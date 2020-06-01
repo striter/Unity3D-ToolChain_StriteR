@@ -99,6 +99,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4373562506124932}
+  - component: {fileID: 114151394001675896}
   m_Layer: 5
   m_Name: UIManager
   m_TagString: Untagged
@@ -314,6 +315,18 @@ MonoBehaviour:
   m_InputActionsPerSecond: 10
   m_RepeatDelay: 0.5
   m_ForceModuleActive: 0
+--- !u!114 &114151394001675896
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1505590167179654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc23b8fb667ad3d45a2be82af36504a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Pages: []
 --- !u!114 &114157171260583816
 MonoBehaviour:
   m_ObjectHideFlags: 1

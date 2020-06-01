@@ -4,17 +4,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIManagerBase : SingletonMono<UIManagerBase> {
+public class UIManagerBase : SingletonMono<UIManagerBase>, ICoroutineHelperClass
+{
     public float m_fittedScale { get; private set; }
     protected Canvas cvs_Overlay, cvs_Camera;
     private RectTransform tf_OverlayPage, tf_CameraPage, tf_OverlayControl, tf_CameraControl, tf_MessageBox;
-    Transform m_PageStorage;
-    public List<UIPageBase> m_Pages = new List<UIPageBase>();
-    public Dictionary<Type, UIPageBase> m_PageStored { get; private set; } = new Dictionary<Type, UIPageBase>();
-    public int I_PageCount => m_Pages.Count;
-    public bool m_PageOpening => I_PageCount > 0;
-    public bool CheckPageOpening<T>() where T : UIPageBase => m_Pages.Count > 0 && m_Pages.Find(p => p.GetType() == typeof(T));
 
+    Transform m_PageStorage;
+    public List<UIPageBase> m_Pages { get; private set; } = new List<UIPageBase>();
+    public Dictionary<Type, UIPageBase> m_PageStored { get; private set; } = new Dictionary<Type, UIPageBase>();
+    public bool CheckPageOpening<T>() where T : UIPageBase => m_Pages.Count > 0 && m_Pages.Find(p => p.GetType() == typeof(T));
+    private Image m_OverlayBG;
+    public Camera m_Camera { get; private set; }
+    public CameraEffectManager m_Effect { get; private set; }
+    protected CB_GenerateTransparentOverlayTexture m_BlurBG { get; private set; }
     public Dictionary<UIControlBase, int> m_ControlSiblings { get; private set; } = new Dictionary<UIControlBase, int>();
 
     protected virtual void Init()
@@ -33,6 +36,13 @@ public class UIManagerBase : SingletonMono<UIManagerBase> {
 
         CanvasScaler scaler = cvs_Overlay.GetComponent<CanvasScaler>();
         m_fittedScale = ((float)Screen.height / Screen.width)/(scaler.referenceResolution.y/scaler.referenceResolution.x);
+
+        m_OverlayBG = cvs_Overlay.transform.Find("OverlayBG").GetComponent<Image>();
+        m_OverlayBG.SetActivate(false);
+
+        m_Camera = transform.Find("UICamera").GetComponent<Camera>();
+        m_Effect = m_Camera.GetComponent<CameraEffectManager>();
+        m_BlurBG = m_Effect.GetOrAddCameraEffect<CB_GenerateTransparentOverlayTexture>().SetOpaqueBlurTextureEnabled(false, 2f, 3, 4);
 
         UIMessageBoxBase.OnMessageBoxExit = OnMessageBoxExit;
     }
@@ -71,7 +81,7 @@ public class UIManagerBase : SingletonMono<UIManagerBase> {
         return false;
     }
 
-    protected T ShowPage<T>(bool useAnim) where T : UIPageBase
+    protected T ShowPage<T>(bool useAnim,bool blurBG) where T : UIPageBase
     {
         if (CheckPageOpening<T>())
             return null;
@@ -86,6 +96,7 @@ public class UIManagerBase : SingletonMono<UIManagerBase> {
 
         page.OnPlay(useAnim,OnPageExit);
         m_Pages.Add(page);
+        SetBlurBackground(blurBG);
         OnAdjustPageSibling();
         return page ;
     }
@@ -95,9 +106,28 @@ public class UIManagerBase : SingletonMono<UIManagerBase> {
         page.SetActivate(false);
         page.transform.SetParent(m_PageStorage);
         page.OnStop();
-
+        SetBlurBackground(false);
         m_Pages.Remove(page);
         OnAdjustPageSibling();
+    }
+
+    void SetBlurBackground(bool enable)
+    {
+        if (enable)
+        {
+            m_OverlayBG.SetActivate(true);
+            m_BlurBG.SetOpaqueBlurTextureEnabled(true, 2f, 2, 3);
+            this.StartSingleCoroutine(0, TIEnumerators.ChangeValueTo((float value) => { m_OverlayBG.color = TCommon.ColorAlpha(m_OverlayBG.color, value); }, 0, 1, UIPageBase.F_AnimDuration, null, false));
+        }
+        else
+        {
+            this.StartSingleCoroutine(0, TIEnumerators.ChangeValueTo((float value) => {
+                m_OverlayBG.color = TCommon.ColorAlpha(m_OverlayBG.color, value);
+            }, 1, 0, UIPageBase.F_AnimDuration, () => {
+                m_BlurBG.SetOpaqueBlurTextureEnabled(false);
+                m_OverlayBG.SetActivate(false);
+            }, false));
+        }
     }
     #endregion
 
