@@ -1,243 +1,161 @@
 ﻿using System;
 using System.Collections.Generic;
-public class TBroadCaster<TEnum>
-{      //Message Center  Add / Remove / Trigger
 
-    private static Dictionary<TEnum, List<LocalMessage>> dic_delegates = new Dictionary<TEnum, List<LocalMessage>>();
-    public static void Init()
-    {
-        dic_delegates.Clear();
-        TCommon.TraversalEnum((TEnum temp) => { dic_delegates.Add(temp, new List<LocalMessage>()); });
-    }
-
-    public static void Add(TEnum type, Action Listener)
-    {
-        if (dic_delegates.Count == 0)
-            UnityEngine.Debug.LogError("Please Init Broadcaster Before Add");
-
-        dic_delegates[type].Add(new LocalMessage(Listener));
-    }
-    public static void Remove(TEnum type, Action Listener)
-    {
-        LocalMessage target = null;
-        foreach (LocalMessage mb in dic_delegates[type])
-        {
-            if (mb.e_type == LocalMessage.enum_MessageType.Void && mb.ac_listener == Listener)
-            {
-                target = mb;
-                break;
-            }
-        }
-        if (target != null)
-            dic_delegates[type].Remove(target);
-    }
-    public static void Trigger(TEnum type)
-    {
-        bool triggered = false;
-        foreach (LocalMessage del in dic_delegates[type])
-        {
-            if (del.e_type == LocalMessage.enum_MessageType.Void)
-            {
-                triggered = true;
-                del.Trigger();
-            }
-        }
-        if (!triggered)
-            UnityEngine.Debug.LogWarning("No Message Triggered By:" + type.ToString());
-    }
-
-    public static void Add<T>(TEnum type, Action<T> Listener)
-    {
-        if (dic_delegates.Count == 0)
-            UnityEngine.Debug.LogError("Please Init Broadcaster Before Add");
-
-        dic_delegates[type].Add(new LocalMessage<T>(Listener));
-    }
-    public static void Remove<T>(TEnum type, Action<T> Listener)
-    {
-        LocalMessage<T> removeTarget = null;
-        foreach (LocalMessage mb in dic_delegates[type])
-        {
-            if (mb.e_type == LocalMessage.enum_MessageType.OneTemplate)
-                removeTarget = mb as LocalMessage<T>;
-            if (removeTarget != null && removeTarget.ac_listener == Listener)
-                break;
-            removeTarget = null;
-        }
-
-        if (removeTarget != null)
-            dic_delegates[type].Remove(removeTarget);
-    }
-    public static void Trigger<T>(TEnum type, T template)
-    {
-        bool triggered = false;
-        foreach (LocalMessage del in dic_delegates[type])
-        {
-            if (del.e_type != LocalMessage.enum_MessageType.OneTemplate)
-                return;
-
-            triggered = true;
-            (del as LocalMessage<T>).Trigger(template);
-        }
-
-        if (!triggered)
-            UnityEngine.Debug.LogWarning("No Message Triggered By:"+type.ToString()+"|"  + typeof(T).ToString());
-    }
-
-    public static void Add<T, Y>(TEnum type, Action<T, Y> Listener)
-    {
-        if (dic_delegates.Count == 0)
-            UnityEngine.Debug.LogError("Please Init Broadcaster Before Add");
-
-        dic_delegates[type].Add(new LocalMessage<T, Y>(Listener));
-    }
-
-    public static void Remove<T, Y>(TEnum type, Action<T, Y> Listener)
-    {
-        LocalMessage<T, Y> removeTarget = null;
-        foreach (LocalMessage mb in dic_delegates[type])
-        {
-            if (mb.e_type == LocalMessage.enum_MessageType.TwoTemplate)
-                removeTarget = mb as LocalMessage<T, Y>;
-            if (removeTarget != null && removeTarget.ac_listener == Listener)
-                break;
-            removeTarget = null;
-        }
-
-        if (removeTarget != null)
-            dic_delegates[type].Remove(removeTarget);
-    }
-    public static void Trigger<T, Y>(TEnum type, T template1, Y template2)
-    {
-        bool triggered = false;
-        foreach (LocalMessage del in dic_delegates[type])
-        {
-            if (del.e_type != LocalMessage.enum_MessageType.TwoTemplate)
-                return;
-
-            triggered = true;
-            (del as LocalMessage<T,Y>).Trigger(template1,template2);
-        }
-
-        if (!triggered)
-            UnityEngine.Debug.LogWarning("No Message Triggered By:" + type.ToString() + "|" + typeof(T) .ToString() + "|" + typeof(Y).ToString());
-    }
-
-    public static void Add<T, Y, U>(TEnum type, Action<T, Y, U> Listener)
-    {
-        if (dic_delegates.Count == 0)
-            UnityEngine.Debug.LogError("Please Init Broadcaster Before Add");
-
-        dic_delegates[type].Add(new LocalMessage<T, Y, U>(Listener));
-    }
-    public static void Remove<T, Y, U>(TEnum type, Action<T, Y, U> Listener)
-    {
-        LocalMessage<T, Y, U> removeTarget = null;
-        foreach (LocalMessage mb in dic_delegates[type])
-        {
-            if (mb.e_type == LocalMessage.enum_MessageType.ThreeTemplate)
-                removeTarget = mb as LocalMessage<T, Y, U>;
-            if (removeTarget != null && removeTarget.ac_listener == Listener)
-                break;
-            removeTarget = null;
-        }
-
-        if (removeTarget != null)
-            dic_delegates[type].Remove(removeTarget);
-    }
-    public static void Trigger<T, Y, U>(TEnum type, T template1, Y template2, U template3)
-    {
-        bool triggered = false;
-        foreach (LocalMessage del in dic_delegates[type])
-        {
-            if (del.e_type != LocalMessage.enum_MessageType.ThreeTemplate)
-                return;
-            triggered = true;
-            (del as LocalMessage<T, Y, U>).Trigger(template1, template2, template3);
-        }
-
-        if (!triggered)
-            UnityEngine.Debug.LogWarning("No Message Triggered By:" + type.ToString() + "|" + typeof(T).ToString() + "|" + typeof(Y).ToString() + "|" + typeof(U).ToString());
-    }
-}
-
-#region LocalMessages
-public class LocalMessage
+interface BroadCastMessageInterface<T>
 {
-    public enum enum_MessageType
+    List<T> m_MessageList { get; }
+}
+
+static class BroadCastMessageInteraface_Extend
+{
+    public static int Count(this BroadCastMessageInterface<Action> messages) => messages.m_MessageList.Count;
+    public static void Add<T>(this BroadCastMessageInterface<T> messages, T message)
     {
-        Void,
-        OneTemplate,
-        TwoTemplate,
-        ThreeTemplate,
-    }
-    public virtual enum_MessageType e_type => enum_MessageType.Void;
-    public Action ac_listener { get; private set; }
-    public LocalMessage(Action listener)
-    {
-        ac_listener = listener;
-    }
-    public void Trigger()
-    {
-        ac_listener.Invoke();
+        if (messages.m_MessageList.Contains(message))
+            throw new Exception("Message Already Registed!" + message);
+        messages.m_MessageList.Add(message);
     }
 
-    public LocalMessage()
+    public static void Remove<T>(this BroadCastMessageInterface<T> messages, T message)
     {
+        if (!messages.m_MessageList.Contains(message))
+            throw new Exception("Message Not Registed!" + message);
+        messages.m_MessageList.Remove(message);
     }
 }
-public class LocalMessage<T> : LocalMessage
-{
-    public override enum_MessageType e_type => enum_MessageType.OneTemplate;
-    public new Action<T> ac_listener { get; private set; }
-    public LocalMessage(Action<T> _listener)
-    {
-        ac_listener = _listener;
-    }
-    public void Trigger(T _object)
-    {
-        ac_listener(_object);
 
-    }
-}
-public class LocalMessage<T, Y> : LocalMessage
+public static class TBroadCaster<TEnum>
 {
-    public override enum_MessageType e_type => enum_MessageType.TwoTemplate;
-    public new Action<T, Y> ac_listener { get; private set; }
-    public LocalMessage(Action<T, Y> _listener)
+    public class MessageBase { }
+    public static Dictionary<TEnum, MessageBase> m_Messages = new Dictionary<TEnum, MessageBase>();
+    #region Messages
+    public class BroadCastMessage : MessageBase, BroadCastMessageInterface<Action>
     {
-        ac_listener = _listener;
+        public List<Action> m_MessageList { get; } = new List<Action>();
+        public void Trigger()
+        {
+            foreach (Action message in m_MessageList)
+                message();
+        }
     }
-    public void Trigger(T _object1, Y _object2)
+    public class BroadCastMessage<T> : MessageBase, BroadCastMessageInterface<Action<T>>
     {
-        ac_listener(_object1, _object2);
+        public List<Action<T>> m_MessageList { get; } = new List<Action<T>>();
+        public void Trigger(T template)
+        {
+            foreach (Action<T> message in m_MessageList)
+                message(template);
+        }
     }
-}
-public class LocalMessage<T, Y,U> : LocalMessage
-{
-    public override enum_MessageType e_type => enum_MessageType.ThreeTemplate;
-    public new Action<T, Y,U> ac_listener { get; private set; }
-    public LocalMessage(Action<T, Y,U> _listener)
+    public class BroadCastMessage<T, Y> : MessageBase, BroadCastMessageInterface<Action<T, Y>>
     {
-        ac_listener = _listener;
+        public List<Action<T, Y>> m_MessageList { get; } = new List<Action<T, Y>>();
+        public void Trigger(T template1,Y template2)
+        {
+            foreach (Action<T,Y> message in m_MessageList)
+                message(template1,template2);
+        }
     }
-    public void Trigger(T _object1, Y _object2,U _object3)
+    public class BroadCastMessage<T, Y, U> : MessageBase, BroadCastMessageInterface<Action<T, Y, U>>
     {
-        ac_listener(_object1, _object2,_object3);
+        public List<Action<T, Y, U>> m_MessageList { get; } = new List<Action<T, Y, U>>();
+        public void Trigger(T template1, Y template2,U template3)
+        {
+            foreach (Action<T, Y,U> message in m_MessageList)
+                message(template1, template2,template3);
+        }
     }
-}
-public class LocalMessage<T, Y, U,I> : LocalMessage
-{
-    public override enum_MessageType e_type => enum_MessageType.ThreeTemplate;
-    public new Action<T, Y, U> ac_listener { get; private set; }
-    public LocalMessage(Action<T, Y, U> _listener)
+    public class BroadCastMessage<T, Y, U, I> : MessageBase, BroadCastMessageInterface<Action<T, Y, U, I>>
     {
-        ac_listener = _listener;
+        public List<Action<T, Y, U, I>> m_MessageList { get; } = new List<Action<T, Y, U, I>>();
+        public void Trigger(T template1, Y template2, U template3,I template4)
+        {
+            foreach (Action<T, Y, U,I> message in m_MessageList)
+                message(template1, template2, template3,template4);
+        }
     }
-    public void Trigger(T _object1, Y _object2, U _object3)
+    #endregion
+    #region Messages Get
+    public static BroadCastMessage Get(TEnum identity)
     {
-        ac_listener(_object1, _object2, _object3);
+        BroadCastMessage message;
+        if (!m_Messages.ContainsKey(identity))
+        {
+            message = new BroadCastMessage();
+            m_Messages.Add(identity, message);
+        }
+        else
+        {
+            message = (m_Messages[identity] as BroadCastMessage);
+            if (message == null)
+                throw new Exception("Null Void Message Found Of"+identity);
+        }
+        return message;
     }
-}
-#endregion
 
+    public static BroadCastMessage<T> Get<T>(TEnum identity)
+    {
+        BroadCastMessage<T> message;
+        if (!m_Messages.ContainsKey(identity))
+        {
+            message = new BroadCastMessage<T>();
+            m_Messages.Add(identity, message);
+        }
+        else
+        {
+            message = (m_Messages[identity] as BroadCastMessage<T>);
+            if (message == null)
+                throw new Exception("Null Single Message Found Of" + identity + "," + typeof(T));
+        }
+        return message;
+    }
+    public static BroadCastMessage<T, Y> Get<T, Y>(TEnum identity)
+    {
+        BroadCastMessage<T, Y> message;
+        if (!m_Messages.ContainsKey(identity))
+        {
+            message = new BroadCastMessage<T, Y>();
+            m_Messages.Add(identity, message);
+        }
+        else
+        {
+            message = (m_Messages[identity] as BroadCastMessage<T, Y>);
+            if (message == null)
+                throw new Exception("Null Single Message Found Of" + identity + "," + typeof(T) + "," + typeof(Y));
+        }
+        return message;
+    }
+    public static BroadCastMessage<T, Y,U> Get<T, Y, U>(TEnum identity)
+    {
+        BroadCastMessage<T, Y, U> message;
+        if (!m_Messages.ContainsKey(identity))
+        {
+            message = new BroadCastMessage<T, Y, U>();
+            m_Messages.Add(identity, message);
+        }
+        else
+        {
+            message = (m_Messages[identity] as BroadCastMessage<T, Y, U>);
+            if (message == null)
+                throw new Exception("Null Single Message Found Of" + identity + "," + typeof(T) + "," + typeof(Y)+","+typeof(U));
+        }
+        return message;
+    }
+    public static BroadCastMessage<T, Y, U, I> Get<T, Y, U, I>(TEnum identity)
+    {
+        BroadCastMessage<T, Y, U, I> message;
+        if (!m_Messages.ContainsKey(identity))
+        {
+            message = new BroadCastMessage<T, Y, U, I>();
+            m_Messages.Add(identity, message);
+        }
+        else
+        {
+            message = (m_Messages[identity] as BroadCastMessage<T, Y, U, I>);
+            if (message == null)
+                throw new Exception("Null Single Message Found Of" + identity + "," + typeof(T) + "," + typeof(Y)+","+typeof(U)+","+typeof(I));
+        }
+        return message;
+    }
+    #endregion
+}
