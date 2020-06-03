@@ -54,7 +54,7 @@ GameObject:
   - component: {fileID: 224769092574060114}
   - component: {fileID: 114138217792325534}
   m_Layer: 5
-  m_Name: MobileControl
+  m_Name: TouchControl
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

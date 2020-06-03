@@ -43,8 +43,8 @@ public class UIT_EventTriggerListener : EventTrigger
         if (OnLocalDown == null)
             return;
 
-        Vector2 pos = Vector2.zero;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(transform as RectTransform,eventData.position,eventData.enterEventCamera,out pos);
+        Vector2 pos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle( transform as RectTransform,eventData.position,eventData.enterEventCamera,out pos);
         OnLocalDown(down, pos);
     }
 
@@ -53,7 +53,7 @@ public class UIT_EventTriggerListener : EventTrigger
         if (OnClickLocal == null)
             return;
 
-        Vector2 pos = Vector2.zero;
+        Vector2 pos;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(transform as RectTransform, eventData.position, eventData.enterEventCamera, out pos);
         OnClickLocal(pos);
     }

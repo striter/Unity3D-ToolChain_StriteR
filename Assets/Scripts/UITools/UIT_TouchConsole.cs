@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIT_MobileConsole : SingletonMono<UIT_MobileConsole> {
-
+public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
     public bool m_ConsoleOpening { get; private set; } = false;
     public int LogExistCount = 10;
     public int LogSaveCount = 30;
@@ -32,7 +31,6 @@ public class UIT_MobileConsole : SingletonMono<UIT_MobileConsole> {
     }
 #region Console
     public ConsoleCommand AddConsoleBinding() => m_ConsoleCommands.AddItem(m_ConsoleCommands.Count);
-    
     public class ConsoleCommand : CObjectPoolClass<int>
     {
         InputField m_ValueInput;
@@ -89,8 +87,8 @@ public class UIT_MobileConsole : SingletonMono<UIT_MobileConsole> {
         }
     }
 #endregion
-    float m_fastKeyCooldown = 0f;
 
+    float m_fastKeyCooldown = 0f;
     private void Update()
     {
 #if UNITY_EDITOR
