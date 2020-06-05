@@ -125,12 +125,4 @@ public class CameraController : SingletonMono<CameraController>  {
     public static Vector3 CameraXZRightward => Instance.m_RootRightward;
     public static Quaternion CameraProjectionOnPlane(Vector3 position)=> Quaternion.LookRotation(Vector3.ProjectOnPlane(position - MainCamera.transform.position, MainCamera.transform.right), MainCamera.transform.up);
     #endregion
-
-#if UNITY_EDITOR
-    public bool m_CameraDebug=true;
-    protected virtual void OnDrawGizmos()
-    {
-
-    }
-#endif
 }
