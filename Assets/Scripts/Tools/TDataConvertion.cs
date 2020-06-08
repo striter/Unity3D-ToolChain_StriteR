@@ -38,12 +38,12 @@ public interface IDataConvert
 }
 public static class TDataConvert
 {
-    static readonly char[] m_PhraseLiterateBreakPoints = new char[8] { '-', '[', ']', '{', '}', '(', ')', '/' };
+    static readonly char[] m_PhraseLiterateBreakPoints = new char[7] {'[', ']', '{', '}', '(', ')', '/' };
     const char m_PhraseBaseBreakPoint = '|';
 
-    public static string Convert(object value) => ConvertToString(value.GetType(), value, -1);
-    public static T Convert<T>(string xmlData) => (T)ConvertToObject(typeof(T), xmlData, -1);
-    public static object Convert(Type type, string xmlData) => ConvertToObject(type, xmlData, -1);
+    public static string Convert(object value,int startIndex=0) => ConvertToString(value.GetType(), value, startIndex);
+    public static T Convert<T>(string xmlData,int startIndex=0) => (T)ConvertToObject(typeof(T), xmlData, startIndex);
+    public static object Convert(Type type, string xmlData,int startIndex=0) => ConvertToObject(type, xmlData, startIndex);
     public static object Default(Type type) => type.IsValueType ? Activator.CreateInstance(type) : null;
     static string ConvertToString( Type type, object value, int iteration)
     {
@@ -54,14 +54,13 @@ public static class TDataConvert
             return m_BaseTypeToXmlData[type](value);
 
         if (CheckIXmlParseType(type))
-            return IXmlPhraseToString(type, value, iteration + 1);
+            return IXmlPhraseToString(type, value, iteration);
 
         Type genericDefinition = type.GetGenericTypeDefinition();
         if (CheckGenericPhrase(genericDefinition))
-            return GenericPhraseToString(type,genericDefinition, value, iteration + 1);
+            return GenericPhraseToString(type,genericDefinition, value, iteration);
 
-        Debug.LogError("Xml Error Invlid Type:" + type.ToString() + " For Base Type To Phrase");
-        return null;
+        throw new Exception("Xml Error Invlid Type:" + type.ToString() + " For Base Type To Phrase");
     }
     static object ConvertToObject(Type type, string xmlData, int iteration)
     {
@@ -78,8 +77,7 @@ public static class TDataConvert
         if (CheckGenericPhrase(genericDefinition))
             return GenericPhraseToData(type,genericDefinition, xmlData, iteration + 1);
 
-        Debug.LogError("Xml Error Invlid Type:" + type.ToString() + " For Xml Data To Phrase");
-        return null;
+        throw new Exception("Xml Error Invlid Type:" + type.ToString() + " For Xml Data To Phrase");
     }
 
     #region BaseType
@@ -112,10 +110,7 @@ public static class TDataConvert
     static string GenericPhraseToString( Type type,Type genericDefinition, object data, int iteration)
     {
         if (iteration >= m_PhraseLiterateBreakPoints.Length)
-        {
-            Debug.LogError("Iteration Max Reached!");
-            return "";
-        }
+            throw new Exception("Iteration Max Reached!");
         char dataBreak = m_PhraseLiterateBreakPoints[iteration];
         StringBuilder _convertData = new StringBuilder();
         if (genericDefinition== m_GenericListType)
@@ -149,10 +144,7 @@ public static class TDataConvert
     static object GenericPhraseToData(Type type,Type genericDefinition, string xmlData, int iteration)
     {
         if (iteration >= m_PhraseLiterateBreakPoints.Length)
-        {
-            Debug.LogError("Iteration Max Reached!");
-            return null;
-        }
+            throw new Exception("Iteration Max Reached!");
         char dataBreak = m_PhraseLiterateBreakPoints[iteration];
         if(genericDefinition==m_GenericListType)
         {
@@ -178,8 +170,7 @@ public static class TDataConvert
                 }
             return iDic_Target;
         }
-        Debug.LogError("Invalid GenericDefinition here!");
-        return null;
+        throw new Exception("Invalid GenericDefinition:"+genericDefinition);
     }
     #endregion
     #region IXmlConvertType
@@ -199,17 +190,14 @@ public static class TDataConvert
     {
         string phrase = "";
         if (iteration >= m_PhraseLiterateBreakPoints.Length)
-        {
-            Debug.LogError("Iteration Max Reached!");
-            return phrase;
-        }
+            throw new Exception("Iteration Max Reached!");
         char dataBreak = m_PhraseLiterateBreakPoints[iteration];
         int fieldLength = m_XmlConvertFieldInfos[type].Length;
         for (int i = 0; i < fieldLength; i++)
         {
             FieldInfo field = m_XmlConvertFieldInfos[type][i];
             object fieldValue = field.GetValue(data);
-            string fieldString = ConvertToString(field.FieldType, fieldValue, iteration);
+            string fieldString = ConvertToString(field.FieldType, fieldValue, ++iteration);
             phrase += fieldString;
             if (i != fieldLength - 1)
                 phrase += dataBreak;
@@ -221,10 +209,7 @@ public static class TDataConvert
     {
         object objectData = Activator.CreateInstance(type);
         if (iteration >= m_PhraseLiterateBreakPoints.Length)
-        {
-            Debug.LogError("Iteration Max Reached!");
-            return null;
-        }
+            throw new Exception("Iteration Max Reached!");
         char dataBreak = m_PhraseLiterateBreakPoints[iteration];
         int fieldLength = m_XmlConvertFieldInfos[type].Length;
         string[] splitString = data.Split(dataBreak);
@@ -234,7 +219,7 @@ public static class TDataConvert
         {
             FieldInfo field = m_XmlConvertFieldInfos[type][i];
             string fieldString = splitString[i];
-            object fieldValule = ConvertToObject(field.FieldType, fieldString, iteration);
+            object fieldValule = ConvertToObject(field.FieldType, fieldString, ++iteration);
             field.SetValue(objectData, fieldValule);
         }
         return objectData;
