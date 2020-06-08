@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using UnityEngine;
 
 
 [Serializable]
@@ -41,9 +40,9 @@ public static class TDataConvert
     static readonly char[] m_PhraseLiterateBreakPoints = new char[7] {'[', ']', '{', '}', '(', ')', '/' };
     const char m_PhraseBaseBreakPoint = '|';
 
-    public static string Convert(object value,int startIndex=0) => ConvertToString(value.GetType(), value, startIndex);
-    public static T Convert<T>(string xmlData,int startIndex=0) => (T)ConvertToObject(typeof(T), xmlData, startIndex);
-    public static object Convert(Type type, string xmlData,int startIndex=0) => ConvertToObject(type, xmlData, startIndex);
+    public static string Convert(object value) => ConvertToString(value.GetType(), value, 0);
+    public static T Convert<T>(string xmlData) => (T)ConvertToObject(typeof(T), xmlData, 0);
+    public static object Convert(Type type, string xmlData) => ConvertToObject(type, xmlData, 0);
     public static object Default(Type type) => type.IsValueType ? Activator.CreateInstance(type) : null;
     static string ConvertToString( Type type, object value, int iteration)
     {
@@ -56,9 +55,12 @@ public static class TDataConvert
         if (CheckIXmlParseType(type))
             return IXmlPhraseToString(type, value, iteration);
 
-        Type genericDefinition = type.GetGenericTypeDefinition();
-        if (CheckGenericPhrase(genericDefinition))
-            return GenericPhraseToString(type,genericDefinition, value, iteration);
+        if (type.IsGenericType)
+        {
+            Type genericDefinition = type.GetGenericTypeDefinition();
+            if (CheckGenericPhrase(genericDefinition))
+                return GenericPhraseToString(type, genericDefinition, value, iteration);
+        }
 
         throw new Exception("Xml Error Invlid Type:" + type.ToString() + " For Base Type To Phrase");
     }
@@ -73,9 +75,12 @@ public static class TDataConvert
         if (CheckIXmlParseType(type))
             return IXmlPraseToData(type, xmlData, iteration + 1);
 
-        Type genericDefinition = type.GetGenericTypeDefinition();
-        if (CheckGenericPhrase(genericDefinition))
-            return GenericPhraseToData(type,genericDefinition, xmlData, iteration + 1);
+        if(type.IsGenericType)
+        {
+            Type genericDefinition = type.GetGenericTypeDefinition();
+            if (CheckGenericPhrase(genericDefinition))
+                return GenericPhraseToData(type, genericDefinition, xmlData, iteration + 1);
+        }
 
         throw new Exception("Xml Error Invlid Type:" + type.ToString() + " For Xml Data To Phrase");
     }
