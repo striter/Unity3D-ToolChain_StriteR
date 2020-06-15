@@ -42,7 +42,7 @@ public class TouchCheckLRJoystick : TouchCheckBase
     Action<Vector2> OnLeftDelta, OnRightDelta;
     Func<bool> OnCanSendDelta;
     Vector2 m_leftDelta, m_rightDelta;
-    public TouchCheckLRJoystick(Action<Vector2> _OnLeftDelta, Action<Vector2> _OnRightDelta, Func<bool> _OnCanSendDelta)
+    public TouchCheckLRJoystick(Action<Vector2> _OnLeftDelta, Action<Vector2> _OnRightDelta, Func<bool> _OnCanSendDelta=null)
     {
         m_leftDelta = Vector2.zero;
         m_rightDelta = Vector2.zero;

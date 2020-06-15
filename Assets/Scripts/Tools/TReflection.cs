@@ -32,10 +32,7 @@ public static class TReflection
 
     public static class UI
     {
-        public interface IUIPropertyFill
-        {
-        }
-        public class CPropertyFillElement:IUIPropertyFill
+        public class CPropertyFillElement
         {
             public Transform transform { get; private set; }
             public CPropertyFillElement(Transform transform)
@@ -57,7 +54,7 @@ public static class TReflection
     };
         static bool FillTypeMatch(Type type) => m_BaseTypeHelper.ContainsKey(type) || type.IsSubclassOf(typeof(CPropertyFillElement));
 
-        public static void UIPropertyFill<T>(T target,Transform parent) where T : IUIPropertyFill
+        public static void UIPropertyFill<T>(T target,Transform parent) 
         {
             try
             {
@@ -83,7 +80,7 @@ public static class TReflection
             }
         } 
 
-        static bool GetProperty<T>(T target,Transform parent, string name, Type type, out object obj) where T : IUIPropertyFill
+        static bool GetProperty<T>(T target,Transform parent, string name, Type type, out object obj)
         {
             obj = null;
             string[] propertySplitPath = name.Split('_');

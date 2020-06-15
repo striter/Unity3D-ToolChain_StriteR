@@ -9,10 +9,9 @@ public class SFXBase :CObjectPoolStaticPrefabBase<int> {
 
     protected float f_lifeTimeCheck { get; private set; }
     protected bool B_Delaying { get; private set; }
-    public bool B_Activating { get; private set; }
-    public bool B_Playing { get; private set; }
+    public bool m_Activating { get; private set; }
+    public bool m_Playing { get; private set; }
     public bool m_TickLifeTime { get; private set; }
-    protected virtual bool m_ScaledDeltaTime => true;
     public float f_playTimeLeft => f_lifeTimeCheck - I_SFXStopExternalDuration;
     public float f_delayTimeLeft { get; private set; }
     public float f_delayLeftScale => f_delayTimeLeft>0? (f_delayTimeLeft / f_delayDuration):0;
@@ -27,9 +26,9 @@ public class SFXBase :CObjectPoolStaticPrefabBase<int> {
     }
     protected void PlaySFX(int sourceID,float playDuration,float delayDuration,bool lifeTimeTick)
     {
-        B_Activating = true;
+        m_Activating = true;
         B_Delaying = true;
-        B_Playing = false;
+        m_Playing = false;
         m_TickLifeTime = lifeTimeTick;
         m_SourceID = sourceID;
         f_playDuration = playDuration;
@@ -48,7 +47,7 @@ public class SFXBase :CObjectPoolStaticPrefabBase<int> {
     protected virtual void OnPlay()
     {
         B_Delaying = false;
-        B_Playing = true;
+        m_Playing = true;
         m_relativeSFXs.Traversal((SFXRelativeBase relative) => { relative.OnPlay(); });
     }
 
@@ -57,13 +56,13 @@ public class SFXBase :CObjectPoolStaticPrefabBase<int> {
         f_lifeTimeCheck = I_SFXStopExternalDuration;
         m_TickLifeTime = true;
         B_Delaying = false;
-        B_Playing = false;
+        m_Playing = false;
         m_relativeSFXs.Traversal((SFXRelativeBase sfxRelative) => { sfxRelative.OnStop(); });
     }
 
     protected virtual void OnRecycle()
     {
-        B_Activating = false;
+        m_Activating = false;
         m_AttachTo = null;
         m_relativeSFXs.Traversal((SFXRelativeBase relative) => { relative.OnRecycle(); });
         DoRecycle();
@@ -78,9 +77,9 @@ public class SFXBase :CObjectPoolStaticPrefabBase<int> {
         m_localDir = _attachTo.InverseTransformDirection(transform.forward);
     }
 
-    protected virtual void Update()
+    public virtual void Tick(float deltaTime)
     {
-        if (!B_Activating)
+        if (!m_Activating)
             return;
 
         if (m_AttachTo)
@@ -89,7 +88,6 @@ public class SFXBase :CObjectPoolStaticPrefabBase<int> {
             transform.rotation = Quaternion.LookRotation(m_AttachTo.TransformDirection(m_localDir));
         }
 
-        float deltaTime = m_ScaledDeltaTime ? Time.deltaTime : Time.unscaledDeltaTime;
         if (B_Delaying && f_delayTimeLeft >= 0)
         {
             f_delayTimeLeft -= deltaTime;
@@ -103,12 +101,12 @@ public class SFXBase :CObjectPoolStaticPrefabBase<int> {
 
         if (!m_TickLifeTime)
             return;
-        if (B_Playing && f_playTimeLeft < 0)
+        if (m_Playing && f_playTimeLeft < 0)
             OnStop();
-        if (!B_Playing && f_lifeTimeCheck < 0)
+        if (!m_Playing && f_lifeTimeCheck < 0)
             OnRecycle();
-    }
 
+    }
 
     public void Stop()
     {
@@ -123,7 +121,7 @@ public class SFXBase :CObjectPoolStaticPrefabBase<int> {
     protected Color EDITOR_GizmosColor()
     {
         Color color = Color.red;
-        if (B_Playing)
+        if (m_Playing)
             color = Color.green;
         if (B_Delaying)
             color = Color.yellow;

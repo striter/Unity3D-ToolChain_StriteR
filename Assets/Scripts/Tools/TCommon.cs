@@ -197,14 +197,14 @@ public static class TCommon
     public static T GetIndexKey<T, Y>(this Dictionary<T, Y> dictionary, int index) => dictionary.ElementAt(index).Key;
     public static Y GetIndexValue<T, Y>(this Dictionary<T, Y> dictionary, int index) => dictionary.ElementAt(index).Value;
 
-    public static List<T> DeepCopy<T>(this List<T> list) where T : struct
+    public static List<T> DeepCopy<T>(this List<T> list) 
     {
         List<T> copyList = new List<T>();
         list.Traversal((T value) => { copyList.Add(value); });
         return copyList;
     }
 
-    public static Dictionary<T,Y> DeepCopy<T,Y>(this Dictionary<T,Y> dictionary) where T:struct where Y: struct
+    public static Dictionary<T,Y> DeepCopy<T,Y>(this Dictionary<T,Y> dictionary) 
     {
         Dictionary<T, Y> copyDic = new Dictionary<T, Y>();
         dictionary.Traversal((T key, Y value) => { copyDic.Add(key, value); });
@@ -226,7 +226,7 @@ public static class TCommon
     public static void Traversal<T>(this List<T> list, Action<T> OnEachItem, bool shallowCopy = false)
     {
         List<T> tempList = shallowCopy ? new List<T>(list) : list;
-        TraversalEnumerableIndex(0, list.Count, (int index) => { OnEachItem(tempList[index]); return false; });
+        TraversalEnumerableIndex(0, list.Count, (int index) => {  OnEachItem(tempList[index]); return false; });
     }
     public static void TraversalBreak<T>(this List<T> list, Func<T,bool> OnEachItem,bool shallowCopy=false)
     {

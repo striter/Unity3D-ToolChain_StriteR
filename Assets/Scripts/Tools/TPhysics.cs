@@ -6,71 +6,74 @@ using UnityEngine;
 namespace TPhysics
 {
     #region Physics Simluator
-    public abstract class PhysicsSimulator<T> where T : MonoBehaviour
+    public abstract class PhysicsSimulatorBase<T> where T : MonoBehaviour
     {
-        protected Vector3 m_startPos;
-        protected Vector3 m_Direction;
-        public float m_simulateTime { get; protected set; }
-        public bool m_simulating { get; protected set; }
-        public abstract void Simulate(float deltaTime);
+        public Vector3 m_Origin { get; protected set; }
+        public Vector3 m_Direction { get; protected set; }
+        public float m_TimeElapsed { get; protected set; }
+        public bool m_SelfSimulate { get; protected set; }
+        public abstract void Tick(float deltaTime);
         public abstract Vector3 GetSimulatedPosition(float elapsedTime);
     }
-    public class CapsuleCastPSimulator<T> : PhysicsSimulator<T> where T : MonoBehaviour
+    public class CapsuleCastPSimulatorBase<T> : PhysicsSimulatorBase<T> where T : MonoBehaviour
     {
-        Transform transform;
-        Vector3 m_prePos, m_curPos;
-        protected float m_castHeight, m_castRadius;
-        protected int m_hitLayer;
-        protected Func<RaycastHit, T, bool> OnTargetHitBreak;
-        protected Predicate<T> CanHitTarget;
-        public CapsuleCastPSimulator(Transform _transform, Vector3 _startPos, Vector3 _direction, float _height, float _radius, int _hitLayer, Func<RaycastHit, T, bool> _onTargetHit, Predicate<T> _CanHitTarget)
+        protected Vector3 m_PrePosition { get; private set; }
+        public Vector3 m_Position { get; private set; }
+        public Quaternion m_Rotation { get; private set; }
+        float m_castHeight;
+        float m_castRadius;
+        int m_LayerMask;
+
+        Func<RaycastHit, T, bool> OnTargetHitBreak;
+         Predicate<T> CheckCanHitTarget;
+        public CapsuleCastPSimulatorBase( float _height, float _radius, int _layerMask, Func<RaycastHit, T, bool> OnTargetHitBreak, Predicate<T> CheckCanHitTarget)
         {
-            m_simulateTime = 0f;
-            transform = _transform;
-            m_startPos = _startPos;
-            m_prePos = m_startPos;
-            m_curPos = m_startPos;
-            transform.position = _startPos;
-            m_Direction = _direction;
+            m_SelfSimulate = true;
+            m_TimeElapsed = 0f;
             m_castHeight = _height;
             m_castRadius = _radius;
-            m_hitLayer = _hitLayer;
-            OnTargetHitBreak = _onTargetHit;
-            CanHitTarget = _CanHitTarget;
-            m_simulating = true;
+            m_LayerMask = _layerMask;
+            this.OnTargetHitBreak = OnTargetHitBreak;
+           this. CheckCanHitTarget = CheckCanHitTarget;
         }
-        protected virtual Quaternion GetSimulateRotation(float deltaTime, Vector3 direction) => Quaternion.LookRotation(direction);
-        public override void Simulate(float deltaTime)
+        protected CapsuleCastPSimulatorBase<T> Play(Vector3 _position,Vector3 _direction)=> SetPhysics(_position,_direction,0f);
+        public CapsuleCastPSimulatorBase<T> SetPhysics(Vector3 origin, Vector3 direction, float elapsedTime)
         {
-            if (!m_simulating || deltaTime == 0) return;
-            m_prePos = GetSimulatedPosition(m_simulateTime);
-            m_simulateTime += deltaTime;
-            m_curPos = GetSimulatedPosition(m_simulateTime);
-            Vector3 direction = (m_curPos - m_prePos).normalized;
-            float distance = Vector3.Distance(m_curPos, m_prePos);
-            distance = distance > m_castHeight ? distance : m_castHeight;
-            OnTargetsHitBreak(deltaTime, Physics.SphereCastAll(new Ray(m_prePos, direction), m_castRadius, distance, m_hitLayer));
-            m_prePos = m_curPos;
-            transform.position = m_curPos;
-            transform.rotation = GetSimulateRotation(deltaTime, direction);
-        }
-        public void Redirection(Vector3 direction)
-        {
-            m_startPos = m_prePos;
+            m_SelfSimulate = true;
+            m_Origin = origin;
+            m_PrePosition = m_Origin;
+            m_Position = m_Origin;
             m_Direction = direction;
-            m_simulateTime = 0f;
+            m_TimeElapsed = elapsedTime;
+            return this;
         }
+        public virtual Vector4 GetRelativeParams() => Vector4.zero;
+        public virtual void SetRelativeParam(Vector4 param) { }
+        public override void Tick(float deltaTime)
+        {
+            if (!m_SelfSimulate || deltaTime == 0) return;
+            m_PrePosition = GetSimulatedPosition(m_TimeElapsed);
+            m_TimeElapsed += deltaTime;
+            m_Position = GetSimulatedPosition(m_TimeElapsed);
+            Vector3 direction = (m_Position - m_PrePosition).normalized;
+            float distance = Vector3.Distance(m_Position, m_PrePosition);
+            distance = distance > m_castHeight ? distance : m_castHeight;
+            OnTargetCheck(deltaTime, Physics.SphereCastAll(new Ray(m_PrePosition, direction), m_castRadius, distance, m_LayerMask));
+            m_PrePosition = m_Position;
+            m_Rotation = Quaternion.LookRotation(direction);
+        }
+        public void Stop() => m_SelfSimulate = false;
         public override Vector3 GetSimulatedPosition(float elapsedTime)
         {
             Debug.Log("Override This Please");
             return Vector3.zero;
         }
-        protected void OnTargetsHitBreak(float deltaTime, RaycastHit[] castHits)
+        protected void OnTargetCheck(float deltaTime, RaycastHit[] castHits)
         {
             for (int i = 0; i < castHits.Length; i++)
             {
                 T temp = castHits[i].collider.GetComponent<T>();
-                if (CanHitTarget(temp) && OnTargetHit(deltaTime, castHits[i], temp))
+                if (CheckCanHitTarget(temp) && OnTargetHit(deltaTime, castHits[i], temp))
                     break;
             }
         }
@@ -78,12 +81,17 @@ namespace TPhysics
 
     }
 
-    public class AccelerationPSimulator<T> : CapsuleCastPSimulator<T> where T : MonoBehaviour
+    public class AccelerationPSimulator<T> : CapsuleCastPSimulatorBase<T> where T : MonoBehaviour
     {
         protected Vector3 m_HorizontalDirection, m_VerticalDirection;
         protected float m_horizontalSpeed, m_horizontalAcceleration;
-        public AccelerationPSimulator(Transform _transform, Vector3 _startPos, Vector3 _horizontalDirection, Vector3 _verticalDirection, float _horizontalSpeed, float _horizontalAcceleration, float _height, float _radius, int _hitLayer, Func<RaycastHit, T, bool> _onTargetHit, Predicate<T> _CanHitTarget) : base(_transform, _startPos, _horizontalDirection, _height, _radius, _hitLayer, _onTargetHit, _CanHitTarget)
+        public AccelerationPSimulator(float _height, float _radius, int _hitLayer, Func<RaycastHit, T, bool> _onTargetHit, Predicate<T> _CanHitTarget) : base(  _height, _radius, _hitLayer, _onTargetHit, _CanHitTarget)
         {
+        }
+
+        public void Play(Vector3 position, Vector3 _horizontalDirection, Vector3 _verticalDirection, float _horizontalSpeed, float _horizontalAcceleration)
+        {
+            base.Play(position,_horizontalDirection);
             m_HorizontalDirection = _horizontalDirection;
             m_VerticalDirection = _verticalDirection;
             m_horizontalSpeed = _horizontalSpeed;
@@ -99,108 +107,117 @@ namespace TPhysics
                 horizontalShift += m_HorizontalDirection * PhysicsExpressions.AccelerationSpeedShift(m_horizontalSpeed, m_horizontalAcceleration, elapsedTime > aboveZeroTime ? aboveZeroTime : elapsedTime);
             }
 
-            Vector3 targetPos = m_startPos + horizontalShift;
+            Vector3 targetPos = m_Origin + horizontalShift;
             return targetPos;
         }
     }
 
-    public class SpeedDirectionPSimulator<T> : CapsuleCastPSimulator<T> where T : MonoBehaviour
+    public class SpeedDirectionPSimulator<T> : CapsuleCastPSimulatorBase<T> where T : MonoBehaviour
     {
-        protected Vector3 m_VerticalDirection { get; private set; }
-        protected float m_horizontalSpeed { get; private set; }
-        public SpeedDirectionPSimulator(Transform _transform, Vector3 _startPos, Vector3 _horizontalDirection, Vector3 _verticalDirection, float _horizontalSpeed, float _height, float _radius, int _hitLayer, Func<RaycastHit, T, bool> _onTargetHit, Predicate<T> _canHitTarget) : base(_transform, _startPos, _horizontalDirection, _height, _radius, _hitLayer, _onTargetHit, _canHitTarget)
+        protected float m_Speed { get; private set; }
+        public SpeedDirectionPSimulator( float _height, float _radius, int _hitLayer, Func<RaycastHit, T, bool> _onTargetHit, Predicate<T> _canHitTarget) : base(_height, _radius, _hitLayer, _onTargetHit, _canHitTarget)
         {
-            m_VerticalDirection = _verticalDirection.normalized;
-            m_horizontalSpeed = _horizontalSpeed;
         }
-        public override Vector3 GetSimulatedPosition(float elapsedTime) => m_startPos + m_Direction * PhysicsExpressions.SpeedShift(m_horizontalSpeed, elapsedTime);
+        public void Play(Vector3 _startPos, Vector3 _direction, float _speed)
+        {
+            base.Play(_startPos,_direction);
+            m_Speed = _speed;
+        }
+        public override Vector4 GetRelativeParams() => new Vector4(m_Speed,0);
+        public override void SetRelativeParam(Vector4 param)
+        {
+            m_Speed = param.x;
+        }
+        public override Vector3 GetSimulatedPosition(float elapsedTime) => m_Origin + m_Direction * PhysicsExpressions.SpeedShift(m_Speed, elapsedTime);
     }
 
-    public class LerpPSimulator<T> : CapsuleCastPSimulator<T> where T : MonoBehaviour
+    public class LerpPSimulator<T> : CapsuleCastPSimulatorBase<T> where T : MonoBehaviour
     {
         bool b_lerpFinished;
         Action OnLerpFinished;
         Vector3 m_endPos;
         float f_totalTime;
-        public LerpPSimulator(Transform _transform, Vector3 _startPos, Vector3 _endPos, Action _OnLerpFinished, float _duration, float _height, float _radius, int _hitLayer, Func<RaycastHit, T, bool> _onTargetHit, Predicate<T> _canHitTarget) : base(_transform, _startPos, _endPos - _startPos, _height, _radius, _hitLayer, _onTargetHit, _canHitTarget)
+        public LerpPSimulator(Action _OnLerpFinished, float _height, float _radius, int _hitLayer, Func<RaycastHit, T, bool> _onTargetHit, Predicate<T> _canHitTarget) : base(_height, _radius, _hitLayer, _onTargetHit, _canHitTarget)
         {
-            m_endPos = _endPos;
             OnLerpFinished = _OnLerpFinished;
-            f_totalTime = _duration;
-            b_lerpFinished = false;
         }
-        public override void Simulate(float deltaTime)
+        public void Play(Vector3 _startPos, Vector3 _endPos, float _duration)
         {
-            base.Simulate(deltaTime);
-            if (!b_lerpFinished && m_simulateTime > f_totalTime)
+            base.Play(_startPos, _endPos - _startPos);
+            b_lerpFinished = false;
+            m_endPos = _endPos;
+            f_totalTime = _duration;
+        }
+        public override void Tick(float deltaTime)
+        {
+            base.Tick(deltaTime);
+            if (!b_lerpFinished && m_TimeElapsed > f_totalTime)
             {
                 OnLerpFinished?.Invoke();
                 b_lerpFinished = true;
             }
         }
-        public override Vector3 GetSimulatedPosition(float elapsedTime) => b_lerpFinished ? m_endPos : Vector3.Lerp(m_startPos, m_endPos, elapsedTime / f_totalTime);
+        public override Vector3 GetSimulatedPosition(float elapsedTime) => b_lerpFinished ? m_endPos : Vector3.Lerp(m_Origin, m_endPos, elapsedTime / f_totalTime);
     }
 
 
-    public class ParacurveBouncePSimulator<T> : CapsuleCastPSimulator<T> where T : MonoBehaviour
+    public class ParacurveBouncePSimulator<T> : CapsuleCastPSimulatorBase<T> where T : MonoBehaviour
     {
-        float f_speed;
-        float f_vertiAcceleration;
-        bool b_randomRotation;
-        bool b_bounceOnHit;
-        float f_bounceSpeedMultiply;
-        protected Vector3 v3_RotateEuler;
-        protected Vector3 v3_RotateDirection;
-        public ParacurveBouncePSimulator(Transform _transform, Vector3 _startPos, Vector3 _endPos, float _angle, float _horiSpeed, float _height, float _radius, bool randomRotation, int _hitLayer, bool bounce, float _bounceSpeedMultiply, Func<RaycastHit, T, bool> _onBounceHit, Predicate<T> _OnBounceCheck) : base(_transform, _startPos, Vector3.zero, _height, _radius, _hitLayer, _onBounceHit, _OnBounceCheck)
+        public float m_SpeedMultiplier { get; private set; }
+        public float m_HorizontalSpeed { get;private set; }
+        public float m_VerticalAcceleration { get; private set; }
+
+        bool m_bounceOnHit;
+        float m_bounceSpeedMultiply;
+        public ParacurveBouncePSimulator(float _height, float _radius, bool bounce, float _bounceSpeedMultiply, int _hitLayer, Func<RaycastHit, T, bool> _onBounceHit, Predicate<T> _OnBounceCheck) : base(_height, _radius, _hitLayer, _onBounceHit, _OnBounceCheck)
         {
+            m_bounceOnHit = bounce;
+            m_bounceSpeedMultiply = _bounceSpeedMultiply;
+        }
+
+        public void Play(Vector3 _startPos, Vector3 _endPos, float _angle, float _horiSpeed)
+        {
+            base.Play(_startPos, Vector3.zero);
             Vector3 horiDirection = TCommon.GetXZLookDirection(_startPos, _endPos);
             Vector3 horiRight = horiDirection.RotateDirectionClockwise(Vector3.up, 90);
             m_Direction = horiDirection.RotateDirectionClockwise(horiRight, -_angle);
-            f_speed = _horiSpeed / Mathf.Cos(_angle * Mathf.Deg2Rad);
+            m_HorizontalSpeed = _horiSpeed / Mathf.Cos(_angle * Mathf.Deg2Rad);
+            m_SpeedMultiplier = 1f;
             float horiDistance = Vector3.Distance(_startPos, _endPos);
             float duration = horiDistance / _horiSpeed;
             float vertiDistance = Mathf.Tan(_angle * Mathf.Deg2Rad) * horiDistance;
-            f_vertiAcceleration = PhysicsExpressions.GetAcceleration(0, vertiDistance, duration);
-            b_randomRotation = randomRotation;
-            b_bounceOnHit = bounce;
-            f_bounceSpeedMultiply = _bounceSpeedMultiply;
-            v3_RotateEuler = Quaternion.LookRotation(m_Direction).eulerAngles;
-            v3_RotateDirection = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f));
+            m_VerticalAcceleration = PhysicsExpressions.GetAcceleration(0, vertiDistance, duration);
         }
 
-
-        protected override Quaternion GetSimulateRotation(float deltaTime, Vector3 direction)
+        public override Vector4 GetRelativeParams()=> new Vector4(m_HorizontalSpeed,m_VerticalAcceleration,m_SpeedMultiplier);
+        public override void SetRelativeParam(Vector4 param)
         {
-            if (!b_randomRotation)
-                return base.GetSimulateRotation(deltaTime, direction);
-            v3_RotateEuler += v3_RotateDirection * deltaTime * 300f;
-            return Quaternion.Euler(v3_RotateEuler);
+            m_HorizontalSpeed = param.x;
+            m_VerticalAcceleration = param.y;
+            m_SpeedMultiplier = param.z;
         }
+
         public override bool OnTargetHit(float deltaTime, RaycastHit hit, T template)
         {
-            if (!b_bounceOnHit)
+            if (!m_bounceOnHit)
                 return base.OnTargetHit(deltaTime, hit, template);
 
-            f_speed -= .1f;
-            f_speed *= f_bounceSpeedMultiply;
-            if (f_speed < m_castRadius)
-            {
-                m_simulating = false;
+            m_SpeedMultiplier -= .05f;
+            m_SpeedMultiplier *= m_bounceSpeedMultiply;
+            if (m_SpeedMultiplier < .05f)
                 return true;
-            }
             Vector3 normal = hit.point == Vector3.zero ? Vector3.up : hit.normal;
-            Redirection(Vector3.Reflect(m_Direction, normal));
+            SetPhysics(m_PrePosition ,Vector3.Reflect(m_Direction, normal),0);
             return true;
         }
-
-        public override Vector3 GetSimulatedPosition(float elapsedTime) => m_startPos + m_Direction * f_speed * elapsedTime + Vector3.down * f_vertiAcceleration * elapsedTime * elapsedTime;
+        public override Vector3 GetSimulatedPosition(float elapsedTime)=> m_Origin + m_Direction * m_HorizontalSpeed * m_SpeedMultiplier * elapsedTime + Vector3.down * m_VerticalAcceleration * elapsedTime * elapsedTime;
     }
 
     public class ReflectBouncePSimulator<T> : SpeedDirectionPSimulator<T> where T : MonoBehaviour
     {
         Func<Vector3, Vector3, Vector3> OnBounceDirection;
         int m_BounceTimesLeft = 0;
-        public ReflectBouncePSimulator(Transform _transform, Vector3 _startPos, Vector3 _horizontalDirection, Vector3 _verticalDirection, float _horizontalSpeed, float _height, float _radius, int bounceTime, Func<Vector3, Vector3, Vector3> _OnBounceDirection, int _hitLayer, Func<RaycastHit, T, bool> _onTargetHit, Predicate<T> _canHitTarget) : base(_transform, _startPos, _horizontalDirection, _verticalDirection, _horizontalSpeed, _height, _radius, _hitLayer, _onTargetHit, _canHitTarget)
+        public ReflectBouncePSimulator(float _height, float _radius, int bounceTime, Func<Vector3, Vector3, Vector3> _OnBounceDirection, int _hitLayer, Func<RaycastHit, T, bool> _onTargetHit, Predicate<T> _canHitTarget) : base(_height, _radius, _hitLayer, _onTargetHit, _canHitTarget)
         {
             m_BounceTimesLeft = bounceTime;
             OnBounceDirection = _OnBounceDirection;
@@ -212,8 +229,9 @@ namespace TPhysics
             if (hitBreak)
             {
                 m_BounceTimesLeft--;
-                Redirection(OnBounceDirection == null ? Vector3.Normalize(Vector3.Reflect(m_Direction, hit.normal)) : OnBounceDirection(m_Direction, hit.normal));
-                m_simulating = m_BounceTimesLeft > 0;
+                SetPhysics(m_PrePosition, OnBounceDirection == null ? Vector3.Normalize(Vector3.Reflect(m_Direction, hit.normal)) : OnBounceDirection(m_Direction, hit.normal),m_TimeElapsed);
+                if (m_BounceTimesLeft <= 0)
+                    Stop();
             }
             return hitBreak;
         }

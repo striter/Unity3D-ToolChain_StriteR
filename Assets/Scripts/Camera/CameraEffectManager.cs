@@ -13,7 +13,7 @@ public class CameraEffectManager :MonoBehaviour, ICoroutineHelperClass
     public bool m_DoGraphicBlitz { get; private set; } = false;
     RenderTexture m_BlitzTempTexture1, m_BlitzTempTexture2;
 
-    protected void Awake()
+    public CameraEffectManager Init()
     {
         m_Camera = GetComponent<Camera>();
         m_Camera.depthTextureMode = DepthTextureMode.None;
@@ -22,6 +22,7 @@ public class CameraEffectManager :MonoBehaviour, ICoroutineHelperClass
         m_DoGraphicBlitz = false;
         m_BlitzTempTexture1 = RenderTexture.GetTemporary(Screen.width, Screen.height, 0);
         m_BlitzTempTexture2 = RenderTexture.GetTemporary(Screen.width, Screen.height, 0);
+        return this;
     }
     protected void OnRenderImage(RenderTexture source, RenderTexture destination)
     {

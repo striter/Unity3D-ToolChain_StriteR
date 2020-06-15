@@ -70,6 +70,7 @@ public class AudioManagerBase : SingletonMono <AudioManagerBase>
                 }
             }
         }
+        ObjectPoolManager<int, SFXAudioBase>.TraversalAllActive((SFXAudioBase audio) => { audio.Tick(Time.unscaledDeltaTime); });
     }
 
     protected SFXAudioBase PlayClip(int sourceID,AudioClip _clip,float _volume, bool _loop, Transform _target)

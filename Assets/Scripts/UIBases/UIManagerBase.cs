@@ -41,7 +41,7 @@ public class UIManagerBase : SingletonMono<UIManagerBase>, ICoroutineHelperClass
         m_OverlayBG.SetActivate(false);
 
         m_Camera = transform.Find("UICamera").GetComponent<Camera>();
-        m_Effect = m_Camera.GetComponent<CameraEffectManager>();
+        m_Effect = m_Camera.GetComponent<CameraEffectManager>().Init();
         m_BlurBG = m_Effect.GetOrAddCameraEffect<CB_GenerateTransparentOverlayTexture>().SetOpaqueBlurTextureEnabled(false, 2f, 3, 4);
 
         UIMessageBoxBase.OnMessageBoxExit = OnMessageBoxExit;

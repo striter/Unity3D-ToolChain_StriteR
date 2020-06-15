@@ -37,7 +37,7 @@ public interface IDataConvert
 }
 public static class TDataConvert
 {
-    static readonly char[] m_PhraseLiterateBreakPoints = new char[7] { '[', ']', '{', '}', '(', ')', '/' };
+    static readonly char[] m_PhraseLiterateBreakPoints = new char[10] { '[', ']', '{', '}', '(', ')', ';', ':', '/', '`' };
     const char m_PhraseBaseBreakPoint = '|';
 
     public static string Convert(object value) => ConvertToString(value.GetType(), value, 0);
@@ -93,9 +93,17 @@ public static class TDataConvert
         { typeof(float), (object target) => { return target.ToString(); }},
         { typeof(string), (object target) => { return target as string; }},
         {typeof(bool), (object data) => { return (((bool)data ? 1 : 0)).ToString(); }},
+        { typeof(Vector2),(object data) => {
+            Vector2 objectData=(Vector2)data;
+            return objectData.x.ToString()+m_PhraseBaseBreakPoint+objectData.y;
+            }},
         { typeof(Vector3),(object data) => {
             Vector3 objectData=(Vector3)data;
             return objectData.x.ToString()+m_PhraseBaseBreakPoint+objectData.y+m_PhraseBaseBreakPoint+objectData.z;
+            }},
+        { typeof(Vector4),(object data) => {
+            Vector4 objectData=(Vector4)data;
+            return objectData.x.ToString()+m_PhraseBaseBreakPoint+objectData.y+m_PhraseBaseBreakPoint+objectData.z+m_PhraseBaseBreakPoint+objectData.w;
             }},
         { typeof(RangeInt),(object data) => { return ((RangeInt)data).start.ToString() + m_PhraseBaseBreakPoint + ((RangeInt)data).length.ToString(); } },
         { typeof(RangeFloat), (object data) => { return ((RangeFloat)data).start.ToString() + m_PhraseBaseBreakPoint + ((RangeFloat)data).length.ToString(); }}
@@ -108,9 +116,17 @@ public static class TDataConvert
         { typeof(float), (string xmlData) => { return float.Parse(xmlData); } },
         { typeof(string), (string xmlData) => { return xmlData; }},
         { typeof(bool), (string xmlData) => { return int.Parse(xmlData) == 1; } },
+        { typeof(Vector2),(string xmlData) => {
+            string[] split = xmlData.Split(m_PhraseBaseBreakPoint);
+            return new Vector2(float.Parse(split[0]), float.Parse(split[1]));
+        }},
         { typeof(Vector3),(string xmlData) => {
             string[] split = xmlData.Split(m_PhraseBaseBreakPoint);
             return new Vector3(float.Parse(split[0]), float.Parse(split[1]),float.Parse(split[2]));
+        }},
+        { typeof(Vector4),(string xmlData) => {
+            string[] split = xmlData.Split(m_PhraseBaseBreakPoint);
+            return new Vector4(float.Parse(split[0]), float.Parse(split[1]),float.Parse(split[2]),float.Parse(split[3]));
         }},
         { typeof(RangeInt), (string xmlData) => { string[] split = xmlData.Split(m_PhraseBaseBreakPoint); return new RangeInt(int.Parse(split[0]), int.Parse(split[1])); }},
         { typeof(RangeFloat), (string xmlData) => { string[] split = xmlData.Split(m_PhraseBaseBreakPoint); return new RangeFloat(float.Parse(split[0]), float.Parse(split[1])); }},
@@ -122,6 +138,7 @@ public static class TDataConvert
     static bool CheckGenericPhrase(Type genericDefinition) => genericDefinition == m_GenericDicType || genericDefinition == m_GenericListType;
     static string GenericPhraseToString(Type type, Type genericDefinition, object data, int iteration)
     {
+        iteration += 1;
         if (iteration >= m_PhraseLiterateBreakPoints.Length)
             throw new Exception("Iteration Max Reached!");
         char dataBreak = m_PhraseLiterateBreakPoints[iteration];
@@ -156,6 +173,7 @@ public static class TDataConvert
 
     static object GenericPhraseToData(Type type, Type genericDefinition, string xmlData, int iteration)
     {
+        iteration += 1;
         if (iteration >= m_PhraseLiterateBreakPoints.Length)
             throw new Exception("Iteration Max Reached!");
         char dataBreak = m_PhraseLiterateBreakPoints[iteration];
@@ -198,6 +216,8 @@ public static class TDataConvert
 
     static string IXmlPhraseToString(Type type, object data, int iteration)
     {
+        if (data == null)
+            return "";
         iteration += 1;
         string phrase = "";
         if (iteration >= m_PhraseLiterateBreakPoints.Length)
@@ -218,6 +238,8 @@ public static class TDataConvert
 
     static object IXmlPraseToData(Type type, string data, int iteration)
     {
+        if (data == "")
+            return null;
         iteration += 1;
         object objectData = Activator.CreateInstance(type);
         if (iteration >= m_PhraseLiterateBreakPoints.Length)

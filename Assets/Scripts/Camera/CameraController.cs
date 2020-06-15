@@ -36,7 +36,7 @@ public class CameraController : SingletonMono<CameraController>  {
         base.Awake();
         m_Camera = Camera.main;
         tf_MainCamera = m_Camera.transform;
-        m_Effect = m_Camera.GetComponent<CameraEffectManager>();
+        m_Effect = m_Camera.GetComponent<CameraEffectManager>().Init();
     }
 
     #endregion
@@ -61,12 +61,11 @@ public class CameraController : SingletonMono<CameraController>  {
         tf_AttachTo = toTransform;
         return this;
     }
-    public CameraController SetCameraRotation(float pitch = -1, float yaw = -1)
+    public CameraController SetCameraRotation(Vector3 rotation)
     {
-        if (pitch != -1)
-            m_Pitch = pitch;
-        if (yaw != -1)
-            m_Yaw = yaw;
+        m_Pitch = Mathf.Clamp(rotation.x, m_YawAngleMin, m_YawAngleMax);
+        m_Yaw = rotation.y;
+        m_Roll = rotation.z;
         return this;
     }
 

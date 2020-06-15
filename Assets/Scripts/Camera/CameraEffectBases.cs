@@ -425,10 +425,11 @@ public class PE_BloomSpecific : PostEffectBase //Need To Bind Shader To Specific
         m_OccludeEnabled = true;
     }
 
-    public void SetBloomEnable(bool enable,bool occludeEnable)
+    public PE_BloomSpecific SetBloomEnable(bool enable,bool occludeEnable)
     {
         m_Enabled = enable;
         m_OccludeEnabled = occludeEnable;
+        return this;
     }
     
     public override void OnRenderImage(RenderTexture source, RenderTexture destination)

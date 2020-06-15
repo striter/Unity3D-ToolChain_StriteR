@@ -12,15 +12,15 @@ public interface IObjectPoolStaticBase<T>{
 public class CObjectPoolStaticPrefabBase<T> :MonoBehaviour,IObjectPoolStaticBase<T>
 {
     public bool m_PoolItemInited { get; private set; }
-    public T m_Identity { get; private set; }
+    public T m_PoolID { get; private set; }
     private Action<T,MonoBehaviour> OnSelfRecycle;
     public virtual void OnPoolInit(T _identity,Action<T,MonoBehaviour> _OnSelfRecycle)
     {
-        m_Identity = _identity;
+        m_PoolID = _identity;
         m_PoolItemInited = true;
         OnSelfRecycle = _OnSelfRecycle;
     }
-    public void DoRecycle() =>  OnSelfRecycle?.Invoke(m_Identity, this);
+    public void DoRecycle() =>  OnSelfRecycle?.Invoke(m_PoolID, this);
 
     public virtual void OnPoolSpawn() {  }
     public virtual void OnPoolRecycle() { }
@@ -128,7 +128,12 @@ public class ObjectPoolManager<T, Y> : ObjectPoolManager where Y : MonoBehaviour
         obj.transform.SetParent(tf_PoolSpawn);
         info.m_DeactiveQueue.Enqueue(obj);
     }
-    public static void TraversalAllActive(Action<Y> OnEachItem) => d_ItemInfos.Traversal((ItemPoolInfo info) => { info.m_ActiveList.Traversal(OnEachItem); });
+    public static void TraversalAllActive(Action<Y> OnEachItem,bool willActivateChange=false) => d_ItemInfos.Traversal((ItemPoolInfo info) => {
+        if (willActivateChange)
+            info.m_ActiveList.DeepCopy().Traversal(OnEachItem);
+        else
+            info.m_ActiveList.Traversal(OnEachItem);
+    });
     public static void RecycleAll(T identity)
     {
         ItemPoolInfo info = d_ItemInfos[identity];
