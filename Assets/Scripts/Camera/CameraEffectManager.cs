@@ -4,11 +4,10 @@ using UnityEngine;
 using UnityEngine.Rendering;
 
 [RequireComponent(typeof(Camera))]
-public class CameraEffectManager :MonoBehaviour, ICoroutineHelperClass
+public class CameraEffectManager :MonoBehaviour
 {
     List<CameraEffectBase> m_CameraEffects=new List<CameraEffectBase>();
     public Camera m_Camera { get; protected set; }
-    public bool m_MainTextureCamera { get; private set; }
     public bool m_DepthToWorldMatrix { get; private set; } = false;
     public bool m_DoGraphicBlitz { get; private set; } = false;
     RenderTexture m_BlitzTempTexture1, m_BlitzTempTexture2;
@@ -18,7 +17,6 @@ public class CameraEffectManager :MonoBehaviour, ICoroutineHelperClass
         m_Camera = GetComponent<Camera>();
         m_Camera.depthTextureMode = DepthTextureMode.None;
         m_DepthToWorldMatrix = false;
-        m_MainTextureCamera = false;
         m_DoGraphicBlitz = false;
         m_BlitzTempTexture1 = RenderTexture.GetTemporary(Screen.width, Screen.height, 0);
         m_BlitzTempTexture2 = RenderTexture.GetTemporary(Screen.width, Screen.height, 0);
@@ -105,29 +103,22 @@ public class CameraEffectManager :MonoBehaviour, ICoroutineHelperClass
     #endregion
 
     #region Interact
-    public T GetOrAddCameraEffect<T>() where T : CameraEffectBase, new()
+    public T AddCameraEffect<T>(T effect) where T:CameraEffectBase
     {
-        T existingEffect = GetCameraEffect<T>();
-        if (existingEffect != null)
-            return existingEffect;
-
-        T effectBase = new T();
-        if (effectBase.m_Supported)
-        {
-            effectBase.InitEffect(this);
-            m_CameraEffects.Add(effectBase);
-            ResetCameraEffectParams();
-            return effectBase;
-        }
-        return null;
+        if (!effect.m_Supported)
+            return null;
+        effect.InitEffect(this);
+        m_CameraEffects.Add(effect);
+        ResetCameraEffectParams();
+        return effect;
     }
-
-    public T GetCameraEffect<T>() where T : CameraEffectBase => m_CameraEffects.Find(p => p.GetType() == typeof(T)) as T;
-    public void RemoveCameraEffect<T>() where T : CameraEffectBase, new()
+    public void RemoveCameraEffect(CameraEffectBase effect) 
     {
-        T effect = GetCameraEffect<T>();
-        if (effect == null)
+        if (!m_CameraEffects.Contains(effect))
+        {
+            Debug.LogError("Can't Remove Effect!");
             return;
+        }
 
         m_CameraEffects.Remove(effect);
         ResetCameraEffectParams();
@@ -139,18 +130,27 @@ public class CameraEffectManager :MonoBehaviour, ICoroutineHelperClass
         ResetCameraEffectParams();
     }
 
+
+    CE_MainCameraTexture m_MainCameraTexture;
+    public bool m_MainCameraTextureEnabled => m_MainCameraTexture != null;
     public void SetMainTextureCamera(bool enabled)
     {
         //m_Camera.depthTextureMode = enabled ? DepthTextureMode.Depth : DepthTextureMode.None;
-        m_MainTextureCamera = enabled;
-        if (m_MainTextureCamera)
-            GetOrAddCameraEffect<CE_MainCameraTexture>().SetTextureEnable(true, true);
-        else
-            RemoveCameraEffect<CE_MainCameraTexture>();
+        if(enabled&&!m_MainCameraTextureEnabled)
+        {
+            m_MainCameraTexture = new CE_MainCameraTexture();
+            AddCameraEffect(m_MainCameraTexture).SetTextureEnable(true, true);
+
+        }
+        else if(!enabled&&m_MainCameraTextureEnabled)
+        {
+            RemoveCameraEffect(m_MainCameraTexture);
+            m_MainCameraTexture = null;
+        }
     }
     protected void ResetCameraEffectParams()
     {
-        Shader.SetGlobalInt(m_GlobalCameraDepthTextureMode, m_MainTextureCamera ? 1 : 0);
+        Shader.SetGlobalInt(m_GlobalCameraDepthTextureMode, m_MainCameraTextureEnabled ? 1 : 0);
         m_DoGraphicBlitz = false;
         m_DepthToWorldMatrix = false;
         m_CameraEffects.Sort((a, b) => a.m_Sorting - b.m_Sorting);
@@ -163,26 +163,29 @@ public class CameraEffectManager :MonoBehaviour, ICoroutineHelperClass
             m_DepthToWorldMatrix |= effectBase.m_DepthFrustumCornors;
         });
     }
+
     public PE_DepthCircleScan StartDepthScanCircle(Vector3 origin, Color scanColor, float width = 1f, float radius = 20, float duration = 1.5f)
     {
-        PE_DepthCircleScan scan = GetOrAddCameraEffect<PE_DepthCircleScan>().SetEffect(origin, scanColor);
-        this.StartSingleCoroutine(0, TIEnumerators.ChangeValueTo((float value) => {
+        PE_DepthCircleScan scan = AddCameraEffect(new PE_DepthCircleScan()).SetEffect(origin, scanColor);
+        CoroutineHelper.CreateSingleCoroutine().StartSingleCoroutine(TIEnumerators.ChangeValueTo((float value) => {
             scan.SetElapse(radius * value, width);
         }, 0, 1, duration, () => {
-            RemoveCameraEffect<PE_DepthCircleScan>();
+            RemoveCameraEffect(scan);
         }));
         return scan;
     }
+
+    SingleCoroutine m_AreaCoroutine=CoroutineHelper.CreateSingleCoroutine();
     public PE_DepthCircleArea SetDepthAreaCircle(bool begin, Vector3 origin, float radius = 10f, float edgeWidth = .5f, float duration = 1.5f)
     {
-        PE_DepthCircleArea area = GetOrAddCameraEffect<PE_DepthCircleArea>().SetOrigin(origin);
-        this.StartSingleCoroutine(1, TIEnumerators.ChangeValueTo((float value) => { area.SetRadius(radius * value, edgeWidth); },
+        PE_DepthCircleArea effect = AddCameraEffect(new PE_DepthCircleArea()).SetOrigin(origin);
+        m_AreaCoroutine.StartSingleCoroutine(TIEnumerators.ChangeValueTo((float value) => { effect.SetRadius(radius * value, edgeWidth); },
             begin ? 0 : 1, begin ? 1 : 0, duration,
             () => {
                 if (!begin)
-                    RemoveCameraEffect<PE_DepthCircleArea>();
+                    RemoveCameraEffect(effect);
             }));
-        return area;
+        return effect;
     }
     #endregion
 }

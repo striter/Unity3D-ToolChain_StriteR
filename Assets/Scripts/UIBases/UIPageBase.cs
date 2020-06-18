@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIPageBase : UIComponentBase,ICoroutineHelperClass
+public class UIPageBase : UIComponentBase
 {
     public static UIPageBase Generate(Type type,Transform parentTransform)
     {
@@ -19,6 +19,7 @@ public class UIPageBase : UIComponentBase,ICoroutineHelperClass
     protected Button btn_ContainerCancel,btn_WholeCancel;
     protected RectTransform rtf_Container;
     Vector2 m_AnimateStartPos, m_AnimateEndPos;
+    SingleCoroutine m_AnimationCoroutine;
 
     protected override void Init()
     {
@@ -34,6 +35,7 @@ public class UIPageBase : UIComponentBase,ICoroutineHelperClass
 
         m_AnimateStartPos = rtf_Container.anchoredPosition + Vector2.up * Screen.height;
         m_AnimateEndPos = rtf_Container.anchoredPosition;
+        m_AnimationCoroutine = new SingleCoroutine(this);
     }
 
     public virtual void OnPlay(bool doAnim, Action<UIPageBase> OnPageExit)
@@ -45,7 +47,7 @@ public class UIPageBase : UIComponentBase,ICoroutineHelperClass
 
         if (!doAnim)
             return;
-        this.StartSingleCoroutine(0, TIEnumerators.ChangeValueTo((float value) => {
+        m_AnimationCoroutine.StartSingleCoroutine( TIEnumerators.ChangeValueTo((float value) => {
             rtf_Container.anchoredPosition = Vector2.Lerp(m_AnimateStartPos, m_AnimateEndPos, value);
         }
         , 0f, 1f, F_AnimDuration, null, false));
@@ -65,7 +67,7 @@ public class UIPageBase : UIComponentBase,ICoroutineHelperClass
             OnPageExit(this);
             return;
         }
-        this.StartSingleCoroutine(0, TIEnumerators.ChangeValueTo((float value) => {
+        m_AnimationCoroutine.StartSingleCoroutine(TIEnumerators.ChangeValueTo((float value) => {
             rtf_Container.anchoredPosition = Vector2.Lerp(m_AnimateStartPos, m_AnimateEndPos, value);
         }, 1f, 0f, F_AnimDuration,()=> { OnPageExit(this); }, false));
     }

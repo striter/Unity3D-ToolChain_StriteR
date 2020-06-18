@@ -24,7 +24,6 @@ public class CameraController : SingletonMono<CameraController>  {
     Vector3 m_RootForward;
     Vector3 m_RootRightward;
 
-
     public float m_Yaw { get; protected set; } = 0;
     public float m_Pitch { get; protected set; } = 0;
     public float m_Roll { get; protected set; } = 0;

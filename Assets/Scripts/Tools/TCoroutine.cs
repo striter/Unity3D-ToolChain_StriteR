@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
-//List Of INumerators Will Be Used
 public static class TIEnumerators
 {
     public static class UI
@@ -203,92 +202,40 @@ public static class TIEnumerators
     }
 }
 
-//Interface For CoroutineManager
-public interface ICoroutineHelperClass
+public class SingleCoroutine
 {
+    Coroutine m_Coroutine;
+    MonoBehaviour m_StarterBehaviour;
+    public SingleCoroutine(MonoBehaviour _starterBehaviour)
+    {
+        m_StarterBehaviour = _starterBehaviour;
+        m_Coroutine = null;
+    }
+    public void StartSingleCoroutine(IEnumerator coroutine)
+    {
+        StopSinlgeCoroutine();
+        m_Coroutine= m_StarterBehaviour.StartCoroutine(coroutine);
+    }
+    public void StopSinlgeCoroutine()
+    {
+        if (m_Coroutine == null)
+            return;
+        m_StarterBehaviour.StopCoroutine(m_Coroutine);
+        m_Coroutine = null;
+    }
 }
-public static class ICoroutineHelper_Extend
+
+public static class CoroutineHelper
 {
-    struct SCoroutineHelperData
-    {
-        public int m_HelperIndex { get; private set; }
-        public List<int> m_CoroutineIndexes { get; private set; }
-        public SCoroutineHelperData(int helperIndex)
-        {
-            m_HelperIndex = helperIndex;
-            m_CoroutineIndexes = new List<int>();
-        }
-    }
-    static int m_HelperCount = 0;
-    static Dictionary<ICoroutineHelperClass, SCoroutineHelperData> m_TargetCoroutines=new Dictionary<ICoroutineHelperClass, SCoroutineHelperData>();
-    internal static int GetCoroutineIndex(ICoroutineHelperClass target, int coroutineIndex) => m_TargetCoroutines[target].m_HelperIndex * 10000 + coroutineIndex;
-    public static void StartSingleCoroutine(this ICoroutineHelperClass target, int index, IEnumerator ienumerator)
-    {
-        if (!m_TargetCoroutines.ContainsKey(target))
-            m_TargetCoroutines.Add(target, new SCoroutineHelperData(m_HelperCount++));
-
-        int targetIndex = GetCoroutineIndex(target, index);
-        CoroutineHelperManager.StartCoroutine(targetIndex,ienumerator);
-
-        if (!m_TargetCoroutines[target].m_CoroutineIndexes.Contains(targetIndex))
-            m_TargetCoroutines[target].m_CoroutineIndexes.Add(targetIndex);
-    }
-    public static void StopSingleCoroutine(this ICoroutineHelperClass target, int index = 0)
-    {
-        if (!m_TargetCoroutines.ContainsKey(target))
-            return;
-
-        int targetIndex = GetCoroutineIndex(target, index);
-        CoroutineHelperManager.StopCoroutine(targetIndex);
-
-        if (m_TargetCoroutines[target].m_CoroutineIndexes.Contains(index))
-            m_TargetCoroutines[target].m_CoroutineIndexes.Remove(targetIndex);
-    }
-
-    public static void StopAllSingleCoroutines(this ICoroutineHelperClass target)
-    {
-        if (!m_TargetCoroutines.ContainsKey(target))
-            return;
-
-        m_TargetCoroutines[target].m_CoroutineIndexes.Traversal((int coroutineIndex) =>  {
-            CoroutineHelperManager.StopCoroutine(coroutineIndex);
-        });
-        m_TargetCoroutines.Remove(target);
-    }
-    
-
+    public static SingleCoroutine CreateSingleCoroutine() => new SingleCoroutine(CoroutineHelperManager.Instance);
+    public static void StartCoroutine(IEnumerator ienumerator) => CoroutineHelperManager.Instance.StartCoroutine(ienumerator);
     //Main Coroutine Manager
     class CoroutineHelperManager : SingletonMono<CoroutineHelperManager>
     {
-        static Dictionary<int, Coroutine> m_CoroutinesDic = new Dictionary<int, Coroutine>();
-
-        public static void StartCoroutine(int targetIndex, IEnumerator ienumerator)
-        {
-            StopCoroutine(targetIndex);
-
-            if (!m_CoroutinesDic.ContainsKey(targetIndex))
-                m_CoroutinesDic.Add(targetIndex, null);
-
-            m_CoroutinesDic[targetIndex] = Instance.StartCoroutine(ienumerator);
-        }
-
-        public static void StopCoroutine(int targetIndex)
-        {
-            if (!m_CoroutinesDic.ContainsKey(targetIndex))
-                return;
-
-            if(m_CoroutinesDic[targetIndex]==null)
-            {
-                m_CoroutinesDic.Remove(targetIndex);
-                return;
-            }
-
-            Instance.StopCoroutine(m_CoroutinesDic[targetIndex]);
-        }
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            m_TargetCoroutines.Clear();
+            StopAllCoroutines();
         }
     }
 }

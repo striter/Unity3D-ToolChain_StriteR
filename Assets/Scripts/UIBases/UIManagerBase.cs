@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIManagerBase : SingletonMono<UIManagerBase>, ICoroutineHelperClass
+public class UIManagerBase : SingletonMono<UIManagerBase>
 {
     public float m_fittedScale { get; private set; }
     protected Canvas cvs_Overlay, cvs_Camera;
@@ -18,6 +18,7 @@ public class UIManagerBase : SingletonMono<UIManagerBase>, ICoroutineHelperClass
     public Camera m_Camera { get; private set; }
     public CameraEffectManager m_Effect { get; private set; }
     protected CB_GenerateTransparentOverlayTexture m_BlurBG { get; private set; }
+    SingleCoroutine m_BlurCoroutine;
     public Dictionary<UIControlBase, int> m_ControlSiblings { get; private set; } = new Dictionary<UIControlBase, int>();
 
     protected virtual void Init()
@@ -42,7 +43,8 @@ public class UIManagerBase : SingletonMono<UIManagerBase>, ICoroutineHelperClass
 
         m_Camera = transform.Find("UICamera").GetComponent<Camera>();
         m_Effect = m_Camera.GetComponent<CameraEffectManager>().Init();
-        m_BlurBG = m_Effect.GetOrAddCameraEffect<CB_GenerateTransparentOverlayTexture>().SetOpaqueBlurTextureEnabled(false, 2f, 3, 4);
+        m_BlurBG = m_Effect.AddCameraEffect(new CB_GenerateTransparentOverlayTexture()).SetOpaqueBlurTextureEnabled(false, 2f, 3, 4);
+        m_BlurCoroutine = new SingleCoroutine(this);
 
         UIMessageBoxBase.OnMessageBoxExit = OnMessageBoxExit;
     }
@@ -117,11 +119,11 @@ public class UIManagerBase : SingletonMono<UIManagerBase>, ICoroutineHelperClass
         {
             m_OverlayBG.SetActivate(true);
             m_BlurBG.SetOpaqueBlurTextureEnabled(true, 2f, 2, 3);
-            this.StartSingleCoroutine(0, TIEnumerators.ChangeValueTo((float value) => { m_OverlayBG.color = TCommon.ColorAlpha(m_OverlayBG.color, value); }, 0, 1, UIPageBase.F_AnimDuration, null, false));
+            m_BlurCoroutine.StartSingleCoroutine(TIEnumerators.ChangeValueTo((float value) => { m_OverlayBG.color = TCommon.ColorAlpha(m_OverlayBG.color, value); }, 0, 1, UIPageBase.F_AnimDuration, null, false));
         }
         else
         {
-            this.StartSingleCoroutine(0, TIEnumerators.ChangeValueTo((float value) => {
+            m_BlurCoroutine.StartSingleCoroutine(TIEnumerators.ChangeValueTo((float value) => {
                 m_OverlayBG.color = TCommon.ColorAlpha(m_OverlayBG.color, value);
             }, 1, 0, UIPageBase.F_AnimDuration, () => {
                 m_BlurBG.SetOpaqueBlurTextureEnabled(false);
