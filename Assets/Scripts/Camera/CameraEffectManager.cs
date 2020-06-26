@@ -175,10 +175,13 @@ public class CameraEffectManager :MonoBehaviour
         return scan;
     }
 
-    SingleCoroutine m_AreaCoroutine=CoroutineHelper.CreateSingleCoroutine();
+    SingleCoroutine m_AreaCoroutine;
     public PE_DepthCircleArea SetDepthAreaCircle(bool begin, Vector3 origin, float radius = 10f, float edgeWidth = .5f, float duration = 1.5f)
     {
         PE_DepthCircleArea effect = AddCameraEffect(new PE_DepthCircleArea()).SetOrigin(origin);
+        if(m_AreaCoroutine==null)
+            m_AreaCoroutine = CoroutineHelper.CreateSingleCoroutine();
+
         m_AreaCoroutine.StartSingleCoroutine(TIEnumerators.ChangeValueTo((float value) => { effect.SetRadius(radius * value, edgeWidth); },
             begin ? 0 : 1, begin ? 1 : 0, duration,
             () => {

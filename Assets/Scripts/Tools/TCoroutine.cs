@@ -99,94 +99,19 @@ public static class TIEnumerators
             yield return null;
         }
     }
-    public static IEnumerator PauseDel(float pauseDuration, Action del)
-    {
-        yield return new WaitForSeconds(pauseDuration);
-        del();
-    }
-    public static IEnumerator PauseDel<T>(float pauseDuration, T template, Action<T> del)
-    {
-        yield return new WaitForSeconds(pauseDuration);
-        del(template);
-    }
-    public static IEnumerator RectTransformLerpTo(RectTransform rectTrans, Vector3 startPos, Vector3 endPos, float duration, Action OnFinished = null)
-    {
-        float startTime = Time.time;
-        for (; ; )
-        {
-            if (rectTrans == null)
-            {
-                yield break;
-            }
 
-            float timeParam = (Time.time - startTime) / duration;
-            if (timeParam > 1)
-            {
-                rectTrans.anchoredPosition = endPos;
-                if (OnFinished != null)
-                    OnFinished();
-                yield break;
-            }
-            else
-            {
-                rectTrans.anchoredPosition = Vector3.Lerp(startPos, endPos, timeParam);
-            }
-            yield return null;
-        }
-    }
-    public static IEnumerator RigidbodyMovePosition(Rigidbody rigid, Vector3 startPos, Vector3 endPos, float duration, Action OnFinished = null)
+    public static IEnumerator YieldReturnAction(IEnumerator ienumerator,Action action)
     {
-
-        float startTime = Time.time;
-        for (; ; )
-        {
-            if (rigid == null)
-            {
-                yield break;
-            }
-
-            float timeParam = (Time.time - startTime) / duration;
-            if (timeParam > 1)
-            {
-                rigid.MovePosition(endPos);
-                if (OnFinished != null)
-                    OnFinished();
-                yield break;
-            }
-            else
-            {
-                rigid.MovePosition(Vector3.Lerp(startPos, endPos, timeParam));
-            }
-            yield return null;
-        }
+        yield return ienumerator;
+        action();
     }
-    public static IEnumerator TransformLerpTo(Transform lerpTrans, Vector3 startPos, Vector3 endPos, float duration, bool isLocal, Action OnFinished = null)
+
+    public static IEnumerator YieldReturnAction(YieldInstruction yieldInstruction, Action action)
     {
-        float startTime = Time.time;
-        for (; ; )
-        {
-            if (lerpTrans == null)
-            {
-                yield break;
-            }
-
-            float timeParam = (Time.time - startTime) / duration;
-            if (timeParam > 1)
-            {
-                if (OnFinished != null)
-                    OnFinished();
-                yield break;
-            }
-            else
-            {
-                if (isLocal)
-                    lerpTrans.localPosition = Vector3.Lerp(startPos, endPos, timeParam);
-                else
-                    lerpTrans.position = Vector3.Lerp(startPos, endPos, timeParam);
-            }
-            yield return null;
-        }
+        yield return yieldInstruction;
+        action();
     }
+
     public static IEnumerator TaskCoroutine(this Task task)
     {
         for(; ; )
