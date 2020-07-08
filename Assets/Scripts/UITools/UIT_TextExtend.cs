@@ -8,7 +8,7 @@ public class UIT_TextExtend : Text
 {
     #region Localization
     public bool B_AutoLocalize = false;
-    public string S_AutoLocalizeKey;
+    public string m_LocalizeKey;
     protected override void OnEnable()
     {
         base.OnEnable();
@@ -29,17 +29,17 @@ public class UIT_TextExtend : Text
     void OnKeyLocalize()
     {
         if (B_AutoLocalize)
-            text = TLocalization.GetKeyLocalized(S_AutoLocalizeKey);
+            text = TLocalization.GetLocalizeValue(m_LocalizeKey);
     }
 
-    public string formatText(string formatKey, params object[] subItems) => base.text = string.Format(TLocalization.GetKeyLocalized(formatKey), subItems);
-    public string formatKey(string formatKey, string subKey) => base.text = string.Format(TLocalization.GetKeyLocalized(formatKey), TLocalization.GetKeyLocalized(subKey));
+    public string formatText(string formatKey, params object[] subItems) => base.text = string.Format(TLocalization.GetLocalizeValue(formatKey), subItems);
+    public string formatKey(string formatKey, string subKey) => base.text = string.Format(TLocalization.GetLocalizeValue(formatKey), TLocalization.GetLocalizeValue(subKey));
 
     public string localizeKey
     {
         set
         {
-            S_AutoLocalizeKey = value;
+            m_LocalizeKey = value;
             B_AutoLocalize = true;
             OnKeyLocalize();
         }
@@ -56,15 +56,15 @@ public class UIT_TextExtend : Text
             int maxLineCount = 0;
             for (int i=0;i<linesVertexStartIndexes.Count;i++)
                 maxLineCount = Mathf.Max(maxLineCount, linesVertexStartIndexes[i].Count);
-            return preferredWidth + m_characterSpacing * (maxLineCount - 1);
+            return preferredWidth + m_CharacterSpacing * (maxLineCount - 1);
         }
     } 
 
-    public int m_characterSpacing;
+    public int m_CharacterSpacing;
     protected override void OnPopulateMesh(VertexHelper toFill)
     {
         base.OnPopulateMesh(toFill);
-        if (m_characterSpacing == 0)
+        if (m_CharacterSpacing == 0)
             return;
         List<UIVertex> vertexes = new List<UIVertex>();
         toFill.GetUIVertexStream(vertexes);
@@ -74,11 +74,11 @@ public class UIT_TextExtend : Text
 
         for (int i = 0; i < linesVertexStartIndexes.Count; i++)
         {
-            float lineOffset = (linesVertexStartIndexes[i].Count - 1) * m_characterSpacing * alignmentFactor;
+            float lineOffset = (linesVertexStartIndexes[i].Count - 1) * m_CharacterSpacing * alignmentFactor;
             for (int j = 0; j < linesVertexStartIndexes[i].Count; j++)
             {
                 int vertexStartIndex = linesVertexStartIndexes[i][j];
-                Vector3 offset = Vector3.right * ((m_characterSpacing * j) - lineOffset);
+                Vector3 offset = Vector3.right * ((m_CharacterSpacing * j) - lineOffset);
                 AddVertexOffset(vertexes, vertexStartIndex + 0, offset);
                 AddVertexOffset(vertexes, vertexStartIndex + 1, offset);
                 AddVertexOffset(vertexes, vertexStartIndex + 2, offset);

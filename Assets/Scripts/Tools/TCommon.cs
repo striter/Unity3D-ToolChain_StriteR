@@ -193,6 +193,113 @@ public static class TCommon
         return angle;
     }
     #endregion
+    #region Algorithm
+    public enum enum_SortType
+    {
+        Bubble,
+        Selection,
+        Insertion,
+
+        Quick,
+    }
+    public static void SwapItem<T>(this List<T> list,int index1,int index2)
+    {
+        T temp = list[index1];
+        list[index1] = list[index2];
+        list[index2] = temp;
+    }
+    static bool TSortCheck<T>( T a,T b,bool lower) where T:IComparable
+    {
+        int offset = b.CompareTo(a);
+        return lower ? offset < 0 : offset > 0;
+    }
+    public static void TSort<T>(this List<T> sortTarget,enum_SortType sortType,bool startLower=true) where T:IComparable
+    {
+        int count = sortTarget.Count;
+        if (count <= 1)
+            return;
+
+        switch(sortType)
+        {
+            case enum_SortType.Bubble:
+                for(int i=0;i<count-1;i++)
+                {
+                    bool sorted = true;
+                    for (int j = 0; j < count-1-i; j++)
+                    {
+                        if (!TSortCheck(sortTarget[j], sortTarget[j + 1],startLower))
+                            continue;
+                        sorted = false;
+                        sortTarget.SwapItem(j,j+1);
+                    }
+                    if (sorted)
+                        break;
+                }
+                break;
+            case enum_SortType.Selection:
+                for(int i=0;i<count-1;i++)
+                {
+                    int selectionIndex = i;
+                    for(int j=i+1;j<count;j++)
+                    {
+                        if (!TSortCheck(sortTarget[selectionIndex], sortTarget[j], startLower))
+                            continue;
+                        selectionIndex = j;
+                    }
+                    if (selectionIndex == i)
+                        break;
+                    sortTarget.SwapItem(i,selectionIndex);
+                }
+                break;
+            case enum_SortType.Insertion:
+                for(int i=1;i<count;i++)
+                {
+                    for(int j=i;j>0;j--)
+                    {
+                        if (TSortCheck(sortTarget[j], sortTarget[j - 1],startLower))
+                            break;
+                        sortTarget.SwapItem(j, j - 1);
+                    }
+                }
+                break;
+            case enum_SortType.Quick:
+                TQuickSort(sortTarget, 0, count - 1,startLower);
+                break;
+        }
+    }
+
+    static void TQuickSort<T>(List<T> sortTarget,int startIndex,int endIndex,bool startLower) where T:IComparable
+    {
+        if (startIndex >=endIndex)
+            return;
+
+        T temp = sortTarget[startIndex];
+        int leftIndex = startIndex;
+        int rightIndex = endIndex;
+        while (leftIndex != rightIndex)
+        {
+            while (leftIndex != rightIndex)
+            {
+                if (TSortCheck(temp, sortTarget[rightIndex], startLower))
+                    break;
+                rightIndex--;
+            }
+            sortTarget[leftIndex] = sortTarget[rightIndex];
+
+            while (leftIndex!=rightIndex)
+            {
+                if (TSortCheck(sortTarget[leftIndex], temp, startLower))
+                    break;
+                leftIndex++;
+            }
+            sortTarget[rightIndex] = sortTarget[leftIndex];
+        }
+        sortTarget[leftIndex] = temp;
+
+        TQuickSort(sortTarget, startIndex, leftIndex-1, startLower);
+        TQuickSort(sortTarget, leftIndex+1, endIndex, startLower);
+    }
+    #endregion
     #region Collections/Array Traversal
     public static T GetIndexKey<T, Y>(this Dictionary<T, Y> dictionary, int index) => dictionary.ElementAt(index).Key;
     public static Y GetIndexValue<T, Y>(this Dictionary<T, Y> dictionary, int index) => dictionary.ElementAt(index).Value;

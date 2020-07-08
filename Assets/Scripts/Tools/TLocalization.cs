@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 #pragma warning disable 0649        //Warnning Closed Cause  Use Private Field To Protected Value Set By Reflection 
 public enum enum_Option_LanguageRegion
@@ -36,13 +37,22 @@ public static class TLocalization
         OnLocaleChanged?.Invoke();
         IsInit = true;
     }
-    public static bool CanLocalize(string key)=>key!=null&&CurLocalization.ContainsKey(key);
-    public static string GetKeyLocalized(this string key)
+    public static bool CheckKeyLocalizable(string key)=>key!=null&&CurLocalization.ContainsKey(key);
+    public static bool CheckValueLocalized(string value) =>value!=null&&CurLocalization.ContainsValue(value);
+    public static string GetLocalizeValue(this string key)
     {
-        if (CurLocalization.ContainsKey(key))
+        if(CheckKeyLocalizable(key))
             return CurLocalization[key.Replace("\\n", "\n")];
 
         Debug.LogWarning("Localization Key:(" + key + ") Not Found In SLocalization ");
         return key;
+    }
+    public static string FindLocalizeKey(this string value)
+    {
+        if (CheckValueLocalized(value))
+            return CurLocalization.Keys.ToList().Find(p=>CurLocalization[p]==value);
+
+        Debug.LogWarning("Localization Key:(" + value + ") Not Found In SLocalization ");
+        return value;
     }
 }
