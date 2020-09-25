@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5f80804631ad4e4086550170c31517a, type: 3}
+  m_Name: npc_bianfu_skin_VertexInstance_Data
+  m_EditorClassIdentifier: 
+  m_InstanceMesh: {fileID: 4300000, guid: 7cceca0c9763c7c4d8b9e693e02bc27b, type: 2}
+  m_AnimationAtlas: {fileID: 2800000, guid: 368d9933e4f8f4d45925e18d0c71ec3c, type: 2}
+  m_AnimationParams:
+  - m_Name: bianfu_attack1
+    m_FrameBegin: 0
+    m_FrameRate: 30
+    m_FrameCount: 30
+    m_Length: 1
+    m_Loop: 0
+  - m_Name: bianfu_die
+    m_FrameBegin: 30
+    m_FrameRate: 30
+    m_FrameCount: 32
+    m_Length: 1.0666667
+    m_Loop: 0
+  - m_Name: bianfu_idle
+    m_FrameBegin: 62
+    m_FrameRate: 30
+    m_FrameCount: 24
+    m_Length: 0.8000001
+    m_Loop: 1
+  - m_Name: bianfu_show
+    m_FrameBegin: 86
+    m_FrameRate: 30
+    m_FrameCount: 40
+    m_Length: 1.3333334
+    m_Loop: 0
