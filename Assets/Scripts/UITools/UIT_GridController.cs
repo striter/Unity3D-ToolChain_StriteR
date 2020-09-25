@@ -15,10 +15,15 @@ public class UIT_GridControllerBase<T> where T:class
         m_Pool = pool;
     }
 
-    public T AddItem() => AddItem(m_Count);
+    int m_NoneIdentitfiedCount = 0;
+    public T AddItem() => AddItem(m_NoneIdentitfiedCount++);
     public virtual T AddItem(int identity)=>m_Pool.AddItem(identity);
-    public void RemoveItem(int identity) => m_Pool.RemoveItem(identity);
-    public virtual void ClearGrid() => m_Pool.Clear();
+    public virtual void RemoveItem(int identity) => m_Pool.RemoveItem(identity);
+    public virtual void ClearGrid()
+    {
+        m_NoneIdentitfiedCount = 0;
+        m_Pool.Clear();
+    } 
     public bool Contains(int identity) => m_Pool.ContainsItem(identity);
     public T GetItem(int identity) => Contains(identity) ? m_Pool.GetItem(identity) : null;
     public T AddItem(int xIdentity, int yIdentity) => AddItem(GetIdentity(xIdentity, yIdentity));
@@ -30,7 +35,8 @@ public class UIT_GridControllerBase<T> where T:class
 
 public class UIT_GridItemClass : CObjectPoolClass<int>
 {
-    public UIT_GridItemClass(Transform transform):base(transform){ }
+    public RectTransform rectTransform { get; private set; }
+    public UIT_GridItemClass(Transform transform):base(transform){ rectTransform = transform as RectTransform; }
 }
 
 public class UIT_GridControllerClass<T> : UIT_GridControllerBase<T> where T: UIT_GridItemClass
@@ -101,13 +107,8 @@ public class UIT_GridControllerGridItemScrollView<T> : UIT_GridControllerGridIte
     }
 }
 
-public interface IGridHighlight
-{
-    void AttachSelectButton(Action<int> OnButtonClick);
-    void OnHighlight(bool highlight);
-}
 
-public class UIT_GridControlledSingleSelect<T> : UIT_GridControllerGridItem<T> where T : UIT_GridItem, IGridHighlight
+public class UIT_GridControlledSingleSelect<T> : UIT_GridControllerGridItem<T> where T : UIT_GridItem
 {
     public int m_Selecting { get; private set; } = -1;
     Action<int> OnItemSelect;
@@ -118,11 +119,16 @@ public class UIT_GridControlledSingleSelect<T> : UIT_GridControllerGridItem<T> w
     public override T AddItem(int identity)
     {
         T item= base.AddItem(identity);
-        item.AttachSelectButton(OnItemClick);
+        item.InitHighlight(OnItemClick);
         item.OnHighlight(false);
         return item;
     }
-
+    public override void RemoveItem(int identity)
+    {
+        if (identity == m_Selecting)
+            m_Selecting = -1;
+        base.RemoveItem(identity);
+    }
     public void OnItemClick(int index)
     {
         if (m_Selecting != -1)

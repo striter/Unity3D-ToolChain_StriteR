@@ -6,5 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/TouchControl Test.unity
-    guid: 3c230d0c449bbc94e85248bf275735a0
+    path: Assets/SampleScenes/AnimationInstance/AnimationInstanceTest.unity
+    guid: 1e93d68cc12511e47a5946bbbec25c6a
+  m_configObjects: {}

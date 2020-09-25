@@ -47,7 +47,7 @@ public class UIPageBase : UIComponentBase
 
         if (!doAnim)
             return;
-        m_AnimationCoroutine.StartSingleCoroutine( TIEnumerators.ChangeValueTo((float value) => {
+        m_AnimationCoroutine.Start( TIEnumerators.ChangeValueTo((float value) => {
             rtf_Container.anchoredPosition = Vector2.Lerp(m_AnimateStartPos, m_AnimateEndPos, value);
         }
         , 0f, 1f, F_AnimDuration, null, false));
@@ -67,7 +67,7 @@ public class UIPageBase : UIComponentBase
             OnPageExit(this);
             return;
         }
-        m_AnimationCoroutine.StartSingleCoroutine(TIEnumerators.ChangeValueTo((float value) => {
+        m_AnimationCoroutine.Start(TIEnumerators.ChangeValueTo((float value) => {
             rtf_Container.anchoredPosition = Vector2.Lerp(m_AnimateStartPos, m_AnimateEndPos, value);
         }, 1f, 0f, F_AnimDuration,()=> { OnPageExit(this); }, false));
     }

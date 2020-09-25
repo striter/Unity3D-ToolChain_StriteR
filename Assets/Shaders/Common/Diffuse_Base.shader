@@ -67,23 +67,6 @@
 				return float4(GetDiffuseAddColor(_LightColor0.rgb, atten, i.diffuse), 1);
 			}
 
-			struct v2fs
-			{
-				V2F_SHADOW_CASTER;
-			};
-
-			v2fs ShadowVertex(appdata_base v)
-			{
-				UNITY_SETUP_INSTANCE_ID(v);
-				v2fs o;
-				TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
-				return o;
-			}
-
-			fixed4 ShadowFragment(v2fs i) :SV_TARGET
-			{
-				SHADOW_CASTER_FRAGMENT(i);
-			}
 
 			ENDCG
 
@@ -120,7 +103,26 @@
 				CGPROGRAM
 				#pragma vertex ShadowVertex
 				#pragma fragment ShadowFragment
+
 				#pragma multi_compile_instancing
+				
+				struct v2fs
+				{
+					V2F_SHADOW_CASTER;
+				};
+
+				v2fs ShadowVertex(appdata_base v)
+				{
+					UNITY_SETUP_INSTANCE_ID(v);
+					v2fs o;
+					TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
+					return o;
+				}
+
+				fixed4 ShadowFragment(v2fs i) :SV_TARGET
+				{
+					SHADOW_CASTER_FRAGMENT(i);
+				}
 				ENDCG
 			}
 	}

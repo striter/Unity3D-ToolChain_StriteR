@@ -27,15 +27,12 @@ public class CameraController : SingletonMono<CameraController>  {
     public float m_Yaw { get; protected set; } = 0;
     public float m_Pitch { get; protected set; } = 0;
     public float m_Roll { get; protected set; } = 0;
-
-    public CameraEffectManager m_Effect { get; private set; }
     #region Preset
     protected override void Awake()
     {
         base.Awake();
         m_Camera = Camera.main;
         tf_MainCamera = m_Camera.transform;
-        m_Effect = m_Camera.GetComponent<CameraEffectManager>().Init();
     }
 
     #endregion

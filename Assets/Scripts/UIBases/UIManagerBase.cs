@@ -16,8 +16,6 @@ public class UIManagerBase : SingletonMono<UIManagerBase>
     public bool CheckPageOpening<T>() where T : UIPageBase => m_Pages.Count > 0 && m_Pages.Find(p => p.GetType() == typeof(T));
     private Image m_OverlayBG;
     public Camera m_Camera { get; private set; }
-    public CameraEffectManager m_Effect { get; private set; }
-    protected CB_GenerateTransparentOverlayTexture m_BlurBG { get; private set; }
     SingleCoroutine m_BlurCoroutine;
     public Dictionary<UIControlBase, int> m_ControlSiblings { get; private set; } = new Dictionary<UIControlBase, int>();
 
@@ -42,8 +40,6 @@ public class UIManagerBase : SingletonMono<UIManagerBase>
         m_OverlayBG.SetActivate(false);
 
         m_Camera = transform.Find("UICamera").GetComponent<Camera>();
-        m_Effect = m_Camera.GetComponent<CameraEffectManager>().Init();
-        m_BlurBG = m_Effect.AddCameraEffect(new CB_GenerateTransparentOverlayTexture()).SetOpaqueBlurTextureEnabled(false, 2f, 3, 4);
         m_BlurCoroutine = new SingleCoroutine(this);
 
         UIMessageBoxBase.OnMessageBoxExit = OnMessageBoxExit;
@@ -60,7 +56,7 @@ public class UIManagerBase : SingletonMono<UIManagerBase>
         for (int i = 0; i < m_Pages.Count; i++)
         {
             bool pageOverlay = pageShow && m_Pages.Count - 1 == i;
-            TCommonUI.ReparentRestretchUI(m_Pages[i].rectTransform, pageOverlay ? tf_OverlayPage : tf_CameraPage);
+            TUI.ReparentRestretchUI(m_Pages[i].rectTransform, pageOverlay ? tf_OverlayPage : tf_CameraPage);
         }
     }
 
@@ -98,7 +94,6 @@ public class UIManagerBase : SingletonMono<UIManagerBase>
 
         page.OnPlay(useAnim,OnPageExit);
         m_Pages.Add(page);
-        SetBlurBackground(blurBG);
         OnAdjustPageSibling();
         return page ;
     }
@@ -108,29 +103,10 @@ public class UIManagerBase : SingletonMono<UIManagerBase>
         page.SetActivate(false);
         page.transform.SetParent(m_PageStorage);
         page.OnStop();
-        SetBlurBackground(false);
         m_Pages.Remove(page);
         OnAdjustPageSibling();
     }
 
-    void SetBlurBackground(bool enable)
-    {
-        if (enable)
-        {
-            m_OverlayBG.SetActivate(true);
-            m_BlurBG.SetOpaqueBlurTextureEnabled(true, 2f, 2, 3);
-            m_BlurCoroutine.StartSingleCoroutine(TIEnumerators.ChangeValueTo((float value) => { m_OverlayBG.color = TCommon.ColorAlpha(m_OverlayBG.color, value); }, 0, 1, UIPageBase.F_AnimDuration, null, false));
-        }
-        else
-        {
-            m_BlurCoroutine.StartSingleCoroutine(TIEnumerators.ChangeValueTo((float value) => {
-                m_OverlayBG.color = TCommon.ColorAlpha(m_OverlayBG.color, value);
-            }, 1, 0, UIPageBase.F_AnimDuration, () => {
-                m_BlurBG.SetOpaqueBlurTextureEnabled(false);
-                m_OverlayBG.SetActivate(false);
-            }, false));
-        }
-    }
     #endregion
 
     #region MessageBox
@@ -159,7 +135,7 @@ public class UIManagerBase : SingletonMono<UIManagerBase>
             return;
         }
 
-        TCommonUI.ReparentRestretchUI(control.rectTransform, overlay ? tf_OverlayControl : tf_CameraControl);
+        TUI.ReparentRestretchUI(control.rectTransform, overlay ? tf_OverlayControl : tf_CameraControl);
         control.transform.SetSiblingIndex(m_ControlSiblings[control]);
     }
     #endregion

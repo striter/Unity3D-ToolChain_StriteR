@@ -17,83 +17,106 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
         m_LogText = transform.Find("Log").GetComponent<Text>();
         m_LogText.text = "";
         m_FrameText = transform.Find("Frame").GetComponent<Text>();
-
         Transform tf_ConsoleCommand = transform.Find("ConsoleCommand");
         m_ConsoleCommands = new ObjectPoolListClass<int, ConsoleCommand>(tf_ConsoleCommand, "GridItem");
         m_ConsoleOpening = false;
         m_ConsoleCommands.transform.SetActivate(m_ConsoleOpening);
     }
-
-    public void InitConsole(Action<bool> _OnConsoleShow)
+    public UIT_TouchConsole InitConsole(Action<bool> _OnConsoleShow)
     {
-        OnConsoleShow = _OnConsoleShow;
         m_ConsoleCommands.Clear();
+        OnConsoleShow = _OnConsoleShow;
+        AddConsoleBinding().Set("Clear Log").Play(ClearConsoleLog);
+        return this;
     }
 #region Console
     public ConsoleCommand AddConsoleBinding() => m_ConsoleCommands.AddItem(m_ConsoleCommands.Count);
     public class ConsoleCommand : CObjectPoolClass<int>
     {
-        InputField m_ValueInput;
+        InputField m_ValueInput1,m_ValueInput2;
         EnumSelection m_ValueSelection;
         Text m_CommandTitle;
         KeyCode m_KeyCode;
         Button m_CommonButton;
         public ConsoleCommand(Transform _transform):base(_transform)
         {
-            m_ValueInput = transform.Find("Input").GetComponent<InputField>();
+            m_ValueInput1 = transform.Find("Input1").GetComponent<InputField>();
+            m_ValueInput2 = transform.Find("Input2").GetComponent<InputField>();
             m_ValueSelection = new EnumSelection(transform.Find("Select"));
             m_CommonButton = transform.Find("Button").GetComponent<Button>();
             m_CommandTitle = transform.Find("Button/Title").GetComponent<Text>();
         }
 
-        public void EditorKeycodeTick()
+        public void KeycodeTick()
         {
             if (Input.GetKeyDown(m_KeyCode))
                 m_CommonButton.onClick.Invoke();
         }
-
-        void Play(string title,KeyCode keyCode)
+        public override void OnAddItem(int identity)
+        {
+            base.OnAddItem(identity);
+            m_ValueInput1.SetActivate(false);
+            m_ValueInput2.SetActivate(false);
+            m_ValueSelection.transform.SetActivate(false);
+            m_KeyCode =  KeyCode.None;
+            m_CommandTitle.text = "";
+            m_CommonButton.onClick.RemoveAllListeners();
+        }
+        public ConsoleCommand Set(string title,KeyCode keyCode= KeyCode.None)
         {
             m_KeyCode = keyCode;
-            m_CommandTitle.text = string.Format("{0}|{1}", title, keyCode);
+            m_CommandTitle.text = title + (keyCode == KeyCode.None ? "":"|" + keyCode);
             m_CommonButton.onClick.RemoveAllListeners();
-            m_ValueInput.SetActivate(false);
-            m_ValueSelection.transform.SetActivate(false);
+            return this;
         }
 
-        public void Play(string title,KeyCode keyCode,Action OnClick)
+        public void Play(Action OnClick)
         {
-            Play(title, keyCode);
             m_CommonButton.onClick.AddListener(()=>OnClick());
         }
 
         int selectionIndex = -1;
-        public void Play<T>(string title,KeyCode keyCode,T defaultEnum ,Action<T> OnClick)  
+        public void Play<T>(T defaultEnum ,Action<T> OnClick)  
         {
-            Play(title, keyCode);
             m_ValueSelection.transform.SetActivate(true);
             selectionIndex = (int)Enum.ToObject(typeof(T),defaultEnum);
             m_ValueSelection.Init(defaultEnum, (int value)=>  selectionIndex=value );
             m_CommonButton.onClick.AddListener(() => OnClick((T)Enum.ToObject(typeof(T),selectionIndex)));
         }
 
-
-        public void Play(string title,KeyCode keyCode, string defaultValue,Action<string> OnValueClick)
+        public void Play<T>(T _defaultEnum,string _defaultValue, Action<T,string> OnClick)
         {
-            Play(title, keyCode);
-            m_ValueInput.SetActivate(true);
-            m_ValueInput.text = defaultValue;
-            m_CommonButton.onClick.AddListener(() => OnValueClick(m_ValueInput.text));
+            m_ValueSelection.transform.SetActivate(true);
+            m_ValueInput1.SetActivate(true);
+            m_ValueInput1.text = _defaultValue;
+            selectionIndex = (int)Enum.ToObject(typeof(T), _defaultEnum);
+            m_ValueSelection.Init(_defaultEnum, (int value) => selectionIndex = value);
+            m_CommonButton.onClick.AddListener(() => OnClick((T)Enum.ToObject(typeof(T), selectionIndex),m_ValueInput1.text));
         }
+
+        public void Play(string defaultValue,Action<string> OnValueClick)
+        {
+            m_ValueInput1.SetActivate(true);
+            m_ValueInput1.text = defaultValue;
+            m_CommonButton.onClick.AddListener(() => OnValueClick(m_ValueInput1.text));
+        }
+
+        public void Play(string defaultValue1,string defaultValue2,Action<string,string> OnValueClick)
+        {
+            m_ValueInput1.SetActivate(true);
+            m_ValueInput2.SetActivate(true);
+            m_ValueInput1.text = defaultValue1;
+            m_ValueInput2.text = defaultValue2;
+            m_CommonButton.onClick.AddListener(() => OnValueClick(m_ValueInput1.text, m_ValueInput2.text));
+        }
+
     }
-#endregion
+    #endregion
 
     float m_fastKeyCooldown = 0f;
     private void Update()
     {
-#if UNITY_EDITOR
-        m_ConsoleCommands.m_ActiveItemDic.Traversal((ConsoleCommand command) => { command.EditorKeycodeTick(); });
-#endif
+        m_ConsoleCommands.m_ActiveItemDic.Traversal((ConsoleCommand command) => { command.KeycodeTick(); });
 
         m_FrameText.text = ((int)(1 / Time.unscaledDeltaTime)).ToString();
         if (m_fastKeyCooldown>0f)
