@@ -19,29 +19,33 @@ MonoBehaviour:
     m_FrameCount: 30
     m_Length: 1
     m_Loop: 0
+    m_Events: []
   - m_Name: Bat_Anim_Die
     m_FrameBegin: 30
     m_FrameRate: 30
     m_FrameCount: 32
     m_Length: 1.0666667
     m_Loop: 0
+    m_Events: []
   - m_Name: Bat_Anim_Idle
     m_FrameBegin: 62
     m_FrameRate: 30
     m_FrameCount: 24
     m_Length: 0.8000001
     m_Loop: 0
+    m_Events: []
   - m_Name: Bat_Anim_Show
     m_FrameBegin: 86
     m_FrameRate: 30
     m_FrameCount: 40
     m_Length: 1.3333334
     m_Loop: 0
+    m_Events: []
   - m_Name: Bat_Anim_Walk
     m_FrameBegin: 126
     m_FrameRate: 30
     m_FrameCount: 18
     m_Length: 0.6
-    m_Loop: 1
+    m_Loop: 0
+    m_Events: []
   m_ExposeBones: []
-  m_Events: []

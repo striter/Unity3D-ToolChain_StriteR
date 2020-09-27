@@ -6,7 +6,6 @@ public class AnimationInstanceData : ScriptableObject
 {
     public AnimationInstanceParam[] m_Animations;
     public AnimationInstanceExposeBone[] m_ExposeBones;
-    public AnimationInstanceEvent[] m_Events;
 }
 
 [System.Serializable]
@@ -18,12 +17,14 @@ public class AnimationInstanceParam
     public int m_FrameCount;
     public float m_Length;
     public bool m_Loop;
-    public AnimationInstanceParam(string _name, int _startFrame,float _frameRate,float _length,bool _loop)
+    public AnimationInstanceEvent[] m_Events;
+    public AnimationInstanceParam(string _name, int _startFrame,float _frameRate,float _length,bool _loop,AnimationInstanceEvent[] _events)
     {
         m_Name = _name;
         m_FrameBegin = _startFrame;
         m_FrameRate = _frameRate;
         m_FrameCount =(int)( _frameRate * _length);
+        m_Events = _events;
         m_Length = _length;
         m_Loop= _loop;
     }
@@ -41,6 +42,11 @@ public class AnimationInstanceExposeBone
 [System.Serializable]
 public class AnimationInstanceEvent
 {
-    public int m_EventFrame;
+    public float m_EventFrame;
     public string m_EventIdentity;
+    public AnimationInstanceEvent(AnimationEvent _event,float frameRate)
+    {
+        m_EventFrame = _event.time * frameRate;
+        m_EventIdentity = _event.functionName;
+    }
 }

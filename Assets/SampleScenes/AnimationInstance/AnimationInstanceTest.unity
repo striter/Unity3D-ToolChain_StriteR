@@ -153,8 +153,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8fd8124bdbeddf44909374c321b4d2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_X: 1
-  m_Y: 1
+  m_X: 50
+  m_Y: 50
   m_Anim: 6
   m_Prefab: {fileID: 4610609407414166748, guid: 93cdaf67bce9a024e982dc4018d25f8b,
     type: 3}

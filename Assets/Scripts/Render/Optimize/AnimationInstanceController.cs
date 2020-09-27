@@ -59,7 +59,7 @@ public class AnimationInstanceController : MonoBehaviour
             return;
 
         AnimationInstanceParam param = m_Data.m_Animations[m_CurrentAnimIndex];
-        TickEvents(param.m_FrameBegin+m_TimeElapsed*param.m_FrameRate,_deltaTime*param.m_FrameRate);
+        TickEvents(param,m_TimeElapsed*param.m_FrameRate,_deltaTime*param.m_FrameRate);
         m_TimeElapsed += _deltaTime;
 
         float framePassed;
@@ -88,13 +88,13 @@ public class AnimationInstanceController : MonoBehaviour
         TickBones(curFrame, nextFrame, framePassed);
     }
     #region Events
-    void TickEvents(float _preFrame,float _deltaFrame)
+    void TickEvents(AnimationInstanceParam _clip, float _preFrame,float _deltaFrame)
     {
         if (OnAnimEvent == null)
             return;
         float _nextFrame = _preFrame + _deltaFrame;
 
-        m_Data.m_Events.Traversal(animEvent => {
+        _clip.m_Events.Traversal(animEvent => {
             if (_preFrame < animEvent.m_EventFrame && animEvent.m_EventFrame <= _nextFrame)
                 OnAnimEvent(animEvent.m_EventIdentity);
         });

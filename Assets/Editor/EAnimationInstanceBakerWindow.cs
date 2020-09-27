@@ -110,8 +110,12 @@ namespace TEditor
             for (int i = 0; i < _clips.Length; i++)
             {
                 AnimationClip clip = _clips[i];
+
+                AnimationInstanceEvent[] instanceEvents = new AnimationInstanceEvent[clip.events.Length];
+                for(int j=0;j<clip.events.Length;j++)
+                    instanceEvents[j] = new AnimationInstanceEvent(clip.events[j],clip.frameRate);
                 int frameCount = (int)(clip.length * clip.frameRate);
-                instanceParams[i] = new AnimationInstanceParam(clip.name, totalHeight, clip.frameRate, clip.length, clip.isLooping);
+                instanceParams[i] = new AnimationInstanceParam(clip.name, totalHeight, clip.frameRate, clip.length, clip.isLooping,instanceEvents.ToArray());
                 totalHeight += frameCount;
             }
             return totalHeight;
@@ -130,7 +134,6 @@ namespace TEditor
             int vertexCount = skinnedMeshRenderer.sharedMesh.vertexCount;
             int totalVertexRecord = vertexCount * 2;
             int totalFrame = GetInstanceParams(_clips, out AnimationInstanceParam[] instanceParams);
-            List<AnimationInstanceEvent> instanceEvents = new List<AnimationInstanceEvent>();
 
             Texture2D atlasTexture = new Texture2D(Mathf.NextPowerOfTwo(totalVertexRecord), Mathf.NextPowerOfTwo(totalFrame), TextureFormat.RGBAHalf, false);
             atlasTexture.filterMode = FilterMode.Point;
@@ -145,7 +148,6 @@ namespace TEditor
                 float frameRate = clip.frameRate;
                 int frameCount = (int)(length * frameRate);
                 int startFrame = instanceParams[i].m_FrameBegin;
-                clip.events.Traversal(eventItem => { instanceEvents.Add(new AnimationInstanceEvent() { m_EventFrame = startFrame+ (int)(eventItem.time* frameRate), m_EventIdentity = eventItem.functionName }); });
                 for (int j = 0; j < frameCount; j++)
                 {
                     clip.SampleAnimation(instantiatedObj, length * j / frameCount);
@@ -176,7 +178,6 @@ namespace TEditor
 
             AnimationInstanceData instaneData = ScriptableObject.CreateInstance<AnimationInstanceData>();
             instaneData.m_Animations = instanceParams;
-            instaneData.m_Events = instanceEvents.ToArray();
             TEditor.CreateOrReplaceAsset(instaneData, savePath + meshName + "_VertexInstance_Data.asset");
             TEditor.CreateOrReplaceAsset(bakeBoneMesh, savePath + meshName + "_VertexInstance_BakeMesh.asset");
             TEditor.CreateOrReplaceAsset(atlasTexture, savePath + meshName + "_VertexInstance_AnimationAtlas.asset");
@@ -198,13 +199,21 @@ namespace TEditor
                 Transform[] bones = _skinnedMeshRenderer.bones;
                 #region Record Expose Bone
                 List<AnimationInstanceExposeBone> exposeBoneParam = new List<AnimationInstanceExposeBone>();
-                for (int i=0;i<bones.Length;i++)
+                if (exposeBones!="")
                 {
-                    if (!System.Text.RegularExpressions.Regex.Match(bones[i].name, exposeBones).Success)
-                        continue;
-                    Matrix4x4 worldTolocal = _skinnedMeshRenderer.transform.worldToLocalMatrix;
-                    exposeBoneParam.Add(new AnimationInstanceExposeBone() { m_BoneIndex=i, m_BoneName= bones[i].name,
-                        m_Position = worldTolocal.MultiplyPoint( bones[i].transform.position), m_Direction= worldTolocal.MultiplyVector( bones[i].transform.forward)});
+                    for (int i = 0; i < bones.Length; i++)
+                    {
+                        if (!System.Text.RegularExpressions.Regex.Match(bones[i].name, exposeBones).Success)
+                            continue;
+                        Matrix4x4 worldTolocal = _skinnedMeshRenderer.transform.worldToLocalMatrix;
+                        exposeBoneParam.Add(new AnimationInstanceExposeBone()
+                        {
+                            m_BoneIndex = i,
+                            m_BoneName = bones[i].name,
+                            m_Position = worldTolocal.MultiplyPoint(bones[i].transform.position),
+                            m_Direction = worldTolocal.MultiplyVector(bones[i].transform.forward)
+                        });
+                    }
                 }
                 #endregion
                 #region Bake Animation Atlas
@@ -225,7 +234,6 @@ namespace TEditor
                     float frameRate = clip.frameRate;
                     int frameCount = (int)(length * frameRate);
                     int startFrame = instanceParams[i].m_FrameBegin;
-                    clip.events.Traversal(eventItem => { instanceEvents.Add(new AnimationInstanceEvent() { m_EventFrame = startFrame + (int) (eventItem.time * frameRate), m_EventIdentity = eventItem.functionName }); });
                     for (int j = 0; j < frameCount; j++)
                     {
                         clip.SampleAnimation(_instantiatedObj, length * j / frameCount);
@@ -267,7 +275,6 @@ namespace TEditor
                 DestroyImmediate(_instantiatedObj);
                 AnimationInstanceData instanceData = ScriptableObject.CreateInstance<AnimationInstanceData>();
                 instanceData.m_Animations = instanceParams;
-                instanceData.m_Events = instanceEvents.ToArray();
                 instanceData.m_ExposeBones = exposeBoneParam.ToArray();
                 TEditor.CreateOrReplaceAsset(instanceData, savePath + meshName + "_BoneInstance_Data.asset");
                 TEditor.CreateOrReplaceAsset(atlasTexture, savePath + meshName + "_BoneInstance_AnimationAtlas.asset");
