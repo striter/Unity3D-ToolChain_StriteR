@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5f80804631ad4e4086550170c31517a, type: 3}
+  m_Name: PolarBear_BoneInstance_Data
+  m_EditorClassIdentifier: 
+  m_Animations:
+  - m_Name: PolarBear_Anim_Attack1
+    m_FrameBegin: 0
+    m_FrameRate: 30
+    m_FrameCount: 32
+    m_Length: 1.0666667
+    m_Loop: 0
+  - m_Name: PolarBear_Anim_Attack2
+    m_FrameBegin: 32
+    m_FrameRate: 30
+    m_FrameCount: 104
+    m_Length: 3.4666667
+    m_Loop: 0
+  - m_Name: PolarBear_Anim_Attack3
+    m_FrameBegin: 136
+    m_FrameRate: 30
+    m_FrameCount: 60
+    m_Length: 2
+    m_Loop: 0
+  - m_Name: PolarBear_Anim_Die
+    m_FrameBegin: 196
+    m_FrameRate: 30
+    m_FrameCount: 34
+    m_Length: 1.1333334
+    m_Loop: 0
+  - m_Name: PolarBear_Anim_Idle
+    m_FrameBegin: 230
+    m_FrameRate: 30
+    m_FrameCount: 40
+    m_Length: 1.3333334
+    m_Loop: 1
+  - m_Name: PolarBear_Anim_Show
+    m_FrameBegin: 270
+    m_FrameRate: 30
+    m_FrameCount: 31
+    m_Length: 1.0333334
+    m_Loop: 0
+  - m_Name: PolarBear_Anim_Walk
+    m_FrameBegin: 301
+    m_FrameRate: 30
+    m_FrameCount: 22
+    m_Length: 0.73333335
+    m_Loop: 1
+  m_ExposeBones:
+  - m_BoneName: Bip001 L Hand
+    m_BoneIndex: 7
+    m_Position: {x: -1.1528182, y: 0.021615218, z: 1.2240819}
+    m_Direction: {x: 0.01352687, y: 0.99980664, z: 0.01431168}
+  - m_BoneName: Bip001 R Hand
+    m_BoneIndex: 13
+    m_Position: {x: 1.1521041, y: 0.021612179, z: 1.2240852}
+    m_Direction: {x: 0.01352436, y: -0.9998062, z: -0.01431146}
+  m_Events:
+  - m_EventFrame: 16
+    m_EventIdentity: NotifyHit
+  - m_EventFrame: 48
+    m_EventIdentity: NotifyHit
+  - m_EventFrame: 139
+    m_EventIdentity: notify_s
+  - m_EventFrame: 170
+    m_EventIdentity: notify_s
+  - m_EventFrame: 172
+    m_EventIdentity: NotifyHit

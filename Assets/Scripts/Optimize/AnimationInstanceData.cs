@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class AnimationInstanceData : ScriptableObject
 {
-    public Mesh m_InstanceMesh;
-    public Texture2D m_AnimationAtlas;
-    public AnimationInstanceParam[] m_AnimationParams;
+    public AnimationInstanceParam[] m_Animations;
+    public AnimationInstanceExposeBone[] m_ExposeBones;
+    public AnimationInstanceEvent[] m_Events;
 }
 
 [System.Serializable]
@@ -27,4 +27,20 @@ public class AnimationInstanceParam
         m_Length = _length;
         m_Loop= _loop;
     }
+}
+
+[System.Serializable]
+public class AnimationInstanceExposeBone
+{
+    public string m_BoneName;
+    public int m_BoneIndex;
+    public Vector3 m_Position;
+    public Vector3 m_Direction;
+}
+
+[System.Serializable]
+public class AnimationInstanceEvent
+{
+    public int m_EventFrame;
+    public string m_EventIdentity;
 }

@@ -169,6 +169,7 @@ public static class TCommon
     public static Color ColorAlpha(Color origin, float alpha) => new Color(origin.r, origin.g, origin.b, alpha);
     public static Color ToColor(this Vector4 colorVector) => new Color(colorVector.x, colorVector.y, colorVector.z, colorVector.w);
     public static Color ToColor(this Vector3 colorVector) => new Color(colorVector.x, colorVector.y, colorVector.z);
+    public static Vector4 ToVector(this Color color) => new Vector4(color.r,color.g,color.b,color.a);
     #endregion
     #region Vector/Angle
     public static float GetXZDistance(Vector3 start, Vector3 end) => new Vector2(start.x - end.x, start.z - end.z).magnitude;

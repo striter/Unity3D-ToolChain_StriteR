@@ -38,7 +38,7 @@ public class EAnimationInstanceController : Editor
         }
 
         if (GUILayout.Button("Replay"))
-            m_Target.Replay();
+            m_Target.SetTime(0);
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.EndVertical();
 

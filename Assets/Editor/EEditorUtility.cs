@@ -103,8 +103,42 @@ namespace TEditor
 
         }
     }
-    public static class ETPath
+    public static class TEditor
     {
+        public static T CreateOrReplaceAsset<T>(T asset, string path) where T : UnityEngine.Object
+        {
+            UnityEngine.Object previousAsset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
+            T replacedAsset = null;
+            if (previousAsset != null)
+            {
+                replacedAsset = previousAsset as T;
+                if (replacedAsset != null)
+                    EditorUtility.CopySerialized(asset, previousAsset);
+                else
+                    AssetDatabase.DeleteAsset(path);
+            }
+
+            if(!replacedAsset)
+            {
+                AssetDatabase.CreateAsset(asset, path);
+                replacedAsset= AssetDatabase.LoadAssetAtPath<T>(path);
+            }
+            return replacedAsset;
+        }
+        public static bool SelectPath(UnityEngine.Object _srcAsset, out string savePath, out string objName)
+        {
+            savePath = "";
+            objName = "";
+            string assetPath = AssetDatabase.GetAssetPath(_srcAsset);
+            string fbxDirectory = (Application.dataPath.Remove(Application.dataPath.Length - 6, 6) + assetPath.Remove(assetPath.LastIndexOf('/'))).Replace("/", @"\");
+            Debug.Log(fbxDirectory);
+            string folderPath = EditorUtility.OpenFolderPanel("Select Data Save Folder", fbxDirectory, "");
+            if (folderPath.Length == 0)
+                return false;
+            savePath = GetAssetPath(folderPath);
+            objName = GetPathName(assetPath);
+            return true;
+        }
         public static string GetAssetPath(string path)
         {
             int assetIndex = path.IndexOf("Assets/");
@@ -114,12 +148,16 @@ namespace TEditor
                 path += '/';
             return path;
         }
-        public static string GetPathName(string path)
+        public static string RemoveExtension(string path)
         {
             int extensionIndex = path.LastIndexOf('.');
             if (extensionIndex >= 0)
-                path = path.Remove(extensionIndex);
-
+                return path.Remove(extensionIndex);
+            return path;
+        }
+        public static string GetPathName(string path)
+        {
+            path = RemoveExtension(path);
             int folderIndex = path.LastIndexOf('/');
             if (folderIndex >= 0)
                 path = path.Substring(folderIndex + 1, path.Length - folderIndex - 1);

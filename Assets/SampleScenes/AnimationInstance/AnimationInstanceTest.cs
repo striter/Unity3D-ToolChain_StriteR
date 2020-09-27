@@ -14,9 +14,9 @@ public class AnimationInstanceTest : MonoBehaviour
         {
             for(int j=0;j<m_Y;j++)
             {
-                AnimationInstanceController controller = GameObject.Instantiate(m_Prefab,transform).GetComponent<AnimationInstanceController>().Init();
+                AnimationInstanceController controller = GameObject.Instantiate(m_Prefab,transform).GetComponent<AnimationInstanceController>().Init(Debug.Log);
                 controller.transform.localPosition = new Vector3(i*10,0, j * 10);
-                controller.SetAnimation(m_Anim,Random.value);
+                controller.SetAnimation(m_Anim).SetScale(Random.value);
                 m_Controllers.Add(controller);
             }
         }
