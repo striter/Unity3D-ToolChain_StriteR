@@ -32,7 +32,6 @@ namespace TEditor
          static void ShowOptimizeWindow() => EditorWindow.GetWindow(typeof(EAnimationInstanceBakerWindow));
 
     }
-
     public static class EEditorAudioHelper
     {
         static AudioClip curClip;

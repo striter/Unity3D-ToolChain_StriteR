@@ -42,6 +42,6 @@ MonoBehaviour:
     m_FrameRate: 30
     m_FrameCount: 18
     m_Length: 0.6
-    m_Loop: 0
+    m_Loop: 1
   m_ExposeBones: []
   m_Events: []
