@@ -112,17 +112,17 @@ namespace TEditor
                 AnimationClip clip = _clips[i];
 
                 AnimationInstanceEvent[] instanceEvents = new AnimationInstanceEvent[clip.events.Length];
-                for(int j=0;j<clip.events.Length;j++)
-                    instanceEvents[j] = new AnimationInstanceEvent(clip.events[j],clip.frameRate);
+                for (int j = 0; j < clip.events.Length; j++)
+                    instanceEvents[j] = new AnimationInstanceEvent(clip.events[j], clip.frameRate);
                 int frameCount = (int)(clip.length * clip.frameRate);
-                instanceParams[i] = new AnimationInstanceParam(clip.name, totalHeight, clip.frameRate, clip.length, clip.isLooping,instanceEvents.ToArray());
+                instanceParams[i] = new AnimationInstanceParam(clip.name, totalHeight, clip.frameRate, clip.length, clip.isLooping, instanceEvents.ToArray());
                 totalHeight += frameCount;
             }
             return totalHeight;
         }
         void GenerateVertexTexture(GameObject _targetFBX, AnimationClip[] _clips)
         {
-            if(!TEditor.SelectPath(_targetFBX,out string savePath, out string meshName))
+            if (!TEditor.SelectPath(_targetFBX, out string savePath, out string meshName))
             {
                 Debug.LogWarning("Invalid Folder Selected");
                 return;
@@ -167,20 +167,18 @@ namespace TEditor
             #endregion
 
             #region Bake Mesh
-            Mesh bakeBoneMesh = skinnedMeshRenderer.sharedMesh.Copy();
-            bakeBoneMesh.normals = null;
-            bakeBoneMesh.tangents = null;
-            bakeBoneMesh.boneWeights = null;
-            bakeBoneMesh.bindposes = null;
-            bakeBoneMesh.bounds = boundsCheck.GetBounds();
+            Mesh instanceMesh = skinnedMeshRenderer.sharedMesh.Copy();
+            instanceMesh.normals = null;
+            instanceMesh.tangents = null;
+            instanceMesh.boneWeights = null;
+            instanceMesh.bindposes = null;
+            instanceMesh.bounds = boundsCheck.GetBounds();
             #endregion
             DestroyImmediate(instantiatedObj);
 
-            AnimationInstanceData instaneData = ScriptableObject.CreateInstance<AnimationInstanceData>();
-            instaneData.m_Animations = instanceParams;
-            TEditor.CreateOrReplaceAsset(instaneData, savePath + meshName + "_VertexInstance_Data.asset");
-            TEditor.CreateOrReplaceAsset(bakeBoneMesh, savePath + meshName + "_VertexInstance_BakeMesh.asset");
-            TEditor.CreateOrReplaceAsset(atlasTexture, savePath + meshName + "_VertexInstance_AnimationAtlas.asset");
+            AnimationInstanceData instanceData = ScriptableObject.CreateInstance<AnimationInstanceData>();
+            instanceData.m_Animations = instanceParams;
+             TEditor.CreateAssetCombination( new KeyValuePair<Object, string>(instanceData,savePath + meshName + "_VertexInstance.asset"), new KeyValuePair<Object, string>( atlasTexture,meshName+"_AnimationAtlas"),new KeyValuePair<Object,string>(instanceMesh,meshName+"_InstanceMesh"));
         }
 
         void GenerateBoneInstanceMeshAndTexture(GameObject _targetFBX, AnimationClip[] _clips, string exposeBones)
@@ -199,19 +197,33 @@ namespace TEditor
                 Transform[] bones = _skinnedMeshRenderer.bones;
                 #region Record Expose Bone
                 List<AnimationInstanceExposeBone> exposeBoneParam = new List<AnimationInstanceExposeBone>();
-                if (exposeBones!="")
+                if (exposeBones != "")
                 {
-                    for (int i = 0; i < bones.Length; i++)
+                    Transform[] activeTransforms = _instantiatedObj.GetComponentsInChildren<Transform>();
+                    for (int i = 0; i < activeTransforms.Length; i++)
                     {
-                        if (!System.Text.RegularExpressions.Regex.Match(bones[i].name, exposeBones).Success)
+                        if (!System.Text.RegularExpressions.Regex.Match(activeTransforms[i].name, exposeBones).Success)
                             continue;
-                        Matrix4x4 worldTolocal = _skinnedMeshRenderer.transform.worldToLocalMatrix;
+                        int relativeBoneIndex = -1;
+                        Transform relativeBone = activeTransforms[i];
+                        while (relativeBone != null)
+                        {
+                            relativeBoneIndex = System.Array.FindIndex( bones,p => p == relativeBone);
+                            if (relativeBoneIndex != -1)
+                                break;
+                            relativeBone = relativeBone.parent;
+                        }
+                        if (relativeBoneIndex == -1)
+                            continue;
+
+                        Matrix4x4 rootWorldToLocal = _skinnedMeshRenderer.transform.worldToLocalMatrix;
+
                         exposeBoneParam.Add(new AnimationInstanceExposeBone()
                         {
-                            m_BoneIndex = i,
-                            m_BoneName = bones[i].name,
-                            m_Position = worldTolocal.MultiplyPoint(bones[i].transform.position),
-                            m_Direction = worldTolocal.MultiplyVector(bones[i].transform.forward)
+                            m_BoneIndex = relativeBoneIndex,
+                            m_BoneName = activeTransforms[i].name,
+                            m_Position = rootWorldToLocal.MultiplyPoint(activeTransforms[i].transform.position),
+                            m_Direction = rootWorldToLocal.MultiplyVector(activeTransforms[i].transform.forward)
                         });
                     }
                 }
@@ -257,8 +269,8 @@ namespace TEditor
                 atlasTexture.Apply();
                 #endregion
                 #region Bake Mesh
-                Mesh bakeBoneMesh = _skinnedMeshRenderer.sharedMesh.Copy();
-                BoneWeight[] boneWeights = bakeBoneMesh.boneWeights;
+                Mesh instanceMesh = _skinnedMeshRenderer.sharedMesh.Copy();
+                BoneWeight[] boneWeights = instanceMesh.boneWeights;
                 Vector4[] uv2 = new Vector4[boneWeights.Length];
                 Vector4[] uv3 = new Vector4[boneWeights.Length];
                 for (int i = 0; i < boneWeights.Length; i++)
@@ -266,27 +278,27 @@ namespace TEditor
                     uv2[i] = new Vector4(boneWeights[i].boneIndex0, boneWeights[i].boneIndex1, boneWeights[i].boneIndex2, boneWeights[i].boneIndex3);
                     uv3[i] = new Vector4(boneWeights[i].weight0, boneWeights[i].weight1, boneWeights[i].weight2, boneWeights[i].weight3);
                 }
-                bakeBoneMesh.SetUVs(1, uv2);
-                bakeBoneMesh.SetUVs(2, uv3);
-                bakeBoneMesh.boneWeights = null;
-                bakeBoneMesh.bindposes = null;
-                bakeBoneMesh.bounds = boundsCheck.GetBounds();
+                instanceMesh.SetUVs(1, uv2);
+                instanceMesh.SetUVs(2, uv3);
+                instanceMesh.boneWeights = null;
+                instanceMesh.bindposes = null;
+                instanceMesh.bounds = boundsCheck.GetBounds();
                 #endregion
                 DestroyImmediate(_instantiatedObj);
+
                 AnimationInstanceData instanceData = ScriptableObject.CreateInstance<AnimationInstanceData>();
                 instanceData.m_Animations = instanceParams;
                 instanceData.m_ExposeBones = exposeBoneParam.ToArray();
-                TEditor.CreateOrReplaceAsset(instanceData, savePath + meshName + "_BoneInstance_Data.asset");
-                TEditor.CreateOrReplaceAsset(atlasTexture, savePath + meshName + "_BoneInstance_AnimationAtlas.asset");
-                TEditor.CreateOrReplaceAsset(bakeBoneMesh, savePath + meshName + "_BoneInstance_BakeMesh.asset");
-                Debug.Log("Generate Successful:"+meshName+savePath);
+                TEditor.CreateAssetCombination(new KeyValuePair<Object, string>(instanceData, savePath + meshName + "_BoneInstance.asset"), new KeyValuePair<Object, string>(atlasTexture, meshName + "_AnimationAtlas"), new KeyValuePair<Object, string>(instanceMesh, meshName + "_InstanceMesh"));
+
             }
-            catch(System.Exception e)
+            catch (System.Exception e)
             {
                 Debug.LogError("Generate Failed:" + e.Message);
                 DestroyImmediate(_instantiatedObj);
             }
         }
+
 
         public class AnimationInstanceBoundsCheck
         {

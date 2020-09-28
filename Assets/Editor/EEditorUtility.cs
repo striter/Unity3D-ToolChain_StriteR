@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UnityEditor;
@@ -104,9 +105,9 @@ namespace TEditor
     }
     public static class TEditor
     {
-        public static T CreateOrReplaceAsset<T>(T asset, string path) where T : UnityEngine.Object
+        public static T CreateOrReplaceMainAsset<T>(T asset, string path) where T : UnityEngine.Object
         {
-            UnityEngine.Object previousAsset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
+            UnityEngine.Object previousAsset = AssetDatabase.LoadMainAssetAtPath(path);
             T replacedAsset = null;
             if (previousAsset != null)
             {
@@ -117,20 +118,43 @@ namespace TEditor
                     AssetDatabase.DeleteAsset(path);
             }
 
-            if(!replacedAsset)
+            if (!replacedAsset)
             {
                 AssetDatabase.CreateAsset(asset, path);
-                replacedAsset= AssetDatabase.LoadAssetAtPath<T>(path);
+                replacedAsset = AssetDatabase.LoadMainAssetAtPath(path) as T;
             }
             return replacedAsset;
         }
+        public static void CreateOrReplaceSubAsset<T>(T asset, string mainPath, string assetName) where T : UnityEngine.Object
+        {
+            UnityEngine.Object mainAsset = AssetDatabase.LoadMainAssetAtPath(mainPath);
+            if (!mainAsset)
+                throw new System.Exception("Invalid Main Assets:" + mainPath);
+            asset.name = assetName;
+            UnityEngine.Object[] assets = AssetDatabase.LoadAllAssetsAtPath(mainPath);
+            UnityEngine.Object subAsset = System.Array.Find(assets, p => p.name == asset.name);
+
+            if (subAsset && (subAsset as T != null))
+                EditorUtility.CopySerialized(asset, subAsset);
+            else
+                AssetDatabase.AddObjectToAsset(asset, mainAsset);
+        }
+
+        public static void CreateAssetCombination(KeyValuePair<UnityEngine.Object, string> _mainAsset,params KeyValuePair<UnityEngine.Object, string>[] _subValues)
+        {
+            UnityEngine.Object mainAsset = CreateOrReplaceMainAsset(_mainAsset.Key, _mainAsset.Value);
+            foreach (KeyValuePair<UnityEngine.Object, string> subValue in _subValues)
+                CreateOrReplaceSubAsset(subValue.Key, _mainAsset.Value, subValue.Value);
+            AssetDatabase.SaveAssets();
+            Debug.Log("Asset Combination Generate Successful:" + _mainAsset.Key);
+        }
+
         public static bool SelectPath(UnityEngine.Object _srcAsset, out string savePath, out string objName)
         {
             savePath = "";
             objName = "";
             string assetPath = AssetDatabase.GetAssetPath(_srcAsset);
             string fbxDirectory = (Application.dataPath.Remove(Application.dataPath.Length - 6, 6) + assetPath.Remove(assetPath.LastIndexOf('/'))).Replace("/", @"\");
-            Debug.Log(fbxDirectory);
             string folderPath = EditorUtility.OpenFolderPanel("Select Data Save Folder", fbxDirectory, "");
             if (folderPath.Length == 0)
                 return false;
