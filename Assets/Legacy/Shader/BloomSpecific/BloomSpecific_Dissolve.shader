@@ -19,7 +19,7 @@
 		Cull Off
 
 		CGINCLUDE
-		#include "../../CommonLightingInclude.cginc"
+		#include "../../../Shaders/CommonLightingInclude.cginc"
 		#include "UnityCG.cginc"
 		#include "AutoLight.cginc"
 		#include "Lighting.cginc"
