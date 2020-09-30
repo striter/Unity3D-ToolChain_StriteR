@@ -96,12 +96,10 @@ namespace Rendering.ImageEffect
             m_RenderCamera.clearFlags = CameraClearFlags.SolidColor;
             if (_param.m_OccludeEnable)
             {
-                m_RenderCamera.SetReplacementShader(m_RenderOcclusionShader, "RenderType");
-                m_RenderCamera.Render();
+                m_RenderCamera.RenderWithShader(m_RenderOcclusionShader, "RenderType");
                 m_RenderCamera.clearFlags = CameraClearFlags.Nothing;
             }
-            m_RenderCamera.SetReplacementShader(m_RenderBloomShader, "RenderType");
-            m_RenderCamera.Render();
+            m_RenderCamera.RenderWithShader(m_RenderBloomShader, "RenderType");
             m_Blur.OnImageProcess(m_RenderTexture, m_RenderTexture);     //Blur
             m_Material.SetTexture("_RenderTex", m_RenderTexture);
             m_RenderCamera.targetTexture = null;

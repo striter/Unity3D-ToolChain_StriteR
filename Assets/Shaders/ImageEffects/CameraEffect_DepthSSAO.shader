@@ -1,4 +1,4 @@
-﻿Shader "Hidden/PostEffect/PE_DepthSSAO"
+﻿Shader "Hidden/CameraEffect_DepthSSAO"
 {
 	Properties
 	{
@@ -22,8 +22,8 @@
 			sampler2D _CameraDepthTexture;
 			float4 _SampleSphere[32];
 			int _SampleCount;
-			float _Strength;
-			float _FallOff;
+			float _Intensity;
+			float _DepthBias;
 			float4 _AOColor;
 
 			float Get01Depth(float2 uv)
@@ -60,9 +60,9 @@
 					float3 sampleOffsetRay =  _SampleSphere[i]*random;
 					float2 occ_depth_uv = saturate(uv + sign(dot(sampleOffsetRay, normal)) * sampleOffsetRay.xy * _MainTex_TexelSize);
 					float depthOffset = baseDepth -Get01Depth(occ_depth_uv) ;
-					occlusion +=step(depthOffset, _FallOff) *lerp(-1,1,  smoothstep(-_FallOff, _FallOff, depthOffset));
+					occlusion +=step(depthOffset, _DepthBias) *lerp(-1,1,  smoothstep(-_DepthBias, _DepthBias, depthOffset));
 				}
-				occlusion = saturate(occlusion / _SampleCount * _Strength);
+				occlusion = saturate(occlusion / _SampleCount * _Intensity);
 				return lerp(tex2D(_MainTex, uv), _AOColor, occlusion);
 			}
 			ENDCG
