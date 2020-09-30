@@ -68,9 +68,9 @@
 			#pragma fragment ShadowFragment
             struct a2fs
             {
+                uint vertexID:SV_VertexID;
                 half4 vertex:POSITION;
                 half3 normal:NORMAL;
-                uint vertexID:SV_VertexID;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 				

@@ -63,7 +63,7 @@ MonoBehaviour:
     m_FrameRate: 30
     m_FrameCount: 33
     m_Length: 1.1
-    m_Loop: 0
+    m_Loop: 1
     m_Events:
     - m_EventFrame: 1
       m_EventIdentity: notify_i

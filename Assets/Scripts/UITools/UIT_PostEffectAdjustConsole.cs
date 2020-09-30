@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Rendering;
+using Rendering.ImageEffect;
 using UnityEngine;
 using UnityEngine.UI;
     public class UIT_PostEffectAdjustConsole : MonoBehaviour

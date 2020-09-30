@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Rendering.ImageEffect;
 
-namespace Rendering
+namespace Rendering.CameraCommandBuffer
 {
     public class CommandBufferBase
     {
@@ -86,7 +87,7 @@ namespace Rendering
         #endregion
         RenderTexture m_TempTexture1, m_TempBlurTexture2;
         
-        public GeometryCopyBlurBuffer InitBlur(Func< ImageEffectParams_Blurs> _GetParams)
+        public GeometryCopyBlurBuffer InitBlur(Func< ImageEffectParam_Blurs> _GetParams)
         {
             m_Blur = new ImageEffect_Blurs(_GetParams);
             m_Blur.DoValidate();
@@ -96,7 +97,7 @@ namespace Rendering
         protected override void OnBufferInit(CommandBuffer _buffer)
         {
             base.OnBufferInit(_buffer);
-            ImageEffectParams_Blurs _params = m_Blur.GetParams();
+            ImageEffectParam_Blurs _params = m_Blur.GetParams();
 
             if(_params.blurType== ImageEffect_Blurs.enum_BlurType.AverageSinglePass)
                 return;

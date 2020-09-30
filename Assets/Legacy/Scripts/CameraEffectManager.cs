@@ -101,7 +101,6 @@ public class CameraEffectManager :MonoBehaviour
         Shader.SetGlobalVector(ID_FrustumCornersRayBR, bottomRight);
         Shader.SetGlobalVector(ID_FrustumCornersRayTL, topLeft);
         Shader.SetGlobalVector(ID_FrustumCornersRayTR, topRight);
-        
     }
     #endregion
 

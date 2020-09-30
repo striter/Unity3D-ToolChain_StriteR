@@ -359,8 +359,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8fd8124bdbeddf44909374c321b4d2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_X: 50
-  m_Y: 50
+  m_X: 2
+  m_Y: 2
   m_Anim: 0
   m_Prefab: {fileID: 4887277092385224129, guid: 59beb6616dac47b4f914115c2e1cb749,
     type: 3}
@@ -943,8 +943,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8fd8124bdbeddf44909374c321b4d2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_X: 50
-  m_Y: 50
+  m_X: 100
+  m_Y: 100
   m_Anim: 2
   m_Prefab: {fileID: 4610609407414166748, guid: 8a09e1c2e4627d84d931fec3f8cee43e,
     type: 3}

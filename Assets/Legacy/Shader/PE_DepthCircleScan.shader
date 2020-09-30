@@ -21,7 +21,6 @@
 				#pragma vertex vert
 				#pragma fragment frag
 
-
 				#include "UnityCG.cginc"
 				#include "PostEffectInclude.cginc"
 

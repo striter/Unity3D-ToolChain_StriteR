@@ -120,34 +120,6 @@ public class CB_DepthOfFieldSpecificStatic : CommandBufferBase
 }
 #endregion
 #region PostEffect
-public class PE_ViewNormal : PostEffectBase
-{
-}
-public class PE_ViewDepth : PostEffectBase
-{
-}
-public class PE_BSC : PostEffectBase {      //Brightness Saturation Contrast
-
-    public void SetEffect(float _brightness = 1f, float _saturation = 1f, float _contrast = 1f)
-    {
-        m_Material.SetFloat("_Brightness", _brightness);
-        m_Material.SetFloat("_Saturation", _saturation);
-        m_Material.SetFloat("_Contrast", _contrast);
-    }
-}
-public class PE_DistortVortex : PostEffectBase
-{
-    static readonly int ID_DistortParam = Shader.PropertyToID("_DistortParam");
-    public void SetTexture(Texture noise, float _noiseStrength = 1f)
-    {
-        m_Material.SetTexture("_NoiseTex", noise);
-        m_Material.SetFloat("_NoiseStrength", _noiseStrength);
-    }
-    public void SetDistort(Vector2 playerViewPort, float distortFactor)
-    {
-        m_Material.SetVector(ID_DistortParam, new Vector4(playerViewPort.x, playerViewPort.y, distortFactor));
-    }
-}
 public class PE_Blurs : PostEffectBase       //Blur Base Collection
 {
     public enum enum_BlurType
@@ -233,53 +205,6 @@ public class PE_Blurs : PostEffectBase       //Blur Base Collection
         Graphics.Blit(targetBuffer, destination);
     }
 }
-public class PE_Bloom : PostEffectBase
-{
-    float F_BlurSpread = 2f;
-    int I_Iterations = 3;
-    int I_DownSample = 3;
-    float F_LuminanceThreshold = .85f;
-    float F_LuminanceMultiple = 10;
-    public void SetEffect(float _blurSpread = 2f, int _iterations = 5, int _downSample = 4, float _luminanceThreshold = .85f, float _luminanceMultiple = 10)
-    {
-        F_BlurSpread = _blurSpread;
-        I_Iterations = _iterations;
-        I_DownSample = _downSample;
-        F_LuminanceThreshold = _luminanceThreshold;
-        F_LuminanceMultiple = _luminanceMultiple;
-    }
-    public override void OnRenderImage(RenderTexture source, RenderTexture destination)
-    {
-        if (I_DownSample == 0)
-            I_DownSample = 1;
-        m_Material.SetFloat("_LuminanceThreshold", F_LuminanceThreshold);
-        m_Material.SetFloat("_LuminanceMultiple", F_LuminanceMultiple);
-        int rtW = source.width >> I_DownSample;
-        int rtH = source.height >> I_DownSample;
-
-        RenderTexture buffer0 = RenderTexture.GetTemporary(rtW, rtH, 0);
-        buffer0.filterMode = FilterMode.Bilinear;
-        Graphics.Blit(source, buffer0, m_Material, 0);
-        for (int i = 0; i < I_Iterations; i++)
-        {
-            m_Material.SetFloat("BlurSize", 1f + i * F_BlurSpread);
-            RenderTexture buffer1;
-            buffer1 = RenderTexture.GetTemporary(rtW, rtH, 0);
-            Graphics.Blit(buffer0, buffer1, m_Material, 1);
-            RenderTexture.ReleaseTemporary(buffer0);
-            buffer0 = buffer1;
-
-            buffer1 = RenderTexture.GetTemporary(rtW, rtH, 0);
-            Graphics.Blit(buffer0, buffer1, m_Material, 2);
-            RenderTexture.ReleaseTemporary(buffer0);
-            buffer0 = buffer1;
-        }
-
-        m_Material.SetTexture("_Bloom", buffer0);
-        RenderTexture.ReleaseTemporary(buffer0);
-        Graphics.Blit(source, destination, m_Material, 3);
-    }
-}
 public class PE_MotionBlur : PostEffectBase     //Camera Motion Blur ,Easiest
 {
     private RenderTexture rt_Accumulation;
@@ -324,139 +249,6 @@ public class PE_MotionBlurDepth : PE_MotionBlur
         Graphics.Blit(source, destination, m_Material);
     }
 }
-public class PE_FogDepth : PostEffectBase
-{
-    public override bool m_DepthFrustumCornors => true;
-    public T SetEffect<T>(Color _fogColor, float _fogDensity = .5f, float _fogYStart = -1f, float _fogYEnd = 5f) where T : PE_FogDepth
-    {
-        m_Material.SetFloat("_FogDensity", _fogDensity);
-        m_Material.SetColor("_FogColor", _fogColor);
-        m_Material.SetFloat("_FogStart", _fogYStart);
-        m_Material.SetFloat("_FogEnd", _fogYEnd);
-        return this as T;
-    }
-}
-public class PE_FogDepthNoise : PE_FogDepth
-{
-    public void SetEffect(Texture noise, float _noiseLambert = .3f, float _noisePow = 1f, float _fogSpeedX = .02f, float _fogSpeedY = .02f)
-    {
-        m_Material.SetTexture("_NoiseTex", noise);
-        m_Material.SetFloat("_NoiseLambert", _noiseLambert);
-        m_Material.SetFloat("_NoisePow", _noisePow);
-        m_Material.SetFloat("_FogSpeedX", _fogSpeedX);
-        m_Material.SetFloat("_FogSpeedY", _fogSpeedY);
-    }
-}
-public class PE_FocalDepth : PostEffectBase
-{
-    public PE_Blurs m_Blur { get; private set; }
-    RenderTexture m_TempTexture;
-    public override void InitEffect(CameraEffectManager _manager)
-    {
-        base.InitEffect(_manager);
-        m_Blur = new PE_Blurs();
-        m_Blur.InitEffect(_manager);
-    }
-    public PE_FocalDepth SetEffect(int downSample = 2)
-    {
-        m_Blur.SetEffect(PE_Blurs.enum_BlurType.GaussianBlur, 2, 3, downSample);
-        m_TempTexture = RenderTexture.GetTemporary(m_Manager.m_Camera.scaledPixelHeight >> downSample, m_Manager.m_Camera.scaledPixelWidth >> downSample);
-        m_Material.SetTexture("_BlurTex", m_TempTexture);
-        return this;
-    }
-    public void SetFocalTarget(Vector3 focalTarget, float focalWidth)
-    {
-        float _01Depth = m_Manager.Get01Depth(focalTarget);
-        float _01Width = m_Manager.Get01DepthLength(focalWidth);
-        m_Material.SetFloat("_FocalDepthStart", _01Depth - _01Width);
-        m_Material.SetFloat("_FocalDepthEnd", _01Depth + _01Width);
-    }
-    public override void OnRenderImage(RenderTexture source, RenderTexture destination)
-    {
-        m_Blur.OnRenderImage(source, m_TempTexture);
-        base.OnRenderImage(source, destination);
-    }
-
-    public override void OnDestroy()
-    {
-        base.OnDestroy();
-        RenderTexture.ReleaseTemporary(m_TempTexture);
-        m_Blur.OnDestroy();
-    }
-}
-public class PE_DepthOutline : PostEffectBase
-{
-    public void SetEffect(Color _edgeColor, float _sampleDistance = 1f, float _depthBias = .001f)
-    {
-        m_Material.SetColor("_EdgeColor", _edgeColor);
-        m_Material.SetFloat("_SampleDistance", _sampleDistance);
-        m_Material.SetFloat("_DepthBias", _depthBias);
-    }
-}
-public class PE_BloomSpecific : PostEffectBase //Need To Bind Shader To Specific Items
-{
-    Camera m_RenderCamera;
-    RenderTexture m_RenderTexture;
-    Shader m_RenderBloomShader, m_RenderOcclusionShader;
-    public PE_Blurs m_Blur { get; private set; }
-    public bool m_OccludeEnabled { get; private set; }
-    public override void InitEffect(CameraEffectManager _manager)
-    {
-        base.InitEffect(_manager);
-        m_Blur = new PE_Blurs();
-        m_Blur.InitEffect(_manager);
-        m_RenderBloomShader = Shader.Find("Hidden/PostEffect/PE_BloomSpecific_Render_Bloom");
-        m_RenderOcclusionShader = Shader.Find("Hidden/PostEffect/PE_BloomSpecific_Render_Occlusion");
-        if (m_RenderBloomShader == null || m_RenderOcclusionShader == null)
-            Debug.LogError("Null Bloom Specific Shader Found!");
-
-        GameObject temp = new GameObject("Render Camera");
-        temp.transform.SetParentResetTransform(m_Manager.m_Camera.transform);
-        m_RenderCamera = temp.AddComponent<Camera>();
-        m_RenderCamera.backgroundColor = Color.black;
-        m_RenderCamera.orthographic = m_Manager.m_Camera.orthographic;
-        m_RenderCamera.orthographicSize = m_Manager.m_Camera.orthographicSize;
-        m_RenderCamera.nearClipPlane = m_Manager.m_Camera.nearClipPlane;
-        m_RenderCamera.farClipPlane = m_Manager.m_Camera.farClipPlane;
-        m_RenderCamera.fieldOfView = m_Manager.m_Camera.fieldOfView;
-        m_RenderCamera.depthTextureMode = DepthTextureMode.None;
-        m_RenderCamera.enabled = false;
-        m_RenderTexture = RenderTexture.GetTemporary(m_Manager.m_Camera.scaledPixelWidth, m_Manager.m_Camera.scaledPixelHeight, 1);
-        m_RenderCamera.targetTexture = m_RenderTexture;
-        m_OccludeEnabled = true;
-    }
-
-    public PE_BloomSpecific SetBloomEnable(bool enable, bool occludeEnable)
-    {
-        m_Enabled = enable;
-        m_OccludeEnabled = occludeEnable;
-        return this;
-    }
-
-    public override void OnRenderImage(RenderTexture source, RenderTexture destination)
-    {
-        m_RenderCamera.clearFlags = CameraClearFlags.SolidColor;
-        if (m_OccludeEnabled)
-        {
-            m_RenderCamera.SetReplacementShader(m_RenderOcclusionShader, "RenderType");
-            m_RenderCamera.Render();
-            m_RenderCamera.clearFlags = CameraClearFlags.Nothing;
-        }
-        m_RenderCamera.SetReplacementShader(m_RenderBloomShader, "RenderType");
-        m_RenderCamera.Render();
-        m_Blur.OnRenderImage(m_RenderTexture, m_RenderTexture);     //Blur
-        m_Material.SetTexture("_RenderTex", m_RenderTexture);
-        Graphics.Blit(source, destination, m_Material, 1);        //Mix
-    }
-    public override void OnDestroy()
-    {
-        base.OnDestroy();
-        GameObject.Destroy(m_RenderCamera.gameObject);
-        m_Blur.OnDestroy();
-        RenderTexture.ReleaseTemporary(m_RenderTexture);
-    }
-}
-
 public class PE_DepthCircleScan : PostEffectBase
 {
     public override bool m_DepthFrustumCornors => true;
@@ -555,13 +347,6 @@ public class PE_DepthSSAO : PostEffectBase
         m_Material.SetTexture("_NoiseTex", _noiseTex);
         return this;
     }
-}
-public enum enum_CameraEffectQuality
-{
-    Invalid = -1,
-    Normal,
-    Medium,
-    High,
 }
 #endregion
 }

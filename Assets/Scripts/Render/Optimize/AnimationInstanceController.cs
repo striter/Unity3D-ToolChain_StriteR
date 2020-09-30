@@ -95,8 +95,10 @@ public class AnimationInstanceController : MonoBehaviour
         float lastFrame = _timeElapsed * _clip.m_FrameRate;
         float nextFrame = lastFrame + _deltaTime*_clip.m_FrameRate;
 
+        float checkOffset= _clip.m_Loop ? _clip.m_FrameCount * Mathf.Floor( (nextFrame / _clip.m_FrameCount)):0;
         _clip.m_Events.Traversal(animEvent => {
-            if (lastFrame < animEvent.m_EventFrame && animEvent.m_EventFrame <= nextFrame)
+            float frameCheck = checkOffset + animEvent.m_EventFrame;
+            if (lastFrame < frameCheck  && frameCheck <= nextFrame)
                 OnAnimEvent(animEvent.m_EventIdentity);
         });
     }
