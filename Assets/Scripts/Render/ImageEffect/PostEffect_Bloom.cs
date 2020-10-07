@@ -2,13 +2,13 @@
 using System;
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_Bloom : PostEffectBase
+    public class PostEffect_Bloom : PostEffectBase<ImageEffect_Bloom>
     {
         [Tooltip("Bloom采样参数")]
         public CameraEffectParam_Bloom m_BloomParams;
         [Tooltip("采样模糊参数")]
         public ImageEffectParam_Blurs m_BlurParams;
-        protected override AImageEffectBase OnGenerateRequiredImageEffects() => new CameraEffect_Bloom(()=>m_BloomParams,()=>m_BlurParams);
+        protected override ImageEffect_Bloom OnGenerateRequiredImageEffects() => new ImageEffect_Bloom(()=>m_BloomParams,()=>m_BlurParams);
     }
 
     [System.Serializable]
@@ -22,7 +22,7 @@ namespace Rendering.ImageEffect
         public bool enableBlur = false;
     }
 
-    public class CameraEffect_Bloom : ImageEffectBase<CameraEffectParam_Bloom>
+    public class ImageEffect_Bloom : ImageEffectBase<CameraEffectParam_Bloom>
     {
         #region ShaderProperties
         static int ID_Threshold = Shader.PropertyToID("_Threshold");
@@ -37,7 +37,7 @@ namespace Rendering.ImageEffect
         }
 
         ImageEffect_Blurs m_Blur;
-        public CameraEffect_Bloom(Func<CameraEffectParam_Bloom> _GetParams, Func<ImageEffectParam_Blurs> _GetBlurParams) : base(_GetParams)
+        public ImageEffect_Bloom(Func<CameraEffectParam_Bloom> _GetParams, Func<ImageEffectParam_Blurs> _GetBlurParams) : base(_GetParams)
         {
             m_Blur = new ImageEffect_Blurs(_GetBlurParams);
         }

@@ -5,10 +5,10 @@ using UnityEngine;
 
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_DepthOutline:PostEffectBase
+    public class PostEffect_DepthOutline:PostEffectBase<CameraEffect_DepthOutline>
     {
         public CameraEffectParam_DepthOutline m_Param;
-        protected override AImageEffectBase OnGenerateRequiredImageEffects() => new CameraEffect_DepthOutline(()=>m_Param);
+        protected override CameraEffect_DepthOutline OnGenerateRequiredImageEffects() => new CameraEffect_DepthOutline(()=>m_Param);
     }
 
     [System.Serializable]

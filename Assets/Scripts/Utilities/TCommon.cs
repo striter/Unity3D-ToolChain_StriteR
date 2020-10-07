@@ -150,6 +150,17 @@ public static class TCommon
             copy.SetIndices(target.GetIndices(i), MeshTopology.Triangles, i);
         return copy;
     }
+
+    public static bool InputRayCheck(this Camera _camera, Vector2 _inputPos, out RaycastHit _hit, int _layerMask = -1)
+    {
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+        {
+            _hit = new RaycastHit();
+            return false;
+        }
+
+        return Physics.Raycast(_camera.ScreenPointToRay(_inputPos), out _hit, 1000, _layerMask);
+    }
     #region Color
     public static Color GetHexColor(string hex)
     {

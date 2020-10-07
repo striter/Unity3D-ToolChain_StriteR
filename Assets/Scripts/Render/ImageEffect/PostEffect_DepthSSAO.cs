@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_DepthSSAO:PostEffectBase
+    public class PostEffect_DepthSSAO:PostEffectBase<CameraEffect_DepthSSAO>
     {
         public CameraEffectParam_DepthSSAO m_Param;
-        protected override AImageEffectBase OnGenerateRequiredImageEffects() => new CameraEffect_DepthSSAO(()=>m_Param);
+        protected override CameraEffect_DepthSSAO OnGenerateRequiredImageEffects() => new CameraEffect_DepthSSAO(()=>m_Param);
     }
 
     [System.Serializable]
@@ -20,6 +20,7 @@ namespace Rendering.ImageEffect
         public float m_DepthBias = 0.002f;
         public int m_SampleCount = 16;
         public Texture2D m_NoiseTex;
+        public float m_NoiseScale = 1;
     }
 
     public class CameraEffect_DepthSSAO:ImageEffectBase<CameraEffectParam_DepthSSAO>
@@ -31,6 +32,7 @@ namespace Rendering.ImageEffect
         static readonly int ID_Intensity = Shader.PropertyToID("_Intensity");
         static readonly int ID_DepthBias = Shader.PropertyToID("_DepthBias");
         static readonly int ID_NoiseTex = Shader.PropertyToID("_NoiseTex");
+        static readonly int ID_NoiseScale = Shader.PropertyToID("_NoiseScale");
         #endregion
         static readonly Vector4[] m_DepthSampleArray = new Vector4[16] {
             new Vector3( 0.5381f, 0.1856f,-0.4319f),  new Vector3( 0.1379f, 0.2486f, 0.4430f),new Vector3( 0.3371f, 0.5679f,-0.0057f),  new Vector3(-0.6999f,-0.0451f,-0.0019f),
@@ -53,6 +55,7 @@ namespace Rendering.ImageEffect
             m_Material.SetFloat(ID_Intensity, _params.m_Intensity);
             m_Material.SetFloat(ID_DepthBias, _params.m_DepthBias);
             m_Material.SetTexture(ID_NoiseTex, _params.m_NoiseTex);
+            m_Material.SetFloat(ID_NoiseScale, _params.m_NoiseScale);
         }
     }
 

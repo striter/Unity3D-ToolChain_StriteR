@@ -2,11 +2,11 @@
 using UnityEngine;
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_Blurs : PostEffectBase
+    public class PostEffect_Blurs : PostEffectBase<ImageEffect_Blurs>
     {
         [Tooltip("模糊参数")]
         public ImageEffectParam_Blurs m_BlurParam;
-        protected override AImageEffectBase OnGenerateRequiredImageEffects() => new ImageEffect_Blurs(() => m_BlurParam);
+        protected override ImageEffect_Blurs OnGenerateRequiredImageEffects() => new ImageEffect_Blurs(() => m_BlurParam);
     }
 
 

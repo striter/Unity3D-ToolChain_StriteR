@@ -2,11 +2,11 @@
 using System;
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_ColorGrading : PostEffectBase
+    public class PostEffect_ColorGrading : PostEffectBase<ImageEffect_ColorGrading>
     {
         [SerializeField,Tooltip("颜色分级参数")]
         public ImageEffectParam_ColorGrading m_Params;
-        protected override AImageEffectBase OnGenerateRequiredImageEffects() => new ImageEffect_ColorGrading(()=>m_Params);
+        protected override ImageEffect_ColorGrading OnGenerateRequiredImageEffects() => new ImageEffect_ColorGrading(()=>m_Params);
     }
 
     [System.Serializable]

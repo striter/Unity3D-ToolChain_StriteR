@@ -166,32 +166,6 @@ public class CameraEffectManager :MonoBehaviour
         });
     }
 
-    public PE_DepthCircleScan StartDepthScanCircle(Vector3 origin, Color scanColor, float width = 1f, float radius = 20, float duration = 1.5f)
-    {
-        PE_DepthCircleScan scan = AddCameraEffect(new PE_DepthCircleScan()).SetEffect(origin, scanColor);
-        CoroutineHelper.CreateSingleCoroutine().Start(TIEnumerators.ChangeValueTo((float value) => {
-            scan.SetElapse(radius * value, width);
-        }, 0, 1, duration, () => {
-            RemoveCameraEffect(scan);
-        }));
-        return scan;
-    }
-
-    SingleCoroutine m_AreaCoroutine;
-    public PE_DepthCircleArea SetDepthAreaCircle(bool begin, Vector3 origin, float radius = 10f, float edgeWidth = .5f, float duration = 1.5f)
-    {
-        PE_DepthCircleArea effect = AddCameraEffect(new PE_DepthCircleArea()).SetOrigin(origin);
-        if(m_AreaCoroutine==null)
-            m_AreaCoroutine = CoroutineHelper.CreateSingleCoroutine();
-
-        m_AreaCoroutine.Start(TIEnumerators.ChangeValueTo((float value) => { effect.SetRadius(radius * value, edgeWidth); },
-            begin ? 0 : 1, begin ? 1 : 0, duration,
-            () => {
-                if (!begin)
-                    RemoveCameraEffect(effect);
-            }));
-        return effect;
-    }
     #endregion
 }
 

@@ -65,11 +65,12 @@ namespace Rendering.ImageEffect
         public static readonly ImageEffectParamBase m_Default = new ImageEffectParamBase();
     }
 
+
     [ExecuteInEditMode]
-    public class PostEffectBase : MonoBehaviour
+    public class PostEffectBase<T> : MonoBehaviour where T:AImageEffectBase
     {
-        protected AImageEffectBase m_Effects { get; private set; }
-        protected virtual AImageEffectBase OnGenerateRequiredImageEffects() => throw new Exception("Override This Please");
+        protected T m_Effects { get; private set; }
+        protected virtual T OnGenerateRequiredImageEffects() => throw new Exception("Override This Please");
 
         protected virtual void Awake() 
         {

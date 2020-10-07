@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PolarBear_BoneMaterial
+  m_Name: PolarBear_BoneInstance
   m_Shader: {fileID: 4800000, guid: e79474b8018424a458f64c7a68eaf79a, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4

@@ -1,4 +1,4 @@
-﻿Shader "Hidden/PostEffect/PE_DepthCircleArea"
+﻿Shader "Hidden/CameraEffect_DepthCircleArea"
 {
 	Properties
 	{
@@ -21,7 +21,7 @@
 				#pragma fragment frag
 
 				#include "UnityCG.cginc"
-				#include "PostEffectInclude.cginc"
+				#include "CameraEffectInclude.cginc"
 
 				float4 _Origin;
 				float4 _FillColor;
@@ -60,13 +60,13 @@
 					float fill = step(squaredDistance,_SqrEdgeMax);
 					float edge = fill * step(_SqrEdgeMin,squaredDistance);
 
-					fill *=  (1 - edge);
-					fill *= tex2D(_FillTexture, uv*_TextureScale+_TextureFlow.xy*(_Time.y)).r;
-
 					fill *= _FillColor.a;
 					edge *= _EdgeColor.a;
 
-					return tex2D(_MainTex,i.uv)+ _FillColor * fill+_EdgeColor*edge;
+					float4 fillColor = tex2D(_FillTexture, uv * _TextureScale + _TextureFlow.xy * (_Time.y))*_FillColor;
+					float4 edgeColor = _EdgeColor;
+
+					return  lerp( tex2D(_MainTex, i.uv),lerp(fillColor, edgeColor,edge), fill);
 				}
 			ENDCG
 		}

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Rendering.Optimize;
 public class AnimationInstanceTest : MonoBehaviour
 {
     public int m_X=100,m_Y=100;

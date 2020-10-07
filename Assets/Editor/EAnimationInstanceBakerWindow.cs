@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using TEditor;
 using UnityEditor;
 using UnityEngine;
-
+using Rendering.Optimize;
 namespace TEditor
 {
     public class EAnimationInstanceBakerWindow : EditorWindow

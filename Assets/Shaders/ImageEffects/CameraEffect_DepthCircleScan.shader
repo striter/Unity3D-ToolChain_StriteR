@@ -1,4 +1,4 @@
-﻿Shader "Hidden/PostEffect/PE_DepthCircleScan"
+﻿Shader "Hidden/CameraEffect_DepthCircleScan"
 {
 	Properties
 	{
@@ -22,7 +22,7 @@
 				#pragma fragment frag
 
 				#include "UnityCG.cginc"
-				#include "PostEffectInclude.cginc"
+				#include "CameraEffectInclude.cginc"
 
 			sampler2D _Texture;
 			float _TextureScale;
@@ -59,7 +59,7 @@
 				scan *= _Color.a;
 				scan *= step(_MinSqrDistance, squareDistance)*step(squareDistance, _MaxSqrDistance);
 				scan *= tex2D(_Texture, worldPos.xz*_TextureScale).r;
-				return tex2D(_MainTex,i.uv)+_Color* scan;
+				return lerp( tex2D(_MainTex,i.uv),_Color, scan);
 			}
 			ENDCG
 		}

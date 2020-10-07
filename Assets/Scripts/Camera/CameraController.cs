@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems;
+﻿using UnityEngine;
 
 public class CameraController : SingletonMono<CameraController>  {
     [Range(0,1)]
@@ -74,13 +70,6 @@ public class CameraController : SingletonMono<CameraController>  {
     public void ForceSetCamera() => UpdateCameraPositionRotation(1f,1f);
 
 
-    public bool InputRayCheck(Vector2 inputPos, int layerMask, ref RaycastHit rayHit)
-    {
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
-            return false;
-
-        return Physics.Raycast(m_Camera.ScreenPointToRay(inputPos), out rayHit, 1000, layerMask);
-    }
     #endregion
     #region Calculate
     protected virtual Vector3 GetUnbindRootOffset() => Vector3.zero;

@@ -1,4 +1,4 @@
-Shader "Hidden/CameraEffect_Bloom"
+Shader "Hidden/ImageEffect_Bloom"
 {
    Properties
    {

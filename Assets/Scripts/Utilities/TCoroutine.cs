@@ -153,7 +153,6 @@ public class SingleCoroutine
 public static class CoroutineHelper
 {
     public static SingleCoroutine CreateSingleCoroutine() => new SingleCoroutine(CoroutineHelperManager.Instance);
-    public static void StartCoroutine(IEnumerator ienumerator) => CoroutineHelperManager.Instance.StartCoroutine(ienumerator);
     //Main Coroutine Manager
     class CoroutineHelperManager : SingletonMono<CoroutineHelperManager>
     {

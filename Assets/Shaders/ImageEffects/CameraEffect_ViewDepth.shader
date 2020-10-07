@@ -19,11 +19,11 @@
 			
 			sampler2D _MainTex;
 			sampler2D _CameraDepthTexture;
-			fixed4 frag (v2f_img i) : SV_Target
+			half4 frag (v2f_img i) : SV_Target
 			{
 				fixed depth = Linear01Depth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,i.uv));
 
-				return fixed4(depth,depth,depth,1) ;
+				return half4(depth,depth,depth,1) ;
 			}
 			ENDCG
 		}

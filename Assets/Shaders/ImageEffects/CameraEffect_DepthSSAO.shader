@@ -25,6 +25,7 @@
 			float _Intensity;
 			float _DepthBias;
 			float4 _AOColor;
+			float _NoiseScale;
 
 			float Get01Depth(float2 uv)
 			{
@@ -52,7 +53,7 @@
 			fixed4 frag (v2f_img i) : SV_Target
 			{
 				float3 normal = normal_from_depth( i.uv);
-				float3 random = tex2D(_NoiseTex, i.uv*10).rgb;
+				float3 random = tex2D(_NoiseTex, i.uv* _NoiseScale).rgb;
 				float2 uv = i.uv;
 				float baseDepth = Get01Depth(uv);
 				float occlusion = 0;

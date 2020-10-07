@@ -2,13 +2,13 @@
 using UnityEngine;
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_DepthOfField : PostEffectBase
+    public class PostEffect_DepthOfField : PostEffectBase<CameraEffect_DepthOfField>
     {
         [SerializeField, Tooltip("景深采样参数")]
         public CameraEffectParam_DepthOfField m_DepthOfFieldParams;
         [SerializeField, Tooltip("采样图模糊参数")]
         public ImageEffectParam_Blurs m_BlurParams;
-        protected override AImageEffectBase OnGenerateRequiredImageEffects() => new CameraEffect_DepthOfField(() => m_DepthOfFieldParams, () => m_BlurParams);
+        protected override CameraEffect_DepthOfField OnGenerateRequiredImageEffects() => new CameraEffect_DepthOfField(() => m_DepthOfFieldParams, () => m_BlurParams);
     }
 
     [System.Serializable]
@@ -18,10 +18,10 @@ namespace Rendering.ImageEffect
         public float m_DOFStart = 0.1f;
         [Tooltip("景深渐淡插值深度"), Range(.01f, .3f)]
         public float m_DOFLerp = .1f;
-        [Tooltip("遮罩 1 深度")]
-        public bool m_FullDepthClip = true;
+        [Tooltip("遮罩深度")]
+        public bool m_DepthFullClip = true;
         [Tooltip("深度取值模糊")]
-        public bool m_UseBlurDepth = true;
+        public bool m_DepthBlurSample = true;
         [Tooltip("深度取值模糊像素偏差"), Range(.25f, 1.25f)]
         public float m_BlurSize = .5f;
     }
@@ -44,8 +44,8 @@ namespace Rendering.ImageEffect
 
             m_Material.SetFloat(ID_FocalStart, _params.m_DOFStart);
             m_Material.SetFloat(ID_FocalLerp, _params.m_DOFLerp);
-            m_Material.EnableKeyword(KW_FullDepthClip, _params.m_FullDepthClip);
-            m_Material.EnableKeyword(KW_UseBlurDepth, _params.m_UseBlurDepth);
+            m_Material.EnableKeyword(KW_FullDepthClip, _params.m_DepthFullClip);
+            m_Material.EnableKeyword(KW_UseBlurDepth, _params.m_DepthBlurSample);
             m_Material.SetFloat(ID_BlurSize, _params.m_BlurSize);
             m_Blur.DoValidate();
         }

@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_DepthVerticalFog:PostEffectBase
+    public class PostEffect_DepthVerticalFog:PostEffectBase<CameraEffect_DepthVerticalFog>
     {
         public CameraEffectParam_DepthFog m_Param;
-        protected override AImageEffectBase OnGenerateRequiredImageEffects() => new CameraEffect_DepthVerticalFog(()=>m_Param);
+        protected override CameraEffect_DepthVerticalFog OnGenerateRequiredImageEffects() => new CameraEffect_DepthVerticalFog(()=>m_Param);
     }
 
     [System.Serializable]

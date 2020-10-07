@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_BloomIndividual:PostEffectBase
+    public class PostEffect_BloomIndividual:PostEffectBase<CameraEffect_BloomIndividual>
     {
         Camera m_RenderCamera;
         protected override void Awake()
@@ -50,7 +50,7 @@ namespace Rendering.ImageEffect
         }
         public CameraEffectParam_BloomInvididual m_Param;
         public ImageEffectParam_Blurs m_BlurParam;
-        protected override AImageEffectBase OnGenerateRequiredImageEffects() => new CameraEffect_BloomIndividual(m_RenderCamera, () => m_Param, () => m_BlurParam);
+        protected override CameraEffect_BloomIndividual OnGenerateRequiredImageEffects() => new CameraEffect_BloomIndividual(m_RenderCamera, () => m_Param, () => m_BlurParam);
     }
 
     [System.Serializable]
