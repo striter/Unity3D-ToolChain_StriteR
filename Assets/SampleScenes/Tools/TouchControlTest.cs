@@ -37,7 +37,7 @@ public class TouchControlTest : MonoBehaviour {
         OnJoystickSwitch();
 
         m_TouchJoyStickMode = new TouchCheckLRJoystick(OnTouchLeftDelta, OnTouchRightDelta, null);
-        m_TouchScreenDownMode = new TouchCheckDown(OnTouchCheck);
+        m_TouchScreenDownMode = new TouchCheckDown(OnTouchCheck,null);
         m_TouchScreenDragMode = new TouchCheckScreenDrag(OnDragDown,OnDrag);
         OnTouchInputSwitch(enum_TouchCheckType.TouchLR);
     }

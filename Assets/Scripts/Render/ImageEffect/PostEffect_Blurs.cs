@@ -73,12 +73,12 @@ namespace Rendering.ImageEffect
                 }
                 else
                 {
-                    int horizontalPass = (int)(m_Params.blurType - 1) * 2;
+                    int horizontalPass = (int)(m_Params.blurType - 1) * 2+1;
                     int verticalPass = horizontalPass + 1;
 
                     // vertical blur
                     RenderTexture rt2 = RenderTexture.GetTemporary(rtW, rtH, 0, src.format);
-                    Graphics.Blit(rt1, rt2, m_Material, verticalPass);
+                    Graphics.Blit(rt1, rt2, m_Material, horizontalPass);
                     RenderTexture.ReleaseTemporary(rt1);
                     rt1 = rt2;
 
@@ -86,7 +86,7 @@ namespace Rendering.ImageEffect
                     {
                         // horizontal blur
                         rt2 = RenderTexture.GetTemporary(rtW, rtH, 0, src.format);
-                        Graphics.Blit(rt1, rt2, m_Material, horizontalPass);
+                        Graphics.Blit(rt1, rt2, m_Material, verticalPass);
                         RenderTexture.ReleaseTemporary(rt1);
                         rt1 = rt2;
                         continue;

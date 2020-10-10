@@ -11,6 +11,10 @@ namespace Rendering.ImageEffect
         protected override CameraEffect_DepthCircleArea OnGenerateRequiredImageEffects() => new CameraEffect_DepthCircleArea(() => m_Param);
 
         SingleCoroutine m_AreaCoroutine;
+        public void SetAreaOrigin(Vector3 origin)
+        {
+            m_Param.m_Origin = origin;
+        }
         public void SetDepthAreaCircle(bool begin, Vector3 origin, float radius = 10f, float edgeWidth = .5f, float duration = 1.5f)
         {
             if (m_AreaCoroutine == null)

@@ -17,10 +17,10 @@ namespace Rendering.ImageEffect
                 m_ScanCoroutine =  CoroutineHelper.CreateSingleCoroutine();
             m_ScanCoroutine.Stop();
             enabled = true;
-
+            m_Param.m_Width = width;
             m_Param.m_Origin = origin;
             m_Param.m_Color = scanColor;
-            CoroutineHelper.CreateSingleCoroutine().Start(TIEnumerators.ChangeValueTo((float value) => { m_Param.m_Elapse= radius * value; }, 0, 1, duration, () => { enabled = false; }));
+            m_ScanCoroutine.Start(TIEnumerators.ChangeValueTo((float value) => { m_Param.m_Elapse= radius * value; }, 0, 1, duration, () => { enabled = false; }));
         }
     }
 

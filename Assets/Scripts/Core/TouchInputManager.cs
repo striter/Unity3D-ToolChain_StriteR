@@ -189,9 +189,11 @@ public class TouchCheckDown : TouchCheckBase
 {
     public override enum_TouchCheckType m_Type => enum_TouchCheckType.TouchDown;
     Action<bool, Vector2> OnDown;
-    public TouchCheckDown(Action<bool, Vector2> _OnDown)
+    Action<Vector2> OnPressing;
+    public TouchCheckDown(Action<bool, Vector2> _OnDown,Action<Vector2> _OnPressing)
     {
         OnDown = _OnDown;
+        OnPressing = _OnPressing;
     }
 
     public override void Tick(float deltaTime)
@@ -199,6 +201,8 @@ public class TouchCheckDown : TouchCheckBase
 #if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0))
             OnDown(true, Input.mousePosition);
+        else if (Input.GetMouseButton(0))
+            OnPressing?.Invoke(Input.mousePosition);
         else if (Input.GetMouseButtonUp(0))
             OnDown(false, Input.mousePosition);
 #endif
@@ -208,6 +212,10 @@ public class TouchCheckDown : TouchCheckBase
             if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
             {
                 OnDown(false, touch.position);
+            }
+            else if(touch.phase== TouchPhase.Stationary||touch.phase== TouchPhase.Moved)
+            {
+                OnPressing?.Invoke(touch.position);
             }
             else if (touch.phase == TouchPhase.Began)
             {
