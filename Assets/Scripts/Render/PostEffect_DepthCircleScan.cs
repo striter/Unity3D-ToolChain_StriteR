@@ -20,7 +20,10 @@ namespace Rendering.ImageEffect
             m_Param.m_Width = width;
             m_Param.m_Origin = origin;
             m_Param.m_Color = scanColor;
-            m_ScanCoroutine.Start(TIEnumerators.ChangeValueTo((float value) => { m_Param.m_Elapse= radius * value; }, 0, 1, duration, () => { enabled = false; }));
+            m_ScanCoroutine.Start(TIEnumerators.ChangeValueTo((float value) => { 
+                m_Param.m_Elapse= radius * value; 
+                m_Effect.DoValidate();
+            }, 0, 1, duration, () => { enabled = false; }));
         }
     }
 

@@ -1,4 +1,4 @@
-﻿Shader "Game/BloomEmmiter/Particles/Additive"
+﻿Shader "Game/BloomEmitter/Particles/Additive"
 {
 	Properties
 	{

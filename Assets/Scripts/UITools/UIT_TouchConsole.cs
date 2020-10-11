@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
     public bool m_ConsoleOpening { get; private set; } = false;
-    public int LogExistCount = 10;
     public int LogSaveCount = 30;
     Text m_LogText, m_FrameText;
     ObjectPoolListClass<int, ConsoleCommand> m_ConsoleCommands;
@@ -29,7 +28,7 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
         AddConsoleBinding().Set("Clear Log").Play(ClearConsoleLog);
         return this;
     }
-#region Console
+    #region Console
     public ConsoleCommand AddConsoleBinding() => m_ConsoleCommands.AddItem(m_ConsoleCommands.Count);
     public class ConsoleCommand : CObjectPoolClass<int>
     {
@@ -133,8 +132,6 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
             UpdateLogUI();
         }
     }
-
-
     #region Log
     private void OnEnable()
     {

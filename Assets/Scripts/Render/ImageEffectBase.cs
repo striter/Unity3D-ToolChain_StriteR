@@ -9,6 +9,20 @@ namespace Rendering.ImageEffect
         public virtual void OnImageProcess(RenderTexture src, RenderTexture dst) { }
         public abstract void DoValidate();
         public virtual void OnDestroy() { }
+
+        public static Material CreateMaterial(Type _type)
+        {
+            Shader _shader = Shader.Find("Hidden/" + _type.Name);
+
+            if (_shader == null)
+                throw new NullReferenceException("Invalid ImageEffect Shader Found:" + _type.Name);
+
+            if (!_shader.isSupported)
+                throw new NullReferenceException("Shader Not Supported:" + _type.Name);
+
+            return new Material(_shader) { name = _type.Name, hideFlags = HideFlags.HideAndDontSave };
+        }
+
     }
     public class ImageEffectBase<T>:AImageEffectBase where T:ImageEffectParamBase
     {
@@ -18,16 +32,7 @@ namespace Rendering.ImageEffect
         public T GetParams() => GetParamsFunc();
         public ImageEffectBase(Func<T> _GetParams)
         {
-            Type _type=this.GetType();
-            Shader _shader = Shader.Find("Hidden/" + _type.Name);
-
-            if (_shader == null)
-                throw new NullReferenceException("Invalid ImageEffect Shader Found:" + _type.Name);
-
-            if (!_shader.isSupported)
-                throw new NullReferenceException("Shader Not Supported:" + _type.Name);
-
-            m_Material =   new Material(_shader) { name=_type.Name,hideFlags =  HideFlags.DontSave};
+            m_Material = CreateMaterial(this.GetType()); 
             GetParamsFunc = _GetParams;
         }
 
@@ -69,7 +74,7 @@ namespace Rendering.ImageEffect
     [ExecuteInEditMode]
     public class PostEffectBase<T> : MonoBehaviour where T:AImageEffectBase
     {
-        protected T m_Effects { get; private set; }
+        protected T m_Effect { get; private set; }
         protected virtual T OnGenerateRequiredImageEffects() => throw new Exception("Override This Please");
 
         protected virtual void Awake() 
@@ -87,21 +92,21 @@ namespace Rendering.ImageEffect
         void DoInit()
         {
             Destroy();
-            m_Effects = OnGenerateRequiredImageEffects();
-            m_Effects.DoValidate();
+            m_Effect = OnGenerateRequiredImageEffects();
+            m_Effect.DoValidate();
         }
 
         void Destroy()
         {
-            if (m_Effects == null)
+            if (m_Effect == null)
                 return;
 
-            m_Effects.OnDestroy();
-            m_Effects = null;
+            m_Effect.OnDestroy();
+            m_Effect = null;
         }
         public void OnRenderImage(RenderTexture src, RenderTexture dst)
         {
-            if (m_Effects == null)
+            if (m_Effect == null)
             {
                 Graphics.Blit(src, dst);
                 return;
@@ -109,10 +114,10 @@ namespace Rendering.ImageEffect
 
 #if UNITY_EDITOR
             //保存场景时Material会重置 需要重新设置属性
-            m_Effects.DoValidate();
+            m_Effect.DoValidate();
 #endif
 
-            m_Effects.OnImageProcess(src, dst);
+            m_Effect.OnImageProcess(src, dst);
         }
     }
 }

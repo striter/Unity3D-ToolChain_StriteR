@@ -25,7 +25,7 @@ namespace Rendering.ImageEffect
         [Tooltip("亮度"), Range(0, 2)]
         public float m_brightness = 1;
         [Tooltip("饱和度"), Range(0, 2)]
-        public float m_saturation = 0;
+        public float m_saturation = 1;
         [Tooltip("对比度"), Range(0, 2)]
         public float m_contrast = 1;
 

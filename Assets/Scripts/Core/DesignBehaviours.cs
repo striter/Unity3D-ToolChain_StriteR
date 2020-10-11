@@ -1,40 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Networking;
-
-public class SimpleBehaviour
-{
-    protected Transform transform;
-    public Transform Transform
-    {
-        get
-        {
-            return transform;
-        }
-    }
-    public SimpleBehaviour(Transform _transform)
-    {
-        transform = _transform;
-    }
-}
-
-public class SimpleMonoLifetime
-{
-    public virtual void Awake() { }
-    public virtual void Update() { }
-    public virtual void OnLateUpdate() { }
-    public virtual void OnFixedUpdate() { }
-    public virtual void OnDestroy() { }
-    public virtual void OnEnable() { }
-    public virtual void OnDisable() { }
-}
+﻿using UnityEngine;
 
 public class SingletonMono<T> : MonoBehaviour where T : MonoBehaviour
 {
     static T instance;
-    public static bool m_HaveInstance => instance;
-
     public static T Instance
     {
         get
@@ -49,6 +17,10 @@ public class SingletonMono<T> : MonoBehaviour where T : MonoBehaviour
     {
         instance = this.GetComponent<T>();
         this.name = typeof(T).Name;
+    }
+    public T SingletonInit()
+    {
+        return this as T;
     }
     protected  virtual void OnDestroy()
     {

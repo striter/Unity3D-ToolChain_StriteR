@@ -11,14 +11,14 @@
 	{
 		Tags{ "RenderType" = "BloomParticlesAdditive" "IgnoreProjector" = "True" "Queue" = "Transparent" }
 		Cull Off Lighting Off ZWrite Off Fog { Color(0,0,0,0) }
-		UsePass "Game/BloomEmmitter/Particle/Additive/MAIN"
+		UsePass "Game/BloomEmitter/Particles/Additive/MAIN"
 	}
 
 	SubShader
 	{
 		Tags{ "RenderType" = "BloomParticlesAlphaBlend" "IgnoreProjector" = "True" "Queue" = "Transparent" }
 		Cull Off Lighting Off ZWrite Off Fog { Color(0,0,0,0) }
-		UsePass "Game/BloomEmmitter/Particle/AlphaBlend/MAIN"
+		UsePass "Game/BloomEmitter/Particles/AlphaBlend/MAIN"
 	}
 
 	SubShader

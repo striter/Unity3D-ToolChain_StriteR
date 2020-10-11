@@ -12,9 +12,8 @@ public class TouchControlTest : MonoBehaviour {
         Right,
     }
 
-    TouchCheckLRJoystick m_TouchJoyStickMode;
-    TouchCheckDown m_TouchScreenDownMode;
-    TouchCheckScreenDrag m_TouchScreenDragMode;
+    TouchCheckDualJoystick m_TouchJoyStickMode;
+    TouchCheckSingleInput m_TouchScreenDragMode;
     bool m_JoyStickStational = false;
 
     RaycastHit m_RaycastHit;
@@ -31,27 +30,22 @@ public class TouchControlTest : MonoBehaviour {
         UIT_TouchConsole.Instance.AddConsoleBinding().Set("Push").Play(enum_TestDirection.Forward, OnConsoleDirection);
         UIT_TouchConsole.Instance.AddConsoleBinding().Set("Reset", KeyCode.R).Play(OnConsoleReset);
         UIT_TouchConsole.Instance.AddConsoleBinding().Set("Switch Joystick Mode").Play(OnJoystickSwitch);
-        UIT_TouchConsole.Instance.AddConsoleBinding().Set("Switch Touch Mode").Play(enum_TouchCheckType.TouchLR, OnTouchInputSwitch);
+        UIT_TouchConsole.Instance.AddConsoleBinding().Set("Switch Touch Mode").Play(enum_TouchCheckType.DualJoystick, OnTouchInputSwitch);
 
         m_JoyStickStational = true;
         OnJoystickSwitch();
 
-        m_TouchJoyStickMode = new TouchCheckLRJoystick(OnTouchLeftDelta, OnTouchRightDelta, null);
-        m_TouchScreenDownMode = new TouchCheckDown(OnTouchCheck,null);
-        m_TouchScreenDragMode = new TouchCheckScreenDrag(OnDragDown,OnDrag);
-        OnTouchInputSwitch(enum_TouchCheckType.TouchLR);
+        OnTouchInputSwitch(enum_TouchCheckType.DualJoystick);
     }
 
     void OnConsoleOpen(bool open) => Debug.LogError("Console Status:" + open);
-    void OnConsoleClick() => Debug.Log("TestConsole");
     void OnTouchInputSwitch(enum_TouchCheckType type)
     {
         Debug.LogWarning("Switch Touch Mode:" + type);
         switch (type)
         {
-            case enum_TouchCheckType.TouchDown: TouchInputManager.Instance.Init(m_TouchScreenDownMode); break;
-            case enum_TouchCheckType.TouchLR: TouchInputManager.Instance.Init(m_TouchJoyStickMode); break;
-            case enum_TouchCheckType.TouchDrag: TouchInputManager.Instance.Init(m_TouchScreenDragMode); break;
+            case enum_TouchCheckType.DualJoystick: TouchInputManager.Instance.SwitchToDualJoystick().Init(OnTouchLeftDelta, OnTouchRightDelta, null); break;
+            case enum_TouchCheckType.SingleInput: TouchInputManager.Instance.SwitchToSingle().Init(OnDragDown, OnDrag); break;
         }
     }
 
@@ -101,16 +95,6 @@ public class TouchControlTest : MonoBehaviour {
         {
             Vector3 offset = m_RaycastHit.point-transform.position ;
             m_Rigidbody.AddForce(offset * 5f);
-        }
-    }
-    void OnTouchCheck(bool down,Vector2 screenPos)
-    {
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(screenPos), out m_RaycastHit, 1000f, 1 << 0))
-        {
-            m_Rigidbody.velocity = Vector3.zero;
-            m_Rigidbody.angularVelocity = Vector3.zero;
-            Vector3 offset = m_RaycastHit.point - transform.position;
-            m_Rigidbody.AddForce(offset * 20f);
         }
     }
 }

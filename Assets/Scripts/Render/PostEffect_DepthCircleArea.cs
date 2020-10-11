@@ -10,32 +10,14 @@ namespace Rendering.ImageEffect
         public PostEffectParam_DepthCirCleArea m_Param;
         protected override CameraEffect_DepthCircleArea OnGenerateRequiredImageEffects() => new CameraEffect_DepthCircleArea(() => m_Param);
 
-        SingleCoroutine m_AreaCoroutine;
-        public void SetAreaOrigin(Vector3 origin)
-        {
-            m_Param.m_Origin = origin;
-        }
-        public void SetDepthAreaCircle(bool begin, Vector3 origin, float radius = 10f, float edgeWidth = .5f, float duration = 1.5f)
-        {
-            if (m_AreaCoroutine == null)
-                m_AreaCoroutine =  CoroutineHelper.CreateSingleCoroutine();
-            m_AreaCoroutine.Stop();
-
-            enabled = true;
-            m_Param.m_Origin = origin;
-            m_AreaCoroutine.Start(TIEnumerators.ChangeValueTo((float value) => {
-                m_Param.m_Radius = radius * value;
-                m_Param.m_Outline = edgeWidth; },
-                begin ? 0 : 1, begin ? 1 : 0, duration,
-                () => { enabled = begin;  }));
-        }
+        public void DoValidate() => m_Effect.DoValidate();
     }
     [System.Serializable]
     public class PostEffectParam_DepthCirCleArea:ImageEffectParamBase
     {
         public Vector3 m_Origin;
-        public float m_Radius=5f;
-        public float m_Outline=1f;
+        public float Radius=5f;
+        public float m_SqrOutline=1f;
         public Color m_FillColor;
         public Color m_EdgeColor;
         public Texture2D m_FillTexure;
@@ -60,10 +42,10 @@ namespace Rendering.ImageEffect
         protected override void OnValidate(PostEffectParam_DepthCirCleArea _params)
         {
             base.OnValidate(_params);
-            float edgeMin = _params.m_Radius;
-            float edgeMax = _params.m_Radius + _params.m_Outline;
-            m_Material.SetFloat(ID_SqrEdgeMax, edgeMax * edgeMax);
-            m_Material.SetFloat(ID_SqrEdgeMin, edgeMin * edgeMin);
+            float sqrEdgeMin = _params.Radius;
+            float sqrEdgeMax = _params.Radius + _params.m_SqrOutline;
+            m_Material.SetFloat(ID_SqrEdgeMax, sqrEdgeMax * sqrEdgeMax);
+            m_Material.SetFloat(ID_SqrEdgeMin, sqrEdgeMin * sqrEdgeMin);
             m_Material.SetVector(ID_Origin, _params.m_Origin);
             m_Material.SetColor(ID_FillColor, _params.m_FillColor);
             m_Material.SetColor(ID_EdgeColor, _params.m_EdgeColor);

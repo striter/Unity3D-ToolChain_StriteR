@@ -96,9 +96,11 @@
 				#if _LUT
 					targetCol=SampleLUT(targetCol);
 				#endif
+
 				#if _BSC
 					targetCol=GetBSCCol(targetCol);
 				#endif
+
 				#if _CHANNEL_MIXER
 					targetCol=ChannelMixing(targetCol);
 				#endif
