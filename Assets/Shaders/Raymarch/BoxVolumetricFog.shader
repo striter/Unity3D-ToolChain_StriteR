@@ -3,11 +3,11 @@
     Properties
     {
         _Color("Color",Color)=(1,1,1,1)
-        _MarchDistance("March Distance",Range(0,50))=5
-        [KeywordEnum(T16,T32,T64,T128,T256,T512)]_March("March Times",float)=5
+        _Distance("March Distance",Range(0,50))=5
+        _Density("Density",Range(0,5))=1
+        [Enum(_16,16,_32,32,_64,64,_128,128,_256,256,_512,512)]_March("March Times",int)=128
         _Noise("Noise 3D",3D)="white"{}
-        _NoiseDensity("Noise Density",Range(0,5))=1
-        _NoiseScale("Noise Scale",Vector)=(1,1,1,1)
+        _NoiseScale("Noise Scale",Range(0.1,100))=10
         _NoiseFlow("Noise Flow",Vector)=(0,0,0,1)
     }
     SubShader
@@ -22,7 +22,6 @@
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma multi_compile _MARCH_T16 _MARCH_T32 _MARCH_T64 _MARCH_T128 _MARCH_T256 _MARCH_T512
 
             #include "UnityCG.cginc"
             #include "RaymarchInclude.cginc"
@@ -42,11 +41,12 @@
                 float4 vertex : SV_POSITION;
             };
 
+            int _March;
             float4 _Color;
-            float _MarchDistance;
+            float _Distance;
             sampler3D _Noise;
-            float _NoiseDensity;
-            float4 _NoiseScale;
+            float _Density;
+            float _NoiseScale;
             float4 _NoiseFlow;
             sampler2D _CameraDepthTexture;
             v2f vert (appdata v)
@@ -72,36 +72,25 @@
                 float march=0;
                 if(marchDistance>0)
                 {
-                    #if _MARCH_T16
-                    int marchTimes=16;
-                    #elif _MARCH_T32
-                    int marchTimes=32;
-                    #elif _MARCH_T64
-                    int marchTimes=64;
-                    #elif _MARCH_T128
-                    int marchTimes=128;
-                    #elif _MARCH_T256
-                    int marchTimes=256;
-                    #elif _MARCH_T512
-                    int marchTimes=512;
-                    #endif
-
                     float3 direction=normalize(-i.viewDir);
-                    direction= (direction*_MarchDistance)/marchTimes;
-                    float marchOffset=1.0/marchTimes;
+                    direction= (direction*_Distance)/_March;
+                    float marchOffset=1.0/_March;
                     float distanceOffset=length(direction);
 
-                    for(int index=0;index<marchTimes;index++)
+                    for(int index=0;index<_March;index++)
                     {
-                        if(marchDistance>0&&march<1)
-                        {
-                            float3 marchPos=marchStart+direction*index;
-                            float noise=saturate( tex3D(_Noise,marchPos/_NoiseScale+_NoiseFlow*_Time.y).r*_NoiseDensity);
-                            march=saturate(march+ marchOffset* noise);
-                            marchDistance-=distanceOffset;
-                        }
+                        if(marchDistance<0)
+                            break;
+                        float3 marchPos=marchStart+direction*index;
+                        float density=saturate( tex3Dlod(_Noise,float4( marchPos/_NoiseScale+_NoiseFlow*_Time.y,0)).r*_Density);
+                        march+=density*marchOffset;
+                        marchDistance-=distanceOffset;
+
+                        if(march>=1)
+                            break;
                     }
                 }
+                march=saturate(march);
 
                 return _Color*march;
             }
