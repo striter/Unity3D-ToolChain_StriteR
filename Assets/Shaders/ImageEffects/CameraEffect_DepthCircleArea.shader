@@ -21,6 +21,7 @@
 				#pragma fragment frag
 
 				#include "UnityCG.cginc"
+				#include "../CommonInclude.cginc"
 				#include "CameraEffectInclude.cginc"
 
 				float4 _Origin;

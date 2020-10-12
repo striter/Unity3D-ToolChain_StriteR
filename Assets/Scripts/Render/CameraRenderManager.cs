@@ -10,7 +10,6 @@ namespace Rendering
     {
         public enum enum_DepthMode
         {
-            Invalid=-1,
             None=0,
             BuiltIn=1,
             Optimize=2,
@@ -45,7 +44,7 @@ namespace Rendering
             m_Camera.depthTextureMode = m_DepthMode == enum_DepthMode.BuiltIn ? DepthTextureMode.Depth : DepthTextureMode.None;
             if (optimized)
             {
-                m_ColorBuffer = RenderTexture.GetTemporary(m_Camera.pixelWidth, m_Camera.pixelHeight, 0, RenderTextureFormat.RGB565);
+                m_ColorBuffer = RenderTexture.GetTemporary(m_Camera.pixelWidth, m_Camera.pixelHeight, 0, RenderTextureFormat.RGB111110Float);
                 m_ColorBuffer.name = "Main Color Buffer";
                 m_DepthBuffer = RenderTexture.GetTemporary(m_Camera.pixelWidth, m_Camera.pixelHeight, 1, RenderTextureFormat.Depth);
                 m_DepthBuffer.name = "Main Depth Buffer";

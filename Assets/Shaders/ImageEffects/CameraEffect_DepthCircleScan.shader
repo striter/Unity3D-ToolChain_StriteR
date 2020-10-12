@@ -22,6 +22,7 @@
 				#pragma fragment frag
 
 				#include "UnityCG.cginc"
+				#include "../CommonInclude.cginc"
 				#include "CameraEffectInclude.cginc"
 
 			sampler2D _Texture;

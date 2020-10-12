@@ -9,11 +9,6 @@ float4 _FrustumCornersRayBR;
 float4 _FrustumCornersRayTL;
 float4 _FrustumCornersRayTR;
 
-float sqrdistance(float3 pA, float3 pB)
-{
-	float3 offset = pA - pB;
-	return dot(offset, offset);
-}
 float4 GetInterpolatedRay(float2 uv)
 {
 	bool right  =uv.x > .5;

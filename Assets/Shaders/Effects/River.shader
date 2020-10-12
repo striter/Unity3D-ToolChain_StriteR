@@ -47,7 +47,6 @@
 
 			
 			sampler2D _CameraOpaqueTexture;
-			bool _CameraDepthTextureMode;
 			sampler2D _CameraDepthTexture;
 			sampler2D _MainTex;
 			float _SpecularRange;
@@ -81,23 +80,17 @@
 
 			float4 _FoamDepthParam;
 			float Foam(float depthOffset) {
-				if (_CameraDepthTextureMode==0)
-					return 0;
 				return step( depthOffset, _FoamDepthParam.x);
 				//return smoothstep(_FoamDepthParam.x, 0, depthOffset);		//More Realistic
 			}
 
 			float DepthOpacity(float depthOffset)
 			{
-				if (_CameraDepthTextureMode == 0)
-					return 0;
 				return smoothstep(_FoamDepthParam.y, _FoamDepthParam.y+ _FoamDepthParam.z,depthOffset);
 			}
 
 			float2 DepthDistort(float depthOffset, float2 distort)
 			{
-				if (_CameraDepthTextureMode == 0)
-					return distort;
 				return step(_FoamDepthParam.y, depthOffset) * distort;
 			}
 
