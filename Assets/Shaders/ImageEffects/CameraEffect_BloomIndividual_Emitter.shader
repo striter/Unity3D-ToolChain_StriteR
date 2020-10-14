@@ -2,7 +2,7 @@
 {
 	Category
 	{
-		Cull Off Lighting Off ZWrite Off Fog { Mode Off }
+		Cull Off Lighting Off Fog { Mode Off }
 		Tags{"Ignore Projector"="True"}
 		SubShader
 		{
