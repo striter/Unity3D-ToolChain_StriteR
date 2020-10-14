@@ -24,7 +24,7 @@
             #pragma fragment frag
 
             #include "UnityCG.cginc"
-            #include "RaymarchInclude.cginc"
+            #include "../../CommonInclude.cginc"
 
             struct appdata
             {
@@ -37,7 +37,8 @@
                 float3 worldPos:TEXCOORD0;
                 float4 screenPos : TEXCOORD1;
                 float3 viewDir:TEXCOORD2;
-                float3 origin:TEXCOORD3;
+                float3 boundsMin:TEXCOORD3;
+                float3 boundsMax:TEXCOORD4;
                 float4 vertex : SV_POSITION;
             };
 
@@ -53,7 +54,8 @@
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.origin=mul(unity_ObjectToWorld,float4(0,0,0,1));
+                o.boundsMin =mul((float3x3)unity_ObjectToWorld,float3(-.5,-.5,-.5));
+                o.boundsMax = mul((float3x3)unity_ObjectToWorld, float3(.5, .5, .5));
                 o.worldPos=mul(unity_ObjectToWorld,v.vertex);
                 o.viewDir=WorldSpaceViewDir(v.vertex);
                 o.screenPos=ComputeScreenPos(o.vertex);
@@ -64,8 +66,11 @@
             {
                 half2 uv = i.screenPos.xy/i.screenPos.w;
 
-                float3 marchStart=i.worldPos;
-                half marchDst=RayBoxDistance(mul(unity_ObjectToWorld,float3(-.5,-.5,-.5)),mul(unity_ObjectToWorld,float3(.5,.5,.5)),i.worldPos-i.origin,-normalize(i.viewDir) ).y;
+                if (PosInsideBox(i.boundsMin,i.boundsMax,i.worldPos))
+                    return float4(1, 1, 1, 1);
+
+
+                half marchDst=RayBoxDistance(i.boundsMin, i.boundsMax,i.worldPos,-normalize(i.viewDir) ).y;
                 half depthDst=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, i.screenPos)).r-i.screenPos.w;
                 half marchDistance= min(marchDst, depthDst);
                 
@@ -81,7 +86,7 @@
                     {
                         if(marchDistance<0)
                             break;
-                        float3 marchPos=marchStart+direction*index;
+                        float3 marchPos=i.worldPos+direction*index;
                         float density=saturate( tex3Dlod(_Noise,float4( marchPos/_NoiseScale+_NoiseFlow*_Time.y,0)).r*_Density);
                         march+=density*marchOffset;
                         marchDistance-=distanceOffset;

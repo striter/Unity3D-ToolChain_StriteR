@@ -30,4 +30,9 @@ float2 RayBoxDistance(float3 boundsMin,float3 boundsMax,float3 rayOrigin,float3 
 	return float2(dstToBox,dstInsideBox);
 }
 
+bool PosInsideBox(float3 boundsMin, float3 boundsMax, float3 pos)
+{
+	return boundsMin.x <= pos.x && pos.x <= boundsMax.x&& boundsMin.y <= pos.y && pos.y <= boundsMax.y && boundsMin.z <= pos.z && pos.z <= boundsMax.z;
+}
+
 #endif

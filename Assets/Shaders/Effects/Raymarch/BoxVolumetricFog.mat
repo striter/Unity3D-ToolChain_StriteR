@@ -77,6 +77,7 @@ Material:
     - _March: 512
     - _MarchDistance: 8.9
     - _MarchTimes: 1
+    - _MaxDensity: 1
     - _Metallic: 0
     - _Mode: 0
     - _NoiseDensity: 1.43
@@ -93,4 +94,5 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _NoiseFlow: {r: 0.1, g: 0.02, b: 0.02, a: 1}
     - _NoiseScale: {r: 30, g: 30, b: 30, a: 1}
+    - _Origin: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
