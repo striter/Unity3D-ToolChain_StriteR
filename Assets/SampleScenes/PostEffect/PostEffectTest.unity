@@ -456,9 +456,9 @@ GameObject:
   m_Component:
   - component: {fileID: 520397186}
   - component: {fileID: 520397185}
+  - component: {fileID: 520397183}
   - component: {fileID: 520397187}
   - component: {fileID: 520397184}
-  - component: {fileID: 520397183}
   m_Layer: 0
   m_Name: Post4
   m_TagString: MainCamera
@@ -479,10 +479,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DepthOfFieldParams:
-    m_DOFStart: 0.45
+    m_DOFStart: 0.423
     m_DOFLerp: 0.16
-    m_DepthFullClip: 0
-    m_DepthBlurSample: 0
+    m_DepthFullClip: 1
+    m_DepthBlurSample: 1
     m_BlurSize: 0.648
   m_BlurParams:
     blurSize: 0.83
@@ -1972,7 +1972,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b98b9eb758c45084291b31d4813e0d3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DepthMode: 1
+  m_DepthMode: 2
   m_GeometryCopyTexture: 1
   m_GeometryCopyBlurTexture: 1
   m_DepthToWorldCalculation: 1

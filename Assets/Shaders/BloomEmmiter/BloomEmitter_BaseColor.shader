@@ -10,6 +10,7 @@
 	{ 
 		Tags {"RenderType" = "BloomColor" "IgnoreProjector" = "True" "Queue" = "Geometry" }
 		Cull Back Lighting Off Fog { Color(0,0,0,0) }
+		ZWrite On
 		Pass
 		{
 			name "MAIN"
