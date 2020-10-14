@@ -17,7 +17,7 @@ namespace Rendering.ImageEffect
 
         [Header("LUT_颜色对照表")]
         [Tooltip("颜色对照表")]
-        public Texture m_LUT = null;
+        public Texture2D m_LUT = null;
         [Tooltip("32格/16格")]
         public ImageEffect_ColorGrading.enum_LUTCellCount m_LUTCellCount = ImageEffect_ColorGrading.enum_LUTCellCount._16;
 

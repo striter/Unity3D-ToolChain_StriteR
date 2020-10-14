@@ -21,23 +21,26 @@
 			#include "UnityCG.cginc"
 			
 		#if _LUT
-		uniform sampler2D _LUTTex;
+		sampler2D _LUTTex;
+		float4 _LUTTex_TexelSize;
 		int _LUTCellCount;
+
 		half3 SampleLUT(half3 sampleCol) {
 			half width=_LUTCellCount;
-			half sliceSize = 1.0h / width;              // space of 1 slice
-			half slicePixelSize = sliceSize / width;           // space of 1 pixel
-			half sliceInnerSize = slicePixelSize * (width - 1.0h);  // space of width pixels
-			half zSlice0 = min(floor(sampleCol.b * width), width - 1.0h);
-			half zSlice1 = min(zSlice0 + 1.0h, width - 1.0h);
-			half xOffset = slicePixelSize * 0.5h + sampleCol.r * sliceInnerSize;
-			half s0 = xOffset + (zSlice0 * sliceSize);
-			half s1 = xOffset + (zSlice1 * sliceSize);
-			half3 slice0Color = tex2D(_LUTTex, half2(s0, sampleCol.g));
-			half3 slice1Color = tex2D(_LUTTex, half2(s1, sampleCol.g));
+
+			int lutCellPixelCount = _LUTTex_TexelSize.z / width;
+			int x0CellIndex =  floor(sampleCol.b * width);
+			int x1CellIndex = min(x0CellIndex+1, width - 1);
+
+			half x0PixelCount = x0CellIndex* lutCellPixelCount + (lutCellPixelCount -1)* sampleCol.r;
+			half x1PixelCount = x1CellIndex * lutCellPixelCount + (lutCellPixelCount - 1) * sampleCol.r;
+			half yPixelCount = sampleCol.g*_LUTTex_TexelSize.w;
+
+			half2 uv0 = float2(x0PixelCount, yPixelCount) * _LUTTex_TexelSize.xy;
+			half2 uv1= float2(x1PixelCount, yPixelCount) * _LUTTex_TexelSize.xy;
+
 			half zOffset = fmod(sampleCol.b * width, 1.0h);
-			half3 result = lerp(slice0Color, slice1Color, zOffset);
-			return result;
+			return lerp( tex2D(_LUTTex,uv0),tex2D(_LUTTex,uv1),zOffset) ;
 		}
 		#endif
 

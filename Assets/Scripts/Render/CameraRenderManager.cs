@@ -33,7 +33,8 @@ namespace Rendering
         #endregion
         public ImageEffectParam_Blurs m_BlurData;
         Material m_OpaqueBlurMaterial;
-        RenderTexture m_ColorBuffer,m_DepthBuffer, m_DepthTexture;
+        RenderTexture m_ColorBuffer, m_DepthBuffer;
+        RenderTexture  m_DepthTexture;
         RenderTexture m_OpaqueTexture;
         RenderTexture m_BlurTempTexture1, m_BlurTempTexture2;
         void InitCommandBuffers()

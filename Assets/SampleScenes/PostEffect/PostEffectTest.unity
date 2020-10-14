@@ -252,8 +252,8 @@ MonoBehaviour:
   m_Param:
     m_Color: {r: 0, g: 0, b: 0, a: 0}
     m_Intensity: 3
-    m_SampleRadius: 30
-    m_DepthBias: 0.00546
+    m_SampleRadius: 10
+    m_DepthBias: 0.00269
     m_SampleCount: 16
     m_NoiseTex: {fileID: 2800000, guid: 9c85090b0e4b5e246a82c5f13bb6d5dd, type: 3}
     m_NoiseScale: 0.5
@@ -1972,7 +1972,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b98b9eb758c45084291b31d4813e0d3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DepthMode: 2
+  m_DepthMode: 1
   m_GeometryCopyTexture: 1
   m_GeometryCopyBlurTexture: 1
   m_DepthToWorldCalculation: 1
