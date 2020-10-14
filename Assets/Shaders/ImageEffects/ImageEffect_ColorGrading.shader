@@ -97,7 +97,7 @@
 				half3 targetCol=baseCol;
 
 				#if _LUT
-					targetCol=SampleLUT(targetCol);
+					targetCol=SampleLUT(saturate(targetCol));		//saturate For HDR
 				#endif
 
 				#if _BSC
