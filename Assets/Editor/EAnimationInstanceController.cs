@@ -9,12 +9,16 @@ namespace TEditor
     public class EAnimationInstanceController : Editor
     {
         AnimationInstanceController m_Target;
-        public bool m_TestTick = false;
-        public bool m_SlowTick = false;
+        public float m_TestTick = 0;
         public int m_StartAnim = 0;
+        MaterialPropertyBlock m_TargetBlock;
+        MeshRenderer m_Renderer;
         private void OnEnable()
         {
+            m_TargetBlock = new MaterialPropertyBlock();
             m_Target = (target as AnimationInstanceController);
+            m_Renderer = m_Target.GetComponent<MeshRenderer>();
+            m_Target.Init(m_TargetBlock);
             EditorApplication.update += Update;
         }
         private void OnDisable()
@@ -30,8 +34,7 @@ namespace TEditor
             EditorGUILayout.LabelField("Editor Play Test");
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Anim Tick:");
-            m_TestTick = EditorGUILayout.Toggle(m_TestTick);
-            m_SlowTick = EditorGUILayout.Toggle(m_SlowTick);
+            m_TestTick = EditorGUILayout.Slider(m_TestTick, 0, .1f);
             int anim = EditorGUILayout.IntField(m_StartAnim);
             if (anim != m_StartAnim)
             {
@@ -54,9 +57,10 @@ namespace TEditor
 
         void Update()
         {
-            if (!m_TestTick)
+            if (m_TestTick <= 0)
                 return;
-            m_Target.Tick(Time.deltaTime * (m_SlowTick ? .1f : 1f));
+            m_Target.Tick(m_TestTick);
+            m_Renderer.SetPropertyBlock(m_TargetBlock);
         }
     }
 }

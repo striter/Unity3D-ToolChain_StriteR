@@ -481,8 +481,8 @@ MonoBehaviour:
   m_DepthOfFieldParams:
     m_DOFStart: 0.423
     m_DOFLerp: 0.16
-    m_DepthFullClip: 1
-    m_DepthBlurSample: 1
+    m_DepthFullClip: 0
+    m_DepthBlurSample: 0
     m_BlurSize: 0.648
   m_BlurParams:
     blurSize: 0.83
@@ -1979,8 +1979,8 @@ MonoBehaviour:
   m_BlurData:
     blurSize: 1
     downSample: 2
-    iteration: 1
-    blurType: 1
+    iteration: 2
+    blurType: 2
 --- !u!20 &2086077256
 Camera:
   m_ObjectHideFlags: 0

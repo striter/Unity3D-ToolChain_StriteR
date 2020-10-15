@@ -3,11 +3,11 @@
     sampler2D _AnimTex;
     float4 _AnimTex_TexelSize;
             
-    UNITY_INSTANCING_BUFFER_START(Props)
+    UNITY_INSTANCING_BUFFER_START(PropsAnimInstance)
         UNITY_DEFINE_INSTANCED_PROP(int, _BeginFrame)
         UNITY_DEFINE_INSTANCED_PROP(int, _EndFrame)
         UNITY_DEFINE_INSTANCED_PROP(float, _FrameLerp)
-    UNITY_INSTANCING_BUFFER_END(Props)
+    UNITY_INSTANCING_BUFFER_END(PropsAnimInstance)
 
     half4x4 SampleBoneMatrix(uint sampleFrame,uint boneIndex)
     {
@@ -25,7 +25,7 @@
 
     void SampleBoneInstance(uint4 boneIndexes,half4 boneWeights,inout half4 position,inout half3 normal)
     {
-        half4x4 sampleMatrix= lerp(SampleBoneMatrix( UNITY_ACCESS_INSTANCED_PROP(Props, _BeginFrame),boneIndexes,boneWeights),SampleBoneMatrix(UNITY_ACCESS_INSTANCED_PROP( Props, _EndFrame),boneIndexes,boneWeights),UNITY_ACCESS_INSTANCED_PROP(Props, _FrameLerp));
+        half4x4 sampleMatrix= lerp(SampleBoneMatrix( UNITY_ACCESS_INSTANCED_PROP(PropsAnimInstance, _BeginFrame),boneIndexes,boneWeights),SampleBoneMatrix(UNITY_ACCESS_INSTANCED_PROP( PropsAnimInstance, _EndFrame),boneIndexes,boneWeights),UNITY_ACCESS_INSTANCED_PROP(PropsAnimInstance, _FrameLerp));
         normal=mul(sampleMatrix,normal);
         position=mul(sampleMatrix,position);
     }
@@ -42,8 +42,8 @@
 
     void SampleVertexInstance(uint vertexID,inout half4 position,inout half3 normal)
     {
-        position= lerp(SampleVertex(vertexID,UNITY_ACCESS_INSTANCED_PROP(Props, _BeginFrame)),SampleVertex(vertexID,UNITY_ACCESS_INSTANCED_PROP(Props, _EndFrame)),UNITY_ACCESS_INSTANCED_PROP(Props, _FrameLerp));
-        normal= lerp(SampleNormal(vertexID,UNITY_ACCESS_INSTANCED_PROP(Props, _BeginFrame)),SampleNormal(vertexID,UNITY_ACCESS_INSTANCED_PROP(Props, _EndFrame)),UNITY_ACCESS_INSTANCED_PROP(Props, _FrameLerp));
+        position= lerp(SampleVertex(vertexID,UNITY_ACCESS_INSTANCED_PROP(PropsAnimInstance, _BeginFrame)),SampleVertex(vertexID,UNITY_ACCESS_INSTANCED_PROP(PropsAnimInstance, _EndFrame)),UNITY_ACCESS_INSTANCED_PROP(PropsAnimInstance, _FrameLerp));
+        normal= lerp(SampleNormal(vertexID,UNITY_ACCESS_INSTANCED_PROP(PropsAnimInstance, _BeginFrame)),SampleNormal(vertexID,UNITY_ACCESS_INSTANCED_PROP(PropsAnimInstance, _EndFrame)),UNITY_ACCESS_INSTANCED_PROP(PropsAnimInstance, _FrameLerp));
     }
 
 #endif

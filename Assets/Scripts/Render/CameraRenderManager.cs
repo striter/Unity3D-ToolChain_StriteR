@@ -21,7 +21,7 @@ namespace Rendering
         public bool m_DepthToWorldCalculation = false;
         public Camera m_Camera { get; private set; }
 
-        private void Awake()=>InitCommandBuffers();
+        private void Start()=>InitCommandBuffers();
         public void OnValidate()=> InitCommandBuffers();
         private void OnDestroy()=> RemoveCommandBuffers();
         #region CommandBuffer

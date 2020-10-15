@@ -14,7 +14,7 @@ public class AnimationInstanceTest : MonoBehaviour
         {
             for(int j=0;j<m_Y;j++)
             {
-                AnimationInstanceController controller = GameObject.Instantiate(m_Prefab,transform).GetComponent<AnimationInstanceController>().Init(Debug.Log);
+                AnimationInstanceController controller = GameObject.Instantiate(m_Prefab,transform).GetComponent<AnimationInstanceController>().Init(new MaterialPropertyBlock(), Debug.Log);
                 controller.transform.localPosition = new Vector3(i*10,0, j * 10);
                 controller.SetAnimation(m_Anim).SetScale(Random.value);
                 m_Controllers.Add(controller);
@@ -28,6 +28,7 @@ public class AnimationInstanceTest : MonoBehaviour
         foreach(AnimationInstanceController item in m_Controllers)
         {
             item.Tick(_deltaTime);
+            item.m_MeshRenderer.SetPropertyBlock(item.m_SharedPropertyBlock);
         }
     }
 }

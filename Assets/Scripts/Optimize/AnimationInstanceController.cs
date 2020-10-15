@@ -13,19 +13,19 @@ namespace Rendering.Optimize
         static readonly int ID_FrameLerp = Shader.PropertyToID("_FrameLerp");
         #endregion
         public AnimationInstanceData m_Data;
+        public MaterialPropertyBlock m_SharedPropertyBlock { get; private set; }
         public int m_CurrentAnimIndex { get; private set; }
         public float m_TimeElapsed { get; private set; }
-        MeshRenderer m_MeshRenderer;
+        public MeshRenderer m_MeshRenderer { get; private set; }
         MeshFilter m_MeshFilter;
-        MaterialPropertyBlock m_PropertyBlock;
         Texture2D m_AnimAtlas;
         Action<string> OnAnimEvent;
-        public AnimationInstanceController Init(Action<string> _OnAnimEvent = null)
+        public AnimationInstanceController Init(MaterialPropertyBlock _sharedBlock, Action<string> _OnAnimEvent = null)
         {
             if (!m_Data)
                 throw new System.Exception("Invalid Data Found Of:" + gameObject);
 
-            m_PropertyBlock = new MaterialPropertyBlock();
+            m_SharedPropertyBlock = _sharedBlock;
             m_MeshRenderer = GetComponent<MeshRenderer>();
             m_MeshFilter = GetComponent<MeshFilter>();
 
@@ -82,10 +82,9 @@ namespace Rendering.Optimize
             curFrame += param.m_FrameBegin;
             nextFrame += param.m_FrameBegin;
             framePassed %= 1;
-            m_PropertyBlock.SetInt(ID_BeginFrame, curFrame);
-            m_PropertyBlock.SetInt(ID_EndFrame, nextFrame);
-            m_PropertyBlock.SetFloat(ID_FrameLerp, framePassed);
-            m_MeshRenderer.SetPropertyBlock(m_PropertyBlock);
+            m_SharedPropertyBlock.SetInt(ID_BeginFrame, curFrame);
+            m_SharedPropertyBlock.SetInt(ID_EndFrame, nextFrame);
+            m_MeshRenderer.SetPropertyBlock(m_SharedPropertyBlock);
             TickBones(curFrame, nextFrame, framePassed);
         }
         #region Events
