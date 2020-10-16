@@ -77,7 +77,7 @@ Shader "Raymarch/BoxVolumetricFog"
                 if(marchDistance>0)
                 {
                     worldMarchDir= (normalize(worldMarchDir)*_Distance)/_March;
-                    float marchOffset=1.0/_March;
+                    float marchOffset=_Density/_March;
                     float distanceOffset=length(worldMarchDir);
 
                     for(int index=0;index<_March;index++)
@@ -85,7 +85,7 @@ Shader "Raymarch/BoxVolumetricFog"
                         if(marchDistance<0)
                             break;
                         float3 marchPos=i.worldPos+worldMarchDir*index;
-                        float density=saturate( tex3Dlod(_Noise,float4( marchPos/_NoiseScale+_NoiseFlow*_Time.y,0)).r*_Density);
+                        float density=saturate( tex3Dlod(_Noise,float4( marchPos/_NoiseScale+_NoiseFlow*_Time.y,0)).r);
                         march+=density*marchOffset;
                         marchDistance-=distanceOffset;
 

@@ -16,6 +16,7 @@
 	SubShader
 	{
 		Tags { "RenderType"="Transparent" "Queue"="Transparent"  }
+		Blend SrcAlpha OneMinusSrcAlpha
 		ZWrite On
 		Cull Back
 		CGINCLUDE
@@ -46,7 +47,7 @@
 			};
 
 			
-			sampler2D _CameraOpaqueTexture;
+			sampler2D _CameraGeometryTexture;
 			sampler2D _CameraDepthTexture;
 			sampler2D _MainTex;
 			float _SpecularRange;
@@ -126,7 +127,7 @@
 				float specular =lerp(Specular(distort, normal, viewDir, lightDir),0,foam);
 				float4 specularColor = float4(_LightColor0.rgb * specular, 0);
 
-				float4 transparentTexture = tex2D(_CameraOpaqueTexture, i.screenPos.xy / i.screenPos.w + DepthDistort(linearDepthOffset, distort) );
+				float4 transparentTexture = tex2D(_CameraGeometryTexture, i.screenPos.xy / i.screenPos.w + DepthDistort(linearDepthOffset, distort) );
 				float4 albedo = float4((tex2D(_MainTex, i.uv+distort)*_Color).rgb,1);
 				return lerp(transparentTexture, albedo, totalOpacity)+ foamColor + specularColor;
 			}

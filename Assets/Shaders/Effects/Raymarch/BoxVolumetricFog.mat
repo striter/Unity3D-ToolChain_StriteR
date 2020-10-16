@@ -14,7 +14,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: 3001
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -53,7 +53,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Noise:
-        m_Texture: {fileID: 11700000, guid: 4ed99a7ccafd728408a1bd580f472384, type: 2}
+        m_Texture: {fileID: 11700000, guid: d2993425f654940448af634a1d7cf838, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -67,21 +67,21 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
-    - _Density: 1.67
+    - _Density: 2.01
     - _DetailNormalMapScale: 1
-    - _Distance: 26.3
+    - _Distance: 10.6
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _March: 512
+    - _March: 128
     - _MarchDistance: 8.9
     - _MarchTimes: 1
     - _MaxDensity: 1
     - _Metallic: 0
     - _Mode: 0
     - _NoiseDensity: 1.43
-    - _NoiseScale: 22.5
+    - _NoiseScale: 65.3
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
@@ -90,7 +90,7 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.5188679, g: 0.5188679, b: 0.5188679, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _NoiseFlow: {r: 0.1, g: 0.02, b: 0.02, a: 1}
     - _NoiseScale: {r: 30, g: 30, b: 30, a: 1}

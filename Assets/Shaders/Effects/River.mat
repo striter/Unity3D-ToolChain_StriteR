@@ -4,15 +4,16 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: River
   m_Shader: {fileID: 4800000, guid: af20fe6b362187548afc5a358859acba, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -35,7 +36,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DistortTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: fa57e5ff6a47ada49b4a0ec740c02bec, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
@@ -73,14 +74,17 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SpecularPow: 100
-    - _SpecularRange: 1
+    - _SpecularRange: 0.993
     - _SrcBlend: 1
     - _TexUVScale: 10
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0, g: 0, b: 0, a: 1}
-    - _DistortParam: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.41108933, g: 0.55793417, b: 0.5849056, a: 1}
+    - _DistortParam: {r: 0.006, g: 0.1, b: 0.25, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FresnelParam: {r: 1, g: 1, b: 0, a: 0}
-    - _WaveParam: {r: 0, g: 1, b: 1, a: 1}
+    - _FoamColor: {r: 0.26415092, g: 0.26415092, b: 0.26415092, a: 0.6156863}
+    - _FoamDepthParam: {r: 0.5, g: 0.76, b: 8.99, a: 1}
+    - _FresnelParam: {r: 0.23, g: 0.67, b: 12, a: 0}
+    - _WaveParam: {r: 0.47, g: 2, b: 0.1, a: 0.1}
+  m_BuildTextureStacks: []

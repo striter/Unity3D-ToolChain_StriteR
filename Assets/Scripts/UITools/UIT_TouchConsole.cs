@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
     public bool m_ConsoleOpening { get; private set; } = false;
     public int LogSaveCount = 30;
-    Text m_LogText, m_FrameText;
+    Text m_LogText;
     ObjectPoolListClass<int, ConsoleCommand> m_ConsoleCommands;
     Action<bool> OnConsoleShow;
     protected override void Awake()
@@ -15,7 +15,6 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
         base.Awake();
         m_LogText = transform.Find("Log").GetComponent<Text>();
         m_LogText.text = "";
-        m_FrameText = transform.Find("Frame").GetComponent<Text>();
         Transform tf_ConsoleCommand = transform.Find("ConsoleCommand");
         m_ConsoleCommands = new ObjectPoolListClass<int, ConsoleCommand>(tf_ConsoleCommand, "GridItem");
         m_ConsoleOpening = false;
@@ -117,7 +116,6 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
     {
         m_ConsoleCommands.m_ActiveItemDic.Traversal((ConsoleCommand command) => { command.KeycodeTick(); });
 
-        m_FrameText.text = ((int)(1 / Time.unscaledDeltaTime)).ToString();
         if (m_fastKeyCooldown>0f)
         {
             m_fastKeyCooldown -= Time.unscaledDeltaTime;
