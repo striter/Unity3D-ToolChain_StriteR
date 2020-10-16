@@ -1,4 +1,6 @@
-﻿Shader "Raymarch/BoxVolumetricFog"
+﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
+Shader "Raymarch/BoxVolumetricFog"
 {
     Properties
     {
@@ -34,11 +36,10 @@
 
             struct v2f
             {
-                float3 worldPos:TEXCOORD0;
-                float4 screenPos : TEXCOORD1;
-                float3 viewDir:TEXCOORD2;
-                float3 boundsMin:TEXCOORD3;
-                float3 boundsMax:TEXCOORD4;
+                float3 objPos:TEXCOORD0;
+                float3 worldPos:TEXCOORD1;
+                float4 screenPos : TEXCOORD2;
+                float3 viewDir:TEXCOORD3;
                 float4 vertex : SV_POSITION;
             };
 
@@ -54,39 +55,36 @@
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.boundsMin =mul((float3x3)unity_ObjectToWorld,float3(-.5,-.5,-.5));
-                o.boundsMax = mul((float3x3)unity_ObjectToWorld, float3(.5, .5, .5));
+                o.objPos=v.vertex;
                 o.worldPos=mul(unity_ObjectToWorld,v.vertex);
-                o.viewDir=WorldSpaceViewDir(v.vertex);
+                o.viewDir=ObjSpaceViewDir(v.vertex);
                 o.screenPos=ComputeScreenPos(o.vertex);
                 return o;
             }
+            
 
             fixed4 frag (v2f i) : SV_Target
             {
-                half2 uv = i.screenPos.xy/i.screenPos.w;
+                half3 objViewDir=-normalize(i.viewDir);
+                half objMarchDst=RayBoxDistance(-.5,.5,i.objPos,objViewDir).y;
 
-                if (PosInsideBox(i.boundsMin,i.boundsMax,i.worldPos))
-                    return float4(1, 1, 1, 1);
-
-
-                half marchDst=RayBoxDistance(i.boundsMin, i.boundsMax,i.worldPos,-normalize(i.viewDir) ).y;
+                half worldMarchDst=length(mul(unity_ObjectToWorld,objViewDir*objMarchDst));
+                half3 worldMarchDir=mul(unity_ObjectToWorld,objViewDir*objMarchDst);
                 half depthDst=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, i.screenPos)).r-i.screenPos.w;
-                half marchDistance= min(marchDst, depthDst);
+                half marchDistance= min(length( worldMarchDir), depthDst);
                 
                 float march=0;
                 if(marchDistance>0)
                 {
-                    float3 direction=normalize(-i.viewDir);
-                    direction= (direction*_Distance)/_March;
+                    worldMarchDir= (normalize(worldMarchDir)*_Distance)/_March;
                     float marchOffset=1.0/_March;
-                    float distanceOffset=length(direction);
+                    float distanceOffset=length(worldMarchDir);
 
                     for(int index=0;index<_March;index++)
                     {
                         if(marchDistance<0)
                             break;
-                        float3 marchPos=i.worldPos+direction*index;
+                        float3 marchPos=i.worldPos+worldMarchDir*index;
                         float density=saturate( tex3Dlod(_Noise,float4( marchPos/_NoiseScale+_NoiseFlow*_Time.y,0)).r*_Density);
                         march+=density*marchOffset;
                         marchDistance-=distanceOffset;

@@ -69,7 +69,7 @@ Material:
     - _Cutoff: 0.5
     - _Density: 1.67
     - _DetailNormalMapScale: 1
-    - _Distance: 18.6
+    - _Distance: 26.3
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -81,7 +81,7 @@ Material:
     - _Metallic: 0
     - _Mode: 0
     - _NoiseDensity: 1.43
-    - _NoiseScale: 26
+    - _NoiseScale: 22.5
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
