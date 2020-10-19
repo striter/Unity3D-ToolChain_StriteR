@@ -1,6 +1,4 @@
-﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-
-Shader "Game/Effect/Depth/VolumetricVerticalFog"
+﻿Shader "Game/Effect/Depth/VolumetricFog_Box_Vertical"
 {
     Properties
     {
@@ -9,10 +7,9 @@ Shader "Game/Effect/Depth/VolumetricVerticalFog"
     }
     SubShader
     {
-        Tags{"Queue"="Transparent"}
+        Tags{"Queue"="Transparent" "DisableBatching"="True" "IgnoreProjector" = "True"  }
         Pass
         {
-            Tags { "IgnoreProjector" = "True" "PreviewType" = "Box"}
             Blend SrcAlpha OneMinusSrcAlpha
             ZWrite Off
             Cull Back

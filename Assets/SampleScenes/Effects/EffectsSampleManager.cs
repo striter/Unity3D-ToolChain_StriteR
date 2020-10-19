@@ -6,6 +6,6 @@ public class EffectsSampleManager : MonoBehaviour
 {
     private void Awake()
     {
-        Application.runInBackground = true;
     }
+
 }

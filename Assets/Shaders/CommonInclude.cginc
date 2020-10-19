@@ -30,6 +30,33 @@ float2 AABBRayDistance(float3 boundsMin,float3 boundsMax,float3 rayOrigin,float3
 	return float2(dstToBox,dstInsideBox);
 }
 
+
+float2 BSRayDistance(float3 _bsCenter, float _bsRadius, float3 _rayOrigin, float3 _rayDirection)
+{
+    float3 offset = _rayOrigin - _bsCenter;
+    float dotOffsetDirection = dot(_rayDirection, offset);
+    if (dotOffsetDirection > 0)
+        return -1;
+
+    float dotOffset = dot(offset, offset);
+    float sqrRadius = _bsRadius * _bsRadius;
+    float discriminant = dotOffsetDirection * dotOffsetDirection - dotOffset + sqrRadius;
+    if (discriminant < 0)
+        return -1;
+    else if (discriminant < 0.00001)
+        float2(-dotOffsetDirection, -dotOffsetDirection);
+    else
+    {
+        discriminant = sqrt(discriminant);
+        float t0 = -dotOffsetDirection - discriminant;
+        float t1 = -dotOffsetDirection + discriminant;
+        if (t0 < 0)
+            t0 = t1;
+        return float2(t0, t1);
+    }
+    return -1;
+}
+
 bool PosInsideBox(float3 boundsMin, float3 boundsMax, float3 pos)
 {
 	return boundsMin.x <= pos.x && pos.x <= boundsMax.x&& boundsMin.y <= pos.y && pos.y <= boundsMax.y && boundsMin.z <= pos.z && pos.z <= boundsMax.z;

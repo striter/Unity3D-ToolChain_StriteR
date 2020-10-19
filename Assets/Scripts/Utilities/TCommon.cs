@@ -126,41 +126,6 @@ public static class TCommon
     }
 
     #endregion
-    public static Mesh Copy(this Mesh target)
-    {
-        Mesh copy = new Mesh();
-        copy.vertices = target.vertices;
-        copy.normals = target.normals;
-        copy.tangents = target.tangents;
-        copy.name = target.name;
-        copy.bounds = target.bounds;
-        copy.bindposes = target.bindposes;
-        copy.colors = target.colors;
-        copy.triangles = target.triangles;
-        copy.boneWeights = target.boneWeights;
-        copy.uv = target.uv;
-        copy.uv2 = target.uv2;
-        copy.uv3 = target.uv3;
-        copy.uv4 = target.uv4;
-        copy.uv5 = target.uv5;
-        copy.uv6 = target.uv6;
-        copy.uv7 = target.uv7;
-        copy.uv8 = target.uv8;
-        for (int i = 0; i < target.subMeshCount; i++)
-            copy.SetIndices(target.GetIndices(i), MeshTopology.Triangles, i);
-        return copy;
-    }
-
-    public static bool InputRayCheck(this Camera _camera, Vector2 _inputPos, out RaycastHit _hit, int _layerMask = -1)
-    {
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
-        {
-            _hit = new RaycastHit();
-            return false;
-        }
-
-        return Physics.Raycast(_camera.ScreenPointToRay(_inputPos), out _hit, 1000, _layerMask);
-    }
     #region Color
     public static Color GetHexColor(string hex)
     {
@@ -182,7 +147,7 @@ public static class TCommon
     public static Color ToColor(this Vector3 colorVector) => new Color(colorVector.x, colorVector.y, colorVector.z);
     public static Vector4 ToVector(this Color color) => new Vector4(color.r,color.g,color.b,color.a);
     #endregion
-    #region Vector/Angle
+    #region Basic
     public static float GetXZDistance(Vector3 start, Vector3 end) => new Vector2(start.x - end.x, start.z - end.z).magnitude;
     public static float GetXZSqrDistance(Vector3 start, Vector3 end) => new Vector2(start.x - end.x, start.z - end.z).sqrMagnitude;
     public static Vector3 GetXZLookDirection(Vector3 startPoint, Vector3 endPoint)
@@ -206,27 +171,11 @@ public static class TCommon
         Vector3 newSecond = new Vector3(second.x, 0, second.z);
         return GetAngle(newFirst, newSecond, up);
     }
-    public static float GetIncludedAngle(float angle1, float angle2)
-    {
-        float angle = 0;
-        if (angle1 >= 270 && angle2 < 90)
-        {
-            angle = (angle1 - (angle2 + 360)) % 180;
-        }
-        else if (angle1 <= 90 && angle2 >= 270)
-        {
-            angle = (angle1 + 360 - angle2) % 180;
-        }
-        else
-        {
-            angle = (angle1 - angle2);
-            if (Mathf.Abs(angle) > 180)
-            {
-                angle -= 360;
-            }
-        }
-        return angle;
-    }
+
+    public static Vector3 Multiply(this Vector3 _src, Vector3 _tar) => new Vector3(_src.x * _tar.x, _src.y * _tar.y, _src.z * _tar.z);
+    public static Vector3 Divide(this Vector3 _src, Vector3 _tar) => new Vector3(_src.x / _tar.x, _src.y / _tar.y, _src.z / _tar.z);
+    public static bool InRange(this RangeFloat _value, float _check) => _value.start <= _check && _check <= _value.end;
+    public static float InRangeScale(this RangeFloat _value, float _check) => Mathf.InverseLerp(_value.start, _value.end, _check);
     #endregion
     #region Algorithm
     public enum enum_SortType
@@ -335,7 +284,7 @@ public static class TCommon
         TQuickSort(sortTarget, leftIndex + 1, endIndex, startLower);
     }
     #endregion
-    #region Collections/Array 
+    #region Collections & Array 
     public static T GetIndexKey<T, Y>(this Dictionary<T, Y> dictionary, int index) => dictionary.ElementAt(index).Key;
     public static Y GetIndexValue<T, Y>(this Dictionary<T, Y> dictionary, int index) => dictionary.ElementAt(index).Value;
     public static List<T> DeepCopy<T>(this List<T> list)
@@ -625,6 +574,40 @@ public static class TCommon
         return default(T);
     }
     #endregion
-    public static bool InRange(this RangeFloat _value, float _check) => _value.start <=_check && _check <= _value.end;
-    public static float InRangeScale(this RangeFloat _value, float _check) => Mathf.InverseLerp(_value.start, _value.end, _check);
+    #region Extra Helper
+    public static Mesh Copy(this Mesh target)
+    {
+        Mesh copy = new Mesh();
+        copy.vertices = target.vertices;
+        copy.normals = target.normals;
+        copy.tangents = target.tangents;
+        copy.name = target.name;
+        copy.bounds = target.bounds;
+        copy.bindposes = target.bindposes;
+        copy.colors = target.colors;
+        copy.triangles = target.triangles;
+        copy.boneWeights = target.boneWeights;
+        copy.uv = target.uv;
+        copy.uv2 = target.uv2;
+        copy.uv3 = target.uv3;
+        copy.uv4 = target.uv4;
+        copy.uv5 = target.uv5;
+        copy.uv6 = target.uv6;
+        copy.uv7 = target.uv7;
+        copy.uv8 = target.uv8;
+        for (int i = 0; i < target.subMeshCount; i++)
+            copy.SetIndices(target.GetIndices(i), MeshTopology.Triangles, i);
+        return copy;
+    }
+    public static bool InputRayCheck(this Camera _camera, Vector2 _inputPos, out RaycastHit _hit, int _layerMask = -1)
+    {
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+        {
+            _hit = new RaycastHit();
+            return false;
+        }
+
+        return Physics.Raycast(_camera.ScreenPointToRay(_inputPos), out _hit, 1000, _layerMask);
+    }
+    #endregion
 }

@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: VolumetricVerticalFog
+  m_Name: VolumetricFog_Box_Vertical
   m_Shader: {fileID: 4800000, guid: 14e6b37f616f10f45bcc1dd9839a18aa, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -62,7 +62,7 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
-    - _Density: 3.42
+    - _Density: 3.07
     - _DetailNormalMapScale: 1
     - _Distance: 5
     - _DstBlend: 0
