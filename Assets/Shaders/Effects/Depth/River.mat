@@ -36,7 +36,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DistortTex:
-        m_Texture: {fileID: 2800000, guid: fa57e5ff6a47ada49b4a0ec740c02bec, type: 3}
+        m_Texture: {fileID: 2800000, guid: 9c85090b0e4b5e246a82c5f13bb6d5dd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
@@ -86,5 +86,5 @@ Material:
     - _FoamColor: {r: 0.26415092, g: 0.26415092, b: 0.26415092, a: 0.6156863}
     - _FoamDepthParam: {r: 0.5, g: 0.76, b: 8.99, a: 1}
     - _FresnelParam: {r: 0.23, g: 0.67, b: 12, a: 0}
-    - _WaveParam: {r: 0.47, g: 2, b: 0.1, a: 0.1}
+    - _WaveParam: {r: 0.2, g: 2, b: 0.1, a: 0.1}
   m_BuildTextureStacks: []

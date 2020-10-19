@@ -7,7 +7,7 @@ Shader "Effect/Raymarch/VolumetricFog"
         _Color("Color",Color)=(1,1,1,1)
         _Distance("March Distance",Range(0,50))=5
         _Density("Density",Range(0,5))=1
-        [Enum(_16,16,_32,32,_64,64,_128,128,_256,256,_512,512)]_March("March Times",int)=128
+        [Enum(_16,16,_32,32,_64,64,_128,128,_256,256,_512,512)]_RayMarch("Ray March Times",int)=128
         _Noise("Noise 3D",3D)="white"{}
         _NoiseScale("Noise Scale",Range(0.1,100))=10
         _NoiseFlow("Noise Flow",Vector)=(0,0,0,1)
@@ -42,14 +42,20 @@ Shader "Effect/Raymarch/VolumetricFog"
                 float4 vertex : SV_POSITION;
             };
 
-            int _March;
+            int _RayMarch;
             float4 _Color;
             float _Distance;
-            sampler3D _Noise;
             float _Density;
+            
+            sampler2D _CameraDepthTexture;
+
+            sampler3D _Noise;
             float _NoiseScale;
             float4 _NoiseFlow;
-            sampler2D _CameraDepthTexture;
+            float SampleDensity(float3 worldPos)  {
+                return  saturate( tex3Dlod(_Noise,float4( worldPos/_NoiseScale+_NoiseFlow*_Time.y,0)).r);
+            }
+
             v2f vert (appdata v)
             {
                 v2f o;
@@ -62,39 +68,40 @@ Shader "Effect/Raymarch/VolumetricFog"
             }
             
 
-            fixed4 frag (v2f i) : SV_Target
+            fixed4 frag (v2f _input) : SV_Target
             {
-                half3 objViewDir=-normalize(i.viewDir);
-                half objMarchDst=AABBRayDistance(-.5,.5,i.objPos,objViewDir).y;
+                half3 objViewDir=-normalize(_input.viewDir);
+                half objMarchDst=AABBRayDistance(-.5,.5,_input.objPos,objViewDir).y;
 
                 half worldMarchDst=length(mul(unity_ObjectToWorld,float3(0, objMarchDst,0)));
                 half3 worldMarchDir=mul(unity_ObjectToWorld,objViewDir*objMarchDst);
-                half worldDepthDst=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, i.screenPos)).r-i.screenPos.w;
+                half worldDepthDst=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, _input.screenPos)).r-_input.screenPos.w;
                 half marchDistance= min(length( worldMarchDir), worldDepthDst);
                 
-                float march=0;
+                float sumDensity=0;
                 if(marchDistance>0)
                 {
-                    worldMarchDir= (normalize(worldMarchDir)*_Distance)/_March;
-                    float marchOffset=_Density/_March;
+                    worldMarchDir= (normalize(worldMarchDir)*_Distance)/_RayMarch;
+                    float marchOffset=1.0/_RayMarch;
                     float distanceOffset=length(worldMarchDir);
 
-                    for(int index=0;index<_March;index++)
+                    for(int i=0;i<_RayMarch;i++)
                     {
                         if(marchDistance<0)
                             break;
-                        float3 marchPos=i.worldPos+worldMarchDir*index;
-                        float density=saturate( tex3Dlod(_Noise,float4( marchPos/_NoiseScale+_NoiseFlow*_Time.y,0)).r);
-                        march+=density*marchOffset;
+                        float3 marchPos=_input.worldPos+worldMarchDir*i;
+                        float density=SampleDensity(marchPos)*_Density;
+
+                        sumDensity+=marchOffset*density;
                         marchDistance-=distanceOffset;
 
-                        if(march>=1)
+                        if(sumDensity>=1)
                             break;
                     }
                 }
-                march=saturate(march);
+                sumDensity=saturate(sumDensity);
 
-                return _Color*march;
+                return _Color*sumDensity;
             }
             ENDCG
         }
