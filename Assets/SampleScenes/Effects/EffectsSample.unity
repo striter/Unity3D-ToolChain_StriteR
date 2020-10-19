@@ -902,8 +902,8 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!65 &1314644220
-BoxCollider:
+--- !u!135 &1314644220
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -913,7 +913,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Radius: 0.5000003
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1314644221
 MeshRenderer:
@@ -972,8 +972,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1314644219}
   m_LocalRotation: {x: -0.6478712, y: 0.28330734, z: 0.28330725, w: 0.64787114}
-  m_LocalPosition: {x: 16.38, y: 2.85, z: 20.83}
-  m_LocalScale: {x: 6, y: 6, z: 6}
+  m_LocalPosition: {x: 15.09, y: 1.87, z: 21.97}
+  m_LocalScale: {x: 8, y: 8, z: 8}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
