@@ -522,6 +522,7 @@ public class AtlasAnim:AtlasLoader
 class EnumSelection : TReflection.UI.CPropertyFillElement
 {
     Text m_Text;
+    List<string> m_Enums=new List<string>();
     ObjectPoolListComponent<int, Button> m_ChunkButton;
     public EnumSelection(Transform transform) : base(transform)
     {
@@ -540,6 +541,22 @@ class EnumSelection : TReflection.UI.CPropertyFillElement
         TCommon.TraversalEnum((T temp) =>
         {
             int index = (int)((object)temp);
+            Button btn = m_ChunkButton.AddItem(index);
+            btn.onClick.RemoveAllListeners();
+            btn.GetComponentInChildren<Text>().text = temp.ToString();
+            btn.onClick.AddListener(() => {
+                m_Text.text = temp.ToString();
+                OnClick(index);
+                m_ChunkButton.transform.SetActivate(false);
+            });
+        });
+    }
+    public void Init(List<string> values, string defaultValue,Action<int> OnClick)
+    {
+        m_Text.text = defaultValue.ToString();
+        m_ChunkButton.Clear();
+        values.Traversal((int index,string temp) =>
+        {
             Button btn = m_ChunkButton.AddItem(index);
             btn.onClick.RemoveAllListeners();
             btn.GetComponentInChildren<Text>().text = temp.ToString();

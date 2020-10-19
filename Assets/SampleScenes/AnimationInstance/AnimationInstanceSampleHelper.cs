@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Rendering.Optimize;
-public class AnimationInstanceTest : MonoBehaviour
+public class AnimationInstanceSampleHelper : MonoBehaviour
 {
     public int m_X=100,m_Y=100;
     public int m_Anim = 0;
     public GameObject m_Prefab;
     List<AnimationInstanceController> m_Controllers=new List<AnimationInstanceController>();
-    private void Awake()
+    protected void Awake()
     {
         for(int i=0;i<m_X;i++)
         {

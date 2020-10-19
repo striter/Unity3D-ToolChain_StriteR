@@ -1,6 +1,6 @@
 ﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
-Shader "Raymarch/BoxVolumetricFog"
+Shader "Effect/Raymarch/VolumetricFog"
 {
     Properties
     {
@@ -14,8 +14,7 @@ Shader "Raymarch/BoxVolumetricFog"
     }
     SubShader
     {
-        Tags { "RenderQueue"="Transparent" }
-
+        Tags{"Queue"="Transparent"}
         Pass
         {
             Blend SrcAlpha OneMinusSrcAlpha
@@ -26,7 +25,7 @@ Shader "Raymarch/BoxVolumetricFog"
             #pragma fragment frag
 
             #include "UnityCG.cginc"
-            #include "../../CommonInclude.cginc"
+            #include "../../../CommonInclude.cginc"
 
             struct appdata
             {
@@ -66,12 +65,12 @@ Shader "Raymarch/BoxVolumetricFog"
             fixed4 frag (v2f i) : SV_Target
             {
                 half3 objViewDir=-normalize(i.viewDir);
-                half objMarchDst=RayBoxDistance(-.5,.5,i.objPos,objViewDir).y;
+                half objMarchDst=AABBRayDistance(-.5,.5,i.objPos,objViewDir).y;
 
-                half worldMarchDst=length(mul(unity_ObjectToWorld,objViewDir*objMarchDst));
+                half worldMarchDst=length(mul(unity_ObjectToWorld,float3(0, objMarchDst,0)));
                 half3 worldMarchDir=mul(unity_ObjectToWorld,objViewDir*objMarchDst);
-                half depthDst=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, i.screenPos)).r-i.screenPos.w;
-                half marchDistance= min(length( worldMarchDir), depthDst);
+                half worldDepthDst=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, i.screenPos)).r-i.screenPos.w;
+                half marchDistance= min(length( worldMarchDir), worldDepthDst);
                 
                 float march=0;
                 if(marchDistance>0)

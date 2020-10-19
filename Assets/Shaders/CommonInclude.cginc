@@ -14,7 +14,7 @@ fixed luminance(fixed3 color)
 }
 
 //return X: Dst To Box , Y:Dst In Side Box
-float2 RayBoxDistance(float3 boundsMin,float3 boundsMax,float3 rayOrigin,float3 rayDir)	
+float2 AABBRayDistance(float3 boundsMin,float3 boundsMax,float3 rayOrigin,float3 rayDir)
 {
 	float3 invRayDir=1/rayDir;
 	float3 t0=(boundsMin-rayOrigin)*invRayDir;

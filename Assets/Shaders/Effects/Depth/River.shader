@@ -1,4 +1,4 @@
-﻿Shader "Game/Effect/River"
+﻿Shader "Game/Effect/Depth/River"
 {
 	Properties
 	{
@@ -15,13 +15,13 @@
 	}
 	SubShader
 	{
-		Tags { "RenderType"="Transparent" "Queue"="Transparent"  }
+		Tags {  "Queue"="Transparent-1"  }
 		Blend SrcAlpha OneMinusSrcAlpha
-		ZWrite On
+		ZWrite Off
 		Cull Back
 		CGINCLUDE
 		#include "UnityCG.cginc"
-			#include "Lighting.cginc"
+		#include "Lighting.cginc"
 		ENDCG
 		Pass		//Base Pass
 		{
