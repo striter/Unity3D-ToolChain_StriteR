@@ -51,13 +51,12 @@
             fixed4 frag(v2f i) : SV_Target
             {
                 half3 viewDir = -normalize(i.viewDir);
-                half2 rayDistance=BSRayDistance(0,.5,i.pos, viewDir);
 
-                half viewDst = rayDistance.y;
+                half viewDst = BSRayDistance(0,.5,i.pos, viewDir).y;
                 half worldDepthDst = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, i.screenPos)).r - i.screenPos.w;
                 half depthDst = length(mul(unity_WorldToObject, float3(0, worldDepthDst, 0)));
                 half maxDst = min(depthDst, viewDst);
-                half dstParam=rayDistance.x==-1?0:maxDst*_Density;
+                half dstParam=viewDst==-1?0:maxDst*_Density;
                 return _Color*  dstParam;
             }
             ENDCG
