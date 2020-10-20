@@ -8,10 +8,11 @@ float sqrdistance(float3 pA, float3 pB)
 }
 
 
-fixed luminance(fixed3 color)
-{
-	return 0.2125*color.r + 0.7154*color.g + 0.0721 + color.b;
-}
+float luminance(fixed3 color){ return 0.2125*color.r + 0.7154*color.g + 0.0721 + color.b;}
+
+float4 BlendColor(float4 src,float4 dst){  return 1-(1-src)*(1-dst);}
+float3 BlendColor(float3 src,float3 dst){return 1-(1-src)*(1-dst);}
+
 
 //return X: Dst To Box , Y:Dst In Side Box
 float2 AABBRayDistance(float3 boundsMin,float3 boundsMax,float3 rayOrigin,float3 rayDir)
