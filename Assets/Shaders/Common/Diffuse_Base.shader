@@ -67,7 +67,6 @@
 				return float4(GetDiffuseAddColor(_LightColor0.rgb, atten, i.diffuse), 1);
 			}
 
-
 			ENDCG
 
 			Pass

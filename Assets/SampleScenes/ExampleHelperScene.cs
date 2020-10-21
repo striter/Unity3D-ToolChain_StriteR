@@ -4,10 +4,11 @@ using UnityEngine.SceneManagement;
 
 public class ExampleHelperScene : MonoBehaviour
 {
+
     public static List<string> m_SceneNames { get; private set; } = new List<string>();
     protected void Awake()
     {
-        for(int i=0;i<SceneManager.sceneCountInBuildSettings; i++)
+        for (int i=0;i<SceneManager.sceneCountInBuildSettings; i++)
         {
             if (i == 0)
                 continue;
