@@ -1,9 +1,10 @@
-﻿Shader "Game/Effects/Depth/SphericalDecal"
+﻿Shader "Game/Effects/Depth/Decal"
 {
 	Properties
 	{
 		_MainTex("Decal Texture",2D) = "white"{}
 		_Color("Decal Color",Color)=(1,1,1,1)
+		[KeywordEnum(NONE, BOX,SPHERE)]_DECALCLIP("Decal Clip Volume",int)=0
 	}
 	SubShader
 	{
@@ -15,9 +16,11 @@
 			ZWrite Off
 
 			CGPROGRAM
+			#pragma multi_compile  _DECALCLIP_NONE _DECALCLIP_BOX _DECALCLIP_SPHERE
 			#pragma vertex vert
 			#pragma fragment frag
             #include "UnityCG.cginc"
+			#include "../../CommonInclude.cginc"
 			struct a2f
 			{
 				float4 vertex:POSITION;
@@ -53,7 +56,11 @@
 				half2 decalUV=opos.xy+.5;
 				decalUV=TRANSFORM_TEX(decalUV,_MainTex);
 				float4 color=tex2D(_MainTex,decalUV)* _Color;
-				color.a*=step(opos.z,.5);
+				#if _DECALCLIP_SPHERE
+				color.a*=step(sqrDistance(opos),.25);
+				#elif _DECALCLIP_BOX
+				color.a*=step(abs(opos),.5);
+				#endif
 				return color;
 			}
 			ENDCG

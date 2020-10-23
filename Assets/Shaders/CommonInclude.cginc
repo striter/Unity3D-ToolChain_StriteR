@@ -1,10 +1,13 @@
 ﻿#ifndef COMMON_INCLUDE
 #define COMMON_INCLUDE
 
-float sqrdistance(float3 pA, float3 pB)
+float sqrDistance(float3 offset)
 {
-	float3 offset = pA - pB;
-	return dot(offset, offset);
+    return dot(offset,offset);
+}
+float sqrDistance(float3 pA, float3 pB)
+{
+    return sqrDistance(pA-pB);
 }
 
 

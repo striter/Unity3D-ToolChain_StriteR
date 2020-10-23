@@ -56,7 +56,7 @@
 					float linearDepth = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,i.uv_depth));
 					float3 worldPos = _WorldSpaceCameraPos + i.interpolatedRay*linearDepth;
 					float2 uv = worldPos.xz + worldPos.yy;
-					float squaredDistance = sqrdistance(worldPos,_Origin);
+					float squaredDistance = sqrDistance(worldPos,_Origin);
 
 					float fill = step(squaredDistance,_SqrEdgeMax);
 					float edge = fill * step(_SqrEdgeMin,squaredDistance);

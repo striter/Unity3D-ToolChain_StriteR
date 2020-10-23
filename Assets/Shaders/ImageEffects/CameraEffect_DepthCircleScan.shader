@@ -54,7 +54,7 @@
 			{
 				float linearDepth = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,i.uv_depth));
 				float3 worldPos = _WorldSpaceCameraPos + i.interpolatedRay*linearDepth;
-				float squareDistance = sqrdistance(_Origin.xyz,worldPos);
+				float squareDistance = sqrDistance(_Origin.xyz,worldPos);
 
 				float scan = 1;
 				scan *= _Color.a;
