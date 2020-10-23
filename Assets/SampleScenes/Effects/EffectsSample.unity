@@ -731,7 +731,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &432133807
 GameObject:
@@ -880,7 +880,7 @@ GameObject:
   - component: {fileID: 837242280}
   - component: {fileID: 837242279}
   m_Layer: 0
-  m_Name: Decal3 (1)
+  m_Name: Decal4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -943,11 +943,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 837242278}
   m_LocalRotation: {x: -0.46617568, y: -0.14343406, z: 0.20256189, w: -0.84916174}
-  m_LocalPosition: {x: -9.816, y: 4.321, z: 21.523}
+  m_LocalPosition: {x: -9.705, y: 4.321, z: 21.523}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 121.80701, y: 185.961, z: 156.486}
 --- !u!1 &1227946554
 GameObject:
@@ -1215,7 +1215,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1314644219}
   m_LocalRotation: {x: -0.6478712, y: 0.28330734, z: 0.28330725, w: 0.64787114}
-  m_LocalPosition: {x: 15.02, y: 1.87, z: 22.01}
+  m_LocalPosition: {x: 15.05, y: 1.87, z: 22.08}
   m_LocalScale: {x: 8, y: 8, z: 8}
   m_Children: []
   m_Father: {fileID: 0}

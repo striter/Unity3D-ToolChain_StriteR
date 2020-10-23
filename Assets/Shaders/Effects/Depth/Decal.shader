@@ -59,7 +59,7 @@
 				#if _DECALCLIP_SPHERE
 				color.a*=step(sqrDistance(opos),.25);
 				#elif _DECALCLIP_BOX
-				color.a*=step(abs(opos),.5);
+				color.a*=step(abs(opos.x),.5)*step(abs(opos.y),.5)*step(abs(opos.z),.5);
 				#endif
 				return color;
 			}
