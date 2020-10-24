@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
-public class UIT_GridItem : CObjectPoolMono<int>
+public class UIT_GridItem : TGameObjectPool_Instance_Monobehaviour<int>
 {
     protected RectTransform m_Container;
     public RectTransform rectTransform { get; private set; }

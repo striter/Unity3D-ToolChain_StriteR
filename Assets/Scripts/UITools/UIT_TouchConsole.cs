@@ -8,7 +8,7 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
     public bool m_ConsoleOpening { get; private set; } = false;
     public int LogSaveCount = 30;
     Text m_LogText;
-    ObjectPoolListClass<int, ConsoleCommand> m_ConsoleCommands;
+    TGameObjectPool_Instance_Class<int, ConsoleCommand> m_ConsoleCommands;
     Action<bool> OnConsoleShow;
     protected override void Awake()
     {
@@ -16,7 +16,7 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
         m_LogText = transform.Find("Log").GetComponent<Text>();
         m_LogText.text = "";
         Transform tf_ConsoleCommand = transform.Find("ConsoleCommand");
-        m_ConsoleCommands = new ObjectPoolListClass<int, ConsoleCommand>(tf_ConsoleCommand, "GridItem");
+        m_ConsoleCommands = new TGameObjectPool_Instance_Class<int, ConsoleCommand>(tf_ConsoleCommand, "GridItem");
         m_ConsoleOpening = false;
         m_ConsoleCommands.transform.SetActivate(m_ConsoleOpening);
     }
@@ -29,7 +29,7 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
     }
     #region Console
     public ConsoleCommand AddConsoleBinding() => m_ConsoleCommands.AddItem(m_ConsoleCommands.Count);
-    public class ConsoleCommand : CObjectPoolClass<int>
+    public class ConsoleCommand : CGameObjectPool_Instance_Class<int>
     {
         InputField m_ValueInput1,m_ValueInput2;
         EnumSelection m_ValueSelection;

@@ -21,15 +21,15 @@ public class AudioManagerBase : SingletonMono <AudioManagerBase>
         obj.transform.SetParent(transform);
         AudioSource source= obj.AddComponent<AudioSource>();
         source.spatialBlend = 1;
-        ObjectPoolManager<int, SFXAudioBase>.Register(0, obj.AddComponent<SFXAudioBase>(), 20);
+        TGameObjectPool_Static<int, SFXAudioBase>.Register(0, obj.AddComponent<SFXAudioBase>(), 20);
 
         obj = new GameObject("Prefab 2D");
         obj.transform.SetParent(transform);
         source = obj.AddComponent<AudioSource>();
         source.spatialBlend = 0;
-        ObjectPoolManager<int, SFXAudioBase>.Register(1, obj.AddComponent<SFXAudioBase>(), 20);
+        TGameObjectPool_Static<int, SFXAudioBase>.Register(1, obj.AddComponent<SFXAudioBase>(), 20);
     }
-    public virtual void Destroy()=> ObjectPoolManager<int, SFXAudioBase>.Destroy();
+    public virtual void Destroy()=> TGameObjectPool_Static<int, SFXAudioBase>.Destroy();
     protected void SwitchBackground(AudioClip _Clip,bool loop)
     {
         if (m_Clip == _Clip)
@@ -38,7 +38,7 @@ public class AudioManagerBase : SingletonMono <AudioManagerBase>
         m_AudioBG.loop = loop;
     }
     protected void StopBackground() => m_Clip = null;
-    protected void SetSFXVolume(float volume) => ObjectPoolManager<int, SFXAudioBase>.TraversalAllActive((SFXAudioBase audio) => audio.SetVolume(volume));
+    protected void SetSFXVolume(float volume) => TGameObjectPool_Static<int, SFXAudioBase>.TraversalAllActive((SFXAudioBase audio) => audio.SetVolume(volume));
     protected void SetBGPitch(float pitch) => m_AudioBG.pitch = pitch;
     protected virtual void Update()
     {
@@ -70,25 +70,25 @@ public class AudioManagerBase : SingletonMono <AudioManagerBase>
                 }
             }
         }
-        ObjectPoolManager<int, SFXAudioBase>.TraversalAllActive((SFXAudioBase audio) => { audio.Tick(Time.unscaledDeltaTime); });
+        TGameObjectPool_Static<int, SFXAudioBase>.TraversalAllActive((SFXAudioBase audio) => { audio.Tick(Time.unscaledDeltaTime); });
     }
 
     protected SFXAudioBase PlayClip(int sourceID,AudioClip _clip,float _volume, bool _loop, Transform _target)
     {
         if (_volume == 0)
             return null;
-        return ObjectPoolManager<int, SFXAudioBase>.Spawn(0, null, _target.position, Quaternion.identity).Play(sourceID, _clip, _volume, _loop, _target);
+        return TGameObjectPool_Static<int, SFXAudioBase>.Spawn(0, null, _target.position, Quaternion.identity).Play(sourceID, _clip, _volume, _loop, _target);
     }
     protected SFXAudioBase PlayClip(int sourceID, AudioClip _clip, float _volume, bool _loop, Vector3 _position)
     {
         if (_volume == 0)
             return null;
-        return ObjectPoolManager<int, SFXAudioBase>.Spawn(0, null, _position, Quaternion.identity).Play(sourceID, _clip,_volume, _loop, null);
+        return TGameObjectPool_Static<int, SFXAudioBase>.Spawn(0, null, _position, Quaternion.identity).Play(sourceID, _clip,_volume, _loop, null);
     }
     protected SFXAudioBase PlayClip(int sourceID, AudioClip _clip, float _volume, bool _loop)
     {
         if (_volume == 0)
             return null;
-        return ObjectPoolManager<int, SFXAudioBase>.Spawn(1, null, Vector3.zero, Quaternion.identity).Play(sourceID,_clip,_volume,_loop,null);
+        return TGameObjectPool_Static<int, SFXAudioBase>.Spawn(1, null, Vector3.zero, Quaternion.identity).Play(sourceID,_clip,_volume,_loop,null);
     }
 }

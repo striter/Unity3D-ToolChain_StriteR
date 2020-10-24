@@ -98,7 +98,7 @@ public class EntityProperty_0Max<T> : EntityProperty<T>
         m_MaxAmount = m_MaxStart + m_MaxModify;
     }
 }
-public class EntitySheildItem:CClassPool
+public class EntitySheildItem:IObjectPool
 {
     public int m_ID { get; private set; }
     public float m_Amount { get; private set; }
@@ -109,6 +109,10 @@ public class EntitySheildItem:CClassPool
         return this;
     }
     public void AddDelta(float _delta) => m_Amount += _delta;
+
+    public void OnPoolInit() { }
+    public void OnPoolSpawn() {  }
+    public void OnPoolRecycle() { }
 }
 public class EntityShieldCombine
 {
@@ -121,7 +125,7 @@ public class EntityShieldCombine
     }
     public void SpawnShield(int _id, float _amount)
     {
-        EntitySheildItem shield = CClassPool.Spawn<EntitySheildItem>().Set(_id, _amount);
+        EntitySheildItem shield = TObjectPool<EntitySheildItem>.Spawn().Set(_id, _amount);
         m_Shields.Add(_id, shield);
         CheckTotalAmount();
     }
@@ -523,11 +527,11 @@ class EnumSelection : TReflection.UI.CPropertyFillElement
 {
     Text m_Text;
     List<string> m_Enums=new List<string>();
-    ObjectPoolListComponent<int, Button> m_ChunkButton;
+    TGameObjectPool_Component<int, Button> m_ChunkButton;
     public EnumSelection(Transform transform) : base(transform)
     {
         m_Text = transform.Find("Text").GetComponent<Text>();
-        m_ChunkButton = new ObjectPoolListComponent<int, Button>(transform.Find("Grid"), "GridItem");
+        m_ChunkButton = new TGameObjectPool_Component<int, Button>(transform.Find("Grid"), "GridItem");
         transform.GetComponent<Button>().onClick.AddListener(() => {
             m_ChunkButton.transform.SetActivate(!m_ChunkButton.transform.gameObject.activeSelf);
         });

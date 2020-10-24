@@ -8,9 +8,9 @@ using UnityEngine.UI;
 public class UIT_GridControllerBase<T> where T:class
 {
     public Transform transform => m_Pool.transform;
-    public ObjectPoolListBase<int, T> m_Pool { get; private set; }
+    public TGameObjectPool_Instance<int, T> m_Pool { get; private set; }
     public int m_Count => m_Pool.Count;
-    public UIT_GridControllerBase(ObjectPoolListBase<int, T> pool)
+    public UIT_GridControllerBase(TGameObjectPool_Instance<int, T> pool)
     {
         m_Pool = pool;
     }
@@ -33,7 +33,7 @@ public class UIT_GridControllerBase<T> where T:class
     public virtual void Sort(Comparison<KeyValuePair<int, T>> comparison) => m_Pool.Sort(comparison);
 }
 
-public class UIT_GridItemClass : CObjectPoolClass<int>
+public class UIT_GridItemClass : CGameObjectPool_Instance_Class<int>
 {
     public RectTransform rectTransform { get; private set; }
     public UIT_GridItemClass(Transform transform):base(transform){ rectTransform = transform as RectTransform; }
@@ -41,7 +41,7 @@ public class UIT_GridItemClass : CObjectPoolClass<int>
 
 public class UIT_GridControllerClass<T> : UIT_GridControllerBase<T> where T: UIT_GridItemClass
 {
-    public UIT_GridControllerClass(Transform _transform):base(new ObjectPoolListClass<int, T>(_transform, "GridItem"))
+    public UIT_GridControllerClass(Transform _transform):base(new TGameObjectPool_Instance_Class<int, T>(_transform, "GridItem"))
     {
     }
 }
@@ -49,7 +49,7 @@ public class UIT_GridControllerClass<T> : UIT_GridControllerBase<T> where T: UIT
 
 public class UIT_GridControllerComponent<T> : UIT_GridControllerBase<T> where T : Component
 {
-    public UIT_GridControllerComponent(Transform _transform) : base(new ObjectPoolListComponent<int, T>(_transform, "GridItem"))
+    public UIT_GridControllerComponent(Transform _transform) : base(new TGameObjectPool_Component<int, T>(_transform, "GridItem"))
     {
     }
 
@@ -60,7 +60,7 @@ public class UIT_GridControllerComponent<T> : UIT_GridControllerBase<T> where T 
 public class UIT_GridControllerGridItem<T>: UIT_GridControllerBase<T> where T:UIT_GridItem
 {
     public GridLayoutGroup m_GridLayout { get; private set; }
-    public UIT_GridControllerGridItem(Transform _transform) : base(new ObjectPoolListMonobehaviour<int,T>(_transform,"GridItem"))
+    public UIT_GridControllerGridItem(Transform _transform) : base(new TGameObjectPool_Instance_Monobehaviour<int,T>(_transform,"GridItem"))
     {
         m_GridLayout = _transform.GetComponent<GridLayoutGroup>();
     }
