@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteInEditMode, RequireComponent(typeof(Camera))]
 public class FPSCameraController : CameraController
 {
     public enum enum_RecoilSpreadMode
@@ -14,7 +15,6 @@ public class FPSCameraController : CameraController
     public static new FPSCameraController Instance => ninstance;
 
     public enum_RecoilSpreadMode E_RecoilMode = enum_RecoilSpreadMode.Triangle_Like;
-    public int I_PitchMin=-90, I_PitchMax=90;
     public bool B_SelfSetoffRecoil=true;
     public float f_angleSmoothParam = .1f;
     public float f_recoilPitchEdge=20f,f_recoilYawEdge=5f;
@@ -23,21 +23,20 @@ public class FPSCameraController : CameraController
     protected float f_recoilPitch, f_recoilYaw;
     protected float f_sprintRoll;
     protected float f_damagePitch, f_damageYaw, f_damageRoll;
+    protected float m_RollAdditive;
     protected override void Awake()
     {
         base.Awake();
         ninstance = this;
-        SetCameraYawClamp(I_PitchMin,I_PitchMax);
-        m_BindCamera = true;
 
         f_fovStart = m_Camera.fieldOfView;
         f_fovCurrent = f_fovStart;
     }
-    protected override Quaternion GetUnbindRotation()
+    protected override Vector3 GetRootRotateAdditive()
     {
         f_sprintRoll = Mathf.Lerp(f_sprintRoll, 0, f_angleSmoothParam);
         f_damageRoll = Mathf.Lerp(f_damageRoll, 0, f_angleSmoothParam);
-        m_Roll = Mathf.Lerp(m_Roll, f_sprintRoll + f_damageRoll, f_angleSmoothParam);
+        m_RollAdditive = Mathf.Lerp(m_RollAdditive, f_sprintRoll + f_damageRoll, f_angleSmoothParam);
         if (B_SelfSetoffRecoil)
         {
             if (Time.time > f_recoilAutoSetoff)
@@ -47,19 +46,16 @@ public class FPSCameraController : CameraController
             }
             f_damagePitch = Mathf.Lerp(f_damagePitch, 0, f_angleSmoothParam);
             f_damageYaw = Mathf.Lerp(f_damageYaw, 0, f_angleSmoothParam);
-            return Quaternion.Euler(m_Pitch + f_recoilPitch + f_damagePitch, m_Yaw + f_recoilYaw + f_damageYaw, m_Roll);
+            return new Vector3(f_recoilPitch + f_damagePitch, f_recoilYaw + f_damageYaw, m_RollAdditive);
         }
         else
         {
-            m_Pitch += f_recoilPitch;
-            m_Yaw += f_recoilYaw;
+            AddPitchYawRollDelta(new Vector3(f_recoilPitch + f_damagePitch, f_recoilYaw + f_damageYaw));
             f_recoilPitch = 0;
             f_recoilYaw = 0;
-            m_Pitch += f_damagePitch;
-            m_Yaw += f_damageYaw;
             f_damagePitch = 0;
             f_damageYaw = 0;
-            return base.GetUnbindRotation();
+            return Vector3.zero;
         }
     }
     public void OnSprintAnimation(float animationRoll)

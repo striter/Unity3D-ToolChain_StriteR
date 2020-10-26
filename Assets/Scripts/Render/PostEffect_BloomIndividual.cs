@@ -25,7 +25,6 @@ namespace Rendering.ImageEffect
             m_RenderCamera.fieldOfView = _camera.fieldOfView;
             m_RenderCamera.depthTextureMode = DepthTextureMode.None;
             m_RenderCamera.enabled = false;
-
             base.Awake();
         }
 

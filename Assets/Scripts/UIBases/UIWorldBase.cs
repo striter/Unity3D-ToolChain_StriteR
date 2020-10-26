@@ -22,7 +22,7 @@ public class UIWorldBase : MonoBehaviour
     protected virtual void Update()
     {
         if(B_AutoRotate)
-            transform.rotation = Quaternion.LookRotation(Vector3.ProjectOnPlane( transform.position- CameraController.MainCamera.transform.position, CameraController.MainCamera.transform.right), CameraController.MainCamera.transform.up);
+            transform.rotation = Camera.main.CameraProjectionOnPlane(transform.position);
     }
     protected void Hide()
     {

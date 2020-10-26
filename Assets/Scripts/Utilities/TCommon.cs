@@ -142,7 +142,7 @@ public static class TCommon
         float r = br / 255f; float g = bg / 255f; float b = bb / 255f; float a = cc / 255f;
         return new Color(r, g, b, a);
     }
-    public static Color ColorAlpha(Color origin, float alpha) => new Color(origin.r, origin.g, origin.b, alpha);
+    public static Color ChangeAlpha(this Color col, float alpha) => new Color(col.r, col.g, col.b, alpha);
     public static Color ToColor(this Vector4 colorVector) => new Color(colorVector.x, colorVector.y, colorVector.z, colorVector.w);
     public static Color ToColor(this Vector3 colorVector) => new Color(colorVector.x, colorVector.y, colorVector.z);
     public static Vector4 ToVector(this Color color) => new Vector4(color.r,color.g,color.b,color.a);
@@ -488,15 +488,8 @@ public static class TCommon
     public static Vector3 RandomUnitCircle(System.Random seed=null)
     {
         Vector2 randomCirlce = Vector2.zero;
-        if (seed != null)
-        {
-            float radin = RandomUnit(seed) * Mathf.PI;
-            randomCirlce = new Vector2(Mathf.Sin(radin), Mathf.Cos(radin));
-        }
-        else
-        {
-            randomCirlce = UnityEngine.Random.insideUnitCircle;
-        }
+        float radin =  RandomUnit(seed) * Mathf.PI;
+        randomCirlce = new Vector2(Mathf.Sin(radin), Mathf.Cos(radin));
         return new Vector3(randomCirlce.x, 0, randomCirlce.y);
     }
 
@@ -574,7 +567,21 @@ public static class TCommon
         return default(T);
     }
     #endregion
-    #region Extra Helper
+    #region Camera Helper
+    public static bool InputRayCheck(this Camera _camera, Vector2 _inputPos, out RaycastHit _hit, int _layerMask = -1)
+    {
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+        {
+            _hit = new RaycastHit();
+            return false;
+        }
+
+        return Physics.Raycast(_camera.ScreenPointToRay(_inputPos), out _hit, 1000, _layerMask);
+    }
+    public static Quaternion CameraProjectionOnPlane(this Camera _camera, Vector3 _position) => Quaternion.LookRotation(Vector3.ProjectOnPlane(_position - _camera.transform.position, _camera.transform.right), _camera.transform.up);
+
+    #endregion
+    #region Copy Helper
     public static Mesh Copy(this Mesh target)
     {
         Mesh copy = new Mesh();
@@ -599,15 +606,6 @@ public static class TCommon
             copy.SetIndices(target.GetIndices(i), MeshTopology.Triangles, i);
         return copy;
     }
-    public static bool InputRayCheck(this Camera _camera, Vector2 _inputPos, out RaycastHit _hit, int _layerMask = -1)
-    {
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
-        {
-            _hit = new RaycastHit();
-            return false;
-        }
-
-        return Physics.Raycast(_camera.ScreenPointToRay(_inputPos), out _hit, 1000, _layerMask);
-    }
+    
     #endregion
 }

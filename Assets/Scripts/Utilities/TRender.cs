@@ -20,5 +20,4 @@ public static class TRender
         }
     }
 
-    public static Color ChangeAlpha(this Color col, float alpha) => new Color(col.r, col.g, col.b, alpha);
 }

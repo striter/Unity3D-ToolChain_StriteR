@@ -1,112 +1,82 @@
 ﻿using UnityEngine;
 
-public class CameraController : SingletonMono<CameraController>  {
-    [Range(0,1)]
-    public float F_CameraRotateSmooth = .3f;
-    [Range(0, 1)]
-    public float F_CameraMoveSmooth = .3f;
-    public bool B_InvertCamera = false;
-    public float F_RotateSensitive = 1;
+
+[ExecuteInEditMode,RequireComponent(typeof(Camera))]
+public class CameraController : SingletonMono<CameraController>
+{
 
     public Camera m_Camera { get; private set; }
-    public Transform tf_AttachTo { get; private set; }
-    protected Transform tf_MainCamera;
-    protected Transform tf_CameraLookAt;
+    [Header("Position Param")]
+    [SerializeField]
+    protected Transform m_BindRoot;
+    [SerializeField]
+    protected Vector3 m_BindPosOffset;
+    [Range(0.01f, 5f)]
+    public float m_MoveDamping = 1f;
+    [Header("Rotation Param")]
+    [SerializeField]
+    protected Transform m_LookAt;
+    [SerializeField]
+    protected Vector3 m_InputRotEuler;
+    [SerializeField]
+    protected RangeFloat m_InputPitchClamp;
+    [Range(0.01f, 5f)]
+    public float m_RotateDamping = 1f;
 
-    protected bool m_BindCamera;
-    protected int m_YawAngleMin = 0;
-    protected int m_YawAngleMax = 30;
-
-    Vector3 m_RootForward;
-    Vector3 m_RootRightward;
-
-    public float m_Yaw { get; protected set; } = 0;
-    public float m_Pitch { get; protected set; } = 0;
-    public float m_Roll { get; protected set; } = 0;
-    #region Preset
     protected override void Awake()
     {
         base.Awake();
-        m_Camera = Camera.main;
-        tf_MainCamera = m_Camera.transform;
+        m_Camera = GetComponent<Camera>();
     }
-
-    #endregion
-    #region Interact Apis
-    protected void SetCameraYawClamp(int minRotationClamp = -1, int maxRotationClamp = -1)
-    {
-        m_YawAngleMin = minRotationClamp;
-        m_YawAngleMax = maxRotationClamp;
-        m_Pitch = Mathf.Clamp(m_Pitch, m_YawAngleMin, m_YawAngleMax);
-    }
-
-    public void RotateCamera(Vector2 _input)
-    {
-        m_Yaw += _input.x * F_RotateSensitive;
-        m_Pitch += (B_InvertCamera ? _input.y : -_input.y) * F_RotateSensitive;
-        m_Pitch = Mathf.Clamp(m_Pitch, m_YawAngleMin, m_YawAngleMax);
-    }
-
-    public CameraController Attach(Transform toTransform,bool bindCamera)
-    {
-        m_BindCamera = bindCamera;
-        tf_AttachTo = toTransform;
-        return this;
-    }
-    public CameraController SetCameraRotation(Vector3 rotation)
-    {
-        m_Pitch = Mathf.Clamp(rotation.x, m_YawAngleMin, m_YawAngleMax);
-        m_Yaw = rotation.y;
-        m_Roll = rotation.z;
-        return this;
-    }
-
-    public CameraController SetLookAt(Transform lookAtTrans)
-    {
-        tf_CameraLookAt = lookAtTrans;
-        return this;
-    }
-
-    public void ForceSetCamera() => UpdateCameraPositionRotation(1f,1f);
-
-
-    #endregion
-    #region Calculate
-    protected virtual Vector3 GetUnbindRootOffset() => Vector3.zero;
-    protected virtual Quaternion GetUnbindRotation() => Quaternion.Euler(m_Pitch, m_Yaw, m_Roll);
-
     protected virtual void LateUpdate()
     {
-        if (!tf_AttachTo)
+        if (!m_BindRoot)
             return;
 
-        UpdateCameraPositionRotation(F_CameraMoveSmooth, F_CameraRotateSmooth);
+        UpdateCameraPositionRotation(m_MoveDamping, m_RotateDamping,Time.deltaTime);
     }
-
-    void UpdateCameraPositionRotation(float moveLerp,float rotateLerp)
+    Matrix4x4 GetBindRootMatrix() => Matrix4x4.TRS(m_BindRoot.position, Quaternion.Euler(0, m_InputRotEuler.y, 0), Vector3.one);
+    void UpdateCameraPositionRotation(float _moveDamping, float _rotateDamping,float _deltaTime)
     {
-        Vector3 cameraPosition = tf_AttachTo.position;
-        Quaternion cameraRotation = tf_AttachTo.rotation;
-        if(!m_BindCamera)
-        {
-            Matrix4x4 rootMatrix = Matrix4x4.TRS(cameraPosition, Quaternion.Euler(0, m_Yaw, 0), Vector3.one);
-            cameraPosition = rootMatrix.MultiplyPoint(GetUnbindRootOffset());
-            m_RootForward = rootMatrix.MultiplyVector(Vector3.forward);
-            m_RootRightward = rootMatrix.MultiplyVector(Vector3.right);
+        Matrix4x4 rootMatrix = GetBindRootMatrix(); 
+        Vector3 cameraPosition = rootMatrix.MultiplyPoint(m_BindPosOffset + GetRootOffsetAdditive());
+        transform.position = Vector3.Lerp(transform.position, cameraPosition, _deltaTime / _moveDamping); ;
 
-            cameraRotation = tf_CameraLookAt ? Quaternion.LookRotation(tf_CameraLookAt.position - tf_MainCamera.position, Vector3.up) : GetUnbindRotation();
-        }
-
-        tf_MainCamera.position = Vector3.Lerp(tf_MainCamera.position, cameraPosition, moveLerp);
-        tf_MainCamera.rotation = Quaternion.Lerp(tf_MainCamera.rotation, cameraRotation, rotateLerp);
+        Vector3 cameraEuler = m_LookAt ? Quaternion.LookRotation(m_LookAt.position - transform.position, Vector3.up).eulerAngles : m_InputRotEuler;
+        
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(cameraEuler + GetRootRotateAdditive()), _deltaTime / _rotateDamping); 
     }
 
+    public void ForceSetCamera() => UpdateCameraPositionRotation(1f, 1f,1f);
+    public CameraController SetCameraBindRoot(Transform _bindRoot)
+    {
+        m_BindRoot = _bindRoot;
+        return this;
+    }
+    public CameraController LookAt(Transform lookAtTrans)
+    {
+        m_LookAt = lookAtTrans;
+        return this;
+    }
+    public void AddPitchYawRollDelta(Vector3 _delta) 
+    {
+        m_InputRotEuler += _delta;
+        m_InputRotEuler.y = Mathf.Clamp(m_InputRotEuler.y, m_InputPitchClamp.start, m_InputPitchClamp.length);   
+    }
+    protected virtual Vector3 GetRootOffsetAdditive() => Vector3.zero;
+    protected virtual Vector3 GetRootRotateAdditive() => Vector3.zero;
+
+
+#if UNITY_EDITOR
+    #region Editor
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Gizmos_Extend.DrawCylinder(m_BindRoot.position,Quaternion.LookRotation( Vector3.up), .2f,2f);
+
+        Gizmos.matrix = GetBindRootMatrix();
+        Gizmos.DrawWireSphere(m_BindPosOffset ,.5f);
+    }
     #endregion
-    #region Get/Set
-    public static Camera MainCamera => Instance.m_Camera;
-    public static Quaternion CameraXZRotation=> Quaternion.LookRotation(CameraXZForward, Vector3.up);
-    public static Vector3 CameraXZForward => Instance.m_RootForward;
-    public static Vector3 CameraXZRightward => Instance.m_RootRightward;
-    public static Quaternion CameraProjectionOnPlane(Vector3 position)=> Quaternion.LookRotation(Vector3.ProjectOnPlane(position - MainCamera.transform.position, MainCamera.transform.right), MainCamera.transform.up);
-    #endregion
+#endif
 }

@@ -2,41 +2,39 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteInEditMode,RequireComponent(typeof(Camera))]
 public class TPSCameraController : CameraController
 {
     protected static TPSCameraController ninstance;
     public static new TPSCameraController Instance => ninstance;
-    public Vector3 TPSOffset=new Vector3(6,3,1);
-    public int I_PitchMin = -90, I_PitchMax = 90;
+    [Header("Shake Param")]
     public int I_ShakeParam;
-    public float F_ReverseCheck;
+    public float m_ShakeReverseDuration=.2f;
     Vector3 v3_Recoil;
     Vector3 v3_Shake;
     float inverseCheck = 0;
     bool b_shakeReverse;
-    protected override Vector3 GetUnbindRootOffset()
+    protected override Vector3 GetRootOffsetAdditive()
     {
         inverseCheck += Time.deltaTime;
-        if (inverseCheck > F_ReverseCheck)
+        if (inverseCheck > m_ShakeReverseDuration)
         {
             b_shakeReverse = !b_shakeReverse;
-            inverseCheck -= F_ReverseCheck;
+            inverseCheck -= m_ShakeReverseDuration;
         }
 
         v3_Shake = Vector3.Lerp(v3_Shake, Vector3.zero, I_ShakeParam * Time.deltaTime);
-        return TPSOffset + (b_shakeReverse ? -1 : 1) * v3_Shake;
+        return (b_shakeReverse ? -1 : 1) * v3_Shake;
     }
-    protected override Quaternion GetUnbindRotation()
+    protected override Vector3 GetRootRotateAdditive()
     {
         v3_Recoil = Vector3.Lerp(v3_Recoil, Vector3.zero, Time.deltaTime * 5f);
-        return Quaternion.Euler(m_Pitch + v3_Recoil.x, m_Yaw + v3_Recoil.y, m_Roll + v3_Recoil.z);
+        return v3_Recoil;
     }
     protected override void Awake()
     {
         ninstance = this;
         base.Awake();
-        m_BindCamera = true;
-        SetCameraYawClamp(I_PitchMin, I_PitchMax);
     }
     
     public void AddRecoil(float recoilAmount)=>v3_Recoil +=new Vector3(0,( TCommon.RandomBool() ? 1 : -1) * recoilAmount, 0);

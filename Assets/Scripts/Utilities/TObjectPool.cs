@@ -365,7 +365,7 @@ public class TGameObjectPool_Instance_Class<T, Y> : TGameObjectPool_Instance_Int
 }
 #endregion
 #region Monobehaviour
-public class TGameObjectPool_Instance_Monobehaviour<T> : MonoBehaviour, IGameObjectPool_Instance<T>
+public class CGameObjectPool_Instance_Monobehaviour<T> : MonoBehaviour, IGameObjectPool_Instance<T>
 {
     public T m_Identity { get; private set; }
     protected Action<T> DoRecycle { get; private set; }
@@ -385,7 +385,7 @@ public class TGameObjectPool_Instance_Monobehaviour<T> : MonoBehaviour, IGameObj
     }
 }
 
-public class TGameObjectPool_Instance_Monobehaviour<T, Y> : TGameObjectPool_Instance_Interface<T, Y> where Y : TGameObjectPool_Instance_Monobehaviour<T>
+public class TGameObjectPool_Instance_Monobehaviour<T, Y> : TGameObjectPool_Instance_Interface<T, Y> where Y : CGameObjectPool_Instance_Monobehaviour<T>
 {
     public TGameObjectPool_Instance_Monobehaviour(Transform poolTrans, string itemName) : base(poolTrans, itemName)
     {
