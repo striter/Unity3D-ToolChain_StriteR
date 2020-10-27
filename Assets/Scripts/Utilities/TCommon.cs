@@ -126,27 +126,6 @@ public static class TCommon
     }
 
     #endregion
-    #region Color
-    public static Color GetHexColor(string hex)
-    {
-        if (hex.Length != 8)
-        {
-            Debug.LogError("Hex Color Length Not Equals 8!");
-            return Color.magenta;
-        }
-
-        byte br = byte.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
-        byte bg = byte.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
-        byte bb = byte.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
-        byte cc = byte.Parse(hex.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
-        float r = br / 255f; float g = bg / 255f; float b = bb / 255f; float a = cc / 255f;
-        return new Color(r, g, b, a);
-    }
-    public static Color ChangeAlpha(this Color col, float alpha) => new Color(col.r, col.g, col.b, alpha);
-    public static Color ToColor(this Vector4 colorVector) => new Color(colorVector.x, colorVector.y, colorVector.z, colorVector.w);
-    public static Color ToColor(this Vector3 colorVector) => new Color(colorVector.x, colorVector.y, colorVector.z);
-    public static Vector4 ToVector(this Color color) => new Vector4(color.r,color.g,color.b,color.a);
-    #endregion
     #region Basic
     public static float GetXZDistance(Vector3 start, Vector3 end) => new Vector2(start.x - end.x, start.z - end.z).magnitude;
     public static float GetXZSqrDistance(Vector3 start, Vector3 end) => new Vector2(start.x - end.x, start.z - end.z).sqrMagnitude;
@@ -174,6 +153,8 @@ public static class TCommon
 
     public static Vector3 Multiply(this Vector3 _src, Vector3 _tar) => new Vector3(_src.x * _tar.x, _src.y * _tar.y, _src.z * _tar.z);
     public static Vector3 Divide(this Vector3 _src, Vector3 _tar) => new Vector3(_src.x / _tar.x, _src.y / _tar.y, _src.z / _tar.z);
+    public static Vector4 Multiply(this Vector4 _src, Vector4 _tar) => new Vector4(_src.x * _tar.x, _src.y * _tar.y, _src.z * _tar.z,_src.w*_tar.w);
+    public static Vector4 Divide(this Vector4 _src, Vector4 _tar) => new Vector4(_src.x / _tar.x, _src.y / _tar.y, _src.z / _tar.z,_src.w/_tar.w);
     public static bool InRange(this RangeFloat _value, float _check) => _value.start <= _check && _check <= _value.end;
     public static float InRangeScale(this RangeFloat _value, float _check) => Mathf.InverseLerp(_value.start, _value.end, _check);
     #endregion
@@ -492,18 +473,13 @@ public static class TCommon
         randomCirlce = new Vector2(Mathf.Sin(radin), Mathf.Cos(radin));
         return new Vector3(randomCirlce.x, 0, randomCirlce.y);
     }
-
     public static int Random(this RangeInt ir, System.Random seed = null) => ir.start + Random(ir.length + 1, seed);
     public static float Random(this RangeFloat ir, System.Random seed = null) => seed != null ? seed.Next((int)(ir.start * 1000), (int)(ir.end * 1000)) / 1000f : UnityEngine.Random.Range(ir.start, ir.end);
-
     public static int RandomIndex<T>(this List<T> randomList, System.Random seed = null) => Random(randomList.Count,seed);
     public static int RandomIndex<T>(this T[] randomArray, System.Random randomSeed = null) => Random(randomArray.Length,randomSeed);
-
     public static T RandomItem<T>(this List<T> randomList, System.Random randomSeed = null) => randomList[randomSeed != null ? randomSeed.Next(randomList.Count) : UnityEngine.Random.Range(0, randomList.Count)];
     public static T RandomItem<T>(this T[] array, System.Random randomSeed = null) => randomSeed != null ? array[randomSeed.Next(array.Length)] : array[UnityEngine.Random.Range(0, array.Length)];
-
     public static T RandomItem<T>(this T[,] array, System.Random randomSeed = null) => randomSeed != null ? array[randomSeed.Next(array.GetLength(0)), randomSeed.Next(array.GetLength(1))] : array[UnityEngine.Random.Range(0, array.GetLength(0)), UnityEngine.Random.Range(0, array.GetLength(1))];
-
     public static T RandomKey<T, Y>(this Dictionary<T, Y> dic, System.Random randomSeed = null) => dic.ElementAt(Random(dic.Count, randomSeed)).Key;
     public static Y RandomValue<T, Y>(this Dictionary<T, Y> dic, System.Random randomSeed = null) => dic.ElementAt(Random(dic.Count, randomSeed)).Value;
     public static bool RandomBool(System.Random seed = null) => seed != null ? seed.Next(0, 2) > 0 : UnityEngine.Random.Range(0, 2) > 0;

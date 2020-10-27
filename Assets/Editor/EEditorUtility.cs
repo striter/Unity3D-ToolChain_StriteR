@@ -147,6 +147,7 @@ namespace TEditor
                 CreateOrReplaceSubAsset(subValue.Key, _mainAsset.Value, subValue.Value);
             AssetDatabase.SaveAssets();
             Debug.Log("Asset Combination Generate Successful:" + _mainAsset.Key);
+            EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(_mainAsset.Value));
         }
 
         public static bool SelectPath(UnityEngine.Object _srcAsset, out string savePath, out string objName)
