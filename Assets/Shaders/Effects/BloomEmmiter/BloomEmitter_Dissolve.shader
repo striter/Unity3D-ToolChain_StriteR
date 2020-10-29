@@ -1,4 +1,4 @@
-﻿Shader "Game/BloomEmitter/Bloom_Dissolve"
+﻿Shader "Game/Effects/BloomEmitter/Bloom_Dissolve"
 {
 	Properties
 	{
@@ -19,7 +19,7 @@
 		Cull Off
 
 		CGINCLUDE
-		#include "../CommonLightingInclude.cginc"
+		#include "../../CommonLightingInclude.cginc"
 		#include "UnityCG.cginc"
 		#include "AutoLight.cginc"
 		#include "Lighting.cginc"

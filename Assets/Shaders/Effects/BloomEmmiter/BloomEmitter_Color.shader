@@ -1,4 +1,4 @@
-﻿Shader "Game/BloomEmitter/BaseColor"
+﻿Shader "Game/Effects/BloomEmitter/Color"
 {
 	Properties
 	{

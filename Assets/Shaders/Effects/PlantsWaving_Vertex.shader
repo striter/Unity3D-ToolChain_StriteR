@@ -1,6 +1,6 @@
 ﻿// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
 
-Shader "Game/Effect/PlantsWaving_Vertex"
+Shader "Game/Effects/PlantsWaving_Vertex"
 {
 	Properties
 	{

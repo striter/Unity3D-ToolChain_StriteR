@@ -7,19 +7,19 @@
 		SubShader
 		{
 			Tags { "RenderType" = "BloomColor" "Queue" = "Geometry" }
-			UsePass "Game/BloomEmitter/BaseColor/MAIN"
+			UsePass "Game/Effects/BloomEmitter/Color/MAIN"
 		}
 
 		SubShader
 		{
 			Tags{ "RenderType" = "BloomParticlesAdditive" "Queue" = "Transparent" }
-			UsePass "Game/BloomEmitter/Particles/Additive/MAIN"
+			UsePass "Game/Effects/BloomEmitter/Particles/Additive/MAIN"
 		}
 
 		SubShader
 		{
 			Tags{ "RenderType" = "BloomParticlesAlphaBlend" "Queue" = "Transparent" }
-			UsePass "Game/BloomEmitter/Particles/AlphaBlend/MAIN"
+			UsePass "Game/Effects/BloomEmitter/Particles/AlphaBlend/MAIN"
 		}
 
 		SubShader
@@ -65,7 +65,7 @@
 				ENDCG
 			}
 
-			UsePass "Game/BloomEmitter/Bloom_Dissolve/EDGE"
+			UsePass "Game/Effects/BloomEmitter/Bloom_Dissolve/EDGE"
 		}
 	}
 }

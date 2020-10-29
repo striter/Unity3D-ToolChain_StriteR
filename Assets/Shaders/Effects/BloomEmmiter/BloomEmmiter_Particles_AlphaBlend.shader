@@ -1,4 +1,4 @@
-﻿Shader "Game/BloomEmitter/Particles/AlphaBlend"
+﻿Shader "Game/Effects/BloomEmitter/Particles/AlphaBlend"
 {
 	Properties
 	{

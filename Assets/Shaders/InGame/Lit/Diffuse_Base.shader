@@ -1,4 +1,4 @@
-﻿Shader "Game/Common/Diffuse_Base"
+﻿Shader "Game/Lit/Diffuse/Base"
 {
 	Properties
 	{
@@ -11,7 +11,7 @@
 			Cull Back
 			CGINCLUDE
 
-			#include "../CommonLightingInclude.cginc"
+			#include "../../CommonLightingInclude.cginc"
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
 			#include "AutoLight.cginc"
