@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using Rendering.Optimize;
+
 namespace TEditor
 {
     [CustomEditor(typeof(AnimationInstanceController))]
@@ -15,21 +14,33 @@ namespace TEditor
         MeshRenderer m_Renderer;
         private void OnEnable()
         {
-            m_TargetBlock = new MaterialPropertyBlock();
             m_Target = (target as AnimationInstanceController);
+
+            if (AssetDatabase.IsMainAsset(m_Target.gameObject))
+                return;
+
+            if (!m_Target.m_Data)
+                return;
+
+            m_TargetBlock = new MaterialPropertyBlock();
             m_Renderer = m_Target.GetComponent<MeshRenderer>();
             m_Target.Init(m_TargetBlock);
+            m_Target.SetAnimation(m_StartAnim);
             EditorApplication.update += Update;
         }
         private void OnDisable()
         {
+            if (!m_Target.m_Inited)
+                return;
+
             EditorApplication.update -= Update;
         }
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            if (!m_Target.m_Data)
+            if (!m_Target.m_Inited)
                 return;
+
             EditorGUILayout.BeginVertical();
             EditorGUILayout.LabelField("Editor Play Test");
             EditorGUILayout.BeginHorizontal();
@@ -61,6 +72,7 @@ namespace TEditor
                 return;
             m_Target.Tick(m_TestTick);
             m_Renderer.SetPropertyBlock(m_TargetBlock);
+            EditorUtility.SetDirty(this);
         }
     }
 }
