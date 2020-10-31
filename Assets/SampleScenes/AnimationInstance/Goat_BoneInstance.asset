@@ -63,7 +63,7 @@ MonoBehaviour:
     m_FrameRate: 30
     m_FrameCount: 33
     m_Length: 1.1
-    m_Loop: 1
+    m_Loop: 0
     m_Events:
     - m_EventFrame: 1
       m_EventIdentity: notify_i
@@ -90,7 +90,11 @@ MonoBehaviour:
     m_Length: 0.8000001
     m_Loop: 1
     m_Events: []
-  m_ExposeBones: []
+  m_ExposeBones:
+  - m_BoneName: Bip001 Pelvis
+    m_BoneIndex: 4
+    m_Position: {x: -0.000355664, y: 0.033677325, z: 0.2295269}
+    m_Direction: {x: -1, y: 0.0000028610234, z: 3.410605e-13}
 --- !u!43 &5208099002548712821
 Mesh:
   m_ObjectHideFlags: 0

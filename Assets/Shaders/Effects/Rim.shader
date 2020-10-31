@@ -1,4 +1,4 @@
-﻿Shader "Game/Effect/Rim"
+﻿Shader "Game/Effects/Rim"
 {
 	Properties
 	{

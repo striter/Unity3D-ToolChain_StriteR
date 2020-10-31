@@ -1,6 +1,6 @@
 ﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
-Shader "Effect/Raymarch/VolumetricFog"
+Shader "Game/Effects/Raymarch/VolumetricFog"
 {
     Properties
     {

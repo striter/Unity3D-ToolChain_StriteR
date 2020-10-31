@@ -4,10 +4,11 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: UI_Sprite_Outline
-  m_Shader: {fileID: 4800000, guid: 8b3d21350e219a649b1d4f0bd5db81bc, type: 3}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprite_BSC
+  m_Shader: {fileID: 4800000, guid: 2dd5c8293dfe3cb44863ea7886e1a77b, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -67,8 +68,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _Brightness: 1
     - _BumpScale: 1
     - _ColorMask: 15
+    - _Contrast: 1
     - _Cutoff: 0.5
     - _DeltaX: 1
     - _DeltaY: 1
@@ -84,6 +87,7 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Saturation: 1
     - _ShineWidth: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -98,9 +102,11 @@ Material:
     - _Width: 2.63
     - _ZWrite: 1
     m_Colors:
+    - _BSC: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlowVec: {r: 0, g: 0, b: -0.1, a: 0}
     - _LightColor: {r: 1, g: 1, b: 1, a: 0}
     - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpriteRect: {r: 0.061062366, g: 0, b: 0.99776113, a: 0.99769324}
+  m_BuildTextureStacks: []

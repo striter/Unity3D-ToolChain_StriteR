@@ -1,4 +1,4 @@
-﻿Shader "Game/Effect/Depth/VolumetricFog_Spherical"
+﻿Shader "Game/Effects/Depth/VolumetricFog_Spherical"
 {
     Properties
     {

@@ -1,13 +1,13 @@
 ﻿
-Shader "Game/UI/Sprite/Shadow" 
-{ 
+Shader "Game/UI/Sprite_Outline"
+{
 	Properties
 	{
 		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
 		_Color("Tint", Color) = (1,1,1,1)
 
-		_ShadowColor("Shadow Color",Color)=(1,1,1,1)
-		_ShadowOffset("Shadow Offset",Vector)=(0,0,0,0)
+		_OutlineColor("Outline Color",Color)=(1,1,1,1)
+		_Width("Outline Width",float)=1
 
 		_StencilComp("Stencil Comparison", Float) = 8
 		_Stencil("Stencil ID", Float) = 0
@@ -18,9 +18,9 @@ Shader "Game/UI/Sprite/Shadow"
 		_ColorMask("Color Mask", Float) = 15
 
 		[Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip("Use Alpha Clip", Float) = 0
-}
+	}
 
-SubShader
+	SubShader
 	{
 		Tags
 		{
@@ -89,16 +89,20 @@ SubShader
 
 			sampler2D _MainTex;
 			float4 _MainTex_TexelSize;
-			float4 _ShadowOffset;
-			float4 _ShadowColor;
+			float _Width;
+			float4 _OutlineColor;
 
 			fixed4 frag(v2f IN) : SV_Target
 			{
-				float shadow = tex2D(_MainTex,IN.texcoord + _ShadowOffset.xy*_MainTex_TexelSize).a;
+				float outline =
+				tex2D(_MainTex,IN.texcoord + float2(1,0)*_MainTex_TexelSize*_Width).a +
+				tex2D(_MainTex,IN.texcoord + float2(-1,0)*_MainTex_TexelSize*_Width).a +
+				tex2D(_MainTex,IN.texcoord + float2(0,1)*_MainTex_TexelSize*_Width).a +
+				tex2D(_MainTex,IN.texcoord + float2(0,-1)*_MainTex_TexelSize*_Width).a;
 
 				float4 color = tex2D(_MainTex, IN.texcoord);
 				if (color.a <= .5)
-					return _ShadowColor * shadow;
+					return _OutlineColor * outline;
 				else
 					return color*IN.color;
 			}

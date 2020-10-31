@@ -1,13 +1,13 @@
-﻿Shader "Game/Common/Diffuse_Texture_Normalmap"
+﻿Shader "Game/Lit/Diffuse_Normalmap"
 {
 	Properties
 	{
 		_MainTex("Texture", 2D) = "white" {}
 		_BumpMap("Normal Map",2D) = "white"{}
 	}
-		SubShader
+	SubShader
 	{
-	Tags { "RenderType" = "Opaque" "Queue" = "Geometry" }
+		Tags { "RenderType" = "Opaque" "Queue" = "Geometry" }
 		Cull Back
 		CGINCLUDE
 		#include "UnityCG.cginc"
@@ -132,6 +132,6 @@
 			ENDCG
 		}
 
-		USEPASS "Game/Common/Diffuse_Base/SHADOWCASTER"
+		USEPASS "Game/Lit/Diffuse_Base/SHADOWCASTER"
 	}
 }

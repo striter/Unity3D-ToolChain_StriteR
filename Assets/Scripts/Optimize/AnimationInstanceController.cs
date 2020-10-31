@@ -17,13 +17,13 @@ namespace Rendering.Optimize
         public int m_CurrentAnimIndex { get; private set; }
         public float m_TimeElapsed { get; private set; }
         public MeshRenderer m_MeshRenderer { get; private set; }
-        MeshFilter m_MeshFilter;
+        public MeshFilter m_MeshFilter { get; private set; }
         Texture2D m_AnimAtlas;
         Action<string> OnAnimEvent;
         public AnimationInstanceController Init(MaterialPropertyBlock _sharedBlock, Action<string> _OnAnimEvent = null)
         {
             if (!m_Data)
-                throw new System.Exception("Invalid Data Found Of:" + gameObject);
+                throw new Exception("Invalid Data Found Of:" + gameObject);
 
             m_SharedPropertyBlock = _sharedBlock;
             m_MeshRenderer = GetComponent<MeshRenderer>();
@@ -37,23 +37,33 @@ namespace Rendering.Optimize
             return this;
         }
 
+
         public AnimationInstanceController SetAnimation(int _animIndex)
         {
             m_TimeElapsed = 0;
             if (_animIndex < 0 || _animIndex >= m_Data.m_Animations.Length)
-                throw new System.Exception("Invalid Animation Index Found:" + _animIndex);
+            {
+                Debug.LogError("Invalid Animation Index Found:" + _animIndex);
+                return this;
+            }
 
             m_CurrentAnimIndex = _animIndex;
             return this;
         }
         public void SetTime(float _time) => m_TimeElapsed = _time;
-        public void SetScale(float _scale)
+        public void SetTimeScale(float _scale)
         {
             if (m_CurrentAnimIndex < 0 || m_CurrentAnimIndex >= m_Data.m_Animations.Length)
                 return;
             m_TimeElapsed = m_Data.m_Animations[m_CurrentAnimIndex].m_Length * _scale;
         }
-
+         
+        public float GetScale()
+        {
+            if (m_CurrentAnimIndex < 0 || m_CurrentAnimIndex >= m_Data.m_Animations.Length)
+                return 0f;
+            return m_TimeElapsed / m_Data.m_Animations[m_CurrentAnimIndex].m_Length;
+        }
         public void Tick(float _deltaTime)
         {
             if (m_CurrentAnimIndex < 0 || m_CurrentAnimIndex >= m_Data.m_Animations.Length)
@@ -115,7 +125,6 @@ namespace Rendering.Optimize
             m_BoneParent.localPosition = Vector3.zero;
             m_BoneParent.localRotation = Quaternion.identity;
             m_BoneParent.localScale = Vector3.one;
-
             m_Bones = new Transform[m_Data.m_ExposeBones.Length];
             for (int i = 0; i < m_Data.m_ExposeBones.Length; i++)
             {
@@ -144,19 +153,6 @@ namespace Rendering.Optimize
             return m_AnimAtlas.GetPixel(boneIndex * 3 + row, frame);
         }
         #endregion
-
-
-#if UNITY_EDITOR
-        public static bool m_DrawGizmos = false;
-        private void OnDrawGizmos()
-        {
-            if (!m_DrawGizmos || !m_Data)
-                return;
-            Gizmos.color = Color.white;
-            Gizmos.matrix = transform.localToWorldMatrix;
-            Gizmos.DrawWireCube(m_MeshFilter.sharedMesh.bounds.center, m_MeshFilter.sharedMesh.bounds.size);
-        }
-#endif
     }
 
 }

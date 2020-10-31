@@ -16,7 +16,7 @@ public class AnimationInstanceSampleHelper : MonoBehaviour
             {
                 AnimationInstanceController controller = GameObject.Instantiate(m_Prefab,transform).GetComponent<AnimationInstanceController>().Init(new MaterialPropertyBlock(), Debug.Log);
                 controller.transform.localPosition = new Vector3(i*10,0, j * 10);
-                controller.SetAnimation(m_Anim).SetScale(Random.value);
+                controller.SetAnimation(m_Anim).SetTimeScale(Random.value);
                 m_Controllers.Add(controller);
             }
         }

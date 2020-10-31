@@ -1,4 +1,4 @@
-﻿Shader "Game/UI/UI_OverlayOpaqueBlurBG" {
+﻿Shader "Game/UI/OpaqueBlurSample" {
 	Properties {
 		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
 			_StencilComp("Stencil Comparison", Float) = 8

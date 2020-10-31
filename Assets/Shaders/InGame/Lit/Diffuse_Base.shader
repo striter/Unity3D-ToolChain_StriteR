@@ -1,4 +1,4 @@
-﻿Shader "Game/Lit/Diffuse/Base"
+﻿Shader "Game/Lit/Diffuse_Base"
 {
 	Properties
 	{

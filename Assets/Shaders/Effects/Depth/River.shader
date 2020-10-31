@@ -1,4 +1,4 @@
-﻿Shader "Game/Effect/Depth/River"
+﻿Shader "Game/Effects/Depth/River"
 {
 	Properties
 	{

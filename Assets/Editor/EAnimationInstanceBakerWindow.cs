@@ -260,7 +260,7 @@ namespace TEditor
                         _skinnedMeshRenderer.BakeMesh(boundsCheckMesh);
                         Vector3[] verticies = boundsCheckMesh.vertices;
                         for (int k = 0; k < verticies.Length; k++)
-                            boundsCheck.CheckBounds(verticies[k]);
+                            boundsCheck.CheckBounds(verticies[k].Divide(_skinnedMeshRenderer.transform.localScale));
 
                         boundsCheckMesh.Clear();
                     }

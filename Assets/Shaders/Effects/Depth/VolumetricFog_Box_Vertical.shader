@@ -1,4 +1,4 @@
-﻿Shader "Game/Effect/Depth/VolumetricFog_Box_Vertical"
+﻿Shader "Game/Effects/Depth/VolumetricFog_Box_Vertical"
 {
     Properties
     {

@@ -7,72 +7,128 @@ namespace TEditor
     [CustomEditor(typeof(AnimationInstanceController))]
     public class EAnimationInstanceController : Editor
     {
-        AnimationInstanceController m_Target;
-        public float m_TestTick = 0;
-        public int m_StartAnim = 0;
+        PreviewRenderUtility m_Preview;
+        AnimationInstanceController m_PreviewTarget;
+        MeshRenderer m_PreviewMeshRenderer;
+        GameObject m_BoundsViewer;
         MaterialPropertyBlock m_TargetBlock;
-        MeshRenderer m_Renderer;
+        float m_PreviewTickSpeed = 1f;
+        int m_PreviewAnimIndex = 0;
+        bool m_PreviewReplay = true;
+        Vector2 m_RotateDelta;
+        Vector3 m_CameraDirection;
+        float m_CameraDistance=8f;
+        public override bool HasPreviewGUI()
+        {
+            if (!(target as AnimationInstanceController).m_Data)
+                return false;
+            return true;
+        } 
         private void OnEnable()
         {
-            m_Target = (target as AnimationInstanceController);
-
-            if (AssetDatabase.IsMainAsset(m_Target.gameObject))
+            if (!HasPreviewGUI())
                 return;
+            m_CameraDirection = Vector3.Normalize(new Vector3(0f,3f,15f));
+            m_Preview = new PreviewRenderUtility();
+            m_Preview.camera.fieldOfView = 30.0f;
+            m_Preview.camera.nearClipPlane = 0.3f;
+            m_Preview.camera.farClipPlane = 1000;
 
-            if (!m_Target.m_Data)
-                return;
+
+            m_PreviewTarget = GameObject.Instantiate(((Component)target).gameObject).GetComponent<AnimationInstanceController>();
+            m_Preview.AddSingleGO(m_PreviewTarget.gameObject);
+            m_PreviewMeshRenderer = m_PreviewTarget.GetComponent<MeshRenderer>();
+
+
+            m_PreviewTarget.transform.position = Vector3.zero;
 
             m_TargetBlock = new MaterialPropertyBlock();
-            m_Renderer = m_Target.GetComponent<MeshRenderer>();
-            m_Target.Init(m_TargetBlock);
-            m_Target.SetAnimation(m_StartAnim);
+            m_PreviewTarget.Init(m_TargetBlock);
+            m_PreviewTarget.SetAnimation(0);
+
+
+            m_BoundsViewer = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            m_Preview.AddSingleGO(m_BoundsViewer.gameObject);
+            m_BoundsViewer.transform.SetParent(m_PreviewTarget.transform);
+            m_BoundsViewer.transform.localRotation = Quaternion.identity;
+            m_BoundsViewer.transform.localScale = m_PreviewTarget.m_MeshFilter.sharedMesh.bounds.size;
+            m_BoundsViewer.transform.localPosition = m_PreviewTarget.m_MeshFilter.sharedMesh.bounds.center;
+            m_BoundsViewer.SetActive(false);
+
             EditorApplication.update += Update;
         }
+
         private void OnDisable()
         {
-            if (!m_Target.m_Inited)
+            if (!HasPreviewGUI())
                 return;
-
+            m_Preview.Cleanup();
+            m_Preview = null;
+            m_PreviewTarget = null;
+            m_PreviewMeshRenderer = null;
+            m_TargetBlock = null;
             EditorApplication.update -= Update;
         }
-        public override void OnInspectorGUI()
+        static readonly string[] m_PreviewSpeedGrid = new string[] { "0", ".5", "1", "2" };
+        public override void OnPreviewSettings()
         {
-            base.OnInspectorGUI();
-            if (!m_Target.m_Inited)
-                return;
-
-            EditorGUILayout.BeginVertical();
-            EditorGUILayout.LabelField("Editor Play Test");
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Anim Tick:");
-            m_TestTick = EditorGUILayout.Slider(m_TestTick, 0, .1f);
-            int anim = EditorGUILayout.IntField(m_StartAnim);
-            if (anim != m_StartAnim)
-            {
-                m_StartAnim = anim;
-                m_Target.SetAnimation(m_StartAnim);
-            }
-
-            if (GUILayout.Button("Replay"))
-                m_Target.SetTime(0);
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.EndVertical();
-
-            EditorGUILayout.BeginVertical();
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Culling Gizmo");
-            AnimationInstanceController.m_DrawGizmos = EditorGUILayout.Toggle(AnimationInstanceController.m_DrawGizmos);
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.EndVertical();
+            base.OnPreviewSettings();
+            AnimationInstanceParam param= m_PreviewTarget.m_Data.m_Animations[m_PreviewTarget.m_CurrentAnimIndex];
+            GUILayout.Label(string.Format("{0},Loop:{1}",param.m_Name, param.m_Loop?1:0));
         }
+        public override void OnPreviewGUI(Rect r, GUIStyle background)
+        {
+            InputCheck();
+            PreviewGUI();
+            m_Preview.BeginPreview(r, background);
+            m_Preview.camera.Render();
+            m_Preview.EndAndDrawPreview(r);
+        }
+        void InputCheck()
+        {
+            if (Event.current == null)
+                return;
+            if(Event.current.type == EventType.MouseDrag)
+                m_RotateDelta += Event.current.delta;
 
+            if (Event.current.type == EventType.ScrollWheel)
+                m_CameraDistance = Mathf.Clamp(m_CameraDistance+Event.current.delta.y*.2f, 0,20f);
+        }
+        void PreviewGUI()
+        {
+            AnimationInstanceData m_Data = m_PreviewTarget.m_Data;
+            string[] anims = new string[m_Data.m_Animations.Length];
+            for (int i = 0; i < anims.Length; i++)
+                anims[i] = m_Data.m_Animations[i].m_Name.Substring(m_Data.m_Animations[i].m_Name.LastIndexOf("_") + 1);
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Play:");
+            m_PreviewAnimIndex = GUILayout.SelectionGrid(m_PreviewAnimIndex, anims, m_Data.m_Animations.Length > 5 ? 5 : m_Data.m_Animations.Length);
+            if (m_PreviewTarget.m_CurrentAnimIndex != m_PreviewAnimIndex)
+                m_PreviewTarget.SetAnimation(m_PreviewAnimIndex);
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Speed:");
+            m_PreviewTickSpeed= GUILayout.HorizontalSlider(m_PreviewTickSpeed, 0f,3f);
+            GUILayout.Label("Replay:");
+            m_PreviewReplay = GUILayout.Toggle(m_PreviewReplay, "");
+            GUILayout.Label("Bounds:");
+            m_BoundsViewer.SetActive(GUILayout.Toggle(m_BoundsViewer.activeSelf,""));
+            GUILayout.EndHorizontal();
+        }
         void Update()
         {
-            if (m_TestTick <= 0)
-                return;
-            m_Target.Tick(m_TestTick);
-            m_Renderer.SetPropertyBlock(m_TargetBlock);
-            EditorUtility.SetDirty(this);
+            if(m_PreviewReplay&&m_PreviewTarget.GetScale()>=1)
+                m_PreviewTarget.SetTime(0f);
+
+
+            m_PreviewTarget.Tick(0.012f* m_PreviewTickSpeed);
+
+            m_PreviewMeshRenderer.SetPropertyBlock(m_TargetBlock);
+            m_Preview.camera.transform.position = m_CameraDirection * m_CameraDistance;
+            m_Preview.camera.transform.LookAt(m_PreviewTarget.transform);
+            m_PreviewTarget.transform.rotation = Quaternion.Euler(m_RotateDelta.y,m_RotateDelta.x,0f);
+            Repaint();
         }
     }
 }

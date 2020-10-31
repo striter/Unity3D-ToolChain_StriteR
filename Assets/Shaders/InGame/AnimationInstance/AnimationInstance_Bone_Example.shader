@@ -43,7 +43,7 @@
                 UNITY_SETUP_INSTANCE_ID(v);
                 v2f o;
                 SampleBoneInstance(v.boneIndexes,v.boneWeights, v.vertex, v.normal);
-                o.diffuse=dot(v.normal,ObjSpaceLightDir(v.vertex));
+                o.diffuse=dot(v.normal,normalize(ObjSpaceLightDir(v.vertex)));
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = v.uv;
 

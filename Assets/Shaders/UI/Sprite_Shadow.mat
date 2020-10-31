@@ -4,10 +4,11 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: UI_Fog
-  m_Shader: {fileID: 4800000, guid: 1311caeb2d438d648a7e8e307c1b3417, type: 3}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprite_Shadow
+  m_Shader: {fileID: 4800000, guid: 70593ce820817ba4e9a30d02753df5b0, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -38,6 +39,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _FlowTex:
+        m_Texture: {fileID: 2800000, guid: d312a60fd3a7a4a4d856ae2a36d15848, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HoloTex:
+        m_Texture: {fileID: 2800000, guid: d312a60fd3a7a4a4d856ae2a36d15848, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -66,6 +75,9 @@ Material:
     - _DeltaY: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _FlowTexMultiply: 1
+    - _FlowX: -0.1
+    - _FlowY: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -73,6 +85,7 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _ShineWidth: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -83,7 +96,15 @@ Material:
     - _StencilWriteMask: 255
     - _UVSec: 0
     - _UseUIAlphaClip: 0
+    - _Width: 2.63
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FlowVec: {r: 0, g: 0, b: -0.1, a: 0}
+    - _LightColor: {r: 1, g: 1, b: 1, a: 0}
+    - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ShadowColor: {r: 0.022058845, g: 0.022058845, b: 0.022058845, a: 0.503}
+    - _ShadowOffset: {r: -2.5, g: 2.5, b: 0, a: 0}
+    - _SpriteRect: {r: 0.061062366, g: 0, b: 0.99776113, a: 0.99769324}
+  m_BuildTextureStacks: []
