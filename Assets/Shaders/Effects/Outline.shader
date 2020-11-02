@@ -8,15 +8,10 @@
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
 		
+        Tags { "RenderType"="Opaque" "Queue"="Geometry"}
         Pass
         {
-            Stencil {
-                Ref 0
-                Comp Always
-                Pass Replace
-            }
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -54,14 +49,8 @@
             ENDCG
         }
 
-        Pass {	
-        
-            Stencil {
-                Ref 0
-                Comp NotEqual
-                Pass Keep
-            }
-
+        Pass 
+        {	
             ZWrite Off
 		    Name "OutLine"
 			Cull Front
