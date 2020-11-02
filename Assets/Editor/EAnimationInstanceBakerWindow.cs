@@ -14,6 +14,7 @@ namespace TEditor
         AnimationClip[] m_TargetAnimations;
         SerializedProperty m_AnimationProperty;
         string m_BoneExposeRegex="";
+
         private void OnEnable()
         {
             m_TargetAnimations = null;
@@ -38,7 +39,6 @@ namespace TEditor
             DrawGUI();
             EditorGUILayout.EndVertical();
         }
-
         void DrawGUI()
         {
             //Select Prefab

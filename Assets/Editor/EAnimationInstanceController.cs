@@ -33,19 +33,15 @@ namespace TEditor
             m_Preview.camera.fieldOfView = 30.0f;
             m_Preview.camera.nearClipPlane = 0.3f;
             m_Preview.camera.farClipPlane = 1000;
-
+            m_Preview.camera.transform.position = m_CameraDirection * m_CameraDistance;
 
             m_PreviewTarget = GameObject.Instantiate(((Component)target).gameObject).GetComponent<AnimationInstanceController>();
             m_Preview.AddSingleGO(m_PreviewTarget.gameObject);
             m_PreviewMeshRenderer = m_PreviewTarget.GetComponent<MeshRenderer>();
-
-
-            m_PreviewTarget.transform.position = Vector3.zero;
-
             m_TargetBlock = new MaterialPropertyBlock();
+            m_PreviewTarget.transform.position = Vector3.zero;
             m_PreviewTarget.Init(m_TargetBlock);
             m_PreviewTarget.SetAnimation(0);
-
 
             m_BoundsViewer = GameObject.CreatePrimitive(PrimitiveType.Cube);
             m_Preview.AddSingleGO(m_BoundsViewer.gameObject);

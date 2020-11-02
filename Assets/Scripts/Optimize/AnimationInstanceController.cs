@@ -16,6 +16,8 @@ namespace Rendering.Optimize
         public MaterialPropertyBlock m_SharedPropertyBlock { get; private set; }
         public int m_CurrentAnimIndex { get; private set; }
         public float m_TimeElapsed { get; private set; }
+        public bool m_Playing => m_CurrentAnimIndex < m_Data.m_Animations.Length && m_CurrentAnimIndex >= 0;
+        public AnimationInstanceParam m_CurrentAnim => m_Data.m_Animations[m_CurrentAnimIndex];
         public MeshRenderer m_MeshRenderer { get; private set; }
         public MeshFilter m_MeshFilter { get; private set; }
         Texture2D m_AnimAtlas;
