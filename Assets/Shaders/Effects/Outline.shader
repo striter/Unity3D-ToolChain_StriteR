@@ -12,6 +12,11 @@
         Tags { "RenderType"="Opaque" "Queue"="Geometry"}
         Pass
         {
+            Stencil {
+                Ref 255
+                Comp Always
+                Pass Replace
+            }
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -51,6 +56,13 @@
 
         Pass 
         {	
+        
+            Stencil {
+                Ref 255
+                Comp NotEqual
+                Pass Keep
+            }
+
             ZWrite Off
 		    Name "OutLine"
 			Cull Front
