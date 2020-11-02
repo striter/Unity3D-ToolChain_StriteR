@@ -6,7 +6,7 @@
 		_TexUVScale("Main Tex UV Scale",float)=10
 		_Color("Color Tint",Color) = (1,1,1,1)
 		[NoScaleOffset]_DistortTex("Distort Texure",2D) = "white"{}
-		_SpecularRange("Specular Range",Range(.95,1)) = 1
+		_SpecularRange("Specular Range",Range(.90,1)) = 1
 		_WaveParam("Wave: X|Strength Y|Frequency ZW|Direction",Vector) = (1,1,1,1)
 		_DistortParam("Distort: X|Refraction Distort Y|Frequency Z|Specular Distort",Vector) = (1,1,1,1)
 		_FresnelParam("Fresnel: X | Base Y| Max Z| Scale ",Vector)=(1,1,1,1)
@@ -22,6 +22,7 @@
 		CGINCLUDE
 		#include "UnityCG.cginc"
 		#include "Lighting.cginc"
+		#include "../../CommonLightingInclude.cginc"
 		ENDCG
 		Pass		//Base Pass
 		{
@@ -29,7 +30,6 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile_instancing
-
 			struct appdata
 			{
 				float4 vertex : POSITION;
@@ -46,11 +46,9 @@
 				float3 worldNormal:TEXCOORD3;
 			};
 
-			
 			sampler2D _CameraGeometryTexture;
 			sampler2D _CameraDepthTexture;
 			sampler2D _MainTex;
-			float _SpecularRange;
 			float _TexUVScale;
 			sampler2D _DistortTex;
 			float4 _Color;
@@ -61,6 +59,7 @@
 			{
 				return  sin(worldPos.xz* _WaveParam.zw +_Time.y*_WaveParam.y)*_WaveParam.x;
 			}
+
 			float4 _DistortParam;
 			float2 Distort(float2 uv)
 			{
@@ -71,18 +70,17 @@
 			float FresnelOpacity(float3 normal, float3 viewDir) {
 				return lerp( _FresnelParam.x ,_FresnelParam.y, saturate(  _FresnelParam.z* (1 - dot(normal, viewDir))));
 			}
-
+			
+			float _SpecularRange;
 			float Specular(float2 distort, float3 normal, float3 viewDir, float3 lightDir)
 			{
-				float specular = dot(normalize(normal), normalize(viewDir + lightDir));
-				specular = smoothstep(_SpecularRange, 1, specular - distort.x*_DistortParam.z);
-				return specular;
+				return GetSpecular(normal,lightDir,viewDir,_SpecularRange)*distort.x*_DistortParam.z;
 			}
 
 			float4 _FoamDepthParam;
 			float Foam(float depthOffset) {
-				return step( depthOffset, _FoamDepthParam.x);
-				//return smoothstep(_FoamDepthParam.x, 0, depthOffset);		//More Realistic
+				//return step( depthOffset, _FoamDepthParam.x);		//Toonic
+				return smoothstep(_FoamDepthParam.x, 0, depthOffset);		//Realistic
 			}
 
 			float DepthOpacity(float depthOffset)

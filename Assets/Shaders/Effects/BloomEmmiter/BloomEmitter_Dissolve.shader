@@ -59,7 +59,8 @@
 				float4 pos : SV_POSITION;
 				float4 uv:TEXCOORD0;
 				float3 worldPos:TEXCOORD1;
-				float diffuse : TEXCOORD2;
+				float3 objNormal:TEXCOORD2;
+				float3 objLightDir:TEXCOORD3;
 				SHADOW_COORDS(3)
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -76,7 +77,8 @@
 				o.worldPos = mul(unity_ObjectToWorld, v.vertex);
 				o.uv.zw = GetDissolveUV(v.vertex);
 				o.pos = UnityObjectToClipPos(v.vertex);
-				o.diffuse = GetDiffuse(mul(v.normal, (float3x3)unity_WorldToObject), UnityWorldSpaceLightDir(o.worldPos));
+				o.objNormal=v.normal;
+				o.objLightDir=UnityWorldSpaceLightDir(o.worldPos);
 				TRANSFER_SHADOW(o);
 				return o;
 			}
@@ -87,9 +89,10 @@
 				fixed dissolve = tex2D(_NoiseTex,i.uv.zw).r - _DissolveAmount-_DissolveWidth;
 				clip(dissolve);
 
+				float diffuse=GetDiffuse(normalize(i.objNormal),normalize(i.objLightDir));
 				float4 albedo = tex2D(_MainTex,i.uv.xy)* _Color;
 				UNITY_LIGHT_ATTENUATION(atten, i,i.worldPos)
-				return float4(GetDiffuseBaseColor(albedo, UNITY_LIGHTMODEL_AMBIENT.xyz, _LightColor0.rgb, atten, i.diffuse),1);
+				return float4( tex2D(_MainTex, i.uv)* _Color*(UNITY_LIGHTMODEL_AMBIENT.xyz+diffuse *  _LightColor0.rgb*atten+(1-atten)),1);
 			}
 			ENDCG
 		}

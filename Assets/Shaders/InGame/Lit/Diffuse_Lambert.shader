@@ -1,9 +1,10 @@
-﻿Shader "Game/Lit/Diffuse_Base"
+﻿Shader "Game/Lit/Diffuse_Lambert"
 {
 	Properties
 	{
 		_MainTex("Main Tex",2D) = "white"{}
 		_Color("Color",Color) = (1,1,1,1)
+		_Lambert("Lambert",Range(0,1))=.5
 	}
 		SubShader
 		{
@@ -18,6 +19,7 @@
 
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
+			float _Lambert;
 			UNITY_INSTANCING_BUFFER_START(Props)
 				UNITY_DEFINE_INSTANCED_PROP(float4, _Color)
 			UNITY_INSTANCING_BUFFER_END(Props)
@@ -35,8 +37,9 @@
 				float4 pos : SV_POSITION;
 				float2 uv:TEXCOORD0;
 				float3 worldPos:TEXCOORD1;
-				float diffuse : TEXCOORD2;
-				SHADOW_COORDS(3)
+				float3 objLightDir:TEXCOORD2;
+				float3 objNormal:TEXCOORD3;
+				SHADOW_COORDS(4)
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -48,7 +51,8 @@
 				o.uv = TRANSFORM_TEX( v.uv,_MainTex);
 				o.pos = UnityObjectToClipPos(v.vertex);
 				o.worldPos = mul(unity_ObjectToWorld, v.vertex);
-				o.diffuse = GetDiffuse(v.normal,ObjSpaceLightDir(v.vertex));
+				o.objLightDir=ObjSpaceLightDir(v.vertex);
+				o.objNormal=v.normal;
 				TRANSFER_SHADOW(o);
 				return o;
 			}
@@ -57,14 +61,19 @@
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
 				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
-				return float4(GetDiffuseBaseColor(tex2D(_MainTex, i.uv)*UNITY_ACCESS_INSTANCED_PROP(Props, _Color), UNITY_LIGHTMODEL_AMBIENT.xyz, _LightColor0.rgb, atten, i.diffuse), 1);
+				
+				float diffuse=GetDiffuse(normalize(i.objNormal),normalize(i.objLightDir));
+				atten*=diffuse;
+				atten = atten * _Lambert + (1 - _Lambert);
+				return float4( tex2D(_MainTex, i.uv)*UNITY_ACCESS_INSTANCED_PROP(Props, _Color)*(UNITY_LIGHTMODEL_AMBIENT.xyz+ _LightColor0.rgb*atten+(1-atten)*float3(0,0,0)),1);
 			}
 
 			float4 DiffuseFragmentAdd(v2fDV i) :SV_TARGET
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
 				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
-				return float4(GetDiffuseAddColor(_LightColor0.rgb, atten, i.diffuse), 1);
+				float diffuse=GetDiffuse(normalize(i.objNormal),normalize(i.objLightDir));
+				return float4( _LightColor0.rgb*diffuse* atten, 1);
 			}
 
 			ENDCG

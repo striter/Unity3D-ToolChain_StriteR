@@ -1,23 +1,16 @@
 ﻿#ifndef COMMONLIGHTING_INCLUDE
 #define COMMONLIGHTING_INCLUDE
 
-float _Lambert;
-float4 _ShadowColor;
 float GetDiffuse(float3 normal, float3 lightDir)
 {
-	return saturate(dot(normalize(normal), normalize(lightDir)));
+	return dot(normal, lightDir);
 }
 
-float3 GetDiffuseBaseColor(float3 albedo, float3 ambient, float3 lightCol, float atten, float diffuse)
+//range 0.9-1
+float GetSpecular(float3 normal,float3 lightDir,float3 viewDir,float range)
 {
-	atten = atten * _Lambert + (1 - _Lambert);
-	float3 diffuseCol = albedo * diffuse*lightCol;
-	float3 ambientCol = albedo * ambient;
-	return ambientCol+diffuseCol*atten+(1-atten)*_ShadowColor;
-}
-
-float3 GetDiffuseAddColor(float3 lightCol,float atten,float diffuse)
-{
-	return lightCol * diffuse*atten;
+	float specular = dot(normalize(normal), normalize(viewDir + lightDir));
+	specular = smoothstep(range, 1, specular);
+	return specular;
 }
 #endif

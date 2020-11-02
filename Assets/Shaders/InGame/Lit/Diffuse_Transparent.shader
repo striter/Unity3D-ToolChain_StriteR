@@ -4,7 +4,7 @@
 	{
 		_MainTex("Color UV TEX",2D) = "white"{}
 		_Color("Color Tint",Color) = (1,1,1,1)
-		_Opacity("Opacity Multiple",float) = .7
+		_Opacity("Opacity",Range(0,1)) = .7
 	}
 	SubShader
 	{
@@ -37,7 +37,8 @@
 				float4 pos : SV_POSITION;
 				float2 uv:TEXCOORD0;
 				float3 worldPos:TEXCOORD1;
-				float diffuse : TEXCOORD2;
+				float3 objNormal:TEXCOORD2;
+				float3 objViewDir : TEXCOORD3;
 				SHADOW_COORDS(3)
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -50,7 +51,8 @@
 				o.uv = v.uv;
 				o.pos = UnityObjectToClipPos(v.vertex);
 				o.worldPos = mul(unity_ObjectToWorld, v.vertex);
-				o.diffuse = GetDiffuse(v.normal,ObjSpaceLightDir(v.vertex));
+				o.objNormal=v.normal;
+				o.objViewDir = ObjSpaceLightDir(v.vertex);  
 				TRANSFER_SHADOW(o);
 				return o;
 			}
@@ -59,7 +61,8 @@
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
 				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
-				return float4(GetDiffuseBaseColor(tex2D(_MainTex, i.uv)*UNITY_ACCESS_INSTANCED_PROP(Props, _Color), UNITY_LIGHTMODEL_AMBIENT.xyz, _LightColor0.rgb, atten, i.diffuse), _Opacity);
+				float diffuse=GetDiffuse(normalize( i.objNormal),normalize(i.objViewDir));
+				return float4( tex2D(_MainTex, i.uv)* UNITY_ACCESS_INSTANCED_PROP(Props, _Color)*(UNITY_LIGHTMODEL_AMBIENT.xyz+diffuse *  _LightColor0.rgb*atten+(1-atten)),_Opacity);
 			}
 			ENDCG
 

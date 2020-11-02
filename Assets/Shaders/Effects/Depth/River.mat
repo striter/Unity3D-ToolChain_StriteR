@@ -74,14 +74,15 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SpecularPow: 100
-    - _SpecularRange: 0.993
+    - _SpecularRange: 0.9904
+    - _SpecularStrength: 0.653
     - _SrcBlend: 1
-    - _TexUVScale: 10
+    - _TexUVScale: 55.8
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 0.41108933, g: 0.55793417, b: 0.5849056, a: 1}
-    - _DistortParam: {r: 0.006, g: 0.1, b: 0.25, a: 1}
+    - _DistortParam: {r: 0.006, g: 0.1, b: 428.7, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FoamColor: {r: 0.26415092, g: 0.26415092, b: 0.26415092, a: 0.6156863}
     - _FoamDepthParam: {r: 0.5, g: 0.76, b: 8.99, a: 1}

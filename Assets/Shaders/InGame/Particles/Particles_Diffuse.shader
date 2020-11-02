@@ -36,7 +36,8 @@
 					float4 color:TEXCOORD0;
 					float2 uv:TEXCOORD1;
 					float3 worldPos:TEXCOORD2;
-					float diffuse : TEXCOORD3;
+					float3 objNormal:TEXCOORD3;
+					float3 objLightDir:TEXCOORD4;
 				};
 				sampler2D _MainTex;
 				float4 _MainTex_ST;
@@ -52,14 +53,16 @@
 					o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 					o.color = v.color*UNITY_ACCESS_INSTANCED_PROP(Props, _Color);
 					o.worldPos = mul(unity_ObjectToWorld, v.vertex);
-					o.diffuse = GetDiffuse(mul(v.normal, (float3x3)unity_WorldToObject), UnityWorldSpaceLightDir(o.worldPos));
+					o.objNormal=v.normal;
+					o.objLightDir=ObjSpaceLightDir(v.vertex);
 					return o;
 				}
 
 				fixed4 frag(v2f i) : SV_Target
 				{
-				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
-				return float4(GetDiffuseBaseColor(tex2D(_MainTex, i.uv)*i.color, UNITY_LIGHTMODEL_AMBIENT.xyz, _LightColor0.rgb, atten, i.diffuse), 1);
+					UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
+					float diffuse=GetDiffuse(normalize( i.objNormal),normalize( i.objLightDir));
+					return float4( tex2D(_MainTex, i.uv)*i.color*(UNITY_LIGHTMODEL_AMBIENT.xyz+diffuse *  _LightColor0.rgb*atten+(1-atten)),1);
 				}
 				ENDCG
 			}

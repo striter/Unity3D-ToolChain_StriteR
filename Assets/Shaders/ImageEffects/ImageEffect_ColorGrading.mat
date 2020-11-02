@@ -7,9 +7,9 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: VolumetricFog_Box_Vertical
-  m_Shader: {fileID: 4800000, guid: 14e6b37f616f10f45bcc1dd9839a18aa, type: 3}
-  m_ShaderKeywords: 
+  m_Name: ImageEffect_ColorGrading
+  m_Shader: {fileID: 4800000, guid: 719f100b2d290364cbbf16fcff0b327c, type: 3}
+  m_ShaderKeywords: _BSC
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -39,15 +39,15 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _MainTex:
+    - _LUTTex:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 8f355b51e742b1048bd4b2028f267630, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Noise:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -60,28 +60,34 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _Brightness: 1.47
     - _BumpScale: 1
+    - _Contrast: 1.38
     - _Cutoff: 0.5
-    - _Density: 0.8
     - _DetailNormalMapScale: 1
-    - _Distance: 5
     - _DstBlend: 0
+    - _Enable_BSC: 1
+    - _Enable_CHANNEL_MIXER: 1
+    - _Enable_LUT: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _March: 128
+    - _LUTCellCount: 16
     - _Metallic: 0
     - _Mode: 0
-    - _NoiseScale: 10
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Saturation: 1.4
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
+    - _Weight: 1
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0, g: 1, b: 0.96636033, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _NoiseFlow: {r: 0, g: 0, b: 0, a: 1}
+    - _MixBlue: {r: 0, g: 0, b: 0, a: 0}
+    - _MixGreen: {r: 0, g: 0, b: 0, a: 0}
+    - _MixRed: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
