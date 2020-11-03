@@ -1,4 +1,4 @@
-﻿Shader "Game/Lit/Hatching"
+﻿Shader "Game/Lit/Hatching_Diffuse"
 {
 	Properties
 	{
@@ -23,15 +23,14 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile_fwdbase
+			#include "UnityCG.cginc"
+			#include "AutoLight.cginc"
 
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
 			fixed _HatchScale;
 			fixed _Lambert;
 			sampler2D _Hatch0, _Hatch1, _Hatch2, _Hatch3, _Hatch4, _Hatch5;
-
-			#include "UnityCG.cginc"
-#include "AutoLight.cginc"
 
 			struct appdata
 			{

@@ -26,6 +26,7 @@
 		ENDCG
 		Pass		//Base Pass
 		{
+			Tags{"LightMode" = "ForwardBase"}
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
@@ -105,6 +106,7 @@
 				o.worldNormal =UnityObjectToWorldNormal(v.normal) ;
 				return o;
 			}
+
 			
 			float4 frag (v2f i) : SV_Target
 			{

@@ -39,7 +39,6 @@
 			v2f vert(a2f v)
 			{
 				v2f o;
-				UNITY_SETUP_INSTANCE_ID(v);
 				o.pos = UnityObjectToClipPos(v.vertex);
 				o.screenPos = ComputeScreenPos(o.pos);
 				o.viewDir=WorldSpaceViewDir(v.vertex);
