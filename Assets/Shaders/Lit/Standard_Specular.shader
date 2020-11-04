@@ -47,9 +47,9 @@
 			float4 pos : SV_POSITION;
 			float2 uv:TEXCOORD0;
 			float3 worldPos:TEXCOORD1;
-			float3 objLightDir:TEXCOORD2;
-			float3 objNormal:TEXCOORD3;
-			float3 objViewDir:TEXCOORD4;
+			float3 worldLightDir:TEXCOORD2;
+			float3 worldNormal:TEXCOORD3;
+			float3 worldViewDir:TEXCOORD4;
 			SHADOW_COORDS(5)
 			UNITY_VERTEX_INPUT_INSTANCE_ID
 		};
@@ -62,9 +62,9 @@
 			o.uv = TRANSFORM_TEX( v.uv,_MainTex);
 			o.pos = UnityObjectToClipPos(v.vertex);
 			o.worldPos = mul(unity_ObjectToWorld, v.vertex);
-			o.objLightDir=ObjSpaceLightDir(v.vertex);
-			o.objNormal=v.normal;
-			o.objViewDir=ObjSpaceViewDir(v.vertex);
+			o.worldLightDir=WorldSpaceLightDir( v.vertex);
+			o.worldNormal=mul(unity_ObjectToWorld,v.normal);
+			o.worldViewDir=WorldSpaceViewDir( v.vertex);
 			TRANSFER_SHADOW(o);
 			return o;
 		}
@@ -74,9 +74,9 @@
 		{
 			UNITY_SETUP_INSTANCE_ID(i);
 			UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
-			float3 normal=normalize(i.objNormal);
-			float3 lightDir=normalize(i.objLightDir);
-			float3 viewDir=normalize(i.objViewDir);
+			float3 normal=normalize(i.worldNormal);
+			float3 lightDir=normalize(i.worldLightDir);
+			float3 viewDir=normalize(i.worldViewDir);
 				
 			float3 finalCol=tex2D(_MainTex, i.uv)*UNITY_ACCESS_INSTANCED_PROP(Props, _Color);
 
@@ -98,7 +98,7 @@
 		{
 			UNITY_SETUP_INSTANCE_ID(i);
 			UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
-			float diffuse=GetDiffuse(normalize(i.objNormal),normalize(i.objLightDir));
+			float diffuse=GetDiffuse(normalize(i.worldNormal),normalize(i.worldLightDir));
 			return float4( _LightColor0.rgb*diffuse* atten, 1);
 		}
 		ENDCG

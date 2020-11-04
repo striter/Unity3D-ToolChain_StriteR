@@ -42,7 +42,7 @@ namespace Rendering.ImageEffect
         public override void OnValidate()
         {
 #if UNITY_EDITOR
-            if (!Application.isPlaying)
+            if (!Application.isPlaying||m_RenderCamera==null)
                 return;
 #endif
             base.OnValidate();
@@ -55,8 +55,7 @@ namespace Rendering.ImageEffect
     [System.Serializable]
     public class CameraEffectParam_BloomInvididual:ImageEffectParamBase
     {
-        public bool m_OccludeEnable = true;
-        [Range(0,3)]
+        [Range(0,5)]
         public float m_Intensity = 1f;
     }
 
@@ -68,17 +67,17 @@ namespace Rendering.ImageEffect
         #endregion
         ImageEffect_Blurs m_Blur;
         Camera m_RenderCamera;
-        Shader m_RenderBloomShader, m_RenderOcclusionShader;
+        Shader m_RenderBloomShader;
         public CameraEffect_BloomIndividual(Camera _camera, Func<CameraEffectParam_BloomInvididual> _GetParam,Func<ImageEffectParam_Blurs> _GetBlurParam):base(_GetParam)
         {
             m_Blur = new ImageEffect_Blurs(_GetBlurParam);
 
             m_RenderBloomShader = Shader.Find("Hidden/CameraEffect_BloomReceiver_Emitter");
-            m_RenderOcclusionShader = Shader.Find("Hidden/CameraEffect_BloomReceiver_Occlusion");
-            if (m_RenderBloomShader == null || m_RenderOcclusionShader == null)
+            if (m_RenderBloomShader == null )
                 throw new Exception("Null Bloom Individual Shader Found!");
 
             m_RenderCamera = _camera;
+            m_RenderCamera.clearFlags = CameraClearFlags.SolidColor;
         }
         protected override void OnValidate(CameraEffectParam_BloomInvididual _params)
         {
@@ -92,15 +91,7 @@ namespace Rendering.ImageEffect
             RenderTexture m_RenderTexture = RenderTexture.GetTemporary(m_RenderCamera.scaledPixelWidth, m_RenderCamera.scaledPixelHeight, 1);
             m_RenderCamera.targetTexture = m_RenderTexture;
 
-            m_RenderCamera.clearFlags = CameraClearFlags.SolidColor;
-            if (_param.m_OccludeEnable)
-            {
-                m_RenderCamera.SetReplacementShader(m_RenderOcclusionShader, "RenderType");
-                m_RenderCamera.Render();
-                m_RenderCamera.clearFlags = CameraClearFlags.Nothing;
-            }
-            m_RenderCamera.SetReplacementShader(m_RenderBloomShader, "RenderType");
-            m_RenderCamera.Render();
+            m_RenderCamera.RenderWithShader(m_RenderBloomShader, "RenderType");
             m_Blur.OnImageProcess(m_RenderTexture, m_RenderTexture);     //Blur
             m_Material.SetTexture("_RenderTex", m_RenderTexture);
             m_RenderCamera.targetTexture = null;

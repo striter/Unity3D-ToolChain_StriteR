@@ -8,6 +8,12 @@ namespace Rendering.ImageEffect
     {
         public CameraEffectParam_DepthSSAO m_Param;
         protected override CameraEffect_DepthSSAO OnGenerateRequiredImageEffects() => new CameraEffect_DepthSSAO(()=>m_Param);
+
+        [ImageEffectOpaque]
+        private new void OnRenderImage(RenderTexture source, RenderTexture destination)
+        {
+            base.OnRenderImage(source, destination);
+        }
     }
 
     [System.Serializable]

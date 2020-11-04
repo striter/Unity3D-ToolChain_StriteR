@@ -77,9 +77,9 @@ namespace Rendering.ImageEffect
         protected T m_Effect { get; private set; }
         protected virtual T OnGenerateRequiredImageEffects() => throw new Exception("Override This Please");
 
-        protected virtual void Awake() 
+        protected virtual void Awake()
         {
-            DoInit();
+            OnValidate();
         }
         protected virtual void OnDestroy()
         {
@@ -87,12 +87,9 @@ namespace Rendering.ImageEffect
         }
         public virtual void OnValidate()
         {
-            DoInit();
-        }
-        void DoInit()
-        {
-            Destroy();
-            m_Effect = OnGenerateRequiredImageEffects();
+            if (m_Effect == null)
+                m_Effect = OnGenerateRequiredImageEffects();
+
             m_Effect.DoValidate();
         }
 
