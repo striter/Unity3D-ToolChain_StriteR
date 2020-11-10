@@ -29,9 +29,11 @@ namespace TEditor
         [MenuItem("Work Flow/UI Tools/Missing Fonts Replacer", false, 203)]
          static void ShowWindow()=> EditorWindow.GetWindow<EUIFontsMissingReplacerWindow>().Show();
 
-        [MenuItem("Work Flow/Optimize/Animation Instance Baker", false, 303)]
+        [MenuItem("Work Flow/Art/(Optimize)Animation Instance Baker", false, 300)]
          static void ShowOptimizeWindow() => EditorWindow.GetWindow(typeof(EAnimationInstanceBakerWindow));
 
+        [MenuItem("Work Flow/Art/Plane Mesh Generator", false, 301)]
+        static void ShowPlaneGenerator() => EditorWindow.GetWindow(typeof(EPlaneMeshGeneratorWindow));
     }
     public static class EEditorAudioHelper
     {
@@ -105,15 +107,22 @@ namespace TEditor
     }
     public static class TEditor
     {
+
         public static T CreateOrReplaceMainAsset<T>(T asset, string path) where T : UnityEngine.Object
         {
             UnityEngine.Object previousAsset = AssetDatabase.LoadMainAssetAtPath(path);
             T replacedAsset = null;
+
             if (previousAsset != null)
             {
                 replacedAsset = previousAsset as T;
                 if (replacedAsset != null)
-                    EditorUtility.CopySerialized(asset, previousAsset);
+                {
+                    if (TCommon.CopyPropertyTo<T>(asset, previousAsset))
+                        AssetDatabase.SaveAssets();
+                    else
+                        EditorUtility.CopySerialized(asset,previousAsset);
+                }
                 else
                     AssetDatabase.DeleteAsset(path);
             }
@@ -135,7 +144,10 @@ namespace TEditor
             UnityEngine.Object subAsset = System.Array.Find(assets, p => p.name == asset.name);
 
             if (subAsset && (subAsset as T != null))
-                EditorUtility.CopySerialized(asset, subAsset);
+                if (TCommon.CopyPropertyTo<T>(asset, subAsset))
+                    AssetDatabase.SaveAssets();
+                else
+                    EditorUtility.CopySerialized(asset, subAsset);
             else
                 AssetDatabase.AddObjectToAsset(asset, mainAsset);
         }
@@ -154,7 +166,7 @@ namespace TEditor
         {
             savePath = "";
             objName = "";
-            string assetPath = AssetDatabase.GetAssetPath(_srcAsset);
+            string assetPath = _srcAsset==null?"Assets/":AssetDatabase.GetAssetPath(_srcAsset);
             string fbxDirectory = (Application.dataPath.Remove(Application.dataPath.Length - 6, 6) + assetPath.Remove(assetPath.LastIndexOf('/'))).Replace("/", @"\");
             string folderPath = EditorUtility.OpenFolderPanel("Select Data Save Folder", fbxDirectory, "");
             if (folderPath.Length == 0)
@@ -165,8 +177,8 @@ namespace TEditor
         }
         public static string GetAssetPath(string path)
         {
-            int assetIndex = path.IndexOf("Assets/");
-            if (assetIndex != -1)
+            int assetIndex = path.IndexOf("/Assets")+1;
+            if (assetIndex != 0)
                 path = path.Substring(assetIndex, path.Length - assetIndex);
             if (path[path.Length - 1] != '/')
                 path += '/';

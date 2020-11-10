@@ -128,7 +128,7 @@ namespace TEditor
             }
             GameObject instantiatedObj = GameObject.Instantiate(m_TargetPrefab);
             SkinnedMeshRenderer skinnedMeshRenderer = instantiatedObj.GetComponentInChildren<SkinnedMeshRenderer>();
-            AnimationInstanceBoundsCheck boundsCheck = new AnimationInstanceBoundsCheck();
+            MeshBoundsChecker boundsCheck = new MeshBoundsChecker();
             #region Bake Animation Atlas
             int vertexCount = skinnedMeshRenderer.sharedMesh.vertexCount;
             int totalVertexRecord = vertexCount * 2;
@@ -191,7 +191,7 @@ namespace TEditor
             SkinnedMeshRenderer _skinnedMeshRenderer = _instantiatedObj.GetComponentInChildren<SkinnedMeshRenderer>();
             try
             {
-                AnimationInstanceBoundsCheck boundsCheck = new AnimationInstanceBoundsCheck();
+                MeshBoundsChecker boundsCheck = new MeshBoundsChecker();
                 Matrix4x4[] bindPoses = _skinnedMeshRenderer.sharedMesh.bindposes;
                 Transform[] bones = _skinnedMeshRenderer.bones;
                 #region Record Expose Bone
@@ -296,24 +296,6 @@ namespace TEditor
                 Debug.LogError("Generate Failed:" + e.Message);
                 DestroyImmediate(_instantiatedObj);
             }
-        }
-
-
-        public class AnimationInstanceBoundsCheck
-        {
-            Vector3 m_BoundsMin;
-            Vector3 m_BoundsMax;
-            public AnimationInstanceBoundsCheck()
-            {
-                m_BoundsMin = Vector3.zero;
-                m_BoundsMax = Vector3.zero;
-            }
-            public void CheckBounds(Vector3 vertice)
-            {
-                m_BoundsMin = Vector3.Min(m_BoundsMin, vertice);
-                m_BoundsMax = Vector3.Max(m_BoundsMax, vertice);
-            }
-            public Bounds GetBounds() => new Bounds((m_BoundsMin + m_BoundsMax) / 2, m_BoundsMax - m_BoundsMin);
         }
     }
 }

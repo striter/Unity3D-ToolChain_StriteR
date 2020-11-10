@@ -558,28 +558,50 @@ public static class TCommon
 
     #endregion
     #region Copy Helper
+    static readonly Dictionary<Type, Action<UnityEngine.Object, UnityEngine.Object>> m_CopyHelper = new Dictionary<Type, Action<UnityEngine.Object, UnityEngine.Object>>()
+    {
+        { typeof(Mesh),(src, dst) => CopyMesh((Mesh)src, (Mesh)dst)}
+    };
+
+    public static bool CopyPropertyTo<T>(UnityEngine.Object source,UnityEngine.Object target)
+    {
+        Type type = typeof(T);
+        if(m_CopyHelper.ContainsKey(type))
+        {
+            m_CopyHelper[type](source, target);
+            return true;
+        }
+        return false;
+    }
+
+    public static void CopyMesh(Mesh source,Mesh target)
+    {
+        target.Clear();
+        target.vertices = source.vertices;
+        target.normals = source.normals;
+        target.tangents = source.tangents;
+        target.name = source.name;
+        target.bounds = source.bounds;
+        target.bindposes = source.bindposes;
+        target.colors = source.colors;
+        target.boneWeights = source.boneWeights;
+        target.triangles = source.triangles;
+        target.uv = source.uv;
+        target.uv2 = source.uv2;
+        target.uv3 = source.uv3;
+        target.uv4 = source.uv4;
+        target.uv5 = source.uv5;
+        target.uv6 = source.uv6;
+        target.uv7 = source.uv7;
+        target.uv8 = source.uv8;
+        for (int i = 0; i < source.subMeshCount; i++)
+            target.SetIndices(source.GetIndices(i), MeshTopology.Triangles, i);
+    }
+
     public static Mesh Copy(this Mesh target)
     {
         Mesh copy = new Mesh();
-        copy.vertices = target.vertices;
-        copy.normals = target.normals;
-        copy.tangents = target.tangents;
-        copy.name = target.name;
-        copy.bounds = target.bounds;
-        copy.bindposes = target.bindposes;
-        copy.colors = target.colors;
-        copy.triangles = target.triangles;
-        copy.boneWeights = target.boneWeights;
-        copy.uv = target.uv;
-        copy.uv2 = target.uv2;
-        copy.uv3 = target.uv3;
-        copy.uv4 = target.uv4;
-        copy.uv5 = target.uv5;
-        copy.uv6 = target.uv6;
-        copy.uv7 = target.uv7;
-        copy.uv8 = target.uv8;
-        for (int i = 0; i < target.subMeshCount; i++)
-            copy.SetIndices(target.GetIndices(i), MeshTopology.Triangles, i);
+        CopyMesh(target,copy);
         return copy;
     }
     

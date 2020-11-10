@@ -51,40 +51,36 @@ namespace Rendering.ImageEffect
             base.OnDestory();
             m_Blur.OnDestory();
         }
-        protected override void OnValidate(CameraEffectParam_Bloom _params)
+        protected override void OnValidate(CameraEffectParam_Bloom _params, Material _material)
         {
-            base.OnValidate(_params);
-
-            m_Material.SetFloat(ID_Threshold, _params.threshold);
-            m_Material.SetFloat(ID_Intensity, _params.intensity);
+            base.OnValidate(_params, _material);
+            _material.SetFloat(ID_Threshold, _params.threshold);
+            _material.SetFloat(ID_Intensity, _params.intensity);
         }
-
-        public override void OnImageProcess(RenderTexture src, RenderTexture dst)
+        protected override void OnImageProcess(RenderTexture _src, RenderTexture _dst, Material _material, CameraEffectParam_Bloom _param)
         {
-
-            CameraEffectParam_Bloom _params = GetParams();
-            if (!_params.enableBlur)
+            if (!_param.enableBlur)
             {
-                Graphics.Blit(src, dst, m_Material, (int)enum_Pass.FastBloom);
+                Graphics.Blit(_src, _dst, _material, (int)enum_Pass.FastBloom);
                 return;
             }
 
-            src.filterMode = FilterMode.Bilinear;
-            var rtW = src.width;
-            var rtH = src.height;
+            _src.filterMode = FilterMode.Bilinear;
+            var rtW = _src.width;
+            var rtH = _src.height;
 
             // downsample
-            RenderTexture rt1 = RenderTexture.GetTemporary(rtW, rtH, 0, src.format);
+            RenderTexture rt1 = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
             rt1.filterMode = FilterMode.Bilinear;
 
-            RenderTexture rt2 = RenderTexture.GetTemporary(rtW, rtH, 0, src.format);
+            RenderTexture rt2 = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
             rt1.filterMode = FilterMode.Bilinear;
 
 
-            Graphics.Blit(src, rt1, m_Material, (int)enum_Pass.SampleLight);
-            m_Blur.OnImageProcess(rt1, rt2);
-            m_Material.SetTexture("_Bloom", rt2);
-            Graphics.Blit(src, dst, m_Material, (int)enum_Pass.AddBloomTex);
+            Graphics.Blit(_src, rt1, _material, (int)enum_Pass.SampleLight);
+            m_Blur.DoImageProcess(rt1, rt2);
+            _material.SetTexture("_Bloom", rt2);
+            Graphics.Blit(_src, _dst, _material, (int)enum_Pass.AddBloomTex);
 
             RenderTexture.ReleaseTemporary(rt1);
             RenderTexture.ReleaseTemporary(rt2);

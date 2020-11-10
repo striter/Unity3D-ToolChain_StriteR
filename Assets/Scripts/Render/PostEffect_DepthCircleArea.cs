@@ -39,19 +39,19 @@ namespace Rendering.ImageEffect
         public CameraEffect_DepthCircleArea(Func<PostEffectParam_DepthCirCleArea> _GetParam) : base(_GetParam) { }
         #region ShaderProperties
         #endregion
-        protected override void OnValidate(PostEffectParam_DepthCirCleArea _params)
+        protected override void OnValidate(PostEffectParam_DepthCirCleArea _params, Material _material)
         {
-            base.OnValidate(_params);
+            base.OnValidate(_params, _material);
             float sqrEdgeMin = _params.Radius;
             float sqrEdgeMax = _params.Radius + _params.m_SqrOutline;
-            m_Material.SetFloat(ID_SqrEdgeMax, sqrEdgeMax * sqrEdgeMax);
-            m_Material.SetFloat(ID_SqrEdgeMin, sqrEdgeMin * sqrEdgeMin);
-            m_Material.SetVector(ID_Origin, _params.m_Origin);
-            m_Material.SetColor(ID_FillColor, _params.m_FillColor);
-            m_Material.SetColor(ID_EdgeColor, _params.m_EdgeColor);
-            m_Material.SetTexture(ID_FillTexture, _params.m_FillTexure);
-            m_Material.SetFloat(ID_FillTextureScale, _params.m_FillTextureScale);
-            m_Material.SetVector(ID_FillTextureFlow, _params.m_FillTextureFlow);
+            _material.SetFloat(ID_SqrEdgeMax, sqrEdgeMax * sqrEdgeMax);
+            _material.SetFloat(ID_SqrEdgeMin, sqrEdgeMin * sqrEdgeMin);
+            _material.SetVector(ID_Origin, _params.m_Origin);
+            _material.SetColor(ID_FillColor, _params.m_FillColor);
+            _material.SetColor(ID_EdgeColor, _params.m_EdgeColor);
+            _material.SetTexture(ID_FillTexture, _params.m_FillTexure);
+            _material.SetFloat(ID_FillTextureScale, _params.m_FillTextureScale);
+            _material.SetVector(ID_FillTextureFlow, _params.m_FillTextureFlow);
         }
     }
 }

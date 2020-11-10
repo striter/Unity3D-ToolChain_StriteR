@@ -79,24 +79,22 @@ namespace Rendering.ImageEffect
             m_RenderCamera = _camera;
             m_RenderCamera.clearFlags = CameraClearFlags.SolidColor;
         }
-        protected override void OnValidate(CameraEffectParam_BloomInvididual _params)
+        protected override void OnValidate(CameraEffectParam_BloomInvididual _params, Material _material)
         {
-            base.OnValidate(_params);
-            m_Material.SetFloat(ID_Intensity, _params.m_Intensity);
+            base.OnValidate(_params, _material);
+            _material.SetFloat(ID_Intensity, _params.m_Intensity);
         }
-        public override void OnImageProcess(RenderTexture src, RenderTexture dst)
+        protected override void OnImageProcess(RenderTexture _src, RenderTexture _dst, Material _material, CameraEffectParam_BloomInvididual _param)
         {
-            CameraEffectParam_BloomInvididual _param = GetParams();
-
             RenderTexture m_RenderTexture = RenderTexture.GetTemporary(m_RenderCamera.scaledPixelWidth, m_RenderCamera.scaledPixelHeight, 1);
             m_RenderCamera.targetTexture = m_RenderTexture;
 
             m_RenderCamera.RenderWithShader(m_RenderBloomShader, "RenderType");
-            m_Blur.OnImageProcess(m_RenderTexture, m_RenderTexture);     //Blur
-            m_Material.SetTexture("_RenderTex", m_RenderTexture);
+            m_Blur.DoImageProcess(m_RenderTexture, m_RenderTexture);     //Blur
+            _material.SetTexture("_RenderTex", m_RenderTexture);
             m_RenderCamera.targetTexture = null;
 
-            Graphics.Blit(src, dst, m_Material, 1);        //Mix
+            Graphics.Blit(_src, _dst, _material, 1);        //Mix
             RenderTexture.ReleaseTemporary(m_RenderTexture);
         }
         public override void OnDestroy()

@@ -40,58 +40,58 @@ namespace Rendering.ImageEffect
             Gaussian = 2,
         }
 
-        public override void OnImageProcess(RenderTexture src, RenderTexture dst)
+        protected override void OnImageProcess(RenderTexture _src, RenderTexture _dst, Material _material, ImageEffectParam_Blurs _param)
         {
-            if (m_Material.passCount <= 1)
+            if (_material.passCount <= 1)
             {
                 Debug.LogWarning("Invalid Material Pass Found Of Blur!");
-                Graphics.Blit(src, dst);
+                Graphics.Blit(_src, _dst);
                 return;
             }
 
             ImageEffectParam_Blurs m_Params = GetParams();
 
-            int rtW = src.width / m_Params.downSample;
-            int rtH = src.height / m_Params.downSample;
-            RenderTexture rt1 = src;
+            int rtW = _src.width / m_Params.downSample;
+            int rtH = _src.height / m_Params.downSample;
+            RenderTexture rt1 = _src;
 
             for (int i = 0; i < m_Params.iteration; i++)
             {
-                m_Material.SetFloat(ID_BlurSize, m_Params.blurSize * (1 + i));
+                _material.SetFloat(ID_BlurSize, m_Params.blurSize * (1 + i));
                 if (m_Params.blurType == enum_BlurType.AverageSinglePass)
                 {
                     int pass = (int)m_Params.blurType;
                     if (i != m_Params.iteration - 1)
                     {
-                        RenderTexture rt2 = RenderTexture.GetTemporary(rtW, rtH, 0, src.format);
-                        Graphics.Blit(rt1, rt2, m_Material, pass);
+                        RenderTexture rt2 = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
+                        Graphics.Blit(rt1, rt2, _material, pass);
                         RenderTexture.ReleaseTemporary(rt1);
                         rt1 = rt2;
                         continue;
                     }
-                    Graphics.Blit(rt1, dst, m_Material, (int)m_Params.blurType);
+                    Graphics.Blit(rt1, _dst, _material, (int)m_Params.blurType);
                 }
                 else
                 {
-                    int horizontalPass = (int)(m_Params.blurType - 1) * 2+1;
+                    int horizontalPass = (int)(m_Params.blurType - 1) * 2 + 1;
                     int verticalPass = horizontalPass + 1;
 
                     // vertical blur
-                    RenderTexture rt2 = RenderTexture.GetTemporary(rtW, rtH, 0, src.format);
-                    Graphics.Blit(rt1, rt2, m_Material, horizontalPass);
+                    RenderTexture rt2 = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
+                    Graphics.Blit(rt1, rt2, _material, horizontalPass);
                     RenderTexture.ReleaseTemporary(rt1);
                     rt1 = rt2;
 
                     if (i != m_Params.iteration - 1)
                     {
                         // horizontal blur
-                        rt2 = RenderTexture.GetTemporary(rtW, rtH, 0, src.format);
-                        Graphics.Blit(rt1, rt2, m_Material, verticalPass);
+                        rt2 = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
+                        Graphics.Blit(rt1, rt2, _material, verticalPass);
                         RenderTexture.ReleaseTemporary(rt1);
                         rt1 = rt2;
                         continue;
                     }
-                    Graphics.Blit(rt1, dst, m_Material, horizontalPass);
+                    Graphics.Blit(rt1, _dst, _material, horizontalPass);
                 }
             }
             RenderTexture.ReleaseTemporary(rt1);

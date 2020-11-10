@@ -6,7 +6,7 @@ namespace Rendering.ImageEffect
 {
     public abstract class AImageEffectBase
     {
-        public virtual void OnImageProcess(RenderTexture src, RenderTexture dst) { }
+        public abstract void DoImageProcess(RenderTexture src, RenderTexture dst);
         public abstract void DoValidate();
         public virtual void OnDestroy() { }
 
@@ -26,8 +26,8 @@ namespace Rendering.ImageEffect
     }
     public class ImageEffectBase<T>:AImageEffectBase where T:ImageEffectParamBase
     {
-        public Material m_Material { get; private set; }
         protected virtual string m_ShaderLocation => "Override This Please";
+        Material m_Material;
         Func<T> GetParamsFunc;
         public T GetParams() => GetParamsFunc();
         public ImageEffectBase(Func<T> _GetParams)
@@ -44,22 +44,30 @@ namespace Rendering.ImageEffect
             m_Material = null;
             GetParamsFunc = null;
         }
-        public override void OnImageProcess( RenderTexture src, RenderTexture dst)
+
+        public override void DoImageProcess(RenderTexture _src, RenderTexture _dst)
         {
-            if (m_Material != null)
-                Graphics.Blit(src, dst, m_Material);
+            T param = GetParams();
+            if (m_Material != null && param != null)
+                OnImageProcess(_src, _dst, m_Material, param);
             else
-                Graphics.Blit(src, dst);
+                Graphics.Blit(_src, _dst);
+        }
+
+
+        protected virtual void OnImageProcess(RenderTexture _src,RenderTexture _dst,Material _material, T _param)
+        {
+            Graphics.Blit(_src, _dst, _material);
         }
 
         public override void DoValidate()
         {
             T param = GetParams();
-            if (param==null)
+            if (param==null||m_Material==null)
                 return;
-            OnValidate(GetParams());
+            OnValidate(GetParams(),m_Material);
         }
-        protected virtual void OnValidate(T _params)
+        protected virtual void OnValidate(T _params,Material _material)
         {
 
         }
@@ -114,7 +122,7 @@ namespace Rendering.ImageEffect
             m_Effect.DoValidate();
 #endif
 
-            m_Effect.OnImageProcess(src, dst);
+            m_Effect.DoImageProcess(src, dst);
         }
     }
 }

@@ -49,19 +49,19 @@ namespace Rendering.ImageEffect
         {
 
         }
-        protected override void OnValidate(CameraEffectParam_DepthSSAO _params)
+        protected override void OnValidate(CameraEffectParam_DepthSSAO _params, Material _material)
         {
-            base.OnValidate(_params);
+            base.OnValidate(_params, _material);
             Vector4[] array = new Vector4[m_DepthSampleArray.Length];
             for (int i = 0; i < m_DepthSampleArray.Length; i++)
                 array[i] = m_DepthSampleArray[i] * _params.m_SampleRadius;
-            m_Material.SetInt(ID_SampleCount, _params.m_SampleCount);
-            m_Material.SetVectorArray(ID_SampleSphere, array);
-            m_Material.SetColor(ID_Color, _params.m_Color);
-            m_Material.SetFloat(ID_Intensity, _params.m_Intensity);
-            m_Material.SetFloat(ID_DepthBias, _params.m_DepthBias);
-            m_Material.SetTexture(ID_NoiseTex, _params.m_NoiseTex);
-            m_Material.SetFloat(ID_NoiseScale, _params.m_NoiseScale);
+            _material.SetInt(ID_SampleCount, _params.m_SampleCount);
+            _material.SetVectorArray(ID_SampleSphere, array);
+            _material.SetColor(ID_Color, _params.m_Color);
+            _material.SetFloat(ID_Intensity, _params.m_Intensity);
+            _material.SetFloat(ID_DepthBias, _params.m_DepthBias);
+            _material.SetTexture(ID_NoiseTex, _params.m_NoiseTex);
+            _material.SetFloat(ID_NoiseScale, _params.m_NoiseScale);
         }
     }
 

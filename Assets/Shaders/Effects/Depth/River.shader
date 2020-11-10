@@ -2,7 +2,7 @@
 {
 	Properties
 	{
-		[NoScaleOffset]_MainTex("Color UV TEX",2D) = "white"{}
+		_MainTex("Color UV TEX",2D) = "white"{}
 		_TexUVScale("Main Tex UV Scale",float)=10
 		_Color("Color Tint",Color) = (1,1,1,1)
 		[NoScaleOffset]_DistortTex("Distort Texure",2D) = "white"{}
@@ -34,7 +34,7 @@
 			struct appdata
 			{
 				float4 vertex : POSITION;
-				float3 normal:NORMAL;
+				float2 uv:TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -50,6 +50,7 @@
 			sampler2D _CameraGeometryTexture;
 			sampler2D _CameraDepthTexture;
 			sampler2D _MainTex;
+			float4 _MainTex_ST;
 			float _TexUVScale;
 			sampler2D _DistortTex;
 			float4 _Color;
@@ -100,10 +101,10 @@
 				UNITY_SETUP_INSTANCE_ID(v);
 				o.worldPos = mul(unity_ObjectToWorld, v.vertex);
 				o.worldPos += float3(0, Wave(o.worldPos),0);
-				o.uv = o.worldPos.xz / _TexUVScale;
+				o.uv = TRANSFORM_TEX(v.uv,_MainTex);
 				o.pos = UnityWorldToClipPos(o.worldPos);
 				o.screenPos= ComputeScreenPos(o.pos);
-				o.worldNormal =UnityObjectToWorldNormal(v.normal) ;
+				o.worldNormal =UnityObjectToWorldNormal(float3(0,1,0)) ;
 				return o;
 			}
 

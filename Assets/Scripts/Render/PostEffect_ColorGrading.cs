@@ -72,24 +72,25 @@ namespace Rendering.ImageEffect
             _64 = 64,
             _128 = 128,
         }
-        protected override void OnValidate(ImageEffectParam_ColorGrading _params)
+
+        protected override void OnValidate(ImageEffectParam_ColorGrading _params, Material _material)
         {
-            base.OnValidate(_params);
-            m_Material.SetFloat(ID_Weight, _params.m_Weight);
+            base.OnValidate(_params, _material);
+            _material.SetFloat(ID_Weight, _params.m_Weight);
 
-            m_Material.EnableKeyword(KW_LUT, _params.m_LUT);
-            m_Material.SetTexture(ID_LUT, _params.m_LUT);
-            m_Material.SetInt(ID_LUTCellCount, (int)_params.m_LUTCellCount);
+            _material.EnableKeyword(KW_LUT, _params.m_LUT);
+            _material.SetTexture(ID_LUT, _params.m_LUT);
+            _material.SetInt(ID_LUTCellCount, (int)_params.m_LUTCellCount);
 
-            m_Material.EnableKeyword(KW_BSC, _params.m_brightness != 1 || _params.m_saturation != 1f || _params.m_contrast != 1);
-            m_Material.SetFloat(ID_Brightness, _params.m_brightness);
-            m_Material.SetFloat(ID_Saturation, _params.m_saturation);
-            m_Material.SetFloat(ID_Contrast, _params.m_contrast);
+            _material.EnableKeyword(KW_BSC, _params.m_brightness != 1 || _params.m_saturation != 1f || _params.m_contrast != 1);
+            _material.SetFloat(ID_Brightness, _params.m_brightness);
+            _material.SetFloat(ID_Saturation, _params.m_saturation);
+            _material.SetFloat(ID_Contrast, _params.m_contrast);
 
-            m_Material.EnableKeyword(KW_MixChannel, _params.m_MixRed != Vector3.zero || _params.m_MixBlue != Vector3.zero || _params.m_MixGreen != Vector3.zero);
-            m_Material.SetVector(ID_MixRed, _params.m_MixRed);
-            m_Material.SetVector(ID_MixGreen, _params.m_MixGreen);
-            m_Material.SetVector(ID_MixBlue, _params.m_MixBlue);
+            _material.EnableKeyword(KW_MixChannel, _params.m_MixRed != Vector3.zero || _params.m_MixBlue != Vector3.zero || _params.m_MixGreen != Vector3.zero);
+            _material.SetVector(ID_MixRed, _params.m_MixRed);
+            _material.SetVector(ID_MixGreen, _params.m_MixGreen);
+            _material.SetVector(ID_MixBlue, _params.m_MixBlue);
         }
     }
 }

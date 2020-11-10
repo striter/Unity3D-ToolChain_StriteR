@@ -38,23 +38,26 @@ namespace Rendering.ImageEffect
 
         ImageEffect_Blurs m_Blur;
         public CameraEffect_DepthOfField(Func<CameraEffectParam_DepthOfField> _GetParams, Func<ImageEffectParam_Blurs> _GetBlurParams) : base(_GetParams) { m_Blur = new ImageEffect_Blurs(_GetBlurParams); }
-        protected override void OnValidate(CameraEffectParam_DepthOfField _params)
+        public override void DoValidate()
         {
-            base.OnValidate(_params);
-
-            m_Material.SetFloat(ID_FocalStart, _params.m_DOFStart);
-            m_Material.SetFloat(ID_FocalLerp, _params.m_DOFLerp);
-            m_Material.EnableKeyword(KW_FullDepthClip, _params.m_DepthFullClip);
-            m_Material.EnableKeyword(KW_UseBlurDepth, _params.m_DepthBlurSample);
-            m_Material.SetFloat(ID_BlurSize, _params.m_BlurSize);
+            base.DoValidate();
             m_Blur.DoValidate();
         }
-        public override void OnImageProcess(RenderTexture src, RenderTexture dst)
+        protected override void OnValidate(CameraEffectParam_DepthOfField _params, Material _material)
         {
-            RenderTexture _tempBlurTex = RenderTexture.GetTemporary(src.width, src.height, 0, src.format);
-            m_Blur.OnImageProcess(src, _tempBlurTex);
-            m_Material.SetTexture(ID_BlurTexture, _tempBlurTex);
-            Graphics.Blit(src, dst, m_Material);
+            base.OnValidate(_params, _material);
+            _material.SetFloat(ID_FocalStart, _params.m_DOFStart);
+            _material.SetFloat(ID_FocalLerp, _params.m_DOFLerp);
+            _material.EnableKeyword(KW_FullDepthClip, _params.m_DepthFullClip);
+            _material.EnableKeyword(KW_UseBlurDepth, _params.m_DepthBlurSample);
+            _material.SetFloat(ID_BlurSize, _params.m_BlurSize);
+        }
+        protected override void OnImageProcess(RenderTexture _src, RenderTexture _dst, Material _material, CameraEffectParam_DepthOfField _param)
+        {
+            RenderTexture _tempBlurTex = RenderTexture.GetTemporary(_src.width, _src.height, 0, _src.format);
+            m_Blur.DoImageProcess(_src, _tempBlurTex);
+            _material.SetTexture(ID_BlurTexture, _tempBlurTex);
+            Graphics.Blit(_src, _dst, _material);
             RenderTexture.ReleaseTemporary(_tempBlurTex);
         }
         public override void OnDestory()

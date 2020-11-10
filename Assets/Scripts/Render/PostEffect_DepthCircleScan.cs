@@ -52,17 +52,17 @@ namespace Rendering.ImageEffect
         readonly int ID_MinSqrDistance = Shader.PropertyToID("_MinSqrDistance");
         readonly int ID_MaxSqrDistance = Shader.PropertyToID("_MaxSqrDistance");
         #endregion
-        protected override void OnValidate(CameraEffectParam_DepthCircleScan _params)
+        protected override void OnValidate(CameraEffectParam_DepthCircleScan _params, Material _material)
         {
-            base.OnValidate(_params);
-            m_Material.SetVector(ID_Origin, _params.m_Origin);
-            m_Material.SetColor(ID_Color, _params.m_Color);
-            m_Material.SetTexture(ID_Texture, _params.m_Texture);
-            m_Material.SetFloat(ID_TexScale, _params.m_TextureScale);
+            base.OnValidate(_params, _material);
+            _material.SetVector(ID_Origin, _params.m_Origin);
+            _material.SetColor(ID_Color, _params.m_Color);
+            _material.SetTexture(ID_Texture, _params.m_Texture);
+            _material.SetFloat(ID_TexScale, _params.m_TextureScale);
             float minDistance = _params.m_Elapse;
             float maxDistance = _params.m_Elapse + _params.m_Width;
-            m_Material.SetFloat(ID_MinSqrDistance, minDistance * minDistance);
-            m_Material.SetFloat(ID_MaxSqrDistance, maxDistance * maxDistance);
+            _material.SetFloat(ID_MinSqrDistance, minDistance * minDistance);
+            _material.SetFloat(ID_MaxSqrDistance, maxDistance * maxDistance);
         }
     }
 }

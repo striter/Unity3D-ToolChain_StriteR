@@ -33,12 +33,12 @@ namespace Rendering.ImageEffect
         {
 
         }
-        protected override void OnValidate(CameraEffectParam_DepthOutline _params)
+        protected override void OnValidate(CameraEffectParam_DepthOutline _params, Material _material)
         {
-            base.OnValidate(_params);
-            m_Material.SetColor(ID_EdgeColor, _params.m_OutlineColor);
-            m_Material.SetFloat(ID_SampleDistance, _params.m_SampleDistance);
-            m_Material.SetFloat(ID_DepthBias, _params.m_DepthBias);
+            base.OnValidate(_params, _material);
+            _material.SetColor(ID_EdgeColor, _params.m_OutlineColor);
+            _material.SetFloat(ID_SampleDistance, _params.m_SampleDistance);
+            _material.SetFloat(ID_DepthBias, _params.m_DepthBias);
         }
     }
 

@@ -61,7 +61,7 @@
 				float3 worldPos:TEXCOORD1;
 				float3 objNormal:TEXCOORD2;
 				float3 objLightDir:TEXCOORD3;
-				SHADOW_COORDS(3)
+				SHADOW_COORDS(4)
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
