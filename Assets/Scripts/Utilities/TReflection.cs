@@ -30,6 +30,23 @@ public static class TReflection
         }
     }
 
+    public static void Copy<T>(T source, T target) where T:class
+    {
+        Type type = typeof(T);
+        FieldInfo[] fields = type.GetFields();
+        PropertyInfo[] properties = type.GetProperties();
+        foreach(var field in fields)
+        {
+            field.SetValue(target,field.GetValue(source));
+        }
+
+        foreach(var property in properties)
+        {
+            property.SetValue(target, property.GetValue(source));
+        }
+
+    }
+
     public static class UI
     {
         public class CPropertyFillElement
