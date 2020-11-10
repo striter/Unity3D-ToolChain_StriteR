@@ -43,7 +43,12 @@ namespace TEditor
             m_PreviewTarget.Init(m_TargetBlock);
             m_PreviewTarget.SetAnimation(0);
 
+            Material transparentMaterial = new Material(Shader.Find("Game/Unlit/Transparent"));
+            transparentMaterial.SetColor("_Color", new Color(1, 1, 1, .3f));
+
             m_BoundsViewer = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            m_BoundsViewer.GetComponent<MeshRenderer>().material = transparentMaterial;
+
             m_Preview.AddSingleGO(m_BoundsViewer.gameObject);
             m_BoundsViewer.transform.SetParent(m_PreviewTarget.transform);
             m_BoundsViewer.transform.localRotation = Quaternion.identity;
