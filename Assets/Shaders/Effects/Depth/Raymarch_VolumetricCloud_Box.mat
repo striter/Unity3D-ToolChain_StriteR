@@ -71,14 +71,14 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
-    - _Density: 0.222
+    - _Density: 0.628
     - _DetailNormalMapScale: 1
     - _Distance: 5
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _LightAbsorption: -2.37
+    - _LightAbsorption: -1.28
     - _LightMarch: 8
     - _March: 512
     - _MarchDistance: 8.9
@@ -102,7 +102,7 @@ Material:
     - _LightColorDark: {r: 1, g: 1, b: 1, a: 0}
     - _LightColorShadow: {r: 0, g: 1, b: 0.11642933, a: 0}
     - _LightShadowColor: {r: 0, g: 0, b: 0, a: 0}
-    - _NoiseFlow: {r: 0.01, g: 0.02, b: 0.01, a: 1}
-    - _NoiseScale: {r: 50, g: 50, b: 50, a: 1}
+    - _NoiseFlow: {r: 0.25, g: 0.05, b: 0.01, a: 1}
+    - _NoiseScale: {r: 200, g: 75, b: 75, a: 1}
     - _Origin: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
