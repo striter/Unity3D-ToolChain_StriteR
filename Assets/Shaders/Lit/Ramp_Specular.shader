@@ -40,6 +40,7 @@
 		{
 			float4 vertex : POSITION;
 			float3 normal:NORMAL;
+			float3 tangent:TANGENT;
 			float2 uv : TEXCOORD0;
 		};
 
@@ -47,27 +48,29 @@
 		{
 			float4 pos : SV_POSITION;
 			float2 uv : TEXCOORD0;
-			float3 worldNormal:TEXCOORD1;
-			float3 worldLightDir:TEXCOORD2;
-			float3 worldViewDir:TEXCOORD3;
+			float3 normal:TEXCOORD1;
+			float3 lightDir:TEXCOORD2;
+			float3 viewDir:TEXCOORD3;
 		};
+
 
 		v2f vert (appdata v)
 		{
 			v2f o;
 			o.pos = UnityObjectToClipPos(v.vertex);
 			o.uv = TRANSFORM_TEX( v.uv, _MainTex);
-			o.worldNormal=mul(unity_ObjectToWorld, v.normal);
-			o.worldLightDir=WorldSpaceLightDir(v.vertex);
-			o.worldViewDir=WorldSpaceViewDir(v.vertex);
+			o.normal=v.normal;
+			o.lightDir=ObjSpaceLightDir(v.vertex);
+			o.viewDir=ObjSpaceViewDir(v.vertex);
 			return o;
 		}
+			
 
 		float4 frag (v2f i) : SV_Target
 		{
-			float3 normal=normalize(i.worldNormal);
-			float3 lightDir=normalize(i.worldLightDir);
-			float3 viewDir = normalize(i.worldViewDir);
+			float3 normal=normalize(i.normal);
+			float3 lightDir=normalize(i.lightDir);
+			float3 viewDir = normalize(i.viewDir);
 			
 			float3 albedo = tex2D(_MainTex, i.uv).rgb*_Color.rgb;
 			float3 finalCol=0;
@@ -90,16 +93,17 @@
 			finalCol=lerp(finalCol,_RimColor.rgb,rim);
 			#endif
 			
+
 			#if _SPECULAR
 			float specular = GetSpecular(normal,lightDir,viewDir,_SpecularRange);
 			specular=1-step(specular,0);
 			finalCol = lerp(finalCol,_SpecularColor.rgb,specular) ;
 			#endif
 
+
 			return fixed4(finalCol ,1);
 		}
 		ENDCG
-		
 		Pass
 		{
 			Tags{"LightMode" = "ForwardBase"}

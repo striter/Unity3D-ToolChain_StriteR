@@ -7,9 +7,10 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: River
-  m_Shader: {fileID: 4800000, guid: af20fe6b362187548afc5a358859acba, type: 3}
-  m_ShaderKeywords: 
+  m_Name: Raymarch_VolumetricCloud_Box
+  m_Shader: {fileID: 4800000, guid: 0d179e3075ea0854fb294e42e87723d8, type: 3}
+  m_ShaderKeywords: _MARCHTIMES__16__32__64__128__256__512 _MARCHTIMES__32 _MARCH_T128
+    _MARCH__16
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -19,6 +20,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _3DNoise:
+        m_Texture: {fileID: 11700000, guid: d2993425f654940448af634a1d7cf838, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -35,11 +40,11 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _DistortTex:
-        m_Texture: {fileID: 2800000, guid: 9c85090b0e4b5e246a82c5f13bb6d5dd, type: 3}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _EmissionMap:
+    - _LightRamp:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -49,6 +54,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Noise:
+        m_Texture: {fileID: 11700000, guid: efcc81b398f11a14aafbcc1d8d9a522c, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -62,30 +71,38 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
+    - _Density: 0.222
     - _DetailNormalMapScale: 1
+    - _Distance: 5
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _LightAbsorption: -2.37
+    - _LightMarch: 8
+    - _March: 512
+    - _MarchDistance: 8.9
+    - _MarchTimes: 1
+    - _MaxDensity: 1
     - _Metallic: 0
     - _Mode: 0
+    - _NoiseDensity: 1.43
+    - _NoiseScale: 100
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _RayMarch: 64
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SpecularPow: 100
-    - _SpecularRange: 0.9904
-    - _SpecularStrength: 0.653
     - _SrcBlend: 1
-    - _TexUVScale: 55.8
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.41108933, g: 0.55793417, b: 0.5849056, a: 1}
-    - _DistortParam: {r: 0.006, g: 0.1, b: 428.7, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FoamColor: {r: 0.26415092, g: 0.26415092, b: 0.26415092, a: 0.6156863}
-    - _FoamDepthParam: {r: 1.02, g: 0.76, b: 8.99, a: 1}
-    - _FresnelParam: {r: 0.23, g: 0.67, b: 12, a: 0}
-    - _WaveParam: {r: 0.2, g: 2, b: 0.1, a: 0.1}
+    - _LightColorDark: {r: 1, g: 1, b: 1, a: 0}
+    - _LightColorShadow: {r: 0, g: 1, b: 0.11642933, a: 0}
+    - _LightShadowColor: {r: 0, g: 0, b: 0, a: 0}
+    - _NoiseFlow: {r: 0.01, g: 0.02, b: 0.01, a: 1}
+    - _NoiseScale: {r: 50, g: 50, b: 50, a: 1}
+    - _Origin: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

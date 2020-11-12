@@ -1,23 +1,26 @@
-﻿Shader "Game/Effects/Depth/River"
+﻿Shader "Game/Effects/Depth/Ocean"
 {
 	Properties
 	{
 		[NoScaleOffset]_MainTex("Color UV TEX",2D) = "white"{}
-		_TexUVScale("Main Tex UV Scale",float)=10
-		_Color("Color Tint",Color) = (1,1,1,1)
 		[NoScaleOffset]_DistortTex("Distort Texure",2D) = "white"{}
+		_TexUVScale("Main Tex UV Scale",float)=10
+
+		_Color("Color Tint",Color) = (1,1,1,1)
 		_SpecularRange("Specular Range",Range(.90,1)) = 1
-		_WaveParam("Wave: X|Strength Y|Frequency ZW|Direction",Vector) = (1,1,1,1)
-		_DistortParam("Distort: X|Refraction Distort Y|Frequency Z|Specular Distort",Vector) = (1,1,1,1)
+		[Header(Wave Settings)]
+		_WaveFrequency("Wave Frequency",float)=10
+		_WaveStrength("Wave Strength",float)=20
+		_WaveDirection("Wave Direction",Vector)=(1,1,1,1)
 		_FresnelParam("Fresnel: X | Base Y| Max Z| Scale ",Vector)=(1,1,1,1)
 		_FoamColor("Foam Color",Color)=(1,1,1,1)
 		_FoamDepthParam("Depth/Foam: X| FoamWidth Y | DepthStart Z | Depth Width",Vector)=(.2,.5,1.5,1)
 	}
 	SubShader
 	{
-		Tags {  "Queue"="Transparent-1"  }
+		Tags {  "Queue"="Transparent-1"  "PreviewType"="Plane" }
 		Blend SrcAlpha OneMinusSrcAlpha
-		ZWrite Off
+		ZWrite On
 		Cull Back
 		CGINCLUDE
 		#include "UnityCG.cginc"
@@ -26,7 +29,7 @@
 		ENDCG
 		Pass		//Base Pass
 		{
-			Tags{"LightMode" = "ForwardBase"}
+			Tags{"LightMode" = "ForwardBase" }
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
@@ -47,7 +50,6 @@
 				float3 worldNormal:TEXCOORD3;
 			};
 
-			sampler2D _CameraGeometryTexture;
 			sampler2D _CameraDepthTexture;
 			sampler2D _MainTex;
 			float _TexUVScale;
@@ -55,17 +57,14 @@
 			float4 _Color;
 			float4 _FoamColor;
 
-			float4 _WaveParam;
+			float _WaveFrequency;
+			float _WaveStrength;
+			float4 _WaveDirection;
 			float Wave(float3 worldPos)
 			{
-				return  sin(worldPos.xz* _WaveParam.zw +_Time.y*_WaveParam.y)*_WaveParam.x;
+				return  sin(worldPos.xz*_WaveDirection +_Time.y*_WaveFrequency)*_WaveStrength;
 			}
 
-			float4 _DistortParam;
-			float2 Distort(float2 uv)
-			{
-				return tex2D(_DistortTex, uv+ _WaveParam.zw *_Time.y*_DistortParam.y).rg*_DistortParam.x;
-			}
 
 			float4 _FresnelParam;
 			float FresnelOpacity(float3 normal, float3 viewDir) {
@@ -73,25 +72,15 @@
 			}
 			
 			float _SpecularRange;
-			float Specular(float2 distort, float3 normal, float3 viewDir, float3 lightDir)
+			float Specular(float3 normal, float3 viewDir, float3 lightDir)
 			{
-				return GetSpecular(normal,lightDir,viewDir,_SpecularRange)*distort.x*_DistortParam.z;
+				return GetSpecular(normal,lightDir,viewDir,_SpecularRange);
 			}
 
 			float4 _FoamDepthParam;
 			float Foam(float depthOffset) {
 				//return step( depthOffset, _FoamDepthParam.x);		//Toonic
 				return smoothstep(_FoamDepthParam.x, 0, depthOffset);		//Realistic
-			}
-
-			float DepthOpacity(float depthOffset)
-			{
-				return smoothstep(_FoamDepthParam.y, _FoamDepthParam.y+ _FoamDepthParam.z,depthOffset);
-			}
-
-			float2 DepthDistort(float depthOffset, float2 distort)
-			{
-				return step(_FoamDepthParam.y, depthOffset) * distort;
 			}
 
 			v2f vert (appdata v)
@@ -115,21 +104,13 @@
 				float3 lightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
 				float linearDepthOffset = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, i.screenPos)).r - i.screenPos.w;
 
-				float2 distort = Distort(i.uv);
-
 				float fresnelOpacity = FresnelOpacity(normal, viewDir);
-				float depthOpacity = DepthOpacity(linearDepthOffset);
-				float totalOpacity = saturate( fresnelOpacity + depthOpacity);
 
 				float foam = Foam(linearDepthOffset) * _FoamColor.a;
-				float4 foamColor = float4(_FoamColor.rgb * foam, 0);
+				float specular =lerp(Specular(normal, viewDir, lightDir),0,foam);
 
-				float specular =lerp(Specular(distort, normal, viewDir, lightDir),0,foam);
-				float4 specularColor = float4(_LightColor0.rgb * specular, 0);
-
-				float4 transparentTexture = tex2D(_CameraGeometryTexture, i.screenPos.xy / i.screenPos.w + DepthDistort(linearDepthOffset, distort) );
-				float4 albedo = float4((tex2D(_MainTex, i.uv+distort)*_Color).rgb,1);
-				return lerp(transparentTexture, albedo, totalOpacity)+ foamColor + specularColor;
+				float3 color=tex2D(_MainTex, i.uv)*_Color;
+				return float4( lerp(lerp( color,_LightColor0,specular), _FoamColor.rgb, foam),1);
 			}
 			ENDCG
 		}

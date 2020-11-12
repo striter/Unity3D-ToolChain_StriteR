@@ -4,6 +4,7 @@
 	{
 		_MainTex("Decal Texture",2D) = "white"{}
 		_Color("Decal Color",Color)=(1,1,1,1)
+		[Toggle(_CULLBACK)] _Enable_CULLBACK ("Cull Back", Float) = 1
 		[KeywordEnum(NONE, BOX,SPHERE)]_DECALCLIP("Decal Clip Volume",int)=0
 	}
 	SubShader
@@ -16,6 +17,7 @@
 			ZWrite Off
 
 			CGPROGRAM
+			#pragma shader_feature _CULLBACK
 			#pragma multi_compile  _DECALCLIP_NONE _DECALCLIP_BOX _DECALCLIP_SPHERE
 			#pragma vertex vert
 			#pragma fragment frag

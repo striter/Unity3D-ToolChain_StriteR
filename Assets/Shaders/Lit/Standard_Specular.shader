@@ -83,7 +83,7 @@
 			float diffuse=GetDiffuse(normal,lightDir);
 			atten*=diffuse;
 			atten = atten * _Lambert + (1 - _Lambert);
-			finalCol=(UNITY_LIGHTMODEL_AMBIENT.xyz+ _LightColor0.rgb*atten+(1-atten)*float3(0,0,0));
+			finalCol*=(UNITY_LIGHTMODEL_AMBIENT.xyz+ _LightColor0.rgb*atten+(1-atten)*float3(0,0,0));
 				
 			#if _SPECULAR
 			float specular = GetSpecular(normal,lightDir,viewDir,_SpecularRange);

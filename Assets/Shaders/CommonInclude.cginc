@@ -22,6 +22,18 @@ float luminance(fixed3 color){ return 0.2125*color.r + 0.7154*color.g + 0.0721 +
 float4 BlendColor(float4 src,float4 dst){ return 1-(1-src)*(1-dst); }
 float3 BlendColor(float3 src,float3 dst){ return 1-(1-src)*(1-dst); }
 
+float min(float3 target){ return min( min(target.x,target.y),target.z);}
+float max(float3 target){ return max( max(target.x,target.y),target.z);}
+
+bool AABBRayHitted(float3 boundsMin,float3 boundsMax,float3 rayOrigin,float3 rayDir)
+{
+    float3 invRayDir=1/rayDir;
+    float3 t0=(boundsMin-rayOrigin)*invRayDir;
+    float3 t1=(boundsMax-rayOrigin)*invRayDir;
+    float3 tmin=min(t0,t1);
+    float3 tmax=max(t0,t1);
+    return max(tmin)<=min(tmax);
+}
 
 //return X: Dst To Box , Y:Dst In Side Box
 float2 AABBRayDistance(float3 boundsMin,float3 boundsMax,float3 rayOrigin,float3 rayDir)

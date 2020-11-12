@@ -12,7 +12,7 @@
 		Cull Back
 		Blend SrcAlpha OneMinusSrcAlpha
 		CGINCLUDE
-			#include "../../CommonLightingInclude.cginc"
+			#include "../CommonLightingInclude.cginc"
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
 			#include "AutoLight.cginc"

@@ -132,6 +132,6 @@
 			ENDCG
 		}
 
-		USEPASS "Game/Lit/Diffuse_Lambert/SHADOWCASTER"
+		USEPASS "Game/Lit/Standard_Specular/SHADOWCASTER"
 	}
 }

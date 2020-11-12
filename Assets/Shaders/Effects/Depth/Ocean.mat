@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: River
-  m_Shader: {fileID: 4800000, guid: af20fe6b362187548afc5a358859acba, type: 3}
+  m_Name: Ocean
+  m_Shader: {fileID: 4800000, guid: e9fffec29afd8bd4d80db6b98b556175, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -85,7 +85,6 @@ Material:
     - _DistortParam: {r: 0.006, g: 0.1, b: 428.7, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FoamColor: {r: 0.26415092, g: 0.26415092, b: 0.26415092, a: 0.6156863}
-    - _FoamDepthParam: {r: 1.02, g: 0.76, b: 8.99, a: 1}
+    - _FoamDepthParam: {r: 0.5, g: 0.76, b: 8.99, a: 1}
     - _FresnelParam: {r: 0.23, g: 0.67, b: 12, a: 0}
     - _WaveParam: {r: 0.2, g: 2, b: 0.1, a: 0.1}
-  m_BuildTextureStacks: []

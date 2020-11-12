@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class EffectsSampleManager : MonoBehaviour
 {
-    private void Awake()
+    public float expParam = 1;
+    private void Update()
     {
-    }
 
+
+    }
 }
