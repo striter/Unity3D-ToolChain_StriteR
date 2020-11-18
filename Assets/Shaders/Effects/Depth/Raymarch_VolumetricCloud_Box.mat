@@ -57,7 +57,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Noise:
-        m_Texture: {fileID: 11700000, guid: efcc81b398f11a14aafbcc1d8d9a522c, type: 2}
+        m_Texture: {fileID: 11700000, guid: 4ed99a7ccafd728408a1bd580f472384, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -71,17 +71,18 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
-    - _Density: 0.628
+    - _Density: 1.47
+    - _DensityClip: 0.689
     - _DetailNormalMapScale: 1
-    - _Distance: 5
+    - _Distance: 4.5
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _LightAbsorption: -1.28
+    - _LightAbsorption: 0.733
     - _LightMarch: 8
     - _March: 512
-    - _MarchDistance: 8.9
+    - _MarchDistance: 5.6
     - _MarchTimes: 1
     - _MaxDensity: 1
     - _Metallic: 0
@@ -90,10 +91,11 @@ Material:
     - _NoiseScale: 100
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _RayMarch: 64
+    - _RayMarch: 32
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _Strength: 5
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
@@ -101,8 +103,8 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _LightColorDark: {r: 1, g: 1, b: 1, a: 0}
     - _LightColorShadow: {r: 0, g: 1, b: 0.11642933, a: 0}
-    - _LightShadowColor: {r: 0, g: 0, b: 0, a: 0}
-    - _NoiseFlow: {r: 0.25, g: 0.05, b: 0.01, a: 1}
-    - _NoiseScale: {r: 200, g: 75, b: 75, a: 1}
+    - _LightShadowColor: {r: 0.4185208, g: 0.46515602, b: 0.5377358, a: 1}
+    - _NoiseFlow: {r: 0.01, g: 0.001, b: 0, a: 1}
+    - _NoiseScale: {r: 20, g: 15, b: 20, a: 1}
     - _Origin: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

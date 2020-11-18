@@ -81,11 +81,11 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.41108933, g: 0.55793417, b: 0.5849056, a: 1}
+    - _Color: {r: 0.63127446, g: 0.67622644, b: 0.7735849, a: 1}
     - _DistortParam: {r: 0.006, g: 0.1, b: 428.7, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FoamColor: {r: 0.26415092, g: 0.26415092, b: 0.26415092, a: 0.6156863}
     - _FoamDepthParam: {r: 1.02, g: 0.76, b: 8.99, a: 1}
     - _FresnelParam: {r: 0.23, g: 0.67, b: 12, a: 0}
-    - _WaveParam: {r: 0.2, g: 2, b: 0.1, a: 0.1}
+    - _WaveParam: {r: 0.2, g: 2.42, b: 0.47, a: 0.1}
   m_BuildTextureStacks: []

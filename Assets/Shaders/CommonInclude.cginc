@@ -25,7 +25,7 @@ float3 BlendColor(float3 src,float3 dst){ return 1-(1-src)*(1-dst); }
 float min(float3 target){ return min( min(target.x,target.y),target.z);}
 float max(float3 target){ return max( max(target.x,target.y),target.z);}
 
-bool AABBRayHitted(float3 boundsMin,float3 boundsMax,float3 rayOrigin,float3 rayDir)
+bool AABBRayIntersect(float3 boundsMin,float3 boundsMax,float3 rayOrigin,float3 rayDir)
 {
     float3 invRayDir=1/rayDir;
     float3 t0=(boundsMin-rayOrigin)*invRayDir;
