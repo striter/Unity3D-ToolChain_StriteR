@@ -2,9 +2,9 @@
 {
     Properties
     {
-        _Strength("Strength",Range(0,5))=1
-        _Density("Density",Range(0,5))=1
-        _DensityClip("Density Clip",Range(0,1))=.1
+        _Strength("Strength",Range(0,10))=1
+        _DensityClip("Cloud Sharpen",Range(0,1))=.1
+        _Density("Cloud Density",Range(0,5))=1
         _Distance("March Distance",float)=5
         [Enum(_16,16,_32,32,_64,64,_128,128)]_RayMarch("Ray March Times",int)=128
         [Enum(_8,8,_16,16)]_LightMarch("Light March Times",int)=8
@@ -63,7 +63,7 @@
             float4 _NoiseScale;
             float4 _NoiseFlow;
             float SampleDensity(float3 worldPos)  {
-                return smoothstep(_DensityClip,1 ,saturate( tex3Dlod(_Noise,float4( worldPos/_NoiseScale+_NoiseFlow*_Time.y,0)).r*_Density));
+                return saturate(smoothstep(_DensityClip,1 , tex3Dlod(_Noise,float4( worldPos/_NoiseScale+_NoiseFlow*_Time.y,0)).r)*_Density);
             }
 
             v2f vert (appdata v)
