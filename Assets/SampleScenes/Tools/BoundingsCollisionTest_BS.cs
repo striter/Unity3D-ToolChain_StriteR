@@ -13,18 +13,19 @@ public class BoundingsCollisionTest_BS : MonoBehaviour
     {
         Gizmos.matrix = transform.localToWorldMatrix;
         Vector3 direction = m_RayDirection.normalized;
-        Gizmos.color = Color.grey;
+        bool intersect = Physics_Extend.BSRayIntersect(m_BoundingSphereOrigin, m_BoundingSphereRadius, m_RayOrigin, direction);
+        Gizmos.color = intersect?Color.green:Color.grey;
         Gizmos.DrawWireSphere(m_BoundingSphereOrigin,m_BoundingSphereRadius);
-        Vector2 distances = Physics_Extend.BSRayDistance( m_BoundingSphereOrigin, m_BoundingSphereRadius, m_RayOrigin, direction);
-        Gizmos.color= Color.green;
+        Vector2 distances = Physics_Extend.BSRayDistance(m_BoundingSphereOrigin, m_BoundingSphereRadius, m_RayOrigin, direction);
+        Gizmos.color= Color.white;
         Gizmos.DrawRay(m_RayOrigin, direction * 100f );
 
-        if (distances.x >0)
+        if (distances.x >=0)
         {
             Gizmos.color = Color.blue;
             Gizmos.DrawSphere(m_RayOrigin+ direction * distances.x,.1f);
         }
-        if (distances.y >0)
+        if (distances.y >=0)
         {
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(m_RayOrigin + direction * distances.y,.1f);

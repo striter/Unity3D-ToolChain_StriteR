@@ -2,17 +2,26 @@
 {
     Properties
     {
-        _Strength("Strength",Range(0,10))=1
-        _DensityClip("Cloud Sharpen",Range(0,1))=.1
-        _Density("Cloud Density",Range(0,5))=1
-        _Distance("March Distance",float)=5
-        [Enum(_16,16,_32,32,_64,64,_128,128)]_RayMarch("Ray March Times",int)=128
-        [Enum(_8,8,_16,16)]_LightMarch("Light March Times",int)=8
-        _LightShadowColor("Light Shadow Color",Color)=(0.7,0.7,0.7,0)
-        _LightAbsorption("Light Absorption",Range(0,1))=1
+        _Strength("Strength",Range(0,5))=1
+        _DensityClip("Cloud Clip",Range(0,1))=.1
+        _Density("Cloud Density",Range(0,10))=1
+        _Distance("March Distance",float)=50
+        [Enum(_16,16,_32,32,_64,64,_128,128)]_RayMarchTimes("Ray March Times",int)=32
+        [NoScaleOffset]_ColorRamp("Cloud Color Ramp",2D)="white"
+        
+        [Header(Noise Settings)]
         _Noise("Noise 3D",3D)="white"{}
         _NoiseScale("Noise Scale",Vector)=(10,10,1,1)
         _NoiseFlow("Noise Flow",Vector)=(0,0,0,1)
+
+        [Header(Light March Settings)]
+        _LightAbsorption("Light Absorption",Range(0,10))=1
+        [Toggle(_LIGHTMARCH)]_EnableLightMarch("Enable Light March",int)=1
+        [Enum(_4,4,_8,8,_16,16)]_LightMarchTimes("Light March Times",int)=8
+        
+        [Header(Scatter Settings)]
+        _ScatterRange("Scatter Range",Range(0.5,1))=0.8
+        _ScatterStrength("Scatter Strength",Range(0,1))=0.8
     }
     SubShader
     {
@@ -28,7 +37,8 @@
 
             #include "UnityCG.cginc"
             #include "Lighting.cginc"
-            #include "../../CommonInclude.cginc"
+            #include "../../BoundingCollision.cginc"
+            #pragma shader_feature _LIGHTMARCH
 
             struct appdata
             {
@@ -47,15 +57,18 @@
                 float3 maxBound:TEXCOORD5;
             };
 
-            int _RayMarch;
+            int _RayMarchTimes;
             float _Distance;
             float _Strength;
             float _Density;
             float _DensityClip;
+            
+            float _ScatterRange;
+            float _ScatterStrength;
 
-            int _LightMarch;
+            int _LightMarchTimes;
             float _LightAbsorption;
-            float4 _LightShadowColor;
+            sampler2D _ColorRamp;
 
             sampler2D _CameraDepthTexture;
 
@@ -66,6 +79,24 @@
                 return saturate(smoothstep(_DensityClip,1 , tex3Dlod(_Noise,float4( worldPos/_NoiseScale+_NoiseFlow*_Time.y,0)).r)*_Density);
             }
 
+            #if _LIGHTMARCH
+            float3 lightMarch(float minBound,float3 maxBound, float3 position,float3 marchDir,float marchDst)
+            {
+                float dstInsideBox=AABBRayDistance(minBound,maxBound,position,marchDir).y;
+                float cloudDensity=0;
+                float totalDst=0;
+                for(int i=0;i<_LightMarchTimes;i++)
+                {
+                    float3 marchPos=position+marchDir*totalDst;
+                    cloudDensity+=SampleDensity(marchPos);
+                    totalDst+=marchDst;
+                    if(totalDst>dstInsideBox)
+                        break;
+                }
+                return  cloudDensity/_LightMarchTimes;
+            }
+            #endif
+            
             v2f vert (appdata v)
             {
                 v2f o;
@@ -79,24 +110,6 @@
                 return o;
             }
             
-
-            float3 lightMarch(float minBound,float3 maxBound, float3 position,float3 lightDir,float marchDst)
-            {
-                float3 marchDir=-lightDir;
-                float dstInsideBox=AABBRayDistance(minBound,maxBound,position,-lightDir).y;
-                float cloudDensity=0;
-                float totalDst=0;
-                for(int i=0;i<_LightMarch;i++)
-                {
-                    float3 marchPos=position+marchDir*totalDst;
-                    cloudDensity+=SampleDensity(marchPos);
-                    totalDst+=marchDst;
-                    if(totalDst>dstInsideBox)
-                        break;
-                }
-                return cloudDensity/_LightMarch*_LightAbsorption;
-            }
-
             fixed4 frag (v2f _input) : SV_Target
             {
                 float3 worldMarchDir=-normalize( _input.worldViewDir);
@@ -104,34 +117,41 @@
                 float worldDepthDst=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, _input.screenPos)).r-_input.screenPos.w;
                 float marchDistance= min(worldMarchDst, worldDepthDst);
 
-                float sumDensity=1;
-                float lightDensity=1;
+                float cloudDensity=1;
+                float lightIntensity=1;
                 if(marchDistance>0)
                 {
-                    float marchDst= _Distance/_RayMarch;
-                    worldMarchDir= normalize(worldMarchDir);
                     float3 worldLightDir=normalize(_input.worldLightDir);
+                    float scatter=(1-smoothstep(_ScatterRange,1,dot(worldMarchDir,worldLightDir))*_ScatterStrength);
+                    float cloudMarchDst= _Distance/_RayMarchTimes;
+                    float lightMarchDst=_Distance/_LightMarchTimes;
+                    worldMarchDir= normalize(worldMarchDir);
                     float dstMarched=0;
-                    float marchParam=1.0/_RayMarch;
-                    for(int i=0;i<_RayMarch;i++)
+                    float marchParam=1.0/_RayMarchTimes;
+                    float totalDensity=0;
+                    for(int i=0;i<_RayMarchTimes;i++)
                     {
                         float3 marchPos=_input.worldPos+worldMarchDir*dstMarched;
-                        float density=smoothstep(0,1,SampleDensity(marchPos));
+                        float density=SampleDensity(marchPos);
+                        density*=marchParam;
                         if(density>0)
                         {
-                            float cloudDensity=exp(-density*marchParam*_Strength);
-                            sumDensity*= cloudDensity;
-                            lightDensity -=density*marchParam*lightMarch(_input.minBound,_input.maxBound,marchPos,worldLightDir,marchDst);
+                            cloudDensity*= exp(-density*_Strength);
+                            #if _LIGHTMARCH
+                            lightIntensity *= exp(-density*scatter*cloudDensity*lerp(0,_LightAbsorption, lightMarch(_input.minBound,_input.maxBound,marchPos,worldLightDir,lightMarchDst)));
+                            #else
+                            lightIntensity -= density*scatter*cloudDensity*_LightAbsorption;
+                            #endif
                         }
 
-                        dstMarched+=marchDst;
-                        if(sumDensity<0.01||dstMarched>marchDistance)
+                        dstMarched+=cloudMarchDst;
+                        if(cloudDensity<0.01||dstMarched>marchDistance)
                             break;
                     }
                 }
-
-                sumDensity=1-sumDensity;
-                return float4(lerp(_LightShadowColor,_LightColor0.rgb, lightDensity),sumDensity);
+                float3 rampCol=tex2D(_ColorRamp, lightIntensity).rgb;
+                float3 lightCol= lerp(rampCol,_LightColor0.rgb, lightIntensity);
+                return float4(lightCol,1-cloudDensity);
             }
             ENDCG
         }

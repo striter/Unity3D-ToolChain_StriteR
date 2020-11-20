@@ -18,7 +18,7 @@
             #pragma fragment frag
 
             #include "UnityCG.cginc"
-            #include "../../CommonInclude.cginc"
+            #include "../../BoundingCollision.cginc"
 
             struct appdata
             {

@@ -254,7 +254,6 @@ namespace TPhysics
         }
     }
     #endregion
-
     public static class Physics_Extend
     {
         #region Physics Cast
@@ -290,46 +289,69 @@ namespace TPhysics
             return hitsList.ToArray();
         }
         #endregion
-
-
         #region Physics Althogrim
-        public static Vector2 BSRayDistance(Vector3 _bsCenter, float _bsRadius, Vector3 _rayOrigin, Vector3 _rayDirection)
+        public static float PlaneRayDistance(Vector3 _pPosition,Vector3 _pDirection,Vector3 _pNormal,Vector3 _rayOrigin,Vector3 _rayDirection)
+        {
+            float npP = Vector3.Dot(_pNormal, _pPosition);
+            float nrO = Vector3.Dot(_pNormal,_rayOrigin);
+            float nrD = Vector3.Dot(_pNormal ,_rayDirection);
+            return (npP-nrO)/nrD;
+        }
+
+        static void BoundingSphereRayCalculate(Vector3 _bsCenter,float _bsRadius,Vector3 _rayOrigin,Vector3 _rayDirection,out float dotOffsetDirection,out float discriminant)
         {
             Vector3 offset = _rayOrigin - _bsCenter;
-            float dotOffsetDirection = Vector3.Dot(_rayDirection, offset);
-            if (dotOffsetDirection > 0)
-                return Vector2.one * -1;
+            dotOffsetDirection = Vector3.Dot(_rayDirection, offset);
+            float sqrRadius = _bsRadius * _bsRadius;
+            float radiusDelta = Vector3.Dot(offset, offset) - sqrRadius;
+            discriminant = -1;
+            if (dotOffsetDirection > 0&&radiusDelta>0)
+                return;
 
             float dotOffset = Vector3.Dot(offset, offset);
-            float sqrRadius = _bsRadius * _bsRadius;
-            float discriminant = dotOffsetDirection * dotOffsetDirection - dotOffset + sqrRadius;
+            discriminant = dotOffsetDirection * dotOffsetDirection - dotOffset + sqrRadius;
+        }
+
+        public static bool BSRayIntersect(Vector3 _bsCenter,float _bsRadius,Vector3 _rayOrigin,Vector3 _rayDirection)
+        {
+            BoundingSphereRayCalculate(_bsCenter, _bsRadius, _rayOrigin, _rayDirection, out float dotOffsetDirection, out float discriminant);
+            return discriminant>=0;
+        }
+
+        public static Vector2 BSRayDistance(Vector3 _bsCenter, float _bsRadius, Vector3 _rayOrigin, Vector3 _rayDirection)
+        {
+            BoundingSphereRayCalculate(_bsCenter,_bsRadius,_rayOrigin,_rayDirection,out float dotOffsetDirection,out float discriminant);
             if (discriminant < 0)
                 return Vector2.one * -1;
-            else if (discriminant < float.Epsilon)
-                new Vector2(-dotOffsetDirection, -dotOffsetDirection);
-            else
-            {
-                discriminant = Mathf.Sqrt(discriminant);
-                float t0 = -dotOffsetDirection - discriminant;
-                float t1 = -dotOffsetDirection + discriminant;
-                if (t0 < 0)
-                    t0 = t1;
-                return new Vector2(t0, t1);
-            }
-            return Vector2.one * -1;
+
+            discriminant = Mathf.Sqrt(discriminant);
+            float t0 = -dotOffsetDirection - discriminant;
+            float t1 = -dotOffsetDirection + discriminant;
+            if (t0 < 0)
+                t0 = t1;
+            return new Vector2(t0, t1);
+        }
+
+        static void AxisAlignBoundingBoxRayCalculate(Vector3 _boundsMin, Vector3 _boundsMax, Vector3 _rayOrigin, Vector3 _rayDir,out Vector3 _tmin,out Vector3 _tmax)
+        {
+            Vector3 invRayDir = Vector3.one.Divide(_rayDir);
+            Vector3 t0 = (_boundsMin - _rayOrigin).Multiply(invRayDir);
+            Vector3 t1 = (_boundsMax - _rayOrigin).Multiply(invRayDir);
+            _tmin = Vector3.Min(t0, t1);
+            _tmax = Vector3.Max(t0, t1);
+        }
+
+        public static bool AABBRayIntersect(Vector3 _boundsMin, Vector3 _boundsMax, Vector3 _rayOrigin, Vector3 _rayDir)
+        {
+            AxisAlignBoundingBoxRayCalculate(_boundsMin, _boundsMax, _rayOrigin, _rayDir,out Vector3 tmin,out Vector3 tmax);
+            return tmin.Max() <= tmax.Min();
         }
 
         public static Vector2 AABBRayDistance(Vector3 _boundsMin, Vector3 _boundsMax, Vector3 _rayOrigin, Vector3 _rayDir)
         {
-            Vector3 invRayDir =Vector3.one.Divide(_rayDir);
-            Vector3 t0  =(_boundsMin - _rayOrigin).Multiply(invRayDir);
-            Vector3 t1 = (_boundsMax - _rayOrigin).Multiply(invRayDir);
-            Vector3 tmin = Vector3.Min(t0, t1);
-            Vector3 tmax = Vector3.Max(t0, t1);
-
+            AxisAlignBoundingBoxRayCalculate(_boundsMin, _boundsMax, _rayOrigin, _rayDir, out Vector3 tmin, out Vector3 tmax);
             float dstA = Mathf.Max(Mathf.Max(tmin.x, tmin.y), tmin.z);
             float dstB = Mathf.Min(tmax.x, Mathf.Min(tmax.y, tmax.z));
-
             float dstToBox = Mathf.Max(0, dstA);
             float dstInsideBox = Mathf.Max(0, dstB - dstToBox);
             return new Vector2(dstToBox, dstInsideBox);

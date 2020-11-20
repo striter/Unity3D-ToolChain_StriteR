@@ -12,12 +12,14 @@ public class BoundingsCollisionTest_AABB : MonoBehaviour
     {
         Vector3 direction = m_RayDirection.normalized;
         Gizmos.matrix = transform.localToWorldMatrix;
-        Gizmos.color = Color.grey;
+        Bounds bound = new Bounds(m_BoxOrigin, m_BoxSize);
+        bool intersect = Physics_Extend.AABBRayIntersect(bound.min, bound.max, m_RayOrigin, direction);
+        Gizmos.color = intersect?Color.green:Color.grey;
         Gizmos.DrawWireCube(m_BoxOrigin, m_BoxSize);
 
-        Gizmos.color = Color.green;
+        Gizmos.color = Color.white;
         Gizmos.DrawRay(m_RayOrigin, m_RayDirection * 100f);
-        Bounds bound = new Bounds(m_BoxOrigin,m_BoxSize);
+
         Vector2 distances = Physics_Extend.AABBRayDistance(bound.min, bound.max, m_RayOrigin, direction);
         if (distances.y > 0)
         {

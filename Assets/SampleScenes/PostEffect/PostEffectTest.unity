@@ -216,6 +216,7 @@ GameObject:
   - component: {fileID: 289594998}
   - component: {fileID: 289594997}
   - component: {fileID: 289594996}
+  - component: {fileID: 289594999}
   m_Layer: 0
   m_Name: Post1
   m_TagString: MainCamera
@@ -293,7 +294,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 20
+  far clip plane: 500
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -312,6 +313,35 @@ Camera:
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &289594999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 289594994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9056c14d9bf4e124baceeaf10f56ca3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Param:
+    m_VerticalStart: 50
+    m_VerticalLength: 100
+    m_Strength: 4.73
+    m_DensityClip: 0.583
+    m_Density: 10
+    m_Distance: 100
+    m_MarchTimes: 32
+    m_ColorRamp: {fileID: 2800000, guid: fada509226f7c374595020510107c6e9, type: 3}
+    m_Noise: {fileID: 11700000, guid: 4ed99a7ccafd728408a1bd580f472384, type: 2}
+    m_NoiseScale: {x: 400, y: 240, z: 400}
+    m_NoiseFlow: {x: 0.01, y: 0.01, z: 0.1}
+    m_LightAbsorption: 7.78
+    m_LightMarch: 1
+    m_LightMarchTimes: 4
+    m_ScatterRange: 0.8
+    m_ScatterStrength: 0.8
 --- !u!1 &374659047
 GameObject:
   m_ObjectHideFlags: 0
@@ -530,7 +560,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 20
+  far clip plane: 500
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -1226,7 +1256,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 20
+  far clip plane: 500
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -1911,7 +1941,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 20
+  far clip plane: 500
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -1955,8 +1985,8 @@ GameObject:
   - component: {fileID: 2086077257}
   - component: {fileID: 2086077256}
   - component: {fileID: 2086077255}
-  - component: {fileID: 2086077261}
   - component: {fileID: 2086077258}
+  - component: {fileID: 2086077261}
   m_Layer: 0
   m_Name: Main
   m_TagString: MainCamera
@@ -2009,7 +2039,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 20
+  far clip plane: 500
   field of view: 60
   orthographic: 0
   orthographic size: 5

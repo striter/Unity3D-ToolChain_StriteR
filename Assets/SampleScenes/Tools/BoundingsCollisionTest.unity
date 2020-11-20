@@ -206,6 +206,54 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &314156684
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 314156686}
+  - component: {fileID: 314156685}
+  m_Layer: 0
+  m_Name: PRayCollision
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &314156685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 314156684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69c20d0e83f17094b84b617e9e0c080d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PlanePosition: {x: 0, y: -0.59, z: 0}
+  m_PlaneDirection: {x: 1, y: 0, z: 0}
+  m_PlaneNormal: {x: 0, y: 1, z: 0}
+  m_RayOrigin: {x: 1, y: 0, z: 0}
+  m_RayDirection: {x: -0.73, y: -0.57, z: 1.91}
+--- !u!4 &314156686
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 314156684}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.13, y: 0, z: 0.65}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1203903734
 GameObject:
   m_ObjectHideFlags: 0
@@ -217,7 +265,7 @@ GameObject:
   - component: {fileID: 1203903735}
   - component: {fileID: 1203903736}
   m_Layer: 0
-  m_Name: BSRayDistance
+  m_Name: BSRayCollision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -230,13 +278,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1203903734}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8, y: 0, z: -1.5}
+  m_LocalRotation: {x: -0, y: -0.7842808, z: -0, w: 0.62040615}
+  m_LocalPosition: {x: 0, y: 0, z: 4.33}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -103.308, z: 0}
 --- !u!114 &1203903736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,8 +297,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c1330962292cd84f8bfd44b761e581a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_RayOrigin: {x: 0, y: 2.12, z: 0}
-  m_RayDirection: {x: 0.58, y: -1, z: 1.22}
+  m_RayOrigin: {x: 0, y: 2, z: 0}
+  m_RayDirection: {x: 4.03, y: -4.24, z: 1.22}
   m_BoundingSphereOrigin: {x: 0, y: 0, z: 0}
   m_BoundingSphereRadius: 2
 --- !u!1 &1630316435
@@ -356,7 +404,7 @@ GameObject:
   - component: {fileID: 1899185938}
   - component: {fileID: 1899185939}
   m_Layer: 0
-  m_Name: AABBRayDistance
+  m_Name: AABBRayCollision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -370,7 +418,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1899185937}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.9395432, y: -1.0491372, z: 5.348023}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -391,4 +439,4 @@ MonoBehaviour:
   m_BoxOrigin: {x: 0, y: 0, z: 0}
   m_BoxSize: {x: 1.27, y: -1.15, z: 1.33}
   m_RayOrigin: {x: 1.19, y: 0.9, z: 0}
-  m_RayDirection: {x: -15, y: -4.2, z: -2.15}
+  m_RayDirection: {x: -5.76, y: -4.2, z: -2.15}

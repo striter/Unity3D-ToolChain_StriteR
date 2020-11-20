@@ -9,8 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Raymarch_VolumetricCloud_Box
   m_Shader: {fileID: 4800000, guid: 0d179e3075ea0854fb294e42e87723d8, type: 3}
-  m_ShaderKeywords: _MARCHTIMES__16__32__64__128__256__512 _MARCHTIMES__32 _MARCH_T128
-    _MARCH__16
+  m_ShaderKeywords: _LIGHTMARCH _MARCHTIMES__16__32__64__128__256__512 _MARCHTIMES__32
+    _MARCH_T128 _MARCH__16
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -28,6 +28,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _CloudColorRamp:
+        m_Texture: {fileID: 2800000, guid: 03ce33f9b98e23f4e95f78c95b2abc62, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ColorRamp:
+        m_Texture: {fileID: 2800000, guid: a318b8bae7c05324a83aad49c4f9143e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -42,6 +50,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LightColorRamp:
+        m_Texture: {fileID: 2800000, guid: fada509226f7c374595020510107c6e9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _LightRamp:
@@ -71,16 +83,19 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
-    - _Density: 4.81
-    - _DensityClip: 0.518
+    - _Density: 10
+    - _DensityClip: 0.607
     - _DetailNormalMapScale: 1
-    - _Distance: 4.5
+    - _Distance: 6
     - _DstBlend: 0
+    - _EnableLightMarch: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _LightAbsorption: 1
-    - _LightMarch: 8
+    - _LightAbsorption: 10
+    - _LightDensityClip: 0.451
+    - _LightMarch: 4
+    - _LightMarchTimes: 8
     - _March: 512
     - _MarchDistance: 5.6
     - _MarchTimes: 1
@@ -91,11 +106,14 @@ Material:
     - _NoiseScale: 100
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _RayMarch: 32
+    - _RayMarch: 16
+    - _RayMarchTimes: 32
+    - _ScatterRange: 0.8
+    - _ScatterStrength: 0.8
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _Strength: 5.22
+    - _Strength: 2.99
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
@@ -103,8 +121,8 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _LightColorDark: {r: 1, g: 1, b: 1, a: 0}
     - _LightColorShadow: {r: 0, g: 1, b: 0.11642933, a: 0}
-    - _LightShadowColor: {r: 0.4185208, g: 0.46515602, b: 0.5377358, a: 1}
-    - _NoiseFlow: {r: 0.01, g: 0.001, b: 0, a: 1}
-    - _NoiseScale: {r: 15, g: 10, b: 15, a: 1}
+    - _LightShadowColor: {r: 0.25992346, g: 0.28517285, b: 0.5566038, a: 1}
+    - _NoiseFlow: {r: 0.01, g: 0.01, b: 0.1, a: 1}
+    - _NoiseScale: {r: 30, g: 20, b: 30, a: 1}
     - _Origin: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

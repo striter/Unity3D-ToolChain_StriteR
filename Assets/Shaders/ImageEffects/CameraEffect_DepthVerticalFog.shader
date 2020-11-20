@@ -39,7 +39,7 @@
 					float2 uv : TEXCOORD0;
 					float4 vertex : SV_POSITION;
 					float2 uv_depth:TEXCOORD1;
-					float4 interpolatedRay:TEXCOORD2;
+					float4 viewDir:TEXCOORD2;
 				};
 
 				v2f vert (appdata_img v)
@@ -48,14 +48,14 @@
 					o.vertex = UnityObjectToClipPos(v.vertex);
 					o.uv = v.texcoord;
 					o.uv_depth = GetDepthUV(v.texcoord); 
-					o.interpolatedRay = GetInterpolatedRay(o.uv);
+					o.viewDir = GetInterpolatedRay(o.uv);
 					return o;
 				}
 
 				fixed4 frag (v2f i) : SV_Target
 				{
 					float linearDepth = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,i.uv_depth));
-					float3 worldPos = _WorldSpaceCameraPos+ i.interpolatedRay.xyz*linearDepth;
+					float3 worldPos = _WorldSpaceCameraPos+ i.viewDir.xyz*linearDepth;
 					float2 worldUV = (worldPos.xz + worldPos.y);
 					float2 noiseUV = worldUV / _NoiseScale + _Time.y*float2(_NoiseSpeedX,_NoiseSpeedY);
 					float noise = tex2D(_NoiseTex, noiseUV).r;
