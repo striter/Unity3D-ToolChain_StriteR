@@ -73,10 +73,10 @@
 		float4 DiffuseFragmentBase(v2fDV i) :SV_TARGET
 		{
 			UNITY_SETUP_INSTANCE_ID(i);
-			UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
 			float3 normal=normalize(i.worldNormal);
 			float3 lightDir=normalize(i.worldLightDir);
 			float3 viewDir=normalize(i.worldViewDir);
+			UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
 				
 			float3 finalCol=tex2D(_MainTex, i.uv)*UNITY_ACCESS_INSTANCED_PROP(Props, _Color);
 

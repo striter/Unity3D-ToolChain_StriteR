@@ -75,11 +75,11 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
 
         #region EnumSelection
         int selectionIndex = -1;
-        public void Play<T>(T defaultEnum ,Action<T> OnClick)  
+        public void Play<T>(T defaultEnum ,Action<T> OnClick) where T:Enum
         {
             m_ValueSelection.transform.SetActivate(true);
             selectionIndex = (int)Enum.ToObject(typeof(T),defaultEnum);
-            m_ValueSelection.Init(defaultEnum, (int value)=>  selectionIndex=value );
+            m_ValueSelection.Init(defaultEnum, (int value)=>  selectionIndex=value);
             m_CommonButton.onClick.AddListener(() => OnClick((T)Enum.ToObject(typeof(T),selectionIndex)));
         }
 
@@ -91,7 +91,7 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
             m_CommonButton.onClick.AddListener(() => OnClick(values[selectionIndex]));
         }
         #endregion
-        public void Play<T>(T _defaultEnum,string _defaultValue, Action<T,string> OnClick)
+        public void Play<T>(T _defaultEnum,string _defaultValue, Action<T,string> OnClick) where T:Enum
         {
             m_ValueSelection.transform.SetActivate(true);
             m_ValueInput1.SetActivate(true);

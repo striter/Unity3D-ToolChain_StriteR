@@ -539,7 +539,7 @@ class EnumSelection : TReflection.UI.CPropertyFillElement
         m_ChunkButton.transform.SetActivate(false);
     }
 
-    public void Init<T>(T defaultValue, Action<int> OnClick)
+    public void Init<T>(T defaultValue, Action<int> OnClick) where T:Enum
     {
         m_Text.text = defaultValue.ToString();
         m_ChunkButton.Clear();

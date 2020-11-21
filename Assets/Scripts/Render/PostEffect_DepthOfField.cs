@@ -18,8 +18,6 @@ namespace Rendering.ImageEffect
         public float m_DOFStart = 0.1f;
         [Tooltip("景深渐淡插值深度"), Range(.01f, .3f)]
         public float m_DOFLerp = .1f;
-        [Tooltip("遮罩深度")]
-        public bool m_DepthFullClip = true;
         [Tooltip("深度取值模糊")]
         public bool m_DepthBlurSample = true;
         [Tooltip("深度取值模糊像素偏差"), Range(.25f, 1.25f)]
@@ -32,7 +30,6 @@ namespace Rendering.ImageEffect
         static int ID_FocalLerp = Shader.PropertyToID("_FocalLerp");
         static int ID_BlurTexture = Shader.PropertyToID("_BlurTex");
         static int ID_BlurSize = Shader.PropertyToID("_BlurSize");
-        const string KW_FullDepthClip = "_FullDepthClip";
         const string KW_UseBlurDepth = "_UseBlurDepth";
         #endregion
 
@@ -48,7 +45,6 @@ namespace Rendering.ImageEffect
             base.OnValidate(_params, _material);
             _material.SetFloat(ID_FocalStart, _params.m_DOFStart);
             _material.SetFloat(ID_FocalLerp, _params.m_DOFLerp);
-            _material.EnableKeyword(KW_FullDepthClip, _params.m_DepthFullClip);
             _material.EnableKeyword(KW_UseBlurDepth, _params.m_DepthBlurSample);
             _material.SetFloat(ID_BlurSize, _params.m_BlurSize);
         }

@@ -8,6 +8,7 @@
 	
 	CGINCLUDE
 	#include "UnityCG.cginc"
+	#pragma multi_compile _ _BLOOMINDIVIDUAL_ADDITIVE _BLOOMINDIVIDUAL_ALPHABLEND
 	sampler2D _MainTex;
 	sampler2D _RenderTex;
 	float _Intensity;
@@ -17,29 +18,22 @@
 	{
 		Cull Off ZWrite Off ZTest Always
 		Pass
-		{
-			name "Minus"
-			CGPROGRAM
-			#pragma vertex vert_img
-			#pragma fragment frag
-			fixed4 frag(v2f_img i) : SV_Target
-			{
-				fixed4 col =tex2D(_RenderTex,i.uv)- tex2D(_MainTex,i.uv);
-				return col;
-			}
-			ENDCG
-		}
-
-		Pass
 		{		
-			name "Mix"
+			name "Main"
 			CGPROGRAM
 			#pragma vertex vert_img
 			#pragma fragment frag
 			fixed4 frag(v2f_img i) : SV_Target
 			{
-				fixed4 col = tex2D(_MainTex,i.uv) +tex2D(_RenderTex,i.uv)*_Intensity;
-				return col;
+				float4 baseCol=tex2D(_MainTex,i.uv);
+				float4 blendCol=tex2D(_RenderTex,i.uv)*_Intensity;
+				#if _BLOOMINDIVIDUAL_ADDITIVE
+					return baseCol+blendCol;
+				#elif _BLOOMINDIVIDUAL_ALPHABLEND
+					return blendCol*blendCol.a +baseCol*(1-blendCol.a);
+				#else
+					return blendCol;
+				#endif
 			}
 			ENDCG
 		}

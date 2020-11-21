@@ -9,6 +9,7 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile_instancing
+			#pragma multi_compile _ _BLOOMINDIVIDUAL_ADDITIVE _BLOOMINDIVIDUAL_ALPHABLEND
 			#include "UnityCG.cginc"
 
 			struct appdata
@@ -32,6 +33,9 @@
 
 			fixed4 frag(v2f i) : SV_Target
 			{
+				#if _BLOOMINDIVIDUAL_ALPHABLEND
+					return float4(0,0,0,0);
+				#endif
 				return float4(0,0,0,1);
 			}
 			ENDCG

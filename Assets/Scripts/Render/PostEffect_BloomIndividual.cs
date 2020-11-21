@@ -4,6 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Rendering.ImageEffect
 {
+    public enum enum_BloomIndividual_Blend
+    {
+        None=0,
+        Additive=1,
+        AlphaBlend=2,
+    }
     public class PostEffect_BloomIndividual:PostEffectBase<CameraEffect_BloomIndividual>
     {
         Camera m_RenderCamera;
@@ -57,6 +63,7 @@ namespace Rendering.ImageEffect
     {
         [Range(0,5)]
         public float m_Intensity = 1f;
+        public enum_BloomIndividual_Blend m_BlendMode = enum_BloomIndividual_Blend.Additive;
     }
 
 
@@ -64,6 +71,7 @@ namespace Rendering.ImageEffect
     {
         #region ShaderProperties
         static readonly int ID_Intensity = Shader.PropertyToID("_Intensity");
+        static readonly string[] KW_Blend = new string[] { "_BLOOMINDIVIDUAL_ADDITIVE", "_BLOOMINDIVIDUAL_ALPHABLEND" };
         #endregion
         ImageEffect_Blurs m_Blur;
         Camera m_RenderCamera;
@@ -82,19 +90,20 @@ namespace Rendering.ImageEffect
         protected override void OnValidate(CameraEffectParam_BloomInvididual _params, Material _material)
         {
             base.OnValidate(_params, _material);
+            TRender.EnableGlobalKeyword(KW_Blend, (int)_params.m_BlendMode);
             _material.SetFloat(ID_Intensity, _params.m_Intensity);
+            m_RenderCamera.backgroundColor = _params.m_BlendMode == enum_BloomIndividual_Blend.Additive ? Color.black : Color.clear;
         }
         protected override void OnImageProcess(RenderTexture _src, RenderTexture _dst, Material _material, CameraEffectParam_BloomInvididual _param)
         {
             RenderTexture m_RenderTexture = RenderTexture.GetTemporary(m_RenderCamera.scaledPixelWidth, m_RenderCamera.scaledPixelHeight, 1);
             m_RenderCamera.targetTexture = m_RenderTexture;
-
             m_RenderCamera.RenderWithShader(m_RenderBloomShader, "RenderType");
             m_Blur.DoImageProcess(m_RenderTexture, m_RenderTexture);     //Blur
             _material.SetTexture("_RenderTex", m_RenderTexture);
             m_RenderCamera.targetTexture = null;
 
-            Graphics.Blit(_src, _dst, _material, 1);        //Mix
+            Graphics.Blit(_src, _dst, _material);        //Mix
             RenderTexture.ReleaseTemporary(m_RenderTexture);
         }
         public override void OnDestroy()

@@ -429,7 +429,7 @@ public static class TCommon
     }
     #region Enum
 
-    public static void TraversalEnum<T>(Action<T> enumAction)    //Can't Constraint T to System.Enum?
+    public static void TraversalEnum<T>(Action<T> enumAction) where T:Enum 
     {
         if (!typeof(T).IsSubclassOf(typeof(Enum)))
         {
@@ -471,9 +471,8 @@ public static class TCommon
     public static Vector3 RandomUnitSphere(System.Random seed = null) => RandomUnitCircle(seed) * RandomUnit(seed);
     public static Vector3 RandomUnitCircle(System.Random seed=null)
     {
-        Vector2 randomCirlce = Vector2.zero;
         float radin =  RandomUnit(seed) * Mathf.PI;
-        randomCirlce = new Vector2(Mathf.Sin(radin), Mathf.Cos(radin));
+        Vector2 randomCirlce = new Vector2(Mathf.Sin(radin), Mathf.Cos(radin));
         return new Vector3(randomCirlce.x, 0, randomCirlce.y);
     }
     public static int Random(this RangeInt ir, System.Random seed = null) => ir.start + Random(ir.length + 1, seed);
@@ -526,13 +525,8 @@ public static class TCommon
         return targetLevel;
     }
 
-    public static T RandomEnumValues<T>(System.Random _seed=null)        //Can't Constraint T to System.Enum
+    public static T RandomEnumValues<T>(System.Random _seed=null) where T:Enum
     {
-        if (!typeof(T).IsSubclassOf(typeof(Enum)))
-        {
-            Debug.LogError("Can't Traversal EnEnum Class!");
-            return default(T);
-        }
         Array allEnums = Enum.GetValues(typeof(T));
         int randomIndex = _seed != null ? _seed.Next(1, allEnums.Length): UnityEngine.Random.Range(1,allEnums.Length);
         int count=0;
@@ -543,7 +537,7 @@ public static class TCommon
                 continue;
             return (T)temp;
         }
-        return default(T);
+        return default;
     }
     #endregion
     #region Camera Helper
