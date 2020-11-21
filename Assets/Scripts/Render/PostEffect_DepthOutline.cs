@@ -9,6 +9,8 @@ namespace Rendering.ImageEffect
     {
         public CameraEffectParam_DepthOutline m_Param;
         protected override CameraEffect_DepthOutline OnGenerateRequiredImageEffects() => new CameraEffect_DepthOutline(()=>m_Param);
+        [ImageEffectOpaque]
+        protected new void OnRenderImage(RenderTexture source, RenderTexture destination)=> base.OnRenderImage(source, destination);
     }
 
     [System.Serializable]

@@ -160,6 +160,12 @@ public static class TCommon
     public static Vector4 Divide(this Vector4 _src, Vector4 _tar) => new Vector4(_src.x / _tar.x, _src.y / _tar.y, _src.z / _tar.z,_src.w/_tar.w);
     public static bool InRange(this RangeFloat _value, float _check) => _value.start <= _check && _check <= _value.end;
     public static float InRangeScale(this RangeFloat _value, float _check) => Mathf.InverseLerp(_value.start, _value.end, _check);
+
+    public static int GetByBit(int _target, int _index)
+    {
+        int tmpInt = 1 << _index;
+        return (_target & tmpInt) / tmpInt;
+    }
     #endregion
     #region Algorithm
     public enum enum_SortType

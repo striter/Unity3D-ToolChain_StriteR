@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 275175740}
   - component: {fileID: 275175739}
   - component: {fileID: 275175738}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -216,7 +216,6 @@ GameObject:
   - component: {fileID: 289594998}
   - component: {fileID: 289594997}
   - component: {fileID: 289594996}
-  - component: {fileID: 289594999}
   m_Layer: 0
   m_Name: Post1
   m_TagString: MainCamera
@@ -251,7 +250,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Param:
-    m_Color: {r: 0, g: 0, b: 0, a: 0}
+    m_Color: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 0}
     m_Intensity: 5
     m_SampleRadius: 25
     m_DepthBias: 0.00104
@@ -265,7 +264,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 289594994}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1821c3c36ad4e0b4ca57ece1fa992ff7, type: 3}
   m_Name: 
@@ -294,7 +293,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 500
+  far clip plane: 15
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -313,35 +312,6 @@ Camera:
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!114 &289594999
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 289594994}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9056c14d9bf4e124baceeaf10f56ca3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Param:
-    m_VerticalStart: 50
-    m_VerticalLength: 100
-    m_Strength: 4.43
-    m_DensityClip: 0.65
-    m_Density: 9.19
-    m_Distance: 100
-    m_MarchTimes: 32
-    m_ColorRamp: {fileID: 2800000, guid: fada509226f7c374595020510107c6e9, type: 3}
-    m_Noise: {fileID: 11700000, guid: 4ed99a7ccafd728408a1bd580f472384, type: 2}
-    m_NoiseScale: {x: 400, y: 240, z: 400}
-    m_NoiseFlow: {x: 0.01, y: 0.01, z: 0.1}
-    m_LightAbsorption: 10
-    m_LightMarch: 1
-    m_LightMarchTimes: 4
-    m_ScatterRange: 0.8
-    m_ScatterStrength: 0.8
 --- !u!1 &374659047
 GameObject:
   m_ObjectHideFlags: 0
@@ -489,6 +459,7 @@ GameObject:
   - component: {fileID: 520397185}
   - component: {fileID: 520397183}
   - component: {fileID: 520397187}
+  - component: {fileID: 520397188}
   - component: {fileID: 520397184}
   m_Layer: 0
   m_Name: Post4
@@ -560,7 +531,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 500
+  far clip plane: 15
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -607,7 +578,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Param:
     m_Intensity: 3
+    m_BlendMode: 1
+    m_CullingMask: 47
+  m_BlurParam:
+    blurSize: 1.5
+    downSample: 4
+    iteration: 4
+    blurType: 2
+--- !u!114 &520397188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520397182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c699f20d8a4cbe6459d9145e0da06fe7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Param:
+    m_Intensity: 3
     m_BlendMode: 2
+    m_CullingMask: 31
   m_BlurParam:
     blurSize: 1.5
     downSample: 4
@@ -1144,7 +1137,7 @@ GameObject:
   - component: {fileID: 1201938990}
   - component: {fileID: 1201938992}
   - component: {fileID: 1201938991}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Cube (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1159,7 +1152,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1201938989}
   m_LocalRotation: {x: -0, y: -0.090523295, z: -0, w: 0.9958944}
-  m_LocalPosition: {x: -3.23, y: 0.43, z: -6.3599997}
+  m_LocalPosition: {x: -2.859, y: 0.43, z: -6.3599997}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 374659048}
@@ -1225,7 +1218,7 @@ GameObject:
   - component: {fileID: 1205778676}
   - component: {fileID: 1205778678}
   - component: {fileID: 1205778677}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Cube (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1240,7 +1233,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1205778675}
   m_LocalRotation: {x: -0, y: -0.090523295, z: -0, w: 0.9958944}
-  m_LocalPosition: {x: -2.87, y: -0.18, z: -6.3599997}
+  m_LocalPosition: {x: -3.166, y: -0.495, z: -6.3599997}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 374659048}
@@ -1338,7 +1331,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 500
+  far clip plane: 15
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -2023,7 +2016,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 500
+  far clip plane: 15
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -2069,6 +2062,7 @@ GameObject:
   - component: {fileID: 2086077255}
   - component: {fileID: 2086077258}
   - component: {fileID: 2086077261}
+  - component: {fileID: 2086077259}
   m_Layer: 0
   m_Name: Main
   m_TagString: MainCamera
@@ -2173,6 +2167,35 @@ MonoBehaviour:
     m_Width: 0.5
     m_Texture: {fileID: 2800000, guid: cceffb6573d1f5e448909c17187a6e29, type: 3}
     m_TextureScale: 0.37
+--- !u!114 &2086077259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2086077254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9056c14d9bf4e124baceeaf10f56ca3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Param:
+    m_VerticalStart: 20.95
+    m_VerticalLength: 100
+    m_Strength: 4.43
+    m_DensityClip: 0.65
+    m_Density: 9.19
+    m_Distance: 100
+    m_MarchTimes: 32
+    m_ColorRamp: {fileID: 2800000, guid: fada509226f7c374595020510107c6e9, type: 3}
+    m_Noise: {fileID: 11700000, guid: 4ed99a7ccafd728408a1bd580f472384, type: 2}
+    m_NoiseScale: {x: 400, y: 240, z: 400}
+    m_NoiseFlow: {x: 0.01, y: 0.01, z: 0.1}
+    m_LightAbsorption: 10
+    m_LightMarch: 1
+    m_LightMarchTimes: 4
+    m_ScatterRange: 0.8
+    m_ScatterStrength: 0.8
 --- !u!114 &2086077261
 MonoBehaviour:
   m_ObjectHideFlags: 0

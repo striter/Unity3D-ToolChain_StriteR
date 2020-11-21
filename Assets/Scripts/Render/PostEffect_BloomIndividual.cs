@@ -93,13 +93,13 @@ namespace Rendering.ImageEffect
         protected override void OnValidate(CameraEffectParam_BloomInvididual _params, Material _material)
         {
             base.OnValidate(_params, _material);
-            TRender.EnableGlobalKeyword(KW_Blend, (int)_params.m_BlendMode);
             _material.SetFloat(ID_Intensity, _params.m_Intensity);
             m_RenderCamera.backgroundColor = _params.m_BlendMode == enum_BloomIndividual_Blend.Additive ? Color.black : Color.clear;
             m_RenderCamera.cullingMask = _params.m_CullingMask;
         }
         protected override void OnImageProcess(RenderTexture _src, RenderTexture _dst, Material _material, CameraEffectParam_BloomInvididual _param)
         {
+            TRender.EnableGlobalKeyword(KW_Blend, (int)_param.m_BlendMode);
             RenderTexture m_RenderTexture = RenderTexture.GetTemporary(m_RenderCamera.scaledPixelWidth, m_RenderCamera.scaledPixelHeight, 1);
             m_RenderCamera.targetTexture = m_RenderTexture;
             m_RenderCamera.RenderWithShader(m_RenderBloomShader, "RenderType");

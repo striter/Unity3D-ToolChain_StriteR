@@ -107,13 +107,13 @@ namespace TEditor
     }
     public static class TEditor
     {
-        public static Dictionary<int,string> GetAllLayers()
+        public static Dictionary<int,string> GetAllLayers(bool emptyInclusive)
         {
             Dictionary<int, string> dic = new Dictionary<int, string>();
             for (int i = 0; i < 32; i++)
             {
                 string layerName = LayerMask.LayerToName(i);
-                if (layerName == string.Empty)
+                if (!emptyInclusive&&layerName == string.Empty)
                     continue;
                 dic.Add(i, layerName);
             }

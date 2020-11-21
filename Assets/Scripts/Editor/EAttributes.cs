@@ -9,17 +9,24 @@ namespace TEditor
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            // First get the attribute since it contains the range for the slider
-            CullingMaskAttribute range = attribute as CullingMaskAttribute;
             if (property.propertyType != SerializedPropertyType.Integer)
             {
-                EditorGUI.LabelField(position, label.text, "Use Range Integer Only!");
+                EditorGUI.LabelField(position, label.text, "Attributes For Integer Only!");
                 return;
             }
-            Dictionary<int, string> allLayers = TEditor.GetAllLayers();
+            Dictionary<int, string> allLayers = TEditor.GetAllLayers(true);
+            List<string> values = new List<string>();
+            foreach(int key in allLayers.Keys)
+                values.Add(allLayers[key]== string.Empty?null: allLayers[key]);
+            for(int i=allLayers.Count-1;i>=0;i--)
+            {
+                if (allLayers.GetIndexValue(i) == string.Empty)
+                    values.RemoveAt(i);
+                else
+                    break;
+            }
 
-
-            property.intValue = EditorGUI.MaskField(position, "Culling Mask", property.intValue, allLayers.Values.ToArray());
+            property.intValue = EditorGUI.MaskField(position, "Culling Mask", property.intValue, values.ToArray());
         }
     }
 }
