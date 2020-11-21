@@ -107,7 +107,20 @@ namespace TEditor
     }
     public static class TEditor
     {
+        public static Dictionary<int,string> GetAllLayers()
+        {
+            Dictionary<int, string> dic = new Dictionary<int, string>();
+            for (int i = 0; i < 32; i++)
+            {
+                string layerName = LayerMask.LayerToName(i);
+                if (layerName == string.Empty)
+                    continue;
+                dic.Add(i, layerName);
+            }
+            return dic;
+        }
 
+        #region Assets
         public static T CreateOrReplaceMainAsset<T>(T asset, string path) where T : UnityEngine.Object
         {
             UnityEngine.Object previousAsset = AssetDatabase.LoadMainAssetAtPath(path);
@@ -151,7 +164,6 @@ namespace TEditor
             else
                 AssetDatabase.AddObjectToAsset(asset, mainAsset);
         }
-
         public static void CreateAssetCombination(KeyValuePair<UnityEngine.Object, string> _mainAsset,params KeyValuePair<UnityEngine.Object, string>[] _subValues)
         {
             UnityEngine.Object mainAsset = CreateOrReplaceMainAsset(_mainAsset.Key, _mainAsset.Value);
@@ -161,7 +173,6 @@ namespace TEditor
             Debug.Log("Asset Combination Generate Successful:" + _mainAsset.Key);
             EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(_mainAsset.Value));
         }
-
         public static bool SelectPath(UnityEngine.Object _srcAsset, out string savePath, out string objName)
         {
             savePath = "";
@@ -199,5 +210,6 @@ namespace TEditor
                 path = path.Substring(folderIndex + 1, path.Length - folderIndex - 1);
             return path;
         }
+        #endregion
     }
 }
