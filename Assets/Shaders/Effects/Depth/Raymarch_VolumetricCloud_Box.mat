@@ -86,7 +86,7 @@ Material:
     - _Density: 10
     - _DensityClip: 0.607
     - _DetailNormalMapScale: 1
-    - _Distance: 6
+    - _Distance: 5.8
     - _DstBlend: 0
     - _EnableLightMarch: 1
     - _GlossMapScale: 1

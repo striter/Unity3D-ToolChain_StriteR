@@ -16,23 +16,29 @@ namespace Rendering.ImageEffect
     [System.Serializable]
     public class CameraEffectParam_VolumetricCloud : ImageEffectParamBase
     {
-        public float m_VerticalStart = 100f;
-        public float m_VerticalLength = 20f;
-        [Range(0, 5)] public float m_Strength = 1;
-        [Range(0, 1)] public float m_DensityClip = .1f;
-        [Range(0, 10)] public float m_Density = 5f;
-        public float m_Distance = 25f;
-        public enum_VolumetricCloud_MarchTimes m_MarchTimes = enum_VolumetricCloud_MarchTimes._32;
-        public Texture2D m_ColorRamp;
+        [Header("Shape Setting")]
+        public float m_VerticalStart = 20f;
+        public float m_VerticalLength = 100f;
 
         public Texture3D m_Noise;
         public Vector3 m_NoiseScale;
         public Vector3 m_NoiseFlow;
 
-        [Range(0, 10)] public float m_LightAbsorption = 8f;
+        [Range(0, 100)] public float m_Density = 50f;
+        [Range(0, 1)] public float m_DensityClip = .6f;
+        public float m_Distance = 100f;
+        public enum_VolumetricCloud_MarchTimes m_MarchTimes = enum_VolumetricCloud_MarchTimes._32;
+
+        [Header("Color Settings")]
+        public Texture2D m_ColorRamp;
+        [Range(0, 1)] public float m_Opacity = .8f;
+
+        [Header("Light Setting")]
+        [Range(0, 2)] public float m_LightAbsorption = 1f;
         public bool m_LightMarch = true;
         public enum_VolumetricCloud_LightMarchTimes m_LightMarchTimes = enum_VolumetricCloud_LightMarchTimes._4;
 
+        [Header("Scatter Setting")]
         [Range(.5f, 1)] public float m_ScatterRange = .8f;
         [Range(0, 1)] public float m_ScatterStrength = .8f;
     }
@@ -43,7 +49,7 @@ namespace Rendering.ImageEffect
         static readonly int ID_VerticalStart = Shader.PropertyToID("_VerticalStart");
         static readonly int ID_VerticalEnd = Shader.PropertyToID("_VerticalEnd");
 
-        static readonly int ID_Strength = Shader.PropertyToID("_Strength");
+        static readonly int ID_Opacity = Shader.PropertyToID("_Opacity");
         static readonly int ID_Density = Shader.PropertyToID("_Density");
         static readonly int ID_DensityClip = Shader.PropertyToID("_DensityClip");
         static readonly int ID_Distance = Shader.PropertyToID("_Distance");
@@ -67,7 +73,7 @@ namespace Rendering.ImageEffect
             base.OnValidate(_params, _material);
             _material.SetFloat(ID_VerticalStart, _params.m_VerticalStart);
             _material.SetFloat(ID_VerticalEnd, _params.m_VerticalStart+_params.m_VerticalLength);
-            _material.SetFloat(ID_Strength, _params.m_Strength);
+            _material.SetFloat(ID_Opacity, _params.m_Opacity);
             _material.SetFloat(ID_Density, _params.m_Density);
             _material.SetFloat(ID_DensityClip, _params.m_DensityClip);
             _material.SetFloat(ID_Distance, _params.m_Distance);

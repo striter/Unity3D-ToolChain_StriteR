@@ -2182,16 +2182,16 @@ MonoBehaviour:
   m_Param:
     m_VerticalStart: 20.95
     m_VerticalLength: 100
-    m_Strength: 4.43
-    m_DensityClip: 0.65
-    m_Density: 9.19
-    m_Distance: 100
-    m_MarchTimes: 32
-    m_ColorRamp: {fileID: 2800000, guid: fada509226f7c374595020510107c6e9, type: 3}
     m_Noise: {fileID: 11700000, guid: 4ed99a7ccafd728408a1bd580f472384, type: 2}
     m_NoiseScale: {x: 400, y: 240, z: 400}
     m_NoiseFlow: {x: 0.01, y: 0.01, z: 0.1}
-    m_LightAbsorption: 10
+    m_Density: 83
+    m_DensityClip: 0.7
+    m_Distance: 100
+    m_MarchTimes: 32
+    m_ColorRamp: {fileID: 2800000, guid: a318b8bae7c05324a83aad49c4f9143e, type: 3}
+    m_Opacity: 0.62
+    m_LightAbsorption: 0.64
     m_LightMarch: 1
     m_LightMarchTimes: 4
     m_ScatterRange: 0.8

@@ -25,9 +25,9 @@
             
             int _RayMarchTimes;
             float _Distance;
-            float _Strength;
             float _Density;
             float _DensityClip;
+            float _Opacity;
             
             float _ScatterRange;
             float _ScatterStrength;
@@ -40,7 +40,7 @@
             float4 _NoiseScale;
             float4 _NoiseFlow;
             float SampleDensity(float3 worldPos)  {
-                return saturate(smoothstep(_DensityClip,1 , tex3Dlod(_Noise,float4( worldPos/_NoiseScale+_NoiseFlow*_Time.y,0)).r)*_Density);
+                return  smoothstep(_DensityClip,1 , tex3Dlod(_Noise,float4( worldPos/_NoiseScale+_NoiseFlow*_Time.y,0)).r)*_Density;
             }
 
             #if _LIGHTMARCH
@@ -118,21 +118,21 @@
                     float scatter=(1-smoothstep(_ScatterRange,1,dot(marchDir,lightDir))*_ScatterStrength);
                     float cloudMarchDst= _Distance/_RayMarchTimes;
                     float lightMarchDst=_Distance/_LightMarchTimes;
+                    float marchParam= 2.0/_RayMarchTimes;
+                    float lightMarchParam=_LightAbsorption*cloudMarchDst;
                     float dstMarched=0;
-                    float marchParam=1.0/_RayMarchTimes;
                     float totalDensity=0;
                     for(int i=0;i<_RayMarchTimes;i++)
                     {
                         float3 marchPos=marchBegin+marchDir*dstMarched;
-                        float density=SampleDensity(marchPos);
-                        density*=marchParam;
+                        float density=SampleDensity(marchPos)*marchParam;
                         if(density>0)
                         {
-                            cloudDensity*= exp(-density*_Strength);
+                            cloudDensity*= exp(-density*_Opacity);
                             #if _LIGHTMARCH
-                            lightIntensity *= exp(-density*scatter*cloudDensity*lerp(0,_LightAbsorption, lightMarch(marchPos,lightDir,lightMarchDst)));
+                            lightIntensity *= exp(-density*scatter*cloudDensity*lightMarchParam*lightMarch(marchPos,lightDir,lightMarchDst));
                             #else
-                            lightIntensity -= density*scatter*cloudDensity*_LightAbsorption;
+                            lightIntensity -= density*scatter*cloudDensity*lightMarchParam;
                             #endif
                         }
 
