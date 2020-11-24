@@ -691,13 +691,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 526198351}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: 0.48296294, y: -0.22414385, z: 0.1294095, w: 0.8365163}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 60, y: -30, z: 0}
 --- !u!1 &559505669
 GameObject:
   m_ObjectHideFlags: 0
@@ -722,7 +722,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 559505669}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.13043973, y: 0, z: 0, w: 0.9914563}
   m_LocalPosition: {x: 0, y: -1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -733,7 +733,7 @@ Transform:
   - {fileID: 520397186}
   m_Father: {fileID: 0}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -14.99, y: 0, z: 0}
 --- !u!114 &559505671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2115,7 +2115,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 500
+  far clip plane: 1000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -2180,20 +2180,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Param:
-    m_VerticalStart: 20.95
-    m_VerticalLength: 100
+    m_VerticalStart: 20
+    m_VerticalLength: 200
     m_Noise: {fileID: 11700000, guid: 4ed99a7ccafd728408a1bd580f472384, type: 2}
-    m_NoiseScale: {x: 400, y: 240, z: 400}
+    m_NoiseScale: {x: 500, y: 300, z: 500}
     m_NoiseFlow: {x: 0.01, y: 0.01, z: 0.1}
-    m_Density: 83
-    m_DensityClip: 0.7
-    m_Distance: 100
+    m_Density: 200
+    m_DensityClip: 0.62
+    m_DensitySmooth: 0.13
+    m_Distance: 300
     m_MarchTimes: 32
-    m_ColorRamp: {fileID: 2800000, guid: a318b8bae7c05324a83aad49c4f9143e, type: 3}
-    m_Opacity: 0.62
-    m_LightAbsorption: 0.64
+    m_Opacity: 0.45
+    m_ColorRamp: {fileID: 2800000, guid: 03ce33f9b98e23f4e95f78c95b2abc62, type: 3}
+    m_LightAbsorption: 0.08
     m_LightMarch: 1
+    m_LightMarchClip: 0
     m_LightMarchTimes: 4
+    m_LightScatter: 0
     m_ScatterRange: 0.8
     m_ScatterStrength: 0.8
 --- !u!114 &2086077261
