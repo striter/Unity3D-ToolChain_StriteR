@@ -2185,14 +2185,14 @@ MonoBehaviour:
     m_Noise: {fileID: 11700000, guid: 4ed99a7ccafd728408a1bd580f472384, type: 2}
     m_NoiseScale: {x: 500, y: 300, z: 500}
     m_NoiseFlow: {x: 0.01, y: 0.01, z: 0.1}
-    m_Density: 200
-    m_DensityClip: 0.62
+    m_Density: 68
+    m_DensityClip: 0.7
     m_DensitySmooth: 0.13
-    m_Distance: 300
+    m_Distance: 200
     m_MarchTimes: 32
-    m_Opacity: 0.45
+    m_Opacity: 1
     m_ColorRamp: {fileID: 2800000, guid: 03ce33f9b98e23f4e95f78c95b2abc62, type: 3}
-    m_LightAbsorption: 0.08
+    m_LightAbsorption: 0.22
     m_LightMarch: 1
     m_LightMarchClip: 0
     m_LightMarchTimes: 4
