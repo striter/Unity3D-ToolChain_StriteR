@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public enum enum_TouchCheckType
 {
     Invalid = -1,

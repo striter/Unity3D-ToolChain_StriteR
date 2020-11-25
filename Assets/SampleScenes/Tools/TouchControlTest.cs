@@ -27,10 +27,10 @@ public class TouchControlTest : MonoBehaviour {
     {
         UIT_TouchConsole.Instance.InitConsole(OnConsoleOpen);
         UIT_TouchConsole.Instance.AddConsoleBinding().Set("Jump",  KeyCode.Space).Play("200", OnConsoleJump);
-        UIT_TouchConsole.Instance.AddConsoleBinding().Set("Push").Play(enum_TestDirection.Forward, OnConsoleDirection);
-        UIT_TouchConsole.Instance.AddConsoleBinding().Set("Reset", KeyCode.R).Play(OnConsoleReset);
-        UIT_TouchConsole.Instance.AddConsoleBinding().Set("Switch Joystick Mode").Play(OnJoystickSwitch);
-        UIT_TouchConsole.Instance.AddConsoleBinding().Set("Switch Touch Mode").Play(enum_TouchCheckType.DualJoystick, OnTouchInputSwitch);
+        UIT_TouchConsole.Instance.AddConsoleBinding().Set("Push").EnumSelection(enum_TestDirection.Forward, OnConsoleDirection);
+        UIT_TouchConsole.Instance.AddConsoleBinding().Set("Reset", KeyCode.R).Button(OnConsoleReset);
+        UIT_TouchConsole.Instance.AddConsoleBinding().Set("Switch Joystick Mode").Button(OnJoystickSwitch);
+        UIT_TouchConsole.Instance.AddConsoleBinding().Set("Switch Touch Mode").EnumSelection(enum_TouchCheckType.DualJoystick, OnTouchInputSwitch);
 
         m_JoyStickStational = true;
         OnJoystickSwitch();

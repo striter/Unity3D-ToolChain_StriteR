@@ -226,6 +226,7 @@ GameObject:
   - component: {fileID: 1604089972}
   - component: {fileID: 1604089971}
   - component: {fileID: 1604089970}
+  - component: {fileID: 1604089973}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -292,9 +293,34 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1604089969}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1604089973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1604089969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58a71c24cd8160447aedffd2addc7878, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Euler: {x: 90, y: 360, z: 0}
+  m_Quaternion: {x: -0.70710677, y: -0.00000006181724, z: 0.00000006181724, w: -0.70710677}
+  m_Forward: {x: 0, y: -1, z: 0.00000005960464}
+  m_Sin: 45
+  m_SinResult: 0.70710677
+  m_Cos: 45
+  m_CosResult: 0.70710677
+  m_EulerTest: {x: 90, y: 360, z: 0}
+  m_EulerToQuaternion: {x: -0.7071068, y: -0.000000061817246, z: 0.000000061817246,
+    w: -0.7071068}
+  m_AxisTest: {x: 0, y: 1, z: 0}
+  m_AngleTest: 90
+  m_AxisAngleToQuaternion: {x: 0, y: 0.70710677, z: 0, w: 0.70710677}

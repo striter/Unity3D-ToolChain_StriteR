@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
 public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
     public bool m_ConsoleOpening { get; private set; } = false;
     public int LogSaveCount = 30;
@@ -24,15 +23,94 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
     {
         m_ConsoleCommands.Clear();
         OnConsoleShow = _OnConsoleShow;
-        AddConsoleBinding().Set("Clear Log").Play(ClearConsoleLog);
+        AddConsoleBinding().Set("Clear Log").Button(ClearConsoleLog);
+        AddConsoleBinding().Set("Console Debug Filter").EnumFlagsSelection<enum_ConsoleLog>(0,TConsole.SetLogFilter);
         return this;
     }
     #region Console
     public ConsoleCommand AddConsoleBinding() => m_ConsoleCommands.AddItem(m_ConsoleCommands.Count);
     public class ConsoleCommand : CGameObjectPool_Instance_Class<int>
     {
+        #region Predefine Classes
+        public class ToggleSelection
+        {
+            public Transform transform { get; private set; }
+            TGameObjectPool_Component<int, Toggle> m_ToggleGrid;
+            public ToggleSelection(Transform _transform)
+            {
+                transform = _transform;
+                m_ToggleGrid = new TGameObjectPool_Component<int, Toggle>(_transform.Find("Grid"), "GridItem");
+            }
+            public void Play<T>(int defaultValue,Action<T> _OnFlagChanged) where T:Enum
+            {
+                TCommon.TraversalEnum<T>(value => {
+                    int valueIndex = (int)value;
+                    Toggle tog = m_ToggleGrid.AddItem(valueIndex);
+                    tog.isOn = (defaultValue & valueIndex) == valueIndex;
+                    tog.GetComponentInChildren<Text>().text = value.ToString();
+                    tog.onValueChanged.RemoveAllListeners();
+                    tog.onValueChanged.AddListener(changed=> {
+                        int totalIndex=0;
+                        m_ToggleGrid.m_ActiveItemDic.Traversal((index, toggle) => totalIndex += (toggle.isOn ? index : 0));
+                        _OnFlagChanged((T)Enum.ToObject(typeof(T), totalIndex));
+                    });
+                });
+            }
+        }
+        public class ButtonSelection
+        {
+            public Transform transform { get; private set; }
+            Text m_Text;
+            TGameObjectPool_Component<int, Button> m_ButtonGrid;
+            public ButtonSelection(Transform _transform) 
+            {
+                transform = _transform;
+                m_Text = _transform.Find("Text").GetComponent<Text>();
+                m_ButtonGrid = new TGameObjectPool_Component<int, Button>(_transform.Find("Grid"), "GridItem");
+                _transform.GetComponent<Button>().onClick.AddListener(() => {
+                    m_ButtonGrid.transform.SetActivate(!m_ButtonGrid.transform.gameObject.activeSelf);
+                });
+                m_ButtonGrid.transform.SetActivate(false);
+            }
+            public void Play<T>(T _defaultValue, Action<int> _OnClick) where T : Enum
+            {
+                m_ButtonGrid.Clear();
+                m_Text.text = _defaultValue.ToString();
+                TCommon.TraversalEnum<T>(temp =>
+                {
+                    int index = (int)(temp);
+                    Button btn = m_ButtonGrid.AddItem(index);
+                    btn.onClick.RemoveAllListeners();
+                    btn.GetComponentInChildren<Text>().text = temp.ToString();
+                    btn.onClick.AddListener(() => {
+                        m_Text.text = temp.ToString();
+                        _OnClick(index);
+                        m_ButtonGrid.transform.SetActivate(false);
+                    });
+                });
+            }
+            public void Play(List<string> values, string defaultValue, Action<int> OnClick)
+            {
+                m_ButtonGrid.Clear();
+                m_Text.text = defaultValue.ToString();
+                m_ButtonGrid.Clear();
+                values.Traversal((int index, string temp) =>
+                {
+                    Button btn = m_ButtonGrid.AddItem(index);
+                    btn.onClick.RemoveAllListeners();
+                    btn.GetComponentInChildren<Text>().text = temp.ToString();
+                    btn.onClick.AddListener(() => {
+                        m_Text.text = temp.ToString();
+                        OnClick(index);
+                        m_ButtonGrid.transform.SetActivate(false);
+                    });
+                });
+            }
+        }
+        #endregion
         InputField m_ValueInput1,m_ValueInput2;
-        EnumSelection m_ValueSelection;
+        ButtonSelection m_GridSelection;
+        ToggleSelection m_ToggleSelection;
         Text m_CommandTitle;
         KeyCode m_KeyCode;
         Button m_CommonButton;
@@ -40,7 +118,8 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
         {
             m_ValueInput1 = transform.Find("Input1").GetComponent<InputField>();
             m_ValueInput2 = transform.Find("Input2").GetComponent<InputField>();
-            m_ValueSelection = new EnumSelection(transform.Find("Select"));
+            m_GridSelection = new ButtonSelection(transform.Find("ButtonSelection"));
+            m_ToggleSelection = new ToggleSelection(transform.Find("ToggleSelection"));
             m_CommonButton = transform.Find("Button").GetComponent<Button>();
             m_CommandTitle = transform.Find("Button/Title").GetComponent<Text>();
         }
@@ -55,7 +134,8 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
             base.OnAddItem(identity);
             m_ValueInput1.SetActivate(false);
             m_ValueInput2.SetActivate(false);
-            m_ValueSelection.transform.SetActivate(false);
+            m_GridSelection.transform.SetActivate(false);
+            m_CommonButton.SetActivate(true);
             m_KeyCode =  KeyCode.None;
             m_CommandTitle.text = "";
             m_CommonButton.onClick.RemoveAllListeners();
@@ -64,42 +144,43 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
         {
             m_KeyCode = keyCode;
             m_CommandTitle.text = title + (keyCode == KeyCode.None ? "":"|" + keyCode);
-            m_CommonButton.onClick.RemoveAllListeners();
             return this;
         }
 
-        public void Play(Action OnClick)
-        {
-            m_CommonButton.onClick.AddListener(()=>OnClick());
-        }
+        public void Button(Action OnClick)=>m_CommonButton.onClick.AddListener(()=>OnClick());
 
         #region EnumSelection
         int selectionIndex = -1;
-        public void Play<T>(T defaultEnum ,Action<T> OnClick) where T:Enum
+        public void EnumSelection<T>(T defaultEnum ,Action<T> OnClick) where T:Enum
         {
-            m_ValueSelection.transform.SetActivate(true);
+            m_GridSelection.transform.SetActivate(true);
             selectionIndex = (int)Enum.ToObject(typeof(T),defaultEnum);
-            m_ValueSelection.Init(defaultEnum, (int value)=>  selectionIndex=value);
+            m_GridSelection.Play(defaultEnum, (int value)=>  selectionIndex=value);
             m_CommonButton.onClick.AddListener(() => OnClick((T)Enum.ToObject(typeof(T),selectionIndex)));
         }
-
-        public void Play(List<string> values, int defaultEnum,Action<string> OnClick)
+        public void EnumSelection(int defaultEnum, List<string> values, Action<string> OnClick)
         {
-            m_ValueSelection.transform.SetActivate(true);
+            m_GridSelection.transform.SetActivate(true);
             selectionIndex = defaultEnum;
-            m_ValueSelection.Init(values,values[ defaultEnum], (int value) => selectionIndex = value);
+            m_GridSelection.Play(values,values[ defaultEnum], (int value) => selectionIndex = value);
             m_CommonButton.onClick.AddListener(() => OnClick(values[selectionIndex]));
         }
-        #endregion
-        public void Play<T>(T _defaultEnum,string _defaultValue, Action<T,string> OnClick) where T:Enum
+        public void EnumSelection<T>(T _defaultEnum, string _defaultValue, Action<T, string> OnClick) where T : Enum
         {
-            m_ValueSelection.transform.SetActivate(true);
+            m_GridSelection.transform.SetActivate(true);
             m_ValueInput1.SetActivate(true);
             m_ValueInput1.text = _defaultValue;
             selectionIndex = (int)Enum.ToObject(typeof(T), _defaultEnum);
-            m_ValueSelection.Init(_defaultEnum, (int value) => selectionIndex = value);
-            m_CommonButton.onClick.AddListener(() => OnClick((T)Enum.ToObject(typeof(T), selectionIndex),m_ValueInput1.text));
+            m_GridSelection.Play(_defaultEnum, (int value) => selectionIndex = value);
+            m_CommonButton.onClick.AddListener(() => OnClick((T)Enum.ToObject(typeof(T), selectionIndex), m_ValueInput1.text));
         }
+        public void EnumFlagsSelection<T>(int _defaultEnum, Action<T> _logFilter) where T : Enum
+        {
+            m_ToggleSelection.transform.SetActivate(false);
+            m_ToggleSelection.Play(_defaultEnum,_logFilter);
+            m_CommonButton.onClick.AddListener(() => m_ToggleSelection.transform.SetActivate(!m_ToggleSelection.transform.gameObject.activeSelf));
+        }
+        #endregion
 
         public void Play(string defaultValue,Action<string> OnValueClick)
         {
@@ -116,7 +197,6 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
             m_ValueInput2.text = defaultValue2;
             m_CommonButton.onClick.AddListener(() => OnValueClick(m_ValueInput1.text, m_ValueInput2.text));
         }
-
     }
     #endregion
 
@@ -139,7 +219,10 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
             UpdateLogUI();
         }
     }
-    #region Log
+    #region CONSOLE DEBUG LOG FILTER
+
+    #endregion
+    #region DEBUG LOG VISUALIZE
     private void OnEnable()
     {
         Application.logMessageReceived += OnLogReceived;

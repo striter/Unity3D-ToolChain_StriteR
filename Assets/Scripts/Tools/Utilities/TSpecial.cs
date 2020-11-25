@@ -524,55 +524,6 @@ public class AtlasAnim:AtlasLoader
     }
 }
 
-class EnumSelection : TReflection.UI.CPropertyFillElement
-{
-    Text m_Text;
-    List<string> m_Enums=new List<string>();
-    TGameObjectPool_Component<int, Button> m_ChunkButton;
-    public EnumSelection(Transform transform) : base(transform)
-    {
-        m_Text = transform.Find("Text").GetComponent<Text>();
-        m_ChunkButton = new TGameObjectPool_Component<int, Button>(transform.Find("Grid"), "GridItem");
-        transform.GetComponent<Button>().onClick.AddListener(() => {
-            m_ChunkButton.transform.SetActivate(!m_ChunkButton.transform.gameObject.activeSelf);
-        });
-        m_ChunkButton.transform.SetActivate(false);
-    }
-
-    public void Init<T>(T defaultValue, Action<int> OnClick) where T:Enum
-    {
-        m_Text.text = defaultValue.ToString();
-        m_ChunkButton.Clear();
-        TCommon.TraversalEnum((T temp) =>
-        {
-            int index = (int)((object)temp);
-            Button btn = m_ChunkButton.AddItem(index);
-            btn.onClick.RemoveAllListeners();
-            btn.GetComponentInChildren<Text>().text = temp.ToString();
-            btn.onClick.AddListener(() => {
-                m_Text.text = temp.ToString();
-                OnClick(index);
-                m_ChunkButton.transform.SetActivate(false);
-            });
-        });
-    }
-    public void Init(List<string> values, string defaultValue,Action<int> OnClick)
-    {
-        m_Text.text = defaultValue.ToString();
-        m_ChunkButton.Clear();
-        values.Traversal((int index,string temp) =>
-        {
-            Button btn = m_ChunkButton.AddItem(index);
-            btn.onClick.RemoveAllListeners();
-            btn.GetComponentInChildren<Text>().text = temp.ToString();
-            btn.onClick.AddListener(() => {
-                m_Text.text = temp.ToString();
-                OnClick(index);
-                m_ChunkButton.transform.SetActivate(false);
-            });
-        });
-    }
-}
 #endregion
 
 #if UNITY_EDITOR
@@ -634,14 +585,14 @@ public static  class Gizmos_Extend
             Handles.DrawLine(new Vector3(-halfWidth, -halfHeight, halfLength), new Vector3(-halfWidth, -halfHeight, -halfLength));
         }
     }
-    public static void DrawArrow(Vector3 _pos, Quaternion _rot, Vector3 _arrowSize)
+    public static void DrawArrow(Vector3 _pos, Quaternion _rot,float _length, float _radius)
     {
         using (new Handles.DrawingScope(Gizmos.color, Matrix4x4.TRS(_pos, _rot, Handles.matrix.lossyScale)))
         {
-            Vector3 capBottom = Vector3.forward * _arrowSize.z / 2;
-            Vector3 capTop = Vector3.forward * _arrowSize.z;
-            float rootRadius = _arrowSize.x / 4;
-            float capBottomSize = _arrowSize.x / 2;
+            Vector3 capBottom = Vector3.forward * _length / 2;
+            Vector3 capTop = Vector3.forward * _length;
+            float rootRadius = _radius / 4;
+            float capBottomSize = _radius / 2;
             Handles.DrawWireDisc(Vector3.zero, Vector3.forward, rootRadius);
             Handles.DrawWireDisc(capBottom, Vector3.forward, rootRadius);
             Handles.DrawLine(Vector3.up * rootRadius, capBottom + Vector3.up * rootRadius);

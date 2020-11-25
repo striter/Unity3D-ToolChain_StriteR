@@ -75,18 +75,7 @@ public static class TCommon
     }
 
     #endregion
-    #region Basic
-    public static float GetXZDistance(Vector3 start, Vector3 end) => new Vector2(start.x - end.x, start.z - end.z).magnitude;
-    public static float GetXZSqrDistance(Vector3 start, Vector3 end) => new Vector2(start.x - end.x, start.z - end.z).sqrMagnitude;
-    public static Vector3 GetXZLookDirection(Vector3 startPoint, Vector3 endPoint)
-    {
-        Vector3 lookDirection = endPoint - startPoint;
-        lookDirection.y = 0;
-        lookDirection.Normalize();
-        return lookDirection;
-    }
-    public static Vector3 RotateDirectionClockwise(this Vector3 Direction, Vector3 axis, float angle) => (Quaternion.AngleAxis(angle, axis) * Direction).normalized;
-
+    #region Angle
     public static float GetAngle(Vector3 first, Vector3 second, Vector3 up)
     {
         float angle = Vector3.Angle(first, second);
@@ -99,129 +88,32 @@ public static class TCommon
         Vector3 newSecond = new Vector3(second.x, 0, second.z);
         return GetAngle(newFirst, newSecond, up);
     }
-    public static float Max(this Vector3 _src) => Mathf.Max( Mathf.Max(_src.x, _src.y),_src.z);
+    public static float AngleToRadin(float angle) => Mathf.PI * angle / 180f;
+    public static float RadinToAngle(float radin) => radin / Mathf.PI * 180f;
+    #endregion
+    #region Vector
+    public static float GetXZDistance(Vector3 start, Vector3 end) => new Vector2(start.x - end.x, start.z - end.z).magnitude;
+    public static float GetXZSqrDistance(Vector3 start, Vector3 end) => new Vector2(start.x - end.x, start.z - end.z).sqrMagnitude;
+    public static Vector3 GetXZLookDirection(Vector3 startPoint, Vector3 endPoint)
+    {
+        Vector3 lookDirection = endPoint - startPoint;
+        lookDirection.y = 0;
+        lookDirection.Normalize();
+        return lookDirection;
+    }
+    public static Vector3 RotateDirectionClockwise(this Vector3 Direction, Vector3 axis, float angle) => (Quaternion.AngleAxis(angle, axis) * Direction).normalized;
+    public static float Max(this Vector3 _src) => Mathf.Max(Mathf.Max(_src.x, _src.y), _src.z);
     public static float Min(this Vector3 _src) => Mathf.Min(Mathf.Min(_src.x, _src.y), _src.z);
-    public static float Max(this Vector4 _src) =>Mathf.Max( Mathf.Max(Mathf.Max(_src.x, _src.y), _src.z),_src.w);
-    public static float Min(this Vector4 _src) => Mathf.Min(Mathf.Min(Mathf.Min(_src.x, _src.y), _src.z),_src.w);
+    public static float Max(this Vector4 _src) => Mathf.Max(Mathf.Max(Mathf.Max(_src.x, _src.y), _src.z), _src.w);
+    public static float Min(this Vector4 _src) => Mathf.Min(Mathf.Min(Mathf.Min(_src.x, _src.y), _src.z), _src.w);
     public static Vector3 Multiply(this Vector3 _src, Vector3 _tar) => new Vector3(_src.x * _tar.x, _src.y * _tar.y, _src.z * _tar.z);
     public static Vector3 Divide(this Vector3 _src, Vector3 _tar) => new Vector3(_src.x / _tar.x, _src.y / _tar.y, _src.z / _tar.z);
-    public static Vector4 Multiply(this Vector4 _src, Vector4 _tar) => new Vector4(_src.x * _tar.x, _src.y * _tar.y, _src.z * _tar.z,_src.w*_tar.w);
-    public static Vector4 Divide(this Vector4 _src, Vector4 _tar) => new Vector4(_src.x / _tar.x, _src.y / _tar.y, _src.z / _tar.z,_src.w/_tar.w);
+    public static Vector4 Multiply(this Vector4 _src, Vector4 _tar) => new Vector4(_src.x * _tar.x, _src.y * _tar.y, _src.z * _tar.z, _src.w * _tar.w);
+    public static Vector4 Divide(this Vector4 _src, Vector4 _tar) => new Vector4(_src.x / _tar.x, _src.y / _tar.y, _src.z / _tar.z, _src.w / _tar.w);
+    #endregion
+    #region Basic
     public static bool InRange(this RangeFloat _value, float _check) => _value.start <= _check && _check <= _value.end;
     public static float InRangeScale(this RangeFloat _value, float _check) => Mathf.InverseLerp(_value.start, _value.end, _check);
-
-    public static int GetByBit(int _target, int _index)
-    {
-        int tmpInt = 1 << _index;
-        return (_target & tmpInt) / tmpInt;
-    }
-    #endregion
-    #region Algorithm
-    public enum enum_SortType
-    {
-        Bubble,
-        Selection,
-        Insertion,
-
-        Quick,
-    }
-    public static void SwapItem<T>(this List<T> list, int index1, int index2)
-    {
-        T temp = list[index1];
-        list[index1] = list[index2];
-        list[index2] = temp;
-    }
-    static bool TSortCheck<T>(T a, T b, bool lower) where T : IComparable
-    {
-        int offset = b.CompareTo(a);
-        return lower ? offset < 0 : offset > 0;
-    }
-    public static void TSort<T>(this List<T> sortTarget, enum_SortType sortType, bool startLower = true) where T : IComparable
-    {
-        int count = sortTarget.Count;
-        if (count <= 1)
-            return;
-
-        switch (sortType)
-        {
-            case enum_SortType.Bubble:
-                for (int i = 0; i < count - 1; i++)
-                {
-                    bool sorted = true;
-                    for (int j = 0; j < count - 1 - i; j++)
-                    {
-                        if (!TSortCheck(sortTarget[j], sortTarget[j + 1], startLower))
-                            continue;
-                        sorted = false;
-                        sortTarget.SwapItem(j, j + 1);
-                    }
-                    if (sorted)
-                        break;
-                }
-                break;
-            case enum_SortType.Selection:
-                for (int i = 0; i < count - 1; i++)
-                {
-                    int selectionIndex = i;
-                    for (int j = i + 1; j < count; j++)
-                    {
-                        if (!TSortCheck(sortTarget[selectionIndex], sortTarget[j], startLower))
-                            continue;
-                        selectionIndex = j;
-                    }
-                    if (selectionIndex == i)
-                        break;
-                    sortTarget.SwapItem(i, selectionIndex);
-                }
-                break;
-            case enum_SortType.Insertion:
-                for (int i = 1; i < count; i++)
-                {
-                    for (int j = i; j > 0; j--)
-                    {
-                        if (TSortCheck(sortTarget[j], sortTarget[j - 1], startLower))
-                            break;
-                        sortTarget.SwapItem(j, j - 1);
-                    }
-                }
-                break;
-            case enum_SortType.Quick:
-                TQuickSort(sortTarget, 0, count - 1, startLower);
-                break;
-        }
-    }
-
-    static void TQuickSort<T>(List<T> sortTarget, int startIndex, int endIndex, bool startLower) where T : IComparable
-    {
-        if (startIndex >= endIndex)
-            return;
-
-        T temp = sortTarget[startIndex];
-        int leftIndex = startIndex;
-        int rightIndex = endIndex;
-        while (leftIndex != rightIndex)
-        {
-            while (leftIndex != rightIndex)
-            {
-                if (TSortCheck(temp, sortTarget[rightIndex], startLower))
-                    break;
-                rightIndex--;
-            }
-            sortTarget[leftIndex] = sortTarget[rightIndex];
-
-            while (leftIndex != rightIndex)
-            {
-                if (TSortCheck(sortTarget[leftIndex], temp, startLower))
-                    break;
-                leftIndex++;
-            }
-            sortTarget[rightIndex] = sortTarget[leftIndex];
-        }
-        sortTarget[leftIndex] = temp;
-
-        TQuickSort(sortTarget, startIndex, leftIndex - 1, startLower);
-        TQuickSort(sortTarget, leftIndex + 1, endIndex, startLower);
-    }
     #endregion
     #region Collections & Array 
     public static T GetIndexKey<T, Y>(this Dictionary<T, Y> dictionary, int index) => dictionary.ElementAt(index).Key;
@@ -383,20 +275,13 @@ public static class TCommon
         return dstArray;
     }
     #region Enum
-
-    public static void TraversalEnum<T>(Action<T> enumAction) where T:Enum 
+    public static void TraversalEnum<T>(Action<object> enumAction) where T:Enum 
     {
-        if (!typeof(T).IsSubclassOf(typeof(Enum)))
-        {
-            Debug.LogError("Can't Traversal EnEnum Class!");
-            return;
-        }
-
         foreach (object temp in Enum.GetValues(typeof(T)))
         {
             if (temp.ToString() == "Invalid")
                 continue;
-            enumAction((T)temp);
+            enumAction(temp);
         }
     }
     public static List<T> GetEnumList<T>()

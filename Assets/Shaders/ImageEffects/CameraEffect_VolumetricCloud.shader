@@ -49,13 +49,12 @@
             }
 
             #if _LIGHTMARCH
-            float lightMarch(float3 position,float3 marchDir)
+            float lightMarch(float3 position,float3 marchDir,float marchDst)
             {
                 float distance1=PRayDistance(float3(0,_VerticalStart,0),float3(0,0,1),float3(0,1,0),position,marchDir);
                 float distance2=PRayDistance(float3(0,_VerticalEnd,0),float3(0,0,1),float3(0,1,0),position,marchDir);
                 float distanceInside=max(distance1,distance2);
                 float distanceLimitParam=saturate(distanceInside/_LightMarchMinimalDistance);
-                float marchDst=distanceInside/_LightMarchTimes;
                 float cloudDensity=0;
                 float totalDst=0;
                 for(int i=0;i<_LightMarchTimes;i++)
@@ -63,6 +62,8 @@
                     float3 marchPos=position+marchDir*totalDst;
                     cloudDensity+=SampleDensity(marchPos);
                     totalDst+=marchDst;
+                    if(totalDst>=distanceInside)
+                        break;
                 }
                 return cloudDensity/_LightMarchTimes*distanceLimitParam;
             }
@@ -127,6 +128,7 @@
                     float cloudMarchDst= _Distance/_RayMarchTimes;
                     float cloudMarchParam=1.0/_RayMarchTimes;
                     float lightMarchParam=_LightAbsorption*_Opacity;
+                    float lightMarchDst=_Distance/_LightMarchTimes/2;
                     float dstMarched=0;
                     float totalDensity=0;
                     for(int i=0;i<_RayMarchTimes;i++)
@@ -137,7 +139,7 @@
                         {
                             cloudDensity*= exp(-density*_Opacity);
                             #if _LIGHTMARCH
-                            lightIntensity *= exp(-density*scatter*cloudDensity*lightMarchParam*lightMarch(marchPos,lightDir));
+                            lightIntensity *= exp(-density*scatter*cloudDensity*lightMarchParam*lightMarch(marchPos,lightDir,lightMarchDst));
                             #else
                             lightIntensity -= density*scatter*cloudDensity*lightMarchParam;
                             #endif
