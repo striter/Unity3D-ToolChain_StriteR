@@ -112,15 +112,11 @@ public class UIT_EventTriggerListener : EventTrigger
             m_pressDurationChecking = false;
         }
     }
-
-
     void OnPressDisable()
     {
         if (m_pressing) OnPressStatus?.Invoke(false, Vector2.zero);
     }
-
     #endregion
-
     #region Drag
     public Action<bool, Vector2> D_OnDragStatus;
     public Action<Vector2> D_OnDrag, D_OnDragDelta;

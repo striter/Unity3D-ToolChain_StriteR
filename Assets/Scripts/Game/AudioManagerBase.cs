@@ -42,13 +42,14 @@ public class AudioManagerBase : SingletonMono <AudioManagerBase>
     protected void SetBGPitch(float pitch) => m_AudioBG.pitch = pitch;
     protected virtual void Update()
     {
+        float deltaTime = Time.unscaledDeltaTime;
         m_AudioBG.volume = m_BGVolume;
 
         if (m_Clip == null)
         {
             if (m_AudioBG.isPlaying)
             {
-                m_baseVolume = Mathf.Lerp(m_baseVolume, 0f, Time.deltaTime*2);
+                m_baseVolume = Mathf.Lerp(m_baseVolume, 0f, deltaTime * 2);
                 if (m_baseVolume <= .05f)
                     m_AudioBG.Stop();
             }
@@ -58,11 +59,11 @@ public class AudioManagerBase : SingletonMono <AudioManagerBase>
         {
             if (m_AudioBG.clip == m_Clip)
             {
-                m_baseVolume = Mathf.Lerp(m_baseVolume, 1f, Time.deltaTime*2);
+                m_baseVolume = Mathf.Lerp(m_baseVolume, 1f, deltaTime * 2);
             }
             else
             {
-                m_baseVolume = Mathf.Lerp(m_baseVolume, 0f, Time.deltaTime*2);
+                m_baseVolume = Mathf.Lerp(m_baseVolume, 0f, deltaTime*2);
                 if (m_baseVolume <= .05f)
                 {
                     m_AudioBG.clip = m_Clip;
@@ -70,7 +71,7 @@ public class AudioManagerBase : SingletonMono <AudioManagerBase>
                 }
             }
         }
-        TGameObjectPool_Static<int, SFXAudioBase>.TraversalAllActive((SFXAudioBase audio) => { audio.Tick(Time.unscaledDeltaTime); });
+        TGameObjectPool_Static<int, SFXAudioBase>.TraversalAllActive((SFXAudioBase audio) => { audio.Tick(deltaTime); });
     }
 
     protected SFXAudioBase PlayClip(int sourceID,AudioClip _clip,float _volume, bool _loop, Transform _target)

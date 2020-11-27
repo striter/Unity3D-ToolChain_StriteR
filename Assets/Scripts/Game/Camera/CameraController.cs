@@ -1,25 +1,17 @@
 ﻿using UnityEngine;
 
 
-[ExecuteInEditMode,RequireComponent(typeof(Camera))]
+[ExecuteInEditMode, RequireComponent(typeof(Camera))]
 public class CameraController : SingletonMono<CameraController>
 {
-
     public Camera m_Camera { get; private set; }
+    public Transform m_BindRoot;
     [Header("Position Param")]
-    [SerializeField]
-    protected Transform m_BindRoot;
-    [SerializeField]
-    protected Vector3 m_BindPosOffset;
+    public Vector3 m_BindPosOffset;
     [Range(0.01f, 5f)]
     public float m_MoveDamping = 1f;
     [Header("Rotation Param")]
-    [SerializeField]
-    protected Transform m_LookAt;
-    [SerializeField]
-    protected Vector3 m_InputRotEuler;
-    [SerializeField]
-    protected RangeFloat m_InputPitchClamp;
+    public Transform m_ForceLookAt;
     [Range(0.01f, 5f)]
     public float m_RotateDamping = 1f;
 
@@ -33,49 +25,36 @@ public class CameraController : SingletonMono<CameraController>
         if (!m_BindRoot)
             return;
 
-        UpdateCameraPositionRotation(m_MoveDamping, m_RotateDamping,Time.deltaTime);
+        UpdateCameraPositionRotation(m_MoveDamping, m_RotateDamping, Time.deltaTime);
     }
-    Matrix4x4 GetBindRootMatrix() => Matrix4x4.TRS(m_BindRoot.position, Quaternion.Euler(0, m_InputRotEuler.y, 0), Vector3.one);
-    void UpdateCameraPositionRotation(float _moveDamping, float _rotateDamping,float _deltaTime)
+    Matrix4x4 GetBindRootMatrix() => Matrix4x4.TRS(m_BindRoot.position, m_BindRoot.rotation, Vector3.one);
+    void UpdateCameraPositionRotation(float _moveDamping, float _rotateDamping, float _deltaTime)
     {
-        Matrix4x4 rootMatrix = GetBindRootMatrix(); 
-        Vector3 cameraPosition = rootMatrix.MultiplyPoint(m_BindPosOffset + GetRootOffsetAdditive());
+        if (!m_BindRoot)
+            return;
+
+        Matrix4x4 rootMatrix = GetBindRootMatrix();
+        Vector3 cameraPosition = rootMatrix.MultiplyPoint(m_BindPosOffset + GetRootOffsetAdditive(_deltaTime));
         transform.position = Vector3.Lerp(transform.position, cameraPosition, _deltaTime / _moveDamping); ;
 
-        Vector3 cameraEuler = m_LookAt ? Quaternion.LookRotation(m_LookAt.position - transform.position, Vector3.up).eulerAngles : m_InputRotEuler;
-        
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(cameraEuler + GetRootRotateAdditive()), _deltaTime / _rotateDamping); 
+        Vector3 cameraEuler = m_ForceLookAt ? Quaternion.LookRotation(m_ForceLookAt.position - transform.position, Vector3.up).eulerAngles : m_BindRoot.eulerAngles;
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(cameraEuler + GetRootRotateAdditive(_deltaTime)), _deltaTime / _rotateDamping);
     }
 
-    public void ForceSetCamera() => UpdateCameraPositionRotation(1f, 1f,1f);
-    public CameraController SetCameraBindRoot(Transform _bindRoot)
-    {
-        m_BindRoot = _bindRoot;
-        return this;
-    }
-    public CameraController LookAt(Transform lookAtTrans)
-    {
-        m_LookAt = lookAtTrans;
-        return this;
-    }
-    public void AddPitchYawRollDelta(Vector3 _delta) 
-    {
-        m_InputRotEuler += _delta;
-        m_InputRotEuler.y = Mathf.Clamp(m_InputRotEuler.y, m_InputPitchClamp.start, m_InputPitchClamp.length);   
-    }
-    protected virtual Vector3 GetRootOffsetAdditive() => Vector3.zero;
-    protected virtual Vector3 GetRootRotateAdditive() => Vector3.zero;
-
-
+    public void ForceSetCamera() => UpdateCameraPositionRotation(1f, 1f, 1f);
+    protected virtual Vector3 GetRootOffsetAdditive(float _deltaTime) => Vector3.zero;
+    protected virtual Vector3 GetRootRotateAdditive(float _deltaTime) => Vector3.zero;
 #if UNITY_EDITOR
     #region Editor
     private void OnDrawGizmosSelected()
     {
+        ForceSetCamera();
+
         Gizmos.color = Color.green;
-        Gizmos_Extend.DrawCylinder(m_BindRoot.position,Quaternion.LookRotation( Vector3.up), .2f,2f);
+        Gizmos_Extend.DrawCylinder(m_BindRoot.position, Quaternion.LookRotation(Vector3.up), .2f, 2f);
 
         Gizmos.matrix = GetBindRootMatrix();
-        Gizmos.DrawWireSphere(m_BindPosOffset ,.5f);
+        Gizmos.DrawWireSphere(m_BindPosOffset, .5f);
     }
     #endregion
 #endif

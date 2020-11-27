@@ -14,9 +14,9 @@ public class TPSCameraController : CameraController
     Vector3 v3_Shake;
     float inverseCheck = 0;
     bool b_shakeReverse;
-    protected override Vector3 GetRootOffsetAdditive()
+    protected override Vector3 GetRootOffsetAdditive(float _deltaTime)
     {
-        inverseCheck += Time.deltaTime;
+        inverseCheck += _deltaTime;
         if (inverseCheck > m_ShakeReverseDuration)
         {
             b_shakeReverse = !b_shakeReverse;
@@ -26,9 +26,9 @@ public class TPSCameraController : CameraController
         v3_Shake = Vector3.Lerp(v3_Shake, Vector3.zero, I_ShakeParam * Time.deltaTime);
         return (b_shakeReverse ? -1 : 1) * v3_Shake;
     }
-    protected override Vector3 GetRootRotateAdditive()
+    protected override Vector3 GetRootRotateAdditive(float _deltaTime)
     {
-        v3_Recoil = Vector3.Lerp(v3_Recoil, Vector3.zero, Time.deltaTime * 5f);
+        v3_Recoil = Vector3.Lerp(v3_Recoil, Vector3.zero, _deltaTime* 5f);
         return v3_Recoil;
     }
     protected override void Awake()

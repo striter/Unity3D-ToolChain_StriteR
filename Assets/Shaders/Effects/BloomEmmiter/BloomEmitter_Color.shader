@@ -9,18 +9,12 @@
 	SubShader
 	{ 
 		Tags {"RenderType" = "BloomColor" "IgnoreProjector" = "True" "Queue" = "Transparent" }
-		Cull Back Lighting Off Fog { Color(0,0,0,0) }
+		Lighting Off Fog { Color(0,0,0,0) }
 		ZWrite On
 		Blend SrcAlpha OneMinusSrcAlpha
-		Pass
-		{
-			name "MAIN"
-			CGPROGRAM
+		CGINCLUDE
 			#pragma multi_compile_instancing
-			#pragma vertex vert
-			#pragma fragment frag
 			#include "UnityCG.cginc"
-
 			struct appdata
 			{
 				float4 vertex : POSITION;
@@ -55,7 +49,17 @@
 			{
 				return tex2D(_MainTex,i.uv)*i.color;
 			}
+		ENDCG
+
+		Pass
+		{
+			Cull Back 
+			name "MAIN"
+			CGPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag
 			ENDCG
 		}
+
 	}
 }
