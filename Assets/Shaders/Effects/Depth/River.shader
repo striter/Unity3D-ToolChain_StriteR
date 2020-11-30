@@ -12,6 +12,8 @@
 		_FresnelParam("Fresnel: X | Base Y| Max Z| Scale ",Vector)=(1,1,1,1)
 		_FoamColor("Foam Color",Color)=(1,1,1,1)
 		_FoamDepthParam("Depth/Foam: X| FoamWidth Y | DepthStart Z | Depth Width",Vector)=(.2,.5,1.5,1)
+		
+		[Toggle(_SOFTFOAM)]_SoftFoam("Soft Foam",float)=1
 	}
 	SubShader
 	{
@@ -23,6 +25,8 @@
 		#include "UnityCG.cginc"
 		#include "Lighting.cginc"
 		#include "../../CommonLightingInclude.cginc"
+		#pragma shader_feature _SOFTFOAM
+
 		ENDCG
 		Pass		//Base Pass
 		{
@@ -80,8 +84,11 @@
 
 			float4 _FoamDepthParam;
 			float Foam(float depthOffset) {
-				//return step( depthOffset, _FoamDepthParam.x);		//Toonic
-				return smoothstep(_FoamDepthParam.x, 0, depthOffset);		//Realistic
+			#if _SOFTFOAM
+				return smoothstep(_FoamDepthParam.x, 0, depthOffset);
+			#else
+				return step( depthOffset, _FoamDepthParam.x);
+			#endif
 			}
 
 			float DepthOpacity(float depthOffset)

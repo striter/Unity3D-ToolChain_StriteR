@@ -8,7 +8,6 @@
 		
 		[Header(Specular Setting)]
 		[Toggle(_SPECULAR)]_EnableSpecular("Enable Specular",float)=1
-		_SpecularColor("Specular Color",Color)=(1,1,1,1)
 		_SpecularRange("Specular Range",Range(.9,1))=.98
 	}
 	SubShader
@@ -28,7 +27,6 @@
 		sampler2D _MainTex;
 		float4 _MainTex_ST;
 		float _Lambert;
-		float4 _SpecularColor;
 		float _SpecularRange;
 		UNITY_INSTANCING_BUFFER_START(Props)
 			UNITY_DEFINE_INSTANCED_PROP(float4, _Color)
@@ -82,15 +80,14 @@
 
 			float diffuse=saturate( GetDiffuse(normal,lightDir));
 			diffuse*=atten;
-
 			diffuse = _Lambert + (1 - _Lambert)*diffuse;
 
-			finalCol*=(_LightColor0.rgb*diffuse);
+			finalCol*=_LightColor0.rgb*diffuse;
 				
 			#if _SPECULAR
 			float specular = GetSpecular(normal,lightDir,viewDir,_SpecularRange);
 			specular*=atten;
-			finalCol = lerp(finalCol,_SpecularColor.rgb,specular) ;
+			finalCol += _LightColor0.rgb*specular ;
 			#endif
 
 			return float4(finalCol,1);

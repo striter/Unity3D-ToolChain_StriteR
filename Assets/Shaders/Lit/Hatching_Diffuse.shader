@@ -2,15 +2,14 @@
 {
 	Properties
 	{
-		_MainTex ("Texture", 2D) = "white" {}
+		_HatchScale("Hatch Scale",Float)=1
 		_Lambert("Lambert",Range(0,1))=1
-		_HatchScale("Tile Factor",Float)=1
-		_Hatch0("Hatch 0",2D)="white"{}
-		_Hatch1("Hatch 1",2D) = "white"{}
-		_Hatch2("Hatch 2",2D) = "white"{}
-		_Hatch3("Hatch 3",2D) = "white"{}
-		_Hatch4("Hatch 4",2D) = "white"{}
-		_Hatch5("Hatch 5",2D) = "white"{}
+		[NoScaleOffset]_Hatch0("Hatch 0",2D)="white"{}
+		[NoScaleOffset]_Hatch1("Hatch 1",2D) = "white"{}
+		[NoScaleOffset]_Hatch2("Hatch 2",2D) = "white"{}
+		[NoScaleOffset]_Hatch3("Hatch 3",2D) = "white"{}
+		[NoScaleOffset]_Hatch4("Hatch 4",2D) = "white"{}
+		[NoScaleOffset]_Hatch5("Hatch 5",2D) = "white"{}
 	}
 	SubShader
 	{
@@ -19,6 +18,7 @@
 		Pass
 		{
 			Tags{"LightMode"="ForwardBase"}
+			ZWrite On
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
@@ -26,8 +26,6 @@
 			#include "UnityCG.cginc"
 			#include "AutoLight.cginc"
 
-			sampler2D _MainTex;
-			float4 _MainTex_ST;
 			fixed _HatchScale;
 			fixed _Lambert;
 			sampler2D _Hatch0, _Hatch1, _Hatch2, _Hatch3, _Hatch4, _Hatch5;
@@ -46,7 +44,7 @@
 				fixed3 hatchWeight012 : TEXCOORD1;
 				fixed3 hatchWeight345 : TEXCOORD2;
 				float3 worldPos:TEXCOORD3;
-				SHADOW_COORDS(4)
+				SHADOW_COORDS(5)
 			};
 			
 			v2f vert (appdata v)
@@ -58,8 +56,10 @@
 				o.worldPos = mul(unity_ObjectToWorld, v.vertex);
 				fixed3 worldNormal = normalize( UnityObjectToWorldNormal(v.normal));
 				fixed3 worldLightDir = normalize(  UnityWorldSpaceLightDir(o.worldPos));
+				UNITY_LIGHT_ATTENUATION(atten,o,o.worldPos);
 
 				fixed diff =  dot(worldLightDir, worldNormal);
+				diff*=atten;
 				diff=diff*_Lambert+(1-_Lambert);
 				o.hatchWeight012 = fixed3(0, 0, 0);
 				o.hatchWeight345 = fixed3(0, 0, 0);
@@ -114,11 +114,13 @@
 				hatchColor += whiteCol;
 				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
 
-				fixed3 col = tex2D(_MainTex, i.uv).rgb*hatchColor.rgb;
+				fixed3 col = hatchColor.rgb;
 
 				return fixed4( col,1);
 			}
 			ENDCG
 		}
+
+		USEPASS "Game/Lit/Standard_Specular/ShadowCaster"
 	}
 }

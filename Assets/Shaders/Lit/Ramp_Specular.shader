@@ -93,7 +93,6 @@
 			finalCol=lerp(finalCol,_RimColor.rgb,rim);
 			#endif
 			
-
 			#if _SPECULAR
 			float specular = GetSpecular(normal,lightDir,viewDir,_SpecularRange);
 			specular=1-step(specular,0);
