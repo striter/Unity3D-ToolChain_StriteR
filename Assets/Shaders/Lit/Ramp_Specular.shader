@@ -99,8 +99,6 @@
 			specular=1-step(specular,0);
 			finalCol = lerp(finalCol,_SpecularColor.rgb,specular) ;
 			#endif
-
-
 			return fixed4(finalCol ,1);
 		}
 		ENDCG

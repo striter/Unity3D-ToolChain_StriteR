@@ -25,7 +25,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _EnableSpecular: 1
-    - _Lambert: 1
+    - _Lambert: 0.5
     - _SpecularRange: 0.9416
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

@@ -4,7 +4,12 @@ float min(float3 target){ return min( min(target.x,target.y),target.z);}
 float max(float3 target){ return max( max(target.x,target.y),target.z);}
 
 //Plane
-float PRayDistance(float3 _pPosition,float3 _pDirection,float3 _pNormal,float3 _rayOrigin,float3 _rayDirection) //return: Dst To Plane
+float3 PRayIntersectPosition(float3 planePos,float3 planeNor,float3 projPos,float3 projDir)
+{
+    float d = dot(planePos - projPos, planeNor) / dot(projDir, planeNor);
+    return projPos + projDir * d;
+}
+float PRayDistance(float3 _pPosition,float3 _pNormal,float3 _rayOrigin,float3 _rayDirection) //return: Dst To Plane
 {
     float npP = dot(_pNormal, _pPosition);
     float nrO = dot(_pNormal,_rayOrigin);

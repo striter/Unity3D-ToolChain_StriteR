@@ -80,10 +80,12 @@
 				
 			float3 finalCol=tex2D(_MainTex, i.uv)*UNITY_ACCESS_INSTANCED_PROP(Props, _Color)+UNITY_LIGHTMODEL_AMBIENT.xyz;
 
-			float diffuse=GetDiffuse(normal,lightDir);
-			atten*=diffuse;
-			atten = atten * _Lambert + (1 - _Lambert);
-			finalCol*=(_LightColor0.rgb*atten+(1-atten)*float3(0,0,0));
+			float diffuse=saturate( GetDiffuse(normal,lightDir));
+			diffuse*=atten;
+
+			diffuse = _Lambert + (1 - _Lambert)*diffuse;
+
+			finalCol*=(_LightColor0.rgb*diffuse);
 				
 			#if _SPECULAR
 			float specular = GetSpecular(normal,lightDir,viewDir,_SpecularRange);
