@@ -81,7 +81,7 @@ Material:
     - _RimRange: 0.351
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SpecularRange: 0.965
+    - _SpecularRange: 0.979
     - _SpecularScale: 0.0046
     - _SrcBlend: 1
     - _UVSec: 0

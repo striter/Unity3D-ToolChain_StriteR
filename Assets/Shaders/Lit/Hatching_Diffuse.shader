@@ -5,7 +5,7 @@
 		_HatchScale("Hatch Scale",Float)=1
 		_Lambert("Lambert",Range(0,1))=1
 		[Toggle(_WORLD_UV)]_WORLDUV("World UV",float)=1
-		[NoScaleOffset]_Hatch0("Hatch 0",2D)="white"{}
+		[NoScaleOffset]_Hatch0("Hatch 0",2D) = "white"{}
 		[NoScaleOffset]_Hatch1("Hatch 1",2D) = "white"{}
 		[NoScaleOffset]_Hatch2("Hatch 2",2D) = "white"{}
 		[NoScaleOffset]_Hatch3("Hatch 3",2D) = "white"{}
@@ -69,59 +69,36 @@
 				return o;
 			}
 			
+			float3 SampleHatchMap(int index,float2 uv)
+			{
+				if(index==0)
+					return tex2D(_Hatch0, uv);
+				else if(index==1)
+					return tex2D(_Hatch1, uv);
+				else if(index==2)
+					return tex2D(_Hatch2, uv);
+				else if(index==3)
+					return tex2D(_Hatch3, uv);
+				else if(index==4)
+					return tex2D(_Hatch4, uv);
+				else if(index==5)
+					return tex2D(_Hatch5, uv);
+				else
+					return 0;
+			}
+
 			fixed4 frag (v2f i) : SV_Target
 			{
 				fixed diff =saturate(GetDiffuse(normalize(i.worldLightDir),normalize(i.worldNormal)));
 				UNITY_LIGHT_ATTENUATION(atten,i,i.worldPos);
 				diff*=atten;
 				diff=diff*_Lambert+(1-_Lambert);
-				float3 hatchWeight012 =0;
-				float3 hatchWeight345 = 0;
-
-				float hatchFactor = diff * 7.0;
-
-				if (hatchFactor > 5)
-				{
-					hatchWeight012.x = 1;
-				}
-				else if (hatchFactor > 4)
-				{
-					hatchWeight012.x = hatchFactor - 4;
-					hatchWeight012.y = 1 - hatchWeight012.x;
-				}
-				else if (hatchFactor > 3)
-				{
-					hatchWeight012.y = hatchFactor - 3;
-					hatchWeight012.z = 1 - hatchWeight012.y;
-				}
-				else if (hatchFactor > 2)
-				{
-					hatchWeight012.z = hatchFactor - 2;
-					hatchWeight345.x = 1 - hatchWeight012.z;
-				}
-				else if(hatchFactor>1)
-				{
-					hatchWeight345.x = hatchFactor - 1;
-					hatchWeight345.y = 1 - hatchWeight345.x;
-				}
-				else
-				{
-					hatchWeight345.y = hatchFactor;
-					hatchWeight345.z = 1 - hatchWeight345.y;
-				}
-
-
-				float3 hatchColor=0;
-				hatchColor += tex2D(_Hatch0, i.uv)*hatchWeight012.x;
-				hatchColor += tex2D(_Hatch1, i.uv)*hatchWeight012.y;
-				hatchColor += tex2D(_Hatch2, i.uv)*hatchWeight012.z;
-				hatchColor += tex2D(_Hatch3, i.uv)*hatchWeight345.x;
-				hatchColor += tex2D(_Hatch4, i.uv)*hatchWeight345.y;
-				hatchColor += tex2D(_Hatch5, i.uv)*hatchWeight345.z;
-
-				float3 whiteCol = (1 - hatchWeight012.x - hatchWeight012.y - hatchWeight012.z - hatchWeight345.x - hatchWeight345.y - hatchWeight345.z);
-				hatchColor += whiteCol;
-				return float4( hatchColor,1);
+				int hatchIndex=-1;
+				float hatchWeight=0;
+				float hatchFactor =diff * 6.0;
+				hatchIndex= max(0, 4-floor(hatchFactor));
+				hatchWeight=saturate( hatchFactor-(4-hatchIndex));
+				return float4(SampleHatchMap(hatchIndex,i.uv)*hatchWeight+SampleHatchMap(hatchIndex+1,i.uv)*(1-hatchWeight),1);
 			}
 			ENDCG
 		}
