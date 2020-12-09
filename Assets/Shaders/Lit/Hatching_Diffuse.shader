@@ -58,13 +58,7 @@
 				o.worldPos = mul(unity_ObjectToWorld, v.vertex);
 				o.worldNormal = UnityObjectToWorldNormal(v.normal);
 				o.worldLightDir = UnityWorldSpaceLightDir(o.worldPos);
-				#if _WORLD_UV
-				o.uv = TriplanarMapping(o.worldPos,v.normal,_HatchScale);
-				#else
-				o.uv=v.uv;
-				#endif
-
-			
+				o.uv=v.uv/_HatchScale;
 				TRANSFER_SHADOW(o);
 				return o;
 			}
@@ -89,6 +83,9 @@
 
 			fixed4 frag (v2f i) : SV_Target
 			{
+				#if _WORLD_UV
+				i.uv = TriplanarMapping(i.worldPos,normalize(i.worldNormal))/_HatchScale;
+				#endif
 				fixed diff =saturate(GetDiffuse(normalize(i.worldLightDir),normalize(i.worldNormal)));
 				UNITY_LIGHT_ATTENUATION(atten,i,i.worldPos);
 				diff*=atten;
@@ -97,7 +94,7 @@
 				float hatchWeight=0;
 				float hatchFactor =diff * 6.0;
 				hatchIndex= max(0, 4-floor(hatchFactor));
-				hatchWeight=saturate( hatchFactor-(4-hatchIndex));
+				hatchWeight=saturate(hatchFactor-(4-hatchIndex));
 				return float4(SampleHatchMap(hatchIndex,i.uv)*hatchWeight+SampleHatchMap(hatchIndex+1,i.uv)*(1-hatchWeight),1);
 			}
 			ENDCG

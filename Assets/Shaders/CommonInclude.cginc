@@ -16,7 +16,7 @@ float2 UVCenterMapping(float2 uv,float2 tilling,float2 offset,float rotateAngle)
     return mul(rotateMatrix,centerUV)*tilling+offset;
 }
 
-float2 TriplanarMapping(float3 worldPos,float3 worldNormal,float scale){ return (worldPos.zy*worldNormal.x+worldPos.xz*worldNormal.y+worldPos.xy*worldNormal.z)/scale;}
+float2 TriplanarMapping(float3 worldPos,float3 worldNormal){ return (worldPos.zy*worldNormal.x+worldPos.xz*worldNormal.y+worldPos.xy*worldNormal.z);}
 
 float luminance(fixed3 color){ return 0.2125*color.r + 0.7154*color.g + 0.0721 + color.b;}
 
