@@ -93,9 +93,47 @@
 				int hatchIndex=-1;
 				float hatchWeight=0;
 				float hatchFactor =diff * 6.0;
-				hatchIndex= max(0, 4-floor(hatchFactor));
-				hatchWeight=saturate(hatchFactor-(4-hatchIndex));
-				return float4(SampleHatchMap(hatchIndex,i.uv)*hatchWeight+SampleHatchMap(hatchIndex+1,i.uv)*(1-hatchWeight),1);
+				float3 hatchCol=0;
+				float3 hatchWeight012 =0;
+				float3 hatchWeight345 = 0;
+				if (hatchFactor > 5)
+				{
+					hatchWeight012.x = 1;
+				}
+				else if (hatchFactor > 4)
+				{
+					hatchWeight012.x = hatchFactor - 4;
+					hatchWeight012.y = 1 - hatchWeight012.x;
+				}
+				else if (hatchFactor > 3)
+				{
+					hatchWeight012.y = hatchFactor - 3;
+					hatchWeight012.z = 1 - hatchWeight012.y;
+				}
+				else if (hatchFactor > 2)
+				{
+					hatchWeight012.z = hatchFactor - 2;
+					hatchWeight345.x = 1 - hatchWeight012.z;
+				}
+				else if(hatchFactor>1)
+				{
+					hatchWeight345.x = hatchFactor - 1;
+					hatchWeight345.y = 1 - hatchWeight345.x;
+				}
+				else
+				{
+					hatchWeight345.y = hatchFactor;
+					hatchWeight345.z = 1 - hatchWeight345.y;
+				}
+
+
+				hatchCol += SampleHatchMap(0, i.uv)*hatchWeight012.x;
+				hatchCol += SampleHatchMap(1, i.uv)*hatchWeight012.y;
+				hatchCol += SampleHatchMap(2, i.uv)*hatchWeight012.z;
+				hatchCol += SampleHatchMap(3, i.uv)*hatchWeight345.x;
+				hatchCol += SampleHatchMap(4, i.uv)*hatchWeight345.y;
+				hatchCol += SampleHatchMap(5, i.uv)*hatchWeight345.z;
+				return float4(hatchCol,1);
 			}
 			ENDCG
 		}

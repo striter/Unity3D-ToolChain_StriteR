@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Hatching_Diffuse
   m_Shader: {fileID: 4800000, guid: 8d0c576265723664baf6425e0a91133d, type: 3}
-  m_ShaderKeywords: _WORLD_UV
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -88,7 +88,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _HatchScale: 3
+    - _HatchScale: 0.1
     - _Lambert: 1
     - _Metallic: 0
     - _Mode: 0
@@ -101,7 +101,7 @@ Material:
     - _SrcBlend: 1
     - _TileFactor: 2
     - _UVSec: 0
-    - _WORLDUV: 1
+    - _WORLDUV: 0
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
