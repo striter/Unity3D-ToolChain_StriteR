@@ -63,22 +63,25 @@
 				return o;
 			}
 			
-			float3 SampleHatchMap(int index,float2 uv)
+			float3 SampleHatchMap(int index,float2 uv,float weight)
 			{
+				float3 col=0;
+				if(weight==0)
+					return col;
+
 				if(index==0)
-					return tex2D(_Hatch0, uv);
+					col= tex2D(_Hatch0, uv);
 				else if(index==1)
-					return tex2D(_Hatch1, uv);
+					col= tex2D(_Hatch1, uv);
 				else if(index==2)
-					return tex2D(_Hatch2, uv);
+					col= tex2D(_Hatch2, uv);
 				else if(index==3)
-					return tex2D(_Hatch3, uv);
+					col= tex2D(_Hatch3, uv);
 				else if(index==4)
-					return tex2D(_Hatch4, uv);
+					col= tex2D(_Hatch4, uv);
 				else if(index==5)
-					return tex2D(_Hatch5, uv);
-				else
-					return 0;
+					col= tex2D(_Hatch5, uv);
+				return col*weight;
 			}
 
 			fixed4 frag (v2f i) : SV_Target
@@ -90,8 +93,6 @@
 				UNITY_LIGHT_ATTENUATION(atten,i,i.worldPos);
 				diff*=atten;
 				diff=diff*_Lambert+(1-_Lambert);
-				int hatchIndex=-1;
-				float hatchWeight=0;
 				float hatchFactor =diff * 6.0;
 				float3 hatchCol=0;
 				float3 hatchWeight012 =0;
@@ -125,14 +126,13 @@
 					hatchWeight345.y = hatchFactor;
 					hatchWeight345.z = 1 - hatchWeight345.y;
 				}
-
-
-				hatchCol += SampleHatchMap(0, i.uv)*hatchWeight012.x;
-				hatchCol += SampleHatchMap(1, i.uv)*hatchWeight012.y;
-				hatchCol += SampleHatchMap(2, i.uv)*hatchWeight012.z;
-				hatchCol += SampleHatchMap(3, i.uv)*hatchWeight345.x;
-				hatchCol += SampleHatchMap(4, i.uv)*hatchWeight345.y;
-				hatchCol += SampleHatchMap(5, i.uv)*hatchWeight345.z;
+				
+				hatchCol += SampleHatchMap(0, i.uv,hatchWeight012.x);
+				hatchCol += SampleHatchMap(1, i.uv,hatchWeight012.y);
+				hatchCol += SampleHatchMap(2, i.uv,hatchWeight012.z);
+				hatchCol += SampleHatchMap(3, i.uv,hatchWeight345.x);
+				hatchCol += SampleHatchMap(4, i.uv,hatchWeight345.y);
+				hatchCol += SampleHatchMap(5, i.uv,hatchWeight345.z);
 				return float4(hatchCol,1);
 			}
 			ENDCG

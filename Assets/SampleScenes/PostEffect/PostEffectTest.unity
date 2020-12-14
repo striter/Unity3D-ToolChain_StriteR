@@ -2241,7 +2241,7 @@ MonoBehaviour:
     m_Distance: 200
     m_MarchTimes: 32
     m_Opacity: 1
-    m_ColorRamp: {fileID: 2800000, guid: 03ce33f9b98e23f4e95f78c95b2abc62, type: 3}
+    m_ColorRamp: {fileID: 2800000, guid: fada509226f7c374595020510107c6e9, type: 3}
     m_LightAbsorption: 0.26
     m_LightMarch: 1
     m_LightMarchClip: 1
