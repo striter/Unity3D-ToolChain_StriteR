@@ -10,6 +10,7 @@ public class JointRot : MonoBehaviour
 
     Quaternion m_InvStartLocalRotation;
     Quaternion m_LocalToJointSpace;
+    Quaternion m_InvLocalToJointSpace;
     private void Start()
     {
         m_ConfigurableJoint = GetComponent<ConfigurableJoint>();
@@ -21,20 +22,17 @@ public class JointRot : MonoBehaviour
             return;
         Vector3 right = m_ConfigurableJoint.axis;
         Vector3 up = m_ConfigurableJoint.secondaryAxis;
-        Vector3 forward = Vector3.Cross(right, up).normalized;
-        m_LocalToJointSpace = Quaternion.LookRotation(forward, up);
-        m_InvStartLocalRotation = Quaternion.Inverse(m_ConfigurableJoint.connectedBody.transform.localRotation);
+        Vector3 forward =Vector3.Cross(right, up).normalized;
+        m_InvLocalToJointSpace = Quaternion.LookRotation(forward, up);
+        m_LocalToJointSpace = Quaternion.Inverse(m_InvLocalToJointSpace);
+        m_InvStartLocalRotation = Quaternion.Inverse( m_ConfigurableJoint.connectedBody.transform.localRotation);
     }
     private void Update()
     {
         //sourceRotation.Rotate(15f*Time.deltaTime, 30f * Time.deltaTime, 0f, Space.Self);
         SetTargetRotation(sourceRotation.localRotation);
     }
-    public void SetTargetRotation(Quaternion _localRotation)
-    {
-        m_ConfigurableJoint.targetRotation = m_LocalToJointSpace* _localRotation * m_InvStartLocalRotation;
-        Debug.Log(m_InvStartLocalRotation.eulerAngles + "," + m_LocalToJointSpace.eulerAngles + "\n" + _localRotation.eulerAngles + "," + m_ConfigurableJoint.targetRotation.eulerAngles);
-    }
+    public void SetTargetRotation(Quaternion _localRotation)=>m_ConfigurableJoint.targetRotation = m_InvLocalToJointSpace * _localRotation * m_InvStartLocalRotation * m_LocalToJointSpace;
     private void OnDrawGizmos()
     {
         if (m_ConfigurableJoint == null)
