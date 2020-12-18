@@ -29,6 +29,7 @@ namespace Rendering.ImageEffect
         static readonly int ID_FogDensity = Shader.PropertyToID("_FogDensity");
         static readonly int ID_FogVerticalStart = Shader.PropertyToID("_FogVerticalStart");
         static readonly int ID_FogVerticalOffset = Shader.PropertyToID("_FogVerticalOffset");
+        const string KW_Noise = "_NOISE";
         static readonly int ID_NoiseTexure = Shader.PropertyToID("_NoiseTex");
         static readonly int ID_NoiseScale = Shader.PropertyToID("_NoiseScale");
         static readonly int ID_NoiseSpeedX = Shader.PropertyToID("_NoiseSpeedX");
@@ -45,6 +46,7 @@ namespace Rendering.ImageEffect
             _material.SetFloat(ID_FogDensity, _params.m_FogDensity);
             _material.SetFloat(ID_FogVerticalStart, _params.m_FogVerticalStart);
             _material.SetFloat(ID_FogVerticalOffset, _params.m_FogVerticalOffset);
+            _material.EnableKeyword(KW_Noise, _params.m_NoiseTexure);
             _material.SetTexture(ID_NoiseTexure, _params.m_NoiseTexure);
             _material.SetFloat(ID_NoiseScale, _params.m_NoiseScale);
             _material.SetFloat(ID_NoiseSpeedX, _params.m_NoiseSpeedX);

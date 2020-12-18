@@ -359,4 +359,40 @@ namespace TPhysics
         #endregion
     }
 
+    public class ConfigurableJoint_Helper
+    {
+
+
+        public ConfigurableJoint m_ConfigurableJoint { get; private set; }
+        Vector3 m_InvStartPosition;
+        Quaternion m_InvStartLocalRotation;
+        Quaternion m_LocalToJointSpace;
+        Quaternion m_InvLocalToJointSpace;
+        public ConfigurableJoint_Helper(ConfigurableJoint _joint)
+        {
+            m_ConfigurableJoint = _joint;
+            OnValidate();
+        }
+
+        public void OnValidate()
+        {
+            Vector3 right = m_ConfigurableJoint.axis.normalized;
+            Vector3 up = m_ConfigurableJoint.secondaryAxis.normalized;
+            Vector3 forward = Vector3.Cross(right, up).normalized;
+
+            m_InvLocalToJointSpace = Quaternion.LookRotation(forward, up);
+            m_LocalToJointSpace = Quaternion.Inverse(m_InvLocalToJointSpace);
+            m_InvStartLocalRotation = Quaternion.Inverse(m_ConfigurableJoint.connectedBody.transform.localRotation);
+            m_InvStartPosition = -m_ConfigurableJoint.connectedBody.transform.localPosition - m_ConfigurableJoint.connectedAnchor;
+        }
+
+        public void SetTargetPosition(Vector3 _localPosition)
+        {
+            m_ConfigurableJoint.targetPosition = m_LocalToJointSpace * (_localPosition + m_InvStartPosition);
+        }
+        public void SetTargetRotation(Quaternion _localRotation)
+        {
+            m_ConfigurableJoint.targetRotation = m_InvLocalToJointSpace * _localRotation * m_InvStartLocalRotation * m_LocalToJointSpace;
+        }
+    }
 }

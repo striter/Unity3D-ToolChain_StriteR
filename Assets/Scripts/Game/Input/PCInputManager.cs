@@ -4,15 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 #region Enums
-public enum enum_BindingsName
+public enum enum_Binding
 {
     Invalid = 0,
     Up,
     Down,
     Left,
     Right,
-    Fire,
-    Aim,
+    MainFire,
+    AltFire,
     Reload,
     Sprint,
     Throw,
@@ -27,153 +27,105 @@ public class PCInputManager : SingletonMono<PCInputManager>
     {
         base.Awake();
         DontDestroyOnLoad(this);
-        KeyBindings.CreatePresetBinding(enum_BindingsName.Up, KeyCode.W);
-        KeyBindings.CreatePresetBinding(enum_BindingsName.Down,  KeyCode.S);
-        KeyBindings.CreatePresetBinding(enum_BindingsName.Left,  KeyCode.A);
-        KeyBindings.CreatePresetBinding(enum_BindingsName.Right, KeyCode.D);
-        KeyBindings.CreatePresetBinding(enum_BindingsName.Aim,  KeyCode.Mouse1);
-        KeyBindings.CreatePresetBinding(enum_BindingsName.Fire, KeyCode.Mouse0);
-        KeyBindings.CreatePresetBinding(enum_BindingsName.Reload,  KeyCode.R);
-        KeyBindings.CreatePresetBinding(enum_BindingsName.Sprint,  KeyCode.LeftShift);
-        KeyBindings.CreatePresetBinding(enum_BindingsName.Throw,  KeyCode.G);
-        KeyBindings.CreatePresetBinding(enum_BindingsName.Interact, KeyCode.E);
-        KeyBindings.CreatePresetBinding(enum_BindingsName.Jump,  KeyCode.Space);
-        KeyBindings.CreatePresetBinding(enum_BindingsName.FlashLight, KeyCode.F);
+    }
+    public Dictionary<enum_Binding, KeyBindings> m_Bindings=new Dictionary<enum_Binding, KeyBindings>()
+    {
+        {enum_Binding.Up,new KeyBindings( KeyCode.W)},
+        {enum_Binding.Down,new KeyBindings( KeyCode.S)},
+        {enum_Binding.Left,new KeyBindings( KeyCode.A)},
+        {enum_Binding.Right,new KeyBindings( KeyCode.D)},
+        {enum_Binding.MainFire,new KeyBindings( KeyCode.Mouse0)},
+        {enum_Binding.AltFire,new KeyBindings( KeyCode.Mouse1)},
+        {enum_Binding.Reload,new KeyBindings( KeyCode.R)},
+        {enum_Binding.Sprint,new KeyBindings( KeyCode.LeftShift)},
+        {enum_Binding.Throw,new KeyBindings( KeyCode.G)},
+        {enum_Binding.Interact,new KeyBindings( KeyCode.E)},
+        {enum_Binding.Jump,new KeyBindings( KeyCode.Space)},
+        {enum_Binding.FlashLight,new KeyBindings( KeyCode.F)},
+    };
+    public KeyBindings GetKeyBinding(enum_Binding _binding)
+    {
+        if(!m_Bindings.ContainsKey(_binding))
+        {
+            Debug.LogError("Preset Binding In Code! " + name.ToString());
+            return null;
+        }
+        return m_Bindings[_binding];
     }
     #region KeyBindings
-    static List<KeyBindings> m_BindingList = new List<KeyBindings>();
-    #region struct
     public class KeyBindings
     {
-        public enum_BindingsName m_Identity { get; private set; }
-        public List<KeyCode> code { get; private set; }
-        public event Action triggerEventVoid;
-        public event Action<bool> triggerEventBool;
-        public void Trigger()
+        public KeyCode m_ActivateKeyCode { get; private set; }
+        public event Action TriggerEventVoid;
+        public event Action<bool> TriggerEventBool;
+        public KeyBindings(KeyCode _default)
         {
-            if(triggerEventVoid!=null)
-            triggerEventVoid();
+            m_ActivateKeyCode = _default;
         }
-        public void Trigger(bool b)
+        public void SetBindingKey(KeyCode _keyCode)=>m_ActivateKeyCode = _keyCode;
+        public void Add(Action trigger)=>TriggerEventVoid += trigger;
+        public void Remove(Action d) => TriggerEventVoid -= d;
+        public void Trigger()=>TriggerEventVoid?.Invoke();
+
+        public void Add(Action<bool> trigger) => TriggerEventBool += trigger;
+        public void Remove(Action<bool> d) => TriggerEventBool -= d;
+        public void Trigger(bool b)=> TriggerEventBool?.Invoke(b);
+
+        public void Clear()
         {
-            if (triggerEventBool != null)
-                triggerEventBool(b);
-        }
-        public void Remove(Action<bool> d)
-        {
-            triggerEventBool -= d;
-        }
-        public void Remove(Action d)
-        {
-            triggerEventVoid -= d;
-        }
-        public static void CreatePresetBinding(enum_BindingsName name,params KeyCode[] codeList)
-        {
-            KeyBindings binding = new KeyBindings();
-            binding.m_Identity = name;
-            binding.code = new List<KeyCode>();
-            for (int i = 0; i < codeList.Length; i++)
-            {
-                binding.code.Add(codeList[i]);
-            }
-            binding.triggerEventVoid = null;
-            binding.triggerEventBool = null;
-            m_BindingList.Add(binding);
+            foreach (var del in TriggerEventVoid.GetInvocationList())
+                TriggerEventVoid -= (Action)del;
+            foreach (var del in TriggerEventBool.GetInvocationList())
+                TriggerEventBool -= (Action<bool>)del;
         }
     }
     #endregion
-    public Vector2 m_MovementDelta { get; private set; }
-    public Vector2 m_RotateDelta { get; private set; }
+    Vector2 movementDelta;
+    Vector2 rotateDelta;
     public Action<Vector2> OnMovementDelta;
     public Action<Vector2> OnRotateDelta;
-    public void AddBinding(enum_BindingsName name, Action trigger)
-    {
-        KeyBindings binding = m_BindingList.Find(p => p.m_Identity == name);
-        if (binding.m_Identity == enum_BindingsName.Invalid)
-        {
-            Debug.LogError("Shoulda Preset Binding At Awake "+name.ToString());
-            return;
-        }
 
-        m_BindingList.Remove(binding);
-        binding.triggerEventVoid += trigger;
-        m_BindingList.Add(binding);
+    public void ClearBinding()
+    { 
+        foreach(var keyBinding in m_Bindings.Values)
+            keyBinding.Clear();
     }
-    public void AddBinding(enum_BindingsName name, Action<bool> trigger)
-    {
-        KeyBindings binding = m_BindingList.Find(p => p.m_Identity == name);
-        if (binding.m_Identity == enum_BindingsName.Invalid)
-        {
-            Debug.LogError("Shoulda Preset Binding At Awake");
-            return;
-        }
-        binding.triggerEventBool += trigger;
-    }
-
-    public void ClearBinding() => m_BindingList.Clear();
     int up, down, left, right;
-    List<KeyCode> keyCode;
-    enum_BindingsName keyName;
     void Update ()
     {
-        for (int i=0;i<m_BindingList.Count;i++)
+        foreach(var keyEnum in m_Bindings.Keys)
         {
-            keyCode = m_BindingList[i].code;
-            for(int j=0;j<keyCode.Count;j++)
+           KeyBindings bindings=m_Bindings[keyEnum];
+            KeyCode keyCode = bindings.m_ActivateKeyCode;
+            if (Input.GetKeyDown(keyCode))
             {
-                if (Input.GetKeyDown(keyCode[j]))
-                    m_BindingList[i].Trigger();
-                else if (Input.GetKeyUp(keyCode[j]))
-                    m_BindingList[i].Trigger(false);
-                else if (Input.GetKeyUp(keyCode[j]))
-                    m_BindingList[i].Trigger(true);
+                bindings.Trigger();
+                bindings.Trigger(true);
+            }
+            else if (Input.GetKeyUp(keyCode))
+            {
+                bindings.Trigger(false);
+            }
 
-                keyName = m_BindingList[i].m_Identity;
-                switch (keyName)
-                {
-                    case enum_BindingsName.Up:
-                        up = Input.GetKey(keyCode[j]) ? 1 : 0;
-                        break;
-                    case enum_BindingsName.Down:
-                        down = Input.GetKey(keyCode[j]) ? 1 : 0;
-                        break;
-                    case enum_BindingsName.Left:
-                        left = Input.GetKey(keyCode[j]) ? 1 : 0;
-                        break;
-                    case enum_BindingsName.Right:
-                        right = Input.GetKey(keyCode[j]) ? 1 : 0;
-                        break;
-                }
+            switch (keyEnum)
+            {
+                case enum_Binding.Up:
+                    up = Input.GetKey(keyCode) ? 1 : 0;
+                    break;
+                case enum_Binding.Down:
+                    down = Input.GetKey(keyCode) ? 1 : 0;
+                    break;
+                case enum_Binding.Left:
+                    left = Input.GetKey(keyCode) ? 1 : 0;
+                    break;
+                case enum_Binding.Right:
+                    right = Input.GetKey(keyCode) ? 1 : 0;
+                    break;
             }
         }
-        m_MovementDelta= new Vector2(right - left, up - down);
-        m_RotateDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-        OnMovementDelta?.Invoke(m_MovementDelta);
-        OnRotateDelta?.Invoke(m_RotateDelta);
+        movementDelta= new Vector2(right - left, up - down);
+        rotateDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        OnMovementDelta?.Invoke(movementDelta);
+        OnRotateDelta?.Invoke(rotateDelta);
     }
-    #region For RTS Only
-    int ScreenHeight= Screen.height;
-    int ScreenWidth=Screen.width;
-    int ScreenMoveSensitivity = 20;
-    Vector2 mousePos;
-    public Vector2 RTSOnMouseScreenMove()
-    {
-        mousePos = Input.mousePosition;
-        return new Vector2(mousePos.x < ScreenMoveSensitivity ? -1 : mousePos.x > ScreenWidth - ScreenMoveSensitivity ? 1 : 0,
-        mousePos.y < ScreenMoveSensitivity ? -1 : mousePos.y > ScreenHeight - ScreenMoveSensitivity ? 1 : 0 );
-    }
-    #endregion
-    #region get/set
-    Vector2 mouseInput =new Vector2();
-    public Vector2 MouseInput
-    {
-        get
-        {
-            mouseInput.x = Input.GetAxis("Mouse X");
-            mouseInput.y = Input.GetAxis("Mouse Y");
-            return mouseInput;
-        }
-    }
-    #endregion
-    #endregion
 }

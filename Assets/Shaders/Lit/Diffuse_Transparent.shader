@@ -39,7 +39,6 @@
 				float3 worldPos:TEXCOORD1;
 				float3 objNormal:TEXCOORD2;
 				float3 objViewDir : TEXCOORD3;
-				SHADOW_COORDS(3)
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -53,16 +52,14 @@
 				o.worldPos = mul(unity_ObjectToWorld, v.vertex);
 				o.objNormal=v.normal;
 				o.objViewDir = ObjSpaceLightDir(v.vertex);  
-				TRANSFER_SHADOW(o);
 				return o;
 			}
 
 			float4 DiffuseFragmentBase(v2fDV i) :SV_TARGET
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
-				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
 				float diffuse=GetDiffuse(normalize( i.objNormal),normalize(i.objViewDir));
-				return float4( tex2D(_MainTex, i.uv)* UNITY_ACCESS_INSTANCED_PROP(Props, _Color)*(UNITY_LIGHTMODEL_AMBIENT.xyz+diffuse *  _LightColor0.rgb*atten+(1-atten)),_Opacity);
+				return float4( tex2D(_MainTex, i.uv)* UNITY_ACCESS_INSTANCED_PROP(Props, _Color)*(UNITY_LIGHTMODEL_AMBIENT.xyz+diffuse *  _LightColor0.rgb),_Opacity);
 			}
 			ENDCG
 

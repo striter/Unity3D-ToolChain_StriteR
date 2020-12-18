@@ -21,7 +21,7 @@
 				CGPROGRAM
 				#pragma vertex vert
 				#pragma fragment frag
-
+				#pragma shader_feature _NOISE
 				#include "UnityCG.cginc"
 				#include "CameraEffectInclude.cginc"
 				half _FogDensity;
@@ -29,11 +29,12 @@
 				fixed4 _FogColor;
 				float _FogVerticalStart;
 				float _FogVerticalOffset;
+				#if _NOISE
 				sampler2D _NoiseTex;
 				float _NoiseScale;
 				float _NoiseSpeedX;
 				float _NoiseSpeedY;
-
+				#endif
 				struct v2f
 				{
 					float2 uv : TEXCOORD0;
@@ -57,9 +58,12 @@
 					float linearDepth = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,i.uv_depth));
 					float3 worldPos = _WorldSpaceCameraPos+ i.viewDir.xyz*linearDepth;
 					float2 worldUV = (worldPos.xz + worldPos.y);
+					float fog =  (( _FogVerticalStart+_FogVerticalOffset)-worldPos.y)  /_FogVerticalOffset*_FogDensity;
+					#if _NOISE
 					float2 noiseUV = worldUV / _NoiseScale + _Time.y*float2(_NoiseSpeedX,_NoiseSpeedY);
 					float noise = tex2D(_NoiseTex, noiseUV).r;
-					float fog =  (( _FogVerticalStart+_FogVerticalOffset)-worldPos.y)  /_FogVerticalOffset*_FogDensity*noise;
+					fog*=noise;
+					#endif
 					return lerp(tex2D(_MainTex, i.uv) , _FogColor, saturate(fog));
 				}
 				ENDCG

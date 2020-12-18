@@ -18,10 +18,6 @@ public class SingletonMono<T> : MonoBehaviour where T : MonoBehaviour
         instance = this.GetComponent<T>();
         this.name = typeof(T).Name;
     }
-    public T SingletonInit()
-    {
-        return this as T;
-    }
     protected  virtual void OnDestroy()
     {
         instance = null;
