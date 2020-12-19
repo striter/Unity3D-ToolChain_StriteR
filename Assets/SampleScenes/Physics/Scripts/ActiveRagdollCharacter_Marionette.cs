@@ -11,20 +11,80 @@ namespace PhysicsTest
         public Transform m_CameraAttach;
         public Rigidbody m_BodyString;
         public Rigidbody m_Hips;
+        public ArmCombination m_LeftArmCombine, m_RightArmCombine;
         public Rigidbody m_LeftThigh, m_RightThigh;
-        public Rigidbody m_LeftArm, m_RightArm;
-        public FixedJoint m_LeftHand, m_RightHand;
         public float m_VerticalOffset = 1.8f;
         public float m_StringStrength = 200f;
         public float m_WalkAngularSpeed = 15f;
         bool m_Sprinting;
-        bool m_LeftAim, m_RightAim;
-        bool m_LeftGrabing, m_RightGrabing;
         float m_ConciousTimeElapsed;
         void OnLostConcious() => m_LostConcious = !m_LostConcious;
         void OnSprint(bool _sprint) => m_Sprinting = _sprint;
-        void OnLeftAim(bool _leftAim) => m_LeftAim = _leftAim;
-        void OnRightAim(bool _rightAim) => m_RightAim = _rightAim;
+
+        [System.Serializable]
+        public class ArmCombination
+        {
+            public Rigidbody m_ForeArm;
+            public Rigidbody m_Arm;
+            public Rigidbody m_Hand;
+            public bool m_Aiming;
+            public FixedJoint m_Grabing;
+            public void OnAiming(bool _aiming) => m_Aiming = _aiming;
+            public void ArmTick(Vector3 armPos,ref Vector3 hipsForce)
+            {
+                m_ForeArm.useGravity = !m_Aiming;
+                m_Arm.useGravity = !m_Aiming;
+                m_Hand.useGravity = !m_Aiming;
+                if(!m_Aiming)
+                {
+                    if (m_Grabing)
+                    {
+                        Destroy(m_Grabing);
+                        m_Grabing = null;
+                    }
+                    return;
+                }
+
+                if (m_Grabing)
+                    return;
+
+                Vector3 offset = armPos - m_ForeArm.position;
+                Vector3 strength = .8f / offset.magnitude * offset * 30f;
+                m_ForeArm.AddForce(strength, ForceMode.Acceleration);
+                hipsForce -= strength;
+                if (!GrabCheck(out Vector3 _grabPoint, out Rigidbody _grabBody))
+                    return;
+                m_Grabing = m_Hand.gameObject.AddComponent<FixedJoint>();
+                m_Grabing.connectedBody = _grabBody;
+                //m_Grabing.anchor = m_LeftHand.transform.worldToLocalMatrix.MultiplyPoint(_grabPoint);
+                //m_Grabing.connectedAnchor = _grabBody?_grabBody.transform.worldToLocalMatrix.MultiplyPoint(_grabPoint):m_Grabing.anchor;
+            }
+
+            public bool GrabCheck(out Vector3 _grabPoint, out Rigidbody _grabBody)
+            {
+                Vector3 handPos = m_Hand.transform.position + m_Hand.transform.up * .15f;
+                Collider[] casts = Physics.OverlapSphere(handPos, .05f, PhysicsLayer.I_ItemMask);
+                _grabPoint = Vector3.zero;
+                _grabBody = null;
+                foreach (var cast in casts)
+                {
+                    _grabPoint = cast.ClosestPoint(handPos);
+                    _grabBody = cast.GetComponent<Rigidbody>();
+                    return true;
+                }
+                return false;
+            }
+
+            public void OnDrawGizmos()
+            {
+                if (!m_Aiming)
+                    return;
+
+                Gizmos.color = m_Grabing ? Color.green : Color.red;
+                Gizmos.DrawWireSphere(m_Hand.transform.position + m_Hand.transform.up * .15f,.05f);
+            }
+        }
+
         public override void OnTakeControl()
         {
             base.OnTakeControl();
@@ -34,8 +94,8 @@ namespace PhysicsTest
             TPSCameraController.Instance.m_RotateDamping = .2f;
             PCInputManager.Instance.GetKeyBinding(enum_Binding.Jump).Add(OnLostConcious);
             PCInputManager.Instance.GetKeyBinding(enum_Binding.Sprint).Add(OnSprint);
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.MainFire).Add(OnLeftAim);
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.AltFire).Add(OnRightAim);
+            PCInputManager.Instance.GetKeyBinding(enum_Binding.MainFire).Add(m_LeftArmCombine.OnAiming);
+            PCInputManager.Instance.GetKeyBinding(enum_Binding.AltFire).Add(m_RightArmCombine.OnAiming);
             m_LeftThigh.maxAngularVelocity = 90f;
             m_RightThigh.maxAngularVelocity = 90f;
         }
@@ -44,8 +104,8 @@ namespace PhysicsTest
             base.OnRemoveControl();
             PCInputManager.Instance.GetKeyBinding(enum_Binding.Jump).Remove(OnLostConcious);
             PCInputManager.Instance.GetKeyBinding(enum_Binding.Sprint).Remove(OnSprint);
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.MainFire).Remove(OnLeftAim);
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.AltFire).Remove(OnRightAim);
+            PCInputManager.Instance.GetKeyBinding(enum_Binding.MainFire).Remove(m_LeftArmCombine.OnAiming);
+            PCInputManager.Instance.GetKeyBinding(enum_Binding.AltFire).Remove(m_RightArmCombine.OnAiming);
         }
 
         public override void Tick(float _deltaTime)
@@ -84,46 +144,10 @@ namespace PhysicsTest
             m_RightThigh.angularVelocity = m_Right * Mathf.Sin((m_ConciousTimeElapsed * moveFrequency + 1f) * Mathf.PI) * moveSpeed;
 
             Vector3 hipsForce = m_Forward * moveSpeed;
-            float armStretch = .8f;
             Vector3 armPos = m_CameraAttach.position + m_CameraAttach.forward;
-            m_LeftArm.useGravity = !m_LeftArm;
-            if (m_LeftAim)
-            {
-                if(!m_LeftGrabing)
-                {
-                    Vector3 offset = armPos + m_CameraAttach.right * -.1f - m_LeftArm.position;
-                    Vector3 strength = armStretch / offset.magnitude * offset * 30f;
-                    m_LeftArm.AddForce(strength, ForceMode.Acceleration);
-                    hipsForce -= strength;
-                    if(GrabCheck(m_LeftHand.transform.position,out Vector3 _grabPoint,out Rigidbody _grabBody))
-                    {
-                        m_LeftHand.transform.position = _grabPoint;
-                        m_LeftHand.connectedBody = _grabBody;
-                        m_LeftHand.transform.SetActivate(false);
-                    }
-                }
-            }
-            else
-            {
-                m_LeftGrabing = false;
-                m_LeftHand.transform.SetActivate(false);
-            }
-
+            m_LeftArmCombine.ArmTick(armPos + m_CameraAttach.right * -.1f, ref hipsForce);
+            m_RightArmCombine.ArmTick(armPos + m_CameraAttach.right * .1f, ref hipsForce);
             m_Hips.AddForce(hipsForce, ForceMode.Force);
-        }
-
-        bool GrabCheck(Vector3 handPos, out Vector3 _grabPoint,out Rigidbody _grabBody)
-        {
-            Collider[] casts=Physics.OverlapSphere(handPos,.2f,PhysicsLayer.I_ItemMask);
-            _grabPoint = Vector3.zero;
-            _grabBody = null;
-            foreach(var cast in casts)
-            {
-                _grabPoint= cast.ClosestPoint(handPos);
-                _grabBody = cast.GetComponent<Rigidbody>();
-                return true;
-            }
-            return false;
         }
 
 #if UNITY_EDITOR
@@ -142,6 +166,9 @@ namespace PhysicsTest
 
             Gizmos.color = Color.yellow;
             Gizmos.DrawSphere(m_BodyString.transform.position, .1f);
+
+            m_LeftArmCombine.OnDrawGizmos();
+            m_RightArmCombine.OnDrawGizmos();
         }
 #endif
     }
