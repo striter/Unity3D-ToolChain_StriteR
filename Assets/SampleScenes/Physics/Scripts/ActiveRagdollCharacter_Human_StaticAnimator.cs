@@ -64,7 +64,7 @@ namespace PhysicsTest
         public override void Tick(float _deltaTime)
         {
             base.Tick(_deltaTime);
-            m_Hips.MoveRotation(Quaternion.Slerp(m_Hips.rotation, Quaternion.Euler(0,m_Yaw,0),_deltaTime*15f));
+            m_Hips.rotation=Quaternion.Slerp(m_Hips.rotation, Quaternion.Euler(0,m_Yaw,0),_deltaTime*15f);
         }
     }
 }

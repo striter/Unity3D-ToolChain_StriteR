@@ -15,6 +15,7 @@ namespace PhysicsTest
 
         bool m_AltFiring;
         Rigidbody m_TargetObject;
+        LineRenderer m_GravityLine;
         Timer m_GravityGunCooldown = new Timer(.35f);
         bool m_Sprinting;
         Timer m_JumpTimer = new Timer(.5f,true);
@@ -36,6 +37,7 @@ namespace PhysicsTest
             PCInputManager.Instance.GetKeyBinding(enum_Binding.MainFire).Add(OnMainFire);
             PCInputManager.Instance.GetKeyBinding(enum_Binding.Jump).Add(OnJump);
             PCInputManager.Instance.GetKeyBinding(enum_Binding.Sprint).Add(OnSprint);
+            m_GravityLine = m_GravityPoint.GetComponent<LineRenderer>();
         }
         public override void OnRemoveControl()
         {
@@ -45,7 +47,14 @@ namespace PhysicsTest
             PCInputManager.Instance.GetKeyBinding(enum_Binding.Jump).Remove(OnJump);
             PCInputManager.Instance.GetKeyBinding(enum_Binding.Sprint).Remove(OnSprint);
         }
-
+        private void Update()
+        {
+            m_GravityLine.enabled = m_TargetObject;
+            if (!m_TargetObject)
+                return;
+            m_GravityLine.SetPosition(0, m_GravityPoint.position);
+            m_GravityLine.SetPosition(1, m_TargetObject.position);
+        }
         public override void Tick(float _deltaTime)
         {
             m_JumpTimer.Tick(_deltaTime);

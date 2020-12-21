@@ -81,7 +81,6 @@
 			float diffuse=saturate( GetDiffuse(normal,lightDir));
 			diffuse*=atten;
 			diffuse = _Lambert + (1 - _Lambert)*diffuse;
-
 			finalCol*=_LightColor0.rgb*diffuse;
 				
 			#if _SPECULAR

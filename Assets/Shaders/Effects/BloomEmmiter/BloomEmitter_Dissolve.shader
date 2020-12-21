@@ -4,13 +4,10 @@
 	{
 		_MainTex("Main Tex",2D) = "white"{}
 		_Color("Color",Color) = (1,1,1,1)
-		_DissolveColor("_Dissolve Color",Color) = (1,1,1,1)
-
-
-		_NoiseTex("Dissolve Map",2D) = "white"{}
+		_DissolveTex("Dissolve Map",2D) = "white"{}
 		_DissolveAmount("_Dissolve Amount",Range(0,1)) = 1
 		_DissolveWidth("_Dissolve Width",float) = .1
-		_DissolveScale("_Dissolve Scale",Range(0,1))=1
+		_DissolveColor("_Dissolve Color",Color) = (1,1,1,1)
 
 	}
 	SubShader
@@ -23,17 +20,17 @@
 		#include "UnityCG.cginc"
 		#include "AutoLight.cginc"
 		#include "Lighting.cginc"
-		sampler2D _NoiseTex;
+		sampler2D _DissolveTex;
+		float4 _DissolveTex_ST;
 		float _DissolveAmount;
 		float _DissolveWidth;
 		float4 _DissolveColor;
 		sampler2D _MainTex;
 		float4 _MainTex_ST;
-		float _DissolveScale;
 		float2 GetDissolveUV(float3 vertex)
 		{
 			float2 uv = float2(vertex.x, vertex.z) + vertex.y*.7;
-			return uv* _DissolveScale;
+			return TRANSFORM_TEX( uv,_DissolveTex);
 		}
 		ENDCG
 
@@ -67,7 +64,8 @@
 
 			UNITY_INSTANCING_BUFFER_START(Props)
 				UNITY_DEFINE_INSTANCED_PROP(float4, _Color)
-				UNITY_INSTANCING_BUFFER_END(Props)
+			UNITY_INSTANCING_BUFFER_END(Props)
+
 			v2f vert (a2fDV v)
 			{
 				v2f o;
@@ -78,7 +76,7 @@
 				o.uv.zw = GetDissolveUV(v.vertex);
 				o.pos = UnityObjectToClipPos(v.vertex);
 				o.objNormal=v.normal;
-				o.objLightDir=UnityWorldSpaceLightDir(o.worldPos);
+				o.objLightDir=-ObjSpaceLightDir(v.vertex);
 				TRANSFER_SHADOW(o);
 				return o;
 			}
@@ -86,13 +84,16 @@
 			fixed4 frag (v2f i) : SV_Target
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
-				fixed dissolve = tex2D(_NoiseTex,i.uv.zw).r - _DissolveAmount-_DissolveWidth;
+				fixed dissolve = tex2D(_DissolveTex,i.uv.zw).r - _DissolveAmount-_DissolveWidth;
 				clip(dissolve);
 
 				float diffuse=GetDiffuse(normalize(i.objNormal),normalize(i.objLightDir));
 				float4 albedo = tex2D(_MainTex,i.uv.xy)* _Color;
 				UNITY_LIGHT_ATTENUATION(atten, i,i.worldPos)
-				return float4( tex2D(_MainTex, i.uv)* _Color*(UNITY_LIGHTMODEL_AMBIENT.xyz+diffuse *  _LightColor0.rgb*atten+(1-atten)),1);
+				float3 finalCol=tex2D(_MainTex, i.uv)* _Color+(UNITY_LIGHTMODEL_AMBIENT.xyz);
+				finalCol*=diffuse*atten;
+			finalCol*=_LightColor0.rgb;
+				return float4(finalCol,1);
 			}
 			ENDCG
 		}
@@ -119,7 +120,7 @@
 
 			fixed4 fragshadow(v2fs i) :SV_TARGET
 			{
-				fixed dissolve = tex2D(_NoiseTex,i.uv).r - _DissolveAmount-_DissolveWidth;
+				fixed dissolve = tex2D(_DissolveTex,i.uv).r - _DissolveAmount-_DissolveWidth;
 				clip(dissolve);
 				SHADOW_CASTER_FRAGMENT(i);
 			}
@@ -129,7 +130,7 @@
 
 		Pass
 		{
-		NAME "EDGE"
+			NAME "EDGE"
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
@@ -158,9 +159,9 @@
 
 			fixed4 frag(v2f i) : SV_Target
 			{
-				fixed dissolve = tex2D(_NoiseTex,i.uv).r - _DissolveAmount;
+				fixed dissolve = tex2D(_DissolveTex,i.uv).r - _DissolveAmount;
 				clip(dissolve);
-				clip( _DissolveWidth -dissolve);
+				clip(  _DissolveWidth -dissolve);
 				return _DissolveColor;
 			}
 			ENDCG
