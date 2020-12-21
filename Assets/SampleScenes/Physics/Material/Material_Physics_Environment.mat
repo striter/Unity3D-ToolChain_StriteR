@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Mat_Gravity_Environment
+  m_Name: Material_Physics_Environment
   m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
   m_ShaderKeywords: _RIM_NONE _SPECULAR
   m_LightmapFlags: 4

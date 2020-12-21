@@ -7,6 +7,8 @@ namespace PhysicsTest
     public class ActiveRagdollCharacter_Human_StaticAnimator : ActiveRagdollCharacter_HumanBase
     {
         public Transform m_StaticAnimatorHips;
+        public Animation m_Animation;
+        public Rigidbody m_Hips;
         List<StaticAnimatorSynchonize> m_StaticAnimatorSynchonize=new List<StaticAnimatorSynchonize>();
         struct StaticAnimatorSynchonize
         {
@@ -16,12 +18,10 @@ namespace PhysicsTest
             {
                 m_SyncSource = _source;
                 m_SyncJoint = new TPhysics.ConfigurableJoint_Helper(_target);
-                _target.rotationDriveMode = RotationDriveMode.Slerp;
-                _target.slerpDrive = new JointDrive() { positionDamper = 0, positionSpring = 50000 };
             }
             public void Sync()
             {
-                //m_SyncJoint.SetTargetRotation(m_SyncSource.localRotation);
+                m_SyncJoint.SetTargetRotation(m_SyncSource.localRotation);
             }
         }
         protected override void Start()
@@ -35,10 +35,36 @@ namespace PhysicsTest
                     m_StaticAnimatorSynchonize.Add(new StaticAnimatorSynchonize(syncTransform, joint));
             }
         }
+        public override void OnTakeControl()
+        {
+            base.OnTakeControl();
+            PCInputManager.Instance.GetKeyBinding(enum_Binding.Jump).Add(SwitchAnim);
+        }
+        public override void OnRemoveControl()
+        {
+            base.OnRemoveControl();
+            PCInputManager.Instance.GetKeyBinding(enum_Binding.Jump).Remove(SwitchAnim);
+        }
+
+        bool playing = false;
+        void SwitchAnim()
+        {
+            playing = !playing;
+            if (playing)
+                m_Animation.Play();
+            else
+                m_Animation.Stop();
+        }
+
         protected override void Update()
         {
             base.Update();
             m_StaticAnimatorSynchonize.Traversal(sync => sync.Sync());
+        }
+        public override void Tick(float _deltaTime)
+        {
+            base.Tick(_deltaTime);
+            m_Hips.MoveRotation(Quaternion.Slerp(m_Hips.rotation, Quaternion.Euler(0,m_Yaw,0),_deltaTime*15f));
         }
     }
 }

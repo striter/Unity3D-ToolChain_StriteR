@@ -382,7 +382,7 @@ namespace TPhysics
 
             m_InvLocalToJointSpace = Quaternion.LookRotation(forward, up);
             m_LocalToJointSpace = Quaternion.Inverse(m_InvLocalToJointSpace);
-            m_InvStartLocalRotation = Quaternion.Inverse(m_ConfigurableJoint.connectedBody.transform.localRotation);
+            m_InvStartLocalRotation = Quaternion.Inverse(m_ConfigurableJoint.transform.localRotation);
             m_InvStartPosition = -m_ConfigurableJoint.connectedBody.transform.localPosition - m_ConfigurableJoint.connectedAnchor;
         }
 
