@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace PhysicsTest
 {
-    public class ActiveRagdollCharacter : PhysicsCharacterBase
+    public class ActiveRagdollCharacter_HumanBase : ActiveRagdollCharacter_ThirdPerson
     {
         public Transform m_SkinHips, m_PhysicsHips;
         List<TransformSynchronize> m_Synchornizes = new List<TransformSynchronize>();
@@ -24,7 +24,7 @@ namespace PhysicsTest
                 m_SyncTarget.transform.localScale = m_SyncSource.transform.localScale;
             }
         }
-        private void Start()
+        protected virtual void Start()
         {
             Transform[] sourceTransforms = m_SkinHips.GetComponentsInChildren<Transform>();
             foreach (var sourceTransform in sourceTransforms)
@@ -41,15 +41,9 @@ namespace PhysicsTest
         {
             base.OnRemoveControl();
         }
-        private void Update()
+        protected virtual void Update()
         {
             m_Synchornizes.Traversal(p => p.Sync());
-        }
-        public override void Tick(float _deltaTime)
-        {
-        }
-        public override void FixedTick(float _deltaTime)
-        {
         }
     }
 }

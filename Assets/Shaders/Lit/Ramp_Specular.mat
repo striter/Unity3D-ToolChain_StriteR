@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Ramp_Specular
   m_Shader: {fileID: 4800000, guid: c8e0eecdb2eaf98498f0a3c380e0c4d4, type: 3}
-  m_ShaderKeywords: _RIM_SMOOTH _Rim _SPECULAR
+  m_ShaderKeywords: _RIM_HARD _Rim _SPECULAR
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -77,7 +77,7 @@ Material:
     - _OutLine: 0.1
     - _Outline: 0.0243
     - _Parallax: 0.02
-    - _Rim: 2
+    - _Rim: 1
     - _RimRange: 0.351
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

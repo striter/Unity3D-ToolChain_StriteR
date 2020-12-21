@@ -48,7 +48,6 @@ namespace PhysicsTest
 
         public override void Tick(float _deltaTime)
         {
-            TickMovement(out Quaternion targetRotation, out Vector3 targetMovement);
             m_JumpTimer.Tick(_deltaTime);
             m_Head.position = m_Body.transform.position + Vector3.up * .9f;
             if (m_TargetObject)
@@ -56,8 +55,8 @@ namespace PhysicsTest
                 m_TargetObject.MovePosition(Vector3.Lerp(m_TargetObject.transform.position, m_GravityPoint.position, _deltaTime * 10f));
                 m_TargetObject.velocity = Vector3.zero;
             }
-            m_Head.rotation = targetRotation;
-            m_Body.Move((targetMovement*(m_Sprinting?3f:1f) + Vector3.up* Mathf.Lerp(-9.8f,9.8f, m_JumpTimer.m_TimeLeftScale))*_deltaTime);
+            m_Head.rotation = TickRotation();
+            m_Body.Move((TickMovement()*(m_Sprinting?3f:1f) + Vector3.up* Mathf.Lerp(-9.8f,9.8f, m_JumpTimer.m_TimeLeftScale))*_deltaTime);
         }
         public override void FixedTick(float _deltaTime)
         {

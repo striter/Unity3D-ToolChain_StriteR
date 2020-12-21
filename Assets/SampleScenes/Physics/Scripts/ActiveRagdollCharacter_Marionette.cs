@@ -4,11 +4,9 @@ using UnityEngine;
 
 namespace PhysicsTest
 {
-    public class ActiveRagdollCharacter_Marionette : PhysicsCharacterBase
+    public class ActiveRagdollCharacter_Marionette : ActiveRagdollCharacter_ThirdPerson
     {
         public bool m_LostConcious;
-        public Transform m_HeadEnd;
-        public Transform m_CameraAttach;
         public Rigidbody m_BodyString;
         public Rigidbody m_Hips;
         public ArmCombination m_LeftArmCombine, m_RightArmCombine;
@@ -88,10 +86,6 @@ namespace PhysicsTest
         public override void OnTakeControl()
         {
             base.OnTakeControl();
-            TPSCameraController.Instance.m_BindRoot = m_CameraAttach;
-            TPSCameraController.Instance.m_BindPosOffset = new Vector3(0, .5f, -4f);
-            TPSCameraController.Instance.m_MoveDamping = .2f;
-            TPSCameraController.Instance.m_RotateDamping = .2f;
             PCInputManager.Instance.GetKeyBinding(enum_Binding.Jump).Add(OnLostConcious);
             PCInputManager.Instance.GetKeyBinding(enum_Binding.Sprint).Add(OnSprint);
             PCInputManager.Instance.GetKeyBinding(enum_Binding.MainFire).Add(m_LeftArmCombine.OnAiming);
@@ -110,9 +104,7 @@ namespace PhysicsTest
 
         public override void Tick(float _deltaTime)
         {
-            TickMovement(out Quaternion targetRotation, out Vector3 targetMovement);
-            m_CameraAttach.transform.position = m_HeadEnd.position;
-            m_CameraAttach.transform.rotation = targetRotation;
+            base.Tick(_deltaTime);
 
             if (m_LostConcious)
                 return;
@@ -131,9 +123,9 @@ namespace PhysicsTest
                 return;
             if (Physics.Raycast(m_Hips.position, Vector3.down, out RaycastHit _hit, 10f, PhysicsLayer.I_ItemMask))
             {
-                float posOffset = m_HeadEnd.position.y - _hit.point.y;
+                float posOffset = m_CameraFollow.position.y - _hit.point.y;
                 if (posOffset < m_VerticalOffset)
-                    m_BodyString.AddForce(Vector3.up * m_StringStrength, ForceMode.Force);
+                    m_BodyString.AddForce(Vector3.up * m_StringStrength*100f*Time.deltaTime, ForceMode.Force);
                 Debug.DrawRay(_hit.point, Vector3.up * m_VerticalOffset, Color.red);
             }
             m_Hips.MoveRotation(Quaternion.Slerp(m_Hips.rotation, Quaternion.Euler(m_Pitch, m_Yaw, 0), 20f * _deltaTime));
@@ -147,7 +139,7 @@ namespace PhysicsTest
             Vector3 armPos = m_CameraAttach.position + m_CameraAttach.forward;
             m_LeftArmCombine.ArmTick(armPos + m_CameraAttach.right * -.1f, ref hipsForce);
             m_RightArmCombine.ArmTick(armPos + m_CameraAttach.right * .1f, ref hipsForce);
-            m_Hips.AddForce(hipsForce, ForceMode.Force);
+            m_Hips.AddForce(hipsForce*100f*Time.deltaTime, ForceMode.Force);
         }
 
 #if UNITY_EDITOR
