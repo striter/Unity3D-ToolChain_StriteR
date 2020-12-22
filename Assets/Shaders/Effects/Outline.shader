@@ -1,97 +1,65 @@
-﻿Shader "Game/Effects/Outline"
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Game/Effects/Outline"
 {
     Properties
     {
         _OutlineColor("Color",Vector)=(0,0,0,0)
         _OutlineWidth("Width",Range(0,1))=0.1
-        _OutlineSmoothFactor("Smooth Factor",Range(0,1))=1
+		[_Header(View Space Adapting)]
+		[Toggle(_CLIPSPACEADPATION)]_ClipSpaceAdapt("Clip Space Adapting",float)=0
+		_AdaptFactor("Adapting Factor(Pixel Multiply)",float)=100
+
+		[Header(Break Fixing)]
+		[Toggle(_BREAKFIXING)]_BreakFixing("Break Normal Fixing",float)=0
+        _FixFactor("Fix Factor",Range(0,1))=1
     }
     SubShader
     {
-		
-        Tags { "RenderType"="Opaque" "Queue"="Geometry"}
-        Pass
-        {
-            Stencil {
-                Ref 255
-                Comp Always
-                Pass Replace
-            }
-            CGPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
-
-            #include "UnityCG.cginc"
-
-            struct appdata
-            {
-                float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
-            };
-
-            struct v2f
-            {
-                float2 uv : TEXCOORD0;
-                float4 vertex : SV_POSITION;
-            };
-
-            sampler2D _MainTex;
-            float4 _MainTex_ST;
-
-            v2f vert (appdata v)
-            {
-                v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                return o;
-            }
-
-            fixed4 frag (v2f i) : SV_Target
-            {
-                fixed4 col = tex2D(_MainTex, i.uv);
-                return col;
-            }
-            ENDCG
-        }
-
+        Tags { "RenderType"="Opaque" "Queue"="Geometry" }
         Pass 
         {	
-        
-            Stencil {
-                Ref 255
-                Comp NotEqual
-                Pass Keep
-            }
-
-            ZWrite Off
 		    Name "OutLine"
+            ZWrite On
 			Cull Front
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma shader_feature _CLIPSPACEADPATION
+			#pragma shader_feature _BREAKFIXING
 			#include "UnityCG.cginc"
-			float _OutlineWidth;
-			float _OutlineSmoothFactor;
 			float4 _OutlineColor;
-			struct appdata
-			{
-				float4 vertex:POSITION;
-				float3 normal:NORMAL;
-			};
-			struct v2f {
-				float4 pos:SV_POSITION;
-			};
+			float _OutlineWidth;
+			#if _CLIPSPACEADPATION
+			float _AdaptFactor;
+			#endif
+			#if _BREAKFIXING
+			float _FixFactor;
+			#endif
 
-			v2f vert(appdata v) {
-				v2f o;
-				float3 dir = normalize(v.vertex.xyz);
-				float3 dir2 = normalize(v.normal);
-				dir = dir * sign(dot(dir, dir2));
-				dir = dir * _OutlineSmoothFactor + dir2 * (1 - _OutlineSmoothFactor);
-				o.pos = UnityObjectToClipPos(v.vertex+dir*_OutlineWidth);
-				return o;
+			float4 vert(float4 vertex:POSITION,float3 normal:NORMAL):SV_POSITION {
+				normal=normalize(normal);
+				
+				#if _BREAKFIXING
+				float3 vertexDir = normalize(vertex.xyz);
+				vertexDir = vertexDir * sign(dot(normal, vertexDir));
+				normal = normal* (1 - _FixFactor)  + vertexDir* _FixFactor ;
+				#endif
+
+				#if _CLIPSPACEADPATION
+				float4 clipPosition=UnityObjectToClipPos(vertex);
+				float3 screenDir=mul((float3x3)UNITY_MATRIX_MVP, normal);
+				float2 screenOffset=normalize(screenDir).xy/_ScreenParams.xy*clipPosition.w*_AdaptFactor;
+				clipPosition.xy+=screenOffset*_OutlineWidth;
+				return clipPosition;
+				#else
+				normal=mul((float3x3)unity_ObjectToWorld,normal);
+				float4 worldPos=mul(unity_ObjectToWorld,vertex);
+				worldPos.xyz+=normal*_OutlineWidth;
+				return UnityWorldToClipPos(worldPos);
+				#endif
 			}
-			float4 frag(v2f i) :COLOR
+			float4 frag(float4 position:SV_POSITION) :COLOR
 			{
 				return _OutlineColor;
 			}

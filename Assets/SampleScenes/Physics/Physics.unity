@@ -3753,7 +3753,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 923714082}
   m_LocalRotation: {x: -0.016630348, y: 0.36955756, z: 0.0056848265, w: -0.9290416}
-  m_LocalPosition: {x: 1.24, y: 0.53, z: -11.96}
+  m_LocalPosition: {x: 1.7, y: 0.53, z: -12.05}
   m_LocalScale: {x: 2, y: 1, z: 2}
   m_Children: []
   m_Father: {fileID: 2018736516}
@@ -9270,9 +9270,9 @@ ConfigurableJoint:
     maximumForce: 3.4028233e+38
   m_SlerpDrive:
     serializedVersion: 3
-    positionSpring: 500
-    positionDamper: 0
-    maximumForce: 500
+    positionSpring: 300
+    positionDamper: 300
+    maximumForce: 300
   m_ProjectionMode: 0
   m_ProjectionDistance: 0.1
   m_ProjectionAngle: 180
@@ -11377,9 +11377,9 @@ ConfigurableJoint:
     maximumForce: 3.4028233e+38
   m_SlerpDrive:
     serializedVersion: 3
-    positionSpring: 500
-    positionDamper: 0
-    maximumForce: 500
+    positionSpring: 300
+    positionDamper: 300
+    maximumForce: 300
   m_ProjectionMode: 0
   m_ProjectionDistance: 0.1
   m_ProjectionAngle: 180
@@ -11739,7 +11739,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2043142945}
   m_LocalRotation: {x: -0.016630348, y: 0.36955756, z: 0.0056848265, w: -0.9290416}
-  m_LocalPosition: {x: -1.4242889, y: 0.9068598, z: -12.059653}
+  m_LocalPosition: {x: -1.32, y: 0.92, z: -12.4}
   m_LocalScale: {x: 2, y: 1, z: 2}
   m_Children: []
   m_Father: {fileID: 2018736516}

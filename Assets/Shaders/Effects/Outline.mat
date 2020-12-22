@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Outline
   m_Shader: {fileID: 4800000, guid: ea5e8b0900aeddd40b9c7410c58736f7, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: _CLIPSPACEADPATION
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -56,18 +56,22 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _AdaptFactor: 100
+    - _BreakFixing: 0
     - _BumpScale: 1
+    - _ClipSpaceAdapt: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _FixFactor: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
-    - _OutlineSmoothFactor: 1
-    - _OutlineWidth: 0.04
+    - _OutlineSmoothFactor: 0
+    - _OutlineWidth: 0.246
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
