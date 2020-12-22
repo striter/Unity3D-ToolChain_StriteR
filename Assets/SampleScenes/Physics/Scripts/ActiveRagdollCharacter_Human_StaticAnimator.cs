@@ -7,7 +7,8 @@ namespace PhysicsTest
     public class ActiveRagdollCharacter_Human_StaticAnimator : ActiveRagdollCharacter_HumanBase
     {
         public Transform m_StaticAnimatorHips;
-        public Animation m_Animation;
+        public Animator m_StaticAnimator;
+        static readonly int HS_B_Walk = Animator.StringToHash("b_walk");
         public Rigidbody m_Hips;
         List<StaticAnimatorSynchonize> m_StaticAnimatorSynchonize=new List<StaticAnimatorSynchonize>();
         struct StaticAnimatorSynchonize
@@ -46,14 +47,11 @@ namespace PhysicsTest
             PCInputManager.Instance.GetKeyBinding(enum_Binding.Jump).Remove(SwitchAnim);
         }
 
-        bool playing = false;
+        bool m_Walking = false;
         void SwitchAnim()
         {
-            playing = !playing;
-            if (playing)
-                m_Animation.Play();
-            else
-                m_Animation.Stop();
+            m_Walking = !m_Walking;
+            m_StaticAnimator.SetBool(HS_B_Walk, m_Walking);
         }
 
         protected override void Update()
