@@ -33,7 +33,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ColorRamp:
-        m_Texture: {fileID: 2800000, guid: 03ce33f9b98e23f4e95f78c95b2abc62, type: 3}
+        m_Texture: {fileID: 2800000, guid: 41755a7f95902404ebec52ed8a999853, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -69,7 +69,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Noise:
-        m_Texture: {fileID: 11700000, guid: 4ed99a7ccafd728408a1bd580f472384, type: 2}
+        m_Texture: {fileID: 11700000, guid: 5743fc3e0e9339b41b3dc606bd35aefe, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -92,7 +92,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _LightAbsorption: 10
+    - _LightAbsorption: 7.81
     - _LightDensityClip: 0.451
     - _LightMarch: 4
     - _LightMarchTimes: 8

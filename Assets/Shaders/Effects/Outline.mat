@@ -71,7 +71,7 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _OutlineSmoothFactor: 0
-    - _OutlineWidth: 0.246
+    - _OutlineWidth: 0.14
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

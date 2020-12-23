@@ -76,7 +76,7 @@
 				o.uv.zw = GetDissolveUV(v.vertex);
 				o.pos = UnityObjectToClipPos(v.vertex);
 				o.objNormal=v.normal;
-				o.objLightDir=-ObjSpaceLightDir(v.vertex);
+				o.objLightDir=ObjSpaceLightDir(v.vertex);
 				TRANSFER_SHADOW(o);
 				return o;
 			}
@@ -92,7 +92,7 @@
 				UNITY_LIGHT_ATTENUATION(atten, i,i.worldPos)
 				float3 finalCol=tex2D(_MainTex, i.uv)* _Color+(UNITY_LIGHTMODEL_AMBIENT.xyz);
 				finalCol*=diffuse*atten;
-			finalCol*=_LightColor0.rgb;
+				finalCol*=_LightColor0.rgb;
 				return float4(finalCol,1);
 			}
 			ENDCG
