@@ -20,7 +20,7 @@ public class MeshFilterEditor: Editor
     bool m_DrawBiTangents = false;
     float m_BiTangentsLength = .5f;
     Color m_BitangentColor = Color.yellow;
-    enum_ColorType m_ColorType;
+    enum_ColorType m_DrawColorType;
     float m_ColorLength = .5f;
 
     void OnEnable()
@@ -31,7 +31,7 @@ public class MeshFilterEditor: Editor
     {
         base.OnInspectorGUI();
         EditorGUILayout.BeginVertical();
-        m_EnableVertexDataVisualize = EditorGUILayout.Foldout(m_EnableVertexDataVisualize, "Vertex Visualize Helper");
+        m_EnableVertexDataVisualize = EditorGUILayout.Foldout(m_EnableVertexDataVisualize, "Vertex Data Visualize");
 
         if (m_EnableVertexDataVisualize)
         {
@@ -85,12 +85,12 @@ public class MeshFilterEditor: Editor
             EditorGUILayout.BeginHorizontal();
             if(haveColors)
             {
-                m_ColorType = (enum_ColorType)EditorGUILayout.EnumPopup("Draw Color", m_ColorType);
+                m_DrawColorType = (enum_ColorType)EditorGUILayout.EnumPopup("Draw Color", m_DrawColorType);
                 m_ColorLength = EditorGUILayout.Slider(m_ColorLength, 0f, 2f);
             }
             else
             {
-                m_ColorType = enum_ColorType.None;
+                m_DrawColorType = enum_ColorType.None;
                 EditorGUILayout.LabelField("No Color Data");
             }
             EditorGUILayout.EndHorizontal();
@@ -112,7 +112,6 @@ public class MeshFilterEditor: Editor
         Vector4[] tangents = m_Target.sharedMesh.tangents;
         Color[] colors = m_Target.sharedMesh.colors;
         int[] indices = m_Target.sharedMesh.GetIndices(0);
-
         if (m_DrawVertex)
         {
             Handles.color = m_VertexColor;
@@ -147,11 +146,11 @@ public class MeshFilterEditor: Editor
                 Handles.DrawLine(verticies[i], verticies[i] + Vector3.Cross(normals[i], tangents[i]).normalized * m_BiTangentsLength);
             }
 
-            if(m_ColorType!= enum_ColorType.None)
+            if(m_DrawColorType!= enum_ColorType.None)
             {
                 Color vertexColor = Color.clear;
 
-                switch (m_ColorType)
+                switch (m_DrawColorType)
                 {
                     case enum_ColorType.RGBA: vertexColor = colors[i]; break;
                     case enum_ColorType.R:vertexColor = Color.red * colors[i].r; ; break;

@@ -325,6 +325,7 @@ public static class TCommon
     public static T RandomKey<T, Y>(this Dictionary<T, Y> dic, System.Random randomSeed = null) => dic.ElementAt(Random(dic.Count, randomSeed)).Key;
     public static Y RandomValue<T, Y>(this Dictionary<T, Y> dic, System.Random randomSeed = null) => dic.ElementAt(Random(dic.Count, randomSeed)).Value;
     public static bool RandomBool(System.Random seed = null) => seed != null ? seed.Next(0, 2) > 0 : UnityEngine.Random.Range(0, 2) > 0;
+    public static Color RandomColor(System.Random seed = null, float alpha = -1)=>  new Color(Random(1f,seed), Random(1f, seed), Random(1f, seed), alpha < 0 ? Random(1f, seed):alpha );
     public static int RandomPercentageInt(System.Random random=null)=> random != null ? random.Next(0, 101)  : UnityEngine.Random.Range(0, 101);
     public static float RandomPercentageFloat(System.Random random = null) => Random(100, random);
     public static T RandomPercentage<T>(this Dictionary<T, int> percentageRate, System.Random seed) => RandomPercentage(percentageRate,default(T),seed);
