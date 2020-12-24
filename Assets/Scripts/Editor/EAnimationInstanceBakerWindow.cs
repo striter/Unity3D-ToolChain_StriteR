@@ -15,14 +15,14 @@ namespace TEditor
         SerializedProperty m_AnimationProperty;
         string m_BoneExposeRegex="";
 
-        private void OnEnable()
+        void OnEnable()
         {
             m_TargetAnimations = null;
             m_SerializedWindow = new SerializedObject(this);
             m_AnimationProperty = m_SerializedWindow.FindProperty("m_TargetAnimations");
             EditorApplication.update += Tick;
         }
-        private void OnDisable()
+        void OnDisable()
         {
             m_TargetPrefab = null;
             m_TargetAnimations = null;

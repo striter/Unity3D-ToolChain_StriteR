@@ -13,10 +13,13 @@ float GetDiffuse(float3 normal, float3 lightDir,float lambert)
 }
 
 //range 0.9-1
+float GetSpecular(float3 normal,float3 halfDir,float range)
+{
+	float specular = dot(normalize(normal),halfDir);
+	return smoothstep(range, 1, specular);
+}
 float GetSpecular(float3 normal,float3 lightDir,float3 viewDir,float range)
 {
-	float specular = dot(normalize(normal), normalize(viewDir + lightDir));
-	specular = smoothstep(range, 1, specular);
-	return specular;
+	return GetSpecular(normal,normalize(lightDir+viewDir),range);
 }
 #endif
