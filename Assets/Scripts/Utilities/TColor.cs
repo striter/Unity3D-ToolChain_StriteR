@@ -6,7 +6,7 @@ public static class TColor
     public static Color VectorToColor(Vector3 colorVector) => new Color(colorVector.x, colorVector.y, colorVector.z);
     public static Color VectorToColor(Vector4 colorVector) => new Color(colorVector.x, colorVector.y, colorVector.z, colorVector.w);
     public static Vector4 ToVector(this Color color) => new Vector4(color.r, color.g, color.b, color.a);
-
+    public static Color ToColor(this Vector4 vector)=>new Color(vector.x,vector.y,vector.z,vector.w);
     //RGBA32
     public static readonly Vector4 m_RGBA32_MaxValue = Vector4.one * 255f;
     public static Vector4 ToRGBA32(this Color color) => color.ToVector().Multiply(m_RGBA32_MaxValue);

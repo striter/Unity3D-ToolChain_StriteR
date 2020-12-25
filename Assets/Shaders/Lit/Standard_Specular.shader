@@ -6,6 +6,10 @@
 		_Color("Color",Color) = (1,1,1,1)
 		_Lambert("Lambert",Range(0,1))=.5
 		
+		[Header(Normal Map)]
+		[Toggle(_NORMALMAP)]_EnableNormalMap("Enable Normal Mapping",float)=1
+		[NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
+
 		[Header(Specular Setting)]
 		[Toggle(_SPECULAR)]_EnableSpecular("Enable Specular",float)=1
 		_SpecularRange("Specular Range",Range(.9,1))=.98
@@ -23,9 +27,13 @@
 		#pragma multi_compile_instancing
 		#pragma shader_feature _TRANSPARENT
 		#pragma shader_feature _SPECULAR
+		#pragma shader_feature _NORMALMAP
 
 		sampler2D _MainTex;
 		float4 _MainTex_ST;
+		#if _NORMALMAP
+		sampler2D _NormalTex;
+		#endif
 		float _Lambert;
 		float _SpecularRange;
 		UNITY_INSTANCING_BUFFER_START(Props)
@@ -37,6 +45,9 @@
 			float4 vertex : POSITION;
 			float2 uv:TEXCOORD0;
 			float3 normal:NORMAL;
+			#if _NORMALMAP
+			float4 tangent:TANGENT;
+			#endif
 			UNITY_VERTEX_INPUT_INSTANCE_ID
 		};
 
@@ -49,6 +60,9 @@
 			float3 worldNormal:TEXCOORD3;
 			float3 worldViewDir:TEXCOORD4;
 			SHADOW_COORDS(5)
+			#if _NORMALMAP
+			float3x3 worldToTangent:TEXCOORD6;
+			#endif
 			UNITY_VERTEX_INPUT_INSTANCE_ID
 		};
 
@@ -63,6 +77,11 @@
 			o.worldLightDir=WorldSpaceLightDir( v.vertex);
 			o.worldNormal=mul(unity_ObjectToWorld,v.normal);
 			o.worldViewDir=WorldSpaceViewDir( v.vertex);
+			#if _NORMALMAP
+			float3 worldTangent=mul(unity_ObjectToWorld,v.tangent);
+			float3 worldBitangent=cross(worldTangent,o.worldNormal);
+			o.worldToTangent=float3x3(normalize(worldTangent),normalize(worldBitangent),normalize(o.worldNormal));
+			#endif
 			TRANSFER_SHADOW(o);
 			return o;
 		}
@@ -72,12 +91,14 @@
 		{
 			UNITY_SETUP_INSTANCE_ID(i);
 			float3 normal=normalize(i.worldNormal);
+			#if _NORMALMAP
+			float3 tangentSpaceNormal= tex2D(_NormalTex,i.uv)*2-1;
+			normal= mul(tangentSpaceNormal,i.worldToTangent);
+			#endif
 			float3 lightDir=normalize(i.worldLightDir);
 			float3 viewDir=normalize(i.worldViewDir);
 			UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
-				
 			float3 finalCol=tex2D(_MainTex, i.uv)*UNITY_ACCESS_INSTANCED_PROP(Props, _Color)+UNITY_LIGHTMODEL_AMBIENT.xyz;
-
 			float diffuse=saturate( GetDiffuse(normal,lightDir));
 			diffuse*=atten;
 			diffuse = _Lambert + (1 - _Lambert)*diffuse;

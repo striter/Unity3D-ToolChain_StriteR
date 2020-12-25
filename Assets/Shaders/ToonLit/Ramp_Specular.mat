@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Ramp_Specular
   m_Shader: {fileID: 4800000, guid: c8e0eecdb2eaf98498f0a3c380e0c4d4, type: 3}
-  m_ShaderKeywords: _RAMP_RIM_V _RIM_NONE _Rim
+  m_ShaderKeywords: _RAMP_RIM_V _RIM_NONE _Rim _SPECULAR
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -65,7 +65,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EnableRim: 1
-    - _EnableSpecular: 0
+    - _EnableSpecular: 1
     - _Factor: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -82,7 +82,7 @@ Material:
     - _RimRange: 0.325
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SpecularRange: 0.9702
+    - _SpecularRange: 0.9
     - _SpecularScale: 0.0046
     - _SrcBlend: 1
     - _UVSec: 0

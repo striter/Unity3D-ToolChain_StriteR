@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using System;
 
 [CustomEditor(typeof(MeshFilter)),CanEditMultipleObjects]
 public class MeshFilterEditor: Editor
@@ -11,6 +10,10 @@ public class MeshFilterEditor: Editor
     bool m_EnableVertexDataVisualize;
     bool m_DrawVertex = true;
     Color m_VertexColor = Color.white;
+    bool m_DrawUVs = false;
+    enum_UVType m_UVIndex=0;
+    float m_UVsLength=.5f;
+
     bool m_DrawNormals = false;
     float m_NormalsLength = .5f;
     Color m_NormalColor = Color.blue;
@@ -23,6 +26,7 @@ public class MeshFilterEditor: Editor
     enum_ColorType m_DrawColorType;
     float m_ColorLength = .5f;
 
+    List<Vector4> m_UVList = new List<Vector4>();
     void OnEnable()
     {
         m_Target = target as MeshFilter;
@@ -94,9 +98,20 @@ public class MeshFilterEditor: Editor
                 EditorGUILayout.LabelField("No Color Data");
             }
             EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginHorizontal();
+            m_UVIndex = (enum_UVType)EditorGUILayout.EnumPopup("Draw UV", m_UVIndex);
+            if(m_UVIndex != enum_UVType.None)
+            {
+                GetUVs(m_Target.sharedMesh, m_UVIndex, m_UVList);
+                if (m_UVList.Count != 0)
+                    m_UVsLength = EditorGUILayout.Slider(m_UVsLength, 0f, 2f);
+                else
+                    EditorGUILayout.LabelField("No UV Data");
+            }
+
+            EditorGUILayout.EndHorizontal();
         }
         EditorGUILayout.EndVertical();
-
     }
     private void OnSceneGUI()
     {
@@ -104,13 +119,11 @@ public class MeshFilterEditor: Editor
             return;
 
         Handles.matrix = m_Target.transform.localToWorldMatrix;
-        Handles.color = Color.red;
-        Handles.DrawLine(Vector3.zero, m_Target.transform.forward * 2f);
-
         Vector3[] verticies = m_Target.sharedMesh.vertices;
         Vector3[] normals = m_Target.sharedMesh.normals;
         Vector4[] tangents = m_Target.sharedMesh.tangents;
         Color[] colors = m_Target.sharedMesh.colors;
+        GetUVs(m_Target.sharedMesh, m_UVIndex,m_UVList);
         int[] indices = m_Target.sharedMesh.GetIndices(0);
         if (m_DrawVertex)
         {
@@ -146,7 +159,13 @@ public class MeshFilterEditor: Editor
                 Handles.DrawLine(verticies[i], verticies[i] + Vector3.Cross(normals[i], tangents[i]).normalized * m_BiTangentsLength);
             }
 
-            if(m_DrawColorType!= enum_ColorType.None)
+            if (m_UVList .Count!= 0)
+            {
+                Handles.color = m_UVList[i].ToColor().SetAlpha(1f);
+                Handles.DrawLine(verticies[i], verticies[i] + normals[i] * m_UVsLength);
+            }
+
+            if (m_DrawColorType!= enum_ColorType.None)
             {
                 Color vertexColor = Color.clear;
 
@@ -159,11 +178,11 @@ public class MeshFilterEditor: Editor
                     case enum_ColorType.A:vertexColor = Color.white * colors[i].a; break;
                 }
                 Handles.color = vertexColor;
-                Handles.DrawPolyLine(new Vector3[3] { verticies[i] + new Vector3(tangents[i].x, tangents[i].y, tangents[i].z) * .1f, verticies[i] - new Vector3(tangents[i].x, tangents[i].y, tangents[i].z) * .2f, verticies[i] + normals[i] * m_ColorLength } );
+                Handles.DrawLine(verticies[i], verticies[i] + normals[i] * m_ColorLength);
             }
         }
-
     }
+
     enum enum_ColorType
     {
         None,
@@ -173,4 +192,34 @@ public class MeshFilterEditor: Editor
         B,
         A,
     }
+    enum enum_UVType
+    {
+        None,
+        UV1,
+        UV2,
+        UV3,
+        UV4,
+        UV5,
+        UV6,
+        UV7,
+        UV8,
+    }
+
+    void GetUVs(Mesh _target,enum_UVType _index,List<Vector4> uvList)
+    {
+        uvList.Clear();
+        switch (_index)
+        {
+            default:break;
+            case enum_UVType.UV1:  _target.GetUVs(0,uvList);break;
+            case enum_UVType.UV2: _target.GetUVs(1, uvList); break;
+            case enum_UVType.UV3: _target.GetUVs(2, uvList); break;
+            case enum_UVType.UV4: _target.GetUVs(3, uvList); break;
+            case enum_UVType.UV5: _target.GetUVs(4, uvList); break;
+            case enum_UVType.UV6: _target.GetUVs(5, uvList); break;
+            case enum_UVType.UV7: _target.GetUVs(6, uvList); break;
+            case enum_UVType.UV8: _target.GetUVs(7, uvList); break;
+        }
+    }
+    
 }
