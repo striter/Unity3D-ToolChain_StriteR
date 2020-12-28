@@ -11,11 +11,39 @@
 		Tags { "RenderType"="Transparent" "Queue"="Transparent" }
 		Cull Back
 		Blend SrcAlpha OneMinusSrcAlpha
+		ZWrite On
+		ZTest LEqual
+		
+		Pass
+		{
+			NAME "FORWARDBASE"
+			Tags{"LightMode" = "ForwardBase"}
+			Cull Back
+			CGPROGRAM
+			#pragma vertex DiffuseVertex
+			#pragma fragment DiffuseFragmentBase
+			#pragma multi_compile_fwdbase
+			ENDCG
+		}
+
+		Pass
+		{
+			NAME "SHADOWCASTER"
+			Tags{"LightMode" = "ShadowCaster"}
+			CGPROGRAM
+
+			#pragma vertex ShadowVertex
+			#pragma fragment ShadowFragment
+			#pragma multi_compile_shadowcaster
+			ENDCG
+		}
+
 		CGINCLUDE
 			#include "../CommonLightingInclude.cginc"
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
 			#include "AutoLight.cginc"
+			#pragma multi_compile_instancing
 
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
@@ -47,7 +75,7 @@
 				v2fDV o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-				o.uv = v.uv;
+				o.uv = TRANSFORM_TEX( v.uv,_MainTex);
 				o.pos = UnityObjectToClipPos(v.vertex);
 				o.worldPos = mul(unity_ObjectToWorld, v.vertex);
 				o.objNormal=v.normal;
@@ -58,35 +86,14 @@
 			float4 DiffuseFragmentBase(v2fDV i) :SV_TARGET
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
-				float diffuse=GetDiffuse(normalize( i.objNormal),normalize(i.objViewDir));
-				return float4( tex2D(_MainTex, i.uv)* UNITY_ACCESS_INSTANCED_PROP(Props, _Color)*(UNITY_LIGHTMODEL_AMBIENT.xyz+diffuse *  _LightColor0.rgb),_Opacity);
-			}
-			ENDCG
-
-			Pass
-			{
-				NAME "FORWARDBASE"
-				Tags{"LightMode" = "ForwardBase"}
-				Cull Back
-				CGPROGRAM
-				#pragma vertex DiffuseVertex
-				#pragma fragment DiffuseFragmentBase
-				#pragma multi_compile_fwdbase
-				#pragma multi_compile_instancing
-				ENDCG
+				float diffuse=saturate( GetDiffuse(normalize( i.objNormal),normalize(i.objViewDir)));
+				float3 finalCol=tex2D(_MainTex, i.uv)* UNITY_ACCESS_INSTANCED_PROP(Props, _Color)+UNITY_LIGHTMODEL_AMBIENT.xyz;
+				finalCol*=diffuse*_LightColor0.rgb.rgb;
+				return float4(finalCol,_Opacity);
 			}
 
-
-			Pass
-			{
-				NAME "SHADOWCASTER"
-				Tags{"LightMode" = "ShadowCaster"}
-				CGPROGRAM
-
-				#pragma vertex ShadowVertex
-				#pragma fragment ShadowFragment
-				#pragma multi_compile_instancing
-				sampler3D _DitherMaskLOD;
+			
+			sampler3D _DitherMaskLOD;
 			struct v2fs
 			{
 				V2F_SHADOW_CASTER;
@@ -109,8 +116,6 @@
 				clip(dither - 0.01);
 				SHADOW_CASTER_FRAGMENT(i);
 			}
-				ENDCG
-			}
+			ENDCG
 	}
-
 }

@@ -1,4 +1,4 @@
-﻿Shader "Game/ToonLit/Hatching_Diffuse"
+﻿Shader "Game/Lit/Toon/Hatching_Diffuse"
 {
 	Properties
 	{
@@ -27,8 +27,8 @@
 			#pragma shader_feature _WORLD_UV
 			#include "UnityCG.cginc"
 			#include "AutoLight.cginc"
-			#include "../CommonInclude.cginc"
-			#include "../CommonLightingInclude.cginc"
+			#include "../../CommonInclude.cginc"
+			#include "../../CommonLightingInclude.cginc"
 
 			fixed _HatchScale;
 			fixed _Lambert;
@@ -138,6 +138,6 @@
 			ENDCG
 		}
 
-		USEPASS "Game/Lit/Standard_Specular/ShadowCaster"
+		USEPASS "Hidden/ShadowCaster/MAIN"
 	}
 }
