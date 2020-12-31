@@ -22,7 +22,17 @@ namespace Rendering
         public Camera m_Camera { get; private set; }
 
         private void Start()=>InitCommandBuffers();
-        public void OnValidate()=> InitCommandBuffers();
+        public void OnValidate()
+        {
+
+            InitCommandBuffers();
+#if UNITY_EDITOR
+            if (!m_EditorRenderManager)
+                return;
+            m_EditorRenderManager.m_DepthToWorldCalculation = m_DepthToWorldCalculation;
+            m_EditorRenderManager.OnValidate();
+#endif
+        }
         private void OnDestroy()=> RemoveCommandBuffers();
         #region CommandBuffer
         #region ShaderProperties
@@ -43,6 +53,7 @@ namespace Rendering
             RemoveCommandBuffers();
             bool optimized = m_DepthMode == enum_DepthMode.Optimize;
             m_Camera.depthTextureMode = m_DepthMode == enum_DepthMode.BuiltIn ? DepthTextureMode.Depth : DepthTextureMode.None;
+            
             if (optimized)
             {
                 m_ColorBuffer = RenderTexture.GetTemporary(m_Camera.pixelWidth, m_Camera.pixelHeight, 0, RenderTextureFormat.RGB111110Float);
@@ -182,6 +193,32 @@ namespace Rendering
             Shader.SetGlobalVector(ID_FrustumCornersRayTR, topRight);
         }
         #endregion
+
+#if UNITY_EDITOR
+        CameraRenderManager m_EditorRenderManager;
+
+        private void OnEnable()
+        {
+            if (!UnityEditor.SceneView.lastActiveSceneView)
+                return;
+            if (UnityEditor.SceneView.lastActiveSceneView.camera.gameObject == this.gameObject)
+                return;
+
+            m_EditorRenderManager = UnityEditor.SceneView.lastActiveSceneView.camera.gameObject.AddComponent<CameraRenderManager>();
+            m_EditorRenderManager.m_DepthToWorldCalculation = m_DepthToWorldCalculation;
+        }
+        private void OnDisable()
+        {
+            if (!UnityEditor.SceneView.lastActiveSceneView)
+                return;
+            if (UnityEditor.SceneView.lastActiveSceneView.camera.gameObject == this.gameObject)
+                return;
+            if (!m_EditorRenderManager)
+                return;
+
+            GameObject.DestroyImmediate(m_EditorRenderManager);
+        }
+#endif
     }
 
 }

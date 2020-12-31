@@ -8567,14 +8567,14 @@ MonoBehaviour:
     m_Noise: {fileID: 11700000, guid: 5743fc3e0e9339b41b3dc606bd35aefe, type: 2}
     m_NoiseScale: {x: 1000, y: 1200, z: 1000}
     m_NoiseFlow: {x: 0.1, y: 0, z: 0}
-    m_Density: 74.3
+    m_Density: 49.1
     m_DensityClip: 0.587
     m_DensitySmooth: 1
     m_Distance: 500
     m_MarchTimes: 32
     m_Opacity: 1
     m_ColorRamp: {fileID: 2800000, guid: 034f12e5c34ba414fbcbfa5900814c89, type: 3}
-    m_LightAbsorption: 0.14
+    m_LightAbsorption: 0.174
     m_LightMarch: 1
     m_LightMarchClip: 1
     m_LightMarchTimes: 4

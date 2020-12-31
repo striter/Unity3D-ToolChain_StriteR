@@ -110,6 +110,9 @@ namespace Rendering.ImageEffect
             m_Effect.OnDestroy();
             m_Effect = null;
         }
+
+
+
         public void OnRenderImage(RenderTexture src, RenderTexture dst)
         {
             if (m_Effect == null)
@@ -121,9 +124,37 @@ namespace Rendering.ImageEffect
 #if UNITY_EDITOR
             //保存场景时Material会重置 需要重新设置属性
             m_Effect.DoValidate();
+            m_SceneCameraEffect?.OnValidate();
 #endif
 
             m_Effect.DoImageProcess(src, dst);
         }
+
+#if UNITY_EDITOR
+        PostEffectBase<T> m_SceneCameraEffect=null;
+
+        private void OnEnable()
+        {
+            if (!SceneView.lastActiveSceneView)
+                return;
+            if (SceneView.lastActiveSceneView.camera.gameObject == this.gameObject)
+                return;
+
+            m_SceneCameraEffect = SceneView.lastActiveSceneView.camera.gameObject.AddComponent(this.GetType()) as PostEffectBase<T>;
+            m_SceneCameraEffect.m_Effect = m_Effect;
+        }
+        private void OnDisable()
+        {
+            if (!SceneView.lastActiveSceneView)
+                return;
+            if (SceneView.lastActiveSceneView.camera.gameObject == this.gameObject)
+                return;
+            if (!m_SceneCameraEffect)
+                return;
+
+            GameObject.DestroyImmediate(m_SceneCameraEffect);
+        }
+#endif
+
     }
 }
