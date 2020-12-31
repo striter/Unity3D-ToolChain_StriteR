@@ -64,7 +64,7 @@ Material:
         m_Scale: {x: 10, y: 1}
         m_Offset: {x: 0, y: 0}
     - _WarpDiffuseTex:
-        m_Texture: {fileID: 2800000, guid: dbbe28cc5b2167f4194d2a4fc975169c, type: 3}
+        m_Texture: {fileID: 2800000, guid: ce61626c08bc39042baa67b029be7950, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
@@ -82,9 +82,10 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _ShiftAmount: -1
-    - _ShiftStrength: 0.624
+    - _ShiftOffset: -0.55
+    - _ShiftStrength: 1
     - _SmoothnessTextureChannel: 0
-    - _SpecularExponent: 186.2
+    - _SpecularExponent: 100
     - _SpecularHighlights: 1
     - _SpecularStrength: 50
     - _SrcBlend: 1

@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Ramp_Specular
-  m_Shader: {fileID: 4800000, guid: c8e0eecdb2eaf98498f0a3c380e0c4d4, type: 3}
+  m_Shader: {fileID: 4800000, guid: 375dabf743e9d814ab295f7a81e551c6, type: 3}
   m_ShaderKeywords: _RAMP_RIM_V _RIM_SMOOTH _Rim _SPECULAR
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -47,6 +47,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _NormalTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -59,11 +63,20 @@ Material:
         m_Texture: {fileID: 2800000, guid: dbbe28cc5b2167f4194d2a4fc975169c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _ShiftTex:
+        m_Texture: {fileID: 2800000, guid: ac92fe14a02d4c748aa600d71cfb04d9, type: 3}
+        m_Scale: {x: 5, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WarpDiffuseTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _EnableNormalMap: 0
     - _EnableRim: 1
     - _EnableSpecular: 1
     - _Factor: 1
@@ -80,12 +93,16 @@ Material:
     - _RampRimV: 1
     - _Rim: 2
     - _RimRange: 0.4
+    - _ShiftOffset: -1
+    - _ShiftStrength: 1
     - _SmoothnessTextureChannel: 0
+    - _SpecularExponent: 66
     - _SpecularHighlights: 1
     - _SpecularRange: 0.9
     - _SpecularScale: 0.0046
     - _SrcBlend: 1
     - _UVSec: 0
+    - _UseBiTangent: 0
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

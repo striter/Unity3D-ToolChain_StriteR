@@ -6726,7 +6726,6 @@ GameObject:
   - component: {fileID: 1380301467}
   - component: {fileID: 1380301466}
   - component: {fileID: 1380301465}
-  - component: {fileID: 1380301470}
   m_Layer: 0
   m_Name: HeavyBall
   m_TagString: Untagged
@@ -6826,18 +6825,6 @@ Transform:
   m_Father: {fileID: 917909168}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1380301470
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1380301464}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a94a4caad63d044f83d6c48c90f686c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1396541839
 GameObject:
   m_ObjectHideFlags: 0
@@ -8577,17 +8564,17 @@ MonoBehaviour:
   m_Param:
     m_VerticalStart: 50
     m_VerticalLength: 350
-    m_Noise: {fileID: 11700000, guid: 4ed99a7ccafd728408a1bd580f472384, type: 2}
+    m_Noise: {fileID: 11700000, guid: 5743fc3e0e9339b41b3dc606bd35aefe, type: 2}
     m_NoiseScale: {x: 1000, y: 1200, z: 1000}
     m_NoiseFlow: {x: 0.1, y: 0, z: 0}
-    m_Density: 75
-    m_DensityClip: 0.58
-    m_DensitySmooth: 0.19
+    m_Density: 74.3
+    m_DensityClip: 0.587
+    m_DensitySmooth: 1
     m_Distance: 500
     m_MarchTimes: 32
     m_Opacity: 1
-    m_ColorRamp: {fileID: 2800000, guid: 03ce33f9b98e23f4e95f78c95b2abc62, type: 3}
-    m_LightAbsorption: 0.04
+    m_ColorRamp: {fileID: 2800000, guid: 034f12e5c34ba414fbcbfa5900814c89, type: 3}
+    m_LightAbsorption: 0.14
     m_LightMarch: 1
     m_LightMarchClip: 1
     m_LightMarchTimes: 4

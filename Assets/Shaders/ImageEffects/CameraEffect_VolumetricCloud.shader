@@ -150,12 +150,12 @@
                             break;
                     }
                 }
-                float3 rampCol=tex2D(_ColorRamp, lightIntensity).rgb;
+
+                float3 rampCol=tex2D(_ColorRamp,  lightIntensity).rgb;
                 float3 lightCol= lerp(rampCol,_LightColor0.rgb, lightIntensity);
-                float4 cloudCol=float4(lightCol,1-cloudDensity);
-                
-                float4 baseCol = tex2D(_MainTex, _input.uv);
-                return float4(cloudCol.rgb*cloudCol.a+baseCol.rgb*(1-cloudCol.a) ,1) ;
+                float3 baseCol = tex2D(_MainTex, _input.uv);
+                float3 finalCol=lerp(lightCol,baseCol, cloudDensity) ;
+                return float4(finalCol,1) ;
             }
             ENDCG
         }

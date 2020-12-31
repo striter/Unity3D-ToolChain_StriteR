@@ -10,6 +10,7 @@
         [Toggle(_BITANGENT)]_UseBiTangent("Use Bi Tangent",float)=0
         _SpecularExponent("Specular Exponent",float)=50
         _ShiftTex("Shift Tex",2D)="white"{}
+        _ShiftOffset("Shift Offset",Range(-1,1))=-.5
         _ShiftStrength("Shift Strength",Range(0,1))=.5
     }
     SubShader
@@ -19,7 +20,7 @@
 		Blend Off
 		ZWrite On
 		ZTest LEqual
-
+        
 		Pass
 		{
 			NAME "FORWARDBASE"
@@ -77,7 +78,7 @@
             sampler2D _ShiftTex;
             float4 _ShiftTex_ST;
             float _ShiftStrength;
-
+            float _ShiftOffset;
             v2f vert (appdata v)
             {
                 v2f o;
@@ -110,16 +111,17 @@
                 #if _BITANGENT
                     tangent=cross(normal,tangent);
                 #endif
+
                 float3 lightDir=normalize(i.lightDir);
                 float3 viewDir=normalize(i.viewDir);
                 float3 halfDir=normalize(i.viewDir+i.lightDir);
                 UNITY_LIGHT_ATTENUATION(atten,i,i.worldPos)
 
                 float3 finalCol=tex2D(_MainTex,i.uv.xy)+UNITY_LIGHTMODEL_AMBIENT.xyz;
-                float diffuse=GetDiffuse(normal,lightDir)*atten;
+                float diffuse=saturate(GetDiffuse(normal,lightDir))*atten;
                 finalCol*=tex2D(_WarpDiffuseTex,diffuse)*_LightColor0;
-                float shiftAmount=tex2D(_ShiftTex,i.uv.zw)*_ShiftStrength;
-                float specular=saturate(StrandSpecular(tangent,normal,halfDir,_SpecularExponent,shiftAmount))*atten;
+                float shiftAmount=tex2D(_ShiftTex,i.uv.zw)*_ShiftStrength+_ShiftOffset;
+                float specular=saturate(StrandSpecular(tangent,normal,halfDir,_SpecularExponent,shiftAmount))*atten*diffuse;
                 finalCol+=specular*_LightColor0;
                 return float4(finalCol,1);
             }

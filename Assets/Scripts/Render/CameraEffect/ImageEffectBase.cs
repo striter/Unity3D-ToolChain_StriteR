@@ -9,7 +9,6 @@ namespace Rendering.ImageEffect
         public abstract void DoImageProcess(RenderTexture src, RenderTexture dst);
         public abstract void DoValidate();
         public virtual void OnDestroy() { }
-
         public static Material CreateMaterial(Type _type)
         {
             Shader _shader = Shader.Find("Hidden/" + _type.Name);
@@ -35,7 +34,7 @@ namespace Rendering.ImageEffect
             m_Material = CreateMaterial(this.GetType()); 
             GetParamsFunc = _GetParams;
         }
-
+        
         public virtual void OnDestory()
         {
             if (m_Material)
@@ -88,11 +87,13 @@ namespace Rendering.ImageEffect
         protected virtual void Awake()
         {
             OnValidate();
+
         }
         protected virtual void OnDestroy()
         {
             Destroy();
         }
+
         public virtual void OnValidate()
         {
             if (m_Effect == null)

@@ -1,6 +1,4 @@
-﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "Game/Effects/Outline"
+﻿Shader "Game/Effects/Outline"
 {
     Properties
     {
@@ -16,7 +14,7 @@ Shader "Game/Effects/Outline"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" "Queue"="Geometry" }
+        Tags { "RenderType"="Opaque" "Queue"="Geometry+1" }
         Pass 
         {	
 		    Name "OutLine"

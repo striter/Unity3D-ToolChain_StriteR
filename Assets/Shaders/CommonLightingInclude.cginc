@@ -41,5 +41,4 @@ float3 DecodeNormalMap(float3 normal)
 {
 	return normal*2-1;
 }
-
 #endif
