@@ -29,7 +29,7 @@ namespace Rendering
 #if UNITY_EDITOR
             if (!m_EditorRenderManager)
                 return;
-            m_EditorRenderManager.m_DepthToWorldCalculation = m_DepthToWorldCalculation;
+            SyncEditorData();
             m_EditorRenderManager.OnValidate();
 #endif
         }
@@ -205,7 +205,7 @@ namespace Rendering
                 return;
 
             m_EditorRenderManager = UnityEditor.SceneView.lastActiveSceneView.camera.gameObject.AddComponent<CameraRenderManager>();
-            m_EditorRenderManager.m_DepthToWorldCalculation = m_DepthToWorldCalculation;
+            SyncEditorData();
         }
         private void OnDisable()
         {
@@ -217,6 +217,15 @@ namespace Rendering
                 return;
 
             GameObject.DestroyImmediate(m_EditorRenderManager);
+        }
+
+        void SyncEditorData()
+        {
+            m_EditorRenderManager.m_DepthToWorldCalculation = m_DepthToWorldCalculation;
+            m_EditorRenderManager.m_DepthMode = enum_DepthMode.None;
+            m_EditorRenderManager.m_GeometryCopyTexture = m_GeometryCopyTexture;
+            m_EditorRenderManager.m_GeometryCopyBlurTexture = m_GeometryCopyBlurTexture;
+            m_EditorRenderManager.m_BlurData = m_BlurData;
         }
 #endif
     }

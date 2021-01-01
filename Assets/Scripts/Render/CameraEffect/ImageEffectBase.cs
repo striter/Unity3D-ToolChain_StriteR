@@ -78,16 +78,18 @@ namespace Rendering.ImageEffect
     }
 
 
-    [ExecuteInEditMode]
+    [ExecuteInEditMode,RequireComponent(typeof(CameraRenderManager))]
     public class PostEffectBase<T> : MonoBehaviour where T:AImageEffectBase
     {
+        protected CameraRenderManager m_Manager { get; private set; }
         protected T m_Effect { get; private set; }
         protected virtual T OnGenerateRequiredImageEffects() => throw new Exception("Override This Please");
-
+        public virtual bool m_DepthRequired => false;
+        public virtual bool m_DepthToWorldCalculationRequired => false;
         protected virtual void Awake()
         {
             OnValidate();
-
+            m_Manager = GetComponent<CameraRenderManager>();
         }
         protected virtual void OnDestroy()
         {

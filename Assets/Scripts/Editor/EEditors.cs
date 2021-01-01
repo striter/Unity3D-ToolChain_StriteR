@@ -10,7 +10,6 @@ public class MeshFilterEditor: Editor
     bool m_EnableVertexDataVisualize;
     bool m_DrawVertex = true;
     Color m_VertexColor = Color.white;
-    bool m_DrawUVs = false;
     enum_UVType m_UVIndex=0;
     float m_UVsLength=.5f;
 
