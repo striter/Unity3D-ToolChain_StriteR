@@ -1,7 +1,4 @@
-﻿#ifndef COMMON_INCLUDE
-#define COMMON_INCLUDE
-
-float sqrDistance(float3 offset){ return dot(offset,offset); }
+﻿float sqrDistance(float3 offset){ return dot(offset,offset); }
 float sqrDistance(float3 pA, float3 pB){ return sqrDistance(pA-pB); }
 
 float2 UVCenterMapping(float2 uv,float2 tilling,float2 offset,float rotateAngle)
@@ -22,4 +19,3 @@ float luminance(fixed3 color){ return 0.2125*color.r + 0.7154*color.g + 0.0721 +
 
 float4 BlendColor(float4 src,float4 dst){ return 1-(1-src)*(1-dst); }
 float3 BlendColor(float3 src,float3 dst){ return 1-(1-src)*(1-dst); }
-#endif

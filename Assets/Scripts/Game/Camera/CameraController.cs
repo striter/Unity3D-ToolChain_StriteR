@@ -55,8 +55,9 @@ public class CameraController : SingletonMono<CameraController>
         ForceSetCamera();
 
 
+
         Gizmos.color = Color.blue;
-        Gizmos.DrawSphere(m_Camera.transform.position,.2f);
+        Gizmos.DrawSphere(Vector3.zero,.2f);
         Gizmos_Extend.DrawArrow(m_Camera.transform.position, m_Camera.transform.rotation,.8f,.2f);
 
         Gizmos.color = Color.green;

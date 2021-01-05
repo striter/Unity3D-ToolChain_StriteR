@@ -8526,7 +8526,7 @@ MonoBehaviour:
   m_MoveDamping: 0.2
   m_ForceLookAt: {fileID: 0}
   m_RotateDamping: 0.2
-  m_Gizmos: 0
+  m_Gizmos: 1
   I_ShakeParam: 0
   m_ShakeReverseDuration: 0.2
 --- !u!114 &1604089975

@@ -235,11 +235,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69c20d0e83f17094b84b617e9e0c080d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PlanePosition: {x: 0, y: -0.59, z: 0}
-  m_PlaneDirection: {x: 1, y: 0, z: 0}
   m_PlaneNormal: {x: 0, y: 1, z: 0}
-  m_RayOrigin: {x: 1, y: 0, z: 0}
-  m_RayDirection: {x: -0.73, y: -0.57, z: 1.91}
+  m_PlaneDistance: -0.57
+  m_RayOrigin: {x: 0, y: 0, z: 0}
+  m_RayDirection: {x: 0.78, y: -1, z: 1.52}
 --- !u!4 &314156686
 Transform:
   m_ObjectHideFlags: 0
@@ -248,7 +247,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 314156684}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.13, y: 0, z: 0.65}
+  m_LocalPosition: {x: 0.14, y: 0, z: -4.89}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

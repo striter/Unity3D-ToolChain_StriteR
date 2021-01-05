@@ -587,7 +587,7 @@ public static  class Gizmos_Extend
     }
     public static void DrawArrow(Vector3 _pos, Quaternion _rot,float _length, float _radius)
     {
-        using (new Handles.DrawingScope(Gizmos.color, Matrix4x4.TRS(_pos, _rot, Handles.matrix.lossyScale)))
+        using (new Handles.DrawingScope(Gizmos.color, Gizmos.matrix*Matrix4x4.TRS(_pos, _rot, Handles.matrix.lossyScale)))
         {
             Vector3 capBottom = Vector3.forward * _length / 2;
             Vector3 capTop = Vector3.forward * _length;

@@ -1,20 +1,12 @@
-﻿#ifndef BOUNDING_COLLISION
-#define BOUNDING_COLLISION
-float min(float3 target){ return min( min(target.x,target.y),target.z);}
+﻿float min(float3 target){ return min( min(target.x,target.y),target.z);}
 float max(float3 target){ return max( max(target.x,target.y),target.z);}
 
 //Plane
-float3 PRayIntersectPosition(float3 planePos,float3 planeNor,float3 projPos,float3 projDir)
+float PRayDistance(float3 _pNormal,float _pDistance,float3 _rayOrigin,float3 _rayDirection) //return: Dst To Plane
 {
-    float d = dot(planePos - projPos, planeNor) / dot(projDir, planeNor);
-    return projPos + projDir * d;
-}
-float PRayDistance(float3 _pPosition,float3 _pNormal,float3 _rayOrigin,float3 _rayDirection) //return: Dst To Plane
-{
-    float npP = dot(_pNormal, _pPosition);
     float nrO = dot(_pNormal,_rayOrigin);
     float nrD = dot(_pNormal ,_rayDirection);
-    return (npP-nrO)/nrD;
+    return (_pDistance-nrO)/nrD;
 }
 
 //Axis Aligned Bounding Box
@@ -69,4 +61,3 @@ float2 BSRayDistance(float3 _bsCenter, float _bsRadius, float3 _rayOrigin, float
         t0 = t1;
     return float2(t0, t1);
 }
-#endif

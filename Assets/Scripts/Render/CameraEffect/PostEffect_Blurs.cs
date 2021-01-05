@@ -17,7 +17,7 @@ namespace Rendering.ImageEffect
         public float blurSize = 1.0f;
         [Tooltip("贴图降采样"), Range(1, 4)]
         public int downSample = 2;
-        [Tooltip("迭代次数"), Range(1, 4)]
+        [Tooltip("迭代次数"), Range(1, 8)]
         public int iteration = 1;
         [Tooltip("模糊方式")]
         public ImageEffect_Blurs.enum_BlurType blurType = ImageEffect_Blurs.enum_BlurType.AverageSinglePass;

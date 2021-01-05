@@ -1,7 +1,4 @@
-﻿#ifndef COMMONLIGHTING_INCLUDE
-#define COMMONLIGHTING_INCLUDE
-
-//Diffuse-Lambert
+﻿//Diffuse-Lambert
 float GetDiffuse(float3 normal,float3 lightDir)
 {
 	return  dot(normal, lightDir);
@@ -41,4 +38,3 @@ float3 DecodeNormalMap(float3 normal)
 {
 	return normal*2-1;
 }
-#endif

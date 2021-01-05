@@ -51,8 +51,8 @@
             #if _LIGHTMARCH
             float lightMarch(float3 position,float3 marchDir,float marchDst)
             {
-                float distance1=PRayDistance(float3(0,_VerticalStart,0),float3(0,1,0),position,marchDir);
-                float distance2=PRayDistance(float3(0,_VerticalEnd,0),float3(0,1,0),position,marchDir);
+                float distance1=PRayDistance(float3(0,1,0),_VerticalStart,position,marchDir);
+                float distance2=PRayDistance(float3(0,1,0),_VerticalEnd,position,marchDir);
                 float distanceInside=max(distance1,distance2);
                 float distanceLimitParam=saturate(distanceInside/_LightMarchMinimalDistance);
                 float cloudDensity=0;
@@ -98,8 +98,8 @@
             {
                 float3 marchDir=normalize(_input.viewDir);
                 float3 cameraPos=_WorldSpaceCameraPos;
-                float distance1=PRayDistance(float3(0,_VerticalStart,0),float3(0,1,0),cameraPos,marchDir);
-                float distance2=PRayDistance(float3(0,_VerticalEnd,0),float3(0,1,0),cameraPos,marchDir);
+                float distance1=PRayDistance(float3(0,1,0),_VerticalStart,cameraPos,marchDir);
+                float distance2=PRayDistance(float3(0,1,0),_VerticalEnd,cameraPos,marchDir);
 				float linearDepth = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,_input.uv));
                 distance1=min(linearDepth,distance1);
                 distance2=min(linearDepth,distance2);

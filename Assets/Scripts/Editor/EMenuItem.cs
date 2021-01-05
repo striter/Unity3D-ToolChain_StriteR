@@ -9,18 +9,12 @@ namespace TEditor
 {
     public static class EMenuItem
     {
-        [MenuItem("Work Flow/Test",false,101)]
-        static void Test()
-        {
-            SceneView.lastActiveSceneView.camera.transform.Translate(0, 0, -10, Space.World);
-        }
-
-        [MenuItem("Work Flow/Take Screen Shot", false, 102)]
+        [MenuItem("Work Flow/Take Screen Shot _F12", false, 102)]
         static void TakeScreenShot()
         {
             DirectoryInfo directory = new DirectoryInfo(Application.persistentDataPath + "/ScreenShots");
             string path = Path.Combine(directory.Parent.FullName, string.Format("Screenshot_{0}.png", DateTime.Now.ToString("yyyyMMdd_Hmmss")));
-            Debug.Log("Sceen Shots At " + path);
+            Debug.LogFormat("ScreenShot Successful:\n<#Color=F1F635FF>{0}</Color>",path);
             ScreenCapture.CaptureScreenshot(path);
         }
 
