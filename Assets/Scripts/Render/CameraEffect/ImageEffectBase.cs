@@ -134,9 +134,11 @@ namespace Rendering.ImageEffect
 
 #if UNITY_EDITOR
         PostEffectBase<T> m_SceneCameraEffect=null;
-
         private void OnEnable()
         {
+            if (m_SceneCameraEffect)
+                return;
+
             if (!SceneView.lastActiveSceneView)
                 return;
             if (SceneView.lastActiveSceneView.camera.gameObject == this.gameObject)
@@ -147,11 +149,12 @@ namespace Rendering.ImageEffect
         }
         private void OnDisable()
         {
+            if (!m_SceneCameraEffect)
+                return;
+
             if (!SceneView.lastActiveSceneView)
                 return;
             if (SceneView.lastActiveSceneView.camera.gameObject == this.gameObject)
-                return;
-            if (!m_SceneCameraEffect)
                 return;
 
             GameObject.DestroyImmediate(m_SceneCameraEffect);

@@ -2132,7 +2132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b98b9eb758c45084291b31d4813e0d3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DepthMode: 2
+  m_DepthMode: 1
   m_GeometryCopyTexture: 1
   m_GeometryCopyBlurTexture: 1
   m_DepthToWorldCalculation: 1

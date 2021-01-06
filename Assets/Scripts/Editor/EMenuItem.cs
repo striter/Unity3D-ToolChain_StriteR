@@ -14,7 +14,7 @@ namespace TEditor
         {
             DirectoryInfo directory = new DirectoryInfo(Application.persistentDataPath + "/ScreenShots");
             string path = Path.Combine(directory.Parent.FullName, string.Format("Screenshot_{0}.png", DateTime.Now.ToString("yyyyMMdd_Hmmss")));
-            Debug.LogFormat("ScreenShot Successful:\n<#Color=F1F635FF>{0}</Color>",path);
+            Debug.LogFormat("ScreenShot Successful:\n<Color=#F1F635FF>{0}</Color>",path);
             ScreenCapture.CaptureScreenshot(path);
         }
 

@@ -4,8 +4,11 @@
     {
         _MainTex ("Texture", 2D) = "white" {}
         _Color("Color",Color)=(1,1,1,1)
+
         _Glossiness("Smoothness",Range(0,1))=1
         _Metallic("Metalness",Range(0,1))=0
+    
+        _SpecularPower("Specular Power",float)=40
     }
     SubShader
     {
@@ -50,6 +53,7 @@
             float4 _Color;
             float _Glossiness;
             float _Metallic;
+            float _SpecularPower;
 
             v2f vert (appdata v)
             {
@@ -90,8 +94,10 @@
 
                 float smoothness=UnpackSmoothness(_Glossiness);
                 float3 diffuseColor=albedo*(1-_Metallic);
-                float3 specColor=lerp(lightCol,_Color.rgb,_Metallic*.5);
+                float3 specColor=lerp(lightCol,albedo,_Metallic*.5);
 
+                float specular= NDF_BlinnPhong(NDH,_Glossiness,max(1,_Glossiness*_SpecularPower));
+                return float4(NDL*lightCol+specular,1);
                 float3 finalCol=albedo*atten*lightCol +ambient;
                 return float4(finalCol,1);
             }
