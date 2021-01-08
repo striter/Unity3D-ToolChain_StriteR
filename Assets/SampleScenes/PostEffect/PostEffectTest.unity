@@ -250,10 +250,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectData:
-    m_Color: {r: 0, g: 0, b: 0, a: 0}
-    m_Intensity: 1
-    m_SampleRadius: 10
-    m_DepthBias: 0.002
+    m_Color: {r: 1, g: 1, b: 1, a: 0}
+    m_Intensity: 5
+    m_SampleRadius: 35
+    m_DepthBias: 0.00384
     m_SampleCount: 16
     m_NoiseTex: {fileID: 0}
     m_NoiseScale: 1
