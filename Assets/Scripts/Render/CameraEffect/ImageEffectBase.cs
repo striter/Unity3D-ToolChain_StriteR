@@ -19,13 +19,13 @@ namespace Rendering.ImageEffect
             if (!_shader.isSupported)
                 throw new NullReferenceException("Shader Not Supported:" + _type.Name);
 
-            return new Material(_shader) { name = _type.Name, hideFlags = HideFlags.HideAndDontSave };
+            return new Material(_shader) { name = _type.Name, hideFlags = HideFlags.DontSave };
         }
-
     }
+
+    [Serializable]
     public class ImageEffectBase<T>:AImageEffectBase where T:ImageEffectParamBase
     {
-        protected virtual string m_ShaderLocation => "Override This Please";
         Material m_Material;
         Func<T> GetParamsFunc;
         public T GetParams() => GetParamsFunc();
@@ -72,24 +72,20 @@ namespace Rendering.ImageEffect
         }
     }
 
+    [Serializable]
     public class ImageEffectParamBase
     {
         public static readonly ImageEffectParamBase m_Default = new ImageEffectParamBase();
     }
 
-
-    [ExecuteInEditMode,RequireComponent(typeof(CameraRenderManager))]
-    public class PostEffectBase<T> : MonoBehaviour where T:AImageEffectBase
+    [ExecuteInEditMode,DisallowMultipleComponent,RequireComponent(typeof(Camera))]
+    public partial class PostEffectBase<T> : MonoBehaviour where T:AImageEffectBase
     {
-        protected CameraRenderManager m_Manager { get; private set; }
         protected T m_Effect { get; private set; }
         protected virtual T OnGenerateRequiredImageEffects() => throw new Exception("Override This Please");
-        public virtual bool m_DepthRequired => false;
-        public virtual bool m_DepthToWorldCalculationRequired => false;
         protected virtual void Awake()
         {
-            OnValidate();
-            m_Manager = GetComponent<CameraRenderManager>();
+            Init();
         }
         protected virtual void OnDestroy()
         {
@@ -97,6 +93,11 @@ namespace Rendering.ImageEffect
         }
 
         public virtual void OnValidate()
+        {
+            Init();
+        }
+
+        void Init()
         {
             if (m_Effect == null)
                 m_Effect = OnGenerateRequiredImageEffects();
@@ -113,8 +114,6 @@ namespace Rendering.ImageEffect
             m_Effect = null;
         }
 
-
-
         public void OnRenderImage(RenderTexture src, RenderTexture dst)
         {
             if (m_Effect == null)
@@ -123,43 +122,41 @@ namespace Rendering.ImageEffect
                 return;
             }
 
-#if UNITY_EDITOR
-            //保存场景时Material会重置 需要重新设置属性
-            m_Effect.DoValidate();
-            m_SceneCameraEffect?.OnValidate();
-#endif
-
             m_Effect.DoImageProcess(src, dst);
         }
 
 #if UNITY_EDITOR
-        PostEffectBase<T> m_SceneCameraEffect=null;
-        private void OnEnable()
+        public bool m_SceneViewPreview = false;
+        PostEffectBase<T> m_SceneCameraEffect = null;
+        bool EditorInitAvailable() => SceneView.lastActiveSceneView && SceneView.lastActiveSceneView.camera.gameObject != this.gameObject;
+        private void Update()
         {
+            if (!EditorInitAvailable())
+                return;
+
+            m_Effect?.DoValidate();
+            m_SceneCameraEffect?.OnValidate();
             if (m_SceneCameraEffect)
+            {
+                m_SceneCameraEffect.OnValidate();
+                m_SceneCameraEffect.enabled = m_SceneViewPreview;
                 return;
-
-            if (!SceneView.lastActiveSceneView)
-                return;
-            if (SceneView.lastActiveSceneView.camera.gameObject == this.gameObject)
-                return;
-
-            m_SceneCameraEffect = SceneView.lastActiveSceneView.camera.gameObject.AddComponent(this.GetType()) as PostEffectBase<T>;
+            }
+            m_SceneCameraEffect = SceneView.lastActiveSceneView.camera.GetComponent(this.GetType()) as PostEffectBase<T>;
+            if (!m_SceneCameraEffect)
+                m_SceneCameraEffect = SceneView.lastActiveSceneView.camera.gameObject.AddComponent(this.GetType()) as PostEffectBase<T>;
+            m_SceneCameraEffect.hideFlags = HideFlags.HideAndDontSave;
             m_SceneCameraEffect.m_Effect = m_Effect;
         }
         private void OnDisable()
         {
+            if (!EditorInitAvailable())
+                return;
             if (!m_SceneCameraEffect)
-                return;
-
-            if (!SceneView.lastActiveSceneView)
-                return;
-            if (SceneView.lastActiveSceneView.camera.gameObject == this.gameObject)
                 return;
 
             GameObject.DestroyImmediate(m_SceneCameraEffect);
         }
 #endif
-
     }
 }

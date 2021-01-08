@@ -249,6 +249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0d691f066f07e4fbd5e0dba44664e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SceneViewPreview: 0
   m_Param:
     m_Color: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 0}
     m_Intensity: 5
@@ -269,6 +270,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1821c3c36ad4e0b4ca57ece1fa992ff7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SceneViewPreview: 0
 --- !u!20 &289594998
 Camera:
   m_ObjectHideFlags: 0
@@ -480,6 +482,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4609a38f9a12b4543a91e80b01b89860, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SceneViewPreview: 0
   m_DepthOfFieldParams:
     m_DOFStart: 0.423
     m_DOFLerp: 0.16
@@ -502,6 +505,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 416756d6fe5a98042a0feb4feb778b27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SceneViewPreview: 0
   m_BlurParam:
     blurSize: 1
     downSample: 2
@@ -576,6 +580,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c699f20d8a4cbe6459d9145e0da06fe7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SceneViewPreview: 1
   m_Param:
     m_Intensity: 3
     m_BlendMode: 1
@@ -597,6 +602,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c699f20d8a4cbe6459d9145e0da06fe7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SceneViewPreview: 0
   m_Param:
     m_Intensity: 3
     m_BlendMode: 2
@@ -1376,6 +1382,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 470b53a701913514e92d942055827517, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SceneViewPreview: 0
   m_Param:
     m_OutlineColor: {r: 0.095341444, g: 1, b: 0, a: 0}
     m_SampleDistance: 3
@@ -1392,6 +1399,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 853def725d253de47b79e3a0c18ad32e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SceneViewPreview: 0
   m_Param:
     m_FogColor: {r: 0.8117647, g: 0.8392157, b: 0.83613664, a: 0}
     m_FogDensity: 2
@@ -1993,6 +2001,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9ed9868716178b429cda286a7d7af94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SceneViewPreview: 0
   m_Param:
     m_OriginViewPort_X: 0.5
     m_OriginViewPort_Y: 0.5
@@ -2011,6 +2020,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b62db4376f6a80241a778bd4d3ab7a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SceneViewPreview: 0
   m_BloomParams:
     threshold: 0.76
     intensity: 1.88
@@ -2032,6 +2042,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e24f8465e5911194a9d11d5acb09953c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SceneViewPreview: 0
   m_Params:
     m_Weight: 1
     m_LUT: {fileID: 2800000, guid: a0fb9abcbebf1304081947afc184b7c7, type: 3}
@@ -2210,6 +2221,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 668c8d0d863661f4a98eecfacdc4c9c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SceneViewPreview: 0
   m_Param:
     m_Origin: {x: 0, y: 0, z: 0}
     m_Color: {r: 0.95869803, g: 1, b: 0, a: 1}
@@ -2229,6 +2241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9056c14d9bf4e124baceeaf10f56ca3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SceneViewPreview: 1
   m_Param:
     m_VerticalStart: 50
     m_VerticalLength: 350
@@ -2261,6 +2274,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebcb6d2112f373a4fb9cf478372bb50a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SceneViewPreview: 1
   m_Param:
     m_Origin: {x: 2, y: 0, z: 0}
     Radius: 1
