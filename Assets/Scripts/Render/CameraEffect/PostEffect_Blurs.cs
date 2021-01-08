@@ -2,15 +2,12 @@
 using UnityEngine;
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_Blurs : PostEffectBase<ImageEffect_Blurs>
+    public class PostEffect_Blurs : PostEffectBase<ImageEffect_Blurs,ImageEffectParam_Blurs>
     {
-        [Tooltip("模糊参数")]
-        public ImageEffectParam_Blurs m_BlurParam;
-        protected override ImageEffect_Blurs OnGenerateRequiredImageEffects() => new ImageEffect_Blurs(() => m_BlurParam);
     }
 
 
-    [System.Serializable]
+    [Serializable]
     public class ImageEffectParam_Blurs : ImageEffectParamBase
     {
         [Tooltip("模糊像素偏差"), Range(0.25f, 1.5f)]
@@ -25,7 +22,7 @@ namespace Rendering.ImageEffect
 
     public class ImageEffect_Blurs : ImageEffectBase<ImageEffectParam_Blurs>
     {
-        public ImageEffect_Blurs(Func<ImageEffectParam_Blurs> _GetParams) : base(_GetParams)
+        public ImageEffect_Blurs() : base()
         {
 
         }
@@ -49,19 +46,17 @@ namespace Rendering.ImageEffect
                 return;
             }
 
-            ImageEffectParam_Blurs m_Params = GetParams();
-
-            int rtW = _src.width / m_Params.downSample;
-            int rtH = _src.height / m_Params.downSample;
+            int rtW = _src.width / _param.downSample;
+            int rtH = _src.height / _param.downSample;
             RenderTexture rt1 = _src;
 
-            for (int i = 0; i < m_Params.iteration; i++)
+            for (int i = 0; i < _param.iteration; i++)
             {
-                _material.SetFloat(ID_BlurSize, m_Params.blurSize * (1 + i));
-                if (m_Params.blurType == enum_BlurType.AverageSinglePass)
+                _material.SetFloat(ID_BlurSize, _param.blurSize * (1 + i));
+                if (_param.blurType == enum_BlurType.AverageSinglePass)
                 {
-                    int pass = (int)m_Params.blurType;
-                    if (i != m_Params.iteration - 1)
+                    int pass = (int)_param.blurType;
+                    if (i != _param.iteration - 1)
                     {
                         RenderTexture rt2 = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
                         Graphics.Blit(rt1, rt2, _material, pass);
@@ -74,7 +69,7 @@ namespace Rendering.ImageEffect
                 }
                 else
                 {
-                    int horizontalPass = (int)(m_Params.blurType - 1) * 2 + 1;
+                    int horizontalPass = (int)(_param.blurType - 1) * 2 + 1;
                     int verticalPass = horizontalPass + 1;
 
                     // vertical blur
@@ -84,7 +79,7 @@ namespace Rendering.ImageEffect
                         RenderTexture.ReleaseTemporary(rt1);
                     rt1 = rt2;
 
-                    if (i != m_Params.iteration - 1)
+                    if (i != _param.iteration - 1)
                     {
                         // horizontal blur
                         rt2 = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);

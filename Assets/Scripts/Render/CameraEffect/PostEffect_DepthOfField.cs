@@ -2,13 +2,8 @@
 using UnityEngine;
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_DepthOfField : PostEffectBase<CameraEffect_DepthOfField>
+    public class PostEffect_DepthOfField : PostEffectBase<CameraEffect_DepthOfField, CameraEffectParam_DepthOfField>
     {
-        [SerializeField, Tooltip("景深采样参数")]
-        public CameraEffectParam_DepthOfField m_DepthOfFieldParams;
-        [SerializeField, Tooltip("采样图模糊参数")]
-        public ImageEffectParam_Blurs m_BlurParams;
-        protected override CameraEffect_DepthOfField OnGenerateRequiredImageEffects() => new CameraEffect_DepthOfField(() => m_DepthOfFieldParams, () => m_BlurParams);
     }
 
     [System.Serializable]
@@ -22,6 +17,8 @@ namespace Rendering.ImageEffect
         public bool m_DepthBlurSample = true;
         [Tooltip("深度取值模糊像素偏差"), Range(.25f, 1.25f)]
         public float m_BlurSize = .5f;
+        [SerializeField, Tooltip("采样图模糊参数")]
+        public ImageEffectParam_Blurs m_BlurParams;
     }
     public class CameraEffect_DepthOfField : ImageEffectBase<CameraEffectParam_DepthOfField>
     {
@@ -34,11 +31,11 @@ namespace Rendering.ImageEffect
         #endregion
 
         ImageEffect_Blurs m_Blur;
-        public CameraEffect_DepthOfField(Func<CameraEffectParam_DepthOfField> _GetParams, Func<ImageEffectParam_Blurs> _GetBlurParams) : base(_GetParams) { m_Blur = new ImageEffect_Blurs(_GetBlurParams); }
-        public override void DoValidate()
+        public CameraEffect_DepthOfField() : base() { m_Blur = new ImageEffect_Blurs(); }
+        public override void Destroy()
         {
-            base.DoValidate();
-            m_Blur.DoValidate();
+            base.Destroy();
+            m_Blur.Destroy();
         }
         protected override void OnValidate(CameraEffectParam_DepthOfField _params, Material _material)
         {
@@ -47,19 +44,15 @@ namespace Rendering.ImageEffect
             _material.SetFloat(ID_FocalLerp, _params.m_DOFLerp);
             _material.EnableKeyword(KW_UseBlurDepth, _params.m_DepthBlurSample);
             _material.SetFloat(ID_BlurSize, _params.m_BlurSize);
+            m_Blur.DoValidate(_params.m_BlurParams);
         }
         protected override void OnImageProcess(RenderTexture _src, RenderTexture _dst, Material _material, CameraEffectParam_DepthOfField _param)
         {
             RenderTexture _tempBlurTex = RenderTexture.GetTemporary(_src.width, _src.height, 0, _src.format);
-            m_Blur.DoImageProcess(_src, _tempBlurTex);
+            m_Blur.DoImageProcess(_src, _tempBlurTex,_param.m_BlurParams);
             _material.SetTexture(ID_BlurTexture, _tempBlurTex);
             Graphics.Blit(_src, _dst, _material);
             RenderTexture.ReleaseTemporary(_tempBlurTex);
-        }
-        public override void OnDestory()
-        {
-            base.OnDestory();
-            m_Blur.OnDestory();
         }
 
     }

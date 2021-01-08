@@ -249,15 +249,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0d691f066f07e4fbd5e0dba44664e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SceneViewPreview: 0
-  m_Param:
-    m_Color: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 0}
-    m_Intensity: 5
-    m_SampleRadius: 25
-    m_DepthBias: 0.00104
+  m_EffectData:
+    m_Color: {r: 0, g: 0, b: 0, a: 0}
+    m_Intensity: 1
+    m_SampleRadius: 10
+    m_DepthBias: 0.002
     m_SampleCount: 16
-    m_NoiseTex: {fileID: 2800000, guid: 9c85090b0e4b5e246a82c5f13bb6d5dd, type: 3}
-    m_NoiseScale: 0.5
+    m_NoiseTex: {fileID: 0}
+    m_NoiseScale: 1
+  m_SceneViewPreview: 0
 --- !u!114 &289594997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -482,17 +482,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4609a38f9a12b4543a91e80b01b89860, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_EffectData:
+    m_DOFStart: 0.338
+    m_DOFLerp: 0.116
+    m_DepthBlurSample: 1
+    m_BlurSize: 1.107
+    m_BlurParams:
+      blurSize: 1
+      downSample: 2
+      iteration: 5
+      blurType: 2
   m_SceneViewPreview: 0
-  m_DepthOfFieldParams:
-    m_DOFStart: 0.423
-    m_DOFLerp: 0.16
-    m_DepthBlurSample: 0
-    m_BlurSize: 0.648
-  m_BlurParams:
-    blurSize: 0.83
-    downSample: 3
-    iteration: 4
-    blurType: 2
 --- !u!114 &520397184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -505,12 +505,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 416756d6fe5a98042a0feb4feb778b27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SceneViewPreview: 0
-  m_BlurParam:
-    blurSize: 1
+  m_EffectData:
+    blurSize: 1.031
     downSample: 2
     iteration: 1
-    blurType: 2
+    blurType: 1
+  m_SceneViewPreview: 0
 --- !u!20 &520397185
 Camera:
   m_ObjectHideFlags: 0
@@ -580,16 +580,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c699f20d8a4cbe6459d9145e0da06fe7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SceneViewPreview: 1
-  m_Param:
-    m_Intensity: 3
-    m_BlendMode: 1
-    m_CullingMask: 47
-  m_BlurParam:
-    blurSize: 1.5
-    downSample: 4
-    iteration: 4
-    blurType: 2
+  m_EffectData:
+    m_Intensity: 0.6
+    m_BlendMode: 2
+    m_CullingMask: 16
+    m_BlurParam:
+      blurSize: 1
+      downSample: 2
+      iteration: 5
+      blurType: 2
+  m_SceneViewPreview: 0
 --- !u!114 &520397188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -602,16 +602,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c699f20d8a4cbe6459d9145e0da06fe7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_EffectData:
+    m_Intensity: 2.13
+    m_BlendMode: 1
+    m_CullingMask: 1007
+    m_BlurParam:
+      blurSize: 1.466
+      downSample: 3
+      iteration: 8
+      blurType: 1
   m_SceneViewPreview: 0
-  m_Param:
-    m_Intensity: 3
-    m_BlendMode: 2
-    m_CullingMask: 31
-  m_BlurParam:
-    blurSize: 1.5
-    downSample: 4
-    iteration: 4
-    blurType: 2
 --- !u!1 &526198351
 GameObject:
   m_ObjectHideFlags: 0
@@ -1382,11 +1382,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 470b53a701913514e92d942055827517, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SceneViewPreview: 0
-  m_Param:
-    m_OutlineColor: {r: 0.095341444, g: 1, b: 0, a: 0}
-    m_SampleDistance: 3
-    m_DepthBias: 0.056
+  m_EffectData:
+    m_OutlineColor: {r: 0, g: 1, b: 0.25998163, a: 0}
+    m_SampleDistance: 1.8
+    m_DepthBias: 0.022
+  m_SceneViewPreview: 1
 --- !u!114 &1230212950
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1399,16 +1399,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 853def725d253de47b79e3a0c18ad32e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SceneViewPreview: 0
-  m_Param:
-    m_FogColor: {r: 0.8117647, g: 0.8392157, b: 0.83613664, a: 0}
-    m_FogDensity: 2
-    m_FogVerticalStart: -1.8
-    m_FogVerticalOffset: 1
-    m_NoiseTexure: {fileID: 2800000, guid: 9c85090b0e4b5e246a82c5f13bb6d5dd, type: 3}
+  m_EffectData:
+    m_FogColor: {r: 0, g: 0, b: 0, a: 0}
+    m_FogDensity: 1
+    m_FogVerticalStart: -1.18
+    m_FogVerticalOffset: 0.32
+    m_NoiseTexure: {fileID: 2800000, guid: fa57e5ff6a47ada49b4a0ec740c02bec, type: 3}
     m_NoiseScale: 15
-    m_NoiseSpeedX: 0.1
+    m_NoiseSpeedX: 0
     m_NoiseSpeedY: 0.1
+  m_SceneViewPreview: 0
 --- !u!1 &1383501843
 GameObject:
   m_ObjectHideFlags: 0
@@ -2001,13 +2001,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9ed9868716178b429cda286a7d7af94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SceneViewPreview: 0
-  m_Param:
+  m_EffectData:
     m_OriginViewPort_X: 0.5
     m_OriginViewPort_Y: 0.5
-    m_OffsetFactor: -0.2
+    m_OffsetFactor: -0.31
     m_NoiseTex: {fileID: 2800000, guid: fa57e5ff6a47ada49b4a0ec740c02bec, type: 3}
     m_NoiseStrength: 0.5
+  m_SceneViewPreview: 0
 --- !u!114 &1941222565
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2020,16 +2020,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b62db4376f6a80241a778bd4d3ab7a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SceneViewPreview: 0
-  m_BloomParams:
-    threshold: 0.76
-    intensity: 1.88
+  m_EffectData:
+    threshold: 0.25
+    intensity: 0.3
     enableBlur: 1
-  m_BlurParams:
-    blurSize: 1.5
-    downSample: 4
-    iteration: 4
-    blurType: 2
+    m_BlurParams:
+      blurSize: 1
+      downSample: 2
+      iteration: 4
+      blurType: 2
+  m_SceneViewPreview: 0
 --- !u!114 &1941222566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2042,8 +2042,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e24f8465e5911194a9d11d5acb09953c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SceneViewPreview: 0
-  m_Params:
+  m_EffectData:
     m_Weight: 1
     m_LUT: {fileID: 2800000, guid: a0fb9abcbebf1304081947afc184b7c7, type: 3}
     m_LUTCellCount: 32
@@ -2052,7 +2051,8 @@ MonoBehaviour:
     m_contrast: 1
     m_MixRed: {x: 0, y: 0, z: 0}
     m_MixGreen: {x: 0, y: 0, z: 0}
-    m_MixBlue: {x: 0.05, y: 0, z: 0}
+    m_MixBlue: {x: 0, y: 0, z: 0}
+  m_SceneViewPreview: 1
 --- !u!20 &1941222569
 Camera:
   m_ObjectHideFlags: 0
@@ -2145,7 +2145,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_DepthMode: 1
   m_GeometryCopyTexture: 1
-  m_GeometryCopyBlurTexture: 1
+  m_GeometryCopyBlurTexture: 0
   m_DepthToWorldCalculation: 1
   m_BlurData:
     blurSize: 1
@@ -2221,14 +2221,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 668c8d0d863661f4a98eecfacdc4c9c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SceneViewPreview: 0
-  m_Param:
+  m_EffectData:
     m_Origin: {x: 0, y: 0, z: 0}
-    m_Color: {r: 0.95869803, g: 1, b: 0, a: 1}
-    m_Elapse: 3.7
-    m_Width: 0.5
+    m_Color: {r: 0, g: 0, b: 0, a: 1}
+    m_Elapse: 3.24
+    m_Width: 0.2
     m_Texture: {fileID: 2800000, guid: cceffb6573d1f5e448909c17187a6e29, type: 3}
-    m_TextureScale: 0.37
+    m_TextureScale: 15
+  m_SceneViewPreview: 0
 --- !u!114 &2086077259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2241,27 +2241,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9056c14d9bf4e124baceeaf10f56ca3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SceneViewPreview: 1
-  m_Param:
-    m_VerticalStart: 50
-    m_VerticalLength: 350
+  m_EffectData:
+    m_VerticalStart: 40
+    m_VerticalLength: 300
     m_Noise: {fileID: 11700000, guid: 5743fc3e0e9339b41b3dc606bd35aefe, type: 2}
-    m_NoiseScale: {x: 1000, y: 1200, z: 1000}
-    m_NoiseFlow: {x: 0.1, y: 0, z: 0}
-    m_Density: 74.3
-    m_DensityClip: 0.587
-    m_DensitySmooth: 1
-    m_Distance: 500
-    m_MarchTimes: 32
-    m_Opacity: 1
+    m_NoiseScale: {x: 500, y: 500, z: 500}
+    m_NoiseFlow: {x: 0.1, y: 0, z: 0.1}
+    m_Density: 50
+    m_DensityClip: 0.6
+    m_DensitySmooth: 0.1
+    m_Distance: 300
+    m_MarchTimes: 64
+    m_Opacity: 0.8
     m_ColorRamp: {fileID: 2800000, guid: 034f12e5c34ba414fbcbfa5900814c89, type: 3}
-    m_LightAbsorption: 0.195
+    m_LightAbsorption: 0.072
     m_LightMarch: 1
-    m_LightMarchClip: 1
-    m_LightMarchTimes: 4
+    m_LightMarchClip: 0.304
+    m_LightMarchTimes: 8
     m_LightScatter: 1
-    m_ScatterRange: 0.903
-    m_ScatterStrength: 1
+    m_ScatterRange: 0.8
+    m_ScatterStrength: 0.8
+  m_SceneViewPreview: 1
 --- !u!114 &2086077261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2274,16 +2274,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebcb6d2112f373a4fb9cf478372bb50a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_EffectData:
+    m_Origin: {x: 2.05, y: 0.19, z: 0}
+    Radius: 1.6
+    m_SqrOutline: 0.05
+    m_FillColor: {r: 1, g: 1, b: 1, a: 1}
+    m_EdgeColor: {r: 1, g: 0, b: 0, a: 1}
+    m_FillTexure: {fileID: 2800000, guid: b9db44f36e4c96a4aa459d3fd8f56434, type: 3}
+    m_FillTextureFlow: {x: 0, y: 0}
+    m_FillTextureScale: 1
   m_SceneViewPreview: 1
-  m_Param:
-    m_Origin: {x: 2, y: 0, z: 0}
-    Radius: 1
-    m_SqrOutline: 0.1
-    m_FillColor: {r: 0.9716981, g: 0.9716981, b: 0.9716981, a: 0.6745098}
-    m_EdgeColor: {r: 0, g: 0, b: 0, a: 1}
-    m_FillTexure: {fileID: 2800000, guid: cceffb6573d1f5e448909c17187a6e29, type: 3}
-    m_FillTextureFlow: {x: 0, y: 0.5}
-    m_FillTextureScale: 0.3
 --- !u!1 &2142251302
 GameObject:
   m_ObjectHideFlags: 0

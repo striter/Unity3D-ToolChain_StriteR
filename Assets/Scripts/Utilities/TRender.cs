@@ -30,6 +30,19 @@ public static class TRender
         else
             Shader.DisableKeyword(_keyword);
     }
+
+    public static Material CreateMaterial(Type _type)
+    {
+        Shader _shader = Shader.Find("Hidden/" + _type.Name);
+
+        if (_shader == null)
+            throw new NullReferenceException("Invalid ImageEffect Shader Found:" + _type.Name);
+
+        if (!_shader.isSupported)
+            throw new NullReferenceException("Shader Not Supported:" + _type.Name);
+
+        return new Material(_shader) { name = _type.Name, hideFlags = HideFlags.DontSave };
+    }
 }
 public class MeshBoundsChecker
 {

@@ -1,15 +1,25 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using System;
 using UnityEditor;
 
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_ColorGrading : PostEffectBase<ImageEffect_ColorGrading>
-    {
-        [SerializeField,Tooltip("颜色分级参数")]
-        public ImageEffectParam_ColorGrading m_Params;
-        protected override ImageEffect_ColorGrading OnGenerateRequiredImageEffects() => new ImageEffect_ColorGrading(()=>m_Params);
+    public class PostEffect_ColorGrading : PostEffectBase<ImageEffect_ColorGrading,ImageEffectParam_ColorGrading>{}
 
+    public enum enum_MixChannel
+    {
+        None = 0,
+        Red = 1,
+        Green = 2,
+        Blue = 3,
+    }
+    public enum enum_LUTCellCount
+    {
+        _16 = 16,
+        _32 = 32,
+        _64 = 64,
+        _128 = 128,
     }
 
     [System.Serializable]
@@ -22,7 +32,7 @@ namespace Rendering.ImageEffect
         [Tooltip("颜色对照表")]
         public Texture2D m_LUT = null;
         [Tooltip("32格/16格")]
-        public ImageEffect_ColorGrading.enum_LUTCellCount m_LUTCellCount = ImageEffect_ColorGrading.enum_LUTCellCount._16;
+        public enum_LUTCellCount m_LUTCellCount = enum_LUTCellCount._16;
 
         [Header("BSC_亮度 饱和度 对比度")]
         [Tooltip("亮度"), Range(0, 2)]
@@ -43,7 +53,6 @@ namespace Rendering.ImageEffect
 
     public class ImageEffect_ColorGrading : ImageEffectBase<ImageEffectParam_ColorGrading>
     {
-        public ImageEffect_ColorGrading(Func<ImageEffectParam_ColorGrading> _GetParams) : base(_GetParams) { }
         #region ShaderProperties
         readonly int ID_Weight = Shader.PropertyToID("_Weight");
 
@@ -61,21 +70,6 @@ namespace Rendering.ImageEffect
         readonly int ID_MixGreen = Shader.PropertyToID("_MixGreen");
         readonly int ID_MixBlue = Shader.PropertyToID("_MixBlue");
         #endregion
-        public enum enum_MixChannel
-        {
-            None = 0,
-            Red = 1,
-            Green = 2,
-            Blue = 3,
-        }
-        public enum enum_LUTCellCount
-        {
-            _16 = 16,
-            _32 = 32,
-            _64 = 64,
-            _128 = 128,
-        }
-
         protected override void OnValidate(ImageEffectParam_ColorGrading _params, Material _material)
         {
             base.OnValidate(_params, _material);

@@ -5,10 +5,8 @@ using UnityEngine;
 
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_DepthOutline:PostEffectBase<CameraEffect_DepthOutline>
+    public class PostEffect_DepthOutline:PostEffectBase<CameraEffect_DepthOutline, CameraEffectParam_DepthOutline>
     {
-        public CameraEffectParam_DepthOutline m_Param;
-        protected override CameraEffect_DepthOutline OnGenerateRequiredImageEffects() => new CameraEffect_DepthOutline(()=>m_Param);
         [ImageEffectOpaque]
         protected new void OnRenderImage(RenderTexture source, RenderTexture destination)=> base.OnRenderImage(source, destination);
     }
@@ -31,10 +29,6 @@ namespace Rendering.ImageEffect
         static readonly int ID_DepthBias = Shader.PropertyToID("_DepthBias");
         #endregion
 
-        public CameraEffect_DepthOutline(Func<CameraEffectParam_DepthOutline> _GetParam):base(_GetParam)
-        {
-
-        }
         protected override void OnValidate(CameraEffectParam_DepthOutline _params, Material _material)
         {
             base.OnValidate(_params, _material);

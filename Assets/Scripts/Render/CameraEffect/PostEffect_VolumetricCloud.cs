@@ -7,10 +7,8 @@ namespace Rendering.ImageEffect
 {
     public enum enum_VolumetricCloud_MarchTimes { _16 = 16, _32 = 32, _64 = 64, _128 = 128 }
     public enum enum_VolumetricCloud_LightMarchTimes { _4 = 4, _8 = 8, _16 = 16 }
-    public class PostEffect_VolumetricCloud : PostEffectBase<CameraEffect_VolumetricCloud>
+    public class PostEffect_VolumetricCloud : PostEffectBase<CameraEffect_VolumetricCloud, CameraEffectParam_VolumetricCloud>
     {
-        public CameraEffectParam_VolumetricCloud m_Param;
-        protected override CameraEffect_VolumetricCloud OnGenerateRequiredImageEffects() => new CameraEffect_VolumetricCloud(()=>m_Param);
     }
 
     [System.Serializable]
@@ -69,7 +67,6 @@ namespace Rendering.ImageEffect
         static readonly int ID_ScatterRange = Shader.PropertyToID("_ScatterRange");
         static readonly int ID_ScatterStrength = Shader.PropertyToID("_ScatterStrength");
         #endregion
-        public CameraEffect_VolumetricCloud(Func<CameraEffectParam_VolumetricCloud> _GetParam) : base(_GetParam) { }
         protected override void OnValidate(CameraEffectParam_VolumetricCloud _params, Material _material)
         {
             base.OnValidate(_params, _material);

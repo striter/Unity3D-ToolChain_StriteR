@@ -116,15 +116,15 @@ using UnityEngine.UI;
             m_Intensity = new FormatValueSlider(m_Container.Find("Intensity").GetComponent<Slider>(), (float srcValue) => srcValue / 2.5f, (float normalizedValue) => normalizedValue * 2.5f);
 
             m_ColorGradingToggle.isOn = m_ColorGrading.enabled;
-            m_Weight.SetValue(m_ColorGrading.m_Params.m_Weight);
-            m_Brightness.SetValue(m_ColorGrading.m_Params.m_brightness);
-            m_Saturation.SetValue(m_ColorGrading.m_Params.m_saturation);
-            m_Contrast.SetValue(m_ColorGrading.m_Params.m_contrast);
-            m_ChannelGroup.SetToggleOn(ImageEffect_ColorGrading.enum_MixChannel.Red.ToString());
+            m_Weight.SetValue(m_ColorGrading.m_EffectData.m_Weight);
+            m_Brightness.SetValue(m_ColorGrading.m_EffectData.m_brightness);
+            m_Saturation.SetValue(m_ColorGrading.m_EffectData.m_saturation);
+            m_Contrast.SetValue(m_ColorGrading.m_EffectData.m_contrast);
+            m_ChannelGroup.SetToggleOn(enum_MixChannel.Red.ToString());
 
             m_BloomOptimizedToggle.isOn = m_Bloom.enabled;
-            m_Threshold.SetValue(m_Bloom.m_BloomParams.threshold / 1.5f);
-            m_Intensity.SetValue(m_Bloom.m_BloomParams.intensity / 2.5f);
+            m_Threshold.SetValue(m_Bloom.m_EffectData.threshold / 1.5f);
+            m_Intensity.SetValue(m_Bloom.m_EffectData.intensity / 2.5f);
         }
 
         private void Update()
@@ -137,21 +137,21 @@ using UnityEngine.UI;
             }
 
             m_ColorGrading.enabled = m_ColorGradingToggle.isOn;
-            m_ColorGrading.m_Params.m_Weight = m_Weight.TickValue();
-            m_ColorGrading.m_Params.m_brightness = m_Brightness.TickValue();
-            m_ColorGrading.m_Params.m_saturation = m_Saturation.TickValue();
-            m_ColorGrading.m_Params.m_contrast = m_Contrast.TickValue();
+            m_ColorGrading.m_EffectData.m_Weight = m_Weight.TickValue();
+            m_ColorGrading.m_EffectData.m_brightness = m_Brightness.TickValue();
+            m_ColorGrading.m_EffectData.m_saturation = m_Saturation.TickValue();
+            m_ColorGrading.m_EffectData.m_contrast = m_Contrast.TickValue();
             Vector3 channelMixVector = new Vector3(m_MixRed.TickValue(), m_MixGreen.TickValue(), m_MixBlue.TickValue());
-            switch ((ImageEffect_ColorGrading.enum_MixChannel)Enum.Parse(typeof(ImageEffect_ColorGrading.enum_MixChannel), m_ChannelGroup.m_ActiveTogName))
+            switch ((enum_MixChannel)Enum.Parse(typeof(enum_MixChannel), m_ChannelGroup.m_ActiveTogName))
             {
-                case ImageEffect_ColorGrading.enum_MixChannel.Red: m_ColorGrading.m_Params.m_MixRed = channelMixVector; break;
-                case ImageEffect_ColorGrading.enum_MixChannel.Green: m_ColorGrading.m_Params.m_MixGreen = channelMixVector; break;
-                case ImageEffect_ColorGrading.enum_MixChannel.Blue: m_ColorGrading.m_Params.m_MixBlue = channelMixVector; break;
+                case enum_MixChannel.Red: m_ColorGrading.m_EffectData.m_MixRed = channelMixVector; break;
+                case enum_MixChannel.Green: m_ColorGrading.m_EffectData.m_MixGreen = channelMixVector; break;
+                case enum_MixChannel.Blue: m_ColorGrading.m_EffectData.m_MixBlue = channelMixVector; break;
             }
 
             m_Bloom.enabled = m_BloomOptimizedToggle.isOn;
-            m_Bloom.m_BloomParams.threshold = m_Threshold.TickValue();
-            m_Bloom.m_BloomParams.intensity = m_Intensity.TickValue();
+            m_Bloom.m_EffectData.threshold = m_Threshold.TickValue();
+            m_Bloom.m_EffectData.intensity = m_Intensity.TickValue();
 
             m_ColorGrading.OnValidate();
             m_Bloom.OnValidate();
@@ -160,11 +160,11 @@ using UnityEngine.UI;
         void OutputChannelChange(string name)
         {
             Vector3 targetVector = Vector3.zero;
-            switch ((ImageEffect_ColorGrading.enum_MixChannel)Enum.Parse(typeof(ImageEffect_ColorGrading.enum_MixChannel), m_ChannelGroup.m_ActiveTogName))
+            switch ((enum_MixChannel)Enum.Parse(typeof(enum_MixChannel), m_ChannelGroup.m_ActiveTogName))
             {
-                case ImageEffect_ColorGrading.enum_MixChannel.Red: targetVector = m_ColorGrading.m_Params.m_MixRed; break;
-                case ImageEffect_ColorGrading.enum_MixChannel.Green: targetVector = m_ColorGrading.m_Params.m_MixGreen; break;
-                case ImageEffect_ColorGrading.enum_MixChannel.Blue: targetVector = m_ColorGrading.m_Params.m_MixBlue; break;
+                case enum_MixChannel.Red: targetVector =m_ColorGrading.m_EffectData.m_MixRed; break;
+                case enum_MixChannel.Green: targetVector = m_ColorGrading.m_EffectData.m_MixGreen; break;
+                case enum_MixChannel.Blue: targetVector = m_ColorGrading.m_EffectData.m_MixBlue; break;
             }
             m_MixRed.SetValue(targetVector.x);
             m_MixGreen.SetValue(targetVector.y);
@@ -173,9 +173,9 @@ using UnityEngine.UI;
 
         void OnOutputChannelReset()
         {
-            m_ColorGrading.m_Params.m_MixRed = Vector3.zero;
-            m_ColorGrading.m_Params.m_MixGreen = Vector3.zero;
-            m_ColorGrading.m_Params.m_MixBlue = Vector3.zero;
+            m_ColorGrading.m_EffectData.m_MixRed = Vector3.zero;
+            m_ColorGrading.m_EffectData.m_MixGreen = Vector3.zero;
+            m_ColorGrading.m_EffectData.m_MixBlue = Vector3.zero;
             OutputChannelChange(m_ChannelGroup.m_ActiveTogName);
         }
     }

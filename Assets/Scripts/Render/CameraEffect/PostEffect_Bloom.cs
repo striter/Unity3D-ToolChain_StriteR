@@ -2,13 +2,8 @@
 using System;
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_Bloom : PostEffectBase<ImageEffect_Bloom>
+    public class PostEffect_Bloom : PostEffectBase<ImageEffect_Bloom,CameraEffectParam_Bloom>
     {
-        [Tooltip("Bloom采样参数")]
-        public CameraEffectParam_Bloom m_BloomParams;
-        [Tooltip("采样模糊参数")]
-        public ImageEffectParam_Blurs m_BlurParams;
-        protected override ImageEffect_Bloom OnGenerateRequiredImageEffects() => new ImageEffect_Bloom(()=>m_BloomParams,()=>m_BlurParams);
     }
 
     [System.Serializable]
@@ -20,6 +15,8 @@ namespace Rendering.ImageEffect
         public float intensity = 0.3f;
         [Tooltip("启动贴图模糊")]
         public bool enableBlur = false;
+        [Tooltip("模糊参数")]
+        public ImageEffectParam_Blurs m_BlurParams;
     }
 
     public class ImageEffect_Bloom : ImageEffectBase<CameraEffectParam_Bloom>
@@ -37,25 +34,21 @@ namespace Rendering.ImageEffect
         }
 
         ImageEffect_Blurs m_Blur;
-        public ImageEffect_Bloom(Func<CameraEffectParam_Bloom> _GetParams, Func<ImageEffectParam_Blurs> _GetBlurParams) : base(_GetParams)
+        public ImageEffect_Bloom() : base()
         {
-            m_Blur = new ImageEffect_Blurs(_GetBlurParams);
+            m_Blur = new ImageEffect_Blurs();
         }
-        public override void DoValidate()
+        public override void Destroy()
         {
-            base.DoValidate();
-            m_Blur.DoValidate();
-        }
-        public override void OnDestory()
-        {
-            base.OnDestory();
-            m_Blur.OnDestory();
+            base.Destroy();
+            m_Blur.Destroy();
         }
         protected override void OnValidate(CameraEffectParam_Bloom _params, Material _material)
         {
             base.OnValidate(_params, _material);
             _material.SetFloat(ID_Threshold, _params.threshold);
             _material.SetFloat(ID_Intensity, _params.intensity);
+            if(_params.enableBlur) m_Blur.DoValidate(_params.m_BlurParams);
         }
         protected override void OnImageProcess(RenderTexture _src, RenderTexture _dst, Material _material, CameraEffectParam_Bloom _param)
         {
@@ -78,7 +71,7 @@ namespace Rendering.ImageEffect
 
 
             Graphics.Blit(_src, rt1, _material, (int)enum_Pass.SampleLight);
-            m_Blur.DoImageProcess(rt1, rt2);
+            m_Blur.DoImageProcess(rt1, rt2,_param.m_BlurParams);
             _material.SetTexture("_Bloom", rt2);
             Graphics.Blit(_src, _dst, _material, (int)enum_Pass.AddBloomTex);
 

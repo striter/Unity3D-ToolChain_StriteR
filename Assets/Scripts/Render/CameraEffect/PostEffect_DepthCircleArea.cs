@@ -5,12 +5,8 @@ using UnityEngine;
 
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_DepthCircleArea : PostEffectBase<CameraEffect_DepthCircleArea>
+    public class PostEffect_DepthCircleArea : PostEffectBase<CameraEffect_DepthCircleArea, PostEffectParam_DepthCirCleArea>
     {
-        public PostEffectParam_DepthCirCleArea m_Param;
-        protected override CameraEffect_DepthCircleArea OnGenerateRequiredImageEffects() => new CameraEffect_DepthCircleArea(() => m_Param);
-
-        public void DoValidate() => m_Effect.DoValidate();
     }
     [System.Serializable]
     public class PostEffectParam_DepthCirCleArea:ImageEffectParamBase
@@ -36,7 +32,6 @@ namespace Rendering.ImageEffect
         readonly int ID_SqrEdgeMin = Shader.PropertyToID("_SqrEdgeMin");
         readonly int ID_SqrEdgeMax = Shader.PropertyToID("_SqrEdgeMax");
 
-        public CameraEffect_DepthCircleArea(Func<PostEffectParam_DepthCirCleArea> _GetParam) : base(_GetParam) { }
         #region ShaderProperties
         #endregion
         protected override void OnValidate(PostEffectParam_DepthCirCleArea _params, Material _material)

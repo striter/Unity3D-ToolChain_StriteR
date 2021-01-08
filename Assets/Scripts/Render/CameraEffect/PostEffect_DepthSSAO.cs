@@ -4,16 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_DepthSSAO:PostEffectBase<CameraEffect_DepthSSAO>
+    public class PostEffect_DepthSSAO:PostEffectBase<CameraEffect_DepthSSAO, CameraEffectParam_DepthSSAO>
     {
-        public CameraEffectParam_DepthSSAO m_Param;
-        protected override CameraEffect_DepthSSAO OnGenerateRequiredImageEffects() => new CameraEffect_DepthSSAO(()=>m_Param);
-
         [ImageEffectOpaque]
-        private new void OnRenderImage(RenderTexture source, RenderTexture destination)
-        {
-            base.OnRenderImage(source, destination);
-        }
+        private new void OnRenderImage(RenderTexture source, RenderTexture destination)=> base.OnRenderImage(source, destination);
     }
 
     [System.Serializable]
@@ -45,10 +39,6 @@ namespace Rendering.ImageEffect
             new Vector3( 0.0689f,-0.1598f,-0.8547f),  new Vector3( 0.0560f, 0.0069f,-0.1843f),new Vector3(-0.0146f, 0.1402f, 0.0762f),  new Vector3( 0.0100f,-0.1924f,-0.0344f),
             new Vector3(-0.3577f,-0.5301f,-0.4358f),  new Vector3(-0.3169f, 0.1063f, 0.0158f),new Vector3( 0.0103f,-0.5869f, 0.0046f),  new Vector3(-0.0897f,-0.4940f, 0.3287f),
             new Vector3( 0.7119f,-0.0154f,-0.0918f),  new Vector3(-0.0533f, 0.0596f,-0.5411f),new Vector3( 0.0352f,-0.0631f, 0.5460f),  new Vector3(-0.4776f, 0.2847f,-0.0271f)};
-        public CameraEffect_DepthSSAO(Func<CameraEffectParam_DepthSSAO> _GetParam):base(_GetParam)
-        {
-
-        }
         protected override void OnValidate(CameraEffectParam_DepthSSAO _params, Material _material)
         {
             base.OnValidate(_params, _material);
