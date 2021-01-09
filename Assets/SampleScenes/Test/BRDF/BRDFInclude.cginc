@@ -9,7 +9,7 @@ float UnpackRoughness(float glossiness)
 float Fresnel_Schlick(float F0,float NDV){ return F0+(1-F0)*pow(1-NDV,5);}
 float Fresnel_Schlick(float F0,float3 normal,float3 viewDir) { return Fresnel_Schlick(F0,dot(normal,viewDir)); }
 
-//Normal Distribution Function
+//NDF,Normal Distribution Function
 float NDF_BlinnPhong(float NDH,float specularPower,float specularGloss)
 {
 	float distribution=pow(NDH,specularGloss)*specularPower;
@@ -42,4 +42,6 @@ float NDF_TrowbridgeReitz(float NDH,float roughness)
 	float distribution=sqrNDH*(sqrRoughness-1.0)+1.0;
 	return sqrRoughness/(PI*distribution*distribution);
 }
+//Anisotropic NDF
+
 
