@@ -92,12 +92,17 @@
                 float LDV=saturate(dot(lightDir,viewDir));
                 float RDV=saturate(dot(reflectDir,viewDir));
 
-                float smoothness=UnpackSmoothness(_Glossiness);
+                float roughness=UnpackRoughness(_Glossiness);
                 float3 diffuseColor=albedo*(1-_Metallic);
                 float3 specColor=lerp(lightCol,albedo,_Metallic*.5);
 
-                float specular= NDF_BlinnPhong(NDH,_Glossiness,max(1,_Glossiness*_SpecularPower));
-                return float4(NDL*lightCol+specular,1);
+                float specular=0;
+                specular=NDF_BlinnPhong(NDH,_Glossiness,max(1,_Glossiness*_SpecularPower));
+                specular=NDF_Beckmann(NDH,roughness);
+                specular=NDF_Gaussian(NDH,roughness);
+                specular=NDF_GGX(NDH,roughness);
+                specular=NDF_TrowbridgeReitz(NDH,roughness);
+                return specular;
                 float3 finalCol=albedo*atten*lightCol +ambient;
                 return float4(finalCol,1);
             }

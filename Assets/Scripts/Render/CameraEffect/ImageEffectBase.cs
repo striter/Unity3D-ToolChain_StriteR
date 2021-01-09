@@ -54,6 +54,7 @@ namespace Rendering.ImageEffect
     {
         public Y m_EffectData;
         protected T m_Effect { get; private set; }
+        protected Camera m_Camera { get; private set; }
         protected virtual void Awake()
         {
             Init();
@@ -70,11 +71,14 @@ namespace Rendering.ImageEffect
 
         void Init()
         {
+            if (!m_Camera) m_Camera = GetComponent<Camera>();
+
             if (m_Effect == null)
             {
                 m_Effect = new T();
                 OnEffectCreate(m_Effect);
             }
+
             m_Effect.DoValidate(m_EffectData);
         }
 

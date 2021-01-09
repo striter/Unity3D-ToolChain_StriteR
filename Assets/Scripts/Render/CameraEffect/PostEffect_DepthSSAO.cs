@@ -16,11 +16,11 @@ namespace Rendering.ImageEffect
         public Color m_Color;
         public float m_Intensity=1f;
         public float m_SampleRadius = 10f;
-        [Range(0,.01f)]
+        [Range(1f,20f)]
         public float m_DepthBias = 0.002f;
         public int m_SampleCount = 16;
         public Texture2D m_NoiseTex;
-        public float m_NoiseScale = 1;
+        public float m_NoiseScale = 1; 
     }
 
     public class CameraEffect_DepthSSAO:ImageEffectBase<CameraEffectParam_DepthSSAO>

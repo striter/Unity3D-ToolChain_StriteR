@@ -8543,11 +8543,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EffectData:
     m_Color: {r: 0, g: 0, b: 0, a: 0}
-    m_Intensity: 2
+    m_Intensity: 1
     m_SampleRadius: 25
-    m_DepthBias: 0.00127
+    m_DepthBias: 3.4
     m_SampleCount: 16
-    m_NoiseTex: {fileID: 0}
+    m_NoiseTex: {fileID: 2800000, guid: 0db5b19ef3682e449a1e176e4ae4f623, type: 3}
     m_NoiseScale: 1
   m_SceneViewPreview: 1
 --- !u!114 &1604089976
