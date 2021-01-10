@@ -7,8 +7,9 @@
 
         _Glossiness("Smoothness",Range(0,1))=1
         _Metallic("Metalness",Range(0,1))=0
-    
-        _SpecularPower("Specular Power",float)=40
+
+        [KeywordEnum(BlinnPhong,Beckmann,Gaussian,GGX,TrowbridgeReitz,Anisotropic_TrowbridgeReitz,Anisotropic_Ward)]_NDF("NDF Type",float) = 2
+        _AnisoTropicValue("Anisotropic Value",Range(0,1))=1
     }
     SubShader
     {
@@ -20,6 +21,7 @@
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile_fwdbase_fullshadows
+            #pragma multi_compile _NDF_BLINNPHONG _NDF_BECKMANN _NDF_GAUSSIAN _NDF_GGX _NDF_TROWBRIDGEREITZ _NDF_ANISOTROPIC_TROWBRIDGEREITZ _NDF_ANISOTROPIC_WARD
             #include "UnityCG.cginc"
             #include "Lighting.cginc"
             #include "AutoLight.cginc"
@@ -29,7 +31,7 @@
             {
                 float4 vertex : POSITION;
                 float3 normal:NORMAL;
-                float4 tangent:TANGENT;
+                float3 tangent:TANGENT;
                 float2 uv : TEXCOORD0;
                 float2 lightmapUV:TEXCOORD1;
             };
@@ -53,7 +55,7 @@
             float4 _Color;
             float _Glossiness;
             float _Metallic;
-            float _SpecularPower;
+            float _AnisoTropicValue;
 
             v2f vert (appdata v)
             {
@@ -63,7 +65,7 @@
                 o.lightMapUV=v.lightmapUV;
                 o.normal=UnityObjectToWorldNormal(v.normal);
                 o.tangent=normalize(mul(unity_ObjectToWorld,v.tangent));
-                o.biTangent=normalize(cross(o.normal,o.tangent)*v.tangent.w);
+                o.biTangent=normalize(cross(o.normal,o.tangent));
                 o.worldPos=mul(unity_ObjectToWorld,v.vertex);
                 o.lightDir=WorldSpaceLightDir(v.vertex);
                 o.viewDir=WorldSpaceViewDir(v.vertex);
@@ -74,6 +76,8 @@
             fixed4 frag (v2f i) : SV_Target
             {
                 float3 normal=normalize(i.normal);
+                float3 tangent = normalize(i.tangent);
+                float3 biTangent = normalize(i.biTangent);
                 float3 lightDir=normalize(i.lightDir);
                 float3 viewDir=normalize(i.viewDir);
                 float3 halfDir=normalize(viewDir+lightDir);
@@ -84,25 +88,43 @@
                 float3 ambient=UNITY_LIGHTMODEL_AMBIENT.xyz;
                 UNITY_LIGHT_ATTENUATION(atten, i,i.worldPos);
 
-                float NDL=saturate(dot(normal,lightDir));
-                float NDH=saturate(dot(normal,halfDir));
-                float NDV=saturate(dot(normal,viewDir));
-                float VDH=saturate(dot(viewDir,halfDir));
-                float LDH=saturate(dot(lightDir,halfDir));
-                float LDV=saturate(dot(lightDir,viewDir));
-                float RDV=saturate(dot(reflectDir,viewDir));
+                float NDL = dot(normal, lightDir);
+                float NDH = dot(normal, halfDir);
+                float NDV = dot(normal, viewDir);
+                float VDH = dot(viewDir, halfDir);
+                float LDH = dot(lightDir, halfDir);
+                float LDV = dot(lightDir, viewDir);
+                float RDV = dot(reflectDir, viewDir);
 
                 float roughness=UnpackRoughness(_Glossiness);
                 float3 diffuseColor=albedo*(1-_Metallic);
                 float3 specColor=lerp(lightCol,albedo,_Metallic*.5);
 
                 float specular=0;
-                specular=NDF_BlinnPhong(NDH,_Glossiness,max(1,_Glossiness*_SpecularPower));
+#if _NDF_BLINNPHONG
+                specular=NDF_BlinnPhong(NDH, _Glossiness,max(1, _Glossiness *40));
+#elif _NDF_BECKMANN
                 specular=NDF_Beckmann(NDH,roughness);
+#elif _NDF_GAUSSIAN
                 specular=NDF_Gaussian(NDH,roughness);
+#elif _NDF_GGX
                 specular=NDF_GGX(NDH,roughness);
+#elif _NDF_TROWBRIDGEREITZ
                 specular=NDF_TrowbridgeReitz(NDH,roughness);
-                return specular;
+#elif _NDF_ANISOTROPIC_TROWBRIDGEREITZ
+                specular = NDFA_TrowbridgeReitz(NDH, dot(halfDir, tangent), dot(halfDir, biTangent), _AnisoTropicValue, _Glossiness);
+#elif _NDF_ANISOTROPIC_WARD
+                specular = NDFA_Ward(NDL, NDV, NDH, dot(halfDir, tangent), dot(halfDir, biTangent), _AnisoTropicValue, _Glossiness);
+#endif 
+
+                return specular * 2;
+
+                float geometricShadow = 1;
+                geometricShadow = GSF_Implicit(NDL, NDV);
+                geometricShadow = GSF_AshikhminShirley(NDL, NDV, LDH);
+                geometricShadow = GSF_AshikhminPremoze(NDL, NDV);
+                return geometricShadow;
+
                 float3 finalCol=albedo*atten*lightCol +ambient;
                 return float4(finalCol,1);
             }
