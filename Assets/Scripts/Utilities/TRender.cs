@@ -12,10 +12,10 @@ public static class TRender
         else
             _material.DisableKeyword(_keyword);
     }
-    public static void EnableKeyword(this Material _material, string[] _keywords, int _target)
+    public static void EnableKeywords(this Material _material, string[] _keywords, int _target)
     {
         for (int i = 0; i < _keywords.Length; i++)
-            _material.EnableKeyword(_keywords[i], (i + 1) == _target);
+            _material.EnableKeyword(_keywords[i], i+1 == _target);
     }
     public static void EnableGlobalKeyword(string[] _keywords, int _target)
     {

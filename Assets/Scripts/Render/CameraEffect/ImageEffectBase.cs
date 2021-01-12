@@ -46,7 +46,6 @@ namespace Rendering.ImageEffect
 
         }
     }
-    [Serializable]
     public class ImageEffectParamBase  {  }
 
     [ExecuteInEditMode,DisallowMultipleComponent,RequireComponent(typeof(Camera))]
