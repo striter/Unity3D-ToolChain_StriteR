@@ -7,10 +7,10 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BRDFTest6
-  m_Shader: {fileID: 4800000, guid: 8992ff326da877e409d201bc1634ad77, type: 3}
-  m_ShaderKeywords: _FRESNEL_SCHLICK _FRESNEL__SPHERICALGAUSSIAN _GSF_R_GGX _GSF_R_KELEMEN_MODIFED
-    _GSF_R_SCHLICK_BECKMAN _NDF_GGX _NDF__ANISOTROPIC_WARD
+  m_Name: Physically_Based_Lighting
+  m_Shader: {fileID: 4800000, guid: a36156edb0b90f4409fdcf5f2c79e75d, type: 3}
+  m_ShaderKeywords: _FRESNELMODEL_SPHERICALGAUSSIAN _GEOSHADOWMODEL_ASHIKHMINSHIRLEY
+    _NORMALDISTMODEL_GGX _SMITHGEOSHADOWMODEL_GGX
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -57,28 +57,37 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _AnisoTropicValue: 1
+    - _Anisotropic: 0
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _FRESNEL: 0
-    - _GSF: 12
+    - _ENABLE_D: 0
+    - _ENABLE_F: 0
+    - _ENABLE_G: 0
+    - _ENABLE_NDF: 0
+    - _FresnelModel: 2
+    - _GeoShadowModel: 0
     - _GlossMapScale: 1
-    - _Glossiness: 0.6
+    - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _Metallic: 0.5
+    - _Ior: 1.5
+    - _Metallic: 1
     - _Mode: 0
-    - _NDF: 3
+    - _NormalDistModel: 4
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _SmithGeoShadowModel: 3
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SpecularPower: 40
+    - _SpecularPower: 1
+    - _SpecularRange: 0
     - _SrcBlend: 1
     - _UVSec: 0
+    - _UnityLightingContribution: 1
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

@@ -11,6 +11,8 @@ namespace BoundingCollisionTest
         public float m_PlaneDistance;
         public Vector3 m_RayOrigin;
         public Vector3 m_RayDirection;
+
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             float distance = Physics_Extend.PlaneRayDistance(m_PlaneNormal,m_PlaneDistance, m_RayOrigin, m_RayDirection);
@@ -36,5 +38,6 @@ namespace BoundingCollisionTest
             Gizmos_Extend.DrawArrow(Vector3.zero,Quaternion.LookRotation(Vector3.up), .3f, .1f);
             Gizmos.DrawWireCube(Vector3.zero, planeSize);
         }
+#endif
     }
 }

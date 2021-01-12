@@ -22,32 +22,7 @@
 		Blend Off
 		ZWrite On
 		ZTest LEqual
-
-		Pass
-		{
-			NAME "FORWARDBASE"
-			Tags{"LightMode" = "ForwardBase"}
-			Cull Back
-			CGPROGRAM
-			#pragma vertex DiffuseVertex
-			#pragma fragment DiffuseFragmentBase
-			#pragma multi_compile_fwdbase
-			ENDCG
-		}
-
-		Pass
-		{
-			Name "ForwardAdd"
-			Tags{"LightMode" = "ForwardAdd"}
-			Blend One One
-			CGPROGRAM
-			#pragma vertex DiffuseVertex
-			#pragma fragment DiffuseFragmentAdd
-			#pragma multi_compile_fwdadd
-			ENDCG
-		}
 		
-		USEPASS "Hidden/ShadowCaster/MAIN"
 
 		CGINCLUDE
 		#include "../CommonLightingInclude.cginc"
@@ -115,37 +90,43 @@
 			return o;
 		}
 
-
-		float4 DiffuseFragmentBase(v2fDV i) :SV_TARGET
-		{
-			UNITY_SETUP_INSTANCE_ID(i);
-			float3 normal=normalize(i.worldNormal);
-			#if _NORMALMAP
-			float3 tangentSpaceNormal= DecodeNormalMap(tex2D(_NormalTex,i.uv));
-			normal= mul(tangentSpaceNormal,i.worldToTangent);
-			#endif
-			float3 lightDir=normalize(i.worldLightDir);
-			float3 viewDir=normalize(i.worldViewDir);
-			UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
-
-			float3 finalCol=tex2D(_MainTex, i.uv)*UNITY_ACCESS_INSTANCED_PROP(Props, _Color)+UNITY_LIGHTMODEL_AMBIENT.xyz;
-			float diffuse=saturate( GetDiffuse(normal,lightDir,_Lambert,atten));
-			finalCol*=_LightColor0.rgb*diffuse;
-			#if _SPECULAR
-			float specular = GetSpecular(normal,lightDir,viewDir,_SpecularRange);
-			specular*=atten;
-			finalCol += _LightColor0.rgb*specular;
-			#endif
-			return float4(finalCol,1);
-		}
-
-		float4 DiffuseFragmentAdd(v2fDV i) :SV_TARGET
-		{
-			UNITY_SETUP_INSTANCE_ID(i);
-			UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
-			float diffuse=GetDiffuse(normalize(i.worldNormal),normalize(i.worldLightDir));
-			return float4(_LightColor0.rgb*diffuse* atten,1);
-		}
 		ENDCG
+		Pass
+		{
+			NAME "FORWARDBASE"
+			Tags{"LightMode" = "ForwardBase"}
+			Cull Back
+			CGPROGRAM
+			#pragma vertex DiffuseVertex
+			#pragma fragment DiffuseFragmentBase
+			#pragma multi_compile_fwdbase
+
+			float4 DiffuseFragmentBase(v2fDV i) :SV_TARGET
+			{
+				UNITY_SETUP_INSTANCE_ID(i);
+				float3 normal=normalize(i.worldNormal);
+				#if _NORMALMAP
+				float3 tangentSpaceNormal= DecodeNormalMap(tex2D(_NormalTex,i.uv));
+				normal= mul(tangentSpaceNormal,i.worldToTangent);
+				#endif
+				float3 lightDir=normalize(i.worldLightDir);
+				float3 viewDir=normalize(i.worldViewDir);
+
+				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
+				float3 finalCol=tex2D(_MainTex, i.uv)*UNITY_ACCESS_INSTANCED_PROP(Props, _Color)+UNITY_LIGHTMODEL_AMBIENT.xyz;
+				float diffuse=saturate( GetDiffuse(normal,lightDir,_Lambert,atten));
+				finalCol*=_LightColor0.rgb*diffuse;
+				#if _SPECULAR
+				float specular = GetSpecular(normal,lightDir,viewDir,_SpecularRange);
+				specular*=atten;
+				finalCol += _LightColor0.rgb*specular;
+				#endif
+				return float4(finalCol,1);
+			}
+
+			ENDCG
+		}
+
+		USEPASS "Hidden/ShadowCaster/MAIN"
 	}
 }

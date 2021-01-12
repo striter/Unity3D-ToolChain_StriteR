@@ -97,7 +97,7 @@
 			struct v2fs
 			{
 				V2F_SHADOW_CASTER;
-				float4 screenPos:TEXCOORD0;
+				float4 screenPos:TEXCOORD1;
 			};
 
 			v2fs ShadowVertex(appdata_base v)

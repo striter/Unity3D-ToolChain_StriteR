@@ -12,13 +12,13 @@
             #include "UnityCG.cginc"
             #include "AnimationInstanceInclude.cginc"
 			#pragma multi_compile_instancing
+            #pragma target 3.5
         ENDCG
         Pass
         {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-
             struct appdata
             {
                 uint vertexID:SV_VertexID;
