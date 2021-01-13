@@ -26,12 +26,25 @@ namespace Rendering.ImageEffect
         [RangeVector(-5, 5)] public Vector2 m_ColorBleedR = Vector2.one;
         [RangeVector(-5, 5)] public Vector2 m_ColorBleedG = -Vector2.one;
         [RangeVector(-5, 5)] public Vector2 m_ColorBleedB = Vector2.zero;
+        [Header("Pixel Distort")]
+        public bool m_PixelDistort = true;
+        [RangeVector(0, 1)] public Vector2 m_PixelDistortScale = Vector2.one*.1f;
+        [Range(0, 0.5f)] public float m_PixelDistortStrength = .1f;
+        [Range(0.5f, 1f)] public float m_PixelDistortClip = .95f;
+        [Range(0f, 144f)] public int m_PixelDistortFrequency = 10;
+
+        [Header("Line Distort")]
+        public bool m_LineDistort = true;
+        [Range(-2f, 2f)] public float m_LineDistortSpeed = 1f;
+        [Range(-.1f, .1f)] public float m_LineDistortStrength = 0.005f;
+        [Range(0f, 1f)] public float m_LineDistortClip = 0.8f;
+        [Range(0, 10f)] public float m_LineDistortFrequency = 0.5f;
         [Header("Grain")] 
         public bool m_Grain = true;
         public Color m_GrainColor = Color.white;
         [RangeVector(0, 1)] public Vector2 m_GrainScale = Vector2.one;
         [Range(0, 1)] public float m_GrainClip = .5f;
-        [Range(0, 144)] public float m_GrainFrequency = 20f;
+        [Range(0, 144)] public int m_GrainFrequency = 10;
     }
     public class ImageEffect_VHS:ImageEffectBase<ImageEffectParam_VHS>
     {
@@ -49,12 +62,24 @@ namespace Rendering.ImageEffect
         static readonly int ID_ColorBleedG = Shader.PropertyToID("_ColorBleedG");
         static readonly int ID_ColorBleedB = Shader.PropertyToID("_ColorBleedB");
 
+        const string KW_PixelDistort = "_PIXELDISTORT";
+        static readonly int ID_PixelDistortSize = Shader.PropertyToID("_PixelDistortScale");
+        static readonly int ID_PixelDistortFrequency = Shader.PropertyToID("_PixelDistortFrequency");
+        static readonly int ID_PixelDistortClip = Shader.PropertyToID("_PixelDistortClip");
+        static readonly int ID_PixelDistortStrength = Shader.PropertyToID("_PixelDistortStrength");
+
+        const string KW_LineDistort="_LINEDISTORT";
+        static readonly int ID_LineDistortSpeed = Shader.PropertyToID( "_LineDistortSpeed");
+        static readonly int ID_LineDistortStrength = Shader.PropertyToID("_LineDistortStrength");
+        static readonly int ID_LineDistortClip = Shader.PropertyToID("_LineDistortClip");
+        static readonly int ID_LineDistortFrequency = Shader.PropertyToID("_LineDistortFrequency");
+
         const string KW_Grain = "_GRAIN";
         static readonly int ID_GrainScale = Shader.PropertyToID("_GrainScale");
         static readonly int ID_GrainColor = Shader.PropertyToID("_GrainColor");
         static readonly int ID_GrainClip = Shader.PropertyToID("_GrainClip");
         static readonly int ID_GrainFrequency = Shader.PropertyToID("_GrainFrequency");
-        #endregion
+#endregion
 
         protected override void OnValidate(ImageEffectParam_VHS _params, Material _material)
         {
@@ -71,6 +96,18 @@ namespace Rendering.ImageEffect
             _material.SetVector(ID_ColorBleedR, _params.m_ColorBleedR);
             _material.SetVector(ID_ColorBleedG, _params.m_ColorBleedG);
             _material.SetVector(ID_ColorBleedB, _params.m_ColorBleedB);
+
+            _material.EnableKeyword(KW_PixelDistort, _params.m_PixelDistort);
+            _material.SetVector(ID_PixelDistortSize, _params.m_PixelDistortScale);
+            _material.SetFloat(ID_PixelDistortClip, _params.m_PixelDistortClip);
+            _material.SetFloat(ID_PixelDistortFrequency, _params.m_PixelDistortFrequency);
+            _material.SetFloat(ID_PixelDistortStrength, _params.m_PixelDistortStrength);
+
+            _material.EnableKeyword(KW_LineDistort,_params.m_LineDistort);
+            _material.SetFloat(ID_LineDistortSpeed, _params.m_LineDistortSpeed);
+            _material.SetFloat(ID_LineDistortClip, _params.m_LineDistortClip);
+            _material.SetFloat(ID_LineDistortFrequency, _params.m_LineDistortFrequency);
+            _material.SetFloat(ID_LineDistortStrength, _params.m_LineDistortStrength);
 
             _material.EnableKeyword(KW_Grain, _params.m_Grain);
             _material.SetVector(ID_GrainScale, _params.m_GrainScale);

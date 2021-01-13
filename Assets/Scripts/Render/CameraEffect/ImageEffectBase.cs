@@ -49,8 +49,48 @@ namespace Rendering.ImageEffect
     public class ImageEffectParamBase  {  }
 
     [ExecuteInEditMode,DisallowMultipleComponent,RequireComponent(typeof(Camera))]
-    public partial class PostEffectBase<T,Y> : MonoBehaviour where T : ImageEffectBase<Y>, new() where Y:ImageEffectParamBase 
+    public partial class PostEffectBase<T,Y> : MonoBehaviour where T : ImageEffectBase<Y>, new() where Y:ImageEffectParamBase
     {
+        #region EditorPreview
+#if UNITY_EDITOR
+        public bool m_SceneViewPreview = false;
+        PostEffectBase<T, Y> m_SceneCameraEffect = null;
+        bool EditorInitAvailable() => SceneView.lastActiveSceneView && SceneView.lastActiveSceneView.camera.gameObject != this.gameObject;
+        void Update()
+        {
+            m_Effect?.DoValidate(m_EffectData);
+            if (!EditorInitAvailable())
+                return;
+
+            if (m_SceneViewPreview)
+                InitSceneCameraEffect();
+            else
+                RemoveSceneCameraEffect();
+
+        }
+        void OnDisable()
+        {
+            RemoveSceneCameraEffect();
+        }
+        void InitSceneCameraEffect()
+        {
+            if (m_SceneCameraEffect)
+                return;
+            m_SceneCameraEffect = SceneView.lastActiveSceneView.camera.gameObject.AddComponent(this.GetType()) as PostEffectBase<T, Y>;
+            m_SceneCameraEffect.hideFlags = HideFlags.HideAndDontSave;
+            m_SceneCameraEffect.m_EffectData = m_EffectData;
+            m_SceneCameraEffect.Init();
+        }
+        void RemoveSceneCameraEffect()
+        {
+            if (!m_SceneCameraEffect)
+                return;
+
+            GameObject.DestroyImmediate(m_SceneCameraEffect);
+            m_SceneCameraEffect = null;
+        }
+#endif
+        #endregion
         public Y m_EffectData;
         protected T m_Effect { get; private set; }
         protected Camera m_Camera { get; private set; }
@@ -103,47 +143,5 @@ namespace Rendering.ImageEffect
             m_Effect.DoImageProcess(src, dst,m_EffectData);
         }
 
-#if UNITY_EDITOR
-        public bool m_SceneViewPreview = false;
-        PostEffectBase<T,Y> m_SceneCameraEffect = null;
-        bool EditorInitAvailable() => SceneView.lastActiveSceneView && SceneView.lastActiveSceneView.camera.gameObject != this.gameObject;
-        void Update()
-        {
-            m_Effect?.DoValidate(m_EffectData);
-            if (!EditorInitAvailable())
-                return;
-
-            if (m_SceneViewPreview)
-                InitSceneCameraEffect();
-            else
-                RemoveSceneCameraEffect();
-
-        }
-
-        void OnDisable()
-        {
-            RemoveSceneCameraEffect();
-        }
-
-
-        void InitSceneCameraEffect()
-        {
-            if (m_SceneCameraEffect)
-                return;
-            m_SceneCameraEffect = SceneView.lastActiveSceneView.camera.gameObject.AddComponent(this.GetType()) as PostEffectBase<T, Y>;
-            m_SceneCameraEffect.hideFlags = HideFlags.HideAndDontSave;
-            m_SceneCameraEffect.m_EffectData = m_EffectData;
-            m_SceneCameraEffect.Init();
-        }
-
-        void RemoveSceneCameraEffect()
-        {
-            if (!m_SceneCameraEffect)
-                return;
-
-            GameObject.DestroyImmediate(m_SceneCameraEffect);
-            m_SceneCameraEffect = null;
-        }
-#endif
     }
 }

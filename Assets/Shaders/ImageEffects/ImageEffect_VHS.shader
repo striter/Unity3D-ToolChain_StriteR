@@ -19,6 +19,8 @@
             #pragma shader_feature _COLORBLEED_G
             #pragma shader_feature _COLORBLEED_B
             #pragma shader_feature _GRAIN
+            #pragma shader_feature _LINEDISTORT
+            #pragma shader_feature _PIXELDISTORT
             #include "CameraEffectInclude.cginc"
             #include "UnityCG.cginc"
             float2 _ScreenCutTarget;
@@ -29,6 +31,20 @@
             float2 _ColorBleedR;
             float2 _ColorBleedG;
             float2 _ColorBleedB;
+            #endif
+
+            #if _LINEDISTORT
+            float _LineDistortSpeed;
+            float _LineDistortStrength;
+            float _LineDistortClip;
+            float _LineDistortFrequency;
+            #endif
+
+            #if _PIXELDISTORT
+            float2 _PixelDistortScale;
+            float _PixelDistortFrequency;
+            float _PixelDistortClip;
+            float _PixelDistortStrength;
             #endif
 
             #if _GRAIN
@@ -46,6 +62,12 @@
 
 
             float2 screenCut(float2 uv) {
+                return uv;
+            }
+            fixed4 frag (v2f_img i) : SV_Target
+            {
+                float2 uv=screenCut(i.uv);
+                
                 uv -= 0.5;
                 #if _SCREENCUT_HARD
                 uv.x=sign(uv.x)*clamp(abs(uv.x),0,_ScreenCutTarget.x);
@@ -55,14 +77,22 @@
                 uv.x=sign(uv.x)*lerp(0,_ScreenCutTarget.x,abs(uv.x));
                 uv.y=sign(uv.y)*lerp(0,_ScreenCutTarget.y,abs(uv.y));
                 #endif
+                
+                #if _LINEDISTORT
+                float lineDistort= lerp(-1,1,frac(uv.y*_LineDistortFrequency+_Time.y*_LineDistortSpeed));
+                lineDistort=abs(lineDistort);
+                lineDistort=smoothstep(_LineDistortClip,1,lineDistort);
+                uv.x+=lineDistort*_LineDistortStrength;
+                #endif
                 uv += .5;
-                return uv;
-            }
-            fixed4 frag (v2f_img i) : SV_Target
-            {
-                float2 uv=screenCut(i.uv);
-                float4 col = tex2D(_MainTex, uv);
 
+                #if _PIXELDISTORT
+                float2 pixelDistort=floor(uv*_PixelDistortScale*_MainTex_TexelSize.zw)*(_PixelDistortScale*_MainTex_TexelSize.xy)+random(floor(_Time.y*_PixelDistortFrequency)/_PixelDistortFrequency);
+                float pixelDistortRandom=random(pixelDistort);
+                uv += step(_PixelDistortClip,pixelDistortRandom)*lerp(-1,1,pixelDistort)*_PixelDistortStrength;
+                #endif
+
+                float4 col = tex2D(_MainTex, uv);
                 #if _COLORBLEED
                 float colorBleedOffset=0;
                 float colR,colG,colB;
@@ -94,6 +124,7 @@
                 float rand= random(floor(uv*_GrainScale*_MainTex_TexelSize.zw)*(_MainTex_TexelSize.xy*_GrainScale)+random(floor(_Time.y*_GrainFrequency)/_GrainFrequency));
                 col.rgb=lerp(col.rgb,_GrainColor.rgb,step(_GrainClip,rand)*rand*_GrainColor.a);
                 #endif
+
                 return col;
             }
             ENDCG
