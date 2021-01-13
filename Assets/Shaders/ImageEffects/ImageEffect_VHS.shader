@@ -21,6 +21,7 @@
             #pragma shader_feature _GRAIN
             #pragma shader_feature _LINEDISTORT
             #pragma shader_feature _PIXELDISTORT
+            #pragma shader_feature _VIGNETTE
             #include "CameraEffectInclude.cginc"
             #include "UnityCG.cginc"
             float2 _ScreenCutTarget;
@@ -52,6 +53,10 @@
             float4 _GrainColor;
             float _GrainClip;
             float _GrainFrequency;
+            #endif
+            
+            #if _VIGNETTE
+            float _VignetteValue;
             #endif
 
             struct v2f
@@ -124,7 +129,12 @@
                 float rand= random(floor(uv*_GrainScale*_MainTex_TexelSize.zw)*(_MainTex_TexelSize.xy*_GrainScale)+random(floor(_Time.y*_GrainFrequency)/_GrainFrequency));
                 col.rgb=lerp(col.rgb,_GrainColor.rgb,step(_GrainClip,rand)*rand*_GrainColor.a);
                 #endif
-
+                
+                #if _VIGNETTE
+                uv-=.5;
+                float vignette = ( 1-uv.y*uv.y*_VignetteValue)*saturate(1-uv.x*uv.x*_VignetteValue);
+                col*=vignette;
+                #endif
                 return col;
             }
             ENDCG

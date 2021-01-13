@@ -270,7 +270,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d512aa3e72031e45b724413deb89fce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SceneViewPreview: 1
+  m_SceneViewPreview: 0
   m_EffectData:
     m_ScreenCut: 1
     m_ScreenCutDistance: {x: 0.1, y: 0.1}
@@ -286,15 +286,17 @@ MonoBehaviour:
     m_PixelDistortClip: 0.95
     m_PixelDistortFrequency: 10
     m_LineDistort: 1
-    m_LineDistortSpeed: -0.76
-    m_LineDistortStrength: 0.005
-    m_LineDistortClip: 0.783
+    m_LineDistortSpeed: -0.88
+    m_LineDistortStrength: 0.018
+    m_LineDistortClip: 0.91
     m_LineDistortFrequency: 0.48
     m_Grain: 1
-    m_GrainColor: {r: 1, g: 1, b: 1, a: 0.09411765}
+    m_GrainColor: {r: 1, g: 1, b: 1, a: 0.3254902}
     m_GrainScale: {x: 0.37, y: 0.63}
     m_GrainClip: 0.91
     m_GrainFrequency: 10
+    m_Vignette: 1
+    m_VignetteValue: 3.48
 --- !u!20 &289594998
 Camera:
   m_ObjectHideFlags: 0
