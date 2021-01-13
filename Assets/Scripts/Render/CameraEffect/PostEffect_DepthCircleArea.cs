@@ -12,12 +12,12 @@ namespace Rendering.ImageEffect
     public class PostEffectParam_DepthCirCleArea:ImageEffectParamBase
     {
         public Vector3 m_Origin;
-        public float Radius=5f;
-        public float m_SqrOutline=1f;
+        public float Radius = 5f;
+        public float m_SqrOutline = 1f;
         public Color m_FillColor;
         public Color m_EdgeColor;
         public Texture2D m_FillTexure;
-        public Vector2 m_FillTextureFlow;
+        [RangeVector(-5,5)] public Vector2 m_FillTextureFlow;
         public float m_FillTextureScale=1f;
     }
 

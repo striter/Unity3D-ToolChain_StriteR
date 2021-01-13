@@ -9,13 +9,11 @@ namespace Rendering.ImageEffect
     [System.Serializable]
     public class CameraEffectParam_Bloom : ImageEffectParamBase
     {
-        [Tooltip("LDR 亮度采样阈值"), Range(0.0f, 1f)]
+        [Range(0.0f, 1f)]
         public float threshold = 0.25f;
-        [Tooltip("采样后增强"), Range(0.0f, 2.5f)]
+        [Range(0.0f, 2.5f)]
         public float intensity = 0.3f;
-        [Tooltip("启动贴图模糊")]
         public bool enableBlur = false;
-        [Tooltip("模糊参数")]
         public ImageEffectParam_Blurs m_BlurParams;
     }
 

@@ -10,13 +10,12 @@ namespace Rendering.ImageEffect
     [Serializable]
     public class ImageEffectParam_Blurs : ImageEffectParamBase
     {
-        [Tooltip("模糊像素偏差"), Range(0.25f, 1.5f)]
+        [Range(0.25f, 1.5f)]
         public float blurSize = 1.0f;
-        [Tooltip("贴图降采样"), Range(1, 4)]
+        [Range(1, 4)]
         public int downSample = 2;
-        [Tooltip("迭代次数"), Range(1, 8)]
+        [Range(1, 8)]
         public int iteration = 1;
-        [Tooltip("模糊方式")]
         public ImageEffect_Blurs.enum_BlurType blurType = ImageEffect_Blurs.enum_BlurType.AverageSinglePass;
     }
 

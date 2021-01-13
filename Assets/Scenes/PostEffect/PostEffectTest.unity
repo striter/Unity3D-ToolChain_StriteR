@@ -214,8 +214,8 @@ GameObject:
   m_Component:
   - component: {fileID: 289594995}
   - component: {fileID: 289594998}
-  - component: {fileID: 289594997}
   - component: {fileID: 289594996}
+  - component: {fileID: 289594997}
   m_Layer: 0
   m_Name: Post1
   m_TagString: MainCamera
@@ -250,14 +250,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectData:
-    m_Color: {r: 1, g: 1, b: 1, a: 0}
+    m_Color: {r: 0, g: 0, b: 0, a: 0}
     m_Intensity: 5
     m_SampleRadius: 35
-    m_DepthBias: 0.00384
+    m_DepthBias: 1.7
     m_SampleCount: 16
     m_NoiseTex: {fileID: 0}
     m_NoiseScale: 1
-  m_SceneViewPreview: 0
+  m_SceneViewPreview: 1
 --- !u!114 &289594997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,10 +267,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 289594994}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1821c3c36ad4e0b4ca57ece1fa992ff7, type: 3}
+  m_Script: {fileID: 11500000, guid: 1d512aa3e72031e45b724413deb89fce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SceneViewPreview: 0
+  m_EffectData:
+    m_ScreenCut: 1
+    m_ScreenCutDistance: {x: 0.1, y: 0.1}
+    m_ColorBleed: 1
+    m_ColorBleedIteration: 2
+    m_ColorBleedSize: 2
+    m_ColorBleedR: {x: 1.2, y: 0}
+    m_ColorBleedG: {x: -1, y: 0}
+    m_ColorBleedB: {x: 0, y: 0}
+    m_Grain: 1
+    m_GrainColor: {r: 1, g: 1, b: 1, a: 0.05882353}
+    m_GrainScale: {x: 0.37, y: 0.63}
+    m_GrainClip: 0.318
+    m_GrainFrequency: 10
+  m_SceneViewPreview: 1
 --- !u!20 &289594998
 Camera:
   m_ObjectHideFlags: 0
@@ -611,7 +625,7 @@ MonoBehaviour:
       downSample: 3
       iteration: 8
       blurType: 1
-  m_SceneViewPreview: 0
+  m_SceneViewPreview: 1
 --- !u!1 &526198351
 GameObject:
   m_ObjectHideFlags: 0

@@ -21,7 +21,7 @@
             #pragma shader_feature _GRAIN
             #include "CameraEffectInclude.cginc"
             #include "UnityCG.cginc"
-            float _ScreenCutTarget;
+            float2 _ScreenCutTarget;
 
             #if _COLORBLEED
             float _ColorBleedIteration;
@@ -32,9 +32,10 @@
             #endif
 
             #if _GRAIN
-            float _GrainScale;
-            float2 _GrainFlow;
+            float2 _GrainScale;
             float4 _GrainColor;
+            float _GrainClip;
+            float _GrainFrequency;
             #endif
 
             struct v2f
@@ -47,12 +48,12 @@
             float2 screenCut(float2 uv) {
                 uv -= 0.5;
                 #if _SCREENCUT_HARD
-                uv.x=sign(uv.x)*clamp(abs(uv.x),0,_ScreenCutTarget);
-                uv.y=sign(uv.y)*clamp(abs(uv.y),0,_ScreenCutTarget);
+                uv.x=sign(uv.x)*clamp(abs(uv.x),0,_ScreenCutTarget.x);
+                uv.y=sign(uv.y)*clamp(abs(uv.y),0,_ScreenCutTarget.y);
                 #elif _SCREENCUT_SCALED
                 uv*=2;
-                uv.x=sign(uv.x)*lerp(0,_ScreenCutTarget,abs(uv.x));
-                uv.y=sign(uv.y)*lerp(0,_ScreenCutTarget,abs(uv.y));
+                uv.x=sign(uv.x)*lerp(0,_ScreenCutTarget.x,abs(uv.x));
+                uv.y=sign(uv.y)*lerp(0,_ScreenCutTarget.y,abs(uv.y));
                 #endif
                 uv += .5;
                 return uv;
@@ -88,10 +89,10 @@
                 col.b=colB/_ColorBleedIteration;
                 #endif
                 #endif
-
+                
                 #if _GRAIN
-                float rand= random(floor(uv*_GrainScale*_MainTex_TexelSize.zw)+floor(_Time.y));
-                col.rgb=lerp(col.rgb,_GrainColor.rgb,rand*_GrainColor.a);
+                float rand= random(floor(uv*_GrainScale*_MainTex_TexelSize.zw)*(_MainTex_TexelSize.xy*_GrainScale)+random(floor(_Time.y*_GrainFrequency)/_GrainFrequency));
+                col.rgb=lerp(col.rgb,_GrainColor.rgb,step(_GrainClip,rand)*rand*_GrainColor.a);
                 #endif
                 return col;
             }

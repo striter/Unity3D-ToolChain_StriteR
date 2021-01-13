@@ -16,24 +16,22 @@ namespace Rendering.ImageEffect
     [Serializable]
     public class ImageEffectParam_VHS:ImageEffectParamBase
     {
-        [Header("Screen Cut")]
+        [Header("Screen Cut")] 
         public enum_VHSScreenCut m_ScreenCut;
-        [Range(0, 1)]
-        public float m_ScreenCutDistance;
-        [Header("Color Bleed")]
+        [RangeVector(0, 1)] public Vector2 m_ScreenCutDistance=Vector2.one*0.1f;
+        [Header("Color Bleed")] 
         public bool m_ColorBleed = true;
-        [Range(1,4)]
-        public int m_ColorBleedIteration = 2;
-        [Range(0,2)]
-        public float m_ColorBleedSize = .8f;
-        public Vector2 m_ColorBleedR = Vector2.one;
-        public Vector2 m_ColorBleedG = -Vector2.one;
-        public Vector2 m_ColorBleedB = Vector2.zero;
-        [Header("Grain")]
+        [Range(1, 4)] public int m_ColorBleedIteration = 2;
+        [Range(0, 2)] public float m_ColorBleedSize = .8f;
+        [RangeVector(-5, 5)] public Vector2 m_ColorBleedR = Vector2.one;
+        [RangeVector(-5, 5)] public Vector2 m_ColorBleedG = -Vector2.one;
+        [RangeVector(-5, 5)] public Vector2 m_ColorBleedB = Vector2.zero;
+        [Header("Grain")] 
         public bool m_Grain = true;
         public Color m_GrainColor = Color.white;
-        public float m_GrainScale = 1f;
-        public Vector2 m_GrainFlow = Vector2.one;
+        [RangeVector(0, 1)] public Vector2 m_GrainScale = Vector2.one;
+        [Range(0, 1)] public float m_GrainClip = .5f;
+        [Range(0, 144)] public float m_GrainFrequency = 20f;
     }
     public class ImageEffect_VHS:ImageEffectBase<ImageEffectParam_VHS>
     {
@@ -54,14 +52,15 @@ namespace Rendering.ImageEffect
         const string KW_Grain = "_GRAIN";
         static readonly int ID_GrainScale = Shader.PropertyToID("_GrainScale");
         static readonly int ID_GrainColor = Shader.PropertyToID("_GrainColor");
-        static readonly int ID_GrainFlow = Shader.PropertyToID("_GrainFlow");
+        static readonly int ID_GrainClip = Shader.PropertyToID("_GrainClip");
+        static readonly int ID_GrainFrequency = Shader.PropertyToID("_GrainFrequency");
         #endregion
 
         protected override void OnValidate(ImageEffectParam_VHS _params, Material _material)
         {
             base.OnValidate(_params, _material);
             _material.EnableKeywords(KW_SCREENCUT, (int)_params.m_ScreenCut);
-            _material.SetFloat(ID_ScreenCutTarget,(1f+ (_params.m_ScreenCut == enum_VHSScreenCut.Scaled?1:-1)*_params.m_ScreenCutDistance) /2f);
+            _material.SetVector(ID_ScreenCutTarget,(Vector2.one+ (_params.m_ScreenCut == enum_VHSScreenCut.Scaled?1:-1)*_params.m_ScreenCutDistance) /2f);
 
             _material.EnableKeyword(KW_ColorBleed, _params.m_ColorBleed);
             _material.SetInt(ID_ColorBleedIteration, _params.m_ColorBleedIteration);
@@ -74,9 +73,10 @@ namespace Rendering.ImageEffect
             _material.SetVector(ID_ColorBleedB, _params.m_ColorBleedB);
 
             _material.EnableKeyword(KW_Grain, _params.m_Grain);
-            _material.SetFloat(ID_GrainScale, _params.m_GrainScale);
-            _material.SetVector(ID_GrainFlow, _params.m_GrainFlow);
+            _material.SetVector(ID_GrainScale, _params.m_GrainScale);
             _material.SetColor(ID_GrainColor, _params.m_GrainColor);
+            _material.SetFloat(ID_GrainFrequency, _params.m_GrainFrequency);
+            _material.SetFloat(ID_GrainClip, _params.m_GrainClip);
         }
 
     }

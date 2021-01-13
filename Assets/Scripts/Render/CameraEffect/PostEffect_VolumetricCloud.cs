@@ -18,8 +18,8 @@ namespace Rendering.ImageEffect
         public float m_VerticalStart = 20f;
         public float m_VerticalLength = 100f;
         public Texture3D m_Noise;
-        public Vector3 m_NoiseScale;
-        public Vector3 m_NoiseFlow;
+        [RangeVector(0f,1000f)]public Vector3 m_NoiseScale=Vector3.one*100f;
+        [RangeVector(0.01f,10f)]public Vector3 m_NoiseFlow=Vector3.one*0.1f;
         [Range(0, 100)] public float m_Density = 50f;
         [Range(0, 1)] public float m_DensityClip = .6f;
         [Range(0, 1)] public float m_DensitySmooth = 0.1f;

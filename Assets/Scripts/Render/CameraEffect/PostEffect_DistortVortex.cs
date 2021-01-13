@@ -12,12 +12,9 @@ namespace Rendering.ImageEffect
     [System.Serializable]
     public class ImageEffectParam_DistortVortex:ImageEffectParamBase
     {
-        [Range(0,1)]
-        public float m_OriginViewPort_X=.5f;
-        [Range(0,1)]
-        public float m_OriginViewPort_Y=.5f;
-        [Range(-5,5)]
-        public float m_OffsetFactor=.1f;
+        [Range(0, 1)] public float m_OriginViewPort_X = .5f;
+        [Range(0, 1)] public float m_OriginViewPort_Y = .5f;
+        [Range(-5, 5)] public float m_OffsetFactor = .1f;
         public Texture2D m_NoiseTex;
         public float m_NoiseStrength=.5f;
     }

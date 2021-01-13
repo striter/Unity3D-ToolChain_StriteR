@@ -21,7 +21,8 @@ namespace Rendering.ImageEffect
         }
         void GenerateRenderCamera()
         {
-            ClearRenderCamera();
+            if (m_RenderCamera)
+                return;
             Camera _camera = GetComponent<Camera>();
             GameObject temp = new GameObject("Bloom Individual Render Camera");
             temp.hideFlags = HideFlags.HideAndDontSave;

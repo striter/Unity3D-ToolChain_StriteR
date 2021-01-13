@@ -9,15 +9,10 @@ namespace Rendering.ImageEffect
     [System.Serializable]
     public class CameraEffectParam_DepthOfField : ImageEffectParamBase
     {
-        [Tooltip("景深起始深度"), Range(0.01f, 1f)]
-        public float m_DOFStart = 0.1f;
-        [Tooltip("景深渐淡插值深度"), Range(.01f, .3f)]
-        public float m_DOFLerp = .1f;
-        [Tooltip("深度取值模糊")]
+        [Range(0.01f, 1f)] public float m_DOFStart = 0.1f;
+        [Range(.01f, .3f)] public float m_DOFLerp = .1f;
         public bool m_DepthBlurSample = true;
-        [Tooltip("深度取值模糊像素偏差"), Range(.25f, 1.25f)]
-        public float m_BlurSize = .5f;
-        [SerializeField, Tooltip("采样图模糊参数")]
+        [Range(.25f, 1.25f)] public float m_BlurSize = .5f;
         public ImageEffectParam_Blurs m_BlurParams;
     }
     public class CameraEffect_DepthOfField : ImageEffectBase<CameraEffectParam_DepthOfField>

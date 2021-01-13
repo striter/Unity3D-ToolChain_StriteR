@@ -25,30 +25,21 @@ namespace Rendering.ImageEffect
     [System.Serializable]
     public class ImageEffectParam_ColorGrading : ImageEffectParamBase
     {
-        [Tooltip("总权重"), Range(0, 1)]
-        public float m_Weight = 1;
+        [Range(0, 1)]public float m_Weight = 1;
 
-        [Header("LUT_颜色对照表")]
-        [Tooltip("颜色对照表")]
+        [Header("LUT")]
         public Texture2D m_LUT = null;
-        [Tooltip("32格/16格")]
         public enum_LUTCellCount m_LUTCellCount = enum_LUTCellCount._16;
 
-        [Header("BSC_亮度 饱和度 对比度")]
-        [Tooltip("亮度"), Range(0, 2)]
-        public float m_brightness = 1;
-        [Tooltip("饱和度"), Range(0, 2)]
-        public float m_saturation = 1;
-        [Tooltip("对比度"), Range(0, 2)]
-        public float m_contrast = 1;
+        [Header("BSC")]
+        [Range(0, 2)]public float m_brightness = 1;
+        [Range(0, 2)] public float m_saturation = 1;
+        [Range(0, 2)]public float m_contrast = 1;
 
-        [Header("Channel Mixer_通道混合器")]
-        [Tooltip("红色通道混合")]
-        public Vector3 m_MixRed = Vector3.zero;
-        [Tooltip("绿色通道混合")]
-        public Vector3 m_MixGreen = Vector3.zero;
-        [Tooltip("蓝色通道混合")]
-        public Vector3 m_MixBlue = Vector3.zero;
+        [Header("Channel Mixer")]
+        [RangeVector(-1, 1)] public Vector3 m_MixRed = Vector3.zero;
+        [RangeVector(-1, 1)] public Vector3 m_MixGreen = Vector3.zero;
+        [RangeVector(-1, 1)] public Vector3 m_MixBlue = Vector3.zero;
     }
 
     public class ImageEffect_ColorGrading : ImageEffectBase<ImageEffectParam_ColorGrading>

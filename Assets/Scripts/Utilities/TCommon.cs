@@ -262,6 +262,26 @@ public static class TCommon
         });
         return builder.ToString();
     }
+    public static string ToString_FieldName(this string _fieldName)
+    {
+        int index = _fieldName.IndexOf("m_");
+        if(index!=-1)
+            _fieldName=_fieldName.Remove(index,2);
+
+        int length = _fieldName.Length-1;
+        for (int i = 0; i < length; i++)
+        {
+
+
+            if (Char.IsLower(_fieldName[i]) && Char.IsUpper(_fieldName[i + 1]))
+            {
+                _fieldName = _fieldName.Insert(i + 1, " ");
+                i++;
+                length ++ ;
+            }
+        }
+        return _fieldName;
+    }
 
     public static void AddRange<T,Y>(this List<T> list,IEnumerable<Y> ienumerable,Func<Y,T> OnEachAddItem)
     {
