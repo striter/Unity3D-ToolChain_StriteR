@@ -7,15 +7,10 @@ namespace Rendering.ImageEffect
 {
     public enum enum_VolumetricCloud_MarchTimes { _16 = 16, _32 = 32, _64 = 64, _128 = 128 }
     public enum enum_VolumetricCloud_LightMarchTimes { _4 = 4, _8 = 8, _16 = 16 }
-    public class PostEffect_VolumetricCloud : PostEffectBase<CameraEffect_VolumetricCloud>
+    public class PostEffect_VolumetricCloud : PostEffectBase<CameraEffect_VolumetricCloud, CameraEffectParam_VolumetricCloud>
     {
-        public CameraEffectParam_VolumetricCloud m_Param;
         [ImageEffectOpaque]
         new void OnRenderImage(RenderTexture source, RenderTexture destination) => base.OnRenderImage(source, destination);
-        protected override CameraEffect_VolumetricCloud OnGenerateRequiredImageEffects()
-        {
-            return base.OnGenerateRequiredImageEffects();
-        }
     }
 
     [System.Serializable]
@@ -49,7 +44,6 @@ namespace Rendering.ImageEffect
 
     public class CameraEffect_VolumetricCloud : ImageEffectBase<CameraEffectParam_VolumetricCloud>
     {
-        public CameraEffect_VolumetricCloud(Func<CameraEffectParam_VolumetricCloud> _GetParam) : base(_GetParam) { }
         #region ShaderProperties
         static readonly int ID_VerticalStart = Shader.PropertyToID("_VerticalStart");
         static readonly int ID_VerticalEnd = Shader.PropertyToID("_VerticalEnd");

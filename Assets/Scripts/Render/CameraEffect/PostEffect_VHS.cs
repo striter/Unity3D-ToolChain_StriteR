@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Rendering.ImageEffect
 {
 
-    public class PostEffect_VHS : PostEffectBase<ImageEffect_VHS>{ }
+    public class PostEffect_VHS : PostEffectBase<ImageEffect_VHS, ImageEffectParam_VHS>{ }
     
     public enum enum_VHSScreenCut
     {

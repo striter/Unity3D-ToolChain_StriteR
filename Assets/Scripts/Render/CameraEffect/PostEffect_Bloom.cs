@@ -2,13 +2,8 @@
 using System;
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_Bloom : PostEffectBase<ImageEffect_Bloom>
+    public class PostEffect_Bloom : PostEffectBase<ImageEffect_Bloom,CameraEffectParam_Bloom>
     {
-        public CameraEffectParam_Bloom m_Param;
-        protected override ImageEffect_Bloom OnGenerateRequiredImageEffects()
-        {
-            return new ImageEffect_Bloom(() => m_Param);
-        }
     }
 
     [System.Serializable]
@@ -24,10 +19,6 @@ namespace Rendering.ImageEffect
 
     public class ImageEffect_Bloom : ImageEffectBase<CameraEffectParam_Bloom>
     {
-        public ImageEffect_Bloom(Func<CameraEffectParam_Bloom> _GetParam) : base(_GetParam)
-        {
-            m_Blur = new ImageEffect_Blurs(()=>_GetParam().m_BlurParams);
-        }
         #region ShaderProperties
         static int ID_Threshold = Shader.PropertyToID("_Threshold");
         static int ID_Intensity = Shader.PropertyToID("_Intensity");
@@ -41,6 +32,10 @@ namespace Rendering.ImageEffect
         }
 
         ImageEffect_Blurs m_Blur;
+        public ImageEffect_Bloom() : base()
+        {
+            m_Blur = new ImageEffect_Blurs();
+        }
         public override void Destroy()
         {
             base.Destroy();

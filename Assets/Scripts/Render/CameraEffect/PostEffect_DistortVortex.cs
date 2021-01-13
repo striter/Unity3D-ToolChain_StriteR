@@ -5,13 +5,8 @@ using UnityEngine;
 namespace Rendering.ImageEffect
 {
 
-    public class PostEffect_DistortVortex : PostEffectBase<ImageEffect_DistortVortex>
+    public class PostEffect_DistortVortex : PostEffectBase<ImageEffect_DistortVortex, ImageEffectParam_DistortVortex>
     {
-        public ImageEffectParam_DistortVortex m_Param;
-        protected override ImageEffect_DistortVortex OnGenerateRequiredImageEffects()
-        {
-            return new ImageEffect_DistortVortex(() => m_Param);
-        }
     }
 
     [System.Serializable]
@@ -26,7 +21,6 @@ namespace Rendering.ImageEffect
 
     public class ImageEffect_DistortVortex :ImageEffectBase<ImageEffectParam_DistortVortex>
     {
-        public ImageEffect_DistortVortex(Func<ImageEffectParam_DistortVortex> _GetParam) : base(_GetParam) { }
         #region ShaderProperties
         static readonly int ID_NoiseTex = Shader.PropertyToID("_NoiseTex");
         static readonly int ID_NoiseStrength = Shader.PropertyToID("_NoiseStrength");

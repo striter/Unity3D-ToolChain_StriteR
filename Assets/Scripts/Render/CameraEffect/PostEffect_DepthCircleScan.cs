@@ -5,13 +5,8 @@ using UnityEngine;
 
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_DepthCircleScan : PostEffectBase<CameraEffect_DepthCircleScan>
+    public class PostEffect_DepthCircleScan : PostEffectBase<CameraEffect_DepthCircleScan, CameraEffectParam_DepthCircleScan>
     {
-        CameraEffectParam_DepthCircleScan m_Param;
-        protected override CameraEffect_DepthCircleScan OnGenerateRequiredImageEffects()
-        {
-            return new CameraEffect_DepthCircleScan(()=>m_Param);
-        }
 
         SingleCoroutine m_ScanCoroutine;
         public void StartDepthScanCircle(Vector3 origin, Color scanColor, float width = 1f, float radius = 20, float duration = 1.5f)
@@ -20,11 +15,11 @@ namespace Rendering.ImageEffect
                 m_ScanCoroutine =  CoroutineHelper.CreateSingleCoroutine();
             m_ScanCoroutine.Stop();
             enabled = true;
-            m_Param.m_Width = width;
-            m_Param.m_Origin = origin;
-            m_Param.m_Color = scanColor;
+            m_EffectData.m_Width = width;
+            m_EffectData.m_Origin = origin;
+            m_EffectData.m_Color = scanColor;
             m_ScanCoroutine.Start(TIEnumerators.ChangeValueTo((float value) => {
-                m_Param.m_Elapse= radius * value; 
+                m_EffectData.m_Elapse= radius * value; 
                 OnValidate();
             }, 0, 1, duration, () => { enabled = false; }));
         }
@@ -43,7 +38,6 @@ namespace Rendering.ImageEffect
 
     public class CameraEffect_DepthCircleScan:ImageEffectBase<CameraEffectParam_DepthCircleScan>
     {
-        public CameraEffect_DepthCircleScan(Func<CameraEffectParam_DepthCircleScan> _GetParam) : base(_GetParam) { }
         #region ShaderProperties
         readonly int ID_Origin = Shader.PropertyToID("_Origin");
         readonly int ID_Color = Shader.PropertyToID("_Color");

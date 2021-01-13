@@ -2,13 +2,8 @@
 using UnityEngine;
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_Blurs : PostEffectBase<ImageEffect_Blurs>
+    public class PostEffect_Blurs : PostEffectBase<ImageEffect_Blurs,ImageEffectParam_Blurs>
     {
-        public ImageEffectParam_Blurs m_BlurParam;
-        protected override ImageEffect_Blurs OnGenerateRequiredImageEffects()
-        {
-            return new ImageEffect_Blurs(()=>m_BlurParam);
-        }
     }
 
 
@@ -26,7 +21,7 @@ namespace Rendering.ImageEffect
 
     public class ImageEffect_Blurs : ImageEffectBase<ImageEffectParam_Blurs>
     {
-        public ImageEffect_Blurs(Func<ImageEffectParam_Blurs> _GetParam) : base(_GetParam)
+        public ImageEffect_Blurs() : base()
         {
 
         }

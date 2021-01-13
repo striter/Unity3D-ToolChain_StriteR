@@ -4,13 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_DepthSSAO:PostEffectBase<CameraEffect_DepthSSAO>
+    public class PostEffect_DepthSSAO:PostEffectBase<CameraEffect_DepthSSAO, CameraEffectParam_DepthSSAO>
     {
-        public CameraEffectParam_DepthSSAO m_Param;
-        protected override CameraEffect_DepthSSAO OnGenerateRequiredImageEffects()
-        {
-            return new CameraEffect_DepthSSAO(() => m_Param);
-        }
         [ImageEffectOpaque]
         private new void OnRenderImage(RenderTexture source, RenderTexture destination)=> base.OnRenderImage(source, destination);
     }
@@ -29,7 +24,6 @@ namespace Rendering.ImageEffect
 
     public class CameraEffect_DepthSSAO:ImageEffectBase<CameraEffectParam_DepthSSAO>
     {
-        public CameraEffect_DepthSSAO(Func<CameraEffectParam_DepthSSAO> _GetParam) : base(_GetParam) { }
         #region ShaderProperties
         static readonly int ID_SampleCount = Shader.PropertyToID("_SampleCount");
         static readonly int ID_SampleSphere = Shader.PropertyToID("_SampleSphere");

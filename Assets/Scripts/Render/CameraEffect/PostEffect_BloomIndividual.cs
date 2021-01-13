@@ -11,20 +11,9 @@ namespace Rendering.ImageEffect
         AlphaBlend=2,
     }
 
-    public class PostEffect_BloomIndividual:PostEffectBase<CameraEffect_BloomIndividual>
+    public class PostEffect_BloomIndividual:PostEffectBase<CameraEffect_BloomIndividual,CameraEffectParam_BloomInvididual>
     {
-        public CameraEffectParam_BloomInvididual m_Param;
-        protected override CameraEffect_BloomIndividual OnGenerateRequiredImageEffects()
-        {
-            return new CameraEffect_BloomIndividual(() => m_Param);
-        }
         Camera m_RenderCamera;
-        protected override void Awake()
-        {
-            base.Awake();
-            GenerateRenderCamera();
-            m_Effect.OnCreate(m_RenderCamera);
-        }
         protected override void OnDestroy()
         {
             base.OnDestroy();
@@ -55,6 +44,12 @@ namespace Rendering.ImageEffect
                 return;
             GameObject.DestroyImmediate(m_RenderCamera.gameObject);
         }
+        protected override void OnEffectCreate(CameraEffect_BloomIndividual _effect)
+        {
+            base.OnEffectCreate(_effect);
+            GenerateRenderCamera();
+            _effect.OnCreate(m_RenderCamera);
+        }
     }
 
     [Serializable]
@@ -78,9 +73,9 @@ namespace Rendering.ImageEffect
         ImageEffect_Blurs m_Blur;
         Camera m_RenderCamera;
         Shader m_RenderBloomShader;
-        public CameraEffect_BloomIndividual(Func<CameraEffectParam_BloomInvididual> _GetParam):base(_GetParam)
+        public CameraEffect_BloomIndividual():base()
         {
-            m_Blur = new ImageEffect_Blurs(()=>GetParams().m_BlurParam );
+            m_Blur = new ImageEffect_Blurs();
 
             m_RenderBloomShader = Shader.Find("Hidden/CameraEffect_BloomReceiver_Emitter");
             if (m_RenderBloomShader == null )

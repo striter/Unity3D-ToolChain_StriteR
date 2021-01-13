@@ -5,13 +5,8 @@ using UnityEngine;
 
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_DepthCircleArea : PostEffectBase<CameraEffect_DepthCircleArea>
+    public class PostEffect_DepthCircleArea : PostEffectBase<CameraEffect_DepthCircleArea, PostEffectParam_DepthCirCleArea>
     {
-        public PostEffectParam_DepthCirCleArea m_Param;
-        protected override CameraEffect_DepthCircleArea OnGenerateRequiredImageEffects()
-        {
-            return new CameraEffect_DepthCircleArea(()=>m_Param);
-        }
     }
     [System.Serializable]
     public class PostEffectParam_DepthCirCleArea:ImageEffectParamBase
@@ -28,7 +23,6 @@ namespace Rendering.ImageEffect
 
     public class CameraEffect_DepthCircleArea:ImageEffectBase<PostEffectParam_DepthCirCleArea>
     {
-        public CameraEffect_DepthCircleArea(Func<PostEffectParam_DepthCirCleArea> _GetParam) : base(_GetParam) { }
         readonly int ID_Origin = Shader.PropertyToID("_Origin");
         readonly int ID_FillColor = Shader.PropertyToID("_FillColor");
         readonly int ID_FillTexture = Shader.PropertyToID("_FillTexture");
