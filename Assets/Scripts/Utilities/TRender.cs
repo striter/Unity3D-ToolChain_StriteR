@@ -41,7 +41,7 @@ public static class TRender
         if (!_shader.isSupported)
             throw new NullReferenceException("Shader Not Supported:" + _type.Name);
 
-        return new Material(_shader) { name = _type.Name, hideFlags = HideFlags.DontSave };
+        return new Material(_shader) { hideFlags = HideFlags.HideAndDontSave };
     }
 }
 public class MeshBoundsChecker
