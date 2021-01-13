@@ -5,8 +5,14 @@ using UnityEngine;
 
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_DepthOutline:PostEffectBase<CameraEffect_DepthOutline, CameraEffectParam_DepthOutline>
+    public class PostEffect_DepthOutline:PostEffectBase<CameraEffect_DepthOutline>
     {
+        public CameraEffectParam_DepthOutline m_Param;
+        protected override CameraEffect_DepthOutline OnGenerateRequiredImageEffects()
+        {
+            return new CameraEffect_DepthOutline(() => m_Param);
+        }
+
         [ImageEffectOpaque]
         protected new void OnRenderImage(RenderTexture source, RenderTexture destination)=> base.OnRenderImage(source, destination);
     }
@@ -21,6 +27,7 @@ namespace Rendering.ImageEffect
 
     public class CameraEffect_DepthOutline:ImageEffectBase<CameraEffectParam_DepthOutline>
     {
+        public CameraEffect_DepthOutline(Func<CameraEffectParam_DepthOutline> _GetParam) : base(_GetParam) { }
         #region ShaderProperties
         static readonly int ID_EdgeColor = Shader.PropertyToID("_OutlineColor");
         static readonly int ID_SampleDistance = Shader.PropertyToID("_SampleDistance");

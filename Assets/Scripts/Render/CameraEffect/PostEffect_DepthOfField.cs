@@ -2,8 +2,13 @@
 using UnityEngine;
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_DepthOfField : PostEffectBase<CameraEffect_DepthOfField, CameraEffectParam_DepthOfField>
+    public class PostEffect_DepthOfField : PostEffectBase<CameraEffect_DepthOfField>
     {
+        public CameraEffectParam_DepthOfField m_Param;
+        protected override CameraEffect_DepthOfField OnGenerateRequiredImageEffects()
+        {
+            return new CameraEffect_DepthOfField(() => m_Param);
+        }
     }
 
     [System.Serializable]
@@ -26,7 +31,7 @@ namespace Rendering.ImageEffect
         #endregion
 
         ImageEffect_Blurs m_Blur;
-        public CameraEffect_DepthOfField() : base() { m_Blur = new ImageEffect_Blurs(); }
+        public CameraEffect_DepthOfField(Func<CameraEffectParam_DepthOfField> _GetParam) : base(_GetParam) { m_Blur = new ImageEffect_Blurs(()=>_GetParam().m_BlurParams); }
         public override void Destroy()
         {
             base.Destroy();
@@ -39,12 +44,12 @@ namespace Rendering.ImageEffect
             _material.SetFloat(ID_FocalLerp, _params.m_DOFLerp);
             _material.EnableKeyword(KW_UseBlurDepth, _params.m_DepthBlurSample);
             _material.SetFloat(ID_BlurSize, _params.m_BlurSize);
-            m_Blur.DoValidate(_params.m_BlurParams);
+            m_Blur.DoValidate();
         }
         protected override void OnImageProcess(RenderTexture _src, RenderTexture _dst, Material _material, CameraEffectParam_DepthOfField _param)
         {
             RenderTexture _tempBlurTex = RenderTexture.GetTemporary(_src.width, _src.height, 0, _src.format);
-            m_Blur.DoImageProcess(_src, _tempBlurTex,_param.m_BlurParams);
+            m_Blur.DoImageProcess(_src, _tempBlurTex);
             _material.SetTexture(ID_BlurTexture, _tempBlurTex);
             Graphics.Blit(_src, _dst, _material);
             RenderTexture.ReleaseTemporary(_tempBlurTex);

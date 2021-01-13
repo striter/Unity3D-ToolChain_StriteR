@@ -5,7 +5,14 @@ using UnityEditor;
 
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_ColorGrading : PostEffectBase<ImageEffect_ColorGrading,ImageEffectParam_ColorGrading>{}
+    public class PostEffect_ColorGrading : PostEffectBase<ImageEffect_ColorGrading>{
+        public ImageEffectParam_ColorGrading m_Param;
+        protected override ImageEffect_ColorGrading OnGenerateRequiredImageEffects()
+        {
+            return new ImageEffect_ColorGrading(() => m_Param);
+        }
+
+    }
 
     public enum enum_MixChannel
     {
@@ -44,6 +51,7 @@ namespace Rendering.ImageEffect
 
     public class ImageEffect_ColorGrading : ImageEffectBase<ImageEffectParam_ColorGrading>
     {
+        public ImageEffect_ColorGrading(Func<ImageEffectParam_ColorGrading> _GetParam) : base(_GetParam) { }
         #region ShaderProperties
         readonly int ID_Weight = Shader.PropertyToID("_Weight");
 

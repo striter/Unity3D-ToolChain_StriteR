@@ -22,8 +22,18 @@ namespace Rendering
         public Camera m_Camera { get; private set; }
 
         private void Start()=>InitCommandBuffers();
-        public void OnValidate()=>InitCommandBuffers();
-        private void OnDestroy()=>RemoveCommandBuffers();
+        public void OnValidate()
+        {
+
+            InitCommandBuffers();
+#if UNITY_EDITOR
+            if (!m_EditorRenderManager)
+                return;
+            SyncEditorData();
+            m_EditorRenderManager.OnValidate();
+#endif
+        }
+        private void OnDestroy()=> RemoveCommandBuffers();
         #region CommandBuffer
         #region ShaderProperties
         static readonly int ID_GlobalDepthTexture = Shader.PropertyToID("_CameraDepthTexture");
@@ -78,7 +88,7 @@ namespace Rendering
             {
                 CommandBuffer opaqueBlurTexture = new CommandBuffer() { name = "Geometry Blur Texture Generate" };
                 ImageEffectParam_Blurs _params = m_BlurData;
-                m_OpaqueBlurMaterial = TRender.CreateMaterial(typeof(ImageEffect_Blurs));
+                m_OpaqueBlurMaterial = AImageEffectBase.CreateMaterial(typeof(ImageEffect_Blurs));
                 switch (_params.blurType)
                 {
                     default:
@@ -186,29 +196,15 @@ namespace Rendering
 
 #if UNITY_EDITOR
         CameraRenderManager m_EditorRenderManager;
-        void SyncEditorData()
-        {
-            m_EditorRenderManager.m_DepthToWorldCalculation = m_DepthToWorldCalculation;
-            m_EditorRenderManager.m_DepthMode = enum_DepthMode.None;
-            m_EditorRenderManager.m_GeometryCopyTexture = m_GeometryCopyTexture;
-            m_EditorRenderManager.m_GeometryCopyBlurTexture = m_GeometryCopyBlurTexture;
-            m_EditorRenderManager.m_BlurData = m_BlurData;
-        }
-        void Update()
+
+        private void OnEnable()
         {
             if (!UnityEditor.SceneView.lastActiveSceneView)
                 return;
             if (UnityEditor.SceneView.lastActiveSceneView.camera.gameObject == this.gameObject)
                 return;
-            if(m_EditorRenderManager)
-            {
-                SyncEditorData();
-                m_EditorRenderManager.OnValidate();
-                return;
-            }
 
             m_EditorRenderManager = UnityEditor.SceneView.lastActiveSceneView.camera.gameObject.AddComponent<CameraRenderManager>();
-            m_EditorRenderManager.hideFlags = HideFlags.HideAndDontSave;
             SyncEditorData();
         }
         private void OnDisable()
@@ -221,6 +217,15 @@ namespace Rendering
                 return;
 
             GameObject.DestroyImmediate(m_EditorRenderManager);
+        }
+
+        void SyncEditorData()
+        {
+            m_EditorRenderManager.m_DepthToWorldCalculation = m_DepthToWorldCalculation;
+            m_EditorRenderManager.m_DepthMode = enum_DepthMode.None;
+            m_EditorRenderManager.m_GeometryCopyTexture = m_GeometryCopyTexture;
+            m_EditorRenderManager.m_GeometryCopyBlurTexture = m_GeometryCopyBlurTexture;
+            m_EditorRenderManager.m_BlurData = m_BlurData;
         }
 #endif
     }

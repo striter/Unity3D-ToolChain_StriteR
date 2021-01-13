@@ -4,8 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_DepthVerticalFog:PostEffectBase<CameraEffect_DepthVerticalFog, CameraEffectParam_DepthFog>
+    public class PostEffect_DepthVerticalFog:PostEffectBase<CameraEffect_DepthVerticalFog>
     {
+        public CameraEffectParam_DepthFog m_Param;
+        protected override CameraEffect_DepthVerticalFog OnGenerateRequiredImageEffects()
+        {
+            return new CameraEffect_DepthVerticalFog(()=>m_Param);
+        }
     }
 
     [System.Serializable]
@@ -22,6 +27,7 @@ namespace Rendering.ImageEffect
     }
     public class CameraEffect_DepthVerticalFog:ImageEffectBase<CameraEffectParam_DepthFog>
     {
+        public CameraEffect_DepthVerticalFog(Func<CameraEffectParam_DepthFog> _GetParam) : base(_GetParam) { }
         #region ShaderProeprties
         static readonly int ID_FogColor = Shader.PropertyToID("_FogColor");
         static readonly int ID_FogDensity = Shader.PropertyToID("_FogDensity");
