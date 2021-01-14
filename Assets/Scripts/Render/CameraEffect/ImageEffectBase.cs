@@ -90,7 +90,7 @@ namespace Rendering.ImageEffect
             m_Effect = null;
         }
 
-        public void OnRenderImage(RenderTexture src, RenderTexture dst)
+        protected void OnRenderImage(RenderTexture src, RenderTexture dst)
         {
             if (m_Effect == null)
             {

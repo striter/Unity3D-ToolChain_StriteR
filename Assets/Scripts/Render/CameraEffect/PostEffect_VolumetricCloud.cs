@@ -10,7 +10,7 @@ namespace Rendering.ImageEffect
     public class PostEffect_VolumetricCloud : PostEffectBase<CameraEffect_VolumetricCloud, CameraEffectParam_VolumetricCloud>
     {
         [ImageEffectOpaque]
-        new void OnRenderImage(RenderTexture source, RenderTexture destination) => base.OnRenderImage(source, destination);
+        protected new void OnRenderImage(RenderTexture source, RenderTexture destination) => base.OnRenderImage(source, destination);
     }
 
     [System.Serializable]

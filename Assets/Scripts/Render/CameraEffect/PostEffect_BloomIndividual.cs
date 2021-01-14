@@ -24,11 +24,9 @@ namespace Rendering.ImageEffect
             if (m_RenderCamera)
                 return;
             Camera _camera = GetComponent<Camera>();
-            GameObject temp = new GameObject("Bloom Individual Render Camera");
-            temp.hideFlags = HideFlags.HideAndDontSave;
-            temp.transform.SetParentResetTransform(_camera.transform);
 
-            m_RenderCamera = temp.AddComponent<Camera>();
+            m_RenderCamera = new GameObject("Bloom Individual Render Camera").AddComponent<Camera>();
+            m_RenderCamera.gameObject.hideFlags = HideFlags.HideAndDontSave;
             m_RenderCamera.backgroundColor = Color.black;
             m_RenderCamera.orthographic = _camera.orthographic;
             m_RenderCamera.orthographicSize = _camera.orthographicSize;
@@ -49,6 +47,13 @@ namespace Rendering.ImageEffect
             base.OnEffectCreate(_effect);
             GenerateRenderCamera();
             _effect.OnCreate(m_RenderCamera);
+        }
+
+        public new void OnRenderImage(RenderTexture src, RenderTexture dst)
+        {
+            m_RenderCamera.transform.position = transform.position;
+            m_RenderCamera.transform.rotation = transform.rotation;
+            base.OnRenderImage(src, dst);
         }
     }
 
