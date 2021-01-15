@@ -24,16 +24,13 @@
 				int _SampleCount;
 				float _Intensity;
 				float _DepthBias;
+				float _DepthBiasMax;
 				float4 _AOColor;
 				float _NoiseScale;
 
-				float GetDepth(float2 uv)		//0-1
+				float GetDepth(float2 uv)
 				{
-					float depth= SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv);
-	#ifdef UNITY_REVERSED_Z 
-					depth = 1 - depth;
-	#endif
-					return depth;
+					return LinearEyeDepth( SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv));
 				}
 
 				float3 normal_from_depth(float2 texcoords) {
@@ -55,20 +52,19 @@
 					float3 normal = normal_from_depth( i.uv);
 					float3 random = tex2D(_NoiseTex, i.uv* _NoiseScale).rgb;
 					float2 uv = i.uv;
+					float maxAODistance=100;
 					float baseDepth = GetDepth(uv);
+					float depthParam= saturate(baseDepth/maxAODistance);
 					float occlusion = 0;
-
-					float depthParam= saturate(LinearEyeDepth(1-baseDepth)/30);
-					float depthBias=_DepthBias*_ProjectionParams.w*lerp(1,0.1, depthParam);
 					float distance=1-depthParam;
 					for (int i = 0; i < _SampleCount; i++) {
 						float3 sampleOffsetRay =  _SampleSphere[i]*random*distance;
 						float2 occ_depth_uv = uv + sign(dot(sampleOffsetRay, normal)) * sampleOffsetRay.xy * _MainTex_TexelSize;
-						float depthOffset = baseDepth -GetDepth(occ_depth_uv) ;
-						occlusion +=step(depthOffset, depthBias) * lerp(-1,1,  smoothstep(-depthBias, depthBias, depthOffset));
+						float depthOffset = baseDepth-GetDepth(occ_depth_uv);
+						occlusion+= step(_DepthBias,depthOffset)*step(depthOffset,_DepthBiasMax);
 					}
-					occlusion = saturate(occlusion / _SampleCount * _Intensity);
-					return lerp(tex2D(_MainTex, uv), _AOColor, occlusion);
+					occlusion = 1-saturate(occlusion / _SampleCount * _Intensity);
+					return lerp(_AOColor,tex2D(_MainTex, uv), occlusion);
 				}
 				ENDCG
 		}

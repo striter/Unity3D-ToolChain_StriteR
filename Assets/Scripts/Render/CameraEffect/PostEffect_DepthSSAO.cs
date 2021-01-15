@@ -16,16 +16,18 @@ namespace Rendering.ImageEffect
         public Color m_Color;
         public float m_Intensity;
         public float m_SampleRadius;
-        [Range(1f,20f)] public float m_DepthBias;
+        [Range(0.01f,0.5f)] public float m_DepthBias;
+        [Range(0.01f, 1f)] public float m_DepthBiasRange;
         public int m_SampleCount;
         public Texture2D m_NoiseTex;
         public float m_NoiseScale;
         public static readonly CameraEffectParam_DepthSSAO m_Default = new CameraEffectParam_DepthSSAO()
         {
-            m_Color=Color.grey,
+            m_Color = Color.grey,
             m_Intensity = 1f,
             m_SampleRadius = 10f,
-            m_DepthBias = 2f,
+            m_DepthBias = 0.1f,
+            m_DepthBiasRange = 0.5f,
             m_SampleCount = 16,
             m_NoiseScale = 1,
         };
@@ -39,6 +41,7 @@ namespace Rendering.ImageEffect
         static readonly int ID_Color = Shader.PropertyToID("_AOColor");
         static readonly int ID_Intensity = Shader.PropertyToID("_Intensity");
         static readonly int ID_DepthBias = Shader.PropertyToID("_DepthBias");
+        static readonly int ID_DepthBiasMax = Shader.PropertyToID("_DepthBiasMax");
         static readonly int ID_NoiseTex = Shader.PropertyToID("_NoiseTex");
         static readonly int ID_NoiseScale = Shader.PropertyToID("_NoiseScale");
         #endregion
@@ -58,6 +61,7 @@ namespace Rendering.ImageEffect
             _material.SetColor(ID_Color, _params.m_Color);
             _material.SetFloat(ID_Intensity, _params.m_Intensity);
             _material.SetFloat(ID_DepthBias, _params.m_DepthBias);
+            _material.SetFloat(ID_DepthBiasMax, _params.m_DepthBias + _params.m_DepthBiasRange);
             _material.SetTexture(ID_NoiseTex, _params.m_NoiseTex);
             _material.SetFloat(ID_NoiseScale, _params.m_NoiseScale);
         }
