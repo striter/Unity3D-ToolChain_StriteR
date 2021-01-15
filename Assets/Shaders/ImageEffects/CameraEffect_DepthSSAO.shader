@@ -54,11 +54,9 @@
 					float2 uv = i.uv;
 					float maxAODistance=100;
 					float baseDepth = GetDepth(uv);
-					float depthParam= saturate(baseDepth/maxAODistance);
 					float occlusion = 0;
-					float distance=1-depthParam;
 					for (int i = 0; i < _SampleCount; i++) {
-						float3 sampleOffsetRay =  _SampleSphere[i]*random*distance;
+						float3 sampleOffsetRay =  _SampleSphere[i]*random;
 						float2 occ_depth_uv = uv + sign(dot(sampleOffsetRay, normal)) * sampleOffsetRay.xy * _MainTex_TexelSize;
 						float depthOffset = baseDepth-GetDepth(occ_depth_uv);
 						occlusion+= step(_DepthBias,depthOffset)*step(depthOffset,_DepthBiasMax);
