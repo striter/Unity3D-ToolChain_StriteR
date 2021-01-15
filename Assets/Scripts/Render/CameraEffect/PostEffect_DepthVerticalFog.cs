@@ -8,17 +8,27 @@ namespace Rendering.ImageEffect
     {
     }
 
-    [System.Serializable]
-    public class CameraEffectParam_DepthFog:ImageEffectParamBase
+    [Serializable]
+    public struct CameraEffectParam_DepthFog
     {
         public Color m_FogColor;
-        public float m_FogDensity = 1;
-        public float m_FogVerticalStart = -2f;
-        public float m_FogVerticalOffset = 2f;
+        public float m_FogDensity;
+        public float m_FogVerticalStart;
+        public float m_FogVerticalOffset;
         public Texture2D m_NoiseTexure;
-        public float m_NoiseScale = 15f;
-        public float m_NoiseSpeedX = .1f;
-        public float m_NoiseSpeedY=.1f;
+        public float m_NoiseScale ;
+        public float m_NoiseSpeedX;
+        public float m_NoiseSpeedY;
+        public static readonly CameraEffectParam_DepthFog m_Default = new CameraEffectParam_DepthFog()
+        {
+            m_FogColor=Color.grey,
+            m_FogDensity = 1,
+            m_FogVerticalStart = -2f,
+            m_FogVerticalOffset = 2f,
+            m_NoiseScale = 15f,
+            m_NoiseSpeedX = .1f,
+            m_NoiseSpeedY = .1f,
+    };
     }
     public class CameraEffect_DepthVerticalFog:ImageEffectBase<CameraEffectParam_DepthFog>
     {

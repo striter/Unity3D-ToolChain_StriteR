@@ -45,5 +45,5 @@ Material:
     - _StarColor: {r: 0.75, g: 1, b: 0.96875, a: 1}
     - _StarMaskFlow: {r: 0.05, g: 0, b: 0, a: 0}
     - _StartColor: {r: 1, g: 1, b: 1, a: 1}
-    - _SunColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SunColor: {r: 0.11320752, g: 0.11320752, b: 0.11320752, a: 1}
   m_BuildTextureStacks: []

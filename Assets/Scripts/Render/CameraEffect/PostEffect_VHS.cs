@@ -5,8 +5,9 @@ using UnityEngine;
 namespace Rendering.ImageEffect
 {
 
-    public class PostEffect_VHS : PostEffectBase<ImageEffect_VHS, ImageEffectParam_VHS>{ }
-    
+    public class PostEffect_VHS : PostEffectBase<ImageEffect_VHS, ImageEffectParam_VHS>
+    {
+    }
     public enum enum_VHSScreenCut
     {
         None=0,
@@ -14,40 +15,73 @@ namespace Rendering.ImageEffect
         Scaled=2,
     }
     [Serializable]
-    public class ImageEffectParam_VHS:ImageEffectParamBase
+    public struct ImageEffectParam_VHS
     {
         [Header("Screen Cut")] 
         public enum_VHSScreenCut m_ScreenCut;
-        [RangeVector(0, 1)] public Vector2 m_ScreenCutDistance=Vector2.one*0.1f;
-        [Header("Color Bleed")] 
-        public bool m_ColorBleed = true;
-        [Range(1, 4)] public int m_ColorBleedIteration = 2;
-        [Range(0, 2)] public float m_ColorBleedSize = .8f;
-        [RangeVector(-5, 5)] public Vector2 m_ColorBleedR = Vector2.one;
-        [RangeVector(-5, 5)] public Vector2 m_ColorBleedG = -Vector2.one;
-        [RangeVector(-5, 5)] public Vector2 m_ColorBleedB = Vector2.zero;
+        [RangeVector(0, 1)] public Vector2 m_ScreenCutDistance;
+        [Header("Color Bleed")]
+        public bool m_ColorBleed;
+        [Range(1, 4)] public int m_ColorBleedIteration;
+        [Range(0, 2)] public float m_ColorBleedSize;
+        [RangeVector(-5, 5)] public Vector2 m_ColorBleedR;
+        [RangeVector(-5, 5)] public Vector2 m_ColorBleedG;
+        [RangeVector(-5, 5)] public Vector2 m_ColorBleedB;
         [Header("Pixel Distort")]
-        public bool m_PixelDistort = true;
-        [RangeVector(0, 1)] public Vector2 m_PixelDistortScale = Vector2.one*.1f;
-        [Range(0, 0.5f)] public float m_PixelDistortStrength = .1f;
-        [Range(0.5f, 1f)] public float m_PixelDistortClip = .95f;
-        [Range(0f, 144f)] public int m_PixelDistortFrequency = 10;
+        public bool m_PixelDistort;
+        [RangeVector(0, 1)] public Vector2 m_PixelDistortScale;
+        [Range(0, 0.5f)] public float m_PixelDistortStrength;
+        [Range(0.5f, 1f)] public float m_PixelDistortClip;
+        [Range(0f, 144f)] public int m_PixelDistortFrequency;
 
         [Header("Line Distort")]
-        public bool m_LineDistort = true;
-        [Range(-2f, 2f)] public float m_LineDistortSpeed = 1f;
-        [Range(-.1f, .1f)] public float m_LineDistortStrength = 0.005f;
-        [Range(0f, 1f)] public float m_LineDistortClip = 0.8f;
-        [Range(0, 10f)] public float m_LineDistortFrequency = 0.5f;
-        [Header("Grain")] 
-        public bool m_Grain = true;
-        public Color m_GrainColor = Color.white;
-        [RangeVector(0, 1)] public Vector2 m_GrainScale = Vector2.one;
-        [Range(0, 1)] public float m_GrainClip = .5f;
-        [Range(0, 144)] public int m_GrainFrequency = 10;
+        public bool m_LineDistort;
+        [Range(-2f, 2f)] public float m_LineDistortSpeed;
+        [Range(-.1f, .1f)] public float m_LineDistortStrength;
+        [Range(0f, 1f)] public float m_LineDistortClip;
+        [Range(0, 10f)] public float m_LineDistortFrequency;
+        [Header("Grain")]
+        public bool m_Grain;
+        public Color m_GrainColor;
+        [RangeVector(0, 1)] public Vector2 m_GrainScale;
+        [Range(0, 1)] public float m_GrainClip;
+        [Range(0, 144)] public int m_GrainFrequency;
         [Header("Vignette")]
         public bool m_Vignette;
-        [Range(0,10)]public float m_VignetteValue = 2f;
+        [Range(0, 10)] public float m_VignetteValue;
+        public static readonly ImageEffectParam_VHS m_Default= new ImageEffectParam_VHS()
+        {
+            m_ScreenCut = enum_VHSScreenCut.Hard,
+            m_ScreenCutDistance = Vector2.one * 0.1f,
+
+            m_ColorBleed = true,
+            m_ColorBleedIteration = 2,
+            m_ColorBleedSize = .8f,
+            m_ColorBleedR = Vector2.one,
+            m_ColorBleedG = -Vector2.one,
+            m_ColorBleedB = Vector2.zero,
+
+            m_PixelDistort = true,
+            m_PixelDistortScale = Vector2.one * .1f,
+            m_PixelDistortStrength = .1f,
+            m_PixelDistortClip = .95f,
+            m_PixelDistortFrequency = 10,
+
+            m_LineDistort = true,
+            m_LineDistortSpeed = 1f,
+            m_LineDistortStrength = 0.005f,
+            m_LineDistortClip = 0.8f,
+
+            m_LineDistortFrequency = 0.5f,
+            m_Grain = true,
+            m_GrainColor = new Color(.5f, .5f, .5f, .5f),
+            m_GrainScale = Vector2.one,
+            m_GrainClip = .5f,
+            m_GrainFrequency = 10,
+
+            m_Vignette = true,
+            m_VignetteValue = 2f,
+        };
     }
     public class ImageEffect_VHS:ImageEffectBase<ImageEffectParam_VHS>
     {

@@ -6,15 +6,23 @@ namespace Rendering.ImageEffect
     {
     }
 
-    [System.Serializable]
-    public class CameraEffectParam_DepthOfField : ImageEffectParamBase
+    [Serializable]
+    public struct CameraEffectParam_DepthOfField 
     {
-        [Range(0.01f, 1f)] public float m_DOFStart = 0.1f;
-        [Range(.01f, .3f)] public float m_DOFLerp = .1f;
-        public bool m_DepthBlurSample = true;
-        [Range(.25f, 1.25f)] public float m_BlurSize = .5f;
+        [Range(0.01f, 1f)] public float m_DOFStart;
+        [Range(.01f, .3f)] public float m_DOFLerp;
+        public bool m_DepthBlurSample;
+        [Range(.25f, 1.25f)] public float m_BlurSize;
         public ImageEffectParam_Blurs m_BlurParams;
-    }
+        public static readonly CameraEffectParam_DepthOfField m_Default = new CameraEffectParam_DepthOfField()
+        {
+            m_DOFStart = 0.1f,
+            m_DOFLerp = .1f,
+            m_DepthBlurSample = true,
+            m_BlurSize = .5f,
+            m_BlurParams = ImageEffectParam_Blurs.m_Default,
+    };
+}
     public class CameraEffect_DepthOfField : ImageEffectBase<CameraEffectParam_DepthOfField>
     {
         #region ShaderID

@@ -16,7 +16,6 @@ public class PostEffect : MonoBehaviour
         m_CircleArea = GetComponentInChildren<PostEffect_DepthCircleArea>();
         m_CircleAreaCamera = m_CircleArea.GetComponent<Camera>();
         TouchInputManager.Instance.SwitchToDualStretch().Init(OnTouchCheck,OnPressCheck);
-
     }
 
     void OnTouchCheck(bool down, Vector2 stretch1Pos,Vector2 strech2Pos)
@@ -39,7 +38,7 @@ public class PostEffect : MonoBehaviour
                 return;
             m_CircleArea.m_EffectData.m_Origin = m_AreaOrigin;
             m_AreaCoroutine.Start(TIEnumerators.ChangeValueTo((float value) => {
-                m_CircleArea.m_EffectData.Radius = m_AreaRadius * value;
+                m_CircleArea.m_EffectData.m_Radius = m_AreaRadius * value;
                 m_CircleArea.OnValidate();
             }, 1,0, .2f, () => { m_CircleArea.enabled = false; }));
         }
@@ -50,7 +49,7 @@ public class PostEffect : MonoBehaviour
         {
             m_AreaOrigin = (_hit1.point + _hit2.point) / 2;
             m_AreaRadius = Vector3.Distance( _hit2.point,_hit1.point)/2f;
-            m_CircleArea.m_EffectData.Radius = m_AreaRadius;
+            m_CircleArea.m_EffectData.m_Radius = m_AreaRadius;
             m_CircleArea.m_EffectData.m_Origin = m_AreaOrigin;
             m_CircleArea.OnValidate();
         }

@@ -8,17 +8,28 @@ namespace Rendering.ImageEffect
     public class PostEffect_DepthCircleArea : PostEffectBase<CameraEffect_DepthCircleArea, PostEffectParam_DepthCirCleArea>
     {
     }
-    [System.Serializable]
-    public class PostEffectParam_DepthCirCleArea:ImageEffectParamBase
+    [Serializable]
+    public struct PostEffectParam_DepthCirCleArea
     {
         public Vector3 m_Origin;
-        public float Radius = 5f;
-        public float m_SqrOutline = 1f;
+        public float m_Radius;
+        public float m_SqrOutline;
         public Color m_FillColor;
         public Color m_EdgeColor;
         public Texture2D m_FillTexure;
         [RangeVector(-5,5)] public Vector2 m_FillTextureFlow;
-        public float m_FillTextureScale=1f;
+        public float m_FillTextureScale;
+
+        public static readonly PostEffectParam_DepthCirCleArea m_Default = new PostEffectParam_DepthCirCleArea()
+        {
+            m_Origin = Vector3.zero,
+            m_Radius = 5f,
+            m_SqrOutline = 1f,
+            m_FillColor=Color.white,
+            m_EdgeColor=Color.black,
+            m_FillTextureFlow=Vector2.one,
+            m_FillTextureScale=1f,
+        };
     }
 
     public class CameraEffect_DepthCircleArea:ImageEffectBase<PostEffectParam_DepthCirCleArea>
@@ -37,8 +48,8 @@ namespace Rendering.ImageEffect
         protected override void OnValidate(PostEffectParam_DepthCirCleArea _params, Material _material)
         {
             base.OnValidate(_params, _material);
-            float sqrEdgeMin = _params.Radius;
-            float sqrEdgeMax = _params.Radius + _params.m_SqrOutline;
+            float sqrEdgeMin = _params.m_Radius;
+            float sqrEdgeMax = _params.m_Radius + _params.m_SqrOutline;
             _material.SetFloat(ID_SqrEdgeMax, sqrEdgeMax * sqrEdgeMax);
             _material.SetFloat(ID_SqrEdgeMin, sqrEdgeMin * sqrEdgeMin);
             _material.SetVector(ID_Origin, _params.m_Origin);

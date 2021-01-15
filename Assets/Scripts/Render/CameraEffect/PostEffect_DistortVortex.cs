@@ -9,14 +9,21 @@ namespace Rendering.ImageEffect
     {
     }
 
-    [System.Serializable]
-    public class ImageEffectParam_DistortVortex:ImageEffectParamBase
+    [Serializable]
+    public struct ImageEffectParam_DistortVortex
     {
-        [Range(0, 1)] public float m_OriginViewPort_X = .5f;
-        [Range(0, 1)] public float m_OriginViewPort_Y = .5f;
-        [Range(-5, 5)] public float m_OffsetFactor = .1f;
+        [Range(0, 1)] public float m_OriginViewPort_X;
+        [Range(0, 1)] public float m_OriginViewPort_Y;
+        [Range(-5, 5)] public float m_OffsetFactor;
         public Texture2D m_NoiseTex;
-        public float m_NoiseStrength=.5f;
+        public float m_NoiseStrength;
+        public static readonly ImageEffectParam_DistortVortex m_Default = new ImageEffectParam_DistortVortex()
+        {
+            m_OriginViewPort_X = .5f,
+            m_OriginViewPort_Y = .5f,
+            m_OffsetFactor = .1f,
+            m_NoiseStrength = .5f,
+        };
     }
 
     public class ImageEffect_DistortVortex :ImageEffectBase<ImageEffectParam_DistortVortex>

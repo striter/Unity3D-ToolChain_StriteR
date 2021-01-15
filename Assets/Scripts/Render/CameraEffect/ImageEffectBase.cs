@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Rendering.ImageEffect
 {
     [Serializable]
-    public class ImageEffectBase<T> where T:ImageEffectParamBase
+    public class ImageEffectBase<T> where T: struct
     {
         Material m_Material;
         public ImageEffectBase()
@@ -19,9 +19,10 @@ namespace Rendering.ImageEffect
             m_Material = null;
         }
 
+
         public void DoImageProcess(RenderTexture _src, RenderTexture _dst,T _data)
         {
-            if (_data==null||m_Material == null)
+            if (m_Material == null)
             {
                 Graphics.Blit(_src, _dst);
                 return;
@@ -30,7 +31,7 @@ namespace Rendering.ImageEffect
         }
         public void DoValidate(T _data)
         {
-            if (_data==null||m_Material == null)
+            if (m_Material == null)
                 return;
             OnValidate(_data, m_Material);
         }
@@ -45,27 +46,18 @@ namespace Rendering.ImageEffect
 
         }
     }
-    public class ImageEffectParamBase  {  }
 
     [DisallowMultipleComponent,RequireComponent(typeof(Camera))]
-    public partial class PostEffectBase<T,Y> : MonoBehaviour where T : ImageEffectBase<Y>, new() where Y:ImageEffectParamBase
+    public partial class PostEffectBase<T,Y> : MonoBehaviour where T : ImageEffectBase<Y>, new() where Y:struct
     {
         public Y m_EffectData;
         protected T m_Effect { get; private set; }
         protected Camera m_Camera { get; private set; }
-        protected virtual void Awake()
-        {
-            Init();
-        }
-        protected virtual void OnDestroy()
-        {
-            Destroy();
-        }
-        public void OnValidate()
-        {
-            Init();
-        }
-
+        protected virtual void Awake()=>Init();
+        protected virtual void OnDestroy()=>Destroy();
+        public void OnValidate() => m_Effect?.DoValidate(m_EffectData);
+        void OnDidApplyAnimationProperties() => OnValidate();
+        public void Reset() => m_EffectData = (Y) typeof(Y).GetField("m_Default", System.Reflection.BindingFlags.Static| System.Reflection.BindingFlags.Public).GetValue(null);
         void Init()
         {
             if (!m_Camera) m_Camera = GetComponent<Camera>();
@@ -75,9 +67,9 @@ namespace Rendering.ImageEffect
                 m_Effect = new T();
                 OnEffectCreate(m_Effect);
             }
-
-            m_Effect.DoValidate(m_EffectData);
+            OnValidate();
         }
+
 
         protected virtual void OnEffectCreate(T _effect) { }
 
@@ -102,20 +94,26 @@ namespace Rendering.ImageEffect
         }
     }
 
-    #region Editor Preview
 #if UNITY_EDITOR
+    #region Editor Preview
     [ExecuteInEditMode]
-    public partial class PostEffectBase<T, Y> : MonoBehaviour where T : ImageEffectBase<Y>, new() where Y : ImageEffectParamBase
+    public partial class PostEffectBase<T, Y> : MonoBehaviour where T : ImageEffectBase<Y>, new() where Y : struct
     {
         public bool m_SceneViewPreview = false;
         PostEffectBase<T, Y> m_SceneCameraEffect = null;
         bool EditorInitAvailable() => UnityEditor.SceneView.lastActiveSceneView && UnityEditor.SceneView.lastActiveSceneView.camera.gameObject != this.gameObject;
         void Update()
         {
-            m_Effect?.DoValidate(m_EffectData);
-
             if (!EditorInitAvailable())
                 return;
+
+            Init();
+
+            if (m_SceneCameraEffect)
+            {
+                m_SceneCameraEffect.m_EffectData = m_EffectData;
+                m_SceneCameraEffect.OnValidate();
+            }
 
             if (m_SceneViewPreview)
                 InitSceneCameraEffect();
@@ -144,6 +142,6 @@ namespace Rendering.ImageEffect
             m_SceneCameraEffect = null;
         }
     }
-#endif
     #endregion
+#endif
 }

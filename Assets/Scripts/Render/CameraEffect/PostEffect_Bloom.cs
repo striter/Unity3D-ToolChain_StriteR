@@ -6,15 +6,20 @@ namespace Rendering.ImageEffect
     {
     }
 
-    [System.Serializable]
-    public class CameraEffectParam_Bloom : ImageEffectParamBase
+    [Serializable]
+    public struct CameraEffectParam_Bloom 
     {
-        [Range(0.0f, 1f)]
-        public float threshold = 0.25f;
-        [Range(0.0f, 2.5f)]
-        public float intensity = 0.3f;
-        public bool enableBlur = false;
+        [Range(0.0f, 1f)] public float threshold;
+        [Range(0.0f, 2.5f)] public float intensity;
+        public bool enableBlur;
         public ImageEffectParam_Blurs m_BlurParams;
+        public static readonly CameraEffectParam_Bloom m_Default = new CameraEffectParam_Bloom()
+        {
+            threshold = 0.25f,
+            intensity = 0.3f,
+            enableBlur = false,
+            m_BlurParams = ImageEffectParam_Blurs.m_Default,
+        };
     }
 
     public class ImageEffect_Bloom : ImageEffectBase<CameraEffectParam_Bloom>

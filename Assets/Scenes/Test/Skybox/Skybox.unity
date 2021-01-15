@@ -136,7 +136,6 @@ GameObject:
   - component: {fileID: 115514809}
   - component: {fileID: 115514813}
   - component: {fileID: 115514812}
-  - component: {fileID: 115514814}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -202,13 +201,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 115514808}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.35427576, y: -0, z: -0, w: 0.935141}
   m_LocalPosition: {x: 0, y: 1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -41.498, y: 0, z: 0}
 --- !u!114 &115514812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -252,45 +251,6 @@ MonoBehaviour:
     downSample: 2
     iteration: 1
     blurType: 0
---- !u!114 &115514814
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 115514808}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d512aa3e72031e45b724413deb89fce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectData:
-    m_ScreenCut: 0
-    m_ScreenCutDistance: {x: 0.1, y: 0.1}
-    m_ColorBleed: 0
-    m_ColorBleedIteration: 2
-    m_ColorBleedSize: 0.8
-    m_ColorBleedR: {x: 1, y: 1}
-    m_ColorBleedG: {x: -1, y: -1}
-    m_ColorBleedB: {x: 0, y: 0}
-    m_PixelDistort: 0
-    m_PixelDistortScale: {x: 0.1, y: 0.1}
-    m_PixelDistortStrength: 0.1
-    m_PixelDistortClip: 0.95
-    m_PixelDistortFrequency: 10
-    m_LineDistort: 0
-    m_LineDistortSpeed: 1
-    m_LineDistortStrength: 0.005
-    m_LineDistortClip: 0.8
-    m_LineDistortFrequency: 0.5
-    m_Grain: 0
-    m_GrainColor: {r: 1, g: 1, b: 1, a: 0.38431373}
-    m_GrainScale: {x: 1, y: 1}
-    m_GrainClip: 0.5
-    m_GrainFrequency: 10
-    m_Vignette: 0
-    m_VignetteValue: 3.83
-  m_SceneViewPreview: 0
 --- !u!1 &1381386618
 GameObject:
   m_ObjectHideFlags: 0

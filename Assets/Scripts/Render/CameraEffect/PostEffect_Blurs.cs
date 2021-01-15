@@ -6,17 +6,28 @@ namespace Rendering.ImageEffect
     {
     }
 
+    public enum enum_BlurType
+    {
+        AverageSinglePass = 0,
+        Average = 1,
+        Gaussian = 2,
+    }
+
 
     [Serializable]
-    public class ImageEffectParam_Blurs : ImageEffectParamBase
+    public struct ImageEffectParam_Blurs 
     {
-        [Range(0.25f, 1.5f)]
-        public float blurSize = 1.0f;
-        [Range(1, 4)]
-        public int downSample = 2;
-        [Range(1, 8)]
-        public int iteration = 1;
-        public ImageEffect_Blurs.enum_BlurType blurType = ImageEffect_Blurs.enum_BlurType.AverageSinglePass;
+        [Range(0.25f, 1.5f)] public float blurSize ;
+        [Range(1, 4)] public int downSample;
+        [Range(1, 8)] public int iteration;
+        public enum_BlurType blurType;
+        public static readonly ImageEffectParam_Blurs m_Default = new ImageEffectParam_Blurs()
+        {
+            blurSize = 1.0f,
+            downSample = 2,
+            iteration = 1,
+            blurType = enum_BlurType.AverageSinglePass,
+        };
     }
 
     public class ImageEffect_Blurs : ImageEffectBase<ImageEffectParam_Blurs>
@@ -29,13 +40,6 @@ namespace Rendering.ImageEffect
         const string KW_ClipAlpha = "CLIP_ZERO_ALPHA";
         static readonly int ID_BlurSize = Shader.PropertyToID("_BlurSize");
         #endregion
-        public enum enum_BlurType
-        {
-            AverageSinglePass = 0,
-            Average = 1,
-            Gaussian = 2,
-        }
-
         protected override void OnImageProcess(RenderTexture _src, RenderTexture _dst, Material _material, ImageEffectParam_Blurs _param)
         {
             if (_material.passCount <= 1)

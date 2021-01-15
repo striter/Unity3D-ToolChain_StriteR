@@ -26,14 +26,22 @@ namespace Rendering.ImageEffect
     }
 
     [Serializable]
-    public class CameraEffectParam_DepthCircleScan:ImageEffectParamBase
+    public struct CameraEffectParam_DepthCircleScan
     {
         public Vector3 m_Origin;
         public Color m_Color;
-        public float m_Elapse=5;
-        public float m_Width=5;
-        public Texture2D m_Texture=null;
-        public float m_TextureScale = 15f;
+        public float m_Elapse;
+        public float m_Width;
+        public Texture2D m_Texture;
+        public float m_TextureScale;
+        public static readonly CameraEffectParam_DepthCircleScan m_Default = new CameraEffectParam_DepthCircleScan()
+        {
+            m_Origin = Vector3.zero,
+            m_Color = Color.green,
+            m_Elapse = 5f,
+            m_Width = 52f,
+            m_TextureScale = 1f,
+        };
     }
 
     public class CameraEffect_DepthCircleScan:ImageEffectBase<CameraEffectParam_DepthCircleScan>

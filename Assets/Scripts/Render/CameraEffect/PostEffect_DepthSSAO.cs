@@ -11,15 +11,24 @@ namespace Rendering.ImageEffect
     }
 
     [System.Serializable]
-    public class CameraEffectParam_DepthSSAO:ImageEffectParamBase
+    public struct CameraEffectParam_DepthSSAO
     {
         public Color m_Color;
-        public float m_Intensity=1f;
-        public float m_SampleRadius = 10f;
-        [Range(1f,20f)] public float m_DepthBias = 0.002f;
-        public int m_SampleCount = 16;
+        public float m_Intensity;
+        public float m_SampleRadius;
+        [Range(1f,20f)] public float m_DepthBias;
+        public int m_SampleCount;
         public Texture2D m_NoiseTex;
-        public float m_NoiseScale = 1; 
+        public float m_NoiseScale;
+        public static readonly CameraEffectParam_DepthSSAO m_Default = new CameraEffectParam_DepthSSAO()
+        {
+            m_Color=Color.grey,
+            m_Intensity = 1f,
+            m_SampleRadius = 10f,
+            m_DepthBias = 2f,
+            m_SampleCount = 16,
+            m_NoiseScale = 1,
+        };
     }
 
     public class CameraEffect_DepthSSAO:ImageEffectBase<CameraEffectParam_DepthSSAO>

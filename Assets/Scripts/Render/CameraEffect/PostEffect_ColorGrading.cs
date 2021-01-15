@@ -23,23 +23,36 @@ namespace Rendering.ImageEffect
     }
 
     [System.Serializable]
-    public class ImageEffectParam_ColorGrading : ImageEffectParamBase
+    public struct ImageEffectParam_ColorGrading 
     {
-        [Range(0, 1)]public float m_Weight = 1;
+        [Range(0, 1)]public float m_Weight;
 
         [Header("LUT")]
-        public Texture2D m_LUT = null;
-        public enum_LUTCellCount m_LUTCellCount = enum_LUTCellCount._16;
+        public Texture2D m_LUT ;
+        public enum_LUTCellCount m_LUTCellCount ;
 
         [Header("BSC")]
-        [Range(0, 2)]public float m_brightness = 1;
-        [Range(0, 2)] public float m_saturation = 1;
-        [Range(0, 2)]public float m_contrast = 1;
+        [Range(0, 2)]public float m_brightness ;
+        [Range(0, 2)] public float m_saturation ;
+        [Range(0, 2)]public float m_contrast ;
 
         [Header("Channel Mixer")]
-        [RangeVector(-1, 1)] public Vector3 m_MixRed = Vector3.zero;
-        [RangeVector(-1, 1)] public Vector3 m_MixGreen = Vector3.zero;
-        [RangeVector(-1, 1)] public Vector3 m_MixBlue = Vector3.zero;
+        [RangeVector(-1, 1)] public Vector3 m_MixRed;
+        [RangeVector(-1, 1)] public Vector3 m_MixGreen;
+        [RangeVector(-1, 1)] public Vector3 m_MixBlue;
+        public static readonly ImageEffectParam_ColorGrading m_Default = new ImageEffectParam_ColorGrading()
+        {
+            m_Weight=1f ,
+            
+            m_LUTCellCount = enum_LUTCellCount._16,
+            m_brightness = 1,
+            m_saturation = 1,
+            m_contrast = 1,
+            
+            m_MixRed = Vector3.zero,
+            m_MixGreen = Vector3.zero,
+            m_MixBlue = Vector3.zero,
+    };
     }
 
     public class ImageEffect_ColorGrading : ImageEffectBase<ImageEffectParam_ColorGrading>

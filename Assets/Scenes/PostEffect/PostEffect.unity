@@ -214,6 +214,7 @@ GameObject:
   m_Component:
   - component: {fileID: 289594995}
   - component: {fileID: 289594998}
+  - component: {fileID: 289594999}
   - component: {fileID: 289594996}
   - component: {fileID: 289594997}
   m_Layer: 0
@@ -253,7 +254,7 @@ MonoBehaviour:
     m_Color: {r: 0, g: 0, b: 0, a: 0}
     m_Intensity: 5
     m_SampleRadius: 35
-    m_DepthBias: 1.7
+    m_DepthBias: 4.8
     m_SampleCount: 16
     m_NoiseTex: {fileID: 0}
     m_NoiseScale: 1
@@ -340,6 +341,22 @@ Camera:
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!111 &289594999
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 289594994}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 309a7301df0362d4e9ed8e6c7890d9f0, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 309a7301df0362d4e9ed8e6c7890d9f0, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &374659047
 GameObject:
   m_ObjectHideFlags: 0
@@ -1426,7 +1443,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectData:
-    m_FogColor: {r: 0, g: 0, b: 0, a: 0}
+    m_FogColor: {r: 0.9245283, g: 0.9245283, b: 0.9245283, a: 0}
     m_FogDensity: 1
     m_FogVerticalStart: -1.18
     m_FogVerticalOffset: 0.32
@@ -2005,6 +2022,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1941222570}
   - component: {fileID: 1941222569}
+  - component: {fileID: 1941222564}
   - component: {fileID: 1941222566}
   - component: {fileID: 1941222565}
   - component: {fileID: 1941222563}
@@ -2034,6 +2052,22 @@ MonoBehaviour:
     m_NoiseTex: {fileID: 2800000, guid: fa57e5ff6a47ada49b4a0ec740c02bec, type: 3}
     m_NoiseStrength: 0.5
   m_SceneViewPreview: 0
+--- !u!111 &1941222564
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1941222562}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 6ad75bdf249877540b07b5a6ed3be9e8, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 6ad75bdf249877540b07b5a6ed3be9e8, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!114 &1941222565
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2051,7 +2085,7 @@ MonoBehaviour:
     intensity: 0.3
     enableBlur: 1
     m_BlurParams:
-      blurSize: 1
+      blurSize: 1.5
       downSample: 2
       iteration: 4
       blurType: 2
@@ -2273,17 +2307,17 @@ MonoBehaviour:
     m_Noise: {fileID: 11700000, guid: 5743fc3e0e9339b41b3dc606bd35aefe, type: 2}
     m_NoiseScale: {x: 500, y: 500, z: 500}
     m_NoiseFlow: {x: 0.1, y: 0, z: 0.1}
-    m_Density: 50
+    m_Density: 25.9
     m_DensityClip: 0.6
     m_DensitySmooth: 0.1
     m_Distance: 300
-    m_MarchTimes: 64
+    m_MarchTimes: 32
     m_Opacity: 0.8
     m_ColorRamp: {fileID: 2800000, guid: 034f12e5c34ba414fbcbfa5900814c89, type: 3}
-    m_LightAbsorption: 0.072
+    m_LightAbsorption: 0.14
     m_LightMarch: 1
     m_LightMarchClip: 0.304
-    m_LightMarchTimes: 8
+    m_LightMarchTimes: 4
     m_LightScatter: 1
     m_ScatterRange: 0.8
     m_ScatterStrength: 0.8
@@ -2302,12 +2336,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EffectData:
     m_Origin: {x: 2.05, y: 0.19, z: 0}
-    Radius: 1.6
+    m_Radius: 0
     m_SqrOutline: 0.05
     m_FillColor: {r: 1, g: 1, b: 1, a: 1}
-    m_EdgeColor: {r: 1, g: 0, b: 0, a: 1}
+    m_EdgeColor: {r: 0, g: 0, b: 0, a: 1}
     m_FillTexure: {fileID: 2800000, guid: b9db44f36e4c96a4aa459d3fd8f56434, type: 3}
-    m_FillTextureFlow: {x: 0, y: 0}
+    m_FillTextureFlow: {x: -0.04, y: -0.06}
     m_FillTextureScale: 1
   m_SceneViewPreview: 0
 --- !u!1 &2142251302

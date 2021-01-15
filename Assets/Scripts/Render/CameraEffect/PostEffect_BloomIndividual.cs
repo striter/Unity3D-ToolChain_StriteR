@@ -58,14 +58,19 @@ namespace Rendering.ImageEffect
     }
 
     [Serializable]
-    public class CameraEffectParam_BloomInvididual:ImageEffectParamBase
+    public struct CameraEffectParam_BloomInvididual
     {
-        [Range(0,5)]
-        public float m_Intensity = 1f;
-        public enum_BloomIndividual_Blend m_BlendMode = enum_BloomIndividual_Blend.Additive;
-        [CullingMask]
-        public int m_CullingMask=-1;
+        [Range(0, 5)] public float m_Intensity;
+        public enum_BloomIndividual_Blend m_BlendMode ;
+        [CullingMask] public int m_CullingMask;
         public ImageEffectParam_Blurs m_BlurParam;
+        public static readonly CameraEffectParam_BloomInvididual m_Default = new CameraEffectParam_BloomInvididual()
+        {
+            m_Intensity = 1f,
+            m_BlendMode = enum_BloomIndividual_Blend.Additive,
+            m_CullingMask = -1,
+            m_BlurParam = ImageEffectParam_Blurs.m_Default,
+    };
     }
 
     [SerializeField]

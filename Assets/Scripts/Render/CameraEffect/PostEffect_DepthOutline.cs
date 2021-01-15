@@ -12,11 +12,17 @@ namespace Rendering.ImageEffect
     }
 
     [System.Serializable]
-    public class CameraEffectParam_DepthOutline:ImageEffectParamBase
+    public struct CameraEffectParam_DepthOutline
     {
         public Color m_OutlineColor;
-        [Range(0,3)] public float m_SampleDistance=1;
-        [Range(0,1)] public float m_DepthBias=0.05f;
+        [Range(0,3)] public float m_SampleDistance;
+        [Range(0,1)] public float m_DepthBias;
+        public static readonly CameraEffectParam_DepthOutline m_Default = new CameraEffectParam_DepthOutline()
+        {
+            m_OutlineColor = Color.black,
+            m_SampleDistance = 1,
+            m_DepthBias = 0.05f,
+        };
     }
 
     public class CameraEffect_DepthOutline:ImageEffectBase<CameraEffectParam_DepthOutline>

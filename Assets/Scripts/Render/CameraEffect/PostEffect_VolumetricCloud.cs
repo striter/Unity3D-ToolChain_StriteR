@@ -13,33 +13,55 @@ namespace Rendering.ImageEffect
         protected new void OnRenderImage(RenderTexture source, RenderTexture destination) => base.OnRenderImage(source, destination);
     }
 
-    [System.Serializable]
-    public class CameraEffectParam_VolumetricCloud : ImageEffectParamBase
+    [Serializable]
+    public struct CameraEffectParam_VolumetricCloud 
     {
         [Header("Cloud Setting")]
-        public float m_VerticalStart = 20f;
-        public float m_VerticalLength = 100f;
+        public float m_VerticalStart ;
+        public float m_VerticalLength;
         public Texture3D m_Noise;
-        [RangeVector(0f,1000f)]public Vector3 m_NoiseScale=Vector3.one*100f;
-        [RangeVector(0.01f,10f)]public Vector3 m_NoiseFlow=Vector3.one*0.1f;
-        [Range(0, 100)] public float m_Density = 50f;
-        [Range(0, 1)] public float m_DensityClip = .6f;
-        [Range(0, 1)] public float m_DensitySmooth = 0.1f;
-        public float m_Distance = 100f;
-        public enum_VolumetricCloud_MarchTimes m_MarchTimes = enum_VolumetricCloud_MarchTimes._32;
-        [Range(0, 1)] public float m_Opacity = .8f;
+        [RangeVector(0f,1000f)]public Vector3 m_NoiseScale;
+        [RangeVector(0.01f,10f)]public Vector3 m_NoiseFlow;
+        [Range(0, 100)] public float m_Density;
+        [Range(0, 1)] public float m_DensityClip;
+        [Range(0, 1)] public float m_DensitySmooth;
+        public float m_Distance;
+        public enum_VolumetricCloud_MarchTimes m_MarchTimes ;
+        [Range(0, 1)] public float m_Opacity;
 
         [Header("Light Setting")]
         public Texture2D m_ColorRamp;
-        [Range(0, 1)] public float m_LightAbsorption = 1f;
-        public bool m_LightMarch = true;
-        [Range(0, 1)] public float m_LightMarchClip = 0.1f;
-        public enum_VolumetricCloud_LightMarchTimes m_LightMarchTimes = enum_VolumetricCloud_LightMarchTimes._4;
+        [Range(0, 1)] public float m_LightAbsorption;
+        public bool m_LightMarch;
+        [Range(0, 1)] public float m_LightMarchClip;
+        public enum_VolumetricCloud_LightMarchTimes m_LightMarchTimes;
 
         [Header("Scatter Setting")]
-        public bool m_LightScatter = true;
-        [Range(.5f, 1)] public float m_ScatterRange = .8f;
-        [Range(0, 1)] public float m_ScatterStrength = .8f;
+        public bool m_LightScatter;
+        [Range(.5f, 1)] public float m_ScatterRange ;
+        [Range(0, 1)] public float m_ScatterStrength;
+        public static readonly CameraEffectParam_VolumetricCloud m_Default = new CameraEffectParam_VolumetricCloud()
+        {
+              m_VerticalStart = 20f,
+            m_VerticalLength = 100f,
+            m_NoiseScale = Vector3.one * 100f,
+            m_NoiseFlow = Vector3.one * 0.1f,
+            m_Density = 50f,
+            m_DensityClip = .6f,
+            m_DensitySmooth = 0.1f,
+            m_Distance = 100f,
+            m_MarchTimes = enum_VolumetricCloud_MarchTimes._32,
+            m_Opacity = .8f,
+            
+            m_LightAbsorption = 1f,
+            m_LightMarch = true,
+            m_LightMarchClip = 0.1f,
+            m_LightMarchTimes = enum_VolumetricCloud_LightMarchTimes._4,
+
+            m_LightScatter = true,
+            m_ScatterRange = .8f,
+            m_ScatterStrength = .8f,
+        };
     }
 
     public class CameraEffect_VolumetricCloud : ImageEffectBase<CameraEffectParam_VolumetricCloud>
