@@ -56,6 +56,7 @@
             #endif
             
             #if _VIGNETTE
+            float3 _VignetteColor;
             float _VignetteValue;
             #endif
 
@@ -133,7 +134,7 @@
                 #if _VIGNETTE
                 uv-=.5;
                 float vignette = ( 1-uv.y*uv.y*_VignetteValue)*saturate(1-uv.x*uv.x*_VignetteValue);
-                col*=vignette;
+                col.rgb=lerp(_VignetteColor,col.rgb,vignette);
                 #endif
                 return col;
             }

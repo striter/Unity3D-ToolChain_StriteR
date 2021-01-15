@@ -48,8 +48,9 @@ namespace Rendering.ImageEffect
         [Range(0, 144)] public int m_GrainFrequency;
         [Header("Vignette")]
         public bool m_Vignette;
+        public Color m_VignetteColor;
         [Range(0, 10)] public float m_VignetteValue;
-        public static readonly ImageEffectParam_VHS m_Default= new ImageEffectParam_VHS()
+        public static readonly ImageEffectParam_VHS m_Default = new ImageEffectParam_VHS()
         {
             m_ScreenCut = enum_VHSScreenCut.Hard,
             m_ScreenCutDistance = Vector2.one * 0.1f,
@@ -80,6 +81,7 @@ namespace Rendering.ImageEffect
             m_GrainFrequency = 10,
 
             m_Vignette = true,
+            m_VignetteColor = Color.black,
             m_VignetteValue = 2f,
         };
     }
@@ -118,6 +120,7 @@ namespace Rendering.ImageEffect
         static readonly int ID_GrainFrequency = Shader.PropertyToID("_GrainFrequency");
 
         const string KW_Vignette = "_VIGNETTE";
+        static readonly int ID_VignetteColor = Shader.PropertyToID("_VignetteColor");
         static readonly int ID_VignetteValue = Shader.PropertyToID("_VignetteValue");
 #endregion
 
@@ -156,6 +159,7 @@ namespace Rendering.ImageEffect
             _material.SetFloat(ID_GrainClip, _params.m_GrainClip);
 
             _material.EnableKeyword(KW_Vignette, _params.m_Vignette);
+            _material.SetColor(ID_VignetteColor, _params.m_VignetteColor);
             _material.SetFloat(ID_VignetteValue, _params.m_VignetteValue);
         }
     }

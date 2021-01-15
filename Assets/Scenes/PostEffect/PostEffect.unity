@@ -296,6 +296,7 @@ MonoBehaviour:
     m_GrainClip: 0.91
     m_GrainFrequency: 10
     m_Vignette: 1
+    m_VignetteColor: {r: 0.4056604, g: 0.4056604, b: 0.4056604, a: 0}
     m_VignetteValue: 3.48
   m_SceneViewPreview: 0
 --- !u!20 &289594998

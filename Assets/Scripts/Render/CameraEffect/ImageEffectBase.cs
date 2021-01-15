@@ -56,8 +56,8 @@ namespace Rendering.ImageEffect
         protected virtual void Awake()=>Init();
         protected virtual void OnDestroy()=>Destroy();
         public void OnValidate() => m_Effect?.DoValidate(m_EffectData);
-        void OnDidApplyAnimationProperties() => OnValidate();
-        public void Reset() => m_EffectData = (Y) typeof(Y).GetField("m_Default", System.Reflection.BindingFlags.Static| System.Reflection.BindingFlags.Public).GetValue(null);
+        void OnDidApplyAnimationProperties() => OnValidate();       //Undocumented Magic Fucntion ,Triggered By AnimationClip
+        void Reset() => m_EffectData = (Y) typeof(Y).GetField("m_Default", System.Reflection.BindingFlags.Static| System.Reflection.BindingFlags.Public).GetValue(null);     //Get Default Value By Reflection
         void Init()
         {
             if (!m_Camera) m_Camera = GetComponent<Camera>();
