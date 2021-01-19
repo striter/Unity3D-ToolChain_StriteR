@@ -19,7 +19,7 @@ namespace TEditor
         {
             m_TargetAnimations = null;
             m_SerializedWindow = new SerializedObject(this);
-            m_AnimationProperty = m_SerializedWindow.FindProperty("m_TargetAnimations");
+            m_AnimationProperty = m_SerializedWindow.FindProperty(nameof(m_TargetAnimations));
             EditorApplication.update += Tick;
         }
         void OnDisable()

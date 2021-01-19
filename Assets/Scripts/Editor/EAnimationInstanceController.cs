@@ -70,7 +70,6 @@ namespace TEditor
             m_TargetBlock = null;
             EditorApplication.update -= Update;
         }
-        static readonly string[] m_PreviewSpeedGrid = new string[] { "0", ".5", "1", "2" };
         public override void OnPreviewSettings()
         {
             base.OnPreviewSettings();
