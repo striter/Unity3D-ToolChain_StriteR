@@ -9,10 +9,10 @@ EditorBuildSettings:
     path: Assets/Scenes/ExampleHelperScene.unity
     guid: 0600e4da9bdccee4ab819bf25ea95bdf
   - enabled: 1
-    path: Assets/Scenes/Effects/EffectsExample.unity
+    path: Assets/Scenes/Rendering/EffectsOverview.unity
     guid: 21f0777311e4d6049a9b325c34cbdc37
   - enabled: 1
-    path: Assets/Scenes/PostEffect/PostEffect.unity
+    path: Assets/Scenes/Rendering/PostEffect.unity
     guid: c1695ceef3934ec44b866eb60161d834
   - enabled: 1
     path: Assets/Scenes/AnimationInstance/AnimationInstanceSampleManager.unity

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EffectsExample : MonoBehaviour
+public class EffectsOverview : MonoBehaviour
 {
     public Light m_Light;
     public float m_LightRotateSpeed;
