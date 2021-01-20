@@ -1,4 +1,4 @@
-﻿Shader "Unlit/Skybox"
+﻿Shader "Game/Skybox/Color"
 {
     Properties
     {
@@ -39,6 +39,7 @@
             #pragma fragment frag
 
             #include "UnityCG.cginc"
+            #include "../CommonInclude.cginc"
             float3 _DayTopColor;
             float3 _DayBottomColor;
             float3 _NightTopColor;
@@ -78,11 +79,6 @@
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = v.uv;
                 return o;
-            }
-
-            float invlerp(float a,float b,float value)
-            {
-                return (value-a)/(b-a);
             }
 
             fixed4 frag (v2f i) : SV_Target

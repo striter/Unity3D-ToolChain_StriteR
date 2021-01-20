@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UI;
+//using UnityEditor.AudioUtil; //EEditorAudioHelper Reflection Target
 
 namespace TEditor
 {
     public static class EEditorAudioHelper
     {
         static AudioClip curClip;
-        //Reflection Target  UnityEditor.AudioUtil;
         public static void AttachClipTo(AudioClip clip)
         {
             curClip = clip;

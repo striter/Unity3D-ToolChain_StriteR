@@ -7,8 +7,9 @@ Shader "Game/Effects/PlantsWaving_Vertex"
 		_MainTex("Color UV TEX",2D) = "white"{}
 		_Color("Color Tint",Color) = (1,1,1,1)
 		_WaveSpeed("Wind Speed",Range(0,5)) = 1
-		_WaveDirection("Wave: XYZ|Direction W|Frequency",Vector)=(.1,0,.1,0)
-		_WaveParam("Y Param: X|Clip Y|Start Z|Multiply",Vector)=(0,0,1,0)
+		_WaveFrequency("Wind Frequency",float)=5
+		_WaveStrength("Wind Strength",float)=1
+		_WaveDirection("Wind Direction",Vector)=(1,1,1)
 	}
 		SubShader
 		{
@@ -18,15 +19,15 @@ Shader "Game/Effects/PlantsWaving_Vertex"
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
 			#include "AutoLight.cginc"
-			float4 _WaveDirection;
+			float3 _WaveDirection;
+			float _WaveFrequency;
 			float _WaveSpeed;
-			float4 _WaveParam;
+			float _WaveStrength;
 
 			float3 Wave(float3 worldPos)
 			{
-				float wave = sin(_Time.y*_WaveSpeed + (worldPos.x + worldPos.y)*_WaveDirection.w) / 100;
-				float yMultiple = max(0,worldPos.y%_WaveParam.x- _WaveParam.y)*_WaveParam.z;
-				return  _WaveDirection.xyz*wave*yMultiple;
+				float wave =_WaveStrength*sin(_Time.y*_WaveSpeed + (worldPos.x + worldPos.y)*_WaveFrequency) / 100;
+				return  _WaveDirection*wave;
 			}
 				ENDCG
 
@@ -64,7 +65,7 @@ Shader "Game/Effects/PlantsWaving_Vertex"
 					o.worldPos = mul(unity_ObjectToWorld, v.vertex);
 					o.worldPos +=Wave(o.worldPos);
 					o.pos = UnityWorldToClipPos(o.worldPos);
-					o.diffuse = saturate(dot(v.normal,ObjSpaceLightDir(v.vertex)));
+					o.diffuse = saturate(dot(normalize(v.normal),normalize(ObjSpaceLightDir(v.vertex))));
 					TRANSFER_SHADOW(o);
 					return o;
 				}
@@ -94,21 +95,21 @@ Shader "Game/Effects/PlantsWaving_Vertex"
 				V2F_SHADOW_CASTER;
 				};
 
-			v2fs vertshadow(appdata_base v)
-			{
-				v2fs o;
-				TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
-				float3 worldPos = mul(unity_ObjectToWorld, v.vertex);
-				worldPos += Wave(worldPos);
-				o.pos = UnityWorldToClipPos(worldPos);
-				return o;
-			}
+				v2fs vertshadow(appdata_base v)
+				{
+					v2fs o;
+					TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
+					float3 worldPos = mul(unity_ObjectToWorld, v.vertex);
+					worldPos += Wave(worldPos);
+					o.pos = UnityWorldToClipPos(worldPos);
+					return o;
+				}
 
-			fixed4 fragshadow(v2fs i) :SV_TARGET
-			{
-				SHADOW_CASTER_FRAGMENT(i);
-			}
-				ENDCG
-			}
+				fixed4 fragshadow(v2fs i) :SV_TARGET
+				{
+					SHADOW_CASTER_FRAGMENT(i);
+				}
+					ENDCG
+				}
 		}
 }

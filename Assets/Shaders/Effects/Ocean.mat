@@ -79,6 +79,8 @@ Material:
     - _SrcBlend: 1
     - _TexUVScale: 55.8
     - _UVSec: 0
+    - _WaveFrequency: 10
+    - _WaveStrength: 20
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 0.41108933, g: 0.55793417, b: 0.5849056, a: 1}
@@ -87,4 +89,6 @@ Material:
     - _FoamColor: {r: 0.26415092, g: 0.26415092, b: 0.26415092, a: 0.6156863}
     - _FoamDepthParam: {r: 0.5, g: 0.76, b: 8.99, a: 1}
     - _FresnelParam: {r: 0.23, g: 0.67, b: 12, a: 0}
+    - _WaveDirection: {r: 1, g: 1, b: 1, a: 1}
     - _WaveParam: {r: 0.2, g: 2, b: 0.1, a: 0.1}
+  m_BuildTextureStacks: []

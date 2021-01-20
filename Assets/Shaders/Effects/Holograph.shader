@@ -46,7 +46,7 @@
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
-				float alpha =tex2D(_HolographTex, i.uv+float2(0,_Time.x*_VerticalFlowSpeed)).g;
+				float alpha =tex2D(_HolographTex, i.uv+float2(0,_Time.x*_VerticalFlowSpeed)).r;
 				fixed4 col = _Color;
 				col.a = alpha> _Cutout ?alpha:0;
 				return col;
