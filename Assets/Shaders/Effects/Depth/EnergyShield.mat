@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: EnergyShield
   m_Shader: {fileID: 4800000, guid: 0311f393cff769b4a8907f6630e4b4df, type: 3}
-  m_ShaderKeywords: _DEPTHOFFSET _VERTEXRANDOMDISTORT _VERTICALSMOOTHEN
+  m_ShaderKeywords: _DEPTHOFFSET _INNERGLOW _VERTEXRANDOMDISTORT _VERTICALSMOOTHEN
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -53,7 +53,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
         m_Texture: {fileID: 2800000, guid: 93b96f8bbd98891429c340145dc0ab58, type: 3}
-        m_Scale: {x: 15, y: 15}
+        m_Scale: {x: 8, y: 6}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
@@ -86,9 +86,9 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _InnerGlowClip: 0.486
-    - _InnerGlowFrequency: 5.9
-    - _InnerGlowSpeed: 1.52
+    - _InnerGlowClip: 0.81
+    - _InnerGlowFrequency: 1.47
+    - _InnerGlowSpeed: 1.41
     - _InnerGlowWidth: 7.2
     - _Metallic: 0
     - _Mode: 0
@@ -106,7 +106,7 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _InnerColor: {r: 0, g: 0, b: 0, a: 0}
-    - _InnerGlow: {r: 1, g: 1, b: 1, a: 1}
-    - _RimColor: {r: 0, g: 0.89411736, b: 1, a: 1}
+    - _InnerColor: {r: 0.23175506, g: 0.28524983, b: 0.5283019, a: 1}
+    - _InnerGlow: {r: 1, g: 1, b: 1, a: 0}
+    - _RimColor: {r: 0, g: 0.1802516, b: 1, a: 1}
   m_BuildTextureStacks: []

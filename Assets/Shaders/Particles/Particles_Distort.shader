@@ -1,4 +1,4 @@
-﻿Shader "Game/Particle/Distort"
+﻿Shader "Game/Particles/Distort"
 {
 	Properties
 	{

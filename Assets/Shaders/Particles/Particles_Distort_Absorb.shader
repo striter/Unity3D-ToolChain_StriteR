@@ -1,4 +1,4 @@
-﻿Shader "Game/Particle/Distort_CenterAbsorb"
+﻿Shader "Game/Particles/Distort_CenterAbsorb"
 {
 	Properties
 	{

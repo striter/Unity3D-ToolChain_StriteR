@@ -115,12 +115,14 @@
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
-
-				float4 outerCol=_RimColor;
-				float4 innerCol=_InnerColor;
+				float3 finalCol=0;
+				float3 outerCol=_RimColor;
+				float3 innerCol=_InnerColor;
+				#if _INNERGLOW
 				float glowParam=abs(lerp(-1,1,frac(i.pos.y*_InnerGlowFrequency+_Time.y*_InnerGlowSpeed)));
 			 	glowParam=smoothstep(_InnerGlowClip,1,glowParam);
 				innerCol=lerp(innerCol,_InnerGlow,glowParam);
+				#endif
 
 				innerCol*=tex2D(_MaskTex,i.uv).r;
 
@@ -132,14 +134,16 @@
 				float depthOffset=pow(1-worldDepthDst*PI,_RimWidth)*_EdgeMultiplier*_DepthMultiplier;
 				outerRim=max(outerRim,depthOffset);
 				#endif
+
+				outerRim=saturate(outerRim);
+				finalCol= lerp(innerCol,outerCol, outerRim);
+				
 				#if _VERTICALSMOOTHEN
 				float verticalParam=abs(i.pos.y);
 				verticalParam=saturate(invlerp(_VerticalSmoothenStart,_VerticalSmoothenStart+_VerticalSmoothenDistance,verticalParam));
-				outerRim=max(outerRim,verticalParam);
+				finalCol=lerp(finalCol,outerCol,verticalParam);
 				#endif
-
-				outerRim=saturate(outerRim);
-				return lerp(innerCol,outerCol, outerRim);
+				return float4(finalCol,1);
 			}
 			ENDCG
 		}

@@ -1,4 +1,4 @@
-﻿Shader "Game/Particle/Diffuse"
+﻿Shader "Game/Particles/Diffuse"
 {
 	Properties
 	{
