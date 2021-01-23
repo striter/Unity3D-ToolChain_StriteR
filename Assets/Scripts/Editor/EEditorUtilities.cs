@@ -142,13 +142,16 @@ namespace TEditor
                 CreateOrReplaceSubAsset(subValue.Key, _mainAsset.Value, subValue.Value);
             AssetDatabase.SaveAssets();
             Debug.Log("Asset Combination Generate Successful:" + _mainAsset.Key);
-            EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(_mainAsset.Value));
+            EditorGUIUtility.PingObject(mainAsset);
         }
+
+        public static string GetCurrentProjectWindowPath()=> (string)(typeof(ProjectWindowUtil).GetMethod("GetActiveFolderPath", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null,null));
+
         public static bool SelectPath(UnityEngine.Object _srcAsset, out string savePath, out string objName)
         {
             savePath = "";
             objName = "";
-            string assetPath = _srcAsset==null?"Assets/":AssetDatabase.GetAssetPath(_srcAsset);
+            string assetPath = _srcAsset==null? GetCurrentProjectWindowPath() : AssetDatabase.GetAssetPath(_srcAsset);
             string fbxDirectory = (Application.dataPath.Remove(Application.dataPath.Length - 6, 6) + assetPath.Remove(assetPath.LastIndexOf('/'))).Replace("/", @"\");
             string folderPath = EditorUtility.OpenFolderPanel("Select Data Save Folder", fbxDirectory, "");
             if (folderPath.Length == 0)

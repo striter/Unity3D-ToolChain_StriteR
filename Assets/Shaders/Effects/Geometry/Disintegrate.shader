@@ -28,7 +28,7 @@
         Cull Off
 
         CGINCLUDE
-        #include "UnityCG.cginc"
+            #include "UnityCG.cginc"
             float _DisintegrateAmount;
             sampler2D _DissolveTex;
             float4 _DissolveTex_ST;
@@ -79,6 +79,7 @@
         {   
             Name "DISINTEGRATE"
             CGPROGRAM
+            #pragma target 4.0
             #pragma vertex vert
             #pragma geometry geom
             #pragma fragment frag

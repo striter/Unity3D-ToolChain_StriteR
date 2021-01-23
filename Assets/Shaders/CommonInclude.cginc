@@ -26,4 +26,4 @@ float invlerp(float a,float b,float value){ return (value-a)/(b-a); }
 float remap (float value, float from1, float to1, float from2, float to2) {   return lerp(from2,to2, invlerp(from1,to1,value));  }
 
 float random2(float2 value){return frac(sin(dot(value,float2(12.9898,78.233)))*43758.543123);}
-float random3(float3 value){return frac(sin(dot(value,float3(12.9898,78.233,55.15123)))*43758.543123);}
+float random3(float3 value){return frac(sin(dot(value,float3(12.9898,78.233,53.539)))*43758.543123);}

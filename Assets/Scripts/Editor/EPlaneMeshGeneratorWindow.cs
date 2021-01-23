@@ -36,7 +36,7 @@ namespace TEditor
 
         void CreateHexagon(float _tileSize, int _innerRadius)
         {
-
+            //To Be Continued
         }
 
         void CreateSquare(float _tileSize,int _radius,bool circled)
@@ -45,6 +45,8 @@ namespace TEditor
             List<Vector3> verticies = new List<Vector3>();
             List<Vector2> uvs = new List<Vector2>();
             List<int> indices = new List<int>();
+            List<Vector3> normals = new List<Vector3>();
+            List<Vector4> tangents = new List<Vector4>();
 
             Vector2 uv0 = new Vector2(0, 0);
             Vector2 uv1 = new Vector2(1, 0);
@@ -71,6 +73,16 @@ namespace TEditor
                     verticies.Add(v2);
                     verticies.Add(v3);
 
+                    normals.Add(Vector3.up);
+                    normals.Add(Vector3.up);
+                    normals.Add(Vector3.up);
+                    normals.Add(Vector3.up);
+
+                    tangents.Add(new Vector4(1,0,0,1));
+                    tangents.Add(new Vector4(1, 0, 0, 1));
+                    tangents.Add(new Vector4(1, 0, 0, 1));
+                    tangents.Add(new Vector4(1, 0, 0, 1));
+
                     uvs.Add(uv0);
                     uvs.Add(uv1);
                     uvs.Add(uv2);
@@ -94,6 +106,8 @@ namespace TEditor
             mesh.name = "CustomPlane";
             mesh.SetVertices(verticies);
             mesh.SetUVs(0, uvs);
+            mesh.SetNormals(normals);
+            mesh.SetTangents(tangents);
             mesh.SetIndices(indices, MeshTopology.Triangles, 0);
 
             if (!TEditor.SelectPath(null, out string path, out string name))

@@ -56,7 +56,6 @@
                 for(int i=0;i<3;i++)
                 {
                     uint next=(i+1)%3;
-                    
                     o.vertex=baryCenter;
                     o.color=1;
                     stream.Append(o);

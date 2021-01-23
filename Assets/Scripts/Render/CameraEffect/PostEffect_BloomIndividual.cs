@@ -14,6 +14,7 @@ namespace Rendering.ImageEffect
     public class PostEffect_BloomIndividual:PostEffectBase<CameraEffect_BloomIndividual,CameraEffectParam_BloomInvididual>
     {
         Camera m_RenderCamera;
+
         protected override void OnDestroy()
         {
             base.OnDestroy();

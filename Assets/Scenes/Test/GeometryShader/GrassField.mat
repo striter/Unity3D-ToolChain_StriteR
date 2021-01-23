@@ -7,13 +7,13 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Spike
-  m_Shader: {fileID: 4800000, guid: 98cfa9caa45714d49ae03ea45708de88, type: 3}
-  m_ShaderKeywords: 
+  m_Name: GrassField
+  m_Shader: {fileID: 4800000, guid: 3feecd15eb88cc7418690d75a109224c, type: 3}
+  m_ShaderKeywords: _SEGMENT_HIGH _SEGMENT__1 _SEGMENT__HIGH
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2001
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -55,7 +55,15 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _WindFlowTex:
+        m_Texture: {fileID: 2800000, guid: eec618cb356b9594e91e7778126bb5dc, type: 3}
+        m_Scale: {x: 0.1, y: 0.1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _BendForward: 0.259
+    - _BendRotate: 0.156
+    - _BendScale: 0.384
+    - _BottomWidth: 0.2
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -63,17 +71,26 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _Height: 3
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _RandomClip: 0
+    - _SEGMENT: 2
+    - _SegmentFactor: 0.842
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SpikeStrength: 0.204
     - _SrcBlend: 1
     - _UVSec: 0
+    - _Width: 0.2
+    - _WindSpeed: 0.359
+    - _WindStrength: 0.479
     - _ZWrite: 1
     m_Colors:
+    - _BottomColor: {r: 0, g: 0.18867922, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _GroundColor: {r: 0.06019394, g: 0.26415092, b: 0.056069776, a: 1}
+    - _TopColor: {r: 0, g: 0.8679245, b: 0.10114126, a: 1}
   m_BuildTextureStacks: []
