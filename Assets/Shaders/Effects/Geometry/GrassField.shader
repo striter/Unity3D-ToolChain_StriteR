@@ -24,7 +24,10 @@
         Tags { "RenderType"="Opaque" }
         CGINCLUDE
             #pragma multi_compile _SEGMENT_LOW _SEGMENT_NORMAL _SEGMENT_HIGH _SEGMENT_ULTRA
-            #include "UnityCG.cginc"
+            #pragma target 4.6
+		    #include "UnityCG.cginc"
+		    #include "Lighting.cginc"
+		    #include "AutoLight.cginc"
             #include "../../CommonInclude.cginc"
 
             struct a2v
@@ -32,6 +35,7 @@
                 float4 vertex : POSITION;
                 float3 normal:NORMAL;
                 float4 tangent:TANGENT;
+                float3 color:COLOR;
             };
 
             struct v2g
@@ -39,20 +43,17 @@
                 float4 vertex:POSITION;
                 float3 normal:NORMAL;
                 float4 tangent:TANGENT;
+                float3 color:COLOR;
             };
 
             struct g2f
             {
                 float4 vertex : SV_POSITION;
                 float3 color:COLOR;
+                #if UNITY_PASS_FORWARDBASE
+			    SHADOW_COORDS(0)
+                #endif
             };
-
-            v2g vert(a2v i)
-            {
-                v2g o;
-                o = i;
-                return o;
-            }
 
             float4 _GroundColor;
             float4 _TopColor;
@@ -78,17 +79,36 @@
             float4 _WindFlowTex_ST;
             float _WindSpeed;
             float _WindStrength;
+            
+            v2g vert(a2v i)
+            {
+                v2g o;
+                o.vertex=i.vertex;
+                o.normal=i.normal;
+                o.tangent=i.tangent;
+                o.color=i.color;
+                return o;
+            }
+
+            void Append(inout TriangleStream<g2f> stream,v2g v)
+            {
+                g2f o;
+                o.color=v.color;
+                o.vertex=UnityObjectToClipPos(v.vertex);
+                #if UNITY_PASS_FORWARDBASE
+		        TRANSFER_SHADOW(o);
+                #endif
+                stream.Append(o);
+            }
 
             [maxvertexcount(_SEGMENTCOUNT * 4 + 1 + 3)]
             void geom(triangle v2g i[3],inout TriangleStream<g2f> stream)
-            {
-                g2f o;
-                
+            {   
+                [unroll(2)]
                 for (int index = 0; index < 3; index++)
                 {
-                    o.vertex = UnityObjectToClipPos(i[index].vertex);
-                    o.color = _GroundColor;
-                    stream.Append(o);
+                    i[index].color=_GroundColor;
+                    Append(stream,i[index]);
                 }
                 stream.RestartStrip();
 
@@ -116,8 +136,7 @@
                 float randHeight = random3(pos.zyx) * _Height * _RandomClip + _Height * (1 - _RandomClip);
                 float randForward = random3(pos.zzx) * _RandomClip * _BendForward + _BendForward * (1 - _RandomClip);
 
-                float4 verticies[_SEGMENTCOUNT * 2];
-                float4 colors[_SEGMENTCOUNT];
+                v2g vertexDatas[_SEGMENTCOUNT * 2];
 
                 float3 lightNormal = normalize(mul(vertexTransform,float3(0,0,1)));
                 float3 lightDir = normalize(_WorldSpaceLightPos0.xyz);
@@ -133,40 +152,45 @@
                     float right = randWidth * (1 - gradient);
                     float up = randHeight * gradient;
 
-                    verticies[index * 2] = UnityObjectToClipPos(pos + mul(vertexTransform,float3(-right,forward,up)));
-                    verticies[index * 2 + 1] = UnityObjectToClipPos(pos + mul(vertexTransform,float3(right,forward,up)));
-                    colors[index] = lerp(_BottomColor,_TopColor,gradient) * diffuse;
+                    float3 vertex1=pos+mul(vertexTransform,float3(-right,forward,up));
+                    float3 vertex2=pos + mul(vertexTransform,float3(right,forward,up));
+                    
+                    vertexDatas[index*2].vertex=float4(vertex1,1);
+                    vertexDatas[index*2+1].vertex=float4(vertex2,1);
+
+                    float3 color=lerp(_BottomColor,_TopColor,gradient) * diffuse;
+                    vertexDatas[index*2].color=color;
+                    vertexDatas[index*2+1].color=color;
                 }
 
                 [unroll(2)]
                 for (index = 0; index < _SEGMENTCOUNT; index++)
                 {
-                    o.color = colors[index];
-                    o.vertex = verticies[index * 2];
-                    stream.Append(o);
-                    o.vertex = verticies[index * 2 + 1];
-                    stream.Append(o);
+                    Append(stream, vertexDatas[index*2]);
+                    Append(stream, vertexDatas[index * 2+1]);
                 }
-                o.vertex = UnityObjectToClipPos(pos + mul(vertexTransform,float3(0,randForward,randHeight)));
-                o.color = diffuse * _TopColor;
-                stream.Append(o);
-
+                v2g v;
+                v.vertex=float4(pos + mul(vertexTransform,float3(0,randForward,randHeight)),1);
+                v.color= diffuse * _TopColor;
+                Append(stream,v);
                 [unroll(2)]
                 for (index = 0; index < _SEGMENTCOUNT; index++)
                 {
-                    o.color = colors[index];
-                    o.vertex = verticies[index * 2 + 1];
-                    stream.Append(o);
-                    o.vertex = verticies[index * 2];
-                    stream.Append(o);
+                    Append(stream, vertexDatas[index * 2+1]);
+                    Append(stream, vertexDatas[index*2]);
                 }
                 stream.RestartStrip();
             }
 
             fixed4 frag(g2f i) : SV_Target
             {
+                #if UNITY_PASS_FORWARDBASE
                 float3 finalCol = i.color;
-                return float4(finalCol,1);
+                float atten=SHADOW_ATTENUATION(i);
+                return float4(finalCol*atten,1);
+                #else
+                    return 1;
+                #endif
             }
 
         ENDCG
