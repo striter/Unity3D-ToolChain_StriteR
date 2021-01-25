@@ -7,7 +7,7 @@
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "RenderType"="Opaque"  }
         CGINCLUDE       
             #pragma target 4.0
             #include "UnityCG.cginc"
@@ -86,5 +86,17 @@
             #pragma fragment frag
             ENDCG
         }
+
+        Pass
+        {
+            Tags{"LightMode" = "ShadowCaster"}
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma geometry geom
+            #pragma fragment frag
+            #pragma multi_compile_shadowcaster
+            ENDCG
+        }
+
     }
 }

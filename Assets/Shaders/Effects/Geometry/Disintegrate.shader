@@ -24,8 +24,9 @@
     }
     SubShader
     {
-        Tags { "RenderType"="Disintegrate" "Queue"="Geometry" }
+        Tags { "RenderType"="Disintegrate" "Queue"="Transparent" }
         Cull Off
+        Blend SrcAlpha OneMinusSrcAlpha
 
         CGINCLUDE
             #include "UnityCG.cginc"
@@ -192,5 +193,6 @@
             }
             ENDCG
         }
+        
     }
 }

@@ -29,13 +29,13 @@
 	}
 	SubShader
 	{
-		Tags { "RenderType"="Transparent" "Queue"="Transparent" }
+		Tags { "RenderType"="Transparent" "Queue"="Transparent" "PreviewType" = "Plane"}
 		ZWrite Off
 		Cull Back
 		Blend SrcAlpha OneMinusSrcAlpha
 		CGINCLUDE
 			#include "UnityCG.cginc"
-			#include "../../CommonInclude.cginc"
+			#include "../CommonInclude.cginc"
 			#pragma shader_feature _VERTEXRANDOMDISTORT
 			sampler2D _MaskTex;
 			float4 _MaskTex_ST;
