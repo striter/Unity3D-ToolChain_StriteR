@@ -82,8 +82,8 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _ShiftAmount: -1
-    - _ShiftOffset: -0.55
-    - _ShiftStrength: 1
+    - _ShiftOffset: 0.004
+    - _ShiftStrength: 0.828
     - _SmoothnessTextureChannel: 0
     - _SpecularExponent: 100
     - _SpecularHighlights: 1
