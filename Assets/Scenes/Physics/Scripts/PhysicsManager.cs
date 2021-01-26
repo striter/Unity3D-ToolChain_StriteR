@@ -47,11 +47,12 @@ namespace PhysicsTest
         private void Start()
         {
             UIT_TouchConsole.Instance.InitConsole(consoleOn=>Cursor.lockState=consoleOn? CursorLockMode.Confined: CursorLockMode.Locked);
-            UIT_TouchConsole.Instance.AddConsoleBinding().Set("Graviry", KeyCode.F1).Button(() => SetCharacter(m_GravityGunCharacter));
-            UIT_TouchConsole.Instance.AddConsoleBinding().Set("Marioentte", KeyCode.F2).Button(() => SetCharacter(m_marionetteCharacter));
-            UIT_TouchConsole.Instance.AddConsoleBinding().Set("Human Static Animator", KeyCode.F3).Button(() => SetCharacter(m_Human_StaticAnimator));
-            UIT_TouchConsole.Instance.AddConsoleBinding().Set("Human Balance", KeyCode.F4).Button(() => SetCharacter(m_Human_Balance));
-            UIT_TouchConsole.Instance.AddConsoleBinding().Set("Reset All Items", KeyCode.F5).Button(() => m_DynamicItems.Traversal(dynamicItem => dynamicItem.Reposition()));
+            UIT_TouchConsole.Instance.AddCommandLine().Header("Level");
+            UIT_TouchConsole.Instance.AddCommandLine().Command("Graviry", KeyCode.F1).Button(() => SetCharacter(m_GravityGunCharacter));
+            UIT_TouchConsole.Instance.AddCommandLine().Command("Marioentte", KeyCode.F2).Button(() => SetCharacter(m_marionetteCharacter));
+            UIT_TouchConsole.Instance.AddCommandLine().Command("Human Static Animator", KeyCode.F3).Button(() => SetCharacter(m_Human_StaticAnimator));
+            UIT_TouchConsole.Instance.AddCommandLine().Command("Human Balance", KeyCode.F4).Button(() => SetCharacter(m_Human_Balance));
+            UIT_TouchConsole.Instance.AddCommandLine().Command("Reset All Items", KeyCode.F5).Button(() => m_DynamicItems.Traversal(dynamicItem => dynamicItem.Reposition()));
 
             SetCharacter(m_GravityGunCharacter);
             Cursor.lockState = CursorLockMode.Locked;
