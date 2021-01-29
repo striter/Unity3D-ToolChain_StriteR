@@ -69,8 +69,8 @@ Material:
     - _GlossyReflections: 1
     - _Metallic: 0
     - _Mode: 0
-    - _NoiseFlowX: 0.04
-    - _NoiseFlowY: 0.31
+    - _NoiseFlowX: 0.5
+    - _NoiseFlowY: 0.2
     - _NoisePow: 1.9
     - _NoiseStrength: 0.892
     - _OcclusionStrength: 1

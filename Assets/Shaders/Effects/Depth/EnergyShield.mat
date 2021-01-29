@@ -78,7 +78,7 @@ Material:
     - _DistortFrequency: 60
     - _DistortStrength: 0.005
     - _DstBlend: 10
-    - _EdgeMultiplier: 3
+    - _EdgeMultiplier: 1
     - _EnableDepthOffset: 1
     - _EnableInnerGlow: 1
     - _EnableRandomDistort: 1
@@ -95,7 +95,7 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _RimGlow: 3.86
-    - _RimWidth: 5.1
+    - _RimWidth: 2
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 5
