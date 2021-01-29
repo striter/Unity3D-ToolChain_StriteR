@@ -17,7 +17,7 @@ namespace Rendering.ImageEffect
     [Serializable]
     public struct ImageEffectParam_Blurs 
     {
-        [Range(0.25f, 1.5f)] public float blurSize ;
+        [Range(0.25f, 2.5f)] public float blurSize;
         [Range(1, 4)] public int downSample;
         [Range(1, 8)] public int iteration;
         public enum_BlurType blurType;

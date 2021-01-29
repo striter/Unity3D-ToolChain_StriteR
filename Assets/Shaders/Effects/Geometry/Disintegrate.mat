@@ -48,7 +48,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 49ad95a1818f98841988433385100b75, type: 3}
+        m_Texture: {fileID: 2800000, guid: 840a70338a3229f4d93ee5c6a13cb82c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -73,7 +73,7 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DisintegrateAmount: 0.17
-    - _DissolveEdgeWidth: 0.039
+    - _DissolveEdgeWidth: 0.125
     - _DstBlend: 0
     - _FlowAmount: 5
     - _FlowExpand: 5
@@ -85,7 +85,7 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _ParticleShapeClip: 0.944
-    - _ParticleSize: 0.117
+    - _ParticleSize: 0.134
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -93,8 +93,8 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DissolveEdgeColor: {r: 0, g: 0.7971698, b: 0.7971698, a: 0.5529412}
+    - _DissolveEdgeColor: {r: 1.3411765, g: 1.9058824, b: 1.9058824, a: 0.5529412}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlowDirection: {r: 0, g: 2, b: 0, a: 0}
-    - _ParticleColor: {r: 0.6606889, g: 0.9528302, b: 0.9434063, a: 0.6313726}
+    - _ParticleColor: {r: 0.85104096, g: 3.6121962, b: 1.8556495, a: 0.6313726}
   m_BuildTextureStacks: []

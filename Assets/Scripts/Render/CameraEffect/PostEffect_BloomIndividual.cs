@@ -34,6 +34,8 @@ namespace Rendering.ImageEffect
             m_RenderCamera.nearClipPlane = _camera.nearClipPlane;
             m_RenderCamera.farClipPlane = _camera.farClipPlane;
             m_RenderCamera.fieldOfView = _camera.fieldOfView;
+            m_RenderCamera.allowHDR = _camera.allowHDR;
+            m_RenderCamera.allowMSAA = _camera.allowMSAA;
             m_RenderCamera.depthTextureMode = DepthTextureMode.None;
             m_RenderCamera.enabled = false;
         }

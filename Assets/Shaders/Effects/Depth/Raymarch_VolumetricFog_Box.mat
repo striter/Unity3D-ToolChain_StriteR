@@ -70,7 +70,7 @@ Material:
     - _Density: 3.66
     - _DensityClip: 0.228
     - _DetailNormalMapScale: 1
-    - _Distance: 7
+    - _Distance: 13
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -94,7 +94,7 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 0.6313726}
+    - _Color: {r: 1.1769093, g: 1.1769093, b: 1.319565, a: 0.6313726}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _NoiseFlow: {r: 0.03, g: 0.01, b: 0, a: 1}
     - _NoiseScale: {r: 100, g: 100, b: 100, a: 1}

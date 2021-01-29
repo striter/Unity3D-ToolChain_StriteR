@@ -2,7 +2,7 @@
 {
     Properties
     {
-        _Color("Color",Color)=(1,1,1,1)
+        [HDR]_Color("Color",Color)=(1,1,1,1)
         _Distance("March Distance",Range(0,500))=5
         _Density("Density",Range(0,5))=1
         _DensityClip("_Density Clip",Range(0,1))=.2

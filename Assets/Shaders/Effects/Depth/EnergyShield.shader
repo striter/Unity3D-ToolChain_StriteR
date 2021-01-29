@@ -3,7 +3,7 @@
 	Properties
 	{
 		[Header(Color)]
-	    _RimColor("Rim Color", Color) =(1,1,1,1)
+	    [HDR]_RimColor("Rim Color", Color) =(1,1,1,1)
 	    _RimWidth("Rim Width", Range(0.2,20.0)) = 3.0
 	    _EdgeMultiplier("Rim Glow Multiplier", Range(0.0,9.0)) = 1.0
 		_MaskTex("Mask Texture",2D)="white"{}

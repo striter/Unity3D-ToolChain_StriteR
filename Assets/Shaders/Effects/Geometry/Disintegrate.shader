@@ -9,12 +9,12 @@
         [Header(Dissolve)]
         _DissolveTex("Dissolve Tex",2D)="white"{}
         _DissolveEdgeWidth("Dissolve Edge Width",Range(0,1))=0.1
-        _DissolveEdgeColor("Dissolve Edge Color",Color)=(1,1,1,1)
+        [HDR]_DissolveEdgeColor("Dissolve Edge Color",Color)=(1,1,1,1)
 
         [Header(Shape)]
         _ParticleShape("Particle Shape",2D)="white"{}
         _ParticleShapeClip("Particle Shape Clip",Range(0,1))=.1
-        _ParticleColor("Particle Color",Color)=(1,1,1,1)
+        [HDR]_ParticleColor("Particle Color",Color)=(1,1,1,1)
         _ParticleSize("Particle Size",Range(0,1))=.1
 
         [Header(Flow)]

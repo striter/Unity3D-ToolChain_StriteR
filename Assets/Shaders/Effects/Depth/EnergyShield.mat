@@ -108,5 +108,5 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _InnerColor: {r: 0.23175506, g: 0.28524983, b: 0.5283019, a: 1}
     - _InnerGlow: {r: 1, g: 1, b: 1, a: 0}
-    - _RimColor: {r: 0, g: 0.1802516, b: 1, a: 1}
+    - _RimColor: {r: 0.26901528, g: 0.45253474, b: 1.2673607, a: 1}
   m_BuildTextureStacks: []

@@ -1,0 +1,5 @@
+ssh-keygen
+ssh-add
+ssh-add -l
+ssh-add -d
+ssh (address)
