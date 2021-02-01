@@ -18,7 +18,7 @@ public class ExampleHelperScene : MonoBehaviour
     private void Start()
     {
         GameObject.DontDestroyOnLoad(this);
-        UIT_TouchConsole.Instance.AddCommandLine().EnumSelection(0,m_SceneNames,ChangeScene);
+        UIT_TouchConsole.Command("Select Scene").EnumSelection(0,m_SceneNames,ChangeScene);
         ChangeScene(m_SceneNames[0]);
     }
 

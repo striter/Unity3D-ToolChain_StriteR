@@ -3,10 +3,11 @@
     Properties
     {
         [HDR]_Color ("Color Tine", Color) = (1,1,1,.1)
-        
+        [Header(Shape)]
         _NoiseTex("Noise Tex",2D)="white"{}
+        _NoiseStrength("Noise Strength",Range(0,5))=1.5
         _NoisePow("Noise Pow",Range(.1,5))=2
-        [Header(Noise Flow)]
+        [Header(Flow)]
         _NoiseFlowX("Noise Flow X",Range(-2,2))=.1
         _NoiseFlowY("Noise Flow Y",Range(-2,2))=.1
     }
@@ -23,6 +24,7 @@
 
             sampler2D _NoiseTex;
             float4 _NoiseTex_ST;
+            float _NoiseStrength;
             float _NoisePow;
             float  _NoiseFlowX;
             float  _NoiseFlowY;
@@ -55,7 +57,7 @@
             fixed4 frag (v2f i) : SV_Target
             {
                 float3 finalCol=_Color*_Color.a;
-                float noise= tex2D(_NoiseTex,i.uv).r;
+                float noise= tex2D(_NoiseTex,i.uv).r*_NoiseStrength;
                 noise=pow(noise,_NoisePow);
 
                 finalCol*=noise;
