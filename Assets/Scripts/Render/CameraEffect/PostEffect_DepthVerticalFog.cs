@@ -11,7 +11,7 @@ namespace Rendering.ImageEffect
     [Serializable]
     public struct CameraEffectParam_DepthFog
     {
-        public Color m_FogColor;
+        [ColorUsage(true,true)]public Color m_FogColor;
         public float m_FogDensity;
         public float m_FogVerticalStart;
         public float m_FogVerticalOffset;

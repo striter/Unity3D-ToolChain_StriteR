@@ -3,14 +3,13 @@
 	Properties
 	{
 		[PreRenderData]_MainTex ("Texture", 2D) = "white" {}
-		_RenderTex("Render",2D) = "white"{}
 	}
 	
 	CGINCLUDE
 	#include "UnityCG.cginc"
 	#pragma multi_compile _ _BLOOMINDIVIDUAL_ADDITIVE _BLOOMINDIVIDUAL_ALPHABLEND
 	sampler2D _MainTex;
-	sampler2D _RenderTex;
+	sampler2D _TargetTex;
 	float _Intensity;
 	ENDCG
 
@@ -26,7 +25,7 @@
 			fixed4 frag(v2f_img i) : SV_Target
 			{
 				float4 baseCol=tex2D(_MainTex,i.uv);
-				float4 blendCol=tex2D(_RenderTex,i.uv)*_Intensity;
+				float4 blendCol=tex2D(_TargetTex,i.uv)*_Intensity;
 				#if _BLOOMINDIVIDUAL_ADDITIVE
 					return baseCol+blendCol;
 				#elif _BLOOMINDIVIDUAL_ALPHABLEND

@@ -288,7 +288,7 @@ public static class TCommon
         ienumerable.Traversal((item => list.Add(OnEachAddItem(item))));
     }
 
-    public static Y[] Convert<T,Y>(this T[] srcArray,Func<T,Y> GetDstItem)
+    public static Y[] ReconstructToArray<T,Y>(this T[] srcArray,Func<T,Y> GetDstItem)
     {
         Y[] dstArray = new Y[srcArray.Length]; ;
         srcArray.Traversal((index, srcItem) =>dstArray[index]=GetDstItem(srcItem));

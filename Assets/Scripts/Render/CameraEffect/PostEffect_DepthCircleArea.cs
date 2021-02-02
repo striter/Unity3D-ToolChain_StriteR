@@ -7,15 +7,35 @@ namespace Rendering.ImageEffect
 {
     public class PostEffect_DepthCircleArea : PostEffectBase<CameraEffect_DepthCircleArea, PostEffectParam_DepthCirCleArea>
     {
+        [ImageEffectOpaque]
+        new void OnRenderImage(RenderTexture _src, RenderTexture _dst) => base.OnRenderImage(_src, _dst);
+
+#if UNITY_EDITOR
+        public bool m_DrawGizmos = true;
+        protected void OnDrawGizmos()
+        {
+            if (!m_DrawGizmos)
+                return;
+
+            Gizmos.color = Color.white;
+            Gizmos.DrawSphere(m_EffectData.m_Origin, .1f);
+
+            Gizmos.color = m_EffectData.m_FillColor;
+            Gizmos.DrawWireSphere(m_EffectData.m_Origin,m_EffectData.m_Radius);
+
+            Gizmos.color = m_EffectData.m_EdgeColor;
+            Gizmos.DrawWireSphere(m_EffectData.m_Origin,m_EffectData.m_Radius+m_EffectData.m_Outline);
+        }
+#endif
     }
     [Serializable]
     public struct PostEffectParam_DepthCirCleArea
     {
         public Vector3 m_Origin;
         public float m_Radius;
-        public float m_SqrOutline;
-        public Color m_FillColor;
-        public Color m_EdgeColor;
+        public float m_Outline;
+        [ColorUsage(true,true)]public Color m_FillColor;
+        [ColorUsage(true,true)]public Color m_EdgeColor;
         public Texture2D m_FillTexure;
         [RangeVector(-5,5)] public Vector2 m_FillTextureFlow;
         public float m_FillTextureScale;
@@ -24,7 +44,7 @@ namespace Rendering.ImageEffect
         {
             m_Origin = Vector3.zero,
             m_Radius = 5f,
-            m_SqrOutline = 1f,
+            m_Outline = 1f,
             m_FillColor=Color.white,
             m_EdgeColor=Color.black,
             m_FillTextureFlow=Vector2.one,
@@ -48,10 +68,10 @@ namespace Rendering.ImageEffect
         protected override void OnValidate(PostEffectParam_DepthCirCleArea _params, Material _material)
         {
             base.OnValidate(_params, _material);
-            float sqrEdgeMin = _params.m_Radius;
-            float sqrEdgeMax = _params.m_Radius + _params.m_SqrOutline;
-            _material.SetFloat(ID_SqrEdgeMax, sqrEdgeMax * sqrEdgeMax);
-            _material.SetFloat(ID_SqrEdgeMin, sqrEdgeMin * sqrEdgeMin);
+            float edgeMin = _params.m_Radius;
+            float edgeMax = _params.m_Radius + _params.m_Outline;
+            _material.SetFloat(ID_SqrEdgeMax, edgeMax * edgeMax);
+            _material.SetFloat(ID_SqrEdgeMin, edgeMin * edgeMin);
             _material.SetVector(ID_Origin, _params.m_Origin);
             _material.SetColor(ID_FillColor, _params.m_FillColor);
             _material.SetColor(ID_EdgeColor, _params.m_EdgeColor);

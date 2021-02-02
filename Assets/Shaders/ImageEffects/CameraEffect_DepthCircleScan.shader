@@ -3,34 +3,34 @@
 	Properties
 	{
 		[PreRenderData]_MainTex ("Texture", 2D) = "white" {}
-		_Texture(" Scan Texture",2D) = "white"{}
-		_TextureScale("Scan Tex Scale",float)=15
-		_Color("Scan Color",Color)=(1,1,1,1)
-		_MinSqrDistance("Min Squared Distance",float) = .5
-		_MaxSqrDistance("Max Squared Distance",float)=.5
-		_Origin("Scan Origin",Vector)=(1,1,1,1)
 	}
-		SubShader
+	SubShader
+	{
+		// No culling or depth
+		Cull Off ZWrite Off ZTest Always
+
+		Pass
 		{
-			// No culling or depth
-			Cull Off ZWrite Off ZTest Always
+			CGPROGRAM
+			#pragma shader_feature _MASK_TEXTURE
+			#pragma vertex vert
+			#pragma fragment frag
 
-			Pass
-			{
-				CGPROGRAM
-				#pragma vertex vert
-				#pragma fragment frag
+			#include "UnityCG.cginc"
+			#include "../CommonInclude.cginc"
+			#include "CameraEffectInclude.cginc"
 
-				#include "UnityCG.cginc"
-				#include "../CommonInclude.cginc"
-				#include "CameraEffectInclude.cginc"
-
-			sampler2D _Texture;
-			float _TextureScale;
 			float4 _Color;
 			float4 _Origin;
+
 			float _MinSqrDistance;
 			float _MaxSqrDistance;
+			float _FadingPow;
+
+			#if _MASK_TEXTURE
+			sampler2D _MaskTexture;
+			float _MaskTextureScale;
+			#endif
 
 			struct v2f
 			{
@@ -58,9 +58,13 @@
 
 				float scan = 1;
 				scan *= _Color.a;
-				scan *= step(_MinSqrDistance, squareDistance)*step(squareDistance, _MaxSqrDistance);
-				scan *= tex2D(_Texture, worldPos.xz*_TextureScale).r;
-				return lerp( tex2D(_MainTex,i.uv),_Color, scan);
+				scan *= pow(saturate(invlerp( _MinSqrDistance,_MaxSqrDistance,squareDistance)),_FadingPow)*step(squareDistance, _MaxSqrDistance);
+
+				#if _MASK_TEXTURE
+				scan *= tex2D(_MaskTexture, worldPos.xz*_MaskTextureScale).r;
+				#endif
+				float4 finalCol=tex2D(_MainTex,i.uv);
+				return lerp(finalCol,finalCol*_Color, scan);
 			}
 			ENDCG
 		}

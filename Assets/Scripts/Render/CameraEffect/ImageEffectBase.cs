@@ -55,15 +55,14 @@ namespace Rendering.ImageEffect
         protected Camera m_Camera { get; private set; }
         protected virtual void Awake()=>Init();
         protected virtual void OnDestroy()=>Destroy();
-        public void OnValidate() => m_Effect?.DoValidate(m_EffectData);
+        public virtual void OnValidate() => m_Effect?.DoValidate(m_EffectData);
         void OnDidApplyAnimationProperties() => OnValidate();       //Undocumented Magic Fucntion ,Triggered By AnimationClip
         void Reset() => m_EffectData = (Y) typeof(Y).GetField("m_Default", System.Reflection.BindingFlags.Static| System.Reflection.BindingFlags.Public).GetValue(null);     //Get Default Value By Reflection
         void Init()
         {
-            if (!m_Camera) m_Camera = GetComponent<Camera>();
-
             if (m_Effect == null)
             {
+                m_Camera = GetComponent<Camera>();
                 m_Effect = new T();
                 OnEffectCreate(m_Effect);
             }
@@ -82,15 +81,15 @@ namespace Rendering.ImageEffect
             m_Effect = null;
         }
 
-        protected void OnRenderImage(RenderTexture src, RenderTexture dst)
+        protected void OnRenderImage(RenderTexture _src, RenderTexture _dst)
         {
             if (m_Effect == null)
             {
-                Graphics.Blit(src, dst);
+                Graphics.Blit(_src, _dst);
                 return;
             }
 
-            m_Effect.DoImageProcess(src, dst,m_EffectData);
+            m_Effect.DoImageProcess(_src, _dst,m_EffectData);
         }
     }
 

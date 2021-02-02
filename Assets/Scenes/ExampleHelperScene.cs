@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 
 public class ExampleHelperScene : MonoBehaviour
 {
-
     public static List<string> m_SceneNames { get; private set; } = new List<string>();
     protected void Awake()
     {
@@ -15,6 +14,7 @@ public class ExampleHelperScene : MonoBehaviour
             m_SceneNames.Add(i.ToString());
         }
     }
+
     private void Start()
     {
         GameObject.DontDestroyOnLoad(this);

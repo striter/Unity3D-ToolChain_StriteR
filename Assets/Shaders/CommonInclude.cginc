@@ -28,6 +28,13 @@ float remap (float value, float from1, float to1, float from2, float to2) {   re
 float random2(float2 value){return frac(sin(dot(value,float2(12.9898,78.233)))*43758.543123);}
 float random3(float3 value){return frac(sin(dot(value,float3(12.9898,78.233,53.539)))*43758.543123);}
 
+float2x2 Rotate2x2(float angle)
+{
+    float cosAngle = cos(angle);
+    float sinAngle = sin(angle);
+    return float2x2(cosAngle,-sinAngle,sinAngle,cosAngle);
+}
+
 float3x3 AngleAxis3x3(float angle, float3 axis)
 {
     float s, c;

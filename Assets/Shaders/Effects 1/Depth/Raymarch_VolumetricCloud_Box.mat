@@ -1,0 +1,128 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Raymarch_VolumetricCloud_Box
+  m_Shader: {fileID: 4800000, guid: 0d179e3075ea0854fb294e42e87723d8, type: 3}
+  m_ShaderKeywords: _LIGHTMARCH _MARCHTIMES__16__32__64__128__256__512 _MARCHTIMES__32
+    _MARCH_T128 _MARCH__16
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _3DNoise:
+        m_Texture: {fileID: 11700000, guid: d2993425f654940448af634a1d7cf838, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CloudColorRamp:
+        m_Texture: {fileID: 2800000, guid: 03ce33f9b98e23f4e95f78c95b2abc62, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ColorRamp:
+        m_Texture: {fileID: 2800000, guid: 034f12e5c34ba414fbcbfa5900814c89, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LightColorRamp:
+        m_Texture: {fileID: 2800000, guid: fada509226f7c374595020510107c6e9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LightRamp:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Noise:
+        m_Texture: {fileID: 11700000, guid: 5743fc3e0e9339b41b3dc606bd35aefe, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _BumpScale: 1
+    - _Cutoff: 0.5
+    - _Density: 10
+    - _DensityClip: 0.607
+    - _DetailNormalMapScale: 1
+    - _Distance: 5.8
+    - _DstBlend: 0
+    - _EnableLightMarch: 1
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _LightAbsorption: 10
+    - _LightDensityClip: 0.451
+    - _LightMarch: 4
+    - _LightMarchTimes: 8
+    - _March: 512
+    - _MarchDistance: 5.6
+    - _MarchTimes: 1
+    - _MaxDensity: 1
+    - _Metallic: 0
+    - _Mode: 0
+    - _NoiseDensity: 1.43
+    - _NoiseScale: 100
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _RayMarch: 16
+    - _RayMarchTimes: 32
+    - _ScatterRange: 0.8
+    - _ScatterStrength: 0.8
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _Strength: 4.08
+    - _UVSec: 0
+    - _ZWrite: 1
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _LightColorDark: {r: 1, g: 1, b: 1, a: 0}
+    - _LightColorShadow: {r: 0, g: 1, b: 0.11642933, a: 0}
+    - _LightShadowColor: {r: 0.25992346, g: 0.28517285, b: 0.5566038, a: 1}
+    - _NoiseFlow: {r: 0.01, g: 0.01, b: 0.1, a: 1}
+    - _NoiseScale: {r: 30, g: 20, b: 30, a: 1}
+    - _Origin: {r: 0, g: 0, b: 0, a: 0}
+  m_BuildTextureStacks: []

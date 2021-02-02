@@ -10,6 +10,7 @@
         Tags { "RenderType"="Opaque"  }
         CGINCLUDE       
             #pragma target 4.0
+            #pragma target 3.5
             #include "UnityCG.cginc"
 
             struct a2v

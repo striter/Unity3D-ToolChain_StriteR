@@ -45,11 +45,6 @@
 	{
 		Cull Off Lighting Off Fog { Mode Off }
 		Tags{"Ignore Projector"="True"}
-		SubShader
-		{
-			Tags { "RenderType" = "Transparent"}
-			UsePass "Game/Unlit/Transparent/MAIN"
-		}
 
 		SubShader
 		{
@@ -61,6 +56,24 @@
 		{
 			Tags {"RenderType" = "Disintegrate"}
 			UsePass "Game/Effects/Geometry/Disintegrate/DISINTEGRATE"
+		}
+
+		SubShader
+		{
+			Tags{"RenderType"="GeometryAdditive"}
+			UsePass "Game/Effects/GeometryAdditive/MAIN"
+		}
+
+		SubShader
+		{
+			Tags{"RenderType"="EnergyShield"}
+			UsePass "Game/Effects/EnergyShield/MAIN"
+		}
+
+		SubShader
+		{
+			Tags {"RenderType"="HDREmitter"}
+			UsePass "Game/Unlit/Transparent/MAIN"
 		}
 	}
 }

@@ -27,7 +27,7 @@ public class PostEffect : MonoBehaviour
             PostEffect_DepthCircleScan scan = GetComponentInChildren<PostEffect_DepthCircleScan>();
             Camera scanCamera = scan.GetComponent<Camera>();
             if (scanCamera.InputRayCheck(stretch1Pos, out RaycastHit _hit))
-                scan.StartDepthScanCircle(_hit.point, Color.green, .5f, 10f, .5f);
+                scan.StartDepthScanCircle(_hit.point, 10f, 1f);
 
             m_AreaRadius= 0f;
             m_AreaOrigin = Vector3.zero;

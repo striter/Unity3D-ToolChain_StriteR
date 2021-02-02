@@ -325,7 +325,7 @@ namespace TPhysics
             float t1 = -dotOffsetDirection + discriminant;
             if (t0 < 0)
                 t0 = t1;
-            return new Vector2(t0, t1);
+            return new Vector2(t0, t1-t0);
         }
         static void AxisAlignBoundingBoxRayCalculate(Vector3 _boundsMin, Vector3 _boundsMax, Vector3 _rayOrigin, Vector3 _rayDir,out Vector3 _tmin,out Vector3 _tmax)
         {

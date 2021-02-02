@@ -242,14 +242,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectData:
-    m_Intensity: 2.56
+    m_Intensity: 0.47
     m_BlendMode: 1
     m_CullingMask: -1
+    m_EnableBlur: 1
     m_BlurParam:
-      blurSize: 0.293
-      downSample: 4
-      iteration: 8
-      blurType: 2
+      blurSize: 2.5
+      downSample: 1
+      iteration: 1
+      blurType: 3
   m_SceneViewPreview: 1
 --- !u!1 &57150664
 GameObject:

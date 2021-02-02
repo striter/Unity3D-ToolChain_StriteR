@@ -4,7 +4,7 @@ using UnityEngine;
 using TPhysics;
 namespace BoundingCollisionTest
 {
-    public class BoundingsCollisionTest_AABB : MonoBehaviour
+    public class GeometryTest_AABB : MonoBehaviour
     {
         public Vector3 m_BoxOrigin = Vector3.zero;
         public Vector3 m_BoxSize = Vector3.one;
@@ -19,9 +19,6 @@ namespace BoundingCollisionTest
             Gizmos.color = intersect ? Color.green : Color.grey;
             Gizmos.DrawWireCube(m_BoxOrigin, m_BoxSize);
 
-            Gizmos.color = Color.white;
-            Gizmos.DrawRay(m_RayOrigin, m_RayDirection * 100f);
-
             Vector2 distances = Physics_Extend.AABBRayDistance(bound.min, bound.max, m_RayOrigin, direction);
             if (distances.y > 0)
             {
@@ -34,6 +31,8 @@ namespace BoundingCollisionTest
                 }
             }
 
+            Gizmos.color = intersect ? Color.white:Color.grey;
+            Gizmos.DrawRay(m_RayOrigin, direction * Mathf.Max(1f, distances.x+distances.y));
         }
 
 

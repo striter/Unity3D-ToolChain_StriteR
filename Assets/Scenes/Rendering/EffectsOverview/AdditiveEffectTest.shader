@@ -1,4 +1,4 @@
-﻿Shader "Unlit/AdditiveEffectTest"
+﻿Shader "Game/Effects/GeometryAdditive"
 {
     Properties
     {
@@ -13,7 +13,8 @@
     }
     SubShader
     {
-        Tags { "RenderType"="Geometry+1" }
+        Name "Main"
+        Tags { "RenderType" ="GeometryAdditive" "Queue"="Geometry+100" }
         ZWrite Off
         Blend One One
         Pass

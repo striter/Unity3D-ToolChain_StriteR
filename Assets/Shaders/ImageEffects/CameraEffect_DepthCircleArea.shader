@@ -3,12 +3,6 @@
 	Properties
 	{
 		[PreRenderData]_MainTex("Texture", 2D) = "white" {}
-		_FillColor("_Fill Color",Color)=(1,1,1,1)
-		_FillTexture("_Fill Texture",2D)="White"{}
-		_TextureScale("_Texture Scale",float)=1
-		_TextureFlow("_Texture Flow",Vector)=(1,1,0,0)
-		_SqrEdgeMin("Square Edge Min",float)=100
-		_SqrEdgeMax("Square Edge Max",float)=144
 	}
 	SubShader
 	{
@@ -55,19 +49,21 @@
 				{
 					float linearDepth = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,i.uv_depth));
 					float3 worldPos = _WorldSpaceCameraPos + i.interpolatedRay*linearDepth;
-					float2 uv = worldPos.xz + worldPos.yy;
 					float squaredDistance = sqrDistance(worldPos,_Origin);
 
-					float fill = step(squaredDistance,_SqrEdgeMax);
-					float edge = fill * step(_SqrEdgeMin,squaredDistance);
+					float fill = step(squaredDistance,_SqrEdgeMin);
+					float edge = saturate( invlerp(_SqrEdgeMax,_SqrEdgeMin,squaredDistance))*(1-fill);
+					
+					float2 uv = (worldPos.xz-_Origin.xz)* _TextureScale + _TextureFlow.xy * _Time.y;
+					float fillMask=tex2D(_FillTexture, uv ).r;
+					float3 fillColor = fillMask*_FillColor;
+					float3 edgeColor = _EdgeColor;
 
-					fill *= _FillColor.a;
-					edge *= _EdgeColor.a;
+					float3 finalCol=tex2D(_MainTex, i.uv);
+					finalCol=lerp(finalCol,fillColor,fill*_FillColor.a);
+					finalCol=lerp(finalCol,edgeColor,edge*_EdgeColor.a);
 
-					float4 fillColor = tex2D(_FillTexture, uv * _TextureScale + _TextureFlow.xy * (_Time.y))*_FillColor;
-					float4 edgeColor = _EdgeColor;
-
-					return  lerp( tex2D(_MainTex, i.uv),lerp(fillColor, edgeColor,edge), fill);
+					return float4( finalCol,1);
 				}
 			ENDCG
 		}
