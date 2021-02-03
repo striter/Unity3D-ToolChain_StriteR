@@ -11,17 +11,18 @@ namespace Rendering.ImageEffect
     {
         [Range(0.01f, 1f)] public float m_DOFStart;
         [Range(.01f, .3f)] public float m_DOFLerp;
-        public bool m_DepthBlurSample;
-        [Range(.25f, 1.25f)] public float m_BlurSize;
         public ImageEffectParam_Blurs m_BlurParams;
+        [Header("Depth Blur")]
+        public bool m_DepthBlurSample;
+        [Range(.25f, 1.25f)] public float m_DepthBlurSize;
         public static readonly CameraEffectParam_DepthOfField m_Default = new CameraEffectParam_DepthOfField()
         {
             m_DOFStart = 0.1f,
             m_DOFLerp = .1f,
-            m_DepthBlurSample = true,
-            m_BlurSize = .5f,
             m_BlurParams = ImageEffectParam_Blurs.m_Default,
-    };
+            m_DepthBlurSample = true,
+            m_DepthBlurSize = .5f,
+        };
 }
     public class CameraEffect_DepthOfField : ImageEffectBase<CameraEffectParam_DepthOfField>
     {
@@ -46,7 +47,7 @@ namespace Rendering.ImageEffect
             _material.SetFloat(ID_FocalStart, _params.m_DOFStart);
             _material.SetFloat(ID_FocalLerp, _params.m_DOFLerp);
             _material.EnableKeyword(KW_UseBlurDepth, _params.m_DepthBlurSample);
-            _material.SetFloat(ID_BlurSize, _params.m_BlurSize);
+            _material.SetFloat(ID_BlurSize, _params.m_DepthBlurSize);
             m_Blur.DoValidate(_params.m_BlurParams);
         }
         protected override void OnImageProcess(RenderTexture _src, RenderTexture _dst, Material _material, CameraEffectParam_DepthOfField _param)

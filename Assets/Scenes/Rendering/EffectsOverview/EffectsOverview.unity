@@ -247,8 +247,8 @@ MonoBehaviour:
     m_CullingMask: -1
     m_EnableBlur: 1
     m_BlurParam:
-      blurSize: 1.536
-      downSample: 4
+      blurSize: 1.23
+      downSample: 2
       iteration: 4
       blurType: 3
   m_SceneViewPreview: 1

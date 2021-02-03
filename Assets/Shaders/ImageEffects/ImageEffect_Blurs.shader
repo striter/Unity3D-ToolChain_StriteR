@@ -85,7 +85,7 @@
 	{
 		float4 finalCol=0;
 		float amount=0;
-		for(int i=0;i<_HexagonIteration;i++)
+		for(uint i=0;i<_HexagonIteration;i++)
 			finalCol+=tex2D(tex,uv+direction*(i+.5));
 		return finalCol/_HexagonIteration;
 	}
@@ -188,7 +188,6 @@
 				float2 diagonalBlurDirection=float2(-cos(UNITY_PI/6),sin(UNITY_PI/6))*_MainTex_TexelSize.xy*_BlurSize;
 				diagonal=HexagonBlurTexture(_Hexagon_Diagonal,i.uv,diagonalBlurDirection);
 
-				
 				return (vertical+diagonal)/2;
 			}
 			ENDCG

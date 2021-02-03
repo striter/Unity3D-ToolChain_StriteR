@@ -21,32 +21,22 @@ Shader "Hidden/ImageEffect_Bloom"
         struct v2f_tap
         {
             half4 pos : SV_POSITION;
-            half2 uv20 : TEXCOORD0;
-            half2 uv21 : TEXCOORD1;
-            half2 uv22 : TEXCOORD2;
-            half2 uv23 : TEXCOORD3;
+            half2 uv : TEXCOORD0;
         };
         
         v2f_tap vert4Tap(appdata_img v)
         {
             v2f_tap o;
-
             o.pos = UnityObjectToClipPos(v.vertex);
-            o.uv20 = v.texcoord + _MainTex_TexelSize.xy;
-            o.uv21 = v.texcoord + _MainTex_TexelSize.xy * half2(-0.5h, -0.5h);
-            o.uv22 = v.texcoord + _MainTex_TexelSize.xy * half2(0.5h, -0.5h);
-            o.uv23 = v.texcoord + _MainTex_TexelSize.xy * half2(-0.5h, 0.5h);
-
+            o.uv = v.texcoord;
             return o;
         }
 
         fixed4 fragSampleLight(v2f_tap i) : SV_Target
         {
-            fixed4 color = tex2D(_MainTex, i.uv20);
-            color += tex2D(_MainTex, i.uv21);
-            color += tex2D(_MainTex, i.uv22);
-            color += tex2D(_MainTex, i.uv23);
-            return max(color / 4 - _Threshold, 0) * _Intensity;
+            fixed4 color = tex2D(_MainTex, i.uv);
+            color*=step(_Threshold+0.01,(color.r+color.g+color.b)/3);
+            return color;
         }
 
        //ADD BLOOM TEXTURE
@@ -69,7 +59,7 @@ Shader "Hidden/ImageEffect_Bloom"
         {
             fixed4 color;
             color = tex2D(_MainTex, i.uv);
-            color += tex2D(_Bloom, i.uv);
+            color += tex2D(_Bloom, i.uv)*_Intensity;
             return color;
         }
 

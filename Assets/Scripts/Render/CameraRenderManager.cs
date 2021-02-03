@@ -16,9 +16,11 @@ namespace Rendering
         }
 
         public enum_DepthMode m_DepthMode = enum_DepthMode.None;
-        public bool m_GeometryCopyTexture = false;
-        public bool m_GeometryCopyBlurTexture = false;
         public bool m_DepthToWorldCalculation = false;
+        public bool m_GeometryCopyTexture = false;
+        [Header("Geometry Blur Copy")]
+        public bool m_GeometryCopyBlurTexture = false;
+        public ImageEffectParam_Blurs m_GeometryCopyBlur;
         public Camera m_Camera { get; private set; }
 
         private void Start()=>InitCommandBuffers();
@@ -31,7 +33,6 @@ namespace Rendering
         static readonly int ID_BlurSize = Shader.PropertyToID("_BlurSize");
         static readonly int ID_GeometryBlurTexture = Shader.PropertyToID("_CameraGeometryBlurTexture");
         #endregion
-        public ImageEffectParam_Blurs m_BlurData;
         Material m_OpaqueBlurMaterial;
         RenderTexture m_ColorBuffer, m_DepthBuffer;
         RenderTexture  m_DepthTexture;
@@ -77,7 +78,7 @@ namespace Rendering
             if (m_GeometryCopyBlurTexture)
             {
                 CommandBuffer opaqueBlurTexture = new CommandBuffer() { name = "Geometry Blur Texture Generate" };
-                ImageEffectParam_Blurs _params = m_BlurData;
+                ImageEffectParam_Blurs _params = m_GeometryCopyBlur;
                 m_OpaqueBlurMaterial = TRender.CreateMaterial(typeof(ImageEffect_Blurs));
                 switch (_params.blurType)
                 {
@@ -192,7 +193,7 @@ namespace Rendering
             m_EditorRenderManager.m_DepthMode = enum_DepthMode.None;
             m_EditorRenderManager.m_GeometryCopyTexture = m_GeometryCopyTexture;
             m_EditorRenderManager.m_GeometryCopyBlurTexture = m_GeometryCopyBlurTexture;
-            m_EditorRenderManager.m_BlurData = m_BlurData;
+            m_EditorRenderManager.m_GeometryCopyBlur = m_GeometryCopyBlur;
         }
         void Update()
         {

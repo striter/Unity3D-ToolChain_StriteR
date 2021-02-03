@@ -505,10 +505,9 @@ GameObject:
   m_Component:
   - component: {fileID: 520397186}
   - component: {fileID: 520397185}
-  - component: {fileID: 520397183}
-  - component: {fileID: 520397187}
   - component: {fileID: 520397188}
-  - component: {fileID: 520397184}
+  - component: {fileID: 520397187}
+  - component: {fileID: 520397183}
   m_Layer: 0
   m_Name: Post4
   m_TagString: MainCamera
@@ -529,33 +528,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectData:
-    m_DOFStart: 0.338
-    m_DOFLerp: 0.116
-    m_DepthBlurSample: 1
-    m_BlurSize: 1.107
+    m_DOFStart: 0.503
+    m_DOFLerp: 0.214
     m_BlurParams:
-      blurSize: 1
-      downSample: 2
-      iteration: 5
-      blurType: 2
-  m_SceneViewPreview: 0
---- !u!114 &520397184
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 520397182}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 416756d6fe5a98042a0feb4feb778b27, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectData:
-    blurSize: 1.031
-    downSample: 2
-    iteration: 1
-    blurType: 1
+      blurSize: 1.373
+      downSample: 1
+      iteration: 8
+      blurType: 3
+    m_DepthBlurSample: 0
+    m_DepthBlurSize: 0.291
   m_SceneViewPreview: 0
 --- !u!20 &520397185
 Camera:
@@ -1112,7 +1093,7 @@ Transform:
   m_GameObject: {fileID: 876274290}
   m_LocalRotation: {x: -0, y: -0.090523295, z: -0, w: 0.9958944}
   m_LocalPosition: {x: 3.06, y: 1.89, z: -5.13}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 374659048}
   m_RootOrder: 10
@@ -1769,15 +1750,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectData:
-    threshold: 0.25
-    intensity: 0.3
-    enableBlur: 1
+    threshold: 0.945
+    intensity: 0.86
     m_BlurParams:
-      blurSize: 1.5
-      downSample: 2
-      iteration: 4
-      blurType: 2
-  m_SceneViewPreview: 0
+      blurSize: 2.5
+      downSample: 1
+      iteration: 6
+      blurType: 3
+    debug: 0
+  m_SceneViewPreview: 1
 --- !u!114 &1941222566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1892,14 +1873,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DepthMode: 1
+  m_DepthToWorldCalculation: 1
   m_GeometryCopyTexture: 1
   m_GeometryCopyBlurTexture: 0
-  m_DepthToWorldCalculation: 1
-  m_BlurData:
-    blurSize: 1
-    downSample: 2
-    iteration: 2
-    blurType: 2
+  m_GeometryCopyBlur:
+    blurSize: 0
+    downSample: 0
+    iteration: 0
+    blurType: 0
 --- !u!20 &2086077256
 Camera:
   m_ObjectHideFlags: 0
