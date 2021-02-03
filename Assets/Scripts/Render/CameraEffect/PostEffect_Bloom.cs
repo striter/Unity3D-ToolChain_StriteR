@@ -33,7 +33,6 @@ namespace Rendering.ImageEffect
         {
             SampleLight = 0,
             AddBloomTex = 1,
-            FastBloom = 2,
         }
 
         ImageEffect_Blurs m_Blur;
@@ -55,12 +54,6 @@ namespace Rendering.ImageEffect
         }
         protected override void OnImageProcess(RenderTexture _src, RenderTexture _dst, Material _material, CameraEffectParam_Bloom _param)
         {
-            if (!_param.enableBlur)
-            {
-                Graphics.Blit(_src, _dst, _material, (int)enum_Pass.FastBloom);
-                return;
-            }
-
             _src.filterMode = FilterMode.Bilinear;
             var rtW = _src.width;
             var rtH = _src.height;
@@ -71,7 +64,6 @@ namespace Rendering.ImageEffect
 
             RenderTexture rt2 = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
             rt1.filterMode = FilterMode.Bilinear;
-
 
             Graphics.Blit(_src, rt1, _material, (int)enum_Pass.SampleLight);
             m_Blur.DoImageProcess(rt1, rt2,_param.m_BlurParams);

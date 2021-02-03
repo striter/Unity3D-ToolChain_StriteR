@@ -17,18 +17,19 @@ namespace Rendering.ImageEffect
     enum enum_BlurPass
     {
         Average_Simple=0,
-        Average_Horizontal=1,
-        Average_Vertical=2,
-        Gaussian_Horizontal=3,
-        Gaussian_Vertical=4,
-        Average_Directional=5,
-        Hexagon_CombineCell=6,
+        Average_Horizontal,
+        Average_Vertical,
+        Gaussian_Horizontal,
+        Gaussian_Vertical,
+        Hexagon_Vertical,
+        Hexagon_Diagonal,
+        Hexagon_Rhomboid,
     }
 
     [Serializable]
     public struct ImageEffectParam_Blurs 
     {
-        [Range(0.25f, 2.5f)] public float blurSize;
+        [Range(0.15f, 2.5f)] public float blurSize;
         [Range(1, 4)] public int downSample;
         [Range(1, 8)] public int iteration;
         public enum_BlurType blurType;
@@ -48,13 +49,8 @@ namespace Rendering.ImageEffect
 
         }
         #region ShaderProperties
-        const string KW_ClipAlpha = "CLIP_ZERO_ALPHA";
         static readonly int ID_BlurSize = Shader.PropertyToID("_BlurSize");
-        static readonly int ID_BlurDirection = Shader.PropertyToID("_BlurDirection");
-        static readonly int ID_HexagonCell1 = Shader.PropertyToID("_HexagonCell1");
-        static readonly int ID_HexagonCell2 = Shader.PropertyToID("_HexagonCell2");
-        static readonly int ID_HexagonCell3 = Shader.PropertyToID("_HexagonCell3");
-
+        static readonly int ID_HexagonIteration = Shader.PropertyToID("_HexagonIteration");
         #endregion
         protected override void OnImageProcess(RenderTexture _src, RenderTexture _dst, Material _material, ImageEffectParam_Blurs _param)
         {
@@ -65,105 +61,73 @@ namespace Rendering.ImageEffect
                 return;
             }
 
+
             int rtW = _src.width / _param.downSample;
             int rtH = _src.height / _param.downSample;
-            float blurSize = _param.blurSize / _param.downSample;
-
-            RenderTexture rt1 = _src;
-            for (int i = 0; i < _param.iteration; i++)
+            switch (_param.blurType)
             {
-                switch(_param.blurType)
-                {
-                    case enum_BlurType.AverageSinglePass:
+                case enum_BlurType.Average:
+                case enum_BlurType.AverageSinglePass:
+                case enum_BlurType.Gaussian:
+                    {
+                        RenderTexture rtTemp1 = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
+                        RenderTexture rtTemp2 = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
+                        for (int i = 0; i < _param.iteration; i++)
                         {
-                            int pass = (int)enum_BlurPass.Average_Simple;
-                            if (i != _param.iteration - 1)
+                            RenderTexture blitSrc = i == 0 ? _src : (i % 2 == 0 ? rtTemp1 : rtTemp2);
+                            RenderTexture blitTarget = i == _param.iteration - 1 ? _dst : (i % 2 == 0 ? rtTemp2 : rtTemp1);
+                            switch (_param.blurType)
                             {
-                                RenderTexture rt2 = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
-                                _material.SetFloat(ID_BlurSize, blurSize * (1 + i));
-                                Graphics.Blit(rt1, rt2, _material, pass);
-                                if (i != 0)
-                                    RenderTexture.ReleaseTemporary(rt1);
-                                rt1 = rt2;
-                                continue;
+                                case enum_BlurType.AverageSinglePass:
+                                    {
+                                        int pass = (int)enum_BlurPass.Average_Simple;
+                                        _material.SetFloat(ID_BlurSize, _param.blurSize / _param.downSample * (1 + i));
+                                        Graphics.Blit(blitSrc, blitTarget, _material, pass);
+                                    }
+                                    break;
+                                case enum_BlurType.Average:
+                                case enum_BlurType.Gaussian:
+                                    {
+                                        int horizontalPass = (int)(_param.blurType - 1) * 2 + 1;
+                                        int verticalPass = horizontalPass + 1;
+                                        _material.SetFloat(ID_BlurSize, _param.blurSize / _param.downSample * (1 + i));
+
+                                        RenderTexture rtTemp3 = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
+                                        Graphics.Blit(blitSrc, rtTemp3, _material, horizontalPass);
+                                        Graphics.Blit(rtTemp3, blitTarget, _material, verticalPass);
+                                        RenderTexture.ReleaseTemporary(rtTemp3);
+                                    }
+                                    break;
                             }
-                            Graphics.Blit(rt1, _dst, _material, pass);
                         }
-                        break;
+                        RenderTexture.ReleaseTemporary(rtTemp1);
+                        RenderTexture.ReleaseTemporary(rtTemp2);
+                    }
+                    break;
+                case enum_BlurType.Hexagon:
+                    {
+                        int verticalPass = (int)enum_BlurPass.Hexagon_Vertical;
+                        int diagonalPass = (int)enum_BlurPass.Hexagon_Diagonal;
+                        int rhomboidPass = (int)enum_BlurPass.Hexagon_Rhomboid;
 
-                    case enum_BlurType.Average:
-                    case enum_BlurType.Gaussian:
-                        {
-                            int horizontalPass =  (int)(_param.blurType - 1) * 2 + 1;
-                            int verticalPass = horizontalPass + 1;
+                        _material.SetFloat(ID_BlurSize, _param.blurSize * 2);
+                        _material.SetFloat(ID_HexagonIteration, _param.iteration*2);
 
-                            // vertical blur
-                            RenderTexture rt2 = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
-                            _material.SetFloat(ID_BlurSize, blurSize * (1 + i));
-                            Graphics.Blit(rt1, rt2, _material, horizontalPass);
-                            if (i != 0)
-                                RenderTexture.ReleaseTemporary(rt1);
-                            rt1 = rt2;
+                        RenderTexture verticalRT = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
+                        RenderTexture diagonalRT = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
 
-                            if (i != _param.iteration - 1)
-                            {
-                                // horizontal blur
-                                rt2 = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
-                                Graphics.Blit(rt1, rt2, _material, verticalPass);
-                                RenderTexture.ReleaseTemporary(rt1);
-                                rt1 = rt2;
-                                continue;
-                            }
-                            Graphics.Blit(rt1, _dst, _material, horizontalPass);
-                        }
-                        break;
-                    case enum_BlurType.Hexagon:
-                        {
-                            int cellPass = (int)enum_BlurPass.Average_Directional;
-                            int combinePass = (int)enum_BlurPass.Hexagon_CombineCell;
-                            _material.SetFloat(ID_BlurSize, blurSize * (1 + i));
+                        Graphics.Blit(_src, verticalRT, _material, verticalPass);
+                        _material.SetTexture("_Hexagon_Vertical", verticalRT);
+                        Graphics.Blit(_dst, diagonalRT, _material, diagonalPass);
+                        _material.SetTexture("_Hexagon_Diagonal", diagonalRT);
+                        Graphics.Blit(_src, _dst, _material, rhomboidPass);
 
-                            RenderTexture cell1 = RenderHexagonCell(rt1, rtW, rtH, _material, cellPass, TTile_Hexagon.HexagonHelper.C_UnitHexagonPoints[0], TTile_Hexagon.HexagonHelper.C_UnitHexagonPoints[1]);
-                            RenderTexture cell2 = RenderHexagonCell(rt1, rtW, rtH, _material, cellPass, TTile_Hexagon.HexagonHelper.C_UnitHexagonPoints[2], TTile_Hexagon.HexagonHelper.C_UnitHexagonPoints[3]);
-                            RenderTexture cell3 = RenderHexagonCell(rt1, rtW, rtH, _material, cellPass, TTile_Hexagon.HexagonHelper.C_UnitHexagonPoints[4], TTile_Hexagon.HexagonHelper.C_UnitHexagonPoints[5]);
-
-                            _material.SetTexture(ID_HexagonCell1, cell1);
-                            _material.SetTexture(ID_HexagonCell2, cell2);
-                            _material.SetTexture(ID_HexagonCell3, cell3);
-                            RenderTexture rt2 = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
-                            Graphics.Blit(rt1,rt2, _material, combinePass);
-                            if (i != 0)
-                                RenderTexture.ReleaseTemporary(rt1);
-                            rt1 = rt2;
-
-                            RenderTexture.ReleaseTemporary(cell1);
-                            RenderTexture.ReleaseTemporary(cell2);
-                            RenderTexture.ReleaseTemporary(cell3);
-
-                            if (i!=_param.iteration-1)
-                                continue;
-                            Graphics.Blit(rt1, _dst, _material, cellPass);
-                        }
-                        break;
-                }
+                        RenderTexture.ReleaseTemporary(verticalRT);
+                        RenderTexture.ReleaseTemporary(diagonalRT);
+                    }
+                    break;
             }
 
-            if(_param.iteration!=1)
-                RenderTexture.ReleaseTemporary(rt1);
-        }
-
-        RenderTexture RenderHexagonCell(RenderTexture _src,int rtW,int rtH,Material _material,int pass,Vector2 _hexagonPoint1,Vector2 _hexagonPoint2)
-        {
-            RenderTexture temporaryTexture = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
-            _material.SetVector(ID_BlurDirection,_hexagonPoint1);
-            Graphics.Blit(_src, temporaryTexture,_material, pass);
-
-            RenderTexture targetTexture = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
-            _material.SetVector(ID_BlurDirection, _hexagonPoint2-_hexagonPoint1);
-            Graphics.Blit(temporaryTexture, targetTexture,_material, pass);
-
-            RenderTexture.ReleaseTemporary(temporaryTexture);
-            return targetTexture;
         }
 
     }

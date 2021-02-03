@@ -11,9 +11,8 @@
     uniform sampler2D _MainTex;
     uniform half4 _MainTex_TexelSize;
 	half _BlurSize;
-	half2 _BlurDirection;
 
-	struct v2f
+	struct v2fc
 	{
 		half4 vertex : SV_POSITION;
 		half2 uv: TEXCOORD0;
@@ -21,9 +20,9 @@
 		half4 uvOffsetB:TEXCOORD2;
 	};
 		
-	v2f vertSinglePass(appdata_img v)
+	v2fc vertSinglePass(appdata_img v)
 	{
-		v2f o;
+		v2fc o;
 		o.vertex = UnityObjectToClipPos(v.vertex);
 		half2 uv = v.texcoord;
 		o.uv = uv;
@@ -34,9 +33,9 @@
 		return o;
 	}
 
-	v2f vertDualPassHorizontal(appdata_img v)
+	v2fc vertDualPassHorizontal(appdata_img v)
 	{
-		v2f o;
+		v2fc o;
 		o.vertex = UnityObjectToClipPos(v.vertex);
 		half2 uv = v.texcoord;
 		o.uv = uv;
@@ -47,9 +46,9 @@
 		return o;
 	}
 		
-	v2f vertDualPassVertical(appdata_img v)
+	v2fc vertDualPassVertical(appdata_img v)
 	{
-		v2f o;
+		v2fc o;
 		o.vertex = UnityObjectToClipPos(v.vertex);
 		half2 uv = v.texcoord;
 		o.uv = uv;
@@ -60,20 +59,7 @@
 		return o;
 	}
 
-	v2f vertDirectional(appdata_img v)
-	{
-		v2f o;
-		o.vertex = UnityObjectToClipPos(v.vertex);
-		half2 uv = v.texcoord;
-		o.uv = uv;
-		o.uvOffsetA.xy = uv - _BlurDirection*.5*_MainTex_TexelSize.y *_BlurSize;
-		o.uvOffsetA.zw = uv - _BlurDirection*1*_MainTex_TexelSize.y *_BlurSize;
-		o.uvOffsetB.xy = uv - _BlurDirection*1.5*_MainTex_TexelSize.y *_BlurSize;
-		o.uvOffsetB.zw = uv - _BlurDirection*2*_MainTex_TexelSize.y *_BlurSize;
-		return o;
-	}
-
-	half4 fragAverageBlur(v2f i):SV_TARGET
+	half4 fragAverageBlur(v2fc i):SV_TARGET
 	{
 		half4 sum = tex2D(_MainTex,i.uv);
 		sum += tex2D(_MainTex,i.uvOffsetA.xy);
@@ -84,7 +70,7 @@
 	}
 		
 	static const half gaussianWeight[3] = {0.4026h,0.2442h,0.0545h};
-	half4 fragGaussianBlur(v2f i) :SV_TARGET
+	half4 fragGaussianBlur(v2fc i) :SV_TARGET
 	{
 		half4 sum = tex2D(_MainTex,i.uv)*gaussianWeight[0];
 		sum += tex2D(_MainTex,i.uvOffsetA.xy)*gaussianWeight[1];
@@ -92,6 +78,16 @@
 		sum += tex2D(_MainTex,i.uvOffsetB.xy)*gaussianWeight[2];
 		sum += tex2D(_MainTex,i.uvOffsetB.zw)*gaussianWeight[2];
 		return sum;
+	}
+
+	uint _HexagonIteration;
+	float4 HexagonBlurTexture(sampler2D tex,float2 uv,float2 direction)
+	{
+		float4 finalCol=0;
+		float amount=0;
+		for(int i=0;i<_HexagonIteration;i++)
+			finalCol+=tex2D(tex,uv+direction*(i+.5));
+		return finalCol/_HexagonIteration;
 	}
 	ENDCG
 
@@ -147,39 +143,53 @@
 
 		Pass
 		{
-			Name "AVERAGE_DIRECTIONAL"
+			Name "HEXAGON_VERTICAL"
 			CGPROGRAM
-			#pragma vertex vertDirectional
-			#pragma fragment fragAverageBlur
+			#pragma vertex vert_img
+			#pragma fragment frag
+			float4 frag(v2f_img i):SV_TARGET
+			{
+				float2 dir=float2(cos(-UNITY_PI/2),sin(-UNITY_PI/2))*_MainTex_TexelSize.xy*_BlurSize;
+				return HexagonBlurTexture(_MainTex,i.uv,dir);
+			}
+			ENDCG
+		}
+		Pass
+		{
+			Name "HEXAGON_DIAGONAL"
+			CGPROGRAM
+			#pragma vertex vert_img
+			#pragma fragment frag
+			sampler2D _Hexagon_Vertical;
+			float4 frag(v2f_img i):SV_TARGET
+			{
+				float2 dir=float2(cos(UNITY_PI/6),sin(UNITY_PI/6))*_MainTex_TexelSize.xy*_BlurSize;
+				return tex2D(_Hexagon_Vertical,i.uv)+HexagonBlurTexture(_MainTex,i.uv,dir);
+			}
 			ENDCG
 		}
 
 		Pass 
 		{
-			Name "HEXAGON_COMBINE"
+			Name "HEXAGON_RHOMBOID"
 			CGPROGRAM
-			#pragma vertex vert
+			#pragma vertex vert_img
 			#pragma fragment frag
-			sampler2D _HexagonCell1;
-			sampler2D _HexagonCell2;
-			sampler2D _HexagonCell3;
-			struct v2fc
-			{
-				float4 vertex:SV_POSITION;
-				float2 uv:TEXCOORD0;
-			};
-			
-			v2fc vert(appdata_img v)
-			{
-				v2fc o;
-				o.vertex=UnityObjectToClipPos(v.vertex);
-				o.uv=v.texcoord;
-				return o;
-			}
+			sampler2D _Hexagon_Vertical;
+			sampler2D _Hexagon_Diagonal;
 
 			float4 frag(v2f_img i):SV_TARGET
 			{
-				return (tex2D(_HexagonCell1,i.uv)+tex2D(_HexagonCell2,i.uv)+tex2D(_HexagonCell3,i.uv))/3;
+				float4 vertical=tex2D(_Hexagon_Vertical,i.uv);
+				float2 verticalBlurDirection=float2(cos(UNITY_PI/6),sin(UNITY_PI/6))*_MainTex_TexelSize.xy*_BlurSize;
+				vertical=HexagonBlurTexture(_Hexagon_Vertical,i.uv,verticalBlurDirection);
+
+				float4 diagonal=tex2D(_Hexagon_Diagonal,i.uv);
+				float2 diagonalBlurDirection=float2(-cos(UNITY_PI/6),sin(UNITY_PI/6))*_MainTex_TexelSize.xy*_BlurSize;
+				diagonal=HexagonBlurTexture(_Hexagon_Diagonal,i.uv,diagonalBlurDirection);
+
+				
+				return (vertical+diagonal)/2;
 			}
 			ENDCG
 		}
