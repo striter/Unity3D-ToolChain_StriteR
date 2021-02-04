@@ -6,38 +6,110 @@ using UnityEngine.UI;
 public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
 
     #region Helper
-    public static void Init(Action<bool> _OnConsoleShow)=>Instance.InitConsole(_OnConsoleShow);
-    public static void Header(string title) => Instance.AddCommandLine().Header(title);
+    public static void Init(Action<bool> _OnConsoleShow = null,bool _defaultFrameRateShow=true,float _defaultTimeScale=.5f)=>Instance.InitConsole(_OnConsoleShow,_defaultFrameRateShow, _defaultTimeScale);
+    public static void Header(string _title) => Instance.AddCommandLine().Header(_title);
     public static void EmtpyLine() => Instance.AddCommandLine().EmptyLine();
-    public static ConsoleCommand Command(string title) => Instance.AddCommandLine().Command(title);
+    public static ConsoleCommand Command(string _title) => Instance.AddCommandLine().Command(_title);
     #endregion
     public bool m_ConsoleOpening { get; private set; } = false;
+
+    [Range(0,2f)] public float m_ConsoleTimeScale = .5f;
+    public bool m_ShowFrameRate = true;
     public int LogSaveCount = 30;
+
     Text m_LogText;
+    Transform m_FrameRate;
+    Text m_FrameRateValue;
     ScrollRect m_ConsoleCommandScrollRect;
     TGameObjectPool_Instance_Class<int, ConsoleCommand> m_ConsoleCommands;
     Action<bool> OnConsoleShow;
+
     protected override void Awake()
     {
         base.Awake();
-        m_LogText = transform.Find("Log").GetComponent<Text>();
+        m_FrameRate = transform.Find("FrameRate");
+        m_FrameRateValue = transform.Find("FrameRate/Value").GetComponent<Text>();
+
         m_ConsoleCommandScrollRect = transform.Find("ConsoleCommand").GetComponent<ScrollRect>();
-        m_LogText.text = "";
         Transform tf_ConsoleCommand = m_ConsoleCommandScrollRect.transform.Find("Viewport/Content");
         m_ConsoleCommands = new TGameObjectPool_Instance_Class<int, ConsoleCommand>(tf_ConsoleCommand, "GridItem");
+
+        m_LogText = transform.Find("Log").GetComponent<Text>();
+
         m_ConsoleOpening = false;
         m_ConsoleCommands.transform.SetActivate(m_ConsoleOpening);
     }
-    protected UIT_TouchConsole InitConsole(Action<bool> _OnConsoleShow)
+    protected UIT_TouchConsole InitConsole(Action<bool> _OnConsoleShow,bool _defaultFrameRateShow,float _defaultConsoleTimeScale)
     {
-        m_ConsoleCommands.Clear();
         OnConsoleShow = _OnConsoleShow;
-        AddCommandLine().Header("Console");
-        AddCommandLine().Command("Clear Log").Button(ClearConsoleLog);
-        AddCommandLine().Command("Console Debug Filter").EnumFlagsSelection<enum_ConsoleLog>(0,TConsole.SetLogFilter);
-        AddCommandLine().EmptyLine();
+
+        ShowFrameRate(_defaultFrameRateShow);
+        SetConsoleTimeScale(_defaultConsoleTimeScale);
+
+        m_FrameRateQueue.Clear();
+        m_FrameRateValue.text = "";
+
+        m_LogQueue.Clear();
+        m_LogText.text = "";
+
+        m_ConsoleCommands.Clear();
+        Header("Console");
+        Command("Show FPS").Button(()=>ShowFrameRate(!m_ShowFrameRate));
+        Command("Clear Log").Button(ClearConsoleLog);
+        Command("Debug Filter").EnumFlagsSelection<enum_ConsoleLog>(0, TConsole.SetLogFilter);
+        Command("Time Scale").Slider(_defaultConsoleTimeScale,0f, 2f, SetConsoleTimeScale);
+        EmtpyLine();
         return this;
     }
+
+    Timer m_FastKeyCooldownTimer = new Timer(.5f);
+    Queue<int> m_FrameRateQueue = new Queue<int>();
+    private void Update()
+    {
+        m_ConsoleCommands.m_ActiveItemDic.Traversal((ConsoleCommand command) => { command.KeycodeTick(); });
+
+        m_FastKeyCooldownTimer.Tick(Time.unscaledDeltaTime);
+        if (m_FastKeyCooldownTimer .m_Timing)
+            return;
+        if (Input.touchCount >= 5 || Input.GetKey(KeyCode.BackQuote))
+        {
+            m_FastKeyCooldownTimer.Replay();
+            m_ConsoleOpening = !m_ConsoleOpening;
+            m_ConsoleCommands.transform.SetActivate(m_ConsoleOpening);
+            OnConsoleShow?.Invoke(m_ConsoleOpening);
+            Time.timeScale = m_ConsoleOpening?m_ConsoleTimeScale:1f;
+            UpdateLogUI();
+        }
+
+        if(m_ShowFrameRate)
+        {
+            m_FrameRateQueue.Enqueue(Mathf.CeilToInt(1f / Time.unscaledDeltaTime));
+            if (m_FrameRateQueue.Count > 30)
+                m_FrameRateQueue.Dequeue();
+
+            int total = 0;
+            foreach (var frameRate in m_FrameRateQueue)
+                total += frameRate;
+            total /= m_FrameRateQueue.Count;
+
+            m_FrameRateValue.text = total.ToString();
+        }
+    }
+    #region Miscs
+
+    protected void ShowFrameRate(bool _show)
+    {
+        m_ShowFrameRate = _show;
+        m_FrameRate.SetActivate(m_ShowFrameRate);
+    }
+    protected void SetConsoleTimeScale(float _timeScale)
+    {
+        m_ConsoleTimeScale = _timeScale;
+        if (!m_ConsoleOpening)
+            return;
+        Time.timeScale = m_ConsoleTimeScale;
+    }
+    #endregion
     #region Console
     protected ConsoleCommand AddCommandLine() => m_ConsoleCommands.AddItem(m_ConsoleCommands.Count);
     public class ConsoleCommand : CGameObjectPool_Instance_Class<int>
@@ -52,7 +124,7 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
                 transform = _transform;
                 m_ToggleGrid = new TGameObjectPool_Component<int, Toggle>(_transform.Find("Grid"), "GridItem");
             }
-            public void Play<T>(int defaultValue,Action<T> _OnFlagChanged) where T:Enum
+            public void Play<T>(int defaultValue, Action<T> _OnFlagChanged) where T : Enum
             {
                 m_ToggleGrid.Clear();
                 TCommon.TraversalEnum<T>(value => {
@@ -61,8 +133,8 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
                     tog.isOn = (defaultValue & valueIndex) == valueIndex;
                     tog.GetComponentInChildren<Text>().text = value.ToString();
                     tog.onValueChanged.RemoveAllListeners();
-                    tog.onValueChanged.AddListener(changed=> {
-                        int totalIndex=0;
+                    tog.onValueChanged.AddListener(changed => {
+                        int totalIndex = 0;
                         m_ToggleGrid.m_ActiveItemDic.Traversal((index, toggle) => totalIndex += (toggle.isOn ? index : 0));
                         _OnFlagChanged((T)Enum.ToObject(typeof(T), totalIndex));
                     });
@@ -74,7 +146,7 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
             public Transform transform { get; private set; }
             Text m_Text;
             TGameObjectPool_Component<int, Button> m_ButtonGrid;
-            public ButtonSelection(Transform _transform) 
+            public ButtonSelection(Transform _transform)
             {
                 transform = _transform;
                 m_Text = _transform.Find("Text").GetComponent<Text>();
@@ -134,7 +206,7 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
         Transform m_Slider;
         Slider m_SliderComponent;
         Text m_SliderValue;
-        public ConsoleCommand(Transform _transform):base(_transform)
+        public ConsoleCommand(Transform _transform) : base(_transform)
         {
             m_Header = transform.Find("Header");
             m_HeaderTitle = m_Header.Find("Title").GetComponent<Text>();
@@ -164,7 +236,7 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
             m_GridSelection.transform.SetActivate(false);
             m_ToggleSelection.transform.SetActivate(false);
             m_Button.SetActivate(true);
-            
+
             m_Header.SetActivate(false);
             m_Command.SetActivate(false);
 
@@ -200,18 +272,18 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
             m_ButtonTitle.text = _keyCode == KeyCode.None ? "" : _keyCode.ToString();
         }
         int selectionIndex = -1;
-        public void EnumSelection<T>(T _defaultEnum ,Action<T> OnClick, KeyCode _keyCode = KeyCode.None) where T:Enum
+        public void EnumSelection<T>(T _defaultEnum, Action<T> OnClick, KeyCode _keyCode = KeyCode.None) where T : Enum
         {
             m_GridSelection.transform.SetActivate(true);
-            selectionIndex = (int)Enum.ToObject(typeof(T),_defaultEnum);
-            m_GridSelection.Play(_defaultEnum, (int value)=>  selectionIndex=value);
-            Button(() => OnClick((T)Enum.ToObject(typeof(T),selectionIndex)), _keyCode);
+            selectionIndex = (int)Enum.ToObject(typeof(T), _defaultEnum);
+            m_GridSelection.Play(_defaultEnum, (int value) => selectionIndex = value);
+            Button(() => OnClick((T)Enum.ToObject(typeof(T), selectionIndex)), _keyCode);
         }
         public void EnumSelection(int _defaultEnum, List<string> _values, Action<string> OnClick, KeyCode _keyCode = KeyCode.None)
         {
             m_GridSelection.transform.SetActivate(true);
             selectionIndex = _defaultEnum;
-            m_GridSelection.Play(_values,_values[ _defaultEnum], (int value) => selectionIndex = value);
+            m_GridSelection.Play(_values, _values[_defaultEnum], (int value) => selectionIndex = value);
             Button(() => OnClick(_values[selectionIndex]), _keyCode);
         }
         public void EnumSelection<T>(T _defaultEnum, string _defaultValue, Action<T, string> OnClick, KeyCode keyCode = KeyCode.None) where T : Enum
@@ -226,17 +298,17 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
         public void EnumFlagsSelection<T>(int _defaultEnum, Action<T> _logFilter, KeyCode _keyCode = KeyCode.None) where T : Enum
         {
             m_ToggleSelection.transform.SetActivate(false);
-            m_ToggleSelection.Play(_defaultEnum,_logFilter);
+            m_ToggleSelection.Play(_defaultEnum, _logFilter);
             Button(() => m_ToggleSelection.transform.SetActivate(!m_ToggleSelection.transform.gameObject.activeSelf), _keyCode);
         }
-        public void InputField(string _defaultValue,Action<string> OnValueClick,KeyCode _keyCode=KeyCode.None)
+        public void InputField(string _defaultValue, Action<string> OnValueClick, KeyCode _keyCode = KeyCode.None)
         {
             m_ValueInput1.SetActivate(true);
             m_ValueInput1.text = _defaultValue;
-            Button(() => OnValueClick(m_ValueInput1.text),_keyCode);
+            Button(() => OnValueClick(m_ValueInput1.text), _keyCode);
         }
 
-        public void InpuptField(string _defaultValue1,string _defaultValue2,Action<string,string> OnValueClick, KeyCode _keyCode = KeyCode.None)
+        public void InpuptField(string _defaultValue1, string _defaultValue2, Action<string, string> OnValueClick, KeyCode _keyCode = KeyCode.None)
         {
             m_ValueInput1.SetActivate(true);
             m_ValueInput2.SetActivate(true);
@@ -245,42 +317,19 @@ public class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
             Button(() => OnValueClick(m_ValueInput1.text, m_ValueInput2.text), _keyCode);
         }
 
-        public void Slider(float _maxValue, Action<float> OnValueChanged) => Slider(0, _maxValue, OnValueChanged);
-        public void Slider(float _minValue,float _maxValue,Action<float> OnValueChanged)
+        public void Slider(float _maxValue, Action<float> OnValueChanged) => Slider(0,0, _maxValue, OnValueChanged);
+        public void Slider(float _startValue,float _minValue, float _maxValue, Action<float> OnValueChanged)
         {
             m_Slider.SetActivate(true);
-            m_SliderComponent.value = 0;
-            m_SliderValue.text = _minValue.ToString();
+            m_SliderComponent.value = _startValue;
+            m_SliderValue.text = _startValue.ToString();
             m_SliderComponent.onValueChanged.AddListener((float value) => {
-                float finalValue = Mathf.Lerp(_minValue,_maxValue, value );
+                float finalValue = Mathf.Lerp(_minValue, _maxValue, value);
                 m_SliderValue.text = string.Format("{0:0.0}", value * _maxValue);
                 OnValueChanged(finalValue);
             });
         }
     }
-    #endregion
-
-    float m_fastKeyCooldown = 0f;
-    private void Update()
-    {
-        m_ConsoleCommands.m_ActiveItemDic.Traversal((ConsoleCommand command) => { command.KeycodeTick(); });
-
-        if (m_fastKeyCooldown>0f)
-        {
-            m_fastKeyCooldown -= Time.unscaledDeltaTime;
-            return;
-        }
-        if (Input.touchCount >= 4 || Input.GetKey(KeyCode.BackQuote))
-        {
-            m_fastKeyCooldown = .5f;
-            m_ConsoleOpening = !m_ConsoleOpening;
-            m_ConsoleCommands.transform.SetActivate(m_ConsoleOpening);
-            OnConsoleShow?.Invoke(m_ConsoleOpening);
-            UpdateLogUI();
-        }
-    }
-    #region CONSOLE DEBUG LOG FILTER
-
     #endregion
     #region DEBUG LOG VISUALIZE
     private void OnEnable()

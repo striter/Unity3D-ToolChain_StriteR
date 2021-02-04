@@ -6229,6 +6229,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 224425732658640804, guid: 946dcc992a62efe4ab9651eef4fb7e56,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -24.999878
+      objectReference: {fileID: 0}
     - target: {fileID: 224534597935883154, guid: 946dcc992a62efe4ab9651eef4fb7e56,
         type: 3}
       propertyPath: m_SizeDelta.x
@@ -6262,32 +6267,32 @@ PrefabInstance:
     - target: {fileID: 224934925593751412, guid: 946dcc992a62efe4ab9651eef4fb7e56,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 224934925593751412, guid: 946dcc992a62efe4ab9651eef4fb7e56,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 224934925593751412, guid: 946dcc992a62efe4ab9651eef4fb7e56,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 224934925593751412, guid: 946dcc992a62efe4ab9651eef4fb7e56,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -17.5
       objectReference: {fileID: 0}
     - target: {fileID: 224934925593751412, guid: 946dcc992a62efe4ab9651eef4fb7e56,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 224934925593751412, guid: 946dcc992a62efe4ab9651eef4fb7e56,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 6620085660399059851, guid: 946dcc992a62efe4ab9651eef4fb7e56,
         type: 3}
@@ -8591,14 +8596,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DepthMode: 1
+  m_DepthToWorldCalculation: 1
   m_GeometryCopyTexture: 1
   m_GeometryCopyBlurTexture: 0
-  m_DepthToWorldCalculation: 1
-  m_BlurData:
-    blurSize: 1
-    downSample: 2
-    iteration: 1
+  m_GeometryCopyBlur:
+    blurSize: 0
+    downSample: 0
+    iteration: 0
     blurType: 0
+    hexagonAngle: 0
 --- !u!114 &1604089974
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8632,11 +8638,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectData:
-    m_Color: {r: 0, g: 0, b: 0, a: 0}
-    m_Intensity: 1
+    m_Color: {r: 0, g: 0, b: 0, a: 1}
+    m_Intensity: 0.5
     m_SampleRadius: 25
-    m_DepthBias: 3.4
-    m_DepthBiasRange: 0
+    m_DepthBias: 0.01
+    m_DepthBiasRange: 0.491
     m_SampleCount: 16
     m_NoiseTex: {fileID: 2800000, guid: 0db5b19ef3682e449a1e176e4ae4f623, type: 3}
     m_NoiseScale: 1

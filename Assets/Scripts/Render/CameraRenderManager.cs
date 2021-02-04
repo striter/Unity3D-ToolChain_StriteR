@@ -85,8 +85,8 @@ namespace Rendering
                     default:
                         Debug.LogError("Override This Please");
                         break;
-                    case enum_BlurType.Average:
-                    case enum_BlurType.Gaussian:
+                    case enum_BlurType.AverageVHSeperated:
+                    case enum_BlurType.GaussianVHSeperated:
                         int rtW = m_Camera.pixelWidth / _params.downSample;
                         int rtH = m_Camera.pixelHeight / _params.downSample;
 

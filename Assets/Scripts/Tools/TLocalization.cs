@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-#pragma warning disable 0649        //Warnning Closed Cause  Use Private Field To Protected Value Set By Reflection 
 public enum enum_Option_LanguageRegion
 {
     CN=1,
