@@ -7,9 +7,9 @@ using UnityEngine.EventSystems;
 public static class TCommon
 {
     #region Transform
-    public static bool SetActivate(this Transform _transform, bool _active) => SetActivate(_transform.gameObject, _active);
-    public static bool SetActivate(this MonoBehaviour _monobehaviour, bool _active) => SetActivate(_monobehaviour.gameObject, _active);
-    public static bool SetActivate(this GameObject _transform, bool _active)
+    public static bool SetActive(this Transform _transform, bool _active) => SetActive(_transform.gameObject, _active);
+    public static bool SetActive(this MonoBehaviour _monobehaviour, bool _active) => SetActive(_monobehaviour.gameObject, _active);
+    public static bool SetActive(this GameObject _transform, bool _active)
     {
         if (_transform.activeSelf == _active)
             return false;
@@ -295,23 +295,17 @@ public static class TCommon
         return dstArray;
     }
     #region Enum
-    public static void TraversalEnum<T>(Action<object> enumAction) where T:Enum 
+    public static void TraversalEnum<T>(Action<T> enumAction) where T:Enum 
     {
         foreach (object temp in Enum.GetValues(typeof(T)))
         {
             if (temp.ToString() == "Invalid")
                 continue;
-            enumAction(temp);
+            enumAction((T)temp);
         }
     }
-    public static List<T> GetEnumList<T>()
+    public static List<T> GetEnumList<T>() where T:Enum
     {
-        if (!typeof(T).IsSubclassOf(typeof(Enum)))
-        {
-            Debug.LogError("Can't Traversal EnEnum Class!");
-            return null;
-        }
-
         List<T> list = new List<T>();
         Array allEnums = Enum.GetValues(typeof(T));
         for (int i = 0; i < allEnums.Length; i++)
@@ -322,6 +316,15 @@ public static class TCommon
         }
         return list;
     }
+
+    public static bool IsFlagEnable<T>(this T _flag,T _compare) where T:Enum
+    {
+        int srcFlag = Convert.ToInt32(_flag);
+        int compareFlag = Convert.ToInt32(_compare);
+        return (srcFlag&compareFlag)== compareFlag;
+    }
+
+    public static bool IsFlagClear<T>(this T _flag) where T : Enum => Convert.ToInt32(_flag) == 0;
     #endregion
     #endregion
     #region Random

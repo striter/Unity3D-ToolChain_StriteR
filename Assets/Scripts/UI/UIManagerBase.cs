@@ -37,7 +37,7 @@ public class UIManagerBase : SingletonMono<UIManagerBase>
         m_fittedScale = ((float)Screen.height / Screen.width)/(scaler.referenceResolution.y/scaler.referenceResolution.x);
 
         m_OverlayBG = cvs_Overlay.transform.Find("OverlayBG").GetComponent<Image>();
-        m_OverlayBG.SetActivate(false);
+        m_OverlayBG.SetActive(false);
 
         m_Camera = transform.Find("UICamera").GetComponent<Camera>();
         m_BlurCoroutine = new SingleCoroutine(this);
@@ -72,7 +72,7 @@ public class UIManagerBase : SingletonMono<UIManagerBase>
         if (!m_PageStored.ContainsKey(type))
         {
             UIPageBase page = UIPageBase.Generate(type, m_PageStorage);
-            page.SetActivate(false);
+            page.SetActive(false);
             m_PageStored.Add(type, page);
             return true;
         }
@@ -90,7 +90,7 @@ public class UIManagerBase : SingletonMono<UIManagerBase>
             Debug.LogWarning("Page:" + type + " Not Preloaded!");
 
         page = m_PageStored[type] as T;
-        page.SetActivate(true);
+        page.SetActive(true);
 
         page.OnPlay(useAnim,OnPageExit);
         m_Pages.Add(page);
@@ -100,7 +100,7 @@ public class UIManagerBase : SingletonMono<UIManagerBase>
     
     protected virtual void OnPageExit(UIPageBase page)
     {
-        page.SetActivate(false);
+        page.SetActive(false);
         page.transform.SetParent(m_PageStorage);
         page.OnStop();
         m_Pages.Remove(page);

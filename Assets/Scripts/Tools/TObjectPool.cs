@@ -93,7 +93,7 @@ public class TGameObjectPool_Static<T, Y> : TGameObjectPool_Static where Y : Mon
             Y item = GameObject.Instantiate(m_SpawnItem,position,rotation, tf_PoolSpawn); 
             item.name = m_SpawnItem.name + "_" + (m_DeactiveStack.Count + m_ActiveList.Count).ToString();
             item.OnPoolInit(m_Identity, (temp,mono)=>Recycle(temp, mono as Y));
-            item.SetActivate(false);
+            item.SetActive(false);
             return item;
         }
 
@@ -156,7 +156,7 @@ public class TGameObjectPool_Static<T, Y> : TGameObjectPool_Static where Y : Mon
         }
 
         item.transform.SetParent(toTrans == null ? tf_PoolSpawn : toTrans);
-        item.SetActivate(true);
+        item.SetActive(true);
         info.m_ActiveList.Add(item);
         item.OnPoolSpawn();
         return item;
@@ -171,7 +171,7 @@ public class TGameObjectPool_Static<T, Y> : TGameObjectPool_Static where Y : Mon
         GameObjectStaticPoolItem info = d_ItemInfos[identity];
         info.m_ActiveList.Remove(obj);
         obj.OnPoolRecycle();
-        obj.SetActivate(false);
+        obj.SetActive(false);
         obj.transform.SetParent(tf_PoolSpawn);
         info.m_DeactiveStack.Push(obj);
     }
@@ -230,7 +230,6 @@ public class TGameObjectPool_Instance<T, Y>
     }
     public bool ContainsItem(T identity) => m_ActiveItemDic.ContainsKey(identity);
     public Y GetItem(T identity) => m_ActiveItemDic[identity];
-
     public virtual Y AddItem(T identity)
     {
         Y targetItem;
@@ -246,8 +245,9 @@ public class TGameObjectPool_Instance<T, Y>
         if (m_ActiveItemDic.ContainsKey(identity)) Debug.LogError(identity + "Already Exists In Grid Dic");
         else m_ActiveItemDic.Add(identity, targetItem);
         Transform trans = GetItemTransform(targetItem);
+        trans.SetAsLastSibling();
         trans.name = identity.ToString();
-        trans.SetActivate(true);
+        trans.SetActive(true);
         return targetItem;
     }
 
@@ -255,7 +255,7 @@ public class TGameObjectPool_Instance<T, Y>
     {
         Y item = m_ActiveItemDic[identity];
         m_InactiveItemList.Add(item);
-        GetItemTransform(item).SetActivate(false);
+        GetItemTransform(item).SetActive(false);
         m_ActiveItemDic.Remove(identity);
     }
 

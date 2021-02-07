@@ -8,9 +8,11 @@
 	
     CGINCLUDE
     #include "UnityCG.cginc"
+	#include "../CommonInclude.cginc"
     uniform sampler2D _MainTex;
     uniform half4 _MainTex_TexelSize;
 	half _BlurSize;
+	uint _Iteration;
 
 	struct v2fc
 	{
@@ -44,6 +46,20 @@
 		return sum*.25;
 	}
 
+	//Grainy
+	half4 fragGrainy(v2f_img i):SV_TARGET
+	{
+		half random=random2(i.uv);
+		half4 sum=0;
+		float randomSum=1.0/_Iteration;
+		for(uint index=0;index<_Iteration;index++)
+		{
+			float2 randomUV=float2(random2(random*randomSum*index),random2(random*randomSum*(_Iteration-index)))-.5;
+			randomUV*=_MainTex_TexelSize.xy*_BlurSize;
+			sum+=tex2D(_MainTex,i.uv+randomUV);
+		}
+		return sum/_Iteration;
+	}
 
 	//Dual Pass
 	v2fc vertDualPassHorizontal(appdata_img v)
@@ -94,15 +110,14 @@
 	}
 
 	//Hexagon Blur
-	uint _HexagonIteration;
 	float _HexagonAngle;
 	float4 HexagonBlurTexture(sampler2D tex,float2 uv,float2 direction)
 	{
 		float4 finalCol=0;
 		float amount=0;
-		for(uint i=0;i<_HexagonIteration;i++)
+		for(uint i=0;i<_Iteration;i++)
 			finalCol+=tex2D(tex,uv+direction*(i+.5));
-		return finalCol/_HexagonIteration;
+		return finalCol/_Iteration;
 	}
 
 	//Dual Filtering
@@ -182,14 +197,22 @@
 
     SubShader
     {
-        Cull Off ZWrite Off ZTest Always
-        
+        Cull Off ZWrite Off ZTest Always Cull Off
 		Pass
 		{
 			NAME "KAWASE_BLUR"
 			CGPROGRAM
 			#pragma vertex vertKawase
 			#pragma fragment fragKawase
+			ENDCG
+		}
+
+		Pass
+		{
+			Name "GRAINY"
+			CGPROGRAM
+			#pragma vertex vert_img
+			#pragma fragment fragGrainy
 			ENDCG
 		}
 

@@ -462,7 +462,7 @@ public class ParticleControlBase
     }
     public void SetActive(bool active)
     {
-        m_Particles.Traversal((ParticleSystem particle) => { particle.transform.SetActivate(active); });
+        m_Particles.Traversal((ParticleSystem particle) => { particle.transform.SetActive(active); });
     }
 }
 #endregion

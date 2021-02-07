@@ -57,7 +57,7 @@
 				{
 					float linearDepth = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,i.uv_depth));
 					float3 worldPos = _WorldSpaceCameraPos+ i.viewDir.xyz*linearDepth;
-					float2 worldUV = (worldPos.xz + worldPos.y);
+					float2 worldUV = (worldPos.xz + worldPos.yz);
 					float fog =  (( _FogVerticalStart+_FogVerticalOffset)-worldPos.y)  /_FogVerticalOffset*_FogDensity;
 					#if _NOISE
 					float2 noiseUV = worldUV / _NoiseScale + _Time.y*float2(_NoiseSpeedX,_NoiseSpeedY);

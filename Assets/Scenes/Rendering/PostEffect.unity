@@ -535,6 +535,7 @@ MonoBehaviour:
       downSample: 1
       iteration: 8
       blurType: 3
+      hexagonAngle: 0
     m_DepthBlurSample: 0
     m_DepthBlurSize: 0.291
   m_SceneViewPreview: 0
@@ -617,6 +618,7 @@ MonoBehaviour:
       downSample: 2
       iteration: 5
       blurType: 2
+      hexagonAngle: 0
   m_SceneViewPreview: 0
 --- !u!114 &520397188
 MonoBehaviour:
@@ -640,6 +642,7 @@ MonoBehaviour:
       downSample: 2
       iteration: 8
       blurType: 2
+      hexagonAngle: 0
   m_SceneViewPreview: 1
 --- !u!1 &526198351
 GameObject:
@@ -1415,6 +1418,7 @@ GameObject:
   - component: {fileID: 1230212948}
   - component: {fileID: 1230212947}
   - component: {fileID: 1230212949}
+  - component: {fileID: 1230212951}
   - component: {fileID: 1230212950}
   m_Layer: 0
   m_Name: Post2
@@ -1493,10 +1497,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectData:
-    m_OutlineColor: {r: 0, g: 1, b: 0.25998163, a: 0}
-    m_SampleDistance: 1.8
-    m_DepthBias: 0.022
-  m_SceneViewPreview: 1
+    m_OutlineColor: {r: 0, g: 2.1026778, b: 14.343262, a: 1}
+    m_SampleDistance: 3
+    m_DepthBias: 0.2
+    m_ColorReplace: 1
+    m_ReplaceColor: {r: 0, g: 0, b: 0, a: 0}
+  m_SceneViewPreview: 0
 --- !u!114 &1230212950
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1512,12 +1518,35 @@ MonoBehaviour:
   m_EffectData:
     m_FogColor: {r: 1.3232815, g: 1.5748914, b: 1.7799069, a: 0}
     m_FogDensity: 1
-    m_FogVerticalStart: -1.18
-    m_FogVerticalOffset: 0.32
+    m_FogVerticalStart: -1.09
+    m_FogVerticalOffset: 0.98
     m_NoiseTexure: {fileID: 2800000, guid: fa57e5ff6a47ada49b4a0ec740c02bec, type: 3}
     m_NoiseScale: 15
     m_NoiseSpeedX: 0
     m_NoiseSpeedY: 0.1
+  m_SceneViewPreview: 0
+--- !u!114 &1230212951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1230212946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b62db4376f6a80241a778bd4d3ab7a35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectData:
+    threshold: 0.142
+    intensity: 5
+    m_BlurParams:
+      blurSize: 2.5
+      downSample: 2
+      iteration: 8
+      blurType: 5
+      hexagonAngle: -0.068
+    debug: 0
   m_SceneViewPreview: 0
 --- !u!1 &1383501843
 GameObject:
@@ -1693,7 +1722,6 @@ GameObject:
   - component: {fileID: 1941222569}
   - component: {fileID: 1941222564}
   - component: {fileID: 1941222566}
-  - component: {fileID: 1941222565}
   - component: {fileID: 1941222563}
   m_Layer: 0
   m_Name: Post3
@@ -1737,28 +1765,6 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 0
---- !u!114 &1941222565
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1941222562}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b62db4376f6a80241a778bd4d3ab7a35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectData:
-    threshold: 0.945
-    intensity: 0.86
-    m_BlurParams:
-      blurSize: 2.5
-      downSample: 1
-      iteration: 6
-      blurType: 3
-    debug: 0
-  m_SceneViewPreview: 1
 --- !u!114 &1941222566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1881,6 +1887,7 @@ MonoBehaviour:
     downSample: 0
     iteration: 0
     blurType: 0
+    hexagonAngle: 0
 --- !u!20 &2086077256
 Camera:
   m_ObjectHideFlags: 0
@@ -1992,7 +1999,7 @@ MonoBehaviour:
     m_LightScatter: 1
     m_ScatterRange: 0.819
     m_ScatterStrength: 1
-  m_SceneViewPreview: 1
+  m_SceneViewPreview: 0
 --- !u!114 &2086077261
 MonoBehaviour:
   m_ObjectHideFlags: 0

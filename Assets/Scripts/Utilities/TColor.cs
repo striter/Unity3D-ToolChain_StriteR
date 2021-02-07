@@ -23,17 +23,31 @@ public static class TColor
     }
     public static Color HEXtoColor(string hex)
     {
-        if (hex.Length != 9)
+        try
         {
-            Debug.LogError("Hex Color Length Not Equals 8!");
+            int offset = hex[0] == '#' ? 1 : 0;
+            if (hex.Length == offset + 6)
+            {
+                float br = byte.Parse(hex.Substring(offset + 0, 2), System.Globalization.NumberStyles.HexNumber);
+                float bg = byte.Parse(hex.Substring(offset + 2, 2), System.Globalization.NumberStyles.HexNumber);
+                float bb = byte.Parse(hex.Substring(offset + 4, 2), System.Globalization.NumberStyles.HexNumber);
+                return RGBA32toColor(br, bg, bb);
+            }
+            else if (hex.Length == offset + 8)
+            {
+                float br = byte.Parse(hex.Substring(offset + 0, 2), System.Globalization.NumberStyles.HexNumber);
+                float bg = byte.Parse(hex.Substring(offset + 2, 2), System.Globalization.NumberStyles.HexNumber);
+                float bb = byte.Parse(hex.Substring(offset + 4, 2), System.Globalization.NumberStyles.HexNumber);
+                float ba = byte.Parse(hex.Substring(offset + 6, 2), System.Globalization.NumberStyles.HexNumber);
+                return RGBA32toColor(br, bg, bb, ba);
+            }
+            throw new System.Exception();
+        }
+        catch
+        {
+            Debug.Log("Invalid Hex Color:" + hex);
             return Color.magenta;
         }
-
-        float br = byte.Parse(hex.Substring(1, 2), System.Globalization.NumberStyles.HexNumber);
-        float bg = byte.Parse(hex.Substring(3, 2), System.Globalization.NumberStyles.HexNumber);
-        float bb = byte.Parse(hex.Substring(5, 2), System.Globalization.NumberStyles.HexNumber);
-        float ba = byte.Parse(hex.Substring(7, 2), System.Globalization.NumberStyles.HexNumber);
-        return RGBA32toColor(br, bg, bb, ba);
     }
 
     //HSVA

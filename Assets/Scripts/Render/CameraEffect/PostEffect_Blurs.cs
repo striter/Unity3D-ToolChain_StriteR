@@ -9,15 +9,18 @@ namespace Rendering.ImageEffect
     public enum enum_BlurType
     {
         Kawase = 0,
-        AverageVHSeperated = 1,
-        GaussianVHSeperated = 2,
-        Hexagon=3,
-        DualFiltering=4,
+        Grainy = 1,
+        AverageVHSeperated = 2,
+        GaussianVHSeperated = 3,
+        Hexagon=4,
+        DualFiltering=5,
     }
 
     enum enum_BlurPass
     {
         Kawase=0,
+        Grainy,
+
         Average_Horizontal,
         Average_Vertical,
         Gaussian_Horizontal,
@@ -59,7 +62,7 @@ namespace Rendering.ImageEffect
         }
         #region ShaderProperties
         static readonly int ID_BlurSize = Shader.PropertyToID("_BlurSize");
-        static readonly int ID_HexagonIteration = Shader.PropertyToID("_HexagonIteration");
+        static readonly int ID_Iteration = Shader.PropertyToID("_Iteration");
         static readonly int ID_HexagonAngle = Shader.PropertyToID("_HexagonAngle");
         #endregion
         protected override void OnImageProcess(RenderTexture _src, RenderTexture _dst, Material _material, ImageEffectParam_Blurs _param)
@@ -125,6 +128,14 @@ namespace Rendering.ImageEffect
                         RenderTexture.ReleaseTemporary(rtTemp2);
                     }
                     break;
+                case enum_BlurType.Grainy:
+                    {
+                        int grainyPass = (int)enum_BlurPass.Grainy;
+                        _material.SetFloat(ID_BlurSize, _param.blurSize*_param.iteration*_param.downSample);
+                        _material.SetInt(ID_Iteration, _param.iteration);
+                        Graphics.Blit(_src, _dst, _material, grainyPass);
+                    }
+                    break;
                 case enum_BlurType.Hexagon:
                     {
                         int verticalPass = (int)enum_BlurPass.Hexagon_Vertical;
@@ -132,7 +143,7 @@ namespace Rendering.ImageEffect
                         int rhomboidPass = (int)enum_BlurPass.Hexagon_Rhomboid;
 
                         _material.SetFloat(ID_BlurSize, _param.blurSize * 2);
-                        _material.SetFloat(ID_HexagonIteration, _param.iteration*2);
+                        _material.SetFloat(ID_Iteration, _param.iteration*2);
                         _material.SetFloat(ID_HexagonAngle, _param.hexagonAngle);
 
                         RenderTexture verticalRT = RenderTexture.GetTemporary(startWidth, startHeight, 0, _src.format);

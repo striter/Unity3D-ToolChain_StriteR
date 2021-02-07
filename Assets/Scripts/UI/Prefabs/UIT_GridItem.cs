@@ -14,7 +14,7 @@ public class UIT_GridItem : CGameObjectPool_Instance_Monobehaviour<int>
         if(container)
             m_Container = container as RectTransform;
     }
-    public void SetShowScrollView(bool show)=> m_Container.SetActivate(show);
+    public void SetShowScrollView(bool show)=> m_Container.SetActive(show);
 
 
     public void InitHighlight(Action<int> OnHighlighClick ) { OnInitHighlight(() => { OnHighlighClick(m_Identity); }); }
