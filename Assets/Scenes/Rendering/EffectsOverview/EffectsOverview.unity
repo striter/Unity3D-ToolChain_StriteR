@@ -229,7 +229,7 @@ MonoBehaviour:
     downSample: 0
     iteration: 0
     blurType: 0
-    hexagonAngle: 0
+    angle: 0
 --- !u!114 &15725975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -243,16 +243,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectData:
-    m_Intensity: 2.28
+    m_Intensity: 5
     m_BlendMode: 1
     m_CullingMask: -1
     m_EnableBlur: 1
     m_BlurParam:
-      blurSize: 2.5
+      blurSize: 1.51
       downSample: 1
-      iteration: 8
+      iteration: 4
       blurType: 4
-      hexagonAngle: 0
+      angle: 1
   m_SceneViewPreview: 1
 --- !u!1 &57150664
 GameObject:

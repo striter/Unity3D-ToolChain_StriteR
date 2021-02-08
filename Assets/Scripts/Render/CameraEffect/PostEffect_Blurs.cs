@@ -13,7 +13,8 @@ namespace Rendering.ImageEffect
         AverageVHSeperated = 2,
         GaussianVHSeperated = 3,
         Hexagon=4,
-        DualFiltering=5,
+        Bokeh=5,
+        DualFiltering=6,
     }
 
     enum enum_BlurPass
@@ -30,6 +31,8 @@ namespace Rendering.ImageEffect
         Hexagon_Diagonal,
         Hexagon_Rhomboid,
 
+        Bokeh,
+
         DualFiltering_DownSample,
         DualFiltering_UpSample,
     }
@@ -42,15 +45,15 @@ namespace Rendering.ImageEffect
         [Range(1, 4)] public int downSample;
         [Range(1, 8)] public int iteration;
         public enum_BlurType blurType;
-        [Header("Hexagon")]
-        [Range(-1, 1)] public float hexagonAngle;
+        [Header("Bokeh | Hexagon")]
+        [Range(-1, 1)] public float angle;
         public static readonly ImageEffectParam_Blurs m_Default = new ImageEffectParam_Blurs()
         {
             blurSize = 1.0f,
             downSample = 2,
             iteration = 1,
             blurType = enum_BlurType.Kawase,
-            hexagonAngle = 0,
+            angle = 0,
         };
     }
 
@@ -63,7 +66,7 @@ namespace Rendering.ImageEffect
         #region ShaderProperties
         static readonly int ID_BlurSize = Shader.PropertyToID("_BlurSize");
         static readonly int ID_Iteration = Shader.PropertyToID("_Iteration");
-        static readonly int ID_HexagonAngle = Shader.PropertyToID("_HexagonAngle");
+        static readonly int ID_Angle = Shader.PropertyToID("_Angle");
         #endregion
         protected override void OnImageProcess(RenderTexture _src, RenderTexture _dst, Material _material, ImageEffectParam_Blurs _param)
         {
@@ -132,8 +135,17 @@ namespace Rendering.ImageEffect
                     {
                         int grainyPass = (int)enum_BlurPass.Grainy;
                         _material.SetFloat(ID_BlurSize, _param.blurSize*_param.iteration*_param.downSample);
-                        _material.SetInt(ID_Iteration, _param.iteration);
+                        _material.SetInt(ID_Iteration, _param.iteration*_param.downSample);
                         Graphics.Blit(_src, _dst, _material, grainyPass);
+                    }
+                    break;
+                case enum_BlurType.Bokeh:
+                    {
+                        int bokehPass = (int)enum_BlurPass.Bokeh;
+                        _material.SetFloat(ID_BlurSize, _param.blurSize);
+                        _material.SetInt(ID_Iteration, _param.iteration *32/_param.downSample);
+                        _material.SetFloat(ID_Angle, _param.angle);
+                        Graphics.Blit(_src, _dst, _material, bokehPass);
                     }
                     break;
                 case enum_BlurType.Hexagon:
@@ -144,7 +156,7 @@ namespace Rendering.ImageEffect
 
                         _material.SetFloat(ID_BlurSize, _param.blurSize * 2);
                         _material.SetFloat(ID_Iteration, _param.iteration*2);
-                        _material.SetFloat(ID_HexagonAngle, _param.hexagonAngle);
+                        _material.SetFloat(ID_Angle, _param.angle);
 
                         RenderTexture verticalRT = RenderTexture.GetTemporary(startWidth, startHeight, 0, _src.format);
                         RenderTexture diagonalRT = RenderTexture.GetTemporary(startWidth, startHeight, 0, _src.format);

@@ -13,6 +13,7 @@
     uniform half4 _MainTex_TexelSize;
 	half _BlurSize;
 	uint _Iteration;
+	float _Angle;
 
 	struct v2fc
 	{
@@ -110,14 +111,35 @@
 	}
 
 	//Hexagon Blur
-	float _HexagonAngle;
 	float4 HexagonBlurTexture(sampler2D tex,float2 uv,float2 direction)
 	{
 		float4 finalCol=0;
-		float amount=0;
 		for(uint i=0;i<_Iteration;i++)
-			finalCol+=tex2D(tex,uv+direction*(i+.5));
+		{
+			half4 hexagonBlur=tex2D(tex,uv+direction*(i+.5));
+			finalCol+=hexagonBlur;
+		}
 		return finalCol/_Iteration;
+	}
+	//Bokeh
+	
+	#define _GOLDENANGLE 2.39996
+
+	float4 fragBokeh(v2f_img i):SV_TARGET
+	{
+		half2x2 rot=Rotate2x2(_GOLDENANGLE);
+		half2 rotate=float2(0,_BlurSize);
+		rotate=mul(Rotate2x2(_Angle),rotate);
+		half4 sum=0;
+		half r=1;
+		for(uint j=0;j<_Iteration;j++)
+		{
+			r+=1.0/r;
+			rotate=mul(rot,rotate);
+			half4 bokeh=tex2D(_MainTex,i.uv+(r-1.0)*rotate*_MainTex_TexelSize.xy);
+			sum+=bokeh;
+		}
+		return sum/_Iteration;
 	}
 
 	//Dual Filtering
@@ -260,7 +282,7 @@
 			#pragma fragment frag
 			float4 frag(v2f_img i):SV_TARGET
 			{
-				float2 dir=float2(cos(_HexagonAngle -UNITY_PI/2),sin(_HexagonAngle-UNITY_PI/2))*_MainTex_TexelSize.xy*_BlurSize;
+				float2 dir=float2(cos(_Angle -UNITY_PI/2),sin(_Angle-UNITY_PI/2))*_MainTex_TexelSize.xy*_BlurSize;
 				return HexagonBlurTexture(_MainTex,i.uv,dir);
 			}
 			ENDCG
@@ -274,7 +296,7 @@
 			sampler2D _Hexagon_Vertical;
 			float4 frag(v2f_img i):SV_TARGET
 			{
-				float2 dir=float2(cos(_HexagonAngle+UNITY_PI/6),sin(_HexagonAngle+UNITY_PI/6))*_MainTex_TexelSize.xy*_BlurSize;
+				float2 dir=float2(cos(_Angle+UNITY_PI/6),sin(_Angle+UNITY_PI/6))*_MainTex_TexelSize.xy*_BlurSize;
 				return tex2D(_Hexagon_Vertical,i.uv)+HexagonBlurTexture(_MainTex,i.uv,dir);
 			}
 			ENDCG
@@ -292,15 +314,25 @@
 			float4 frag(v2f_img i):SV_TARGET
 			{
 				float4 vertical=tex2D(_Hexagon_Vertical,i.uv);
-				float2 verticalBlurDirection=float2(cos(_HexagonAngle+UNITY_PI/6),sin(_HexagonAngle+UNITY_PI/6))*_MainTex_TexelSize.xy*_BlurSize;
+				float2 verticalBlurDirection=float2(cos(_Angle+UNITY_PI/6),sin(_Angle+UNITY_PI/6))*_MainTex_TexelSize.xy*_BlurSize;
 				vertical=HexagonBlurTexture(_Hexagon_Vertical,i.uv,verticalBlurDirection);
 
 				float4 diagonal=tex2D(_Hexagon_Diagonal,i.uv);
-				float2 diagonalBlurDirection=float2(cos(_HexagonAngle+UNITY_PI*5/6),sin(_HexagonAngle+UNITY_PI*5/6))*_MainTex_TexelSize.xy*_BlurSize;
+				float2 diagonalBlurDirection=float2(cos(_Angle+UNITY_PI*5/6),sin(_Angle+UNITY_PI*5/6))*_MainTex_TexelSize.xy*_BlurSize;
 				diagonal=HexagonBlurTexture(_Hexagon_Diagonal,i.uv,diagonalBlurDirection);
 
 				return (vertical+diagonal)/2;
 			}
+			ENDCG
+		}
+
+		Pass
+		{
+			Name "Bokeh"
+			CGPROGRAM
+			#pragma vertex vert_img
+			#pragma fragment fragBokeh
+
 			ENDCG
 		}
 

@@ -535,7 +535,7 @@ MonoBehaviour:
       downSample: 1
       iteration: 8
       blurType: 3
-      hexagonAngle: 0
+      angle: 0
     m_DepthBlurSample: 0
     m_DepthBlurSize: 0.291
   m_SceneViewPreview: 0
@@ -618,7 +618,7 @@ MonoBehaviour:
       downSample: 2
       iteration: 5
       blurType: 2
-      hexagonAngle: 0
+      angle: 0
   m_SceneViewPreview: 0
 --- !u!114 &520397188
 MonoBehaviour:
@@ -642,7 +642,7 @@ MonoBehaviour:
       downSample: 2
       iteration: 8
       blurType: 2
-      hexagonAngle: 0
+      angle: 0
   m_SceneViewPreview: 1
 --- !u!1 &526198351
 GameObject:
@@ -1542,10 +1542,10 @@ MonoBehaviour:
     intensity: 5
     m_BlurParams:
       blurSize: 2.5
-      downSample: 2
+      downSample: 1
       iteration: 8
-      blurType: 5
-      hexagonAngle: -0.068
+      blurType: 6
+      angle: 0
     debug: 0
   m_SceneViewPreview: 0
 --- !u!1 &1383501843
@@ -1887,7 +1887,7 @@ MonoBehaviour:
     downSample: 0
     iteration: 0
     blurType: 0
-    hexagonAngle: 0
+    angle: 0
 --- !u!20 &2086077256
 Camera:
   m_ObjectHideFlags: 0
