@@ -225,11 +225,12 @@ MonoBehaviour:
   m_GeometryCopyTexture: 1
   m_GeometryCopyBlurTexture: 0
   m_GeometryCopyBlur:
-    blurSize: 0
-    downSample: 0
-    iteration: 0
     blurType: 0
+    blurSize: 0
+    iteration: 0
+    downSample: 0
     angle: 0
+    vector: {x: 0, y: 0}
 --- !u!114 &15725975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -248,11 +249,12 @@ MonoBehaviour:
     m_CullingMask: -1
     m_EnableBlur: 1
     m_BlurParam:
-      blurSize: 1.51
+      blurType: 5
+      blurSize: 1
+      iteration: 8
       downSample: 1
-      iteration: 4
-      blurType: 4
       angle: 1
+      vector: {x: 1, y: 1}
   m_SceneViewPreview: 1
 --- !u!1 &57150664
 GameObject:

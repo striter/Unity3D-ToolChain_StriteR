@@ -528,17 +528,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectData:
-    m_DOFStart: 0.503
-    m_DOFLerp: 0.214
+    m_DOFStart: 0.428
+    m_DOFLerp: 0.042
     m_BlurParams:
-      blurSize: 1.373
-      downSample: 1
-      iteration: 8
-      blurType: 3
-      angle: 0
+      blurType: 5
+      blurSize: 2.5
+      iteration: 5
+      downSample: 4
+      angle: -0.65
+      vector: {x: 0.5, y: 0.5}
     m_DepthBlurSample: 0
     m_DepthBlurSize: 0.291
-  m_SceneViewPreview: 0
+  m_SceneViewPreview: 1
 --- !u!20 &520397185
 Camera:
   m_ObjectHideFlags: 0
@@ -614,11 +615,12 @@ MonoBehaviour:
     m_CullingMask: 17
     m_EnableBlur: 1
     m_BlurParam:
-      blurSize: 2.5
-      downSample: 2
-      iteration: 5
       blurType: 2
+      blurSize: 2.5
+      iteration: 5
+      downSample: 2
       angle: 0
+      vector: {x: 0, y: 0}
   m_SceneViewPreview: 0
 --- !u!114 &520397188
 MonoBehaviour:
@@ -638,11 +640,12 @@ MonoBehaviour:
     m_CullingMask: 1007
     m_EnableBlur: 1
     m_BlurParam:
-      blurSize: 2.5
-      downSample: 2
-      iteration: 8
       blurType: 2
+      blurSize: 2.5
+      iteration: 8
+      downSample: 2
       angle: 0
+      vector: {x: 0, y: 0}
   m_SceneViewPreview: 1
 --- !u!1 &526198351
 GameObject:
@@ -1541,11 +1544,12 @@ MonoBehaviour:
     threshold: 0.142
     intensity: 5
     m_BlurParams:
-      blurSize: 2.5
-      downSample: 1
+      blurType: 2
+      blurSize: 1.36
       iteration: 8
-      blurType: 6
+      downSample: 1
       angle: 0
+      vector: {x: 0, y: 0}
     debug: 0
   m_SceneViewPreview: 0
 --- !u!1 &1383501843
@@ -1883,11 +1887,12 @@ MonoBehaviour:
   m_GeometryCopyTexture: 1
   m_GeometryCopyBlurTexture: 0
   m_GeometryCopyBlur:
-    blurSize: 0
-    downSample: 0
-    iteration: 0
     blurType: 0
+    blurSize: 0
+    iteration: 0
+    downSample: 0
     angle: 0
+    vector: {x: 0, y: 0}
 --- !u!20 &2086077256
 Camera:
   m_ObjectHideFlags: 0
@@ -1999,7 +2004,7 @@ MonoBehaviour:
     m_LightScatter: 1
     m_ScatterRange: 0.819
     m_ScatterStrength: 1
-  m_SceneViewPreview: 0
+  m_SceneViewPreview: 1
 --- !u!114 &2086077261
 MonoBehaviour:
   m_ObjectHideFlags: 0
