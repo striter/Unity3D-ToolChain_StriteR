@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/EntityAdditive"
+﻿Shader "Hidden/AnimationInstance_Bone_EntityAdditive"
 {
     Properties
     {
@@ -10,6 +10,13 @@
         [Header(Flow)]
         _NoiseFlowX("Noise Flow X",Range(-2,2))=.1
         _NoiseFlowY("Noise Flow Y",Range(-2,2))=.1
+        
+        [Header(Instance)]
+        [NoScaleOffset] _InstanceAnimationTex("Animation Texture",2D)="black"{}
+        _InstanceFrameBegin("Begin Frame",int)=0
+        _InstanceFrameEnd("End Frame",int)=0
+        _InstanceFrameInterpolate("Frame Interpolate",Range(0,1))=1
+        [KeywordEnum(None,1Bone,2Bone)]_OPTIMIZE("Optimize",float)=0
     }
     SubShader
     {
@@ -22,7 +29,9 @@
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma multi_compile_instancing
             #include "UnityCG.cginc"
+            #include "../Optimize/AnimationInstanceInclude.cginc"
 
             sampler2D _NoiseTex;
             float4 _NoiseTex_ST;
@@ -37,6 +46,10 @@
             {
                 float4 vertex : POSITION;
                 float2 uv : TEXCOORD0;
+                #if INSTANCING_ON
+                float4 boneIndexes:TEXCOORD1;
+                float4 boneWeights:TEXCOORD2;
+                #endif
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -52,6 +65,9 @@
             {
                 v2f o;
                 UNITY_SETUP_INSTANCE_ID(v);
+                #if INSTANCING_ON
+                SampleBoneInstance(v.boneIndexes,v.boneWeights, v.vertex);
+				#endif
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv,_NoiseTex);
                 o.uv+=_Time.y*float2(_NoiseFlowX,_NoiseFlowY);
