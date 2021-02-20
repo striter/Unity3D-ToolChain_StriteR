@@ -44,6 +44,15 @@ Material:
         m_Texture: {fileID: 2800000, guid: 533a60f9b1a62b5428eba873d918d596, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _InstanceAnimationTex:
+        m_Texture: {fileID: -3097883310370274289, guid: 5f5c2ba9531440e4298da718cbd6c528,
+          type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _InstanceAnimationTexe:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: 533a60f9b1a62b5428eba873d918d596, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -73,8 +82,12 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
+    - _InstanceFrameBegin: 0
+    - _InstanceFrameEnd: 0
+    - _InstanceFrameInterpolate: 1
     - _Metallic: 0
     - _Mode: 0
+    - _OPTIMIZE: 0
     - _OcclusionStrength: 1
     - _Outline: 3
     - _OutlineScale: 1

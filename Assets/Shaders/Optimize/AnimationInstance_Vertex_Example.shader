@@ -3,15 +3,20 @@
     Properties
     {
         [NoScaleOffset]_MainTex ("Texture", 2D) = "white" {}
-        [NoScaleOffset] _AnimTex("Texture",2D)="black"{}
+        [NoScaleOffset] _InstanceAnimationTex("Animation Texture",2D)="black"{}
+        _InstanceFrameBegin("Begin Frame",int)=0
+        _InstanceFrameEnd("End Frame",int)=0
+        _InstanceFrameInterpolate("Frame Interpolate",Range(0,1))=1
+        [KeywordEnum(None,1Bone,2Bone)]_OPTIMIZE("Optimize",float)=0
     }
     SubShader
     {
         Tags { "RenderType"="Opaque" }
         CGINCLUDE
             #include "UnityCG.cginc"
+            #pragma multi_compile_instancing
+            #include "UnityCG.cginc"
             #include "AnimationInstanceInclude.cginc"
-			#pragma multi_compile_instancing
             #pragma target 3.5
         ENDCG
         Pass
@@ -21,7 +26,11 @@
             #pragma fragment frag
             struct appdata
             {
+                #if INSTANCING_ON
                 uint vertexID:SV_VertexID;
+                #endif
+                float4 vertex:POSITION;
+                float3 normal:NORMAL;
                 float2 uv : TEXCOORD0;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
@@ -40,12 +49,11 @@
             {
                 UNITY_SETUP_INSTANCE_ID(v);
                 v2f o;
-                int startIndex=v.vertexID*2;
-                half4 vertex;
-                half3 normal;
-                SampleVertexInstance(v.vertexID, vertex, normal);
-                o.diffuse=dot(normal,ObjSpaceLightDir(vertex));
-                o.vertex = UnityObjectToClipPos(vertex);
+                #if INSTANCING_ON
+                SampleVertexInstance(v.vertexID, v.vertex, v.normal);
+                #endif
+                o.diffuse=dot(v.normal,ObjSpaceLightDir(v.vertex));
+                o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 return o;
             }

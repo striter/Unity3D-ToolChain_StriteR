@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: PolarBear_BoneInstance
   m_Shader: {fileID: 4800000, guid: e79474b8018424a458f64c7a68eaf79a, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: _OPTIMIZE_NONE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -48,6 +48,16 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _InstanceAnimationTex:
+        m_Texture: {fileID: -7975149132758514205, guid: 3810b0f00865ad141adb159b8d668738,
+          type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _InstanceAnimationTexe:
+        m_Texture: {fileID: -7975149132758514205, guid: 3810b0f00865ad141adb159b8d668738,
+          type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: d62b79de8d02b4e44ab42b45f6973f84, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -72,12 +82,17 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _EnableAnimationInstance: 0
     - _FramePass: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _InstanceFrameBegin: 0
+    - _InstanceFrameEnd: 0
+    - _InstanceFrameInterpolate: 1
     - _Metallic: 0
     - _Mode: 0
+    - _OPTIMIZE: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0

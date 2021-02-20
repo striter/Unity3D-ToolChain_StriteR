@@ -40,7 +40,7 @@ namespace TEditor
             m_PreviewMeshRenderer = m_PreviewTarget.GetComponent<MeshRenderer>();
             m_TargetBlock = new MaterialPropertyBlock();
             m_PreviewTarget.transform.position = Vector3.zero;
-            m_PreviewTarget.Init(m_TargetBlock);
+            m_PreviewTarget.Init();
             m_PreviewTarget.SetAnimation(0);
 
             Material transparentMaterial = new Material(Shader.Find("Game/Unlit/Transparent"));
@@ -122,7 +122,8 @@ namespace TEditor
                 m_PreviewTarget.SetTime(0f);
 
 
-            m_PreviewTarget.Tick(0.012f* m_PreviewTickSpeed);
+            m_PreviewTarget.Tick(0.012f* m_PreviewTickSpeed,m_TargetBlock);
+            m_PreviewTarget.m_MeshRenderer.SetPropertyBlock(m_TargetBlock);
 
             m_PreviewMeshRenderer.SetPropertyBlock(m_TargetBlock);
             m_Preview.camera.transform.position = m_CameraDirection * m_CameraDistance;

@@ -5,6 +5,48 @@ using UnityEngine;
 
 public partial class TResources
 {
+    public static class EditorDefaultResources
+    {
+        static Texture3D _Noise3D = null;
+        public static Texture3D Noise3D
+        {
+            get
+            {
+#if UNITY_EDITOR
+                if(!_Noise3D)
+                    _Noise3D =  UnityEditor.AssetDatabase.LoadAssetAtPath<Texture3D>("Assets/ArtPreset/Textures/Noise/Texture3D_Noise_1.asset");
+#endif
+                return _Noise3D;
+            }
+        }
+
+        static Texture2D _Noise2D = null;
+        public static Texture2D Noise2D
+        {
+            get
+            {
+#if UNITY_EDITOR
+                if (!_Noise2D)
+                    _Noise2D = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/ArtPreset/Textures/Noise/Texture_Noise_1.jpg");
+#endif
+                return _Noise2D;
+            }
+        }
+        static Texture2D _Ramp = null;
+        public static Texture2D Ramp
+        {
+            get
+            {
+#if UNITY_EDITOR
+                if (!_Ramp)
+                    _Ramp = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/ArtPreset/Textures/Ramp/Texture_Ramp1D_Linear0.png");
+#endif
+                return _Ramp;
+            }
+        }
+    }
+
+
     public static GameObject Instantiate(string path, Transform toParent=null)
     {
         GameObject obj = Resources.Load<GameObject>(path);

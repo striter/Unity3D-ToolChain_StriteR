@@ -1985,17 +1985,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectData:
+    m_MainNoise: {fileID: 11700000, guid: 5743fc3e0e9339b41b3dc606bd35aefe, type: 2}
+    m_MainNoiseScale: {x: 200, y: 200, z: 200}
+    m_MainNoiseFlow: {x: 0.01, y: 0.01, z: 0.01}
+    m_ShapeMask: {fileID: 2800000, guid: 6aa362da6a7a0a345b62173346aab5ee, type: 3}
+    m_ShapeMaskScale: {x: 100, y: 100}
+    m_ShapeMaskFlow: {x: 0.1, y: 0.1}
     m_VerticalStart: 40
     m_VerticalLength: 300
-    m_Noise: {fileID: 11700000, guid: 5743fc3e0e9339b41b3dc606bd35aefe, type: 2}
-    m_NoiseScale: {x: 500, y: 500, z: 500}
-    m_NoiseFlow: {x: 0.1, y: 0, z: 0.1}
-    m_Density: 25.9
-    m_DensityClip: 0.6
-    m_DensitySmooth: 0.1
-    m_Distance: 300
-    m_MarchTimes: 32
-    m_Opacity: 0.8
+    m_Density: 28.2
+    m_DensityClip: 0.157
+    m_DensitySmooth: 0.302
+    m_Distance: 100
+    m_MarchTimes: 128
+    m_Opacity: 1
     m_ColorRamp: {fileID: 2800000, guid: 034f12e5c34ba414fbcbfa5900814c89, type: 3}
     m_LightAbsorption: 0.14
     m_LightMarch: 1

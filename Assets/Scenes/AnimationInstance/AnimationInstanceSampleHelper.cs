@@ -8,13 +8,15 @@ public class AnimationInstanceSampleHelper : MonoBehaviour
     public int m_Anim = 0;
     public GameObject m_Prefab;
     List<AnimationInstanceController> m_Controllers=new List<AnimationInstanceController>();
+    List<MaterialPropertyBlock> m_Blocks = new List<MaterialPropertyBlock>();
     protected void Awake()
     {
         for(int i=0;i<m_X;i++)
         {
             for(int j=0;j<m_Y;j++)
             {
-                AnimationInstanceController controller = GameObject.Instantiate(m_Prefab,transform).GetComponent<AnimationInstanceController>().Init(new MaterialPropertyBlock(), Debug.Log);
+                AnimationInstanceController controller = GameObject.Instantiate(m_Prefab,transform).GetComponent<AnimationInstanceController>().Init(Debug.Log);
+                m_Blocks.Add(new MaterialPropertyBlock());
                 controller.transform.localPosition = new Vector3(i*10,0, j * 10);
                 controller.SetAnimation(m_Anim).SetTimeScale(Random.value);
                 m_Controllers.Add(controller);
@@ -25,10 +27,10 @@ public class AnimationInstanceSampleHelper : MonoBehaviour
     private void Update()
     {
         float _deltaTime = Time.deltaTime;
-        foreach(AnimationInstanceController item in m_Controllers)
+        for(int i=0;i<m_Controllers.Count;i++)
         {
-            item.Tick(_deltaTime);
-            item.m_MeshRenderer.SetPropertyBlock(item.m_SharedPropertyBlock);
+            m_Controllers[i].Tick(_deltaTime, m_Blocks[i]);
+            m_Controllers[i].m_MeshRenderer.SetPropertyBlock(m_Blocks[i]);
         }
     }
 }

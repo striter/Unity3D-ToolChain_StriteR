@@ -14,15 +14,21 @@ namespace Rendering.ImageEffect
     }
 
     [Serializable]
-    public struct CameraEffectParam_VolumetricCloud 
+    public struct CameraEffectParam_VolumetricCloud
     {
+        [Header("_Main")]
         [Header("Cloud Setting")]
-        public float m_VerticalStart ;
+        public Texture3D m_MainNoise;
+        [RangeVector(0f,1000f)]public Vector3 m_MainNoiseScale;
+        [RangeVector(0f,10f)]public Vector3 m_MainNoiseFlow;
+        [Header("_Shape")]
+        public Texture2D m_ShapeMask;
+        [RangeVector(0f, 1000f)] public Vector2 m_ShapeMaskScale;
+        [RangeVector(0f, 10f)] public Vector2 m_ShapeMaskFlow;
+        [Header("_Sample")]
+        public float m_VerticalStart;
         public float m_VerticalLength;
-        public Texture3D m_Noise;
-        [RangeVector(0f,1000f)]public Vector3 m_NoiseScale;
-        [RangeVector(0.01f,10f)]public Vector3 m_NoiseFlow;
-        [Range(0, 100)] public float m_Density;
+        [Range(0f, 100f)] public float m_Density;
         [Range(0, 1)] public float m_DensityClip;
         [Range(0, 1)] public float m_DensitySmooth;
         public float m_Distance;
@@ -42,18 +48,24 @@ namespace Rendering.ImageEffect
         [Range(0, 1)] public float m_ScatterStrength;
         public static readonly CameraEffectParam_VolumetricCloud m_Default = new CameraEffectParam_VolumetricCloud()
         {
-              m_VerticalStart = 20f,
+            m_VerticalStart = 20f,
             m_VerticalLength = 100f,
-            m_NoiseScale = Vector3.one * 100f,
-            m_NoiseFlow = Vector3.one * 0.1f,
+            m_MainNoise = TResources.EditorDefaultResources.Noise3D,
+            m_MainNoiseScale = Vector3.one * 500f,
+            m_MainNoiseFlow = Vector3.one * 0.1f,
+            m_ShapeMask = TResources.EditorDefaultResources.Noise2D,
+            m_ShapeMaskScale = Vector3.one * 500f,
+            m_ShapeMaskFlow = Vector3.one * 0.1f,
+
             m_Density = 50f,
             m_DensityClip = .6f,
             m_DensitySmooth = 0.1f,
             m_Distance = 100f,
             m_MarchTimes = enum_VolumetricCloud_MarchTimes._32,
             m_Opacity = .8f,
-            
-            m_LightAbsorption = 1f,
+
+            m_ColorRamp = TResources.EditorDefaultResources.Ramp,
+            m_LightAbsorption = .2f,
             m_LightMarch = true,
             m_LightMarchClip = 0.1f,
             m_LightMarchTimes = enum_VolumetricCloud_LightMarchTimes._4,
@@ -78,9 +90,12 @@ namespace Rendering.ImageEffect
         static readonly int ID_MarchTimes = Shader.PropertyToID("_RayMarchTimes");
         static readonly int ID_ColorRamp = Shader.PropertyToID("_ColorRamp");
 
-        static readonly int ID_Noise = Shader.PropertyToID("_Noise");
-        static readonly int ID_NoiseScale = Shader.PropertyToID("_NoiseScale");
-        static readonly int ID_NoiseFlow = Shader.PropertyToID("_NoiseFlow");
+        static readonly int ID_MainNoise = Shader.PropertyToID("_MainNoise");
+        static readonly int ID_MainNoiseScale = Shader.PropertyToID("_MainNoiseScale");
+        static readonly int ID_MainNoiseFlow = Shader.PropertyToID("_MainNoiseFlow");
+        static readonly int ID_ShapeMask = Shader.PropertyToID("_ShapeMask");
+        static readonly int ID_ShapeScale = Shader.PropertyToID("_ShapeMaskScale");
+        static readonly int ID_ShapeFlow = Shader.PropertyToID("_ShapeMaskFlow");
 
         static readonly int ID_LightAbsorption = Shader.PropertyToID("_LightAbsorption");
         const string KW_LightMarch = "_LIGHTMARCH";
@@ -103,9 +118,12 @@ namespace Rendering.ImageEffect
             _material.SetFloat(ID_Distance, _params.m_Distance);
             _material.SetInt(ID_MarchTimes, (int)_params.m_MarchTimes);
             _material.SetTexture(ID_ColorRamp, _params.m_ColorRamp);
-            _material.SetTexture(ID_Noise, _params.m_Noise);
-            _material.SetVector(ID_NoiseScale, _params.m_NoiseScale);
-            _material.SetVector(ID_NoiseFlow, _params.m_NoiseFlow);
+            _material.SetTexture(ID_MainNoise, _params.m_MainNoise);
+            _material.SetVector(ID_MainNoiseScale, _params.m_MainNoiseScale);
+            _material.SetVector(ID_MainNoiseFlow, _params.m_MainNoiseFlow);
+            _material.SetTexture(ID_ShapeMask, _params.m_ShapeMask);
+            _material.SetVector(ID_ShapeScale, _params.m_ShapeMaskScale);
+            _material.SetVector(ID_ShapeFlow, _params.m_ShapeMaskFlow);
             _material.SetFloat(ID_LightAbsorption, _params.m_LightAbsorption);
             _material.EnableKeyword(KW_LightMarch,_params.m_LightMarch);
             _material.SetInt(ID_LightMarchTimes,(int)_params.m_LightMarchTimes);

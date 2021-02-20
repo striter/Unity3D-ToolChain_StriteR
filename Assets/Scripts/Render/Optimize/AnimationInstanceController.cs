@@ -7,13 +7,12 @@ namespace Rendering.Optimize
     public class AnimationInstanceController : MonoBehaviour
     {
         #region ShaderProperties
-        static readonly int ID_AnimTex = Shader.PropertyToID("_AnimTex");
-        static readonly int ID_BeginFrame = Shader.PropertyToID("_BeginFrame");
-        static readonly int ID_EndFrame = Shader.PropertyToID("_EndFrame");
-        static readonly int ID_FrameLerp = Shader.PropertyToID("_FrameLerp");
+        static readonly int ID_AnimationTex = Shader.PropertyToID("_InstanceAnimationTex");
+        static readonly int ID_FrameBegin = Shader.PropertyToID("_InstanceFrameBegin");
+        static readonly int ID_FrameEnd = Shader.PropertyToID("_InstanceFrameEnd");
+        static readonly int ID_FrameInterpolate = Shader.PropertyToID("_InstanceFrameInterpolate");
         #endregion
         public AnimationInstanceData m_Data;
-        public MaterialPropertyBlock m_SharedPropertyBlock { get; private set; }
         public int m_CurrentAnimIndex { get; private set; }
         public float m_TimeElapsed { get; private set; }
         public bool m_Playing => m_CurrentAnimIndex < m_Data.m_Animations.Length && m_CurrentAnimIndex >= 0;
@@ -22,16 +21,15 @@ namespace Rendering.Optimize
         public MeshFilter m_MeshFilter { get; private set; }
         Texture2D m_AnimAtlas;
         Action<string> OnAnimEvent;
-        public AnimationInstanceController Init(MaterialPropertyBlock _sharedBlock, Action<string> _OnAnimEvent = null)
+        public AnimationInstanceController Init( Action<string> _OnAnimEvent = null)
         {
             if (!m_Data)
                 throw new Exception("Invalid Data Found Of:" + gameObject);
 
-            m_SharedPropertyBlock = _sharedBlock;
             m_MeshRenderer = GetComponent<MeshRenderer>();
             m_MeshFilter = GetComponent<MeshFilter>();
 
-            m_AnimAtlas = m_MeshRenderer.sharedMaterial.GetTexture(ID_AnimTex) as Texture2D;
+            m_AnimAtlas = m_MeshRenderer.sharedMaterial.GetTexture(ID_AnimationTex) as Texture2D;
             m_CurrentAnimIndex = -1;
             m_TimeElapsed = 0f;
             InitBones();
@@ -66,7 +64,7 @@ namespace Rendering.Optimize
                 return 0f;
             return m_TimeElapsed / m_Data.m_Animations[m_CurrentAnimIndex].m_Length;
         }
-        public void Tick(float _deltaTime)
+        public void Tick(float _deltaTime,MaterialPropertyBlock _block)
         {
             if (m_CurrentAnimIndex < 0 || m_CurrentAnimIndex >= m_Data.m_Animations.Length)
                 return;
@@ -94,9 +92,9 @@ namespace Rendering.Optimize
             curFrame += param.m_FrameBegin;
             nextFrame += param.m_FrameBegin;
             framePassed %= 1;
-            m_SharedPropertyBlock.SetInt(ID_BeginFrame, curFrame);
-            m_SharedPropertyBlock.SetInt(ID_EndFrame, nextFrame);
-            m_MeshRenderer.SetPropertyBlock(m_SharedPropertyBlock);
+            _block.SetInt(ID_FrameBegin, curFrame);
+            _block.SetInt(ID_FrameEnd, nextFrame);
+            _block.SetFloat(ID_FrameInterpolate, framePassed);
             TickBones(curFrame, nextFrame, framePassed);
         }
         #region Events

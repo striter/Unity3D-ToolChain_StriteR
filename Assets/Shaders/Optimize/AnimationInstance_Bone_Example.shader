@@ -3,29 +3,36 @@
     Properties
     {
         [NoScaleOffset]_MainTex ("Texture", 2D) = "white" {}
-        [NoScaleOffset] _AnimTex("Texture",2D)="black"{}
+
+        [Header(Instance)]
+        [NoScaleOffset] _InstanceAnimationTex("Animation Texture",2D)="black"{}
+        _InstanceFrameBegin("Begin Frame",int)=0
+        _InstanceFrameEnd("End Frame",int)=0
+        _InstanceFrameInterpolate("Frame Interpolate",Range(0,1))=1
+        [KeywordEnum(None,1Bone,2Bone)]_OPTIMIZE("Optimize",float)=0
+        
     }
     SubShader
     {
         Tags { "RenderType"="Opaque" }
-        CGINCLUDE
-            #pragma multi_compile_instancing
-            #include "UnityCG.cginc"
-            #include "AnimationInstanceInclude.cginc"
-        ENDCG
         Pass
         {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma multi_compile_instancing
+            #include "UnityCG.cginc"
+            #include "AnimationInstanceInclude.cginc"
 
             struct appdata
             {
                 float4 vertex : POSITION;
                 float3 normal:NORMAL;
                 float2 uv : TEXCOORD0;
+                #if INSTANCING_ON
                 float4 boneIndexes:TEXCOORD1;
                 float4 boneWeights:TEXCOORD2;
+                #endif
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -40,9 +47,11 @@
 
             v2f vert (appdata v)
             {
-                UNITY_SETUP_INSTANCE_ID(v);
                 v2f o;
+                UNITY_SETUP_INSTANCE_ID(v);
+                #if INSTANCING_ON
                 SampleBoneInstance(v.boneIndexes,v.boneWeights, v.vertex, v.normal);
+				#endif
                 o.diffuse=dot(v.normal,normalize(ObjSpaceLightDir(v.vertex)));
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = v.uv;
@@ -84,8 +93,10 @@
 			{
 				UNITY_SETUP_INSTANCE_ID(v);
 				v2fs o;
+                #if INSTANCING_ON
                 SampleBoneInstance(v.boneIndexes,v.boneWeights, v.vertex, v.normal);
-				TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
+				#endif
+                TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
 				return o;
 			}
 
