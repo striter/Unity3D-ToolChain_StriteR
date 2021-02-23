@@ -57,6 +57,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5f80804631ad4e4086550170c31517a, type: 3}
   m_Name: Goat_BoneInstance
   m_EditorClassIdentifier: 
+  m_VertexInstance: 0
+  m_InstancedMesh: {fileID: 5208099002548712821}
+  m_AnimationAtlas: {fileID: -3097883310370274289}
   m_Animations:
   - m_Name: Goat_Anim_Attack
     m_FrameBegin: 0

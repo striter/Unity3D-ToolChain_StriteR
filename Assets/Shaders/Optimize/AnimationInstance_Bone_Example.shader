@@ -21,6 +21,7 @@
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile_instancing
+            #pragma multi_compile _ _OPTIMIZE_1BONE _OPTIMIZE_2BONE
             #include "UnityCG.cginc"
             #include "AnimationInstanceInclude.cginc"
 
@@ -75,6 +76,9 @@
             #include "Lighting.cginc"
 			#pragma vertex ShadowVertex
 			#pragma fragment ShadowFragment
+            #include "AnimationInstanceInclude.cginc"
+            #pragma multi_compile_instancing
+            #pragma multi_compile _ _OPTIMIZE_1BONE _OPTIMIZE_2BONE
             struct a2fs
             {
                 half4 vertex:POSITION;

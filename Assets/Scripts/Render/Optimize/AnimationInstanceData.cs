@@ -5,6 +5,8 @@ namespace Rendering.Optimize
 {
     public class AnimationInstanceData : ScriptableObject
     {
+        public Mesh m_InstancedMesh;
+        public Texture2D m_AnimationAtlas;
         public AnimationInstanceParam[] m_Animations;
         public AnimationInstanceExposeBone[] m_ExposeBones;
     }

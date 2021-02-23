@@ -17,27 +17,33 @@ namespace Rendering.Optimize
         public float m_TimeElapsed { get; private set; }
         public bool m_Playing => m_CurrentAnimIndex < m_Data.m_Animations.Length && m_CurrentAnimIndex >= 0;
         public AnimationInstanceParam m_CurrentAnim => m_Data.m_Animations[m_CurrentAnimIndex];
-        public MeshRenderer m_MeshRenderer { get; private set; }
         public MeshFilter m_MeshFilter { get; private set; }
-        Texture2D m_AnimAtlas;
+        public MeshRenderer m_MeshRenderer { get; private set; }
         Action<string> OnAnimEvent;
+
+        protected void Awake() => OnValidate();
+        public void OnValidate()
+        {
+            if (!m_Data)
+                return;
+            m_MeshFilter = GetComponent<MeshFilter>();
+            m_MeshRenderer = GetComponent<MeshRenderer>();
+
+            m_MeshFilter.sharedMesh =m_Data.m_InstancedMesh;
+            m_MeshRenderer.sharedMaterial.SetTexture(ID_AnimationTex,m_Data.m_AnimationAtlas);
+        }
         public AnimationInstanceController Init( Action<string> _OnAnimEvent = null)
         {
             if (!m_Data)
                 throw new Exception("Invalid Data Found Of:" + gameObject);
 
-            m_MeshRenderer = GetComponent<MeshRenderer>();
-            m_MeshFilter = GetComponent<MeshFilter>();
-
-            m_AnimAtlas = m_MeshRenderer.sharedMaterial.GetTexture(ID_AnimationTex) as Texture2D;
+            OnValidate();
             m_CurrentAnimIndex = -1;
             m_TimeElapsed = 0f;
             InitBones();
             OnAnimEvent = _OnAnimEvent;
             return this;
         }
-
-
         public AnimationInstanceController SetAnimation(int _animIndex)
         {
             m_TimeElapsed = 0;
@@ -120,7 +126,7 @@ namespace Rendering.Optimize
         {
             if (m_Data.m_ExposeBones.Length <= 0)
                 return;
-            m_BoneParent = new GameObject("Bones").transform;
+            m_BoneParent = new GameObject("Bones") { hideFlags = HideFlags.DontSave }.transform;
             m_BoneParent.SetParent(transform);
             m_BoneParent.localPosition = Vector3.zero;
             m_BoneParent.localRotation = Quaternion.identity;
@@ -128,7 +134,7 @@ namespace Rendering.Optimize
             m_Bones = new Transform[m_Data.m_ExposeBones.Length];
             for (int i = 0; i < m_Data.m_ExposeBones.Length; i++)
             {
-                m_Bones[i] = new GameObject(m_Data.m_ExposeBones[i].m_BoneName).transform;
+                m_Bones[i] = new GameObject(m_Data.m_ExposeBones[i].m_BoneName) { hideFlags = HideFlags.DontSave }.transform;
                 m_Bones[i].SetParent(m_BoneParent);
             }
         }
@@ -150,7 +156,7 @@ namespace Rendering.Optimize
         }
         Vector4 ReadAnimationTexture(int boneIndex, int row, int frame)
         {
-            return m_AnimAtlas.GetPixel(boneIndex * 3 + row, frame);
+            return m_Data.m_AnimationAtlas.GetPixel(boneIndex * 3 + row, frame);
         }
         #endregion
     }

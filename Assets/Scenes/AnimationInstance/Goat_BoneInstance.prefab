@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7116648276832165890}
   - component: {fileID: 2521500525837006048}
   m_Layer: 0
-  m_Name: Goat_BoneInstance_BakeMesh
+  m_Name: Goat_BoneInstance
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

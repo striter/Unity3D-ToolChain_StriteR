@@ -177,7 +177,18 @@ namespace TEditor
 
             AnimationInstanceData instanceData = ScriptableObject.CreateInstance<AnimationInstanceData>();
             instanceData.m_Animations = instanceParams;
-             TEditor.CreateAssetCombination( new KeyValuePair<Object, string>(instanceData,savePath + meshName + "_VertexInstance.asset"), new KeyValuePair<Object, string>( atlasTexture,meshName+"_AnimationAtlas"),new KeyValuePair<Object,string>(instanceMesh,meshName+"_InstanceMesh"));
+            instanceData=TEditor.CreateAssetCombination( new KeyValuePair<AnimationInstanceData, string>(instanceData,savePath + meshName + "_VertexInstance.asset"), new KeyValuePair<Object, string>( atlasTexture,meshName+"_AnimationAtlas"),new KeyValuePair<Object,string>(instanceMesh,meshName+"_InstanceMesh"));
+            Object[] assets = AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GetAssetPath(instanceData));
+            foreach (var asset in assets)
+            {
+                Texture2D atla = asset as Texture2D;
+                Mesh mesh = asset as Mesh;
+                if (atla)
+                    instanceData.m_AnimationAtlas = atla;
+                if (mesh)
+                    instanceData.m_InstancedMesh = mesh;
+            }
+            AssetDatabase.SaveAssets();
         }
 
         void GenerateBoneInstanceMeshAndTexture(GameObject _targetFBX, AnimationClip[] _clips, string exposeBones)
@@ -288,8 +299,19 @@ namespace TEditor
                 AnimationInstanceData instanceData = ScriptableObject.CreateInstance<AnimationInstanceData>();
                 instanceData.m_Animations = instanceParams;
                 instanceData.m_ExposeBones = exposeBoneParam.ToArray();
-                TEditor.CreateAssetCombination(new KeyValuePair<Object, string>(instanceData, savePath + meshName + "_BoneInstance.asset"), new KeyValuePair<Object, string>(atlasTexture, meshName + "_AnimationAtlas"), new KeyValuePair<Object, string>(instanceMesh, meshName + "_InstanceMesh"));
 
+                instanceData =  TEditor.CreateAssetCombination(new KeyValuePair<Object, string>(instanceData, savePath + meshName + "_BoneInstance.asset"), new KeyValuePair<Object, string>(atlasTexture, meshName + "_AnimationAtlas"), new KeyValuePair<Object, string>(instanceMesh, meshName + "_InstanceMesh")) as AnimationInstanceData;
+                Object[] assets=AssetDatabase.LoadAllAssetsAtPath( AssetDatabase.GetAssetPath(instanceData));
+                foreach(var asset in assets)
+                {
+                    Texture2D atla = asset as Texture2D;
+                    Mesh mesh = asset as Mesh;
+                    if (atla)
+                        instanceData.m_AnimationAtlas = atla;
+                    if (mesh)
+                        instanceData.m_InstancedMesh = mesh;
+                }
+                AssetDatabase.SaveAssets();
             }
             catch (System.Exception e)
             {

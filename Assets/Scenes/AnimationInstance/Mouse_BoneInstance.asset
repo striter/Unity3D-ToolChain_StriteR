@@ -176,6 +176,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5f80804631ad4e4086550170c31517a, type: 3}
   m_Name: Mouse_BoneInstance
   m_EditorClassIdentifier: 
+  m_VertexInstance: 0
+  m_InstancedMesh: {fileID: -6714811801976831586}
+  m_AnimationAtlas: {fileID: 4034038330724503887}
   m_Animations:
   - m_Name: Mouse_Anim_Attack
     m_FrameBegin: 0

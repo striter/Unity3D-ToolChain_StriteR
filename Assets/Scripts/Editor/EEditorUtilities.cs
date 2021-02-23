@@ -135,14 +135,15 @@ namespace TEditor
             else
                 AssetDatabase.AddObjectToAsset(asset, mainAsset);
         }
-        public static void CreateAssetCombination(KeyValuePair<UnityEngine.Object, string> _mainAsset,params KeyValuePair<UnityEngine.Object, string>[] _subValues)
+        public static T CreateAssetCombination<T>(KeyValuePair<T, string> _mainAsset,params KeyValuePair<UnityEngine.Object, string>[] _subValues) where T: UnityEngine.Object
         {
-            UnityEngine.Object mainAsset = CreateOrReplaceMainAsset(_mainAsset.Key, _mainAsset.Value);
+            T mainAsset = CreateOrReplaceMainAsset(_mainAsset.Key, _mainAsset.Value);
             foreach (KeyValuePair<UnityEngine.Object, string> subValue in _subValues)
                 CreateOrReplaceSubAsset(subValue.Key, _mainAsset.Value, subValue.Value);
             AssetDatabase.SaveAssets();
             Debug.Log("Asset Combination Generate Successful:" + _mainAsset.Key);
             EditorGUIUtility.PingObject(mainAsset);
+            return mainAsset;
         }
 
         public static string GetCurrentProjectWindowPath()=> (string)(typeof(ProjectWindowUtil).GetMethod("GetActiveFolderPath", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null,null));

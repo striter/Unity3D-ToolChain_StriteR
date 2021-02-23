@@ -30,7 +30,7 @@ public class AnimationInstanceSampleHelper : MonoBehaviour
         for(int i=0;i<m_Controllers.Count;i++)
         {
             m_Controllers[i].Tick(_deltaTime, m_Blocks[i]);
-            m_Controllers[i].m_MeshRenderer.SetPropertyBlock(m_Blocks[i]);
+            m_Controllers[i].m_MeshRenderer .SetPropertyBlock(m_Blocks[i]);
         }
     }
 }

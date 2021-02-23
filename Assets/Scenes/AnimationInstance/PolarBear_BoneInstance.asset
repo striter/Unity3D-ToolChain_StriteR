@@ -221,6 +221,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5f80804631ad4e4086550170c31517a, type: 3}
   m_Name: PolarBear_BoneInstance
   m_EditorClassIdentifier: 
+  m_VertexInstance: 0
+  m_InstancedMesh: {fileID: -566467632581359664}
+  m_AnimationAtlas: {fileID: -7975149132758514205}
   m_Animations:
   - m_Name: PolarBear_Anim_Attack1
     m_FrameBegin: 0
