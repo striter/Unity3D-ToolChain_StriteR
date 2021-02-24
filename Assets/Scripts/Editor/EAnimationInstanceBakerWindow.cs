@@ -181,10 +181,10 @@ namespace TEditor
             Object[] assets = AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GetAssetPath(instanceData));
             foreach (var asset in assets)
             {
-                Texture2D atla = asset as Texture2D;
+                Texture2D atlas = asset as Texture2D;
                 Mesh mesh = asset as Mesh;
-                if (atla)
-                    instanceData.m_AnimationAtlas = atla;
+                if (atlas)
+                    instanceData.m_AnimationAtlas = atlas;
                 if (mesh)
                     instanceData.m_InstancedMesh = mesh;
             }
@@ -304,10 +304,10 @@ namespace TEditor
                 Object[] assets=AssetDatabase.LoadAllAssetsAtPath( AssetDatabase.GetAssetPath(instanceData));
                 foreach(var asset in assets)
                 {
-                    Texture2D atla = asset as Texture2D;
+                    Texture2D atlas = asset as Texture2D;
                     Mesh mesh = asset as Mesh;
-                    if (atla)
-                        instanceData.m_AnimationAtlas = atla;
+                    if (atlas)
+                        instanceData.m_AnimationAtlas = atlas;
                     if (mesh)
                         instanceData.m_InstancedMesh = mesh;
                 }
