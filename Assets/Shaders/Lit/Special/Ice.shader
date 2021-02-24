@@ -1,4 +1,4 @@
-﻿Shader "Unlit/Ice"
+﻿Shader "Game/Lit/Special/Ice"
 {
     Properties
     {
@@ -9,10 +9,10 @@
 		[Toggle(_THICK)]_EnableThick("Enable Ice Thick",float)=1
 		_Thickness("Ice Thicknesss",Range(0.01,1))=.1
 
-		[Header(Diffuse)]
+		[Header(Lighting)]
+		[Header(_ Diffuse)]
 		_Lambert("Lambert",Range(0,1))=.5
-		
-		[Header(Specular)]
+		[Header(_ Specular)]
 		[Toggle(_SPECULAR)]_EnableSpecular("Enable Specular",float)=1
 		_SpecularRange("Specular Range",Range(.9,1))=.98
 		
@@ -20,8 +20,10 @@
 		[Toggle(_CRACK)]_EnableCrack("Enable Crack",Range(0,1))=.5
         [NoScaleOffset]_CrackTex("Crack Tex",2D)="white" {}
 		[HDR]_CrackColor("Crack Color",Color)=(1,1,1,1)
+		[Header(_ CrackTop)]
 		[Toggle(_CRACKTOP)]_EnableCrackTop("Enable Crack Top",float)=1
 		_CrackTopStrength("Crack Top Strength",Range(0.1,1))=.2
+		[Header(_ Parallex)]
 		[Toggle(_CRACKPARALLEX)]_CrackParallex("Enable Crack Parallex",float)=1
         [Enum(_4,4,_8,8,_16,16,_32,32,_64,64)]_CrackParallexTimes("Crack Parallex Times",int)=8
 		_CrackDistance("Crack Distance",Range(0,1))=.5
@@ -30,9 +32,16 @@
 		[Header(Opacity)]
 		[Toggle(_OPACITY)]_EnableOpacity("Enable Opacity",float)=1
 		_BeginOpacity("Begin Opacity",Range(0,1))=.5
+		[Header(_ Distort)]
+		[Toggle(_DISTORT)]_EnableDistort("Enable Normal Distort",float)=1
+		_DistortStrength("Distort Strength",Range(.1,2))=1
+		[Header(_ Depth)]
 		[Toggle(_DEPTH)]_EnableDepth("Enable Depth",float)=1
 		_DepthDistance("Depth Distance",Range(0,3))=1
 		_DepthPow("Depth Pow",Range(0.1,5))=2
+		[Header(_ Fresnel)]
+		[Toggle(_FRESNEL)]_EnableFresnel("Enable Fresnel",float)=1
+		_FresnelPow("Fresnel Pow",Range(0.1,10))=1
     }
     SubShader
     {
@@ -45,20 +54,22 @@
             #pragma vertex vert
             #pragma fragment frag
 			#pragma multi_compile_fwdbase
-			#pragma shader_feature _SPECULAR
 			#pragma shader_feature _NORMALMAP
-			#pragma shader_feature _OPACITY
 			#pragma shader_feature _THICK
-			#pragma shader_feature _DEPTH
 			#pragma shader_feature _CRACK
 			#pragma shader_feature _CRACKTOP
 			#pragma shader_feature _CRACKPARALLEX
+			#pragma shader_feature _OPACITY
+			#pragma shader_feature _DISTORT
+			#pragma shader_feature _DEPTH
+			#pragma shader_feature _FRESNEL
+			#pragma shader_feature _SPECULAR
 
             #include "UnityCG.cginc"
 			#include "AutoLight.cginc"
 			#include "Lighting.cginc"
-			#include "../../../Shaders/CommonInclude.cginc"
-			#include "../../../Shaders/CommonLightingInclude.cginc"
+			#include "../../CommonInclude.cginc"
+			#include "../../CommonLightingInclude.cginc"
 
             struct appdata
             {
@@ -99,8 +110,10 @@
 			sampler2D _CameraDepthTexture;
 			sampler2D _CameraGeometryTexture;
 			float _BeginOpacity;
+			float _DistortStrength;
 			float _DepthDistance;
 			float _DepthPow;
+			float _FresnelPow;
             v2f vert (appdata v)
             {
                 v2f o;
@@ -124,17 +137,17 @@
 				float3 normal=normalize(i.normal);
 				float3 lightDir=normalize(i.lightDir);
 				float3 viewDir=normalize(i.viewDir);
-				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
 				float3 albedo=tex2D(_MainTex, i.uv);
-				float2 crackOffset=-viewDir.xy/viewDir.z;
+				float2 thickOffset=-viewDir.xy/viewDir.z;
 				
 				#if _NORMALMAP
 				float2 normalUV=i.uv;
 				#if _THICK
-				normalUV+=crackOffset*_Thickness;
+				normalUV+=thickOffset*_Thickness;
 				#endif
 				normal= DecodeNormalMap(tex2D(_NormalTex,normalUV));
 				#endif
+				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
 				
 				float diffuse=saturate( GetDiffuse(normal,lightDir,_Lambert,atten));
 				float3 finalCol=_LightColor0.rgb*diffuse*albedo+UNITY_LIGHTMODEL_AMBIENT.xyz;
@@ -152,35 +165,44 @@
 				{
 					float distance=_CrackDistance*totalParallex;
 					distance+=random2(frac(i.uv))*offsetDistance;
-					float2 parallexUV=i.uv+crackOffset*distance;
+					float2 parallexUV=i.uv+thickOffset*distance;
 					crackAmount+=tex2D(_CrackTex,parallexUV)*parallexParam*pow(1-totalParallex,_CrackPow);
 					totalParallex+=parallexParam;
 				}
-				crackAmount=saturate(crackAmount*atten*_CrackColor.a);
+				crackAmount=saturate(crackAmount*diffuse*_CrackColor.a);
 				#endif
 				finalCol= lerp(finalCol,_CrackColor*_LightColor0, crackAmount);
 				#endif
-				#if _OPACITY
-				float opacity=1-_BeginOpacity;
-				float2 screenUV=i.screenPos.xy/i.screenPos.w;
-				float2 screenDistort=normal.xy;
-				#if _DEPTH
-				float depthOffset=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, i.screenPos)).r - i.screenPos.w;
-				depthOffset=saturate(depthOffset/_DepthDistance);
-				depthOffset= pow(1-depthOffset,_DepthPow);
-				opacity=lerp(opacity,1,depthOffset);
-				screenDistort*=(1-depthOffset);
-				#endif
-				float3 geometryTex=tex2D(_CameraGeometryTexture,screenUV+screenDistort);
-				finalCol=lerp( finalCol,geometryTex,opacity);
-				#endif
-				
+
 				#if _SPECULAR
 				float specular = GetSpecular(normal,lightDir,viewDir,_SpecularRange);
 				specular*=diffuse;
 				finalCol += _LightColor0.rgb*albedo *specular;
 				#endif
 
+				#if _OPACITY
+				float opacity=0;
+				float2 screenUV=i.screenPos.xy/i.screenPos.w;
+				#if _DEPTH
+				float depthOffset=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, i.screenPos)).r - i.screenPos.w;
+				depthOffset=saturate(depthOffset/_DepthDistance);
+				depthOffset= pow(1-depthOffset,_DepthPow);
+				opacity+=depthOffset;
+				#endif
+				#if _FRESNEL
+				float NDV=dot(normal,viewDir);
+				opacity+=pow(NDV,_FresnelPow)*.5;
+				#endif
+				opacity=lerp(1-_BeginOpacity,1,saturate(opacity));
+				#if _DISTORT
+				float2 screenDistort=normal.xy*_DistortStrength;
+				screenDistort*=1-opacity;
+				screenUV+=screenDistort;
+				#endif
+				float3 geometryTex=tex2D(_CameraGeometryTexture,screenUV);
+				finalCol=lerp( finalCol,geometryTex,opacity);
+				#endif
+				
 				return float4(finalCol,1);
             }
             ENDCG

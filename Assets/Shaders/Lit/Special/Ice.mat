@@ -9,8 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Ice
   m_Shader: {fileID: 4800000, guid: 995fb0a8256378d4baff5b307f063cc4, type: 3}
-  m_ShaderKeywords: _CRACK _CRACKPARALLEX _CRACKTOP _Crack _DEPTH _DISTORT _NORMALMAP
-    _OPACITY _SPECULAR _THICK
+  m_ShaderKeywords: _CRACK _CRACKPARALLEX _CRACKTOP _Crack _DEPTH _DISTORT _FRESNEL
+    _NORMALMAP _OPACITY _SPECULAR _THICK
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -46,7 +46,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: 86c0e679eba10e0499bff3f3ebceefa1, type: 3}
-        m_Scale: {x: 2, y: 2}
+        m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
@@ -65,26 +65,29 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _BeginOpacity: 0.895
+    - _BeginOpacity: 1
     - _BumpScale: 1
     - _CrackDistance: 0.149
     - _CrackParallex: 1
-    - _CrackParallexTimes: 16
+    - _CrackParallexTimes: 8
     - _CrackPow: 2.94
     - _CrackTopStrength: 0.149
     - _Cutoff: 0.5
-    - _DepthDistance: 0.63
+    - _DepthDistance: 0.71
     - _DepthPow: 0.91
     - _DetailNormalMapScale: 1
+    - _DistortStrength: 1
     - _DstBlend: 0
     - _EnableCrack: 1
     - _EnableCrackTop: 1
     - _EnableDepth: 1
     - _EnableDistort: 1
+    - _EnableFresnel: 1
     - _EnableNormalMap: 1
     - _EnableOpacity: 1
     - _EnableSpecular: 1
     - _EnableThick: 1
+    - _FresnelPow: 10
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -102,6 +105,6 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _CrackColor: {r: 9.564255, g: 12.1680565, b: 15.245278, a: 0.65882355}
+    - _CrackColor: {r: 9.564255, g: 12.1680565, b: 15.245278, a: 0.46666667}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
