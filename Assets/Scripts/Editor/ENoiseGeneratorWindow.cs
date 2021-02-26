@@ -49,12 +49,12 @@ namespace TEditor
             if(!m_Texture||EditorGUI.EndChangeCheck())
             {
                 double sizeD = size;
-                m_Texture = new Texture2D(size, size);
+                m_Texture = new Texture2D(size, size,TextureFormat.R8,true);
                 for (int i = 0; i < size; i++)
                     for (int j = 0; j < size; j++)
                     {
-                        float perlin = (float)TPerlinNoise.Perlin(i / sizeD + i, j / sizeD + j ,0);
-                        m_Texture.SetPixel(i, j, new Color(perlin, perlin, perlin, perlin));
+                        float noise = (float)TPerlinNoise.Perlin(i / sizeD + i, j / sizeD + j ,0);
+                        m_Texture.SetPixel(i, j, new Color(noise, 0, 0, 1));
                     }
                 m_Texture.Apply();
             }
