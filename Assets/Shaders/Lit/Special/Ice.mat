@@ -9,8 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Ice
   m_Shader: {fileID: 4800000, guid: 995fb0a8256378d4baff5b307f063cc4, type: 3}
-  m_ShaderKeywords: _CRACK _CRACKPARALLEX _CRACKTOP _Crack _DEPTH _DISTORT _FRESNEL
-    _NORMALMAP _OPACITY _SPECULAR _THICK
+  m_ShaderKeywords: _CRACK _CRACKPARALLEX _CRACKTOP _Crack _DISTORT _FRESNEL _NORMALMAP
+    _OPACITY _SPECULAR _THICK
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -69,7 +69,7 @@ Material:
     - _BumpScale: 1
     - _CrackDistance: 0.149
     - _CrackParallex: 1
-    - _CrackParallexTimes: 8
+    - _CrackParallexTimes: 16
     - _CrackPow: 2.94
     - _CrackTopStrength: 0.149
     - _Cutoff: 0.5
@@ -80,7 +80,7 @@ Material:
     - _DstBlend: 0
     - _EnableCrack: 1
     - _EnableCrackTop: 1
-    - _EnableDepth: 1
+    - _EnableDepth: 0
     - _EnableDistort: 1
     - _EnableFresnel: 1
     - _EnableNormalMap: 1

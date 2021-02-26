@@ -14,7 +14,7 @@
     SubShader
     {
         Name "Main"
-        Tags { "RenderType" ="GeometryAdditive" "Queue"="Geometry+100" }
+        Tags { "RenderType" ="EntityAdditive" "Queue"="Geometry+100" }
         ZWrite Off
         Blend One One
         Pass

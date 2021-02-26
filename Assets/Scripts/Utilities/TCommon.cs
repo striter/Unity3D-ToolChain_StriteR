@@ -287,13 +287,24 @@ public static class TCommon
     {
         ienumerable.Traversal((item => list.Add(OnEachAddItem(item))));
     }
-
+    public static T[] Add<T>(this T[] srcArray, T[] tarArray)
+    {
+        int srcLength = srcArray.Length;
+        int tarLength = tarArray.Length;
+        T[] newArray = new T[srcLength + tarLength];
+        for(int i=0;i<srcLength;i++)
+            newArray[i] =srcArray[i];
+        for(int i=0;i<tarLength;i++)
+            newArray[srcLength+i] = tarArray[i];
+        return newArray;
+    }
     public static Y[] ReconstructToArray<T,Y>(this T[] srcArray,Func<T,Y> GetDstItem)
     {
         Y[] dstArray = new Y[srcArray.Length]; ;
         srcArray.Traversal((index, srcItem) =>dstArray[index]=GetDstItem(srcItem));
         return dstArray;
     }
+
     #region Enum
     public static void TraversalEnum<T>(Action<T> enumAction) where T:Enum 
     {
@@ -465,6 +476,13 @@ public static class TCommon
         CopyMesh(target,copy);
         return copy;
     }
-    
+
+    #endregion
+
+    #region Rect
+    public static Rect Reposition(this Rect _rect, float _newPositionX, float _newPositionY) => Reposition(_rect, new Vector2(_newPositionX, _newPositionY));
+    public static Rect Reposition(this Rect _rect, Vector2 _newPosition) { _rect.position = _newPosition; return _rect; }
+    public static Rect Resize(this Rect _rect, float _newSizeX, float _newSizeY) => Resize(_rect,new Vector2(_newSizeX,_newSizeY));
+    public static Rect Resize(this Rect _rect, Vector2 _newSize) { _rect.size = _newSize; return _rect; }
     #endregion
 }

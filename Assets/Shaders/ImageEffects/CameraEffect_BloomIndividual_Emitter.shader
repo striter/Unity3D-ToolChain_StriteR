@@ -60,8 +60,8 @@
 
 		SubShader
 		{
-			Tags{"RenderType"="GeometryAdditive"}
-			UsePass "Game/Effects/GeometryAdditive/MAIN"
+			Tags{"RenderType"="EntityAdditive"}
+			UsePass "Game/Effects/EntityAdditive/MAIN"
 		}
 
 		SubShader

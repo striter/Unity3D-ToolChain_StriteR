@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -147,27 +148,64 @@ namespace TEditor
         }
 
         public static string GetCurrentProjectWindowPath()=> (string)(typeof(ProjectWindowUtil).GetMethod("GetActiveFolderPath", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null,null));
+        public static bool SelectFilePath(out string filePath,string extensiton = "", string startDirectory = null)
+        { 
+            filePath = EditorUtility.OpenFilePanel("Select File Path", startDirectory == null ? GetCurrentProjectWindowPath() : startDirectory, extensiton);
+            if (filePath.Length == 0)
+                return false;
+            return true;
+        }
 
-        public static bool SelectPath(UnityEngine.Object _srcAsset, out string savePath, out string objName)
+        public static bool SaveFilePath(out string filePath,string extension="",string defaultName="",string startDirectory=null)
         {
-            savePath = "";
+            filePath = EditorUtility.SaveFilePanel("Select Save File Path",startDirectory==null?GetCurrentProjectWindowPath():startDirectory,defaultName,extension);
+            if (filePath.Length == 0)
+                return false;
+            return true;
+        }
+
+        public static bool SelectDirectory(UnityEngine.Object _srcAsset, out string directoryPath, out string objName)
+        {
+            directoryPath = "";
             objName = "";
-            string assetPath = _srcAsset==null? GetCurrentProjectWindowPath() : AssetDatabase.GetAssetPath(_srcAsset);
+            string assetPath =  AssetDatabase.GetAssetPath(_srcAsset);
             string fbxDirectory = (Application.dataPath.Remove(Application.dataPath.Length - 6, 6) + assetPath.Remove(assetPath.LastIndexOf('/'))).Replace("/", @"\");
-            string folderPath = EditorUtility.OpenFolderPanel("Select Data Save Folder", fbxDirectory, "");
+            string folderPath = EditorUtility.OpenFolderPanel("Select Directory", fbxDirectory, "");
             if (folderPath.Length == 0)
                 return false;
-            savePath = GetAssetPath(folderPath);
+            directoryPath = FilePathToAssetPath(folderPath)+"/";
             objName = GetPathName(assetPath);
             return true;
         }
-        public static string GetAssetPath(string path)
+
+        public static bool CreateOrReplaceFile(string path,byte[] bytes)
+        {
+            try
+            {
+                FileStream fileStream = File.Open(path,FileMode.OpenOrCreate);
+                BinaryWriter writer = new BinaryWriter(fileStream);
+                writer.Write(bytes);
+                writer.Close();
+                fileStream.Close();
+                AssetDatabase.Refresh();
+                return true;
+
+            }
+            catch(Exception e)
+            {
+                Debug.LogError(e);
+                return false;
+            }
+
+
+        }
+
+
+        public static string FilePathToAssetPath(string path)
         {
             int assetIndex = path.IndexOf("/Assets")+1;
             if (assetIndex != 0)
                 path = path.Substring(assetIndex, path.Length - assetIndex);
-            if (path[path.Length - 1] != '/')
-                path += '/';
             return path;
         }
         public static string RemoveExtension(string path)

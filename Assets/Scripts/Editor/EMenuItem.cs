@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -18,20 +16,14 @@ namespace TEditor
             ScreenCapture.CaptureScreenshot(path);
         }
 
-        [MenuItem("Work Flow/AssetBundles/Test Asset Bundle Constructing", false, 110)]
-        static void BuildAllAssetBundlesAndroid()
-        {
-            BuildPipeline.BuildAssetBundles(Application.streamingAssetsPath, BuildAssetBundleOptions.None, BuildTarget.Android);
-        }
-
         [MenuItem("Work Flow/UI Tools/Missing Fonts Replacer", false, 203)]
-        static void ShowWindow() => EditorWindow.GetWindow<EUIFontsMissingReplacerWindow>().Show();
-
+        static void ShowWindow() => EditorWindow.GetWindow<EUIFontsMissingReplacerWindow>().titleContent=new GUIContent("Missing Fonts Replacer",EditorGUIUtility.FindTexture("FilterByLabel"));
         [MenuItem("Work Flow/Art/(Optimize)Animation Instance Baker", false, 300)]
-        static void ShowOptimizeWindow() => EditorWindow.GetWindow(typeof(EAnimationInstanceBakerWindow));
-
+        static void ShowOptimizeWindow() => EditorWindow.GetWindow(typeof(EAnimationInstanceBakerWindow)).titleContent = new GUIContent("GPU Animation Instance Baker", EditorGUIUtility.FindTexture("AvatarSelector"));
         [MenuItem("Work Flow/Art/Plane Mesh Generator", false, 301)]
-        static void ShowPlaneGenerator() => EditorWindow.GetWindow(typeof(EPlaneMeshGeneratorWindow));
+        static void ShowPlaneGenerator() => EditorWindow.GetWindow(typeof(EPlaneMeshGeneratorWindow)).titleContent=new GUIContent("Plane Generator", EditorGUIUtility.FindTexture("CustomTool"));
+        [MenuItem("Work Flow/Art/Noise Generator", false, 302)]
+        static void ShowNoiseGenerator() => EditorWindow.GetWindow(typeof(ENoiseGeneratorWindow)).titleContent=new GUIContent("Noise Generator",EditorGUIUtility.FindTexture("CustomTool"));
     }
 
 }

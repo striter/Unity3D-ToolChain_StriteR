@@ -110,10 +110,10 @@ namespace TEditor
             mesh.SetTangents(tangents);
             mesh.SetIndices(indices, MeshTopology.Triangles, 0);
 
-            if (!TEditor.SelectPath(null, out string path, out string name))
+            if (!TEditor.SaveFilePath( out string path, "asset", "CustomPlane"))
                 return;
 
-            TEditor.CreateOrReplaceMainAsset(mesh, path+"CustomPlane.asset");
+            TEditor.CreateOrReplaceMainAsset(mesh, TEditor.FilePathToAssetPath( path));
         }
     }
 }

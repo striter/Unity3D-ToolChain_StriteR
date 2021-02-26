@@ -121,7 +121,7 @@ namespace TEditor
         }
         void GenerateVertexTexture(GameObject _targetFBX, AnimationClip[] _clips)
         {
-            if (!TEditor.SelectPath(_targetFBX, out string savePath, out string meshName))
+            if (!TEditor.SelectDirectory(_targetFBX, out string savePath, out string meshName))
             {
                 Debug.LogWarning("Invalid Folder Selected");
                 return;
@@ -193,7 +193,7 @@ namespace TEditor
 
         void GenerateBoneInstanceMeshAndTexture(GameObject _targetFBX, AnimationClip[] _clips, string exposeBones)
         {
-            if (!TEditor.SelectPath(_targetFBX, out string savePath, out string meshName))
+            if (!TEditor.SelectDirectory(_targetFBX, out string savePath, out string meshName))
             {
                 Debug.LogWarning("Invalid Folder Selected");
                 return;
