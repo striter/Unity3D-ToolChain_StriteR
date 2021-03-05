@@ -27,9 +27,9 @@ public class TouchControlTest : MonoBehaviour {
     {
         UIT_TouchConsole.Init(OnConsoleOpen);
         UIT_TouchConsole.Header("Control");
-        UIT_TouchConsole.Command("Jump").InputField("200", OnConsoleJump, KeyCode.Space);
+        UIT_TouchConsole.Command("Jump", KeyCode.Space).InputField("200", OnConsoleJump);
         UIT_TouchConsole.Command("Push").EnumSelection(enum_TestDirection.Forward, OnConsoleDirection);
-        UIT_TouchConsole.Command("Reset").Button(OnConsoleReset, KeyCode.R);
+        UIT_TouchConsole.Command("Reset", KeyCode.R).Button(OnConsoleReset);
         UIT_TouchConsole.Command("Joystick").Button(OnJoystickSwitch);
         UIT_TouchConsole.Command("Touch").EnumSelection(enum_TouchCheckType.DualJoystick, OnTouchInputSwitch);
 

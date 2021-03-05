@@ -255,7 +255,9 @@ public class TGameObjectPool_Instance<T, Y>
     {
         Y item = m_ActiveItemDic[identity];
         m_InactiveItemList.Add(item);
-        GetItemTransform(item).SetActive(false);
+        Transform itemTransform = GetItemTransform(item);
+        itemTransform.SetActive(false);
+        itemTransform.SetParent(transform);
         m_ActiveItemDic.Remove(identity);
     }
 
@@ -351,17 +353,16 @@ public abstract class CGameObjectPool_Instance_Class<T>:IGameObjectPool_Instance
 }
 public class TGameObjectPool_Instance_Class<T, Y> : TGameObjectPool_Instance_Interface<T, Y> where Y : CGameObjectPool_Instance_Class<T>
 {
-    public TGameObjectPool_Instance_Class(Transform poolTrans, string itemName) : base(poolTrans, itemName) { }
-
-    static readonly Type type = typeof(Y);
+    public Type m_Type;
+    public TGameObjectPool_Instance_Class(Transform poolTrans, Type type, string itemName) : base(poolTrans, itemName) { m_Type = type; }
+    public TGameObjectPool_Instance_Class(Transform poolTrans, string itemName) : base(poolTrans, itemName) { m_Type = typeof(Y); }
     protected override Y CreateNewItem(Transform instantiateTrans)
     {
-        Y item = TReflection.CreateInstance<Y>(type, instantiateTrans);
+        Y item = TReflection.CreateInstance<Y>(m_Type, instantiateTrans);
         item.OnInitItem(RemoveItem);
         return item;
     } 
     protected override Transform GetItemTransform(Y targetItem) => targetItem.transform;
-
 }
 #endregion
 #region Monobehaviour

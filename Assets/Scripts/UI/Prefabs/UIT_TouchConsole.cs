@@ -1,112 +1,56 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
-
+using static UIT_TouchConsole;
+public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
+{
     #region Helper
-    public static void Init(Action<bool> _OnConsoleShow = null)=>Instance.InitConsole(_OnConsoleShow);
-    public static void Header(string _title) => Instance.AddCommandLine().Header(_title);
-    public static void EmptyLine() => Instance.AddCommandLine().EmptyLine();
-    public static CommandItem Command(string _title) => Instance.AddCommandLine().Command(_title);
+    public static void Init(Action<bool> _OnConsoleShow = null) => Instance.InitConsole(_OnConsoleShow);
+    public static void EmptyLine() => Instance.AddCommandLine();
+    public static void Header(string _title) => Instance.AddCommandLine().Insert<CommandItem_Header>().m_HeaderTitle.text = _title;
+    public static CommandContainer Command(string _title, KeyCode _keyCode = KeyCode.None)
+    {
+        CommandContainer container = Instance.AddCommandLine(_keyCode);
+        container.Insert<CommandItem_CommandTitle>().m_CommandTitle.text = _title;
+        return container;
+    }
     #endregion
-    public bool m_ConsoleOpening { get; private set; } = false;
 
-    [Range(0,2f)] public float m_ConsoleTimeScale = .5f;
-    public enum_RightPanel m_RightPanelSetting = (enum_RightPanel)int.MaxValue;
-    public bool m_LogFiltered = false, m_WarningFiltered = true, m_ErrorFiltered = true;
+    [Range(0, 2f)] public float m_ConsoleTimeScale = .5f;
 
-    Transform m_FrameRate;
-    Text m_FrameRateValue;
-    ScrollRect m_ConsoleCommandScrollRect;
-    TGameObjectPool_Instance_Class<int, CommandItem> m_Commands;
-    Action<bool> OnConsoleShow;
-
-    ScrollRect m_RightPanelRect;
-    RectTransform m_LogFilter;
-    LogToggle m_FilterLog, m_FilterWarning, m_FilterError;
-    TGameObjectPool_Instance_Class<int, LogItem> m_Logs;
-    StackPanel m_Stack;
-
-    Queue<LogData> m_LogDataQueue = new Queue<LogData>();
-    Timer m_FastKeyCooldownTimer = new Timer(.5f);
-    Queue<int> m_FrameRateQueue = new Queue<int>();
     protected override void Awake()
     {
         base.Awake();
-
-        m_ConsoleCommandScrollRect = transform.Find("Command").GetComponent<ScrollRect>();
-        m_Commands = new TGameObjectPool_Instance_Class<int, CommandItem>(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content"), "GridItem");
-
-        m_RightPanelRect = transform.Find("RightPanel").GetComponent<ScrollRect>();
-        Transform rightContent = m_RightPanelRect.transform.Find("Viewport/Content");
-        m_LogFilter = rightContent.Find("LogFilter") as RectTransform;
-        m_FilterLog = new LogToggle(m_LogFilter.Find("Log"),m_LogFiltered,UpdateLogs);
-        m_FilterWarning = new LogToggle(m_LogFilter.Find("Warning"),m_WarningFiltered,UpdateLogs);
-        m_FilterError = new LogToggle(m_LogFilter.Find("Error"),m_ErrorFiltered,UpdateLogs);
-        m_FrameRate = rightContent.Find("FrameRate");
-        m_FrameRateValue = m_FrameRate.Find("Value/Value").GetComponent<Text>();
-        m_Logs = new TGameObjectPool_Instance_Class<int, LogItem>(m_RightPanelRect.transform.Find("Viewport/Content"),"LogItem");
-
-        m_Stack = new StackPanel(transform.Find("Stack"));
-
-        m_ConsoleOpening = false;
-        m_ConsoleCommandScrollRect.SetActive(m_ConsoleOpening);
+        ConsoleAwake();
+        LogFrameAwake();
 
         SetConsoleTimeScale(m_ConsoleTimeScale);
-        SetRightPanel(m_RightPanelSetting);
+        SetLogFramePanel(m_RightPanelSetting);
     }
     protected UIT_TouchConsole InitConsole(Action<bool> _OnConsoleShow)
     {
-        OnConsoleShow = _OnConsoleShow;
+        ConsoleReset(_OnConsoleShow);
+        LogFrameReset();
 
-        m_FrameRateQueue.Clear();
-        m_FrameRateValue.text = "";
-
-        ClearConsoleLog();
-        m_Stack.HideStack();
-
-        m_Commands.Clear();
         Header("Console");
         Command("Time Scale").Slider(m_ConsoleTimeScale, 0f, 2f, SetConsoleTimeScale);
-        Command("Right Panel").EnumFlagsSelection(m_RightPanelSetting,SetRightPanel);
+        Command("Right Panel").FlagsSelection(m_RightPanelSetting, SetLogFramePanel);
         Command("Clear Log").Button(ClearConsoleLog);
+        Command("Init").Button(() => InitConsole(null));
         EmptyLine();
         return this;
     }
 
     private void Update()
     {
-        m_Commands.m_ActiveItemDic.Traversal((CommandItem command) => { command.KeycodeTick(); });
+        float deltaTime = Time.unscaledDeltaTime;
+        ConsoleTick(deltaTime);
 
-        m_FastKeyCooldownTimer.Tick(Time.unscaledDeltaTime);
-        if (m_FastKeyCooldownTimer .m_Timing)
-            return;
-        if (Input.touchCount >= 5 || Input.GetKey(KeyCode.BackQuote))
-        {
-            m_FastKeyCooldownTimer.Replay();
-            m_ConsoleOpening = !m_ConsoleOpening;
-            m_ConsoleCommandScrollRect.SetActive(m_ConsoleOpening);
-            OnConsoleShow?.Invoke(m_ConsoleOpening);
-            Time.timeScale = m_ConsoleOpening?m_ConsoleTimeScale:1f;
-            UpdateLogs();
-        }
-
-        if(m_RightPanelSetting.IsFlagEnable(enum_RightPanel.FPS))
-        {
-            m_FrameRateQueue.Enqueue(Mathf.CeilToInt(1f / Time.unscaledDeltaTime));
-            if (m_FrameRateQueue.Count > 30)
-                m_FrameRateQueue.Dequeue();
-
-            int total = 0;
-            foreach (var frameRate in m_FrameRateQueue)
-                total += frameRate;
-            total /= m_FrameRateQueue.Count;
-
-            m_FrameRateValue.text = total.ToString();
-        }
+        if (m_RightPanelSetting.IsFlagEnable(enum_RightPanel.FPS))
+            LogFrame(deltaTime);
     }
+
     #region Miscs
     protected void SetConsoleTimeScale(float _timeScale)
     {
@@ -115,7 +59,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
             return;
         Time.timeScale = m_ConsoleTimeScale;
     }
-    protected void SetRightPanel(enum_RightPanel _panelSetting)
+    protected void SetLogFramePanel(enum_RightPanel _panelSetting)
     {
         m_RightPanelSetting = _panelSetting;
         m_FrameRate.SetActive(m_RightPanelSetting.IsFlagEnable(enum_RightPanel.FPS));
@@ -125,125 +69,207 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole> {
     }
     #endregion
 }
-
 //Console
+public static class UIT_TouchConsoleHelper
+{
+    public static string GetKeyCodeString(this KeyCode _keyCode) => _keyCode == KeyCode.None ? "" : _keyCode.ToString();
+
+    public static void Button(this CommandContainer _container, Action OnClick)
+    {
+        CommandItem_Button button = _container.Insert<CommandItem_Button>();
+        button.m_Button.onClick.AddListener(() => OnClick());
+        button.m_ButtonTitle.text = _container.m_KeyCode.GetKeyCodeString();
+    }
+    public static void Toggle(this CommandContainer _container, Action<bool> OnToggleChange, bool defaultValue = false)
+    {
+        CommandItem_Toggle toggle = _container.Insert<CommandItem_Toggle>();
+        toggle.m_Toggle.onValueChanged.AddListener((value) => OnToggleChange(value));
+        toggle.m_Toggle.isOn = defaultValue;
+        toggle.m_ToggleTitle.text = _container.m_KeyCode.GetKeyCodeString();
+    }
+    static T ButtonFoldOutItem<T>(this CommandContainer _container,bool foldOut,out CommandItem_Button _button) where T : CommandItemBase
+    {
+        _button = null;
+        if (!foldOut)
+            return _container.Insert<T>(); 
+        _button = _container.Insert<CommandItem_Button>();
+        T item = _container.Insert<T>();
+        _button.m_Button.onClick.AddListener(() => item.transform.SetActive(!item.transform.gameObject.activeSelf));
+        item.transform.SetActive(false);
+        return item;
+    }
+    public static void EnumSelection<T>(this CommandContainer _container, T _defaultEnum, Action<T> OnClick,bool foldOut=true) where T : Enum
+    {
+        CommandItem_ButtonSelection buttonSelection =_container.ButtonFoldOutItem<CommandItem_ButtonSelection>(foldOut,out CommandItem_Button button);
+        buttonSelection.Play(_defaultEnum, (int value) => {
+            T enumValue = (T)Enum.ToObject(typeof(T), value);
+            OnClick(enumValue);
+            if (button != null)
+                button.m_ButtonTitle.text = enumValue.ToString();
+        });
+        if (button != null)
+            button.m_ButtonTitle.text = _defaultEnum.ToString();
+    }
+    public static Action EnumSelection<T>(this CommandContainer _container, Func<T?> _GetEnum, Action<T> OnClick, bool foldOut = true) where T : struct, Enum
+    {
+        CommandItem_ButtonSelection buttonSelection = _container.ButtonFoldOutItem<CommandItem_ButtonSelection>(foldOut, out CommandItem_Button foldOutButton);
+        Action updateValues = () => {
+            T? enumValueN = _GetEnum();
+            T enumValue = enumValueN == null ? default : enumValueN.Value;
+            buttonSelection.Play(enumValue, (int value) => {
+                T selectEnum = (T)Enum.ToObject(typeof(T), value);
+                OnClick(selectEnum);
+                if (foldOutButton != null)
+                    foldOutButton.m_ButtonTitle.text = selectEnum.ToString();
+            });
+            if (foldOutButton != null)
+                foldOutButton.m_ButtonTitle.text = enumValue.ToString();
+        };
+        updateValues();
+        return updateValues;
+    }
+    public static void EnumSelection(this CommandContainer _container, int _defaultEnum, List<string> _values, Action<string> OnClick,bool foldOut=true)
+    {
+        CommandItem_ButtonSelection buttonSelection = _container. ButtonFoldOutItem<CommandItem_ButtonSelection>(foldOut,out CommandItem_Button foldOutButton);
+        buttonSelection.Play(_values, _defaultEnum, (int value) => {
+            OnClick(_values[value]);
+            if (foldOutButton != null)
+                foldOutButton.m_ButtonTitle.text = _values[value];
+        });
+        if (foldOutButton != null)
+            foldOutButton.m_ButtonTitle.text = _values[_defaultEnum];
+    }
+    public static void FlagsSelection<T>(this CommandContainer _container, T _defaultFlags, Action<T> _logFilter,bool foldOut=true) where T : Enum
+    {
+        _container.ButtonFoldOutItem<CommandItem_FlagsSelection>(foldOut,out CommandItem_Button foldOutButton).Play(_defaultFlags,flags=> {
+            if (foldOutButton != null)
+                foldOutButton.m_ButtonTitle.text = flags.GetNumerable().ToString_Readable("|", value => value ? "√" : "×");
+            _logFilter(flags);
+        });
+        if (foldOutButton != null)
+            foldOutButton.m_ButtonTitle.text = _defaultFlags.GetNumerable().ToString_Readable("|", value => value ? "√" : "×");
+    }
+    public static void InputField(this CommandContainer _container, string _defaultValue, Action<string> OnValueClick)
+    {
+        CommandItem_InputField input = _container.Insert<CommandItem_InputField>();
+        input.m_InputField.text = _defaultValue;
+        _container.Button(() => OnValueClick(input.m_InputField.text));
+    }
+    public static void InpuptField(this CommandContainer _container, string _defaultValue1, string _defaultValue2, Action<string, string> OnValueClick)
+    {
+        CommandItem_InputField input1 = _container.Insert<CommandItem_InputField>();
+        CommandItem_InputField input2 = _container.Insert<CommandItem_InputField>();
+        input1.m_InputField.text = _defaultValue1;
+        input2.m_InputField.text = _defaultValue2;
+        _container.Button(() => OnValueClick(input1.m_InputField.text, input2.m_InputField.text));
+    }
+    public static void Slider(this CommandContainer _container, float _maxValue, Action<float> OnValueChanged) => Slider(_container, 0, 0, _maxValue, OnValueChanged);
+    public static void Slider(this CommandContainer _container, float _startValue, float _minValue, float _maxValue, Action<float> OnValueChanged)
+    {
+        CommandItem_Slider slider = _container.Insert<CommandItem_Slider>();
+        slider.m_SliderComponent.value = Mathf.InverseLerp(_minValue, _maxValue, _startValue);
+        slider.m_SliderValue.text = _startValue.ToString();
+        slider.m_SliderComponent.onValueChanged.AddListener((float value) => {
+            float finalValue = Mathf.Lerp(_minValue, _maxValue, value);
+            slider.m_SliderValue.text = string.Format("{0:0.0}", finalValue);
+            OnValueChanged(finalValue);
+        });
+    }
+    public static Action Slider(this CommandContainer _container, Func<float?> _GetValue, Action<float> _SetValue, float _minValue, float _maxValue)
+    {
+        CommandItem_Slider slider = _container.Insert<CommandItem_Slider>();
+        Action UpdateValue = () => {
+            float? _value = _GetValue();
+            if (_value == null)
+                return;
+            float finalValue = _value.Value;
+            slider.m_SliderComponent.value = Mathf.InverseLerp(_minValue, _maxValue, finalValue);
+            slider.m_SliderValue.text = string.Format("{0:0.0}", finalValue);
+        };
+        UpdateValue();
+        slider.m_SliderComponent.onValueChanged.AddListener(value => {
+            float finalValue = Mathf.Lerp(_minValue, _maxValue, value);
+            slider.m_SliderValue.text = string.Format("{0:0.0}", finalValue);
+            _SetValue(finalValue);
+        });
+        return UpdateValue;
+    }
+
+
+}
 public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
 {
+    public bool m_ConsoleOpening { get; private set; } = false;
+    Timer m_FastKeyCooldownTimer = new Timer(.5f);
+
     int m_totalCommands;
-    protected CommandItem AddCommandLine() => m_Commands.AddItem(m_totalCommands++);
-    public class CommandItem : CGameObjectPool_Instance_Class<int>
+    int m_totalItems;
+
+    ScrollRect m_ConsoleCommandScrollRect;
+    TGameObjectPool_Instance_Class<int, CommandContainer> m_CommandContainers;
+    Dictionary<Type, TGameObjectPool_Instance_Class<int, CommandItemBase>> m_CommandItems = new Dictionary<Type, TGameObjectPool_Instance_Class<int, CommandItemBase>>();
+    Action<bool> OnConsoleShow;
+    protected CommandContainer AddCommandLine(KeyCode _keyCode = KeyCode.None) => m_CommandContainers.AddItem(m_totalCommands++).Init(_keyCode, CommandItemCreate, CommandItemRecycle);
+    protected CommandItemBase CommandItemCreate(Type type) => m_CommandItems[type].AddItem(m_totalItems++);
+    protected void CommandItemRecycle(CommandItemBase item) => m_CommandItems[item.GetType()].RemoveItem(item.m_Identity);
+    void ConsoleAwake()
+    {
+        m_ConsoleCommandScrollRect = transform.Find("Command").GetComponent<ScrollRect>();
+        m_CommandContainers = new TGameObjectPool_Instance_Class<int, CommandContainer>(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content"), "GridItem");
+        Transform containerItemPool = m_ConsoleCommandScrollRect.transform.Find("Viewport/CommandItemPool");
+        TReflection.TraversalAllInheritedClasses<CommandItemBase>(type => m_CommandItems.Add(type, new TGameObjectPool_Instance_Class<int, CommandItemBase>(containerItemPool,type, type.Name)));
+
+        m_ConsoleOpening = false;
+        m_ConsoleCommandScrollRect.SetActive(m_ConsoleOpening);
+    }
+    void ConsoleReset(Action<bool> _OnConsoleShow)
+    {
+        OnConsoleShow = _OnConsoleShow;
+
+        m_CommandContainers.Clear();
+        m_totalItems = 0;
+        m_totalCommands = 0;
+    }
+
+
+    void ConsoleTick(float _deltaTime)
+    {
+        m_CommandContainers.m_ActiveItemDic.Traversal( command => command.KeycodeTick());
+
+        m_FastKeyCooldownTimer.Tick(_deltaTime);
+        if (m_FastKeyCooldownTimer.m_Timing)
+            return;
+        if (Input.touchCount >= 5 || Input.GetKey(KeyCode.BackQuote))
+        {
+            m_FastKeyCooldownTimer.Replay();
+            m_ConsoleOpening = !m_ConsoleOpening;
+            m_ConsoleCommandScrollRect.SetActive(m_ConsoleOpening);
+            OnConsoleShow?.Invoke(m_ConsoleOpening);
+            
+            Time.timeScale = m_ConsoleOpening ? m_ConsoleTimeScale : 1f;
+            UpdateLogs();
+            UpdateCommandData();
+        }
+    }
+    void UpdateCommandData()=> m_CommandContainers.m_ActiveItemDic.Traversal(command => command.UpdateItems());
+
+
+    public class CommandContainer : CGameObjectPool_Instance_Class<int>
     {
         #region Predefine Classes
-        public class ToggleSelection
-        {
-            public Transform transform { get; private set; }
-            TGameObjectPool_Component<int, Toggle> m_ToggleGrid;
-            public ToggleSelection(Transform _transform)
-            {
-                transform = _transform;
-                m_ToggleGrid = new TGameObjectPool_Component<int, Toggle>(_transform.Find("Grid"), "GridItem");
-            }
-            public void Play<T>(T defaultValue, Action<T> _OnFlagChanged) where T : Enum
-            {
-                m_ToggleGrid.Clear();
-                TCommon.TraversalEnum<T>(value => {
-                    Toggle tog = m_ToggleGrid.AddItem(Convert.ToInt32(value));
-                    tog.isOn = defaultValue.IsFlagEnable((T)value); ;
-                    tog.GetComponentInChildren<Text>().text = value.ToString();
-                    tog.onValueChanged.RemoveAllListeners();
-                    tog.onValueChanged.AddListener(changed => {
-                        int totalIndex = 0;
-                        m_ToggleGrid.m_ActiveItemDic.Traversal((index, toggle) => totalIndex += (toggle.isOn ? index : 0));
-                        _OnFlagChanged((T)Enum.ToObject(typeof(T), totalIndex));
-                    });
-                });
-            }
-        }
-        public class ButtonSelection
-        {
-            public Transform transform { get; private set; }
-            Text m_Text;
-            TGameObjectPool_Component<int, Button> m_ButtonGrid;
-            public ButtonSelection(Transform _transform)
-            {
-                transform = _transform;
-                m_Text = _transform.Find("Text").GetComponent<Text>();
-                m_ButtonGrid = new TGameObjectPool_Component<int, Button>(_transform.Find("Grid"), "GridItem");
-                _transform.GetComponent<Button>().onClick.AddListener(() => {
-                    m_ButtonGrid.transform.SetActive(!m_ButtonGrid.transform.gameObject.activeSelf);
-                });
-                m_ButtonGrid.transform.SetActive(false);
-            }
-            public void Play<T>(T _defaultValue, Action<int> _OnClick) where T : Enum
-            {
-                m_ButtonGrid.Clear();
-                m_Text.text = _defaultValue.ToString();
-                TCommon.TraversalEnum<T>(temp =>
-                {
-                    int index = Convert.ToInt32(temp);
-                    Button btn = m_ButtonGrid.AddItem(index);
-                    btn.onClick.RemoveAllListeners();
-                    btn.GetComponentInChildren<Text>().text = temp.ToString();
-                    btn.onClick.AddListener(() => {
-                        m_Text.text = temp.ToString();
-                        _OnClick(index);
-                        m_ButtonGrid.transform.SetActive(false);
-                    });
-                });
-            }
-            public void Play(List<string> values, string defaultValue, Action<int> OnClick)
-            {
-                m_ButtonGrid.Clear();
-                m_Text.text = defaultValue.ToString();
-                m_ButtonGrid.Clear();
-                values.Traversal((int index, string temp) =>
-                {
-                    Button btn = m_ButtonGrid.AddItem(index);
-                    btn.onClick.RemoveAllListeners();
-                    btn.GetComponentInChildren<Text>().text = temp.ToString();
-                    btn.onClick.AddListener(() => {
-                        m_Text.text = temp.ToString();
-                        OnClick(index);
-                        m_ButtonGrid.transform.SetActive(false);
-                    });
-                });
-            }
-        }
         #endregion
-        Transform m_Header;
-        Text m_HeaderTitle;
-        Transform m_Command;
-        Text m_CommandTitle;
-
-        KeyCode m_KeyCode;
-        InputField m_ValueInput1, m_ValueInput2;
-        Button m_Button;
-        Text m_ButtonTitle;
-        ButtonSelection m_GridSelection;
-        Toggle m_Toggle;
-        Text m_ToggleTitle;
-        ToggleSelection m_ToggleSelection;
-
-        Transform m_Slider;
-        Slider m_SliderComponent;
-        Text m_SliderValue;
-        public CommandItem(Transform _transform) : base(_transform)
+        List<CommandItemBase> m_Items  = new List<CommandItemBase>();
+        public CommandContainer(Transform _transform) : base(_transform) { }
+        public int m_PageIndex { get; private set; }
+        public KeyCode m_KeyCode { get; private set; }
+        Func<Type, CommandItemBase> CreateItem;
+        Action<CommandItemBase> RecycleItem;
+        public CommandContainer Init(KeyCode _keyCode, Func<Type, CommandItemBase> _CreateItem, Action<CommandItemBase> _RecycleItem)
         {
-            m_Header = transform.Find("Header");
-            m_HeaderTitle = m_Header.Find("Title").GetComponent<Text>();
-            m_Command = transform.Find("Command");
-            m_CommandTitle = transform.Find("Command/Title").GetComponent<Text>();
-            m_ValueInput1 = transform.Find("Input1").GetComponent<InputField>();
-            m_ValueInput2 = transform.Find("Input2").GetComponent<InputField>();
-            m_Button = transform.Find("Button").GetComponent<Button>();
-            m_ButtonTitle = transform.Find("Button/Title").GetComponent<Text>();
-            m_GridSelection = new ButtonSelection(transform.Find("ButtonSelection"));
-            m_Toggle = transform.Find("Toggle").GetComponent<Toggle>();
-            m_ToggleTitle = transform.Find("Toggle/Title").GetComponent<Text>();
-            m_ToggleSelection = new ToggleSelection(transform.Find("ToggleSelection"));
-            m_Slider = transform.Find("Slider");
-            m_SliderComponent = transform.Find("Slider/Slider").GetComponent<Slider>();
-            m_SliderValue = transform.Find("Slider/Value").GetComponent<Text>();
+            m_KeyCode = _keyCode;
+            CreateItem = _CreateItem;
+            RecycleItem = _RecycleItem;
+            return this;
         }
         public void KeycodeTick()
         {
@@ -251,119 +277,196 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
                 return;
 
             if (Input.GetKeyDown(m_KeyCode))
+                m_Items.Traversal(item => item.OnFastKeyTrigger());
+        }
+        public void UpdateItems() => m_Items.Traversal(item => item.UpdateData());
+        public T Insert<T>() where T : CommandItemBase
+        {
+            T item = CreateItem(typeof(T)) as T;
+            item.transform.SetParent(transform);
+            m_Items.Add(item);
+            return item;
+        }
+
+        public override void OnRemoveItem()
+        {
+            base.OnRemoveItem();
+            m_Items.Traversal(RecycleItem);
+            m_Items.Clear();
+            m_KeyCode = KeyCode.None;
+        }
+    }
+    public class CommandItemBase : CGameObjectPool_Instance_Class<int>
+    {
+        public CommandItemBase(Transform _transform) : base(_transform)
+        {
+
+        }
+        public virtual void OnFastKeyTrigger()
+        {
+
+        }
+        public virtual void UpdateData()
+        {
+
+        }
+    }
+    public class CommandItem_FlagsSelection : CommandItemBase
+    {
+        TGameObjectPool_Component<int, Toggle> m_ToggleGrid;
+        public CommandItem_FlagsSelection(Transform _transform) : base(_transform)
+        {
+            m_ToggleGrid = new TGameObjectPool_Component<int, Toggle>(_transform, "GridItem");
+        }
+        public void Play<T>(T defaultValue, Action<T> _OnFlagChanged) where T : Enum
+        {
+            m_ToggleGrid.Clear();
+            TCommon.TraversalEnum<T>(value => {
+                Toggle tog = m_ToggleGrid.AddItem(Convert.ToInt32(value));
+                tog.isOn = defaultValue.IsFlagEnable(value);
+                tog.GetComponentInChildren<Text>().text = value.ToString();
+                tog.onValueChanged.RemoveAllListeners();
+                tog.onValueChanged.AddListener(changed => {
+                    int totalIndex = 0;
+                    m_ToggleGrid.m_ActiveItemDic.Traversal((index, toggle) => totalIndex += (toggle.isOn ? index : 0));
+                    _OnFlagChanged((T)Enum.ToObject(typeof(T), totalIndex));
+                });
+            });
+        }
+    }
+    public class CommandItem_ButtonSelection : CommandItemBase
+    {
+        public int m_DefaultValue;
+        TGameObjectPool_Component<int, Button> m_ButtonGrid;
+        public CommandItem_ButtonSelection(Transform _transform) : base(_transform)
+        {
+            m_ButtonGrid = new TGameObjectPool_Component<int, Button>(_transform, "GridItem");
+        }
+        public void Play<T>(T _defaultValue, Action<int> _OnClick) where T : Enum
+        {
+            m_DefaultValue = Convert.ToInt32(_defaultValue);
+            m_ButtonGrid.Clear();
+            TCommon.TraversalEnum<T>(temp =>
             {
-                m_Button.onClick.Invoke();
-                m_Toggle.isOn = !m_Toggle.isOn;
-                m_Toggle.onValueChanged.Invoke(m_Toggle.isOn);
-            }
+                int index = Convert.ToInt32(temp);
+                Button btn = m_ButtonGrid.AddItem(index);
+                btn.onClick.RemoveAllListeners();
+                btn.GetComponentInChildren<Text>().text = temp.ToString();
+                btn.onClick.AddListener(() => _OnClick(index));
+            });
+        }
+        public void Play(List<string> values,int defaultValue, Action<int> OnClick)
+        {
+            m_DefaultValue = defaultValue;
+            m_ButtonGrid.Clear();
+            values.Traversal((int index, string temp) =>
+            {
+                Button btn = m_ButtonGrid.AddItem(index);
+                btn.onClick.RemoveAllListeners();
+                btn.GetComponentInChildren<Text>().text = temp.ToString();
+                btn.onClick.AddListener(() => OnClick(index));
+            });
+        }
+    }
+    public class CommandItem_Header : CommandItemBase
+    {
+        public Text m_HeaderTitle { get; private set; }
+        public CommandItem_Header(Transform _transform) : base(_transform)
+        {
+            m_HeaderTitle = _transform.Find("Title").GetComponent<Text>();
+        }
+    }
+    public class CommandItem_CommandTitle : CommandItemBase
+    {
+        public Text m_CommandTitle { get; private set; }
+        public CommandItem_CommandTitle(Transform _transform) : base(_transform)
+        {
+            m_CommandTitle = _transform.Find("Title").GetComponent<Text>();
+        }
+    }
+    public class CommandItem_Toggle : CommandItemBase
+    {
+        public Toggle m_Toggle { get; private set; }
+        public Text m_ToggleTitle { get; private set; }
+        public CommandItem_Toggle(Transform _transform) : base(_transform)
+        {
+            m_Toggle = transform.GetComponent<Toggle>();
+            m_ToggleTitle = _transform.Find("Title").GetComponent<Text>();
         }
         public override void OnAddItem(int identity)
         {
             base.OnAddItem(identity);
-            m_ValueInput1.SetActive(false);
-            m_ValueInput2.SetActive(false);
-            m_GridSelection.transform.SetActive(false);
-            m_ToggleSelection.transform.SetActive(false);
-            m_Button.SetActive(true);
-
-            m_Header.SetActive(false);
-            m_Command.SetActive(false);
-
-            m_KeyCode = KeyCode.None;
-            m_Button.SetActive(false);
-            m_Button.onClick.RemoveAllListeners();
-
-            m_Toggle.SetActive(false);
             m_Toggle.onValueChanged.RemoveAllListeners();
-
-            m_Slider.SetActive(false);
         }
-        public void EmptyLine()
+        public override void OnRemoveItem()
         {
-
+            base.OnRemoveItem();
+            m_Toggle.onValueChanged.RemoveAllListeners();
         }
-        public void Header(string _title)
+        public override void OnFastKeyTrigger()
         {
-            m_Header.SetActive(true);
-            m_HeaderTitle.text = _title;
-        }
-        public CommandItem Command(string _title)
-        {
-            m_Command.SetActive(true);
-            m_CommandTitle.text = _title;
-            return this;
-        }
-        public void Button(Action OnClick, KeyCode _keyCode = KeyCode.None)
-        {
-            m_Button.SetActive(true);
-            m_Button.onClick.AddListener(() => OnClick());
-            m_KeyCode = _keyCode;
-            m_ButtonTitle.text = _keyCode==KeyCode.None?"": _keyCode.ToString();
-        }
-        public void Toggle(Action<bool> OnToggleChange, bool defaultValue = false, KeyCode _keyCode = KeyCode.None)
-        {
-            m_Toggle.SetActive(true);
-            m_Toggle.onValueChanged.AddListener((value) => OnToggleChange(value));
-            m_Toggle.isOn = defaultValue;
-            m_KeyCode = _keyCode;
-            m_ToggleTitle.text = _keyCode == KeyCode.None ? "" : _keyCode.ToString();
-        }
-        int selectionIndex = -1;
-        public void EnumSelection<T>(T _defaultEnum, Action<T> OnClick, KeyCode _keyCode = KeyCode.None) where T : Enum
-        {
-            m_GridSelection.transform.SetActive(true);
-            selectionIndex = (int)Enum.ToObject(typeof(T), _defaultEnum);
-            m_GridSelection.Play(_defaultEnum, (int value) => { selectionIndex = value; OnClick((T)Enum.ToObject(typeof(T), selectionIndex)); });
-        }
-        public void EnumSelection(int _defaultEnum, List<string> _values, Action<string> OnClick, KeyCode _keyCode = KeyCode.None)
-        {
-            m_GridSelection.transform.SetActive(true);
-            selectionIndex = _defaultEnum;
-            m_GridSelection.Play(_values, _values[_defaultEnum], (int value) => { selectionIndex = value; OnClick(_values[selectionIndex]); });
-        }
-        public void EnumSelection<T>(T _defaultEnum, string _defaultValue, Action<T, string> OnClick, KeyCode keyCode = KeyCode.None) where T : Enum
-        {
-            m_GridSelection.transform.SetActive(true);
-            m_ValueInput1.SetActive(true);
-            m_ValueInput1.text = _defaultValue;
-            selectionIndex = (int)Enum.ToObject(typeof(T), _defaultEnum);
-            m_GridSelection.Play(_defaultEnum, (int value) => { selectionIndex = value; OnClick((T)Enum.ToObject(typeof(T), selectionIndex), m_ValueInput1.text); });
-        }
-        public void EnumFlagsSelection<T>(T _defaultEnum, Action<T> _logFilter, KeyCode _keyCode = KeyCode.None) where T : Enum
-        {
-            m_ToggleSelection.transform.SetActive(false);
-            m_ToggleSelection.Play(_defaultEnum, _logFilter);
-            Button(() => m_ToggleSelection.transform.SetActive(!m_ToggleSelection.transform.gameObject.activeSelf), _keyCode);
-        }
-        public void InputField(string _defaultValue, Action<string> OnValueClick, KeyCode _keyCode = KeyCode.None)
-        {
-            m_ValueInput1.SetActive(true);
-            m_ValueInput1.text = _defaultValue;
-            Button(() => OnValueClick(m_ValueInput1.text), _keyCode);
-        }
-        public void InpuptField(string _defaultValue1, string _defaultValue2, Action<string, string> OnValueClick, KeyCode _keyCode = KeyCode.None)
-        {
-            m_ValueInput1.SetActive(true);
-            m_ValueInput2.SetActive(true);
-            m_ValueInput1.text = _defaultValue1;
-            m_ValueInput2.text = _defaultValue2;
-            Button(() => OnValueClick(m_ValueInput1.text, m_ValueInput2.text), _keyCode);
-        }
-        public void Slider(float _maxValue, Action<float> OnValueChanged) => Slider(0, 0, _maxValue, OnValueChanged);
-        public void Slider(float _startValue, float _minValue, float _maxValue, Action<float> OnValueChanged)
-        {
-            m_Slider.SetActive(true);
-            m_SliderComponent.value = Mathf.InverseLerp(_minValue, _maxValue, _startValue);
-            m_SliderValue.text = _startValue.ToString();
-            m_SliderComponent.onValueChanged.AddListener((float value) => {
-                float finalValue = Mathf.Lerp(_minValue, _maxValue, value);
-                m_SliderValue.text = string.Format("{0:0.0}", value * _maxValue);
-                OnValueChanged(finalValue);
-            });
+            base.OnFastKeyTrigger();
+            m_Toggle.isOn = !m_Toggle.isOn;
+            m_Toggle.onValueChanged.Invoke(m_Toggle.isOn);
         }
     }
-}
+    public class CommandItem_Slider : CommandItemBase
+    {
+        public Slider m_SliderComponent { get; private set; }
+        public Text m_SliderValue { get; private set; }
+        public CommandItem_Slider(Transform _transform) : base(_transform)
+        {
+            m_SliderComponent = transform.Find("Slider").GetComponent<Slider>();
+            m_SliderValue = transform.Find("Value").GetComponent<Text>();
+        }
+        public override void OnAddItem(int identity)
+        {
+            base.OnAddItem(identity);
+            m_SliderComponent.onValueChanged.RemoveAllListeners();
+        }
+        public override void OnRemoveItem()
+        {
+            base.OnRemoveItem();
+            m_SliderComponent.onValueChanged.RemoveAllListeners();
+        }
+    }
+    public class CommandItem_Button : CommandItemBase
+    {
+        public Button m_Button { get; private set; }
+        public Text m_ButtonTitle { get; private set; }
+        public CommandItem_Button(Transform _transform) : base(_transform)
+        {
+            m_Button = _transform.GetComponent<Button>();
+            m_ButtonTitle = _transform.Find("Title").GetComponent<Text>();
+        }
+        public override void OnAddItem(int identity)
+        {
+            base.OnAddItem(identity);
+            m_Button.onClick.RemoveAllListeners();
+            m_ButtonTitle.text = "";
+        }
+        public override void OnRemoveItem()
+        {
+            base.OnRemoveItem();
+            m_Button.onClick.RemoveAllListeners();
+        }
+        public override void OnFastKeyTrigger()
+        {
+            base.OnFastKeyTrigger();
+            m_Button.onClick.Invoke();
+        }
+    }
 
+    public class CommandItem_InputField : CommandItemBase
+    {
+        public InputField m_InputField { get; private set; }
+        public CommandItem_InputField(Transform _transform) : base(_transform)
+        {
+            m_InputField = _transform.GetComponent<InputField>();
+        }
+
+    }
+}
 //Right Panel
 public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
 {
@@ -386,6 +489,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
             default: return "00E5FF";
         }
     }
+
     #region External Class
     struct LogData
     {
@@ -423,7 +527,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
     {
         public Toggle m_Toggle;
         public Text m_Value;
-        public LogToggle(Transform _transform,bool _filtered, Action OnValueChanged)
+        public LogToggle(Transform _transform, bool _filtered, Action OnValueChanged)
         {
             m_Toggle = _transform.GetComponent<Toggle>();
             m_Toggle.isOn = _filtered;
@@ -458,13 +562,49 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         {
             m_Type.color = TColor.HEXtoColor(GetLogHexColor(_data.m_LogType));
             m_Info.text = _data.m_LogInfo;
-            m_Time.text = TTime.TTimeTools.GetDateTime( _data.m_Time).ToLongTimeString();
+            m_Time.text = TTime.TTimeTools.GetDateTime(_data.m_Time).ToLongTimeString();
             m_Track.text = _data.m_LogTrace;
             transform.SetActive(true);
         }
-        public void HideStack()=> transform.SetActive(false);
+        public void HideStack() => transform.SetActive(false);
     }
     #endregion
+
+    public enum_RightPanel m_RightPanelSetting = (enum_RightPanel)int.MaxValue;
+    public bool m_LogFiltered = false, m_WarningFiltered = true, m_ErrorFiltered = true;
+
+    Transform m_FrameRate;
+    Text m_FrameRateValue;
+    Queue<LogData> m_LogDataQueue = new Queue<LogData>();
+
+    ScrollRect m_RightPanelRect;
+    RectTransform m_LogFilter;
+    LogToggle m_FilterLog, m_FilterWarning, m_FilterError;
+    TGameObjectPool_Instance_Class<int, LogItem> m_Logs;
+    StackPanel m_Stack;
+    Queue<int> m_FrameRateQueue = new Queue<int>();
+    public void LogFrameAwake()
+    {
+        m_RightPanelRect = transform.Find("RightPanel").GetComponent<ScrollRect>();
+        Transform rightContent = m_RightPanelRect.transform.Find("Viewport/Content");
+        m_LogFilter = rightContent.Find("LogFilter") as RectTransform;
+        m_FilterLog = new LogToggle(m_LogFilter.Find("Log"), m_LogFiltered, UpdateLogs);
+        m_FilterWarning = new LogToggle(m_LogFilter.Find("Warning"), m_WarningFiltered, UpdateLogs);
+        m_FilterError = new LogToggle(m_LogFilter.Find("Error"), m_ErrorFiltered, UpdateLogs);
+        m_FrameRate = rightContent.Find("FrameRate");
+        m_FrameRateValue = m_FrameRate.Find("Value/Value").GetComponent<Text>();
+        m_Logs = new TGameObjectPool_Instance_Class<int, LogItem>(m_RightPanelRect.transform.Find("Viewport/Content"), "LogItem");
+
+        m_Stack = new StackPanel(transform.Find("Stack"));
+    }
+    public void LogFrameReset()
+    {
+        m_FrameRateQueue.Clear();
+        m_FrameRateValue.text = "";
+
+        m_Stack.HideStack();
+        ClearConsoleLog();
+    }
     private void OnEnable()
     {
         Application.logMessageReceived += OnLogReceived;
@@ -474,10 +614,24 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         Application.logMessageReceived -= OnLogReceived;
     }
 
+    public void LogFrame(float _deltaTime)
+    {
+        m_FrameRateQueue.Enqueue(Mathf.CeilToInt(1f / _deltaTime));
+        if (m_FrameRateQueue.Count > 30)
+            m_FrameRateQueue.Dequeue();
+
+        int total = 0;
+        foreach (var frameRate in m_FrameRateQueue)
+            total += frameRate;
+        total /= m_FrameRateQueue.Count;
+
+        m_FrameRateValue.text = total.ToString();
+    }
+
     int m_ErrorCount, m_WarningCount, m_LogCount;
     void OnLogReceived(string info, string trace, LogType type)
     {
-        m_LogDataQueue.Enqueue(new LogData() { m_Time=TTime.TTimeTools.GetTimeStampNow(), m_LogInfo = info, m_LogTrace = trace, m_LogType = type });
+        m_LogDataQueue.Enqueue(new LogData() { m_Time = TTime.TTimeTools.GetTimeStampNow(), m_LogInfo = info, m_LogTrace = trace, m_LogType = type });
         switch (type)
         {
             case LogType.Exception:
@@ -495,7 +649,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         m_FilterError.Set(m_ErrorCount);
 
         m_Logs.Clear();
-        if (!m_ConsoleOpening||!m_RightPanelSetting.IsFlagEnable(enum_RightPanel.LogItem))
+        if (!m_ConsoleOpening || !m_RightPanelSetting.IsFlagEnable(enum_RightPanel.LogItem))
             return;
         foreach (var logInfo in m_LogDataQueue)
         {
@@ -516,7 +670,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
             }
             if (!validateLog)
                 continue;
-            m_Logs.AddItem(m_Logs.Count).Init(logInfo,m_Stack.ShowTrack);
+            m_Logs.AddItem(m_Logs.Count).Init(logInfo, m_Stack.ShowTrack);
         }
         m_Logs.Sort((a, b) => a.Key - b.Key);
         LayoutRebuilder.ForceRebuildLayoutImmediate(m_RightPanelRect.transform as RectTransform);

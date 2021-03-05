@@ -112,8 +112,19 @@ public static class TCommon
     public static Vector4 Divide(this Vector4 _src, Vector4 _tar) => new Vector4(_src.x / _tar.x, _src.y / _tar.y, _src.z / _tar.z, _src.w / _tar.w);
     #endregion
     #region Basic
+    public static int Power(int _src,int _pow)
+    {
+        if (_pow == 0) return 1;
+        if (_pow == 1) return _src;
+        int dst = _src;
+        for(int i=0;i<_pow-1;i++)
+            dst *= _src;
+        return dst;
+    }
     public static bool InRange(this RangeFloat _value, float _check) => _value.start <= _check && _check <= _value.end;
     public static float InRangeScale(this RangeFloat _value, float _check) => Mathf.InverseLerp(_value.start, _value.end, _check);
+    public static Vector3 ToVector3(this Vector4 _vector) => new Vector3(_vector.x,_vector.y,_vector.z);
+    public static Vector4 ToVector4(this Vector3 _vector,float _fill=0) => new Vector4(_vector.x,_vector.y,_vector.z,_fill);
     #endregion
     #region Collections & Array 
     public static T GetIndexKey<T, Y>(this Dictionary<T, Y> dictionary, int index) => dictionary.ElementAt(index).Key;
@@ -124,19 +135,24 @@ public static class TCommon
         list.Traversal((T value) => { copyList.Add(value); });
         return copyList;
     }
-
     public static Dictionary<T, Y> DeepCopy<T, Y>(this Dictionary<T, Y> dictionary)
     {
         Dictionary<T, Y> copyDic = new Dictionary<T, Y>();
         dictionary.Traversal((T key, Y value) => { copyDic.Add(key, value); });
         return copyDic;
     }
-
     public static Dictionary<T, List<Y>> DeepCopy<T, Y>(this Dictionary<T, List<Y>> dictionary) where T : struct where Y : struct
     {
         Dictionary<T, List<Y>> copyDic = new Dictionary<T, List<Y>>();
         dictionary.Traversal((T key, List<Y> value) => { copyDic.Add(key, value.DeepCopy()); });
         return copyDic;
+    }
+    public static T[] Copy<T>(this T[] _srcArray)
+    {
+        T[] _dstArray = new T[_srcArray.Length];
+        for(int i=0;i<_srcArray.Length;i++)
+            _dstArray[i] = _srcArray[i];
+        return _dstArray;
     }
 
     public static void Traversal<T>(this IEnumerable<T> _numerable, Action<T> OnEachItem)
@@ -327,15 +343,26 @@ public static class TCommon
         }
         return list;
     }
-
     public static bool IsFlagEnable<T>(this T _flag,T _compare) where T:Enum
     {
         int srcFlag = Convert.ToInt32(_flag);
         int compareFlag = Convert.ToInt32(_compare);
         return (srcFlag&compareFlag)== compareFlag;
     }
-
     public static bool IsFlagClear<T>(this T _flag) where T : Enum => Convert.ToInt32(_flag) == 0;
+    public static IEnumerable<bool> GetNumerable<T>(this T _flags) where T:Enum
+    {
+        int flagValues =Convert.ToInt32(_flags);
+        int maxPower=Convert.ToInt32( Enum.GetValues(typeof(T)).Cast<T>().Max());
+        for(int i=0;i<32 ;i++ )
+        {
+            int curPower = Power(2,i);
+            if (curPower > maxPower)
+                yield break;
+            yield return (flagValues&curPower)==curPower;
+        }
+        yield break;
+    }
     #endregion
     #endregion
     #region Random
@@ -350,7 +377,7 @@ public static class TCommon
         return new Vector3(randomCirlce.x, 0, randomCirlce.y);
     }
     public static int Random(this RangeInt ir, System.Random seed = null) => ir.start + Random(ir.length + 1, seed);
-    public static float Random(this RangeFloat ir, System.Random seed = null) => seed != null ? seed.Next((int)(ir.start * 1000), (int)(ir.end * 1000)) / 1000f : UnityEngine.Random.Range(ir.start, ir.end);
+    public static float Random(this RangeFloat ir, System.Random seed = null) => seed != null ? seed.Next((int)(ir.start * 1000), (int)(ir.end * 1000)) / 1000f : UnityEngine.Random.Range(ir.start, ir.end);   
     public static int RandomIndex<T>(this List<T> randomList, System.Random seed = null) => Random(randomList.Count,seed);
     public static int RandomIndex<T>(this T[] randomArray, System.Random randomSeed = null) => Random(randomArray.Length,randomSeed);
     public static T RandomItem<T>(this List<T> randomList, System.Random randomSeed = null) => randomList[randomSeed != null ? randomSeed.Next(randomList.Count) : UnityEngine.Random.Range(0, randomList.Count)];
@@ -470,10 +497,10 @@ public static class TCommon
             target.SetIndices(source.GetIndices(i), MeshTopology.Triangles, i);
     }
 
-    public static Mesh Copy(this Mesh target)
+    public static Mesh Copy(this Mesh _srcMesh)
     {
         Mesh copy = new Mesh();
-        CopyMesh(target,copy);
+        CopyMesh(_srcMesh,copy);
         return copy;
     }
 

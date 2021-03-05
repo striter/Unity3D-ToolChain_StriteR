@@ -14,7 +14,7 @@ namespace TEditor
         bool m_EnableVertexDataVisualize;
         bool m_DrawVertex = true;
         Color m_VertexColor = Color.white;
-        enum_UVType m_UVIndex = 0;
+        enum_Editor_MeshUV m_UVIndex = 0;
         float m_UVsLength = .5f;
 
         bool m_DrawNormals = false;
@@ -26,7 +26,7 @@ namespace TEditor
         bool m_DrawBiTangents = false;
         float m_BiTangentsLength = .5f;
         Color m_BitangentColor = Color.yellow;
-        enum_ColorType m_DrawColorType;
+        enum_Editor_MeshColor m_DrawColorType;
         float m_ColorLength = .5f;
 
         List<Vector4> m_UVList = new List<Vector4>();
@@ -92,18 +92,18 @@ namespace TEditor
                 EditorGUILayout.BeginHorizontal();
                 if (haveColors)
                 {
-                    m_DrawColorType = (enum_ColorType)EditorGUILayout.EnumPopup("Draw Color", m_DrawColorType);
+                    m_DrawColorType = (enum_Editor_MeshColor)EditorGUILayout.EnumPopup("Draw Color", m_DrawColorType);
                     m_ColorLength = EditorGUILayout.Slider(m_ColorLength, 0f, 2f);
                 }
                 else
                 {
-                    m_DrawColorType = enum_ColorType.None;
+                    m_DrawColorType = enum_Editor_MeshColor.None;
                     EditorGUILayout.LabelField("No Color Data");
                 }
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.BeginHorizontal();
-                m_UVIndex = (enum_UVType)EditorGUILayout.EnumPopup("Draw UV", m_UVIndex);
-                if (m_UVIndex != enum_UVType.None)
+                m_UVIndex = (enum_Editor_MeshUV)EditorGUILayout.EnumPopup("Draw UV", m_UVIndex);
+                if (m_UVIndex != enum_Editor_MeshUV.None)
                 {
                     GetUVs(m_Target.sharedMesh, m_UVIndex, m_UVList);
                     if (m_UVList.Count != 0)
@@ -159,7 +159,7 @@ namespace TEditor
                 if (m_DrawBiTangents)
                 {
                     Handles.color = Color.yellow;
-                    Handles.DrawLine(verticies[i], verticies[i] + Vector3.Cross(normals[i], tangents[i]).normalized * m_BiTangentsLength);
+                    Handles.DrawLine(verticies[i], verticies[i] + Vector3.Cross(tangents[i],normals[i]).normalized * m_BiTangentsLength);
                 }
 
                 if (m_UVList.Count != 0)
@@ -168,17 +168,17 @@ namespace TEditor
                     Handles.DrawLine(verticies[i], verticies[i] + normals[i] * m_UVsLength);
                 }
 
-                if (m_DrawColorType != enum_ColorType.None)
+                if (m_DrawColorType != enum_Editor_MeshColor.None)
                 {
                     Color vertexColor = Color.clear;
 
                     switch (m_DrawColorType)
                     {
-                        case enum_ColorType.RGBA: vertexColor = colors[i]; break;
-                        case enum_ColorType.R: vertexColor = Color.red * colors[i].r; ; break;
-                        case enum_ColorType.G: vertexColor = Color.green * colors[i].g; break;
-                        case enum_ColorType.B: vertexColor = Color.blue * colors[i].b; break;
-                        case enum_ColorType.A: vertexColor = Color.white * colors[i].a; break;
+                        case enum_Editor_MeshColor.RGBA: vertexColor = colors[i]; break;
+                        case enum_Editor_MeshColor.R: vertexColor = Color.red * colors[i].r; ; break;
+                        case enum_Editor_MeshColor.G: vertexColor = Color.green * colors[i].g; break;
+                        case enum_Editor_MeshColor.B: vertexColor = Color.blue * colors[i].b; break;
+                        case enum_Editor_MeshColor.A: vertexColor = Color.white * colors[i].a; break;
                     }
                     Handles.color = vertexColor;
                     Handles.DrawLine(verticies[i], verticies[i] + normals[i] * m_ColorLength);
@@ -186,43 +186,14 @@ namespace TEditor
             }
         }
 
-        enum enum_ColorType
-        {
-            None,
-            RGBA,
-            R,
-            G,
-            B,
-            A,
-        }
-        enum enum_UVType
-        {
-            None,
-            UV1,
-            UV2,
-            UV3,
-            UV4,
-            UV5,
-            UV6,
-            UV7,
-            UV8,
-        }
 
-        void GetUVs(Mesh _target, enum_UVType _index, List<Vector4> uvList)
+        void GetUVs(Mesh _target, enum_Editor_MeshUV _index, List<Vector4> uvList)
         {
             uvList.Clear();
-            switch (_index)
-            {
-                default: break;
-                case enum_UVType.UV1: _target.GetUVs(0, uvList); break;
-                case enum_UVType.UV2: _target.GetUVs(1, uvList); break;
-                case enum_UVType.UV3: _target.GetUVs(2, uvList); break;
-                case enum_UVType.UV4: _target.GetUVs(3, uvList); break;
-                case enum_UVType.UV5: _target.GetUVs(4, uvList); break;
-                case enum_UVType.UV6: _target.GetUVs(5, uvList); break;
-                case enum_UVType.UV7: _target.GetUVs(6, uvList); break;
-                case enum_UVType.UV8: _target.GetUVs(7, uvList); break;
-            }
+            if (_index == enum_Editor_MeshUV.None)
+                return;
+
+            _target.GetUVs((int)_index,uvList);
         }
 
     }

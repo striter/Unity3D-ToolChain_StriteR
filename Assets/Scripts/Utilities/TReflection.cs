@@ -8,16 +8,17 @@ using UnityEngine.UI;
 public static class TReflection
 {
     public static T CreateInstance<T>(Type t,params object[] constructorArgs) => (T)Activator.CreateInstance(t, constructorArgs);
-    public static void TraversalAllInheritedClasses<T> (Action<Type,T> OnInstanceCreated,params object[] constructorArgs)
+    public static void TraversalAllInheritedClasses<T>(Action<Type> OnEachClass)
     {
-        Type[] allTypes= Assembly.GetExecutingAssembly().GetTypes();
-        Type parentType=typeof(T);
+        Type[] allTypes = Assembly.GetExecutingAssembly().GetTypes();
+        Type parentType = typeof(T);
         for (int i = 0; i < allTypes.Length; i++)
         {
             if (allTypes[i].IsClass && !allTypes[i].IsAbstract && allTypes[i].IsSubclassOf(parentType))
-                OnInstanceCreated(allTypes[i], CreateInstance<T>(allTypes[i], constructorArgs));
+                OnEachClass(allTypes[i]);
         }
     }
+    public static void TraversalAllInheritedClasses<T>(Action<Type, T> OnInstanceCreated, params object[] constructorArgs) => TraversalAllInheritedClasses<T>(type=> OnInstanceCreated(type, CreateInstance<T>(type, constructorArgs)));
     public static void InvokeAllMethod<T>(List<Type> classes,string methodName,T template) where T:class
     {
         foreach (Type t in classes)

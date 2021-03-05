@@ -4,12 +4,35 @@ using System.IO;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-//using UnityEditor.AudioUtil; //EEditorAudioHelper Reflection Target
 
 namespace TEditor
 {
+    #region Enums
+    enum enum_Editor_MeshColor
+    {
+        None,
+        RGBA,
+        R,
+        G,
+        B,
+        A,
+    }
+    enum enum_Editor_MeshUV
+    {
+        None=-1,
+        UV0,
+        UV1,
+        UV2,
+        UV3,
+        UV4,
+        UV5,
+        UV6,
+        UV7,
+    }
+    #endregion
     public static class EEditorAudioHelper
     {
+        //using UnityEditor.AudioUtil; //EEditorAudioHelper Reflection Target
         static AudioClip curClip;
         public static void AttachClipTo(AudioClip clip)
         {
@@ -224,5 +247,29 @@ namespace TEditor
             return path;
         }
         #endregion
+    }
+    public static class TEditorGUIScope_Horizontal
+    {
+        static Vector2 m_StartPos;
+        static Vector2 m_Offset;
+        static float m_SizeY;
+        public static void Begin(float _startX, float _startY, float _startSizeY)
+        {
+            m_SizeY = _startSizeY;
+            m_StartPos = new Vector2(_startX, _startY);
+            m_Offset = Vector2.zero;
+        }
+        public static Rect NextRect(float _spacingX, float _sizeX)
+        {
+            Vector2 originOffset = m_Offset;
+            m_Offset.x += _sizeX + _spacingX;
+            return new Rect(m_StartPos + originOffset, new Vector2(_sizeX, m_SizeY));
+        }
+        public static void NextLine(float _spacingY, float _sizeY)
+        {
+            m_Offset.y += m_SizeY + _spacingY;
+            m_SizeY = _sizeY;
+            m_Offset.x = 0;
+        }
     }
 }

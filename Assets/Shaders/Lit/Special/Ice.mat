@@ -69,7 +69,7 @@ Material:
     - _BumpScale: 1
     - _CrackDistance: 0.149
     - _CrackParallex: 1
-    - _CrackParallexTimes: 16
+    - _CrackParallexTimes: 64
     - _CrackPow: 2.94
     - _CrackTopStrength: 0.149
     - _Cutoff: 0.5

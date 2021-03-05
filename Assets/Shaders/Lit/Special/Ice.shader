@@ -121,7 +121,7 @@
 			    o.pos = UnityObjectToClipPos(v.vertex);
 			    o.worldPos = mul(unity_ObjectToWorld, v.vertex);
 
-				float3x3 objectToTangent=float3x3(v.tangent.xyz,cross(v.tangent,v.normal),v.normal);
+				float3x3 objectToTangent=float3x3(v.tangent.xyz,cross(v.normal,v.tangent)*v.tangent.w,v.normal);
 				o.viewDir=mul(objectToTangent,ObjSpaceViewDir(v.vertex));
 				o.lightDir=mul(objectToTangent,ObjSpaceLightDir(v.vertex));
 				o.normal=mul(objectToTangent,v.normal);

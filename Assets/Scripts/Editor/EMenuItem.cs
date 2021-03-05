@@ -22,8 +22,10 @@ namespace TEditor
         static void ShowOptimizeWindow() => EditorWindow.GetWindow(typeof(EAnimationInstanceBakerWindow)).titleContent = new GUIContent("GPU Animation Instance Baker", EditorGUIUtility.FindTexture("AvatarSelector"));
         [MenuItem("Work Flow/Art/Plane Mesh Generator", false, 301)]
         static void ShowPlaneGenerator() => EditorWindow.GetWindow(typeof(EPlaneMeshGeneratorWindow)).titleContent=new GUIContent("Plane Generator", EditorGUIUtility.FindTexture("CustomTool"));
-        [MenuItem("Work Flow/Art/Noise Generator", false, 302)]
-        static void ShowNoiseGenerator() => EditorWindow.GetWindow(typeof(ENoiseGeneratorWindow)).titleContent=new GUIContent("Noise Generator",EditorGUIUtility.FindTexture("CustomTool"));
+        [MenuItem("Work Flow/Art/Noise Texture Generator", false, 302)]
+        static void ShowNoiseGenerator() => EditorWindow.GetWindow(typeof(ENoiseGeneratorWindow)).titleContent=new GUIContent("Noise Texture Generator",EditorGUIUtility.FindTexture("CustomTool"));
+        [MenuItem("Work Flow/Art/Mesh Smooth Normal Generator", false, 303)]
+        static void ShowSmoothNormalGenerator() => EditorWindow.GetWindow(typeof(ESmoothNormalGeneratorWindow)).titleContent = new GUIContent("Smooth Normal Generator", EditorGUIUtility.FindTexture("CustomTool"));
     }
 
 }

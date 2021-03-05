@@ -10,8 +10,7 @@ namespace TEditor
     {
         GameObject m_TargetPrefab;
         SerializedObject m_SerializedWindow;
-        [SerializeField]
-        AnimationClip[] m_TargetAnimations;
+        [SerializeField] AnimationClip[] m_TargetAnimations;
         SerializedProperty m_AnimationProperty;
         string m_BoneExposeRegex="";
 
@@ -27,6 +26,7 @@ namespace TEditor
             m_TargetPrefab = null;
             m_TargetAnimations = null;
             m_SerializedWindow.Dispose();
+            m_AnimationProperty.Dispose();
             EditorApplication.update -= Tick;
         }
         private void Tick()
@@ -281,15 +281,15 @@ namespace TEditor
                 #region Bake Mesh
                 Mesh instanceMesh = _skinnedMeshRenderer.sharedMesh.Copy();
                 BoneWeight[] boneWeights = instanceMesh.boneWeights;
+                Vector4[] uv1 = new Vector4[boneWeights.Length];
                 Vector4[] uv2 = new Vector4[boneWeights.Length];
-                Vector4[] uv3 = new Vector4[boneWeights.Length];
                 for (int i = 0; i < boneWeights.Length; i++)
                 {
-                    uv2[i] = new Vector4(boneWeights[i].boneIndex0, boneWeights[i].boneIndex1, boneWeights[i].boneIndex2, boneWeights[i].boneIndex3);
-                    uv3[i] = new Vector4(boneWeights[i].weight0, boneWeights[i].weight1, boneWeights[i].weight2, boneWeights[i].weight3);
+                    uv1[i] = new Vector4(boneWeights[i].boneIndex0, boneWeights[i].boneIndex1, boneWeights[i].boneIndex2, boneWeights[i].boneIndex3);
+                    uv2[i] = new Vector4(boneWeights[i].weight0, boneWeights[i].weight1, boneWeights[i].weight2, boneWeights[i].weight3);
                 }
-                instanceMesh.SetUVs(1, uv2);
-                instanceMesh.SetUVs(2, uv3);
+                instanceMesh.SetUVs(1, uv1);
+                instanceMesh.SetUVs(2, uv2);
                 instanceMesh.boneWeights = null;
                 instanceMesh.bindposes = null;
                 instanceMesh.bounds = boundsCheck.GetBounds();

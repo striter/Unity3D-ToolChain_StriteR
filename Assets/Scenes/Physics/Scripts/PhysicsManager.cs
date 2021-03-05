@@ -48,11 +48,11 @@ namespace PhysicsTest
         {
             UIT_TouchConsole.Init(consoleOn=>Cursor.lockState=consoleOn? CursorLockMode.Confined: CursorLockMode.Locked);
             UIT_TouchConsole.Header("Level");
-            UIT_TouchConsole.Command("Graviry").Button(() => SetCharacter(m_GravityGunCharacter), KeyCode.F1);
-            UIT_TouchConsole.Command("Marioentte").Button(() => SetCharacter(m_marionetteCharacter), KeyCode.F2);
-            UIT_TouchConsole.Command("Human Static Animator").Button(() => SetCharacter(m_Human_StaticAnimator), KeyCode.F3);
-            UIT_TouchConsole.Command("Human Balance").Button(() => SetCharacter(m_Human_Balance), KeyCode.F4);
-            UIT_TouchConsole.Command("Reset All Items").Button(() => m_DynamicItems.Traversal(dynamicItem => dynamicItem.Reposition()), KeyCode.F5);
+            UIT_TouchConsole.Command("Graviry", KeyCode.F1).Button(() => SetCharacter(m_GravityGunCharacter));
+            UIT_TouchConsole.Command("Marioentte", KeyCode.F2).Button(() => SetCharacter(m_marionetteCharacter));
+            UIT_TouchConsole.Command("Human Static Animator", KeyCode.F3).Button(() => SetCharacter(m_Human_StaticAnimator));
+            UIT_TouchConsole.Command("Human Balance", KeyCode.F4).Button(() => SetCharacter(m_Human_Balance));
+            UIT_TouchConsole.Command("Reset All Items", KeyCode.F5).Button(() => m_DynamicItems.Traversal(dynamicItem => dynamicItem.Reposition()));
 
             SetCharacter(m_GravityGunCharacter);
             Cursor.lockState = CursorLockMode.Locked;
