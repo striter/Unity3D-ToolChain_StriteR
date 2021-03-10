@@ -18,8 +18,8 @@ float2 TriplanarMapping(float3 worldPos,float3 worldNormal){ return (worldPos.zy
 
 float luminance(fixed3 color){ return 0.2125*color.r + 0.7154*color.g + 0.0721 + color.b;}
 
-float4 BlendColor(float4 src,float4 dst){ return 1-(1-src)*(1-dst); }
-float3 BlendColor(float3 src,float3 dst){ return 1-(1-src)*(1-dst); }
+float4 Blend_Color(float4 src,float4 dst){ return 1-(1-src)*(1-dst); }
+float3 Blend_Color(float3 src,float3 dst){ return 1-(1-src)*(1-dst); }
 
 float invlerp(float a,float b,float value){ return (value-a)/(b-a); }
 

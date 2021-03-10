@@ -12,7 +12,7 @@
     uniform sampler2D _MainTex;
     uniform half4 _MainTex_TexelSize;
 	half _BlurSize;
-	uint _Iteration;
+	int _Iteration;
 	float _Angle;
 	float2 _Vector;
 
@@ -175,7 +175,7 @@
 		half random=random2(i.uv);
 		half4 sum=0;
 		float randomSum=1.0/_Iteration;
-		for(uint index=0;index<_Iteration;index++)
+		for(int index=0;index<_Iteration;index++)
 		{
 			float2 randomUV=float2(random2(random*randomSum*index),random2(random*randomSum*(_Iteration-index)))-.5;
 			randomUV*=_MainTex_TexelSize.xy*_BlurSize;
@@ -193,7 +193,7 @@
 		rotate=mul(Rotate2x2(_Angle),rotate);
 		half4 sum=0;
 		half r=1;
-		for(uint j=0;j<_Iteration;j++)
+		for(int j=0;j<_Iteration;j++)
 		{
 			r+=1.0/r;
 			rotate=mul(rot,rotate);
@@ -207,7 +207,7 @@
 	float4 HexagonBlurTexture(sampler2D tex,float2 uv,float2 direction)
 	{
 		float4 finalCol=0;
-		for(uint i=0;i<_Iteration;i++)
+		for(int i=0;i<_Iteration;i++)
 		{
 			half4 hexagonBlur=tex2D(tex,uv+direction*(i+.5));
 			finalCol+=hexagonBlur;
@@ -257,7 +257,7 @@
 	float4 fragDirectional(v2f_img i):SV_TARGET
 	{
 		float4 sum=0;
-		int iteration=_Iteration/2;
+		int iteration=_Iteration/2u;
 		float2 offset=_Vector*_MainTex_TexelSize.xy*_BlurSize;
 		for(int j=-iteration;j<iteration;j++)
 		{

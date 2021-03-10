@@ -7,99 +7,6 @@ using UnityEngine;
 
 namespace TEditor
 {
-    #region Enums
-    enum enum_Editor_MeshColor
-    {
-        None,
-        RGBA,
-        R,
-        G,
-        B,
-        A,
-    }
-    enum enum_Editor_MeshUV
-    {
-        None=-1,
-        UV0,
-        UV1,
-        UV2,
-        UV3,
-        UV4,
-        UV5,
-        UV6,
-        UV7,
-    }
-    #endregion
-    public static class EEditorAudioHelper
-    {
-        //using UnityEditor.AudioUtil; //EEditorAudioHelper Reflection Target
-        static AudioClip curClip;
-        public static void AttachClipTo(AudioClip clip)
-        {
-            curClip = clip;
-        }
-        public static bool IsAudioPlaying()
-        {
-            if (curClip != null)
-                return (bool)GetClipMethod("IsClipPlaying").Invoke(null, new object[] { curClip });
-            return false;
-        }
-        public static int GetSampleDuration()
-        {
-            if(curClip!=null)
-              return(int)GetClipMethod("GetSampleCount").Invoke(null, new object[] { curClip });
-            return -1;
-        }
-        public static int GetCurSample()
-        {
-            if (curClip != null)
-                return (int)GetClipMethod("GetClipSamplePosition").Invoke(null, new object[] { curClip });
-            return -1;
-        }
-        public static float GetCurTime()
-        {
-            if (curClip != null)
-                return (float)GetClipMethod("GetClipPosition").Invoke(null, new object[] { curClip});
-            return -1;
-        }
-        public static void PlayClip()
-        {
-            if (curClip != null)
-                GetClipMethod("PlayClip").Invoke(null, new object[] { curClip });
-        }
-        public static void PauseClip()
-        {
-            if (curClip != null)
-                GetClipMethod("PauseClip").Invoke( null,  new object[] { curClip } );
-        }
-        public static void StopClip()
-        {
-            if(curClip!=null)
-            GetClipMethod("StopClip").Invoke(null,  new object[] { curClip } );
-        }
-        public static void ResumeClip()
-        {
-            if (curClip != null)
-                GetClipMethod("ResumeClip").Invoke(null, new object[] { curClip });
-        }
-        public static void SetSamplePosition(int startSample)
-        {
-            GetMethod<AudioClip, int>("SetClipSamplePosition").Invoke(null, new object[] { curClip, startSample });
-        }
-        static MethodInfo GetClipMethod(string methodName)
-        {
-            Assembly unityEditorAssembly = typeof(AudioImporter).Assembly;
-            Type audioUtilClass = unityEditorAssembly.GetType("UnityEditor.AudioUtil");
-           return  audioUtilClass.GetMethod(methodName, BindingFlags.Static | BindingFlags.Public, null, new System.Type[] { typeof(AudioClip) }, null);
-        }
-        static MethodInfo GetMethod<T, U>(string methodName)
-        {
-            Assembly unityEditorAssembly = typeof(AudioImporter).Assembly;
-            Type audioUtilClass = unityEditorAssembly.GetType("UnityEditor.AudioUtil");
-            return audioUtilClass.GetMethod(methodName, BindingFlags.Static | BindingFlags.Public, null, new System.Type[] { typeof(T), typeof(U) }, null);
-
-        }
-    }
     public static class TEditor
     {
         public static Dictionary<int,string> GetAllLayers(bool emptyInclusive)
@@ -126,7 +33,7 @@ namespace TEditor
                 replacedAsset = previousAsset as T;
                 if (replacedAsset != null)
                 {
-                    if (TCommon.CopyPropertyTo<T>(asset, previousAsset))
+                    if (TCommon.CopyPropertyTo( asset, previousAsset))
                         AssetDatabase.SaveAssets();
                     else
                         EditorUtility.CopySerialized(asset,previousAsset);
@@ -142,30 +49,32 @@ namespace TEditor
             }
             return replacedAsset;
         }
-        public static void CreateOrReplaceSubAsset<T>(T asset, string mainPath, string assetName) where T : UnityEngine.Object
+        public static void CreateOrReplaceSubAsset(string _path, params KeyValuePair<string, UnityEngine.Object>[] _subValues)
         {
-            UnityEngine.Object mainAsset = AssetDatabase.LoadMainAssetAtPath(mainPath);
+            UnityEngine.Object mainAsset = AssetDatabase.LoadMainAssetAtPath(_path);
             if (!mainAsset)
-                throw new System.Exception("Invalid Main Assets:" + mainPath);
-            asset.name = assetName;
-            UnityEngine.Object[] assets = AssetDatabase.LoadAllAssetsAtPath(mainPath);
-            UnityEngine.Object subAsset = System.Array.Find(assets, p => p.name == asset.name);
+                throw new Exception("Invalid Main Assets:" + _path);
+            UnityEngine.Object[] assets = AssetDatabase.LoadAllAssetsAtPath(_path);
+            foreach (KeyValuePair<string, UnityEngine.Object> subValue in _subValues)
+            {
+                subValue.Value.name = subValue.Key;
+                UnityEngine.Object subAsset = Array.Find(assets, p => p.name == subValue.Key&&p.GetType()==subValue.Value.GetType());
 
-            if (subAsset && (subAsset as T != null))
-                if (TCommon.CopyPropertyTo<T>(asset, subAsset))
-                    AssetDatabase.SaveAssets();
+                if (subAsset)
+                    if (TCommon.CopyPropertyTo(subValue.Value, subAsset))
+                        AssetDatabase.SaveAssets();
+                    else
+                        EditorUtility.CopySerialized(subValue.Value, subAsset);
                 else
-                    EditorUtility.CopySerialized(asset, subAsset);
-            else
-                AssetDatabase.AddObjectToAsset(asset, mainAsset);
-        }
-        public static T CreateAssetCombination<T>(KeyValuePair<T, string> _mainAsset,params KeyValuePair<UnityEngine.Object, string>[] _subValues) where T: UnityEngine.Object
-        {
-            T mainAsset = CreateOrReplaceMainAsset(_mainAsset.Key, _mainAsset.Value);
-            foreach (KeyValuePair<UnityEngine.Object, string> subValue in _subValues)
-                CreateOrReplaceSubAsset(subValue.Key, _mainAsset.Value, subValue.Value);
+                    AssetDatabase.AddObjectToAsset(subValue.Value, mainAsset);
+            }
             AssetDatabase.SaveAssets();
-            Debug.Log("Asset Combination Generate Successful:" + _mainAsset.Key);
+        }
+        public static T CreateAssetCombination<T>(string _path, T _mainAsset,params KeyValuePair< string, UnityEngine.Object>[] _subAssets) where T: UnityEngine.Object
+        {
+            T mainAsset = CreateOrReplaceMainAsset(_mainAsset, _path);
+            CreateOrReplaceSubAsset(_path, _subAssets);
+            Debug.Log("Asset Combination Generate Successful:" + _path);
             EditorGUIUtility.PingObject(mainAsset);
             return mainAsset;
         }
@@ -219,8 +128,6 @@ namespace TEditor
                 Debug.LogError(e);
                 return false;
             }
-
-
         }
 
 
@@ -248,7 +155,12 @@ namespace TEditor
         }
         #endregion
     }
-    public static class TEditorGUIScope_Horizontal
+    public static class TEditor_Style
+    {
+        public static GUIStyle m_TitleLabel => new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold };
+        public static GUIStyle m_ErrorLabel => new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontSize = 14, fontStyle = FontStyle.BoldAndItalic, richText = true };
+    }
+    public static class TEditor_GUIScope_Horizontal
     {
         static Vector2 m_StartPos;
         static Vector2 m_Offset;

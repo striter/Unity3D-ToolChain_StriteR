@@ -15,7 +15,7 @@ public class GeometryTest_Hexagon : MonoBehaviour
             for(int j=0;j<m_CellSizeY;j++)
             {
                 Vector3 origin =Vector3.zero+HexagonHelper.GetHexagonOriginOffset(m_Radius,i,j)+(i*j+i)*Vector3.up*0.01f;
-                Vector3[] hexagonList =  HexagonHelper.C_UnitHexagonPoints.ReconstructToArray(value=>new Vector3(value.x,0,value.y)*m_Radius+origin);
+                Vector3[] hexagonList =  HexagonHelper.C_UnitHexagonPoints.ToArray(value=>new Vector3(value.x,0,value.y)*m_Radius+origin);
                 for (int k = 0; k < 6; k++)
                     Gizmos.DrawLine(hexagonList[k], hexagonList[(k + 1) % 6]);
             }

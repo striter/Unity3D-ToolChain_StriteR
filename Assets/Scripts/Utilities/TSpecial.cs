@@ -389,7 +389,7 @@ public class AnimationFrameControl<T> where T : Enum
         gameObject = _gameObject;
         m_Animations = _animations;
         m_CurPlaying = -1;
-        m_BoneRecords = _gameObject.GetComponentsInChildren<Transform>(false).ReconstructToArray(trans=>new BoneTransformRecord(trans));
+        m_BoneRecords = _gameObject.GetComponentsInChildren<Transform>(false).ToArray(trans=>new BoneTransformRecord(trans));
     }
 
     public void ResetAnimation()

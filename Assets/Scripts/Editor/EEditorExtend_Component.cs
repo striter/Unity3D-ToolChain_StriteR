@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 namespace TEditor
 {
+    using static TEditor_Render;
     #region Extend
     [CustomEditor(typeof(MeshFilter)), CanEditMultipleObjects]
     public class MeshFilterEditor : Editor

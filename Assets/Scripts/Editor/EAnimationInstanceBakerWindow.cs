@@ -13,6 +13,7 @@ namespace TEditor
         [SerializeField] AnimationClip[] m_TargetAnimations;
         SerializedProperty m_AnimationProperty;
         string m_BoneExposeRegex="";
+        bool m_BoneInstanceSwitch = false;
 
         void OnEnable()
         {
@@ -45,60 +46,64 @@ namespace TEditor
             bool havePrefab = m_TargetPrefab == null;
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.TextField("Select Source FBX");
+            EditorGUILayout.LabelField("Select FBX&Animation Datas");
             m_TargetPrefab = (GameObject)EditorGUILayout.ObjectField(m_TargetPrefab, typeof(GameObject), false);
-            EditorGUILayout.EndHorizontal();
-            if (m_TargetPrefab == null)
-                return;
-            //Check ModelImporters   
-            ModelImporter importer = ModelImporter.GetAtPath(AssetDatabase.GetAssetPath(m_TargetPrefab)) as ModelImporter;
-            if (importer == null)
-            {
-                EditorGUILayout.TextField("Target Asset Must Be A FBX Model");
-                return;
-            }
-
-            //Select AnimationClipAsset  
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.TextField("Animations For Bake");
-            if (GUILayout.Button("Import Animation From Selection"))
-            {
-                List<AnimationClip> clip = new List<AnimationClip>();
-                foreach (Object obj in Selection.objects)
-                {
-                    if ((obj as AnimationClip) != null && AssetDatabase.IsMainAsset(obj))
-                        clip.Add(obj as AnimationClip);
-                }
-                m_TargetAnimations = clip.ToArray();
-                m_SerializedWindow.Update();
-            }
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.PropertyField(m_AnimationProperty, true);
             m_SerializedWindow.ApplyModifiedProperties();
+            //Select AnimationClipAsset  
+            List<AnimationClip> clip = new List<AnimationClip>();
+            foreach (Object obj in Selection.objects)
+            {
+                if ((obj as AnimationClip) != null && AssetDatabase.IsMainAsset(obj))
+                    clip.Add(obj as AnimationClip);
+                else if (AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(obj)) as ModelImporter != null)
+                    m_TargetPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GetAssetPath(obj));
+            }
+            if(clip.Count>0)
+            {
+                m_TargetAnimations = clip.ToArray();
+                m_SerializedWindow.Update();
+            }
+
+            ModelImporter importer = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(m_TargetPrefab)) as ModelImporter;
+            if (m_TargetPrefab == null || importer == null || m_TargetAnimations==null || m_TargetAnimations.Length==0)
+            {
+                EditorGUILayout.LabelField("<Color=#FF0000>Select FBX Model & Animations</Color>", TEditor_Style.m_ErrorLabel);
+                return;
+            }
+            
             //Generate Animation 
             if (m_TargetAnimations == null || m_TargetAnimations.Length == 0 || m_TargetAnimations.Any(p => p == null))
                 return;
 
-            GUILayout.TextField("Generate Vertex Anim Instance Data(Highest Performance)");
-            if (GUILayout.Button("Per Vertex Anim Instance Data Generate"))
-                GenerateVertexTexture(m_TargetPrefab, m_TargetAnimations);
-
-
-            GUILayout.TextField("Generate Bone Instance Anim Data(Lower Performance,Bone Expose Included)");
             EditorGUILayout.BeginHorizontal();
-            GUILayout.TextField("Bone Expose Regex:");
-            m_BoneExposeRegex = GUILayout.TextArea(m_BoneExposeRegex);
+            m_BoneInstanceSwitch = EditorGUILayout.Toggle("Generate Bone Or Vertex Animation Instance:",m_BoneInstanceSwitch);
             EditorGUILayout.EndHorizontal();
-            if (GUILayout.Button("Per Bone Anim Instance Data Generate"))
-            {
-                if (importer.optimizeGameObjects)
-                {
-                    EditorUtility.DisplayDialog("Error!", "Can't Bake Optimized FBX With Bone Instance", "Confirm");
-                    return;
-                }
 
-                GenerateBoneInstanceMeshAndTexture(m_TargetPrefab, m_TargetAnimations, m_BoneExposeRegex);
+            if(m_BoneInstanceSwitch)
+            {
+                EditorGUILayout.LabelField("Vertex Instance Data: More Space|Lesser Time");
+                if (GUILayout.Button("Generate"))
+                    GenerateVertexTexture(m_TargetPrefab, m_TargetAnimations);
+            }
+            else
+            {
+                EditorGUILayout.LabelField("Bone Instance Data:Lesser Space|More Time");
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Expose Transform Regex:");
+                m_BoneExposeRegex = GUILayout.TextArea(m_BoneExposeRegex);
+                EditorGUILayout.EndHorizontal();
+                if (GUILayout.Button("Generate"))
+                {
+                    if (importer.optimizeGameObjects)
+                    {
+                        EditorUtility.DisplayDialog("Error!", "Can't Bake Optimized FBX With Bone Instance", "Confirm");
+                        return;
+                    }
+                    GenerateBoneInstanceMeshAndTexture(m_TargetPrefab, m_TargetAnimations, m_BoneExposeRegex);
+                }
             }
         }
 
@@ -177,7 +182,7 @@ namespace TEditor
 
             AnimationInstanceData instanceData = ScriptableObject.CreateInstance<AnimationInstanceData>();
             instanceData.m_Animations = instanceParams;
-            instanceData=TEditor.CreateAssetCombination( new KeyValuePair<AnimationInstanceData, string>(instanceData,savePath + meshName + "_VertexInstance.asset"), new KeyValuePair<Object, string>( atlasTexture,meshName+"_AnimationAtlas"),new KeyValuePair<Object,string>(instanceMesh,meshName+"_InstanceMesh"));
+            instanceData=TEditor.CreateAssetCombination(savePath + meshName + "_VertexInstance.asset", instanceData, new KeyValuePair< string, Object>(meshName + "_AnimationAtlas", atlasTexture),new KeyValuePair<string,Object>( meshName + "_InstanceMesh",instanceMesh));
             Object[] assets = AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GetAssetPath(instanceData));
             foreach (var asset in assets)
             {
@@ -300,7 +305,7 @@ namespace TEditor
                 instanceData.m_Animations = instanceParams;
                 instanceData.m_ExposeBones = exposeBoneParam.ToArray();
 
-                instanceData =  TEditor.CreateAssetCombination(new KeyValuePair<Object, string>(instanceData, savePath + meshName + "_BoneInstance.asset"), new KeyValuePair<Object, string>(atlasTexture, meshName + "_AnimationAtlas"), new KeyValuePair<Object, string>(instanceMesh, meshName + "_InstanceMesh")) as AnimationInstanceData;
+                instanceData =  TEditor.CreateAssetCombination(savePath + meshName + "_BoneInstance.asset",instanceData, new KeyValuePair<string,Object>(meshName + "_AnimationAtlas",atlasTexture), new KeyValuePair<string,Object>(meshName + "_InstanceMesh",instanceMesh));
                 Object[] assets=AssetDatabase.LoadAllAssetsAtPath( AssetDatabase.GetAssetPath(instanceData));
                 foreach(var asset in assets)
                 {

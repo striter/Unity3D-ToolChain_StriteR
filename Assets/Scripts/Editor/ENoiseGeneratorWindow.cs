@@ -12,18 +12,17 @@ namespace TEditor
         int m_SizePower=5;
         float m_Scale = 1;
         Texture2D m_Texture;
-        static GUIStyle m_TitleStyle => new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold };
         private void OnGUI()
         {
-            TEditorGUIScope_Horizontal.Begin(5,5,20);
+            TEditor_GUIScope_Horizontal.Begin(5,5,20);
             EditorGUI.BeginChangeCheck();
-            EditorGUI.LabelField(TEditorGUIScope_Horizontal.NextRect(0, 60),  "Size:", m_TitleStyle);
-            m_SizePower = EditorGUI.IntSlider(TEditorGUIScope_Horizontal.NextRect( 5, 120), m_SizePower, C_MinSizePower, C_MaxSizePower);
+            EditorGUI.LabelField(TEditor_GUIScope_Horizontal.NextRect(0, 60),  "Size:", TEditor_Style. m_TitleLabel);
+            m_SizePower = EditorGUI.IntSlider(TEditor_GUIScope_Horizontal.NextRect( 5, 120), m_SizePower, C_MinSizePower, C_MaxSizePower);
             int size = Mathf.RoundToInt(Mathf.Pow(2, m_SizePower));
-            EditorGUI.LabelField(TEditorGUIScope_Horizontal.NextRect(5,40), size.ToString());
-            TEditorGUIScope_Horizontal.NextLine(2,20);
-            EditorGUI.LabelField(TEditorGUIScope_Horizontal.NextRect(0, 60), "Scale:", m_TitleStyle);
-            m_Scale = EditorGUI.Slider(TEditorGUIScope_Horizontal.NextRect(5, 120), m_Scale,1f,10f);
+            EditorGUI.LabelField(TEditor_GUIScope_Horizontal.NextRect(5,40), size.ToString());
+            TEditor_GUIScope_Horizontal.NextLine(2,20);
+            EditorGUI.LabelField(TEditor_GUIScope_Horizontal.NextRect(0, 60), "Scale:", TEditor_Style.m_TitleLabel);
+            m_Scale = EditorGUI.Slider(TEditor_GUIScope_Horizontal.NextRect(5, 120), m_Scale,1f,10f);
             if(!m_Texture||EditorGUI.EndChangeCheck())
             {
                 double sizeD = size;
@@ -35,10 +34,10 @@ namespace TEditor
                 m_Texture.SetPixels(colors);
                 m_Texture.Apply();
             }
-            TEditorGUIScope_Horizontal.NextLine(2,256);
-            EditorGUI.DrawPreviewTexture(TEditorGUIScope_Horizontal.NextRect(0,256), m_Texture);
-            TEditorGUIScope_Horizontal.NextLine(2, 20);
-            if(GUI.Button( TEditorGUIScope_Horizontal.NextRect(0,80),"Export"))
+            TEditor_GUIScope_Horizontal.NextLine(2,256);
+            EditorGUI.DrawPreviewTexture(TEditor_GUIScope_Horizontal.NextRect(0,256), m_Texture);
+            TEditor_GUIScope_Horizontal.NextLine(2, 20);
+            if(GUI.Button( TEditor_GUIScope_Horizontal.NextRect(0,80),"Export"))
             {
                 if(TEditor.SaveFilePath(out string filePath,"png", "CustomNoise"))
                     TEditor.CreateOrReplaceFile(filePath,m_Texture.EncodeToPNG());

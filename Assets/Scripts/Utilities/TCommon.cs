@@ -314,11 +314,17 @@ public static class TCommon
             newArray[srcLength+i] = tarArray[i];
         return newArray;
     }
-    public static Y[] ReconstructToArray<T,Y>(this T[] srcArray,Func<T,Y> GetDstItem)
+    public static Y[] ToArray<T,Y>(this IEnumerable<T> src,Func<T,Y> GetDstItem)
     {
-        Y[] dstArray = new Y[srcArray.Length]; ;
-        srcArray.Traversal((index, srcItem) =>dstArray[index]=GetDstItem(srcItem));
+        Y[] dstArray = new Y[src.Count()];
+        src.Traversal((index, srcItem) =>dstArray[index]=GetDstItem(srcItem));
         return dstArray;
+    }
+    public static List<Y> ToList<T,Y>(this IEnumerable<T> src,Func<T,Y> GetDstItem)
+    {
+        List<Y> dstList = new List<Y>();
+        src.Traversal((index, srcItem) =>dstList.Add(GetDstItem(srcItem)));
+        return dstList;
     }
 
     #region Enum
@@ -462,12 +468,18 @@ public static class TCommon
         { typeof(Mesh),(src, dst) => CopyMesh((Mesh)src, (Mesh)dst)}
     };
 
-    public static bool CopyPropertyTo<T>(UnityEngine.Object source,UnityEngine.Object target)
+    public static bool CopyPropertyTo( UnityEngine.Object _src,UnityEngine.Object _tar)
     {
-        Type type = typeof(T);
-        if(m_CopyHelper.ContainsKey(type))
+        Type type = _src.GetType();
+        if(type != _tar.GetType())
         {
-            m_CopyHelper[type](source, target);
+            Debug.LogError("Assets Type Not Match:" + _src.GetType() + "," + _tar.GetType());
+            return false;
+        }
+
+        if (m_CopyHelper.ContainsKey(_src.GetType()))
+        {
+            m_CopyHelper[type](_src, _tar);
             return true;
         }
         return false;
@@ -485,14 +497,26 @@ public static class TCommon
         target.colors = source.colors;
         target.boneWeights = source.boneWeights;
         target.triangles = source.triangles;
-        target.uv = source.uv;
-        target.uv2 = source.uv2;
-        target.uv3 = source.uv3;
-        target.uv4 = source.uv4;
-        target.uv5 = source.uv5;
-        target.uv6 = source.uv6;
-        target.uv7 = source.uv7;
-        target.uv8 = source.uv8;
+        List<Vector4> uvs = new List<Vector4>();
+        for(int i=0;i<8;i++)
+        {
+            source.GetUVs(i, uvs);
+            bool third=false;
+            bool fourth = false;
+            for(int j=0;j<uvs.Count;j++)
+            {
+                Vector4 check = uvs[j];
+                third |= check.z!=0;
+                fourth |= check.w != 0;
+            }
+
+            if (fourth)
+                target.SetUVs(i, uvs);
+            else if (third)
+                target.SetUVs(i, uvs.ToList(vec4 => new Vector3(vec4.x, vec4.y, vec4.z)));
+            else
+                target.SetUVs(i, uvs.ToList(vec4 => new Vector2(vec4.x, vec4.y)));
+        }
         for (int i = 0; i < source.subMeshCount; i++)
             target.SetIndices(source.GetIndices(i), MeshTopology.Triangles, i);
     }
