@@ -47,10 +47,13 @@ namespace TEditor
         {
             GameObject prefabSource = GameObject.Instantiate(_targetFBX);
 
-            SkinnedMeshRenderer[] renderers = prefabSource.GetComponentsInChildren<SkinnedMeshRenderer>();
+            SkinnedMeshRenderer[] skinnedRenderers = prefabSource.GetComponentsInChildren<SkinnedMeshRenderer>();
+            MeshFilter[] meshFilters = prefabSource.GetComponentsInChildren<MeshFilter>();
             List<Mesh> sourceMeshes = new List<Mesh>();
-            foreach (SkinnedMeshRenderer renderer in renderers)
+            foreach (SkinnedMeshRenderer renderer in skinnedRenderers)
                 sourceMeshes.Add(renderer.sharedMesh);
+            foreach (MeshFilter filter in meshFilters)
+                sourceMeshes.Add(filter.sharedMesh);
 
             List< KeyValuePair<string,Object>> targetSubAsset = new List< KeyValuePair<string,Object>>();
             for (int i = 0; i < sourceMeshes.Count; i++)
@@ -62,13 +65,16 @@ namespace TEditor
                 string assetPath =  TEditor.FilePathToAssetPath(filePath);
                 GameObject mainAsset= PrefabUtility.SaveAsPrefabAsset(prefabSource,assetPath);
                 TEditor.CreateOrReplaceSubAsset(assetPath,targetSubAsset.ToArray());
-                //Mesh[] meshes = AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath).ToArray(obj=>(Mesh)obj);
+                Mesh[] meshes = AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath).ToArray(obj => (Mesh)obj);
 
-                //renderers = mainAsset.GetComponentsInChildren<SkinnedMeshRenderer>();
-                //for (int i = 0; i < renderers.Length; i++)
-                //    renderers[i].sharedMesh = meshes[i];
+                skinnedRenderers = mainAsset.GetComponentsInChildren<SkinnedMeshRenderer>();
+                for (int i = 0; i < skinnedRenderers.Length; i++)
+                    skinnedRenderers[i].sharedMesh = meshes[i];
 
-                //PrefabUtility.SavePrefabAsset(mainAsset);
+                meshFilters = mainAsset.GetComponentsInChildren<MeshFilter>();
+                for (int i = 0; i < meshFilters.Length; i++)
+                    meshFilters[i].sharedMesh = meshes[i+skinnedRenderers.Length];
+                PrefabUtility.SavePrefabAsset(mainAsset);
             }
             GameObject.DestroyImmediate(prefabSource);
         }

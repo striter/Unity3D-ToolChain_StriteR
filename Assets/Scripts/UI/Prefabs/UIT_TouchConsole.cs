@@ -17,16 +17,15 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
     }
     #endregion
 
-    [Range(0, 2f)] public float m_ConsoleTimeScale = .5f;
-
+    [Range(0, 2f)] public readonly Ref<float> m_ConsoleTimeScale = .5f;
     protected override void Awake()
     {
         base.Awake();
         ConsoleAwake();
         LogFrameAwake();
 
-        SetConsoleTimeScale(m_ConsoleTimeScale);
-        SetLogFramePanel(m_RightPanelSetting);
+        SetConsoleTimeScale(m_ConsoleTimeScale.Value);
+        SetLogFramePanel(m_RightPanelSetting.Value);
     }
     protected UIT_TouchConsole InitConsole(Action<bool> _OnConsoleShow)
     {
@@ -34,10 +33,9 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         LogFrameReset();
 
         Header("Console");
-        Command("Time Scale").Slider(m_ConsoleTimeScale, 0f, 2f, SetConsoleTimeScale);
+        Command("Time Scale").Slider(m_ConsoleTimeScale,  SetConsoleTimeScale, 0f, 2f);
         Command("Right Panel").FlagsSelection(m_RightPanelSetting, SetLogFramePanel);
         Command("Clear Log").Button(ClearConsoleLog);
-        Command("Init").Button(() => InitConsole(null));
         EmptyLine();
         return this;
     }
@@ -47,24 +45,22 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         float deltaTime = Time.unscaledDeltaTime;
         ConsoleTick(deltaTime);
 
-        if (m_RightPanelSetting.IsFlagEnable(enum_RightPanel.FPS))
+        if (m_RightPanelSetting.Value.IsFlagEnable(enum_RightPanel.FPS))
             LogFrame(deltaTime);
     }
 
     #region Miscs
     protected void SetConsoleTimeScale(float _timeScale)
     {
-        m_ConsoleTimeScale = _timeScale;
         if (!m_ConsoleOpening)
             return;
-        Time.timeScale = m_ConsoleTimeScale;
+        Time.timeScale = _timeScale;
     }
     protected void SetLogFramePanel(enum_RightPanel _panelSetting)
     {
-        m_RightPanelSetting = _panelSetting;
-        m_FrameRate.SetActive(m_RightPanelSetting.IsFlagEnable(enum_RightPanel.FPS));
-        m_LogFilter.SetActive(m_RightPanelSetting.IsFlagEnable(enum_RightPanel.LogFilter));
-        m_RightPanelRect.SetActive(!m_RightPanelSetting.IsFlagClear());
+        m_FrameRate.SetActive(_panelSetting.IsFlagEnable(enum_RightPanel.FPS));
+        m_LogFilter.SetActive(_panelSetting.IsFlagEnable(enum_RightPanel.LogFilter));
+        m_RightPanelRect.SetActive(!_panelSetting.IsFlagClear());
         UpdateLogs();
     }
     #endregion
@@ -80,12 +76,40 @@ public static class UIT_TouchConsoleHelper
         button.m_Button.onClick.AddListener(() => OnClick());
         button.m_ButtonTitle.text = _container.m_KeyCode.GetKeyCodeString();
     }
-    public static void Toggle(this CommandContainer _container, Action<bool> OnToggleChange, bool defaultValue = false)
+    public static void Toggle(this CommandContainer _container, Action<bool> OnToggleChange, bool startValue = false)
     {
         CommandItem_Toggle toggle = _container.Insert<CommandItem_Toggle>();
-        toggle.m_Toggle.onValueChanged.AddListener((value) => OnToggleChange(value));
-        toggle.m_Toggle.isOn = defaultValue;
+        toggle.m_Toggle.onValueChanged.AddListener(value => OnToggleChange(value));
+        toggle.m_Toggle.isOn = startValue;
         toggle.m_ToggleTitle.text = _container.m_KeyCode.GetKeyCodeString();
+    }
+    public static void Toggle(this CommandContainer _container,Ref<bool> _refValue,Action<bool> OnToggleChange)
+    {
+        CommandItem_Toggle toggle = _container.Insert<CommandItem_Toggle>();
+        toggle.SetDataUpdate(() => toggle.m_Toggle.isOn=_refValue.Value);
+        toggle.m_Toggle.onValueChanged.AddListener(value => {
+            _refValue.Value = value;
+            OnToggleChange(value);
+        });
+        toggle.m_ToggleTitle.text = _container.m_KeyCode.GetKeyCodeString();
+    }
+    public static void Slider(this CommandContainer _container, float _maxValue, Action<float> OnValueChanged) => Slider(_container, 0, OnValueChanged, 0, _maxValue);
+    public static void Slider(this CommandContainer _container, Ref<float> _refValue, Action<float> _SetValue, float _minValue, float _maxValue)
+    {
+        CommandItem_Slider slider = _container.Insert<CommandItem_Slider>();
+        slider.SetDataUpdate(() => {
+            if (!_refValue)
+                return;
+            float finalValue = _refValue.Value;
+            slider.m_SliderComponent.value = Mathf.InverseLerp(_minValue, _maxValue, finalValue);
+            slider.m_SliderValue.text = string.Format("{0:0.0}", finalValue);
+        });
+        slider.m_SliderComponent.onValueChanged.AddListener(value => {
+            float finalValue = Mathf.Lerp(_minValue, _maxValue, value);
+            slider.m_SliderValue.text = string.Format("{0:0.0}", finalValue);
+            _refValue.Value = finalValue;
+            _SetValue(finalValue);
+        });
     }
     static T ButtonFoldOutItem<T>(this CommandContainer _container,bool foldOut,out CommandItem_Button _button) where T : CommandItemBase
     {
@@ -98,104 +122,61 @@ public static class UIT_TouchConsoleHelper
         item.transform.SetActive(false);
         return item;
     }
-    public static void EnumSelection<T>(this CommandContainer _container, T _defaultEnum, Action<T> OnClick,bool foldOut=true) where T : Enum
+    public static void EnumSelection<T>(this CommandContainer _container,Ref<T> _valueRef, Action<T> OnClick, bool foldOut = true) where T : struct, Enum
     {
-        CommandItem_ButtonSelection buttonSelection =_container.ButtonFoldOutItem<CommandItem_ButtonSelection>(foldOut,out CommandItem_Button button);
-        buttonSelection.Play(_defaultEnum, (int value) => {
-            T enumValue = (T)Enum.ToObject(typeof(T), value);
-            OnClick(enumValue);
-            if (button != null)
-                button.m_ButtonTitle.text = enumValue.ToString();
-        });
-        if (button != null)
-            button.m_ButtonTitle.text = _defaultEnum.ToString();
-    }
-    public static Action EnumSelection<T>(this CommandContainer _container, Func<T?> _GetEnum, Action<T> OnClick, bool foldOut = true) where T : struct, Enum
-    {
-        CommandItem_ButtonSelection buttonSelection = _container.ButtonFoldOutItem<CommandItem_ButtonSelection>(foldOut, out CommandItem_Button foldOutButton);
-        Action updateValues = () => {
-            T? enumValueN = _GetEnum();
-            T enumValue = enumValueN == null ? default : enumValueN.Value;
-            buttonSelection.Play(enumValue, (int value) => {
+        CommandItem_ButtonSelection selection = _container.ButtonFoldOutItem<CommandItem_ButtonSelection>(foldOut, out CommandItem_Button foldOutButton);
+        selection. SetDataUpdate(() => {
+            selection.Play(_valueRef.Value, (int value) => {
                 T selectEnum = (T)Enum.ToObject(typeof(T), value);
                 OnClick(selectEnum);
                 if (foldOutButton != null)
                     foldOutButton.m_ButtonTitle.text = selectEnum.ToString();
             });
             if (foldOutButton != null)
-                foldOutButton.m_ButtonTitle.text = enumValue.ToString();
-        };
-        updateValues();
-        return updateValues;
-    }
-    public static void EnumSelection(this CommandContainer _container, int _defaultEnum, List<string> _values, Action<string> OnClick,bool foldOut=true)
-    {
-        CommandItem_ButtonSelection buttonSelection = _container. ButtonFoldOutItem<CommandItem_ButtonSelection>(foldOut,out CommandItem_Button foldOutButton);
-        buttonSelection.Play(_values, _defaultEnum, (int value) => {
-            OnClick(_values[value]);
-            if (foldOutButton != null)
-                foldOutButton.m_ButtonTitle.text = _values[value];
+                foldOutButton.m_ButtonTitle.text = _valueRef.Value.ToString();
         });
-        if (foldOutButton != null)
-            foldOutButton.m_ButtonTitle.text = _values[_defaultEnum];
     }
-    public static void FlagsSelection<T>(this CommandContainer _container, T _defaultFlags, Action<T> _logFilter,bool foldOut=true) where T : Enum
+    public static void EnumSelection(this CommandContainer _container, Ref<int> _refEnum, List<string> _values, Action<string> OnClick,bool foldOut=true)
     {
-        _container.ButtonFoldOutItem<CommandItem_FlagsSelection>(foldOut,out CommandItem_Button foldOutButton).Play(_defaultFlags,flags=> {
+        CommandItem_ButtonSelection selection = _container.ButtonFoldOutItem<CommandItem_ButtonSelection>(foldOut, out CommandItem_Button foldOutButton);
+        selection.SetDataUpdate(() => {
+            selection.Play(_values, _refEnum.Value, (int value) => {
+                OnClick(_values[value]);
+                if (foldOutButton != null)
+                    foldOutButton.m_ButtonTitle.text = _values[value];
+            });
+            if (foldOutButton != null)
+                foldOutButton.m_ButtonTitle.text = _values[_refEnum.Value];
+        });
+    }
+    public static void FlagsSelection<T>(this CommandContainer _container, Ref<T> _refFlags, Action<T> _logFilter,bool foldOut=true) where T :struct, Enum
+    {
+        CommandItem_FlagsSelection selection= _container.ButtonFoldOutItem<CommandItem_FlagsSelection>(foldOut, out CommandItem_Button foldOutButton);
+        selection.SetDataUpdate(() => selection.Play(_refFlags.Value, flags => {
             if (foldOutButton != null)
                 foldOutButton.m_ButtonTitle.text = flags.GetNumerable().ToString_Readable("|", value => value ? "√" : "×");
             _logFilter(flags);
-        });
+        }));
         if (foldOutButton != null)
-            foldOutButton.m_ButtonTitle.text = _defaultFlags.GetNumerable().ToString_Readable("|", value => value ? "√" : "×");
+            foldOutButton.m_ButtonTitle.text = _refFlags.Value.GetNumerable().ToString_Readable("|", value => value ? "√" : "×");
     }
-    public static void InputField(this CommandContainer _container, string _defaultValue, Action<string> OnValueClick)
+    public static void InputField(this CommandContainer _container, Ref<string> _refText, Action<string> OnValueClick)
     {
         CommandItem_InputField input = _container.Insert<CommandItem_InputField>();
-        input.m_InputField.text = _defaultValue;
+        input.SetDataUpdate(() => { input.m_InputField.text = _refText.Value; });
+        input.m_InputField.onValueChanged.AddListener(value => { _refText.Value = value; });
         _container.Button(() => OnValueClick(input.m_InputField.text));
     }
-    public static void InpuptField(this CommandContainer _container, string _defaultValue1, string _defaultValue2, Action<string, string> OnValueClick)
+    public static void InpuptField(this CommandContainer _container, Ref<string> _refText1, Ref<string> _refText2, Action<string, string> OnValueClick)
     {
         CommandItem_InputField input1 = _container.Insert<CommandItem_InputField>();
         CommandItem_InputField input2 = _container.Insert<CommandItem_InputField>();
-        input1.m_InputField.text = _defaultValue1;
-        input2.m_InputField.text = _defaultValue2;
+        input1.SetDataUpdate(() => input1.m_InputField.text = _refText1.Value);
+        input2.SetDataUpdate(() => input2.m_InputField.text = _refText2.Value);
+        input1.m_InputField.onValueChanged.AddListener(value => { _refText1.Value = value; });
+        input2.m_InputField.onValueChanged.AddListener(value => { _refText2.Value = value; });
         _container.Button(() => OnValueClick(input1.m_InputField.text, input2.m_InputField.text));
     }
-    public static void Slider(this CommandContainer _container, float _maxValue, Action<float> OnValueChanged) => Slider(_container, 0, 0, _maxValue, OnValueChanged);
-    public static void Slider(this CommandContainer _container, float _startValue, float _minValue, float _maxValue, Action<float> OnValueChanged)
-    {
-        CommandItem_Slider slider = _container.Insert<CommandItem_Slider>();
-        slider.m_SliderComponent.value = Mathf.InverseLerp(_minValue, _maxValue, _startValue);
-        slider.m_SliderValue.text = _startValue.ToString();
-        slider.m_SliderComponent.onValueChanged.AddListener((float value) => {
-            float finalValue = Mathf.Lerp(_minValue, _maxValue, value);
-            slider.m_SliderValue.text = string.Format("{0:0.0}", finalValue);
-            OnValueChanged(finalValue);
-        });
-    }
-    public static Action Slider(this CommandContainer _container, Func<float?> _GetValue, Action<float> _SetValue, float _minValue, float _maxValue)
-    {
-        CommandItem_Slider slider = _container.Insert<CommandItem_Slider>();
-        Action UpdateValue = () => {
-            float? _value = _GetValue();
-            if (_value == null)
-                return;
-            float finalValue = _value.Value;
-            slider.m_SliderComponent.value = Mathf.InverseLerp(_minValue, _maxValue, finalValue);
-            slider.m_SliderValue.text = string.Format("{0:0.0}", finalValue);
-        };
-        UpdateValue();
-        slider.m_SliderComponent.onValueChanged.AddListener(value => {
-            float finalValue = Mathf.Lerp(_minValue, _maxValue, value);
-            slider.m_SliderValue.text = string.Format("{0:0.0}", finalValue);
-            _SetValue(finalValue);
-        });
-        return UpdateValue;
-    }
-
-
 }
 public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
 {
@@ -246,10 +227,12 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
             m_ConsoleCommandScrollRect.SetActive(m_ConsoleOpening);
             OnConsoleShow?.Invoke(m_ConsoleOpening);
             
-            Time.timeScale = m_ConsoleOpening ? m_ConsoleTimeScale : 1f;
+            Time.timeScale = m_ConsoleOpening ? m_ConsoleTimeScale.Value : 1f;
             UpdateLogs();
             UpdateCommandData();
         }
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+            m_ConsoleTimeScale.Value = 2f;
     }
     void UpdateCommandData()=> m_CommandContainers.m_ActiveItemDic.Traversal(command => command.UpdateItems());
 
@@ -279,7 +262,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
             if (Input.GetKeyDown(m_KeyCode))
                 m_Items.Traversal(item => item.OnFastKeyTrigger());
         }
-        public void UpdateItems() => m_Items.Traversal(item => item.UpdateData());
+        public void UpdateItems() => m_Items.Traversal(item => item.OnDataUpdated?.Invoke());
         public T Insert<T>() where T : CommandItemBase
         {
             T item = CreateItem(typeof(T)) as T;
@@ -298,17 +281,13 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
     }
     public class CommandItemBase : CGameObjectPool_Instance_Class<int>
     {
-        public CommandItemBase(Transform _transform) : base(_transform)
+        public CommandItemBase(Transform _transform) : base(_transform) {  }
+        public virtual void OnFastKeyTrigger() {  }
+        public Action OnDataUpdated { get; private set; }
+        public void SetDataUpdate(Action _OnDataUpdated)
         {
-
-        }
-        public virtual void OnFastKeyTrigger()
-        {
-
-        }
-        public virtual void UpdateData()
-        {
-
+            OnDataUpdated = _OnDataUpdated;
+            OnDataUpdated?.Invoke();
         }
     }
     public class CommandItem_FlagsSelection : CommandItemBase
@@ -464,6 +443,11 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         {
             m_InputField = _transform.GetComponent<InputField>();
         }
+        public override void OnInitItem(Action<int> DoRecycle)
+        {
+            base.OnInitItem(DoRecycle);
+            m_InputField.onValueChanged.RemoveAllListeners();
+        }
 
     }
 }
@@ -570,7 +554,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
     }
     #endregion
 
-    public enum_RightPanel m_RightPanelSetting = (enum_RightPanel)int.MaxValue;
+    public Ref<enum_RightPanel> m_RightPanelSetting = (enum_RightPanel)int.MaxValue;
     public bool m_LogFiltered = false, m_WarningFiltered = true, m_ErrorFiltered = true;
 
     Transform m_FrameRate;
@@ -649,7 +633,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         m_FilterError.Set(m_ErrorCount);
 
         m_Logs.Clear();
-        if (!m_ConsoleOpening || !m_RightPanelSetting.IsFlagEnable(enum_RightPanel.LogItem))
+        if (!m_ConsoleOpening || !m_RightPanelSetting.Value.IsFlagEnable(enum_RightPanel.LogItem))
             return;
         foreach (var logInfo in m_LogDataQueue)
         {

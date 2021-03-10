@@ -1,6 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+public class Ref<T> 
+{
+    public T Value=default;
+    public override bool Equals(object obj) => this == (Ref<T>)obj;
+    public override int GetHashCode() => Value.GetHashCode();
+    public static bool operator !(Ref<T> refValue) => refValue is null;
+    public static bool operator !=(Ref<T> _src, Ref<T> _tar) => !(_src == _tar);
+    public static bool operator ==(Ref<T> _src,Ref<T> _tar)
+    {
+        if (!!_src && !!_tar)
+            return _src.Value.Equals(_tar.Value);
+        return !_src && !_tar;
+    }
+    public static bool operator true(Ref<T> refValue) => !!refValue;
+    public static bool operator  false(Ref<T> refValue) => !refValue;
+    public static implicit operator Ref<T>(T value)=>new Ref<T>() { Value=value};
+    public static explicit operator T(Ref<T> refValue) => !refValue?default:refValue.Value;
+}
+
 public struct Matrix3x3
 {
     public float m00, m01, m02;
