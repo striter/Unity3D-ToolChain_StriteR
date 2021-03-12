@@ -6,7 +6,7 @@
 		_Color("Color",Color) = (1,1,1,1)
 		
 		[Header(Normal Map)]
-		[Toggle(_NORMALMAP)]_EnableNormalMap("Enable Normal Mapping",float)=1
+		[Toggle(_NORMALMAP)]_EnableNormalMap("Enable Normal Mapping",float)=0
 		[NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
 		[Header(Diffuse Setting)]
 		_Lambert("Lambert",Range(0,1))=.5
@@ -22,7 +22,6 @@
 		Blend Off
 		ZWrite On
 		ZTest LEqual
-		
 
 		CGINCLUDE
 		#include "../CommonLightingInclude.cginc"

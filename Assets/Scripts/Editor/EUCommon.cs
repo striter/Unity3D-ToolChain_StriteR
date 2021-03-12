@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace TEditor
 {
-    public static class TEditor
+    public static class EUCommon
     {
         public static Dictionary<int,string> GetAllLayers(bool emptyInclusive)
         {
@@ -33,7 +33,7 @@ namespace TEditor
                 replacedAsset = previousAsset as T;
                 if (replacedAsset != null)
                 {
-                    if (TCommon.CopyPropertyTo( asset, previousAsset))
+                    if (CopyPropertyTo( asset, previousAsset))
                         AssetDatabase.SaveAssets();
                     else
                         EditorUtility.CopySerialized(asset,previousAsset);
@@ -47,6 +47,7 @@ namespace TEditor
                 AssetDatabase.CreateAsset(asset, path);
                 replacedAsset = AssetDatabase.LoadMainAssetAtPath(path) as T;
             }
+            EditorGUIUtility.PingObject(replacedAsset);
             return replacedAsset;
         }
         public static void CreateOrReplaceSubAsset(string _path, params KeyValuePair<string, UnityEngine.Object>[] _subValues)
@@ -61,7 +62,7 @@ namespace TEditor
                 UnityEngine.Object subAsset = Array.Find(assets, p => p.name == subValue.Key&&p.GetType()==subValue.Value.GetType());
 
                 if (subAsset)
-                    if (TCommon.CopyPropertyTo(subValue.Value, subAsset))
+                    if (CopyPropertyTo(subValue.Value, subAsset))
                         AssetDatabase.SaveAssets();
                     else
                         EditorUtility.CopySerialized(subValue.Value, subAsset);
@@ -75,7 +76,6 @@ namespace TEditor
             T mainAsset = CreateOrReplaceMainAsset(_mainAsset, _path);
             CreateOrReplaceSubAsset(_path, _subAssets);
             Debug.Log("Asset Combination Generate Successful:" + _path);
-            EditorGUIUtility.PingObject(mainAsset);
             return mainAsset;
         }
 
@@ -105,8 +105,8 @@ namespace TEditor
             string folderPath = EditorUtility.OpenFolderPanel("Select Directory", fbxDirectory, "");
             if (folderPath.Length == 0)
                 return false;
-            directoryPath = FilePathToAssetPath(folderPath)+"/";
-            objName = GetPathName(assetPath);
+            directoryPath =EUPath.FilePathToAssetPath(folderPath)+"/";
+            objName = EUPath.GetPathName(assetPath);
             return true;
         }
 
@@ -130,10 +130,83 @@ namespace TEditor
             }
         }
 
+        #endregion
 
+        #region Serialize Helper
+        static readonly Dictionary<Type, Action<UnityEngine.Object, UnityEngine.Object>> m_CopyHelper = new Dictionary<Type, Action<UnityEngine.Object, UnityEngine.Object>>() {
+            { typeof(Mesh),(src, dst) => CopyMesh((Mesh)src, (Mesh)dst)}
+        };
+
+        public static bool CopyPropertyTo(UnityEngine.Object _src, UnityEngine.Object _tar)
+        {
+            Type type = _src.GetType();
+            if (type != _tar.GetType())
+            {
+                Debug.LogError("Assets Type Not Match:" + _src.GetType() + "," + _tar.GetType());
+                return false;
+            }
+
+            if (m_CopyHelper.ContainsKey(_src.GetType()))
+            {
+                m_CopyHelper[type](_src, _tar);
+                return true;
+            }
+            return false;
+        }
+
+        public static void CopyMesh(Mesh source, Mesh target)
+        {
+            target.Clear();
+            target.vertices = source.vertices;
+            target.normals = source.normals;
+            target.tangents = source.tangents;
+            target.name = source.name;
+            target.bounds = source.bounds;
+            target.bindposes = source.bindposes;
+            target.colors = source.colors;
+            target.boneWeights = source.boneWeights;
+            target.triangles = source.triangles;
+            List<Vector4> uvs = new List<Vector4>();
+            for (int i = 0; i < 8; i++)
+            {
+                source.GetUVs(i, uvs);
+                if (uvs.Count <= 0)
+                    continue;
+                bool third = false;
+                bool fourth = false;
+                for (int j = 0; j < uvs.Count; j++)
+                {
+                    Vector4 check = uvs[j];
+                    third |= check.z != 0;
+                    fourth |= check.w != 0;
+                }
+
+                if (fourth)
+                    target.SetUVs(i, uvs);
+                else if (third)
+                    target.SetUVs(i, uvs.ToList(vec4 => new Vector3(vec4.x, vec4.y, vec4.z)));
+                else
+                    target.SetUVs(i, uvs.ToList(vec4 => new Vector2(vec4.x, vec4.y)));
+            }
+            for (int i = 0; i < source.subMeshCount; i++)
+                target.SetIndices(source.GetIndices(i), MeshTopology.Triangles, i);
+        }
+
+        public static Mesh Copy(this Mesh _srcMesh)
+        {
+            Mesh copy = new Mesh();
+            CopyMesh(_srcMesh, copy);
+            return copy;
+        }
+
+        #endregion
+    }
+
+    public static class EUPath
+    {
         public static string FilePathToAssetPath(string path)
         {
-            int assetIndex = path.IndexOf("/Assets")+1;
+            int assetIndex = path.IndexOf("/Assets") + 1;
             if (assetIndex != 0)
                 path = path.Substring(assetIndex, path.Length - assetIndex);
             return path;
@@ -153,7 +226,6 @@ namespace TEditor
                 path = path.Substring(folderIndex + 1, path.Length - folderIndex - 1);
             return path;
         }
-        #endregion
     }
     public static class TEditor_GUIStyle
     {

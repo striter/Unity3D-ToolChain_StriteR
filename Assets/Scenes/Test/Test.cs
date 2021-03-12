@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TAlthogrim;
-public class MathTest : MonoBehaviour
+public class Test : MonoBehaviour
 {
     public Vector3 m_SrcVector = Vector3.one;
     public Vector3 m_DstVector = Vector3.down;

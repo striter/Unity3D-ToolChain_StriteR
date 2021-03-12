@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TTile_Square
+namespace Utilities_Tile
 {
 
     public enum enum_TileDirection

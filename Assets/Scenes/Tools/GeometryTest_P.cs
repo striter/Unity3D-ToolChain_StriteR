@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using TPhysics;
 using UnityEngine;
 
 namespace BoundingCollisionTest
@@ -15,7 +14,7 @@ namespace BoundingCollisionTest
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            float distance = Physics_Extend.PlaneRayDistance(m_PlaneNormal,m_PlaneDistance, m_RayOrigin, m_RayDirection);
+            float distance = UBoundingCollision.PlaneRayDistance(m_PlaneNormal,m_PlaneDistance, m_RayOrigin, m_RayDirection);
 
             Gizmos.matrix = transform.localToWorldMatrix;
             Vector3 planeSize = new Vector3(1,0,1);

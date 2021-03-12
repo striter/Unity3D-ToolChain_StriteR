@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using OPhysics;
 using UnityEngine;
 
 namespace PhysicsTest
@@ -14,11 +15,11 @@ namespace PhysicsTest
         struct StaticAnimatorSynchonize
         {
             public Transform m_SyncSource;
-            public TPhysics.ConfigurableJoint_Helper m_SyncJoint;
+            public ConfigurableJoint_Helper m_SyncJoint;
             public StaticAnimatorSynchonize(Transform _source,ConfigurableJoint _target)
             {
                 m_SyncSource = _source;
-                m_SyncJoint = new TPhysics.ConfigurableJoint_Helper(_target);
+                m_SyncJoint = new ConfigurableJoint_Helper(_target);
             }
             public void Sync()
             {

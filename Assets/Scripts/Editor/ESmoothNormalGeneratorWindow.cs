@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace TEditor
 {
-    using static TEditor_Render;
+    using static EURender;
     public class ESmoothNormalGeneratorWindow : EditorWindow
     {
         GameObject m_ModelPrefab;
@@ -60,11 +60,11 @@ namespace TEditor
                 targetSubAsset.Add(new KeyValuePair<string,Object>(sourceMeshes[i].name, GenerateMesh(sourceMeshes[i], _generateTangent, _generateUV)));
 
 
-            if( TEditor.SaveFilePath(out string filePath,"prefab",TEditor.RemoveExtension( TEditor.GetPathName(AssetDatabase.GetAssetPath(_targetFBX))) + "_SmoothNormal"))
+            if( EUCommon.SaveFilePath(out string filePath,"prefab", EUPath.RemoveExtension(EUPath.GetPathName(AssetDatabase.GetAssetPath(_targetFBX))) + "_SmoothNormal"))
             {
-                string assetPath =  TEditor.FilePathToAssetPath(filePath);
+                string assetPath =  EUPath.FilePathToAssetPath(filePath);
                 GameObject mainAsset= PrefabUtility.SaveAsPrefabAsset(prefabSource,assetPath);
-                TEditor.CreateOrReplaceSubAsset(assetPath,targetSubAsset.ToArray());
+                EUCommon.CreateOrReplaceSubAsset(assetPath,targetSubAsset.ToArray());
                 Mesh[] meshes = AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath).ToArray(obj => (Mesh)obj);
 
                 skinnedRenderers = mainAsset.GetComponentsInChildren<SkinnedMeshRenderer>();

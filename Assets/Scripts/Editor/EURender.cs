@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace TEditor
 {
-    public static class TEditor_Render
+    public static class EURender
     {
         public enum enum_Editor_MeshColor
         {

@@ -1,9 +1,7 @@
 ﻿
 using System;
 
-namespace TTime
-{
-    public static class TTimeTools
+    public static class UTime
     {
         public const int m_StampADay = 86400;
         public const int m_StampAnHour = 3600;
@@ -36,5 +34,4 @@ namespace TTime
             return dtStart.Add(toNow);
         }
     }
-}
 

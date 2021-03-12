@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TPhysics;
 namespace BoundingCollisionTest
 {
     public class GeometryTest_AABB : MonoBehaviour
@@ -15,11 +14,11 @@ namespace BoundingCollisionTest
             Vector3 direction = m_RayDirection.normalized;
             Gizmos.matrix = transform.localToWorldMatrix;
             Bounds bound = new Bounds(m_BoxOrigin, m_BoxSize);
-            bool intersect = Physics_Extend.AABBRayIntersect(bound.min, bound.max, m_RayOrigin, direction);
+            bool intersect = UBoundingCollision.AABBRayIntersect(bound.min, bound.max, m_RayOrigin, direction);
             Gizmos.color = intersect ? Color.green : Color.grey;
             Gizmos.DrawWireCube(m_BoxOrigin, m_BoxSize);
 
-            Vector2 distances = Physics_Extend.AABBRayDistance(bound.min, bound.max, m_RayOrigin, direction);
+            Vector2 distances = UBoundingCollision.AABBRayDistance(bound.min, bound.max, m_RayOrigin, direction);
             if (distances.y > 0)
             {
                 Gizmos.color = Color.red;

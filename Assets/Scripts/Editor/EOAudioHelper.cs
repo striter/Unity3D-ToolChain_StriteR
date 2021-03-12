@@ -7,7 +7,7 @@ using UnityEngine;
 namespace TEditor
 {
     //using UnityEditor.AudioUtil; 
-    public static class TEditor_AudioHelper
+    public static class EOAudioHelper
     {
         static AudioClip curClip;
         public static void AttachClipTo(AudioClip clip)

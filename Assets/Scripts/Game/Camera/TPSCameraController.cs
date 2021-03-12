@@ -37,7 +37,7 @@ public class TPSCameraController : CameraController
         base.Awake();
     }
     
-    public void AddRecoil(float recoilAmount)=>v3_Recoil +=new Vector3(0,( TCommon.RandomBool() ? 1 : -1) * recoilAmount, 0);
+    public void AddRecoil(float recoilAmount)=>v3_Recoil +=new Vector3(0,( URandom.RandomBool() ? 1 : -1) * recoilAmount, 0);
     public void AddShake(float shakeAmount) => v3_Shake += Random.insideUnitSphere * shakeAmount;
     public void SetImpact(Vector3 impactDirection)
     {

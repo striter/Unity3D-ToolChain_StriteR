@@ -126,14 +126,13 @@ namespace TEditor
         }
         void GenerateVertexTexture(GameObject _targetFBX, AnimationClip[] _clips)
         {
-            if (!TEditor.SelectDirectory(_targetFBX, out string savePath, out string meshName))
+            if (!EUCommon.SelectDirectory(_targetFBX, out string savePath, out string meshName))
             {
                 Debug.LogWarning("Invalid Folder Selected");
                 return;
             }
             GameObject instantiatedObj = GameObject.Instantiate(m_TargetPrefab);
             SkinnedMeshRenderer skinnedMeshRenderer = instantiatedObj.GetComponentInChildren<SkinnedMeshRenderer>();
-            MeshBoundsChecker boundsCheck = new MeshBoundsChecker();
             #region Bake Animation Atlas
             int vertexCount = skinnedMeshRenderer.sharedMesh.vertexCount;
             int totalVertexRecord = vertexCount * 2;
@@ -143,7 +142,7 @@ namespace TEditor
             atlasTexture.filterMode = FilterMode.Point;
             atlasTexture.wrapModeU = TextureWrapMode.Clamp;
             atlasTexture.wrapModeV = TextureWrapMode.Repeat;
-
+            UBoundsChecker.Begin();
             for (int i = 0; i < _clips.Length; i++)
             {
                 AnimationClip clip = _clips[i];
@@ -160,9 +159,9 @@ namespace TEditor
                     Vector3[] normals = vertexBakeMesh.normals;
                     for (int k = 0; k < vertexCount; k++)
                     {
-                        boundsCheck.CheckBounds(vertices[k]);
-                        atlasTexture.SetPixel(k * 2, startFrame + j, TColor.VectorToColor(vertices[k]));
-                        atlasTexture.SetPixel(k * 2 + 1, startFrame + j, TColor.VectorToColor(normals[k]));
+                        UBoundsChecker.CheckBounds(vertices[k]);
+                        atlasTexture.SetPixel(k * 2, startFrame + j, UColor.VectorToColor(vertices[k]));
+                        atlasTexture.SetPixel(k * 2 + 1, startFrame + j, UColor.VectorToColor(normals[k]));
                     }
                 }
                 vertexBakeMesh.Clear();
@@ -176,13 +175,13 @@ namespace TEditor
             instanceMesh.tangents = null;
             instanceMesh.boneWeights = null;
             instanceMesh.bindposes = null;
-            instanceMesh.bounds = boundsCheck.GetBounds();
+            instanceMesh.bounds = UBoundsChecker.CalculateBounds();
             #endregion
             DestroyImmediate(instantiatedObj);
 
             AnimationInstanceData instanceData = ScriptableObject.CreateInstance<AnimationInstanceData>();
             instanceData.m_Animations = instanceParams;
-            instanceData=TEditor.CreateAssetCombination(savePath + meshName + "_VertexInstance.asset", instanceData, new KeyValuePair< string, Object>(meshName + "_AnimationAtlas", atlasTexture),new KeyValuePair<string,Object>( meshName + "_InstanceMesh",instanceMesh));
+            instanceData=EUCommon.CreateAssetCombination(savePath + meshName + "_VertexInstance.asset", instanceData, new KeyValuePair< string, Object>(meshName + "_AnimationAtlas", atlasTexture),new KeyValuePair<string,Object>( meshName + "_InstanceMesh",instanceMesh));
             Object[] assets = AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GetAssetPath(instanceData));
             foreach (var asset in assets)
             {
@@ -198,7 +197,7 @@ namespace TEditor
 
         void GenerateBoneInstanceMeshAndTexture(GameObject _targetFBX, AnimationClip[] _clips, string exposeBones)
         {
-            if (!TEditor.SelectDirectory(_targetFBX, out string savePath, out string meshName))
+            if (!EUCommon.SelectDirectory(_targetFBX, out string savePath, out string meshName))
             {
                 Debug.LogWarning("Invalid Folder Selected");
                 return;
@@ -207,7 +206,6 @@ namespace TEditor
             SkinnedMeshRenderer _skinnedMeshRenderer = _instantiatedObj.GetComponentInChildren<SkinnedMeshRenderer>();
             try
             {
-                MeshBoundsChecker boundsCheck = new MeshBoundsChecker();
                 Matrix4x4[] bindPoses = _skinnedMeshRenderer.sharedMesh.bindposes;
                 Transform[] bones = _skinnedMeshRenderer.bones;
                 #region Record Expose Bone
@@ -253,7 +251,7 @@ namespace TEditor
                 atlasTexture.filterMode = FilterMode.Point;
                 atlasTexture.wrapModeU = TextureWrapMode.Clamp;
                 atlasTexture.wrapModeV = TextureWrapMode.Repeat;
-
+                UBoundsChecker.Begin();
                 for (int i = 0; i < _clips.Length; i++)
                 {
                     AnimationClip clip = _clips[i];
@@ -267,16 +265,16 @@ namespace TEditor
                         for (int k = 0; k < boneCount; k++)
                         {
                             Matrix4x4 curFrameBoneMatrix = _skinnedMeshRenderer.transform.worldToLocalMatrix * bones[k].localToWorldMatrix * bindPoses[k];
-                            atlasTexture.SetPixel(k * 3, startFrame + j, TColor.VectorToColor(curFrameBoneMatrix.GetRow(0)));
-                            atlasTexture.SetPixel(k * 3 + 1, startFrame + j, TColor.VectorToColor(curFrameBoneMatrix.GetRow(1)));
-                            atlasTexture.SetPixel(k * 3 + 2, startFrame + j, TColor.VectorToColor( curFrameBoneMatrix.GetRow(2)));
+                            atlasTexture.SetPixel(k * 3, startFrame + j, UColor.VectorToColor(curFrameBoneMatrix.GetRow(0)));
+                            atlasTexture.SetPixel(k * 3 + 1, startFrame + j, UColor.VectorToColor(curFrameBoneMatrix.GetRow(1)));
+                            atlasTexture.SetPixel(k * 3 + 2, startFrame + j, UColor.VectorToColor( curFrameBoneMatrix.GetRow(2)));
                         }
 
                         Mesh boundsCheckMesh = new Mesh();
                         _skinnedMeshRenderer.BakeMesh(boundsCheckMesh);
                         Vector3[] verticies = boundsCheckMesh.vertices;
                         for (int k = 0; k < verticies.Length; k++)
-                            boundsCheck.CheckBounds(verticies[k].Divide(_skinnedMeshRenderer.transform.localScale));
+                            UBoundsChecker.CheckBounds(verticies[k].Divide(_skinnedMeshRenderer.transform.localScale));
 
                         boundsCheckMesh.Clear();
                     }
@@ -297,7 +295,7 @@ namespace TEditor
                 instanceMesh.SetUVs(2, uv2);
                 instanceMesh.boneWeights = null;
                 instanceMesh.bindposes = null;
-                instanceMesh.bounds = boundsCheck.GetBounds();
+                instanceMesh.bounds = UBoundsChecker.CalculateBounds();
                 #endregion
                 DestroyImmediate(_instantiatedObj);
 
@@ -305,7 +303,7 @@ namespace TEditor
                 instanceData.m_Animations = instanceParams;
                 instanceData.m_ExposeBones = exposeBoneParam.ToArray();
 
-                instanceData =  TEditor.CreateAssetCombination(savePath + meshName + "_BoneInstance.asset",instanceData, new KeyValuePair<string,Object>(meshName + "_AnimationAtlas",atlasTexture), new KeyValuePair<string,Object>(meshName + "_InstanceMesh",instanceMesh));
+                instanceData =  EUCommon.CreateAssetCombination(savePath + meshName + "_BoneInstance.asset",instanceData, new KeyValuePair<string,Object>(meshName + "_AnimationAtlas",atlasTexture), new KeyValuePair<string,Object>(meshName + "_InstanceMesh",instanceMesh));
                 Object[] assets=AssetDatabase.LoadAllAssetsAtPath( AssetDatabase.GetAssetPath(instanceData));
                 foreach(var asset in assets)
                 {

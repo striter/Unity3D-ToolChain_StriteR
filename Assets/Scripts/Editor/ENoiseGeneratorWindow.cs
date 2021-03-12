@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using TAlthogrim;
+using UAlthogrim;
 namespace TEditor
 {
     public class ENoiseGeneratorWindow : EditorWindow
@@ -29,7 +29,7 @@ namespace TEditor
                 Color[] colors = new Color[size * size];
                 for (int i = 0; i < size; i++)
                     for (int j = 0; j < size; j++)
-                        colors[i * size + j] = new Color((float)TPerlinNoise.Perlin(.5d+j / sizeD*255* m_Scale,.5d+i / sizeD*255* m_Scale, 0),0,0,0);
+                        colors[i * size + j] = new Color((float)UNoise.Perlin(.5d+j / sizeD*255* m_Scale,.5d+i / sizeD*255* m_Scale, 0),0,0,0);
                 m_Texture = new Texture2D(size, size, TextureFormat.R8, true);
                 m_Texture.SetPixels(colors);
                 m_Texture.Apply();
@@ -39,8 +39,8 @@ namespace TEditor
             TEditor_GUIScope_Horizontal.NextLine(2, 20);
             if(GUI.Button( TEditor_GUIScope_Horizontal.NextRect(0,80),"Export"))
             {
-                if(TEditor.SaveFilePath(out string filePath,"png", "CustomNoise"))
-                    TEditor.CreateOrReplaceFile(filePath,m_Texture.EncodeToPNG());
+                if(EUCommon.SaveFilePath(out string filePath,"png", "CustomNoise"))
+                    EUCommon.CreateOrReplaceFile(filePath,m_Texture.EncodeToPNG());
             }
         }
 

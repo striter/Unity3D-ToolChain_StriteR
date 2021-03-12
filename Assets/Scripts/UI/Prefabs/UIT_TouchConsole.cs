@@ -298,7 +298,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         public void Play<T>(T defaultValue, Action<T> _OnFlagChanged) where T : Enum
         {
             m_ToggleGrid.Clear();
-            TCommon.TraversalEnum<T>(value => {
+            UCommon.TraversalEnum<T>(value => {
                 Toggle tog = m_ToggleGrid.AddItem(Convert.ToInt32(value));
                 tog.isOn = defaultValue.IsFlagEnable(value);
                 tog.GetComponentInChildren<Text>().text = value.ToString();
@@ -323,7 +323,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         {
             m_DefaultValue = Convert.ToInt32(_defaultValue);
             m_ButtonGrid.Clear();
-            TCommon.TraversalEnum<T>(temp =>
+            UCommon.TraversalEnum<T>(temp =>
             {
                 int index = Convert.ToInt32(temp);
                 Button btn = m_ButtonGrid.AddItem(index);
@@ -497,7 +497,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         public void Init(LogData _data, Action<LogData> OnStackClick)
         {
             m_Data = _data;
-            m_Type.color = TColor.HEXtoColor(GetLogHexColor(m_Data.m_LogType));
+            m_Type.color = UColor.HEXtoColor(GetLogHexColor(m_Data.m_LogType));
             m_Info.text = m_Data.m_LogInfo;
             m_Stack.onClick.RemoveAllListeners();
             m_Stack.onClick.AddListener(() => OnStackClick(m_Data));
@@ -542,9 +542,9 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
 
         public void ShowTrack(LogData _data)
         {
-            m_Type.color = TColor.HEXtoColor(GetLogHexColor(_data.m_LogType));
+            m_Type.color = UColor.HEXtoColor(GetLogHexColor(_data.m_LogType));
             m_Info.text = _data.m_LogInfo;
-            m_Time.text = TTime.TTimeTools.GetDateTime(_data.m_Time).ToLongTimeString();
+            m_Time.text = UTime.GetDateTime(_data.m_Time).ToLongTimeString();
             m_Track.text = _data.m_LogTrace;
             transform.SetActive(true);
         }
@@ -613,7 +613,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
     int m_ErrorCount, m_WarningCount, m_LogCount;
     void OnLogReceived(string info, string trace, LogType type)
     {
-        m_LogDataQueue.Enqueue(new LogData() { m_Time = TTime.TTimeTools.GetTimeStampNow(), m_LogInfo = info, m_LogTrace = trace, m_LogType = type });
+        m_LogDataQueue.Enqueue(new LogData() { m_Time = UTime.GetTimeStampNow(), m_LogInfo = info, m_LogTrace = trace, m_LogType = type });
         switch (type)
         {
             case LogType.Exception:
