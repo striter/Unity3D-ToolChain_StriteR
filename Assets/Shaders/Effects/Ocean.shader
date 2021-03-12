@@ -25,7 +25,7 @@
 		CGINCLUDE
 		#include "UnityCG.cginc"
 		#include "Lighting.cginc"
-		#include "../../CommonLightingInclude.cginc"
+		#include "../CommonLightingInclude.cginc"
 		ENDCG
 		Pass		//Base Pass
 		{

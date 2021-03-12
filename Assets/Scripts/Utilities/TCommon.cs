@@ -127,6 +127,13 @@ public static class TCommon
     public static Vector4 ToVector4(this Vector3 _vector,float _fill=0) => new Vector4(_vector.x,_vector.y,_vector.z,_fill);
     #endregion
     #region Collections & Array 
+    public static T Find<T>(this T[] _array,Predicate<T> _predicate) 
+    {
+        for (int i = 0; i < _array.Length; i++)
+            if (_predicate(_array[i]))
+                return _array[i];
+        return default;
+    }
     public static T GetIndexKey<T, Y>(this Dictionary<T, Y> dictionary, int index) => dictionary.ElementAt(index).Key;
     public static Y GetIndexValue<T, Y>(this Dictionary<T, Y> dictionary, int index) => dictionary.ElementAt(index).Value;
     public static List<T> DeepCopy<T>(this List<T> list)
@@ -178,15 +185,12 @@ public static class TCommon
         }
         markupList.Traversal(item=>OnEachMarkup(item));
     }
-
     public static void TraversalBreak<T>(this IEnumerable<T> _numerable, Predicate<T> OnEachItemBreak)
     {
         foreach (T item in _numerable)
             if (OnEachItemBreak(item))
                 break;
     }
-
-
     public static void Traversal<T, Y>(this Dictionary<T, Y> dic, Action<T> OnEachKey)
     {
         foreach (T temp in dic.Keys)
@@ -219,7 +223,6 @@ public static class TCommon
         }
         markKeys.Traversal(key => { OnMarkup(key);});
     }
-
     public static void Traversal<T>(this T[] array, Action<int, T> OnEachItem)
     {
         int length = array.Length;
@@ -251,7 +254,6 @@ public static class TCommon
         KeyValuePair<T, Y> element = dictionary.ElementAt(index);
         return OnRandomItemStop != null && OnRandomItemStop(element.Key, element.Value);
     });
-
     public static void TraversalEnumerableIndex(int index, int count, Func<int, bool> OnItemBreak)
     {
         if (count == 0)
@@ -501,6 +503,8 @@ public static class TCommon
         for(int i=0;i<8;i++)
         {
             source.GetUVs(i, uvs);
+            if (uvs.Count <= 0)
+                continue;
             bool third=false;
             bool fourth = false;
             for(int j=0;j<uvs.Count;j++)

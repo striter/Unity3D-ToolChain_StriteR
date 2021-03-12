@@ -16,10 +16,11 @@ float2 UVCenterMapping(float2 uv,float2 tilling,float2 offset,float rotateAngle)
 
 float2 TriplanarMapping(float3 worldPos,float3 worldNormal){ return (worldPos.zy*worldNormal.x+worldPos.xz*worldNormal.y+worldPos.xy*worldNormal.z);}
 
-float luminance(fixed3 color){ return 0.2125*color.r + 0.7154*color.g + 0.0721 + color.b;}
+float luminance(float3 color){ return 0.2125*color.r + 0.7154*color.g + 0.0721 + color.b;}
 
-float4 Blend_Color(float4 src,float4 dst){ return 1-(1-src)*(1-dst); }
-float3 Blend_Color(float3 src,float3 dst){ return 1-(1-src)*(1-dst); }
+float4 ScreenBlend(float4 src,float4 dst){ return 1-(1-src)*(1-dst); }
+float3 ScreenBlend(float3 src,float3 dst){ return 1-(1-src)*(1-dst); }
+float4 AlphaBlend(float4 src, float4 dst){return dst * dst.a + src * (1 - dst.a);}
 
 float invlerp(float a,float b,float value){ return (value-a)/(b-a); }
 

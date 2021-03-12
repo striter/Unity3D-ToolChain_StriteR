@@ -27,7 +27,7 @@ namespace TEditor
 
             if(!importer)
             {
-                EditorGUILayout.LabelField("<Color=#FF0000>Select FBX Model</Color>", TEditor_Style.m_ErrorLabel);
+                EditorGUILayout.LabelField("<Color=#FF0000>Select FBX Model</Color>", TEditor_GUIStyle.m_ErrorLabel);
                 return;
             }
 
@@ -73,7 +73,7 @@ namespace TEditor
 
                 meshFilters = mainAsset.GetComponentsInChildren<MeshFilter>();
                 for (int i = 0; i < meshFilters.Length; i++)
-                    meshFilters[i].sharedMesh = meshes[i+skinnedRenderers.Length];
+                    meshFilters[i].sharedMesh = meshes.Find(p => p.name == meshFilters[i].sharedMesh.name);
                 PrefabUtility.SavePrefabAsset(mainAsset);
             }
             GameObject.DestroyImmediate(prefabSource);

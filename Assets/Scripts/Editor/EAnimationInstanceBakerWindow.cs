@@ -70,7 +70,7 @@ namespace TEditor
             ModelImporter importer = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(m_TargetPrefab)) as ModelImporter;
             if (m_TargetPrefab == null || importer == null || m_TargetAnimations==null || m_TargetAnimations.Length==0)
             {
-                EditorGUILayout.LabelField("<Color=#FF0000>Select FBX Model & Animations</Color>", TEditor_Style.m_ErrorLabel);
+                EditorGUILayout.LabelField("<Color=#FF0000>Select FBX Model & Animations</Color>", TEditor_GUIStyle.m_ErrorLabel);
                 return;
             }
             

@@ -236,7 +236,6 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
     }
     void UpdateCommandData()=> m_CommandContainers.m_ActiveItemDic.Traversal(command => command.UpdateItems());
 
-
     public class CommandContainer : CGameObjectPool_Instance_Class<int>
     {
         #region Predefine Classes
@@ -270,7 +269,6 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
             m_Items.Add(item);
             return item;
         }
-
         public override void OnRemoveItem()
         {
             base.OnRemoveItem();

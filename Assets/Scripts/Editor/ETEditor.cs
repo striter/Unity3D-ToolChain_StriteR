@@ -155,7 +155,7 @@ namespace TEditor
         }
         #endregion
     }
-    public static class TEditor_Style
+    public static class TEditor_GUIStyle
     {
         public static GUIStyle m_TitleLabel => new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold };
         public static GUIStyle m_ErrorLabel => new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontSize = 14, fontStyle = FontStyle.BoldAndItalic, richText = true };

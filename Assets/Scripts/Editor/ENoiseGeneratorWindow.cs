@@ -16,12 +16,12 @@ namespace TEditor
         {
             TEditor_GUIScope_Horizontal.Begin(5,5,20);
             EditorGUI.BeginChangeCheck();
-            EditorGUI.LabelField(TEditor_GUIScope_Horizontal.NextRect(0, 60),  "Size:", TEditor_Style. m_TitleLabel);
+            EditorGUI.LabelField(TEditor_GUIScope_Horizontal.NextRect(0, 60),  "Size:", TEditor_GUIStyle. m_TitleLabel);
             m_SizePower = EditorGUI.IntSlider(TEditor_GUIScope_Horizontal.NextRect( 5, 120), m_SizePower, C_MinSizePower, C_MaxSizePower);
             int size = Mathf.RoundToInt(Mathf.Pow(2, m_SizePower));
             EditorGUI.LabelField(TEditor_GUIScope_Horizontal.NextRect(5,40), size.ToString());
             TEditor_GUIScope_Horizontal.NextLine(2,20);
-            EditorGUI.LabelField(TEditor_GUIScope_Horizontal.NextRect(0, 60), "Scale:", TEditor_Style.m_TitleLabel);
+            EditorGUI.LabelField(TEditor_GUIScope_Horizontal.NextRect(0, 60), "Scale:", TEditor_GUIStyle.m_TitleLabel);
             m_Scale = EditorGUI.Slider(TEditor_GUIScope_Horizontal.NextRect(5, 120), m_Scale,1f,10f);
             if(!m_Texture||EditorGUI.EndChangeCheck())
             {

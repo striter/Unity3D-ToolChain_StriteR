@@ -830,13 +830,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 526198351}
-  m_LocalRotation: {x: -0.9106141, y: -0.07721038, z: 0.19854611, w: -0.35411856}
+  m_LocalRotation: {x: -0.89222836, y: -0.08681713, z: 0.19453737, w: -0.39817902}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 137.5, y: -335.4, z: 0}
+  m_LocalEulerAnglesHint: {x: 131.9, y: -335.4, z: 0}
 --- !u!1 &559505669
 GameObject:
   m_ObjectHideFlags: 0
@@ -1597,12 +1597,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectData:
-    m_OutlineColor: {r: 0, g: 2.1026778, b: 14.343262, a: 1}
-    m_SampleDistance: 1.93
-    m_DepthBias: 0.15
-    m_ColorReplace: 1
-    m_ReplaceColor: {r: 0, g: 0, b: 0, a: 0}
-  m_SceneViewPreview: 0
+    m_OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OutlineWidth: 0.61
+    m_Convolution: 1
+    m_DetectType: 1
+    m_Bias: 0.05
+    m_ColorReplace: 0
+    m_ReplaceColor: {r: 1, g: 1, b: 1, a: 0}
+  m_SceneViewPreview: 1
 --- !u!114 &1230212951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1610,7 +1612,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1230212946}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b62db4376f6a80241a778bd4d3ab7a35, type: 3}
   m_Name: 
