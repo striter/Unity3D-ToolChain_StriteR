@@ -4,10 +4,11 @@ using System.IO;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace TEditor
 {
-    public static class EUCommon
+    public static class UECommon
     {
         public static Dictionary<int,string> GetAllLayers(bool emptyInclusive)
         {
@@ -105,8 +106,8 @@ namespace TEditor
             string folderPath = EditorUtility.OpenFolderPanel("Select Directory", fbxDirectory, "");
             if (folderPath.Length == 0)
                 return false;
-            directoryPath =EUPath.FilePathToAssetPath(folderPath)+"/";
-            objName = EUPath.GetPathName(assetPath);
+            directoryPath =UEPath.FilePathToAssetPath(folderPath)+"/";
+            objName = UEPath.GetPathName(assetPath);
             return true;
         }
 
@@ -130,6 +131,15 @@ namespace TEditor
             }
         }
 
+        #endregion
+
+        #region SceneView
+        public static Vector2 GetScreenPoint(this SceneView _sceneView)
+        {
+            Vector2 screenPoint = Event.current.mousePosition;
+            screenPoint.y = _sceneView.camera.pixelHeight - screenPoint.y;
+            return screenPoint;
+        }
         #endregion
 
         #region Serialize Helper
@@ -201,8 +211,7 @@ namespace TEditor
 
         #endregion
     }
-
-    public static class EUPath
+    public static class UEPath
     {
         public static string FilePathToAssetPath(string path)
         {
@@ -225,35 +234,6 @@ namespace TEditor
             if (folderIndex >= 0)
                 path = path.Substring(folderIndex + 1, path.Length - folderIndex - 1);
             return path;
-        }
-    }
-    public static class TEditor_GUIStyle
-    {
-        public static GUIStyle m_TitleLabel => new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold };
-        public static GUIStyle m_ErrorLabel => new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontSize = 14, fontStyle = FontStyle.BoldAndItalic, richText = true };
-    }
-    public static class TEditor_GUIScope_Horizontal
-    {
-        static Vector2 m_StartPos;
-        static Vector2 m_Offset;
-        static float m_SizeY;
-        public static void Begin(float _startX, float _startY, float _startSizeY)
-        {
-            m_SizeY = _startSizeY;
-            m_StartPos = new Vector2(_startX, _startY);
-            m_Offset = Vector2.zero;
-        }
-        public static Rect NextRect(float _spacingX, float _sizeX)
-        {
-            Vector2 originOffset = m_Offset;
-            m_Offset.x += _sizeX + _spacingX;
-            return new Rect(m_StartPos + originOffset, new Vector2(_sizeX, m_SizeY));
-        }
-        public static void NextLine(float _spacingY, float _sizeY)
-        {
-            m_Offset.y += m_SizeY + _spacingY;
-            m_SizeY = _sizeY;
-            m_Offset.x = 0;
         }
     }
 }

@@ -6,7 +6,44 @@ public static class Gizmos_Extend
 {
     public static void DrawWireCapsule(Vector3 _pos, Quaternion _rot, Vector3 _scale, float _radius, float _height)
     {
-        using (new Handles.DrawingScope(Gizmos.color, Matrix4x4.TRS(_pos, _rot, _scale)))
+        Handles.color = Gizmos.color;
+        Handles.matrix = Gizmos.matrix;
+        Handles_Extend.DrawWireCapsule(_pos, _rot, _scale, _radius, _height);
+    }
+
+    public static void DrawWireCube(Vector3 _pos, Quaternion _rot, Vector3 _cubeSize)
+    {
+        Handles.color = Gizmos.color;
+        Handles.matrix = Gizmos.matrix;
+        Handles_Extend.DrawWireCube(_pos, _rot, _cubeSize);
+    }
+
+    public static void DrawArrow(Vector3 _pos, Vector3 _direction, float _length, float _radius) => DrawArrow(_pos, Quaternion.LookRotation(_direction), _length, _radius);
+    public static void DrawArrow(Vector3 _pos, Quaternion _rot, float _length, float _radius)
+    {
+        Handles.color = Gizmos.color;
+        Handles.matrix = Gizmos.matrix;
+        Handles_Extend.DrawArrow(_pos, _rot, _length, _radius);
+    }
+    public static void DrawCylinder(Vector3 _pos, Quaternion _rot, float _radius, float _height)
+    {
+        Handles.color = Gizmos.color;
+        Handles.matrix = Gizmos.matrix;
+        Handles_Extend.DrawCylinder(_pos, _rot, _radius, _height);
+    }
+
+    public static void DrawTrapezium(Vector3 _pos, Quaternion _rot, Vector4 trapeziumInfo)
+    {
+        Handles.color = Gizmos.color;
+        Handles.matrix = Gizmos.matrix;
+        Handles_Extend.DrawTrapezium(_pos, _rot, trapeziumInfo);
+    }
+}
+public static class Handles_Extend
+{
+    public static void DrawWireCapsule(Vector3 _pos, Quaternion _rot, Vector3 _scale, float _radius, float _height)
+    {
+        using (new Handles.DrawingScope(Handles.color, Handles.matrix * Matrix4x4.TRS(_pos, _rot, _scale)))
         {
             if (_height > _radius * 2)
             {
@@ -33,10 +70,19 @@ public static class Gizmos_Extend
             }
         }
     }
-
+    public static void DrawWireSphere(Vector3 _pos, Vector3 _dir, float _radius) => DrawWireSphere(_pos,Quaternion.LookRotation(_dir),_radius);
+    public static void DrawWireSphere(Vector3 _pos,Quaternion _rot,  float _radius)
+    {
+        using (new Handles.DrawingScope(Handles.color, Handles.matrix* Matrix4x4.TRS(_pos, _rot, Vector3.one)))
+        {
+            Handles.DrawWireDisc(Vector3.zero, Vector3.up, _radius);
+            Handles.DrawWireDisc(Vector3.zero, Vector3.right, _radius);
+            Handles.DrawWireDisc(Vector3.zero, Vector3.forward, _radius);
+        }
+    }
     public static void DrawWireCube(Vector3 _pos, Quaternion _rot, Vector3 _cubeSize)
     {
-        using (new Handles.DrawingScope(Gizmos.color, Matrix4x4.TRS(_pos, _rot, Handles.matrix.lossyScale)))
+        using (new Handles.DrawingScope(Handles.color, Handles.matrix * Matrix4x4.TRS(_pos, _rot, Handles.matrix.lossyScale)))
         {
             float halfWidth, halfHeight, halfLength;
             halfWidth = _cubeSize.x / 2;
@@ -59,9 +105,10 @@ public static class Gizmos_Extend
             Handles.DrawLine(new Vector3(-halfWidth, -halfHeight, halfLength), new Vector3(-halfWidth, -halfHeight, -halfLength));
         }
     }
+    public static void DrawArrow(Vector3 _pos, Vector3 _direction, float _length, float _radius) => DrawArrow(_pos, Quaternion.LookRotation(_direction), _length, _radius);
     public static void DrawArrow(Vector3 _pos, Quaternion _rot, float _length, float _radius)
     {
-        using (new Handles.DrawingScope(Gizmos.color, Gizmos.matrix * Matrix4x4.TRS(_pos, _rot, Handles.matrix.lossyScale)))
+        using (new Handles.DrawingScope(Handles.color, Handles.matrix * Matrix4x4.TRS(_pos, _rot, Handles.matrix.lossyScale)))
         {
             Vector3 capBottom = Vector3.forward * _length / 2;
             Vector3 capTop = Vector3.forward * _length;
@@ -83,7 +130,7 @@ public static class Gizmos_Extend
     }
     public static void DrawCylinder(Vector3 _pos, Quaternion _rot, float _radius, float _height)
     {
-        using (new Handles.DrawingScope(Gizmos.color, Matrix4x4.TRS(_pos, _rot, Handles.matrix.lossyScale)))
+        using (new Handles.DrawingScope(Handles.color, Handles.matrix * Matrix4x4.TRS(_pos, _rot, Vector3.one)))
         {
             Vector3 top = Vector3.forward * _height;
 
@@ -98,7 +145,7 @@ public static class Gizmos_Extend
     }
     public static void DrawTrapezium(Vector3 _pos, Quaternion _rot, Vector4 trapeziumInfo)
     {
-        using (new Handles.DrawingScope(Gizmos.color, Matrix4x4.TRS(_pos, _rot, Handles.matrix.lossyScale)))
+        using (new Handles.DrawingScope(Handles.color, Handles.matrix * Matrix4x4.TRS(_pos, _rot, Vector3.one)))
         {
             Vector3 backLeftUp = -Vector3.right * trapeziumInfo.x / 2 + Vector3.forward * trapeziumInfo.y / 2 - Vector3.up * trapeziumInfo.z / 2;
             Vector3 backLeftDown = -Vector3.right * trapeziumInfo.x / 2 - Vector3.forward * trapeziumInfo.y / 2 - Vector3.up * trapeziumInfo.z / 2;

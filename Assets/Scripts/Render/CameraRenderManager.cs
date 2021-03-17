@@ -79,7 +79,7 @@ namespace Rendering
             {
                 CommandBuffer opaqueBlurTexture = new CommandBuffer() { name = "Geometry Blur Texture Generate" };
                 ImageEffectParam_Blurs _params = m_GeometryCopyBlur;
-                m_OpaqueBlurMaterial = UMaterial.CreateMaterial(typeof(ImageEffect_Blurs));
+                m_OpaqueBlurMaterial = URender.CreateMaterial(typeof(ImageEffect_Blurs));
                 switch (_params.blurType)
                 {
                     default:

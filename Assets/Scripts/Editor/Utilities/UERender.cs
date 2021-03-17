@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace TEditor
 {
-    public static class EURender
+    public static class UERender
     {
         public enum enum_Editor_MeshColor
         {
@@ -16,19 +16,6 @@ namespace TEditor
             B,
             A,
         }
-        public enum enum_Editor_MeshUV
-        {
-            None = -1,
-            UV0,
-            UV1,
-            UV2,
-            UV3,
-            UV4,
-            UV5,
-            UV6,
-            UV7,
-        }
-
         public static Vector3[] GenerateSmoothNormals(Mesh _srcMesh, bool _convertToTangentSpace)
         {
             var groups = _srcMesh.vertices.Select((vertex, index) => new KeyValuePair<Vector3, int>(vertex, index)).GroupBy(pair => pair.Key);

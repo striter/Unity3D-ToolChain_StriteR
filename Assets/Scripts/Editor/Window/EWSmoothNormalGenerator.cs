@@ -6,13 +6,12 @@ using UnityEngine;
 
 namespace TEditor
 {
-    using static EURender;
-    public class ESmoothNormalGeneratorWindow : EditorWindow
+    using static UERender;
+    public class EWSmoothNormalGenerator : EditorWindow
     {
         GameObject m_ModelPrefab;
 
-        bool m_GenerateToTangent;
-        enum_Editor_MeshUV m_GenerateUV= enum_Editor_MeshUV.UV7;
+        enum_VertexData m_GenerateUV= enum_VertexData.UV7;
         void OnGUI()
         {
             EditorGUILayout.BeginVertical();
@@ -27,23 +26,18 @@ namespace TEditor
 
             if(!importer)
             {
-                EditorGUILayout.LabelField("<Color=#FF0000>Select FBX Model</Color>", TEditor_GUIStyle.m_ErrorLabel);
+                EditorGUILayout.LabelField("<Color=#FF0000>Select FBX Model</Color>", UEGUIStyle_Window.m_ErrorLabel);
                 return;
             }
 
-            m_GenerateToTangent = EditorGUILayout.Toggle("Generate As Tangent:", m_GenerateToTangent);
-            if (!m_GenerateToTangent)
-                m_GenerateUV = (enum_Editor_MeshUV)EditorGUILayout.EnumPopup("Generate UV:", m_GenerateUV);
-
-            bool generateVailable = m_GenerateToTangent ||(!m_GenerateToTangent&&m_GenerateUV != enum_Editor_MeshUV.None);
-
-            if(generateVailable&& GUILayout.Button("Generate"))
-                GenerateSkinnedTarget(m_ModelPrefab,m_GenerateToTangent,m_GenerateUV);
+            m_GenerateUV = (enum_VertexData)EditorGUILayout.EnumPopup("Generate UV:", m_GenerateUV);
+            if (m_GenerateUV != enum_VertexData.None && GUILayout.Button("Generate"))
+                GenerateSkinnedTarget(m_ModelPrefab,m_GenerateUV);
 
             EditorGUILayout.EndVertical();
         }
 
-        void GenerateSkinnedTarget(GameObject _targetFBX, bool _generateTangent, enum_Editor_MeshUV _generateUV)
+        void GenerateSkinnedTarget(GameObject _targetFBX,  enum_VertexData _generateUV)
         {
             GameObject prefabSource = GameObject.Instantiate(_targetFBX);
 
@@ -57,14 +51,14 @@ namespace TEditor
 
             List< KeyValuePair<string,Object>> targetSubAsset = new List< KeyValuePair<string,Object>>();
             for (int i = 0; i < sourceMeshes.Count; i++)
-                targetSubAsset.Add(new KeyValuePair<string,Object>(sourceMeshes[i].name, GenerateMesh(sourceMeshes[i], _generateTangent, _generateUV)));
+                targetSubAsset.Add(new KeyValuePair<string,Object>(sourceMeshes[i].name, GenerateMesh(sourceMeshes[i], _generateUV)));
 
 
-            if( EUCommon.SaveFilePath(out string filePath,"prefab", EUPath.RemoveExtension(EUPath.GetPathName(AssetDatabase.GetAssetPath(_targetFBX))) + "_SmoothNormal"))
+            if( UECommon.SaveFilePath(out string filePath,"prefab", UEPath.RemoveExtension(UEPath.GetPathName(AssetDatabase.GetAssetPath(_targetFBX))) + "_SmoothNormal"))
             {
-                string assetPath =  EUPath.FilePathToAssetPath(filePath);
+                string assetPath =  UEPath.FilePathToAssetPath(filePath);
                 GameObject mainAsset= PrefabUtility.SaveAsPrefabAsset(prefabSource,assetPath);
-                EUCommon.CreateOrReplaceSubAsset(assetPath,targetSubAsset.ToArray());
+                UECommon.CreateOrReplaceSubAsset(assetPath,targetSubAsset.ToArray());
                 Mesh[] meshes = AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath).ToArray(obj => (Mesh)obj);
 
                 skinnedRenderers = mainAsset.GetComponentsInChildren<SkinnedMeshRenderer>();
@@ -79,15 +73,22 @@ namespace TEditor
             GameObject.DestroyImmediate(prefabSource);
         }
         
-        static Mesh GenerateMesh(Mesh _src,bool _generateTangent,enum_Editor_MeshUV _generateUV)
+        static Mesh GenerateMesh(Mesh _src,enum_VertexData _generateUV)
         {
             Mesh target = _src.Copy();
-            Vector3[] smoothNormals = GenerateSmoothNormals(target, !_generateTangent);
-            if (_generateTangent)
-                target.SetTangents(smoothNormals.ToArray(smoothNormal => smoothNormal.ToVector4(1f)));
-            else
-                target.SetUVs((int)_generateUV, smoothNormals);
+            Vector3[] smoothNormals = GenerateSmoothNormals(target, ConvertToTangentSpace(_generateUV));
+            target.SetVertexData(_generateUV,smoothNormals.ToList());
             return target;
+        }
+        static bool ConvertToTangentSpace(enum_VertexData _target)
+        {
+            switch(_target)
+            {
+                case enum_VertexData.Normal:
+                case enum_VertexData.Tangent:
+                    return false;
+            }
+            return true;
         }
     }
 }

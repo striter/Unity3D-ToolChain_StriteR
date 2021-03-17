@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace TEditor
 {
-    public class EPlaneMeshGeneratorWindow : EditorWindow
+    public class EWPlaneMeshGenerator : EditorWindow
     {
         public enum enum_PlaneGeometryType
         {
@@ -110,10 +110,10 @@ namespace TEditor
             mesh.SetTangents(tangents);
             mesh.SetIndices(indices, MeshTopology.Triangles, 0);
 
-            if (!EUCommon.SaveFilePath( out string path, "asset", "CustomPlane"))
+            if (!UECommon.SaveFilePath( out string path, "asset", "CustomPlane"))
                 return;
 
-            EUCommon.CreateOrReplaceMainAsset(mesh, EUPath.FilePathToAssetPath( path));
+            UECommon.CreateOrReplaceMainAsset(mesh, UEPath.FilePathToAssetPath( path));
         }
     }
 }

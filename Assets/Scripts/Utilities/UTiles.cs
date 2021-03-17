@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Utilities_Tile
+namespace UTile
 {
-
     public enum enum_TileDirection
     {
         Invalid = -1,
@@ -400,9 +399,9 @@ namespace Utilities_Tile
     }
 }
 
-namespace TTile_Hexagon
+namespace UHexagon
 {
-    public static class HexagonHelper
+    public static class UHexagonHelper
     {
         public static readonly float C_SQRT3 = Mathf.Sqrt(3);
         public static readonly float C_SQRT3Half = C_SQRT3/2f;

@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 
-#region DataPhrase
 public interface IDataConvert
 {
 }
@@ -288,5 +287,3 @@ public static class TDataCrypt
         return Encoding.UTF8.GetString(bdata);
     }
 }
-
-#endregion

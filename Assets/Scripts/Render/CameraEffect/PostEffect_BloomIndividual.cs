@@ -119,7 +119,7 @@ namespace Rendering.ImageEffect
 
         protected override void OnImageProcess(RenderTexture _src, RenderTexture _dst, Material _material, CameraEffectParam_BloomInvididual _param)
         {
-            UMaterial.EnableGlobalKeyword(KW_Blend, (int)_param.m_BlendMode);
+            URender.EnableGlobalKeyword(KW_Blend, (int)_param.m_BlendMode);
             RenderTexture renderTexture = RenderTexture.GetTemporary(m_RenderCamera.scaledPixelWidth, m_RenderCamera.scaledPixelHeight, 1);
             m_RenderCamera.targetTexture = renderTexture;
             m_RenderCamera.RenderWithShader(m_RenderBloomShader, "RenderType");

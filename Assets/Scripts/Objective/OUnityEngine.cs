@@ -27,7 +27,7 @@ public static class TimeScaleController<T> where T : struct
     public static void Tick()
     {
         if (m_BulletTimeChecker.Check(GetLowestScale()))
-            Time.timeScale = m_BulletTimeChecker.value1;
+            Time.timeScale = m_BulletTimeChecker.m_Value;
     }
 }
 

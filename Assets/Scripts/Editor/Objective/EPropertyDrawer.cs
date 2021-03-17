@@ -13,7 +13,7 @@ namespace TEditor
             _targetAttribute = null;
             if (!_checkTypes.Any(p => _property.propertyType == p))
             {
-                EditorGUI.LabelField(_position,string.Format("<Color=#FF0000>Attribute For {0} Only!</Color>", _checkTypes.ToString_Readable("|", type => type.ToString())),TEditor_GUIStyle.m_ErrorLabel);
+                EditorGUI.LabelField(_position,string.Format("<Color=#FF0000>Attribute For {0} Only!</Color>", _checkTypes.ToString_Readable("|", type => type.ToString())), UEGUIStyle_Window.m_TitleLabel);
                 return false;
             }
             _targetAttribute = attribute as T;
@@ -28,7 +28,7 @@ namespace TEditor
         {
             if (!OnGUIAttributePropertyCheck(position, property, out CullingMaskAttribute attribute, SerializedPropertyType.Integer))
                 return;
-            Dictionary<int, string> allLayers = EUCommon.GetAllLayers(true);
+            Dictionary<int, string> allLayers = UECommon.GetAllLayers(true);
             List<string> values = new List<string>();
             foreach(int key in allLayers.Keys)
                 values.Add(allLayers[key]== string.Empty?null: allLayers[key]);

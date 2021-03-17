@@ -159,11 +159,15 @@ namespace TEditor
         private void OnGUI()
         {
             EditorGUILayout.BeginVertical();
-            if (EditorApplication.isPlaying)
-            {
-                EditorGUILayout.TextArea("Available Only In EDITOR Mode!");
+            DrawGUI();
+            EditorGUILayout.EndVertical();
+        }
+        void DrawGUI()
+        {
+
+            if (!UEGUI.EditorApplicationPlayingCheck())
                 return;
-            }
+
             if (m_parent == null)
             {
                 EditorGUILayout.TextArea("Please Select Texts Parent Which PREFAB CONNECTED!");
@@ -188,7 +192,6 @@ namespace TEditor
                     EditorUtility.SetDirty(m_parent);
                 }
             }
-            EditorGUILayout.EndVertical();
         }
 
         void ReplaceFonts(Font _font, Text[] _texts, bool replaceMissingOnly)

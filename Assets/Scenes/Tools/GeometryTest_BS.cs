@@ -14,10 +14,10 @@ namespace BoundingCollisionTest
         {
             Gizmos.matrix = transform.localToWorldMatrix;
             Vector3 direction = m_RayDirection.normalized;
-            bool intersect = UBoundingCollision.BSRayIntersect(m_BoundingSphereOrigin, m_BoundingSphereRadius, m_RayOrigin, direction);
+            bool intersect = UBoundingCollision.RayBSIntersect(m_BoundingSphereOrigin, m_BoundingSphereRadius, m_RayOrigin, direction);
             Gizmos.color = intersect ? Color.green : Color.grey;
             Gizmos.DrawWireSphere(m_BoundingSphereOrigin, m_BoundingSphereRadius);
-            Vector2 distances = UBoundingCollision.BSRayDistance(m_BoundingSphereOrigin, m_BoundingSphereRadius, m_RayOrigin, direction);
+            Vector2 distances = UBoundingCollision.RayBSDistance(m_BoundingSphereOrigin, m_BoundingSphereRadius, m_RayOrigin, direction);
 
             Gizmos.color = intersect ? Color.white:Color.grey;
             Gizmos.DrawRay(m_RayOrigin, direction * Mathf.Max(1f,distances.x+distances.y));

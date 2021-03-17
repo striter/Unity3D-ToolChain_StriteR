@@ -6,7 +6,7 @@ using UnityEngine;
 using Rendering.Optimize;
 namespace TEditor
 {
-    public class EAnimationInstanceBakerWindow : EditorWindow
+    public class EWAnimationInstanceBaker : EditorWindow
     {
         GameObject m_TargetPrefab;
         SerializedObject m_SerializedWindow;
@@ -70,7 +70,7 @@ namespace TEditor
             ModelImporter importer = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(m_TargetPrefab)) as ModelImporter;
             if (m_TargetPrefab == null || importer == null || m_TargetAnimations==null || m_TargetAnimations.Length==0)
             {
-                EditorGUILayout.LabelField("<Color=#FF0000>Select FBX Model & Animations</Color>", TEditor_GUIStyle.m_ErrorLabel);
+                EditorGUILayout.LabelField("<Color=#FF0000>Select FBX Model & Animations</Color>", UEGUIStyle_Window.m_ErrorLabel);
                 return;
             }
             
@@ -126,7 +126,7 @@ namespace TEditor
         }
         void GenerateVertexTexture(GameObject _targetFBX, AnimationClip[] _clips)
         {
-            if (!EUCommon.SelectDirectory(_targetFBX, out string savePath, out string meshName))
+            if (!UECommon.SelectDirectory(_targetFBX, out string savePath, out string meshName))
             {
                 Debug.LogWarning("Invalid Folder Selected");
                 return;
@@ -181,7 +181,7 @@ namespace TEditor
 
             AnimationInstanceData instanceData = ScriptableObject.CreateInstance<AnimationInstanceData>();
             instanceData.m_Animations = instanceParams;
-            instanceData=EUCommon.CreateAssetCombination(savePath + meshName + "_VertexInstance.asset", instanceData, new KeyValuePair< string, Object>(meshName + "_AnimationAtlas", atlasTexture),new KeyValuePair<string,Object>( meshName + "_InstanceMesh",instanceMesh));
+            instanceData=UECommon.CreateAssetCombination(savePath + meshName + "_VertexInstance.asset", instanceData, new KeyValuePair< string, Object>(meshName + "_AnimationAtlas", atlasTexture),new KeyValuePair<string,Object>( meshName + "_InstanceMesh",instanceMesh));
             Object[] assets = AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GetAssetPath(instanceData));
             foreach (var asset in assets)
             {
@@ -197,7 +197,7 @@ namespace TEditor
 
         void GenerateBoneInstanceMeshAndTexture(GameObject _targetFBX, AnimationClip[] _clips, string exposeBones)
         {
-            if (!EUCommon.SelectDirectory(_targetFBX, out string savePath, out string meshName))
+            if (!UECommon.SelectDirectory(_targetFBX, out string savePath, out string meshName))
             {
                 Debug.LogWarning("Invalid Folder Selected");
                 return;
@@ -303,7 +303,7 @@ namespace TEditor
                 instanceData.m_Animations = instanceParams;
                 instanceData.m_ExposeBones = exposeBoneParam.ToArray();
 
-                instanceData =  EUCommon.CreateAssetCombination(savePath + meshName + "_BoneInstance.asset",instanceData, new KeyValuePair<string,Object>(meshName + "_AnimationAtlas",atlasTexture), new KeyValuePair<string,Object>(meshName + "_InstanceMesh",instanceMesh));
+                instanceData =  UECommon.CreateAssetCombination(savePath + meshName + "_BoneInstance.asset",instanceData, new KeyValuePair<string,Object>(meshName + "_AnimationAtlas",atlasTexture), new KeyValuePair<string,Object>(meshName + "_InstanceMesh",instanceMesh));
                 Object[] assets=AssetDatabase.LoadAllAssetsAtPath( AssetDatabase.GetAssetPath(instanceData));
                 foreach(var asset in assets)
                 {

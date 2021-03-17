@@ -9,7 +9,7 @@ namespace Rendering.ImageEffect
         Material m_Material;
         public ImageEffectBase()
         {
-            m_Material = UMaterial.CreateMaterial(this.GetType());
+            m_Material = URender.CreateMaterial(this.GetType());
         }
         public virtual void Destroy()
         {

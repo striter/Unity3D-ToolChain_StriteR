@@ -152,7 +152,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -311,3 +311,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 100657de137c0de40b2440ac588bb656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SrcVector: {x: 1, y: 1, z: 1}
+  m_DstVector: {x: 0, y: -1, z: 0}

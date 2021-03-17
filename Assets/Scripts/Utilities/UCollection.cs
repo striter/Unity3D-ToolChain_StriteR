@@ -37,21 +37,122 @@ public static class UCollection
     }
     public static T[] Copy<T>(this T[] _srcArray)
     {
-        T[] _dstArray = new T[_srcArray.Length];
+        T[] dstArray = new T[_srcArray.Length];
         for (int i = 0; i < _srcArray.Length; i++)
-            _dstArray[i] = _srcArray[i];
-        return _dstArray;
+            dstArray[i] = _srcArray[i];
+        return dstArray;
+    }
+    public static T[] Resize<T>(this T[] _srcArray,int _length,bool _fillWithLast=true)
+    {
+        T[] dstArray = new T[_length];
+        for (int i = 0; i < dstArray.Length; i++)
+        {
+            if (i >= _srcArray.Length && !_fillWithLast)
+                break;
+            dstArray[i] = _srcArray[Mathf.Min(i, Mathf.Max(_srcArray.Length - 1))];
+        }
+        return dstArray;
     }
 
-    public static void Traversal<T>(this IEnumerable<T> _numerable, Action<T> OnEachItem)
+    public static int LastIndex<T>(this IEnumerable<T> _ienumerable,Predicate<T> OnEachItem )
     {
-        foreach (T item in _numerable)
+        int index = -1;
+        int countIndex = -1;
+        foreach (T item in _ienumerable)
+        {
+            countIndex++;
+            if (OnEachItem(item))
+                index = countIndex;
+        }
+        return index;
+    }
+
+    public static int FindIndex<T>(this IEnumerable<T> _ienumerable, Predicate<T> OnEachItem)
+    {
+        int index = -1;
+        foreach (T item in _ienumerable)
+        {
+            index++;
+            if (OnEachItem(item))
+                return index;
+        }
+        return index;
+    }
+    public static bool Any<T>(this IEnumerable<T> _ienumerable,Func<int,T,bool> OnEachItem)
+    {
+        int index = -1;
+        foreach(T item in _ienumerable)
+        {
+            index++;
+            if (OnEachItem(index,item))
+                return true;
+        }
+        return false;
+    }
+    public static bool Any(this Array _array, Func<int, object, bool> OnEachItem)
+    {
+        int index = -1;
+        foreach (object item in _array)
+        {
+            index++;
+            if (OnEachItem(index, item))
+                return true;
+        }
+        return false;
+    }
+    public static void FindAllIndexes<T>(this IEnumerable<T> _ienumerable,List<int> _indexList, Predicate<T> OnEachItem)
+    {
+        _indexList.Clear();
+        int index = -1;
+        foreach (T item in _ienumerable)
+        {
+            index++;
+            if (OnEachItem(item))
+                _indexList.Add(index);
+        }
+    }
+    public static void FindAllIndexes<T>(this IEnumerable<T> _ienumerable, List<int> _indexList, Func<int,T,bool> OnEachItem)
+    {
+        _indexList.Clear();
+        int index = -1;
+        foreach (T item in _ienumerable)
+        {
+            index++;
+            if (OnEachItem(index,item))
+                _indexList.Add(index);
+        }
+    }
+    public static List<int> FindAllIndexes<T>(this IEnumerable<T> _ienumerable,Predicate<T> OnEachItem)
+    {
+        List<int> items = new List<int>();
+        int index = -1;
+        foreach (T item in _ienumerable)
+        {
+            index++;
+            if (OnEachItem(item))
+                items.Add(index);
+        }
+        return items;
+    }
+    public static List<T> FindAll<T>(this IEnumerable<T> _ienumerable,Predicate<T> OnEachItem)
+    {
+        List<T> items = new List<T>();
+        foreach(T item in _ienumerable)
+        {
+            if (OnEachItem(item))
+                items.Add(item);
+        }
+        return items;
+    }
+    public static void Traversal<T>(this IEnumerable<T> _ienumerable, Action<T> OnEachItem)
+    {
+        foreach (T item in _ienumerable)
             OnEachItem(item);
     }
-    public static void Traversal<T>(this IEnumerable<T> _numerable, Action<int, T> OnEachItem)
+    public static void Traversal<T>(this IEnumerable<T> _ienumerable, Action<int, T> OnEachItem)
     {
         int index = 0;
-        foreach (T item in _numerable)
+        foreach (T item in _ienumerable)
             OnEachItem(index++, item);
     }
 
@@ -209,6 +310,12 @@ public static class UCollection
     {
         Y[] dstArray = new Y[src.Count()];
         src.Traversal((index, srcItem) => dstArray[index] = GetDstItem(srcItem));
+        return dstArray;
+    }
+    public static Y[] ToArray<T, Y>(this IEnumerable<T> src, Func<int,T, Y> GetDstItem)
+    {
+        Y[] dstArray = new Y[src.Count()];
+        src.Traversal((index, srcItem) => dstArray[index] = GetDstItem(index,srcItem));
         return dstArray;
     }
     public static List<Y> ToList<T, Y>(this IEnumerable<T> src, Func<T, Y> GetDstItem)

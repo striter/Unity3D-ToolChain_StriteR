@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 #region Unit
 public class Ref<T> 
@@ -117,44 +118,24 @@ public class ValueLerpSeconds : ValueLerpBase
 
     protected override float GetValue(float checkLeftParam) => Mathf.Lerp(m_previousValue, m_targetValue, 1 - checkLeftParam);
 }
-public class ValueChecker<T>
+
+public class ValueChecker<T> 
 {
-    public T value1 { get; private set; }
+    public T m_Value { get; private set; }
     public ValueChecker(T _check)
     {
-        value1 = _check;
+        m_Value = _check;
     }
 
     public bool Check(T target)
     {
-        if (value1.Equals(target))
-            return false;
-        value1 = target;
+        if (Equals(m_Value,target))
+                return false;
+        m_Value = target;
         return true;
     }
 }
-public class ValueChecker<T, Y> : ValueChecker<T>
-{
-    public Y value2 { get; private set; }
-    public ValueChecker(T temp1, Y temp2) : base(temp1)
-    {
-        value2 = temp2;
-    }
 
-    public bool Check(T target1, Y target2)
-    {
-        bool check1 = Check(target1);
-        bool check2 = Check(target2);
-        return check1 || check2;
-    }
-    public bool Check(Y target2)
-    {
-        if (value2.Equals(target2))
-            return false;
-        value2 = target2;
-        return true;
-    }
-}
 public class Timer
 {
     public float m_TimerDuration { get; private set; } = 0;
@@ -198,6 +179,7 @@ public class Timer
 }
 #endregion
 #region Render
+[Serializable]
 public struct Matrix3x3
 {
     public float m00, m01, m02;
@@ -235,21 +217,67 @@ public struct Matrix3x3
     }
     public static readonly Matrix3x3 identity = new Matrix3x3() { m00 = 0, m01 = 0, m02 = 0, m10 = 0, m11 = 0, m12 = 0, m20 = 0, m21 = 0, m22 = 0 };
 }
+
 [Serializable]
-public struct Polygon
+public struct Triangle
 {
-    public Vector3 m_Point0 => m_Points[0];
-    public Vector3 m_Point1 => m_Points[1];
-    public Vector3 m_Point2 => m_Points[2];
-    public int m_Indice0=>m_Triangles[0];
-    public int m_Indice1=>m_Triangles[1];
-    public int m_Indice2=>m_Triangles[2];
-    public Vector3[] m_Points;
-    public int[] m_Triangles;
-    public Polygon(Vector3 _point1, Vector3 _point2, Vector3 _point3, int _indice0, int _indice1, int _indice2)
+    public Vector3 m_Vertex1;
+    public Vector3 m_Vertex2;
+    public Vector3 m_Vertex3;
+    public Vector3[] m_Verticies { get; private set; }
+    public Vector3[] GetDrawLinesVerticies() => new Vector3[] { m_Vertex1, m_Vertex2, m_Vertex3, m_Vertex1};
+    public Vector3 this[int index]
     {
-        m_Points = new Vector3[3] { _point1,_point2,_point3};
-        m_Triangles = new int[3] { _indice0, _indice1, _indice2 };
+        get
+        {
+            switch(index)
+            {
+                default:Debug.LogError( "Invalid Index:" + index);return m_Vertex1;
+                case 0:return m_Vertex1;
+                case 1:return m_Vertex2;
+                case 2:return m_Vertex3;
+            }
+        }
     }
+    public Triangle(Vector3[] _verticies):this(_verticies[0],_verticies[1],_verticies[2])
+    {
+        Debug.Assert(_verticies.Length!=3,"Triangles' Vertices Count Must Equals 3!");
+    }
+    public Triangle(Vector3 _vertex1,Vector3 _vertex2,Vector3 _vertex3)
+    {
+        m_Vertex1 = _vertex1;
+        m_Vertex2 = _vertex2;
+        m_Vertex3 = _vertex3;
+        m_Verticies = new Vector3[] { _vertex1, _vertex2, _vertex3 };
+    }
+}
+
+[Serializable]
+public struct DirectedTriangle
+{
+    public Triangle m_Triangle;
+    public Vector3 m_UOffset => m_Triangle.m_Vertex2 - m_Triangle.m_Vertex1;
+    public Vector3 m_VOffset => m_Triangle.m_Vertex3 - m_Triangle.m_Vertex1;
+    public Vector3 m_Normal => Vector3.Cross(m_UOffset, m_VOffset);
+    public Vector3 this[int index]=>m_Triangle[index];
+    public DirectedTriangle(Vector3 _vertex1, Vector3 _vertex2, Vector3 _vertex3)
+    {
+        m_Triangle = new Triangle(_vertex1, _vertex2, _vertex3);
+    }
+    public Vector3 GetUVPoint(Vector2 uv) => (1f - uv.x - uv.y) * m_Triangle.m_Vertex1 + uv.x * m_UOffset + uv.y * m_VOffset;
+}
+[Serializable]
+public struct MeshPolygon
+{
+    public int m_Indice0=>m_Indices[0];
+    public int m_Indice1=>m_Indices[1];
+    public int m_Indice2=>m_Indices[2];
+    public int[] m_Indices;
+    public MeshPolygon(int _indice0, int _indice1, int _indice2)
+    {
+        m_Indices = new int[3] { _indice0, _indice1, _indice2 };
+    }
+    public Triangle GetTriangle(Vector3[] verticies) => new Triangle(verticies[m_Indice0], verticies[m_Indice1], verticies[m_Indice2]);
+    public DirectedTriangle GetDirectedTriangle(Vector3[] verticies)=>new DirectedTriangle(verticies[m_Indice0], verticies[m_Indice1], verticies[m_Indice2]);
 }
 #endregion
