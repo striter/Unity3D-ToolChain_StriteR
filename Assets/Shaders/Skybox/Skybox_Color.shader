@@ -34,12 +34,14 @@
 
         Pass
         {
-            CGPROGRAM
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
 
-            #include "UnityCG.cginc"
-            #include "../CommonInclude.cginc"
+            #include "../CommonInclude.hlsl"
+            TEXTURE2D_X(_StarTexture);SAMPLER(sampler_StarTexture);
+            TEXTURE2D_X(_StarMask);SAMPLER(sampler_StarMask);
+            CBUFFER_START(UnityPerMaterial)
             float3 _DayTopColor;
             float3 _DayBottomColor;
             float3 _NightTopColor;
@@ -55,35 +57,35 @@
             float _MoonSize;
             float _MoonCrescent;
 
-            sampler2D _StarTexture;
             float3 _StarColor;
             float _StarDensity;
-            sampler2D _StarMask;
             float2 _StarMaskFlow;
             float _StarMaskStrength;
+            CBUFFER_END
+
             struct appdata
             {
-                float4 vertex : POSITION;
+                float3 positionOS : POSITION;
                 float3 uv : TEXCOORD0;
             };
 
             struct v2f
             {
+                float4 positionCS : SV_POSITION;
                 float3 uv : TEXCOORD0;
-                float4 vertex : SV_POSITION;
             };
 
             v2f vert (appdata v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.positionCS = TransformObjectToHClip(v.positionOS);
                 o.uv = v.uv;
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            float4 frag (v2f i) : SV_Target
             {
-                float3 sunDir=_WorldSpaceLightPos0;
+                float3 sunDir=normalize(_MainLightPosition.xyz);
                 float sunHeight=sunDir.y;
                 float skyGradient=saturate(i.uv.y);
                 float daynightGradient= invlerp(-1,1,sunDir.y);
@@ -113,13 +115,13 @@
 
                 float2 skyUV= i.uv.xz/i.uv.y;
 
-                float star= tex2D(_StarTexture,skyUV*_StarDensity).r* skyGradient*moonGradient;
-                star*=step(tex2D(_StarMask,skyUV+_Time.y*_StarMaskFlow).r,_StarMaskStrength);
+                float star= SAMPLE_TEXTURE2D(_StarTexture,sampler_StarTexture,skyUV*_StarDensity).r* skyGradient*moonGradient;
+                star*=step(SAMPLE_TEXTURE2D(_StarMask,sampler_StarMask,skyUV+_Time.y*_StarMaskFlow).r,_StarMaskStrength);
                 finalCol+=star*_StarColor;
                 
                 return float4(finalCol,1);
             }
-            ENDCG
+            ENDHLSL
         }
     }
 }

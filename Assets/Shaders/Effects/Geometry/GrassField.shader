@@ -22,48 +22,35 @@
     SubShader
     {
         Tags { "RenderType"="Opaque" }
-        CGINCLUDE
+        HLSLINCLUDE
             #pragma multi_compile _SEGMENT_LOW _SEGMENT_NORMAL _SEGMENT_HIGH _SEGMENT_ULTRA
             #pragma target 4.6
-		    #include "UnityCG.cginc"
-		    #include "Lighting.cginc"
-		    #include "AutoLight.cginc"
-            #include "../../CommonInclude.cginc"
+            #include "../../CommonInclude.hlsl"
+            #include "../../CommonLightingInclude.hlsl"
 
             struct a2v
             {
-                float4 vertex : POSITION;
-                float3 normal:NORMAL;
-                float4 tangent:TANGENT;
+                float4 positionOS : POSITION;
+                float3 normalOS:NORMAL;
+                float4 tangentOS:TANGENT;
                 float3 color:COLOR;
             };
 
             struct v2g
             {
-                float4 vertex:POSITION;
-                float3 normal:NORMAL;
-                float4 tangent:TANGENT;
+                float4 positionOS:SV_POSITION;
+                float3 normalOS:NORMAL;
+                float4 tangentOS:TANGENT;
                 float3 color:COLOR;
             };
 
             struct g2f
             {
-                float4 vertex : SV_POSITION;
+                float4 positionCS : SV_POSITION;
                 float3 color:COLOR;
-                #if UNITY_PASS_FORWARDBASE
-			    SHADOW_COORDS(0)
-                #endif
+			    float4 shadowCoordWS:TEXCOORD0;
             };
 
-            float4 _GroundColor;
-            float4 _TopColor;
-            float4 _BottomColor;
-            float _BendRotate;
-            float _BendForward;
-
-            float _Width;
-            float _Height;
-            float _RandomClip;
 #if _SEGMENT_NORMAL
     #define _SEGMENTCOUNT 2
 #elif _SEGMENT_HIGH
@@ -73,6 +60,17 @@
 #else
     #define _SEGMENTCOUNT 1
 #endif
+    
+            float4 _GroundColor;
+            float4 _TopColor;
+            float4 _BottomColor;
+            float _BendRotate;
+            float _BendForward;
+
+            float _Width;
+            float _Height;
+            float _RandomClip;
+
             float _SegmentFactor;
 
             sampler2D _WindFlowTex;
@@ -83,10 +81,7 @@
             v2g vert(a2v i)
             {
                 v2g o;
-                o.vertex=i.vertex;
-                o.normal=i.normal;
-                o.tangent=i.tangent;
-                o.color=i.color;
+                o=i;
                 return o;
             }
 
@@ -94,32 +89,34 @@
             {
                 g2f o;
                 o.color=v.color;
-                o.vertex=UnityObjectToClipPos(v.vertex);
-                #if UNITY_PASS_FORWARDBASE
-		        TRANSFER_SHADOW(o);
+                #if UNITY_PASS_SHADOWCASTER
+                SHADOW_CASTER_FRAGMENT(v,o);
+                #else
+                o.positionCS=TransformObjectToHClip(v.positionOS.xyz);
                 #endif
+		        o.shadowCoordWS=TransformWorldToShadowCoord(TransformObjectToWorld(v.positionOS.xyz));
                 stream.Append(o);
             }
 
             [maxvertexcount(_SEGMENTCOUNT * 4 + 1 + 3)]
             void geom(triangle v2g i[3],inout TriangleStream<g2f> stream)
             {   
-                [unroll(2)]
-                for (int index = 0; index < 3; index++)
+                [unroll(3)]
+                for (uint index = 0u; index < 3u; index++)
                 {
-                    i[index].color=_GroundColor;
+                    i[index].color=_GroundColor.xyz;
                     Append(stream,i[index]);
                 }
                 stream.RestartStrip();
 
-                float3 pos = i[0].vertex;
-                float3 normal = i[0].normal;
-                float3 tangent = i[0].tangent;
-                float3 biNormal = cross(normal,tangent) * i[0].tangent.w;
+                float3 pos = i[0].positionOS.xyz;
+                float3 normal = i[0].normalOS;
+                float4 tangent = i[0].tangentOS;
+                float3 biNormal = cross(normal,tangent.xyz) * i[0].tangentOS.w;
 
                 float3x3 tangentToLocal = float3x3(tangent.x,biNormal.x,normal.x,tangent.y,biNormal.y,normal.y,tangent.z,biNormal.z,normal.z);
 
-                float3x3 facingRotation = AngleAxis3x3(random3(pos) * UNITY_TWO_PI,float3(0,0,1));
+                float3x3 facingRotation = AngleAxis3x3(random3(pos) * PI*2,float3(0,0,1));
 
                 float2 windUV = TRANSFORM_TEX(pos.xz,_WindFlowTex) + _Time.yy * _WindSpeed;
                 float2 windSample = tex2Dlod(_WindFlowTex,float4(windUV,0,0)).xy * 2 - 1;
@@ -127,8 +124,8 @@
 
                 float blend = random3(pos.zzx) * _BendRotate + windSample.x;
                 blend = clamp(blend,-1,1);
-                float3x3 bendingRotation = AngleAxis3x3(blend * UNITY_PI * 0.5,float3(1,0,0));
-                float3x3 windRotation = AngleAxis3x3(UNITY_PI * 0.5 * windSample * _WindStrength,float3(windSample,0));
+                float3x3 bendingRotation = AngleAxis3x3(blend * PI,float3(1,0,0));
+                float3x3 windRotation = AngleAxis3x3(PI * windSample.x+windSample.y*PI,float3(windSample,0));
 
                 float3x3 vertexTransform = mul(mul(tangentToLocal,facingRotation),bendingRotation);
 
@@ -139,7 +136,7 @@
                 v2g vertexDatas[_SEGMENTCOUNT * 2];
 
                 float3 lightNormal = normalize(mul(vertexTransform,float3(0,0,1)));
-                float3 lightDir = normalize(_WorldSpaceLightPos0.xyz);
+                float3 lightDir = normalize(_MainLightPosition.xyz);
                 float diffuse = (dot(lightNormal,lightDir) + 1) / 2;
 
                 [unroll(2)]
@@ -155,14 +152,19 @@
                     float3 vertex1=pos+mul(vertexTransform,float3(-right,forward,up));
                     float3 vertex2=pos + mul(vertexTransform,float3(right,forward,up));
                     
-                    vertexDatas[index*2].vertex=float4(vertex1,1);
-                    vertexDatas[index*2+1].vertex=float4(vertex2,1);
+                    vertexDatas[index*2].positionOS=float4(vertex1,1);
+                    vertexDatas[index*2+1].positionOS=float4(vertex2,1);
 
-                    float3 color=lerp(_BottomColor,_TopColor,gradient) * diffuse;
+                    vertexDatas[index*2].normalOS=normal;
+                    vertexDatas[index*2+1].normalOS=normal;
+                    vertexDatas[index*2].tangentOS=tangent;
+                    vertexDatas[index*2+1].tangentOS=tangent;
+
+                    float3 color=lerp(_BottomColor.rgb,_TopColor.rgb,gradient) * diffuse;
                     vertexDatas[index*2].color=color;
                     vertexDatas[index*2+1].color=color;
                 }
-
+                
                 [unroll(2)]
                 for (index = 0; index < _SEGMENTCOUNT; index++)
                 {
@@ -170,8 +172,10 @@
                     Append(stream, vertexDatas[index * 2+1]);
                 }
                 v2g v;
-                v.vertex=float4(pos + mul(vertexTransform,float3(0,randForward,randHeight)),1);
-                v.color= diffuse * _TopColor;
+                v.positionOS=float4(pos + mul(vertexTransform,float3(0,randForward,randHeight)),1);
+                v.normalOS=normal;
+                v.tangentOS=tangent;
+                v.color= diffuse * _TopColor.rgb;
                 Append(stream,v);
                 [unroll(2)]
                 for (index = 0; index < _SEGMENTCOUNT; index++)
@@ -181,41 +185,50 @@
                 }
                 stream.RestartStrip();
             }
-
-            fixed4 frag(g2f i) : SV_Target
+            
+            float4 frag(g2f i) : SV_Target
             {
-                #if UNITY_PASS_FORWARDBASE
+                #ifndef _UNITY_PASS_SHADOWCASTER
                 float3 finalCol = i.color;
-                float atten=SHADOW_ATTENUATION(i);
+                float atten=MainLightRealtimeShadow(i.shadowCoordWS);
                 return float4(finalCol*atten,1);
                 #else
                     return 1;
                 #endif
             }
-
-        ENDCG
+        ENDHLSL
 
         Pass
         {
-            Tags{ "LightMode" = "ForwardBase" }
-            CGPROGRAM
+            Tags{ "LightMode" = "UniversalForward" }
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma geometry geom
             #pragma fragment frag
-            #pragma multi_compile_fwdbase
-            ENDCG
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
+            #pragma multi_compile _ _SHADOWS_SOFT
+            ENDHLSL
         }
 
         Pass
         {
             Tags{"LightMode" = "ShadowCaster"}
-            CGPROGRAM
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma geometry geom
             #pragma fragment frag
-            #pragma multi_compile_shadowcaster
-            ENDCG
+            ENDHLSL
         }
-
+        
+        Pass
+        {
+            Tags{"LightMode" = "DepthOnly"}
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma geometry geom
+            #pragma fragment frag
+            ENDHLSL
+        }
     }
 }

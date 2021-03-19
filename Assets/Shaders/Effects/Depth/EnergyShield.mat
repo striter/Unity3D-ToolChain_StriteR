@@ -101,7 +101,7 @@ Material:
     - _SrcBlend: 5
     - _UVSec: 0
     - _VerticalSmoothenDistance: 0.057
-    - _VerticalSmoothenStart: 0.471
+    - _VerticalSmoothenStart: 0.905
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

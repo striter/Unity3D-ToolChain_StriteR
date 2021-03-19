@@ -7,7 +7,6 @@
 		_Color("Color",Color) = (1,1,1,1)
 		_DissolveTex("Dissolve Map",2D) = "white"{}
 		_DissolveWidth("_Dissolve Width",Range(0,1)) = .1
-		[HDR]_DissolveColor("_Dissolve Color",Color) = (1,1,1,1)
 
 	}
 	SubShader
@@ -15,151 +14,145 @@
 		Tags{"RenderType" = "Dissolve"  "Queue" = "Geometry"}
 		Cull Off
 
-		CGINCLUDE
-		#include "../CommonLightingInclude.cginc"
-		#include "UnityCG.cginc"
-		#include "AutoLight.cginc"
-		#include "Lighting.cginc"
-		sampler2D _DissolveTex;
-		float4 _DissolveTex_ST;
-		float _DissolveAmount;
-		float _DissolveWidth;
-		float4 _DissolveColor;
-		sampler2D _MainTex;
-		float4 _MainTex_ST;
-		ENDCG
+		HLSLINCLUDE
+		#include "../CommonInclude.hlsl"
+		#include "../CommonLightingInclude.hlsl"
+
+		TEXTURE2D(_DissolveTex);SAMPLER(sampler_DissolveTex);
+		TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
+		INSTANCING_BUFFER_START
+		INSTANCING_PROP(float4,_Color)
+		INSTANCING_PROP(float4,_DissolveTex_ST)
+		INSTANCING_PROP(float4,_MainTex_ST)
+		INSTANCING_PROP(float,_DissolveAmount)
+		INSTANCING_PROP(float,_DissolveWidth)
+		INSTANCING_BUFFER_END
+		ENDHLSL
 
 		Pass
 		{
-			Tags{ "LightMode" = "ForwardBase" }
-			CGPROGRAM
+			Tags{ "LightMode" = "UniversalForward" }
+			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			#pragma multi_compile_fwdbase
+			#pragma multi_compile_instancing
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
+            #pragma multi_compile _ _SHADOWS_SOFT
 
-
-			struct a2fDV
+			struct a2f
 			{
-				float4 vertex : POSITION;
+				float3 positionOS : POSITION;
+				float3 normalOS:NORMAL;
 				float2 uv:TEXCOORD0;
-				float3 normal:NORMAL;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct v2f
 			{
-				float4 pos : SV_POSITION;
+				float4 positionCS : SV_POSITION;
 				float4 uv:TEXCOORD0;
-				float3 worldPos:TEXCOORD1;
-				float3 objNormal:TEXCOORD2;
-				float3 objLightDir:TEXCOORD3;
-				SHADOW_COORDS(4)
+				float3 normalWS:TEXCOORD1;
+				float4 shadowCoordWS:TEXCOORD2;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
-			UNITY_INSTANCING_BUFFER_START(Props)
-				UNITY_DEFINE_INSTANCED_PROP(float4, _Color)
-			UNITY_INSTANCING_BUFFER_END(Props)
 
-			v2f vert (a2fDV v)
+			v2f vert (a2f v)
 			{
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-				o.uv.xy =  TRANSFORM_TEX( v.uv, _MainTex);
-				o.worldPos = mul(unity_ObjectToWorld, v.vertex);
-				o.uv.zw = TRANSFORM_TEX(v.vertex.xz,_DissolveTex);
-				o.pos = UnityObjectToClipPos(v.vertex);
-				o.objNormal=v.normal;
-				o.objLightDir=ObjSpaceLightDir(v.vertex);
-				TRANSFER_SHADOW(o);
+				o.positionCS = TransformObjectToHClip(v.positionOS);
+				o.uv.xy =  TRANSFORM_TEX_INSTANCE( v.uv, _MainTex);
+				o.uv.zw = TRANSFORM_TEX_INSTANCE(v.positionOS.xz,_DissolveTex);
+				o.normalWS= TransformObjectToWorldNormal(v.normalOS);
+				o.shadowCoordWS=TransformWorldToShadowCoord(TransformObjectToWorld(v.positionOS));
 				return o;
 			}
 			
-			fixed4 frag (v2f i) : SV_Target
+			float4 frag (v2f i) : SV_Target
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
-				fixed dissolve = tex2D(_DissolveTex,i.uv.zw).r - _DissolveAmount-_DissolveWidth;
+				float dissolve = SAMPLE_TEXTURE2D(_DissolveTex,sampler_DissolveTex,i.uv.zw).r -INSTANCE( _DissolveAmount)-INSTANCE(_DissolveWidth);
 				clip(dissolve);
 
-				float diffuse=GetDiffuse(normalize(i.objNormal),normalize(i.objLightDir));
-				float4 albedo = tex2D(_MainTex,i.uv.xy)* _Color;
-				UNITY_LIGHT_ATTENUATION(atten, i,i.worldPos)
-				float3 finalCol=tex2D(_MainTex, i.uv)* _Color+(UNITY_LIGHTMODEL_AMBIENT.xyz);
-				finalCol*=diffuse*atten;
-				finalCol*=_LightColor0.rgb;
+				float diffuse=GetDiffuse(normalize(i.normalWS),normalize(_MainLightPosition.xyz));
+				float3 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv.xy).rgb* INSTANCE(_Color).rgb+_GlossyEnvironmentColor.rgb;
+				float atten=MainLightRealtimeShadow(i.shadowCoordWS);
+				float3 finalCol=albedo*diffuse*atten*_MainLightColor.rgb;
 				return float4(finalCol,1);
 			}
-			ENDCG
+			ENDHLSL
 		}
-
+		
 		Pass
 		{
 			Tags{"LightMode" = "ShadowCaster"}
-			CGPROGRAM
+			HLSLPROGRAM
 			#pragma vertex vertshadow
 			#pragma fragment fragshadow
+			#pragma multi_compile_instancing
 
-			struct v2fs
+			struct a2f
 			{
-				V2F_SHADOW_CASTER;
-				float2 uv:TEXCOORD0;
-			};
-			v2fs vertshadow(appdata_base v)
-			{
-				v2fs o;
-				TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
-				o.uv = TRANSFORM_TEX(v.vertex.xz,_DissolveTex);
-				return o;
-			}
-
-			fixed4 fragshadow(v2fs i) :SV_TARGET
-			{
-				fixed dissolve = tex2D(_DissolveTex,i.uv).r - _DissolveAmount-_DissolveWidth;
-				clip(dissolve);
-				SHADOW_CASTER_FRAGMENT(i);
-			}
-			ENDCG
-		}
-
-
-		Pass
-		{
-			NAME "EDGE"
-			CGPROGRAM
-			#pragma vertex vert
-			#pragma fragment frag
-			#pragma multi_compile_fwdbase
-
-			struct appdata
-			{
-				float4 vertex : POSITION;
-				float3 normal:NORMAL;
-				float2 uv:TEXCOORD0;
+				A2F_SHADOW_CASTER;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct v2f
 			{
-				float4 pos : SV_POSITION;
+				V2F_SHADOW_CASTER;
 				float2 uv:TEXCOORD0;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
-
-			v2f vert(appdata v)
+			v2f vertshadow(a2f v)
 			{
 				v2f o;
-				o.uv = TRANSFORM_TEX(v.vertex.xz,_DissolveTex);
-				o.pos = UnityObjectToClipPos(v.vertex);
+				UNITY_SETUP_INSTANCE_ID(v);
+				UNITY_TRANSFER_INSTANCE_ID(v,o);
+				SHADOW_CASTER_FRAGMENT(v,o);
+				o.uv = TRANSFORM_TEX_INSTANCE(v.positionOS.xz,_DissolveTex);
 				return o;
 			}
 
-			fixed4 frag(v2f i) : SV_Target
+			float4 fragshadow(v2f i) :SV_TARGET
 			{
-				fixed dissolve = tex2D(_DissolveTex,i.uv).r - _DissolveAmount;
-				clip(step(0,dissolve)*step( dissolve,_DissolveWidth )-0.01);
-				return _DissolveColor;
+				UNITY_SETUP_INSTANCE_ID(i);
+				float dissolve = SAMPLE_TEXTURE2D(_DissolveTex,sampler_DissolveTex,i.uv).r - INSTANCE(_DissolveAmount)-INSTANCE(_DissolveWidth);
+				clip(dissolve);
+				return 0;
 			}
-			ENDCG
+			ENDHLSL
 		}
+		
+		Pass
+		{
+			Tags{"LightMode" = "DepthOnly"}
+			HLSLPROGRAM
+			#pragma vertex vertshadow
+			#pragma fragment fragshadow
 
+			struct v2f
+			{
+				float4 positionCS:SV_POSITION;
+				float2 uv:TEXCOORD0;
+			};
+			v2f vertshadow(float3 positionOS:POSITION)
+			{
+				v2f o;
+				o.positionCS=TransformObjectToHClip(positionOS);
+				o.uv = TRANSFORM_TEX_INSTANCE(positionOS.xz,_DissolveTex);
+				return o;
+			}
+
+			float4 fragshadow(v2f i) :SV_TARGET
+			{
+				float dissolve = SAMPLE_TEXTURE2D(_DissolveTex,sampler_DissolveTex,i.uv).r - INSTANCE(_DissolveAmount)-INSTANCE(_DissolveWidth);
+				clip(dissolve);
+				return 0;
+			}
+			ENDHLSL
+		}
 	}
 }

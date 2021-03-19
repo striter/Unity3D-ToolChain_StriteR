@@ -19,55 +19,59 @@
         Blend One One
         Pass
         {
-            CGPROGRAM
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #include "UnityCG.cginc"
+            #pragma multi_compile_instancing
+            #include "../CommonInclude.hlsl"
 
-            sampler2D _NoiseTex;
-            float4 _NoiseTex_ST;
-            float _NoiseStrength;
-            float _NoisePow;
-            float  _NoiseFlowX;
-            float  _NoiseFlowY;
-
-            #include "UnityCG.cginc"
+            TEXTURE2D(_NoiseTex); SAMPLER(sampler_NoiseTex);
+            
+            INSTANCING_BUFFER_START
+            INSTANCING_PROP(float4,_NoiseTex_ST)
+            INSTANCING_PROP(float,_NoiseStrength)
+            INSTANCING_PROP(float,_NoisePow)
+            INSTANCING_PROP(float,_NoiseFlowX)
+            INSTANCING_PROP(float,_NoiseFlowY)
+            INSTANCING_PROP(float4,_Color)
+            INSTANCING_BUFFER_END
 
             struct appdata
             {
-                float4 vertex : POSITION;
+                float3 positionOS : POSITION;
                 float2 uv : TEXCOORD0;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
             {
-                float4 vertex : SV_POSITION;
+                float4 positionCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            float4 _Color;
 
             v2f vert (appdata v)
             {
                 v2f o;
                 UNITY_SETUP_INSTANCE_ID(v);
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = TRANSFORM_TEX(v.uv,_NoiseTex);
-                o.uv+=_Time.y*float2(_NoiseFlowX,_NoiseFlowY);
+                UNITY_TRANSFER_INSTANCE_ID(v,o);
+                o.positionCS = TransformObjectToHClip(v.positionOS);
+                o.uv = TRANSFORM_TEX_INSTANCE(v.uv,_NoiseTex);
+                o.uv+=_Time.y*float2(INSTANCE( _NoiseFlowX),INSTANCE(_NoiseFlowY));
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            float4 frag (v2f i) : SV_Target
             {
-                float3 finalCol=_Color*_Color.a;
-                float noise= tex2D(_NoiseTex,i.uv).r*_NoiseStrength;
-                noise=pow(noise,_NoisePow);
-
+                UNITY_SETUP_INSTANCE_ID(i);
+                float3 finalCol=INSTANCE(_Color).rgb*INSTANCE(_Color).a;
+                float noise= SAMPLE_TEXTURE2D(_NoiseTex,sampler_NoiseTex,i.uv).r*INSTANCE(_NoiseStrength);
+                noise=pow(abs(noise),INSTANCE(_NoisePow));
                 finalCol*=noise;
-                return float4(finalCol,1);           
+                return float4(finalCol,1);
             }
-            ENDCG
+            ENDHLSL
         }
     }
 }

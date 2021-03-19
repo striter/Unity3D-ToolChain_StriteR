@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Decal
   m_Shader: {fileID: 4800000, guid: 0d4c1140ffa3ff849a5b3af90220d53d, type: 3}
-  m_ShaderKeywords: _DECALCLIP_SPHERE _DECALTYPE__SPHERE
+  m_ShaderKeywords: _CULLBACK _DECALCLIP_SPHERE _DECALTYPE__SPHERE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0

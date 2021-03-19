@@ -1,34 +1,33 @@
-﻿Shader "Hidden/ShadowCaster"
+﻿Shader "Hidden/DepthOnly"
 {
     SubShader
     {
 		Pass
 		{
 			NAME "MAIN"
-			Tags{"LightMode" = "ShadowCaster"}
+			Tags{"LightMode" = "DepthOnly"}
 			HLSLPROGRAM
 			#pragma vertex ShadowVertex
 			#pragma fragment ShadowFragment
 			#pragma multi_compile_instancing
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-			#include "../../CommonLightingInclude.hlsl"
 				
 			struct a2f
 			{
-				A2F_SHADOW_CASTER;
+				float3 positionOS:POSITION;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct v2f
 			{
-				V2F_SHADOW_CASTER;
+				float4 positionCS:SV_POSITION;
 			};
 
 			v2f ShadowVertex(a2f v)
 			{
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
-				SHADOW_CASTER_FRAGMENT(v,o);
+				o.positionCS=TransformObjectToHClip(v.positionOS);
 				return o;
 			}
 
@@ -37,7 +36,6 @@
 				return 0;
 			}
 			ENDHLSL
-		}	
-		
+		}
     }
 }

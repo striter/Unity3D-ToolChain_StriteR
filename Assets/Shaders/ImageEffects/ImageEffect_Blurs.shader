@@ -8,7 +8,7 @@
 	
     CGINCLUDE
     #include "UnityCG.cginc"
-	#include "../CommonInclude.cginc"
+	#include "../CommonInclude.hlsl"
     uniform sampler2D _MainTex;
     uniform half4 _MainTex_TexelSize;
 	half _BlurSize;

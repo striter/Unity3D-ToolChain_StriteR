@@ -22,8 +22,8 @@
             #pragma shader_feature _LINEDISTORT
             #pragma shader_feature _PIXELDISTORT
             #pragma shader_feature _VIGNETTE
-            #include "CameraEffectInclude.cginc"
-            #include "../CommonInclude.cginc"
+            #include "CameraEffectInclude.hlsl"
+            #include "../CommonInclude.hlsl"
             #include "UnityCG.cginc"
             float2 _ScreenCutTarget;
 

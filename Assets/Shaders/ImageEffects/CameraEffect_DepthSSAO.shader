@@ -15,7 +15,7 @@
 				#pragma fragment frag
 
 				#include "UnityCG.cginc"
-				#include "CameraEffectInclude.cginc"
+				#include "CameraEffectInclude.hlsl"
 
 				sampler2D _NoiseTex;
 				float4 _SampleSphere[32];

@@ -8,114 +8,123 @@
 	}
 	SubShader
 	{
-		Tags {"Queue"="Transparent" }
+		Tags {"Queue"="Transparent-1" }
 		Cull Back
 		Blend SrcAlpha OneMinusSrcAlpha
-		ZWrite On
-		ZTest LEqual
 		
+		HLSLINCLUDE
+			#include "../CommonInclude.hlsl"
+			#include "../CommonLightingInclude.hlsl"
+
+			TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
+			INSTANCING_BUFFER_START
+			INSTANCING_PROP(float4, _Color)
+			INSTANCING_PROP(float4,_MainTex_ST)
+			INSTANCING_PROP(float,_Opacity)
+			INSTANCING_BUFFER_END
+		ENDHLSL
+
 		Pass
 		{
-			NAME "FORWARDBASE"
-			Tags{"LightMode" = "ForwardBase"}
-			Cull Back
-			CGPROGRAM
+			NAME "FORWARD"
+			Tags{"LightMode" = "UniversalForward"}
+			HLSLPROGRAM
 			#pragma vertex DiffuseVertex
 			#pragma fragment DiffuseFragmentBase
-			#pragma multi_compile_fwdbase
-			ENDCG
+			#pragma multi_compile_instancing
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
+            #pragma multi_compile _ _SHADOWS_SOFT
+			
+			struct a2f
+			{
+				float3 positionOS : POSITION;
+				float3 normalOS:NORMAL;
+				float2 uv:TEXCOORD0;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+			};
+
+			struct v2f
+			{
+				float4 positionCS : SV_POSITION;
+				float2 uv:TEXCOORD0;
+				float3 normalOS:TEXCOORD1;
+				float3 lightDirOS:TEXCOORD2;
+				float4 shadowCoordWS:TEXCOORD3;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+			};
+
+			v2f DiffuseVertex(a2f v)
+			{
+				v2f o;
+				UNITY_SETUP_INSTANCE_ID(v);
+				UNITY_TRANSFER_INSTANCE_ID(v, o);
+				o.uv = TRANSFORM_TEX_INSTANCE( v.uv,_MainTex);
+				o.positionCS = TransformObjectToHClip(v.positionOS.xyz);
+				o.normalOS = v.normalOS;
+				o.lightDirOS=TransformWorldToObjectNormal(_MainLightPosition.xyz);
+				o.shadowCoordWS=TransformWorldToShadowCoord(TransformObjectToWorld(v.positionOS));
+				return o;
+			}
+
+			float4 DiffuseFragmentBase(v2f i) :SV_TARGET
+			{
+				UNITY_SETUP_INSTANCE_ID(i);
+				float diffuse=saturate( GetDiffuse(normalize( i.normalOS),normalize(i.lightDirOS)));
+				float atten=MainLightRealtimeShadow(i.shadowCoordWS);
+				diffuse*=atten;
+				float3 finalCol=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv).rgb* INSTANCE( _Color).rgb+UNITY_LIGHTMODEL_AMBIENT.xyz;
+				finalCol*=_MainLightColor.rgb*diffuse;
+				float opacity=INSTANCE(  _Opacity);
+				opacity=min(opacity,diffuse);
+				return float4(finalCol,opacity);
+			}
+			ENDHLSL
 		}
 
 		Pass
 		{
 			NAME "SHADOWCASTER"
 			Tags{"LightMode" = "ShadowCaster"}
-			CGPROGRAM
+			HLSLPROGRAM
 
 			#pragma vertex ShadowVertex
 			#pragma fragment ShadowFragment
-			#pragma multi_compile_shadowcaster
-			ENDCG
-		}
-
-		CGINCLUDE
-			#include "../CommonLightingInclude.cginc"
-			#include "UnityCG.cginc"
-			#include "Lighting.cginc"
-			#include "AutoLight.cginc"
 			#pragma multi_compile_instancing
-
-			sampler2D _MainTex;
-			float4 _MainTex_ST;
-			float _Opacity;
-			UNITY_INSTANCING_BUFFER_START(Props)
-			UNITY_DEFINE_INSTANCED_PROP(float4, _Color)
-			UNITY_INSTANCING_BUFFER_END(Props)
-
-			struct a2fDV
-			{
-				float4 vertex : POSITION;
-				float2 uv:TEXCOORD0;
-				float3 normal:NORMAL;
-				UNITY_VERTEX_INPUT_INSTANCE_ID
-			};
-
-			struct v2fDV
-			{
-				float4 pos : SV_POSITION;
-				float2 uv:TEXCOORD0;
-				float3 worldPos:TEXCOORD1;
-				float3 objNormal:TEXCOORD2;
-				float3 objViewDir : TEXCOORD3;
-				UNITY_VERTEX_INPUT_INSTANCE_ID
-			};
-
-			v2fDV DiffuseVertex(a2fDV v)
-			{
-				v2fDV o;
-				UNITY_SETUP_INSTANCE_ID(v);
-				UNITY_TRANSFER_INSTANCE_ID(v, o);
-				o.uv = TRANSFORM_TEX( v.uv,_MainTex);
-				o.pos = UnityObjectToClipPos(v.vertex);
-				o.worldPos = mul(unity_ObjectToWorld, v.vertex);
-				o.objNormal=v.normal;
-				o.objViewDir = ObjSpaceLightDir(v.vertex);  
-				return o;
-			}
-
-			float4 DiffuseFragmentBase(v2fDV i) :SV_TARGET
-			{
-				UNITY_SETUP_INSTANCE_ID(i);
-				float diffuse=saturate( GetDiffuse(normalize( i.objNormal),normalize(i.objViewDir)));
-				float3 finalCol=tex2D(_MainTex, i.uv)* UNITY_ACCESS_INSTANCED_PROP(Props, _Color)+UNITY_LIGHTMODEL_AMBIENT.xyz;
-				finalCol*=diffuse*_LightColor0.rgb.rgb;
-				return float4(finalCol,_Opacity);
-			}
-
 			
 			sampler3D _DitherMaskLOD;
-			struct v2fs
+			struct a2f
+			{
+				A2F_SHADOW_CASTER;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+			};
+			struct v2f
 			{
 				V2F_SHADOW_CASTER;
 				float4 screenPos:TEXCOORD1;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
-			v2fs ShadowVertex(appdata_base v)
+			v2f ShadowVertex(a2f v)
 			{
+				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
-				v2fs o;
-				o.screenPos = ComputeScreenPos(v.vertex);
-				TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
-					return o;
+				UNITY_TRANSFER_INSTANCE_ID(v, o);
+				SHADOW_CASTER_FRAGMENT(v,o);
+				o.screenPos = ComputeScreenPos(o.positionCS);
+				return o;
 			}
 
-			fixed4 ShadowFragment(v2fs i) :SV_TARGET
+			float4 ShadowFragment(v2f i) :SV_TARGET
 			{
+				UNITY_SETUP_INSTANCE_ID(i);
 				float2 vpos = i.screenPos.xy / i.screenPos.w;
-				float dither = tex3D(_DitherMaskLOD, float3(vpos * 10,_Opacity * 0.9375)).a;
+				float dither = tex3D(_DitherMaskLOD, float3(vpos * 10,INSTANCE( _Opacity) * 0.9375)).a;
 				clip(dither - 0.01);
-				SHADOW_CASTER_FRAGMENT(i);
+				return 0;
 			}
-			ENDCG
+			ENDHLSL
+		}
+
 	}
 }

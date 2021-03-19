@@ -11,7 +11,7 @@
 
         Pass
         {
-            CGPROGRAM
+            HLSLPROGRAM
             #pragma target 4.6
             #pragma vertex vert
             #pragma hull hullProgram
@@ -19,36 +19,36 @@
             #pragma geometry geomProgram
             #pragma fragment frag
 
-            #include "UnityCG.cginc"
+            #include "../../CommonInclude.hlsl"
 
             struct a2v
             {
-                float4 vertex : POSITION;
-                float3 normal:NORMAL;
-                float3 tangent:TANGENT;
+                float4 positionOS : POSITION;
+                float3 normalOS:NORMAL;
+                float3 tangentOS:TANGENT;
                 float2 uv : TEXCOORD0;
             };
 
             struct v2t
             {
-                float4 vertex:INTERNALTESSPOS;
-                float3 normal:NORMAL;
-                float3 tangent:TANGENT;
+                float4 positionOS:INTERNALTESSPOS;
+                float3 normalOS:NORMAL;
+                float3 tangentOS:TANGENT;
                 float2 uv:TEXCOORD0;
             };
 
             struct t2g
             {
-                float4 vertex : POSITION;
-                float3 normal:NORMAL;
-                float3 tangent:TANGENT;
+                float4 positionOS : POSITION;
+                float3 normalOS:NORMAL;
+                float3 tangentOS:TANGENT;
                 float2 uv : TEXCOORD0;
             };
 
 
             struct g2f
             {
-                float4 vertex : SV_POSITION;
+                float4 positionCS : SV_POSITION;
                 float4 color:COLOR;
             };
 
@@ -68,11 +68,11 @@
                 return o;
             }
             
-            [UNITY_domain("tri")]
-            [UNITY_outputcontrolpoints(3)]
-            [UNITY_outputtopology("triangle_cw")]
-            [UNITY_partitioning("fractional_odd")]
-            [UNITY_patchconstantfunc("patchConstant")]
+            [domain("tri")]
+            [outputcontrolpoints(3)]
+            [outputtopology("triangle_cw")]
+            [partitioning("fractional_odd")]
+            [patchconstantfunc("patchConstant")]
             v2t hullProgram(InputPatch<v2t,3> patch,uint id:SV_OUTPUTCONTROLPOINTID)
             {
                 return patch[id];
@@ -90,42 +90,42 @@
             
             #define DOMAIN_DATA_INTERPOLATE(output,field) output.field=patch[0].field*barycentricCoordinates.x+patch[1].field*barycentricCoordinates.y+patch[2].field*barycentricCoordinates.z;
 
-            [UNITY_domain("tri")]
+            [domain("tri")]
             t2g domainProgram(tData data,OutputPatch<v2t,3> patch,float3 barycentricCoordinates:SV_DOMAINLOCATION )
             {
                 v2t v;
-                DOMAIN_DATA_INTERPOLATE(v,vertex);
-                DOMAIN_DATA_INTERPOLATE(v,normal);
-                DOMAIN_DATA_INTERPOLATE(v,tangent);
+                DOMAIN_DATA_INTERPOLATE(v,positionOS);
+                DOMAIN_DATA_INTERPOLATE(v,normalOS);
+                DOMAIN_DATA_INTERPOLATE(v,tangentOS);
                 DOMAIN_DATA_INTERPOLATE(v,uv);
 
                 t2g o;
-                o.vertex=v.vertex;
-                o.normal=v.normal;
-                o.tangent=v.tangent;
+                o.positionOS=v.positionOS;
+                o.normalOS=v.normalOS;
+                o.tangentOS=v.tangentOS;
                 o.uv=v.uv;
                 return o;
             }
 
-            void Append(inout TriangleStream<g2f> stream,float4 vertex,float4 color)
+            void Append(inout TriangleStream<g2f> stream,float3 vertex,float4 color)
             {
                 g2f o;
-                o.vertex=UnityObjectToClipPos(vertex);
+                o.positionCS=TransformObjectToHClip(vertex);
                 o.color=color;
                 stream.Append(o);
             }
 
-            void AppendWireFrame(inout TriangleStream<g2f> stream ,float4 vertex1,float4 vertex2,float3 vertex3,float3 normal)
+            void AppendWireFrame(inout TriangleStream<g2f> stream ,float3 vertex1,float3 vertex2,float3 vertex3,float3 normal)
             {
-                Append(stream,vertex1+float4(normal,0),0);
-                Append(stream,vertex2+float4(normal,0),0);
+                Append(stream,vertex1+normal,0);
+                Append(stream,vertex2+normal,0);
                 
                 float3 direction;
                 
                 direction=normalize(vertex3-vertex1)*_WireframeWidth;
-                Append(stream,vertex1+float4(direction+normal,0),0);
+                Append(stream,vertex1+direction,0);
                 direction=normalize(vertex3-vertex2)*_WireframeWidth;
-                Append(stream,vertex2+float4(direction+normal ,0),0);
+                Append(stream,vertex2+direction+normal,0);
 
                 stream.RestartStrip();
             }
@@ -135,25 +135,25 @@
             {
                 for(int i=0;i<3;i++)
                 {
-                    Append(stream,p[i].vertex,1);
+                    Append(stream,p[i].positionOS.xyz,1);
                 }
                 stream.RestartStrip();
                 
 
-                float3 normal=p[0].normal+p[1].normal+p[2].normal;
+                float3 normal=p[0].normalOS+p[1].normalOS+p[2].normalOS;
                 normal/=3;
                 normal*=0.0001;
                 
-                AppendWireFrame(stream,p[0].vertex,p[1].vertex,p[2].vertex,normal);
-                AppendWireFrame(stream,p[1].vertex,p[2].vertex,p[0].vertex,normal);
-                AppendWireFrame(stream,p[2].vertex,p[0].vertex,p[1].vertex,normal);
+                AppendWireFrame(stream,p[0].positionOS.xyz,p[1].positionOS.xyz,p[2].positionOS.xyz,normal);
+                AppendWireFrame(stream,p[1].positionOS.xyz,p[2].positionOS.xyz,p[0].positionOS.xyz,normal);
+                AppendWireFrame(stream,p[2].positionOS.xyz,p[0].positionOS.xyz,p[1].positionOS.xyz,normal);
             }
 
-            fixed4 frag (g2f i) : SV_Target
+            float4 frag (g2f i) : SV_Target
             {
                 return i.color;
             }
-            ENDCG
+            ENDHLSL
         }
     }
 }

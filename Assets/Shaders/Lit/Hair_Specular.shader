@@ -24,107 +24,110 @@
 		Pass
 		{
 			NAME "FORWARDBASE"
-			Tags{"LightMode" = "ForwardBase"}
-			Cull Back
-			CGPROGRAM
+			Tags{"LightMode" = "UniversalForward"}
+			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			#pragma multi_compile_fwdbase
-			ENDCG
-		}
+			
+            #include "../CommonInclude.hlsl"
+            #include "../CommonLightingInclude.hlsl"
 
-		USEPASS "Hidden/ShadowCaster/MAIN"
-
-
-        CGINCLUDE
             #pragma shader_feature _BITANGENT
 		    #pragma shader_feature _NORMALMAP
-            #include "../CommonLightingInclude.cginc"
-            #include "UnityCG.cginc"
-            #include "Lighting.cginc"
-            #include "AutoLight.cginc"
+            #pragma multi_compile_instancing
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
+            #pragma multi_compile _ _SHADOWS_SOFT
 
             struct appdata
             {
-                float4 vertex : POSITION;
+                float3 positionOS : POSITION;
+                float3 tangentOS:TANGENT;
+                float3 normalOS:NORMAL;
                 float2 uv : TEXCOORD0;
-                float3 tangent:TANGENT;
-                float3 normal:NORMAL;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
             {
-                float4 vertex : SV_POSITION;
+                float4 positionCS : SV_POSITION;
+                float3 normalWS:NORMAL;
+                float3 tangentWS:TANGENT;
                 float4 uv : TEXCOORD0;
-                float3 normal:TEXCOORD1;
-                float3 tangent:TEXCOORD2;
-                float3 worldPos:TEXCOORD3;
-                float3 viewDir:TEXCOORD4;
-                float3 lightDir:TEXCOORD5;
-			    SHADOW_COORDS(6)
+                float3 positionWS:TEXCOORD1;
+                float3 viewDirWS:TEXCOORD2;
+                float3 lightDirWS:TEXCOORD3;
+			    float4 shadowCoordWS:TEXCOORD4;
 			    #if _NORMALMAP
-			    float3x3 worldToTangent:TEXCOORD7;
+			    float3x3 TBNWS:TEXCOORD5;
 			    #endif
+				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
-
-            sampler2D _MainTex;
-            float4 _MainTex_ST;
-            sampler2D _WarpDiffuseTex;
+            
+            TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
+            TEXTURE2D(_WarpDiffuseTex); SAMPLER(sampler_WarpDiffuseTex);
+            TEXTURE2D(_ShiftTex);SAMPLER(sampler_ShiftTex);
 		    #if _NORMALMAP
-		    sampler2D _NormalTex;
+            TEXTURE2D(_NormalTex);SAMPLER(sampler_NormalTex);
 		    #endif
+			INSTANCING_BUFFER_START
+			INSTANCING_PROP(float4,_MainTex_ST)
+            INSTANCING_PROP(float,_SpecularExponent)
+            INSTANCING_PROP(float4,_ShiftTex_ST)
+            INSTANCING_PROP(float,_ShiftStrength)
+            INSTANCING_PROP(float,_ShiftOffset)
+			INSTANCING_BUFFER_END
 
-            float _SpecularExponent;
-            sampler2D _ShiftTex;
-            float4 _ShiftTex_ST;
-            float _ShiftStrength;
-            float _ShiftOffset;
             v2f vert (appdata v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.tangent=v.tangent;
-                o.normal=v.normal;
-                o.uv.xy = TRANSFORM_TEX(v.uv,_MainTex);
-                o.uv.zw=TRANSFORM_TEX(v.uv,_ShiftTex);
-                o.viewDir=ObjSpaceViewDir(v.vertex);
-                o.lightDir=ObjSpaceLightDir(v.vertex);
-                o.worldPos=mul(unity_ObjectToWorld,v.vertex);
+				UNITY_SETUP_INSTANCE_ID(v);
+				UNITY_TRANSFER_INSTANCE_ID(v, o);
+                o.positionCS = TransformObjectToHClip(v.positionOS);
+                o.tangentWS=normalize( TransformObjectToWorldNormal( v.tangentOS));
+                o.normalWS=normalize(TransformObjectToWorldNormal(v.normalOS));
+                o.positionWS=TransformObjectToWorld (v.positionOS);
+                o.uv.xy = TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
+                o.uv.zw=TRANSFORM_TEX_INSTANCE(v.uv,_ShiftTex);
+                o.viewDirWS=GetCameraPositionWS()- o.positionWS;
+                o.lightDirWS=_MainLightPosition.xyz;
 			    #if _NORMALMAP
-                float3 worldNormal=mul(unity_ObjectToWorld,o.normal);
-			    float3 worldTangent=mul(unity_ObjectToWorld,v.tangent);
-			    float3 worldBitangent=cross(worldTangent,worldNormal);
-			    o.worldToTangent=float3x3(normalize(worldTangent),normalize(worldBitangent),normalize(worldNormal));
+			    o.TBNWS=float3x3(o.tangentWS,cross(o.tangentWS,o.normalWS),o.normalWS);
 			    #endif
-                TRANSFER_SHADOW(o);
+                o.shadowCoordWS= TransformWorldToShadowCoord(o.positionWS);
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            float4 frag (v2f i) : SV_Target
             {
-                float3 normal=normalize(i.normal);
-                float3 tangent=normalize(i.tangent);
+				UNITY_SETUP_INSTANCE_ID(i);
+                float3 normalWS=normalize(i.normalWS);
+                float3 tangentWS=normalize(i.tangentWS);
 			    #if _NORMALMAP
-			    float3 tangentSpaceNormal= DecodeNormalMap(tex2D(_NormalTex,i.uv));
-			    normal= mul(tangentSpaceNormal,i.worldToTangent);
+			    float3 normalTS= DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv.xy).xyz);
+			    normalWS = mul(normalTS,i.TBNWS);
 			    #endif
                 #if _BITANGENT
-                    tangent=cross(normal,tangent);
+                    tangentWS=cross(normalWS,tangentWS);
                 #endif
 
-                float3 lightDir=normalize(i.lightDir);
-                float3 viewDir=normalize(i.viewDir);
-                float3 halfDir=normalize(i.viewDir+i.lightDir);
-                UNITY_LIGHT_ATTENUATION(atten,i,i.worldPos)
+                float3 lightDirWS=normalize(i.lightDirWS);
+                float3 viewDirWS=normalize(i.viewDirWS);
+                float3 halfDirWS=normalize(lightDirWS+viewDirWS);
+				float atten=MainLightRealtimeShadow(i.shadowCoordWS);
 
-                float3 finalCol=tex2D(_MainTex,i.uv.xy)+UNITY_LIGHTMODEL_AMBIENT.xyz;
-                float diffuse=saturate(GetDiffuse(normal,lightDir))*atten;
-                finalCol*=tex2D(_WarpDiffuseTex,diffuse)*_LightColor0;
-                float shiftAmount=tex2D(_ShiftTex,i.uv.zw)*_ShiftStrength+_ShiftOffset;
-                float specular=saturate(StrandSpecular(tangent,normal,halfDir,_SpecularExponent,shiftAmount))*atten*diffuse;
-                finalCol+=specular*_LightColor0;
+                float3 lightCol=_MainLightColor.rgb;
+                float3 ambient=_GlossyEnvironmentColor.rgb;
+                float3 finalCol=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv.xy).xyz+ambient;
+                float diffuse=saturate(GetDiffuse(normalWS,lightDirWS))*atten;
+                finalCol*=SAMPLE_TEXTURE2D(_WarpDiffuseTex,sampler_WarpDiffuseTex,diffuse).rgb*lightCol;
+                float shiftAmount=SAMPLE_TEXTURE2D(_ShiftTex,sampler_ShiftTex,i.uv.zw).x*INSTANCE( _ShiftStrength)+INSTANCE( _ShiftOffset);
+                float specular=saturate(StrandSpecular(tangentWS,normalWS,halfDirWS,INSTANCE( _SpecularExponent),shiftAmount))*atten*diffuse;
+                finalCol+=specular*lightCol;
                 return float4(finalCol,1);
             }
-        ENDCG
+			ENDHLSL
+		}
+		USEPASS "Hidden/ShadowCaster/MAIN"
     }
 }

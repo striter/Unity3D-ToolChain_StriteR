@@ -8,28 +8,28 @@
     SubShader
     {
         Tags { "RenderType"="Opaque"  }
-        CGINCLUDE       
+        HLSLINCLUDE       
             #pragma target 4.0
             #pragma target 3.5
-            #include "UnityCG.cginc"
+            #include "../../CommonInclude.hlsl"
 
             struct a2v
             {
-                float4 vertex : POSITION;
-                float3 normal:NORMAL;
+                float4 positionOS : POSITION;
+                float3 normalOS:NORMAL;
                 float2 uv : TEXCOORD0;
             };
 
             struct v2g
             {
-                float4 vertex:POSITION;
-                float3 normal:NORMAL;
+                float4 positionOS:POSITION;
+                float3 normalOS:NORMAL;
                 float2 uv:TEXCOORD0;
             };
 
             struct g2f
             {
-                float4 vertex : SV_POSITION;
+                float4 positionCS : SV_POSITION;
                 float4 color:COLOR;
                 float2 uv : TEXCOORD0;
             };
@@ -41,9 +41,9 @@
             v2g vert (a2v v)
             {
                 v2g o;
-                o.vertex = v.vertex;
+                o.positionOS = v.positionOS;
+                o.normalOS=v.normalOS;
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                o.normal=v.normal;
                 return o;
             }
 
@@ -52,51 +52,50 @@
             {
                 g2f o;
                 o.uv=0;
-                float3 normal=normalize(p[0].normal+p[1].normal+p[2].normal);
-                float4 baryCenter=UnityObjectToClipPos((p[0].vertex+p[1].vertex+p[2].vertex)/3+normal*_SpikeStrength);
+                float3 normal=normalize(p[0].normalOS+p[1].normalOS+p[2].normalOS);
+                float4 baryCenter=TransformObjectToHClip((p[0].positionOS+p[1].positionOS+p[2].positionOS)/3+normal*_SpikeStrength);
                 for(int i=0;i<3;i++)
                 {
-                    uint next=(i+1)%3;
-                    o.vertex=baryCenter;
+                    uint next=(i+1u)%3u;
+                    o.positionCS=baryCenter;
                     o.color=1;
                     stream.Append(o);
 
-                    o.vertex=UnityObjectToClipPos(p[next].vertex);
+                    o.positionCS=TransformObjectToHClip(p[next].positionOS);
                     o.color=0;
                     stream.Append(o);
 
-                    o.vertex= UnityObjectToClipPos(p[i].vertex);
+                    o.positionCS= TransformObjectToHClip(p[i].positionOS);
                     o.color=0;
                     stream.Append(o);
                 }
                 stream.RestartStrip();
             }
 
-            fixed4 frag (g2f i) : SV_Target
+            float4 frag (g2f i) : SV_Target
             {
-                fixed4 col = tex2D(_MainTex, i.uv)*i.color;
+                float4 col = tex2D(_MainTex, i.uv)*i.color;
                 return col;
             }
-        ENDCG
+        ENDHLSL
 
         Pass
         {
-            CGPROGRAM
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma geometry geom
             #pragma fragment frag
-            ENDCG
+            ENDHLSL
         }
 
         Pass
         {
             Tags{"LightMode" = "ShadowCaster"}
-            CGPROGRAM
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma geometry geom
             #pragma fragment frag
-            #pragma multi_compile_shadowcaster
-            ENDCG
+            ENDHLSL
         }
 
     }

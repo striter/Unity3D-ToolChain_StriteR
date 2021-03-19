@@ -20,112 +20,107 @@
 		Tags { "RenderType" = "Opaque" "Queue" = "Geometry" }
 		Cull Back
 		Blend Off
-		ZWrite On
-		ZTest LEqual
 
-		CGINCLUDE
-		#include "../CommonLightingInclude.cginc"
-		#include "UnityCG.cginc"
-		#include "Lighting.cginc"
-		#include "AutoLight.cginc"
-		#pragma multi_compile_instancing
-		#pragma shader_feature _SPECULAR
-		#pragma shader_feature _NORMALMAP
-
-		sampler2D _MainTex;
-		float4 _MainTex_ST;
-		#if _NORMALMAP
-		sampler2D _NormalTex;
-		#endif
-		float _Lambert;
-		float _SpecularRange;
-		UNITY_INSTANCING_BUFFER_START(Props)
-			UNITY_DEFINE_INSTANCED_PROP(float4, _Color)
-		UNITY_INSTANCING_BUFFER_END(Props)
-
-		struct a2fDV
-		{
-			float4 vertex : POSITION;
-			float2 uv:TEXCOORD0;
-			float3 normal:NORMAL;
-			#if _NORMALMAP
-			float4 tangent:TANGENT;
-			#endif
-			UNITY_VERTEX_INPUT_INSTANCE_ID
-		};
-
-		struct v2fDV
-		{
-			float4 pos : SV_POSITION;
-			float2 uv:TEXCOORD0;
-			float3 worldPos:TEXCOORD1;
-			float3 worldLightDir:TEXCOORD2;
-			float3 worldNormal:TEXCOORD3;
-			float3 worldViewDir:TEXCOORD4;
-			SHADOW_COORDS(5)
-			#if _NORMALMAP
-			float3x3 worldToTangent:TEXCOORD6;
-			#endif
-			UNITY_VERTEX_INPUT_INSTANCE_ID
-		};
-
-		v2fDV DiffuseVertex(a2fDV v)
-		{
-			v2fDV o;
-			UNITY_SETUP_INSTANCE_ID(v);
-			UNITY_TRANSFER_INSTANCE_ID(v, o);
-			o.uv = TRANSFORM_TEX( v.uv,_MainTex);
-			o.pos = UnityObjectToClipPos(v.vertex);
-			o.worldPos = mul(unity_ObjectToWorld, v.vertex);
-			o.worldLightDir=WorldSpaceLightDir( v.vertex);
-			o.worldNormal=mul(unity_ObjectToWorld,v.normal);
-			o.worldViewDir=WorldSpaceViewDir( v.vertex);
-			#if _NORMALMAP
-			float3 worldTangent=mul(unity_ObjectToWorld,v.tangent);
-			float3 worldBitangent=cross(worldTangent,o.worldNormal);
-			o.worldToTangent=float3x3(normalize(worldTangent),normalize(worldBitangent),normalize(o.worldNormal));
-			#endif
-			TRANSFER_SHADOW(o);
-			return o;
-		}
-
-		ENDCG
 		Pass
 		{
-			NAME "FORWARDBASE"
-			Tags{"LightMode" = "ForwardBase"}
-			Cull Back
-			CGPROGRAM
+			NAME "FORWARD"
+			Tags{"LightMode" = "UniversalForward"}
+			HLSLPROGRAM
 			#pragma vertex DiffuseVertex
 			#pragma fragment DiffuseFragmentBase
-			#pragma multi_compile_fwdbase
+			
+			#include "../CommonInclude.hlsl"
+			#include "../CommonLightingInclude.hlsl"
+			
+			#pragma multi_compile_instancing
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
+            #pragma multi_compile _ _SHADOWS_SOFT
+			#pragma shader_feature _SPECULAR
+			#pragma shader_feature _NORMALMAP
+		
+			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
+		    #if _NORMALMAP
+			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
+			#endif
+			UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
+			UNITY_DEFINE_INSTANCED_PROP(float4,_MainTex_ST)
+			UNITY_DEFINE_INSTANCED_PROP(float,_Lambert)
+			UNITY_DEFINE_INSTANCED_PROP(float,_SpecularRange)
+			UNITY_DEFINE_INSTANCED_PROP(float4, _Color)
+			UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
-			float4 DiffuseFragmentBase(v2fDV i) :SV_TARGET
+			struct a2f
+			{
+				float3 positionOS : POSITION;
+				float2 uv:TEXCOORD0;
+				float3 normalOS:NORMAL;
+				#if _NORMALMAP
+				float4 tangentOS:TANGENT;
+				#endif
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+			};
+
+			struct v2f
+			{
+				float4 positionCS : SV_POSITION;
+				float2 uv:TEXCOORD0;
+				float3 positionWS:TEXCOORD1;
+				float3 normalWS:TEXCOORD2;
+				float3 viewDirWS:TEXCOORD3;
+				float4 shadowCoordWS:TEXCOORD4;
+				#if _NORMALMAP
+				float3x3 TBNWS:TEXCOORD5;
+				#endif
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+			};
+
+			v2f DiffuseVertex(a2f v)
+			{
+				v2f o;
+				UNITY_SETUP_INSTANCE_ID(v);
+				UNITY_TRANSFER_INSTANCE_ID(v, o);
+				o.uv = TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
+				o.positionCS = TransformObjectToHClip(v.positionOS);
+				o.positionWS =  TransformObjectToWorld(v.positionOS);
+				o.normalWS=TransformObjectToWorldNormal(v.normalOS);
+				o.viewDirWS=GetCameraPositionWS() -o.positionWS;
+				o.shadowCoordWS=TransformWorldToShadowCoord(o.positionWS);
+				#if _NORMALMAP
+				float3 tangentWS=TransformObjectToWorldNormal(v.tangentOS.xyz*v.tangentOS.w);
+				float3 biTangentWS=cross(tangentWS,o.normalWS);
+				o.TBNWS=float3x3(normalize(tangentWS),normalize(biTangentWS),normalize(o.normalWS));
+				#endif
+				return o;
+			}
+			float4 DiffuseFragmentBase(v2f i) :SV_TARGET
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
-				float3 normal=normalize(i.worldNormal);
+				float3 normal=normalize(i.normalWS);
+				float3 lightDir=normalize(_MainLightPosition.xyz);
+				float3 viewDir=normalize(i.viewDirWS);
 				#if _NORMALMAP
-				float3 tangentSpaceNormal= DecodeNormalMap(tex2D(_NormalTex,i.uv));
-				normal= mul(tangentSpaceNormal,i.worldToTangent);
+				float3 normalTS= DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv).xyz);
+				normal= mul(normalTS,i.TBNWS);
 				#endif
-				float3 lightDir=normalize(i.worldLightDir);
-				float3 viewDir=normalize(i.worldViewDir);
 
-				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
-				float3 finalCol=tex2D(_MainTex, i.uv)*UNITY_ACCESS_INSTANCED_PROP(Props, _Color)+UNITY_LIGHTMODEL_AMBIENT.xyz;
-				float diffuse=saturate( GetDiffuse(normal,lightDir,_Lambert,atten));
-				finalCol*=_LightColor0.rgb*diffuse;
+				float atten=MainLightRealtimeShadow(i.shadowCoordWS);
+				float3 ambient=_GlossyEnvironmentColor.rgb;
+				float3 lightCol=_MainLightColor.rgb;
+				float3 finalCol=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv).xyz*INSTANCE( _Color).rgb+ambient;
+				float diffuse=saturate( GetDiffuse(normal,lightDir,INSTANCE(_Lambert),atten));
+				finalCol*=_MainLightColor.rgb*diffuse;
 				#if _SPECULAR
-				float specular = GetSpecular(normal,lightDir,viewDir,_SpecularRange);
+				float specular = GetSpecular(normal,lightDir,viewDir,INSTANCE(_SpecularRange));
 				specular*=atten;
-				finalCol += _LightColor0.rgb*specular;
+				finalCol += _MainLightColor.rgb*specular;
 				#endif
 				return float4(finalCol,1);
 			}
-
-			ENDCG
+			ENDHLSL
 		}
 
 		USEPASS "Hidden/ShadowCaster/MAIN"
+		USEPASS "Hidden/DepthOnly/MAIN"
 	}
 }

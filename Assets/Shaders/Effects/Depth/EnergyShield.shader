@@ -39,100 +39,98 @@
 			ZWrite Off
 			Cull Back
 			Blend One One
-			CGPROGRAM
+			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma multi_compile_instancing
 			#pragma shader_feature _DEPTHOFFSET
 			#pragma shader_feature _VERTICALSMOOTHEN
 			#pragma shader_feature _INNERGLOW
 			#pragma shader_feature _VERTEXRANDOMDISTORT
-			#include "UnityCG.cginc"
-			#include "../../CommonInclude.cginc"
+			#include "../../CommonInclude.hlsl"
 			
-			sampler2D _MaskTex;
-			float4 _MaskTex_ST;
-			float4 _InnerColor;
-		    float4 _RimColor;
-		    float _RimWidth;
-		    float _EdgeMultiplier;
+			TEXTURE2D( _MaskTex); SAMPLER(sampler_MaskTex);
+			TEXTURE2D(_CameraDepthTexture); SAMPLER(sampler_CameraDepthTexture);
+			INSTANCING_BUFFER_START
+			INSTANCING_PROP(float4,_MaskTex_ST)
+			INSTANCING_PROP(float4,_InnerColor)
+		    INSTANCING_PROP(float4,_RimColor)
+		    INSTANCING_PROP(float,_RimWidth)
+		    INSTANCING_PROP(float,_EdgeMultiplier)
 			
-			float4 _InnerGlow;
-			float _InnerGlowFrequency;
-			float _InnerGlowClip;
-			float _InnerGlowSpeed;
+			INSTANCING_PROP(float4,_InnerGlow)
+			INSTANCING_PROP(float,_InnerGlowFrequency)
+			INSTANCING_PROP(float,_InnerGlowClip)
+			INSTANCING_PROP(float,_InnerGlowSpeed)
 
-			#if _VERTICALSMOOTHEN
-			float _VerticalSmoothenStart;
-			float _VerticalSmoothenDistance;
-			#endif
+			INSTANCING_PROP(float,_VerticalSmoothenStart)
+			INSTANCING_PROP(float,_VerticalSmoothenDistance)
 
-			#if _DEPTHOFFSET
-			sampler2D _CameraDepthTexture;
-			float _DepthMultiplier;
-			#endif
+			INSTANCING_PROP(float,_DepthMultiplier)
 
-			#if _VERTEXRANDOMDISTORT
-			float _DistortStrength;
-			float _DistortFrequency;
-			#endif
+			INSTANCING_PROP(float,_DistortStrength)
+			INSTANCING_PROP(float,_DistortFrequency)
+			INSTANCING_BUFFER_END
 
 			struct appdata
 			{
-				float4 vertex : POSITION;
-				float3 normal:NORMAL;
+				float3 positionOS : POSITION;
+				float3 normalOS:NORMAL;
 				float2 uv:TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct v2f
 			{
-				float4 vertex : SV_POSITION;
-				float3 pos:TEXCOORD0;
+				float4 positionCS : SV_POSITION;
+				float3 positionOS:TEXCOORD0;
 				float2 uv:TEXCOORD1;
-				float3 viewDir:TEXCOORD2;
-				float3 normal:TEXCOORD3;
+				float3 viewDirWS:TEXCOORD2;
+				float3 normalWS:TEXCOORD3;
 				#if _DEPTHOFFSET
 				float4 screenPos:TEXCOORD4;
 				#endif
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			v2f vert (appdata v)
 			{
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
+				UNITY_TRANSFER_INSTANCE_ID(v,o);
 				#if _VERTEXRANDOMDISTORT
-				v.vertex*=lerp(1-_DistortStrength,1+_DistortStrength,random3(v.vertex+floor(_Time.y*_DistortFrequency%_DistortFrequency)));
+				v.positionOS*=lerp(1-INSTANCE(_DistortStrength),1+INSTANCE(_DistortStrength),random3(v.positionOS+floor(_Time.y*INSTANCE(_DistortFrequency)%INSTANCE(_DistortFrequency))));
 				#endif
-				o.vertex = UnityObjectToClipPos(v.vertex);
-				o.pos=v.vertex;
-				o.uv=TRANSFORM_TEX(v.uv,_MaskTex);
-				o.viewDir=ObjSpaceViewDir(v.vertex);
-				o.normal=v.normal;
+				o.positionOS=v.positionOS;
+				o.positionCS = TransformObjectToHClip(v.positionOS);
+				o.uv=TRANSFORM_TEX_INSTANCE(v.uv,_MaskTex);
+				o.viewDirWS= TransformObjectToWorld(v.positionOS)-GetCameraPositionWS();
+				o.normalWS=TransformObjectToWorldNormal( v.normalOS);
 				#if _DEPTHOFFSET
-				o.screenPos=ComputeScreenPos(o.vertex);
+				o.screenPos=ComputeScreenPos(o.positionCS);
 				#endif
 				return o;
 			}
 			
-			fixed4 frag (v2f i) : SV_Target
+			float4 frag (v2f i) : SV_Target
 			{
+				UNITY_SETUP_INSTANCE_ID(i);
 				float3 finalCol=0;
-				float3 outerCol=_RimColor;
-				float3 innerCol=_InnerColor;
+				float3 outerCol=INSTANCE(_RimColor).rgb;
+				float3 innerCol=INSTANCE(_InnerColor).rgb;
 				#if _INNERGLOW
-				float glowParam=abs(lerp(-1,1,frac(i.pos.y*_InnerGlowFrequency+_Time.y*_InnerGlowSpeed)));
-			 	glowParam=smoothstep(_InnerGlowClip,1,glowParam);
-				innerCol=lerp(innerCol,_InnerGlow,glowParam);
+				float glowParam=abs(lerp(-1,1,frac(i.positionOS.y*INSTANCE(_InnerGlowFrequency)+_Time.y*INSTANCE(_InnerGlowSpeed))));
+			 	glowParam=smoothstep(INSTANCE(_InnerGlowClip),1,glowParam);
+				innerCol=lerp(innerCol,INSTANCE(_InnerGlow).rgb,glowParam);
 				#endif
 
-				innerCol*=tex2D(_MaskTex,i.uv).r;
+				innerCol*=SAMPLE_TEXTURE2D(_MaskTex,sampler_MaskTex,i.uv).r;
 
-				float outerRim = pow(1-dot(normalize(i.viewDir),normalize(i.normal)),_RimWidth)*_EdgeMultiplier;
+				float outerRim = pow(abs(1+dot(normalize(i.viewDirWS),normalize(i.normalWS))),INSTANCE(_RimWidth))*INSTANCE(_EdgeMultiplier);
 
 				#if _DEPTHOFFSET
-				float worldDepthDst=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, i.screenPos)).r-i.screenPos.w;
-
-				float depthOffset=pow(1-worldDepthDst*PI,_RimWidth)*_EdgeMultiplier*_DepthMultiplier;
+				float worldDepthDst=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, i.screenPos.xy/i.screenPos.w),_ZBufferParams).r-i.screenPos.w;
+				float depthOffset=pow(max(0,1-worldDepthDst*PI),INSTANCE(_RimWidth))*INSTANCE(_EdgeMultiplier)*INSTANCE(_DepthMultiplier);
 				outerRim=max(outerRim,depthOffset);
 				#endif
 
@@ -140,13 +138,13 @@
 				finalCol= lerp(innerCol,outerCol, outerRim);
 				
 				#if _VERTICALSMOOTHEN
-				float verticalParam=abs(i.pos.y);
-				verticalParam=saturate(invlerp(_VerticalSmoothenStart,_VerticalSmoothenStart+_VerticalSmoothenDistance,verticalParam));
+				float verticalParam=abs(i.positionOS.y);
+				verticalParam=saturate(invlerp(INSTANCE(_VerticalSmoothenStart),INSTANCE(_VerticalSmoothenStart)+INSTANCE(_VerticalSmoothenDistance),verticalParam));
 				finalCol=lerp(finalCol,outerCol,verticalParam);
 				#endif
 				return float4(finalCol,1);
 			}
-			ENDCG
+			ENDHLSL
 		}
 	}
 }

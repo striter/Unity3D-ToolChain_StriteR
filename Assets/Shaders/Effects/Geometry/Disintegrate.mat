@@ -72,8 +72,8 @@ Material:
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _DisintegrateAmount: 0.185
-    - _DissolveEdgeWidth: 0.125
+    - _DisintegrateAmount: 0.16
+    - _DissolveEdgeWidth: 0.2
     - _DstBlend: 0
     - _FlowAmount: 5
     - _FlowExpand: 5
@@ -84,8 +84,8 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _ParticleShapeClip: 0.944
-    - _ParticleSize: 0.142
+    - _ParticleShapeClip: 0.926
+    - _ParticleSize: 0.123
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -93,7 +93,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DissolveEdgeColor: {r: 0.69701725, g: 0.69701725, b: 2.2564456, a: 0.5529412}
+    - _DissolveEdgeColor: {r: 0.69701725, g: 0.69701725, b: 2.2564456, a: 0.6117647}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlowDirection: {r: 0, g: 2, b: 0, a: 0}
     - _ParticleColor: {r: 1.8051767, g: 0.85104096, b: 3.6121962, a: 0.6313726}

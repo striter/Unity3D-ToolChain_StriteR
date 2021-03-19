@@ -11,7 +11,7 @@ Material:
   m_Shader: {fileID: 4800000, guid: 46f30f903f3e0864b9ccd16f1e0521e0, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -36,7 +36,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DissolveTex:
-        m_Texture: {fileID: 2800000, guid: 9c85090b0e4b5e246a82c5f13bb6d5dd, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2696f69bd9d99d14a915a9ace437031f, type: 3}
         m_Scale: {x: 0.5, y: 0.5}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
@@ -73,9 +73,9 @@ Material:
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _DissolveAmount: 0.57
+    - _DissolveAmount: 0.4
     - _DissolveScale: 1
-    - _DissolveWidth: 0.147
+    - _DissolveWidth: 0.2
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -92,6 +92,6 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Color1: {r: 1, g: 1, b: 1, a: 1}
-    - _DissolveColor: {r: 0.69886, g: 0.31466997, b: 0.31466997, a: 1}
+    - _DissolveColor: {r: 29.530258, g: 22.181715, b: 22.181715, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

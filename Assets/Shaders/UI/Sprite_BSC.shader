@@ -54,7 +54,7 @@ Shader "Game/UI/Sprite_BSC"
 
 			#include "UnityCG.cginc"
 			#include "UnityUI.cginc"
-			#include "../CommonInclude.cginc"
+			#include "../CommonInclude.hlsl"
 
 			#pragma multi_compile __ UNITY_UI_ALPHACLIP
 

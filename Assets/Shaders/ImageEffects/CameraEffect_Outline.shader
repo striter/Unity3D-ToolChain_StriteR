@@ -16,8 +16,8 @@
 			#pragma fragment frag
 
 			#include "UnityCG.cginc"
-			#include "../CommonInclude.cginc"
-			#include "CameraEffectInclude.cginc"
+			#include "../CommonInclude.hlsl"
+			#include "CameraEffectInclude.hlsl"
 			#pragma multi_compile _ _CONVOLUTION_SOBEL
 			#pragma multi_compile _ _DETECT_COLOR _DETECT_NORMAL
 			#pragma shader_feature _COLOREPLACE

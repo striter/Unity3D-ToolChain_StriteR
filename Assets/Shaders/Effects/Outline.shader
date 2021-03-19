@@ -17,23 +17,27 @@
 		    Name "OutLine"
             ZWrite On
 			Cull Front
-			CGPROGRAM
+			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma multi_compile_instancing
 			#pragma shader_feature _CLIPSPACEADPATION
 			#pragma multi_compile _NORMALSAMPLE_NORMAL _NORMALSAMPLE_TANGENT _NORMALSAMPLE_UV1 _NORMALSAMPLE_UV2 _NORMALSAMPLE_UV3 _NORMALSAMPLE_UV4 _NORMALSAMPLE_UV5  _NORMALSAMPLE_UV6  _NORMALSAMPLE_UV7
-			#include "UnityCG.cginc"
-			float4 _OutlineColor;
-			float _OutlineWidth;
+			#include "../CommonInclude.hlsl"
+
+			INSTANCING_BUFFER_START
+			INSTANCING_PROP(float4,_OutlineColor)
+			INSTANCING_PROP(float,_OutlineWidth)
 			#if _CLIPSPACEADPATION
-			float _AdaptFactor;
+			INSTANCING_PROP(float,_AdaptFactor)
 			#endif
+			INSTANCING_BUFFER_END
 
 			struct a2v
 			{
-				float4 vertex : POSITION;
-				float3 normal:NORMAL;
-				float4 tangent:TANGENT;
+				float3 positionOS : POSITION;
+				float3 normalOS:NORMAL;
+				float4 tangentOS:TANGENT;
 				#if _NORMALSAMPLE_UV1
 				float3 uv1:TEXCOORD1;
 				#elif _NORMALSAMPLE_UV2
@@ -49,56 +53,67 @@
 				#elif _NORMALSAMPLE_UV7
 				float3 uv7:TEXCOORD7;
 				#endif
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
-			float4 vert(a2v v):SV_POSITION {
-				float4 vertex=v.vertex;
+			struct v2f
+			{
+				float4 positionCS:SV_POSITION;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+			};
 
-				float3 normal=0;
+			v2f vert(a2v v) {
+				v2f o;
+				UNITY_SETUP_INSTANCE_ID(v);
+				UNITY_TRANSFER_INSTANCE_ID(v,o);
+				
+				float3 positionOS=v.positionOS;
+				float3 normalOS=0;
 				#if _NORMALSAMPLE_NORMAL
-				normal=normalize(v.normal);
+				normalOS=normalize(v.normalOS);
 				#elif _NORMALSAMPLE_TANGENT
-				normal=normalize(v.tangent);
+				normalOS=normalize(v.tangentOS);
 				#elif _NORMALSAMPLE_UV1
-				normal=normalize(v.uv1);
+				normalOS=normalize(v.uv1);
 				#elif _NORMALSAMPLE_UV2
-				normal=normalize(v.uv2);
+				normalOS=normalize(v.uv2);
 				#elif _NORMALSAMPLE_UV3
-				normal=normalize(v.uv3);
+				normalOS=normalize(v.uv3);
 				#elif _NORMALSAMPLE_UV4
-				normal=normalize(v.uv4);
+				normalOS=normalize(v.uv4);
 				#elif _NORMALSAMPLE_UV5
-				normal=normalize(v.uv5);
+				normalOS=normalize(v.uv5);
 				#elif _NORMALSAMPLE_UV6
-				normal=normalize(v.uv6);
+				normalOS=normalize(v.uv6);
 				#elif _NORMALSAMPLE_UV7
-				normal=normalize(v.uv7);
+				normalOS=normalize(v.uv7);
 				#endif
 
 				#if _NORMALSAMPLE_UV1||_NORMALSAMPLE_UV1||_NORMALSAMPLE_UV2||_NORMALSAMPLE_UV3||_NORMALSAMPLE_UV4||_NORMALSAMPLE_UV5||_NORMALSAMPLE_UV6||_NORMALSAMPLE_UV7
-				float3x3 objectToTangent=float3x3(v.tangent.xyz,cross(v.normal,v.tangent)*v.tangent.w,v.normal);
-				normal=mul(normal,objectToTangent);
+				float3x3 TBNOS=float3x3(v.tangentOS.xyz,cross(v.normalOS,v.tangentOS.xyz)*v.tangentOS.w,v.normalOS);
+				normalOS=mul(normalnormalOSTBNOS);
 				#endif
-
-
+				
 				#if _CLIPSPACEADPATION
-				float4 clipPosition=UnityObjectToClipPos(vertex);
-				float3 screenDir=mul((float3x3)UNITY_MATRIX_MVP, normal);
-				float2 screenOffset=normalize(screenDir).xy/_ScreenParams.xy*clipPosition.w*_AdaptFactor;
-				clipPosition.xy+=screenOffset*_OutlineWidth;
-				return  clipPosition;
+				float4 clipPosition=TransformObjectToHClip(positionOS);
+				float3 screenDir=TransformObjectToHClipNormal(normalOS);
+				float2 screenOffset=normalize(screenDir).xy/_ScreenParams.xy*clipPosition.w*INSTANCE(_AdaptFactor);
+				clipPosition.xy+=screenOffset*INSTANCE(_OutlineWidth);
+				o.positionCS= clipPosition;
 				#else
-				normal=mul((float3x3)unity_ObjectToWorld,normal);
-				float4 worldPos=mul(unity_ObjectToWorld,vertex);
-				worldPos.xyz+=normal*_OutlineWidth;
-				return UnityWorldToClipPos(worldPos);
+				float3 normalWS=mul((float3x3)unity_ObjectToWorld,normalOS);
+				float3 worldPos=TransformObjectToWorld(positionOS);
+				worldPos+=normalWS*_OutlineWidth;
+				o.positionCS= TransformWorldToHClip(worldPos);
 				#endif
+				return o;
 			}
-			float4 frag() :SV_TARGET
+			float4 frag(v2f i) :SV_TARGET
 			{
-				return _OutlineColor;
+				UNITY_SETUP_INSTANCE_ID(i);
+				return  INSTANCE(_OutlineColor);
 			}
-		ENDCG
+			ENDHLSL
 		}
     }
 }

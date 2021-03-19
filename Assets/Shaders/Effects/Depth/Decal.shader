@@ -16,55 +16,63 @@
 			Cull Back
 			ZWrite Off
 
-			CGPROGRAM
-			#pragma shader_feature _CULLBACK
-			#pragma multi_compile  _DECALCLIP_NONE _DECALCLIP_BOX _DECALCLIP_SPHERE
+			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-            #include "UnityCG.cginc"
-			#include "../../CommonInclude.cginc"
-			struct a2f
-			{
-				float4 vertex:POSITION;
-			};
+			#pragma shader_feature _CULLBACK
+			#pragma multi_compile  _DECALCLIP_NONE _DECALCLIP_BOX _DECALCLIP_SPHERE
+			
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
+            #pragma multi_compile _ _SHADOWS_SOFT
+
+			#include "../../CommonInclude.hlsl"
+			#include "../../CommonLightingInclude.hlsl"
+
 			struct v2f
 			{
-				float4 pos:SV_POSITION;
-				float4 screenPos: TEXCOORD0;
-				float3 viewDir:TEXCOORD1;
-				float3 worldPos:TEXCOORD2;
+				float4 positionCS:SV_POSITION;
+				float3 positionWS:TEXCOORD0;
+				float3 viewDirWS:TEXCOORD1;
+				float4 screenPos: TEXCOORD2;
 			};
-			sampler2D _MainTex;
+			
+			TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
+			TEXTURE2D(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
+			CBUFFER_START(UnityPerMaterial)
 			float4 _MainTex_ST;
-			sampler2D _CameraDepthTexture;
 			float4 _Color;
-			v2f vert(a2f v)
+			CBUFFER_END
+			v2f vert(float3 positionOS:POSITION)
 			{
 				v2f o;
-				o.pos = UnityObjectToClipPos(v.vertex);
-				o.screenPos = ComputeScreenPos(o.pos);
-				o.viewDir=WorldSpaceViewDir(v.vertex);
-				o.worldPos=mul(unity_ObjectToWorld,v.vertex);
+				o.positionCS = TransformObjectToHClip(positionOS);
+				o.positionWS=TransformObjectToWorld(positionOS);
+				o.viewDirWS=o.positionWS-GetCameraPositionWS();
+				o.screenPos = ComputeScreenPos(o.positionCS);
 				return o;
 			}
 
 			float4 frag(v2f i):SV_Target
 			{
-				float2 uv = i.screenPos.xy / i.screenPos.w;
-				float depthOffset = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, i.screenPos)).r - i.screenPos.w;
-				float3 wpos = i.worldPos-normalize(i.viewDir)*depthOffset;
-				float3 opos = mul(unity_WorldToObject, float4(wpos,1));
+
+				float depthOffset = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, i.screenPos.xy / i.screenPos.w),_ZBufferParams).r - i.screenPos.w;
+				float3 wpos = i.positionWS+normalize(i.viewDirWS)*depthOffset;
+				float3 opos = TransformWorldToObject(wpos);
 				half2 decalUV=opos.xy+.5;
 				decalUV=TRANSFORM_TEX(decalUV,_MainTex);
-				float4 color=tex2D(_MainTex,decalUV)* _Color;
+				float4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,decalUV)* _Color;
 				#if _DECALCLIP_SPHERE
 				color.a*=step(sqrDistance(opos),.25);
 				#elif _DECALCLIP_BOX
 				color.a*=step(abs(opos.x),.5)*step(abs(opos.y),.5)*step(abs(opos.z),.5);
 				#endif
+				float atten=MainLightRealtimeShadow(TransformWorldToShadowCoord(wpos));
+				color.a*=atten;
+				color.rgb+=_GlossyEnvironmentColor.rgb;
 				return color;
 			}
-			ENDCG
-			}
+			ENDHLSL
+		}
 	}
 }

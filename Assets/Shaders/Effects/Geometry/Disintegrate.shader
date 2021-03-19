@@ -39,44 +39,6 @@
         ENDCG
 
         Pass
-        {
-            Name "Main"
-            CGPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
-            
-            struct a2v
-            {
-                float4 vertex:POSITIOn;
-                float2 uv:TEXCOORD0;
-            };
-            struct v2f
-            {
-                float4 vertex:SV_POSITION;
-                float4 uv:TEXCOORD0;
-            };
-            
-            sampler2D _MainTex;
-            float4 _MainTex_ST;
-
-            v2f vert(a2v v)
-            {
-                v2f o;
-                o.vertex=UnityObjectToClipPos(v.vertex);
-                o.uv=float4( TRANSFORM_TEX(v.uv,_MainTex),TRANSFORM_TEX(v.uv,_DissolveTex));
-                return o;
-            }
-
-            float4 frag(v2f i):SV_TARGET
-            {
-                clip(GetDissolve(i.uv.zw)-0.001);
-                return tex2D(_MainTex,i.uv.xy);
-            }
-            
-            ENDCG
-        }
-
-        Pass
         {   
             Name "DISINTEGRATE"
             CGPROGRAM
@@ -179,7 +141,7 @@
                 stream.RestartStrip();
             }
 
-            fixed4 frag (g2f i) : SV_Target
+            float4 frag (g2f i) : SV_Target
             {
                 if(i.particleMask==1)
                 {

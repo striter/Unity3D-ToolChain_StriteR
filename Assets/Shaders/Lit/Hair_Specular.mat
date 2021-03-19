@@ -11,7 +11,7 @@ Material:
   m_Shader: {fileID: 4800000, guid: 375dabf743e9d814ab295f7a81e551c6, type: 3}
   m_ShaderKeywords: _BITANGENT _NORMALMAP
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -82,8 +82,8 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _ShiftAmount: -1
-    - _ShiftOffset: 0.004
-    - _ShiftStrength: 0.828
+    - _ShiftOffset: 0
+    - _ShiftStrength: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularExponent: 100
     - _SpecularHighlights: 1

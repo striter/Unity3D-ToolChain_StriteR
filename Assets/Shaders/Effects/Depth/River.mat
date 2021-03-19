@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: River
   m_Shader: {fileID: 4800000, guid: af20fe6b362187548afc5a358859acba, type: 3}
-  m_ShaderKeywords: _SOFTFOAM
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -45,7 +45,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
+        m_Scale: {x: 0.2, y: 0.2}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
@@ -62,8 +62,18 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
+    - _DepthStart: 0.642
+    - _DepthWidth: 0.62
     - _DetailNormalMapScale: 1
+    - _DistortStrength: 0.088
     - _DstBlend: 0
+    - _EnableWave: 0
+    - _FlowDirectionX: 0.1
+    - _FlowDirectionY: 0.1
+    - _FoamWidth: 0.296
+    - _FresnelBase: 0.2
+    - _FresnelMax: 0.5
+    - _FresnelScale: 2
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -71,8 +81,10 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _RefractionStrength: 0.683
     - _SmoothnessTextureChannel: 0
-    - _SoftFoam: 1
+    - _SoftFoam: 0
+    - _SpecularDistort: 0.5
     - _SpecularHighlights: 1
     - _SpecularPow: 100
     - _SpecularRange: 0.9904
@@ -80,12 +92,16 @@ Material:
     - _SrcBlend: 1
     - _TexUVScale: 55.8
     - _UVSec: 0
+    - _WaveDirectionX: 0.42
+    - _WaveDirectionY: 0.1
+    - _WaveFrequency: 5
+    - _WaveStrength: 0.39
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 0.63127446, g: 0.67622644, b: 0.7735849, a: 1}
     - _DistortParam: {r: 0.01, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FoamColor: {r: 6.700582, g: 10.680627, b: 10.597275, a: 1}
     - _FoamDepthParam: {r: 1.36, g: 0, b: 13.44, a: -1.01}
     - _FresnelParam: {r: 0, g: 0.5, b: 12, a: 0}
     - _WaveParam: {r: 0.1, g: 10, b: 1, a: 1.1}

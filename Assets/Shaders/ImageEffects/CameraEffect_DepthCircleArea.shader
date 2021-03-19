@@ -15,8 +15,8 @@
 				#pragma fragment frag
 
 				#include "UnityCG.cginc"
-				#include "../CommonInclude.cginc"
-				#include "CameraEffectInclude.cginc"
+				#include "../CommonInclude.hlsl"
+				#include "CameraEffectInclude.hlsl"
 
 				float4 _Origin;
 				float4 _FillColor;

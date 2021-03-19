@@ -11,7 +11,7 @@ Material:
   m_Shader: {fileID: 4800000, guid: c8e0eecdb2eaf98498f0a3c380e0c4d4, type: 3}
   m_ShaderKeywords: _RAMP_RIM_V _RIM_SMOOTH _Rim _SPECULAR
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -92,7 +92,7 @@ Material:
     - _Parallax: 0.02
     - _RampRimV: 1
     - _Rim: 2
-    - _RimRange: 0.4
+    - _RimRange: 1
     - _ShiftOffset: -1
     - _ShiftStrength: 1
     - _SmoothnessTextureChannel: 0

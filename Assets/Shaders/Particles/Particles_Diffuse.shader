@@ -16,7 +16,7 @@
 				CGPROGRAM
 				#pragma vertex vert
 				#pragma fragment frag
-				#include "../CommonLightingInclude.cginc"
+				#include "../CommonLightingInclude.hlsl"
 				#include "UnityCG.cginc"
 				#include "Lighting.cginc"
 				#include "AutoLight.cginc"

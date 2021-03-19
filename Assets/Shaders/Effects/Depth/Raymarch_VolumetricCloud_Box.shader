@@ -25,39 +25,42 @@
     }
     SubShader
     {
-        Tags{"Queue"="Transparent" "LightMode"="ForwardBase"}
+        Tags{"Queue"="Transparent" }
         Pass
         {
+            Tags{"LightMode"="UniversalForward"}
             Blend SrcAlpha OneMinusSrcAlpha
             ZWrite Off
             Cull Back
-            CGPROGRAM
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
 
-            #include "UnityCG.cginc"
-            #include "Lighting.cginc"
-            #include "../../BoundingCollision.cginc"
+            #include "../../CommonInclude.hlsl"
+            #include "../../CommonLightingInclude.hlsl"
+            #include "../../BoundingCollision.hlsl"
             #pragma shader_feature _LIGHTMARCH
 
             struct appdata
             {
-                float4 vertex : POSITION;
+                float3 positionOS : POSITION;
                 float2 uv : TEXCOORD0;
             };
 
             struct v2f
             {
-                float4 vertex : SV_POSITION;
-                float3 worldPos:TEXCOORD0;
-                float4 screenPos : TEXCOORD1;
-                float3 worldViewDir:TEXCOORD2;
-                float3 worldLightDir:TEXCOORD3;
-                float3 minBound:TEXCOORD4;
-                float3 maxBound:TEXCOORD5;
+                float4 positionCS : SV_POSITION;
+                float3 positionWS:TEXCOORD0;
+                float3 viewDirWS:TEXCOORD1;
+                float3 minBoundWS:TEXCOORD2;
+                float3 maxBoundWS:TEXCOORD3;
+                float4 screenPos : TEXCOORD4;
             };
-
-            int _RayMarchTimes;
+            
+            TEXTURE2D( _CameraDepthTexture); SAMPLER(sampler_CameraDepthTexture);
+            sampler3D _Noise;
+            CBUFFER_START(UnityPerMaterial)
+            uint _RayMarchTimes;
             float _Distance;
             float _Strength;
             float _Density;
@@ -70,17 +73,15 @@
             float _LightAbsorption;
             sampler2D _ColorRamp;
 
-            sampler2D _CameraDepthTexture;
-
-            sampler3D _Noise;
-            float4 _NoiseScale;
-            float4 _NoiseFlow;
+            float3 _NoiseScale;
+            float3 _NoiseFlow;
+            CBUFFER_END
             float SampleDensity(float3 worldPos)  {
                 return saturate(smoothstep(_DensityClip,1 , tex3Dlod(_Noise,float4( worldPos/_NoiseScale+_NoiseFlow*_Time.y,0)).r)*_Density);
             }
 
             #if _LIGHTMARCH
-            float3 lightMarch(float minBound,float3 maxBound, float3 position,float3 marchDir,float marchDst)
+            float lightMarch(float3 minBound,float3 maxBound, float3 position,float3 marchDir,float marchDst)
             {
                 float dstInsideBox=AABBRayDistance(minBound,maxBound,position,marchDir).y;
                 float cloudDensity=0;
@@ -100,45 +101,43 @@
             v2f vert (appdata v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.screenPos=ComputeScreenPos(o.vertex);
-                o.worldPos=mul(unity_ObjectToWorld,v.vertex);
-                o.worldViewDir=WorldSpaceViewDir(v.vertex);
-                o.worldLightDir=WorldSpaceLightDir(v.vertex);
-                o.minBound=mul(unity_ObjectToWorld,float4(-.5,-.5,-.5,1));
-                o.maxBound=mul(unity_ObjectToWorld,float4(.5,.5,.5,1));
+                o.positionCS = TransformObjectToHClip(v.positionOS);
+                o.positionWS=TransformObjectToWorld(v.positionOS);
+                o.viewDirWS=o.positionWS-GetCameraPositionWS();
+                o.minBoundWS=TransformObjectToWorld(float3(-.5,-.5,-.5));
+                o.maxBoundWS=TransformObjectToWorld(float3(.5,.5,.5));
+                o.screenPos=ComputeScreenPos(o.positionCS);
                 return o;
             }
             
-            fixed4 frag (v2f _input) : SV_Target
+            float4 frag (v2f i) : SV_Target
             {
-                float3 worldMarchDir=-normalize( _input.worldViewDir);
-                float worldMarchDst=AABBRayDistance(_input.minBound,_input.maxBound,_input.worldPos,worldMarchDir).y;
-                float worldDepthDst=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, _input.screenPos)).r-_input.screenPos.w;
-                float marchDistance= min(worldMarchDst, worldDepthDst);
+                float3 marchDirWS=normalize( i.viewDirWS);
+                float marchDstWS=AABBRayDistance(i.minBoundWS,i.maxBoundWS,i.positionWS,marchDirWS).y;
+                float depthDstWS=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, i.screenPos.xy/i.screenPos.w),_ZBufferParams).r-i.screenPos.w;
+                float marchDistance= min(depthDstWS, marchDstWS);
 
                 float cloudDensity=1;
                 float lightIntensity=1;
                 if(marchDistance>0)
                 {
-                    float3 worldLightDir=normalize(_input.worldLightDir);
-                    float scatter=(1-smoothstep(_ScatterRange,1,dot(worldMarchDir,worldLightDir))*_ScatterStrength);
+                    float3 lightDirWS=normalize(_MainLightPosition.xyz);
+                    float scatter=(1-smoothstep(_ScatterRange,1,dot(marchDirWS,lightDirWS))*_ScatterStrength);
                     float cloudMarchDst= _Distance/_RayMarchTimes;
                     float lightMarchDst=_Distance/_LightMarchTimes;
-                    worldMarchDir= normalize(worldMarchDir);
                     float dstMarched=0;
                     float marchParam=1.0/_RayMarchTimes;
                     float totalDensity=0;
-                    for(int i=0;i<_RayMarchTimes;i++)
+                    for(uint index=0u;index<_RayMarchTimes;index++)
                     {
-                        float3 marchPos=_input.worldPos+worldMarchDir*dstMarched;
+                        float3 marchPos=i.positionWS+marchDirWS*dstMarched;
                         float density=SampleDensity(marchPos);
                         density*=marchParam;
                         if(density>0)
                         {
                             cloudDensity*= exp(-density*_Strength);
                             #if _LIGHTMARCH
-                            lightIntensity *= exp(-density*scatter*cloudDensity*lerp(0,_LightAbsorption, lightMarch(_input.minBound,_input.maxBound,marchPos,worldLightDir,lightMarchDst)));
+                            lightIntensity *= exp(-density*scatter*cloudDensity*lerp(0,_LightAbsorption, lightMarch(i.minBoundWS,i.maxBoundWS,marchPos,lightDirWS,lightMarchDst)));
                             #else
                             lightIntensity -= density*scatter*cloudDensity*_LightAbsorption;
                             #endif
@@ -150,10 +149,10 @@
                     }
                 }
                 float3 rampCol=tex2D(_ColorRamp, lightIntensity).rgb;
-                float3 lightCol= lerp(rampCol,_LightColor0.rgb, lightIntensity);
+                float3 lightCol= lerp(rampCol,_MainLightColor.rgb, lightIntensity);
                 return float4(lightCol,1-cloudDensity);
             }
-            ENDCG
+            ENDHLSL
         }
     }
 }

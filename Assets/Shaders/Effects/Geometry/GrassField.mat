@@ -76,7 +76,7 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _RandomClip: 0.61
+    - _RandomClip: 0.299
     - _SEGMENT: 2
     - _SegmentFactor: 0.842
     - _SmoothnessTextureChannel: 0
@@ -84,8 +84,8 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _Width: 0.2
-    - _WindSpeed: 0.12
-    - _WindStrength: 0.64
+    - _WindSpeed: 0.126
+    - _WindStrength: 0.216
     - _ZWrite: 1
     m_Colors:
     - _BottomColor: {r: 0, g: 0.18867922, b: 0, a: 0}

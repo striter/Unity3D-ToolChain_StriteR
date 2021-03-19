@@ -16,9 +16,9 @@
 
             #include "UnityCG.cginc"
             #include "Lighting.cginc"
-            #include "CameraEffectInclude.cginc"
-            #include "../CommonInclude.cginc"
-            #include "../BoundingCollision.cginc"
+            #include "CameraEffectInclude.hlsl"
+            #include "../CommonInclude.hlsl"
+            #include "../BoundingCollision.hlsl"
             #pragma shader_feature _LIGHTMARCH
             #pragma shader_feature _LIGHTSCATTER
 
