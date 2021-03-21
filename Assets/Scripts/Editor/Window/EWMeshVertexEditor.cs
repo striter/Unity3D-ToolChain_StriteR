@@ -111,8 +111,8 @@ namespace TEditor
                 End();
                 m_SourceMesh = _srcMesh;
                 m_ModifingMesh = m_SourceMesh.Copy();
-                m_Polygons = m_ModifingMesh.GetPolygons(out m_Verticies,out int[] triangles);
-
+                m_Polygons = m_ModifingMesh.GetPolygons(out int[] triangles);
+                m_Verticies = m_ModifingMesh.vertices;
                 m_MeshObject = new GameObject("Modify Mesh");
                 m_MeshObject.hideFlags = HideFlags.HideAndDontSave;
                 m_MeshFilter = m_MeshObject.AddComponent<MeshFilter>();

@@ -44,7 +44,7 @@
 
 			struct a2v
 			{
-				float4 positionOS : POSITION;
+				float3 positionOS : POSITION;
 				float3 normalOS:NORMAL;
 				float2 uv : TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -74,7 +74,7 @@
 			float4 frag (v2f i) : SV_Target
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
-				float3 finalCol=lerp(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv),INSTANCE(_DistortColor),i.strength);
+				float3 finalCol=lerp(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv),INSTANCE(_DistortColor),i.strength).rgb;
 				return float4(finalCol,1);
 			}
 			ENDHLSL

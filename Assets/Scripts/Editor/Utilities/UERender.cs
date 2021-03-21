@@ -16,10 +16,26 @@ namespace TEditor
             B,
             A,
         }
+        static Vector3[] RenegerateNormals(int[] _indices, Vector3[] _verticies)
+        {
+            Vector3[] normals = new Vector3[_verticies.Length];
+            MeshPolygon[] polygons = URender.GetPolygons(_indices);
+            foreach(var polygon in polygons)
+            {
+                DirectedTriangle triangle = polygon.GetDirectedTriangle(_verticies);
+                Vector3 normal = triangle.m_Normal;
+                foreach (var indice in polygon.m_Indices)
+                    normals[indice] += normal;
+            }
+            normals=normals.ToArray(normal => normal.normalized);
+            return normals;
+        }
+
         public static Vector3[] GenerateSmoothNormals(Mesh _srcMesh, bool _convertToTangentSpace)
         {
-            var groups = _srcMesh.vertices.Select((vertex, index) => new KeyValuePair<Vector3, int>(vertex, index)).GroupBy(pair => pair.Key);
-            Vector3[] normals = _srcMesh.normals;
+            Vector3[] verticies = _srcMesh.vertices;
+            var groups = verticies.Select((vertex, index) => new KeyValuePair<Vector3, int>(vertex, index)).GroupBy(pair => pair.Key);
+            Vector3[] normals = RenegerateNormals(_srcMesh.triangles,verticies);
             Vector3[] smoothNormals = normals.Copy();
             foreach (var group in groups)
             {

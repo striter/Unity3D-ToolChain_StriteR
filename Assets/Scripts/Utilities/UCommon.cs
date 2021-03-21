@@ -146,20 +146,23 @@ public static class UUnityEngine
 
 public static class URender
 {
-    public static MeshPolygon[] GetPolygons(this Mesh _srcMesh, out Vector3[] verticies, out int[] triangles)
+    public static MeshPolygon[] GetPolygons(int[] _indices)
     {
-        triangles = _srcMesh.triangles;
-        verticies = _srcMesh.vertices;
-        MeshPolygon[] polygons = new MeshPolygon[triangles.Length / 3];
+        MeshPolygon[] polygons = new MeshPolygon[_indices.Length / 3];
         for (int i = 0; i < polygons.Length; i++)
         {
             int startIndex = i * 3;
-            int triangle0 = triangles[startIndex];
-            int triangle1 = triangles[startIndex + 1];
-            int triangle2 = triangles[startIndex + 2];
+            int triangle0 = _indices[startIndex];
+            int triangle1 = _indices[startIndex + 1];
+            int triangle2 = _indices[startIndex + 2];
             polygons[i] = new MeshPolygon(triangle0, triangle1, triangle2);
         }
         return polygons;
+    }
+    public static MeshPolygon[] GetPolygons(this Mesh _srcMesh,out int[] _indices)
+    {
+        _indices = _srcMesh.triangles;
+        return GetPolygons(_indices);
     }
     public static bool GetVertexData(this Mesh _srcMesh,enum_VertexData _dataType, List<Vector4> vertexData)
     {

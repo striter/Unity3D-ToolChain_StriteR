@@ -223,12 +223,14 @@ MonoBehaviour:
   m_EffectData:
     threshold: 0.909
     intensity: 2.5
-    enableBlur: 1
     m_BlurParams:
-      blurSize: 0.455
-      downSample: 1
-      iteration: 8
       blurType: 1
+      blurSize: 0.455
+      iteration: 8
+      downSample: 1
+      angle: 0
+      vector: {x: 0, y: 0}
+    debug: 0
   m_SceneViewPreview: 1
 --- !u!114 &115514813
 MonoBehaviour:
@@ -243,14 +245,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DepthMode: 1
+  m_DepthToWorldCalculation: 1
   m_GeometryCopyTexture: 0
   m_GeometryCopyBlurTexture: 0
-  m_DepthToWorldCalculation: 1
-  m_BlurData:
-    blurSize: 1
-    downSample: 2
-    iteration: 1
+  m_GeometryCopyBlur:
     blurType: 0
+    blurSize: 0
+    iteration: 0
+    downSample: 0
+    angle: 0
+    vector: {x: 0, y: 0}
 --- !u!1 &132233268
 GameObject:
   m_ObjectHideFlags: 0
@@ -462,13 +466,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1381386618}
-  m_LocalRotation: {x: 0.7986357, y: -0, z: -0, w: -0.60181475}
+  m_LocalRotation: {x: 0.60139716, y: -0, z: -0, w: -0.79895025}
   m_LocalPosition: {x: -0.70152414, y: 0.8915601, z: 0.13585831}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 132233269}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 1694, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 1726.06, y: 0, z: 0}
 --- !u!1 &1600509029
 GameObject:
   m_ObjectHideFlags: 0
@@ -520,7 +524,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -629,7 +633,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

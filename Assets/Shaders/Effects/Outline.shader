@@ -97,7 +97,7 @@
 				#if _CLIPSPACEADPATION
 				float4 clipPosition=TransformObjectToHClip(positionOS);
 				float3 screenDir=TransformObjectToHClipNormal(normalOS);
-				float2 screenOffset=normalize(screenDir).xy/_ScreenParams.xy*clipPosition.w*INSTANCE(_AdaptFactor);
+				float2 screenOffset=normalize(screenDir.xy)/_ScreenParams.xy*clipPosition.w*INSTANCE(_AdaptFactor);
 				clipPosition.xy+=screenOffset*INSTANCE(_OutlineWidth);
 				o.positionCS= clipPosition;
 				#else
