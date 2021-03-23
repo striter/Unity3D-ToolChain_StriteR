@@ -101,8 +101,8 @@
 			}
 			#endif
 
-			uniform sampler2D _MainTex;
-			uniform half _Weight;
+			sampler2D _MainTex;
+			half _Weight;
 			half4 frag (v2f_img i) : SV_Target
 			{
 				half3 baseCol=tex2D(_MainTex, i.uv).rgb;
