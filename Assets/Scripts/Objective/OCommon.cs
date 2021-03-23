@@ -280,4 +280,5 @@ public struct MeshPolygon
     public Triangle GetTriangle(Vector3[] verticies) => new Triangle(verticies[m_Indice0], verticies[m_Indice1], verticies[m_Indice2]);
     public DirectedTriangle GetDirectedTriangle(Vector3[] verticies)=>new DirectedTriangle(verticies[m_Indice0], verticies[m_Indice1], verticies[m_Indice2]);
 }
+
 #endregion

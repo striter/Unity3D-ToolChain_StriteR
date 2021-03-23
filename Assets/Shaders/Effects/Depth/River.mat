@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: River
   m_Shader: {fileID: 4800000, guid: af20fe6b362187548afc5a358859acba, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: _WAVE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -62,12 +62,12 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
-    - _DepthStart: 0.642
-    - _DepthWidth: 0.62
+    - _DepthStart: 1
+    - _DepthWidth: 2
     - _DetailNormalMapScale: 1
-    - _DistortStrength: 0.088
+    - _DistortStrength: 0
     - _DstBlend: 0
-    - _EnableWave: 0
+    - _EnableWave: 1
     - _FlowDirectionX: 0.1
     - _FlowDirectionY: 0.1
     - _FoamWidth: 0.296
@@ -95,7 +95,7 @@ Material:
     - _WaveDirectionX: 0.42
     - _WaveDirectionY: 0.1
     - _WaveFrequency: 5
-    - _WaveStrength: 0.39
+    - _WaveStrength: 0.079
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 0.63127446, g: 0.67622644, b: 0.7735849, a: 1}

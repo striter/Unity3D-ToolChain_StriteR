@@ -5,13 +5,13 @@ float GetDiffuse(float3 normal,float3 lightDir)
 {
 	return  dot(normal, lightDir);
 }
-
 float GetDiffuse(float3 normal, float3 lightDir,float lambert,float atten)
 {
     float diffuse = saturate(GetDiffuse(normal, lightDir));
-	diffuse*=atten;
-	return lambert+(1-lambert)*diffuse;
+    diffuse *= atten;
+    return lambert + (1 - lambert) * diffuse;
 }
+
 
 //Blinn-Phong Specular Optimized, range 0.9-1
 float GetSpecular(float3 normal,float3 halfDir,float range)

@@ -129,5 +129,6 @@
 			ENDHLSL
 		}
 		USEPASS "Hidden/ShadowCaster/MAIN"
+		USEPASS "Hidden/DepthOnly/MAIN"
     }
 }

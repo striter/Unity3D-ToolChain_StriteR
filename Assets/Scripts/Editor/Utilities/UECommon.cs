@@ -163,7 +163,6 @@ namespace TEditor
             }
             return false;
         }
-
         public static void CopyMesh(Mesh source, Mesh target)
         {
             target.Clear();
@@ -200,6 +199,9 @@ namespace TEditor
             }
             for (int i = 0; i < source.subMeshCount; i++)
                 target.SetIndices(source.GetIndices(i), MeshTopology.Triangles, i);
+
+            target.ClearBlendShapes();
+            source.TraversalBlendShapes((name, index, frame, weight, deltaVerticies, deltaNormals, deltaTangents) => target.AddBlendShapeFrame(name, weight, deltaVerticies, deltaNormals, deltaTangents));
         }
 
         public static Mesh Copy(this Mesh _srcMesh)

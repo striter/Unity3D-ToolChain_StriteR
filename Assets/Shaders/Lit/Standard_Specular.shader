@@ -93,6 +93,7 @@
 				#endif
 				return o;
 			}
+
 			float4 DiffuseFragmentBase(v2f i) :SV_TARGET
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
@@ -108,7 +109,7 @@
 				float3 ambient=_GlossyEnvironmentColor.rgb;
 				float3 lightCol=_MainLightColor.rgb;
 				float3 finalCol=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv).xyz*INSTANCE( _Color).rgb+ambient;
-				float diffuse=saturate( GetDiffuse(normal,lightDir,INSTANCE(_Lambert),atten));
+				float diffuse= GetDiffuse(normal,lightDir,INSTANCE(_Lambert),atten);
 				finalCol*=_MainLightColor.rgb*diffuse;
 				#if _SPECULAR
 				float specular = GetSpecular(normal,lightDir,viewDir,INSTANCE(_SpecularRange));

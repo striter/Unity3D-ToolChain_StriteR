@@ -164,6 +164,24 @@ public static class URender
         _indices = _srcMesh.triangles;
         return GetPolygons(_indices);
     }
+    public static void TraversalBlendShapes(this Mesh _srcMesh,Action<string,int,int,float,Vector3[],Vector3[],Vector3[]> _OnEachFrame)
+    {
+        Vector3[] deltaVerticies=null;
+        Vector3[] deltaNormals=null;
+        Vector3[] deltaTangents = null; 
+        int totalBlendshapes = _srcMesh.blendShapeCount;
+        for(int i=0;i<_srcMesh.blendShapeCount;i++)
+        {
+            int frameCount = _srcMesh.GetBlendShapeFrameCount(i);
+            string name = _srcMesh.GetBlendShapeName(i);
+            for(int j=0;j<frameCount;j++)
+            {
+                float weight = _srcMesh.GetBlendShapeFrameWeight(i, j);
+                _srcMesh.GetBlendShapeFrameVertices(i,j,deltaVerticies,deltaNormals,deltaTangents);
+                _OnEachFrame(name,i,j,weight,deltaVerticies,deltaNormals,deltaTangents);
+            }
+        }
+    }
     public static bool GetVertexData(this Mesh _srcMesh,enum_VertexData _dataType, List<Vector4> vertexData)
     {
         vertexData.Clear();
