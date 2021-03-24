@@ -88,9 +88,9 @@ Material:
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _INSTANCE: 0
-    - _InstanceFrameBegin: 0
-    - _InstanceFrameEnd: 4.65
-    - _InstanceFrameInterpolate: 1
+    - _InstanceFrameBegin: 210.15
+    - _InstanceFrameEnd: 0
+    - _InstanceFrameInterpolate: 0
     - _IsBoneInstance: 1
     - _Metallic: 0
     - _Mode: 0

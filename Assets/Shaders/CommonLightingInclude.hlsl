@@ -55,7 +55,7 @@ float4 ShadowCasterCS(float3 positionOS, float3 normalOS)
 #endif
     return positionCS;
 }
-#define A2F_SHADOW_CASTER float3 positionOS:POSITION; float3 normalOS:NORMAL
+#define A2V_SHADOW_CASTER float3 positionOS:POSITION; float3 normalOS:NORMAL
 #define V2F_SHADOW_CASTER float4 positionCS:SV_POSITION
-#define SHADOW_CASTER_FRAGMENT(v,o) o.positionCS= ShadowCasterCS(v.positionOS.xyz,v.normalOS)
+#define SHADOW_CASTER_VERTEX(v,o) o.positionCS= ShadowCasterCS(v.positionOS.xyz,v.normalOS)
 #endif

@@ -21,30 +21,31 @@
     SubShader
     {
         Name "Main"
-        Tags { "RenderType" ="GeometryAdditive" "Queue"="Geometry+100" }
+        Tags { "RenderType" ="GeometryAdditive" "DisableBatching"="true" "Queue"="Geometry+100" }
         ZWrite Off
         Blend One One
         Pass
         {
-            CGPROGRAM
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile_instancing
-            #include "UnityCG.cginc"
-            #include "../Optimize/AnimationInstanceInclude.cginc"
+            #include "../CommonInclude.hlsl"
+            #include "../Optimize/AnimationInstanceInclude.hlsl"
 
             sampler2D _NoiseTex;
-            float4 _NoiseTex_ST;
-            float _NoiseStrength;
-            float _NoisePow;
-            float  _NoiseFlowX;
-            float  _NoiseFlowY;
+            INSTANCING_BUFFER_START
+            INSTANCING_PROP(float4,_NoiseTex_ST)
+            INSTANCING_PROP(float,_NoiseStrength)
+            INSTANCING_PROP(float,_NoisePow)
+            INSTANCING_PROP(float,_NoiseFlowX)
+            INSTANCING_PROP(float,_NoiseFlowY)
+            INSTANCING_PROP(float4,_Color)
+            INSTANCING_BUFFER_END
 
-            #include "UnityCG.cginc"
-
-            struct appdata
+            struct a2f
             {
-                float4 vertex : POSITION;
+                float3 positionOS : POSITION;
                 float2 uv : TEXCOORD0;
                 #if INSTANCING_ON
                 float4 boneIndexes:TEXCOORD1;
@@ -55,35 +56,36 @@
 
             struct v2f
             {
-                float4 vertex : SV_POSITION;
+                float4 positionCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            float4 _Color;
-
-            v2f vert (appdata v)
+            v2f vert (a2f v)
             {
                 v2f o;
                 UNITY_SETUP_INSTANCE_ID(v);
+                UNITY_TRANSFER_INSTANCE_ID(v,o);
                 #if INSTANCING_ON
-                SampleBoneInstance(v.boneIndexes,v.boneWeights, v.vertex);
+                SampleBoneInstance(v.boneIndexes,v.boneWeights, v.positionOS);
 				#endif
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = TRANSFORM_TEX(v.uv,_NoiseTex);
-                o.uv+=_Time.y*float2(_NoiseFlowX,_NoiseFlowY);
+                o.positionCS = TransformObjectToHClip(v.positionOS);
+                o.uv = TRANSFORM_TEX_INSTANCE(v.uv,_NoiseTex);
+                o.uv+=_Time.y*float2(INSTANCE(_NoiseFlowX),INSTANCE(_NoiseFlowY));
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            float4 frag (v2f i) : SV_Target
             {
-                float3 finalCol=_Color*_Color.a;
-                float noise= tex2D(_NoiseTex,i.uv).r*_NoiseStrength;
-                noise=pow(noise,_NoisePow);
+                UNITY_SETUP_INSTANCE_ID(i);
+                float3 finalCol=INSTANCE(_Color).rgb*INSTANCE(_Color).a;
+                float noise= tex2D(_NoiseTex,i.uv).r*INSTANCE(_NoiseStrength);
+                noise=pow(abs(noise),INSTANCE(_NoisePow));
 
                 finalCol*=noise;
                 return float4(finalCol,1);           
             }
-            ENDCG
+            ENDHLSL
         }
     }
 }

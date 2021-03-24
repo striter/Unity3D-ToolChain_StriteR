@@ -176,6 +176,7 @@
 				float parallexParam=1.0/crackParallexTimes;
 				float offsetDistance=crackDistance/crackParallexTimes;
 				float totalParallex=0;
+				[unroll(64)]
 				for(uint index=0u;index<crackParallexTimes;index++)
 				{
 					float distance=crackDistance*totalParallex;

@@ -14,21 +14,24 @@
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
-        Pass
-        {
-            CGPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
+        Tags { "RenderType"="Opaque" "DisableBatching"="True" }
+        HLSLINCLUDE
+            #include "../CommonInclude.hlsl"
+            #include "../CommonLightingInclude.hlsl"
+            #include "AnimationInstanceInclude.hlsl"
             #pragma multi_compile_instancing
             #pragma multi_compile _ _OPTIMIZE_1BONE _OPTIMIZE_2BONE
-            #include "UnityCG.cginc"
-            #include "AnimationInstanceInclude.cginc"
+        ENDHLSL
+        Pass
+        {
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
 
             struct appdata
             {
-                float4 vertex : POSITION;
-                float3 normal:NORMAL;
+                float3 positionOS : POSITION;
+                float3 normalOS:NORMAL;
                 float2 uv : TEXCOORD0;
                 #if INSTANCING_ON
                 float4 boneIndexes:TEXCOORD1;
@@ -39,9 +42,9 @@
 
             struct v2f
             {
+                float4 positionCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
                 float diffuse:TEXCOORD1;
-                float4 vertex : SV_POSITION;
             };
 
             sampler2D _MainTex;
@@ -51,39 +54,34 @@
                 v2f o;
                 UNITY_SETUP_INSTANCE_ID(v);
                 #if INSTANCING_ON
-                SampleBoneInstance(v.boneIndexes,v.boneWeights, v.vertex, v.normal);
+                SampleBoneInstance(v.boneIndexes,v.boneWeights, v.positionOS, v.normalOS);
 				#endif
-                o.diffuse=dot(v.normal,normalize(ObjSpaceLightDir(v.vertex)));
-                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.diffuse=dot(v.normalOS,normalize( TransformWorldToObjectNormal(_MainLightPosition.xyz)));
+                o.positionCS = TransformObjectToHClip(v.positionOS);
                 o.uv = v.uv;
 
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            float4 frag (v2f i) : SV_Target
             {
-                fixed4 col = tex2D(_MainTex, i.uv);
+                float4 col = tex2D(_MainTex, i.uv);
                 return col*i.diffuse;
             }
-            ENDCG
+            ENDHLSL
         }
 
         Pass
 		{
 			NAME "SHADOWCASTER"
 			Tags{"LightMode" = "ShadowCaster"}
-			CGPROGRAM
-            #include "Lighting.cginc"
+			HLSLPROGRAM
 			#pragma vertex ShadowVertex
 			#pragma fragment ShadowFragment
-            #include "AnimationInstanceInclude.cginc"
-            #pragma multi_compile_instancing
-            #pragma multi_compile _ _OPTIMIZE_1BONE _OPTIMIZE_2BONE
             struct a2fs
             {
-                half4 vertex:POSITION;
-                half3 normal:NORMAL;
-                float4 boneIndexes:TEXCOORD1;
+                A2V_SHADOW_CASTER;
+                uint4 boneIndexes:TEXCOORD1;
                 float4 boneWeights:TEXCOORD2;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
@@ -98,17 +96,17 @@
 				UNITY_SETUP_INSTANCE_ID(v);
 				v2fs o;
                 #if INSTANCING_ON
-                SampleBoneInstance(v.boneIndexes,v.boneWeights, v.vertex, v.normal);
+                SampleBoneInstance(v.boneIndexes,v.boneWeights, v.positionOS, v.normalOS);
 				#endif
-                TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
+                SHADOW_CASTER_VERTEX(v,o);
 				return o;
 			}
 
-			fixed4 ShadowFragment(v2fs i) :SV_TARGET
+			float4 ShadowFragment(v2fs i) :SV_TARGET
 			{
-				SHADOW_CASTER_FRAGMENT(i);
+                return 1;
 			}
-			ENDCG
+			ENDHLSL
 		}
     }
 }

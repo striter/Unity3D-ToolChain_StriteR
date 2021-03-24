@@ -96,7 +96,7 @@
 
 			struct a2f
 			{
-				A2F_SHADOW_CASTER;
+				A2V_SHADOW_CASTER;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -111,7 +111,7 @@
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v,o);
-				SHADOW_CASTER_FRAGMENT(v,o);
+				SHADOW_CASTER_VERTEX(v,o);
 				o.uv = TRANSFORM_TEX_INSTANCE(v.positionOS.xz,_DissolveTex);
 				return o;
 			}

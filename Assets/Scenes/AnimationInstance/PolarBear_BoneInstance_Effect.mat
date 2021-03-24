@@ -72,13 +72,13 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _InstanceFrameBegin: 0
+    - _InstanceFrameBegin: 63.1
     - _InstanceFrameEnd: 0
-    - _InstanceFrameInterpolate: 1
+    - _InstanceFrameInterpolate: 0
     - _Metallic: 0
     - _Mode: 0
     - _NoiseFlowX: 0.1
-    - _NoiseFlowY: 1
+    - _NoiseFlowY: 0.88
     - _NoisePow: 4.05
     - _NoiseStrength: 2.87
     - _OPTIMIZE: 0

@@ -99,7 +99,7 @@ Shader "Game/Effects/PlantsWaving_Vertex"
 			#pragma multi_compile_instancing
 			struct a2f
 			{
-				A2F_SHADOW_CASTER;
+				A2V_SHADOW_CASTER;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -115,7 +115,7 @@ Shader "Game/Effects/PlantsWaving_Vertex"
 				float3 positionWS = TransformObjectToWorld( v.positionOS);
 				positionWS += Wave(positionWS);
 				v.positionOS = TransformWorldToObject(positionWS);
-				SHADOW_CASTER_FRAGMENT(v,o);
+				SHADOW_CASTER_VERTEX(v,o);
 				return o;
 			}
 

@@ -12,16 +12,16 @@
     SubShader
     {
         Tags { "RenderType"="Opaque" }
-        CGINCLUDE
-            #include "UnityCG.cginc"
+        HLSLINCLUDE
             #pragma multi_compile_instancing
-            #include "UnityCG.cginc"
-            #include "AnimationInstanceInclude.cginc"
+            #include "../CommonInclude.hlsl"
+            #include "../CommonLightingInclude.hlsl"
+            #include "AnimationInstanceInclude.hlsl"
             #pragma target 3.5
-        ENDCG
+        ENDHLSL
         Pass
         {
-            CGPROGRAM
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             struct appdata
@@ -29,16 +29,16 @@
                 #if INSTANCING_ON
                 uint vertexID:SV_VertexID;
                 #endif
-                float4 vertex:POSITION;
-                float3 normal:NORMAL;
+                float3 positionOS:POSITION;
+                float3 normalOS:NORMAL;
                 float2 uv : TEXCOORD0;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
             {
+                float4 positionCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
-                float4 vertex : SV_POSITION;
                 float diffuse:TEXCOORD1;
             };
 
@@ -50,35 +50,33 @@
                 UNITY_SETUP_INSTANCE_ID(v);
                 v2f o;
                 #if INSTANCING_ON
-                SampleVertexInstance(v.vertexID, v.vertex, v.normal);
+                SampleVertexInstance(v.vertexID, v.positionOS, v.normalOS);
                 #endif
-                o.diffuse=dot(v.normal,ObjSpaceLightDir(v.vertex));
-                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.diffuse=dot(v.normalOS,TransformWorldToObjectNormal(_MainLightPosition.xyz));
+                o.positionCS = TransformObjectToHClip(v.positionOS);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            float4 frag (v2f i) : SV_Target
             {
-                fixed4 col = tex2D(_MainTex, i.uv);
+                float4 col = tex2D(_MainTex, i.uv);
                 return col*i.diffuse;
             }
-            ENDCG
+            ENDHLSL
         }
 
         Pass
 		{
 			NAME "SHADOWCASTER"
 			Tags{"LightMode" = "ShadowCaster"}
-			CGPROGRAM
-            #include "Lighting.cginc"
+			HLSLPROGRAM
 			#pragma vertex ShadowVertex
 			#pragma fragment ShadowFragment
             struct a2fs
             {
+                A2V_SHADOW_CASTER;
                 uint vertexID:SV_VertexID;
-                half4 vertex:POSITION;
-                half3 normal:NORMAL;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 				
@@ -91,16 +89,18 @@
 			{
 				UNITY_SETUP_INSTANCE_ID(v);
 				v2fs o;
-                SampleVertexInstance(v.vertexID, v.vertex,v.normal);
-				TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
+                #if INSTANCING_ON
+                SampleVertexInstance(v.vertexID, v.positionOS,v.normalOS);
+                #endif
+                SHADOW_CASTER_VERTEX(v,o);
 				return o;
 			}
 
-			fixed4 ShadowFragment(v2fs i) :SV_TARGET
+			float4 ShadowFragment(v2fs i) :SV_TARGET
 			{
-				SHADOW_CASTER_FRAGMENT(i);
+                return 1;
 			}
-			ENDCG
+			ENDHLSL
 		}
     }
 }

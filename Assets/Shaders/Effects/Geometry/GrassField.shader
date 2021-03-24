@@ -90,7 +90,7 @@
                 g2f o;
                 o.color=v.color;
                 #if UNITY_PASS_SHADOWCASTER
-                SHADOW_CASTER_FRAGMENT(v,o);
+                SHADOW_CASTER_VERTEX(v,o);
                 #else
                 o.positionCS=TransformObjectToHClip(v.positionOS.xyz);
                 #endif

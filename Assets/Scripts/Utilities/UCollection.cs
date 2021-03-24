@@ -89,17 +89,6 @@ public static class UCollection
         }
         return false;
     }
-    public static bool Any(this Array _array, Func<int, object, bool> OnEachItem)
-    {
-        int index = -1;
-        foreach (object item in _array)
-        {
-            index++;
-            if (OnEachItem(index, item))
-                return true;
-        }
-        return false;
-    }
     public static void FindAllIndexes<T>(this IEnumerable<T> _ienumerable,List<int> _indexList, Predicate<T> OnEachItem)
     {
         _indexList.Clear();

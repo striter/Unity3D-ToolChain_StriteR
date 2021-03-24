@@ -95,7 +95,7 @@
 			sampler3D _DitherMaskLOD;
 			struct a2f
 			{
-				A2F_SHADOW_CASTER;
+				A2V_SHADOW_CASTER;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 			struct v2f
@@ -110,7 +110,7 @@
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-				SHADOW_CASTER_FRAGMENT(v,o);
+				SHADOW_CASTER_VERTEX(v,o);
 				o.screenPos = ComputeScreenPos(o.positionCS);
 				return o;
 			}

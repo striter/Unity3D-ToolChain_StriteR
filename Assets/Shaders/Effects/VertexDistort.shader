@@ -90,7 +90,7 @@
 
 			struct a2f
 			{
-				A2F_SHADOW_CASTER;
+				A2V_SHADOW_CASTER;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -109,7 +109,7 @@
 				float strength=0;
 				positionWS+=GetDistortPositionWS(v.positionOS,TransformObjectToWorldNormal(v.normalOS), strength);
 				v.positionOS = TransformWorldToObject(positionWS);
-				SHADOW_CASTER_FRAGMENT(v,o);
+				SHADOW_CASTER_VERTEX(v,o);
 				return o;
 			}
 
