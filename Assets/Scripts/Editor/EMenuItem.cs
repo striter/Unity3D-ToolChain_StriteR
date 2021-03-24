@@ -9,37 +9,35 @@ namespace TEditor
     public static class EMenuItem
     {
         #region Hotkeys
-        [MenuItem("Work Flow/Hotkeys/Selected Camera Sync Scene View _F10", false, 101)]
-        static void SelectedCameraSyncSceneView()
+        [MenuItem("Work Flow/Hotkeys/Selected Object Sync Scene View &F", false, 101)]
+        static void SyncObjectToSceneView()
         {
             if (Application.isPlaying)
                 return;
-            if (m_SceneCameraSync)
+            if (m_ObjectSyncToSceneView)
             {
-                m_SceneCameraSync = null;
-                EditorApplication.update -= SyncCameraPositions;
+                m_ObjectSyncToSceneView = null;
+                EditorApplication.update -= SyncObjectPositionToSceneView;
                 return;
             }
             if (!Selection.activeGameObject)
                 return;
-            m_SceneCameraSync = Selection.activeGameObject.GetComponent<Camera>();
-            if (!m_SceneCameraSync)
-                return;
-            EditorApplication.update += SyncCameraPositions;
-            Undo.RecordObject(m_SceneCameraSync.transform, "Camera Position Sync");
+            m_ObjectSyncToSceneView = Selection.activeGameObject;
+            EditorApplication.update += SyncObjectPositionToSceneView;
+            Undo.RecordObject(m_ObjectSyncToSceneView.transform, "Camera Position Sync");
         }
-        static Camera m_SceneCameraSync;
-        static void SyncCameraPositions()
+        static GameObject m_ObjectSyncToSceneView;
+        static void SyncObjectPositionToSceneView()
         {
-            if (!m_SceneCameraSync || Selection.activeObject != m_SceneCameraSync.gameObject)
+            if (!m_ObjectSyncToSceneView || Selection.activeObject != m_ObjectSyncToSceneView)
             {
-                EditorApplication.update -= SyncCameraPositions;
-                m_SceneViewSyncObject = null;
+                EditorApplication.update -= SyncObjectPositionToSceneView;
+                m_ObjectSyncToSceneView = null;
                 return;
             }
             SceneView targetView = SceneView.sceneViews[0] as SceneView;
-            m_SceneCameraSync.transform.position = targetView.camera.transform.position;
-            m_SceneCameraSync.transform.rotation = targetView.camera.transform.rotation;
+            m_ObjectSyncToSceneView.transform.position = targetView.camera.transform.position;
+            m_ObjectSyncToSceneView.transform.rotation = targetView.camera.transform.rotation;
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         }
 
