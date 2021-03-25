@@ -6,8 +6,7 @@ namespace Rendering.ImageEffect
 {
     public class PostEffect_DepthSSAO:PostEffectBase<CameraEffect_DepthSSAO, CameraEffectParam_DepthSSAO>
     {
-        [ImageEffectOpaque]
-        protected new void OnRenderImage(RenderTexture source, RenderTexture destination)=> base.OnRenderImage(source, destination);
+        public override bool m_IsOpaqueProcess => true;
     }
 
     [System.Serializable]

@@ -11,26 +11,26 @@
 
 		Pass
 		{
-			CGPROGRAM
+			HLSLPROGRAM
 			#pragma vertex vert_img
 			#pragma fragment frag
 
-			#include "UnityCG.cginc"
+			#include "../CommonInclude.hlsl"
+			#include "CameraEffectInclude.hlsl"
 
-			sampler2D _MainTex;
-			sampler2D _NoiseTex;
+			TEXTURE2D( _NoiseTex);SAMPLER(sampler_NoiseTex);
 			float _NoiseStrength;
 			float4 _DistortParam;		//xy ViewPort z OffsetFactor;
 
-			fixed4 frag (v2f_img i) : SV_Target
+			float4 frag (v2f_img i) : SV_Target
 			{
 				float2 dir = i.uv - _DistortParam.xy;
 				float2 distort = normalize(dir)*(1 - length(dir))*_DistortParam.z;
-				float noise = tex2D(_NoiseTex,i.uv).r*_NoiseStrength;
+				float noise = SAMPLE_TEXTURE2D(_NoiseTex,sampler_NoiseTex,i.uv).r*_NoiseStrength;
 				distort *= noise;
-				return  tex2D(_MainTex, i.uv + distort);
+				return  SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv + distort);
 			}
-			ENDCG
+			ENDHLSL
 		}
 	}
 }

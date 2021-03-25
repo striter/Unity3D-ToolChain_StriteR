@@ -84,8 +84,8 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _ParticleShapeClip: 0.926
-    - _ParticleSize: 0.123
+    - _ParticleShapeClip: 0.864
+    - _ParticleSize: 0.077
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -93,8 +93,8 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DissolveEdgeColor: {r: 1.3940345, g: 1.3940345, b: 4.5128913, a: 0.56078434}
+    - _DissolveEdgeColor: {r: 2.1262183, g: 2.1262183, b: 6.8831816, a: 0.56078434}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlowDirection: {r: 0, g: 2, b: 0, a: 0}
-    - _ParticleColor: {r: 1.8051767, g: 0.85104096, b: 3.6121962, a: 0.6313726}
+    - _ParticleColor: {r: 3.2279294, g: 1.5467162, b: 6.4222345, a: 0.6313726}
   m_BuildTextureStacks: []

@@ -135,8 +135,8 @@ GameObject:
   - component: {fileID: 15725972}
   - component: {fileID: 15725971}
   - component: {fileID: 15725974}
-  - component: {fileID: 15725975}
   - component: {fileID: 15725976}
+  - component: {fileID: 15725975}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -218,20 +218,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 15725970}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b98b9eb758c45084291b31d4813e0d3b, type: 3}
+  m_Script: {fileID: 11500000, guid: b62db4376f6a80241a778bd4d3ab7a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DepthMode: 1
-  m_DepthToWorldCalculation: 0
-  m_GeometryCopyTexture: 1
-  m_GeometryCopyBlurTexture: 0
-  m_GeometryCopyBlur:
-    blurType: 0
-    blurSize: 0
-    iteration: 0
-    downSample: 0
-    angle: 0
-    vector: {x: 0, y: 0}
+  m_EffectData:
+    threshold: 2
+    intensity: 3.61
+    m_BlurParams:
+      blurType: 5
+      blurSize: 2.27
+      iteration: 5
+      downSample: 4
+      angle: -0.284
+      vector: {x: 0.5, y: 0.5}
+    debug: 0
+  m_SceneViewPreview: 0
 --- !u!114 &15725975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,22 +242,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 15725970}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c699f20d8a4cbe6459d9145e0da06fe7, type: 3}
+  m_Script: {fileID: 11500000, guid: 4a12404f1e1dc7b428e0b1fb7a5bba66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectData:
-    m_Intensity: 5
-    m_BlendMode: 1
-    m_CullingMask: -1
-    m_EnableBlur: 1
-    m_BlurParam:
-      blurType: 5
-      blurSize: 1
-      iteration: 8
-      downSample: 1
-      angle: 1
-      vector: {x: 1, y: 1}
-  m_SceneViewPreview: 1
+  m_FrustumCornersRay: 2
+  m_OpaqueBlurTexture: 0
 --- !u!114 &15725976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2561,6 +2551,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 9047a6e15cb94364f8ce9bb8cba64ea6, type: 2}
+  - {fileID: 2100000, guid: ba75645fc58004a4c959e6ebcac8a823, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2963,7 +2954,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.85
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208

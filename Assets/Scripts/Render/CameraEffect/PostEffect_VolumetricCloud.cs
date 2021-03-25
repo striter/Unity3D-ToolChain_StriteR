@@ -9,8 +9,7 @@ namespace Rendering.ImageEffect
     public enum enum_VolumetricCloud_LightMarchTimes { _4 = 4, _8 = 8, _16 = 16 }
     public class PostEffect_VolumetricCloud : PostEffectBase<CameraEffect_VolumetricCloud, CameraEffectParam_VolumetricCloud>
     {
-        [ImageEffectOpaque]
-        protected new void OnRenderImage(RenderTexture source, RenderTexture destination) => base.OnRenderImage(source, destination);
+        public override bool m_IsOpaqueProcess => true;
     }
 
     [Serializable]

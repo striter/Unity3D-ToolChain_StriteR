@@ -5,7 +5,7 @@
 		_DissolveAmount("_Dissolve Amount",Range(0,1)) = 1
 		_DissolveTex("Dissolve Map",2D) = "white"{}
 		_DissolveWidth("_Dissolve Width",Range(0,1)) = .1
-		_DissolveColor("_Dissolve Color",Color) = (1,1,1,1)
+		[HDR]_DissolveColor("_Dissolve Color",Color) = (1,1,1,1)
 	}
 	SubShader
 	{

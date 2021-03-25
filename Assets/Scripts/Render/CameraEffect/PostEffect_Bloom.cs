@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System;
+using UnityEngine.Rendering;
+
 namespace Rendering.ImageEffect
 {
     public class PostEffect_Bloom : PostEffectBase<ImageEffect_Bloom,CameraEffectParam_Bloom>
@@ -9,7 +11,7 @@ namespace Rendering.ImageEffect
     [Serializable]
     public struct CameraEffectParam_Bloom 
     {
-        [Range(0.0f, 1f)] public float threshold;
+        [Range(0.0f, 2f)] public float threshold;
         [Range(0.0f, 5)] public float intensity;
         public ImageEffectParam_Blurs m_BlurParams;
         public bool debug;
@@ -25,6 +27,12 @@ namespace Rendering.ImageEffect
     public class ImageEffect_Bloom : ImageEffectBase<CameraEffectParam_Bloom>
     {
         #region ShaderProperties
+        static int RT_ID_Sample = Shader.PropertyToID("_Bloom_Sample");
+        static int RT_ID_Blur = Shader.PropertyToID("_Bloom_Blur");
+        
+        static RenderTargetIdentifier RT_Sample = new RenderTargetIdentifier(RT_ID_Sample);
+        static RenderTargetIdentifier RT_Blur = new RenderTargetIdentifier(RT_ID_Blur);
+
         static int ID_Threshold = Shader.PropertyToID("_Threshold");
         static int ID_Intensity = Shader.PropertyToID("_Intensity");
         #endregion
@@ -52,31 +60,25 @@ namespace Rendering.ImageEffect
             _material.SetFloat(ID_Intensity, _params.intensity);
              m_Blur.DoValidate(_params.m_BlurParams);
         }
-        protected override void OnImageProcess(RenderTexture _src, RenderTexture _dst, Material _material, CameraEffectParam_Bloom _param)
+        protected override void OnExecuteBuffer(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, Material _material, CameraEffectParam_Bloom _param)
         {
-            _src.filterMode = FilterMode.Bilinear;
-            var rtW = _src.width;
-            var rtH = _src.height;
+            var rtW = _descriptor.width;
+            var rtH = _descriptor.height;
 
-            RenderTexture rt1 = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
-            RenderTexture rt2 = RenderTexture.GetTemporary(rtW, rtH, 0, _src.format);
+            _buffer.GetTemporaryRT(RT_ID_Blur, rtW, rtH, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBHalf);
+            _buffer.GetTemporaryRT(RT_ID_Sample, rtW, rtH, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBHalf);
 
-            Graphics.Blit(_src, rt1, _material, (int)enum_Pass.SampleLight);
-            
-            m_Blur.DoImageProcess(rt1, rt2,_param.m_BlurParams);
+            _buffer.Blit(_src, RT_Sample, _material, (int)enum_Pass.SampleLight);
+
+            m_Blur.ExecuteBuffer(_buffer,_descriptor, RT_Sample, RT_Blur, _param.m_BlurParams);
 
             if (_param.debug)
-            {
-                Graphics.Blit(rt2, _dst);
-            }
+                _buffer.Blit(RT_Blur, _dst);
             else
-            {
-                _material.SetTexture("_Bloom", rt2);
-                Graphics.Blit(_src, _dst, _material, (int)enum_Pass.AddBloomTex);
-            }
+                _buffer.Blit(_src, _dst, _material, (int)enum_Pass.AddBloomTex);
 
-            RenderTexture.ReleaseTemporary(rt1);
-            RenderTexture.ReleaseTemporary(rt2);
+            _buffer.ReleaseTemporaryRT(RT_ID_Sample);
+            _buffer.ReleaseTemporaryRT(RT_ID_Blur);
         }
     }
 }

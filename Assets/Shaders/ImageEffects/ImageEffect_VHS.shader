@@ -10,7 +10,7 @@
 
         Pass
         {
-            CGPROGRAM
+            HLSLPROGRAM
             #pragma vertex vert_img
             #pragma fragment frag
             #pragma multi_compile _ _SCREENCUT_HARD _SCREENCUT_SCALED
@@ -22,9 +22,8 @@
             #pragma shader_feature _LINEDISTORT
             #pragma shader_feature _PIXELDISTORT
             #pragma shader_feature _VIGNETTE
-            #include "CameraEffectInclude.hlsl"
             #include "../CommonInclude.hlsl"
-            #include "UnityCG.cginc"
+            #include "CameraEffectInclude.hlsl"
             float2 _ScreenCutTarget;
 
             #if _COLORBLEED
@@ -61,17 +60,10 @@
             float _VignetteValue;
             #endif
 
-            struct v2f
-            {
-                float2 uv : TEXCOORD0;
-                float4 vertex : SV_POSITION;
-            };
-
-
             float2 screenCut(float2 uv) {
                 return uv;
             }
-            fixed4 frag (v2f_img i) : SV_Target
+            float4 frag (v2f_img i) : SV_Target
             {
                 float2 uv=screenCut(i.uv);
                 
@@ -99,7 +91,7 @@
                 uv += step(_PixelDistortClip,pixelDistortRandom)*lerp(-1,1,pixelDistort)*_PixelDistortStrength;
                 #endif
 
-                float4 col = tex2D(_MainTex, uv);
+                float4 col = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, uv);
                 #if _COLORBLEED
                 float colorBleedOffset=0;
                 float colR,colG,colB;
@@ -107,13 +99,13 @@
                 {
                     colorBleedOffset+=_ColorBleedSize;
                     #if _COLORBLEED_R
-                    colR+=tex2D(_MainTex,uv+colorBleedOffset*_MainTex_TexelSize.xy*_ColorBleedR).r;
+                    colR+=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv+colorBleedOffset*_MainTex_TexelSize.xy*_ColorBleedR).r;
                     #endif
                     #if _COLORBLEED_G
-                    colG+=tex2D(_MainTex,uv+colorBleedOffset*_MainTex_TexelSize.xy*_ColorBleedG).g;
+                    colG+=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv+colorBleedOffset*_MainTex_TexelSize.xy*_ColorBleedG).g;
                     #endif
                     #if _COLORBLEED_B
-                    colB+=tex2D(_MainTex,uv+colorBleedOffset*_MainTex_TexelSize.xy*_ColorBleedB).b;
+                    colB+=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv+colorBleedOffset*_MainTex_TexelSize.xy*_ColorBleedB).b;
                     #endif
                 }
                 #if _COLORBLEED_R
@@ -139,7 +131,7 @@
                 #endif
                 return col;
             }
-            ENDCG
+            ENDHLSL
         }
     }
 }

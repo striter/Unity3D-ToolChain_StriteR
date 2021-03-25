@@ -24,16 +24,17 @@
 
 		Pass
 		{
-			CGPROGRAM
+			HLSLPROGRAM
 			#pragma vertex vert_img
 			#pragma fragment frag
 			#pragma shader_feature _LUT
 			#pragma shader_feature _BSC
 			#pragma shader_feature _CHANNEL_MIXER
-			#include "UnityCG.cginc"
+			#include "../CommonInclude.hlsl"
+			#include "CameraEffectInclude.hlsl"
 			
 			#if _LUT
-			sampler2D _LUTTex;
+			TEXTURE2D(_LUTTex);SAMPLER(sampler_LUTTex);
 			float4 _LUTTex_TexelSize;
 			int _LUTCellCount;
 
@@ -52,20 +53,20 @@
 				half2 uv1= float2(x1PixelCount, yPixelCount) * _LUTTex_TexelSize.xy;
 
 				half zOffset = fmod(sampleCol.b * width, 1.0h);
-				return lerp( tex2D(_LUTTex,uv0),tex2D(_LUTTex,uv1),zOffset) ;
+				return lerp( SAMPLE_TEXTURE2D(_LUTTex,sampler_LUTTex,uv0).rgb,SAMPLE_TEXTURE2D(_LUTTex,sampler_LUTTex,uv1).rgb,zOffset) ;
 			}
 			#endif
 
 			#if _BSC
-			uniform half _Saturation;
+			half _Saturation;
 			float3 Saturation(float3 c)
 			{
 				float luma =  dot(c, float3(0.2126729, 0.7151522, 0.0721750));
 				return luma.xxx + _Saturation.xxx * (c - luma.xxx);
 			}
 
-			uniform half _Brightness;
-			uniform half _Contrast;
+			half _Brightness;
+			half _Contrast;
 			half3 GetBSCCol(half3 col)
 			{
 				half3 avgCol = half3(.5h, .5h, .5h);
@@ -81,9 +82,9 @@
 			#endif
 
 			#if _CHANNEL_MIXER
-			uniform half4 _MixRed;
-			uniform half4 _MixGreen;
-			uniform half4 _MixBlue;
+			half4 _MixRed;
+			half4 _MixGreen;
+			half4 _MixBlue;
 			half GetMixerAmount(half3 col,half3 mix)
 			{
 				return col.r*mix.x+col.g*mix.y+col.b*mix.z;
@@ -101,11 +102,10 @@
 			}
 			#endif
 
-			sampler2D _MainTex;
 			half _Weight;
 			half4 frag (v2f_img i) : SV_Target
 			{
-				half3 baseCol=tex2D(_MainTex, i.uv).rgb;
+				half3 baseCol=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv).rgb;
 				half3 targetCol=baseCol;
 
 				#if _LUT
@@ -121,7 +121,7 @@
 				#endif
 				return half4(lerp(baseCol,targetCol,_Weight),1) ;
 			}
-			ENDCG
+			ENDHLSL
 		}
 	}
 }

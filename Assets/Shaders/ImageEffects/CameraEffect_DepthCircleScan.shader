@@ -11,12 +11,11 @@
 
 		Pass
 		{
-			CGPROGRAM
+			HLSLPROGRAM
 			#pragma shader_feature _MASK_TEXTURE
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#include "UnityCG.cginc"
 			#include "../CommonInclude.hlsl"
 			#include "CameraEffectInclude.hlsl"
 
@@ -28,31 +27,31 @@
 			float _FadingPow;
 
 			#if _MASK_TEXTURE
-			sampler2D _MaskTexture;
+			TEXTURE2D( _MaskTexture);SAMPLER(sampler_MaskTexture);
 			float _MaskTextureScale;
 			#endif
 
 			struct v2f
 			{
+				float4 positionCS : SV_POSITION;
 				float2 uv : TEXCOORD0;
-				float4 vertex : SV_POSITION;
 				half2 uv_depth:TEXCOORD1;
 				float3 interpolatedRay:TEXCOORD2;
 			};
 
-			v2f vert (appdata_img v)
+			v2f vert (a2v_img v)
 			{
 				v2f o;
-				o.vertex = UnityObjectToClipPos(v.vertex);
-				o.uv = v.texcoord;
-				o.uv_depth = GetDepthUV(v.texcoord);
+				o.positionCS = TransformObjectToHClip(v.positionOS);
+				o.uv = v.uv;
+				o.uv_depth = GetDepthUV(v.uv);
 				o.interpolatedRay = GetInterpolatedRay(o.uv);
 				return o;
 			}
 
-			fixed4 frag (v2f i) : SV_Target
+			float4 frag (v2f i) : SV_Target
 			{
-				float linearDepth = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,i.uv_depth));
+				float linearDepth = LinearEyeDepth(i.uv_depth);
 				float3 worldPos = _WorldSpaceCameraPos + i.interpolatedRay*linearDepth;
 				float squareDistance = sqrDistance(_Origin.xyz,worldPos);
 
@@ -61,12 +60,12 @@
 				scan *= pow(saturate(invlerp( _MinSqrDistance,_MaxSqrDistance,squareDistance)),_FadingPow)*step(squareDistance, _MaxSqrDistance);
 
 				#if _MASK_TEXTURE
-				scan *= tex2D(_MaskTexture, worldPos.xz*_MaskTextureScale).r;
+				scan *= SAMPLE_TEXTURE2D(_MaskTexture,sampler_MaskTexture, worldPos.xz*_MaskTextureScale).r;
 				#endif
-				float4 finalCol=tex2D(_MainTex,i.uv);
+				float4 finalCol=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
 				return lerp(finalCol,finalCol*_Color, scan);
 			}
-			ENDCG
+			ENDHLSL
 		}
 	}
 }

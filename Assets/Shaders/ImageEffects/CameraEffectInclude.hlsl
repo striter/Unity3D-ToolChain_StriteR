@@ -1,16 +1,9 @@
-﻿sampler2D _MainTex;
+﻿
+TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
 half4 _MainTex_TexelSize;
-float4 _FrustumCornersRayBL;
-float4 _FrustumCornersRayBR;
-float4 _FrustumCornersRayTL;
-float4 _FrustumCornersRayTR;
 
-float4 GetInterpolatedRay(float2 uv)
-{
-	bool right  =uv.x > .5;
-	bool top = uv.y > .5;
-	return right ? (top ? _FrustumCornersRayTR : _FrustumCornersRayBR) : (top ? _FrustumCornersRayTL : _FrustumCornersRayBL);
-}
+TEXTURE2D( _CameraDepthTexture); SAMPLER(sampler_CameraDepthTexture);
+half4 _CameraDepthTexture_TexelSize;
 
 float2 GetDepthUV(float2 uv)
 {
@@ -18,12 +11,11 @@ float2 GetDepthUV(float2 uv)
 	if (_MainTex_TexelSize.y < 0)
 		uv.y = 1 - uv.y;
 #endif
-	return uv;
+    return uv;
 }
 
-sampler2D _CameraDepthTexture;
-
-float LinearEyeDepth(float2 uv){return LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv));}
+float LinearEyeDepth(float2 uv){return LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, uv),_ZBufferParams);}
+float Linear01Depth(float2 uv){return Linear01Depth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, uv),_ZBufferParams);}
 
 float3 ClipSpaceNormalFromDepth(float2 uv)
 {
@@ -37,4 +29,37 @@ float3 ClipSpaceNormalFromDepth(float2 uv)
     float3 p1 = float3(offset1, depth1 - depth);
     float3 p2 = float3(offset2, depth2 - depth);
     return normalize(cross(p1, p2));
+}
+
+float3 _FrustumCornersRayBL;
+float3 _FrustumCornersRayBR;
+float3 _FrustumCornersRayTL;
+float3 _FrustumCornersRayTR;
+
+float3 GetInterpolatedRay(float2 uv)
+{
+    bool right = uv.x > .5;
+    bool top = uv.y > .5;
+    return right ? (top ? _FrustumCornersRayTR : _FrustumCornersRayBR) : (top ? _FrustumCornersRayTL : _FrustumCornersRayBL);
+}
+
+
+struct a2v_img
+{
+    float3 positionOS : POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+struct v2f_img
+{
+    float4 positionCS : SV_Position;
+    float2 uv : TEXCOORD0;
+};
+
+v2f_img vert_img(a2v_img v)
+{
+    v2f_img o;
+    o.positionCS = TransformObjectToHClip(v.positionOS);
+    o.uv = v.uv;
+    return o;
 }

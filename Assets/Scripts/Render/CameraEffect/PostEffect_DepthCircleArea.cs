@@ -7,8 +7,7 @@ namespace Rendering.ImageEffect
 {
     public class PostEffect_DepthCircleArea : PostEffectBase<CameraEffect_DepthCircleArea, PostEffectParam_DepthCirCleArea>
     {
-        [ImageEffectOpaque]
-        new void OnRenderImage(RenderTexture _src, RenderTexture _dst) => base.OnRenderImage(_src, _dst);
+        public override bool m_IsOpaqueProcess => true;
 
 #if UNITY_EDITOR
         public bool m_DrawGizmos = true;

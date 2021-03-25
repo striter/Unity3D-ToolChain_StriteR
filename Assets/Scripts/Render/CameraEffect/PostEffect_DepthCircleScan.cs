@@ -7,7 +7,7 @@ namespace Rendering.ImageEffect
 {
     public class PostEffect_DepthCircleScan : PostEffectBase<CameraEffect_DepthCircleScan, CameraEffectParam_DepthCircleScan>
     {
-
+        public override bool m_IsOpaqueProcess => true;
         SingleCoroutine m_ScanCoroutine;
         public void StartDepthScanCircle(Vector3 origin,  float radius = 20, float duration = 1.5f)
         {
@@ -21,8 +21,6 @@ namespace Rendering.ImageEffect
                 OnValidate();
             }, 0, 1, duration, () => { enabled = false; }));
         }
-        [ImageEffectOpaque]
-        new void OnRenderImage(RenderTexture _src, RenderTexture _dst) => base.OnRenderImage(_src, _dst);
 
 #if UNITY_EDITOR
         public bool m_DrawGizmos = true;

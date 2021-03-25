@@ -1,5 +1,7 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Rendering;
+
 namespace Rendering.ImageEffect
 {
     public class PostEffect_DepthOfField : PostEffectBase<CameraEffect_DepthOfField, CameraEffectParam_DepthOfField>
@@ -27,9 +29,11 @@ namespace Rendering.ImageEffect
     public class CameraEffect_DepthOfField : ImageEffectBase<CameraEffectParam_DepthOfField>
     {
         #region ShaderID
+        static int RT_ID_Blur = Shader.PropertyToID("_BlurTex");
+        static RenderTargetIdentifier RT_Blur = new RenderTargetIdentifier(RT_ID_Blur);
+
         static int ID_FocalStart = Shader.PropertyToID("_FocalStart");
         static int ID_FocalLerp = Shader.PropertyToID("_FocalLerp");
-        static int ID_BlurTexture = Shader.PropertyToID("_BlurTex");
         static int ID_BlurSize = Shader.PropertyToID("_BlurSize");
         const string KW_UseBlurDepth = "_UseBlurDepth";
         #endregion
@@ -50,13 +54,13 @@ namespace Rendering.ImageEffect
             _material.SetFloat(ID_BlurSize, _params.m_DepthBlurSize);
             m_Blur.DoValidate(_params.m_BlurParams);
         }
-        protected override void OnImageProcess(RenderTexture _src, RenderTexture _dst, Material _material, CameraEffectParam_DepthOfField _param)
+        protected override void OnExecuteBuffer(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, Material _material, CameraEffectParam_DepthOfField _param)
         {
-            RenderTexture _tempBlurTex = RenderTexture.GetTemporary(_src.width, _src.height, 0, _src.format);
-            m_Blur.DoImageProcess(_src, _tempBlurTex,_param.m_BlurParams);
-            _material.SetTexture(ID_BlurTexture, _tempBlurTex);
-            Graphics.Blit(_src, _dst, _material);
-            RenderTexture.ReleaseTemporary(_tempBlurTex);
+            base.OnExecuteBuffer(_buffer, _descriptor, _src, _dst, _material, _param);
+            _buffer.GetTemporaryRT(RT_ID_Blur,_descriptor.width,_descriptor.height,0,FilterMode.Bilinear,RenderTextureFormat.ARGB32);
+            m_Blur.ExecuteBuffer(_buffer,_descriptor,_src, RT_Blur, _param.m_BlurParams);
+            _buffer.Blit(_src, _dst, _material);
+            _buffer.ReleaseTemporaryRT(RT_ID_Blur);
         }
 
     }

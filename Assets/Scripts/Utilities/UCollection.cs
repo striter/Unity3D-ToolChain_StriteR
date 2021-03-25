@@ -133,6 +133,17 @@ public static class UCollection
         }
         return items;
     }
+    public static List<Y> FindAll<T,Y>(this IEnumerable<T> _ienumerable, Func<T,Y> OnEachItem) where T:class  where Y:class
+    {
+        List<Y> transformItems = new List<Y>();
+        foreach (T item in _ienumerable)
+        {
+            Y newItem = OnEachItem(item);
+            if (newItem!=null)
+                transformItems.Add(newItem);
+        }
+        return transformItems;
+    }
     public static void Traversal<T>(this IEnumerable<T> _ienumerable, Action<T> OnEachItem)
     {
         foreach (T item in _ienumerable)
@@ -306,6 +317,19 @@ public static class UCollection
         Y[] dstArray = new Y[src.Count()];
         src.Traversal((index, srcItem) => dstArray[index] = GetDstItem(index,srcItem));
         return dstArray;
+    }
+
+    public static Dictionary<T,List<Y>> ToListDictionary<T,Y>(this IEnumerable<Y> _items, Func<Y,T> OnEachItem)
+    {
+        Dictionary<T, List<Y>> dictionary = new Dictionary<T, List<Y>>();
+        foreach(var item in _items)
+        {
+            T key = OnEachItem(item);
+            if (!dictionary.ContainsKey(key))
+                dictionary.Add(key, new List<Y>());
+            dictionary[key].Add(item);
+        }
+        return dictionary;
     }
     public static List<Y> ToList<T, Y>(this IEnumerable<T> src, Func<T, Y> GetDstItem)
     {

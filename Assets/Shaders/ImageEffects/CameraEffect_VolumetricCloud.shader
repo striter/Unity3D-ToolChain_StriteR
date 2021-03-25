@@ -10,15 +10,13 @@
 
         Pass
         {
-            CGPROGRAM
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-
-            #include "UnityCG.cginc"
-            #include "Lighting.cginc"
-            #include "CameraEffectInclude.hlsl"
+            
             #include "../CommonInclude.hlsl"
             #include "../BoundingCollision.hlsl"
+            #include "CameraEffectInclude.hlsl"
             #pragma shader_feature _LIGHTMARCH
             #pragma shader_feature _LIGHTSCATTER
 
@@ -41,11 +39,11 @@
             sampler2D _ColorRamp;
 
             sampler3D _MainNoise;
-            float4 _MainNoiseScale;
-            float4 _MainNoiseFlow;
+            float3 _MainNoiseScale;
+            float3 _MainNoiseFlow;
             sampler2D _ShapeMask;
-            float4 _ShapeMaskScale;
-            float4 _ShapeMaskFlow;
+            float2 _ShapeMaskScale;
+            float2 _ShapeMaskFlow;
 
             float SampleDensity(float3 worldPos)  {
                 float smoothParam=(worldPos.y);
@@ -75,38 +73,31 @@
             }
             #endif
 
-            struct appdata
-            {
-                float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
-            };
-
             struct v2f
             {
+                float4 positionCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
-                float3 viewDir:TEXCOORD1;
-                float3 lightDir:TEXCOORD2;
-                float4 vertex : SV_POSITION;
+                float3 viewDirWS:TEXCOORD1;
             };
 
-            v2f vert (appdata v)
+            v2f vert (a2v_img v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.positionCS = TransformObjectToHClip(v.positionOS);
                 o.uv = v.uv;
-                o.viewDir=GetInterpolatedRay(v.vertex);
-                o.lightDir=_WorldSpaceLightPos0;
+                o.viewDirWS=GetInterpolatedRay(v.positionOS);
                 return o;
             }
 
 
-            float4 frag (v2f _input) : SV_Target
+            float4 frag (v2f i) : SV_Target
             {
-                float3 marchDir=normalize(_input.viewDir);
-                float3 cameraPos=_WorldSpaceCameraPos;
-                float distance1=PRayDistance(float3(0,1,0),_VerticalStart,cameraPos,marchDir);
-                float distance2=PRayDistance(float3(0,1,0),_VerticalEnd,cameraPos,marchDir);
-				float linearDepth = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,_input.uv));
+                float3 marchDirWS=normalize(i.viewDirWS);
+                float3 lightDirWS=normalize(_MainLightPosition.xyz);
+                float3 cameraPos=GetCameraPositionWS();
+                float distance1=PRayDistance(float3(0,1,0),_VerticalStart,cameraPos,marchDirWS);
+                float distance2=PRayDistance(float3(0,1,0),_VerticalEnd,cameraPos,marchDirWS);
+				float linearDepth = LinearEyeDepth(i.uv);
                 distance1=min(linearDepth,distance1);
                 distance2=min(linearDepth,distance2);
                 float3 marchBegin=cameraPos;
@@ -118,7 +109,7 @@
                 else if(distance1>0)
                 {
                     float distanceOffset=distance1-distance2;
-                    marchBegin=_WorldSpaceCameraPos+marchDir* (distanceOffset>0?distance2:distance1);
+                    marchBegin=_WorldSpaceCameraPos+marchDirWS* (distanceOffset>0?distance2:distance1);
                     marchDistance=abs(distanceOffset);
                 }
 
@@ -126,10 +117,9 @@
                 float lightIntensity=1;
                 if(marchDistance>0)
                 {
-                    float3 lightDir=normalize(_input.lightDir);
                     float scatter=1;
                     #if _LIGHTSCATTER
-                    scatter=(1-smoothstep(_ScatterRange,1,dot(marchDir,lightDir))*_ScatterStrength);
+                    scatter=(1-smoothstep(_ScatterRange,1,dot(marchDirWS,lightDirWS))*_ScatterStrength);
                     #endif
                     float cloudMarchDst= _Distance/_RayMarchTimes;
                     float cloudMarchParam=1.0/_RayMarchTimes;
@@ -137,15 +127,15 @@
                     float lightMarchDst=_Distance/_LightMarchTimes/2;
                     float dstMarched=0;
                     float totalDensity=0;
-                    for(int i=0;i<_RayMarchTimes;i++)
+                    for(int index=0;index<_RayMarchTimes;index++)
                     {
-                        float3 marchPos=marchBegin+marchDir*dstMarched;
+                        float3 marchPos=marchBegin+marchDirWS*dstMarched;
                         float density=SampleDensity(marchPos)*cloudMarchParam;
                         if(density>0)
                         {
                             cloudDensity*= exp(-density*_Opacity);
                             #if _LIGHTMARCH
-                            lightIntensity *= exp(-density*scatter*cloudDensity*lightMarchParam*lightMarch(marchPos,lightDir,lightMarchDst));
+                            lightIntensity *= exp(-density*scatter*cloudDensity*lightMarchParam*lightMarch(marchPos,lightDirWS,lightMarchDst));
                             #else
                             lightIntensity -= density*scatter*cloudDensity*lightMarchParam;
                             #endif
@@ -158,12 +148,12 @@
                 }
 
                 float3 rampCol=tex2D(_ColorRamp,  lightIntensity).rgb;
-                float3 lightCol= lerp(rampCol,_LightColor0.rgb, lightIntensity);
-                float3 baseCol = tex2D(_MainTex, _input.uv);
+                float3 lightCol= lerp(rampCol,_MainLightColor.rgb, lightIntensity);
+                float3 baseCol = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv).rgb;
                 float3 finalCol=lerp(lightCol,baseCol, cloudDensity) ;
                 return float4(finalCol,1) ;
             }
-            ENDCG
+            ENDHLSL
         }
     }
 }

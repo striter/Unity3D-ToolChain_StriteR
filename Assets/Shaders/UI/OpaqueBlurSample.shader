@@ -10,8 +10,9 @@
 
 			[Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip("Use Alpha Clip", Float) = 0
 	}
-	SubShader { 
-			Tags
+	SubShader 
+	{ 
+		Tags
 		{
 			"Queue" = "Transparent"
 			"IgnoreProjector" = "True"
@@ -27,55 +28,54 @@
 			ReadMask[_StencilReadMask]
 			WriteMask[_StencilWriteMask]
 		}
-			LOD 200
+		LOD 200
 
-			Cull Off
-			Lighting Off
-			ZWrite Off
-			ZTest[unity_GUIZTestMode]
-			Blend SrcAlpha OneMinusSrcAlpha
-			ColorMask[_ColorMask]
+		Cull Off
+		Lighting Off
+		ZWrite Off
+		ZTest[unity_GUIZTestMode]
+		Blend SrcAlpha OneMinusSrcAlpha
+		ColorMask[_ColorMask]
 
-			PASS
+		PASS
 		{
+			CGPROGRAM
+			#pragma target 2.0
+			#pragma vertex vert
+			#pragma fragment frag
+			#pragma multi_compile __ UNITY_UI_ALPHACLIP
+			#include "UnityCG.cginc"
+			sampler2D _MainTex;
+			sampler2D _OpaqueBlurTexture;
 
-		CGPROGRAM
-#pragma target 2.0
-#pragma vertex vert
-#pragma fragment frag
-#pragma multi_compile __ UNITY_UI_ALPHACLIP
-#include "UnityCG.cginc"
-		sampler2D _MainTex;
-	sampler2D _CameraUIOverlayBlurTexture;
-
-	struct a2f
-	{
-		float4 vertex   : POSITION;
-		float4 color    : COLOR;
-		float2 texcoord : TEXCOORD0;
-	};
-	struct v2f
-	{
-		float4 vertex   : SV_POSITION;
-		fixed4 color : COLOR;
-		half2 uv  : TEXCOORD0;
-		float2 screenPos:TEXCOORD1;
-	};
-	v2f vert(a2f i)
-	{
-		v2f o;
-		o.vertex = UnityObjectToClipPos(i.vertex);
-		float4 screenPos = ComputeScreenPos(o.vertex);
-		o.screenPos = screenPos.xy / screenPos.w;
-		o.uv = i.texcoord;
-		o.color = i.color;
-		return o;
-	}
-	fixed4 frag(v2f v) :COLOR
-	{
-	return  tex2D(_CameraUIOverlayBlurTexture,v.screenPos)*v.color;
-	}
-	ENDCG
-	}
+			struct a2f
+			{
+				float4 vertex   : POSITION;
+				float4 color    : COLOR;
+				float2 texcoord : TEXCOORD0;
+			};
+			struct v2f
+			{
+				float4 vertex   : SV_POSITION;
+				fixed4 color : COLOR;
+				half2 uv  : TEXCOORD0;
+				float2 screenPos:TEXCOORD1;
+			};
+			v2f vert(a2f i)
+			{
+				v2f o;
+				o.vertex = UnityObjectToClipPos(i.vertex);
+				float4 screenPos = ComputeScreenPos(o.vertex);
+				o.screenPos = screenPos.xy / screenPos.w;
+				o.uv = i.texcoord;
+				o.color = i.color;
+				return o;
+			}
+			float4 frag(v2f v) :COLOR
+			{
+				return  tex2D(_OpaqueBlurTexture,v.screenPos)*v.color;
+			}
+		ENDCG
+		}
 	}
 }

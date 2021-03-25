@@ -11,16 +11,15 @@
 
 		Pass
 		{
-			CGPROGRAM
+			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#include "UnityCG.cginc"
 			#include "../CommonInclude.hlsl"
 			#include "CameraEffectInclude.hlsl"
 			#pragma multi_compile _ _CONVOLUTION_SOBEL
 			#pragma multi_compile _ _DETECT_COLOR _DETECT_NORMAL
-			#pragma shader_feature _COLOREPLACE
+			#pragma shader_feature _COLORREPLACE
 			#pragma shader_feature _NORMALDETECT
 
 			half4 _OutlineColor;
@@ -30,15 +29,15 @@
 
 			struct v2f
 			{
-				half4 vertex : SV_POSITION;
+				half4 positionCS : SV_POSITION;
 				half2 uv[9] : TEXCOORD0;
 			};
 
-			v2f vert (appdata_img v)
+			v2f vert (a2v_img v)
 			{
 				v2f o;
-				o.vertex = UnityObjectToClipPos(v.vertex);
-				half2 uv = v.texcoord;
+				o.positionCS = TransformObjectToHClip(v.positionOS);
+				half2 uv = v.uv;
 				half2 pixelOffset=_OutlineWidth*_MainTex_TexelSize.xy;
                 o.uv[0] = uv + pixelOffset * half2(-1, -1);
                 o.uv[1] = uv + pixelOffset * half2(0, -2);
@@ -53,7 +52,7 @@
 			}
 
 
-			fixed4 frag (v2f i) : SV_Target
+			float4 frag (v2f i) : SV_Target
 			{
 				#if _CONVOLUTION_SOBEL
 				const half Gx[9]={-1,-2,-1,0,0,0,1,2,1};
@@ -73,7 +72,7 @@
 					#elif _DETECT_NORMAL
 					diff=abs(dot(ClipSpaceNormalFromDepth(i.uv[it]),float3(0,0,-1)));
 					#else
-					diff=Linear01Depth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv[it]));
+					diff=Linear01Depth(i.uv[it]);
 					#endif
 					edgeX+=diff*Gx[it];
 					edgeY+=diff*Gy[it];
@@ -83,13 +82,13 @@
 
 				float4 outlineColor=_OutlineColor;
 				outlineColor.a*=edgeDetect;
-				#if _COLOREPLACE
+				#if _COLORREPLACE
 				return AlphaBlend(_ReplaceColor,outlineColor);
 				#else
-				return AlphaBlend(tex2D(_MainTex,i.uv[4]),outlineColor);
+				return AlphaBlend(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv[4]),outlineColor);
 				#endif
 			}
-			ENDCG
+			ENDHLSL
 		}
 	}
 }

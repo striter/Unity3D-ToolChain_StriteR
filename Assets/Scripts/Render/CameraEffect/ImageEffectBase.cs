@@ -1,6 +1,9 @@
 ﻿
 using System;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+
 namespace Rendering.ImageEffect
 {
     [Serializable]
@@ -9,7 +12,7 @@ namespace Rendering.ImageEffect
         Material m_Material;
         public ImageEffectBase()
         {
-            m_Material = URender.CreateMaterial(this.GetType());
+            m_Material = USRP.CreateMaterial(this.GetType());
         }
         public virtual void Destroy()
         {
@@ -19,45 +22,47 @@ namespace Rendering.ImageEffect
             m_Material = null;
         }
 
-
-        public void DoImageProcess(RenderTexture _src, RenderTexture _dst,T _data)
-        {
-            if (m_Material == null)
-            {
-                Graphics.Blit(_src, _dst);
-                return;
-            }
-            OnImageProcess(_src, _dst, m_Material, _data);
-        }
         public void DoValidate(T _data)
         {
             if (m_Material == null)
                 return;
             OnValidate(_data, m_Material);
         }
-
-        protected virtual void OnImageProcess(RenderTexture _src,RenderTexture _dst,Material _material, T _param)
+        protected virtual void OnValidate(T _params, Material _material)
         {
-            Graphics.Blit(_src, _dst, _material);
+
         }
-
-        protected virtual void OnValidate(T _params,Material _material)
+        public void ExecuteBuffer(CommandBuffer _buffer,RenderTextureDescriptor _descriptor, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, T _data)
         {
-
+            if (m_Material == null)
+            {
+                _buffer.Blit(_src, _dst);
+                return;
+            }
+            OnExecuteBuffer(_buffer, _descriptor, _src, _dst, m_Material, _data);
+        }
+        protected virtual void OnExecuteBuffer(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, Material _material, T _param)
+        {
+            _buffer.Blit(_src, _dst, _material);
         }
     }
-
-    [DisallowMultipleComponent,RequireComponent(typeof(Camera))]
-    public partial class PostEffectBase<T,Y> : MonoBehaviour where T : ImageEffectBase<Y>, new() where Y:struct
+    [ExecuteInEditMode,RequireComponent(typeof(Camera))]
+    public abstract class APostEffectBase:MonoBehaviour
     {
-        public Y m_EffectData;
+        public abstract bool m_IsOpaqueProcess { get; }
+        public abstract void ExecutePostProcess(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _src, RenderTargetIdentifier _dst);
+    }
+
+    public partial class PostEffectBase<T,Y> : APostEffectBase where T : ImageEffectBase<Y>, new() where Y:struct
+    {
+        public Y m_EffectData=USRP.GetDefaultPostProcessData<Y>();
         protected T m_Effect { get; private set; }
         protected Camera m_Camera { get; private set; }
-        protected virtual void Awake()=>Init();
-        protected virtual void OnDestroy()=>Destroy();
+        protected void Awake()=>Init();
+        protected void OnDestroy()=>Destroy();
         public virtual void OnValidate() => m_Effect?.DoValidate(m_EffectData);
         void OnDidApplyAnimationProperties() => OnValidate();       //Undocumented Magic Fucntion ,Triggered By AnimationClip
-        void Reset() => m_EffectData = (Y) typeof(Y).GetField("m_Default", System.Reflection.BindingFlags.Static| System.Reflection.BindingFlags.Public).GetValue(null);     //Get Default Value By Reflection
+        void Reset() => m_EffectData = USRP.GetDefaultPostProcessData<Y>();
         void Init()
         {
             if (m_Effect == null)
@@ -68,35 +73,35 @@ namespace Rendering.ImageEffect
             }
             OnValidate();
         }
+        public override bool m_IsOpaqueProcess => false;
+        public override void ExecutePostProcess(CommandBuffer _buffer,RenderTextureDescriptor _descriptor, RenderTargetIdentifier _src, RenderTargetIdentifier _dst)
+        {
+            if (m_Effect == null)
+            {
+                _buffer.Blit(_src, _dst);
+                return;
+            }
 
-
-        protected virtual void OnEffectCreate(T _effect) { }
-
+            m_Effect.ExecuteBuffer(_buffer,_descriptor, _src, _dst, m_EffectData);
+        }
         void Destroy()
         {
             if (m_Effect == null)
                 return;
 
             m_Effect.Destroy();
+            OnEffectDestroy();
             m_Effect = null;
         }
-
-        protected void OnRenderImage(RenderTexture _src, RenderTexture _dst)
-        {
-            if (m_Effect == null)
-            {
-                Graphics.Blit(_src, _dst);
-                return;
-            }
-
-            m_Effect.DoImageProcess(_src, _dst,m_EffectData);
-        }
+        protected virtual void OnEffectCreate(T _effect) { }
+        protected virtual void OnEffectDestroy() { }
     }
+
 
 #if UNITY_EDITOR
     #region Editor Preview
     [ExecuteInEditMode]
-    public partial class PostEffectBase<T, Y> : MonoBehaviour where T : ImageEffectBase<Y>, new() where Y : struct
+    public partial class PostEffectBase<T, Y> : APostEffectBase where T : ImageEffectBase<Y>, new() where Y : struct
     {
         public bool m_SceneViewPreview = false;
         PostEffectBase<T, Y> m_SceneCameraEffect = null;
@@ -105,15 +110,12 @@ namespace Rendering.ImageEffect
         {
             if (!EditorInitAvailable())
                 return;
-
             Init();
-
             if (m_SceneCameraEffect)
             {
                 m_SceneCameraEffect.m_EffectData = m_EffectData;
                 m_SceneCameraEffect.OnValidate();
             }
-
             if (m_SceneViewPreview)
                 InitSceneCameraEffect();
             else
@@ -136,7 +138,6 @@ namespace Rendering.ImageEffect
         {
             if (!m_SceneCameraEffect)
                 return;
-
             GameObject.DestroyImmediate(m_SceneCameraEffect);
             m_SceneCameraEffect = null;
         }
