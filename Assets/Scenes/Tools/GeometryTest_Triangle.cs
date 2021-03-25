@@ -10,6 +10,7 @@ namespace BoundingCollisionTest
         public Vector3 m_Origin=new Vector3(0,2,0),m_Direction= new Vector3(-.1f,-1,.1f);
         public bool m_RayDirectionCheck = true;
         public bool m_PlaneDirectionCheck = true;
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.green;
@@ -33,5 +34,6 @@ namespace BoundingCollisionTest
                 Gizmos_Extend.DrawArrow(ray.origin,Quaternion.LookRotation(ray.direction),.5f,.1f);
             Gizmos.DrawLine(ray.origin,ray.GetPoint(distance));
         }
+#endif
     }
 }
