@@ -26,9 +26,7 @@
             #pragma fragment frag
             struct appdata
             {
-                #if INSTANCING_ON
                 uint vertexID:SV_VertexID;
-                #endif
                 float3 positionOS:POSITION;
                 float3 normalOS:NORMAL;
                 float2 uv : TEXCOORD0;
@@ -49,9 +47,7 @@
             {
                 UNITY_SETUP_INSTANCE_ID(v);
                 v2f o;
-                #if INSTANCING_ON
                 SampleVertexInstance(v.vertexID, v.positionOS, v.normalOS);
-                #endif
                 o.diffuse=dot(v.normalOS,TransformWorldToObjectNormal(_MainLightPosition.xyz));
                 o.positionCS = TransformObjectToHClip(v.positionOS);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
@@ -89,9 +85,7 @@
 			{
 				UNITY_SETUP_INSTANCE_ID(v);
 				v2fs o;
-                #if INSTANCING_ON
                 SampleVertexInstance(v.vertexID, v.positionOS,v.normalOS);
-                #endif
                 SHADOW_CASTER_VERTEX(v,o);
 				return o;
 			}

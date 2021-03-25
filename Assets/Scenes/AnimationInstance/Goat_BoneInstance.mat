@@ -84,7 +84,7 @@ Material:
     - _GlossyReflections: 1
     - _InstanceFrameBegin: 0
     - _InstanceFrameEnd: 0
-    - _InstanceFrameInterpolate: 1
+    - _InstanceFrameInterpolate: 0
     - _Metallic: 0
     - _Mode: 0
     - _OPTIMIZE: 0

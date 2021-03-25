@@ -15,13 +15,13 @@
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#include "../CommonInclude.hlsl"
-			#include "CameraEffectInclude.hlsl"
 			#pragma multi_compile _ _CONVOLUTION_SOBEL
 			#pragma multi_compile _ _DETECT_COLOR _DETECT_NORMAL
 			#pragma shader_feature _COLORREPLACE
 			#pragma shader_feature _NORMALDETECT
-
+			
+			#include "../CommonInclude.hlsl"
+			#include "CameraEffectInclude.hlsl"
 			half4 _OutlineColor;
 			half _OutlineWidth;
 			half _Bias;

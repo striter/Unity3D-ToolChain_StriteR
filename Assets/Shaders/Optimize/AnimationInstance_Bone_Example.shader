@@ -33,10 +33,8 @@
                 float3 positionOS : POSITION;
                 float3 normalOS:NORMAL;
                 float2 uv : TEXCOORD0;
-                #if INSTANCING_ON
                 float4 boneIndexes:TEXCOORD1;
                 float4 boneWeights:TEXCOORD2;
-                #endif
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -47,15 +45,13 @@
                 float diffuse:TEXCOORD1;
             };
 
-            sampler2D _MainTex;
+            TEXTURE2D( _MainTex);SAMPLER(sampler_MainTex);
 
             v2f vert (appdata v)
             {
                 v2f o;
                 UNITY_SETUP_INSTANCE_ID(v);
-                #if INSTANCING_ON
                 SampleBoneInstance(v.boneIndexes,v.boneWeights, v.positionOS, v.normalOS);
-				#endif
                 o.diffuse=dot(v.normalOS,normalize( TransformWorldToObjectNormal(_MainLightPosition.xyz)));
                 o.positionCS = TransformObjectToHClip(v.positionOS);
                 o.uv = v.uv;
@@ -65,7 +61,7 @@
 
             float4 frag (v2f i) : SV_Target
             {
-                float4 col = tex2D(_MainTex, i.uv);
+                float4 col = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv);
                 return col*i.diffuse;
             }
             ENDHLSL
@@ -95,9 +91,7 @@
 			{
 				UNITY_SETUP_INSTANCE_ID(v);
 				v2fs o;
-                #if INSTANCING_ON
                 SampleBoneInstance(v.boneIndexes,v.boneWeights, v.positionOS, v.normalOS);
-				#endif
                 SHADOW_CASTER_VERTEX(v,o);
 				return o;
 			}

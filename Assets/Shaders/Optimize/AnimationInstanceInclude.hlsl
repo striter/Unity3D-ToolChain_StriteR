@@ -30,19 +30,15 @@ float4x4 SampleBoneMatrix(uint sampleFrame,uint4 boneIndexes,float4 boneWeights)
 
 void SampleBoneInstance(uint4 boneIndexes,float4 boneWeights,inout float3 position,inout float3 normal)
 {
-#if INSTANCING_ON
     float4x4 sampleMatrix = lerp(SampleBoneMatrix(UNITY_ACCESS_INSTANCED_PROP(PropsAnimInstance, _InstanceFrameBegin), boneIndexes, boneWeights), SampleBoneMatrix(UNITY_ACCESS_INSTANCED_PROP(PropsAnimInstance, _InstanceFrameEnd), boneIndexes, boneWeights), UNITY_ACCESS_INSTANCED_PROP(PropsAnimInstance, _InstanceFrameInterpolate));
     normal=mul((float3x3)sampleMatrix,normal);
     position=mul(sampleMatrix,float4(position,1)).xyz;
-#endif
 }
 
 void SampleBoneInstance(uint4 boneIndexes, float4 boneWeights, inout float3 position)
 {
-#if INSTANCING_ON
     float4x4 sampleMatrix = lerp(SampleBoneMatrix(UNITY_ACCESS_INSTANCED_PROP(PropsAnimInstance, _InstanceFrameBegin), boneIndexes, boneWeights), SampleBoneMatrix(UNITY_ACCESS_INSTANCED_PROP(PropsAnimInstance, _InstanceFrameEnd), boneIndexes, boneWeights), UNITY_ACCESS_INSTANCED_PROP(PropsAnimInstance, _InstanceFrameInterpolate));
     position=mul(sampleMatrix,float4(position,1)).xyz;
-#endif
 }
             
 float3 SampleVertex(uint vertexID,uint frame)

@@ -91,7 +91,7 @@
 
 				#if _NORMALSAMPLE_UV1||_NORMALSAMPLE_UV1||_NORMALSAMPLE_UV2||_NORMALSAMPLE_UV3||_NORMALSAMPLE_UV4||_NORMALSAMPLE_UV5||_NORMALSAMPLE_UV6||_NORMALSAMPLE_UV7
 				float3x3 TBNOS=float3x3(v.tangentOS.xyz,cross(v.normalOS,v.tangentOS.xyz)*v.tangentOS.w,v.normalOS);
-				normalOS=mul(normalnormalOSTBNOS);
+				normalOS=mul(normalOS,TBNOS);
 				#endif
 				
 				#if _CLIPSPACEADPATION

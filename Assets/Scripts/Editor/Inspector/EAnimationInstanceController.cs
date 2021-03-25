@@ -38,6 +38,7 @@ namespace TEditor
             m_PreviewTarget = GameObject.Instantiate(((Component)target).gameObject).GetComponent<AnimationInstanceController>();
             m_Preview.AddSingleGO(m_PreviewTarget.gameObject);
             m_PreviewMeshRenderer = m_PreviewTarget.GetComponent<MeshRenderer>();
+            m_PreviewMeshRenderer.sharedMaterial.enableInstancing = true;
             m_TargetBlock = new MaterialPropertyBlock();
             m_PreviewTarget.transform.position = Vector3.zero;
             m_PreviewTarget.Init();
@@ -120,7 +121,6 @@ namespace TEditor
         {
             if(m_PreviewReplay&&m_PreviewTarget.GetScale()>=1)
                 m_PreviewTarget.SetTime(0f);
-
 
             m_PreviewTarget.Tick(0.012f* m_PreviewTickSpeed,m_TargetBlock);
             m_PreviewTarget.m_MeshRenderer.SetPropertyBlock(m_TargetBlock);
