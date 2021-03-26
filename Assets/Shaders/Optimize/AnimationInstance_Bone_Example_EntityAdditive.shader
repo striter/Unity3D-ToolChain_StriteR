@@ -47,10 +47,8 @@
             {
                 float3 positionOS : POSITION;
                 float2 uv : TEXCOORD0;
-                #if INSTANCING_ON
                 float4 boneIndexes:TEXCOORD1;
                 float4 boneWeights:TEXCOORD2;
-                #endif
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -66,9 +64,7 @@
                 v2f o;
                 UNITY_SETUP_INSTANCE_ID(v);
                 UNITY_TRANSFER_INSTANCE_ID(v,o);
-                #if INSTANCING_ON
                 SampleBoneInstance(v.boneIndexes,v.boneWeights, v.positionOS);
-				#endif
                 o.positionCS = TransformObjectToHClip(v.positionOS);
                 o.uv = TRANSFORM_TEX_INSTANCE(v.uv,_NoiseTex);
                 o.uv+=_Time.y*float2(INSTANCE(_NoiseFlowX),INSTANCE(_NoiseFlowY));

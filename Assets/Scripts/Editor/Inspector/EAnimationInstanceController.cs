@@ -38,7 +38,6 @@ namespace TEditor
             m_PreviewTarget = GameObject.Instantiate(((Component)target).gameObject).GetComponent<AnimationInstanceController>();
             m_Preview.AddSingleGO(m_PreviewTarget.gameObject);
             m_PreviewMeshRenderer = m_PreviewTarget.GetComponent<MeshRenderer>();
-            m_PreviewMeshRenderer.sharedMaterial.enableInstancing = true;
             m_TargetBlock = new MaterialPropertyBlock();
             m_PreviewTarget.transform.position = Vector3.zero;
             m_PreviewTarget.Init();
@@ -74,7 +73,7 @@ namespace TEditor
         public override void OnPreviewSettings()
         {
             base.OnPreviewSettings();
-            AnimationInstanceParam param= m_PreviewTarget.m_Data.m_Animations[m_PreviewTarget.m_CurrentAnimIndex];
+            AnimationInstanceParam param= m_PreviewTarget.m_Timer.m_Anim;
             GUILayout.Label(string.Format("{0},Loop:{1}",param.m_Name, param.m_Loop?1:0));
         }
         public override void OnPreviewGUI(Rect r, GUIStyle background)
@@ -105,7 +104,7 @@ namespace TEditor
             GUILayout.BeginHorizontal();
             GUILayout.Label("Play:");
             m_PreviewAnimIndex = GUILayout.SelectionGrid(m_PreviewAnimIndex, anims, m_Data.m_Animations.Length > 5 ? 5 : m_Data.m_Animations.Length);
-            if (m_PreviewTarget.m_CurrentAnimIndex != m_PreviewAnimIndex)
+            if (m_PreviewTarget.m_Timer.m_AnimIndex != m_PreviewAnimIndex)
                 m_PreviewTarget.SetAnimation(m_PreviewAnimIndex);
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();

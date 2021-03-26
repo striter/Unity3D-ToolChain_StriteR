@@ -77,7 +77,7 @@
             struct a2fs
             {
                 A2V_SHADOW_CASTER;
-                uint4 boneIndexes:TEXCOORD1;
+                float4 boneIndexes:TEXCOORD1;
                 float4 boneWeights:TEXCOORD2;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };

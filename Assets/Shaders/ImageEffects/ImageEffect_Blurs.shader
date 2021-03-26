@@ -9,17 +9,17 @@
     HLSLINCLUDE
 	#include "../CommonInclude.hlsl"
 	#include "CameraEffectInclude.hlsl"
-	half _BlurSize;
+	float _BlurSize;
 	int _Iteration;
 	float _Angle;
 	float2 _Vector;
 
 	struct v2fc
 	{
-		half4 vertex : SV_POSITION;
-		half2 uv: TEXCOORD0;
-		half4 uvOffsetA:TEXCOORD1;
-		half4 uvOffsetB:TEXCOORD2;
+		float4 vertex : SV_POSITION;
+		float2 uv: TEXCOORD0;
+		float4 uvOffsetA:TEXCOORD1;
+		float4 uvOffsetB:TEXCOORD2;
 	};
 
 	//Kawase
@@ -27,18 +27,18 @@
 	{
 		v2fc o;
 		o.vertex = TransformObjectToHClip(v.positionOS);
-		half2 uv = v.uv;
+		float2 uv = v.uv;
 		o.uv = uv;
-		o.uvOffsetA.xy = uv + half2(0, 1)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetA.zw = uv + half2(1,0)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.xy = uv + half2(0, -1)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.zw = uv + half2(-1, 0)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetA.xy = uv + float2(0, 1)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetA.zw = uv + float2(1,0)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetB.xy = uv + float2(0, -1)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetB.zw = uv + float2(-1, 0)*_MainTex_TexelSize.xy *_BlurSize;
 		return o;
 	}
 	
-	half4 fragKawase(v2fc i):SV_TARGET
+	float4 fragKawase(v2fc i):SV_TARGET
 	{
-		half4 sum = 0;
+		float4 sum = 0;
 		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.xy);
 		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.zw);
 		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetB.xy);
@@ -51,12 +51,12 @@
 	{
 		v2fc o;
 		o.vertex = TransformObjectToHClip(v.positionOS);
-		half2 uv = v.uv;
+		float2 uv = v.uv;
 		o.uv = uv;
-		o.uvOffsetA.xy = uv + half2(1, 0)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetA.zw = uv + half2(-1,0)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.xy = uv + half2(2, 0)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.zw = uv + half2(-2, 0)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetA.xy = uv + float2(1, 0)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetA.zw = uv + float2(-1,0)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetB.xy = uv + float2(2, 0)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetB.zw = uv + float2(-2, 0)*_MainTex_TexelSize.xy *_BlurSize;
 		return o;
 	}
 		
@@ -64,18 +64,18 @@
 	{
 		v2fc o;
 		o.vertex = TransformObjectToHClip(v.positionOS);
-		half2 uv = v.uv;
+		float2 uv = v.uv;
 		o.uv = uv;
-		o.uvOffsetA.xy = uv + half2(0, 1)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetA.zw = uv + half2(0, -1)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.xy = uv + half2(0, 2)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.zw = uv + half2(0, -2)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetA.xy = uv + float2(0, 1)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetA.zw = uv + float2(0, -1)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetB.xy = uv + float2(0, 2)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetB.zw = uv + float2(0, -2)*_MainTex_TexelSize.xy *_BlurSize;
 		return o;
 	}
 
-	half4 fragAverageBlur(v2fc i):SV_TARGET
+	float4 fragAverageBlur(v2fc i):SV_TARGET
 	{
-		half4 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
+		float4 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
 		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.xy);
 		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.zw);
 		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetB.xy);
@@ -83,10 +83,10 @@
 		return sum*.2;
 	}
 		
-	static const half gaussianWeight[3] = {0.4026h,0.2442h,0.0545h};
-	half4 fragGaussianBlur(v2fc i) :SV_TARGET
+	static const float gaussianWeight[3] = {0.4026h,0.2442h,0.0545h};
+	float4 fragGaussianBlur(v2fc i) :SV_TARGET
 	{
-		half4 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*gaussianWeight[0];
+		float4 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*gaussianWeight[0];
 		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.xy)*gaussianWeight[1];
 		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.zw)*gaussianWeight[1];
 		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetB.xy)*gaussianWeight[2];
@@ -97,10 +97,10 @@
 	//Dual Filtering
 	struct v2fdfd
 	{
-		half4 vertex : SV_POSITION;
-		half2 uv: TEXCOORD0;
-		half4 uvOffsetA:TEXCOORD1;
-		half4 uvOffsetB:TEXCOORD2;
+		float4 vertex : SV_POSITION;
+		float2 uv: TEXCOORD0;
+		float4 uvOffsetA:TEXCOORD1;
+		float4 uvOffsetB:TEXCOORD2;
 	};
 	
 	
@@ -108,19 +108,19 @@
 	{
 		v2fdfd o;
 		o.vertex = TransformObjectToHClip(v.positionOS);
-		half2 uv = v.uv;
+		float2 uv = v.uv;
 		o.uv = uv;
-		o.uvOffsetA.xy = uv + half2(0, 1)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetA.zw = uv + half2(1,0)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.xy = uv + half2(0, -1)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.zw = uv + half2(-1, 0)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetA.xy = uv + float2(0, 1)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetA.zw = uv + float2(1,0)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetB.xy = uv + float2(0, -1)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetB.zw = uv + float2(-1, 0)*_MainTex_TexelSize.xy *_BlurSize;
 		return o;
 	}
 	
 	float4 fragDualFilteringDownSample(v2fdfd i):SV_TARGET
 	{
 	
-		half4 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*4;
+		float4 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*4;
 		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.xy);
 		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.zw);
 		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetB.xy);
@@ -130,32 +130,32 @@
 
 	struct v2fdfu
 	{
-		half4 vertex : SV_POSITION;
-		half4 uvOffsetA:TEXCOORD0;
-		half4 uvOffsetB:TEXCOORD1;
-		half4 uvOffsetC:TEXCOORD2;
-		half4 uvOffsetD:TEXCOORD3;
+		float4 vertex : SV_POSITION;
+		float4 uvOffsetA:TEXCOORD0;
+		float4 uvOffsetB:TEXCOORD1;
+		float4 uvOffsetC:TEXCOORD2;
+		float4 uvOffsetD:TEXCOORD3;
 	};
 
 	v2fdfu vertDualFilteringUpSample(a2v_img v)
 	{
 		v2fdfu o;
 		o.vertex = TransformObjectToHClip(v.positionOS);
-		half2 uv = v.uv;
-		o.uvOffsetA.xy = uv + half2(0, 2)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetA.zw = uv + half2(2,0)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.xy = uv + half2(0, -2)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.zw = uv + half2(-2, 0)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetC.xy = uv + half2(1, 1)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetC.zw = uv + half2(1,-1)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetD.xy = uv + half2(-1, 1)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetD.zw = uv + half2(-1, -1)*_MainTex_TexelSize.xy *_BlurSize;
+		float2 uv = v.uv;
+		o.uvOffsetA.xy = uv + float2(0, 2)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetA.zw = uv + float2(2,0)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetB.xy = uv + float2(0, -2)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetB.zw = uv + float2(-2, 0)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetC.xy = uv + float2(1, 1)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetC.zw = uv + float2(1,-1)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetD.xy = uv + float2(-1, 1)*_MainTex_TexelSize.xy *_BlurSize;
+		o.uvOffsetD.zw = uv + float2(-1, -1)*_MainTex_TexelSize.xy *_BlurSize;
 		return o;
 	}
 	
 	float4 fragDualFilteringUpSample(v2fdfu i):SV_TARGET
 	{
-		half4 sum =0;
+		float4 sum =0;
 		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.xy);
 		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.zw);
 		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetB.xy);
@@ -168,10 +168,10 @@
 	}
 	
 	//Grainy
-	half4 fragGrainy(v2f_img i):SV_TARGET
+	float4 fragGrainy(v2f_img i):SV_TARGET
 	{
-		half random=random2(i.uv);
-		half4 sum=0;
+		float random=random2(i.uv);
+		float4 sum=0;
 		float randomSum=1.0/_Iteration;
 		for(int index=0;index<_Iteration;index++)
 		{
@@ -186,16 +186,16 @@
 	#define _GOLDENANGLE 2.39996
 	float4 fragBokeh(v2f_img i):SV_TARGET
 	{
-		half2x2 rot=Rotate2x2(_GOLDENANGLE);
-		half2 rotate=float2(0,_BlurSize);
+		float2x2 rot=Rotate2x2(_GOLDENANGLE);
+		float2 rotate=float2(0,_BlurSize);
 		rotate=mul(Rotate2x2(_Angle),rotate);
-		half4 sum=0;
-		half r=1;
+		float4 sum=0;
+		float r=1;
 		for(int j=0;j<_Iteration;j++)
 		{
 			r+=1.0/r;
 			rotate=mul(rot,rotate);
-			half4 bokeh=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+(r-1.0)*rotate*_MainTex_TexelSize.xy);
+			float4 bokeh=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+(r-1.0)*rotate*_MainTex_TexelSize.xy);
 			sum+=bokeh;
 		}
 		return sum/_Iteration;
@@ -207,7 +207,7 @@
 		float4 finalCol=0;
 		for(int i=0;i<_Iteration;i++)
 		{
-			half4 hexagonBlur=SAMPLE_TEXTURE2D(tex,samp,uv+direction*float2(i+.5,i+.5));
+			float4 hexagonBlur=SAMPLE_TEXTURE2D(tex,samp,uv+direction*float2(i+.5,i+.5));
 			finalCol+=hexagonBlur;
 		}
 		return finalCol/_Iteration;

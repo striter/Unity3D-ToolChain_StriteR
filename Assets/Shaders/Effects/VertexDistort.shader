@@ -74,7 +74,7 @@
 			float4 frag (v2f i) : SV_Target
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
-				float3 finalCol=lerp(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv),INSTANCE(_DistortColor),i.strength).rgb;
+				float3 finalCol=lerp(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb,INSTANCE(_DistortColor).rgb,i.strength);
 				return float4(finalCol,1);
 			}
 			ENDHLSL

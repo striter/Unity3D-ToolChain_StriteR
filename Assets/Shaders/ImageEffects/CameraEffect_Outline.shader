@@ -22,6 +22,7 @@
 			
 			#include "../CommonInclude.hlsl"
 			#include "CameraEffectInclude.hlsl"
+			uint convolution;
 			half4 _OutlineColor;
 			half _OutlineWidth;
 			half _Bias;
@@ -61,14 +62,14 @@
 				const half Gx[9]={-1,-1,-1,0,0,0,1,1,1};
 				const half Gy[9]={-1,0,1,-1,0,1,-1,0,1};
 				#endif
-
+				
 				half edgeX=0;
 				half edgeY=0;
 				for (int it = 0; it < 9; it++)
 				{
 					half diff=0;
 					#if _DETECT_COLOR
-					diff=luminance(tex2D(_MainTex,i.uv[it]));
+					diff=luminance(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv[it]));
 					#elif _DETECT_NORMAL
 					diff=abs(dot(ClipSpaceNormalFromDepth(i.uv[it]),float3(0,0,-1)));
 					#else
@@ -80,13 +81,13 @@
 				half edgeDetect=step(_Bias,abs(edgeX)+abs(edgeY));
 
 
-				float4 outlineColor=_OutlineColor;
-				outlineColor.a*=edgeDetect;
+				float3 finalCol=1;
 				#if _COLORREPLACE
-				return AlphaBlend(_ReplaceColor,outlineColor);
+				finalCol= lerp(_ReplaceColor.rgb,_OutlineColor.rgb,edgeDetect);
 				#else
-				return AlphaBlend(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv[4]),outlineColor);
+				finalCol= lerp(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv[4]).rgb,_OutlineColor.rgb,edgeDetect);
 				#endif
+				return float4(finalCol,1);
 			}
 			ENDHLSL
 		}

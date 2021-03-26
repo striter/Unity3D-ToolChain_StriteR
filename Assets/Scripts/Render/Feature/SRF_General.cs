@@ -24,10 +24,13 @@ namespace Rendering
         }
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
+            if (renderingData.cameraData.isPreviewCamera)
+                return;
+
             bool frustumCornersRay = m_FrustumCornersRay;
             bool opaqueBlurTexture = m_OpaqueBlurTexture;
 
-            if(!(renderingData.cameraData.isSceneViewCamera||renderingData.cameraData.isPreviewCamera))
+            if(!renderingData.cameraData.isSceneViewCamera)
             {
                 if (!renderingData.cameraData.camera.gameObject.TryGetComponent(out SRD_AddtionalData data))
                     data = renderingData.cameraData.camera.gameObject.AddComponent<SRD_AddtionalData>();
@@ -91,12 +94,12 @@ namespace Rendering
         {
             base.Configure(cmd, cameraTextureDescriptor);
             cmd.GetTemporaryRT(RT_ID_BlurTexture, cameraTextureDescriptor.width,cameraTextureDescriptor.height,0,FilterMode.Bilinear,RenderTextureFormat.ARGB32);
+            ConfigureTarget(RT_BlurTexture);
         }
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get("Generate Opaque Blur Texture");
             m_Blurs.ExecuteBuffer(cmd,renderingData.cameraData.cameraTargetDescriptor,m_ColorTexture,RT_BlurTexture, m_BlursData);
-            cmd.SetRenderTarget(m_ColorTexture);
             context.ExecuteCommandBuffer(cmd);
             cmd.Clear();
             CommandBufferPool.Release(cmd);

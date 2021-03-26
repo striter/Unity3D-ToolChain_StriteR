@@ -2,86 +2,72 @@
 using UnityEngine;
 namespace Rendering.Optimize
 {
-
-    [RequireComponent(typeof(MeshRenderer), typeof(MeshFilter))]
-    public class AnimationInstanceController : MonoBehaviour
+    [Serializable]
+    public class AnimationInstanceTimer
     {
         #region ShaderProperties
-        static readonly int ID_AnimationTex = Shader.PropertyToID("_InstanceAnimationTex");
         static readonly int ID_FrameBegin = Shader.PropertyToID("_InstanceFrameBegin");
         static readonly int ID_FrameEnd = Shader.PropertyToID("_InstanceFrameEnd");
         static readonly int ID_FrameInterpolate = Shader.PropertyToID("_InstanceFrameInterpolate");
         #endregion
-        public AnimationInstanceData m_Data;
-        public int m_CurrentAnimIndex { get; private set; }
+        public int m_AnimIndex { get; private set; }
         public float m_TimeElapsed { get; private set; }
-        public bool m_Playing => m_CurrentAnimIndex < m_Data.m_Animations.Length && m_CurrentAnimIndex >= 0;
-        public AnimationInstanceParam m_CurrentAnim => m_Data.m_Animations[m_CurrentAnimIndex];
-        public MeshFilter m_MeshFilter { get; private set; }
-        public MeshRenderer m_MeshRenderer { get; private set; }
-        Action<string> OnAnimEvent;
-
-        protected void Awake() => OnValidate();
-        public void OnValidate()
+        public AnimationInstanceParam m_Anim => m_Animations[m_AnimIndex];
+        AnimationInstanceParam[] m_Animations;
+        public void Setup(AnimationInstanceParam[] _params) { m_Animations = _params; }
+        public void Reset()
         {
-            if (!m_Data)
+            m_AnimIndex = 0;
+            m_TimeElapsed = 0;
+        }
+
+        public void SetTime(float _time) => m_TimeElapsed = _time;
+        public void SetNormalizedTime(float _scale)
+        {
+            if (m_AnimIndex < 0 || m_AnimIndex >= m_Animations.Length)
                 return;
-            m_MeshFilter = GetComponent<MeshFilter>();
-            m_MeshRenderer = GetComponent<MeshRenderer>();
-
-            m_MeshFilter.sharedMesh =m_Data.m_InstancedMesh;
-            m_MeshRenderer.sharedMaterial.SetTexture(ID_AnimationTex,m_Data.m_AnimationAtlas);
+            m_TimeElapsed = m_Animations[m_AnimIndex].m_Length * _scale;
         }
-        public AnimationInstanceController Init( Action<string> _OnAnimEvent = null)
+
+        public float GetNormalizedTime()
         {
-            if (!m_Data)
-                throw new Exception("Invalid Data Found Of:" + gameObject);
-
-            OnValidate();
-            m_CurrentAnimIndex = -1;
-            m_TimeElapsed = 0f;
-            InitBones();
-            OnAnimEvent = _OnAnimEvent;
-            return this;
+            if (m_AnimIndex < 0 || m_AnimIndex >= m_Animations.Length)
+                return 0f;
+            return m_TimeElapsed / m_Animations[m_AnimIndex].m_Length;
         }
-        public AnimationInstanceController SetAnimation(int _animIndex)
+        public void SetAnimation(int _animIndex)
         {
             m_TimeElapsed = 0;
-            if (_animIndex < 0 || _animIndex >= m_Data.m_Animations.Length)
+            if (_animIndex < 0 || _animIndex >= m_Animations.Length)
             {
                 Debug.LogError("Invalid Animation Index Found:" + _animIndex);
-                return this;
+                return;
             }
+            m_AnimIndex = _animIndex;
+        }
 
-            m_CurrentAnimIndex = _animIndex;
-            return this;
-        }
-        public void SetTime(float _time) => m_TimeElapsed = _time;
-        public void SetTimeScale(float _scale)
+        public bool Tick(float _deltaTime, MaterialPropertyBlock _block, out int curFrame, out int nextFrame, out float framePassed, Action<string> _onEvents = null)
         {
-            if (m_CurrentAnimIndex < 0 || m_CurrentAnimIndex >= m_Data.m_Animations.Length)
-                return;
-            m_TimeElapsed = m_Data.m_Animations[m_CurrentAnimIndex].m_Length * _scale;
+            if (!Tick(_deltaTime, out curFrame, out nextFrame, out framePassed, _onEvents))
+                return false;
+            _block.SetInt(ID_FrameBegin, curFrame);
+            _block.SetInt(ID_FrameEnd, nextFrame);
+            _block.SetFloat(ID_FrameInterpolate, framePassed);
+            return true;
         }
-         
-        public float GetScale()
+        public bool Tick(float _deltaTime, out int curFrame, out int nextFrame, out float framePassed, Action<string> _onEvents = null)
         {
-            if (m_CurrentAnimIndex < 0 || m_CurrentAnimIndex >= m_Data.m_Animations.Length)
-                return 0f;
-            return m_TimeElapsed / m_Data.m_Animations[m_CurrentAnimIndex].m_Length;
-        }
-        public void Tick(float _deltaTime,MaterialPropertyBlock _block)
-        {
-            if (m_CurrentAnimIndex < 0 || m_CurrentAnimIndex >= m_Data.m_Animations.Length)
-                return;
+            curFrame = 0;
+            nextFrame = 0;
+            framePassed = 0;
+            if (m_AnimIndex < 0 || m_AnimIndex >= m_Animations.Length)
+                return false;
 
-            AnimationInstanceParam param = m_Data.m_Animations[m_CurrentAnimIndex];
-            TickEvents(param, m_TimeElapsed, _deltaTime);
+            AnimationInstanceParam param = m_Animations[m_AnimIndex];
+            if (_onEvents != null)
+                TickEvents(param, m_TimeElapsed, _deltaTime, _onEvents);
             m_TimeElapsed += _deltaTime;
 
-            float framePassed;
-            int curFrame;
-            int nextFrame;
             if (param.m_Loop)
             {
                 framePassed = (m_TimeElapsed % param.m_Length) * param.m_FrameRate;
@@ -98,16 +84,11 @@ namespace Rendering.Optimize
             curFrame += param.m_FrameBegin;
             nextFrame += param.m_FrameBegin;
             framePassed %= 1;
-            _block.SetInt(ID_FrameBegin, curFrame);
-            _block.SetInt(ID_FrameEnd, nextFrame);
-            _block.SetFloat(ID_FrameInterpolate, framePassed);
-            TickBones(curFrame, nextFrame, framePassed);
+            return true;
         }
-        #region Events
-        void TickEvents(AnimationInstanceParam _clip, float _timeElapsed, float _deltaTime)
+
+        void TickEvents(AnimationInstanceParam _clip, float _timeElapsed, float _deltaTime,Action<string> _onEvents)
         {
-            if (OnAnimEvent == null)
-                return;
             float lastFrame = _timeElapsed * _clip.m_FrameRate;
             float nextFrame = lastFrame + _deltaTime * _clip.m_FrameRate;
 
@@ -115,10 +96,61 @@ namespace Rendering.Optimize
             _clip.m_Events.Traversal(animEvent => {
                 float frameCheck = checkOffset + animEvent.m_EventFrame;
                 if (lastFrame < frameCheck && frameCheck <= nextFrame)
-                    OnAnimEvent(animEvent.m_EventIdentity);
+                    _onEvents(animEvent.m_EventIdentity);
             });
         }
+    }
+
+    [RequireComponent(typeof(MeshRenderer), typeof(MeshFilter))]
+    public class AnimationInstanceController : MonoBehaviour
+    {
+        #region ShaderProperties
+        static readonly int ID_AnimationTex = Shader.PropertyToID("_InstanceAnimationTex");
         #endregion
+        public AnimationInstanceData m_Data;
+        public AnimationInstanceTimer m_Timer { get; private set; } = new AnimationInstanceTimer(); 
+        public MeshFilter m_MeshFilter { get; private set; }
+        public MeshRenderer m_MeshRenderer { get; private set; }
+        Action<string> OnAnimEvent;
+
+        protected void Awake() => OnValidate();
+        public void OnValidate()
+        {
+            if (!m_Data)
+                return;
+            m_Timer.Setup(m_Data.m_Animations);
+            m_MeshFilter = GetComponent<MeshFilter>();
+            m_MeshRenderer = GetComponent<MeshRenderer>();
+
+            m_MeshFilter.sharedMesh =m_Data.m_InstancedMesh;
+            m_MeshRenderer.sharedMaterial.SetTexture(ID_AnimationTex,m_Data.m_AnimationAtlas);
+        }
+        public AnimationInstanceController Init( Action<string> _OnAnimEvent = null)
+        {
+            if (!m_Data)
+                throw new Exception("Invalid Data Found Of:" + gameObject);
+
+            OnValidate();
+            m_Timer.Reset();
+            InitBones();
+            OnAnimEvent = _OnAnimEvent;
+            return this;
+        }
+        public AnimationInstanceController SetAnimation(int _animIndex)
+        {
+            m_Timer.SetAnimation(_animIndex);
+            return this;
+        }
+        public void SetTime(float _time) => m_Timer.SetTime(_time);
+        public void SetTimeScale(float _scale) => m_Timer.SetNormalizedTime(_scale);
+        public float GetScale() => m_Timer.GetNormalizedTime();
+        public void Tick(float _deltaTime,MaterialPropertyBlock _block)
+        {
+            if (!m_Timer.Tick(_deltaTime,_block,out int curFrame,out int nextFrame,out float framePassed,OnAnimEvent))
+                return;
+            
+            TickBones(curFrame, nextFrame, framePassed);
+        }
         #region Bones
         Transform m_BoneParent;
         Transform[] m_Bones;

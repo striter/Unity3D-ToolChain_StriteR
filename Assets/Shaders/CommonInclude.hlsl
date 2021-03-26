@@ -28,9 +28,9 @@ float2 TriplanarMapping(float3 worldPos,float3 worldNormal){ return (worldPos.zy
 
 float luminance(float3 color){ return 0.2125*color.r + 0.7154*color.g + 0.0721 + color.b;}
 
-float4 ScreenBlend(float4 src,float4 dst){ return 1-(1-src)*(1-dst); }
-float3 ScreenBlend(float3 src,float3 dst){ return 1-(1-src)*(1-dst); }
-float4 AlphaBlend(float4 src, float4 dst){return dst * dst.a + src * (1 - dst.a);}
+float4 Blend_Screen(float4 src,float4 dst){ return 1-(1-src)*(1-dst); }
+float3 Blend_Screen(float3 src,float3 dst){ return 1-(1-src)*(1-dst); }
+float3 Blend_Alpha(float4 src, float4 dst){return dst.rgb * dst.a + src.rgb * (1 - dst.a);}
 
 float invlerp(float a,float b,float value){ return (value-a)/(b-a); }
 
