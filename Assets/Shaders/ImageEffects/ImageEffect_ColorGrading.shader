@@ -82,9 +82,9 @@
 			#endif
 
 			#if _CHANNEL_MIXER
-			half4 _MixRed;
-			half4 _MixGreen;
-			half4 _MixBlue;
+			half3 _MixRed;
+			half3 _MixGreen;
+			half3 _MixBlue;
 			half GetMixerAmount(half3 col,half3 mix)
 			{
 				return col.r*mix.x+col.g*mix.y+col.b*mix.z;
@@ -92,13 +92,8 @@
 
 			half3 ChannelMixing(half3 col)
 			{
-				half redMixAmount=GetMixerAmount(col,_MixRed);
-				half greenMixAmount=GetMixerAmount(col,_MixGreen);
-				half blueMixAmount=GetMixerAmount(col,_MixBlue);
-				col.r+=redMixAmount;
-				col.g+=greenMixAmount;
-				col.b+=blueMixAmount;
-				return col;
+				half3x3 mixMatrix=half3x3(_MixRed,_MixGreen,_MixBlue);
+				return mul(col,mixMatrix);
 			}
 			#endif
 

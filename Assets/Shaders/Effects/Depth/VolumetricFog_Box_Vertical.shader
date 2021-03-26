@@ -55,7 +55,7 @@
                 half3 viewDirOS = normalize(i.viewDirOS);
                 half viewDstOS = AABBRayDistance(-.5,.5,i.positionOS, viewDirOS).y;
                 half depthDstWS = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, i.screenPos.xy/i.screenPos.w),_ZBufferParams).r - i.screenPos.w;
-                half depthDstOS =    half depthDst = length(mul(unity_WorldToObject, float3(0, worldDepthDst, 0)));
+                half depthDstOS =     length(mul(unity_WorldToObject, float3(0, depthDstWS, 0)));
                 half maxDst = min(depthDstOS, viewDstOS);
 
                 half3 maxViewPos = i.positionOS + viewDirOS * maxDst;
