@@ -89,9 +89,9 @@ namespace Rendering.ImageEffect
             _material.SetFloat(ID_Contrast, _params.m_contrast);
 
             _material.EnableKeyword(KW_MixChannel, _params.m_MixRed != Vector3.zero || _params.m_MixBlue != Vector3.zero || _params.m_MixGreen != Vector3.zero);
-            _material.SetVector(ID_MixRed, _params.m_MixRed);
-            _material.SetVector(ID_MixGreen, _params.m_MixGreen);
-            _material.SetVector(ID_MixBlue, _params.m_MixBlue);
+            _material.SetVector(ID_MixRed, _params.m_MixRed+Vector3.right);
+            _material.SetVector(ID_MixGreen, _params.m_MixGreen+Vector3.up);
+            _material.SetVector(ID_MixBlue, _params.m_MixBlue+Vector3.forward);
         }
     }
 }

@@ -17,9 +17,9 @@ namespace TEditor
             {
                 PostEffect_ColorGrading colorGrading = target as PostEffect_ColorGrading;
                 colorGrading.m_EffectData = ImageEffectParam_ColorGrading.m_Default;
-                colorGrading.m_EffectData.m_MixRed = new Vector3(0.393f, 0.349f, 0.272f);
-                colorGrading.m_EffectData.m_MixGreen = new Vector3(0.769f, 0.686f, 0.534f);
-                colorGrading.m_EffectData.m_MixBlue = new Vector3(0.189f, 0.168f, 0.131f);
+                colorGrading.m_EffectData.m_MixRed = new Vector3(0.393f, 0.349f, 0.272f)-Vector3.right;
+                colorGrading.m_EffectData.m_MixGreen = new Vector3(0.769f, 0.686f, 0.534f)-Vector3.up;
+                colorGrading.m_EffectData.m_MixBlue = new Vector3(0.189f, 0.168f, 0.131f)-Vector3.forward;
                 colorGrading.OnValidate();
             }
             GUILayout.EndVertical();
