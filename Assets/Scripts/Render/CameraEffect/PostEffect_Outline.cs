@@ -7,7 +7,7 @@ namespace Rendering.ImageEffect
 {
     public class PostEffect_Outline:PostEffectBase<CameraEffect_Outline, CameraEffectParam_Outline>
     {
-        public override bool m_IsOpaqueProcess => !m_EffectData.m_ColorReplace;
+        public override bool m_IsOpaqueProcess => m_EffectData.m_OpaquePostProcessing;
     }
 
     public enum enum_Convolution
@@ -26,6 +26,7 @@ namespace Rendering.ImageEffect
     [System.Serializable]
     public struct CameraEffectParam_Outline
     {
+        public bool m_OpaquePostProcessing;
         [ColorUsage(true, true)] public Color m_OutlineColor;
         [Range(.1f, 3f)] public float m_OutlineWidth;
         public enum_Convolution m_Convolution;
@@ -37,6 +38,7 @@ namespace Rendering.ImageEffect
         public Color m_ReplaceColor;
         public static readonly CameraEffectParam_Outline m_Default = new CameraEffectParam_Outline()
         {
+            m_OpaquePostProcessing=false,
             m_OutlineColor = Color.white,
             m_OutlineWidth = 1,
             m_Convolution= enum_Convolution.Prewitt,

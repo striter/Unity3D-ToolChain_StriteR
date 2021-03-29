@@ -7,7 +7,8 @@ using System.Reflection;
 
 namespace TEditor
 {
-    public class PropertyDrawer_Extend<T>: PropertyDrawer where T:Attribute
+    #region Attributes
+    public class AttributeDrawer_Extend<T>: PropertyDrawer where T:Attribute
     {
         public bool OnGUIAttributePropertyCheck(Rect _position, SerializedProperty _property, out T _targetAttribute, params SerializedPropertyType[] _checkTypes) 
         {
@@ -22,8 +23,20 @@ namespace TEditor
         }
     }
 
+    [CustomPropertyDrawer(typeof(RangeIntAttribute))]
+    public class RangeIntPropertyDrawer : AttributeDrawer_Extend<RangeIntAttribute>
+    {
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            if (!OnGUIAttributePropertyCheck(position, property, out RangeIntAttribute attribute, SerializedPropertyType.Integer))
+                return;
+
+            property.intValue = EditorGUI.IntSlider(position, property.name.ToString_FieldName(), property.intValue, attribute.m_Min, attribute.m_Max);
+        }
+    }
+
     [CustomPropertyDrawer(typeof(CullingMaskAttribute))]
-    public class CullingMaskPropertyDrawer : PropertyDrawer_Extend<CullingMaskAttribute>
+    public class CullingMaskPropertyDrawer : AttributeDrawer_Extend<CullingMaskAttribute>
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -45,21 +58,8 @@ namespace TEditor
         }
     }
 
-    [CustomPropertyDrawer(typeof(RangeIntAttribute))]
-    public class RangeIntPropertyDrawer: PropertyDrawer_Extend<RangeIntAttribute>
-    {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            if (!OnGUIAttributePropertyCheck(position, property, out RangeIntAttribute attribute, SerializedPropertyType.Integer))
-                return;
-
-            property.intValue = EditorGUI.IntSlider(position,property.name.ToString_FieldName(),property.intValue, attribute.m_Min, attribute.m_Max);
-        }
-
-    }
-
     [CustomPropertyDrawer(typeof(RangeVectorAttribute))]
-    public class RangeVectorPropertyDrawer:PropertyDrawer_Extend<RangeVectorAttribute>
+    public class RangeVectorPropertyDrawer:AttributeDrawer_Extend<RangeVectorAttribute>
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
@@ -134,5 +134,6 @@ namespace TEditor
             property.vector4Value = m_Vector;
         }
     }
+    #endregion
 }
 

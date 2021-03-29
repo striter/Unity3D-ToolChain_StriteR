@@ -44,6 +44,8 @@ float3 GetInterpolatedRay(float2 uv)
 }
 
 
+float luminance(float3 color){ return 0.299 * color.r + 0.587 * color.g + 0.114 * color.b; }
+
 struct a2v_img
 {
     float3 positionOS : POSITION;
