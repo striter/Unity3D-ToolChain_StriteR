@@ -86,8 +86,8 @@
                 uv += .5;
 
                 #if _PIXELDISTORT
-                float2 pixelDistort=floor(uv*_PixelDistortScale*_MainTex_TexelSize.zw)*(_PixelDistortScale*_MainTex_TexelSize.xy)+random2(floor(_Time.y*_PixelDistortFrequency)/_PixelDistortFrequency);
-                float pixelDistortRandom=random2(pixelDistort);
+                float2 pixelDistort=floor(uv*_PixelDistortScale*_MainTex_TexelSize.zw)*(_PixelDistortScale*_MainTex_TexelSize.xy)+random01(floor(_Time.y*_PixelDistortFrequency)/_PixelDistortFrequency);
+                float pixelDistortRandom=random01(pixelDistort);
                 uv += step(_PixelDistortClip,pixelDistortRandom)*lerp(-1,1,pixelDistort)*_PixelDistortStrength;
                 #endif
 
@@ -120,7 +120,7 @@
                 #endif
                 
                 #if _GRAIN
-                float rand= random2(floor(uv*_GrainScale*_MainTex_TexelSize.zw)*(_MainTex_TexelSize.xy*_GrainScale)+random2(floor(_Time.y*_GrainFrequency)/_GrainFrequency));
+                float rand= random01(floor(uv*_GrainScale*_MainTex_TexelSize.zw)*(_MainTex_TexelSize.xy*_GrainScale)+random01(floor(_Time.y*_GrainFrequency)/_GrainFrequency));
                 col.rgb=lerp(col.rgb,_GrainColor.rgb,step(_GrainClip,rand)*rand*_GrainColor.a);
                 #endif
                 

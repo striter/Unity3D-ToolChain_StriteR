@@ -39,7 +39,6 @@
 				{
 					float4 positionCS : SV_POSITION;
 					float2 uv : TEXCOORD0;
-					float2 uv_depth:TEXCOORD1;
 					float3 viewDir:TEXCOORD2;
 				};
 
@@ -48,14 +47,13 @@
 					v2f o;
 					o.positionCS = TransformObjectToHClip(v.positionOS);
 					o.uv = v.uv;
-					o.uv_depth = GetDepthUV(v.uv); 
 					o.viewDir = GetInterpolatedRay(o.uv);
 					return o;
 				}
 
 				float4 frag (v2f i) : SV_Target
 				{
-					float linearDepth = LinearEyeDepth(i.uv_depth);
+					float linearDepth = LinearEyeDepth(i.uv);
 					float3 worldPos = _WorldSpaceCameraPos+ i.viewDir.xyz*linearDepth;
 					float2 worldUV = (worldPos.xz + worldPos.yz);
 					float fog =  (( _FogVerticalStart+_FogVerticalOffset)-worldPos.y)  /_FogVerticalOffset*_FogDensity;

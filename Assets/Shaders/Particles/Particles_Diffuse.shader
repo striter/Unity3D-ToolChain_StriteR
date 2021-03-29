@@ -13,7 +13,7 @@
 			Pass
 			{
 				name "Main"
-				CGPROGRAM
+				HLSLINCLUDE
 				#pragma vertex vert
 				#pragma fragment frag
 				#include "../CommonInclude.hlsl"
@@ -56,13 +56,13 @@
 					return o;
 				}
 
-				fixed4 frag(v2f i) : SV_Target
+				float4 frag(v2f i) : SV_Target
 				{
 					UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos)
 					float diffuse=GetDiffuse(normalize( i.objNormal),normalize( i.objLightDir));
 					return float4( tex2D(_MainTex, i.uv)*i.color*(UNITY_LIGHTMODEL_AMBIENT.xyz+diffuse *  _LightColor0.rgb*atten+(1-atten)),1);
 				}
-				ENDCG
+				ENDHLSL
 			}
 		}
 }

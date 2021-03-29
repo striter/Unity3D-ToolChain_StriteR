@@ -22,7 +22,7 @@ Shader "Hidden/ImageEffect_Stylize"
             float2 _PixelGridWidth;
             float4 frag(v2f_img i):SV_TARGET
             {
-                float3 finalCol=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
+                float3 finalCol=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).xyz;
             #if _PIXEL_GRID
                 float2 pixelUV= (i.uv*_MainTex_TexelSize.zw)%1;
                 float pixelGrid= step(pixelUV.y,_PixelGridWidth.x)+step(_PixelGridWidth.y,pixelUV.y)+step(pixelUV.x,_PixelGridWidth.x)+step(_PixelGridWidth.y,pixelUV.x);
@@ -53,13 +53,13 @@ Shader "Hidden/ImageEffect_Stylize"
                 float3 sum=0;
                 float3 squareSum=0;
                 int samples=(upperRight.x-lowerLeft.x+1)*(upperRight.y-lowerLeft.y+1);
-                float random=(1+random2(uv)*.2);
+                float random=(1+random01(uv)*.2);
                 for(int i=lowerLeft.x;i<=upperRight.x;i++)
                 {
                     for(int j=lowerLeft.y;j<=upperRight.y;j++)
                     {
                         float2 offset=float2(i,j)*_MainTex_TexelSize.xy*_OilPaintSize*random;
-                        float3 col=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv+offset);
+                        float3 col=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv+offset).xyz;
                         sum+=col;
                         squareSum+=col*col;
                     }
@@ -110,12 +110,13 @@ Shader "Hidden/ImageEffect_Stylize"
             float3 _ObraDitherColor;
             float4 frag(v2f_img i):SV_TARGET
             {
-                float lum=luminance( SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv));
+                float lum=luminance( SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).xyz);
 
                 i.uv*=_MainTex_TexelSize.zw*_ObraDitherScale;
                 i.uv=floor(i.uv)*.1;
 
-                lum=1-step( lum,random2(i.uv)*_ObraDitherStrength);
+                lum=1-step( lum,random01(i.uv)*_ObraDitherStrength);
+
 
                 return float4(lerp(_ObraDitherColor,1,lum) ,1);
             }

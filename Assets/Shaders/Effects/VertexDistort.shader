@@ -31,7 +31,7 @@
 			float3 GetDistortPositionWS(float3 positionOS,float3 normalWS,out float strength)
 			{
 					strength=saturate( invlerp(0,1, dot(normalWS,INSTANCE(_DistortDirection))));
-				return INSTANCE(_DistortDirection)*random3(frac(positionOS+floor(INSTANCE(_DistortFlow)*_Time.y)/100))*strength*INSTANCE(_DistortStrength);
+				return INSTANCE(_DistortDirection)*random01(frac(positionOS+floor(INSTANCE(_DistortFlow)*_Time.y)/100))*strength*INSTANCE(_DistortStrength);
 			}
 		ENDHLSL
 		Pass

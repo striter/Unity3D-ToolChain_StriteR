@@ -85,7 +85,7 @@
                 v2f o;
                 o.positionCS = TransformObjectToHClip(v.positionOS);
                 o.uv = v.uv;
-                o.viewDirWS=GetInterpolatedRay(v.positionOS);
+                o.viewDirWS=GetInterpolatedRay(v.uv);
                 return o;
             }
 

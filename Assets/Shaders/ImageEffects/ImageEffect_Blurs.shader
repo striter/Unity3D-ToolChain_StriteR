@@ -170,12 +170,12 @@
 	//Grainy
 	float4 fragGrainy(v2f_img i):SV_TARGET
 	{
-		float random=random2(i.uv);
+		float random=random01(i.uv);
 		float4 sum=0;
 		float randomSum=1.0/_Iteration;
 		for(int index=0;index<_Iteration;index++)
 		{
-			float2 randomUV=float2(random2(random*randomSum*index),random2(random*randomSum*(_Iteration-index)))-.5;
+			float2 randomUV=randomUnitCircle(i.uv)*random01(i.uv);
 			randomUV*=_MainTex_TexelSize.xy*_BlurSize;
 			sum+=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+randomUV);
 		}

@@ -12,30 +12,27 @@ float3 TransformObjectToHClipNormal(float3 normalOS){  return mul((float3x3) Get
 float sqrDistance(float3 offset){ return dot(offset,offset); }
 float sqrDistance(float3 pA, float3 pB){ return sqrDistance(pA-pB); }
 
-float2 UVCenterMapping(float2 uv,float2 tilling,float2 offset,float rotateAngle)
-{
-    const float2 center=float2(.5,.5);
-    uv=uv+offset;
-    offset+=center;
-    float2 centerUV=uv-offset;
-    float sinR=sin(rotateAngle);
-    float cosR=cos(rotateAngle);
-    float2x2 rotateMatrix=float2x2(sinR,-cosR,cosR,sinR);
-    return mul(rotateMatrix,centerUV)*tilling+offset;
-}
-
-float2 TriplanarMapping(float3 worldPos,float3 worldNormal){ return (worldPos.zy*worldNormal.x+worldPos.xz*worldNormal.y+worldPos.xy*worldNormal.z);}
 
 float4 Blend_Screen(float4 src,float4 dst){ return 1-(1-src)*(1-dst); }
 float3 Blend_Screen(float3 src,float3 dst){ return 1-(1-src)*(1-dst); }
 float3 Blend_Alpha(float4 src, float4 dst){return dst.rgb * dst.a + src.rgb * (1 - dst.a);}
 
 float invlerp(float a,float b,float value){ return (value-a)/(b-a); }
-
+float quinterp(float f){ return f * f * f * (f * (f*6-15)+10); }
 float remap (float value, float from1, float to1, float from2, float to2) {   return lerp(from2,to2, invlerp(from1,to1,value));  }
 
-float random2(float2 value){return frac(sin(dot(value,float2(12.9898,78.233)))*43758.543123);}
-float random3(float3 value){return frac(sin(dot(value,float3(12.9898,78.233,53.539)))*43758.543123);}
+float2 TriplanarMapping(float3 worldPos,float3 worldNormal){ return (worldPos.zy*worldNormal.x+worldPos.xz*worldNormal.y+worldPos.xy*worldNormal.z);}
+float2 UVCenterMapping(float2 uv, float2 tilling, float2 offset, float rotateAngle)
+{
+    const float2 center = float2(.5, .5);
+    uv = uv + offset;
+    offset += center;
+    float2 centerUV = uv - offset;
+    float sinR = sin(rotateAngle);
+    float cosR = cos(rotateAngle);
+    float2x2 rotateMatrix = float2x2(sinR, -cosR, cosR, sinR);
+    return mul(rotateMatrix, centerUV) * tilling + offset;
+}
 
 float2x2 Rotate2x2(float angle)
 {
@@ -57,4 +54,36 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
     return float3x3(t * x * x + c, t * x * y - s * z, t * x * z + s * y,
         t * x * y + s * z, t * y * y + c, t * y * z - s * x,
         t * x * z - s * y, t * y * z + s * x, t * z * z + c);
+}
+
+float random01(float value){ return frac(sin(value*12.9898) * 43758.543123);}
+float random01(float2 value){return frac(sin(dot(value,float2(12.9898,78.233)))*43758.543123);}
+float random01(float3 value){return frac(sin(dot(value,float3(12.9898,78.233,53.539)))*43758.543123);}
+float randomUnit(float value){return random01(value) * 2 - 1;}
+float randomUnit(float2 value){ return random01(value)*2-1;}
+float randomUnit(float3 value){return random01(value)*2-1;}
+
+float2 randomUnitQuad(float2 value){return float2(random01(value.xy), random01(value.yx));}
+float2 randomUnitCircle(float2 value)
+{
+    float theta = 2 * PI * random01(value);
+    return float2(cos(theta), sin(theta));
+}
+
+float2 randomUnitPerlin(float2 value)
+{
+    float2 pos00 = floor(value);
+    float2 pos10 = pos00 + float2(1.0f, 0.0f);
+    float2 pos01 = pos00 + float2(0.0f, 1.0f);
+    float2 pos11 = pos00 + float2(1.0f, 1.0f);
+
+    float2 rand00 = randomUnitCircle(pos00);
+    float2 rand10 = randomUnitCircle(pos10);
+    float2 rand01 = randomUnitCircle(pos01);
+    float2 rand11 = randomUnitCircle(pos11);
+    
+    float dot00 = dot(rand00, pos00 - value);
+    float dot01 = dot(rand01, pos01 - value);
+    float dot10 = dot(rand10, pos10 - value);
+    float dot11 = dot(rand11, pos11 - value);
 }

@@ -48,19 +48,18 @@ Shader "Game/UI/Sprite_BSC"
 
 		Pass
 		{
-		CGPROGRAM
+		HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#include "UnityCG.cginc"
-			#include "UnityUI.cginc"
 			#include "../CommonInclude.hlsl"
+			#include "../ImageEffects/CameraEffectInclude.hlsl"
 
 			#pragma multi_compile __ UNITY_UI_ALPHACLIP
 
 			struct appdata_t
 			{
-				float4 vertex   : POSITION;
+				float3 vertex   : POSITION;
 				float4 color    : COLOR;
 				float2 texcoord : TEXCOORD0;
 			};
@@ -68,33 +67,31 @@ Shader "Game/UI/Sprite_BSC"
 			struct v2f
 			{
 				float4 vertex   : SV_POSITION;
-				fixed4 color : COLOR;
+				float4 color : COLOR;
 				half2 texcoord  : TEXCOORD0;
-				float4 worldPosition : TEXCOORD1;
+				float3 worldPosition : TEXCOORD1;
 			};
 
 
 			float4 _Color;
 
-			v2f vert(appdata_t IN)
+			v2f vert(appdata_t i)
 			{
-				v2f OUT;
-				OUT.worldPosition = IN.vertex;
-				OUT.vertex = UnityObjectToClipPos(OUT.worldPosition);
+				v2f o;
+				o.worldPosition = TransformObjectToWorld(i.vertex);
+				o.vertex = TransformObjectToHClip(i.vertex);
 
-				OUT.texcoord = IN.texcoord;
+				o.texcoord = i.texcoord;
 
-				OUT.color = IN.color * _Color;
-				return OUT;
+				o.color = i.color * _Color;
+				return o;
 			}
 			
 			float4 _BSC;
-			sampler2D _MainTex;
-			float4 _MainTex_TexelSize;
 
-			fixed4 frag(v2f IN) : SV_Target
+			float4 frag(v2f i) : SV_Target
 			{
-				float4 albedo = tex2D(_MainTex,IN.texcoord)*IN.color;
+				float4 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.texcoord)*i.color;
 
 				float3 color = albedo.rgb*_BSC.x;
 				float lum = luminance(color);
@@ -106,7 +103,7 @@ Shader "Game/UI/Sprite_BSC"
 
 				return float4(color,albedo.a);
 			}
-		ENDCG
+		ENDHLSL
 		}
 	}
 }
