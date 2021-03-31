@@ -144,7 +144,8 @@ namespace TEditor
 
         #region Serialize Helper
         static readonly Dictionary<Type, Action<UnityEngine.Object, UnityEngine.Object>> m_CopyHelper = new Dictionary<Type, Action<UnityEngine.Object, UnityEngine.Object>>() {
-            { typeof(Mesh),(src, dst) => CopyMesh((Mesh)src, (Mesh)dst)}
+            { typeof(Mesh),(src, dst) => CopyMesh((Mesh)src, (Mesh)dst)},
+            {typeof(AnimationClip),(src,dst)=>CopyAnimationClip((AnimationClip)src,(AnimationClip)dst) }
         };
 
         public static bool CopyPropertyTo(UnityEngine.Object _src, UnityEngine.Object _tar)
@@ -163,22 +164,22 @@ namespace TEditor
             }
             return false;
         }
-        public static void CopyMesh(Mesh source, Mesh target)
+        public static void CopyMesh(Mesh _src, Mesh _tar)
         {
-            target.Clear();
-            target.vertices = source.vertices;
-            target.normals = source.normals;
-            target.tangents = source.tangents;
-            target.name = source.name;
-            target.bounds = source.bounds;
-            target.bindposes = source.bindposes;
-            target.colors = source.colors;
-            target.boneWeights = source.boneWeights;
-            target.triangles = source.triangles;
+            _tar.Clear();
+            _tar.vertices = _src.vertices;
+            _tar.normals = _src.normals;
+            _tar.tangents = _src.tangents;
+            _tar.name = _src.name;
+            _tar.bounds = _src.bounds;
+            _tar.bindposes = _src.bindposes;
+            _tar.colors = _src.colors;
+            _tar.boneWeights = _src.boneWeights;
+            _tar.triangles = _src.triangles;
             List<Vector4> uvs = new List<Vector4>();
             for (int i = 0; i < 8; i++)
             {
-                source.GetUVs(i, uvs);
+                _src.GetUVs(i, uvs);
                 if (uvs.Count <= 0)
                     continue;
                 bool third = false;
@@ -191,26 +192,41 @@ namespace TEditor
                 }
 
                 if (fourth)
-                    target.SetUVs(i, uvs);
+                    _tar.SetUVs(i, uvs);
                 else if (third)
-                    target.SetUVs(i, uvs.ToList(vec4 => new Vector3(vec4.x, vec4.y, vec4.z)));
+                    _tar.SetUVs(i, uvs.ToList(vec4 => new Vector3(vec4.x, vec4.y, vec4.z)));
                 else
-                    target.SetUVs(i, uvs.ToList(vec4 => new Vector2(vec4.x, vec4.y)));
+                    _tar.SetUVs(i, uvs.ToList(vec4 => new Vector2(vec4.x, vec4.y)));
             }
-            for (int i = 0; i < source.subMeshCount; i++)
-                target.SetIndices(source.GetIndices(i), MeshTopology.Triangles, i);
+            for (int i = 0; i < _src.subMeshCount; i++)
+                _tar.SetIndices(_src.GetIndices(i), MeshTopology.Triangles, i);
 
-            target.ClearBlendShapes();
-            source.TraversalBlendShapes((name, index, frame, weight, deltaVerticies, deltaNormals, deltaTangents) => target.AddBlendShapeFrame(name, weight, deltaVerticies, deltaNormals, deltaTangents));
+            _tar.ClearBlendShapes();
+            _src.TraversalBlendShapes((name, index, frame, weight, deltaVerticies, deltaNormals, deltaTangents) => _tar.AddBlendShapeFrame(name, weight, deltaVerticies, deltaNormals, deltaTangents));
         }
-
+        public static void CopyAnimationClip(AnimationClip _src,AnimationClip _dstClip)
+        {
+            AnimationUtility.SetAnimationEvents(_dstClip,_src.events);
+            _dstClip.frameRate = _src.frameRate;
+            _dstClip.wrapMode = _src.wrapMode;
+            _dstClip.legacy = _src.legacy;
+            _dstClip.localBounds = _src.localBounds;
+            _dstClip.ClearCurves();
+            foreach(var curveBinding in AnimationUtility.GetCurveBindings(_src))
+                _dstClip.SetCurve(curveBinding.path, curveBinding.type, curveBinding.propertyName,  AnimationUtility.GetEditorCurve(_src, curveBinding));
+        }
         public static Mesh Copy(this Mesh _srcMesh)
         {
             Mesh copy = new Mesh();
             CopyMesh(_srcMesh, copy);
             return copy;
         }
-
+        public static AnimationClip Copy(this AnimationClip _srcClip)
+        {
+            AnimationClip copy = new AnimationClip();
+            CopyAnimationClip(_srcClip, copy);
+            return copy;
+        }
         #endregion
     }
     public static class UEPath

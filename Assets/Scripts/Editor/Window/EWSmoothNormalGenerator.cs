@@ -54,7 +54,7 @@ namespace TEditor
                 targetSubAsset.Add(new KeyValuePair<string,Object>(sourceMeshes[i].name, GenerateMesh(sourceMeshes[i], _generateUV)));
 
 
-            if( UECommon.SaveFilePath(out string filePath,"prefab", UEPath.RemoveExtension(UEPath.GetPathName(AssetDatabase.GetAssetPath(_targetFBX))) + "_SmoothNormal"))
+            if( UECommon.SaveFilePath(out string filePath,"prefab", UEPath.RemoveExtension(UEPath.GetPathName(AssetDatabase.GetAssetPath(_targetFBX))) + "_SN"))
             {
                 string assetPath =  UEPath.FilePathToAssetPath(filePath);
                 GameObject mainAsset= PrefabUtility.SaveAsPrefabAsset(prefabSource,assetPath);

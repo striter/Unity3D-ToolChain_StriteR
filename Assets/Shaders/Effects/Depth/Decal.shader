@@ -4,7 +4,6 @@
 	{
 		_MainTex("Decal Texture",2D) = "white"{}
 		_Color("Decal Color",Color)=(1,1,1,1)
-		[Toggle(_CULLBACK)] _Enable_CULLBACK ("Cull Back", Float) = 1
 		[KeywordEnum(NONE, BOX,SPHERE)]_DECALCLIP("Decal Clip Volume",int)=0
 	}
 	SubShader
@@ -19,7 +18,6 @@
 			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			#pragma shader_feature _CULLBACK
 			#pragma multi_compile  _DECALCLIP_NONE _DECALCLIP_BOX _DECALCLIP_SPHERE
 			
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
@@ -67,6 +65,7 @@
 				#elif _DECALCLIP_BOX
 				color.a*=step(abs(opos.x),.5)*step(abs(opos.y),.5)*step(abs(opos.z),.5);
 				#endif
+				
 				float atten=MainLightRealtimeShadow(TransformWorldToShadowCoord(wpos));
 				color.a*=atten;
 				color.rgb+=_GlossyEnvironmentColor.rgb;

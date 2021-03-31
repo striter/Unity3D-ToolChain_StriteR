@@ -6,7 +6,7 @@ public static class UMath
 {
     public static float AngleToRadin(float angle) => Mathf.PI * angle / 180f;
     public static float RadinToAngle(float radin) => radin / Mathf.PI * 180f;
-    public static int Power(int _src, int _pow)
+    public static int Pow(int _src, int _pow)
     {
         if (_pow == 0) return 1;
         if (_pow == 1) return _src;

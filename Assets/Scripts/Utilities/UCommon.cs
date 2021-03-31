@@ -42,7 +42,7 @@ public static class UCommon
         int maxPower=Convert.ToInt32( Enum.GetValues(typeof(T)).Cast<T>().Max());
         for(int i=0;i<32 ;i++ )
         {
-            int curPower = UMath.Power(2,i);
+            int curPower = UMath.Pow(2,i);
             if (curPower > maxPower)
                 yield break;
             yield return (flagValues&curPower)==curPower;
