@@ -5,15 +5,30 @@
 		_MainTex("Main Tex",2D) = "white"{}
 		_Color("Color",Color) = (1,1,1,1)
 		
-		[Header(Normal Map)]
-		[Toggle(_NORMALMAP)]_EnableNormalMap("Enable Normal Mapping",float)=0
-		[NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
 		[Header(Diffuse Setting)]
 		_Lambert("Lambert",Range(0,1))=.5
 
 		[Header(Specular Setting)]
 		[Toggle(_SPECULAR)]_EnableSpecular("Enable Specular",float)=1
 		_SpecularRange("Specular Range",Range(.9,1))=.98
+
+		[Header(Additional Mapping)]
+		[Header(_Normal)]
+		[Toggle(_NORMALMAP)]_EnableNormalMap("_Normal Mapping",float)=0
+		[NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
+		[Header(_Parallex)]
+		[Toggle(_PARALLEXMAP)]_EnableParallexMap("_Parallex Mapping",float)=0
+		[NoScaleOffset]_ParallexTex("Parallex Tex",2D)="white"{}
+		_ParallexScale("Parallex Scale",Range(0.001,.2))=1
+		_ParallexOffset("Parallex Offset",Range(0,1))=.42
+		[Toggle(_PARALLEX_STEEP)]_SteepParallex("Steep Parallex",float)=0
+		[Enum(_8,8,_16,16,_32,32,_64,64,_128,128)]_SteepCount("Steep Count",int)=16
+		[Header(_AO)]
+		[Toggle(_AOMAP)]_EnableAOMap("_AO Mapping",float)=0
+		[NoScaleOffset]_AOTex("AO Tex",2D)="white"{}
+		[Header(_Roughness)]
+		[Toggle(_ROUGHNESSMAP)]_EnableRoughnessMap("_Rougheness Mapping",float)=0
+		[NoScaleOffset]_RoughnessTex("Roughness Tex",2D)="white"{}
 	}
 	SubShader
 	{
@@ -38,16 +53,24 @@
             #pragma multi_compile _ _SHADOWS_SOFT
 			#pragma shader_feature _SPECULAR
 			#pragma shader_feature _NORMALMAP
+			#pragma shader_feature _PARALLEXMAP
+			#pragma shader_feature _PARALLEX_STEEP
+			#pragma shader_feature _AOMAP
+			#pragma shader_feature _ROUGHNESSMAP
 		
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
-		    #if _NORMALMAP
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
-			#endif
+			TEXTURE2D(_ParallexTex);SAMPLER(sampler_ParallexTex);
+			TEXTURE2D(_AOTex);SAMPLER(sampler_AOTex);
+			TEXTURE2D(_RoughnessTex);SAMPLER(sampler_RoughnessTex);
 			UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
+			UNITY_DEFINE_INSTANCED_PROP(int ,_SteepCount)
 			UNITY_DEFINE_INSTANCED_PROP(float4,_MainTex_ST)
 			UNITY_DEFINE_INSTANCED_PROP(float,_Lambert)
 			UNITY_DEFINE_INSTANCED_PROP(float,_SpecularRange)
 			UNITY_DEFINE_INSTANCED_PROP(float4, _Color)
+			UNITY_DEFINE_INSTANCED_PROP(float,_ParallexScale);
+			UNITY_DEFINE_INSTANCED_PROP(float,_ParallexOffset)
 			UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
 			struct a2f
@@ -55,9 +78,7 @@
 				float3 positionOS : POSITION;
 				float2 uv:TEXCOORD0;
 				float3 normalOS:NORMAL;
-				#if _NORMALMAP
 				float4 tangentOS:TANGENT;
-				#endif
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -65,13 +86,11 @@
 			{
 				float4 positionCS : SV_POSITION;
 				float2 uv:TEXCOORD0;
-				float3 positionWS:TEXCOORD1;
-				float3 normalWS:TEXCOORD2;
-				float3 viewDirWS:TEXCOORD3;
-				float4 shadowCoordWS:TEXCOORD4;
-				#if _NORMALMAP
-				float3x3 TBNWS:TEXCOORD5;
-				#endif
+				float3 normalTS:TEXCOORD1;
+				float3 positionTS:TEXCOORD2;
+				float3 cameraPosTS:TEXCOORD3;
+				float3 lightDirTS:TEXCOORD4;
+				float4 shadowCoordWS:TEXCOORD5;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -82,39 +101,87 @@
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				o.uv = TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
 				o.positionCS = TransformObjectToHClip(v.positionOS);
-				o.positionWS =  TransformObjectToWorld(v.positionOS);
-				o.normalWS=TransformObjectToWorldNormal(v.normalOS);
-				o.viewDirWS=GetCameraPositionWS() -o.positionWS;
-				o.shadowCoordWS=TransformWorldToShadowCoord(o.positionWS);
-				#if _NORMALMAP
-				float3 tangentWS=TransformObjectToWorldNormal(v.tangentOS.xyz*v.tangentOS.w);
-				float3 biTangentWS=cross(tangentWS,o.normalWS);
-				o.TBNWS=float3x3(normalize(tangentWS),normalize(biTangentWS),normalize(o.normalWS));
-				#endif
+				float3 positionWS =  TransformObjectToWorld(v.positionOS);
+				o.shadowCoordWS=TransformWorldToShadowCoord(positionWS);
+
+				float3 normalOS=normalize(v.normalOS);
+				float3 tangentOS=normalize(v.tangentOS.xyz);
+				float3x3 TBN=float3x3(v.tangentOS.xyz,cross(v.normalOS,v.tangentOS.xyz)*v.tangentOS.w,v.normalOS);
+				o.positionTS=mul(TBN,v.positionOS);
+				o.cameraPosTS=mul(TBN, TransformWorldToObject(GetCameraPositionWS()));
+				o.lightDirTS=mul(TBN,TransformWorldToObjectNormal(_MainLightPosition.xyz));
+				o.normalTS=mul(TBN,v.normalOS);
 				return o;
 			}
-
+			#if _PARALLEXMAP
+			float GetParallex(float2 uv)
+			{
+				return 1.0-SAMPLE_TEXTURE2D(_ParallexTex,sampler_ParallexTex,uv);
+			}
+			float2 ParallexMap(float2 uv,float3 viewDirTS)
+			{
+				float3 viewDir=normalize(viewDirTS);
+				viewDir.z+=INSTANCE(_ParallexOffset);
+				float2 uvOffset=viewDir.xy/viewDir.z*INSTANCE(_ParallexScale);
+				#if _PARALLEX_STEEP
+				int marchCount=lerp(INSTANCE(_SteepCount),INSTANCE(_SteepCount)/4,saturate(dot(float3(0,0,1),viewDirTS)));
+				float deltaDepth=1.0/marchCount;
+				float2 deltaUV=uvOffset/marchCount;
+				float depthLayer=0;
+				float2 curUV=uv;
+				float curDepth;
+				[unroll(128)]
+				for(int i=0;i<marchCount;i++)
+				{
+					curDepth=GetParallex(curUV).r;
+					if(curDepth<=depthLayer)
+						break;
+					curUV-=deltaUV;
+					depthLayer+=deltaDepth;
+				}
+				float2 preUV=curUV+deltaUV;
+				float beforeDepth=GetParallex(preUV)-depthLayer+deltaDepth;
+				float afterDepth=curDepth-depthLayer;
+				float weight=afterDepth/(afterDepth-beforeDepth);
+				curUV=preUV*weight+curUV*(1-weight);
+				return curUV;
+				#else
+				float2 offset=uvOffset*GetParallex(uv).r;
+				return uv-offset;
+				#endif
+			}
+			#endif
 			float4 DiffuseFragmentBase(v2f i) :SV_TARGET
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
-				float3 normal=normalize(i.normalWS);
-				float3 lightDir=normalize(_MainLightPosition.xyz);
-				float3 viewDir=normalize(i.viewDirWS);
+				float3 normalTS=normalize(i.normalTS);
+				float3 lightDirTS=normalize(i.lightDirTS);
+				float3 viewDirTS=normalize(i.cameraPosTS-i.positionTS);
+				#if _PARALLEXMAP
+				i.uv=ParallexMap(i.uv,viewDirTS);
+				#endif
 				#if _NORMALMAP
-				float3 normalTS= DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv).xyz);
-				normal= mul(normalTS,i.TBNWS);
+				normalTS=normalize( DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv).xyz));
 				#endif
 
 				float atten=MainLightRealtimeShadow(i.shadowCoordWS);
+				#if _AOMAP
+				atten*=SAMPLE_TEXTURE2D(_AOTex,sampler_AOTex,i.uv);
+				#endif
+
 				float3 ambient=_GlossyEnvironmentColor.rgb;
 				float3 lightCol=_MainLightColor.rgb;
-				float3 finalCol=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv).xyz*INSTANCE( _Color).rgb+ambient;
-				float diffuse= GetDiffuse(normal,lightDir,INSTANCE(_Lambert),atten);
+				float3 albedo=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv).xyz*INSTANCE( _Color).rgb;
+				float3 finalCol=albedo+ambient;
+				float diffuse= GetDiffuse(normalTS,lightDirTS,INSTANCE(_Lambert),atten);
 				finalCol*=_MainLightColor.rgb*diffuse;
 				#if _SPECULAR
-				float specular = GetSpecular(normal,lightDir,viewDir,INSTANCE(_SpecularRange));
+				float specular = GetSpecular(normalTS,lightDirTS,viewDirTS,INSTANCE(_SpecularRange));
+				#if _ROUGHNESSMAP
+				specular*=SAMPLE_TEXTURE2D(_RoughnessTex,sampler_RoughnessTex,i.uv);
+				#endif
 				specular*=atten;
-				finalCol += _MainLightColor.rgb*specular;
+				finalCol += _MainLightColor.rgb*albedo*specular*atten;
 				#endif
 				return float4(finalCol,1);
 			}

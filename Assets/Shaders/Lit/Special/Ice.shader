@@ -108,11 +108,12 @@
 			    float4 positionCS : SV_POSITION;
 			    float2 uv:TEXCOORD0;
 			    float3 normalTS:TEXCOORD1;
-			    float3 viewDirTS:TEXCOORD2;
-				float3 lightDirTS:TEXCOORD3;
-				float4 shadowCoordWS:TEXCOORD4;
+				float3 positionTS:TEXCOORD2;
+				float3 cameraPosTS:TEXCOORD3;
+				float3 lightDirTS:TEXCOORD4;
+				float4 shadowCoordWS:TEXCOORD5;
 				#if _OPACITY
-				float4 screenPos:TEXCOORD5;
+				float4 screenPos:TEXCOORD6;
 				#endif
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
@@ -127,10 +128,11 @@
 				float3 positionWS=TransformObjectToWorld(v.positionOS);
 			    o.shadowCoordWS=TransformWorldToShadowCoord(positionWS);
 
-				float3x3 TBNOS=float3x3(v.tangentOS.xyz,cross(v.normalOS,v.tangentOS.xyz)*v.tangentOS.w,v.normalOS);
-				o.viewDirTS=mul(TBNOS, TransformWorldToObjectNormal(GetCameraPositionWS()-positionWS));
-				o.lightDirTS=mul(TBNOS,TransformWorldToObjectNormal(_MainLightPosition.xyz));
-				o.normalTS=mul(TBNOS,v.normalOS);
+				float3x3 TBN=float3x3(v.tangentOS.xyz,cross(v.normalOS,v.tangentOS.xyz)*v.tangentOS.w,v.normalOS);
+				o.positionTS=mul(TBN,v.positionOS);
+				o.cameraPosTS=mul(TBN, TransformWorldToObject(GetCameraPositionWS()));
+				o.lightDirTS=mul(TBN,TransformWorldToObjectNormal(_MainLightPosition.xyz));
+				o.normalTS=mul(TBN,v.normalOS);
 
 				#if _OPACITY
 				o.screenPos=ComputeScreenPos(o.positionCS);
@@ -143,7 +145,7 @@
 				UNITY_SETUP_INSTANCE_ID(i);
 				float3 normalTS=normalize(i.normalTS);
 				float3 lightDirTS=normalize(i.lightDirTS);
-				float3 viewDirTS=normalize(i.viewDirTS);
+				float3 viewDirTS=normalize(i.cameraPosTS-i.positionTS);
 				float2 thickOffset=-viewDirTS.xy/viewDirTS.z;
 				
 				#if _NORMALMAP
@@ -166,7 +168,7 @@
 				float crackAmount=0;
 				float4 crackCol=INSTANCE(_CrackColor);
 				#if _CRACKTOP
-				crackAmount=SAMPLE_TEXTURE2D(_CrackTex,sampler_CrackTex,i.uv)* crackCol.a* INSTANCE(_CrackTopStrength);
+				crackAmount=SAMPLE_TEXTURE2D(_CrackTex,sampler_CrackTex,i.uv).r* crackCol.a* INSTANCE(_CrackTopStrength);
 				#endif
 				#if _CRACKPARALLEX
 				uint crackParallexTimes=INSTANCE(_CrackParallexTimes);
@@ -182,7 +184,7 @@
 					float distance=crackDistance*totalParallex;
 					distance+=random01(frac(i.uv))*offsetDistance;
 					float2 parallexUV=i.uv+thickOffset*distance;
-					crackAmount+=SAMPLE_TEXTURE2D(_CrackTex,sampler_CrackTex,parallexUV)*parallexParam*pow(1-totalParallex,crackPow);
+					crackAmount+=SAMPLE_TEXTURE2D(_CrackTex,sampler_CrackTex,parallexUV).r*parallexParam*pow(saturate(1-totalParallex),crackPow);
 					totalParallex+=parallexParam;
 				}
 				crackAmount=saturate(crackAmount*diffuse*crackCol.a);
@@ -207,7 +209,7 @@
 				#endif
 				#if _FRESNEL
 				float NDV=dot(normalTS,viewDirTS);
-				opacity+=pow(NDV,INSTANCE(_FresnelPow))*.5;
+				opacity+=pow(saturate(NDV),INSTANCE(_FresnelPow))*.5;
 				#endif
 				opacity=lerp(1-INSTANCE(_BeginOpacity),1,saturate(opacity));
 				#if _DISTORT
@@ -215,7 +217,7 @@
 				screenDistort*=1-opacity;
 				screenUV+=screenDistort;
 				#endif
-				float3 geometryTex=SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,screenUV);
+				float3 geometryTex=SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,screenUV).rgb;
 				finalCol=lerp( finalCol,geometryTex,opacity);
 				#endif
 				
