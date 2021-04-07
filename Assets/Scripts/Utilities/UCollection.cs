@@ -89,39 +89,12 @@ public static class UCollection
         }
         return false;
     }
-    public static void FindAllIndexes<T>(this IEnumerable<T> _ienumerable,List<int> _indexList, Predicate<T> OnEachItem)
+    public static T Find<T>(this IEnumerable<T> _ienumerable,Predicate<T> OnEachItem)
     {
-        _indexList.Clear();
-        int index = -1;
-        foreach (T item in _ienumerable)
-        {
-            index++;
+        foreach (var item in _ienumerable)
             if (OnEachItem(item))
-                _indexList.Add(index);
-        }
-    }
-    public static void FindAllIndexes<T>(this IEnumerable<T> _ienumerable, List<int> _indexList, Func<int,T,bool> OnEachItem)
-    {
-        _indexList.Clear();
-        int index = -1;
-        foreach (T item in _ienumerable)
-        {
-            index++;
-            if (OnEachItem(index,item))
-                _indexList.Add(index);
-        }
-    }
-    public static List<int> FindAllIndexes<T>(this IEnumerable<T> _ienumerable,Predicate<T> OnEachItem)
-    {
-        List<int> items = new List<int>();
-        int index = -1;
-        foreach (T item in _ienumerable)
-        {
-            index++;
-            if (OnEachItem(item))
-                items.Add(index);
-        }
-        return items;
+                return item;
+        return default;
     }
     public static List<T> FindAll<T>(this IEnumerable<T> _ienumerable,Predicate<T> OnEachItem)
     {
@@ -143,6 +116,40 @@ public static class UCollection
                 transformItems.Add(newItem);
         }
         return transformItems;
+    }
+    public static void FindAllIndexes<T>(this IEnumerable<T> _ienumerable, List<int> _indexList, Predicate<T> OnEachItem)
+    {
+        _indexList.Clear();
+        int index = -1;
+        foreach (T item in _ienumerable)
+        {
+            index++;
+            if (OnEachItem(item))
+                _indexList.Add(index);
+        }
+    }
+    public static void FindAllIndexes<T>(this IEnumerable<T> _ienumerable, List<int> _indexList, Func<int, T, bool> OnEachItem)
+    {
+        _indexList.Clear();
+        int index = -1;
+        foreach (T item in _ienumerable)
+        {
+            index++;
+            if (OnEachItem(index, item))
+                _indexList.Add(index);
+        }
+    }
+    public static List<int> FindAllIndexes<T>(this IEnumerable<T> _ienumerable, Predicate<T> OnEachItem)
+    {
+        List<int> items = new List<int>();
+        int index = -1;
+        foreach (T item in _ienumerable)
+        {
+            index++;
+            if (OnEachItem(item))
+                items.Add(index);
+        }
+        return items;
     }
     public static void Traversal<T>(this IEnumerable<T> _ienumerable, Action<T> OnEachItem)
     {
@@ -262,26 +269,6 @@ public static class UCollection
         });
         return builder.ToString();
     }
-    public static string ToString_FieldName(this string _fieldName)
-    {
-        int index = _fieldName.IndexOf("m_");
-        if (index != -1)
-            _fieldName = _fieldName.Remove(index, 2);
-
-        int length = _fieldName.Length - 1;
-        for (int i = 0; i < length; i++)
-        {
-
-
-            if (Char.IsLower(_fieldName[i]) && Char.IsUpper(_fieldName[i + 1]))
-            {
-                _fieldName = _fieldName.Insert(i + 1, " ");
-                i++;
-                length++;
-            }
-        }
-        return _fieldName;
-    }
 
     public static void AddRange<T, Y>(this List<T> list, IEnumerable<Y> ienumerable, Func<Y, T> OnEachAddItem)
     {
@@ -305,6 +292,13 @@ public static class UCollection
         for (int i = 0; i < tarLength; i++)
             newArray[srcLength + i] = tarArray[i];
         return newArray;
+    }
+    public static T[] RemoveLast<T>(this T[] srcArray)
+    {
+        T[] dstArray = new T[srcArray.Length-1];
+        for (int i = 0; i < dstArray.Length; i++)
+            dstArray[i] = srcArray[i];
+        return dstArray;
     }
     public static Y[] ToArray<T, Y>(this IEnumerable<T> src, Func<T, Y> GetDstItem)
     {

@@ -36,8 +36,8 @@ namespace Rendering.ImageEffect
         [ColorUsage(true,true)]public Color m_FillColor;
         [ColorUsage(true,true)]public Color m_EdgeColor;
         public Texture2D m_FillTexure;
-        [RangeVector(-5,5)] public Vector2 m_FillTextureFlow;
-        public float m_FillTextureScale;
+        [MFold(nameof(m_FillTexure)), RangeVector(-5,5)] public Vector2 m_FillTextureFlow;
+        [MFold(nameof(m_FillTexure)),Clamp(0f)] public float m_FillTextureScale;
 
         public static readonly PostEffectParam_DepthCirCleArea m_Default = new PostEffectParam_DepthCirCleArea()
         {

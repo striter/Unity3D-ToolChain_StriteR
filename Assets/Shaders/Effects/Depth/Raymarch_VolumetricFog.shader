@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/Depth/Raymarch_VolumetricFog_Box"
+﻿Shader "Game/Effects/Depth/Raymarch_VolumetricFog"
 {
     Properties
     {
@@ -22,8 +22,13 @@
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
+            #pragma multi_compile _ _SHADOWS_SOFT
 
             #include "../../CommonInclude.hlsl"
+            #include "../../CommonLightingInclude.hlsl"
             #include "../../BoundingCollision.hlsl"
 
             struct appdata
@@ -78,7 +83,7 @@
                 float3 marchDirWS=normalize( i.viewDirWS);
                 float marchDstWS=AABBRayDistance(i.minBoundWS,i.maxBoundWS,i.positionWS,marchDirWS).y;
                 float depthDstWS=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, i.screenPos.xy/i.screenPos.w),_ZBufferParams).r-i.screenPos.w;
-                float marchDistance= min(marchDstWS, depthDstWS);
+                float marchDistance= max(0,min(marchDstWS, depthDstWS));
                 
                 float sumDensity=0;
                 if(marchDistance>0)
@@ -90,7 +95,8 @@
                     {
                         float3 marchPos=i.positionWS+marchDirWS*dstMarched;
                         float density=SampleDensity(marchPos)*_Density;
-                        sumDensity+=marchOffset*density;
+                        float atten=MainLightRealtimeShadow(TransformWorldToShadowCoord(marchPos));
+                        sumDensity+=marchOffset*density*atten;
                         dstMarched+=distanceOffset;
 
                         if(sumDensity>=1||dstMarched>marchDistance)

@@ -17,39 +17,38 @@ namespace Rendering.ImageEffect
     [Serializable]
     public struct ImageEffectParam_VHS
     {
-        [Header("Screen Cut")] 
-        public enum_VHSScreenCut m_ScreenCut;
-        [RangeVector(0, 1)] public Vector2 m_ScreenCutDistance;
-        [Header("Color Bleed")]
-        public bool m_ColorBleed;
-        [Range(1, 4)] public int m_ColorBleedIteration;
-        [Range(0, 2)] public float m_ColorBleedSize;
-        [RangeVector(-5, 5)] public Vector2 m_ColorBleedR;
-        [RangeVector(-5, 5)] public Vector2 m_ColorBleedG;
-        [RangeVector(-5, 5)] public Vector2 m_ColorBleedB;
-        [Header("Pixel Distort")]
-        public bool m_PixelDistort;
-        [RangeVector(0, 1)] public Vector2 m_PixelDistortScale;
-        [Range(0, 0.5f)] public float m_PixelDistortStrength;
-        [Range(0.5f, 1f)] public float m_PixelDistortClip;
-        [Range(0f, 144f)] public int m_PixelDistortFrequency;
+        [MTitle]  public enum_VHSScreenCut m_ScreenCut;
+        [MFold(nameof(m_ScreenCut),enum_VHSScreenCut.None),RangeVector(0, 1)] public Vector2 m_ScreenCutDistance;
 
-        [Header("Line Distort")]
-        public bool m_LineDistort;
-        [Range(-2f, 2f)] public float m_LineDistortSpeed;
-        [Range(-.1f, .1f)] public float m_LineDistortStrength;
-        [Range(0f, 1f)] public float m_LineDistortClip;
-        [Range(0, 10f)] public float m_LineDistortFrequency;
-        [Header("Grain")]
-        public bool m_Grain;
-        public Color m_GrainColor;
-        [RangeVector(0, 1)] public Vector2 m_GrainScale;
-        [Range(0, 1)] public float m_GrainClip;
-        [Range(0, 144)] public int m_GrainFrequency;
-        [Header("Vignette")]
-        public bool m_Vignette;
-        public Color m_VignetteColor;
-        [Range(0, 10)] public float m_VignetteValue;
+        [MTitle] public bool m_ColorBleed;
+        [MFoldout(nameof(m_ColorBleed), true), Range(1, 4)] public int m_ColorBleedIteration;
+        [MFoldout(nameof(m_ColorBleed), true), Range(0, 2)] public float m_ColorBleedSize;
+        [MFoldout(nameof(m_ColorBleed), true), RangeVector(-5, 5)] public Vector2 m_ColorBleedR;
+        [MFoldout(nameof(m_ColorBleed), true), RangeVector(-5, 5)] public Vector2 m_ColorBleedG;
+        [MFoldout(nameof(m_ColorBleed), true), RangeVector(-5, 5)] public Vector2 m_ColorBleedB;
+
+        [MTitle] public bool m_PixelDistort;
+        [MFoldout(nameof(m_PixelDistort), true), RangeVector(0, 1)] public Vector2 m_PixelDistortScale;
+        [MFoldout(nameof(m_PixelDistort), true), Range(0, 0.5f)] public float m_PixelDistortStrength;
+        [MFoldout(nameof(m_PixelDistort), true), Range(0.5f, 1f)] public float m_PixelDistortClip;
+        [MFoldout(nameof(m_PixelDistort), true), Range(0f, 144f)] public int m_PixelDistortFrequency;
+
+        [MTitle] public bool m_LineDistort;
+        [MFoldout(nameof(m_LineDistort), true), Range(-2f, 2f)] public float m_LineDistortSpeed;
+        [MFoldout(nameof(m_LineDistort), true), Range(-.1f, .1f)] public float m_LineDistortStrength;
+        [MFoldout(nameof(m_LineDistort), true), Range(0f, 1f)] public float m_LineDistortClip;
+        [MFoldout(nameof(m_LineDistort), true), Range(0, 10f)] public float m_LineDistortFrequency;
+
+        [MTitle] public bool m_Grain;
+        [MFoldout(nameof(m_Grain), true)] public Color m_GrainColor;
+        [MFoldout(nameof(m_Grain), true), RangeVector(0, 1)] public Vector2 m_GrainScale;
+        [MFoldout(nameof(m_Grain), true), Range(0, 1)] public float m_GrainClip;
+        [MFoldout(nameof(m_Grain), true), Range(0, 144)] public int m_GrainFrequency;
+
+        [MTitle] public bool m_Vignette;
+        [MFoldout(nameof(m_Vignette), true)] public Color m_VignetteColor;
+        [MFoldout(nameof(m_Vignette), true), Range(0, 10)] public float m_VignetteValue;
+
         public static readonly ImageEffectParam_VHS m_Default = new ImageEffectParam_VHS()
         {
             m_ScreenCut = enum_VHSScreenCut.Hard,

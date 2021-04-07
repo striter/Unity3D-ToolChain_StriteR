@@ -14,9 +14,8 @@ namespace Rendering.ImageEffect
         [Range(0.01f, 1f)] public float m_DOFStart;
         [Range(.01f, .3f)] public float m_DOFLerp;
         public ImageEffectParam_Blurs m_BlurParams;
-        [Header("Depth Blur")]
-        public bool m_DepthBlurSample;
-        [Range(.25f, 1.25f)] public float m_DepthBlurSize;
+        [MTitle] public bool m_DepthBlurSample;
+        [MFoldout(nameof(m_DepthBlurSample),true), Range(.25f, 1.25f)] public float m_DepthBlurSize;
         public static readonly CameraEffectParam_DepthOfField m_Default = new CameraEffectParam_DepthOfField()
         {
             m_DOFStart = 0.1f,

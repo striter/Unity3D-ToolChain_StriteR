@@ -15,16 +15,10 @@ namespace Rendering.ImageEffect
     [Serializable]
     public struct CameraEffectParam_VolumetricCloud
     {
-        [Header("_Main")]
-        [Header("Cloud Setting")]
-        public Texture3D m_MainNoise;
-        [RangeVector(0f,1000f)]public Vector3 m_MainNoiseScale;
-        [RangeVector(0f,10f)]public Vector3 m_MainNoiseFlow;
-        [Header("_Shape")]
-        public Texture2D m_ShapeMask;
-        [RangeVector(0f, 1000f)] public Vector2 m_ShapeMaskScale;
-        [RangeVector(0f, 10f)] public Vector2 m_ShapeMaskFlow;
-        [Header("_Sample")]
+        [MTitle] public Texture3D m_MainNoise;
+        [MFold(nameof(m_MainNoise)), RangeVector(0f, 1000f)] public Vector3 m_MainNoiseScale;
+        [MFold(nameof(m_MainNoise)), RangeVector(0f, 10f)] public Vector3 m_MainNoiseFlow;
+
         public float m_VerticalStart;
         public float m_VerticalLength;
         [Range(0f, 100f)] public float m_Density;
@@ -34,17 +28,19 @@ namespace Rendering.ImageEffect
         public enum_VolumetricCloud_MarchTimes m_MarchTimes ;
         [Range(0, 1)] public float m_Opacity;
 
-        [Header("Light Setting")]
+        [MTitle] public Texture2D m_ShapeMask;
+        [MFold(nameof(m_ShapeMask)), RangeVector(0f, 1000f)] public Vector2 m_ShapeMaskScale;
+        [MFold(nameof(m_ShapeMask)), RangeVector(0f, 10f)] public Vector2 m_ShapeMaskFlow;
+
+        [Header("Light Setting")] 
         public Texture2D m_ColorRamp;
         [Range(0, 1)] public float m_LightAbsorption;
-        public bool m_LightMarch;
-        [Range(0, 1)] public float m_LightMarchClip;
-        public enum_VolumetricCloud_LightMarchTimes m_LightMarchTimes;
-
-        [Header("Scatter Setting")]
-        public bool m_LightScatter;
-        [Range(.5f, 1)] public float m_ScatterRange ;
-        [Range(0, 1)] public float m_ScatterStrength;
+        [MTitle]public bool m_LightMarch;
+        [MFoldout(nameof(m_LightMarch),true), Range(0, 1)] public float m_LightMarchClip;
+        [MFoldout(nameof(m_LightMarch), true)] public enum_VolumetricCloud_LightMarchTimes m_LightMarchTimes;
+        [MTitle] public bool m_LightScatter;
+        [MFoldout(nameof(m_LightScatter), true), Range(.5f, 1)] public float m_ScatterRange;
+        [MFoldout(nameof(m_LightScatter), true), Range(0, 1)] public float m_ScatterStrength;
         public static readonly CameraEffectParam_VolumetricCloud m_Default = new CameraEffectParam_VolumetricCloud()
         {
             m_VerticalStart = 20f,
@@ -92,6 +88,8 @@ namespace Rendering.ImageEffect
         static readonly int ID_MainNoise = Shader.PropertyToID("_MainNoise");
         static readonly int ID_MainNoiseScale = Shader.PropertyToID("_MainNoiseScale");
         static readonly int ID_MainNoiseFlow = Shader.PropertyToID("_MainNoiseFlow");
+
+        const string KW_ShapeMask = "_SHAPEMASK";
         static readonly int ID_ShapeMask = Shader.PropertyToID("_ShapeMask");
         static readonly int ID_ShapeScale = Shader.PropertyToID("_ShapeMaskScale");
         static readonly int ID_ShapeFlow = Shader.PropertyToID("_ShapeMaskFlow");
@@ -120,6 +118,7 @@ namespace Rendering.ImageEffect
             _material.SetTexture(ID_MainNoise, _params.m_MainNoise);
             _material.SetVector(ID_MainNoiseScale, _params.m_MainNoiseScale);
             _material.SetVector(ID_MainNoiseFlow, _params.m_MainNoiseFlow);
+            _material.EnableKeyword(KW_ShapeMask, _params.m_ShapeMask != null);
             _material.SetTexture(ID_ShapeMask, _params.m_ShapeMask);
             _material.SetVector(ID_ShapeScale, _params.m_ShapeMaskScale);
             _material.SetVector(ID_ShapeFlow, _params.m_ShapeMaskFlow);

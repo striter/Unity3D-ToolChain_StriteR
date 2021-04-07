@@ -7,11 +7,12 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PolarBear_BoneInstance
-  m_Shader: {fileID: 4800000, guid: e79474b8018424a458f64c7a68eaf79a, type: 3}
-  m_ShaderKeywords: _BONE _INSTANCE_BONE _OPTIMIZE_NONE
+  m_Name: Raymarch_VolumetricFog
+  m_Shader: {fileID: 4800000, guid: d00864ce2a76b934998c3b6bbef45762, type: 3}
+  m_ShaderKeywords: _MARCHTIMES__16__32__64__128__256__512 _MARCHTIMES__32 _MARCH_T128
+    _MARCH__16
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
+  m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -19,13 +20,8 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _AnimTex:
-        m_Texture: {fileID: -7975149132758514205, guid: 3810b0f00865ad141adb159b8d668738,
-          type: 2}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _BoneAnimTex:
-        m_Texture: {fileID: 2800000, guid: b44906c52af19b0499672321a9b6a59d, type: 2}
+    - _3DNoise:
+        m_Texture: {fileID: 11700000, guid: d2993425f654940448af634a1d7cf838, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -48,22 +44,16 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _InstanceAnimationTex:
-        m_Texture: {fileID: -7975149132758514205, guid: 3810b0f00865ad141adb159b8d668738,
-          type: 2}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _InstanceAnimationTexe:
-        m_Texture: {fileID: -7975149132758514205, guid: 3810b0f00865ad141adb159b8d668738,
-          type: 2}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: d62b79de8d02b4e44ab42b45f6973f84, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Noise:
+        m_Texture: {fileID: 11700000, guid: d7cdc3d1f96e777489126e46f6ca72c0, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -75,34 +65,38 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _BeginFrame: 1
-    - _BoneCount: 0
     - _BumpScale: 1
-    - _CurFrame: 1
     - _Cutoff: 0.5
+    - _Density: 5
+    - _DensityClip: 0.228
     - _DetailNormalMapScale: 1
+    - _Distance: 13
     - _DstBlend: 0
-    - _EnableAnimationInstance: 0
-    - _FramePass: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _INSTANCE: 0
-    - _InstanceFrameBegin: 197.12
-    - _InstanceFrameEnd: 0
-    - _InstanceFrameInterpolate: 0
-    - _IsBoneInstance: 1
+    - _LightMarch: 16
+    - _March: 512
+    - _MarchDistance: 8.9
+    - _MarchTimes: 1
+    - _MaxDensity: 1
     - _Metallic: 0
     - _Mode: 0
-    - _OPTIMIZE: 0
+    - _NoiseDensity: 1.43
+    - _NoiseScale: 58
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _RayMarch: 64
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _StepDistance: 6
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.9202805, g: 1.160949, b: 1.2830188, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _NoiseFlow: {r: 0.03, g: 0.01, b: 0, a: 1}
+    - _NoiseScale: {r: 100, g: 100, b: 100, a: 1}
+    - _Origin: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

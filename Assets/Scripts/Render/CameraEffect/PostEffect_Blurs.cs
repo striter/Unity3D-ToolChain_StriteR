@@ -47,14 +47,13 @@ namespace Rendering.ImageEffect
     [Serializable]
     public struct ImageEffectParam_Blurs
     {
-        public enum_BlurType blurType;
-        [Header("Common")]
+        [MTitle]public enum_BlurType blurType;
         [Range(0.15f, 2.5f)] public float blurSize;
         [Range(1, 8)] public int iteration;
         [Range(1, 4)] public int downSample;
-        [Header("Bokeh | Hexagon")]
+        [MFoldout(nameof(blurType),enum_BlurType.Hexagon,enum_BlurType.Bokeh)]
         [Range(-1, 1)] public float angle;
-        [Header("Directional | Offset")]
+        [MFoldout(nameof(blurType), enum_BlurType.Directional,enum_BlurType.Radial)]
         [RangeVector(0, 1)] public Vector2 vector;
         public static readonly ImageEffectParam_Blurs m_Default = new ImageEffectParam_Blurs()
         {

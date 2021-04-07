@@ -19,6 +19,7 @@
             #include "CameraEffectInclude.hlsl"
             #pragma shader_feature _LIGHTMARCH
             #pragma shader_feature _LIGHTSCATTER
+            #pragma shader_feature _SHAPEMASK
 
             float _VerticalStart;
             float _VerticalEnd;
@@ -46,10 +47,12 @@
             float2 _ShapeMaskFlow;
 
             float SampleDensity(float3 worldPos)  {
-                float smoothParam=(worldPos.y);
-                smoothParam=saturate(min(abs(worldPos.y-_VerticalStart)/_DensitySmooth,abs(worldPos.y-_VerticalEnd)/_DensitySmooth));
+                float densityParam= saturate(min(abs(worldPos.y-_VerticalStart)/_DensitySmooth,abs(worldPos.y-_VerticalEnd)/_DensitySmooth));
+                #if _SHAPEMASK
                 float mask=tex2Dlod(_ShapeMask,float4(worldPos.xz/_ShapeMaskScale+_Time.y*_ShapeMaskFlow,0,0)).r;
-                return  smoothstep(_DensityClip,1 , tex3Dlod(_MainNoise,float4( worldPos/_MainNoiseScale+_MainNoiseFlow*_Time.y,0)).r)*_Density*smoothParam*mask;
+                densityParam*=mask;
+                #endif
+                return  smoothstep(_DensityClip,1 , tex3Dlod(_MainNoise,float4( worldPos/_MainNoiseScale+_MainNoiseFlow*_Time.y,0)).r)*_Density*densityParam;
             }
 
             #if _LIGHTMARCH

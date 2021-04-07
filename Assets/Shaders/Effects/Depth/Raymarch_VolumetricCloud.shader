@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/Depth/Raymarch_VolumetricCloud_Box"
+﻿Shader "Game/Effects/Depth/Raymarch_VolumetricCloud"
 {
     Properties
     {

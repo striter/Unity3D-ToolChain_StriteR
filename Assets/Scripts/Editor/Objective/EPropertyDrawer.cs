@@ -4,11 +4,48 @@ using UnityEditor;
 using System;
 using System.Linq;
 using System.Reflection;
+using UnityEngine.UIElements;
 
 namespace TEditor
 {
     #region Attributes
-    public class AttributeDrawer_Extend<T>: PropertyDrawer where T:Attribute
+    public class MainAttributePropertyDrawer<T> : PropertyDrawer where T : Attribute
+    {
+        static readonly Type[] s_MainTypes = new Type[] { typeof(MFoldoutAttribute), typeof(MFoldAttribute), typeof(MTitleAttribute),typeof(HeaderAttribute) };
+        static readonly Type s_PropertyDrawerType = typeof(PropertyDrawer);
+        PropertyDrawer m_DefaultPropertyDrawer;
+        PropertyDrawer GetDefaultPropertyDrawer(SerializedProperty _property)
+        {
+            if (m_DefaultPropertyDrawer != null)
+                return m_DefaultPropertyDrawer;
+
+            FieldInfo targetField = _property.GetFieldInfo();
+            Attribute targetAttribute = targetField.GetCustomAttributes().Find(p => !s_MainTypes.Contains(p.GetType()));
+            if (targetAttribute == null)
+                return null;
+
+            Type attributeType = targetAttribute.GetType();
+            Type propertyDrawerType = (Type)Type.GetType("UnityEditor.ScriptAttributeUtility,UnityEditor").GetMethod("GetDrawerTypeForType", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { attributeType });
+            m_DefaultPropertyDrawer = (PropertyDrawer)Activator.CreateInstance(propertyDrawerType);
+            s_PropertyDrawerType.GetField("m_FieldInfo", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(m_DefaultPropertyDrawer, targetField);
+            s_PropertyDrawerType.GetField("m_Attribute", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(m_DefaultPropertyDrawer, targetAttribute);
+            return m_DefaultPropertyDrawer;
+        }
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            var customDrawerHeight = GetDefaultPropertyDrawer(property)?.GetPropertyHeight(property, label);
+            return customDrawerHeight.HasValue ? customDrawerHeight.Value : base.GetPropertyHeight(property, label);
+        }
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            var customDrawer = GetDefaultPropertyDrawer(property);
+            if (customDrawer != null)
+                customDrawer.OnGUI(position, property, label);
+            else
+                EditorGUI.PropertyField(position, property, label);
+        }
+    }
+    public class SubAttributePropertyDrawer<T>: PropertyDrawer where T:Attribute
     {
         public bool OnGUIAttributePropertyCheck(Rect _position, SerializedProperty _property, out T _targetAttribute, params SerializedPropertyType[] _checkTypes) 
         {
@@ -23,20 +60,86 @@ namespace TEditor
         }
     }
 
+    #region MainAttribute
+    [CustomPropertyDrawer(typeof(MTitleAttribute))]
+    public class MTitlePropertyDrawer : MainAttributePropertyDrawer<MTitleAttribute>
+    {
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return base.GetPropertyHeight(property, label) + 2f;
+        }
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            EditorGUI.LabelField(position, label, UEGUIStyle_Window.m_TitleLabel);
+            label.text = " ";
+            base.OnGUI(position, property, label);
+        }
+    }
+
+    [CustomPropertyDrawer(typeof(MFoldoutAttribute)), CustomPropertyDrawer(typeof(MFoldAttribute))]
+    public class MFoldoutProeprtyDrawer : MainAttributePropertyDrawer<MFoldoutAttribute>
+    {
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            if (!CheckIsMatched(property, attribute as MFoldoutAttribute))
+                return 0;
+
+            return base.GetPropertyHeight(property, label);
+        }
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            if (!CheckIsMatched(property, attribute as MFoldoutAttribute))
+                return;
+            base.OnGUI(position, property, label);
+        }
+        public bool CheckIsMatched(SerializedProperty _property, MFoldoutAttribute _attribute)
+        {
+            bool isFold = _attribute is MFoldAttribute;
+            return _property.GetAllFields().Any(pair => {
+                if (pair.Key.Name != _attribute.m_FieldName)
+                    return false;
+                bool equals = _attribute.m_Value==null?pair.Value.Equals(null):_attribute.m_Value.Contains(pair.Value);
+                return isFold ? !equals : equals;
+            });
+        }
+    }
+    #endregion
+    #region SubAttribute
     [CustomPropertyDrawer(typeof(RangeIntAttribute))]
-    public class RangeIntPropertyDrawer : AttributeDrawer_Extend<RangeIntAttribute>
+    public class RangeIntPropertyDrawer : SubAttributePropertyDrawer<RangeIntAttribute>
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (!OnGUIAttributePropertyCheck(position, property, out RangeIntAttribute attribute, SerializedPropertyType.Integer))
                 return;
 
-            property.intValue = EditorGUI.IntSlider(position, property.name.ToString_FieldName(), property.intValue, attribute.m_Min, attribute.m_Max);
+            property.intValue = EditorGUI.IntSlider(position, label, property.intValue, attribute.m_Min, attribute.m_Max);
+        }
+    }
+
+    [CustomPropertyDrawer(typeof(ClampAttribute))]
+    public class ClampPropertyDrawer : SubAttributePropertyDrawer<ClampAttribute>
+    {
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            if (!OnGUIAttributePropertyCheck(position, property, out ClampAttribute attribute, SerializedPropertyType.Float, SerializedPropertyType.Integer))
+                return;
+
+            EditorGUI.PropertyField(position, property, label);
+            switch (property.propertyType)
+            {
+                case SerializedPropertyType.Integer:
+                    property.intValue = Mathf.Clamp(property.intValue, (int)attribute.m_Min, (int)attribute.m_Max);
+                    break;
+                case SerializedPropertyType.Float:
+                    property.floatValue = Mathf.Clamp(property.floatValue, attribute.m_Min, attribute.m_Max);
+                    break;
+            }
         }
     }
 
     [CustomPropertyDrawer(typeof(CullingMaskAttribute))]
-    public class CullingMaskPropertyDrawer : AttributeDrawer_Extend<CullingMaskAttribute>
+    public class CullingMaskPropertyDrawer : SubAttributePropertyDrawer<CullingMaskAttribute>
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -59,7 +162,7 @@ namespace TEditor
     }
 
     [CustomPropertyDrawer(typeof(RangeVectorAttribute))]
-    public class RangeVectorPropertyDrawer:AttributeDrawer_Extend<RangeVectorAttribute>
+    public class RangeVectorPropertyDrawer:SubAttributePropertyDrawer<RangeVectorAttribute>
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
@@ -85,25 +188,15 @@ namespace TEditor
                 case SerializedPropertyType.Vector4: format = "X:{1:0.00} Y:{2:0.00} Z:{3:0.00} W:{4:0.00}"; m_Vector = property.vector4Value; break;
             }
             float halfWidth = position.width / 2;
-            float labelWidth = halfWidth / 6;
             float startX = position.x;
+            position.width = halfWidth;
             position.height = 18;
-            m_Foldout = EditorGUI.Foldout(position,m_Foldout, string.Format("{0} | "+format, property.name.ToString_FieldName(),m_Vector.x,m_Vector.y,m_Vector.z,m_Vector.w));
+            m_Foldout = EditorGUI.Foldout(position,m_Foldout, string.Format("{0} | "+format, label.text,m_Vector.x,m_Vector.y,m_Vector.z,m_Vector.w));
             if (!m_Foldout)
                 return;
-
             position.y += 20;
-            position.width = labelWidth;
-            EditorGUI.LabelField(position,"X",EditorStyles.miniBoldLabel);
-            position.x += position.width;
-            position.width = halfWidth - labelWidth;
             m_Vector.x = EditorGUI.Slider(position, m_Vector.x, attribute.m_Min, attribute.m_Max);
-
             position.x += position.width;
-            position.width = labelWidth;
-            EditorGUI.LabelField(position, "Y", EditorStyles.miniBoldLabel);
-            position.x += position.width;
-            position.width = halfWidth - labelWidth;
             m_Vector.y = EditorGUI.Slider(position, m_Vector.y, attribute.m_Min, attribute.m_Max);
 
             if (property.propertyType== SerializedPropertyType.Vector2)
@@ -113,11 +206,6 @@ namespace TEditor
             }
             position.x = startX;
             position.y += 20;
-
-            position.width = labelWidth;
-            EditorGUI.LabelField(position, "Z", EditorStyles.miniBoldLabel);
-            position.x += position.width;
-            position.width = halfWidth - labelWidth;
             m_Vector.z = EditorGUI.Slider(position, m_Vector.z, attribute.m_Min, attribute.m_Max);
             if(property.propertyType== SerializedPropertyType.Vector3)
             {
@@ -126,14 +214,12 @@ namespace TEditor
             }
 
             position.x += position.width;
-            position.width = labelWidth;
-            EditorGUI.LabelField(position, "W", EditorStyles.miniBoldLabel);
-            position.x += position.width;
-            position.width = halfWidth - labelWidth;
+            position.width = halfWidth;
             m_Vector.w = EditorGUI.Slider(position, m_Vector.w, attribute.m_Min, attribute.m_Max);
             property.vector4Value = m_Vector;
         }
     }
+    #endregion
     #endregion
 }
 

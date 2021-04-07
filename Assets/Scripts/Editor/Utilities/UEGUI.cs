@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,6 +9,34 @@ namespace TEditor
 {
     public static class UEGUI
     {
+        public static FieldInfo GetFieldInfo(this SerializedProperty _property)
+        {
+            string[] paths = _property.propertyPath.Split('.');
+            object targetObject = _property.serializedObject.targetObject;
+            FieldInfo fieldInfo = null;
+            foreach (var fieldName in paths)
+            {
+                fieldInfo = targetObject.GetType().GetField(fieldName);
+                targetObject = fieldInfo.GetValue(targetObject);
+            }
+            return fieldInfo;
+        }
+        public static IEnumerable<KeyValuePair<FieldInfo, object>> GetAllFields(this SerializedProperty _property)
+        {
+            string[] paths = _property.propertyPath.Split('.').RemoveLast();
+            object targetObject = _property.serializedObject.targetObject;
+            foreach (var fieldName in paths)
+            {
+                FieldInfo fieldInfo = targetObject.GetType().GetField(fieldName);
+                targetObject = fieldInfo.GetValue(targetObject);
+                foreach (var subFieldInfo in fieldInfo.FieldType.GetFields())
+                    yield return new KeyValuePair<FieldInfo, object>(subFieldInfo, subFieldInfo.GetValue(targetObject));
+                yield return new KeyValuePair<FieldInfo, object>(fieldInfo, targetObject);
+            }
+            yield break;
+        }
+
+
         public static class HorizontalScope
         {
             static Vector2 m_StartPos;

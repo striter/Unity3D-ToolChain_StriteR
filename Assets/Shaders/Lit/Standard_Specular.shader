@@ -51,6 +51,7 @@
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
             #pragma multi_compile _ _SHADOWS_SOFT
+
 			#pragma shader_feature _SPECULAR
 			#pragma shader_feature _NORMALMAP
 			#pragma shader_feature _PARALLEXMAP
@@ -69,7 +70,7 @@
 			UNITY_DEFINE_INSTANCED_PROP(float,_Lambert)
 			UNITY_DEFINE_INSTANCED_PROP(float,_SpecularRange)
 			UNITY_DEFINE_INSTANCED_PROP(float4, _Color)
-			UNITY_DEFINE_INSTANCED_PROP(float,_ParallexScale);
+			UNITY_DEFINE_INSTANCED_PROP(float,_ParallexScale)
 			UNITY_DEFINE_INSTANCED_PROP(float,_ParallexOffset)
 			UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 

@@ -47,9 +47,8 @@ namespace Rendering.ImageEffect
         [Range(0,20)]public float m_Width;
         [Range(0.01f,2)]public float m_FadingPow;
 
-        [Header("Shape")]
         public Texture2D m_MaskTexture;
-        public float m_MaskTextureScale;
+        [MFold(nameof(m_MaskTexture))] public float m_MaskTextureScale;
         public static readonly CameraEffectParam_DepthCircleScan m_Default = new CameraEffectParam_DepthCircleScan()
         {
             m_Origin = Vector3.zero,

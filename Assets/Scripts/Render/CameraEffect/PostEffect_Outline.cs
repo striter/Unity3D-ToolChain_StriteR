@@ -33,9 +33,9 @@ namespace Rendering.ImageEffect
         public enum_DetectType m_DetectType;
         [Range(0, 10f)] public float m_Strength;
         [Range(0, 3f)] public float m_Bias;
-        [Header("Color Replace")]
-        public bool m_ColorReplace;
-        public Color m_ReplaceColor;
+
+        [MTitle] public bool m_ColorReplace;
+        [MFoldout(nameof(m_ColorReplace), true)] public Color m_ReplaceColor;
         public static readonly CameraEffectParam_Outline m_Default = new CameraEffectParam_Outline()
         {
             m_OpaquePostProcessing=false,
