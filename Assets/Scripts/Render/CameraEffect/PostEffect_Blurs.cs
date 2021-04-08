@@ -97,9 +97,9 @@ namespace Rendering.ImageEffect
                     {
                         int idTemp1= Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp1");
                         int idTemp2= Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp2");
-                        _buffer.GetTemporaryRT(idTemp1, startWidth,startHeight,0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
+                        _buffer.GetTemporaryRT(idTemp1, startWidth,startHeight,0, FilterMode.Bilinear, _descriptor.colorFormat);
                         RenderTargetIdentifier rtTemp1 = new RenderTargetIdentifier(idTemp1);
-                        _buffer.GetTemporaryRT(idTemp2, startWidth, startHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
+                        _buffer.GetTemporaryRT(idTemp2, startWidth, startHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
                         RenderTargetIdentifier rtTemp2 = new RenderTargetIdentifier(idTemp2);
                         for (int i = 0; i < _param.iteration; i++)
                         {
@@ -133,7 +133,7 @@ namespace Rendering.ImageEffect
                                         _material.SetFloat(ID_BlurSize, _param.blurSize / _param.downSample * (1 + i));
 
                                         int tempID3 = Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp3");
-                                        _buffer.GetTemporaryRT(tempID3, startWidth, startHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
+                                        _buffer.GetTemporaryRT(tempID3, startWidth, startHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
                                         RenderTargetIdentifier rtTemp3 = new RenderTargetIdentifier(tempID3);
                                         _buffer.Blit(blitSrc, rtTemp3, _material, horizontalPass);
                                         _buffer.Blit(rtTemp3, blitTarget, _material, verticalPass);
@@ -162,7 +162,7 @@ namespace Rendering.ImageEffect
                             int filterWidth = startWidth / filterSample;
                             int filterHeight = startHeight / filterSample;
                             tempIDs[i] = Shader.PropertyToID("_PostProcessing_Blit_DualFiltering_Temp"+i.ToString());
-                             _buffer.GetTemporaryRT(tempIDs[i], filterWidth, filterHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
+                             _buffer.GetTemporaryRT(tempIDs[i], filterWidth, filterHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
                             tempTextures[i] = new RenderTargetIdentifier(tempIDs[i]);
                         }
                         for (int i = 0; i < _param.iteration; i++)
@@ -209,8 +209,8 @@ namespace Rendering.ImageEffect
                         int verticalTempID = Shader.PropertyToID("_Hexagon_Vertical");
                         int diagonalTempID = Shader.PropertyToID("_Hexagon_Diagonal");
                         
-                        _buffer.GetTemporaryRT(verticalTempID,startWidth, startHeight, 0,FilterMode.Bilinear,RenderTextureFormat.ARGB32);
-                        _buffer.GetTemporaryRT(diagonalTempID,startWidth, startHeight, 0, FilterMode.Bilinear,RenderTextureFormat.ARGB32);
+                        _buffer.GetTemporaryRT(verticalTempID,startWidth, startHeight, 0,FilterMode.Bilinear, _descriptor.colorFormat);
+                        _buffer.GetTemporaryRT(diagonalTempID,startWidth, startHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
 
                         RenderTargetIdentifier verticalRT = new RenderTargetIdentifier(verticalTempID); 
                         RenderTargetIdentifier diagonalRT = new RenderTargetIdentifier(diagonalTempID); 

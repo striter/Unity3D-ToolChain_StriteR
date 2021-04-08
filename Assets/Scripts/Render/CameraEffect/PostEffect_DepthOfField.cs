@@ -56,7 +56,7 @@ namespace Rendering.ImageEffect
         protected override void OnExecuteBuffer(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, Material _material, CameraEffectParam_DepthOfField _param)
         {
             base.OnExecuteBuffer(_buffer, _descriptor, _src, _dst, _material, _param);
-            _buffer.GetTemporaryRT(RT_ID_Blur,_descriptor.width,_descriptor.height,0,FilterMode.Bilinear,RenderTextureFormat.ARGB32);
+            _buffer.GetTemporaryRT(RT_ID_Blur,_descriptor.width,_descriptor.height,0,FilterMode.Bilinear,_descriptor.colorFormat);
             m_Blur.ExecuteBuffer(_buffer,_descriptor,_src, RT_Blur, _param.m_BlurParams);
             _buffer.Blit(_src, _dst, _material);
             _buffer.ReleaseTemporaryRT(RT_ID_Blur);

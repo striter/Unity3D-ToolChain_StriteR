@@ -23,12 +23,11 @@ public static class URender
         _indices = _srcMesh.triangles;
         return GetPolygons(_indices);
     }
-    public static void TraversalBlendShapes(this Mesh _srcMesh, Action<string, int, int, float, Vector3[], Vector3[], Vector3[]> _OnEachFrame)
+    public static void TraversalBlendShapes(this Mesh _srcMesh, int _VertexCount, Action<string, int, int, float, Vector3[], Vector3[], Vector3[]> _OnEachFrame)
     {
-        Vector3[] deltaVerticies = null;
-        Vector3[] deltaNormals = null;
-        Vector3[] deltaTangents = null;
-        int totalBlendshapes = _srcMesh.blendShapeCount;
+        Vector3[] deltaVerticies = new Vector3[_VertexCount];
+        Vector3[] deltaNormals = new Vector3[_VertexCount];
+        Vector3[] deltaTangents = new Vector3[_VertexCount];
         for (int i = 0; i < _srcMesh.blendShapeCount; i++)
         {
             int frameCount = _srcMesh.GetBlendShapeFrameCount(i);

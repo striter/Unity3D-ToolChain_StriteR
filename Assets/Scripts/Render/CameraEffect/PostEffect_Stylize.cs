@@ -81,7 +81,7 @@ namespace Rendering.ImageEffect
                     base.OnExecuteBuffer(_buffer, _descriptor, _src, _dst, _material, _param);
                     break;
                 case enum_Stylize.Pixel:
-                    _buffer.GetTemporaryRT(ID_PixelizeDownSample, _descriptor.width / _param.m_DownSample, _descriptor.height / _param.m_DownSample, 0, FilterMode.Point, RenderTextureFormat.ARGB32);
+                    _buffer.GetTemporaryRT(ID_PixelizeDownSample, _descriptor.width / _param.m_DownSample, _descriptor.height / _param.m_DownSample, 0, FilterMode.Point, _descriptor.colorFormat);
                     _buffer.Blit(_src, RT_PixelizeDownSample);
                     _buffer.Blit(RT_PixelizeDownSample, _dst, _material, 0);
                     _buffer.ReleaseTemporaryRT(ID_PixelizeDownSample);

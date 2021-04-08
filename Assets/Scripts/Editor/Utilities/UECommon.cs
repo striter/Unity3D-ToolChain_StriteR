@@ -167,7 +167,8 @@ namespace TEditor
         public static void CopyMesh(Mesh _src, Mesh _tar)
         {
             _tar.Clear();
-            _tar.vertices = _src.vertices;
+            Vector3[] verticies = _src.vertices;
+            _tar.vertices = verticies;
             _tar.normals = _src.normals;
             _tar.tangents = _src.tangents;
             _tar.name = _src.name;
@@ -202,7 +203,7 @@ namespace TEditor
                 _tar.SetIndices(_src.GetIndices(i), MeshTopology.Triangles, i);
 
             _tar.ClearBlendShapes();
-            _src.TraversalBlendShapes((name, index, frame, weight, deltaVerticies, deltaNormals, deltaTangents) => _tar.AddBlendShapeFrame(name, weight, deltaVerticies, deltaNormals, deltaTangents));
+            _src.TraversalBlendShapes(verticies.Length,(name, index, frame, weight, deltaVerticies, deltaNormals, deltaTangents) => _tar.AddBlendShapeFrame(name, weight, deltaVerticies, deltaNormals, deltaTangents));
         }
         public static void CopyAnimationClip(AnimationClip _src,AnimationClip _dstClip)
         {

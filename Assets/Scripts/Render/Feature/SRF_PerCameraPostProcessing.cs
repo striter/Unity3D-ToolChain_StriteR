@@ -59,7 +59,7 @@ namespace Rendering
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get(m_Name);
-            cmd.GetTemporaryRT(ID_Blit_Temp, renderingData.cameraData.cameraTargetDescriptor.width, renderingData.cameraData.cameraTargetDescriptor.height, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
+            cmd.GetTemporaryRT(ID_Blit_Temp, renderingData.cameraData.cameraTargetDescriptor);
             bool blitSrc = true;
             foreach (var effect in m_Effects)
             {

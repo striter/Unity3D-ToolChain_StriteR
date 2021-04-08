@@ -11,6 +11,7 @@ Shader "Hidden/CameraEffect_VolumetricLight"
 
         Pass
         {
+            Name "SAMPLE"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -22,6 +23,7 @@ Shader "Hidden/CameraEffect_VolumetricLight"
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
             #pragma multi_compile _ _SHADOWS_SOFT
+            #pragma shader_feature _DITHER
 
             float _LightPow;
             float _LightStrength;
@@ -68,14 +70,35 @@ Shader "Hidden/CameraEffect_VolumetricLight"
                 {
                     for(int index=0;index<_MarchTimes;index++)
                     {
-                        totalAtten+=marchDelta*MainLightRealtimeShadow(TransformWorldToShadowCoord(curPos));
+                        float3 samplePos=curPos;
+                        #if _DITHER
+                        samplePos+=posDelta*random01(samplePos);
+                        #endif
+                        totalAtten+=marchDelta*MainLightRealtimeShadow(TransformWorldToShadowCoord(samplePos));
                         curPos+=posDelta;
                         curDst+=dstDelta;
                     }
                 }
-                totalAtten= pow(totalAtten,_LightPow);
+                totalAtten= pow(totalAtten,_LightPow)*_LightStrength;
+                return totalAtten;
+            }
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "Combine"
+            HLSLPROGRAM
+            #include "../CommonInclude.hlsl"
+            #include "CameraEffectInclude.hlsl"
+            #pragma vertex vert_img
+            #pragma fragment frag
+            TEXTURE2D(_VolumetricLight_Sample);SAMPLER(sampler_VolumetricLight_Sample);
+            float4 frag(v2f_img i):SV_TARGET
+            {
                 float3 col= SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv).rgb;
-                col+=_MainLightColor.rgb*_LightStrength*totalAtten;
+                float sample=SAMPLE_TEXTURE2D(_VolumetricLight_Sample,sampler_VolumetricLight_Sample,i.uv).r;
+                col+=_MainLightColor.rgb*sample;
                 return float4(col,1);
             }
             ENDHLSL

@@ -14,13 +14,11 @@ namespace Rendering.ImageEffect
         [Range(0.0f, 2f)] public float threshold;
         [Range(0.0f, 5)] public float intensity;
         public ImageEffectParam_Blurs m_BlurParams;
-        public bool debug;
         public static readonly CameraEffectParam_Bloom m_Default = new CameraEffectParam_Bloom()
         {
             threshold = 0.25f,
             intensity = 0.3f,
             m_BlurParams = ImageEffectParam_Blurs.m_Default,
-            debug = false,
         };
     }
 
@@ -65,17 +63,14 @@ namespace Rendering.ImageEffect
             var rtW = _descriptor.width;
             var rtH = _descriptor.height;
 
-            _buffer.GetTemporaryRT(RT_ID_Blur, rtW, rtH, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBHalf);
-            _buffer.GetTemporaryRT(RT_ID_Sample, rtW, rtH, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBHalf);
+            _buffer.GetTemporaryRT(RT_ID_Blur, rtW, rtH, 0, FilterMode.Bilinear, _descriptor.colorFormat);
+            _buffer.GetTemporaryRT(RT_ID_Sample, rtW, rtH, 0, FilterMode.Bilinear, _descriptor.colorFormat);
 
             _buffer.Blit(_src, RT_Sample, _material, (int)enum_Pass.SampleLight);
 
             m_Blur.ExecuteBuffer(_buffer,_descriptor, RT_Sample, RT_Blur, _param.m_BlurParams);
 
-            if (_param.debug)
-                _buffer.Blit(RT_Blur, _dst);
-            else
-                _buffer.Blit(_src, _dst, _material, (int)enum_Pass.AddBloomTex);
+            _buffer.Blit(_src, _dst, _material, (int)enum_Pass.AddBloomTex);
 
             _buffer.ReleaseTemporaryRT(RT_ID_Sample);
             _buffer.ReleaseTemporaryRT(RT_ID_Blur);
