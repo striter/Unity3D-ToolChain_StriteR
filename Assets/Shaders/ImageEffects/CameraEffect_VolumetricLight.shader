@@ -58,8 +58,8 @@ Shader "Hidden/CameraEffect_VolumetricLight"
                 float3 marchDirWS=normalize(i.viewDirWS);
                 float depthDstWS=LinearEyeDepth(i.uv);
                 float marchDstWS=min(depthDstWS,_MarchDistance);
-                float marchDelta=1.0/_MarchTimes;
-                float dstDelta=_MarchDistance/_MarchTimes;
+                float marchDelta=marchDstWS/_MarchDistance*1.0/_MarchTimes;
+                float dstDelta=marchDstWS/_MarchTimes;
                 float3 posDelta=marchDirWS*dstDelta;
                 float curDst=0;
                 float totalAtten=0;
@@ -68,16 +68,15 @@ Shader "Hidden/CameraEffect_VolumetricLight"
                 {
                     for(int index=0;index<_MarchTimes;index++)
                     {
-                        if(curDst>=marchDstWS)
-                            break;
-
                         totalAtten+=marchDelta*MainLightRealtimeShadow(TransformWorldToShadowCoord(curPos));
                         curPos+=posDelta;
                         curDst+=dstDelta;
                     }
                 }
-                totalAtten=pow(totalAtten,_LightPow)*_LightStrength;
-                return SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv)+_MainLightColor*totalAtten;
+                totalAtten= pow(totalAtten,_LightPow);
+                float3 col= SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv).rgb;
+                col+=_MainLightColor.rgb*_LightStrength*totalAtten;
+                return float4(col,1);
             }
             ENDHLSL
         }

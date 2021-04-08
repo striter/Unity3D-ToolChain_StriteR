@@ -77,8 +77,8 @@ namespace Rendering
     public class SRP_OpaqueBlurTexture : ScriptableRenderPass
     {
         #region ID
-        static int RT_ID_BlurTexture = Shader.PropertyToID("_OpaqueBlurTexture");
-        static RenderTargetIdentifier RT_BlurTexture = new RenderTargetIdentifier(RT_ID_BlurTexture);
+        static readonly int RT_ID_BlurTexture = Shader.PropertyToID("_OpaqueBlurTexture");
+        static readonly RenderTargetIdentifier RT_BlurTexture = new RenderTargetIdentifier(RT_ID_BlurTexture);
         #endregion
         RenderTargetIdentifier m_ColorTexture;
         ImageEffect_Blurs m_Blurs=new ImageEffect_Blurs();

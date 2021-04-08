@@ -15,10 +15,10 @@ namespace Rendering.ImageEffect
         public float m_FogDensity;
         public float m_FogVerticalStart;
         public float m_FogVerticalOffset;
-        public Texture2D m_NoiseTexure;
-        public float m_NoiseScale ;
-        public float m_NoiseSpeedX;
-        public float m_NoiseSpeedY;
+        [MTitle] public Texture2D m_NoiseTexure;
+        [MFold(nameof(m_NoiseTexure), null)] public float m_NoiseScale;
+        [MFold(nameof(m_NoiseTexure), null)] public float m_NoiseSpeedX;
+        [MFold(nameof(m_NoiseTexure), null)] public float m_NoiseSpeedY;
         public static readonly CameraEffectParam_DepthFog m_Default = new CameraEffectParam_DepthFog()
         {
             m_FogColor=Color.grey,
@@ -57,6 +57,4 @@ namespace Rendering.ImageEffect
             _material.SetFloat(ID_NoiseSpeedY, _params.m_NoiseSpeedY);
         }
     }
-
-
 }

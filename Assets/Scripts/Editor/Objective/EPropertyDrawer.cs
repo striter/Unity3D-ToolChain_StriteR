@@ -12,6 +12,7 @@ namespace TEditor
     public class MainAttributePropertyDrawer<T> : PropertyDrawer where T : Attribute
     {
         static readonly Type[] s_MainTypes = new Type[] { typeof(MFoldoutAttribute), typeof(MFoldAttribute), typeof(MTitleAttribute),typeof(HeaderAttribute) };
+        static readonly MethodInfo s_DefaultDrawMethod = typeof(EditorGUI).GetMethod("DefaultPropertyField", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
         static readonly Type s_PropertyDrawerType = typeof(PropertyDrawer);
         PropertyDrawer m_DefaultPropertyDrawer;
         PropertyDrawer GetDefaultPropertyDrawer(SerializedProperty _property)
@@ -34,7 +35,7 @@ namespace TEditor
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             var customDrawerHeight = GetDefaultPropertyDrawer(property)?.GetPropertyHeight(property, label);
-            return customDrawerHeight.HasValue ? customDrawerHeight.Value : base.GetPropertyHeight(property, label);
+            return customDrawerHeight.HasValue ? customDrawerHeight.Value : EditorGUI.GetPropertyHeight(property, label, true);
         }
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -42,7 +43,7 @@ namespace TEditor
             if (customDrawer != null)
                 customDrawer.OnGUI(position, property, label);
             else
-                EditorGUI.PropertyField(position, property, label);
+                EditorGUI.PropertyField(position, property, label,true);
         }
     }
     public class SubAttributePropertyDrawer<T>: PropertyDrawer where T:Attribute
@@ -81,18 +82,18 @@ namespace TEditor
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            if (!CheckIsMatched(property, attribute as MFoldoutAttribute))
+            if (!CheckPropertyAvailable(property, attribute as MFoldoutAttribute))
                 return 0;
 
             return base.GetPropertyHeight(property, label);
         }
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (!CheckIsMatched(property, attribute as MFoldoutAttribute))
+            if (!CheckPropertyAvailable(property, attribute as MFoldoutAttribute))
                 return;
             base.OnGUI(position, property, label);
         }
-        public bool CheckIsMatched(SerializedProperty _property, MFoldoutAttribute _attribute)
+        public bool CheckPropertyAvailable(SerializedProperty _property, MFoldoutAttribute _attribute)
         {
             bool isFold = _attribute is MFoldAttribute;
             return _property.GetAllFields().Any(pair => {
@@ -157,7 +158,7 @@ namespace TEditor
                     break;
             }
 
-            property.intValue = EditorGUI.MaskField(position, "Culling Mask", property.intValue, values.ToArray());
+            property.intValue = EditorGUI.MaskField(position, label.text, property.intValue, values.ToArray());
         }
     }
 

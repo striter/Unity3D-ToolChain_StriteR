@@ -58,21 +58,21 @@ namespace Rendering.ImageEffect
     public class ImageEffect_ColorGrading : ImageEffectBase<ImageEffectParam_ColorGrading>
     {
         #region ShaderProperties
-        readonly int ID_Weight = Shader.PropertyToID("_Weight");
+        static readonly int ID_Weight = Shader.PropertyToID("_Weight");
 
         const string KW_LUT = "_LUT";
-        readonly int ID_LUT = Shader.PropertyToID("_LUTTex");
+        static readonly int ID_LUT = Shader.PropertyToID("_LUTTex");
         readonly int ID_LUTCellCount = Shader.PropertyToID("_LUTCellCount");
 
         const string KW_BSC = "_BSC";
-        readonly int ID_Brightness = Shader.PropertyToID("_Brightness");
-        readonly int ID_Saturation = Shader.PropertyToID("_Saturation");
-        readonly int ID_Contrast = Shader.PropertyToID("_Contrast");
+        static readonly int ID_Brightness = Shader.PropertyToID("_Brightness");
+        static readonly int ID_Saturation = Shader.PropertyToID("_Saturation");
+        static readonly int ID_Contrast = Shader.PropertyToID("_Contrast");
 
         const string KW_MixChannel = "_CHANNEL_MIXER";
-        readonly int ID_MixRed = Shader.PropertyToID("_MixRed");
-        readonly int ID_MixGreen = Shader.PropertyToID("_MixGreen");
-        readonly int ID_MixBlue = Shader.PropertyToID("_MixBlue");
+        static readonly int ID_MixRed = Shader.PropertyToID("_MixRed");
+        static readonly int ID_MixGreen = Shader.PropertyToID("_MixGreen");
+        static readonly int ID_MixBlue = Shader.PropertyToID("_MixBlue");
         #endregion
         protected override void OnValidate(ImageEffectParam_ColorGrading _params, Material _material)
         {

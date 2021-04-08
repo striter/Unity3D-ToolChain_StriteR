@@ -63,14 +63,14 @@ namespace Rendering.ImageEffect
     public class CameraEffect_DepthCircleScan:ImageEffectBase<CameraEffectParam_DepthCircleScan>
     {
         #region ShaderProperties
-        readonly int ID_Origin = Shader.PropertyToID("_Origin");
-        readonly int ID_Color = Shader.PropertyToID("_Color");
-        readonly int ID_FadingPow = Shader.PropertyToID("_FadingPow");
+        static readonly int ID_Origin = Shader.PropertyToID("_Origin");
+        static readonly int ID_Color = Shader.PropertyToID("_Color");
+        static readonly int ID_FadingPow = Shader.PropertyToID("_FadingPow");
         const string KW_Mask = "_MASK_TEXTURE";
-        readonly int ID_Texture = Shader.PropertyToID("_MaskTexture");
-        readonly int ID_TexScale = Shader.PropertyToID("_MaskTextureScale");
-        readonly int ID_MinSqrDistance = Shader.PropertyToID("_MinSqrDistance");
-        readonly int ID_MaxSqrDistance = Shader.PropertyToID("_MaxSqrDistance");
+        static readonly int ID_Texture = Shader.PropertyToID("_MaskTexture");
+        static readonly int ID_TexScale = Shader.PropertyToID("_MaskTextureScale");
+        static readonly int ID_MinSqrDistance = Shader.PropertyToID("_MinSqrDistance");
+        static readonly int ID_MaxSqrDistance = Shader.PropertyToID("_MaxSqrDistance");
         #endregion
         protected override void OnValidate(CameraEffectParam_DepthCircleScan _params, Material _material)
         {

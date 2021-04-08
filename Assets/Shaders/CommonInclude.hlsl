@@ -15,7 +15,7 @@ float sqrDistance(float3 pA, float3 pB){ return sqrDistance(pA-pB); }
 
 float4 Blend_Screen(float4 src,float4 dst){ return 1-(1-src)*(1-dst); }
 float3 Blend_Screen(float3 src,float3 dst){ return 1-(1-src)*(1-dst); }
-float3 Blend_Alpha(float4 src, float4 dst){return dst.rgb * dst.a + src.rgb * (1 - dst.a);}
+float3 Blend_Alpha(float3 src, float3 dst,float srcAlpha){return src * srcAlpha + dst * (1 - srcAlpha);}
 
 float invlerp(float a,float b,float value){ return (value-a)/(b-a); }
 float quinterp(float f){ return f * f * f * (f * (f*6-15)+10); }

@@ -126,12 +126,12 @@
 				float2 uvOffset=viewDir.xy/viewDir.z*INSTANCE(_ParallexScale);
 				#if _PARALLEX_STEEP
 				int marchCount=lerp(INSTANCE(_SteepCount),INSTANCE(_SteepCount)/4,saturate(dot(float3(0,0,1),viewDirTS)));
+				marchCount=min(marchCount,128);
 				float deltaDepth=1.0/marchCount;
 				float2 deltaUV=uvOffset/marchCount;
 				float depthLayer=0;
 				float2 curUV=uv;
 				float curDepth;
-				[unroll(128)]
 				for(int i=0;i<marchCount;i++)
 				{
 					curDepth=GetParallex(curUV).r;
@@ -166,9 +166,6 @@
 				#endif
 
 				float atten=MainLightRealtimeShadow(i.shadowCoordWS);
-				#if _AOMAP
-				atten*=SAMPLE_TEXTURE2D(_AOTex,sampler_AOTex,i.uv);
-				#endif
 
 				float3 ambient=_GlossyEnvironmentColor.rgb;
 				float3 lightCol=_MainLightColor.rgb;
@@ -176,12 +173,14 @@
 				float3 finalCol=albedo+ambient;
 				float diffuse= GetDiffuse(normalTS,lightDirTS,INSTANCE(_Lambert),atten);
 				finalCol*=_MainLightColor.rgb*diffuse;
+				#if _AOMAP
+				finalCol*=SAMPLE_TEXTURE2D(_AOTex,sampler_AOTex,i.uv).r;
+				#endif
 				#if _SPECULAR
 				float specular = GetSpecular(normalTS,lightDirTS,viewDirTS,INSTANCE(_SpecularRange));
 				#if _ROUGHNESSMAP
 				specular*=SAMPLE_TEXTURE2D(_RoughnessTex,sampler_RoughnessTex,i.uv);
 				#endif
-				specular*=atten;
 				finalCol += _MainLightColor.rgb*albedo*specular*atten;
 				#endif
 				return float4(finalCol,1);

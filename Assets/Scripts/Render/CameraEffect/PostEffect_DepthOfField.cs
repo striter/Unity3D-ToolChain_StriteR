@@ -28,12 +28,12 @@ namespace Rendering.ImageEffect
     public class CameraEffect_DepthOfField : ImageEffectBase<CameraEffectParam_DepthOfField>
     {
         #region ShaderID
-        static int RT_ID_Blur = Shader.PropertyToID("_BlurTex");
-        static RenderTargetIdentifier RT_Blur = new RenderTargetIdentifier(RT_ID_Blur);
+        static readonly int RT_ID_Blur = Shader.PropertyToID("_BlurTex");
+        static readonly RenderTargetIdentifier RT_Blur = new RenderTargetIdentifier(RT_ID_Blur);
 
-        static int ID_FocalStart = Shader.PropertyToID("_FocalStart");
-        static int ID_FocalLerp = Shader.PropertyToID("_FocalLerp");
-        static int ID_BlurSize = Shader.PropertyToID("_BlurSize");
+        static readonly int ID_FocalStart = Shader.PropertyToID("_FocalStart");
+        static readonly int ID_FocalLerp = Shader.PropertyToID("_FocalLerp");
+        static readonly int ID_BlurSize = Shader.PropertyToID("_BlurSize");
         const string KW_UseBlurDepth = "_UseBlurDepth";
         #endregion
 

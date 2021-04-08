@@ -53,16 +53,15 @@ namespace Rendering.ImageEffect
 
     public class CameraEffect_DepthCircleArea:ImageEffectBase<PostEffectParam_DepthCirCleArea>
     {
-        readonly int ID_Origin = Shader.PropertyToID("_Origin");
-        readonly int ID_FillColor = Shader.PropertyToID("_FillColor");
-        readonly int ID_FillTexture = Shader.PropertyToID("_FillTexture");
-        readonly int ID_FillTextureScale = Shader.PropertyToID("_TextureScale");
-        readonly int ID_FillTextureFlow = Shader.PropertyToID("_TextureFlow");
-        readonly int ID_EdgeColor = Shader.PropertyToID("_EdgeColor");
-        readonly int ID_SqrEdgeMin = Shader.PropertyToID("_SqrEdgeMin");
-        readonly int ID_SqrEdgeMax = Shader.PropertyToID("_SqrEdgeMax");
-
         #region ShaderProperties
+        static readonly int ID_Origin = Shader.PropertyToID("_Origin");
+        static readonly int ID_FillColor = Shader.PropertyToID("_FillColor");
+        static readonly int ID_FillTexture = Shader.PropertyToID("_FillTexture");
+        static readonly int ID_FillTextureScale = Shader.PropertyToID("_TextureScale");
+        static readonly int ID_FillTextureFlow = Shader.PropertyToID("_TextureFlow");
+        static readonly int ID_EdgeColor = Shader.PropertyToID("_EdgeColor");
+        static readonly int ID_SqrEdgeMin = Shader.PropertyToID("_SqrEdgeMin");
+        static readonly int ID_SqrEdgeMax = Shader.PropertyToID("_SqrEdgeMax");
         #endregion
         protected override void OnValidate(PostEffectParam_DepthCirCleArea _params, Material _material)
         {

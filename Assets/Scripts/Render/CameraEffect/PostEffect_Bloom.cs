@@ -27,14 +27,14 @@ namespace Rendering.ImageEffect
     public class ImageEffect_Bloom : ImageEffectBase<CameraEffectParam_Bloom>
     {
         #region ShaderProperties
-        static int RT_ID_Sample = Shader.PropertyToID("_Bloom_Sample");
-        static int RT_ID_Blur = Shader.PropertyToID("_Bloom_Blur");
+        static readonly int RT_ID_Sample = Shader.PropertyToID("_Bloom_Sample");
+        static readonly int RT_ID_Blur = Shader.PropertyToID("_Bloom_Blur");
         
-        static RenderTargetIdentifier RT_Sample = new RenderTargetIdentifier(RT_ID_Sample);
-        static RenderTargetIdentifier RT_Blur = new RenderTargetIdentifier(RT_ID_Blur);
+        static readonly RenderTargetIdentifier RT_Sample = new RenderTargetIdentifier(RT_ID_Sample);
+        static readonly RenderTargetIdentifier RT_Blur = new RenderTargetIdentifier(RT_ID_Blur);
 
-        static int ID_Threshold = Shader.PropertyToID("_Threshold");
-        static int ID_Intensity = Shader.PropertyToID("_Intensity");
+        static readonly int ID_Threshold = Shader.PropertyToID("_Threshold");
+        static readonly int ID_Intensity = Shader.PropertyToID("_Intensity");
         #endregion
 
         public enum enum_Pass
