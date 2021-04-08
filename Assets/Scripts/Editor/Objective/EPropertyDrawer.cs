@@ -71,7 +71,9 @@ namespace TEditor
         }
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            EditorGUI.LabelField(position, label, UEGUIStyle_Window.m_TitleLabel);
+            Rect titleRect = position;
+            titleRect.height = 18;
+            EditorGUI.LabelField(titleRect, label, UEGUIStyle_Window.m_TitleLabel);
             label.text = " ";
             base.OnGUI(position, property, label);
         }

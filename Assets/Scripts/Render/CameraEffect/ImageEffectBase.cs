@@ -55,7 +55,7 @@ namespace Rendering.ImageEffect
 
     public partial class PostEffectBase<T,Y> : APostEffectBase where T : ImageEffectBase<Y>, new() where Y:struct
     {
-        public Y m_EffectData;
+        [MTitle] public Y m_EffectData;
         protected T m_Effect { get; private set; }
         protected Camera m_Camera { get; private set; }
         protected void Awake()=>Init();
