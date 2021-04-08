@@ -1722,7 +1722,6 @@ MonoBehaviour:
       downSample: 1
       angle: 0
       vector: {x: 0, y: 0}
-    debug: 0
   m_SceneViewPreview: 0
 --- !u!114 &1230212952
 MonoBehaviour:
@@ -2326,8 +2325,18 @@ MonoBehaviour:
   m_EffectData:
     m_Distance: 20
     m_MarchTimes: 128
-    m_Strength: 0.2
-    m_Pow: 5
+    m_Strength: 0.15
+    m_Pow: 1
+    m_DownSample: 4
+    m_Dither: 1
+    m_EnableBlur: 0
+    m_BlurParam:
+      blurType: 0
+      blurSize: 1
+      iteration: 1
+      downSample: 2
+      angle: 0
+      vector: {x: 0.5, y: 0.5}
   m_SceneViewPreview: 1
 --- !u!1 &2142251302
 GameObject:
