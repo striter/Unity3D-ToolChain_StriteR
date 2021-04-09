@@ -154,11 +154,11 @@ public static class UIT_TouchConsoleHelper
         CommandItem_FlagsSelection selection= _container.ButtonFoldOutItem<CommandItem_FlagsSelection>(foldOut, out CommandItem_Button foldOutButton);
         selection.SetDataUpdate(() => selection.Play(_refFlags.Value, flags => {
             if (foldOutButton != null)
-                foldOutButton.m_ButtonTitle.text = flags.GetNumerable().ToString_Readable("|", value => value ? "√" : "×");
+                foldOutButton.m_ButtonTitle.text = flags.GetNumerable().ToString_Readable('|', value => value ? "√" : "×");
             _logFilter(flags);
         }));
         if (foldOutButton != null)
-            foldOutButton.m_ButtonTitle.text = _refFlags.Value.GetNumerable().ToString_Readable("|", value => value ? "√" : "×");
+            foldOutButton.m_ButtonTitle.text = _refFlags.Value.GetNumerable().ToString_Readable('|', value => value ? "√" : "×");
     }
     public static void InputField(this CommandContainer _container, Ref<string> _refText, Action<string> OnValueClick)
     {

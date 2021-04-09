@@ -53,7 +53,7 @@ namespace TEditor
             _targetAttribute = null;
             if (!_checkTypes.Any(p => _property.propertyType == p))
             {
-                EditorGUI.LabelField(_position,string.Format("<Color=#FF0000>Attribute For {0} Only!</Color>", _checkTypes.ToString_Readable("|", type => type.ToString())), UEGUIStyle_Window.m_TitleLabel);
+                EditorGUI.LabelField(_position,string.Format("<Color=#FF0000>Attribute For {0} Only!</Color>", _checkTypes.ToString_Readable('|', type => type.ToString())), UEGUIStyle_Window.m_TitleLabel);
                 return false;
             }
             _targetAttribute = attribute as T;

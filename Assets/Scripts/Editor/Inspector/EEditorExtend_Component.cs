@@ -13,7 +13,7 @@ namespace TEditor
     {
         MeshFilter m_Target;
         bool m_EnableVertexDataVisualize;
-        bool m_DrawVertex = true;
+        bool m_DrawVertex = false;
         Color m_VertexColor = Color.white;
 
         bool m_DrawBiTangents = false;
@@ -23,10 +23,9 @@ namespace TEditor
         float m_ColorLength = .5f;
 
         ValueChecker<enum_VertexData> m_ColorVertexDataType = new ValueChecker<enum_VertexData>(enum_VertexData.None);
-        float m_ColorVertexDataLength = .5f;
+        float m_VertexData = .5f;
+        bool m_DrawDirection;
 
-        ValueChecker<enum_VertexData> m_VectorVertexDataType = new ValueChecker<enum_VertexData>(enum_VertexData.None);
-        float m_VectorVertexDataLength = .5f;
         Color m_VectorVertexDataColor = Color.blue;
 
         ValueChecker< Mesh> m_SharedMesh=new ValueChecker<Mesh>(null);
@@ -35,7 +34,6 @@ namespace TEditor
         Vector4[] m_Tangents;
         Color[] m_Colors;
         List<Vector4> m_ColorVertexData = new List<Vector4>();
-        List<Vector3> m_VectorVertexData = new List<Vector3>();
         void OnEnable()
         {
             m_Target = target as MeshFilter;
@@ -68,23 +66,26 @@ namespace TEditor
                 m_VertexColor = EditorGUILayout.ColorField(m_VertexColor);
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.BeginHorizontal();
-                if (m_ColorVertexDataType.Check((enum_VertexData)EditorGUILayout.EnumPopup("Draw Vertex Data", m_ColorVertexDataType.m_Value)) && m_ColorVertexDataType.m_Value != enum_VertexData.None)
-                    m_Target.sharedMesh.GetVertexData(m_ColorVertexDataType.m_Value, m_ColorVertexData);
-
-                if (m_ColorVertexData.Count != 0)
-                    m_ColorVertexDataLength = EditorGUILayout.Slider(m_ColorVertexDataLength, 0f, 2f);
-                else
-                    EditorGUILayout.LabelField("No Vertex Data");
+                if (m_ColorVertexDataType.Check((enum_VertexData)EditorGUILayout.EnumPopup("Draw Vertex Data", m_ColorVertexDataType.m_Value)))
+                {
+                    m_ColorVertexData.Clear();
+                    if (m_ColorVertexDataType.m_Value != enum_VertexData.None)
+                        m_Target.sharedMesh.GetVertexData(m_ColorVertexDataType.m_Value, m_ColorVertexData);
+                }
 
                 EditorGUILayout.EndHorizontal();
-
                 EditorGUILayout.BeginHorizontal();
-                if (m_VectorVertexDataType.Check((enum_VertexData)EditorGUILayout.EnumPopup("Draw Vertex Data", m_VectorVertexDataType.m_Value)) && m_VectorVertexDataType.m_Value != enum_VertexData.None)
-                    m_Target.sharedMesh.GetVertexData(m_VectorVertexDataType.m_Value, m_VectorVertexData);
-                m_VectorVertexDataColor = EditorGUILayout.ColorField(m_VectorVertexDataColor);
-                m_VectorVertexDataLength = EditorGUILayout.Slider(m_VectorVertexDataLength, 0f, 2f);
+                if (m_ColorVertexData.Count != 0)
+                {
+                    m_DrawDirection = EditorGUILayout.Toggle("Directional",m_DrawDirection);
+                    m_VertexData = EditorGUILayout.Slider(m_VertexData, 0f, 2f);
+                }
+                else
+                    EditorGUILayout.LabelField("No Vertex Data Found",EditorStyles.boldLabel);
                 EditorGUILayout.EndHorizontal();
 
+
+                EditorGUILayout.LabelField("Helpers",EditorStyles.boldLabel);
                 EditorGUILayout.BeginHorizontal();
                 if (haveNormals && haveTangents)
                 {
@@ -144,14 +145,17 @@ namespace TEditor
 
                 if (m_ColorVertexData.Count != 0)
                 {
-                    Handles.color = m_ColorVertexData[i].ToColor().SetAlpha(1f);
-                    Handles.DrawLine(m_Verticies[i], m_Verticies[i] + m_Normals[i] * m_ColorVertexDataLength);
-                }
+                    if(m_DrawDirection)
+                    {
+                        Handles.color = m_VectorVertexDataColor;
+                        Handles.DrawLine(m_Verticies[i], m_Verticies[i] + m_ColorVertexData[i].ToVector3() * m_VertexData);
+                    }
+                    else
+                    {
+                        Handles.color = m_ColorVertexData[i].ToColor().SetAlpha(1f);
+                        Handles.DrawLine(m_Verticies[i], m_Verticies[i] + m_Normals[i] * m_VertexData);
+                    }
 
-                if(m_VectorVertexData.Count!=0)
-                {
-                    Handles.color = m_VectorVertexDataColor;
-                    Handles.DrawLine(m_Verticies[i], m_Verticies[i] + m_VectorVertexData[i] * m_VectorVertexDataLength);
                 }
 
                 if (m_DrawColorType != enum_Editor_MeshColor.None)

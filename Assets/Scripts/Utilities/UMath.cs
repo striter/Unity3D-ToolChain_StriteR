@@ -15,4 +15,6 @@ public static class UMath
             dst *= _src;
         return dst;
     }
+    public static float Frac(float _src) => _src - Mathf.Floor(_src);
+    public static float Mod(float _src, float _dst) => _src - _dst * Mathf.Floor(_src/_dst);
 }

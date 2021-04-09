@@ -258,12 +258,12 @@ public static class UCollection
         }
     }
 
-    public static string ToString_Readable<T>(this IEnumerable<T> inumerable, string breakAppend, Func<T, string> OnEachAppend)
+    public static string ToString_Readable<T>(this IEnumerable<T> inumerable, char breakAppend, Func<T, string> OnEachAppend=null)
     {
         StringBuilder builder = new StringBuilder();
         int maxIndex = inumerable.Count() - 1;
         inumerable.Traversal((int index, T temp) => {
-            builder.Append(OnEachAppend(temp));
+            builder.Append(OnEachAppend!=null?OnEachAppend(temp):temp.ToString());
             if (index != maxIndex)
                 builder.Append(breakAppend);
         });
