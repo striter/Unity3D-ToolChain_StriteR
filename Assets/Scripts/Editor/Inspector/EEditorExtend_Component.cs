@@ -11,6 +11,15 @@ namespace TEditor
     [CustomEditor(typeof(MeshFilter)), CanEditMultipleObjects]
     public class MeshFilterEditor : Editor
     {
+        public enum enum_ColorVisualize
+        {
+            None,
+            RGBA,
+            R,
+            G,
+            B,
+            A,
+        }
         MeshFilter m_Target;
         bool m_EnableVertexDataVisualize;
         bool m_DrawVertex = false;
@@ -19,7 +28,7 @@ namespace TEditor
         bool m_DrawBiTangents = false;
         float m_BiTangentsLength = .5f;
         Color m_BitangentColor = Color.yellow;
-        enum_Editor_MeshColor m_DrawColorType;
+        enum_ColorVisualize m_DrawColorType;
         float m_ColorLength = .5f;
 
         ValueChecker<enum_VertexData> m_ColorVertexDataType = new ValueChecker<enum_VertexData>(enum_VertexData.None);
@@ -102,12 +111,12 @@ namespace TEditor
                 EditorGUILayout.BeginHorizontal();
                 if (haveColors)
                 {
-                    m_DrawColorType = (enum_Editor_MeshColor)EditorGUILayout.EnumPopup("Draw Color", m_DrawColorType);
+                    m_DrawColorType = (enum_ColorVisualize)EditorGUILayout.EnumPopup("Draw Color", m_DrawColorType);
                     m_ColorLength = EditorGUILayout.Slider(m_ColorLength, 0f, 2f);
                 }
                 else
                 {
-                    m_DrawColorType = enum_Editor_MeshColor.None;
+                    m_DrawColorType = enum_ColorVisualize.None;
                     EditorGUILayout.LabelField("No Color Data");
                 }
                 EditorGUILayout.EndHorizontal();
@@ -158,17 +167,17 @@ namespace TEditor
 
                 }
 
-                if (m_DrawColorType != enum_Editor_MeshColor.None)
+                if (m_DrawColorType != enum_ColorVisualize.None)
                 {
                     Color vertexColor = Color.clear;
 
                     switch (m_DrawColorType)
                     {
-                        case enum_Editor_MeshColor.RGBA: vertexColor = m_Colors[i]; break;
-                        case enum_Editor_MeshColor.R: vertexColor = Color.red * m_Colors[i].r; ; break;
-                        case enum_Editor_MeshColor.G: vertexColor = Color.green * m_Colors[i].g; break;
-                        case enum_Editor_MeshColor.B: vertexColor = Color.blue * m_Colors[i].b; break;
-                        case enum_Editor_MeshColor.A: vertexColor = Color.white * m_Colors[i].a; break;
+                        case enum_ColorVisualize.RGBA: vertexColor = m_Colors[i]; break;
+                        case enum_ColorVisualize.R: vertexColor = Color.red * m_Colors[i].r; ; break;
+                        case enum_ColorVisualize.G: vertexColor = Color.green * m_Colors[i].g; break;
+                        case enum_ColorVisualize.B: vertexColor = Color.blue * m_Colors[i].b; break;
+                        case enum_ColorVisualize.A: vertexColor = Color.white * m_Colors[i].a; break;
                     }
                     Handles.color = vertexColor;
                     Handles.DrawLine(m_Verticies[i], m_Verticies[i] + m_Normals[i] * m_ColorLength);

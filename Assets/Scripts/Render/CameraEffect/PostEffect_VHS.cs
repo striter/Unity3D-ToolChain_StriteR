@@ -17,8 +17,8 @@ namespace Rendering.ImageEffect
     [Serializable]
     public struct ImageEffectParam_VHS
     {
-        [MTitle]  public enum_VHSScreenCut m_ScreenCut;
-        [MFold(nameof(m_ScreenCut),enum_VHSScreenCut.None),RangeVector(0, 1)] public Vector2 m_ScreenCutDistance;
+        [MTitle] public enum_VHSScreenCut m_ScreenCut;
+        [MFold(nameof(m_ScreenCut), enum_VHSScreenCut.None), RangeVector(0, 1)] public Vector2 m_ScreenCutDistance;
 
         [MTitle] public bool m_ColorBleed;
         [MFoldout(nameof(m_ColorBleed), true), Range(1, 4)] public int m_ColorBleedIteration;

@@ -29,6 +29,16 @@ public static class UCommon
         }
         return list;
     }
+    public static T Next<T>(this T enumValue) where T : Enum
+    {
+        T[] allEnums = (T[])Enum.GetValues(typeof(T));
+        if (allEnums.Length<2)
+            throw new Exception("Invalid Enum Type Next:"+typeof(T));
+
+        int index = allEnums.FindIndex(p => p.Equals(enumValue));
+        return allEnums[(index + 1) % allEnums.Length];
+    }
+
     public static bool IsFlagEnable<T>(this T _flag,T _compare) where T:Enum
     {
         int srcFlag = Convert.ToInt32(_flag);

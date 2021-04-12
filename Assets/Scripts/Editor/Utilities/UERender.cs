@@ -7,15 +7,6 @@ namespace TEditor
 {
     public static class UERender
     {
-        public enum enum_Editor_MeshColor
-        {
-            None,
-            RGBA,
-            R,
-            G,
-            B,
-            A,
-        }
         static Vector3[] RenegerateNormals(int[] _indices, Vector3[] _verticies)
         {
             Vector3[] normals = new Vector3[_verticies.Length];

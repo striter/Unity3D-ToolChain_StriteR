@@ -40,9 +40,9 @@ public static class URender
             }
         }
     }
-    public static bool GetVertexData(this Mesh _srcMesh, enum_VertexData _dataType, List<Vector4> vertexData)
+    public static bool GetVertexData(this Mesh _srcMesh, enum_VertexData _dataType, List<Vector4> _data)
     {
-        vertexData.Clear();
+        _data.Clear();
         switch (_dataType)
         {
             default: throw new Exception("Invalid Vertex Data Type" + _dataType);
@@ -54,21 +54,27 @@ public static class URender
             case enum_VertexData.UV5:
             case enum_VertexData.UV6:
             case enum_VertexData.UV7:
-                _srcMesh.GetUVs((int)_dataType, vertexData);
+                _srcMesh.GetUVs((int)_dataType, _data);
+                break;
+            case enum_VertexData.Color:
+                List<Color> colors = new List<Color>();
+                _srcMesh.GetColors(colors);
+                foreach (var color in colors)
+                    _data.Add(color.ToVector());
                 break;
             case enum_VertexData.Tangent:
-                _srcMesh.GetTangents(vertexData);
+                _srcMesh.GetTangents(_data);
                 break;
             case enum_VertexData.Normal:
                 {
                     List<Vector3> normalList = new List<Vector3>();
                     _srcMesh.GetNormals(normalList);
                     foreach (var normal in normalList)
-                        vertexData.Add(normal);
+                        _data.Add(normal);
                 }
                 break;
         }
-        return vertexData != null;
+        return _data != null;
     }
     public static void SetVertexData(this Mesh _srcMesh, enum_VertexData _dataType, List<Vector4> _data)
     {
@@ -85,6 +91,9 @@ public static class URender
             case enum_VertexData.UV7:
                 _srcMesh.SetUVs((int)_dataType, _data);
                 break;
+            case enum_VertexData.Color:
+                _srcMesh.SetColors(_data.ToArray(p => new Color(p.x, p.y, p.z, p.w)));
+                break;
             case enum_VertexData.Tangent:
                 _srcMesh.SetTangents(_data);
                 break;
@@ -93,9 +102,9 @@ public static class URender
                 break;
         }
     }
-    public static bool GetVertexData(this Mesh _srcMesh, enum_VertexData _dataType, List<Vector3> vertexData)
+    public static bool GetVertexData(this Mesh _srcMesh, enum_VertexData _dataType, List<Vector3> _data)
     {
-        vertexData.Clear();
+        _data.Clear();
         switch (_dataType)
         {
             default: throw new Exception("Invalid Vertex Data Type" + _dataType);
@@ -107,24 +116,30 @@ public static class URender
             case enum_VertexData.UV5:
             case enum_VertexData.UV6:
             case enum_VertexData.UV7:
-                _srcMesh.GetUVs((int)_dataType, vertexData);
+                _srcMesh.GetUVs((int)_dataType, _data);
+                break;
+            case enum_VertexData.Color:
+                List<Color> colors = new List<Color>();
+                _srcMesh.GetColors(colors);
+                foreach (var color in colors)
+                    _data.Add(color.ToVector());
                 break;
             case enum_VertexData.Tangent:
                 List<Vector4> tangents = new List<Vector4>();
                 _srcMesh.GetTangents(tangents);
                 foreach (var tangent in tangents)
-                    vertexData.Add(tangent.ToVector3());
+                    _data.Add(tangent.ToVector3());
                 break;
             case enum_VertexData.Normal:
                 {
                     List<Vector3> normalList = new List<Vector3>();
                     _srcMesh.GetNormals(normalList);
                     foreach (var normal in normalList)
-                        vertexData.Add(normal);
+                        _data.Add(normal);
                 }
                 break;
         }
-        return vertexData != null;
+        return _data != null;
     }
     public static void SetVertexData(this Mesh _srcMesh, enum_VertexData _dataType, List<Vector3> _data)
     {
@@ -140,6 +155,9 @@ public static class URender
             case enum_VertexData.UV6:
             case enum_VertexData.UV7:
                 _srcMesh.SetUVs((int)_dataType, _data);
+                break;
+            case enum_VertexData.Color:
+                _srcMesh.SetColors(_data.ToArray(p => new Color(p.x, p.y, p.z, 0)));
                 break;
             case enum_VertexData.Tangent:
                 _srcMesh.SetTangents(_data.ToArray(p => p.ToVector4(1f)));
