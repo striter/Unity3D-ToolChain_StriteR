@@ -37,7 +37,7 @@ namespace TEditor
 
         Color m_VectorVertexDataColor = Color.blue;
 
-        ValueChecker< Mesh> m_SharedMesh=new ValueChecker<Mesh>(null);
+        ValueChecker<Mesh> m_SharedMesh=new ValueChecker<Mesh>(null);
         Vector3[] m_Verticies;
         Vector3[] m_Normals;
         Vector4[] m_Tangents;

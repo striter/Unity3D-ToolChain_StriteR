@@ -23,19 +23,19 @@ namespace TEditor
         }
         public static IEnumerable<KeyValuePair<FieldInfo, object>> GetAllFields(this SerializedProperty _property)
         {
-            string[] paths = _property.propertyPath.Split('.').RemoveLast();
+            string[] paths = _property.propertyPath.Split('.');
             object targetObject = _property.serializedObject.targetObject;
+            Type targetType = targetObject.GetType();
             foreach (var fieldName in paths)
             {
-                FieldInfo fieldInfo = targetObject.GetType().GetField(fieldName);
-                targetObject = fieldInfo.GetValue(targetObject);
-                foreach (var subFieldInfo in fieldInfo.FieldType.GetFields())
+                foreach (var subFieldInfo in targetType.GetFields())
                     yield return new KeyValuePair<FieldInfo, object>(subFieldInfo, subFieldInfo.GetValue(targetObject));
-                yield return new KeyValuePair<FieldInfo, object>(fieldInfo, targetObject);
+                FieldInfo targetField = targetObject.GetType().GetField(fieldName);
+                targetType = targetField.FieldType;
+                targetObject = targetField.GetValue(targetObject);
             }
             yield break;
         }
-
 
         public static class HorizontalScope
         {

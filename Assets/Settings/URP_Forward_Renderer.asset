@@ -27,7 +27,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   m_FrustumCornersRay: 1
-  m_OpaqueBlurTexture: 1
+  m_OpaqueBlurTexture: 0
   m_BlurParams:
     blurType: 0
     blurSize: 2.5

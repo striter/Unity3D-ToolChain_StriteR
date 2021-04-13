@@ -16,30 +16,26 @@ namespace Rendering.ImageEffect
     [Serializable]
     public struct ImageEffectParam_Stylize
     {
-        public enum_Stylize m_Stylize;
-
-        [Header("Pixel")]
-        [RangeInt(2,20)] public int m_DownSample;
-        public bool m_PixelGrid;
-        [Range(0.01f,0.49f)]public float m_GridWidth;
-        public Color m_PixelGridColor;
-        [Header("Oil Paint")]
-        [RangeInt(1,20)]public int m_OilPaintKernel;
-        [Range(0.1f, 5f)] public float m_OilPaintSize;
-        [Header("Obra Dither")]
-        [Range(0.001f,1f)]public float m_ObraDitherScale;
-        [Range(0.1f,1f)]public float m_ObraDitherStrength;
-        public Color m_ObraDitherColor;
+        [MTitle]public enum_Stylize m_Stylize;
+        [MFoldout(nameof(m_Stylize),enum_Stylize.Pixel)] [ RangeInt(2,20)] public int m_DownSample;
+        [MFoldout(nameof(m_Stylize), enum_Stylize.Pixel)] public bool m_PixelGrid;
+        [MFoldout(nameof(m_Stylize), enum_Stylize.Pixel, nameof(m_PixelGrid), true)] [Range(0.01f, 0.49f)] public float m_GridWidth;
+        [MFoldout(nameof(m_Stylize), enum_Stylize.Pixel, nameof(m_PixelGrid), true)] public Color m_PixelGridColor;
+        [MFoldout(nameof(m_Stylize), enum_Stylize.OilPaint)] [RangeInt(1,20)]public int m_OilPaintKernel;
+        [MFoldout(nameof(m_Stylize), enum_Stylize.OilPaint)] [Range(0.1f, 5f)] public float m_OilPaintSize;
+        [MFoldout(nameof(m_Stylize), enum_Stylize.ObraDithering)] [Range(0.001f,1f)]public float m_ObraDitherScale;
+        [MFoldout(nameof(m_Stylize), enum_Stylize.ObraDithering)] [Range(0.1f,1f)]public float m_ObraDitherStrength;
+        [MFoldout(nameof(m_Stylize), enum_Stylize.ObraDithering)] public Color m_ObraDitherColor;
         public static readonly ImageEffectParam_Stylize m_Default = new ImageEffectParam_Stylize()
         {
             m_Stylize = enum_Stylize.Pixel,
             m_DownSample = 7,
-            m_PixelGrid = true,
+            m_PixelGrid = false,
             m_GridWidth = .1f,
             m_PixelGridColor = Color.white.SetAlpha(.5f),
             m_OilPaintKernel = 10,
             m_OilPaintSize = 2f,
-            m_ObraDitherColor = Color.black,
+            m_ObraDitherColor = Color.yellow*.3f,
             m_ObraDitherScale=.33f,
             m_ObraDitherStrength=.5f,
         };

@@ -85,7 +85,7 @@ namespace TEditor
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             if (!CheckPropertyAvailable(property, attribute as MFoldoutAttribute))
-                return 0;
+                return -2;
 
             return base.GetPropertyHeight(property, label);
         }
@@ -98,12 +98,13 @@ namespace TEditor
         public bool CheckPropertyAvailable(SerializedProperty _property, MFoldoutAttribute _attribute)
         {
             bool isFold = _attribute is MFoldAttribute;
-            return _property.GetAllFields().Any(pair => {
-                if (pair.Key.Name != _attribute.m_FieldName)
+            IEnumerable<KeyValuePair<FieldInfo, object>> fields = _property.GetAllFields();
+            return _attribute.m_FieldsMatches.All(fieldMatch => fields.Any(field => {
+                if (field.Key.Name != fieldMatch.Key)
                     return false;
-                bool equals = _attribute.m_Value==null?pair.Value.Equals(null):_attribute.m_Value.Contains(pair.Value);
+                bool equals = fieldMatch.Value == null ? field.Value.Equals(null) : fieldMatch.Value.Contains(field.Value);
                 return isFold ? !equals : equals;
-            });
+            }));
         }
     }
     #endregion

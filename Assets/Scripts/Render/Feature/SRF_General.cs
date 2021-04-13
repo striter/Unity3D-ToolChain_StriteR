@@ -16,8 +16,8 @@ namespace Rendering
         #endregion
         public bool m_FrustumCornersRay;
         public bool m_OpaqueBlurTexture;
-        public ImageEffectParam_Blurs m_BlurParams = USRP.GetDefaultPostProcessData<ImageEffectParam_Blurs>();
-        SRP_OpaqueBlurTexture m_OpaqueBlurPass ;
+        [MFoldout(nameof(m_OpaqueBlurTexture), true)] public ImageEffectParam_Blurs m_BlurParams = USRP.GetDefaultPostProcessData<ImageEffectParam_Blurs>();
+        SRP_OpaqueBlurTexture m_OpaqueBlurPass;
         public override void Create()
         {
             m_OpaqueBlurPass = new SRP_OpaqueBlurTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox+1 };

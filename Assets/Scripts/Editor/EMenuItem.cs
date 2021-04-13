@@ -87,8 +87,8 @@ namespace TEditor
         static void ShowNoiseGenerator() => EditorWindow.GetWindow(typeof(EWNoiseGenerator)).titleContent=new GUIContent("Noise Texture Generator",EditorGUIUtility.FindTexture("CustomTool"));
         [MenuItem("Work Flow/Art/Mesh Smooth Normal Generator", false, 303)]
         static void ShowSmoothNormalGenerator() => EditorWindow.GetWindow(typeof(EWSmoothNormalGenerator)).titleContent = new GUIContent("Smooth Normal Generator", EditorGUIUtility.FindTexture("CustomTool"));
-        [MenuItem("Work Flow/Art/Mesh Vertex Editor", false, 304)]
-        static void ShowMeshVertexEditor() => EditorWindow.GetWindow(typeof(EWMeshVertexEditor)).titleContent = new GUIContent("Vertex Editor",EditorGUIUtility.FindTexture("AvatarPivot"));
+        [MenuItem("Work Flow/Art/Mesh Editor", false, 304)]
+        static void ShowMeshVertexEditor() => EditorWindow.GetWindow(typeof(EMeshEditor)).titleContent = new GUIContent("Mesh Editor",EditorGUIUtility.FindTexture("AvatarPivot"));
 
         [MenuItem("Work Flow/Art/(Optimize)Animation Instance Baker", false, 400)]
         static void ShowOptimizeWindow() => EditorWindow.GetWindow(typeof(EWAnimationInstanceBaker)).titleContent = new GUIContent("GPU Animation Instance Baker", EditorGUIUtility.FindTexture("AvatarSelector"));

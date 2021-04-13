@@ -19,7 +19,7 @@ public class Ref<T>
     public static bool operator true(Ref<T> refValue) => !!refValue;
     public static bool operator  false(Ref<T> refValue) => !refValue;
     public static implicit operator Ref<T>(T value)=>new Ref<T>() { Value=value};
-    public static explicit operator T(Ref<T> refValue) => !refValue?default:refValue.Value;
+    public static implicit operator T(Ref<T> refValue) => !refValue?default:refValue.Value;
 }
 
 
@@ -122,18 +122,36 @@ public class ValueLerpSeconds : ValueLerpBase
 public class ValueChecker<T> 
 {
     public T m_Value { get; private set; }
-    public ValueChecker(T _check)
+    Action<T> OnAvailableCheck;
+    Action<T, T> OnAvailableCheckPreCur;
+    public ValueChecker(T _default=default) { m_Value = _default; }
+    public ValueChecker<T> Bind(Action<T,T> _OnAvailableCheckPreCur = null)
     {
-        m_Value = _check;
+        OnAvailableCheckPreCur = _OnAvailableCheckPreCur;
+        return this;
+    }
+    public ValueChecker<T> Bind(Action<T> _OnAvailableCheck = null)
+    {
+        OnAvailableCheck = _OnAvailableCheck;
+        return this;
     }
 
-    public bool Check(T target)
+    public bool Check(T _value)
     {
-        if (Equals(m_Value,target))
+        if (Equals(m_Value,_value))
                 return false;
-        m_Value = target;
+        Set(_value);
         return true;
     }
+    public ValueChecker<T> Set(T _value)
+    {
+        T preValue = m_Value;
+        m_Value = _value;
+        OnAvailableCheckPreCur?.Invoke(preValue, _value);
+        OnAvailableCheck?.Invoke(m_Value);
+        return this;
+    }
+    public static implicit operator T(ValueChecker<T> checker) => checker.m_Value;
 }
 
 public class Timer

@@ -22,12 +22,12 @@ public static class TimeScaleController<T> where T : struct
             m_TimeScales.Add(scaleIndex, 1f);
         m_TimeScales[scaleIndex] = scale;
     }
-    static ValueChecker<float> m_BulletTimeChecker = new ValueChecker<float>(1f);
+    static ValueChecker<float> m_BulletTime = new ValueChecker<float>(1f);
 
     public static void Tick()
     {
-        if (m_BulletTimeChecker.Check(GetLowestScale()))
-            Time.timeScale = m_BulletTimeChecker.m_Value;
+        if (m_BulletTime.Check(GetLowestScale()))
+            Time.timeScale = m_BulletTime;
     }
 }
 
