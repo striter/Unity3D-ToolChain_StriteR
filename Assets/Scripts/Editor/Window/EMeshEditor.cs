@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using static TEditor.UERender;
 
 namespace TEditor
 {
@@ -17,15 +16,15 @@ namespace TEditor
         public ValueChecker<Mesh> m_SourceMesh { get; private set; } = new ValueChecker<Mesh>(null);
         public Mesh m_ModifingMesh { get; private set; }
         bool m_Debugging = false;
-        public ValueChecker<bool> m_MaterialOverride { get; private set; } =new ValueChecker<bool>(false);
+        public ValueChecker<bool> m_MaterialOverride { get; private set; } = new ValueChecker<bool>(false);
         public Material[] m_Materials { get; private set; }
         GameObject m_MeshObject;
         MeshFilter m_MeshFilter;
         MeshRenderer m_MeshRenderer;
 
         Dictionary<enum_EditorMode, MeshEditorHelperBase> m_EditorHelpers;
-        MeshEditorHelperBase m_Helper=>m_EditorHelpers.ContainsKey(m_EditorMode)? m_EditorHelpers[m_EditorMode] :null;
-        ValueChecker<enum_EditorMode> m_EditorMode=new ValueChecker<enum_EditorMode>();
+        MeshEditorHelperBase m_Helper => m_EditorHelpers.ContainsKey(m_EditorMode) ? m_EditorHelpers[m_EditorMode] : null;
+        ValueChecker<enum_EditorMode> m_EditorMode = new ValueChecker<enum_EditorMode>();
 
         private void OnEnable()
         {
@@ -33,7 +32,7 @@ namespace TEditor
             m_MeshObject.hideFlags = HideFlags.HideAndDontSave;
             m_MeshFilter = m_MeshObject.AddComponent<MeshFilter>();
             m_MeshRenderer = m_MeshObject.AddComponent<MeshRenderer>();
-            m_EditorHelpers = new Dictionary<enum_EditorMode, MeshEditorHelperBase>() { { enum_EditorMode.Edit, new MeshEditorHelper_Edit(this) }, { enum_EditorMode.Paint,new MeshEditorHelper_Paint(this) } };
+            m_EditorHelpers = new Dictionary<enum_EditorMode, MeshEditorHelperBase>() { { enum_EditorMode.Edit, new MeshEditorHelper_Edit(this) }, { enum_EditorMode.Paint, new MeshEditorHelper_Paint(this) } };
             SceneView.duringSceneGui += OnSceneGUI;
 
             m_EditorMode.Bind(SwitchEditorMode);
@@ -46,7 +45,7 @@ namespace TEditor
             SceneView.duringSceneGui -= OnSceneGUI;
             m_EditorHelpers.Clear();
             m_SourceMesh.Check(null);
-             End();
+            End();
 
             if (m_MeshObject) GameObject.DestroyImmediate(m_MeshObject);
             m_MeshFilter = null;
@@ -96,7 +95,7 @@ namespace TEditor
             targetView.pivot = m_MeshObject.transform.localToWorldMatrix.MultiplyPoint(_srcMesh.bounds.GetPoint(Vector3.back + Vector3.up));
             targetView.rotation = Quaternion.LookRotation(m_MeshObject.transform.position - targetView.pivot);
         }
-        void SwitchEditorMode(enum_EditorMode preVal,enum_EditorMode val)
+        void SwitchEditorMode(enum_EditorMode preVal, enum_EditorMode val)
         {
             if (m_EditorHelpers.ContainsKey(preVal))
                 m_EditorHelpers[preVal].End();
@@ -177,8 +176,8 @@ namespace TEditor
 
             switch (_keyCode)
             {
-                default:  m_Helper.OnKeyboradInteract(_keyCode);break;
-                case KeyCode.BackQuote:m_EditorMode.Check(m_EditorMode.m_Value.Next());break;
+                default: m_Helper.OnKeyboradInteract(_keyCode); break;
+                case KeyCode.BackQuote: m_EditorMode.Check(m_EditorMode.m_Value.Next()); break;
                 case KeyCode.UpArrow: m_MeshObject.transform.Rotate(90f, 0, 0, Space.World); break;
                 case KeyCode.DownArrow: m_MeshObject.transform.Rotate(-90f, 0, 0, Space.World); break;
                 case KeyCode.LeftArrow: m_MeshObject.transform.Rotate(0, 90f, 0, Space.World); break;
@@ -216,14 +215,14 @@ namespace TEditor
         public virtual void OnEditorSceneGUIDebug(SceneView _sceneView, GameObject _meshObject)
         {
             Handles.color = Color.red;
-            Handles_Extend.DrawArrow(mouseRay.origin, mouseRay.direction, .2f , .01f);
+            Handles_Extend.DrawArrow(mouseRay.origin, mouseRay.direction, .2f, .01f);
             Handles.DrawLine(mouseRay.origin, mouseRay.direction * 10f + mouseRay.origin);
             Handles.matrix = _meshObject.transform.localToWorldMatrix;
             Handles.SphereHandleCap(0, collisionPoint, Quaternion.identity, .05f, EventType.Repaint);
             Handles.DrawLines(collisionTriangle.m_Triangle.GetDrawLinesVerticies());
         }
 
-        protected static Ray ObjLocalSpaceRay(SceneView _sceneView,GameObject _meshObj)
+        protected static Ray ObjLocalSpaceRay(SceneView _sceneView, GameObject _meshObj)
         {
             Ray ray = _sceneView.camera.ScreenPointToRay(_sceneView.GetScreenPoint());
             mouseRay = ray;
@@ -232,11 +231,11 @@ namespace TEditor
             return ray;
         }
 
-        protected static int RayDirectedTriangleIntersect(MeshPolygon[] _polygons,Vector3[] _verticies, Ray _ray,out Vector3 hitPoint,out DirectedTriangle hitTriangle)
+        protected static int RayDirectedTriangleIntersect(MeshPolygon[] _polygons, Vector3[] _verticies, Ray _ray, out Vector3 hitPoint, out DirectedTriangle hitTriangle)
         {
             collisionPoint = Vector3.zero;
             float minDistance = float.MaxValue;
-            int index= _polygons.LastIndex(p =>
+            int index = _polygons.LastIndex(p =>
             {
                 DirectedTriangle triangle = p.GetDirectedTriangle(_verticies);
                 bool intersect = UBoundingCollision.RayDirectedTriangleIntersect(triangle, _ray, true, true, out float distance);
@@ -255,7 +254,7 @@ namespace TEditor
         }
 
     }
-    public class MeshEditorHelper_Edit:MeshEditorHelperBase
+    public class MeshEditorHelper_Edit : MeshEditorHelperBase
     {
         public MeshEditorHelper_Edit(EMeshEditor _parent) : base(_parent) { }
         enum enum_VertexEditMode
@@ -276,7 +275,7 @@ namespace TEditor
         bool m_SelectingPolygon => m_SelectedPolygon >= 0;
         bool m_SelectingVertex => m_SelectedVertexIndex != -1;
         ValueChecker<Vector3> m_PositionChecker = new ValueChecker<Vector3>().Set(Vector3.zero);
-        ValueChecker<Quaternion> m_RotationChecker = new ValueChecker<Quaternion>().Set( Quaternion.identity);
+        ValueChecker<Quaternion> m_RotationChecker = new ValueChecker<Quaternion>().Set(Quaternion.identity);
 
         enum_VertexEditMode m_VertexEditMode;
 
@@ -340,7 +339,7 @@ namespace TEditor
         public override void OnEditorSceneGUI(SceneView _sceneView, GameObject _meshObject, EditorWindow _window)
         {
             base.OnEditorWindowGUI();
-            OnSceneInteract(_meshObject,_sceneView);
+            OnSceneInteract(_meshObject, _sceneView);
             OnDrawSceneHandles(_sceneView);
         }
         public void OnSceneInteract(GameObject _meshObject, SceneView _sceneView)
@@ -355,10 +354,10 @@ namespace TEditor
                 return;
 
             m_SelectedVertexIndex = -1;
-            Ray ray = ObjLocalSpaceRay (_sceneView, _meshObject);
+            Ray ray = ObjLocalSpaceRay(_sceneView, _meshObject);
             if (OnSelectVertexCheck(ray))
                 return;
-            SelectPolygon(RayDirectedTriangleIntersect(m_Polygons, m_Verticies,ray,out Vector3 _hitPoint,out DirectedTriangle _hitTriangle));
+            SelectPolygon(RayDirectedTriangleIntersect(m_Polygons, m_Verticies, ray, out Vector3 _hitPoint, out DirectedTriangle _hitTriangle));
         }
         void OnDrawSceneHandles(SceneView _sceneView)
         {
@@ -552,23 +551,23 @@ namespace TEditor
         }
         public enum enum_PaintColor
         {
-            R=1,
-            G=2,
-            B=3,
-            A=4,
+            R = 1,
+            G = 2,
+            B = 3,
+            A = 4,
         }
         Vector3[] m_Verticies;
         Vector3[] m_Normals;
         enum_PaintMode m_PaintMode = enum_PaintMode.Const;
-        ValueChecker<enum_PaintColor> m_PaintColor=new ValueChecker<enum_PaintColor>();
+        ValueChecker<enum_PaintColor> m_PaintColor = new ValueChecker<enum_PaintColor>(enum_PaintColor.R);
 
-        float m_PaintSize =1f;
+        float m_PaintSize = 1f;
         float m_PaintValue = .5f;
-        static readonly RangeFloat s_PaintSizeRange = new RangeFloat(.01f,2f);
+        static readonly RangeFloat s_PaintSizeRange = new RangeFloat(.001f, 2f);
         Vector3 m_PaintPosition;
         List<int> m_PaintAffectedIndices = new List<int>();
         enum_PaintNormal m_PaintNormal = enum_PaintNormal.TriangleNormal;
-        ValueChecker<enum_VertexData> m_VertexDataSource = new ValueChecker<enum_VertexData>( enum_VertexData.None);
+        ValueChecker<enum_VertexData> m_VertexDataSource = new ValueChecker<enum_VertexData>(enum_VertexData.Color);
         List<Vector4> m_VertexDatas = new List<Vector4>();
         bool m_AvailableDatas => m_VertexDatas.Count > 0;
         public override Material GetDefaultMaterial() => new Material(Shader.Find("Hidden/VertexColorVisualize")) { hideFlags = HideFlags.HideAndDontSave };
@@ -596,14 +595,13 @@ namespace TEditor
             base.Begin();
             m_Verticies = m_ModifingMesh.vertices;
             m_Normals = m_ModifingMesh.normals;
-            m_PaintColor.Set(enum_PaintColor.R);
-            m_VertexDataSource.Check( enum_VertexData.UV0);
-
+            m_PaintColor.Set(m_PaintColor);
+            m_VertexDataSource.Set(m_VertexDataSource);
         }
         public override void End()
         {
             base.End();
-            m_VertexDataSource.Check(enum_VertexData.None);
+            m_VertexDatas.Clear();
         }
         public override void OnEditorSceneGUI(SceneView _sceneView, GameObject _meshObject, EditorWindow _window)
         {
@@ -623,14 +621,14 @@ namespace TEditor
             if (Event.current.type == EventType.MouseMove)
             {
                 Vector3 cameraLocal = _meshObject.transform.worldToLocalMatrix.MultiplyPoint(_sceneView.camera.transform.position);
-                if (RayDirectedTriangleIntersect(m_Polygons, m_ModifingMesh.vertices, ObjLocalSpaceRay(_sceneView, _meshObject), out Vector3 hitPosition,out DirectedTriangle hitTriangle) != -1)
+                if (RayDirectedTriangleIntersect(m_Polygons, m_ModifingMesh.vertices, ObjLocalSpaceRay(_sceneView, _meshObject), out Vector3 hitPosition, out DirectedTriangle hitTriangle) != -1)
                 {
                     m_PaintPosition = hitPosition;
                     m_PaintAffectedIndices.Clear();
                     float sqrRaidus = m_PaintSize * m_PaintSize;
                     m_Verticies.FindAllIndexes(m_PaintAffectedIndices, (index, p) => {
                         bool normalPassed = false;
-                        switch(m_PaintNormal)
+                        switch (m_PaintNormal)
                         {
                             case enum_PaintNormal.ViewNormal: normalPassed = Vector3.Dot(m_Normals[index], p - cameraLocal) < 0; break;
                             case enum_PaintNormal.TriangleNormal: normalPassed = Vector3.Dot(m_Normals[index], hitTriangle.m_Normal) > 0; break;
@@ -648,15 +646,15 @@ namespace TEditor
                 int button = Event.current.button;
                 if (button != 0 && button != 2)
                     return;
-                switch(m_PaintMode)
+                switch (m_PaintMode)
                 {
-                    default:throw new Exception("Invalid Type:" + m_PaintMode);
+                    default: throw new Exception("Invalid Type:" + m_PaintMode);
                     case enum_PaintMode.Const:
                         m_PaintAffectedIndices.Traversal(index => m_VertexDatas[index] = ApplyModify(m_VertexDatas[index], m_PaintValue, m_PaintMode, m_PaintColor));
                         break;
                     case enum_PaintMode.Modify:
-                        float value = button==0?m_PaintValue:-m_PaintValue;
-                        m_PaintAffectedIndices.Traversal(index=>m_VertexDatas[index]=ApplyModify(m_VertexDatas[index],value,m_PaintMode,m_PaintColor));
+                        float value = button == 0 ? m_PaintValue : -m_PaintValue;
+                        m_PaintAffectedIndices.Traversal(index => m_VertexDatas[index] = ApplyModify(m_VertexDatas[index], value, m_PaintMode, m_PaintColor));
                         break;
                 }
                 OnDataChange();
@@ -724,17 +722,17 @@ namespace TEditor
             m_PaintMode = (enum_PaintMode)EditorGUILayout.EnumPopup("Mode (Tab)", m_PaintMode);
             m_PaintNormal = (enum_PaintNormal)EditorGUILayout.EnumPopup("Normal (Capslock)", m_PaintNormal);
             m_PaintSize = EditorGUILayout.Slider("Size (Z X)", m_PaintSize, s_PaintSizeRange.start, s_PaintSizeRange.end);
-            m_PaintValue = EditorGUILayout.Slider("Value (Q E)",m_PaintValue, 0f, 1f);
+            m_PaintValue = EditorGUILayout.Slider("Value (Q E)", m_PaintValue, 0f, 1f);
         }
         public override void OnKeyboradInteract(KeyCode _keycode)
         {
             base.OnKeyboradInteract(_keycode);
-            switch(_keycode)
+            switch (_keycode)
             {
-                case KeyCode.R:ResetSelected();break;
-                case KeyCode.Tab:m_PaintMode = m_PaintMode.Next();break;
+                case KeyCode.R: ResetSelected(); break;
+                case KeyCode.Tab: m_PaintMode = m_PaintMode.Next(); break;
                 case KeyCode.LeftControl: m_PaintColor.Check(m_PaintColor.m_Value.Next()); break;
-                case KeyCode.CapsLock:m_PaintNormal = m_PaintNormal.Next();break;
+                case KeyCode.CapsLock: m_PaintNormal = m_PaintNormal.Next(); break;
                 case KeyCode.Q: m_PaintValue = Mathf.Clamp(m_PaintValue - .1f, 0, 1); break;
                 case KeyCode.E: m_PaintValue = Mathf.Clamp(m_PaintValue + .1f, 0, 1); break;
                 case KeyCode.Z: m_PaintSize = Mathf.Clamp(m_PaintSize - .1f, s_PaintSizeRange.start, s_PaintSizeRange.end); break;
@@ -744,7 +742,7 @@ namespace TEditor
         void ResetSelected()
         {
             List<Vector4> originDatas = new List<Vector4>();
-            m_SourceMesh.GetVertexData(m_VertexDataSource,originDatas);
+            m_SourceMesh.GetVertexData(m_VertexDataSource, originDatas);
             if (originDatas.Count == 0)
                 return;
             m_PaintAffectedIndices.Traversal(index => m_VertexDatas[index] = originDatas[index]);
