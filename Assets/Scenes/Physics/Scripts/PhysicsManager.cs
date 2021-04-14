@@ -89,13 +89,11 @@ namespace PhysicsTest
         public float m_RotateSpeed = 1f;
         public virtual void OnTakeControl()
         {
-            PCInputManager.Instance.OnMovementDelta = OnMove;
-            PCInputManager.Instance.OnRotateDelta = OnRotate;
+            TouchInputManager.Instance.SwitchToDualJoystick().Init(OnMove,OnRotate);
         }
         public virtual void OnRemoveControl()
         {
-            PCInputManager.Instance.OnMovementDelta = null;
-            PCInputManager.Instance.OnRotateDelta = null;
+            TouchInputManager.Instance.SwitchOff();
         }
         public abstract void Tick(float _deltaTime);
         public abstract void FixedTick(float _deltaTime);

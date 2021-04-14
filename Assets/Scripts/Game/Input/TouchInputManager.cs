@@ -19,42 +19,36 @@ public abstract class TouchCheckBase
 public class TouchInputManager : SingletonMono<TouchInputManager>
 {
     TouchCheckSingleInput m_SingleInput = new TouchCheckSingleInput();
-    TouchCheckDualJoystick m_DualJoystick = new TouchCheckDualJoystick();
+    TouchCheckDualLRInput m_DualLRInput = new TouchCheckDualLRInput();
     TouchCheckDualStretch m_DualStretch = new TouchCheckDualStretch();
     public TouchCheckSingleInput SwitchToSingle()
     {
-        SwitchCheck(m_SingleInput);
+        SwitchTo(m_SingleInput);
         return m_SingleInput;
     }
 
-    public TouchCheckDualJoystick SwitchToDualJoystick()
+    public TouchCheckDualLRInput SwitchToDualJoystick()
     {
-        SwitchCheck(m_DualJoystick);
-        return m_DualJoystick;
+        SwitchTo(m_DualLRInput);
+        return m_DualLRInput;
     }
 
     public TouchCheckDualStretch SwitchToDualStretch()
     {
-        SwitchCheck(m_DualStretch);
+        SwitchTo(m_DualStretch);
         return m_DualStretch;
     }
+    public void SwitchOff() => SwitchTo(null);
 
     public TouchCheckBase m_Check { get; private set; }
-    void SwitchCheck(TouchCheckBase check)
+    void SwitchTo(TouchCheckBase check)
     {
-        if (m_Check!=null)
-            m_Check.Disable();
+        m_Check?.Disable();
         m_Check = check;
-        m_Check.Enable();
+        m_Check?.Enable();
     }
 
-    void Update()
-    {
-        if (m_Check == null)
-            return;
-
-        m_Check.Tick(Time.unscaledDeltaTime);
-    }
+    void Update()=>m_Check?.Tick(Time.unscaledDeltaTime);
 }
 #region TouchChecks
 public class TouchCheckSingleInput : TouchCheckBase
@@ -72,6 +66,11 @@ public class TouchCheckSingleInput : TouchCheckBase
     public override void Enable()
     {
         m_TouchTrackID = -1;
+    }
+    public override void Disable()
+    {
+        m_TouchTrackID = -1;
+        OnTouchStatus(false, Vector2.zero);
     }
     public override void Tick(float deltaTime)
     {
@@ -106,13 +105,7 @@ public class TouchCheckSingleInput : TouchCheckBase
             }
         }
     }
-    public override void Disable()
-    {
-        m_TouchTrackID = -1;
-        OnTouchStatus(false, Vector2.zero);
-    }
 }
-
 public class TouchCheckDualStretch:TouchCheckBase
 {
     Action<bool, Vector2, Vector2> OnStretchStatus;
@@ -205,37 +198,48 @@ public class TouchCheckDualStretch:TouchCheckBase
         terminated |= touch.phase == TouchPhase.Canceled || touch.phase == TouchPhase.Ended;
     }
 }
-public class TouchCheckDualJoystick : TouchCheckBase
+
+public enum enum_Option_JoyStickMode { Retarget = 1, Stational = 2, }
+public interface ILeftJoystickPositionHelper
 {
-    public class JoystickTouchTracker
+    public bool Setshow(bool _visible, Vector2 _basePos);
+    public void Tick(bool _show, Vector2 _basePos, Vector2 _delta);
+    public float m_Radius { get; }
+    public Vector2 m_Origin { get; }
+}
+public class TouchLRTracker
+{
+    public static readonly float s_halfHorizontal = Screen.width / 2;
+    public static readonly float s_halfVertical = Screen.height / 2;
+    public Touch m_Touch { get; private set; } = new Touch() { fingerId = -1 };
+    public bool m_Enabled => m_Touch.fingerId >= 0;
+    public Vector2 m_Origin { get; private set; }
+    public Vector2 m_Delta { get; private set; }
+    public void Set(Touch touchTrack)
     {
-        static float f_halfHorizontal = Screen.width / 2;
-        static float f_halfVertical = Screen.height / 2;
-        public Touch m_Touch { get; private set; }
-        public Vector2 v2_startPos { get; private set; }
-        public bool isLeft => v2_startPos.x < f_halfHorizontal;
-        public bool isDown => v2_startPos.y < f_halfVertical;
-        public bool trackSuccessful;
-        public JoystickTouchTracker(Touch touchTrack)
-        {
-            m_Touch = touchTrack;
-            v2_startPos = m_Touch.position;
-            trackSuccessful = false;
-        }
-        public void Record(Touch touchTrack)
-        {
-            m_Touch = touchTrack;
-        }
+        m_Touch = touchTrack;
+        m_Origin = m_Touch.position;
     }
+    public void Clear()
+    {
+        m_Touch = new Touch() { fingerId = -1 };
+    }
+    public void Record(Touch _touchTrack)
+    {
+        m_Touch = _touchTrack;
+        m_Delta = _touchTrack.deltaPosition;
+    }
+}
+
+public class TouchCheckDualLRInput : TouchCheckBase
+{
     public override enum_TouchCheckType m_Type => enum_TouchCheckType.DualJoystick;
-    JoystickTouchTracker m_TrackLeft, m_TrackRight;
+    protected TouchLRTracker m_TrackLeft { get; private set; } = new TouchLRTracker();
+    protected TouchLRTracker m_TrackRight { get; private set; } = new TouchLRTracker();
     Action<Vector2> OnLeftDelta, OnRightDelta;
     Func<bool> OnCanSendDelta;
-    Vector2 m_leftDelta, m_rightDelta;
     public void Init(Action<Vector2> _OnLeftDelta, Action<Vector2> _OnRightDelta, Func<bool> _OnTickCheck = null)
     {
-        m_leftDelta = Vector2.zero;
-        m_rightDelta = Vector2.zero;
         OnLeftDelta = _OnLeftDelta;
         OnRightDelta = _OnRightDelta;
         OnCanSendDelta = _OnTickCheck;
@@ -243,83 +247,68 @@ public class TouchCheckDualJoystick : TouchCheckBase
 
     public override void Enable()
     {
-
     }
     public override void Disable()
     {
-        m_TrackLeft = null;
-        m_TrackRight = null;
-        m_leftDelta = Vector2.zero;
-        m_rightDelta = Vector2.zero;
-        OnLeftDelta?.Invoke(m_leftDelta);
-        OnRightDelta?.Invoke(m_rightDelta);
-        UIT_JoyStick.Instance.OnDeactivate();
+        OnLeftDelta?.Invoke(Vector2.zero);
+        OnRightDelta?.Invoke(Vector2.zero);
     }
     public override void Tick(float deltaTime)
     {
-        if (UIT_JoyStick.Instance == null)
+        if (OnCanSendDelta!=null&& !OnCanSendDelta())
             return;
-
-        m_rightDelta = Vector2.zero;
         int touchCount = Input.touchCount;
         for (int i = 0; i < touchCount; i++)
         {
-            Touch t = Input.GetTouch(i);
-            if (t.phase == TouchPhase.Began)
+            Touch touch = Input.GetTouch(i);
+            if (touch.phase == TouchPhase.Began)
             {
-                JoystickTouchTracker track = new JoystickTouchTracker(t);
-                if (m_TrackLeft == null && track.isLeft && track.isDown)
-                {
-                    m_TrackLeft = track;
-                    UIT_JoyStick.Instance.OnActivate(m_TrackLeft.v2_startPos);
-                    m_leftDelta = Vector2.zero;
-                }
-                else if (m_TrackRight == null && !track.isLeft)
-                {
-                    m_TrackRight = track;
-                }
+                bool isLeft=touch.position.x< TouchLRTracker.s_halfHorizontal;
+                if (m_TrackLeft == null && isLeft)
+                    m_TrackLeft.Set(touch);
+                else if (m_TrackRight == null && !isLeft)
+                    m_TrackRight.Set(touch);
             }
-            else if (t.phase == TouchPhase.Ended || t.phase == TouchPhase.Canceled)
+            else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
             {
-                if (m_TrackLeft != null && t.fingerId == m_TrackLeft.m_Touch.fingerId)
-                {
-                    m_TrackLeft = null;
-                    UIT_JoyStick.Instance.OnDeactivate();
-                    m_leftDelta = Vector2.zero;
-                }
-                if (m_TrackRight != null && t.fingerId == m_TrackRight.m_Touch.fingerId)
-                {
-                    m_TrackRight = null;
-                }
+                if (touch.fingerId == m_TrackLeft.m_Touch.fingerId)
+                    m_TrackLeft.Clear();
+                if (touch.fingerId == m_TrackRight.m_Touch.fingerId)
+                    m_TrackRight.Clear();
             }
-            else if (t.phase == TouchPhase.Moved)
+            else if (touch.phase == TouchPhase.Moved)
             {
-                if (m_TrackRight != null && t.fingerId == m_TrackRight.m_Touch.fingerId)
-                {
-                    m_TrackRight.Record(t);
-                    m_rightDelta = t.deltaPosition;
-                }
-                else if (m_TrackLeft != null && t.fingerId == m_TrackLeft.m_Touch.fingerId)
-                {
-                    m_TrackLeft.Record(t);
-                    m_leftDelta = UIT_JoyStick.Instance.OnMoved(t.position);
-                }
+                if (touch.fingerId == m_TrackRight.m_Touch.fingerId)
+                    m_TrackRight.Record(touch);
+                else if (touch.fingerId == m_TrackLeft.m_Touch.fingerId)
+                    m_TrackLeft.Record(touch);
             }
         }
 
 #if UNITY_EDITOR
-        m_leftDelta = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        m_rightDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        if (Input.GetMouseButtonDown(0))
+            m_TrackLeft.Set(new Touch() { fingerId = 0, deltaPosition = Vector2.zero, position = Input.mousePosition });
+        else if (Input.GetMouseButton(0))
+        {
+            Vector2 deltaPosition = m_TrackRight.m_Touch.position - Input.mousePosition.ToVector2();
+            m_TrackLeft.Record(new Touch() { fingerId = 0, deltaPosition = deltaPosition, position = Input.mousePosition });
+        }
+        else if (Input.GetMouseButtonDown(0))
+            m_TrackLeft.Clear();
+
+        if (Input.GetMouseButtonDown(1))
+            m_TrackRight.Set(new Touch() { fingerId = 1, deltaPosition = Vector2.zero, position = Input.mousePosition });
+        else if (Input.GetMouseButton(1))
+        {
+            Vector2 deltaPosition = m_TrackRight.m_Touch.position - Input.mousePosition.ToVector2();
+            m_TrackRight.Record(new Touch() { fingerId = 1, deltaPosition = deltaPosition, position = Input.mousePosition });
+        }
+        else if (Input.GetMouseButtonDown(1))
+            m_TrackRight.Clear();
 #endif
 
-        if (OnCanSendDelta != null && !OnCanSendDelta())
-        {
-            m_leftDelta = Vector2.zero;
-            m_rightDelta = Vector2.zero;
-        }
-
-        OnLeftDelta?.Invoke(m_leftDelta);
-        OnRightDelta?.Invoke(m_rightDelta);
+        OnLeftDelta(m_TrackLeft.m_Delta);
+        OnRightDelta(m_TrackRight.m_Delta);
     }
 }
 

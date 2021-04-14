@@ -2,36 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum enum_Option_JoyStickMode { Invalid = -1, Retarget = 1, Stational = 2, }
-public class UIT_JoyStick : SingletonMono<UIT_JoyStick>
+public class UIT_JoyStick : MonoBehaviour, ILeftJoystickPositionHelper
 {
-#if UNITY_EDITOR
-    public bool TESTMODE = false;
-    private void Update()
-    {
-        if (!TESTMODE)
-            return;
-
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-            OnActivate(Input.mousePosition);
-        if (Input.GetKey(KeyCode.Mouse0))
-            OnMoved(Input.mousePosition);
-        if (Input.GetKeyUp(KeyCode.Mouse0))
-            OnDeactivate(); 
-    }
-#endif
     RectTransform rtf_Main;
     RectTransform rtf_Center;
-    enum_Option_JoyStickMode m_Mode= enum_Option_JoyStickMode.Invalid;
     JoyStickBase m_JoystickControl;
-    Vector2 v2_startPos;
     public float m_JoyStickRaidus { get; private set; }
-    protected override void Awake()
+    protected void Awake()
     {
-        base.Awake();
         rtf_Main = GetComponent<RectTransform>();
         rtf_Center = transform.Find("Center").GetComponent<RectTransform>();
-        v2_startPos = rtf_Main.anchoredPosition;
         m_JoyStickRaidus = Mathf.Abs( rtf_Main.sizeDelta.y/2)-Mathf.Abs( rtf_Center.sizeDelta.y/2);
         SetMode(enum_Option_JoyStickMode.Retarget);
     }

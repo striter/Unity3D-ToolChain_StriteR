@@ -147,7 +147,7 @@ public static class TDataConvert
         }
         if (array.Length != 0)
             _convertData.Remove(_convertData.Length - 1, 1);
-;        return _convertData.ToString();
+        return _convertData.ToString();
     }
 
     static object ArrayPhraseToData(Type arrayType,string xmlData,int iteration)
