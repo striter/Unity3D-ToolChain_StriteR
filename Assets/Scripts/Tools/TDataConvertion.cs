@@ -12,13 +12,15 @@ public static class TDataConvert
 {
     static readonly char[] m_PhraseIterateBreakPoints = new char[12] {',',';','[', ']', '{', '}', '(', ')', ';', ':', '/', '`' };
     const char m_PhraseBaseBreakPoint = '|';
-
-    public static string Convert(object value) => ConvertToString(value.GetType(), value, -1);
+    public static string Convert(Type type, object value) => ConvertToString(type, value, -1);
     public static T Convert<T>(string xmlData) => (T)ConvertToObject(typeof(T), xmlData, -1);
     public static object Convert(Type type, string xmlData) => ConvertToObject(type, xmlData, -1);
     public static object Default(Type type) => type.IsValueType ? Activator.CreateInstance(type) : null;
     static string ConvertToString(Type type, object value, int iteration)
     {
+        if (value == null)
+            return "";
+
         if (type.IsEnum)
             return value.ToString();
 
@@ -30,7 +32,7 @@ public static class TDataConvert
         iteration = DoIteration(iteration);
 
         if (type.IsArray)
-            return ArrayPhraseToString(type, value,iteration);
+            return ArrayPhraseToString(type, value, iteration);
 
         if (type.IsGenericType)
         {
@@ -40,10 +42,11 @@ public static class TDataConvert
         }
 
         if (CheckIXmlParseType(type))
-            return IXmlPhraseToString(type, value,  iteration);
+            return IXmlPhraseToString(type, value, iteration);
 
         throw new Exception("Xml Error Invlid Type:" + type.ToString() + " For Base Type To Phrase");
     }
+        
     static object ConvertToObject(Type type, string xmlData, int iteration)
     {
         if (type.IsEnum)

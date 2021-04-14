@@ -76,7 +76,7 @@ public static class UCollection
             if (OnEachItem(item))
                 return index;
         }
-        return index;
+        return -1;
     }
     public static bool Any<T>(this IEnumerable<T> _ienumerable,Func<int,T,bool> OnEachItem)
     {

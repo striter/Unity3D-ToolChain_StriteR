@@ -21,19 +21,19 @@ namespace TEditor
             }
             return fieldInfo;
         }
-        public static IEnumerable<KeyValuePair<FieldInfo, object>> GetAllFields(this SerializedProperty _property)
+        public static IEnumerable<KeyValuePair<FieldInfo, object>> AllRelativeFields(this SerializedProperty _property)
         {
             string[] paths = _property.propertyPath.Split('.');
             object targetObject = _property.serializedObject.targetObject;
             Type targetType = targetObject.GetType();
-            foreach (var fieldName in paths)
+            for(int i=0;i< paths.Length-1; i++)
             {
-                foreach (var subFieldInfo in targetType.GetFields())
-                    yield return new KeyValuePair<FieldInfo, object>(subFieldInfo, subFieldInfo.GetValue(targetObject));
-                FieldInfo targetField = targetObject.GetType().GetField(fieldName);
+                FieldInfo targetField = targetObject.GetType().GetField(paths[i]);
                 targetType = targetField.FieldType;
                 targetObject = targetField.GetValue(targetObject);
             }
+            foreach (var subFieldInfo in targetType.GetFields())
+                yield return new KeyValuePair<FieldInfo, object>(subFieldInfo, subFieldInfo.GetValue(targetObject));
             yield break;
         }
 

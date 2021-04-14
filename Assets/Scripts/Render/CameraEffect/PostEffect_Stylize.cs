@@ -12,15 +12,21 @@ namespace Rendering.ImageEffect
         OilPaint=1,
         ObraDithering=2,
     }
+    public enum enum_PixelBound
+    {
+        None=0,
+        Grid,
+        Circle,
+    }
     public class PostEffect_Stylize : PostEffectBase<ImageEffect_Stylize, ImageEffectParam_Stylize> { }
     [Serializable]
     public struct ImageEffectParam_Stylize
     {
         [MTitle]public enum_Stylize m_Stylize;
         [MFoldout(nameof(m_Stylize),enum_Stylize.Pixel)] [ RangeInt(2,20)] public int m_DownSample;
-        [MFoldout(nameof(m_Stylize), enum_Stylize.Pixel)] public bool m_PixelGrid;
-        [MFoldout(nameof(m_Stylize), enum_Stylize.Pixel, nameof(m_PixelGrid), true)] [Range(0.01f, 0.49f)] public float m_GridWidth;
-        [MFoldout(nameof(m_Stylize), enum_Stylize.Pixel, nameof(m_PixelGrid), true)] public Color m_PixelGridColor;
+        [MFoldout(nameof(m_Stylize), enum_Stylize.Pixel)] public enum_PixelBound m_PixelGrid;
+        [MFoldout(nameof(m_Stylize), enum_Stylize.Pixel)] [MFold(nameof(m_PixelGrid), enum_PixelBound.None)] [Range(0.01f, 0.49f)] public float m_GridWidth;
+        [MFoldout(nameof(m_Stylize), enum_Stylize.Pixel)] [MFold(nameof(m_PixelGrid), enum_PixelBound.None)] public Color m_PixelGridColor;
         [MFoldout(nameof(m_Stylize), enum_Stylize.OilPaint)] [RangeInt(1,20)]public int m_OilPaintKernel;
         [MFoldout(nameof(m_Stylize), enum_Stylize.OilPaint)] [Range(0.1f, 5f)] public float m_OilPaintSize;
         [MFoldout(nameof(m_Stylize), enum_Stylize.ObraDithering)] [Range(0.001f,1f)]public float m_ObraDitherScale;
@@ -30,7 +36,7 @@ namespace Rendering.ImageEffect
         {
             m_Stylize = enum_Stylize.Pixel,
             m_DownSample = 7,
-            m_PixelGrid = false,
+            m_PixelGrid =  enum_PixelBound.None,
             m_GridWidth = .1f,
             m_PixelGridColor = Color.white.SetAlpha(.5f),
             m_OilPaintKernel = 10,
@@ -46,7 +52,7 @@ namespace Rendering.ImageEffect
         #region ShaderProperties
         static readonly int ID_PixelizeDownSample = Shader.PropertyToID("_STYLIZE_PIXEL_DOWNSAMPLE");
         static readonly RenderTargetIdentifier RT_PixelizeDownSample = new RenderTargetIdentifier(ID_PixelizeDownSample);
-        const string KW_PixelGrid = "_PIXEL_GRID";
+        static readonly string[] KW_PixelGrid = new string[] { "_PIXEL_GRID" ,"_PIXEL_CIRCLE"};
         static readonly int ID_PixelGridColor = Shader.PropertyToID("_PixelGridColor");
         static readonly int ID_PixelGridWidth = Shader.PropertyToID("_PixelGridWidth");
 
@@ -60,7 +66,7 @@ namespace Rendering.ImageEffect
         protected override void OnValidate(ImageEffectParam_Stylize _params, Material _material)
         {
             base.OnValidate(_params, _material);
-            _material.EnableKeyword(KW_PixelGrid, _params.m_PixelGrid);
+            _material.EnableKeywords(KW_PixelGrid, (int)_params.m_PixelGrid);
             _material.SetColor(ID_PixelGridColor,_params.m_PixelGridColor);
             _material.SetVector(ID_PixelGridWidth, new Vector2(_params.m_GridWidth, 1f - _params.m_GridWidth));
             _material.SetVector(ID_OilPaintKernel, new Vector2(-_params.m_OilPaintKernel / 2, _params.m_OilPaintKernel / 2 + 1));
