@@ -17,7 +17,7 @@ Shader "Hidden/ImageEffect_Stylize"
             HLSLPROGRAM
             #pragma vertex vert_img
             #pragma fragment frag
-            #pragma shader_feature _PIXEL_GRID
+            #pragma multi_compile _ _PIXEL_GRID _PIXEL_CIRCLE
             float4 _PixelGridColor;
             float2 _PixelGridWidth;
             float4 frag(v2f_img i):SV_TARGET
@@ -25,8 +25,13 @@ Shader "Hidden/ImageEffect_Stylize"
                 float3 finalCol=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).xyz;
             #if _PIXEL_GRID
                 float2 pixelUV= (i.uv*_MainTex_TexelSize.zw)%1;
-                float pixelGrid= step(pixelUV.y,_PixelGridWidth.x)+step(_PixelGridWidth.y,pixelUV.y)+step(pixelUV.x,_PixelGridWidth.x)+step(_PixelGridWidth.y,pixelUV.x);
+                float pixelGrid= max(step(pixelUV.y,_PixelGridWidth.x),step(_PixelGridWidth.y,pixelUV.y),step(pixelUV.x,_PixelGridWidth.x),step(_PixelGridWidth.y,pixelUV.x));
                 finalCol=lerp(finalCol,_PixelGridColor.rgb,pixelGrid*_PixelGridColor.a);
+            #elif _PIXEL_CIRCLE
+                float2 pixelUV=(i.uv*_MainTex_TexelSize.zw)%1-.5;
+                float pixelCircle= dot(pixelUV,pixelUV);
+                pixelCircle= step(.5-_PixelGridWidth,pixelCircle);
+                finalCol=lerp(finalCol,_PixelGridColor.rgb,pixelCircle*_PixelGridColor.a);
             #endif
                 return float4(finalCol,1);
             }
