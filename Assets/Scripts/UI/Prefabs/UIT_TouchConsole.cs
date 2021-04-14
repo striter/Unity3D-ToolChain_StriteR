@@ -15,12 +15,15 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         container.Insert<CommandItem_CommandTitle>().m_CommandTitle.text = _title;
         return container;
     }
+    public static UIT_JoyStick GetHelperJoystick() => Instance.m_HelperJoystick;
     #endregion
 
     [Range(0, 2f)] public readonly Ref<float> m_ConsoleTimeScale = .5f;
+    UIT_JoyStick m_HelperJoystick;
     protected override void Awake()
     {
         base.Awake();
+        m_HelperJoystick = new UIT_JoyStick(transform.Find("Joystick"));
         ConsoleAwake();
         LogFrameAwake();
 
@@ -65,7 +68,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
     }
     #endregion
 }
-//Console
+#region Console
 public static class UIT_TouchConsoleHelper
 {
     public static string GetKeyCodeString(this KeyCode _keyCode) => _keyCode == KeyCode.None ? "" : _keyCode.ToString();
@@ -449,7 +452,8 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
 
     }
 }
-//Right Panel
+#endregion
+#region RightPanel
 public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
 {
     [Flags]
@@ -667,3 +671,4 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         UpdateLogs();
     }
 }
+#endregion

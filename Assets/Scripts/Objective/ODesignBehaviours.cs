@@ -1,5 +1,10 @@
 ﻿using UnityEngine;
+public class SimpleBehaviour
+{
+    public  Transform transform { get; private set; }
+    public SimpleBehaviour(Transform _transform) { transform = _transform; }
 
+}
 public class SingletonMono<T> : MonoBehaviour where T : MonoBehaviour
 {
     static T instance;

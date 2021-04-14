@@ -55,7 +55,6 @@ namespace PhysicsTest
             UIT_TouchConsole.Command("Reset All Items", KeyCode.F5).Button(() => m_DynamicItems.Traversal(dynamicItem => dynamicItem.Reposition()));
 
             SetCharacter(m_GravityGunCharacter);
-            Cursor.lockState = CursorLockMode.Locked;
         }
         void SetCharacter(PhysicsCharacterBase _character)
         {
@@ -89,7 +88,7 @@ namespace PhysicsTest
         public float m_RotateSpeed = 1f;
         public virtual void OnTakeControl()
         {
-            TouchInputManager.Instance.SwitchToDualJoystick().Init(OnMove,OnRotate);
+            TouchInputManager.Instance.SwitchToDualJoystick().Init(new TouchTracker_Joystick(UIT_TouchConsole.GetHelperJoystick(), enum_Option_JoyStickMode.Retarget, OnMove,TouchTracker.s_LeftTrack),new TouchTracker(OnRotate,TouchTracker.s_RightTrack));
         }
         public virtual void OnRemoveControl()
         {

@@ -159,9 +159,9 @@ public class Timer
     public float m_TimerDuration { get; private set; } = 0;
     public bool m_Timing { get; private set; } = false;
     public float m_TimeLeft { get; private set; } = -1;
-    public float m_TimeElapsed => m_TimerDuration - m_TimeLeft;
     public float m_TimeLeftScale { get; private set; } = 0;
-    protected virtual bool CheckTiming() => m_TimeLeft > 0;
+    public float m_TimeElapsed { get; private set; }
+    public float m_TimeElapsedScale { get; private set; } = 0;
     public Timer(float countDuration = 0, bool startOff = false)
     {
         Set(countDuration);
@@ -173,19 +173,16 @@ public class Timer
         m_TimerDuration = duration;
         OnTimeCheck(m_TimerDuration);
     }
-
     void OnTimeCheck(float _timeCheck)
     {
         m_TimeLeft = _timeCheck;
-        m_Timing = CheckTiming();
-        m_TimeLeftScale = m_TimerDuration == 0 ? 0 : m_TimeLeft / m_TimerDuration;
-        if (m_TimeLeftScale < 0)
-            m_TimeLeftScale = 0;
+        m_TimeElapsed = m_TimerDuration - m_TimeLeft;
+        m_Timing = m_TimeLeft > 0;
+        m_TimeLeftScale = Mathf.Max(m_TimerDuration == 0 ? 0 : m_TimeLeft / m_TimerDuration, 0);
+        m_TimeElapsedScale = 1f - m_TimeLeftScale;
     }
-
     public void Replay() => OnTimeCheck(m_TimerDuration);
     public void Stop() => OnTimeCheck(0);
-
     public void Tick(float deltaTime)
     {
         if (m_TimeLeft <= 0)

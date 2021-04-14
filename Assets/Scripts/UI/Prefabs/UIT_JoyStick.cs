@@ -2,129 +2,39 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIT_JoyStick : MonoBehaviour, ILeftJoystickPositionHelper
+public class UIT_JoyStick : SimpleBehaviour, ITouchJoystick
 {
     RectTransform rtf_Main;
     RectTransform rtf_Center;
-    JoyStickBase m_JoystickControl;
-    public float m_JoyStickRaidus { get; private set; }
-    protected void Awake()
+    public float m_Radius { get; private set; }
+    public Vector2 m_Origin { get; private set; }
+    Timer m_SwitchTimer =new Timer(.2f);
+    ValueChecker<bool> m_SwitchChecker = new ValueChecker<bool>(false);
+    public UIT_JoyStick (Transform _transform):base(_transform)
     {
-        rtf_Main = GetComponent<RectTransform>();
+        rtf_Main = transform as RectTransform;
         rtf_Center = transform.Find("Center").GetComponent<RectTransform>();
-        m_JoyStickRaidus = Mathf.Abs( rtf_Main.sizeDelta.y/2)-Mathf.Abs( rtf_Center.sizeDelta.y/2);
-        SetMode(enum_Option_JoyStickMode.Retarget);
+        m_SwitchTimer.Stop();
+        m_Origin = rtf_Main.anchoredPosition;
+        m_Radius = Mathf.Abs(rtf_Main.sizeDelta.y / 2) - Mathf.Abs(rtf_Center.sizeDelta.y / 2);
+        m_SwitchTimer.Replay();
+        SetVisible(false);
     }
-    public void SetMode(enum_Option_JoyStickMode mode)
+    public void SetVisible(bool _visible)
     {
-        if (mode == m_Mode) return;
-
-        m_Mode = mode;
-        switch (m_Mode)
-        {
-            case enum_Option_JoyStickMode.Stational:
-                m_JoystickControl = new JoyStickStational(v2_startPos, m_JoyStickRaidus);
-                break;
-            case enum_Option_JoyStickMode.Retarget:
-                m_JoystickControl = new JoyStickRetarget(v2_startPos, m_JoyStickRaidus);
-                break;
-        }
-        ResetStatus();
+        transform.SetActive(_visible);
+        rtf_Center.anchoredPosition = m_Origin;
     }
-
-    public void OnActivate(Vector2 pos)
+    public void Tick(float _deltaTime,bool _show, Vector2 _basePos, Vector2 _delta)
     {
-        m_JoystickControl.OnActivate( pos);
-        ResetStatus();
-    }
-    public void OnDeactivate()
-    {
-        m_JoystickControl.OnDeactivate();
-        ResetStatus();
-    }
-
-    public Vector2 OnMoved(Vector2 pos)
-    {
-        Vector2 delta= m_JoystickControl.OnMoved(pos);
-        ResetStatus();
-        return delta;
-    }
-    private void LateUpdate()
-    {
-        transform.localScale =Vector3.Lerp(transform.localScale, m_JoystickControl.m_JoyStickShow ? Vector3.one : Vector3.zero,.2f);
-        rtf_Center.anchoredPosition = m_JoystickControl.m_JoyStickOffset;
-    }
-    void ResetStatus()
-    {
-        rtf_Main.anchoredPosition = m_JoystickControl.m_BasePos;
-    }
-
-    class JoyStickBase
-    {
-        public bool m_JoyStickShow { get; protected set; } = false;
-        public Vector2 m_BasePos { get; protected set; } = Vector2.zero;
-        public Vector2 m_JoyStickOffset { get; protected set; } = Vector2.zero;
-        public float m_JoystickRadius { get; protected set; } = 0f;
-        public JoyStickBase(Vector2 startPos, float radius)
-        {
-            m_BasePos = startPos;
-            m_JoystickRadius = radius;
-            m_JoyStickShow = false;
-        }
-        public virtual void OnActivate(Vector2 pos)
-        {
-            m_JoyStickOffset = Vector2.zero;
-        }
-        public virtual void OnDeactivate()
-        {
-            m_JoyStickOffset = Vector2.zero;
-        }
-        public virtual Vector2 OnMoved(Vector2 pos)
-        {
-            Vector2 centerOffset = Vector2.Distance(pos, m_BasePos) > m_JoystickRadius ? (pos - m_BasePos).normalized * m_JoystickRadius : pos - m_BasePos;
-            m_JoyStickOffset = centerOffset;
-            return centerOffset / m_JoystickRadius;
-        }
-    }
-    class JoyStickStational:JoyStickBase
-    {
-        bool enabled;
-        public JoyStickStational(Vector2 startPos, float radius) : base(startPos,radius)
-        {
-            m_JoyStickShow = true;
-            enabled = false;
-        }
-
-        public override void OnActivate( Vector2 pos)
-        {
-            base.OnActivate(pos);
-            enabled = Vector2.Distance(pos,m_BasePos)<m_JoystickRadius*2f;
-         }
-        public override void OnDeactivate()
-        {
-            base.OnDeactivate();
-            enabled = false;
-        }
-        public override Vector2 OnMoved(Vector2 pos)
-        {
-            if (!enabled) return Vector2.zero;
-            return base.OnMoved(pos);
-        }
-    }
-    class JoyStickRetarget : JoyStickBase
-    {
-        public JoyStickRetarget(Vector2 startPos, float radius) : base(startPos, radius)
-        {
-        }
-        public override void OnActivate( Vector2 pos)
-        {
-            m_JoyStickShow = true;
-            m_BasePos = pos;
-        }
-        public override void OnDeactivate()
-        {
-            base.OnDeactivate();
-            m_JoyStickShow = false;
-        }
+        rtf_Center.anchoredPosition = Vector2.Lerp(rtf_Center.anchoredPosition, _delta * m_Radius, 30f*_deltaTime);
+        if (m_SwitchChecker.Check(_show))
+            m_SwitchTimer.Replay();
+        if (!m_SwitchTimer.m_Timing)
+            return;
+        m_SwitchTimer.Tick(_deltaTime);
+        rtf_Main.anchoredPosition = _basePos;
+        transform.localScale = Vector3.Lerp(transform.localScale, _show ? Vector3.one : Vector3.zero, m_SwitchTimer.m_TimeElapsedScale);
+        transform.SetActive( _show || m_SwitchTimer.m_Timing);
     }
 }
