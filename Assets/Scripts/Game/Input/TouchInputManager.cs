@@ -2,23 +2,9 @@
 using System.ComponentModel;
 using UnityEngine;
 
-public enum enum_TouchCheckType
-{
-    Invalid = -1,
-    SingleInput = 1,
-    DualStretch = 4,
-    DualJoystick = 3,
-}
-public abstract class TouchCheckBase
-{
-    public abstract enum_TouchCheckType m_Type { get; }
-    public abstract void Enable();
-    public abstract void Disable();
-    public abstract void Tick(float deltaTime);
-}
-
 public class TouchInputManager : SingletonMono<TouchInputManager>
 {
+    public TouchCheckBase m_Check { get; private set; }
     TouchCheckSingleInput m_SingleInput = new TouchCheckSingleInput();
     TouchCheckDualLRInput m_DualLRInput = new TouchCheckDualLRInput();
     TouchCheckDualStretch m_DualStretch = new TouchCheckDualStretch();
@@ -40,21 +26,23 @@ public class TouchInputManager : SingletonMono<TouchInputManager>
         return m_DualStretch;
     }
     public void SwitchOff() => SwitchTo(null);
-
-    public TouchCheckBase m_Check { get; private set; }
     void SwitchTo(TouchCheckBase check)
     {
         m_Check?.Disable();
         m_Check = check;
         m_Check?.Enable();
     }
-
     void Update()=>m_Check?.Tick(Time.unscaledDeltaTime);
 }
 #region TouchChecks
+public abstract class TouchCheckBase
+{
+    public abstract void Enable();
+    public abstract void Disable();
+    public abstract void Tick(float deltaTime);
+}
 public class TouchCheckSingleInput : TouchCheckBase
 {
-    public override enum_TouchCheckType m_Type => enum_TouchCheckType.SingleInput;
     Action<bool, Vector2> OnTouchStatus;
     Action<Vector2> OnTouchTick;
     int m_TouchTrackID;
@@ -113,7 +101,6 @@ public class TouchCheckDualStretch:TouchCheckBase
     Action<Vector2, Vector2> OnStretchTick;
     int m_StretchTrackID1 = -1;
     int m_StretchTrackID2 = -1;
-    public override enum_TouchCheckType m_Type => enum_TouchCheckType.DualStretch;
     public void Init(Action<bool, Vector2, Vector2> _OnStretchStatus,Action<Vector2,Vector2> _OnStretchTick)
     {
         OnStretchStatus = _OnStretchStatus;
@@ -199,14 +186,6 @@ public class TouchCheckDualStretch:TouchCheckBase
         terminated |= touch.phase == TouchPhase.Canceled || touch.phase == TouchPhase.Ended;
     }
 }
-
-public interface ITouchJoystick
-{
-    public void Tick(float _deltaTime,bool _show, Vector2 _basePos, Vector2 _delta);
-    public void SetVisible(bool _visible);
-    public float m_Radius { get; }
-    public Vector2 m_Origin { get; }
-}
 public class TouchTracker
 {
     public static implicit operator bool(TouchTracker tracker)=>tracker!=null;
@@ -262,69 +241,8 @@ public class TouchTracker
     public static readonly Func<Vector2, bool> s_RightTrack = (vector) => vector.x >= s_HalfWidth;
     public static readonly Func<Vector2, bool> s_LeftBottomTrack = (vector) => vector.x < s_HalfWidth && vector.y < s_HalfHeight;
 }
-public enum enum_Option_JoyStickMode { Retarget = 1, Stational = 2, }
-public class TouchTracker_Joystick: TouchTracker
-{
-    public enum_Option_JoyStickMode m_Mode { get; private set; }
-    ITouchJoystick m_Joystick;
-    public bool m_JoystickShow { get; private set; }
-    public TouchTracker_Joystick(ITouchJoystick _joystick,enum_Option_JoyStickMode _mode, Action<Vector2> _OnTrackerTick, Func<Vector2, bool> _OnTrackerSet = null):base(_OnTrackerTick,_OnTrackerSet)
-    {
-        m_Joystick = _joystick;
-        SwitchJoystickMode(_mode);
-    }
-    public void SwitchJoystickMode( enum_Option_JoyStickMode _mode)
-    {
-        m_Mode = _mode;
-        OnClear();
-    }
-    public override void OnDisable()
-    {
-        base.OnDisable();
-        m_Joystick.SetVisible(false);
-        m_JoystickShow = true;
-    }
-    protected override void OnSet()
-    {
-        base.OnSet();
-        switch(m_Mode)
-        {
-            case enum_Option_JoyStickMode.Stational:m_JoystickShow = true; break;
-            case enum_Option_JoyStickMode.Retarget: m_JoystickShow = true; break;
-        }
-    }
-    protected override void OnClear()
-    {
-        base.OnClear();
-        switch (m_Mode)
-        {
-            case enum_Option_JoyStickMode.Stational: m_JoystickShow = true; break;
-            case enum_Option_JoyStickMode.Retarget: m_JoystickShow = false; break;
-        }
-    }
-    protected override Vector2 OnRecord(Touch _touch)
-    {
-        Vector2 delta = Vector2.zero;
-        switch(m_Mode)
-        {
-            case enum_Option_JoyStickMode.Retarget: delta=(_touch.position-m_TouchOrigin) / m_Joystick.m_Radius;break;
-            case enum_Option_JoyStickMode.Stational: delta=(_touch.position-m_Joystick.m_Origin ) / m_Joystick.m_Radius;break;
-        }
-        return delta.normalized;
-    }
-    public override void Tick(float _deltaTime)
-    {
-        base.Tick(_deltaTime);
-        switch(m_Mode)
-        {
-            case enum_Option_JoyStickMode.Stational:m_Joystick.Tick(_deltaTime,m_JoystickShow,m_Joystick.m_Origin,m_Delta); break;
-            case enum_Option_JoyStickMode.Retarget: m_Joystick.Tick(_deltaTime, m_JoystickShow, m_TouchOrigin, m_Delta); break;
-        }
-    }
-}
 public class TouchCheckDualLRInput : TouchCheckBase
 {
-    public override enum_TouchCheckType m_Type => enum_TouchCheckType.DualJoystick;
     protected TouchTracker[] m_Trackers;
     public  TouchCheckDualLRInput Init(params TouchTracker[] _trackers)
     {
@@ -370,6 +288,73 @@ public class TouchCheckDualLRInput : TouchCheckBase
         }
 #endif
         m_Trackers.Traversal(tracker => tracker.Tick(_deltaTime));
+    }
+}
+public interface ITouchJoystick
+{
+    public void Tick(float _deltaTime, bool _show, Vector2 _basePos, Vector2 _delta);
+    public void SetVisible(bool _visible);
+    public float m_Radius { get; }
+    public Vector2 m_Origin { get; }
+}
+public enum enum_Option_JoyStickMode { Retarget = 1, Stational = 2, }
+public class TouchTracker_Joystick : TouchTracker
+{
+    public enum_Option_JoyStickMode m_Mode { get; private set; }
+    ITouchJoystick m_Joystick;
+    public bool m_JoystickShow { get; private set; }
+    public TouchTracker_Joystick(ITouchJoystick _joystick, enum_Option_JoyStickMode _mode, Action<Vector2> _OnTrackerTick, Func<Vector2, bool> _OnTrackerSet = null) : base(_OnTrackerTick, _OnTrackerSet)
+    {
+        m_Joystick = _joystick;
+        SwitchJoystickMode(_mode);
+    }
+    public void SwitchJoystickMode(enum_Option_JoyStickMode _mode)
+    {
+        m_Mode = _mode;
+        OnClear();
+    }
+    public override void OnDisable()
+    {
+        base.OnDisable();
+        m_Joystick.SetVisible(false);
+        m_JoystickShow = true;
+    }
+    protected override void OnSet()
+    {
+        base.OnSet();
+        switch (m_Mode)
+        {
+            case enum_Option_JoyStickMode.Stational: m_JoystickShow = true; break;
+            case enum_Option_JoyStickMode.Retarget: m_JoystickShow = true; break;
+        }
+    }
+    protected override void OnClear()
+    {
+        base.OnClear();
+        switch (m_Mode)
+        {
+            case enum_Option_JoyStickMode.Stational: m_JoystickShow = true; break;
+            case enum_Option_JoyStickMode.Retarget: m_JoystickShow = false; break;
+        }
+    }
+    protected override Vector2 OnRecord(Touch _touch)
+    {
+        Vector2 delta = Vector2.zero;
+        switch (m_Mode)
+        {
+            case enum_Option_JoyStickMode.Retarget: delta = (_touch.position - m_TouchOrigin) / m_Joystick.m_Radius; break;
+            case enum_Option_JoyStickMode.Stational: delta = (_touch.position - m_Joystick.m_Origin) / m_Joystick.m_Radius; break;
+        }
+        return delta.normalized;
+    }
+    public override void Tick(float _deltaTime)
+    {
+        base.Tick(_deltaTime);
+        switch (m_Mode)
+        {
+            case enum_Option_JoyStickMode.Stational: m_Joystick.Tick(_deltaTime, m_JoystickShow, m_Joystick.m_Origin, m_Delta); break;
+            case enum_Option_JoyStickMode.Retarget: m_Joystick.Tick(_deltaTime, m_JoystickShow, m_TouchOrigin, m_Delta); break;
+        }
     }
 }
 #endregion

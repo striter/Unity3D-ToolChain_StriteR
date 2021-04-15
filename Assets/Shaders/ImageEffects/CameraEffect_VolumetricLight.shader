@@ -60,15 +60,16 @@ Shader "Hidden/CameraEffect_VolumetricLight"
                 float3 marchDirWS=normalize(i.viewDirWS);
                 float depthDstWS=LinearEyeDepth(i.uv);
                 float marchDstWS=min(depthDstWS,_MarchDistance);
-                float marchDelta=marchDstWS/_MarchDistance*1.0/_MarchTimes;
-                float dstDelta=marchDstWS/_MarchTimes;
+                int marchTimes=min(_MarchTimes,128);
+                float marchDelta=marchDstWS/_MarchDistance*1.0/marchTimes;
+                float dstDelta=marchDstWS/marchTimes;
                 float3 posDelta=marchDirWS*dstDelta;
                 float curDst=0;
                 float totalAtten=0;
 
                 if(marchDstWS>0)
                 {
-                    for(int index=0;index<_MarchTimes;index++)
+                    for(int index=0;index<marchTimes;index++)
                     {
                         float3 samplePos=curPos;
                         #if _DITHER

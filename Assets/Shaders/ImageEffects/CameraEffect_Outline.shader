@@ -69,7 +69,7 @@
 				{
 					half diff=0;
 					#if _DETECT_COLOR
-					diff=luminance(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv[it])).xyz;
+					diff=luminance(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv[it]).xyz);
 					#elif _DETECT_NORMAL
 					diff=abs(dot(ClipSpaceNormalFromDepth(i.uv[it]),float3(0,0,-1)));
 					#else
