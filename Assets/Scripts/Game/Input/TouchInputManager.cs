@@ -28,7 +28,7 @@ public class TouchInputManager : SingletonMono<TouchInputManager>
         return m_SingleInput;
     }
 
-    public TouchCheckDualLRInput SwitchToDualJoystick()
+    public TouchCheckDualLRInput SwitchToTrackers()
     {
         SwitchTo(m_DualLRInput);
         return m_DualLRInput;
@@ -250,8 +250,8 @@ public class TouchTracker
     }
 
     public virtual void Tick(float _deltaTime) { }
-    public virtual void OnEnable() {}
-    public virtual void OnDisable() { m_Delta = Vector2.zero; OnTrackerDelta(m_Delta); }
+    public virtual void OnEnable() { }
+    public virtual void OnDisable() { End(m_Touch); }
     protected virtual void OnClear() { }
     protected virtual void OnSet() { }
     protected virtual Vector2 OnRecord(Touch _touch) => _touch.deltaPosition;
@@ -270,8 +270,13 @@ public class TouchTracker_Joystick: TouchTracker
     public bool m_JoystickShow { get; private set; }
     public TouchTracker_Joystick(ITouchJoystick _joystick,enum_Option_JoyStickMode _mode, Action<Vector2> _OnTrackerTick, Func<Vector2, bool> _OnTrackerSet = null):base(_OnTrackerTick,_OnTrackerSet)
     {
-        m_Mode = _mode;
         m_Joystick = _joystick;
+        SwitchJoystickMode(_mode);
+    }
+    public void SwitchJoystickMode( enum_Option_JoyStickMode _mode)
+    {
+        m_Mode = _mode;
+        OnClear();
     }
     public override void OnDisable()
     {

@@ -233,7 +233,7 @@ public static class TDataConvert
             return false;
 
         if (!m_XmlConvertFieldInfos.ContainsKey(type))
-            m_XmlConvertFieldInfos.Add(type, type.GetFields(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.NonPublic));
+            m_XmlConvertFieldInfos.Add(type, type.GetFields(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public));
         return true;
     }
 
