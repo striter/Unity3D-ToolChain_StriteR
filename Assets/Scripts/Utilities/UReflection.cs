@@ -56,18 +56,18 @@ public static class TReflection
         }
         return inheritStack;
     }
-    public static IEnumerable<FieldInfo> GetInstanceFields(this Type _type)
+    public static IEnumerable<MemberInfo> GetAllMembers(this Type _type,BindingFlags _memberFlags)
     {
         if (_type == null)
             throw new NullReferenceException();
 
-        foreach (var fieldInfo in _type.GetFields(BindingFlags.Instance | BindingFlags.Public|BindingFlags.NonPublic))
+        foreach (var fieldInfo in _type.GetFields(_memberFlags | BindingFlags.Public|BindingFlags.NonPublic))
             yield return fieldInfo;
         var inheritStack = _type.GetInheritTypes();
         while(inheritStack.Count>0)
         {
             var type = inheritStack.Pop();
-            foreach (var fieldInfo in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
+            foreach (var fieldInfo in type.GetFields(_memberFlags | BindingFlags.NonPublic))
                 if(fieldInfo.IsPrivate)
                     yield return fieldInfo;
         }
