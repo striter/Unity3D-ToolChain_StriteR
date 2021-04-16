@@ -32,12 +32,13 @@ namespace TEditor
 
             m_GenerateUV = (enum_VertexData)EditorGUILayout.EnumPopup("Generate UV:", m_GenerateUV);
             if (m_GenerateUV != enum_VertexData.None && GUILayout.Button("Generate"))
-                GenerateSkinnedTarget(m_ModelPrefab,m_GenerateUV);
+                if (UECommon.SaveFilePath(out string filePath, "prefab", UEPath.RemoveExtension(UEPath.GetPathName(AssetDatabase.GetAssetPath(m_ModelPrefab))) + "_SN"))
+                    GenerateSkinnedTarget(UEPath.FilePathToAssetPath(filePath), m_ModelPrefab, m_GenerateUV);
 
             EditorGUILayout.EndVertical();
         }
 
-        void GenerateSkinnedTarget(GameObject _targetFBX,  enum_VertexData _generateUV)
+        public static void GenerateSkinnedTarget(string assetPath, GameObject _targetFBX, enum_VertexData _generateUV)
         {
             GameObject prefabSource = GameObject.Instantiate(_targetFBX);
 
@@ -49,30 +50,25 @@ namespace TEditor
             foreach (MeshFilter filter in meshFilters)
                 sourceMeshes.Add(filter.sharedMesh);
 
-            List< KeyValuePair<string,Object>> targetSubAsset = new List< KeyValuePair<string,Object>>();
+            List<KeyValuePair<string, Object>> targetSubAsset = new List<KeyValuePair<string, Object>>();
             for (int i = 0; i < sourceMeshes.Count; i++)
-                targetSubAsset.Add(new KeyValuePair<string,Object>(sourceMeshes[i].name, GenerateMesh(sourceMeshes[i], _generateUV)));
+                targetSubAsset.Add(new KeyValuePair<string, Object>(sourceMeshes[i].name, GenerateMesh(sourceMeshes[i], _generateUV)));
 
+            GameObject mainAsset = PrefabUtility.SaveAsPrefabAsset(prefabSource, assetPath);
+            UECommon.CreateOrReplaceSubAsset(assetPath, targetSubAsset.ToArray());
+            Mesh[] meshes = AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath).ToArray(obj => (Mesh)obj);
 
-            if( UECommon.SaveFilePath(out string filePath,"prefab", UEPath.RemoveExtension(UEPath.GetPathName(AssetDatabase.GetAssetPath(_targetFBX))) + "_SN"))
-            {
-                string assetPath =  UEPath.FilePathToAssetPath(filePath);
-                GameObject mainAsset= PrefabUtility.SaveAsPrefabAsset(prefabSource,assetPath);
-                UECommon.CreateOrReplaceSubAsset(assetPath,targetSubAsset.ToArray());
-                Mesh[] meshes = AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath).ToArray(obj => (Mesh)obj);
+            skinnedRenderers = mainAsset.GetComponentsInChildren<SkinnedMeshRenderer>();
+            for (int i = 0; i < skinnedRenderers.Length; i++)
+                skinnedRenderers[i].sharedMesh = meshes[i];
 
-                skinnedRenderers = mainAsset.GetComponentsInChildren<SkinnedMeshRenderer>();
-                for (int i = 0; i < skinnedRenderers.Length; i++)
-                    skinnedRenderers[i].sharedMesh = meshes[i];
-
-                meshFilters = mainAsset.GetComponentsInChildren<MeshFilter>();
-                for (int i = 0; i < meshFilters.Length; i++)
-                    meshFilters[i].sharedMesh = meshes.Find(p => p.name == meshFilters[i].sharedMesh.name);
-                PrefabUtility.SavePrefabAsset(mainAsset);
-            }
+            meshFilters = mainAsset.GetComponentsInChildren<MeshFilter>();
+            for (int i = 0; i < meshFilters.Length; i++)
+                meshFilters[i].sharedMesh = meshes.Find(p => p.name == meshFilters[i].sharedMesh.name);
+            PrefabUtility.SavePrefabAsset(mainAsset);
             GameObject.DestroyImmediate(prefabSource);
         }
-        
+
         static Mesh GenerateMesh(Mesh _src,enum_VertexData _generateUV)
         {
             Mesh target = _src.Copy();

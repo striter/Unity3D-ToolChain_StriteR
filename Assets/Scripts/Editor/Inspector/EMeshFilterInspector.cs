@@ -6,10 +6,8 @@ using UnityEngine.UI;
 
 namespace TEditor
 {
-    using static UERender;
-    #region Extend
     [CustomEditor(typeof(MeshFilter)), CanEditMultipleObjects]
-    public class MeshFilterEditor : Editor
+    public class EMeshFilterInspector : Editor
     {
         public enum enum_ColorVisualize
         {
@@ -185,5 +183,4 @@ namespace TEditor
             }
         }
     }
-    #endregion
 }

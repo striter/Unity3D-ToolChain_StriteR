@@ -37,15 +37,40 @@ public static class TReflection
         FieldInfo[] fields = type.GetFields();
         PropertyInfo[] properties = type.GetProperties();
         foreach(var field in fields)
-        {
             field.SetValue(target,field.GetValue(source));
-        }
 
         foreach(var property in properties)
-        {
             property.SetValue(target, property.GetValue(source));
-        }
+    }
 
+    public static Stack<Type> GetInheritTypes(this Type _type)
+    {
+        if (_type == null)
+            throw new NullReferenceException();
+
+        Stack<Type> inheritStack = new Stack<Type>();
+        while (_type.BaseType != null)
+        {
+            _type = _type.BaseType;
+            inheritStack.Push(_type);
+        }
+        return inheritStack;
+    }
+    public static IEnumerable<FieldInfo> GetInstanceFields(this Type _type)
+    {
+        if (_type == null)
+            throw new NullReferenceException();
+
+        foreach (var fieldInfo in _type.GetFields(BindingFlags.Instance | BindingFlags.Public|BindingFlags.NonPublic))
+            yield return fieldInfo;
+        var inheritStack = _type.GetInheritTypes();
+        while(inheritStack.Count>0)
+        {
+            var type = inheritStack.Pop();
+            foreach (var fieldInfo in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
+                if(fieldInfo.IsPrivate)
+                    yield return fieldInfo;
+        }
     }
 
     public static class UI

@@ -151,6 +151,11 @@ public static class UCollection
         }
         return items;
     }
+    public static void Enqueue<T>(this Queue<T> _queue,IEnumerable<T> _ienumerable)
+    {
+        foreach (var item in _ienumerable)
+            _queue.Enqueue(item);
+    }
     public static void Traversal<T>(this IEnumerable<T> _ienumerable, Action<T> OnEachItem)
     {
         foreach (T item in _ienumerable)
