@@ -36,7 +36,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         LogFrameReset();
 
         Header("Console");
-        Command("Time Scale").Slider(m_ConsoleTimeScale,  SetConsoleTimeScale, 0f, 2f);
+        Command("Time Scale").Slider(0f, 2f, m_ConsoleTimeScale, SetConsoleTimeScale);
         Command("Right Panel").FlagsSelection(m_RightPanelSetting, SetLogFramePanel);
         Command("Clear Log").Button(ClearConsoleLog);
         EmptyLine();
@@ -96,8 +96,9 @@ public static class UIT_TouchConsoleHelper
         });
         toggle.m_ToggleTitle.text = _container.m_KeyCode.GetKeyCodeString();
     }
-    public static void Slider(this CommandContainer _container, float _maxValue, Action<float> OnValueChanged) => Slider(_container, 0, OnValueChanged, 0, _maxValue);
-    public static void Slider(this CommandContainer _container, Ref<float> _refValue, Action<float> _SetValue, float _minValue, float _maxValue)
+    public static void Slider(this CommandContainer _container, float _maxValue, Action<float> OnValueChanged) => Slider(_container, 0, _maxValue, 0, OnValueChanged);
+    public static void Slider(this CommandContainer _container, float _minValue, float _maxValue, Action<float> OnValueChanged) => Slider(_container, _minValue, _maxValue ,0, OnValueChanged);
+    public static void Slider(this CommandContainer _container, float _minValue, float _maxValue, Ref<float> _refValue, Action<float> _SetValue)
     {
         CommandItem_Slider slider = _container.Insert<CommandItem_Slider>();
         slider.SetDataUpdate(() => {

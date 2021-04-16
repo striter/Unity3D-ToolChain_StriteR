@@ -138,6 +138,13 @@ public static class UUnityEngine
     public static Rect Resize(this Rect _rect, float _newSizeX, float _newSizeY) => Resize(_rect, new Vector2(_newSizeX, _newSizeY));
     public static Rect Resize(this Rect _rect, Vector2 _newSize) { _rect.size = _newSize; return _rect; }
     public static Vector3 GetPoint(this Bounds _bound, Vector3 _normalizedSize) => _bound.center + _bound.size.Multiply(_normalizedSize);
+    public static Bounds Resize(this Bounds _srcBounds,Bounds _dstBounds)
+    {
+        Vector3 min = Vector3.Min(_srcBounds.min, _dstBounds.min);
+        Vector3 max = Vector3.Max(_srcBounds.max, _dstBounds.max);
+        Vector3 size = min - max;
+        return new Bounds(min + size / 2, size);
+    }
 
     #region Camera Helper
     public static bool InputRayCheck(this Camera _camera, Vector2 _inputPos, out RaycastHit _hit, int _layerMask = -1)

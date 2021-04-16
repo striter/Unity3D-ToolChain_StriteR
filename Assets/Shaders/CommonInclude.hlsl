@@ -43,8 +43,8 @@ float2 UVCenterMapping(float2 uv, float2 tilling, float2 offset, float rotateAng
 
 float2x2 Rotate2x2(float angle)
 {
-    float cosAngle = cos(angle);
-    float sinAngle = sin(angle);
+    float sinAngle, cosAngle;
+    sincos(angle, sinAngle, cosAngle);
     return float2x2(cosAngle,-sinAngle,sinAngle,cosAngle);
 }
 

@@ -112,7 +112,6 @@ namespace UAlthogrim
             TQuickSort(sortTarget, startIndex, leftIndex - 1, startLower);
             TQuickSort(sortTarget, leftIndex + 1, endIndex, startLower);
         }
-
     }
     public static class UQuaternion
     {
@@ -131,13 +130,27 @@ namespace UAlthogrim
             float qW = cosHX * cosHY * cosHZ - sinHX * sinHY * sinHZ;
             return new Quaternion(qX, qY, qZ, qW);
         }
-
         public static Quaternion AngleAxisToQuaternion(float _angle, Vector3 _axis)
         {
             float radinH = UMath.AngleToRadin(_angle / 2);
             float sinH = Mathf.Sin(radinH);
             float cosH = Mathf.Cos(radinH);
             return new Quaternion(_axis.x * sinH, _axis.y * sinH, _axis.z * sinH, cosH);
+        }
+        public static Matrix3x3 AngleAxisToRotateMatrix(float _angle,Vector3 _axis)
+        {
+            float radin = UMath.AngleToRadin(_angle);
+            float s = Mathf.Sin(radin);
+            float c = Mathf.Cos(radin);
+
+            float t = 1 - c;
+            float x = _axis.x;
+            float y = _axis.y;
+            float z = _axis.z;
+
+            return new Matrix3x3(t * x * x + c, t * x * y - s * z, t * x * z + s * y,
+                t * x * y + s * z, t * y * y + c, t * y * z - s * x,
+                t * x * z - s * y, t * y * z + s * x, t * z * z + c);
         }
     }
     public static partial class UVector

@@ -200,6 +200,7 @@ public struct Matrix3x3
     public float m00, m01, m02;
     public float m10, m11, m12;
     public float m20, m21, m22;
+    public Matrix3x3(float _00,float _01,float _02,float _10,float _11,float _12,float _20,float _21,float _22) { m00 = _00;m01 = _01;m02 = _02;m10 = _10;m11 = _11;m12 = _12;m20 = _20;m21 = _21;m22 = _22; }
     public Vector3 InvMultiplyVector(Vector3 _srcVector) => new Vector3(
         _srcVector.x * m00 + _srcVector.y * m10 + _srcVector.z * m20,
         _srcVector.x * m01 + _srcVector.y * m11 + _srcVector.z * m21,
@@ -231,6 +232,7 @@ public struct Matrix3x3
         }
     }
     public static readonly Matrix3x3 identity = new Matrix3x3() { m00 = 0, m01 = 0, m02 = 0, m10 = 0, m11 = 0, m12 = 0, m20 = 0, m21 = 0, m22 = 0 };
+    public static explicit operator Matrix3x3(Matrix4x4 _srcMatrix) => new Matrix3x3(_srcMatrix.m00, _srcMatrix.m01, _srcMatrix.m02, _srcMatrix.m10, _srcMatrix.m11, _srcMatrix.m12, _srcMatrix.m20, _srcMatrix.m21, _srcMatrix.m22);
 }
 
 [Serializable]
