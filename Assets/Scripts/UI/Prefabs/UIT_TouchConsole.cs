@@ -202,7 +202,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         m_ConsoleCommandScrollRect = transform.Find("Command").GetComponent<ScrollRect>();
         m_CommandContainers = new TGameObjectPool_Instance_Class<int, CommandContainer>(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content"), "GridItem");
         Transform containerItemPool = m_ConsoleCommandScrollRect.transform.Find("Viewport/CommandItemPool");
-        TReflection.TraversalAllInheritedClasses<CommandItemBase>(type => m_CommandItems.Add(type, new TGameObjectPool_Instance_Class<int, CommandItemBase>(containerItemPool,type, type.Name)));
+        UReflection.TraversalAllInheritedClasses<CommandItemBase>(type => m_CommandItems.Add(type, new TGameObjectPool_Instance_Class<int, CommandItemBase>(containerItemPool,type, type.Name)));
 
         m_ConsoleOpening = false;
         m_ConsoleCommandScrollRect.SetActive(m_ConsoleOpening);

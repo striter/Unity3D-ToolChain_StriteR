@@ -15,7 +15,8 @@ namespace TEditor
         {
             m_ModelImporterEditor = CreateEditor(targets, s_ModelImporterType);
             m_ModelImporterEditor.hideFlags = HideFlags.DontSave;
-            (s_ModelImporterType.GetAllMembers(BindingFlags.Instance).Find(p => p.Name == "m_InstantApply") as FieldInfo).SetValue(m_ModelImporterEditor,false);
+            (s_ModelImporterType.GetAllFields(BindingFlags.Instance).Find(p => p.Name == "m_InstantApply") as FieldInfo).SetValue(m_ModelImporterEditor,false);
+            
             //m_ActiveEditorIndex = s_ModelImporterType.GetAllMembers(BindingFlags.Instance).Find(p => p.Name == "m_ActiveEditorIndex") as FieldInfo;
         }
 

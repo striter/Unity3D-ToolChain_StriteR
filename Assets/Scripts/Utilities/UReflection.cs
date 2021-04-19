@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public static class TReflection
+public static class UReflection
 {
     public static T CreateInstance<T>(Type t,params object[] constructorArgs) => (T)Activator.CreateInstance(t, constructorArgs);
     public static void TraversalAllInheritedClasses<T>(Action<Type> OnEachClass)
@@ -56,7 +56,7 @@ public static class TReflection
         }
         return inheritStack;
     }
-    public static IEnumerable<MemberInfo> GetAllMembers(this Type _type,BindingFlags _memberFlags)
+    public static IEnumerable<FieldInfo> GetAllFields(this Type _type,BindingFlags _memberFlags)
     {
         if (_type == null)
             throw new NullReferenceException();
@@ -70,6 +70,22 @@ public static class TReflection
             foreach (var fieldInfo in type.GetFields(_memberFlags | BindingFlags.NonPublic))
                 if(fieldInfo.IsPrivate)
                     yield return fieldInfo;
+        }
+    }
+    public static IEnumerable<MethodInfo> GetAllMethods(this Type _type, BindingFlags _flags)
+    {
+        if (_type == null)
+            throw new NullReferenceException();
+
+        foreach (var methodInfo in _type.GetMethods(_flags | BindingFlags.Public | BindingFlags.NonPublic))
+            yield return methodInfo;
+        var inheritStack = _type.GetInheritTypes();
+        while (inheritStack.Count > 0)
+        {
+            var type = inheritStack.Pop();
+            foreach (var methodInfo in type.GetMethods(_flags | BindingFlags.NonPublic))
+                if (methodInfo.IsPrivate)
+                    yield return methodInfo;
         }
     }
 

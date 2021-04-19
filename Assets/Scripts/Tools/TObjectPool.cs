@@ -358,7 +358,7 @@ public class TGameObjectPool_Instance_Class<T, Y> : TGameObjectPool_Instance_Int
     public TGameObjectPool_Instance_Class(Transform poolTrans, string itemName) : base(poolTrans, itemName) { m_Type = typeof(Y); }
     protected override Y CreateNewItem(Transform instantiateTrans)
     {
-        Y item = TReflection.CreateInstance<Y>(m_Type, instantiateTrans);
+        Y item = UReflection.CreateInstance<Y>(m_Type, instantiateTrans);
         item.OnInitItem(RemoveItem);
         return item;
     } 
