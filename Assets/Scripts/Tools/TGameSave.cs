@@ -20,7 +20,6 @@ namespace TDataPersistent
         public const string m_DataCryptKey = "StriteRTestCrypt";
         public static readonly string s_Directory = Application.persistentDataPath + "/Save";
         static XmlNode m_ParentNode;
-        static XmlElement temp_Element;
         static XmlNode temp_SubNode;
         public static XmlDocument m_Doc = new XmlDocument();
         public static string GetFiledPath<T>() where T : CDataSave<T>, new() => s_Directory + CDataSave<T>.s_FilePath;
@@ -40,13 +39,9 @@ namespace TDataPersistent
                 if (m_ParentNode == null)
                     throw new Exception("None Xml Parent Found:" + typeof(T).Name);
 
-                FieldInfo[] fieldInfos = CDataSave<T>.s_FieldInfos;
-                for (int i = 0; i < fieldInfos.Length; i++)
-                {
-                    temp_SubNode = m_ParentNode.SelectSingleNode(fieldInfos[i].Name);
-                    if (temp_SubNode == null)
-                        throw new Exception("Invalid Xml Child:" + fieldInfos[i].Name);
-                }
+                foreach(var fieldInfo in CDataSave<T>.s_FieldInfos)
+                    if (m_ParentNode.SelectSingleNode(fieldInfo.Name) == null)
+                        throw new Exception("Invalid Xml Child:" + fieldInfo.Name);
             }
             catch
             {
@@ -59,21 +54,13 @@ namespace TDataPersistent
             Init<T>();
             try
             {
-                bool dataCrypt = _data.DataCrypt();
-                FieldInfo[] fieldInfo = CDataSave<T>.s_FieldInfos;
-                for (int i = 0; i < fieldInfo.Length; i++)
-                {
-                    string readData = m_ParentNode.SelectSingleNode(fieldInfo[i].Name).InnerText;
-                    if (dataCrypt) readData = TDataCrypt.EasyCryptData(readData, m_DataCryptKey);
-                    fieldInfo[i].SetValue(_data, TDataConvert.Convert(fieldInfo[i].FieldType, readData));
-                }
-                _data.DataRecorrect();
+                ReadData(_data);
             }
             catch (Exception e)
             {
-                Debug.LogWarning("Xml Read File Error:" + e.Message);
+                Debug.LogWarning("Data Read Error:" + e.Message);
                 CreateDefaultDoc<T>();
-                ReadPersistentData(_data);
+                ReadData(_data);
             }
         }
 
@@ -82,28 +69,47 @@ namespace TDataPersistent
             Init<T>();
             try
             {
-                bool dataCrypt = data.DataCrypt();
-                FieldInfo[] fieldInfos = CDataSave<T>.s_FieldInfos;
-                for (int i = 0; i < fieldInfos.Length; i++)
-                {
-                    temp_SubNode = m_ParentNode.SelectSingleNode(fieldInfos[i].Name);
-                    string saveData = TDataConvert.Convert(fieldInfos[i].FieldType, fieldInfos[i].GetValue(data));
-                    if (dataCrypt) saveData = TDataCrypt.EasyCryptData(saveData, m_DataCryptKey);
-                    temp_SubNode.InnerText = saveData;
-                    m_ParentNode.AppendChild(temp_SubNode);
-                }
-                m_Doc.Save(GetFiledPath<T>());
+                SaveData(data);
             }
             catch(Exception e)
             {
-                Debug.LogWarning("Xml Read File Error:" + e.Message);
+                Debug.LogWarning("Data Save Error:" + e.Message);
                 CreateDefaultDoc<T>();
             }
         }
 
+
+        static void ReadData<T>(CDataSave<T> _data) where T:CDataSave<T>,new()
+        {
+            bool dataCrypt = _data.DataCrypt();
+            FieldInfo[] fieldInfo = CDataSave<T>.s_FieldInfos;
+            for (int i = 0; i < fieldInfo.Length; i++)
+            {
+                string readData = m_ParentNode.SelectSingleNode(fieldInfo[i].Name).InnerText;
+                if (dataCrypt) readData = TDataCrypt.EasyCryptData(readData, m_DataCryptKey);
+                fieldInfo[i].SetValue(_data, TDataConvert.Convert(fieldInfo[i].FieldType, readData));
+            }
+            _data.DataRecorrect();
+        }
+        
+        static void SaveData<T>(CDataSave<T> _data) where T : CDataSave<T>, new()
+        {
+            bool dataCrypt = _data.DataCrypt();
+            FieldInfo[] fieldInfos = CDataSave<T>.s_FieldInfos;
+            for (int i = 0; i < fieldInfos.Length; i++)
+            {
+                temp_SubNode = m_ParentNode.SelectSingleNode(fieldInfos[i].Name);
+                string saveData = TDataConvert.Convert(fieldInfos[i].FieldType, fieldInfos[i].GetValue(_data));
+                if (dataCrypt) saveData = TDataCrypt.EasyCryptData(saveData, m_DataCryptKey);
+                temp_SubNode.InnerText = saveData;
+                m_ParentNode.AppendChild(temp_SubNode);
+            }
+            m_Doc.Save(GetFiledPath<T>());
+        }
+
         static void CreateDefaultDoc<T>() where T:CDataSave<T>,new()
         {
-            Debug.LogWarning("New Default Xml Doc Created.");
+            Debug.LogWarning("Default Data Created:"+typeof(T).Name);
             if (!Directory.Exists(s_Directory))
                 Directory.CreateDirectory(s_Directory);
 
@@ -111,19 +117,11 @@ namespace TDataPersistent
             if (File.Exists(filePath))
                 File.Delete(filePath);
 
-            T temp = new T();
             m_Doc = new XmlDocument();
-            temp_Element = m_Doc.CreateElement(typeof(T).Name);
-            m_ParentNode = m_Doc.AppendChild(temp_Element);
-
-            FieldInfo[] fieldInfos = CDataSave<T>.s_FieldInfos;
-            for (int i = 0; i < fieldInfos.Length; i++)
-            {
-                temp_Element = m_Doc.CreateElement(fieldInfos[i].Name);
-                temp_Element.InnerText = TDataConvert.Convert(fieldInfos[i].FieldType, fieldInfos[i].GetValue(temp));
-                m_ParentNode.AppendChild(temp_Element);
-            }
-            m_Doc.Save(GetFiledPath<T>());
+            m_ParentNode = m_Doc.AppendChild(m_Doc.CreateElement(typeof(T).Name));
+            foreach(var fieldInfo in CDataSave<T>.s_FieldInfos)
+                m_ParentNode.AppendChild(m_Doc.CreateElement(fieldInfo.Name));
+            SaveData(new T());
         }
     }
 

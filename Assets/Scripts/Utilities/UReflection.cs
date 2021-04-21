@@ -79,7 +79,7 @@ public static class UReflection
         typeof(int),typeof(short),typeof(long),
         typeof(Vector3), typeof(Vector2), typeof(Vector4),
         typeof(RangeInt), typeof(RangeFloat),
-        typeof(Texture2D),typeof(Texture3D),
+        typeof(Texture2D),typeof(Texture3D),typeof(Mesh),typeof(AnimationClip),
         typeof(IntPtr),
     };
     public static IEnumerable<KeyValuePair<FieldInfo, Stack<FieldInfo>>> GetBaseTypeFieldStacks(this Type _type, BindingFlags _flags)

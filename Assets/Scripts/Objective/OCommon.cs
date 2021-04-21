@@ -1,27 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 #region Unit
+[Serializable]
 public class Ref<T> 
 {
-    public T Value=default;
+    public T m_RefValue = default;
     public override bool Equals(object obj) => this == (Ref<T>)obj;
-    public override int GetHashCode() => Value.GetHashCode();
-    public static bool operator !(Ref<T> refValue) => refValue is null;
+    public override int GetHashCode() => m_RefValue.GetHashCode();
     public static bool operator !=(Ref<T> _src, Ref<T> _tar) => !(_src == _tar);
     public static bool operator ==(Ref<T> _src,Ref<T> _tar)
     {
-        if (!!_src && !!_tar)
-            return _src.Value.Equals(_tar.Value);
-        return !_src && !_tar;
+        if (_src!=null && _tar!=null)
+            return _src.m_RefValue.Equals(_tar.m_RefValue);
+        return _src==null && _tar==null;
     }
-    public static bool operator true(Ref<T> refValue) => !!refValue;
-    public static bool operator false(Ref<T> refValue) => !refValue;
-    public static implicit operator Ref<T>(T value)=>new Ref<T>() { Value=value};
+    public static implicit operator Ref<T>(T _value)=>new Ref<T>() { m_RefValue=_value};
+    public static implicit operator T(Ref<T> _refValue) => _refValue.m_RefValue;
+    public void SetValue(T _value) => m_RefValue = _value;
 }
-
-
 [Serializable]
 public struct RangeFloat
 {
@@ -34,7 +30,6 @@ public struct RangeFloat
         length = _length;
     }
 }
-
 [Serializable]
 public struct RangeInt
 {

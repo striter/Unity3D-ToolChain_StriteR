@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Reflection;
+using TDataPersistent;
 using static UIT_TouchConsole;
 
 public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
@@ -21,17 +22,40 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
     public static UIT_JoyStick GetHelperJoystick() => Instance.m_HelperJoystick;
     #endregion
 
-    [Range(0, 2f)] public readonly Ref<float> m_ConsoleTimeScale = .5f;
+    public TouchConsoleSaveData m_Data = new TouchConsoleSaveData();
     UIT_JoyStick m_HelperJoystick;
+
+    [Serializable]
+    public class TouchConsoleSaveData : CDataSave<TouchConsoleSaveData>
+    {
+        public override bool DataCrypt() => false;
+        public Ref<float> m_ConsoleTimeScale;
+        public Ref<enum_ConsoleSetting> m_FilterSetting;
+        [Header("Log Filter")]
+        public Ref<bool> m_Log;
+        public Ref<bool> m_Warning;
+        public Ref<bool> m_Error;
+        public Ref<bool> m_Collapse;
+        public TouchConsoleSaveData()
+        {
+            m_Warning =  true;
+            m_Log = true;
+            m_Error = true;
+            m_Collapse = true;
+            m_FilterSetting = (enum_ConsoleSetting)int.MaxValue;
+            m_ConsoleTimeScale = .5f;
+        }
+    }
+
     protected override void Awake()
     {
         base.Awake();
         m_HelperJoystick = new UIT_JoyStick(transform.Find("Joystick"));
+        m_Data.ReadPersistentData();
+
         ConsoleAwake();
         LogFrameAwake();
-
-        SetConsoleTimeScale(m_ConsoleTimeScale.Value);
-        SetLogFramePanel(m_RightPanelSetting.Value);
+        SetLogFramePanel(m_Data.m_FilterSetting.m_RefValue);
     }
     protected UIT_TouchConsole InitConsole(Action<bool> _OnConsoleShow)
     {
@@ -39,9 +63,8 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         LogFrameReset();
 
         Header("Console");
-        Command("Time Scale").Slider(0f, 2f, m_ConsoleTimeScale, SetConsoleTimeScale);
-        Command("Right Panel").FlagsSelection(m_RightPanelSetting, SetLogFramePanel);
-        Command("Clear Log").Button(ClearConsoleLog);
+        Command("Time Scale").Slider(0f, 2f, m_Data.m_ConsoleTimeScale, scale => { m_Data.SavePersistentData(); SetConsoleTimeScale(scale); });
+        Command("Right Panel").FlagsSelection(m_Data.m_FilterSetting, setting => { m_Data.SavePersistentData(); SetLogFramePanel(setting); });
         EmptyLine();
         return this;
     }
@@ -119,7 +142,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         float deltaTime = Time.unscaledDeltaTime;
         ConsoleTick(deltaTime);
 
-        if (m_RightPanelSetting.Value.IsFlagEnable(enum_RightPanel.FPS))
+        if (m_Data.m_FilterSetting.m_RefValue.IsFlagEnable(enum_ConsoleSetting.FPS))
             LogFrame(deltaTime);
     }
 
@@ -130,20 +153,19 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
             return;
         Time.timeScale = _timeScale;
     }
-    protected void SetLogFramePanel(enum_RightPanel _panelSetting)
+    protected void SetLogFramePanel(enum_ConsoleSetting _panelSetting)
     {
-        m_FrameRate.SetActive(_panelSetting.IsFlagEnable(enum_RightPanel.FPS));
-        m_LogFilter.SetActive(_panelSetting.IsFlagEnable(enum_RightPanel.LogFilter));
-        m_RightPanelRect.SetActive(!_panelSetting.IsFlagClear());
+        m_FrameRate.SetActive(_panelSetting.IsFlagEnable(enum_ConsoleSetting.FPS));
+        m_LogFilter.SetActive(_panelSetting.IsFlagEnable(enum_ConsoleSetting.LogPanel));
+        m_LogPanelRect.SetActive(!_panelSetting.IsFlagClear());
         UpdateLogs();
     }
     #endregion
 }
-#region Console
+#region Command Console
 public static class UIT_TouchConsoleHelper
 {
     public static string GetKeyCodeString(this KeyCode _keyCode) => _keyCode == KeyCode.None ? "" : _keyCode.ToString();
-
     public static void Button(this CommandContainer _container, Action OnClick)
     {
         CommandItem_Button button = _container.Insert<CommandItem_Button>();
@@ -153,14 +175,14 @@ public static class UIT_TouchConsoleHelper
     public static void Toggle(this CommandContainer _container,Ref<bool> _refValue,Action<bool> OnToggleChange)
     {
         CommandItem_Toggle toggle = _container.Insert<CommandItem_Toggle>();
-        toggle.SetDataUpdate(() => toggle.m_Toggle.isOn=_refValue.Value);
+        toggle.SetDataUpdate(() => toggle.m_Toggle.isOn=_refValue.m_RefValue);
         toggle.m_Toggle.onValueChanged.AddListener(value => {
-            _refValue.Value = value;
+            _refValue.SetValue(value);
             OnToggleChange(value);
         });
         toggle.m_ToggleTitle.text = _container.m_KeyCode.GetKeyCodeString();
     }
-    public static void Slider(this CommandContainer _container, int _minValue, int _maxValue, Ref<int> _refValue, Action<int> _SetValue, string _format = "{0}")=>Slider(_container, _minValue, _maxValue, _refValue.Value, value => _refValue.Value = (int)value, _format, true);
+    public static void Slider(this CommandContainer _container, int _minValue, int _maxValue, Ref<int> _refValue, Action<int> _SetValue, string _format = "{0}")=>Slider(_container, _minValue, _maxValue, _refValue.m_RefValue, value => { _refValue.SetValue((int)value); _SetValue(_refValue.m_RefValue); }, _format, true);
     public static void Slider(this CommandContainer _container, float _minValue, float _maxValue, Ref<float> _refValue, Action<float> _SetValue,string _format="{0:0.0}",bool _wholeNumbers=false)
     {
         CommandItem_Slider slider = _container.Insert<CommandItem_Slider>();
@@ -168,15 +190,13 @@ public static class UIT_TouchConsoleHelper
         slider.m_Slider.minValue = _minValue;
         slider.m_Slider.maxValue = _maxValue;
         slider.SetDataUpdate(() => {
-            if (!_refValue)
-                return;
-            float finalValue = _refValue.Value;
+            float finalValue = _refValue.m_RefValue;
             slider.m_Slider.value = finalValue;
             slider.m_Value.text =string.Format( _format, finalValue);
         });
         slider.m_Slider.onValueChanged.AddListener(value => {
             slider.m_Value.text =string.Format(_format, value);
-            _refValue.Value = value;
+            _refValue.SetValue(value);
             _SetValue(value);
         });
     }
@@ -191,7 +211,7 @@ public static class UIT_TouchConsoleHelper
         item.transform.SetActive(false);
         return item;
     }
-    public static void EnumSelection<T>(this CommandContainer _container, Ref<T> _valueRef, Action<T> OnClick, bool foldOut = true) where T : struct, Enum => EnumSelection(_container,_valueRef.Value,enumObj=> { _valueRef.Value = (T)enumObj;OnClick?.Invoke(_valueRef.Value); },foldOut);
+    public static void EnumSelection<T>(this CommandContainer _container, Ref<T> _valueRef, Action<T> OnClick, bool foldOut = true) where T : struct, Enum => EnumSelection(_container,_valueRef.m_RefValue,enumObj=> { _valueRef.SetValue((T)enumObj);OnClick?.Invoke(_valueRef.m_RefValue); },foldOut);
     public static void EnumSelection(this CommandContainer _container, object _value, Action<object> OnClick, bool foldOut = true)
     {
         Type type = _value.GetType();
@@ -216,41 +236,42 @@ public static class UIT_TouchConsoleHelper
     {
         CommandItem_ButtonSelection selection = _container.ButtonFoldOutItem<CommandItem_ButtonSelection>(foldOut, out CommandItem_Button foldOutButton);
         selection.SetDataUpdate(() => {
-            selection.Play(_values, _refEnum.Value, (int value) => {
+            selection.Play(_values, _refEnum.m_RefValue, (int value) => {
                 OnClick(_values[value]);
                 if (foldOutButton != null)
                     foldOutButton.m_ButtonTitle.text = _values[value];
             });
             if (foldOutButton != null)
-                foldOutButton.m_ButtonTitle.text = _values[_refEnum.Value];
+                foldOutButton.m_ButtonTitle.text = _values[_refEnum.m_RefValue];
         });
     }
     public static void FlagsSelection<T>(this CommandContainer _container, Ref<T> _refFlags, Action<T> _logFilter,bool foldOut=true) where T :struct, Enum
     {
         CommandItem_FlagsSelection selection= _container.ButtonFoldOutItem<CommandItem_FlagsSelection>(foldOut, out CommandItem_Button foldOutButton);
-        selection.SetDataUpdate(() => selection.Play(_refFlags.Value, flags => {
+        selection.SetDataUpdate(() => selection.Play(_refFlags.m_RefValue, flags => {
+            _refFlags.SetValue(flags);
             if (foldOutButton != null)
                 foldOutButton.m_ButtonTitle.text = flags.GetNumerable().ToString('|', value => value ? "√" : "×");
             _logFilter(flags);
         }));
         if (foldOutButton != null)
-            foldOutButton.m_ButtonTitle.text = _refFlags.Value.GetNumerable().ToString('|', value => value ? "√" : "×");
+            foldOutButton.m_ButtonTitle.text = _refFlags.m_RefValue.GetNumerable().ToString('|', value => value ? "√" : "×");
     }
     public static void InputField(this CommandContainer _container, Ref<string> _refText, Action<string> OnValueClick)
     {
         CommandItem_InputField input = _container.Insert<CommandItem_InputField>();
-        input.SetDataUpdate(() => { input.m_InputField.text = _refText.Value; });
-        input.m_InputField.onValueChanged.AddListener(value => { _refText.Value = value; });
+        input.SetDataUpdate(() => { input.m_InputField.text = _refText.m_RefValue; });
+        input.m_InputField.onValueChanged.AddListener(_refText.SetValue);
         _container.Button(() => OnValueClick(input.m_InputField.text));
     }
     public static void InpuptField(this CommandContainer _container, Ref<string> _refText1, Ref<string> _refText2, Action<string, string> OnValueClick)
     {
         CommandItem_InputField input1 = _container.Insert<CommandItem_InputField>();
         CommandItem_InputField input2 = _container.Insert<CommandItem_InputField>();
-        input1.SetDataUpdate(() => input1.m_InputField.text = _refText1.Value);
-        input2.SetDataUpdate(() => input2.m_InputField.text = _refText2.Value);
-        input1.m_InputField.onValueChanged.AddListener(value => { _refText1.Value = value; });
-        input2.m_InputField.onValueChanged.AddListener(value => { _refText2.Value = value; });
+        input1.SetDataUpdate(() => input1.m_InputField.text = _refText1.m_RefValue);
+        input2.SetDataUpdate(() => input2.m_InputField.text = _refText2.m_RefValue);
+        input1.m_InputField.onValueChanged.AddListener(_refText1.SetValue);
+        input2.m_InputField.onValueChanged.AddListener(_refText2.SetValue);
         _container.Button(() => OnValueClick(input1.m_InputField.text, input2.m_InputField.text));
     }
 }
@@ -302,8 +323,8 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
             m_ConsoleOpening = !m_ConsoleOpening;
             m_ConsoleCommandScrollRect.SetActive(m_ConsoleOpening);
             OnConsoleShow?.Invoke(m_ConsoleOpening);
-            
-            Time.timeScale = m_ConsoleOpening ? m_ConsoleTimeScale.Value : 1f;
+
+            Time.timeScale = m_ConsoleOpening ? m_Data.m_ConsoleTimeScale.m_RefValue : 1f;
             UpdateLogs();
             UpdateCommandData();
         }
@@ -525,15 +546,15 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
     }
 }
 #endregion
-#region RightPanel
+#region LogPanel&FPS
 public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
 {
     [Flags]
-    public enum enum_RightPanel
+    public enum enum_ConsoleSetting
     {
-        LogFilter = 1,
-        FPS = 2,
-        LogItem = 4,
+        LogPanel = 1,
+        LogTrack = 2,
+        FPS = 4,
     }
     static string GetLogHexColor(LogType type)
     {
@@ -570,13 +591,21 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
             m_Stack = transform.GetComponent<Button>();
         }
 
-        public void Init(LogData _data, Action<LogData> OnStackClick)
+        public LogItem Init(LogData _data, Action<LogData> OnStackClick)
         {
             m_Data = _data;
-            m_Type.color = UColor.HEXtoColor(GetLogHexColor(m_Data.m_LogType));
-            m_Info.text = m_Data.m_LogInfo;
             m_Stack.onClick.RemoveAllListeners();
             m_Stack.onClick.AddListener(() => OnStackClick(m_Data));
+            return this;
+        }
+        public void SetData(bool _collapse,int _count=0)
+        {
+            m_Type.color = UColor.HEXtoColor(GetLogHexColor(m_Data.m_LogType));
+            m_Info.text = m_Data.m_LogInfo;
+            if (_collapse)
+                m_Info.text =string.Format("{0} {1}",_count,  m_Data.m_LogInfo);
+            else
+                m_Info.text = string.Format("{0} {1}",UTime.GetDateTime( m_Data.m_Time).ToShortTimeString(), m_Data.m_LogInfo);
         }
 
     }
@@ -585,14 +614,13 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
     {
         public Toggle m_Toggle;
         public Text m_Value;
-        public LogToggle(Transform _transform, bool _filtered, Action OnValueChanged)
+        public LogToggle(Transform _transform, Ref<bool> _filtered, Action OnValueChanged)
         {
             m_Toggle = _transform.GetComponent<Toggle>();
-            m_Toggle.isOn = _filtered;
             m_Value = _transform.Find("Value").GetComponent<Text>();
-            m_Toggle.onValueChanged.AddListener(value => OnValueChanged());
+            m_Toggle.isOn = _filtered;
+            m_Toggle.onValueChanged.AddListener(value => { _filtered.SetValue(value); OnValueChanged(); });
         }
-
         public void Set(int count) => m_Value.text = count.ToString();
     }
 
@@ -627,33 +655,33 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         public void HideStack() => transform.SetActive(false);
     }
     #endregion
-
-    public Ref<enum_RightPanel> m_RightPanelSetting = (enum_RightPanel)int.MaxValue;
-    public bool m_LogFiltered = false, m_WarningFiltered = true, m_ErrorFiltered = true;
-
     Transform m_FrameRate;
     Text m_FrameRateValue;
     Queue<LogData> m_LogDataQueue = new Queue<LogData>();
 
-    ScrollRect m_RightPanelRect;
+    ScrollRect m_LogPanelRect;
     RectTransform m_LogFilter;
-    LogToggle m_FilterLog, m_FilterWarning, m_FilterError;
+    LogToggle m_FilterLog, m_FilterWarning, m_FilterError,m_FilterCollapse;
     TGameObjectPool_Instance_Class<int, LogItem> m_Logs;
     StackPanel m_Stack;
     Queue<int> m_FrameRateQueue = new Queue<int>();
     public void LogFrameAwake()
     {
-        m_RightPanelRect = transform.Find("RightPanel").GetComponent<ScrollRect>();
-        Transform rightContent = m_RightPanelRect.transform.Find("Viewport/Content");
-        m_LogFilter = rightContent.Find("LogFilter") as RectTransform;
-        m_FilterLog = new LogToggle(m_LogFilter.Find("Log"), m_LogFiltered, UpdateLogs);
-        m_FilterWarning = new LogToggle(m_LogFilter.Find("Warning"), m_WarningFiltered, UpdateLogs);
-        m_FilterError = new LogToggle(m_LogFilter.Find("Error"), m_ErrorFiltered, UpdateLogs);
-        m_FrameRate = rightContent.Find("FrameRate");
+        m_FrameRate = transform.Find("FrameRate");
         m_FrameRateValue = m_FrameRate.Find("Value/Value").GetComponent<Text>();
-        m_Logs = new TGameObjectPool_Instance_Class<int, LogItem>(m_RightPanelRect.transform.Find("Viewport/Content"), "LogItem");
+
+        m_LogPanelRect = transform.Find("LogPanel").GetComponent<ScrollRect>();
+        Transform rightContent = m_LogPanelRect.transform.Find("Viewport/Content");
+        m_LogFilter = rightContent.Find("LogFilter") as RectTransform;
+        m_FilterLog = new LogToggle(m_LogFilter.Find("Log"), m_Data.m_Log , OnLogToggled);
+        m_FilterWarning = new LogToggle(m_LogFilter.Find("Warning"), m_Data.m_Warning, OnLogToggled);
+        m_FilterError = new LogToggle(m_LogFilter.Find("Error"), m_Data.m_Error, OnLogToggled);
+        m_FilterCollapse = new LogToggle(m_LogFilter.Find("Collapse"), m_Data.m_Collapse, OnLogToggled);
+        m_Logs = new TGameObjectPool_Instance_Class<int, LogItem>(m_LogPanelRect.transform.Find("Viewport/Content"), "LogItem");
 
         m_Stack = new StackPanel(transform.Find("Stack"));
+
+        m_LogFilter.Find("Clear").GetComponent<Button>().onClick.AddListener(ClearConsoleLog);
     }
     public void LogFrameReset()
     {
@@ -662,6 +690,12 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
 
         m_Stack.HideStack();
         ClearConsoleLog();
+    }
+
+    public void ClearConsoleLog()
+    {
+        m_LogDataQueue.Clear();
+        UpdateLogs();
     }
     private void OnEnable()
     {
@@ -686,61 +720,80 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         m_FrameRateValue.text = total.ToString();
     }
 
-    int m_ErrorCount, m_WarningCount, m_LogCount;
     void OnLogReceived(string info, string trace, LogType type)
     {
         m_LogDataQueue.Enqueue(new LogData() { m_Time = UTime.GetTimeStampNow(), m_LogInfo = info, m_LogTrace = trace, m_LogType = type });
-        switch (type)
-        {
-            case LogType.Exception:
-            case LogType.Error: m_ErrorCount++; break;
-            case LogType.Warning: m_WarningCount++; break;
-            case LogType.Log: m_LogCount++; break;
-        }
+        UpdateLogs();
+    }
+    void OnLogToggled()
+    {
+        m_Data.SavePersistentData();
         UpdateLogs();
     }
 
     void UpdateLogs()
     {
-        m_FilterLog.Set(m_LogCount);
-        m_FilterWarning.Set(m_WarningCount);
-        m_FilterError.Set(m_ErrorCount);
-
-        m_Logs.Clear();
-        if (!m_ConsoleOpening || !m_RightPanelSetting.Value.IsFlagEnable(enum_RightPanel.LogItem))
-            return;
+        int logCount = 0;
+        int warningCount = 0;
+        int errorCount = 0;
         foreach (var logInfo in m_LogDataQueue)
         {
             bool validateLog = false;
             switch (logInfo.m_LogType)
             {
+                case LogType.Log:
+                    {
+                        validateLog = m_FilterLog.m_Toggle.isOn;
+                        logCount++;
+                    }
+                    break;
                 case LogType.Warning:
-                    validateLog = m_FilterWarning.m_Toggle.isOn;
+                    {
+                        validateLog = m_FilterWarning.m_Toggle.isOn;
+                        warningCount++;
+                    }
                     break;
                 case LogType.Error:
                 case LogType.Exception:
                 case LogType.Assert:
-                    validateLog = m_FilterError.m_Toggle.isOn;
-                    break;
-                case LogType.Log:
-                    validateLog = m_FilterLog.m_Toggle.isOn;
+                    {
+                        validateLog = m_FilterError.m_Toggle.isOn;
+                        errorCount++;
+                    }
                     break;
             }
             if (!validateLog)
                 continue;
-            m_Logs.AddItem(m_Logs.Count).Init(logInfo, m_Stack.ShowTrack);
         }
-        m_Logs.Sort((a, b) => a.Key - b.Key);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(m_RightPanelRect.transform as RectTransform);
-    }
+        m_FilterLog.Set(logCount);
+        m_FilterWarning.Set(warningCount);
+        m_FilterError.Set(errorCount);
 
-    public void ClearConsoleLog()
-    {
-        m_LogDataQueue.Clear();
-        m_ErrorCount = 0;
-        m_WarningCount = 0;
-        m_LogCount = 0;
-        UpdateLogs();
+        m_Logs.Clear();
+        if (!(m_ConsoleOpening && m_Data.m_FilterSetting.m_RefValue.IsFlagEnable(enum_ConsoleSetting.LogTrack)))
+            return;
+        if(!m_Data.m_Collapse)
+        {
+            foreach (var logData in m_LogDataQueue)
+                m_Logs.AddItem(m_Logs.Count).Init(logData, m_Stack.ShowTrack).SetData(false, 0);
+        }
+        else
+        {
+            Dictionary<LogData, int> logCollapses = new Dictionary<LogData, int>();
+            foreach (var logData in m_LogDataQueue)
+            {
+                var collapseData = logCollapses.Keys.Find(p => p.m_LogInfo == logData.m_LogInfo && p.m_LogType == logData.m_LogType && p.m_LogTrace == logData.m_LogTrace);
+                if (collapseData.m_Time != 0)
+                    logCollapses[collapseData]++;
+                else
+                    logCollapses.Add(logData,1);
+            }
+            foreach (var logCollapse in logCollapses)
+                m_Logs.AddItem(m_Logs.Count).Init(logCollapse.Key,m_Stack.ShowTrack).SetData(true,logCollapse.Value);
+        }
+
+        m_Logs.Sort((a, b) => b.Key - a.Key);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(m_LogPanelRect.transform as RectTransform);
     }
 }
 #endregion

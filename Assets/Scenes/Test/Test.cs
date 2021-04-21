@@ -33,7 +33,7 @@ public class Test : MonoBehaviour
 
         UIT_TouchConsole.InitDefaultCommands();
         UIT_TouchConsole.Header("Data Save");
-        UIT_TouchConsole.Command("Read").Button(() => m_SaveTest.ReadPersistentData());
+        UIT_TouchConsole.Command("Read").Button(() => { m_SaveTest.ReadPersistentData(); Debug.Log(m_SaveTest.Test1); });
         UIT_TouchConsole.Command("Save").Slider(0,10,m_SaveTest.Test1, value =>
         {
             m_SaveTest.Test1 = value;
