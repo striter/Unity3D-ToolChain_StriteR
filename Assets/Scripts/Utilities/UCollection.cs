@@ -151,10 +151,15 @@ public static class UCollection
         }
         return items;
     }
-    public static void Enqueue<T>(this Queue<T> _queue,IEnumerable<T> _ienumerable)
+    public static void EnqueueRange<T>(this Queue<T> _queue,IEnumerable<T> _ienumerable)
     {
         foreach (var item in _ienumerable)
             _queue.Enqueue(item);
+    }
+    public static void PushRange<T>(this Stack<T> _stack,IEnumerable<T> _ienumerable)
+    {
+        foreach (var item in _ienumerable)
+            _stack.Push(item);
     }
     public static void Traversal<T>(this IEnumerable<T> _ienumerable, Action<T> OnEachItem)
     {
@@ -263,7 +268,7 @@ public static class UCollection
         }
     }
 
-    public static string ToString_Readable<T>(this IEnumerable<T> inumerable, char breakAppend, Func<T, string> OnEachAppend=null)
+    public static string ToString<T>(this IEnumerable<T> inumerable, char breakAppend, Func<T, string> OnEachAppend=null)
     {
         StringBuilder builder = new StringBuilder();
         int maxIndex = inumerable.Count() - 1;

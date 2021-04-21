@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Reflection;
 using static UIT_TouchConsole;
+
 public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
 {
     #region Helper
-    public static void Init(Action<bool> _OnConsoleShow = null) => Instance.InitConsole(_OnConsoleShow);
+    public static void InitDefaultCommands(Action<bool> _OnConsoleShow = null) => Instance.InitConsole(_OnConsoleShow);
     public static void EmptyLine() => Instance.AddCommandLine();
     public static void Header(string _title) => Instance.AddCommandLine().Insert<CommandItem_Header>().m_HeaderTitle.text = _title;
     public static CommandContainer Command(string _title, KeyCode _keyCode = KeyCode.None)
@@ -15,6 +17,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         container.Insert<CommandItem_CommandTitle>().m_CommandTitle.text = _title;
         return container;
     }
+    public static void InitSerializeCommands<T>(T _target, Action<T> _OnSerializeDataChanged) where T:MonoBehaviour => Instance.CommandSerialize(_target, _OnSerializeDataChanged);
     public static UIT_JoyStick GetHelperJoystick() => Instance.m_HelperJoystick;
     #endregion
 
@@ -40,6 +43,74 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         Command("Right Panel").FlagsSelection(m_RightPanelSetting, SetLogFramePanel);
         Command("Clear Log").Button(ClearConsoleLog);
         EmptyLine();
+        return this;
+    }
+
+    protected UIT_TouchConsole CommandSerialize<T>(T _target,Action<T> _OnSerializeDataChanged) where T:MonoBehaviour
+    {
+        Type targetType = _target.GetType();
+        Header(targetType.Name);
+        Command("Enable").Toggle(_target.enabled, value => _target.enabled = value);
+        foreach(var fieldStack in typeof(T).GetBaseTypeFieldStacks(BindingFlags.Instance))
+        {
+            object startValue = fieldStack.Value.GetValue(_target);
+            if (fieldStack.Key.FieldType.IsEnum)
+            {
+                Command(fieldStack.Key.Name).EnumSelection(startValue,value=>fieldStack.Value.SetValue(_target,value));
+                continue;
+            }
+            if(fieldStack.Key.FieldType==typeof(bool))
+            {
+                Command(fieldStack.Key.Name).Toggle((bool)startValue,value=>fieldStack.Value.SetValue(_target,value));
+                continue;
+            }
+            if (fieldStack.Key.FieldType == typeof(string))
+            {
+                Command(fieldStack.Key.Name).InputField((string)startValue, value => fieldStack.Value.SetValue(_target, value));
+                continue;
+            }
+
+            var attributes = fieldStack.Key.GetCustomAttributes(false);
+            foreach (var attribute in attributes)
+            {
+                if(attribute is RangeAttribute)
+                {
+                    RangeAttribute rangeAttribute = attribute as RangeAttribute;
+                    if(fieldStack.Key.FieldType==typeof(int))
+                        Command(fieldStack.Key.Name).Slider((int)rangeAttribute.min, (int)rangeAttribute.max, (int)startValue, value => { fieldStack.Value.SetValue(_target, value); _OnSerializeDataChanged?.Invoke(_target); });
+                    else
+                        Command(fieldStack.Key.Name).Slider(rangeAttribute.min,rangeAttribute.max,(float)startValue ,value=> { fieldStack.Value.SetValue(_target, value); _OnSerializeDataChanged?.Invoke(_target); });
+                    continue;
+                }
+                else if(attribute is RangeVectorAttribute)
+                {
+                    RangeVectorAttribute vectorAttribute = attribute as RangeVectorAttribute;
+                    CommandContainer command = Command(fieldStack.Key.Name);
+                    Type fieldType = fieldStack.Key.FieldType;
+                    if (fieldType == typeof(Vector2))
+                    {
+                        Vector2 startVec = (Vector2)startValue;
+                        command.Slider(vectorAttribute.m_Min, vectorAttribute.m_Max, startVec.x, value => { fieldStack.Value.SetValue(_target, ((Vector2)fieldStack.Value.GetValue(_target)).SetX(value)); _OnSerializeDataChanged?.Invoke(_target); }, "X:{0:0.0}");
+                        command.Slider(vectorAttribute.m_Min, vectorAttribute.m_Max, startVec.y, value => { fieldStack.Value.SetValue(_target, ((Vector2)fieldStack.Value.GetValue(_target)).SetY(value)); _OnSerializeDataChanged?.Invoke(_target); }, "Y:{0:0.0}");
+                    }
+                    else if (fieldType == typeof(Vector3))
+                    {
+                        Vector3 startVec = (Vector3)startValue;
+                        command.Slider(vectorAttribute.m_Min, vectorAttribute.m_Max, startVec.x, value => { fieldStack.Value.SetValue(_target, ((Vector3)fieldStack.Value.GetValue(_target)).SetX(value)); _OnSerializeDataChanged?.Invoke(_target); }, "X:{0:0.0}");
+                        command.Slider(vectorAttribute.m_Min, vectorAttribute.m_Max, startVec.y, value => { fieldStack.Value.SetValue(_target, ((Vector3)fieldStack.Value.GetValue(_target)).SetY(value)); _OnSerializeDataChanged?.Invoke(_target); }, "Y:{0:0.0}");
+                        command.Slider(vectorAttribute.m_Min, vectorAttribute.m_Max, startVec.z, value => { fieldStack.Value.SetValue(_target, ((Vector3)fieldStack.Value.GetValue(_target)).SetZ(value)); _OnSerializeDataChanged?.Invoke(_target); }, "Z:{0:0.0}");
+                    }
+                    else if (fieldType == typeof(Vector4))
+                    {
+                        Vector4 startVec = (Vector4)startValue;
+                        command.Slider(vectorAttribute.m_Min, vectorAttribute.m_Max, startVec.x, value => { fieldStack.Value.SetValue(_target, ((Vector4)fieldStack.Value.GetValue(_target)).SetX(value)); _OnSerializeDataChanged?.Invoke(_target); }, "X:{0:0.0}");
+                        command.Slider(vectorAttribute.m_Min, vectorAttribute.m_Max, startVec.y, value => { fieldStack.Value.SetValue(_target, ((Vector4)fieldStack.Value.GetValue(_target)).SetY(value)); _OnSerializeDataChanged?.Invoke(_target); }, "X:{0:0.0}");
+                        command.Slider(vectorAttribute.m_Min, vectorAttribute.m_Max, startVec.z, value => { fieldStack.Value.SetValue(_target, ((Vector4)fieldStack.Value.GetValue(_target)).SetZ(value)); _OnSerializeDataChanged?.Invoke(_target); }, "X:{0:0.0}");
+                        command.Slider(vectorAttribute.m_Min, vectorAttribute.m_Max, startVec.w, value => { fieldStack.Value.SetValue(_target, ((Vector4)fieldStack.Value.GetValue(_target)).SetW(value)); _OnSerializeDataChanged?.Invoke(_target); }, "X:{0:0.0}");
+                    }
+                }
+            }
+        }
         return this;
     }
 
@@ -79,13 +150,6 @@ public static class UIT_TouchConsoleHelper
         button.m_Button.onClick.AddListener(() => OnClick());
         button.m_ButtonTitle.text = _container.m_KeyCode.GetKeyCodeString();
     }
-    public static void Toggle(this CommandContainer _container, Action<bool> OnToggleChange, bool startValue = false)
-    {
-        CommandItem_Toggle toggle = _container.Insert<CommandItem_Toggle>();
-        toggle.m_Toggle.onValueChanged.AddListener(value => OnToggleChange(value));
-        toggle.m_Toggle.isOn = startValue;
-        toggle.m_ToggleTitle.text = _container.m_KeyCode.GetKeyCodeString();
-    }
     public static void Toggle(this CommandContainer _container,Ref<bool> _refValue,Action<bool> OnToggleChange)
     {
         CommandItem_Toggle toggle = _container.Insert<CommandItem_Toggle>();
@@ -96,23 +160,24 @@ public static class UIT_TouchConsoleHelper
         });
         toggle.m_ToggleTitle.text = _container.m_KeyCode.GetKeyCodeString();
     }
-    public static void Slider(this CommandContainer _container, float _maxValue, Action<float> OnValueChanged) => Slider(_container, 0, _maxValue, 0, OnValueChanged);
-    public static void Slider(this CommandContainer _container, float _minValue, float _maxValue, Action<float> OnValueChanged) => Slider(_container, _minValue, _maxValue ,0, OnValueChanged);
-    public static void Slider(this CommandContainer _container, float _minValue, float _maxValue, Ref<float> _refValue, Action<float> _SetValue)
+    public static void Slider(this CommandContainer _container, int _minValue, int _maxValue, Ref<int> _refValue, Action<int> _SetValue, string _format = "{0}")=>Slider(_container, _minValue, _maxValue, _refValue.Value, value => _refValue.Value = (int)value, _format, true);
+    public static void Slider(this CommandContainer _container, float _minValue, float _maxValue, Ref<float> _refValue, Action<float> _SetValue,string _format="{0:0.0}",bool _wholeNumbers=false)
     {
         CommandItem_Slider slider = _container.Insert<CommandItem_Slider>();
+        slider.m_Slider.wholeNumbers = _wholeNumbers;
+        slider.m_Slider.minValue = _minValue;
+        slider.m_Slider.maxValue = _maxValue;
         slider.SetDataUpdate(() => {
             if (!_refValue)
                 return;
             float finalValue = _refValue.Value;
-            slider.m_SliderComponent.value = Mathf.InverseLerp(_minValue, _maxValue, finalValue);
-            slider.m_SliderValue.text = string.Format("{0:0.0}", finalValue);
+            slider.m_Slider.value = finalValue;
+            slider.m_Value.text =string.Format( _format, finalValue);
         });
-        slider.m_SliderComponent.onValueChanged.AddListener(value => {
-            float finalValue = Mathf.Lerp(_minValue, _maxValue, value);
-            slider.m_SliderValue.text = string.Format("{0:0.0}", finalValue);
-            _refValue.Value = finalValue;
-            _SetValue(finalValue);
+        slider.m_Slider.onValueChanged.AddListener(value => {
+            slider.m_Value.text =string.Format(_format, value);
+            _refValue.Value = value;
+            _SetValue(value);
         });
     }
     static T ButtonFoldOutItem<T>(this CommandContainer _container,bool foldOut,out CommandItem_Button _button) where T : CommandItemBase
@@ -126,18 +191,25 @@ public static class UIT_TouchConsoleHelper
         item.transform.SetActive(false);
         return item;
     }
-    public static void EnumSelection<T>(this CommandContainer _container,Ref<T> _valueRef, Action<T> OnClick, bool foldOut = true) where T : struct, Enum
+    public static void EnumSelection<T>(this CommandContainer _container, Ref<T> _valueRef, Action<T> OnClick, bool foldOut = true) where T : struct, Enum => EnumSelection(_container,_valueRef.Value,enumObj=> { _valueRef.Value = (T)enumObj;OnClick?.Invoke(_valueRef.Value); },foldOut);
+    public static void EnumSelection(this CommandContainer _container, object _value, Action<object> OnClick, bool foldOut = true)
     {
+        Type type = _value.GetType();
+        if (!type.IsEnum)
+            throw new Exception("Input Must Be Enum!");
+
         CommandItem_ButtonSelection selection = _container.ButtonFoldOutItem<CommandItem_ButtonSelection>(foldOut, out CommandItem_Button foldOutButton);
-        selection. SetDataUpdate(() => {
-            selection.Play(_valueRef.Value, (int value) => {
-                T selectEnum = (T)Enum.ToObject(typeof(T), value);
-                OnClick(selectEnum);
+        selection.SetDataUpdate(() => {
+            selection.Play(_value, value => {
+                OnClick(value);
                 if (foldOutButton != null)
-                    foldOutButton.m_ButtonTitle.text = selectEnum.ToString();
+                {
+                    foldOutButton.m_Button.onClick.Invoke();
+                    foldOutButton.m_ButtonTitle.text = Enum.ToObject(type, value).ToString();
+                }
             });
             if (foldOutButton != null)
-                foldOutButton.m_ButtonTitle.text = _valueRef.Value.ToString();
+                foldOutButton.m_ButtonTitle.text = Enum.ToObject(type, _value).ToString();
         });
     }
     public static void EnumSelection(this CommandContainer _container, Ref<int> _refEnum, List<string> _values, Action<string> OnClick,bool foldOut=true)
@@ -158,11 +230,11 @@ public static class UIT_TouchConsoleHelper
         CommandItem_FlagsSelection selection= _container.ButtonFoldOutItem<CommandItem_FlagsSelection>(foldOut, out CommandItem_Button foldOutButton);
         selection.SetDataUpdate(() => selection.Play(_refFlags.Value, flags => {
             if (foldOutButton != null)
-                foldOutButton.m_ButtonTitle.text = flags.GetNumerable().ToString_Readable('|', value => value ? "√" : "×");
+                foldOutButton.m_ButtonTitle.text = flags.GetNumerable().ToString('|', value => value ? "√" : "×");
             _logFilter(flags);
         }));
         if (foldOutButton != null)
-            foldOutButton.m_ButtonTitle.text = _refFlags.Value.GetNumerable().ToString_Readable('|', value => value ? "√" : "×");
+            foldOutButton.m_ButtonTitle.text = _refFlags.Value.GetNumerable().ToString('|', value => value ? "√" : "×");
     }
     public static void InputField(this CommandContainer _container, Ref<string> _refText, Action<string> OnValueClick)
     {
@@ -235,8 +307,6 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
             UpdateLogs();
             UpdateCommandData();
         }
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-            m_ConsoleTimeScale.Value = 2f;
     }
     void UpdateCommandData()=> m_CommandContainers.m_ActiveItemDic.Traversal(command => command.UpdateItems());
 
@@ -302,17 +372,18 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         public void Play<T>(T defaultValue, Action<T> _OnFlagChanged) where T : Enum
         {
             m_ToggleGrid.Clear();
-            UCommon.TraversalEnum<T>(value => {
-                Toggle tog = m_ToggleGrid.AddItem(Convert.ToInt32(value));
-                tog.isOn = defaultValue.IsFlagEnable(value);
-                tog.GetComponentInChildren<Text>().text = value.ToString();
+            foreach(T enumValue in UCommon.GetEnumValues<T>())
+            {
+                Toggle tog = m_ToggleGrid.AddItem(Convert.ToInt32(enumValue));
+                tog.isOn = defaultValue.IsFlagEnable(enumValue);
+                tog.GetComponentInChildren<Text>().text = enumValue.ToString();
                 tog.onValueChanged.RemoveAllListeners();
                 tog.onValueChanged.AddListener(changed => {
                     int totalIndex = 0;
                     m_ToggleGrid.m_ActiveItemDic.Traversal((index, toggle) => totalIndex += (toggle.isOn ? index : 0));
                     _OnFlagChanged((T)Enum.ToObject(typeof(T), totalIndex));
                 });
-            });
+            }
         }
     }
     public class CommandItem_ButtonSelection : CommandItemBase
@@ -323,18 +394,18 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         {
             m_ButtonGrid = new TGameObjectPool_Component<int, Button>(_transform, "GridItem");
         }
-        public void Play<T>(T _defaultValue, Action<int> _OnClick) where T : Enum
+        public void Play(object _defaultValue,Action<object> _OnClick)
         {
             m_DefaultValue = Convert.ToInt32(_defaultValue);
             m_ButtonGrid.Clear();
-            UCommon.TraversalEnum<T>(temp =>
+            foreach(var enumObj in UCommon.GetEnumValues(_defaultValue.GetType()))
             {
-                int index = Convert.ToInt32(temp);
+                int index = Convert.ToInt32(enumObj);
                 Button btn = m_ButtonGrid.AddItem(index);
                 btn.onClick.RemoveAllListeners();
-                btn.GetComponentInChildren<Text>().text = temp.ToString();
+                btn.GetComponentInChildren<Text>().text = enumObj.ToString();
                 btn.onClick.AddListener(() => _OnClick(index));
-            });
+            }
         }
         public void Play(List<string> values,int defaultValue, Action<int> OnClick)
         {
@@ -393,22 +464,22 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
     }
     public class CommandItem_Slider : CommandItemBase
     {
-        public Slider m_SliderComponent { get; private set; }
-        public Text m_SliderValue { get; private set; }
+        public Slider m_Slider { get; private set; }
+        public Text m_Value { get; private set; }
         public CommandItem_Slider(Transform _transform) : base(_transform)
         {
-            m_SliderComponent = transform.Find("Slider").GetComponent<Slider>();
-            m_SliderValue = transform.Find("Value").GetComponent<Text>();
+            m_Slider = transform.Find("Slider").GetComponent<Slider>();
+            m_Value = transform.Find("Value").GetComponent<Text>();
         }
         public override void OnAddItem(int identity)
         {
             base.OnAddItem(identity);
-            m_SliderComponent.onValueChanged.RemoveAllListeners();
+            m_Slider.onValueChanged.RemoveAllListeners();
         }
         public override void OnRemoveItem()
         {
             base.OnRemoveItem();
-            m_SliderComponent.onValueChanged.RemoveAllListeners();
+            m_Slider.onValueChanged.RemoveAllListeners();
         }
     }
     public class CommandItem_Button : CommandItemBase

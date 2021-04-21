@@ -2,7 +2,7 @@
 {
 	Properties
 	{
-		[NoScaleOffset]_MainTex ("Texture", 2D) = "white" {}
+		 _MainTex ("Texture", 2D) = "white" {}
 		_Weight("Weight",Range(0,1))=1
 		[Toggle(_BSC)] _Enable_BSC ("BSC Enable", Float) = 1
 		_Brightness("Brightness",Range(0,2))=1
@@ -18,9 +18,7 @@
 	}
 	SubShader
 	{
-		Tags {"Queue"="Transparent" "PreviewType"="Plane"}
-		// No culling or depth
-		Cull Off ZWrite Off 
+		Cull Off ZWrite Off ZTest Always
 
 		Pass
 		{

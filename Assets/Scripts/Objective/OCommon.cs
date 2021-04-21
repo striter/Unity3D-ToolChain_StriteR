@@ -17,9 +17,8 @@ public class Ref<T>
         return !_src && !_tar;
     }
     public static bool operator true(Ref<T> refValue) => !!refValue;
-    public static bool operator  false(Ref<T> refValue) => !refValue;
+    public static bool operator false(Ref<T> refValue) => !refValue;
     public static implicit operator Ref<T>(T value)=>new Ref<T>() { Value=value};
-    public static implicit operator T(Ref<T> refValue) => !refValue?default:refValue.Value;
 }
 
 

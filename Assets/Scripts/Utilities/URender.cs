@@ -167,6 +167,26 @@ public static class URender
                 break;
         }
     }
+    public static void SetUVsResize(this Mesh _tar, int _index, List<Vector4> uvs)
+    {
+        if (uvs.Count <= 0)
+            return;
+        bool third = false;
+        bool fourth = false;
+        for (int j = 0; j < uvs.Count; j++)
+        {
+            Vector4 check = uvs[j];
+            third |= check.z != 0;
+            fourth |= check.w != 0;
+        }
+
+        if (fourth)
+            _tar.SetUVs(_index, uvs);
+        else if (third)
+            _tar.SetUVs(_index, uvs.ToList(vec4 => new Vector3(vec4.x, vec4.y, vec4.z)));
+        else
+            _tar.SetUVs(_index, uvs.ToList(vec4 => new Vector2(vec4.x, vec4.y)));
+    }
 
     public static void EnableKeyword(this Material _material, string _keyword, bool _enable)
     {

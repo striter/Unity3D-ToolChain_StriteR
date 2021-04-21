@@ -5,12 +5,9 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 
-public interface IDataConvert
-{
-}
 public static class TDataConvert
 {
-    static readonly char[] m_PhraseIterateBreakPoints = new char[12] {',',';','[', ']', '{', '}', '(', ')', ';', ':', '/', '`' };
+    static readonly char[] m_PhraseIterateBreakPoints = new char[12] { ',', ';', '[', ']', '{', '}', '(', ')', ';', ':', '/', '`' };
     const char m_PhraseBaseBreakPoint = '|';
     public static string Convert(Type type, object value) => ConvertToString(type, value, -1);
     public static T Convert<T>(string xmlData) => (T)ConvertToObject(typeof(T), xmlData, -1);
@@ -24,8 +21,8 @@ public static class TDataConvert
         if (type.IsEnum)
             return value.ToString();
 
-        if (m_BaseTypeToXmlData.ContainsKey(type))
-            return m_BaseTypeToXmlData[type](value);
+        if (s_BaseTypeConvert.ContainsKey(type))
+            return s_BaseTypeConvert[type].Key(value);
 
 
         //Iteration Type
@@ -41,87 +38,67 @@ public static class TDataConvert
                 return GenericPhraseToString(type, genericDefinition, value, iteration);
         }
 
-        if (CheckIXmlParseType(type))
-            return IXmlPhraseToString(type, value, iteration);
+        if (CheckSerializeType(type))
+            return SerializeToString(type, value, iteration);
 
         throw new Exception("Xml Error Invlid Type:" + type.ToString() + " For Base Type To Phrase");
     }
-        
-    static object ConvertToObject(Type type, string xmlData, int iteration)
-    {
-        if (type.IsEnum)
-            return Enum.Parse(type, xmlData);
 
-        if (m_BaseTypeToObject.ContainsKey(type))
-            return m_BaseTypeToObject[type](xmlData);
+    static object ConvertToObject(Type _type, string _xmlData, int _iteration)
+    {
+        if (_type.IsEnum)
+            return Enum.Parse(_type, _xmlData);
+
+        if (s_BaseTypeConvert.ContainsKey(_type))
+            return s_BaseTypeConvert[_type].Value(_xmlData);
 
         //Iteration Type
-        iteration = DoIteration(iteration);
+        _iteration = DoIteration(_iteration);
 
-        if (type.IsArray)
-            return ArrayPhraseToData(type,xmlData,iteration);
+        if (_type.IsArray)
+            return ArrayPhraseToData(_type, _xmlData, _iteration);
 
-        if (type.IsGenericType)
+        if (_type.IsGenericType)
         {
-            Type genericDefinition = type.GetGenericTypeDefinition();
+            Type genericDefinition = _type.GetGenericTypeDefinition();
             if (CheckGenericPhrase(genericDefinition))
-                return GenericPhraseToData(type, genericDefinition, xmlData, iteration);
+                return GenericPhraseToData(_type, genericDefinition, _xmlData, _iteration);
         }
 
-        if (CheckIXmlParseType(type))
-            return IXmlPraseToData(type, xmlData, iteration);
+        if (CheckSerializeType(_type))
+            return StringToSerializeData(_type, _xmlData, _iteration);
 
-        throw new Exception("Xml Error Invlid Type:" + type.ToString() + " For Xml Data To Phrase");
+        throw new Exception("Xml Error Invlid Type:" + _type.ToString() + " For Xml Data To Phrase");
     }
-
     #region BaseType
-
-    static readonly Dictionary<Type, Func<object, string>> m_BaseTypeToXmlData = new Dictionary<Type, Func<object, string>>() {
-        { typeof(int), (object target) => { return target.ToString(); }},
-        { typeof(long), (object target) => { return target.ToString(); } },
-        { typeof(double), (object target) => { return target.ToString(); }},
-        { typeof(float), (object target) => { return target.ToString(); }},
-        { typeof(char),(object target)=>{ return target.ToString(); } },
-        { typeof(string), (object target) => { return target as string; }},
-        { typeof(bool), (object data) => { return (((bool)data ? 1 : 0)).ToString(); }},
-        { typeof(Vector2),(object data) => {
-            Vector2 objectData=(Vector2)data;
-            return objectData.x.ToString()+m_PhraseBaseBreakPoint+objectData.y;
-            }},
-        { typeof(Vector3),(object data) => {
-            Vector3 objectData=(Vector3)data;
-            return objectData.x.ToString()+m_PhraseBaseBreakPoint+objectData.y+m_PhraseBaseBreakPoint+objectData.z;
-            }},
-        { typeof(Vector4),(object data) => {
-            Vector4 objectData=(Vector4)data;
-            return objectData.x.ToString()+m_PhraseBaseBreakPoint+objectData.y+m_PhraseBaseBreakPoint+objectData.z+m_PhraseBaseBreakPoint+objectData.w;
-            }},
-        { typeof(RangeInt),(object data) => { return ((RangeInt)data).start.ToString() + m_PhraseBaseBreakPoint + ((RangeInt)data).length.ToString(); } },
-        { typeof(RangeFloat), (object data) => { return ((RangeFloat)data).start.ToString() + m_PhraseBaseBreakPoint + ((RangeFloat)data).length.ToString(); }}
-    };
-    static readonly Dictionary<Type, Func<string, object>> m_BaseTypeToObject = new Dictionary<Type, Func<string, object>>()
-    {
-        { typeof(int), (string xmlData) => { return int.Parse(xmlData); }},
-        { typeof(long), (string xmlData) => { return long.Parse(xmlData); } },
-        { typeof(double), (string xmlData) => { return double.Parse(xmlData); }},
-        { typeof(float), (string xmlData) => { return float.Parse(xmlData); } },
-        { typeof(char),(string xmlData)=>{ return char.Parse(xmlData); } },
-        { typeof(string), (string xmlData) => { return xmlData; }},
-        { typeof(bool), (string xmlData) => { return int.Parse(xmlData) == 1; } },
-        { typeof(Vector2),(string xmlData) => {
-            string[] split = xmlData.Split(m_PhraseBaseBreakPoint);
-            return new Vector2(float.Parse(split[0]), float.Parse(split[1]));
-        }},
-        { typeof(Vector3),(string xmlData) => {
-            string[] split = xmlData.Split(m_PhraseBaseBreakPoint);
-            return new Vector3(float.Parse(split[0]), float.Parse(split[1]),float.Parse(split[2]));
-        }},
-        { typeof(Vector4),(string xmlData) => {
-            string[] split = xmlData.Split(m_PhraseBaseBreakPoint);
-            return new Vector4(float.Parse(split[0]), float.Parse(split[1]),float.Parse(split[2]),float.Parse(split[3]));
-        }},
-        { typeof(RangeInt), (string xmlData) => { string[] split = xmlData.Split(m_PhraseBaseBreakPoint); return new RangeInt(int.Parse(split[0]), int.Parse(split[1])); }},
-        { typeof(RangeFloat), (string xmlData) => { string[] split = xmlData.Split(m_PhraseBaseBreakPoint); return new RangeFloat(float.Parse(split[0]), float.Parse(split[1])); }},
+    static readonly Dictionary<Type, KeyValuePair<Func<object, string>, Func<string, object>>> s_BaseTypeConvert = new Dictionary<Type, KeyValuePair<Func<object, string>, Func<string, object>>>() {
+        { typeof(char),new KeyValuePair<Func<object, string>, Func<string, object>>( target=>target.ToString(),str=>char.Parse(str)) },
+        { typeof(string), new KeyValuePair<Func<object, string>, Func<string, object>>( target => target as string,str=>str)},
+        { typeof(int),new KeyValuePair<Func<object, string>, Func<string, object>>(data =>data.ToString(), str =>int.Parse(str) )},
+        { typeof(long),new KeyValuePair<Func<object, string>, Func<string, object>>(data => data.ToString(), str => long.Parse(str) )},
+        { typeof(double),new KeyValuePair<Func<object, string>, Func<string, object>>(target => target.ToString(),str => double.Parse(str))},
+        { typeof(float),new KeyValuePair<Func<object, string>, Func<string, object>>( target => target.ToString(), str =>  float.Parse(str))},
+        { typeof(bool), new KeyValuePair<Func<object, string>, Func<string, object>>( data => (((bool)data ? 1 : 0)).ToString() , str=>  int.Parse(str) == 1)},
+        { typeof(Vector2),new KeyValuePair<Func<object, string>, Func<string, object>>(
+            data => {Vector2 objectData=(Vector2)data;
+            return objectData.x.ToString()+m_PhraseBaseBreakPoint+objectData.y;},
+            str => {string[] split = str.Split(m_PhraseBaseBreakPoint);
+            return new Vector2(float.Parse(split[0]), float.Parse(split[1])); })},
+        { typeof(Vector3),new KeyValuePair<Func<object, string>, Func<string, object>>(
+            data => {Vector3 objectData=(Vector3)data;
+            return objectData.x.ToString()+m_PhraseBaseBreakPoint+objectData.y+m_PhraseBaseBreakPoint+objectData.z;},
+            str=>{string[] split = str.Split(m_PhraseBaseBreakPoint);
+            return new Vector3(float.Parse(split[0]), float.Parse(split[1]), float.Parse(split[2]));  }) },
+        { typeof(Vector4),new KeyValuePair<Func<object, string>, Func<string, object>>(
+            data => {Vector4 objectData=(Vector4)data;
+            return objectData.x.ToString()+m_PhraseBaseBreakPoint+objectData.y+m_PhraseBaseBreakPoint+objectData.z+m_PhraseBaseBreakPoint+objectData.w;},
+            xmlData => {string[] split = xmlData.Split(m_PhraseBaseBreakPoint);
+            return new Vector4(float.Parse(split[0]), float.Parse(split[1]), float.Parse(split[2]), float.Parse(split[3]));})},
+        { typeof(RangeInt),new KeyValuePair<Func<object, string>, Func<string, object>>(
+            data => { return ((RangeInt)data).start.ToString() + m_PhraseBaseBreakPoint + ((RangeInt)data).length.ToString(); },
+            xmlData => { string[] split = xmlData.Split(m_PhraseBaseBreakPoint); return new RangeInt(int.Parse(split[0]), int.Parse(split[1]));})},
+        { typeof(RangeFloat), new KeyValuePair<Func<object, string>, Func<string, object>>( data => { return ((RangeFloat)data).start.ToString() + m_PhraseBaseBreakPoint + ((RangeFloat)data).length.ToString(); },
+            xmlData => { string[] split = xmlData.Split(m_PhraseBaseBreakPoint); return new RangeFloat(float.Parse(split[0]), float.Parse(split[1])); } )}
     };
     #endregion
     #region IterateType
@@ -225,11 +202,10 @@ public static class TDataConvert
     }
     #endregion
     #region IDataConvert
-    static readonly Type m_XmlPhraseType = typeof(IDataConvert);
     static Dictionary<Type, FieldInfo[]> m_XmlConvertFieldInfos = new Dictionary<Type, FieldInfo[]>();
-    static bool CheckIXmlParseType(Type type)
+    static bool CheckSerializeType(Type type)
     {
-        if (!m_XmlPhraseType.IsAssignableFrom(type))
+        if (!type.IsSerializable)
             return false;
 
         if (!m_XmlConvertFieldInfos.ContainsKey(type))
@@ -237,7 +213,7 @@ public static class TDataConvert
         return true;
     }
 
-    static string IXmlPhraseToString(Type type, object data, int iteration)
+    static string SerializeToString(Type type, object data, int iteration)
     {
         if (data == null)
             return "";
@@ -256,7 +232,7 @@ public static class TDataConvert
         return phrase;
     }
 
-    static object IXmlPraseToData(Type type, string data, int iteration)
+    static object StringToSerializeData(Type type, string data, int iteration)
     {
         if (data == "")
             return null;

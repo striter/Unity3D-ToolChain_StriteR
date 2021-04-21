@@ -65,7 +65,7 @@ namespace TEditor
             _targetAttribute = null;
             if (!_checkTypes.Any(p => _property.propertyType == p))
             {
-                EditorGUI.LabelField(_position,string.Format("<Color=#FF0000>Attribute For {0} Only!</Color>", _checkTypes.ToString_Readable('|', type => type.ToString())), UEGUIStyle_Window.m_TitleLabel);
+                EditorGUI.LabelField(_position,string.Format("<Color=#FF0000>Attribute For {0} Only!</Color>", _checkTypes.ToString('|', type => type.ToString())), UEGUIStyle_Window.m_TitleLabel);
                 return false;
             }
             _targetAttribute = attribute as T;
@@ -127,18 +127,6 @@ namespace TEditor
     }
     #endregion
     #region SubAttribute
-    [CustomPropertyDrawer(typeof(RangeIntAttribute))]
-    public class RangeIntPropertyDrawer : SubAttributePropertyDrawer<RangeIntAttribute>
-    {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            if (!OnGUIAttributePropertyCheck(position, property, out RangeIntAttribute attribute, SerializedPropertyType.Integer))
-                return;
-
-            property.intValue = EditorGUI.IntSlider(position, label, property.intValue, attribute.m_Min, attribute.m_Max);
-        }
-    }
-
     [CustomPropertyDrawer(typeof(ClampAttribute))]
     public class ClampPropertyDrawer : SubAttributePropertyDrawer<ClampAttribute>
     {

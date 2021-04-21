@@ -8,26 +8,19 @@ public static class UCommon
 {
     public static bool InRange(this RangeFloat _value, float _check) => _value.start <= _check && _check <= _value.end;
     public static float InRangeScale(this RangeFloat _value, float _check) => Mathf.InverseLerp(_value.start, _value.end, _check);
-    public static void TraversalEnum<T>(Action<T> enumAction) where T:Enum 
+    public static IEnumerable<object> GetEnumValues(Type _enumType)
     {
-        foreach (object temp in Enum.GetValues(typeof(T)))
+        foreach(object enumObj in Enum.GetValues(_enumType))
         {
-            if (temp.ToString() == "Invalid")
+            if (Convert.ToInt32(enumObj) == -1||_enumType.ToString() == "Invalid" )
                 continue;
-            enumAction((T)temp);
+            yield return enumObj;
         }
     }
-    public static List<T> GetEnumList<T>() where T:Enum
+    public static IEnumerable<T> GetEnumValues<T>()
     {
-        List<T> list = new List<T>();
-        Array allEnums = Enum.GetValues(typeof(T));
-        for (int i = 0; i < allEnums.Length; i++)
-        {
-            if (allEnums.GetValue(i).ToString() == "Invalid")
-                continue;
-            list.Add((T)allEnums.GetValue(i));
-        }
-        return list;
+        foreach (object enumObj in GetEnumValues(typeof(T)))
+            yield return (T)enumObj;
     }
     public static T Next<T>(this T enumValue) where T : Enum
     {

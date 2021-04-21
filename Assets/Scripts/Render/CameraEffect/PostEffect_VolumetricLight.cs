@@ -25,7 +25,7 @@ namespace Rendering.ImageEffect
         public enum_LightMarchTimes m_MarchTimes;
         [Range(0, 2f)] public float m_Strength;
         [Range(0.1f, 2f)] public float m_Pow;
-        [Header("Optimize"),RangeInt(1, 4)] public int m_DownSample;
+        [Header("Optimize"),Range(1, 4)] public int m_DownSample;
         public bool m_Dither;
         [MTitle] public bool m_EnableBlur;
         [MFoldout(nameof(m_EnableBlur), true)] public ImageEffectParam_Blurs m_BlurParam;

@@ -59,7 +59,7 @@ namespace OSwizzling
         }
         public T this[int index] => m_Value[index];
         public T this[char index] => m_Value[m_SwizzlingPositions[index]];
-        public override string ToString() => m_Value.ToString_Readable(',');
+        public override string ToString() => m_Value.ToString(',');
         protected virtual void OnValueChanged(T[] _value) { }
         void SafeCheck(string name)
         {

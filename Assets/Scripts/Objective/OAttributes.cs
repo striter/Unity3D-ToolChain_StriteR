@@ -16,19 +16,6 @@ public class RangeVectorAttribute : PropertyAttribute
         m_Max = _max;
     }
 }
-
-[AttributeUsage(AttributeTargets.Field)]
-public class RangeIntAttribute:PropertyAttribute
-{
-    public int m_Min { get; private set; }
-    public int m_Max { get; private set; }
-    public RangeIntAttribute(int _min,int _max)
-    {
-        m_Min = _min;
-        m_Max = _max;
-    }
-}
-
 [AttributeUsage(AttributeTargets.Field)]
 public class ClampAttribute:PropertyAttribute
 {

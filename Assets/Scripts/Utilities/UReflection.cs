@@ -30,19 +30,6 @@ public static class UReflection
                 Debug.LogError("Null Method Found From:"+t.ToString()+"."+methodName);
         }
     }
-
-    public static void Copy<T>(T source, T target) where T:class
-    {
-        Type type = typeof(T);
-        FieldInfo[] fields = type.GetFields();
-        PropertyInfo[] properties = type.GetProperties();
-        foreach(var field in fields)
-            field.SetValue(target,field.GetValue(source));
-
-        foreach(var property in properties)
-            property.SetValue(target, property.GetValue(source));
-    }
-
     public static Stack<Type> GetInheritTypes(this Type _type)
     {
         if (_type == null)
@@ -56,18 +43,87 @@ public static class UReflection
         }
         return inheritStack;
     }
-    public static IEnumerable<FieldInfo> GetAllFields(this Type _type,BindingFlags _memberFlags)
+    public static object GetValue(this Stack<FieldInfo> _fieldStacks, object _targetObject)
+    {
+        object dstObject = _targetObject;
+        foreach(var field in _fieldStacks)
+            dstObject = field.GetValue(dstObject);
+        return dstObject;
+    }
+    public static void SetValue(this Stack<FieldInfo> _fieldStacks, object _targetObject, object _value)
+    {
+        Stack<object> dstObjects = new Stack<object>();
+        object dstObject = _targetObject;
+        int totalCount = _fieldStacks.Count;
+        int fieldCount = totalCount;
+        foreach (var field in _fieldStacks)
+        {
+            if (--fieldCount == 0)
+                break;
+            dstObject = field.GetValue(dstObject);
+            dstObjects.Push(dstObject);
+        }
+        dstObject = _value;
+        for (int i = totalCount-1; i >=0; i--)
+        {
+            FieldInfo field = _fieldStacks.ElementAt(i);
+            object tarObject = dstObjects.Count==0?_targetObject:dstObjects.Pop();
+            field.SetValue(tarObject, dstObject);
+            dstObject = tarObject;
+        }
+    }
+
+    static readonly List<Type> s_SerializeBaseType = new List<Type>() {
+        typeof(bool), typeof(string),typeof(char),
+        typeof(float),  typeof(double),
+        typeof(int),typeof(short),typeof(long),
+        typeof(Vector3), typeof(Vector2), typeof(Vector4),
+        typeof(RangeInt), typeof(RangeFloat),
+        typeof(Texture2D),typeof(Texture3D),
+        typeof(IntPtr),
+    };
+    public static IEnumerable<KeyValuePair<FieldInfo, Stack<FieldInfo>>> GetBaseTypeFieldStacks(this Type _type, BindingFlags _flags)
+    {
+        Stack<Queue<FieldInfo>> totalFields = new Stack<Queue<FieldInfo>>();
+        Stack<FieldInfo> fieldStack = new Stack<FieldInfo>();
+
+        foreach (var field in _type.GetAllFields(_flags))
+            totalFields.Push(new Queue<FieldInfo>(new FieldInfo[] { field }));
+        while (totalFields.Count > 0)
+        {
+            var curFieldStack = totalFields.Peek();
+            if (curFieldStack.Count == 0)
+            {
+                totalFields.Pop();
+                if (fieldStack.Count > 0)
+                    fieldStack.Pop();
+                continue;
+            }
+
+            FieldInfo shallowField = curFieldStack.Dequeue();
+            fieldStack.Push(shallowField);
+            bool isBaseType = shallowField.FieldType.IsEnum || shallowField.FieldType.IsArray || shallowField.FieldType.IsGenericType || s_SerializeBaseType.Contains(shallowField.FieldType);
+            if (!isBaseType && shallowField.FieldType.IsSerializable)
+            {
+                totalFields.Push(new Queue<FieldInfo>(shallowField.FieldType.GetAllFields(_flags)));
+                continue;
+            }
+            yield return new KeyValuePair<FieldInfo, Stack<FieldInfo>>(shallowField, new Stack<FieldInfo>(fieldStack));
+            fieldStack.Pop();
+        }
+    }
+    public static IEnumerable<FieldInfo> GetAllFields(this Type _type,BindingFlags _flags)
     {
         if (_type == null)
             throw new NullReferenceException();
 
-        foreach (var fieldInfo in _type.GetFields(_memberFlags | BindingFlags.Public|BindingFlags.NonPublic))
+        foreach (var fieldInfo in _type.GetFields(_flags | BindingFlags.Public|BindingFlags.NonPublic))
             yield return fieldInfo;
         var inheritStack = _type.GetInheritTypes();
         while(inheritStack.Count>0)
         {
             var type = inheritStack.Pop();
-            foreach (var fieldInfo in type.GetFields(_memberFlags | BindingFlags.NonPublic))
+            foreach (var fieldInfo in type.GetFields(_flags | BindingFlags.NonPublic))
                 if(fieldInfo.IsPrivate)
                     yield return fieldInfo;
         }

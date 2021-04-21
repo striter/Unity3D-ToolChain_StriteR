@@ -19,13 +19,13 @@ Shader "Hidden/ImageEffect_Stylize"
             #pragma fragment frag
             #pragma multi_compile _ _PIXEL_GRID _PIXEL_CIRCLE
             float4 _PixelGridColor;
-            float2 _PixelGridWidth;
+            float _PixelGridWidth;
             float4 frag(v2f_img i):SV_TARGET
             {
                 float3 finalCol=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).xyz;
             #if _PIXEL_GRID
                 float2 pixelUV= (i.uv*_MainTex_TexelSize.zw)%1;
-                float pixelGrid= max(step(pixelUV.y,_PixelGridWidth.x),step(_PixelGridWidth.y,pixelUV.y),step(pixelUV.x,_PixelGridWidth.x),step(_PixelGridWidth.y,pixelUV.x));
+                float pixelGrid= max(step(pixelUV.y,_PixelGridWidth),step(_PixelGridWidth,pixelUV),step(pixelUV.x,_PixelGridWidth),step(_PixelGridWidth,pixelUV.x));
                 finalCol=lerp(finalCol,_PixelGridColor.rgb,pixelGrid*_PixelGridColor.a);
             #elif _PIXEL_CIRCLE
                 float2 pixelUV=(i.uv*_MainTex_TexelSize.zw)%1-.5;

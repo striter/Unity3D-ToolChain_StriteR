@@ -23,11 +23,11 @@ namespace Rendering.ImageEffect
     public struct ImageEffectParam_Stylize
     {
         [MTitle]public enum_Stylize m_Stylize;
-        [MFoldout(nameof(m_Stylize),enum_Stylize.Pixel)] [ RangeInt(2,20)] public int m_DownSample;
+        [MFoldout(nameof(m_Stylize),enum_Stylize.Pixel)] [ Range(2,20)] public int m_DownSample;
         [MFoldout(nameof(m_Stylize), enum_Stylize.Pixel)] public enum_PixelBound m_PixelGrid;
         [MFoldout(nameof(m_Stylize), enum_Stylize.Pixel)] [MFold(nameof(m_PixelGrid), enum_PixelBound.None)] [Range(0.01f, 0.49f)] public float m_GridWidth;
         [MFoldout(nameof(m_Stylize), enum_Stylize.Pixel)] [MFold(nameof(m_PixelGrid), enum_PixelBound.None)] public Color m_PixelGridColor;
-        [MFoldout(nameof(m_Stylize), enum_Stylize.OilPaint)] [RangeInt(1,20)]public int m_OilPaintKernel;
+        [MFoldout(nameof(m_Stylize), enum_Stylize.OilPaint)] [Range(1,20)]public int m_OilPaintKernel;
         [MFoldout(nameof(m_Stylize), enum_Stylize.OilPaint)] [Range(0.1f, 5f)] public float m_OilPaintSize;
         [MFoldout(nameof(m_Stylize), enum_Stylize.ObraDithering)] [Range(0.001f,1f)]public float m_ObraDitherScale;
         [MFoldout(nameof(m_Stylize), enum_Stylize.ObraDithering)] [Range(0.1f,1f)]public float m_ObraDitherStrength;

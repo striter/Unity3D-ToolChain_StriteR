@@ -4,7 +4,7 @@ using UnityEngine;
 using TDataPersistent;
 using System;
 using UnityEngine.UI;
-
+using Rendering.ImageEffect;
 public class Test : MonoBehaviour
 {
     public Vector3 m_SrcVector = Vector3.one;
@@ -28,16 +28,13 @@ public class Test : MonoBehaviour
         //Debug.Log(TVector.Cross(m_SrcVector, m_DstVector) + " " + Vector3.Cross(m_SrcVector, m_DstVector));
     }
     public SaveTest m_SaveTest = new SaveTest();
-    public GameObject root;
     private void Start()
     {
-        UBatch.BatchSkinnedMeshRenderer(root);
 
-        UIT_TouchConsole.Init();
-
+        UIT_TouchConsole.InitDefaultCommands();
         UIT_TouchConsole.Header("Data Save");
-        UIT_TouchConsole.Command("Read").Button(() => { m_SaveTest.ReadPersistentData(); Debug.Log(m_SaveTest.m_Test1.m_Test1 + " " + m_SaveTest.Test1); });
-        UIT_TouchConsole.Command("Save").Slider(10, value =>
+        UIT_TouchConsole.Command("Read").Button(() => m_SaveTest.ReadPersistentData());
+        UIT_TouchConsole.Command("Save").Slider(0,10,m_SaveTest.Test1, value =>
         {
             m_SaveTest.Test1 = value;
             m_SaveTest.m_Test1.m_Test1 = value * value;
@@ -53,15 +50,24 @@ public class Test : MonoBehaviour
             Button(() => TouchInputManager.Instance.SwitchToTrackers().Init(new TouchTracker(vec2 => Debug.LogFormat("Dual L{0}", vec2), TouchTracker.s_LeftTrack), new TouchTracker(vec2 => Debug.LogFormat("Dual R{0}", vec2), TouchTracker.s_RightTrack)));
         UIT_TouchConsole.Command("Dual LR Joystick").
             Button(() => TouchInputManager.Instance.SwitchToTrackers().Init(new TouchTracker_Joystick(UIT_TouchConsole.GetHelperJoystick(), enum_Option_JoyStickMode.Retarget, vec2 => Debug.LogFormat("Dual L Joystick{0}", vec2), TouchTracker.s_LeftTrack), new TouchTracker(vec2 => Debug.LogFormat("Dual R Joystick{0}", vec2), TouchTracker.s_RightTrack)));
+
+        UIT_TouchConsole.EmptyLine();
+        UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostEffect_ColorGrading>(), effect => effect.OnValidate());
+        UIT_TouchConsole.EmptyLine();
+        UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostEffect_DepthOfField>(), effect => effect.OnValidate());
+        UIT_TouchConsole.EmptyLine();
+        UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostEffect_VHS>(), effect => effect.OnValidate());
     }
-    public class SaveTest:CDataSave<SaveTest>
+    [Serializable]
+    public class SaveTest : CDataSave<SaveTest>
     {
         public float Test1;
         public string Test2;
         public SaveTest1 m_Test1;
         public override bool DataCrypt() => true;
     }
-    public struct SaveTest1:IDataConvert
+    [Serializable]
+    public struct SaveTest1
     {
         public float m_Test1;
         public Dictionary<int, string> m_Test4;
