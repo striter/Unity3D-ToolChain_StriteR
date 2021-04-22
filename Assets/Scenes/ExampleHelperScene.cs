@@ -10,7 +10,9 @@ public class ExampleHelperScene : MonoBehaviour
         GameObject.DontDestroyOnLoad(this);
         for (int i = 1; i < SceneManager.sceneCountInBuildSettings; i++)
             m_SceneNames.Add(GetSceneName( SceneUtility.GetScenePathByBuildIndex(i)));
-        UIT_TouchConsole.Command("Select Scene").EnumSelection(0,  m_SceneNames, ChangeScene);
+        UIT_TouchConsole.InitDefaultCommands();
+        UIT_TouchConsole.NewPage("Select");
+        UIT_TouchConsole.Command("Scene").EnumSelection(0,  m_SceneNames, index=> ChangeScene(m_SceneNames[index]));
         ChangeScene(m_SceneNames[0]);
     }
     static string GetSceneName(string scenePath)

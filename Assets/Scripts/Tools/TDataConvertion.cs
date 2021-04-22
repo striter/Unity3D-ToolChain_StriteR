@@ -19,7 +19,7 @@ public static class TDataConvert
             return "";
 
         if (type.IsEnum)
-            return value.ToString();
+            return ((int)value).ToString();
 
         if (s_BaseTypeConvert.ContainsKey(type))
             return s_BaseTypeConvert[type].Key(value);
@@ -47,7 +47,7 @@ public static class TDataConvert
     static object ConvertToObject(Type _type, string _xmlData, int _iteration)
     {
         if (_type.IsEnum)
-            return Enum.Parse(_type, _xmlData);
+            return Enum.ToObject(_type,int.Parse(_xmlData));
 
         if (s_BaseTypeConvert.ContainsKey(_type))
             return s_BaseTypeConvert[_type].Value(_xmlData);

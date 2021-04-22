@@ -51,6 +51,7 @@ namespace Rendering.ImageEffect
     {
         public abstract bool m_IsOpaqueProcess { get; }
         public abstract void ExecutePostProcess(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _src, RenderTargetIdentifier _dst);
+        public abstract void OnValidate();
     }
 
     public partial class PostEffectBase<T,Y> : APostEffectBase where T : ImageEffectBase<Y>, new() where Y:struct
@@ -60,7 +61,7 @@ namespace Rendering.ImageEffect
         protected Camera m_Camera { get; private set; }
         protected void Awake()=>Init();
         protected void OnDestroy()=>Destroy();
-        public virtual void OnValidate() => m_Effect?.DoValidate(m_EffectData);
+        public override void OnValidate() => m_Effect?.DoValidate(m_EffectData);
         void OnDidApplyAnimationProperties() => OnValidate();       //Undocumented Magic Fucntion ,Triggered By AnimationClip
         void Reset() => m_EffectData = USRP.GetDefaultPostProcessData<Y>();
         void Init()

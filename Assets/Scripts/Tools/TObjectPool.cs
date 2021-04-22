@@ -213,9 +213,9 @@ public class TGameObjectPool_Instance<T, Y>
 {
     public Transform transform { get; private set; }
     protected GameObject m_PoolItem;
-    public Dictionary<T, Y> m_ActiveItemDic { get; private set; } = new Dictionary<T, Y>();
-    public List<Y> m_InactiveItemList { get; private set; } = new List<Y>();
-    public int Count => m_ActiveItemDic.Count;
+    public Dictionary<T, Y> m_ActiveItems { get; private set; } = new Dictionary<T, Y>();
+    public List<Y> m_PooledItems { get; private set; } = new List<Y>();
+    public int Count => m_ActiveItems.Count;
     public TGameObjectPool_Instance(Transform poolTrans, string itemName)
     {
         transform = poolTrans;
@@ -228,22 +228,22 @@ public class TGameObjectPool_Instance<T, Y>
             return GetItem(identity);
         return AddItem(identity);
     }
-    public bool ContainsItem(T identity) => m_ActiveItemDic.ContainsKey(identity);
-    public Y GetItem(T identity) => m_ActiveItemDic[identity];
+    public bool ContainsItem(T identity) => m_ActiveItems.ContainsKey(identity);
+    public Y GetItem(T identity) => m_ActiveItems[identity];
     public virtual Y AddItem(T identity)
     {
         Y targetItem;
-        if (m_InactiveItemList.Count > 0)
+        if (m_PooledItems.Count > 0)
         {
-            targetItem = m_InactiveItemList[0];
-            m_InactiveItemList.Remove(targetItem);
+            targetItem = m_PooledItems[0];
+            m_PooledItems.Remove(targetItem);
         }
         else
         {
             targetItem = CreateNewItem(UnityEngine.Object.Instantiate(m_PoolItem, transform).transform);
         }
-        if (m_ActiveItemDic.ContainsKey(identity)) Debug.LogError(identity + "Already Exists In Grid Dic");
-        else m_ActiveItemDic.Add(identity, targetItem);
+        if (m_ActiveItems.ContainsKey(identity)) Debug.LogError(identity + "Already Exists In Grid Dic");
+        else m_ActiveItems.Add(identity, targetItem);
         Transform trans = GetItemTransform(targetItem);
         trans.SetAsLastSibling();
         trans.name = identity.ToString();
@@ -253,29 +253,29 @@ public class TGameObjectPool_Instance<T, Y>
 
     public virtual void RemoveItem(T identity)
     {
-        Y item = m_ActiveItemDic[identity];
-        m_InactiveItemList.Add(item);
+        Y item = m_ActiveItems[identity];
+        m_PooledItems.Add(item);
         Transform itemTransform = GetItemTransform(item);
         itemTransform.SetActive(false);
         itemTransform.SetParent(transform);
-        m_ActiveItemDic.Remove(identity);
+        m_ActiveItems.Remove(identity);
     }
 
     public void Sort(Comparison<KeyValuePair<T,Y>> Compare)
     {
-        List<KeyValuePair<T, Y>> list = m_ActiveItemDic.ToList();
+        List<KeyValuePair<T, Y>> list = m_ActiveItems.ToList();
         list.Sort(Compare);
-        m_ActiveItemDic.Clear();
+        m_ActiveItems.Clear();
         list.Traversal((KeyValuePair<T,Y> pair) =>
         {
             GetItemTransform(pair.Value).SetAsLastSibling();
-            m_ActiveItemDic.Add(pair.Key,pair.Value);
+            m_ActiveItems.Add(pair.Key,pair.Value);
         });
     }
 
     public void Clear()
     {
-        m_ActiveItemDic.TraversalMark(item => true, RemoveItem);
+        m_ActiveItems.TraversalMark(item => true, RemoveItem);
     } 
 
     protected virtual Y CreateNewItem(Transform instantiateTrans)

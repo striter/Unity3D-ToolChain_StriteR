@@ -2,9 +2,11 @@
 using UnityEngine;
 #region Unit
 [Serializable]
-public class Ref<T> 
+public class Ref<T>
 {
     public T m_RefValue = default;
+    public Ref() { }
+    public Ref(T _refValue) { m_RefValue = _refValue; }
     public override bool Equals(object obj) => this == (Ref<T>)obj;
     public override int GetHashCode() => m_RefValue.GetHashCode();
     public static bool operator !=(Ref<T> _src, Ref<T> _tar) => !(_src == _tar);
@@ -14,7 +16,7 @@ public class Ref<T>
             return _src.m_RefValue.Equals(_tar.m_RefValue);
         return _src==null && _tar==null;
     }
-    public static implicit operator Ref<T>(T _value)=>new Ref<T>() { m_RefValue=_value};
+    public static implicit operator Ref<T>(T _value)=>new Ref<T>(_value) ;
     public static implicit operator T(Ref<T> _refValue) => _refValue.m_RefValue;
     public void SetValue(T _value) => m_RefValue = _value;
 }

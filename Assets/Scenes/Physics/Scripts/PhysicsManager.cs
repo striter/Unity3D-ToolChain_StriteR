@@ -46,8 +46,8 @@ namespace PhysicsTest
         }
         private void Start()
         {
-            UIT_TouchConsole.InitDefaultCommands(consoleOn=>Cursor.lockState=consoleOn? CursorLockMode.Confined: CursorLockMode.Locked);
-            UIT_TouchConsole.Header("Level");
+            UIT_TouchConsole.InitDefaultCommands().SetOnConsoleShow(consoleOn => Cursor.lockState = consoleOn ? CursorLockMode.Confined : CursorLockMode.Locked);
+            UIT_TouchConsole.NewPage("Level");
             UIT_TouchConsole.Command("Graviry", KeyCode.F1).Button(() => SetCharacter(m_GravityGunCharacter));
             UIT_TouchConsole.Command("Marioentte", KeyCode.F2).Button(() => SetCharacter(m_marionetteCharacter));
             UIT_TouchConsole.Command("Human Static Animator", KeyCode.F3).Button(() => SetCharacter(m_Human_StaticAnimator));

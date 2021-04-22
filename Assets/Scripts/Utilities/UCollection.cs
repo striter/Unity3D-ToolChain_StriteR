@@ -322,6 +322,11 @@ public static class UCollection
         src.Traversal((index, srcItem) => dstArray[index] = GetDstItem(index,srcItem));
         return dstArray;
     }
+    public static IEnumerable<object> GetEnumerable(this Array array)
+    {
+        foreach(var item in array)
+            yield return item;
+    }
 
     public static Dictionary<T,List<Y>> ToListDictionary<T,Y>(this IEnumerable<Y> _items, Func<Y,T> OnEachItem)
     {
@@ -340,5 +345,16 @@ public static class UCollection
         List<Y> dstList = new List<Y>();
         src.Traversal((index, srcItem) => dstList.Add(GetDstItem(srcItem)));
         return dstList;
+    }
+
+    public static IEnumerable<Y> TakeAll<T,Y>(this IEnumerable<T> _enumerable,Func<T,Y> _OnEachElement ) where T:class  where Y:class
+    {
+        foreach(var element in _enumerable)
+        {
+            Y item = _OnEachElement(element);
+            if (item == null)
+                continue;
+            yield return item;
+        }
     }
 }

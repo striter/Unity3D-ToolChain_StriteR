@@ -5,22 +5,22 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/ExampleHelperScene.unity
     guid: 0600e4da9bdccee4ab819bf25ea95bdf
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/EffectsOverview/EffectsOverview.unity
     guid: 21f0777311e4d6049a9b325c34cbdc37
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Rendering/PostEffect.unity
     guid: c1695ceef3934ec44b866eb60161d834
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/AnimationInstance/AnimationInstanceSampleManager.unity
     guid: 1e93d68cc12511e47a5946bbbec25c6a
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Physics/Physics.unity
     guid: 231e8973e87fdb74199ddf25bc6b8079
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Test/Test.unity
     guid: 414a5d9f6dee25d409efdb48a0110b72
   m_configObjects:

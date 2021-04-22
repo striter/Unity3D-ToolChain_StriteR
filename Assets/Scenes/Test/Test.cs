@@ -30,9 +30,8 @@ public class Test : MonoBehaviour
     public SaveTest m_SaveTest = new SaveTest();
     private void Start()
     {
-
         UIT_TouchConsole.InitDefaultCommands();
-        UIT_TouchConsole.Header("Data Save");
+        UIT_TouchConsole.NewPage("Data Persistent");
         UIT_TouchConsole.Command("Read").Button(() => { m_SaveTest.ReadPersistentData(); Debug.Log(m_SaveTest.Test1); });
         UIT_TouchConsole.Command("Save").Slider(0,10,m_SaveTest.Test1, value =>
         {
@@ -41,7 +40,7 @@ public class Test : MonoBehaviour
             m_SaveTest.SavePersistentData();
         });
 
-        UIT_TouchConsole.Header("Touch Input");
+        UIT_TouchConsole.NewPage("Touch Input");
         UIT_TouchConsole.Command("Single").
             Button(() => TouchInputManager.Instance.SwitchToSingle().Init((down, pos) => Debug.LogFormat("Single{0}{1}", down, pos), pos => Debug.LogFormat("Single Tick{0}", pos)));
         UIT_TouchConsole.Command("Stretch").
@@ -51,11 +50,11 @@ public class Test : MonoBehaviour
         UIT_TouchConsole.Command("Dual LR Joystick").
             Button(() => TouchInputManager.Instance.SwitchToTrackers().Init(new TouchTracker_Joystick(UIT_TouchConsole.GetHelperJoystick(), enum_Option_JoyStickMode.Retarget, vec2 => Debug.LogFormat("Dual L Joystick{0}", vec2), TouchTracker.s_LeftTrack), new TouchTracker(vec2 => Debug.LogFormat("Dual R Joystick{0}", vec2), TouchTracker.s_RightTrack)));
 
-        UIT_TouchConsole.EmptyLine();
+        UIT_TouchConsole.NewPage("Color Grading");
         UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostEffect_ColorGrading>(), effect => effect.OnValidate());
-        UIT_TouchConsole.EmptyLine();
+        UIT_TouchConsole.NewPage("Depth Of Field");
         UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostEffect_DepthOfField>(), effect => effect.OnValidate());
-        UIT_TouchConsole.EmptyLine();
+        UIT_TouchConsole.NewPage("VHS");
         UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostEffect_VHS>(), effect => effect.OnValidate());
     }
     [Serializable]
