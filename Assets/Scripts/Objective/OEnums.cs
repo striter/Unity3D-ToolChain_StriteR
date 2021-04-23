@@ -13,3 +13,14 @@
     Normal,
     Tangent,
 }
+
+public enum enum_ColorVisualize
+{
+    None,
+    RGB,
+    RGBA,
+    R,
+    G,
+    B,
+    A,
+}

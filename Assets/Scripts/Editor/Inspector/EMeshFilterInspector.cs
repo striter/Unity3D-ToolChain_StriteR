@@ -9,15 +9,6 @@ namespace TEditor
     [CustomEditor(typeof(MeshFilter)), CanEditMultipleObjects]
     public class EMeshFilterInspector : Editor
     {
-        public enum enum_ColorVisualize
-        {
-            None,
-            RGBA,
-            R,
-            G,
-            B,
-            A,
-        }
         MeshFilter m_Target;
         bool m_EnableVertexDataVisualize;
         bool m_DrawVertex = false;
@@ -172,6 +163,7 @@ namespace TEditor
                     switch (m_DrawColorType)
                     {
                         case enum_ColorVisualize.RGBA: vertexColor = m_Colors[i]; break;
+                        case enum_ColorVisualize.RGB:vertexColor = m_Colors[i].SetAlpha(1);break;
                         case enum_ColorVisualize.R: vertexColor = Color.red * m_Colors[i].r; ; break;
                         case enum_ColorVisualize.G: vertexColor = Color.green * m_Colors[i].g; break;
                         case enum_ColorVisualize.B: vertexColor = Color.blue * m_Colors[i].b; break;

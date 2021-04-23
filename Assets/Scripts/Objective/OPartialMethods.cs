@@ -9,12 +9,8 @@ public class PartialMethodAttribute : Attribute
     public object m_Sorting;
     public PartialMethodAttribute(object _trigger, object _sorting)
     {
-        if (!_trigger.GetType().IsEnum)
-            throw new Exception("Trigger For Enum Field Only!");
-
-        Type _sortingType = _sorting.GetType();
-        if (!_sortingType.IsValueType)
-            throw new Exception("Sorting For Value Type Only!");
+        if (!_trigger.GetType().IsValueType || !_sorting.GetType().IsValueType)
+            throw new Exception("Trigger For Value Type Only!");
 
         m_Trigger = _trigger;
         m_Sorting = _sorting;

@@ -24,13 +24,14 @@ namespace TEditor
         //Art
         [MenuItem("Work Flow/Art/Plane Mesh Generator", false, 301)]
         static void ShowPlaneGenerator() => EditorWindow.GetWindow(typeof(EWPlaneMeshGenerator)).titleContent=new GUIContent("Plane Generator", EditorGUIUtility.FindTexture("CustomTool"));
-        [MenuItem("Work Flow/Art/Noise Texture Generator", false, 302)]
-        static void ShowNoiseGenerator() => EditorWindow.GetWindow(typeof(EWNoiseGenerator)).titleContent=new GUIContent("Noise Texture Generator",EditorGUIUtility.FindTexture("CustomTool"));
-        [MenuItem("Work Flow/Art/Mesh Smooth Normal Generator", false, 303)]
+        [MenuItem("Work Flow/Art/Mesh Smooth Normal Generator", false, 302)]
         static void ShowSmoothNormalGenerator() => EditorWindow.GetWindow(typeof(EWSmoothNormalGenerator)).titleContent = new GUIContent("Smooth Normal Generator", EditorGUIUtility.FindTexture("CustomTool"));
-        [MenuItem("Work Flow/Art/Mesh Editor", false, 304)]
-        static void ShowMeshVertexEditor() => EditorWindow.GetWindow(typeof(EMeshEditor)).titleContent = new GUIContent("Mesh Editor",EditorGUIUtility.FindTexture("AvatarPivot"));
-
+        [MenuItem("Work Flow/Art/Mesh Editor", false, 303)]
+        static void ShowMeshEditor() => EditorWindow.GetWindow(typeof(EMeshEditor)).titleContent = new GUIContent("Mesh Editor",EditorGUIUtility.FindTexture("AvatarPivot"));
+        [MenuItem("Work Flow/Art/Noise Texture Generator", false, 304)]
+        static void ShowNoiseGenerator() => EditorWindow.GetWindow(typeof(EWNoiseGenerator)).titleContent = new GUIContent("Noise Texture Generator", EditorGUIUtility.FindTexture("CustomTool"));
+        [MenuItem("Work Flow/Art/Texture Modifier", false, 305)]
+        static void ShowTextureModifier() => EditorWindow.GetWindow(typeof(EWTextureEditor)).titleContent = new GUIContent("Texture Modifier", EditorGUIUtility.FindTexture("d_PreTextureMipMapHigh"));
         [MenuItem("Work Flow/Art/(Optimize)Animation Instance Baker", false, 400)]
         static void ShowOptimizeWindow() => EditorWindow.GetWindow(typeof(EWAnimationInstanceBaker)).titleContent = new GUIContent("GPU Animation Instance Baker", EditorGUIUtility.FindTexture("AvatarSelector"));
         [MenuItem("Work Flow/Art/(Optimize)Animation Clip Optimize", false, 401)]
