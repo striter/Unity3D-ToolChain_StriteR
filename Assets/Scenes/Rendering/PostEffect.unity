@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657695, g: 0.49641216, b: 0.5748181, a: 1}
+  m_IndirectSpecularColor: {r: 0.45140064, g: 0.500892, b: 0.5723183, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -636,7 +636,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 509373205}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.5, y: 2.41, z: 4.9}
+  m_LocalPosition: {x: 4.65, y: 3.27, z: 5.36}
   m_LocalScale: {x: 5, y: 1, z: 5}
   m_Children: []
   m_Father: {fileID: 374659048}
@@ -668,6 +668,7 @@ GameObject:
   - component: {fileID: 520397183}
   - component: {fileID: 520397184}
   - component: {fileID: 520397187}
+  - component: {fileID: 520397188}
   m_Layer: 0
   m_Name: Post4
   m_TagString: MainCamera
@@ -803,6 +804,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_FrustumCornersRay: 2
   m_OpaqueBlurTexture: 0
+--- !u!114 &520397188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520397182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd77a91bcac115943bbc6807fe1070b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectData:
+    m_Stylize: 1
+    m_DownSample: 7
+    m_PixelGrid: 0
+    m_GridWidth: 0.1
+    m_PixelGridColor: {r: 1, g: 1, b: 1, a: 0.5}
+    m_OilPaintKernel: 20
+    m_OilPaintSize: 0.92
+    m_ObraDitherScale: 0.33
+    m_ObraDitherStrength: 0.5
+    m_ObraDitherColor: {r: 0.3, g: 0.2764706, b: 0.0047058826, a: 0.3}
+  m_SceneViewPreview: 0
 --- !u!1 &526198351
 GameObject:
   m_ObjectHideFlags: 0
@@ -831,7 +856,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9508801, g: 0.9528302, b: 0.9033909, a: 1}
   m_Intensity: 0.75
   m_Range: 10
   m_SpotAngle: 30
@@ -889,13 +914,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 526198351}
-  m_LocalRotation: {x: -0.88550407, y: -0.090030596, z: 0.19307123, w: -0.4129173}
+  m_LocalRotation: {x: -0.94375354, y: -0.055136368, z: 0.20577168, w: -0.25287804}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 130, y: -335.4, z: 0}
+  m_LocalEulerAnglesHint: {x: 150, y: -335.4, z: 0}
 --- !u!1 &559505669
 GameObject:
   m_ObjectHideFlags: 0
@@ -2052,6 +2077,7 @@ GameObject:
   - component: {fileID: 2086077259}
   - component: {fileID: 2086077260}
   - component: {fileID: 2086077255}
+  - component: {fileID: 2086077262}
   m_Layer: 0
   m_Name: Main
   m_TagString: MainCamera
@@ -2243,6 +2269,34 @@ MonoBehaviour:
     m_FillTextureScale: 0.35
   m_SceneViewPreview: 1
   m_DrawGizmos: 1
+--- !u!114 &2086077262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2086077254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03933548f0649d64a950fbfc4aecb912, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectData:
+    m_Distance: 20
+    m_MarchTimes: 64
+    m_Strength: 0.35
+    m_Pow: 1.06
+    m_DownSample: 2
+    m_Dither: 0
+    m_EnableBlur: 0
+    m_BlurParam:
+      blurType: 0
+      blurSize: 1
+      iteration: 1
+      downSample: 2
+      angle: 0
+      vector: {x: 0.5, y: 0.5}
+  m_SceneViewPreview: 0
 --- !u!1 &2142251302
 GameObject:
   m_ObjectHideFlags: 0

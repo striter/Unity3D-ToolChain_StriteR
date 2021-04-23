@@ -192,6 +192,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartial
             page.Highlight(page.m_Identity == m_CurrentPage);
         foreach (var command in m_CommandContainers.m_ActiveItems.Values)
             command.transform.SetActive(command.m_PageIndex == m_CurrentPage);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(m_LogPanelRect.transform as RectTransform);
     }
     void SetConsoleTimeScale(float _timeScale)
     {
