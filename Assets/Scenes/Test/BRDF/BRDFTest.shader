@@ -8,9 +8,6 @@
         _Glossiness("Smoothness",Range(0,1))=1
         _Metallic("Metalness",Range(0,1))=0
 
-        [KeywordEnum(BlinnPhong,Beckmann,Gaussian,GGX,TrowbridgeReitz,Anisotropic_TrowbridgeReitz,Anisotropic_Ward)]_NDF("Normal Distribution Function:",float) = 2
-        [KeywordEnum(Implicit,AshikhminShirley,AshikhminPremoze,Duer,Neumann,Kelemen,CookTorrence,Ward,R_Kelemen_Modified,R_Kurt,R_WalterEtAl,R_SmithBeckmann,R_GGX,R_Schlick,R_Schlick_Beckmann,R_Schlick_GGX)]_GSF("Geometry Shadow Function:",float)=0
-        [KeywordEnum(SCHLICK,SPHERICALGAUSSIAN)]_FRESNEL("Fresnel Function",float)=0
         _AnisoTropicValue("Normal Anisotropic",Range(0,1))=1
     }
     SubShader
@@ -19,13 +16,10 @@
 
         Pass
         {
-            CGPROGRAM
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile_fwdbase_fullshadows
-            #pragma multi_compile _NDF_BLINNPHONG _NDF_BECKMANN _NDF_GAUSSIAN _NDF_GGX _NDF_TROWBRIDGEREITZ _NDF_ANISOTROPIC_TROWBRIDGEREITZ _NDF_ANISOTROPIC_WARD
-            #pragma multi_compile _GSF_IMPLICIT _GSF_ASHIKHMINSHIRLEY _GSF_ASHIKHMINPREMOZE _GSF_DUER _GSF_NEUMANN _GSF_KELEMEN _GSF_COOKTORRENCE _GSF_WARD _GSF_R_KELEMEN_MODIFIED _GSF_R_KURT _GSF_R_WALTERETAL _GSF_R_SMITHBECKMANN _GSF_R_GGX _GSF_R_SCHLICK _GSF_R_SCHLICK_BECKMANN _GSF_R_SCHLICK_GGX
-            #pragma multi_compile _FRESNEL_SCHLICK _FRESNEL_SPHERICALGAUSSIAN
             #include "UnityCG.cginc"
             #include "Lighting.cginc"
             #include "AutoLight.cginc"
@@ -85,7 +79,6 @@
                 float3 lightDir=normalize(i.lightDir);
                 float3 viewDir=normalize(i.viewDir);
                 float3 halfDir=normalize(viewDir+lightDir);
-                float3 reflectDir=normalize(reflect(-viewDir,normal));
                 
                 float NDL = dot(normal, lightDir);
                 float NDH = dot(normal, halfDir);
@@ -93,7 +86,6 @@
                 float VDH = dot(viewDir, halfDir);
                 float LDH = dot(lightDir, halfDir);
                 float LDV = dot(lightDir, viewDir);
-                float RDV = dot(reflectDir, viewDir);
 
                 float3 albedo=tex2D(_MainTex,i.uv);
                 float3 lightCol=_LightColor0.rgb;

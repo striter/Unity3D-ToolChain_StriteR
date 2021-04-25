@@ -88,10 +88,12 @@
                 float sumDensity=0;
                 if(marchDistance>0)
                 {
-                    float marchOffset=1.0/_RayMarch;
-                    float distanceOffset=_Distance/_RayMarch;
+                    uint rayMarchCount=min(_RayMarch,512);
+                    float marchOffset=1.0/rayMarchCount;
+                    float distanceOffset=_Distance/rayMarchCount;
                     float dstMarched=0;
-                    for(int index=0;index<_RayMarch;index++)
+                    [unrool(512)]
+                    for(uint index=0u;index<rayMarchCount;index++)
                     {
                         float3 marchPos=i.positionWS+marchDirWS*dstMarched;
                         float density=SampleDensity(marchPos)*_Density;

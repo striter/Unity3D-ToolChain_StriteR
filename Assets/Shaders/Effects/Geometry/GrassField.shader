@@ -38,7 +38,7 @@
 
             struct v2g
             {
-                float4 positionOS:SV_POSITION;
+                float4 positionOS:POSITION;
                 float3 normalOS:NORMAL;
                 float4 tangentOS:TANGENT;
                 float3 color:COLOR;
@@ -196,6 +196,11 @@
                     return 1;
                 #endif
             }
+
+            float4 fragDepth(g2f i):SV_TARGET0
+            {
+                return 0;
+            }
         ENDHLSL
 
         Pass
@@ -217,7 +222,7 @@
             HLSLPROGRAM
             #pragma vertex vert
             #pragma geometry geom
-            #pragma fragment frag
+            #pragma fragment fragDepth
             ENDHLSL
         }
         
@@ -227,7 +232,7 @@
             HLSLPROGRAM
             #pragma vertex vert
             #pragma geometry geom
-            #pragma fragment frag
+            #pragma fragment fragDepth
             ENDHLSL
         }
     }

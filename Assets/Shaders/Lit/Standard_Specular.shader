@@ -90,8 +90,8 @@
 				float3 normalTS:TEXCOORD1;
 				float3 positionTS:TEXCOORD2;
 				float3 cameraPosTS:TEXCOORD3;
-				float3 lightDirTS:TEXCOORD4;
-				float4 shadowCoordWS:TEXCOORD5;
+				float4 shadowCoordWS:TEXCOORD4;
+				float3x3 TBNWS:TEXCOORD5;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -105,13 +105,13 @@
 				float3 positionWS =  TransformObjectToWorld(v.positionOS);
 				o.shadowCoordWS=TransformWorldToShadowCoord(positionWS);
 
-				float3 normalOS=normalize(v.normalOS);
-				float3 tangentOS=normalize(v.tangentOS.xyz);
-				float3x3 TBN=float3x3(v.tangentOS.xyz,cross(v.normalOS,v.tangentOS.xyz)*v.tangentOS.w,v.normalOS);
-				o.positionTS=mul(TBN,v.positionOS);
-				o.cameraPosTS=mul(TBN, TransformWorldToObject(GetCameraPositionWS()));
-				o.lightDirTS=mul(TBN,TransformWorldToObjectNormal(_MainLightPosition.xyz));
-				o.normalTS=mul(TBN,v.normalOS);
+				float3 normalWS=normalize(TransformObjectToWorldDir(v.normalOS));
+				float3 tangentWS=normalize(TransformObjectToWorldDir(v.tangentOS.xyz));
+				float3 biTangentWS=cross(normalWS,tangentWS)*v.tangentOS.w;
+				o.TBNWS=float3x3(tangentWS,biTangentWS,normalWS);
+				o.positionTS=mul(o.TBNWS,positionWS);
+				o.normalTS=mul(o.TBNWS,normalWS);
+				o.cameraPosTS=mul(o.TBNWS, GetCameraPositionWS());
 				return o;
 			}
 			#if _PARALLEXMAP
@@ -156,7 +156,7 @@
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
 				float3 normalTS=normalize(i.normalTS);
-				float3 lightDirTS=normalize(i.lightDirTS);
+				float3 lightDirTS=mul(i.TBNWS,_MainLightPosition.xyz);
 				float3 viewDirTS=normalize(i.cameraPosTS-i.positionTS);
 				#if _PARALLEXMAP
 				i.uv=ParallexMap(i.uv,viewDirTS);
