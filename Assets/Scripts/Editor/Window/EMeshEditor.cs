@@ -187,10 +187,10 @@ namespace TEditor
         }
         public void Save()
         {
-            if (!UECommon.SaveFilePath(out string filePath, "asset", m_ModifingMesh.name))
+            if (!UEAsset.SaveFilePath(out string filePath, "asset", m_ModifingMesh.name))
                 return;
 
-            UECommon.CreateOrReplaceMainAsset(m_ModifingMesh, UEPath.FilePathToAssetPath(filePath));
+            UEAsset.CreateOrReplaceMainAsset(m_ModifingMesh, UEPath.FilePathToAssetPath(filePath));
         }
     }
     public class MeshEditorHelperBase

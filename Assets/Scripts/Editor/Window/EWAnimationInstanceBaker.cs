@@ -126,7 +126,7 @@ namespace TEditor
         }
         void GenerateVertexTexture(GameObject _targetFBX, AnimationClip[] _clips)
         {
-            if (!UECommon.SelectDirectory(_targetFBX, out string savePath, out string meshName))
+            if (!UEAsset.SelectDirectory(_targetFBX, out string savePath, out string meshName))
             {
                 Debug.LogWarning("Invalid Folder Selected");
                 return;
@@ -181,7 +181,7 @@ namespace TEditor
 
             AnimationInstanceData instanceData = ScriptableObject.CreateInstance<AnimationInstanceData>();
             instanceData.m_Animations = instanceParams;
-            instanceData=UECommon.CreateAssetCombination(savePath + meshName + "_VertexInstance.asset", instanceData, new KeyValuePair< string, Object>(meshName + "_AnimationAtlas", atlasTexture),new KeyValuePair<string,Object>( meshName + "_InstanceMesh",instanceMesh));
+            instanceData=UEAsset.CreateAssetCombination(savePath + meshName + "_VertexInstance.asset", instanceData, new KeyValuePair< string, Object>(meshName + "_AnimationAtlas", atlasTexture),new KeyValuePair<string,Object>( meshName + "_InstanceMesh",instanceMesh));
             Object[] assets = AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GetAssetPath(instanceData));
             foreach (var asset in assets)
             {
@@ -197,7 +197,7 @@ namespace TEditor
 
         void GenerateBoneInstanceMeshAndTexture(GameObject _targetFBX, AnimationClip[] _clips, string exposeBones)
         {
-            if (!UECommon.SelectDirectory(_targetFBX, out string savePath, out string meshName))
+            if (!UEAsset.SelectDirectory(_targetFBX, out string savePath, out string meshName))
             {
                 Debug.LogWarning("Invalid Folder Selected");
                 return;
@@ -303,7 +303,7 @@ namespace TEditor
                 instanceData.m_Animations = instanceParams;
                 instanceData.m_ExposeBones = exposeBoneParam.ToArray();
 
-                instanceData =  UECommon.CreateAssetCombination(savePath + meshName + "_BoneInstance.asset",instanceData, new KeyValuePair<string,Object>(meshName + "_AnimationAtlas",atlasTexture), new KeyValuePair<string,Object>(meshName + "_InstanceMesh",instanceMesh));
+                instanceData = UEAsset.CreateAssetCombination(savePath + meshName + "_BoneInstance.asset",instanceData, new KeyValuePair<string,Object>(meshName + "_AnimationAtlas",atlasTexture), new KeyValuePair<string,Object>(meshName + "_InstanceMesh",instanceMesh));
                 Object[] assets=AssetDatabase.LoadAllAssetsAtPath( AssetDatabase.GetAssetPath(instanceData));
                 foreach(var asset in assets)
                 {

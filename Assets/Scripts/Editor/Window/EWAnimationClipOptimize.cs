@@ -28,7 +28,7 @@ namespace TEditor
             m_OptimizePresicion = EditorGUILayout.IntSlider("Float Presicion",m_OptimizePresicion, 2, 8);
             if (GUILayout.Button("Optimize"))
             {
-                if (UECommon.SaveFilePath(out string filePath, "anim", UEPath.RemoveExtension(UEPath.GetPathName(AssetDatabase.GetAssetPath(m_OptimizeAsset))) + "_O"))
+                if (UEAsset.SaveFilePath(out string filePath, "anim", UEPath.RemoveExtension(UEPath.GetPathName(AssetDatabase.GetAssetPath(m_OptimizeAsset))) + "_O"))
                 {
                     AnimationClip clip = OptimizeAnimation(m_OptimizeAsset, m_OptimizePresicion, m_OptimizeScale);
                     string assetPath = UEPath.FilePathToAssetPath(filePath);

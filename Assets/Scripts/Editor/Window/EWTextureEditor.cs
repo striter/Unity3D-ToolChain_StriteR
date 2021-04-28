@@ -93,8 +93,8 @@ namespace TEditor
                 UpdateTexture();
             if (GUI.Button(UEGUI.HorizontalScope.NextRect(20, 80), "Export"))
             {
-                if (UECommon.SaveFilePath(out string filePath, "png", m_SrcTexture.name+"_M"))
-                    UECommon.CreateOrReplaceFile(filePath, m_ModifyTexture.EncodeToPNG());
+                if (UEAsset.SaveFilePath(out string filePath, "png", m_SrcTexture.name+"_M"))
+                    UEAsset.CreateOrReplaceFile(filePath, m_ModifyTexture.EncodeToPNG());
             }
         }
 
