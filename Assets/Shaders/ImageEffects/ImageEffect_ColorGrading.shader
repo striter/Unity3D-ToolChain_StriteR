@@ -2,7 +2,7 @@
 {
 	Properties
 	{
-		 _MainTex ("Texture", 2D) = "white" {}
+		[NoScaleOffset]_MainTex ("Texture", 2D) = "white" {}
 		_Weight("Weight",Range(0,1))=1
 		[Toggle(_BSC)] _Enable_BSC ("BSC Enable", Float) = 1
 		_Brightness("Brightness",Range(0,2))=1
@@ -18,30 +18,34 @@
 	}
 	SubShader
 	{
-		Cull Off ZWrite Off ZTest Always
+		Tags {"Queue"="Transparent" "PreviewType"="Plane"}
+		// No culling or depth
+		Cull Off ZWrite Off 
 
 		Pass
 		{
-			HLSLPROGRAM
+			CGPROGRAM
 			#pragma vertex vert_img
 			#pragma fragment frag
 			#pragma shader_feature _LUT
 			#pragma shader_feature _BSC
 			#pragma shader_feature _CHANNEL_MIXER
-			#include "../CommonInclude.hlsl"
-			#include "CameraEffectInclude.hlsl"
+			#include "UnityCG.cginc"
 			
 			#if _LUT
-			TEXTURE2D(_LUTTex);SAMPLER(sampler_LUTTex);
+			sampler2D _LUTTex;
 			float4 _LUTTex_TexelSize;
 			int _LUTCellCount;
 
 			half3 SampleLUT(half3 sampleCol) {
 				half width=_LUTCellCount;
+				half minWidth=_LUTCellCount-1;
 
 				int lutCellPixelCount = _LUTTex_TexelSize.z / width;
 				int x0CellIndex =  floor(sampleCol.b * width);
-				int x1CellIndex = min(x0CellIndex+1, width - 1);
+				int x1CellIndex = x0CellIndex+1;
+				x0CellIndex=min(x0CellIndex,minWidth);
+				x1CellIndex=min(x1CellIndex,minWidth);
 
 				half x0PixelCount = x0CellIndex* lutCellPixelCount + (lutCellPixelCount -1)* sampleCol.r;
 				half x1PixelCount = x1CellIndex * lutCellPixelCount + (lutCellPixelCount - 1) * sampleCol.r;
@@ -51,20 +55,20 @@
 				half2 uv1= float2(x1PixelCount, yPixelCount) * _LUTTex_TexelSize.xy;
 
 				half zOffset = fmod(sampleCol.b * width, 1.0h);
-				return lerp( SAMPLE_TEXTURE2D(_LUTTex,sampler_LUTTex,uv0).rgb,SAMPLE_TEXTURE2D(_LUTTex,sampler_LUTTex,uv1).rgb,zOffset) ;
+				return lerp( tex2D(_LUTTex,uv0),tex2D(_LUTTex,uv1),zOffset) ;
 			}
 			#endif
 
 			#if _BSC
-			half _Saturation;
+			uniform half _Saturation;
 			float3 Saturation(float3 c)
 			{
 				float luma =  dot(c, float3(0.2126729, 0.7151522, 0.0721750));
 				return luma.xxx + _Saturation.xxx * (c - luma.xxx);
 			}
 
-			half _Brightness;
-			half _Contrast;
+			uniform half _Brightness;
+			uniform half _Contrast;
 			half3 GetBSCCol(half3 col)
 			{
 				half3 avgCol = half3(.5h, .5h, .5h);
@@ -80,9 +84,9 @@
 			#endif
 
 			#if _CHANNEL_MIXER
-			half3 _MixRed;
-			half3 _MixGreen;
-			half3 _MixBlue;
+			uniform half4 _MixRed;
+			uniform half4 _MixGreen;
+			uniform half4 _MixBlue;
 			half GetMixerAmount(half3 col,half3 mix)
 			{
 				return col.r*mix.x+col.g*mix.y+col.b*mix.z;
@@ -90,15 +94,21 @@
 
 			half3 ChannelMixing(half3 col)
 			{
-				half3x3 mixMatrix=half3x3(_MixRed,_MixGreen,_MixBlue);
-				return mul(col,mixMatrix);
+				half redMixAmount=GetMixerAmount(col,_MixRed);
+				half greenMixAmount=GetMixerAmount(col,_MixGreen);
+				half blueMixAmount=GetMixerAmount(col,_MixBlue);
+				col.r+=redMixAmount;
+				col.g+=greenMixAmount;
+				col.b+=blueMixAmount;
+				return col;
 			}
 			#endif
 
-			half _Weight;
+			uniform sampler2D _MainTex;
+			uniform half _Weight;
 			half4 frag (v2f_img i) : SV_Target
 			{
-				half3 baseCol=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv).rgb;
+				half3 baseCol=tex2D(_MainTex, i.uv).rgb;
 				half3 targetCol=baseCol;
 
 				#if _LUT
@@ -114,7 +124,7 @@
 				#endif
 				return half4(lerp(baseCol,targetCol,_Weight),1) ;
 			}
-			ENDHLSL
+			ENDCG
 		}
 	}
 }
