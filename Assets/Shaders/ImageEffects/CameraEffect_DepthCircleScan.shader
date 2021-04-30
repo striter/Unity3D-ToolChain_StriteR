@@ -17,7 +17,7 @@
 			#pragma fragment frag
 
 			#include "../CommonInclude.hlsl"
-			#include "CameraEffectInclude.hlsl"
+            #include "../CameraEffectInclude.hlsl"
 
 			float4 _Color;
 			float4 _Origin;

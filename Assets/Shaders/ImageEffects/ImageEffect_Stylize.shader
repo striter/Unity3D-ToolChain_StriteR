@@ -9,7 +9,7 @@ Shader "Hidden/ImageEffect_Stylize"
         Tags { "RenderType"="Opaque" }
         HLSLINCLUDE
             #include "../CommonInclude.hlsl"
-            #include "CameraEffectInclude.hlsl"
+            #include "../CameraEffectInclude.hlsl"
         ENDHLSL
         Pass
         {

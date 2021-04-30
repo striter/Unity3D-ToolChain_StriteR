@@ -23,7 +23,7 @@
 				#pragma fragment frag
 				#pragma shader_feature _NOISE
 				#include "../CommonInclude.hlsl"
-				#include "CameraEffectInclude.hlsl"
+				#include "../CameraEffectInclude.hlsl"
 				half _FogDensity;
 				float _FogPow;
 				float4 _FogColor;

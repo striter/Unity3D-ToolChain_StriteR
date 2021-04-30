@@ -88,6 +88,7 @@ public class Test : MonoBehaviour
     {
 
         Vector4[] curLights = lights;
+        
         if (Input.GetMouseButton(0))
             curLights = lights.Add(new Vector4(Input.mousePosition.x, Input.mousePosition.y, 200 * 200, 1));
 

@@ -23,7 +23,7 @@
             #pragma shader_feature _PIXELDISTORT
             #pragma shader_feature _VIGNETTE
             #include "../CommonInclude.hlsl"
-            #include "CameraEffectInclude.hlsl"
+            #include "../CameraEffectInclude.hlsl"
             float2 _ScreenCutTarget;
 
             #if _COLORBLEED

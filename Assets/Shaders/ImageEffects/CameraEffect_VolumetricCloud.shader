@@ -16,7 +16,7 @@
             
             #include "../CommonInclude.hlsl"
             #include "../BoundingCollision.hlsl"
-            #include "CameraEffectInclude.hlsl"
+            #include "../CameraEffectInclude.hlsl"
             #pragma shader_feature _LIGHTMARCH
             #pragma shader_feature _LIGHTSCATTER
             #pragma shader_feature _SHAPEMASK

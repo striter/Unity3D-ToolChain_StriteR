@@ -21,7 +21,7 @@
 			#pragma shader_feature _NORMALDETECT
 			
 			#include "../CommonInclude.hlsl"
-			#include "CameraEffectInclude.hlsl"
+            #include "../CameraEffectInclude.hlsl"
 			uint convolution;
 			half4 _OutlineColor;
 			half _OutlineWidth;

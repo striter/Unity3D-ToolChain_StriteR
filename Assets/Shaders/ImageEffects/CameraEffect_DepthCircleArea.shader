@@ -15,7 +15,7 @@
 				#pragma fragment frag
 
 				#include "../CommonInclude.hlsl"
-				#include "CameraEffectInclude.hlsl"
+				#include "../CameraEffectInclude.hlsl"
 				
 				TEXTURE2D(_FillTexture);SAMPLER(sampler_FillTexture);
 				float4 _Origin;

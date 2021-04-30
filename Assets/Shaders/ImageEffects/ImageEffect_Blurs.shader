@@ -8,7 +8,7 @@
 	
     HLSLINCLUDE
 	#include "../CommonInclude.hlsl"
-	#include "CameraEffectInclude.hlsl"
+    #include "../CameraEffectInclude.hlsl"
 	float _BlurSize;
 	int _Iteration;
 	float _Angle;

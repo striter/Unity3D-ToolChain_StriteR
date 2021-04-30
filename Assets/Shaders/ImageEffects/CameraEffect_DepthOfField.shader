@@ -16,7 +16,7 @@
             #pragma fragment frag
             #pragma shader_feature _UseBlurDepth
             #include "../CommonInclude.hlsl"
-            #include "CameraEffectInclude.hlsl"
+            #include "../CameraEffectInclude.hlsl"
 
             TEXTURE2D( _BlurTex);SAMPLER(sampler_BlurTex);
             half _FocalStart;

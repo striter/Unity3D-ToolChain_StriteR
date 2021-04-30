@@ -53,7 +53,7 @@ Shader "Game/UI/Sprite_BSC"
 			#pragma fragment frag
 
 			#include "../CommonInclude.hlsl"
-			#include "../ImageEffects/CameraEffectInclude.hlsl"
+			#include "../CameraEffectInclude.hlsl"
 
 			#pragma multi_compile __ UNITY_UI_ALPHACLIP
 

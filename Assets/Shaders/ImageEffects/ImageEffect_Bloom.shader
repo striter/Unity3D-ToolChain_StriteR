@@ -7,7 +7,7 @@ Shader "Hidden/ImageEffect_Bloom"
 
    HLSLINCLUDE
        #include "../CommonInclude.hlsl"
-       #include "CameraEffectInclude.hlsl"
+        #include "../CameraEffectInclude.hlsl"
        TEXTURE2D(_Bloom_Blur);SAMPLER(sampler_Bloom_Blur);
 
        half _Intensity;

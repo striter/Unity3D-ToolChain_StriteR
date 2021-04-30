@@ -15,7 +15,7 @@
 				#pragma fragment frag
 
 				#include "../CommonInclude.hlsl"
-				#include "CameraEffectInclude.hlsl"
+				#include "../CameraEffectInclude.hlsl"
 
 				TEXTURE2D(_NoiseTex);SAMPLER(sampler_NoiseTex);
 				float3 _SampleSphere[32];

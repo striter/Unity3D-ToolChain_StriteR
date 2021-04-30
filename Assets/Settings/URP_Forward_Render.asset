@@ -1,19 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-7868817819740291261
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d25247078c18484cbe07f444b16ec1a, type: 3}
-  m_Name: PerCameraPostProcessing
-  m_EditorClassIdentifier: 
-  m_Active: 1
---- !u!114 &-6475431018226410149
+--- !u!114 &-641928330505408660
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -23,17 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59bf9e073cf798b41b61b969a7d7487c, type: 3}
-  m_Name: SRFGeneral
+  m_Name: Additional
   m_EditorClassIdentifier: 
   m_Active: 1
-  m_FrustumCornersRay: 1
+  m_FrustumCornersRay: 0
+  m_CameraReflectionTexture: 0
+  m_CameraReflectionPlane:
+    m_Normal: {x: 0, y: 1, z: 0}
+    m_Distance: 0
+  m_CameraReflectionComputeShader: {fileID: 0}
   m_OpaqueBlurTexture: 0
   m_BlurParams:
     blurType: 0
-    blurSize: 2.5
-    iteration: 8
-    downSample: 4
-    angle: 0.443
+    blurSize: 1
+    iteration: 1
+    downSample: 2
+    angle: 0
     vector: {x: 0.5, y: 0.5}
 --- !u!114 &11400000
 MonoBehaviour:
@@ -45,12 +37,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de640fe3d0db1804a85f9fc8f5cadab6, type: 3}
-  m_Name: URP_Forward_Renderer
+  m_Name: URP_Forward_Render
   m_EditorClassIdentifier: 
   m_RendererFeatures:
-  - {fileID: -6475431018226410149}
-  - {fileID: -7868817819740291261}
-  m_RendererFeatureMap: 5b9d1117cca522a643bf1d3ce257cc92
+  - {fileID: -641928330505408660}
+  m_RendererFeatureMap: 6c2ff7a0956917f7
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
   shaders:
@@ -74,7 +65,7 @@ MonoBehaviour:
     overrideStencilState: 0
     stencilReference: 0
     stencilCompareFunction: 8
-    passOperation: 0
+    passOperation: 2
     failOperation: 0
     zFailOperation: 0
   m_ShadowTransparentReceive: 1

@@ -29,7 +29,7 @@
 			#pragma shader_feature _BSC
 			#pragma shader_feature _CHANNEL_MIXER
 			#include "../CommonInclude.hlsl"
-			#include "CameraEffectInclude.hlsl"
+            #include "../CameraEffectInclude.hlsl"
 			
 			#if _LUT
 			TEXTURE2D(_LUTTex);SAMPLER(sampler_LUTTex);

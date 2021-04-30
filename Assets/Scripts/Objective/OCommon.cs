@@ -294,4 +294,11 @@ public struct MeshPolygon
     public DirectedTriangle GetDirectedTriangle(Vector3[] verticies)=>new DirectedTriangle(verticies[m_Indice0], verticies[m_Indice1], verticies[m_Indice2]);
 }
 
+[Serializable]
+public struct Plane
+{
+    public Vector3 m_Normal;
+    public float m_Distance;
+    public Plane(Vector3 _normal,float _distance) { m_Normal = _normal;m_Distance = _distance; }
+}
 #endregion
