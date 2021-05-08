@@ -22,11 +22,13 @@ namespace Rendering.Pipeline
         [MFoldout(nameof(m_EnableBlur), true)] public ImageEffectParam_Blurs m_BlurParam = UPipeline.GetDefaultPostProcessData<ImageEffectParam_Blurs>();
         public DistancePlane m_PlaneData => new DistancePlane() { m_Normal = transform.up,m_Distance= UGeometry.PointPlaneDistance( transform.position,transform.up,0) };
         public MeshRenderer m_MeshRenderer { get; private set; }
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.white;
             Gizmos_Extend.DrawArrow(m_PlaneData .m_Normal* m_PlaneData.m_Distance, Quaternion.LookRotation(m_PlaneData.m_Normal), 2f, .5f);
         }
+#endif
     }
 
 }

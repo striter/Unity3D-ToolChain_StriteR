@@ -6,7 +6,7 @@
         _Distance("March Distance",Range(0,500))=5
         _Density("Density",Range(0,5))=1
         _DensityClip("_Density Clip",Range(0,1))=.2
-        [Enum(_16,16,_32,32,_64,64,_128,128,_256,256,_512,512)]_RayMarch("Ray March Times",int)=128
+        [Enum(_16,16,_32,32,_64,64,_128,128)]_RayMarch("Ray March Times",int)=128
         _Noise("Noise 3D",3D)="white"{}
         _NoiseScale("Noise Scale",Vector)=(50,50,50,1)
         _NoiseFlow("Noise Flow",Vector)=(0,0,0,1)
@@ -48,7 +48,7 @@
             };
 
             TEXTURE2D(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
-            sampler3D _Noise;
+            TEXTURE3D(_Noise);SAMPLER(sampler_Noise);
             CBUFFER_START(UnityPerMaterial)
             int _RayMarch;
             float4 _Color;
@@ -61,7 +61,7 @@
             CBUFFER_END
 
             float SampleDensity(float3 worldPos)  {
-                float density=saturate(tex3Dlod(_Noise,float4( worldPos/_NoiseScale.xyz+_NoiseFlow.xyz*_Time.y,0)).r);
+                float density=saturate(SAMPLE_TEXTURE3D(_Noise,sampler_Noise,float3( worldPos/_NoiseScale.xyz+_NoiseFlow.xyz*_Time.y)).r);
                 return smoothstep(_DensityClip,1,density);
             }
 
@@ -88,11 +88,11 @@
                 float sumDensity=0;
                 if(marchDistance>0)
                 {
-                    uint rayMarchCount=min(_RayMarch,512);
+                    uint rayMarchCount=min(_RayMarch,128u);
                     float marchOffset=1.0/rayMarchCount;
                     float distanceOffset=_Distance/rayMarchCount;
                     float dstMarched=0;
-                    [unrool(512)]
+                    [unroll(128)]
                     for(uint index=0u;index<rayMarchCount;index++)
                     {
                         float3 marchPos=i.positionWS+marchDirWS*dstMarched;

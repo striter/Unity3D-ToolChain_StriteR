@@ -1,6 +1,6 @@
 #include "../CommonInclude.hlsl"
-#pragma multi_compile _ _CLEAR_COLOR _CLEAR_CUBE
 
+#pragma kernel Clear
 #pragma kernel Generate
 
 Texture2D<float> _CameraDepthTexture;
@@ -15,8 +15,13 @@ RWTexture2D<float4> _Result;
 float4 _Result_TexelSize;
 
 SamplerState sampler_PointClamp;
+[numthreads(8, 8, 1)]
+void Clear(uint3 id:SV_DispatchThreadID)
+{
+    _Result[id.xy] = 0;
+}
 
-[numthreads(8,8,8)]
+[numthreads(8,8,1)]
 void Generate (uint3 id : SV_DispatchThreadID)
 {
     float2 uv = (id.xy + .5) * _Result_TexelSize.xy;
@@ -25,15 +30,22 @@ void Generate (uint3 id : SV_DispatchThreadID)
     float4 positionCS = float4(uv * 2 - 1, depth, 1);
     float4 positionWS = mul(_MatrixInvVP, positionCS);
     positionWS /= positionWS.w;
+    
     float normalProj = dot(positionWS.xyz - _PlanePosition, _PlaneNormal);
-    if(normalProj>0)
-    {
-        float3 positionWSM = positionWS.xyz - normalProj * _PlaneNormal * 2;
-        float4 positionCSM = mul(_MatrixVP, float4(positionWSM, 1));
-        float2 uvM = (positionCSM.xy / positionCSM.w + 1) * .5;
-        uint2 resultIDM = uvM  * _Result_TexelSize.zw;
-        float originDepth = _Result[resultIDM].a;
-        if (depth>0&&originDepth <= positionCSM.z)
-            _Result[resultIDM] = float4(_Input.SampleLevel(sampler_PointClamp, uv, 0).rgb, 1 - positionCSM.z);
-    }
+    float3 positionWSM = positionWS.xyz - normalProj * _PlaneNormal * 2;
+    float4 positionCSM = mul(_MatrixVP, float4(positionWSM, 1));
+    float2 uvM = (positionCSM.xy / positionCSM.w + 1) * .5;
+    uint2 resultIDM = uvM * _Result_TexelSize.zw;
+    float originDepth = _Result[resultIDM].a;
+    float3 sampleCol = _Input.SampleLevel(sampler_PointClamp, uv, 0).rgb;
+
+    //if (depth > 0 && originDepth < positionCSM.z)
+    //    _Result[resultIDM] = float4(_Input[id.xy].rgb, 1 - positionCSM.z);
+    sampleCol *= step(0.001, normalProj);
+    float depthSample = step(originDepth, positionCSM.z) * step(0.001, depth);
+    sampleCol *= depthSample;
+    depth = lerp(depth,1 - positionCSM, depthSample);
+    
+    sampleCol *= depthSample;
+    _Result[resultIDM] = float4(sampleCol, depth);
 }

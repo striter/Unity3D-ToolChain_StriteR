@@ -56,7 +56,8 @@ Shader "Hidden/CameraEffect_VolumetricLight"
                         curDst+=dstDelta;
                     }
                 }
-                totalAtten= pow(totalAtten,_LightPow)*_LightStrength;
+                float lightPow=abs(_LightPow);
+                totalAtten= pow(totalAtten,lightPow)*_LightStrength;
                 return totalAtten;
             }
             ENDHLSL

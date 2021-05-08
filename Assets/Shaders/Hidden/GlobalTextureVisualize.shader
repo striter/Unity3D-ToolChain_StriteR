@@ -38,7 +38,7 @@ Shader "Unlit/GlobalTextureVisualize"
                 o.vertex = TransformObjectToHClip(v.vertex);
                 o.screenPos=ComputeScreenPos(o.vertex);
                 o.normal=TransformObjectToWorldNormal(v.normal);
-                o.viewDir=TransformObjectToWorld(v.vertex)-GetCameraPositionWS().xyz;
+                o.viewDir=TransformObjectToWorldNormal(v.vertex)-GetCameraPositionWS().xyz;
                 return o;
             }
 
@@ -47,7 +47,7 @@ Shader "Unlit/GlobalTextureVisualize"
                 float3 viewDir=-normalize(i.viewDir);
                 float3 normal=normalize( i.normal);
                 float3 reflectDir=reflect(-viewDir,normal);
-                float3 col = tex2D(_CameraReflectionTexure, i.screenPos.xy/i.screenPos.w);
+                float3 col = tex2D(_CameraReflectionTexure, i.screenPos.xy/i.screenPos.w).rgb;
                 return float4(col,1);
             }
             ENDHLSL
