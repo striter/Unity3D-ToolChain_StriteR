@@ -10,7 +10,8 @@ namespace Rendering.ImageEffect
     {
         Pixel=0,
         OilPaint=1,
-        ObraDithering=2,
+        BilateralFilter=2,
+        ObraDithering = 3,
     }
     public enum enum_PixelBound
     {
@@ -32,18 +33,22 @@ namespace Rendering.ImageEffect
         [MFoldout(nameof(m_Stylize), enum_Stylize.ObraDithering)] [Range(0.001f,1f)]public float m_ObraDitherScale;
         [MFoldout(nameof(m_Stylize), enum_Stylize.ObraDithering)] [Range(0.1f,1f)]public float m_ObraDitherStrength;
         [MFoldout(nameof(m_Stylize), enum_Stylize.ObraDithering)] public Color m_ObraDitherColor;
+        [MFoldout(nameof(m_Stylize), enum_Stylize.BilateralFilter)] [Range(0.1f, 5f)] public float m_BilaterailSize;
+        [MFoldout(nameof(m_Stylize), enum_Stylize.BilateralFilter)] [Range(0.01f, 1f)] public float m_BilateralFactor;
         public static readonly ImageEffectParam_Stylize m_Default = new ImageEffectParam_Stylize()
         {
             m_Stylize = enum_Stylize.Pixel,
             m_DownSample = 7,
-            m_PixelGrid =  enum_PixelBound.None,
+            m_PixelGrid = enum_PixelBound.None,
             m_GridWidth = .1f,
             m_PixelGridColor = Color.white.SetAlpha(.5f),
             m_OilPaintKernel = 10,
             m_OilPaintSize = 2f,
-            m_ObraDitherColor = Color.yellow*.3f,
-            m_ObraDitherScale=.33f,
-            m_ObraDitherStrength=.5f,
+            m_ObraDitherColor = Color.yellow * .3f,
+            m_ObraDitherScale = .33f,
+            m_ObraDitherStrength = .5f,
+            m_BilaterailSize = 5f,
+            m_BilateralFactor=.5f,
         };
     }
 
@@ -62,6 +67,9 @@ namespace Rendering.ImageEffect
         static readonly int ID_ObraDitherScale = Shader.PropertyToID("_ObraDitherScale");
         static readonly int ID_ObraDitherStrength = Shader.PropertyToID("_ObraDitherStrength");
         static readonly int ID_ObraDitherColor = Shader.PropertyToID("_ObraDitherColor");
+
+        static readonly int ID_BilateralSize = Shader.PropertyToID("_BilateralSize");
+        static readonly int ID_BilateralFactor = Shader.PropertyToID("_BilateralFactor");
         #endregion
         protected override void OnValidate(ImageEffectParam_Stylize _params, Material _material)
         {
@@ -74,6 +82,8 @@ namespace Rendering.ImageEffect
             _material.SetFloat(ID_ObraDitherScale, _params.m_ObraDitherScale);
             _material.SetFloat(ID_ObraDitherStrength, _params.m_ObraDitherStrength);
             _material.SetColor(ID_ObraDitherColor, _params.m_ObraDitherColor);
+            _material.SetFloat(ID_BilateralSize, _params.m_BilaterailSize);
+            _material.SetFloat(ID_BilateralFactor, _params.m_BilateralFactor);
         }
         protected override void OnExecuteBuffer(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, Material _material, ImageEffectParam_Stylize _param)
         {
@@ -93,6 +103,9 @@ namespace Rendering.ImageEffect
                     break;
                 case enum_Stylize.ObraDithering:
                     _buffer.Blit(_src, _dst,_material, 2);
+                    break;
+                case enum_Stylize.BilateralFilter:
+                    _buffer.Blit(_src, _dst, _material, 3);
                     break;
             }
         }

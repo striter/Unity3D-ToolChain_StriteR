@@ -295,10 +295,10 @@ public struct MeshPolygon
 }
 
 [Serializable]
-public struct Plane
+public struct DistancePlane
 {
     public Vector3 m_Normal;
     public float m_Distance;
-    public Plane(Vector3 _normal,float _distance) { m_Normal = _normal;m_Distance = _distance; }
+    public DistancePlane(Vector3 _normal,float _distance) { m_Normal = _normal;m_Distance = _distance; }
 }
 #endregion

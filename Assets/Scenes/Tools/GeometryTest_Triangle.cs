@@ -23,7 +23,7 @@ namespace BoundingCollisionTest
 
             Ray ray = new Ray(m_Origin, m_Direction.normalized);
             float distance = 2f;
-            if( UBoundingCollision.RayDirectedTriangleIntersect(Triangle,ray, m_RayDirectionCheck,m_PlaneDirectionCheck,out float rayDistance))
+            if( UGeometry.RayDirectedTriangleIntersect(Triangle,ray, m_RayDirectionCheck,m_PlaneDirectionCheck,out float rayDistance))
             {
                 distance = rayDistance;
                 Gizmos.color = Color.red;

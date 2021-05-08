@@ -14,11 +14,11 @@ namespace BoundingCollisionTest
             Vector3 direction = m_RayDirection.normalized;
             Gizmos.matrix = transform.localToWorldMatrix;
             Bounds bound = new Bounds(m_BoxOrigin, m_BoxSize);
-            bool intersect = UBoundingCollision.RayAABBIntersect(bound.min, bound.max, m_RayOrigin, direction);
+            bool intersect = UGeometry.RayAABBIntersect(bound.min, bound.max, m_RayOrigin, direction);
             Gizmos.color = intersect ? Color.green : Color.grey;
             Gizmos.DrawWireCube(m_BoxOrigin, m_BoxSize);
 
-            Vector2 distances = UBoundingCollision.RayAABBDistance(bound.min, bound.max, m_RayOrigin, direction);
+            Vector2 distances = UGeometry.RayAABBDistance(bound.min, bound.max, m_RayOrigin, direction);
             if (distances.y > 0)
             {
                 Gizmos.color = Color.red;

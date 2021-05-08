@@ -19,16 +19,16 @@ Shader "Hidden/ImageEffect_Stylize"
             #pragma fragment frag
             #pragma multi_compile _ _PIXEL_GRID _PIXEL_CIRCLE
             float4 _PixelGridColor;
-            float _PixelGridWidth;
+            float2 _PixelGridWidth;
             float4 frag(v2f_img i):SV_TARGET
             {
                 float3 finalCol=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).xyz;
             #if _PIXEL_GRID
                 float2 pixelUV= (i.uv*_MainTex_TexelSize.zw)%1;
-                float pixelGrid= max(step(pixelUV.y,_PixelGridWidth),step(_PixelGridWidth,pixelUV),step(pixelUV.x,_PixelGridWidth),step(_PixelGridWidth,pixelUV.x));
+                float pixelGrid= max(step(pixelUV.y,_PixelGridWidth.x),step(_PixelGridWidth.y,pixelUV.y),step(pixelUV.x,_PixelGridWidth.x),step(_PixelGridWidth.y,pixelUV.x));
                 finalCol=lerp(finalCol,_PixelGridColor.rgb,pixelGrid*_PixelGridColor.a);
             #elif _PIXEL_CIRCLE
-                float2 pixelUV=(i.uv*_MainTex_TexelSize.zw)%1-.5;
+                float2 pixelUV=(i.uv*_MainTex_TexelSize.zw)%1+.5;
                 float pixelCircle= dot(pixelUV,pixelUV);
                 pixelCircle= step(.5-_PixelGridWidth,pixelCircle);
                 finalCol=lerp(finalCol,_PixelGridColor.rgb,pixelCircle*_PixelGridColor.a);
@@ -125,6 +125,58 @@ Shader "Hidden/ImageEffect_Stylize"
 
                 return float4(lerp(_ObraDitherColor,1,lum) ,1);
             }
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "Bilateral Filter"
+            HLSLPROGRAM
+            #pragma vertex vert_img
+            #pragma fragment frag
+            
+	static const float gaussianWeight4[4]= {0.37004,0.31718,0.19823,0.11453};
+            float _BilateralSize;
+            float _BilateralFactor;
+
+	        float BilateralColorWeight(float3 srcCol,float3 dstCol)
+	        {
+		        float srcL=luminance(srcCol);
+		        float dstL=luminance(dstCol);
+		        return smoothstep(_BilateralFactor,1.0,1.0-abs(srcL-dstL));
+	        }
+
+	        float4 frag(v2f_img i):SV_TARGET
+	        {
+		        float2 delta=_MainTex_TexelSize.xy*_BilateralSize;
+		        float3 col00=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb;
+		        float3 col1a=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv-delta).rgb;
+		        float3 col1b=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+delta).rgb;
+		        float3 col2a=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv-delta*2).rgb;
+		        float3 col2b=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+delta*2).rgb;
+		        float3 col3a=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv-delta*3).rgb;
+		        float3 col3b=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+delta*3).rgb;
+
+		        float weight00=gaussianWeight4[0];
+		        float weight1a=BilateralColorWeight(col00,col1a)*gaussianWeight4[1];
+		        float weight1b=BilateralColorWeight(col00,col1b)*gaussianWeight4[1];
+		        float weight2a=BilateralColorWeight(col00,col2a)*gaussianWeight4[2];
+		        float weight2b=BilateralColorWeight(col00,col2b)*gaussianWeight4[2];
+		        float weight3a=BilateralColorWeight(col00,col3a)*gaussianWeight4[3];
+		        float weight3b=BilateralColorWeight(col00,col3b)*gaussianWeight4[3];
+
+		        float3 colSum=col00*weight00;
+		        colSum+=col1a*weight1a;
+		        colSum+=col1b*weight1b;
+		        colSum+=col2a*weight2a;
+		        colSum+=col2b*weight2b;
+		        colSum+=col3a*weight3a;
+		        colSum+=col3b*weight3b;
+		
+		        float weightSum=weight00+weight1a+weight1b+weight2a+weight2b+weight3a+weight3b;
+		        return float4(colSum/=weightSum,1);
+	        }
+	
             ENDHLSL
         }
     }

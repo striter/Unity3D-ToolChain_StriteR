@@ -18,6 +18,7 @@
 				#include "../CameraEffectInclude.hlsl"
 
 				TEXTURE2D(_NoiseTex);SAMPLER(sampler_NoiseTex);
+				TEXTURE2D(_CameraNormalTexture);SAMPLER(sampler_CameraNormalTexture);
 				float3 _SampleSphere[32];
 				int _SampleCount;
 				float _Intensity;
@@ -28,7 +29,7 @@
 
 				float4 frag (v2f_img i) : SV_Target
 				{
-					float3 normal = ClipSpaceNormalFromDepth( i.uv);
+					float3 normal = ClipSpaceNormalFromDepth(i.uv);
 					float3 random = SAMPLE_TEXTURE2D(_NoiseTex,sampler_NoiseTex, i.uv* _NoiseScale).rgb;
 					float2 uv = i.uv;
 					float maxAODistance=100;

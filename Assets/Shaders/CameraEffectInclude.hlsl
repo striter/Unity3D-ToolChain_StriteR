@@ -5,15 +5,6 @@ half4 _MainTex_TexelSize;
 TEXTURE2D( _CameraDepthTexture); SAMPLER(sampler_CameraDepthTexture);
 half4 _CameraDepthTexture_TexelSize;
 
-float2 GetDepthUV(float2 uv)
-{
-#if UNITY_UV_STARTS_AT_TOP
-	if (_MainTex_TexelSize.y < 0)
-		uv.y = 1 - uv.y;
-#endif
-    return uv;
-}
-
 float LinearEyeDepth(float2 uv){return LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, uv),_ZBufferParams);}
 float Linear01Depth(float2 uv){return Linear01Depth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, uv),_ZBufferParams);}
 
@@ -36,11 +27,12 @@ float3 _FrustumCornersRayBR;
 float3 _FrustumCornersRayTL;
 float3 _FrustumCornersRayTR;
 
-float3 GetInterpolatedRay(float2 uv)
+float3 GetViewDirWS(float2 uv) { return bilinearLerp(_FrustumCornersRayTL, _FrustumCornersRayTR, _FrustumCornersRayBL, _FrustumCornersRayBR, uv); }
+
+float3 GetWorldPosFromDepth(float2 uv)
 {
-    bool right = uv.x > .5;
-    bool top = uv.y > .5;
-    return right ? (top ? _FrustumCornersRayTR : _FrustumCornersRayBR) : (top ? _FrustumCornersRayTL : _FrustumCornersRayBL);
+    float3 interpolatedRay = GetViewDirWS(uv);
+    return _WorldSpaceCameraPos + LinearEyeDepth(uv) * interpolatedRay;
 }
 
 float luminance(float3 color){ return 0.299 * color.r + 0.587 * color.g + 0.114 * color.b; }

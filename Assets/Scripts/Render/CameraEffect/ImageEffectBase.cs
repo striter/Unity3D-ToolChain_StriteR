@@ -12,7 +12,7 @@ namespace Rendering.ImageEffect
         Material m_Material;
         public ImageEffectBase()
         {
-            m_Material = USRP.CreateMaterial(this.GetType());
+            m_Material = UPipeline.CreateMaterial(this.GetType());
         }
         public virtual void Destroy()
         {
@@ -63,7 +63,7 @@ namespace Rendering.ImageEffect
         protected void OnDestroy()=>Destroy();
         public override void OnValidate() => m_Effect?.DoValidate(m_EffectData);
         void OnDidApplyAnimationProperties() => OnValidate();       //Undocumented Magic Fucntion ,Triggered By AnimationClip
-        void Reset() => m_EffectData = USRP.GetDefaultPostProcessData<Y>();
+        void Reset() => m_EffectData = UPipeline.GetDefaultPostProcessData<Y>();
         void Init()
         {
             if (m_Effect == null)

@@ -13,7 +13,7 @@ Shader "Hidden/CameraEffect_VolumetricLight"
         {
             Name "SAMPLE"
             HLSLPROGRAM
-            #pragma vertex vert
+            #pragma vertex vert_img
             #pragma fragment frag
             #include "../CommonInclude.hlsl"
             #include "../CommonLightingInclude.hlsl"
@@ -30,34 +30,10 @@ Shader "Hidden/CameraEffect_VolumetricLight"
             int _MarchTimes;
             float _MarchDistance;
 
-            struct appdata
-            {
-                float3 positionOS : POSITION;
-                float2 uv : TEXCOORD0;
-            };
-
-            struct v2f
-            {
-                float4 positionCS : SV_POSITION;
-                float2 uv : TEXCOORD0;
-                float3 viewDirWS:TEXCOORD1;
-                float3 planeWS:TEXCOORD2;
-            };
-
-            v2f vert (appdata v)
-            {
-                v2f o;
-                o.positionCS = TransformObjectToHClip(v.positionOS);
-                o.uv = v.uv;
-                o.viewDirWS=GetInterpolatedRay(v.uv);
-                o.planeWS=TransformObjectToWorldNormal(float3(0,0,1));
-                return o;
-            }
-
-            float4 frag (v2f i) : SV_Target
+            float4 frag (v2f_img i) : SV_Target
             {
                 float3 curPos=_WorldSpaceCameraPos;
-                float3 marchDirWS=normalize(i.viewDirWS);
+                float3 marchDirWS=normalize( GetViewDirWS(i.uv));
                 float depthDstWS=LinearEyeDepth(i.uv);
                 float marchDstWS=min(depthDstWS,_MarchDistance);
                 int marchTimes=min(_MarchTimes,128);
@@ -91,7 +67,7 @@ Shader "Hidden/CameraEffect_VolumetricLight"
             Name "Combine"
             HLSLPROGRAM
             #include "../CommonInclude.hlsl"
-            #include "CameraEffectInclude.hlsl"
+            #include "../CameraEffectInclude.hlsl"
             #pragma vertex vert_img
             #pragma fragment frag
             TEXTURE2D(_VolumetricLight_Sample);SAMPLER(sampler_VolumetricLight_Sample);

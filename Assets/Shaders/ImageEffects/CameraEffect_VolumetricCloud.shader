@@ -11,7 +11,7 @@
         Pass
         {
             HLSLPROGRAM
-            #pragma vertex vert
+            #pragma vertex vert_img
             #pragma fragment frag
             
             #include "../CommonInclude.hlsl"
@@ -76,26 +76,9 @@
             }
             #endif
 
-            struct v2f
+            float4 frag (v2f_img i) : SV_Target
             {
-                float4 positionCS : SV_POSITION;
-                float2 uv : TEXCOORD0;
-                float3 viewDirWS:TEXCOORD1;
-            };
-
-            v2f vert (a2v_img v)
-            {
-                v2f o;
-                o.positionCS = TransformObjectToHClip(v.positionOS);
-                o.uv = v.uv;
-                o.viewDirWS=GetInterpolatedRay(v.uv);
-                return o;
-            }
-
-
-            float4 frag (v2f i) : SV_Target
-            {
-                float3 marchDirWS=normalize(i.viewDirWS);
+                float3 marchDirWS=normalize(GetViewDirWS(i.uv));
                 float3 lightDirWS=normalize(_MainLightPosition.xyz);
                 float3 cameraPos=GetCameraPositionWS();
                 float distance1=PRayDistance(float3(0,1,0),_VerticalStart,cameraPos,marchDirWS);

@@ -246,7 +246,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_FrustumCornersRay: 2
-  m_OpaqueBlurTexture: 0
+  m_CameraViewProjectionMatrix: 2
+  m_OpaqueBlurTexture: 2
+  m_NormalTexture: 2
+  m_ReflectionTexture: 2
 --- !u!114 &15725976
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EffectsOverview : MonoBehaviour
+public class Effects : MonoBehaviour
 {
     public Vector3 m_RotateSpeed;
     private void Update()

@@ -13,7 +13,7 @@
 		{
 			HLSLPROGRAM
 			#pragma shader_feature _MASK_TEXTURE
-			#pragma vertex vert
+			#pragma vertex vert_img
 			#pragma fragment frag
 
 			#include "../CommonInclude.hlsl"
@@ -31,28 +31,9 @@
 			float _MaskTextureScale;
 			#endif
 
-			struct v2f
+			float4 frag (v2f_img i) : SV_Target
 			{
-				float4 positionCS : SV_POSITION;
-				float2 uv : TEXCOORD0;
-				half2 uv_depth:TEXCOORD1;
-				float3 interpolatedRay:TEXCOORD2;
-			};
-
-			v2f vert (a2v_img v)
-			{
-				v2f o;
-				o.positionCS = TransformObjectToHClip(v.positionOS);
-				o.uv = v.uv;
-				o.uv_depth = GetDepthUV(v.uv);
-				o.interpolatedRay = GetInterpolatedRay(o.uv);
-				return o;
-			}
-
-			float4 frag (v2f i) : SV_Target
-			{
-				float linearDepth = LinearEyeDepth(i.uv_depth);
-				float3 worldPos = _WorldSpaceCameraPos + i.interpolatedRay*linearDepth;
+				float3 worldPos = GetWorldPosFromDepth(i.uv);
 				float squareDistance = sqrDistance(_Origin.xyz,worldPos);
 
 				float scan = 1;

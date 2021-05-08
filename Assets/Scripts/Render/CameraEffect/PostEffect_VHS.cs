@@ -21,29 +21,31 @@ namespace Rendering.ImageEffect
         [MFold(nameof(m_ScreenCut), enum_VHSScreenCut.None), RangeVector(0, 1)] public Vector2 m_ScreenCutDistance;
 
         [MTitle] public bool m_ColorBleed;
-        [MFoldout(nameof(m_ColorBleed), true), Range(1, 4)] public int m_ColorBleedIteration;
-        [MFoldout(nameof(m_ColorBleed), true), Range(0, 2)] public float m_ColorBleedSize;
-        [MFoldout(nameof(m_ColorBleed), true), RangeVector(-5, 5)] public Vector2 m_ColorBleedR;
-        [MFoldout(nameof(m_ColorBleed), true), RangeVector(-5, 5)] public Vector2 m_ColorBleedG;
-        [MFoldout(nameof(m_ColorBleed), true), RangeVector(-5, 5)] public Vector2 m_ColorBleedB;
+        [MFoldout(nameof(m_ColorBleed), true)][ Range(1, 4)] public int m_ColorBleedIteration;
+        [MFoldout(nameof(m_ColorBleed), true)][ Range(0, 2)] public float m_ColorBleedSize;
+        [MFoldout(nameof(m_ColorBleed), true)][ RangeVector(-5, 5)] public Vector2 m_ColorBleedR;
+        [MFoldout(nameof(m_ColorBleed), true)][ RangeVector(-5, 5)] public Vector2 m_ColorBleedG;
+        [MFoldout(nameof(m_ColorBleed), true)][ RangeVector(-5, 5)] public Vector2 m_ColorBleedB;
 
         [MTitle] public bool m_PixelDistort;
-        [MFoldout(nameof(m_PixelDistort), true), RangeVector(0, 1)] public Vector2 m_PixelDistortScale;
-        [MFoldout(nameof(m_PixelDistort), true), Range(0, 0.5f)] public float m_PixelDistortStrength;
-        [MFoldout(nameof(m_PixelDistort), true), Range(0.5f, 1f)] public float m_PixelDistortClip;
-        [MFoldout(nameof(m_PixelDistort), true), Range(0f, 144f)] public int m_PixelDistortFrequency;
+        [MFoldout(nameof(m_PixelDistort), true)][ RangeVector(0, 1)] public Vector2 m_PixelDistortScale;
+        [MFoldout(nameof(m_PixelDistort), true)][ Range(0, 0.5f)] public float m_PixelDistortStrength;
+        [MFoldout(nameof(m_PixelDistort), true)][ Range(0.5f, 1f)] public float m_PixelDistortClip;
+        [MFoldout(nameof(m_PixelDistort), true)][ Range(0f, 144f)] public int m_PixelDistortFrequency;
 
         [MTitle] public bool m_LineDistort;
-        [MFoldout(nameof(m_LineDistort), true), Range(-2f, 2f)] public float m_LineDistortSpeed;
-        [MFoldout(nameof(m_LineDistort), true), Range(-.1f, .1f)] public float m_LineDistortStrength;
-        [MFoldout(nameof(m_LineDistort), true), Range(0f, 1f)] public float m_LineDistortClip;
-        [MFoldout(nameof(m_LineDistort), true), Range(0, 10f)] public float m_LineDistortFrequency;
+        [MFoldout(nameof(m_LineDistort), true)][ Range(-2f, 2f)] public float m_LineDistortSpeed;
+        [MFoldout(nameof(m_LineDistort), true)][ Range(-.1f, .1f)] public float m_LineDistortStrength;
+        [MFoldout(nameof(m_LineDistort), true)][ Range(0f, 1f)] public float m_LineDistortClip;
+        [MFoldout(nameof(m_LineDistort), true)][ Range(0, 10f)] public float m_LineDistortFrequency;
 
         [MTitle] public bool m_Grain;
         [MFoldout(nameof(m_Grain), true)] public Color m_GrainColor;
-        [MFoldout(nameof(m_Grain), true), RangeVector(0, 1)] public Vector2 m_GrainScale;
-        [MFoldout(nameof(m_Grain), true), Range(0, 1)] public float m_GrainClip;
-        [MFoldout(nameof(m_Grain), true), Range(0, 144)] public int m_GrainFrequency;
+        [MFoldout(nameof(m_Grain), true)] [RangeVector(0, 1)] public Vector2 m_GrainScale;
+        [MFoldout(nameof(m_Grain), true)] [Range(0, 1)] public float m_GrainClip;
+        [MFoldout(nameof(m_Grain), true)] [Range(0, 144)] public int m_GrainFrequency;
+        [MFoldout(nameof(m_Grain), true)] public bool m_GrainCirlce;
+        [MFoldout(nameof(m_Grain), true, nameof(m_GrainCirlce), true)] [Range(0, .5f)] public float m_GrainCircleWidth;
 
         [MTitle] public bool m_Vignette;
         [MFoldout(nameof(m_Vignette), true)] public Color m_VignetteColor;
@@ -78,6 +80,8 @@ namespace Rendering.ImageEffect
             m_GrainScale = Vector2.one,
             m_GrainClip = .5f,
             m_GrainFrequency = 10,
+            m_GrainCirlce=true,
+            m_GrainCircleWidth=.3f,
 
             m_Vignette = true,
             m_VignetteColor = Color.black,
@@ -117,6 +121,8 @@ namespace Rendering.ImageEffect
         static readonly int ID_GrainColor = Shader.PropertyToID("_GrainColor");
         static readonly int ID_GrainClip = Shader.PropertyToID("_GrainClip");
         static readonly int ID_GrainFrequency = Shader.PropertyToID("_GrainFrequency");
+        const string KW_GrainCircle = "_GRAIN_CIRCLE";
+        static readonly int ID_GrainCircleWidth = Shader.PropertyToID("_GrainCircleWidth");
 
         const string KW_Vignette = "_VIGNETTE";
         static readonly int ID_VignetteColor = Shader.PropertyToID("_VignetteColor");
@@ -156,6 +162,8 @@ namespace Rendering.ImageEffect
             _material.SetColor(ID_GrainColor, _params.m_GrainColor);
             _material.SetFloat(ID_GrainFrequency, _params.m_GrainFrequency);
             _material.SetFloat(ID_GrainClip, _params.m_GrainClip);
+            _material.EnableKeyword(KW_GrainCircle, _params.m_GrainCirlce);
+            _material.SetFloat(ID_GrainCircleWidth, _params.m_GrainCircleWidth);
 
             _material.EnableKeyword(KW_Vignette, _params.m_Vignette);
             _material.SetColor(ID_VignetteColor, _params.m_VignetteColor);

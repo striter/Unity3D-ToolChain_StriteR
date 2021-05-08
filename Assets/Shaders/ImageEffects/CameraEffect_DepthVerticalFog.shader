@@ -19,7 +19,7 @@
 			Pass
 			{
 				HLSLPROGRAM
-				#pragma vertex vert
+				#pragma vertex vert_img
 				#pragma fragment frag
 				#pragma shader_feature _NOISE
 				#include "../CommonInclude.hlsl"
@@ -35,26 +35,11 @@
 				float _NoiseSpeedX;
 				float _NoiseSpeedY;
 				#endif
-				struct v2f
-				{
-					float4 positionCS : SV_POSITION;
-					float2 uv : TEXCOORD0;
-					float3 viewDir:TEXCOORD2;
-				};
 
-				v2f vert (a2v_img v)
-				{
-					v2f o;
-					o.positionCS = TransformObjectToHClip(v.positionOS);
-					o.uv = v.uv;
-					o.viewDir = GetInterpolatedRay(o.uv);
-					return o;
-				}
-
-				float4 frag (v2f i) : SV_Target
+				float4 frag (v2f_img i) : SV_Target
 				{
 					float linearDepth = LinearEyeDepth(i.uv);
-					float3 worldPos = _WorldSpaceCameraPos+ i.viewDir.xyz*linearDepth;
+					float3 worldPos = GetWorldPosFromDepth(i.uv);
 					float2 worldUV = (worldPos.xz + worldPos.yz);
 					float fog =  (( _FogVerticalStart+_FogVerticalOffset)-worldPos.y)  /_FogVerticalOffset*_FogDensity;
 					#if _NOISE

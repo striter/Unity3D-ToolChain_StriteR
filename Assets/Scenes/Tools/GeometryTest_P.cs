@@ -16,7 +16,7 @@ namespace BoundingCollisionTest
         {
             Vector3 rayDirection = m_RayDirection.normalized;
             Vector3 planeNormal = m_PlaneNormal.normalized;
-            float distance = UBoundingCollision.RayPlaneDistance(planeNormal, m_PlaneDistance, m_RayOrigin, rayDirection);
+            float distance = UGeometry.RayPlaneDistance(planeNormal, m_PlaneDistance, m_RayOrigin, rayDirection);
 
             Gizmos.matrix = transform.localToWorldMatrix;
             Vector3 planeSize = new Vector3(1,0,1);

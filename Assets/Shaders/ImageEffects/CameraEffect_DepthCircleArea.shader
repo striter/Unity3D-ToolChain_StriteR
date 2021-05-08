@@ -11,7 +11,7 @@
 		Pass
 		{
 				HLSLPROGRAM
-				#pragma vertex vert
+				#pragma vertex vert_img
 				#pragma fragment frag
 
 				#include "../CommonInclude.hlsl"
@@ -26,28 +26,10 @@
 				float _SqrEdgeMin;
 				float _SqrEdgeMax;
 
-				struct v2f
-				{
-					float4 positionCS : SV_POSITION;
-					float2 uv : TEXCOORD0;
-					half2 uv_depth:TEXCOORD1;
-					float3 interpolatedRay:TEXCOORD2;
-				};
 
-				v2f vert (a2v_img v)
+				float4 frag (v2f_img i) : SV_Target
 				{
-					v2f o;
-					o.positionCS = TransformObjectToHClip(v.positionOS);
-					o.uv = v.uv;
-					o.uv_depth = GetDepthUV(v.uv);
-					o.interpolatedRay = GetInterpolatedRay(o.uv);
-					return o;
-				}
-
-				float4 frag (v2f i) : SV_Target
-				{
-					float linearDepth = LinearEyeDepth(i.uv_depth);
-					float3 worldPos = _WorldSpaceCameraPos + i.interpolatedRay*linearDepth;
+					float3 worldPos =GetWorldPosFromDepth(i.uv);
 					float squaredDistance = sqrDistance(worldPos,_Origin.xyz);
 
 					float fill = step(squaredDistance,_SqrEdgeMin);

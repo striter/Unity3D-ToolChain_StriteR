@@ -9886,12 +9886,12 @@ MonoBehaviour:
     m_Dither: 1
     m_EnableBlur: 1
     m_BlurParam:
-      blurType: 2
-      blurSize: 1
-      iteration: 4
-      downSample: 1
-      angle: 0
-      vector: {x: 0.5, y: 0.5}
+      m_BlurType: 2
+      m_BlurSize: 0.46
+      m_Iteration: 2
+      m_DownSample: 1
+      m_Angle: 0
+      m_Vector: {x: 0, y: 0}
   m_SceneViewPreview: 1
 --- !u!114 &1604089974
 MonoBehaviour:
@@ -10006,7 +10006,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_FrustumCornersRay: 2
+  m_CameraViewProjectionMatrix: 2
   m_OpaqueBlurTexture: 2
+  m_NormalTexture: 2
+  m_ReflectionTexture: 2
 --- !u!114 &1604089979
 MonoBehaviour:
   m_ObjectHideFlags: 0

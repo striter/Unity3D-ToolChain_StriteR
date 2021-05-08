@@ -697,6 +697,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_FrustumCornersRay: 2
   m_OpaqueBlurTexture: 2
+  m_ReflectionTexture: 2
+  m_ReflectionPlane:
+    m_Normal: {x: 0, y: 1, z: 0}
+    m_Distance: 0
 --- !u!114 &2000282104
 MonoBehaviour:
   m_ObjectHideFlags: 0

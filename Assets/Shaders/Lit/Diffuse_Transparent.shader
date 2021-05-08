@@ -8,7 +8,7 @@
 	}
 	SubShader
 	{
-		Tags {"Queue"="Transparent-1" }
+		Tags {"Queue"="Transparent" }
 		Cull Back
 		Blend SrcAlpha OneMinusSrcAlpha
 		

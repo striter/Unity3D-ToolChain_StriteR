@@ -1,32 +1,43 @@
-#pragma kernel Clear
+#include "../CommonInclude.hlsl"
+#pragma multi_compile _ _CLEAR_COLOR _CLEAR_CUBE
+
 #pragma kernel Generate
-#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
-Texture2D<float4> _CameraColorTexture;
 Texture2D<float> _CameraDepthTexture;
-RWTexture2D<float4> _Result;
-float4 _CameraColorTexture_TexelSize;
-
+float4 _CameraDepthTexture_TexelSize;
 float3 _PlaneNormal;
 float3 _PlanePosition;
+float _DitherAmount;
 
-float3 _FrustumCornersRayBL;
-float3 _FrustumCornersRayBR;
-float3 _FrustumCornersRayTL;
-float3 _FrustumCornersRayTR;
+float4x4 _MatrixVP;
+float4x4 _MatrixInvVP;
+Texture2D<float4> _Input;
+RWTexture2D<float4> _Result;
+float4 _Result_TexelSize;
 
-[numthreads(8,8,1)]
-void Clear(uint3 id:SV_DispatchThreadID)
-{
-    float depth = _CameraDepthTexture[id.xy];
-    float2 uv = id.xy * _CameraColorTexture_TexelSize.xy;
-    
+SamplerState sampler_PointClamp;
 
-    _Result[id.xy] = Linear01Depth(depth, _ZBufferParams); //
-}
-
-[numthreads(8,8,1)]
+[numthreads(8,8,8)]
 void Generate (uint3 id : SV_DispatchThreadID)
 {
-    _Result[id.xy] = _Result[id.xy];
+    float2 uv = (id.xy + .5) * _Result_TexelSize.xy;
+    float depth = _CameraDepthTexture.SampleLevel(sampler_PointClamp, uv, 0);
+
+    float4 positionCS = float4(uv * 2 - 1, depth, 1);
+    float4 positionWS = mul(_MatrixInvVP, positionCS);
+    positionWS /= positionWS.w;
+    float normalProj = dot(positionWS.xyz - _PlanePosition, _PlaneNormal);
+    if(normalProj>0)
+    {
+        float3 positionWSM = positionWS.xyz - normalProj * _PlaneNormal * 2;
+        float4 positionCSM = mul(_MatrixVP, float4(positionWSM, 1));
+        float2 uvM = (positionCSM.xy / positionCSM.w + 1) * .5;
+        uint2 resultIDM = uvM  * _Result_TexelSize.zw;
+        float originDepth = _Result[resultIDM].a;
+        if (originDepth <= positionCSM.z)
+        {
+            float3 sampleCol = depth < 0.0001 ? 0 : _Input.SampleLevel(sampler_PointClamp, uv, 0).rgb;
+            _Result[resultIDM] = float4(sampleCol, 1-positionCSM.z);
+        }
+    }
 }

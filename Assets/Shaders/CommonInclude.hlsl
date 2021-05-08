@@ -28,6 +28,25 @@ float max(float max1, float max2, float max3, float max4)
     return final;
 }
 
+float bilinearLerp(float tl, float tr, float bl, float br, float2 uv)
+{
+    float lerpT = lerp(tl, tr, uv.x);
+    float lerpB = lerp(bl, br, uv.x);
+    return lerp(lerpB, lerpT, uv.y);
+}
+float2 bilinearLerp(float2 tl, float2 tr, float2 bl, float2 br, float2 uv)
+{
+    float2 lerpT = lerp(tl, tr, uv.x);
+    float2 lerpB = lerp(bl, br, uv.x);
+    return lerp(lerpB, lerpT, uv.y);
+}
+
+float3 bilinearLerp(float3 tl, float3 tr, float3 bl, float3 br, float2 uv)
+{
+    float3 lerpT = lerp(tl, tr, uv.x);
+    float3 lerpB = lerp(bl, br, uv.x);
+    return lerp(lerpB,lerpT, uv.y);
+}
 float2 TriplanarMapping(float3 worldPos,float3 worldNormal){ return (worldPos.zy*worldNormal.x+worldPos.xz*worldNormal.y+worldPos.xy*worldNormal.z);}
 float2 UVCenterMapping(float2 uv, float2 tilling, float2 offset, float rotateAngle)
 {

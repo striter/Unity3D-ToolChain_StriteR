@@ -25,7 +25,7 @@ public static class UBoundsChecker
     }
 }
 
-public static class UBoundingCollision
+public static class UGeometry
 {
     public static bool RayTriangleIntersect(Triangle _triangle, Ray _ray, bool _rayDirectionCheck) => RayTriangleIntersect(_triangle, _ray, _rayDirectionCheck, out float distance);
     public static bool RayTriangleIntersect(Triangle _triangle,Ray _ray,bool _rayDirectionCheck,out float distance)
@@ -82,11 +82,18 @@ public static class UBoundingCollision
         v *= invDetermination;
         return true;
     }
-    public static float RayPlaneDistance(Vector3 _pNormal, float _pDistance, Vector3 _rayOrigin, Vector3 _rayDirection)
+    public static float RayPlaneDistance(Vector3 _pNormal, float _pDistance, Vector3 _rayOrigin, Vector3 _rayDirection) => RayPlaneDistance(new DistancePlane(_pNormal,_pDistance),new Ray(_rayOrigin,_rayDirection));
+    public static float RayPlaneDistance(DistancePlane _plane,Ray _ray)
     {
-        float nrO = Vector3.Dot(_pNormal, _rayOrigin);
-        float nrD = Vector3.Dot(_pNormal, _rayDirection);
-        return (_pDistance - nrO) / nrD;
+        float nrO = Vector3.Dot(_plane.m_Normal, _ray.origin);
+        float nrD = Vector3.Dot(_plane.m_Normal, _ray.direction);
+        return (_plane.m_Distance - nrO) / nrD;
+    }
+    public static float PointPlaneDistance(Vector3 _point, Vector3 _normal, float _distance) => PointPlaneDistance(_point, new DistancePlane(_normal, _distance));
+    public static float PointPlaneDistance(Vector3 _point,DistancePlane _plane)
+    {
+        float nr= _point.x*_plane.m_Normal.x + _point.y * _plane.m_Normal.y + _point.z * _plane.m_Normal.z+_plane.m_Distance;
+        return nr / _plane.m_Normal.magnitude;
     }
     static void RayBSCalculate(Vector3 _bsCenter, float _bsRadius, Vector3 _rayOrigin, Vector3 _rayDirection, out float dotOffsetDirection, out float discriminant)
     {

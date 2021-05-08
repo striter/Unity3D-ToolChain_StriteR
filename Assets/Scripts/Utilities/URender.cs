@@ -188,6 +188,7 @@ public static class URender
             _tar.SetUVs(_index, uvs.ToList(vec4 => new Vector2(vec4.x, vec4.y)));
     }
 
+    //Material
     public static void EnableKeyword(this Material _material, string _keyword, bool _enable)
     {
         if (_enable)
@@ -195,17 +196,33 @@ public static class URender
         else
             _material.DisableKeyword(_keyword);
     }
+    public static void EnableKeywords<T>(this Material _material, string[] _keywords, T _target) where T : Enum => EnableKeywords(_material, _keywords, Convert.ToInt32(_target));
     public static void EnableKeywords(this Material _material, string[] _keywords, int _target)
     {
         for (int i = 0; i < _keywords.Length; i++)
             _material.EnableKeyword(_keywords[i], i + 1 == _target);
     }
-    public static void EnableGlobalKeyword(string[] _keywords, int _target)
+    //Compute Shader
+    public static void EnableKeyword(this ComputeShader _computeShader, string _keyword, bool _enable)
+    {
+        if (_enable)
+            _computeShader.EnableKeyword(_keyword);
+        else
+            _computeShader.DisableKeyword(_keyword);
+    }
+    public static void EnableKeywords<T>(this ComputeShader _computeShader, string[] _keywords, T _target) where T : Enum => EnableKeywords(_computeShader, _keywords, Convert.ToInt32(_target));
+    public static void EnableKeywords(this ComputeShader _computeShader, string[] _keywords, int _target)
+    {
+        for (int i = 0; i < _keywords.Length; i++)
+            _computeShader.EnableKeyword(_keywords[i], i + 1 == _target);
+    }
+    //Global
+    public static void EnableGlobalKeywords<T>(string[] _keywords, T _target) where T : Enum => EnableGlobalKeywords(_keywords, Convert.ToInt32(_target));
+    public static void EnableGlobalKeywords(string[] _keywords, int _target)
     {
         for (int i = 0; i < _keywords.Length; i++)
             EnableGlobalKeyword(_keywords[i], (i + 1) == _target);
     }
-
     public static void EnableGlobalKeyword(string _keyword, bool _enable)
     {
         if (_enable)
@@ -213,5 +230,4 @@ public static class URender
         else
             Shader.DisableKeyword(_keyword);
     }
-
 }

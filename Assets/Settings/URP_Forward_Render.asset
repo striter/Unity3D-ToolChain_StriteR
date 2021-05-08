@@ -13,20 +13,20 @@ MonoBehaviour:
   m_Name: Additional
   m_EditorClassIdentifier: 
   m_Active: 1
-  m_FrustumCornersRay: 0
-  m_CameraReflectionTexture: 0
-  m_CameraReflectionPlane:
-    m_Normal: {x: 0, y: 1, z: 0}
-    m_Distance: 0
-  m_CameraReflectionComputeShader: {fileID: 0}
+  m_FrustumCornersRay: 1
+  m_CameraViewProjectionMatrix: 1
   m_OpaqueBlurTexture: 0
   m_BlurParams:
-    blurType: 0
-    blurSize: 1
-    iteration: 1
-    downSample: 2
-    angle: 0
-    vector: {x: 0.5, y: 0.5}
+    m_BlurType: 3
+    m_BlurSize: 1.3
+    m_Iteration: 7
+    m_DownSample: 2
+    m_Angle: 0
+    m_Vector: {x: 0.5, y: 0.5}
+  m_NormalTexture: 0
+  m_CameraReflectionTexture: 1
+  m_CameraReflectionComputeShader: {fileID: 7200000, guid: f5a23fffb62c7304f8c65cf797424e7b,
+    type: 3}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0

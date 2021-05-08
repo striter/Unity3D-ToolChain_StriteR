@@ -19,6 +19,7 @@
             #pragma shader_feature _COLORBLEED_G
             #pragma shader_feature _COLORBLEED_B
             #pragma shader_feature _GRAIN
+            #pragma shader_feature _GRAIN_CIRCLE
             #pragma shader_feature _LINEDISTORT
             #pragma shader_feature _PIXELDISTORT
             #pragma shader_feature _VIGNETTE
@@ -53,6 +54,9 @@
             float4 _GrainColor;
             float _GrainClip;
             float _GrainFrequency;
+            #if _GRAIN_CIRCLE
+            float _GrainCircleWidth;
+            #endif
             #endif
             
             #if _VIGNETTE
@@ -120,8 +124,15 @@
                 #endif
                 
                 #if _GRAIN
-                float rand= random01(floor(uv*_GrainScale*_MainTex_TexelSize.zw)*(_MainTex_TexelSize.xy*_GrainScale)+random01(floor(_Time.y*_GrainFrequency)/_GrainFrequency));
-                col.rgb=lerp(col.rgb,_GrainColor.rgb,step(_GrainClip,rand)*rand*_GrainColor.a);
+                float2 grainUV=uv*_MainTex_TexelSize.zw*_GrainScale;
+                float rand= random01(floor(grainUV)+random01(floor(_Time.y*_GrainFrequency)/_GrainFrequency));
+                float grain=step(_GrainClip,rand)*rand*_GrainColor.a;
+                #if _GRAIN_CIRCLE
+                float2 circleUV=grainUV%1-.5;
+                float circleDistance=dot(circleUV,circleUV);
+                grain*=step(circleDistance,.5-_GrainCircleWidth);
+                #endif
+                col.rgb=lerp(col.rgb,_GrainColor.rgb,grain);
                 #endif
                 
                 #if _VIGNETTE

@@ -238,7 +238,7 @@ namespace TEditor
             int index = _polygons.LastIndex(p =>
             {
                 DirectedTriangle triangle = p.GetDirectedTriangle(_verticies);
-                bool intersect = UBoundingCollision.RayDirectedTriangleIntersect(triangle, _ray, true, true, out float distance);
+                bool intersect = UGeometry.RayDirectedTriangleIntersect(triangle, _ray, true, true, out float distance);
                 if (intersect && minDistance > distance)
                 {
                     collisionTriangle = triangle;
@@ -460,7 +460,7 @@ namespace TEditor
 
             foreach (var indice in m_Polygons[m_SelectedPolygon].m_Indices)
             {
-                if (!UBoundingCollision.RayBSIntersect(m_Verticies[indice], C_VertexSphereRadius * m_GUISize, _ray))
+                if (!UGeometry.RayBSIntersect(m_Verticies[indice], C_VertexSphereRadius * m_GUISize, _ray))
                     continue;
                 SelectVertex(indice);
                 return true;

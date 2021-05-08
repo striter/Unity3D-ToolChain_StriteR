@@ -10,178 +10,103 @@
 	#include "../CommonInclude.hlsl"
     #include "../CameraEffectInclude.hlsl"
 	float _BlurSize;
-	int _Iteration;
+	uint _Iteration;
 	float _Angle;
 	float2 _Vector;
-
-	struct v2fc
-	{
-		float4 vertex : SV_POSITION;
-		float2 uv: TEXCOORD0;
-		float4 uvOffsetA:TEXCOORD1;
-		float4 uvOffsetB:TEXCOORD2;
-	};
+	static const float gaussianWeight3[3] = {0.4026,0.2442,0.0545};
 
 	//Kawase
-	v2fc vertKawase(a2v_img v)
+	float4 fragKawase(v2f_img i):SV_TARGET
 	{
-		v2fc o;
-		o.vertex = TransformObjectToHClip(v.positionOS);
-		float2 uv = v.uv;
-		o.uv = uv;
-		o.uvOffsetA.xy = uv + float2(0, 1)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetA.zw = uv + float2(1,0)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.xy = uv + float2(0, -1)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.zw = uv + float2(-1, 0)*_MainTex_TexelSize.xy *_BlurSize;
-		return o;
-	}
-	
-	float4 fragKawase(v2fc i):SV_TARGET
-	{
-		float4 sum = 0;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.xy);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.zw);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetB.xy);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetB.zw);
-		return sum*.25;
+		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
+		float3 sum = 0;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, 1)*uvDelta).rgb;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1,0)*uvDelta).rgb;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -1)*uvDelta).rgb;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, 0)*uvDelta).rgb;
+		return float4(sum*.25,1);
 	}
 
-	//Dual 
-	v2fc vertDualPassHorizontal(a2v_img v)
+	//Dual VH Kawase
+	float4 fragAverageBlurHorizontal(v2f_img i):SV_TARGET
 	{
-		v2fc o;
-		o.vertex = TransformObjectToHClip(v.positionOS);
-		float2 uv = v.uv;
-		o.uv = uv;
-		o.uvOffsetA.xy = uv + float2(1, 0)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetA.zw = uv + float2(-1,0)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.xy = uv + float2(2, 0)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.zw = uv + float2(-2, 0)*_MainTex_TexelSize.xy *_BlurSize;
-		return o;
+		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
+		float3 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1, 0)*uvDelta).rgb;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, 0)*uvDelta).rgb;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(2, 0)*uvDelta).rgb;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-2, 0)*uvDelta).rgb;
+		return float4(sum*.2,1);
+	}
+	float4 fragAverageBlurVertical(v2f_img i):SV_TARGET
+	{
+		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
+		float3 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,1)*uvDelta).rgb;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -1)*uvDelta).rgb;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, 2)*uvDelta).rgb;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -2)*uvDelta).rgb;
+		return float4(sum*.2,1);
 	}
 		
-	v2fc vertDualPassVertical(a2v_img v)
+	//Dual VH Gaussian
+	float4 fragGaussianBlurHorizontal(v2f_img i) :SV_TARGET
 	{
-		v2fc o;
-		o.vertex = TransformObjectToHClip(v.positionOS);
-		float2 uv = v.uv;
-		o.uv = uv;
-		o.uvOffsetA.xy = uv + float2(0, 1)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetA.zw = uv + float2(0, -1)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.xy = uv + float2(0, 2)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.zw = uv + float2(0, -2)*_MainTex_TexelSize.xy *_BlurSize;
-		return o;
+		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
+		float3 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*gaussianWeight3[0];
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1,0)*uvDelta).rgb*gaussianWeight3[1];
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1,0)*uvDelta).rgb*gaussianWeight3[1];
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(2,0)*uvDelta).rgb*gaussianWeight3[2];
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-2,0)*uvDelta).rgb*gaussianWeight3[2];
+		return float4(sum,1);
 	}
-
-	float4 fragAverageBlur(v2fc i):SV_TARGET
+	float4 fragGaussianBlurVertical(v2f_img i) :SV_TARGET
 	{
-		float4 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.xy);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.zw);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetB.xy);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetB.zw);
-		return sum*.2;
-	}
-		
-	static const float gaussianWeight[3] = {0.4026h,0.2442h,0.0545h};
-	float4 fragGaussianBlur(v2fc i) :SV_TARGET
-	{
-		float4 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*gaussianWeight[0];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.xy)*gaussianWeight[1];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.zw)*gaussianWeight[1];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetB.xy)*gaussianWeight[2];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetB.zw)*gaussianWeight[2];
-		return sum;
+		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
+		float3 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*gaussianWeight3[0];
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,1)*uvDelta).rgb*gaussianWeight3[1];
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,-1)*uvDelta).rgb*gaussianWeight3[1];
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,2)*uvDelta).rgb*gaussianWeight3[2];
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,-2)*uvDelta).rgb*gaussianWeight3[2];
+		return float4(sum,1);
 	}
 	
 	//Dual Filtering
-	struct v2fdfd
+	float4 fragDualFilteringDownSample(v2f_img i):SV_TARGET
 	{
-		float4 vertex : SV_POSITION;
-		float2 uv: TEXCOORD0;
-		float4 uvOffsetA:TEXCOORD1;
-		float4 uvOffsetB:TEXCOORD2;
-	};
-	
-	
-	v2fdfd vertDualFilteringDownSample(a2v_img v)
-	{
-		v2fdfd o;
-		o.vertex = TransformObjectToHClip(v.positionOS);
-		float2 uv = v.uv;
-		o.uv = uv;
-		o.uvOffsetA.xy = uv + float2(0, 1)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetA.zw = uv + float2(1,0)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.xy = uv + float2(0, -1)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.zw = uv + float2(-1, 0)*_MainTex_TexelSize.xy *_BlurSize;
-		return o;
-	}
-	
-	float4 fragDualFilteringDownSample(v2fdfd i):SV_TARGET
-	{
-	
-		float4 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*4;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.xy);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.zw);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetB.xy);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetB.zw);
-		return sum*.125;
+		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
+		float3 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*4;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, 1)*uvDelta).rgb;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1, 0)*uvDelta).rgb;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -1)*uvDelta).rgb;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, 0)*uvDelta).rgb;
+		return float4(sum*.125,1);
 	}
 
-	struct v2fdfu
+	float4 fragDualFilteringUpSample(v2f_img i):SV_TARGET
 	{
-		float4 vertex : SV_POSITION;
-		float4 uvOffsetA:TEXCOORD0;
-		float4 uvOffsetB:TEXCOORD1;
-		float4 uvOffsetC:TEXCOORD2;
-		float4 uvOffsetD:TEXCOORD3;
-	};
-
-	v2fdfu vertDualFilteringUpSample(a2v_img v)
-	{
-		v2fdfu o;
-		o.vertex = TransformObjectToHClip(v.positionOS);
-		float2 uv = v.uv;
-		o.uvOffsetA.xy = uv + float2(0, 2)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetA.zw = uv + float2(2,0)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.xy = uv + float2(0, -2)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetB.zw = uv + float2(-2, 0)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetC.xy = uv + float2(1, 1)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetC.zw = uv + float2(1,-1)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetD.xy = uv + float2(-1, 1)*_MainTex_TexelSize.xy *_BlurSize;
-		o.uvOffsetD.zw = uv + float2(-1, -1)*_MainTex_TexelSize.xy *_BlurSize;
-		return o;
-	}
-	
-	float4 fragDualFilteringUpSample(v2fdfu i):SV_TARGET
-	{
-		float4 sum =0;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.xy);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetA.zw);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetB.xy);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetB.zw);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetC.xy)*2;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetC.zw)*2;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetD.xy)*2;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uvOffsetD.zw)*2;
-		return sum*.08333;
+		float2 uvDelta=_MainTex_TexelSize.xy;
+		float3 sum =0;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, 2)*uvDelta).rgb;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(2,0)*uvDelta).rgb;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -2)*uvDelta).rgb;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-2, 0)*uvDelta).rgb;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1, 1)*uvDelta).rgb*2;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1, -1)*uvDelta).rgb*2;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, 1)*uvDelta).rgb*2;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, -1)*uvDelta).rgb*2;
+		return float4(sum*.08333,1);
 	}
 	
 	//Grainy
 	float4 fragGrainy(v2f_img i):SV_TARGET
 	{
-		float random=random01(i.uv);
-		float4 sum=0;
-		float randomSum=1.0/_Iteration;
-		for(int index=0;index<_Iteration;index++)
-		{
-			float2 randomUV=randomUnitCircle(i.uv)*random01(i.uv);
-			randomUV*=_MainTex_TexelSize.xy*_BlurSize;
-			sum+=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+randomUV);
-		}
-		return sum/_Iteration;
+		float2 delta=_MainTex_TexelSize.xy*_BlurSize;
+		float2 randomUV=randomUnitCircle(i.uv)*random01(i.uv)*delta;
+		float3 sum=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+randomUV).rgb;
+		return float4(sum,1);
 	}
-	
+
 	//Bokeh
 	#define _GOLDENANGLE 2.39996
 	float4 fragBokeh(v2f_img i):SV_TARGET
@@ -191,7 +116,7 @@
 		rotate=mul(Rotate2x2(_Angle),rotate);
 		float4 sum=0;
 		float r=1;
-		for(int j=0;j<_Iteration;j++)
+		for(uint j=0;j<_Iteration;j++)
 		{
 			r+=1.0/r;
 			rotate=mul(rot,rotate);
@@ -205,7 +130,7 @@
 	float4 HexagonBlurTexture(Texture2D tex,sampler samp,float2 uv,float2 direction)
 	{
 		float4 finalCol=0;
-		for(int i=0;i<_Iteration;i++)
+		for(uint i=0;i<_Iteration;i++)
 		{
 			float4 hexagonBlur=SAMPLE_TEXTURE2D(tex,samp,uv+direction*float2(i+.5,i+.5));
 			finalCol+=hexagonBlur;
@@ -218,12 +143,14 @@
 		float2 dir=float2(cos(_Angle -PI/2),sin(_Angle-PI/2))*_MainTex_TexelSize.xy*_BlurSize;
 		return HexagonBlurTexture(_MainTex,sampler_MainTex,i.uv,dir);
 	}
+
 	TEXTURE2D(_Hexagon_Vertical);SAMPLER(sampler_Hexagon_Vertical);
 	float4 fragHexagonDiagonal(v2f_img i):SV_TARGET
 	{
 		float2 dir=float2(cos(_Angle+PI/6),sin(_Angle+PI/6))*_MainTex_TexelSize.xy*_BlurSize;
 		return (SAMPLE_TEXTURE2D(_Hexagon_Vertical,sampler_Hexagon_Vertical,i.uv)+HexagonBlurTexture(_MainTex,sampler_MainTex,i.uv,dir))/2;
 	}
+
 	TEXTURE2D( _Hexagon_Diagonal);SAMPLER(sampler_Hexagon_Diagonal);
 	float4 fragHexagonRamboid(v2f_img i):SV_TARGET
 	{
@@ -240,7 +167,7 @@
 	{
 		float2 offset=(_Vector-i.uv)*_BlurSize*_MainTex_TexelSize.xy;
 		float4 sum=0;
-		for(int j=0;j<_Iteration;j++)
+		for(uint j=0;j<_Iteration;j++)
 		{
 			sum+=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
 			i.uv+=offset;
@@ -251,13 +178,11 @@
 	float4 fragDirectional(v2f_img i):SV_TARGET
 	{
 		float4 sum=0;
-		int iteration=_Iteration/2u;
+		int iteration=max(_Iteration/2,1);
 		float2 offset=_Vector*_MainTex_TexelSize.xy*_BlurSize;
 		for(int j=-iteration;j<iteration;j++)
-		{
 			sum+=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+j*offset);
-		}
-		return sum/(_Iteration);
+		return sum/(iteration*2);
 	}
 	ENDHLSL
 
@@ -268,7 +193,7 @@
 		{
 			NAME "KAWASE_BLUR"
 			HLSLPROGRAM
-			#pragma vertex vertKawase
+			#pragma vertex vert_img
 			#pragma fragment fragKawase
 			ENDHLSL
 		}
@@ -277,8 +202,8 @@
 		{
 			NAME "AVERAGE_BLUR_HORIZONTAL"
 			HLSLPROGRAM
-			#pragma vertex vertDualPassHorizontal
-			#pragma fragment fragAverageBlur
+			#pragma vertex vert_img
+			#pragma fragment fragAverageBlurHorizontal
 			ENDHLSL
 		}
 		
@@ -286,8 +211,8 @@
 		{
 			NAME "AVERAGE_BLUR_VERTICAL"
 			HLSLPROGRAM
-			#pragma vertex vertDualPassVertical
-			#pragma fragment fragAverageBlur
+			#pragma vertex vert_img
+			#pragma fragment fragAverageBlurVertical
 			ENDHLSL
 		}
 
@@ -295,17 +220,17 @@
 		{
 			NAME "GAUSSIAN_BLUR_HORIZONTAL"
 			HLSLPROGRAM
-			#pragma vertex vertDualPassHorizontal
-			#pragma fragment fragGaussianBlur
+			#pragma vertex vert_img
+			#pragma fragment fragGaussianBlurHorizontal
 			ENDHLSL
 		}
 
-		Pass		//Vert Blur
+		Pass
 		{
 			NAME "GAUSSIAN_BLUR_VERTICAL"
 			HLSLPROGRAM
-			#pragma vertex vertDualPassVertical
-			#pragma fragment fragGaussianBlur
+			#pragma vertex vert_img
+			#pragma fragment fragGaussianBlurVertical
 			ENDHLSL
 		}
 		
@@ -313,7 +238,7 @@
 		{
 			Name "DUALFILTERING_DOWNSAMPLE"
 			HLSLPROGRAM
-			#pragma vertex vertDualFilteringDownSample
+			#pragma vertex vert_img
 			#pragma fragment fragDualFilteringDownSample
 			ENDHLSL
 		}
@@ -322,7 +247,7 @@
 		{
 			Name "DUALFILTERING_UPSAMPLE"
 			HLSLPROGRAM
-			#pragma vertex vertDualFilteringUpSample
+			#pragma vertex vert_img
 			#pragma fragment fragDualFilteringUpSample
 			ENDHLSL
 		}
@@ -335,16 +260,16 @@
 			#pragma fragment fragGrainy
 			ENDHLSL
 		}
-
+		
 		Pass
 		{
-			Name "Bokeh"
+			Name "BOKEH"
 			HLSLPROGRAM
 			#pragma vertex vert_img
 			#pragma fragment fragBokeh
-
 			ENDHLSL
 		}
+
 		Pass
 		{
 			Name "HEXAGON_VERTICAL"
