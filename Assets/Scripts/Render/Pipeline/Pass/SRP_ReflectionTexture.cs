@@ -16,7 +16,6 @@ namespace Rendering.Pipeline
         static readonly int ID_Result_TexelSize = Shader.PropertyToID("_Result_TexelSize");
         static readonly int ID_PlaneNormal = Shader.PropertyToID("_PlaneNormal");
         static readonly int ID_PlanePosition = Shader.PropertyToID("_PlanePosition");
-        static readonly int ID_DitherAmount = Shader.PropertyToID("_DitherAmount");
 
         static readonly int ID_Input = Shader.PropertyToID("_Input");
         static readonly int ID_Result = Shader.PropertyToID("_Result");
@@ -81,7 +80,6 @@ namespace Rendering.Pipeline
             cmd.SetComputeVectorParam(m_ComputeShader, ID_PlaneNormal, planeData.m_Normal.normalized);
             cmd.SetComputeVectorParam(m_ComputeShader, ID_PlanePosition, planeData.m_Distance*planeData.m_Normal);
             cmd.SetComputeVectorParam(m_ComputeShader, ID_Result_TexelSize, m_ResultDescriptor.GetTexelSize());
-            cmd.SetComputeFloatParam(m_ComputeShader, ID_DitherAmount, m_Plane.m_DitherAmount);
 
             cmd.ClearRenderTarget(true, true, m_Plane.m_ClearColor.SetAlpha(0));
             cmd.SetComputeTextureParam(m_ComputeShader, m_KernalGenerate, ID_Input, m_ColorTarget);

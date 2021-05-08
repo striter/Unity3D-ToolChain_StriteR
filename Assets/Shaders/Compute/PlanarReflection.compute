@@ -7,7 +7,6 @@ Texture2D<float> _CameraDepthTexture;
 float4 _CameraDepthTexture_TexelSize;
 float3 _PlaneNormal;
 float3 _PlanePosition;
-float _DitherAmount;
 
 float4x4 _MatrixVP;
 float4x4 _MatrixInvVP;
@@ -34,10 +33,7 @@ void Generate (uint3 id : SV_DispatchThreadID)
         float2 uvM = (positionCSM.xy / positionCSM.w + 1) * .5;
         uint2 resultIDM = uvM  * _Result_TexelSize.zw;
         float originDepth = _Result[resultIDM].a;
-        if (originDepth <= positionCSM.z)
-        {
-            float3 sampleCol = depth < 0.0001 ? 0 : _Input.SampleLevel(sampler_PointClamp, uv, 0).rgb;
-            _Result[resultIDM] = float4(sampleCol, 1-positionCSM.z);
-        }
+        if (depth>0&&originDepth <= positionCSM.z)
+            _Result[resultIDM] = float4(_Input.SampleLevel(sampler_PointClamp, uv, 0).rgb, 1 - positionCSM.z);
     }
 }
