@@ -17,7 +17,6 @@ namespace Rendering.Pipeline
         {
             m_ReflectionPlanes.Remove(this);
         }
-        [ColorUsage(false)] public Color m_ClearColor = Color.black;
         public bool m_EnableBlur = false;
         [MFoldout(nameof(m_EnableBlur), true)] public ImageEffectParam_Blurs m_BlurParam = UPipeline.GetDefaultPostProcessData<ImageEffectParam_Blurs>();
         public DistancePlane m_PlaneData => new DistancePlane() { m_Normal = transform.up,m_Distance= UGeometry.PointPlaneDistance( transform.position,transform.up,0) };

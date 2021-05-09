@@ -7,6 +7,7 @@ Shader "Unlit/GlobalTextureVisualize"
     SubShader
     {
         Tags { "Queue"="Transparent" }
+            Blend SrcAlpha OneMinusSrcAlpha
         Pass
         {
             HLSLPROGRAM
@@ -47,8 +48,8 @@ Shader "Unlit/GlobalTextureVisualize"
                 float3 viewDir=-normalize(i.viewDir);
                 float3 normal=normalize( i.normal);
                 float3 reflectDir=reflect(-viewDir,normal);
-                float3 col = tex2D(_CameraReflectionTexure, i.screenPos.xy/i.screenPos.w).rgb;
-                return float4(col,1);
+                float4 col = tex2D(_CameraReflectionTexure, i.screenPos.xy/i.screenPos.w);
+                return float4(col.rgb,1);
             }
             ENDHLSL
         }
