@@ -9,7 +9,7 @@ float3 _PlanePosition;
 float4 _Result_TexelSize;
 Texture2D<float4> _Input;
 RWTexture2D<float> _Depth; //RWTexture<float4> Read+Write  Not Supported In GLES3.0 ? 
-RWTexture2D<float4> _Result;
+RWTexture2D<float> _Result;
 
 Texture2D<float> _CameraDepthTexture;
 float4 _CameraDepthTexture_TexelSize;
@@ -19,7 +19,7 @@ SamplerState sampler_PointClamp;
 void Clear(uint3 id:SV_DispatchThreadID)
 {
     _Result[id.xy] = 0;
-    _Depth[id.xy] = 1;
+    _Depth[id.xy] = 0;
 }
 
 [numthreads(8,8,1)]
@@ -41,12 +41,12 @@ void Generate (uint3 id : SV_DispatchThreadID)
 #endif
     uint2 resultIDM = uvM * _Result_TexelSize.zw;
     float depthM = positionCSM.z;
-#if UNITY_REVERSED_Z
+#if !UNITY_REVERSED_Z
     depth= 1 - depth;
     depthM = 1 - depthM;
 #endif
-    
-    if (normalProj > 0.001 && depth!=1 && depthM < _Depth[resultIDM])
+
+    if (normalProj > 0.001 && depth>0 && depthM > _Depth[resultIDM])
     {
         _Result[resultIDM] = float4(_Input.SampleLevel(sampler_PointClamp, uv, 0).rgb, 1);
         _Depth[resultIDM] = depthM;
