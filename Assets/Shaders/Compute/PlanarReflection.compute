@@ -1,46 +1,54 @@
 #pragma kernel Clear
 #pragma kernel Generate
 
+#include "../CommonInclude.hlsl"
+
 float3 _PlaneNormal;
 float3 _PlanePosition;
 
-float4x4 _MatrixVP;
-float4x4 _MatrixInvVP;
 float4 _Result_TexelSize;
 Texture2D<float4> _Input;
+RWTexture2D<float> _Depth; //RWTexture<float4> Read+Write  Not Supported In GLES3.0 ? 
 RWTexture2D<float4> _Result;
-RWTexture2D<float> _Depth;      //RWTexture<float4> Read+Write  Not Supported In GLES3.0 ? 
 
 Texture2D<float> _CameraDepthTexture;
 float4 _CameraDepthTexture_TexelSize;
 SamplerState sampler_PointClamp;
+
 [numthreads(8, 8, 1)]
 void Clear(uint3 id:SV_DispatchThreadID)
 {
     _Result[id.xy] = 0;
-    _Depth[id.xy] = 0;
+    _Depth[id.xy] = 1;
 }
 
 [numthreads(8,8,1)]
 void Generate (uint3 id : SV_DispatchThreadID)
 {
     float2 uv = (id.xy + .5) * _Result_TexelSize.xy;
-    float depth = _CameraDepthTexture.SampleLevel(sampler_PointClamp, uv, 0);
-
+    float depth =  _CameraDepthTexture.SampleLevel(sampler_PointClamp, uv,0);
+    
     float4 positionCS = float4(uv * 2 - 1, depth, 1);
-    float4 positionWS = mul(_MatrixInvVP, positionCS);
-    positionWS /= positionWS.w;
+    float3 positionWS = _WorldSpaceCameraPos + GetViewDirWS(uv) * LinearEyeDepth(depth, _ZBufferParams);
     
     float normalProj = dot(positionWS.xyz - _PlanePosition, _PlaneNormal);
     float3 positionWSM = positionWS.xyz - normalProj * _PlaneNormal * 2;
-    float4 positionCSM = mul(_MatrixVP, float4(positionWSM, 1));
-    float2 uvM = (positionCSM.xy / positionCSM.w + 1) * .5;
+    float4 positionCSM = TransformWorldToHClip(positionWSM);
+    positionCSM.xyz /= positionCSM.w;
+    float2 uvM = (positionCSM.xy  + 1) * .5;
+#if UNITY_UV_STARTS_AT_TOP
+    uvM.y = 1 - uvM.y;
+#endif
     uint2 resultIDM = uvM * _Result_TexelSize.zw;
-
-    float sampleDepth = _Depth[resultIDM];
-    if (step(0.001,normalProj)* step(0.001, depth) * step(sampleDepth, positionCSM.z) > 0)
+    float depthM = positionCSM.z;
+#if UNITY_REVERSED_Z
+    depth= 1 - depth;
+    depthM = 1 - depthM;
+#endif
+    
+    if (normalProj > 0.001 && depth!=1 && depthM < _Depth[resultIDM])
     {
         _Result[resultIDM] = float4(_Input.SampleLevel(sampler_PointClamp, uv, 0).rgb, 1);
-        _Depth[resultIDM] = 1 - positionCSM.z;
+        _Depth[resultIDM] = depthM;
     }
 }

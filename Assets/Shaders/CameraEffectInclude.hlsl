@@ -22,13 +22,6 @@ float3 ClipSpaceNormalFromDepth(float2 uv)
     return normalize(cross(p1, p2));
 }
 
-float3 _FrustumCornersRayBL;
-float3 _FrustumCornersRayBR;
-float3 _FrustumCornersRayTL;
-float3 _FrustumCornersRayTR;
-
-float3 GetViewDirWS(float2 uv) { return bilinearLerp(_FrustumCornersRayTL, _FrustumCornersRayTR, _FrustumCornersRayBL, _FrustumCornersRayBR, uv); }
-
 float3 GetWorldPosFromDepth(float2 uv)
 {
     float3 interpolatedRay = GetViewDirWS(uv);

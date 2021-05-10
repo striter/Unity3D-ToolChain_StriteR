@@ -246,7 +246,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_FrustumCornersRay: 2
-  m_CameraViewProjectionMatrix: 2
   m_OpaqueBlurTexture: 2
   m_NormalTexture: 2
   m_ReflectionTexture: 2
@@ -586,13 +585,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 213668523}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8.76, y: -4.71, z: 7.57}
-  m_LocalScale: {x: 1, y: 0.82351, z: 1}
+  m_LocalRotation: {x: -0.26392505, y: -0.3066479, z: 0.6254488, w: 0.6671765}
+  m_LocalPosition: {x: 11.9, y: 0.33, z: 27.31}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 664948147}
   m_RootOrder: 11
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 1.8, y: -47.705, z: 85.506}
 --- !u!114 &213668525
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -605,11 +604,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c85af998dd99edf45b824a71f34e3c08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ClearColor: {r: 0.036716342, g: 1, b: 0, a: 1}
-  m_EnableBlur: 0
+  m_EnableBlur: 1
   m_BlurParam:
     m_BlurType: 3
-    m_BlurSize: 0.87
+    m_BlurSize: 1.54
     m_Iteration: 7
     m_DownSample: 1
     m_Angle: 0

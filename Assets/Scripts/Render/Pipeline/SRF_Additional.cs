@@ -15,14 +15,13 @@ namespace Rendering.Pipeline
         static readonly int ID_ViewProjectionMatrix = Shader.PropertyToID("_MatrixVP");
         static readonly int ID_InvViewProjectionMatrix = Shader.PropertyToID("_MatrixInvVP");
         #endregion
-        [Header("Screen Space Params")]
+        [Tooltip("Screen Space World Position Reconstruction")]
         public bool m_FrustumCornersRay;
-        [Tooltip("World Space Post Process Required")] public bool m_CameraViewProjectionMatrix;
         [Header("External Textures")]
         public bool m_OpaqueBlurTexture=false;
         [MFoldout(nameof(m_OpaqueBlurTexture), true)] public ImageEffectParam_Blurs m_BlurParams = UPipeline.GetDefaultPostProcessData<ImageEffectParam_Blurs>();
         public bool m_NormalTexture=false;
-        [MFoldout(nameof(m_CameraViewProjectionMatrix), true)] public bool m_CameraReflectionTexture=false;
+        [MFoldout(nameof(m_FrustumCornersRay), true)] public bool m_CameraReflectionTexture=false;
         [HideInInspector, SerializeField] ComputeShader m_CameraReflectionComputeShader;
 
         SRP_OpaqueBlurTexture m_OpaqueBlurPass;
@@ -56,18 +55,16 @@ namespace Rendering.Pipeline
                 return;
 
             bool frustumCornersRay = m_FrustumCornersRay;
-            bool viewProjectionMatrix = m_CameraViewProjectionMatrix;
             bool opaqueBlurTexture = m_OpaqueBlurTexture;
             bool cameraNormalTexture = m_NormalTexture;
             bool cameraReflectionTexture = m_CameraReflectionTexture;
 
             if(!renderingData.cameraData.isSceneViewCamera)
             {
-                if (!renderingData.cameraData.camera.gameObject.TryGetComponent(out SRD_AddtionalData data))
-                    data = renderingData.cameraData.camera.gameObject.AddComponent<SRD_AddtionalData>();
+                if (!renderingData.cameraData.camera.gameObject.TryGetComponent(out SRD_AdditionalData data))
+                    data = renderingData.cameraData.camera.gameObject.AddComponent<SRD_AdditionalData>();
 
                 frustumCornersRay = data.m_FrustumCornersRay.IsEnabled(frustumCornersRay);
-                viewProjectionMatrix = data.m_CameraViewProjectionMatrix.IsEnabled(viewProjectionMatrix);
                 opaqueBlurTexture = data.m_OpaqueBlurTexture.IsEnabled(opaqueBlurTexture);
                 cameraNormalTexture = data.m_NormalTexture.IsEnabled(cameraNormalTexture);
                 cameraReflectionTexture = data.m_ReflectionTexture.IsEnabled(cameraReflectionTexture);
@@ -75,8 +72,6 @@ namespace Rendering.Pipeline
 
             if (frustumCornersRay)
                 UpdateFrustumCornersRay(renderingData.cameraData.camera);
-            if (viewProjectionMatrix)
-                UpdateViewProjectionMatrix(renderingData.cameraData);
             if (opaqueBlurTexture)
                 renderer.EnqueuePass(m_OpaqueBlurPass.Setup(renderer.cameraColorTarget,m_BlurParams));
             if (cameraNormalTexture)
@@ -111,14 +106,6 @@ namespace Rendering.Pipeline
             Shader.SetGlobalVector(ID_FrustumCornersRayBR, bottomRight);
             Shader.SetGlobalVector(ID_FrustumCornersRayTL, topLeft);
             Shader.SetGlobalVector(ID_FrustumCornersRayTR, topRight);
-        }
-        void UpdateViewProjectionMatrix(CameraData _cameraData)
-        {
-            Matrix4x4 view = _cameraData.camera.worldToCameraMatrix;
-            Matrix4x4 projection =GL.GetGPUProjectionMatrix(  _cameraData.GetProjectionMatrix(),false);
-            Matrix4x4 viewProjection =  projection*view;
-            Shader.SetGlobalMatrix(ID_ViewProjectionMatrix,viewProjection);
-            Shader.SetGlobalMatrix(ID_InvViewProjectionMatrix, viewProjection.inverse);
         }
         void UpdateCameraReflectionTexture(ScriptableRenderer _renderer)
         {

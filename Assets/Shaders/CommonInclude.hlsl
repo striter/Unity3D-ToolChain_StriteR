@@ -121,3 +121,13 @@ float random01Perlin(float2 value)
 }
 
 float randomUnitPerlin(float2 value){ return random01Perlin(value)*2-1;}
+
+float3 _FrustumCornersRayBL;
+float3 _FrustumCornersRayBR;
+float3 _FrustumCornersRayTL;
+float3 _FrustumCornersRayTR;
+
+float3 GetViewDirWS(float2 uv)
+{
+    return bilinearLerp(_FrustumCornersRayTL, _FrustumCornersRayTR, _FrustumCornersRayBL, _FrustumCornersRayBR, uv);
+}
