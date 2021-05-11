@@ -1,54 +1,94 @@
-#pragma kernel Clear
-#pragma kernel Generate
+#pragma kernel ClearLow
+#pragma kernel GenerateLow
+#pragma kernel ClearMedium
+#pragma kernel GenerateMedium
 
 #include "../CommonInclude.hlsl"
+#include "../BoundingCollision.hlsl"
 
 float3 _PlaneNormal;
 float3 _PlanePosition;
 
+uint _SAMPLE_COUNT;
 float4 _Result_TexelSize;
 Texture2D<float4> _Input;
 RWTexture2D<float> _Depth; //RWTexture<float4> Read+Write  Not Supported In GLES3.0 ? 
-RWTexture2D<float> _Result;
+RWTexture2D<float4> _Result;
 
 Texture2D<float> _CameraDepthTexture;
 float4 _CameraDepthTexture_TexelSize;
 SamplerState sampler_PointClamp;
 
-[numthreads(8, 8, 1)]
-void Clear(uint3 id:SV_DispatchThreadID)
+void Clear(uint3 id)
 {
     _Result[id.xy] = 0;
-    _Depth[id.xy] = 0;
+    _Depth[id.xy] = 1;
 }
 
-[numthreads(8,8,1)]
-void Generate (uint3 id : SV_DispatchThreadID)
+void GenerateUV(float2 uv)
 {
-    float2 uv = (id.xy + .5) * _Result_TexelSize.xy;
-    float depth =  _CameraDepthTexture.SampleLevel(sampler_PointClamp, uv,0);
+    float depth = _CameraDepthTexture.SampleLevel(sampler_PointClamp, uv, 0);
     
-    float4 positionCS = float4(uv * 2 - 1, depth, 1);
-    float3 positionWS = _WorldSpaceCameraPos + GetViewDirWS(uv) * LinearEyeDepth(depth, _ZBufferParams);
+    float3 viewDirWS = GetViewDirWS(uv);
+    float3 positionWS = _WorldSpaceCameraPos + viewDirWS * LinearEyeDepth(depth, _ZBufferParams);
     
     float normalProj = dot(positionWS.xyz - _PlanePosition, _PlaneNormal);
     float3 positionWSM = positionWS.xyz - normalProj * _PlaneNormal * 2;
     float4 positionCSM = TransformWorldToHClip(positionWSM);
     positionCSM.xyz /= positionCSM.w;
-    float2 uvM = (positionCSM.xy  + 1) * .5;
+    
+    float2 uvM = (positionCSM.xy + 1) * .5;
+    float depthM = positionCSM.z;
 #if UNITY_UV_STARTS_AT_TOP
     uvM.y = 1 - uvM.y;
 #endif
-    uint2 resultIDM = uvM * _Result_TexelSize.zw;
-    float depthM = positionCSM.z;
+    
 #if !UNITY_REVERSED_Z
-    depth= 1 - depth;
-    depthM = 1 - depthM;
+    depth = 1 - depth;
 #endif
-
-    if (normalProj > 0.001 && depth>0 && depthM > _Depth[resultIDM])
+    if (positionCSM.w > 0 && depth > 0)
     {
-        _Result[resultIDM] = float4(_Input.SampleLevel(sampler_PointClamp, uv, 0).rgb, 1);
-        _Depth[resultIDM] = depthM;
+        uint2 resultIDM = uvM * _Result_TexelSize.zw;
+        float sampleDepth = _Depth[resultIDM];
+        depthM = Linear01Depth(depthM, _ZBufferParams) ;
+        if (sampleDepth > depthM)
+        {
+            _Result[resultIDM] = _Input.SampleLevel(sampler_PointClamp, uv, 0);
+            _Depth[resultIDM] = depthM;
+        }
     }
 }
+void Generate (uint3 id)
+{
+    float2 uv = id.xy * _Result_TexelSize.xy;
+    GenerateUV(uv);
+    if (_SAMPLE_COUNT > 1u)
+        GenerateUV(uv + _Result_TexelSize.xy * float2(0, .5));
+    if (_SAMPLE_COUNT > 2u)
+        GenerateUV(uv + _Result_TexelSize.xy * float2(.5, 0));
+    if (_SAMPLE_COUNT > 3u)
+        GenerateUV(uv + _Result_TexelSize.xy * float2(.5, .5));
+}
+
+
+[numthreads(1, 1, 1)]
+void ClearLow(uint3 id : SV_DispatchThreadID)
+{
+    Clear(id);
+}
+[numthreads(1, 1, 1)]
+void GenerateLow(uint3 id : SV_DispatchThreadID)
+{
+    Generate(id);
+}
+[numthreads(8, 8, 1)]
+void ClearMedium(uint3 id : SV_DispatchThreadID)
+{
+    Clear(id);
+}
+[numthreads(8, 8, 1)]
+void GenerateMedium(uint3 id : SV_DispatchThreadID)
+{
+    Generate(id);
+}
+

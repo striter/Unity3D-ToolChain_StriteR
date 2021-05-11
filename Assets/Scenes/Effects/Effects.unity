@@ -604,7 +604,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c85af998dd99edf45b824a71f34e3c08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EnableBlur: 1
+  m_OffsetDistance: 0
+  m_Sample: 4
+  m_EnableBlur: 0
   m_BlurParam:
     m_BlurType: 3
     m_BlurSize: 1.54

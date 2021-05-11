@@ -301,4 +301,30 @@ public struct DistancePlane
     public float m_Distance;
     public DistancePlane(Vector3 _normal,float _distance) { m_Normal = _normal;m_Distance = _distance; }
 }
+
+[Serializable]
+public struct Int2
+{
+    public int m_X;
+    public int m_Y;
+    public Int2(int _x, int _y) { m_X = _x; m_Y = _y;  }
+}
+[Serializable]
+public struct Int3
+{
+
+    public int m_X;
+    public int m_Y;
+    public int m_Z;
+    public Int3(int _x, int _y, int _z) { m_X = _x; m_Y = _y; m_Z = _z;  }
+}
+[Serializable]
+public struct Int4
+{
+    public int m_X;
+    public int m_Y;
+    public int m_Z;
+    public int m_W;
+    public Int4(int _x,int _y,int _z,int _w) { m_X = _x;m_Y = _y;m_Z = _z;m_W = _w; }
+}
 #endregion

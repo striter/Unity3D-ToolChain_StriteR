@@ -32,9 +32,9 @@ namespace Rendering.Pipeline
         public override void Create()
         {
             m_OpaqueBlurPass = new SRP_OpaqueBlurTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 1 };
-            m_NormalPass = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 1 };
-            m_ReflecitonPass = new SRP_CameraReflectionTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 2 };
-            m_PostProcesssing_Opaque = new SRP_PerCameraPostProcessing("Opaque Post Process") { renderPassEvent = RenderPassEvent.AfterRenderingSkybox };
+            m_NormalPass = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 2 };
+            m_ReflecitonPass = new SRP_CameraReflectionTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 3};
+            m_PostProcesssing_Opaque = new SRP_PerCameraPostProcessing("Opaque Post Process") { renderPassEvent = RenderPassEvent.AfterRenderingSkybox+4 };
             m_PostProcesssing_AfterAll = new SRP_PerCameraPostProcessing("After All Post Process") { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing };
 #if UNITY_EDITOR
             m_CameraReflectionComputeShader = UnityEditor.AssetDatabase.LoadAssetAtPath<ComputeShader>("Assets/Shaders/Compute/PlanarReflection.compute");
@@ -77,7 +77,7 @@ namespace Rendering.Pipeline
             if (cameraNormalTexture)
                 renderer.EnqueuePass(m_NormalPass);
             if (cameraReflectionTexture)
-                UpdateCameraReflectionTexture(renderer);
+                UpdateCameraReflectionTexture(renderer,ref renderingData);
             UpdatePostProcess(renderer, ref renderingData);
         }
         void UpdateFrustumCornersRay(Camera _camera)
@@ -107,14 +107,19 @@ namespace Rendering.Pipeline
             Shader.SetGlobalVector(ID_FrustumCornersRayTL, topLeft);
             Shader.SetGlobalVector(ID_FrustumCornersRayTR, topRight);
         }
-        void UpdateCameraReflectionTexture(ScriptableRenderer _renderer)
+        void UpdateCameraReflectionTexture(ScriptableRenderer _renderer,ref RenderingData renderingData)
         {
             if (SRD_ReflectionPlane.m_ReflectionPlanes.Count == 0)
                 return;
+            if(SRD_ReflectionPlane.m_ReflectionPlanes.Count>1)
+            {
+                Debug.LogWarning("Multiple Reflection Plane Are Not Supported Currently!");
+                return;
+            }
             SRD_ReflectionPlane plane = SRD_ReflectionPlane.m_ReflectionPlanes[0];
             if (!plane.m_MeshRenderer.isVisible)
                 return;
-            _renderer.EnqueuePass(m_ReflecitonPass.Setup(_renderer.cameraColorTarget, m_CameraReflectionComputeShader, plane));
+            _renderer.EnqueuePass(m_ReflecitonPass.Setup(_renderer.cameraColorTarget, m_CameraReflectionComputeShader, plane, renderingData.cameraData.isSceneViewCamera));
         }
         void UpdatePostProcess(ScriptableRenderer renderer, ref RenderingData renderingData)
         {

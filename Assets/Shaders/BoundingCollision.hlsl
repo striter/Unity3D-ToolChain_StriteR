@@ -8,7 +8,12 @@ float PRayDistance(float3 _pNormal,float _pDistance,float3 _rayOrigin,float3 _ra
     float nrD = dot(_pNormal ,_rayDirection);
     return (_pDistance-nrO)/nrD;
 }
-
+float PRayDistance(float3 _pNormal,float3 _pPosition,float3 _rOrigin,float3 _rDirection)
+{
+    float nrO = dot(_pNormal,_pPosition-_rOrigin);
+    float nrD = dot(_pNormal, _rDirection);
+    return nrD / nrO;
+}
 //Axis Aligned Bounding Box
 bool AABBPositionInside(float3 boundsMin, float3 boundsMax, float3 pos)
 {

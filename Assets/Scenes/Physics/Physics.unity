@@ -3840,6 +3840,7 @@ GameObject:
   - component: {fileID: 813067135}
   - component: {fileID: 813067134}
   - component: {fileID: 813067133}
+  - component: {fileID: 813067137}
   m_Layer: 0
   m_Name: Plane (1)
   m_TagString: Untagged
@@ -3879,7 +3880,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4981376f4d655524385f8501887dca24, type: 2}
+  - {fileID: 2100000, guid: 2d90dc0f68f2ffc40b23747f1fdb4353, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3923,6 +3924,28 @@ Transform:
   m_Father: {fileID: 29240221}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &813067137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 813067132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c85af998dd99edf45b824a71f34e3c08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OffsetDistance: 0
+  m_Sample: 4
+  m_EnableBlur: 0
+  m_BlurParam:
+    m_BlurType: 3
+    m_BlurSize: 0.424
+    m_Iteration: 4
+    m_DownSample: 2
+    m_Angle: 0
+    m_Vector: {x: 0.5, y: 0.5}
 --- !u!1 &814280861
 GameObject:
   m_ObjectHideFlags: 0
@@ -9858,7 +9881,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1604089969}
-  m_LocalRotation: {x: 0, y: -0.3606917, z: 0, w: 0.9326851}
+  m_LocalRotation: {x: 0, y: 0.3606917, z: 0, w: -0.9326851}
   m_LocalPosition: {x: 1.3412942, y: 1.8580003, z: -15.719212}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -10006,7 +10029,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_FrustumCornersRay: 2
-  m_CameraViewProjectionMatrix: 2
   m_OpaqueBlurTexture: 2
   m_NormalTexture: 2
   m_ReflectionTexture: 2

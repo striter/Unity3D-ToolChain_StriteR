@@ -17,15 +17,18 @@ namespace Rendering.Pipeline
         {
             m_ReflectionPlanes.Remove(this);
         }
+        [Range(-5f,5f)]public float m_OffsetDistance = 0f;
+        [Range(1,4)]public int m_Sample=1;
         public bool m_EnableBlur = false;
         [MFoldout(nameof(m_EnableBlur), true)] public ImageEffectParam_Blurs m_BlurParam = UPipeline.GetDefaultPostProcessData<ImageEffectParam_Blurs>();
-        public DistancePlane m_PlaneData => new DistancePlane() { m_Normal = transform.up,m_Distance= UGeometry.PointPlaneDistance( transform.position,transform.up,0) };
+        public DistancePlane m_PlaneData => new DistancePlane() { m_Normal = transform.up,m_Distance= UGeometry.PointPlaneDistance( transform.position,transform.up,0)+ m_OffsetDistance };
         public MeshRenderer m_MeshRenderer { get; private set; }
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.white;
-            Gizmos_Extend.DrawArrow(m_PlaneData .m_Normal* m_PlaneData.m_Distance, Quaternion.LookRotation(m_PlaneData.m_Normal), 2f, .5f);
+            DistancePlane planeData = m_PlaneData;
+            Gizmos_Extend.DrawArrow(transform.position+transform.up * m_OffsetDistance, Quaternion.LookRotation(planeData.m_Normal), 2f, .5f);
         }
 #endif
     }
