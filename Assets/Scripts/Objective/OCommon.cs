@@ -300,6 +300,28 @@ public struct DistancePlane
     public Vector3 m_Normal;
     public float m_Distance;
     public DistancePlane(Vector3 _normal,float _distance) { m_Normal = _normal;m_Distance = _distance; }
+
+    public Matrix4x4 GetMirrorMatrix()
+    {
+        Matrix4x4 mirrorMatrix = Matrix4x4.identity;
+        mirrorMatrix.m00 = 1 - 2 * m_Normal.x* m_Normal.x;
+        mirrorMatrix.m01 = -2 * m_Normal.x * m_Normal.y;
+        mirrorMatrix.m02 = -2 * m_Normal.x * m_Normal.z;
+        mirrorMatrix.m03 = 2 * m_Normal.x * m_Distance;
+        mirrorMatrix.m10 = -2 * m_Normal.x * m_Normal.y;
+        mirrorMatrix.m11 = 1 - 2 * m_Normal.y * m_Normal.y;
+        mirrorMatrix.m12 = -2 * m_Normal.y * m_Normal.z;
+        mirrorMatrix.m13 = 2 * m_Normal.y * m_Distance;
+        mirrorMatrix.m20 = -2 * m_Normal.x * m_Normal.z;
+        mirrorMatrix.m21 = -2 * m_Normal.y * m_Normal.z;
+        mirrorMatrix.m22 = 1 - 2 * m_Normal.z * m_Normal.z;
+        mirrorMatrix.m23 = 2 * m_Normal.z * m_Distance;
+        mirrorMatrix.m30 = 0;
+        mirrorMatrix.m31 = 0;
+        mirrorMatrix.m32 = 0;
+        mirrorMatrix.m33 = 1;
+        return mirrorMatrix;
+    }
 }
 
 [Serializable]

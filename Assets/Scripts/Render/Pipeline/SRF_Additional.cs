@@ -26,14 +26,14 @@ namespace Rendering.Pipeline
 
         SRP_OpaqueBlurTexture m_OpaqueBlurPass;
         SRP_NormalTexture m_NormalPass;
-        SRP_CameraReflectionTexture m_ReflecitonPass;
+        SRP_PlanarReflection m_ReflecitonPass;
         SRP_PerCameraPostProcessing m_PostProcesssing_Opaque;
         SRP_PerCameraPostProcessing m_PostProcesssing_AfterAll;
         public override void Create()
         {
             m_OpaqueBlurPass = new SRP_OpaqueBlurTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 1 };
             m_NormalPass = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 2 };
-            m_ReflecitonPass = new SRP_CameraReflectionTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 3};
+            m_ReflecitonPass = new SRP_PlanarReflection() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 3};
             m_PostProcesssing_Opaque = new SRP_PerCameraPostProcessing("Opaque Post Process") { renderPassEvent = RenderPassEvent.AfterRenderingSkybox+4 };
             m_PostProcesssing_AfterAll = new SRP_PerCameraPostProcessing("After All Post Process") { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing };
 #if UNITY_EDITOR
