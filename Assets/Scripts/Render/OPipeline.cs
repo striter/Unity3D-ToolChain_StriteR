@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace Rendering
 {
-    public enum enum_PlanarReflectionSpace
+    public enum enum_ReflectionSpace
     {
         ScreenSpace,
-        InverseCameraSpace,
+        MirrorSpace,
     }
 
 }

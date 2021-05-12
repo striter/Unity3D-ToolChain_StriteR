@@ -17,9 +17,9 @@ namespace Rendering.Pipeline
         {
             m_ReflectionPlanes.Remove(this);
         }
-        public enum_PlanarReflectionSpace m_ReflectionType = enum_PlanarReflectionSpace.ScreenSpace;
+        public enum_ReflectionSpace m_ReflectionType = enum_ReflectionSpace.ScreenSpace;
         [Range(-5f,5f)]public float m_PlaneOffset = 0f;
-        [Range(1,4)]public int m_Sample=1;
+        [MFoldout(nameof(m_ReflectionType),enum_ReflectionSpace.ScreenSpace)] [Range(1,4)]public int m_Sample=1;
         public bool m_EnableBlur = false;
         [MFoldout(nameof(m_EnableBlur), true)] public ImageEffectParam_Blurs m_BlurParam = UPipeline.GetDefaultPostProcessData<ImageEffectParam_Blurs>();
         public DistancePlane m_PlaneData => new DistancePlane() { m_Normal = transform.up,m_Distance= UGeometry.PointPlaneDistance( transform.position,transform.up,0)+ m_PlaneOffset };

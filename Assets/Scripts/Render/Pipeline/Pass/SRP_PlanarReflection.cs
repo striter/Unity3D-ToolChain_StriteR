@@ -25,9 +25,9 @@ namespace Rendering.Pipeline
         static readonly int ID_Result = Shader.PropertyToID("_Result");
         #endregion
 
+        ScriptableRenderer m_Renderer;
         SRD_ReflectionPlane m_Plane;
         ComputeShader m_ComputeShader;
-        RenderTargetIdentifier m_ColorInput;
         RenderTargetIdentifier m_ColorResult;
         RenderTextureDescriptor m_ResultDescriptor;
         ImageEffect_Blurs m_Blur;
@@ -45,9 +45,9 @@ namespace Rendering.Pipeline
         {
             m_Blur.Destroy();
         }
-        public SRP_PlanarReflection Setup(RenderTargetIdentifier _color, ComputeShader _shader, SRD_ReflectionPlane _plane,bool _lowEnd)
+        public SRP_PlanarReflection Setup(ScriptableRenderer _renderer, ComputeShader _shader, SRD_ReflectionPlane _plane,bool _lowEnd)
         {
-            m_ColorInput = _color;
+            m_Renderer = _renderer;
             m_Plane = _plane;
             m_ComputeShader = _shader;
             string keyword = _lowEnd ? "Low" : "Medium";
@@ -72,14 +72,14 @@ namespace Rendering.Pipeline
 
             switch(m_Plane.m_ReflectionType)
             {
-                case enum_PlanarReflectionSpace.InverseCameraSpace:
+                case enum_ReflectionSpace.MirrorSpace:
                     {
                         RenderTextureDescriptor depthDescriptor = new RenderTextureDescriptor(cameraTextureDescriptor.width, cameraTextureDescriptor.height, RenderTextureFormat.Depth,16,0);
-                        cmd.GetTemporaryRT(ID_ReflectionDepth, depthDescriptor);
+                        cmd.GetTemporaryRT(ID_ReflectionDepth, depthDescriptor,FilterMode.Point);
                         ConfigureTarget(m_ColorResult, RT_ID_ReflectionDepth);
                     }
                     break;
-                case enum_PlanarReflectionSpace.ScreenSpace:
+                case enum_ReflectionSpace.ScreenSpace:
                     {
                         cmd.GetTemporaryRT(ID_ReflectionDepth, m_ResultDescriptor);
                         ConfigureTarget(m_ColorResult);
@@ -101,7 +101,7 @@ namespace Rendering.Pipeline
             DistancePlane planeData = m_Plane.m_PlaneData;
             switch(m_Plane.m_ReflectionType)
             {
-                case enum_PlanarReflectionSpace.ScreenSpace:
+                case enum_ReflectionSpace.ScreenSpace:
                     {
                         cmd.SetComputeIntParam(m_ComputeShader, ID_SampleCount, m_Plane.m_Sample);
                         cmd.SetComputeVectorParam(m_ComputeShader, ID_PlaneNormal, planeData.m_Normal.normalized);
@@ -115,13 +115,13 @@ namespace Rendering.Pipeline
                         cmd.SetComputeTextureParam(m_ComputeShader, m_Kernels.m_X, ID_Result, m_ColorResult);
                         cmd.DispatchCompute(m_ComputeShader, m_Kernels.m_X, groupX, groupY, 1);
 
-                        cmd.SetComputeTextureParam(m_ComputeShader, m_Kernels.m_Y, ID_Input, m_ColorInput);
+                        cmd.SetComputeTextureParam(m_ComputeShader, m_Kernels.m_Y, ID_Input, m_Renderer.cameraColorTarget);
                         cmd.SetComputeTextureParam(m_ComputeShader, m_Kernels.m_Y, ID_Depth, RT_ID_ReflectionDepth);
                         cmd.SetComputeTextureParam(m_ComputeShader, m_Kernels.m_Y, ID_Result, m_ColorResult);
                         cmd.DispatchCompute(m_ComputeShader, m_Kernels.m_Y, groupX, groupY, 1);
                     }
                     break;
-                case enum_PlanarReflectionSpace.InverseCameraSpace:
+                case enum_ReflectionSpace.MirrorSpace:
                     {
                         cmd.ClearRenderTarget(true, true, Color.black);
                         context.ExecuteCommandBuffer(cmd);
@@ -156,7 +156,6 @@ namespace Rendering.Pipeline
             }
             if (m_Plane.m_EnableBlur)
                 m_Blur.ExecuteBuffer(cmd, m_ResultDescriptor, m_ColorResult, RT_ID_ReflectionTexture, m_Plane.m_BlurParam);
-
             context.ExecuteCommandBuffer(cmd);
             cmd.Clear();
             CommandBufferPool.Release(cmd);

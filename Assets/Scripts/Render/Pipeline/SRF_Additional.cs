@@ -119,7 +119,7 @@ namespace Rendering.Pipeline
             SRD_ReflectionPlane plane = SRD_ReflectionPlane.m_ReflectionPlanes[0];
             if (!plane.m_MeshRenderer.isVisible)
                 return;
-            _renderer.EnqueuePass(m_ReflecitonPass.Setup(_renderer.cameraColorTarget, m_CameraReflectionComputeShader, plane, renderingData.cameraData.isSceneViewCamera));
+            _renderer.EnqueuePass(m_ReflecitonPass.Setup(_renderer, m_CameraReflectionComputeShader, plane, renderingData.cameraData.isSceneViewCamera));
         }
         void UpdatePostProcess(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
