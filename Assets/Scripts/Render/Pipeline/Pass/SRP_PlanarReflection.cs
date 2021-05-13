@@ -123,7 +123,7 @@ namespace Rendering.Pipeline
                     break;
                 case enum_ReflectionSpace.MirrorSpace:
                     {
-                        cmd.ClearRenderTarget(true, true, Color.black);
+                        cmd.ClearRenderTarget(true, true, Color.black.SetAlpha(0));
                         context.ExecuteCommandBuffer(cmd);
 
                         CameraData cameraData = renderingData.cameraData;

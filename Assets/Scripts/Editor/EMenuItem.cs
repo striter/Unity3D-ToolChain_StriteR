@@ -20,22 +20,22 @@ namespace TEditor
         //BuiltIn Texture Ref:https://unitylist.com/p/5c3/Unity-editor-icons
         //UI
         [MenuItem("Work Flow/UI/Missing Fonts Replacer", false, 203)]
-        static void ShowFontsReplacerWindow() => EditorWindow.GetWindow<EUIFontsMissingReplacerWindow>().titleContent=new GUIContent("Missing Fonts Replacer",EditorGUIUtility.FindTexture("FilterByLabel"));
+        static void ShowFontsReplacerWindow() => EditorWindow.GetWindow<EUIFontsMissingReplacerWindow>().titleContent=new GUIContent("Missing Fonts Replacer",EditorGUIUtility.IconContent("FilterByLabel").image);
         //Art
         [MenuItem("Work Flow/Art/Plane Mesh Generator", false, 301)]
-        static void ShowPlaneGenerator() => EditorWindow.GetWindow(typeof(EWPlaneMeshGenerator)).titleContent=new GUIContent("Plane Generator", EditorGUIUtility.FindTexture("CustomTool"));
+        static void ShowPlaneGenerator() => EditorWindow.GetWindow(typeof(EWPlaneMeshGenerator)).titleContent=new GUIContent("Plane Generator", EditorGUIUtility.IconContent("CustomTool").image);
         [MenuItem("Work Flow/Art/Mesh Smooth Normal Generator", false, 302)]
-        static void ShowSmoothNormalGenerator() => EditorWindow.GetWindow(typeof(EWSmoothNormalGenerator)).titleContent = new GUIContent("Smooth Normal Generator", EditorGUIUtility.FindTexture("CustomTool"));
+        static void ShowSmoothNormalGenerator() => EditorWindow.GetWindow(typeof(EWSmoothNormalGenerator)).titleContent = new GUIContent("Smooth Normal Generator", EditorGUIUtility.IconContent("CustomTool").image);
         [MenuItem("Work Flow/Art/Mesh Editor", false, 303)]
-        static void ShowMeshEditor() => EditorWindow.GetWindow(typeof(EMeshEditor)).titleContent = new GUIContent("Mesh Editor",EditorGUIUtility.FindTexture("AvatarPivot"));
+        static void ShowMeshEditor() => EditorWindow.GetWindow(typeof(EMeshEditor)).titleContent = new GUIContent("Mesh Editor",EditorGUIUtility.IconContent("AvatarPivot").image);
         [MenuItem("Work Flow/Art/Noise Texture Generator", false, 304)]
-        static void ShowNoiseGenerator() => EditorWindow.GetWindow(typeof(EWNoiseGenerator)).titleContent = new GUIContent("Noise Texture Generator", EditorGUIUtility.FindTexture("CustomTool"));
+        static void ShowNoiseGenerator() => EditorWindow.GetWindow(typeof(EWNoiseGenerator)).titleContent = new GUIContent("Noise Texture Generator", EditorGUIUtility.IconContent("CustomTool").image);
         [MenuItem("Work Flow/Art/Texture Modifier", false, 305)]
-        static void ShowTextureModifier() => EditorWindow.GetWindow(typeof(EWTextureEditor)).titleContent = new GUIContent("Texture Modifier", EditorGUIUtility.FindTexture("d_PreTextureMipMapHigh"));
+        static void ShowTextureModifier() => EditorWindow.GetWindow(typeof(EWTextureEditor)).titleContent = new GUIContent("Texture Modifier", EditorGUIUtility.IconContent("d_PreTextureMipMapHigh").image);
         [MenuItem("Work Flow/Art/(Optimize)Animation Instance Baker", false, 400)]
-        static void ShowOptimizeWindow() => EditorWindow.GetWindow(typeof(EWAnimationInstanceBaker)).titleContent = new GUIContent("GPU Animation Instance Baker", EditorGUIUtility.FindTexture("AvatarSelector"));
+        static void ShowOptimizeWindow() => EditorWindow.GetWindow(typeof(EWAnimationInstanceBaker)).titleContent = new GUIContent("GPU Animation Instance Baker", EditorGUIUtility.IconContent("AvatarSelector").image);
         [MenuItem("Work Flow/Art/(Optimize)Animation Clip Optimize", false, 401)]
-        static void ShowAssetOptimizeWindow() => EditorWindow.GetWindow(typeof(EWAnimationClipOptimize)).titleContent = new GUIContent("Asset Optimize", EditorGUIUtility.FindTexture("Toolbar Plus More"));
+        static void ShowAssetOptimizeWindow() => EditorWindow.GetWindow(typeof(EWAnimationClipOptimize)).titleContent = new GUIContent("Asset Optimize", EditorGUIUtility.IconContent("Toolbar Plus More").image);
         #endregion
     }
 
