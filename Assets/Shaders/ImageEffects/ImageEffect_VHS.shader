@@ -15,9 +15,6 @@
             #pragma fragment frag
             #pragma multi_compile _ _SCREENCUT_HARD _SCREENCUT_SCALED
             #pragma shader_feature _COLORBLEED
-            #pragma shader_feature _COLORBLEED_R
-            #pragma shader_feature _COLORBLEED_G
-            #pragma shader_feature _COLORBLEED_B
             #pragma shader_feature _GRAIN
             #pragma shader_feature _GRAIN_CIRCLE
             #pragma shader_feature _LINEDISTORT
@@ -28,6 +25,7 @@
             float2 _ScreenCutTarget;
 
             #if _COLORBLEED
+            float _ColorBleedStrength;
             float _ColorBleedIteration;
             float _ColorBleedSize;
             float2 _ColorBleedR;
@@ -58,7 +56,7 @@
             float _GrainCircleWidth;
             #endif
             #endif
-            
+
             #if _VIGNETTE
             float3 _VignetteColor;
             float _VignetteValue;
@@ -94,33 +92,21 @@
                 float pixelDistortRandom=random01(pixelDistort);
                 uv += step(_PixelDistortClip,pixelDistortRandom)*lerp(-1,1,pixelDistort)*_PixelDistortStrength;
                 #endif
-
-                float4 col = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, uv);
+                
+                float4 albedo= SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, uv);
+                float4 col = albedo;
                 #if _COLORBLEED
                 float colorBleedOffset=0;
-                float colR,colG,colB;
+                float3 bleedCol=0;
                 for(int k=0;k<_ColorBleedIteration;k++)
                 {
                     colorBleedOffset+=_ColorBleedSize;
-                    #if _COLORBLEED_R
-                    colR+=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv+colorBleedOffset*_MainTex_TexelSize.xy*_ColorBleedR).r;
-                    #endif
-                    #if _COLORBLEED_G
-                    colG+=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv+colorBleedOffset*_MainTex_TexelSize.xy*_ColorBleedG).g;
-                    #endif
-                    #if _COLORBLEED_B
-                    colB+=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv+colorBleedOffset*_MainTex_TexelSize.xy*_ColorBleedB).b;
-                    #endif
+                    bleedCol.r+=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv+colorBleedOffset*_MainTex_TexelSize.xy*_ColorBleedR).r;
+                    bleedCol.g+=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv+colorBleedOffset*_MainTex_TexelSize.xy*_ColorBleedG).g;
+                    bleedCol.b+=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv+colorBleedOffset*_MainTex_TexelSize.xy*_ColorBleedB).b;
                 }
-                #if _COLORBLEED_R
-                col.r=colR/_ColorBleedIteration;
-                #endif
-                #if _COLORBLEED_G
-                col.g=colG/_ColorBleedIteration;
-                #endif
-                #if _COLORBLEED_B
-                col.b=colB/_ColorBleedIteration;
-                #endif
+                bleedCol/=_ColorBleedIteration;
+                col.rgb=lerp(albedo.rgb,bleedCol,_ColorBleedStrength);
                 #endif
                 
                 #if _GRAIN
@@ -134,12 +120,13 @@
                 #endif
                 col.rgb=lerp(col.rgb,_GrainColor.rgb,grain);
                 #endif
-                
+
                 #if _VIGNETTE
                 uv-=.5;
                 float vignette = ( 1-uv.y*uv.y*_VignetteValue)*saturate(1-uv.x*uv.x*_VignetteValue);
-                col.rgb=lerp(_VignetteColor,col.rgb,vignette);
+                col.rgb=lerp(_VignetteColor,col.rgb,saturate(vignette));
                 #endif
+
                 return col;
             }
             ENDHLSL

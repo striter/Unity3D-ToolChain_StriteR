@@ -504,7 +504,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_FrustumCornersRay: 0
-  m_CameraViewProjectionMatrix: 0
   m_OpaqueBlurTexture: 0
   m_NormalTexture: 0
   m_ReflectionTexture: 0
@@ -807,7 +806,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_FrustumCornersRay: 0
-  m_CameraViewProjectionMatrix: 0
   m_OpaqueBlurTexture: 0
   m_NormalTexture: 0
   m_ReflectionTexture: 0
@@ -1770,7 +1768,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_FrustumCornersRay: 0
-  m_CameraViewProjectionMatrix: 0
   m_OpaqueBlurTexture: 0
   m_NormalTexture: 0
   m_ReflectionTexture: 0
@@ -1908,8 +1905,9 @@ MonoBehaviour:
     m_ScreenCut: 1
     m_ScreenCutDistance: {x: 0.1, y: 0.1}
     m_ColorBleed: 1
+    m_ColorBleedStrength: 5
     m_ColorBleedIteration: 2
-    m_ColorBleedSize: 2
+    m_ColorBleedSize: 1.61
     m_ColorBleedR: {x: 1.2, y: 0}
     m_ColorBleedG: {x: -1, y: 0}
     m_ColorBleedB: {x: 0, y: 0}
@@ -1933,7 +1931,7 @@ MonoBehaviour:
     m_Vignette: 1
     m_VignetteColor: {r: 0, g: 0, b: 0, a: 0}
     m_VignetteValue: 3.18
-  m_SceneViewPreview: 1
+  m_SceneViewPreview: 0
 --- !u!111 &1941222564
 Animation:
   m_ObjectHideFlags: 0
@@ -2018,7 +2016,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_FrustumCornersRay: 0
-  m_CameraViewProjectionMatrix: 0
   m_OpaqueBlurTexture: 0
   m_NormalTexture: 0
   m_ReflectionTexture: 0
@@ -2115,7 +2112,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_FrustumCornersRay: 2
-  m_CameraViewProjectionMatrix: 2
   m_OpaqueBlurTexture: 2
   m_NormalTexture: 2
   m_ReflectionTexture: 2

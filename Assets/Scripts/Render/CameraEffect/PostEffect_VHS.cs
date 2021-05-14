@@ -21,6 +21,7 @@ namespace Rendering.ImageEffect
         [MFold(nameof(m_ScreenCut), enum_VHSScreenCut.None), RangeVector(0, 1)] public Vector2 m_ScreenCutDistance;
 
         [MTitle] public bool m_ColorBleed;
+        [MFoldout(nameof(m_ColorBleed), true)] [Range(0, 5)] public float m_ColorBleedStrength;
         [MFoldout(nameof(m_ColorBleed), true)][ Range(1, 4)] public int m_ColorBleedIteration;
         [MFoldout(nameof(m_ColorBleed), true)][ Range(0, 2)] public float m_ColorBleedSize;
         [MFoldout(nameof(m_ColorBleed), true)][ RangeVector(-5, 5)] public Vector2 m_ColorBleedR;
@@ -57,6 +58,7 @@ namespace Rendering.ImageEffect
             m_ScreenCutDistance = Vector2.one * 0.1f,
 
             m_ColorBleed = true,
+            m_ColorBleedStrength = 1f,
             m_ColorBleedIteration = 2,
             m_ColorBleedSize = .8f,
             m_ColorBleedR = Vector2.one,
@@ -95,9 +97,7 @@ namespace Rendering.ImageEffect
         static readonly int ID_ScreenCutTarget = Shader.PropertyToID("_ScreenCutTarget");
 
         const string KW_ColorBleed = "_COLORBLEED";
-        const string KW_ColorBleedR = "_COLORBLEED_R";
-        const string KW_ColorBleedG = "_COLORBLEED_G";
-        const string KW_ColorBleedB = "_COLORBLEED_B";
+        static readonly int ID_ColorBleedStrengthen = Shader.PropertyToID("_ColorBleedStrength");
         static readonly int ID_ColorBleedIteration = Shader.PropertyToID("_ColorBleedIteration");
         static readonly int ID_ColorBleedSize = Shader.PropertyToID("_ColorBleedSize");
         static readonly int ID_ColorBleedR = Shader.PropertyToID("_ColorBleedR");
@@ -138,9 +138,7 @@ namespace Rendering.ImageEffect
             _material.EnableKeyword(KW_ColorBleed, _params.m_ColorBleed);
             _material.SetInt(ID_ColorBleedIteration, _params.m_ColorBleedIteration);
             _material.SetFloat(ID_ColorBleedSize, _params.m_ColorBleedSize);
-            _material.EnableKeyword(KW_ColorBleedR, _params.m_ColorBleedR!=Vector2.zero);
-            _material.EnableKeyword(KW_ColorBleedG, _params.m_ColorBleedG != Vector2.zero);
-            _material.EnableKeyword(KW_ColorBleedB, _params.m_ColorBleedB != Vector2.zero);
+            _material.SetFloat(ID_ColorBleedStrengthen, _params.m_ColorBleedStrength);
             _material.SetVector(ID_ColorBleedR, _params.m_ColorBleedR);
             _material.SetVector(ID_ColorBleedG, _params.m_ColorBleedG);
             _material.SetVector(ID_ColorBleedB, _params.m_ColorBleedB);
