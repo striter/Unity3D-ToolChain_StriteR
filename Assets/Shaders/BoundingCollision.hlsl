@@ -1,5 +1,7 @@
 ﻿float min(float3 target){ return min( min(target.x,target.y),target.z);}
 float max(float3 target){ return max( max(target.x,target.y),target.z);}
+half min(half3 target){return min(min(target.x,target.y),target.z);}
+half max(half3 target){return max(max(target.x,target.y),target.z);}
 
 //Plane
 float PRayDistance(float3 _pNormal,float _pDistance,float3 _rayOrigin,float3 _rayDirection) //return: Dst To Plane
@@ -51,18 +53,12 @@ float2 BSRayDistance(float3 _bsCenter, float _bsRadius, float3 _rayOrigin, float
 {
     float3 offset = _rayOrigin - _bsCenter;
     float dotOffsetDirection = dot(_rayDirection, offset);
-    if (dotOffsetDirection > 0)
-        return -1;
-
     float dotOffset = dot(offset, offset);
     float sqrRadius = _bsRadius * _bsRadius;
     float discriminant = dotOffsetDirection * dotOffsetDirection - dotOffset + sqrRadius;
-    if (discriminant < 0)
-        return -1;
     discriminant = sqrt(discriminant);
     float t0 = -dotOffsetDirection - discriminant;
     float t1 = -dotOffsetDirection + discriminant;
-    if (t0 < 0)
-        t0 = t1;
-    return float2(t0, t1);
+    t0 = lerp(t0, t1, step(0,t0));
+    return lerp(-1.0h, float2(t0, t1),  step(0, discriminant) * step(dotOffsetDirection, 0));
 }
