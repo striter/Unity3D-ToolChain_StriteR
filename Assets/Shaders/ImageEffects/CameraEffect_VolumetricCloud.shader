@@ -56,17 +56,17 @@
             }
 
             #if _LIGHTMARCH
-            float lightMarch(float3 position,float3 marchDir,float marchDst)
+            float lightMarch(GPlane _planeStart,GPlane _planeEnd, GRay lightRay,float marchDst)
             {
-                float distance1=PRayDistance(float3(0,1,0),_VerticalStart,position,marchDir);
-                float distance2=PRayDistance(float3(0,1,0),_VerticalEnd,position,marchDir);
+                float distance1=PRayDistance(_planeStart,lightRay);
+                float distance2=PRayDistance(_planeEnd,lightRay);
                 float distanceInside=max(distance1,distance2);
                 float distanceLimitParam=saturate(distanceInside/_LightMarchMinimalDistance);
                 float cloudDensity=0;
                 float totalDst=0;
                 for(int i=0;i<_LightMarchTimes;i++)
                 {
-                    float3 marchPos=position+marchDir*totalDst;
+                    float3 marchPos=GetPoint(lightRay,totalDst);
                     cloudDensity+=SampleDensity(marchPos);
                     totalDst+=marchDst;
                     if(totalDst>=distanceInside)
@@ -81,8 +81,11 @@
                 float3 marchDirWS=normalize(GetViewDirWS(i.uv));
                 float3 lightDirWS=normalize(_MainLightPosition.xyz);
                 float3 cameraPos=GetCameraPositionWS();
-                float distance1=PRayDistance(float3(0,1,0),_VerticalStart,cameraPos,marchDirWS);
-                float distance2=PRayDistance(float3(0,1,0),_VerticalEnd,cameraPos,marchDirWS);
+                GPlane planeStartWS=GetPlane( float3(0,1,0),_VerticalStart);
+                GPlane planeEndWS=GetPlane(float3(0,1,0),_VerticalEnd);
+                GRay viewRayWS=GetRay( cameraPos,marchDirWS);
+                float distance1=PRayDistance(planeStartWS,viewRayWS);
+                float distance2=PRayDistance(planeEndWS,viewRayWS);
 				float linearDepth = LinearEyeDepth(i.uv);
                 distance1=min(linearDepth,distance1);
                 distance2=min(linearDepth,distance2);
@@ -121,7 +124,8 @@
                         {
                             cloudDensity*= exp(-density*_Opacity);
                             #if _LIGHTMARCH
-                            lightIntensity *= exp(-density*scatter*cloudDensity*lightMarchParam*lightMarch(marchPos,lightDirWS,lightMarchDst));
+                            GRay lightRayWS=GetRay( marchPos,lightDirWS);
+                            lightIntensity *= exp(-density*scatter*cloudDensity*lightMarchParam*lightMarch(planeStartWS,planeEndWS,lightRayWS,lightMarchDst));
                             #else
                             lightIntensity -= density*scatter*cloudDensity*lightMarchParam;
                             #endif

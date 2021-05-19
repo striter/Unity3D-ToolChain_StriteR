@@ -81,14 +81,14 @@
             }
 
             #if _LIGHTMARCH
-            float lightMarch(float3 minBound,float3 maxBound, float3 position,float3 marchDir,float marchDst)
+            float lightMarch(GBox box,GRay ray,float marchDst)
             {
-                float dstInsideBox=AABBRayDistance(minBound,maxBound,position,marchDir).y;
+                float dstInsideBox=AABBRayDistance(box,ray).y;
                 float cloudDensity=0;
                 float totalDst=0;
                 for(int i=0;i<_LightMarchTimes;i++)
                 {
-                    float3 marchPos=position+marchDir*totalDst;
+                    float3 marchPos=GetPoint(ray,totalDst);
                     cloudDensity+=SampleDensity(marchPos);
                     totalDst+=marchDst;
                     if(totalDst>dstInsideBox)
@@ -113,7 +113,9 @@
             float4 frag (v2f i) : SV_Target
             {
                 float3 marchDirWS=normalize( i.viewDirWS);
-                float marchDstWS=AABBRayDistance(i.minBoundWS,i.maxBoundWS,i.positionWS,marchDirWS).y;
+                GBox boxWS=GetBox(i.minBoundWS,i.maxBoundWS);
+                GRay rayWS=GetRay(i.positionWS,marchDirWS);
+                float marchDstWS=AABBRayDistance(boxWS,rayWS).y;
                 float depthDstWS=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, i.screenPos.xy/i.screenPos.w),_ZBufferParams).r-i.screenPos.w;
                 float marchDistance= min(depthDstWS, marchDstWS);
 
@@ -137,7 +139,8 @@
                         {
                             cloudDensity*= exp(-density*_Strength);
                             #if _LIGHTMARCH
-                            lightIntensity *= exp(-density*scatter*cloudDensity*lerp(0,_LightAbsorption, lightMarch(i.minBoundWS,i.maxBoundWS,marchPos,lightDirWS,lightMarchDst)));
+                            GRay lightRayWS=GetRay( marchPos,lightDirWS);
+                            lightIntensity *= exp(-density*scatter*cloudDensity*lerp(0,_LightAbsorption, lightMarch(boxWS,lightRayWS,lightMarchDst)));
                             #else
                             lightIntensity -= density*scatter*cloudDensity*_LightAbsorption;
                             #endif

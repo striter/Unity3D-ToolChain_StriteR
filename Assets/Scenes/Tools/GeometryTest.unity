@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -169,7 +169,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 235485685}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.04, y: 0, z: -6.06}
+  m_LocalPosition: {x: 0.75, y: 0, z: -3.77}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -204,8 +204,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69c20d0e83f17094b84b617e9e0c080d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PlaneNormal: {x: 0, y: 1, z: 0}
-  m_PlaneDistance: 0
+  m_Plane:
+    m_Normal: {x: 0, y: 1, z: 0}
+    m_Distance: 0
   m_RayOrigin: {x: 0, y: 0.32, z: 0}
   m_RayDirection: {x: 0.47, y: -0.63, z: 1.21}
 --- !u!4 &314156686
@@ -216,12 +217,65 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 314156684}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.14, y: 0, z: -4.13}
+  m_LocalPosition: {x: -4.15, y: 0, z: 2.55}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &548546586
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 548546587}
+  - component: {fileID: 548546588}
+  m_Layer: 0
+  m_Name: ConeRayCollision
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &548546587
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 548546586}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -6.75, y: 1.19, z: -0.74}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &548546588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 548546586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 657393a8e337b514aa36316cbde4fd44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Data:
+    m_Cone:
+      m_DirectedPosition:
+        m_Position: {x: 0.38, y: -1.2, z: 0}
+        m_Direction: {x: 0.9053831, y: -0.42459595, z: -0.00000013411045}
+      m_Angle: 49.1
+    m_Height: 1.17
+  m_Ray:
+    m_Position: {x: 1.55, y: -0.77, z: 0}
+    m_Direction: {x: -118.8, y: -140.27, z: 0}
 --- !u!1 &999107284
 GameObject:
   m_ObjectHideFlags: 0
@@ -268,7 +322,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 999107284}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.06, y: 0, z: -6.0099998}
+  m_LocalPosition: {x: -1.3499999, y: 0, z: -3.7199998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -318,8 +372,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RayOrigin: {x: 0, y: 3, z: 0}
-  m_RayDirection: {x: -2.01, y: -4.24, z: 1.22}
-  m_BoundingSphereOrigin: {x: 0, y: 0, z: 0}
+  m_RayDirection: {x: -2.01, y: -5.18, z: 1.22}
+  m_SphereOrigin: {x: 0, y: 0, z: 0}
   m_BoundingSphereRadius: 2
 --- !u!1 &1365951602
 GameObject:
@@ -346,7 +400,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1365951602}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.5, y: 0, z: 2.4}
+  m_LocalPosition: {x: -7.48, y: 0, z: 2.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -443,6 +497,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!4 &1630316437
@@ -493,7 +548,7 @@ MonoBehaviour:
       m_Vertex1: {x: 0, y: 0, z: 1}
       m_Vertex2: {x: 1, y: 0, z: -1}
       m_Vertex3: {x: -1, y: -0, z: -1}
-  m_Origin: {x: 0, y: -0.35, z: -0.17}
+  m_Origin: {x: 0, y: -0.18, z: -0.17}
   m_Direction: {x: -48.21, y: -51.89, z: 0.1}
   m_RayDirectionCheck: 0
   m_PlaneDirectionCheck: 0
@@ -505,7 +560,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1824406048}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.25, y: 0, z: -6.06}
+  m_LocalPosition: {x: -3.5400002, y: 0, z: -3.77}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

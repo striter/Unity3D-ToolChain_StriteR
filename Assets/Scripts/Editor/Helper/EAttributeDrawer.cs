@@ -72,7 +72,6 @@ namespace TEditor
             return true;
         }
     }
-
     #region MainAttribute
     [CustomPropertyDrawer(typeof(MTitleAttribute))]
     public class MTitlePropertyDrawer : MainAttributePropertyDrawer<MTitleAttribute>
@@ -90,7 +89,6 @@ namespace TEditor
             base.OnGUI(position, property, label);
         }
     }
-
     [CustomPropertyDrawer(typeof(MFoldoutAttribute))]
     public class MFoldoutProeprtyDrawer : MainAttributePropertyDrawer<MFoldoutAttribute>
     {

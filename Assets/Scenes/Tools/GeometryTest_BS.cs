@@ -7,20 +7,20 @@ namespace BoundingCollisionTest
     {
         public Vector3 m_RayOrigin = Vector3.up * 5;
         public Vector3 m_RayDirection = Vector3.down;
-        public Vector3 m_BoundingSphereOrigin = Vector3.zero;
+        public Vector3 m_SphereOrigin = Vector3.zero;
         public float m_BoundingSphereRadius = 2f;
 
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
             Vector3 direction = m_RayDirection.normalized;
-            bool intersect = UGeometry.RayBSIntersect(m_BoundingSphereOrigin, m_BoundingSphereRadius, m_RayOrigin, direction);
+            bool intersect = UGeometry.RayBSIntersect(m_SphereOrigin, m_BoundingSphereRadius, m_RayOrigin, direction);
             Gizmos.color = intersect ? Color.green : Color.grey;
-            Gizmos.DrawWireSphere(m_BoundingSphereOrigin, m_BoundingSphereRadius);
-            Vector2 distances = UGeometry.RayBSDistance(m_BoundingSphereOrigin, m_BoundingSphereRadius, m_RayOrigin, direction);
+            Gizmos.DrawWireSphere(m_SphereOrigin, m_BoundingSphereRadius);
+            Vector2 distances = UGeometry.RayBSDistance(m_SphereOrigin, m_BoundingSphereRadius, m_RayOrigin, direction);
 
             Gizmos.color = intersect ? Color.white:Color.grey;
-            Gizmos.DrawRay(m_RayOrigin, direction * Mathf.Max(1f,distances.x+distances.y));
+            Gizmos.DrawRay(m_RayOrigin, direction * Mathf.Max(1f,distances.y));
 
             if (distances.x >= 0)
             {
@@ -30,7 +30,7 @@ namespace BoundingCollisionTest
             if (distances.y >= 0)
             {
                 Gizmos.color = Color.red;
-                Gizmos.DrawSphere(m_RayOrigin + direction * (distances.x+distances.y), .1f);
+                Gizmos.DrawSphere(m_RayOrigin + direction * distances.y, .1f);
             }
         }
 

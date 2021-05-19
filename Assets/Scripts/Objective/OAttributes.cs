@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-
+[AttributeUsage(AttributeTargets.Field)]
+public class DirectionAttribute : PropertyAttribute { }
+[AttributeUsage(AttributeTargets.Field)]
+public class PositionAttribute : PropertyAttribute { }
 [AttributeUsage(AttributeTargets.Field)]
 public class CullingMaskAttribute : PropertyAttribute { }
 

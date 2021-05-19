@@ -38,9 +38,38 @@ public static class Gizmos_Extend
         Handles.matrix = Gizmos.matrix;
         Handles_Extend.DrawTrapezium(_pos, _rot, trapeziumInfo);
     }
+    public static void DrawCone(GHeightCone _cone)
+    {
+        Handles.color = Gizmos.color;
+        Handles.matrix = Gizmos.matrix;
+        Handles_Extend.DrawCone(_cone);
+    }
 }
 public static class Handles_Extend
 {
+    public static void DrawCone(GHeightCone _heightCone)
+    {
+        using(new Handles.DrawingScope(Handles.color, Handles.matrix*Matrix4x4.TRS(_heightCone.m_Origin, Quaternion.LookRotation(_heightCone.m_Normal),Vector3.one )))
+        {
+            float radius = _heightCone.m_Radius;
+
+            Vector3 bottom =  Vector3.forward * _heightCone.m_Height;
+            Vector3 bottomForwardDir =  Vector3.up *radius;
+            Vector3 bottomForward = bottom +bottomForwardDir;
+            Vector3 bottomBack = bottom - bottomForwardDir;
+            Vector3 bottomRightDir =Vector3.right * radius;
+            Vector3 bottomRight = bottom + bottomRightDir;
+            Vector3 bottomLeft = bottom - bottomRightDir;
+
+            Handles.DrawWireArc(bottom,-Vector3.forward, Vector3.right, 360,radius);
+            Handles.DrawWireArc(bottom, Vector3.right, Vector3.up, 180, radius);
+            Handles.DrawWireArc(bottom, Vector3.up, -Vector3.right, 180, radius);
+            Handles.DrawLine(Vector3.zero, bottomForward);
+            Handles.DrawLine(Vector3.zero, bottomBack);
+            Handles.DrawLine(Vector3.zero, bottomRight);
+            Handles.DrawLine(Vector3.zero, bottomLeft);
+        }
+    }
     public static void DrawWireCapsule(Vector3 _pos, Quaternion _rot, Vector3 _scale, float _radius, float _height)
     {
         using (new Handles.DrawingScope(Handles.color, Handles.matrix * Matrix4x4.TRS(_pos, _rot, _scale)))

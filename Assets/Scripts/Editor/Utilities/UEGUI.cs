@@ -7,6 +7,31 @@ using UnityEngine;
 
 namespace TEditor
 {
+    public static class HorizontalScope
+    {
+        static Vector2 m_StartPos;
+        static Vector2 m_Offset;
+        public static float m_CurrentY { get; private set; }
+        public static Vector2 m_CurrentPos => m_StartPos + m_Offset;
+        public static void Begin(float _startX, float _startY, float _startSizeY)
+        {
+            m_CurrentY = _startSizeY;
+            m_StartPos = new Vector2(_startX, _startY);
+            m_Offset = Vector2.zero;
+        }
+        public static Rect NextRect(float _spacingX, float _sizeX)
+        {
+            Vector2 originOffset = m_Offset;
+            m_Offset.x += _sizeX + _spacingX;
+            return new Rect(m_StartPos + originOffset, new Vector2(_sizeX, m_CurrentY));
+        }
+        public static void NextLine(float _spacingY, float _sizeY)
+        {
+            m_Offset.y += m_CurrentY + _spacingY;
+            m_CurrentY = _sizeY;
+            m_Offset.x = 0;
+        }
+    }
     public static class UEGUI
     {
         public static FieldInfo GetFieldInfo(this SerializedProperty _property)
@@ -37,30 +62,6 @@ namespace TEditor
             yield break;
         }
 
-        public static class HorizontalScope
-        {
-            static Vector2 m_StartPos;
-            static Vector2 m_Offset;
-            static float m_SizeY;
-            public static void Begin(float _startX, float _startY, float _startSizeY)
-            {
-                m_SizeY = _startSizeY;
-                m_StartPos = new Vector2(_startX, _startY);
-                m_Offset = Vector2.zero;
-            }
-            public static Rect NextRect(float _spacingX, float _sizeX)
-            {
-                Vector2 originOffset = m_Offset;
-                m_Offset.x += _sizeX + _spacingX;
-                return new Rect(m_StartPos + originOffset, new Vector2(_sizeX, m_SizeY));
-            }
-            public static void NextLine(float _spacingY, float _sizeY)
-            {
-                m_Offset.y += m_SizeY + _spacingY;
-                m_SizeY = _sizeY;
-                m_Offset.x = 0;
-            }
-        }
         public static bool EditorApplicationPlayingCheck()
         {
             if (Application.isPlaying)
@@ -70,29 +71,47 @@ namespace TEditor
             }
             return true;
         }
-
-        public static class Layout
+    }
+    public static class GUI_Extend
+    {
+        public static bool VectorField(SerializedProperty _property, Rect _rect,GUIContent _content)
         {
-            public static T[] ArrayField<T>(T[] _src, string _context="", bool _allowSceneObjects=false) where T : UnityEngine.Object
+            if (EditorGUI.EndChangeCheck())
             {
-                GUILayout.BeginVertical();
-                if(_context!="")
-                EditorGUILayout.LabelField(_context,UEGUIStyle_Window.m_TitleLabel);
-                int length = Mathf.Clamp(EditorGUILayout.IntField("Length", _src.Length),1,128);
-                if (length != _src.Length)
-                    _src = _src.Resize(length);
-
-                Type type = typeof(T);
-                T[] modifiedField = _src.Copy();
-                for (int i = 0; i < modifiedField.Length; i++)
-                    modifiedField[i] = (T)EditorGUILayout.ObjectField(modifiedField[i], type, _allowSceneObjects);
-                GUILayout.EndVertical();
-                for (int i = 0; i < modifiedField.Length; i++)
-                    if (modifiedField[i] != _src[i])
-                        return modifiedField;
-
-                return _src;
+                switch (_property.propertyType)
+                {
+                    default: EditorGUI.LabelField(_rect, "<Color=#FF0000>Invalid Property Type!</Color>", UEGUIStyle_SceneView.m_ErrorLabel); return false;
+                    case SerializedPropertyType.Vector2: _property.vector2Value = EditorGUI.Vector2Field(_rect,_content,_property.vector2Value) ; break;
+                    case SerializedPropertyType.Vector3: _property.vector3Value = EditorGUI.Vector3Field(_rect, _content, _property.vector3Value); break;
+                    case SerializedPropertyType.Vector4: _property.vector4Value = EditorGUI.Vector4Field(_rect, _content, _property.vector4Value); break;
+                }
+                _property.serializedObject.ApplyModifiedProperties();
+                return true;
             }
+            return false;
+        }
+
+    }
+    public static class GUILayout_Extend
+    {
+        public static T[] ArrayField<T>(T[] _src, string _context = "", bool _allowSceneObjects = false) where T : UnityEngine.Object
+        {
+            GUILayout.BeginVertical();
+            if (_context != "")
+                EditorGUILayout.LabelField(_context, UEGUIStyle_Window.m_TitleLabel);
+            int length = Mathf.Clamp(EditorGUILayout.IntField("Length", _src.Length), 1, 128);
+            if (length != _src.Length)
+                _src = _src.Resize(length);
+
+            Type type = typeof(T);
+            T[] modifiedField = _src.Copy();
+            for (int i = 0; i < modifiedField.Length; i++)
+                modifiedField[i] = (T)EditorGUILayout.ObjectField(modifiedField[i], type, _allowSceneObjects);
+            GUILayout.EndVertical();
+            for (int i = 0; i < modifiedField.Length; i++)
+                if (modifiedField[i] != _src[i])
+                    return modifiedField;
+            return _src;
         }
     }
 }

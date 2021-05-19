@@ -81,7 +81,7 @@
             float4 frag (v2f i) : SV_Target
             {
                 float3 marchDirWS=normalize( i.viewDirWS);
-                float marchDstWS=AABBRayDistance(i.minBoundWS,i.maxBoundWS,i.positionWS,marchDirWS).y;
+                float marchDstWS=AABBRayDistance(GetBox( i.minBoundWS,i.maxBoundWS),GetRay(i.positionWS,marchDirWS)).y;
                 float depthDstWS=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, i.screenPos.xy/i.screenPos.w),_ZBufferParams).r-i.screenPos.w;
                 float marchDistance= max(0,min(marchDstWS, depthDstWS));
                 

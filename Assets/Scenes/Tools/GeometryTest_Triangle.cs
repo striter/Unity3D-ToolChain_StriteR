@@ -6,7 +6,7 @@ namespace BoundingCollisionTest
 {
     public class GeometryTest_Triangle : MonoBehaviour
     {
-        public DirectedTriangle Triangle=new DirectedTriangle( new Vector3(0, 0, 1), new Vector3(1, 0, -1), new Vector3(-1, 0, -1) );
+        public GDirectedTriangle Triangle=new GDirectedTriangle( new Vector3(0, 0, 1), new Vector3(1, 0, -1), new Vector3(-1, 0, -1) );
         public Vector3 m_Origin=new Vector3(0,2,0),m_Direction= new Vector3(-.1f,-1,.1f);
         public bool m_RayDirectionCheck = true;
         public bool m_PlaneDirectionCheck = true;

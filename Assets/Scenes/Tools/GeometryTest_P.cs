@@ -6,8 +6,7 @@ namespace BoundingCollisionTest
 {
     public class GeometryTest_P : MonoBehaviour
     {
-        public Vector3 m_PlaneNormal;
-        public float m_PlaneDistance;
+        public GPlane m_Plane;
         public Vector3 m_RayOrigin;
         public Vector3 m_RayDirection;
 
@@ -15,8 +14,8 @@ namespace BoundingCollisionTest
         private void OnDrawGizmos()
         {
             Vector3 rayDirection = m_RayDirection.normalized;
-            Vector3 planeNormal = m_PlaneNormal.normalized;
-            float distance = UGeometry.RayPlaneDistance(planeNormal, m_PlaneDistance, m_RayOrigin, rayDirection);
+            Vector3 planeNormal = m_Plane.m_Normal.normalized;
+            float distance = UGeometry.RayPlaneDistance(planeNormal, m_Plane.m_Distance, m_RayOrigin, rayDirection);
 
             Gizmos.matrix = transform.localToWorldMatrix;
             Vector3 planeSize = new Vector3(1,0,1);
@@ -34,7 +33,7 @@ namespace BoundingCollisionTest
 
             Gizmos.color = intersect? Color.white:Color.grey;
             Gizmos.DrawLine(m_RayOrigin, m_RayOrigin + rayDirection.normalized * rayDistance);
-            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.TRS(planeNormal * m_PlaneDistance, Quaternion.LookRotation(Vector3.forward, planeNormal), Vector3.one);
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.TRS(planeNormal * m_Plane.m_Distance, Quaternion.LookRotation(Vector3.forward, planeNormal), Vector3.one);
             Gizmos.color = intersect ? Color.green : Color.grey;
             Gizmos_Extend.DrawArrow(Vector3.zero,Quaternion.LookRotation(Vector3.up), .3f, .1f);
             Gizmos.DrawWireCube(Vector3.zero, planeSize);

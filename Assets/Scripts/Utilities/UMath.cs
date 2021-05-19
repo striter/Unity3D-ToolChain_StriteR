@@ -4,8 +4,8 @@ using UnityEngine;
 
 public static class UMath
 {
-    public static float AngleToRadin(float angle) => Mathf.PI * angle / 180f;
-    public static float RadinToAngle(float radin) => radin / Mathf.PI * 180f;
+    public static float AngleToRadin(float angle) => Mathf.PI * angle / 360f;
+    public static float RadinToAngle(float radin) => radin / Mathf.PI * 360f;
     public static int Pow(int _src, int _pow)
     {
         if (_pow == 0) return 1;

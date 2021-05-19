@@ -12,7 +12,6 @@ float3 TransformObjectToHClipNormal(float3 normalOS){  return mul((float3x3) Get
 float sqrDistance(float3 offset){ return dot(offset,offset); }
 float sqrDistance(float3 pA, float3 pB){ return sqrDistance(pA-pB); }
 
-
 float4 Blend_Screen(float4 src,float4 dst){ return 1-(1-src)*(1-dst); }
 float3 Blend_Screen(float3 src,float3 dst){ return 1-(1-src)*(1-dst); }
 float3 Blend_Alpha(float3 src, float3 dst,float srcAlpha){return src * srcAlpha + dst * (1 - srcAlpha);}
@@ -130,4 +129,21 @@ float3 _FrustumCornersRayTR;
 float3 GetViewDirWS(float2 uv)
 {
     return bilinearLerp(_FrustumCornersRayTL, _FrustumCornersRayTR, _FrustumCornersRayBL, _FrustumCornersRayBR, uv);
+}
+
+float min(float3 target)
+{
+    return min(min(target.x, target.y), target.z);
+}
+float max(float3 target)
+{
+    return max(max(target.x, target.y), target.z);
+}
+half min(half3 target)
+{
+    return min(min(target.x, target.y), target.z);
+}
+half max(half3 target)
+{
+    return max(max(target.x, target.y), target.z);
 }

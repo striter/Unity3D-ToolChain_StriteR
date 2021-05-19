@@ -118,9 +118,9 @@ namespace UAlthogrim
         public static Quaternion EulerToQuaternion(Vector3 euler) => EulerToQuaternion(euler.x, euler.y, euler.z);
         public static Quaternion EulerToQuaternion(float _angleX, float _angleY, float _angleZ)     //Euler Axis XYZ
         {
-            float radinHX = UMath.AngleToRadin(_angleX / 2);
-            float radinHY = UMath.AngleToRadin(_angleY / 2);
-            float radinHZ = UMath.AngleToRadin(_angleZ / 2);
+            float radinHX = UMath.AngleToRadin(_angleX);
+            float radinHY = UMath.AngleToRadin(_angleY);
+            float radinHZ = UMath.AngleToRadin(_angleZ);
             float sinHX = Mathf.Sin(radinHX); float cosHX = Mathf.Cos(radinHX);
             float sinHY = Mathf.Sin(radinHY); float cosHY = Mathf.Cos(radinHY);
             float sinHZ = Mathf.Sin(radinHZ); float cosHZ = Mathf.Cos(radinHZ);

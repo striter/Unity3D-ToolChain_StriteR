@@ -5,20 +5,20 @@ using UnityEngine;
 
 public static class URender
 {
-    public static MeshPolygon[] GetPolygons(int[] _indices)
+    public static GMeshPolygon[] GetPolygons(int[] _indices)
     {
-        MeshPolygon[] polygons = new MeshPolygon[_indices.Length / 3];
+        GMeshPolygon[] polygons = new GMeshPolygon[_indices.Length / 3];
         for (int i = 0; i < polygons.Length; i++)
         {
             int startIndex = i * 3;
             int triangle0 = _indices[startIndex];
             int triangle1 = _indices[startIndex + 1];
             int triangle2 = _indices[startIndex + 2];
-            polygons[i] = new MeshPolygon(triangle0, triangle1, triangle2);
+            polygons[i] = new GMeshPolygon(triangle0, triangle1, triangle2);
         }
         return polygons;
     }
-    public static MeshPolygon[] GetPolygons(this Mesh _srcMesh, out int[] _indices)
+    public static GMeshPolygon[] GetPolygons(this Mesh _srcMesh, out int[] _indices)
     {
         _indices = _srcMesh.triangles;
         return GetPolygons(_indices);

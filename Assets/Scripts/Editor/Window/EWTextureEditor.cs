@@ -23,32 +23,32 @@ namespace TEditor
         }
         private void OnGUI()
         {
-            UEGUI.HorizontalScope.Begin(5,5,30);
-            EditorGUI.LabelField(UEGUI.HorizontalScope.NextRect(0, 60), "Texture:", UEGUIStyle_Window.m_TitleLabel);
+            HorizontalScope.Begin(5,5,30);
+            EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Texture:", UEGUIStyle_Window.m_TitleLabel);
             EditorGUI.BeginChangeCheck();
-            m_SrcTexture = (Texture2D)EditorGUI.ObjectField(UEGUI.HorizontalScope.NextRect(5,65), m_SrcTexture,typeof(Texture2D),false);
+            m_SrcTexture = (Texture2D)EditorGUI.ObjectField(HorizontalScope.NextRect(5,65), m_SrcTexture,typeof(Texture2D),false);
 
             if(m_SrcTexture==null||!m_SrcTexture.isReadable)
             {
-                UEGUI.HorizontalScope.NextLine(2, 20);
-                EditorGUI.LabelField(UEGUI.HorizontalScope.NextRect(0,240),"Select Readable Texture To Begin",UEGUIStyle_Window.m_TitleLabel);
+                HorizontalScope.NextLine(2, 20);
+                EditorGUI.LabelField(HorizontalScope.NextRect(0,240),"Select Readable Texture To Begin",UEGUIStyle_Window.m_TitleLabel);
                 return;
             }
             if (EditorGUI.EndChangeCheck())
                 UpdateTexture();
 
             EditorGUI.BeginChangeCheck();
-            UEGUI.HorizontalScope.NextLine(2, 20);
-            EditorGUI.LabelField(UEGUI.HorizontalScope.NextRect(0, 60),"Display:",UEGUIStyle_Window.m_TitleLabel);
-            EditorGUI.LabelField(UEGUI.HorizontalScope.NextRect(5, 15), "R:");
-            m_R = EditorGUI.Toggle(UEGUI.HorizontalScope.NextRect(2, 20), m_R);
-            EditorGUI.LabelField(UEGUI.HorizontalScope.NextRect(5, 15), "G:");
-            m_G = EditorGUI.Toggle(UEGUI.HorizontalScope.NextRect(2, 20), m_G);
-            EditorGUI.LabelField(UEGUI.HorizontalScope.NextRect(5, 15), "B:");
-            m_B = EditorGUI.Toggle(UEGUI.HorizontalScope.NextRect(2, 20), m_B);
-            EditorGUI.LabelField(UEGUI.HorizontalScope.NextRect(5, 15), "A:");
-            m_A = EditorGUI.Toggle(UEGUI.HorizontalScope.NextRect(2, 20), m_A);
-            if(GUI.Button(UEGUI.HorizontalScope.NextRect(10,60),"All"))
+            HorizontalScope.NextLine(2, 20);
+            EditorGUI.LabelField(HorizontalScope.NextRect(0, 60),"Display:",UEGUIStyle_Window.m_TitleLabel);
+            EditorGUI.LabelField(HorizontalScope.NextRect(5, 15), "R:");
+            m_R = EditorGUI.Toggle(HorizontalScope.NextRect(2, 20), m_R);
+            EditorGUI.LabelField(HorizontalScope.NextRect(5, 15), "G:");
+            m_G = EditorGUI.Toggle(HorizontalScope.NextRect(2, 20), m_G);
+            EditorGUI.LabelField(HorizontalScope.NextRect(5, 15), "B:");
+            m_B = EditorGUI.Toggle(HorizontalScope.NextRect(2, 20), m_B);
+            EditorGUI.LabelField(HorizontalScope.NextRect(5, 15), "A:");
+            m_A = EditorGUI.Toggle(HorizontalScope.NextRect(2, 20), m_A);
+            if(GUI.Button(HorizontalScope.NextRect(10,60),"All"))
             {
                 m_R = true;
                 m_G = true;
@@ -58,40 +58,40 @@ namespace TEditor
             if(EditorGUI.EndChangeCheck())
                 UpdateDisplayTexture();
 
-            UEGUI.HorizontalScope.NextLine(2, 256);
-            Rect textureRect = UEGUI.HorizontalScope.NextRect(0, 256);
+            HorizontalScope.NextLine(2, 256);
+            Rect textureRect = HorizontalScope.NextRect(0, 256);
             GUI.DrawTexture(textureRect, EditorGUIUtility.whiteTexture);
             GUI.DrawTexture(textureRect.Collapse(Vector2.one * 10f), m_DisplayTexture);
 
-            UEGUI.HorizontalScope.NextLine(2, 20);
-            EditorGUI.LabelField(UEGUI.HorizontalScope.NextRect(5, 60), "Modify:",UEGUIStyle_Window.m_TitleLabel);
-            m_ColorModify = (enum_ColorVisualize)EditorGUI.EnumPopup(UEGUI.HorizontalScope.NextRect(5, 120), m_ColorModify);
+            HorizontalScope.NextLine(2, 20);
+            EditorGUI.LabelField(HorizontalScope.NextRect(5, 60), "Modify:",UEGUIStyle_Window.m_TitleLabel);
+            m_ColorModify = (enum_ColorVisualize)EditorGUI.EnumPopup(HorizontalScope.NextRect(5, 120), m_ColorModify);
 
             if(m_ColorModify!= enum_ColorVisualize.None)
             {
-                UEGUI.HorizontalScope.NextLine(2, 20);
-                if (GUI.Button(UEGUI.HorizontalScope.NextRect(10, 60), "Reverse"))
+                HorizontalScope.NextLine(2, 20);
+                if (GUI.Button(HorizontalScope.NextRect(10, 60), "Reverse"))
                 {
                     DoColorModify(m_ModifyTexture, m_ColorModify, value => 1 - value);
                     UpdateDisplayTexture();
                 }
-                if (GUI.Button(UEGUI.HorizontalScope.NextRect(10, 60), "Fill"))
+                if (GUI.Button(HorizontalScope.NextRect(10, 60), "Fill"))
                 {
                     DoColorModify(m_ModifyTexture, m_ColorModify, value => 1);
                     UpdateDisplayTexture();
                 }
-                if (GUI.Button(UEGUI.HorizontalScope.NextRect(10, 60), "Clear"))
+                if (GUI.Button(HorizontalScope.NextRect(10, 60), "Clear"))
                 {
                     DoColorModify(m_ModifyTexture, m_ColorModify, value => 0);
                     UpdateDisplayTexture();
                 }
             }
-            UEGUI.HorizontalScope.NextLine(2, 20);
-            EditorGUI.LabelField(UEGUI.HorizontalScope.NextRect(0, 60), "Finalize", UEGUIStyle_Window.m_TitleLabel);
-            UEGUI.HorizontalScope.NextLine(2, 20);
-            if (GUI.Button(UEGUI.HorizontalScope.NextRect(5, 80), "Reset"))
+            HorizontalScope.NextLine(2, 20);
+            EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Finalize", UEGUIStyle_Window.m_TitleLabel);
+            HorizontalScope.NextLine(2, 20);
+            if (GUI.Button(HorizontalScope.NextRect(5, 80), "Reset"))
                 UpdateTexture();
-            if (GUI.Button(UEGUI.HorizontalScope.NextRect(20, 80), "Export"))
+            if (GUI.Button(HorizontalScope.NextRect(20, 80), "Export"))
             {
                 if (UEAsset.SaveFilePath(out string filePath, "png", m_SrcTexture.name+"_M"))
                     UEAsset.CreateOrReplaceFile(filePath, m_ModifyTexture.EncodeToPNG());

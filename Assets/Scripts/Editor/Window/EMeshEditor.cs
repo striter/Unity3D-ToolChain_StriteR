@@ -124,7 +124,7 @@ namespace TEditor
             if (m_MaterialOverride.Check(GUILayout.Toggle(m_MaterialOverride, "Material Override")))
                 SwitchMaterials(null);
             if (m_MaterialOverride)
-                SwitchMaterials(UEGUI.Layout.ArrayField(m_Materials));
+                SwitchMaterials(GUILayout_Extend.ArrayField(m_Materials));
 
             GUILayout.Label("Commands:", UEGUIStyle_Window.m_TitleLabel);
 
@@ -198,7 +198,7 @@ namespace TEditor
         public EMeshEditor m_Parent { get; private set; }
         protected Mesh m_SourceMesh => m_Parent.m_SourceMesh;
         protected Mesh m_ModifingMesh => m_Parent.m_ModifingMesh;
-        protected MeshPolygon[] m_Polygons { get; private set; }
+        protected GMeshPolygon[] m_Polygons { get; private set; }
         public MeshEditorHelperBase(EMeshEditor _parent) { m_Parent = _parent; }
         public virtual void Begin()
         {
@@ -211,7 +211,7 @@ namespace TEditor
         public virtual void OnKeyboradInteract(KeyCode _keycode) { }
         static Ray mouseRay;
         static Vector3 collisionPoint;
-        static DirectedTriangle collisionTriangle;
+        static GDirectedTriangle collisionTriangle;
         public virtual void OnEditorSceneGUIDebug(SceneView _sceneView, GameObject _meshObject)
         {
             Handles.color = Color.red;
@@ -231,13 +231,13 @@ namespace TEditor
             return ray;
         }
 
-        protected static int RayDirectedTriangleIntersect(MeshPolygon[] _polygons, Vector3[] _verticies, Ray _ray, out Vector3 hitPoint, out DirectedTriangle hitTriangle)
+        protected static int RayDirectedTriangleIntersect(GMeshPolygon[] _polygons, Vector3[] _verticies, Ray _ray, out Vector3 hitPoint, out GDirectedTriangle hitTriangle)
         {
             collisionPoint = Vector3.zero;
             float minDistance = float.MaxValue;
             int index = _polygons.LastIndex(p =>
             {
-                DirectedTriangle triangle = p.GetDirectedTriangle(_verticies);
+                GDirectedTriangle triangle = p.GetDirectedTriangle(_verticies);
                 bool intersect = UGeometry.RayDirectedTriangleIntersect(triangle, _ray, true, true, out float distance);
                 if (intersect && minDistance > distance)
                 {
@@ -312,8 +312,8 @@ namespace TEditor
             m_SubPolygons.Clear();
             if (_index < 0)
                 return;
-            MeshPolygon mainPolygon = m_Polygons[m_SelectedPolygon];
-            Triangle mainTriangle = mainPolygon.GetTriangle(m_Verticies);
+            GMeshPolygon mainPolygon = m_Polygons[m_SelectedPolygon];
+            GTriangle mainTriangle = mainPolygon.GetTriangle(m_Verticies);
             m_Polygons.FindAllIndexes(m_SubPolygons, (index, polygon) => index != m_SelectedPolygon && polygon.GetTriangle(m_Verticies).m_Verticies.Any(subVertex => mainTriangle.m_Verticies.Any(mainVertex => mainVertex == subVertex)));
         }
         void SelectVertex(int _index)
@@ -357,7 +357,7 @@ namespace TEditor
             Ray ray = ObjLocalSpaceRay(_sceneView, _meshObject);
             if (OnSelectVertexCheck(ray))
                 return;
-            SelectPolygon(RayDirectedTriangleIntersect(m_Polygons, m_Verticies, ray, out Vector3 _hitPoint, out DirectedTriangle _hitTriangle));
+            SelectPolygon(RayDirectedTriangleIntersect(m_Polygons, m_Verticies, ray, out Vector3 _hitPoint, out GDirectedTriangle _hitTriangle));
         }
         void OnDrawSceneHandles(SceneView _sceneView)
         {
@@ -367,11 +367,11 @@ namespace TEditor
             if (!m_SelectingPolygon)
                 return;
 
-            MeshPolygon _mainPolygon = m_Polygons[m_SelectedPolygon];
+            GMeshPolygon _mainPolygon = m_Polygons[m_SelectedPolygon];
 
             foreach (var subPolygon in m_SubPolygons)
             {
-                DirectedTriangle directedTriangle = m_Polygons[subPolygon].GetDirectedTriangle(m_Verticies);
+                GDirectedTriangle directedTriangle = m_Polygons[subPolygon].GetDirectedTriangle(m_Verticies);
                 if (Vector3.Dot(directedTriangle.m_Normal, _sceneView.camera.transform.forward) > 0)
                     continue;
                 Handles.color = Color.yellow.SetAlpha(.1f);
@@ -379,7 +379,7 @@ namespace TEditor
                 Handles.color = Color.yellow;
                 Handles.DrawLines(directedTriangle.m_Triangle.GetDrawLinesVerticies());
             }
-            Triangle mainTriangle = _mainPolygon.GetTriangle(m_Verticies);
+            GTriangle mainTriangle = _mainPolygon.GetTriangle(m_Verticies);
             Handles.color = Color.green.SetAlpha(.3f);
             Handles.DrawAAConvexPolygon(mainTriangle.m_Verticies);
             Handles.color = Color.green;
@@ -621,7 +621,7 @@ namespace TEditor
             if (Event.current.type == EventType.MouseMove)
             {
                 Vector3 cameraLocal = _meshObject.transform.worldToLocalMatrix.MultiplyPoint(_sceneView.camera.transform.position);
-                if (RayDirectedTriangleIntersect(m_Polygons, m_ModifingMesh.vertices, ObjLocalSpaceRay(_sceneView, _meshObject), out Vector3 hitPosition, out DirectedTriangle hitTriangle) != -1)
+                if (RayDirectedTriangleIntersect(m_Polygons, m_ModifingMesh.vertices, ObjLocalSpaceRay(_sceneView, _meshObject), out Vector3 hitPosition, out GDirectedTriangle hitTriangle) != -1)
                 {
                     m_PaintPosition = hitPosition;
                     m_PaintAffectedIndices.Clear();

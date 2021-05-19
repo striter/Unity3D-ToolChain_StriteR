@@ -98,7 +98,7 @@ namespace Rendering.Pipeline
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get("Generate Reflection Texture");
-            DistancePlane planeData = m_Plane.m_PlaneData;
+            GPlane planeData = m_Plane.m_PlaneData;
             switch(m_Plane.m_ReflectionType)
             {
                 case enum_ReflectionSpace.ScreenSpace:
