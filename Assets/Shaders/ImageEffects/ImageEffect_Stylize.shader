@@ -17,7 +17,7 @@ Shader "Hidden/ImageEffect_Stylize"
             HLSLPROGRAM
             #pragma vertex vert_img
             #pragma fragment frag
-            #pragma multi_compile _ _PIXEL_GRID _PIXEL_CIRCLE
+            #pragma multi_compile_local _ _PIXEL_GRID _PIXEL_CIRCLE
             float4 _PixelGridColor;
             float2 _PixelGridWidth;
             float4 frag(v2f_img i):SV_TARGET

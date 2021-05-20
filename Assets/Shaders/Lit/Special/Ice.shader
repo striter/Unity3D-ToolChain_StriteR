@@ -55,16 +55,16 @@
             #pragma fragment frag
 			#pragma multi_compile_instancing
 
-			#pragma shader_feature _NORMALMAP
-			#pragma shader_feature _THICK
-			#pragma shader_feature _CRACK
-			#pragma shader_feature _CRACKTOP
-			#pragma shader_feature _CRACKPARALLEX
-			#pragma shader_feature _OPACITY
-			#pragma shader_feature _DISTORT
-			#pragma shader_feature _DEPTH
-			#pragma shader_feature _FRESNEL
-			#pragma shader_feature _SPECULAR
+			#pragma shader_feature_local _NORMALMAP
+			#pragma shader_feature_local _THICK
+			#pragma shader_feature_local _CRACK
+			#pragma shader_feature_local _CRACKTOP
+			#pragma shader_feature_local _CRACKPARALLEX
+			#pragma shader_feature_local _OPACITY
+			#pragma shader_feature_local _DISTORT
+			#pragma shader_feature_local _DEPTH
+			#pragma shader_feature_local _FRESNEL
+			#pragma shader_feature_local _SPECULAR
 
 			#include "../../CommonInclude.hlsl"
 			#include "../../CommonLightingInclude.hlsl"

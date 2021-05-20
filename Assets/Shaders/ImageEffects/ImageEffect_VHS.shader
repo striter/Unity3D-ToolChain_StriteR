@@ -13,13 +13,13 @@
             HLSLPROGRAM
             #pragma vertex vert_img
             #pragma fragment frag
-            #pragma multi_compile _ _SCREENCUT_HARD _SCREENCUT_SCALED
-            #pragma shader_feature _COLORBLEED
-            #pragma shader_feature _GRAIN
-            #pragma shader_feature _GRAIN_CIRCLE
-            #pragma shader_feature _LINEDISTORT
-            #pragma shader_feature _PIXELDISTORT
-            #pragma shader_feature _VIGNETTE
+            #pragma multi_compile_local _ _SCREENCUT_HARD _SCREENCUT_SCALED
+            #pragma shader_feature_local _COLORBLEED
+            #pragma shader_feature_local _GRAIN
+            #pragma shader_feature_local _GRAIN_CIRCLE
+            #pragma shader_feature_local _LINEDISTORT
+            #pragma shader_feature_local _PIXELDISTORT
+            #pragma shader_feature_local _VIGNETTE
             #include "../CommonInclude.hlsl"
             #include "../CameraEffectInclude.hlsl"
             float2 _ScreenCutTarget;

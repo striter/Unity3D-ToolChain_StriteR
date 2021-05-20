@@ -55,7 +55,7 @@ Shader "Game/UI/Sprite_BSC"
 			#include "../CommonInclude.hlsl"
 			#include "../CameraEffectInclude.hlsl"
 
-			#pragma multi_compile __ UNITY_UI_ALPHACLIP
+			#pragma multi_compile_local __ UNITY_UI_ALPHACLIP
 
 			struct appdata_t
 			{

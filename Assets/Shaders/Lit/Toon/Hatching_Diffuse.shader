@@ -26,8 +26,9 @@
 			#include "../../CommonInclude.hlsl"
 			#include "../../CommonLightingInclude.hlsl"
 			
+			#pragma shader_feature_local _WORLD_UV
+			
 			#pragma multi_compile_instancing
-			#pragma shader_feature _WORLD_UV
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
             #pragma multi_compile _ _SHADOWS_SOFT

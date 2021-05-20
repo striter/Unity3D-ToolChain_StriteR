@@ -75,6 +75,7 @@ public struct GPlane
     public Vector3 m_Normal;
     public float m_Distance;
     public GPlane(Vector3 _normal, float _distance) { m_Normal = _normal; m_Distance = _distance; }
+    public GPlane(Vector3 _normal, Vector3 _position) : this(_normal, UGeometry.PointPlaneDistance(_position, new GPlane(_normal, 0))) { }
 }
 [Serializable]
 public struct GCone
@@ -97,6 +98,7 @@ public struct GHeightCone
     public Vector3 m_Origin => m_Cone.m_Origin;
     public Vector3 m_Normal => m_Cone.m_Normal;
     public float m_Radius =>  m_Cone.GetRadius(m_Height);
+    public Vector3 m_Bottom => m_Origin + m_Normal * m_Height;
     public GHeightCone(GCone _cone,float _height) { m_Cone = _cone;m_Height = _height; }
     public GHeightCone(Vector3 _origin, Vector3 _direction, float _radin, float _height) : this(new GCone(_origin, _direction, _radin), _height) { }
 }

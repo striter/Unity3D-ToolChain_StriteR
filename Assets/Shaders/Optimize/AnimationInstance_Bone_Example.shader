@@ -20,7 +20,7 @@
             #include "../CommonLightingInclude.hlsl"
             #include "AnimationInstanceInclude.hlsl"
             #pragma multi_compile_instancing
-            #pragma multi_compile _ _OPTIMIZE_1BONE _OPTIMIZE_2BONE
+            #pragma multi_compile_local _ _OPTIMIZE_1BONE _OPTIMIZE_2BONE
         ENDHLSL
         Pass
         {

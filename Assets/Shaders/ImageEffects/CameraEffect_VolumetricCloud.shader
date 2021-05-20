@@ -17,9 +17,10 @@
             #include "../CommonInclude.hlsl"
             #include "../BoundingCollision.hlsl"
             #include "../CameraEffectInclude.hlsl"
-            #pragma shader_feature _LIGHTMARCH
-            #pragma shader_feature _LIGHTSCATTER
-            #pragma shader_feature _SHAPEMASK
+
+            #pragma shader_feature_local _LIGHTMARCH
+            #pragma shader_feature_local _LIGHTSCATTER
+            #pragma shader_feature_local _SHAPEMASK
 
             float _VerticalStart;
             float _VerticalEnd;
@@ -66,7 +67,7 @@
                 float totalDst=0;
                 for(int i=0;i<_LightMarchTimes;i++)
                 {
-                    float3 marchPos=GetPoint(lightRay,totalDst);
+                    float3 marchPos=lightRay.GetPoint(totalDst);
                     cloudDensity+=SampleDensity(marchPos);
                     totalDst+=marchDst;
                     if(totalDst>=distanceInside)
@@ -84,8 +85,8 @@
                 GPlane planeStartWS=GetPlane( float3(0,1,0),_VerticalStart);
                 GPlane planeEndWS=GetPlane(float3(0,1,0),_VerticalEnd);
                 GRay viewRayWS=GetRay( cameraPos,marchDirWS);
-                float distance1=PRayDistance(planeStartWS,viewRayWS);
-                float distance2=PRayDistance(planeEndWS,viewRayWS);
+                float distance1=PlaneRayDistance(planeStartWS,viewRayWS);
+                float distance2=PlaneRayDistance(planeEndWS,viewRayWS);
 				float linearDepth = LinearEyeDepth(i.uv);
                 distance1=min(linearDepth,distance1);
                 distance2=min(linearDepth,distance2);

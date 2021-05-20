@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BoundingCollisionTest
 {
-    public class GeometryTest_P : MonoBehaviour
+    public class GeometryTest_Plane : MonoBehaviour
     {
         public GPlane m_Plane;
         public Vector3 m_RayOrigin;

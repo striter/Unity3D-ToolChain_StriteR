@@ -62,8 +62,6 @@ public static class Handles_Extend
             Vector3 bottomLeft = bottom - bottomRightDir;
 
             Handles.DrawWireArc(bottom,-Vector3.forward, Vector3.right, 360,radius);
-            Handles.DrawWireArc(bottom, Vector3.right, Vector3.up, 180, radius);
-            Handles.DrawWireArc(bottom, Vector3.up, -Vector3.right, 180, radius);
             Handles.DrawLine(Vector3.zero, bottomForward);
             Handles.DrawLine(Vector3.zero, bottomBack);
             Handles.DrawLine(Vector3.zero, bottomRight);

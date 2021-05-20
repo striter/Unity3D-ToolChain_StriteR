@@ -43,51 +43,51 @@
 			Blend SrcAlpha OneMinusSrcAlpha
 			ColorMask[_ColorMask]
 
-			PASS
+		PASS
 		{
 
-		CGPROGRAM
-#pragma target 2.0
-#pragma vertex vert
-#pragma fragment frag
-#pragma multi_compile __ UNITY_UI_ALPHACLIP
-#include "UnityCG.cginc"
-		sampler2D _MainTex;
-	sampler2D _NoiseTex;
-	float4 _Color;
-	half _DeltaX;
-	half _DeltaY;
+			CGPROGRAM
+			#pragma target 2.0
+			#pragma vertex vert
+			#pragma fragment frag
+			#pragma multi_compile_local __ UNITY_UI_ALPHACLIP
+			#include "UnityCG.cginc"
+			sampler2D _MainTex;
+			sampler2D _NoiseTex;
+			float4 _Color;
+			half _DeltaX;
+			half _DeltaY;
 
-	struct a2f
-	{
-		float4 vertex   : POSITION;
-		float4 color    : COLOR;
-		float2 texcoord : TEXCOORD0;
-	};
-	struct v2f
-	{
-		half2 uv  : TEXCOORD0;
-		float4 vertex   : SV_POSITION;
-		fixed4 color : COLOR;
-	};
-	v2f vert(a2f i)
-	{
-		v2f o;
-		o.vertex = UnityObjectToClipPos(i.vertex);
-		o.uv = i.texcoord;
-		o.color = i.color*_Color;
-		return o;
-	}
-	fixed4 frag(v2f v) :COLOR
-	{
-	float2 noiseUV = v.uv + float2(_Time.x*_DeltaX,_Time.x*_DeltaY);
-	float noise = tex2D(_NoiseTex, noiseUV/2).r;
+			struct a2f
+			{
+				float4 vertex   : POSITION;
+				float4 color    : COLOR;
+				float2 texcoord : TEXCOORD0;
+			};
+			struct v2f
+			{
+				half2 uv  : TEXCOORD0;
+				float4 vertex   : SV_POSITION;
+				fixed4 color : COLOR;
+			};
+			v2f vert(a2f i)
+			{
+				v2f o;
+				o.vertex = UnityObjectToClipPos(i.vertex);
+				o.uv = i.texcoord;
+				o.color = i.color*_Color;
+				return o;
+			}
+			fixed4 frag(v2f v) :COLOR
+			{
+			float2 noiseUV = v.uv + float2(_Time.x*_DeltaX,_Time.x*_DeltaY);
+			float noise = tex2D(_NoiseTex, noiseUV/2).r;
 
-	half4 finalCol = tex2D(_MainTex, v.uv)*v.color;
-	return half4( finalCol.rgb, finalCol.a*noise);
-	}
-	ENDCG
-	}
+			half4 finalCol = tex2D(_MainTex, v.uv)*v.color;
+			return half4( finalCol.rgb, finalCol.a*noise);
+			}
+			ENDCG
+		}
 	}
 	FallBack "Diffuse"
 }

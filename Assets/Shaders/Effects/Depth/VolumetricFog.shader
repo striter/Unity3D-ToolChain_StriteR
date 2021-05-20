@@ -6,6 +6,7 @@
         [KeywordEnum(Point,Spot)]_Type("Type",float)=0
         _Density("Density",Range(0,10)) = 1
         _Pow("Density Pow",Range(0,10))=2
+        [Header(Depth)]
         _Depth("Depth Sensitivity",Range(0,1))=.5
     }
     SubShader
@@ -68,14 +69,18 @@
                 float sqrtDetermination = sqrt(determination);
                 float t0 = (-b + sqrtDetermination) / (2. * a);
                 float t1 = (-b - sqrtDetermination) / (2. * a);
-                float2 bsDistance = SphereRayDistance(_cone.bottomSphere, _ray);
-                float surfaceDst = dot(_cone.normal, GetPoint(_ray, t0) - _cone.origin);
-                if(surfaceDst<0|| surfaceDst>_cone.height)
-                    t0=bsDistance.x;
-                surfaceDst = dot(_cone.normal, GetPoint(_ray, t1) - _cone.origin);
-                if(surfaceDst<0|| surfaceDst>_cone.height)
-                    t1=bsDistance.y;
-                return float2(t0, t1) ;
+                float bpDistance=PlaneRayDistance(_cone.bottomPlane,_ray);
+                float sqrRadius=_cone.bottomRadius*_cone.bottomRadius;
+                if (sqrDistance(_cone.bottom - _ray.GetPoint(bpDistance)) > sqrRadius)
+                    bpDistance = 0;
+                float surfaceDst = dot(_cone.normal, _ray.GetPoint(t0) - _cone.origin);
+                if (surfaceDst<0|| surfaceDst > _cone.height)
+                    t0= bpDistance;
+
+                surfaceDst = dot(_cone.normal, _ray.GetPoint(t1) - _cone.origin) ;
+                if (surfaceDst<0||surfaceDst > _cone.height)
+                    t1 = bpDistance;
+                return float2(t0,t1) ;
             }
 
 
@@ -90,12 +95,12 @@
                 GRay viewRayOS=GetRay(i.positionOS,viewDirOS);
                 #if _TYPE_POINT
                 sdfDstOS= SphereRayDistance(GetSphere(origin,.5) ,viewRayOS);
-                half closestDst=dot(-i.positionOS ,viewDirOS);
-                closestDst= length(i.positionOS+viewDirOS*closestDst)*2;
+                half closestDst=PointRayProjectDistance(0,viewRayOS);
+                closestDst= length(0.-viewRayOS.GetPoint(closestDst))*2;
                 density= saturate(1-closestDst);
                 #elif _TYPE_SPOT
-                float angle=53.;
-                float height=.8;
+                float angle=45.;
+                float height=1.2;
                 sdfDstOS =ConeRayDistance(GetHeightCone( float3(.0,.7,.0),float3(.0,-1.,.0),angle,height),viewRayOS);
                 density=1;
                 #endif

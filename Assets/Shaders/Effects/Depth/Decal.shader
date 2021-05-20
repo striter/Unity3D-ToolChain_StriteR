@@ -18,11 +18,11 @@
 			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			#pragma multi_compile  _DECALCLIP_NONE _DECALCLIP_BOX _DECALCLIP_SPHERE
+			#pragma multi_compile_local  _DECALCLIP_NONE _DECALCLIP_BOX _DECALCLIP_SPHERE
 			
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
-            #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
-            #pragma multi_compile _ _SHADOWS_SOFT
+            #pragma multi_compile_local _ _MAIN_LIGHT_CALCULATE_SHADOWS
+            #pragma multi_compile_local _ _SHADOWS_SOFT
 
 			#include "../../CommonInclude.hlsl"
 			#include "../../CommonLightingInclude.hlsl"

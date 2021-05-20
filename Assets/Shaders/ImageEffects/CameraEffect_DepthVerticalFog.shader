@@ -21,7 +21,7 @@
 				HLSLPROGRAM
 				#pragma vertex vert_img
 				#pragma fragment frag
-				#pragma shader_feature _NOISE
+				#pragma shader_feature_local _NOISE
 				#include "../CommonInclude.hlsl"
 				#include "../CameraEffectInclude.hlsl"
 				half _FogDensity;

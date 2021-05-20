@@ -12,7 +12,7 @@
 		Pass
 		{
 			HLSLPROGRAM
-			#pragma shader_feature _MASK_TEXTURE
+			#pragma shader_feature_local _MASK_TEXTURE
 			#pragma vertex vert_img
 			#pragma fragment frag
 

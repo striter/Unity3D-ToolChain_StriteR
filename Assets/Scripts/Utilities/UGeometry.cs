@@ -49,56 +49,19 @@ public static class UGeometry
         return mirrorMatrix;
     }
 
-    #region Collision
-    public static Vector2 RayConeDistance(GCone _cone,Ray _ray)
+    #region Point
+    public static float PointRayProjection(Vector3 _point,Ray _ray)
     {
-        Vector2 distances = RayConeCalculate(_cone, _ray);
-        if (Vector3.Dot(_cone.m_Normal, _ray.GetPoint(distances.x) - _cone.m_Origin)<0)
-            distances.x = -1;
-        if (Vector3.Dot(_cone.m_Normal, _ray.GetPoint(distances.y) - _cone.m_Origin)<0)
-            distances.y = -1;
-        return distances;
+        return Vector3.Dot(_point- _ray.origin, _ray.direction);
     }
-    public static Vector2 RayConeDistance(GHeightCone _cone,Ray _ray)
+    public static float PointPlaneDistance(Vector3 _point, Vector3 _normal, float _distance) => PointPlaneDistance(_point, new GPlane(_normal, _distance));
+    public static float PointPlaneDistance(Vector3 _point, GPlane _plane)
     {
-        Vector2 distances = RayConeCalculate(_cone.m_Cone, _ray);
-        Vector3 bottomSphereCenter = _cone.m_Origin + _cone.m_Normal * _cone.m_Height;
-        float bottomSphereRadius = _cone.m_Cone.GetRadius(_cone.m_Height);
-        Vector2 bottomSphereDistance= RayBSDistance(bottomSphereCenter, bottomSphereRadius,_ray.origin,_ray.direction);
-
-        float surfaceDst = Vector3.Dot(_cone.m_Normal, _ray.GetPoint(distances.x) - _cone.m_Origin);
-        if(surfaceDst<0||surfaceDst>_cone.m_Height)
-            distances.x = bottomSphereDistance.x;
-
-        surfaceDst = Vector3.Dot(_cone.m_Normal, _ray.GetPoint(distances.y) - _cone.m_Origin);
-        if (surfaceDst < 0 || surfaceDst > _cone.m_Height)
-            distances.y = bottomSphereDistance.y;
-        return distances;
+        float nr = _point.x * _plane.m_Normal.x + _point.y * _plane.m_Normal.y + _point.z * _plane.m_Normal.z + _plane.m_Distance;
+        return nr / _plane.m_Normal.magnitude;
     }
-
-    static Vector2 RayConeCalculate(GCone _cone, Ray _ray)
-    {
-        Vector3 offset = _ray.origin - _cone.m_Origin;
-
-        float RDV = Vector3.Dot(_ray.direction, _cone.m_Normal);
-        float ODN = Vector3.Dot(offset, _cone.m_Normal);
-
-        float cosA = Mathf.Cos(UMath.AngleToRadin(_cone.m_Angle));
-        float sqrCosA = cosA * cosA;
-
-        float a = RDV * RDV - sqrCosA;
-        float b = 2f * (RDV * ODN - Vector3.Dot(_ray.direction, offset) * sqrCosA);
-        float c = ODN * ODN - Vector3.Dot(offset, offset) * sqrCosA;
-        float determination = b * b - 4f * a * c;
-        if (determination < 0)
-            return Vector2.one*-1;
-
-        determination = Mathf.Sqrt(determination);
-        float t1 = (-b + determination) / (2f * a);
-        float t2 = (-b - determination) / (2f * a);
-        return new Vector2(t1,t2);
-    }
-
+    #endregion
+    #region Ray
     public static bool RayTriangleIntersect(GTriangle _triangle, Ray _ray, bool _rayDirectionCheck) => RayTriangleIntersect(_triangle, _ray, _rayDirectionCheck, out float distance);
     public static bool RayTriangleIntersect(GTriangle _triangle,Ray _ray,bool _rayDirectionCheck,out float distance)
     {
@@ -161,12 +124,6 @@ public static class UGeometry
         float nrD = Vector3.Dot(_plane.m_Normal, _ray.direction);
         return (_plane.m_Distance - nrO) / nrD;
     }
-    public static float PointPlaneDistance(Vector3 _point, Vector3 _normal, float _distance) => PointPlaneDistance(_point, new GPlane(_normal, _distance));
-    public static float PointPlaneDistance(Vector3 _point,GPlane _plane)
-    {
-        float nr= _point.x*_plane.m_Normal.x + _point.y * _plane.m_Normal.y + _point.z * _plane.m_Normal.z+_plane.m_Distance;
-        return nr / _plane.m_Normal.magnitude;
-    }
     static void RayBSCalculate(Vector3 _bsCenter, float _bsRadius, Vector3 _rayOrigin, Vector3 _rayDirection, out float dotOffsetDirection, out float discriminant)
     {
         Vector3 offset = _rayOrigin - _bsCenter;
@@ -220,6 +177,56 @@ public static class UGeometry
         float dstToBox = Mathf.Max(0, dstA);
         float dstInsideBox = Mathf.Max(0, dstB - dstToBox);
         return new Vector2(dstToBox, dstInsideBox);
+    }
+    public static Vector2 RayConeDistance(GCone _cone, Ray _ray)
+    {
+        Vector2 distances = RayConeCalculate(_cone, _ray);
+        if (Vector3.Dot(_cone.m_Normal, _ray.GetPoint(distances.x) - _cone.m_Origin) < 0)
+            distances.x = -1;
+        if (Vector3.Dot(_cone.m_Normal, _ray.GetPoint(distances.y) - _cone.m_Origin) < 0)
+            distances.y = -1;
+        return distances;
+    }
+    public static Vector2 RayConeDistance(GHeightCone _cone, Ray _ray)
+    {
+        Vector2 distances = RayConeCalculate(_cone.m_Cone, _ray);
+        GPlane bottomPlane = new GPlane(_cone.m_Normal, _cone.m_Origin + _cone.m_Normal * _cone.m_Height);
+        float rayPlaneDistance = RayPlaneDistance(bottomPlane, _ray);
+        float sqrRadius = _cone.m_Radius;
+        sqrRadius *= sqrRadius;
+        if ((_cone.m_Bottom - _ray.GetPoint(rayPlaneDistance)).sqrMagnitude > sqrRadius)
+            rayPlaneDistance = -1;
+
+        float surfaceDst = Vector3.Dot(_cone.m_Normal, _ray.GetPoint(distances.x) - _cone.m_Origin);
+        if (surfaceDst<0|| surfaceDst > _cone.m_Height)
+            distances.x = rayPlaneDistance;
+
+        surfaceDst = Vector3.Dot(_cone.m_Normal, _ray.GetPoint(distances.y) - _cone.m_Origin) ;
+        if (surfaceDst<0||surfaceDst > _cone.m_Height)
+            distances.y = rayPlaneDistance;
+        return distances;
+    }
+
+    static Vector2 RayConeCalculate(GCone _cone, Ray _ray)
+    {
+        Vector2 distances = Vector2.one * -1;
+        Vector3 offset = _ray.origin - _cone.m_Origin;
+
+        float RDV = Vector3.Dot(_ray.direction, _cone.m_Normal);
+        float ODN = Vector3.Dot(offset, _cone.m_Normal);
+        float cosA = Mathf.Cos(UMath.AngleToRadin(_cone.m_Angle));
+        float sqrCosA = cosA * cosA;
+
+        float a = RDV * RDV - sqrCosA;
+        float b = 2f * (RDV * ODN - Vector3.Dot(_ray.direction, offset) * sqrCosA);
+        float c = ODN * ODN - Vector3.Dot(offset, offset) * sqrCosA;
+        float determination = b * b - 4f * a * c;
+        if (determination < 0)
+            return distances;
+        determination = Mathf.Sqrt(determination);
+        distances.x = (-b + determination) / (2f * a);
+        distances.y = (-b - determination) / (2f * a);
+        return distances;
     }
     #endregion
 }

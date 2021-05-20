@@ -32,6 +32,7 @@
 			#pragma vertex DiffuseVertex
 			#pragma fragment DiffuseFragmentBase
 			#pragma multi_compile_instancing
+
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
             #pragma multi_compile _ _SHADOWS_SOFT

@@ -1,15 +1,27 @@
 ﻿#include "GeometryInput.hlsl"
+//Point
+float PointRayProjectDistance(float3 _point,GRay _ray)
+{
+    return dot(_point-_ray.origin, _ray.direction);
+}
 //Plane
-float PPointDistance(GPlane _plane,float3 _point)
+float PlanePointDistance(GPlane _plane,float3 _point)
 {
     float nr = _point.x * _plane.normal.x + _point.y * _plane.normal.y + _point.z * _plane.normal.z + _plane.distance;
     return nr / length(_plane.normal);
 }
-float PRayDistance(GPlane _plane,GRay _ray) //return: Dst To Plane
+float PlaneRayDistance(GPlane _plane,GRay _ray)
 {
     float nrO = dot(_plane.normal, _ray.origin);
     float nrD = dot(_plane.normal, _ray.direction);
     return (_plane.distance-nrO)/nrD;
+}
+float PlaneRayDistance(GPlanePos _plane,GRay _ray)
+{   
+    float s = dot(_plane.position,_plane.normal);
+    float nrO = dot(_plane.normal, _ray.origin);
+    float nrD = dot(_plane.normal, _ray.direction);
+    return (s - nrO) / nrD;
 }
 
 //Axis Aligned Bounding Box

@@ -1,8 +1,12 @@
-﻿
-struct GRay
+﻿struct GRay
 {
     float3 origin;
     float3 direction;
+    
+    float3 GetPoint(float _distance)
+    {
+        return origin + direction * _distance;
+    }
 };
 GRay GetRay(float3 _origin, float3 _direction)
 {
@@ -11,22 +15,30 @@ GRay GetRay(float3 _origin, float3 _direction)
     ray.direction = _direction;
     return ray;
 }
-float3 GetPoint(GRay _ray, float _distance)
-{
-    return _ray.origin + _ray.direction * _distance;
-}
 
 struct GPlane
 {
     float3 normal;
     float distance;
 };
-
 GPlane GetPlane(float3 _normal, float _distance)
 {
     GPlane plane;
     plane.normal = _normal;
     plane.distance = _distance;
+    return plane;
+}
+
+struct GPlanePos
+{
+    float3 normal;
+    float3 position;
+};
+GPlanePos GetPlanePosition(float3 _normal, float3 _position)
+{
+    GPlanePos plane;
+    plane.normal = _normal;
+    plane.position = _position;
     return plane;
 }
 
@@ -62,9 +74,10 @@ struct GHeightCone
     float3 normal;
     float sqrCosA;
     float height;
-    GSphere bottomSphere;
+    float3 bottom;
+    float bottomRadius;
+    GPlanePos bottomPlane;
 };
-
 GHeightCone GetHeightCone(float3 _origin, float3 _normal, float _angle, float _height)
 {
     GHeightCone cone;
@@ -74,6 +87,8 @@ GHeightCone GetHeightCone(float3 _origin, float3 _normal, float _angle, float _h
     float radinA = _angle / 360. * PI;
     float cosA = cos(radinA);
     cone.sqrCosA = cosA * cosA;
-    cone.bottomSphere = GetSphere(_origin + _normal * _height, _height * tan(radinA));
+    cone.bottom = _origin + _normal * _height;
+    cone.bottomRadius = _height * tan(radinA);
+    cone.bottomPlane = GetPlanePosition(_normal, cone.bottom);
     return cone;
 }

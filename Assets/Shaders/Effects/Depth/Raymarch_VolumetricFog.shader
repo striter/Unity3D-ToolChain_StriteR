@@ -23,13 +23,13 @@
             #pragma vertex vert
             #pragma fragment frag
             
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
-            #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
-            #pragma multi_compile _ _SHADOWS_SOFT
-
             #include "../../CommonInclude.hlsl"
             #include "../../CommonLightingInclude.hlsl"
             #include "../../BoundingCollision.hlsl"
+
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
+            #pragma multi_compile _ _SHADOWS_SOFT
 
             struct appdata
             {

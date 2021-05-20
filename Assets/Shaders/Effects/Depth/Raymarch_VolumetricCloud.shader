@@ -39,7 +39,7 @@
             #include "../../CommonInclude.hlsl"
             #include "../../CommonLightingInclude.hlsl"
             #include "../../BoundingCollision.hlsl"
-            #pragma shader_feature _LIGHTMARCH
+            #pragma shader_feature_local _LIGHTMARCH
 
             struct appdata
             {
@@ -88,7 +88,7 @@
                 float totalDst=0;
                 for(int i=0;i<_LightMarchTimes;i++)
                 {
-                    float3 marchPos=GetPoint(ray,totalDst);
+                    float3 marchPos=ray.GetPoint(totalDst);
                     cloudDensity+=SampleDensity(marchPos);
                     totalDst+=marchDst;
                     if(totalDst>dstInsideBox)

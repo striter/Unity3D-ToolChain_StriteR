@@ -3936,14 +3936,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c85af998dd99edf45b824a71f34e3c08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ReflectionType: 1
+  m_ReflectionType: 0
   m_PlaneOffset: 0
   m_Sample: 3
   m_EnableBlur: 1
   m_BlurParam:
     m_BlurType: 3
     m_BlurSize: 2.5
-    m_Iteration: 2
+    m_Iteration: 6
     m_DownSample: 1
     m_Angle: 0
     m_Vector: {x: 0.5, y: 0.5}

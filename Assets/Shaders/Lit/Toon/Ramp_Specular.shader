@@ -32,11 +32,11 @@
 			#include "../../CommonInclude.hlsl"
 			#include "../../CommonLightingInclude.hlsl"
 			
+			#pragma shader_feature_local _SPECULAR
+			#pragma shader_feature_local _RAMP_RIM_V
+			#pragma multi_compile_local _RIM_NONE _RIM_HARD _RIM_SMOOTH
+			
 			#pragma multi_compile_instancing
-			#pragma shader_feature _SPECULAR
-			#pragma shader_feature _RAMP_RIM_V
-			#pragma multi_compile _RIM_NONE _RIM_HARD _RIM_SMOOTH
-
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
             #pragma multi_compile _ _SHADOWS_SOFT

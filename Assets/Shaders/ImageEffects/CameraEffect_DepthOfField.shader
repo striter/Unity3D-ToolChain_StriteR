@@ -14,7 +14,7 @@
             HLSLPROGRAM
             #pragma vertex vert_img
             #pragma fragment frag
-            #pragma shader_feature _UseBlurDepth
+            #pragma shader_feature_local _UseBlurDepth
             #include "../CommonInclude.hlsl"
             #include "../CameraEffectInclude.hlsl"
 

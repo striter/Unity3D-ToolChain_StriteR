@@ -15,10 +15,10 @@
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#pragma multi_compile _ _CONVOLUTION_SOBEL
-			#pragma multi_compile _ _DETECT_COLOR _DETECT_NORMAL
-			#pragma shader_feature _COLORREPLACE
-			#pragma shader_feature _NORMALDETECT
+			#pragma multi_compile_local _ _CONVOLUTION_SOBEL
+			#pragma multi_compile_local _ _DETECT_COLOR _DETECT_NORMAL
+			#pragma shader_feature_local _COLORREPLACE
+			#pragma shader_feature_local _NORMALDETECT
 			
 			#include "../CommonInclude.hlsl"
             #include "../CameraEffectInclude.hlsl"

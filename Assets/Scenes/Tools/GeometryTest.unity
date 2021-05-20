@@ -223,6 +223,53 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &359821876
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 359821878}
+  - component: {fileID: 359821877}
+  m_Layer: 0
+  m_Name: PointProjection
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &359821877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 359821876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9109604c16a4b2c43bf2400d9232ed06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Ray:
+    m_Position: {x: 0, y: -0.2, z: 0}
+    m_Direction: {x: 1, y: 0, z: 0}
+  m_Point: {x: 1.45, y: 0.62, z: 0}
+--- !u!4 &359821878
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 359821876}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.28, y: -0.38, z: -0.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &548546586
 GameObject:
   m_ObjectHideFlags: 0
@@ -269,13 +316,13 @@ MonoBehaviour:
   m_Data:
     m_Cone:
       m_DirectedPosition:
-        m_Position: {x: 0.38, y: -1.2, z: 0}
-        m_Direction: {x: 0.9053831, y: -0.42459595, z: -0.00000013411045}
+        m_Position: {x: -0.076672375, y: -0.96, z: 0}
+        m_Direction: {x: 0.69994783, y: 0.71419394, z: -0.00000013411045}
       m_Angle: 49.1
-    m_Height: 1.17
+    m_Height: 1.39
   m_Ray:
-    m_Position: {x: 1.55, y: -0.77, z: 0}
-    m_Direction: {x: -118.8, y: -140.27, z: 0}
+    m_Position: {x: -1.22, y: 0.06, z: -0.040601403}
+    m_Direction: {x: 2.52, y: -0.38612282, z: 0.00000013038516}
 --- !u!1 &999107284
 GameObject:
   m_ObjectHideFlags: 0

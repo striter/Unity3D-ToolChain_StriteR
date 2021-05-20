@@ -23,7 +23,7 @@
     {
         Tags { "RenderType"="Opaque" }
         HLSLINCLUDE
-            #pragma multi_compile _SEGMENT_LOW _SEGMENT_NORMAL _SEGMENT_HIGH _SEGMENT_ULTRA
+            #pragma multi_compile_local _SEGMENT_LOW _SEGMENT_NORMAL _SEGMENT_HIGH _SEGMENT_ULTRA
             #pragma target 4.6
             #include "../../CommonInclude.hlsl"
             #include "../../CommonLightingInclude.hlsl"

@@ -43,10 +43,10 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile_instancing
-			#pragma shader_feature _DEPTHOFFSET
-			#pragma shader_feature _VERTICALSMOOTHEN
-			#pragma shader_feature _INNERGLOW
-			#pragma shader_feature _VERTEXRANDOMDISTORT
+			#pragma shader_feature_local _DEPTHOFFSET
+			#pragma shader_feature_local _VERTICALSMOOTHEN
+			#pragma shader_feature_local _INNERGLOW
+			#pragma shader_feature_local _VERTEXRANDOMDISTORT
 			#include "../../CommonInclude.hlsl"
 			
 			TEXTURE2D( _MaskTex); SAMPLER(sampler_MaskTex);

@@ -32,8 +32,9 @@
             #include "../CommonInclude.hlsl"
             #include "../CommonLightingInclude.hlsl"
 
-            #pragma shader_feature _BITANGENT
-		    #pragma shader_feature _NORMALMAP
+            #pragma shader_feature_local _BITANGENT
+		    #pragma shader_feature_local _NORMALMAP
+
             #pragma multi_compile_instancing
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS

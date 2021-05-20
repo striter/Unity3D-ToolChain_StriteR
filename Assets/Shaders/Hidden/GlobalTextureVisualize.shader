@@ -18,7 +18,7 @@ Shader "Unlit/GlobalTextureVisualize"
 
             struct appdata
             {
-                float4 vertex : POSITION;
+                float3 vertex : POSITION;
                 float3 normal:NORMAL;
                 float2 uv : TEXCOORD0;
             };

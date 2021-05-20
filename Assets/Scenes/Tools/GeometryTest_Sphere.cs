@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace BoundingCollisionTest
 {
-    public class GeometryTest_BS : MonoBehaviour
+    public class GeometryTest_Sphere : MonoBehaviour
     {
         public Vector3 m_RayOrigin = Vector3.up * 5;
         public Vector3 m_RayDirection = Vector3.down;

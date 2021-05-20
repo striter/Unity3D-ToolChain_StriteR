@@ -23,7 +23,7 @@ Shader "Hidden/CameraEffect_VolumetricLight"
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
             #pragma multi_compile _ _SHADOWS_SOFT
-            #pragma shader_feature _DITHER
+            #pragma shader_feature_local _DITHER
 
             float _LightPow;
             float _LightStrength;
@@ -51,7 +51,7 @@ Shader "Hidden/CameraEffect_VolumetricLight"
                         #if _DITHER
                         samplePos+=posDelta*random01(samplePos);
                         #endif
-                        totalAtten+=marchDelta*MainLightRealtimeShadow(TransformWorldToShadowCoord(samplePos));
+                        totalAtten+=marchDelta*MainLightRealtimeShadow(float4(TransformWorldToShadowCoord(samplePos).xyz,1));
                         curPos+=posDelta;
                         curDst+=dstDelta;
                     }

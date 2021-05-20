@@ -25,9 +25,9 @@
 			HLSLPROGRAM
 			#pragma vertex vert_img
 			#pragma fragment frag
-			#pragma shader_feature _LUT
-			#pragma shader_feature _BSC
-			#pragma shader_feature _CHANNEL_MIXER
+			#pragma shader_feature_local _LUT
+			#pragma shader_feature_local _BSC
+			#pragma shader_feature_local _CHANNEL_MIXER
 			#include "../CommonInclude.hlsl"
             #include "../CameraEffectInclude.hlsl"
 			
@@ -106,7 +106,9 @@
 				half3 targetCol=baseCol;
 
 				#if _LUT
-					targetCol=SampleLUT(saturate(targetCol));		//saturate For HDR
+					float3 saturateCol=saturate(targetCol);		//saturate For HDR
+					float3 offset=targetCol-saturateCol;
+					targetCol=SampleLUT(saturateCol)+offset;
 				#endif
 
 				#if _BSC

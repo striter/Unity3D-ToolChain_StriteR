@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace BoundingCollisionTest
 {
-    public class GeometryTest_C : MonoBehaviour
+    public class GeometryTest_Cone : MonoBehaviour
     {
         public GHeightCone m_Data;
         public GSpaceData m_Ray;

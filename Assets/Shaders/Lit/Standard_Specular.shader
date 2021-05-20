@@ -52,12 +52,12 @@
             #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
             #pragma multi_compile _ _SHADOWS_SOFT
 
-			#pragma shader_feature _SPECULAR
-			#pragma shader_feature _NORMALMAP
-			#pragma shader_feature _PARALLEXMAP
-			#pragma shader_feature _PARALLEX_STEEP
-			#pragma shader_feature _AOMAP
-			#pragma shader_feature _ROUGHNESSMAP
+			#pragma shader_feature_local _SPECULAR
+			#pragma shader_feature_local _NORMALMAP
+			#pragma shader_feature_local _PARALLEXMAP
+			#pragma shader_feature_local _PARALLEX_STEEP
+			#pragma shader_feature_local _AOMAP
+			#pragma shader_feature_local _ROUGHNESSMAP
 		
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
