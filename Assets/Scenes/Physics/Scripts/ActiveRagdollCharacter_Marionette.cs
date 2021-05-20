@@ -82,10 +82,9 @@ namespace PhysicsTest
                 Gizmos.DrawWireSphere(m_Hand.transform.position + m_Hand.transform.up * .15f,.05f);
             }
         }
-
-        public override void OnTakeControl()
+        public override void OnTakeControl(TPSCameraController _controller)
         {
-            base.OnTakeControl();
+            base.OnTakeControl(_controller);
             PCInputManager.Instance.GetKeyBinding(enum_Binding.Jump).Add(OnLostConcious);
             PCInputManager.Instance.GetKeyBinding(enum_Binding.Sprint).Add(OnSprint);
             PCInputManager.Instance.GetKeyBinding(enum_Binding.MainFire).Add(m_LeftArmCombine.OnAiming);

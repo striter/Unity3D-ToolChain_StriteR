@@ -37,9 +37,9 @@ namespace PhysicsTest
                     m_StaticAnimatorSynchonize.Add(new StaticAnimatorSynchonize(syncTransform, joint));
             }
         }
-        public override void OnTakeControl()
+        public override void OnTakeControl(TPSCameraController _controller)
         {
-            base.OnTakeControl();
+            base.OnTakeControl(_controller);
             PCInputManager.Instance.GetKeyBinding(enum_Binding.Jump).Add(SwitchAnim);
         }
         public override void OnRemoveControl()

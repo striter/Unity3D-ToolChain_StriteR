@@ -12,6 +12,7 @@ namespace PhysicsTest
         public ActiveRagdollCharacter_Human_StaticAnimator m_Human_StaticAnimator;
         PhysicsCharacterBase m_CharacterBase;
         DynamicItemRepositon[] m_DynamicItems;
+        TPSCameraController m_CameraController;
         class DynamicItemRepositon
         {
             public Rigidbody m_Rigidbody;
@@ -39,6 +40,7 @@ namespace PhysicsTest
         }
         private void Awake()
         {
+            m_CameraController = transform.Find("CameraController").GetComponent<TPSCameraController>();
             Rigidbody[] rigidbodies = transform.Find("Dynamic").GetComponentsInChildren<Rigidbody>();
             m_DynamicItems = new DynamicItemRepositon[rigidbodies.Length];
             for (int i = 0; i < rigidbodies.Length; i++)
@@ -64,7 +66,7 @@ namespace PhysicsTest
             m_CharacterBase = _character;
 
             if (m_CharacterBase)
-                m_CharacterBase.OnTakeControl();
+                m_CharacterBase.OnTakeControl(m_CameraController);
         }
 
         private void Update()
@@ -86,7 +88,7 @@ namespace PhysicsTest
     {
         public float m_MoveSpeed = 10f;
         public float m_RotateSpeed = 1f;
-        public virtual void OnTakeControl()
+        public virtual void OnTakeControl(TPSCameraController _controller)
         {
             TouchInputManager.Instance.SwitchToTrackers().Init(new TouchTracker_Joystick(UIT_TouchConsole.GetHelperJoystick(), enum_Option_JoyStickMode.Retarget, OnMove,TouchTracker.s_LeftTrack),new TouchTracker(OnRotate,TouchTracker.s_RightTrack));
         }

@@ -2,7 +2,7 @@
 
 
 [ExecuteInEditMode, RequireComponent(typeof(Camera))]
-public class CameraController : SingletonMono<CameraController>
+public class CameraController : MonoBehaviour
 {
     public Camera m_Camera { get; private set; }
     public Transform m_BindRoot;
@@ -12,11 +12,11 @@ public class CameraController : SingletonMono<CameraController>
     public float m_MoveDamping = 1f;
     [Header("Rotation Param")]
     public Transform m_ForceLookAt;
+    public Vector3 m_BindRotOffset;
     [Range(0f, 5f)]
     public float m_RotateDamping = 1f;
-    protected override void Awake()
+    protected virtual void Awake()
     {
-        base.Awake();
         m_Camera = GetComponent<Camera>();
     }
     protected virtual void LateUpdate()
@@ -36,8 +36,8 @@ public class CameraController : SingletonMono<CameraController>
         Vector3 cameraPosition = rootMatrix.MultiplyPoint(m_BindPosOffset + GetRootOffsetAdditive(_deltaTime));
         transform.position = Vector3.Lerp(transform.position, cameraPosition, _moveDamping==0?1f: _deltaTime / _moveDamping);
 
-        Vector3 cameraEuler = m_ForceLookAt ? Quaternion.LookRotation(m_ForceLookAt.position - transform.position, Vector3.up).eulerAngles : m_BindRoot.eulerAngles;
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(cameraEuler + GetRootRotateAdditive(_deltaTime)),_rotateDamping==0?1f: _deltaTime / _rotateDamping);
+        Quaternion cameraRotation= m_ForceLookAt ? Quaternion.LookRotation(m_ForceLookAt.position - transform.position, Vector3.up) : m_BindRoot.rotation;
+        transform.rotation =  Quaternion.Lerp(transform.rotation, cameraRotation*Quaternion.Euler( m_BindRotOffset + GetRootRotateAdditive(_deltaTime)),_rotateDamping==0?1f: _deltaTime / _rotateDamping);
     }
 
     public void ForceSetCamera() => UpdateCameraPositionRotation(1f, 1f, 1f);

@@ -149,7 +149,37 @@ public class ValueChecker<T>
     }
     public static implicit operator T(ValueChecker<T> checker) => checker.m_Value;
 }
-
+public class Ticker
+{
+    public float m_Duration { get; private set; }
+    public float m_Elapsed { get; private set; }
+    public float m_Tick { get; private set; }
+    public float m_TickScale { get; private set; }
+    public Ticker(float _tick)
+    {
+        m_Duration = _tick;
+        Stop();
+    }
+    public void Stop()
+    {
+        m_Elapsed = 0;
+        m_Tick = 0;
+        m_TickScale = 0f;
+    }
+    public bool Tick(float _delta)
+    {
+        m_Elapsed += _delta;
+        m_Tick += _delta;
+        bool availableTick = false;
+        if(m_Tick>=m_Duration)
+        {
+            m_Tick -= m_Duration;
+            availableTick = true;
+        }
+        m_TickScale = m_Tick / m_Duration;
+        return availableTick;
+    }
+}
 public class Timer
 {
     public float m_TimerDuration { get; private set; } = 0;

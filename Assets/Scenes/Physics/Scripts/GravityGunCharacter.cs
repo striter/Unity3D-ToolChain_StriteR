@@ -26,13 +26,13 @@ namespace PhysicsTest
             m_JumpTimer.Replay();
         }
         void OnSprint(bool _sprint) => m_Sprinting = _sprint;
-        public override void OnTakeControl()
+        public override void OnTakeControl(TPSCameraController _controller)
         {
-            base.OnTakeControl();
-            TPSCameraController.Instance.m_BindRoot = m_Head;
-            TPSCameraController.Instance.m_BindPosOffset = Vector3.zero;
-            TPSCameraController.Instance.m_MoveDamping = 0f;
-            TPSCameraController.Instance.m_RotateDamping = 0f;
+            base.OnTakeControl(_controller);
+            _controller.m_BindRoot = m_Head;
+            _controller.m_BindPosOffset = Vector3.zero;
+            _controller.m_MoveDamping = 0f;
+            _controller.m_RotateDamping = 0f;
             PCInputManager.Instance.GetKeyBinding(enum_Binding.AltFire).Add(OnAltFire);
             PCInputManager.Instance.GetKeyBinding(enum_Binding.MainFire).Add(OnMainFire);
             PCInputManager.Instance.GetKeyBinding(enum_Binding.Jump).Add(OnJump);

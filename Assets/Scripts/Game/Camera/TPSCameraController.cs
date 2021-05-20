@@ -5,8 +5,6 @@ using UnityEngine;
 [ExecuteInEditMode,RequireComponent(typeof(Camera))]
 public class TPSCameraController : CameraController
 {
-    protected static TPSCameraController ninstance;
-    public static new TPSCameraController Instance => ninstance;
     [Header("Shake Param")]
     public int I_ShakeParam;
     public float m_ShakeReverseDuration=.2f;
@@ -31,12 +29,6 @@ public class TPSCameraController : CameraController
         v3_Recoil = Vector3.Lerp(v3_Recoil, Vector3.zero, _deltaTime* 5f);
         return v3_Recoil;
     }
-    protected override void Awake()
-    {
-        ninstance = this;
-        base.Awake();
-    }
-    
     public void AddRecoil(float recoilAmount)=>v3_Recoil +=new Vector3(0,( URandom.RandomBool() ? 1 : -1) * recoilAmount, 0);
     public void AddShake(float shakeAmount) => v3_Shake += Random.insideUnitSphere * shakeAmount;
     public void SetImpact(Vector3 impactDirection)

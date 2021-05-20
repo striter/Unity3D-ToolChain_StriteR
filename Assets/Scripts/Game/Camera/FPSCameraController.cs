@@ -11,8 +11,6 @@ public class FPSCameraController : CameraController
        T_Like,
        Triangle_Like,
     }
-    protected static FPSCameraController ninstance;
-    public static new FPSCameraController Instance => ninstance;
     public enum_RecoilSpreadMode E_RecoilMode = enum_RecoilSpreadMode.Triangle_Like;
     public bool B_SelfSetoffRecoil=true;
     public float f_angleSmoothParam = .1f;
@@ -26,8 +24,6 @@ public class FPSCameraController : CameraController
     protected override void Awake()
     {
         base.Awake();
-        ninstance = this;
-
         f_fovStart = m_Camera.fieldOfView;
         f_fovCurrent = f_fovStart;
     }

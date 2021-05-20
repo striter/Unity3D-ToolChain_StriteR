@@ -33,9 +33,9 @@ namespace PhysicsTest
                 m_Synchornizes.Add(new TransformSynchronize(sourceTransform, physicsSync));
             }
         }
-        public override void OnTakeControl()
+        public override void OnTakeControl(TPSCameraController _controller)
         {
-            base.OnTakeControl();
+            base.OnTakeControl(_controller);
         }
         public override void OnRemoveControl()
         {
