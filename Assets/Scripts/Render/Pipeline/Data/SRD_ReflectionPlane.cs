@@ -15,7 +15,7 @@ namespace Rendering.Pipeline
         [MFoldout(nameof(m_ReflectionType), enum_ReflectionSpace.ScreenSpace)] [Range(1, 4)] public int m_Sample = 1;
         public bool m_EnableBlur = false;
         [MFoldout(nameof(m_EnableBlur), true)] public ImageEffectParam_Blurs m_BlurParam = UPipeline.GetDefaultPostProcessData<ImageEffectParam_Blurs>();
-        public GPlane m_PlaneData => new GPlane() { m_Normal = transform.up, m_Distance = UGeometry.PointPlaneDistance(transform.position, transform.up, 0) + m_PlaneOffset };
+        public GPlane m_PlaneData => new GPlane(transform.up, transform.position + transform.up * m_PlaneOffset);
         private void OnEnable()
         {
             m_ReflectionPlanes.Add(this);

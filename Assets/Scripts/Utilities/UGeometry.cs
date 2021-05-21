@@ -1,82 +1,48 @@
 ﻿using UnityEngine;
 
-public static class UBoundsChecker
-{
-    static Vector3 m_BoundsMin;
-    static Vector3 m_BoundsMax;
-    public static void Begin()
-    {
-        m_BoundsMin = Vector3.zero;
-        m_BoundsMax = Vector3.zero;
-    }
-    public static void CheckBounds(Vector3 vertex)
-    {
-        m_BoundsMin = Vector3.Min(m_BoundsMin, vertex);
-        m_BoundsMax = Vector3.Max(m_BoundsMax, vertex);
-    }
-    public static Bounds CalculateBounds() => new Bounds((m_BoundsMin + m_BoundsMax) / 2, m_BoundsMax - m_BoundsMin);
-
-    public static Bounds GetBounds(Vector3[] _verticies)
-    {
-        Begin();
-        foreach (var vertex in _verticies)
-            CheckBounds(vertex);
-        return CalculateBounds();
-    }
-}
-
 public static class UGeometry
 {
-    public static Matrix4x4 GetMirrorMatrix(this GPlane _plane)
+    #region Line
+    public static Vector2 LineRayProjectionDistance(GLine _line, GRay _ray)
     {
-        Matrix4x4 mirrorMatrix = Matrix4x4.identity;
-        mirrorMatrix.m00 = 1 - 2 * _plane.m_Normal.x * _plane.m_Normal.x;
-        mirrorMatrix.m01 = -2 * _plane.m_Normal.x * _plane.m_Normal.y;
-        mirrorMatrix.m02 = -2 * _plane.m_Normal.x * _plane.m_Normal.z;
-        mirrorMatrix.m03 = 2 * _plane.m_Normal.x * _plane.m_Distance;
-        mirrorMatrix.m10 = -2 * _plane.m_Normal.x * _plane.m_Normal.y;
-        mirrorMatrix.m11 = 1 - 2 * _plane.m_Normal.y * _plane.m_Normal.y;
-        mirrorMatrix.m12 = -2 * _plane.m_Normal.y * _plane.m_Normal.z;
-        mirrorMatrix.m13 = 2 * _plane.m_Normal.y * _plane.m_Distance;
-        mirrorMatrix.m20 = -2 * _plane.m_Normal.x * _plane.m_Normal.z;
-        mirrorMatrix.m21 = -2 * _plane.m_Normal.y * _plane.m_Normal.z;
-        mirrorMatrix.m22 = 1 - 2 * _plane.m_Normal.z * _plane.m_Normal.z;
-        mirrorMatrix.m23 = 2 * _plane.m_Normal.z * _plane.m_Distance;
-        mirrorMatrix.m30 = 0;
-        mirrorMatrix.m31 = 0;
-        mirrorMatrix.m32 = 0;
-        mirrorMatrix.m33 = 1;
-        return mirrorMatrix;
-    }
+        Vector3 diff = _line.origin - _ray.origin;
+        float a01 = -Vector3.Dot(_line.direction, _ray.direction);
+        float b0 = Vector3.Dot(diff, _line.direction);
+        float b1 = -Vector3.Dot(diff, _ray.direction);
+        float det = 1f - a01 * a01;
 
+        float s0 = Mathf.Clamp( (a01 * b1 - b0) / det,0f,_line.length);
+        float s1 = (a01 * b0 - b1) / det;
+        return new Vector2(s0, s1);
+    }
+    #endregion
     #region Point
-    public static float PointRayProjection(Vector3 _point,Ray _ray)
+    public static float PointRayProjection(Vector3 _point,GRay _ray)
     {
         return Vector3.Dot(_point- _ray.origin, _ray.direction);
     }
-    public static float PointPlaneDistance(Vector3 _point, Vector3 _normal, float _distance) => PointPlaneDistance(_point, new GPlane(_normal, _distance));
     public static float PointPlaneDistance(Vector3 _point, GPlane _plane)
     {
-        float nr = _point.x * _plane.m_Normal.x + _point.y * _plane.m_Normal.y + _point.z * _plane.m_Normal.z + _plane.m_Distance;
-        return nr / _plane.m_Normal.magnitude;
+        float nr = _point.x * _plane.normal.x + _point.y * _plane.normal.y + _point.z * _plane.normal.z + _plane.distance;
+        return nr / _plane.normal.magnitude;
     }
     #endregion
     #region Ray
-    public static bool RayTriangleIntersect(GTriangle _triangle, Ray _ray, bool _rayDirectionCheck) => RayTriangleIntersect(_triangle, _ray, _rayDirectionCheck, out float distance);
-    public static bool RayTriangleIntersect(GTriangle _triangle,Ray _ray,bool _rayDirectionCheck,out float distance)
+    public static bool RayTriangleIntersect(GTriangle _triangle, GRay _ray, bool _rayDirectionCheck) => RayTriangleIntersect(_triangle, _ray, _rayDirectionCheck, out float distance);
+    public static bool RayTriangleIntersect(GTriangle _triangle,GRay _ray,bool _rayDirectionCheck,out float distance)
     {
         if (!RayTriangleCalculate(_triangle[0], _triangle[1], _triangle[2], _ray.origin, _ray.direction, out distance, out float u, out float v))
             return false;
         return !_rayDirectionCheck || distance > 0;
     }
-    public static bool RayDirectedTriangleIntersect(GDirectedTriangle _triangle, Ray _ray, bool _rayDirectionCheck, bool _triangleDirectionCheck) => RayDirectedTriangleIntersect(_triangle,_ray,_rayDirectionCheck,_triangleDirectionCheck,out float distance);
-    public static bool RayDirectedTriangleIntersect(GDirectedTriangle _triangle, Ray _ray, bool _rayDirectionCheck, bool _triangleDirectionCheck,out float distance)
+    public static bool RayDirectedTriangleIntersect(GDirectedTriangle _triangle, GRay _ray, bool _rayDirectionCheck, bool _triangleDirectionCheck) => RayDirectedTriangleIntersect(_triangle,_ray,_rayDirectionCheck,_triangleDirectionCheck,out float distance);
+    public static bool RayDirectedTriangleIntersect(GDirectedTriangle _triangle, GRay _ray, bool _rayDirectionCheck, bool _triangleDirectionCheck,out float distance)
     {
         if (!RayTriangleCalculate(_triangle[0], _triangle[1], _triangle[2], _ray.origin, _ray.direction, out distance, out float u, out float v))
             return false;
         bool intersect = true;
         intersect &= !_rayDirectionCheck || distance > 0;
-        intersect &= !_triangleDirectionCheck || Vector3.Dot(_triangle.m_Normal, _ray.direction) < 0;
+        intersect &= !_triangleDirectionCheck || Vector3.Dot(_triangle.normal, _ray.direction) < 0;
         return intersect;
     }
     static bool RayTriangleCalculate(Vector3 _vertex0, Vector3 _vertex1, Vector3 _vertex2, Vector3 _rayOrigin, Vector3 _rayDir,out float t,out float u,out float v)  //Möller-Trumbore
@@ -117,35 +83,20 @@ public static class UGeometry
         v *= invDetermination;
         return true;
     }
-    public static float RayPlaneDistance(Vector3 _pNormal, float _pDistance, Vector3 _rayOrigin, Vector3 _rayDirection) => RayPlaneDistance(new GPlane(_pNormal,_pDistance),new Ray(_rayOrigin,_rayDirection));
     public static float RayPlaneDistance(GPlane _plane,Ray _ray)
     {
-        float nrO = Vector3.Dot(_plane.m_Normal, _ray.origin);
-        float nrD = Vector3.Dot(_plane.m_Normal, _ray.direction);
-        return (_plane.m_Distance - nrO) / nrD;
+        float nrO = Vector3.Dot(_plane.normal, _ray.origin);
+        float nrD = Vector3.Dot(_plane.normal, _ray.direction);
+        return (_plane.distance - nrO) / nrD;
     }
-    static void RayBSCalculate(Vector3 _bsCenter, float _bsRadius, Vector3 _rayOrigin, Vector3 _rayDirection, out float dotOffsetDirection, out float discriminant)
+    public static bool RayBSIntersect(GSphere _sphere, GRay _ray)
     {
-        Vector3 offset = _rayOrigin - _bsCenter;
-        dotOffsetDirection = Vector3.Dot(_rayDirection, offset);
-        float sqrRadius = _bsRadius * _bsRadius;
-        float radiusDelta = Vector3.Dot(offset, offset) - sqrRadius;
-        discriminant = -1;
-        if (dotOffsetDirection > 0 && radiusDelta > 0)
-            return;
-
-        float dotOffset = Vector3.Dot(offset, offset);
-        discriminant = dotOffsetDirection * dotOffsetDirection - dotOffset + sqrRadius;
-    }
-    public static bool RayBSIntersect(Vector3 _bsCenter, float _bsRadius, Ray _ray) => RayBSIntersect(_bsCenter,_bsRadius,_ray.origin,_ray.direction);
-    public static bool RayBSIntersect(Vector3 _bsCenter, float _bsRadius, Vector3 _rayOrigin, Vector3 _rayDirection)
-    {
-        RayBSCalculate(_bsCenter, _bsRadius, _rayOrigin, _rayDirection, out float dotOffsetDirection, out float discriminant);
+        RayBSCalculate(_sphere,_ray, out float dotOffsetDirection, out float discriminant);
         return discriminant >= 0;
     }
-    public static Vector2 RayBSDistance(Vector3 _bsCenter, float _bsRadius, Vector3 _rayOrigin, Vector3 _rayDirection)
+    public static Vector2 RayBSDistance(GSphere _sphere, GRay _ray)
     {
-        RayBSCalculate(_bsCenter, _bsRadius, _rayOrigin, _rayDirection, out float dotOffsetDirection, out float discriminant);
+        RayBSCalculate(_sphere,_ray, out float dotOffsetDirection, out float discriminant);
         if (discriminant < 0)
             return Vector2.one * -1;
 
@@ -156,65 +107,79 @@ public static class UGeometry
             t0 = t1;
         return new Vector2(t0, t1);
     }
-    static void RayAABBCalculate(Vector3 _boundsMin, Vector3 _boundsMax, Vector3 _rayOrigin, Vector3 _rayDir, out Vector3 _tmin, out Vector3 _tmax)
+    static void RayBSCalculate(GSphere _sphere, GRay _ray, out float dotOffsetDirection, out float discriminant)
     {
-        Vector3 invRayDir = Vector3.one.Divide(_rayDir);
-        Vector3 t0 = (_boundsMin - _rayOrigin).Multiply(invRayDir);
-        Vector3 t1 = (_boundsMax - _rayOrigin).Multiply(invRayDir);
-        _tmin = Vector3.Min(t0, t1);
-        _tmax = Vector3.Max(t0, t1);
+        Vector3 offset = _ray.origin - _sphere.center;
+        dotOffsetDirection = Vector3.Dot(_ray.direction, offset);
+        float sqrRadius = _sphere.radius * _sphere.radius;
+        float radiusDelta = Vector3.Dot(offset, offset) - sqrRadius;
+        discriminant = -1;
+        if (dotOffsetDirection > 0 && radiusDelta > 0)
+            return;
+
+        float dotOffset = Vector3.Dot(offset, offset);
+        discriminant = dotOffsetDirection * dotOffsetDirection - dotOffset + sqrRadius;
     }
-    public static bool RayAABBIntersect(Vector3 _boundsMin, Vector3 _boundsMax, Vector3 _rayOrigin, Vector3 _rayDir)
+
+    public static bool RayAABBIntersect(GBox _box,GRay _ray)
     {
-        RayAABBCalculate(_boundsMin, _boundsMax, _rayOrigin, _rayDir, out Vector3 tmin, out Vector3 tmax);
+        RayAABBCalculate(_box,_ray, out Vector3 tmin, out Vector3 tmax);
         return tmin.Max() <= tmax.Min();
     }
-    public static Vector2 RayAABBDistance(Vector3 _boundsMin, Vector3 _boundsMax, Vector3 _rayOrigin, Vector3 _rayDir)
+    public static Vector2 RayAABBDistance(GBox _box, GRay _ray)
     {
-        RayAABBCalculate(_boundsMin, _boundsMax, _rayOrigin, _rayDir, out Vector3 tmin, out Vector3 tmax);
+        RayAABBCalculate(_box,_ray, out Vector3 tmin, out Vector3 tmax);
         float dstA = Mathf.Max(Mathf.Max(tmin.x, tmin.y), tmin.z);
         float dstB = Mathf.Min(tmax.x, Mathf.Min(tmax.y, tmax.z));
         float dstToBox = Mathf.Max(0, dstA);
         float dstInsideBox = Mathf.Max(0, dstB - dstToBox);
         return new Vector2(dstToBox, dstInsideBox);
     }
-    public static Vector2 RayConeDistance(GCone _cone, Ray _ray)
+    static void RayAABBCalculate(GBox _box, GRay _ray, out Vector3 _tmin, out Vector3 _tmax)
+    {
+        Vector3 invRayDir = Vector3.one.Divide(_ray.direction);
+        Vector3 t0 = (_box.Min - _ray.origin).Multiply(invRayDir);
+        Vector3 t1 = (_box.Max - _ray.origin).Multiply(invRayDir);
+        _tmin = Vector3.Min(t0, t1);
+        _tmax = Vector3.Max(t0, t1);
+    }
+    public static Vector2 RayConeDistance(GCone _cone, GRay _ray)
     {
         Vector2 distances = RayConeCalculate(_cone, _ray);
-        if (Vector3.Dot(_cone.m_Normal, _ray.GetPoint(distances.x) - _cone.m_Origin) < 0)
+        if (Vector3.Dot(_cone.normal, _ray.GetPoint(distances.x) - _cone.origin) < 0)
             distances.x = -1;
-        if (Vector3.Dot(_cone.m_Normal, _ray.GetPoint(distances.y) - _cone.m_Origin) < 0)
+        if (Vector3.Dot(_cone.normal, _ray.GetPoint(distances.y) - _cone.origin) < 0)
             distances.y = -1;
         return distances;
     }
-    public static Vector2 RayConeDistance(GHeightCone _cone, Ray _ray)
+    public static Vector2 RayConeDistance(GHeightCone _cone, GRay _ray)
     {
-        Vector2 distances = RayConeCalculate(_cone.m_Cone, _ray);
-        GPlane bottomPlane = new GPlane(_cone.m_Normal, _cone.m_Origin + _cone.m_Normal * _cone.m_Height);
+        Vector2 distances = RayConeCalculate(_cone.cone, _ray);
+        GPlane bottomPlane = new GPlane(_cone.normal, _cone.origin + _cone.normal * _cone.height);
         float rayPlaneDistance = RayPlaneDistance(bottomPlane, _ray);
-        float sqrRadius = _cone.m_Radius;
+        float sqrRadius = _cone.Radius;
         sqrRadius *= sqrRadius;
-        if ((_cone.m_Bottom - _ray.GetPoint(rayPlaneDistance)).sqrMagnitude > sqrRadius)
+        if ((_cone.Bottom - _ray.GetPoint(rayPlaneDistance)).sqrMagnitude > sqrRadius)
             rayPlaneDistance = -1;
 
-        float surfaceDst = Vector3.Dot(_cone.m_Normal, _ray.GetPoint(distances.x) - _cone.m_Origin);
-        if (surfaceDst<0|| surfaceDst > _cone.m_Height)
+        float surfaceDst = Vector3.Dot(_cone.normal, _ray.GetPoint(distances.x) - _cone.origin);
+        if (surfaceDst<0|| surfaceDst > _cone.height)
             distances.x = rayPlaneDistance;
 
-        surfaceDst = Vector3.Dot(_cone.m_Normal, _ray.GetPoint(distances.y) - _cone.m_Origin) ;
-        if (surfaceDst<0||surfaceDst > _cone.m_Height)
+        surfaceDst = Vector3.Dot(_cone.normal, _ray.GetPoint(distances.y) - _cone.origin) ;
+        if (surfaceDst<0||surfaceDst > _cone.height)
             distances.y = rayPlaneDistance;
         return distances;
     }
 
-    static Vector2 RayConeCalculate(GCone _cone, Ray _ray)
+    static Vector2 RayConeCalculate(GCone _cone, GRay _ray)
     {
         Vector2 distances = Vector2.one * -1;
-        Vector3 offset = _ray.origin - _cone.m_Origin;
+        Vector3 offset = _ray.origin - _cone.origin;
 
-        float RDV = Vector3.Dot(_ray.direction, _cone.m_Normal);
-        float ODN = Vector3.Dot(offset, _cone.m_Normal);
-        float cosA = Mathf.Cos(UMath.AngleToRadin(_cone.m_Angle));
+        float RDV = Vector3.Dot(_ray.direction, _cone.normal);
+        float ODN = Vector3.Dot(offset, _cone.normal);
+        float cosA = Mathf.Cos(UMath.AngleToRadin(_cone.angle));
         float sqrCosA = cosA * cosA;
 
         float a = RDV * RDV - sqrCosA;
@@ -229,4 +194,29 @@ public static class UGeometry
         return distances;
     }
     #endregion
+
+
+
+    public static Matrix4x4 GetMirrorMatrix(this GPlane _plane)
+    {
+        Matrix4x4 mirrorMatrix = Matrix4x4.identity;
+        mirrorMatrix.m00 = 1 - 2 * _plane.normal.x * _plane.normal.x;
+        mirrorMatrix.m01 = -2 * _plane.normal.x * _plane.normal.y;
+        mirrorMatrix.m02 = -2 * _plane.normal.x * _plane.normal.z;
+        mirrorMatrix.m03 = 2 * _plane.normal.x * _plane.distance;
+        mirrorMatrix.m10 = -2 * _plane.normal.x * _plane.normal.y;
+        mirrorMatrix.m11 = 1 - 2 * _plane.normal.y * _plane.normal.y;
+        mirrorMatrix.m12 = -2 * _plane.normal.y * _plane.normal.z;
+        mirrorMatrix.m13 = 2 * _plane.normal.y * _plane.distance;
+        mirrorMatrix.m20 = -2 * _plane.normal.x * _plane.normal.z;
+        mirrorMatrix.m21 = -2 * _plane.normal.y * _plane.normal.z;
+        mirrorMatrix.m22 = 1 - 2 * _plane.normal.z * _plane.normal.z;
+        mirrorMatrix.m23 = 2 * _plane.normal.z * _plane.distance;
+        mirrorMatrix.m30 = 0;
+        mirrorMatrix.m31 = 0;
+        mirrorMatrix.m32 = 0;
+        mirrorMatrix.m33 = 1;
+        return mirrorMatrix;
+    }
+
 }

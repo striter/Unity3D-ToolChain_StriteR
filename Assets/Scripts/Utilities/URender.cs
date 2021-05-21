@@ -23,6 +23,7 @@ public static class URender
         _indices = _srcMesh.triangles;
         return GetPolygons(_indices);
     }
+    #region Mesh Edit
     public static void TraversalBlendShapes(this Mesh _srcMesh, int _VertexCount, Action<string, int, int, float, Vector3[], Vector3[], Vector3[]> _OnEachFrame)
     {
         Vector3[] deltaVerticies = new Vector3[_VertexCount];
@@ -187,7 +188,7 @@ public static class URender
         else
             _tar.SetUVs(_index, uvs.ToList(vec4 => new Vector2(vec4.x, vec4.y)));
     }
-
+    #endregion
     //Material
     public static void EnableKeyword(this Material _material, string _keyword, bool _enable)
     {
@@ -229,5 +230,30 @@ public static class URender
             Shader.EnableKeyword(_keyword);
         else
             Shader.DisableKeyword(_keyword);
+    }
+}
+
+public static class UBoundsChecker
+{
+    static Vector3 m_BoundsMin;
+    static Vector3 m_BoundsMax;
+    public static void Begin()
+    {
+        m_BoundsMin = Vector3.zero;
+        m_BoundsMax = Vector3.zero;
+    }
+    public static void CheckBounds(Vector3 vertex)
+    {
+        m_BoundsMin = Vector3.Min(m_BoundsMin, vertex);
+        m_BoundsMax = Vector3.Max(m_BoundsMax, vertex);
+    }
+    public static Bounds CalculateBounds() => new Bounds((m_BoundsMin + m_BoundsMax) / 2, m_BoundsMax - m_BoundsMin);
+
+    public static Bounds GetBounds(Vector3[] _verticies)
+    {
+        Begin();
+        foreach (var vertex in _verticies)
+            CheckBounds(vertex);
+        return CalculateBounds();
     }
 }

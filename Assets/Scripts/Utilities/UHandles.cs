@@ -49,11 +49,11 @@ public static class Handles_Extend
 {
     public static void DrawCone(GHeightCone _heightCone)
     {
-        using(new Handles.DrawingScope(Handles.color, Handles.matrix*Matrix4x4.TRS(_heightCone.m_Origin, Quaternion.LookRotation(_heightCone.m_Normal),Vector3.one )))
+        using(new Handles.DrawingScope(Handles.color, Handles.matrix*Matrix4x4.TRS(_heightCone.origin, Quaternion.LookRotation(_heightCone.normal),Vector3.one )))
         {
-            float radius = _heightCone.m_Radius;
+            float radius = _heightCone.Radius;
 
-            Vector3 bottom =  Vector3.forward * _heightCone.m_Height;
+            Vector3 bottom =  Vector3.forward * _heightCone.height;
             Vector3 bottomForwardDir =  Vector3.up *radius;
             Vector3 bottomForward = bottom +bottomForwardDir;
             Vector3 bottomBack = bottom - bottomForwardDir;

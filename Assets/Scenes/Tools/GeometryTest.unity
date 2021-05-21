@@ -153,12 +153,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Triangle:
-    m_Triangle:
-      m_Vertex1: {x: 0, y: 0, z: 1}
-      m_Vertex2: {x: 1, y: 0, z: -1}
-      m_Vertex3: {x: -1, y: -0, z: -1}
-  m_Origin: {x: 0, y: 0.59, z: -0.17}
-  m_Direction: {x: -48.21, y: -51.89, z: 0.1}
+    triangle:
+      vertex1: {x: -0.73, y: 0, z: -0.26}
+      vertex2: {x: 0, y: 0, z: 1.37}
+      vertex3: {x: 0.84, y: 0, z: -0.1}
+  m_Ray:
+    origin: {x: 0, y: 2, z: 0}
+    direction: {x: -0.119525, y: -0.98790395, z: 0.09879038}
   m_RayDirectionCheck: 1
   m_PlaneDirectionCheck: 1
 --- !u!4 &235485687
@@ -205,10 +206,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Plane:
-    m_Normal: {x: 0, y: 1, z: 0}
-    m_Distance: 0
-  m_RayOrigin: {x: 0, y: 0.32, z: 0}
-  m_RayDirection: {x: 0.47, y: -0.63, z: 1.21}
+    normal: {x: 0, y: 1, z: 0}
+    distance: 0
+  m_Ray:
+    origin: {x: 0, y: 0.72717476, z: -1.0016682}
+    direction: {x: 0.047317713, y: -0.47419658, z: 0.8791465}
 --- !u!4 &314156686
 Transform:
   m_ObjectHideFlags: 0
@@ -234,7 +236,7 @@ GameObject:
   - component: {fileID: 359821878}
   - component: {fileID: 359821877}
   m_Layer: 0
-  m_Name: PointProjection
+  m_Name: Ray_Point_Line
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -253,9 +255,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Ray:
-    m_Position: {x: 0, y: -0.2, z: 0}
-    m_Direction: {x: 1, y: 0, z: 0}
-  m_Point: {x: 1.45, y: 0.62, z: 0}
+    origin: {x: 0.29742813, y: -0.20015764, z: -0.80235684}
+    direction: {x: -0.430671, y: 0.42425215, z: 0.79657555}
+  m_Point: {x: -0.09, y: 0.62, z: 0}
+  m_Ray1:
+    origin: {x: -2.21, y: -0.49, z: 0}
+    direction: {x: 0, y: 0.41626254, z: 0.9092445}
+  m_Line1:
+    origin: {x: -1.27, y: 0, z: 0.38}
+    direction: {x: -1.07, y: 1, z: 0}
+    length: 1.93
 --- !u!4 &359821878
 Transform:
   m_ObjectHideFlags: 0
@@ -264,7 +273,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 359821876}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.28, y: -0.38, z: -0.3}
+  m_LocalPosition: {x: -5.11, y: -0.38, z: -3.06}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -295,7 +304,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 548546586}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.75, y: 1.19, z: -0.74}
+  m_LocalPosition: {x: -4.1, y: 1.19, z: -1.33}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -314,15 +323,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Data:
-    m_Cone:
-      m_DirectedPosition:
-        m_Position: {x: -0.076672375, y: -0.96, z: 0}
-        m_Direction: {x: 0.69994783, y: 0.71419394, z: -0.00000013411045}
-      m_Angle: 49.1
-    m_Height: 1.39
+    cone:
+      m_Ray:
+        origin: {x: 0.06303835, y: 0, z: -0.2013135}
+        direction: {x: 0, y: 0, z: 1}
+      angle: 49.1
+    height: 1.26
   m_Ray:
-    m_Position: {x: -1.22, y: 0.06, z: -0.040601403}
-    m_Direction: {x: 2.52, y: -0.38612282, z: 0.00000013038516}
+    origin: {x: -0.38, y: -0.13, z: 0}
+    direction: {x: 0.5508869, y: 0, z: 0.83457994}
 --- !u!1 &999107284
 GameObject:
   m_ObjectHideFlags: 0
@@ -353,12 +362,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Triangle:
-    m_Triangle:
-      m_Vertex1: {x: 0, y: 0, z: 1}
-      m_Vertex2: {x: 1, y: 0, z: -1}
-      m_Vertex3: {x: -1, y: -0, z: -1}
-  m_Origin: {x: 0, y: -1.04, z: -0.17}
-  m_Direction: {x: -0.1, y: 9.4, z: 0.1}
+    triangle:
+      vertex1: {x: -0.73, y: 0, z: -0.26}
+      vertex2: {x: 0, y: 0, z: 1.37}
+      vertex3: {x: 0.84, y: 0, z: -0.1}
+  m_Ray:
+    origin: {x: 0, y: -0.17, z: 0}
+    direction: {x: -0.119525, y: -0.98790395, z: 0.09879038}
   m_RayDirectionCheck: 1
   m_PlaneDirectionCheck: 1
 --- !u!4 &999107286
@@ -418,10 +428,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c1330962292cd84f8bfd44b761e581a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_RayOrigin: {x: 0, y: 3, z: 0}
-  m_RayDirection: {x: -2.01, y: -5.18, z: 1.22}
-  m_SphereOrigin: {x: 0, y: 0, z: 0}
-  m_BoundingSphereRadius: 2
+  m_Sphere:
+    center: {x: 0, y: 0, z: 0}
+    radius: 1.01
+  m_Ray:
+    origin: {x: 0, y: 0, z: -1.335212}
+    direction: {x: 0, y: -0.1702682, z: 0.98539776}
 --- !u!1 &1365951602
 GameObject:
   m_ObjectHideFlags: 0
@@ -447,7 +459,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1365951602}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.48, y: 0, z: 2.4}
+  m_LocalPosition: {x: -10.52, y: 0, z: 1.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -591,14 +603,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Triangle:
-    m_Triangle:
-      m_Vertex1: {x: 0, y: 0, z: 1}
-      m_Vertex2: {x: 1, y: 0, z: -1}
-      m_Vertex3: {x: -1, y: -0, z: -1}
-  m_Origin: {x: 0, y: -0.18, z: -0.17}
-  m_Direction: {x: -48.21, y: -51.89, z: 0.1}
+    triangle:
+      vertex1: {x: -0.73, y: 0, z: -0.26}
+      vertex2: {x: 0, y: 0, z: 1.37}
+      vertex3: {x: 0.84, y: 0, z: -0.1}
+  m_Ray:
+    origin: {x: 0.56, y: -0.31, z: 0}
+    direction: {x: -0.37560293, y: 0.54810876, z: 0.74732804}
   m_RayDirectionCheck: 0
-  m_PlaneDirectionCheck: 0
+  m_PlaneDirectionCheck: 1
 --- !u!4 &1824406050
 Transform:
   m_ObjectHideFlags: 0
@@ -656,7 +669,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 376e3324328ef364aa2c47e7739ec576, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_BoxOrigin: {x: 0, y: 0, z: 0}
-  m_BoxSize: {x: 1.27, y: -1.15, z: 1.33}
-  m_RayOrigin: {x: 1.19, y: 0.9, z: 0}
-  m_RayDirection: {x: -5.76, y: -4.2, z: -2.15}
+  m_Box:
+    center: {x: 0, y: 0, z: 0}
+    extend: {x: 0.5, y: 0.5, z: 0.5}
+  m_Ray:
+    origin: {x: 0.96336365, y: -0.5118964, z: -2.0003295}
+    direction: {x: -0.35280073, y: 0.24979077, z: 0.9017407}

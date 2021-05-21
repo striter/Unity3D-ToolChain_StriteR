@@ -104,8 +104,8 @@ namespace Rendering.Pipeline
                 case enum_ReflectionSpace.ScreenSpace:
                     {
                         cmd.SetComputeIntParam(m_ComputeShader, ID_SampleCount, m_Plane.m_Sample);
-                        cmd.SetComputeVectorParam(m_ComputeShader, ID_PlaneNormal, planeData.m_Normal.normalized);
-                        cmd.SetComputeVectorParam(m_ComputeShader, ID_PlanePosition, planeData.m_Distance * planeData.m_Normal);
+                        cmd.SetComputeVectorParam(m_ComputeShader, ID_PlaneNormal, planeData.normal.normalized);
+                        cmd.SetComputeVectorParam(m_ComputeShader, ID_PlanePosition, planeData.distance * planeData.normal);
                         cmd.SetComputeVectorParam(m_ComputeShader, ID_Result_TexelSize, m_ResultDescriptor.GetTexelSize());
 
                         int groupX = m_ResultDescriptor.width / m_Kernels.m_Z;

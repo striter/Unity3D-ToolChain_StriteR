@@ -7,32 +7,41 @@ using UnityEngine.UIElements;
 
 namespace TEditor
 {
-    [CustomPropertyDrawer(typeof(GSpaceData))]
-    public class GDirectionPositionPropertyDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(GRay))]
+    public class GRayPropertyDrawer : PropertyDrawer
     {
-        public bool m_Selected = false;
+        public ValueChecker<bool> m_Selected = new ValueChecker<bool>(false);
         SerializedProperty m_PositionProperty;
         SerializedProperty m_DirecitonProperty;
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            m_PositionProperty = property.FindPropertyRelative(nameof(GSpaceData.m_Position));
-            m_DirecitonProperty = property.FindPropertyRelative(nameof(GSpaceData.m_Direction));
-            return 20+EditorGUI.GetPropertyHeight(m_PositionProperty,true)+EditorGUI.GetPropertyHeight(m_DirecitonProperty,true);
+            m_PositionProperty = property.FindPropertyRelative(nameof(GRay.origin));
+            m_DirecitonProperty = property.FindPropertyRelative(nameof(GRay.direction));
+            return 20+(m_Selected?(4+ EditorGUI.GetPropertyHeight(m_PositionProperty,true)+EditorGUI.GetPropertyHeight(m_DirecitonProperty,true)):0);
         }
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            float depthOffset = property.depth * 15;
-            position.x += depthOffset;
-            position.size = new Vector2(position.size.x - depthOffset, position.size.y);
-            float width = position.size.x;
+            m_DirecitonProperty.vector3Value=m_DirecitonProperty.vector3Value.normalized;
+
+            float width = position.size.x ;
             HorizontalScope.Begin(position.x, position.y, 20);
-            GUI.Label( HorizontalScope.NextRect(0f,width*2/3f),label);
-            if (GUI.Button(HorizontalScope.NextRect(0f, width / 3f), "Edit"))
+            if (m_Selected.Check(EditorGUI.Foldout(HorizontalScope.NextRect(0f, width * 3f / 4f), m_Selected, label)))
+                GDirectedPositionHelper.End();
+            if (GUI.Button(HorizontalScope.NextRect(0f, width / 4f), "Edit"))
+            {
                 GDirectedPositionHelper.Begin(m_PositionProperty, m_DirecitonProperty);
-            HorizontalScope.NextLine(0, EditorGUI.GetPropertyHeight(m_PositionProperty, true));
-            EditorGUI.PropertyField( new Rect(HorizontalScope.m_CurrentPos, new Vector2(position.width, HorizontalScope.m_CurrentY)), m_PositionProperty);
-            HorizontalScope.NextLine(0, EditorGUI.GetPropertyHeight(m_DirecitonProperty, true));
-            EditorGUI.PropertyField(new Rect(HorizontalScope.m_CurrentPos, new Vector2(position.width, HorizontalScope.m_CurrentY)), m_DirecitonProperty);
+                m_Selected.Set(true);
+            }
+
+            if(m_Selected)
+            {
+                HorizontalScope.Begin(position.x + 15, position.y, 20);
+                width = position.size.x - 15;
+                HorizontalScope.NextLine(2, EditorGUI.GetPropertyHeight(m_PositionProperty, true));
+                EditorGUI.PropertyField(new Rect(HorizontalScope.m_CurrentPos, new Vector2(width, HorizontalScope.m_CurrentY)), m_PositionProperty);
+                HorizontalScope.NextLine(2, EditorGUI.GetPropertyHeight(m_DirecitonProperty, true));
+                EditorGUI.PropertyField(new Rect(HorizontalScope.m_CurrentPos, new Vector2(width, HorizontalScope.m_CurrentY)), m_DirecitonProperty);
+            }
         }
         public static class GDirectedPositionHelper
         {
@@ -62,7 +71,7 @@ namespace TEditor
             {
                 try
                 {
-                    if (Tools.current != Tool.None || Event.current.keyCode == KeyCode.Escape)
+                    if ( Tools.current != Tool.None || Event.current.keyCode == KeyCode.Escape)
                     {
                         End();
                         return;
@@ -76,8 +85,10 @@ namespace TEditor
                     m_PositionChecker.Check(Handles.DoPositionHandle(m_PositionChecker.m_Value, Quaternion.identity));
                     m_PositionProperty.vector3Value = m_PositionChecker.m_Value;
                     m_PositionProperty.serializedObject.ApplyModifiedProperties();
+
+                    Handles.Label(m_PositionChecker.m_Value,"Ray Editing",UEGUIStyle_SceneView.m_TitleLabel);
                 }
-                catch       //
+                catch
                 {
                     End();
                 }

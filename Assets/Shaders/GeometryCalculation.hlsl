@@ -5,11 +5,23 @@ float PointRayProjectDistance(GRay _ray,float3 _point)
     return dot(_point-_ray.origin, _ray.direction);
 }
 
-
 //Line
 float3 PointLineProjectionDistance(GLine _line,float3 _point)
 {
     return clamp(dot(_point - _line.origin, _line.direction),0,_line.length);
+}
+float2 LineRayProjectionDistance(GLine _line,GRay _ray)      
+{
+    float3 diff = _line.origin - _ray.origin;
+    float a01 = -dot(_line.direction, _ray.direction);
+    float b0 = dot(diff, _line.direction);
+    float b1 = -dot(diff, _ray.direction);
+    float det = 1. - a01 * a01;
+    
+    float s0 = 0., s1 = 0.;
+    s0 = (a01 * b1 - b0) / det;
+    s1 = (a01 * b0 - b1)/det;
+    return float2(s0, s1);
 }
 
 //Plane

@@ -14,8 +14,8 @@ namespace TEditor
             foreach(var polygon in polygons)
             {
                 GDirectedTriangle triangle = polygon.GetDirectedTriangle(_verticies);
-                Vector3 normal = triangle.m_Normal;
-                foreach (var indice in polygon.m_Indices)
+                Vector3 normal = triangle.normal;
+                foreach (var indice in polygon.indices)
                     normals[indice] += normal;
             }
             normals=normals.ToArray(normal => normal.normalized);

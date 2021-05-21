@@ -7,24 +7,21 @@ namespace BoundingCollisionTest
     public class GeometryTest_Plane : MonoBehaviour
     {
         public GPlane m_Plane;
-        public Vector3 m_RayOrigin;
-        public Vector3 m_RayDirection;
+        public GRay m_Ray;
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            Vector3 rayDirection = m_RayDirection.normalized;
-            Vector3 planeNormal = m_Plane.m_Normal.normalized;
-            float distance = UGeometry.RayPlaneDistance(planeNormal, m_Plane.m_Distance, m_RayOrigin, rayDirection);
+            float distance = UGeometry.RayPlaneDistance(m_Plane,m_Ray);
 
             Gizmos.matrix = transform.localToWorldMatrix;
             Vector3 planeSize = new Vector3(1,0,1);
             float rayDistance = 1f;
             bool intersect = distance >= 0;
-            Gizmos.DrawWireSphere(m_RayOrigin, .05f);
+            Gizmos.DrawWireSphere(m_Ray.origin, .05f);
             if (intersect)
             {
-                Vector3 hitPoint = m_RayOrigin + rayDirection * distance;
+                Vector3 hitPoint = m_Ray.GetPoint(distance);
                 Gizmos.color = Color.red;
                 Gizmos.DrawSphere(hitPoint, .05f);
                 rayDistance = distance;
@@ -32,8 +29,8 @@ namespace BoundingCollisionTest
             }
 
             Gizmos.color = intersect? Color.white:Color.grey;
-            Gizmos.DrawLine(m_RayOrigin, m_RayOrigin + rayDirection.normalized * rayDistance);
-            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.TRS(planeNormal * m_Plane.m_Distance, Quaternion.LookRotation(Vector3.forward, planeNormal), Vector3.one);
+            Gizmos.DrawLine(m_Ray.origin, m_Ray.GetPoint(rayDistance));
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.TRS(m_Plane.Position, Quaternion.LookRotation(Vector3.forward, m_Plane.normal), Vector3.one);
             Gizmos.color = intersect ? Color.green : Color.grey;
             Gizmos_Extend.DrawArrow(Vector3.zero,Quaternion.LookRotation(Vector3.up), .3f, .1f);
             Gizmos.DrawWireCube(Vector3.zero, planeSize);
