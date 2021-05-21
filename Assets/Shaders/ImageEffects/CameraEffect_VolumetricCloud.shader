@@ -15,7 +15,7 @@
             #pragma fragment frag
             
             #include "../CommonInclude.hlsl"
-            #include "../BoundingCollision.hlsl"
+            #include "../GeometryCalculation.hlsl"
             #include "../CameraEffectInclude.hlsl"
 
             #pragma shader_feature_local _LIGHTMARCH
@@ -59,8 +59,8 @@
             #if _LIGHTMARCH
             float lightMarch(GPlane _planeStart,GPlane _planeEnd, GRay lightRay,float marchDst)
             {
-                float distance1=PRayDistance(_planeStart,lightRay);
-                float distance2=PRayDistance(_planeEnd,lightRay);
+                float distance1=PlaneRayDistance(_planeStart,lightRay);
+                float distance2=PlaneRayDistance(_planeEnd,lightRay);
                 float distanceInside=max(distance1,distance2);
                 float distanceLimitParam=saturate(distanceInside/_LightMarchMinimalDistance);
                 float cloudDensity=0;

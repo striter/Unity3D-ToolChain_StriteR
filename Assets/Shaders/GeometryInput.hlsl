@@ -1,4 +1,21 @@
-﻿struct GRay
+﻿struct GLine
+{
+    float3 origin;
+    float3 direction;
+    float length;
+    float3 end;
+};
+GLine GetLine(float3 _origin, float3 _direction, float _length)
+{
+    GLine gline;
+    gline.origin = _origin;
+    gline.direction = _direction;
+    gline.length = _length;
+    gline.end = _origin + _direction * _length;
+    return gline;
+}
+
+struct GRay
 {
     float3 origin;
     float3 direction;

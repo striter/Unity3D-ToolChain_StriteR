@@ -4,7 +4,6 @@
 #pragma kernel GenerateMedium
 
 #include "../CommonInclude.hlsl"
-#include "../BoundingCollision.hlsl"
 
 float3 _PlaneNormal;
 float3 _PlanePosition;

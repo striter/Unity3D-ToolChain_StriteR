@@ -79,8 +79,8 @@ Material:
     - _Mode: 0
     - _NoiseFlowX: 0.1
     - _NoiseFlowY: 1
-    - _NoisePow: 4.05
-    - _NoiseStrength: 2.87
+    - _NoisePow: 5
+    - _NoiseStrength: 1.84
     - _OPTIMIZE: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02

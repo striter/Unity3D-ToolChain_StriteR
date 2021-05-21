@@ -38,7 +38,7 @@
 
             #include "../../CommonInclude.hlsl"
             #include "../../CommonLightingInclude.hlsl"
-            #include "../../BoundingCollision.hlsl"
+            #include "../../GeometryCalculation.hlsl"
             #pragma shader_feature_local _LIGHTMARCH
 
             struct appdata

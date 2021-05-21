@@ -23,7 +23,7 @@
             #pragma multi_compile_local _TYPE_POINT _TYPE_SPOT
 
             #include "../../CommonInclude.hlsl"
-            #include "../../BoundingCollision.hlsl"
+            #include "../../GeometryCalculation.hlsl"
 
             struct appdata
             {
@@ -95,7 +95,7 @@
                 GRay viewRayOS=GetRay(i.positionOS,viewDirOS);
                 #if _TYPE_POINT
                 sdfDstOS= SphereRayDistance(GetSphere(origin,.5) ,viewRayOS);
-                half closestDst=PointRayProjectDistance(0,viewRayOS);
+                half closestDst=PointRayProjectDistance(viewRayOS,0);
                 closestDst= length(0.-viewRayOS.GetPoint(closestDst))*2;
                 density= saturate(1-closestDst);
                 #elif _TYPE_SPOT

@@ -1,9 +1,17 @@
 ﻿#include "GeometryInput.hlsl"
 //Point
-float PointRayProjectDistance(float3 _point,GRay _ray)
+float PointRayProjectDistance(GRay _ray,float3 _point)
 {
     return dot(_point-_ray.origin, _ray.direction);
 }
+
+
+//Line
+float3 PointLineProjectionDistance(GLine _line,float3 _point)
+{
+    return clamp(dot(_point - _line.origin, _line.direction),0,_line.length);
+}
+
 //Plane
 float PlanePointDistance(GPlane _plane,float3 _point)
 {

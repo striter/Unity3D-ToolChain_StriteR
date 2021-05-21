@@ -25,7 +25,7 @@
             
             #include "../../CommonInclude.hlsl"
             #include "../../CommonLightingInclude.hlsl"
-            #include "../../BoundingCollision.hlsl"
+            #include "../../GeometryCalculation.hlsl"
 
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
