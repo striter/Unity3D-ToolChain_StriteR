@@ -28,7 +28,7 @@ Shader "Hidden/ImageEffect_Stylize"
                 float pixelGrid= max(step(pixelUV.y,_PixelGridWidth.x),step(_PixelGridWidth.y,pixelUV.y),step(pixelUV.x,_PixelGridWidth.x),step(_PixelGridWidth.y,pixelUV.x));
                 finalCol=lerp(finalCol,_PixelGridColor.rgb,pixelGrid*_PixelGridColor.a);
             #elif _PIXEL_CIRCLE
-                float2 pixelUV=(i.uv*_MainTex_TexelSize.zw)%1+.5;
+                float2 pixelUV=(i.uv*_MainTex_TexelSize.zw)%1-.5;
                 float pixelCircle= dot(pixelUV,pixelUV);
                 pixelCircle= step(.5-_PixelGridWidth,pixelCircle);
                 finalCol=lerp(finalCol,_PixelGridColor.rgb,pixelCircle*_PixelGridColor.a);

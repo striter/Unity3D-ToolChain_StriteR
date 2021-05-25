@@ -36,11 +36,6 @@ float StrandSpecular(float3 T,float3 N,float3 H,float exponent,float3 shift)
     return dirAtten*pow(sinTH,exponent);
 }
 
-float3 DecodeNormalMap(float3 normal)
-{
-	return normal*2-1;
-}
-
 #if UNITY_PASS_SHADOWCASTER
 float3 _LightDirection;
 float4 ShadowCasterCS(float3 positionOS, float3 normalOS)

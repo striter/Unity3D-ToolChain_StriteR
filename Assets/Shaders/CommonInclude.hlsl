@@ -1,6 +1,9 @@
 ﻿#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 float2 TransformTex(float2 uv, float4 st) {return uv * st.xy + st.zw;}
 #define PI_HALF 1.5707963267949
+#define PI_TWO 6.2831853071796
+#define PI_ONEDIVIDE 0.31830988618379
+#define PI_ONEDIVDETWO 0.15915494309189
 #define INSTANCING_BUFFER_START UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 #define INSTANCING_PROP(type,param) UNITY_DEFINE_INSTANCED_PROP(type,param)
 #define INSTANCING_BUFFER_END UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)

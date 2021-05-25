@@ -128,7 +128,7 @@ namespace Rendering.ImageEffect
         }
         void InitSceneCameraEffect()
         {
-            if (m_SceneCameraEffect)
+            if (m_SceneCameraEffect||UnityEditor.SceneView.lastActiveSceneView==null)
                 return;
             m_SceneCameraEffect = UnityEditor.SceneView.lastActiveSceneView.camera.gameObject.AddComponent(this.GetType()) as PostEffectBase<T, Y>;
             m_SceneCameraEffect.hideFlags = HideFlags.HideAndDontSave;
