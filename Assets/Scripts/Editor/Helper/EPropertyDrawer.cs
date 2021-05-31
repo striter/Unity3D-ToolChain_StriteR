@@ -78,10 +78,12 @@ namespace TEditor
 
                 m_PositionProperty = _positionProperty;
                 m_DirectionProperty = _directionProperty;
+
                 SceneView.duringSceneGui += OnSceneGUI;
                 m_PositionChecker.Check(m_PositionProperty.vector3Value);
                 m_RotationChecker.Check(Quaternion.LookRotation(m_DirectionProperty.vector3Value));
                 Tools.current = Tool.None;
+                SceneView.lastActiveSceneView.pivot = m_PositionChecker.m_Value;
             }
             public static void End()
             {
@@ -98,8 +100,6 @@ namespace TEditor
                         End();
                         return;
                     }
-
-                    Handles_Extend.DrawArrow(m_PositionChecker.m_Value, m_RotationChecker.m_Value, 1f, .2f);
                     m_RotationChecker.Check(Handles.DoRotationHandle(m_RotationChecker.m_Value, m_PositionChecker.m_Value));
                     m_DirectionProperty.vector3Value = m_RotationChecker.m_Value * Vector3.forward;
                     m_DirectionProperty.serializedObject.ApplyModifiedProperties();
@@ -107,7 +107,6 @@ namespace TEditor
                     m_PositionChecker.Check(Handles.DoPositionHandle(m_PositionChecker.m_Value, Quaternion.identity));
                     m_PositionProperty.vector3Value = m_PositionChecker.m_Value;
                     m_PositionProperty.serializedObject.ApplyModifiedProperties();
-
                     Handles.Label(m_PositionChecker.m_Value, "Transforming", UEGUIStyle_SceneView.m_TitleLabel);
                 }
                 catch
