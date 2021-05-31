@@ -62,11 +62,11 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
-    - _Density: 1.37
+    - _Density: 0.93
     - _Depth: 1
     - _DetailNormalMapScale: 1
     - _Distance: 5
-    - _DstBlend: 0
+    - _DstBlend: 1
     - _FogType: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -77,7 +77,7 @@ Material:
     - _NoiseScale: 10
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Pow: 1.11
+    - _Pow: 0.94
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1

@@ -8,13 +8,16 @@
         _Pow("Density Pow",Range(0,10))=2
         [Header(Depth)]
         _Depth("Depth Sensitivity",Range(0,1))=.5
+        [Header(Misc)]
+        [Enum(UnityEngine.Rendering.BlendMode)]_SrcBlend("Src Blend",float)=1
+        [Enum(UnityEngine.Rendering.BlendMode)]_DstBlend("Dst Blend",float)=1
     }
     SubShader
     {
         Tags{"Queue"="Transparent" "DisableBatching"="True" "IgnoreProjector" = "True"  }
         Pass
         {
-            Blend One One
+            Blend [_SrcBlend] [_DstBlend]
             ZWrite Off
             Cull Back
             HLSLPROGRAM
@@ -53,37 +56,6 @@
                 return o;
             }
             
-            //Heighted Cone 
-            float2 ConeRayDistance(GHeightCone _cone, GRay _ray)
-            {
-                float2 distance = 0.;
-                float3 offset = _ray.origin - _cone.origin;
-
-                float RDV = dot(_ray.direction, _cone.normal);
-                float ODN = dot(offset, _cone.normal);
-
-                float a = RDV * RDV - _cone.sqrCosA;
-                float b = 2. * (RDV * ODN - dot(_ray.direction, offset) * _cone.sqrCosA);
-                float c = ODN * ODN - dot(offset, offset) * _cone.sqrCosA;
-                float determination = b * b - 4. * a * c;
-                float sqrtDetermination = sqrt(determination);
-                float t0 = (-b + sqrtDetermination) / (2. * a);
-                float t1 = (-b - sqrtDetermination) / (2. * a);
-                float bpDistance=PlaneRayDistance(_cone.bottomPlane,_ray);
-                float sqrRadius=_cone.bottomRadius*_cone.bottomRadius;
-                if (sqrDistance(_cone.bottom - _ray.GetPoint(bpDistance)) > sqrRadius)
-                    bpDistance = 0;
-                float surfaceDst = dot(_cone.normal, _ray.GetPoint(t0) - _cone.origin);
-                if (surfaceDst<0|| surfaceDst > _cone.height)
-                    t0= bpDistance;
-
-                surfaceDst = dot(_cone.normal, _ray.GetPoint(t1) - _cone.origin) ;
-                if (surfaceDst<0||surfaceDst > _cone.height)
-                    t1 = bpDistance;
-                return float2(t0,t1) ;
-            }
-
-
             half4 frag(v2f i) : SV_Target
             {
                 half3 viewDirOS=TransformWorldToObjectNormal(TransformObjectToWorld(i.positionOS)-GetCameraPositionWS());
@@ -95,13 +67,12 @@
                 GRay viewRayOS=GetRay(i.positionOS,viewDirOS);
                 #if _TYPE_POINT
                 sdfDstOS= SphereRayDistance(GetSphere(origin,.5) ,viewRayOS);
-                half closestDst=PointRayProjectDistance(viewRayOS,0);
+                half closestDst=PointRayProjection(viewRayOS,0);
                 closestDst= length(0.-viewRayOS.GetPoint(closestDst))*2;
                 density= saturate(1-closestDst);
                 #elif _TYPE_SPOT
-                float angle=45.;
-                float height=1.2;
-                sdfDstOS =ConeRayDistance(GetHeightCone( float3(.0,.7,.0),float3(.0,-1.,.0),angle,height),viewRayOS);
+                GHeightCone cone=GetHeightCone( float3(.0,.5,.0),float3(.0,-1.,.0),55.,1);
+                sdfDstOS =ConeRayDistance(cone,viewRayOS);
                 density=1;
                 #endif
                 sdfDstOS.y=min(depthDstOS,sdfDstOS.y);

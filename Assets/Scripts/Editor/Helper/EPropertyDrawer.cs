@@ -1,57 +1,79 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace TEditor
 {
-    [CustomPropertyDrawer(typeof(GRay))]
-    public class GRayPropertyDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(GLine))]
+    public class GLinePropertyDrawer : PositionDirectionDrawer
     {
-        public ValueChecker<bool> m_Selected = new ValueChecker<bool>(false);
+        protected override string PositionPropertyName => nameof(GLine.origin);
+        protected override string DirectionPropertyName => nameof(GLine.direction);
+    }
+    [CustomPropertyDrawer(typeof(GRay))]
+    public class GRayPropertyDrawer : PositionDirectionDrawer
+    {
+        protected override string PositionPropertyName => nameof(GRay.origin);
+        protected override string DirectionPropertyName => nameof(GRay.direction);
+    }
+    [CustomPropertyDrawer(typeof(GCone))]
+    public class GConePropertyDrawer : PositionDirectionDrawer
+    {
+        protected override string PositionPropertyName => nameof(GCone.origin);
+        protected override string DirectionPropertyName => nameof(GCone.normal);
+    }
+    [CustomPropertyDrawer(typeof(GHeightCone))]
+    public class GHeightConePropertyDrawer : PositionDirectionDrawer
+    {
+        protected override string PositionPropertyName => nameof(GHeightCone.origin);
+        protected override string DirectionPropertyName => nameof(GHeightCone.normal);
+    }
+    public class PositionDirectionDrawer:PropertyDrawer
+    {
+        protected virtual string PositionPropertyName => throw new Exception("Override This Please");
+        protected virtual string DirectionPropertyName => throw new Exception("Override This Please");
         SerializedProperty m_PositionProperty;
         SerializedProperty m_DirecitonProperty;
+        string m_Name,m_ToolTip;
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            m_PositionProperty = property.FindPropertyRelative(nameof(GRay.origin));
-            m_DirecitonProperty = property.FindPropertyRelative(nameof(GRay.direction));
-            return 20+(m_Selected?(4+ EditorGUI.GetPropertyHeight(m_PositionProperty,true)+EditorGUI.GetPropertyHeight(m_DirecitonProperty,true)):0);
+            m_Name = label.text;
+            m_ToolTip = label.tooltip;
+            m_PositionProperty = property.FindPropertyRelative(PositionPropertyName);
+            m_DirecitonProperty = property.FindPropertyRelative(DirectionPropertyName);
+            return EditorGUI.GetPropertyHeight(property,label,true)+ (property .isExpanded? 20f:0f);
         }
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            m_DirecitonProperty.vector3Value=m_DirecitonProperty.vector3Value.normalized;
-
-            float width = position.size.x ;
-            HorizontalScope.Begin(position.x, position.y, 20);
-            if (m_Selected.Check(EditorGUI.Foldout(HorizontalScope.NextRect(0f, width * 3f / 4f), m_Selected, label)))
-                GDirectedPositionHelper.End();
-            if (GUI.Button(HorizontalScope.NextRect(0f, width / 4f), "Edit"))
+            m_DirecitonProperty.vector3Value = m_DirecitonProperty.vector3Value.normalized;
+            float width = position.size.x;
+            float propertyHeight = EditorGUI.GetPropertyHeight(property);
+            HorizontalScope.Begin(position.x,position.y, propertyHeight);
+            EditorGUI.PropertyField(HorizontalScope.NextRect(0f, width), property, new GUIContent(m_Name, m_ToolTip), true);
+            if (!property.isExpanded)
+                return;
+            HorizontalScope.NextLine(2f, 18f);
+            HorizontalScope.NextRect(0f, width * 4f / 6f);
+            if (GUI.Button(HorizontalScope.NextRect(2f, width / 6f - 2f), "Reset"))
             {
+                m_PositionProperty.vector3Value = Vector3.zero;
+                m_DirecitonProperty.vector3Value = Vector3.forward;
+                property.serializedObject.ApplyModifiedProperties();
+                Undo.RecordObject(property.serializedObject.targetObject, "Reset Property");
+            }
+            if (GUI.Button(HorizontalScope.NextRect(0f, width / 6f), "Edit"))
                 GDirectedPositionHelper.Begin(m_PositionProperty, m_DirecitonProperty);
-                m_Selected.Set(true);
-            }
-
-            if(m_Selected)
-            {
-                HorizontalScope.Begin(position.x + 15, position.y, 20);
-                width = position.size.x - 15;
-                HorizontalScope.NextLine(2, EditorGUI.GetPropertyHeight(m_PositionProperty, true));
-                EditorGUI.PropertyField(new Rect(HorizontalScope.m_CurrentPos, new Vector2(width, HorizontalScope.m_CurrentY)), m_PositionProperty);
-                HorizontalScope.NextLine(2, EditorGUI.GetPropertyHeight(m_DirecitonProperty, true));
-                EditorGUI.PropertyField(new Rect(HorizontalScope.m_CurrentPos, new Vector2(width, HorizontalScope.m_CurrentY)), m_DirecitonProperty);
-            }
         }
+
         public static class GDirectedPositionHelper
         {
             static SerializedProperty m_PositionProperty;
             static SerializedProperty m_DirectionProperty;
             static ValueChecker<Vector3> m_PositionChecker = new ValueChecker<Vector3>(Vector3.zero);
             static ValueChecker<Quaternion> m_RotationChecker = new ValueChecker<Quaternion>(Quaternion.identity);
-            public static void Begin(SerializedProperty _positionProperty,SerializedProperty _directionProperty )
+            public static void Begin(SerializedProperty _positionProperty, SerializedProperty _directionProperty)
             {
-                if (m_PositionProperty != null || m_DirectionProperty!=null)
+                if (m_PositionProperty != null || m_DirectionProperty != null)
                     End();
 
                 m_PositionProperty = _positionProperty;
@@ -71,7 +93,7 @@ namespace TEditor
             {
                 try
                 {
-                    if ( Tools.current != Tool.None || Event.current.keyCode == KeyCode.Escape)
+                    if (Tools.current != Tool.None || Event.current.keyCode == KeyCode.Escape)
                     {
                         End();
                         return;
@@ -86,7 +108,7 @@ namespace TEditor
                     m_PositionProperty.vector3Value = m_PositionChecker.m_Value;
                     m_PositionProperty.serializedObject.ApplyModifiedProperties();
 
-                    Handles.Label(m_PositionChecker.m_Value,"Ray Editing",UEGUIStyle_SceneView.m_TitleLabel);
+                    Handles.Label(m_PositionChecker.m_Value, "Transforming", UEGUIStyle_SceneView.m_TitleLabel);
                 }
                 catch
                 {

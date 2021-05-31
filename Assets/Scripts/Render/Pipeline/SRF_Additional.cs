@@ -26,14 +26,16 @@ namespace Rendering.Pipeline
 
         SRP_OpaqueBlurTexture m_OpaqueBlurPass;
         SRP_NormalTexture m_NormalPass;
-        SRP_PlanarReflection m_ReflecitonPass;
+        SRP_PlanarReflection[] m_ReflecitonPasses;
         SRP_PerCameraPostProcessing m_PostProcesssing_Opaque;
         SRP_PerCameraPostProcessing m_PostProcesssing_AfterAll;
         public override void Create()
         {
             m_OpaqueBlurPass = new SRP_OpaqueBlurTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 1 };
             m_NormalPass = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 2 };
-            m_ReflecitonPass = new SRP_PlanarReflection() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 3};
+            m_ReflecitonPasses = new SRP_PlanarReflection[SRP_PlanarReflection.R_MaxReflectionTextureCount];
+            for (int i=0;i<SRP_PlanarReflection.R_MaxReflectionTextureCount;i++)
+                m_ReflecitonPasses[i] = new SRP_PlanarReflection() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 3};
             m_PostProcesssing_Opaque = new SRP_PerCameraPostProcessing("Opaque Post Process") { renderPassEvent = RenderPassEvent.AfterRenderingSkybox+4 };
             m_PostProcesssing_AfterAll = new SRP_PerCameraPostProcessing("After All Post Process") { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing };
 #if UNITY_EDITOR
@@ -45,7 +47,8 @@ namespace Rendering.Pipeline
             base.Dispose(disposing);
             m_OpaqueBlurPass.Dispose();
             m_NormalPass.Dispose();
-            m_ReflecitonPass.Dispose();
+            foreach(var reflectionPass in m_ReflecitonPasses)
+                reflectionPass.Dispose();
             m_PostProcesssing_Opaque.Dispose();
             m_PostProcesssing_AfterAll.Dispose();
         }
@@ -111,15 +114,21 @@ namespace Rendering.Pipeline
         {
             if (SRD_ReflectionPlane.m_ReflectionPlanes.Count == 0)
                 return;
-            if(SRD_ReflectionPlane.m_ReflectionPlanes.Count>1)
+
+            int index = 0;
+            for(int i=0;i<SRD_ReflectionPlane.m_ReflectionPlanes.Count;i++)
             {
-                Debug.LogWarning("Multiple Reflection Plane Are Not Supported Currently!");
-                return;
+                SRD_ReflectionPlane plane = SRD_ReflectionPlane.m_ReflectionPlanes[i];
+                if (!plane.m_MeshRenderer.isVisible)
+                    return;
+                if (index >= SRP_PlanarReflection.R_MaxReflectionTextureCount)
+                {
+                    Debug.LogWarning("Reflection Plane Outta Limit!");
+                    break;
+                }
+                _renderer.EnqueuePass(m_ReflecitonPasses[index].Setup(index, _renderer, m_CameraReflectionComputeShader, plane, renderingData.cameraData.isSceneViewCamera));
+                index++;
             }
-            SRD_ReflectionPlane plane = SRD_ReflectionPlane.m_ReflectionPlanes[0];
-            if (!plane.m_MeshRenderer.isVisible)
-                return;
-            _renderer.EnqueuePass(m_ReflecitonPass.Setup(_renderer, m_CameraReflectionComputeShader, plane, renderingData.cameraData.isSceneViewCamera));
         }
         void UpdatePostProcess(ScriptableRenderer renderer, ref RenderingData renderingData)
         {

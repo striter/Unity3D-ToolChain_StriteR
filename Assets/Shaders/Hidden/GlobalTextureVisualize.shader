@@ -31,7 +31,11 @@ Shader "Unlit/GlobalTextureVisualize"
                 float3 viewDir:TEXCOORD1;
             };
 
-            sampler2D _CameraReflectionTexure;
+            uint _CameraReflectionTextureIndex;
+            sampler2D _CameraReflectionTexure0;
+            sampler2D _CameraReflectionTexure1;
+            sampler2D _CameraReflectionTexure2;
+            sampler2D _CameraReflectionTexure3;
 
             v2f vert (appdata v)
             {
@@ -48,7 +52,15 @@ Shader "Unlit/GlobalTextureVisualize"
                 float3 viewDir=-normalize(i.viewDir);
                 float3 normal=normalize( i.normal);
                 float3 reflectDir=reflect(-viewDir,normal);
-                float4 col = tex2D(_CameraReflectionTexure, i.screenPos.xy/i.screenPos.w);
+                float4 col=0;
+                float2 screenUV=i.screenPos.xy/i.screenPos.w;
+                switch(_CameraReflectionTextureIndex)
+                {
+                    case 0u:col=tex2D(_CameraReflectionTexure0,screenUV);break;
+                    case 1u:col=tex2D(_CameraReflectionTexure1,screenUV);break;
+                    case 2u:col=tex2D(_CameraReflectionTexure2,screenUV);break;
+                    case 3u:col=tex2D(_CameraReflectionTexure3,screenUV);break;
+                }
                 return float4(col.rgb,1);
             }
             ENDHLSL

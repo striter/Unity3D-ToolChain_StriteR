@@ -11,26 +11,38 @@ namespace BoundingCollisionTest
         [Header("Ray & Line")]
         public GRay m_Ray1;
         public GLine m_Line1;
+        [Header("Ray & Ray")]
+        public GRay m_Ray20;
+        public GRay m_Ray21;
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
             Gizmos.color = Color.white;
             Gizmos.DrawSphere(m_Point, .1f);
-            Gizmos_Extend.DrawArrow(m_Ray.origin,m_Ray.direction,1f,.1f);
-            Gizmos.DrawLine(m_Ray.origin,m_Ray.GetPoint(2f));
+            float distances= UGeometry.PointRayProjection(m_Point, m_Ray);
+            Handles_Extend.DrawLine(m_Ray.ToLine(distances));
             Gizmos.color = Color.blue;
-            Gizmos.DrawSphere(m_Ray.GetPoint(UGeometry.PointRayProjection(m_Point, m_Ray)),.1f);
-
+            Gizmos.DrawSphere(m_Ray.GetPoint(distances),.1f);
 
             Gizmos.color = Color.white;
-            Gizmos_Extend.DrawArrow(m_Ray1.origin, m_Ray1.direction, 1f, .1f);
-            Gizmos.DrawLine(m_Ray1.origin, m_Ray1.GetPoint(2f));
-            Gizmos.DrawLine(m_Line1.origin, m_Line1.End);
-            Vector2 lineRayDistances = UGeometry.LineRayProjectionDistance(m_Line1,m_Ray1);
+            Vector2 lineRayDistances = UGeometry.LineRayProjection(m_Line1, m_Ray1);
+            Gizmos_Extend.DrawLine(m_Line1);
+            Gizmos_Extend.DrawLine(m_Ray1.ToLine(lineRayDistances.y));
             Gizmos.color = Color.blue;
             Gizmos.DrawSphere(m_Line1.GetPoint(lineRayDistances.x), .1f);
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(m_Ray1.GetPoint(lineRayDistances.y), .1f);
+
+            Gizmos.color = Color.white;
+            Vector2 rayrayDistances = UGeometry.RayRayProjection(m_Ray20, m_Ray21);
+            Gizmos_Extend.DrawLine(m_Ray20.ToLine(rayrayDistances.x));
+            Gizmos_Extend.DrawLine(m_Ray21.ToLine(rayrayDistances.y));
+            Gizmos.color = Color.blue;
+            Gizmos.DrawSphere(m_Ray20.GetPoint(rayrayDistances.x), .1f);
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(m_Ray21.GetPoint(rayrayDistances.y), .1f);
         }
+#endif
     }
 }

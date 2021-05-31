@@ -1,19 +1,22 @@
 ﻿using UnityEngine;
-
 public static class UGeometry
 {
-    #region Line
-    public static Vector2 LineRayProjectionDistance(GLine _line, GRay _ray)
+    #region Line&Ray
+    public static Vector3 RayRayProjection(GRay _ray1,GRay _ray2)
     {
-        Vector3 diff = _line.origin - _ray.origin;
-        float a01 = -Vector3.Dot(_line.direction, _ray.direction);
-        float b0 = Vector3.Dot(diff, _line.direction);
-        float b1 = -Vector3.Dot(diff, _ray.direction);
+        Vector3 diff = _ray1.origin - _ray2.origin;
+        float a01 = -Vector3.Dot(_ray1.direction, _ray2.direction);
+        float b0 = Vector3.Dot(diff, _ray1.direction);
+        float b1 = -Vector3.Dot(diff, _ray2.direction);
         float det = 1f - a01 * a01;
-
-        float s0 = Mathf.Clamp( (a01 * b1 - b0) / det,0f,_line.length);
-        float s1 = (a01 * b0 - b1) / det;
-        return new Vector2(s0, s1);
+        return new Vector2((a01 * b1 - b0) / det, (a01 * b0 - b1) / det);
+    }
+    public static Vector2 LineRayProjection(GLine _line, GRay _ray)
+    {
+        Vector2 projections = RayRayProjection(_line, _ray);
+        projections.x = Mathf.Clamp(projections.x, 0, _line.length);
+        projections.y = PointRayProjection(_line.GetPoint(projections.x), _ray);
+        return projections;
     }
     #endregion
     #region Point
@@ -154,7 +157,7 @@ public static class UGeometry
     }
     public static Vector2 RayConeDistance(GHeightCone _cone, GRay _ray)
     {
-        Vector2 distances = RayConeCalculate(_cone.cone, _ray);
+        Vector2 distances = RayConeCalculate(_cone, _ray);
         GPlane bottomPlane = new GPlane(_cone.normal, _cone.origin + _cone.normal * _cone.height);
         float rayPlaneDistance = RayPlaneDistance(bottomPlane, _ray);
         float sqrRadius = _cone.Radius;
@@ -194,9 +197,6 @@ public static class UGeometry
         return distances;
     }
     #endregion
-
-
-
     public static Matrix4x4 GetMirrorMatrix(this GPlane _plane)
     {
         Matrix4x4 mirrorMatrix = Matrix4x4.identity;
@@ -218,5 +218,4 @@ public static class UGeometry
         mirrorMatrix.m33 = 1;
         return mirrorMatrix;
     }
-
 }

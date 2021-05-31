@@ -44,6 +44,12 @@ public static class Gizmos_Extend
         Handles.matrix = Gizmos.matrix;
         Handles_Extend.DrawCone(_cone);
     }
+    public static void DrawLine(GLine _line)
+    {
+        Handles.color = Gizmos.color;
+        Handles.matrix = Gizmos.matrix;
+        Handles_Extend.DrawLine(_line);
+    }
 }
 public static class Handles_Extend
 {
@@ -52,7 +58,6 @@ public static class Handles_Extend
         using(new Handles.DrawingScope(Handles.color, Handles.matrix*Matrix4x4.TRS(_heightCone.origin, Quaternion.LookRotation(_heightCone.normal),Vector3.one )))
         {
             float radius = _heightCone.Radius;
-
             Vector3 bottom =  Vector3.forward * _heightCone.height;
             Vector3 bottomForwardDir =  Vector3.up *radius;
             Vector3 bottomForward = bottom +bottomForwardDir;
@@ -66,6 +71,15 @@ public static class Handles_Extend
             Handles.DrawLine(Vector3.zero, bottomBack);
             Handles.DrawLine(Vector3.zero, bottomRight);
             Handles.DrawLine(Vector3.zero, bottomLeft);
+        }
+    }
+    public static void DrawLine(GLine _line)
+    {
+        Quaternion rotation = Quaternion.LookRotation(_line.direction);
+        DrawArrow(_line.origin, rotation, .5f,.05f);
+        using(new Handles.DrawingScope(Handles.color,Handles.matrix*Matrix4x4.TRS(_line.origin,rotation,Vector3.one)))
+        {
+            Handles.DrawLine(Vector3.zero,Vector3.forward*_line.length);
         }
     }
     public static void DrawWireCapsule(Vector3 _pos, Quaternion _rot, Vector3 _scale, float _radius, float _height)

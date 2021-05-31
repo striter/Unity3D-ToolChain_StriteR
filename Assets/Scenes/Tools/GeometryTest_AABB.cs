@@ -7,6 +7,7 @@ namespace BoundingCollisionTest
     {
         public GBox m_Box;
         public GRay m_Ray;
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
@@ -27,9 +28,8 @@ namespace BoundingCollisionTest
             }
 
             Gizmos.color = intersect ? Color.white:Color.grey;
-            Gizmos.DrawRay(m_Ray.origin, m_Ray.direction * Mathf.Max(1f, distances.x+distances.y));
+            Gizmos_Extend.DrawLine(m_Ray.ToLine(distances.x + distances.y)); 
         }
-
-
+#endif
     }
 }

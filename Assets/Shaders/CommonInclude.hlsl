@@ -12,6 +12,11 @@ float2 TransformTex(float2 uv, float4 st) {return uv * st.xy + st.zw;}
 
 float3 TransformObjectToHClipNormal(float3 normalOS){  return mul((float3x3) GetWorldToHClipMatrix(), TransformObjectToWorldNormal(normalOS));}
 
+float3 DecodeNormalMap(float3 normal)
+{
+    return normal * 2 - 1;
+}
+
 float sqrDistance(float3 offset){ return dot(offset,offset); }
 float sqrDistance(float3 pA, float3 pB){ return sqrDistance(pA-pB); }
 

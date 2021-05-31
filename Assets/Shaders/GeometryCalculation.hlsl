@@ -1,29 +1,31 @@
 ﻿#include "GeometryInput.hlsl"
-//Point
-float PointRayProjectDistance(GRay _ray,float3 _point)
+//Point&Line
+float PointRayProjection( GRay _ray,float3 _point)
 {
     return dot(_point-_ray.origin, _ray.direction);
 }
-
-//Line
-float3 PointLineProjectionDistance(GLine _line,float3 _point)
+float3 PointRayProjection(GLine _line,float3 _point)
 {
-    return clamp(dot(_point - _line.origin, _line.direction),0,_line.length);
+    return clamp(PointRayProjection(_line.ToRay(), _point), 0., _line.length);
 }
-float2 LineRayProjectionDistance(GLine _line,GRay _ray)      
+
+float2 RayRayProjection(GRay _ray1,GRay _ray2)
 {
-    float3 diff = _line.origin - _ray.origin;
-    float a01 = -dot(_line.direction, _ray.direction);
-    float b0 = dot(diff, _line.direction);
-    float b1 = -dot(diff, _ray.direction);
+    float3 diff = _ray2.origin - _ray1.origin;
+    float a01 = -dot(_ray2.direction, _ray1.direction);
+    float b0 = dot(diff, _ray2.direction);
+    float b1 = -dot(diff, _ray1.direction);
     float det = 1. - a01 * a01;
-    
-    float s0 = 0., s1 = 0.;
-    s0 = (a01 * b1 - b0) / det;
-    s1 = (a01 * b0 - b1)/det;
-    return float2(s0, s1);
+    return float2((a01 * b0 - b1) / det, (a01 * b1 - b0) / det);
 }
 
+float2 LineRayProjection(GLine _line,GRay _ray)
+{
+    float2 distances = RayRayProjection(_line.ToRay(),_ray);
+    distances.x = clamp(distances.x, 0., _line.length);
+    distances.y = PointRayProjection(_ray, _line.GetPoint(distances.x));
+    return distances;
+}
 //Plane
 float PlanePointDistance(GPlane _plane,float3 _point)
 {
@@ -89,3 +91,34 @@ float2 SphereRayDistance(GSphere _sphere, GRay _ray)
     float t1 = -dotOffsetDirection + discriminant;
     return float2(t0, t1) * step(0., discriminant) * step(dotOffsetDirection, 0.);
 }
+
+ //Heighted Cone 
+float2 ConeRayDistance(GHeightCone _cone, GRay _ray)
+{
+    float2 distance = 0.;
+    float3 offset = _ray.origin - _cone.origin;
+
+    float RDV = dot(_ray.direction, _cone.normal);
+    float ODN = dot(offset, _cone.normal);
+
+    float a = RDV * RDV - _cone.sqrCosA;
+    float b = 2. * (RDV * ODN - dot(_ray.direction, offset) * _cone.sqrCosA);
+    float c = ODN * ODN - dot(offset, offset) * _cone.sqrCosA;
+    float determination = b * b - 4. * a * c;
+    float sqrtDetermination = sqrt(determination);
+    float t0 = (-b + sqrtDetermination) / (2. * a);
+    float t1 = (-b - sqrtDetermination) / (2. * a);
+    float bpDistance = PlaneRayDistance(_cone.bottomPlane, _ray);
+    float sqrRadius = _cone.bottomRadius * _cone.bottomRadius;
+    if (sqrDistance(_cone.bottom - _ray.GetPoint(bpDistance)) > sqrRadius)
+        bpDistance = 0;
+    float surfaceDst = dot(_cone.normal, _ray.GetPoint(t0) - _cone.origin);
+    if (surfaceDst < 0 || surfaceDst > _cone.height)
+        t0 = bpDistance;
+
+    surfaceDst = dot(_cone.normal, _ray.GetPoint(t1) - _cone.origin);
+    if (surfaceDst < 0 || surfaceDst > _cone.height)
+        t1 = bpDistance;
+    return float2(t0, t1);
+}
+

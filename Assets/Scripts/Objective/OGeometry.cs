@@ -9,6 +9,7 @@ public struct GRay
     public Vector3 GetPoint(float _distance) => origin + direction * _distance;
     public static implicit operator Ray(GRay _ray)=>new Ray(_ray.origin,_ray.direction);
     public static implicit operator GRay(Ray _ray)=>new GRay(_ray.origin,_ray.direction);
+    public GLine ToLine(float _length)=>new GLine(origin,direction,_length);
 }
 [Serializable]
 public struct GLine
@@ -19,7 +20,9 @@ public struct GLine
     public Vector3 End => origin + direction * length;
     public Vector3 GetPoint(float _distance) => origin + direction * _distance;
     public GLine(Vector3 _position, Vector3 _direction, float _length) { origin = _position; direction = _direction; length = _length; }
+    public static implicit operator GRay(GLine _line)=>new GRay(_line.origin,_line.direction);
 }
+
 [Serializable]
 public struct GSphere
 {
@@ -105,25 +108,28 @@ public struct GPlane
 [Serializable]
 public struct GCone
 {
-    public GRay m_Ray;
+    public Vector3 origin;
+    public Vector3 normal;
     [Range(0, 180)] public float angle;
-    public Vector3 origin => m_Ray.origin;
-    public Vector3 normal => m_Ray.direction;
-    public GCone(GRay _directedPosition, float _angle) { m_Ray = _directedPosition; angle = _angle; }
-    public GCone(Vector3 _origin, Vector3 _direction, float _angle) : this(new GRay(_origin, _direction), _angle) { }
+    public GCone(Vector3 _origin, Vector3 _normal, float _angle) { origin = _origin;normal = _normal;angle = _angle; }
     public float GetRadius(float _height) => _height * Mathf.Tan(UMath.AngleToRadin(angle));
 }
 
 [Serializable]
 public struct GHeightCone
 {
-    public GCone cone;
+    public Vector3 origin;
+    public Vector3 normal;
+    [Range(0,180)]public float angle;
     public float height;
-    public float angle => cone.angle;
-    public Vector3 origin => cone.origin;
-    public Vector3 normal => cone.normal;
-    public float Radius => cone.GetRadius(height);
+    public float Radius => ((GCone)this).GetRadius(height);
     public Vector3 Bottom => origin + normal * height;
-    public GHeightCone(GCone _cone, float _height) { cone = _cone; height = _height; }
-    public GHeightCone(Vector3 _origin, Vector3 _direction, float _radin, float _height) : this(new GCone(_origin, _direction, _radin), _height) { }
+    public GHeightCone(Vector3 _origin, Vector3 _normal, float _radin, float _height)
+    {
+        origin = _origin;
+        normal =_normal;
+        angle = _radin;
+        height = _height;
+    }
+    public static implicit operator GCone(GHeightCone _cone)=>new GCone(_cone.origin,_cone.normal,_cone.angle);
 }

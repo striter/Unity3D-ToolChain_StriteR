@@ -18,7 +18,6 @@ namespace BoundingCollisionTest
             Vector3 planeSize = new Vector3(1,0,1);
             float rayDistance = 1f;
             bool intersect = distance >= 0;
-            Gizmos.DrawWireSphere(m_Ray.origin, .05f);
             if (intersect)
             {
                 Vector3 hitPoint = m_Ray.GetPoint(distance);
@@ -29,7 +28,7 @@ namespace BoundingCollisionTest
             }
 
             Gizmos.color = intersect? Color.white:Color.grey;
-            Gizmos.DrawLine(m_Ray.origin, m_Ray.GetPoint(rayDistance));
+            Gizmos_Extend.DrawLine(m_Ray.ToLine(rayDistance));
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.TRS(m_Plane.Position, Quaternion.LookRotation(Vector3.forward, m_Plane.normal), Vector3.one);
             Gizmos.color = intersect ? Color.green : Color.grey;
             Gizmos_Extend.DrawArrow(Vector3.zero,Quaternion.LookRotation(Vector3.up), .3f, .1f);
