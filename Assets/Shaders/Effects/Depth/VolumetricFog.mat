@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: VolumetricFog
   m_Shader: {fileID: 4800000, guid: 60370191e630cc9409e94aeb42476317, type: 3}
-  m_ShaderKeywords: _TYPE_SPOT
+  m_ShaderKeywords: _TYPE_POINT
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -81,7 +81,7 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _Type: 1
+    - _Type: 0
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
