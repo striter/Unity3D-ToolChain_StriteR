@@ -33,8 +33,8 @@ namespace Rendering.Pipeline
         {
             m_OpaqueBlurPass = new SRP_OpaqueBlurTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 1 };
             m_NormalPass = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 2 };
-            m_ReflecitonPasses = new SRP_PlanarReflection[SRP_PlanarReflection.R_MaxReflectionTextureCount];
-            for (int i=0;i<SRP_PlanarReflection.R_MaxReflectionTextureCount;i++)
+            m_ReflecitonPasses = new SRP_PlanarReflection[SRP_PlanarReflection.C_MaxReflectionTextureCount];
+            for (int i=0;i<SRP_PlanarReflection.C_MaxReflectionTextureCount;i++)
                 m_ReflecitonPasses[i] = new SRP_PlanarReflection() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 3};
             m_PostProcesssing_Opaque = new SRP_PerCameraPostProcessing("Opaque Post Process") { renderPassEvent = RenderPassEvent.AfterRenderingSkybox+4 };
             m_PostProcesssing_AfterAll = new SRP_PerCameraPostProcessing("After All Post Process") { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing };
@@ -121,7 +121,7 @@ namespace Rendering.Pipeline
                 SRD_ReflectionPlane plane = SRD_ReflectionPlane.m_ReflectionPlanes[i];
                 if (!plane.m_MeshRenderer.isVisible)
                     return;
-                if (index >= SRP_PlanarReflection.R_MaxReflectionTextureCount)
+                if (index >= SRP_PlanarReflection.C_MaxReflectionTextureCount)
                 {
                     Debug.LogWarning("Reflection Plane Outta Limit!");
                     break;

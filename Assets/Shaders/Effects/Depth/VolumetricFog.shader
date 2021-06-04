@@ -26,7 +26,7 @@
             #pragma multi_compile_local _TYPE_POINT _TYPE_SPOT
 
             #include "../../CommonInclude.hlsl"
-            #include "../../GeometryCalculation.hlsl"
+            #include "../../GeometryInclude.hlsl"
 
             struct appdata
             {

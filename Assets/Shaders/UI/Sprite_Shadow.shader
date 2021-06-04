@@ -7,7 +7,7 @@ Shader "Game/UI/Sprite_Shadow"
 		_Color("Tint", Color) = (1,1,1,1)
 
 		_ShadowColor("Shadow Color",Color)=(1,1,1,1)
-		_ShadowOffset("Shadow Offset",Vector)=(0,0,0,0)
+		[Vector2]_ShadowOffset("Shadow Offset",Vector)=(0,0,0,0)
 
 		_StencilComp("Stencil Comparison", Float) = 8
 		_Stencil("Stencil ID", Float) = 0

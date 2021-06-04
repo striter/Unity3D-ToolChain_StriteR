@@ -74,14 +74,14 @@ namespace TEditor
     }
     public static class GUI_Extend
     {
-        public static bool VectorField(SerializedProperty _property, Rect _rect,GUIContent _content)
+        public static bool VectorField(SerializedProperty _property, Rect _rect, GUIContent _content)
         {
             if (EditorGUI.EndChangeCheck())
             {
                 switch (_property.propertyType)
                 {
                     default: EditorGUI.LabelField(_rect, "<Color=#FF0000>Invalid Property Type!</Color>", UEGUIStyle_SceneView.m_ErrorLabel); return false;
-                    case SerializedPropertyType.Vector2: _property.vector2Value = EditorGUI.Vector2Field(_rect,_content,_property.vector2Value) ; break;
+                    case SerializedPropertyType.Vector2: _property.vector2Value = EditorGUI.Vector2Field(_rect, _content, _property.vector2Value); break;
                     case SerializedPropertyType.Vector3: _property.vector3Value = EditorGUI.Vector3Field(_rect, _content, _property.vector3Value); break;
                     case SerializedPropertyType.Vector4: _property.vector4Value = EditorGUI.Vector4Field(_rect, _content, _property.vector4Value); break;
                 }
@@ -90,7 +90,6 @@ namespace TEditor
             }
             return false;
         }
-
     }
     public static class GUILayout_Extend
     {

@@ -11,6 +11,7 @@ namespace Rendering.Pipeline
         public MeshFilter m_MeshFilter { get; private set; }
         public static List<SRD_ReflectionPlane> m_ReflectionPlanes { get; private set; } = new List<SRD_ReflectionPlane>();
         public enum_ReflectionSpace m_ReflectionType = enum_ReflectionSpace.ScreenSpace;
+        [Range(1, 4)] public int m_DownSample = 1;
         [Range(-5f, 5f)] public float m_PlaneOffset = 0f;
         [MFoldout(nameof(m_ReflectionType), enum_ReflectionSpace.ScreenSpace)] [Range(1, 4)] public int m_Sample = 1;
         public bool m_EnableBlur = false;

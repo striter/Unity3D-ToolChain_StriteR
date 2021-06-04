@@ -15,7 +15,7 @@
             #pragma fragment frag
             
             #include "../CommonInclude.hlsl"
-            #include "../GeometryCalculation.hlsl"
+            #include "../GeometryInclude.hlsl"
             #include "../CameraEffectInclude.hlsl"
 
             #pragma shader_feature_local _LIGHTMARCH

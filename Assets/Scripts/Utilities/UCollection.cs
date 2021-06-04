@@ -78,17 +78,6 @@ public static class UCollection
         }
         return -1;
     }
-    public static bool Any<T>(this IEnumerable<T> _ienumerable,Func<int,T,bool> OnEachItem)
-    {
-        int index = -1;
-        foreach(T item in _ienumerable)
-        {
-            index++;
-            if (OnEachItem(index,item))
-                return true;
-        }
-        return false;
-    }
     public static T Find<T>(this IEnumerable<T> _ienumerable,Predicate<T> OnEachItem)
     {
         foreach (var item in _ienumerable)

@@ -8,15 +8,14 @@ namespace Rendering.Pipeline
     public class SRP_PlanarReflection : ScriptableRenderPass,ISRPBase
     {
         #region ID
-        static readonly int[] ID_ReflectionTextures = new int[] {
-            Shader.PropertyToID("_CameraReflectionTexure0"), Shader.PropertyToID("_CameraReflectionTexure1"),
-            Shader.PropertyToID("_CameraReflectionTexure2"), Shader.PropertyToID("_CameraReflectionTexure3") };
-        public static readonly int R_MaxReflectionTextureCount = ID_ReflectionTextures.Length;
+        public const int C_MaxReflectionTextureCount = 4;
+        const string C_ReflectionTex = "_CameraReflectionTexture";
 
         static readonly int ID_ReflectionTextureIndex = Shader.PropertyToID("_CameraReflectionTextureIndex");
 
         static readonly int ID_ReflectionDepth = Shader.PropertyToID("_CameraReflectionDepthComaparer");
         static readonly RenderTargetIdentifier RT_ID_ReflectionDepth = new RenderTargetIdentifier(ID_ReflectionDepth);
+
         static readonly int ID_ReflectionTempTexture = Shader.PropertyToID("_CameraReflectionTemp");
         static readonly RenderTargetIdentifier RT_ID_ReflectionTempTexture = new RenderTargetIdentifier(ID_ReflectionTempTexture);
 
@@ -33,7 +32,6 @@ namespace Rendering.Pipeline
         ScriptableRenderer m_Renderer;
         SRD_ReflectionPlane m_Plane;
         ComputeShader m_ComputeShader;
-        RenderTargetIdentifier m_ColorResult;
         RenderTextureDescriptor m_ResultDescriptor;
         ImageEffect_Blurs m_Blur;
         Int3 m_Kernels;
@@ -65,49 +63,35 @@ namespace Rendering.Pipeline
             m_Blur.DoValidate(_plane.m_BlurParam);
             m_PropertyBlock.SetInt(ID_ReflectionTextureIndex,_index);
             m_Plane.m_MeshRenderer.SetPropertyBlock(m_PropertyBlock);
-            m_ReflectionTexture = ID_ReflectionTextures[_index];
+            m_ReflectionTexture = Shader.PropertyToID( C_ReflectionTex + _index.ToString());
             m_ReflectionTextureID = new RenderTargetIdentifier(m_ReflectionTexture);
             return this;
         }
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
             base.Configure(cmd, cameraTextureDescriptor);
-            m_ResultDescriptor = new RenderTextureDescriptor(cameraTextureDescriptor.width, cameraTextureDescriptor.height, RenderTextureFormat.ARGB32, -1) { enableRandomWrite = true };
-
+            m_ResultDescriptor = new RenderTextureDescriptor(cameraTextureDescriptor.width/m_Plane.m_DownSample, cameraTextureDescriptor.height/m_Plane.m_DownSample, RenderTextureFormat.ARGB32, -1) { enableRandomWrite = true };
             cmd.GetTemporaryRT(m_ReflectionTexture, m_ResultDescriptor,FilterMode.Bilinear);
-            m_ColorResult = m_ReflectionTextureID;
-
-            if (m_Plane.m_EnableBlur)
-            {
-                cmd.GetTemporaryRT(ID_ReflectionTempTexture, m_ResultDescriptor, FilterMode.Bilinear);
-                m_ColorResult = RT_ID_ReflectionTempTexture;
-            }
-
-            switch(m_Plane.m_ReflectionType)
-            {
-                case enum_ReflectionSpace.MirrorSpace:
-                    {
-                        RenderTextureDescriptor depthDescriptor = new RenderTextureDescriptor(cameraTextureDescriptor.width, cameraTextureDescriptor.height, RenderTextureFormat.Depth,16,0);
-                        cmd.GetTemporaryRT(ID_ReflectionDepth, depthDescriptor,FilterMode.Point);
-                        ConfigureTarget(m_ColorResult, RT_ID_ReflectionDepth);
-                    }
-                    break;
-                case enum_ReflectionSpace.ScreenSpace:
-                    {
-                        cmd.GetTemporaryRT(ID_ReflectionDepth, m_ResultDescriptor);
-                        ConfigureTarget(m_ColorResult);
-                    }
-                    break;
-            }
         }
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get("Generate Reflection Texture");
             GPlane planeData = m_Plane.m_PlaneData;
-            switch(m_Plane.m_ReflectionType)
+            RenderTargetIdentifier colorResult = m_ReflectionTextureID;
+
+            if (m_Plane.m_EnableBlur)
+            {
+                cmd.GetTemporaryRT(ID_ReflectionTempTexture, m_ResultDescriptor, FilterMode.Bilinear);
+                colorResult = RT_ID_ReflectionTempTexture;
+            }
+
+            switch (m_Plane.m_ReflectionType)
             {
                 case enum_ReflectionSpace.ScreenSpace:
                     {
+                        cmd.GetTemporaryRT(ID_ReflectionDepth, m_ResultDescriptor);
+                        cmd.SetRandomWriteTarget(0,colorResult);
+                        cmd.SetRenderTarget(colorResult);
                         cmd.SetComputeIntParam(m_ComputeShader, ID_SampleCount, m_Plane.m_Sample);
                         cmd.SetComputeVectorParam(m_ComputeShader, ID_PlaneNormal, planeData.normal.normalized);
                         cmd.SetComputeVectorParam(m_ComputeShader, ID_PlanePosition, planeData.distance * planeData.normal);
@@ -117,19 +101,23 @@ namespace Rendering.Pipeline
                         int groupY = m_ResultDescriptor.height / m_Kernels.m_Z;
 
                         cmd.SetComputeTextureParam(m_ComputeShader, m_Kernels.m_X, ID_Depth, RT_ID_ReflectionDepth);
-                        cmd.SetComputeTextureParam(m_ComputeShader, m_Kernels.m_X, ID_Result, m_ColorResult);
+                        cmd.SetComputeTextureParam(m_ComputeShader, m_Kernels.m_X, ID_Result, colorResult);
                         cmd.DispatchCompute(m_ComputeShader, m_Kernels.m_X, groupX, groupY, 1);
 
                         cmd.SetComputeTextureParam(m_ComputeShader, m_Kernels.m_Y, ID_Input, m_Renderer.cameraColorTarget);
                         cmd.SetComputeTextureParam(m_ComputeShader, m_Kernels.m_Y, ID_Depth, RT_ID_ReflectionDepth);
-                        cmd.SetComputeTextureParam(m_ComputeShader, m_Kernels.m_Y, ID_Result, m_ColorResult);
+                        cmd.SetComputeTextureParam(m_ComputeShader, m_Kernels.m_Y, ID_Result, colorResult);
                         cmd.DispatchCompute(m_ComputeShader, m_Kernels.m_Y, groupX, groupY, 1);
                     }
                     break;
                 case enum_ReflectionSpace.MirrorSpace:
                     {
+                        RenderTextureDescriptor depthDescriptor = new RenderTextureDescriptor(m_ResultDescriptor.width, m_ResultDescriptor.height, RenderTextureFormat.Depth, 16, 0);
+                        cmd.GetTemporaryRT(ID_ReflectionDepth, depthDescriptor, FilterMode.Point);
+                        cmd.SetRenderTarget(colorResult, RT_ID_ReflectionDepth);
                         cmd.ClearRenderTarget(true, true, Color.black.SetAlpha(0));
                         context.ExecuteCommandBuffer(cmd);
+                        cmd.Clear();
 
                         CameraData cameraData = renderingData.cameraData;
                         Camera camera = cameraData.camera;
@@ -160,8 +148,12 @@ namespace Rendering.Pipeline
                     break;
             }
             if (m_Plane.m_EnableBlur)
-                m_Blur.ExecuteBuffer(cmd, m_ResultDescriptor, m_ColorResult, m_ReflectionTextureID, m_Plane.m_BlurParam);
+            {
+                m_Blur.ExecuteBuffer(cmd, m_ResultDescriptor, colorResult, m_ReflectionTextureID, m_Plane.m_BlurParam);
+                cmd.ReleaseTemporaryRT(ID_ReflectionTempTexture);
+            }
             cmd.ReleaseTemporaryRT(ID_ReflectionDepth);
+            cmd.SetRenderTarget(m_Renderer.cameraColorTarget);
             context.ExecuteCommandBuffer(cmd);
             cmd.Clear();
             CommandBufferPool.Release(cmd);
@@ -170,8 +162,6 @@ namespace Rendering.Pipeline
         {
             base.FrameCleanup(cmd);
             cmd.ReleaseTemporaryRT(m_ReflectionTexture);
-            if (m_Plane.m_EnableBlur)
-                cmd.ReleaseTemporaryRT(ID_ReflectionTempTexture);
         }
     }
 }

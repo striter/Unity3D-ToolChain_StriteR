@@ -1,70 +1,68 @@
-﻿#define SQRT2DPI 0.797884560802865
-
-float MieScattering(float lightCos, float g1, float g2, float g3)  
-{
-    return g1 / pow(g2 - g3 * lightCos, 1.5);
-}
-
-float MieScattering(float3 lightDir,float3 rayDir,float g)      //Fast Test, Precalculate G1 G2 G3 Pls
-{
-    float powG = g * g;
-    float g1 = (1 - powG)/4*PI;
-    float g2 = 1 + powG;
-    float g3 = g * 2;
-    float lightCos = dot(lightDir, rayDir);
-    return MieScattering(lightCos, g1, g2, g3);
-}
-
-float BeerLambert(float stepSize,float density,float scatterFactor,float extinctionFactor,inout float extinction)
-{
-    float scattering = scatterFactor * stepSize * density;
-    extinction += extinctionFactor * stepSize * density;
-    return scattering * exp(-extinction);
-}
-
+﻿#define PI_ONE 3.1415926535
+#define PI_TWO 6.2831853071796
+#define PI_FOUR 12.566370614359
+#define PI_SQRT2 0.797884560802865
+#define PI_ONEMINUS 0.31830988618379
 
 float sqr(float value)
 {
     return value * value;
 }
-float UnpackRoughness(float glossiness)
+float pow5(float value)
 {
-    float roughness = 1 - glossiness * glossiness;
-    return roughness * roughness;
+    return value * value * value * value * value;
 }
 
+//float GSF_Burley(float NDL,float NDV,float LDH,float roughness)
+//{
+//    half FD90MinusOne = -.5 + 2.0 * LDH * LDH * roughness;
+//    float NDLPow5 = pow5(1. - NDL);
+//    float NDVPow5 = pow5(1. - NDV);
+//    return (1. + FD90MinusOne * NDLPow5) * (1. - FD90MinusOne * NDVPow5) * NDL;
+//}
+
 //NDF,Normal Distribution Function
+
 float NDF_BlinnPhong(float NDH, float specularPower, float specularGloss)
 {
     float distribution = pow(NDH, specularGloss) * specularPower;
-    distribution *= (2 + specularPower) / (2 * PI);
+    distribution *= (2 + specularPower) / PI_TWO;
     return distribution;
 }
-float NDF_Beckmann(float NDH, float roughness)
+float NDF_Phong(float RDV, float specularPower, float specularGloss)
 {
-    float sqrRoughness = dot(roughness, roughness);
-    float sqrNDH = dot(NDH, NDH);
-    return max(0.000001, (1.0 / (PI * sqrRoughness * sqrNDH * sqrNDH)) * exp((sqrNDH - 1) / (sqrNDH * sqrRoughness)));
+    float Distribution = pow(RDV, specularGloss) * specularPower;
+    Distribution *= (2 + specularPower) / PI_TWO;
+    return Distribution;
 }
-float NDF_Gaussian(float NDH, float roughness)
+float NDF_Beckmann(float NDH, float sqrRoughness)
 {
-    float sqrRoughness = dot(roughness, roughness);
+    float sqrNDH = dot(NDH, NDH);
+    return max(0.000001, (1.0 / (PI_ONE * sqrRoughness * sqrNDH * sqrNDH)) * exp((sqrNDH - 1) / (sqrNDH * sqrRoughness)));
+}
+float NDF_Gaussian(float NDH, float sqrRoughness)
+{
     float thetaH = acos(NDH);
     return exp(-thetaH * thetaH / sqrRoughness);
 }
-float NDF_GGX(float NDH, float roughness)
+float NDF_GGX(float NDH,float roughness, float sqrRoughness)
 {
-    float sqrRoughness = dot(roughness, roughness);
     float sqrNDH = dot(NDH, NDH);
     float tanSqrNDH = (1 - sqrNDH) / sqrNDH;
-    return (1.0 / PI) * sqr(roughness / (sqrNDH * (sqrRoughness + tanSqrNDH)));
+    return max ( 0.00001, PI_ONEMINUS * sqr(roughness / (sqrNDH * (sqrRoughness + tanSqrNDH))));
 }
-float NDF_TrowbridgeReitz(float NDH, float roughness)
+float NDF_CookTorrance(float NDH,float LDH,float roughness,float roughness2)
 {
-    float sqrRoughness = dot(roughness, roughness);
+    float d = NDH * NDH *( roughness2-1.) +1.00001f;
+    float sqrLDH = sqr(LDH);
+    float normalizationTerm = roughness * 4. + 2.;
+    return roughness2 / ((d * d) * max(0.1h, sqrLDH) * normalizationTerm);
+}
+float NDF_TrowbridgeReitz(float NDH, float roughness,float sqrRoughness)
+{
     float sqrNDH = dot(NDH, NDH);
     float distribution = sqrNDH * (sqrRoughness - 1.0) + 1.0;
-    return sqrRoughness / (PI * distribution * distribution);
+    return sqrRoughness / (PI_ONE * distribution * distribution+1e-5f);
 }
 //Anisotropic NDF
 float NDFA_TrowbridgeReitz(float NDH, float HDX, float HDY, float anisotropic, float glossiness)
@@ -73,7 +71,7 @@ float NDFA_TrowbridgeReitz(float NDH, float HDX, float HDY, float anisotropic, f
     glossiness = sqr(1.0 - glossiness);
     float X = max(.001, glossiness / aspect) * 5;
     float Y = max(.001, glossiness * aspect) * 5;
-    return 1.0 / (PI * X * Y * sqr(sqr(HDX / X) + sqr(HDY / Y) + sqr(NDH)));
+    return 1.0 / (PI_ONE * X * Y * sqr(sqr(HDX / X) + sqr(HDY / Y) + sqr(NDH)));
 }
 float NDFA_Ward(float NDL, float NDV, float NDH, float HDX, float HDY, float anisotropic, float glossiness)
 {
@@ -81,8 +79,9 @@ float NDFA_Ward(float NDL, float NDV, float NDH, float HDX, float HDY, float ani
     glossiness = sqr(1.0 - glossiness);
     float X = max(.001, glossiness / aspect) * 5;
     float Y = max(.001, glossiness * aspect) * 5;
-    float distribution = 1.0 / (4.0 * PI * X * Y * sqrt(NDL * NDV));
-    distribution *= exp(-(sqr(HDX / X) + sqr(HDY / Y)) / sqr(NDH));
+    float exponent = -(sqr(HDX / X) + sqr(HDY / Y)) / sqr(NDH);
+    float distribution = 1. / (PI_FOUR * X * Y) * sqrt(NDL*NDV);
+    distribution *= exp(exponent);
     return distribution;
 }
 
@@ -111,7 +110,7 @@ float GSF_Kelemen(float NDL, float NDV, float VDH)
 {
     return NDL * NDV / (VDH * VDH);
 }
-float GSF_CookTorrence(float NDL, float NDV, float VDH, float NDH)
+float GSF_CookTorrance(float NDL, float NDV, float VDH, float NDH)
 {
     return min(1.0, min(2 * NDH * NDV / VDH, 2 * NDH * NDL / VDH));
 }
@@ -119,10 +118,11 @@ float GSF_Ward(float NDL, float NDV)
 {
     return pow(NDL * NDV, .5);
 }
+
 //roughness based GSF
 float GSFR_Kelemen_Modifed(float NDL, float NDV, float roughness)
 {
-    float k = sqr(roughness) * SQRT2DPI;
+    float k = sqr(roughness) * PI_SQRT2;
     float gH = NDV * k + (1 - k);
     return gH * gH * NDL;
 }
@@ -142,7 +142,7 @@ float GSFR_WalterEtAl(float NDL, float NDV, float roughness)
 }
 float GSFR_SmithBeckmann(float NDL, float NDV, float roughness)
 {
-    float sqrRoughness = sqr(roughness);
+    float sqrRoughness = max(0.00001, sqr(roughness));
     float sqrNDL = sqr(NDL);
     float sqrNDV = sqr(NDV);
     float calculationL = NDL / (sqrRoughness * sqrt(1 - sqrNDL));
@@ -171,7 +171,7 @@ float GSFR_Schlick(float NDL, float NDV, float roughness)
 }
 float GSFR_SchlickBeckmann(float NDL, float NDV, float roughness)
 {
-    float k = sqr(roughness) * SQRT2DPI;
+    float k = sqr(roughness) * PI_SQRT2;
     float smithL = NDL / (k + (1 - k) * NDL);
     float smithV = NDV / (k + (1 - k) * NDV);
     return smithL * smithV;
@@ -185,24 +185,27 @@ float GSFR_SchlickGGX(float NDL, float NDV, float roughness)
 }
 
 //Fresnel
-float Fresnel_Schlick(float i)
-{
-    float x = saturate(1 - i);
-    float x2 = x * x;
-    return x2 * x2 * x;
+float F_Schlick(float NDV)
+{ 
+    float x = saturate(1. - NDV);
+    return pow5(x);
 }
-
-float Fresnel_SphericalGaussian(float i)
+float F_SchlickIOR(float NDV, float ior)
 {
-    float power = (-5.55473 * i - 6.98316) * i;
+    float f0 = sqr((ior - 1.) / (ior + 1.));
+    return f0 + (1. - f0) * F_Schlick(NDV);
+}
+float F_SphericalGaussian(float NDV)
+{
+    float power = (-5.55473 * NDV - 6.98316) * NDV;
     return pow(2, power);
 }
 
 //normal incidence reflection
 float F0(float NDL, float NDV, float LDH, float roughness)
 {
-    float fresnelLight = Fresnel_Schlick(NDL);
-    float fresnelView = Fresnel_Schlick(NDV);
+    float fresnelLight = F_Schlick(NDL);
+    float fresnelView = F_Schlick(NDV);
     float fresnelDiffuse90 = .5 + 2 * sqr(LDH) * roughness;
     return lerp(1, fresnelDiffuse90, fresnelLight) * lerp(1, fresnelDiffuse90, fresnelView);
 }

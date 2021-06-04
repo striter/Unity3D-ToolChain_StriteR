@@ -1,15 +1,15 @@
-﻿#include "GeometryInput.hlsl"
+﻿
 //Point&Line
-float PointRayProjection( GRay _ray,float3 _point)
+float PointRayProjection(GRay _ray, float3 _point)
 {
-    return dot(_point-_ray.origin, _ray.direction);
+    return dot(_point - _ray.origin, _ray.direction);
 }
-float3 PointRayProjection(GLine _line,float3 _point)
+float3 PointRayProjection(GLine _line, float3 _point)
 {
     return clamp(PointRayProjection(_line.ToRay(), _point), 0., _line.length);
 }
 
-float2 RayRayProjection(GRay _ray1,GRay _ray2)
+float2 RayRayProjection(GRay _ray1, GRay _ray2)
 {
     float3 diff = _ray2.origin - _ray1.origin;
     float a01 = -dot(_ray2.direction, _ray1.direction);
@@ -19,48 +19,48 @@ float2 RayRayProjection(GRay _ray1,GRay _ray2)
     return float2((a01 * b0 - b1) / det, (a01 * b1 - b0) / det);
 }
 
-float2 LineRayProjection(GLine _line,GRay _ray)
+float2 LineRayProjection(GLine _line, GRay _ray)
 {
-    float2 distances = RayRayProjection(_line.ToRay(),_ray);
+    float2 distances = RayRayProjection(_line.ToRay(), _ray);
     distances.x = clamp(distances.x, 0., _line.length);
     distances.y = PointRayProjection(_ray, _line.GetPoint(distances.x));
     return distances;
 }
 //Plane
-float PlanePointDistance(GPlane _plane,float3 _point)
+float PlanePointDistance(GPlane _plane, float3 _point)
 {
     float nr = _point.x * _plane.normal.x + _point.y * _plane.normal.y + _point.z * _plane.normal.z + _plane.distance;
     return nr / length(_plane.normal);
 }
-float PlaneRayDistance(GPlane _plane,GRay _ray)
+float PlaneRayDistance(GPlane _plane, GRay _ray)
 {
     float nrO = dot(_plane.normal, _ray.origin);
     float nrD = dot(_plane.normal, _ray.direction);
-    return (_plane.distance-nrO)/nrD;
+    return (_plane.distance - nrO) / nrD;
 }
-float PlaneRayDistance(GPlanePos _plane,GRay _ray)
-{   
-    float s = dot(_plane.position,_plane.normal);
+float PlaneRayDistance(GPlanePos _plane, GRay _ray)
+{
+    float s = dot(_plane.position, _plane.normal);
     float nrO = dot(_plane.normal, _ray.origin);
     float nrD = dot(_plane.normal, _ray.direction);
     return (s - nrO) / nrD;
 }
 
 //Axis Aligned Bounding Box
-bool AABBPositionInside(GBox _box,float3 _pos)
+bool AABBPositionInside(GBox _box, float3 _pos)
 {
     return _box.boxMin.x <= _pos.x && _pos.x <= _box.boxMax.x 
         && _box.boxMin.y <= _pos.y && _pos.y <= _box.boxMax.y 
         && _box.boxMin.z <= _pos.z && _pos.z <= _box.boxMax.z;
 }
-bool AABBRayIntersect(GBox _box,GRay _ray)
+bool AABBRayIntersect(GBox _box, GRay _ray)
 {
     float3 invRayDir = 1 / _ray.direction;
-    float3 t0 = (_box.boxMin- _ray.origin) * invRayDir;
-    float3 t1 = (_box.boxMax- _ray.origin) * invRayDir;
-    float3 tmin=min(t0,t1);
-    float3 tmax=max(t0,t1);
-    return max(tmin)<=min(tmax);
+    float3 t0 = (_box.boxMin - _ray.origin) * invRayDir;
+    float3 t1 = (_box.boxMax - _ray.origin) * invRayDir;
+    float3 tmin = min(t0, t1);
+    float3 tmax = max(t0, t1);
+    return max(tmin) <= min(tmax);
 }
 float2 AABBRayDistance(GBox _box, GRay _ray)    //X: Dst To Box , Y:Dst In Side Box
 {

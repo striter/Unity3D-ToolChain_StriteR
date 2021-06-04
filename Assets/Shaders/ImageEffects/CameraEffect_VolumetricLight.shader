@@ -17,7 +17,7 @@ Shader "Hidden/CameraEffect_VolumetricLight"
             #pragma fragment frag
             #include "../CommonInclude.hlsl"
             #include "../CommonLightingInclude.hlsl"
-            #include "../GeometryCalculation.hlsl"
+            #include "../GeometryInclude.hlsl"
             #include "../CameraEffectInclude.hlsl"
 
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS

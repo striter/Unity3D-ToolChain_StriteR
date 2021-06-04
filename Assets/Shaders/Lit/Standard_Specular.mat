@@ -9,7 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Standard_Specular
   m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
-  m_ShaderKeywords: _SPECULAR
+  m_ShaderKeywords: _AOMAP _FRESNEL_SCHLICK _GSF_R_SCHLICK_GGX _NDF_BURLEY _NDF_TROWBRIDGEREITZ
+    _NORMALMAP _PARALLEXMAP _ROUGHNESSMAP _SPECULAR
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -20,36 +21,43 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _AOTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: d69fc08f5001a4f4587b495e4a37ef5e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: ea2f0f63e40f326458d3d1a3fe7125ec, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: dc57807282857d345827be7fb4f64b5b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallexTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: f852070fec779a24f93ad8d7107fd14f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RoughnessTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 0b5658cab89f20843921de4cf6327dd4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _AnisoTropicValue: 1
     - _EnableAOMap: 0
     - _EnableNormalMap: 0
     - _EnableParallexMap: 0
     - _EnableRoughnessMap: 0
     - _EnableSpecular: 1
-    - _Lambert: 0.5
-    - _ParallexOffset: 0.42
-    - _ParallexScale: 1
-    - _SpecularRange: 0.98
-    - _SteepCount: 16
+    - _FRESNEL: 0
+    - _GSF: 16
+    - _Glossiness: 1
+    - _Ior: 1
+    - _Lambert: 0
+    - _Metallic: 1
+    - _NDF: 5
+    - _ParallexOffset: 1
+    - _ParallexScale: 0.023
+    - _SpecularRange: 0.9
+    - _SteepCount: 128
     - _SteepParallex: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

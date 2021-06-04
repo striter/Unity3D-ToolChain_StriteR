@@ -105,6 +105,6 @@ Material:
     - _LightColor: {r: 1, g: 1, b: 1, a: 0}
     - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}
     - _ShadowColor: {r: 0.022058845, g: 0.022058845, b: 0.022058845, a: 0.503}
-    - _ShadowOffset: {r: -2.5, g: 2.5, b: 0, a: 0}
+    - _ShadowOffset: {r: -1.63, g: 2.5, b: 0, a: 0}
     - _SpriteRect: {r: 0.061062366, g: 0, b: 0.99776113, a: 0.99769324}
   m_BuildTextureStacks: []
