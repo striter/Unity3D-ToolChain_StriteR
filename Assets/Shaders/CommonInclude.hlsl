@@ -14,7 +14,7 @@ float3 TransformObjectToHClipNormal(float3 normalOS){  return mul((float3x3) Get
 
 float3 DecodeNormalMap(float3 normal)
 {
-    return normal * 2 - 1;
+    return normalize(normal * 2. - 1.);
 }
 
 float sqrDistance(float3 offset){ return dot(offset,offset); }

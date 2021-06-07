@@ -1,24 +1,25 @@
-﻿Shader "Game/Lit/Standard_Specular"
+﻿Shader "Game/Lit/UberPBR"
 {
 	Properties
 	{
 		_MainTex("Main Tex",2D) = "white"{}
 		_Color("Color",Color) = (1,1,1,1)
 		[Header(PBR)]
-		_Glossiness("Smoothness",Range(0,1))=1
-        _Metallic("Metalness",Range(0,1))=0
+		[Fold(_ROUGHNESSMAP)]_Glossiness("Glossiness",Range(0,1))=1
+		[ToggleTex(_ROUGHNESSMAP)][NoScaleOffset]_RoughnessTex("Roughness Tex",2D)="white"{}
+        [Fold(_METALLICMAP)]_Metallic("Metalness",Range(0,1))=0
+		[ToggleTex(_METALLICMAP)][NoScaleOffset]_MetallicTex("Metallic Tex",2D)="white"{}
+
 		[Header(_Functions)]
         [KeywordEnum(BlinnPhong,CookTorrance,Beckmann,Gaussian,GGX,TrowbridgeReitz,Anisotropic_TrowbridgeReitz,Anisotropic_Ward)]_NDF("Normal Distribution Function:",float) = 2
 		[Foldout(_NDF_ANISOTROPIC_TROWBRIDGEREITZ,_NDF_ANISOTROPIC_WARD)]_AnisoTropicValue("Anisotropic Value",Range(0,1))=1
         [KeywordEnum(Implicit,AshikhminShirley,AshikhminPremoze,Duer,Neumann,Kelemen,CookTorrance,Ward,R_Kelemen_Modified,R_Kurt,R_WalterEtAl,R_SmithBeckmann,R_GGX,R_Schlick,R_Schlick_Beckmann,R_Schlick_GGX)]_GSF("Geometry Shadow Function:",float)=0
-        [KeywordEnum(Schlick,Schlick_IOR,SphericalGaussian)]_FRESNEL("Fresnel Function",float)=0
-		[Foldout(_FRESNEL_SCHLICK_IOR)]_Ior("Ior",  Range(1,4)) = 1.5
+        [KeywordEnum(Schlick,Schlick_IOR,SphericalGaussian)]_F("Fresnel Function",float)=0
+		[Foldout(_F_SCHLICK_IOR)]_Ior("Ior",  Range(1,4)) = 1.5
 
 		[Header(Additional Mapping)]
-		[Header(_Normal)]
 		[ToggleTex(_NORMALMAP)][NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
 		[ToggleTex(_AOMAP)][NoScaleOffset]_AOTex("AO Tex",2D)="white"{}
-		[ToggleTex(_ROUGHNESSMAP)][NoScaleOffset]_RoughnessTex("Roughness Tex",2D)="white"{}
 		[ToggleTex(_PARALLEXMAP)][NoScaleOffset]_ParallexTex("Parallex Tex",2D)="white"{}
 		[Foldout(_PARALLEXMAP)]_ParallexScale("Parallex Scale",Range(0.001,.2))=1
 		[Foldout(_PARALLEXMAP)]_ParallexOffset("Parallex Offset",Range(0,1))=.42
@@ -47,23 +48,25 @@
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
             #pragma multi_compile _ _SHADOWS_SOFT
-
+			
+			#pragma shader_feature_local _ROUGHNESSMAP
+			#pragma shader_feature_local _METALLICMAP
 			#pragma shader_feature_local _SPECULAR
 			#pragma shader_feature_local _NORMALMAP
 			#pragma shader_feature_local _PARALLEXMAP
 			#pragma shader_feature_local _PARALLEX_STEEP
 			#pragma shader_feature_local _AOMAP
-			#pragma shader_feature_local _ROUGHNESSMAP
 
 			#pragma multi_compile_local _NDF_BLINNPHONG _NDF_COOKTORRANCE _NDF_BECKMANN _NDF_GAUSSIAN _NDF_GGX _NDF_TROWBRIDGEREITZ _NDF_ANISOTROPIC_TROWBRIDGEREITZ _NDF_ANISOTROPIC_WARD
             #pragma multi_compile_local _GSF_IMPLICIT _GSF_ASHIKHMINSHIRLEY _GSF_ASHIKHMINPREMOZE _GSF_DUER _GSF_NEUMANN _GSF_KELEMEN _GSF_COOKTORRANCE _GSF_WARD _GSF_R_KELEMEN_MODIFIED _GSF_R_KURT _GSF_R_WALTERETAL _GSF_R_SMITHBECKMANN _GSF_R_GGX _GSF_R_SCHLICK _GSF_R_SCHLICK_BECKMANN _GSF_R_SCHLICK_GGX
-            #pragma multi_compile_local _FRESNEL_SCHLICK _FRESNEL_SCHLICK_IOR _FRESNEL_SPHERICALGAUSSIAN
+            #pragma multi_compile_local _F_SCHLICK _F_SCHLICK_IOR _F_SPHERICALGAUSSIAN
 		
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
+			TEXTURE2D(_RoughnessTex);SAMPLER(sampler_RoughnessTex);
+			TEXTURE2D(_MetallicTex);SAMPLER(sampler_MetallicTex);
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
 			TEXTURE2D(_ParallexTex);SAMPLER(sampler_ParallexTex);
 			TEXTURE2D(_AOTex);SAMPLER(sampler_AOTex);
-			TEXTURE2D(_RoughnessTex);SAMPLER(sampler_RoughnessTex);
 			UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 			INSTANCING_PROP(float,_Glossiness)
 			INSTANCING_PROP(float,_Metallic)
@@ -167,21 +170,29 @@
 				float3 normalTS=normalize( DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv).xyz));
 				normalWS=normalize(mul(transpose(TBNWS), normalTS));
 				#endif
-				
+
 				float4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*_Color;
 				float3 albedo=color.rgb;
 				
 				float alpha=color.a;
-				float glossiness=_Glossiness;
+				float glossiness=
 				#if _ROUGHNESSMAP
-				glossiness*=(1-SAMPLE_TEXTURE2D(_RoughnessTex,sampler_RoughnessTex,i.uv));
+				(1-SAMPLE_TEXTURE2D(_RoughnessTex,sampler_RoughnessTex,i.uv));
+				#else
+				_Glossiness;
 				#endif
-				float metallic=_Metallic;
+
+				float metallic=
+				#if _METALLICMAP
+				SAMPLE_TEXTURE2D(_MetallicTex,sampler_MetallicTex,i.uv);
+				#else
+				_Metallic;
+				#endif
+				
 				float ao=1;
 				#if _AOMAP
 				ao*=SAMPLE_TEXTURE2D(_AOTex,sampler_AOTex,i.uv);
 				#endif
-
 
 				Light mainlight=GetMainLight(i.shadowCoordWS);
 				half3 bakcedGI=0;
@@ -189,7 +200,7 @@
                 float3 normal=normalize(normalWS);
                 float3 tangent = normalize(tangentWS);
                 float3 viewDir=normalize(viewDirWS);
-				BRDFSurface surface=InitializeBRDFSurface(albedo,glossiness,metallic,ao,_AnisoTropicValue,normal,tangent,viewDir);
+				BRDFSurface surface=InitializeBRDFSurface(albedo,glossiness,metallic,ao,_Ior,normal,tangent,viewDir);
 				
                 float3 lightDir=normalize(lightDirWS);
 				float3 lightCol=_MainLightColor.rgb;
@@ -197,12 +208,10 @@
 
 				float3 brdfColor=0;
 				
-				half3 bakedGI=0;
-				brdfColor+=BRDFGlobalIllumination(surface,bakedGI);
+				brdfColor+=BRDFGlobalIllumination(surface);
 
-				BRDFLight light=InitializeBRDFLight(surface,lightDir,lightCol,atten);
+				BRDFLight light=InitializeBRDFLight(surface,lightDir,lightCol,atten,_AnisoTropicValue);
 				brdfColor+=BRDFLighting(surface,light);
-
 				return float4(brdfColor,1);
 			}
 			ENDHLSL

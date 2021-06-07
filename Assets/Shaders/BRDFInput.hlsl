@@ -8,16 +8,17 @@
     half smoothness;
     half ao;
     
-    half anisotropic;
-    half grazingTerm;
-    
-    half perceptualRoughness;
-    half roughness;
-    half roughness2;
-    
     half3 normal;
     half3 tangent;
     half3 viewDir;
+    half3 reflectDir;
+    half NDV;
+    
+    half grazingTerm;
+    half fresnelTerm;
+    half perceptualRoughness;
+    half roughness;
+    half roughness2;
 };
 
 struct BRDFLight
@@ -30,7 +31,6 @@ struct BRDFLight
     half3 viewReflectDir;
     half3 lightReflectDir;
     
-    float geometricShadow;
-    float normalDistribution;
-    float fresnel;
+    half geometricShadow;
+    half normalDistribution;
 };

@@ -4,14 +4,10 @@
 #define PI_SQRT2 0.797884560802865
 #define PI_ONEMINUS 0.31830988618379
 
-float sqr(float value)
-{
-    return value * value;
-}
-float pow5(float value)
-{
-    return value * value * value * value * value;
-}
+float sqr(float value){ return value * value; }
+float pow3(float value) { return value*value*value; }
+float pow4(float value) { return value * value * value * value ;}
+float pow5(float value) { return value * value * value * value * value;}
 
 //float GSF_Burley(float NDL,float NDV,float LDH,float roughness)
 //{
@@ -53,6 +49,8 @@ float NDF_GGX(float NDH,float roughness, float sqrRoughness)
 }
 float NDF_CookTorrance(float NDH,float LDH,float roughness,float roughness2)
 {
+    NDH = saturate(NDH);
+    LDH = saturate(LDH);
     float d = NDH * NDH *( roughness2-1.) +1.00001f;
     float sqrLDH = sqr(LDH);
     float normalizationTerm = roughness * 4. + 2.;
