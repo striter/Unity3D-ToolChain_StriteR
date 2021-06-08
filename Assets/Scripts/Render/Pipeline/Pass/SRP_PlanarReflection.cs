@@ -11,7 +11,9 @@ namespace Rendering.Pipeline
         public const int C_MaxReflectionTextureCount = 4;
         const string C_ReflectionTex = "_CameraReflectionTexture";
 
+        static readonly int ID_ReflectionTextureOn = Shader.PropertyToID("_CameraReflectionTextureOn");
         static readonly int ID_ReflectionTextureIndex = Shader.PropertyToID("_CameraReflectionTextureIndex");
+        static readonly int ID_ReflectionNormalDistort = Shader.PropertyToID("_CameraReflectionNormalDistort");
 
         static readonly int ID_ReflectionDepth = Shader.PropertyToID("_CameraReflectionDepthComaparer");
         static readonly RenderTargetIdentifier RT_ID_ReflectionDepth = new RenderTargetIdentifier(ID_ReflectionDepth);
@@ -61,7 +63,9 @@ namespace Rendering.Pipeline
             int groupCount = _lowEnd ? 1 : 8;
             m_Kernels = new Int3(m_ComputeShader.FindKernel("Clear" + keyword),m_ComputeShader.FindKernel("Generate"+ keyword), groupCount);
             m_Blur.DoValidate(_plane.m_BlurParam);
+            m_PropertyBlock.SetInt(ID_ReflectionTextureOn, 1);
             m_PropertyBlock.SetInt(ID_ReflectionTextureIndex,_index);
+            m_PropertyBlock.SetFloat(ID_ReflectionNormalDistort, m_Plane.m_NormalDistort);
             m_Plane.m_MeshRenderer.SetPropertyBlock(m_PropertyBlock);
             m_ReflectionTexture = Shader.PropertyToID( C_ReflectionTex + _index.ToString());
             m_ReflectionTextureID = new RenderTargetIdentifier(m_ReflectionTexture);

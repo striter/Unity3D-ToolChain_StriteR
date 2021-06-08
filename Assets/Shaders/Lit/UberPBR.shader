@@ -43,6 +43,7 @@
 			#include "../CommonInclude.hlsl"
 			#include "../CommonLightingInclude.hlsl"
 			#include "../BRDFInclude.hlsl"
+			#include "../GlobalIlluminationInclude.hlsl"
 			
 			#pragma multi_compile_instancing
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
@@ -98,6 +99,7 @@
 				float3 biTangentWS:TEXCOORD3;
 				float3 viewDirWS:TEXCOORD4;
 				float4 shadowCoordWS:TEXCOORD5;
+				float4 screenPos:TEXCOORD6;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -114,6 +116,7 @@
 				o.tangentWS=mul((float3x3)unity_ObjectToWorld,v.tangentOS.xyz);
 				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
 				o.viewDirWS=GetCameraPositionWS()-positionWS;
+				o.screenPos=ComputeScreenPos(o.positionCS);
 				return o;
 			}
 			#if _PARALLEXMAP
@@ -158,6 +161,7 @@
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
 				float3 normalWS=normalize(i.normalWS);
+				half3 normalTS=half3(0,0,1);
 				float3 biTangentWS=normalize(i.biTangentWS);
 				float3 tangentWS=normalize(i.tangentWS);
 				float3 viewDirWS=normalize(i.viewDirWS);
@@ -167,7 +171,7 @@
 				i.uv=ParallexMap(i.uv,mul(TBNWS, viewDirWS));
 				#endif
 				#if _NORMALMAP
-				float3 normalTS=normalize( DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv).xyz));
+				normalTS=normalize( DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv).xyz));
 				normalWS=normalize(mul(transpose(TBNWS), normalTS));
 				#endif
 
@@ -194,9 +198,6 @@
 				ao*=SAMPLE_TEXTURE2D(_AOTex,sampler_AOTex,i.uv);
 				#endif
 
-				Light mainlight=GetMainLight(i.shadowCoordWS);
-				half3 bakcedGI=0;
-
                 float3 normal=normalize(normalWS);
                 float3 tangent = normalize(tangentWS);
                 float3 viewDir=normalize(viewDirWS);
@@ -207,8 +208,9 @@
 				float atten=MainLightRealtimeShadow(i.shadowCoordWS);
 
 				float3 brdfColor=0;
-				
-				brdfColor+=BRDFGlobalIllumination(surface);
+				half3 indirectDiffuse=IndirectBRDFDiffuse(surface.normal);
+				half3 indirectSpecular=IndirectBRDFSpecular(surface.reflectDir, surface.perceptualRoughness,i.screenPos,normalTS);
+				brdfColor+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 
 				BRDFLight light=InitializeBRDFLight(surface,lightDir,lightCol,atten,_AnisoTropicValue);
 				brdfColor+=BRDFLighting(surface,light);

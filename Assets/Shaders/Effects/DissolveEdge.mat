@@ -92,7 +92,7 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Color1: {r: 1, g: 1, b: 1, a: 1}
-    - _DissolveColor: {r: 3.890196, g: 1.6470588, b: 1.6470588, a: 1}
+    - _DissolveColor: {r: 51.377876, g: 21.788525, b: 21.788525, a: 1}
     - _EdgeEnd: {r: 1, g: 1, b: 1, a: 1}
     - _EdgeStart: {r: 1, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

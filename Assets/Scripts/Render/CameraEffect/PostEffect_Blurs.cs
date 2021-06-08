@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 
 namespace Rendering.ImageEffect
 {
-    public class PostEffect_Blurs : PostEffectBase<ImageEffect_Blurs,ImageEffectParam_Blurs>
+    public class PostEffect_Blurs : PostEffectBase<ImageEffect_Blurs, ImageEffectParam_Blurs>
     {
     }
 
@@ -24,7 +24,7 @@ namespace Rendering.ImageEffect
     enum enum_BlurPass
     {
         //Blur
-        Kawase=0,
+        Kawase = 0,
         Average_Horizontal,
         Average_Vertical,
         Gaussian_Horizontal,
@@ -47,15 +47,15 @@ namespace Rendering.ImageEffect
     [Serializable]
     public struct ImageEffectParam_Blurs
     {
-        [MTitle]public enum_BlurType m_BlurType;
+        [MTitle] public enum_BlurType m_BlurType;
         [Range(0.15f, 2.5f)] public float m_BlurSize;
-        [MFold(nameof(m_BlurType),enum_BlurType.Grainy)]
+        [MFold(nameof(m_BlurType), enum_BlurType.Grainy)]
         [Range(1, 8)] public int m_Iteration;
-        [MFoldout(nameof(m_BlurType),enum_BlurType.Kawase,enum_BlurType.GaussianVHSeperated,enum_BlurType.AverageVHSeperated,enum_BlurType.Hexagon,enum_BlurType.DualFiltering)]
+        [MFoldout(nameof(m_BlurType), enum_BlurType.Kawase, enum_BlurType.GaussianVHSeperated, enum_BlurType.AverageVHSeperated, enum_BlurType.Hexagon, enum_BlurType.DualFiltering)]
         [Range(1, 4)] public int m_DownSample;
-        [MFoldout(nameof(m_BlurType),enum_BlurType.Hexagon,enum_BlurType.Bokeh)]  
+        [MFoldout(nameof(m_BlurType), enum_BlurType.Hexagon, enum_BlurType.Bokeh)]
         [Range(-1, 1)] public float m_Angle;
-        [MFoldout(nameof(m_BlurType), enum_BlurType.Directional,enum_BlurType.Radial)] 
+        [MFoldout(nameof(m_BlurType), enum_BlurType.Directional, enum_BlurType.Radial)]
         [RangeVector(0, 1)] public Vector2 m_Vector;
         public static readonly ImageEffectParam_Blurs m_Default = new ImageEffectParam_Blurs()
         {
@@ -64,7 +64,7 @@ namespace Rendering.ImageEffect
             m_Iteration = 7,
             m_BlurType = enum_BlurType.DualFiltering,
             m_Angle = 0,
-            m_Vector=Vector2.one*.5f,
+            m_Vector = Vector2.one * .5f,
         };
     }
 
@@ -81,9 +81,9 @@ namespace Rendering.ImageEffect
         static readonly int ID_Vector = Shader.PropertyToID("_Vector");
         #endregion
 
-        protected override void OnExecuteBuffer(CommandBuffer _buffer,RenderTextureDescriptor _descriptor,  RenderTargetIdentifier _src, RenderTargetIdentifier _dst, Material _material, ImageEffectParam_Blurs _param)
+        protected override void OnExecuteBuffer(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, Material _material, ImageEffectParam_Blurs _param)
         {
-            if (_param.m_DownSample<=0)
+            if (_param.m_DownSample <= 0)
             {
                 Debug.LogWarning("Invalid Down Sample!");
                 _buffer.Blit(_src, _dst);
@@ -98,9 +98,9 @@ namespace Rendering.ImageEffect
                 case enum_BlurType.AverageVHSeperated:
                 case enum_BlurType.GaussianVHSeperated:
                     {
-                        int idTemp1= Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp1");
-                        int idTemp2= Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp2");
-                        _buffer.GetTemporaryRT(idTemp1, startWidth,startHeight,0, FilterMode.Bilinear, _descriptor.colorFormat);
+                        int idTemp1 = Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp1");
+                        int idTemp2 = Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp2");
+                        _buffer.GetTemporaryRT(idTemp1, startWidth, startHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
                         RenderTargetIdentifier rtTemp1 = new RenderTargetIdentifier(idTemp1);
                         _buffer.GetTemporaryRT(idTemp2, startWidth, startHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
                         RenderTargetIdentifier rtTemp2 = new RenderTargetIdentifier(idTemp2);
@@ -122,12 +122,12 @@ namespace Rendering.ImageEffect
                                     {
                                         int horizontalPass = -1;
                                         int verticalPass = -1;
-                                        if(_param.m_BlurType== enum_BlurType.AverageVHSeperated)
+                                        if (_param.m_BlurType == enum_BlurType.AverageVHSeperated)
                                         {
                                             horizontalPass = (int)enum_BlurPass.Average_Horizontal;
                                             verticalPass = (int)enum_BlurPass.Average_Vertical;
                                         }
-                                        else if(_param.m_BlurType== enum_BlurType.GaussianVHSeperated)
+                                        else if (_param.m_BlurType == enum_BlurType.GaussianVHSeperated)
                                         {
                                             horizontalPass = (int)enum_BlurPass.Gaussian_Horizontal;
                                             verticalPass = (int)enum_BlurPass.Gaussian_Vertical;
@@ -164,8 +164,8 @@ namespace Rendering.ImageEffect
                             int filterSample = downSampleCount - Mathf.CeilToInt(Mathf.Abs(_param.m_Iteration / 2f - (i + 1))) + 1 + _param.m_Iteration % 2;
                             int filterWidth = startWidth / filterSample;
                             int filterHeight = startHeight / filterSample;
-                            tempIDs[i] = Shader.PropertyToID("_PostProcessing_Blit_DualFiltering_Temp"+i.ToString());
-                             _buffer.GetTemporaryRT(tempIDs[i], filterWidth, filterHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
+                            tempIDs[i] = Shader.PropertyToID("_PostProcessing_Blit_DualFiltering_Temp" + i.ToString());
+                            _buffer.GetTemporaryRT(tempIDs[i], filterWidth, filterHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
                             tempTextures[i] = new RenderTargetIdentifier(tempIDs[i]);
                         }
                         for (int i = 0; i < _param.m_Iteration; i++)
@@ -205,17 +205,17 @@ namespace Rendering.ImageEffect
                         int rhomboidPass = (int)enum_BlurPass.Hexagon_Rhomboid;
 
                         _material.SetFloat(ID_BlurSize, _param.m_BlurSize * 2);
-                        _material.SetFloat(ID_Iteration, _param.m_Iteration*2);
+                        _material.SetFloat(ID_Iteration, _param.m_Iteration * 2);
                         _material.SetFloat(ID_Angle, _param.m_Angle);
 
                         int verticalTempID = Shader.PropertyToID("_Hexagon_Vertical");
                         int diagonalTempID = Shader.PropertyToID("_Hexagon_Diagonal");
-                        
-                        _buffer.GetTemporaryRT(verticalTempID,startWidth, startHeight, 0,FilterMode.Bilinear, _descriptor.colorFormat);
-                        _buffer.GetTemporaryRT(diagonalTempID,startWidth, startHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
 
-                        RenderTargetIdentifier verticalRT = new RenderTargetIdentifier(verticalTempID); 
-                        RenderTargetIdentifier diagonalRT = new RenderTargetIdentifier(diagonalTempID); 
+                        _buffer.GetTemporaryRT(verticalTempID, startWidth, startHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
+                        _buffer.GetTemporaryRT(diagonalTempID, startWidth, startHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
+
+                        RenderTargetIdentifier verticalRT = new RenderTargetIdentifier(verticalTempID);
+                        RenderTargetIdentifier diagonalRT = new RenderTargetIdentifier(diagonalTempID);
 
                         _buffer.Blit(_src, verticalRT, _material, verticalPass);
                         _buffer.Blit(_src, diagonalRT, _material, diagonalPass);
@@ -229,18 +229,18 @@ namespace Rendering.ImageEffect
                     {
                         int pass = (int)enum_BlurPass.Radial;
 
-                        _material.SetFloat(ID_BlurSize, _param.m_BlurSize*32);
+                        _material.SetFloat(ID_BlurSize, _param.m_BlurSize * 32);
                         _material.SetVector(ID_Vector, _param.m_Vector);
-                        _material.SetInt(ID_Iteration, _param.m_Iteration );
+                        _material.SetInt(ID_Iteration, _param.m_Iteration);
                         _buffer.Blit(_src, _dst, _material, pass);
                     }
                     break;
                 case enum_BlurType.Directional:
                     {
-                        int pass = (int) enum_BlurPass.Directional;
-                        _material.SetFloat(ID_BlurSize, _param.m_BlurSize*32);
-                        _material.SetVector(ID_Vector, _param.m_Vector*2-Vector2.one);
-                        _material.SetInt(ID_Iteration, _param.m_Iteration );
+                        int pass = (int)enum_BlurPass.Directional;
+                        _material.SetFloat(ID_BlurSize, _param.m_BlurSize * 32);
+                        _material.SetVector(ID_Vector, _param.m_Vector * 2 - Vector2.one);
+                        _material.SetInt(ID_Iteration, _param.m_Iteration);
                         _buffer.Blit(_src, _dst, _material, pass);
                     }
                     break;

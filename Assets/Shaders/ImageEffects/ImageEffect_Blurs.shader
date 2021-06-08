@@ -19,83 +19,83 @@
 	float4 fragKawase(v2f_img i):SV_TARGET
 	{
 		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
-		float3 sum = 0;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, 1)*uvDelta).rgb;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1,0)*uvDelta).rgb;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -1)*uvDelta).rgb;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, 0)*uvDelta).rgb;
-		return float4(sum*.25,1);
+		float4 sum = 0;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, 1)*uvDelta);
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1,0)*uvDelta);
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -1)*uvDelta);
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, 0)*uvDelta);
+		return sum*.25;
 	}
 
 	//Dual VH Kawase
 	float4 fragAverageBlurHorizontal(v2f_img i):SV_TARGET
 	{
 		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
-		float3 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1, 0)*uvDelta).rgb;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, 0)*uvDelta).rgb;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(2, 0)*uvDelta).rgb;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-2, 0)*uvDelta).rgb;
-		return float4(sum*.2,1);
+		float4 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1, 0)*uvDelta);
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, 0)*uvDelta);
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(2, 0)*uvDelta);
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-2, 0)*uvDelta);
+		return sum*.2;
 	}
 	float4 fragAverageBlurVertical(v2f_img i):SV_TARGET
 	{
 		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
-		float3 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,1)*uvDelta).rgb;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -1)*uvDelta).rgb;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, 2)*uvDelta).rgb;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -2)*uvDelta).rgb;
-		return float4(sum*.2,1);
+		float4 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,1)*uvDelta);
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -1)*uvDelta);
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, 2)*uvDelta);
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -2)*uvDelta);
+		return sum*.2;
 	}
 		
 	//Dual VH Gaussian
 	float4 fragGaussianBlurHorizontal(v2f_img i) :SV_TARGET
 	{
 		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
-		float3 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*gaussianWeight3[0];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1,0)*uvDelta).rgb*gaussianWeight3[1];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1,0)*uvDelta).rgb*gaussianWeight3[1];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(2,0)*uvDelta).rgb*gaussianWeight3[2];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-2,0)*uvDelta).rgb*gaussianWeight3[2];
-		return float4(sum,1);
+		float4 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*gaussianWeight3[0];
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1,0)*uvDelta)*gaussianWeight3[1];
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1,0)*uvDelta)*gaussianWeight3[1];
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(2,0)*uvDelta)*gaussianWeight3[2];
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-2,0)*uvDelta)*gaussianWeight3[2];
+		return sum;
 	}
 	float4 fragGaussianBlurVertical(v2f_img i) :SV_TARGET
 	{
 		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
-		float3 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*gaussianWeight3[0];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,1)*uvDelta).rgb*gaussianWeight3[1];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,-1)*uvDelta).rgb*gaussianWeight3[1];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,2)*uvDelta).rgb*gaussianWeight3[2];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,-2)*uvDelta).rgb*gaussianWeight3[2];
-		return float4(sum,1);
+		float4 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*gaussianWeight3[0];
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,1)*uvDelta)*gaussianWeight3[1];
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,-1)*uvDelta)*gaussianWeight3[1];
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,2)*uvDelta)*gaussianWeight3[2];
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,-2)*uvDelta)*gaussianWeight3[2];
+		return sum;
 	}
 	
 	//Dual Filtering
 	float4 fragDualFilteringDownSample(v2f_img i):SV_TARGET
 	{
 		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
-		float3 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*4;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, 1)*uvDelta).rgb;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1, 0)*uvDelta).rgb;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -1)*uvDelta).rgb;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, 0)*uvDelta).rgb;
-		return float4(sum*.125,1);
+		float4 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*4;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, 1)*uvDelta);
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1, 0)*uvDelta);
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -1)*uvDelta);
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, 0)*uvDelta);
+		return sum*.125;
 	}
 
 	float4 fragDualFilteringUpSample(v2f_img i):SV_TARGET
 	{
 		float2 uvDelta=_MainTex_TexelSize.xy;
-		float3 sum =0;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, 2)*uvDelta).rgb;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(2,0)*uvDelta).rgb;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -2)*uvDelta).rgb;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-2, 0)*uvDelta).rgb;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1, 1)*uvDelta).rgb*2;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1, -1)*uvDelta).rgb*2;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, 1)*uvDelta).rgb*2;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, -1)*uvDelta).rgb*2;
-		return float4(sum*.08333,1);
+		float4 sum =0;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, 2)*uvDelta);
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(2,0)*uvDelta);
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -2)*uvDelta);
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-2, 0)*uvDelta);
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1, 1)*uvDelta)*2;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1, -1)*uvDelta)*2;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, 1)*uvDelta)*2;
+		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, -1)*uvDelta)*2;
+		return sum*.08333;
 	}
 	
 	//Grainy
@@ -103,8 +103,8 @@
 	{
 		float2 delta=_MainTex_TexelSize.xy*_BlurSize;
 		float2 randomUV=randomUnitCircle(i.uv)*random01(i.uv)*delta;
-		float3 sum=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+randomUV).rgb;
-		return float4(sum,1);
+		float4 sum=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+randomUV);
+		return sum;
 	}
 
 	//Bokeh
@@ -189,6 +189,7 @@
     SubShader
     {
         Cull Off ZWrite Off ZTest Always Cull Off
+
 		Pass
 		{
 			NAME "KAWASE_BLUR"

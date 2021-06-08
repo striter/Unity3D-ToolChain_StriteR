@@ -7,25 +7,32 @@ namespace Rendering.Pipeline
     [ExecuteInEditMode,RequireComponent(typeof(MeshRenderer),typeof(MeshFilter))]
     public class SRD_ReflectionPlane : MonoBehaviour
     {
-        public MeshRenderer m_MeshRenderer { get; private set; }
-        public MeshFilter m_MeshFilter { get; private set; }
-        public static List<SRD_ReflectionPlane> m_ReflectionPlanes { get; private set; } = new List<SRD_ReflectionPlane>();
         public enum_ReflectionSpace m_ReflectionType = enum_ReflectionSpace.ScreenSpace;
         [Range(1, 4)] public int m_DownSample = 1;
         [Range(-5f, 5f)] public float m_PlaneOffset = 0f;
+        [Range(0f, 0.2f)] public float m_NormalDistort = .1f;
         [MFoldout(nameof(m_ReflectionType), enum_ReflectionSpace.ScreenSpace)] [Range(1, 4)] public int m_Sample = 1;
         public bool m_EnableBlur = false;
         [MFoldout(nameof(m_EnableBlur), true)] public ImageEffectParam_Blurs m_BlurParam = UPipeline.GetDefaultPostProcessData<ImageEffectParam_Blurs>();
-        public GPlane m_PlaneData => new GPlane(transform.up, transform.position + transform.up * m_PlaneOffset);
+
+        public static List<SRD_ReflectionPlane> m_ReflectionPlanes { get; private set; } = new List<SRD_ReflectionPlane>();
+        public MeshRenderer m_MeshRenderer { get; private set; }
+        public MeshFilter m_MeshFilter { get; private set; }
+        public GPlane m_PlaneData { get; private set; }
         private void OnEnable()
         {
             m_ReflectionPlanes.Add(this);
             m_MeshFilter = GetComponent<MeshFilter>();
             m_MeshRenderer = GetComponent<MeshRenderer>();
+            OnValidate();
         }
         private void OnDisable()
         {
             m_ReflectionPlanes.Remove(this);
+        }
+        private void OnValidate()
+        {
+            m_PlaneData = new GPlane(transform.up, transform.position + transform.up * m_PlaneOffset); ;
         }
 #if UNITY_EDITOR
         private void OnDrawGizmos()

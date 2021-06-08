@@ -204,7 +204,7 @@ namespace TEditor
         {
             m_Polygons = m_ModifingMesh.GetPolygons(out int[] triangles);
         }
-        public virtual Material GetDefaultMaterial() => new Material(Shader.Find("Game/Lit/Standard_Specular")) { hideFlags = HideFlags.HideAndDontSave };
+        public virtual Material GetDefaultMaterial() => new Material(Shader.Find("Game/Lit/UberPBR")) { hideFlags = HideFlags.HideAndDontSave };
         public virtual void End() { }
         public virtual void OnEditorSceneGUI(SceneView _sceneView, GameObject _meshObject, EditorWindow _window) { }
         public virtual void OnEditorWindowGUI() { }

@@ -131,33 +131,14 @@ half3 BRDFLighting(BRDFSurface surface,BRDFLight light)
     return brdf*light.radiance;
 }
 
-half3 IndirectBRDFDiffuse(half3 normal)
+half3 BRDFGlobalIllumination(BRDFSurface surface,half3 indirectDiffuse,half3 indirectSpecular)
 {
-    float3 res = SHEvalLinearL0L1(normal, unity_SHAr, unity_SHAg, unity_SHAb);
-    res += SHEvalLinearL2(normal, unity_SHBr, unity_SHBg, unity_SHBb, unity_SHC);
-#ifdef UNITY_COLORSPACE_GAMMA
-	res = LinearToSRGB(res);
-#endif
-    return res;
-}
-
-half3 IndirectBRDFSpecular(half3 reflectDir,float perceptualRoughness)
-{
-    half mip = perceptualRoughness * (1.7 - 0.7 * perceptualRoughness) * UNITY_SPECCUBE_LOD_STEPS;
-    half4 encodedIrradiance = SAMPLE_TEXTURECUBE_LOD(unity_SpecCube0, samplerunity_SpecCube0, reflectDir, mip);
-    half3 irradiance = DecodeHDREnvironment(encodedIrradiance, unity_SpecCube0_HDR);
-    return irradiance;
-}
-
-half3 BRDFGlobalIllumination(BRDFSurface surface)
-{
-    half3 indirectDiffuse = IndirectBRDFDiffuse(surface.normal) * surface.ao;
-    half3 indirectSpecular = IndirectBRDFSpecular(surface.reflectDir, surface.perceptualRoughness)*surface.ao;
+    indirectDiffuse *= surface.ao;
+    indirectSpecular *= surface.ao;
     
     half3 giDiffuse = indirectDiffuse * surface.diffuse;
     
-    float3 surfaceReduction = 1.0 / (surface.roughness2 + 1.0);
-    surfaceReduction *= lerp(surface.specular, surface.grazingTerm, surface.fresnelTerm);
+    float3 surfaceReduction = 1.0 / (surface.roughness2 + 1.0) * lerp(surface.specular, surface.grazingTerm, surface.fresnelTerm);
     half3 giSpecular = indirectSpecular * surfaceReduction;
     
     return giDiffuse + giSpecular;
