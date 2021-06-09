@@ -18,9 +18,9 @@ namespace Rendering.Pipeline
         }
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
-            base.Configure(cmd, cameraTextureDescriptor);
             cmd.GetTemporaryRT(ID_CameraNormalTex, cameraTextureDescriptor.width, cameraTextureDescriptor.height, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
             ConfigureTarget(RT_ID_CameraNormalTex);
+            base.Configure(cmd, cameraTextureDescriptor);
         }
         public override void FrameCleanup(CommandBuffer cmd)
         {

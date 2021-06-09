@@ -9,8 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UberPBR
   m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
-  m_ShaderKeywords: _AOMAP _F_IMPLICIT _F_SCHLICK _GSF_COOKTORRANCE _NDF_COOKTORRANCE
-    _NORMALMAP _PARALLEXMAP
+  m_ShaderKeywords: _AOMAP _F_IMPLICIT _F_SCHLICK _GSF_COOKTORRANCE _METALLICMAP
+    _NDF_COOKTORRANCE _NORMALMAP _PARALLEXMAP _ROUGHNESSMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -21,7 +21,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _AOTex:
-        m_Texture: {fileID: 2800000, guid: d69fc08f5001a4f4587b495e4a37ef5e, type: 3}
+        m_Texture: {fileID: 2800000, guid: 10825124709c2bf4b82cc6d67daac429, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
@@ -49,19 +49,19 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: ea2f0f63e40f326458d3d1a3fe7125ec, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: 6f9db56490a0ebd4b81daf4c3f5709b0, type: 3}
+        m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 367e5807bd920984e8c4a9556e85c943, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTex:
-        m_Texture: {fileID: 2800000, guid: dc57807282857d345827be7fb4f64b5b, type: 3}
+        m_Texture: {fileID: 2800000, guid: 1af8c9dba40d07841823c9aa75513739, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -73,11 +73,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallexTex:
-        m_Texture: {fileID: 2800000, guid: f852070fec779a24f93ad8d7107fd14f, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6df7976dfa00819478feea3a8a8ba164, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RoughnessTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 4bca6e3baae91304cb1fa060c2b734d7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -127,7 +127,7 @@ Material:
     - _OcclusionStrength: 0
     - _Parallax: 0.005
     - _ParallexOffset: 1
-    - _ParallexScale: 0.017
+    - _ParallexScale: 0.001
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 1

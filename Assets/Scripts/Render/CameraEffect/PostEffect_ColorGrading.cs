@@ -74,24 +74,24 @@ namespace Rendering.ImageEffect
         static readonly int ID_MixGreen = Shader.PropertyToID("_MixGreen");
         static readonly int ID_MixBlue = Shader.PropertyToID("_MixBlue");
         #endregion
-        protected override void OnValidate(ImageEffectParam_ColorGrading _params, Material _material)
+        public override void OnValidate(ImageEffectParam_ColorGrading _data)
         {
-            base.OnValidate(_params, _material);
-            _material.SetFloat(ID_Weight, _params.m_Weight);
+            base.OnValidate(_data);
+            m_Material.SetFloat(ID_Weight, _data.m_Weight);
 
-            _material.EnableKeyword(KW_LUT, _params.m_LUT);
-            _material.SetTexture(ID_LUT, _params.m_LUT);
-            _material.SetInt(ID_LUTCellCount, (int)_params.m_LUTCellCount);
+            m_Material.EnableKeyword(KW_LUT, _data.m_LUT);
+            m_Material.SetTexture(ID_LUT, _data.m_LUT);
+            m_Material.SetInt(ID_LUTCellCount, (int)_data.m_LUTCellCount);
 
-            _material.EnableKeyword(KW_BSC, _params.m_brightness != 1 || _params.m_saturation != 1f || _params.m_contrast != 1);
-            _material.SetFloat(ID_Brightness, _params.m_brightness);
-            _material.SetFloat(ID_Saturation, _params.m_saturation);
-            _material.SetFloat(ID_Contrast, _params.m_contrast);
+            m_Material.EnableKeyword(KW_BSC, _data.m_brightness != 1 || _data.m_saturation != 1f || _data.m_contrast != 1);
+            m_Material.SetFloat(ID_Brightness, _data.m_brightness);
+            m_Material.SetFloat(ID_Saturation, _data.m_saturation);
+            m_Material.SetFloat(ID_Contrast, _data.m_contrast);
 
-            _material.EnableKeyword(KW_MixChannel, _params.m_MixRed != Vector3.zero || _params.m_MixBlue != Vector3.zero || _params.m_MixGreen != Vector3.zero);
-            _material.SetVector(ID_MixRed, _params.m_MixRed+Vector3.right);
-            _material.SetVector(ID_MixGreen, _params.m_MixGreen+Vector3.up);
-            _material.SetVector(ID_MixBlue, _params.m_MixBlue+Vector3.forward);
+            m_Material.EnableKeyword(KW_MixChannel, _data.m_MixRed != Vector3.zero || _data.m_MixBlue != Vector3.zero || _data.m_MixGreen != Vector3.zero);
+            m_Material.SetVector(ID_MixRed, _data.m_MixRed+Vector3.right);
+            m_Material.SetVector(ID_MixGreen, _data.m_MixGreen+Vector3.up);
+            m_Material.SetVector(ID_MixBlue, _data.m_MixBlue+Vector3.forward);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Rendering.ImageEffect
     [Serializable]
     public struct PostEffectParam_DepthCirCleArea
     {
-        public Vector3 m_Origin;
+        [Position] public Vector3 m_Origin;
         public float m_Radius;
         public float m_Outline;
         [ColorUsage(true,true)]public Color m_FillColor;
@@ -63,19 +63,19 @@ namespace Rendering.ImageEffect
         static readonly int ID_SqrEdgeMin = Shader.PropertyToID("_SqrEdgeMin");
         static readonly int ID_SqrEdgeMax = Shader.PropertyToID("_SqrEdgeMax");
         #endregion
-        protected override void OnValidate(PostEffectParam_DepthCirCleArea _params, Material _material)
+        public override void OnValidate(PostEffectParam_DepthCirCleArea _data)
         {
-            base.OnValidate(_params, _material);
-            float edgeMin = _params.m_Radius;
-            float edgeMax = _params.m_Radius + _params.m_Outline;
-            _material.SetFloat(ID_SqrEdgeMax, edgeMax * edgeMax);
-            _material.SetFloat(ID_SqrEdgeMin, edgeMin * edgeMin);
-            _material.SetVector(ID_Origin, _params.m_Origin);
-            _material.SetColor(ID_FillColor, _params.m_FillColor);
-            _material.SetColor(ID_EdgeColor, _params.m_EdgeColor);
-            _material.SetTexture(ID_FillTexture, _params.m_FillTexure);
-            _material.SetFloat(ID_FillTextureScale, _params.m_FillTextureScale);
-            _material.SetVector(ID_FillTextureFlow, _params.m_FillTextureFlow);
+            base.OnValidate(_data);
+            float edgeMin = _data.m_Radius;
+            float edgeMax = _data.m_Radius + _data.m_Outline;
+            m_Material.SetFloat(ID_SqrEdgeMax, edgeMax * edgeMax);
+            m_Material.SetFloat(ID_SqrEdgeMin, edgeMin * edgeMin);
+            m_Material.SetVector(ID_Origin, _data.m_Origin);
+            m_Material.SetColor(ID_FillColor, _data.m_FillColor);
+            m_Material.SetColor(ID_EdgeColor, _data.m_EdgeColor);
+            m_Material.SetTexture(ID_FillTexture, _data.m_FillTexure);
+            m_Material.SetFloat(ID_FillTextureScale, _data.m_FillTextureScale);
+            m_Material.SetVector(ID_FillTextureFlow, _data.m_FillTextureFlow);
         }
     }
 }

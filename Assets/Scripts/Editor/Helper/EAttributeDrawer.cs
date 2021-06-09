@@ -19,7 +19,7 @@ namespace TEditor
 
             FieldInfo targetField = _property.GetFieldInfo();
             IEnumerable<Attribute> attributes = targetField.GetCustomAttributes();
-            int order = attribute.order+1;
+            int order = attribute.order + 1;
             if (order >= attributes.Count())
                 return null;
 
@@ -44,7 +44,7 @@ namespace TEditor
             if (customDrawer != null)
                 customDrawer.OnGUI(position, property, label);
             else
-                EditorGUI.PropertyField(position, property, label,true);
+                EditorGUI.PropertyField(position, property, label, true);
         }
         public bool CheckPropertyAvailable(bool fold, SerializedProperty _property, MFoldoutAttribute _attribute)
         {
@@ -57,14 +57,14 @@ namespace TEditor
             }));
         }
     }
-    public class SubAttributePropertyDrawer<T>: PropertyDrawer where T:Attribute
+    public class SubAttributePropertyDrawer<T> : PropertyDrawer where T : Attribute
     {
-        public bool OnGUIAttributePropertyCheck(Rect _position, SerializedProperty _property, out T _targetAttribute, params SerializedPropertyType[] _checkTypes) 
+        public bool OnGUIAttributePropertyCheck(Rect _position, SerializedProperty _property, out T _targetAttribute, params SerializedPropertyType[] _checkTypes)
         {
             _targetAttribute = null;
             if (!_checkTypes.Any(p => _property.propertyType == p))
             {
-                EditorGUI.LabelField(_position,string.Format("<Color=#FF0000>Attribute For {0} Only!</Color>", _checkTypes.ToString('|', type => type.ToString())), UEGUIStyle_Window.m_TitleLabel);
+                EditorGUI.LabelField(_position, string.Format("<Color=#FF0000>Attribute For {0} Only!</Color>", _checkTypes.ToString('|', type => type.ToString())), UEGUIStyle_Window.m_TitleLabel);
                 return false;
             }
             _targetAttribute = attribute as T;
@@ -93,24 +93,24 @@ namespace TEditor
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            if (!CheckPropertyAvailable(false,property, attribute as MFoldoutAttribute))
+            if (!CheckPropertyAvailable(false, property, attribute as MFoldoutAttribute))
                 return -2;
 
             return base.GetPropertyHeight(property, label);
         }
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (!CheckPropertyAvailable(false,property, attribute as MFoldoutAttribute))
+            if (!CheckPropertyAvailable(false, property, attribute as MFoldoutAttribute))
                 return;
             base.OnGUI(position, property, label);
         }
     }
     [CustomPropertyDrawer(typeof(MFoldAttribute))]
-    public class MFoldPropertyDrawer: MainAttributePropertyDrawer<MFoldoutAttribute>
+    public class MFoldPropertyDrawer : MainAttributePropertyDrawer<MFoldoutAttribute>
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            if (!CheckPropertyAvailable(true,property, attribute as MFoldoutAttribute))
+            if (!CheckPropertyAvailable(true, property, attribute as MFoldoutAttribute))
                 return -2;
 
             return base.GetPropertyHeight(property, label);
@@ -154,9 +154,9 @@ namespace TEditor
                 return;
             Dictionary<int, string> allLayers = UECommon.GetAllLayers(true);
             List<string> values = new List<string>();
-            foreach(int key in allLayers.Keys)
-                values.Add(allLayers[key]== string.Empty?null: allLayers[key]);
-            for(int i=allLayers.Count-1;i>=0;i--)
+            foreach (int key in allLayers.Keys)
+                values.Add(allLayers[key] == string.Empty ? null : allLayers[key]);
+            for (int i = allLayers.Count - 1; i >= 0; i--)
             {
                 if (allLayers.GetIndexValue(i) == string.Empty)
                     values.RemoveAt(i);
@@ -167,7 +167,26 @@ namespace TEditor
             property.intValue = EditorGUI.MaskField(position, label.text, property.intValue, values.ToArray());
         }
     }
+    [CustomPropertyDrawer(typeof(PositionAttribute))]
+    public class PositionPropertyDrawer:SubAttributePropertyDrawer<PositionAttribute>
+    {
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return EditorGUI.GetPropertyHeight( property, label,true)+20f;
+        }
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            if (!OnGUIAttributePropertyCheck(position, property, out PositionAttribute attribute, SerializedPropertyType.Vector3))
+                return;
 
+            Rect propertyRect = new Rect(position.position,position.size-new Vector2(0,20));
+            EditorGUI.PropertyField(propertyRect, property, label, true);
+            float buttonWidth = position.size.x / 5f;
+            Rect buttonRect = new Rect(position.position+new Vector2(buttonWidth*4f,EditorGUI.GetPropertyHeight(property,label,true)),new Vector2(buttonWidth,20f));
+            if (GUI.Button(buttonRect, "Edit"))
+                GUITransformHandles.Begin(property);
+        }
+    }
     [CustomPropertyDrawer(typeof(RangeVectorAttribute))]
     public class RangeVectorPropertyDrawer:SubAttributePropertyDrawer<RangeVectorAttribute>
     {

@@ -49,20 +49,20 @@ namespace Rendering.ImageEffect
             new Vector3( 0.0689f,-0.1598f,-0.8547f),  new Vector3( 0.0560f, 0.0069f,-0.1843f),new Vector3(-0.0146f, 0.1402f, 0.0762f),  new Vector3( 0.0100f,-0.1924f,-0.0344f),
             new Vector3(-0.3577f,-0.5301f,-0.4358f),  new Vector3(-0.3169f, 0.1063f, 0.0158f),new Vector3( 0.0103f,-0.5869f, 0.0046f),  new Vector3(-0.0897f,-0.4940f, 0.3287f),
             new Vector3( 0.7119f,-0.0154f,-0.0918f),  new Vector3(-0.0533f, 0.0596f,-0.5411f),new Vector3( 0.0352f,-0.0631f, 0.5460f),  new Vector3(-0.4776f, 0.2847f,-0.0271f)};
-        protected override void OnValidate(CameraEffectParam_DepthSSAO _params, Material _material)
+        public override void OnValidate(CameraEffectParam_DepthSSAO _data)
         {
-            base.OnValidate(_params, _material);
+            base.OnValidate(_data);
             Vector4[] array = new Vector4[m_DepthSampleArray.Length];
             for (int i = 0; i < m_DepthSampleArray.Length; i++)
-                array[i] = m_DepthSampleArray[i] * _params.m_SampleRadius;
-            _material.SetInt(ID_SampleCount, _params.m_SampleCount);
-            _material.SetVectorArray(ID_SampleSphere, array);
-            _material.SetColor(ID_Color, _params.m_Color);
-            _material.SetFloat(ID_Intensity, _params.m_Intensity);
-            _material.SetFloat(ID_DepthBias, _params.m_DepthBias);
-            _material.SetFloat(ID_DepthBiasMax, _params.m_DepthBias + _params.m_DepthBiasRange);
-            _material.SetTexture(ID_NoiseTex, _params.m_NoiseTex);
-            _material.SetFloat(ID_NoiseScale, _params.m_NoiseScale);
+                array[i] = m_DepthSampleArray[i] * _data.m_SampleRadius;
+            m_Material.SetInt(ID_SampleCount, _data.m_SampleCount);
+            m_Material.SetVectorArray(ID_SampleSphere, array);
+            m_Material.SetColor(ID_Color, _data.m_Color);
+            m_Material.SetFloat(ID_Intensity, _data.m_Intensity);
+            m_Material.SetFloat(ID_DepthBias, _data.m_DepthBias);
+            m_Material.SetFloat(ID_DepthBiasMax, _data.m_DepthBias + _data.m_DepthBiasRange);
+            m_Material.SetTexture(ID_NoiseTex, _data.m_NoiseTex);
+            m_Material.SetFloat(ID_NoiseScale, _data.m_NoiseScale);
         }
     }
 

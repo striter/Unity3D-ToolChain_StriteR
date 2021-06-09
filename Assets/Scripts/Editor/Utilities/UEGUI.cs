@@ -113,4 +113,66 @@ namespace TEditor
             return _src;
         }
     }
+    public static class GUITransformHandles
+    {
+        static SerializedProperty m_PositionProperty;
+        static SerializedProperty m_RotationProperty;
+        static ValueChecker<Vector3> m_PositionChecker = new ValueChecker<Vector3>(Vector3.zero);
+        static ValueChecker<Quaternion> m_RotationChecker = new ValueChecker<Quaternion>(Quaternion.identity);
+        public static void Begin(SerializedProperty _positionProperty, SerializedProperty _rotationProperty=null)
+        {
+            if (m_PositionProperty != null)
+                End(true);
+            m_PositionProperty = _positionProperty;
+            m_RotationProperty = _rotationProperty;
+            if (m_RotationProperty != null)
+            {
+                if (m_RotationProperty.propertyType == SerializedPropertyType.Quaternion)
+                    m_RotationChecker.Check(m_RotationProperty.quaternionValue.normalized);
+                else
+                    m_RotationChecker.Check(Quaternion.LookRotation(m_RotationProperty.vector3Value.normalized));
+            }
+
+            Undo.RecordObject(m_PositionProperty.serializedObject.targetObject, "Transform Modify Begin");
+            SceneView.duringSceneGui += OnSceneGUI;
+            Tools.current = Tool.None;
+            SceneView.lastActiveSceneView.pivot = m_PositionChecker.m_Value;
+        }
+        public static void End(bool _apply)
+        {
+            SceneView.duringSceneGui -= OnSceneGUI;
+            if (_apply)
+                Undo.RecordObject(m_PositionProperty.serializedObject.targetObject, "Transform End");
+            m_PositionProperty = null;
+            m_RotationProperty = null;
+        }
+        static void OnSceneGUI(SceneView _sceneView)
+        {
+            try
+            {
+                if (Tools.current != Tool.None || Event.current.keyCode == KeyCode.Escape)
+                {
+                    End(true);
+                    return;
+                }
+                Handles.Label(m_PositionChecker.m_Value, "Transforming", UEGUIStyle_SceneView.m_TitleLabel);
+                m_PositionChecker.Check(Handles.DoPositionHandle(m_PositionChecker.m_Value, m_RotationChecker.m_Value));
+                m_PositionProperty.vector3Value = m_PositionChecker.m_Value;
+
+                if(m_RotationProperty !=null)
+                {
+                    m_RotationChecker.Check(Handles.DoRotationHandle(m_RotationChecker.m_Value,m_PositionChecker.m_Value));
+                    if (m_RotationProperty.propertyType == SerializedPropertyType.Quaternion)
+                        m_RotationProperty.quaternionValue = m_RotationChecker.m_Value;
+                    else
+                        m_RotationProperty.vector3Value = m_RotationChecker.m_Value * Vector3.forward;
+                }
+                m_PositionProperty.serializedObject.ApplyModifiedProperties();
+            }
+            catch
+            {
+                End(false);
+            }
+        }
+    }
 }

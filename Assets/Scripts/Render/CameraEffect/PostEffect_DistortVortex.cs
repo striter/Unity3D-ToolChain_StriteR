@@ -33,12 +33,12 @@ namespace Rendering.ImageEffect
         static readonly int ID_NoiseStrength = Shader.PropertyToID("_NoiseStrength");
         static readonly int ID_DistortParam = Shader.PropertyToID("_DistortParam");
         #endregion
-        protected override void OnValidate(ImageEffectParam_DistortVortex _params, Material _material)
+        public override void OnValidate(ImageEffectParam_DistortVortex _data)
         {
-            base.OnValidate(_params, _material);
-            _material.SetVector(ID_DistortParam, new Vector4(_params.m_OriginViewPort_X, _params.m_OriginViewPort_Y, _params.m_OffsetFactor));
-            _material.SetTexture(ID_NoiseTex, _params.m_NoiseTex);
-            _material.SetFloat(ID_NoiseStrength, _params.m_NoiseStrength);
+            base.OnValidate(_data);
+            m_Material.SetVector(ID_DistortParam, new Vector4(_data.m_OriginViewPort_X, _data.m_OriginViewPort_Y, _data.m_OffsetFactor));
+            m_Material.SetTexture(ID_NoiseTex, _data.m_NoiseTex);
+            m_Material.SetFloat(ID_NoiseStrength, _data.m_NoiseStrength);
         }
     }
 }

@@ -9,6 +9,22 @@ namespace Rendering
 {
     public static class UPipeline
     {
+        public static DrawingSettings CreateDrawingSettings(bool fillDefault, Camera _camera)
+        {
+            DrawingSettings settings = new DrawingSettings();
+            settings.sortingSettings = new SortingSettings(_camera);
+            settings.perObjectData = PerObjectData.None;
+            settings.enableDynamicBatching = true;
+            settings.enableInstancing = true;
+            if (fillDefault)
+            {
+                settings.SetShaderPassName(0, new ShaderTagId("SRPDefaultUnlit"));
+                settings.SetShaderPassName(1, new ShaderTagId("UniversalForward"));
+                settings.SetShaderPassName(2, new ShaderTagId("UniversalForwardOnly"));
+                settings.SetShaderPassName(3, new ShaderTagId("LightweightForward"));
+            }
+            return settings;
+        }
         public static void FillWithDefaultTags(this List<ShaderTagId> _tagList)
         {
             _tagList.Clear();

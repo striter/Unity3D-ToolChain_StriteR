@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/HDREmitter"
+﻿Shader "Game/Unlit/Color"
 {
 	Properties
 	{
@@ -11,15 +11,21 @@
 		Tags {"RenderType" = "HDREmitter" "IgnoreProjector" = "True" "Queue" = "Transparent" }
 		
 		Lighting Off Fog { Color(0,0,0,0) }
-		ZWrite On
+		ZWrite Off
 		Blend SrcAlpha OneMinusSrcAlpha
 
-		CGINCLUDE
+		Pass
+		{
+			Cull Back 
+			name "MAIN"
+			HLSLPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag
 			#pragma multi_compile_instancing
-			#include "UnityCG.cginc"
+			#include "../CommonInclude.hlsl"
 			struct appdata
 			{
-				float4 vertex : POSITION;
+				float3 positionOS : POSITION;
 				float4 color : COLOR;
 				float2 uv:TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -27,40 +33,31 @@
 
 			struct v2f
 			{
-				float4 vertex : SV_POSITION;
+				float4 positionCS : SV_POSITION;
 				float4 color : TEXCOORD0;
 				float2 uv:TEXCOORD1;
 			};
 
 			sampler2D _ShapeTexture;
-			UNITY_INSTANCING_BUFFER_START(Props)
-				UNITY_DEFINE_INSTANCED_PROP(float4, _Color)
-			UNITY_INSTANCING_BUFFER_END(Props)
+			INSTANCING_BUFFER_START
+				INSTANCING_PROP(float4, _Color)
+			INSTANCING_BUFFER_END
 
 			v2f vert(appdata v)
 			{
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
+				o.positionCS = TransformObjectToHClip(v.positionOS);
 				o.uv = v.uv;
-				o.vertex = UnityObjectToClipPos(v.vertex);
-				o.color = v.color*UNITY_ACCESS_INSTANCED_PROP(Props, _Color);
+				o.color = v.color*INSTANCE(_Color);
 				return o;
 			}
 
-			fixed4 frag(v2f i) : SV_Target
+			float4 frag(v2f i) : SV_Target
 			{
 				return tex2D(_ShapeTexture,i.uv).r*i.color;
 			}
-		ENDCG
-
-		Pass
-		{
-			Cull Back 
-			name "MAIN"
-			CGPROGRAM
-			#pragma vertex vert
-			#pragma fragment frag
-			ENDCG
+			ENDHLSL
 		}
 
 	}

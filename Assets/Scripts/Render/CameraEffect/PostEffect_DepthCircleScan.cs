@@ -41,7 +41,7 @@ namespace Rendering.ImageEffect
     [Serializable]
     public struct CameraEffectParam_DepthCircleScan
     {
-        public Vector3 m_Origin;
+        [Position] public Vector3 m_Origin;
         [ColorUsage(true,true)]public Color m_Color;
         public float m_Elapse;
         [Range(0,20)]public float m_Width;
@@ -72,23 +72,23 @@ namespace Rendering.ImageEffect
         static readonly int ID_MinSqrDistance = Shader.PropertyToID("_MinSqrDistance");
         static readonly int ID_MaxSqrDistance = Shader.PropertyToID("_MaxSqrDistance");
         #endregion
-        protected override void OnValidate(CameraEffectParam_DepthCircleScan _params, Material _material)
+        public override void OnValidate(CameraEffectParam_DepthCircleScan _data)
         {
-            base.OnValidate(_params, _material);
-            _material.SetVector(ID_Origin, _params.m_Origin);
-            _material.SetColor(ID_Color, _params.m_Color);
-            float minDistance = _params.m_Elapse;
-            float maxDistance = _params.m_Elapse + _params.m_Width;
-            _material.SetFloat(ID_MinSqrDistance, minDistance * minDistance);
-            _material.SetFloat(ID_MaxSqrDistance, maxDistance * maxDistance);
-            _material.SetFloat(ID_FadingPow, _params.m_FadingPow);
+            base.OnValidate(_data);
+            m_Material.SetVector(ID_Origin, _data.m_Origin);
+            m_Material.SetColor(ID_Color, _data.m_Color);
+            float minDistance = _data.m_Elapse;
+            float maxDistance = _data.m_Elapse + _data.m_Width;
+            m_Material.SetFloat(ID_MinSqrDistance, minDistance * minDistance);
+            m_Material.SetFloat(ID_MaxSqrDistance, maxDistance * maxDistance);
+            m_Material.SetFloat(ID_FadingPow, _data.m_FadingPow);
 
-            bool maskEnable = _params.m_MaskTexture != null;
-            _material.EnableKeyword(KW_Mask,maskEnable);
+            bool maskEnable = _data.m_MaskTexture != null;
+            m_Material.EnableKeyword(KW_Mask,maskEnable);
             if(maskEnable)
             {
-                _material.SetTexture(ID_Texture, _params.m_MaskTexture);
-                _material.SetFloat(ID_TexScale, _params.m_MaskTextureScale);
+                m_Material.SetTexture(ID_Texture, _data.m_MaskTexture);
+                m_Material.SetFloat(ID_TexScale, _data.m_MaskTextureScale);
             }
         }
     }

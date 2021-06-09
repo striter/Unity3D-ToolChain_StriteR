@@ -43,18 +43,18 @@ namespace Rendering.ImageEffect
         static readonly int ID_NoiseSpeedX = Shader.PropertyToID("_NoiseSpeedX");
         static readonly int ID_NoiseSpeedY = Shader.PropertyToID("_NoiseSpeedY");
         #endregion
-        protected override void OnValidate(CameraEffectParam_DepthFog _params, Material _material)
+        public override void OnValidate(CameraEffectParam_DepthFog _data)
         {
-            base.OnValidate(_params, _material);
-            _material.SetColor(ID_FogColor, _params.m_FogColor);
-            _material.SetFloat(ID_FogDensity, _params.m_FogDensity);
-            _material.SetFloat(ID_FogVerticalStart, _params.m_FogVerticalStart);
-            _material.SetFloat(ID_FogVerticalOffset, _params.m_FogVerticalOffset);
-            _material.EnableKeyword(KW_Noise, _params.m_NoiseTexure);
-            _material.SetTexture(ID_NoiseTexure, _params.m_NoiseTexure);
-            _material.SetFloat(ID_NoiseScale, _params.m_NoiseScale);
-            _material.SetFloat(ID_NoiseSpeedX, _params.m_NoiseSpeedX);
-            _material.SetFloat(ID_NoiseSpeedY, _params.m_NoiseSpeedY);
+            base.OnValidate(_data);
+            m_Material.SetColor(ID_FogColor, _data.m_FogColor);
+            m_Material.SetFloat(ID_FogDensity, _data.m_FogDensity);
+            m_Material.SetFloat(ID_FogVerticalStart, _data.m_FogVerticalStart);
+            m_Material.SetFloat(ID_FogVerticalOffset, _data.m_FogVerticalOffset);
+            m_Material.EnableKeyword(KW_Noise, _data.m_NoiseTexure);
+            m_Material.SetTexture(ID_NoiseTexure, _data.m_NoiseTexure);
+            m_Material.SetFloat(ID_NoiseScale, _data.m_NoiseScale);
+            m_Material.SetFloat(ID_NoiseSpeedX, _data.m_NoiseSpeedX);
+            m_Material.SetFloat(ID_NoiseSpeedY, _data.m_NoiseSpeedY);
         }
     }
 }

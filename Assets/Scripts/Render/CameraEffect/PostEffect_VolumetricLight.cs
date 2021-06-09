@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 namespace Rendering.ImageEffect
 {
@@ -57,8 +58,9 @@ namespace Rendering.ImageEffect
         static RenderTargetIdentifier RT_Blur = new RenderTargetIdentifier(RT_ID_Blur);
         #endregion
         public ImageEffect_Blurs m_Blur;
-        public CameraEffect_VolumetricLight() : base()
+        public override void Create()
         {
+            base.Create();
             m_Blur = new ImageEffect_Blurs();
         }
         public override void Destroy()
@@ -67,39 +69,42 @@ namespace Rendering.ImageEffect
             m_Blur.Destroy();
         }
 
-        protected override void OnValidate(CameraEffectParam_VolumetricLight _params, Material _material)
+        public override void OnValidate(CameraEffectParam_VolumetricLight _params)
         {
-            base.OnValidate(_params, _material);
-            m_Blur.DoValidate(_params.m_BlurParam);
-            _material.SetInt(ID_MarchTimes, (int)_params.m_MarchTimes);
-            _material.SetFloat(ID_MarchDistance, _params.m_Distance);
-            _material.SetFloat(ID_LightPow, _params.m_Pow);
-            _material.SetFloat(ID_LightStrength, _params.m_Strength);
-            _material.EnableKeyword(kW_DITHER, _params.m_Dither);
+            base.OnValidate(_params);
+            m_Blur.OnValidate(_params.m_BlurParam);
+            m_Material.SetInt(ID_MarchTimes, (int)_params.m_MarchTimes);
+            m_Material.SetFloat(ID_MarchDistance, _params.m_Distance);
+            m_Material.SetFloat(ID_LightPow, _params.m_Pow);
+            m_Material.SetFloat(ID_LightStrength, _params.m_Strength);
+            m_Material.EnableKeyword(kW_DITHER, _params.m_Dither);
         }
-        protected override void OnExecuteBuffer(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, Material _material, CameraEffectParam_VolumetricLight _param)
+        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor, CameraEffectParam_VolumetricLight _data)
         {
-            _descriptor.colorFormat = RenderTextureFormat.R8;
-            int sampleWidth  = _descriptor.width / _param.m_DownSample;
-            int sampleHeight = _descriptor.height / _param.m_DownSample;
+            base.ExecutePostProcessBuffer(_buffer, _src, _dst, _descriptor, _data);
 
-            if (!_param.m_EnableBlur)
+            _descriptor.width /= _data.m_DownSample;
+            _descriptor.height /= _data.m_DownSample;
+            _descriptor.colorFormat = RenderTextureFormat.R8;
+            _descriptor.depthBufferBits = 0;
+
+            if (!_data.m_EnableBlur)
             {
-                _buffer.GetTemporaryRT(RT_ID_Sample, sampleWidth,sampleHeight,0,FilterMode.Bilinear, _descriptor.colorFormat);
-                _buffer.Blit(_src, RT_ID_Sample, _material, 0);
+                _buffer.GetTemporaryRT(RT_ID_Sample, _descriptor,FilterMode.Bilinear);
+                _buffer.Blit(_src, RT_ID_Sample, m_Material, 0);
                 _buffer.ReleaseTemporaryRT(RT_ID_Sample);
             }
             else
             {
-                _buffer.GetTemporaryRT(RT_ID_Blur, sampleWidth, sampleHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
-                _buffer.GetTemporaryRT(RT_ID_Sample, _descriptor.width,_descriptor.height,0,FilterMode.Bilinear,_descriptor.colorFormat);
-                _buffer.Blit(_src, RT_ID_Blur, _material, 0);
-                m_Blur.ExecuteBuffer(_buffer, _descriptor, RT_ID_Blur, RT_ID_Sample, _param.m_BlurParam);
+                _buffer.GetTemporaryRT(RT_ID_Blur, _descriptor, FilterMode.Bilinear);
+                _buffer.GetTemporaryRT(RT_ID_Sample, _descriptor, FilterMode.Bilinear);
+                _buffer.Blit(_src, RT_ID_Blur, m_Material, 0);
+                m_Blur.ExecutePostProcessBuffer(_buffer, RT_ID_Blur, RT_ID_Sample, _descriptor,_data.m_BlurParam); 
                 _buffer.ReleaseTemporaryRT(RT_ID_Blur);
                 _buffer.ReleaseTemporaryRT(RT_ID_Sample);
             }
 
-            _buffer.Blit(_src, _dst, _material, 1);
+            _buffer.Blit(_src, _dst, m_Material, 1);
         }
     }
 }

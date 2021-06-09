@@ -10,9 +10,9 @@ namespace Rendering.Pipeline
     {
         static readonly int ID_Blit_Temp = Shader.PropertyToID("_PostProcessing_Blit_Temp");
         string m_Name;
-        RenderTargetIdentifier m_SrcTarget;
+        ScriptableRenderer m_Renderer;
         RenderTargetIdentifier m_BlitTarget;
-        IEnumerable<APostEffectBase> m_Effects;
+        IEnumerable<APostProcessBase> m_Effects;
         public SRP_PerCameraPostProcessing(string _name) : base()
         {
             m_Name = _name;
@@ -23,11 +23,17 @@ namespace Rendering.Pipeline
 
         }
 
-        public SRP_PerCameraPostProcessing Setup(RenderTargetIdentifier _srcTarget, IEnumerable<APostEffectBase> _effects)
+        public SRP_PerCameraPostProcessing Setup(ScriptableRenderer _renderer, IEnumerable<APostProcessBase> _effects)
         {
-            m_SrcTarget = _srcTarget;
+            m_Renderer = _renderer;
             m_Effects = _effects;
             return this;
+        }
+        public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
+        {
+            base.Configure(cmd, cameraTextureDescriptor);
+            foreach (var effect in m_Effects)
+                effect.Configure(m_Renderer, cmd, cameraTextureDescriptor, this);
         }
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
@@ -36,17 +42,27 @@ namespace Rendering.Pipeline
             bool blitSrc = true;
             foreach (var effect in m_Effects)
             {
-                RenderTargetIdentifier src = blitSrc ? m_SrcTarget : m_BlitTarget;
-                RenderTargetIdentifier dst = blitSrc ? m_BlitTarget : m_SrcTarget;
-                effect.ExecutePostProcess(cmd, renderingData.cameraData.cameraTargetDescriptor, src, dst);
+                string name = effect.GetType().Name;
+                cmd.BeginSample(name);
+                RenderTargetIdentifier src = blitSrc ? m_Renderer.cameraColorTarget : m_BlitTarget;
+                RenderTargetIdentifier dst = blitSrc ? m_BlitTarget : m_Renderer.cameraColorTarget;
+                effect.Execute(m_Renderer, context, ref renderingData);
+                effect.ExecuteBuffer(cmd, src, dst,renderingData.cameraData.cameraTargetDescriptor);
                 blitSrc = !blitSrc;
+                cmd.EndSample(name);
             }
             if (!blitSrc)
-                cmd.Blit(m_BlitTarget, m_SrcTarget);
+                cmd.Blit(m_BlitTarget, m_Renderer.cameraColorTarget);
             cmd.ReleaseTemporaryRT(ID_Blit_Temp);
             context.ExecuteCommandBuffer(cmd);
             cmd.Clear();
             CommandBufferPool.Release(cmd);
+        }
+        public override void FrameCleanup(CommandBuffer cmd)
+        {
+            base.FrameCleanup(cmd);
+            foreach (var effect in m_Effects)
+                effect.FrameCleanUp(cmd);
         }
     }
 

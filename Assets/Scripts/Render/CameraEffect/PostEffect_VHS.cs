@@ -127,45 +127,45 @@ namespace Rendering.ImageEffect
         const string KW_Vignette = "_VIGNETTE";
         static readonly int ID_VignetteColor = Shader.PropertyToID("_VignetteColor");
         static readonly int ID_VignetteValue = Shader.PropertyToID("_VignetteValue");
-#endregion
+        #endregion
 
-        protected override void OnValidate(ImageEffectParam_VHS _params, Material _material)
+        public override void OnValidate(ImageEffectParam_VHS _data)
         {
-            base.OnValidate(_params, _material);
-            _material.EnableKeywords(KW_SCREENCUT, (int)_params.m_ScreenCut);
-            _material.SetVector(ID_ScreenCutTarget,(Vector2.one+ (_params.m_ScreenCut == enum_VHSScreenCut.Scaled?1:-1)*_params.m_ScreenCutDistance) /2f);
+            base.OnValidate(_data);
+            m_Material.EnableKeywords(KW_SCREENCUT, (int)_data.m_ScreenCut);
+            m_Material.SetVector(ID_ScreenCutTarget,(Vector2.one+ (_data.m_ScreenCut == enum_VHSScreenCut.Scaled?1:-1)*_data.m_ScreenCutDistance) /2f);
 
-            _material.EnableKeyword(KW_ColorBleed, _params.m_ColorBleed);
-            _material.SetInt(ID_ColorBleedIteration, _params.m_ColorBleedIteration);
-            _material.SetFloat(ID_ColorBleedSize, _params.m_ColorBleedSize);
-            _material.SetFloat(ID_ColorBleedStrengthen, _params.m_ColorBleedStrength);
-            _material.SetVector(ID_ColorBleedR, _params.m_ColorBleedR);
-            _material.SetVector(ID_ColorBleedG, _params.m_ColorBleedG);
-            _material.SetVector(ID_ColorBleedB, _params.m_ColorBleedB);
+            m_Material.EnableKeyword(KW_ColorBleed, _data.m_ColorBleed);
+            m_Material.SetInt(ID_ColorBleedIteration, _data.m_ColorBleedIteration);
+            m_Material.SetFloat(ID_ColorBleedSize, _data.m_ColorBleedSize);
+            m_Material.SetFloat(ID_ColorBleedStrengthen, _data.m_ColorBleedStrength);
+            m_Material.SetVector(ID_ColorBleedR, _data.m_ColorBleedR);
+            m_Material.SetVector(ID_ColorBleedG, _data.m_ColorBleedG);
+            m_Material.SetVector(ID_ColorBleedB, _data.m_ColorBleedB);
 
-            _material.EnableKeyword(KW_PixelDistort, _params.m_PixelDistort);
-            _material.SetVector(ID_PixelDistortSize, _params.m_PixelDistortScale);
-            _material.SetFloat(ID_PixelDistortClip, _params.m_PixelDistortClip);
-            _material.SetFloat(ID_PixelDistortFrequency, _params.m_PixelDistortFrequency);
-            _material.SetFloat(ID_PixelDistortStrength, _params.m_PixelDistortStrength);
+            m_Material.EnableKeyword(KW_PixelDistort, _data.m_PixelDistort);
+            m_Material.SetVector(ID_PixelDistortSize, _data.m_PixelDistortScale);
+            m_Material.SetFloat(ID_PixelDistortClip, _data.m_PixelDistortClip);
+            m_Material.SetFloat(ID_PixelDistortFrequency, _data.m_PixelDistortFrequency);
+            m_Material.SetFloat(ID_PixelDistortStrength, _data.m_PixelDistortStrength);
 
-            _material.EnableKeyword(KW_LineDistort,_params.m_LineDistort);
-            _material.SetFloat(ID_LineDistortSpeed, _params.m_LineDistortSpeed);
-            _material.SetFloat(ID_LineDistortClip, _params.m_LineDistortClip);
-            _material.SetFloat(ID_LineDistortFrequency, _params.m_LineDistortFrequency);
-            _material.SetFloat(ID_LineDistortStrength, _params.m_LineDistortStrength);
+            m_Material.EnableKeyword(KW_LineDistort,_data.m_LineDistort);
+            m_Material.SetFloat(ID_LineDistortSpeed, _data.m_LineDistortSpeed);
+            m_Material.SetFloat(ID_LineDistortClip, _data.m_LineDistortClip);
+            m_Material.SetFloat(ID_LineDistortFrequency, _data.m_LineDistortFrequency);
+            m_Material.SetFloat(ID_LineDistortStrength, _data.m_LineDistortStrength);
 
-            _material.EnableKeyword(KW_Grain, _params.m_Grain);
-            _material.SetVector(ID_GrainScale, _params.m_GrainScale);
-            _material.SetColor(ID_GrainColor, _params.m_GrainColor);
-            _material.SetFloat(ID_GrainFrequency, _params.m_GrainFrequency);
-            _material.SetFloat(ID_GrainClip, _params.m_GrainClip);
-            _material.EnableKeyword(KW_GrainCircle, _params.m_GrainCirlce);
-            _material.SetFloat(ID_GrainCircleWidth, _params.m_GrainCircleWidth);
+            m_Material.EnableKeyword(KW_Grain, _data.m_Grain);
+            m_Material.SetVector(ID_GrainScale, _data.m_GrainScale);
+            m_Material.SetColor(ID_GrainColor, _data.m_GrainColor);
+            m_Material.SetFloat(ID_GrainFrequency, _data.m_GrainFrequency);
+            m_Material.SetFloat(ID_GrainClip, _data.m_GrainClip);
+            m_Material.EnableKeyword(KW_GrainCircle, _data.m_GrainCirlce);
+            m_Material.SetFloat(ID_GrainCircleWidth, _data.m_GrainCircleWidth);
 
-            _material.EnableKeyword(KW_Vignette, _params.m_Vignette);
-            _material.SetColor(ID_VignetteColor, _params.m_VignetteColor);
-            _material.SetFloat(ID_VignetteValue, _params.m_VignetteValue);
+            m_Material.EnableKeyword(KW_Vignette, _data.m_Vignette);
+            m_Material.SetColor(ID_VignetteColor, _data.m_VignetteColor);
+            m_Material.SetFloat(ID_VignetteValue, _data.m_VignetteValue);
         }
     }
 }

@@ -76,7 +76,7 @@ namespace Rendering.Pipeline
             if (frustumCornersRay)
                 UpdateFrustumCornersRay(renderingData.cameraData.camera);
             if (opaqueBlurTexture)
-                renderer.EnqueuePass(m_OpaqueBlurPass.Setup(renderer.cameraColorTarget,m_BlurParams));
+                renderer.EnqueuePass(m_OpaqueBlurPass.Setup(renderer,m_BlurParams));
             if (cameraNormalTexture)
                 renderer.EnqueuePass(m_NormalPass);
             if (cameraReflectionTexture)
@@ -132,7 +132,7 @@ namespace Rendering.Pipeline
         }
         void UpdatePostProcess(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
-            var postEffects = renderingData.cameraData.camera.GetComponents<APostEffectBase>().FindAll(p => p.enabled);
+            var postEffects = renderingData.cameraData.camera.GetComponents<APostProcessBase>().FindAll(p => p.enabled);
             if (postEffects.Count() == 0)
                 return;
 
@@ -145,9 +145,9 @@ namespace Rendering.Pipeline
                     continue;
 
                 if (key)
-                    renderer.EnqueuePass(m_PostProcesssing_Opaque.Setup(renderer.cameraColorTarget, dictionary[key]));
+                    renderer.EnqueuePass(m_PostProcesssing_Opaque.Setup(renderer, dictionary[key]));
                 else
-                    renderer.EnqueuePass(m_PostProcesssing_AfterAll.Setup(renderer.cameraColorTarget, dictionary[key]));
+                    renderer.EnqueuePass(m_PostProcesssing_AfterAll.Setup(renderer, dictionary[key]));
             }
         }
     }

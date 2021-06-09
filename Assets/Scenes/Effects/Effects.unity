@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 15725972}
   - component: {fileID: 15725971}
   - component: {fileID: 15725977}
+  - component: {fileID: 15725978}
   - component: {fileID: 15725974}
   - component: {fileID: 15725976}
   - component: {fileID: 15725975}
@@ -304,6 +305,36 @@ MonoBehaviour:
     m_MixRed: {x: 0, y: 0, z: 0}
     m_MixGreen: {x: 0, y: 0, z: 0}
     m_MixBlue: {x: 0, y: 0, z: 0}
+  m_SceneViewPreview: 1
+--- !u!114 &15725978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 15725970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 470b53a701913514e92d942055827517, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectData:
+    m_OpaquePostProcessing: 1
+    m_OutlineColor: {r: 1, g: 0, b: 0, a: 1}
+    m_OutlineType: 0
+    m_OutlineWidth: 0.3
+    m_Convolution: 1
+    m_DetectType: 1
+    m_Strength: 2
+    m_Bias: 5
+    m_CullingMask: 1
+    m_BlurData:
+      m_BlurType: 0
+      m_BlurSize: 0.7
+      m_Iteration: 4
+      m_DownSample: 2
+      m_Angle: 0
+      m_Vector: {x: 0, y: 0}
   m_SceneViewPreview: 1
 --- !u!1 &57150664
 GameObject:
@@ -3226,8 +3257,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c85af998dd99edf45b824a71f34e3c08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ReflectionType: 0
-  m_DownSample: 2
+  m_ReflectionType: 1
+  m_DownSample: 1
   m_PlaneOffset: 0
   m_NormalDistort: 0.05
   m_Sample: 1
@@ -3235,7 +3266,7 @@ MonoBehaviour:
   m_BlurParam:
     m_BlurType: 3
     m_BlurSize: 0.36
-    m_Iteration: 2
+    m_Iteration: 3
     m_DownSample: 1
     m_Angle: 0
     m_Vector: {x: 0.5, y: 0.5}

@@ -17,10 +17,10 @@ public class PostEffect : MonoBehaviour
         m_CircleAreaCamera = m_CircleArea.GetComponent<Camera>();
         TouchInputManager.Instance.SwitchToDualStretch().Init(OnTouchCheck,OnPressCheck);
         UIT_TouchConsole.InitDefaultCommands();
-        foreach(var postEffects in GetComponentsInChildren<APostEffectBase>())
+        foreach(var postEffects in GetComponentsInChildren<APostProcessBase>())
         {
             UIT_TouchConsole.NewPage(postEffects.GetType(). Name);
-            UIT_TouchConsole.InitSerializeCommands<APostEffectBase>(postEffects,effect=>effect.OnValidate());
+            UIT_TouchConsole.InitSerializeCommands<APostProcessBase>(postEffects,effect=>effect.OnValidate());
         }
     }
 

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 namespace Rendering.ImageEffect
 {
@@ -42,8 +43,9 @@ namespace Rendering.ImageEffect
         }
 
         ImageEffect_Blurs m_Blur;
-        public ImageEffect_Bloom() : base()
+        public override void Create()
         {
+            base.Create();
             m_Blur = new ImageEffect_Blurs();
         }
         public override void Destroy()
@@ -51,14 +53,14 @@ namespace Rendering.ImageEffect
             base.Destroy();
             m_Blur.Destroy();
         }
-        protected override void OnValidate(CameraEffectParam_Bloom _params, Material _material)
+        public override void OnValidate(CameraEffectParam_Bloom _data)
         {
-            base.OnValidate(_params, _material);
-            _material.SetFloat(ID_Threshold, _params.threshold);
-            _material.SetFloat(ID_Intensity, _params.intensity);
-             m_Blur.DoValidate(_params.m_BlurParams);
+            base.OnValidate(_data);
+            m_Material.SetFloat(ID_Threshold, _data.threshold);
+            m_Material.SetFloat(ID_Intensity, _data.intensity);
+             m_Blur.OnValidate(_data.m_BlurParams);
         }
-        protected override void OnExecuteBuffer(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, Material _material, CameraEffectParam_Bloom _param)
+        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor, CameraEffectParam_Bloom _data)
         {
             var rtW = _descriptor.width;
             var rtH = _descriptor.height;
@@ -66,11 +68,11 @@ namespace Rendering.ImageEffect
             _buffer.GetTemporaryRT(RT_ID_Blur, rtW, rtH, 0, FilterMode.Bilinear, _descriptor.colorFormat);
             _buffer.GetTemporaryRT(RT_ID_Sample, rtW, rtH, 0, FilterMode.Bilinear, _descriptor.colorFormat);
 
-            _buffer.Blit(_src, RT_Sample, _material, (int)enum_Pass.SampleLight);
+            _buffer.Blit(_src, RT_Sample, m_Material, (int)enum_Pass.SampleLight);
 
-            m_Blur.ExecuteBuffer(_buffer,_descriptor, RT_Sample, RT_Blur, _param.m_BlurParams);
+            m_Blur.ExecutePostProcessBuffer(_buffer, RT_Sample, RT_Blur, _descriptor, _data.m_BlurParams);
 
-            _buffer.Blit(_src, _dst, _material, (int)enum_Pass.AddBloomTex);
+            _buffer.Blit(_src, _dst, m_Material, (int)enum_Pass.AddBloomTex);
 
             _buffer.ReleaseTemporaryRT(RT_ID_Sample);
             _buffer.ReleaseTemporaryRT(RT_ID_Blur);

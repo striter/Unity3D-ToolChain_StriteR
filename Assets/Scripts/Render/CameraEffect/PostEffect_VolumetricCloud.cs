@@ -103,32 +103,32 @@ namespace Rendering.ImageEffect
         static readonly int ID_ScatterRange = Shader.PropertyToID("_ScatterRange");
         static readonly int ID_ScatterStrength = Shader.PropertyToID("_ScatterStrength");
         #endregion
-        protected override void OnValidate(CameraEffectParam_VolumetricCloud _params, Material _material)
+        public override void OnValidate(CameraEffectParam_VolumetricCloud _data)
         {
-            base.OnValidate(_params, _material);
-            _material.SetFloat(ID_VerticalStart, _params.m_VerticalStart);
-            _material.SetFloat(ID_VerticalEnd, _params.m_VerticalStart+_params.m_VerticalLength);
-            _material.SetFloat(ID_Opacity, _params.m_Opacity);
-            _material.SetFloat(ID_Density, _params.m_Density);
-            _material.SetFloat(ID_DensityClip, _params.m_DensityClip);
-            _material.SetFloat(ID_DensitySmooth, _params.m_DensitySmooth/2f*_params.m_Distance);
-            _material.SetFloat(ID_Distance, _params.m_Distance);
-            _material.SetInt(ID_MarchTimes, (int)_params.m_MarchTimes);
-            _material.SetTexture(ID_ColorRamp, _params.m_ColorRamp);
-            _material.SetTexture(ID_MainNoise, _params.m_MainNoise);
-            _material.SetVector(ID_MainNoiseScale, _params.m_MainNoiseScale);
-            _material.SetVector(ID_MainNoiseFlow, _params.m_MainNoiseFlow);
-            _material.EnableKeyword(KW_ShapeMask, _params.m_ShapeMask != null);
-            _material.SetTexture(ID_ShapeMask, _params.m_ShapeMask);
-            _material.SetVector(ID_ShapeScale, _params.m_ShapeMaskScale);
-            _material.SetVector(ID_ShapeFlow, _params.m_ShapeMaskFlow);
-            _material.SetFloat(ID_LightAbsorption, _params.m_LightAbsorption);
-            _material.EnableKeyword(KW_LightMarch,_params.m_LightMarch);
-            _material.SetInt(ID_LightMarchTimes,(int)_params.m_LightMarchTimes);
-            _material.EnableKeyword(KW_LightScatter, _params.m_LightScatter);
-            _material.SetFloat(ID_LightMarchMinimalDistance, _params.m_Distance* _params.m_LightMarchClip);
-            _material.SetFloat(ID_ScatterRange, _params.m_ScatterRange);
-            _material.SetFloat(ID_ScatterStrength, _params.m_ScatterStrength);
+            base.OnValidate(_data);
+            m_Material.SetFloat(ID_VerticalStart, _data.m_VerticalStart);
+            m_Material.SetFloat(ID_VerticalEnd, _data.m_VerticalStart+_data.m_VerticalLength);
+            m_Material.SetFloat(ID_Opacity, _data.m_Opacity);
+            m_Material.SetFloat(ID_Density, _data.m_Density);
+            m_Material.SetFloat(ID_DensityClip, _data.m_DensityClip);
+            m_Material.SetFloat(ID_DensitySmooth, _data.m_DensitySmooth/2f*_data.m_Distance);
+            m_Material.SetFloat(ID_Distance, _data.m_Distance);
+            m_Material.SetInt(ID_MarchTimes, (int)_data.m_MarchTimes);
+            m_Material.SetTexture(ID_ColorRamp, _data.m_ColorRamp);
+            m_Material.SetTexture(ID_MainNoise, _data.m_MainNoise);
+            m_Material.SetVector(ID_MainNoiseScale, _data.m_MainNoiseScale);
+            m_Material.SetVector(ID_MainNoiseFlow, _data.m_MainNoiseFlow);
+            m_Material.EnableKeyword(KW_ShapeMask, _data.m_ShapeMask != null);
+            m_Material.SetTexture(ID_ShapeMask, _data.m_ShapeMask);
+            m_Material.SetVector(ID_ShapeScale, _data.m_ShapeMaskScale);
+            m_Material.SetVector(ID_ShapeFlow, _data.m_ShapeMaskFlow);
+            m_Material.SetFloat(ID_LightAbsorption, _data.m_LightAbsorption);
+            m_Material.EnableKeyword(KW_LightMarch,_data.m_LightMarch);
+            m_Material.SetInt(ID_LightMarchTimes,(int)_data.m_LightMarchTimes);
+            m_Material.EnableKeyword(KW_LightScatter, _data.m_LightScatter);
+            m_Material.SetFloat(ID_LightMarchMinimalDistance, _data.m_Distance* _data.m_LightMarchClip);
+            m_Material.SetFloat(ID_ScatterRange, _data.m_ScatterRange);
+            m_Material.SetFloat(ID_ScatterStrength, _data.m_ScatterStrength);
         }
     }
 }

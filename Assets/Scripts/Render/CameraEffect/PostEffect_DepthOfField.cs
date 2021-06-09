@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 namespace Rendering.ImageEffect
 {
@@ -38,27 +39,31 @@ namespace Rendering.ImageEffect
         #endregion
 
         ImageEffect_Blurs m_Blur;
-        public CameraEffect_DepthOfField() : base() { m_Blur = new ImageEffect_Blurs(); }
+        public override void Create()
+        {
+            base.Create();
+            m_Blur = new ImageEffect_Blurs();
+        }
         public override void Destroy()
         {
             base.Destroy();
             m_Blur.Destroy();
         }
-        protected override void OnValidate(CameraEffectParam_DepthOfField _params, Material _material)
+        public override void OnValidate(CameraEffectParam_DepthOfField _data)
         {
-            base.OnValidate(_params, _material);
-            _material.SetFloat(ID_FocalStart, _params.m_DOFStart);
-            _material.SetFloat(ID_FocalLerp, _params.m_DOFLerp);
-            _material.EnableKeyword(KW_UseBlurDepth, _params.m_DepthBlurSample);
-            _material.SetFloat(ID_BlurSize, _params.m_DepthBlurSize);
-            m_Blur.DoValidate(_params.m_BlurParams);
+            base.OnValidate(_data);
+            m_Material.SetFloat(ID_FocalStart, _data.m_DOFStart);
+            m_Material.SetFloat(ID_FocalLerp, _data.m_DOFLerp);
+            m_Material.EnableKeyword(KW_UseBlurDepth, _data.m_DepthBlurSample);
+            m_Material.SetFloat(ID_BlurSize, _data.m_DepthBlurSize);
+            m_Blur.OnValidate(_data.m_BlurParams);
         }
-        protected override void OnExecuteBuffer(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, Material _material, CameraEffectParam_DepthOfField _param)
+        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor, CameraEffectParam_DepthOfField _data)
         {
-            base.OnExecuteBuffer(_buffer, _descriptor, _src, _dst, _material, _param);
-            _buffer.GetTemporaryRT(RT_ID_Blur,_descriptor.width,_descriptor.height,0,FilterMode.Bilinear,_descriptor.colorFormat);
-            m_Blur.ExecuteBuffer(_buffer,_descriptor,_src, RT_Blur, _param.m_BlurParams);
-            _buffer.Blit(_src, _dst, _material);
+            base.ExecutePostProcessBuffer(_buffer, _src, _dst, _descriptor, _data);
+            _buffer.GetTemporaryRT(RT_ID_Blur, _descriptor.width, _descriptor.height, 0, FilterMode.Bilinear, _descriptor.colorFormat);
+            m_Blur.ExecutePostProcessBuffer(_buffer, _src, RT_ID_Blur,_descriptor, _data.m_BlurParams);
+            _buffer.Blit(_src, _dst, m_Material);
             _buffer.ReleaseTemporaryRT(RT_ID_Blur);
         }
 

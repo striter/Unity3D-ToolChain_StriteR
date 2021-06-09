@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 namespace Rendering.ImageEffect
 {
@@ -71,44 +72,43 @@ namespace Rendering.ImageEffect
         static readonly int ID_BilateralSize = Shader.PropertyToID("_BilateralSize");
         static readonly int ID_BilateralFactor = Shader.PropertyToID("_BilateralFactor");
         #endregion
-        protected override void OnValidate(ImageEffectParam_Stylize _params, Material _material)
+        public override void OnValidate(ImageEffectParam_Stylize _params)
         {
-            base.OnValidate(_params, _material);
-            _material.EnableKeywords(KW_PixelGrid, (int)_params.m_PixelGrid);
-            _material.SetColor(ID_PixelGridColor,_params.m_PixelGridColor);
-            _material.SetVector(ID_PixelGridWidth, new Vector2(_params.m_GridWidth, 1f - _params.m_GridWidth));
-            _material.SetVector(ID_OilPaintKernel, new Vector2(-_params.m_OilPaintKernel / 2, _params.m_OilPaintKernel / 2 + 1));
-            _material.SetFloat(ID_OilPaintSize, _params.m_OilPaintSize);
-            _material.SetFloat(ID_ObraDitherScale, _params.m_ObraDitherScale);
-            _material.SetFloat(ID_ObraDitherStrength, _params.m_ObraDitherStrength);
-            _material.SetColor(ID_ObraDitherColor, _params.m_ObraDitherColor);
-            _material.SetFloat(ID_BilateralSize, _params.m_BilaterailSize);
-            _material.SetFloat(ID_BilateralFactor, _params.m_BilateralFactor);
+            base.OnValidate(_params);
+            m_Material.EnableKeywords(KW_PixelGrid, (int)_params.m_PixelGrid);
+            m_Material.SetColor(ID_PixelGridColor,_params.m_PixelGridColor);
+            m_Material.SetVector(ID_PixelGridWidth, new Vector2(_params.m_GridWidth, 1f - _params.m_GridWidth));
+            m_Material.SetVector(ID_OilPaintKernel, new Vector2(-_params.m_OilPaintKernel / 2, _params.m_OilPaintKernel / 2 + 1));
+            m_Material.SetFloat(ID_OilPaintSize, _params.m_OilPaintSize);
+            m_Material.SetFloat(ID_ObraDitherScale, _params.m_ObraDitherScale);
+            m_Material.SetFloat(ID_ObraDitherStrength, _params.m_ObraDitherStrength);
+            m_Material.SetColor(ID_ObraDitherColor, _params.m_ObraDitherColor);
+            m_Material.SetFloat(ID_BilateralSize, _params.m_BilaterailSize);
+            m_Material.SetFloat(ID_BilateralFactor, _params.m_BilateralFactor);
         }
-        protected override void OnExecuteBuffer(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, Material _material, ImageEffectParam_Stylize _param)
+        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor, ImageEffectParam_Stylize _data)
         {
-            switch (_param.m_Stylize)
+            switch (_data.m_Stylize)
             {
                 default:
-                    base.OnExecuteBuffer(_buffer, _descriptor, _src, _dst, _material, _param);
+                    base.ExecutePostProcessBuffer(_buffer, _src, _dst, _descriptor, _data);
                     break;
                 case enum_Stylize.Pixel:
-                    _buffer.GetTemporaryRT(ID_PixelizeDownSample, _descriptor.width / _param.m_DownSample, _descriptor.height / _param.m_DownSample, 0, FilterMode.Point, _descriptor.colorFormat);
+                    _buffer.GetTemporaryRT(ID_PixelizeDownSample, _descriptor.width / _data.m_DownSample, _descriptor.height / _data.m_DownSample, 0, FilterMode.Point, _descriptor.colorFormat);
                     _buffer.Blit(_src, RT_PixelizeDownSample);
-                    _buffer.Blit(RT_PixelizeDownSample, _dst, _material, 0);
+                    _buffer.Blit(RT_PixelizeDownSample, _dst, m_Material, 0);
                     _buffer.ReleaseTemporaryRT(ID_PixelizeDownSample);
                     break;
                 case enum_Stylize.OilPaint:
-                    _buffer.Blit(_src, _dst, _material, 1);
+                    _buffer.Blit(_src, _dst, m_Material, 1);
                     break;
                 case enum_Stylize.ObraDithering:
-                    _buffer.Blit(_src, _dst,_material, 2);
+                    _buffer.Blit(_src, _dst, m_Material, 2);
                     break;
                 case enum_Stylize.BilateralFilter:
-                    _buffer.Blit(_src, _dst, _material, 3);
+                    _buffer.Blit(_src, _dst, m_Material, 3);
                     break;
             }
         }
     }
-
 }

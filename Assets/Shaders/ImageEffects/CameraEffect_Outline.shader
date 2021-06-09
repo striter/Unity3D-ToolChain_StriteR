@@ -8,9 +8,15 @@
 	{
 		// No culling or depth
 		Cull Off ZWrite Off ZTest Always
+		HLSLINCLUDE
+			#include "../CommonInclude.hlsl"
+            #include "../CameraEffectInclude.hlsl"
+			half4 _OutlineColor;
+		ENDHLSL
 
 		Pass
 		{
+			Name "Overlay Outline"
 			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
@@ -20,13 +26,9 @@
 			#pragma shader_feature_local _COLORREPLACE
 			#pragma shader_feature_local _NORMALDETECT
 			
-			#include "../CommonInclude.hlsl"
-            #include "../CameraEffectInclude.hlsl"
 			uint convolution;
-			half4 _OutlineColor;
 			half _OutlineWidth;
 			half _Bias;
-			half4 _ReplaceColor;
 
 			struct v2f
 			{
@@ -73,22 +75,33 @@
 					#elif _DETECT_NORMAL
 					diff=abs(dot(ClipSpaceNormalFromDepth(i.uv[it]),float3(0,0,-1)));
 					#else
-					diff=Linear01Depth(i.uv[it]);
+					diff=LinearEyeDepth(i.uv[it]);
 					#endif
 					edgeX+=diff*Gx[it];
 					edgeY+=diff*Gy[it];
 				}
 				half edgeDetect=step(_Bias,abs(edgeX)+abs(edgeY));
+				return float4( lerp(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv[4]).rgb,_OutlineColor.rgb,edgeDetect),1);
+			}
+			ENDHLSL
+		}
 
-
-				float3 finalCol=1;
-				#if _COLORREPLACE
-				finalCol= lerp(_ReplaceColor.rgb,_OutlineColor.rgb,edgeDetect);
-				#else
-				finalCol= lerp(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv[4]).rgb,_OutlineColor.rgb,edgeDetect);
-				#endif
+		Pass
+		{
+			Name "Culled Blur Outline"
+			HLSLPROGRAM
+			#pragma vertex vert_img
+			#pragma fragment frag
+			TEXTURE2D(_OUTLINE_MASK);SAMPLER(sampler_OUTLINE_MASK);
+			TEXTURE2D(_OUTLINE_MASK_BLUR);SAMPLER(sampler_OUTLINE_MASK_BLUR);
+			float4 frag(v2f_img i):SV_TARGET
+			{
+				float mask=SAMPLE_TEXTURE2D(_OUTLINE_MASK_BLUR,sampler_OUTLINE_MASK_BLUR,i.uv).r-SAMPLE_TEXTURE2D(_OUTLINE_MASK,sampler_OUTLINE_MASK,i.uv).r;
+				float3 finalCol= SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
+				finalCol+=saturate(mask)*_OutlineColor.rgb;
 				return float4(finalCol,1);
 			}
+
 			ENDHLSL
 		}
 	}
