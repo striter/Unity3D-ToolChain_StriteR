@@ -159,17 +159,7 @@ namespace TEditor
                 if (m_DrawColorType != enum_ColorVisualize.None)
                 {
                     Color vertexColor = Color.clear;
-
-                    switch (m_DrawColorType)
-                    {
-                        case enum_ColorVisualize.RGBA: vertexColor = m_Colors[i]; break;
-                        case enum_ColorVisualize.RGB:vertexColor = m_Colors[i].SetAlpha(1);break;
-                        case enum_ColorVisualize.R: vertexColor = Color.red * m_Colors[i].r; ; break;
-                        case enum_ColorVisualize.G: vertexColor = Color.green * m_Colors[i].g; break;
-                        case enum_ColorVisualize.B: vertexColor = Color.blue * m_Colors[i].b; break;
-                        case enum_ColorVisualize.A: vertexColor = Color.white * m_Colors[i].a; break;
-                    }
-                    Handles.color = vertexColor;
+                    Handles.color = m_DrawColorType.FilterColor(m_Colors[i]);
                     Handles.DrawLine(m_Verticies[i], m_Verticies[i] + m_Normals[i] * m_ColorLength);
                 }
             }

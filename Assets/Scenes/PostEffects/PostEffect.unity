@@ -2213,8 +2213,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EffectData:
     m_Origin: {x: -4.65155, y: 0, z: 2.2669978}
-    m_Color: {r: 3.7479095, g: 9.802225, b: 27.53272, a: 1}
-    m_Elapse: 6.33
+    m_Color: {r: 6.088498, g: 15.923765, b: 44.727043, a: 1}
+    m_Elapse: 5.52
     m_Width: 1.15
     m_FadingPow: 1.434
     m_MaskTexture: {fileID: 2800000, guid: 71cd7dc05d8fcb449b9782c3ef25eca7, type: 3}

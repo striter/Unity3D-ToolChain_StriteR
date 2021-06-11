@@ -4,11 +4,10 @@
 	{
 		_MainTex("Main Tex",2D) = "white"{}
 		_Color("Color",Color) = (1,1,1,1)
-		[Header(PBR)]
-		[Fold(_ROUGHNESSMAP)]_Glossiness("Glossiness",Range(0,1))=1
-		[ToggleTex(_ROUGHNESSMAP)][NoScaleOffset]_RoughnessTex("Roughness Tex",2D)="white"{}
-        [Fold(_METALLICMAP)]_Metallic("Metalness",Range(0,1))=0
-		[ToggleTex(_METALLICMAP)][NoScaleOffset]_MetallicTex("Metallic Tex",2D)="white"{}
+		[Fold(_PBRMAP)]_Glossiness("Glossiness",Range(0,1))=1
+        [Fold(_PBRMAP)]_Metallic("Metalness",Range(0,1))=0
+		[Header(Roughness.Metallic.AO)]
+		[ToggleTex(_PBRMAP)] [NoScaleOffset]_PBRTex("PBR Tex",2D)="white"{}
 
 		[Header(_Functions)]
         [KeywordEnum(BlinnPhong,CookTorrance,Beckmann,Gaussian,GGX,TrowbridgeReitz,Anisotropic_TrowbridgeReitz,Anisotropic_Ward)]_NDF("Normal Distribution Function:",float) = 2
@@ -17,7 +16,6 @@
 
 		[Header(Additional Mapping)]
 		[ToggleTex(_NORMALMAP)][NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
-		[ToggleTex(_AOMAP)][NoScaleOffset]_AOTex("AO Tex",2D)="white"{}
 		[ToggleTex(_PARALLEXMAP)][NoScaleOffset]_ParallexTex("Parallex Tex",2D)="white"{}
 		[Foldout(_PARALLEXMAP)]_ParallexScale("Parallex Scale",Range(0.001,.2))=1
 		[Foldout(_PARALLEXMAP)]_ParallexOffset("Parallex Offset",Range(0,1))=.42
@@ -57,23 +55,19 @@
             #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
             #pragma multi_compile _ _SHADOWS_SOFT
 			
-			#pragma shader_feature_local _ROUGHNESSMAP
-			#pragma shader_feature_local _METALLICMAP
+			#pragma shader_feature_local _PBRMAP
 			#pragma shader_feature_local _SPECULAR
 			#pragma shader_feature_local _NORMALMAP
 			#pragma shader_feature_local _PARALLEXMAP
 			#pragma shader_feature_local _PARALLEX_STEEP
-			#pragma shader_feature_local _AOMAP
             
 			#pragma multi_compile_local _NDF_BLINNPHONG _NDF_COOKTORRANCE _NDF_BECKMANN _NDF_GAUSSIAN _NDF_GGX _NDF_TROWBRIDGEREITZ _NDF_ANISOTROPIC_TROWBRIDGEREITZ _NDF_ANISOTROPIC_WARD
 			#pragma multi_compile_local _VF_BLINNPHONG _VF_GGX
 		
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
-			TEXTURE2D(_RoughnessTex);SAMPLER(sampler_RoughnessTex);
-			TEXTURE2D(_MetallicTex);SAMPLER(sampler_MetallicTex);
+			TEXTURE2D(_PBRTex);SAMPLER(sampler_PBRTex);
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
 			TEXTURE2D(_ParallexTex);SAMPLER(sampler_ParallexTex);
-			TEXTURE2D(_AOTex);SAMPLER(sampler_AOTex);
 			UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 			INSTANCING_PROP(float,_Glossiness)
 			INSTANCING_PROP(float,_Metallic)
@@ -183,25 +177,16 @@
 
 				float4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*_Color;
 				float3 albedo=color.rgb;
-				
 				float alpha=color.a;
-				float glossiness=
-				#if _ROUGHNESSMAP
-				(1-SAMPLE_TEXTURE2D(_RoughnessTex,sampler_RoughnessTex,i.uv)).r;
-				#else
-				_Glossiness;
-				#endif
 
-				float metallic=
-				#if _METALLICMAP
-				SAMPLE_TEXTURE2D(_MetallicTex,sampler_MetallicTex,i.uv).r;
-				#else
-				_Metallic;
-				#endif
-				
+				float glossiness=_Glossiness;
+				float metallic=_Metallic;
 				float ao=1;
-				#if _AOMAP
-				ao*=SAMPLE_TEXTURE2D(_AOTex,sampler_AOTex,i.uv).r;
+				#if _PBRMAP
+				float3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,i.uv);
+				glossiness=1.-mix.r;
+				metallic=mix.g;
+				ao=mix.b;
 				#endif
 
                 float3 normal=normalize(normalWS);
