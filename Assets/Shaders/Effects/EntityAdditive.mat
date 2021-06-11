@@ -80,7 +80,7 @@ Material:
     - _NoiseFlowX: 0.1
     - _NoiseFlowY: 1
     - _NoisePow: 5
-    - _NoiseStrength: 1.84
+    - _NoiseStrength: 1
     - _OPTIMIZE: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
@@ -90,7 +90,7 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 1.7411011, g: 0.49160504, b: 0, a: 1}
+    - _Color: {r: 15.104688, g: 8.496737, b: 5.9136276, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _NoiseFlow: {r: 0.1, g: 0.1, b: 0, a: 0}
   m_BuildTextureStacks: []

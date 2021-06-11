@@ -14,7 +14,7 @@
     }
     SubShader
     {
-        Tags{"Queue"="Transparent" "DisableBatching"="True" "IgnoreProjector" = "True"  }
+        Tags{"Queue"="Transparent" }
         Pass
         {
             Blend [_SrcBlend] [_DstBlend]

@@ -1598,24 +1598,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EffectData:
     m_OpaquePostProcessing: 0
-    m_OutlineColor: {r: 3.8325803, g: 3.2072098, b: 0.601976, a: 1}
-    m_OutlineType: 0
-    m_OutlineWidth: 0.82
+    m_Color: {r: 3.4165, g: 0.596276, b: 0.596276, a: 1}
+    m_Type: 0
+    m_Width: 0
     m_Convolution: 1
     m_DetectType: 1
     m_Strength: 0.44
     m_Bias: 0.19
     m_CullingMask: 256
-    m_BlurData:
+    m_ZClip: 1
+    m_ZLesser: 1
+    m_ZOffset: 0.23
+    m_OutlineBlur:
       m_BlurType: 3
-      m_BlurSize: 1.29
-      m_Iteration: 6
+      m_BlurSize: 1.14
+      m_Iteration: 4
       m_DownSample: 2
       m_Angle: 0
       m_Vector: {x: 0, y: 0}
-    m_ZClip: 1
-    m_ZLesser: 0
-    m_ZOffset: 1
   m_SceneViewPreview: 1
 --- !u!114 &1230212950
 MonoBehaviour:

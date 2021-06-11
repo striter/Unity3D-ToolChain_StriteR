@@ -3,7 +3,7 @@ Shader "Game/UI/Sprite_Outline"
 {
 	Properties
 	{
-		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
+		_MainTex("Sprite Texture", 2D) = "white" {}
 		_Color("Tint", Color) = (1,1,1,1)
 
 		_OutlineColor("Outline Color",Color)=(1,1,1,1)
