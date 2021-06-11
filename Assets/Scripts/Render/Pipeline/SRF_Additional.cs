@@ -27,8 +27,8 @@ namespace Rendering.Pipeline
         SRP_OpaqueBlurTexture m_OpaqueBlurPass;
         SRP_NormalTexture m_NormalPass;
         SRP_PlanarReflection[] m_ReflecitonPasses;
-        SRP_PerCameraPostProcessing m_PostProcesssing_Opaque;
-        SRP_PerCameraPostProcessing m_PostProcesssing_AfterAll;
+        SRP_ComponentBasedPostProcess m_PostProcesssing_Opaque;
+        SRP_ComponentBasedPostProcess m_PostProcesssing_AfterAll;
         public override void Create()
         {
             m_OpaqueBlurPass = new SRP_OpaqueBlurTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 1 };
@@ -36,8 +36,8 @@ namespace Rendering.Pipeline
             m_ReflecitonPasses = new SRP_PlanarReflection[SRP_PlanarReflection.C_MaxReflectionTextureCount];
             for (int i=0;i<SRP_PlanarReflection.C_MaxReflectionTextureCount;i++)
                 m_ReflecitonPasses[i] = new SRP_PlanarReflection() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 3};
-            m_PostProcesssing_Opaque = new SRP_PerCameraPostProcessing("Opaque Post Process") { renderPassEvent = RenderPassEvent.AfterRenderingSkybox+4 };
-            m_PostProcesssing_AfterAll = new SRP_PerCameraPostProcessing("After All Post Process") { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing };
+            m_PostProcesssing_Opaque = new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox+4 };
+            m_PostProcesssing_AfterAll = new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing };
 #if UNITY_EDITOR
             m_CameraReflectionComputeShader = UnityEditor.AssetDatabase.LoadAssetAtPath<ComputeShader>("Assets/Shaders/Compute/PlanarReflection.compute");
 #endif

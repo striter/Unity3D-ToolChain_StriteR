@@ -39,16 +39,16 @@ namespace Rendering.ImageEffect
     public abstract class APostProcessBase:MonoBehaviour
     {
         public abstract bool m_IsOpaqueProcess { get; }
-        public abstract void Configure(ScriptableRenderer _renderer, CommandBuffer _buffer, RenderTextureDescriptor _descriptor,ScriptableRenderPass _pass);
-        public abstract void Execute(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData);
+        public abstract void Configure( CommandBuffer _buffer, RenderTextureDescriptor _descriptor);
+        public abstract void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData);
         public abstract void ExecuteBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _executeData);
         public abstract void FrameCleanUp(CommandBuffer _buffer);
         public abstract void OnValidate();
     }
     public interface ImageEffectPipeline<T> where T:struct
     {
-        public abstract void Configure(ScriptableRenderer _renderer, CommandBuffer _buffer, RenderTextureDescriptor _descriptor, ScriptableRenderPass _pass, T _data);
-        public abstract void Execute(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,T _data);
+        public abstract void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, T _data);
+        public abstract void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,T _data);
         public abstract void FrameCleanUp(CommandBuffer _buffer,T _data);
     }
 
@@ -75,8 +75,8 @@ namespace Rendering.ImageEffect
             OnValidate();
         }
         public override bool m_IsOpaqueProcess => false;
-        public override void Configure(ScriptableRenderer _renderer, CommandBuffer _buffer, RenderTextureDescriptor _descriptor, ScriptableRenderPass _pass) => m_EffectPipeline?.Configure(_renderer, _buffer,_descriptor,_pass,m_EffectData);
-        public override void Execute(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData) => m_EffectPipeline?.Execute(_renderer, _context, ref _renderingData,m_EffectData);
+        public override void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor) => m_EffectPipeline?.Configure(_buffer,_descriptor,m_EffectData);
+        public override void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData) => m_EffectPipeline?.ExecuteContext(_renderer, _context, ref _renderingData,m_EffectData);
         public override void ExecuteBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _descriptor)  => m_Effect?.ExecutePostProcessBuffer(_buffer, _src, _dst, _descriptor, m_EffectData);
         public override void FrameCleanUp(CommandBuffer _buffer) => m_EffectPipeline?.FrameCleanUp(_buffer,m_EffectData);
         void Destroy()

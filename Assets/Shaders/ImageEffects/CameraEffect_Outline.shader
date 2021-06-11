@@ -97,7 +97,7 @@
 			float4 frag(v2f_img i):SV_TARGET
 			{
 				float mask=SAMPLE_TEXTURE2D(_OUTLINE_MASK_BLUR,sampler_OUTLINE_MASK_BLUR,i.uv).r-SAMPLE_TEXTURE2D(_OUTLINE_MASK,sampler_OUTLINE_MASK,i.uv).r;
-				float3 finalCol= SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
+				float3 finalCol= SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb;
 				finalCol+=saturate(mask)*_OutlineColor.rgb;
 				return float4(finalCol,1);
 			}

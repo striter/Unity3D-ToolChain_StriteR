@@ -44,6 +44,9 @@ namespace Rendering.ImageEffect
 
         [MFoldout(nameof(m_OutlineType), enum_OutlineType.MaskBlur)] [CullingMask] public int m_CullingMask;
         [MFoldout(nameof(m_OutlineType), enum_OutlineType.MaskBlur)] public ImageEffectParam_Blurs m_BlurData;
+        [MFoldout(nameof(m_OutlineType), enum_OutlineType.MaskBlur)] public bool m_ZClip;
+        [MFoldout(nameof(m_OutlineType), enum_OutlineType.MaskBlur, nameof(m_ZClip), true)] public bool m_ZLesser;
+        [MFoldout(nameof(m_OutlineType), enum_OutlineType.MaskBlur,nameof(m_ZClip),true)] [Range(0.01f,1f)] public float m_ZOffset;
         public static readonly CameraEffectParam_Outline m_Default = new CameraEffectParam_Outline()
         {
             m_OpaquePostProcessing = false,
@@ -55,6 +58,9 @@ namespace Rendering.ImageEffect
             m_Strength = 2f,
             m_Bias = .5f,
             m_CullingMask = int.MaxValue,
+            m_ZClip=true,
+            m_ZOffset=.2f,
+            m_ZLesser=true,
         };
     }
 
@@ -70,18 +76,27 @@ namespace Rendering.ImageEffect
 
         static readonly int ID_MaskRender = Shader.PropertyToID("_OUTLINE_MASK");
         static readonly RenderTargetIdentifier RT_ID_MaskRender = new RenderTargetIdentifier(ID_MaskRender);
+        static readonly int ID_MaskDepth = Shader.PropertyToID("_OUTLINE_MASK_DEPTH");
+        static readonly RenderTargetIdentifier RT_ID_MaskDepth = new RenderTargetIdentifier(ID_MaskDepth);
         static readonly int ID_MaskRenderBlur = Shader.PropertyToID("_OUTLINE_MASK_BLUR");
         static readonly RenderTargetIdentifier RT_ID_MaskRenderBlur = new RenderTargetIdentifier(ID_MaskRenderBlur);
+
+        const string KW_DepthForward = "_CSFORWARD";
+        static readonly int ID_ZTest = Shader.PropertyToID("_ZTest");
+        static readonly int ID_DepthForwardAmount = Shader.PropertyToID("_ClipSpaceForwardAmount");
         #endregion
         RenderTextureDescriptor m_Descriptor;
         Material m_RenderMaterial;
+        Material m_RenderDepthMaterial;
         List<ShaderTagId> m_ShaderTagIDs = new List<ShaderTagId>();
         ImageEffect_Blurs m_Blur;
         public override void Create()
         {
             base.Create();
+
             m_Blur = new ImageEffect_Blurs();
             m_RenderMaterial = new Material(Shader.Find("Game/Unlit/Color")) { hideFlags = HideFlags.HideAndDontSave };
+            m_RenderDepthMaterial = new Material(Shader.Find("Hidden/CopyDepth")) { hideFlags = HideFlags.HideAndDontSave };
             m_RenderMaterial.SetColor("_Color", Color.white);
             m_ShaderTagIDs.FillWithDefaultTags();
         }
@@ -100,36 +115,63 @@ namespace Rendering.ImageEffect
             m_Material.EnableKeywords(KW_DetectType, (int)_data.m_DetectType);
             m_Material.SetFloat(ID_Strength, _data.m_Strength);
             m_Material.SetFloat(ID_Bias, _data.m_Bias);
+
+            m_RenderMaterial.EnableKeyword(KW_DepthForward, _data.m_ZClip);
+            if (_data.m_ZClip)
+            {
+                m_RenderMaterial.SetInt(ID_ZTest, (int)(_data.m_ZLesser ?CompareFunction.Less:CompareFunction.Greater));
+                m_RenderMaterial.SetFloat(ID_DepthForwardAmount, _data.m_ZOffset);
+            }
         }
-        public void Configure(ScriptableRenderer _renderer, CommandBuffer _buffer, RenderTextureDescriptor _descriptor, ScriptableRenderPass _pass, CameraEffectParam_Outline _data)
+
+        public void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, CameraEffectParam_Outline _data)
         {
             if (_data.m_OutlineType != enum_OutlineType.MaskBlur)
                 return;
+            m_Descriptor = new RenderTextureDescriptor(_descriptor.width, _descriptor.height, RenderTextureFormat.R8, 0, 0);
 
-            m_Descriptor = new RenderTextureDescriptor(_descriptor.width,_descriptor.height,RenderTextureFormat.R8,0,0);
             _buffer.GetTemporaryRT(ID_MaskRender, m_Descriptor, FilterMode.Bilinear);
             _buffer.GetTemporaryRT(ID_MaskRenderBlur, m_Descriptor, FilterMode.Bilinear);
-            _buffer.SetRenderTarget(RT_ID_MaskRender);
-            _buffer.ClearRenderTarget(false,true,Color.black);
+
+            if (!_data.m_ZClip)
+                return;
+            var depthDescriptor = new RenderTextureDescriptor(_descriptor.width, _descriptor.height, RenderTextureFormat.Depth, 32, 0);
+            _buffer.GetTemporaryRT(ID_MaskDepth, depthDescriptor);
+            _buffer.Blit(RenderTargetHandle.CameraTarget.id, RT_ID_MaskDepth, m_RenderDepthMaterial);
         }
 
-        public void FrameCleanUp(CommandBuffer _buffer, CameraEffectParam_Outline _data)
+        public void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData, CameraEffectParam_Outline _data)
         {
             if (_data.m_OutlineType != enum_OutlineType.MaskBlur)
                 return;
-
-            _buffer.ReleaseTemporaryRT(ID_MaskRender);
-            _buffer.ReleaseTemporaryRT(ID_MaskRenderBlur);
-        }
-        public void Execute(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData, CameraEffectParam_Outline _data)
-        {
-            if (_data.m_OutlineType != enum_OutlineType.MaskBlur)
-                return;
+            CommandBuffer buffer = CommandBufferPool.Get("Outline Execute");
+            ref var _descriptor = ref _renderingData.cameraData.cameraTargetDescriptor;
+            if (!_data.m_ZClip)
+                buffer.SetRenderTarget(RT_ID_MaskRender);
+            else
+                buffer.SetRenderTarget(RT_ID_MaskRender, RT_ID_MaskDepth);
+            buffer.ClearRenderTarget(false, true, Color.black);
+            _context.ExecuteCommandBuffer(buffer);
 
             DrawingSettings drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
             drawingSettings.overrideMaterial = m_RenderMaterial;
             FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = _data.m_CullingMask };
             _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
+
+            buffer.Clear();
+            buffer.SetRenderTarget(_renderer.cameraColorTarget);
+            _context.ExecuteCommandBuffer(buffer);
+            CommandBufferPool.Release(buffer);
+        }
+        public void FrameCleanUp(CommandBuffer _buffer, CameraEffectParam_Outline _data)
+        {
+            if (_data.m_OutlineType != enum_OutlineType.MaskBlur)
+                return;
+            _buffer.ReleaseTemporaryRT(ID_MaskRender);
+            _buffer.ReleaseTemporaryRT(ID_MaskRenderBlur);
+            if (!_data.m_ZClip)
+                return;
+            _buffer.ReleaseTemporaryRT(ID_MaskDepth);
         }
         public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor, CameraEffectParam_Outline _data)
         {
@@ -142,8 +184,6 @@ namespace Rendering.ImageEffect
                     break;
                 case enum_OutlineType.MaskBlur:
                     {
-                        _descriptor.colorFormat = RenderTextureFormat.R8;
-
                         m_Blur.ExecutePostProcessBuffer(_buffer, RT_ID_MaskRender, RT_ID_MaskRenderBlur, m_Descriptor, _data.m_BlurData);
                         _buffer.Blit(_src, _dst, m_Material, 1);
                     }

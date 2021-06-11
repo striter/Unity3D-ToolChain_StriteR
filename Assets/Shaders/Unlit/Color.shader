@@ -2,8 +2,13 @@
 {
 	Properties
 	{
+		_MainTex("Main Tex",2D)="white"{}
 	    [HDR]_Color("HDR Color",Color)=(1,1,1,1)
-		_ShapeTexture("Shape",2D)="white"{}
+
+		[Header(Misc)]
+		[Toggle(_CSFORWARD)]_ClipSpaceForward("Clip Space Forward",float)=0
+		[Foldout(_CSFORWARD)]_ClipSpaceForwardAmount("Forward Amount",Range(0.01,1))=.2
+		[Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
 	}
 
 	SubShader
@@ -11,6 +16,7 @@
 		Tags {"RenderType" = "HDREmitter" "IgnoreProjector" = "True" "Queue" = "Transparent" }
 		
 		Lighting Off Fog { Color(0,0,0,0) }
+		ZTest [_ZTest]
 		ZWrite Off
 		Blend SrcAlpha OneMinusSrcAlpha
 
@@ -22,6 +28,8 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile_instancing
+			#pragma shader_feature _CSFORWARD
+
 			#include "../CommonInclude.hlsl"
 			struct appdata
 			{
@@ -38,16 +46,21 @@
 				float2 uv:TEXCOORD1;
 			};
 
-			sampler2D _ShapeTexture;
+			sampler2D _MainTex;
 			INSTANCING_BUFFER_START
 				INSTANCING_PROP(float4, _Color)
+				INSTANCING_PROP(float,_ClipSpaceForwardAmount)
 			INSTANCING_BUFFER_END
 
 			v2f vert(appdata v)
 			{
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
-				o.positionCS = TransformObjectToHClip(v.positionOS);
+				float4 positionOS= TransformObjectToHClip(v.positionOS);
+				#if _CSFORWARD
+				positionOS.z+=_ClipSpaceForwardAmount*positionOS.z;
+				#endif
+				o.positionCS =positionOS;
 				o.uv = v.uv;
 				o.color = v.color*INSTANCE(_Color);
 				return o;
@@ -55,7 +68,7 @@
 
 			float4 frag(v2f i) : SV_Target
 			{
-				return tex2D(_ShapeTexture,i.uv).r*i.color;
+				return tex2D(_MainTex,i.uv).r*i.color;
 			}
 			ENDHLSL
 		}

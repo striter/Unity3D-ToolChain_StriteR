@@ -25,12 +25,21 @@
 		[Foldout(_PARALLEXMAP)]_ParallexOffset("Parallex Offset",Range(0,1))=.42
 		[Toggle(_PARALLEX_STEEP)]_SteepParallex("Steep Parallex",float)=0
 		[Enum(_8,8,_16,16,_32,32,_64,64,_128,128)]_SteepCount("Steep Count",int)=16
+
+		//[Header(Misc)]
+  //      [Enum(UnityEngine.Rendering.BlendMode)]_SrcBlend("Src Blend",int)=0
+  //      [Enum(UnityEngine.Rendering.BlendMode)]_DstBlend("Dst Blend",int)=0
+  //      [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
+  //      [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
+  //      [Enum(Off,0,Back,1,Front,2)]_Cull("Cull",int)=1
 	}
 	SubShader
 	{
-		Tags { "RenderType" = "Opaque" "Queue" = "Geometry" }
-		Cull Back
-		Blend Off
+		Tags { "Queue" = "Geometry" }
+		//Blend [_SrcBlend] [_DstBlend]
+		//ZWrite [_ZWrite]
+		//ZTest [_ZTest]
+		//Cull [_Cull]
 
 		Pass
 		{
@@ -122,7 +131,7 @@
 			#if _PARALLEXMAP
 			float GetParallex(float2 uv)
 			{
-				return 1.0-SAMPLE_TEXTURE2D(_ParallexTex,sampler_ParallexTex,uv);
+				return 1.0-SAMPLE_TEXTURE2D(_ParallexTex,sampler_ParallexTex,uv).r;
 			}
 			float2 ParallexMap(float2 uv,float3 viewDirTS)
 			{
@@ -181,21 +190,21 @@
 				float alpha=color.a;
 				float glossiness=
 				#if _ROUGHNESSMAP
-				(1-SAMPLE_TEXTURE2D(_RoughnessTex,sampler_RoughnessTex,i.uv));
+				(1-SAMPLE_TEXTURE2D(_RoughnessTex,sampler_RoughnessTex,i.uv)).r;
 				#else
 				_Glossiness;
 				#endif
 
 				float metallic=
 				#if _METALLICMAP
-				SAMPLE_TEXTURE2D(_MetallicTex,sampler_MetallicTex,i.uv);
+				SAMPLE_TEXTURE2D(_MetallicTex,sampler_MetallicTex,i.uv).r;
 				#else
 				_Metallic;
 				#endif
 				
 				float ao=1;
 				#if _AOMAP
-				ao*=SAMPLE_TEXTURE2D(_AOTex,sampler_AOTex,i.uv);
+				ao*=SAMPLE_TEXTURE2D(_AOTex,sampler_AOTex,i.uv).r;
 				#endif
 
                 float3 normal=normalize(normalWS);
