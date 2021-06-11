@@ -3311,7 +3311,7 @@ MonoBehaviour:
   m_ReflectionType: 0
   m_DownSample: 1
   m_PlaneOffset: 0
-  m_NormalDistort: 0.2
+  m_NormalDistort: 0.041
   m_Sample: 1
   m_EnableBlur: 0
   m_BlurParam:

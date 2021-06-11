@@ -15,7 +15,6 @@
     half NDV;
     
     half grazingTerm;
-    half fresnelTerm;
     half perceptualRoughness;
     half roughness;
     half roughness2;
@@ -31,6 +30,6 @@ struct BRDFLight
     half3 viewReflectDir;
     half3 lightReflectDir;
     
-    half geometricShadow;
     half normalDistribution;
+    half invNormalizationTerm;
 };

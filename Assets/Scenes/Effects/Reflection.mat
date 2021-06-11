@@ -118,7 +118,7 @@ Material:
     - _FRESNEL: 0
     - _GSF: 6
     - _GlossMapScale: 0
-    - _Glossiness: 0.85
+    - _Glossiness: 1
     - _GlossyReflections: 0
     - _Ior: 1
     - _Lambert: 0

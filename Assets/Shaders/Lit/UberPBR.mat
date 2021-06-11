@@ -9,8 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UberPBR
   m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
-  m_ShaderKeywords: _AOMAP _F_IMPLICIT _F_SCHLICK _GSF_COOKTORRANCE _METALLICMAP
-    _NDF_COOKTORRANCE _NORMALMAP _PARALLEXMAP _ROUGHNESSMAP
+  m_ShaderKeywords: _AOMAP _F_IMPLICIT _F_SCHLICK _GSF_COOKTORRANCE _NDF_COOKTORRANCE
+    _NORMALMAP _PARALLEXMAP _VF_GGX
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -21,7 +21,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _AOTex:
-        m_Texture: {fileID: 2800000, guid: 10825124709c2bf4b82cc6d67daac429, type: 3}
+        m_Texture: {fileID: 2800000, guid: 23770a160eda9a742b84b66e3742cb5e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
@@ -49,7 +49,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 6f9db56490a0ebd4b81daf4c3f5709b0, type: 3}
+        m_Texture: {fileID: 2800000, guid: 646da4453bd230f48a5994f17b37095a, type: 3}
         m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -57,11 +57,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicTex:
-        m_Texture: {fileID: 2800000, guid: 367e5807bd920984e8c4a9556e85c943, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTex:
-        m_Texture: {fileID: 2800000, guid: 1af8c9dba40d07841823c9aa75513739, type: 3}
+        m_Texture: {fileID: 2800000, guid: 8457331359dae744f8c8e2a2a31a37fc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -73,11 +73,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallexTex:
-        m_Texture: {fileID: 2800000, guid: 6df7976dfa00819478feea3a8a8ba164, type: 3}
+        m_Texture: {fileID: 2800000, guid: 23337338d7e7297459535f78eb1063a5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RoughnessTex:
-        m_Texture: {fileID: 2800000, guid: 4bca6e3baae91304cb1fa060c2b734d7, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -122,7 +122,7 @@ Material:
     - _GlossyReflections: 0
     - _Ior: 1
     - _Lambert: 0
-    - _Metallic: 0
+    - _Metallic: 1
     - _NDF: 1
     - _OcclusionStrength: 0
     - _Parallax: 0.005
@@ -138,6 +138,7 @@ Material:
     - _SteepCount: 128
     - _SteepParallex: 0
     - _Surface: 0
+    - _VF: 1
     - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 1

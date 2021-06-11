@@ -9,14 +9,6 @@ float pow3(float value) { return value*value*value; }
 float pow4(float value) { return value * value * value * value ;}
 float pow5(float value) { return value * value * value * value * value;}
 
-//float GSF_Burley(float NDL,float NDV,float LDH,float roughness)
-//{
-//    half FD90MinusOne = -.5 + 2.0 * LDH * LDH * roughness;
-//    float NDLPow5 = pow5(1. - NDL);
-//    float NDVPow5 = pow5(1. - NDV);
-//    return (1. + FD90MinusOne * NDLPow5) * (1. - FD90MinusOne * NDVPow5) * NDL;
-//}
-
 //NDF,Normal Distribution Function
 
 float NDF_BlinnPhong(float NDH, float specularPower, float specularGloss)
@@ -53,8 +45,7 @@ float NDF_CookTorrance(float NDH,float LDH,float roughness,float roughness2)
     LDH = saturate(LDH);
     float d = NDH * NDH *( roughness2-1.) +1.00001f;
     float sqrLDH = sqr(LDH);
-    float normalizationTerm = roughness * 4. + 2.;
-    return roughness2 / ((d * d) * max(0.1h, sqrLDH) * normalizationTerm);
+    return roughness2 / (d * d);
 }
 float NDF_TrowbridgeReitz(float NDH, float roughness,float sqrRoughness)
 {
@@ -82,8 +73,54 @@ float NDFA_Ward(float NDL, float NDV, float NDH, float HDX, float HDY, float ani
     distribution *= exp(exponent);
     return distribution;
 }
+//VF: (VisibilityTerm * FresnelTerm) * 4.0
+float InvVF_GGX(float LDH, float roughness)
+{
+    float sqrLDH = sqr(LDH);
+    return max(0.1h, sqrLDH) * (roughness + .5);
+}
+float InvVF_BlinnPhong(float LDH)
+{
+    return max(0.1h, pow3(LDH));
+}
+
+//Fresnel
+float F_Schlick(float NDV)
+{ 
+    float x = saturate(1. - NDV);
+    return pow4(x);//pow5(x);
+}
+
+//Unused
+float F0(float NDL, float NDV, float LDH, float roughness)
+{
+    float fresnelLight = F_Schlick(NDL);
+    float fresnelView = F_Schlick(NDV);
+    float fresnelDiffuse90 = .5 + 2 * sqr(LDH) * roughness;
+    return lerp(1, fresnelDiffuse90, fresnelLight) * lerp(1, fresnelDiffuse90, fresnelView);
+}
+
+//Fresnel
+float F_SchlickIOR(float NDV, float ior)
+{
+    float f0 = sqr((ior - 1.) / (ior + 1.));
+    return f0 + (1. - f0) * F_Schlick(NDV);
+}
+float F_SphericalGaussian(float NDV)
+{
+    float power = (-5.55473 * NDV - 6.98316) * NDV;
+    return pow(2, power);
+}
 
 //GSF Geometric Shadowing Function
+float GSF_Burley(float NDL, float NDV, float LDH, float roughness)
+{
+    half FD90MinusOne = -.5 + 2.0 * LDH * LDH * roughness;
+    float NDLPow5 = pow5(1. - NDL);
+    float NDVPow5 = pow5(1. - NDV);
+    return (1. + FD90MinusOne * NDLPow5) * (1. - FD90MinusOne * NDVPow5) * NDL;
+}
+
 float GSF_Implicit(float NDL, float NDV)
 {
     return NDL * NDV;
@@ -128,6 +165,7 @@ float GSFR_Kurt(float NDL, float NDV, float VDH, float roughness)
 {
     return NDL * NDV / (VDH * pow(NDL * NDV, 1 - roughness));
 }
+
 //Smith-Based GSF
 float GSFR_WalterEtAl(float NDL, float NDV, float roughness)
 {
@@ -180,30 +218,4 @@ float GSFR_SchlickGGX(float NDL, float NDV, float roughness)
     float smithL = NDL / (k + NDL * (1 - k));
     float smithV = NDV / (k + NDV * (1 - k));
     return smithL * smithV;
-}
-
-//Fresnel
-float F_Schlick(float NDV)
-{ 
-    float x = saturate(1. - NDV);
-    return pow5(x);
-}
-float F_SchlickIOR(float NDV, float ior)
-{
-    float f0 = sqr((ior - 1.) / (ior + 1.));
-    return f0 + (1. - f0) * F_Schlick(NDV);
-}
-float F_SphericalGaussian(float NDV)
-{
-    float power = (-5.55473 * NDV - 6.98316) * NDV;
-    return pow(2, power);
-}
-
-//normal incidence reflection
-float F0(float NDL, float NDV, float LDH, float roughness)
-{
-    float fresnelLight = F_Schlick(NDL);
-    float fresnelView = F_Schlick(NDV);
-    float fresnelDiffuse90 = .5 + 2 * sqr(LDH) * roughness;
-    return lerp(1, fresnelDiffuse90, fresnelLight) * lerp(1, fresnelDiffuse90, fresnelView);
 }

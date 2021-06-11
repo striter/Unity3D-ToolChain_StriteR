@@ -2,20 +2,6 @@
 #include "BRDFMethods.hlsl"
 #define DIELETRIC_SPEC half4(0.04,0.04,0.04,1.0-0.04)
 
-half GetFresnel(BRDFSurface surface,float ior)
-{
-    return
-#if _F_SCHLICK
-                F_Schlick(surface.NDV);
-#elif _F_SCHLICK_IOR
-				F_SchlickIOR(surface.NDV,ior);
-#elif _F_SPHERICALGAUSSIAN
-                F_SphericalGaussian(surface.NDV);
-#else
-				0;
-#endif
-}
-
 BRDFSurface InitializeBRDFSurface(half3 albedo, half smoothness, half metallic,half ao,half ior, half3 normal, half3 tangent, half3 viewDir)
 {
     BRDFSurface surface;
@@ -36,7 +22,6 @@ BRDFSurface InitializeBRDFSurface(half3 albedo, half smoothness, half metallic,h
     surface.NDV = max(0., dot(surface.normal,surface.viewDir));
     
     surface.grazingTerm = saturate(smoothness + reflectivity);
-    surface.fresnelTerm = GetFresnel(surface,ior);
     surface.perceptualRoughness = 1. - surface.smoothness;
     surface.roughness = max(HALF_MIN_SQRT, surface.perceptualRoughness * surface.perceptualRoughness);
     surface.roughness2 = max(HALF_MIN, surface.roughness * surface.roughness);
@@ -53,12 +38,12 @@ BRDFLight InitializeBRDFLight(BRDFSurface surface, half3 lightDir, half3 lightCo
     half roughness = surface.roughness;
     half sqrRoughness = surface.roughness2;
         
-    float NDV = surface.NDV;
-    float NDL = max(0., dot(normal, lightDir));
-    float NDH = max(0., dot(normal, halfDir));
-    float VDH = max(0., dot(viewDir, halfDir));
-    float LDH = max(0., dot(lightDir, halfDir));
-    float LDV = max(0., dot(lightDir, viewDir));
+    half NDV = surface.NDV;
+    half NDL = max(0., dot(normal, lightDir));
+    half NDH = max(0., dot(normal, halfDir));
+    half VDH = max(0., dot(viewDir, halfDir));
+    half LDH = max(0., dot(lightDir, halfDir));
+    half LDV = max(0., dot(lightDir, viewDir));
     
     BRDFLight light;
     light.lightDir = lightDir;
@@ -85,41 +70,13 @@ BRDFLight InitializeBRDFLight(BRDFSurface surface, half3 lightDir, half3 lightCo
 				0;
 #endif
     
-    light.geometricShadow =
-#if _GSF_IMPLICIT
-                GSF_Implicit(NDL, NDV);
-#elif _GSF_ASHIKHMINSHIRLEY
-                GSF_AshikhminShirley(NDL, NDV, LDH);
-#elif _GSF_ASHIKHMINPREMOZE
-                GSF_AshikhminPremoze(NDL, NDV);
-#elif _GSF_DUER
-                GSF_Duer(NDL,NDV, lightDir,viewDir,normal);
-#elif _GSF_NEUMANN
-                GSF_Neumann(NDL,NDV);
-#elif _GSF_KELEMEN
-                GSF_Kelemen(NDL,NDV,VDH);
-#elif _GSF_COOKTORRANCE
-                GSF_CookTorrance(NDL,NDV,VDH,NDH);
-#elif _GSF_WARD
-                GSF_Ward(NDL,NDV);
-#elif _GSF_R_KELEMEN_MODIFIED
-                GSFR_Kelemen_Modifed(NDL,NDV,roughness);
-#elif _GSF_R_KURT
-                GSFR_Kurt(NDL,NDV,VDH,roughness);
-#elif _GSF_R_WALTERETAL
-                GSFR_WalterEtAl(NDL,NDV,roughness);
-#elif _GSF_R_SMITHBECKMANN
-                GSFR_SmithBeckmann(NDL,NDV,roughness);
-#elif _GSF_R_GGX
-                GSFR_GGX(NDL,NDV,roughness);
-#elif _GSF_R_SCHLICK
-                GSFR_Schlick(NDL,NDV,roughness);
-#elif _GSF_R_SCHLICK_BECKMANN
-                GSFR_SchlickBeckmann(NDL,NDV,roughness);
-#elif _GSF_R_SCHLICK_GGX
-                GSFR_SchlickGGX(NDL,NDV,roughness);
+    light.invNormalizationTerm =
+#if _VF_GGX
+    InvVF_GGX(LDH,roughness);
+#elif _VF_BLINNPHONG
+    InvVF_BlinnPhong(LDH);
 #else
-				0;
+    0;
 #endif
     
     return light;
@@ -127,7 +84,11 @@ BRDFLight InitializeBRDFLight(BRDFSurface surface, half3 lightDir, half3 lightCo
 half3 BRDFLighting(BRDFSurface surface,BRDFLight light)
 {
     half3 brdf = surface.diffuse;
-    brdf += surface.specular * light.normalDistribution;
+    
+    half D = light.normalDistribution;
+    half invVF = light.invNormalizationTerm;
+    
+    brdf += surface.specular * D / invVF / 4;
     return brdf*light.radiance;
 }
 
@@ -138,7 +99,8 @@ half3 BRDFGlobalIllumination(BRDFSurface surface,half3 indirectDiffuse,half3 ind
     
     half3 giDiffuse = indirectDiffuse * surface.diffuse;
     
-    float3 surfaceReduction = 1.0 / (surface.roughness2 + 1.0) * lerp(surface.specular, surface.grazingTerm, surface.fresnelTerm);
+    float fresnelTerm = F_Schlick(surface.NDV);
+    float3 surfaceReduction = 1.0 / (surface.roughness2 + 1.0) * lerp(surface.specular, surface.grazingTerm, fresnelTerm);
     half3 giSpecular = indirectSpecular * surfaceReduction;
     
     return giDiffuse + giSpecular;

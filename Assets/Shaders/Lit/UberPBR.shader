@@ -13,9 +13,7 @@
 		[Header(_Functions)]
         [KeywordEnum(BlinnPhong,CookTorrance,Beckmann,Gaussian,GGX,TrowbridgeReitz,Anisotropic_TrowbridgeReitz,Anisotropic_Ward)]_NDF("Normal Distribution Function:",float) = 2
 		[Foldout(_NDF_ANISOTROPIC_TROWBRIDGEREITZ,_NDF_ANISOTROPIC_WARD)]_AnisoTropicValue("Anisotropic Value",Range(0,1))=1
-        [KeywordEnum(Implicit,AshikhminShirley,AshikhminPremoze,Duer,Neumann,Kelemen,CookTorrance,Ward,R_Kelemen_Modified,R_Kurt,R_WalterEtAl,R_SmithBeckmann,R_GGX,R_Schlick,R_Schlick_Beckmann,R_Schlick_GGX)]_GSF("Geometry Shadow Function:",float)=0
-        [KeywordEnum(Schlick,Schlick_IOR,SphericalGaussian)]_F("Fresnel Function",float)=0
-		[Foldout(_F_SCHLICK_IOR)]_Ior("Ior",  Range(1,4)) = 1.5
+		[KeywordEnum(BlinnPhong,GGX)]_VF("VsibilityTerm * Fresnel Term",float)=1
 
 		[Header(Additional Mapping)]
 		[ToggleTex(_NORMALMAP)][NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
@@ -66,10 +64,9 @@
 			#pragma shader_feature_local _PARALLEXMAP
 			#pragma shader_feature_local _PARALLEX_STEEP
 			#pragma shader_feature_local _AOMAP
-
+            
 			#pragma multi_compile_local _NDF_BLINNPHONG _NDF_COOKTORRANCE _NDF_BECKMANN _NDF_GAUSSIAN _NDF_GGX _NDF_TROWBRIDGEREITZ _NDF_ANISOTROPIC_TROWBRIDGEREITZ _NDF_ANISOTROPIC_WARD
-            #pragma multi_compile_local _GSF_IMPLICIT _GSF_ASHIKHMINSHIRLEY _GSF_ASHIKHMINPREMOZE _GSF_DUER _GSF_NEUMANN _GSF_KELEMEN _GSF_COOKTORRANCE _GSF_WARD _GSF_R_KELEMEN_MODIFIED _GSF_R_KURT _GSF_R_WALTERETAL _GSF_R_SMITHBECKMANN _GSF_R_GGX _GSF_R_SCHLICK _GSF_R_SCHLICK_BECKMANN _GSF_R_SCHLICK_GGX
-            #pragma multi_compile_local _F_SCHLICK _F_SCHLICK_IOR _F_SPHERICALGAUSSIAN
+			#pragma multi_compile_local _VF_BLINNPHONG _VF_GGX
 		
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_RoughnessTex);SAMPLER(sampler_RoughnessTex);
