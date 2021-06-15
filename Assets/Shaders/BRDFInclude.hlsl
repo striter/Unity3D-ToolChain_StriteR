@@ -1,8 +1,8 @@
-﻿#include "BRDFInput.hlsl"
-#include "BRDFMethods.hlsl"
+﻿#include "Library/BRDFInput.hlsl"
+#include "Library/BRDFMethods.hlsl"
 #define DIELETRIC_SPEC half4(0.04,0.04,0.04,1.0-0.04)
 
-BRDFSurface InitializeBRDFSurface(half3 albedo, half smoothness, half metallic,half ao,half ior, half3 normal, half3 tangent, half3 viewDir)
+BRDFSurface InitializeBRDFSurface(half3 albedo, half smoothness, half metallic,half ao, half3 normal, half3 tangent, half3 viewDir)
 {
     BRDFSurface surface;
     

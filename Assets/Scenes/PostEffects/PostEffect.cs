@@ -20,7 +20,7 @@ public class PostEffect : MonoBehaviour
         foreach(var postEffects in GetComponentsInChildren<APostProcessBase>())
         {
             UIT_TouchConsole.NewPage(postEffects.GetType(). Name);
-            UIT_TouchConsole.InitSerializeCommands<APostProcessBase>(postEffects,effect=>effect.OnValidate());
+            UIT_TouchConsole.InitSerializeCommands(postEffects,effect=>effect.OnValidate());
         }
     }
 

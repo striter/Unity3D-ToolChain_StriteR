@@ -30,7 +30,6 @@ public static class TimeScaleController<T> where T : struct
             Time.timeScale = m_BulletTime;
     }
 }
-
 public class AnimationSingleControl
 {
     public Animation m_Animation { get; private set; }

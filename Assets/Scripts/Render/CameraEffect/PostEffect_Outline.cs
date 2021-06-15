@@ -30,7 +30,7 @@ namespace Rendering.ImageEffect
         Color = 3,
     }
 
-    [System.Serializable]
+    [Serializable]
     public struct CameraEffectParam_Outline
     {
         public bool m_OpaquePostProcessing;
@@ -104,7 +104,7 @@ namespace Rendering.ImageEffect
         public override void Destroy()
         {
             base.Destroy();
-            GameObject.DestroyImmediate(m_RenderMaterial);
+            UnityEngine.Object.DestroyImmediate(m_RenderMaterial);
         }
         public override void OnValidate(CameraEffectParam_Outline _data)
         {
@@ -146,7 +146,6 @@ namespace Rendering.ImageEffect
             if (_data.m_Type != enum_OutlineType.MaskBlur)
                 return;
             CommandBuffer buffer = CommandBufferPool.Get("Outline Execute");
-            ref var _descriptor = ref _renderingData.cameraData.cameraTargetDescriptor;
             if (!_data.m_ZClip)
                 buffer.SetRenderTarget(RT_ID_MaskRender);
             else

@@ -1,5 +1,4 @@
-﻿
-half3 IndirectBRDFDiffuse(half3 normal)
+﻿half3 IndirectBRDFDiffuse(half3 normal)
 {
     float3 res = SHEvalLinearL0L1(normal, unity_SHAr, unity_SHAg, unity_SHAb);
     res += SHEvalLinearL2(normal, unity_SHBr, unity_SHBg, unity_SHBb, unity_SHC);
@@ -23,6 +22,7 @@ half4 IndirectBRDFPlanarSpecular(half4 screenPos, half3 normalTS)
     [branch]
     switch (_CameraReflectionTextureIndex)
     {
+        default:return 0;
         case 0u:
             return tex2D(_CameraReflectionTexture0, screenUV);
         case 1u:

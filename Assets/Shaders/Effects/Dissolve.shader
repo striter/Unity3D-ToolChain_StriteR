@@ -119,7 +119,7 @@
 			float4 fragshadow(v2f i) :SV_TARGET
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
-				float dissolve = SAMPLE_TEXTURE2D(_DissolveTex,sampler_DissolveTex,i.uv).r - INSTANCE(_DissolveAmount)-INSTANCE(_DissolveWidth);
+				const float dissolve = SAMPLE_TEXTURE2D(_DissolveTex,sampler_DissolveTex,i.uv).r - INSTANCE(_DissolveAmount)-INSTANCE(_DissolveWidth);
 				clip(dissolve);
 				return 0;
 			}

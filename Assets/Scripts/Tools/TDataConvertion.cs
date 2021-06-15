@@ -68,7 +68,7 @@ public static class TDataConvert
         if (CheckSerializeType(_type))
             return StringToSerializeData(_type, _xmlData, _iteration);
 
-        throw new Exception("Xml Error Invlid Type:" + _type.ToString() + " For Xml Data To Phrase");
+        throw new Exception("Xml Error Invalid Type:" + _type.ToString() + " For Xml Data To Phrase");
     }
     #region BaseType
     static readonly Dictionary<Type, KeyValuePair<Func<object, string>, Func<string, object>>> s_BaseTypeConvert = new Dictionary<Type, KeyValuePair<Func<object, string>, Func<string, object>>>() {
@@ -145,17 +145,17 @@ public static class TDataConvert
     static string GenericPhraseToString(Type type, Type genericDefinition, object data, int iteration)
     {
         char dataBreak = m_PhraseIterateBreakPoints[iteration];
-        StringBuilder _convertData = new StringBuilder();
+        StringBuilder convertData = new StringBuilder();
         if (genericDefinition == m_GenericListType)
         {
             Type listType = type.GetGenericArguments()[0];
-            foreach (object obj in data as IEnumerable)
+            foreach (object obj in (IEnumerable) data)
             {
-                _convertData.Append(ConvertToString(listType, obj, iteration));
-                _convertData.Append(dataBreak);
+                convertData.Append(ConvertToString(listType, obj, iteration));
+                convertData.Append(dataBreak);
             }
-            if (_convertData.Length != 0)
-                _convertData.Remove(_convertData.Length - 1, 1);
+            if (convertData.Length != 0)
+                convertData.Remove(convertData.Length - 1, 1);
         }
         else if (genericDefinition == m_GenericDicType)
         {
@@ -163,15 +163,15 @@ public static class TDataConvert
             Type valueType = type.GetGenericArguments()[1];
             foreach (DictionaryEntry obj in (IDictionary)data)
             {
-                _convertData.Append(ConvertToString(keyType, obj.Key, iteration));
-                _convertData.Append(dataBreak);
-                _convertData.Append(ConvertToString(valueType, obj.Value, iteration));
-                _convertData.Append(dataBreak);
+                convertData.Append(ConvertToString(keyType, obj.Key, iteration));
+                convertData.Append(dataBreak);
+                convertData.Append(ConvertToString(valueType, obj.Value, iteration));
+                convertData.Append(dataBreak);
             }
-            if (_convertData.Length != 0)
-                _convertData.Remove(_convertData.Length - 1, 1);
+            if (convertData.Length != 0)
+                convertData.Remove(convertData.Length - 1, 1);
         }
-        return _convertData.ToString();
+        return convertData.ToString();
     }
     static object GenericPhraseToData(Type type, Type genericDefinition, string xmlData, int iteration)
     {
@@ -180,12 +180,13 @@ public static class TDataConvert
         if (genericDefinition == m_GenericListType)
         {
             Type listType = type.GetGenericArguments()[0];
-            IList iList_Target = (IList)Activator.CreateInstance(type);
-            string[] list_Split = xmlData.Split(dataBreak);
-            if (list_Split.Length != 1 || list_Split[0] != "")
-                for (int i = 0; i < list_Split.Length; i++)
-                    iList_Target.Add(ConvertToObject(listType, list_Split[i], iteration));
-            return iList_Target;
+            IList iListTarget = (IList)Activator.CreateInstance(type);
+            string[] listSplit = xmlData.Split(dataBreak);
+            if (listSplit.Length != 1 || listSplit[0] != "")
+                foreach (var split in listSplit)
+                    iListTarget.Add(ConvertToObject(listType, split, iteration));
+
+            return iListTarget;
         }
         else if (genericDefinition == m_GenericDicType)
         {

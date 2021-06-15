@@ -1,4 +1,5 @@
 ﻿#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+#include "Library/ValueMapping.hlsl"
 float2 TransformTex(float2 uv, float4 st) {return uv * st.xy + st.zw;}
 #define PI_HALF 1.5707963267949
 #define PI_TWO 6.2831853071796
@@ -10,51 +11,94 @@ float2 TransformTex(float2 uv, float4 st) {return uv * st.xy + st.zw;}
 #define INSTANCE(param) UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,param)
 #define TRANSFORM_TEX_INSTANCE(uv,tex) TransformTex(uv,INSTANCE(tex##_ST));
 
-float3 TransformObjectToHClipNormal(float3 normalOS){  return mul((float3x3) GetWorldToHClipMatrix(), TransformObjectToWorldNormal(normalOS));}
-
-float3 DecodeNormalMap(float3 normal)
+float3 TransformObjectToHClipNormal(float3 _normalOS)
 {
-    return normalize(normal * 2. - 1.);
+    return mul((float3x3) GetWorldToHClipMatrix(), TransformObjectToWorldNormal(_normalOS));
 }
 
-float sqrDistance(float3 offset){ return dot(offset,offset); }
-float sqrDistance(float3 pA, float3 pB){ return sqrDistance(pA-pB); }
-
-float4 Blend_Screen(float4 src,float4 dst){ return 1-(1-src)*(1-dst); }
-float3 Blend_Screen(float3 src,float3 dst){ return 1-(1-src)*(1-dst); }
-float3 Blend_Alpha(float3 src, float3 dst,float srcAlpha){return src * srcAlpha + dst * (1 - srcAlpha);}
-
-float invlerp(float a,float b,float value){ return (value-a)/(b-a); }
-float quinterp(float f){ return f * f * f * (f * (f*6-15)+10); }
-float remap (float value, float from1, float to1, float from2, float to2) {   return lerp(from2,to2, invlerp(from1,to1,value));  }
-float max(float max1, float max2, float max3, float max4)
+float sqrDistance(float3 _offset)
 {
-    float final = max(max1, max2);
-    final = max(final, max3);
-    final = max(final, max4);
-    return final;
+    return dot(_offset, _offset);
+}
+float sqrDistance(float3 _pA, float3 _pB)
+{
+    return sqrDistance(_pA - _pB);
 }
 
-float bilinearLerp(float tl, float tr, float bl, float br, float2 uv)
+half Blend_Overlay(half _src,half _dst)
 {
-    float lerpT = lerp(tl, tr, uv.x);
-    float lerpB = lerp(bl, br, uv.x);
-    return lerp(lerpB, lerpT, uv.y);
+    return _src<.5h?2.h*_src*_dst:1.h-2.h*(1.h-_src)*(1.h-_dst);
 }
-float2 bilinearLerp(float2 tl, float2 tr, float2 bl, float2 br, float2 uv)
+half3 Blend_Overlay(half3 _src,half3 _dst)
 {
-    float2 lerpT = lerp(tl, tr, uv.x);
-    float2 lerpB = lerp(bl, br, uv.x);
-    return lerp(lerpB, lerpT, uv.y);
+    return half3(Blend_Overlay(_src.x,_dst.x),Blend_Overlay(_src.y,_dst.y),Blend_Overlay(_src.z,_dst.z));
+}
+float4 Blend_Screen(float4 _src, float4 _dst)
+{
+    return 1 - (1 - _src) * (1 - _dst);
+}
+float3 Blend_Screen(float3 _src, float3 _dst)
+{
+    return 1 - (1 - _src) * (1 - _dst);
 }
 
-float3 bilinearLerp(float3 tl, float3 tr, float3 bl, float3 br, float2 uv)
+float3 DecodeNormalMap(float3 _normal)
 {
-    float3 lerpT = lerp(tl, tr, uv.x);
-    float3 lerpB = lerp(bl, br, uv.x);
-    return lerp(lerpB,lerpT, uv.y);
+    return normalize(_normal * 2. - 1.);
 }
-float2 TriplanarMapping(float3 worldPos,float3 worldNormal){ return (worldPos.zy*worldNormal.x+worldPos.xz*worldNormal.y+worldPos.xy*worldNormal.z);}
+
+//Refer: @https://blog.selfshadow.com/publications/blending-in-detail/
+half3 BlendNormal(half3 _normal1, half3 _normal2, uint _blendMode)
+{
+    half3 blendNormal=half3(0.h,0.h,1.h);
+    [branch]switch (_blendMode)
+    {
+        default:blendNormal=0.h;break;
+        case 0u://Linear
+            {
+                _normal1=DecodeNormalMap(_normal1);
+                _normal2=DecodeNormalMap(_normal2);
+                blendNormal= normalize(_normal1 + _normal2);                
+            }
+        break;
+        case 1u://Overlay
+            {
+                blendNormal =Blend_Overlay(_normal1,_normal2);
+                blendNormal= DecodeNormalMap(blendNormal);                
+            }
+        break;
+        case 2u://Partial Derivative
+            {
+                _normal1=DecodeNormalMap(_normal1);
+                _normal2=DecodeNormalMap(_normal2);
+                half2 pd=_normal1.xy*_normal2.z+_normal2.xy*_normal1.z;
+                blendNormal=half3(pd,_normal1.z*_normal2.z);
+            }
+        break;
+        case 3u://Unreal Developer Network
+            {
+                _normal1=DecodeNormalMap(_normal1);
+                _normal2=DecodeNormalMap(_normal2);
+                //blendNormal=half3(_normal1.xy+_normal2.xy,_normal1.z*_normal2.z); //Whiteout
+                blendNormal=half3(_normal1.xy+_normal2.xy,_normal1.z);
+            }
+        break;
+        case 4u://Reoriented
+            {
+                half3 t=_normal1*half3(2.h,2.h,2.h)+half3(-1.h,-1.h,0);
+                half3 u=_normal2*half3(-2.h,-2.h,2.h)+half3(1.h,1.h,-1.h);
+                blendNormal=t*dot(t,u)-u*t.z;
+            }
+        break;
+    }
+    return normalize(blendNormal);
+}
+
+float2 TriplanarMapping(float3 worldPos, float3 worldNormal)
+{
+    return worldPos.zy * worldNormal.x + worldPos.xz * worldNormal.y + worldPos.xy * worldNormal.z;
+}
+
 float2 UVCenterMapping(float2 uv, float2 tilling, float2 offset, float rotateAngle)
 {
     const float2 center = float2(.5, .5);
@@ -71,7 +115,7 @@ float2x2 Rotate2x2(float angle)
 {
     float sinAngle, cosAngle;
     sincos(angle, sinAngle, cosAngle);
-    return float2x2(cosAngle,-sinAngle,sinAngle,cosAngle);
+    return float2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
 }
 
 float3x3 AngleAxis3x3(float angle, float3 axis)
@@ -89,46 +133,6 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
         t * x * z - s * y, t * y * z + s * x, t * z * z + c);
 }
 
-float random01(float value){ return frac(sin(value*12.9898) * 43758.543123);}
-float random01(float2 value){return frac(sin(dot(value,float2(12.9898,78.233)))*43758.543123);}
-float random01(float3 value){return frac(sin(dot(value,float3(12.9898,78.233,53.539)))*43758.543123);}
-
-float randomUnit(float value){return random01(value) * 2 - 1;}
-float randomUnit(float2 value){ return random01(value)*2-1;}
-float randomUnit(float3 value){return random01(value)*2-1;}
-float2 randomUnitQuad(float2 value){return float2(randomUnit(value.xy), randomUnit(value.yx));}
-float2 randomUnitCircle(float2 value)
-{
-    float theta = 2 * PI * random01(value);
-    return float2(cos(theta), sin(theta));
-}
-
-float random01Perlin(float2 value)
-{
-    float2 pos00 = floor(value);
-    float2 pos10 = pos00 + float2(1.0f, 0.0f);
-    float2 pos01 = pos00 + float2(0.0f, 1.0f);
-    float2 pos11 = pos00 + float2(1.0f, 1.0f);
-
-    float2 rand00 = randomUnitCircle(pos00);
-    float2 rand10 = randomUnitCircle(pos10);
-    float2 rand01 = randomUnitCircle(pos01);
-    float2 rand11 = randomUnitCircle(pos11);
-    
-    float dot00 = dot(rand00, pos00 - value);
-    float dot01 = dot(rand01, pos01 - value);
-    float dot10 = dot(rand10, pos10 - value);
-    float dot11 = dot(rand11, pos11 - value);
-    
-    float2 d = frac(value);
-    float interpolate = quinterp(d.x);
-    float x1 = lerp(dot00, dot10, interpolate);
-    float x2 = lerp(dot01, dot11, interpolate);
-    return lerp(x1, x2, quinterp(d.y));
-}
-
-float randomUnitPerlin(float2 value){ return random01Perlin(value)*2-1;}
-
 float3 _FrustumCornersRayBL;
 float3 _FrustumCornersRayBR;
 float3 _FrustumCornersRayTL;
@@ -139,19 +143,4 @@ float3 GetViewDirWS(float2 uv)
     return bilinearLerp(_FrustumCornersRayTL, _FrustumCornersRayTR, _FrustumCornersRayBL, _FrustumCornersRayBR, uv);
 }
 
-float min(float3 target)
-{
-    return min(min(target.x, target.y), target.z);
-}
-float max(float3 target)
-{
-    return max(max(target.x, target.y), target.z);
-}
-half min(half3 target)
-{
-    return min(min(target.x, target.y), target.z);
-}
-half max(half3 target)
-{
-    return max(max(target.x, target.y), target.z);
-}
+#include "Library/Noise.hlsl"

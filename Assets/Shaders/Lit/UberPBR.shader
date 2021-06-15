@@ -2,20 +2,24 @@
 {
 	Properties
 	{
+		[Header(Base Tex)]
 		_MainTex("Main Tex",2D) = "white"{}
-		_Color("Color",Color) = (1,1,1,1)
+		_Color("Color Tint",Color) = (1,1,1,1)
+		[ToggleTex(_NORMALMAP)][NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
+		[Header(Detail Tex)]
+		[ToggleTex(_DETAILNORMALMAP)]_DetailNormalTex("Normal Tex",2D)="white"{}
+		[Enum(Linear,0,Overlay,1,PartialDerivative,2,UDN,3,Reoriented,4)]_DetailBlendMode("Normal Blend Mode",int)=0
+		
+		[Header(PBR)]
 		[Fold(_PBRMAP)]_Glossiness("Glossiness",Range(0,1))=1
         [Fold(_PBRMAP)]_Metallic("Metalness",Range(0,1))=0
 		[Header(Roughness.Metallic.AO)]
 		[ToggleTex(_PBRMAP)] [NoScaleOffset]_PBRTex("PBR Tex",2D)="white"{}
+        [KeywordEnum(BlinnPhong,CookTorrance,Beckmann,Gaussian,GGX,TrowbridgeReitz,Anisotropic_TrowbridgeReitz,Anisotropic_Ward)]_NDF("Normal Distribution:",float) = 2
+		[Foldout(_NDF_ANISOTROPIC_TROWBRIDGEREITZ,_NDF_ANISOTROPIC_WARD)]_AnisoTropicValue("Anisotropic Value:",Range(0,1))=1
+		[KeywordEnum(BlinnPhong,GGX)]_VF("Vsibility * Fresnel:",float)=1
 
-		[Header(_Functions)]
-        [KeywordEnum(BlinnPhong,CookTorrance,Beckmann,Gaussian,GGX,TrowbridgeReitz,Anisotropic_TrowbridgeReitz,Anisotropic_Ward)]_NDF("Normal Distribution Function:",float) = 2
-		[Foldout(_NDF_ANISOTROPIC_TROWBRIDGEREITZ,_NDF_ANISOTROPIC_WARD)]_AnisoTropicValue("Anisotropic Value",Range(0,1))=1
-		[KeywordEnum(BlinnPhong,GGX)]_VF("VsibilityTerm * Fresnel Term",float)=1
-
-		[Header(Additional Mapping)]
-		[ToggleTex(_NORMALMAP)][NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
+		[Header(_Height)]
 		[ToggleTex(_PARALLEXMAP)][NoScaleOffset]_ParallexTex("Parallex Tex",2D)="white"{}
 		[Foldout(_PARALLEXMAP)]_ParallexScale("Parallex Scale",Range(0.001,.2))=1
 		[Foldout(_PARALLEXMAP)]_ParallexOffset("Parallex Offset",Range(0,1))=.42
@@ -58,6 +62,7 @@
 			#pragma shader_feature_local _PBRMAP
 			#pragma shader_feature_local _SPECULAR
 			#pragma shader_feature_local _NORMALMAP
+			#pragma shader_feature_local _DETAILNORMALMAP
 			#pragma shader_feature_local _PARALLEXMAP
 			#pragma shader_feature_local _PARALLEX_STEEP
             
@@ -67,12 +72,13 @@
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_PBRTex);SAMPLER(sampler_PBRTex);
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
+			TEXTURE2D(_DetailNormalTex);SAMPLER(sampler_DetailNormalTex);
 			TEXTURE2D(_ParallexTex);SAMPLER(sampler_ParallexTex);
 			UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 			INSTANCING_PROP(float,_Glossiness)
 			INSTANCING_PROP(float,_Metallic)
+			INSTANCING_PROP(float,_DetailBlendMode)
 			INSTANCING_PROP(float,_AnisoTropicValue)
-			INSTANCING_PROP(float,_Ior)
 			INSTANCING_PROP(int ,_SteepCount)
 			INSTANCING_PROP(float4,_MainTex_ST)
 			INSTANCING_PROP(float4, _Color)
@@ -136,7 +142,7 @@
 				float2 deltaUV=uvOffset/marchCount;
 				float depthLayer=0;
 				float2 curUV=uv;
-				float curDepth;
+				float curDepth = 0;
 				for(int i=0;i<marchCount;i++)
 				{
 					curDepth=GetParallex(curUV).r;
@@ -171,10 +177,15 @@
 				i.uv=ParallexMap(i.uv,mul(TBNWS, viewDirWS));
 				#endif
 				#if _NORMALMAP
-				normalTS=normalize( DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv).xyz));
+				normalTS= SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv).xyz;
+				#if _DETAILNORMALMAP
+				half3 detailNormalTS=SAMPLE_TEXTURE2D(_DetailNormalTex,sampler_DetailNormalTex,i.uv).xyz;
+				normalTS=BlendNormal(normalTS,detailNormalTS,INSTANCE(_DetailBlendMode));
+				#else
+				normalTS=DecodeNormalMap(normalTS);
+				#endif
 				normalWS=normalize(mul(transpose(TBNWS), normalTS));
 				#endif
-
 				float4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*_Color;
 				float3 albedo=color.rgb;
 				float alpha=color.a;
@@ -192,7 +203,7 @@
                 float3 normal=normalize(normalWS);
                 float3 tangent = normalize(tangentWS);
                 float3 viewDir=normalize(viewDirWS);
-				BRDFSurface surface=InitializeBRDFSurface(albedo,glossiness,metallic,ao,_Ior,normal,tangent,viewDir);
+				BRDFSurface surface=InitializeBRDFSurface(albedo,glossiness,metallic,ao,normal,tangent,viewDir);
 				
                 float3 lightDir=normalize(lightDirWS);
 				float3 lightCol=_MainLightColor.rgb;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using UnityEditor;
-using UnityEditor.SceneManagement;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace TEditor

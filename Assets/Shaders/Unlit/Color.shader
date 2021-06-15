@@ -58,7 +58,11 @@
 				UNITY_SETUP_INSTANCE_ID(v);
 				float4 positionOS= TransformObjectToHClip(v.positionOS);
 				#if _CSFORWARD
-				positionOS.z+=_ClipSpaceForwardAmount*positionOS.z;
+				float forward=_ClipSpaceForwardAmount*positionOS.z;
+				#if UNITY_REVERSED_Z
+				forward=-forward;
+				#endif
+				positionOS.z-=forward;
 				#endif
 				o.positionCS =positionOS;
 				o.uv = v.uv;

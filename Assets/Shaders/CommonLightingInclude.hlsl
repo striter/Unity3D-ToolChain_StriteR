@@ -25,7 +25,6 @@ float GetSpecular(float3 normal,float3 lightDir,float3 viewDir,float range)
 	return GetSpecular(normal,normalize(lightDir+viewDir),range);
 }
 
-
 //Kajiya-Kay Anisotropic Lighting Model
 float StrandSpecular(float3 T,float3 N,float3 H,float exponent,float3 shift)
 {
