@@ -17,7 +17,7 @@
 		
 		Lighting Off Fog { Color(0,0,0,0) }
 		ZTest [_ZTest]
-		ZWrite Off
+		ZWrite On
 		Blend SrcAlpha OneMinusSrcAlpha
 
 		Pass
@@ -58,10 +58,7 @@
 				UNITY_SETUP_INSTANCE_ID(v);
 				float4 positionOS= TransformObjectToHClip(v.positionOS);
 				#if _CSFORWARD
-				float forward=_ClipSpaceForwardAmount*positionOS.z;
-				#if UNITY_REVERSED_Z
-				forward=-forward;
-				#endif
+				float forward=_ClipSpaceForwardAmount*positionOS.z*Z_Multiply;
 				positionOS.z-=forward;
 				#endif
 				o.positionCS =positionOS;

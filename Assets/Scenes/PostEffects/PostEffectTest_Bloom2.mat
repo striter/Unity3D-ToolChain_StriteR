@@ -61,6 +61,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BumpScale: 1
+    - _ClipSpaceForward: 0
+    - _ClipSpaceForwardAmount: 0.2
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -75,6 +77,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
+    - _ZTest: 2
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 19.468573, g: 8.562095, b: 8.562095, a: 0.5803922}

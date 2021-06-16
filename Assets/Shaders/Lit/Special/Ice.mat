@@ -73,8 +73,8 @@ Material:
     - _CrackPow: 2.94
     - _CrackTopStrength: 0.149
     - _Cutoff: 0.5
-    - _DepthDistance: 0.71
-    - _DepthPow: 0.91
+    - _DepthDistance: 3
+    - _DepthPow: 3.26
     - _DetailNormalMapScale: 1
     - _DistortStrength: 1
     - _DstBlend: 0
@@ -100,7 +100,7 @@ Material:
     - _SpecularHighlights: 1
     - _SpecularRange: 0.9436
     - _SrcBlend: 1
-    - _Thickness: 0.125
+    - _Thickness: 0.22
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:

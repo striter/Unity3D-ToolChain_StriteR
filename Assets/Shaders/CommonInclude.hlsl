@@ -11,6 +11,12 @@ float2 TransformTex(float2 uv, float4 st) {return uv * st.xy + st.zw;}
 #define INSTANCE(param) UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,param)
 #define TRANSFORM_TEX_INSTANCE(uv,tex) TransformTex(uv,INSTANCE(tex##_ST));
 
+#if UNITY_REVERSED_Z
+#define Z_Multiply -1.h
+#else
+#define Z_Multiply 1.h
+#endif
+
 float3 TransformObjectToHClipNormal(float3 _normalOS)
 {
     return mul((float3x3) GetWorldToHClipMatrix(), TransformObjectToWorldNormal(_normalOS));

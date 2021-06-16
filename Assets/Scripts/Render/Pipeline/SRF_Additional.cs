@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using System.Linq;
@@ -90,19 +91,21 @@ namespace Rendering.Pipeline
             float aspect = _camera.aspect;
             Transform cameraTrans = _camera.transform;
             float halfHeight = near * Mathf.Tan(fov * .5f * Mathf.Deg2Rad);
+            Vector3 forward = cameraTrans.forward;
             Vector3 toRight = cameraTrans.right * halfHeight * aspect;
             Vector3 toTop = cameraTrans.up * halfHeight;
-            Vector3 topLeft = cameraTrans.forward * near + toTop - toRight;
+            
+            Vector3 topLeft = forward * near + toTop - toRight;
             float scale = topLeft.magnitude / near;
             topLeft.Normalize();
             topLeft *= scale;
-            Vector3 topRight = cameraTrans.forward * near + toTop + toRight;
+            Vector3 topRight = forward * near + toTop + toRight;
             topRight.Normalize();
             topRight *= scale;
-            Vector3 bottomLeft = cameraTrans.forward * near - toTop - toRight;
+            Vector3 bottomLeft = forward * near - toTop - toRight;
             bottomLeft.Normalize();
             bottomLeft *= scale;
-            Vector3 bottomRight = cameraTrans.forward * near - toTop + toRight;
+            Vector3 bottomRight = forward * near - toTop + toRight;
             bottomRight.Normalize();
             bottomRight *= scale;
             Shader.SetGlobalVector(ID_FrustumCornersRayBL, bottomLeft);
@@ -116,9 +119,8 @@ namespace Rendering.Pipeline
                 return;
 
             int index = 0;
-            for(int i=0;i<SRD_ReflectionPlane.m_ReflectionPlanes.Count;i++)
+            foreach (SRD_ReflectionPlane plane in SRD_ReflectionPlane.m_ReflectionPlanes)
             {
-                SRD_ReflectionPlane plane = SRD_ReflectionPlane.m_ReflectionPlanes[i];
                 if (!plane.m_MeshRenderer.isVisible)
                     return;
                 if (index >= SRP_PlanarReflection.C_MaxReflectionTextureCount)
@@ -133,22 +135,13 @@ namespace Rendering.Pipeline
         void UpdatePostProcess(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
             var postEffects = renderingData.cameraData.camera.GetComponents<APostProcessBase>().FindAll(p => p.enabled);
-            if (postEffects.Count() == 0)
+            if (!postEffects.Any())
                 return;
 
             var dictionary = postEffects.ToListDictionary(p => p.m_IsOpaqueProcess);
 
-            foreach (var key in dictionary.Keys)
-            {
-                int count = dictionary[key].Count();
-                if (count == 0)
-                    continue;
-
-                if (key)
-                    renderer.EnqueuePass(m_PostProcesssing_Opaque.Setup(renderer, dictionary[key]));
-                else
-                    renderer.EnqueuePass(m_PostProcesssing_AfterAll.Setup(renderer, dictionary[key]));
-            }
+            foreach (bool key in from key in dictionary.Keys let count = dictionary[key].Count() where count != 0 select key)
+                renderer.EnqueuePass(key ? m_PostProcesssing_Opaque.Setup(renderer, dictionary[true]) : m_PostProcesssing_AfterAll.Setup(renderer, dictionary[false]));
         }
     }
 }

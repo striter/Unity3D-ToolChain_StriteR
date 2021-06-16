@@ -26,7 +26,6 @@ namespace Rendering.Pipeline
     {
         public ShaderTagId m_OutlineTags;
         public int m_LayerMask;
-
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             DrawingSettings drawingSettings = CreateDrawingSettings(m_OutlineTags, ref renderingData,SortingCriteria.CommonOpaque);

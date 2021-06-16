@@ -1,6 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 namespace Rendering.Pipeline
 {
     using ImageEffect;
@@ -12,9 +12,10 @@ namespace Rendering.Pipeline
         [Range(-5f, 5f)] public float m_PlaneOffset = 0f;
         [Range(0f, 0.2f)] public float m_NormalDistort = .1f;
         [MFoldout(nameof(m_ReflectionType), enum_ReflectionSpace.ScreenSpace)] [Range(1, 4)] public int m_Sample = 1;
+        [MFoldout(nameof(m_ReflectionType), enum_ReflectionSpace.MirrorSpace)]  public bool m_IncludeTransparent=false;
+
         public bool m_EnableBlur = false;
         [MFoldout(nameof(m_EnableBlur), true)] public ImageEffectParam_Blurs m_BlurParam = UPipeline.GetDefaultPostProcessData<ImageEffectParam_Blurs>();
-
         public static List<SRD_ReflectionPlane> m_ReflectionPlanes { get; private set; } = new List<SRD_ReflectionPlane>();
         public MeshRenderer m_MeshRenderer { get; private set; }
         public MeshFilter m_MeshFilter { get; private set; }

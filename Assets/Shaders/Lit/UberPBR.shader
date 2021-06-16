@@ -88,24 +88,23 @@
 
 			struct a2f
 			{
-				float3 positionOS : POSITION;
-				float2 uv:TEXCOORD0;
-				float2 lightmapUV:TEXCOORD1;
-				float3 normalOS:NORMAL;
-				float4 tangentOS:TANGENT;
+				half3 positionOS : POSITION;
+				half2 uv:TEXCOORD0;
+				half3 normalOS:NORMAL;
+				half4 tangentOS:TANGENT;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct v2f
 			{
-				float4 positionCS : SV_POSITION;
-				float2 uv:TEXCOORD0;
-				float3 normalWS:TEXCOORD1;
-				float3 tangentWS:TEXCOORD2;
-				float3 biTangentWS:TEXCOORD3;
-				float3 viewDirWS:TEXCOORD4;
+				half4 positionCS : SV_POSITION;
+				half2 uv:TEXCOORD0;
+				half3 normalWS:TEXCOORD1;
+				half3 tangentWS:TEXCOORD2;
+				half3 biTangentWS:TEXCOORD3;
+				half3 viewDirWS:TEXCOORD4;
 				float4 shadowCoordWS:TEXCOORD5;
-				float4 screenPos:TEXCOORD6;
+				half4 screenPos:TEXCOORD6;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -126,23 +125,23 @@
 				return o;
 			}
 			#if _PARALLEXMAP
-			float GetParallex(float2 uv)
+			half GetParallex(half2 uv)
 			{
-				return 1.0-SAMPLE_TEXTURE2D(_ParallexTex,sampler_ParallexTex,uv).r;
+				return 1.h-SAMPLE_TEXTURE2D(_ParallexTex,sampler_ParallexTex,uv).r;
 			}
-			float2 ParallexMap(float2 uv,float3 viewDirTS)
+			half2 ParallexMap(half2 uv,half3 viewDirTS)
 			{
-				float3 viewDir=normalize(viewDirTS);
+				half3 viewDir=normalize(viewDirTS);
 				viewDir.z+=INSTANCE(_ParallexOffset);
-				float2 uvOffset=viewDir.xy/viewDir.z*INSTANCE(_ParallexScale);
+				half2 uvOffset=viewDir.xy/viewDir.z*INSTANCE(_ParallexScale);
 				#if _PARALLEX_STEEP
 				int marchCount=lerp(INSTANCE(_SteepCount),INSTANCE(_SteepCount)/4,saturate(dot(float3(0,0,1),viewDirTS)));
 				marchCount=min(marchCount,128);
-				float deltaDepth=1.0/marchCount;
-				float2 deltaUV=uvOffset/marchCount;
-				float depthLayer=0;
-				float2 curUV=uv;
-				float curDepth = 0;
+				half deltaDepth=1.0/marchCount;
+				half2 deltaUV=uvOffset/marchCount;
+				half depthLayer=0;
+				half2 curUV=uv;
+				half curDepth = 0;
 				for(int i=0;i<marchCount;i++)
 				{
 					curDepth=GetParallex(curUV).r;
@@ -151,28 +150,28 @@
 					curUV-=deltaUV;
 					depthLayer+=deltaDepth;
 				}
-				float2 preUV=curUV+deltaUV;
-				float beforeDepth=GetParallex(preUV)-depthLayer+deltaDepth;
-				float afterDepth=curDepth-depthLayer;
-				float weight=afterDepth/(afterDepth-beforeDepth);
+				half2 preUV=curUV+deltaUV;
+				half beforeDepth=GetParallex(preUV)-depthLayer+deltaDepth;
+				half afterDepth=curDepth-depthLayer;
+				half weight=afterDepth/(afterDepth-beforeDepth);
 				curUV=preUV*weight+curUV*(1-weight);
 				return curUV;
 				#else
-				float2 offset=uvOffset*GetParallex(uv).r;
+				half2 offset=uvOffset*GetParallex(uv).r;
 				return uv-offset;
 				#endif
 			}
 			#endif
-			float4 frag(v2f i) :SV_TARGET
+			half4 frag(v2f i) :SV_TARGET
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
-				float3 normalWS=normalize(i.normalWS);
+				half3 normalWS=normalize(i.normalWS);
 				half3 normalTS=half3(0,0,1);
-				float3 biTangentWS=normalize(i.biTangentWS);
-				float3 tangentWS=normalize(i.tangentWS);
-				float3 viewDirWS=normalize(i.viewDirWS);
-				float3 lightDirWS=normalize(_MainLightPosition.xyz);
-				float3x3 TBNWS=float3x3(tangentWS,biTangentWS,normalWS);
+				half3 biTangentWS=normalize(i.biTangentWS);
+				half3 tangentWS=normalize(i.tangentWS);
+				half3 viewDirWS=normalize(i.viewDirWS);
+				half3 lightDirWS=normalize(_MainLightPosition.xyz);
+				half3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
 				#if _PARALLEXMAP
 				i.uv=ParallexMap(i.uv,mul(TBNWS, viewDirWS));
 				#endif
@@ -186,37 +185,36 @@
 				#endif
 				normalWS=normalize(mul(transpose(TBNWS), normalTS));
 				#endif
-				float4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*_Color;
-				float3 albedo=color.rgb;
-				float alpha=color.a;
+				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*_Color;
+				half3 albedo=color.rgb;
 
-				float glossiness=_Glossiness;
-				float metallic=_Metallic;
-				float ao=1;
+				half glossiness=_Glossiness;
+				half metallic=_Metallic;
+				half ao=1;
 				#if _PBRMAP
-				float3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,i.uv);
+				half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,i.uv).rgb;
 				glossiness=1.-mix.r;
 				metallic=mix.g;
 				ao=mix.b;
 				#endif
 
-                float3 normal=normalize(normalWS);
-                float3 tangent = normalize(tangentWS);
-                float3 viewDir=normalize(viewDirWS);
+                half3 normal=normalize(normalWS);
+                half3 tangent = normalize(tangentWS);
+                half3 viewDir=normalize(viewDirWS);
 				BRDFSurface surface=InitializeBRDFSurface(albedo,glossiness,metallic,ao,normal,tangent,viewDir);
 				
-                float3 lightDir=normalize(lightDirWS);
-				float3 lightCol=_MainLightColor.rgb;
-				float atten=MainLightRealtimeShadow(i.shadowCoordWS);
+                half3 lightDir=normalize(lightDirWS);
+				half3 lightCol=_MainLightColor.rgb;
+				half atten=MainLightRealtimeShadow(i.shadowCoordWS);
 
-				float3 brdfColor=0;
+				half3 brdfColor=0;
 				half3 indirectDiffuse=IndirectBRDFDiffuse(surface.normal);
 				half3 indirectSpecular=IndirectBRDFSpecular(surface.reflectDir, surface.perceptualRoughness,i.screenPos,normalTS);
 				brdfColor+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 
 				BRDFLight light=InitializeBRDFLight(surface,lightDir,lightCol,atten,_AnisoTropicValue);
 				brdfColor+=BRDFLighting(surface,light);
-				return float4(brdfColor,1);
+				return half4(brdfColor,1.h);
 			}
 			ENDHLSL
 		}

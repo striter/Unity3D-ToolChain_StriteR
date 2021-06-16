@@ -20,8 +20,8 @@ SamplerState sampler_PointClamp;
 
 void Clear(uint3 id)
 {
-    _Result[id.xy] = 0;
-    _Depth[id.xy] = 1;
+    _Result[id.xy] = 0.;
+    _Depth[id.xy] = 1.;
 }
 
 void GenerateUV(float2 uv)
@@ -52,7 +52,7 @@ void GenerateUV(float2 uv)
         depthM = Linear01Depth(depthM, _ZBufferParams) ;
         if (sampleDepth > depthM)
         {
-            _Result[resultIDM] = _Input.SampleLevel(sampler_PointClamp, uv, 0);
+            _Result[resultIDM] = float4(_Input.SampleLevel(sampler_PointClamp, uv, 0).rgb,1.);
             _Depth[resultIDM] = depthM;
         }
     }
@@ -68,7 +68,6 @@ void Generate (uint3 id)
     if (_SAMPLE_COUNT > 3u)
         GenerateUV(uv + _Result_TexelSize.xy * float2(.5, .5));
 }
-
 
 [numthreads(1, 1, 1)]
 void ClearLow(uint3 id : SV_DispatchThreadID)
