@@ -3415,7 +3415,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c85af998dd99edf45b824a71f34e3c08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ReflectionType: 1
+  m_ReflectionType: 0
   m_DownSample: 1
   m_PlaneOffset: 0
   m_NormalDistort: 0.2

@@ -9,7 +9,6 @@ namespace Rendering.ImageEffect
 {
     public class PostEffect_VolumetricLight : PostEffectBase<CameraEffect_VolumetricLight, CameraEffectParam_VolumetricLight>
     {
-        public override bool m_IsOpaqueProcess => true;
     }
     public enum enum_LightMarchTimes
     {

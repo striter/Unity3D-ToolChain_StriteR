@@ -23,8 +23,12 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DetailNormalTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 02a2fe7308f3c3643b533e6beae22f9c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 577a2ca0c7f289046aa425f4f268f7fe, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicTex:
@@ -32,6 +36,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PBRTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -45,6 +53,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _AnisoTropicValue: 1
+    - _Cull: 2
+    - _DetailBlendMode: 0
+    - _DstBlend: 0
     - _EnableAOMap: 0
     - _EnableNormalMap: 0
     - _EnableParallexMap: 0
@@ -52,7 +63,7 @@ Material:
     - _EnableSpecular: 1
     - _F: 0
     - _GSF: 0
-    - _Glossiness: 0.2
+    - _Glossiness: 0
     - _Ior: 1.5
     - _Lambert: 0.2
     - _Metallic: 0
@@ -60,8 +71,12 @@ Material:
     - _ParallexOffset: 1
     - _ParallexScale: 0.2
     - _SpecularRange: 0.98
+    - _SrcBlend: 1
     - _SteepCount: 64
     - _SteepParallex: 1
+    - _VF: 1
+    - _ZTest: 2
+    - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

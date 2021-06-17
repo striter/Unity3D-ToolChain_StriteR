@@ -2963,7 +2963,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &650149209
 Transform:
   m_ObjectHideFlags: 0
@@ -3843,7 +3843,7 @@ GameObject:
   - component: {fileID: 813067133}
   - component: {fileID: 813067137}
   m_Layer: 0
-  m_Name: Plane (1)
+  m_Name: Reflection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3918,7 +3918,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 813067132}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -8.7, y: 0, z: 0}
   m_LocalScale: {x: 5, y: 3, z: 3}
   m_Children: []
@@ -3937,7 +3937,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c85af998dd99edf45b824a71f34e3c08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ReflectionType: 1
+  m_ReflectionType: 0
   m_DownSample: 1
   m_PlaneOffset: 0
   m_NormalDistort: 0.2
@@ -3947,7 +3947,7 @@ MonoBehaviour:
   m_BlurParam:
     m_BlurType: 3
     m_BlurSize: 0.15
-    m_Iteration: 7
+    m_Iteration: 3
     m_DownSample: 1
     m_Angle: 0
     m_Vector: {x: 0.5, y: 0.5}
@@ -9909,8 +9909,8 @@ MonoBehaviour:
   m_EffectData:
     m_Distance: 20
     m_MarchTimes: 128
-    m_Strength: 0.53
-    m_Pow: 0.6
+    m_Strength: 0.16
+    m_Pow: 0.31
     m_DownSample: 4
     m_Dither: 1
     m_EnableBlur: 1
@@ -9972,7 +9972,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1604089969}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9056c14d9bf4e124baceeaf10f56ca3c, type: 3}
   m_Name: 
@@ -10014,7 +10014,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectData:
-    m_FogColor: {r: 2.3525207, g: 2.3525207, b: 1.8753585, a: 1}
+    m_FogColor: {r: 3.6789525, g: 2.9196665, b: 2.6203861, a: 1}
     m_FogDensity: 0.05
     m_FogVerticalStart: 0
     m_FogVerticalOffset: 4.58
@@ -10078,7 +10078,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1604089969}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e24f8465e5911194a9d11d5acb09953c, type: 3}
   m_Name: 

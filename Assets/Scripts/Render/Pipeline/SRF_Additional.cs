@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Rendering;
+﻿using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using System.Linq;
 using Rendering.ImageEffect;
@@ -13,8 +11,6 @@ namespace Rendering.Pipeline
         static readonly int ID_FrustumCornersRayBR = Shader.PropertyToID("_FrustumCornersRayBR");
         static readonly int ID_FrustumCornersRayTL = Shader.PropertyToID("_FrustumCornersRayTL");
         static readonly int ID_FrustumCornersRayTR = Shader.PropertyToID("_FrustumCornersRayTR");
-        static readonly int ID_ViewProjectionMatrix = Shader.PropertyToID("_MatrixVP");
-        static readonly int ID_InvViewProjectionMatrix = Shader.PropertyToID("_MatrixInvVP");
         #endregion
         [Tooltip("Screen Space World Position Reconstruction")]
         public bool m_FrustumCornersRay;
@@ -38,7 +34,7 @@ namespace Rendering.Pipeline
             for (int i=0;i<SRP_PlanarReflection.C_MaxReflectionTextureCount;i++)
                 m_ReflecitonPasses[i] = new SRP_PlanarReflection() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 3};
             m_PostProcesssing_Opaque = new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox+4 };
-            m_PostProcesssing_AfterAll = new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing };
+            m_PostProcesssing_AfterAll = new SRP_ComponentBasedPostProcess() {  renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing };
 #if UNITY_EDITOR
             m_CameraReflectionComputeShader = UnityEditor.AssetDatabase.LoadAssetAtPath<ComputeShader>("Assets/Shaders/Compute/PlanarReflection.compute");
 #endif

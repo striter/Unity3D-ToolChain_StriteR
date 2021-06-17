@@ -26,21 +26,20 @@
 		[Toggle(_PARALLEX_STEEP)]_SteepParallex("Steep Parallex",float)=0
 		[Enum(_8,8,_16,16,_32,32,_64,64,_128,128)]_SteepCount("Steep Count",int)=16
 
-		//[Header(Misc)]
-  //      [Enum(UnityEngine.Rendering.BlendMode)]_SrcBlend("Src Blend",int)=0
-  //      [Enum(UnityEngine.Rendering.BlendMode)]_DstBlend("Dst Blend",int)=0
-  //      [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
-  //      [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
-  //      [Enum(Off,0,Back,1,Front,2)]_Cull("Cull",int)=1
+		[Header(Misc)]
+        [Enum(UnityEngine.Rendering.BlendMode)]_SrcBlend("Src Blend",int)=0
+        [Enum(UnityEngine.Rendering.BlendMode)]_DstBlend("Dst Blend",int)=0
+        [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
+        [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
+        [Enum(Off,0,Front,1,Back,2)]_Cull("Cull",int)=1
 	}
 	SubShader
 	{
 		Tags { "Queue" = "Geometry" }
-		//Blend [_SrcBlend] [_DstBlend]
-		//ZWrite [_ZWrite]
-		//ZTest [_ZTest]
-		//Cull [_Cull]
-
+		Blend [_SrcBlend] [_DstBlend]
+		ZWrite [_ZWrite]
+		ZTest [_ZTest]
+		Cull [_Cull]
 		Pass
 		{
 			NAME "FORWARD"

@@ -53,7 +53,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _AnisoTropicValue: 1
+    - _Cull: 2
     - _DetailBlendMode: 0
+    - _DstBlend: 0
     - _EnableAOMap: 0
     - _EnableNormalMap: 0
     - _EnableParallexMap: 0
@@ -64,14 +66,17 @@ Material:
     - _Glossiness: 1
     - _Ior: 1.5
     - _Lambert: 0.2
-    - _Metallic: 0
+    - _Metallic: 1
     - _NDF: 2
     - _ParallexOffset: 1
     - _ParallexScale: 0.001
     - _SpecularRange: 0.98
+    - _SrcBlend: 1
     - _SteepCount: 64
     - _SteepParallex: 0
     - _VF: 1
+    - _ZTest: 2
+    - _ZWrite: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

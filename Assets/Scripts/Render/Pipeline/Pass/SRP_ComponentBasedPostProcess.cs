@@ -32,6 +32,7 @@ namespace Rendering.Pipeline
             base.Configure(cmd, cameraTextureDescriptor);
             foreach (var effect in m_Effects)
                 effect.Configure(cmd, cameraTextureDescriptor);
+            ConfigureTarget(colorAttachment,depthAttachment);
         }
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
@@ -80,5 +81,4 @@ namespace Rendering.Pipeline
                 effect.FrameCleanUp(cmd);
         }
     }
-
 }
