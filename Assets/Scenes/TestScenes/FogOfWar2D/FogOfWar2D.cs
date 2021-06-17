@@ -5,7 +5,7 @@ using TDataPersistent;
 using System;
 using UnityEngine.UI;
 using Rendering.ImageEffect;
-public class Test : MonoBehaviour
+public class FogOfWar2D : MonoBehaviour
 {
     public Vector3 m_SrcVector = Vector3.one;
     public Vector3 m_DstVector = Vector3.down;

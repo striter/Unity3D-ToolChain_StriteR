@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.7544928, g: 0.7565416, b: 0.7275205, a: 1}
+  m_IndirectSpecularColor: {r: 0.8078008, g: 0.8087431, b: 0.77809274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -355,6 +355,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -697,10 +698,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_FrustumCornersRay: 2
   m_OpaqueBlurTexture: 2
+  m_NormalTexture: 2
   m_ReflectionTexture: 2
-  m_ReflectionPlane:
-    m_Normal: {x: 0, y: 1, z: 0}
-    m_Distance: 0
 --- !u!114 &2000282104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -740,7 +739,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2000282098}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4609a38f9a12b4543a91e80b01b89860, type: 3}
   m_Name: 
@@ -749,12 +748,12 @@ MonoBehaviour:
     m_DOFStart: 0.1
     m_DOFLerp: 0.1
     m_BlurParams:
-      blurType: 0
-      blurSize: 1
-      iteration: 1
-      downSample: 2
-      angle: 0
-      vector: {x: 0.5, y: 0.5}
+      m_BlurType: 0
+      m_BlurSize: 0.6
+      m_Iteration: 3
+      m_DownSample: 2
+      m_Angle: 0
+      m_Vector: {x: 0, y: 0}
     m_DepthBlurSample: 1
     m_DepthBlurSize: 0.5
   m_SceneViewPreview: 0
@@ -774,6 +773,7 @@ MonoBehaviour:
     m_ScreenCut: 1
     m_ScreenCutDistance: {x: 0.1, y: 0.1}
     m_ColorBleed: 1
+    m_ColorBleedStrength: 0
     m_ColorBleedIteration: 2
     m_ColorBleedSize: 0.8
     m_ColorBleedR: {x: 1, y: 1}
@@ -794,6 +794,8 @@ MonoBehaviour:
     m_GrainScale: {x: 1, y: 1}
     m_GrainClip: 0.5
     m_GrainFrequency: 10
+    m_GrainCirlce: 0
+    m_GrainCircleWidth: 0
     m_Vignette: 1
     m_VignetteColor: {r: 0, g: 0, b: 0, a: 1}
     m_VignetteValue: 2

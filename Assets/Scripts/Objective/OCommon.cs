@@ -54,7 +54,7 @@ public class ValueLerpBase
     protected float m_value { get; private set; }
     protected float m_previousValue { get; private set; }
     protected float m_targetValue { get; private set; }
-    Action<float> OnValueChanged;
+    readonly Action<float> OnValueChanged;
     public ValueLerpBase(float startValue, Action<float> _OnValueChanged)
     {
         m_targetValue = startValue;
@@ -66,7 +66,7 @@ public class ValueLerpBase
 
     protected void SetLerpValue(float value, float duration)
     {
-        if (value == m_targetValue)
+        if (Math.Abs(value - m_targetValue) < float.Epsilon)
             return;
         m_duration = duration;
         m_check = m_duration;
@@ -76,7 +76,7 @@ public class ValueLerpBase
 
     public void SetFinalValue(float value)
     {
-        if (value == m_value)
+        if (Math.Abs(value - m_value) < float.Epsilon)
             return;
         m_value = value;
         m_previousValue = m_value;
@@ -100,8 +100,8 @@ public class ValueLerpBase
 }
 public class ValueLerpSeconds : ValueLerpBase
 {
-    float m_perSecondValue;
-    float m_maxDuration;
+    readonly float m_perSecondValue;
+    readonly float m_maxDuration;
     float m_maxDurationValue;
     public ValueLerpSeconds(float startValue, float perSecondValue, float maxDuration, Action<float> _OnValueChanged) : base(startValue, _OnValueChanged)
     {
