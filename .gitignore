@@ -1,9 +1,9 @@
 # =============== #
 # Unity generated #
 # =============== #
-Temp/
-Library/
-Logs/
+/Temp
+/Library
+/Logs
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
 # ===================================== #
