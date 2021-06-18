@@ -39,7 +39,7 @@
 				float4 frag (v2f_img i) : SV_Target
 				{
 					float linearDepth = LinearEyeDepth(i.uv);
-					float3 worldPos = GetWorldPosFromDepth(i.uv);
+					float3 worldPos = GetWorldPositionFromUV(i.uv);
 					float2 worldUV = (worldPos.xz + worldPos.yz);
 					float fog =  (( _FogVerticalStart+_FogVerticalOffset)-worldPos.y)  /_FogVerticalOffset*_FogDensity;
 					#if _NOISE

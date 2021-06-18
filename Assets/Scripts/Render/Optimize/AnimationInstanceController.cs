@@ -93,11 +93,12 @@ namespace Rendering.Optimize
             float nextFrame = lastFrame + _deltaTime * _clip.m_FrameRate;
 
             float checkOffset = _clip.m_Loop ? _clip.m_FrameCount * Mathf.Floor((nextFrame / _clip.m_FrameCount)) : 0;
-            _clip.m_Events.Traversal(animEvent => {
+            foreach (AnimationInstanceEvent animEvent in _clip.m_Events)
+            {
                 float frameCheck = checkOffset + animEvent.m_EventFrame;
                 if (lastFrame < frameCheck && frameCheck <= nextFrame)
                     _onEvents(animEvent.m_EventIdentity);
-            });
+            }
         }
     }
 

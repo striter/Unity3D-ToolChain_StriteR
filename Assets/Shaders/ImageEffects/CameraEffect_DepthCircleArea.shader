@@ -29,7 +29,7 @@
 
 				float4 frag (v2f_img i) : SV_Target
 				{
-					float3 worldPos =GetWorldPosFromDepth(i.uv);
+					float3 worldPos =GetWorldPositionFromUV(i.uv);
 					float squaredDistance = sqrDistance(worldPos,_Origin.xyz);
 
 					float fill = step(squaredDistance,_SqrEdgeMin);

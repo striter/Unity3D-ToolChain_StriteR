@@ -81,12 +81,13 @@ namespace CustomShadow
             int resolution = (int)m_ShadowData.m_ShadowResolution;
             RenderTextureDescriptor descriptor = new RenderTextureDescriptor(resolution, resolution,RenderTextureFormat.Shadowmap,16);
             cmd.GetTemporaryRT(ID_ShadowMap, descriptor);
-            ConfigureTarget( RT_ID_ShadowMap);
+            ConfigureTarget(RT_ID_ShadowMap);
+            ConfigureClear(ClearFlag.All, Color.black);
         }
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
-            ShadowDrawingSettings settings = new ShadowDrawingSettings(renderingData.cullResults, m_Index);
-            context.DrawShadows(ref settings);
+            // ShadowDrawingSettings settings = new ShadowDrawingSettings(renderingData.cullResults, m_Index);
+            // context.DrawShadows(ref settings);
         }
         public override void FrameCleanup(CommandBuffer cmd)
         {

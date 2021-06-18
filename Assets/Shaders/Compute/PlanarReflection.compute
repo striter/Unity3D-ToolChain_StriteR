@@ -30,7 +30,6 @@ void GenerateUV(float2 uv)
     
     float3 viewDirWS = GetViewDirWS(uv);
     float3 positionWS = _WorldSpaceCameraPos + viewDirWS * LinearEyeDepth(depth, _ZBufferParams);
-    
     float normalProj = dot(positionWS.xyz - _PlanePosition, _PlaneNormal);
     float3 positionWSM = positionWS.xyz - normalProj * _PlaneNormal * 2;
     float4 positionCSM = TransformWorldToHClip(positionWSM);
