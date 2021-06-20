@@ -36,7 +36,7 @@ namespace Rendering.Pipeline
         ComputeShader m_ComputeShader;
         RenderTextureDescriptor m_ResultDescriptor;
         RenderTargetIdentifier m_ColorResult;
-        ImageEffect_Blurs m_Blur;
+        PPCore_Blurs _mCoreBlur;
         Int3 m_Kernels;
 
         readonly MaterialPropertyBlock m_PropertyBlock;
@@ -45,13 +45,13 @@ namespace Rendering.Pipeline
         RenderTargetIdentifier m_ReflectionTextureID;
         public SRP_PlanarReflection()
         {
-            m_Blur = new ImageEffect_Blurs();
+            _mCoreBlur = new PPCore_Blurs();
             m_ShaderTagIDs.FillWithDefaultTags();
             m_PropertyBlock = new MaterialPropertyBlock();
         }
         public void Dispose()
         {
-            m_Blur.Destroy();
+            _mCoreBlur.Destroy();
         }
         public SRP_PlanarReflection Setup(int _index,ScriptableRenderer _renderer, ComputeShader _shader, SRD_ReflectionPlane _plane,bool _lowEnd)
         {
@@ -61,7 +61,7 @@ namespace Rendering.Pipeline
             string keyword = _lowEnd ? "Low" : "Medium";
             int groupCount = _lowEnd ? 1 : 8;
             m_Kernels = new Int3(m_ComputeShader.FindKernel("Clear" + keyword),m_ComputeShader.FindKernel("Generate"+ keyword), groupCount);
-            m_Blur.OnValidate(_plane.m_BlurParam);
+            _mCoreBlur.OnValidate(_plane.m_BlurParam);
             m_PropertyBlock.SetInt(ID_ReflectionTextureOn, 1);
             m_PropertyBlock.SetInt(ID_ReflectionTextureIndex,_index);
             m_PropertyBlock.SetFloat(ID_ReflectionNormalDistort, m_Plane.m_NormalDistort);
@@ -169,7 +169,7 @@ namespace Rendering.Pipeline
             }
             if (m_Plane.m_EnableBlur)
             {
-                m_Blur.ExecutePostProcessBuffer(cmd, m_ColorResult, m_ReflectionTextureID, m_ResultDescriptor ,m_Plane.m_BlurParam); 
+                _mCoreBlur.ExecutePostProcessBuffer(cmd, m_ColorResult, m_ReflectionTextureID, m_ResultDescriptor ,m_Plane.m_BlurParam); 
                 cmd.ReleaseTemporaryRT(ID_ReflectionTempTexture);
             }
             context.ExecuteCommandBuffer(cmd);

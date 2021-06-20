@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SRF Addition
   m_EditorClassIdentifier: 
   m_Active: 1
-  m_FrustumCornersRay: 1
+  m_ScreenParams: 1
   m_OpaqueBlurTexture: 0
   m_BlurParams:
     m_BlurType: 3

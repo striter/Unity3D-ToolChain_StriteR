@@ -52,8 +52,7 @@ Shader "Game/UI/Sprite_BSC"
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#include "../CommonInclude.hlsl"
-			#include "../CameraEffectInclude.hlsl"
+			#include "../PostProcessInclude.hlsl"
 
 			#pragma multi_compile_local __ UNITY_UI_ALPHACLIP
 

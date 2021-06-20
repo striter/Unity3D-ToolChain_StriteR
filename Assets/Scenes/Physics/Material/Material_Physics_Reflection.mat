@@ -28,7 +28,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 646da4453bd230f48a5994f17b37095a, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 5, y: 5}
         m_Offset: {x: 0, y: 0}
     - _MetallicTex:
@@ -51,6 +51,7 @@ Material:
         m_Texture: {fileID: 2800000, guid: 1ccfa1526c506f04289a6ec8c4949e1d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _AnisoTropicValue: 1
     - _Cull: 2

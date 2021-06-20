@@ -104,6 +104,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _AlphaClip: 0
     - _AnisoTropicValue: 1
@@ -114,7 +115,7 @@ Material:
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
-    - _DetailBlendMode: 0
+    - _DetailBlendMode: 4
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EnableAOMap: 0

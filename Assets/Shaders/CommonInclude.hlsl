@@ -1,57 +1,81 @@
 ﻿#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Library/ValueMapping.hlsl"
-float2 TransformTex(float2 uv, float4 st) {return uv * st.xy + st.zw;}
+
+float2 TransformTex(float2 _uv, float4 _st) {return _uv * _st.xy + _st.zw;}
 #define PI_HALF 1.5707963267949
 #define PI_TWO 6.2831853071796
-#define PI_ONEDIVIDE 0.31830988618379
-#define PI_ONEDIVDETWO 0.15915494309189
+#define PI_ONE_DIV 0.31830988618379
+#define PI_ONE_DIV_TWO 0.15915494309189
 #define INSTANCING_BUFFER_START UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 #define INSTANCING_PROP(type,param) UNITY_DEFINE_INSTANCED_PROP(type,param)
 #define INSTANCING_BUFFER_END UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 #define INSTANCE(param) UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,param)
 #define TRANSFORM_TEX_INSTANCE(uv,tex) TransformTex(uv,INSTANCE(tex##_ST));
 
-#if UNITY_REVERSED_Z
-#define Z_Multiply -1.h
-#else
+//Depth
+#if !UNITY_REVERSED_Z
 #define Z_Multiply 1.h
+#define Z_BEGIN 1.h
+#define Z_END 0.h
+#else
+#define Z_Multiply -1.h
+#define Z_BEGIN 1.h
+#define Z_END 0.h
 #endif
+bool DepthGreater(float _depthSrc,float _depthComp)
+{
+    #if !UNITY_REVERSED_Z
+        return _depthSrc>_depthComp;
+    #else
+        return _depthSrc<_depthComp;
+    #endif
+}
+
+//Transformations
+float3 GetPositionHClip(float2 _uv,float _depth)
+{
+    #if UNITY_REVERSED_Z
+    _uv.y=1-_uv.y;
+    #endif
+    return float3(_uv*2.-1.,_depth);
+}
+float4x4 _Matrix_VP;
+float4x4 _Matrix_I_VP;
+float3 TransformHClipToWorld(float3 _positionCS)
+{
+    float4 pos=mul(_Matrix_I_VP,float4(_positionCS,1));
+    return pos.xyz/pos.w;
+}
 
 float3 TransformObjectToHClipNormal(float3 _normalOS)
 {
     return mul((float3x3) GetWorldToHClipMatrix(), TransformObjectToWorldNormal(_normalOS));
 }
 
-float sqrDistance(float3 _offset)
+void TransformHClipToUVDepth(float4 positionCS,out half2 uv,out half depth)
 {
-    return dot(_offset, _offset);
-}
-float sqrDistance(float3 _pA, float3 _pB)
-{
-    return sqrDistance(_pA - _pB);
-}
-
-half Blend_Overlay(half _src,half _dst)
-{
-    return _src<.5h?2.h*_src*_dst:1.h-2.h*(1.h-_src)*(1.h-_dst);
-}
-half3 Blend_Overlay(half3 _src,half3 _dst)
-{
-    return half3(Blend_Overlay(_src.x,_dst.x),Blend_Overlay(_src.y,_dst.y),Blend_Overlay(_src.z,_dst.z));
-}
-float4 Blend_Screen(float4 _src, float4 _dst)
-{
-    return 1 - (1 - _src) * (1 - _dst);
-}
-float3 Blend_Screen(float3 _src, float3 _dst)
-{
-    return 1 - (1 - _src) * (1 - _dst);
+    positionCS.xyz /= positionCS.w;
+    
+    uv= (positionCS.xy + 1) * .5;
+    #if UNITY_UV_STARTS_AT_TOP
+    uv.y = 1 - uv.y;
+    #endif
+    
+    depth = positionCS.z;
 }
 
-float3 DecodeNormalMap(float3 _normal)
-{
-    return normalize(_normal * 2. - 1.);
-}
+//Screen Space Calculations
+float3 _FrustumCornersRayBL;
+float3 _FrustumCornersRayBR;
+float3 _FrustumCornersRayTL;
+float3 _FrustumCornersRayTR;
+
+float3 GetViewDirWS(float2 uv){return bilinearLerp(_FrustumCornersRayTL, _FrustumCornersRayTR, _FrustumCornersRayBL, _FrustumCornersRayBR, uv);}
+float3 GetPositionWS_Frustum(half2 uv,half depth){ return _WorldSpaceCameraPos + LinearEyeDepth(depth,_ZBufferParams) *  GetViewDirWS(uv);}
+float3 GetPositionWS_VP(half2 uv,half depth){ return TransformHClipToWorld(GetPositionHClip(uv,depth));}
+
+//Normals
+float3 DecodeNormalMap(float3 _normal){return normalize(_normal * 2. - 1.);}
 
 //Refer: @https://blog.selfshadow.com/publications/blending-in-detail/
 half3 BlendNormal(half3 _normal1, half3 _normal2, uint _blendMode)
@@ -100,53 +124,19 @@ half3 BlendNormal(half3 _normal1, half3 _normal2, uint _blendMode)
     return normalize(blendNormal);
 }
 
-float2 TriplanarMapping(float3 worldPos, float3 worldNormal)
+//UV Remapping
+float2 UVRemap_Triplanar(float3 _positionWS, float3 _normalWS)
 {
-    return worldPos.zy * worldNormal.x + worldPos.xz * worldNormal.y + worldPos.xy * worldNormal.z;
+    return _positionWS.zy * _normalWS.x + _positionWS.xz * _normalWS.y + _positionWS.xy * _normalWS.z;
 }
 
-float2 UVCenterMapping(float2 uv, float2 tilling, float2 offset, float rotateAngle)
+float2 UVRemap_TSR(float2 uv, float2 tilling, float2 offset, float rotateAngle)
 {
     const float2 center = float2(.5, .5);
     uv = uv + offset;
     offset += center;
     float2 centerUV = uv - offset;
-    float sinR = sin(rotateAngle);
-    float cosR = cos(rotateAngle);
-    float2x2 rotateMatrix = float2x2(sinR, -cosR, cosR, sinR);
-    return mul(rotateMatrix, centerUV) * tilling + offset;
-}
-
-float2x2 Rotate2x2(float angle)
-{
-    float sinAngle, cosAngle;
-    sincos(angle, sinAngle, cosAngle);
-    return float2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
-}
-
-float3x3 AngleAxis3x3(float angle, float3 axis)
-{
-    float s, c;
-    sincos(angle, s, c);
-
-    float t = 1 - c;
-    float x = axis.x;
-    float y = axis.y;
-    float z = axis.z;
-
-    return float3x3(t * x * x + c, t * x * y - s * z, t * x * z + s * y,
-        t * x * y + s * z, t * y * y + c, t * y * z - s * x,
-        t * x * z - s * y, t * y * z + s * x, t * z * z + c);
-}
-
-float3 _FrustumCornersRayBL;
-float3 _FrustumCornersRayBR;
-float3 _FrustumCornersRayTL;
-float3 _FrustumCornersRayTR;
-
-float3 GetViewDirWS(float2 uv)
-{
-    return bilinearLerp(_FrustumCornersRayTL, _FrustumCornersRayTR, _FrustumCornersRayBL, _FrustumCornersRayBR, uv);
+    return mul( Rotate2x2(rotateAngle), centerUV) * tilling + offset;
 }
 
 #include "Library/Noise.hlsl"

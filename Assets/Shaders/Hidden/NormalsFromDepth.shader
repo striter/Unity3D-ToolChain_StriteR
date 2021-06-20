@@ -12,13 +12,14 @@ Shader "Hidden/NormalsFromDepth"
             HLSLPROGRAM
             #pragma vertex vert_img
             #pragma fragment frag
-            #include "../CommonInclude.hlsl"
-            #include "../CameraEffectInclude.hlsl"
+            #include "../PostProcessInclude.hlsl"
 
             float4 frag (v2f_img i) : SV_Target
             {
                 //To Be Continued
-                return float4(ClipSpaceNormalFromDepth(i.uv),1);
+                float3 positionWS;
+                float depth;
+                return float4(WorldSpaceNormalFromDepth(i.uv,positionWS,depth),1);
             }
             ENDHLSL
         }

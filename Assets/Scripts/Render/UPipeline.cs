@@ -33,12 +33,15 @@ namespace Rendering
             _tagList.Add(new ShaderTagId("UniversalForwardOnly"));
             _tagList.Add(new ShaderTagId("LightweightForward"));
         }
+
         public static Material CreateMaterial(Type _type)
         {
-            Shader _shader = Shader.Find("Hidden/" + _type.Name);
+            string lastname = _type.Name.Split('_')[1];
+            string name ="Hidden/PostProcess/"+lastname;
+            Shader _shader = Shader.Find(name);
 
             if (_shader == null)
-                throw new NullReferenceException("Invalid ImageEffect Shader Found:" + _type.Name);
+                throw new NullReferenceException("Invalid ImageEffect Shader Found:" + name);
 
             if (!_shader.isSupported)
                 throw new NullReferenceException("Shader Not Supported:" + _type.Name);

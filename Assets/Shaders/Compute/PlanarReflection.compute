@@ -21,35 +21,24 @@ SamplerState sampler_PointClamp;
 void Clear(uint3 id)
 {
     _Result[id.xy] = 0.;
-    _Depth[id.xy] = 1.;
+    _Depth[id.xy] = Z_END;
 }
 
-void GenerateUV(float2 uv)
+void ReflectionMapping(float2 uv)
 {
     float depth = _CameraDepthTexture.SampleLevel(sampler_PointClamp, uv, 0);
-    
-    float3 viewDirWS = GetViewDirWS(uv);
-    float3 positionWS = _WorldSpaceCameraPos + viewDirWS * LinearEyeDepth(depth, _ZBufferParams);
+    float3 positionWS=GetPositionWS_VP(uv,depth);
     float normalProj = dot(positionWS.xyz - _PlanePosition, _PlaneNormal);
     float3 positionWSM = positionWS.xyz - normalProj * _PlaneNormal * 2;
     float4 positionCSM = TransformWorldToHClip(positionWSM);
-    positionCSM.xyz /= positionCSM.w;
-    
-    float2 uvM = (positionCSM.xy + 1) * .5;
-    float depthM = positionCSM.z;
-#if UNITY_UV_STARTS_AT_TOP
-    uvM.y = 1 - uvM.y;
-#endif
-    
-#if !UNITY_REVERSED_Z
-    depth = 1 - depth;
-#endif
+    half2 uvM;
+    half depthM;
+    TransformHClipToUVDepth(positionCSM,uvM,depthM);
     if (positionCSM.w > 0 && depth > 0)
     {
         uint2 resultIDM = uvM * _Result_TexelSize.zw;
         float sampleDepth = _Depth[resultIDM];
-        depthM = Linear01Depth(depthM, _ZBufferParams) ;
-        if (sampleDepth > depthM)
+        if (!DepthGreater(depthM,sampleDepth))
         {
             _Result[resultIDM] = float4(_Input.SampleLevel(sampler_PointClamp, uv, 0).rgb,1.);
             _Depth[resultIDM] = depthM;
@@ -59,13 +48,13 @@ void GenerateUV(float2 uv)
 void Generate (uint3 id)
 {
     float2 uv = id.xy * _Result_TexelSize.xy;
-    GenerateUV(uv);
+    ReflectionMapping(uv);
     if (_SAMPLE_COUNT > 1u)
-        GenerateUV(uv + _Result_TexelSize.xy * float2(0, .5));
+        ReflectionMapping(uv + _Result_TexelSize.xy * float2(0, .5));
     if (_SAMPLE_COUNT > 2u)
-        GenerateUV(uv + _Result_TexelSize.xy * float2(.5, 0));
+        ReflectionMapping(uv + _Result_TexelSize.xy * float2(.5, 0));
     if (_SAMPLE_COUNT > 3u)
-        GenerateUV(uv + _Result_TexelSize.xy * float2(.5, .5));
+        ReflectionMapping(uv + _Result_TexelSize.xy * float2(.5, .5));
 }
 
 [numthreads(1, 1, 1)]

@@ -72,7 +72,7 @@
 				o.positionWS = TransformObjectToWorld(v.positionOS);
 				o.normalWS = TransformObjectToWorldNormal(v.normalOS);
 				#if _WORLD_UV
-				o.uv = TRANSFORM_TEX_INSTANCE( TriplanarMapping(o.positionWS,normalize(o.normalWS)),_Hatch0);
+				o.uv = TRANSFORM_TEX_INSTANCE( UVRemap_Triplanar(o.positionWS,normalize(o.normalWS)),_Hatch0);
 				#else
 				o.uv=TRANSFORM_TEX_INSTANCE(v.uv,_Hatch0);
 				#endif

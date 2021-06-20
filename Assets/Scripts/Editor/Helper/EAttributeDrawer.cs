@@ -124,6 +124,18 @@ namespace TEditor
     }
     #endregion
     #region SubAttribute
+
+    [CustomPropertyDrawer(typeof(IntEnumAttribute))]
+    public class IntEnumPropertyDrawer : SubAttributePropertyDrawer<IntEnumAttribute>
+    {
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            if(!OnGUIAttributePropertyCheck(position,property,out IntEnumAttribute attribute,SerializedPropertyType.Float,SerializedPropertyType.Integer))
+                return;
+            property.intValue = EditorGUI.IntPopup(position,label,property.intValue,attribute.m_Values.ToArray(p=>new GUIContent( p.ToString())),attribute.m_Values);
+        }
+    }
+    
     [CustomPropertyDrawer(typeof(ClampAttribute))]
     public class ClampPropertyDrawer : SubAttributePropertyDrawer<ClampAttribute>
     {

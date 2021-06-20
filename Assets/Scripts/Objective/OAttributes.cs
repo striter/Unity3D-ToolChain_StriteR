@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 [AttributeUsage(AttributeTargets.Field)]
 public class MFoldoutAttribute : PropertyAttribute
@@ -19,6 +20,21 @@ public class MFoldAttribute : MFoldoutAttribute
 [AttributeUsage(AttributeTargets.Field)]
 public class MTitleAttribute : PropertyAttribute { }
 
+
+[AttributeUsage(AttributeTargets.Field)]
+public class IntEnumAttribute : PropertyAttribute
+{
+    public int[] m_Values {get ; private set; }
+    public IntEnumAttribute(params int[] _values)
+    {
+        m_Values = _values;
+        #if UNITY_EDITOR
+        Type intType =typeof(int);
+        if (m_Values.Any(p => p.GetType() != intType))
+            throw new Exception("Type Must All Equals");
+        #endif 
+    }
+}
 [AttributeUsage(AttributeTargets.Field)]
 public class PositionAttribute : PropertyAttribute { }
 [AttributeUsage(AttributeTargets.Field)]

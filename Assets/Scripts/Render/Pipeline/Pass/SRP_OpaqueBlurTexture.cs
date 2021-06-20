@@ -11,22 +11,22 @@ namespace Rendering.Pipeline
         static readonly RenderTargetIdentifier RT_BlurTexture = new RenderTargetIdentifier(RT_ID_BlurTexture);
         #endregion
         ScriptableRenderer m_Renderer;
-        ImageEffect_Blurs m_Blurs;
-        ImageEffectParam_Blurs m_BlurParams;
+        PPCore_Blurs _mCoreBlurs;
+        PPData_Blurs m_BlurParams;
         public SRP_OpaqueBlurTexture()
         {
-            m_Blurs = new ImageEffect_Blurs();
+            _mCoreBlurs = new PPCore_Blurs();
         }
-        public SRP_OpaqueBlurTexture Setup(ScriptableRenderer _renderer, ImageEffectParam_Blurs _params)
+        public SRP_OpaqueBlurTexture Setup(ScriptableRenderer _renderer, PPData_Blurs _params)
         {
             m_Renderer = _renderer;
             m_BlurParams = _params;
-            m_Blurs.OnValidate(_params);
+            _mCoreBlurs.OnValidate(_params);
             return this;
         }
         public void Dispose()
         {
-            m_Blurs.Destroy();
+            _mCoreBlurs.Destroy();
         }
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
@@ -37,7 +37,7 @@ namespace Rendering.Pipeline
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get("Generate Opaque Blur Texture");
-            m_Blurs.ExecutePostProcessBuffer(cmd, m_Renderer.cameraColorTarget, RT_BlurTexture, renderingData.cameraData.cameraTargetDescriptor, m_BlurParams);
+            _mCoreBlurs.ExecutePostProcessBuffer(cmd, m_Renderer.cameraColorTarget, RT_BlurTexture, renderingData.cameraData.cameraTargetDescriptor, m_BlurParams);
             context.ExecuteCommandBuffer(cmd);
             cmd.Clear();
             CommandBufferPool.Release(cmd);

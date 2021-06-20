@@ -2,6 +2,8 @@
 using UnityEngine.Rendering.Universal;
 using System.Linq;
 using Rendering.ImageEffect;
+using UnityEngine.Serialization;
+
 namespace Rendering.Pipeline
 {
     public class SRF_Additional : ScriptableRendererFeature
@@ -11,14 +13,15 @@ namespace Rendering.Pipeline
         static readonly int ID_FrustumCornersRayBR = Shader.PropertyToID("_FrustumCornersRayBR");
         static readonly int ID_FrustumCornersRayTL = Shader.PropertyToID("_FrustumCornersRayTL");
         static readonly int ID_FrustumCornersRayTR = Shader.PropertyToID("_FrustumCornersRayTR");
+        static readonly int ID_MatrixVP = Shader.PropertyToID("_Matrix_VP");
         #endregion
         [Tooltip("Screen Space World Position Reconstruction")]
-        public bool m_FrustumCornersRay;
+        public bool m_ScreenParams;
         [Header("External Textures")]
         public bool m_OpaqueBlurTexture=false;
-        [MFoldout(nameof(m_OpaqueBlurTexture), true)] public ImageEffectParam_Blurs m_BlurParams = UPipeline.GetDefaultPostProcessData<ImageEffectParam_Blurs>();
+        [MFoldout(nameof(m_OpaqueBlurTexture), true)] public PPData_Blurs m_BlurParams = UPipeline.GetDefaultPostProcessData<PPData_Blurs>();
         public bool m_NormalTexture=false;
-        [MFoldout(nameof(m_FrustumCornersRay), true)] public bool m_CameraReflectionTexture=false;
+        [MFoldout(nameof(m_ScreenParams), true)] public bool m_CameraReflectionTexture=false;
         [HideInInspector, SerializeField] ComputeShader m_CameraReflectionComputeShader;
 
         SRP_OpaqueBlurTexture m_OpaqueBlurPass;
@@ -28,12 +31,12 @@ namespace Rendering.Pipeline
         SRP_ComponentBasedPostProcess m_PostProcesssing_AfterAll;
         public override void Create()
         {
-            m_OpaqueBlurPass = new SRP_OpaqueBlurTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 1 };
-            m_NormalPass = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 2 };
+            m_OpaqueBlurPass = new SRP_OpaqueBlurTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox };
+            m_NormalPass = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox};
+            m_PostProcesssing_Opaque = new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox };
             m_ReflecitonPasses = new SRP_PlanarReflection[SRP_PlanarReflection.C_MaxReflectionTextureCount];
             for (int i=0;i<SRP_PlanarReflection.C_MaxReflectionTextureCount;i++)
-                m_ReflecitonPasses[i] = new SRP_PlanarReflection() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 3};
-            m_PostProcesssing_Opaque = new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox+4 };
+                m_ReflecitonPasses[i] = new SRP_PlanarReflection() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 1};
             m_PostProcesssing_AfterAll = new SRP_ComponentBasedPostProcess() {  renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing };
 #if UNITY_EDITOR
             m_CameraReflectionComputeShader = UnityEditor.AssetDatabase.LoadAssetAtPath<ComputeShader>("Assets/Shaders/Compute/PlanarReflection.compute");
@@ -54,7 +57,7 @@ namespace Rendering.Pipeline
             if (renderingData.cameraData.isPreviewCamera)
                 return;
 
-            bool frustumCornersRay = m_FrustumCornersRay;
+            bool screenParams = m_ScreenParams;
             bool opaqueBlurTexture = m_OpaqueBlurTexture;
             bool cameraNormalTexture = m_NormalTexture;
             bool cameraReflectionTexture = m_CameraReflectionTexture;
@@ -64,14 +67,14 @@ namespace Rendering.Pipeline
                 if (!renderingData.cameraData.camera.gameObject.TryGetComponent(out SRD_AdditionalData data))
                     data = renderingData.cameraData.camera.gameObject.AddComponent<SRD_AdditionalData>();
 
-                frustumCornersRay = data.m_FrustumCornersRay.IsEnabled(frustumCornersRay);
+                screenParams = data.m_FrustumCornersRay.IsEnabled(screenParams);
                 opaqueBlurTexture = data.m_OpaqueBlurTexture.IsEnabled(opaqueBlurTexture);
                 cameraNormalTexture = data.m_NormalTexture.IsEnabled(cameraNormalTexture);
                 cameraReflectionTexture = data.m_ReflectionTexture.IsEnabled(cameraReflectionTexture);
             }
 
-            if (frustumCornersRay)
-                UpdateFrustumCornersRay(renderingData.cameraData.camera);
+            if (screenParams)
+                UpdateScreenParams(ref renderingData);
             if (opaqueBlurTexture)
                 renderer.EnqueuePass(m_OpaqueBlurPass.Setup(renderer,m_BlurParams));
             if (cameraNormalTexture)
@@ -80,12 +83,21 @@ namespace Rendering.Pipeline
                 UpdateCameraReflectionTexture(renderer,ref renderingData);
             UpdatePostProcess(renderer, ref renderingData);
         }
-        void UpdateFrustumCornersRay(Camera _camera)
+        void UpdateScreenParams(ref RenderingData _renderingData)
         {
-            float fov = _camera.fieldOfView;
-            float near = _camera.nearClipPlane;
-            float aspect = _camera.aspect;
-            Transform cameraTrans = _camera.transform;
+            Matrix4x4 projection = GL.GetGPUProjectionMatrix(_renderingData.cameraData.GetProjectionMatrix(),
+                _renderingData.cameraData.IsCameraProjectionMatrixFlipped());
+            Matrix4x4 view = _renderingData.cameraData.GetViewMatrix();
+            Matrix4x4 vp = projection * view;
+
+            Shader.SetGlobalMatrix("_Matrix_VP",vp);
+            Shader.SetGlobalMatrix("_Matrix_I_VP",vp.inverse);
+            
+            var camera = _renderingData.cameraData.camera;
+            float fov = camera.fieldOfView;
+            float near = camera.nearClipPlane;
+            float aspect = camera.aspect;
+            Transform cameraTrans = camera.transform;
             float halfHeight = near * Mathf.Tan(fov * .5f * Mathf.Deg2Rad);
             Vector3 forward = cameraTrans.forward;
             Vector3 toRight = cameraTrans.right * halfHeight * aspect;

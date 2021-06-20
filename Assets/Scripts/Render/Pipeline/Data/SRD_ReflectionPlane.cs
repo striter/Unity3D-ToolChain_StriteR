@@ -15,7 +15,7 @@ namespace Rendering.Pipeline
         [MFoldout(nameof(m_ReflectionType), enum_ReflectionSpace.MirrorSpace)]  public bool m_IncludeTransparent=false;
 
         public bool m_EnableBlur = false;
-        [MFoldout(nameof(m_EnableBlur), true)] public ImageEffectParam_Blurs m_BlurParam = UPipeline.GetDefaultPostProcessData<ImageEffectParam_Blurs>();
+        [MFoldout(nameof(m_EnableBlur), true)] public PPData_Blurs m_BlurParam = UPipeline.GetDefaultPostProcessData<PPData_Blurs>();
         public static List<SRD_ReflectionPlane> m_ReflectionPlanes { get; private set; } = new List<SRD_ReflectionPlane>();
         public MeshRenderer m_MeshRenderer { get; private set; }
         public MeshFilter m_MeshFilter { get; private set; }

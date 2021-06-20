@@ -9874,9 +9874,7 @@ GameObject:
   - component: {fileID: 1604089970}
   - component: {fileID: 1604089974}
   - component: {fileID: 1604089975}
-  - component: {fileID: 1604089976}
   - component: {fileID: 1604089973}
-  - component: {fileID: 1604089980}
   - component: {fileID: 1604089977}
   - component: {fileID: 1604089978}
   - component: {fileID: 1604089979}
@@ -9945,7 +9943,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1604089969}
-  m_LocalRotation: {x: -0, y: 0.3606917, z: -0, w: -0.93268514}
+  m_LocalRotation: {x: -0, y: -0.3606917, z: -0, w: 0.93268514}
   m_LocalPosition: {x: 1.3412942, y: 1.8580003, z: -15.719212}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -10015,49 +10013,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EffectData:
     m_Color: {r: 0, g: 0, b: 0, a: 1}
-    m_Intensity: 1
-    m_SampleRadius: 0.1
-    m_DepthBias: 0.01
-    m_DepthBiasRange: 0.311
-    m_SampleCount: 1
-    m_NoiseTex: {fileID: 2800000, guid: 0db5b19ef3682e449a1e176e4ae4f623, type: 3}
-    m_NoiseScale: 5
-  m_SceneViewPreview: 1
---- !u!114 &1604089976
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1604089969}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9056c14d9bf4e124baceeaf10f56ca3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectData:
-    m_MainNoise: {fileID: 11700000, guid: 5743fc3e0e9339b41b3dc606bd35aefe, type: 2}
-    m_MainNoiseScale: {x: 1000, y: 1000, z: 1000}
-    m_MainNoiseFlow: {x: 0.01, y: 0, z: 0.02}
-    m_VerticalStart: 20
-    m_VerticalLength: 200
-    m_Density: 83.7
-    m_DensityClip: 0.672
-    m_DensitySmooth: 0.285
-    m_Distance: 200
-    m_MarchTimes: 32
-    m_Opacity: 0.502
-    m_ShapeMask: {fileID: 2800000, guid: fa57e5ff6a47ada49b4a0ec740c02bec, type: 3}
-    m_ShapeMaskScale: {x: 500, y: 500}
-    m_ShapeMaskFlow: {x: 0.1, y: 0.1}
-    m_ColorRamp: {fileID: 2800000, guid: 034f12e5c34ba414fbcbfa5900814c89, type: 3}
-    m_LightAbsorption: 0.051
-    m_LightMarch: 1
-    m_LightMarchClip: 0.1
-    m_LightMarchTimes: 4
-    m_LightScatter: 1
-    m_ScatterRange: 0.8
-    m_ScatterStrength: 0.8
+    m_Intensity: 1.2
+    m_Radius: 0.17
+    m_Bias: 0.5
+    m_SampleCount: 8
+    m_Dither: 1
+    m_RandomVectorKeywords: Random5
   m_SceneViewPreview: 1
 --- !u!114 &1604089977
 MonoBehaviour:
@@ -10074,7 +10035,7 @@ MonoBehaviour:
   m_EffectData:
     m_FogColor: {r: 3.6789525, g: 2.9196665, b: 2.6203861, a: 1}
     m_FogDensity: 0.05
-    m_FogVerticalStart: 0
+    m_FogVerticalStart: 1.01
     m_FogVerticalOffset: 4.58
     m_NoiseTexure: {fileID: 0}
     m_NoiseScale: 15
@@ -10129,29 +10090,6 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
---- !u!114 &1604089980
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1604089969}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e24f8465e5911194a9d11d5acb09953c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectData:
-    m_Weight: 1
-    m_LUT: {fileID: 2800000, guid: a0fb9abcbebf1304081947afc184b7c7, type: 3}
-    m_LUTCellCount: 32
-    m_brightness: 1
-    m_saturation: 0.67
-    m_contrast: 1
-    m_MixRed: {x: 0, y: 0, z: 0}
-    m_MixGreen: {x: 0, y: 0, z: 0}
-    m_MixBlue: {x: 0, y: 0, z: 0}
-  m_SceneViewPreview: 1
 --- !u!1 &1621550541
 GameObject:
   m_ObjectHideFlags: 0
@@ -12116,7 +12054,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1810458398}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.33, y: 1.54, z: 1.53}
+  m_LocalPosition: {x: 0, y: 1.54, z: 1.53}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 1774138544}

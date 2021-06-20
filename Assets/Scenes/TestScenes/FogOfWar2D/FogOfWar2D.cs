@@ -51,11 +51,11 @@ public class FogOfWar2D : MonoBehaviour
             Button(() => TouchInputManager.Instance.SwitchToTrackers().Init(new TouchTracker_Joystick(UIT_TouchConsole.GetHelperJoystick(), enum_Option_JoyStickMode.Retarget, vec2 => Debug.LogFormat("Dual L Joystick{0}", vec2), TouchTracker.s_LeftTrack), new TouchTracker(vec2 => Debug.LogFormat("Dual R Joystick{0}", vec2), TouchTracker.s_RightTrack)));
 
         UIT_TouchConsole.NewPage("Color Grading");
-        UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostEffect_ColorGrading>(), effect => effect.OnValidate());
+        UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostProcess_ColorGrading>(), effect => effect.OnValidate());
         UIT_TouchConsole.NewPage("Depth Of Field");
-        UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostEffect_DepthOfField>(), effect => effect.OnValidate());
+        UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostProcess_DepthOfField>(), effect => effect.OnValidate());
         UIT_TouchConsole.NewPage("VHS");
-        UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostEffect_VHS>(), effect => effect.OnValidate());
+        UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostProcess_VHS>(), effect => effect.OnValidate());
 
         m_Texture = RenderTexture.GetTemporary(1920, 1080);
         m_Texture.enableRandomWrite = true;
@@ -66,15 +66,15 @@ public class FogOfWar2D : MonoBehaviour
 
         UIT_TouchConsole.NewPage("Compute Shader");
         UIT_TouchConsole.Command("Random Lights", KeyCode.Space).Button(()=> {
-            int randomCount = 5+URandom.Random(8);
+            int randomCount = 5+URandom.RandomInt(8);
             lights = new Vector4[randomCount];
             for(int i=0;i<randomCount;i++)
             {
-                float randomPixelX = URandom.Random(Screen.width);
-                float randomPixelY = URandom.Random(Screen.height);
-                float randomRadius = 50f + URandom.Random(200f);
+                float randomPixelX = URandom.RandomInt(Screen.width);
+                float randomPixelY = URandom.RandomInt(Screen.height);
+                float randomRadius = 50f + URandom.Random01()*200f;
                 randomRadius *= randomRadius;
-                float randomIntenisty = .5f + URandom.Random(2f);
+                float randomIntenisty = .5f + URandom.Random01()*2f;
                 lights[i] = new Vector4(randomPixelX,randomPixelY,randomRadius,randomIntenisty);
             }
         });
