@@ -10,7 +10,7 @@ Material:
   m_Name: UberPBR
   m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
   m_ShaderKeywords: _AOMAP _DETAILNORMALMAP _F_IMPLICIT _F_SCHLICK _GSF_COOKTORRANCE
-    _NDF_GGX _NORMALMAP _PARALLEXMAP _PBRMAP _VF_GGX
+    _NDF_GGX _NORMALMAP _PBRMAP _VF_GGX
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -81,7 +81,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallexTex:
-        m_Texture: {fileID: 2800000, guid: 6df7976dfa00819478feea3a8a8ba164, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RoughnessTex:

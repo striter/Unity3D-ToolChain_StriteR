@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Rendering.ImageEffect
 {
-    public class PostProcessComponentDepthCircleScan : PostProcessComponentBase<CameraEffect_DepthCircleScan, CameraEffectParam_DepthCircleScan>
+    public class PostProcess_ScanCircle : PostProcessComponentBase<PPCore_ScanCircle, PPData_CircleScan>
     {
         public override bool m_IsOpaqueProcess => true;
         SingleCoroutine m_ScanCoroutine;
@@ -39,7 +39,7 @@ namespace Rendering.ImageEffect
     }
 
     [Serializable]
-    public struct CameraEffectParam_DepthCircleScan
+    public struct PPData_CircleScan
     {
         [Position] public Vector3 m_Origin;
         [ColorUsage(true,true)]public Color m_Color;
@@ -49,7 +49,7 @@ namespace Rendering.ImageEffect
 
         public Texture2D m_MaskTexture;
         [MFold(nameof(m_MaskTexture))] public float m_MaskTextureScale;
-        public static readonly CameraEffectParam_DepthCircleScan m_Default = new CameraEffectParam_DepthCircleScan()
+        public static readonly PPData_CircleScan m_Default = new PPData_CircleScan()
         {
             m_Origin = Vector3.zero,
             m_Color = Color.green,
@@ -60,7 +60,7 @@ namespace Rendering.ImageEffect
         };
     }
 
-    public class CameraEffect_DepthCircleScan:PostProcessCore<CameraEffectParam_DepthCircleScan>
+    public class PPCore_ScanCircle:PostProcessCore<PPData_CircleScan>
     {
         #region ShaderProperties
         static readonly int ID_Origin = Shader.PropertyToID("_Origin");
@@ -72,7 +72,7 @@ namespace Rendering.ImageEffect
         static readonly int ID_MinSqrDistance = Shader.PropertyToID("_MinSqrDistance");
         static readonly int ID_MaxSqrDistance = Shader.PropertyToID("_MaxSqrDistance");
         #endregion
-        public override void OnValidate(CameraEffectParam_DepthCircleScan _data)
+        public override void OnValidate(PPData_CircleScan _data)
         {
             base.OnValidate(_data);
             m_Material.SetVector(ID_Origin, _data.m_Origin);

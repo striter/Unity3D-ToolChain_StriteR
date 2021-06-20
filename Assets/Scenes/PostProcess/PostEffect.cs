@@ -30,7 +30,7 @@ public class PostEffect : MonoBehaviour
         m_AreaCoroutine.Stop();
         if (down)
         {
-            PostProcessComponentDepthCircleScan scan = GetComponentInChildren<PostProcessComponentDepthCircleScan>();
+            PostProcess_ScanCircle scan = GetComponentInChildren<PostProcess_ScanCircle>();
             Camera scanCamera = scan.GetComponent<Camera>();
             if (scanCamera.InputRayCheck(stretch1Pos, out RaycastHit _hit))
                 scan.StartDepthScanCircle(_hit.point, 10f, 1f);
