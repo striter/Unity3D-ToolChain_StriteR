@@ -7,7 +7,7 @@ namespace TEditor
     {
         #region Hotkeys
         [MenuItem("Work Flow/Hotkeys/Selected Object Sync Scene View &F", false, 101)]
-        public static void SyncObjectToSceneView() => EHotkeys.SyncObjectToSceneView();
+        public static void SyncObjectToSceneView() => EHotkeys.SyncSelectedToSceneViewCamera();
         [MenuItem("Work Flow/Hotkeys/Scene View Camera Sync To Selected _F11", false, 102)]
         public static void SceneViewCameraSyncSelected() => EHotkeys.SceneViewCameraSyncSelected();
         [MenuItem("Work Flow/Hotkeys/Take Screen Shot _F12", false, 103)]
