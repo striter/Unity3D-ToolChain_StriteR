@@ -102,6 +102,7 @@ namespace Rendering.Pipeline
                 cmd.GetTemporaryRT(ID_ReflectionTempTexture, m_ResultDescriptor, FilterMode.Bilinear);
                 m_ColorResult = RT_ID_ReflectionTempTexture;
             }
+            
             ConfigureTarget(m_ColorResult,RT_ID_ReflectionDepth);
         }
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)

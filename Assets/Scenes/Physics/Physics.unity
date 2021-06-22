@@ -3971,7 +3971,7 @@ MonoBehaviour:
   m_EnableBlur: 1
   m_BlurParam:
     m_BlurType: 3
-    m_BlurSize: 0.15
+    m_BlurSize: 2.5
     m_Iteration: 3
     m_DownSample: 1
     m_Angle: 0
@@ -10013,7 +10013,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EffectData:
     m_Color: {r: 0, g: 0, b: 0, a: 1}
-    m_Intensity: 1.2
+    m_Intensity: 0.58
     m_Radius: 0.17
     m_Bias: 0.5
     m_SampleCount: 8

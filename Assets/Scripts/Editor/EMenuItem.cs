@@ -30,7 +30,7 @@ namespace TEditor
         [MenuItem("Work Flow/Art/Texture Modifier", false, 305)]
         static void ShowTextureModifier() => EditorWindow.GetWindow(typeof(EWTextureEditor)).titleContent = new GUIContent("Texture Editor", EditorGUIUtility.IconContent("d_PreTextureMipMapHigh").image);
         [MenuItem("Work Flow/Art/(Optimize)Animation Instance Baker", false, 400)]
-        static void ShowOptimizeWindow() => EditorWindow.GetWindow(typeof(EWAnimationInstanceBaker)).titleContent = new GUIContent("GPU Animation Instance Baker", EditorGUIUtility.IconContent("AvatarSelector").image);
+        static void ShowOptimizeWindow() => EditorWindow.GetWindow(typeof(EWGPUAnimationBaker)).titleContent = new GUIContent("GPU Animation Instance Baker", EditorGUIUtility.IconContent("AvatarSelector").image);
         [MenuItem("Work Flow/Art/(Optimize)Animation Clip Optimize", false, 401)]
         static void ShowAssetOptimizeWindow() => EditorWindow.GetWindow(typeof(EWAnimationClipOptimize)).titleContent = new GUIContent("Asset Optimize", EditorGUIUtility.IconContent("Toolbar Plus More").image);
         #endregion

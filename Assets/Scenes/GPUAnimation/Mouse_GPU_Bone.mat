@@ -1,0 +1,123 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Mouse_GPU_Bone
+  m_Shader: {fileID: 4800000, guid: e79474b8018424a458f64c7a68eaf79a, type: 3}
+  m_ShaderKeywords: HITTED_POINT0 HITTED_POINT1 _EMISSION _GPU_BONE _OPTIMIZE_1BONE
+  m_LightmapFlags: 1
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AnimTex:
+        m_Texture: {fileID: 4034038330724503887, guid: 2431a8f8b1533e646a2f035c7cc365d0,
+          type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 2800000, guid: 533a60f9b1a62b5428eba873d918d596, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _InstanceAnimationTex:
+        m_Texture: {fileID: 4034038330724503887, guid: 2431a8f8b1533e646a2f035c7cc365d0,
+          type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 61057d6d1c0989242a0a6ad4f3ae1089, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Ramp:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BumpScale: 1
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _GPU: 1
+    - _Gloss: 0.2
+    - _GlossMapScale: 1
+    - _Glossiness: 0
+    - _GlossyReflections: 1
+    - _InstanceFrameBegin: 0
+    - _InstanceFrameEnd: 0
+    - _InstanceFrameInterpolate: 1
+    - _Metallic: 0
+    - _Mode: 0
+    - _OPTIMIZE: 1
+    - _OcclusionStrength: 1
+    - _Outline: 3
+    - _OutlineScale: 1
+    - _OutlineWidth: 4
+    - _Parallax: 0.02
+    - _RampSmooth: 1
+    - _RampThreshold: 0.3
+    - _RimMax: 1
+    - _RimMin: 0.5
+    - _Shadow_HSV_H: 0
+    - _Shadow_HSV_S: 0
+    - _Shadow_HSV_V: 0
+    - _ShawdowEffect: 0.5
+    - _Smoothness: 0.2
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _Stencil: 21
+    - _UVSec: 0
+    - _ZOffset1: 0
+    - _ZOffset2: 0
+    - _ZSmooth: 0
+    - _ZWrite: 1
+    m_Colors:
+    - _AmbientColor: {r: 0.8396226, g: 0.8396226, b: 0.8396226, a: 1}
+    - _Color: {r: 1, g: 0.80133015, b: 0.627451, a: 1}
+    - _EmissionColor: {r: 0.5180404, g: 0.5180404, b: 0.5180404, a: 1}
+    - _HColor: {r: 0.990566, g: 0.89789516, b: 0.75226945, a: 1}
+    - _MainColor: {r: 1, g: 1, b: 1, a: 1}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _PlaneShadowColor: {r: 0.105882354, g: 0.003921569, b: 0.105882354, a: 0.39215687}
+    - _RimColor: {r: 1, g: 0.67647064, b: 0, a: 0.29803923}
+    - _SColor: {r: 0.8867924, g: 0.35471696, b: 0.73914087, a: 0.5019608}
+    - uSpecColor: {r: 0, g: 0, b: 0, a: 1}
+  m_BuildTextureStacks: []
