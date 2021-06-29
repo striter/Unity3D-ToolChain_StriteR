@@ -9,8 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UberPBR
   m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
-  m_ShaderKeywords: _AOMAP _DETAILNORMALMAP _F_IMPLICIT _F_SCHLICK _GSF_COOKTORRANCE
-    _NDF_GGX _NORMALMAP _PBRMAP _VF_GGX
+  m_ShaderKeywords: _AOMAP _DEPTHMAP _DETAILNORMALMAP _F_IMPLICIT _F_SCHLICK _GSF_COOKTORRANCE
+    _NDF_GGX _NORMALMAP _PARALLEX _PARALLEX_STEEP _PBRMAP _VF_GGX
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -32,6 +32,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: dc57807282857d345827be7fb4f64b5b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DepthTex:
+        m_Texture: {fileID: 2800000, guid: 314b848d1e2f2c64caebcbc6175e251c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -45,7 +49,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailNormalTex:
-        m_Texture: {fileID: 2800000, guid: b9e7cebfa4a02324eb870f5d827285c6, type: 3}
+        m_Texture: {fileID: 2800000, guid: cb9a6916db9405a4891180cbae34cc9f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
@@ -53,7 +57,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 6f9db56490a0ebd4b81daf4c3f5709b0, type: 3}
+        m_Texture: {fileID: 2800000, guid: ea2f0f63e40f326458d3d1a3fe7125ec, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -65,7 +69,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTex:
-        m_Texture: {fileID: 2800000, guid: 1af8c9dba40d07841823c9aa75513739, type: 3}
+        m_Texture: {fileID: 2800000, guid: dc57807282857d345827be7fb4f64b5b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -73,7 +77,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PBRTex:
-        m_Texture: {fileID: 2800000, guid: 27637a31d6a5c994885c20f93a042075, type: 3}
+        m_Texture: {fileID: 2800000, guid: d8a06046c7694284f96339b26ebc9b0d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
@@ -81,7 +85,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallexTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 29bc01a7a6734914cbf7e3ac2bd322b5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RoughnessTex:
@@ -114,8 +118,11 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
+    - _DepthBuffer: 1
+    - _DepthOffset: 1
+    - _DepthScale: 0.2
     - _DetailAlbedoMapScale: 1
-    - _DetailBlendMode: 4
+    - _DetailBlendMode: 3
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EnableAOMap: 0
@@ -136,6 +143,8 @@ Material:
     - _NDF: 4
     - _OcclusionStrength: 0
     - _Parallax: 0.005
+    - _Parallex: 1
+    - _ParallexCount: 128
     - _ParallexOffset: 1
     - _ParallexScale: 0.2
     - _QueueOffset: 0
@@ -145,8 +154,8 @@ Material:
     - _SpecularHighlights: 1
     - _SpecularRange: 0.9
     - _SrcBlend: 1
-    - _SteepCount: 64
-    - _SteepParallex: 0
+    - _SteepCount: 128
+    - _SteepParallex: 1
     - _Surface: 0
     - _VF: 1
     - _WorkflowMode: 1

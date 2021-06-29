@@ -32,16 +32,31 @@ bool DepthGreater(float _depthSrc,float _depthComp)
 }
 
 //Transformations
-float3 GetPositionHClip(float2 _uv,float _depth)
+float3 TransformUVDepthToClipPosition(float2 _uv,float _depth)
 {
-    #if UNITY_REVERSED_Z
+    #if UNITY_UV_STARTS_AT_TOP
     _uv.y=1-_uv.y;
     #endif
     return float3(_uv*2.-1.,_depth);
 }
+float3 TransformHClipToClipPosition(float4 _hClip)
+{
+    _hClip.xy=_hClip.xy*.5+1;
+    return _hClip;
+}
+half2 TransformHClipToScreenUV(float4 _hClip)
+{
+    half2 uv=_hClip.xy*rcp(_hClip.w);
+    uv=uv*.5+.5;
+#if UNITY_UV_STARTS_AT_TOP
+    uv.y=1-uv.y;
+#endif
+    return uv;
+}
+
 float4x4 _Matrix_VP;
 float4x4 _Matrix_I_VP;
-float3 TransformHClipToWorld(float3 _positionCS)
+float3 TransformClipToWorld(float3 _positionCS)
 {
     float4 pos=mul(_Matrix_I_VP,float4(_positionCS,1));
     return pos.xyz/pos.w;
@@ -72,7 +87,7 @@ float3 _FrustumCornersRayTR;
 
 float3 GetViewDirWS(float2 uv){return bilinearLerp(_FrustumCornersRayTL, _FrustumCornersRayTR, _FrustumCornersRayBL, _FrustumCornersRayBR, uv);}
 float3 GetPositionWS_Frustum(half2 uv,half depth){ return _WorldSpaceCameraPos + LinearEyeDepth(depth,_ZBufferParams) *  GetViewDirWS(uv);}
-float3 GetPositionWS_VP(half2 uv,half depth){ return TransformHClipToWorld(GetPositionHClip(uv,depth));}
+float3 GetPositionWS_VP(half2 uv,half depth){ return TransformClipToWorld(TransformUVDepthToClipPosition(uv,depth));}
 
 //Normals
 float3 DecodeNormalMap(float3 _normal){return normalize(_normal * 2. - 1.);}

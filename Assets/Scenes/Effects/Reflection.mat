@@ -32,6 +32,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: dc57807282857d345827be7fb4f64b5b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DepthTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -104,6 +108,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _AlphaClip: 0
     - _AnisoTropicValue: 1
@@ -113,6 +118,9 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
+    - _DepthBuffer: 1
+    - _DepthOffset: 0.42
+    - _DepthScale: 1
     - _DetailAlbedoMapScale: 1
     - _DetailBlendMode: 0
     - _DetailNormalMapScale: 1
@@ -135,6 +143,8 @@ Material:
     - _NDF: 1
     - _OcclusionStrength: 0
     - _Parallax: 0.005
+    - _Parallex: 0
+    - _ParallexCount: 16
     - _ParallexOffset: 1
     - _ParallexScale: 0.017
     - _QueueOffset: 0
@@ -149,6 +159,7 @@ Material:
     - _Surface: 0
     - _VF: 1
     - _WorkflowMode: 1
+    - _ZTest: 2
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}

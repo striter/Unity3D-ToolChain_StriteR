@@ -46,6 +46,9 @@ public static class TDataConvert
 
     static object ConvertToObject(Type _type, string _xmlData, int _iteration)
     {
+        if (_xmlData == "")
+            return default;
+        
         if (_type.IsEnum)
             return Enum.ToObject(_type,int.Parse(_xmlData));
 

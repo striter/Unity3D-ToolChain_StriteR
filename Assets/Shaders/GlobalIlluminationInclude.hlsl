@@ -16,9 +16,10 @@ sampler2D _CameraReflectionTexture1;
 sampler2D _CameraReflectionTexture2;
 sampler2D _CameraReflectionTexture3;
 
-half4 IndirectBRDFPlanarSpecular(half4 screenPos, half3 normalTS)
+half4 IndirectBRDFPlanarSpecular(half4 positionHCS, half3 normalTS)
 {
-    half2 screenUV = screenPos.xy / screenPos.w + normalTS.xy * _CameraReflectionNormalDistort;
+    half2 screenUV=TransformHClipToScreenUV(positionHCS);
+    screenUV += normalTS.xy * _CameraReflectionNormalDistort;
     [branch]
     switch (_CameraReflectionTextureIndex)
     {
@@ -43,13 +44,13 @@ half3 IndirectBRDFCubeSpecular(half3 reflectDir, float perceptualRoughness)
     return irradiance;
 }
 
-half3 IndirectBRDFSpecular(float3 reflectDir, float perceptualRoughness, half4 screenPos, half3 normalTS)
+half3 IndirectBRDFSpecular(float3 reflectDir, float perceptualRoughness, half4 positionHCS, half3 normalTS)
 {
     half3 specular = IndirectBRDFCubeSpecular(reflectDir, perceptualRoughness);
     [branch]
     if (_CameraReflectionTextureOn == 1u)
     {
-        half4 planarReflection = IndirectBRDFPlanarSpecular(screenPos, normalTS);
+        half4 planarReflection = IndirectBRDFPlanarSpecular(positionHCS, normalTS);
         specular = lerp(specular, planarReflection.rgb, planarReflection.a);
     }
     return specular;
