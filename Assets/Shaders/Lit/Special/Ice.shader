@@ -168,7 +168,7 @@
 				float crackAmount=0;
 				float4 crackCol=INSTANCE(_CrackColor);
 				#if _CRACKTOP
-				crackAmount=SAMPLE_TEXTURE2D(_CrackTex,sampler_CrackTex,i.uv).r* crackCol.a* INSTANCE(_CrackTopStrength);
+				crackAmount=SAMPLE_TEXTURE2D_LOD(_CrackTex,sampler_CrackTex,i.uv,0).r* crackCol.a* INSTANCE(_CrackTopStrength);
 				#endif
 				#if _CRACKPARALLEX
 				uint crackParallexTimes=INSTANCE(_CrackParallexTimes);
@@ -184,7 +184,7 @@
 					float distance=crackDistance*totalParallex;
 					distance+=random01(frac(i.uv))*offsetDistance;
 					float2 parallexUV=i.uv+thickOffset*distance;
-					crackAmount+=SAMPLE_TEXTURE2D(_CrackTex,sampler_CrackTex,parallexUV).r*parallexParam*pow(saturate(1-totalParallex),crackPow);
+					crackAmount+=SAMPLE_TEXTURE2D_LOD(_CrackTex,sampler_CrackTex,parallexUV,0).r*parallexParam*pow(saturate(1-totalParallex),crackPow);
 					totalParallex+=parallexParam;
 				}
 				crackAmount=saturate(crackAmount*diffuse*crackCol.a);

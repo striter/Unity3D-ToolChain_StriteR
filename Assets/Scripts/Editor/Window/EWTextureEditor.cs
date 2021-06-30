@@ -215,7 +215,6 @@ namespace TEditor
         }
         class TE_ChannelMixer : ITextureEditor
         {
-
             Texture2D m_R, m_G, m_B, m_A;
             float m_RDefault = 1f, m_GDefault = 1f, m_BDefault = 1f, m_ADefault = 1f;
             public void Disable()

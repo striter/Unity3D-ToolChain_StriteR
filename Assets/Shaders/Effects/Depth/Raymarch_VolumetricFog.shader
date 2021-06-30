@@ -8,8 +8,8 @@
         _DensityClip("_Density Clip",Range(0,1))=.2
         [Enum(_16,16,_32,32,_64,64,_128,128)]_RayMarch("Ray March Times",int)=128
         _Noise("Noise 3D",3D)="white"{}
-        _NoiseScale("Noise Scale",Vector)=(50,50,50,1)
-        _NoiseFlow("Noise Flow",Vector)=(0,0,0,1)
+        [Vector3]_NoiseScale("Noise Scale",Vector)=(50,50,50,1)
+        [Vector3]_NoiseFlow("Noise Flow",Vector)=(0,0,0,1)
     }
     SubShader
     {
@@ -61,7 +61,7 @@
             CBUFFER_END
 
             float SampleDensity(float3 worldPos)  {
-                float density=saturate(SAMPLE_TEXTURE3D(_Noise,sampler_Noise,float3( worldPos/_NoiseScale.xyz+_NoiseFlow.xyz*_Time.y)).r);
+                float density=saturate(SAMPLE_TEXTURE3D_LOD(_Noise,sampler_Noise, worldPos/_NoiseScale.xyz+_NoiseFlow.xyz*_Time.y,0).r);
                 return smoothstep(_DensityClip,1,density);
             }
 

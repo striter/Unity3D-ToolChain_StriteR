@@ -25,7 +25,7 @@
 		[Foldout(_DEPTHMAP)]_DepthOffset("Offset",Range(0,1))=.42
 		[Toggle(_DEPTHBUFFER)]_DepthBuffer("Affect Buffer",float)=1
 		[Toggle(_PARALLEX)]_Parallex("Parallex",float)=0
-		[Enum(_8,8,_16,16,_32,32,_64,64,_128,128)]_ParallexCount("Parallex Count",int)=16
+		[Enum(_16,16,_32,32,_64,64,_128,128)]_ParallexCount("Parallex Count",int)=16
 
 		[Header(Misc)]
         [Enum(UnityEngine.Rendering.BlendMode)]_SrcBlend("Src Blend",int)=0
@@ -64,6 +64,7 @@
 			#pragma shader_feature_local _NORMALMAP
 			#pragma shader_feature_local _DETAILNORMALMAP
 			#pragma shader_feature_local _DEPTHMAP
+			#pragma shader_feature_local _DEPTHBUFFER
 			#pragma shader_feature_local _PARALLEX
             
 			#pragma multi_compile_local _NDF_BLINNPHONG _NDF_COOKTORRANCE _NDF_BECKMANN _NDF_GAUSSIAN _NDF_GGX _NDF_TROWBRIDGEREITZ _NDF_ANISOTROPIC_TROWBRIDGEREITZ _NDF_ANISOTROPIC_WARD
@@ -80,6 +81,7 @@
 			INSTANCING_PROP(float,_DetailBlendMode)
 			INSTANCING_PROP(float,_AnisoTropicValue)
 			INSTANCING_PROP(float4,_MainTex_ST)
+			INSTANCING_PROP(float4,_DetailNormalTex_ST)
 			INSTANCING_PROP(float4, _Color)
 			INSTANCING_PROP(float,_DepthScale)
 			INSTANCING_PROP(float,_DepthOffset)
@@ -89,16 +91,16 @@
 			struct a2f
 			{
 				half3 positionOS : POSITION;
-				half2 uv:TEXCOORD0;
 				half3 normalOS:NORMAL;
 				half4 tangentOS:TANGENT;
+				half2 uv:TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct v2f
 			{
 				half4 positionCS : SV_POSITION;
-				half2 uv:TEXCOORD0;
+				half4 uv:TEXCOORD0;
 				half3 normalWS:TEXCOORD1;
 				half3 tangentWS:TEXCOORD2;
 				half3 biTangentWS:TEXCOORD3;
@@ -115,94 +117,62 @@
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-				o.uv = TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
+				o.uv = half4( TRANSFORM_TEX_INSTANCE(v.uv,_MainTex),TRANSFORM_TEX_INSTANCE(v.uv,_DetailNormalTex));
 				o.positionCS = TransformObjectToHClip(v.positionOS);
 				float3 positionWS=  TransformObjectToWorld(v.positionOS);
 				o.shadowCoordWS=TransformWorldToShadowCoord(positionWS);
 				o.normalWS=normalize(mul((float3x3)unity_ObjectToWorld,v.normalOS));
 				o.tangentWS=normalize(mul((float3x3)unity_ObjectToWorld,v.tangentOS.xyz));
-				o.viewDirWS=GetCameraPositionWS()-positionWS;
 				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
+				o.viewDirWS=GetCameraPositionWS()-positionWS;
 				o.positionHCS=o.positionCS;
 				o.normalOS=v.normalOS;
 				o.positionOS=v.positionOS;
 				return o;
 			}
-			#if _DEPTHMAP
-			half GetDepth(half2 uv)
-			{
-				return SAMPLE_TEXTURE2D(_DepthTex,sampler_DepthTex,uv).r;
-			}
-			half2 ParallexMap(half2 uv,half3 viewDirTS)
-			{
-				half3 viewDir=normalize(viewDirTS);
-				viewDir.z+=INSTANCE(_DepthOffset);
-				half2 uvOffset=viewDir.xy/viewDir.z*INSTANCE(_DepthScale);
-				#if _PARALLEX
-				int marchCount=lerp(INSTANCE(_ParallexCount),INSTANCE(_ParallexCount)/4,saturate(dot(float3(0,0,1),viewDirTS)));
-				marchCount=min(marchCount,128);
-				half deltaDepth=1.0/marchCount;
-				half2 deltaUV=uvOffset/marchCount;
-				half depthLayer=0;
-				half2 curUV=uv;
-				half curDepth = 0;
-				for(int i=0;i<marchCount;i++)
-				{
-					curDepth=GetDepth(curUV).r;
-					if(curDepth<=depthLayer)
-						break;
-					curUV-=deltaUV;
-					depthLayer+=deltaDepth;
-				}
-				half2 preUV=curUV+deltaUV;
-				half beforeDepth=GetDepth(preUV)-depthLayer+deltaDepth;
-				half afterDepth=curDepth-depthLayer;
-				half weight=afterDepth/(afterDepth-beforeDepth);
-				curUV=lerp(curUV,preUV,weight);
-				return curUV;
-				#else
-				half2 offset=uvOffset*GetDepth(uv).r;
-				return uv-offset;
-				#endif
-			}
-			#endif
+			
 			half4 frag(v2f i,inout float depth:DEPTH) :SV_TARGET
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
-				depth=i.positionCS.z;
 				half3 normalWS=normalize(i.normalWS);
-				half3 normalTS=half3(0,0,1);
 				half3 biTangentWS=normalize(i.biTangentWS);
 				half3 tangentWS=normalize(i.tangentWS);
+				half3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
 				half3 viewDirWS=normalize(i.viewDirWS);
 				half3 lightDirWS=normalize(_MainLightPosition.xyz);
-				half3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
+				depth=i.positionCS.z;
+				half3 normalTS=half3(0,0,1);
+				half2 baseUV=i.uv.xy;
 				#if _DEPTHMAP
-				i.uv=ParallexMap(i.uv,mul(TBNWS, viewDirWS));
-				
-				half depthOffset=GetDepth(i.uv)*INSTANCE(_DepthScale);
-				half3 positionOS = i.positionOS-normalize(i.normalOS)*depthOffset;
+				half depthOffsetOS=0.h;
+				baseUV=ParallexMapping(_DepthTex,sampler_DepthTex, i.uv,mul(TBNWS, viewDirWS),INSTANCE(_DepthOffset),INSTANCE(_DepthScale),INSTANCE(_ParallexCount),depthOffsetOS);
+				#if _DEPTHBUFFER
+				depthOffsetOS*=INSTANCE(_DepthScale);
+				half3 positionOS = i.positionOS-normalize(i.normalOS)*depthOffsetOS;
 				half4 dstHClip=TransformObjectToHClip(positionOS);
 				depth=dstHClip.z/dstHClip.w;
 				#endif
+				#endif
+				
 				#if _NORMALMAP
-				normalTS= SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv).xyz;
+				normalTS= SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV).xyz;
 				#if _DETAILNORMALMAP
-				half3 detailNormalTS=SAMPLE_TEXTURE2D(_DetailNormalTex,sampler_DetailNormalTex,i.uv).xyz;
+				half3 detailNormalTS=SAMPLE_TEXTURE2D(_DetailNormalTex,sampler_DetailNormalTex,i.uv.zw).xyz;
 				normalTS=BlendNormal(normalTS,detailNormalTS,INSTANCE(_DetailBlendMode));
 				#else
 				normalTS=DecodeNormalMap(normalTS);
 				#endif
 				normalWS=normalize(mul(transpose(TBNWS), normalTS));
 				#endif
-				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*_Color;
+				
+				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV)*_Color;
 				half3 albedo=color.rgb;
 
 				half glossiness=_Glossiness;
 				half metallic=_Metallic;
 				half ao=1.h;
 				#if _PBRMAP
-				half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,i.uv).rgb;
+				half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
 				glossiness=1.h-mix.r;
 				metallic=mix.g;
 				ao=mix.b;

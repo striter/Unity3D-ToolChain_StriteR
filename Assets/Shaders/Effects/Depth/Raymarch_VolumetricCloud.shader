@@ -58,7 +58,7 @@
             };
             
             TEXTURE2D( _CameraDepthTexture); SAMPLER(sampler_CameraDepthTexture);
-            sampler3D _Noise;
+            TEXTURE3D (_Noise);SAMPLER(sampler_Noise);
             CBUFFER_START(UnityPerMaterial)
             uint _RayMarchTimes;
             float _Distance;
@@ -77,7 +77,7 @@
             float3 _NoiseFlow;
             CBUFFER_END
             float SampleDensity(float3 worldPos)  {
-                return saturate(smoothstep(_DensityClip,1 , tex3Dlod(_Noise,float4( worldPos/_NoiseScale+_NoiseFlow*_Time.y,0)).r)*_Density);
+                return saturate(smoothstep(_DensityClip,1 , SAMPLE_TEXTURE3D_LOD(_Noise,sampler_Noise, worldPos/_NoiseScale+_NoiseFlow*_Time.y,0).r)*_Density);
             }
 
             #if _LIGHTMARCH

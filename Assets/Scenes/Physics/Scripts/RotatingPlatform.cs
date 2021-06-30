@@ -7,6 +7,6 @@ namespace PhysicsTest
     public class RotatingPlatform : MonoBehaviour
     {
         public Vector3 m_RotateEuler;
-        private void LateUpdate() => transform.Rotate(m_RotateEuler*Time.fixedDeltaTime, Space.Self);
+        private void LateUpdate() => transform.Rotate(m_RotateEuler*Time.fixedDeltaTime, Space.World);
     }
 }

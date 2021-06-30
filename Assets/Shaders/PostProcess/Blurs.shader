@@ -126,7 +126,7 @@
 	}
 
 	//Hexagon Blur
-	float4 HexagonBlurTexture(Texture2D tex,sampler samp,float2 uv,float2 direction)
+	float4 HexagonBlurTexture(Texture2D tex,SamplerState samp,float2 uv,float2 direction)
 	{
 		float4 finalCol=0;
 		for(uint i=0;i<_Iteration;i++)

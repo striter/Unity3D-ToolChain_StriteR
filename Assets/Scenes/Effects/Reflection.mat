@@ -9,8 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Reflection
   m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
-  m_ShaderKeywords: _AOMAP _F_IMPLICIT _F_SCHLICK _GSF_COOKTORRANCE _NDF_COOKTORRANCE
-    _NORMALMAP _PARALLEXMAP
+  m_ShaderKeywords: _AOMAP _DETAILNORMALMAP _F_IMPLICIT _F_SCHLICK _GSF_COOKTORRANCE
+    _NDF_COOKTORRANCE _NORMALMAP _PARALLEXMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -49,16 +49,16 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailNormalTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+        m_Texture: {fileID: 2800000, guid: c8b4f464be45a5b44a9113a28f2bfd85, type: 3}
+        m_Scale: {x: 0.2, y: 0.2}
+        m_Offset: {x: 0.5, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 5, y: 5}
+        m_Scale: {x: 0.2, y: 0.2}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
@@ -69,7 +69,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTex:
-        m_Texture: {fileID: 2800000, guid: 9bc007d2f4c83e847b1531762c681dd5, type: 3}
+        m_Texture: {fileID: 2800000, guid: c8b4f464be45a5b44a9113a28f2bfd85, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:

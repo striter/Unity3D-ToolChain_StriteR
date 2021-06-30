@@ -29,7 +29,7 @@ Shader "Hidden/PostProcess/Stylize"
             #elif _PIXEL_CIRCLE
                 float2 pixelUV=(i.uv*_MainTex_TexelSize.zw)%1-.5;
                 float pixelCircle= dot(pixelUV,pixelUV);
-                pixelCircle= step(.5-_PixelGridWidth,pixelCircle);
+                pixelCircle= step(.5-_PixelGridWidth.x,pixelCircle);
                 finalCol=lerp(finalCol,_PixelGridColor.rgb,pixelCircle*_PixelGridColor.a);
             #endif
                 return float4(finalCol,1);

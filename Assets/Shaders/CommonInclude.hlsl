@@ -10,7 +10,7 @@ float2 TransformTex(float2 _uv, float4 _st) {return _uv * _st.xy + _st.zw;}
 #define INSTANCING_PROP(type,param) UNITY_DEFINE_INSTANCED_PROP(type,param)
 #define INSTANCING_BUFFER_END UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 #define INSTANCE(param) UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,param)
-#define TRANSFORM_TEX_INSTANCE(uv,tex) TransformTex(uv,INSTANCE(tex##_ST));
+#define TRANSFORM_TEX_INSTANCE(uv,tex) TransformTex(uv,INSTANCE(tex##_ST))
 
 //Depth
 #if !UNITY_REVERSED_Z
@@ -39,17 +39,12 @@ float3 TransformUVDepthToClipPosition(float2 _uv,float _depth)
     #endif
     return float3(_uv*2.-1.,_depth);
 }
-float3 TransformHClipToClipPosition(float4 _hClip)
-{
-    _hClip.xy=_hClip.xy*.5+1;
-    return _hClip;
-}
 half2 TransformHClipToScreenUV(float4 _hClip)
 {
     half2 uv=_hClip.xy*rcp(_hClip.w);
-    uv=uv*.5+.5;
+    uv=uv*.5h+.5h;
 #if UNITY_UV_STARTS_AT_TOP
-    uv.y=1-uv.y;
+    uv.y=1.h-uv.y;
 #endif
     return uv;
 }
@@ -137,6 +132,35 @@ half3 BlendNormal(half3 _normal1, half3 _normal2, uint _blendMode)
         break;
     }
     return normalize(blendNormal);
+}
+//Parallex
+//#pragma shader_feature_local _PARALLEX
+half2 ParallexMapping(Texture2D depthTexture,SamplerState depthSampler, half2 uv,half3 viewDirTS,half offset,half scale,uint parallexCount,inout half depthOS)
+{
+    half3 viewDir=normalize(viewDirTS);
+    viewDir.z+=offset;
+    half2 uvOffset=viewDir.xy/viewDir.z*scale;
+#if _PARALLEX
+    half marchDelta=saturate(dot(half3(0.h,0.h,1.h),viewDirTS));
+    int marchCount=min(lerp(parallexCount/2u,parallexCount,marchDelta),128u);
+    half deltaDepth=1.0h/marchCount;
+    half2 deltaUV=uvOffset/marchCount;
+    half depthLayer=0.h;
+    half2 curUV=uv;
+    depthOS = 0.h;
+    for(int i=0u;i<marchCount;i++)
+    {
+        depthOS=SAMPLE_TEXTURE2D_LOD(depthTexture,depthSampler,curUV,0).r;
+        depthLayer+=deltaDepth;
+        if(depthOS<=depthLayer)
+            break;
+        curUV-=deltaUV;
+    }
+    return curUV;
+#else
+    depthOS=SAMPLE_TEXTURE2D_LOD(depthTexture,depthSampler,uv,0).r;
+    return uv-uvOffset*depthOS;
+#endif
 }
 
 //UV Remapping

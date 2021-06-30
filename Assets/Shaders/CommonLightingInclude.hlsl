@@ -35,12 +35,9 @@ float StrandSpecular(float3 T,float3 N,float3 H,float exponent,float3 shift)
     return dirAtten*pow(sinTH,exponent);
 }
 
-#if UNITY_PASS_SHADOWCASTER
 float3 _LightDirection;
-float4 ShadowCasterCS(float3 positionOS, float3 normalOS)
+float4 ShadowCasterCS(float3 positionWS, float3 normalWS)
 {
-    float3 positionWS = TransformObjectToWorld(positionOS);
-    float3 normalWS = TransformObjectToWorldNormal(normalOS);
     float4 positionCS = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, _LightDirection));
 #if UNITY_REVERSED_Z
 	positionCS.z = min(positionCS.z, positionCS.w * UNITY_NEAR_CLIP_VALUE);
@@ -51,5 +48,4 @@ float4 ShadowCasterCS(float3 positionOS, float3 normalOS)
 }
 #define A2V_SHADOW_CASTER float3 positionOS:POSITION; float3 normalOS:NORMAL
 #define V2F_SHADOW_CASTER float4 positionCS:SV_POSITION
-#define SHADOW_CASTER_VERTEX(v,o) o.positionCS= ShadowCasterCS(v.positionOS.xyz,v.normalOS)
-#endif
+#define SHADOW_CASTER_VERTEX(v,o) o.positionCS= ShadowCasterCS(TransformObjectToWorld(v.positionOS.xyz),TransformObjectToWorldNormal(v.normalOS))

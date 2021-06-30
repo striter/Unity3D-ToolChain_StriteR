@@ -24,19 +24,30 @@ float3 WorldSpaceNormalFromDepth(half2 uv,inout float3 positionWS,inout half dep
     float3 position2=GetPositionWS(uv+_MainTex_TexelUp);
     return normalize(cross(position2-positionWS,position1-positionWS));
 }
+half3 ClipSpaceNormalFromDepth(half2 uv)
+{
+    half depth = LinearEyeDepth(uv);
+    half depth1 = LinearEyeDepth(uv + _MainTex_TexelRight);
+    half depth2 = LinearEyeDepth(uv + _MainTex_TexelUp);
+				
+    half3 p1 = half3(_MainTex_TexelRight, depth1 - depth);
+    half3 p2 = half3(_MainTex_TexelUp, depth2 - depth);
+    return normalize(cross(p1, p2));
+}
+
 
 half luminance(half3 color){ return 0.299h * color.r + 0.587h * color.g + 0.114h * color.b; }
 
 struct a2v_img
 {
-    float3 positionOS : POSITION;
-    float2 uv : TEXCOORD0;
+    half3 positionOS : POSITION;
+    half2 uv : TEXCOORD0;
 };
 
 struct v2f_img
 {
     float4 positionCS : SV_Position;
-    float2 uv : TEXCOORD0;
+    half2 uv : TEXCOORD0;
 };
 
 v2f_img vert_img(a2v_img v)
