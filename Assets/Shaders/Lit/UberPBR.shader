@@ -155,12 +155,10 @@
 				#endif
 				
 				#if _NORMALMAP
-				normalTS= SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV).xyz;
+				normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
 				#if _DETAILNORMALMAP
-				half3 detailNormalTS=SAMPLE_TEXTURE2D(_DetailNormalTex,sampler_DetailNormalTex,i.uv.zw).xyz;
+				half3 detailNormalTS= DecodeNormalMap(SAMPLE_TEXTURE2D(_DetailNormalTex,sampler_DetailNormalTex,i.uv.zw));
 				normalTS=BlendNormal(normalTS,detailNormalTS,INSTANCE(_DetailBlendMode));
-				#else
-				normalTS=DecodeNormalMap(normalTS);
 				#endif
 				normalWS=normalize(mul(transpose(TBNWS), normalTS));
 				#endif
