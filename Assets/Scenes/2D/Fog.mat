@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Raymarch_VolumetricFog 1
+  m_Name: Fog
   m_Shader: {fileID: 4800000, guid: d00864ce2a76b934998c3b6bbef45762, type: 3}
   m_ShaderKeywords: _MARCHTIMES__16__32__64__128__256__512 _MARCHTIMES__32 _MARCH_T128
     _MARCH__16

@@ -5,7 +5,6 @@ Shader "Game/2D/Uber"
     	[Header(Albedo)]
         _MainTex ("Texture", 2D) = "white" {}
     	_Color("Color Tint",Color)=(1,1,1,1)
-    	[Toggle(_BILLBOARD)]_BillBoard("BillBoard",float)=1
         
     	[Header(Alpha)]
         [Toggle(_ALPHACLIP)]_AlphaClip("Clip",float)=0
@@ -55,7 +54,6 @@ Shader "Game/2D/Uber"
 
 			#pragma shader_feature_local _LIGHTING
 			#pragma shader_feature_local _BACKRIM
-			#pragma shader_feature_local _BILLBOARD
 			#pragma shader_feature_local _RECEIVESHADOW
 			#pragma shader_feature_local _WAVE
             #pragma shader_feature_local _ALPHACLIP
@@ -100,24 +98,9 @@ Shader "Game/2D/Uber"
 				float3 viewDirWS:TEXCOORD4;
             	float3 positionWS:TEXCOORD5;
             	half3 positionOS:TEXCOORD6;
-            	half3 normalOS:TEXCOORD7;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-			float3 BillBoard(float3 positionWS)
-			{
-				#if _BILLBOARD
-					half3 centerWS=TransformObjectToWorld( 0.h);
-					half3 forwardDir=normalize(GetCameraPositionWS()-centerWS);
-					half3 upDir=float3(0,1,0);
-					half3 rightDir=normalize(cross(upDir,forwardDir));
-					half3 centerOffset=positionWS-centerWS;
-					return centerWS+rightDir*centerOffset.x+upDir*centerOffset.y+forwardDir*centerOffset.z;
-				#else
-					return positionWS;
-				#endif
-			}
-        
 			float3 Wave(float3 positionWS)
 			{
 				#if _WAVE
@@ -135,16 +118,18 @@ Shader "Game/2D/Uber"
                 #endif
             }
 
-			void DepthParallex(inout half2 uv,inout float depth,inout float3 positionOS,inout float3 positionWS,float3x3 TBNWS,float3 viewDirWS,float3 normalOS)
+			void DepthParallex(inout half2 uv,inout float depth,inout float3 positionOS,inout float3 positionWS,float3x3 TBNWS,float3 viewDirWS)
 			{
 				#if _DEPTHMAP
 				half depthOffsetOS=0.h;
 				uv=ParallexMapping(_DepthTex,sampler_DepthTex, uv,mul(TBNWS, viewDirWS),INSTANCE(_DepthOffset),INSTANCE(_DepthScale),INSTANCE(_ParallexCount),depthOffsetOS);
 				#if _DEPTHBUFFER
-				positionOS = positionOS-normalize(normalOS)*depthOffsetOS*INSTANCE(_DepthScale);
+				positionOS = positionOS-normalize(TransformWorldToObjectNormal(viewDirWS)) *depthOffsetOS*INSTANCE(_DepthScale);
             	positionWS=TransformObjectToWorld(positionOS);
-				half4 dstHClip=TransformObjectToHClip(positionOS);
-				depth=dstHClip.z/dstHClip.w;
+				depth=ComputeNormalizedDeviceCoordinatesWithZ(positionWS,_Matrix_VP).z;
+				#if! UNITY_REVERSED_Z
+					depth=depth*.5+.5;
+				#endif
 				#endif
 				#endif
 			}
@@ -155,7 +140,6 @@ Shader "Game/2D/Uber"
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				float3 positionWS=TransformObjectToWorld(v.positionOS);
-				positionWS=BillBoard(positionWS);
 				positionWS=Wave(positionWS);
 				o.positionCS=TransformWorldToHClip(positionWS);
             	o.positionWS=positionWS;
@@ -165,7 +149,6 @@ Shader "Game/2D/Uber"
 				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
 				o.viewDirWS=GetCameraPositionWS()-o.positionWS;
             	o.positionOS=v.positionOS;
-            	o.normalOS=v.normalOS;
                 return o;
             }
         ENDHLSL
@@ -191,8 +174,8 @@ Shader "Game/2D/Uber"
 				half3 viewDirWS=normalize(i.viewDirWS);
 				half3 lightDirWS=normalize(_MainLightPosition.xyz);
             	depth=i.positionCS.z;
-            	DepthParallex(i.uv,depth,i.positionOS,i.positionWS,TBNWS,viewDirWS,i.normalOS);
                 float4 col = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv)*_Color;
+            	DepthParallex(i.uv,depth,i.positionOS,i.positionWS,TBNWS,viewDirWS);
             	AlphaClip(col.a);
             	#ifndef _LIGHTING
             		return col;
@@ -253,7 +236,6 @@ Shader "Game/2D/Uber"
 				UNITY_SETUP_INSTANCE_ID(v);
 				float3 positionWS=TransformObjectToWorld(v.positionOS);
 				float3 normalWS=TransformObjectToWorldNormal(v.normalOS);
-				positionWS=BillBoard(positionWS);
 				positionWS=Wave(positionWS);
 				o.positionCS=ShadowCasterCS(positionWS,normalWS);
 				o.uv=TRANSFORM_TEX_INSTANCE( v.uv,_MainTex);
@@ -285,7 +267,7 @@ Shader "Game/2D/Uber"
 				half3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
 				half3 viewDirWS=normalize(i.viewDirWS);
 				depth=i.positionCS.z;
-            	DepthParallex(i.uv,depth,i.positionOS,i.positionWS,TBNWS,viewDirWS,i.normalOS);
+            	DepthParallex(i.uv,depth,i.positionOS,i.positionWS,TBNWS,viewDirWS);
 				AlphaClip(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).a*INSTANCE(_Color.a));
 				return 0;
 			}

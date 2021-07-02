@@ -85,10 +85,10 @@ float3 GetPositionWS_Frustum(half2 uv,half depth){ return _WorldSpaceCameraPos +
 float3 GetPositionWS_VP(half2 uv,half depth){ return TransformClipToWorld(TransformUVDepthToClipPosition(uv,depth));}
 
 //Normals
-float3 DecodeNormalMap(float4 _normal)
+half3 DecodeNormalMap(float4 _normal)
 {
 #if UNITY_NO_DXT5nm
-    return _normal*2.h-1.h;
+    return _normal.xyz*2.h-1.h;
 #else
     half3 normal=half3(_normal.ag,0)*2.h-1.h;
     return half3(normal.xy,max(1.0e-16, sqrt(1.0 - saturate(dot(normal.xy,normal.xy)))));
