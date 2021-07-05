@@ -35,6 +35,7 @@
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma target 3.5
 
             #include "../../CommonInclude.hlsl"
             #include "../../CommonLightingInclude.hlsl"

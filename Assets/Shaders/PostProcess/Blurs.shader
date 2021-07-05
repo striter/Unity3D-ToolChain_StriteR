@@ -8,6 +8,7 @@
 	
     HLSLINCLUDE
     #include "../PostProcessInclude.hlsl"
+    #pragma target 3.5
 	float _BlurSize;
 	uint _Iteration;
 	float _Angle;

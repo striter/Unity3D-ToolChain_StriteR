@@ -22,6 +22,7 @@
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma target 3.5
             
             #include "../../CommonInclude.hlsl"
             #include "../../CommonLightingInclude.hlsl"
@@ -92,7 +93,7 @@
                     float marchOffset=1.0/rayMarchCount;
                     float distanceOffset=_Distance/rayMarchCount;
                     float dstMarched=0;
-                    [unroll(128)]
+                    [unroll(128u)]
                     for(uint index=0u;index<rayMarchCount;index++)
                     {
                         float3 marchPos=i.positionWS+marchDirWS*dstMarched;

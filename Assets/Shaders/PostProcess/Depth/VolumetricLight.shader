@@ -33,18 +33,19 @@ Shader "Hidden/PostProcess/VolumetricLight"
             {
                 float3 curPos=_WorldSpaceCameraPos;
                 half3 marchDirWS=normalize( GetViewDirWS(i.uv));
-                half depthDstWS=LinearEyeDepth(i.uv);
-                half marchDstWS=min(depthDstWS,_MarchDistance);
-                int marchTimes=min(_MarchTimes,128);
-                half marchDelta=marchDstWS/_MarchDistance*1.0/marchTimes;
-                half dstDelta=marchDstWS/marchTimes;
-                half3 posDelta=marchDirWS*dstDelta;
+                float depthDstWS=LinearEyeDepth(i.uv);
+                float marchDstWS=min(depthDstWS,_MarchDistance);
+                uint marchTimes=min(_MarchTimes,128u);
+                float marchDelta=marchDstWS/_MarchDistance*1.0/marchTimes;
+                float dstDelta=marchDstWS/marchTimes;
+                float3 posDelta=marchDirWS*dstDelta;
                 half totalAtten=0;
 
                 if(marchDstWS>0)
                 {
-                    half curDst=0;
-                    for(int index=0;index<marchTimes;index++)
+                    float curDst=0;
+                    [unroll(128u)]
+                    for(uint index=0u;index<marchTimes;index++)
                     {
                         float3 samplePos=curPos;
                         #if _DITHER

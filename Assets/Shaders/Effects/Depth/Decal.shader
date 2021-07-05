@@ -55,15 +55,15 @@
 			{
 
 				half depthOffset = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, i.screenPos.xy / i.screenPos.w),_ZBufferParams).r - i.screenPos.w;
-				half3 wpos = i.positionWS+normalize(i.viewDirWS)*depthOffset;
+				float3 wpos = i.positionWS+normalize(i.viewDirWS)*depthOffset;
 				half3 opos = TransformWorldToObject(wpos);
 				half2 decalUV=opos.xy+.5;
 				decalUV=TRANSFORM_TEX(decalUV,_MainTex);
 				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,decalUV)* _Color;
 				#if _DECALCLIP_SPHERE
-				color.a*=step(sqrDistance(opos),.25);
+				color.a*=step(sqrDistance(opos),.25h);
 				#elif _DECALCLIP_BOX
-				color.a*=step(abs(opos.x),.5)*step(abs(opos.y),.5)*step(abs(opos.z),.5);
+				color.a*=step(abs(opos.x),.5h)*step(abs(opos.y),.5h)*step(abs(opos.z),.5h);
 				#endif
 				
 				half atten=MainLightRealtimeShadow(TransformWorldToShadowCoord(wpos));

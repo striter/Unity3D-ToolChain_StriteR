@@ -48,8 +48,10 @@
 			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
+            #pragma target 3.5
 			
 			#include "../CommonInclude.hlsl"
+			#include "../AdditionalMappingInclude.hlsl"
 			#include "../CommonLightingInclude.hlsl"
 			#include "../BRDFInclude.hlsl"
 			#include "../GlobalIlluminationInclude.hlsl"
@@ -76,16 +78,16 @@
 			TEXTURE2D(_DetailNormalTex);SAMPLER(sampler_DetailNormalTex);
 			TEXTURE2D(_DepthTex);SAMPLER(sampler_DepthTex);
 			UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
-			INSTANCING_PROP(float,_Glossiness)
-			INSTANCING_PROP(float,_Metallic)
-			INSTANCING_PROP(float,_DetailBlendMode)
-			INSTANCING_PROP(float,_AnisoTropicValue)
-			INSTANCING_PROP(float4,_MainTex_ST)
-			INSTANCING_PROP(float4,_DetailNormalTex_ST)
-			INSTANCING_PROP(float4, _Color)
-			INSTANCING_PROP(float,_DepthScale)
-			INSTANCING_PROP(float,_DepthOffset)
-			INSTANCING_PROP(int ,_ParallexCount)
+				INSTANCING_PROP(float,_Glossiness)
+				INSTANCING_PROP(float,_Metallic)
+				INSTANCING_PROP(float,_DetailBlendMode)
+				INSTANCING_PROP(float,_AnisoTropicValue)
+				INSTANCING_PROP(float4,_MainTex_ST)
+				INSTANCING_PROP(float4,_DetailNormalTex_ST)
+				INSTANCING_PROP(float4, _Color)
+				INSTANCING_PROP(float,_DepthScale)
+				INSTANCING_PROP(float,_DepthOffset)
+				INSTANCING_PROP(int ,_ParallexCount)
 			UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
 			struct a2f
@@ -145,7 +147,7 @@
 				half2 baseUV=i.uv.xy;
 				#if _DEPTHMAP
 				half depthOffsetOS=0.h;
-				baseUV=ParallexMapping(_DepthTex,sampler_DepthTex, i.uv,mul(TBNWS, viewDirWS),INSTANCE(_DepthOffset),INSTANCE(_DepthScale),INSTANCE(_ParallexCount),depthOffsetOS);
+				baseUV=ParallexMapping(_DepthTex,sampler_DepthTex, baseUV,mul(TBNWS, viewDirWS),INSTANCE(_DepthOffset),INSTANCE(_DepthScale),INSTANCE(_ParallexCount),depthOffsetOS);
 				#if _DEPTHBUFFER
 				depthOffsetOS*=INSTANCE(_DepthScale);
 				half3 positionOS = i.positionOS-normalize(i.normalOS)*depthOffsetOS;
@@ -163,11 +165,11 @@
 				normalWS=normalize(mul(transpose(TBNWS), normalTS));
 				#endif
 				
-				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV)*_Color;
+				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV)*INSTANCE(_Color);
 				half3 albedo=color.rgb;
 
-				half glossiness=_Glossiness;
-				half metallic=_Metallic;
+				half glossiness=INSTANCE(_Glossiness);
+				half metallic=INSTANCE(_Metallic);
 				half ao=1.h;
 				#if _PBRMAP
 				half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
@@ -187,7 +189,7 @@
 				half3 indirectSpecular=IndirectBRDFSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
 				brdfColor+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 
-				BRDFLight light=InitializeBRDFLight(surface,lightDir,lightCol,atten,_AnisoTropicValue);
+				BRDFLight light=InitializeBRDFLight(surface,lightDir,lightCol,atten,INSTANCE(_AnisoTropicValue));
 				brdfColor+=BRDFLighting(surface,light);
 				return half4(brdfColor,1.h);
 			}

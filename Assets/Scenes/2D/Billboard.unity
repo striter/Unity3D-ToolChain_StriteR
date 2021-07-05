@@ -413,7 +413,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 1674983016}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 90, y: 270, z: 90}
 --- !u!1 &117972968
 GameObject:
@@ -801,7 +801,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 1674983016}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &181161635
 GameObject:
@@ -2113,10 +2113,9 @@ Transform:
   m_LocalRotation: {x: 0.70710677, y: -0, z: -0.000000007450581, w: 0.7071068}
   m_LocalPosition: {x: 3, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
-  m_Children:
-  - {fileID: 1411423765}
+  m_Children: []
   m_Father: {fileID: 1674983016}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &792579884
 GameObject:
@@ -2605,7 +2604,7 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
+  m_DynamicOccludee: 0
   m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
@@ -2677,7 +2676,7 @@ Transform:
   m_Children:
   - {fileID: 883936911}
   m_Father: {fileID: 1674983016}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 85.521}
 --- !u!64 &896605859
 MeshCollider:
@@ -2774,7 +2773,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 1674983016}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!64 &921075291
 MeshCollider:
@@ -3129,7 +3128,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 1674983016}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &1162983076
 GameObject:
@@ -3517,7 +3516,7 @@ Transform:
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_Children: []
   m_Father: {fileID: 1674983016}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1264115968
 GameObject:
@@ -3615,7 +3614,7 @@ Transform:
   m_Children:
   - {fileID: 2070820704}
   m_Father: {fileID: 1674983016}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 85.521}
 --- !u!1 &1299224815
 GameObject:
@@ -3934,11 +3933,11 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1411423764}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0, z: 0.025}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: 0.70710677, y: -0, z: -0.000000007450581, w: 0.7071068}
+  m_LocalPosition: {x: 3.025, y: -0.182, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
-  m_Father: {fileID: 784286486}
+  m_Father: {fileID: 1674983016}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!64 &1411423766
@@ -4118,7 +4117,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 1674983016}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!64 &1419710509
 MeshCollider:
@@ -4360,7 +4359,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EffectData:
     m_Color: {r: 0, g: 0.047169805, b: 0.018457746, a: 0.49411765}
-    m_Intensity: 0.99
+    m_Intensity: 1.1
     m_Radius: 0.16
     m_Bias: 0.172
     m_SampleCount: 16
@@ -5308,6 +5307,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 1411423765}
   - {fileID: 1257353578}
   - {fileID: 1264115972}
   - {fileID: 784286486}
@@ -6028,7 +6028,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 1674983016}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!64 &1920968375
 MeshCollider:
@@ -6610,7 +6610,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 1674983016}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!64 &2011815809
 MeshCollider:
@@ -6704,7 +6704,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2070820703}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: -0, z: 0.021}
+  m_LocalPosition: {x: 0, y: -0, z: 0.029}
   m_LocalScale: {x: 0.1, y: 0.09999998, z: 0.09999998}
   m_Children: []
   m_Father: {fileID: 1264115972}
@@ -6746,7 +6746,7 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
+  m_DynamicOccludee: 0
   m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1

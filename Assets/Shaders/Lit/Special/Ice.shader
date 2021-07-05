@@ -153,7 +153,7 @@
 				#if _THICK
 				normalUV+=thickOffset*INSTANCE(_Thickness);
 				#endif
-				normalTS= DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,normalUV).xyz);
+				normalTS= DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,normalUV));
 				#endif
 				
 				float3 albedo=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv).rgb;

@@ -105,7 +105,7 @@
                 float3 normalWS=normalize(i.normalWS);
                 float3 tangentWS=normalize(i.tangentWS);
 			    #if _NORMALMAP
-			    float3 normalTS= DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv.xy).xyz);
+			    float3 normalTS= DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv.xy));
 			    normalWS = mul(normalTS,i.TBNWS);
 			    #endif
                 #if _BITANGENT

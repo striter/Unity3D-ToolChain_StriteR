@@ -41,8 +41,7 @@ Shader "Game/Unlit/CubeSample"
                 float2 distances=AABBRayDistance(_box,_ray);
                 float3 sdfPosOS=_ray.GetPoint(distances.x+distances.y);
 
-                float4 sdfPosCS=TransformObjectToHClip(sdfPosOS);
-                _depth=sdfPosCS.z/sdfPosCS.w;
+                _depth=TransformHClipToFragmentDepth(TransformObjectToHClip(sdfPosOS));
                 return sdfPosOS-offset;
             }
         ENDHLSL

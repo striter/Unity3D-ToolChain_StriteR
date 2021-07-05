@@ -6,11 +6,6 @@ float2 TransformTex(float2 _uv, float4 _st) {return _uv * _st.xy + _st.zw;}
 #define PI_TWO 6.2831853071796
 #define PI_ONE_DIV 0.31830988618379
 #define PI_ONE_DIV_TWO 0.15915494309189
-#define INSTANCING_BUFFER_START UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
-#define INSTANCING_PROP(type,param) UNITY_DEFINE_INSTANCED_PROP(type,param)
-#define INSTANCING_BUFFER_END UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
-#define INSTANCE(param) UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,param)
-#define TRANSFORM_TEX_INSTANCE(uv,tex) TransformTex(uv,INSTANCE(tex##_ST))
 
 //Depth
 #if !UNITY_REVERSED_Z
@@ -74,6 +69,15 @@ void TransformHClipToUVDepth(float4 positionCS,out half2 uv,out half depth)
     depth = positionCS.z;
 }
 
+float TransformHClipToFragmentDepth(float4 positionCS)
+{
+   float depth=positionCS.z/positionCS.w;
+#if! UNITY_REVERSED_Z
+    depth=depth*.5+.5;
+#endif
+    return depth;
+}
+
 //Screen Space Calculations
 float3 _FrustumCornersRayBL;
 float3 _FrustumCornersRayBR;
@@ -135,35 +139,6 @@ half3 BlendNormal(half3 _normal1, half3 _normal2, uint _blendMode)
     }
     return normalize(blendNormal);
 }
-//Parallex
-//#pragma shader_feature_local _PARALLEX
-half2 ParallexMapping(Texture2D depthTexture,SamplerState depthSampler, half2 uv,half3 viewDirTS,half offset,half scale,uint parallexCount,inout half depthOS)
-{
-    half3 viewDir=normalize(viewDirTS);
-    viewDir.z+=offset;
-    half2 uvOffset=viewDir.xy/viewDir.z*scale;
-#if _PARALLEX
-    half marchDelta=saturate(dot(half3(0.h,0.h,1.h),viewDirTS));
-    int marchCount=min(lerp(parallexCount/2u,parallexCount,marchDelta),128u);
-    half deltaDepth=1.0h/marchCount;
-    half2 deltaUV=uvOffset/marchCount;
-    half depthLayer=0.h;
-    half2 curUV=uv;
-    depthOS = 0.h;
-    for(int i=0u;i<marchCount;i++)
-    {
-        depthOS=SAMPLE_TEXTURE2D_LOD(depthTexture,depthSampler,curUV,0).r;
-        depthLayer+=deltaDepth;
-        if(depthOS<=depthLayer)
-            break;
-        curUV-=deltaUV;
-    }
-    return curUV;
-#else
-    depthOS=SAMPLE_TEXTURE2D_LOD(depthTexture,depthSampler,uv,0).r;
-    return uv-uvOffset*depthOS;
-#endif
-}
 
 //UV Remapping
 float2 UVRemap_Triplanar(float3 _positionWS, float3 _normalWS)
@@ -180,4 +155,10 @@ float2 UVRemap_TSR(float2 uv, float2 tilling, float2 offset, float rotateAngle)
     return mul( Rotate2x2(rotateAngle), centerUV) * tilling + offset;
 }
 
+//Instance
+#define INSTANCING_BUFFER_START UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
+#define INSTANCING_PROP(type,param) UNITY_DEFINE_INSTANCED_PROP(type,param)
+#define INSTANCING_BUFFER_END UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
+#define INSTANCE(param) UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,param)
+#define TRANSFORM_TEX_INSTANCE(uv,tex) TransformTex(uv,INSTANCE(tex##_ST))
 #include "Library/Noise.hlsl"

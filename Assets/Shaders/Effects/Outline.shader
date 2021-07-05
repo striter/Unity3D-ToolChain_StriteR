@@ -72,7 +72,7 @@
 				#if _NORMALSAMPLE_NORMAL
 				normalOS=normalize(v.normalOS);
 				#elif _NORMALSAMPLE_TANGENT
-				normalOS=normalize(v.tangentOS);
+				normalOS=normalize(v.tangentOS.xyz);
 				#elif _NORMALSAMPLE_UV1
 				normalOS=normalize(v.uv1);
 				#elif _NORMALSAMPLE_UV2

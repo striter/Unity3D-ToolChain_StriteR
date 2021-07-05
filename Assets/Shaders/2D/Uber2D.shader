@@ -49,8 +49,10 @@ Shader "Game/2D/Uber"
 
         HLSLINCLUDE
             #include "../CommonInclude.hlsl"
+			#include "../AdditionalMappingInclude.hlsl"
 			#include "../CommonLightingInclude.hlsl"
             #pragma multi_compile_instancing
+            #pragma target 3.5
 
 			#pragma shader_feature_local _LIGHTING
 			#pragma shader_feature_local _BACKRIM
@@ -65,18 +67,18 @@ Shader "Game/2D/Uber"
 			TEXTURE2D(_DepthTex);SAMPLER(sampler_DepthTex);
 			TEXTURE2D(_BackRimTex);SAMPLER(sampler_BackRimTex);
 			UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
-			INSTANCING_PROP(float,_AlphaClipRange);
-			INSTANCING_PROP(float,_Diffuse)
-			INSTANCING_PROP(float3,_WaveDirection)
-			INSTANCING_PROP(float,_WaveFrequency)
-			INSTANCING_PROP(float,_WaveSpeed)
-			INSTANCING_PROP(float,_WaveStrength)
-			INSTANCING_PROP(float4,_MainTex_ST)
-			INSTANCING_PROP(float4, _Color)
-			INSTANCING_PROP(float,_DepthScale)
-			INSTANCING_PROP(float,_DepthOffset)
-			INSTANCING_PROP(int ,_ParallexCount)
-			INSTANCING_PROP(float,_RimIntensity)
+				INSTANCING_PROP(float,_AlphaClipRange);
+				INSTANCING_PROP(float,_Diffuse)
+				INSTANCING_PROP(float3,_WaveDirection)
+				INSTANCING_PROP(float,_WaveFrequency)
+				INSTANCING_PROP(float,_WaveSpeed)
+				INSTANCING_PROP(float,_WaveStrength)
+				INSTANCING_PROP(float4,_MainTex_ST)
+				INSTANCING_PROP(float4, _Color)
+				INSTANCING_PROP(float,_DepthScale)
+				INSTANCING_PROP(float,_DepthOffset)
+				INSTANCING_PROP(int ,_ParallexCount)
+				INSTANCING_PROP(float,_RimIntensity)
 			UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
         
             struct a2v
@@ -126,10 +128,7 @@ Shader "Game/2D/Uber"
 				#if _DEPTHBUFFER
 				positionOS = positionOS-normalize(TransformWorldToObjectNormal(viewDirWS)) *depthOffsetOS*INSTANCE(_DepthScale);
             	positionWS=TransformObjectToWorld(positionOS);
-				depth=ComputeNormalizedDeviceCoordinatesWithZ(positionWS,_Matrix_VP).z;
-				#if! UNITY_REVERSED_Z
-					depth=depth*.5+.5;
-				#endif
+				depth=TransformHClipToFragmentDepth(TransformObjectToHClip(positionOS));
 				#endif
 				#endif
 			}
