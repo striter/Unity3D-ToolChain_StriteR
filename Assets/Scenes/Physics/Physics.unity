@@ -9963,13 +9963,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectData:
+    m_Strength: 0.41
     m_Distance: 20
-    m_MarchTimes: 128
-    m_Strength: 0.16
-    m_Pow: 0.31
-    m_DownSample: 4
+    m_MarchTimes: 16
+    m_MarchStrength: 1
+    m_Pow: 0.72
+    m_DownSample: 1
     m_Dither: 1
-    m_EnableBlur: 1
+    m_Debug: 0
+    m_EnableBlur: 0
     m_BlurParam:
       m_BlurType: 2
       m_BlurSize: 0.46
@@ -10013,12 +10015,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EffectData:
     m_Color: {r: 0, g: 0, b: 0, a: 1}
-    m_Intensity: 0.58
-    m_Radius: 0.17
+    m_Intensity: 1.37
+    m_Radius: 0.32
     m_Bias: 0.5
     m_SampleCount: 8
     m_Dither: 1
-    m_RandomVectorKeywords: Random5
+    m_RandomVectorKeywords: Test1
   m_SceneViewPreview: 1
 --- !u!114 &1604089977
 MonoBehaviour:

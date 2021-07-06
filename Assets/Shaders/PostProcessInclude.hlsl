@@ -16,6 +16,18 @@ float Linear01DepthUV(half2 uv){return Linear01Depth(Sample_Depth(uv),_ZBufferPa
 float3 GetPositionWS(half2 uv,half depth){return GetPositionWS_Frustum(uv,depth);}
 float3 GetPositionWS(half2 uv){return GetPositionWS(uv,Sample_Depth(uv));}
 
+float2 TransformViewToScreenUV(float4 positionVS)
+{
+    float height=2*positionVS.z/_Matrix_V._m11;
+    float width=_ScreenParams.x/_ScreenParams.y *height;
+    return float2(positionVS.x/width,positionVS.y/height)+.5;
+}
+
+float TransformWorldToLinearEyeDepth(float3 _positionWS)
+{
+    return -(_positionWS.x*_Matrix_V._m20+_positionWS.y*_Matrix_V._m21+_positionWS.z*_Matrix_V._m22+_Matrix_V._m23);
+}
+
 float3 WorldSpaceNormalFromDepth(half2 uv,inout float3 positionWS,inout half depth)
 {
     depth=Sample_Depth(uv);

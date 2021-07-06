@@ -11,11 +11,13 @@ namespace Rendering
     {
         public static DrawingSettings CreateDrawingSettings(bool fillDefault, Camera _camera)
         {
-            DrawingSettings settings = new DrawingSettings();
-            settings.sortingSettings = new SortingSettings(_camera);
-            settings.perObjectData = PerObjectData.None;
-            settings.enableDynamicBatching = true;
-            settings.enableInstancing = true;
+            DrawingSettings settings = new DrawingSettings
+            {
+                sortingSettings = new SortingSettings(_camera),
+                perObjectData = PerObjectData.None,
+                enableDynamicBatching = true,
+                enableInstancing = true
+            };
             if (fillDefault)
             {
                 settings.SetShaderPassName(0, new ShaderTagId("SRPDefaultUnlit"));

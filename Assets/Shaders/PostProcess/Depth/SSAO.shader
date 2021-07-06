@@ -26,6 +26,7 @@
 				float _Bias;
 				float4 _AOColor;
 				float _NoiseScale;
+				
 				float4 frag (v2f_img i) : SV_Target
 				{
 					float depth = 0;
@@ -44,9 +45,7 @@
 						half2 sampleUV;
 						half sampleDepth;
 						TransformHClipToUVDepth(mul(_Matrix_VP, float4(sampleWS,1)),sampleUV,sampleDepth);
-						float4 positionVS=mul(_Matrix_V,float4(sampleWS,1));
-						
-						float depthOffset = -positionVS.z/positionVS.w-LinearEyeDepthUV(sampleUV);
+						float depthOffset =  TransformWorldToLinearEyeDepth(sampleWS)-LinearEyeDepthUV(sampleUV);
 						float depthSample=saturate(depthOffset/_Radius)*step(depthOffset,_Bias);
 						occlusion+=depthSample;
 					}

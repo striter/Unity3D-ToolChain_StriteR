@@ -73,8 +73,10 @@ namespace Rendering.Pipeline
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
             base.Configure(cmd, cameraTextureDescriptor);
-            m_ResultDescriptor = new RenderTextureDescriptor(cameraTextureDescriptor.width/m_Plane.m_DownSample, cameraTextureDescriptor.height/m_Plane.m_DownSample, RenderTextureFormat.ARGB32, -1) { enableRandomWrite = true };
-
+            m_ResultDescriptor = new RenderTextureDescriptor(cameraTextureDescriptor.width/m_Plane.m_DownSample, cameraTextureDescriptor.height/m_Plane.m_DownSample, RenderTextureFormat.ARGB32, -1) ;
+            if (m_Plane.m_ReflectionType == enum_ReflectionSpace.ScreenSpace)
+                m_ResultDescriptor.enableRandomWrite = true;
+            
             cmd.GetTemporaryRT(m_ReflectionTexture, m_ResultDescriptor,FilterMode.Bilinear);
             
             m_ColorResult = m_ReflectionTextureID;

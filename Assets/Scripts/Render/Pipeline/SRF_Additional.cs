@@ -15,7 +15,7 @@ namespace Rendering.Pipeline
         static readonly int ID_FrustumCornersRayTR = Shader.PropertyToID("_FrustumCornersRayTR");
         static readonly int ID_Matrix_VP = Shader.PropertyToID("_Matrix_VP");
         static readonly int ID_Matrix_I_VP=Shader.PropertyToID("_Matrix_I_VP");
-        static readonly  int ID_Matrix_V=Shader.PropertyToID("_Matrix_V");
+        static readonly int ID_Matrix_V = Shader.PropertyToID("_Matrix_V");
         #endregion
         [Tooltip("Screen Space World Position Reconstruction")]
         public bool m_ScreenParams;
@@ -33,6 +33,7 @@ namespace Rendering.Pipeline
         SRP_ComponentBasedPostProcess m_PostProcesssing_AfterAll;
         public override void Create()
         {
+            Shader.WarmupAllShaders();
             m_OpaqueBlurPass = new SRP_OpaqueBlurTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox };
             m_NormalPass = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox};
             m_PostProcesssing_Opaque = new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox };

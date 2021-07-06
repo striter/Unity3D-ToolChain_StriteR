@@ -89,8 +89,6 @@ namespace Rendering.ImageEffect
         }
         public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor, PPData_VolumetricLight ppData)
         {
-            base.ExecutePostProcessBuffer(_buffer, _src, _dst, _descriptor, ppData);
-
             _descriptor.width /= ppData.m_DownSample;
             _descriptor.height /= ppData.m_DownSample;
             _descriptor.colorFormat = RenderTextureFormat.R8;
