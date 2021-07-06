@@ -22,6 +22,7 @@ Shader "Game/Unlit/CubeSample"
                 float3 viewDirOS:TEXCOORD1;
             };
 
+
             v2f vert (float3 positionOS:POSITION)
             {
                 v2f o;
@@ -31,7 +32,7 @@ Shader "Game/Unlit/CubeSample"
                 return o;
             }
 
-            float3 SDFFragment(v2f i, inout float _depth)
+            float3 SDFFragment(v2f i, out float _depth)
             {
                 half3 viewDirOS=normalize(i.viewDirOS);
                 float3 offset=float3(0,0,_Offset);
@@ -41,7 +42,9 @@ Shader "Game/Unlit/CubeSample"
                 float2 distances=AABBRayDistance(_box,_ray);
                 float3 sdfPosOS=_ray.GetPoint(distances.x+distances.y);
 
-                _depth=TransformHClipToFragmentDepth(TransformObjectToHClip(sdfPosOS));
+                float4 positionVS = TransformObjectToView(sdfPosOS);
+                positionVS.xyz/=positionVS.w;
+                _depth=LinearEyeDepthToOutDepth(-positionVS.z);
                 return sdfPosOS-offset;
             }
         ENDHLSL
@@ -52,9 +55,11 @@ Shader "Game/Unlit/CubeSample"
             #pragma vertex vert
             #pragma fragment frag
             TEXTURECUBE(_CubeMap);SAMPLER(sampler_CubeMap);
-            float4 frag (v2f i,inout float depth:DEPTH) : SV_Target
+            float4 frag (v2f i,out float depth:SV_DEPTH) : SV_Target
             {
-                return SAMPLE_TEXTURECUBE(_CubeMap,sampler_CubeMap,SDFFragment(i,depth));
+                float4 color= SAMPLE_TEXTURECUBE(_CubeMap,sampler_CubeMap,SDFFragment(i,depth));
+                
+                return color;
             }
             ENDHLSL
         }
@@ -64,7 +69,7 @@ Shader "Game/Unlit/CubeSample"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            float4 frag(v2f i,inout float depth:DEPTH):SV_TARGET
+            float4 frag(v2f i,out float depth:SV_DEPTH):SV_TARGET
             {
                 SDFFragment(i,depth);
                 return 0;

@@ -33,7 +33,7 @@ Shader "Hidden/PostProcess/VolumetricLight"
             {
                 float3 curPos=_WorldSpaceCameraPos;
                 half3 marchDirWS=normalize( GetViewDirWS(i.uv));
-                float depthDstWS=LinearEyeDepth(i.uv);
+                float depthDstWS=LinearEyeDepthUV(i.uv);
                 float marchDstWS=min(depthDstWS,_MarchDistance);
                 uint marchTimes=min(_MarchTimes,128u);
                 float marchDelta=marchDstWS/_MarchDistance*1.0/marchTimes;

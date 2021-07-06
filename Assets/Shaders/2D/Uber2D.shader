@@ -99,7 +99,6 @@ Shader "Game/2D/Uber"
 				half3 biTangentWS:TEXCOORD3;
 				float3 viewDirWS:TEXCOORD4;
             	float3 positionWS:TEXCOORD5;
-            	half3 positionOS:TEXCOORD6;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -120,15 +119,19 @@ Shader "Game/2D/Uber"
                 #endif
             }
 
-			void DepthParallex(inout half2 uv,inout float depth,inout float3 positionOS,inout float3 positionWS,float3x3 TBNWS,float3 viewDirWS)
+			void DepthParallex(inout half2 uv,inout float depth,inout float3 positionWS,float3x3 TBNWS,float3 viewDirWS)
 			{
 				#if _DEPTHMAP
 				half depthOffsetOS=0.h;
-				uv=ParallexMapping(_DepthTex,sampler_DepthTex, uv,mul(TBNWS, viewDirWS),INSTANCE(_DepthOffset),INSTANCE(_DepthScale),INSTANCE(_ParallexCount),depthOffsetOS);
+				half3 viewDirTS=mul(TBNWS, viewDirWS);
+				uv=ParallexMapping(_DepthTex,sampler_DepthTex, uv,viewDirTS,INSTANCE(_DepthOffset),INSTANCE(_DepthScale),INSTANCE(_ParallexCount),depthOffsetOS);
 				#if _DEPTHBUFFER
-				positionOS = positionOS-normalize(TransformWorldToObjectNormal(viewDirWS)) *depthOffsetOS*INSTANCE(_DepthScale);
-            	positionWS=TransformObjectToWorld(positionOS);
-				depth=TransformHClipToFragmentDepth(TransformObjectToHClip(positionOS));
+				half3 forwardTS=half3(0.,0.,1.h);
+				half projectParam=dot(forwardTS,viewDirTS);
+				half projectionDistance=depthOffsetOS*INSTANCE(_DepthScale)*rcp(projectParam);
+				positionWS = positionWS-viewDirWS *projectionDistance;
+            	float4 positionVS=mul(UNITY_MATRIX_V,float4(positionWS,1));
+            	depth=LinearEyeDepthToOutDepth(-positionVS.z);
 				#endif
 				#endif
 			}
@@ -147,7 +150,6 @@ Shader "Game/2D/Uber"
 				o.tangentWS=normalize(mul((float3x3)unity_ObjectToWorld,v.tangentOS.xyz));
 				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
 				o.viewDirWS=GetCameraPositionWS()-o.positionWS;
-            	o.positionOS=v.positionOS;
                 return o;
             }
         ENDHLSL
@@ -163,7 +165,7 @@ Shader "Game/2D/Uber"
             #pragma multi_compile _ _SHADOWS_SOFT
             #pragma multi_compile _ _ADDITIONAL_LIGHTS
 
-            float4 frag (v2f i,inout float depth:DEPTH) : SV_Target
+            float4 frag (v2f i,out float depth:SV_DEPTH) : SV_Target
             {
 				UNITY_SETUP_INSTANCE_ID(i);
 				half3 normalWS=normalize(i.normalWS);
@@ -172,16 +174,17 @@ Shader "Game/2D/Uber"
 				half3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
 				half3 viewDirWS=normalize(i.viewDirWS);
 				half3 lightDirWS=normalize(_MainLightPosition.xyz);
+            	half3 positionWS=i.positionWS;
             	depth=i.positionCS.z;
+            	DepthParallex(i.uv,depth,positionWS,TBNWS,viewDirWS);
                 float4 col = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv)*_Color;
-            	DepthParallex(i.uv,depth,i.positionOS,i.positionWS,TBNWS,viewDirWS);
             	AlphaClip(col.a);
             	#ifndef _LIGHTING
             		return col;
             	#endif
             	half atten=1;
             	#if _RECEIVESHADOW
-            		atten=MainLightRealtimeShadow(TransformWorldToShadowCoord(i.positionWS));
+            		atten=MainLightRealtimeShadow(TransformWorldToShadowCoord(positionWS));
             	#endif
             	half diffuse=saturate(dot(normalWS,lightDirWS));
             	diffuse=diffuse*INSTANCE(_Diffuse)+(1.-INSTANCE(_Diffuse));
@@ -266,7 +269,7 @@ Shader "Game/2D/Uber"
 				half3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
 				half3 viewDirWS=normalize(i.viewDirWS);
 				depth=i.positionCS.z;
-            	DepthParallex(i.uv,depth,i.positionOS,i.positionWS,TBNWS,viewDirWS);
+            	DepthParallex(i.uv,depth,i.positionWS,TBNWS,viewDirWS);
 				AlphaClip(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).a*INSTANCE(_Color.a));
 				return 0;
 			}

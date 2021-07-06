@@ -36,14 +36,17 @@
 					#if _DITHER
 					radius*=remap(random01(i.uv),0.,1.,0.5,1.);
 					#endif
+					[unroll(128u)]
 					for (uint index = 0u; index < _SampleCount; index++) {
 						float3 offsetWS= _SampleSphere[index]*radius;
 						offsetWS*=sign(dot(normalWS,offsetWS));
-						float4 offsetCS=mul(_Matrix_VP, float4(positionWS+offsetWS,1));
+						float3 sampleWS=positionWS+offsetWS;
 						half2 sampleUV;
 						half sampleDepth;
-						TransformHClipToUVDepth(offsetCS,sampleUV,sampleDepth);
-						float depthOffset = LinearEyeDepth(sampleDepth,_ZBufferParams)-LinearEyeDepth(sampleUV);
+						TransformHClipToUVDepth(mul(_Matrix_VP, float4(sampleWS,1)),sampleUV,sampleDepth);
+						float4 positionVS=mul(_Matrix_V,float4(sampleWS,1));
+						
+						float depthOffset = -positionVS.z/positionVS.w-LinearEyeDepthUV(sampleUV);
 						float depthSample=saturate(depthOffset/_Radius)*step(depthOffset,_Bias);
 						occlusion+=depthSample;
 					}

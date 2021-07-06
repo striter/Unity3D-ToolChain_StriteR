@@ -10,8 +10,8 @@ half4 _CameraDepthTexture_TexelSize;
 
 float4 Sample_MainTex(half2 uv){return  SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv);}
 float Sample_Depth(half2 uv){return SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture,uv).r;}
-float LinearEyeDepth(half2 uv){return LinearEyeDepth(Sample_Depth(uv),_ZBufferParams);}
-float Linear01Depth(half2 uv){return Linear01Depth(Sample_Depth(uv),_ZBufferParams);}
+float LinearEyeDepthUV(half2 uv){return LinearEyeDepth(Sample_Depth(uv),_ZBufferParams);}
+float Linear01DepthUV(half2 uv){return Linear01Depth(Sample_Depth(uv),_ZBufferParams);}
 
 float3 GetPositionWS(half2 uv,half depth){return GetPositionWS_Frustum(uv,depth);}
 float3 GetPositionWS(half2 uv){return GetPositionWS(uv,Sample_Depth(uv));}
@@ -26,9 +26,9 @@ float3 WorldSpaceNormalFromDepth(half2 uv,inout float3 positionWS,inout half dep
 }
 half3 ClipSpaceNormalFromDepth(half2 uv)
 {
-    half depth = LinearEyeDepth(uv);
-    half depth1 = LinearEyeDepth(uv + _MainTex_TexelRight);
-    half depth2 = LinearEyeDepth(uv + _MainTex_TexelUp);
+    half depth = LinearEyeDepthUV(uv);
+    half depth1 = LinearEyeDepthUV(uv + _MainTex_TexelRight);
+    half depth2 = LinearEyeDepthUV(uv + _MainTex_TexelUp);
 				
     half3 p1 = half3(_MainTex_TexelRight, depth1 - depth);
     half3 p2 = half3(_MainTex_TexelUp, depth2 - depth);

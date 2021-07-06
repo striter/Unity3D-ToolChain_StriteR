@@ -86,7 +86,7 @@
                 GRay viewRayWS=GetRay( cameraPos,marchDirWS);
                 float distance1=PlaneRayDistance(planeStartWS,viewRayWS);
                 float distance2=PlaneRayDistance(planeEndWS,viewRayWS);
-				float linearDepth = LinearEyeDepth(i.uv);
+				float linearDepth = LinearEyeDepthUV(i.uv);
                 distance1=min(linearDepth,distance1);
                 distance2=min(linearDepth,distance2);
                 float3 marchBegin=cameraPos;

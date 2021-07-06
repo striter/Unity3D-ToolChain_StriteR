@@ -23,7 +23,6 @@
 		[ToggleTex(_DEPTHMAP)][NoScaleOffset]_DepthTex("Texure",2D)="white"{}
 		[Foldout(_DEPTHMAP)]_DepthScale("Scale",Range(0.001,.2))=1
 		[Foldout(_DEPTHMAP)]_DepthOffset("Offset",Range(0,1))=.42
-		[Toggle(_DEPTHBUFFER)]_DepthBuffer("Affect Buffer",float)=1
 		[Toggle(_PARALLEX)]_Parallex("Parallex",float)=0
 		[Enum(_16,16,_32,32,_64,64,_128,128)]_ParallexCount("Parallex Count",int)=16
 
@@ -66,7 +65,6 @@
 			#pragma shader_feature_local _NORMALMAP
 			#pragma shader_feature_local _DETAILNORMALMAP
 			#pragma shader_feature_local _DEPTHMAP
-			#pragma shader_feature_local _DEPTHBUFFER
 			#pragma shader_feature_local _PARALLEX
             
 			#pragma multi_compile_local _NDF_BLINNPHONG _NDF_COOKTORRANCE _NDF_BECKMANN _NDF_GAUSSIAN _NDF_GGX _NDF_TROWBRIDGEREITZ _NDF_ANISOTROPIC_TROWBRIDGEREITZ _NDF_ANISOTROPIC_WARD
@@ -109,8 +107,6 @@
 				float3 viewDirWS:TEXCOORD4;
 				float4 shadowCoordWS:TEXCOORD5;
 				half4 positionHCS:TEXCOORD6;
-				half3 normalOS:TEXCOORD7;
-				half3 positionOS:TEXCOORD8;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -128,12 +124,10 @@
 				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
 				o.viewDirWS=GetCameraPositionWS()-positionWS;
 				o.positionHCS=o.positionCS;
-				o.normalOS=v.normalOS;
-				o.positionOS=v.positionOS;
 				return o;
 			}
 			
-			half4 frag(v2f i,inout float depth:DEPTH) :SV_TARGET
+			half4 frag(v2f i) :SV_TARGET
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
 				half3 normalWS=normalize(i.normalWS);
@@ -142,18 +136,11 @@
 				half3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
 				half3 viewDirWS=normalize(i.viewDirWS);
 				half3 lightDirWS=normalize(_MainLightPosition.xyz);
-				depth=i.positionCS.z;
 				half3 normalTS=half3(0,0,1);
 				half2 baseUV=i.uv.xy;
 				#if _DEPTHMAP
 				half depthOffsetOS=0.h;
 				baseUV=ParallexMapping(_DepthTex,sampler_DepthTex, baseUV,mul(TBNWS, viewDirWS),INSTANCE(_DepthOffset),INSTANCE(_DepthScale),INSTANCE(_ParallexCount),depthOffsetOS);
-				#if _DEPTHBUFFER
-				depthOffsetOS*=INSTANCE(_DepthScale);
-				half3 positionOS = i.positionOS-normalize(i.normalOS)*depthOffsetOS;
-				half4 dstHClip=TransformObjectToHClip(positionOS);
-				depth=dstHClip.z/dstHClip.w;
-				#endif
 				#endif
 				
 				#if _NORMALMAP
@@ -183,7 +170,7 @@
                 half3 lightDir=normalize(lightDirWS);
 				half3 lightCol=_MainLightColor.rgb;
 				half atten=MainLightRealtimeShadow(i.shadowCoordWS);
-
+				
 				half3 brdfColor=0;
 				half3 indirectDiffuse=IndirectBRDFDiffuse(surface.normal);
 				half3 indirectSpecular=IndirectBRDFSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);

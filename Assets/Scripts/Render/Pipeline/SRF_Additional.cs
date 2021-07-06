@@ -13,7 +13,9 @@ namespace Rendering.Pipeline
         static readonly int ID_FrustumCornersRayBR = Shader.PropertyToID("_FrustumCornersRayBR");
         static readonly int ID_FrustumCornersRayTL = Shader.PropertyToID("_FrustumCornersRayTL");
         static readonly int ID_FrustumCornersRayTR = Shader.PropertyToID("_FrustumCornersRayTR");
-        static readonly int ID_MatrixVP = Shader.PropertyToID("_Matrix_VP");
+        static readonly int ID_Matrix_VP = Shader.PropertyToID("_Matrix_VP");
+        static readonly int ID_Matrix_I_VP=Shader.PropertyToID("_Matrix_I_VP");
+        static readonly  int ID_Matrix_V=Shader.PropertyToID("_Matrix_V");
         #endregion
         [Tooltip("Screen Space World Position Reconstruction")]
         public bool m_ScreenParams;
@@ -85,16 +87,10 @@ namespace Rendering.Pipeline
         }
         void UpdateScreenParams(ref RenderingData _renderingData)
         {
-            Matrix4x4 projection = GL.GetGPUProjectionMatrix(_renderingData.cameraData.GetProjectionMatrix(),
-                _renderingData.cameraData.IsCameraProjectionMatrixFlipped());
-            Matrix4x4 view = _renderingData.cameraData.GetViewMatrix();
-            Matrix4x4 vp = projection * view;
-
-            Shader.SetGlobalMatrix("_Matrix_VP",vp);
-            Shader.SetGlobalMatrix("_Matrix_I_VP",vp.inverse);
             
             var camera = _renderingData.cameraData.camera;
             float fov = camera.fieldOfView;
+            float far = camera.farClipPlane;
             float near = camera.nearClipPlane;
             float aspect = camera.aspect;
             Transform cameraTrans = camera.transform;
@@ -120,6 +116,15 @@ namespace Rendering.Pipeline
             Shader.SetGlobalVector(ID_FrustumCornersRayBR, bottomRight);
             Shader.SetGlobalVector(ID_FrustumCornersRayTL, topLeft);
             Shader.SetGlobalVector(ID_FrustumCornersRayTR, topRight);
+            
+            Matrix4x4 projection = GL.GetGPUProjectionMatrix(_renderingData.cameraData.GetProjectionMatrix(),
+                _renderingData.cameraData.IsCameraProjectionMatrixFlipped());
+            Matrix4x4 view = _renderingData.cameraData.GetViewMatrix();
+            Matrix4x4 vp = projection * view;
+
+            Shader.SetGlobalMatrix(ID_Matrix_VP,vp);
+            Shader.SetGlobalMatrix(ID_Matrix_I_VP,vp.inverse);
+            Shader.SetGlobalMatrix(ID_Matrix_V,view);
         }
         void UpdateCameraReflectionTexture(ScriptableRenderer _renderer,ref RenderingData renderingData)
         {

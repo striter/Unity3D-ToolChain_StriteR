@@ -74,7 +74,7 @@
 					#elif _DETECT_NORMAL
 					diff=abs(dot(ClipSpaceNormalFromDepth(i.uv[it]),float3(0,0,-1)));
 					#else
-					diff=LinearEyeDepth(i.uv[it]);
+					diff=LinearEyeDepthUV(i.uv[it]);
 					#endif
 					edgeX+=diff*Gx[it];
 					edgeY+=diff*Gy[it];

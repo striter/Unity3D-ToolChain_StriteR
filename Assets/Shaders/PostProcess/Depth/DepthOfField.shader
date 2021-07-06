@@ -26,12 +26,12 @@
 
             half GetFocalParam(half2 uv)
             {
-                half depth=Linear01Depth(uv);
+                half depth=Linear01DepthUV(uv);
                 #if _UseBlurDepth
-                depth=max(depth,Linear01Depth(uv+half2(1,0)*_BlurSize*_CameraDepthTexture_TexelSize.x));
-                depth=max(depth,Linear01Depth(uv+half2(-1,0)*_BlurSize*_CameraDepthTexture_TexelSize.x));
-                depth=max(depth,Linear01Depth(uv+half2(0,1)*_BlurSize*_CameraDepthTexture_TexelSize.y));
-                depth=max(depth,Linear01Depth(uv+half2(0,-1)*_BlurSize*_CameraDepthTexture_TexelSize.y));
+                depth=max(depth,Linear01DepthUV(uv+half2(1,0)*_BlurSize*_CameraDepthTexture_TexelSize.x));
+                depth=max(depth,Linear01DepthUV(uv+half2(-1,0)*_BlurSize*_CameraDepthTexture_TexelSize.x));
+                depth=max(depth,Linear01DepthUV(uv+half2(0,1)*_BlurSize*_CameraDepthTexture_TexelSize.y));
+                depth=max(depth,Linear01DepthUV(uv+half2(0,-1)*_BlurSize*_CameraDepthTexture_TexelSize.y));
                 #endif
 
                 half focal=step(_FocalStart,depth)*abs((_FocalStart-depth))/_FocalLerp;

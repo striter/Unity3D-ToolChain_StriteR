@@ -26,7 +26,17 @@ bool DepthGreater(float _depthSrc,float _depthComp)
     #endif
 }
 
+float LinearEyeDepthToOutDepth(float z)
+{
+    return (1. - _ZBufferParams.w * z) / (_ZBufferParams.z * z);
+}
+
+
 //Transformations
+float4 TransformObjectToView(float3 positionOS)
+{
+    return mul(UNITY_MATRIX_MV,float4(positionOS,1));
+}
 float3 TransformUVDepthToClipPosition(float2 _uv,float _depth)
 {
     #if UNITY_UV_STARTS_AT_TOP
@@ -45,6 +55,7 @@ half2 TransformHClipToScreenUV(float4 _hClip)
 }
 
 float4x4 _Matrix_VP;
+float4x4 _Matrix_V;
 float4x4 _Matrix_I_VP;
 float3 TransformClipToWorld(float3 _positionCS)
 {
@@ -52,30 +63,14 @@ float3 TransformClipToWorld(float3 _positionCS)
     return pos.xyz/pos.w;
 }
 
-float3 TransformObjectToHClipNormal(float3 _normalOS)
+void TransformHClipToUVDepth(float4 positionCS,out half2 uv,out float depth)
 {
-    return mul((float3x3) GetWorldToHClipMatrix(), TransformObjectToWorldNormal(_normalOS));
-}
-
-void TransformHClipToUVDepth(float4 positionCS,out half2 uv,out half depth)
-{
-    positionCS.xyz /= positionCS.w;
-    
-    uv= (positionCS.xy + 1) * .5;
-    #if UNITY_UV_STARTS_AT_TOP
+    float3 divide=positionCS.xyz/positionCS.w;
+    depth = divide.z;
+    uv= (divide.xy + 1.) * .5;
+#if UNITY_UV_STARTS_AT_TOP
     uv.y = 1 - uv.y;
-    #endif
-    
-    depth = positionCS.z;
-}
-
-float TransformHClipToFragmentDepth(float4 positionCS)
-{
-   float depth=positionCS.z/positionCS.w;
-#if! UNITY_REVERSED_Z
-    depth=depth*.5+.5;
 #endif
-    return depth;
 }
 
 //Screen Space Calculations
