@@ -33,6 +33,8 @@ namespace Rendering.Pipeline
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
+            if (!gameObject.activeInHierarchy||!enabled)
+                return;
             Gizmos.color = Color.white;
             Gizmos.matrix = transform.localToWorldMatrix;
             Gizmos_Extend.DrawArrow(Vector3.up*m_PlaneOffset,Quaternion.LookRotation(Vector3.up),.5f,.1f);
