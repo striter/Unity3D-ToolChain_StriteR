@@ -23,10 +23,6 @@ float2 TransformViewToScreenUV(float4 positionVS)
     return float2(positionVS.x/width,positionVS.y/height)+.5;
 }
 
-float TransformWorldToLinearEyeDepth(float3 _positionWS)
-{
-    return -(_positionWS.x*_Matrix_V._m20+_positionWS.y*_Matrix_V._m21+_positionWS.z*_Matrix_V._m22+_Matrix_V._m23);
-}
 
 float3 WorldSpaceNormalFromDepth(half2 uv,inout float3 positionWS,inout half depth)
 {

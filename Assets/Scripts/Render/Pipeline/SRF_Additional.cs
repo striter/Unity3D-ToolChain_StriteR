@@ -33,7 +33,10 @@ namespace Rendering.Pipeline
         SRP_ComponentBasedPostProcess m_PostProcesssing_AfterAll;
         public override void Create()
         {
+#if UNITY_EDITOR
             Shader.WarmupAllShaders();
+            m_CameraReflectionComputeShader = UnityEditor.AssetDatabase.LoadAssetAtPath<ComputeShader>("Assets/Shaders/Compute/PlanarReflection.compute");
+#endif
             m_OpaqueBlurPass = new SRP_OpaqueBlurTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox };
             m_NormalPass = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox};
             m_PostProcesssing_Opaque = new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox };
@@ -41,9 +44,6 @@ namespace Rendering.Pipeline
             for (int i=0;i<SRP_PlanarReflection.C_MaxReflectionTextureCount;i++)
                 m_ReflecitonPasses[i] = new SRP_PlanarReflection() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 1};
             m_PostProcesssing_AfterAll = new SRP_ComponentBasedPostProcess() {  renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing };
-#if UNITY_EDITOR
-            m_CameraReflectionComputeShader = UnityEditor.AssetDatabase.LoadAssetAtPath<ComputeShader>("Assets/Shaders/Compute/PlanarReflection.compute");
-#endif
         }
         protected override void Dispose(bool disposing)
         {

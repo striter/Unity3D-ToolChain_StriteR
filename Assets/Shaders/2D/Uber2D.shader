@@ -22,6 +22,7 @@ Shader "Game/2D/Uber"
 		[Foldout(_DEPTHMAP)]_DepthScale("Scale",Range(0.001,.5))=1
 		[Foldout(_DEPTHMAP)]_DepthOffset("Offset",Range(0,1))=.42
 		[Toggle(_DEPTHBUFFER)]_DepthBuffer("Affect Buffer",float)=1
+    	[Foldout(_DEPTHBUFFER)]_DepthBufferScale("Affect Scale",float)=1
 		[Toggle(_PARALLEX)]_Parallex("Parallex",float)=0
 		[Enum(_16,16,_32,32,_64,64,_128,128)]_ParallexCount("Parallex Count",int)=16
     	
@@ -77,6 +78,7 @@ Shader "Game/2D/Uber"
 				INSTANCING_PROP(float4, _Color)
 				INSTANCING_PROP(float,_DepthScale)
 				INSTANCING_PROP(float,_DepthOffset)
+				INSTANCING_PROP(float,_DepthBufferScale)
 				INSTANCING_PROP(int ,_ParallexCount)
 				INSTANCING_PROP(float,_RimIntensity)
 			UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
@@ -128,10 +130,9 @@ Shader "Game/2D/Uber"
 				#if _DEPTHBUFFER
 				half3 forwardTS=half3(0.,0.,1.h);
 				half projectParam=dot(forwardTS,viewDirTS);
-				half projectionDistance=depthOffsetOS*INSTANCE(_DepthScale)*rcp(projectParam);
-				positionWS = positionWS-viewDirWS *projectionDistance;
-            	float4 positionVS=mul(UNITY_MATRIX_V,float4(positionWS,1));
-            	depth=LinearEyeDepthToOutDepth(-positionVS.z);
+				half projectionDistance=depthOffsetOS*INSTANCE(_DepthScale)*step(0.01h,projectParam)* rcp(projectParam);
+				positionWS = positionWS- viewDirWS*projectionDistance*INSTANCE(_DepthBufferScale);
+            	depth=LinearEyeDepthToOutDepth(TransformWorldToLinearEyeDepth(positionWS,UNITY_MATRIX_V));
 				#endif
 				#endif
 			}
@@ -261,7 +262,7 @@ Shader "Game/2D/Uber"
 			#pragma fragment ShadowFragment
 			#pragma multi_compile_instancing
 				
-			float4 ShadowFragment(v2f i,inout float depth:DEPTH) :SV_TARGET
+			float4 ShadowFragment(v2f i,out float depth:SV_DEPTH) :SV_TARGET
 			{
 				half3 normalWS=normalize(i.normalWS);
 				half3 biTangentWS=normalize(i.biTangentWS);

@@ -36,7 +36,7 @@ namespace Rendering.Pipeline
         ComputeShader m_ComputeShader;
         RenderTextureDescriptor m_ResultDescriptor;
         RenderTargetIdentifier m_ColorResult;
-        PPCore_Blurs m_CoreBlurs;
+        readonly PPCore_Blurs m_CoreBlurs;
         Int3 m_Kernels;
 
         readonly MaterialPropertyBlock m_PropertyBlock;
@@ -86,7 +86,25 @@ namespace Rendering.Pipeline
                 m_ColorResult = RT_ID_ReflectionTempTexture;
             }
             
-            ConfigureTarget(m_ColorResult);
+            var m_DepthDescriptor = m_ResultDescriptor;
+            switch (m_Plane.m_ReflectionType)
+            {
+                case enum_ReflectionSpace.MirrorSpace:
+                    {
+                        m_DepthDescriptor.colorFormat = RenderTextureFormat.Depth;
+                        m_DepthDescriptor.depthBufferBits = 32;
+                    }
+                    break;
+                case enum_ReflectionSpace.ScreenSpace:
+                    {
+                        m_DepthDescriptor.colorFormat = RenderTextureFormat.RHalf;
+                        m_DepthDescriptor.enableRandomWrite = true;
+                    }
+                    break;
+            }
+            cmd.GetTemporaryRT(ID_ReflectionDepth, m_DepthDescriptor,FilterMode.Point);
+            ConfigureTarget(m_ColorResult,RT_ID_ReflectionDepth);
+            ConfigureClear(ClearFlag.All,Color.clear);
         }
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
@@ -96,12 +114,6 @@ namespace Rendering.Pipeline
             {
                 case enum_ReflectionSpace.ScreenSpace:
                     {                         
-                        var m_DepthDescriptor = m_ResultDescriptor;
-                        m_DepthDescriptor.colorFormat = RenderTextureFormat.RHalf;
-                        m_DepthDescriptor.depthBufferBits = 32;
-                        m_DepthDescriptor.enableRandomWrite = true;
-                        cmd.GetTemporaryRT(ID_ReflectionDepth, m_DepthDescriptor,FilterMode.Point);
-                        cmd.SetRandomWriteTarget(0,m_ColorResult);
                         cmd.SetComputeIntParam(m_ComputeShader, ID_SampleCount, m_Plane.m_Sample);
                         cmd.SetComputeVectorParam(m_ComputeShader, ID_PlaneNormal, planeData.normal.normalized);
                         cmd.SetComputeVectorParam(m_ComputeShader, ID_PlanePosition, planeData.distance * planeData.normal);
@@ -130,16 +142,6 @@ namespace Rendering.Pipeline
                         camera.cullingMatrix = cullingMatrix * planeMirroMatrix;
                         if (cameraData.camera.TryGetCullingParameters(out ScriptableCullingParameters cullingParameters))
                         {
-                            var m_DepthDescriptor = m_ResultDescriptor;
-                            m_DepthDescriptor.depthBufferBits = 32;
-                            m_DepthDescriptor.enableRandomWrite = false;
-                            m_DepthDescriptor.colorFormat = RenderTextureFormat.Depth;
-                            cmd.GetTemporaryRT(ID_ReflectionDepth, m_DepthDescriptor,FilterMode.Point);
-                            cmd.SetRenderTarget(m_ColorResult, RT_ID_ReflectionDepth);
-                            cmd.ClearRenderTarget(true, true, Color.black.SetAlpha(0));
-                            context.ExecuteCommandBuffer(cmd);
-                            cmd.Clear();
-
                             DrawingSettings drawingSettings = CreateDrawingSettings(m_ShaderTagIDs, ref renderingData,  SortingCriteria.CommonOpaque);
                             FilteringSettings m_FilterSettings = new FilteringSettings(m_Plane.m_IncludeTransparent? RenderQueueRange.all : RenderQueueRange.opaque);
                             Matrix4x4 projectionMatrix = GL.GetGPUProjectionMatrix(cameraData.GetProjectionMatrix(), cameraData.IsCameraProjectionMatrixFlipped());
@@ -156,7 +158,6 @@ namespace Rendering.Pipeline
                             cmd.Clear();
                             cmd.SetInvertCulling(false);
                             RenderingUtils.SetViewAndProjectionMatrices(cmd, cameraData.GetViewMatrix(), cameraData.GetGPUProjectionMatrix(), false);
-                            cmd.ReleaseTemporaryRT(ID_ReflectionDepth);
                         }
                         camera.ResetCullingMatrix();
                     }
@@ -174,6 +175,7 @@ namespace Rendering.Pipeline
         public override void FrameCleanup(CommandBuffer cmd)
         {
             base.FrameCleanup(cmd);
+            cmd.ReleaseTemporaryRT(ID_ReflectionDepth);
             cmd.ReleaseTemporaryRT(m_ReflectionTexture);
         }
     }

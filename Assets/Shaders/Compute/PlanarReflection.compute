@@ -34,7 +34,7 @@ void ReflectionMapping(float2 uv)
     half2 uvM;
     half depthM;
     TransformHClipToUVDepth(positionCSM,uvM,depthM);
-    if (positionCSM.w > 0 && depth > 0)
+    if (normalProj>0&& positionCSM.w > 0 && depth > 0)
     {
         uint2 resultIDM = uvM * _Result_TexelSize.zw;
         float sampleDepth = _Depth[resultIDM];

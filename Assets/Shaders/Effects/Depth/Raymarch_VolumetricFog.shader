@@ -92,14 +92,14 @@
                     uint rayMarchCount=min(_RayMarch,128u);
                     float marchOffset=1.0/rayMarchCount;
                     float distanceOffset=_Distance/rayMarchCount;
-                    float dstMarched=0;
+                    float dstMarched=0.;
                     [unroll(128u)]
                     for(uint index=0u;index<rayMarchCount;index++)
                     {
                         float3 marchPos=i.positionWS+marchDirWS*dstMarched;
                         float density=SampleDensity(marchPos)*_Density;
-                        float atten=MainLightRealtimeShadow(TransformWorldToShadowCoord(marchPos));
-                        sumDensity+=marchOffset*density*atten;
+                        sumDensity+=marchOffset*density;
+                        //sumDensity*=MainLightRealtimeShadow(TransformWorldToShadowCoord(marchPos));
                         dstMarched+=distanceOffset;
 
                         if(sumDensity>=1||dstMarched>marchDistance)

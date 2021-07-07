@@ -31,6 +31,10 @@ float LinearEyeDepthToOutDepth(float z)
     return (1. - _ZBufferParams.w * z) / (_ZBufferParams.z * z);
 }
 
+float TransformWorldToLinearEyeDepth(float3 _positionWS,float4x4 _matrixV)
+{
+    return -(_positionWS.x*_matrixV._m20+_positionWS.y*_matrixV._m21+_positionWS.z*_matrixV._m22+_matrixV._m23);
+}
 
 //Transformations
 float4 TransformObjectToView(float3 positionOS)
