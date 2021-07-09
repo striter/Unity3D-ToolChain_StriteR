@@ -11,6 +11,5 @@ namespace Rendering.Pipeline
         [Header("External Textures")]
         public CameraOverrideOption m_OpaqueBlurTexture = CameraOverrideOption.UsePipelineSettings;
         public CameraOverrideOption m_NormalTexture = CameraOverrideOption.UsePipelineSettings;
-        [MFold(nameof(m_FrustumCornersRay), CameraOverrideOption.Off)] public CameraOverrideOption m_ReflectionTexture = CameraOverrideOption.UsePipelineSettings;
     }
 }

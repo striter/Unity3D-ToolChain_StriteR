@@ -72,7 +72,6 @@ namespace Rendering.Pipeline
                 screenParams = data.m_FrustumCornersRay.IsEnabled(screenParams);
                 opaqueBlurTexture = data.m_OpaqueBlurTexture.IsEnabled(opaqueBlurTexture);
                 cameraNormalTexture = data.m_NormalTexture.IsEnabled(cameraNormalTexture);
-                cameraReflectionTexture = data.m_ReflectionTexture.IsEnabled(cameraReflectionTexture);
             }
 
             if (screenParams)

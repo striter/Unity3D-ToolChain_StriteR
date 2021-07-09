@@ -109,10 +109,10 @@ namespace Rendering.Pipeline
             m_ReflectionBlurTextureID = new RenderTargetIdentifier(m_ReflectionBlurTexture);
             return this;
         }
-        public sealed override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
+        public sealed override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
-            base.Configure(cmd, cameraTextureDescriptor);
-            m_ResultDescriptor = cameraTextureDescriptor;
+            base.OnCameraSetup(cmd, ref renderingData);
+            m_ResultDescriptor = renderingData.cameraData.cameraTargetDescriptor;
             ConfigureColorDescriptor(ref m_ResultDescriptor,m_Data);
 
             cmd.GetTemporaryRT(m_ReflectionTexture, m_ResultDescriptor,FilterMode.Bilinear);
@@ -123,8 +123,18 @@ namespace Rendering.Pipeline
                 cmd.GetTemporaryRT(m_ReflectionBlurTexture, m_ResultDescriptor, FilterMode.Bilinear);
                 m_ColorResult = m_ReflectionBlurTextureID;
             }
+            DoCameraSetup(cmd,m_ResultDescriptor,m_ColorResult);
+        }
+        protected virtual void DoCameraSetup(CommandBuffer cmd, RenderTextureDescriptor _descriptor,RenderTargetIdentifier _target)
+        {
             
-            DoConfigure(cmd,m_ResultDescriptor,m_ColorResult);
+        }
+        public override void OnCameraCleanup(CommandBuffer cmd)
+        {
+            base.OnCameraCleanup(cmd);
+            if (m_Data.m_EnableBlur)
+                cmd.ReleaseTemporaryRT(m_ReflectionBlurTexture);
+            cmd.ReleaseTemporaryRT(m_ReflectionTexture);
         }
         protected virtual void ConfigureColorDescriptor(ref RenderTextureDescriptor _descriptor,SRD_PlanarReflectionData _data)
         {
@@ -132,31 +142,18 @@ namespace Rendering.Pipeline
             _descriptor.width /= downSample;
             _descriptor.height /= downSample;
         }
-        protected virtual void DoConfigure(CommandBuffer cmd, RenderTextureDescriptor _descriptor,RenderTargetIdentifier _target)
-        {
-            
-        }
         public sealed override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get("Generate Reflection Texture");
-            GenerateTarget(context,ref renderingData,cmd,m_ResultDescriptor,m_ColorResult,m_Data,m_PlaneData);
+            GenerateTarget(context,ref renderingData,cmd,m_ResultDescriptor,m_ColorResult, m_Data,ref m_PlaneData);
             if (m_Data.m_EnableBlur)
                 m_CoreBlurs.ExecutePostProcessBuffer(cmd, m_ColorResult, m_ReflectionTextureID, m_ResultDescriptor ,m_Data.m_BlurParam); 
             context.ExecuteCommandBuffer(cmd);
             cmd.Clear();
             CommandBufferPool.Release(cmd);
         }
-        protected virtual void GenerateTarget(ScriptableRenderContext context, ref RenderingData renderingData, CommandBuffer cmd,
-            RenderTextureDescriptor _descriptor,RenderTargetIdentifier _target, SRD_PlanarReflectionData _data,GPlane _plane)
-        {
-        }
-        public override void FrameCleanup(CommandBuffer cmd)
-        {
-            base.FrameCleanup(cmd);
-            if (m_Data.m_EnableBlur)
-                cmd.ReleaseTemporaryRT(m_ReflectionBlurTexture);
-            cmd.ReleaseTemporaryRT(m_ReflectionTexture);
-        }
+        protected abstract void GenerateTarget(ScriptableRenderContext context, ref RenderingData renderingData, CommandBuffer cmd,
+            RenderTextureDescriptor _descriptor, RenderTargetIdentifier _target,SRD_PlanarReflectionData _data,ref GPlane _plane);
         public abstract void Dispose();
     }
     
@@ -184,21 +181,23 @@ namespace Rendering.Pipeline
             m_Kernels = new Int2(m_ReflectionComputeShader.FindKernel("Clear"),m_ReflectionComputeShader.FindKernel("Generate"));
             m_ThreadGroups = new Int2(_descriptor.width / 8, _descriptor.height / 8);
         }
-        protected override void DoConfigure(CommandBuffer cmd, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _target)
+        protected override void DoCameraSetup(CommandBuffer cmd, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _target)
         {
-            base.DoConfigure(cmd, _descriptor, _target);
+            base.DoCameraSetup(cmd, _descriptor, _target);
             ConfigureTarget(_target);
-            cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels.m_X, ID_Result, _target);
-            cmd.DispatchCompute(m_ReflectionComputeShader, m_Kernels.m_X, m_ThreadGroups.m_X,m_ThreadGroups.m_Y, 1);
+            // ConfigureClear(ClearFlag.Color,Color.clear);
         }
-        protected override void GenerateTarget(ScriptableRenderContext context, ref RenderingData renderingData, CommandBuffer cmd, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _target, SRD_PlanarReflectionData _data, GPlane _plane)
+        protected override void GenerateTarget(ScriptableRenderContext context, ref RenderingData renderingData, CommandBuffer cmd,
+            RenderTextureDescriptor _descriptor, RenderTargetIdentifier _target,SRD_PlanarReflectionData _data,ref GPlane _plane)
         {
-            base.GenerateTarget(context, ref renderingData, cmd, _descriptor, _target, _data, _plane);
             cmd.SetComputeIntParam(m_ReflectionComputeShader, ID_SampleCount, _data.m_Sample);
             cmd.SetComputeVectorParam(m_ReflectionComputeShader, ID_PlaneNormal, _plane.normal.normalized);
             cmd.SetComputeVectorParam(m_ReflectionComputeShader, ID_PlanePosition, _plane.distance * _plane.normal);
             cmd.SetComputeVectorParam(m_ReflectionComputeShader, ID_Result_TexelSize, _descriptor.GetTexelSize());
-
+            
+            cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels.m_X, ID_Result, _target);
+            cmd.DispatchCompute(m_ReflectionComputeShader, m_Kernels.m_X, m_ThreadGroups.m_X,m_ThreadGroups.m_Y, 1);
+            
             cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels.m_Y, ID_Input, m_Renderer.cameraColorTarget);
             cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels.m_Y, ID_Result, _target);
             cmd.DispatchCompute(m_ReflectionComputeShader, m_Kernels.m_Y, m_ThreadGroups.m_X,m_ThreadGroups.m_Y, 1);
@@ -222,9 +221,9 @@ namespace Rendering.Pipeline
             m_ReflectionDepthID = new RenderTargetIdentifier(m_ReflectionDepth);
             return base.Setup(_index, _planeData, _planes, _renderer);
         }
-        protected override void DoConfigure(CommandBuffer cmd, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _target)
+        protected override void DoCameraSetup(CommandBuffer cmd, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _target)
         {
-            base.DoConfigure(cmd, _descriptor, _target);
+            base.DoCameraSetup(cmd, _descriptor, _target);
             var depthDescriptor = _descriptor;
             depthDescriptor.colorFormat = RenderTextureFormat.Depth;
             depthDescriptor.depthBufferBits = 32;
@@ -233,11 +232,12 @@ namespace Rendering.Pipeline
             ConfigureTarget(_target,m_ReflectionDepthID);
             ConfigureClear(ClearFlag.All,Color.clear);
         }
-        protected override void GenerateTarget(ScriptableRenderContext context, ref RenderingData renderingData, CommandBuffer cmd, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _target, SRD_PlanarReflectionData _data, GPlane _plane)
+        
+        protected override void GenerateTarget(ScriptableRenderContext context, ref RenderingData renderingData, CommandBuffer cmd,
+            RenderTextureDescriptor _descriptor, RenderTargetIdentifier _target,SRD_PlanarReflectionData _data,ref GPlane _plane)
         {
-            base.GenerateTarget(context, ref renderingData, cmd, _descriptor, _target, _data, _plane);
-            CameraData cameraData = renderingData.cameraData;
-            Camera camera = cameraData.camera;
+            ref CameraData cameraData = ref renderingData.cameraData;
+            ref Camera camera = ref cameraData.camera;
             
             Matrix4x4 planeMirroMatrix = _plane.GetMirrorMatrix();
             Matrix4x4 cullingMatrix = camera.cullingMatrix;
@@ -263,9 +263,9 @@ namespace Rendering.Pipeline
             }
             camera.ResetCullingMatrix();
         }
-        public override void FrameCleanup(CommandBuffer cmd)
+        public override void OnCameraCleanup(CommandBuffer cmd)
         {
-            base.FrameCleanup(cmd);
+            base.OnCameraCleanup(cmd);
             cmd.ReleaseTemporaryRT(m_ReflectionDepth);
         }
         public override void Dispose() { }
