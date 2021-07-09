@@ -1,11 +1,12 @@
 #pragma kernel CSMain
 RWTexture2D<float4> Result;
+half4 Result_TexelSize;
 float2 _TexelCount;
 float4 _Lights[16];
 uint _LightCount;
 
 [numthreads(8,8,1)]
-void CSMain (uint3 id : SV_DispatchThreadID)
+void CSMain (uint2 id : SV_DispatchThreadID)
 {
     float darkIntensity = 1;
     float2 pixelOffset = id.xy;
@@ -21,5 +22,5 @@ void CSMain (uint3 id : SV_DispatchThreadID)
         float intensity = pow(lightSQRRange/sqrDistance, 2) * lightIntensity;
         darkIntensity -= intensity;
     }
-    Result[id.xy] =  float4(.1, .1, .1, darkIntensity);
+    Result[id] =  float4(.1, .1, .1, darkIntensity);
 }

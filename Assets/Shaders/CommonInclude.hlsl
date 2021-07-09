@@ -1,6 +1,5 @@
 ﻿#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Library/ValueMapping.hlsl"
-
 float2 TransformTex(float2 _uv, float4 _st) {return _uv * _st.xy + _st.zw;}
 #define PI_HALF 1.5707963267949
 #define PI_TWO 6.2831853071796
@@ -10,8 +9,8 @@ float2 TransformTex(float2 _uv, float4 _st) {return _uv * _st.xy + _st.zw;}
 //Depth
 #if !UNITY_REVERSED_Z
 #define Z_Multiply 1.h
-#define Z_BEGIN 1.h
-#define Z_END 0.h
+#define Z_BEGIN 0.h
+#define Z_END 1.h
 #else
 #define Z_Multiply -1.h
 #define Z_BEGIN 1.h
@@ -23,6 +22,15 @@ bool DepthGreater(float _depthSrc,float _depthComp)
         return _depthSrc>_depthComp;
     #else
         return _depthSrc<_depthComp;
+    #endif
+}
+
+bool DepthLesser(float _depthSrc,float _depthComp)
+{
+    #if !UNITY_REVERSED_Z
+        return _depthSrc<_depthComp;
+    #else
+        return _depthSrc>_depthComp;
     #endif
 }
 
@@ -43,10 +51,16 @@ float4 TransformObjectToView(float3 positionOS)
 }
 float3 TransformUVDepthToClipPosition(float2 _uv,float _depth)
 {
-    #if UNITY_UV_STARTS_AT_TOP
-    _uv.y=1-_uv.y;
+    half deviceDepth=_depth;
+    #if !UNITY_REVERSED_Z
+        deviceDepth=lerp(UNITY_NEAR_CLIP_VALUE,1,deviceDepth);
     #endif
-    return float3(_uv*2.-1.,_depth);
+    
+    half2 uv=_uv*2.-1;
+    #if UNITY_UV_STARTS_AT_TOP
+    uv.y=-uv.y;
+    #endif
+    return float3(uv,deviceDepth);
 }
 half2 TransformHClipToScreenUV(float4 _hClip)
 {

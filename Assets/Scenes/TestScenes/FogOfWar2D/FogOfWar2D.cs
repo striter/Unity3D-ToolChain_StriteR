@@ -91,10 +91,10 @@ public class FogOfWar2D : MonoBehaviour
         
         if (Input.GetMouseButton(0))
             curLights = lights.Add(new Vector4(Input.mousePosition.x, Input.mousePosition.y, 200 * 200, 1));
-
         m_ComputeShader.SetVectorArray("_Lights", curLights);
         m_ComputeShader.SetInt("_LightCount", curLights.Length);
         m_ComputeShader.SetTexture(m_KernalHandle, "Result", m_Texture);
+        m_ComputeShader.SetVector("Result_TexelSize",new Vector4(1f/m_Texture.width,1f/m_Texture.height,m_Texture.width,m_Texture.height));
         m_ComputeShader.SetVector("_TexelCount", new Vector4(m_Texture.width, m_Texture.height));
         m_ComputeShader.Dispatch(m_KernalHandle, m_Texture.width / 8, m_Texture.height / 8, 1);
     }

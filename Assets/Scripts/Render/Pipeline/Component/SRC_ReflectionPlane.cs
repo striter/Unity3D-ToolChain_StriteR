@@ -5,18 +5,12 @@ namespace Rendering.Pipeline
 {
     using ImageEffect;
     [ExecuteInEditMode,RequireComponent(typeof(MeshRenderer),typeof(MeshFilter))]
-    public class SRD_ReflectionPlane : MonoBehaviour
+    public class SRC_ReflectionPlane : MonoBehaviour
     {
-        public enum_ReflectionSpace m_ReflectionType = enum_ReflectionSpace.ScreenSpace;
-        [Range(1, 4)] public int m_DownSample = 1;
         [Range(-5f, 5f)] public float m_PlaneOffset = 0f;
         [Range(0f, 0.2f)] public float m_NormalDistort = .1f;
-        [MFoldout(nameof(m_ReflectionType), enum_ReflectionSpace.ScreenSpace)] [Range(1, 4)] public int m_Sample = 1;
-        [MFoldout(nameof(m_ReflectionType), enum_ReflectionSpace.MirrorSpace)]  public bool m_IncludeTransparent=false;
 
-        public bool m_EnableBlur = false;
-        [MFoldout(nameof(m_EnableBlur), true)] public PPData_Blurs m_BlurParam = UPipeline.GetDefaultPostProcessData<PPData_Blurs>();
-        public static List<SRD_ReflectionPlane> m_ReflectionPlanes { get; private set; } = new List<SRD_ReflectionPlane>();
+        public static List<SRC_ReflectionPlane> m_ReflectionPlanes { get; private set; } = new List<SRC_ReflectionPlane>();
         public MeshRenderer m_MeshRenderer { get; private set; }
         public MeshFilter m_MeshFilter { get; private set; }
         public GPlane m_PlaneData => new GPlane(transform.up, transform.position + transform.up * m_PlaneOffset);
@@ -31,14 +25,27 @@ namespace Rendering.Pipeline
             m_ReflectionPlanes.Remove(this);
         }
 #if UNITY_EDITOR
+        private int m_Index=-1;
+        public void EditorApplyIndex(int _index) => m_Index = _index;
         private void OnDrawGizmos()
         {
             if (!gameObject.activeInHierarchy||!enabled)
                 return;
-            Gizmos.color = Color.white;
+            Gizmos.color = IndexToColor(m_Index);
             Gizmos.matrix = transform.localToWorldMatrix;
             Gizmos_Extend.DrawArrow(Vector3.up*m_PlaneOffset,Quaternion.LookRotation(Vector3.up),.5f,.1f);
             Gizmos.DrawWireCube(Vector3.up * m_PlaneOffset, m_MeshFilter.sharedMesh.bounds.size.SetY(0));
+        }
+        private Color IndexToColor(int index)
+        {
+            switch (index)
+            {
+                default: return Color.magenta;
+                case 0: return Color.white;
+                case 1: return Color.blue;
+                case 2: return Color.red;
+                case 3: return Color.yellow;
+            }
         }
 #endif
     }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using System.Linq;
 using Rendering.ImageEffect;
@@ -19,41 +20,39 @@ namespace Rendering.Pipeline
         #endregion
         [Tooltip("Screen Space World Position Reconstruction")]
         public bool m_ScreenParams;
-        [Header("External Textures")]
         public bool m_OpaqueBlurTexture=false;
         [MFoldout(nameof(m_OpaqueBlurTexture), true)] public PPData_Blurs m_BlurParams = UPipeline.GetDefaultPostProcessData<PPData_Blurs>();
         public bool m_NormalTexture=false;
         [MFoldout(nameof(m_ScreenParams), true)] public bool m_CameraReflectionTexture=false;
-        [HideInInspector, SerializeField] ComputeShader m_CameraReflectionComputeShader;
-
+        [HideInInspector] public ComputeShader m_CameraReflectionComputeShader;
+        [MFoldout(nameof(m_CameraReflectionTexture), true)] public SRD_PlanarReflectionData m_PlanarReflectionData= SRD_PlanarReflectionData.Default();
+        
         SRP_OpaqueBlurTexture m_OpaqueBlurPass;
         SRP_NormalTexture m_NormalPass;
-        SRP_PlanarReflection[] m_ReflecitonPasses;
         SRP_ComponentBasedPostProcess m_PostProcesssing_Opaque;
         SRP_ComponentBasedPostProcess m_PostProcesssing_AfterAll;
+        SRP_Reflection m_Reflection;
         public override void Create()
         {
 #if UNITY_EDITOR
             Shader.WarmupAllShaders();
-            m_CameraReflectionComputeShader = UnityEditor.AssetDatabase.LoadAssetAtPath<ComputeShader>("Assets/Shaders/Compute/PlanarReflection.compute");
+            if(m_CameraReflectionComputeShader==null)
+                m_CameraReflectionComputeShader = UnityEditor.AssetDatabase.LoadAssetAtPath<ComputeShader>("Assets/Shaders/Compute/PlanarReflection.compute");
 #endif
             m_OpaqueBlurPass = new SRP_OpaqueBlurTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox };
             m_NormalPass = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox};
             m_PostProcesssing_Opaque = new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox };
-            m_ReflecitonPasses = new SRP_PlanarReflection[SRP_PlanarReflection.C_MaxReflectionTextureCount];
-            for (int i=0;i<SRP_PlanarReflection.C_MaxReflectionTextureCount;i++)
-                m_ReflecitonPasses[i] = new SRP_PlanarReflection() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 1};
             m_PostProcesssing_AfterAll = new SRP_ComponentBasedPostProcess() {  renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing };
+            m_Reflection = new SRP_Reflection(m_PlanarReflectionData,m_CameraReflectionComputeShader);
         }
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
             m_OpaqueBlurPass.Dispose();
             m_NormalPass.Dispose();
-            foreach(var reflectionPass in m_ReflecitonPasses)
-                reflectionPass.Dispose();
             m_PostProcesssing_Opaque.Dispose();
             m_PostProcesssing_AfterAll.Dispose();
+            m_Reflection.Dispose();
         }
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
@@ -83,7 +82,7 @@ namespace Rendering.Pipeline
             if (cameraNormalTexture)
                 renderer.EnqueuePass(m_NormalPass);
             if (cameraReflectionTexture)
-                UpdateCameraReflectionTexture(renderer,ref renderingData);
+                m_Reflection.EnqueuePass(renderer);
             UpdatePostProcess(renderer, ref renderingData);
         }
         void UpdateScreenParams(ref RenderingData _renderingData)
@@ -126,25 +125,6 @@ namespace Rendering.Pipeline
             Shader.SetGlobalMatrix(ID_Matrix_VP,vp);
             Shader.SetGlobalMatrix(ID_Matrix_I_VP,vp.inverse);
             Shader.SetGlobalMatrix(ID_Matrix_V,view);
-        }
-        void UpdateCameraReflectionTexture(ScriptableRenderer _renderer,ref RenderingData renderingData)
-        {
-            if (SRD_ReflectionPlane.m_ReflectionPlanes.Count == 0)
-                return;
-
-            int index = 0;
-            foreach (SRD_ReflectionPlane plane in SRD_ReflectionPlane.m_ReflectionPlanes)
-            {
-                if (!plane.m_MeshRenderer.isVisible)
-                    return;
-                if (index >= SRP_PlanarReflection.C_MaxReflectionTextureCount)
-                {
-                    Debug.LogWarning("Reflection Plane Outta Limit!");
-                    break;
-                }
-                _renderer.EnqueuePass(m_ReflecitonPasses[index].Setup(index, _renderer, m_CameraReflectionComputeShader, plane, renderingData.cameraData.isSceneViewCamera));
-                index++;
-            }
         }
         void UpdatePostProcess(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
