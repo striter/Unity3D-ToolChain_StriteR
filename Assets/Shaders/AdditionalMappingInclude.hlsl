@@ -14,15 +14,20 @@ half2 ParallexMapping(Texture2D depthTexture,SamplerState depthSampler, float2 u
     half deltaDepth=1.0h/marchCount;
     half2 deltaUV=uvOffset/marchCount;
     half depthLayer=0.h;
-    depthOS = 0.h;
-    for(int i=0u;i<marchCount;i++)
+    half depthSample=1.h;
+    half preDepthSample=0.h;
+    while(depthSample>depthLayer)
     {
-        depthOS=SAMPLE_TEXTURE2D_LOD(depthTexture,depthSampler,uv,0).r;
+        preDepthSample=depthSample;
+        depthSample=SAMPLE_TEXTURE2D_LOD(depthTexture,depthSampler,uv,0).r;
         depthLayer+=deltaDepth;
-        if(depthOS<=depthLayer)
-            break;
         uv-=deltaUV;
     }
+    half d1=depthLayer-depthSample;
+    half d2=(depthLayer-deltaDepth)-preDepthSample;
+    half interpolate=d1*rcp(d1-d2);
+    uv+=interpolate*deltaUV;
+    depthOS=depthLayer-interpolate*deltaDepth;
     return uv;
 #endif
 }

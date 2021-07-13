@@ -169,6 +169,7 @@ Shader "Game/2D/Uber"
             float4 frag (v2f i,out float depth:SV_DEPTH) : SV_Target
             {
 				UNITY_SETUP_INSTANCE_ID(i);
+            	
 				half3 normalWS=normalize(i.normalWS);
 				half3 biTangentWS=normalize(i.biTangentWS);
 				half3 tangentWS=normalize(i.tangentWS);

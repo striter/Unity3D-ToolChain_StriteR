@@ -4226,7 +4226,6 @@ MonoBehaviour:
   m_FrustumCornersRay: 2
   m_OpaqueBlurTexture: 2
   m_NormalTexture: 2
-  m_ReflectionTexture: 2
 --- !u!114 &1483932180
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4263,12 +4262,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EffectData:
     m_Color: {r: 0, g: 0.047169805, b: 0.018457746, a: 0.49411765}
-    m_Intensity: 1.1
+    m_Intensity: 1
     m_Radius: 0.16
-    m_Bias: 0.172
-    m_SampleCount: 8
+    m_Bias: 0.135
+    m_SampleCount: 16
     m_Dither: 1
-    m_RandomVectorKeywords: 12:24
+    m_RandomVectorKeywords: Test8
   m_SceneViewPreview: 1
 --- !u!114 &1483932182
 MonoBehaviour:
