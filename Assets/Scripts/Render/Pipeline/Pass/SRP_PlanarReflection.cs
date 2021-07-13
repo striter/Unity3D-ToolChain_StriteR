@@ -96,6 +96,7 @@ namespace Rendering.Pipeline
         private RenderTargetIdentifier m_ReflectionBlurTextureID;
         protected SRP_PlanarReflectionBase(SRP_Reflection _reflection)
         {
+            renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 1;
             m_Reflection = _reflection;
         }
         public virtual ScriptableRenderPass Setup(int _index,GPlane _planeData, IEnumerable< SRC_ReflectionPlane> _planes,ScriptableRenderer _renderer)
@@ -145,6 +146,7 @@ namespace Rendering.Pipeline
         public sealed override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get("Generate Reflection Texture");
+            
             GenerateTarget(context,ref renderingData,cmd,m_ResultDescriptor,m_ColorResult, m_Data,ref m_PlaneData);
             if (m_Data.m_EnableBlur)
                 m_CoreBlurs.ExecutePostProcessBuffer(cmd, m_ColorResult, m_ReflectionTextureID, m_ResultDescriptor ,m_Data.m_BlurParam); 
@@ -166,7 +168,7 @@ namespace Rendering.Pipeline
         static readonly int ID_Result = Shader.PropertyToID("_Result");
         static readonly int ID_PlaneNormal = Shader.PropertyToID("_PlaneNormal");
         static readonly int ID_PlanePosition = Shader.PropertyToID("_PlanePosition");
-        Int2 m_Kernels;
+        int m_Kernels;
         Int2 m_ThreadGroups;
         private readonly ComputeShader m_ReflectionComputeShader;
         public SRP_PlanarReflection_ScreenSpace(SRP_Reflection _reflection,ComputeShader _reflectionCS) : base(_reflection)
@@ -178,14 +180,14 @@ namespace Rendering.Pipeline
             base.ConfigureColorDescriptor(ref _descriptor, _data);
             _descriptor.enableRandomWrite = true;
             _descriptor.colorFormat = RenderTextureFormat.ARGB32;
-            m_Kernels = new Int2(m_ReflectionComputeShader.FindKernel("Clear"),m_ReflectionComputeShader.FindKernel("Generate"));
+            m_Kernels =m_ReflectionComputeShader.FindKernel("Generate");
             m_ThreadGroups = new Int2(_descriptor.width / 8, _descriptor.height / 8);
         }
         protected override void DoCameraSetup(CommandBuffer cmd, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _target)
         {
             base.DoCameraSetup(cmd, _descriptor, _target);
             ConfigureTarget(_target);
-            // ConfigureClear(ClearFlag.Color,Color.clear);
+            ConfigureClear(ClearFlag.Color,Color.clear);
         }
         protected override void GenerateTarget(ScriptableRenderContext context, ref RenderingData renderingData, CommandBuffer cmd,
             RenderTextureDescriptor _descriptor, RenderTargetIdentifier _target,SRD_PlanarReflectionData _data,ref GPlane _plane)
@@ -195,12 +197,9 @@ namespace Rendering.Pipeline
             cmd.SetComputeVectorParam(m_ReflectionComputeShader, ID_PlanePosition, _plane.distance * _plane.normal);
             cmd.SetComputeVectorParam(m_ReflectionComputeShader, ID_Result_TexelSize, _descriptor.GetTexelSize());
             
-            cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels.m_X, ID_Result, _target);
-            cmd.DispatchCompute(m_ReflectionComputeShader, m_Kernels.m_X, m_ThreadGroups.m_X,m_ThreadGroups.m_Y, 1);
-            
-            cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels.m_Y, ID_Input, m_Renderer.cameraColorTarget);
-            cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels.m_Y, ID_Result, _target);
-            cmd.DispatchCompute(m_ReflectionComputeShader, m_Kernels.m_Y, m_ThreadGroups.m_X,m_ThreadGroups.m_Y, 1);
+            cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels, ID_Input, m_Renderer.cameraColorTarget);
+            cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels, ID_Result, _target);
+            cmd.DispatchCompute(m_ReflectionComputeShader, m_Kernels, m_ThreadGroups.m_X,m_ThreadGroups.m_Y, 1);
         }
         public override void Dispose() { }
     }

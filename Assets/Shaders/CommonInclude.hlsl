@@ -99,7 +99,7 @@ float3 _FrustumCornersRayTL;
 float3 _FrustumCornersRayTR;
 
 float3 GetViewDirWS(float2 uv){return bilinearLerp(_FrustumCornersRayTL, _FrustumCornersRayTR, _FrustumCornersRayBL, _FrustumCornersRayBR, uv);}
-float3 GetPositionWS_Frustum(half2 uv,half depth){ return _WorldSpaceCameraPos + LinearEyeDepth(depth,_ZBufferParams) *  GetViewDirWS(uv);}
+float3 GetPositionWS_Frustum(half2 uv,half depth){ return GetCameraPositionWS() + LinearEyeDepth(depth,_ZBufferParams) *  GetViewDirWS(uv);}
 float3 GetPositionWS_VP(half2 uv,half depth){ return TransformClipToWorld(TransformUVDepthToClipPosition(uv,depth));}
 
 //Normals
