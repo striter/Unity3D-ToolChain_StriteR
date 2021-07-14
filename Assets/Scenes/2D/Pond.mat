@@ -119,6 +119,7 @@ Material:
     - _Cull: 2
     - _Cutoff: 0.5
     - _DepthBuffer: 1
+    - _DepthBufferScale: 1
     - _DepthOffset: 0.42
     - _DepthScale: 1
     - _DetailAlbedoMapScale: 1
@@ -143,6 +144,7 @@ Material:
     - _NDF: 1
     - _OcclusionStrength: 0
     - _Parallax: 0.005
+    - _ParallaxCount: 16
     - _Parallex: 0
     - _ParallexCount: 16
     - _ParallexOffset: 1

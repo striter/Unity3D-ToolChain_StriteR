@@ -17,15 +17,15 @@ Shader "Game/2D/Uber"
 		[ToggleTex(_BACKRIM)][NoScaleOffset]_BackRimTex("Back Rim",2D)="black"{}
     	[Foldout(_BACKRIM)]_RimIntensity("Rim Intensity",Range(0,10))=0.5
     		
-		[Header(Depth)]
-		[ToggleTex(_DEPTHMAP)][NoScaleOffset]_DepthTex("Texure",2D)="white"{}
-		[Foldout(_DEPTHMAP)]_DepthScale("Scale",Range(0.001,.5))=1
-		[Foldout(_DEPTHMAP)]_DepthOffset("Offset",Range(0,1))=.42
-		[Toggle(_DEPTHBUFFER)]_DepthBuffer("Affect Buffer",float)=1
-    	[Foldout(_DEPTHBUFFER)]_DepthBufferScale("Affect Scale",float)=1
-		[Toggle(_PARALLEX)]_Parallex("Parallex",float)=0
-		[Enum(_16,16,_32,32,_64,64,_128,128)]_ParallexCount("Parallex Count",int)=16
-    	
+		 [Header(Depth)]
+		 [ToggleTex(_DEPTHMAP)][NoScaleOffset]_DepthTex("Texure",2D)="white"{}
+		 [Foldout(_DEPTHMAP)]_DepthScale("Scale",Range(0.001,.5))=1
+		 [Foldout(_DEPTHMAP)]_DepthOffset("Offset",Range(0,1))=.42
+		 [Toggle(_DEPTHBUFFER)]_DepthBuffer("Affect Buffer",float)=1
+		 [Foldout(_DEPTHBUFFER)]_DepthBufferScale("Affect Scale",float)=1
+		 [Toggle(_PARALLAX)]_Parallax("Parallax",float)=0
+		 [Enum(_16,16,_32,32,_64,64,_128,128)]_ParallaxCount("Parallax Count",int)=16
+
     	[Header(Wave)]
     	[Toggle(_WAVE)]_Wave("Enable",float)=0
 		_WaveSpeed("Wind Speed",Range(0,5)) = 1
@@ -38,7 +38,7 @@ Shader "Game/2D/Uber"
         [Enum(UnityEngine.Rendering.BlendMode)]_DstBlend("Dst Blend",int)=0
         [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
         [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
-        [Enum(Off,0,Front,1,Back,2)]_Cull("Cull",int)=1
+        [Enum(Off,0,Front,1,Back,2)]_Cull("Cull",int)=2
     }
     SubShader
     {
@@ -50,8 +50,8 @@ Shader "Game/2D/Uber"
 
         HLSLINCLUDE
             #include "../CommonInclude.hlsl"
-			#include "../AdditionalMappingInclude.hlsl"
 			#include "../CommonLightingInclude.hlsl"
+			#include "../Library//ParallaxInclude.hlsl"
             #pragma multi_compile_instancing
             #pragma target 3.5
 
@@ -60,15 +60,14 @@ Shader "Game/2D/Uber"
 			#pragma shader_feature_local _RECEIVESHADOW
 			#pragma shader_feature_local _WAVE
             #pragma shader_feature_local _ALPHACLIP
-			#pragma shader_feature_local _DEPTHMAP
+			#pragma shader_feature_local _PARALLAX
 			#pragma shader_feature_local _DEPTHBUFFER
-			#pragma shader_feature_local _PARALLEX
+			#pragma shader_feature_local _DEPTHMAP
         
             TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
-			TEXTURE2D(_DepthTex);SAMPLER(sampler_DepthTex);
 			TEXTURE2D(_BackRimTex);SAMPLER(sampler_BackRimTex);
 			UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
-				INSTANCING_PROP(float,_AlphaClipRange);
+				INSTANCING_PROP(float,_AlphaClipRange)
 				INSTANCING_PROP(float,_Diffuse)
 				INSTANCING_PROP(float3,_WaveDirection)
 				INSTANCING_PROP(float,_WaveFrequency)
@@ -76,10 +75,6 @@ Shader "Game/2D/Uber"
 				INSTANCING_PROP(float,_WaveStrength)
 				INSTANCING_PROP(float4,_MainTex_ST)
 				INSTANCING_PROP(float4, _Color)
-				INSTANCING_PROP(float,_DepthScale)
-				INSTANCING_PROP(float,_DepthOffset)
-				INSTANCING_PROP(float,_DepthBufferScale)
-				INSTANCING_PROP(int ,_ParallexCount)
 				INSTANCING_PROP(float,_RimIntensity)
 			UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
         
@@ -121,22 +116,6 @@ Shader "Game/2D/Uber"
                 #endif
             }
 
-			void DepthParallex(inout half2 uv,inout float depth,inout float3 positionWS,float3x3 TBNWS,float3 viewDirWS)
-			{
-				#if _DEPTHMAP
-				half depthOffsetOS=0.h;
-				half3 viewDirTS=mul(TBNWS, viewDirWS);
-				uv=ParallexMapping(_DepthTex,sampler_DepthTex, uv,viewDirTS,INSTANCE(_DepthOffset),INSTANCE(_DepthScale),INSTANCE(_ParallexCount),depthOffsetOS);
-				#if _DEPTHBUFFER
-				half3 forwardTS=half3(0.,0.,1.h);
-				half projectParam=dot(forwardTS,viewDirTS);
-				half projectionDistance=depthOffsetOS*INSTANCE(_DepthScale)*step(0.01h,projectParam)* rcp(projectParam);
-				positionWS = positionWS- viewDirWS*projectionDistance*INSTANCE(_DepthBufferScale);
-            	depth=LinearEyeDepthToOutDepth(TransformWorldToLinearEyeDepth(positionWS,UNITY_MATRIX_V));
-				#endif
-				#endif
-			}
-        
             v2f vert (a2v v)
             {
                 v2f o;
@@ -178,8 +157,8 @@ Shader "Game/2D/Uber"
 				half3 lightDirWS=normalize(_MainLightPosition.xyz);
             	half3 positionWS=i.positionWS;
             	depth=i.positionCS.z;
-            	DepthParallex(i.uv,depth,positionWS,TBNWS,viewDirWS);
-                float4 col = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv)*_Color;
+            	ParallaxUVMapping(i.uv,depth,positionWS,TBNWS,viewDirWS);
+                float4 col = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv)*INSTANCE(_Color);
             	AlphaClip(col.a);
             	#ifndef _LIGHTING
             		return col;
@@ -219,7 +198,6 @@ Shader "Game/2D/Uber"
             HLSLPROGRAM
 			#pragma vertex ShadowVertex
 			#pragma fragment ShadowFragment
-			#pragma multi_compile_instancing
 				
 			struct a2fSC
 			{
@@ -261,7 +239,6 @@ Shader "Game/2D/Uber"
 			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment ShadowFragment
-			#pragma multi_compile_instancing
 				
 			float4 ShadowFragment(v2f i,out float depth:SV_DEPTH) :SV_TARGET
 			{
@@ -271,7 +248,7 @@ Shader "Game/2D/Uber"
 				half3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
 				half3 viewDirWS=normalize(i.viewDirWS);
 				depth=i.positionCS.z;
-            	DepthParallex(i.uv,depth,i.positionWS,TBNWS,viewDirWS);
+            	ParallaxUVMapping(i.uv,depth,i.positionWS,TBNWS,viewDirWS);
 				AlphaClip(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).a*INSTANCE(_Color.a));
 				return 0;
 			}

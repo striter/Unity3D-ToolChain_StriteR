@@ -22,7 +22,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Hole01
   m_Shader: {fileID: 4800000, guid: 623a8fafd99f201468235763d654b43a, type: 3}
-  m_ShaderKeywords: _DEPTHBUFFER _DEPTHMAP _LIGHTING _PARALLEX _RECEIVESHADOW
+  m_ShaderKeywords: _DEPTHBUFFER _DEPTHMAP _LIGHTING _PARALLAX _PARALLEX _RECEIVESHADOW
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -112,8 +112,9 @@ Material:
     - _Cull: 2
     - _Cutoff: 0.5
     - _DepthBuffer: 1
+    - _DepthBufferScale: 2
     - _DepthOffset: 0
-    - _DepthScale: 0.072
+    - _DepthScale: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _Diffuse: 0.5
@@ -125,7 +126,8 @@ Material:
     - _Lighting: 1
     - _Metallic: 0
     - _OcclusionStrength: 1
-    - _Parallax: 0.005
+    - _Parallax: 1
+    - _ParallaxCount: 128
     - _Parallex: 1
     - _ParallexCount: 16
     - _QueueOffset: 0
