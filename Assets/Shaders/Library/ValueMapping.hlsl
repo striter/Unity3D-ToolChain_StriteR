@@ -91,6 +91,15 @@ float max(float3 target)
 {
     return max(max(target.x, target.y), target.z);
 }
+half min(half2 target)
+{
+    return min(target.x, target.y);
+}
+half max(half2 target)
+{
+    return max(target.x, target.y);
+}
+
 half min(half3 target)
 {
     return min(min(target.x, target.y), target.z);

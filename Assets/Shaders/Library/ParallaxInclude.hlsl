@@ -48,8 +48,8 @@ void ParallaxUVMapping(inout half2 uv,inout float depth,inout float3 positionWS,
 
     half3 viewDirTS=mul(TBNWS, viewDirWS);
     half3 viewDir=normalize(viewDirTS);
-    viewDir.z+=INSTANCE(_DepthOffset);
-    half2 uvOffset=viewDir.xy/viewDir.z*INSTANCE(_DepthScale);
+    viewDir.z+=UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_Parallax,_DepthOffset);
+    half2 uvOffset=viewDir.xy/viewDir.z*UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_Parallax,_DepthScale);
     half marchDelta=saturate(dot(half3(0.h,0.h,1.h),viewDirTS));
     half parallax=0.h;
     
@@ -62,8 +62,8 @@ void ParallaxUVMapping(inout half2 uv,inout float depth,inout float3 positionWS,
     #endif
     
     #if _DEPTHBUFFER
-    half projectionDistance=parallax*INSTANCE(_DepthScale)*step(0.01h,marchDelta)* rcp(marchDelta);
-    positionWS = positionWS- viewDirWS*projectionDistance*INSTANCE(_DepthBufferScale);
+    half projectionDistance=parallax*UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_Parallax,_DepthScale)*step(0.01h,marchDelta)* rcp(marchDelta);
+    positionWS = positionWS- viewDirWS*projectionDistance*UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_Parallax,_DepthBufferScale);
     depth=LinearEyeDepthToOutDepth(TransformWorldToLinearEyeDepth(positionWS,UNITY_MATRIX_V));
     #endif
     

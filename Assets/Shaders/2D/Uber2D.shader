@@ -3,13 +3,19 @@ Shader "Game/2D/Uber"
     Properties
     {
     	[Header(Albedo)]
-        _MainTex ("Texture", 2D) = "white" {}
+        [NoScaleOffset]_MainTex ("Texture", 2D) = "white" {}
+		[ToggleTex(_NORMALMAP)][NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
     	_Color("Color Tint",Color)=(1,1,1,1)
         
-    	[Header(Alpha)]
-        [Toggle(_ALPHACLIP)]_AlphaClip("Clip",float)=0
-        _AlphaClipRange("Range",Range(0.01,1))=0.01
-        
+    	[Header(Shape)]
+    	[Toggle(_ATLAS)]_Atlas("Atlas",float)=0
+    	[Foldout(_ATLAS)]_AtlasWidth("Width",int)=0
+    	[Foldout(_ATLAS)]_AtlasHeight("Height",int)=0
+    	[Foldout(_ATLAS)]_AtlasIndex("Index",int)=0
+        [Toggle(_ALPHACLIP)]_AlphaClip("Alpha Clip",float)=0
+        [Foldout(_ALPHACLIP)]_AlphaClipRange("Range",Range(0.01,1))=0.01
+    	[Toggle(_GRID)]_Grid("Grid WS(Global)",float)=0
+                
     	[Header(Lighting)]
     	[Toggle(_LIGHTING)]_Lighting("Enable",float)=1
     	_Diffuse("Diffuse",Range(0,1))=.5
@@ -17,14 +23,14 @@ Shader "Game/2D/Uber"
 		[ToggleTex(_BACKRIM)][NoScaleOffset]_BackRimTex("Back Rim",2D)="black"{}
     	[Foldout(_BACKRIM)]_RimIntensity("Rim Intensity",Range(0,10))=0.5
     		
-		 [Header(Depth)]
-		 [ToggleTex(_DEPTHMAP)][NoScaleOffset]_DepthTex("Texure",2D)="white"{}
-		 [Foldout(_DEPTHMAP)]_DepthScale("Scale",Range(0.001,.5))=1
-		 [Foldout(_DEPTHMAP)]_DepthOffset("Offset",Range(0,1))=.42
-		 [Toggle(_DEPTHBUFFER)]_DepthBuffer("Affect Buffer",float)=1
-		 [Foldout(_DEPTHBUFFER)]_DepthBufferScale("Affect Scale",float)=1
-		 [Toggle(_PARALLAX)]_Parallax("Parallax",float)=0
-		 [Enum(_16,16,_32,32,_64,64,_128,128)]_ParallaxCount("Parallax Count",int)=16
+		[Header(Depth)]
+		[ToggleTex(_DEPTHMAP)][NoScaleOffset]_DepthTex("Texure",2D)="white"{}
+		[Foldout(_DEPTHMAP)]_DepthScale("Scale",Range(0.001,.5))=1
+		[Foldout(_DEPTHMAP)]_DepthOffset("Offset",Range(0,1))=.42
+		[Toggle(_DEPTHBUFFER)]_DepthBuffer("Affect Buffer",float)=1
+		[Foldout(_DEPTHBUFFER)]_DepthBufferScale("Affect Scale",float)=1
+		[Toggle(_PARALLAX)]_Parallax("Parallax",float)=0
+		[Enum(_16,16,_32,32,_64,64,_128,128)]_ParallaxCount("Parallax Count",int)=16
 
     	[Header(Wave)]
     	[Toggle(_WAVE)]_Wave("Enable",float)=0
@@ -51,20 +57,25 @@ Shader "Game/2D/Uber"
         HLSLINCLUDE
             #include "../CommonInclude.hlsl"
 			#include "../CommonLightingInclude.hlsl"
-			#include "../Library//ParallaxInclude.hlsl"
+			#include "../Library/ParallaxInclude.hlsl"
+			#include "../Library/GridInclude.hlsl"
             #pragma multi_compile_instancing
             #pragma target 3.5
 
 			#pragma shader_feature_local _LIGHTING
+			#pragma shader_feature_local _NORMALMAP
 			#pragma shader_feature_local _BACKRIM
 			#pragma shader_feature_local _RECEIVESHADOW
 			#pragma shader_feature_local _WAVE
-            #pragma shader_feature_local _ALPHACLIP
+			#pragma shader_feature_local _ALPHACLIP
 			#pragma shader_feature_local _PARALLAX
 			#pragma shader_feature_local _DEPTHBUFFER
 			#pragma shader_feature_local _DEPTHMAP
+			#pragma shader_feature_local _ATLAS
+			#pragma shader_feature_local _GRID
         
             TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
+			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
 			TEXTURE2D(_BackRimTex);SAMPLER(sampler_BackRimTex);
 			UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 				INSTANCING_PROP(float,_AlphaClipRange)
@@ -73,9 +84,11 @@ Shader "Game/2D/Uber"
 				INSTANCING_PROP(float,_WaveFrequency)
 				INSTANCING_PROP(float,_WaveSpeed)
 				INSTANCING_PROP(float,_WaveStrength)
-				INSTANCING_PROP(float4,_MainTex_ST)
 				INSTANCING_PROP(float4, _Color)
 				INSTANCING_PROP(float,_RimIntensity)
+				INSTANCING_PROP(int,_AtlasWidth)
+				INSTANCING_PROP(int,_AtlasHeight)
+				INSTANCING_PROP(int,_AtlasIndex)
 			UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
         
             struct a2v
@@ -108,7 +121,17 @@ Shader "Game/2D/Uber"
 					return positionWS;
 				#endif
 			}
-        
+			half2 Atlas(half2 uv)
+			{
+				#if _ATLAS
+					uint2 atlasSize=uint2(INSTANCE( _AtlasWidth),INSTANCE(_AtlasHeight));
+					half2 scale=1.0h/atlasSize;
+					int index=INSTANCE(_AtlasIndex);
+					half2 tiling=half2( index%atlasSize.x,atlasSize.y-1u- index/atlasSize.y);
+					uv=uv*scale+scale*tiling;
+				#endif
+				return uv;
+			}        
             void AlphaClip(half alpha)
             {
                 #if _ALPHACLIP
@@ -125,9 +148,9 @@ Shader "Game/2D/Uber"
 				positionWS=Wave(positionWS);
 				o.positionCS=TransformWorldToHClip(positionWS);
             	o.positionWS=positionWS;
-				o.uv = TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
-				o.normalWS=normalize(mul((float3x3)unity_ObjectToWorld,v.normalOS));
-				o.tangentWS=normalize(mul((float3x3)unity_ObjectToWorld,v.tangentOS.xyz));
+				o.uv = Atlas(v.uv);
+				o.normalWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.normalOS));
+				o.tangentWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.tangentOS.xyz));
 				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
 				o.viewDirWS=GetCameraPositionWS()-o.positionWS;
                 return o;
@@ -158,6 +181,12 @@ Shader "Game/2D/Uber"
             	half3 positionWS=i.positionWS;
             	depth=i.positionCS.z;
             	ParallaxUVMapping(i.uv,depth,positionWS,TBNWS,viewDirWS);
+
+				#if _NORMALMAP
+				half3 normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv));
+				normalWS=normalize(mul(transpose(TBNWS), normalTS));
+				#endif
+            	
                 float4 col = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv)*INSTANCE(_Color);
             	AlphaClip(col.a);
             	#ifndef _LIGHTING
@@ -187,7 +216,12 @@ Shader "Game/2D/Uber"
 			        Light light = GetAdditionalLight(lightIndex,i.positionWS);
 			    	finalCol+=albedo* light.distanceAttenuation*light.shadowAttenuation*light.color;
 			    }
-                return float4(finalCol,alpha);
+
+            	#if _GRID
+            	finalCol=MixGrid(positionWS,finalCol);
+				#endif
+            	
+            	return float4(finalCol,alpha);
             }
             ENDHLSL
         }
@@ -220,7 +254,7 @@ Shader "Game/2D/Uber"
 				float3 normalWS=TransformObjectToWorldNormal(v.normalOS);
 				positionWS=Wave(positionWS);
 				o.positionCS=ShadowCasterCS(positionWS,normalWS);
-				o.uv=TRANSFORM_TEX_INSTANCE( v.uv,_MainTex);
+				o.uv=Atlas( v.uv);
 				return o;
 			}
 

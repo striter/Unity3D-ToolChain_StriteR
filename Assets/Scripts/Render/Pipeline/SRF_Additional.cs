@@ -27,7 +27,6 @@ namespace Rendering.Pipeline
         [HideInInspector] public ComputeShader m_CameraReflectionComputeShader;
         [MFoldout(nameof(m_CameraReflectionTexture), true)] public SRD_PlanarReflectionData m_PlanarReflectionData= SRD_PlanarReflectionData.Default();
         
-        SRP_OpaqueBlurTexture m_OpaqueBlurPass;
         SRP_NormalTexture m_NormalPass;
         SRP_ComponentBasedPostProcess m_PostProcesssing_Opaque;
         SRP_ComponentBasedPostProcess m_PostProcesssing_AfterAll;
@@ -39,7 +38,6 @@ namespace Rendering.Pipeline
             if(m_CameraReflectionComputeShader==null)
                 m_CameraReflectionComputeShader = UnityEditor.AssetDatabase.LoadAssetAtPath<ComputeShader>("Assets/Shaders/Compute/PlanarReflection.compute");
 #endif
-            m_OpaqueBlurPass = new SRP_OpaqueBlurTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox };
             m_NormalPass = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox};
             m_PostProcesssing_Opaque = new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox };
             m_PostProcesssing_AfterAll = new SRP_ComponentBasedPostProcess() {  renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing };
@@ -48,7 +46,6 @@ namespace Rendering.Pipeline
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            m_OpaqueBlurPass.Dispose();
             m_NormalPass.Dispose();
             m_PostProcesssing_Opaque.Dispose();
             m_PostProcesssing_AfterAll.Dispose();
@@ -60,24 +57,11 @@ namespace Rendering.Pipeline
                 return;
 
             bool screenParams = m_ScreenParams;
-            bool opaqueBlurTexture = m_OpaqueBlurTexture;
             bool cameraNormalTexture = m_NormalTexture;
             bool cameraReflectionTexture = m_CameraReflectionTexture;
 
-            if(!renderingData.cameraData.isSceneViewCamera)
-            {
-                if (!renderingData.cameraData.camera.gameObject.TryGetComponent(out SRD_AdditionalData data))
-                    data = renderingData.cameraData.camera.gameObject.AddComponent<SRD_AdditionalData>();
-
-                screenParams = data.m_FrustumCornersRay.IsEnabled(screenParams);
-                opaqueBlurTexture = data.m_OpaqueBlurTexture.IsEnabled(opaqueBlurTexture);
-                cameraNormalTexture = data.m_NormalTexture.IsEnabled(cameraNormalTexture);
-            }
-
             if (screenParams)
                 UpdateScreenParams(ref renderingData);
-            if (opaqueBlurTexture)
-                renderer.EnqueuePass(m_OpaqueBlurPass.Setup(renderer,m_BlurParams));
             if (cameraNormalTexture)
                 renderer.EnqueuePass(m_NormalPass);
             if (cameraReflectionTexture)

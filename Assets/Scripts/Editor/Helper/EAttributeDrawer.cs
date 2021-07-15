@@ -52,7 +52,7 @@ namespace TEditor
             return _attribute.m_FieldsMatches.All(fieldMatch => fields.Any(field => {
                 if (field.Key.Name != fieldMatch.Key)
                     return false;
-                bool equals = fieldMatch.Value == null ? field.Value.Equals(null) : fieldMatch.Value.Contains(field.Value);
+                bool equals = fieldMatch.Value?.Contains(field.Value) ?? field.Value is null;
                 return fold ? !equals : equals;
             }));
         }
@@ -62,9 +62,10 @@ namespace TEditor
         public bool OnGUIAttributePropertyCheck(Rect _position, SerializedProperty _property, out T _targetAttribute, params SerializedPropertyType[] _checkTypes)
         {
             _targetAttribute = null;
-            if (!_checkTypes.Any(p => _property.propertyType == p))
+            if (_checkTypes.All(p => _property.propertyType != p))
             {
-                EditorGUI.LabelField(_position, string.Format("<Color=#FF0000>Attribute For {0} Only!</Color>", _checkTypes.ToString('|', type => type.ToString())), UEGUIStyle_Window.m_TitleLabel);
+                EditorGUI.LabelField(_position,
+                    $"<Color=#FF0000>Attribute For {_checkTypes.ToString('|', type => type.ToString())} Only!</Color>", UEGUIStyle_Window.m_TitleLabel);
                 return false;
             }
             _targetAttribute = attribute as T;
