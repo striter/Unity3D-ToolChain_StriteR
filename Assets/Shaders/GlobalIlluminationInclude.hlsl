@@ -18,7 +18,7 @@ sampler2D _CameraReflectionTexture3;
 
 half4 IndirectBRDFPlanarSpecular(half4 positionHCS, half3 normalTS)
 {
-    half2 screenUV=TransformHClipToScreenUV(positionHCS);
+    half2 screenUV=TransformHClipToNDC(positionHCS);
     screenUV += normalTS.xy * _CameraReflectionNormalDistort;
     [branch]
     switch (_CameraReflectionTextureIndex)

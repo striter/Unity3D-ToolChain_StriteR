@@ -62,7 +62,7 @@ float3 TransformUVDepthToClipPosition(float2 _uv,float _depth)
     #endif
     return float3(uv,deviceDepth);
 }
-half2 TransformHClipToScreenUV(float4 _hClip)
+half2 TransformHClipToNDC(float4 _hClip)
 {
     half2 uv=_hClip.xy*rcp(_hClip.w);
     uv=uv*.5h+.5h;

@@ -72,6 +72,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _NormalTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -104,6 +108,10 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaClipRange: 1
+    - _Atlas: 0
+    - _AtlasHeight: 0
+    - _AtlasIndex: 0
+    - _AtlasWidth: 0
     - _BillBoard: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -123,6 +131,7 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _Grid: 0
     - _Lighting: 1
     - _Metallic: 0
     - _OcclusionStrength: 1

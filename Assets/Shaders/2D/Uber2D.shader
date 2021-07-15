@@ -26,7 +26,6 @@ Shader "Game/2D/Uber"
 		[Header(Depth)]
 		[ToggleTex(_DEPTHMAP)][NoScaleOffset]_DepthTex("Texure",2D)="white"{}
 		[Foldout(_DEPTHMAP)]_DepthScale("Scale",Range(0.001,.5))=1
-		[Foldout(_DEPTHMAP)]_DepthOffset("Offset",Range(0,1))=.42
 		[Toggle(_DEPTHBUFFER)]_DepthBuffer("Affect Buffer",float)=1
 		[Foldout(_DEPTHBUFFER)]_DepthBufferScale("Affect Scale",float)=1
 		[Toggle(_PARALLAX)]_Parallax("Parallax",float)=0
