@@ -9,8 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UberPBR
   m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
-  m_ShaderKeywords: _AOMAP _DEPTHMAP _DETAILNORMALMAP _F_IMPLICIT _F_SCHLICK _GSF_COOKTORRANCE
-    _NDF_GGX _NORMALMAP _PARALLEX _PARALLEX_STEEP _PBRMAP _VF_GGX
+  m_ShaderKeywords: _AOMAP _DEPTHMAP _F_IMPLICIT _F_SCHLICK _GSF_COOKTORRANCE _NDF_GGX
+    _NORMALMAP _PARALLAX _PARALLEX _PARALLEX_STEEP _PBRMAP _VF_GGX
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -49,7 +49,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailNormalTex:
-        m_Texture: {fileID: 2800000, guid: cb9a6916db9405a4891180cbae34cc9f, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
@@ -119,8 +119,9 @@ Material:
     - _Cull: 2
     - _Cutoff: 0.5
     - _DepthBuffer: 0
+    - _DepthBufferScale: 1
     - _DepthOffset: 1
-    - _DepthScale: 0.2
+    - _DepthScale: 0.024
     - _DetailAlbedoMapScale: 1
     - _DetailBlendMode: 3
     - _DetailNormalMapScale: 1
@@ -142,7 +143,8 @@ Material:
     - _Metallic: 0.1
     - _NDF: 4
     - _OcclusionStrength: 0
-    - _Parallax: 0.005
+    - _Parallax: 1
+    - _ParallaxCount: 32
     - _Parallex: 1
     - _ParallexCount: 128
     - _ParallexOffset: 1

@@ -138,7 +138,6 @@ GameObject:
   - component: {fileID: 15725977}
   - component: {fileID: 15725974}
   - component: {fileID: 15725976}
-  - component: {fileID: 15725975}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -234,22 +233,6 @@ MonoBehaviour:
       m_Angle: -0.34
       m_Vector: {x: 0, y: 0}
   m_SceneViewPreview: 1
---- !u!114 &15725975
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 15725970}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a12404f1e1dc7b428e0b1fb7a5bba66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_FrustumCornersRay: 2
-  m_OpaqueBlurTexture: 2
-  m_NormalTexture: 2
-  m_ReflectionTexture: 2
 --- !u!114 &15725976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -289,7 +272,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 15725970}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e24f8465e5911194a9d11d5acb09953c, type: 3}
   m_Name: 
@@ -3416,20 +3399,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c85af998dd99edf45b824a71f34e3c08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ReflectionType: 0
-  m_DownSample: 1
   m_PlaneOffset: 0
   m_NormalDistort: 0.2
-  m_Sample: 4
-  m_IncludeTransparent: 0
-  m_EnableBlur: 0
-  m_BlurParam:
-    m_BlurType: 3
-    m_BlurSize: 0.36
-    m_Iteration: 3
-    m_DownSample: 1
-    m_Angle: 0
-    m_Vector: {x: 0.5, y: 0.5}
 --- !u!1 &1806464936
 GameObject:
   m_ObjectHideFlags: 0

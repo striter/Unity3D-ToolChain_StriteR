@@ -1,4 +1,3 @@
-#pragma kernel Clear
 #pragma kernel Generate
 
 #include "../CommonInclude.hlsl"
@@ -35,12 +34,6 @@ void ReflectionMapping(float2 uv)
 // #endif
             _Result[resultIDM]= float4(_Input.SampleLevel(sampler_PointClamp, uv, 0).rgb,1);
     }
-}
-[numthreads(8, 8, 1)]
-void Clear(uint2 id : SV_DispatchThreadID)
-{
-    // _Result[id.xy] = float4( 0.,0.,0.,Z_END);
-     _Result[id.xy] = 0.;
 }
 [numthreads(8, 8, 1)]
 void Generate(uint2 id : SV_DispatchThreadID)

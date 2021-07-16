@@ -3962,20 +3962,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c85af998dd99edf45b824a71f34e3c08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ReflectionType: 0
-  m_DownSample: 1
   m_PlaneOffset: 0
   m_NormalDistort: 0.2
-  m_Sample: 4
-  m_IncludeTransparent: 0
-  m_EnableBlur: 1
-  m_BlurParam:
-    m_BlurType: 3
-    m_BlurSize: 2.5
-    m_Iteration: 3
-    m_DownSample: 1
-    m_Angle: 0
-    m_Vector: {x: 0.5, y: 0.5}
 --- !u!1 &814280861
 GameObject:
   m_ObjectHideFlags: 0
@@ -9876,7 +9864,6 @@ GameObject:
   - component: {fileID: 1604089975}
   - component: {fileID: 1604089973}
   - component: {fileID: 1604089977}
-  - component: {fileID: 1604089978}
   - component: {fileID: 1604089979}
   m_Layer: 0
   m_Name: CameraController
@@ -10044,22 +10031,6 @@ MonoBehaviour:
     m_NoiseSpeedX: 0.1
     m_NoiseSpeedY: 0.1
   m_SceneViewPreview: 1
---- !u!114 &1604089978
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1604089969}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a12404f1e1dc7b428e0b1fb7a5bba66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_FrustumCornersRay: 2
-  m_OpaqueBlurTexture: 2
-  m_NormalTexture: 2
-  m_ReflectionTexture: 2
 --- !u!114 &1604089979
 MonoBehaviour:
   m_ObjectHideFlags: 0
