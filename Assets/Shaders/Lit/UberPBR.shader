@@ -14,6 +14,7 @@
 		[Fold(_PBRMAP)]_Glossiness("Glossiness",Range(0,1))=1
         [Fold(_PBRMAP)]_Metallic("Metalness",Range(0,1))=0
 		[Header(Roughness.Metallic.AO)]
+		[ToggleTex(_MATCAP)] [NoScaleOffset]_Matcap("Mat Cap",2D)="white"{}
 		[ToggleTex(_PBRMAP)] [NoScaleOffset]_PBRTex("PBR Tex",2D)="white"{}
         [KeywordEnum(BlinnPhong,CookTorrance,Beckmann,Gaussian,GGX,TrowbridgeReitz,Anisotropic_TrowbridgeReitz,Anisotropic_Ward)]_NDF("Normal Distribution:",float) = 2
 		[Foldout(_NDF_ANISOTROPIC_TROWBRIDGEREITZ,_NDF_ANISOTROPIC_WARD)]_AnisoTropicValue("Anisotropic Value:",Range(0,1))=1
@@ -68,12 +69,14 @@
 			#pragma shader_feature_local _PARALLAX
 			#pragma shader_feature_local _DEPTHBUFFER
 			#pragma shader_feature_local _DEPTHMAP
+			#pragma shader_feature_local _MATCAP
             
 			#pragma multi_compile_local _NDF_BLINNPHONG _NDF_COOKTORRANCE _NDF_BECKMANN _NDF_GAUSSIAN _NDF_GGX _NDF_TROWBRIDGEREITZ _NDF_ANISOTROPIC_TROWBRIDGEREITZ _NDF_ANISOTROPIC_WARD
 			#pragma multi_compile_local _VF_BLINNPHONG _VF_GGX
 		
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_PBRTex);SAMPLER(sampler_PBRTex);
+			TEXTURE2D(_Matcap);SAMPLER(sampler_Matcap);
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
 			TEXTURE2D(_DetailNormalTex);SAMPLER(sampler_DetailNormalTex);
 			UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
@@ -138,12 +141,12 @@
 				ParallaxUVMapping(baseUV,depth,positionWS,TBNWS,viewDirWS);
 				
 				#if _NORMALMAP
-				normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
-				#if _DETAILNORMALMAP
-				half3 detailNormalTS= DecodeNormalMap(SAMPLE_TEXTURE2D(_DetailNormalTex,sampler_DetailNormalTex,i.uv.zw));
-				normalTS=BlendNormal(normalTS,detailNormalTS,INSTANCE(_DetailBlendMode));
-				#endif
-				normalWS=normalize(mul(transpose(TBNWS), normalTS));
+					normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
+					#if _DETAILNORMALMAP
+						half3 detailNormalTS= DecodeNormalMap(SAMPLE_TEXTURE2D(_DetailNormalTex,sampler_DetailNormalTex,i.uv.zw));
+						normalTS=BlendNormal(normalTS,detailNormalTS,INSTANCE(_DetailBlendMode));
+					#endif
+					normalWS=normalize(mul(transpose(TBNWS), normalTS));
 				#endif
 				
 				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV)*INSTANCE(_Color);
@@ -153,10 +156,10 @@
 				half metallic=INSTANCE(_Metallic);
 				half ao=1.h;
 				#if _PBRMAP
-				half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
-				glossiness=1.h-mix.r;
-				metallic=mix.g;
-				ao=mix.b;
+					half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
+					glossiness=1.h-mix.r;
+					metallic=mix.g;
+					ao=mix.b;
 				#endif
 
 				BRDFSurface surface=InitializeBRDFSurface(albedo,glossiness,metallic,ao,normalWS,tangentWS,viewDirWS);
@@ -165,12 +168,18 @@
 				half3 lightCol=_MainLightColor.rgb;
 				half atten=MainLightRealtimeShadow(TransformWorldToShadowCoord(positionWS));
 				
+				#if _MATCAP
+					half2 matcapUV=half2(dot(UNITY_MATRIX_V[0],normalWS),dot(UNITY_MATRIX_V[1],normalWS));
+					matcapUV=matcapUV*.5h+.5h;
+					lightCol=SAMPLE_TEXTURE2D(_Matcap,sampler_Matcap,matcapUV);
+				#endif
+				
 				half3 brdfColor=0;
 				half3 indirectDiffuse=IndirectBRDFDiffuse(surface.normal);
 				half3 indirectSpecular=IndirectBRDFSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
 				brdfColor+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
-
 				BRDFLight light=InitializeBRDFLight(surface,lightDir,lightCol,atten,INSTANCE(_AnisoTropicValue));
+				
 				brdfColor+=BRDFLighting(surface,light);
 				return half4(brdfColor,1.h);
 			}
