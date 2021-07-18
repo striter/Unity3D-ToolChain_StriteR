@@ -169,7 +169,7 @@
 				half atten=MainLightRealtimeShadow(TransformWorldToShadowCoord(positionWS));
 				
 				#if _MATCAP
-					half2 matcapUV=half2(dot(UNITY_MATRIX_V[0],normalWS),dot(UNITY_MATRIX_V[1],normalWS));
+					half2 matcapUV=half2(dot(UNITY_MATRIX_V[0].xyz,normalWS),dot(UNITY_MATRIX_V[1].xyz,normalWS));
 					matcapUV=matcapUV*.5h+.5h;
 					lightCol=SAMPLE_TEXTURE2D(_Matcap,sampler_Matcap,matcapUV);
 				#endif

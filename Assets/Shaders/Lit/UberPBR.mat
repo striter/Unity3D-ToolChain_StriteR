@@ -10,7 +10,7 @@ Material:
   m_Name: UberPBR
   m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
   m_ShaderKeywords: _AOMAP _DEPTHMAP _F_IMPLICIT _F_SCHLICK _GSF_COOKTORRANCE _NDF_GGX
-    _NORMALMAP _PARALLEX _PARALLEX_STEEP _PBRMAP _VF_GGX
+    _NORMALMAP _PARALLAX _PBRMAP _VF_GGX
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -114,6 +114,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - : 1
     - _AlphaClip: 0
     - _AnisoTropicValue: 1
     - _Blend: 0
@@ -125,7 +126,7 @@ Material:
     - _DepthBuffer: 0
     - _DepthBufferScale: 3
     - _DepthOffset: 1
-    - _DepthScale: 0.005
+    - _DepthScale: 0.009
     - _DetailAlbedoMapScale: 1
     - _DetailBlendMode: 3
     - _DetailNormalMapScale: 1
@@ -147,13 +148,9 @@ Material:
     - _Metallic: 0.1
     - _NDF: 4
     - _OcclusionStrength: 0
-    - _Parallax: 0
+    - _Parallax: 1
     - _ParallaxCount: 32
-    - _Parallex: 1
-    - _ParallexCount: 128
-    - _ParallexOffset: 1
-    - _ParallexScale: 0.2
-    - _QueueOffset: 0
+    - _ParalleScale: 0.2
     - _ReceiveShadows: 1
     - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
