@@ -32,7 +32,7 @@
 
 			float4 frag (v2f_img i) : SV_Target
 			{
-				float3 worldPos = GetPositionWS(i.uv);
+				float3 worldPos = TransformNDCToWorld(i.uv);
 				float squareDistance = sqrDistance(_Origin.xyz,worldPos);
 
 				float scan = 1;

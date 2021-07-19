@@ -8,41 +8,30 @@ half4 _MainTex_TexelSize;
 TEXTURE2D( _CameraDepthTexture); SAMPLER(sampler_CameraDepthTexture);
 half4 _CameraDepthTexture_TexelSize;
 
-float4 Sample_MainTex(half2 uv){return  SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv);}
-float Sample_Depth(half2 uv){return SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture,uv).r;}
-float LinearEyeDepthUV(half2 uv){return LinearEyeDepth(Sample_Depth(uv),_ZBufferParams);}
-float Linear01DepthUV(half2 uv){return Linear01Depth(Sample_Depth(uv),_ZBufferParams);}
-
-float3 GetPositionWS(half2 uv,half depth){return GetPositionWS_Frustum(uv,depth);}
-float3 GetPositionWS(half2 uv){return GetPositionWS(uv,Sample_Depth(uv));}
-
-float2 TransformViewToScreenUV(float4 positionVS)
-{
-    float height=2*positionVS.z/_Matrix_V._m11;
-    float width=_ScreenParams.x/_ScreenParams.y *height;
-    return float2(positionVS.x/width,positionVS.y/height)+.5;
-}
-
+float4 SampleMainTex(half2 uv){return  SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv);}
+float SampleRawDepth(half2 uv){return SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture,uv).r;}
+float SampleEyeDepth(half2 uv){return RawToEyeDepth(SampleRawDepth(uv));}
+float Sample01Depth(half2 uv){return RawTo01Depth(SampleRawDepth(uv));}
+float3 TransformNDCToWorld(half2 uv){return TransformNDCToWorld(uv,SampleRawDepth(uv));}
 
 float3 WorldSpaceNormalFromDepth(half2 uv,inout float3 positionWS,inout half depth)
 {
-    depth=Sample_Depth(uv);
-    positionWS=GetPositionWS(uv,depth);
-    float3 position1=GetPositionWS(uv+_MainTex_TexelRight);
-    float3 position2=GetPositionWS(uv+_MainTex_TexelUp);
+    depth=SampleRawDepth(uv);
+    positionWS=TransformNDCToWorld(uv,depth);
+    float3 position1=TransformNDCToWorld(uv+_MainTex_TexelRight);
+    float3 position2=TransformNDCToWorld(uv+_MainTex_TexelUp);
     return normalize(cross(position2-positionWS,position1-positionWS));
 }
 half3 ClipSpaceNormalFromDepth(half2 uv)
 {
-    half depth = LinearEyeDepthUV(uv);
-    half depth1 = LinearEyeDepthUV(uv + _MainTex_TexelRight);
-    half depth2 = LinearEyeDepthUV(uv + _MainTex_TexelUp);
+    half depth = SampleEyeDepth(uv);
+    half depth1 = SampleEyeDepth(uv + _MainTex_TexelRight);
+    half depth2 = SampleEyeDepth(uv + _MainTex_TexelUp);
 				
     half3 p1 = half3(_MainTex_TexelRight, depth1 - depth);
     half3 p2 = half3(_MainTex_TexelUp, depth2 - depth);
     return normalize(cross(p1, p2));
 }
-
 
 half luminance(half3 color){ return 0.299h * color.r + 0.587h * color.g + 0.114h * color.b; }
 

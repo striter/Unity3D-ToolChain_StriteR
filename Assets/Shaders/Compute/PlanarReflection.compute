@@ -16,7 +16,7 @@ SamplerState sampler_PointClamp;
 void ReflectionMapping(float2 uv)
 {
     float depth = _CameraDepthTexture.SampleLevel(sampler_PointClamp, uv, 0);
-    float3 positionWS=GetPositionWS_VP(uv,depth);
+    float3 positionWS=TransformNDCToWorld_VPMatrix(uv,depth);
     
     float normalProj = dot(positionWS.xyz - _PlanePosition, _PlaneNormal);
     float3 positionWSM = positionWS.xyz - normalProj * _PlaneNormal * 2;

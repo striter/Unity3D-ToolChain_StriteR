@@ -35,6 +35,7 @@ float StrandSpecular(float3 T,float3 N,float3 H,float exponent,float3 shift)
     return dirAtten*pow(sinTH,exponent);
 }
 
+//Caster
 float3 _LightDirection;
 float4 ShadowCasterCS(float3 positionWS, float3 normalWS)
 {
@@ -46,6 +47,15 @@ float4 ShadowCasterCS(float3 positionWS, float3 normalWS)
 #endif
     return positionCS;
 }
+
 #define A2V_SHADOW_CASTER float3 positionOS:POSITION; float3 normalOS:NORMAL
 #define V2F_SHADOW_CASTER float4 positionCS:SV_POSITION
 #define SHADOW_CASTER_VERTEX(v,o) o.positionCS= ShadowCasterCS(TransformObjectToWorld(v.positionOS.xyz),TransformObjectToWorldNormal(v.normalOS))
+
+//Receiver
+float SampleHardShadow(Texture2D _shadowMap,SamplerComparisonState _sampler_Shadowmap,float3 _shadowCoords,float _shadowStrength)
+{
+    real attenuation=SAMPLE_TEXTURE2D_SHADOW(_shadowMap, _sampler_Shadowmap,_shadowCoords);
+    attenuation = LerpWhiteTo(attenuation, _shadowStrength);
+    return BEYOND_SHADOW_FAR(_shadowCoords) ? 1.0 : attenuation;
+}

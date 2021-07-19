@@ -9,20 +9,20 @@
 		[Header(Detail Tex)]
 		[ToggleTex(_DETAILNORMALMAP)]_DetailNormalTex("Normal Tex",2D)="white"{}
 		[Enum(Linear,0,Overlay,1,PartialDerivative,2,UDN,3,Reoriented,4)]_DetailBlendMode("Normal Blend Mode",int)=0
+		[ToggleTex(_MATCAP)] [NoScaleOffset]_Matcap("Mat Cap",2D)="white"{}		[ToggleTex(_PBRMAP)] [NoScaleOffset]_PBRTex("PBR Tex",2D)="white"{}
 		
 		[Header(PBR)]
 		[Fold(_PBRMAP)]_Glossiness("Glossiness",Range(0,1))=1
         [Fold(_PBRMAP)]_Metallic("Metalness",Range(0,1))=0
 		[Header(Roughness.Metallic.AO)]
-		[ToggleTex(_MATCAP)] [NoScaleOffset]_Matcap("Mat Cap",2D)="white"{}
-		[ToggleTex(_PBRMAP)] [NoScaleOffset]_PBRTex("PBR Tex",2D)="white"{}
         [KeywordEnum(BlinnPhong,CookTorrance,Beckmann,Gaussian,GGX,TrowbridgeReitz,Anisotropic_TrowbridgeReitz,Anisotropic_Ward)]_NDF("Normal Distribution:",float) = 2
 		[Foldout(_NDF_ANISOTROPIC_TROWBRIDGEREITZ,_NDF_ANISOTROPIC_WARD)]_AnisoTropicValue("Anisotropic Value:",Range(0,1))=1
 		[KeywordEnum(BlinnPhong,GGX)]_VF("Vsibility * Fresnel:",float)=1
-
+	
 		[Header(Depth)]
 		[ToggleTex(_DEPTHMAP)][NoScaleOffset]_DepthTex("Texure",2D)="white"{}
 		[Foldout(_DEPTHMAP)]_DepthScale("Scale",Range(0.001,.5))=1
+		[Foldout(_DEPTHMAP)]_DepthOffset("Offset",Range(-.5,.5))=0
 		[Toggle(_DEPTHBUFFER)]_DepthBuffer("Affect Buffer",float)=1
 		[Foldout(_DEPTHBUFFER)]_DepthBufferScale("Affect Scale",float)=1
 		[Toggle(_PARALLAX)]_Parallax("Parallax",float)=0
@@ -133,7 +133,7 @@
 				half3 biTangentWS=normalize(i.biTangentWS);
 				half3 tangentWS=normalize(i.tangentWS);
 				half3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
-				half3 viewDirWS=normalize(GetCameraPositionWS()-positionWS );
+				half3 viewDirWS=TransformWorldToViewDir(positionWS,UNITY_MATRIX_V);
 				half3 lightDirWS=normalize(_MainLightPosition.xyz);
 				half3 normalTS=half3(0,0,1);
 				half2 baseUV=i.uv.xy;
@@ -171,15 +171,14 @@
 				#if _MATCAP
 					half2 matcapUV=half2(dot(UNITY_MATRIX_V[0].xyz,normalWS),dot(UNITY_MATRIX_V[1].xyz,normalWS));
 					matcapUV=matcapUV*.5h+.5h;
-					lightCol=SAMPLE_TEXTURE2D(_Matcap,sampler_Matcap,matcapUV);
+					lightCol=SAMPLE_TEXTURE2D(_Matcap,sampler_Matcap,matcapUV).rgb;
 				#endif
-				
 				half3 brdfColor=0;
 				half3 indirectDiffuse=IndirectBRDFDiffuse(surface.normal);
 				half3 indirectSpecular=IndirectBRDFSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
 				brdfColor+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
+
 				BRDFLight light=InitializeBRDFLight(surface,lightDir,lightCol,atten,INSTANCE(_AnisoTropicValue));
-				
 				brdfColor+=BRDFLighting(surface,light);
 				return half4(brdfColor,1.h);
 			}

@@ -44,7 +44,7 @@ Shader "Game/Unlit/CubeSample"
 
                 float4 positionVS = TransformObjectToView(sdfPosOS);
                 positionVS.xyz/=positionVS.w;
-                _depth=LinearEyeDepthToOutDepth(-positionVS.z);
+                _depth=EyeToRawDepth(-positionVS.z);
                 return sdfPosOS-offset;
             }
         ENDHLSL

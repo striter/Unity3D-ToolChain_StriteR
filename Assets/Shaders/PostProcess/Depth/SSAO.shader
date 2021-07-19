@@ -45,14 +45,14 @@
 						half2 sampleUV;
 						half sampleDepth;
 						TransformHClipToUVDepth(mul(_Matrix_VP, float4(sampleWS,1)),sampleUV,sampleDepth);
-						float depthOffset =  TransformWorldToLinearEyeDepth(sampleWS,_Matrix_V)-LinearEyeDepthUV(sampleUV);
+						float depthOffset =  TransformWorldToEyeDepth(sampleWS,_Matrix_V)-SampleEyeDepth(sampleUV);
 						float depthSample=saturate(depthOffset/_Radius)*step(depthOffset,_Bias);
 						occlusion+=depthSample;
 					}
 					occlusion/=_SampleCount;
 					occlusion = saturate(occlusion  * _Intensity);
 					occlusion*=step(HALF_MIN,abs(depth-Z_END));		//Clip Skybox
-					return lerp(Sample_MainTex(i.uv),_AOColor, occlusion);
+					return lerp(SampleMainTex(i.uv),_AOColor, occlusion);
 				}
 				ENDHLSL
 		}

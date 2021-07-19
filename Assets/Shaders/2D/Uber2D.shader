@@ -5,7 +5,7 @@ Shader "Game/2D/Uber"
     	[Header(Albedo)]
         [NoScaleOffset]_MainTex ("Texture", 2D) = "white" {}
 		[ToggleTex(_NORMALMAP)][NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
-    	_Color("Color Tint",Color)=(1,1,1,1)
+    	[HDR]_Color("Color Tint",Color)=(1,1,1,1)
         
     	[Header(Shape)]
     	[Toggle(_ATLAS)]_Atlas("Atlas",float)=0
@@ -26,6 +26,7 @@ Shader "Game/2D/Uber"
 		[Header(Depth)]
 		[ToggleTex(_DEPTHMAP)][NoScaleOffset]_DepthTex("Texure",2D)="white"{}
 		[Foldout(_DEPTHMAP)]_DepthScale("Scale",Range(0.001,.5))=1
+		[Foldout(_DEPTHMAP)]_DepthOffset("Offset",Range(-.5,.5))=0
 		[Toggle(_DEPTHBUFFER)]_DepthBuffer("Affect Buffer",float)=1
 		[Foldout(_DEPTHBUFFER)]_DepthBufferScale("Affect Scale",float)=1
 		[Toggle(_PARALLAX)]_Parallax("Parallax",float)=0
@@ -151,7 +152,9 @@ Shader "Game/2D/Uber"
 				o.normalWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.normalOS));
 				o.tangentWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.tangentOS.xyz));
 				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
-				o.viewDirWS=GetCameraPositionWS()-o.positionWS;
+				o.viewDirWS= GetCameraPositionWS()-o.positionWS;
+				
+				o.viewDirWS=TransformWorldToViewDir(o.positionWS,UNITY_MATRIX_V);
                 return o;
             }
         ENDHLSL
@@ -180,7 +183,6 @@ Shader "Game/2D/Uber"
             	half3 positionWS=i.positionWS;
             	depth=i.positionCS.z;
             	ParallaxUVMapping(i.uv,depth,positionWS,TBNWS,viewDirWS);
-
 				#if _NORMALMAP
 				half3 normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv));
 				normalWS=normalize(mul(transpose(TBNWS), normalTS));

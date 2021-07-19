@@ -20,8 +20,6 @@ Shader "Hidden/PostProcess/VolumetricLight"
             #include "../../CommonLightingInclude.hlsl"
 
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
-            #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
-            #pragma multi_compile _ _SHADOWS_SOFT
             #pragma shader_feature_local _DITHER
 
             float _LightPow;
@@ -33,7 +31,7 @@ Shader "Hidden/PostProcess/VolumetricLight"
             {
                 float3 curPos=_WorldSpaceCameraPos;
                 half3 marchDirWS=normalize( GetViewDirWS(i.uv));
-                float depthDstWS=LinearEyeDepthUV(i.uv);
+                float depthDstWS=SampleEyeDepth(i.uv);
                 float marchDstWS=min(depthDstWS,_MarchDistance);
                 uint marchTimes=min(_MarchTimes,128u);
                 float marchDelta=marchDstWS/_MarchDistance*1.0/marchTimes;
@@ -43,6 +41,7 @@ Shader "Hidden/PostProcess/VolumetricLight"
 
                 if(marchDstWS>0)
                 {
+                    float shadowStrength=GetMainLightShadowParams().x;
                     float curDst=0;
                     [unroll(128u)]
                     for(uint index=0u;index<marchTimes;index++)
@@ -51,7 +50,8 @@ Shader "Hidden/PostProcess/VolumetricLight"
                         #if _DITHER
                         samplePos+=posDelta*random01(samplePos);
                         #endif
-                        totalAtten+=marchDelta*MainLightRealtimeShadow(float4(TransformWorldToShadowCoord(samplePos).xyz,1));
+                        float shadowAttenuation=SampleHardShadow(_MainLightShadowmapTexture,sampler_MainLightShadowmapTexture,TransformWorldToShadowCoord(samplePos).xyz,shadowStrength);
+                        totalAtten+=marchDelta*shadowAttenuation;
                         curPos+=posDelta;
                         curDst+=dstDelta;
                     }
