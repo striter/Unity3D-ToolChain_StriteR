@@ -7,14 +7,14 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Reflection
-  m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
-  m_ShaderKeywords: _AOMAP _DETAILNORMALMAP _F_IMPLICIT _F_SCHLICK _GSF_COOKTORRANCE
-    _NDF_COOKTORRANCE _NORMALMAP _PARALLEXMAP
+  m_Name: Fog
+  m_Shader: {fileID: 4800000, guid: 091e01690a8976d46a6b7fbb2e037d13, type: 3}
+  m_ShaderKeywords: _AOMAP _DEPTHBUFFER _DEPTHMAP _DETAILNORMALMAP _F_IMPLICIT _F_SCHLICK
+    _GSF_COOKTORRANCE _NDF_COOKTORRANCE _NORMALMAP _PARALLEXMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -33,8 +33,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DepthTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: 3c669aab058aac44bb0230a74f88dcd4, type: 3}
+        m_Scale: {x: 0.001, y: 0.001}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
         m_Texture: {fileID: 0}
@@ -124,8 +124,8 @@ Material:
     - _Cutoff: 0.5
     - _DepthBuffer: 1
     - _DepthBufferScale: 1
-    - _DepthOffset: 0.42
-    - _DepthScale: 1
+    - _DepthOffset: 0.11
+    - _DepthScale: 0.078
     - _DetailAlbedoMapScale: 1
     - _DetailBlendMode: 0
     - _DetailNormalMapScale: 1
@@ -138,6 +138,8 @@ Material:
     - _EnvironmentReflections: 1
     - _F: 0
     - _FRESNEL: 0
+    - _FlowX: 0
+    - _FlowY: 0.05
     - _GSF: 6
     - _GlossMapScale: 0
     - _Glossiness: 1
@@ -148,13 +150,14 @@ Material:
     - _NDF: 1
     - _OcclusionStrength: 0
     - _Parallax: 0.005
-    - _ParallaxCount: 16
+    - _ParallaxCount: 128
     - _Parallex: 0
     - _ParallexCount: 16
     - _ParallexOffset: 1
     - _ParallexScale: 0.017
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _Scale: 1000
     - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -169,8 +172,10 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BeginColor: {r: 0.9575472, g: 0.9869376, b: 1, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EndColor: {r: 0.41037738, g: 0.73581845, b: 1, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &1842042723372290674

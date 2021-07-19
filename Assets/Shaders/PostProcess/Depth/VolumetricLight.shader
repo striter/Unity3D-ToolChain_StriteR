@@ -30,7 +30,7 @@ Shader "Hidden/PostProcess/VolumetricLight"
             half4 frag (v2f_img i) : SV_Target
             {
                 float3 curPos=_WorldSpaceCameraPos;
-                half3 marchDirWS=normalize( GetViewDirWS(i.uv));
+                half3 marchDirWS=normalize( TransformNDCToViewDir(i.uv));
                 float depthDstWS=SampleEyeDepth(i.uv);
                 float marchDstWS=min(depthDstWS,_MarchDistance);
                 uint marchTimes=min(_MarchTimes,128u);

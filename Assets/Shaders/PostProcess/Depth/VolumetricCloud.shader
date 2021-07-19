@@ -78,7 +78,7 @@
 
             float4 frag (v2f_img i) : SV_Target
             {
-                float3 marchDirWS=normalize(GetViewDirWS(i.uv));
+                float3 marchDirWS=normalize(TransformNDCToViewDir(i.uv));
                 float3 lightDirWS=normalize(_MainLightPosition.xyz);
                 float3 cameraPos=GetCameraPositionWS();
                 GPlane planeStartWS=GetPlane( float3(0,1,0),_VerticalStart);

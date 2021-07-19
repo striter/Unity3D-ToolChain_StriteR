@@ -93,13 +93,14 @@
                     float marchOffset=1.0/rayMarchCount;
                     float distanceOffset=_Distance/rayMarchCount;
                     float dstMarched=0.;
+                    float shadowStrength=GetMainLightShadowParams().x;
                     [unroll(128u)]
                     for(uint index=0u;index<rayMarchCount;index++)
                     {
                         float3 marchPos=i.positionWS+marchDirWS*dstMarched;
                         float density=SampleDensity(marchPos)*_Density;
                         sumDensity+=marchOffset*density;
-                        //sumDensity*=MainLightRealtimeShadow(TransformWorldToShadowCoord(marchPos));
+                        sumDensity*=SampleHardShadow(_MainLightShadowmapTexture,sampler_MainLightShadowmapTexture,marchPos,shadowStrength);
                         dstMarched+=distanceOffset;
 
                         if(sumDensity>=1||dstMarched>marchDistance)

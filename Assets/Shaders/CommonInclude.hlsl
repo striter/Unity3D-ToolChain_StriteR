@@ -176,8 +176,8 @@ float3 _FrustumCornersRayBR;
 float3 _FrustumCornersRayTL;
 float3 _FrustumCornersRayTR;
 
-float3 GetViewDirWS(float2 uv){return bilinearLerp(_FrustumCornersRayTL, _FrustumCornersRayTR, _FrustumCornersRayBL, _FrustumCornersRayBR, uv);}
-float3 TransformNDCToWorld_Frustum(half2 uv,half _rawDepth){ return GetCameraPositionWS() + RawToEyeDepth(_rawDepth) *  GetViewDirWS(uv);}
+float3 TransformNDCToViewDir(float2 uv){return bilinearLerp(_FrustumCornersRayTL, _FrustumCornersRayTR, _FrustumCornersRayBL, _FrustumCornersRayBR, uv);}
+float3 TransformNDCToWorld_Frustum(half2 uv,half _rawDepth){ return GetCameraPositionWS() + RawToEyeDepth(_rawDepth) *  TransformNDCToViewDir(uv);}
 float3 TransformNDCToWorld_VPMatrix(half2 uv,half _depth){ return TransformClipToWorld(TransformNDCToClip(uv,_depth));}
 
 float3 TransformNDCToWorld(half2 uv,half depth)
