@@ -7,14 +7,14 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Fog
+  m_Name: Cloud
   m_Shader: {fileID: 4800000, guid: 091e01690a8976d46a6b7fbb2e037d13, type: 3}
   m_ShaderKeywords: _AOMAP _DEPTHBUFFER _DEPTHMAP _DETAILNORMALMAP _F_IMPLICIT _F_SCHLICK
     _GSF_COOKTORRANCE _NDF_COOKTORRANCE _NORMALMAP _PARALLEXMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3001
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:

@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/Depth/ParallexFog"
+﻿Shader "Game/Effects/Depth/ParallaxCloud"
 {
     Properties
     {
