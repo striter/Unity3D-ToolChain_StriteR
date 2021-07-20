@@ -55,7 +55,7 @@
 			#include "../CommonLightingInclude.hlsl"
 			#include "../BRDFInclude.hlsl"
 			#include "../GlobalIlluminationInclude.hlsl"
-			#include "../Library/ParallaxInclude.hlsl"
+			#include "../Library/Additional/Parallax.hlsl"
 			
 			#pragma multi_compile_instancing
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS

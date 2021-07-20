@@ -34,7 +34,7 @@
             #pragma fragment frag
 
             #include "../../CommonInclude.hlsl"
-            #include "../../Library/ParallaxInclude.hlsl"
+            #include "../../Library/Additional/Parallax.hlsl"
 
             struct appdata
             {

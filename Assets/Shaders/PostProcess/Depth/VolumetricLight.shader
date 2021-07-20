@@ -18,9 +18,11 @@ Shader "Hidden/PostProcess/VolumetricLight"
             
             #include "../../PostProcessInclude.hlsl"
             #include "../../CommonLightingInclude.hlsl"
+            #include "../../Library/Additional/CloudShadow.hlsl"
 
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma shader_feature_local _DITHER
+            #pragma shader_feature _CLOUDSHADOW
 
             float _LightPow;
             float _LightStrength;
@@ -37,6 +39,7 @@ Shader "Hidden/PostProcess/VolumetricLight"
                 float marchDelta=marchDstWS/_MarchDistance*1.0/marchTimes;
                 float dstDelta=marchDstWS/marchTimes;
                 float3 posDelta=marchDirWS*dstDelta;
+                float3 lightDirWS=normalize(_MainLightPosition.xyz);
                 half totalAtten=0;
 
                 if(marchDstWS>0)
@@ -51,6 +54,7 @@ Shader "Hidden/PostProcess/VolumetricLight"
                         samplePos+=posDelta*random01(samplePos);
                         #endif
                         float shadowAttenuation=SampleHardShadow(_MainLightShadowmapTexture,sampler_MainLightShadowmapTexture,TransformWorldToShadowCoord(samplePos).xyz,shadowStrength);
+                        shadowAttenuation*=CloudShadowAttenuation(samplePos,lightDirWS);
                         totalAtten+=marchDelta*shadowAttenuation;
                         curPos+=posDelta;
                         curDst+=dstDelta;

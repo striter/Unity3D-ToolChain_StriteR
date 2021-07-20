@@ -22,7 +22,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: TileGround
   m_Shader: {fileID: 4800000, guid: 623a8fafd99f201468235763d654b43a, type: 3}
-  m_ShaderKeywords: _LIGHTING _RECEIVESHADOW
+  m_ShaderKeywords: _GRID _LIGHTING _RECEIVESHADOW
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -72,6 +72,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _NormalTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -104,6 +108,10 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaClipRange: 0.01
+    - _Atlas: 0
+    - _AtlasHeight: 0
+    - _AtlasIndex: 0
+    - _AtlasWidth: 0
     - _BillBoard: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -112,6 +120,7 @@ Material:
     - _Cull: 2
     - _Cutoff: 0.5
     - _DepthBuffer: 1
+    - _DepthBufferScale: 1
     - _DepthOffset: 0.42
     - _DepthScale: 1
     - _DetailAlbedoMapScale: 1
@@ -122,10 +131,12 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _Grid: 1
     - _Lighting: 1
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
+    - _ParallaxCount: 16
     - _Parallex: 0
     - _ParallexCount: 16
     - _QueueOffset: 0

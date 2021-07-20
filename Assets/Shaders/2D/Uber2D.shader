@@ -57,8 +57,9 @@ Shader "Game/2D/Uber"
         HLSLINCLUDE
             #include "../CommonInclude.hlsl"
 			#include "../CommonLightingInclude.hlsl"
-			#include "../Library/ParallaxInclude.hlsl"
-			#include "../Library/GridInclude.hlsl"
+			#include "../Library/Additional/Grid.hlsl"
+			#include "../Library/Additional/Parallax.hlsl"
+			#include "../Library/Additional/CloudShadow.hlsl"
             #pragma multi_compile_instancing
             #pragma target 3.5
 
@@ -73,6 +74,8 @@ Shader "Game/2D/Uber"
 			#pragma shader_feature_local _DEPTHMAP
 			#pragma shader_feature_local _ATLAS
 			#pragma shader_feature_local _GRID
+			#pragma shader_feature _EDITGRID
+			#pragma shader_feature _CLOUDSHADOW
         
             TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
@@ -195,8 +198,10 @@ Shader "Game/2D/Uber"
             	#endif
             	half atten=1;
             	#if _RECEIVESHADOW
-            		atten=MainLightRealtimeShadow(TransformWorldToShadowCoord(positionWS));
+            		atten*=MainLightRealtimeShadow(TransformWorldToShadowCoord(positionWS));
+            	atten*=CloudShadowAttenuation(positionWS,lightDirWS);
             	#endif
+				
             	half diffuse=saturate(dot(normalWS,lightDirWS));
             	diffuse=diffuse*INSTANCE(_Diffuse)+(1.-INSTANCE(_Diffuse));
             	half3 albedo=col.rgb;

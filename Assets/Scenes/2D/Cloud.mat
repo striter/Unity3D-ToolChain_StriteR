@@ -1,18 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-1112615454672219128
-MonoBehaviour:
-  m_ObjectHideFlags: 11
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 4
 --- !u!21 &2100000
 Material:
   serializedVersion: 6
@@ -20,23 +7,24 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Hole01
+  m_Name: Cloud
   m_Shader: {fileID: 4800000, guid: 623a8fafd99f201468235763d654b43a, type: 3}
-  m_ShaderKeywords: _DEPTHBUFFER _DEPTHMAP _GRID _LIGHTING _PARALLAX _PARALLEX _RECEIVESHADOW
+  m_ShaderKeywords: _ALPHACLIP _DEPTHBUFFER _LIGHTING _MARCHTIMES__16__32__64__128__256__512
+    _MARCHTIMES__32 _MARCH_T128 _MARCH__16 _PARALLAX _RECEIVESHADOW
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 1999
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _BackRimTex:
-        m_Texture: {fileID: 0}
+    - _3DNoise:
+        m_Texture: {fileID: 11700000, guid: d2993425f654940448af634a1d7cf838, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _BaseMap:
+    - _BackRimTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -45,7 +33,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DepthTex:
-        m_Texture: {fileID: 2800000, guid: 061dab6754e7cbc43a44409e89f4577d, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -65,11 +53,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 877d90b890b8f5f46907a3a8dd2408d8, type: 3}
+        m_Texture: {fileID: 2800000, guid: 56110f8ba46b13d418b079b9a54fe416, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Noise:
+        m_Texture: {fileID: 11700000, guid: d7cdc3d1f96e777489126e46f6ca72c0, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTex:
@@ -84,81 +76,63 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _RimTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SpecGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaClip: 0
-    - _AlphaClipRange: 0.17
+    - _AlphaClip: 1
+    - _AlphaClipRange: 0.01
     - _Atlas: 0
     - _AtlasHeight: 0
     - _AtlasIndex: 0
     - _AtlasWidth: 0
-    - _BillBoard: 0
-    - _Blend: 0
     - _BumpScale: 1
-    - _ClearCoatMask: 0
-    - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
+    - _Density: 2.26
+    - _DensityClip: 0.5
     - _DepthBuffer: 1
-    - _DepthBufferScale: 2
+    - _DepthBufferScale: 1
     - _DepthOffset: 0
-    - _DepthScale: 0.5
-    - _DetailAlbedoMapScale: 1
+    - _DepthScale: 1
     - _DetailNormalMapScale: 1
     - _Diffuse: 0.5
+    - _Distance: 5
     - _DstBlend: 0
-    - _EnvironmentReflections: 1
-    - _GlossMapScale: 0
-    - _Glossiness: 0
-    - _GlossyReflections: 0
-    - _Grid: 1
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _Grid: 0
+    - _LightMarch: 16
     - _Lighting: 1
+    - _March: 512
+    - _MarchDistance: 8.9
+    - _MarchTimes: 1
+    - _MaxDensity: 1
     - _Metallic: 0
+    - _Mode: 0
+    - _NoiseDensity: 1.43
+    - _NoiseScale: 58
     - _OcclusionStrength: 1
-    - _Parallax: 1
-    - _ParallaxCount: 128
-    - _Parallex: 1
-    - _ParallexCount: 16
-    - _QueueOffset: 0
+    - _Parallax: 0.02
+    - _ParallaxCount: 16
+    - _RayMarch: 16
     - _ReceiveShadow: 1
-    - _ReceiveShadows: 1
     - _RimIntensity: 0.5
-    - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _Surface: 0
+    - _StepDistance: 6
+    - _UVSec: 0
     - _Wave: 0
     - _WaveFrequency: 5
     - _WaveSpeed: 1
     - _WaveStrength: 1
-    - _WorkflowMode: 1
-    - _ZTest: 8
+    - _ZTest: 2
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.9202805, g: 1.160949, b: 1.2830188, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    - _NoiseFlow: {r: 0.01, g: 0, b: 0, a: 0}
+    - _NoiseScale: {r: 20, g: 20, b: 20, a: 0}
+    - _Origin: {r: 0, g: 0, b: 0, a: 0}
     - _WaveDirection: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

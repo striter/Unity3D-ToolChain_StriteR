@@ -1,10 +1,14 @@
-﻿float4 _GridSize;
-float4 _GridColor;
+﻿//#pragma shader_feature _EDITGRID
 
+float4 _GridSize;
+float4 _GridColor;
 
 float3 MixGrid(float3 positionWS, float3 color)
 {
-    float2 gridPos=positionWS.xz-_GridSize.xy;
+    #ifndef _EDITGRID
+        return color;
+    #endif
+    float2 gridPos=abs(positionWS.xz)-_GridSize.xy;
     gridPos%=_GridSize.z;
     float gridOffset=min(min(_GridSize.z-gridPos),min(gridPos));
     float grid=step(gridOffset,_GridSize.w);
