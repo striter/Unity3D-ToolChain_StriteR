@@ -109,9 +109,9 @@ float EyeToRawDepth(float _eyeDepth)
 //Transformations
 float3 TransformWorldToViewDir(float3 _positionWS,float4x4 _matrixV)
 {
-    [branch]if(unity_OrthoParams.w)
-        return normalize(_matrixV[2].xyz);
-    else
+    // [branch]if(unity_OrthoParams.w)
+    //     return normalize(_matrixV[2].xyz);
+    // else
         return GetCameraPositionWS()-_positionWS;
 }
 

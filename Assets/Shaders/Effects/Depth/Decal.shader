@@ -32,7 +32,7 @@
 				half4 positionCS:SV_POSITION;
 				half3 positionWS:TEXCOORD0;
 				half3 viewDirWS:TEXCOORD1;
-				half4 screenPos: TEXCOORD2;
+				half4 positionHCS: TEXCOORD2;
 			};
 			
 			TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
@@ -47,26 +47,26 @@
 				o.positionCS = TransformObjectToHClip(positionOS);
 				o.positionWS=TransformObjectToWorld(positionOS);
 				o.viewDirWS=o.positionWS-GetCameraPositionWS();
-				o.screenPos = ComputeScreenPos(o.positionCS);
+				o.positionHCS = o.positionCS;
 				return o;
 			}
 
 			half4 frag(v2f i):SV_Target
 			{
 
-				half depthOffset = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, i.screenPos.xy / i.screenPos.w),_ZBufferParams).r - i.screenPos.w;
-				float3 wpos = i.positionWS+normalize(i.viewDirWS)*depthOffset;
-				half3 opos = TransformWorldToObject(wpos);
-				half2 decalUV=opos.xy+.5;
+				half depthOffset = RawToEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, TransformHClipToNDC(i.positionHCS))).r - RawToEyeDepth(i.positionCS.z);
+				float3 positionWS = i.positionWS+normalize(i.viewDirWS)*depthOffset;
+				half3 positionOS = TransformWorldToObject(positionWS);
+				half2 decalUV=positionOS.xy+.5;
 				decalUV=TRANSFORM_TEX(decalUV,_MainTex);
 				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,decalUV)* _Color;
 				#if _DECALCLIP_SPHERE
-				color.a*=step(sqrDistance(opos),.25h);
+				color.a*=step(sqrDistance(positionOS),.25h);
 				#elif _DECALCLIP_BOX
-				color.a*=step(abs(opos.x),.5h)*step(abs(opos.y),.5h)*step(abs(opos.z),.5h);
+				color.a*=step(abs(positionOS.x),.5h)*step(abs(positionOS.y),.5h)*step(abs(positionOS.z),.5h);
 				#endif
 				
-				half atten=MainLightRealtimeShadow(TransformWorldToShadowCoord(wpos));
+				half atten=MainLightRealtimeShadow(TransformWorldToShadowCoord(positionWS));
 				color.a*=atten;
 				color.rgb+=_GlossyEnvironmentColor.rgb;
 				return color;

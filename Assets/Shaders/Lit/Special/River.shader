@@ -2,51 +2,49 @@
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "white" {}
-		[Header(Normal Mappping)]
-		[Toggle(_NORMALMAP)]_EnableNormalMap("Enable Normal Mapping",float)=1
-		[NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
-		[Toggle(_THICK)]_EnableThick("Enable Ice Thick",float)=1
-		_Thickness("Ice Thicknesss",Range(0.01,1))=.1
-
-		[Header(Lighting)]
-		[Header(_ Diffuse)]
-		_Lambert("Lambert",Range(0,1))=.5
-		[Header(_ Specular)]
-		[Toggle(_SPECULAR)]_EnableSpecular("Enable Specular",float)=1
-		_SpecularRange("Specular Range",Range(.9,1))=.98
-		
-		[Header(Crack)]
-		[Toggle(_CRACK)]_EnableCrack("Enable Crack",Range(0,1))=.5
-        [NoScaleOffset]_CrackTex("Crack Tex",2D)="white" {}
-		[HDR]_CrackColor("Crack Color",Color)=(1,1,1,1)
-		[Header(_ CrackTop)]
-		[Toggle(_CRACKTOP)]_EnableCrackTop("Enable Crack Top",float)=1
-		_CrackTopStrength("Crack Top Strength",Range(0.1,1))=.2
-		[Header(_ Parallex)]
-		[Toggle(_CRACKPARALLEX)]_CrackParallex("Enable Crack Parallex",float)=1
-        [Enum(_4,4,_8,8,_16,16,_32,32,_64,64)]_CrackParallexTimes("Crack Parallex Times",int)=8
-		_CrackDistance("Crack Distance",Range(0,1))=.5
-		_CrackPow("Crack Pow",Range(0.1,5))=2
-
-		[Header(Opacity)]
-		[Toggle(_OPACITY)]_EnableOpacity("Enable Opacity",float)=1
-		_BeginOpacity("Begin Opacity",Range(0,1))=.5
-		[Header(_ Distort)]
-		[Toggle(_DISTORT)]_EnableDistort("Enable Normal Distort",float)=1
-		_DistortStrength("Distort Strength",Range(.1,2))=1
-		[Header(_ Depth)]
-		[Toggle(_DEPTH)]_EnableDepth("Enable Depth",float)=1
-		_DepthDistance("Depth Distance",Range(0,3))=1
-		_DepthPow("Depth Pow",Range(0.1,5))=2
-		[Header(_ Fresnel)]
-		[Toggle(_FRESNEL)]_EnableFresnel("Enable Fresnel",float)=1
-		_FresnelPow("Fresnel Pow",Range(0.1,10))=1
+    	_Color("Color",Color)=(1,1,1,1)
+		[ToggleTex(_NORMALTEX)][NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
+    	[Foldout(_NORMALTEX)]_Scale("Scale",Range(1,20))=10
+    	
+    	[Header(Flow)]
+		[ToggleTex(_FLOWTEX)][NoScaleOffset]_FlowTex("Flow Tex",2D)="black"{}
+    	[Fold(_FLOWTEX)]_FlowDirection("Flow Direction",Vector)=(1,1,0,0)
+    	_FlowSpeed("Flow Speed",Range(0.01,10))=2
+    	
+    	[Header(Lighting)]
+    	_SpecularAmount("Specular Amount",Range(.3,1))=1
+    	[Toggle(_RECEIVESHADOW)]_ReceiveShadow("Receive Shadow",int)=1
+    	
+    	[Header(_Refraction)]
+    	[Toggle(_DEPTHREFRACTION)] _DepthRefraction("Enable",int)=1
+    	[Foldout(_DEPTHREFRACTION)] _RefractionDistance("Refraction Distance",Range(0.01,5))=1 
+    	[Foldout(_DEPTHREFRACTION)]_RefractionAmount("Refraction Amount",Range(0,.5))=0.1
+    	
+    	[Header(Depth)]
+    	[Toggle(_DEPTH)]_Depth("Enable",int)=1
+    	[Foldout(_DEPTH)]_DepthColor("Color",Color)=(1,1,1,1)
+    	[Foldout(_DEPTH)]_DepthBegin("Begin",Range(0,10))=2
+    	[Foldout(_DEPTH)]_DepthDistance("Distance",Range(0,10))=2
+    	
+    	[Header(Foam)]
+    	[Toggle(_FOAM)]_Foam("Enable",int)=1
+    	[Foldout(_FOAM)][HDR]_FoamColor("Color",Color)=(1,1,1,1)
+    	[Foldout(_FOAM)]_FoamBegin("Begin",Range(0,1))=.1
+    	[Foldout(_FOAM)]_FoamWidth("Width",Range(0.01,.5))=.2
+    	[Foldout(_FOAM)]_FoamDistort("Distort",Range(0,1))=1
+    	
+    	[Header(Caustic)]
+    	[Toggle(_CAUSTIC)]_Caustic("Enable",int)=1
+    	[Foldout(_CAUSTIC)][NoScaleOffset]_CausticTex("Caustic Tex",2D)="black"{}
+    	[Foldout(_CAUSTIC)]_CausticStrength("Caustic Strength",Range(0.1,2))=1
     }
+    
     SubShader
     {
         Tags { "Queue"="Transparent-1"}
 		Blend Off
+    	ZTest Less
+    	ZWrite On
         Pass
         {
 			Tags {"LightMode"="UniversalForward"}
@@ -54,47 +52,43 @@
             #pragma vertex vert
             #pragma fragment frag
 			#pragma multi_compile_instancing
-
-			#pragma shader_feature_local _NORMALMAP
-			#pragma shader_feature_local _THICK
-			#pragma shader_feature_local _CRACK
-			#pragma shader_feature_local _CRACKTOP
-			#pragma shader_feature_local _CRACKPARALLEX
-			#pragma shader_feature_local _OPACITY
-			#pragma shader_feature_local _DISTORT
-			#pragma shader_feature_local _DEPTH
-			#pragma shader_feature_local _FRESNEL
-			#pragma shader_feature_local _SPECULAR
-
+            #pragma shader_feature_local _NORMALTEX
+            #pragma shader_feature_local _FLOWTEX
+            #pragma shader_feature_local _RECEIVESHADOW
+			#pragma shader_feature_local _FOAM
+            #pragma shader_feature_local _DEPTH
+            #pragma shader_feature_local _DEPTHREFRACTION
+			#pragma shader_feature_local _CAUSTIC
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            
 			#include "../../CommonInclude.hlsl"
 			#include "../../CommonLightingInclude.hlsl"
-			
-			TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
-			TEXTURE2D(_CrackTex);SAMPLER(sampler_CrackTex);
-			TEXTURE2D(_NormalTex);SAMPLER(sampler_NormalTex);
-			TEXTURE2D(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
+            #include "../../GlobalIlluminationInclude.hlsl"
+
+			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
+            TEXTURE2D(_CausticTex);SAMPLER(sampler_CausticTex);
+            TEXTURE2D(_FlowTex);SAMPLER(sampler_FlowTex);
 			TEXTURE2D(_CameraOpaqueTexture);SAMPLER(sampler_CameraOpaqueTexture);
-
+            TEXTURE2D(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
 			INSTANCING_BUFFER_START
-			INSTANCING_PROP(float4,_MainTex_ST)
-			INSTANCING_PROP(float,_Thickness)
-			INSTANCING_PROP(float,_Lambert)
-			INSTANCING_PROP(float,_SpecularRange)
-
-			INSTANCING_PROP(float,_CrackTopStrength)
-			INSTANCING_PROP(float,_CrackDistance)
-			INSTANCING_PROP(float,_CrackPow)
-			INSTANCING_PROP(uint,_CrackParallexTimes)
-			INSTANCING_PROP(float4,_CrackColor)
-
-			INSTANCING_PROP(float,_BeginOpacity)
-			INSTANCING_PROP(float,_DistortStrength)
-			INSTANCING_PROP(float,_DepthDistance)
-			INSTANCING_PROP(float,_DepthPow)
-			INSTANCING_PROP(float,_FresnelPow)
+				INSTANCING_PROP(float4,_Color)
+				INSTANCING_PROP(float,_Scale)
+				INSTANCING_PROP(float2,_FlowDirection)
+				INSTANCING_PROP(float,_FlowSpeed)
+				INSTANCING_PROP(float,_SpecularAmount)
+				INSTANCING_PROP(float,_RefractionDistance)
+				INSTANCING_PROP(float,_RefractionAmount)
+	            INSTANCING_PROP(float4,_FoamColor)
+				INSTANCING_PROP(float,_FoamBegin)
+				INSTANCING_PROP(float,_FoamWidth)
+				INSTANCING_PROP(float,_FoamDistort)
+	            INSTANCING_PROP(float4,_DepthColor)
+				INSTANCING_PROP(float,_DepthBegin)
+				INSTANCING_PROP(float,_DepthDistance)
+				INSTANCING_PROP(float,_CausticStrength)
 			INSTANCING_BUFFER_END
 
-            struct appdata
+            struct a2v
             {
 			    float3 positionOS : POSITION;
 			    float3 normalOS:NORMAL;
@@ -106,122 +100,124 @@
             struct v2f
             {
 			    float4 positionCS : SV_POSITION;
-			    float2 uv:TEXCOORD0;
-			    float3 normalTS:TEXCOORD1;
-				float3 positionTS:TEXCOORD2;
-				float3 cameraPosTS:TEXCOORD3;
-				float3 lightDirTS:TEXCOORD4;
-				float4 shadowCoordWS:TEXCOORD5;
-				#if _OPACITY
-				float4 screenPos:TEXCOORD6;
-				#endif
+            	float4 positionHCS:TEXCOORD0;
+            	float3 positionWS:TEXCOORD1;
+				half3 normalWS:TEXCOORD2;
+				half3 tangentWS:TEXCOORD3;
+				half3 biTangentWS:TEXCOORD4;
+				float3 viewDirWS:TEXCOORD5;
+            	float2 uv:TEXCOORD6;
+            	float4 shadowCoords:TEXCOORD7;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 			
-            v2f vert (appdata v)
+            v2f vert (a2v v)
             {
                 v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v,o);
-			    o.uv = TRANSFORM_TEX_INSTANCE( v.uv,_MainTex);
-			    o.positionCS = TransformObjectToHClip(v.positionOS);
-				float3 positionWS=TransformObjectToWorld(v.positionOS);
-			    o.shadowCoordWS=TransformWorldToShadowCoord(positionWS);
-
-				float3x3 TBN=float3x3(v.tangentOS.xyz,cross(v.normalOS,v.tangentOS.xyz)*v.tangentOS.w,v.normalOS);
-				o.positionTS=mul(TBN,v.positionOS);
-				o.cameraPosTS=mul(TBN, TransformWorldToObject(GetCameraPositionWS()));
-				o.lightDirTS=mul(TBN,TransformWorldToObjectNormal(_MainLightPosition.xyz));
-				o.normalTS=mul(TBN,v.normalOS);
-
-				#if _OPACITY
-				o.screenPos=ComputeScreenPos(o.positionCS);
-				#endif
+            	o.positionCS=TransformObjectToHClip(v.positionOS);
+            	o.positionHCS=o.positionCS;
+            	o.positionWS=TransformObjectToWorld(v.positionOS);
+				o.normalWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.normalOS));
+				o.tangentWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.tangentOS.xyz));
+				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
+				o.viewDirWS=TransformWorldToViewDir(o.positionWS,UNITY_MATRIX_V);
+            	o.uv=v.uv;
+            	o.shadowCoords=TransformWorldToShadowCoord(o.positionWS);
                 return o;
             }
 
             float4 frag (v2f i) : SV_Target
             {
 				UNITY_SETUP_INSTANCE_ID(i);
-				float3 normalTS=normalize(i.normalTS);
-				float3 lightDirTS=normalize(i.lightDirTS);
-				float3 viewDirTS=normalize(i.cameraPosTS-i.positionTS);
-				float2 thickOffset=-viewDirTS.xy/viewDirTS.z;
-				
-				#if _NORMALMAP
-				float2 normalUV=i.uv;
-				#if _THICK
-				normalUV+=thickOffset*INSTANCE(_Thickness);
-				#endif
-				normalTS= DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,normalUV));
-				#endif
-				
-				float3 albedo=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv).rgb;
-				float3 lightCol=_MainLightColor.rgb;
-				float3 ambient=_GlossyEnvironmentColor.xyz;
-				float atten=MainLightRealtimeShadow(i.shadowCoordWS);
-				
-				float diffuse=saturate( GetDiffuse(normalTS,lightDirTS,INSTANCE(_Lambert),atten));
-				float3 finalCol=lightCol*diffuse*(albedo+ambient);
+				half3 normalWS=normalize(i.normalWS);
+				half3 biTangentWS=normalize(i.biTangentWS);
+				half3 tangentWS=normalize(i.tangentWS);
+				half3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
+				half3 viewDirWS=normalize(i.viewDirWS);
+				half3 lightDirWS=normalize(_MainLightPosition.xyz);
+            	half3 positionWS=i.positionWS;
+            	half3 lightCol=_MainLightColor.rgb;
+				half3 normalTS=float3(0,0,1);
+            	
+            	float atten=1;
+            	#if _RECEIVESHADOW
+            		atten=MainLightRealtimeShadow(i.shadowCoords);
+            	#endif
 
-				#if _CRACK
-				float crackAmount=0;
-				float4 crackCol=INSTANCE(_CrackColor);
-				#if _CRACKTOP
-				crackAmount=SAMPLE_TEXTURE2D_LOD(_CrackTex,sampler_CrackTex,i.uv,0).r* crackCol.a* INSTANCE(_CrackTopStrength);
-				#endif
-				#if _CRACKPARALLEX
-				uint crackParallexTimes=INSTANCE(_CrackParallexTimes);
-				float crackPow=INSTANCE(_CrackPow);
-				float crackDistance=INSTANCE(_CrackDistance);
+            	float3 albedo=_Color.rgb;
+            	float2 screenUV=TransformHClipToNDC(i.positionHCS);
+            	
+            	half2 uvFlow;
+            	#if _FLOWTEX
+            		half2 flowDir=SAMPLE_TEXTURE2D(_FlowTex,sampler_FlowTex,i.uv).xy;		//To Be Continued
+					uvFlow=flowDir*frac(_Time.y)*_FlowSpeed;
+            	#else
+					uvFlow=_FlowDirection*_Time.y*_FlowSpeed;
+            	#endif
+            	
+            	float uvScale=rcp(_Scale);
+            	
+            	#if _NORMALTEX
+				half2 baseUV=positionWS.xz;
+            	baseUV+=uvFlow;
+            	baseUV*=uvScale;
+            	normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
+				normalWS=normalize(mul(transpose(TBNWS), normalTS));
+            	#endif
 
-				float parallexParam=1.0/crackParallexTimes;
-				float offsetDistance=crackDistance/crackParallexTimes;
-				float totalParallex=0;
-				[unroll(64)]
-				for(uint index=0u;index<crackParallexTimes;index++)
-				{
-					float distance=crackDistance*totalParallex;
-					distance+=random01(frac(i.uv))*offsetDistance;
-					float2 parallexUV=i.uv+thickOffset*distance;
-					crackAmount+=SAMPLE_TEXTURE2D_LOD(_CrackTex,sampler_CrackTex,parallexUV,0).r*parallexParam*pow(saturate(1-totalParallex),crackPow);
-					totalParallex+=parallexParam;
-				}
-				crackAmount=saturate(crackAmount*diffuse*crackCol.a);
+            	float underRawDepth=SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).r;
+            	float eyeDepthUnder=RawToEyeDepth(underRawDepth);
+            	float eyeDepthSurface=RawToEyeDepth(i.positionCS.z);
+            	float eyeDepthOffset=eyeDepthUnder-eyeDepthSurface;
+            	
+            	float2 underSurfaceUV=screenUV;
+				#if _DEPTHREFRACTION
+				float refraction=saturate(invlerp(0,_RefractionDistance,eyeDepthOffset))*_RefractionAmount;
+            	underSurfaceUV+=normalTS.xy*refraction;
+            	#endif
+            	float3 underSurfaceColor=SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,underSurfaceUV).rgb;
+            	
+            	#if _CAUSTIC
+				float3 positionWSDepth=TransformNDCToWorld(screenUV,underRawDepth);
+            	float verticalDistance=positionWSDepth.y-positionWS.y;
+            	float3 causticPositionWS=positionWSDepth+lightDirWS*verticalDistance* rcp(dot(float3(0,-1,0),lightDirWS));
+            	float causticAtten=1;
+            	#if _RECEIVESHADOW
+            		causticAtten=MainLightRealtimeShadow(TransformWorldToShadowCoord(causticPositionWS));
 				#endif
-				finalCol= lerp(finalCol,crackCol.rgb*lightCol, crackAmount);
-				#endif
-
-				#if _SPECULAR
-				float specular = GetSpecular(normalTS,lightDirTS,viewDirTS,INSTANCE( _SpecularRange));
-				specular*=diffuse;
-				finalCol += lightCol*albedo *specular;
-				#endif
-
-				#if _OPACITY
-				float opacity=0;
-				float2 screenUV=i.screenPos.xy/i.screenPos.w;
+            	float2 causticUV=causticPositionWS.xz+uvFlow;
+				causticUV*=uvScale;
+            	float caustic=SAMPLE_TEXTURE2D(_CausticTex,sampler_CausticTex,causticUV);
+            	underSurfaceColor+=caustic*lightCol*_CausticStrength*causticAtten;
+            	#endif
+            	
 				#if _DEPTH
-				float depthOffset=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, screenUV),_ZBufferParams) - i.screenPos.w;
-				depthOffset=saturate(depthOffset/INSTANCE(_DepthDistance));
-				depthOffset= pow(1-depthOffset,INSTANCE(_DepthPow));
-				opacity+=depthOffset;
-				#endif
-				#if _FRESNEL
-				float NDV=dot(normalTS,viewDirTS);
-				opacity+=pow(saturate(NDV),INSTANCE(_FresnelPow))*.5;
-				#endif
-				opacity=lerp(1-INSTANCE(_BeginOpacity),1,saturate(opacity));
-				#if _DISTORT
-				float2 screenDistort=normalTS.xy*INSTANCE(_DistortStrength);
-				screenDistort*=1-opacity;
-				screenUV+=screenDistort;
-				#endif
-				float3 geometryTex=SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,screenUV).rgb;
-				finalCol=lerp( finalCol,geometryTex,opacity);
-				#endif
-				
-				return float4(finalCol,1);
+            	float depth=smoothstep(_DepthBegin,_DepthBegin+_DepthDistance,eyeDepthOffset)*_DepthColor.a;
+            	float3 depthCol=underSurfaceColor*_DepthColor.rgb;
+				underSurfaceColor=lerp(underSurfaceColor,depthCol,depth);
+            	#endif
+            	
+            	float3 aboveSurfaceColor=albedo;
+            	float4 reflection=IndirectBRDFPlanarSpecular(screenUV,normalTS);
+				aboveSurfaceColor=lerp(aboveSurfaceColor, reflection.rgb,reflection.a);
+            	
+            	float specular=GetSpecular(normalWS,lightDirWS,viewDirWS,_SpecularAmount);
+            	specular*=atten;
+            	aboveSurfaceColor=lerp(aboveSurfaceColor,lightCol,specular);
+            	
+				#if _FOAM
+            	float foam=smoothstep(_FoamBegin+_FoamWidth,_FoamBegin,eyeDepthOffset+max(normalTS.xy)*_FoamDistort);
+            	float3 foamColor=lightCol*_FoamColor.rgb;
+				aboveSurfaceColor=lerp(aboveSurfaceColor,foamColor,foam*atten*_FoamColor.a);
+            	#endif
+            	
+				float fresnel=dot(viewDirWS,normalWS);
+            	fresnel=1.-Pow4(fresnel);
+            	float3 riverCol=lerp(underSurfaceColor,aboveSurfaceColor,fresnel);
+            	
+            	return float4(riverCol,1);
             }
             ENDHLSL
         }

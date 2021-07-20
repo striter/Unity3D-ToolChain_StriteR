@@ -220,6 +220,13 @@ namespace Rendering.Pipeline
             m_ReflectionDepthID = new RenderTargetIdentifier(m_ReflectionDepth);
             return base.Setup(_index, _planeData, _planes, _renderer);
         }
+
+        protected override void ConfigureColorDescriptor(ref RenderTextureDescriptor _descriptor, SRD_PlanarReflectionData _data)
+        {
+            base.ConfigureColorDescriptor(ref _descriptor, _data);
+            _descriptor.colorFormat = RenderTextureFormat.ARGB32;
+        }
+
         protected override void DoCameraSetup(CommandBuffer cmd, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _target)
         {
             base.DoCameraSetup(cmd, _descriptor, _target);

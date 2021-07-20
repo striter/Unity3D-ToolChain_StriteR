@@ -71,12 +71,12 @@ MonoBehaviour:
     m_ReflectionType: 0
     m_Sample: 4
     m_IncludeTransparent: 0
-    m_DownSample: 2
+    m_DownSample: 1
     m_EnableBlur: 1
     m_BlurParam:
-      m_BlurType: 0
-      m_BlurSize: 0.59
-      m_Iteration: 2
+      m_BlurType: 2
+      m_BlurSize: 0.77
+      m_Iteration: 5
       m_DownSample: 1
       m_Angle: 0
       m_Vector: {x: 0, y: 0}

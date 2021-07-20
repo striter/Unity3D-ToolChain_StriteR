@@ -155,8 +155,6 @@ Shader "Game/2D/Uber"
 				o.normalWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.normalOS));
 				o.tangentWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.tangentOS.xyz));
 				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
-				o.viewDirWS= GetCameraPositionWS()-o.positionWS;
-				
 				o.viewDirWS=TransformWorldToViewDir(o.positionWS,UNITY_MATRIX_V);
                 return o;
             }

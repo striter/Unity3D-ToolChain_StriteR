@@ -122,7 +122,7 @@ Material:
     - _DepthBuffer: 1
     - _DepthBufferScale: 8
     - _DepthOffset: 0
-    - _DepthScale: 0.05
+    - _DepthScale: 0.07
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _Diffuse: 0.5

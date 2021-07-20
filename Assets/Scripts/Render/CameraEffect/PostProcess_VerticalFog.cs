@@ -6,6 +6,7 @@ namespace Rendering.ImageEffect
 {
     public class PostProcess_VerticalFog:PostProcessComponentBase<PPCore_VerticalFog, PPData_VerticalFog>
     {
+        public override bool m_IsOpaqueProcess => true;
     }
 
     [Serializable]
