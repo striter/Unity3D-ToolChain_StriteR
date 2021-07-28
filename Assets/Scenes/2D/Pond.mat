@@ -179,6 +179,7 @@ Material:
     - _FoamDistort: 0.08
     - _FoamOffset: 0.18
     - _FoamWidth: 0.107
+    - _Fresnel: 1
     - _FresnelPow: 1
     - _GSF: 6
     - _GlossMapScale: 0
@@ -218,7 +219,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 0.19023673, g: 0.31893215, b: 0.4245283, a: 1}
+    - _Color: {r: 0.19023673, g: 0.31893215, b: 0.4245283, a: 0.8}
     - _CrackColor: {r: 1, g: 1, b: 1, a: 1}
     - _DepthColor: {r: 0.26584196, g: 0.45703566, b: 0.5471698, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

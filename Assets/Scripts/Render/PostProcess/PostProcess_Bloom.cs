@@ -53,14 +53,14 @@ namespace Rendering.ImageEffect
             base.Destroy();
             _mCoreBlur.Destroy();
         }
-        public override void OnValidate(PPData_Bloom _data)
+        public override void OnValidate(ref PPData_Bloom _data)
         {
-            base.OnValidate(_data);
+            base.OnValidate(ref _data);
             m_Material.SetFloat(ID_Threshold, _data.threshold);
             m_Material.SetFloat(ID_Intensity, _data.intensity);
-             _mCoreBlur.OnValidate(_data.m_BlurParams);
+             _mCoreBlur.OnValidate(ref _data.m_BlurParams);
         }
-        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor, PPData_Bloom _data)
+        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor,ref PPData_Bloom _data)
         {
             var rtW = _descriptor.width;
             var rtH = _descriptor.height;
@@ -70,7 +70,7 @@ namespace Rendering.ImageEffect
 
             _buffer.Blit(_src, RT_Sample, m_Material, (int)enum_Pass.SampleLight);
 
-            _mCoreBlur.ExecutePostProcessBuffer(_buffer, RT_Sample, RT_Blur, _descriptor, _data.m_BlurParams);
+            _mCoreBlur.ExecutePostProcessBuffer(_buffer, RT_Sample, RT_Blur, _descriptor, ref _data.m_BlurParams);
 
             _buffer.Blit(_src, _dst, m_Material, (int)enum_Pass.AddBloomTex);
 

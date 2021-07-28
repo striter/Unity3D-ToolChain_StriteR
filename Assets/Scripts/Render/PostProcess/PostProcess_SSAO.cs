@@ -52,9 +52,9 @@ namespace Rendering.ImageEffect
         {
         }
         
-        public override void OnValidate(PPData_SSAO ppDataSsao)
+        public override void OnValidate(ref PPData_SSAO ppDataSsao)
         {
-            base.OnValidate(ppDataSsao);
+            base.OnValidate(ref ppDataSsao);
             Random random = new Random(ppDataSsao.m_RandomVectorKeywords?.GetHashCode() ?? "AOCodeDefault".GetHashCode());
             Vector4[] randomVectors = new Vector4[m_MaxArraySize];
             for (int i = 0; i < m_MaxArraySize; i++)

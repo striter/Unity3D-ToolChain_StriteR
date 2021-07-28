@@ -53,9 +53,9 @@ float4 ShadowCasterCS(float3 positionWS, float3 normalWS)
 #define SHADOW_CASTER_VERTEX(v,o) o.positionCS= ShadowCasterCS(TransformObjectToWorld(v.positionOS.xyz),TransformObjectToWorldNormal(v.normalOS))
 
 //Receiver
-float SampleHardShadow(Texture2D _shadowMap,SamplerComparisonState _sampler_Shadowmap,float3 _shadowCoords,float _shadowStrength)
+float SampleHardShadow(TEXTURE2D_SHADOW_PARAM(_ShadowMap, _sampler_ShadowMap),float3 _shadowCoords,float _shadowStrength)
 {
-    real attenuation=SAMPLE_TEXTURE2D_SHADOW(_shadowMap, _sampler_Shadowmap,_shadowCoords);
+    real attenuation=SAMPLE_TEXTURE2D_SHADOW(_ShadowMap, _sampler_ShadowMap,_shadowCoords);
     attenuation = LerpWhiteTo(attenuation, _shadowStrength);
     return BEYOND_SHADOW_FAR(_shadowCoords) ? 1.0 : attenuation;
 }

@@ -197,9 +197,9 @@ public class Timer
     public void Set(float duration)
     {
         m_TimerDuration = duration;
-        OnTimeCheck(m_TimerDuration);
+        TickDelta(m_TimerDuration);
     }
-    void OnTimeCheck(float _timeCheck)
+    void TickDelta(float _timeCheck)
     {
         m_TimeLeft = _timeCheck;
         m_TimeElapsed = m_TimerDuration - m_TimeLeft;
@@ -207,15 +207,25 @@ public class Timer
         m_TimeLeftScale = Mathf.Max(m_TimerDuration == 0 ? 0 : m_TimeLeft / m_TimerDuration, 0);
         m_TimeElapsedScale = 1f - m_TimeLeftScale;
     }
-    public void Replay() => OnTimeCheck(m_TimerDuration);
-    public void Stop() => OnTimeCheck(0);
+    public void Replay() => TickDelta(m_TimerDuration);
+    public void Stop() => TickDelta(0);
     public void Tick(float deltaTime)
     {
         if (m_TimeLeft <= 0)
             return;
-        OnTimeCheck(m_TimeLeft - deltaTime);
+        TickDelta(m_TimeLeft - deltaTime);
         if (!m_Timing)
             m_TimeLeft = 0;
+    }
+
+    public bool TickValid(float deltaTime)
+    {
+        if (!m_Timing)
+            return false;
+        Tick(deltaTime);
+        if (m_Timing)
+            return false;
+        return true;
     }
 }
 #endregion

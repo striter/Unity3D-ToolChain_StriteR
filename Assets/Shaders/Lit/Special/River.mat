@@ -28,6 +28,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _CausticTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _CrackTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -45,6 +49,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FlowTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -90,6 +98,8 @@ Material:
     - _BeginOpacity: 0.5
     - _Blend: 0
     - _BumpScale: 1
+    - _Caustic: 1
+    - _CausticStrength: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _CrackDistance: 0.5
@@ -99,8 +109,11 @@ Material:
     - _CrackTopStrength: 0.2
     - _Cull: 2
     - _Cutoff: 0.5
+    - _Depth: 1
+    - _DepthBegin: 2
     - _DepthDistance: 1
     - _DepthPow: 2
+    - _DepthRefraction: 1
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DistortStrength: 1
@@ -115,6 +128,11 @@ Material:
     - _EnableSpecular: 1
     - _EnableThick: 1
     - _EnvironmentReflections: 1
+    - _FlowSpeed: 2
+    - _Foam: 1
+    - _FoamBegin: 0.1
+    - _FoamDistort: 1
+    - _FoamWidth: 0.2
     - _FresnelPow: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
@@ -124,9 +142,14 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
+    - _ReceiveShadow: 1
     - _ReceiveShadows: 1
+    - _RefractionAmount: 0.1
+    - _RefractionDistance: 1
+    - _Scale: 10
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
+    - _SpecularAmount: 1
     - _SpecularHighlights: 1
     - _SpecularRange: 0.98
     - _SrcBlend: 1
@@ -138,7 +161,10 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _CrackColor: {r: 1, g: 1, b: 1, a: 1}
+    - _DepthColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FlowDirection: {r: 1, g: 1, b: 0, a: 0}
+    - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &8501632780962518606

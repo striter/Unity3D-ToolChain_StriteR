@@ -6,17 +6,12 @@ using static UIT_TouchConsole;
 
 public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
 {
-    public static UIT_JoyStick GetHelperJoystick() => Instance.m_HelperJoystick;
-
-    UIT_JoyStick m_HelperJoystick;
     Transform m_FrameRate;
     Text m_FrameRateValue;
     Queue<int> m_FrameRateQueue = new Queue<int>();
     [PartialMethod(enum_PartialMethods.Init,enum_PartialSorting.Miscs)]
     internal void InitMiscs()
     {
-        m_HelperJoystick = new UIT_JoyStick(transform.Find("Joystick"));
-
         m_FrameRate = transform.Find("FrameRate");
         m_FrameRateValue = m_FrameRate.Find("Value/Value").GetComponent<Text>();
 
@@ -26,7 +21,6 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
     {
         m_FrameRateQueue.Clear();
         m_FrameRateValue.text = "";
-        m_HelperJoystick.SetVisible(false);
     }
     [PartialMethod(enum_PartialMethods.Tick, enum_PartialSorting.Miscs)]
     internal void TickMiscs(float _deltaTime)

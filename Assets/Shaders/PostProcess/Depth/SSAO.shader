@@ -35,21 +35,22 @@
 					float occlusion = 0;
 					float radius=_Radius;
 					#if _DITHER
-					radius*=remap(random01(i.uv),0.,1.,0.5,1.);
+						radius*=remap(dither01(i.uv*_ScreenParams.xy),0.,1.,0.5,1.);
 					#endif
+					float rcpRadius=rcp(_Radius);
 					[unroll(128u)]
 					for (uint index = 0u; index < _SampleCount; index++) {
 						float3 offsetWS= _SampleSphere[index]*radius;
 						offsetWS*=sign(dot(normalWS,offsetWS));
 						float3 sampleWS=positionWS+offsetWS;
-						half2 sampleUV;
+						float2 sampleUV;
 						half sampleDepth;
 						TransformHClipToUVDepth(mul(_Matrix_VP, float4(sampleWS,1)),sampleUV,sampleDepth);
 						float depthOffset =  TransformWorldToEyeDepth(sampleWS,_Matrix_V)-SampleEyeDepth(sampleUV);
-						float depthSample=saturate(depthOffset/_Radius)*step(depthOffset,_Bias);
+						float depthSample=saturate(depthOffset*rcpRadius)*step(depthOffset,_Bias);
 						occlusion+=depthSample;
 					}
-					occlusion/=_SampleCount;
+					occlusion*=rcp(_SampleCount);
 					occlusion = saturate(occlusion  * _Intensity);
 					occlusion*=step(HALF_MIN,abs(depth-Z_END));		//Clip Skybox
 					return lerp(SampleMainTex(i.uv),_AOColor, occlusion);

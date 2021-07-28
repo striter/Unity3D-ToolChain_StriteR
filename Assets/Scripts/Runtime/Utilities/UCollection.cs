@@ -346,4 +346,16 @@ public static class UCollection
             yield return item;
         }
     }
+
+    public static Vector2 Average<T>(this IEnumerable<T> _enumerable, Func<T, Vector2> _OnEachElement)      //To Be Continued With Demical
+    {
+        Vector2 sum = Vector2.zero;
+        int index = 0;
+        foreach (var element in _enumerable)
+        {
+            sum += _OnEachElement(element);
+            index++;
+        }
+        return index==0?Vector2.zero:sum / index;
+    }
 }

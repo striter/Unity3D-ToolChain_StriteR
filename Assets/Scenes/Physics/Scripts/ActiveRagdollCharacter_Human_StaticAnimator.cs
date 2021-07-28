@@ -40,12 +40,10 @@ namespace PhysicsTest
         public override void OnTakeControl(TPSCameraController _controller)
         {
             base.OnTakeControl(_controller);
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.Jump).Add(SwitchAnim);
         }
         public override void OnRemoveControl()
         {
             base.OnRemoveControl();
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.Jump).Remove(SwitchAnim);
         }
 
         bool m_Walking = false;

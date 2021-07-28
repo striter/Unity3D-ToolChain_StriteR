@@ -17,16 +17,13 @@
         _FlowX("Flow X",Range(0,5))=1
         _FlowY("Flow Y",Range(0,5))=1
         
-        [Header(Misc)]
-        [Enum(UnityEngine.Rendering.BlendMode)]_SrcBlend("Src Blend",float)=1
-        [Enum(UnityEngine.Rendering.BlendMode)]_DstBlend("Dst Blend",float)=1
     }
     SubShader
     {
         Tags{"Queue"="Transparent" }
         Pass
         {
-            Blend [_SrcBlend] [_DstBlend]
+            Blend Off
             ZWrite Off
             Cull Back
             HLSLPROGRAM
@@ -69,8 +66,9 @@
                 float3 positionWS=TransformObjectToWorld(v.positionOS);
                 o.viewDirWS=TransformWorldToViewDir(positionWS,UNITY_MATRIX_V);
 
-                float2 uv=positionWS.xz/_Scale;
+                float2 uv=positionWS.xz;
                 uv+=float2(_FlowX,_FlowY)*_Time.y;
+                uv/=_Scale;
                 o.uv=uv;
                 return o;
             }
@@ -80,7 +78,7 @@
                 float3 viewDirWS=normalize(i.viewDirWS);
                 viewDirWS.xz/=viewDirWS.y;
                 viewDirWS*=_DepthScale;
-                float depth= ParallaxMapping(_DepthTex,sampler_DepthTex,i.uv,viewDirWS.xz,_ParallaxCount,_DepthOffset);
+                float depth= ParallaxMappingPOM(TEXTURE2D_ARGS(_DepthTex,sampler_DepthTex),_DepthOffset,i.uv,viewDirWS.xz,_ParallaxCount);
                 float3 color=lerp(_BeginColor.rgb,_EndColor.rgb,depth);
                 return float4(color,1);
             }

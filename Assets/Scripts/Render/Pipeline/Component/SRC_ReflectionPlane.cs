@@ -33,7 +33,6 @@ namespace Rendering.Pipeline
                 return;
             Gizmos.color = IndexToColor(m_Index);
             Gizmos.matrix = transform.localToWorldMatrix;
-            Gizmos_Extend.DrawArrow(Vector3.up*m_PlaneOffset,Quaternion.LookRotation(Vector3.up),.5f,.1f);
             Gizmos.DrawWireCube(Vector3.up * m_PlaneOffset, m_MeshFilter.sharedMesh.bounds.size.SetY(0));
         }
         private Color IndexToColor(int index)

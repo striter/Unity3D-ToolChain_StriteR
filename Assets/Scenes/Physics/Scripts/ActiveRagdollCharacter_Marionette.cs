@@ -85,20 +85,12 @@ namespace PhysicsTest
         public override void OnTakeControl(TPSCameraController _controller)
         {
             base.OnTakeControl(_controller);
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.Jump).Add(OnLostConcious);
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.Sprint).Add(OnSprint);
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.MainFire).Add(m_LeftArmCombine.OnAiming);
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.AltFire).Add(m_RightArmCombine.OnAiming);
             m_LeftThigh.maxAngularVelocity = 90f;
             m_RightThigh.maxAngularVelocity = 90f;
         }
         public override void OnRemoveControl()
         {
             base.OnRemoveControl();
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.Jump).Remove(OnLostConcious);
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.Sprint).Remove(OnSprint);
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.MainFire).Remove(m_LeftArmCombine.OnAiming);
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.AltFire).Remove(m_RightArmCombine.OnAiming);
         }
 
         public override void Tick(float _deltaTime)

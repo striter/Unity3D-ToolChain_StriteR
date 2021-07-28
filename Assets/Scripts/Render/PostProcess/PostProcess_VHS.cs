@@ -129,9 +129,9 @@ namespace Rendering.ImageEffect
         static readonly int ID_VignetteValue = Shader.PropertyToID("_VignetteValue");
         #endregion
 
-        public override void OnValidate(PPData_VHS _data)
+        public override void OnValidate(ref PPData_VHS _data)
         {
-            base.OnValidate(_data);
+            base.OnValidate(ref _data);
             m_Material.EnableKeywords(KW_SCREENCUT, (int)_data.m_ScreenCut);
             m_Material.SetVector(ID_ScreenCutTarget,(Vector2.one+ (_data.m_ScreenCut == enum_VHSScreenCut.Scaled?1:-1)*_data.m_ScreenCutDistance) /2f);
 

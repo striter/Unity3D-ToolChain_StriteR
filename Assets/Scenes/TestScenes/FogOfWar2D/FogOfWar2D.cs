@@ -40,16 +40,6 @@ public class FogOfWar2D : MonoBehaviour
             m_SaveTest.SavePersistentData();
         });
 
-        UIT_TouchConsole.NewPage("Touch Input");
-        UIT_TouchConsole.Command("Single").
-            Button(() => TouchInputManager.Instance.SwitchToSingle().Init((down, pos) => Debug.LogFormat("Single{0}{1}", down, pos), pos => Debug.LogFormat("Single Tick{0}", pos)));
-        UIT_TouchConsole.Command("Stretch").
-            Button(() => TouchInputManager.Instance.SwitchToDualStretch().Init((down, pos1, pos2) => Debug.LogFormat("Stretch{0},{1},{2}", down, pos1, pos2), (pos1, pos2) => Debug.LogFormat("Stretch Tick{0} {1}", pos1, pos2)));
-        UIT_TouchConsole.Command("Dual LR").
-            Button(() => TouchInputManager.Instance.SwitchToTrackers().Init(new TouchTracker(vec2 => Debug.LogFormat("Dual L{0}", vec2), TouchTracker.s_LeftTrack), new TouchTracker(vec2 => Debug.LogFormat("Dual R{0}", vec2), TouchTracker.s_RightTrack)));
-        UIT_TouchConsole.Command("Dual LR Joystick").
-            Button(() => TouchInputManager.Instance.SwitchToTrackers().Init(new TouchTracker_Joystick(UIT_TouchConsole.GetHelperJoystick(), enum_Option_JoyStickMode.Retarget, vec2 => Debug.LogFormat("Dual L Joystick{0}", vec2), TouchTracker.s_LeftTrack), new TouchTracker(vec2 => Debug.LogFormat("Dual R Joystick{0}", vec2), TouchTracker.s_RightTrack)));
-
         UIT_TouchConsole.NewPage("Color Grading");
         UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostProcess_ColorGrading>(), effect => effect.OnValidate());
         UIT_TouchConsole.NewPage("Depth Of Field");

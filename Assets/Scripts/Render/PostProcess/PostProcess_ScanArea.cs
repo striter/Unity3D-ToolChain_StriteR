@@ -63,9 +63,9 @@ namespace Rendering.ImageEffect
         static readonly int ID_SqrEdgeMin = Shader.PropertyToID("_SqrEdgeMin");
         static readonly int ID_SqrEdgeMax = Shader.PropertyToID("_SqrEdgeMax");
         #endregion
-        public override void OnValidate(PPData_ScanArea _data)
+        public override void OnValidate(ref PPData_ScanArea _data)
         {
-            base.OnValidate(_data);
+            base.OnValidate(ref _data);
             float edgeMin = _data.m_Radius;
             float edgeMax = _data.m_Radius + _data.m_Outline;
             m_Material.SetFloat(ID_SqrEdgeMax, edgeMax * edgeMax);

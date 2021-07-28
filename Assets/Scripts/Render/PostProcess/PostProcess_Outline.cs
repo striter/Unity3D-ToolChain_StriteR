@@ -106,10 +106,10 @@ namespace Rendering.ImageEffect
             base.Destroy();
             UnityEngine.Object.DestroyImmediate(m_RenderMaterial);
         }
-        public override void OnValidate(PPData_Outline _data)
+        public override void OnValidate(ref PPData_Outline _data)
         {
-            base.OnValidate(_data);
-            _mCoreBlur.OnValidate(_data.m_OutlineBlur);
+            base.OnValidate(ref _data);
+            _mCoreBlur.OnValidate(ref _data.m_OutlineBlur);
             m_Material.SetColor(ID_EdgeColor, _data.m_Color);
             m_Material.SetFloat(ID_OutlineWidth, _data.m_Width);
             m_Material.EnableKeywords(KW_Convolution, (int)_data.m_Convolution);
@@ -125,7 +125,7 @@ namespace Rendering.ImageEffect
             }
         }
 
-        public void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, PPData_Outline _data)
+        public void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor,ref PPData_Outline _data)
         {
             if (_data.m_Type != enum_OutlineType.MaskBlur)
                 return;
@@ -141,7 +141,7 @@ namespace Rendering.ImageEffect
             _buffer.Blit(RenderTargetHandle.CameraTarget.id, RT_ID_MaskDepth, m_RenderDepthMaterial);
         }
 
-        public void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData, PPData_Outline _data)
+        public void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,ref PPData_Outline _data)
         {
             if (_data.m_Type != enum_OutlineType.MaskBlur)
                 return;
@@ -163,7 +163,7 @@ namespace Rendering.ImageEffect
             _context.ExecuteCommandBuffer(buffer);
             CommandBufferPool.Release(buffer);
         }
-        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor, PPData_Outline _data)
+        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor,ref PPData_Outline _data)
         {
             switch (_data.m_Type)
             {
@@ -174,13 +174,14 @@ namespace Rendering.ImageEffect
                     break;
                 case enum_OutlineType.MaskBlur:
                     {
-                        _mCoreBlur.ExecutePostProcessBuffer(_buffer, RT_ID_MaskRender, RT_ID_MaskRenderBlur, m_Descriptor, _data.m_OutlineBlur);
+                        _mCoreBlur.ExecutePostProcessBuffer(_buffer, RT_ID_MaskRender, RT_ID_MaskRenderBlur, m_Descriptor,ref _data.m_OutlineBlur);
                         _buffer.Blit(_src, _dst, m_Material, 1);
                     }
                     break;
             }
         }
-        public void FrameCleanUp(CommandBuffer _buffer, PPData_Outline _data)
+
+        public void FrameCleanUp(CommandBuffer _buffer,ref PPData_Outline _data)
         {
             if (_data.m_Type != enum_OutlineType.MaskBlur)
                 return;

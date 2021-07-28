@@ -90,11 +90,9 @@ namespace PhysicsTest
         public float m_RotateSpeed = 1f;
         public virtual void OnTakeControl(TPSCameraController _controller)
         {
-            TouchInputManager.Instance.SwitchToTrackers().Init(new TouchTracker_Joystick(UIT_TouchConsole.GetHelperJoystick(), enum_Option_JoyStickMode.Retarget, OnMove,TouchTracker.s_LeftTrack),new TouchTracker(OnRotate,TouchTracker.s_RightTrack));
         }
         public virtual void OnRemoveControl()
         {
-            TouchInputManager.Instance.SwitchOff();
         }
         public abstract void Tick(float _deltaTime);
         public abstract void FixedTick(float _deltaTime);

@@ -25,11 +25,11 @@ namespace Rendering.ImageEffect
             m_Material = null;
         }
 
-        public virtual void OnValidate(T _data) 
+        public virtual void OnValidate(ref T _data) 
         {  
         
         }
-        public virtual void ExecutePostProcessBuffer( CommandBuffer _buffer,  RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _descriptor, T _data)
+        public virtual void ExecutePostProcessBuffer( CommandBuffer _buffer,  RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _descriptor,ref T _data)
         {
             _buffer.Blit(_src, _dst, m_Material);
         }
@@ -47,20 +47,21 @@ namespace Rendering.ImageEffect
     }
     public interface ImageEffectPipeline<T> where T:struct
     {
-        public abstract void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, T _data);
-        public abstract void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,T _data);
-        public abstract void FrameCleanUp(CommandBuffer _buffer,T _data);
+        void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor,ref  T _data);
+        void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,ref T _data);
+        void FrameCleanUp(CommandBuffer _buffer,ref T _data);
     }
 
     public partial class PostProcessComponentBase<T,Y> : APostProcessBase where T : PostProcessCore<Y>, new() where Y:struct
     {
         [MTitle] public Y m_EffectData;
+        public bool m_SceneViewPreview = false;
         public T m_Effect { get; private set; }
         public ImageEffectPipeline<Y> m_EffectPipeline { get; private set; }
         protected Camera m_Camera { get; private set; }
         protected void Awake()=>Init();
         protected void OnDestroy()=>Destroy();
-        public override void OnValidate() => m_Effect?.OnValidate(m_EffectData);
+        public override void OnValidate() => m_Effect?.OnValidate(ref m_EffectData);
         void OnDidApplyAnimationProperties() => OnValidate();       //Undocumented Magic Fucntion ,Triggered By AnimationClip
         void Reset() => m_EffectData = UPipeline.GetDefaultPostProcessData<Y>();
         void Init()
@@ -75,10 +76,10 @@ namespace Rendering.ImageEffect
             OnValidate();
         }
         public override bool m_IsOpaqueProcess => false;
-        public override void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor) => m_EffectPipeline?.Configure(_buffer,_descriptor,m_EffectData);
-        public override void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData) => m_EffectPipeline?.ExecuteContext(_renderer, _context, ref _renderingData,m_EffectData);
-        public override void ExecuteBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _descriptor)  => m_Effect?.ExecutePostProcessBuffer(_buffer, _src, _dst, _descriptor, m_EffectData);
-        public override void FrameCleanUp(CommandBuffer _buffer) => m_EffectPipeline?.FrameCleanUp(_buffer,m_EffectData);
+        public override void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor) => m_EffectPipeline?.Configure(_buffer,_descriptor,ref m_EffectData);
+        public override void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData) => m_EffectPipeline?.ExecuteContext(_renderer, _context, ref _renderingData,ref m_EffectData);
+        public override void ExecuteBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _descriptor)  => m_Effect?.ExecutePostProcessBuffer(_buffer, _src, _dst, _descriptor,ref  m_EffectData);
+        public override void FrameCleanUp(CommandBuffer _buffer) => m_EffectPipeline?.FrameCleanUp(_buffer,ref m_EffectData);
         void Destroy()
         {
             if (m_Effect == null)
@@ -98,7 +99,6 @@ namespace Rendering.ImageEffect
     [ExecuteInEditMode]
     public partial class PostProcessComponentBase<T, Y> : APostProcessBase where T : PostProcessCore<Y>, new() where Y : struct
     {
-        public bool m_SceneViewPreview = false;
         PostProcessComponentBase<T, Y> _mSceneCameraProcessComponent = null;
         bool EditorInitAvailable() => UnityEditor.SceneView.lastActiveSceneView && UnityEditor.SceneView.lastActiveSceneView.camera.gameObject != this.gameObject;
         void Update()

@@ -44,9 +44,9 @@ namespace Rendering.ImageEffect
         static readonly int ID_NoiseSpeedX = Shader.PropertyToID("_NoiseSpeedX");
         static readonly int ID_NoiseSpeedY = Shader.PropertyToID("_NoiseSpeedY");
         #endregion
-        public override void OnValidate(PPData_VerticalFog _data)
+        public override void OnValidate(ref PPData_VerticalFog _data)
         {
-            base.OnValidate(_data);
+            base.OnValidate(ref _data);
             m_Material.SetColor(ID_FogColor, _data.m_FogColor);
             m_Material.SetFloat(ID_FogDensity, _data.m_FogDensity);
             m_Material.SetFloat(ID_FogVerticalStart, _data.m_FogVerticalStart);

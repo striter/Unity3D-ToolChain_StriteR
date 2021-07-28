@@ -86,6 +86,18 @@ public static class UGeometry
         v *= invDetermination;
         return true;
     }
+
+    public static bool RayPlaneDistance(GPlane _plane, Ray _ray,out float distance)
+    {
+        distance = RayPlaneDistance(_plane, _ray);
+        return distance!=0;
+    }
+    public static bool RayPlaneDistance(GPlane _plane, Ray _ray,out Vector3 _hitPoint)
+    {
+        float distance = RayPlaneDistance(_plane, _ray);
+        _hitPoint = _ray.GetPoint(distance);
+        return distance!=0;
+    }
     public static float RayPlaneDistance(GPlane _plane,Ray _ray)
     {
         float nrO = Vector3.Dot(_plane.normal, _ray.origin);

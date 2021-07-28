@@ -160,7 +160,7 @@ float2 TransformViewToNDC(float4 positionVS)
     return float2(positionVS.x/width,positionVS.y/height)+.5;
 }
 
-void TransformHClipToUVDepth(float4 positionCS,out half2 uv,out float depth)
+void TransformHClipToUVDepth(float4 positionCS,out float2 uv,out float depth)
 {
     float3 divide=positionCS.xyz/positionCS.w;
     depth = divide.z;

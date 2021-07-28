@@ -15,7 +15,6 @@ public class PostEffect : MonoBehaviour
         m_AreaCoroutine = CoroutineHelper.CreateSingleCoroutine();
         m_CircleArea = GetComponentInChildren<PostProcess_ScanArea>();
         m_CircleAreaCamera = m_CircleArea.GetComponent<Camera>();
-        TouchInputManager.Instance.SwitchToDualStretch().Init(OnTouchCheck,OnPressCheck);
         UIT_TouchConsole.InitDefaultCommands();
         foreach(var postEffects in GetComponentsInChildren<APostProcessBase>())
         {

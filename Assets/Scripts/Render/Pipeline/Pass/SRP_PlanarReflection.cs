@@ -24,11 +24,11 @@ namespace Rendering.Pipeline
             m_CoreBlurs = new PPCore_Blurs();
             m_PropertyBlock = new MaterialPropertyBlock();
             m_Data = _data;
-            m_CoreBlurs.OnValidate(_data.m_BlurParam);
+            m_CoreBlurs.OnValidate(ref m_Data.m_BlurParam);
             m_ReflectionPasses = new SRP_PlanarReflectionBase[C_MaxReflectionTextureCount];
             for (int i = 0; i < C_MaxReflectionTextureCount; i++)
             {
-                switch (_data.m_ReflectionType)
+                switch (m_Data.m_ReflectionType)
                 {
                     case enum_ReflectionSpace.ScreenSpace:
                         m_ReflectionPasses[i] = new SRP_PlanarReflection_ScreenSpace(this,_reflectionCS);
@@ -149,7 +149,7 @@ namespace Rendering.Pipeline
             
             GenerateTarget(context,ref renderingData,cmd,m_ResultDescriptor,m_ColorResult, m_Data,ref m_PlaneData);
             if (m_Data.m_EnableBlur)
-                m_CoreBlurs.ExecutePostProcessBuffer(cmd, m_ColorResult, m_ReflectionTextureID, m_ResultDescriptor ,m_Data.m_BlurParam); 
+                m_CoreBlurs.ExecutePostProcessBuffer(cmd, m_ColorResult, m_ReflectionTextureID, m_ResultDescriptor ,ref m_Data.m_BlurParam); 
             context.ExecuteCommandBuffer(cmd);
             cmd.Clear();
             CommandBufferPool.Release(cmd);

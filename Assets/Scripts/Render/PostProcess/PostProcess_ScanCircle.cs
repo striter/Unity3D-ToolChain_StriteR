@@ -72,9 +72,9 @@ namespace Rendering.ImageEffect
         static readonly int ID_MinSqrDistance = Shader.PropertyToID("_MinSqrDistance");
         static readonly int ID_MaxSqrDistance = Shader.PropertyToID("_MaxSqrDistance");
         #endregion
-        public override void OnValidate(PPData_CircleScan _data)
+        public override void OnValidate(ref PPData_CircleScan _data)
         {
-            base.OnValidate(_data);
+            base.OnValidate(ref _data);
             m_Material.SetVector(ID_Origin, _data.m_Origin);
             m_Material.SetColor(ID_Color, _data.m_Color);
             float minDistance = _data.m_Elapse;

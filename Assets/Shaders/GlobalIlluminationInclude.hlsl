@@ -49,7 +49,7 @@ half3 IndirectBRDFSpecular(float3 reflectDir, float perceptualRoughness, half4 p
 {
     half3 specular = IndirectBRDFCubeSpecular(reflectDir, perceptualRoughness);
     [branch]
-    if (UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_PlanarReflection, _CameraReflectionTextureOn) == 1u)
+    if (UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_PlanarReflection, _CameraReflectionTextureOn) == 1)
     {
         half4 planarReflection = IndirectBRDFPlanarSpecular(TransformHClipToNDC(positionHCS), normalTS);
         specular = lerp(specular, planarReflection.rgb,  planarReflection.a );

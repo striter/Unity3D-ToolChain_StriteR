@@ -19,6 +19,8 @@
     	[Toggle(_DEPTHREFRACTION)] _DepthRefraction("Enable",int)=1
     	[Foldout(_DEPTHREFRACTION)] _RefractionDistance("Refraction Distance",Range(0.01,5))=1 
     	[Foldout(_DEPTHREFRACTION)]_RefractionAmount("Refraction Amount",Range(0,.5))=0.1
+    	[Header(_Fresnel)]
+    	[Toggle(_FRESNEL)]_Fresnel("Enable",int)=1
     	
     	[Header(Depth)]
     	[Toggle(_DEPTH)]_Depth("Enable",int)=1
@@ -59,6 +61,7 @@
             #pragma shader_feature_local _DEPTH
             #pragma shader_feature_local _DEPTHREFRACTION
 			#pragma shader_feature_local _CAUSTIC
+            #pragma shader_feature_local _FRESNEL
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             
 			#include "../../CommonInclude.hlsl"
@@ -189,7 +192,7 @@
 				#endif
             	float2 causticUV=causticPositionWS.xz+uvFlow;
 				causticUV*=uvScale;
-            	float caustic=SAMPLE_TEXTURE2D(_CausticTex,sampler_CausticTex,causticUV);
+            	float caustic=SAMPLE_TEXTURE2D(_CausticTex,sampler_CausticTex,causticUV).r;
             	underSurfaceColor+=caustic*lightCol*_CausticStrength*causticAtten;
             	#endif
             	
@@ -212,10 +215,13 @@
             	float3 foamColor=lightCol*_FoamColor.rgb;
 				aboveSurfaceColor=lerp(aboveSurfaceColor,foamColor,foam*atten*_FoamColor.a);
             	#endif
+
+            	float fresnel=1;
+            	#if _FRESNEL
+            	fresnel=1.-Pow4(dot(viewDirWS,normalWS));
+				#endif
             	
-				float fresnel=dot(viewDirWS,normalWS);
-            	fresnel=1.-Pow4(fresnel);
-            	float3 riverCol=lerp(underSurfaceColor,aboveSurfaceColor,fresnel);
+            	float3 riverCol=lerp(underSurfaceColor,aboveSurfaceColor,fresnel*_Color.a);
             	
             	return float4(riverCol,1);
             }

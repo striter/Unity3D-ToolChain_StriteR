@@ -6,6 +6,6 @@ namespace Rendering.Pipeline
 {
     public interface ISRPBase
     {
-        public void Dispose();
+        void Dispose();
     }
 }

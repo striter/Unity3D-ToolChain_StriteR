@@ -77,9 +77,9 @@ namespace Rendering.ImageEffect
         static readonly int ID_BilateralSize = Shader.PropertyToID("_BilateralSize");
         static readonly int ID_BilateralFactor = Shader.PropertyToID("_BilateralFactor");
         #endregion
-        public override void OnValidate(PPData_Stylize _params)
+        public override void OnValidate(ref PPData_Stylize _params)
         {
-            base.OnValidate(_params);
+            base.OnValidate(ref _params);
             m_Material.EnableKeywords(KW_PixelGrid, (int)_params.m_PixelGrid);
             m_Material.SetColor(ID_PixelGridColor,_params.m_PixelGridColor);
             m_Material.SetVector(ID_PixelGridWidth, new Vector2(_params.m_GridWidth, 1f - _params.m_GridWidth));
@@ -91,12 +91,12 @@ namespace Rendering.ImageEffect
             m_Material.SetFloat(ID_BilateralSize, _params.m_BilaterailSize);
             m_Material.SetFloat(ID_BilateralFactor, _params.m_BilateralFactor);
         }
-        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor, PPData_Stylize _data)
+        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor,ref PPData_Stylize _data)
         {
             switch (_data.m_Stylize)
             {
                 default:
-                    base.ExecutePostProcessBuffer(_buffer, _src, _dst, _descriptor, _data);
+                    base.ExecutePostProcessBuffer(_buffer, _src, _dst, _descriptor,ref _data);
                     break;
                 case enum_Stylize.Pixel:
                     _buffer.GetTemporaryRT(ID_PixelizeDownSample, _descriptor.width / _data.m_DownSample, _descriptor.height / _data.m_DownSample, 0, FilterMode.Point, _descriptor.colorFormat);

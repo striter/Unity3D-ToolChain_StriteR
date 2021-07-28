@@ -53,7 +53,7 @@ Shader "Hidden/PostProcess/VolumetricLight"
                         #if _DITHER
                         samplePos+=posDelta*random01(samplePos);
                         #endif
-                        float shadowAttenuation=SampleHardShadow(_MainLightShadowmapTexture,sampler_MainLightShadowmapTexture,TransformWorldToShadowCoord(samplePos).xyz,shadowStrength);
+                        float shadowAttenuation=SampleHardShadow(TEXTURE2D_ARGS(_MainLightShadowmapTexture, sampler_MainLightShadowmapTexture),TransformWorldToShadowCoord(samplePos).xyz,shadowStrength);
                         shadowAttenuation*=CloudShadowAttenuation(samplePos,lightDirWS);
                         totalAtten+=marchDelta*shadowAttenuation;
                         curPos+=posDelta;

@@ -78,7 +78,7 @@ namespace Rendering.ImageEffect
         static readonly int ID_Vector = Shader.PropertyToID("_Vector");
         #endregion
 
-        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor, PPData_Blurs _data)
+        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor,ref PPData_Blurs _data)
         {
             if (_data.m_DownSample <= 0)
             {

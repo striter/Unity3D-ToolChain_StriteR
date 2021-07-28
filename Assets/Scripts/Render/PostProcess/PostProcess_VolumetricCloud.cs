@@ -101,9 +101,9 @@ namespace Rendering.ImageEffect
         static readonly int ID_ScatterRange = Shader.PropertyToID("_ScatterRange");
         static readonly int ID_ScatterStrength = Shader.PropertyToID("_ScatterStrength");
         #endregion
-        public override void OnValidate(PPData_VolumetricCloud _data)
+        public override void OnValidate(ref PPData_VolumetricCloud _data)
         {
-            base.OnValidate(_data);
+            base.OnValidate(ref _data);
             m_Material.SetFloat(ID_VerticalStart, _data.m_VerticalStart);
             m_Material.SetFloat(ID_VerticalEnd, _data.m_VerticalStart+_data.m_VerticalLength);
             m_Material.SetFloat(ID_Opacity, _data.m_Opacity);

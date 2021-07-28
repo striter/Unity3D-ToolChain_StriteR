@@ -1,5 +1,5 @@
 ﻿//Depth Parallax
-half ParallaxMapping(Texture2D _texture,SamplerState _sampler, float2 uv,half2 uvOffset,uint marchCount,float depthOffset=0)
+half ParallaxMappingPOM(TEXTURE2D_PARAM(_texture,_sampler), half depthOffset,half2 uv,half2 uvOffset,uint marchCount)
 {
     half deltaParallax=1.0h/marchCount;
     half2 deltaUV=uvOffset/marchCount;
@@ -19,7 +19,10 @@ half ParallaxMapping(Texture2D _texture,SamplerState _sampler, float2 uv,half2 u
     return layer-interpolate*deltaParallax;
 }
 
-
+// half ParallaxMappingRPM(Texture2D _texture,SamplerState _sampler,half _depthOffset,half2 _uv,half2 _uvOffset,uint _linearCount,uint _binaryCount)
+// {
+//         
+// }
 // [Header(Depth)]
 // [ToggleTex(_DEPTHMAP)][NoScaleOffset]_DepthTex("Texure",2D)="white"{}
 // [Foldout(_DEPTHMAP)]_DepthScale("Scale",Range(0.001,.5))=1
@@ -57,7 +60,7 @@ void ParallaxUVMapping(inout half2 uv,inout float depth,inout float3 positionWS,
     #if _PARALLAX
         uint parallaxCount=UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_Parallax,_ParallaxCount);
         parallaxCount=min(lerp(parallaxCount/2u,parallaxCount,marchDelta),128u);
-        parallax=ParallaxMapping(_DepthTex,sampler_DepthTex, uv,uvOffset,parallaxCount,depthOffset);
+        parallax=ParallaxMappingPOM(_DepthTex,sampler_DepthTex,depthOffset, uv,uvOffset,parallaxCount);
     #else
         parallax= SAMPLE_TEXTURE2D_LOD(_DepthTex,sampler_DepthTex,uv,0).r-depthOffset;
     #endif

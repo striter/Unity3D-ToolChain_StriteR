@@ -33,19 +33,11 @@ namespace PhysicsTest
             _controller.m_BindPosOffset = Vector3.zero;
             _controller.m_MoveDamping = 0f;
             _controller.m_RotateDamping = 0f;
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.AltFire).Add(OnAltFire);
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.MainFire).Add(OnMainFire);
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.Jump).Add(OnJump);
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.Sprint).Add(OnSprint);
             m_GravityLine = m_GravityPoint.GetComponent<LineRenderer>();
         }
         public override void OnRemoveControl()
         {
             base.OnRemoveControl();
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.AltFire).Remove(OnAltFire);
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.MainFire).Remove(OnMainFire);
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.Jump).Remove(OnJump);
-            PCInputManager.Instance.GetKeyBinding(enum_Binding.Sprint).Remove(OnSprint);
         }
         private void Update()
         {

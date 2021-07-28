@@ -74,9 +74,9 @@ namespace Rendering.ImageEffect
         static readonly int ID_MixGreen = Shader.PropertyToID("_MixGreen");
         static readonly int ID_MixBlue = Shader.PropertyToID("_MixBlue");
         #endregion
-        public override void OnValidate(PPData_ColorGrading _data)
+        public override void OnValidate(ref PPData_ColorGrading _data)
         {
-            base.OnValidate(_data);
+            base.OnValidate(ref _data);
             m_Material.SetFloat(ID_Weight, _data.m_Weight);
 
             m_Material.EnableKeyword(KW_LUT, _data.m_LUT);
