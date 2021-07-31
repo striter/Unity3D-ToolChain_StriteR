@@ -64,9 +64,9 @@
                 half3 origin=0.h;
                 float density=.0h;
                 float2 sdfDstOS=0.;
-                GRay viewRayOS=GetRay(i.positionOS,viewDirOS);
+                GRay viewRayOS=GRay_Ctor(i.positionOS,viewDirOS);
                 #if _TYPE_POINT
-                sdfDstOS= SphereRayDistance(GetSphere(origin,.5) ,viewRayOS);
+                sdfDstOS= SphereRayDistance(GSphere_Ctor(origin,.5) ,viewRayOS);
                 half closestDst=PointRayProjection(viewRayOS,0);
                 closestDst= length(0.-viewRayOS.GetPoint(closestDst))*2;
                 density= saturate(1-closestDst);

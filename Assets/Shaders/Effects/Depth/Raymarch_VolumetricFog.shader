@@ -44,8 +44,8 @@
                 float3 positionWS:TEXCOORD0;
                 float4 screenPos : TEXCOORD1;
                 float3 viewDirWS:TEXCOORD2;
-                float3 minBoundWS:TEXCOORD4;
-                float3 maxBoundWS:TEXCOORD5;
+                float3 centerWS:TEXCOORD4;
+                float3 sizeWS:TEXCOORD5;
             };
 
             TEXTURE2D(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
@@ -72,8 +72,8 @@
                 o.positionCS = TransformObjectToHClip(v.positionOS);
                 o.positionWS=TransformObjectToWorld(v.positionOS);
                 o.viewDirWS=o.positionWS-GetCameraPositionWS();
-                o.minBoundWS=TransformObjectToWorld(float3(-.5,-.5,-.5));
-                o.maxBoundWS=TransformObjectToWorld(float3(.5,.5,.5));
+                o.centerWS=TransformObjectToWorld(0);
+                o.sizeWS=TransformObjectToWorldDir(1,false);
                 o.screenPos=ComputeScreenPos(o.positionCS);
                 return o;
             }
@@ -82,7 +82,7 @@
             float4 frag (v2f i) : SV_Target
             {
                 float3 marchDirWS=normalize( i.viewDirWS);
-                float marchDstWS=AABBRayDistance(GetBox( i.minBoundWS,i.maxBoundWS),GetRay(i.positionWS,marchDirWS)).y;
+                float marchDstWS=AABBRayDistance(GBox_Ctor( i.centerWS,i.sizeWS),GRay_Ctor(i.positionWS,marchDirWS)).y;
                 float depthDstWS=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, i.screenPos.xy/i.screenPos.w),_ZBufferParams).r-i.screenPos.w;
                 float marchDistance= max(0,min(marchDstWS, depthDstWS));
                 

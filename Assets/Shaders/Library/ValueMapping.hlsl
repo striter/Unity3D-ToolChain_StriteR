@@ -1,27 +1,4 @@
-﻿
-float2x2 Rotate2x2(float _angle)
-{
-    float sinAngle, cosAngle;
-    sincos(_angle, sinAngle, cosAngle);
-    return float2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
-}
-
-float3x3 Rotate3x3(float _angle, float3 _axis)
-{
-    float s, c;
-    sincos(_angle, s, c);
-
-    float t = 1 - c;
-    float x = _axis.x;
-    float y = _axis.y;
-    float z = _axis.z;
-
-    return float3x3(t * x * x + c, t * x * y - s * z, t * x * z + s * y,
-        t * x * y + s * z, t * y * y + c, t * y * z - s * x,
-        t * x * z - s * y, t * y * z + s * x, t * z * z + c);
-}
-
-float sqrDistance(float3 _offset)
+﻿float sqrDistance(float3 _offset)
 {
     return dot(_offset, _offset);
 }
@@ -66,26 +43,30 @@ float max(float _max1, float _max2, float _max3, float _max4)
 
 float bilinearLerp(float tl, float tr, float bl, float br, float2 uv)
 {
-    float lerpT = lerp(tl, tr, uv.x);
     float lerpB = lerp(bl, br, uv.x);
+    float lerpT = lerp(tl, tr, uv.x);
     return lerp(lerpB, lerpT, uv.y);
 }
 float2 bilinearLerp(float2 tl, float2 tr, float2 bl, float2 br, float2 uv)
 {
-    float2 lerpT = lerp(tl, tr, uv.x);
     float2 lerpB = lerp(bl, br, uv.x);
+    float2 lerpT = lerp(tl, tr, uv.x);
     return lerp(lerpB, lerpT, uv.y);
 }
 
 float3 bilinearLerp(float3 tl, float3 tr, float3 bl, float3 br, float2 uv)
 {
-    float3 lerpT = lerp(tl, tr, uv.x);
     float3 lerpB = lerp(bl, br, uv.x);
+    float3 lerpT = lerp(tl, tr, uv.x);
     return lerp(lerpB, lerpT, uv.y);
 }
 float min(float3 target)
 {
     return min(min(target.x, target.y), target.z);
+}
+float min(float x,float y,float z)
+{
+    return min(x,min(y,z));
 }
 float max(float3 target)
 {
@@ -107,4 +88,9 @@ half min(half3 target)
 half max(half3 target)
 {
     return max(max(target.x, target.y), target.z);
+}
+
+float max(float x,float y,float z)
+{
+    return max(x,max(y,z));
 }

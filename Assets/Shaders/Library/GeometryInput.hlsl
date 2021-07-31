@@ -4,13 +4,14 @@
     float3 direction;
     float3 GetPoint(float _distance)  {  return origin + direction * _distance;  }
 };
-GRay GetRay(float3 _origin, float3 _direction)
+GRay GRay_Ctor(float3 _origin, float3 _direction)
 {
     GRay ray;
     ray.origin = _origin;
     ray.direction = _direction;
     return ray;
 }
+
 struct GLine
 {
     float3 origin;
@@ -26,7 +27,8 @@ struct GLine
         return ray;
     }
 };
-GLine GetLine(float3 _origin, float3 _direction, float _length)
+
+GLine GLine_Ctor(float3 _origin, float3 _direction, float _length)
 {
     GLine gline;
     gline.origin = _origin;
@@ -42,7 +44,8 @@ struct GPlane
     float3 normal;
     float distance;
 };
-GPlane GetPlane(float3 _normal, float _distance)
+
+GPlane GPlane_Ctor(float3 _normal, float _distance)
 {
     GPlane plane;
     plane.normal = _normal;
@@ -55,7 +58,7 @@ struct GPlanePos
     float3 normal;
     float3 position;
 };
-GPlanePos GetPlanePosition(float3 _normal, float3 _position)
+GPlanePos GPlanePos_Ctor(float3 _normal, float3 _position)
 {
     GPlanePos plane;
     plane.normal = _normal;
@@ -65,15 +68,46 @@ GPlanePos GetPlanePosition(float3 _normal, float3 _position)
 
 struct GBox
 {
+    float3 center;
+    float3 size;
+    float3 extend;
     float3 boxMin;
     float3 boxMax;
 };
-GBox GetBox(float3 _min, float3 _max)
+GBox GBox_Ctor(float3 _center, float3 _size)
 {
     GBox box;
-    box.boxMin = _min;
-    box.boxMax = _max;
+    box.center=_center;
+    box.size=_size;
+    box.extend=_size*.5;
+    box.boxMin = _center-box.extend;
+    box.boxMax = _center+box.extend;
     return box;
+}
+
+struct GRoundBox
+{
+    GBox box;
+    float roundness;
+};
+GRoundBox GRoundBox_Ctor(float3 _center,float3 _size,float _roundness)
+{
+    GRoundBox roundBox;
+    roundBox.box=GBox_Ctor(_center,_size-_roundness*2);
+    roundBox.roundness=_roundness;
+    return roundBox;
+}
+struct GFrameBox
+{
+    GBox box;
+    float frameExtend;
+};
+GFrameBox GFrameBox_Ctor(float3 _center,float3 _size,float _frameExtend)
+{
+    GFrameBox frameBox;
+    frameBox.box=GBox_Ctor(_center,_size);
+    frameBox.frameExtend=_frameExtend;
+    return frameBox;
 }
 
 struct GSphere
@@ -81,7 +115,7 @@ struct GSphere
     float3 center;
     float radius;
 };
-GSphere GetSphere(float3 _center, float _radius)
+GSphere GSphere_Ctor(float3 _center, float _radius)
 {
     GSphere sphere;
     sphere.center = _center;
@@ -104,18 +138,33 @@ struct GHeightCone
         return _height * tanA;
     }
 };
-GHeightCone GetHeightCone(float3 _origin, float3 _normal, float _angle, float _height)
+GHeightCone GHeightCone_Ctor(float3 _origin, float3 _normal, float _angle, float _height)
 {
     GHeightCone cone;
     cone.origin = _origin;
     cone.normal = _normal;
     cone.height = _height;
-    float radinA = _angle / 360. * PI;
-    float cosA = cos(radinA);
+    float radianA = _angle / 360. * PI;
+    float cosA = cos(radianA);
     cone.sqrCosA = cosA * cosA;
-    cone.tanA = tan(radinA);
+    cone.tanA = tan(radianA);
     cone.bottom = _origin + _normal * _height;
     cone.bottomRadius = _height *cone. tanA;
-    cone.bottomPlane = GetPlanePosition(_normal, cone.bottom);
+    cone.bottomPlane = GPlanePos_Ctor(_normal, cone.bottom);
     return cone;
+}
+
+struct GTorus
+{
+    float3 center;
+    float majorRadius;
+    float minorRadius;
+};
+GTorus GTorus_Ctor(float3 _center,float _majorRadius,float _minorRadius)
+{
+    GTorus torus;
+    torus.center=_center;
+    torus.majorRadius=_majorRadius;
+    torus.minorRadius=_minorRadius;
+    return torus;
 }

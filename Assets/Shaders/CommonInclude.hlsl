@@ -1,5 +1,6 @@
 ﻿#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Library/ValueMapping.hlsl"
+#include "Library/Transformations.hlsl"
 float2 TransformTex(float2 _uv, float4 _st) {return _uv * _st.xy + _st.zw;}
 #define PI_HALF 1.5707963267949
 #define PI_TWO 6.2831853071796
@@ -127,16 +128,16 @@ float3 TransformNDCToClip(float2 _uv,float _depth)
         deviceDepth=lerp(UNITY_NEAR_CLIP_VALUE,1,deviceDepth);
     #endif
     
-    half2 uv=_uv*2.-1;
+    float2 uv=_uv*2.-1;
     #if UNITY_UV_STARTS_AT_TOP
     uv.y=-uv.y;
     #endif
     return float3(uv,deviceDepth);
 }
 
-half2 TransformHClipToNDC(float4 _hClip)
+float2 TransformHClipToNDC(float4 _hClip)
 {
-    half2 uv=_hClip.xy*rcp(_hClip.w);
+    float2 uv=_hClip.xy*rcp(_hClip.w);
     uv=uv*.5h+.5h;
     #if UNITY_UV_STARTS_AT_TOP
         uv.y=1.h-uv.y;
@@ -176,8 +177,8 @@ float3 _FrustumCornersRayBR;
 float3 _FrustumCornersRayTL;
 float3 _FrustumCornersRayTR;
 
-float3 TransformNDCToViewDir(float2 uv){return bilinearLerp(_FrustumCornersRayTL, _FrustumCornersRayTR, _FrustumCornersRayBL, _FrustumCornersRayBR, uv);}
-float3 TransformNDCToWorld_Frustum(half2 uv,half _rawDepth){ return GetCameraPositionWS() + RawToEyeDepth(_rawDepth) *  TransformNDCToViewDir(uv);}
+float3 TransformNDCToViewDirWS(float2 uv){return bilinearLerp(_FrustumCornersRayTL, _FrustumCornersRayTR, _FrustumCornersRayBL, _FrustumCornersRayBR, uv);}
+float3 TransformNDCToWorld_Frustum(half2 uv,half _rawDepth){ return GetCameraPositionWS() + RawToEyeDepth(_rawDepth) *  TransformNDCToViewDirWS(uv);}
 float3 TransformNDCToWorld_VPMatrix(half2 uv,half _depth){ return TransformClipToWorld(TransformNDCToClip(uv,_depth));}
 
 float3 TransformNDCToWorld(half2 uv,half depth)

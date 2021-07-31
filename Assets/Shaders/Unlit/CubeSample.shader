@@ -36,8 +36,8 @@ Shader "Game/Unlit/CubeSample"
             {
                 half3 viewDirOS=normalize(i.viewDirOS);
                 float3 offset=float3(0,0,_Offset);
-                GBox _box=GetBox(-.5+offset,.5+offset);
-                GRay _ray=GetRay(i.positionOS,viewDirOS);
+                GBox _box=GBox_Ctor(-.5+offset,.5+offset);
+                GRay _ray=GRay_Ctor(i.positionOS,viewDirOS);
                 
                 float2 distances=AABBRayDistance(_box,_ray);
                 float3 sdfPosOS=_ray.GetPoint(distances.x+distances.y);

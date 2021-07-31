@@ -78,12 +78,12 @@
 
             float4 frag (v2f_img i) : SV_Target
             {
-                float3 marchDirWS=normalize(TransformNDCToViewDir(i.uv));
+                float3 marchDirWS=normalize(TransformNDCToViewDirWS(i.uv));
                 float3 lightDirWS=normalize(_MainLightPosition.xyz);
                 float3 cameraPos=GetCameraPositionWS();
-                GPlane planeStartWS=GetPlane( float3(0,1,0),_VerticalStart);
-                GPlane planeEndWS=GetPlane(float3(0,1,0),_VerticalEnd);
-                GRay viewRayWS=GetRay( cameraPos,marchDirWS);
+                GPlane planeStartWS=GPlane_Ctor( float3(0,1,0),_VerticalStart);
+                GPlane planeEndWS=GPlane_Ctor(float3(0,1,0),_VerticalEnd);
+                GRay viewRayWS=GRay_Ctor( cameraPos,marchDirWS);
                 float distance1=PlaneRayDistance(planeStartWS,viewRayWS);
                 float distance2=PlaneRayDistance(planeEndWS,viewRayWS);
 				float linearDepth = SampleEyeDepth(i.uv);
@@ -124,7 +124,7 @@
                         {
                             cloudDensity*= exp(-density*_Opacity);
                             #if _LIGHTMARCH
-                            GRay lightRayWS=GetRay( marchPos,lightDirWS);
+                            GRay lightRayWS=GRay_Ctor( marchPos,lightDirWS);
                             lightIntensity *= exp(-density*scatter*cloudDensity*lightMarchParam*lightMarch(planeStartWS,planeEndWS,lightRayWS,lightMarchDst));
                             #else
                             lightIntensity -= density*scatter*cloudDensity*lightMarchParam;
