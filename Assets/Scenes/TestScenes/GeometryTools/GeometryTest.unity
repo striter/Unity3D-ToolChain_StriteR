@@ -387,7 +387,7 @@ GameObject:
   - component: {fileID: 834552115}
   - component: {fileID: 834552114}
   m_Layer: 0
-  m_Name: SDF Shader
+  m_Name: Signed Distance Functions
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -452,7 +452,7 @@ Transform:
   m_GameObject: {fileID: 834552112}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.7, y: 2.7, z: 2.7}
+  m_LocalScale: {x: 2.5, y: 2.5, z: 2.5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -522,6 +522,7 @@ GameObject:
   - component: {fileID: 1104462237}
   - component: {fileID: 1104462236}
   - component: {fileID: 1104462235}
+  - component: {fileID: 1104462239}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -626,6 +627,29 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
+--- !u!114 &1104462239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1104462234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b62db4376f6a80241a778bd4d3ab7a35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectData:
+    threshold: 1.06
+    intensity: 0.43
+    m_BlurParams:
+      m_BlurType: 3
+      m_BlurSize: 1.3
+      m_Iteration: 7
+      m_DownSample: 2
+      m_Angle: 0
+      m_Vector: {x: 0.5, y: 0.5}
+  m_SceneViewPreview: 1
 --- !u!1 &1203903734
 GameObject:
   m_ObjectHideFlags: 0
@@ -749,7 +773,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30

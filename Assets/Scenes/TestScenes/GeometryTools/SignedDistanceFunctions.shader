@@ -1,4 +1,4 @@
-Shader "Hidden/GeometryTest"
+Shader "Hidden/SignedDistanceFunctions"
 {
     Properties
     {
@@ -12,12 +12,12 @@ Shader "Hidden/GeometryTest"
         [Vector3]_BoxSize("Size",Vector)=(1,1,1,0)
         _BoxRoundness("Roundness",Range(0,.5))=.1
         [Header(Frame Box)]
-        _FrameBoxColor("Color",Color)=(1,1,1,1)
+        [HDR]_FrameBoxColor("Color",Color)=(1,1,1,1)
         [Vector3]_FrameBoxPosition("Position",Vector)=(0,0,0,0)
         [Vector3]_FrameBoxSize("Size",Vector)=(1,1,1,0)
         _FrameBoxExtend("Extend",Range(0,.5))=.1
         [Header(Torus)]
-        _TorusColor("Color",Color)=(1,1,1,1)
+        [HDR]_TorusColor("Color",Color)=(1,1,1,1)
         [Vector3]_TorusPosition("Position",Vector)=(0,0,0,0)
         _TorusMajorRadius("Major Radius",Range(0,1))=0.5
         _TorusMinorRadius("Minor Radius",Range(0,0.2))=0.1
@@ -73,6 +73,7 @@ Shader "Hidden/GeometryTest"
                 SDFOutput distD=SDTorus(torus,SDFInput_Ctor(mul(Rotate3x3(_Time.y,float3(0,0,1)), positionWS),_TorusColor));
                 return SDFUnion( SDFDifference(distB,distA),distC,distD);
             }
+            
             bool RaymarchSDF(GRay ray,float start,float end,out float distance,out SDFOutput _output)
             {
                 distance=start;
@@ -88,6 +89,7 @@ Shader "Hidden/GeometryTest"
                 }
                 return false;
             }
+            
             float3 RaymarchSDFNormal(float3 marchPos)
             {
                 return normalize(float3(
@@ -116,6 +118,7 @@ Shader "Hidden/GeometryTest"
                 float distance;
                 if(!RaymarchSDF(viewRay,_ProjectionParams.y,_ProjectionParams.z,distance,output))
                     return 0;
+                viewDirWS=-viewDirWS;
                 float3 positionWS=viewRay.GetPoint(distance);
                 float3 normalWS=RaymarchSDFNormal(positionWS);
                 float3 lightDirWS=normalize(_MainLightPosition.xyz);
@@ -123,9 +126,14 @@ Shader "Hidden/GeometryTest"
                 float NDL=saturate(dot(normalWS,lightDirWS));
                 float NDV=saturate(dot(normalWS,viewDirWS));
                 float NDH=saturate(dot(normalWS,halfDirWS));
-
+                float3 albedo=output.color;
+                float3 lightColor=_MainLightColor.rgb;
                 float diffuse=saturate(NDL)*.5+.5;
-                float3 color=output.color*diffuse;
+                float3 color=albedo*diffuse*lightColor;
+
+                float specular=pow(NDH,PI);
+                color=lerp(color,specular*lightColor*albedo,specular);
+
                 return float4(color,1);
             }
             ENDHLSL

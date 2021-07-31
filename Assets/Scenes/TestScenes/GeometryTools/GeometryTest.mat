@@ -134,6 +134,6 @@ Material:
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _SphereColor: {r: 0.5061855, g: 0.8012582, b: 0.8584906, a: 1}
     - _SpherePosition: {r: 0, g: 0, b: 0, a: 0}
-    - _TorusColor: {r: 0.5951288, g: 0.9245283, b: 0.4753471, a: 1}
+    - _TorusColor: {r: 3.617269, g: 10.03291, b: 1.0884764, a: 1}
     - _TorusPosition: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
