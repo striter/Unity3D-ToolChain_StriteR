@@ -640,12 +640,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectData:
-    threshold: 1.06
+    threshold: 2
     intensity: 0.43
     m_BlurParams:
       m_BlurType: 3
       m_BlurSize: 1.3
-      m_Iteration: 7
+      m_Iteration: 13
       m_DownSample: 2
       m_Angle: 0
       m_Vector: {x: 0.5, y: 0.5}
