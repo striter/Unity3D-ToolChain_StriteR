@@ -18,9 +18,9 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial_PlanarReflection)
     INSTANCING_PROP(half, _CameraReflectionNormalDistort)
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial_PlanarReflection)
 
-half4 IndirectBRDFPlanarSpecular(half2 screenUV, half3 normalTS)
+half4 IndirectBRDFPlanarSpecular(half2 screenUV,float eyeDepth, half3 normalTS)
 {
-    screenUV += normalTS.xy * UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_PlanarReflection, _CameraReflectionNormalDistort);
+    screenUV += normalTS.xy * UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_PlanarReflection, _CameraReflectionNormalDistort)*rcp(eyeDepth);
     [branch]
     switch (UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_PlanarReflection, _CameraReflectionTextureIndex))
     {
@@ -51,7 +51,7 @@ half3 IndirectBRDFSpecular(float3 reflectDir, float perceptualRoughness, half4 p
     [branch]
     if (UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_PlanarReflection, _CameraReflectionTextureOn) == 1)
     {
-        half4 planarReflection = IndirectBRDFPlanarSpecular(TransformHClipToNDC(positionHCS), normalTS);
+        half4 planarReflection = IndirectBRDFPlanarSpecular(TransformHClipToNDC(positionHCS),RawToEyeDepth(positionHCS.z/positionHCS.w), normalTS);
         specular = lerp(specular, planarReflection.rgb,  planarReflection.a );
     }
     return specular;

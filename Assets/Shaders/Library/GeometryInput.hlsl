@@ -1,4 +1,5 @@
-﻿struct GRay
+﻿//Ray
+struct GRay
 {
     float3 origin;
     float3 direction;
@@ -11,7 +12,6 @@ GRay GRay_Ctor(float3 _origin, float3 _direction)
     ray.direction = _direction;
     return ray;
 }
-
 struct GLine
 {
     float3 origin;
@@ -27,7 +27,6 @@ struct GLine
         return ray;
     }
 };
-
 GLine GLine_Ctor(float3 _origin, float3 _direction, float _length)
 {
     GLine gline;
@@ -37,8 +36,7 @@ GLine GLine_Ctor(float3 _origin, float3 _direction, float _length)
     gline.end = _origin + _direction * _length;
     return gline;
 }
-
-
+//Plane
 struct GPlane
 {
     float3 normal;
@@ -53,7 +51,6 @@ GPlane GPlane_Ctor(float3 _normal, float _distance)
     plane.position=plane.normal*plane.distance;
     return plane;
 }
-
 struct GPlanePos
 {
     float3 normal;
@@ -66,7 +63,20 @@ GPlanePos GPlanePos_Ctor(float3 _normal, float3 _position)
     plane.position = _position;
     return plane;
 }
-
+//Sphere
+struct GSphere
+{
+    float3 center;
+    float radius;
+};
+GSphere GSphere_Ctor(float3 _center, float _radius)
+{
+    GSphere sphere;
+    sphere.center = _center;
+    sphere.radius = _radius;
+    return sphere;
+}
+//Box
 struct GBox
 {
     float3 center;
@@ -85,44 +95,68 @@ GBox GBox_Ctor(float3 _center, float3 _size)
     box.boxMax = _center+box.extend;
     return box;
 }
-
-struct GRoundBox
+struct GBoxRound
 {
     GBox box;
     float roundness;
 };
-GRoundBox GRoundBox_Ctor(float3 _center,float3 _size,float _roundness)
+GBoxRound GRoundBox_Ctor(float3 _center,float3 _size,float _roundness)
 {
-    GRoundBox roundBox;
+    GBoxRound roundBox;
     roundBox.box=GBox_Ctor(_center,_size-_roundness*2);
     roundBox.roundness=_roundness;
     return roundBox;
 }
-
-struct GFrameBox
+struct GBoxFrame
 {
     GBox box;
     float frameExtend;
 };
-GFrameBox GFrameBox_Ctor(float3 _center,float3 _size,float _frameExtend)
+GBoxFrame GFrameBox_Ctor(float3 _center,float3 _size,float _frameExtend)
 {
-    GFrameBox frameBox;
+    GBoxFrame frameBox;
     frameBox.box=GBox_Ctor(_center,_size);
     frameBox.frameExtend=_frameExtend;
     return frameBox;
 }
-
-struct GSphere
+//Torus
+struct GTorus
 {
     float3 center;
-    float radius;
+    float majorRadius;
+    float minorRadius;
 };
-GSphere GSphere_Ctor(float3 _center, float _radius)
+GTorus GTorus_Ctor(float3 _center,float _majorRadius,float _minorRadius)
 {
-    GSphere sphere;
-    sphere.center = _center;
-    sphere.radius = _radius;
-    return sphere;
+    GTorus torus;
+    torus.center=_center;
+    torus.majorRadius=_majorRadius;
+    torus.minorRadius=_minorRadius;
+    return torus;
+}
+struct GTorusLink
+{
+    GTorus torus;
+    float extend;
+};
+GTorusLink GTorusLink_Ctor(float3 _center,float _majorRadius,float _minorRadius,float _extend)
+{
+    GTorusLink torusLink;
+    torusLink.torus=GTorus_Ctor(_center,_majorRadius,_minorRadius);
+    torusLink.extend=_extend;
+    return torusLink;
+}
+struct GTorusCapped
+{
+    GTorus torus;
+    float2 capRadianSinCos;
+};
+GTorusCapped GTorusCapped_Ctor(float3 _center,float _majorRadius,float _minorRadius,float2 _capRadianSinCos)
+{
+    GTorusCapped torusCapped;
+    torusCapped.torus=GTorus_Ctor(_center,_majorRadius,_minorRadius);
+    torusCapped.capRadianSinCos=_capRadianSinCos;
+    return torusCapped;
 }
 
 struct GHeightCone
@@ -155,45 +189,3 @@ GHeightCone GHeightCone_Ctor(float3 _origin, float3 _normal, float _angle, float
     cone.bottomPlane = GPlanePos_Ctor(_normal, cone.bottom);
     return cone;
 }
-
-struct GTorus
-{
-    float3 center;
-    float majorRadius;
-    float minorRadius;
-};
-GTorus GTorus_Ctor(float3 _center,float _majorRadius,float _minorRadius)
-{
-    GTorus torus;
-    torus.center=_center;
-    torus.majorRadius=_majorRadius;
-    torus.minorRadius=_minorRadius;
-    return torus;
-}
-
-struct GTorusCapped
-{
-    GTorus torus;
-    float capRadianBegin;
-    float capRadianEnd;
-};
-GTorusCapped GTorusCapped_Ctor(float3 _center,float _majorRadius,float _minorRadius,float _capRadianBegin,float _capRadianEnd)
-{
-    GTorusCapped torusCapped;
-    torusCapped.torus=GTorus_Ctor(_center,_majorRadius,_minorRadius);
-    torusCapped.capRadianBegin=_capRadianBegin;
-    torusCapped.capRadianEnd=_capRadianEnd;
-    return torusCapped;
-}
-
-// struct GLink
-// {
-//     float3 center;
-//     float extend;
-//     float majorRadius;
-//     float minorRadius;
-// };
-// GTorusLink GLink_Ctor(float3 _center,float _majorRadius,float _minorRadius,float _extend)
-// {
-//     
-// }

@@ -178,7 +178,7 @@
             	float2 underSurfaceUV=screenUV;
 				#if _DEPTHREFRACTION
 				float refraction=saturate(invlerp(0,_RefractionDistance,eyeDepthOffset))*_RefractionAmount;
-            	underSurfaceUV+=normalTS.xy*refraction;
+            	underSurfaceUV+=normalTS.xy*refraction*rcp(eyeDepthUnder);
             	#endif
             	float3 underSurfaceColor=SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,underSurfaceUV).rgb;
             	
@@ -203,7 +203,7 @@
             	#endif
             	
             	float3 aboveSurfaceColor=albedo;
-            	float4 reflection=IndirectBRDFPlanarSpecular(screenUV,normalTS);
+            	float4 reflection=IndirectBRDFPlanarSpecular(screenUV,eyeDepthSurface,normalTS);
 				aboveSurfaceColor=lerp(aboveSurfaceColor, reflection.rgb,reflection.a);
             	
             	float specular=GetSpecular(normalWS,lightDirWS,viewDirWS,_SpecularAmount);

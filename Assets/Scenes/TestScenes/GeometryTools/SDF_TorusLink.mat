@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GeometryTest
-  m_Shader: {fileID: 4800000, guid: 6263eb939a5c7d64ba03354d32508942, type: 3}
+  m_Name: SDF_TorusLink
+  m_Shader: {fileID: 4800000, guid: dfdaedfee83dfe14393664f4b8c73430, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -102,7 +102,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EnvironmentReflections: 1
-    - _FrameBoxExtend: 0.05
+    - _FrameBoxExtend: 0.03
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -111,29 +111,44 @@ Material:
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _RoundBoxRoundness: 0.206
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SphereRadius: 0.97
     - _SrcBlend: 1
     - _Surface: 0
-    - _TorusMajorRadius: 0.49
-    - _TorusMinorRadius: 0.105
+    - _TorusCappedBegin: 3
+    - _TorusCappedCos: 0
+    - _TorusCappedEnd: 0
+    - _TorusCappedMajorRadius: 1
+    - _TorusCappedMinorRadius: 0.087
+    - _TorusCappedRadian: 2.25
+    - _TorusCappedSin: 1
+    - _TorusLinkExtend: 0.188
+    - _TorusLinkMajorRadius: 0.3
+    - _TorusLinkMinorRadius: 0.1
+    - _TorusMajorRadius: 1
+    - _TorusMinorRadius: 0.051
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _BoxColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BoxColor: {r: 2.6650658, g: 9.849155, b: 1.7380863, a: 1}
     - _BoxPosition: {r: 0, g: 0, b: 0, a: 0}
-    - _BoxSize: {r: 1.6, g: 1.6, b: 1.6, a: 0}
+    - _BoxSize: {r: 0.5, g: 0.5, b: 0.5, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FrameBoxColor: {r: 0.990566, g: 0.990566, b: 0.55602527, a: 1}
+    - _FrameBoxColor: {r: 1.4980392, g: 1.4980392, b: 0.84705883, a: 1}
     - _FrameBoxPosition: {r: 0, g: 0, b: 0, a: 0}
-    - _FrameBoxSize: {r: 1.1, g: 1.1, b: 1.1, a: 0}
+    - _FrameBoxSize: {r: 1, g: 1, b: 1, a: 0}
+    - _RoundBoxColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RoundBoxSize: {r: 1.6, g: 1.6, b: 1.6, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _SphereColor: {r: 0.5061855, g: 0.8012582, b: 0.8584906, a: 1}
     - _SpherePosition: {r: 0, g: 0, b: 0, a: 0}
-    - _TorusColor: {r: 3.617269, g: 10.03291, b: 1.0884764, a: 1}
+    - _TorusCappedColor: {r: 0.41037738, g: 0.5411833, b: 1, a: 1}
+    - _TorusColor: {r: 0.7086502, g: 0.9716981, b: 0.68293875, a: 1}
+    - _TorusLinkColor: {r: 7.4642644, g: 3.2198787, b: 3.2198787, a: 1}
     - _TorusPosition: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

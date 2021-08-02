@@ -19,3 +19,8 @@ float3x3 Rotate3x3(float _angle, float3 _axis)
         t * x * y + s * z, t * y * y + c, t * y * z - s * x,
         t * x * z - s * y, t * y * z + s * x, t * z * z + c);
 }
+
+float3 RotateAround(float3 _position,float3 _rotateAround,float _angle,float3 _rotateAxis)
+{
+    return _rotateAround+mul(Rotate3x3(_angle,_rotateAxis),_position-_rotateAround);
+}
