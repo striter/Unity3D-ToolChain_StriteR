@@ -23,8 +23,8 @@
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#include "../../CommonInclude.hlsl"
-			#include "../../CommonLightingInclude.hlsl"
+			#include "Assets/Shaders/Library/CommonInclude.hlsl"
+			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
 			
 			#pragma shader_feature_local _WORLD_UV
 			

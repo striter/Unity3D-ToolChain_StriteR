@@ -6,7 +6,7 @@ Shader "Hidden/PostProcess/Bloom"
    }
 
    HLSLINCLUDE
-        #include "../PostProcessInclude.hlsl"
+        #include "Assets/Shaders/Library/PostProcessInclude.hlsl"
        TEXTURE2D(_Bloom_Blur);SAMPLER(sampler_Bloom_Blur);
 
        half _Intensity;

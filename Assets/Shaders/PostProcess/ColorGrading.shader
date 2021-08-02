@@ -28,7 +28,7 @@
 			#pragma shader_feature_local _LUT
 			#pragma shader_feature_local _BSC
 			#pragma shader_feature_local _CHANNEL_MIXER
-			#include "../PostProcessInclude.hlsl"
+			#include "Assets/Shaders/Library/PostProcessInclude.hlsl"
 			
 			#if _LUT
 			TEXTURE2D(_LUTTex);SAMPLER(sampler_LUTTex);

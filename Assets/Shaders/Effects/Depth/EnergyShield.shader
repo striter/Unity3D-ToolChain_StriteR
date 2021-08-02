@@ -47,7 +47,7 @@
 			#pragma shader_feature_local _VERTICALSMOOTHEN
 			#pragma shader_feature_local _INNERGLOW
 			#pragma shader_feature_local _VERTEXRANDOMDISTORT
-			#include "../../CommonInclude.hlsl"
+			#include "Assets/Shaders/Library/CommonInclude.hlsl"
 			
 			TEXTURE2D( _MaskTex); SAMPLER(sampler_MaskTex);
 			TEXTURE2D(_CameraDepthTexture); SAMPLER(sampler_CameraDepthTexture);

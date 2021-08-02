@@ -64,9 +64,9 @@
             #pragma shader_feature_local _FRESNEL
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             
-			#include "../../CommonInclude.hlsl"
-			#include "../../CommonLightingInclude.hlsl"
-            #include "../../GlobalIlluminationInclude.hlsl"
+			#include "Assets/Shaders/Library/CommonInclude.hlsl"
+			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
+            #include "Assets/Shaders/Library/GlobalIlluminationInclude.hlsl"
 
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
             TEXTURE2D(_CausticTex);SAMPLER(sampler_CausticTex);

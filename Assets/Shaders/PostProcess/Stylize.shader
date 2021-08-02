@@ -8,7 +8,7 @@ Shader "Hidden/PostProcess/Stylize"
     {
         Tags { "RenderType"="Opaque" }
         HLSLINCLUDE
-        #include "../PostProcessInclude.hlsl"
+        #include "Assets/Shaders/Library/PostProcessInclude.hlsl"
         ENDHLSL
         Pass
         {

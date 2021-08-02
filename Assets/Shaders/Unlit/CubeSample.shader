@@ -9,8 +9,8 @@ Shader "Game/Unlit/CubeSample"
     {
         Tags { "Queue" = "Geometry" }
         HLSLINCLUDE
-            #include "../CommonInclude.hlsl"
-            #include "../GeometryInclude.hlsl"
+            #include "Assets/Shaders/Library/CommonInclude.hlsl"
+            #include "Assets/Shaders/Library/GeometryInclude.hlsl"
             CBUFFER_START(UnityPerMaterial)
             float _Offset;
             CBUFFER_END

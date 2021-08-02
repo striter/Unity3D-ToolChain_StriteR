@@ -20,7 +20,7 @@
             #pragma shader_feature_local _LINEDISTORT
             #pragma shader_feature_local _PIXELDISTORT
             #pragma shader_feature_local _VIGNETTE
-            #include "../PostProcessInclude.hlsl"
+            #include "Assets/Shaders/Library/PostProcessInclude.hlsl"
             float2 _ScreenCutTarget;
 
             #if _COLORBLEED

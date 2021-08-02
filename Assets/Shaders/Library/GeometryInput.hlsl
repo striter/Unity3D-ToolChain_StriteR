@@ -43,13 +43,14 @@ struct GPlane
 {
     float3 normal;
     float distance;
+    float3 position;
 };
-
 GPlane GPlane_Ctor(float3 _normal, float _distance)
 {
     GPlane plane;
     plane.normal = _normal;
     plane.distance = _distance;
+    plane.position=plane.normal*plane.distance;
     return plane;
 }
 
@@ -97,6 +98,7 @@ GRoundBox GRoundBox_Ctor(float3 _center,float3 _size,float _roundness)
     roundBox.roundness=_roundness;
     return roundBox;
 }
+
 struct GFrameBox
 {
     GBox box;
@@ -168,3 +170,30 @@ GTorus GTorus_Ctor(float3 _center,float _majorRadius,float _minorRadius)
     torus.minorRadius=_minorRadius;
     return torus;
 }
+
+struct GTorusCapped
+{
+    GTorus torus;
+    float capRadianBegin;
+    float capRadianEnd;
+};
+GTorusCapped GTorusCapped_Ctor(float3 _center,float _majorRadius,float _minorRadius,float _capRadianBegin,float _capRadianEnd)
+{
+    GTorusCapped torusCapped;
+    torusCapped.torus=GTorus_Ctor(_center,_majorRadius,_minorRadius);
+    torusCapped.capRadianBegin=_capRadianBegin;
+    torusCapped.capRadianEnd=_capRadianEnd;
+    return torusCapped;
+}
+
+// struct GLink
+// {
+//     float3 center;
+//     float extend;
+//     float majorRadius;
+//     float minorRadius;
+// };
+// GTorusLink GLink_Ctor(float3 _center,float _majorRadius,float _minorRadius,float _extend)
+// {
+//     
+// }

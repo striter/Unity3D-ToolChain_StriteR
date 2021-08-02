@@ -13,8 +13,8 @@
 		Cull Off
 
 		HLSLINCLUDE
-		#include "../CommonInclude.hlsl"
-		#include "../CommonLightingInclude.hlsl"
+		#include "Assets/Shaders/Library/CommonInclude.hlsl"
+		#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
 
 		TEXTURE2D(_DissolveTex);SAMPLER(sampler_DissolveTex);
 		INSTANCING_BUFFER_START

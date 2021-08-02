@@ -24,8 +24,8 @@
             #pragma multi_compile_local _ _MAIN_LIGHT_CALCULATE_SHADOWS
             #pragma multi_compile_local _ _SHADOWS_SOFT
 
-			#include "../../CommonInclude.hlsl"
-			#include "../../CommonLightingInclude.hlsl"
+			#include "Assets/Shaders/Library/CommonInclude.hlsl"
+			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
 
 			struct v2f
 			{

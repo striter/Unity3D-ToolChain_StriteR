@@ -38,7 +38,7 @@
             #pragma vertex vert
             #pragma fragment frag
 
-            #include "../CommonInclude.hlsl"
+            #include "Assets/Shaders/Library/CommonInclude.hlsl"
             TEXTURE2D_X(_StarTexture);SAMPLER(sampler_StarTexture);
             TEXTURE2D_X(_StarMask);SAMPLER(sampler_StarMask);
             CBUFFER_START(UnityPerMaterial)

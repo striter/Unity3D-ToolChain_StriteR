@@ -29,11 +29,11 @@
 		[Enum(_16,16,_32,32,_64,64,_128,128)]_ParallaxCount("Parallax Count",int)=16
 		
 		[Header(Misc)]
-        [Enum(UnityEngine.Rendering.BlendMode)]_SrcBlend("Src Blend",int)=0
+        [Enum(UnityEngine.Rendering.BlendMode)]_SrcBlend("Src Blend",int)=1
         [Enum(UnityEngine.Rendering.BlendMode)]_DstBlend("Dst Blend",int)=0
         [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
         [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
-        [Enum(Off,0,Front,1,Back,2)]_Cull("Cull",int)=1
+        [Enum(Off,0,Front,1,Back,2)]_Cull("Cull",int)=2
 	}
 	SubShader
 	{
@@ -51,11 +51,11 @@
 			#pragma fragment frag
             #pragma target 3.5
 			
-			#include "../CommonInclude.hlsl"
-			#include "../CommonLightingInclude.hlsl"
-			#include "../BRDFInclude.hlsl"
-			#include "../GlobalIlluminationInclude.hlsl"
-			#include "../Library/Additional/Parallax.hlsl"
+			#include "Assets/Shaders/Library/CommonInclude.hlsl"
+			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
+			#include "Assets/Shaders/Library/BRDFInclude.hlsl"
+			#include "Assets/Shaders/Library/GlobalIlluminationInclude.hlsl"
+			#include "Assets/Shaders/Library/Additional/Parallax.hlsl"
 			
 			#pragma multi_compile_instancing
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
@@ -133,7 +133,7 @@
 				half3 biTangentWS=normalize(i.biTangentWS);
 				half3 tangentWS=normalize(i.tangentWS);
 				half3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
-				half3 viewDirWS=TransformWorldToViewDir(positionWS,UNITY_MATRIX_V);
+				half3 viewDirWS=normalize(TransformWorldToViewDir(positionWS,UNITY_MATRIX_V));
 				half3 lightDirWS=normalize(_MainLightPosition.xyz);
 				half3 normalTS=half3(0,0,1);
 				half2 baseUV=i.uv.xy;

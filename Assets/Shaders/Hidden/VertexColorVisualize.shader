@@ -17,7 +17,7 @@ Shader "Hidden/VertexColorVisualize"
             #pragma fragment frag
             #pragma multi_compile_local _SAMPLE_UV0 _SAMPLE_UV1 _SAMPLE_UV2 _SAMPLE_UV3 _SAMPLE_UV4 _SAMPLE_UV5  _SAMPLE_UV6  _SAMPLE_UV7 _SAMPLE_COLOR _SAMPLE_NORMAL _SAMPLE_TANGENT 
             #pragma multi_compile_local _ _VISUALIZE_R _VISUALIZE_G _VISUALIZE_B _VISUALIZE_A
-			#include "../CommonInclude.hlsl"
+			#include "Assets/Shaders/Library/CommonInclude.hlsl"
 
             struct appdata
             {

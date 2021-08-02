@@ -25,8 +25,8 @@
             #pragma fragment frag
             #pragma multi_compile_local _TYPE_POINT _TYPE_SPOT
 
-            #include "../../CommonInclude.hlsl"
-            #include "../../GeometryInclude.hlsl"
+            #include "Assets/Shaders/Library/CommonInclude.hlsl"
+            #include "Assets/Shaders/Library/GeometryInclude.hlsl"
 
             struct appdata
             {

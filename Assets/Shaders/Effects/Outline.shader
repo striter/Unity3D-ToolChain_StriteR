@@ -23,7 +23,7 @@
 			#pragma multi_compile_instancing
 			#pragma shader_feature_local _CLIPSPACEADPATION
 			#pragma multi_compile_local _NORMALSAMPLE_NORMAL _NORMALSAMPLE_TANGENT _NORMALSAMPLE_UV1 _NORMALSAMPLE_UV2 _NORMALSAMPLE_UV3 _NORMALSAMPLE_UV4 _NORMALSAMPLE_UV5  _NORMALSAMPLE_UV6  _NORMALSAMPLE_UV7
-			#include "../CommonInclude.hlsl"
+			#include "Assets/Shaders/Library/CommonInclude.hlsl"
 
 			INSTANCING_BUFFER_START
 			INSTANCING_PROP(float4,_OutlineColor)
@@ -96,7 +96,7 @@
 				
 				#if _CLIPSPACEADPATION
 				float4 clipPosition=TransformObjectToHClip(positionOS);
-				float3 screenDir=TransformObjectToHClipNormal(normalOS);
+				float3 screenDir= mul((float3x3)UNITY_MATRIX_MVP, normalOS);
 				float2 screenOffset=normalize(screenDir.xy)/_ScreenParams.xy*clipPosition.w*INSTANCE(_AdaptFactor);
 				clipPosition.xy+=screenOffset*INSTANCE(_OutlineWidth);
 				o.positionCS= clipPosition;
@@ -111,7 +111,7 @@
 			float4 frag(v2f i) :SV_TARGET
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
-				return  INSTANCE(_OutlineColor);
+				return INSTANCE(_OutlineColor);
 			}
 			ENDHLSL
 		}

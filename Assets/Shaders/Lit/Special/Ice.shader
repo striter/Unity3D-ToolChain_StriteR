@@ -66,8 +66,8 @@
 			#pragma shader_feature_local _FRESNEL
 			#pragma shader_feature_local _SPECULAR
 
-			#include "../../CommonInclude.hlsl"
-			#include "../../CommonLightingInclude.hlsl"
+			#include "Assets/Shaders/Library/CommonInclude.hlsl"
+			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
 			
 			TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
 			TEXTURE2D(_CrackTex);SAMPLER(sampler_CrackTex);

@@ -14,8 +14,8 @@
             #pragma vertex vert_img
             #pragma fragment frag
             
-            #include "../../PostProcessInclude.hlsl"
-            #include "../../GeometryInclude.hlsl"
+            #include "Assets/Shaders/Library/PostProcessInclude.hlsl"
+            #include "Assets/Shaders/Library/GeometryInclude.hlsl"
 
             #pragma shader_feature_local _LIGHTMARCH
             #pragma shader_feature_local _LIGHTSCATTER

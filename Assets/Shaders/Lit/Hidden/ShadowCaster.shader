@@ -10,8 +10,8 @@
 			#pragma vertex ShadowVertex
 			#pragma fragment ShadowFragment
 			#pragma multi_compile_instancing
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-			#include "../../CommonLightingInclude.hlsl"
+			#include "Assets/Shaders/Library/CommonInclude.hlsl"
+			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
 				
 			struct a2f
 			{

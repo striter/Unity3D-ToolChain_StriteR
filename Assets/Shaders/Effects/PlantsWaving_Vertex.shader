@@ -16,8 +16,8 @@ Shader "Game/Effects/PlantsWaving_Vertex"
 		Tags { "RenderType" = "Opaque" "Queue"="AlphaTest+1" }
 
 		HLSLINCLUDE
-		#include "../CommonInclude.hlsl"
-		#include "../CommonLightingInclude.hlsl"
+		#include "Assets/Shaders/Library/CommonInclude.hlsl"
+		#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
 		TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
 		INSTANCING_BUFFER_START
 		INSTANCING_PROP(float3,_WaveDirection)

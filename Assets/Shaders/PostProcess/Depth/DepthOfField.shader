@@ -15,7 +15,7 @@
             #pragma vertex vert_img
             #pragma fragment frag
             #pragma shader_feature_local _UseBlurDepth
-            #include "../../PostProcessInclude.hlsl"
+            #include "Assets/Shaders/Library/PostProcessInclude.hlsl"
 
             TEXTURE2D( _BlurTex);SAMPLER(sampler_BlurTex);
             half _FocalStart;

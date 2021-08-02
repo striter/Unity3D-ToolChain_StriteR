@@ -16,9 +16,9 @@ Shader "Hidden/PostProcess/VolumetricLight"
             #pragma vertex vert_img
             #pragma fragment frag
             
-            #include "../../PostProcessInclude.hlsl"
-            #include "../../CommonLightingInclude.hlsl"
-            #include "../../Library/Additional/CloudShadow.hlsl"
+            #include "Assets/Shaders/Library/PostProcessInclude.hlsl"
+            #include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
+            #include "Assets/Shaders/Library/Additional/CloudShadow.hlsl"
 
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma shader_feature_local _DITHER
@@ -70,7 +70,7 @@ Shader "Hidden/PostProcess/VolumetricLight"
         {
             Name "Combine"
             HLSLPROGRAM
-            #include "../../PostProcessInclude.hlsl"
+            #include "Assets/Shaders/Library/PostProcessInclude.hlsl"
             #pragma vertex vert_img
             #pragma fragment frag
             TEXTURE2D(_VolumetricLight_Sample);SAMPLER(sampler_VolumetricLight_Sample);

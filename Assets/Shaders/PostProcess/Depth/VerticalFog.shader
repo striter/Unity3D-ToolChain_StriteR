@@ -22,7 +22,7 @@
 				#pragma vertex vert_img
 				#pragma fragment frag
 				#pragma shader_feature_local _NOISE
-				#include "../../PostProcessInclude.hlsl"
+				#include "Assets/Shaders/Library/PostProcessInclude.hlsl"
 				half _FogDensity;
 				float _FogPow;
 				float4 _FogColor;

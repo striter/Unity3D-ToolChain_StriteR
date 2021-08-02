@@ -25,8 +25,8 @@
         HLSLINCLUDE
             #pragma multi_compile_local _SEGMENT_LOW _SEGMENT_NORMAL _SEGMENT_HIGH _SEGMENT_ULTRA
             #pragma target 4.6
-            #include "../../CommonInclude.hlsl"
-            #include "../../CommonLightingInclude.hlsl"
+            #include "Assets/Shaders/Library/CommonInclude.hlsl"
+            #include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
 
             struct a2v
             {

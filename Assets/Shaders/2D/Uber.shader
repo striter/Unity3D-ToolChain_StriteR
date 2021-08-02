@@ -55,11 +55,11 @@ Shader "Game/2D/Uber"
 		Cull [_Cull]
 
         HLSLINCLUDE
-            #include "../CommonInclude.hlsl"
-			#include "../CommonLightingInclude.hlsl"
-			#include "../Library/Additional/Grid.hlsl"
-			#include "../Library/Additional/Parallax.hlsl"
-			#include "../Library/Additional/CloudShadow.hlsl"
+            #include "Assets/Shaders/Library/CommonInclude.hlsl"
+			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
+			#include "Assets/Shaders/Library/Additional/Grid.hlsl"
+			#include "Assets/Shaders/Library/Additional/Parallax.hlsl"
+			#include "Assets/Shaders/Library/Additional/CloudShadow.hlsl"
             #pragma multi_compile_instancing
             #pragma target 3.5
 

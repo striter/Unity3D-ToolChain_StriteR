@@ -12,7 +12,7 @@ Shader "Hidden/NormalsFromDepth"
             HLSLPROGRAM
             #pragma vertex vert_img
             #pragma fragment frag
-            #include "../PostProcessInclude.hlsl"
+            #include "Assets/Shaders/Library/PostProcessInclude.hlsl"
 
             float4 frag (v2f_img i) : SV_Target
             {

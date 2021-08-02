@@ -30,8 +30,8 @@
             #pragma vertex vert
             #pragma fragment frag
 
-            #include "../../CommonInclude.hlsl"
-            #include "../../Library/Additional/Parallax.hlsl"
+            #include "Assets/Shaders/Library/CommonInclude.hlsl"
+            #include "Assets/Shaders/Library/Additional/Parallax.hlsl"
 
             struct appdata
             {

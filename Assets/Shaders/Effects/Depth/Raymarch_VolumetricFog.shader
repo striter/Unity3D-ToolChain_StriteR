@@ -24,9 +24,9 @@
             #pragma fragment frag
             #pragma target 3.5
             
-            #include "../../CommonInclude.hlsl"
-            #include "../../CommonLightingInclude.hlsl"
-            #include "../../GeometryInclude.hlsl"
+            #include "Assets/Shaders/Library/CommonInclude.hlsl"
+            #include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
+            #include "Assets/Shaders/Library/GeometryInclude.hlsl"
 
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS

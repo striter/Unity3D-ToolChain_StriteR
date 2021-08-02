@@ -14,6 +14,7 @@
     half NDV;
     
     half grazingTerm;
+    half fresnelTerm;
     half perceptualRoughness;
     half roughness;
     half roughness2;

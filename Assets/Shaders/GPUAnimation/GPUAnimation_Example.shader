@@ -17,8 +17,8 @@
     {
         Tags { "RenderType"="Opaque" "DisableBatching"="True" }
         HLSLINCLUDE
-            #include "../CommonInclude.hlsl"
-            #include "../CommonLightingInclude.hlsl"
+            #include "Assets/Shaders/Library/CommonInclude.hlsl"
+            #include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
             #include "GPUAnimationInclude.hlsl"
             #pragma multi_compile_instancing
 			#pragma multi_compile_local _ _GPU_BONE _GPU_VERTEX

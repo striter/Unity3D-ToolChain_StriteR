@@ -1,6 +1,6 @@
 #pragma kernel Generate
 
-#include "../CommonInclude.hlsl"
+#include "Assets/Shaders/Library/CommonInclude.hlsl"
 
 float3 _PlaneNormal;
 float3 _PlanePosition;

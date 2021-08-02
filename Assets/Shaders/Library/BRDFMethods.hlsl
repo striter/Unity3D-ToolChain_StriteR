@@ -4,7 +4,7 @@
 #define PI_SQRT2 0.797884560802865
 #define PI_ONEMINUS 0.31830988618379
 
-float sqr(float value){ return value * value; }
+float pow2(float value){ return value * value; }
 float pow3(float value) { return value*value*value; }
 float pow4(float value) { return value * value * value * value ;}
 float pow5(float value) { return value * value * value * value * value;}
@@ -36,14 +36,14 @@ float NDF_GGX(float NDH,float roughness, float sqrRoughness)
 {
     float sqrNDH = dot(NDH, NDH);
     float tanSqrNDH = (1 - sqrNDH) / sqrNDH;
-    return max ( 0.00001, PI_ONEMINUS * sqr(roughness / (sqrNDH * (sqrRoughness + tanSqrNDH))));
+    return max ( 0.00001, PI_ONEMINUS * pow2(roughness / (sqrNDH * (sqrRoughness + tanSqrNDH))));
 }
 float NDF_CookTorrance(float NDH,float LDH,float roughness,float roughness2)
 {
     NDH = saturate(NDH);
     LDH = saturate(LDH);
     float d = NDH * NDH *( roughness2-1.) +1.00001f;
-    float sqrLDH = sqr(LDH);
+    float sqrLDH = pow2(LDH);
     return roughness2 / (d * d);
 }
 float NDF_TrowbridgeReitz(float NDH, float roughness,float sqrRoughness)
@@ -56,18 +56,18 @@ float NDF_TrowbridgeReitz(float NDH, float roughness,float sqrRoughness)
 float NDFA_TrowbridgeReitz(float NDH, float HDX, float HDY, float anisotropic, float glossiness)
 {
     float aspect = sqrt(1.0h - anisotropic * 0.9h);
-    glossiness = sqr(1.0 - glossiness);
+    glossiness = pow2(1.0 - glossiness);
     float X = max(.001, glossiness / aspect) * 5;
     float Y = max(.001, glossiness * aspect) * 5;
-    return 1.0 / (PI_ONE * X * Y * sqr(sqr(HDX / X) + sqr(HDY / Y) + sqr(NDH)));
+    return 1.0 / (PI_ONE * X * Y * pow2(pow2(HDX / X) + pow2(HDY / Y) + pow2(NDH)));
 }
 float NDFA_Ward(float NDL, float NDV, float NDH, float HDX, float HDY, float anisotropic, float glossiness)
 {
     float aspect = sqrt(1.0h - anisotropic * 0.9h);
-    glossiness = sqr(1.0 - glossiness);
+    glossiness = pow2(1.0 - glossiness);
     float X = max(.001, glossiness / aspect) * 5;
     float Y = max(.001, glossiness * aspect) * 5;
-    float exponent = -(sqr(HDX / X) + sqr(HDY / Y)) / sqr(NDH);
+    float exponent = -(pow2(HDX / X) + pow2(HDY / Y)) / pow2(NDH);
     float distribution = 1. / (PI_FOUR * X * Y) * sqrt(NDL*NDV);
     distribution *= exp(exponent);
     return distribution;
@@ -75,7 +75,7 @@ float NDFA_Ward(float NDL, float NDV, float NDH, float HDX, float HDY, float ani
 //VF: (VisibilityTerm * FresnelTerm) * 4.0
 float InvVF_GGX(float LDH, float roughness)
 {
-    float sqrLDH = sqr(LDH);
+    float sqrLDH = pow2(LDH);
     return max(0.1h, sqrLDH) * (roughness + .5);
 }
 float InvVF_BlinnPhong(float LDH)

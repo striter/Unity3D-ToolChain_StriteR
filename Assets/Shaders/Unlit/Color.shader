@@ -30,7 +30,7 @@
 			#pragma multi_compile_instancing
 			#pragma shader_feature _CSFORWARD
 
-			#include "../CommonInclude.hlsl"
+			#include "Assets/Shaders/Library/CommonInclude.hlsl"
 			struct appdata
 			{
 				float3 positionOS : POSITION;
