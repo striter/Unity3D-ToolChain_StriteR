@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Rendering.ImageEffect;
+﻿using Rendering.ImageEffect;
 using UnityEngine;
 
 public class PostEffect : MonoBehaviour

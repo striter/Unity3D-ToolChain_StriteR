@@ -8,12 +8,28 @@
 		[Header(View Space Adapting)]
 		[Toggle(_CLIPSPACEADPATION)]_ClipSpaceAdapt("Clip Space Adapting",float)=0
 		_AdaptFactor("Adapting Factor(Pixel Multiply)",float)=100
+    	
+		[Header(Stencil)]
+		_Stencil("Stencil ID", Float) = 0
+		[Enum(UnityEngine.Rendering.CompareFunction)]_StencilComp("Stencil Comparison", Float) = 0
+		[Enum(UnityEngine.Rendering.StencilOp)]_StencilOp("Stencil Operation", Float) = 0
+		_StencilWriteMask("Stencil Write Mask", Float) = 255
+		_StencilReadMask("Stencil Read Mask", Float) = 255
     }
     SubShader
     {
         Tags { "RenderType"="Opaque" "Queue"="Geometry+1" }
         Pass 
         {	
+			Stencil
+			{
+				Ref[_Stencil]
+				Comp[_StencilComp]
+				Pass[_StencilOp]
+				ReadMask[_StencilReadMask]
+				WriteMask[_StencilWriteMask]
+			}
+        	
 		    Name "OutLine"
             ZWrite On
 			Cull Front

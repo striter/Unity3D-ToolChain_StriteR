@@ -214,7 +214,7 @@ Shader "Game/2D/Uber"
             	#endif
             	
             	half3 finalCol=diffuseCol*atten*lightCol+ambient+specular*lightCol;
-			    uint pixelLightCount = GetAdditionalLightsCount();
+            	uint pixelLightCount = GetAdditionalLightsCount();
 			    for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
 			    {
 			        Light light = GetAdditionalLight(lightIndex,i.positionWS);

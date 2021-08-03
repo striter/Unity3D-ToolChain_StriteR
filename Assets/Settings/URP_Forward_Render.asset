@@ -68,11 +68,11 @@ MonoBehaviour:
   m_CameraReflectionComputeShader: {fileID: 7200000, guid: f5a23fffb62c7304f8c65cf797424e7b,
     type: 3}
   m_PlanarReflectionData:
-    m_ReflectionType: 0
+    m_ReflectionType: 1
     m_Sample: 4
     m_IncludeTransparent: 0
     m_DownSample: 1
-    m_EnableBlur: 1
+    m_EnableBlur: 0
     m_BlurParam:
       m_BlurType: 2
       m_BlurSize: 0.93

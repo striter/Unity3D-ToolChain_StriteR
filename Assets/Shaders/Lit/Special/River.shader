@@ -175,12 +175,12 @@
             	float eyeDepthSurface=RawToEyeDepth(i.positionCS.z);
             	float eyeDepthOffset=eyeDepthUnder-eyeDepthSurface;
             	
-            	float2 underSurfaceUV=screenUV;
+            	float2 deepSurfaceUV=screenUV;
 				#if _DEPTHREFRACTION
 				float refraction=saturate(invlerp(0,_RefractionDistance,eyeDepthOffset))*_RefractionAmount;
-            	underSurfaceUV+=normalTS.xy*refraction*rcp(eyeDepthUnder);
+            	deepSurfaceUV+=normalTS.xy*refraction*rcp(eyeDepthUnder);
             	#endif
-            	float3 underSurfaceColor=SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,underSurfaceUV).rgb;
+            	float3 deepSurfaceColor=SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,deepSurfaceUV).rgb;
             	
             	#if _CAUSTIC
 				float3 positionWSDepth=TransformNDCToWorld(screenUV,underRawDepth);
@@ -193,13 +193,13 @@
             	float2 causticUV=causticPositionWS.xz+uvFlow;
 				causticUV*=uvScale;
             	float caustic=SAMPLE_TEXTURE2D(_CausticTex,sampler_CausticTex,causticUV).r;
-            	underSurfaceColor+=caustic*lightCol*_CausticStrength*causticAtten;
+            	deepSurfaceColor+=caustic*lightCol*_CausticStrength*causticAtten;
             	#endif
             	
 				#if _DEPTH
             	float depth=smoothstep(_DepthBegin,_DepthBegin+_DepthDistance,eyeDepthOffset)*_DepthColor.a;
-            	float3 depthCol=underSurfaceColor*_DepthColor.rgb;
-				underSurfaceColor=lerp(underSurfaceColor,depthCol,depth);
+            	float3 depthCol=deepSurfaceColor*_DepthColor.rgb;
+				deepSurfaceColor=lerp(deepSurfaceColor,depthCol,depth);
             	#endif
             	
             	float3 aboveSurfaceColor=albedo;
@@ -221,7 +221,7 @@
             	fresnel=1.-Pow4(dot(viewDirWS,normalWS));
 				#endif
             	
-            	float3 riverCol=lerp(underSurfaceColor,aboveSurfaceColor,fresnel*_Color.a);
+            	float3 riverCol=lerp(deepSurfaceColor,aboveSurfaceColor,fresnel*_Color.a);
             	
             	return float4(riverCol,1);
             }

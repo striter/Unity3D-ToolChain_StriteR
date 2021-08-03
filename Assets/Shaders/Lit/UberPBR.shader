@@ -61,6 +61,7 @@
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
             #pragma multi_compile _ _SHADOWS_SOFT
+            #pragma multi_compile _ _ADDITIONAL_LIGHTS
 			
 			#pragma shader_feature_local _PBRMAP
 			#pragma shader_feature_local _SPECULAR
@@ -155,6 +156,7 @@
 				half glossiness=INSTANCE(_Glossiness);
 				half metallic=INSTANCE(_Metallic);
 				half ao=1.h;
+				float anisotropic=INSTANCE(_AnisoTropicValue);
 				#if _PBRMAP
 					half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
 					glossiness=1.h-mix.r;
@@ -162,11 +164,8 @@
 					ao=mix.b;
 				#endif
 
-				BRDFSurface surface=InitializeBRDFSurface(albedo,glossiness,metallic,ao,normalWS,tangentWS,viewDirWS);
+				BRDFSurface surface=BRDFSurface_Ctor(albedo,glossiness,metallic,ao,normalWS,tangentWS,viewDirWS);
 				
-                half3 lightDir=normalize(lightDirWS);
-				half3 lightCol=_MainLightColor.rgb;
-				half atten=MainLightRealtimeShadow(TransformWorldToShadowCoord(positionWS));
 				
 				#if _MATCAP
 					half2 matcapUV=half2(dot(UNITY_MATRIX_V[0].xyz,normalWS),dot(UNITY_MATRIX_V[1].xyz,normalWS));
@@ -178,8 +177,18 @@
 				half3 indirectSpecular=IndirectBRDFSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
 				brdfColor+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 
-				BRDFLight light=InitializeBRDFLight(surface,lightDir,lightCol,atten,INSTANCE(_AnisoTropicValue));
-				brdfColor+=BRDFLighting(surface,light);
+				Light mainLight=GetMainLight(TransformWorldToShadowCoord(positionWS));
+				BRDFLight brdfMainLight=BRDFLight_Ctor(surface,mainLight.direction,mainLight.color,mainLight.shadowAttenuation,anisotropic);
+				brdfColor+=BRDFLighting(surface,brdfMainLight);
+				
+				#if _ADDITIONAL_LIGHTS
+            	uint pixelLightCount = GetAdditionalLightsCount();
+			    for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
+			    {
+			    	BRDFLight light=BRDFLight_Ctor(surface, GetAdditionalLight(lightIndex,i.positionWS),anisotropic);
+					brdfColor+=BRDFLighting(surface,light);
+			    }
+            	#endif
 				return half4(brdfColor,1.h);
 			}
 			ENDHLSL

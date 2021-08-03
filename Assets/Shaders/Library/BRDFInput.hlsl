@@ -24,9 +24,7 @@ struct BRDFLight
 {
     half3 color;
     half3 radiance;
-    
     half3 lightDir;
-    half3 halfDir;
     
     half normalDistribution;
     half invNormalizationTerm;

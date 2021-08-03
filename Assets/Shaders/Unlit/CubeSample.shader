@@ -36,7 +36,7 @@ Shader "Game/Unlit/CubeSample"
             {
                 half3 viewDirOS=normalize(i.viewDirOS);
                 float3 offset=float3(0,0,_Offset);
-                GBox _box=GBox_Ctor(-.5+offset,.5+offset);
+                GBox _box=GBox_Ctor(float3(0,0,.5),1);
                 GRay _ray=GRay_Ctor(i.positionOS,viewDirOS);
                 
                 float2 distances=AABBRayDistance(_box,_ray);
@@ -58,7 +58,6 @@ Shader "Game/Unlit/CubeSample"
             float4 frag (v2f i,out float depth:SV_DEPTH) : SV_Target
             {
                 float4 color= SAMPLE_TEXTURECUBE(_CubeMap,sampler_CubeMap,SDFFragment(i,depth));
-                
                 return color;
             }
             ENDHLSL

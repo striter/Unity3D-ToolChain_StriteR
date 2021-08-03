@@ -2,7 +2,7 @@
 #include "Assets/Shaders/Library/BRDFMethods.hlsl"
 #define DIELETRIC_SPEC half4(0.04,0.04,0.04,1.0-0.04)
 
-BRDFSurface InitializeBRDFSurface(half3 albedo, half smoothness, half metallic,half ao, half3 normal, half3 tangent, half3 viewDir)
+BRDFSurface BRDFSurface_Ctor(half3 albedo, half smoothness, half metallic,half ao, half3 normal, half3 tangent, half3 viewDir)
 {
     BRDFSurface surface;
     
@@ -29,7 +29,7 @@ BRDFSurface InitializeBRDFSurface(half3 albedo, half smoothness, half metallic,h
     return surface;
 }
 
-BRDFLight InitializeBRDFLight(BRDFSurface surface, half3 lightDir, half3 lightCol, half3 lightAtten, half anisotropic)
+BRDFLight BRDFLight_Ctor(BRDFSurface surface, half3 lightDir, half3 lightCol, half3 lightAtten, half anisotropic)
 {
     half3 viewDir = surface.viewDir;
     half3 normal = surface.normal;
@@ -82,6 +82,11 @@ BRDFLight InitializeBRDFLight(BRDFSurface surface, half3 lightDir, half3 lightCo
     
     return light;
 }
+BRDFLight BRDFLight_Ctor(BRDFSurface surface, Light light,half anisotropic)
+{
+    return BRDFLight_Ctor(surface,light.direction,light.color,light.shadowAttenuation*light.distanceAttenuation,anisotropic);
+}
+
 half3 BRDFLighting(BRDFSurface surface,BRDFLight light)
 {
     half3 brdf = surface.diffuse;
