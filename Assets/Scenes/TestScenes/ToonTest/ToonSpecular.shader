@@ -14,7 +14,16 @@
 		_DiffuseBegin("Diffuse Begin",Range(-1,1))=0
 		_DiffuseEnd("Diffuse End",Range(0,1))=0.5
 		_Lambert("Lambert",Range(0,1))=0.5
-		_Fresnel("Fresnel",Range(0,2))=0.5
+		
+		[Header(_Specular)]
+		[Toggle(_SPECULAR)]_Specular("Specular",int)=0
+		_SpecularRange("Specular Range",Range(0,50))=1
+		[HDR]_SpecularCol("Specular Col",Color)=(1,1,1,1)
+		
+		[Header(_Fresnel)]
+		[Toggle(_FRESNEL)]_Fresnel("Fresnel",int)=0
+		_FresnelStrength("Fresnel",Range(0,2))=0.5
+		_FresnelCol("FresnelCol",Color)=(1,1,1,1)
 		
 		[Header(Misc)]
         [Enum(UnityEngine.Rendering.BlendMode)]_SrcBlend("Src Blend",int)=1
@@ -65,6 +74,8 @@
             #pragma multi_compile _ _SHADOWS_SOFT
 			#pragma multi_compile _ _ADDITIONAL_LIGHTS
 			#pragma shader_feature_local _FLATNORMAL
+			#pragma shader_feature_local _FRESNEL
+			#pragma shader_feature_local _SPECULAR
 			TEXTURE2D( _AlbedoMask); SAMPLER(sampler_AlbedoMask);
 			UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 				INSTANCING_PROP(float3,_ColorR)
@@ -74,14 +85,16 @@
 				INSTANCING_PROP(float,_DiffuseBegin)
 				INSTANCING_PROP(float,_DiffuseEnd)
 				INSTANCING_PROP(float,_Lambert)
-				INSTANCING_PROP(float,_Fresnel)
+				INSTANCING_PROP(float,_FresnelStrength)
+				INSTANCING_PROP(float4,_FresnelCol)
+				INSTANCING_PROP(float,_SpecularRange)
+				INSTANCING_PROP(float4,_SpecularCol)
 			UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
 			struct a2f
 			{
 				half3 positionOS : POSITION;
 				half3 normalOS:NORMAL;
-				half4 tangentOS:TANGENT;
 				half2 uv:TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -94,8 +107,6 @@
 				nointerpolation
 				#endif
 				half3 normalWS:TEXCOORD1;
-				half3 tangentWS:TEXCOORD2;
-				half3 biTangentWS:TEXCOORD3;
 				float3 positionWS:TEXCOORD4;
 				half4 positionHCS:TEXCOORD5;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -110,8 +121,6 @@
 				o.positionCS = TransformObjectToHClip(v.positionOS);
 				o.positionWS=  TransformObjectToWorld(v.positionOS);
 				o.normalWS=normalize(mul((float3x3)unity_ObjectToWorld,v.normalOS));
-				o.tangentWS=normalize(mul((float3x3)unity_ObjectToWorld,v.tangentOS.xyz));
-				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
 				o.positionHCS=o.positionCS;
 				return o;
 			}
@@ -121,8 +130,6 @@
 				UNITY_SETUP_INSTANCE_ID(i);
 				float3 positionWS=i.positionWS;
 				half3 normalWS=normalize(i.normalWS);
-				half3 biTangentWS=normalize(i.biTangentWS);
-				half3 tangentWS=normalize(i.tangentWS);
 				half3 viewDirWS=normalize(TransformWorldToViewDir(positionWS,UNITY_MATRIX_V));
 				half3 lightDirWS=normalize(_MainLightPosition.xyz);
 				half2 baseUV=i.uv.xy;
@@ -134,14 +141,22 @@
 
 				float ndl=dot(normalWS,lightDirWS);
 				float ndv=dot(normalWS,viewDirWS);
+				float geometryShadow=saturate(ndl);
 				float diffuse=smoothstep(_DiffuseBegin,_DiffuseBegin+_DiffuseEnd,ndl);
 				diffuse=_Lambert*diffuse+(1-_Lambert);
 
 				float3 diffuseCol=diffuse*albedo;
-			
-				half3 lightCol=_MainLightColor.rgb;
-				float fresnel=pow3(1-ndv)*saturate(ndl)*_Fresnel;
-				float3 finalCol=lerp(diffuseCol,lightCol,fresnel);
+				float3 finalCol=diffuseCol;
+				#if _SPECULAR
+					float3 halfDirWS=normalize(viewDirWS+lightDirWS);
+					float specular=pow(saturate(dot(halfDirWS,normalWS)),_SpecularRange)*geometryShadow;
+					finalCol=lerp(finalCol,_SpecularCol.rgb,specular*_SpecularCol.a);
+				#endif
+				
+				#if _FRESNEL
+					float fresnel=pow3(1-ndv)*geometryShadow*_FresnelStrength;
+					finalCol=lerp(finalCol,_FresnelCol.rgb,fresnel*_FresnelCol.a);
+				#endif
 				
 				return half4(finalCol,1.h);
 			}

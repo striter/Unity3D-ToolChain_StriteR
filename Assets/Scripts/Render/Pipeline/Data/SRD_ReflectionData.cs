@@ -10,7 +10,9 @@ namespace Rendering.Pipeline
     {
         public enum_ReflectionSpace m_ReflectionType;
         [MFoldout(nameof(m_ReflectionType), enum_ReflectionSpace.ScreenSpace)] [Range(1, 4)] public int m_Sample;
-        [MFoldout(nameof(m_ReflectionType), enum_ReflectionSpace.MirrorSpace)]  public bool m_IncludeTransparent;
+
+        [MFoldout(nameof(m_ReflectionType), enum_ReflectionSpace.MirrorSpace)] [Range(0,8)]public int m_LightCount;
+        [MFoldout(nameof(m_ReflectionType), enum_ReflectionSpace.MirrorSpace)] public bool m_IncludeTransparent;
         
         [Header("Optimize")]
         [Range(1,4)] public int m_DownSample;
@@ -24,6 +26,7 @@ namespace Rendering.Pipeline
                 m_ReflectionType = enum_ReflectionSpace.ScreenSpace,
                 m_IncludeTransparent = false,
                 m_DownSample=2,
+                m_LightCount=8,
                 m_Sample = 1,
                 m_EnableBlur = true,
                 m_BlurParam = UPipeline.GetDefaultPostProcessData<PPData_Blurs>(),

@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -206,6 +207,7 @@ namespace Rendering.Pipeline
     public class SRP_PlanarReflection_MirrorSpace : SRP_PlanarReflectionBase
     {
         private const string C_ReflectionDepth = "_CameraReflectionDepthComparer";
+        static readonly int ID_CameraWorldPosition = Shader.PropertyToID("_WorldSpaceCameraPos");
 
         readonly List<ShaderTagId> m_ShaderTagIDs = new List<ShaderTagId>();
          int m_ReflectionDepth;
@@ -250,6 +252,7 @@ namespace Rendering.Pipeline
             camera.cullingMatrix = cullingMatrix * planeMirroMatrix;
             if (cameraData.camera.TryGetCullingParameters(out ScriptableCullingParameters cullingParameters))
             {
+                cullingParameters.maximumVisibleLights = _data.m_LightCount;
                 DrawingSettings drawingSettings = CreateDrawingSettings(m_ShaderTagIDs, ref renderingData,  SortingCriteria.CommonOpaque);
                 FilteringSettings m_FilterSettings = new FilteringSettings(_data.m_IncludeTransparent? RenderQueueRange.all : RenderQueueRange.opaque);
                 Matrix4x4 projectionMatrix = GL.GetGPUProjectionMatrix(cameraData.GetProjectionMatrix(), cameraData.IsCameraProjectionMatrixFlipped());
@@ -257,6 +260,8 @@ namespace Rendering.Pipeline
                 viewMatrix*= planeMirroMatrix;
             
                 RenderingUtils.SetViewAndProjectionMatrices(cmd, viewMatrix , projectionMatrix, false);
+                var cameraPosition = camera.transform.position;
+                cmd.SetGlobalVector( ID_CameraWorldPosition,planeMirroMatrix.MultiplyPoint(cameraPosition));
                 cmd.SetInvertCulling(true);
                 context.ExecuteCommandBuffer(cmd);
 
@@ -265,6 +270,7 @@ namespace Rendering.Pipeline
 
                 cmd.Clear();
                 cmd.SetInvertCulling(false);
+                cmd.SetGlobalVector( ID_CameraWorldPosition,cameraPosition);
                 RenderingUtils.SetViewAndProjectionMatrices(cmd, cameraData.GetViewMatrix(), cameraData.GetGPUProjectionMatrix(), false);
             }
             camera.ResetCullingMatrix();

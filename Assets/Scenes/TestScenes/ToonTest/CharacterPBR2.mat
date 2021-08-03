@@ -32,7 +32,7 @@ Material:
     - _AnisoTropicValue: 1
     - _Cull: 2
     - _DstBlend: 0
-    - _Fresnel: 4.91
+    - _Fresnel: 4.33
     - _Glossiness: 0.54
     - _Metallic: 0.06
     - _NDF: 5
