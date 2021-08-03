@@ -48,3 +48,27 @@ SDFOutput GTorusCapped_SDF(GTorusCapped _torusCapped,SDFInput _input)
     float distance= sqrt( dot(p,p) + ra*ra - 2.0*ra*k ) - rb;
     return SDFOutput_Ctor(_input,distance);
 }
+
+SDFOutput GCylinder_SDF(GCylinder _cylinder,SDFInput _input)
+{
+    return SDFOutput_Ctor(_input, length((_cylinder.center-_input.position).xy)-_cylinder.radius);
+}
+SDFOutput GCylinderCapped_SDF(GCylinderCapped _cylinderCapped,SDFInput _input)
+{
+    float3 p=_input.position;
+    float2 d=abs(float2(length((p-_cylinderCapped.cylinder.center).xz),p.y))-float2(_cylinderCapped.cylinder.radius,_cylinderCapped.height);
+    return SDFOutput_Ctor( _input,min(max(d),0)+length(max(d,0)));
+}
+SDFOutput GCylinderRound_SDF(GCylinderRound _cylinderRound,SDFInput _input)
+{
+    float3 p=_input.position-_cylinderRound.cylinder.center;
+    float2 d= float2(length(p.xz)-2.0*_cylinderRound.cylinder.radius+_cylinderRound.roundRadius,abs(p.y)-_cylinderRound.height);
+    return SDFOutput_Ctor( _input,min(max(d),0)+length(max(d,0))-_cylinderRound.roundRadius);
+}
+SDFOutput GCylinderCapsule_SDF(GCylinderCapsule _cylinderCapsule,SDFInput _input)
+{
+    float3 pa=_input.position-_cylinderCapsule.top;
+    float3 ba=_cylinderCapsule.bottom-_cylinderCapsule.top;
+    float h=saturate(dot(pa,ba)/dot(ba,ba));
+    return SDFOutput_Ctor(_input, length(pa-ba*h)-_cylinderCapsule.cylinder.radius);
+}

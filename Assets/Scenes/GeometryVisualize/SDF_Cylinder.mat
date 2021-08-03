@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SDF_TorusLink
-  m_Shader: {fileID: 4800000, guid: dfdaedfee83dfe14393664f4b8c73430, type: 3}
+  m_Name: SDF_Cylinder
+  m_Shader: {fileID: 4800000, guid: 9a148cf100dfb7f4aa61fd7876a7503d, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -94,10 +94,20 @@ Material:
     - _Blend: 0
     - _BoxRoundness: 0.246
     - _BumpScale: 1
+    - _CappedCylinderHeight: 0.24
+    - _CappedCylinderRadius: 1
+    - _CapsuleHeight: 0.821
+    - _CapsuleRadius: 0.56
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
+    - _CylinderCappedHeight: 0.51
+    - _CylinderCappedRadius: 0.17
+    - _CylinderRadius: 0.43
+    - _CylinderRoundHeight: 0.17
+    - _CylinderRoundRadius: 0.12
+    - _CylinderRoundRoundness: 0.101
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -137,7 +147,12 @@ Material:
     - _BoxColor: {r: 2.6650658, g: 9.849155, b: 1.7380863, a: 1}
     - _BoxPosition: {r: 0, g: 0, b: 0, a: 0}
     - _BoxSize: {r: 0.5, g: 0.5, b: 0.5, a: 0}
+    - _CappedCylinderColor: {r: 3.5165753, g: 6.064818, b: 9.734288, a: 1}
+    - _CapsuleColor: {r: 0.8396226, g: 0.8396226, b: 0.8396226, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _CylinderCappedColor: {r: 2.6904833, g: 6.3928847, b: 7.0417585, a: 1}
+    - _CylinderColor: {r: 0.840231, g: 0.8867924, b: 0.48104307, a: 1}
+    - _CylinderRoundColor: {r: 0.6556604, g: 0.97974473, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FrameBoxColor: {r: 1.4980392, g: 1.4980392, b: 0.84705883, a: 1}
     - _FrameBoxPosition: {r: 0, g: 0, b: 0, a: 0}

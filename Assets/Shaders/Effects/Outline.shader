@@ -33,6 +33,7 @@
 		    Name "OutLine"
             ZWrite On
 			Cull Front
+        	
 			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag

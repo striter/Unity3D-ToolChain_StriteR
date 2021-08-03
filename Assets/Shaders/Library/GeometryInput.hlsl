@@ -159,6 +159,65 @@ GTorusCapped GTorusCapped_Ctor(float3 _center,float _majorRadius,float _minorRad
     return torusCapped;
 }
 
+//GCylinder
+struct GCylinder
+{
+    float3 center;
+    float radius;
+};
+GCylinder GCylinder_Ctor(float3 _center,float _radius)
+{
+    GCylinder cylinder;
+    cylinder.center=_center;
+    cylinder.radius=_radius;
+    return cylinder;
+}
+struct GCylinderCapped
+{
+    GCylinder cylinder;
+    float height;
+};
+GCylinderCapped GCylinderCapped_Ctor(float3 _center,float _radius,float _height)
+{
+    GCylinderCapped cylinderCapped;
+    cylinderCapped.cylinder=GCylinder_Ctor(_center,_radius);
+    cylinderCapped.height=_height;
+    return cylinderCapped;
+}
+struct GCylinderRound
+{
+    GCylinder cylinder;
+    float height;
+    float roundRadius;
+};
+GCylinderRound GCylinderRound_Ctor(float3 _center,float _radius,float _height,float _roundRadius)
+{
+    GCylinderRound cylinderRound;
+    cylinderRound.cylinder=GCylinder_Ctor(_center,_radius);
+    cylinderRound.height=_height;
+    cylinderRound.roundRadius=_roundRadius;
+    return cylinderRound;
+}
+struct GCylinderCapsule
+{
+    GCylinder cylinder;
+    float3 direction;
+    float height;
+    float3 top;
+    float3 bottom;
+};
+GCylinderCapsule GCylinderCapsule_Ctor(float3 _center,float _radius,float3 _direction,float _height)
+{
+    GCylinderCapsule capsule;
+    capsule.cylinder=GCylinder_Ctor(_center,_radius);
+    capsule.direction=_direction;
+    capsule.height=_height;
+    float3 offset=_direction*capsule.height*.5;
+    capsule.top=_center+offset;
+    capsule.bottom=_center-offset;
+    return capsule;
+}
+
 struct GHeightCone
 {
     float3 origin;

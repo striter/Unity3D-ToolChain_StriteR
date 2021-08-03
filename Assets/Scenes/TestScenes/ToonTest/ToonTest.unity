@@ -370,14 +370,14 @@ MonoBehaviour:
     m_DOFLerp: 0.1
     m_BlurParams:
       m_BlurType: 3
-      m_BlurSize: 1.3
-      m_Iteration: 7
+      m_BlurSize: 2.5
+      m_Iteration: 4
       m_DownSample: 2
       m_Angle: 0
       m_Vector: {x: 0.5, y: 0.5}
     m_DepthBlurSample: 0
     m_DepthBlurSize: 0.5
-  m_SceneViewPreview: 0
+  m_SceneViewPreview: 1
 --- !u!114 &160964373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1120,13 +1120,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 588823847}
-  m_LocalRotation: {x: 0.169971, y: 0.72844017, z: -0.195185, w: 0.6343403}
+  m_LocalRotation: {x: 0.20085563, y: 0.60918605, z: -0.16323094, w: 0.7496033}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 30, y: 97.9, z: 0}
+  m_LocalEulerAnglesHint: {x: 30, y: 78.2, z: 0}
 --- !u!1 &653593234
 GameObject:
   m_ObjectHideFlags: 0
@@ -2202,8 +2202,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.8826788, b: 0.5613208, a: 1}
-  m_Intensity: 0.8
+  m_Color: {r: 1, g: 0.80163413, b: 0.25943398, a: 1}
+  m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -2260,13 +2260,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1793973994}
-  m_LocalRotation: {x: -0.21291508, y: 0.5491886, z: -0.14715467, w: -0.7946097}
+  m_LocalRotation: {x: -0.14510405, y: 0.7998449, z: -0.21431784, w: -0.5415356}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 30, y: 290.7, z: 0}
+  m_LocalEulerAnglesHint: {x: 30, y: 248.2, z: 0}
 --- !u!1 &1843638108
 GameObject:
   m_ObjectHideFlags: 0
