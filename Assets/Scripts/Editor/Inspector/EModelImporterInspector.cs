@@ -6,7 +6,7 @@ using UnityEngine;
 namespace TEditor
 {
     [CustomEditor(typeof(ModelImporter))]
-    public class EModelImporterInspector : Editor
+    public class ModelImporterInspector : Editor
     {
         static readonly Type s_ModelImporterType = Type.GetType("UnityEditor.ModelImporterEditor,UnityEditor");
         Editor m_ModelImporterEditor;

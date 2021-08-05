@@ -55,7 +55,6 @@
 			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
 			#include "Assets/Shaders/Library/BRDFInclude.hlsl"
 			#include "Assets/Shaders/Library/GlobalIlluminationInclude.hlsl"
-			#include "Assets/Shaders/Library/Additional/Parallax.hlsl"
 			
 			#pragma multi_compile_instancing
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
@@ -67,9 +66,6 @@
 			#pragma shader_feature_local _SPECULAR
 			#pragma shader_feature_local _NORMALMAP
 			#pragma shader_feature_local _DETAILNORMALMAP
-			#pragma shader_feature_local _PARALLAX
-			#pragma shader_feature_local _DEPTHBUFFER
-			#pragma shader_feature_local _DEPTHMAP
 			#pragma shader_feature_local _MATCAP
             
 			#pragma multi_compile_local _NDF_BLINNPHONG _NDF_COOKTORRANCE _NDF_BECKMANN _NDF_GAUSSIAN _NDF_GGX _NDF_TROWBRIDGEREITZ _NDF_ANISOTROPIC_TROWBRIDGEREITZ _NDF_ANISOTROPIC_WARD
@@ -80,6 +76,7 @@
 			TEXTURE2D(_Matcap);SAMPLER(sampler_Matcap);
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
 			TEXTURE2D(_DetailNormalTex);SAMPLER(sampler_DetailNormalTex);
+			TEXTURE2D(_DepthTex);SAMPLER(sampler_DepthTex);
 			UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 				INSTANCING_PROP(float,_Glossiness)
 				INSTANCING_PROP(float,_Metallic)
@@ -88,7 +85,16 @@
 				INSTANCING_PROP(float4,_MainTex_ST)
 				INSTANCING_PROP(float4,_DetailNormalTex_ST)
 				INSTANCING_PROP(float4, _Color)
+				INSTANCING_PROP(float,_DepthScale)
+				INSTANCING_PROP(float,_DepthOffset)
+				INSTANCING_PROP(float,_DepthBufferScale)
+				INSTANCING_PROP(int ,_ParallaxCount)
 			UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
+			
+			#include "Assets/Shaders/Library/Additional/Parallax.hlsl"
+			#pragma shader_feature_local _PARALLAX
+			#pragma shader_feature_local _DEPTHBUFFER
+			#pragma shader_feature_local _DEPTHMAP
 
 			struct a2f
 			{

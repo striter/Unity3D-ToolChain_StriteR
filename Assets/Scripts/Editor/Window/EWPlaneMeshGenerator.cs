@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace TEditor
 {
-    public class EWPlaneMeshGenerator : EditorWindow
+    public class PlaneMeshGenerator : EditorWindow
     {
         public enum enum_PlaneGeometryType
         {

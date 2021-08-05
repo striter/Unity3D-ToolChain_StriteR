@@ -17,7 +17,7 @@ public class PartialMethodAttribute : Attribute
     }
 }
 public interface IPartialMethods<T, Y> where T : Enum where Y : struct { }
-public static class IParticalMethods_Helper 
+public static class ParticalMethods_Helper 
 {
     static readonly Type s_ParticalAttribute = typeof(PartialMethodAttribute);
     static Dictionary<Type, Dictionary<Enum, MethodInfo[]>> s_CollectedMethods=new Dictionary<Type, Dictionary<Enum, MethodInfo[]>>();
@@ -28,17 +28,17 @@ public static class IParticalMethods_Helper
             return;
         Type triggerType = typeof(T);
         Type sortingType = typeof(Y);
-        var triggerMethods = targetType.GetMethods(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic).TakeAll(p => {
+        var triggerMethods = targetType.GetMethods(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic).Select(p => {
             var attribute = (PartialMethodAttribute)p.GetCustomAttribute(s_ParticalAttribute);
             if (attribute == null)
-                return null;
+                return default;
             if (attribute.m_Trigger.GetType() != triggerType)
                 throw new Exception("Trigger Type Mismatch:"+attribute.m_Trigger+" "+ triggerType);
             if (attribute.m_Sorting.GetType() != sortingType)
                 throw new Exception("Sorting Type Mismatch:" + attribute.m_Sorting + " " + sortingType);
 
-            return new Ref<KeyValuePair<MethodInfo, PartialMethodAttribute>>(new KeyValuePair<MethodInfo, PartialMethodAttribute>(p, attribute));
-        }).Select(p => p.m_RefValue).GroupBy(p=>(Enum)p.Value.m_Trigger,p=>new KeyValuePair<Y,MethodInfo>((Y)p.Value.m_Sorting , p.Key));
+            return new Ref<KeyValuePair<MethodInfo, PartialMethodAttribute>>(new KeyValuePair<MethodInfo, PartialMethodAttribute>(p, attribute)).m_RefValue;
+        }).GroupBy(p=>(Enum)p.Value.m_Trigger,p=>new KeyValuePair<Y,MethodInfo>((Y)p.Value.m_Sorting , p.Key));
 
         Dictionary<Enum, MethodInfo[]> collectedMethods = new Dictionary<Enum, MethodInfo[]>();
         foreach (var methodGroup in triggerMethods)

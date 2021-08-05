@@ -32,13 +32,16 @@ public static class UGeometry
     #endregion
     #region Ray
     public static bool RayTriangleIntersect(GTriangle _triangle, GRay _ray, bool _rayDirectionCheck) => RayTriangleIntersect(_triangle, _ray, _rayDirectionCheck, out float distance);
+    
     public static bool RayTriangleIntersect(GTriangle _triangle,GRay _ray,bool _rayDirectionCheck,out float distance)
     {
         if (!RayTriangleCalculate(_triangle[0], _triangle[1], _triangle[2], _ray.origin, _ray.direction, out distance, out float u, out float v))
             return false;
         return !_rayDirectionCheck || distance > 0;
     }
+    
     public static bool RayDirectedTriangleIntersect(GDirectedTriangle _triangle, GRay _ray, bool _rayDirectionCheck, bool _triangleDirectionCheck) => RayDirectedTriangleIntersect(_triangle,_ray,_rayDirectionCheck,_triangleDirectionCheck,out float distance);
+    
     public static bool RayDirectedTriangleIntersect(GDirectedTriangle _triangle, GRay _ray, bool _rayDirectionCheck, bool _triangleDirectionCheck,out float distance)
     {
         if (!RayTriangleCalculate(_triangle[0], _triangle[1], _triangle[2], _ray.origin, _ray.direction, out distance, out float u, out float v))
@@ -48,6 +51,7 @@ public static class UGeometry
         intersect &= !_triangleDirectionCheck || Vector3.Dot(_triangle.normal, _ray.direction) < 0;
         return intersect;
     }
+    
     static bool RayTriangleCalculate(Vector3 _vertex0, Vector3 _vertex1, Vector3 _vertex2, Vector3 _rayOrigin, Vector3 _rayDir,out float t,out float u,out float v)  //Möller-Trumbore
     {
         t = 0;
@@ -92,23 +96,27 @@ public static class UGeometry
         distance = RayPlaneDistance(_plane, _ray);
         return distance!=0;
     }
+    
     public static bool RayPlaneDistance(GPlane _plane, Ray _ray,out Vector3 _hitPoint)
     {
         float distance = RayPlaneDistance(_plane, _ray);
         _hitPoint = _ray.GetPoint(distance);
         return distance!=0;
     }
+    
     public static float RayPlaneDistance(GPlane _plane,Ray _ray)
     {
         float nrO = Vector3.Dot(_plane.normal, _ray.origin);
         float nrD = Vector3.Dot(_plane.normal, _ray.direction);
         return (_plane.distance - nrO) / nrD;
     }
+    
     public static bool RayBSIntersect(GSphere _sphere, GRay _ray)
     {
         RayBSCalculate(_sphere,_ray, out float dotOffsetDirection, out float discriminant);
         return discriminant >= 0;
     }
+    
     public static Vector2 RayBSDistance(GSphere _sphere, GRay _ray)
     {
         RayBSCalculate(_sphere,_ray, out float dotOffsetDirection, out float discriminant);

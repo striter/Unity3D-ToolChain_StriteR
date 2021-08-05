@@ -6,7 +6,7 @@ using UAlthogrim;
 namespace TEditor
 {
     using static UEGUI;
-    public class EWNoiseGenerator : EditorWindow
+    public class NoiseGenerator : EditorWindow
     {
         public enum enum_NoiseType
         {

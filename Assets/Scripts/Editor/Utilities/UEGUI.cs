@@ -103,7 +103,7 @@ namespace TEditor
                 _src = _src.Resize(length);
 
             Type type = typeof(T);
-            T[] modifiedField = _src.Copy();
+            T[] modifiedField = _src.DeepCopy();
             for (int i = 0; i < modifiedField.Length; i++)
                 modifiedField[i] = (T)EditorGUILayout.ObjectField(modifiedField[i], type, _allowSceneObjects);
             GUILayout.EndVertical();

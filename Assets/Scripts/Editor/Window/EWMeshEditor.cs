@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace TEditor
 {
-    public class EMeshEditor : EditorWindow
+    public class MeshEditor : EditorWindow
     {
         public enum enum_EditorMode
         {
@@ -28,8 +28,7 @@ namespace TEditor
 
         private void OnEnable()
         {
-            m_MeshObject = new GameObject("Modify Mesh");
-            m_MeshObject.hideFlags = HideFlags.HideAndDontSave;
+            m_MeshObject = new GameObject("Modify Mesh") {hideFlags = HideFlags.HideAndDontSave};
             m_MeshFilter = m_MeshObject.AddComponent<MeshFilter>();
             m_MeshRenderer = m_MeshObject.AddComponent<MeshRenderer>();
             m_EditorHelpers = new Dictionary<enum_EditorMode, MeshEditorHelperBase>() { { enum_EditorMode.Edit, new MeshEditorHelper_Edit(this) }, { enum_EditorMode.Paint, new MeshEditorHelper_Paint(this) } };
@@ -195,11 +194,11 @@ namespace TEditor
     }
     public class MeshEditorHelperBase
     {
-        public EMeshEditor m_Parent { get; private set; }
+        public MeshEditor m_Parent { get; private set; }
         protected Mesh m_SourceMesh => m_Parent.m_SourceMesh;
         protected Mesh m_ModifingMesh => m_Parent.m_ModifingMesh;
         protected GMeshPolygon[] m_Polygons { get; private set; }
-        public MeshEditorHelperBase(EMeshEditor _parent) { m_Parent = _parent; }
+        public MeshEditorHelperBase(MeshEditor _parent) { m_Parent = _parent; }
         public virtual void Begin()
         {
             m_Polygons = m_ModifingMesh.GetPolygons(out int[] triangles);
@@ -256,7 +255,7 @@ namespace TEditor
     }
     public class MeshEditorHelper_Edit : MeshEditorHelperBase
     {
-        public MeshEditorHelper_Edit(EMeshEditor _parent) : base(_parent) { }
+        public MeshEditorHelper_Edit(MeshEditor _parent) : base(_parent) { }
         enum enum_VertexEditMode
         {
             None,
@@ -314,7 +313,7 @@ namespace TEditor
                 return;
             GMeshPolygon mainPolygon = m_Polygons[m_SelectedPolygon];
             GTriangle mainTriangle = mainPolygon.GetTriangle(m_Verticies);
-            m_Polygons.FindAllIndexes(m_SubPolygons, (index, polygon) => index != m_SelectedPolygon && polygon.GetTriangle(m_Verticies).verticies.Any(subVertex => mainTriangle.verticies.Any(mainVertex => mainVertex == subVertex)));
+            m_SubPolygons=m_Polygons.CollectIndex((index, polygon) => index != m_SelectedPolygon && polygon.GetTriangle(m_Verticies).verticies.Any(subVertex => mainTriangle.verticies.Any(mainVertex => mainVertex == subVertex))).ToList();
         }
         void SelectVertex(int _index)
         {
@@ -449,7 +448,7 @@ namespace TEditor
             List<int> modifingIndices = new List<int>();
             modifingIndices.Add(_srcIndex);
             if (m_EditSameVertex)
-                modifingIndices.AddRange(m_Verticies.FindAllIndexes(p => p == m_Verticies[_srcIndex]));
+                modifingIndices.AddRange(m_Verticies.CollectIndex(p => p == m_Verticies[_srcIndex]));
             return modifingIndices;
         }
 
@@ -572,7 +571,7 @@ namespace TEditor
         public override Material GetDefaultMaterial() => new Material(Shader.Find("Hidden/VertexColorVisualize")) { hideFlags = HideFlags.HideAndDontSave };
         static readonly string[] KW_Sample = new string[] { "_SAMPLE_UV0", "_SAMPLE_UV1", "_SAMPLE_UV2", "_SAMPLE_UV3", "_SAMPLE_UV4", "_SAMPLE_UV5", "_SAMPLE_UV6", "_SAMPLE_UV7", "_SAMPLE_COLOR", "_SAMPLE_NORMAL", "_SAMPLE_TANGENT" };
         static readonly string[] KW_Color = new string[] { "_VISUALIZE_R", "_VISUALIZE_G", "_VISUALIZE_B", "_VISUALIZE_A" };
-        public MeshEditorHelper_Paint(EMeshEditor _parent) : base(_parent)
+        public MeshEditorHelper_Paint(MeshEditor _parent) : base(_parent)
         {
             m_PaintColor.Bind(value => {
                 if (!m_Parent.m_MaterialOverride)
@@ -625,7 +624,7 @@ namespace TEditor
                     m_PaintPosition = hitPosition;
                     m_PaintAffectedIndices.Clear();
                     float sqrRaidus = m_PaintSize * m_PaintSize;
-                    m_Verticies.FindAllIndexes(m_PaintAffectedIndices, (index, p) => {
+                    m_Verticies.CollectIndex((index, p) => {
                         bool normalPassed = false;
                         switch (m_PaintNormal)
                         {
@@ -634,7 +633,7 @@ namespace TEditor
                             case enum_PaintNormal.Every: normalPassed = true; break;
                         }
                         return normalPassed && (hitPosition - p).sqrMagnitude < sqrRaidus;
-                    });
+                    }).FillList(m_PaintAffectedIndices);
                 }
             }
 

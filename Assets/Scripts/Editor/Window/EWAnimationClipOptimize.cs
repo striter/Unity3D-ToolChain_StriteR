@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 namespace TEditor
 {
-    public class EWAnimationClipOptimize : EditorWindow
+    public class AnimationClipOptimize : EditorWindow
     {
         AnimationClip m_OptimizeAsset;
         int m_OptimizePresicion=3;

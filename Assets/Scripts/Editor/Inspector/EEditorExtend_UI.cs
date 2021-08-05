@@ -9,7 +9,7 @@ namespace TEditor
     #region UI
     #region Inspector
     [CustomEditor(typeof(UIComponentBase), true), CanEditMultipleObjects]
-    public class EUIComponent : Editor
+    public class UIComponent : Editor
     {
         public override void OnInspectorGUI()
         {
@@ -20,7 +20,7 @@ namespace TEditor
     }
 
     [CustomEditor(typeof(UIT_TextExtend)), CanEditMultipleObjects]
-    public class EUITextExtend : UnityEditor.UI.TextEditor
+    public class UITextExtend : UnityEditor.UI.TextEditor
     {
         [MenuItem("GameObject/UI/TextExtend")]
         public static void CreateTextExtend()
@@ -127,9 +127,9 @@ namespace TEditor
     }
     #endregion
     #region Window
-    public class EUIFontsMissingReplacerWindow : EditorWindow
+    public class UIFontsMissingReplacerWindow : EditorWindow
     {
-        UnityEngine.Object m_parent;
+        Object m_parent;
         Font m_Font;
         bool m_replaceMissing;
         private void OnEnable()

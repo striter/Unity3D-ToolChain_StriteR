@@ -7,7 +7,7 @@ using UnityEngine;
 namespace TEditor
 {
     using static UERender;
-    public class EWSmoothNormalGenerator : EditorWindow
+    public class SmoothNormalGenerator : EditorWindow
     {
         GameObject m_ModelPrefab;
 
@@ -56,7 +56,7 @@ namespace TEditor
 
             GameObject mainAsset = PrefabUtility.SaveAsPrefabAsset(prefabSource, assetPath);
             UEAsset.CreateOrReplaceSubAsset(assetPath, targetSubAsset.ToArray());
-            Mesh[] meshes = AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath).ToArray(obj => (Mesh)obj);
+            Mesh[] meshes = AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath).Select(obj=>(Mesh)obj).ToArray();
 
             skinnedRenderers = mainAsset.GetComponentsInChildren<SkinnedMeshRenderer>();
             for (int i = 0; i < skinnedRenderers.Length; i++)

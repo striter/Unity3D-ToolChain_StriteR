@@ -111,14 +111,16 @@ namespace Rendering.Pipeline
         }
         void UpdatePostProcess(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
-            var postEffects = renderingData.cameraData.camera.GetComponents<APostProcessBase>().FindAll(p => p.enabled);
+            var postEffects = renderingData.cameraData.camera.GetComponents<APostProcessBase>().Collect(p => p.enabled);
             if (!postEffects.Any())
                 return;
 
-            var dictionary = postEffects.ToListDictionary(p => p.m_IsOpaqueProcess);
-
-            foreach (bool key in from key in dictionary.Keys let count = dictionary[key].Count() where count != 0 select key)
-                renderer.EnqueuePass(key ? m_PostProcesssing_Opaque.Setup(renderer, dictionary[true]) : m_PostProcesssing_AfterAll.Setup(renderer, dictionary[false]));
+            var groups = postEffects.GroupBy(p=>p.m_IsOpaqueProcess);
+            foreach (var group in groups)
+            {
+                var pass = group.Key ? m_PostProcesssing_Opaque : m_PostProcesssing_AfterAll;
+                renderer.EnqueuePass(  pass.Setup(renderer, group));
+            }
         }
     }
 }

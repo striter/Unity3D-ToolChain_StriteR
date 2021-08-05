@@ -58,8 +58,8 @@ Shader "Game/2D/Uber"
             #include "Assets/Shaders/Library/CommonInclude.hlsl"
 			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
 			#include "Assets/Shaders/Library/Additional/Grid.hlsl"
-			#include "Assets/Shaders/Library/Additional/Parallax.hlsl"
 			#include "Assets/Shaders/Library/Additional/CloudShadow.hlsl"
+			#include "Assets/Shaders/Library/Additional/HorizonBend.hlsl"
             #pragma multi_compile_instancing
             #pragma target 3.5
 
@@ -76,10 +76,12 @@ Shader "Game/2D/Uber"
 			#pragma shader_feature_local _GRID
 			#pragma shader_feature _EDITGRID
 			#pragma shader_feature _CLOUDSHADOW
+			#pragma shader_feature _HORIZONBEND
         
             TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
 			TEXTURE2D(_BackRimTex);SAMPLER(sampler_BackRimTex);
+			TEXTURE2D(_DepthTex);SAMPLER(sampler_DepthTex);
 			UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 				INSTANCING_PROP(float,_AlphaClipRange)
 				INSTANCING_PROP(float,_Diffuse)
@@ -92,7 +94,13 @@ Shader "Game/2D/Uber"
 				INSTANCING_PROP(int,_AtlasWidth)
 				INSTANCING_PROP(int,_AtlasHeight)
 				INSTANCING_PROP(int,_AtlasIndex)
+				INSTANCING_PROP(float,_DepthScale)
+				INSTANCING_PROP(float,_DepthOffset)
+				INSTANCING_PROP(float,_DepthBufferScale)
+				INSTANCING_PROP(int ,_ParallaxCount)
 			UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
+        
+			#include "Assets/Shaders/Library/Additional/Parallax.hlsl"
         
             struct a2v
             {
@@ -141,7 +149,6 @@ Shader "Game/2D/Uber"
                 clip(alpha-INSTANCE(_AlphaClipRange));
                 #endif
             }
-
             v2f vert (a2v v)
             {
                 v2f o;
@@ -149,6 +156,7 @@ Shader "Game/2D/Uber"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				float3 positionWS=TransformObjectToWorld(v.positionOS);
 				positionWS=Wave(positionWS);
+				positionWS=HorizonBend(positionWS);
 				o.positionCS=TransformWorldToHClip(positionWS);
             	o.positionWS=positionWS;
 				o.uv = Atlas(v.uv);
@@ -197,7 +205,7 @@ Shader "Game/2D/Uber"
             	half atten=1;
             	#if _RECEIVESHADOW
             		atten*=MainLightRealtimeShadow(TransformWorldToShadowCoord(positionWS));
-            	atten*=CloudShadowAttenuation(positionWS,lightDirWS);
+            		atten*=CloudShadowAttenuation(positionWS,lightDirWS);
             	#endif
 				
             	half diffuse=saturate(dot(normalWS,lightDirWS));
@@ -214,12 +222,14 @@ Shader "Game/2D/Uber"
             	#endif
             	
             	half3 finalCol=diffuseCol*atten*lightCol+ambient+specular*lightCol;
+            	#if _ADDITIONAL_LIGHTS
             	uint pixelLightCount = GetAdditionalLightsCount();
 			    for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
 			    {
 			        Light light = GetAdditionalLight(lightIndex,i.positionWS);
 			    	finalCol+=albedo* light.distanceAttenuation*light.shadowAttenuation*light.color;
 			    }
+            	#endif
 
             	#if _GRID
             	finalCol=MixGrid(positionWS,finalCol);

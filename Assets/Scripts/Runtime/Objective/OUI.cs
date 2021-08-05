@@ -26,7 +26,11 @@ public class AtlasLoader
         m_AtlasName = atlas.name;
         Sprite[] allsprites = new Sprite[atlas.spriteCount];
         atlas.GetSprites(allsprites);
-        allsprites.Traversal((Sprite sprite) => { string name = sprite.name.Replace("(Clone)", ""); m_SpriteDic.Add(name, sprite); });
+        foreach (Sprite sprite in allsprites)
+        {
+            string name = sprite.name.Replace("(Clone)", ""); 
+            m_SpriteDic.Add(name, sprite); 
+        }
     }
 }
 

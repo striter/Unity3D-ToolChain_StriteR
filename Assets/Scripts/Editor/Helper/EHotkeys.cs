@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 namespace TEditor
 {
-    public static class EHotkeys
+    public static class Hotkeys
     {
         #region SyncObjectToCamera
         public static void SyncSelectedToSceneViewCamera()

@@ -67,7 +67,7 @@
 			#include "Assets/Shaders/Library/CommonInclude.hlsl"
 			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
             #include "Assets/Shaders/Library/GlobalIlluminationInclude.hlsl"
-
+            
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
             TEXTURE2D(_CausticTex);SAMPLER(sampler_CausticTex);
             TEXTURE2D(_FlowTex);SAMPLER(sampler_FlowTex);
@@ -90,6 +90,11 @@
 				INSTANCING_PROP(float,_DepthDistance)
 				INSTANCING_PROP(float,_CausticStrength)
 			INSTANCING_BUFFER_END
+            
+            #include "Assets/Shaders/Library/Additional/HorizonBend.hlsl"
+            #pragma shader_feature _HORIZONBEND
+            #include "Assets/Shaders/Library/Additional/WaveInteraction.hlsl"
+            #pragma shader_feature_local _WAVEINTERACTION
 
             struct a2v
             {
@@ -119,9 +124,11 @@
                 v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v,o);
-            	o.positionCS=TransformObjectToHClip(v.positionOS);
+            	float3 positionWS=TransformObjectToWorld(v.positionOS);
+            	positionWS=HorizonBend(positionWS);
+            	o.positionWS=positionWS;
+            	o.positionCS=TransformWorldToHClip(o.positionWS);
             	o.positionHCS=o.positionCS;
-            	o.positionWS=TransformObjectToWorld(v.positionOS);
 				o.normalWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.normalOS));
 				o.tangentWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.tangentOS.xyz));
 				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
@@ -148,7 +155,7 @@
             	#if _RECEIVESHADOW
             		atten=MainLightRealtimeShadow(i.shadowCoords);
             	#endif
-
+				float2 wave=WaveInteraction(positionWS);
             	float3 albedo=_Color.rgb;
             	float2 screenUV=TransformHClipToNDC(i.positionHCS);
             	
@@ -163,10 +170,10 @@
             	float uvScale=rcp(_Scale);
             	
             	#if _NORMALTEX
-				half2 baseUV=positionWS.xz;
-            	baseUV+=uvFlow;
-            	baseUV*=uvScale;
-            	normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
+            	float2 surfaceUV=positionWS.xz+wave*.1;
+            	surfaceUV+=uvFlow;
+            	surfaceUV*=uvScale;
+            	normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,surfaceUV));
 				normalWS=normalize(mul(transpose(TBNWS), normalTS));
             	#endif
 
@@ -174,22 +181,18 @@
             	float eyeDepthUnder=RawToEyeDepth(underRawDepth);
             	float eyeDepthSurface=RawToEyeDepth(i.positionCS.z);
             	float eyeDepthOffset=eyeDepthUnder-eyeDepthSurface;
-            	
+
             	float2 deepSurfaceUV=screenUV;
 				#if _DEPTHREFRACTION
-				float refraction=saturate(invlerp(0,_RefractionDistance,eyeDepthOffset))*_RefractionAmount;
+				float refraction=saturate(invlerp(0,_RefractionDistance,eyeDepthOffset+wave))*_RefractionAmount;
             	deepSurfaceUV+=normalTS.xy*refraction*rcp(eyeDepthUnder);
             	#endif
             	float3 deepSurfaceColor=SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,deepSurfaceUV).rgb;
-            	
             	#if _CAUSTIC
 				float3 positionWSDepth=TransformNDCToWorld(screenUV,underRawDepth);
             	float verticalDistance=positionWSDepth.y-positionWS.y;
             	float3 causticPositionWS=positionWSDepth+lightDirWS*verticalDistance* rcp(dot(float3(0,-1,0),lightDirWS));
             	float causticAtten=1;
-            	#if _RECEIVESHADOW
-            		causticAtten=MainLightRealtimeShadow(TransformWorldToShadowCoord(causticPositionWS));
-				#endif
             	float2 causticUV=causticPositionWS.xz+uvFlow;
 				causticUV*=uvScale;
             	float caustic=SAMPLE_TEXTURE2D(_CausticTex,sampler_CausticTex,causticUV).r;
@@ -220,6 +223,7 @@
             	#if _FRESNEL
             	fresnel=1.-Pow4(dot(viewDirWS,normalWS));
 				#endif
+
             	
             	float3 riverCol=lerp(deepSurfaceColor,aboveSurfaceColor,fresnel*_Color.a);
             	

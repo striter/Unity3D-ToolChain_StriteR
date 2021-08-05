@@ -6,7 +6,7 @@ using UnityEngine;
 namespace TEditor
 {
     [CustomEditor(typeof(PostProcess_ColorGrading))]
-    public class EPostEffect_ColorGrading : Editor
+    public class PostEffect_ColorGrading : Editor
     {
         public override void OnInspectorGUI()
         {

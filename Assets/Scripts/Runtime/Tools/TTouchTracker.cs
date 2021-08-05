@@ -34,12 +34,11 @@ namespace  TTouchTracker
             m_Delta = m_Current - m_Previous;
         }
     }
+    
     public static class TouchTracker_Helper
     {
-        public static IEnumerable<Vector2> GetPositions(this List<TrackPosition> _tracks) =>
-            _tracks.Select(p => p.m_Current);
-        public static Vector2 RawDrag(this List<TrackPosition> _tracks)=> _tracks.Average(p => p.m_Delta);
-        public static float RawPinch(this List<TrackPosition> _tracks)
+        public static Vector2 CombinedDrag(this List<TrackPosition> _tracks)=> _tracks.Average(p => p.m_Delta);
+        public static float CombinedPinch(this List<TrackPosition> _tracks)
         {
             if (_tracks.Count<2)
                 return 0f;
@@ -50,6 +49,10 @@ namespace  TTouchTracker
                 float sign=Mathf.Sign( Vector2.Dot( p.m_Delta,center-p.m_Previous));
                 return p.m_Delta.magnitude*sign;
             });
+        }
+        public static IEnumerable<Vector2> ResolveClicks(this List<TrackPosition> _tracks,float _lifeTime=.1f)
+        {
+            return _tracks.Collect(p => p.m_Phase == TouchPhase.Ended && p.m_Lifetime < _lifeTime).Select(p=>p.m_Start);
         }
     }
 
@@ -105,7 +108,7 @@ namespace  TTouchTracker
         public static void Init() => m_TrackData.Clear();
         public static List<TrackPosition> Execute(float _unscaledDeltaTime)
         {
-            foreach (var trackIndex in m_TrackData.Keys.FindAll(p => m_TrackData[p].m_Phase == TouchPhase.Ended||m_TrackData[p].m_Phase== TouchPhase.Canceled))
+            foreach (var trackIndex in m_TrackData.Keys.Collect(p => m_TrackData[p].m_Phase == TouchPhase.Ended||m_TrackData[p].m_Phase== TouchPhase.Canceled))
                 m_TrackData.Remove(trackIndex);
             
             foreach (Touch touch in GetTouches())

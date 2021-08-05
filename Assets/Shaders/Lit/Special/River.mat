@@ -9,30 +9,39 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: River
   m_Shader: {fileID: 4800000, guid: 7afe38b685a46a34286c6167ed5f04a5, type: 3}
-  m_ShaderKeywords: _CRACK _CRACKPARALLEX _CRACKTOP _DEPTH _DISTORT _FRESNEL _NORMALMAP
-    _OPACITY _SPECULAR _THICK
+  m_ShaderKeywords: _AOMAP _CAUSTIC _CRACK _CRACKPARALLEX _CRACKTOP _DEPTH _DEPTHREFRACTION
+    _DETAILNORMALMAP _DISTORT _FOAM _FRESNEL _F_IMPLICIT _F_SCHLICK _GSF_COOKTORRANCE
+    _NDF_COOKTORRANCE _NORMALTEX _OPACITY _PARALLEXMAP _RECEIVESHADOW _SPECULAR _THICK
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _AOTex:
+        m_Texture: {fileID: 2800000, guid: fd8a0a74130f91d45885d2878f35c2ac, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: ea2f0f63e40f326458d3d1a3fe7125ec, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: dc57807282857d345827be7fb4f64b5b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CausticTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 66d73207a382c2a47b76b4c56d8963f0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CrackTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DepthTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -48,6 +57,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DetailNormalTex:
+        m_Texture: {fileID: 2800000, guid: c8b4f464be45a5b44a9113a28f2bfd85, type: 3}
+        m_Scale: {x: 0.2, y: 0.2}
+        m_Offset: {x: 0.5, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -58,21 +71,41 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 0.3, y: 0.3}
+        m_Offset: {x: 0, y: 0}
+    - _Matcap:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _NormalTex:
+    - _MetallicTex:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalTex:
+        m_Texture: {fileID: 2800000, guid: c8b4f464be45a5b44a9113a28f2bfd85, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _PBRTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallexTex:
+        m_Texture: {fileID: 2800000, guid: d0b408275162b224ca69ea8aef45fe14, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RoughnessTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -95,10 +128,12 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
+    - _AnisoTropicValue: 1
     - _BeginOpacity: 0.5
     - _Blend: 0
     - _BumpScale: 1
     - _Caustic: 1
+    - _CausticClip: 1
     - _CausticStrength: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
@@ -110,64 +145,89 @@ Material:
     - _Cull: 2
     - _Cutoff: 0.5
     - _Depth: 1
-    - _DepthBegin: 2
-    - _DepthDistance: 1
+    - _DepthBegin: 0.4
+    - _DepthBuffer: 1
+    - _DepthBufferScale: 1
+    - _DepthDistance: 0.2
+    - _DepthOffset: 0.42
     - _DepthPow: 2
     - _DepthRefraction: 1
+    - _DepthScale: 1
     - _DetailAlbedoMapScale: 1
+    - _DetailBlendMode: 2
     - _DetailNormalMapScale: 1
     - _DistortStrength: 1
     - _DstBlend: 0
+    - _EnableAOMap: 0
     - _EnableCrack: 0.5
     - _EnableCrackTop: 1
     - _EnableDepth: 1
     - _EnableDistort: 1
     - _EnableFresnel: 1
-    - _EnableNormalMap: 1
+    - _EnableNormalMap: 0
     - _EnableOpacity: 1
+    - _EnableParallexMap: 0
+    - _EnableRoughnessMap: 0
     - _EnableSpecular: 1
     - _EnableThick: 1
     - _EnvironmentReflections: 1
-    - _FlowSpeed: 2
+    - _F: 0
+    - _FRESNEL: 0
+    - _FlowSpeed: 0.1
     - _Foam: 1
-    - _FoamBegin: 0.1
-    - _FoamDistort: 1
-    - _FoamWidth: 0.2
+    - _FoamBegin: 0
+    - _FoamDistort: 0.08
+    - _FoamOffset: 0.18
+    - _FoamWidth: 0.107
+    - _Fresnel: 1
     - _FresnelPow: 1
+    - _GSF: 6
     - _GlossMapScale: 0
-    - _Glossiness: 0
+    - _Glossiness: 1
     - _GlossyReflections: 0
-    - _Lambert: 0.5
-    - _Metallic: 0
-    - _OcclusionStrength: 1
+    - _Ior: 1
+    - _Lambert: 0
+    - _Metallic: 0.48
+    - _NDF: 1
+    - _OcclusionStrength: 0
     - _Parallax: 0.005
+    - _ParallaxCount: 16
+    - _Parallex: 0
+    - _ParallexCount: 16
+    - _ParallexOffset: 1
+    - _ParallexScale: 0.017
     - _QueueOffset: 0
     - _ReceiveShadow: 1
     - _ReceiveShadows: 1
-    - _RefractionAmount: 0.1
-    - _RefractionDistance: 1
-    - _Scale: 10
-    - _Smoothness: 0.5
+    - _ReflectionAmount: 0.51
+    - _RefractionAmount: 0.108
+    - _RefractionDistance: 0.47
+    - _Scale: 5
+    - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
-    - _SpecularAmount: 1
+    - _SpecularAmount: 0.99
     - _SpecularHighlights: 1
-    - _SpecularRange: 0.98
+    - _SpecularRange: 0.9
     - _SrcBlend: 1
+    - _SteepCount: 128
+    - _SteepParallex: 0
     - _Surface: 0
     - _Thickness: 0.1
+    - _VF: 1
     - _WorkflowMode: 1
+    - _ZTest: 2
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.19023673, g: 0.31893215, b: 0.4245283, a: 0.8}
     - _CrackColor: {r: 1, g: 1, b: 1, a: 1}
-    - _DepthColor: {r: 1, g: 1, b: 1, a: 1}
+    - _DepthColor: {r: 0.26584196, g: 0.45703566, b: 0.5471698, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlowDirection: {r: 1, g: 1, b: 0, a: 0}
-    - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FoamColor: {r: 1.4980392, g: 1.4980392, b: 1.4980392, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
---- !u!114 &8501632780962518606
+--- !u!114 &1842042723372290674
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

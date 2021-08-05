@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 public static class UBatch 
 {
@@ -63,7 +64,7 @@ public static class UBatch
                 }
 
                 bones.AddRange(renderer.bones);
-                boneWeightes.AddRange(concatMesh.boneWeights.ToArray(boneWeight=>new BoneWeight()
+                boneWeightes.AddRange(concatMesh.boneWeights.Select(boneWeight => new BoneWeight()
                 {
                     boneIndex0 = boneWeight.boneIndex0 + boneOffset,
                     boneIndex1 = boneWeight.boneIndex1 + boneOffset,
@@ -77,8 +78,7 @@ public static class UBatch
             }
 
             batchMeshIndex++;
-            Mesh batchMesh = new Mesh();
-            batchMesh = new Mesh() { name=meshName};
+            Mesh batchMesh= new Mesh() { name=meshName};
             batchMesh.SetVertices(vertices);
             batchMesh.SetNormals(normals);
             batchMesh.SetTangents(tangents);
@@ -93,7 +93,7 @@ public static class UBatch
                 rendererIndex++;
                 if (rendererIndex != 0)
                 {
-                    GameObject.Destroy(renderer.gameObject);
+                    Object.Destroy(renderer.gameObject);
                     continue;
                 }
                 Matrix4x4[] bindPoses = new Matrix4x4[bones.Count];

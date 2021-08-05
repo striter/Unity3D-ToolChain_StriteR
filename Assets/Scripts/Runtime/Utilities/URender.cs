@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -93,13 +93,13 @@ public static class URender
                 _srcMesh.SetUVs((int)_dataType, _data);
                 break;
             case enum_VertexData.Color:
-                _srcMesh.SetColors(_data.ToArray(p => new Color(p.x, p.y, p.z, p.w)));
+                _srcMesh.SetColors(_data.Select(p => new Color(p.x, p.y, p.z, p.w)).ToArray());
                 break;
             case enum_VertexData.Tangent:
                 _srcMesh.SetTangents(_data);
                 break;
             case enum_VertexData.Normal:
-                _srcMesh.SetNormals(_data.ToArray(vec4 => vec4.ToVector3()));
+                _srcMesh.SetNormals(_data.Select(vec4 => vec4.ToVector3()).ToArray());
                 break;
         }
     }
@@ -158,10 +158,10 @@ public static class URender
                 _srcMesh.SetUVs((int)_dataType, _data);
                 break;
             case enum_VertexData.Color:
-                _srcMesh.SetColors(_data.ToArray(p => new Color(p.x, p.y, p.z, 0)));
+                _srcMesh.SetColors(_data.Select(p => new Color(p.x, p.y, p.z,0)).ToArray());
                 break;
             case enum_VertexData.Tangent:
-                _srcMesh.SetTangents(_data.ToArray(p => p.ToVector4(1f)));
+                _srcMesh.SetTangents(_data.Select(p => p.ToVector4()).ToArray());
                 break;
             case enum_VertexData.Normal:
                 _srcMesh.SetNormals(_data);
@@ -184,9 +184,9 @@ public static class URender
         if (fourth)
             _tar.SetUVs(_index, uvs);
         else if (third)
-            _tar.SetUVs(_index, uvs.ToList(vec4 => new Vector3(vec4.x, vec4.y, vec4.z)));
+            _tar.SetUVs(_index, uvs.Select(vec4 => new Vector3(vec4.x, vec4.y, vec4.z)).ToArray());
         else
-            _tar.SetUVs(_index, uvs.ToList(vec4 => new Vector2(vec4.x, vec4.y)));
+            _tar.SetUVs(_index, uvs.Select(vec4 => new Vector2(vec4.x, vec4.y)).ToArray());
     }
     #endregion
     //Material

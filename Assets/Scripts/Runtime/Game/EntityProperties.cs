@@ -117,7 +117,7 @@ namespace OEntityProperty
         void CheckTotalAmount()
         {
             m_TotalAmount = 0;
-            m_Shields.Traversal((EntitySheildItem shield) => { m_TotalAmount += shield.m_Amount; });
+            m_TotalAmount = m_Shields.Values.Sum(p => p.m_Amount);
         }
         public void SpawnShield(int _id, float _amount)
         {
@@ -140,16 +140,18 @@ namespace OEntityProperty
             if (_sort != null)
                 _shields.Sort(_sort);
 
-            _shields.TraversalBreak((EntitySheildItem _shield) => {
-                float delta = _amount - _shield.m_Amount;
+            foreach (var shield in m_Shields.Values)
+            {
+                float delta = _amount - shield.m_Amount;
                 if (delta >= 0)
-                    delta = _shield.m_Amount;
+                    delta = shield.m_Amount;
                 else
                     delta = _amount;
-                _shield.AddDelta(-delta);
+                shield.AddDelta(-delta);
                 _amount -= delta;
-                return _amount == 0;
-            });
+                if (_amount == 0)
+                    break;
+            }
             CheckTotalAmount();
             return _amount;
         }

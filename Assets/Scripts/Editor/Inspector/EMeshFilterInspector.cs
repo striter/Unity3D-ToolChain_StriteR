@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace TEditor
 {
     [CustomEditor(typeof(MeshFilter)), CanEditMultipleObjects]
-    public class EMeshFilterInspector : Editor
+    public class MeshFilterInspector : Editor
     {
         MeshFilter m_Target;
         bool m_EnableVertexDataVisualize;

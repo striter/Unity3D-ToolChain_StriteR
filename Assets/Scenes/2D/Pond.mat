@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Pond
   m_Shader: {fileID: 4800000, guid: 7afe38b685a46a34286c6167ed5f04a5, type: 3}
-  m_ShaderKeywords: _AOMAP _CRACK _CRACKPARALLEX _CRACKTOP _DEPTH _DEPTHREFRACTION
+  m_ShaderKeywords: _AOMAP _CAUSTIC _CRACK _CRACKPARALLEX _CRACKTOP _DEPTH _DEPTHREFRACTION
     _DETAILNORMALMAP _DISTORT _FOAM _FRESNEL _F_IMPLICIT _F_SCHLICK _GSF_COOKTORRANCE
     _NDF_COOKTORRANCE _NORMALTEX _OPACITY _PARALLEXMAP _RECEIVESHADOW _SPECULAR _THICK
   m_LightmapFlags: 4
@@ -132,7 +132,7 @@ Material:
     - _BeginOpacity: 0.5
     - _Blend: 0
     - _BumpScale: 1
-    - _Caustic: 0
+    - _Caustic: 1
     - _CausticClip: 1
     - _CausticStrength: 1
     - _ClearCoatMask: 0

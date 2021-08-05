@@ -60,8 +60,8 @@ public static class UIT_TouchConsoleHelper
         Type type = _value.GetType();
         if (!type.IsEnum)
             throw new Exception("Input Must Be Enum!");
-        IEnumerable<object> enumNumerable = Enum.GetValues(type).GetEnumerable();
-        EnumSelection(_container, enumNumerable.FindIndex(p=>p.Equals(_value)), enumNumerable.ToList(obj=>obj.ToString()),value=>OnClick(Enum.ToObject(type,value)),foldOut);
+        object[] enumNumerable = Enum.GetValues(type).GetEnumerable().ToArray();
+        EnumSelection(_container, enumNumerable.FindIndex(p=>p.Equals(_value)), enumNumerable.Select(obj=>obj.ToString()).ToList(),value=>OnClick(Enum.ToObject(type,value)),foldOut);
     }
     public static void EnumSelection(this CommandContainer _container, Ref<int> _refEnum, List<string> _values, Action<int> OnClick, bool foldOut = true)
     {
@@ -85,11 +85,11 @@ public static class UIT_TouchConsoleHelper
         selection.SetDataUpdate(() => selection.Play(_refFlags.m_RefValue, flags => {
             _refFlags.SetValue(flags);
             if (foldOutButton != null)
-                foldOutButton.m_ButtonTitle.text = flags.GetNumerable().ToString('|', value => value ? "¡Ì" : "¡Á");
+                foldOutButton.m_ButtonTitle.text = flags.GetNumerable().ToString('|', value => value ? "âˆš" : "Ã—");
             _logFilter(flags);
         }));
         if (foldOutButton != null)
-            foldOutButton.m_ButtonTitle.text = _refFlags.m_RefValue.GetNumerable().ToString('|', value => value ? "¡Ì" : "¡Á");
+            foldOutButton.m_ButtonTitle.text = _refFlags.m_RefValue.GetNumerable().ToString('|', value => value ? "âˆš" : "Ã—");
     }
     public static void InputField(this CommandContainer _container, Ref<string> _refText, Action<string> OnValueClick)
     {
@@ -230,7 +230,8 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartial
     [PartialMethod(enum_PartialMethods.Tick,enum_PartialSorting.CommandConsole)]
     internal void TickConsole(float _deltaTime)
     {
-        m_CommandContainers.m_ActiveItems.Traversal(command => command.KeycodeTick());
+        foreach (var command in  m_CommandContainers.m_ActiveItems.Values)
+            command.KeycodeTick();
 
         m_FastKeyCooldownTimer.Tick(_deltaTime);
         if (m_FastKeyCooldownTimer.m_Timing)
@@ -248,7 +249,13 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartial
         }
     }
     void AddNewPage(string _page) => m_PageSelection.AddItem(m_PageSelection.Count).Init(_page, SelectPage);
-    void UpdateCommandData() => m_CommandContainers.m_ActiveItems.Traversal(command => command.UpdateItems());
+
+    void UpdateCommandData()
+    {
+        foreach (var command in m_CommandContainers.m_ActiveItems.Values)
+            command.UpdateItems();
+    }
+
     CommandContainer AddCommandLine(KeyCode _keyCode = KeyCode.None) => m_CommandContainers.AddItem(m_CommandContainers.Count).Init(m_PageSelection.Count - 1, _keyCode, CommandItemCreate, CommandItemRecycle);
     CommandItemBase CommandItemCreate(Type type) => m_CommandItems[type].AddItem(m_CommandItems[type].Count);
     void CommandItemRecycle(CommandItemBase item) => m_CommandItems[item.GetType()].RemoveItem(item.m_Identity);
@@ -313,9 +320,15 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartial
                 return;
 
             if (Input.GetKeyDown(m_KeyCode))
-                m_Items.Traversal(item => item.OnFastKeyTrigger());
+                foreach (CommandItemBase commandItemBase in m_Items)
+                    commandItemBase.OnFastKeyTrigger();
         }
-        public void UpdateItems() => m_Items.Traversal(item => item.OnDataUpdated?.Invoke());
+
+        public void UpdateItems()
+        { 
+            foreach (CommandItemBase commandItemBase in m_Items)
+                commandItemBase.OnDataUpdated?.Invoke();
+        }
         public T Insert<T>() where T : CommandItemBase
         {
             T item = CreateItem(typeof(T)) as T;
@@ -326,7 +339,8 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartial
         public override void OnRemoveItem()
         {
             base.OnRemoveItem();
-            m_Items.Traversal(RecycleItem);
+            foreach (CommandItemBase commandItemBase in m_Items)
+                RecycleItem(commandItemBase);
             m_Items.Clear();
             m_KeyCode = KeyCode.None;
         }
@@ -360,7 +374,8 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartial
                 tog.onValueChanged.RemoveAllListeners();
                 tog.onValueChanged.AddListener(changed => {
                     int totalIndex = 0;
-                    m_ToggleGrid.m_ActiveItems.Traversal((index, toggle) => totalIndex += (toggle.isOn ? index : 0));
+                    foreach ((int _index, var _toggle) in m_ToggleGrid.m_ActiveItems.SelectPairs())
+                        totalIndex += (_toggle.isOn ? _index : 0);
                     _OnFlagChanged((T)Enum.ToObject(typeof(T), totalIndex));
                 });
             }
@@ -376,11 +391,12 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartial
         public CommandItem_ButtonSelection Play(List<string> values, Action<int> _OnClick)
         {
             m_ButtonGrid.Clear();
-            values.Traversal((int index, string temp) =>
+            int index=0;
+            foreach (var value in values)
             {
-                ButtonSelect btn = m_ButtonGrid.AddItem(index);
-                btn.Init(temp, _OnClick);
-            });
+                ButtonSelect btn = m_ButtonGrid.AddItem(index++);
+                btn.Init(value, _OnClick);
+            }
             return this;
         }
         public void Highlight(int _value)

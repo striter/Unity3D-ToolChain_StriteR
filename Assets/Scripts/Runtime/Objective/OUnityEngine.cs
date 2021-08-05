@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class TimeScaleController<T> where T : struct
@@ -11,7 +12,7 @@ public static class TimeScaleController<T> where T : struct
     static float GetLowestScale()
     {
         float scale = 1f;
-        m_TimeScales.Traversal((float value) => { if (scale > value) scale = value; });
+        scale= m_TimeScales.Values.Min(p=>p);
         return scale;
     }
 
@@ -84,14 +85,15 @@ public class AnimationFrameControl<T> where T : Enum
         gameObject = _gameObject;
         m_Animations = _animations;
         m_CurPlaying = -1;
-        m_BoneRecords = _gameObject.GetComponentsInChildren<Transform>(false).ToArray(trans => new BoneTransformRecord(trans));
+        m_BoneRecords = _gameObject.GetComponentsInChildren<Transform>(false).Select(p=>new BoneTransformRecord(p)).ToArray();
     }
 
     public void ResetAnimation()
     {
         m_CurPlaying = -1;
         m_TimeElapsed = 0f;
-        m_BoneRecords.Traversal(boneRecord => boneRecord.Reset());
+        foreach (BoneTransformRecord boneRecord in m_BoneRecords)
+            boneRecord.Reset();
     }
     bool CheckIndex(int index)
     {
@@ -136,27 +138,31 @@ public class ParticleControlBase
     }
     public void Play()
     {
-        m_Particles.Traversal((ParticleSystem particle) => {
+        foreach (ParticleSystem particle in m_Particles)
+        {
             particle.Simulate(0, true, true);
             particle.Play(true);
             ParticleSystem.MainModule main = particle.main;
             main.playOnAwake = true;
-        });
+        }
     }
     public void Stop()
     {
-        m_Particles.Traversal((ParticleSystem particle) => {
+        foreach (ParticleSystem particle in m_Particles)
+        {
             particle.Stop(true);
             ParticleSystem.MainModule main = particle.main;
             main.playOnAwake = false;
-        });
+        }
     }
     public void Clear()
     {
-        m_Particles.Traversal((ParticleSystem particle) => { particle.Clear(); });
+        foreach (ParticleSystem particle in m_Particles)
+            particle.Clear();
     }
     public void SetActive(bool active)
     {
-        m_Particles.Traversal((ParticleSystem particle) => { particle.transform.SetActive(active); });
+        foreach (ParticleSystem particle in m_Particles)
+            particle.transform.SetActive(active);
     }
 }

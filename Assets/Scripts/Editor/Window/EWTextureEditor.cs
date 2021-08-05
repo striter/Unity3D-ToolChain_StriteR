@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 namespace TEditor
 {
-    public class EWTextureEditor : EditorWindow
+    public class TextureEditor : EditorWindow
     {
         interface ITextureEditor
         {

@@ -23,6 +23,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DepthTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -35,6 +39,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DetailNormalTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -43,7 +51,15 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Matcap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -51,13 +67,25 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _PBRTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
+    - _AnisoTropicValue: 1
     - _BumpScale: 1
+    - _Cull: 2
     - _Cutoff: 0.5
+    - _DepthBuffer: 1
+    - _DepthBufferScale: 1
+    - _DepthOffset: 0
+    - _DepthScale: 1
+    - _DetailBlendMode: 0
     - _DetailNormalMapScale: 1
     - _DstBlend: 10
     - _EnableSpecular: 0
@@ -67,14 +95,18 @@ Material:
     - _Lambert: 0.5
     - _Metallic: 0
     - _Mode: 3
+    - _NDF: 2
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _ParallaxCount: 16
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SpecularRange: 0.9
     - _SrcBlend: 1
     - _UVSec: 0
-    - _ZWrite: 0
+    - _VF: 1
+    - _ZTest: 2
+    - _ZWrite: 1
     m_Colors:
     - _Color: {r: 0.028204892, g: 0.06614769, b: 0.52771777, a: 0.9717951}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

@@ -6,7 +6,7 @@ using UnityEngine;
 using Rendering.Optimize;
 namespace TEditor
 {
-    public class EWGPUAnimationBaker : EditorWindow
+    public class GPUAnimationBaker : EditorWindow
     {
         GameObject m_TargetPrefab;
         SerializedObject m_SerializedWindow;

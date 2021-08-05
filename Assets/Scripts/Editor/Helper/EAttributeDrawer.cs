@@ -133,7 +133,7 @@ namespace TEditor
         {
             if(!OnGUIAttributePropertyCheck(position,property,out IntEnumAttribute attribute,SerializedPropertyType.Float,SerializedPropertyType.Integer))
                 return;
-            property.intValue = EditorGUI.IntPopup(position,label,property.intValue,attribute.m_Values.ToArray(p=>new GUIContent( p.ToString())),attribute.m_Values);
+            property.intValue = EditorGUI.IntPopup(position,label,property.intValue,attribute.m_Values.Select(p=>new GUIContent( p.ToString())).ToArray(),attribute.m_Values);
         }
     }
     
@@ -171,7 +171,7 @@ namespace TEditor
                 values.Add(allLayers[key] == string.Empty ? null : allLayers[key]);
             for (int i = allLayers.Count - 1; i >= 0; i--)
             {
-                if (allLayers.GetIndexValue(i) == string.Empty)
+                if (allLayers.SelectValue(i) == string.Empty)
                     values.RemoveAt(i);
                 else
                     break;

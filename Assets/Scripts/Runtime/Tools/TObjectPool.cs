@@ -50,165 +50,6 @@ public static class TObjectPool<T> where T : IObjectPool, new()
 }
 #endregion
 
-#region Static Game Object Pool 
-public interface IGameObjectPool_Static<T>{
-    void OnPoolInit(T identity,Action<T,MonoBehaviour> OnRecycle);
-    void OnPoolSpawn();
-    void OnPoolRecycle();
-}
-public class CGameObjectPool_Static<T> :MonoBehaviour,IGameObjectPool_Static<T>
-{
-    public bool m_PoolItemInited { get; private set; }
-    public T m_PoolID { get; private set; }
-    private Action<T,MonoBehaviour> OnSelfRecycle;
-    public virtual void OnPoolInit(T _identity,Action<T,MonoBehaviour> _OnSelfRecycle)
-    {
-        m_PoolID = _identity;
-        m_PoolItemInited = true;
-        OnSelfRecycle = _OnSelfRecycle;
-    }
-    public void DoRecycle() =>  OnSelfRecycle?.Invoke(m_PoolID, this);
-
-    public virtual void OnPoolSpawn() {  }
-    public virtual void OnPoolRecycle() { }
-}
-public class TGameObjectPool_Static
-{
-    protected static Transform tf_PoolSpawn { get; private set; }
-    public static void Init()
-    {
-        tf_PoolSpawn= new GameObject("PoolSpawn").transform;
-    }
-}
-public class TGameObjectPool_Static<T, Y> : TGameObjectPool_Static where Y : MonoBehaviour, IGameObjectPool_Static<T>
-{
-    class GameObjectStaticPoolItem
-    {
-        public T m_Identity;
-        public Y m_SpawnItem;
-        public Stack<Y> m_DeactiveStack = new Stack<Y>();
-        public List<Y> m_ActiveList = new List<Y>();
-        public Y Create(Vector3 position,Quaternion rotation)
-        {
-            Y item = GameObject.Instantiate(m_SpawnItem,position,rotation, tf_PoolSpawn); 
-            item.name = m_SpawnItem.name + "_" + (m_DeactiveStack.Count + m_ActiveList.Count).ToString();
-            item.OnPoolInit(m_Identity, (temp,mono)=>Recycle(temp, mono as Y));
-            item.SetActive(false);
-            return item;
-        }
-
-        public void Destroy()
-        {
-            for (; m_DeactiveStack.Count > 0;)
-                GameObject.Destroy(m_DeactiveStack.Pop().gameObject);
-            for (int i = 0; i < m_ActiveList.Count; i++)
-                GameObject.Destroy(m_ActiveList[i].gameObject);
-
-            m_DeactiveStack.Clear();
-            m_ActiveList.Clear();
-        }
-    }
-
-    static Dictionary<T, GameObjectStaticPoolItem> d_ItemInfos = new Dictionary<T, GameObjectStaticPoolItem>();
-    public static bool Registed(T identity)
-    {
-        return d_ItemInfos.ContainsKey(identity);
-    }
-    public static List<T> GetRegistedList() => d_ItemInfos.Keys.ToList();
-    public static Y GetRegistedSpawnItem(T identity)
-    {
-        if (!Registed(identity))
-            Debug.LogError("Identity:" + identity + "Unregisted");
-        return d_ItemInfos[identity].m_SpawnItem;
-    }
-    public static void Register(T _identity, Y _registerItem, int _poolStartAmount)
-    {
-        if (d_ItemInfos.ContainsKey(_identity))
-        {
-            Debug.LogError("Same Element Already Registed:" + _identity.ToString() + "/" + _registerItem.gameObject.name);
-            return;
-        }
-        d_ItemInfos.Add(_identity, new GameObjectStaticPoolItem());
-        GameObjectStaticPoolItem info = d_ItemInfos[_identity];
-        info.m_SpawnItem = _registerItem;
-        info.m_Identity = _identity;
-        for (int i = 0; i < _poolStartAmount; i++)
-            info.m_DeactiveStack.Push(info.Create(Vector3.zero,Quaternion.identity));
-    }
-    public static Y Spawn(T identity, Transform toTrans, Vector3 pos, Quaternion rot)
-    {
-        if (!d_ItemInfos.ContainsKey(identity))
-        {
-            Debug.LogError("PoolManager:" + typeof(T).ToString() + "," + typeof(Y).ToString() + " Error! Null Identity:" + identity + "Registed");
-            return null;
-        }
-        GameObjectStaticPoolItem info = d_ItemInfos[identity];
-        Y item;
-        if (info.m_DeactiveStack.Count > 0)
-        {
-            item = info.m_DeactiveStack.Pop();
-            item.transform.position = pos;
-            item.transform.rotation = rot;
-        }
-        else
-        {
-            item = info.Create(pos, rot);
-        }
-
-        item.transform.SetParent(toTrans == null ? tf_PoolSpawn : toTrans);
-        item.SetActive(true);
-        info.m_ActiveList.Add(item);
-        item.OnPoolSpawn();
-        return item;
-    }
-    public static void Recycle(T identity, Y obj)
-    {
-        if (!d_ItemInfos.ContainsKey(identity))
-        {
-            Debug.LogWarning("Null Identity Of GameObject:" + obj.name + "/" + identity + " Registed(" + typeof(T).ToString() + "|" + typeof(Y).ToString() + ")");
-            return;
-        }
-        GameObjectStaticPoolItem info = d_ItemInfos[identity];
-        info.m_ActiveList.Remove(obj);
-        obj.OnPoolRecycle();
-        obj.SetActive(false);
-        obj.transform.SetParent(tf_PoolSpawn);
-        info.m_DeactiveStack.Push(obj);
-    }
-    public static void TraversalAllActive(Action<Y> OnEachItem,bool willActivateChange=false) => d_ItemInfos.Traversal((GameObjectStaticPoolItem info) => {
-        if (willActivateChange)
-            info.m_ActiveList.DeepCopy().Traversal(OnEachItem);
-        else
-            info.m_ActiveList.Traversal(OnEachItem);
-    });
-    public static void RecycleAll(T identity)
-    {
-        GameObjectStaticPoolItem info = d_ItemInfos[identity];
-        info.m_ActiveList.TraversalMark(item => true, item=> Recycle(identity, item)) ;
-    }
-    public static void RecycleAll(Predicate<Y> predicate=null) 
-    {
-        d_ItemInfos.Traversal((T identity, GameObjectStaticPoolItem info) =>
-        {
-            info.m_ActiveList.TraversalMark(target => predicate == null || predicate(target), target => Recycle(identity, target));
-        });
-    }
-    public static void OnSceneChange() => d_ItemInfos.Clear();
-    public static void DestroyPoolItem()
-    {
-        RecycleAll();
-        d_ItemInfos.Traversal((GameObjectStaticPoolItem info) => { info.Destroy(); });
-    }
-
-    public static void Destroy()
-    {
-        DestroyPoolItem();
-        d_ItemInfos.Clear();
-    }
-}
-#endregion
-
-#region Instance Game Object Pools
 public class TGameObjectPool_Instance<T, Y> 
 {
     public Transform transform { get; private set; }
@@ -266,16 +107,17 @@ public class TGameObjectPool_Instance<T, Y>
         List<KeyValuePair<T, Y>> list = m_ActiveItems.ToList();
         list.Sort(Compare);
         m_ActiveItems.Clear();
-        list.Traversal((KeyValuePair<T,Y> pair) =>
+        foreach (var pair in list)
         {
             GetItemTransform(pair.Value).SetAsLastSibling();
             m_ActiveItems.Add(pair.Key,pair.Value);
-        });
+        }
     }
 
     public void Clear()
     {
-        m_ActiveItems.TraversalMark(item => true, RemoveItem);
+        foreach (var item in m_ActiveItems.ToArray())
+            RemoveItem(item.Key);
     } 
 
     protected virtual Y CreateNewItem(Transform instantiateTrans)
@@ -290,16 +132,13 @@ public class TGameObjectPool_Instance<T, Y>
     }
 }
 
-#region Component
 public class TGameObjectPool_Component<T, Y> : TGameObjectPool_Instance<T, Y> where Y : Component
 {
     public TGameObjectPool_Component(Transform poolTrans, string itemName) : base(poolTrans, itemName) {  }
     protected override Y CreateNewItem(Transform instantiateTrans)=>instantiateTrans.GetComponent<Y>();
     protected override Transform GetItemTransform(Y targetItem) => targetItem.transform;
 }
-#endregion
 
-#region Class
 public interface IGameObjectPool_Instance<T>
 {
     void OnInitItem(Action<T> DoRecycle);
@@ -364,8 +203,6 @@ public class TGameObjectPool_Instance_Class<T, Y> : TGameObjectPool_Instance_Int
     } 
     protected override Transform GetItemTransform(Y targetItem) => targetItem.transform;
 }
-#endregion
-#region Monobehaviour
 public class CGameObjectPool_Instance_Monobehaviour<T> : MonoBehaviour, IGameObjectPool_Instance<T>
 {
     public T m_Identity { get; private set; }
@@ -399,5 +236,17 @@ public class TGameObjectPool_Instance_Monobehaviour<T, Y> : TGameObjectPool_Inst
     }
     protected override Transform GetItemTransform(Y targetItem) => targetItem.transform;
 }
-#endregion
-#endregion
+
+public class TObjectPool_Transform : TGameObjectPool_Instance<int, Transform>
+{
+    public TObjectPool_Transform(Transform poolTrans, string itemName) : base(poolTrans, itemName)
+    {
+    }
+
+    protected override Transform CreateNewItem(Transform instantiateTrans)
+    {
+        return instantiateTrans;
+    }
+
+    protected override Transform GetItemTransform(Transform targetItem) => targetItem;
+} 

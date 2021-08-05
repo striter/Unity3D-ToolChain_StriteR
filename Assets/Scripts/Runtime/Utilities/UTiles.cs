@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace UTile
@@ -134,24 +135,26 @@ namespace UTile
         public static List<TileAxis> GetDirectionAxies(int width, int height, TileAxis centerAxis, List<enum_TileDirection> directions)
         {
             List<TileAxis> axisList = new List<TileAxis>();
-            directions.Traversal((enum_TileDirection direction) => {
+            foreach (enum_TileDirection direction in directions)
+            {
                 TileAxis targetAxis = centerAxis.DirectionAxis(direction);
                 if (targetAxis.X < 0 || targetAxis.Y < 0 || targetAxis.X >= width || targetAxis.Y >= height)
-                    return;
+                    continue;
                 axisList.Add(targetAxis);
-            });
+            }
             return axisList;
         }
 
         public static Dictionary<enum_TileDirection, T> GetDirectionAxies<T>(int width, int height, TileAxis centerAxis, List<enum_TileDirection> directions, Func<TileAxis, T> OnItemGet)
         {
             Dictionary<enum_TileDirection, T> axisList = new Dictionary<enum_TileDirection, T>();
-            directions.Traversal((enum_TileDirection direction) => {
+            foreach (enum_TileDirection direction in directions)
+            {
                 TileAxis targetAxis = centerAxis.DirectionAxis(direction);
                 if (targetAxis.X < 0 || targetAxis.Y < 0 || targetAxis.X >= width || targetAxis.Y >= height)
-                    return;
+                    continue;
                 axisList.Add(direction, OnItemGet(targetAxis));
-            });
+            }
             return axisList;
         }
 
@@ -379,7 +382,8 @@ namespace UTile
             for (int i = 0; i < fillCount; i++)
             {
                 T temp = targetList[i];
-                m_EdgeDirections.TraversalRandomBreak((enum_TileDirection randomDirection) => {
+                foreach (enum_TileDirection randomDirection in m_EdgeDirections.RandomLoop(seed))
+                {
                     TileAxis axis = temp.m_Axis.DirectionAxis(randomDirection);
                     if (axis.InRange(tileArray))
                     {
@@ -388,11 +392,10 @@ namespace UTile
                         {
                             OnEachFill(targetAdd);
                             targetList.Add(targetAdd);
-                            return true;
+                            break;
                         }
                     }
-                    return false;
-                }, seed);
+                }
             }
             return targetList;
         }

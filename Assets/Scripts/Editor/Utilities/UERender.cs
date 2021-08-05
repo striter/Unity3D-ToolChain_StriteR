@@ -18,7 +18,7 @@ namespace TEditor
                 foreach (var indice in polygon.indices)
                     normals[indice] += normal;
             }
-            normals=normals.ToArray(normal => normal.normalized);
+            normals=normals.Select(normal => normal.normalized).ToArray();
             return normals;
         }
 
@@ -27,7 +27,7 @@ namespace TEditor
             Vector3[] verticies = _srcMesh.vertices;
             var groups = verticies.Select((vertex, index) => new KeyValuePair<Vector3, int>(vertex, index)).GroupBy(pair => pair.Key);
             Vector3[] normals = RenegerateNormals(_srcMesh.triangles,verticies);
-            Vector3[] smoothNormals = normals.Copy();
+            Vector3[] smoothNormals = normals.DeepCopy();
             foreach (var group in groups)
             {
                 if (group.Count() == 1)

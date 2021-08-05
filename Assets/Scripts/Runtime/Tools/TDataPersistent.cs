@@ -17,19 +17,11 @@ namespace TDataPersistent
     {
         private const string c_DataCryptKey = "StriteRTestCrypt";
         private static readonly string s_persistentPath = Application.persistentDataPath + "/Save/";
-        private static readonly string s_streamingPath = Application.dataPath + "/Resources/Save/";
         private static XmlDocument m_Doc = new XmlDocument();
         private static string GetStreamingPathInDevice<T>(string fileName = null) where T : CDataSave<T>, new() => "Save/" +(fileName == null ? CDataSave<T>.s_FilePath : fileName);
-        private static string GetStreamingPath<T>(string fileName = null) where T : CDataSave<T>, new() => s_streamingPath + (fileName == null ? CDataSave<T>.s_FilePath : fileName)+ ".bytes";
         public static string GetPersistentPath<T>(string fileName = null) where T : CDataSave<T>, new() => s_persistentPath +(fileName == null ? CDataSave<T>.s_FilePath : fileName) + ".sav";
-        public static void ReadPersistentData<T>(this T _data, bool isDefault = false, string fileName = null) where T : CDataSave<T>,new ()
+        public static void ReadPersistentData<T>(this T _data, string fileName = null) where T : CDataSave<T>,new ()
         {
-            if (isDefault)
-            {
-                ReadDefaultData(_data, isDefault,fileName);
-                return;
-            }
-
             try
             {
                 Validate<T>(File.ReadAllText(GetPersistentPath<T>(fileName)),out var parentNode);
@@ -38,13 +30,13 @@ namespace TDataPersistent
             catch (Exception ePersistent)
             {
                 Debug.LogWarning("Data Read Fail,Use Streaming Data:\n" + ePersistent.Message);
-                ReadDefaultData(_data,isDefault,fileName);
+                ReadDefaultData(_data,fileName);
             }
         }       
 
-        public static void SavePersistentData<T>(this CDataSave<T> _data, bool isDefault = false, string fileName=null) where T: CDataSave<T>,new ()
+        public static void SavePersistentData<T>(this CDataSave<T> _data, string fileName=null) where T: CDataSave<T>,new ()
         {
-            string persistentPath = isDefault? GetStreamingPath<T>(fileName) : GetPersistentPath<T>(fileName);
+            string persistentPath = GetPersistentPath<T>(fileName);
             try
             {
                 Validate<T>(File.ReadAllText( persistentPath),out var parentNode);
@@ -53,7 +45,7 @@ namespace TDataPersistent
             catch(Exception e)
             {
                 Debug.LogWarning("Data Save Error,Use Streaming Data\n" + e.Message);
-                ReadDefaultData(_data,isDefault,fileName);
+                ReadDefaultData(_data,fileName);
             }
         }
 
@@ -96,18 +88,12 @@ namespace TDataPersistent
             m_Doc.Save(_path);
         }
 
-        static void ReadDefaultData<T>(CDataSave<T> _data, bool isDefalut = false, string fileName = null) where T : CDataSave<T>, new()
+        static void ReadDefaultData<T>(CDataSave<T> _data, string fileName = null) where T : CDataSave<T>, new()
         {
-            string filePath = isDefalut? GetStreamingPath<T>(fileName) : GetPersistentPath<T>(fileName);
+            string filePath =  GetPersistentPath<T>(fileName);
             try
             {
-#if UNITY_EDITOR
-                Validate<T>(File.ReadAllText(GetStreamingPath<T>(fileName)),out XmlNode node);
-#else
-                Validate<T>(Resources.Load<TextAsset>(GetStreamingPathInDevice<T>(fileName)).text,out XmlNode node);
-#endif
-
-
+                Validate<T>(File.ReadAllText(filePath),out XmlNode node);
                 ReadData(_data,node);
                 SaveData(_data,node,filePath);
             }

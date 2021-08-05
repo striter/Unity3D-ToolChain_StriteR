@@ -53,41 +53,44 @@ public static class URandom
     public static T RandomPercentage<T>(this Dictionary<T, int> percentageRate, T invalid = default, System.Random seed = null)
     {
         float value = RandomPercentageInt(seed);
-        T targetLevel = invalid;
         int totalAmount = 0;
-        bool marked = false;
-        percentageRate.Traversal((temp, amount) => {
-            if (marked)
-                return;
-            totalAmount += amount;
+        foreach (var pair in percentageRate)
+        {
+            totalAmount += pair.Value;
             if (totalAmount >= value)
-            {
-                targetLevel = temp;
-                marked = true;
-            }
-        });
-        return targetLevel;
+                return pair.Key;
+        }
+        return invalid;
     }
     public static T RandomPercentage<T>(this Dictionary<T, float> percentageRate, T invalid = default(T), System.Random seed = null)
     {
         float value = RandomPercentageInt(seed);
-        T targetLevel = invalid;
         float totalAmount = 0;
-        bool marked = false;
-        percentageRate.Traversal((temp,amount)=>
+        foreach (var pair in percentageRate)
         {
-            if (marked)
-                return;
-            totalAmount += amount;
+            totalAmount += pair.Value;
             if (totalAmount >= value)
-            {
-                targetLevel = temp;
-                marked = true;
-            }
-        });
-        return targetLevel;
+                return pair.Key;
+        }
+        return invalid;
+    }
+    
+    public static IEnumerable<T> RandomLoop<T>(this List<T> _items, System.Random _seed=null)
+    {
+        int count = _items.Count();
+        int randomIndex = RandomInt(count, _seed);
+        for (int i = 0; i < count; i++)
+            yield return _items[(randomIndex + i) % count];
     }
 
+    public static IEnumerable<T> RandomLoop<T>(this T[] _items, System.Random _seed=null)
+    {
+        int count = _items.Count();
+        int randomIndex = RandomInt(count, _seed);
+        for (int i = 0; i < count; i++)
+            yield return _items[(randomIndex + i) % count];
+        
+    }
     public static T RandomEnumValues<T>(System.Random _seed = null) where T : Enum
     {
         Array allEnums = Enum.GetValues(typeof(T));

@@ -1,4 +1,9 @@
-﻿float sqrDistance(float3 _offset)
+﻿float sqrDistance(float2 _offset)
+{
+    return dot(_offset,_offset);
+}
+
+float sqrDistance(float3 _offset)
 {
     return dot(_offset, _offset);
 }

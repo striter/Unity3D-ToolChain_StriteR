@@ -224,13 +224,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EffectData:
     threshold: 1.13
-    intensity: 0.1
+    intensity: 0.31
     m_BlurParams:
       m_BlurType: 5
-      m_BlurSize: 0.72
-      m_Iteration: 8
+      m_BlurSize: 0.75
+      m_Iteration: 13
       m_DownSample: 1
-      m_Angle: -0.34
+      m_Angle: 0.04
       m_Vector: {x: 0, y: 0}
   m_SceneViewPreview: 1
 --- !u!114 &15725976
@@ -3009,13 +3009,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1652462422}
-  m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
+  m_LocalRotation: {x: -0.1681474, y: 0.82991755, z: -0.34376308, w: -0.40594375}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 45, y: 232.13, z: 0}
 --- !u!114 &1652462425
 MonoBehaviour:
   m_ObjectHideFlags: 0

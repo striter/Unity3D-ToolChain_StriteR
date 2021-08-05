@@ -209,13 +209,17 @@ public class Timer
     }
     public void Replay() => TickDelta(m_TimerDuration);
     public void Stop() => TickDelta(0);
-    public void Tick(float deltaTime)
+    public bool Tick(float deltaTime)
     {
         if (m_TimeLeft <= 0)
-            return;
+            return false;
         TickDelta(m_TimeLeft - deltaTime);
         if (!m_Timing)
+        {
             m_TimeLeft = 0;
+            return true;
+        }
+        return false;
     }
 
     public bool TickValid(float deltaTime)
