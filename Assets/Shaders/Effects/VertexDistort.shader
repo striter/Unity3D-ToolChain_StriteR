@@ -108,8 +108,7 @@
 				float3 positionWS=TransformObjectToWorld(v.positionOS);
 				float strength=0;
 				positionWS+=GetDistortPositionWS(v.positionOS,TransformObjectToWorldNormal(v.normalOS), strength);
-				v.positionOS = TransformWorldToObject(positionWS);
-				SHADOW_CASTER_VERTEX(v,o);
+				SHADOW_CASTER_VERTEX(v,positionWS);
 				return o;
 			}
 

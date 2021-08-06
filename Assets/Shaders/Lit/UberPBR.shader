@@ -6,10 +6,6 @@
 		_MainTex("Main Tex",2D) = "white"{}
 		_Color("Color Tint",Color) = (1,1,1,1)
 		[ToggleTex(_NORMALMAP)][NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
-		[Header(Detail Tex)]
-		[ToggleTex(_DETAILNORMALMAP)]_DetailNormalTex("Normal Tex",2D)="white"{}
-		[Enum(Linear,0,Overlay,1,PartialDerivative,2,UDN,3,Reoriented,4)]_DetailBlendMode("Normal Blend Mode",int)=0
-		[ToggleTex(_MATCAP)] [NoScaleOffset]_Matcap("Mat Cap",2D)="white"{}		[ToggleTex(_PBRMAP)] [NoScaleOffset]_PBRTex("PBR Tex",2D)="white"{}
 		
 		[Header(PBR)]
 		[Fold(_PBRMAP)]_Glossiness("Glossiness",Range(0,1))=1
@@ -19,6 +15,11 @@
 		[Foldout(_NDF_ANISOTROPIC_TROWBRIDGEREITZ,_NDF_ANISOTROPIC_WARD)]_AnisoTropicValue("Anisotropic Value:",Range(0,1))=1
 		[KeywordEnum(BlinnPhong,GGX)]_VF("Vsibility * Fresnel:",float)=1
 	
+		[Header(Detail Tex)]
+		[ToggleTex(_DETAILNORMALMAP)]_DetailNormalTex("Normal Tex",2D)="white"{}
+		[Enum(Linear,0,Overlay,1,PartialDerivative,2,UDN,3,Reoriented,4)]_DetailBlendMode("Normal Blend Mode",int)=0
+		[ToggleTex(_MATCAP)] [NoScaleOffset]_Matcap("Mat Cap",2D)="white"{}		[ToggleTex(_PBRMAP)] [NoScaleOffset]_PBRTex("PBR Tex",2D)="white"{}
+		
 		[Header(Depth)]
 		[ToggleTex(_DEPTHMAP)][NoScaleOffset]_DepthTex("Texure",2D)="white"{}
 		[Foldout(_DEPTHMAP)]_DepthScale("Scale",Range(0.001,.5))=1
@@ -28,35 +29,38 @@
 		[Toggle(_PARALLAX)]_Parallax("Parallax",float)=0
 		[Enum(_16,16,_32,32,_64,64,_128,128)]_ParallaxCount("Parallax Count",int)=16
 		
-		[Header(Misc)]
+		[Header(Render Options)]
         [Enum(UnityEngine.Rendering.BlendMode)]_SrcBlend("Src Blend",int)=1
         [Enum(UnityEngine.Rendering.BlendMode)]_DstBlend("Dst Blend",int)=0
         [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
         [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
         [Enum(Off,0,Front,1,Back,2)]_Cull("Cull",int)=2
+        [Toggle(_ALPHACLIP)]_AlphaClip("Alpha Clip",float)=0
+        [Foldout(_ALPHACLIP)]_AlphaClipRange("Range",Range(0.01,1))=0.01
 	}
 	SubShader
 	{
 		Tags { "Queue" = "Geometry" }
-		Blend [_SrcBlend] [_DstBlend]
-		ZWrite [_ZWrite]
-		ZTest [_ZTest]
 		Cull [_Cull]
+		
 		Pass
 		{
+			Blend [_SrcBlend] [_DstBlend]
+			ZWrite [_ZWrite]
+			ZTest [_ZTest]
 			NAME "FORWARD"
 			Tags{"LightMode" = "UniversalForward"}
 			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
             #pragma target 3.5
+			#pragma multi_compile_instancing
 			
 			#include "Assets/Shaders/Library/CommonInclude.hlsl"
 			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
 			#include "Assets/Shaders/Library/BRDFInclude.hlsl"
 			#include "Assets/Shaders/Library/GlobalIlluminationInclude.hlsl"
 			
-			#pragma multi_compile_instancing
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
             #pragma multi_compile _ _SHADOWS_SOFT
@@ -89,13 +93,19 @@
 				INSTANCING_PROP(float,_DepthOffset)
 				INSTANCING_PROP(float,_DepthBufferScale)
 				INSTANCING_PROP(int ,_ParallaxCount)
+				INSTANCING_PROP(float,_AlphaClipRange)
 			UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 			
-			#include "Assets/Shaders/Library/Additional/Parallax.hlsl"
+			#include "Assets/Shaders/Library/Additional/HorizonBend.hlsl"
+			#pragma shader_feature _HORIZONBEND
+			
+			#include "Assets/Shaders/Library/Additional/Local/Parallax.hlsl"
 			#pragma shader_feature_local _PARALLAX
 			#pragma shader_feature_local _DEPTHBUFFER
 			#pragma shader_feature_local _DEPTHMAP
-
+			#include "Assets/Shaders/Library/Additional/Local/AlphaClip.hlsl"
+			#pragma shader_feature_local _ALPHACLIP
+			
 			struct a2f
 			{
 				half3 positionOS : POSITION;
@@ -122,13 +132,14 @@
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-				o.uv = half4( TRANSFORM_TEX_INSTANCE(v.uv,_MainTex),TRANSFORM_TEX_INSTANCE(v.uv,_DetailNormalTex));
-				o.positionCS = TransformObjectToHClip(v.positionOS);
-				o.positionWS=  TransformObjectToWorld(v.positionOS);
+				o.positionWS=TransformObjectToWorld(v.positionOS);
+				o.positionWS=HorizonBend(o.positionWS);
+				o.positionCS = TransformWorldToHClip(o.positionWS);
+				o.positionHCS=o.positionCS;
 				o.normalWS=normalize(mul((float3x3)unity_ObjectToWorld,v.normalOS));
 				o.tangentWS=normalize(mul((float3x3)unity_ObjectToWorld,v.tangentOS.xyz));
 				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
-				o.positionHCS=o.positionCS;
+				o.uv = half4( TRANSFORM_TEX_INSTANCE(v.uv,_MainTex),TRANSFORM_TEX_INSTANCE(v.uv,_DetailNormalTex));
 				return o;
 			}
 			
@@ -157,6 +168,7 @@
 				#endif
 				
 				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV)*INSTANCE(_Color);
+				AlphaClip(color.a);
 				half3 albedo=color.rgb;
 
 				half glossiness=INSTANCE(_Glossiness);
@@ -173,17 +185,17 @@
 				BRDFSurface surface=BRDFSurface_Ctor(albedo,glossiness,metallic,ao,normalWS,tangentWS,viewDirWS);
 				
 				
-				#if _MATCAP
-					half2 matcapUV=half2(dot(UNITY_MATRIX_V[0].xyz,normalWS),dot(UNITY_MATRIX_V[1].xyz,normalWS));
-					matcapUV=matcapUV*.5h+.5h;
-					lightCol=SAMPLE_TEXTURE2D(_Matcap,sampler_Matcap,matcapUV).rgb;
-				#endif
 				half3 brdfColor=0;
 				half3 indirectDiffuse=IndirectBRDFDiffuse(surface.normal);
 				half3 indirectSpecular=IndirectBRDFSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
 				brdfColor+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 
 				Light mainLight=GetMainLight(TransformWorldToShadowCoord(positionWS));
+				#if _MATCAP
+					half2 matcapUV=half2(dot(UNITY_MATRIX_V[0].xyz,normalWS),dot(UNITY_MATRIX_V[1].xyz,normalWS));
+					matcapUV=matcapUV*.5h+.5h;
+					mainLight.color=SAMPLE_TEXTURE2D(_Matcap,sampler_Matcap,matcapUV).rgb;
+				#endif
 				BRDFLight brdfMainLight=BRDFLight_Ctor(surface,mainLight.direction,mainLight.color,mainLight.shadowAttenuation,anisotropic);
 				brdfColor+=BRDFLighting(surface,brdfMainLight);
 				

@@ -31,7 +31,7 @@
             #pragma fragment frag
 
             #include "Assets/Shaders/Library/CommonInclude.hlsl"
-            #include "Assets/Shaders/Library/Additional/Parallax.hlsl"
+            #include "Assets/Shaders/Library/Additional/Local/Parallax.hlsl"
 
             struct appdata
             {

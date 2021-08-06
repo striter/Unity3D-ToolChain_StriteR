@@ -103,7 +103,7 @@
 				UNITY_SETUP_INSTANCE_ID(v);
 				v2fs o;
                 SampleBoneInstance(v.boneIndexes,v.boneWeights, v.positionOS, v.normalOS);
-                SHADOW_CASTER_VERTEX(v,o);
+                SHADOW_CASTER_VERTEX(v,TransformObjectToWorld(v.positionOS));
 				return o;
 			}
 

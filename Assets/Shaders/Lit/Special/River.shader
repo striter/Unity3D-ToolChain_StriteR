@@ -93,7 +93,7 @@
             
             #include "Assets/Shaders/Library/Additional/HorizonBend.hlsl"
             #pragma shader_feature _HORIZONBEND
-            #include "Assets/Shaders/Library/Additional/WaveInteraction.hlsl"
+            #include "Assets/Shaders/Library/Additional/Local/WaveInteraction.hlsl"
             #pragma shader_feature_local _WAVEINTERACTION
 
             struct a2v
@@ -184,7 +184,7 @@
 
             	float2 deepSurfaceUV=screenUV;
 				#if _DEPTHREFRACTION
-				float refraction=saturate(invlerp(0,_RefractionDistance,eyeDepthOffset+wave))*_RefractionAmount;
+				float refraction=saturate(invlerp(0,_RefractionDistance,eyeDepthOffset+wave.x))*_RefractionAmount;
             	deepSurfaceUV+=normalTS.xy*refraction*rcp(eyeDepthUnder);
             	#endif
             	float3 deepSurfaceColor=SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,deepSurfaceUV).rgb;

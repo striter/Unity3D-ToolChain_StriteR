@@ -134,7 +134,7 @@ Material:
     - _BumpScale: 1
     - _Caustic: 1
     - _CausticClip: 1
-    - _CausticStrength: 1
+    - _CausticStrength: 0.29
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _CrackDistance: 0.5
@@ -145,10 +145,10 @@ Material:
     - _Cull: 2
     - _Cutoff: 0.5
     - _Depth: 1
-    - _DepthBegin: 0.4
+    - _DepthBegin: 1
     - _DepthBuffer: 1
     - _DepthBufferScale: 1
-    - _DepthDistance: 0.2
+    - _DepthDistance: 1.3
     - _DepthOffset: 0.42
     - _DepthPow: 2
     - _DepthRefraction: 1
@@ -173,12 +173,12 @@ Material:
     - _EnvironmentReflections: 1
     - _F: 0
     - _FRESNEL: 0
-    - _FlowSpeed: 0.1
+    - _FlowSpeed: 3
     - _Foam: 1
-    - _FoamBegin: 0
-    - _FoamDistort: 0.08
+    - _FoamBegin: 0.11
+    - _FoamDistort: 1
     - _FoamOffset: 0.18
-    - _FoamWidth: 0.107
+    - _FoamWidth: 0.5
     - _Fresnel: 1
     - _FresnelPow: 1
     - _GSF: 6
@@ -200,12 +200,12 @@ Material:
     - _ReceiveShadow: 1
     - _ReceiveShadows: 1
     - _ReflectionAmount: 0.51
-    - _RefractionAmount: 0.108
+    - _RefractionAmount: 0.279
     - _RefractionDistance: 0.47
-    - _Scale: 5
+    - _Scale: 11.3
     - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
-    - _SpecularAmount: 0.99
+    - _SpecularAmount: 0.98
     - _SpecularHighlights: 1
     - _SpecularRange: 0.9
     - _SrcBlend: 1
@@ -219,11 +219,11 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 0.19023673, g: 0.31893215, b: 0.4245283, a: 0.8}
+    - _Color: {r: 0.38431373, g: 0.7094229, b: 0.73, a: 0.57254905}
     - _CrackColor: {r: 1, g: 1, b: 1, a: 1}
-    - _DepthColor: {r: 0.26584196, g: 0.45703566, b: 0.5471698, a: 1}
+    - _DepthColor: {r: 0.3915094, g: 1, b: 0.8374419, a: 0.6156863}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FlowDirection: {r: 1, g: 1, b: 0, a: 0}
+    - _FlowDirection: {r: -1, g: 0, b: 0, a: 0}
     - _FoamColor: {r: 1.4980392, g: 1.4980392, b: 1.4980392, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []

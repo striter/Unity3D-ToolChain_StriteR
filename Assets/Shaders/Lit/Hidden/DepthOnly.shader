@@ -4,14 +4,19 @@
     {
 		Pass
 		{
+			Blend Off
+			ZWrite On
+			ZTest LEqual
+			
 			NAME "MAIN"
 			Tags{"LightMode" = "DepthOnly"}
 			HLSLPROGRAM
 			#pragma vertex ShadowVertex
 			#pragma fragment ShadowFragment
 			#pragma multi_compile_instancing
-			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-				
+			#include "Assets/Shaders/Library/CommonInclude.hlsl"
+			#include "Assets/Shaders/Library/Additional/HorizonBend.hlsl"
+			#pragma shader_feature _HORIZONBEND
 			struct a2f
 			{
 				float3 positionOS:POSITION;
@@ -27,7 +32,9 @@
 			{
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
-				o.positionCS=TransformObjectToHClip(v.positionOS);
+				float3 positionWS=TransformObjectToWorld(v.positionOS);
+				positionWS=HorizonBend(positionWS);
+				o.positionCS=TransformWorldToHClip(positionWS);
 				return o;
 			}
 

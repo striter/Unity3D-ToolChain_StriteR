@@ -68,10 +68,6 @@ Shader "Game/2D/Uber"
 			#pragma shader_feature_local _BACKRIM
 			#pragma shader_feature_local _RECEIVESHADOW
 			#pragma shader_feature_local _WAVE
-			#pragma shader_feature_local _ALPHACLIP
-			#pragma shader_feature_local _PARALLAX
-			#pragma shader_feature_local _DEPTHBUFFER
-			#pragma shader_feature_local _DEPTHMAP
 			#pragma shader_feature_local _ATLAS
 			#pragma shader_feature_local _GRID
 			#pragma shader_feature _EDITGRID
@@ -100,7 +96,12 @@ Shader "Game/2D/Uber"
 				INSTANCING_PROP(int ,_ParallaxCount)
 			UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
         
-			#include "Assets/Shaders/Library/Additional/Parallax.hlsl"
+			#include "Assets/Shaders/Library/Additional/Local/Parallax.hlsl"
+			#pragma shader_feature_local _PARALLAX
+			#pragma shader_feature_local _DEPTHBUFFER
+			#pragma shader_feature_local _DEPTHMAP
+			#include "Assets/Shaders/Library/Additional/Local/AlphaClip.hlsl"
+			#pragma shader_feature_local _ALPHACLIP
         
             struct a2v
             {
@@ -143,12 +144,6 @@ Shader "Game/2D/Uber"
 				#endif
 				return uv;
 			}        
-            void AlphaClip(half alpha)
-            {
-                #if _ALPHACLIP
-                clip(alpha-INSTANCE(_AlphaClipRange));
-                #endif
-            }
             v2f vert (a2v v)
             {
                 v2f o;

@@ -114,8 +114,7 @@ Shader "Game/Effects/PlantsWaving_Vertex"
 				UNITY_SETUP_INSTANCE_ID(v);
 				float3 positionWS = TransformObjectToWorld( v.positionOS);
 				positionWS += Wave(positionWS);
-				v.positionOS = TransformWorldToObject(positionWS);
-				SHADOW_CASTER_VERTEX(v,o);
+				SHADOW_CASTER_VERTEX(v,positionWS);
 				return o;
 			}
 

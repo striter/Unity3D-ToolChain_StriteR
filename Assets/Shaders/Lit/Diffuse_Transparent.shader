@@ -111,7 +111,7 @@
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-				SHADOW_CASTER_VERTEX(v,o);
+				SHADOW_CASTER_VERTEX(v,TransformObjectToWorld(v.positionOS));
 				o.screenPos = ComputeScreenPos(o.positionCS);
 				return o;
 			}

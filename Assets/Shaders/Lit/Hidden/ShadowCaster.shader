@@ -4,6 +4,10 @@
     {
 		Pass
 		{
+			Blend Off
+			ZWrite On
+			ZTest LEqual
+			
 			NAME "MAIN"
 			Tags{"LightMode" = "ShadowCaster"}
 			HLSLPROGRAM
@@ -12,7 +16,9 @@
 			#pragma multi_compile_instancing
 			#include "Assets/Shaders/Library/CommonInclude.hlsl"
 			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
-				
+			#include "Assets/Shaders/Library/Additional/HorizonBend.hlsl"
+			#pragma shader_feature _HORIZONBEND
+			
 			struct a2f
 			{
 				A2V_SHADOW_CASTER;
@@ -22,13 +28,17 @@
 			struct v2f
 			{
 				V2F_SHADOW_CASTER;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			v2f ShadowVertex(a2f v)
 			{
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
-				SHADOW_CASTER_VERTEX(v,o);
+				UNITY_TRANSFER_INSTANCE_ID(v,o);
+				float3 positionWS=TransformObjectToWorld(v.positionOS.xyz);
+				positionWS=HorizonBend(positionWS);
+				SHADOW_CASTER_VERTEX(v,positionWS);
 				return o;
 			}
 
