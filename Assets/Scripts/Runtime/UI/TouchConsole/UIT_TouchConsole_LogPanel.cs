@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
 {
     [Flags]
-    public  enum enum_ConsoleSetting
+    public  enum EConsoleSetting
     {
         LogPanel = 1,
         LogTrack = 2,
@@ -22,7 +22,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
     LogToggle m_FilterLog, m_FilterWarning, m_FilterError, m_FilterCollapse;
     TGameObjectPool_Instance_Class<int, LogItem> m_Logs;
     StackPanel m_Stack;
-    [PartialMethod(enum_PartialMethods.Init,enum_PartialSorting.LogPanel)]
+    [PartialMethod(EPartialMethods.Init,EPartialSorting.LogPanel)]
     void InitLog()
     {
         m_LogPanelRect = transform.Find("LogPanel").GetComponent<ScrollRect>();
@@ -38,18 +38,18 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
 
         m_LogFilter.Find("Clear").GetComponent<Button>().onClick.AddListener(ClearConsoleLog);
     }
-    [PartialMethod(enum_PartialMethods.Reset, enum_PartialSorting.LogPanel)]
+    [PartialMethod(EPartialMethods.Reset, EPartialSorting.LogPanel)]
     void LogFrameReset()
     {
         m_Stack.HideStack();
         ClearConsoleLog();
     }
-    [PartialMethod(enum_PartialMethods.OnEnable, enum_PartialSorting.LogPanel)]
+    [PartialMethod(EPartialMethods.OnEnable, EPartialSorting.LogPanel)]
     void LogEnable()
     {
         Application.logMessageReceived += OnLogReceived;
     }
-    [PartialMethod(enum_PartialMethods.OnDisable, enum_PartialSorting.LogPanel)]
+    [PartialMethod(EPartialMethods.OnDisable, EPartialSorting.LogPanel)]
     void LogDisable()
     {
         Application.logMessageReceived -= OnLogReceived;
@@ -110,7 +110,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         m_FilterError.Set(errorCount);
 
         m_Logs.Clear();
-        if (!(m_ConsoleOpening && m_Data.m_FilterSetting.m_RefValue.IsFlagEnable(enum_ConsoleSetting.LogTrack)))
+        if (!(m_ConsoleOpening && m_Data.m_FilterSetting.m_RefValue.IsFlagEnable(EConsoleSetting.LogTrack)))
             return;
         if (!m_Data.m_Collapse)
         {

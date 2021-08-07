@@ -9,23 +9,23 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
     Transform m_FrameRate;
     Text m_FrameRateValue;
     Queue<int> m_FrameRateQueue = new Queue<int>();
-    [PartialMethod(enum_PartialMethods.Init,enum_PartialSorting.Miscs)]
+    [PartialMethod(EPartialMethods.Init,EPartialSorting.Miscs)]
     internal void InitMiscs()
     {
         m_FrameRate = transform.Find("FrameRate");
         m_FrameRateValue = m_FrameRate.Find("Value/Value").GetComponent<Text>();
 
     }
-    [PartialMethod(enum_PartialMethods.Reset,enum_PartialSorting.Miscs)]
+    [PartialMethod(EPartialMethods.Reset,EPartialSorting.Miscs)]
     internal void ResetMiscs()
     {
         m_FrameRateQueue.Clear();
         m_FrameRateValue.text = "";
     }
-    [PartialMethod(enum_PartialMethods.Tick, enum_PartialSorting.Miscs)]
+    [PartialMethod(EPartialMethods.Tick, EPartialSorting.Miscs)]
     internal void TickMiscs(float _deltaTime)
     {
-        if (!m_Data.m_FilterSetting.m_RefValue.IsFlagEnable(enum_ConsoleSetting.FPS))
+        if (!m_Data.m_FilterSetting.m_RefValue.IsFlagEnable(EConsoleSetting.FPS))
             return;
         m_FrameRateQueue.Enqueue(Mathf.CeilToInt(1f / _deltaTime));
         if (m_FrameRateQueue.Count > 30)

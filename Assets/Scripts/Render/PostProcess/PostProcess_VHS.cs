@@ -8,7 +8,7 @@ namespace Rendering.ImageEffect
     public class PostProcess_VHS : PostProcessComponentBase<PPCore_VHS, PPData_VHS>
     {
     }
-    public enum enum_VHSScreenCut
+    public enum EVHSScreenCut
     {
         None=0,
         Hard=1,
@@ -17,8 +17,8 @@ namespace Rendering.ImageEffect
     [Serializable]
     public struct PPData_VHS
     {
-        [MTitle] public enum_VHSScreenCut m_ScreenCut;
-        [MFold(nameof(m_ScreenCut), enum_VHSScreenCut.None), RangeVector(0, 1)] public Vector2 m_ScreenCutDistance;
+        [MTitle] public EVHSScreenCut m_ScreenCut;
+        [MFold(nameof(m_ScreenCut), EVHSScreenCut.None), RangeVector(0, 1)] public Vector2 m_ScreenCutDistance;
 
         [MTitle] public bool m_ColorBleed;
         [MFoldout(nameof(m_ColorBleed), true)] [Range(0, 5)] public float m_ColorBleedStrength;
@@ -54,7 +54,7 @@ namespace Rendering.ImageEffect
 
         public static readonly PPData_VHS m_Default = new PPData_VHS()
         {
-            m_ScreenCut = enum_VHSScreenCut.Hard,
+            m_ScreenCut = EVHSScreenCut.Hard,
             m_ScreenCutDistance = Vector2.one * 0.1f,
 
             m_ColorBleed = true,
@@ -133,7 +133,7 @@ namespace Rendering.ImageEffect
         {
             base.OnValidate(ref _data);
             m_Material.EnableKeywords(KW_SCREENCUT, (int)_data.m_ScreenCut);
-            m_Material.SetVector(ID_ScreenCutTarget,(Vector2.one+ (_data.m_ScreenCut == enum_VHSScreenCut.Scaled?1:-1)*_data.m_ScreenCutDistance) /2f);
+            m_Material.SetVector(ID_ScreenCutTarget,(Vector2.one+ (_data.m_ScreenCut == EVHSScreenCut.Scaled?1:-1)*_data.m_ScreenCutDistance) /2f);
 
             m_Material.EnableKeyword(KW_ColorBleed, _data.m_ColorBleed);
             m_Material.SetInt(ID_ColorBleedIteration, _data.m_ColorBleedIteration);

@@ -42,7 +42,7 @@ namespace TEditor
         {
             base.OnEnable();
             m_target = target as UIT_TextExtend;
-            TLocalization.SetRegion(enum_Option_LanguageRegion.CN);
+            TLocalization.SetRegion(ELanguageRegion.CN);
             targetLocalize = m_target.m_LocalizeKey;
         }
         public override void OnInspectorGUI()

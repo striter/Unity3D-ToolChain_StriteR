@@ -12,18 +12,18 @@ namespace Rendering.ImageEffect
         public override bool m_IsOpaqueProcess => m_EffectData.m_OpaquePostProcessing;
     }
 
-    public enum enum_OutlineType
+    public enum EOutlineType
     {
         MaskBlur,
         EdgeDetect,
     }
-    public enum enum_Convolution
+    public enum EConvolution
     {
         Prewitt = 1,
         Sobel = 2,
     }
 
-    public enum enum_DetectType
+    public enum EDetectType
     {
         Depth = 1,
         Normal = 2,
@@ -35,27 +35,27 @@ namespace Rendering.ImageEffect
     {
         public bool m_OpaquePostProcessing;
         [ColorUsage(true, true)] public Color m_Color;
-        [MTitle] public enum_OutlineType m_Type;
+        [MTitle] public EOutlineType m_Type;
         [Header("Options")]
-        [MFoldout(nameof(m_Type), enum_OutlineType.EdgeDetect)] [Range(.1f, 3f)] public float m_Width;
-        [MFoldout(nameof(m_Type), enum_OutlineType.EdgeDetect)] public enum_Convolution m_Convolution;
-        [MFoldout(nameof(m_Type), enum_OutlineType.EdgeDetect)] public enum_DetectType m_DetectType;
-        [MFoldout(nameof(m_Type), enum_OutlineType.EdgeDetect)] [Range(0, 10f)] public float m_Strength;
-        [MFoldout(nameof(m_Type), enum_OutlineType.EdgeDetect)] [Range(0.01f, 5f)] public float m_Bias;
+        [MFoldout(nameof(m_Type), EOutlineType.EdgeDetect)] [Range(.1f, 3f)] public float m_Width;
+        [MFoldout(nameof(m_Type), EOutlineType.EdgeDetect)] public EConvolution m_Convolution;
+        [MFoldout(nameof(m_Type), EOutlineType.EdgeDetect)] public EDetectType m_DetectType;
+        [MFoldout(nameof(m_Type), EOutlineType.EdgeDetect)] [Range(0, 10f)] public float m_Strength;
+        [MFoldout(nameof(m_Type), EOutlineType.EdgeDetect)] [Range(0.01f, 5f)] public float m_Bias;
 
-        [MFoldout(nameof(m_Type), enum_OutlineType.MaskBlur)] [CullingMask] public int m_CullingMask;
-        [MFoldout(nameof(m_Type), enum_OutlineType.MaskBlur)] public bool m_ZClip;
-        [MFoldout(nameof(m_Type), enum_OutlineType.MaskBlur, nameof(m_ZClip), true)] public bool m_ZLesser;
-        [MFoldout(nameof(m_Type), enum_OutlineType.MaskBlur,nameof(m_ZClip),true)] [Range(0.01f,1f)] public float m_ZOffset;
-        [MFoldout(nameof(m_Type), enum_OutlineType.MaskBlur)] public PPData_Blurs m_OutlineBlur;
+        [MFoldout(nameof(m_Type), EOutlineType.MaskBlur)] [CullingMask] public int m_CullingMask;
+        [MFoldout(nameof(m_Type), EOutlineType.MaskBlur)] public bool m_ZClip;
+        [MFoldout(nameof(m_Type), EOutlineType.MaskBlur, nameof(m_ZClip), true)] public bool m_ZLesser;
+        [MFoldout(nameof(m_Type), EOutlineType.MaskBlur,nameof(m_ZClip),true)] [Range(0.01f,1f)] public float m_ZOffset;
+        [MFoldout(nameof(m_Type), EOutlineType.MaskBlur)] public PPData_Blurs m_OutlineBlur;
         public static readonly PPData_Outline m_Default = new PPData_Outline()
         {
             m_OpaquePostProcessing = false,
-            m_Type = enum_OutlineType.EdgeDetect,
+            m_Type = EOutlineType.EdgeDetect,
             m_Color = Color.white,
             m_Width = 1,
-            m_Convolution = enum_Convolution.Prewitt,
-            m_DetectType = enum_DetectType.Depth,
+            m_Convolution = EConvolution.Prewitt,
+            m_DetectType = EDetectType.Depth,
             m_Strength = 2f,
             m_Bias = .5f,
             m_CullingMask = int.MaxValue,
@@ -127,7 +127,7 @@ namespace Rendering.ImageEffect
 
         public void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor,ref PPData_Outline _data)
         {
-            if (_data.m_Type != enum_OutlineType.MaskBlur)
+            if (_data.m_Type != EOutlineType.MaskBlur)
                 return;
             m_Descriptor = new RenderTextureDescriptor(_descriptor.width, _descriptor.height, RenderTextureFormat.R8, 0, 0);
 
@@ -143,7 +143,7 @@ namespace Rendering.ImageEffect
 
         public void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,ref PPData_Outline _data)
         {
-            if (_data.m_Type != enum_OutlineType.MaskBlur)
+            if (_data.m_Type != EOutlineType.MaskBlur)
                 return;
             CommandBuffer buffer = CommandBufferPool.Get("Outline Execute");
             if (!_data.m_ZClip)
@@ -167,12 +167,12 @@ namespace Rendering.ImageEffect
         {
             switch (_data.m_Type)
             {
-                case enum_OutlineType.EdgeDetect:
+                case EOutlineType.EdgeDetect:
                     {
                         _buffer.Blit(_src, _dst, m_Material, 0);
                     }
                     break;
-                case enum_OutlineType.MaskBlur:
+                case EOutlineType.MaskBlur:
                     {
                         _mCoreBlur.ExecutePostProcessBuffer(_buffer, RT_ID_MaskRender, RT_ID_MaskRenderBlur, m_Descriptor,ref _data.m_OutlineBlur);
                         _buffer.Blit(_src, _dst, m_Material, 1);
@@ -183,7 +183,7 @@ namespace Rendering.ImageEffect
 
         public void FrameCleanUp(CommandBuffer _buffer,ref PPData_Outline _data)
         {
-            if (_data.m_Type != enum_OutlineType.MaskBlur)
+            if (_data.m_Type != EOutlineType.MaskBlur)
                 return;
             _buffer.ReleaseTemporaryRT(ID_MaskRender);
             _buffer.ReleaseTemporaryRT(ID_MaskRenderBlur);

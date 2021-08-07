@@ -36,7 +36,7 @@ namespace Rendering.ImageEffect
         static readonly int ID_Intensity = Shader.PropertyToID("_Intensity");
         #endregion
 
-        public enum enum_Pass
+        public enum EPassIndex
         {
             SampleLight = 0,
             AddBloomTex = 1,
@@ -68,11 +68,11 @@ namespace Rendering.ImageEffect
             _buffer.GetTemporaryRT(RT_ID_Blur, rtW, rtH, 0, FilterMode.Bilinear, _descriptor.colorFormat);
             _buffer.GetTemporaryRT(RT_ID_Sample, rtW, rtH, 0, FilterMode.Bilinear, _descriptor.colorFormat);
 
-            _buffer.Blit(_src, RT_Sample, m_Material, (int)enum_Pass.SampleLight);
+            _buffer.Blit(_src, RT_Sample, m_Material, (int)EPassIndex.SampleLight);
 
             _mCoreBlur.ExecutePostProcessBuffer(_buffer, RT_Sample, RT_Blur, _descriptor, ref _data.m_BlurParams);
 
-            _buffer.Blit(_src, _dst, m_Material, (int)enum_Pass.AddBloomTex);
+            _buffer.Blit(_src, _dst, m_Material, (int)EPassIndex.AddBloomTex);
 
             _buffer.ReleaseTemporaryRT(RT_ID_Sample);
             _buffer.ReleaseTemporaryRT(RT_ID_Blur);

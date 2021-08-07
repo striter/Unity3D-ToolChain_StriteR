@@ -7,14 +7,14 @@ using UnityEngine.Rendering.Universal;
 
 namespace Rendering.ImageEffect
 {
-    public enum enum_Stylize
+    public enum EStylize
     {
         Pixel=0,
         OilPaint=1,
         BilateralFilter=2,
         ObraDithering = 3,
     }
-    public enum enum_PixelBound
+    public enum EPixelBound
     {
         None=0,
         Grid,
@@ -29,23 +29,23 @@ namespace Rendering.ImageEffect
     [Serializable]
     public struct PPData_Stylize
     {
-        [MTitle]public enum_Stylize m_Stylize;
-        [MFoldout(nameof(m_Stylize),enum_Stylize.Pixel)] [ Range(2,20)] public int m_DownSample;
-        [MFoldout(nameof(m_Stylize), enum_Stylize.Pixel)] public enum_PixelBound m_PixelGrid;
-        [MFoldout(nameof(m_Stylize), enum_Stylize.Pixel)] [MFold(nameof(m_PixelGrid), enum_PixelBound.None)] [Range(0.01f, 0.49f)] public float m_GridWidth;
-        [MFoldout(nameof(m_Stylize), enum_Stylize.Pixel)] [MFold(nameof(m_PixelGrid), enum_PixelBound.None)] public Color m_PixelGridColor;
-        [MFoldout(nameof(m_Stylize), enum_Stylize.OilPaint)] [Range(1,20)]public int m_OilPaintKernel;
-        [MFoldout(nameof(m_Stylize), enum_Stylize.OilPaint)] [Range(0.1f, 5f)] public float m_OilPaintSize;
-        [MFoldout(nameof(m_Stylize), enum_Stylize.ObraDithering)] [Range(0.001f,1f)]public float m_ObraDitherScale;
-        [MFoldout(nameof(m_Stylize), enum_Stylize.ObraDithering)] [Range(0.1f,1f)]public float m_ObraDitherStrength;
-        [MFoldout(nameof(m_Stylize), enum_Stylize.ObraDithering)] public Color m_ObraDitherColor;
-        [MFoldout(nameof(m_Stylize), enum_Stylize.BilateralFilter)] [Range(0.1f, 5f)] public float m_BilaterailSize;
-        [MFoldout(nameof(m_Stylize), enum_Stylize.BilateralFilter)] [Range(0.01f, 1f)] public float m_BilateralFactor;
+        [MTitle]public EStylize m_Stylize;
+        [MFoldout(nameof(m_Stylize),EStylize.Pixel)] [ Range(2,20)] public int m_DownSample;
+        [MFoldout(nameof(m_Stylize), EStylize.Pixel)] public EPixelBound m_PixelGrid;
+        [MFoldout(nameof(m_Stylize), EStylize.Pixel)] [MFold(nameof(m_PixelGrid), EPixelBound.None)] [Range(0.01f, 0.49f)] public float m_GridWidth;
+        [MFoldout(nameof(m_Stylize), EStylize.Pixel)] [MFold(nameof(m_PixelGrid), EPixelBound.None)] public Color m_PixelGridColor;
+        [MFoldout(nameof(m_Stylize), EStylize.OilPaint)] [Range(1,20)]public int m_OilPaintKernel;
+        [MFoldout(nameof(m_Stylize), EStylize.OilPaint)] [Range(0.1f, 5f)] public float m_OilPaintSize;
+        [MFoldout(nameof(m_Stylize), EStylize.ObraDithering)] [Range(0.001f,1f)]public float m_ObraDitherScale;
+        [MFoldout(nameof(m_Stylize), EStylize.ObraDithering)] [Range(0.1f,1f)]public float m_ObraDitherStrength;
+        [MFoldout(nameof(m_Stylize), EStylize.ObraDithering)] public Color m_ObraDitherColor;
+        [MFoldout(nameof(m_Stylize), EStylize.BilateralFilter)] [Range(0.1f, 5f)] public float m_BilaterailSize;
+        [MFoldout(nameof(m_Stylize), EStylize.BilateralFilter)] [Range(0.01f, 1f)] public float m_BilateralFactor;
         public static readonly PPData_Stylize m_Default = new PPData_Stylize()
         {
-            m_Stylize = enum_Stylize.Pixel,
+            m_Stylize = EStylize.Pixel,
             m_DownSample = 7,
-            m_PixelGrid = enum_PixelBound.None,
+            m_PixelGrid = EPixelBound.None,
             m_GridWidth = .1f,
             m_PixelGridColor = Color.white.SetAlpha(.5f),
             m_OilPaintKernel = 10,
@@ -98,19 +98,19 @@ namespace Rendering.ImageEffect
                 default:
                     base.ExecutePostProcessBuffer(_buffer, _src, _dst, _descriptor,ref _data);
                     break;
-                case enum_Stylize.Pixel:
+                case EStylize.Pixel:
                     _buffer.GetTemporaryRT(ID_PixelizeDownSample, _descriptor.width / _data.m_DownSample, _descriptor.height / _data.m_DownSample, 0, FilterMode.Point, _descriptor.colorFormat);
                     _buffer.Blit(_src, RT_PixelizeDownSample);
                     _buffer.Blit(RT_PixelizeDownSample, _dst, m_Material, 0);
                     _buffer.ReleaseTemporaryRT(ID_PixelizeDownSample);
                     break;
-                case enum_Stylize.OilPaint:
+                case EStylize.OilPaint:
                     _buffer.Blit(_src, _dst, m_Material, 1);
                     break;
-                case enum_Stylize.ObraDithering:
+                case EStylize.ObraDithering:
                     _buffer.Blit(_src, _dst, m_Material, 2);
                     break;
-                case enum_Stylize.BilateralFilter:
+                case EStylize.BilateralFilter:
                     _buffer.Blit(_src, _dst, m_Material, 3);
                     break;
             }

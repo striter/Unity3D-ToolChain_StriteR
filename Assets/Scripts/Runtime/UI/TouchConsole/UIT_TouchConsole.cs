@@ -5,9 +5,9 @@ using UnityEngine.UI;
 using System.Reflection;
 using TDataPersistent;
 using static UIT_TouchConsole;
-public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartialMethods<enum_PartialMethods,enum_PartialSorting>
+public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartialMethods<EPartialMethods,EPartialSorting>
 {
-    public enum enum_PartialMethods
+    public enum EPartialMethods
     {
         Init,
         Tick,
@@ -15,7 +15,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartial
         OnEnable,
         OnDisable,
     }
-    public enum enum_PartialSorting
+    public enum EPartialSorting
     {
         CommandConsole,
         LogPanel,
@@ -28,7 +28,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartial
     {
         public override bool DataCrypt() => false;
         public Ref<float> m_ConsoleTimeScale;
-        public Ref<enum_ConsoleSetting> m_FilterSetting;
+        public Ref<EConsoleSetting> m_FilterSetting;
         [Header("Log Filter")]
         public Ref<bool> m_Log;
         public Ref<bool> m_Warning;
@@ -40,7 +40,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartial
             m_Log = true;
             m_Error = true;
             m_Collapse = true;
-            m_FilterSetting = (enum_ConsoleSetting)int.MaxValue;
+            m_FilterSetting = (EConsoleSetting)int.MaxValue;
             m_ConsoleTimeScale = .5f;
         }
     }
@@ -50,24 +50,24 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartial
         base.Awake();
         m_Data.ReadPersistentData();
         this.InitMethods();
-        this.InvokeMethods(enum_PartialMethods.Init);
-        this.InvokeMethods(enum_PartialMethods.Reset);
+        this.InvokeMethods(EPartialMethods.Init);
+        this.InvokeMethods(EPartialMethods.Reset);
         SetLogFramePanel(m_Data.m_FilterSetting.m_RefValue);
     }
 
     void OnEnable()
     {
-        this.InvokeMethods(enum_PartialMethods.OnEnable);
+        this.InvokeMethods(EPartialMethods.OnEnable);
     }
     void OnDisable()
     {
-        this.InvokeMethods(enum_PartialMethods.OnDisable);
+        this.InvokeMethods(EPartialMethods.OnDisable);
     }
 
     public static UIT_TouchConsole InitDefaultCommands() => Instance.Init();
     protected UIT_TouchConsole Init()
     {
-        this.InvokeMethods(enum_PartialMethods.Reset);
+        this.InvokeMethods(EPartialMethods.Reset);
         NewPage("Console");
         Command("Time Scale").Slider(0f, 2f, m_Data.m_ConsoleTimeScale, scale => { m_Data.SavePersistentData(); SetConsoleTimeScale(scale); });
         Command("Right Panel").FlagsSelection(m_Data.m_FilterSetting, setting => { m_Data.SavePersistentData(); SetLogFramePanel(setting); });
@@ -77,13 +77,13 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartial
     private void Update()
     {
         float deltaTime = Time.unscaledDeltaTime;
-        this.InvokeMethods( enum_PartialMethods.Tick,deltaTime);
+        this.InvokeMethods( EPartialMethods.Tick,deltaTime);
         TickConsole(deltaTime);
     }
-    protected void SetLogFramePanel(enum_ConsoleSetting _panelSetting)
+    protected void SetLogFramePanel(EConsoleSetting _panelSetting)
     {
-        m_FrameRate.SetActive(_panelSetting.IsFlagEnable(enum_ConsoleSetting.FPS));
-        m_LogFilter.SetActive(_panelSetting.IsFlagEnable(enum_ConsoleSetting.LogPanel));
+        m_FrameRate.SetActive(_panelSetting.IsFlagEnable(EConsoleSetting.FPS));
+        m_LogFilter.SetActive(_panelSetting.IsFlagEnable(EConsoleSetting.LogPanel));
         m_LogPanelRect.SetActive(!_panelSetting.IsFlagClear());
         UpdateLogs();
     }

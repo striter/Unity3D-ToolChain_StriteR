@@ -11,7 +11,7 @@ namespace TEditor
     {
         GameObject m_ModelPrefab;
 
-        enum_VertexData m_GenerateUV= enum_VertexData.UV7;
+        EVertexData m_GenerateUV= EVertexData.UV7;
         void OnGUI()
         {
             EditorGUILayout.BeginVertical();
@@ -30,15 +30,15 @@ namespace TEditor
                 return;
             }
 
-            m_GenerateUV = (enum_VertexData)EditorGUILayout.EnumPopup("Generate UV:", m_GenerateUV);
-            if (m_GenerateUV != enum_VertexData.None && GUILayout.Button("Generate"))
+            m_GenerateUV = (EVertexData)EditorGUILayout.EnumPopup("Generate UV:", m_GenerateUV);
+            if (m_GenerateUV != EVertexData.None && GUILayout.Button("Generate"))
                 if (UEAsset.SaveFilePath(out string filePath, "prefab", UEPath.RemoveExtension(UEPath.GetPathName(AssetDatabase.GetAssetPath(m_ModelPrefab))) + "_SN"))
                     GenerateSkinnedTarget(UEPath.FilePathToAssetPath(filePath), m_ModelPrefab, m_GenerateUV);
 
             EditorGUILayout.EndVertical();
         }
 
-        public static void GenerateSkinnedTarget(string assetPath, GameObject _targetFBX, enum_VertexData _generateUV)
+        public static void GenerateSkinnedTarget(string assetPath, GameObject _targetFBX, EVertexData _generateUV)
         {
             GameObject prefabSource = GameObject.Instantiate(_targetFBX);
 
@@ -69,19 +69,19 @@ namespace TEditor
             GameObject.DestroyImmediate(prefabSource);
         }
 
-        static Mesh GenerateMesh(Mesh _src,enum_VertexData _generateUV)
+        static Mesh GenerateMesh(Mesh _src,EVertexData _generateUV)
         {
             Mesh target = _src.Copy();
             Vector3[] smoothNormals = GenerateSmoothNormals(target, ConvertToTangentSpace(_generateUV));
             target.SetVertexData(_generateUV,smoothNormals.ToList());
             return target;
         }
-        static bool ConvertToTangentSpace(enum_VertexData _target)
+        static bool ConvertToTangentSpace(EVertexData _target)
         {
             switch(_target)
             {
-                case enum_VertexData.Normal:
-                case enum_VertexData.Tangent:
+                case EVertexData.Normal:
+                case EVertexData.Tangent:
                     return false;
             }
             return true;

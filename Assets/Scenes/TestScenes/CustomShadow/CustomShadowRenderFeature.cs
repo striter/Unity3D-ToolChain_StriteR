@@ -7,7 +7,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 namespace CustomShadow
 {
-    public enum enum_ShadowResolution
+    public enum EShadowResolution
     {
         _128=128,
         _256=256,
@@ -19,7 +19,7 @@ namespace CustomShadow
     [Serializable]
     public struct ShadowData
     {
-        public enum_ShadowResolution m_ShadowResolution;
+        public EShadowResolution m_ShadowResolution;
     }
     public class CustomShadowRenderFeature : ScriptableRendererFeature
     {

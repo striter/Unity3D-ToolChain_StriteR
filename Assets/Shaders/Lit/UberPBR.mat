@@ -8,9 +8,9 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: UberPBR
-  m_Shader: {fileID: 4800000, guid: 623a8fafd99f201468235763d654b43a, type: 3}
-  m_ShaderKeywords: _AOMAP _F_IMPLICIT _F_SCHLICK _GSF_COOKTORRANCE _LIGHTING _NDF_GGX
-    _NORMALMAP _PARALLEX _PARALLEX_STEEP _PBRMAP _RECEIVESHADOW _VF_GGX
+  m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
+  m_ShaderKeywords: _AOMAP _DEPTHMAP _F_IMPLICIT _F_SCHLICK _GSF_COOKTORRANCE _LIGHTING
+    _NDF_GGX _NORMALMAP _PARALLEX _PARALLEX_STEEP _PBRMAP _RECEIVESHADOW _VF_GGX
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -65,7 +65,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: e596f9caaa43f134fad2cdb54e831ccb, type: 3}
+        m_Texture: {fileID: 2800000, guid: ea2f0f63e40f326458d3d1a3fe7125ec, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Mask0:

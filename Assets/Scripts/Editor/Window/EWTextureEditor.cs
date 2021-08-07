@@ -14,12 +14,12 @@ namespace TEditor
             bool OnGUIExportValid(ref Texture2D _targetTexture, Action DisplayNotify);
         }
 
-        enum enum_TextureEditorMode
+        enum ETextureEditorMode
         {
             ChannelModifer,
             ChannelMixer,
         }
-        enum enum_TextureExportType
+        enum ETextureExportType
         {
             PNG,
             JPG,
@@ -28,16 +28,16 @@ namespace TEditor
         }
 
 
-        enum_TextureEditorMode m_EditorMode= enum_TextureEditorMode.ChannelModifer;
-        enum_TextureExportType m_TextureExportType= enum_TextureExportType.TGA;
+        ETextureEditorMode m_EditorMode= ETextureEditorMode.ChannelModifer;
+        ETextureExportType m_TextureExportType= ETextureExportType.TGA;
 
-        Dictionary<enum_TextureEditorMode, ITextureEditor> m_Editors = new Dictionary<enum_TextureEditorMode, ITextureEditor>()
-        { { enum_TextureEditorMode.ChannelModifer, new TE_ChannelModifier() },{enum_TextureEditorMode.ChannelMixer,new TE_ChannelMixer() }  };
+        Dictionary<ETextureEditorMode, ITextureEditor> m_Editors = new Dictionary<ETextureEditorMode, ITextureEditor>()
+        { { ETextureEditorMode.ChannelModifer, new TE_ChannelModifier() },{ETextureEditorMode.ChannelMixer,new TE_ChannelMixer() }  };
 
         Texture2D m_TargetTexture;
         Texture2D m_DisplayTexture;
 
-        public enum_ColorVisualize m_ColorVisualize= enum_ColorVisualize.RGBA;
+        public EColorVisualize m_ColorVisualize= EColorVisualize.RGBA;
         private void OnDisable()
         {
             foreach (var editor in m_Editors.Values)
@@ -54,7 +54,7 @@ namespace TEditor
         {
             HorizontalScope.Begin(5,5,18);
             EditorGUI.LabelField(HorizontalScope.NextRect(0, 80),"Editor Mode:",UEGUIStyle_Window.m_TitleLabel);
-            m_EditorMode = (enum_TextureEditorMode)EditorGUI.EnumPopup(HorizontalScope.NextRect(5,100),m_EditorMode);
+            m_EditorMode = (ETextureEditorMode)EditorGUI.EnumPopup(HorizontalScope.NextRect(5,100),m_EditorMode);
 
             HorizontalScope.NextLine(2,20);
             var textureEditor = m_Editors[m_EditorMode];
@@ -66,7 +66,7 @@ namespace TEditor
             EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Display:", UEGUIStyle_Window.m_TitleLabel);
             HorizontalScope.NextLine(2, 18);
             EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Visualize:");
-            m_ColorVisualize= (enum_ColorVisualize)EditorGUI.EnumPopup(HorizontalScope.NextRect(5,40),m_ColorVisualize);
+            m_ColorVisualize= (EColorVisualize)EditorGUI.EnumPopup(HorizontalScope.NextRect(5,40),m_ColorVisualize);
 
             if (EditorGUI.EndChangeCheck())
                 UpdateDisplayTexture();
@@ -79,7 +79,7 @@ namespace TEditor
 
             HorizontalScope.NextLine(2, 18);
             EditorGUI.LabelField(HorizontalScope.NextRect(5, 50), "Export:", UEGUIStyle_Window.m_TitleLabel);
-            m_TextureExportType =(enum_TextureExportType) EditorGUI.EnumPopup(HorizontalScope.NextRect(0,50), m_TextureExportType);
+            m_TextureExportType =(ETextureExportType) EditorGUI.EnumPopup(HorizontalScope.NextRect(0,50), m_TextureExportType);
             if (GUI.Button(HorizontalScope.NextRect(20, 80), "Export"))
                 ExportTexture(m_TargetTexture,m_TargetTexture.name,m_TextureExportType);
         }
@@ -103,16 +103,16 @@ namespace TEditor
         }
 
 
-        static void ExportTexture(Texture2D _saveTexture,string _name,enum_TextureExportType _exportType)
+        static void ExportTexture(Texture2D _saveTexture,string _name,ETextureExportType _exportType)
         {
             string extend = "";
             switch(_exportType)
             {
                 default:throw new Exception("Invalid Export Type:"+_exportType);
-                case enum_TextureExportType.JPG:extend = "jpg";break;
-                case enum_TextureExportType.PNG:extend = "png";break;
-                case enum_TextureExportType.TGA:extend = "tga";break;
-                case enum_TextureExportType.EXR:extend = "exr";break;
+                case ETextureExportType.JPG:extend = "jpg";break;
+                case ETextureExportType.PNG:extend = "png";break;
+                case ETextureExportType.TGA:extend = "tga";break;
+                case ETextureExportType.EXR:extend = "exr";break;
             }
 
 
@@ -121,17 +121,17 @@ namespace TEditor
             byte[] bytes = null; 
             switch(_exportType)
             {
-                case enum_TextureExportType.TGA:bytes = _saveTexture.EncodeToTGA();break;
-                case enum_TextureExportType.EXR: bytes = _saveTexture.EncodeToEXR(); break;
-                case enum_TextureExportType.JPG: bytes = _saveTexture.EncodeToJPG(); break;
-                case enum_TextureExportType.PNG: bytes = _saveTexture.EncodeToPNG(); break;
+                case ETextureExportType.TGA:bytes = _saveTexture.EncodeToTGA();break;
+                case ETextureExportType.EXR: bytes = _saveTexture.EncodeToEXR(); break;
+                case ETextureExportType.JPG: bytes = _saveTexture.EncodeToJPG(); break;
+                case ETextureExportType.PNG: bytes = _saveTexture.EncodeToPNG(); break;
             }
             UEAsset.CreateOrReplaceFile(filePath,bytes);
         }
         class TE_ChannelModifier : ITextureEditor
         {
             Texture2D m_ModifyTexture;
-            enum_ColorVisualize m_ChannelModify = enum_ColorVisualize.None;
+            EColorVisualize m_ChannelModify = EColorVisualize.None;
             public void Disable()
             {
                 m_ModifyTexture = null;
@@ -157,9 +157,9 @@ namespace TEditor
 
                 HorizontalScope.NextLine(2, 20);
                 EditorGUI.LabelField(HorizontalScope.NextRect(5, 60), "Modify:", UEGUIStyle_Window.m_TitleLabel);
-                m_ChannelModify = (enum_ColorVisualize)EditorGUI.EnumPopup(HorizontalScope.NextRect(5, 120), m_ChannelModify);
+                m_ChannelModify = (EColorVisualize)EditorGUI.EnumPopup(HorizontalScope.NextRect(5, 120), m_ChannelModify);
 
-                if (m_ChannelModify != enum_ColorVisualize.None)
+                if (m_ChannelModify != EColorVisualize.None)
                 {
                     HorizontalScope.NextLine(2, 20);
                     if (GUI.Button(HorizontalScope.NextRect(10, 60), "Reverse"))
@@ -194,19 +194,19 @@ namespace TEditor
 
             }
 
-            static void DoColorModify(Texture2D _target, enum_ColorVisualize _color, Func<float, float> _OnEachValue)
+            static void DoColorModify(Texture2D _target, EColorVisualize _color, Func<float, float> _OnEachValue)
             {
                 Color[] colors = _target.GetPixels();
                 for (int i = 0; i < colors.Length; i++)
                 {
                     switch (_color)
                     {
-                        case enum_ColorVisualize.RGBA: colors[i] = new Color(_OnEachValue(colors[i].r), _OnEachValue(colors[i].g), _OnEachValue(colors[i].b), _OnEachValue(colors[i].a)); break;
-                        case enum_ColorVisualize.RGB: colors[i] = new Color(_OnEachValue(colors[i].r), _OnEachValue(colors[i].g), _OnEachValue(colors[i].b), colors[i].a); break;
-                        case enum_ColorVisualize.R: colors[i] = new Color(_OnEachValue(colors[i].r), colors[i].g, colors[i].b, colors[i].a); break;
-                        case enum_ColorVisualize.G: colors[i] = new Color(colors[i].r, _OnEachValue(colors[i].g), colors[i].b, colors[i].a); break;
-                        case enum_ColorVisualize.B: colors[i] = new Color(colors[i].r, colors[i].g, _OnEachValue(colors[i].b), colors[i].a); break;
-                        case enum_ColorVisualize.A: colors[i] = new Color(colors[i].r, colors[i].g, colors[i].b, _OnEachValue(colors[i].a)); break;
+                        case EColorVisualize.RGBA: colors[i] = new Color(_OnEachValue(colors[i].r), _OnEachValue(colors[i].g), _OnEachValue(colors[i].b), _OnEachValue(colors[i].a)); break;
+                        case EColorVisualize.RGB: colors[i] = new Color(_OnEachValue(colors[i].r), _OnEachValue(colors[i].g), _OnEachValue(colors[i].b), colors[i].a); break;
+                        case EColorVisualize.R: colors[i] = new Color(_OnEachValue(colors[i].r), colors[i].g, colors[i].b, colors[i].a); break;
+                        case EColorVisualize.G: colors[i] = new Color(colors[i].r, _OnEachValue(colors[i].g), colors[i].b, colors[i].a); break;
+                        case EColorVisualize.B: colors[i] = new Color(colors[i].r, colors[i].g, _OnEachValue(colors[i].b), colors[i].a); break;
+                        case EColorVisualize.A: colors[i] = new Color(colors[i].r, colors[i].g, colors[i].b, _OnEachValue(colors[i].a)); break;
                     }
                 }
                 _target.SetPixels(colors);

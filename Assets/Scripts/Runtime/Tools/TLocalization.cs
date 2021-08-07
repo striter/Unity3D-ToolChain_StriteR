@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-public enum enum_Option_LanguageRegion
+public enum ELanguageRegion
 {
     CN=1,
     EN=2,
@@ -12,9 +12,9 @@ public static class TLocalization
 {
     public static bool IsInit = false;
     public static event Action OnLocaleChanged;
-    public static enum_Option_LanguageRegion e_CurLocation { get; private set; }
+    public static ELanguageRegion e_CurLocation { get; private set; }
     static Dictionary<string, string> CurLocalization = new Dictionary<string, string>();
-    public static void SetRegion(enum_Option_LanguageRegion location)
+    public static void SetRegion(ELanguageRegion location)
     {
         if (e_CurLocation == location)
             return;
@@ -25,7 +25,7 @@ public static class TLocalization
 
         for (int i = 1; i < data[0].Length; i++)
         {
-            if (data[0][i] != ((enum_Option_LanguageRegion)i).ToString())
+            if (data[0][i] != ((ELanguageRegion)i).ToString())
                 Debug.LogError("SLocalizataion Not Init Propertly:" + i.ToString());    
         }
 

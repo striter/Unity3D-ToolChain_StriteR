@@ -8,7 +8,7 @@ namespace TEditor
 {
     public class MeshEditor : EditorWindow
     {
-        public enum enum_EditorMode
+        public enum EEditorMode
         {
             Edit,
             Paint,
@@ -22,22 +22,22 @@ namespace TEditor
         MeshFilter m_MeshFilter;
         MeshRenderer m_MeshRenderer;
 
-        Dictionary<enum_EditorMode, MeshEditorHelperBase> m_EditorHelpers;
+        Dictionary<EEditorMode, MeshEditorHelperBase> m_EditorHelpers;
         MeshEditorHelperBase m_Helper => m_EditorHelpers.ContainsKey(m_EditorMode) ? m_EditorHelpers[m_EditorMode] : null;
-        ValueChecker<enum_EditorMode> m_EditorMode = new ValueChecker<enum_EditorMode>();
+        ValueChecker<EEditorMode> m_EditorMode = new ValueChecker<EEditorMode>();
 
         private void OnEnable()
         {
             m_MeshObject = new GameObject("Modify Mesh") {hideFlags = HideFlags.HideAndDontSave};
             m_MeshFilter = m_MeshObject.AddComponent<MeshFilter>();
             m_MeshRenderer = m_MeshObject.AddComponent<MeshRenderer>();
-            m_EditorHelpers = new Dictionary<enum_EditorMode, MeshEditorHelperBase>() { { enum_EditorMode.Edit, new MeshEditorHelper_Edit(this) }, { enum_EditorMode.Paint, new MeshEditorHelper_Paint(this) } };
+            m_EditorHelpers = new Dictionary<EEditorMode, MeshEditorHelperBase>() { { EEditorMode.Edit, new MeshEditorHelper_Edit(this) }, { EEditorMode.Paint, new MeshEditorHelper_Paint(this) } };
             SceneView.duringSceneGui += OnSceneGUI;
 
             m_EditorMode.Bind(SwitchEditorMode);
             m_SourceMesh.Bind(SwitchSourceMesh);
 
-            m_EditorMode.Set(enum_EditorMode.Edit);
+            m_EditorMode.Set(EEditorMode.Edit);
         }
         private void OnDisable()
         {
@@ -94,7 +94,7 @@ namespace TEditor
             targetView.pivot = m_MeshObject.transform.localToWorldMatrix.MultiplyPoint(_srcMesh.bounds.GetPoint(Vector3.back + Vector3.up));
             targetView.rotation = Quaternion.LookRotation(m_MeshObject.transform.position - targetView.pivot);
         }
-        void SwitchEditorMode(enum_EditorMode preVal, enum_EditorMode val)
+        void SwitchEditorMode(EEditorMode preVal, EEditorMode val)
         {
             if (m_EditorHelpers.ContainsKey(preVal))
                 m_EditorHelpers[preVal].End();
@@ -117,7 +117,7 @@ namespace TEditor
             if (!MeshModifingCheck())
                 return;
             GUILayout.Label("Editing:" + m_SourceMesh.m_Value.name, UEGUIStyle_Window.m_TitleLabel);
-            m_EditorMode.Check((enum_EditorMode)EditorGUILayout.EnumPopup("Edit Mode (~)", m_EditorMode));
+            m_EditorMode.Check((EEditorMode)EditorGUILayout.EnumPopup("Edit Mode (~)", m_EditorMode));
 
             m_Debugging = GUILayout.Toggle(m_Debugging, "Collision Debug");
             if (m_MaterialOverride.Check(GUILayout.Toggle(m_MaterialOverride, "Material Override")))
@@ -256,7 +256,7 @@ namespace TEditor
     public class MeshEditorHelper_Edit : MeshEditorHelperBase
     {
         public MeshEditorHelper_Edit(MeshEditor _parent) : base(_parent) { }
-        enum enum_VertexEditMode
+        enum EVertexEditMode
         {
             None,
             Position,
@@ -276,18 +276,18 @@ namespace TEditor
         ValueChecker<Vector3> m_PositionChecker = new ValueChecker<Vector3>().Set(Vector3.zero);
         ValueChecker<Quaternion> m_RotationChecker = new ValueChecker<Quaternion>().Set(Quaternion.identity);
 
-        enum_VertexEditMode m_VertexEditMode;
+        EVertexEditMode m_VertexEditMode;
 
         Vector3[] m_Verticies;
-        ValueChecker<enum_VertexData> m_VertexDataSource = new ValueChecker<enum_VertexData>(enum_VertexData.Normal);
+        ValueChecker<EVertexData> m_VertexDataSource = new ValueChecker<EVertexData>(EVertexData.Normal);
         List<Vector3> m_VertexDatas = new List<Vector3>();
         bool m_AvailableDatas => m_VertexDatas.Count > 0;
-        bool m_EditingVectors => m_VertexDataSource != enum_VertexData.None && m_VertexDatas.Count > 0;
+        bool m_EditingVectors => m_VertexDataSource != EVertexData.None && m_VertexDatas.Count > 0;
         public override void Begin()
         {
             base.Begin();
             m_Verticies = m_ModifingMesh.vertices;
-            SelectVectorData(enum_VertexData.Normal);
+            SelectVectorData(EVertexData.Normal);
             SelectVertex(0);
             SelectPolygon(0);
         }
@@ -296,10 +296,10 @@ namespace TEditor
             base.End();
             m_PositionChecker.Check(Vector3.zero);
             m_RotationChecker.Check(Quaternion.identity);
-            m_VertexDataSource.Check(enum_VertexData.None);
+            m_VertexDataSource.Check(EVertexData.None);
             m_SelectedPolygon = -1;
             m_SelectedVertexIndex = -1;
-            m_VertexEditMode = enum_VertexEditMode.Position;
+            m_VertexEditMode = EVertexEditMode.Position;
             m_VertexDatas.Clear();
             m_SubPolygons.Clear();
             m_VertexDatas.Clear();
@@ -328,11 +328,11 @@ namespace TEditor
         {
             m_ModifingMesh.bounds = UBoundsChecker.GetBounds(m_Verticies);
         }
-        void SelectVectorData(enum_VertexData _data)
+        void SelectVectorData(EVertexData _data)
         {
             if (!m_VertexDataSource.Check(_data))
                 return;
-            if (m_VertexDataSource != enum_VertexData.None)
+            if (m_VertexDataSource != EVertexData.None)
                 m_ModifingMesh.GetVertexData(m_VertexDataSource, m_VertexDatas);
         }
         public override void OnEditorSceneGUI(SceneView _sceneView, GameObject _meshObject, EditorWindow _window)
@@ -409,7 +409,7 @@ namespace TEditor
             switch (m_VertexEditMode)
             {
                 default: return false;
-                case enum_VertexEditMode.Position:
+                case EVertexEditMode.Position:
                     {
                         if (m_PositionChecker.Check(Handles.PositionHandle(m_PositionChecker, m_EditingVectors ? Quaternion.LookRotation(m_VertexDatas[m_SelectedVertexIndex]) : Quaternion.identity)))
                         {
@@ -420,7 +420,7 @@ namespace TEditor
                         }
                     }
                     break;
-                case enum_VertexEditMode.Rotation:
+                case EVertexEditMode.Rotation:
                     {
                         if (!m_EditingVectors)
                             return false;
@@ -490,7 +490,7 @@ namespace TEditor
         public override void OnEditorWindowGUI()
         {
             base.OnEditorWindowGUI();
-            SelectVectorData((enum_VertexData)EditorGUILayout.EnumPopup("Data Source", m_VertexDataSource));
+            SelectVectorData((EVertexData)EditorGUILayout.EnumPopup("Data Source", m_VertexDataSource));
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Scene GUI Size (Z X):");
@@ -501,7 +501,7 @@ namespace TEditor
             GUILayout.Label("Edit Same Vertex (Tab):");
             m_EditSameVertex = GUILayout.Toggle(m_EditSameVertex, "");
             GUILayout.EndHorizontal();
-            m_VertexEditMode = (enum_VertexEditMode)EditorGUILayout.EnumPopup("Vertex Edit Mode (Q , E):", m_VertexEditMode);
+            m_VertexEditMode = (EVertexEditMode)EditorGUILayout.EnumPopup("Vertex Edit Mode (Q , E):", m_VertexEditMode);
         }
         public override void OnKeyboradInteract(KeyCode _keycode)
         {
@@ -509,10 +509,10 @@ namespace TEditor
             switch (_keycode)
             {
                 case KeyCode.W:
-                    m_VertexEditMode = enum_VertexEditMode.Position;
+                    m_VertexEditMode = EVertexEditMode.Position;
                     break;
                 case KeyCode.E:
-                    m_VertexEditMode = enum_VertexEditMode.Rotation;
+                    m_VertexEditMode = EVertexEditMode.Rotation;
                     break;
                 case KeyCode.R:
                     ResetVertex(m_SelectedVertexIndex);
@@ -536,18 +536,18 @@ namespace TEditor
 
     public class MeshEditorHelper_Paint : MeshEditorHelperBase
     {
-        public enum enum_PaintMode
+        public enum EPaintMode
         {
             Const,
             Modify,
         }
-        public enum enum_PaintNormal
+        public enum EPaintNormal
         {
             Every,
             ViewNormal,
             TriangleNormal,
         }
-        public enum enum_PaintColor
+        public enum EPaintColor
         {
             R = 1,
             G = 2,
@@ -556,16 +556,16 @@ namespace TEditor
         }
         Vector3[] m_Verticies;
         Vector3[] m_Normals;
-        enum_PaintMode m_PaintMode = enum_PaintMode.Const;
-        ValueChecker<enum_PaintColor> m_PaintColor = new ValueChecker<enum_PaintColor>(enum_PaintColor.R);
+        EPaintMode m_PaintMode = EPaintMode.Const;
+        ValueChecker<EPaintColor> m_PaintColor = new ValueChecker<EPaintColor>(EPaintColor.R);
 
         float m_PaintSize = 1f;
         float m_PaintValue = .5f;
         static readonly RangeFloat s_PaintSizeRange = new RangeFloat(.001f, 2f);
         Vector3 m_PaintPosition;
         List<int> m_PaintAffectedIndices = new List<int>();
-        enum_PaintNormal m_PaintNormal = enum_PaintNormal.TriangleNormal;
-        ValueChecker<enum_VertexData> m_VertexDataSource = new ValueChecker<enum_VertexData>(enum_VertexData.Color);
+        EPaintNormal m_PaintNormal = EPaintNormal.TriangleNormal;
+        ValueChecker<EVertexData> m_VertexDataSource = new ValueChecker<EVertexData>(EVertexData.Color);
         List<Vector4> m_VertexDatas = new List<Vector4>();
         bool m_AvailableDatas => m_VertexDatas.Count > 0;
         public override Material GetDefaultMaterial() => new Material(Shader.Find("Hidden/VertexColorVisualize")) { hideFlags = HideFlags.HideAndDontSave };
@@ -580,7 +580,7 @@ namespace TEditor
             m_VertexDataSource.Bind(value =>
             {
                 m_VertexDatas.Clear();
-                if (value != enum_VertexData.None)
+                if (value != EVertexData.None)
                 {
                     m_ModifingMesh.GetVertexData(value, m_VertexDatas);
                     if (!m_Parent.m_MaterialOverride)
@@ -628,9 +628,9 @@ namespace TEditor
                         bool normalPassed = false;
                         switch (m_PaintNormal)
                         {
-                            case enum_PaintNormal.ViewNormal: normalPassed = Vector3.Dot(m_Normals[index], p - cameraLocal) < 0; break;
-                            case enum_PaintNormal.TriangleNormal: normalPassed = Vector3.Dot(m_Normals[index], hitTriangle.normal) > 0; break;
-                            case enum_PaintNormal.Every: normalPassed = true; break;
+                            case EPaintNormal.ViewNormal: normalPassed = Vector3.Dot(m_Normals[index], p - cameraLocal) < 0; break;
+                            case EPaintNormal.TriangleNormal: normalPassed = Vector3.Dot(m_Normals[index], hitTriangle.normal) > 0; break;
+                            case EPaintNormal.Every: normalPassed = true; break;
                         }
                         return normalPassed && (hitPosition - p).sqrMagnitude < sqrRaidus;
                     }).FillList(m_PaintAffectedIndices);
@@ -647,10 +647,10 @@ namespace TEditor
                 switch (m_PaintMode)
                 {
                     default: throw new Exception("Invalid Type:" + m_PaintMode);
-                    case enum_PaintMode.Const:
+                    case EPaintMode.Const:
                         m_PaintAffectedIndices.Traversal(index => m_VertexDatas[index] = ApplyModify(m_VertexDatas[index], m_PaintValue, m_PaintMode, m_PaintColor));
                         break;
-                    case enum_PaintMode.Modify:
+                    case EPaintMode.Modify:
                         float value = button == 0 ? m_PaintValue : -m_PaintValue;
                         m_PaintAffectedIndices.Traversal(index => m_VertexDatas[index] = ApplyModify(m_VertexDatas[index], value, m_PaintMode, m_PaintColor));
                         break;
@@ -658,28 +658,28 @@ namespace TEditor
                 OnDataChange();
             }
         }
-        Vector4 ApplyModify(Vector4 _src, float _value, enum_PaintMode _paintMode, enum_PaintColor _targetColor)
+        Vector4 ApplyModify(Vector4 _src, float _value, EPaintMode _paintMode, EPaintColor _targetColor)
         {
             switch (_paintMode)
             {
                 default: throw new Exception("Invalid Type:" + _paintMode);
-                case enum_PaintMode.Const:
+                case EPaintMode.Const:
                     switch (_targetColor)
                     {
                         default: throw new Exception("Invalid Target:" + _targetColor);
-                        case enum_PaintColor.R: return new Vector4(_value, _src.y, _src.z, _src.w);
-                        case enum_PaintColor.G: return new Vector4(_src.x, _value, _src.z, _src.w);
-                        case enum_PaintColor.B: return new Vector4(_src.x, _src.y, _value, _src.w);
-                        case enum_PaintColor.A: return new Vector4(_src.x, _src.y, _src.z, _value);
+                        case EPaintColor.R: return new Vector4(_value, _src.y, _src.z, _src.w);
+                        case EPaintColor.G: return new Vector4(_src.x, _value, _src.z, _src.w);
+                        case EPaintColor.B: return new Vector4(_src.x, _src.y, _value, _src.w);
+                        case EPaintColor.A: return new Vector4(_src.x, _src.y, _src.z, _value);
                     }
-                case enum_PaintMode.Modify:
+                case EPaintMode.Modify:
                     switch (_targetColor)
                     {
                         default: throw new Exception("Invalid Target:" + _targetColor);
-                        case enum_PaintColor.R: return new Vector4(Mathf.Clamp(_src.x, 0, 1) + _value, _src.y, _src.z, _src.w);
-                        case enum_PaintColor.G: return new Vector4(_src.x, Mathf.Clamp(_src.y + _value, 0, 1), _src.z, _src.w);
-                        case enum_PaintColor.B: return new Vector4(_src.x, _src.y, Mathf.Clamp(_src.z + _value, 0, 1), _src.w);
-                        case enum_PaintColor.A: return new Vector4(_src.x, _src.y, _src.z, Mathf.Clamp(_src.w + _value, 0, 1));
+                        case EPaintColor.R: return new Vector4(Mathf.Clamp(_src.x, 0, 1) + _value, _src.y, _src.z, _src.w);
+                        case EPaintColor.G: return new Vector4(_src.x, Mathf.Clamp(_src.y + _value, 0, 1), _src.z, _src.w);
+                        case EPaintColor.B: return new Vector4(_src.x, _src.y, Mathf.Clamp(_src.z + _value, 0, 1), _src.w);
+                        case EPaintColor.A: return new Vector4(_src.x, _src.y, _src.z, Mathf.Clamp(_src.w + _value, 0, 1));
                     }
             }
         }
@@ -690,12 +690,12 @@ namespace TEditor
             {
                 Vector4 targetcolor = m_VertexDatas[indice];
                 float colorvalue = 0;
-                switch ((enum_PaintColor)m_PaintColor)
+                switch ((EPaintColor)m_PaintColor)
                 {
-                    case enum_PaintColor.R: colorvalue = targetcolor.x; break;
-                    case enum_PaintColor.G: colorvalue = targetcolor.y; break;
-                    case enum_PaintColor.B: colorvalue = targetcolor.z; break;
-                    case enum_PaintColor.A: colorvalue = targetcolor.w; break;
+                    case EPaintColor.R: colorvalue = targetcolor.x; break;
+                    case EPaintColor.G: colorvalue = targetcolor.y; break;
+                    case EPaintColor.B: colorvalue = targetcolor.z; break;
+                    case EPaintColor.A: colorvalue = targetcolor.w; break;
                 }
                 Handles.color = GetPaintColor(m_PaintColor) * colorvalue;
                 Handles.DrawLine(m_Verticies[indice], m_Verticies[indice] + m_Normals[indice] * .5f * m_PaintSize);
@@ -704,7 +704,7 @@ namespace TEditor
         public override void OnEditorWindowGUI()
         {
             base.OnEditorWindowGUI();
-            m_VertexDataSource.Check((enum_VertexData)EditorGUILayout.EnumPopup("Data Source", m_VertexDataSource));
+            m_VertexDataSource.Check((EVertexData)EditorGUILayout.EnumPopup("Data Source", m_VertexDataSource));
             if (!m_AvailableDatas)
             {
                 EditorGUILayout.LabelField("<Color=#FF0000>Empty Vertex Data</Color>", UEGUIStyle_Window.m_ErrorLabel);
@@ -716,9 +716,9 @@ namespace TEditor
                 }
                 return;
             }
-            m_PaintColor.Check((enum_PaintColor)EditorGUILayout.EnumPopup("Color (LCtrl)", m_PaintColor));
-            m_PaintMode = (enum_PaintMode)EditorGUILayout.EnumPopup("Mode (Tab)", m_PaintMode);
-            m_PaintNormal = (enum_PaintNormal)EditorGUILayout.EnumPopup("Normal (Capslock)", m_PaintNormal);
+            m_PaintColor.Check((EPaintColor)EditorGUILayout.EnumPopup("Color (LCtrl)", m_PaintColor));
+            m_PaintMode = (EPaintMode)EditorGUILayout.EnumPopup("Mode (Tab)", m_PaintMode);
+            m_PaintNormal = (EPaintNormal)EditorGUILayout.EnumPopup("Normal (Capslock)", m_PaintNormal);
             m_PaintSize = EditorGUILayout.Slider("Size (Z X)", m_PaintSize, s_PaintSizeRange.start, s_PaintSizeRange.end);
             m_PaintValue = EditorGUILayout.Slider("Value (Q E)", m_PaintValue, 0f, 1f);
         }
@@ -746,15 +746,15 @@ namespace TEditor
             m_PaintAffectedIndices.Traversal(index => m_VertexDatas[index] = originDatas[index]);
             OnDataChange();
         }
-        public static Color GetPaintColor(enum_PaintColor _color)
+        public static Color GetPaintColor(EPaintColor _color)
         {
             switch (_color)
             {
                 default: return Color.magenta;
-                case enum_PaintColor.R: return Color.red;
-                case enum_PaintColor.G: return Color.green;
-                case enum_PaintColor.B: return Color.blue;
-                case enum_PaintColor.A: return Color.cyan;
+                case EPaintColor.R: return Color.red;
+                case EPaintColor.G: return Color.green;
+                case EPaintColor.B: return Color.blue;
+                case EPaintColor.A: return Color.cyan;
             }
         }
     }

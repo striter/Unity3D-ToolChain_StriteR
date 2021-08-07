@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Rendering
 {
-    public enum enum_ReflectionSpace
+    public enum EReflectionSpace
     {
         ScreenSpace,
         MirrorSpace,

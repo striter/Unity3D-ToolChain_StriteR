@@ -7,28 +7,28 @@ namespace TEditor
 {
     public class PlaneMeshGenerator : EditorWindow
     {
-        public enum enum_PlaneGeometryType
+        public enum EPlaneGeometryType
         {
             Square,
             CircledSquare,
             Hexagon,
         }
-        enum_PlaneGeometryType m_GeometryType= enum_PlaneGeometryType.CircledSquare;
+        EPlaneGeometryType m_GeometryType= EPlaneGeometryType.CircledSquare;
         int m_TileRadius=50;
         float m_TileSize = 2f;
         private void OnGUI()
         {
             GUILayout.BeginVertical();
-            m_GeometryType = (enum_PlaneGeometryType)EditorGUILayout.EnumPopup("Plane Geometry:",m_GeometryType);
+            m_GeometryType = (EPlaneGeometryType)EditorGUILayout.EnumPopup("Plane Geometry:",m_GeometryType);
             m_TileRadius = EditorGUILayout.IntField("Grid Radius",m_TileRadius);
             m_TileSize = EditorGUILayout.FloatField("Tile Size", m_TileSize);
             if (GUILayout.Button("Generate Plane"))
             {
                 switch(m_GeometryType)
                 {
-                    case enum_PlaneGeometryType.Hexagon:CreateHexagon(m_TileSize, m_TileRadius); break;
-                    case enum_PlaneGeometryType.Square: CreateSquare(m_TileSize, m_TileRadius,false); break;
-                    case enum_PlaneGeometryType.CircledSquare:CreateSquare(m_TileSize, m_TileRadius, true); break;
+                    case EPlaneGeometryType.Hexagon:CreateHexagon(m_TileSize, m_TileRadius); break;
+                    case EPlaneGeometryType.Square: CreateSquare(m_TileSize, m_TileRadius,false); break;
+                    case EPlaneGeometryType.CircledSquare:CreateSquare(m_TileSize, m_TileRadius, true); break;
                 }
             }
             GUILayout.EndVertical();

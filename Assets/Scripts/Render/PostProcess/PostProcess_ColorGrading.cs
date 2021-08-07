@@ -7,14 +7,14 @@ namespace Rendering.ImageEffect
 {
     public class PostProcess_ColorGrading : PostProcessComponentBase<PPCore_ColorGrading,PPData_ColorGrading>{}
 
-    public enum enum_MixChannel
+    public enum EMixChannel
     {
         None = 0,
         Red = 1,
         Green = 2,
         Blue = 3,
     }
-    public enum enum_LUTCellCount
+    public enum ELUTCellCount
     {
         _16 = 16,
         _32 = 32,
@@ -29,7 +29,7 @@ namespace Rendering.ImageEffect
 
         [Header("LUT")]
         public Texture2D m_LUT ;
-        public enum_LUTCellCount m_LUTCellCount ;
+        public ELUTCellCount m_LUTCellCount ;
 
         [Header("BSC")]
         [Range(0, 2)]public float m_brightness ;
@@ -44,7 +44,7 @@ namespace Rendering.ImageEffect
         {
             m_Weight=1f ,
             
-            m_LUTCellCount = enum_LUTCellCount._16,
+            m_LUTCellCount = ELUTCellCount._16,
             m_brightness = 1,
             m_saturation = 1,
             m_contrast = 1,

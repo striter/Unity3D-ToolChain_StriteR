@@ -41,32 +41,32 @@ public static class URender
             }
         }
     }
-    public static bool GetVertexData(this Mesh _srcMesh, enum_VertexData _dataType, List<Vector4> _data)
+    public static bool GetVertexData(this Mesh _srcMesh, EVertexData _dataType, List<Vector4> _data)
     {
         _data.Clear();
         switch (_dataType)
         {
             default: throw new Exception("Invalid Vertex Data Type" + _dataType);
-            case enum_VertexData.UV0:
-            case enum_VertexData.UV1:
-            case enum_VertexData.UV2:
-            case enum_VertexData.UV3:
-            case enum_VertexData.UV4:
-            case enum_VertexData.UV5:
-            case enum_VertexData.UV6:
-            case enum_VertexData.UV7:
+            case EVertexData.UV0:
+            case EVertexData.UV1:
+            case EVertexData.UV2:
+            case EVertexData.UV3:
+            case EVertexData.UV4:
+            case EVertexData.UV5:
+            case EVertexData.UV6:
+            case EVertexData.UV7:
                 _srcMesh.GetUVs((int)_dataType, _data);
                 break;
-            case enum_VertexData.Color:
+            case EVertexData.Color:
                 List<Color> colors = new List<Color>();
                 _srcMesh.GetColors(colors);
                 foreach (var color in colors)
                     _data.Add(color.ToVector());
                 break;
-            case enum_VertexData.Tangent:
+            case EVertexData.Tangent:
                 _srcMesh.GetTangents(_data);
                 break;
-            case enum_VertexData.Normal:
+            case EVertexData.Normal:
                 {
                     List<Vector3> normalList = new List<Vector3>();
                     _srcMesh.GetNormals(normalList);
@@ -77,61 +77,61 @@ public static class URender
         }
         return _data != null;
     }
-    public static void SetVertexData(this Mesh _srcMesh, enum_VertexData _dataType, List<Vector4> _data)
+    public static void SetVertexData(this Mesh _srcMesh, EVertexData _dataType, List<Vector4> _data)
     {
         switch (_dataType)
         {
             default: throw new Exception("Invalid Vertex Data Type" + _dataType);
-            case enum_VertexData.UV0:
-            case enum_VertexData.UV1:
-            case enum_VertexData.UV2:
-            case enum_VertexData.UV3:
-            case enum_VertexData.UV4:
-            case enum_VertexData.UV5:
-            case enum_VertexData.UV6:
-            case enum_VertexData.UV7:
+            case EVertexData.UV0:
+            case EVertexData.UV1:
+            case EVertexData.UV2:
+            case EVertexData.UV3:
+            case EVertexData.UV4:
+            case EVertexData.UV5:
+            case EVertexData.UV6:
+            case EVertexData.UV7:
                 _srcMesh.SetUVs((int)_dataType, _data);
                 break;
-            case enum_VertexData.Color:
+            case EVertexData.Color:
                 _srcMesh.SetColors(_data.Select(p => new Color(p.x, p.y, p.z, p.w)).ToArray());
                 break;
-            case enum_VertexData.Tangent:
+            case EVertexData.Tangent:
                 _srcMesh.SetTangents(_data);
                 break;
-            case enum_VertexData.Normal:
+            case EVertexData.Normal:
                 _srcMesh.SetNormals(_data.Select(vec4 => vec4.ToVector3()).ToArray());
                 break;
         }
     }
-    public static bool GetVertexData(this Mesh _srcMesh, enum_VertexData _dataType, List<Vector3> _data)
+    public static bool GetVertexData(this Mesh _srcMesh, EVertexData _dataType, List<Vector3> _data)
     {
         _data.Clear();
         switch (_dataType)
         {
             default: throw new Exception("Invalid Vertex Data Type" + _dataType);
-            case enum_VertexData.UV0:
-            case enum_VertexData.UV1:
-            case enum_VertexData.UV2:
-            case enum_VertexData.UV3:
-            case enum_VertexData.UV4:
-            case enum_VertexData.UV5:
-            case enum_VertexData.UV6:
-            case enum_VertexData.UV7:
+            case EVertexData.UV0:
+            case EVertexData.UV1:
+            case EVertexData.UV2:
+            case EVertexData.UV3:
+            case EVertexData.UV4:
+            case EVertexData.UV5:
+            case EVertexData.UV6:
+            case EVertexData.UV7:
                 _srcMesh.GetUVs((int)_dataType, _data);
                 break;
-            case enum_VertexData.Color:
+            case EVertexData.Color:
                 List<Color> colors = new List<Color>();
                 _srcMesh.GetColors(colors);
                 foreach (var color in colors)
                     _data.Add(color.ToVector());
                 break;
-            case enum_VertexData.Tangent:
+            case EVertexData.Tangent:
                 List<Vector4> tangents = new List<Vector4>();
                 _srcMesh.GetTangents(tangents);
                 foreach (var tangent in tangents)
                     _data.Add(tangent.ToVector3());
                 break;
-            case enum_VertexData.Normal:
+            case EVertexData.Normal:
                 {
                     List<Vector3> normalList = new List<Vector3>();
                     _srcMesh.GetNormals(normalList);
@@ -142,28 +142,28 @@ public static class URender
         }
         return _data != null;
     }
-    public static void SetVertexData(this Mesh _srcMesh, enum_VertexData _dataType, List<Vector3> _data)
+    public static void SetVertexData(this Mesh _srcMesh, EVertexData _dataType, List<Vector3> _data)
     {
         switch (_dataType)
         {
             default: throw new Exception("Invalid Vertex Data Type" + _dataType);
-            case enum_VertexData.UV0:
-            case enum_VertexData.UV1:
-            case enum_VertexData.UV2:
-            case enum_VertexData.UV3:
-            case enum_VertexData.UV4:
-            case enum_VertexData.UV5:
-            case enum_VertexData.UV6:
-            case enum_VertexData.UV7:
+            case EVertexData.UV0:
+            case EVertexData.UV1:
+            case EVertexData.UV2:
+            case EVertexData.UV3:
+            case EVertexData.UV4:
+            case EVertexData.UV5:
+            case EVertexData.UV6:
+            case EVertexData.UV7:
                 _srcMesh.SetUVs((int)_dataType, _data);
                 break;
-            case enum_VertexData.Color:
+            case EVertexData.Color:
                 _srcMesh.SetColors(_data.Select(p => new Color(p.x, p.y, p.z,0)).ToArray());
                 break;
-            case enum_VertexData.Tangent:
+            case EVertexData.Tangent:
                 _srcMesh.SetTangents(_data.Select(p => p.ToVector4()).ToArray());
                 break;
-            case enum_VertexData.Normal:
+            case EVertexData.Normal:
                 _srcMesh.SetNormals(_data);
                 break;
         }

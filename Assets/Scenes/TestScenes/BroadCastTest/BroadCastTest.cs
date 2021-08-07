@@ -2,7 +2,7 @@
 
 public class BroadCastTest : MonoBehaviour {
     
-    enum enum_BroadCastTest
+    enum EBroadCastTest
     {
         Invalid=0,
         LifeCycle,
@@ -10,31 +10,31 @@ public class BroadCastTest : MonoBehaviour {
     }
     private void Awake()
     {
-        TBroadCaster<enum_BroadCastTest>.Add<string>(enum_BroadCastTest.LifeCycle, OnLifeCycle);
-        TBroadCaster<enum_BroadCastTest>.Add<bool, string>(enum_BroadCastTest.EnableSet, OnEnableSet);
+        TBroadCaster<EBroadCastTest>.Add<string>(EBroadCastTest.LifeCycle, OnLifeCycle);
+        TBroadCaster<EBroadCastTest>.Add<bool, string>(EBroadCastTest.EnableSet, OnEnableSet);
 
-        TBroadCaster<enum_BroadCastTest>.Trigger(enum_BroadCastTest.LifeCycle, "Awake");
+        TBroadCaster<EBroadCastTest>.Trigger(EBroadCastTest.LifeCycle, "Awake");
     }
     private void OnEnable()
     {
-        TBroadCaster<enum_BroadCastTest>.Trigger(enum_BroadCastTest.LifeCycle, "Enable");
-        TBroadCaster<enum_BroadCastTest>.Trigger(enum_BroadCastTest.EnableSet, true, "Enable");
+        TBroadCaster<EBroadCastTest>.Trigger(EBroadCastTest.LifeCycle, "Enable");
+        TBroadCaster<EBroadCastTest>.Trigger(EBroadCastTest.EnableSet, true, "Enable");
     }
     private void Start()
     {
-        TBroadCaster<enum_BroadCastTest>.Trigger(enum_BroadCastTest.LifeCycle, "Start");
+        TBroadCaster<EBroadCastTest>.Trigger(EBroadCastTest.LifeCycle, "Start");
     }
     private void OnDisable()
     {
-        TBroadCaster<enum_BroadCastTest>.Trigger(enum_BroadCastTest.LifeCycle, "Disable");
-        TBroadCaster<enum_BroadCastTest>.Trigger(enum_BroadCastTest.EnableSet, false, "Disable");
+        TBroadCaster<EBroadCastTest>.Trigger(EBroadCastTest.LifeCycle, "Disable");
+        TBroadCaster<EBroadCastTest>.Trigger(EBroadCastTest.EnableSet, false, "Disable");
     }
     private void OnDestroy()
     {
-        TBroadCaster<enum_BroadCastTest>.Trigger(enum_BroadCastTest.LifeCycle, "Destroy");
+        TBroadCaster<EBroadCastTest>.Trigger(EBroadCastTest.LifeCycle, "Destroy");
 
-        TBroadCaster<enum_BroadCastTest>.Remove<string>(enum_BroadCastTest.LifeCycle, OnLifeCycle);
-        TBroadCaster<enum_BroadCastTest>.Remove<bool, string>(enum_BroadCastTest.EnableSet, OnEnableSet);
+        TBroadCaster<EBroadCastTest>.Remove<string>(EBroadCastTest.LifeCycle, OnLifeCycle);
+        TBroadCaster<EBroadCastTest>.Remove<bool, string>(EBroadCastTest.EnableSet, OnEnableSet);
     }
     void OnLifeCycle(string cycle)
     {

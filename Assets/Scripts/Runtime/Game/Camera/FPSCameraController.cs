@@ -5,13 +5,13 @@ using UnityEngine;
 [ExecuteInEditMode, RequireComponent(typeof(Camera))]
 public class FPSCameraController : CameraController
 {
-    public enum enum_RecoilSpreadMode
+    public enum ERecoilSpreadMode
     {
        Invalid=-1,
        T_Like,
        Triangle_Like,
     }
-    public enum_RecoilSpreadMode E_RecoilMode = enum_RecoilSpreadMode.Triangle_Like;
+    public ERecoilSpreadMode E_RecoilMode = ERecoilSpreadMode.Triangle_Like;
     public bool B_SelfSetoffRecoil=true;
     public float f_angleSmoothParam = .1f;
     public float f_recoilPitchEdge=20f,f_recoilYawEdge=5f;
@@ -78,13 +78,13 @@ public class FPSCameraController : CameraController
         m_RecoilTimer.Set(fireRate);
         switch (E_RecoilMode)
         {
-            case enum_RecoilSpreadMode.Triangle_Like:
+            case ERecoilSpreadMode.Triangle_Like:
                 {
                     f_recoilPitch += recoilPitch;
                     f_recoilYaw += recoilYaw;
                 }
                 break;
-            case enum_RecoilSpreadMode.T_Like:
+            case ERecoilSpreadMode.T_Like:
                 {
                     f_recoilPitch += recoilPitch;
                     if (Mathf.Abs(f_recoilPitch) >= f_recoilPitchEdge)

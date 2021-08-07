@@ -6,7 +6,7 @@ half ParallaxMappingPOM(TEXTURE2D_PARAM(_texture,_sampler), half depthOffset,hal
     half layer=0.h;
     half parallaxSample=SAMPLE_TEXTURE2D_LOD(_texture,_sampler,uv,0).r-depthOffset;
     half preParallaxSample=0.h;
-    for(int i=0u;i<128u;i++)
+    for(uint i=0u;i<128u;i++)
     {
         if(parallaxSample<layer)
             break;

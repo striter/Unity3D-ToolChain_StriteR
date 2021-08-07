@@ -1,4 +1,4 @@
-﻿public enum enum_VertexData
+﻿public enum EVertexData
 {
     None = -1,
     UV0 =0,
@@ -14,7 +14,7 @@
     Tangent,
 }
 
-public enum enum_ColorVisualize
+public enum EColorVisualize
 {
     None,
     RGB,

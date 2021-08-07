@@ -107,32 +107,32 @@ public static class UColor
         return Color.magenta;
     }
 
-    public static Color FilterColor(this enum_ColorVisualize _visualize,Color _color)
+    public static Color FilterColor(this EColorVisualize _visualize,Color _color)
     {
         switch (_visualize)
         {
             default:throw new System.Exception("Invalid Visualize Color Type:"+_visualize);
-            case enum_ColorVisualize.None: return Color.clear;
-            case enum_ColorVisualize.RGBA: return _color; 
-            case enum_ColorVisualize.RGB: return _color.SetAlpha(1);
-            case enum_ColorVisualize.R: return Color.red * _color.r;
-            case enum_ColorVisualize.G: return Color.green * _color.g; 
-            case enum_ColorVisualize.B: return Color.blue * _color.b;
-            case enum_ColorVisualize.A: return Color.white * _color.a;
+            case EColorVisualize.None: return Color.clear;
+            case EColorVisualize.RGBA: return _color; 
+            case EColorVisualize.RGB: return _color.SetAlpha(1);
+            case EColorVisualize.R: return Color.red * _color.r;
+            case EColorVisualize.G: return Color.green * _color.g; 
+            case EColorVisualize.B: return Color.blue * _color.b;
+            case EColorVisualize.A: return Color.white * _color.a;
         }
     }
-    public static Color FilterGreyScale(this enum_ColorVisualize _visualize, Color _color)
+    public static Color FilterGreyScale(this EColorVisualize _visualize, Color _color)
     {
         switch (_visualize)
         {
             default: throw new System.Exception("Invalid Visualize Color Type:" + _visualize);
-            case enum_ColorVisualize.None:return Color.clear;
-            case enum_ColorVisualize.RGBA: return _color;
-            case enum_ColorVisualize.RGB: return _color.SetAlpha(1);
-            case enum_ColorVisualize.R: return Color.white * _color.r;
-            case enum_ColorVisualize.G: return Color.white * _color.g;
-            case enum_ColorVisualize.B: return Color.white * _color.b;
-            case enum_ColorVisualize.A: return Color.white * _color.a;
+            case EColorVisualize.None:return Color.clear;
+            case EColorVisualize.RGBA: return _color;
+            case EColorVisualize.RGB: return _color.SetAlpha(1);
+            case EColorVisualize.R: return Color.white * _color.r;
+            case EColorVisualize.G: return Color.white * _color.g;
+            case EColorVisualize.B: return Color.white * _color.b;
+            case EColorVisualize.A: return Color.white * _color.a;
         }
     }
 }

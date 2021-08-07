@@ -10,7 +10,7 @@ namespace Rendering.ImageEffect
     public class PostProcess_VolumetricLight : PostProcessComponentBase<PPCore_VolumetricLight, PPData_VolumetricLight>
     {
     }
-    public enum enum_LightMarchTimes
+    public enum ELightMarchTimes
     {
         _8=8,
         _16=16,
@@ -25,7 +25,7 @@ namespace Rendering.ImageEffect
         [Range(.1f,5f)]public float m_Strength;
         [Header("March")]
         [Clamp(0f)] public float m_Distance;
-        public enum_LightMarchTimes m_MarchTimes;
+        public ELightMarchTimes m_MarchTimes;
         [Range(0, 2f)] public float m_MarchStrength;
         [Range(0.1f, 2f)] public float m_Pow;
         [Header("Optimize"),Range(1, 4)] public int m_DownSample;
@@ -40,7 +40,7 @@ namespace Rendering.ImageEffect
             m_Pow = 2,
             m_MarchStrength = .3f,
             m_Distance = 20f,
-            m_MarchTimes = enum_LightMarchTimes._64,
+            m_MarchTimes = ELightMarchTimes._64,
             m_DownSample=2,
             m_Dither=false,
             m_Debug = false,

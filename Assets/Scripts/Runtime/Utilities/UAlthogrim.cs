@@ -7,7 +7,7 @@ namespace UAlthogrim
 {
     public static class USorting
     {
-        public enum enum_SortType
+        public enum ESortType
         {
             Bubble,
             Selection,
@@ -26,7 +26,7 @@ namespace UAlthogrim
             int offset = b.CompareTo(a);
             return lower ? offset < 0 : offset > 0;
         }
-        public static void TSort<T>(this List<T> sortTarget, enum_SortType sortType, bool startLower = true) where T : IComparable
+        public static void TSort<T>(this List<T> sortTarget, ESortType sortType, bool startLower = true) where T : IComparable
         {
             int count = sortTarget.Count;
             if (count <= 1)
@@ -34,7 +34,7 @@ namespace UAlthogrim
 
             switch (sortType)
             {
-                case enum_SortType.Bubble:
+                case ESortType.Bubble:
                     for (int i = 0; i < count - 1; i++)
                     {
                         bool sorted = true;
@@ -49,7 +49,7 @@ namespace UAlthogrim
                             break;
                     }
                     break;
-                case enum_SortType.Selection:
+                case ESortType.Selection:
                     for (int i = 0; i < count - 1; i++)
                     {
                         int selectionIndex = i;
@@ -64,7 +64,7 @@ namespace UAlthogrim
                         sortTarget.SwapItem(i, selectionIndex);
                     }
                     break;
-                case enum_SortType.Insertion:
+                case ESortType.Insertion:
                     for (int i = 1; i < count; i++)
                     {
                         for (int j = i; j > 0; j--)
@@ -75,7 +75,7 @@ namespace UAlthogrim
                         }
                     }
                     break;
-                case enum_SortType.Quick:
+                case ESortType.Quick:
                     TQuickSort(sortTarget, 0, count - 1, startLower);
                     break;
             }

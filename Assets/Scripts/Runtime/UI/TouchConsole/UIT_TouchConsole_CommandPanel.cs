@@ -112,7 +112,7 @@ public static class UIT_TouchConsoleHelper
 
 
 }
-public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartialMethods<enum_PartialMethods,enum_PartialSorting>
+public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartialMethods<EPartialMethods,EPartialSorting>
 {
     public static void NewPage(string _page)
     {
@@ -207,7 +207,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartial
     {
         OnConsoleShow = _OnConsoleShow;
     }
-    [PartialMethod(enum_PartialMethods.Init,enum_PartialSorting.CommandConsole)]
+    [PartialMethod(EPartialMethods.Init,EPartialSorting.CommandConsole)]
     void InitConsole()
     {
         m_ConsoleCommandScrollRect = transform.Find("Command").GetComponent<ScrollRect>();
@@ -220,14 +220,14 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartial
 
         m_PageSelection = new TGameObjectPool_Instance_Class<int, ButtonSelect>(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content/PageSelect"),"GridItem");
     }
-    [PartialMethod(enum_PartialMethods.Reset,enum_PartialSorting.CommandConsole)]
+    [PartialMethod(EPartialMethods.Reset,EPartialSorting.CommandConsole)]
     void ResetConsole()
     {
         m_PageSelection.Clear();
         m_CurrentPage = -1;
         m_CommandContainers.Clear();
     }
-    [PartialMethod(enum_PartialMethods.Tick,enum_PartialSorting.CommandConsole)]
+    [PartialMethod(EPartialMethods.Tick,EPartialSorting.CommandConsole)]
     internal void TickConsole(float _deltaTime)
     {
         foreach (var command in  m_CommandContainers.m_ActiveItems.Values)

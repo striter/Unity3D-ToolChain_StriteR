@@ -31,10 +31,10 @@ namespace Rendering.Pipeline
             {
                 switch (m_Data.m_ReflectionType)
                 {
-                    case enum_ReflectionSpace.ScreenSpace:
+                    case EReflectionSpace.ScreenSpace:
                         m_ReflectionPasses[i] = new SRP_PlanarReflection_ScreenSpace(this,_reflectionCS);
                         break;
-                    case enum_ReflectionSpace.MirrorSpace:
+                    case EReflectionSpace.MirrorSpace:
                         m_ReflectionPasses[i] = new SRP_PlanarReflection_MirrorSpace(this);
                         break;
                 }

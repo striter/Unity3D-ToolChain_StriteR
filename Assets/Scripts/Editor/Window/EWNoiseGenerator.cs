@@ -8,7 +8,7 @@ namespace TEditor
     using static UEGUI;
     public class NoiseGenerator : EditorWindow
     {
-        public enum enum_NoiseType
+        public enum ENoiseType
         {
             Value,
             Perlin,
@@ -16,39 +16,39 @@ namespace TEditor
             VoronoiUnit,
             VoronoiDistance,
         }
-        public enum enum_NoiseSample
+        public enum ENoiseSample
         {
             Unit,
             _01,
             Absolute,
         }
-        public static bool NoiseSampleSupported(enum_NoiseType _type)
+        public static bool NoiseSampleSupported(ENoiseType _type)
         {
             switch(_type)
             {
                 default:
                     return false;
-                case enum_NoiseType.Simplex:
-                case enum_NoiseType.Perlin:
+                case ENoiseType.Simplex:
+                case ENoiseType.Perlin:
                     return true;
             }
         }
-        public static float GetNoise(float noiseX,float noiseY,float scale, enum_NoiseType noiseType)
+        public static float GetNoise(float noiseX,float noiseY,float scale, ENoiseType noiseType)
         {
             float noise = 0;
             noiseX *= scale;
             noiseY *= scale;
             switch (noiseType)
             {
-                case enum_NoiseType.Value: noise = UNoise.ValueUnit(Mathf.Floor(noiseX) , Mathf.Floor( noiseY) ); break;
-                case enum_NoiseType.Perlin: noise = UNoise.PerlinUnit( noiseX ,noiseY, 0); break;
-                case enum_NoiseType.Simplex: noise = UNoise.Simplex(noiseX , noiseY ); break;
-                case enum_NoiseType.VoronoiUnit: noise = UNoise.VoronoiUnit(noiseX, noiseY).y; break;
-                case enum_NoiseType.VoronoiDistance: noise = UNoise.VoronoiUnit(noiseX, noiseY).x;break;
+                case ENoiseType.Value: noise = UNoise.ValueUnit(Mathf.Floor(noiseX) , Mathf.Floor( noiseY) ); break;
+                case ENoiseType.Perlin: noise = UNoise.PerlinUnit( noiseX ,noiseY, 0); break;
+                case ENoiseType.Simplex: noise = UNoise.Simplex(noiseX , noiseY ); break;
+                case ENoiseType.VoronoiUnit: noise = UNoise.VoronoiUnit(noiseX, noiseY).y; break;
+                case ENoiseType.VoronoiDistance: noise = UNoise.VoronoiUnit(noiseX, noiseY).x;break;
             }
             return noise;
         }
-        public static float GetNoiseOctave(float x, float y,float scale, enum_NoiseType noiseType, int octaveCount)
+        public static float GetNoiseOctave(float x, float y,float scale, ENoiseType noiseType, int octaveCount)
         {
             float value = 0;
             float frequency = 1;
@@ -66,8 +66,8 @@ namespace TEditor
         float m_Scale = 1;
         bool m_Octave;
         int m_OctaveCount = 6;
-        enum_NoiseType m_NoiseType = enum_NoiseType.Perlin;
-        enum_NoiseSample m_NoiseSample = enum_NoiseSample.Unit;
+        ENoiseType m_NoiseType = ENoiseType.Perlin;
+        ENoiseSample m_NoiseSample = ENoiseSample.Unit;
         FilterMode m_FilterMode = FilterMode.Bilinear;
         Texture2D m_Texture;
         private void OnGUI()
@@ -75,14 +75,14 @@ namespace TEditor
             EditorGUI.BeginChangeCheck();
             HorizontalScope.Begin(5, 5, 20);
             EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Type:", UEGUIStyle_Window.m_TitleLabel);
-            m_NoiseType = (enum_NoiseType)EditorGUI.EnumPopup(HorizontalScope.NextRect(5, 120), m_NoiseType);
+            m_NoiseType = (ENoiseType)EditorGUI.EnumPopup(HorizontalScope.NextRect(5, 120), m_NoiseType);
 
             bool noiseSampleSupported = NoiseSampleSupported(m_NoiseType);
             if (noiseSampleSupported)
             {
                 HorizontalScope.NextLine(2, 20);
                 EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Sample:", UEGUIStyle_Window.m_TitleLabel);
-                m_NoiseSample = (enum_NoiseSample)EditorGUI.EnumPopup(HorizontalScope.NextRect(5, 120), m_NoiseSample);
+                m_NoiseSample = (ENoiseSample)EditorGUI.EnumPopup(HorizontalScope.NextRect(5, 120), m_NoiseSample);
             }
             HorizontalScope.NextLine(2, 20);
             EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Filter:", UEGUIStyle_Window.m_TitleLabel);
@@ -121,8 +121,8 @@ namespace TEditor
                         {
                             switch (m_NoiseSample)
                             {
-                                case enum_NoiseSample.Absolute: noise = Mathf.Abs(noise); break;
-                                case enum_NoiseSample._01: noise = noise / 2f + .5f; break;
+                                case ENoiseSample.Absolute: noise = Mathf.Abs(noise); break;
+                                case ENoiseSample._01: noise = noise / 2f + .5f; break;
                             }
                         }
                         colors[i * size + j] = new Color(noise, noise, noise, 1);

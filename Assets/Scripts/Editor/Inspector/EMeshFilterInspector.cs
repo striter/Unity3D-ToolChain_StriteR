@@ -17,10 +17,10 @@ namespace TEditor
         bool m_DrawBiTangents = false;
         float m_BiTangentsLength = .5f;
         Color m_BitangentColor = Color.yellow;
-        enum_ColorVisualize m_DrawColorType;
+        EColorVisualize m_DrawColorType;
         float m_ColorLength = .5f;
 
-        ValueChecker<enum_VertexData> m_ColorVertexDataType = new ValueChecker<enum_VertexData>(enum_VertexData.None);
+        ValueChecker<EVertexData> m_ColorVertexDataType = new ValueChecker<EVertexData>(EVertexData.None);
         float m_VertexData = .5f;
         bool m_DrawDirection;
 
@@ -64,10 +64,10 @@ namespace TEditor
                 m_VertexColor = EditorGUILayout.ColorField(m_VertexColor);
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.BeginHorizontal();
-                if (m_ColorVertexDataType.Check((enum_VertexData)EditorGUILayout.EnumPopup("Draw Vertex Data", m_ColorVertexDataType.m_Value)))
+                if (m_ColorVertexDataType.Check((EVertexData)EditorGUILayout.EnumPopup("Draw Vertex Data", m_ColorVertexDataType.m_Value)))
                 {
                     m_ColorVertexData.Clear();
-                    if (m_ColorVertexDataType.m_Value != enum_VertexData.None)
+                    if (m_ColorVertexDataType.m_Value != EVertexData.None)
                         m_Target.sharedMesh.GetVertexData(m_ColorVertexDataType.m_Value, m_ColorVertexData);
                 }
 
@@ -100,12 +100,12 @@ namespace TEditor
                 EditorGUILayout.BeginHorizontal();
                 if (haveColors)
                 {
-                    m_DrawColorType = (enum_ColorVisualize)EditorGUILayout.EnumPopup("Draw Color", m_DrawColorType);
+                    m_DrawColorType = (EColorVisualize)EditorGUILayout.EnumPopup("Draw Color", m_DrawColorType);
                     m_ColorLength = EditorGUILayout.Slider(m_ColorLength, 0f, 2f);
                 }
                 else
                 {
-                    m_DrawColorType = enum_ColorVisualize.None;
+                    m_DrawColorType = EColorVisualize.None;
                     EditorGUILayout.LabelField("No Color Data");
                 }
                 EditorGUILayout.EndHorizontal();
@@ -156,7 +156,7 @@ namespace TEditor
 
                 }
 
-                if (m_DrawColorType != enum_ColorVisualize.None)
+                if (m_DrawColorType != EColorVisualize.None)
                 {
                     Color vertexColor = Color.clear;
                     Handles.color = m_DrawColorType.FilterColor(m_Colors[i]);
