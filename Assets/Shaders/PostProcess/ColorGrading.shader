@@ -2,19 +2,7 @@
 {
 	Properties
 	{
-		 _MainTex ("Texture", 2D) = "white" {}
-		_Weight("Weight",Range(0,1))=1
-		[Toggle(_BSC)] _Enable_BSC ("BSC Enable", Float) = 1
-		_Brightness("Brightness",Range(0,2))=1
-		_Saturation("Saturation",Range(0,2))=1
-		_Contrast("Contrast",Range(0,2))=1
-		[Toggle(_LUT)] _Enable_LUT ("LUT Enable", Float) = 0
-		[NoScaleOffset]_LUTTex("Look Up Table",2D)="white"{}
-		[Enum(enum_LUTCellCount)] _LUTCellCount("LUT Cell Count",int)=16
-		[Toggle(_CHANNEL_MIXER)] _Enable_CHANNEL_MIXER ("Channel Mixer Enable", Float) = 0
-		_MixRed("Mix Red",Vector)=(0,0,0,0)
-		_MixGreen("Mix Green",Vector)=(0,0,0,0)
-		_MixBlue("Mix Blue",Vector)=(0,0,0,0)
+		 [PreRenderData]_MainTex ("Texture", 2D) = "white" {}
 	}
 	SubShader
 	{

@@ -119,7 +119,7 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
-    - _DepthBuffer: 1
+    - _DepthBuffer: 0
     - _DepthBufferScale: 1
     - _DepthOffset: 0.42
     - _DepthScale: 1
@@ -135,7 +135,7 @@ Material:
     - _Lighting: 1
     - _Metallic: 0
     - _OcclusionStrength: 1
-    - _Parallax: 0.005
+    - _Parallax: 0
     - _ParallaxCount: 16
     - _Parallex: 0
     - _ParallexCount: 16

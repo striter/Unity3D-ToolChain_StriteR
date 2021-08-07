@@ -29,7 +29,7 @@ namespace TDataPersistent
             }
             catch (Exception ePersistent)
             {
-                Debug.LogWarning("Data Read Fail,Use Streaming Data:\n" + ePersistent.Message);
+                Debug.LogWarning("Data Read Fail,Use Persistent Data:\n" + ePersistent.Message);
                 ReadDefaultData(_data,fileName);
             }
         }       
@@ -44,7 +44,7 @@ namespace TDataPersistent
             }
             catch(Exception e)
             {
-                Debug.LogWarning("Data Save Error,Use Streaming Data\n" + e.Message);
+                Debug.LogWarning("Data Save Error,Use Persistent Data\n" + e.Message);
                 ReadDefaultData(_data,fileName);
             }
         }
@@ -99,7 +99,7 @@ namespace TDataPersistent
             }
             catch(Exception eStreaming)
             {
-                Debug.LogError("Streaming Data Invalid,Use BuiltIn-Code:\n"+eStreaming.Message);
+                Debug.LogWarning("Persistent Data Invalid,Use BuiltIn-Code:\n"+eStreaming.Message);
 
                 if (!Directory.Exists(s_persistentPath))
                     Directory.CreateDirectory(s_persistentPath);

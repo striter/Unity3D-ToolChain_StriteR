@@ -54,6 +54,7 @@ MonoBehaviour:
   m_Name: Additional
   m_EditorClassIdentifier: 
   m_Active: 1
+  m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
   m_ScreenParams: 1
   m_OpaqueBlurTexture: 0
   m_BlurParams:
@@ -65,8 +66,6 @@ MonoBehaviour:
     m_Vector: {x: 0.5, y: 0.5}
   m_NormalTexture: 0
   m_CameraReflectionTexture: 1
-  m_CameraReflectionComputeShader: {fileID: 7200000, guid: f5a23fffb62c7304f8c65cf797424e7b,
-    type: 3}
   m_PlanarReflectionData:
     m_ReflectionType: 0
     m_Sample: 4

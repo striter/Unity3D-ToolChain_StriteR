@@ -26,7 +26,7 @@ public class MTitleAttribute : PropertyAttribute { }
 [AttributeUsage(AttributeTargets.Field)]
 public class IntEnumAttribute : PropertyAttribute
 {
-    public int[] m_Values {get ; private set; }
+    public readonly int[] m_Values;
     public IntEnumAttribute(params int[] _values)
     {
         m_Values = _values;
@@ -42,10 +42,10 @@ public class PositionAttribute : PropertyAttribute { }
 [AttributeUsage(AttributeTargets.Field)]
 public class CullingMaskAttribute : PropertyAttribute { }
 [AttributeUsage(AttributeTargets.Field)]
-public class RangeVectorAttribute : PropertyAttribute 
+public class RangeVectorAttribute : PropertyAttribute
 {
-    public float m_Min { get; private set; }
-    public float m_Max { get; private set; }
+    public readonly float m_Min;
+    public readonly float m_Max;
     public RangeVectorAttribute(float _min,float _max)
     {
         m_Min = _min;
@@ -55,11 +55,23 @@ public class RangeVectorAttribute : PropertyAttribute
 [AttributeUsage(AttributeTargets.Field)]
 public class ClampAttribute:PropertyAttribute
 {
-    public float m_Min { get; private set; }
-    public float m_Max { get; private set; }
+    public readonly float m_Min;
+    public readonly float m_Max;
     public ClampAttribute(float _min=float.MinValue, float _max=float.MaxValue)
     {
         m_Min = _min;
         m_Max = _max;
+    }
+}
+
+
+[AttributeUsage(AttributeTargets.Field)]
+public class AssetsAttribute : PropertyAttribute
+{
+    public readonly string m_Path;
+
+    public AssetsAttribute(string _path)
+    {
+        m_Path = _path;
     }
 }

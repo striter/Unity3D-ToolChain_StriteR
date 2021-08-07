@@ -18,33 +18,36 @@ namespace Rendering.Pipeline
         static readonly int ID_Matrix_I_VP=Shader.PropertyToID("_Matrix_I_VP");
         static readonly int ID_Matrix_V = Shader.PropertyToID("_Matrix_V");
         #endregion
+
+        public RenderResources m_Resources;
         [Tooltip("Screen Space World Position Reconstruction")]
         public bool m_ScreenParams;
         public bool m_OpaqueBlurTexture=false;
         [MFoldout(nameof(m_OpaqueBlurTexture), true)] public PPData_Blurs m_BlurParams = UPipeline.GetDefaultPostProcessData<PPData_Blurs>();
         public bool m_NormalTexture=false;
         [MFoldout(nameof(m_ScreenParams), true)] public bool m_CameraReflectionTexture=false;
-        [HideInInspector] public ComputeShader m_CameraReflectionComputeShader;
         [MFoldout(nameof(m_CameraReflectionTexture), true)] public SRD_PlanarReflectionData m_PlanarReflectionData= SRD_PlanarReflectionData.Default();
         
         SRP_NormalTexture m_NormalPass;
         SRP_ComponentBasedPostProcess m_PostProcesssing_Opaque;
         SRP_ComponentBasedPostProcess m_PostProcesssing_AfterAll;
         SRP_Reflection m_Reflection;
+        private bool m_Available => m_Resources;
         public override void Create()
         {
-#if UNITY_EDITOR
-            Shader.WarmupAllShaders();
-            if(m_CameraReflectionComputeShader==null)
-                m_CameraReflectionComputeShader = UnityEditor.AssetDatabase.LoadAssetAtPath<ComputeShader>("Assets/Shaders/Compute/PlanarReflection.compute");
-#endif
-            m_NormalPass = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox};
+            if (!m_Available)
+                return;
+            
+            m_NormalPass = new SRP_NormalTexture(m_Resources) { renderPassEvent = RenderPassEvent.AfterRenderingSkybox};
             m_PostProcesssing_Opaque = new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox };
             m_PostProcesssing_AfterAll = new SRP_ComponentBasedPostProcess() {  renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing };
-            m_Reflection = new SRP_Reflection(m_PlanarReflectionData,m_CameraReflectionComputeShader);
+            m_Reflection = new SRP_Reflection(m_PlanarReflectionData,m_Resources);
         }
         protected override void Dispose(bool disposing)
         {
+            if (!m_Available)
+                return;
+            
             base.Dispose(disposing);
             m_NormalPass.Dispose();
             m_PostProcesssing_Opaque.Dispose();
@@ -53,6 +56,9 @@ namespace Rendering.Pipeline
         }
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
+            if (!m_Available)
+                return;
+            
             if (renderingData.cameraData.isPreviewCamera)
                 return;
 
@@ -70,7 +76,6 @@ namespace Rendering.Pipeline
         }
         void UpdateScreenParams(ref RenderingData _renderingData)
         {
-            
             var camera = _renderingData.cameraData.camera;
             float fov = camera.fieldOfView;
             float far = camera.farClipPlane;

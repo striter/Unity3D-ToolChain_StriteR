@@ -20,7 +20,7 @@ namespace Rendering.Pipeline
         public readonly SRD_PlanarReflectionData m_Data;
         public readonly PPCore_Blurs m_CoreBlurs;
         public readonly MaterialPropertyBlock m_PropertyBlock;
-        public SRP_Reflection(SRD_PlanarReflectionData _data,ComputeShader _reflectionCS)
+        public SRP_Reflection(SRD_PlanarReflectionData _data,RenderResources _reflectionCS)
         {
             m_CoreBlurs = new PPCore_Blurs();
             m_PropertyBlock = new MaterialPropertyBlock();
@@ -32,7 +32,7 @@ namespace Rendering.Pipeline
                 switch (m_Data.m_ReflectionType)
                 {
                     case EReflectionSpace.ScreenSpace:
-                        m_ReflectionPasses[i] = new SRP_PlanarReflection_ScreenSpace(this,_reflectionCS);
+                        m_ReflectionPasses[i] = new SRP_PlanarReflection_ScreenSpace(this,_reflectionCS.FindComputeShader("PlanarReflection"));
                         break;
                     case EReflectionSpace.MirrorSpace:
                         m_ReflectionPasses[i] = new SRP_PlanarReflection_MirrorSpace(this);
