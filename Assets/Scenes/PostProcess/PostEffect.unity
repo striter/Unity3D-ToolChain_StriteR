@@ -2037,9 +2037,9 @@ GameObject:
   - component: {fileID: 2086077256}
   - component: {fileID: 2086077258}
   - component: {fileID: 2086077261}
+  - component: {fileID: 2086077262}
   - component: {fileID: 2086077259}
   - component: {fileID: 2086077260}
-  - component: {fileID: 2086077262}
   m_Layer: 0
   m_Name: Main
   m_TagString: MainCamera
@@ -2140,28 +2140,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EffectData:
     m_MainNoise: {fileID: 11700000, guid: 5743fc3e0e9339b41b3dc606bd35aefe, type: 2}
-    m_MainNoiseScale: {x: 300, y: 300, z: 300}
+    m_MainNoiseScale: {x: 100, y: 100, z: 100}
     m_MainNoiseFlow: {x: 0.01, y: 0.01, z: 0.01}
-    m_VerticalStart: 40
-    m_VerticalLength: 100
-    m_Density: 20
-    m_DensityClip: 0.467
-    m_DensitySmooth: 0.302
-    m_Distance: 100
+    m_VerticalStart: -10
+    m_VerticalLength: 30
+    m_Density: 100
+    m_DensityClip: 0.531
+    m_DensitySmooth: 1
+    m_Distance: 50
     m_MarchTimes: 32
     m_Opacity: 1
     m_ShapeMask: {fileID: 0}
     m_ShapeMaskScale: {x: 100, y: 100}
     m_ShapeMaskFlow: {x: 0.1, y: 0.1}
     m_ColorRamp: {fileID: 2800000, guid: 034f12e5c34ba414fbcbfa5900814c89, type: 3}
-    m_LightAbsorption: 0.14
+    m_LightAbsorption: 0.102
     m_LightMarch: 1
     m_LightMarchClip: 0.304
     m_LightMarchTimes: 4
     m_LightScatter: 1
-    m_ScatterRange: 0.819
-    m_ScatterStrength: 1
-  m_SceneViewPreview: 1
+    m_ScatterRange: 0.776
+    m_ScatterStrength: 0.584
+  m_SceneViewPreview: 0
 --- !u!114 &2086077260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2230,12 +2230,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectData:
-    m_Strength: 0.35
+    m_Strength: 0.39
     m_Distance: 20
-    m_MarchTimes: 64
-    m_MarchStrength: 0.58
-    m_Pow: 1.06
-    m_DownSample: 2
+    m_MarchTimes: 8
+    m_MarchStrength: 1.02
+    m_Pow: 2
+    m_DownSample: 4
     m_Dither: 1
     m_Debug: 0
     m_EnableBlur: 1
