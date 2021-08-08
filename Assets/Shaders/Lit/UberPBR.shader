@@ -42,30 +42,10 @@
 	{
 		Tags { "Queue" = "Geometry" }
 		Cull [_Cull]
-		
-		Pass
-		{
-			Blend [_SrcBlend] [_DstBlend]
-			ZWrite [_ZWrite]
-			ZTest [_ZTest]
-			NAME "FORWARD"
-			Tags{"LightMode" = "UniversalForward"}
-			HLSLPROGRAM
-			#pragma vertex vert
-			#pragma fragment frag
+		HLSLINCLUDE
+			#include "Assets/Shaders/Library/CommonInclude.hlsl"
             #pragma target 3.5
 			#pragma multi_compile_instancing
-			
-			#include "Assets/Shaders/Library/CommonInclude.hlsl"
-			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
-			#include "Assets/Shaders/Library/BRDFInclude.hlsl"
-			#include "Assets/Shaders/Library/GlobalIlluminationInclude.hlsl"
-			
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
-            #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
-            #pragma multi_compile _ _SHADOWS_SOFT
-            #pragma multi_compile _ _ADDITIONAL_LIGHTS
-			
 			#pragma shader_feature_local _PBRMAP
 			#pragma shader_feature_local _SPECULAR
 			#pragma shader_feature_local _NORMALMAP
@@ -142,6 +122,27 @@
 				o.uv = half4( TRANSFORM_TEX_INSTANCE(v.uv,_MainTex),TRANSFORM_TEX_INSTANCE(v.uv,_DetailNormalTex));
 				return o;
 			}
+		ENDHLSL
+		Pass
+		{
+			Blend [_SrcBlend] [_DstBlend]
+			ZWrite [_ZWrite]
+			ZTest [_ZTest]
+			NAME "FORWARD"
+			Tags{"LightMode" = "UniversalForward"}
+			HLSLPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag
+			
+			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
+			#include "Assets/Shaders/Library/BRDFInclude.hlsl"
+			#include "Assets/Shaders/Library/GlobalIlluminationInclude.hlsl"
+			
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
+            #pragma multi_compile _ _SHADOWS_SOFT
+            #pragma multi_compile _ _ADDITIONAL_LIGHTS
+			
 			
 			half4 frag(v2f i,out half depth:SV_DEPTH) :SV_TARGET
 			{
@@ -212,7 +213,29 @@
 			ENDHLSL
 		}
 
+		Pass
+		{
+			NAME "MAIN"
+			Tags{"LightMode" = "DepthOnly"}
+			HLSLPROGRAM
+			#pragma vertex vert
+			#pragma fragment ShadowFragment
+				
+			float4 ShadowFragment(v2f i,out float depth:SV_DEPTH) :SV_TARGET
+			{
+				half3 normalWS=normalize(i.normalWS);
+				half3 biTangentWS=normalize(i.biTangentWS);
+				half3 tangentWS=normalize(i.tangentWS);
+				half3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
+				half3 viewDirWS=normalize(TransformWorldToViewDir(i.positionWS,UNITY_MATRIX_V));
+				depth=i.positionCS.z;
+            	ParallaxUVMapping(i.uv.xy,depth,i.positionWS,TBNWS,viewDirWS);
+				AlphaClip(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv.xy).a*INSTANCE(_Color.a));
+				return 0;
+			}
+			ENDHLSL
+		}
+		
 		USEPASS "Hidden/ShadowCaster/MAIN"
-		USEPASS "Hidden/DepthOnly/MAIN"
 	}
 }

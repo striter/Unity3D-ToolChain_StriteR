@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
 [AttributeUsage(AttributeTargets.Method)]
 public class PartialMethodAttribute : Attribute
 {
@@ -28,17 +29,19 @@ public static class ParticalMethods_Helper
             return;
         Type triggerType = typeof(T);
         Type sortingType = typeof(Y);
-        var triggerMethods = targetType.GetMethods(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic).Select(p => {
-            var attribute = (PartialMethodAttribute)p.GetCustomAttribute(s_ParticalAttribute);
+        var triggerMethods = targetType.GetMethods(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic)
+            .Select(p => (p,(PartialMethodAttribute)p.GetCustomAttribute(s_ParticalAttribute))).Collect(p=>
+            {
+                var attribute = p.Item2;
             if (attribute == null)
-                return default;
+                return false;
             if (attribute.m_Trigger.GetType() != triggerType)
                 throw new Exception("Trigger Type Mismatch:"+attribute.m_Trigger+" "+ triggerType);
             if (attribute.m_Sorting.GetType() != sortingType)
                 throw new Exception("Sorting Type Mismatch:" + attribute.m_Sorting + " " + sortingType);
 
-            return new Ref<KeyValuePair<MethodInfo, PartialMethodAttribute>>(new KeyValuePair<MethodInfo, PartialMethodAttribute>(p, attribute)).m_RefValue;
-        }).GroupBy(p=>(Enum)p.Value.m_Trigger,p=>new KeyValuePair<Y,MethodInfo>((Y)p.Value.m_Sorting , p.Key));
+            return true;
+        }).GroupBy(p=>(Enum)p.Item2.m_Trigger,pair=>new KeyValuePair<Y,MethodInfo>((Y)pair.Item2.m_Sorting ,pair.p));
 
         Dictionary<Enum, MethodInfo[]> collectedMethods = new Dictionary<Enum, MethodInfo[]>();
         foreach (var methodGroup in triggerMethods)

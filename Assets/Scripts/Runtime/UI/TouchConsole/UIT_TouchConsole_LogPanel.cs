@@ -5,8 +5,7 @@ using TDataPersistent;
 using UnityEngine;
 using UnityEngine.UI;
 
-#region LogPanel
-public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
+public partial class UIT_TouchConsole
 {
     [Flags]
     public  enum EConsoleSetting
@@ -234,4 +233,3 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
         public void HideStack() => transform.SetActive(false);
     }
 }
-#endregion

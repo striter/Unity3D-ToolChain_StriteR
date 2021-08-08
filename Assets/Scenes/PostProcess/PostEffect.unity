@@ -255,7 +255,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EffectData:
     m_Color: {r: 0, g: 0, b: 0, a: 0}
-    m_Intensity: 2.29
+    m_Intensity: 1.89
     m_Radius: 0.179
     m_Bias: 0.284
     m_SampleCount: 16
@@ -2232,7 +2232,7 @@ MonoBehaviour:
   m_EffectData:
     m_Strength: 0.39
     m_Distance: 20
-    m_MarchTimes: 8
+    m_MarchTimes: 16
     m_MarchStrength: 1.02
     m_Pow: 2
     m_DownSample: 4

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UIT_TouchConsole;
 
-public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>
+public partial class UIT_TouchConsole
 {
     Transform m_FrameRate;
     Text m_FrameRateValue;

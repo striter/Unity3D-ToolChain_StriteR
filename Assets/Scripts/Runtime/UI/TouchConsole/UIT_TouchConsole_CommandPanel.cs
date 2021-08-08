@@ -112,7 +112,7 @@ public static class UIT_TouchConsoleHelper
 
 
 }
-public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartialMethods<EPartialMethods,EPartialSorting>
+public partial class UIT_TouchConsole
 {
     public static void NewPage(string _page)
     {

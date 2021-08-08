@@ -17,6 +17,8 @@
 			#include "Assets/Shaders/Library/CommonInclude.hlsl"
 			#include "Assets/Shaders/Library/Additional/HorizonBend.hlsl"
 			#pragma shader_feature _HORIZONBEND
+
+			
 			struct a2f
 			{
 				float3 positionOS:POSITION;

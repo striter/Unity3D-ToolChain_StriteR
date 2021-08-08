@@ -71,7 +71,7 @@
                 closestDst= length(0.-viewRayOS.GetPoint(closestDst))*2;
                 density= saturate(1-closestDst);
                 #elif _TYPE_SPOT
-                GHeightCone cone=GetHeightCone( float3(.0,.5,.0),float3(.0,-1.,.0),55.,1);
+                GHeightCone cone= GHeightCone_Ctor( float3(.0,.5,.0),float3(.0,-1.,.0),55.,1);
                 sdfDstOS =ConeRayDistance(cone,viewRayOS);
                 density=1;
                 #endif
