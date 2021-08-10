@@ -8,7 +8,8 @@ Shader "Hidden/PostProcess/Stylize"
     {
         Tags { "RenderType"="Opaque" }
         HLSLINCLUDE
-        #include "Assets/Shaders/Library/PostProcessInclude.hlsl"
+        #define ICOLOR
+        #include "Assets/Shaders/Library/PostProcess.hlsl"
         ENDHLSL
         Pass
         {
@@ -22,7 +23,7 @@ Shader "Hidden/PostProcess/Stylize"
             float4 frag(v2f_img i):SV_TARGET
             {
                 float3 finalCol=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).xyz;
-            #if _PIXEL_GRID
+				#if _PIXEL_GRID
                 float2 pixelUV= (i.uv*_MainTex_TexelSize.zw)%1;
                 float pixelGrid= max(step(pixelUV.y,_PixelGridWidth.x),step(_PixelGridWidth.y,pixelUV.y),step(pixelUV.x,_PixelGridWidth.x),step(_PixelGridWidth.y,pixelUV.x));
                 finalCol=lerp(finalCol,_PixelGridColor.rgb,pixelGrid*_PixelGridColor.a);

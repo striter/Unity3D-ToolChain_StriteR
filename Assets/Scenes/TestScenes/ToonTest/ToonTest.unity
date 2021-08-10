@@ -348,8 +348,8 @@ MonoBehaviour:
     m_BlurParams:
       m_BlurType: 2
       m_BlurSize: 0.43
-      m_Iteration: 11
-      m_DownSample: 1
+      m_Iteration: 13
+      m_DownSample: 4
       m_Angle: 0
       m_Vector: {x: 0.5, y: 0.5}
   m_SceneViewPreview: 1

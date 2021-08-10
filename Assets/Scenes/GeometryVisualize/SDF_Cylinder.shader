@@ -23,14 +23,14 @@ Shader "Hidden/SDF_SphereBox"
     {
         Tags { "RenderType"="UniversalForward" "RenderQueue"="Transparent"}
         Blend SrcAlpha OneMinusSrcAlpha
-
         Pass
         {
             HLSLPROGRAM
             #pragma vertex vertSDF
             #pragma fragment fragSDF
-            #include "Assets/Shaders/Library/CommonInclude.hlsl"
-            #include "Assets/Shaders/Library/GeometrySDFInclude.hlsl"
+            #define GeometrySDF
+            #include "Assets/Shaders/Library/Common.hlsl"
+            #include "Assets/Shaders/Library/Geometry.hlsl"
             float _CylinderRadius;
             float3 _CylinderColor;
             float _CapsuleHeight;
@@ -61,7 +61,7 @@ Shader "Hidden/SDF_SphereBox"
                 SDFOutput output=SDFUnion( SDFDifference( distB,distA),SDFDifference( distD,distC));
                 return  SDFDifference(output,distC);
             }
-            #include "Assets/Shaders/Library/GeometrySDFPass.hlsl"
+            #include "Assets/Shaders/Library/Geometry/GeometrySDFPass.hlsl"
             ENDHLSL
         }
     }

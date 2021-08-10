@@ -13,9 +13,11 @@
             HLSLPROGRAM
             #pragma vertex vert_img
             #pragma fragment frag
-            
-            #include "Assets/Shaders/Library/PostProcessInclude.hlsl"
-            #include "Assets/Shaders/Library/GeometryInclude.hlsl"
+
+            #define GeometryDetection
+			#define IDEPTH
+            #include "Assets/Shaders/Library/PostProcess.hlsl"
+            #include "Assets/Shaders/Library/Geometry.hlsl"
 
             #pragma shader_feature_local _LIGHTMARCH
             #pragma shader_feature_local _LIGHTSCATTER

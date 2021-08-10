@@ -16,7 +16,7 @@ Shader "Unlit/StippleTransparent"
             #pragma vertex vert
             #pragma fragment frag
 
-            #include "Assets/Shaders/Library/CommonInclude.hlsl"
+            #include "Assets/Shaders/Library/Common.hlsl"
 
             struct appdata
             {

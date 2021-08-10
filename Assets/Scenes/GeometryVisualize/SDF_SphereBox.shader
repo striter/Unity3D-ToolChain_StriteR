@@ -27,8 +27,9 @@ Shader "Hidden/SDF_SphereBox"
             HLSLPROGRAM
             #pragma vertex vertSDF
             #pragma fragment fragSDF
-            #include "Assets/Shaders/Library/CommonInclude.hlsl"
-            #include "Assets/Shaders/Library/GeometrySDFInclude.hlsl"
+            #define GeometrySDF
+            #include "Assets/Shaders/Library/Common.hlsl"
+            #include "Assets/Shaders/Library/Geometry.hlsl"
             float3 _SphereColor;
             float _SphereRadius;
             float3 _RoundBoxColor;
@@ -53,7 +54,7 @@ Shader "Hidden/SDF_SphereBox"
                 SDFOutput distD=GBox_SDF(box,SDFInput_Ctor(RotateAround(position,origin,_Time.y,float3(0,0,1) ),_BoxColor));
                 return SDFUnion( SDFDifference(distB,distA),distC,distD);
             }
-            #include "Assets/Shaders/Library/GeometrySDFPass.hlsl"
+            #include "Assets/Shaders/Library/Geometry/GeometrySDFPass.hlsl"
             
             ENDHLSL
         }

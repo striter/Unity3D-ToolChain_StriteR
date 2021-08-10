@@ -1,19 +1,20 @@
-﻿//#pragma shader_feature _EDITGRID
+﻿//#pragma multi_compile _ _EDITGRID
 
-float4 _GridSize;
-float4 _GridColor;
+half4 _GridSize;
+half4 _GridColor;
 
-float3 MixGrid(float3 positionWS, float3 color)
+float3 MixGrid(float3 positionWS, half3 color)
 {
     #ifndef _EDITGRID
         return color;
     #endif
-    float2 gridPos=abs(positionWS.xz)-_GridSize.xy;
+    half2 gridPos=abs(positionWS.xz)-_GridSize.xy;
     gridPos%=_GridSize.z;
-    float gridOffset=min(min(_GridSize.z-gridPos),min(gridPos));
-    float grid=step(gridOffset,_GridSize.w);
+    half gridOffset=min(min(_GridSize.z-gridPos),min(gridPos));
+    half grid=step(gridOffset,_GridSize.w);
 
-    grid*=lerp(.35f,1.f,step((positionWS.x+positionWS.z +positionWS.y+_Time.y)%_GridSize.z,.35f));
-    
-    return lerp(color,_GridColor.rgb,grid*_GridColor.a);
+    grid*=lerp(.35h,1.h,step(abs((positionWS.x+positionWS.z +positionWS.y+_Time.y)%_GridSize.z),.35h));
+    grid*=_GridColor.a;
+    half3 gridColor=_GridColor.rgb*grid;
+    return lerp(color,gridColor,grid);
 }

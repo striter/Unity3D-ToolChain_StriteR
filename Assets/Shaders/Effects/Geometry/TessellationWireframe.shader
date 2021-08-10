@@ -19,7 +19,7 @@
             #pragma geometry geomProgram
             #pragma fragment frag
 
-            #include "Assets/Shaders/Library/CommonInclude.hlsl"
+            #include "Assets/Shaders/Library/Common.hlsl"
 
             struct a2v
             {

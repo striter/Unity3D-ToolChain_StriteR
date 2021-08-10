@@ -8,7 +8,7 @@ Shader "Hidden/CopyDepth"
             HLSLPROGRAM
             #pragma vertex vert_img
             #pragma fragment frag
-            #include "Assets/Shaders/Library/CommonInclude.hlsl"
+            #include "Assets/Shaders/Library/Common.hlsl"
             
             struct a2v_img
             {

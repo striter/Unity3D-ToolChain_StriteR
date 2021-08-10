@@ -1,4 +1,4 @@
-﻿//#pragma shader_feature_local _WAVEINTERACTION
+﻿//#pragma multi_compile_local _ _WAVEINTERACTION
 #define MAX_ADDITIONAL_WAVE_COUNT 16u
 uint _AdditionalWavesCount;
 float4 _AdditionalWavesShape[MAX_ADDITIONAL_WAVE_COUNT];

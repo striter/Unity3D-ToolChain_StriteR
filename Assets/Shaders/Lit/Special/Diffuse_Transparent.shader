@@ -13,8 +13,8 @@
 		Blend SrcAlpha OneMinusSrcAlpha
 		
 		HLSLINCLUDE
-			#include "Assets/Shaders/Library/CommonInclude.hlsl"
-			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
+			#include "Assets/Shaders/Library/Common.hlsl"
+			#include "Assets/Shaders/Library/Lighting.hlsl"
 
 			TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
 			INSTANCING_BUFFER_START

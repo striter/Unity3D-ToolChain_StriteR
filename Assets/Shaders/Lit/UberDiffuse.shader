@@ -14,7 +14,6 @@ Shader "Game/2D/UberDiffuse"
     	[Foldout(_ATLAS)]_AtlasIndex("Index",int)=0
         [Toggle(_ALPHACLIP)]_AlphaClip("Alpha Clip",float)=0
         [Foldout(_ALPHACLIP)]_AlphaClipRange("Range",Range(0.01,1))=0.01
-    	[Toggle(_GRID)]_Grid("Grid WS(Global)",float)=0
                 
     	[Header(Lighting)]
     	[Toggle(_LIGHTING)]_Lighting("Enable",float)=1
@@ -55,11 +54,8 @@ Shader "Game/2D/UberDiffuse"
 		Cull [_Cull]
 
         HLSLINCLUDE
-            #include "Assets/Shaders/Library/CommonInclude.hlsl"
-			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
-			#include "Assets/Shaders/Library/Additional/Grid.hlsl"
-			#include "Assets/Shaders/Library/Additional/CloudShadow.hlsl"
-			#include "Assets/Shaders/Library/Additional/HorizonBend.hlsl"
+            #include "Assets/Shaders/Library/Common.hlsl"
+			#include "Assets/Shaders/Library/Lighting.hlsl"
             #pragma multi_compile_instancing
             #pragma target 3.5
 
@@ -70,9 +66,6 @@ Shader "Game/2D/UberDiffuse"
 			#pragma shader_feature_local _WAVE
 			#pragma shader_feature_local _ATLAS
 			#pragma shader_feature_local _GRID
-			#pragma shader_feature _EDITGRID
-			#pragma shader_feature _CLOUDSHADOW
-			#pragma shader_feature _HORIZONBEND
         
             TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
@@ -102,6 +95,13 @@ Shader "Game/2D/UberDiffuse"
 			#pragma shader_feature_local _DEPTHMAP
 			#include "Assets/Shaders/Library/Additional/Local/AlphaClip.hlsl"
 			#pragma shader_feature_local _ALPHACLIP
+
+			#include "Assets/Shaders/Library/Additional/Grid.hlsl"
+			#pragma multi_compile _ _EDITGRID
+			#include "Assets/Shaders/Library/Additional/CloudShadow.hlsl"
+			#pragma shader_feature _CLOUDSHADOW
+			#include "Assets/Shaders/Library/Additional/HorizonBend.hlsl"
+			#pragma multi_compile _ _HORIZONBEND
         
             struct a2v
             {
@@ -119,7 +119,7 @@ Shader "Game/2D/UberDiffuse"
 				half3 normalWS:TEXCOORD1;
 				half3 tangentWS:TEXCOORD2;
 				half3 biTangentWS:TEXCOORD3;
-				float3 viewDirWS:TEXCOORD4;
+				half3 viewDirWS:TEXCOORD4;
             	float3 positionWS:TEXCOORD5;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
@@ -174,7 +174,7 @@ Shader "Game/2D/UberDiffuse"
             #pragma multi_compile _ _SHADOWS_SOFT
             #pragma multi_compile _ _ADDITIONAL_LIGHTS
 
-            float4 frag (v2f i,out float depth:SV_DEPTH) : SV_Target
+            half4 frag (v2f i,out float depth:SV_DEPTH) : SV_Target
             {
 				UNITY_SETUP_INSTANCE_ID(i);
             	
@@ -192,7 +192,7 @@ Shader "Game/2D/UberDiffuse"
 				normalWS=normalize(mul(transpose(TBNWS), normalTS));
 				#endif
             	
-                float4 col = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv)*INSTANCE(_Color);
+                half4 col = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv)*INSTANCE(_Color);
             	AlphaClip(col.a);
             	#ifndef _LIGHTING
             		return col;
@@ -230,7 +230,7 @@ Shader "Game/2D/UberDiffuse"
             	finalCol=MixGrid(positionWS,finalCol);
 				#endif
             	
-            	return float4(finalCol,alpha);
+            	return half4(finalCol,alpha);
             }
             ENDHLSL
         }

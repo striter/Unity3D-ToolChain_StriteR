@@ -1,6 +1,25 @@
-﻿#include "Assets/Shaders/Library/BRDFInput.hlsl"
-#include "Assets/Shaders/Library/BRDFMethods.hlsl"
-#define DIELETRIC_SPEC half4(0.04,0.04,0.04,1.0-0.04)
+﻿#define DIELETRIC_SPEC half4(0.04,0.04,0.04,1.0-0.04)
+struct BRDFSurface
+{
+    half3 diffuse;
+    half3 specular;
+    
+    half metallic;
+    half smoothness;
+    half ao;
+    
+    half3 normal;
+    half3 tangent;
+    half3 viewDir;
+    half3 reflectDir;
+    half NDV;
+    
+    half grazingTerm;
+    half fresnelTerm;
+    half perceptualRoughness;
+    half roughness;
+    half roughness2;
+};
 
 BRDFSurface BRDFSurface_Ctor(half3 albedo, half smoothness, half metallic,half ao, half3 normal, half3 tangent, half3 viewDir)
 {
@@ -28,6 +47,17 @@ BRDFSurface BRDFSurface_Ctor(half3 albedo, half smoothness, half metallic,half a
     surface.roughness2 = max(HALF_MIN, surface.roughness * surface.roughness);
     return surface;
 }
+
+
+struct BRDFLight
+{
+    half3 color;
+    half3 radiance;
+    half3 lightDir;
+    
+    half normalDistribution;
+    half invNormalizationTerm;
+};
 
 BRDFLight BRDFLight_Ctor(BRDFSurface surface, half3 lightDir, half3 lightCol, half3 lightAtten, half anisotropic)
 {
@@ -85,29 +115,4 @@ BRDFLight BRDFLight_Ctor(BRDFSurface surface, half3 lightDir, half3 lightCol, ha
 BRDFLight BRDFLight_Ctor(BRDFSurface surface, Light light,half anisotropic)
 {
     return BRDFLight_Ctor(surface,light.direction,light.color,light.shadowAttenuation*light.distanceAttenuation,anisotropic);
-}
-
-half3 BRDFLighting(BRDFSurface surface,BRDFLight light)
-{
-    half3 brdf = surface.diffuse;
-    
-    half D = light.normalDistribution;
-    half invVF = light.invNormalizationTerm;
-    
-    brdf += surface.specular * D / invVF / 4;
-    return brdf*light.radiance;
-}
-
-half3 BRDFGlobalIllumination(BRDFSurface surface,half3 indirectDiffuse,half3 indirectSpecular)
-{
-    indirectDiffuse *= surface.ao;
-    indirectSpecular *= surface.ao;
-    
-    half3 giDiffuse = indirectDiffuse * surface.diffuse;
-    
-    float fresnelTerm = surface.fresnelTerm;
-    float3 surfaceReduction = 1.0 / (surface.roughness2 + 1.0) * lerp(surface.specular, surface.grazingTerm, fresnelTerm);
-    half3 giSpecular = indirectSpecular * surfaceReduction;
-    
-    return giDiffuse + giSpecular;
 }

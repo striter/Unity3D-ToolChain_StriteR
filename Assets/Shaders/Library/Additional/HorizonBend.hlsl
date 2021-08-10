@@ -1,4 +1,4 @@
-﻿//#pragma shader_feature _HORIZONBEND
+﻿//#pragma multi_compile _ _HORIZONBEND
 
 float3 _HorizonBendPosition;
 float3 _HorizonBendDirection;

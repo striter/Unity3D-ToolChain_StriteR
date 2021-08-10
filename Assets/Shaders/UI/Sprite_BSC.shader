@@ -52,7 +52,8 @@ Shader "Game/UI/Sprite_BSC"
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#include "Assets/Shaders/Library/PostProcessInclude.hlsl"
+			#define ICOLOR
+			#include "Assets/Shaders/Library/PostProcess.hlsl"
 
 			#pragma multi_compile_local __ UNITY_UI_ALPHACLIP
 

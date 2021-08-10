@@ -37,9 +37,10 @@
             #pragma fragment frag
             #pragma target 3.5
 
-            #include "Assets/Shaders/Library/CommonInclude.hlsl"
-            #include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
-            #include "Assets/Shaders/Library/GeometryInclude.hlsl"
+            #define GeometryDetection
+            #include "Assets/Shaders/Library/Common.hlsl"
+            #include "Assets/Shaders/Library/Lighting.hlsl"
+            #include "Assets/Shaders/Library/Geometry.hlsl"
             #pragma shader_feature_local _LIGHTMARCH
 
             struct appdata

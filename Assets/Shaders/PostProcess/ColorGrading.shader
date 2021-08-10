@@ -16,96 +16,50 @@
 			#pragma shader_feature_local _LUT
 			#pragma shader_feature_local _BSC
 			#pragma shader_feature_local _CHANNEL_MIXER
-			#include "Assets/Shaders/Library/PostProcessInclude.hlsl"
+
+			#define ICOLOR
+			#include "Assets/Shaders/Library/PostProcess.hlsl"
 			
+            float _Weight;
 			#if _LUT
 			TEXTURE2D(_LUTTex);SAMPLER(sampler_LUTTex);
 			float4 _LUTTex_TexelSize;
 			int _LUTCellCount;
-
-			half3 SampleLUT(half3 sampleCol) {
-				half width=_LUTCellCount;
-
-				int lutCellPixelCount = _LUTTex_TexelSize.z / width;
-				int x0CellIndex =  floor(sampleCol.b * width);
-				int x1CellIndex = x0CellIndex+1;
-
-				int maxIndex=width-1;
-				x0CellIndex=min(x0CellIndex,maxIndex);
-				x1CellIndex=min(x1CellIndex,maxIndex);
-
-				half x0PixelCount = x0CellIndex* lutCellPixelCount + (lutCellPixelCount -1)* sampleCol.r;
-				half x1PixelCount = x1CellIndex * lutCellPixelCount + (lutCellPixelCount - 1) * sampleCol.r;
-				half yPixelCount = sampleCol.g*_LUTTex_TexelSize.w;
-
-				half2 uv0 = float2(x0PixelCount, yPixelCount) * _LUTTex_TexelSize.xy;
-				half2 uv1= float2(x1PixelCount, yPixelCount) * _LUTTex_TexelSize.xy;
-
-				half zOffset = fmod(sampleCol.b * width, 1.0h);
-				return lerp( SAMPLE_TEXTURE2D(_LUTTex,sampler_LUTTex,uv0).rgb,SAMPLE_TEXTURE2D(_LUTTex,sampler_LUTTex,uv1).rgb,zOffset) ;
-			}
 			#endif
-
 			#if _BSC
 			half _Saturation;
-			float3 Saturation(float3 c)
-			{
-				float luma =  dot(c, float3(0.2126729, 0.7151522, 0.0721750));
-				return luma.xxx + _Saturation.xxx * (c - luma.xxx);
-			}
-
 			half _Brightness;
 			half _Contrast;
-			half3 GetBSCCol(half3 col)
-			{
-				half3 avgCol = half3(.5h, .5h, .5h);
-				col = lerp(avgCol, col, _Contrast);
-				
-				half rgbMax=max(max(col.r,col.g),col.b);
-				half rgbMin=min(min(col.r,col.g),col.b);
-
-				col*=_Brightness;
-				
-				return Saturation(col);
-			}
 			#endif
-
-			#if _CHANNEL_MIXER
+            #if _CHANNEL_MIXER
 			half3 _MixRed;
 			half3 _MixGreen;
 			half3 _MixBlue;
-			half GetMixerAmount(half3 col,half3 mix)
+            #endif
+            half3 ColorGrading(half3 col)
 			{
-				return col.r*mix.x+col.g*mix.y+col.b*mix.z;
-			}
-
-			half3 ChannelMixing(half3 col)
-			{
-				half3x3 mixMatrix=half3x3(_MixRed,_MixGreen,_MixBlue);
-				return mul(col,mixMatrix);
-			}
-			#endif
-
-			half _Weight;
-			half4 frag (v2f_img i) : SV_Target
-			{
-				half3 baseCol=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv).rgb;
-				half3 targetCol=baseCol;
-
+            	half3 targetCol=col;
 				#if _LUT
-					float3 saturateCol=saturate(targetCol);		//saturate For HDR
-					float3 offset=targetCol-saturateCol;
-					targetCol=SampleLUT(saturateCol)+offset;
+            		half3 srcCol=targetCol;
+					half3 lutCol=saturate(targetCol);		//saturate For HDR
+					half3 offset=srcCol-lutCol;
+					targetCol= SampleLUT(lutCol,_LUTTex,sampler_LUTTex,_LUTTex_TexelSize,_LUTCellCount)+offset;
 				#endif
 
 				#if _BSC
-					targetCol=GetBSCCol(targetCol);
+					targetCol *=_Brightness;
+					targetCol = lerp(.5h, targetCol, _Contrast);
+					targetCol = Saturation(targetCol,_Saturation);
 				#endif
 
 				#if _CHANNEL_MIXER
-					targetCol=ChannelMixing(targetCol);
+					targetCol = mul(targetCol,half3x3(_MixRed,_MixGreen,_MixBlue));
 				#endif
-				return half4(lerp(baseCol,targetCol,_Weight),1) ;
+				return lerp(col,targetCol,_Weight);
+			}
+			half4 frag (v2f_img i) : SV_Target
+			{
+				return half4(ColorGrading(SampleMainTex(i.uv).rgb),1) ;
 			}
 			ENDHLSL
 		}

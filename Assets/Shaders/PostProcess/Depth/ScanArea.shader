@@ -14,7 +14,8 @@
 				#pragma vertex vert_img
 				#pragma fragment frag
 
-				#include "Assets/Shaders/Library/PostProcessInclude.hlsl"
+				#define IDEPTH
+				#include "Assets/Shaders/Library/PostProcess.hlsl"
 				
 				TEXTURE2D(_FillTexture);SAMPLER(sampler_FillTexture);
 				float4 _Origin;

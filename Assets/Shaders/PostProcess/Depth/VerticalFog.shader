@@ -22,7 +22,8 @@
 				#pragma vertex vert_img
 				#pragma fragment frag
 				#pragma shader_feature_local _NOISE
-				#include "Assets/Shaders/Library/PostProcessInclude.hlsl"
+				#define IDEPTH
+				#include "Assets/Shaders/Library/PostProcess.hlsl"
 				half _FogDensity;
 				float _FogPow;
 				float4 _FogColor;

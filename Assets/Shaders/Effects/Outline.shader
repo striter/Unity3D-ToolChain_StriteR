@@ -40,7 +40,7 @@
 			#pragma multi_compile_instancing
 			#pragma shader_feature_local _CLIPSPACEADPATION
 			#pragma multi_compile_local _NORMALSAMPLE_NORMAL _NORMALSAMPLE_TANGENT _NORMALSAMPLE_UV1 _NORMALSAMPLE_UV2 _NORMALSAMPLE_UV3 _NORMALSAMPLE_UV4 _NORMALSAMPLE_UV5  _NORMALSAMPLE_UV6  _NORMALSAMPLE_UV7
-			#include "Assets/Shaders/Library/CommonInclude.hlsl"
+			#include "Assets/Shaders/Library/Common.hlsl"
 
 			INSTANCING_BUFFER_START
 			INSTANCING_PROP(float4,_OutlineColor)

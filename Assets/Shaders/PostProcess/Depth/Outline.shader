@@ -9,7 +9,8 @@
 		// No culling or depth
 		Cull Off ZWrite Off ZTest Always
 		HLSLINCLUDE
-            #include "Assets/Shaders/Library/PostProcessInclude.hlsl"
+			#define IDEPTH
+            #include "Assets/Shaders/Library/PostProcess.hlsl"
 			half4 _OutlineColor;
 		ENDHLSL
 

@@ -24,6 +24,6 @@ public class ExampleHelperScene : MonoBehaviour
     }
     public void ChangeScene(string name)
     {
-        SceneManager.LoadScene(name, LoadSceneMode.Single);
+        SceneManager.LoadScene(name, LoadSceneMode.Additive);
     }
 }

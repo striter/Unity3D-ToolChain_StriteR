@@ -14,8 +14,8 @@
 			#pragma vertex ShadowVertex
 			#pragma fragment ShadowFragment
 			#pragma multi_compile_instancing
-			#include "Assets/Shaders/Library/CommonInclude.hlsl"
-			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
+			#include "Assets/Shaders/Library/Common.hlsl"
+			#include "Assets/Shaders/Library/Lighting.hlsl"
 			#include "Assets/Shaders/Library/Additional/HorizonBend.hlsl"
 			#pragma shader_feature _HORIZONBEND
 			

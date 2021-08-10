@@ -28,8 +28,9 @@ Shader "Hidden/SDF_Torus"
             HLSLPROGRAM
             #pragma vertex vertSDF
             #pragma fragment fragSDF
-            #include "Assets/Shaders/Library/CommonInclude.hlsl"
-            #include "Assets/Shaders/Library/GeometrySDFInclude.hlsl"
+            #define GeometrySDF
+            #include "Assets/Shaders/Library/Common.hlsl"
+            #include "Assets/Shaders/Library/Geometry.hlsl"
             float3 _TorusColor;
             float _TorusMajorRadius;
             float _TorusMinorRadius;
@@ -57,7 +58,7 @@ Shader "Hidden/SDF_Torus"
 
                 return SDFUnion(distA, distB,distC);
             }
-            #include "Assets/Shaders/Library/GeometrySDFPass.hlsl"
+            #include "Assets/Shaders/Library/Geometry/GeometrySDFPass.hlsl"
             ENDHLSL
         }
     }

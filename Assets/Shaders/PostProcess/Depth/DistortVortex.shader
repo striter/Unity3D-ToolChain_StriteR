@@ -15,7 +15,7 @@
 			#pragma vertex vert_img
 			#pragma fragment frag
 
-            #include "Assets/Shaders/Library/PostProcessInclude.hlsl"
+            #include "Assets/Shaders/Library/PostProcess.hlsl"
 
 			TEXTURE2D( _NoiseTex);SAMPLER(sampler_NoiseTex);
 			float _NoiseStrength;

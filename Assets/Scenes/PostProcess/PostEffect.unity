@@ -1609,7 +1609,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1230212946}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b62db4376f6a80241a778bd4d3ab7a35, type: 3}
   m_Name: 
@@ -1847,6 +1847,7 @@ GameObject:
   - component: {fileID: 1941222566}
   - component: {fileID: 1941222563}
   - component: {fileID: 1941222565}
+  - component: {fileID: 1941222567}
   m_Layer: 0
   m_Name: Post1
   m_TagString: MainCamera
@@ -1967,6 +1968,29 @@ MonoBehaviour:
     m_MixRed: {x: 0, y: 0, z: 0}
     m_MixGreen: {x: 0, y: 0, z: 0}
     m_MixBlue: {x: 0, y: 0, z: 0}
+  m_SceneViewPreview: 0
+--- !u!114 &1941222567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1941222562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b62db4376f6a80241a778bd4d3ab7a35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectData:
+    threshold: 0.22
+    intensity: 0.31
+    m_BlurParams:
+      m_BlurType: 3
+      m_BlurSize: 1.08
+      m_Iteration: 5
+      m_DownSample: 4
+      m_Angle: 0
+      m_Vector: {x: 0.5, y: 0.5}
   m_SceneViewPreview: 0
 --- !u!20 &1941222569
 Camera:

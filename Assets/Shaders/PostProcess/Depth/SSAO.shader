@@ -15,7 +15,8 @@
 				#pragma fragment frag
 				#pragma shader_feature_local _DITHER
 
-				#include "Assets/Shaders/Library/PostProcessInclude.hlsl"
+				#define IDEPTH
+				#include "Assets/Shaders/Library/PostProcess.hlsl"
 
 				TEXTURE2D(_NoiseTex);SAMPLER(sampler_NoiseTex);
 				TEXTURE2D(_CameraNormalTexture);SAMPLER(sampler_CameraNormalTexture);

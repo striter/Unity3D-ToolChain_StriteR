@@ -122,7 +122,7 @@ Material:
     - _DepthBuffer: 1
     - _DepthBufferScale: 2
     - _DepthOffset: 0
-    - _DepthScale: 0.18
+    - _DepthScale: 0.059
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _Diffuse: 0.5
@@ -136,7 +136,7 @@ Material:
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 1
-    - _ParallaxCount: 128
+    - _ParallaxCount: 16
     - _Parallex: 1
     - _ParallexCount: 16
     - _QueueOffset: 0

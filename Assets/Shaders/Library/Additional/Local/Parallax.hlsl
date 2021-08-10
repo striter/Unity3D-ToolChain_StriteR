@@ -1,11 +1,11 @@
 ﻿//Depth Parallax
-half ParallaxMappingPOM(TEXTURE2D_PARAM(_texture,_sampler), half depthOffset,half2 uv,half2 uvOffset,uint marchCount)
+float ParallaxMappingPOM(TEXTURE2D_PARAM(_texture,_sampler), float depthOffset,float2 uv,float2 uvOffset,uint marchCount)
 {
-    half deltaParallax=1.0h/marchCount;
-    half2 deltaUV=uvOffset/marchCount;
-    half layer=0.h;
-    half parallaxSample=SAMPLE_TEXTURE2D_LOD(_texture,_sampler,uv,0).r-depthOffset;
-    half preParallaxSample=0.h;
+    float deltaParallax=1.0h/marchCount;
+    float2 deltaUV=uvOffset/marchCount;
+    float layer=0.h;
+    float parallaxSample=SAMPLE_TEXTURE2D_LOD(_texture,_sampler,uv,0).r-depthOffset;
+    float preParallaxSample=0.h;
     for(uint i=0u;i<128u;i++)
     {
         if(parallaxSample<layer)
@@ -15,9 +15,9 @@ half ParallaxMappingPOM(TEXTURE2D_PARAM(_texture,_sampler), half depthOffset,hal
         layer+=deltaParallax;
         uv-=deltaUV;
     }
-    half d1=layer-parallaxSample;
-    half d2=(layer-deltaParallax)-preParallaxSample;
-    half interpolate=d1*rcp(d1-d2);
+    float d1=layer-parallaxSample;
+    float d2=(layer-deltaParallax)-preParallaxSample;
+    float interpolate=d1*rcp(d1-d2);
     return layer-interpolate*deltaParallax;
 }
 
@@ -40,15 +40,15 @@ half ParallaxMappingPOM(TEXTURE2D_PARAM(_texture,_sampler), half depthOffset,hal
 // INSTANCING_PROP(float,_DepthBufferScale)
 // INSTANCING_PROP(int ,_ParallaxCount)
 
-void ParallaxUVMapping(inout half2 uv,inout float depth,inout float3 positionWS,float3x3 TBNWS,float3 viewDirWS)
+void ParallaxUVMapping(inout float2 uv,inout float depth,inout float3 positionWS,half3x3 TBNWS,half3 viewDirWS)
 {
     #if _DEPTHMAP
     half3 viewDirTS=mul(TBNWS, viewDirWS);
     half3 viewDir=normalize(viewDirTS);
-    half2 uvOffset=viewDir.xy/viewDir.z*INSTANCE(_DepthScale);
-    half marchDelta=saturate(dot(half3(0.h,0.h,1.h),viewDirTS));
-    half parallax=0.h;
-    half depthOffset=INSTANCE(_DepthOffset);
+    float2 uvOffset=viewDir.xy/viewDir.z*INSTANCE(_DepthScale);
+    float marchDelta=saturate(dot(half3(0.,0.,1.),viewDirTS));
+    float parallax=0.;
+    float depthOffset=INSTANCE(_DepthOffset);
     
     #if _PARALLAX
         uint parallaxCount=INSTANCE(_ParallaxCount);
@@ -59,7 +59,7 @@ void ParallaxUVMapping(inout half2 uv,inout float depth,inout float3 positionWS,
     #endif
     
     #if _DEPTHBUFFER
-        half projectionDistance=parallax*INSTANCE(_DepthScale)*step(0.01h,marchDelta)* rcp(marchDelta);
+        float projectionDistance=parallax*INSTANCE(_DepthScale)*step(0.01h,marchDelta)* rcp(marchDelta);
         positionWS = positionWS- viewDirWS*projectionDistance*INSTANCE(_DepthBufferScale);
         depth=EyeToRawDepth(TransformWorldToEyeDepth(positionWS,UNITY_MATRIX_V));
     #endif

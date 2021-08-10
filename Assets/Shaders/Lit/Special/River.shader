@@ -64,9 +64,9 @@
             #pragma shader_feature_local _FRESNEL
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             
-			#include "Assets/Shaders/Library/CommonInclude.hlsl"
-			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
-            #include "Assets/Shaders/Library/GlobalIlluminationInclude.hlsl"
+            #define GI
+			#include "Assets/Shaders/Library/Common.hlsl"
+			#include "Assets/Shaders/Library/Lighting.hlsl"
             
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
             TEXTURE2D(_CausticTex);SAMPLER(sampler_CausticTex);
@@ -90,11 +90,11 @@
 				INSTANCING_PROP(float,_DepthDistance)
 				INSTANCING_PROP(float,_CausticStrength)
 			INSTANCING_BUFFER_END
-            
-            #include "Assets/Shaders/Library/Additional/HorizonBend.hlsl"
-            #pragma shader_feature _HORIZONBEND
+
             #include "Assets/Shaders/Library/Additional/Local/WaveInteraction.hlsl"
-            #pragma shader_feature_local _WAVEINTERACTION
+            #pragma multi_compile_local _ _WAVEINTERACTION
+            #include "Assets/Shaders/Library/Additional/HorizonBend.hlsl"
+            #pragma multi_compile _ _HORIZONBEND
 
             struct a2v
             {

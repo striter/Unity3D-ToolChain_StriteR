@@ -1,6 +1,6 @@
 ﻿#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-#include "Assets/Shaders/Library/ValueMapping.hlsl"
-#include "Assets/Shaders/Library/Transformations.hlsl"
+#include "Assets/Shaders/Library/Common/ValueMapping.hlsl"
+#include "Assets/Shaders/Library/Common/Transformations.hlsl"
 float2 TransformTex(float2 _uv, float4 _st) {return _uv * _st.xy + _st.zw;}
 #define PI_HALF 1.5707963267949
 #define PI_TWO 6.2831853071796
@@ -179,15 +179,14 @@ float3 _FrustumCornersRayTR;
 
 float3 TransformNDCToViewDirWS(float2 uv){return bilinearLerp(_FrustumCornersRayTL, _FrustumCornersRayTR, _FrustumCornersRayBL, _FrustumCornersRayBR, uv);}
 float3 TransformNDCToWorld_Frustum(half2 uv,half _rawDepth){ return GetCameraPositionWS() + RawToEyeDepth(_rawDepth) *  TransformNDCToViewDirWS(uv);}
-float3 TransformNDCToWorld_VPMatrix(half2 uv,half _depth){ return TransformClipToWorld(TransformNDCToClip(uv,_depth));}
-
-float3 TransformNDCToWorld(half2 uv,half depth)
+float3 TransformNDCToWorld_VPMatrix(half2 uv,half _rawDepth){ return TransformClipToWorld(TransformNDCToClip(uv,_rawDepth));}
+float3 TransformNDCToWorld(float2 uv,half rawDepth)
 {
     [branch]
     if(unity_OrthoParams.w)
-        return TransformNDCToWorld_VPMatrix(uv,depth);
+        return TransformNDCToWorld_VPMatrix(uv,rawDepth);
     else
-        return TransformNDCToWorld_Frustum(uv,depth);
+        return TransformNDCToWorld_Frustum(uv,rawDepth);
 }
 
 //Normals
@@ -264,4 +263,4 @@ float2 UVRemap_TRS(float2 uv,float2 offset, float rotateAngle, float2 tilling)
 #define INSTANCE(param) UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial,param)
 #define TRANSFORM_TEX_INSTANCE(uv,tex) TransformTex(uv,INSTANCE(tex##_ST))
 
-#include "Noise.hlsl"
+#include "Assets/Shaders/Library/Common/Noise.hlsl"

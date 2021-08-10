@@ -136,7 +136,7 @@ Material:
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 1
-    - _ParallaxCount: 32
+    - _ParallaxCount: 16
     - _Parallex: 1
     - _ParallexCount: 16
     - _QueueOffset: 0

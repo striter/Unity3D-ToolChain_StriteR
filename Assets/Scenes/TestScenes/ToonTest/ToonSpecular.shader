@@ -62,11 +62,11 @@
 			#pragma vertex vert
 			#pragma fragment frag
             #pragma target 3.5
-			
-			#include "Assets/Shaders/Library/CommonInclude.hlsl"
-			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
-			#include "Assets/Shaders/Library/BRDFInclude.hlsl"
-			#include "Assets/Shaders/Library/GlobalIlluminationInclude.hlsl"
+
+			#define BDRF
+			#define GI
+			#include "Assets/Shaders/Library/Common.hlsl"
+			#include "Assets/Shaders/Library/Lighting.hlsl"
 			
 			#pragma multi_compile_instancing
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS

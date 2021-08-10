@@ -7,7 +7,7 @@
 
 	
     HLSLINCLUDE
-    #include "Assets/Shaders/Library/PostProcessInclude.hlsl"
+    #include "Assets/Shaders/Library/PostProcess.hlsl"
     #pragma target 3.5
 	float _BlurSize;
 	uint _Iteration;

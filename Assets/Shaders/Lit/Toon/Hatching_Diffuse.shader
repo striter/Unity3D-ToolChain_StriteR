@@ -24,7 +24,7 @@
 			#pragma fragment frag
 
 			#include "Assets/Shaders/Library/CommonInclude.hlsl"
-			#include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
+			#include "Assets/Shaders/Library/Lighting.hlsl"
 			
 			#pragma shader_feature_local _WORLD_UV
 			

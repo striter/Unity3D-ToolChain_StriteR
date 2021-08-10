@@ -1,5 +1,6 @@
 ﻿#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
+
 //Diffuse-Lambert
 float GetDiffuse(float3 normal,float3 lightDir)
 {
@@ -59,3 +60,13 @@ float SampleHardShadow(TEXTURE2D_SHADOW_PARAM(_ShadowMap, _sampler_ShadowMap),fl
     attenuation = LerpWhiteTo(attenuation, _shadowStrength);
     return BEYOND_SHADOW_FAR(_shadowCoords) ? 1.0 : attenuation;
 }
+
+#ifdef GI
+#include "Lighting/GlobalIllumination.hlsl"
+#endif 
+
+#ifdef BRDF
+#include "Lighting/BRDFMethods.hlsl"
+#include "Lighting/BRDFInput.hlsl"
+#include "Lighting/BRDFLighting.hlsl"
+#endif
