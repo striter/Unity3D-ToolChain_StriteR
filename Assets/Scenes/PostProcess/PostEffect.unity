@@ -261,7 +261,7 @@ MonoBehaviour:
     m_SampleCount: 16
     m_Dither: 1
     m_RandomVectorKeywords: Test
-  m_SceneViewPreview: 1
+  m_SceneViewPreview: 0
 --- !u!20 &289594998
 Camera:
   m_ObjectHideFlags: 0
@@ -1569,7 +1569,7 @@ MonoBehaviour:
       m_DownSample: 2
       m_Angle: 0
       m_Vector: {x: 0, y: 0}
-  m_SceneViewPreview: 1
+  m_SceneViewPreview: 0
 --- !u!114 &1230212950
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1614,16 +1614,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b62db4376f6a80241a778bd4d3ab7a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectData:
-    threshold: 1.517
-    intensity: 0.26
-    m_BlurParams:
-      m_BlurType: 3
-      m_BlurSize: 2.5
-      m_Iteration: 8
-      m_DownSample: 1
-      m_Angle: 0
-      m_Vector: {x: 0.5, y: 0.5}
   m_SceneViewPreview: 0
 --- !u!1 &1397122141
 GameObject:
@@ -1847,7 +1837,6 @@ GameObject:
   - component: {fileID: 1941222566}
   - component: {fileID: 1941222563}
   - component: {fileID: 1941222565}
-  - component: {fileID: 1941222567}
   m_Layer: 0
   m_Name: Post1
   m_TagString: MainCamera
@@ -1862,7 +1851,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1941222562}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1d512aa3e72031e45b724413deb89fce, type: 3}
   m_Name: 
@@ -1959,39 +1948,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectData:
-    m_Weight: 0.423
-    m_LUT: {fileID: 2800000, guid: a0fb9abcbebf1304081947afc184b7c7, type: 3}
+    m_FXAA: 1
+    m_ContrastSkip: 0.312
+    m_RelativeSkip: 0.16
+    m_Strength: 1
+    m_LUT: 1
+    m_LUTTex: {fileID: 2800000, guid: a0fb9abcbebf1304081947afc184b7c7, type: 3}
     m_LUTCellCount: 32
-    m_brightness: 1
-    m_saturation: 1
-    m_contrast: 1
+    m_LUTWeight: 1
+    m_BSC: 1
+    m_Brightness: 1
+    m_Saturation: 1
+    m_Contrast: 1
+    m_ChannelMix: 0
     m_MixRed: {x: 0, y: 0, z: 0}
     m_MixGreen: {x: 0, y: 0, z: 0}
     m_MixBlue: {x: 0, y: 0, z: 0}
-  m_SceneViewPreview: 0
---- !u!114 &1941222567
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1941222562}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b62db4376f6a80241a778bd4d3ab7a35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectData:
-    threshold: 0.22
-    intensity: 0.31
-    m_BlurParams:
+    m_Bloom: 1
+    m_Threshold: 1.437
+    m_Intensity: 0.65
+    m_Blur:
       m_BlurType: 3
-      m_BlurSize: 1.08
-      m_Iteration: 5
-      m_DownSample: 4
+      m_BlurSize: 0.58
+      m_Iteration: 8
+      m_DownSample: 2
       m_Angle: 0
-      m_Vector: {x: 0.5, y: 0.5}
-  m_SceneViewPreview: 0
+      m_Vector: {x: 0, y: 0}
+    m_BloomDebug: 0
+  m_SceneViewPreview: 1
 --- !u!20 &1941222569
 Camera:
   m_ObjectHideFlags: 0
@@ -2011,10 +1995,10 @@ Camera:
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: -0.65
+    x: 0
     y: 0.65
-    width: 1
-    height: 1
+    width: 0.35
+    height: 0.35
   near clip plane: 0.3
   far clip plane: 40
   field of view: 60

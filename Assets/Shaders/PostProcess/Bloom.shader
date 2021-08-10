@@ -6,8 +6,7 @@ Shader "Hidden/PostProcess/Bloom"
    }
 
    HLSLINCLUDE
-        #include "Assets/Shaders/Library/PostProcessInclude.hlsl"
-       TEXTURE2D(_Bloom_Blur);SAMPLER(sampler_Bloom_Blur);
+        #include "Assets/Shaders/Library/PostProcess.hlsl"
 
        half _Intensity;
        half _Threshold;
@@ -19,6 +18,7 @@ Shader "Hidden/PostProcess/Bloom"
             return color;
         }
 
+       TEXTURE2D(_Bloom_Blur);SAMPLER(sampler_Bloom_Blur);
         float4 fragAddBloomTex(v2f_img i) : SV_Target
         {
             float4 color;

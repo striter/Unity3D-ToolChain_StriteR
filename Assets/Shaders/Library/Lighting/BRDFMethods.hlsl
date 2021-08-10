@@ -1,14 +1,4 @@
-﻿#define PI_ONE 3.1415926535
-#define PI_TWO 6.2831853071796
-#define PI_FOUR 12.566370614359
-#define PI_SQRT2 0.797884560802865
-#define PI_ONEMINUS 0.31830988618379
-
-float pow2(float value){ return value * value; }
-float pow3(float value) { return value*value*value; }
-float pow4(float value) { return value * value * value * value ;}
-float pow5(float value) { return value * value * value * value * value;}
-
+﻿
 //NDF,Normal Distribution Function
 float NDF_BlinnPhong(float NDH, float specularPower, float specularGloss)
 {

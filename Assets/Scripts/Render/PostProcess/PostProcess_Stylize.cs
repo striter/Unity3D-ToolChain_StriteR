@@ -80,16 +80,35 @@ namespace Rendering.ImageEffect
         public override void OnValidate(ref PPData_Stylize _params)
         {
             base.OnValidate(ref _params);
-            m_Material.EnableKeywords(KW_PixelGrid, (int)_params.m_PixelGrid);
-            m_Material.SetColor(ID_PixelGridColor,_params.m_PixelGridColor);
-            m_Material.SetVector(ID_PixelGridWidth, new Vector2(_params.m_GridWidth, 1f - _params.m_GridWidth));
-            m_Material.SetVector(ID_OilPaintKernel, new Vector2(-_params.m_OilPaintKernel / 2, _params.m_OilPaintKernel / 2 + 1));
-            m_Material.SetFloat(ID_OilPaintSize, _params.m_OilPaintSize);
-            m_Material.SetFloat(ID_ObraDitherScale, _params.m_ObraDitherScale);
-            m_Material.SetFloat(ID_ObraDitherStrength, _params.m_ObraDitherStrength);
-            m_Material.SetColor(ID_ObraDitherColor, _params.m_ObraDitherColor);
-            m_Material.SetFloat(ID_BilateralSize, _params.m_BilaterailSize);
-            m_Material.SetFloat(ID_BilateralFactor, _params.m_BilateralFactor);
+            switch (_params.m_Stylize)
+            {
+                case EStylize.Pixel:
+                {
+                    if (m_Material.EnableKeywords(KW_PixelGrid, _params.m_PixelGrid))
+                    {
+                        m_Material.SetColor(ID_PixelGridColor,_params.m_PixelGridColor);
+                        m_Material.SetVector(ID_PixelGridWidth, new Vector2(_params.m_GridWidth, 1f - _params.m_GridWidth));
+                    }
+
+                } break;
+                case EStylize.BilateralFilter:
+                {
+                    m_Material.SetFloat(ID_BilateralSize, _params.m_BilaterailSize);
+                    m_Material.SetFloat(ID_BilateralFactor, _params.m_BilateralFactor);
+                } break;
+                case EStylize.ObraDithering:
+                {
+                    m_Material.SetFloat(ID_ObraDitherScale, _params.m_ObraDitherScale);
+                    m_Material.SetFloat(ID_ObraDitherStrength, _params.m_ObraDitherStrength);
+                    m_Material.SetColor(ID_ObraDitherColor, _params.m_ObraDitherColor);
+                } break;
+                case EStylize.OilPaint:
+                {
+                    int kernel = _params.m_OilPaintKernel / 2;
+                    m_Material.SetVector(ID_OilPaintKernel, new Vector2(-kernel, kernel+ 1));
+                    m_Material.SetFloat(ID_OilPaintSize, _params.m_OilPaintSize);
+                } break;
+            }
         }
         public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor,ref PPData_Stylize _data)
         {

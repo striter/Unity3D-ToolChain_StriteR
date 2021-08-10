@@ -29,8 +29,8 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			
-            #include "Assets/Shaders/Library/CommonInclude.hlsl"
-            #include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
+            #include "Assets/Shaders/Library/Common.hlsl"
+            #include "Assets/Shaders/Library/Lighting.hlsl"
 
             #pragma shader_feature_local _BITANGENT
 		    #pragma shader_feature_local _NORMALMAP

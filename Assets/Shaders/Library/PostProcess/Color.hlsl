@@ -1,9 +1,12 @@
-﻿half luminance(half3 color){ return 0.299h * color.r + 0.587h * color.g + 0.114h * color.b; }
-
-float3 Saturation(float3 c,float _saturation)
+﻿half Luminance(half3 color)
 {
-    float luma =  dot(c, float3(0.2126729, 0.7151522, 0.0721750));
-    return luma.xxx + _saturation.xxx * (c - luma.xxx);
+    return dot(color,half3(0.2126729h,  0.7151522h, 0.0721750h));
+}
+
+half3 Saturation(half3 c,half _saturation)
+{
+    half lum = Luminance(c);
+    return lum.xxx + _saturation.xxx * (c - lum.xxx);
 }
 
 half3 SampleLUT(half3 sampleCol,Texture2D _lutTex,SamplerState _lutSampler,float4 _lutTextelSize,uint _lutCellCount) {

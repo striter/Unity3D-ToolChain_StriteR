@@ -93,7 +93,7 @@ namespace Rendering.ImageEffect
     public class PPCore_VHS:PostProcessCore<PPData_VHS>
     {
         #region ShaderProperties
-        static readonly string[] KW_SCREENCUT = new string[2] { "_SCREENCUT_HARD", "_SCREENCUT_SCALED" };
+        static readonly string[] KW_SCREENCUT = { "_SCREENCUT_HARD", "_SCREENCUT_SCALED" };
         static readonly int ID_ScreenCutTarget = Shader.PropertyToID("_ScreenCutTarget");
 
         const string KW_ColorBleed = "_COLORBLEED";
@@ -132,7 +132,7 @@ namespace Rendering.ImageEffect
         public override void OnValidate(ref PPData_VHS _data)
         {
             base.OnValidate(ref _data);
-            m_Material.EnableKeywords(KW_SCREENCUT, (int)_data.m_ScreenCut);
+            m_Material.EnableKeywords(KW_SCREENCUT, _data.m_ScreenCut);
             m_Material.SetVector(ID_ScreenCutTarget,(Vector2.one+ (_data.m_ScreenCut == EVHSScreenCut.Scaled?1:-1)*_data.m_ScreenCutDistance) /2f);
 
             m_Material.EnableKeyword(KW_ColorBleed, _data.m_ColorBleed);

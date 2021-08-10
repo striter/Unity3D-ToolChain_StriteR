@@ -190,14 +190,22 @@ public static class URender
     }
     #endregion
     //Material
-    public static void EnableKeyword(this Material _material, string _keyword, bool _enable)
+    public static bool EnableKeyword(this Material _material, string _keyword, bool _enable)
     {
         if (_enable)
             _material.EnableKeyword(_keyword);
         else
             _material.DisableKeyword(_keyword);
+        return _enable;
     }
-    public static void EnableKeywords<T>(this Material _material, string[] _keywords, T _target) where T : Enum => EnableKeywords(_material, _keywords, Convert.ToInt32(_target));
+
+    public static bool EnableKeywords<T>(this Material _material, string[] _keywords, T _target) where T : Enum
+    {
+        int index = Convert.ToInt32(_target);
+        EnableKeywords(_material, _keywords, index);
+        return index != 0;
+    }
+
     public static void EnableKeywords(this Material _material, string[] _keywords, int _target)
     {
         for (int i = 0; i < _keywords.Length; i++)
