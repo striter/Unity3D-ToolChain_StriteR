@@ -14,16 +14,19 @@
 	float _Angle;
 	float2 _Vector;
 	static const float gaussianWeight3[3] = {0.4026,0.2442,0.0545};
-
+    float4 SampleBlurTex(float2 uv)
+    {
+	    return SampleMainTex(uv);
+    }
 	//Kawase
 	float4 fragKawase(v2f_img i):SV_TARGET
 	{
 		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
 		float4 sum = 0;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, 1)*uvDelta);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1,0)*uvDelta);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -1)*uvDelta);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, 0)*uvDelta);
+		sum += SampleBlurTex(i.uv + float2(0, 1)*uvDelta);
+		sum += SampleBlurTex(i.uv + float2(1,0)*uvDelta);
+		sum += SampleBlurTex(i.uv + float2(0, -1)*uvDelta);
+		sum += SampleBlurTex(i.uv + float2(-1, 0)*uvDelta);
 		return sum*.25;
 	}
 
@@ -31,21 +34,21 @@
 	float4 fragAverageBlurHorizontal(v2f_img i):SV_TARGET
 	{
 		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
-		float4 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1, 0)*uvDelta);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, 0)*uvDelta);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(2, 0)*uvDelta);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-2, 0)*uvDelta);
+		float4 sum = SampleBlurTex(i.uv);
+		sum += SampleBlurTex(i.uv + float2(1, 0)*uvDelta);
+		sum += SampleBlurTex(i.uv + float2(-1, 0)*uvDelta);
+		sum += SampleBlurTex(i.uv + float2(2, 0)*uvDelta);
+		sum += SampleBlurTex(i.uv + float2(-2, 0)*uvDelta);
 		return sum*.2;
 	}
 	float4 fragAverageBlurVertical(v2f_img i):SV_TARGET
 	{
 		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
-		float4 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,1)*uvDelta);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -1)*uvDelta);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, 2)*uvDelta);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -2)*uvDelta);
+		float4 sum = SampleBlurTex(i.uv);
+		sum += SampleBlurTex(i.uv + float2(0,1)*uvDelta);
+		sum += SampleBlurTex(i.uv + float2(0, -1)*uvDelta);
+		sum += SampleBlurTex(i.uv + float2(0, 2)*uvDelta);
+		sum += SampleBlurTex(i.uv + float2(0, -2)*uvDelta);
 		return sum*.2;
 	}
 		
@@ -53,21 +56,21 @@
 	float4 fragGaussianBlurHorizontal(v2f_img i) :SV_TARGET
 	{
 		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
-		float4 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*gaussianWeight3[0];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1,0)*uvDelta)*gaussianWeight3[1];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1,0)*uvDelta)*gaussianWeight3[1];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(2,0)*uvDelta)*gaussianWeight3[2];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-2,0)*uvDelta)*gaussianWeight3[2];
+		float4 sum = SampleBlurTex(i.uv)*gaussianWeight3[0];
+		sum += SampleBlurTex(i.uv + float2(1,0)*uvDelta)*gaussianWeight3[1];
+		sum += SampleBlurTex(i.uv + float2(-1,0)*uvDelta)*gaussianWeight3[1];
+		sum += SampleBlurTex(i.uv + float2(2,0)*uvDelta)*gaussianWeight3[2];
+		sum += SampleBlurTex(i.uv + float2(-2,0)*uvDelta)*gaussianWeight3[2];
 		return sum;
 	}
 	float4 fragGaussianBlurVertical(v2f_img i) :SV_TARGET
 	{
 		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
-		float4 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*gaussianWeight3[0];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,1)*uvDelta)*gaussianWeight3[1];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,-1)*uvDelta)*gaussianWeight3[1];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,2)*uvDelta)*gaussianWeight3[2];
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0,-2)*uvDelta)*gaussianWeight3[2];
+		float4 sum = SampleBlurTex(i.uv)*gaussianWeight3[0];
+		sum += SampleBlurTex(i.uv + float2(0,1)*uvDelta)*gaussianWeight3[1];
+		sum += SampleBlurTex(i.uv + float2(0,-1)*uvDelta)*gaussianWeight3[1];
+		sum += SampleBlurTex(i.uv + float2(0,2)*uvDelta)*gaussianWeight3[2];
+		sum += SampleBlurTex(i.uv + float2(0,-2)*uvDelta)*gaussianWeight3[2];
 		return sum;
 	}
 	
@@ -75,11 +78,11 @@
 	float4 fragDualFilteringDownSample(v2f_img i):SV_TARGET
 	{
 		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
-		float4 sum = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*4;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, 1)*uvDelta);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1, 0)*uvDelta);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -1)*uvDelta);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, 0)*uvDelta);
+		float4 sum = SampleBlurTex(i.uv)*4;
+		sum += SampleBlurTex(i.uv + float2(0, 1)*uvDelta);
+		sum += SampleBlurTex(i.uv + float2(1, 0)*uvDelta);
+		sum += SampleBlurTex(i.uv + float2(0, -1)*uvDelta);
+		sum += SampleBlurTex(i.uv + float2(-1, 0)*uvDelta);
 		return sum*.125;
 	}
 
@@ -87,14 +90,14 @@
 	{
 		float2 uvDelta=_MainTex_TexelSize.xy;
 		float4 sum =0;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, 2)*uvDelta);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(2,0)*uvDelta);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(0, -2)*uvDelta);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-2, 0)*uvDelta);
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1, 1)*uvDelta)*2;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(1, -1)*uvDelta)*2;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, 1)*uvDelta)*2;
-		sum += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv + float2(-1, -1)*uvDelta)*2;
+		sum += SampleBlurTex(i.uv + float2(0, 2)*uvDelta);
+		sum += SampleBlurTex(i.uv + float2(2,0)*uvDelta);
+		sum += SampleBlurTex(i.uv + float2(0, -2)*uvDelta);
+		sum += SampleBlurTex(i.uv + float2(-2, 0)*uvDelta);
+		sum += SampleBlurTex(i.uv + float2(1, 1)*uvDelta)*2;
+		sum += SampleBlurTex(i.uv + float2(1, -1)*uvDelta)*2;
+		sum += SampleBlurTex(i.uv + float2(-1, 1)*uvDelta)*2;
+		sum += SampleBlurTex(i.uv + float2(-1, -1)*uvDelta)*2;
 		return sum*.08333;
 	}
 	
@@ -103,7 +106,7 @@
 	{
 		float2 delta=_MainTex_TexelSize.xy*_BlurSize;
 		float2 randomUV=randomUnitCircle(i.uv)*random01(i.uv)*delta;
-		float4 sum=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+randomUV);
+		float4 sum=SampleBlurTex(i.uv+randomUV);
 		return sum;
 	}
 
@@ -120,7 +123,7 @@
 		{
 			r+=1.0/r;
 			rotate=mul(rot,rotate);
-			float4 bokeh=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+(r-1.0)*rotate*_MainTex_TexelSize.xy);
+			float4 bokeh=SampleBlurTex(i.uv+(r-1.0)*rotate*_MainTex_TexelSize.xy);
 			sum+=bokeh;
 		}
 		return sum/_Iteration;
@@ -169,7 +172,7 @@
 		float4 sum=0;
 		for(uint j=0;j<_Iteration;j++)
 		{
-			sum+=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
+			sum+=SampleBlurTex(i.uv);
 			i.uv+=offset;
 		}
 		return sum/_Iteration;
@@ -181,7 +184,7 @@
 		int iteration=max(_Iteration/2,1);
 		float2 offset=_Vector*_MainTex_TexelSize.xy*_BlurSize;
 		for(int j=-iteration;j<iteration;j++)
-			sum+=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+j*offset);
+			sum+=SampleBlurTex(i.uv+j*offset);
 		return sum/(iteration*2);
 	}
 	ENDHLSL

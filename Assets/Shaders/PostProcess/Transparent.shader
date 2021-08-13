@@ -1,4 +1,4 @@
-Shader "Hidden/PostProcess/VolumetricLight"
+Shader "Hidden/PostProcess/Transparent"
 {
     Properties
     {

@@ -4,10 +4,10 @@ using UnityEngine.Rendering;
 
 namespace Rendering.PostProcess
 {
-    public class PostProcess_VolumetricLight : PostProcessComponentBase<PPCore_VolumetricLight, PPData_VolumetricLight>
+    public class PostProcess_Transparent : PostProcessComponentBase<PPCore_Transparent, PPData_Transparent>
     {
         public override bool m_OpaqueProcess => false;
-        public override EPostProcess Event => EPostProcess.Volumetric;
+        public override EPostProcess Event => EPostProcess.Transparent;
     }
     public enum EMarchTimes
     {
@@ -19,7 +19,7 @@ namespace Rendering.PostProcess
     }
 
     [Serializable]
-    public struct PPData_VolumetricLight
+    public struct PPData_Transparent
     {
         [Header("Volumetric")]
         public bool m_VolumetricLight;
@@ -30,7 +30,7 @@ namespace Rendering.PostProcess
         [MTitle] public bool m_EnableBlur;
         [MFoldout(nameof(m_EnableBlur), true)] public PPData_Blurs m_Blur;
         
-        public static readonly PPData_VolumetricLight m_Default = new PPData_VolumetricLight()
+        public static readonly PPData_Transparent m_Default = new PPData_Transparent()
         {
             m_DownSample = 1,
             m_EnableBlur=false,
@@ -79,7 +79,7 @@ namespace Rendering.PostProcess
 
     }
 
-    public class PPCore_VolumetricLight : PostProcessCore<PPData_VolumetricLight>
+    public class PPCore_Transparent : PostProcessCore<PPData_Transparent>
     {
         public enum EPassIndex
         {
@@ -95,7 +95,7 @@ namespace Rendering.PostProcess
         private const string KW_VolumetricLight = "_VOLUMETRICLIGHT";
         #endregion
         readonly PPCore_Blurs m_CoreBlur;
-        public PPCore_VolumetricLight():base()
+        public PPCore_Transparent():base()
         {
             m_CoreBlur = new PPCore_Blurs();}
         
@@ -105,14 +105,14 @@ namespace Rendering.PostProcess
             m_CoreBlur.Destroy();
         }
 
-        public override void OnValidate(ref PPData_VolumetricLight _data)
+        public override void OnValidate(ref PPData_Transparent _data)
         {
             base.OnValidate(ref _data);
             if(m_Material.EnableKeyword(KW_VolumetricLight, _data.m_VolumetricLight))
                 _data.m_VolumetricLightData.Apply(m_Material);
             m_CoreBlur.OnValidate(ref _data.m_Blur);
         }
-        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor,ref PPData_VolumetricLight _data)
+        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor,ref PPData_Transparent _data)
         {
             _descriptor.width /= _data.m_DownSample;
             _descriptor.height /= _data.m_DownSample;

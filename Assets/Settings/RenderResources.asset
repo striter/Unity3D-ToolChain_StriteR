@@ -13,20 +13,13 @@ MonoBehaviour:
   m_Name: RenderResources
   m_EditorClassIdentifier: 
   m_PostProcesses:
-  - {fileID: 4800000, guid: 9453b9da76fbee94d92c3edde7a7e689, type: 3}
-  - {fileID: 4800000, guid: dfd04e2c419bcaf4a8b618abb7f84b61, type: 3}
-  - {fileID: 4800000, guid: 719f100b2d290364cbbf16fcff0b327c, type: 3}
   - {fileID: 4800000, guid: ae805a421560b0f48a9f988528831f5e, type: 3}
-  - {fileID: 4800000, guid: 30b1b36067ff2714dac6d5e77d84577f, type: 3}
-  - {fileID: 4800000, guid: a559f40a327103d4b89ee31bafe8fabe, type: 3}
-  - {fileID: 4800000, guid: f8db1410051e3c044b8cb9f35d6da57e, type: 3}
-  - {fileID: 4800000, guid: c03f14583bc32f644a4ce1d474e7dd82, type: 3}
-  - {fileID: 4800000, guid: 5bffe5df160393247bbe4cb316a6f4ee, type: 3}
-  - {fileID: 4800000, guid: 55fc08aa61c5d32479106887aef7b89d, type: 3}
-  - {fileID: 4800000, guid: 7ccdbb112b4ac774189631ba207682d3, type: 3}
-  - {fileID: 4800000, guid: 74d485148f6d9444dbb7f87a27534642, type: 3}
-  - {fileID: 4800000, guid: 86adbd81b0f3f154f804e5d02e77ed62, type: 3}
+  - {fileID: 4800000, guid: 9453b9da76fbee94d92c3edde7a7e689, type: 3}
+  - {fileID: 4800000, guid: 719f100b2d290364cbbf16fcff0b327c, type: 3}
   - {fileID: 4800000, guid: d20b6fd516bdc6b4884dcbdbf12fa0e1, type: 3}
+  - {fileID: 4800000, guid: 5bffe5df160393247bbe4cb316a6f4ee, type: 3}
+  - {fileID: 4800000, guid: dfd04e2c419bcaf4a8b618abb7f84b61, type: 3}
+  - {fileID: 4800000, guid: a559f40a327103d4b89ee31bafe8fabe, type: 3}
   m_HiddenShaders:
   - {fileID: 4800000, guid: 62fc33af7d0daa54c94cf92b5f0c412e, type: 3}
   - {fileID: 4800000, guid: 33d30261c83fcee41a89f1ad6bdd5489, type: 3}

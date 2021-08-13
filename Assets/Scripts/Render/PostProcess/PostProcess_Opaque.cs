@@ -442,7 +442,7 @@ namespace Rendering.PostProcess
             //     Color = 3,
             // }
 
-            [ColorUsage(true, true)] public Color m_Color;
+            [ColorUsage(true)] public Color m_Color;
             [Header("Options")]
             [Range(.1f, 3f)] public float m_Width;
             // public EConvolution m_Convolution;
@@ -473,7 +473,7 @@ namespace Rendering.PostProcess
         public struct Data_Highlight
         {
             [CullingMask] public int m_CullingMask;
-            public Color m_Color;
+            [ColorUsage(true,true)]public Color m_Color;
             public bool m_ZClip;
             [MFoldout(nameof(m_ZClip), true)] public bool m_ZLesser;
             [MFoldout(nameof(m_ZClip),true)] [Range(0.01f,1f)] public float m_ZOffset;

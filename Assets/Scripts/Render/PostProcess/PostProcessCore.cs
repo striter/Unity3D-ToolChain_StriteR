@@ -8,7 +8,7 @@ namespace Rendering.PostProcess
     public enum EPostProcess
     {
         Opaque=0,
-        Volumetric=1,
+        Transparent=1,
         ColorUpgrade=2,
         ColorDegrade=3,
         Stylize=4,
