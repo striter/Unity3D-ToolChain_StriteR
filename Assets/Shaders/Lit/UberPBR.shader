@@ -135,8 +135,8 @@
 			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			#define BRDF
-			#define GI
+			#define IBRDF
+			#define IGI
 			#include "Assets/Shaders/Library/Lighting.hlsl"
 			
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
@@ -155,7 +155,6 @@
 				half3 tangentWS=normalize(i.tangentWS);
 				float3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
 				half3 viewDirWS=normalize(i.viewDirWS);
-				half3 lightDirWS=normalize(_MainLightPosition.xyz);
 				half3 normalTS=half3(0,0,1);
 				float2 baseUV=i.uv.xy;
 				depth=i.positionCS.z;

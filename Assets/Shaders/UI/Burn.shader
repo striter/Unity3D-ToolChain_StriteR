@@ -55,7 +55,7 @@
 		sampler2D _MainTex;
 	sampler2D _NoiseTex;
 	half4 _BurnColor;
-	float4 _Color;
+	float4 _ScanColor;
 	half _Progress;
 	half _BurnWidth;
 
@@ -76,7 +76,7 @@
 		v2f o;
 		o.vertex = UnityObjectToClipPos(i.vertex);
 		o.uv = i.texcoord;
-		o.color = i.color*_Color;
+		o.color = i.color*_ScanColor;
 		return o;
 	}
 	fixed4 frag(v2f v) :COLOR

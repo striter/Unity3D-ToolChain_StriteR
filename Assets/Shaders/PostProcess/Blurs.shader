@@ -127,12 +127,12 @@
 	}
 
 	//Hexagon Blur
-	float4 HexagonBlurTexture(Texture2D tex,SamplerState samp,float2 uv,float2 direction)
+	float4 HexagonBlurTexture(TEXTURE2D_PARAM(_tex,_samp),float2 uv,float2 direction)
 	{
 		float4 finalCol=0;
 		for(uint i=0;i<_Iteration;i++)
 		{
-			float4 hexagonBlur=SAMPLE_TEXTURE2D(tex,samp,uv+direction*float2(i+.5,i+.5));
+			float4 hexagonBlur=SAMPLE_TEXTURE2D(_tex,_samp,uv+direction*float2(i+.5,i+.5));
 			finalCol+=hexagonBlur;
 		}
 		return finalCol/_Iteration;
@@ -141,24 +141,24 @@
 	float4 fragHexagonVertical(v2f_img i):SV_TARGET
 	{
 		float2 dir=float2(cos(_Angle -PI/2),sin(_Angle-PI/2))*_MainTex_TexelSize.xy*_BlurSize;
-		return HexagonBlurTexture(_MainTex,sampler_MainTex,i.uv,dir);
+		return HexagonBlurTexture(TEXTURE2D_ARGS( _MainTex,sampler_MainTex),i.uv,dir);
 	}
 
 	TEXTURE2D(_Hexagon_Vertical);SAMPLER(sampler_Hexagon_Vertical);
 	float4 fragHexagonDiagonal(v2f_img i):SV_TARGET
 	{
 		float2 dir=float2(cos(_Angle+PI/6),sin(_Angle+PI/6))*_MainTex_TexelSize.xy*_BlurSize;
-		return (SAMPLE_TEXTURE2D(_Hexagon_Vertical,sampler_Hexagon_Vertical,i.uv)+HexagonBlurTexture(_MainTex,sampler_MainTex,i.uv,dir))/2;
+		return (SAMPLE_TEXTURE2D(_Hexagon_Vertical,sampler_Hexagon_Vertical,i.uv)+HexagonBlurTexture(TEXTURE2D_ARGS( _MainTex,sampler_MainTex),i.uv,dir))/2;
 	}
 
 	TEXTURE2D( _Hexagon_Diagonal);SAMPLER(sampler_Hexagon_Diagonal);
 	float4 fragHexagonRamboid(v2f_img i):SV_TARGET
 	{
 		float2 verticalBlurDirection=float2(cos(_Angle+PI/6),sin(_Angle+PI/6))*_MainTex_TexelSize.xy*_BlurSize;
-		float4 vertical=HexagonBlurTexture(_Hexagon_Vertical,sampler_Hexagon_Vertical,i.uv,verticalBlurDirection);
+		float4 vertical=HexagonBlurTexture(TEXTURE2D_ARGS( _Hexagon_Vertical,sampler_Hexagon_Vertical),i.uv,verticalBlurDirection);
 
 		float2 diagonalBlurDirection=float2(cos(_Angle+PI*5/6),sin(_Angle+PI*5/6))*_MainTex_TexelSize.xy*_BlurSize;
-		float4 diagonal=HexagonBlurTexture(_Hexagon_Diagonal,sampler_Hexagon_Diagonal,i.uv,diagonalBlurDirection);
+		float4 diagonal=HexagonBlurTexture(TEXTURE2D_ARGS( _Hexagon_Diagonal,sampler_Hexagon_Diagonal),i.uv,diagonalBlurDirection);
 		return (vertical+diagonal*2)/3;
 	}
 

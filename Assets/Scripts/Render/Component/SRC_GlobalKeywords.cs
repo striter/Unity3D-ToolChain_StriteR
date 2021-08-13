@@ -5,11 +5,12 @@ using UnityEngine;
 
 namespace Rendering.Pipeline
 {
+    [ExecuteInEditMode]
     public class SRC_GlobalKeywords : MonoBehaviour
     {
-        public GlobalKeyword_EditGrid m_EditGrid;
-        public GlobalKeyword_CloudShadow m_CloudShadow;
-        public GlobalKeyword_HorizonBend m_HorizonBend;
+        public GlobalKeyword_EditGrid m_EditGrid=new GlobalKeyword_EditGrid();
+        public GlobalKeyword_CloudShadow m_CloudShadow=new GlobalKeyword_CloudShadow();
+        public GlobalKeyword_HorizonBend m_HorizonBend=new GlobalKeyword_HorizonBend();
         private AGlobalKeyword[] m_GlobalKeywordsHelper => new AGlobalKeyword[] {m_EditGrid,m_CloudShadow,m_HorizonBend};
         private void OnDidApplyAnimationProperties()=>OnValidate();
 
@@ -17,9 +18,13 @@ namespace Rendering.Pipeline
 
         private void OnValidate()
         {
+            if (!enabled)
+                return;
+            
             foreach (AGlobalKeyword aGlobalKeyword in m_GlobalKeywordsHelper)
                 aGlobalKeyword.SetupKeywords();
         }
+        
         private void OnDisable()
         {
             foreach (AGlobalKeyword aGlobalKeyword in m_GlobalKeywordsHelper)

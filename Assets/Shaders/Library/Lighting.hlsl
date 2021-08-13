@@ -61,11 +61,11 @@ float SampleHardShadow(TEXTURE2D_SHADOW_PARAM(_ShadowMap, _sampler_ShadowMap),fl
     return BEYOND_SHADOW_FAR(_shadowCoords) ? 1.0 : attenuation;
 }
 
-#ifdef GI
+#ifdef IGI
 #include "Lighting/GlobalIllumination.hlsl"
 #endif 
 
-#ifdef BRDF
+#ifdef IBRDF
 #include "Lighting/BRDFMethods.hlsl"
 #include "Lighting/BRDFInput.hlsl"
 #include "Lighting/BRDFLighting.hlsl"

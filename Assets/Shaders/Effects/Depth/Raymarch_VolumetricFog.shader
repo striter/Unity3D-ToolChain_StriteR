@@ -24,9 +24,10 @@
             #pragma fragment frag
             #pragma target 3.5
             
-            #include "Assets/Shaders/Library/CommonInclude.hlsl"
-            #include "Assets/Shaders/Library/CommonLightingInclude.hlsl"
-            #include "Assets/Shaders/Library/GeometryInclude.hlsl"
+            #include "Assets/Shaders/Library/Common.hlsl"
+            #include "Assets/Shaders/Library/Lighting.hlsl"
+            #define IGeometryDetection
+            #include "Assets/Shaders/Library/Geometry.hlsl"
 
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
@@ -52,7 +53,7 @@
             TEXTURE3D(_Noise);SAMPLER(sampler_Noise);
             CBUFFER_START(UnityPerMaterial)
             int _RayMarch;
-            float4 _Color;
+            float4 _ScanColor;
             float _Distance;
             float _Density;
             float _DensityClip;
@@ -109,7 +110,7 @@
                 }
                 sumDensity=saturate(sumDensity);
 
-                return _Color*sumDensity;
+                return _ScanColor*sumDensity;
             }
             ENDHLSL
         }

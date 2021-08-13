@@ -73,7 +73,7 @@ Shader "Game/UI/Sprite_BSC"
 			};
 
 
-			float4 _Color;
+			float4 _ScanColor;
 
 			v2f vert(appdata_t i)
 			{
@@ -83,7 +83,7 @@ Shader "Game/UI/Sprite_BSC"
 
 				o.texcoord = i.texcoord;
 
-				o.color = i.color * _Color;
+				o.color = i.color * _ScanColor;
 				return o;
 			}
 			

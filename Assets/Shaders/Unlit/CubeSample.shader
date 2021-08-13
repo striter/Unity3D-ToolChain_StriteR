@@ -9,7 +9,7 @@ Shader "Game/Unlit/CubeSample"
     {
         Tags { "Queue" = "Geometry" }
         HLSLINCLUDE
-            #define GeometryDetection
+            #define IGeometryDetection
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "Assets/Shaders/Library/Geometry.hlsl"
             CBUFFER_START(UnityPerMaterial)

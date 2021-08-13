@@ -3,17 +3,42 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-namespace Rendering.ImageEffect
+namespace Rendering.PostProcess
 {
+    public enum EPostProcess
+    {
+        Opaque=0,
+        Volumetric=1,
+        ColorUpgrade=2,
+        ColorDegrade=3,
+        Stylize=4,
+        Default,
+    }
+
+    public interface IPostProcessPipeline<T> where T:struct
+    {
+        void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor,ref  T _data);
+        void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,ref T _data);
+        void FrameCleanUp(CommandBuffer _buffer,ref T _data);
+    }
+    
+    [ExecuteInEditMode, RequireComponent(typeof(Camera))]
+    public abstract class APostProcessBase:MonoBehaviour
+    {
+        public abstract bool m_OpaqueProcess { get; }
+        public abstract EPostProcess Event { get; }
+        public abstract void Configure( CommandBuffer _buffer, RenderTextureDescriptor _descriptor);
+        public abstract void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData);
+        public abstract void ExecuteBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _executeData);
+        public abstract void FrameCleanUp(CommandBuffer _buffer);
+        public abstract void OnValidate();
+    }
+
     [Serializable]
     public class PostProcessCore<T> where T: struct
     {
         protected Material m_Material { get; private set; }
         public PostProcessCore()
-        {
-            Create();
-        }
-        public virtual void Create()
         {
             m_Material = UPipeline.CreateMaterial(this.GetType());
         }
@@ -35,81 +60,59 @@ namespace Rendering.ImageEffect
         }
     }
 
-    [ExecuteInEditMode, RequireComponent(typeof(Camera))]
-    public abstract class APostProcessBase:MonoBehaviour
+    public abstract partial class PostProcessComponentBase<T,Y> : APostProcessBase where T : PostProcessCore<Y>, new() where Y:struct
     {
-        public abstract bool m_IsOpaqueProcess { get; }
-        public abstract void Configure( CommandBuffer _buffer, RenderTextureDescriptor _descriptor);
-        public abstract void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData);
-        public abstract void ExecuteBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _executeData);
-        public abstract void FrameCleanUp(CommandBuffer _buffer);
-        public abstract void OnValidate();
-    }
-    public interface ImageEffectPipeline<T> where T:struct
-    {
-        void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor,ref  T _data);
-        void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,ref T _data);
-        void FrameCleanUp(CommandBuffer _buffer,ref T _data);
-    }
-
-    public partial class PostProcessComponentBase<T,Y> : APostProcessBase where T : PostProcessCore<Y>, new() where Y:struct
-    {
-        [MTitle] public Y m_EffectData;
+        [MTitle] public Y m_Data;
         public bool m_SceneViewPreview = false;
         public T m_Effect { get; private set; }
-        public ImageEffectPipeline<Y> m_EffectPipeline { get; private set; }
+        public IPostProcessPipeline<Y> m_EffectPipeline { get; private set; }
         protected Camera m_Camera { get; private set; }
         protected void Awake()=>Init();
         protected void OnDestroy()=>Destroy();
-        public override void OnValidate() => m_Effect?.OnValidate(ref m_EffectData);
+        public override void OnValidate() => m_Effect?.OnValidate(ref m_Data);
         void OnDidApplyAnimationProperties() => OnValidate();       //Undocumented Magic Fucntion ,Triggered By AnimationClip
-        void Reset() => m_EffectData = UPipeline.GetDefaultPostProcessData<Y>();
+        void Reset() => m_Data = UPipeline.GetDefaultPostProcessData<Y>();
         void Init()
         {
             if (m_Effect == null)
             {
                 m_Camera = GetComponent<Camera>();
                 m_Effect = new T();
-                m_EffectPipeline = m_Effect as ImageEffectPipeline<Y>;
-                OnEffectCreate(m_Effect);
+                m_EffectPipeline = m_Effect as IPostProcessPipeline<Y>;
             }
             OnValidate();
         }
-        public override bool m_IsOpaqueProcess => false;
-        public override void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor) => m_EffectPipeline?.Configure(_buffer,_descriptor,ref m_EffectData);
-        public override void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData) => m_EffectPipeline?.ExecuteContext(_renderer, _context, ref _renderingData,ref m_EffectData);
-        public override void ExecuteBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _descriptor)  => m_Effect?.ExecutePostProcessBuffer(_buffer, _src, _dst, _descriptor,ref  m_EffectData);
-        public override void FrameCleanUp(CommandBuffer _buffer) => m_EffectPipeline?.FrameCleanUp(_buffer,ref m_EffectData);
         void Destroy()
         {
             if (m_Effect == null)
                 return;
 
             m_Effect.Destroy();
-            OnEffectDestroy();
             m_Effect = null;
         }
-        protected virtual void OnEffectCreate(T _effect) { }
-        protected virtual void OnEffectDestroy() { }
+        public override void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor) => m_EffectPipeline?.Configure(_buffer,_descriptor,ref m_Data);
+        public override void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData) => m_EffectPipeline?.ExecuteContext(_renderer, _context, ref _renderingData,ref m_Data);
+        public override void ExecuteBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _descriptor)  => m_Effect?.ExecutePostProcessBuffer(_buffer, _src, _dst, _descriptor,ref  m_Data);
+        public override void FrameCleanUp(CommandBuffer _buffer) => m_EffectPipeline?.FrameCleanUp(_buffer,ref m_Data);
     }
 
 
 #if UNITY_EDITOR
     #region Editor Preview
-    [ExecuteInEditMode]
-    public partial class PostProcessComponentBase<T, Y> : APostProcessBase where T : PostProcessCore<Y>, new() where Y : struct
+    [ExecuteInEditMode, RequireComponent(typeof(Camera))]
+    public abstract partial class PostProcessComponentBase<T, Y> : APostProcessBase where T : PostProcessCore<Y>, new() where Y : struct
     {
-        PostProcessComponentBase<T, Y> _mSceneCameraProcessComponent = null;
+        PostProcessComponentBase<T, Y> m_SceneComponent = null;
         bool EditorInitAvailable() => UnityEditor.SceneView.lastActiveSceneView && UnityEditor.SceneView.lastActiveSceneView.camera.gameObject != this.gameObject;
         void Update()
         {
             if (!EditorInitAvailable())
                 return;
             Init();
-            if (_mSceneCameraProcessComponent)
+            if (m_SceneComponent)
             {
-                _mSceneCameraProcessComponent.m_EffectData = m_EffectData;
-                _mSceneCameraProcessComponent.OnValidate();
+                m_SceneComponent.m_Data = m_Data;
+                m_SceneComponent.OnValidate();
             }
             if (m_SceneViewPreview)
                 InitSceneCameraEffect();
@@ -122,19 +125,19 @@ namespace Rendering.ImageEffect
         }
         void InitSceneCameraEffect()
         {
-            if (_mSceneCameraProcessComponent||UnityEditor.SceneView.lastActiveSceneView==null)
+            if (m_SceneComponent||UnityEditor.SceneView.lastActiveSceneView==null)
                 return;
-            _mSceneCameraProcessComponent = UnityEditor.SceneView.lastActiveSceneView.camera.gameObject.AddComponent(this.GetType()) as PostProcessComponentBase<T, Y>;
-            _mSceneCameraProcessComponent.hideFlags = HideFlags.HideAndDontSave;
-            _mSceneCameraProcessComponent.m_EffectData = m_EffectData;
-            _mSceneCameraProcessComponent.Init();
+            m_SceneComponent = UnityEditor.SceneView.lastActiveSceneView.camera.gameObject.AddComponent(this.GetType()) as PostProcessComponentBase<T, Y>;
+            m_SceneComponent.hideFlags = HideFlags.HideAndDontSave;
+            m_SceneComponent.m_Data = m_Data;
+            m_SceneComponent.Init();
         }
         void RemoveSceneCameraEffect()
         {
-            if (!_mSceneCameraProcessComponent)
+            if (!m_SceneComponent)
                 return;
-            GameObject.DestroyImmediate(_mSceneCameraProcessComponent);
-            _mSceneCameraProcessComponent = null;
+            GameObject.DestroyImmediate(m_SceneComponent);
+            m_SceneComponent = null;
         }
     }
     #endregion

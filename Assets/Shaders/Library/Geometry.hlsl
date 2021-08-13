@@ -1,8 +1,8 @@
-﻿#ifdef GeometryDetection
+﻿#ifdef IGeometryDetection
 #define Geometry
 #endif
 
-#ifdef GeometrySDF
+#ifdef IGeometrySDF
 #ifndef Geometry
 #define Geometry
 #endif
@@ -10,10 +10,10 @@
 
 #ifdef Geometry
 #include "Geometry/GeometryInput.hlsl"
-#ifdef GeometryDetection
+#ifdef IGeometryDetection
 #include "Geometry/GeometryDetection.hlsl"
 #endif
-#ifdef GeometrySDF
+#ifdef IGeometrySDF
 #include "Geometry/GeometrySDFInput.hlsl"
 #include "Geometry/GeometrySDFMethods.hlsl"
 #endif

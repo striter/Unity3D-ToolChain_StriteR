@@ -37,7 +37,7 @@
             #pragma fragment frag
             #pragma target 3.5
 
-            #define GeometryDetection
+            #define IGeometryDetection
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "Assets/Shaders/Library/Lighting.hlsl"
             #include "Assets/Shaders/Library/Geometry.hlsl"

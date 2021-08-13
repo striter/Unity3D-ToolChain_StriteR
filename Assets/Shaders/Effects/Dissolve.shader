@@ -21,7 +21,7 @@
 		TEXTURE2D(_DissolveTex);SAMPLER(sampler_DissolveTex);
 		TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
 		INSTANCING_BUFFER_START
-		INSTANCING_PROP(float4,_Color)
+		INSTANCING_PROP(float4,_ScanColor)
 		INSTANCING_PROP(float4,_DissolveTex_ST)
 		INSTANCING_PROP(float4,_MainTex_ST)
 		INSTANCING_PROP(float,_DissolveAmount)
@@ -78,7 +78,7 @@
 				clip(dissolve);
 
 				float diffuse=GetDiffuse(normalize(i.normalWS),normalize(_MainLightPosition.xyz));
-				float3 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv.xy).rgb* INSTANCE(_Color).rgb+_GlossyEnvironmentColor.rgb;
+				float3 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv.xy).rgb* INSTANCE(_ScanColor).rgb+_GlossyEnvironmentColor.rgb;
 				float atten=MainLightRealtimeShadow(i.shadowCoordWS);
 				float3 finalCol=albedo*diffuse*atten*_MainLightColor.rgb;
 				return float4(finalCol,1);

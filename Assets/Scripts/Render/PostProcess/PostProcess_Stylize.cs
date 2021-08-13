@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-namespace Rendering.ImageEffect
+namespace Rendering.PostProcess
 {
     public enum EStylize
     {
@@ -23,7 +23,8 @@ namespace Rendering.ImageEffect
 
     public class PostProcess_Stylize : PostProcessComponentBase<PPCore_Stylize, PPData_Stylize>
     {
-        
+        public override bool m_OpaqueProcess => false;
+        public override EPostProcess Event => EPostProcess.Stylize;
     }
     
     [Serializable]
@@ -77,36 +78,36 @@ namespace Rendering.ImageEffect
         static readonly int ID_BilateralSize = Shader.PropertyToID("_BilateralSize");
         static readonly int ID_BilateralFactor = Shader.PropertyToID("_BilateralFactor");
         #endregion
-        public override void OnValidate(ref PPData_Stylize _params)
+        public override void OnValidate(ref PPData_Stylize _ssaoData)
         {
-            base.OnValidate(ref _params);
-            switch (_params.m_Stylize)
+            base.OnValidate(ref _ssaoData);
+            switch (_ssaoData.m_Stylize)
             {
                 case EStylize.Pixel:
                 {
-                    if (m_Material.EnableKeywords(KW_PixelGrid, _params.m_PixelGrid))
+                    if (m_Material.EnableKeywords(KW_PixelGrid, _ssaoData.m_PixelGrid))
                     {
-                        m_Material.SetColor(ID_PixelGridColor,_params.m_PixelGridColor);
-                        m_Material.SetVector(ID_PixelGridWidth, new Vector2(_params.m_GridWidth, 1f - _params.m_GridWidth));
+                        m_Material.SetColor(ID_PixelGridColor,_ssaoData.m_PixelGridColor);
+                        m_Material.SetVector(ID_PixelGridWidth, new Vector2(_ssaoData.m_GridWidth, 1f - _ssaoData.m_GridWidth));
                     }
 
                 } break;
                 case EStylize.BilateralFilter:
                 {
-                    m_Material.SetFloat(ID_BilateralSize, _params.m_BilaterailSize);
-                    m_Material.SetFloat(ID_BilateralFactor, _params.m_BilateralFactor);
+                    m_Material.SetFloat(ID_BilateralSize, _ssaoData.m_BilaterailSize);
+                    m_Material.SetFloat(ID_BilateralFactor, _ssaoData.m_BilateralFactor);
                 } break;
                 case EStylize.ObraDithering:
                 {
-                    m_Material.SetFloat(ID_ObraDitherScale, _params.m_ObraDitherScale);
-                    m_Material.SetFloat(ID_ObraDitherStrength, _params.m_ObraDitherStrength);
-                    m_Material.SetColor(ID_ObraDitherColor, _params.m_ObraDitherColor);
+                    m_Material.SetFloat(ID_ObraDitherScale, _ssaoData.m_ObraDitherScale);
+                    m_Material.SetFloat(ID_ObraDitherStrength, _ssaoData.m_ObraDitherStrength);
+                    m_Material.SetColor(ID_ObraDitherColor, _ssaoData.m_ObraDitherColor);
                 } break;
                 case EStylize.OilPaint:
                 {
-                    int kernel = _params.m_OilPaintKernel / 2;
+                    int kernel = _ssaoData.m_OilPaintKernel / 2;
                     m_Material.SetVector(ID_OilPaintKernel, new Vector2(-kernel, kernel+ 1));
-                    m_Material.SetFloat(ID_OilPaintSize, _params.m_OilPaintSize);
+                    m_Material.SetFloat(ID_OilPaintSize, _ssaoData.m_OilPaintSize);
                 } break;
             }
         }

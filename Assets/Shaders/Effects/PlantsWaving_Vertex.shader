@@ -25,7 +25,7 @@ Shader "Game/Effects/PlantsWaving_Vertex"
 		INSTANCING_PROP(float,_WaveSpeed)
 		INSTANCING_PROP(float,_WaveStrength)
 		INSTANCING_PROP(float4,_MainTex_ST)
-		INSTANCING_PROP(float4,_Color)
+		INSTANCING_PROP(float4,_ScanColor)
 		INSTANCING_BUFFER_END
 
 		float3 Wave(float3 worldPos)
@@ -81,7 +81,7 @@ Shader "Game/Effects/PlantsWaving_Vertex"
 			float4 frag(v2f i) : SV_Target
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
-				float3 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*INSTANCE(_Color).rgb;
+				float3 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*INSTANCE(_ScanColor).rgb;
 				float atten=MainLightRealtimeShadow(i.shadowCoordWS);
 				float3 ambient = _GlossyEnvironmentColor.rgb;
 				float diffuse = GetDiffuse(normalize(i.normalWS),normalize(i.viewDirWS),.5,atten); 

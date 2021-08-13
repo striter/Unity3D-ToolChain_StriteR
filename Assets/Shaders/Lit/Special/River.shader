@@ -64,7 +64,7 @@
             #pragma shader_feature_local _FRESNEL
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             
-            #define GI
+            #define IGI
 			#include "Assets/Shaders/Library/Common.hlsl"
 			#include "Assets/Shaders/Library/Lighting.hlsl"
             

@@ -25,7 +25,7 @@
             #pragma fragment frag
             #pragma multi_compile_local _TYPE_POINT _TYPE_SPOT
 
-            #define GeometryDetection
+            #define IGeometryDetection
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "Assets/Shaders/Library/Geometry.hlsl"
 

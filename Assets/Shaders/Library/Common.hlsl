@@ -123,7 +123,7 @@ float4 TransformObjectToView(float3 positionOS)
 
 float3 TransformNDCToClip(float2 _uv,float _depth)
 {
-    half deviceDepth=_depth;
+    float deviceDepth=_depth;
     #if !UNITY_REVERSED_Z
         deviceDepth=lerp(UNITY_NEAR_CLIP_VALUE,1,deviceDepth);
     #endif
@@ -161,10 +161,10 @@ float2 TransformViewToNDC(float4 positionVS)
     return float2(positionVS.x/width,positionVS.y/height)+.5;
 }
 
-void TransformHClipToUVDepth(float4 positionCS,out float2 uv,out float depth)
+void TransformHClipToUVDepth(float4 positionCS,out float2 uv,out float rawDepth)
 {
     float3 divide=positionCS.xyz/positionCS.w;
-    depth = divide.z;
+    rawDepth = divide.z;
     uv= (divide.xy + 1.) * .5;
     #if UNITY_UV_STARTS_AT_TOP
         uv.y = 1 - uv.y;
@@ -178,9 +178,9 @@ float3 _FrustumCornersRayTL;
 float3 _FrustumCornersRayTR;
 
 float3 TransformNDCToViewDirWS(float2 uv){return bilinearLerp(_FrustumCornersRayTL, _FrustumCornersRayTR, _FrustumCornersRayBL, _FrustumCornersRayBR, uv);}
-float3 TransformNDCToWorld_Frustum(half2 uv,half _rawDepth){ return GetCameraPositionWS() + RawToEyeDepth(_rawDepth) *  TransformNDCToViewDirWS(uv);}
-float3 TransformNDCToWorld_VPMatrix(half2 uv,half _rawDepth){ return TransformClipToWorld(TransformNDCToClip(uv,_rawDepth));}
-float3 TransformNDCToWorld(float2 uv,half rawDepth)
+float3 TransformNDCToWorld_Frustum(float2 uv,float _rawDepth){ return GetCameraPositionWS() + RawToEyeDepth(_rawDepth) *  TransformNDCToViewDirWS(uv);}
+float3 TransformNDCToWorld_VPMatrix(float2 uv,float _rawDepth){ return TransformClipToWorld(TransformNDCToClip(uv,_rawDepth));}
+float3 TransformNDCToWorld(float2 uv,float rawDepth)
 {
     [branch]
     if(unity_OrthoParams.w)
@@ -242,7 +242,7 @@ half3 BlendNormal(half3 _normal1, half3 _normal2, uint _blendMode)
 }
 
 //UV Remapping
-float2 UVRemap_Triplanar(float3 _positionWS, float3 _normalWS)
+float2 UVRemap_Triplanar(float3 _positionWS, half3 _normalWS)
 {
     return _positionWS.zy * _normalWS.x + _positionWS.xz * _normalWS.y + _positionWS.xy * _normalWS.z;
 }

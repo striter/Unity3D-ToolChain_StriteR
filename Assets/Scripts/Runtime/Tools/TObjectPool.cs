@@ -50,6 +50,42 @@ public static class TObjectPool<T> where T : IObjectPool, new()
 }
 #endregion
 
+public class TPool<T> where T:class ,new()
+{
+    public Stack<T> m_Pooled { get; private set; } = new Stack<T>();
+    public Stack<T> m_Activated { get; private set; } = new Stack<T>();
+    public T Pop()
+    {
+        if (m_Pooled.Count != 0)
+            return m_Pooled.Pop();
+
+        T newElement = new T();
+        m_Activated.Push(newElement);
+        return new T();
+    }
+    public void Push(T _poolElement)
+    {
+        if (!m_Activated.Contains(_poolElement))
+            throw new Exception("None Pooled Item Found!"+_poolElement);
+        m_Pooled.Push(_poolElement);
+    }
+
+    public void Clear()
+    {
+        foreach (T _activate in m_Activated)
+            m_Pooled.Push(_activate);
+        m_Activated.Clear();
+    }
+
+    public void Dispose()
+    {
+        Clear();
+        m_Pooled = null;
+        m_Activated = null;
+        GC.SuppressFinalize(this);
+    }
+}
+
 public class TGameObjectPool_Instance<T, Y> 
 {
     public Transform transform { get; private set; }

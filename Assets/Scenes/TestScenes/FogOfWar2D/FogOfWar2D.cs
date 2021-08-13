@@ -4,7 +4,7 @@ using UnityEngine;
 using TDataPersistent;
 using System;
 using UnityEngine.UI;
-using Rendering.ImageEffect;
+using Rendering.PostProcess;
 public class FogOfWar2D : MonoBehaviour
 {
     public Vector3 m_SrcVector = Vector3.one;
@@ -41,11 +41,11 @@ public class FogOfWar2D : MonoBehaviour
         });
 
         UIT_TouchConsole.NewPage("Color Grading");
-        UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostProcess_ColorGrading>(), effect => effect.OnValidate());
+        UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostProcess_ColorUpgrade>(), effect => effect.OnValidate());
         UIT_TouchConsole.NewPage("Depth Of Field");
         UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostProcess_DepthOfField>(), effect => effect.OnValidate());
         UIT_TouchConsole.NewPage("VHS");
-        UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostProcess_VHS>(), effect => effect.OnValidate());
+        UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostProcess_ColorDegrade>(), effect => effect.OnValidate());
 
         m_Texture = RenderTexture.GetTemporary(1920, 1080);
         m_Texture.enableRandomWrite = true;

@@ -1,11 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace  TTouchTracker
+namespace TTouchTracker
 {
-    public class TrackPosition
+    public class TrackData
     {
         public int m_Index { get; private set; }
         public float m_Lifetime { get; private set; }
@@ -14,7 +15,7 @@ namespace  TTouchTracker
         public Vector2 m_Previous { get; private set; }
         public Vector2 m_Delta { get; private set; }
         public TouchPhase m_Phase { get; private set; }
-        public TrackPosition(Touch _touch)
+        public TrackData(Touch _touch)
         {
             m_Index = _touch.fingerId;
             m_Start = _touch.position;
@@ -37,8 +38,8 @@ namespace  TTouchTracker
     
     public static class TouchTracker_Helper
     {
-        public static Vector2 CombinedDrag(this List<TrackPosition> _tracks)=> _tracks.Average(p => p.m_Delta);
-        public static float CombinedPinch(this List<TrackPosition> _tracks)
+        public static Vector2 CombinedDrag(this List<TrackData> _tracks)=> _tracks.Average(p => p.m_Delta);
+        public static float CombinedPinch(this List<TrackData> _tracks)
         {
             if (_tracks.Count<2)
                 return 0f;
@@ -50,15 +51,16 @@ namespace  TTouchTracker
                 return p.m_Delta.magnitude*sign;
             });
         }
-        public static IEnumerable<Vector2> ResolveClicks(this List<TrackPosition> _tracks,float _lifeTime=.1f)
+
+        public static IEnumerable<Vector2> ResolveClicks(this List<TrackData> _tracks,float _clickSenseTime=.1f)
         {
-            return _tracks.Collect(p => p.m_Phase == TouchPhase.Ended && p.m_Lifetime < _lifeTime).Select(p=>p.m_Start);
+            return _tracks.Collect(p => p.m_Phase == TouchPhase.Ended && p.m_Lifetime < _clickSenseTime).Select(p=>p.m_Start);
         }
     }
 
     public static class TouchTracker
     {
-        static readonly Dictionary<int,TrackPosition> m_TrackData=new Dictionary<int, TrackPosition>();
+        static readonly Dictionary<int,TrackData> m_TrackData=new Dictionary<int, TrackData>();
         private static Touch[] GetTouches()
         {
 #if UNITY_EDITOR
@@ -106,9 +108,9 @@ namespace  TTouchTracker
         }
 
         public static void Init() => m_TrackData.Clear();
-        public static List<TrackPosition> Execute(float _unscaledDeltaTime)
+        public static List<TrackData> Execute(float _unscaledDeltaTime)
         {
-            foreach (var trackIndex in m_TrackData.Keys.Collect(p => m_TrackData[p].m_Phase == TouchPhase.Ended||m_TrackData[p].m_Phase== TouchPhase.Canceled))
+            foreach (var trackIndex in m_TrackData.Keys.Collect(p => m_TrackData[p].m_Phase == TouchPhase.Ended||m_TrackData[p].m_Phase== TouchPhase.Canceled).ToArray())
                 m_TrackData.Remove(trackIndex);
             
             foreach (Touch touch in GetTouches())
@@ -117,7 +119,7 @@ namespace  TTouchTracker
                 switch (touch.phase)
                 {
                     case TouchPhase.Began:
-                        m_TrackData.Add(id,new TrackPosition(touch));
+                        m_TrackData.Add(id,new TrackData(touch));
                         break;
                     case TouchPhase.Stationary:
                     case TouchPhase.Moved:
@@ -134,7 +136,7 @@ namespace  TTouchTracker
         private static readonly Texture m_GUITexture =  UnityEditor.EditorGUIUtility.IconContent("TouchInputModule Icon").image;
         public static void DrawDebugGUI()
         {
-            foreach (TrackPosition trackPosition in m_TrackData.Values)
+            foreach (TrackData trackPosition in m_TrackData.Values)
             {
                 Rect screenRect = new Rect(trackPosition.m_Current, Vector2.one * 60f);
                 screenRect.y = Screen.height - screenRect.y;

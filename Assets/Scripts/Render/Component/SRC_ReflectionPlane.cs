@@ -1,9 +1,7 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
+using System.Collections.Generic;
 namespace Rendering.Pipeline
 {
-    using ImageEffect;
     [ExecuteInEditMode,RequireComponent(typeof(MeshRenderer),typeof(MeshFilter))]
     public class SRC_ReflectionPlane : MonoBehaviour
     {

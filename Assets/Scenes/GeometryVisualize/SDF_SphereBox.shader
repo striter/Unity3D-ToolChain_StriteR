@@ -27,7 +27,7 @@ Shader "Hidden/SDF_SphereBox"
             HLSLPROGRAM
             #pragma vertex vertSDF
             #pragma fragment fragSDF
-            #define GeometrySDF
+            #define IGeometrySDF
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "Assets/Shaders/Library/Geometry.hlsl"
             float3 _SphereColor;

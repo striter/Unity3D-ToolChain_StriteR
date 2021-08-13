@@ -1,12 +1,13 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
 
-namespace Rendering.ImageEffect
+namespace Rendering.PostProcess
 {
     public class PostProcess_DepthOfField : PostProcessComponentBase<PPCore_DepthOfField, PPData_DepthOfField>
     {
+        public override bool m_OpaqueProcess => false;
+        public override EPostProcess Event => EPostProcess.Default;
     }
 
     [Serializable]
@@ -37,11 +38,9 @@ namespace Rendering.ImageEffect
         static readonly int ID_BlurSize = Shader.PropertyToID("_BlurSize");
         const string KW_UseBlurDepth = "_UseBlurDepth";
         #endregion
-
         PPCore_Blurs m_CoreBlur;
-        public override void Create()
+        public PPCore_DepthOfField():base() 
         {
-            base.Create();
             m_CoreBlur = new PPCore_Blurs();
         }
         public override void Destroy()
@@ -49,14 +48,14 @@ namespace Rendering.ImageEffect
             base.Destroy();
             m_CoreBlur.Destroy();
         }
-        public override void OnValidate(ref PPData_DepthOfField _data)
+        public override void OnValidate(ref PPData_DepthOfField _ssaoData)
         {
-            base.OnValidate(ref _data);
-            m_Material.SetFloat(ID_FocalStart, _data.m_DOFStart);
-            m_Material.SetFloat(ID_FocalLerp, _data.m_DOFLerp);
-            m_Material.EnableKeyword(KW_UseBlurDepth, _data.m_DepthBlurSample);
-            m_Material.SetFloat(ID_BlurSize, _data.m_DepthBlurSize);
-            m_CoreBlur.OnValidate(ref _data.m_BlurParams);
+            base.OnValidate(ref _ssaoData);
+            m_Material.SetFloat(ID_FocalStart, _ssaoData.m_DOFStart);
+            m_Material.SetFloat(ID_FocalLerp, _ssaoData.m_DOFLerp);
+            m_Material.EnableKeyword(KW_UseBlurDepth, _ssaoData.m_DepthBlurSample);
+            m_Material.SetFloat(ID_BlurSize, _ssaoData.m_DepthBlurSize);
+            m_CoreBlur.OnValidate(ref _ssaoData.m_BlurParams);
         }
         public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor, ref PPData_DepthOfField _data)
         {

@@ -32,7 +32,7 @@
 
 			sampler2D _MainTex;
 			UNITY_INSTANCING_BUFFER_START(Props)
-				UNITY_DEFINE_INSTANCED_PROP(float4, _Color)
+				UNITY_DEFINE_INSTANCED_PROP(float4, _ScanColor)
 			UNITY_INSTANCING_BUFFER_END(Props)
 
 			v2f vert(appdata v)
@@ -41,7 +41,7 @@
 				UNITY_SETUP_INSTANCE_ID(v);
 				o.uv = v.uv;
 				o.vertex = UnityObjectToClipPos(v.vertex);
-				o.color = v.color*UNITY_ACCESS_INSTANCED_PROP(Props, _Color);
+				o.color = v.color*UNITY_ACCESS_INSTANCED_PROP(Props, _ScanColor);
 				return o;
 			}
 

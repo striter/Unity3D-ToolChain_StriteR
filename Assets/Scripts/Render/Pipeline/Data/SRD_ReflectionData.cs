@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Rendering.ImageEffect;
+using Rendering.PostProcess;
 using UnityEngine;
 namespace Rendering.Pipeline
 {

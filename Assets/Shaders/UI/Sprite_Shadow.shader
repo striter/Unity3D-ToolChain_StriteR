@@ -73,7 +73,7 @@ SubShader
 				float4 worldPosition : TEXCOORD1;
 			};
 
-			float4 _Color;
+			float4 _ScanColor;
 
 			v2f vert(appdata_t IN)
 			{
@@ -83,7 +83,7 @@ SubShader
 
 				OUT.texcoord = IN.texcoord;
 
-				OUT.color = IN.color * _Color;
+				OUT.color = IN.color * _ScanColor;
 				return OUT;
 			}
 

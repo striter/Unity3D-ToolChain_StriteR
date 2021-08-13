@@ -7,10 +7,13 @@ Shader "Hidden/PostProcess/Stylize"
     SubShader
     {
         Tags { "RenderType"="Opaque" }
-        HLSLINCLUDE
+		Cull Off ZWrite Off ZTest Always
+        
+    	HLSLINCLUDE
         #define ICOLOR
         #include "Assets/Shaders/Library/PostProcess.hlsl"
         ENDHLSL
+    	
         Pass
         {
             Name "Pixelize"

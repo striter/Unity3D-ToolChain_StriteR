@@ -1,10 +1,8 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using System.Linq;
-using Rendering.ImageEffect;
-using UnityEngine.Serialization;
-
+using Rendering.PostProcess;
 namespace Rendering.Pipeline
 {
     public class SRF_Additional : ScriptableRendererFeature
@@ -29,8 +27,7 @@ namespace Rendering.Pipeline
         [MFoldout(nameof(m_CameraReflectionTexture), true)] public SRD_PlanarReflectionData m_PlanarReflectionData= SRD_PlanarReflectionData.Default();
         
         SRP_NormalTexture m_NormalPass;
-        SRP_ComponentBasedPostProcess m_PostProcesssing_Opaque;
-        SRP_ComponentBasedPostProcess m_PostProcesssing_AfterAll;
+        private TPool<SRP_ComponentBasedPostProcess> m_PostProcessPassPool;
         SRP_Reflection m_Reflection;
         private bool m_Available => m_Resources;
         public override void Create()
@@ -39,9 +36,8 @@ namespace Rendering.Pipeline
                 return;
             
             m_NormalPass = new SRP_NormalTexture(m_Resources) { renderPassEvent = RenderPassEvent.AfterRenderingSkybox};
-            m_PostProcesssing_Opaque = new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox };
-            m_PostProcesssing_AfterAll = new SRP_ComponentBasedPostProcess() {  renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing };
             m_Reflection = new SRP_Reflection(m_PlanarReflectionData,m_Resources);
+            m_PostProcessPassPool = new TPool<SRP_ComponentBasedPostProcess>();
         }
         protected override void Dispose(bool disposing)
         {
@@ -50,9 +46,9 @@ namespace Rendering.Pipeline
             
             base.Dispose(disposing);
             m_NormalPass.Dispose();
-            m_PostProcesssing_Opaque.Dispose();
-            m_PostProcesssing_AfterAll.Dispose();
+            
             m_Reflection.Dispose();
+            m_PostProcessPassPool.Dispose();
         }
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
@@ -72,7 +68,8 @@ namespace Rendering.Pipeline
                 renderer.EnqueuePass(m_NormalPass);
             if (cameraReflectionTexture)
                 m_Reflection.EnqueuePass(renderer);
-            UpdatePostProcess(renderer, ref renderingData);
+            foreach (var postProcessPass in UpdatePostProcess(renderingData.cameraData.camera))
+                renderer.EnqueuePass(postProcessPass);
         }
         void UpdateScreenParams(ref RenderingData _renderingData)
         {
@@ -114,18 +111,18 @@ namespace Rendering.Pipeline
             Shader.SetGlobalMatrix(ID_Matrix_I_VP,vp.inverse);
             Shader.SetGlobalMatrix(ID_Matrix_V,view);
         }
-        void UpdatePostProcess(ScriptableRenderer renderer, ref RenderingData renderingData)
+        IEnumerable<ScriptableRenderPass> UpdatePostProcess(Camera camera)
         {
-            var postEffects = renderingData.cameraData.camera.GetComponents<APostProcessBase>().Collect(p => p.enabled);
-            if (!postEffects.Any())
-                return;
+            m_PostProcessPassPool.Clear();
+            var postEffects = camera.GetComponents<APostProcessBase>().Collect(p => p.enabled);
+            var aPostProcessBases = postEffects as APostProcessBase[] ?? postEffects.ToArray();
+            if (!aPostProcessBases.Any())
+                yield break;
 
-            var groups = postEffects.GroupBy(p=>p.m_IsOpaqueProcess);
-            foreach (var group in groups)
-            {
-                var pass = group.Key ? m_PostProcesssing_Opaque : m_PostProcesssing_AfterAll;
-                renderer.EnqueuePass(  pass.Setup(renderer, group));
-            }
+            foreach (var aPostProcessBaseGroup in aPostProcessBases.GroupBy(p => p.m_OpaqueProcess))
+                yield return m_PostProcessPassPool.Pop().Setup(
+                    aPostProcessBaseGroup.Key?RenderPassEvent.AfterRenderingSkybox:RenderPassEvent.BeforeRenderingPostProcessing
+                    , aPostProcessBaseGroup);
         }
     }
 }

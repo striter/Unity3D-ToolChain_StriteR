@@ -25,9 +25,14 @@ float sqrDistance(float3 _offset)
     return dot(_offset, _offset);
 }
 
-float sqrDistance(float3 _pA, float3 _pB)
+half sqrDistance(half2 _offset)
 {
-    return sqrDistance(_pA - _pB);
+    return dot(_offset,_offset);
+}
+
+half sqrDistance(half3 _offset)
+{
+    return dot(_offset,_offset);
 }
 
 //Max Float
@@ -134,7 +139,18 @@ half min(half3 _Target)
     return min(_Target.x,_Target.y,_Target.z);
 }
 
-//Bilinear Lerp
+
+//Interpolate
+half3 triLerp(half3 tl,half3 tm,half3 tr,half a)       //-1 tl,0 tm,1 tr
+{
+    return tm*(1.h-abs(a))+tl*max(0.h,-a)+tr*a;
+}
+
+float3 triLerp(float3 tl,float3 tm,float3 tr,float a)       //-1 tl,0 tm,1 tr
+{
+    return tm*(1.-abs(a))+tl*max(0.,-a)+tr*a;
+}
+
 float bilinearLerp(float tl, float tr, float bl, float br, float2 uv)
 {
     float lerpB = lerp(bl, br, uv.x);

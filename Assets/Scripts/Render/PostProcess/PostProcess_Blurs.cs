@@ -3,10 +3,12 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-namespace Rendering.ImageEffect
+namespace Rendering.PostProcess
 {
     public class PostProcess_Blurs : PostProcessComponentBase<PPCore_Blurs, PPData_Blurs>
     {
+        public override bool m_OpaqueProcess => false;
+        public override EPostProcess Event => EPostProcess.Default;
     }
 
     public enum EBlurType

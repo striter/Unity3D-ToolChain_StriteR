@@ -1,11 +1,11 @@
 ﻿#include "Common.hlsl"
 
 TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
-half4 _MainTex_TexelSize;
-#define _MainTex_TexelRight half2(1.h,0.h)*_MainTex_TexelSize.xy
-#define _MainTex_TexelUp half2(0.h,1.h)*_MainTex_TexelSize.xy
-#define _MainTex_TexelUpRight half2(1.h,1.h)*_MainTex_TexelSize.xy
-#define _MainTex_TexelUpLeft half2(-1.h,1.h)*_MainTex_TexelSize.xy
+float4 _MainTex_TexelSize;
+#define _MainTex_TexelRight float2(1,0)*_MainTex_TexelSize.xy
+#define _MainTex_TexelUp float2(0,1)*_MainTex_TexelSize.xy
+#define _MainTex_TexelUpRight float2(1,1)*_MainTex_TexelSize.xy
+#define _MainTex_TexelUpLeft float2(-1,1)*_MainTex_TexelSize.xy
 
 float4 SampleMainTex(float2 uv){return  SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv);}
 
@@ -34,4 +34,8 @@ v2f_img vert_img(a2v_img v)
 
 #ifdef IDEPTH
 #include "PostProcess/Depth.hlsl"
+#endif
+
+#ifdef INORMAL
+#include "PostProcess/Normal.hlsl"
 #endif

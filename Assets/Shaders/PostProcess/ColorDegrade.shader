@@ -1,4 +1,4 @@
-﻿Shader "Hidden/PostProcess/VHS"
+﻿Shader "Hidden/PostProcess/ColorDegrade"
 {
     Properties
     {
@@ -17,6 +17,7 @@
             #pragma multi_compile_local _ _SCREENCUT_HARD _SCREENCUT_SCALED
             #pragma shader_feature_local _LINEDISTORT
             #pragma shader_feature_local _PIXELDISTORT
+            #pragma shader_feature_local _VORTEXDISTORT
             float2 _ScreenCutTarget;
             #if _LINEDISTORT
             float _LineDistortSpeed;
@@ -29,6 +30,10 @@
             float _PixelDistortFrequency;
             float _PixelDistortClip;
             float _PixelDistortStrength;
+            #endif
+            #if _VORTEXDISTORT
+                float2 _VortexCenter;
+                float _VortexStrength;
             #endif
             float2 RemapUV(float2 uv)
             {
@@ -55,6 +60,13 @@
                 half pixelDistortRandom=random01(pixelDistort);
                 uv += step(_PixelDistortClip,pixelDistortRandom)*lerp(-1,1,pixelDistort)*_PixelDistortStrength;
                 #endif
+
+                #if _VORTEXDISTORT
+				    float2 dir = uv - _VortexCenter;
+				    float2 distort = normalize(dir)*(1 - length(dir))*_VortexStrength;
+                    uv+=distort;
+                #endif
+                
             	return uv;
             }
 
@@ -83,7 +95,7 @@
             float3 _VignetteColor;
             float _VignetteValue;
             #endif
-            half3 VHS(half3 col,float2 uv)
+            half3 ColorDegrade(half3 col,float2 uv)
             {
                 #if _COLORBLEED
                 half colorBleedOffset=0;
@@ -122,7 +134,7 @@
             {
                 float2 uv= RemapUV(i.uv);
                 half3 col= SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv).rgb;
-				col=VHS(col,uv);
+				col=ColorDegrade(col,uv);
                 return half4(col,1);
             }
             ENDHLSL

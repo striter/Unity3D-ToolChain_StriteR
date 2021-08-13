@@ -9,7 +9,7 @@ half3 Saturation(half3 c,half _saturation)
     return lum.xxx + _saturation.xxx * (c - lum.xxx);
 }
 
-half3 SampleLUT(half3 sampleCol,Texture2D _lutTex,SamplerState _lutSampler,float4 _lutTextelSize,uint _lutCellCount) {
+half3 SampleLUT( half3 sampleCol,TEXTURE2D_PARAM(_lutTex,_lutSampler),float4 _lutTextelSize,uint _lutCellCount) {
     half width=_lutCellCount;
 
     int lutCellPixelCount = _lutTextelSize.z / width;
