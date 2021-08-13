@@ -74,10 +74,24 @@ namespace Rendering.PostProcess
     public class PPCore_Blurs : PostProcessCore<PPData_Blurs>
     {
         #region ShaderProperties
-        static readonly int ID_BlurSize = Shader.PropertyToID("_BlurSize");
-        static readonly int ID_Iteration = Shader.PropertyToID("_Iteration");
-        static readonly int ID_Angle = Shader.PropertyToID("_Angle");
-        static readonly int ID_Vector = Shader.PropertyToID("_Vector");
+        private static readonly int ID_BlurSize = Shader.PropertyToID("_BlurSize");
+        private static readonly int ID_Iteration = Shader.PropertyToID("_Iteration");
+        private static readonly int ID_Angle = Shader.PropertyToID("_Angle");
+        private static readonly int ID_Vector = Shader.PropertyToID("_Vector");
+
+        private const string KW_Focal = "_DOF";
+        private static readonly int ID_FocalBegin = Shader.PropertyToID("_FocalStart");
+        private static readonly int ID_FocalEnd = Shader.PropertyToID("_FocalEnd");
+
+        public bool SetFocal(bool _focal,float _focalBegin,float _focalWidth)
+        {
+            if (m_Material.EnableKeyword(KW_Focal, _focal))
+            {
+                m_Material.SetFloat(ID_FocalBegin,_focalBegin);
+                m_Material.SetFloat(ID_FocalEnd,_focalBegin+_focalWidth);
+            }
+            return _focal;
+        }
         #endregion
 
         public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor,ref PPData_Blurs _data)

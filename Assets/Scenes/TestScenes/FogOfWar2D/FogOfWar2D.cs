@@ -40,13 +40,6 @@ public class FogOfWar2D : MonoBehaviour
             m_SaveTest.SavePersistentData();
         });
 
-        UIT_TouchConsole.NewPage("Color Grading");
-        UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostProcess_ColorUpgrade>(), effect => effect.OnValidate());
-        UIT_TouchConsole.NewPage("Depth Of Field");
-        UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostProcess_DepthOfField>(), effect => effect.OnValidate());
-        UIT_TouchConsole.NewPage("VHS");
-        UIT_TouchConsole.InitSerializeCommands(Camera.main.GetComponent<PostProcess_ColorDegrade>(), effect => effect.OnValidate());
-
         m_Texture = RenderTexture.GetTemporary(1920, 1080);
         m_Texture.enableRandomWrite = true;
         m_Texture.Create();

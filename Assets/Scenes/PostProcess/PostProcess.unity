@@ -263,14 +263,14 @@ MonoBehaviour:
       m_MaskTextureScale: 1
     m_Area: 1
     m_AreaData:
-      m_Origin: {x: -10.55996, y: 0, z: 12.431467}
+      m_Origin: {x: -6.055341, y: 0, z: 7.2996597}
       m_Radius: 5
       m_Width: 1
-      m_FillColor: {r: 1, g: 1, b: 1, a: 1}
-      m_EdgeColor: {r: 1, g: 1, b: 1, a: 1}
-      m_FillTexure: {fileID: 2800000, guid: 4f1adeab80087d846bc6b2e4fc545849, type: 3}
+      m_FillColor: {r: 0.9307828, g: 1, b: 0.92156863, a: 0.65882355}
+      m_EdgeColor: {r: 0.94498324, g: 1.4398783, b: 2.0236006, a: 1}
+      m_FillTexure: {fileID: 2800000, guid: 57e3c3fe1ced3c14082ddb321b144303, type: 3}
       m_FillTextureFlow: {x: 1, y: 1}
-      m_FillTextureScale: 1
+      m_FillTextureScale: 11.93
     m_Outline: 0
     m_OutlineData:
       m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -279,16 +279,16 @@ MonoBehaviour:
       m_Bias: 0.5
     m_Highlight: 1
     m_HighlightData:
-      m_CullingMask: 2147483647
+      m_CullingMask: 256
       m_Color: {r: 4.867145, g: 3.389164, b: 3.5050652, a: 1}
       m_ZClip: 1
       m_ZLesser: 1
       m_ZOffset: 0.2
       m_Blur:
         m_BlurType: 3
-        m_BlurSize: 1.65
-        m_Iteration: 5
-        m_DownSample: 3
+        m_BlurSize: 2.48
+        m_Iteration: 4
+        m_DownSample: 1
         m_Angle: 0
         m_Vector: {x: 0.5, y: 0.5}
     m_DownSample: 2
@@ -564,7 +564,6 @@ GameObject:
   m_Component:
   - component: {fileID: 520397186}
   - component: {fileID: 520397185}
-  - component: {fileID: 520397183}
   - component: {fileID: 520397188}
   - component: {fileID: 520397184}
   m_Layer: 0
@@ -574,31 +573,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &520397183
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 520397182}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4609a38f9a12b4543a91e80b01b89860, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Data:
-    m_DOFStart: 0.14
-    m_DOFLerp: 0.3
-    m_BlurParams:
-      m_BlurType: 3
-      m_BlurSize: 1.3
-      m_Iteration: 7
-      m_DownSample: 2
-      m_Angle: 0
-      m_Vector: {x: 0.5, y: 0.5}
-    m_DepthBlurSample: 1
-    m_DepthBlurSize: 0.5
-  m_SceneViewPreview: 0
 --- !u!114 &520397184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2121,14 +2095,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Data:
-    m_DepthOfField: 0
-    m_FocalBlur:
-      m_BlurType: 3
-      m_BlurSize: 1.3
-      m_Iteration: 7
-      m_DownSample: 2
-      m_Angle: 0
-      m_Vector: {x: 0.5, y: 0.5}
+    m_DepthOfField: 1
+    m_DepthOfFieldData:
+      m_Begin: 5.02
+      m_Width: 27.2
+      m_FocalBlur:
+        m_BlurType: 2
+        m_BlurSize: 0.45
+        m_Iteration: 5
+        m_DownSample: 1
+        m_Angle: 0
+        m_Vector: {x: 0, y: 0}
     m_VolumetricDownSample: 1
     m_EnableVolumetricBlur: 0
     m_VolumetricBlur:
@@ -2138,7 +2115,7 @@ MonoBehaviour:
       m_DownSample: 2
       m_Angle: 0
       m_Vector: {x: 0.5, y: 0.5}
-    m_VolumetricLight: 1
+    m_VolumetricLight: 0
     m_VolumetricLightData:
       m_Strength: 1
       m_Distance: 20

@@ -9,21 +9,93 @@ namespace Rendering.PostProcess
         public override bool m_OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.Transparent;
     }
-    public enum EMarchTimes
+    public class PPCore_Transparent : PostProcessCore<PPData_Transparent>
     {
-        _8=8,
-        _16=16,
-        _32=32,
-        _64=64,
-        _128=128,
-    }
+        private enum EPassIndex
+        {
+            Combine=0,
+            Sample=1,
+        }
+        #region ShaderProperties
+        static readonly int RT_ID_Sample = Shader.PropertyToID("_Volumetric_Sample");
+        static RenderTargetIdentifier RT_Sample = new RenderTargetIdentifier(RT_ID_Sample);
+        static readonly int RT_ID_Blur = Shader.PropertyToID("_Volumetric_Blur");
+        static RenderTargetIdentifier RT_Blur = new RenderTargetIdentifier(RT_ID_Blur);
 
+        private const string KW_VolumetricLight = "_VOLUMETRICLIGHT";
+        #endregion
+        readonly PPCore_Blurs m_VolumetricBlur;
+        private readonly PPCore_Blurs m_FocalBlur;
+        public PPCore_Transparent():base()
+        {
+            m_VolumetricBlur = new PPCore_Blurs();
+            m_FocalBlur = new PPCore_Blurs();
+        }
+        
+        public override void Destroy()
+        {
+            base.Destroy();
+            m_VolumetricBlur.Destroy();
+            m_FocalBlur.Destroy();
+        }
+
+        public override void OnValidate(ref PPData_Transparent _data)
+        {
+            base.OnValidate(ref _data);
+            if(m_Material.EnableKeyword(KW_VolumetricLight, _data.m_VolumetricLight))
+                _data.m_VolumetricLightData.Apply(m_Material);
+            m_VolumetricBlur.OnValidate(ref _data.m_VolumetricBlur);
+            
+            if ( m_FocalBlur.SetFocal(_data.m_DepthOfField,_data.m_DepthOfFieldData.m_Begin,_data.m_DepthOfFieldData.m_Width))
+                m_FocalBlur.OnValidate(ref _data.m_DepthOfFieldData.m_FocalBlur);
+        }
+        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor,ref PPData_Transparent _data)
+        {
+            if (_data.m_VolumetricLight)
+            {
+                var sampleDescriptor = _descriptor;
+                sampleDescriptor.width /= _data.m_VolumetricDownSample;
+                sampleDescriptor.height /= _data.m_VolumetricDownSample;
+                sampleDescriptor.colorFormat = RenderTextureFormat.ARGB32;
+                sampleDescriptor.depthBufferBits = 0;
+            
+                _buffer.GetTemporaryRT(RT_ID_Sample, sampleDescriptor,FilterMode.Bilinear);
+
+                if (!_data.m_EnableVolumetricBlur)
+                {
+                    _buffer.Blit(_src, RT_ID_Sample, m_Material, (int)EPassIndex.Sample);
+                }
+                else
+                {
+                    _buffer.GetTemporaryRT(RT_ID_Blur, sampleDescriptor, FilterMode.Bilinear);
+                    _buffer.Blit(_src, RT_ID_Blur, m_Material,  (int)EPassIndex.Sample);
+                    m_VolumetricBlur.ExecutePostProcessBuffer(_buffer, RT_ID_Blur, RT_ID_Sample, sampleDescriptor,ref _data.m_VolumetricBlur); 
+                    _buffer.ReleaseTemporaryRT(RT_ID_Blur);
+                }
+                
+                _buffer.Blit(_src, _dst, m_Material,  (int)EPassIndex.Combine);
+                _buffer.ReleaseTemporaryRT(RT_ID_Sample);
+            }
+
+            if (_data.m_DepthOfField)
+                m_FocalBlur.ExecutePostProcessBuffer(_buffer, _src,_dst,_descriptor,ref _data.m_DepthOfFieldData.m_FocalBlur);
+        }
+    }
     [Serializable]
     public struct PPData_Transparent
     {
+        public enum EMarchTimes
+        {
+            _8=8,
+            _16=16,
+            _32=32,
+            _64=64,
+            _128=128,
+        }
+
         [Header("Transparent")]
         [MTitle] public bool m_DepthOfField;
-        [MFoldout(nameof(m_DepthOfField), true)] public PPData_Blurs m_FocalBlur;
+        [MFoldout(nameof(m_DepthOfField), true)] public Data_DepthOfField m_DepthOfFieldData;
         
         [Header("Volumetric")]
         [Range(1, 4)] public int m_VolumetricDownSample;
@@ -34,7 +106,12 @@ namespace Rendering.PostProcess
         public static readonly PPData_Transparent m_Default = new PPData_Transparent()
         {
             m_DepthOfField=true,
-            m_FocalBlur = PPData_Blurs.m_Default,
+            m_DepthOfFieldData=new Data_DepthOfField()
+            {            
+                m_FocalBlur = PPData_Blurs.m_Default,
+                m_Begin = 10,
+                m_Width = 5,
+            },
             
             m_VolumetricLight = true,
             m_VolumetricLightData = new Data_VolumetricLight()
@@ -80,67 +157,12 @@ namespace Rendering.PostProcess
             #endregion
         }
 
-    }
-
-    public class PPCore_Transparent : PostProcessCore<PPData_Transparent>
-    {
-        public enum EPassIndex
+        [Serializable]
+        public struct Data_DepthOfField
         {
-            Combine=0,
-            Sample=1,
-        }
-        #region ShaderProperties
-        static readonly int RT_ID_Sample = Shader.PropertyToID("_Volumetric_Sample");
-        static RenderTargetIdentifier RT_Sample = new RenderTargetIdentifier(RT_ID_Sample);
-        static readonly int RT_ID_Blur = Shader.PropertyToID("_Volumetric_Blur");
-        static RenderTargetIdentifier RT_Blur = new RenderTargetIdentifier(RT_ID_Blur);
-
-        private const string KW_VolumetricLight = "_VOLUMETRICLIGHT";
-        #endregion
-        readonly PPCore_Blurs m_CoreBlur;
-        public PPCore_Transparent():base()
-        {
-            m_CoreBlur = new PPCore_Blurs();}
-        
-        public override void Destroy()
-        {
-            base.Destroy();
-            m_CoreBlur.Destroy();
-        }
-
-        public override void OnValidate(ref PPData_Transparent _data)
-        {
-            base.OnValidate(ref _data);
-            if(m_Material.EnableKeyword(KW_VolumetricLight, _data.m_VolumetricLight))
-                _data.m_VolumetricLightData.Apply(m_Material);
-            m_CoreBlur.OnValidate(ref _data.m_VolumetricBlur);
-        }
-        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor,ref PPData_Transparent _data)
-        {
-            if (_data.m_VolumetricLight)
-            {
-                _descriptor.width /= _data.m_VolumetricDownSample;
-                _descriptor.height /= _data.m_VolumetricDownSample;
-                _descriptor.colorFormat = RenderTextureFormat.ARGB32;
-                _descriptor.depthBufferBits = 0;
-            
-                _buffer.GetTemporaryRT(RT_ID_Sample, _descriptor,FilterMode.Bilinear);
-
-                if (!_data.m_EnableVolumetricBlur)
-                {
-                    _buffer.Blit(_src, RT_ID_Sample, m_Material, (int)EPassIndex.Sample);
-                }
-                else
-                {
-                    _buffer.GetTemporaryRT(RT_ID_Blur, _descriptor, FilterMode.Bilinear);
-                    _buffer.Blit(_src, RT_ID_Blur, m_Material,  (int)EPassIndex.Sample);
-                    m_CoreBlur.ExecutePostProcessBuffer(_buffer, RT_ID_Blur, RT_ID_Sample, _descriptor,ref _data.m_VolumetricBlur); 
-                    _buffer.ReleaseTemporaryRT(RT_ID_Blur);
-                }
-                
-                _buffer.Blit(_src, _dst, m_Material,  (int)EPassIndex.Combine);
-                _buffer.ReleaseTemporaryRT(RT_ID_Sample);
-            }
+            public float m_Begin;
+            public float m_Width;
+            public PPData_Blurs m_FocalBlur;
         }
     }
 }
