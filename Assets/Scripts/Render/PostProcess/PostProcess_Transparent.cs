@@ -21,21 +21,21 @@ namespace Rendering.PostProcess
     [Serializable]
     public struct PPData_Transparent
     {
+        [Header("Transparent")]
+        [MTitle] public bool m_DepthOfField;
+        [MFoldout(nameof(m_DepthOfField), true)] public PPData_Blurs m_FocalBlur;
+        
         [Header("Volumetric")]
-        public bool m_VolumetricLight;
+        [Range(1, 4)] public int m_VolumetricDownSample;
+        [MTitle] public bool m_EnableVolumetricBlur;
+        [MFoldout(nameof(m_EnableVolumetricBlur), true)] public PPData_Blurs m_VolumetricBlur;
+        [MTitle]public bool m_VolumetricLight;
         [MFoldout(nameof(m_VolumetricLight),true)] public Data_VolumetricLight m_VolumetricLightData;
-        
-        [Header("Optimize")]
-        [Range(1, 4)] public int m_DownSample;
-        [MTitle] public bool m_EnableBlur;
-        [MFoldout(nameof(m_EnableBlur), true)] public PPData_Blurs m_Blur;
-        
         public static readonly PPData_Transparent m_Default = new PPData_Transparent()
         {
-            m_DownSample = 1,
-            m_EnableBlur=false,
-            m_Blur=PPData_Blurs.m_Default,
-
+            m_DepthOfField=true,
+            m_FocalBlur = PPData_Blurs.m_Default,
+            
             m_VolumetricLight = true,
             m_VolumetricLightData = new Data_VolumetricLight()
             {
@@ -46,6 +46,9 @@ namespace Rendering.PostProcess
                 m_MarchTimes = EMarchTimes._64,
                 m_Dither=false,
             },
+            m_VolumetricDownSample = 1,
+            m_EnableVolumetricBlur=false,
+            m_VolumetricBlur=PPData_Blurs.m_Default,
         };
 
         [Serializable]
@@ -110,31 +113,34 @@ namespace Rendering.PostProcess
             base.OnValidate(ref _data);
             if(m_Material.EnableKeyword(KW_VolumetricLight, _data.m_VolumetricLight))
                 _data.m_VolumetricLightData.Apply(m_Material);
-            m_CoreBlur.OnValidate(ref _data.m_Blur);
+            m_CoreBlur.OnValidate(ref _data.m_VolumetricBlur);
         }
         public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor,ref PPData_Transparent _data)
         {
-            _descriptor.width /= _data.m_DownSample;
-            _descriptor.height /= _data.m_DownSample;
-            _descriptor.colorFormat = RenderTextureFormat.ARGB32;
-            _descriptor.depthBufferBits = 0;
+            if (_data.m_VolumetricLight)
+            {
+                _descriptor.width /= _data.m_VolumetricDownSample;
+                _descriptor.height /= _data.m_VolumetricDownSample;
+                _descriptor.colorFormat = RenderTextureFormat.ARGB32;
+                _descriptor.depthBufferBits = 0;
             
-            _buffer.GetTemporaryRT(RT_ID_Sample, _descriptor,FilterMode.Bilinear);
+                _buffer.GetTemporaryRT(RT_ID_Sample, _descriptor,FilterMode.Bilinear);
 
-            if (!_data.m_EnableBlur)
-            {
-                _buffer.Blit(_src, RT_ID_Sample, m_Material, (int)EPassIndex.Sample);
+                if (!_data.m_EnableVolumetricBlur)
+                {
+                    _buffer.Blit(_src, RT_ID_Sample, m_Material, (int)EPassIndex.Sample);
+                }
+                else
+                {
+                    _buffer.GetTemporaryRT(RT_ID_Blur, _descriptor, FilterMode.Bilinear);
+                    _buffer.Blit(_src, RT_ID_Blur, m_Material,  (int)EPassIndex.Sample);
+                    m_CoreBlur.ExecutePostProcessBuffer(_buffer, RT_ID_Blur, RT_ID_Sample, _descriptor,ref _data.m_VolumetricBlur); 
+                    _buffer.ReleaseTemporaryRT(RT_ID_Blur);
+                }
+                
+                _buffer.Blit(_src, _dst, m_Material,  (int)EPassIndex.Combine);
+                _buffer.ReleaseTemporaryRT(RT_ID_Sample);
             }
-            else
-            {
-                _buffer.GetTemporaryRT(RT_ID_Blur, _descriptor, FilterMode.Bilinear);
-                _buffer.Blit(_src, RT_ID_Blur, m_Material,  (int)EPassIndex.Sample);
-                m_CoreBlur.ExecutePostProcessBuffer(_buffer, RT_ID_Blur, RT_ID_Sample, _descriptor,ref _data.m_Blur); 
-                _buffer.ReleaseTemporaryRT(RT_ID_Blur);
-            }
-
-            _buffer.Blit(_src, _dst, m_Material,  (int)EPassIndex.Combine);
-            _buffer.ReleaseTemporaryRT(RT_ID_Sample);
         }
     }
 }

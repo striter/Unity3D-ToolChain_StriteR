@@ -14,26 +14,16 @@
             HLSLPROGRAM
             #pragma vertex vert_img
             #pragma fragment frag
-            #pragma shader_feature_local _UseBlurDepth
             #define IDEPTH
             #include "Assets/Shaders/Library/PostProcess.hlsl"
 
             TEXTURE2D( _BlurTex);SAMPLER(sampler_BlurTex);
             half _FocalStart;
             half _FocalLerp;
-            #if _UseBlurDepth
-            half _BlurSize;
-            #endif
 
             half GetFocalParam(half2 uv)
             {
                 half depth=Sample01Depth(uv);
-                #if _UseBlurDepth
-                depth=max(depth,Sample01Depth(uv+half2(1,0)*_BlurSize*_CameraDepthTexture_TexelSize.x));
-                depth=max(depth,Sample01Depth(uv+half2(-1,0)*_BlurSize*_CameraDepthTexture_TexelSize.x));
-                depth=max(depth,Sample01Depth(uv+half2(0,1)*_BlurSize*_CameraDepthTexture_TexelSize.y));
-                depth=max(depth,Sample01Depth(uv+half2(0,-1)*_BlurSize*_CameraDepthTexture_TexelSize.y));
-                #endif
 
                 half focal=step(_FocalStart,depth)*abs((_FocalStart-depth))/_FocalLerp;
                 return focal;
