@@ -23,7 +23,7 @@
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile_instancing
-            #include "Assets/Shaders/Library/CommonInclude.hlsl"
+            #include "Assets/Shaders/Library/Common.hlsl"
 
             TEXTURE2D(_NoiseTex); SAMPLER(sampler_NoiseTex);
             

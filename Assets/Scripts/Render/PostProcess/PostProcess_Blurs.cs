@@ -8,7 +8,16 @@ namespace Rendering.PostProcess
     public class PostProcess_Blurs : PostProcessComponentBase<PPCore_Blurs, PPData_Blurs>
     {
         public override bool m_OpaqueProcess => false;
-        public override EPostProcess Event => EPostProcess.Default;
+        public override EPostProcess Event => EPostProcess.DepthOfField;
+
+        public bool m_Focal;
+        [MFoldout(nameof(m_Focal),true)]public PPData_DepthOfField m_FocalData;
+        
+        public override void OnValidate()
+        {
+            base.OnValidate();
+            m_Effect?.SetFocal(m_Focal,ref m_FocalData);
+        }
     }
 
     public enum EBlurType
@@ -71,6 +80,19 @@ namespace Rendering.PostProcess
         };
     }
 
+
+    [Serializable]
+    public struct PPData_DepthOfField
+    {
+        [Clamp(0)]public float m_Begin;
+        [Clamp(0)]public float m_Width;
+
+        public static readonly PPData_DepthOfField m_Default = new PPData_DepthOfField()
+        {
+            m_Begin = 10,
+            m_Width = 5,
+        };
+    }
     public class PPCore_Blurs : PostProcessCore<PPData_Blurs>
     {
         #region ShaderProperties
@@ -83,12 +105,12 @@ namespace Rendering.PostProcess
         private static readonly int ID_FocalBegin = Shader.PropertyToID("_FocalStart");
         private static readonly int ID_FocalEnd = Shader.PropertyToID("_FocalEnd");
 
-        public bool SetFocal(bool _focal,float _focalBegin,float _focalWidth)
+        public bool SetFocal(bool _focal,ref PPData_DepthOfField focalData)
         {
             if (m_Material.EnableKeyword(KW_Focal, _focal))
             {
-                m_Material.SetFloat(ID_FocalBegin,_focalBegin);
-                m_Material.SetFloat(ID_FocalEnd,_focalBegin+_focalWidth);
+                m_Material.SetFloat(ID_FocalBegin,focalData.m_Begin);
+                m_Material.SetFloat(ID_FocalEnd,focalData.m_Begin+focalData.m_Width);
             }
             return _focal;
         }

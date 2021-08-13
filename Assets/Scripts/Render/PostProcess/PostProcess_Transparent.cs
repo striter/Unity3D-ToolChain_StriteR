@@ -7,7 +7,7 @@ namespace Rendering.PostProcess
     public class PostProcess_Transparent : PostProcessComponentBase<PPCore_Transparent, PPData_Transparent>
     {
         public override bool m_OpaqueProcess => false;
-        public override EPostProcess Event => EPostProcess.Transparent;
+        public override EPostProcess Event => EPostProcess.Volumetric;
     }
     public class PPCore_Transparent : PostProcessCore<PPData_Transparent>
     {
@@ -25,18 +25,15 @@ namespace Rendering.PostProcess
         private const string KW_VolumetricLight = "_VOLUMETRICLIGHT";
         #endregion
         readonly PPCore_Blurs m_VolumetricBlur;
-        private readonly PPCore_Blurs m_FocalBlur;
         public PPCore_Transparent():base()
         {
             m_VolumetricBlur = new PPCore_Blurs();
-            m_FocalBlur = new PPCore_Blurs();
         }
         
         public override void Destroy()
         {
             base.Destroy();
             m_VolumetricBlur.Destroy();
-            m_FocalBlur.Destroy();
         }
 
         public override void OnValidate(ref PPData_Transparent _data)
@@ -45,14 +42,14 @@ namespace Rendering.PostProcess
             if(m_Material.EnableKeyword(KW_VolumetricLight, _data.m_VolumetricLight))
                 _data.m_VolumetricLightData.Apply(m_Material);
             m_VolumetricBlur.OnValidate(ref _data.m_VolumetricBlur);
-            
-            if ( m_FocalBlur.SetFocal(_data.m_DepthOfField,_data.m_DepthOfFieldData.m_Begin,_data.m_DepthOfFieldData.m_Width))
-                m_FocalBlur.OnValidate(ref _data.m_DepthOfFieldData.m_FocalBlur);
         }
         public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor,ref PPData_Transparent _data)
         {
-            if (_data.m_VolumetricLight)
+            if (!_data.m_VolumetricLight)
             {
+                _buffer.Blit(_src,_dst);
+                return;
+            }
                 var sampleDescriptor = _descriptor;
                 sampleDescriptor.width /= _data.m_VolumetricDownSample;
                 sampleDescriptor.height /= _data.m_VolumetricDownSample;
@@ -75,10 +72,7 @@ namespace Rendering.PostProcess
                 
                 _buffer.Blit(_src, _dst, m_Material,  (int)EPassIndex.Combine);
                 _buffer.ReleaseTemporaryRT(RT_ID_Sample);
-            }
 
-            if (_data.m_DepthOfField)
-                m_FocalBlur.ExecutePostProcessBuffer(_buffer, _src,_dst,_descriptor,ref _data.m_DepthOfFieldData.m_FocalBlur);
         }
     }
     [Serializable]
@@ -93,26 +87,14 @@ namespace Rendering.PostProcess
             _128=128,
         }
 
-        [Header("Transparent")]
-        [MTitle] public bool m_DepthOfField;
-        [MFoldout(nameof(m_DepthOfField), true)] public Data_DepthOfField m_DepthOfFieldData;
-        
-        [Header("Volumetric")]
+        [MTitle]public bool m_VolumetricLight;
+        [MFoldout(nameof(m_VolumetricLight),true)] public Data_VolumetricLight m_VolumetricLightData;
+        [Header("Optimize")]
         [Range(1, 4)] public int m_VolumetricDownSample;
         [MTitle] public bool m_EnableVolumetricBlur;
         [MFoldout(nameof(m_EnableVolumetricBlur), true)] public PPData_Blurs m_VolumetricBlur;
-        [MTitle]public bool m_VolumetricLight;
-        [MFoldout(nameof(m_VolumetricLight),true)] public Data_VolumetricLight m_VolumetricLightData;
         public static readonly PPData_Transparent m_Default = new PPData_Transparent()
         {
-            m_DepthOfField=true,
-            m_DepthOfFieldData=new Data_DepthOfField()
-            {            
-                m_FocalBlur = PPData_Blurs.m_Default,
-                m_Begin = 10,
-                m_Width = 5,
-            },
-            
             m_VolumetricLight = true,
             m_VolumetricLightData = new Data_VolumetricLight()
             {
@@ -155,14 +137,6 @@ namespace Rendering.PostProcess
                 m_Material.EnableKeyword(kW_DITHER, m_Dither);
             }
             #endregion
-        }
-
-        [Serializable]
-        public struct Data_DepthOfField
-        {
-            public float m_Begin;
-            public float m_Width;
-            public PPData_Blurs m_FocalBlur;
         }
     }
 }

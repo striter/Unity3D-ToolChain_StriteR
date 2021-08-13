@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -8,11 +9,12 @@ namespace Rendering.PostProcess
     public enum EPostProcess
     {
         Opaque=0,
-        Transparent=1,
-        ColorUpgrade=2,
-        ColorDegrade=3,
-        Stylize=4,
-        Default,
+        Volumetric=1,
+        DepthOfField=2,
+        ColorUpgrade=3,
+        ColorDegrade=4,
+        Stylize=5,
+        Default=6,
     }
 
     public interface IPostProcessPipeline<T> where T:struct
@@ -62,8 +64,8 @@ namespace Rendering.PostProcess
 
     public abstract partial class PostProcessComponentBase<T,Y> : APostProcessBase where T : PostProcessCore<Y>, new() where Y:struct
     {
+        public bool m_Preview = false;
         [MTitle] public Y m_Data;
-        public bool m_SceneViewPreview = false;
         public T m_Effect { get; private set; }
         public IPostProcessPipeline<Y> m_EffectPipeline { get; private set; }
         protected Camera m_Camera { get; private set; }
@@ -103,6 +105,14 @@ namespace Rendering.PostProcess
     public abstract partial class PostProcessComponentBase<T, Y> : APostProcessBase where T : PostProcessCore<Y>, new() where Y : struct
     {
         PostProcessComponentBase<T, Y> m_SceneComponent = null;
+        private FieldInfo[] m_Fields;
+
+        FieldInfo[] GetFields()
+        {
+            if(m_Fields==null)
+                m_Fields=this.GetType().GetFields(BindingFlags.Instance|BindingFlags.Public);
+            return m_Fields;
+        }
         bool EditorInitAvailable() => UnityEditor.SceneView.lastActiveSceneView && UnityEditor.SceneView.lastActiveSceneView.camera.gameObject != this.gameObject;
         void Update()
         {
@@ -111,10 +121,12 @@ namespace Rendering.PostProcess
             Init();
             if (m_SceneComponent)
             {
+                foreach (var field in GetFields())
+                    field.SetValue(m_SceneComponent,field.GetValue(this));
                 m_SceneComponent.m_Data = m_Data;
                 m_SceneComponent.OnValidate();
             }
-            if (m_SceneViewPreview)
+            if (m_Preview)
                 InitSceneCameraEffect();
             else
                 RemoveSceneCameraEffect();
