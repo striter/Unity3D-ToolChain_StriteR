@@ -88,7 +88,7 @@
 			#pragma shader_feature_local _DEPTHMAP
 			#include "Assets/Shaders/Library/Additional/Local/AlphaClip.hlsl"
 			#pragma shader_feature_local _ALPHACLIP
-			
+
 			struct a2f
 			{
 				half3 positionOS : POSITION;
@@ -108,6 +108,7 @@
 				half3 tangentWS:TEXCOORD4;
 				half3 biTangentWS:TEXCOORD5;
 				half3 viewDirWS:TEXCOORD6;
+				FOG_COORD(7)
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -125,6 +126,7 @@
 				o.tangentWS=normalize(mul((float3x3)unity_ObjectToWorld,v.tangentOS.xyz));
 				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
 				o.viewDirWS=TransformWorldToViewDir(o.positionWS,UNITY_MATRIX_V);
+				FOG_TRANSFER(o);
 				return o;
 			}
 		ENDHLSL
@@ -143,6 +145,7 @@
             #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
             #pragma multi_compile _ _SHADOWS_SOFT
             #pragma multi_compile _ _ADDITIONAL_LIGHTS
+            #pragma multi_compile_fog
             #pragma target 3.5
 			
 			half4 frag(v2f i,out float depth:SV_DEPTH) :SV_TARGET
@@ -208,6 +211,7 @@
 					brdfColor+=BRDFLighting(surface,light);
 			    }
             	#endif
+				FOG_MIX(i,brdfColor);
 				return half4(brdfColor,1.h);
 			}
 			ENDHLSL
