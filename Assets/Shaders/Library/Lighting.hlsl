@@ -1,5 +1,6 @@
 ﻿#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
+#include "Assets/Shaders/Library/Lighting/Normal.hlsl"
 
 //Diffuse-Lambert
 float GetDiffuse(float3 normal,float3 lightDir)

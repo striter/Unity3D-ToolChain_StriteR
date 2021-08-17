@@ -5,7 +5,7 @@
     half D = light.normalDistribution;
     half invVF = light.invNormalizationTerm;
     
-    brdf += surface.specular * D / invVF / 4;
+    brdf += surface.specular * D / invVF *.25h;
     return brdf*light.radiance;
 }
 

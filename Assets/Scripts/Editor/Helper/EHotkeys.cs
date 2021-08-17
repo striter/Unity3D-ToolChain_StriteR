@@ -88,5 +88,13 @@ namespace TEditor
             Debug.LogFormat("ScreenShot Successful:\n<Color=#F1F635FF>{0}</Color>", path);
             ScreenCapture.CaptureScreenshot(path);
         }
+
+        public static void SwitchDeveleporMode()
+        {
+            bool internalDebug = !EditorPrefs.GetBool("DeveloperMode");
+            EditorPrefs.SetBool("DeveloperMode",internalDebug);
+            Debug.LogWarning("Editor Developer Mode Switch:"+(internalDebug?"ON":"OFF"));
+
+        }
     }
 }

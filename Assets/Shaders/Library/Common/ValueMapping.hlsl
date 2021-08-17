@@ -1,10 +1,4 @@
-﻿#define PI_ONE 3.1415926535
-#define PI_TWO 6.2831853071796
-#define PI_FOUR 12.566370614359
-#define PI_SQRT2 0.797884560802865
-#define PI_ONEMINUS 0.31830988618379
-
-//Pow
+﻿//Pow
 half pow2(half value){ return value * value; }
 half pow3(half value) { return value*value*value; }
 half pow4(half value) { return value * value * value * value ;}
@@ -143,12 +137,12 @@ half min(half3 _Target)
 //Interpolate
 half3 triLerp(half3 tl,half3 tm,half3 tr,half a)       //-1 tl,0 tm,1 tr
 {
-    return tm*(1.h-abs(a))+tl*max(0.h,-a)+tr*a;
+    return tm*(1.h-abs(a))+tl*max(0.h,-a)+tr*max(0,a);
 }
 
 float3 triLerp(float3 tl,float3 tm,float3 tr,float a)       //-1 tl,0 tm,1 tr
 {
-    return tm*(1.-abs(a))+tl*max(0.,-a)+tr*a;
+    return tm*(1.-abs(a))+tl*max(0.,-a)+tr*max(0,a);
 }
 
 float bilinearLerp(float tl, float tr, float bl, float br, float2 uv)
@@ -194,6 +188,11 @@ float3 Blend_Screen(float3 _src, float3 _dst)
 float invlerp(float _a, float _b, float _value)
 {
     return (_value - _a) / (_b - _a);
+}
+
+half remap(half _value, half _from1, half _to1, half _from2, half _to2)
+{
+    return lerp(_from2, _to2, invlerp(_from1, _to1, _value));
 }
 
 float remap(float _value, float _from1, float _to1, float _from2, float _to2)

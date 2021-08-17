@@ -153,7 +153,7 @@
 	
 	half4 fragHexagonVertical(v2f_img i):SV_TARGET
 	{
-		half angle=_Angle-PI_HALF;
+		half angle=_Angle-HALF_PI;
 		half sinA,cosA;
 		sincos(angle,sinA,cosA);
 		half2 dir=half2(cosA,sinA)*_MainTex_TexelSize.xy*_BlurSize;

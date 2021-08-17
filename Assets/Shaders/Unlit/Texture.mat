@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Texture
+  m_Shader: {fileID: 4800000, guid: 1b5421d368cb03b46a318b3702378edd, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: f6f9745a07e407d4a815c13bd5f48fc5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _StarMask:
+        m_Texture: {fileID: 2800000, guid: 9c85090b0e4b5e246a82c5f13bb6d5dd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _StarTexture:
+        m_Texture: {fileID: 2800000, guid: 2bb27e58407ab344b84e3e73c89f0326, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _HorizonClip: 0.15
+    - _HorizonSize: 0.558
+    - _MoonCrescent: 0.089
+    - _MoonSize: 0.882
+    - _StarDensity: 1
+    - _StarMaskStrength: 0.427
+    - _SunSize: 0.886
+    m_Colors:
+    - _Color: {r: 0.97039557, g: 0.99215686, b: 0.96437645, a: 1}
+    - _DayBottomColor: {r: 0.8000001, g: 0.8000001, b: 0.8000001, a: 1}
+    - _DayTopColor: {r: 1, g: 1, b: 0.872, a: 1}
+    - _HorizonColor: {r: 0.75, g: 0.75, b: 0.55, a: 1}
+    - _MoonColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+    - _NightBottomColor: {r: 0.15, g: 0.15, b: 0.15, a: 1}
+    - _NightTopColor: {r: 0.25, g: 0.3, b: 0.4, a: 1}
+    - _StarColor: {r: 0.75, g: 1, b: 0.96875, a: 1}
+    - _StarMaskFlow: {r: 0.05, g: 0, b: 0, a: 0}
+    - _StartColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SunColor: {r: 0.11320752, g: 0.11320752, b: 0.11320752, a: 1}
+  m_BuildTextureStacks: []
