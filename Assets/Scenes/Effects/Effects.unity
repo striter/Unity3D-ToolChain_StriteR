@@ -15,9 +15,9 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 0
-  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_FogColor: {r: 0.6367924, g: 1, b: 0.9566455, a: 0.8156863}
   m_FogMode: 3
-  m_FogDensity: 0.01
+  m_FogDensity: 0.06
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 1, g: 1, b: 1, a: 1}
@@ -277,17 +277,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e24f8465e5911194a9d11d5acb09953c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectData:
-    m_Weight: 1
-    m_LUT: {fileID: 2800000, guid: 8382af7e1f5fa7e448573ee5cbe9c8ec, type: 3}
-    m_LUTCellCount: 32
-    m_brightness: 1
-    m_saturation: 1
-    m_contrast: 1
+  m_Preview: 0
+  m_Data:
+    m_FXAA: 0
+    m_AdditionalSample: 0
+    m_UseDepth: 0
+    m_ContrastSkip: 0
+    m_RelativeSkip: 0
+    m_SubPixelBlend: 0
+    m_LUT: 0
+    m_LUTTex: {fileID: 0}
+    m_LUTCellCount: 0
+    m_LUTWeight: 0
+    m_BSC: 0
+    m_Brightness: 0
+    m_Saturation: 0
+    m_Contrast: 0
+    m_ChannelMix: 0
     m_MixRed: {x: 0, y: 0, z: 0}
     m_MixGreen: {x: 0, y: 0, z: 0}
     m_MixBlue: {x: 0, y: 0, z: 0}
-  m_SceneViewPreview: 1
+    m_Bloom: 0
+    m_BloomData:
+      m_SampleMode: 0
+      m_Threshold: 0
+      m_CullingMask: 0
+      m_Color: {r: 0, g: 0, b: 0, a: 0}
+      m_Blur:
+        m_BlurType: 0
+        m_BlurSize: 0
+        m_Iteration: 0
+        m_DownSample: 0
+        m_Angle: 0
+        m_Vector: {x: 0, y: 0}
+      m_BloomDebug: 0
+  m_Opaque: 0
 --- !u!1 &57150664
 GameObject:
   m_ObjectHideFlags: 0

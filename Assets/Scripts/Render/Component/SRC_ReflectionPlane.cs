@@ -11,7 +11,7 @@ namespace Rendering.Pipeline
         public static List<SRC_ReflectionPlane> m_ReflectionPlanes { get; private set; } = new List<SRC_ReflectionPlane>();
         public MeshRenderer m_MeshRenderer { get; private set; }
         public MeshFilter m_MeshFilter { get; private set; }
-        public GPlane m_PlaneData => new GPlane(transform.up, transform.position + transform.up * m_PlaneOffset);
+        public GPlane m_PlaneData => new GPlane(transform.up,  m_PlaneOffset);
         private void OnEnable()
         {
             m_ReflectionPlanes.Add(this);

@@ -2,7 +2,7 @@
 {
 	Properties
 	{
-		_MainTex("Main Tex",2D)="white"{}
+		[ToggleTex(_MASK)]_MainTex("Mask Tex",2D)="white"{}
 	    [HDR]_Color("HDR Color",Color)=(1,1,1,1)
 
 		[Header(Misc)]
@@ -28,8 +28,9 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile_instancing
-			#pragma shader_feature _CSFORWARD
-
+			#pragma shader_feature_local _CSFORWARD
+			#pragma shader_feature_local _MASK
+			
 			#include "Assets/Shaders/Library/Common.hlsl"
 			struct appdata
 			{
@@ -67,9 +68,13 @@
 				return o;
 			}
 
-			float4 frag(v2f i) : SV_Target
+			half4 frag(v2f i) : SV_Target
 			{
-				return tex2D(_MainTex,i.uv).r*i.color;
+				half4 col=i.color;
+				#if _MASK
+					col*=tex2D(_MainTex,i.uv).r;
+				#endif
+				return col;
 			}
 			ENDHLSL
 		}

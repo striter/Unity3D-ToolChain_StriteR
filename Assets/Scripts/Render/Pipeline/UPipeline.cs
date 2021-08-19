@@ -14,7 +14,6 @@ namespace Rendering
             DrawingSettings settings = new DrawingSettings
             {
                 sortingSettings = new SortingSettings(_camera),
-                perObjectData = PerObjectData.None,
                 enableDynamicBatching = true,
                 enableInstancing = true
             };

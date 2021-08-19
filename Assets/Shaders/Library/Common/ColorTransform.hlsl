@@ -64,13 +64,13 @@ half3 RGBtoHSV(half3 rgb)
     return half3(h, s, v);
 }
 
-half Luminance(half3 color)
+half RGBtoLuminance(half3 color)
 {
     return dot(color,half3(0.2126729h,  0.7151522h, 0.0721750h));
 }
 
 half3 Saturation(half3 c,half _saturation)
 {
-    half lum = Luminance(c);
+    half lum = RGBtoLuminance(c);
     return lum.xxx + _saturation.xxx * (c - lum.xxx);
 }

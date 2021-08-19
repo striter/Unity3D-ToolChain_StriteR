@@ -3,8 +3,8 @@
     float3 res = SHEvalLinearL0L1(normal, unity_SHAr, unity_SHAg, unity_SHAb);
     res += SHEvalLinearL2(normal, unity_SHBr, unity_SHBg, unity_SHBb, unity_SHC);
     #ifdef UNITY_COLORSPACE_GAMMA
-	res = LinearToSRGB(res);
-#endif
+	    res = LinearToSRGB(res);
+    #endif
     return res;
 }
 

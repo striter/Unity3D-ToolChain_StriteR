@@ -6,7 +6,7 @@ using UnityEngine.Rendering.Universal;
 namespace Rendering.Pipeline
 {
     using PostProcess;
-    public  class SRP_Reflection:ISRPBase
+    public  class SRP_Reflection: ISRPBase
     {
         static readonly int ID_ReflectionTextureOn = Shader.PropertyToID("_CameraReflectionTextureOn");
         static readonly int ID_ReflectionTextureIndex = Shader.PropertyToID("_CameraReflectionTextureIndex");
@@ -19,7 +19,7 @@ namespace Rendering.Pipeline
         public readonly SRD_PlanarReflectionData m_Data;
         public readonly PPCore_Blurs m_CoreBlurs;
         public readonly MaterialPropertyBlock m_PropertyBlock;
-        public SRP_Reflection(SRD_PlanarReflectionData _data,RenderResources _reflectionCS)
+        public SRP_Reflection(SRD_PlanarReflectionData _data,RenderResources _reflectionCS,RenderPassEvent _event)
         {
             m_CoreBlurs = new PPCore_Blurs();
             m_PropertyBlock = new MaterialPropertyBlock();
@@ -37,6 +37,8 @@ namespace Rendering.Pipeline
                         m_ReflectionPasses[i] = new SRP_PlanarReflection_MirrorSpace(this);
                         break;
                 }
+
+                m_ReflectionPasses[i].renderPassEvent = _event;
             }
         }
 
@@ -51,8 +53,7 @@ namespace Rendering.Pipeline
             if (SRC_ReflectionPlane.m_ReflectionPlanes.Count == 0)
                 return;
 
-            int index = 0;
-            foreach (var groups in SRC_ReflectionPlane.m_ReflectionPlanes.FindAll(p=>p.m_MeshRenderer.isVisible).GroupBy(p=>p.m_PlaneData))
+            foreach (var (groups,index) in SRC_ReflectionPlane.m_ReflectionPlanes.FindAll(p=>p.m_MeshRenderer.isVisible).GroupBy(p=>p.m_PlaneData).LoopIndex())
             {
                 if (index >= C_MaxReflectionTextureCount)
                 {
@@ -70,7 +71,6 @@ namespace Rendering.Pipeline
                     planeComponent.m_MeshRenderer.SetPropertyBlock(m_PropertyBlock);
                 }
                 _renderer.EnqueuePass(m_ReflectionPasses[index].Setup(index,groups.Key, groups,_renderer));
-                index++;
             }
         }
     }
@@ -96,7 +96,6 @@ namespace Rendering.Pipeline
         private RenderTargetIdentifier m_ReflectionBlurTextureID;
         protected SRP_PlanarReflectionBase(SRP_Reflection _reflection)
         {
-            renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 1;
             m_Reflection = _reflection;
         }
         public virtual ScriptableRenderPass Setup(int _index,GPlane _planeData, IEnumerable< SRC_ReflectionPlane> _planes,ScriptableRenderer _renderer)
@@ -246,9 +245,9 @@ namespace Rendering.Pipeline
             ref CameraData cameraData = ref renderingData.cameraData;
             ref Camera camera = ref cameraData.camera;
             
-            Matrix4x4 planeMirroMatrix = _plane.GetMirrorMatrix();
+            Matrix4x4 planeMirrorMatrix = _plane.GetMirrorMatrix();
             Matrix4x4 cullingMatrix = camera.cullingMatrix;
-            camera.cullingMatrix = cullingMatrix * planeMirroMatrix;
+            camera.cullingMatrix = cullingMatrix * planeMirrorMatrix;
             if (cameraData.camera.TryGetCullingParameters(out ScriptableCullingParameters cullingParameters))
             {
                 cullingParameters.maximumVisibleLights = _data.m_LightCount;
@@ -256,16 +255,17 @@ namespace Rendering.Pipeline
                 FilteringSettings m_FilterSettings = new FilteringSettings(_data.m_IncludeTransparent? RenderQueueRange.all : RenderQueueRange.opaque);
                 Matrix4x4 projectionMatrix = GL.GetGPUProjectionMatrix(cameraData.GetProjectionMatrix(), cameraData.IsCameraProjectionMatrixFlipped());
                 Matrix4x4 viewMatrix = cameraData.GetViewMatrix();
-                viewMatrix*= planeMirroMatrix;
+                viewMatrix*= planeMirrorMatrix;
             
                 RenderingUtils.SetViewAndProjectionMatrices(cmd, viewMatrix , projectionMatrix, false);
                 var cameraPosition = camera.transform.position;
-                cmd.SetGlobalVector( ID_CameraWorldPosition,planeMirroMatrix.MultiplyPoint(cameraPosition));
+                cmd.SetGlobalVector( ID_CameraWorldPosition,planeMirrorMatrix.MultiplyPoint(cameraPosition));
                 cmd.SetInvertCulling(true);
                 context.ExecuteCommandBuffer(cmd);
 
                 CullingResults cullResults = context.Cull(ref cullingParameters);
                 context.DrawRenderers(cullResults, ref drawingSettings, ref m_FilterSettings);
+                
 
                 cmd.Clear();
                 cmd.SetInvertCulling(false);

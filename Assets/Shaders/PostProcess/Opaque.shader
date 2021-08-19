@@ -180,8 +180,9 @@
 			HLSLPROGRAM
 			#pragma vertex vert_img
 			#pragma fragment frag
+			
+			#pragma shader_feature_local _DITHER
 			#if _AO
-				#pragma shader_feature_local _DITHER
 				#define MAX_SAMPLE_COUNT 64u
 				half3 _AOSampleSphere[MAX_SAMPLE_COUNT];
 				uint _AOSampleCount;

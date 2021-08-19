@@ -14,7 +14,6 @@ namespace TEditor
         static void SwitchDeveloperMode() => Hotkeys.SwitchDeveleporMode();
         [MenuItem("Work Flow/Hotkeys/Take Screen Shot _F12", false, 104)]
         static void TakeScreenShot() => Hotkeys.TakeScreenShot();
-
         #endregion
         #region Window
         //BuiltIn Texture Ref:https://unitylist.com/p/5c3/Unity-editor-icons
@@ -36,6 +35,19 @@ namespace TEditor
         static void ShowOptimizeWindow() => EditorWindow.GetWindow(typeof(GPUAnimationBaker)).titleContent = new GUIContent("GPU Animation Instance Baker", EditorGUIUtility.IconContent("AvatarSelector").image);
         [MenuItem("Work Flow/Art/(Optimize)Animation Clip Optimize", false, 401)]
         static void ShowAssetOptimizeWindow() => EditorWindow.GetWindow(typeof(AnimationClipOptimize)).titleContent = new GUIContent("Asset Optimize", EditorGUIUtility.IconContent("Toolbar Plus More").image);
+        #endregion
+        
+        #region MenuItems
+
+        [MenuItem("Work Flow/Prefab/Remove All Colliders Child Of Selected",false,304)]
+        static void RemoveAllSelectedColliders()
+        {
+            foreach (Transform transform in Selection.transforms)
+            {
+                foreach (Collider collider in transform.GetComponents<Collider>())
+                    Object.DestroyImmediate(collider);
+            }
+        }
         #endregion
     }
 

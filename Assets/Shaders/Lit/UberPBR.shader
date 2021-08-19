@@ -24,8 +24,8 @@
 		[ToggleTex(_DEPTHMAP)][NoScaleOffset]_DepthTex("Texure",2D)="white"{}
 		[Foldout(_DEPTHMAP)]_DepthScale("Scale",Range(0.001,.5))=1
 		[Foldout(_DEPTHMAP)]_DepthOffset("Offset",Range(-.5,.5))=0
-		[Toggle(_DEPTHBUFFER)]_DepthBuffer("Affect Buffer",float)=1
-		[Foldout(_DEPTHBUFFER)]_DepthBufferScale("Affect Scale",float)=1
+		[Toggle(_DEPTHBUFFER)]_DepthBuffer("Affect Buffer",float)=0
+		[Foldout(_DEPTHBUFFER)]_DepthBufferScale("Affect Scale",float)=0
 		[Toggle(_PARALLAX)]_Parallax("Parallax",float)=0
 		[Enum(_16,16,_32,32,_64,64,_128,128)]_ParallaxCount("Parallax Count",int)=16
 		
@@ -41,8 +41,8 @@
 	SubShader
 	{
 		Tags { "Queue" = "Geometry" }
-		Cull [_Cull]
 		Blend [_SrcBlend] [_DstBlend]
+		Cull [_Cull]
 		ZWrite [_ZWrite]
 		ZTest [_ZTest]
 		
@@ -186,7 +186,6 @@
 					metallic=mix.g;
 					ao=mix.b;
 				#endif
-
 				BRDFSurface surface=BRDFSurface_Ctor(albedo,glossiness,metallic,ao,normalWS,tangentWS,viewDirWS);
 				
 				half3 brdfColor=0;
@@ -202,7 +201,7 @@
 				#endif
 				BRDFLight brdfMainLight=BRDFLight_Ctor(surface,mainLight.direction,mainLight.color,mainLight.shadowAttenuation,anisotropic);
 				brdfColor+=BRDFLighting(surface,brdfMainLight);
-				
+
 				#if _ADDITIONAL_LIGHTS
             	uint pixelLightCount = GetAdditionalLightsCount();
 			    for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)

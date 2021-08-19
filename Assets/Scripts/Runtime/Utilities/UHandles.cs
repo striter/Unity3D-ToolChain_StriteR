@@ -50,6 +50,13 @@ public static class Gizmos_Extend
         Handles.matrix = Gizmos.matrix;
         Handles_Extend.DrawLine(_line);
     }
+
+    public static void DrawLines(Vector3[] _points)
+    {
+        int count = _points.Length;
+        for(int i=0;i<count;i++)
+            Gizmos.DrawLine(_points[i],_points[(i+1)%count]);
+    }
 }
 public static class Handles_Extend
 {

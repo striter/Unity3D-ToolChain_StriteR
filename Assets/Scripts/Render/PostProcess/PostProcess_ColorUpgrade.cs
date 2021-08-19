@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 namespace Rendering.PostProcess
 {
@@ -31,6 +33,11 @@ namespace Rendering.PostProcess
         _128 = 128,
     }
 
+    public enum EBloomSample
+    {
+        Luminance,
+        Redraw,
+    }
     [System.Serializable]
     public struct PPData_ColorUpgrade
     {
@@ -56,10 +63,7 @@ namespace Rendering.PostProcess
         [MFoldout(nameof(m_ChannelMix),true)] [RangeVector(-1, 1)] public Vector3 m_MixBlue;
 
         [MTitle]public bool m_Bloom;
-        [MFoldout(nameof(m_Bloom),true)] [Range(0.0f, 2f)] public float m_Threshold;
-        [MFoldout(nameof(m_Bloom),true)] [Range(0.0f, 5)] public float m_Intensity;
-        [MFoldout(nameof(m_Bloom),true)] public PPData_Blurs m_Blur;
-        [MFoldout(nameof(m_Bloom),true)] public bool m_BloomDebug;
+        [MFoldout(nameof(m_Bloom),true)] public Data_Bloom m_BloomData;
         
         public static readonly PPData_ColorUpgrade m_Default = new PPData_ColorUpgrade()
         {
@@ -84,14 +88,42 @@ namespace Rendering.PostProcess
             m_MixBlue = Vector3.zero,
             
             m_Bloom = false,
-            m_Threshold = 0.25f,
-            m_Intensity = 0.3f,
-            m_Blur = PPData_Blurs.m_Default,
-            m_BloomDebug = false,
+            m_BloomData = new Data_Bloom()
+            {
+                m_SampleMode = EBloomSample.Luminance,
+                m_LayerMask = int.MaxValue,
+                m_Threshold = 0.25f,
+                m_Color = Color.white,
+                m_Blur = PPData_Blurs.m_Default,
+                m_BloomDebug = false,
+            },
         };
+
+        [Serializable]
+        public struct Data_Bloom
+        {
+            public EBloomSample m_SampleMode;
+            [MFoldout(nameof(m_SampleMode),EBloomSample.Luminance)] [Range(0.0f, 2f)] public float m_Threshold;
+            [MFoldout(nameof(m_SampleMode),EBloomSample.Redraw)][CullingMask] public int m_LayerMask;
+            [ColorUsage(false,true)] public Color m_Color;
+            public PPData_Blurs m_Blur;
+            public bool m_BloomDebug;
+
+            #region Properties
+            static readonly int ID_Threshold = Shader.PropertyToID("_BloomThreshold");
+            static readonly int ID_Color = Shader.PropertyToID("_BloomColor");
+
+            public void Apply(Material _material, PPCore_Blurs _blur)
+            {
+                _material.SetFloat(ID_Threshold, m_Threshold);
+                _material.SetColor(ID_Color, m_Color);
+                _blur.OnValidate(ref m_Blur);
+            }
+            #endregion
+        }
     }
 
-    public class PPCore_ColorUpgrade : PostProcessCore<PPData_ColorUpgrade>
+    public class PPCore_ColorUpgrade : PostProcessCore<PPData_ColorUpgrade>,IPostProcessPipeline<PPData_ColorUpgrade>
     {
         #region ShaderProperties
         const string KW_FXAA = "_FXAA";
@@ -122,8 +154,6 @@ namespace Rendering.PostProcess
         static readonly int RT_ID_Blur = Shader.PropertyToID("_Bloom_Blur");
         
         const string KW_BLOOM = "_BLOOM";
-        static readonly int ID_Threshold = Shader.PropertyToID("_Threshold");
-        static readonly int ID_Intensity = Shader.PropertyToID("_Intensity");
         static readonly RenderTargetIdentifier RT_Sample = new RenderTargetIdentifier(RT_ID_Sample);
         static readonly RenderTargetIdentifier RT_Blur = new RenderTargetIdentifier(RT_ID_Blur);
         #endregion
@@ -182,15 +212,12 @@ namespace Rendering.PostProcess
                 m_Material.SetVector(ID_MixGreen, _ssaoData.m_MixGreen + Vector3.up);
                 m_Material.SetVector(ID_MixBlue, _ssaoData.m_MixBlue + Vector3.forward);
             }
-            
-            if(m_Material.EnableKeyword(KW_BLOOM,_ssaoData.m_Bloom))
-            {
-                m_Material.SetFloat(ID_Threshold, _ssaoData.m_Threshold);
-                m_Material.SetFloat(ID_Intensity, _ssaoData.m_Intensity);
-                m_CoreBlurs.OnValidate(ref _ssaoData.m_Blur);
-            }
+
+            if (m_Material.EnableKeyword(KW_BLOOM, _ssaoData.m_Bloom))
+                _ssaoData.m_BloomData.Apply(m_Material, m_CoreBlurs);
         }
 
+        
         public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,
             RenderTextureDescriptor _descriptor, ref PPData_ColorUpgrade _data)
         {
@@ -200,21 +227,59 @@ namespace Rendering.PostProcess
                 return;
             }
 
-            var rtW = _descriptor.width;
-            var rtH = _descriptor.height;
+            ref var bloomData = ref _data.m_BloomData;
+            if (bloomData.m_SampleMode == EBloomSample.Luminance)
+                _buffer.Blit(_src, RT_Sample, m_Material, (int)EPassIndex.BloomSample);
 
-            _buffer.GetTemporaryRT(RT_ID_Blur, rtW, rtH, 0, FilterMode.Bilinear, _descriptor.colorFormat);
-            _buffer.GetTemporaryRT(RT_ID_Sample, rtW, rtH, 0, FilterMode.Bilinear, _descriptor.colorFormat);
+            m_CoreBlurs.ExecutePostProcessBuffer(_buffer, RT_Sample, RT_Blur, _descriptor, ref bloomData.m_Blur);
 
-            _buffer.Blit(_src, RT_Sample, m_Material, (int)EPassIndex.BloomSample);
-
-            m_CoreBlurs.ExecutePostProcessBuffer(_buffer, RT_Sample, RT_Blur, _descriptor, ref _data.m_Blur);
-
-            if(_data.m_BloomDebug)
-                _buffer.Blit(RT_Sample,_dst);
+            if(bloomData.m_BloomDebug)
+                _buffer.Blit(RT_Blur,_dst);
             else
                 _buffer.Blit(_src, _dst, m_Material, (int)EPassIndex.Process);
+        }
 
+        public void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, ref PPData_ColorUpgrade _data)
+        {
+            if (!_data.m_Bloom)
+                return;
+            ref var data = ref _data.m_BloomData;
+            _descriptor.mipCount = 0;
+
+            _buffer.GetTemporaryRT(RT_ID_Sample, _descriptor, FilterMode.Bilinear);
+            _buffer.GetTemporaryRT(RT_ID_Blur, _descriptor ,FilterMode.Bilinear);
+        }
+
+        public void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,
+            ref PPData_ColorUpgrade _data)
+        {
+            if (!_data.m_Bloom)
+                return;
+            
+            ref var bloomData = ref _data.m_BloomData;
+            if (bloomData.m_SampleMode != EBloomSample.Redraw)
+                return;
+            
+            CommandBuffer buffer = CommandBufferPool.Get("Bloom Redraw Execute");
+            buffer.SetRenderTarget(RT_ID_Sample);
+            buffer.ClearRenderTarget(true, true, Color.black);
+            _context.ExecuteCommandBuffer(buffer);
+
+            DrawingSettings drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
+            drawingSettings.perObjectData = (PerObjectData)int.MaxValue;
+            FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = bloomData.m_LayerMask };
+            _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
+
+            buffer.Clear();
+            buffer.SetRenderTarget(_renderer.cameraColorTarget);
+            _context.ExecuteCommandBuffer(buffer);
+            CommandBufferPool.Release(buffer);
+        }
+
+        public void FrameCleanUp(CommandBuffer _buffer, ref PPData_ColorUpgrade _data)
+        {
+            if (!_data.m_Bloom)
+                return;
             _buffer.ReleaseTemporaryRT(RT_ID_Sample);
             _buffer.ReleaseTemporaryRT(RT_ID_Blur);
         }

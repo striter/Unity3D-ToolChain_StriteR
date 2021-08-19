@@ -22,6 +22,9 @@
     	[Header(_Fresnel)]
     	[Toggle(_FRESNEL)]_Fresnel("Enable",int)=1
     	
+    	[Header(Reflection)]
+		_Strength("Strength",Range(0,1))=1
+    		
     	[Header(Depth)]
     	[Toggle(_DEPTH)]_Depth("Enable",int)=1
     	[Foldout(_DEPTH)]_DepthColor("Color",Color)=(1,1,1,1)
@@ -89,6 +92,7 @@
 				INSTANCING_PROP(float,_DepthBegin)
 				INSTANCING_PROP(float,_DepthDistance)
 				INSTANCING_PROP(float,_CausticStrength)
+				INSTANCING_PROP(float,_Strength)
 			INSTANCING_BUFFER_END
 
             #include "Assets/Shaders/Library/Additional/Local/WaveInteraction.hlsl"
@@ -207,7 +211,7 @@
             	
             	float3 aboveSurfaceColor=albedo;
             	float4 reflection=IndirectBRDFPlanarSpecular(screenUV,eyeDepthSurface,normalTS);
-				aboveSurfaceColor=lerp(aboveSurfaceColor, reflection.rgb,reflection.a);
+				aboveSurfaceColor=lerp(aboveSurfaceColor, reflection.rgb,reflection.a*_Strength);
             	
             	float specular=GetSpecular(normalWS,lightDirWS,viewDirWS,_SpecularAmount);
             	specular*=atten;

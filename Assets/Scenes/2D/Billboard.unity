@@ -3796,7 +3796,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 896605857}
   m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
-  m_LocalPosition: {x: -0.88, y: 1.068944e-11, z: -3.08}
+  m_LocalPosition: {x: -0.86, y: 0, z: -3.08}
   m_LocalScale: {x: 4, y: 4, z: 4}
   m_Children: []
   m_Father: {fileID: 1674983016}
@@ -5559,10 +5559,7 @@ GameObject:
   - component: {fileID: 1483932175}
   - component: {fileID: 1483932178}
   - component: {fileID: 1483932181}
-  - component: {fileID: 1483932180}
   - component: {fileID: 1483932182}
-  - component: {fileID: 1483932184}
-  - component: {fileID: 1483932185}
   - component: {fileID: 1483932186}
   - component: {fileID: 1483932179}
   m_Layer: 0
@@ -5681,7 +5678,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e24f8465e5911194a9d11d5acb09953c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectData:
+  m_Preview: 1
+  m_Data:
     m_FXAA: 0
     m_AdditionalSample: 1
     m_UseDepth: 0
@@ -5701,39 +5699,20 @@ MonoBehaviour:
     m_MixGreen: {x: 0, y: 0, z: 0}
     m_MixBlue: {x: 0, y: 0, z: 0}
     m_Bloom: 1
-    m_Threshold: 0.89
-    m_Intensity: 0.3
-    m_Blur:
-      m_BlurType: 3
-      m_BlurSize: 1.3
-      m_Iteration: 7
-      m_DownSample: 2
-      m_Angle: 0
-      m_Vector: {x: 0.5, y: 0.5}
-    m_BloomDebug: 0
-  m_SceneViewPreview: 0
---- !u!114 &1483932180
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1483932174}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 853def725d253de47b79e3a0c18ad32e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectData:
-    m_FogColor: {r: 0.6179246, g: 0.6607741, b: 1, a: 1}
-    m_FogDensity: 0.21
-    m_FogVerticalStart: -0.32
-    m_FogVerticalOffset: 0.78
-    m_NoiseTexure: {fileID: 0}
-    m_NoiseScale: 15
-    m_NoiseSpeedX: 0.1
-    m_NoiseSpeedY: 0.1
-  m_SceneViewPreview: 1
+    m_BloomData:
+      m_SampleMode: 0
+      m_Threshold: 1.08
+      m_CullingMask: 0
+      m_Color: {r: 1, g: 1, b: 1, a: 0}
+      m_Blur:
+        m_BlurType: 0
+        m_BlurSize: 1.13
+        m_Iteration: 4
+        m_DownSample: 2
+        m_Angle: 0
+        m_Vector: {x: 0, y: 0}
+      m_BloomDebug: 0
+  m_Opaque: 0
 --- !u!114 &1483932181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5746,15 +5725,82 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0d691f066f07e4fbd5e0dba44664e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectData:
-    m_Color: {r: 0, g: 0.047169805, b: 0.018457746, a: 0.49411765}
-    m_Intensity: 1.15
-    m_Radius: 0.16
-    m_Bias: 0.135
-    m_SampleCount: 16
-    m_Dither: 1
-    m_RandomVectorKeywords: Test2
-  m_SceneViewPreview: 1
+  m_Preview: 1
+  m_Data:
+    m_Scan: 0
+    m_ScanData:
+      m_Origin: {x: 0, y: 0, z: 0}
+      m_Color: {r: 0, g: 0, b: 0, a: 0}
+      m_Elapse: 4.86
+      m_Width: 0
+      m_FadingPow: 0
+      m_MaskTexture: {fileID: 0}
+      m_MaskTextureScale: 0.000001
+    m_Area: 0
+    m_AreaData:
+      m_Origin: {x: 0, y: 0, z: 0}
+      m_Radius: 0
+      m_Width: 0
+      m_FillColor: {r: 0, g: 0, b: 0, a: 0}
+      m_EdgeColor: {r: 0, g: 0, b: 0, a: 0}
+      m_FillTexure: {fileID: 0}
+      m_FillTextureFlow: {x: 0, y: 0}
+      m_FillTextureScale: 0
+    m_Outline: 0
+    m_OutlineData:
+      m_Color: {r: 0, g: 0, b: 0, a: 0}
+      m_Width: 0
+      m_Strength: 0
+      m_Bias: 0
+    m_Highlight: 0
+    m_HighlightData:
+      m_CullingMask: 0
+      m_Color: {r: 0, g: 0, b: 0, a: 0}
+      m_ZClip: 0
+      m_ZLesser: 0
+      m_ZOffset: 0
+      m_Blur:
+        m_BlurType: 0
+        m_BlurSize: 0
+        m_Iteration: 0
+        m_DownSample: 0
+        m_Angle: 0
+        m_Vector: {x: 0, y: 0}
+    m_DownSample: 2
+    m_SSAO: 1
+    m_SSAOData:
+      m_Color: {r: 0, g: 0, b: 0, a: 0}
+      m_Intensity: 0.83
+      m_Radius: 0.153
+      m_Bias: 0.5
+      m_SampleCount: 16
+      m_Dither: 1
+      m_RandomVectorKeywords: Test1
+    m_VolumetricCloud: 0
+    m_VolumetricCloudData:
+      m_MainNoise: {fileID: 0}
+      m_MainNoiseScale: {x: 0, y: 0, z: 0}
+      m_MainNoiseFlow: {x: 0, y: 0, z: 0}
+      m_VerticalStart: 0
+      m_VerticalLength: 0
+      m_Density: 0
+      m_DensityClip: 0
+      m_DensitySmooth: 0
+      m_Distance: 0
+      m_MarchTimes: 0
+      m_Opacity: 0
+      m_ShapeMask: {fileID: 0}
+      m_ShapeMaskScale: {x: 0, y: 0}
+      m_ShapeMaskFlow: {x: 0, y: 0}
+      m_ColorRamp: {fileID: 0}
+      m_LightAbsorption: 0
+      m_LightMarch: 0
+      m_LightMarchClip: 0
+      m_LightMarchTimes: 0
+      m_LightScatter: 0
+      m_ScatterRange: 0
+      m_ScatterStrength: 0
+  m_DrawGizmos: 1
 --- !u!114 &1483932182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5767,82 +5813,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03933548f0649d64a950fbfc4aecb912, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectData:
-    m_Strength: 1.3
-    m_Distance: 30
-    m_MarchTimes: 16
-    m_MarchStrength: 1.268
-    m_Pow: 0.911
-    m_DownSample: 1
-    m_Dither: 1
-    m_Debug: 0
-    m_EnableBlur: 0
-    m_BlurParam:
+  m_Preview: 1
+  m_Data:
+    m_VolumetricLight: 1
+    m_VolumetricLightData:
+      m_Strength: 1.88
+      m_Distance: 20
+      m_MarchTimes: 64
+      m_MarchStrength: 0.83
+      m_Pow: 2
+      m_Dither: 1
+    m_VolumetricDownSample: 1
+    m_EnableVolumetricBlur: 0
+    m_VolumetricBlur:
       m_BlurType: 3
       m_BlurSize: 1.3
       m_Iteration: 7
       m_DownSample: 2
       m_Angle: 0
       m_Vector: {x: 0.5, y: 0.5}
-  m_SceneViewPreview: 1
---- !u!114 &1483932184
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1483932174}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 470b53a701913514e92d942055827517, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectData:
-    m_OpaquePostProcessing: 1
-    m_Color: {r: 0.21938412, g: 0.25399846, b: 0.3207547, a: 1}
-    m_Type: 1
-    m_Width: 0.52
-    m_Convolution: 1
-    m_DetectType: 2
-    m_Strength: 2
-    m_Bias: 0.5
-    m_CullingMask: 2147483647
-    m_ZClip: 1
-    m_ZLesser: 1
-    m_ZOffset: 0.2
-    m_OutlineBlur:
-      m_BlurType: 0
-      m_BlurSize: 0
-      m_Iteration: 0
-      m_DownSample: 0
-      m_Angle: 0
-      m_Vector: {x: 0, y: 0}
-  m_SceneViewPreview: 1
---- !u!114 &1483932185
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1483932174}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4609a38f9a12b4543a91e80b01b89860, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectData:
-    m_DOFStart: 0.815
-    m_DOFLerp: 0.119
-    m_BlurParams:
-      m_BlurType: 2
-      m_BlurSize: 1.31
-      m_Iteration: 3
-      m_DownSample: 2
-      m_Angle: 0
-      m_Vector: {x: 0.5, y: 0.5}
-    m_DepthBlurSample: 1
-    m_DepthBlurSize: 0.5
-  m_SceneViewPreview: 0
 --- !u!114 &1483932186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5855,11 +5844,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd77a91bcac115943bbc6807fe1070b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectData:
+  m_Preview: 1
+  m_Data:
     m_Stylize: 1
-    m_DownSample: 8
+    m_DownSample: 7
     m_PixelGrid: 0
-    m_GridWidth: 0.119
+    m_GridWidth: 0.1
     m_PixelGridColor: {r: 1, g: 1, b: 1, a: 0.5}
     m_OilPaintKernel: 10
     m_OilPaintSize: 2
@@ -5868,7 +5858,6 @@ MonoBehaviour:
     m_ObraDitherColor: {r: 0.3, g: 0.2764706, b: 0.0047058826, a: 0.3}
     m_BilaterailSize: 5
     m_BilateralFactor: 0.5
-  m_SceneViewPreview: 0
 --- !u!1 &1487622205
 GameObject:
   m_ObjectHideFlags: 0

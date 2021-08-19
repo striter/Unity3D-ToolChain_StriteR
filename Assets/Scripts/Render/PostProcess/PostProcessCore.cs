@@ -123,7 +123,6 @@ namespace Rendering.PostProcess
             {
                 foreach (var field in GetFields())
                     field.SetValue(m_SceneComponent,field.GetValue(this));
-                m_SceneComponent.m_Data = m_Data;
                 m_SceneComponent.OnValidate();
             }
             if (m_Preview)

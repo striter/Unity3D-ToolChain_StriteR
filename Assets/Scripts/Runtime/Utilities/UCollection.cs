@@ -19,7 +19,7 @@ public static class UCollection
     {
         int index = 0;
         foreach (T element in _collection)
-            yield return (element,index);
+            yield return (element,index++);
     }
     
     public static int LastIndex<T>(this IEnumerable<T> _collection,Predicate<T> _OnEachElement )

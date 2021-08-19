@@ -8,7 +8,6 @@
 //Exp  exp(-density*z)
 //Exp2 exp(-(density*z)^2)
 //z: 0-far
-
 half FogFactor(float z)
 {
     half fogFactor=0;
@@ -37,13 +36,13 @@ half FogDesnity(float fogFactor)
     #elif defined(FOG_LINEAR)
     fogDensity = fogFactor;
     #endif
-    return fogDensity;
+    return 1.h-fogDensity;
 }
 
 half3 FogInterpolate(half3 srcColor,half fogFactor)
 {
     half density=FogDesnity(fogFactor);
-    return lerp(unity_FogColor.rgb,srcColor,density*unity_FogColor.a);
+    return lerp(srcColor,unity_FogColor.rgb,density*unity_FogColor.a);
 }
 
 #if !defined(IFOG)||defined(NFOG)

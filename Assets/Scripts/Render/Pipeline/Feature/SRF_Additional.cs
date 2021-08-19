@@ -19,16 +19,14 @@ namespace Rendering.Pipeline
 
         public RenderResources m_Resources;
         [Tooltip("Screen Space World Position Reconstruction")]
-        public bool m_ScreenParams;
-        public bool m_OpaqueBlurTexture=false;
-        [MFoldout(nameof(m_OpaqueBlurTexture), true)] public PPData_Blurs m_BlurParams = UPipeline.GetDefaultPostProcessData<PPData_Blurs>();
         public bool m_NormalTexture=false;
-        [MFoldout(nameof(m_ScreenParams), true)] public bool m_CameraReflectionTexture=false;
+        public bool m_CameraReflectionTexture=false;
         [MFoldout(nameof(m_CameraReflectionTexture), true)] public SRD_PlanarReflectionData m_PlanarReflectionData= SRD_PlanarReflectionData.Default();
         
         SRP_NormalTexture m_NormalPass;
-        private TPool<SRP_ComponentBasedPostProcess> m_PostProcessPassPool;
-        SRP_Reflection m_Reflection;
+        private SRP_ComponentBasedPostProcess m_OpaquePostProcess;
+        private SRP_ComponentBasedPostProcess m_ScreenPostProcess;
+        private SRP_Reflection m_Reflection;
         private bool m_Available => m_Resources;
         public override void Create()
         {
@@ -36,8 +34,9 @@ namespace Rendering.Pipeline
                 return;
             
             m_NormalPass = new SRP_NormalTexture(m_Resources) { renderPassEvent = RenderPassEvent.AfterRenderingSkybox};
-            m_Reflection = new SRP_Reflection(m_PlanarReflectionData,m_Resources);
-            m_PostProcessPassPool = new TPool<SRP_ComponentBasedPostProcess>();
+            m_Reflection = new SRP_Reflection(m_PlanarReflectionData,m_Resources, RenderPassEvent.AfterRenderingSkybox + 1);
+            m_OpaquePostProcess=new SRP_ComponentBasedPostProcess(){renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 2};
+            m_ScreenPostProcess=new SRP_ComponentBasedPostProcess(){renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing + 1};
         }
         protected override void Dispose(bool disposing)
         {
@@ -46,9 +45,9 @@ namespace Rendering.Pipeline
             
             base.Dispose(disposing);
             m_NormalPass.Dispose();
-            
             m_Reflection.Dispose();
-            m_PostProcessPassPool.Dispose();
+            m_OpaquePostProcess.Dispose();
+            m_ScreenPostProcess.Dispose();
         }
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
@@ -58,18 +57,22 @@ namespace Rendering.Pipeline
             if (renderingData.cameraData.isPreviewCamera)
                 return;
 
-            bool screenParams = m_ScreenParams;
+            UpdateScreenParams(ref renderingData);
+            foreach (var postProcessPass in UpdatePostProcess(renderingData.cameraData.camera))
+                renderer.EnqueuePass(postProcessPass);
+
             bool cameraNormalTexture = m_NormalTexture;
             bool cameraReflectionTexture = m_CameraReflectionTexture;
-
-            if (screenParams)
-                UpdateScreenParams(ref renderingData);
+            if(renderingData.cameraData.camera.TryGetComponent(out SRC_PipelineAdditionalOverride param))
+            {
+                cameraNormalTexture = param.m_Normal.IsEnabled(cameraNormalTexture);
+                cameraReflectionTexture = param.m_Reflection.IsEnabled(cameraReflectionTexture);
+            }
+            
             if (cameraNormalTexture)
                 renderer.EnqueuePass(m_NormalPass);
             if (cameraReflectionTexture)
                 m_Reflection.EnqueuePass(renderer);
-            foreach (var postProcessPass in UpdatePostProcess(renderingData.cameraData.camera))
-                renderer.EnqueuePass(postProcessPass);
         }
         void UpdateScreenParams(ref RenderingData _renderingData)
         {
@@ -113,16 +116,13 @@ namespace Rendering.Pipeline
         }
         IEnumerable<ScriptableRenderPass> UpdatePostProcess(Camera camera)
         {
-            m_PostProcessPassPool.Clear();
             var postEffects = camera.GetComponents<APostProcessBase>().Collect(p => p.enabled);
             var aPostProcessBases = postEffects as APostProcessBase[] ?? postEffects.ToArray();
             if (!aPostProcessBases.Any())
                 yield break;
 
             foreach (var aPostProcessBaseGroup in aPostProcessBases.GroupBy(p => p.m_OpaqueProcess))
-                yield return m_PostProcessPassPool.Pop().Setup(
-                    aPostProcessBaseGroup.Key?RenderPassEvent.AfterRenderingSkybox:RenderPassEvent.BeforeRenderingPostProcessing
-                    , aPostProcessBaseGroup);
+                yield return (aPostProcessBaseGroup.Key ? m_OpaquePostProcess : m_ScreenPostProcess).Setup(aPostProcessBaseGroup);
         }
     }
 }

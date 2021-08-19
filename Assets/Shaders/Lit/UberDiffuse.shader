@@ -14,14 +14,14 @@ Shader "Game/2D/UberDiffuse"
     	[Foldout(_ATLAS)]_AtlasIndex("Index",int)=0
         [Toggle(_ALPHACLIP)]_AlphaClip("Alpha Clip",float)=0
         [Foldout(_ALPHACLIP)]_AlphaClipRange("Range",Range(0.01,1))=0.01
-                
+        
     	[Header(Lighting)]
     	[Toggle(_LIGHTING)]_Lighting("Enable",float)=1
     	_Diffuse("Diffuse",Range(0,1))=.5
     	[Toggle(_RECEIVESHADOW)]_ReceiveShadow("ReceiveShadow",float)=1
 		[ToggleTex(_BACKRIM)][NoScaleOffset]_BackRimTex("Back Rim",2D)="black"{}
     	[Foldout(_BACKRIM)]_RimIntensity("Rim Intensity",Range(0,10))=0.5
-    		
+    	
 		[Header(Depth)]
 		[ToggleTex(_DEPTHMAP)][NoScaleOffset]_DepthTex("Texure",2D)="white"{}
 		[Foldout(_DEPTHMAP)]_DepthScale("Scale",Range(0.001,.5))=1

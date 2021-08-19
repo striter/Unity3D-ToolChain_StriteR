@@ -63,13 +63,13 @@
 			//Bloom
 			#pragma shader_feature_local _BLOOM
 			#if _BLOOM
-		    half _Intensity;
+		    half3 _BloomColor;
 			TEXTURE2D(_Bloom_Blur);SAMPLER(sampler_Bloom_Blur);
 			#endif
 			half3 Bloom(half3 col,float2 uv)
             {
 				#if _BLOOM
-					col += SAMPLE_TEXTURE2D(_Bloom_Blur,sampler_Bloom_Blur, uv).rgb *_Intensity;
+					col += SAMPLE_TEXTURE2D(_Bloom_Blur,sampler_Bloom_Blur, uv).rgb *_BloomColor;
 				#endif
 	            return col;
             }
@@ -90,7 +90,7 @@
 					return 1.h-Sample01Depth(uv);
 				#else
 					half3 color=SAMPLE_TEXTURE2D_LOD(_MainTex,sampler_MainTex, uv,0).rgb;
-					return Luminance(saturate(color));
+					return RGBtoLuminance(saturate(color));
 				#endif
 			}
 			half3 FXAASample(float2 uv)
@@ -135,7 +135,7 @@
 				
 				half pixelBlend=0.h;
 				half edgeBlend=0.h;
-				#if _FXAA_SUBPIXEL
+				// #if _FXAA_SUBPIXEL
 					uint filterCount=4u;
 					half filter=(n+e+s+w);
 					#if _FXAA_ADDITIONAL_SAMPLE
@@ -147,7 +147,7 @@
 					filter=abs(filter-m);
 					filter=saturate(filter*rcp(contrast));
 					pixelBlend= pow2(smoothstep(0.h,1.h,filter))*_FXAABlendStrength;
-				#endif
+				// #endif
 				
 				#if _FXAA_EDGE
 					half opposite=lerp(pos,neg,negative);
@@ -205,11 +205,11 @@
 	            #pragma vertex vert_img
 	            #pragma fragment frag
 		       
-		        half _Threshold;
+		        half _BloomThreshold;
 		        float4 frag(v2f_img i) : SV_Target
 		        {
 		            float4 color = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv);
-		            color*=step(_Threshold+0.01,(color.r+color.g+color.b)/3);
+		            color*=step(_BloomThreshold+0.01,RGBtoLuminance(color.rgb));
 		            return color;
 		        }
 	        ENDHLSL

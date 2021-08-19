@@ -54,7 +54,11 @@
             #pragma vertex vert
             #pragma fragment frag
 			#pragma multi_compile_instancing
+            #pragma multi_compile_fog
 
+			#include "Assets/Shaders/Library/Common.hlsl"
+			#include "Assets/Shaders/Library/Lighting.hlsl"
+            
 			#pragma shader_feature_local _NORMALMAP
 			#pragma shader_feature_local _THICK
 			#pragma shader_feature_local _CRACK
@@ -66,9 +70,9 @@
 			#pragma shader_feature_local _FRESNEL
 			#pragma shader_feature_local _SPECULAR
 
-			#include "Assets/Shaders/Library/Common.hlsl"
-			#include "Assets/Shaders/Library/Lighting.hlsl"
-			
+            #include "Assets/Shaders/Library/Additional/HorizonBend.hlsl"
+            #pragma multi_compile _ _HORIZONBEND
+            
 			TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
 			TEXTURE2D(_CrackTex);SAMPLER(sampler_CrackTex);
 			TEXTURE2D(_NormalTex);SAMPLER(sampler_NormalTex);
@@ -115,6 +119,7 @@
 				#if _OPACITY
 				float4 screenPos:TEXCOORD6;
 				#endif
+            	FOG_COORD(7)
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 			
@@ -124,8 +129,9 @@
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v,o);
 			    o.uv = TRANSFORM_TEX_INSTANCE( v.uv,_MainTex);
-			    o.positionCS = TransformObjectToHClip(v.positionOS);
 				float3 positionWS=TransformObjectToWorld(v.positionOS);
+            	positionWS=HorizonBend(positionWS);
+			    o.positionCS = TransformWorldToHClip(positionWS);
 			    o.shadowCoordWS=TransformWorldToShadowCoord(positionWS);
 
 				float3x3 TBN=float3x3(v.tangentOS.xyz,cross(v.normalOS,v.tangentOS.xyz)*v.tangentOS.w,v.normalOS);
@@ -137,6 +143,7 @@
 				#if _OPACITY
 				o.screenPos=ComputeScreenPos(o.positionCS);
 				#endif
+            	FOG_TRANSFER(o)
                 return o;
             }
 
@@ -183,8 +190,8 @@
 				{
 					float distance=crackDistance*totalParallex;
 					distance+=random01(frac(i.uv))*offsetDistance;
-					float2 parallexUV=i.uv+thickOffset*distance;
-					crackAmount+=SAMPLE_TEXTURE2D_LOD(_CrackTex,sampler_CrackTex,parallexUV,0).r*parallexParam*pow(saturate(1-totalParallex),crackPow);
+					float2 parallaxUV=i.uv+thickOffset*distance;
+					crackAmount+=SAMPLE_TEXTURE2D_LOD(_CrackTex,sampler_CrackTex,parallaxUV,0).r*pow(saturate(1-totalParallex),crackPow);
 					totalParallex+=parallexParam;
 				}
 				crackAmount=saturate(crackAmount*diffuse*crackCol.a);
@@ -220,7 +227,7 @@
 				float3 geometryTex=SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,screenUV).rgb;
 				finalCol=lerp( finalCol,geometryTex,opacity);
 				#endif
-				
+				FOG_MIX(i,finalCol)
 				return float4(finalCol,1);
             }
             ENDHLSL

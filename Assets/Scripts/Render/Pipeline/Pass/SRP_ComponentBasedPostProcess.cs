@@ -19,9 +19,8 @@ namespace Rendering.Pipeline
 
         }
 
-        public SRP_ComponentBasedPostProcess Setup(RenderPassEvent _event, IEnumerable<APostProcessBase> effect)
+        public SRP_ComponentBasedPostProcess Setup(IEnumerable<APostProcessBase> effect)
         {
-            renderPassEvent = _event;
             m_Effects = effect.ToList();
             m_Effects.Sort((a, b) => (int) (a.Event - b.Event));
             return this;

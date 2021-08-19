@@ -118,7 +118,7 @@ Shader "Hidden/PostProcess/Stylize"
             float3 _ObraDitherColor;
             float4 frag(v2f_img i):SV_TARGET
             {
-                float lum=Luminance( SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).xyz);
+                float lum=RGBtoLuminance( SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).xyz);
 
                 i.uv*=_MainTex_TexelSize.zw*_ObraDitherScale;
                 i.uv=floor(i.uv)*.1;
@@ -144,8 +144,8 @@ Shader "Hidden/PostProcess/Stylize"
 
 	        float BilateralColorWeight(float3 srcCol,float3 dstCol)
 	        {
-		        float srcL=Luminance(srcCol);
-		        float dstL=Luminance(dstCol);
+		        float srcL=RGBtoLuminance(srcCol);
+		        float dstL=RGBtoLuminance(dstCol);
 		        return smoothstep(_BilateralFactor,1.0,1.0-abs(srcL-dstL));
 	        }
 

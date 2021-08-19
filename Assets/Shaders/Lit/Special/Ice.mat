@@ -106,6 +106,6 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _CrackColor: {r: 9.564255, g: 12.1680565, b: 15.245278, a: 0.46666667}
+    - _CrackColor: {r: 1.4309018, g: 1.4309018, b: 1.4309018, a: 0.15686275}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

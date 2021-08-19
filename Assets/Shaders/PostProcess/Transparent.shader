@@ -52,10 +52,11 @@ Shader "Hidden/PostProcess/Transparent"
             #if _VOLUMETRICLIGHT
             #pragma shader_feature_local _DITHER
             #include "Assets/Shaders/Library/Lighting.hlsl"
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            // #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            #define _MAIN_LIGHT_SHADOWS
             
-            #include "Assets/Shaders/Library/Additional/CloudShadow.hlsl"
-            #pragma multi_compile _ _CLOUDSHADOW
+            // #include "Assets/Shaders/Library/Additional/CloudShadow.hlsl"
+            // #pragma multi_compile _ _CLOUDSHADOW
 
             float _LightPow;
             float _LightStrength;
@@ -81,7 +82,7 @@ Shader "Hidden/PostProcess/Transparent"
                         samplePos+=posDelta*random01(samplePos);
                         #endif
                         float shadowAttenuation=SampleHardShadow(TEXTURE2D_ARGS(_MainLightShadowmapTexture, sampler_MainLightShadowmapTexture),TransformWorldToShadowCoord(samplePos).xyz,shadowStrength);
-                        shadowAttenuation*=CloudShadowAttenuation(samplePos,lightDirWS);
+                        // shadowAttenuation*=CloudShadowAttenuation(samplePos,lightDirWS);
                         totalAtten+=marchDelta*shadowAttenuation;
                         positionWS+=posDelta;
                         curDst+=dstDelta;

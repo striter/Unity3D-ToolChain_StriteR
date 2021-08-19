@@ -211,6 +211,7 @@ Material:
     - _SrcBlend: 1
     - _SteepCount: 128
     - _SteepParallex: 0
+    - _Strength: 0.671
     - _Surface: 0
     - _Thickness: 0.1
     - _VF: 1

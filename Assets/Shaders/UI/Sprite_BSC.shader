@@ -94,7 +94,7 @@ Shader "Game/UI/Sprite_BSC"
 				float4 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.texcoord)*i.color;
 
 				float3 color = albedo.rgb*_BSC.x;
-				float lum = Luminance(color);
+				float lum = RGBtoLuminance(color);
 				float3 lumCol = float3(lum, lum, lum);
 				color = lerp(lumCol, color, _BSC.y);
 

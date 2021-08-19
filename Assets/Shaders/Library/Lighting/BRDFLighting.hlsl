@@ -19,6 +19,5 @@ half3 BRDFGlobalIllumination(BRDFSurface surface,half3 indirectDiffuse,half3 ind
     float fresnelTerm = surface.fresnelTerm;
     float3 surfaceReduction = 1.0 / (surface.roughness2 + 1.0) * lerp(surface.specular, surface.grazingTerm, fresnelTerm);
     half3 giSpecular = indirectSpecular * surfaceReduction;
-    
     return giDiffuse + giSpecular;
 }

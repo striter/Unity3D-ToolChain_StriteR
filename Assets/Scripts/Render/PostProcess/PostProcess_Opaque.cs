@@ -36,7 +36,7 @@ namespace Rendering.PostProcess
         public bool m_DrawGizmos = true;
         private void OnDrawGizmos()
         {
-            if (!m_DrawGizmos)
+            if (!enabled||!m_DrawGizmos)
                 return;
 
             if (m_Data.m_Scan)
@@ -197,10 +197,9 @@ namespace Rendering.PostProcess
             if (!_data.m_Highlight)
                 return;
             
-            var highlightData = _data.m_HighlightData;
             _buffer.ReleaseTemporaryRT(ID_MaskRender);
             _buffer.ReleaseTemporaryRT(ID_MaskRenderBlur);
-            if (!highlightData.m_ZClip)
+            if (! _data.m_HighlightData.m_ZClip)
                 return;
             _buffer.ReleaseTemporaryRT(ID_MaskDepth);
         }
@@ -219,7 +218,6 @@ namespace Rendering.PostProcess
         [MFoldout(nameof(m_Highlight), true)] public Data_Highlight m_HighlightData;
         
         [Header("Multi Sample")]
-        
         [Range(1, 4)] public int m_DownSample;
         [MTitle] public bool m_SSAO;
         [MFoldout(nameof(m_SSAO), true)] public Data_SSAO m_SSAOData;
