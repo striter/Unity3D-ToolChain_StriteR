@@ -23,12 +23,20 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DepthTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _DetailNormalTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: 5b0b5f090a89bed47a59702235207bbe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Matcap:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicTex:
@@ -53,8 +61,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AlphaClip: 0
+    - _AlphaClipRange: 0.01
     - _AnisoTropicValue: 1
     - _Cull: 2
+    - _DepthBuffer: 0
+    - _DepthBufferScale: 0
+    - _DepthOffset: 0
+    - _DepthScale: 1
     - _DetailBlendMode: 0
     - _DstBlend: 0
     - _EnableAOMap: 0
@@ -69,6 +83,8 @@ Material:
     - _Lambert: 0.2
     - _Metallic: 0
     - _NDF: 2
+    - _Parallax: 0
+    - _ParallaxCount: 16
     - _ParallexOffset: 1
     - _ParallexScale: 0.2
     - _SpecularRange: 0.98

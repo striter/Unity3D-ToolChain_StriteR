@@ -4,6 +4,7 @@ using UnityEditor;
 using System;
 using System.Linq;
 using System.Reflection;
+using Object = System.Object;
 
 namespace TEditor
 {
@@ -258,6 +259,25 @@ namespace TEditor
             property.vector4Value = m_Vector;
         }
     }
+    
+    //To Be Continued(Unitys Property Array)
+    // [CustomPropertyDrawer(typeof(PreloadAssetsAttribute))]
+    // public class PreloadAssetsPropertyDrawer : SubAttributePropertyDrawer<PreloadAssetsAttribute>
+    // {
+    //     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    //     {
+    //         return EditorGUI.GetPropertyHeight(property,label);
+    //     }
+    //
+    //     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    //     {
+    //         if (!OnGUIAttributePropertyCheck(position, property, out PreloadAssetsAttribute attribute, SerializedPropertyType.ObjectReference))
+    //             return;
+    //
+    //         EditorGUI.PropertyField(position, property, label);
+    //     }
+    // }
+    //
     #endregion
     #endregion
 }

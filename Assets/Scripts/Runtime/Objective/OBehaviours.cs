@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
-public class SimpleBehaviour
-{
-    public  Transform transform { get; private set; }
-    public SimpleBehaviour(Transform _transform) { transform = _transform; }
 
+public interface ITransform
+{
+    public Transform iTransform { get; }
 }
 public class SingletonMono<T> : MonoBehaviour where T : MonoBehaviour
 {
@@ -26,22 +25,5 @@ public class SingletonMono<T> : MonoBehaviour where T : MonoBehaviour
     protected  virtual void OnDestroy()
     {
         instance = null;
-    }
-}
-
-
-public class SingleTon<T> where T : new()
-{
-    private static T instance;
-    public static T Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                instance = new T();
-            }
-            return instance;
-        }
     }
 }

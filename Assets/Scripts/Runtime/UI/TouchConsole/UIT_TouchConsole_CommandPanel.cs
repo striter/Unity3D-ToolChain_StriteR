@@ -5,6 +5,7 @@ using System.Reflection;
 using TDataPersistent;
 using UnityEngine;
 using UnityEngine.UI;
+using ObjectPool;
 using static UIT_TouchConsole;
 public static class UIT_TouchConsoleHelper
 {
@@ -50,8 +51,8 @@ public static class UIT_TouchConsoleHelper
             return _container.Insert<T>();
         _button = _container.Insert<CommandItem_Button>();
         T item = _container.Insert<T>();
-        _button.m_Button.onClick.AddListener(() => item.transform.SetActive(!item.transform.gameObject.activeSelf));
-        item.transform.SetActive(false);
+        _button.m_Button.onClick.AddListener(() => item.iTransform.SetActive(!item.iTransform.gameObject.activeSelf));
+        item.iTransform.SetActive(false);
         return item;
     }
     public static void EnumSelection<T>(this CommandContainer _container, Ref<T> _valueRef, Action<T> OnClick, bool foldOut = true) where T : struct, Enum => EnumSelection(_container, _valueRef.m_RefValue, enumObj => { _valueRef.SetValue((T)enumObj); OnClick?.Invoke(_valueRef.m_RefValue); }, foldOut);
@@ -197,10 +198,10 @@ public partial class UIT_TouchConsole
     Timer m_FastKeyCooldownTimer = new Timer(.5f);
     public bool m_ConsoleOpening { get; private set; } = false;
     ScrollRect m_ConsoleCommandScrollRect;
-    TGameObjectPool_Instance_Class<int, CommandContainer> m_CommandContainers;
+    TObjectPoolClass<CommandContainer> m_CommandContainers;
     int m_CurrentPage;
-    TGameObjectPool_Instance_Class<int, ButtonSelect> m_PageSelection;
-    Dictionary<Type, TGameObjectPool_Instance_Class<int, CommandItemBase>> m_CommandItems = new Dictionary<Type, TGameObjectPool_Instance_Class<int, CommandItemBase>>();
+    TObjectPoolClass<ButtonSelect> m_PageSelection;
+    Dictionary<Type, TObjectPoolClass<CommandItemBase>> m_CommandItems = new Dictionary<Type, TObjectPoolClass<CommandItemBase>>();
 
     Action<bool> OnConsoleShow;
     public void SetOnConsoleShow(Action<bool> _OnConsoleShow)
@@ -211,14 +212,14 @@ public partial class UIT_TouchConsole
     void InitConsole()
     {
         m_ConsoleCommandScrollRect = transform.Find("Command").GetComponent<ScrollRect>();
-        m_CommandContainers = new TGameObjectPool_Instance_Class<int, CommandContainer>(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content"), "GridItem");
+        m_CommandContainers = new TObjectPoolClass<CommandContainer>(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content/GridItem"));
         Transform containerItemPool = m_ConsoleCommandScrollRect.transform.Find("Viewport/CommandItemPool");
-        UReflection.TraversalAllInheritedClasses<CommandItemBase>(type => m_CommandItems.Add(type, new TGameObjectPool_Instance_Class<int, CommandItemBase>(containerItemPool, type, type.Name)));
+        UReflection.TraversalAllInheritedClasses<CommandItemBase>(type => m_CommandItems.Add(type, new TObjectPoolClass<CommandItemBase>(containerItemPool.Find(type.Name), type)));
 
         m_ConsoleOpening = false;
         m_ConsoleCommandScrollRect.SetActive(m_ConsoleOpening);
 
-        m_PageSelection = new TGameObjectPool_Instance_Class<int, ButtonSelect>(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content/PageSelect"),"GridItem");
+        m_PageSelection = new TObjectPoolClass<ButtonSelect>(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content/PageSelect/GridItem"));
     }
     [PartialMethod(EPartialMethods.Reset,EPartialSorting.CommandConsole)]
     void ResetConsole()
@@ -265,7 +266,7 @@ public partial class UIT_TouchConsole
         foreach (var page in m_PageSelection.m_ActiveItems.Values)
             page.Highlight(page.m_Identity == m_CurrentPage);
         foreach (var command in m_CommandContainers.m_ActiveItems.Values)
-            command.transform.SetActive(command.m_PageIndex == m_CurrentPage);
+            command.iTransform.SetActive(command.m_PageIndex == m_CurrentPage);
         LayoutRebuilder.ForceRebuildLayoutImmediate(m_LogPanelRect.transform as RectTransform);
     }
     void SetConsoleTimeScale(float _timeScale)
@@ -274,16 +275,16 @@ public partial class UIT_TouchConsole
             return;
         Time.timeScale = _timeScale;
     }
-    public class ButtonSelect : CGameObjectPool_Instance_Class<int>
+    public class ButtonSelect : APoolItem
     {
         Text m_Title;
         Transform m_Highlight;
         Action<int> OnClick;
         public ButtonSelect(Transform _transform) : base(_transform)
         {
-            transform.GetComponentInChildren<Button>().onClick.AddListener(() => OnClick?.Invoke(m_Identity));
-            m_Title = transform.GetComponentInChildren<Text>();
-            m_Highlight = transform.Find("Highlight");
+            iTransform.GetComponentInChildren<Button>().onClick.AddListener(() => OnClick?.Invoke(m_Identity));
+            m_Title = iTransform.GetComponentInChildren<Text>();
+            m_Highlight = iTransform.Find("Highlight");
         }
         public void Init(string _title, Action<int> _OnClick)
         {
@@ -296,7 +297,7 @@ public partial class UIT_TouchConsole
             m_Highlight.SetActive(_highlight);
         }
     }
-    public class CommandContainer : CGameObjectPool_Instance_Class<int>
+    public class CommandContainer : APoolItem
     {
         #region Predefine Classes
         #endregion
@@ -332,20 +333,20 @@ public partial class UIT_TouchConsole
         public T Insert<T>() where T : CommandItemBase
         {
             T item = CreateItem(typeof(T)) as T;
-            item.transform.SetParent(transform);
+            item.iTransform.SetParent(iTransform);
             m_Items.Add(item);
             return item;
         }
-        public override void OnRemoveItem()
+        public override void OnPoolRecycle()
         {
-            base.OnRemoveItem();
+            base.OnPoolRecycle();
             foreach (CommandItemBase commandItemBase in m_Items)
                 RecycleItem(commandItemBase);
             m_Items.Clear();
             m_KeyCode = KeyCode.None;
         }
     }
-    public class CommandItemBase : CGameObjectPool_Instance_Class<int>
+    public class CommandItemBase : APoolItem
     {
         public CommandItemBase(Transform _transform) : base(_transform) { }
         public virtual void OnFastKeyTrigger() { }
@@ -358,10 +359,10 @@ public partial class UIT_TouchConsole
     }
     public class CommandItem_FlagsSelection : CommandItemBase
     {
-        TGameObjectPool_Component<int, Toggle> m_ToggleGrid;
+        TObjectPoolComponent<Toggle> m_ToggleGrid;
         public CommandItem_FlagsSelection(Transform _transform) : base(_transform)
         {
-            m_ToggleGrid = new TGameObjectPool_Component<int, Toggle>(_transform, "GridItem");
+            m_ToggleGrid = new TObjectPoolComponent<Toggle>(_transform.Find("GridItem"));
         }
         public void Play<T>(T defaultValue, Action<T> _OnFlagChanged) where T : Enum
         {
@@ -383,10 +384,10 @@ public partial class UIT_TouchConsole
     }
     public class CommandItem_ButtonSelection : CommandItemBase
     {
-        public TGameObjectPool_Instance_Class<int, ButtonSelect> m_ButtonGrid { get; private set; }
+        public TObjectPoolClass<ButtonSelect> m_ButtonGrid { get; private set; }
         public CommandItem_ButtonSelection(Transform _transform) : base(_transform)
         {
-            m_ButtonGrid = new TGameObjectPool_Instance_Class<int, ButtonSelect>(_transform, "GridItem");
+            m_ButtonGrid = new TObjectPoolClass<ButtonSelect>(_transform.Find("GridItem"));
         }
         public CommandItem_ButtonSelection Play(List<string> values, Action<int> _OnClick)
         {
@@ -427,17 +428,17 @@ public partial class UIT_TouchConsole
         public Text m_ToggleTitle { get; private set; }
         public CommandItem_Toggle(Transform _transform) : base(_transform)
         {
-            m_Toggle = transform.GetComponent<Toggle>();
+            m_Toggle = iTransform.GetComponent<Toggle>();
             m_ToggleTitle = _transform.Find("Title").GetComponent<Text>();
         }
-        public override void OnAddItem(int identity)
+        public override void OnPoolSpawn(int identity)
         {
-            base.OnAddItem(identity);
+            base.OnPoolSpawn(identity);
             m_Toggle.onValueChanged.RemoveAllListeners();
         }
-        public override void OnRemoveItem()
+        public override void OnPoolRecycle()
         {
-            base.OnRemoveItem();
+            base.OnPoolRecycle();
             m_Toggle.onValueChanged.RemoveAllListeners();
         }
         public override void OnFastKeyTrigger()
@@ -453,17 +454,17 @@ public partial class UIT_TouchConsole
         public Text m_Value { get; private set; }
         public CommandItem_Slider(Transform _transform) : base(_transform)
         {
-            m_Slider = transform.Find("Slider").GetComponent<Slider>();
-            m_Value = transform.Find("Value").GetComponent<Text>();
+            m_Slider = iTransform.Find("Slider").GetComponent<Slider>();
+            m_Value = iTransform.Find("Value").GetComponent<Text>();
         }
-        public override void OnAddItem(int identity)
+        public override void OnPoolSpawn(int identity)
         {
-            base.OnAddItem(identity);
+            base.OnPoolSpawn(identity);
             m_Slider.onValueChanged.RemoveAllListeners();
         }
-        public override void OnRemoveItem()
+        public override void OnPoolRecycle()
         {
-            base.OnRemoveItem();
+            base.OnPoolRecycle();
             m_Slider.onValueChanged.RemoveAllListeners();
         }
     }
@@ -476,15 +477,15 @@ public partial class UIT_TouchConsole
             m_Button = _transform.GetComponent<Button>();
             m_ButtonTitle = _transform.Find("Title").GetComponent<Text>();
         }
-        public override void OnAddItem(int identity)
+        public override void OnPoolSpawn(int identity)
         {
-            base.OnAddItem(identity);
+            base.OnPoolSpawn(identity);
             m_Button.onClick.RemoveAllListeners();
             m_ButtonTitle.text = "";
         }
-        public override void OnRemoveItem()
+        public override void OnPoolRecycle()
         {
-            base.OnRemoveItem();
+            base.OnPoolRecycle();
             m_Button.onClick.RemoveAllListeners();
         }
         public override void OnFastKeyTrigger()
@@ -501,9 +502,9 @@ public partial class UIT_TouchConsole
         {
             m_InputField = _transform.GetComponent<InputField>();
         }
-        public override void OnInitItem(Action<int> DoRecycle)
+        public override void OnPoolInit(Action<int> _DoRecycle)
         {
-            base.OnInitItem(DoRecycle);
+            base.OnPoolInit(_DoRecycle);
             m_InputField.onValueChanged.RemoveAllListeners();
         }
 

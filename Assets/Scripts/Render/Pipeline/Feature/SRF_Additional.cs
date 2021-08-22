@@ -33,8 +33,8 @@ namespace Rendering.Pipeline
             if (!m_Available)
                 return;
             
-            m_NormalPass = new SRP_NormalTexture(m_Resources) { renderPassEvent = RenderPassEvent.AfterRenderingSkybox};
-            m_Reflection = new SRP_Reflection(m_PlanarReflectionData,m_Resources, RenderPassEvent.AfterRenderingSkybox + 1);
+            m_NormalPass = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox};
+            m_Reflection = new SRP_Reflection(m_PlanarReflectionData, RenderPassEvent.AfterRenderingSkybox + 1);
             m_OpaquePostProcess=new SRP_ComponentBasedPostProcess(){renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 2};
             m_ScreenPostProcess=new SRP_ComponentBasedPostProcess(){renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing + 1};
         }

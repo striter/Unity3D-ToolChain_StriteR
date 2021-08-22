@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using ObjectPoolStatic;
 namespace OEntityProperty
 {
     public class EntityExpRank
@@ -94,7 +95,7 @@ namespace OEntityProperty
         }
         public override string ToString_Detailed() => string.Format("{0}:C|{1:F1},M|{2:F1},MD|{3:F1}", m_Identity, m_CurAmount, m_MaxAmount, m_MaxModify);
     }
-    public class EntitySheildItem : IObjectPool
+    public class EntitySheildItem : ISPoolItem
     {
         public int m_ID { get; private set; }
         public float m_Amount { get; private set; }
@@ -121,7 +122,7 @@ namespace OEntityProperty
         }
         public void SpawnShield(int _id, float _amount)
         {
-            EntitySheildItem shield = TObjectPool<EntitySheildItem>.Spawn().Set(_id, _amount);
+            EntitySheildItem shield = TSPool<EntitySheildItem>.Spawn().Set(_id, _amount);
             m_Shields.Add(_id, shield);
             CheckTotalAmount();
         }

@@ -55,28 +55,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
-  m_ScreenParams: 1
-  m_OpaqueBlurTexture: 0
-  m_BlurParams:
-    m_BlurType: 3
-    m_BlurSize: 1.3
-    m_Iteration: 7
-    m_DownSample: 2
-    m_Angle: 0
-    m_Vector: {x: 0.5, y: 0.5}
   m_NormalTexture: 1
   m_CameraReflectionTexture: 1
   m_PlanarReflectionData:
-    m_ReflectionType: 0
+    m_ReflectionType: 1
     m_Sample: 4
     m_LightCount: 0
     m_IncludeTransparent: 0
     m_DownSample: 1
-    m_EnableBlur: 0
+    m_EnableBlur: 1
     m_BlurParam:
       m_BlurType: 2
       m_BlurSize: 0.93
-      m_Iteration: 4
+      m_Iteration: 2
       m_DownSample: 2
       m_Angle: 0
       m_Vector: {x: 0, y: 0}

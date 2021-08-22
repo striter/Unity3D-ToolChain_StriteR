@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using System.Reflection;
 using TDataPersistent;
 using static UIT_TouchConsole;
-public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartialMethods<EPartialMethods,EPartialSorting>
+public partial class UIT_TouchConsole :MonoBehaviour, IPartialMethods<EPartialMethods,EPartialSorting>
 {
     public enum EPartialMethods
     {
@@ -21,6 +21,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartial
         LogPanel,
         Miscs,
     }
+    
     public TouchConsoleSaveData m_Data = new TouchConsoleSaveData();
 
     [Serializable]
@@ -45,14 +46,39 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartial
         }
     }
 
-    protected override void Awake()
+    private static UIT_TouchConsole m_Instance;
+
+    public static UIT_TouchConsole Instance
     {
-        base.Awake();
+        get
+        {
+            if (m_Instance == null)
+                m_Instance = TResources.Instantiate("TouchConsole").GetComponent<UIT_TouchConsole>().Init();
+            return m_Instance;
+        }
+    }
+    
+    UIT_TouchConsole Init()
+    {
+        if (m_Instance!=null)
+            return this;
+        m_Instance = this;
         m_Data.ReadPersistentData();
         this.InitMethods();
         this.InvokeMethods(EPartialMethods.Init);
         this.InvokeMethods(EPartialMethods.Reset);
         SetLogFramePanel(m_Data.m_FilterSetting.m_RefValue);
+        return this;
+    }
+    protected void Awake()
+    {
+        Init();
+    }
+
+
+    void OnDestroy()
+    {
+        m_Instance = null;
     }
 
     void OnEnable()
@@ -64,8 +90,8 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartial
         this.InvokeMethods(EPartialMethods.OnDisable);
     }
 
-    public static UIT_TouchConsole InitDefaultCommands() => Instance.Init();
-    protected UIT_TouchConsole Init()
+    public static UIT_TouchConsole InitDefaultCommands()=>Instance.Defaultcommands();
+    protected UIT_TouchConsole Defaultcommands()
     {
         this.InvokeMethods(EPartialMethods.Reset);
         NewPage("Console");
@@ -74,6 +100,7 @@ public partial class UIT_TouchConsole : SingletonMono<UIT_TouchConsole>,IPartial
         SelectPage(0);
         return this;
     }
+    
     private void Update()
     {
         float deltaTime = Time.unscaledDeltaTime;

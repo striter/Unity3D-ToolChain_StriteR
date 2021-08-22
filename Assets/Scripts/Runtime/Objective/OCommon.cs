@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEditor.Graphs;
 using UnityEngine;
 #region Unit
 [Serializable]
@@ -19,6 +20,30 @@ public class Ref<T>
     public static implicit operator Ref<T>(T _value)=>new Ref<T>(_value) ;
     public static implicit operator T(Ref<T> _refValue) => _refValue.m_RefValue;
     public void SetValue(T _value) => m_RefValue = _value;
+}
+
+public class Instance<T> where T:class
+{
+    private T m_Instance;
+    private readonly Func<T> GetInstance;
+    public bool m_Instanced => m_Instance != null;
+
+    public Instance(Func<T> _GetInstance)
+    {
+        GetInstance = _GetInstance;
+    }
+
+    public T m_Value
+    {
+        get
+        {
+            if (!m_Instanced)
+                m_Instance = GetInstance();
+            return m_Instance;
+        }
+    }
+
+    public static implicit operator T(Instance<T> _instance) => _instance.m_Value;
 }
 [Serializable]
 public struct RangeFloat

@@ -19,7 +19,7 @@ namespace Rendering.Pipeline
         public readonly SRD_PlanarReflectionData m_Data;
         public readonly PPCore_Blurs m_CoreBlurs;
         public readonly MaterialPropertyBlock m_PropertyBlock;
-        public SRP_Reflection(SRD_PlanarReflectionData _data,RenderResources _reflectionCS,RenderPassEvent _event)
+        public SRP_Reflection(SRD_PlanarReflectionData _data,RenderPassEvent _event)
         {
             m_CoreBlurs = new PPCore_Blurs();
             m_PropertyBlock = new MaterialPropertyBlock();
@@ -31,7 +31,7 @@ namespace Rendering.Pipeline
                 switch (m_Data.m_ReflectionType)
                 {
                     case EReflectionSpace.ScreenSpace:
-                        m_ReflectionPasses[i] = new SRP_PlanarReflection_ScreenSpace(this,_reflectionCS.FindComputeShader("PlanarReflection"));
+                        m_ReflectionPasses[i] = new SRP_PlanarReflection_ScreenSpace(this);
                         break;
                     case EReflectionSpace.MirrorSpace:
                         m_ReflectionPasses[i] = new SRP_PlanarReflection_MirrorSpace(this);
@@ -169,17 +169,16 @@ namespace Rendering.Pipeline
         static readonly int ID_PlanePosition = Shader.PropertyToID("_PlanePosition");
         int m_Kernels;
         Int2 m_ThreadGroups;
-        private readonly ComputeShader m_ReflectionComputeShader;
-        public SRP_PlanarReflection_ScreenSpace(SRP_Reflection _reflection,ComputeShader _reflectionCS) : base(_reflection)
+        private readonly Instance<ComputeShader> m_ReflectionComputeShader=new Instance<ComputeShader>(()=>RenderResources.FindComputeShader("PlanarReflection"));
+        public SRP_PlanarReflection_ScreenSpace(SRP_Reflection _reflection) : base(_reflection)
         {
-            m_ReflectionComputeShader = _reflectionCS;
         }
         protected override void ConfigureColorDescriptor(ref RenderTextureDescriptor _descriptor, SRD_PlanarReflectionData _data)
         {
             base.ConfigureColorDescriptor(ref _descriptor, _data);
             _descriptor.enableRandomWrite = true;
             _descriptor.colorFormat = RenderTextureFormat.ARGB32;
-            m_Kernels =m_ReflectionComputeShader.FindKernel("Generate");
+            m_Kernels = ((ComputeShader)m_ReflectionComputeShader).FindKernel("Generate");
             m_ThreadGroups = new Int2(_descriptor.width / 8, _descriptor.height / 8);
         }
         protected override void DoCameraSetup(CommandBuffer cmd, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _target)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Rendering.Pipeline;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -42,7 +43,17 @@ namespace Rendering.PostProcess
         protected Material m_Material { get; private set; }
         public PostProcessCore()
         {
-            m_Material = UPipeline.CreateMaterial(this.GetType());
+            string lastname = GetType().Name.Split('_')[1];
+            string name ="Hidden/PostProcess/"+lastname;
+            Shader shader = RenderResources.FindPostProcess(name);
+
+            if (shader == null)
+                throw new NullReferenceException("Invalid ImageEffect Shader Found:" + name);
+
+            if (!shader.isSupported)
+                throw new NullReferenceException("Shader Not Supported:" + GetType().Name);
+
+            m_Material = new Material(shader) { hideFlags = HideFlags.HideAndDontSave };
         }
         public virtual void Destroy()
         {

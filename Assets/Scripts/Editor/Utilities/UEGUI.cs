@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using Object = System.Object;
 
 namespace TEditor
 {
@@ -48,20 +49,26 @@ namespace TEditor
         }
         public static IEnumerable<KeyValuePair<FieldInfo, object>> AllRelativeFields(this SerializedProperty _property)
         {
+            var targetObject =_property.GetPropertyField();
+            foreach (var subFieldInfo in targetObject.GetType().GetFields())
+                yield return new KeyValuePair<FieldInfo, object>(subFieldInfo, subFieldInfo.GetValue(targetObject));
+        }
+
+        public static Object GetPropertyField(this SerializedProperty _property)
+        {
             string[] paths = _property.propertyPath.Split('.');
             object targetObject = _property.serializedObject.targetObject;
             Type targetType = targetObject.GetType();
             for(int i=0;i< paths.Length-1; i++)
             {
-                FieldInfo targetField = targetObject.GetType().GetField(paths[i]);
+                if (paths[i] == "Array")
+                    break;
+                FieldInfo targetField = targetType.GetField(paths[i], BindingFlags.Instance |  BindingFlags.Public | BindingFlags.NonPublic);
                 targetType = targetField.FieldType;
                 targetObject = targetField.GetValue(targetObject);
             }
-            foreach (var subFieldInfo in targetType.GetFields())
-                yield return new KeyValuePair<FieldInfo, object>(subFieldInfo, subFieldInfo.GetValue(targetObject));
-            yield break;
+            return targetType;
         }
-
         public static bool EditorApplicationPlayingCheck()
         {
             if (Application.isPlaying)

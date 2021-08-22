@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using TDataPersistent;
 using UnityEngine;
 using UnityEngine.UI;
-
+using ObjectPool;
 public partial class UIT_TouchConsole
 {
     [Flags]
@@ -19,7 +19,7 @@ public partial class UIT_TouchConsole
     ScrollRect m_LogPanelRect;
     RectTransform m_LogFilter;
     LogToggle m_FilterLog, m_FilterWarning, m_FilterError, m_FilterCollapse;
-    TGameObjectPool_Instance_Class<int, LogItem> m_Logs;
+    TObjectPoolClass<LogItem> m_Logs;
     StackPanel m_Stack;
     [PartialMethod(EPartialMethods.Init,EPartialSorting.LogPanel)]
     void InitLog()
@@ -31,7 +31,7 @@ public partial class UIT_TouchConsole
         m_FilterWarning = new LogToggle(m_LogFilter.Find("Warning"), m_Data.m_Warning, OnLogToggled);
         m_FilterError = new LogToggle(m_LogFilter.Find("Error"), m_Data.m_Error, OnLogToggled);
         m_FilterCollapse = new LogToggle(m_LogFilter.Find("Collapse"), m_Data.m_Collapse, OnLogToggled);
-        m_Logs = new TGameObjectPool_Instance_Class<int, LogItem>(m_LogPanelRect.transform.Find("Viewport/Content"), "LogItem");
+        m_Logs = new TObjectPoolClass<LogItem>(m_LogPanelRect.transform.Find("Viewport/Content/LogItem"));
 
         m_Stack = new StackPanel(transform.Find("Stack"));
 
@@ -156,7 +156,7 @@ public partial class UIT_TouchConsole
     }
 
 
-    class LogItem : CGameObjectPool_Instance_Class<int>
+    class LogItem : APoolItem
     {
         LogData m_Data;
         Button m_Stack;
@@ -164,9 +164,9 @@ public partial class UIT_TouchConsole
         Text m_Info;
         public LogItem(Transform _transform) : base(_transform)
         {
-            m_Type = transform.Find("Type").GetComponent<Image>();
-            m_Info = transform.Find("Message").GetComponent<Text>();
-            m_Stack = transform.GetComponent<Button>();
+            m_Type = iTransform.Find("Type").GetComponent<Image>();
+            m_Info = iTransform.Find("Message").GetComponent<Text>();
+            m_Stack = iTransform.GetComponent<Button>();
         }
 
         public LogItem Init(LogData _data, Action<LogData> OnStackClick)

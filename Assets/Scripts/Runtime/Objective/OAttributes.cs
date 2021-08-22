@@ -66,11 +66,11 @@ public class ClampAttribute:PropertyAttribute
 
 
 [AttributeUsage(AttributeTargets.Field)]
-public class AssetsAttribute : PropertyAttribute
+public class PreloadAssetsAttribute : PropertyAttribute
 {
     public readonly string m_Path;
 
-    public AssetsAttribute(string _path)
+    public PreloadAssetsAttribute(string _path)
     {
         m_Path = _path;
     }
