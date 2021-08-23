@@ -47,27 +47,35 @@ namespace TEditor
             }
             return fieldInfo;
         }
-        public static IEnumerable<KeyValuePair<FieldInfo, object>> AllRelativeFields(this SerializedProperty _property)
+        public static IEnumerable<(FieldInfo, object)> AllRelativeFields(this SerializedProperty _property)
         {
-            var targetObject =_property.GetPropertyField();
-            foreach (var subFieldInfo in targetObject.GetType().GetFields())
-                yield return new KeyValuePair<FieldInfo, object>(subFieldInfo, subFieldInfo.GetValue(targetObject));
+            foreach (var fieldInfos in _property.FieldsSearch())
+            {
+                foreach (var subfield in fieldInfos.Item1.GetFields())
+                    yield return (subfield, subfield.GetValue(fieldInfos.Item2));
+            }
         }
-
-        public static Object GetPropertyField(this SerializedProperty _property)
+        public static Object GetPropertyField(this SerializedProperty _property,Action<FieldInfo> _OnEachField=null)
+        {
+            Object targetObject=null;
+            foreach (var tuple in _property.FieldsSearch())
+                targetObject = tuple.Item2;
+            return targetObject;
+        }
+        public static IEnumerable<(Type,object)> FieldsSearch(this SerializedProperty _property)
         {
             string[] paths = _property.propertyPath.Split('.');
             object targetObject = _property.serializedObject.targetObject;
             Type targetType = targetObject.GetType();
-            for(int i=0;i< paths.Length-1; i++)
+            for(int i=0;i< paths.Length; i++)
             {
-                if (paths[i] == "Array")
+                yield return (targetType, targetObject);
+                if (i==paths.Length-1||paths[i] == "Array")
                     break;
                 FieldInfo targetField = targetType.GetField(paths[i], BindingFlags.Instance |  BindingFlags.Public | BindingFlags.NonPublic);
                 targetType = targetField.FieldType;
                 targetObject = targetField.GetValue(targetObject);
             }
-            return targetType;
         }
         public static bool EditorApplicationPlayingCheck()
         {

@@ -61,6 +61,7 @@ MonoBehaviour:
     m_ReflectionType: 1
     m_Sample: 4
     m_LightCount: 0
+    m_Recull: 0
     m_IncludeTransparent: 0
     m_DownSample: 1
     m_EnableBlur: 1

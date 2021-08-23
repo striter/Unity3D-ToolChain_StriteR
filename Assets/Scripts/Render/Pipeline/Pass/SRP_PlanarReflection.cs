@@ -197,7 +197,7 @@ namespace Rendering.Pipeline
             
             cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels, ID_Input, m_Renderer.cameraColorTarget);
             cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels, ID_Result, _target);
-            cmd.DispatchCompute(m_ReflectionComputeShader, m_Kernels, m_ThreadGroups.m_X,m_ThreadGroups.m_Y, 1);
+            cmd.DispatchCompute(m_ReflectionComputeShader, m_Kernels, m_ThreadGroups.x,m_ThreadGroups.y, 1);
         }
         public override void Dispose() { }
     }
@@ -247,30 +247,37 @@ namespace Rendering.Pipeline
             Matrix4x4 planeMirrorMatrix = _plane.GetMirrorMatrix();
             Matrix4x4 cullingMatrix = camera.cullingMatrix;
             camera.cullingMatrix = cullingMatrix * planeMirrorMatrix;
-            if (cameraData.camera.TryGetCullingParameters(out ScriptableCullingParameters cullingParameters))
-            {
-                cullingParameters.maximumVisibleLights = _data.m_LightCount;
-                DrawingSettings drawingSettings = CreateDrawingSettings(m_ShaderTagIDs, ref renderingData,  SortingCriteria.CommonOpaque);
-                FilteringSettings m_FilterSettings = new FilteringSettings(_data.m_IncludeTransparent? RenderQueueRange.all : RenderQueueRange.opaque);
-                Matrix4x4 projectionMatrix = GL.GetGPUProjectionMatrix(cameraData.GetProjectionMatrix(), cameraData.IsCameraProjectionMatrixFlipped());
-                Matrix4x4 viewMatrix = cameraData.GetViewMatrix();
-                viewMatrix*= planeMirrorMatrix;
+
+            DrawingSettings drawingSettings = CreateDrawingSettings(m_ShaderTagIDs, ref renderingData,  SortingCriteria.CommonOpaque);
+            FilteringSettings m_FilterSettings = new FilteringSettings(_data.m_IncludeTransparent? RenderQueueRange.all : RenderQueueRange.opaque);
+            Matrix4x4 projectionMatrix = GL.GetGPUProjectionMatrix(cameraData.GetProjectionMatrix(), cameraData.IsCameraProjectionMatrixFlipped());
+            Matrix4x4 viewMatrix = cameraData.GetViewMatrix();
+            viewMatrix*= planeMirrorMatrix;
             
-                RenderingUtils.SetViewAndProjectionMatrices(cmd, viewMatrix , projectionMatrix, false);
-                var cameraPosition = camera.transform.position;
-                cmd.SetGlobalVector( ID_CameraWorldPosition,planeMirrorMatrix.MultiplyPoint(cameraPosition));
-                cmd.SetInvertCulling(true);
-                context.ExecuteCommandBuffer(cmd);
+            RenderingUtils.SetViewAndProjectionMatrices(cmd, viewMatrix , projectionMatrix, false);
+            var cameraPosition = camera.transform.position;
+            cmd.SetGlobalVector( ID_CameraWorldPosition,planeMirrorMatrix.MultiplyPoint(cameraPosition));
+            cmd.SetInvertCulling(true);
+            context.ExecuteCommandBuffer(cmd);
 
-                CullingResults cullResults = context.Cull(ref cullingParameters);
-                context.DrawRenderers(cullResults, ref drawingSettings, ref m_FilterSettings);
-                
-
-                cmd.Clear();
-                cmd.SetInvertCulling(false);
-                cmd.SetGlobalVector( ID_CameraWorldPosition,cameraPosition);
-                RenderingUtils.SetViewAndProjectionMatrices(cmd, cameraData.GetViewMatrix(), cameraData.GetGPUProjectionMatrix(), false);
+            if (_data.m_Recull)
+            {
+                if (cameraData.camera.TryGetCullingParameters(out ScriptableCullingParameters cullingParameters))
+                {
+                    cullingParameters.maximumVisibleLights = _data.m_AdditionalLightcount;
+                    context.DrawRenderers(context.Cull(ref cullingParameters), ref drawingSettings, ref m_FilterSettings);
+                }
             }
+            else
+            {
+                context.DrawRenderers(renderingData.cullResults, ref drawingSettings, ref m_FilterSettings);
+            }
+            
+            
+            cmd.Clear();
+            cmd.SetInvertCulling(false);
+            cmd.SetGlobalVector( ID_CameraWorldPosition,cameraPosition);
+            RenderingUtils.SetViewAndProjectionMatrices(cmd, cameraData.GetViewMatrix(), cameraData.GetGPUProjectionMatrix(), false);
             camera.ResetCullingMatrix();
         }
         public override void OnCameraCleanup(CommandBuffer cmd)

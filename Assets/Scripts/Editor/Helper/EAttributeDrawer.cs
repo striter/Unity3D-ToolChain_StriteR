@@ -49,11 +49,11 @@ namespace TEditor
         }
         public bool CheckPropertyAvailable(bool fold, SerializedProperty _property, MFoldoutAttribute _attribute)
         {
-            IEnumerable<KeyValuePair<FieldInfo, object>> fields = _property.AllRelativeFields();
+            IEnumerable<(FieldInfo, object)> fields = _property.AllRelativeFields();
             return _attribute.m_FieldsMatches.All(fieldMatch => fields.Any(field => {
-                if (field.Key.Name != fieldMatch.Key)
+                if (field.Item1.Name != fieldMatch.Key)
                     return false;
-                bool equals = fieldMatch.Value?.Contains(field.Value) ?? field.Value is null;
+                bool equals = fieldMatch.Value?.Contains(field.Item2) ?? field.Item2 is null;
                 return fold ? !equals : equals;
             }));
         }

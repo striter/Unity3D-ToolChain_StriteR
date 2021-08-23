@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEditor.Graphs;
 using UnityEngine;
 #region Unit
 [Serializable]
@@ -262,29 +261,62 @@ public class Timer
 [Serializable]
 public struct Int2
 {
-    public int m_X;
-    public int m_Y;
-    public Int2(int _x, int _y) { m_X = _x; m_Y = _y; }
+    public int x;
+    public int y;
+    public Int2(int _x, int _y) { x = _x; y = _y; }
+    public static implicit operator (int, int)(Int2 int2) => (int2.x, int2.y);
 }
 [Serializable]
 public struct Int3
 {
-
-    public int m_X;
-    public int m_Y;
-    public int m_Z;
-    public Int3(int _x, int _y, int _z) { m_X = _x; m_Y = _y; m_Z = _z; }
+    public int x;
+    public int y;
+    public int z;
+    public Int3(int _x, int _y, int _z) { x = _x; y = _y; z = _z; }
 }
 [Serializable]
 public struct Int4
 {
-    public int m_X;
-    public int m_Y;
-    public int m_Z;
-    public int m_W;
-    public Int4(int _x, int _y, int _z, int _w) { m_X = _x; m_Y = _y; m_Z = _z; m_W = _w; }
+    public int x;
+    public int y;
+    public int z;
+    public int w;
+    public Int4(int _x, int _y, int _z, int _w) { x = _x; y = _y; z = _z; w = _w; }
 }
 
+[Serializable]
+public struct Matrix2x2
+{
+    public float m00, m01;
+    public float m10, m11;
+
+    public Matrix2x2(float _00,float _01,float _10,float _11)
+    {
+        m00 = _00;
+        m01 = _01;
+        m10 = _10;
+        m11 = _11;
+    }
+
+    public readonly (float,float) Multiply(float x, float y) => (
+        x * m00 + y * m01,
+        x * m10 + y * m11
+    );
+
+    public readonly (float,float) InvMultiply(float x, float y) => (
+        x * m00 + y * m10,
+        x * m01 + y * m11
+    );
+
+    public readonly (float, float) Multiply((float, float) float2) => Multiply(float2.Item1, float2.Item2);
+    public readonly (float, float) InvMultiply((float, float) float2) => InvMultiply(float2.Item1, float2.Item2);
+
+    public Vector2 MultiplyVector(Vector2 _srcVector)
+    {
+        var float2=Multiply(_srcVector.x,_srcVector.y);
+        return new Vector2(float2.Item1, float2.Item2);
+    }
+}
 
 [Serializable]
 public struct Matrix3x3
@@ -293,14 +325,15 @@ public struct Matrix3x3
     public float m10, m11, m12;
     public float m20, m21, m22;
     public Matrix3x3(float _00, float _01, float _02, float _10, float _11, float _12, float _20, float _21, float _22) { m00 = _00; m01 = _01; m02 = _02; m10 = _10; m11 = _11; m12 = _12; m20 = _20; m21 = _21; m22 = _22; }
+
+    public Vector3 MultiplyVector(Vector3 _srcVector) => new Vector3(
+        _srcVector.x * m00 + _srcVector.y * m01 + _srcVector.z * m02,
+        _srcVector.x * m10 + _srcVector.y * m11 + _srcVector.z * m12,
+        _srcVector.x * m20 + _srcVector.y * m21 + _srcVector.z * m22);    
     public Vector3 InvMultiplyVector(Vector3 _srcVector) => new Vector3(
         _srcVector.x * m00 + _srcVector.y * m10 + _srcVector.z * m20,
         _srcVector.x * m01 + _srcVector.y * m11 + _srcVector.z * m21,
         _srcVector.x * m02 + _srcVector.y * m12 + _srcVector.z * m22);
-    public Vector3 MultiplyVector(Vector3 _srcVector) => new Vector3(
-        _srcVector.x * m00 + _srcVector.y * m01 + _srcVector.z * m02,
-        _srcVector.x * m10 + _srcVector.y * m11 + _srcVector.z * m12,
-        _srcVector.x * m20 + _srcVector.y * m21 + _srcVector.z * m22);
     public static Vector3 operator *(Matrix3x3 _matrix, Vector3 _vector) => _matrix.MultiplyVector(_vector);
     public static Vector3 operator *(Vector3 _vector, Matrix3x3 matrix) => matrix.InvMultiplyVector(_vector);
     public void SetRow(int _index, Vector3 _row)
