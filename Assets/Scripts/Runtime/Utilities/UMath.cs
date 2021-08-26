@@ -4,8 +4,28 @@ using UnityEngine;
 
 public static class UMath
 {
-    public static float AngleToRadin(float angle) => Mathf.PI * angle / 360f;
-    public static float RadinToAngle(float radin) => radin / Mathf.PI * 360f;
+    public const float PI = 3.141593f;
+    public const float Deg2Rad = PI  / 180f;
+    public const float Rad2Deg = 180f / PI;
+    
+    public static readonly Matrix2x2 m_Rotate90 = GetRotateMatrix(90*Deg2Rad);
+    public static readonly Matrix2x2 m_Rotate180 = GetRotateMatrix(180*Deg2Rad);
+    public static readonly Matrix2x2 m_Rotate270 = GetRotateMatrix(270*Deg2Rad);
+    
+    public static float GetRadin(Vector2 _vec1, Vector2 _vec2)
+    {
+        float sin = _vec1.x * _vec2.y - _vec2.x * _vec1.y;
+        float cos = _vec1.x * _vec2.x + _vec1.y * _vec2.y;
+        
+        return Mathf.Atan2(sin,cos);
+    }
+    public static Matrix2x2 GetRotateMatrix(float _rad)
+    {
+        float sinA = Mathf.Sin(_rad);
+        float cosA = Mathf.Cos(_rad);
+        return new Matrix2x2(cosA,-sinA,sinA,cosA);
+    }
+    
     public static int Pow(int _src, int _pow)
     {
         if (_pow == 0) return 1;
@@ -17,4 +37,23 @@ public static class UMath
     }
     public static float Frac(float _src) => _src - Mathf.Floor(_src);
     public static float Mod(float _src, float _dst) => _src - _dst * Mathf.Floor(_src/_dst);
+    
+    public static float BilinearLerp(float tl, float tr, float bl, float br, float u,float v)
+    {
+        float lerpB = Mathf.Lerp(bl, br, u);
+        float lerpT = Mathf.Lerp(tl, tr, u);
+        return Mathf.Lerp(lerpB, lerpT, v);
+    }
+    public static Vector2 BilinearLerp(Vector2 tl, Vector2 tr, Vector2 bl, Vector2 br, float u,float v)
+    {
+        Vector2 lerpB = Vector2.Lerp(bl, br, u);
+        Vector2 lerpT = Vector2.Lerp(tl, tr, u);
+        return Vector2.Lerp(lerpB, lerpT, v);
+    }
+    public static Vector3 BilinearLerp(Vector3 tl, Vector3 tr, Vector3 bl, Vector3 br, float u,float v)
+    {
+        Vector3 lerpB = Vector3.Lerp(bl, br, u);
+        Vector3 lerpT = Vector3.Lerp(tl, tr, u);
+        return Vector3.Lerp(lerpB, lerpT, v);
+    }
 }

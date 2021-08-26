@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ObjectPool;
-using UnityEngine;using UTile;
+using UnityEngine;
+using Procedural.Tile;
 [Serializable]
 public struct WaveFunctionData:IWFCCompare<ETileDirection,WaveFunctionData>
 {

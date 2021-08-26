@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using ObjectPool;
-using UTile;
+using Procedural.Tile;
 public class WaveFunctionCollapse : MonoBehaviour
 {
     public int m_ResolvePerFrame = 1;
@@ -136,7 +136,7 @@ public class WaveFunctionCollapse : MonoBehaviour
             foreach (var tuple in _allPossibilities.LoopIndex())
             {
                 var index = tuple.index;
-                var possibility = tuple.item;
+                var possibility = tuple.value;
                 Transform transform1;
                 (transform1 = possibility.transform).SetParent(iTransform);
                 int i = index % 4;

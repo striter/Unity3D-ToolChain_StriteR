@@ -298,18 +298,18 @@ public struct Matrix2x2
         m11 = _11;
     }
 
-    public readonly (float,float) Multiply(float x, float y) => (
+    public readonly (float x,float y) Multiply(float x, float y) => (
         x * m00 + y * m01,
         x * m10 + y * m11
     );
 
-    public readonly (float,float) InvMultiply(float x, float y) => (
+    public readonly (float x,float y) InvMultiply(float x, float y) => (
         x * m00 + y * m10,
         x * m01 + y * m11
     );
 
-    public readonly (float, float) Multiply((float, float) float2) => Multiply(float2.Item1, float2.Item2);
-    public readonly (float, float) InvMultiply((float, float) float2) => InvMultiply(float2.Item1, float2.Item2);
+    public readonly (float x, float y) Multiply((float x, float y) float2) => Multiply(float2.x, float2.y);
+    public readonly (float x, float y) InvMultiply((float x, float y) float2) => InvMultiply(float2.x, float2.y);
 
     public Vector2 MultiplyVector(Vector2 _srcVector)
     {

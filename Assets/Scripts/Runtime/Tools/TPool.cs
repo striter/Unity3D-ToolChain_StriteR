@@ -50,6 +50,26 @@ namespace ObjectPoolStatic
             m_PoolItems = null;
         }
     }
+
+    public static class TSPoolList<T> 
+    {
+        public static Stack<List<T>> m_PoolItems { get; private set; } = new Stack<List<T>>();
+        public static List<T> Spawn()
+        {
+            List<T> item=m_PoolItems.Count > 0?m_PoolItems.Pop():new List<T>();
+            item.Clear();
+            return item;
+        }
+        public static void Recycle(List<T> item)
+        {
+            m_PoolItems.Push(item);
+        }
+        public static void Dispose()
+        {
+            m_PoolItems.Clear();
+            m_PoolItems = null;
+        }
+    }
 }
 namespace ObjectPool
 {

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace UAlthogrim
+namespace UAlgorithm
 {
     public static class USorting
     {
@@ -118,9 +118,9 @@ namespace UAlthogrim
         public static Quaternion EulerToQuaternion(Vector3 euler) => EulerToQuaternion(euler.x, euler.y, euler.z);
         public static Quaternion EulerToQuaternion(float _angleX, float _angleY, float _angleZ)     //Euler Axis XYZ
         {
-            float radinHX = UMath.AngleToRadin(_angleX);
-            float radinHY = UMath.AngleToRadin(_angleY);
-            float radinHZ = UMath.AngleToRadin(_angleZ);
+            float radinHX = UMath.Deg2Rad*_angleX;
+            float radinHY = UMath.Deg2Rad*_angleY;
+            float radinHZ = UMath.Deg2Rad*_angleZ;
             float sinHX = Mathf.Sin(radinHX); float cosHX = Mathf.Cos(radinHX);
             float sinHY = Mathf.Sin(radinHY); float cosHY = Mathf.Cos(radinHY);
             float sinHZ = Mathf.Sin(radinHZ); float cosHZ = Mathf.Cos(radinHZ);
@@ -132,14 +132,14 @@ namespace UAlthogrim
         }
         public static Quaternion AngleAxisToQuaternion(float _angle, Vector3 _axis)
         {
-            float radinH = UMath.AngleToRadin(_angle / 2);
+            float radinH =  UMath.Deg2Rad*_angle / 2;
             float sinH = Mathf.Sin(radinH);
             float cosH = Mathf.Cos(radinH);
             return new Quaternion(_axis.x * sinH, _axis.y * sinH, _axis.z * sinH, cosH);
         }
         public static Matrix3x3 AngleAxisToRotateMatrix(float _angle,Vector3 _axis)
         {
-            float radin = UMath.AngleToRadin(_angle);
+            float radin =  UMath.Deg2Rad*_angle;
             float s = Mathf.Sin(radin);
             float c = Mathf.Cos(radin);
 

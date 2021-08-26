@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 public static class UGeometry
 {
+    #region Intersections
     #region Line&Ray
     public static Vector3 RayRayProjection(GRay _ray1,GRay _ray2)
     {
@@ -40,9 +41,9 @@ public static class UGeometry
         return !_rayDirectionCheck || distance > 0;
     }
     
-    public static bool RayDirectedTriangleIntersect(GDirectedTriangle _triangle, GRay _ray, bool _rayDirectionCheck, bool _triangleDirectionCheck) => RayDirectedTriangleIntersect(_triangle,_ray,_rayDirectionCheck,_triangleDirectionCheck,out float distance);
+    public static bool RayDirectedTriangleIntersect(GTriangle _triangle, GRay _ray, bool _rayDirectionCheck, bool _triangleDirectionCheck) => RayDirectedTriangleIntersect(_triangle,_ray,_rayDirectionCheck,_triangleDirectionCheck,out float distance);
     
-    public static bool RayDirectedTriangleIntersect(GDirectedTriangle _triangle, GRay _ray, bool _rayDirectionCheck, bool _triangleDirectionCheck,out float distance)
+    public static bool RayDirectedTriangleIntersect(GTriangle _triangle, GRay _ray, bool _rayDirectionCheck, bool _triangleDirectionCheck,out float distance)
     {
         if (!RayTriangleCalculate(_triangle[0], _triangle[1], _triangle[2], _ray.origin, _ray.direction, out distance, out float u, out float v))
             return false;
@@ -202,7 +203,7 @@ public static class UGeometry
 
         float RDV = Vector3.Dot(_ray.direction, _cone.normal);
         float ODN = Vector3.Dot(offset, _cone.normal);
-        float cosA = Mathf.Cos(UMath.AngleToRadin(_cone.angle));
+        float cosA = Mathf.Cos( UMath.Deg2Rad*_cone.angle);
         float sqrCosA = cosA * cosA;
 
         float a = RDV * RDV - sqrCosA;
@@ -217,6 +218,23 @@ public static class UGeometry
         return distances;
     }
     #endregion
+    #endregion
+
+    public static (Vector3 bary, Vector3 u, Vector3 v, Vector3 w) GetBaryCenterUVW(this GTriangle _triangle)
+    {
+        Vector3 bary = _triangle.vertex1+_triangle.vertex2+_triangle.vertex3;
+        bary /= 3f;
+        Vector3 u = _triangle.vertex1 - bary;
+        Vector3 v = _triangle.vertex2 - bary;
+        Vector3 w = _triangle.vertex3 - bary;
+        return (bary, u, v, w);
+    }
+
+    public static (Vector3 u, Vector3 v) GetUVDirection(this GTriangle _triangle)
+    {
+        return (_triangle.vertex2-_triangle.vertex1,_triangle.vertex3-_triangle.vertex1);
+    }
+    
     public static Matrix4x4 GetMirrorMatrix(this GPlane _plane)
     {
         Matrix4x4 mirrorMatrix = Matrix4x4.identity;
@@ -239,3 +257,4 @@ public static class UGeometry
         return mirrorMatrix;
     }
 }
+

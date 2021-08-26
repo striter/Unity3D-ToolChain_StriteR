@@ -10,10 +10,10 @@ namespace TEditor
         static Vector3[] RenegerateNormals(int[] _indices, Vector3[] _verticies)
         {
             Vector3[] normals = new Vector3[_verticies.Length];
-            GMeshPolygon[] polygons = URender.GetPolygons(_indices);
+            GMeshTriangle[] polygons = URender.GetPolygons(_indices);
             foreach(var polygon in polygons)
             {
-                GDirectedTriangle triangle = polygon.GetDirectedTriangle(_verticies);
+                GTriangle triangle = new GTriangle(polygon.GetVertices(_verticies));
                 Vector3 normal = triangle.normal;
                 foreach (var indice in polygon.indices)
                     normals[indice] += normal;

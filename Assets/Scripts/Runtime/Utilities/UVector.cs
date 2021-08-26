@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public static partial class UVector 
+public static class UVector
 {
+
     public static float GetAngle(Vector3 first, Vector3 second, Vector3 up)
     {
         float angle = Vector3.Angle(first, second);
@@ -24,7 +25,8 @@ public static partial class UVector
         lookDirection.Normalize();
         return lookDirection;
     }
-    public static Vector3 RotateDirectionClockwise(this Vector3 Direction, Vector3 axis, float angle) => (Quaternion.AngleAxis(angle, axis) * Direction).normalized;
+    public static Vector3 RotateDirectionClockwise(this Vector3 _, Vector3 axis, float angle) => (Quaternion.AngleAxis(angle, axis) * _).normalized;
+
     public static float Max(this Vector3 _src) => Mathf.Max(Mathf.Max(_src.x, _src.y), _src.z);
     public static float Min(this Vector3 _src) => Mathf.Min(Mathf.Min(_src.x, _src.y), _src.z);
     public static float Max(this Vector4 _src) => Mathf.Max(Mathf.Max(Mathf.Max(_src.x, _src.y), _src.z), _src.w);

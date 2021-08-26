@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using UAlthogrim;
+using UAlgorithm;
 namespace TEditor
 {
     using static UEGUI;

@@ -78,7 +78,7 @@ Material:
     - _EnableSpecular: 1
     - _F: 0
     - _GSF: 0
-    - _Glossiness: 1
+    - _Glossiness: 0.81
     - _Ior: 1.5
     - _Lambert: 0.2
     - _Metallic: 1

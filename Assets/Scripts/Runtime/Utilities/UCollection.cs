@@ -15,7 +15,7 @@ public static class UCollection
             _OnEach(element);
     }
     
-    public static IEnumerable<(T item,int index)> LoopIndex<T>(this IEnumerable<T> _collection)
+    public static IEnumerable<(T value, int index)> LoopIndex<T>(this IEnumerable<T> _collection)
     {
         int index = 0;
         foreach (T element in _collection)
@@ -54,6 +54,20 @@ public static class UCollection
                 return element;
         return default;
     }
+    public static IEnumerable<T> Extend<T>(this IEnumerable<T> _collection, IEnumerable<T> _extend)
+    {
+        foreach (T element in _collection)
+            yield return element;
+        foreach (T element in _extend)
+            yield return element;
+    }
+    public static IEnumerable<T> Extend<T>(this IEnumerable<T> _collection, T _extend)
+    {
+        foreach (T element in _collection)
+            yield return element;
+        yield return _extend;
+    }
+
     
     public static IEnumerable<T> Collect<T>(this IEnumerable<T> _collection, Predicate<T> _Predicate)
     {
@@ -126,6 +140,41 @@ public static class UCollection
         }
         return index==0?Vector2.zero:sum / index;
     }
+    public static Vector3 Average(this IEnumerable<Vector3> _collection)      //To Be Continued With Demical
+    {
+        Vector3 sum = Vector3.zero;
+        int index = 0;
+        foreach (var element in _collection)
+        {
+            sum += element;
+            index++;
+        }
+        return index==0?Vector3.zero:sum / index;
+    }
+
+    public static T Average<T>( this IEnumerable<T> _collection,Func<T,T,T> _add,Func<T,int,T> _divide) where T:struct
+    {
+        T sum = default;
+        int count = 0;
+        foreach (T element in _collection)
+        {
+            sum = _add(sum, element);
+            count++;
+        }
+        return _divide(sum, count);
+    }
+    
+    public static bool Contains<T>(this IEnumerable<T> _collection1, IEnumerable<T> _collection2)
+    {
+        foreach (T element1 in _collection1)
+        {
+            foreach (T element2 in _collection2)
+                if (element1.Equals(element2))
+                    return true;
+        }
+
+        return false;
+    }
     #endregion
     #region Array
     public static IEnumerable<object> GetEnumerable(this Array _array)
@@ -185,7 +234,7 @@ public static class UCollection
     public static List<T> DeepCopy<T>(this List<T> _list)
     {
         List<T> copyList = new List<T>();
-        _list.AddRange(_list);
+        copyList.AddRange(_list);
         return copyList;
     }
     
@@ -223,6 +272,14 @@ public static class UCollection
                 continue;
             _dic.Remove(key);
         }
+    }
+
+    public static bool TryAdd<T, Y>(this Dictionary<T, Y> _dic, T _key, Y _value)
+    {
+        if (_dic.ContainsKey(_key))
+            return false;
+        _dic.Add(_key,_value);
+        return true;
     }
 
     public static IEnumerable<(T key, Y value)> SelectPairs<T,Y>(this Dictionary<T,Y> dictionary)

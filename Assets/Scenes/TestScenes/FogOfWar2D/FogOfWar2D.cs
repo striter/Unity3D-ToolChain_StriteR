@@ -17,9 +17,9 @@ public class FogOfWar2D : MonoBehaviour
         Gizmos.DrawLine(Vector3.zero, m_DstVector);
 
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(Vector3.zero,UAlthogrim.UQuaternion.AngleAxisToRotateMatrix(m_RotateAngle,m_DstVector)*m_SrcVector);
+        Gizmos.DrawLine(Vector3.zero,UAlgorithm.UQuaternion.AngleAxisToRotateMatrix(m_RotateAngle,m_DstVector)*m_SrcVector);
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(Vector3.zero, UAlthogrim.UQuaternion.AngleAxisToQuaternion(m_RotateAngle, m_DstVector)*m_SrcVector);
+        Gizmos.DrawLine(Vector3.zero, UAlgorithm.UQuaternion.AngleAxisToQuaternion(m_RotateAngle, m_DstVector)*m_SrcVector);
         Gizmos.color = Color.green;
         Gizmos.DrawLine(Vector3.zero, Quaternion.AngleAxis(m_RotateAngle, m_DstVector)* m_SrcVector);
         //Debug.Log(TVector.SqrMagnitude(m_SrcVector) + " " +  m_SrcVector.sqrMagnitude);
