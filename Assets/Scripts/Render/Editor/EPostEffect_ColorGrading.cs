@@ -10,7 +10,6 @@ namespace TEditor
         {
             base.OnInspectorGUI();
             GUILayout.BeginVertical();
-            GUILayout.Label("Extra",UEGUIStyle_Window.m_TitleLabel);
             if(GUILayout.Button("Sepia Tone Filter"))
             {
                 PostProcess_ColorUpgrade colorUpgradeGrading = target as PostProcess_ColorUpgrade;

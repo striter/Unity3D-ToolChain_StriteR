@@ -4,6 +4,7 @@ using UnityEngine;
 
 public static class UMath
 {
+    public const float SQRT2 = 1.14142135623731f;
     public const float PI = 3.141593f;
     public const float Deg2Rad = PI  / 180f;
     public const float Rad2Deg = 180f / PI;

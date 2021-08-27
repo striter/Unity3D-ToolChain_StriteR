@@ -31,10 +31,9 @@ namespace Procedural.Hexagon.Geometry
 
         public static HexQuad CombineTriangle(HexTriangle _triangle1,HexTriangle _triangle2)
         {
-            var mid = _triangle1.vertices.Collect(p => _triangle2.vertices.Contains(p)).ToArray();
-            var diff1 = _triangle1.vertices.Find(p => !mid.Contains(p));
-            var diff2 = _triangle2.vertices.Find(p => !mid.Contains(p));
-            return new HexQuad(diff1,mid[0],diff2,mid[1]);
+            var diff1 = _triangle1.vertices.FindIndex(p => !_triangle2.vertices.Contains(p));
+            var diff2 = _triangle2.vertices.FindIndex(p => !_triangle1.vertices.Contains(p));
+            return new HexQuad(_triangle1[diff1],_triangle1[(diff1+1)%3],_triangle2[diff2],_triangle1[(diff1+2)%3]);
         }
     }
 }

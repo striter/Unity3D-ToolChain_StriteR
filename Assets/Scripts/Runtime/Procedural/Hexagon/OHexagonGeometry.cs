@@ -10,6 +10,7 @@ namespace Procedural.Hexagon.Geometry
         public PHexCube vertex1;
         public PHexCube vertex2;
         public readonly PHexCube[] vertices;
+        public PHexCube this[int index] => vertices[index];
         public HexTriangle(PHexCube _vertex0,PHexCube _vertex1,PHexCube _vertex2)
         {
             vertex0 = _vertex0;

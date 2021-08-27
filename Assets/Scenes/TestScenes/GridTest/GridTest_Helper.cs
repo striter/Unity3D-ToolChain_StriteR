@@ -7,10 +7,6 @@ using Procedural.Hexagon.Area;
 
 namespace GridTest
 {
-    class Vertex
-    {
-        public Coord position;
-    }
     public static class GridHelper
     {
         public static Vector3 ToWorld(this PHexAxial _axial)

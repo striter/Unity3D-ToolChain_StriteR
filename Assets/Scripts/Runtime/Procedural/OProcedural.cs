@@ -46,6 +46,12 @@ namespace Procedural
         public override string ToString() => $"Hex(Pixel):{x:F1},{y:F1}";
         public static readonly Coord zero = new Coord(0, 0);
         public static readonly Coord one = new Coord(1, 1);
+
+        public static Coord Normalize(Coord _src)
+        {
+            var length = Mathf.Sqrt(_src.x*_src.x+_src.y*_src.y);
+            return new Coord(_src.x/length,_src.y/length);
+        }
     }
 
 }

@@ -9,16 +9,19 @@ namespace Procedural.Hexagon.Area
     {
         public static int radius { get; private set; } = 1;
         public static int tilling { get; private set; } = 1;
+        public static bool welded { get; private set; }
         private static int r;
         private static int s;
         private static int a;
         private static float sf;
         static PHexCube[] m_NearbyCoordsCS;
 
-        public static void Init(int _radius,int _tilling=1)
+        public static void Init(int _radius,int _tilling=1,bool _welded=false)
         {
             radius =_radius;
             tilling = _tilling;
+            welded = _welded;
+            
 
             r = radius * tilling;
             a=3 * r * r + 3 * r + 1;
@@ -46,7 +49,7 @@ namespace Procedural.Hexagon.Area
             ref var x = ref _positionCS.x;
             ref var y = ref _positionCS.y;
             ref var z = ref _positionCS.z;
-
+            
             var xh = Mathf.FloorToInt( (y + sf * x) / a);
             var yh = Mathf.FloorToInt( (z + sf * y) / a);
             var zh = Mathf.FloorToInt( (x + sf * z) / a);
@@ -63,16 +66,26 @@ namespace Procedural.Hexagon.Area
             ref var i=ref _areaCoord.x;
             ref var j=ref _areaCoord.y;
             ref var k=ref _areaCoord.z;
-            return new HexagonArea() {position =_areaCoord, centerCS = new PHexCube((r+1)*i-r*k,(r+1)*j-r*i,(r+1)*k-r*j)};
+
+            var centerCS = new PHexCube((r + 1) * i - r * k, (r + 1) * j - r * i, (r + 1) * k - r * j);
+            if (welded)
+                centerCS -= _areaCoord;
+            return new HexagonArea() {coord =_areaCoord, centerCS = centerCS};
         }
 
-        public static IEnumerable<PHexCube> GetAllCoordsCS(this HexagonArea _area)
+        public static IEnumerable<PHexCube> IterateAreaCoordsCS(this HexagonArea _area)
         {
             foreach (var coordsAS in PHexCube.zero.GetCoordsInRadius(radius))
                 yield return _area.TransformASToCS(coordsAS);
         }
 
-        public static IEnumerable<(int radius,int dir,bool first, PHexCube coord)> IterateCoordsCS(this HexagonArea _area,bool insideOut=true)
+        public static IEnumerable<PHexCube> IterateAllCoordsCS(this HexagonArea _area)
+        {
+            foreach (var coordsCS in _area.centerCS.GetCoordsInRadius(r))
+                yield return coordsCS;
+        }
+
+        public static IEnumerable<(int radius,int dir,bool first, PHexCube coord)> IterateAllCoordsCSRinged(this HexagonArea _area,bool insideOut=true)
         {
             for (int i = 0; i <= radius; i++)
             {
@@ -81,13 +94,12 @@ namespace Procedural.Hexagon.Area
                     yield return (ring,coords.dir,coords.first,_area.TransformASToCS(coords.coord));
             }
         }
-
         public static IEnumerable<HexagonArea> IterateNearbyAreas(this HexagonArea _area)
         {
-            foreach (var area in UHexagon.GetCoordsNearby(_area.position))
+            foreach (var area in UHexagon.GetCoordsNearby(_area.coord))
                 yield return GetArea(area);
         }
-
+        
         public static bool InRange(this HexagonArea _area, PHexCube _positionCS)
         {
             PHexCube localCoord = _positionCS - _area.centerCS;

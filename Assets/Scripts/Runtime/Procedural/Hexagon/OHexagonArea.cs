@@ -6,6 +6,6 @@ namespace Procedural.Hexagon.Area
     public class HexagonArea
     {
         public PHexCube centerCS;
-        public PHexCube position;
+        public PHexCube coord;
     }
 }
