@@ -157,7 +157,7 @@ MonoBehaviour:
   m_AreaRadius: 2
   m_Tilling: 2
   m_Welded: 1
-  m_MaxAreaRadius: 3
+  m_MaxAreaRadius: 20
   m_AxisVisualize: 2
   m_Test: 0
   m_Radius1: 2

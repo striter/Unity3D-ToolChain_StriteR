@@ -21,11 +21,10 @@ namespace Procedural.Hexagon.Area
             radius =_radius;
             tilling = _tilling;
             welded = _welded;
-            
 
             r = radius * tilling;
-            a=3 * r * r + 3 * r + 1;
-            s=3 * r + 2;
+            a= 3 * r * r + 3 *r +1;
+            s= 3 * r + 2;
             sf = s;
             
             m_NearbyCoordsCS = UHexagon.GetCoordsNearby(PHexCube.zero).Select(p => p * tilling).ToArray();
@@ -50,9 +49,12 @@ namespace Procedural.Hexagon.Area
             ref var y = ref _positionCS.y;
             ref var z = ref _positionCS.z;
             
-            var xh = Mathf.FloorToInt( (y + sf * x) / a);
-            var yh = Mathf.FloorToInt( (z + sf * y) / a);
-            var zh = Mathf.FloorToInt( (x + sf * z) / a);
+            int xh=welded? x:y;
+            int yh=welded?y:z;
+            int zh=welded?z:x;
+            xh = Mathf.FloorToInt( (xh + sf * x) / a);
+            yh = Mathf.FloorToInt( (yh + sf * y) / a);
+            zh = Mathf.FloorToInt( (zh + sf * z) / a);
             int i = Mathf.FloorToInt((1 + xh - yh) / 3f);
             int j = Mathf.FloorToInt((1 + yh - zh) / 3f);
             int k = Mathf.FloorToInt((1 + zh - xh) / 3f);
@@ -61,6 +63,22 @@ namespace Procedural.Hexagon.Area
             return GetArea(area);
         }
 
+        public static int Test(PHexCube _positionCS)
+        {
+            ref var x = ref _positionCS.x;
+            ref var y = ref _positionCS.y;
+            ref var z = ref _positionCS.z;
+        
+            var xh = Mathf.FloorToInt( (x + sf * x) / a);
+            var yh = Mathf.FloorToInt( (y + sf * y) / a);
+            var zh = Mathf.FloorToInt( (z + sf * z) / a);
+            int i = Mathf.FloorToInt((1 + xh - yh) / 3f);
+            int j = Mathf.FloorToInt((1 + yh - zh) / 3f);
+            int k = Mathf.FloorToInt((1 + zh - xh) / 3f);
+            var area = new PHexCube(i, j, k);
+            //var xyzH = new Int3(xh, yh, zh);
+            return (xh+int.MaxValue/2)%3;
+        }
         public static HexagonArea GetArea(PHexCube _areaCoord)
         {
             ref var i=ref _areaCoord.x;

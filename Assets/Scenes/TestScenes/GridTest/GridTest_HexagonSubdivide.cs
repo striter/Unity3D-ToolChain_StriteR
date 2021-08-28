@@ -128,7 +128,7 @@ namespace GridTest.HexagonSubdivide
         private void OnDrawGizmos()
         {
             UHexagon.flat = m_Flat;
-            UHexagonArea.Init(m_AreaRadius,6,true);
+            UHexagonArea.Init(m_AreaRadius,6);
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Scale(Vector3.one*m_CellRadius);
             DrawProcedural();
             DrawAxis();
@@ -286,45 +286,45 @@ namespace GridTest.HexagonSubdivide
             }
 
             //Relaxing
-            // Dictionary<PHexCube, Coord> directions = new Dictionary<PHexCube, Coord>();
-            // for (int i = 0; i < m_SmoothenTimes; i++)
-            // {
-            //     directions.Clear();
-            //     // var quad = m_Quads.Find();
-            //     // var quad = m_Quads[0];
-            //     foreach (var quad in m_ProceduralQuads)
-            //     { 
-            //         var origins = quad.GetVertices(p => m_ProceduralVertices[p].position);
-            //         var center = origins.Average((a, b) => a + b, (a, divide) => a / divide);
-            //         var offsets = origins.Select(p => p - center).ToArray();
-            //
-            //         Coord direction0 = offsets[0];
-            //         Coord direction1 = UMath.m_Rotate270.Multiply(offsets[1]);
-            //         Coord direction2 = UMath.m_Rotate180.Multiply(offsets[2]);
-            //         Coord direction3 = UMath.m_Rotate90.Multiply(offsets[3]);
-            //         
-            //         var average = Coord.Normalize( direction0 + direction1 + direction2 + direction3)*UMath.SQRT2*3;
-            //         direction0 = average- offsets[0];
-            //         direction1 = UMath.m_Rotate90.Multiply(average)-offsets[1];
-            //         direction2 = UMath.m_Rotate180.Multiply(average)-offsets[2];
-            //         direction3 = UMath.m_Rotate270.Multiply(average)-offsets[3];
-            //
-            //         var vertices = quad.vertices;
-            //         directions.TryAdd(vertices[0], Coord.zero);
-            //         directions.TryAdd(vertices[1], Coord.zero);
-            //         directions.TryAdd(vertices[2], Coord.zero);
-            //         directions.TryAdd(vertices[3], Coord.zero);
-            //
-            //         directions[vertices[0]] += direction0;
-            //         directions[vertices[1]] += direction1;
-            //         directions[vertices[2]] += direction2;
-            //         directions[vertices[3]] += direction3;
-            //     }
-            //
-            //     foreach (var pair in directions)
-            //         m_ProceduralVertices[pair.Key].position += pair.Value * m_SmoothenFactor;
-            //     yield return null;
-            // }
+            Dictionary<PHexCube, Coord> directions = new Dictionary<PHexCube, Coord>();
+            for (int i = 0; i < m_SmoothenTimes; i++)
+            {
+                directions.Clear();
+                // var quad = m_Quads.Find();
+                // var quad = m_Quads[0];
+                foreach (var quad in m_ProceduralQuads)
+                { 
+                    var origins = quad.GetVertices(p => m_ProceduralVertices[p].position);
+                    var center = origins.Average((a, b) => a + b, (a, divide) => a / divide);
+                    var offsets = origins.Select(p => p - center).ToArray();
+            
+                    Coord direction0 = offsets[0];
+                    Coord direction1 = UMath.m_Rotate270.Multiply(offsets[1]);
+                    Coord direction2 = UMath.m_Rotate180.Multiply(offsets[2]);
+                    Coord direction3 = UMath.m_Rotate90.Multiply(offsets[3]);
+                    
+                    var average = Coord.Normalize( direction0 + direction1 + direction2 + direction3)*UMath.SQRT2*3;
+                    direction0 = average- offsets[0];
+                    direction1 = UMath.m_Rotate90.Multiply(average)-offsets[1];
+                    direction2 = UMath.m_Rotate180.Multiply(average)-offsets[2];
+                    direction3 = UMath.m_Rotate270.Multiply(average)-offsets[3];
+            
+                    var vertices = quad.vertices;
+                    directions.TryAdd(vertices[0], Coord.zero);
+                    directions.TryAdd(vertices[1], Coord.zero);
+                    directions.TryAdd(vertices[2], Coord.zero);
+                    directions.TryAdd(vertices[3], Coord.zero);
+            
+                    directions[vertices[0]] += direction0;
+                    directions[vertices[1]] += direction1;
+                    directions[vertices[2]] += direction2;
+                    directions[vertices[3]] += direction3;
+                }
+            
+                foreach (var pair in directions)
+                    m_ProceduralVertices[pair.Key].position += pair.Value * m_SmoothenFactor;
+                yield return null;
+            }
 
 
             int passIndex = m_ProceduralQuads.Count;

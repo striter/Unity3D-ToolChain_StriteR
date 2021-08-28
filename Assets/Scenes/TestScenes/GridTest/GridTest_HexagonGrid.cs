@@ -48,35 +48,39 @@ namespace GridTest
             UHexagonArea.Init(m_AreaRadius, m_Tilling,m_Welded);
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Scale(Vector3.one * m_CellRadius);
 
-            // foreach (var coord in UHexagon.GetCoordsInRadius( PHexCube.zero,50))
-            // {
-            //     var area = UHexagonArea.GetBelongingArea(coord);
-            //     int index = (area.coord.x - area.coord.y + int.MaxValue / 2) % 3;
-            //     switch (index)
-            //     {
-            //         case 0: Gizmos.color = Color.red; break;
-            //         case 1: Gizmos.color = Color.blue; break;
-            //         case 2:  Gizmos.color = Color.green; break;
-            //     }
-            //     coord.DrawHexagon();
-            // }
-            //
+            foreach (var coord in UHexagon.GetCoordsInRadius( PHexCube.zero,50))
+            {
+                var area = UHexagonArea.GetBelongingArea(coord);
+
+                var index = (area.coord.x-area.coord.y + int.MaxValue / 2) % 3;
+                // var index = (i - k + int.MaxValue) % 3;
+                switch (index)
+                {
+                    case 0: Gizmos.color = Color.red; break;
+                    case 1: Gizmos.color = Color.blue; break;
+                    case 2:  Gizmos.color = Color.green; break;
+                }
+                coord.DrawHexagon();
+            }
+            
             DrawAxis();
             DrawAreas();
             DrawTestGrids(m_HitPointCS, m_HitAxialCS);
         }
 
-        void ValidateArea(PHexCube _positionCS)
+        void ValidateArea(PHexCube _positionCS,bool _include)
         {
             var area = UHexagonArea.GetBelongingArea(_positionCS);
 
             if (!area.coord.InRange(m_MaxAreaRadius))
                 return;
-            if (m_Areas.ContainsKey(area.coord))
-                return;
-
-            m_Areas.Add(area.coord, area);
+           
+            if(_include&&!m_Areas.ContainsKey(area.coord))
+                m_Areas.Add(area.coord, area);
+            else if (!_include && m_Areas.ContainsKey(area.coord))
+                m_Areas.Remove(area.coord);
         }
+        
 
 
         public EAxisVisualize m_AxisVisualize;
@@ -107,9 +111,11 @@ namespace GridTest
                 switch (Event.current.button)
                 {
                     case 0:
-                        ValidateArea(m_HitAxialCS);
+                        ValidateArea(m_HitAxialCS,true);
                         break;
-                    case 1: break;
+                    case 1:
+                        ValidateArea(m_HitAxialCS,false);
+                        break;
                 }
 
 
