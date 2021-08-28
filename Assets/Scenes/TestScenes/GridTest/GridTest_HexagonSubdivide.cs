@@ -128,7 +128,7 @@ namespace GridTest.HexagonSubdivide
         private void OnDrawGizmos()
         {
             UHexagon.flat = m_Flat;
-            UHexagonArea.Init(m_AreaRadius,6);
+            UHexagonArea.Init(m_AreaRadius,6,true);
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Scale(Vector3.one*m_CellRadius);
             DrawProcedural();
             DrawAxis();
@@ -143,9 +143,8 @@ namespace GridTest.HexagonSubdivide
                     coord = m_Vertices[p].position;
                 m_ProceduralVertices.TryAdd(p, new Vertex(){position = coord});
             }
-            
-            foreach (HexagonArea area in _destArea.IterateNearbyAreas().Extend(_destArea))
-            {
+
+            var area = _destArea;
                 //Generate Vertices
                 foreach (var tuple in area.IterateAllCoordsCSRinged(false))
                 {
@@ -195,7 +194,6 @@ namespace GridTest.HexagonSubdivide
                     }
                 }
 
-            }
             //Combine Triangles
             System.Random random = new System.Random(m_RandomValue.GetHashCode());
             List<HexTriangle> availableTriangles = m_ProceduralTriangles.DeepCopy();
