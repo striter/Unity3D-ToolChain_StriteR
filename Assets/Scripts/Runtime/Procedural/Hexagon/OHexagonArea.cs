@@ -7,5 +7,7 @@ namespace Procedural.Hexagon.Area
     {
         public PHexCube centerCS;
         public PHexCube coord;
+        public int RadiusAS => UHexagonArea.radius;
+        public int RadiusCS => UHexagonArea.radius*UHexagonArea.tilling;
     }
 }

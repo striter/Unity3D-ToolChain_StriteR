@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Geometry.Index;
+using Geometry.Three;
 using UnityEditor;
 using UnityEngine;
 
@@ -218,7 +220,7 @@ namespace TEditor
             Handles.DrawLine(mouseRay.origin, mouseRay.direction * 10f + mouseRay.origin);
             Handles.matrix = _meshObject.transform.localToWorldMatrix;
             Handles.SphereHandleCap(0, collisionPoint, Quaternion.identity, .05f, EventType.Repaint);
-            Handles.DrawLines(collisionTriangle.GetDrawLinesVerticies());
+            Handles.DrawLines(collisionTriangle.GetDrawLineVertices());
         }
 
         protected static Ray ObjLocalSpaceRay(SceneView _sceneView, GameObject _meshObj)
@@ -313,7 +315,7 @@ namespace TEditor
                 return;
             GMeshTriangle _mainTriangle = m_Polygons[m_SelectedPolygon];
             GTriangle mainTriangle = _mainTriangle.GetTriangle(m_Verticies);
-            m_SubPolygons=m_Polygons.CollectIndex((index, triangle) => index != m_SelectedPolygon && triangle.GetVertices(m_Verticies).Any(subVertex => mainTriangle.verticies.Any(mainVertex => mainVertex == subVertex))).ToList();
+            m_SubPolygons=m_Polygons.CollectIndex((index, triangle) => index != m_SelectedPolygon && triangle.GetVertices(m_Verticies).Any(subVertex => mainTriangle.vertices.Any(mainVertex => mainVertex == subVertex))).ToList();
         }
         void SelectVertex(int _index)
         {
@@ -374,15 +376,15 @@ namespace TEditor
                 if (Vector3.Dot(directedTriangle.normal, _sceneView.camera.transform.forward) > 0)
                     continue;
                 Handles.color = Color.yellow.SetAlpha(.1f);
-                Handles.DrawAAConvexPolygon(directedTriangle.verticies);
+                Handles.DrawAAConvexPolygon(directedTriangle.vertices);
                 Handles.color = Color.yellow;
-                Handles.DrawLines(directedTriangle.GetDrawLinesVerticies());
+                Handles.DrawLines(directedTriangle.GetDrawLineVertices());
             }
             GTriangle mainTriangle =  _mainTriangle.GetTriangle(m_Verticies);
             Handles.color = Color.green.SetAlpha(.3f);
-            Handles.DrawAAConvexPolygon(mainTriangle.verticies);
+            Handles.DrawAAConvexPolygon(mainTriangle.vertices);
             Handles.color = Color.green;
-            Handles.DrawLines(mainTriangle.GetDrawLinesVerticies());
+            Handles.DrawLines(mainTriangle.GetDrawLineVertices());
 
             if (!m_EditingVectors)
                 return;

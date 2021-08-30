@@ -140,6 +140,18 @@ public static class UCollection
         }
         return index==0?Vector2.zero:sum / index;
     }
+    public static Vector2 Average(this IEnumerable<Vector2> _collection)      //To Be Continued With Demical
+    {
+        Vector2 sum = Vector3.zero;
+        int index = 0;
+        foreach (var element in _collection)
+        {
+            sum += element;
+            index++;
+        }
+        return index==0?Vector2.zero:sum / index;
+    }
+
     public static Vector3 Average(this IEnumerable<Vector3> _collection)      //To Be Continued With Demical
     {
         Vector3 sum = Vector3.zero;
@@ -152,17 +164,6 @@ public static class UCollection
         return index==0?Vector3.zero:sum / index;
     }
 
-    public static T Average<T>( this IEnumerable<T> _collection,Func<T,T,T> _add,Func<T,int,T> _divide) where T:struct
-    {
-        T sum = default;
-        int count = 0;
-        foreach (T element in _collection)
-        {
-            sum = _add(sum, element);
-            count++;
-        }
-        return _divide(sum, count);
-    }
     
     public static bool Contains<T>(this IEnumerable<T> _collection1, IEnumerable<T> _collection2)
     {
@@ -229,6 +230,19 @@ public static class UCollection
         }
         return dstArray;
     }
+    
+    public static T Sum<T>( this T[] _collection,Func<T,T,T> _add) where T:struct
+    {
+        T sum = default;
+        foreach (T element in _collection)
+            sum = _add(sum, element);
+        return sum;
+    }
+
+    public static T Average<T>( this T[] _collection,Func<T,T,T> _add,Func<T,int,T> _divide) where T:struct
+    {
+        return _divide(Sum(_collection,_add), _collection.Count());
+    }
     #endregion
     #region List
     public static List<T> DeepCopy<T>(this List<T> _list)
@@ -246,6 +260,22 @@ public static class UCollection
                 continue;
             _list.Remove(element);
         }
+    }
+
+    public static bool TryAdd<T>(this List<T> _list, T _element)
+    {
+        if (_list.Contains(_element))
+            return false;
+        _list.Add(_element);
+        return true;
+    }
+
+    public static bool TryRemove<T>(this List<T> _list, T _element)
+    {
+        if (!_list.Contains(_element))
+            return false;
+        _list.Remove(_element);
+        return true;
     }
 
     #endregion
@@ -282,6 +312,13 @@ public static class UCollection
         return true;
     }
 
+    public static bool TryRemove<T, Y>(this Dictionary<T, Y> _dic,  T _key)
+    {
+        if (!_dic.ContainsKey(_key))
+            return false;
+        _dic.Remove(_key);
+        return true;
+    }
     public static IEnumerable<(T key, Y value)> SelectPairs<T,Y>(this Dictionary<T,Y> dictionary)
     {
         foreach (var pair in dictionary)

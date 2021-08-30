@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using Geometry.Three;
 
 #if UNITY_EDITOR
 public static class Gizmos_Extend

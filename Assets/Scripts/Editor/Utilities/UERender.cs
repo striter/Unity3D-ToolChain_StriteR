@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Geometry.Index;
+using Geometry.Three;
 using UnityEngine;
 
 namespace TEditor

@@ -41,8 +41,8 @@ namespace Procedural.Hexagon.Area
             return _positionAS*tilling + _area.centerCS;
         }
 
-        public static PHexCube[] GetCoordsNearbyCS(PHexCube _positionCS)=>m_NearbyCoordsCS.Select(p=>p+_positionCS).ToArray();
-        public static PHexCube GetCoordsNearby(PHexCube _positionCS, int direction)=> m_NearbyCoordsCS[direction%6]+_positionCS;
+        public static PHexCube[] GetNearbyAreaCoordsCS(PHexCube _positionCS)=>m_NearbyCoordsCS.Select(p=>p+_positionCS).ToArray();
+        public static PHexCube GetNearbyAreaCoordCS(PHexCube _positionCS, int direction)=> m_NearbyCoordsCS[direction%6]+_positionCS;
         public static HexagonArea GetBelongingArea(PHexCube _positionCS)
         {
             ref var x = ref _positionCS.x;
@@ -95,6 +95,11 @@ namespace Procedural.Hexagon.Area
         {
             foreach (var coordsAS in PHexCube.zero.GetCoordsInRadius(radius))
                 yield return _area.TransformASToCS(coordsAS);
+        }
+        public static IEnumerable<(int dir,bool first,PHexCube coord)> IterateAreaCoordsCSRinged(this HexagonArea _area,int _radius)
+        {
+            foreach (var tuple in PHexCube.zero.GetCoordsRinged(_radius))
+                yield return (tuple.dir,tuple.first,_area.TransformASToCS(tuple.coord));
         }
 
         public static IEnumerable<PHexCube> IterateAllCoordsCS(this HexagonArea _area)

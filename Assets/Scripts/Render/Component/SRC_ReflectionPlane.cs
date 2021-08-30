@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Geometry.Three;
+
 namespace Rendering.Pipeline
 {
     [ExecuteInEditMode,RequireComponent(typeof(MeshRenderer),typeof(MeshFilter))]

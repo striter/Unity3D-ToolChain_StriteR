@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Geometry.Three;
 using UnityEngine;
 using UnityEditor;
 using Procedural;
@@ -81,8 +82,6 @@ namespace GridTest
                 m_Areas.Remove(area.coord);
         }
         
-
-
         public EAxisVisualize m_AxisVisualize;
 
         private static class GUIHelper
