@@ -2,7 +2,7 @@
 {
 	Properties
 	{
-		[ToggleTex(_MASK)]_MainTex("Mask Tex",2D)="white"{}
+		[ToggleTex(_MASK)][NoScaleOffset]_MainTex("Mask Tex",2D)="white"{}
 	    [HDR]_Color("HDR Color",Color)=(1,1,1,1)
 
 		[Header(Misc)]

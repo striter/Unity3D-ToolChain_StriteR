@@ -43,7 +43,7 @@ namespace Procedural.Hexagon.Area
 
         public static PHexCube[] GetNearbyAreaCoordsCS(PHexCube _positionCS)=>m_NearbyCoordsCS.Select(p=>p+_positionCS).ToArray();
         public static PHexCube GetNearbyAreaCoordCS(PHexCube _positionCS, int direction)=> m_NearbyCoordsCS[direction%6]+_positionCS;
-        public static HexagonArea GetBelongingArea(PHexCube _positionCS)
+        public static PHexCube GetBelongAreaCoord(PHexCube _positionCS)
         {
             ref var x = ref _positionCS.x;
             ref var y = ref _positionCS.y;
@@ -58,26 +58,8 @@ namespace Procedural.Hexagon.Area
             int i = Mathf.FloorToInt((1 + xh - yh) / 3f);
             int j = Mathf.FloorToInt((1 + yh - zh) / 3f);
             int k = Mathf.FloorToInt((1 + zh - xh) / 3f);
-            var area = new PHexCube(i, j, k);
             //var xyzH = new Int3(xh, yh, zh);
-            return GetArea(area);
-        }
-
-        public static int Test(PHexCube _positionCS)
-        {
-            ref var x = ref _positionCS.x;
-            ref var y = ref _positionCS.y;
-            ref var z = ref _positionCS.z;
-        
-            var xh = Mathf.FloorToInt( (x + sf * x) / a);
-            var yh = Mathf.FloorToInt( (y + sf * y) / a);
-            var zh = Mathf.FloorToInt( (z + sf * z) / a);
-            int i = Mathf.FloorToInt((1 + xh - yh) / 3f);
-            int j = Mathf.FloorToInt((1 + yh - zh) / 3f);
-            int k = Mathf.FloorToInt((1 + zh - xh) / 3f);
-            var area = new PHexCube(i, j, k);
-            //var xyzH = new Int3(xh, yh, zh);
-            return (xh+int.MaxValue/2)%3;
+            return new PHexCube(i, j, k);
         }
         public static HexagonArea GetArea(PHexCube _areaCoord)
         {
@@ -90,6 +72,8 @@ namespace Procedural.Hexagon.Area
                 centerCS -= _areaCoord;
             return new HexagonArea() {coord =_areaCoord, centerCS = centerCS};
         }
+        public static HexagonArea GetBelongingArea(PHexCube _positionCS) => GetArea( GetBelongAreaCoord(_positionCS));
+
 
         public static IEnumerable<PHexCube> IterateAreaCoordsCS(this HexagonArea _area)
         {
@@ -117,12 +101,6 @@ namespace Procedural.Hexagon.Area
                     yield return (ring,coords.dir,coords.first,_area.TransformASToCS(coords.coord));
             }
         }
-        public static IEnumerable<HexagonArea> IterateNearbyAreas(this HexagonArea _area)
-        {
-            foreach (var area in UHexagon.GetCoordsNearby(_area.coord))
-                yield return GetArea(area);
-        }
-        
         public static bool InRange(this HexagonArea _area, PHexCube _positionCS)
         {
             PHexCube localCoord = _positionCS - _area.centerCS;

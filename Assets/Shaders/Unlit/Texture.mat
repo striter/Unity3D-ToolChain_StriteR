@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Texture
-  m_Shader: {fileID: 4800000, guid: 1b5421d368cb03b46a318b3702378edd, type: 3}
+  m_Shader: {fileID: 4800000, guid: 7b36bfd149f2d934e8ebb2cfef159bf2, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -20,7 +20,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: f6f9745a07e407d4a815c13bd5f48fc5, type: 3}
+        m_Texture: {fileID: 2800000, guid: 535377a4a1285c444b6c6deccd399e3c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _StarMask:
@@ -33,10 +33,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Brightness: 0
+    - _Enable: 0
     - _HorizonClip: 0.15
     - _HorizonSize: 0.558
+    - _HueShift: 0
     - _MoonCrescent: 0.089
     - _MoonSize: 0.882
+    - _Saturation: 0
     - _StarDensity: 1
     - _StarMaskStrength: 0.427
     - _SunSize: 0.886

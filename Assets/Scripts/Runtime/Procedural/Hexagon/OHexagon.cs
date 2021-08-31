@@ -75,7 +75,7 @@ namespace Procedural.Hexagon
     }
 
     [Serializable]
-    public struct PHexCube
+    public struct PHexCube:IEquatable<PHexCube>,IEqualityComparer<PHexCube>
     {
         public static PHexCube zero = new PHexCube(0, 0, 0);
         public int x;
@@ -134,10 +134,22 @@ namespace Procedural.Hexagon
         public static bool operator !=(PHexCube offset1, PHexCube offset2) =>
             offset1.x != offset2.x || offset1.y != offset2.y || offset1.z != offset2.z;
 
-        public bool Equals(PHexCube other) => x == other.x && y == other.y && z == other.z;
         public static explicit operator PHexAxial(PHexCube cube) => cube.ToAxial();
-        public override bool Equals(object obj) => obj is PHexCube other && Equals(other);
 
+
+        public override string ToString() => $"{x},{y},{z}";
+
+
+        public int GetHashCode(PHexCube obj)
+        {
+            unchecked
+            {
+                int hashCode = obj.x;
+                hashCode = (hashCode * 397) ^ obj.y;
+                hashCode = (hashCode * 397) ^ obj.z;
+                return hashCode;
+            }
+        }
         public override int GetHashCode()
         {
             unchecked
@@ -148,8 +160,12 @@ namespace Procedural.Hexagon
                 return hashCode;
             }
         }
-
-        public override string ToString() => $"{x},{y},{z}";
+        public override bool Equals(object obj)
+        {
+            return obj is PHexCube other && Equals(other);
+        }
+        public bool Equals(PHexCube _src, PHexCube _dst)=> _src.x == _dst.x && _src.y == _dst.y && _src.z == _dst.z;
+        public bool Equals(PHexCube _dst)=> x == _dst.x && y == _dst.y && z == _dst.z;
     }
     
     [Serializable]

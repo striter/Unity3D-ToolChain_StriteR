@@ -239,6 +239,30 @@ public static class URender
         else
             Shader.DisableKeyword(_keyword);
     }
+
+    public static Vector2 IndexToQuadUV(int _index)
+    {
+        switch (_index)
+        {
+            case 0:return Vector2.zero;
+            case 1: return Vector2.right;
+            case 2: return Vector2.one;
+            case 3: return Vector2.up;
+            default: throw new Exception("Invalid Index:" + _index);
+        }
+
+    }
+    public static Color IndexToColor(int _index)
+    {
+        switch (_index)
+        {
+            default: return Color.magenta;
+            case 0: return Color.red;
+            case 1: return Color.green;
+            case 2: return Color.blue;
+            case 3: return Color.yellow;
+        }
+    }
 }
 
 public static class UBoundsChecker

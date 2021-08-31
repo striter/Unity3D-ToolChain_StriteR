@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-using Random = System.Random;
 
 public static class UCollection
 {
@@ -123,11 +121,16 @@ public static class UCollection
         return builder.ToString();
     }
 
-    public static void FillList<T>(this IEnumerable<T> _collections, List<T> _list)
+    public static void Fill<T>(this IEnumerable<T> _collections, List<T> _list)
     {
         _list.Clear();
         foreach (var element in _collections)
             _list.Add(element);
+    }
+    public static void Fill<T>(this IEnumerable<T> _collections, T[] _list)
+    {
+        foreach (var tuple in _collections.LoopIndex())
+            _list[tuple.index]=tuple.value;
     }
     public static Vector2 Average<T>(this IEnumerable<T> _collection, Func<T, Vector2> _OnEachElement)      //To Be Continued With Demical
     {
@@ -189,7 +192,14 @@ public static class UCollection
         for (int i = 0; i < _srcArray.Length; i++)
             dstArray[i] = _srcArray[i];
         return dstArray;
-    }    
+    }
+
+    public static T[] MemberCopy<T>(this T[] _srcArray, T[] _dstArray)
+    {
+        for (int i = 0; i < _srcArray.Length; i++)
+            _dstArray[i] = _srcArray[i];
+        return _dstArray;
+    }
     public static T[] Add<T>(this T[] _srcArray,T _element)
     {
         T[] newArray= new T[_srcArray.Length + 1];
@@ -242,6 +252,27 @@ public static class UCollection
     public static T Average<T>( this T[] _collection,Func<T,T,T> _add,Func<T,int,T> _divide) where T:struct
     {
         return _divide(Sum(_collection,_add), _collection.Count());
+    }
+    public static bool Contains<T>(this T[] _collection, T _comparer) where T:IEquatable<T>
+    {
+        foreach (T element in _collection)
+            if (element.Equals(_comparer))
+                return true;
+        return false;
+    }
+    public static bool All<T>(this T[] _collection, Predicate<T> _comparer)
+    {
+        foreach (T element in _collection)
+            if (!_comparer(element))
+                return false;
+        return true;
+    }
+    public static bool Any<T>(this T[] _collection, Predicate<T> _comparer)
+    {
+        foreach (T element in _collection)
+            if (_comparer(element))
+                return true;
+        return false;
     }
     #endregion
     #region List

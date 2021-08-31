@@ -9,21 +9,23 @@ public static class UMath
     public const float Deg2Rad = PI  / 180f;
     public const float Rad2Deg = 180f / PI;
     
-    public static readonly Matrix2x2 m_Rotate90 = GetRotateMatrix(90*Deg2Rad);
-    public static readonly Matrix2x2 m_Rotate180 = GetRotateMatrix(180*Deg2Rad);
-    public static readonly Matrix2x2 m_Rotate270 = GetRotateMatrix(270*Deg2Rad);
+    public static readonly Matrix2x2 m_Rotate90CW = GetRotateMatrix(90*Deg2Rad,true);
+    public static readonly Matrix2x2 m_Rotate180CW = GetRotateMatrix(180*Deg2Rad,true);
+    public static readonly Matrix2x2 m_Rotate270CW = GetRotateMatrix(270*Deg2Rad,true);
     
-    public static float GetRadin(Vector2 _vec1, Vector2 _vec2)
+    public static float GetRadBetween(Vector2 _vec1, Vector2 _vec2)
     {
         float sin = _vec1.x * _vec2.y - _vec2.x * _vec1.y;
         float cos = _vec1.x * _vec2.x + _vec1.y * _vec2.y;
         
         return Mathf.Atan2(sin,cos);
     }
-    public static Matrix2x2 GetRotateMatrix(float _rad)
+    public static Matrix2x2 GetRotateMatrix(float _rad,bool _clockWise=false)
     {
         float sinA = Mathf.Sin(_rad);
         float cosA = Mathf.Cos(_rad);
+        if (_clockWise)
+            return new Matrix2x2(cosA,sinA,-sinA,cosA);
         return new Matrix2x2(cosA,-sinA,sinA,cosA);
     }
     

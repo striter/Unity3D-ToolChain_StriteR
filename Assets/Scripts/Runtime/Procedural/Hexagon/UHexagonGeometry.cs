@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Procedural.Hexagon.Geometry
 {
+
     public static class UHexagonGeometry
     {
         public static (PHexCube m01, PHexCube m12, PHexCube m20, PHexCube m012) GetTriangleMidVertices(this HexTriangle _triangle)
@@ -26,13 +27,19 @@ namespace Procedural.Hexagon.Geometry
 
         public static int MatchVertexCount(this HexTriangle _triangle1,HexTriangle _triangle2)
         {
-            return _triangle1.vertices.Collect(k => _triangle2.vertices.Contains(k)).Count() ;
+            int index=0;
+            foreach (PHexCube vertex in _triangle1)
+            {
+                if (_triangle2.vertex0 == vertex || _triangle2.vertex1 == vertex || _triangle2.vertex2 == vertex)
+                    index++;
+            }
+            return index;
         }
 
         public static HexQuad CombineTriangle(HexTriangle _triangle1,HexTriangle _triangle2)
         {
-            var diff1 = _triangle1.vertices.FindIndex(p => !_triangle2.vertices.Contains(p));
-            var diff2 = _triangle2.vertices.FindIndex(p => !_triangle1.vertices.Contains(p));
+            var diff1 = _triangle1.FindIndex(p => !_triangle2.Contains(p));
+            var diff2 = _triangle2.FindIndex(p => !_triangle1.Contains(p));
             return new HexQuad(_triangle1[diff1],_triangle1[(diff1+1)%3],_triangle2[diff2],_triangle1[(diff1+2)%3]);
         }
     }

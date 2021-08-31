@@ -49,7 +49,7 @@ namespace Geometry.Two
         public Vector2 vertex4=> vertices[3];
         public Vector2[] vertices { get; private set; }
 
-        public readonly Vector2 center => vertices.Average();
+        public Vector2 center => vertices.Average();
 
         public Vector2 this[int index]
         {

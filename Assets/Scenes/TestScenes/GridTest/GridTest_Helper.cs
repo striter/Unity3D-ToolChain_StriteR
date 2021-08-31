@@ -3,8 +3,6 @@ using UnityEngine;
 using Procedural.Hexagon;
 using System.Linq;
 using Procedural;
-using Procedural.Hexagon.Area;
-
 namespace GridTest
 {
     public static class GridHelper

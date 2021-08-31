@@ -17,9 +17,9 @@ namespace Procedural.Hexagon
 
     public interface IHexagonShape
     {
-        public Coord[] m_PointOffsets { get; }
-        public Matrix2x2 m_AxialToPixel { get; }
-        public Matrix2x2 m_PixelToAxial { get; }
+        Coord[] m_PointOffsets { get; }
+        Matrix2x2 m_AxialToPixel { get; }
+        Matrix2x2 m_PixelToAxial { get; }
     }
 
 

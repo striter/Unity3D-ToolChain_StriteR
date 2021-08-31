@@ -1,234 +1,27 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry.Three;
 using Geometry.Two;
-using OSwizzling;
+using ObjectPool;
+using ObjectPoolStatic;
 using UnityEngine;
 using Procedural;
 using Procedural.Hexagon;
 using Procedural.Hexagon.Area;
 using Procedural.Hexagon.Geometry;
+using Procedural.Hexagon.ConvexGrid;
 using TEditor;
 using UnityEditor;
-using Random = System.Random;
 
-namespace GridTest.HexagonSubdivide
+namespace GridTest
 {
-    enum EAreaState
-    {
-        Empty=0,
-        Tesselation=1,
-        Relaxed=2,
-        Meshed=3,
-    }
-    class Vertex
-    {
-        public Coord m_Position;
-        public readonly List<Quad> m_RelativeQuads=new List<Quad>(6);
-    }
-    class Area
-    {
-        public EAreaState m_State { get; private set; }
-        public HexagonArea area { get; private set; }
-        public Random m_Random { get; private set; }
-        public Mesh m_Mesh { get; private set; }
-
-        public readonly List<PHexCube> m_ProceduralVertices = new List<PHexCube>(); 
-        public readonly List<HexTriangle> m_ProceduralTriangles = new List<HexTriangle>(); 
-        public readonly List<HexQuad> m_ProceduralQuads = new List<HexQuad>();
-        public Area(HexagonArea _area)
-        {
-            m_State = EAreaState.Empty;
-            area = _area;
-            m_Random= new Random(("Test"+area.coord).GetHashCode());
-        }
-        public IEnumerator SplitQuads()
-        {
-            if (m_State >= EAreaState.Tesselation)
-                yield break;
-            m_State = EAreaState.Tesselation;
-            
-            var random =  m_Random;
-                
-            //Generate Vertices
-            foreach (var tuple in area.IterateAllCoordsCSRinged(false))
-            {
-                m_ProceduralVertices.TryAdd(tuple.coord);
-                yield return null;
-            }
-
-            //Generate Triangles
-            foreach (var tuple in area.IterateAllCoordsCSRinged(true))
-            {
-                var radius = tuple.radius;
-                var direction = tuple.dir;
-                bool first = tuple.first;
-
-                if (radius == UHexagonArea.radius)
-                    break;
-    
-                var startCoordCS = tuple.coord;
-                m_ProceduralVertices.TryAdd(startCoordCS);
-                if (radius == 0)
-                {
-                    var nearbyCoords = UHexagonArea.GetNearbyAreaCoordsCS(startCoordCS);
-        
-                    for (int i = 0; i < 6; i++)
-                    {
-                        var coord1 = nearbyCoords[i];
-                        var coord2 = nearbyCoords[(i + 1) % 6];
-                        m_ProceduralVertices.TryAdd(coord1);
-                        m_ProceduralVertices.TryAdd(coord2);
-                        m_ProceduralTriangles.Add(new HexTriangle(startCoordCS,coord1,coord2));
-                        yield return null;
-                    }
-                }
-                else
-                {
-                    int begin = first ? 0:1;
-                    for (int i = begin; i < 3; i++)
-                    {
-                        var coord1=UHexagonArea.GetNearbyAreaCoordCS(startCoordCS,direction+3+i);
-                        var coord2=UHexagonArea.GetNearbyAreaCoordCS(startCoordCS,direction+4+i);
-                        m_ProceduralVertices.TryAdd(coord1);
-                        m_ProceduralVertices.TryAdd(coord2);
-                        m_ProceduralTriangles.Add(new HexTriangle(startCoordCS,coord1,coord2));
-                        yield return null;
-                    }
-                }
-            }
-            
-            List<HexTriangle> availableTriangles = m_ProceduralTriangles.DeepCopy();
-            //Remove Edge Triangles
-            foreach (var tuple in area.IterateAreaCoordsCSRinged(area.RadiusAS))
-            {
-                 if(!tuple.first)
-                     continue;
-            
-                 var triangles = availableTriangles.Collect(p => p.vertices.All(p=>area.InRange(p))&&p.vertices.Contains(tuple.coord)).ToArray();
-                 availableTriangles.RemoveRange(triangles);
-            }
-
-            //Combine Center Triangles
-            while (availableTriangles.Count > 0)
-            {
-                int validateIndex = availableTriangles.RandomIndex(random);
-                var curTriangle = availableTriangles[validateIndex];
-                availableTriangles.RemoveAt(validateIndex);
-        
-                var relativeTriangleIndex = availableTriangles.FindIndex(p => p.MatchVertexCount(curTriangle)==2&&p.vertices.All(p=>area.InRange(p)));
-                if(relativeTriangleIndex==-1)
-                    continue;
-        
-                var nextTriangle = availableTriangles[relativeTriangleIndex];
-                availableTriangles.RemoveAt(relativeTriangleIndex);
-
-                m_ProceduralQuads.Add(UHexagonGeometry.CombineTriangle(curTriangle, nextTriangle));
-                m_ProceduralTriangles.Remove(curTriangle);
-                m_ProceduralTriangles.Remove(nextTriangle);
-                yield return null;
-            }
-            
-            //Split Quads
-            int quadCount = m_ProceduralQuads.Count;
-            while (quadCount-->0)
-            {
-                var splitQuad = m_ProceduralQuads[0];
-                m_ProceduralQuads.RemoveAt(0);
-            
-                var index0 = splitQuad.vertex0;
-                var index1 = splitQuad.vertex1;
-                var index2 = splitQuad.vertex2;
-                var index3 = splitQuad.vertex3;
-                var midTuple = splitQuad.GetQuadMidVertices();
-                
-                var index01 = midTuple.m01;
-                var index12 = midTuple.m12;
-                var index23 = midTuple.m23;
-                var index30 = midTuple.m30;
-                var index0123 = midTuple.m0123;
-                
-                m_ProceduralVertices.TryAdd(index01);
-                m_ProceduralVertices.TryAdd(index12);
-                m_ProceduralVertices.TryAdd(index23);
-                m_ProceduralVertices.TryAdd(index30);
-                m_ProceduralVertices.TryAdd(index0123);
-                
-                m_ProceduralQuads.Add(new HexQuad(index3,index23,index0123,index30));
-                yield return null;
-                m_ProceduralQuads.Add(new HexQuad(index23,index2,index12,index0123));
-                yield return null;
-                m_ProceduralQuads.Add(new HexQuad(index30,index0123,index01,index0));
-                yield return null;
-                m_ProceduralQuads.Add(new HexQuad(index0123,index12,index1,index01));
-                yield return null;
-            }
-            
-            //Split Triangles
-            while (m_ProceduralTriangles.Count > 0)
-            {
-                var splitTriangle = m_ProceduralTriangles[0];
-                m_ProceduralTriangles.RemoveAt(0);
-                var index0 = splitTriangle.vertex0;
-                var index1 = splitTriangle.vertex1;
-                var index2 = splitTriangle.vertex2;
-            
-                var midTuple = splitTriangle.GetTriangleMidVertices();
-                var index01 = midTuple.m01;
-                var index12 = midTuple.m12;
-                var index20 = midTuple.m20;
-                var index012 = midTuple.m012;
-                
-                m_ProceduralVertices.TryAdd(index01);
-                m_ProceduralVertices.TryAdd(index12);
-                m_ProceduralVertices.TryAdd(index20);
-                m_ProceduralVertices.TryAdd(index012);
-                
-                m_ProceduralQuads.Add(new HexQuad(index0,index20,index012,index01));
-                yield return null;
-                m_ProceduralQuads.Add(new HexQuad(index01,index012,index12,index1));
-                yield return null;
-                m_ProceduralQuads.Add(new HexQuad(index012,index20,index2,index12));
-                yield return null;
-            }
-        }
-
-        public IEnumerator Relaxed()
-        {
-            if (m_State >= EAreaState.Relaxed)
-                yield break;
-            m_State = EAreaState.Relaxed;
-            
-            m_ProceduralVertices.Clear();
-            m_ProceduralTriangles.Clear();
-            m_ProceduralQuads.Clear();
-        }
-    }
-    class Quad
-    {
-        public HexQuad m_HexQuad { get; private set; }
-        public G2Quad m_GeometryQuad { get; private set; }
-        public Quad(HexQuad _hexQuad,Dictionary<PHexCube,Vertex> _vertices)
-        {
-            m_HexQuad = _hexQuad;
-            m_GeometryQuad=new G2Quad(
-                _vertices[m_HexQuad.vertex0].m_Position,
-                _vertices[m_HexQuad.vertex1].m_Position,
-                _vertices[m_HexQuad.vertex2].m_Position,
-                _vertices[m_HexQuad.vertex3].m_Position);
-        }
-    }
-    
     [ExecuteInEditMode]
-    public class GridTest_HexagonSubdivide:MonoBehaviour
+    public partial class GridTest_HexagonSubdivide:MonoBehaviour
     {
         public bool m_Flat = false;
         public float m_CellRadius = 1;
         public int m_AreaRadius = 8;
-        [Header("Random")]
-        public string m_RandomValue="Test";
         [Header("Smoothen")] 
         public int m_SmoothenTimes = 300;
         [Range(0.001f,0.5f)]
@@ -241,7 +34,7 @@ namespace GridTest.HexagonSubdivide
         readonly List<HexTriangle> m_RelaxTriangles = new List<HexTriangle>(); 
         readonly List<HexQuad> m_RelaxQuads = new List<HexQuad>();
         
-        readonly Dictionary<PHexCube,Area> m_Areas = new Dictionary<PHexCube, Area>();
+        readonly Dictionary<PHexCube,AreaContainer> m_Areas = new Dictionary<PHexCube, AreaContainer>();
         readonly Dictionary<PHexCube, Vertex> m_Vertices = new Dictionary<PHexCube, Vertex>();
         readonly List<Quad> m_Quads = new List<Quad>();
 
@@ -249,27 +42,33 @@ namespace GridTest.HexagonSubdivide
         private readonly Timer m_IterateTimer = new Timer(1f/60f);
 
         private int m_QuadSelected=-1;
-        private PHexCube m_GridSelected = PHexCube.zero;
-        
-        void ValidateSelection(Coord _localPos,out int quadIndex,out PHexCube gridIndex)
+        private ValueChecker<PHexCube> m_GridSelected =new ValueChecker<PHexCube>(PHexCube.zero);
+        private Matrix4x4 m_TransformMatrix;
+        void Setup()
+        {
+            UHexagon.flat = m_Flat;
+            UHexagonArea.Init(m_AreaRadius,6,true);
+            m_TransformMatrix = transform.localToWorldMatrix*Matrix4x4.Scale(m_CellRadius*Vector3.one);
+        } 
+        PHexCube ValidateSelection(Coord _localPos,out int quadIndex)
         {
             quadIndex = -1;
-            gridIndex = PHexCube.zero;
             foreach (var tuple in m_Quads.LoopIndex())
             {
                 var quad =  tuple.value;
                 if (quad.m_GeometryQuad.IsPointInside(_localPos))
                 {
                      var sideIndex= quad.m_GeometryQuad.NearestPointIndex(_localPos);
-                     gridIndex = quad.m_HexQuad[sideIndex]; 
                      quadIndex= tuple.index;
-                     break;
+                     return quad.m_HexQuad[sideIndex]; 
                 }
             }
+            return PHexCube.zero;
         }
-
         void Clear()
         {
+            m_QuadSelected = -1;
+            m_GridSelected.Check(PHexCube.zero);
             m_Iterator.Clear();
             m_Areas.Clear();
             m_Vertices.Clear();
@@ -277,13 +76,13 @@ namespace GridTest.HexagonSubdivide
             m_RelaxQuads.Clear();
             m_RelaxTriangles.Clear();
             m_RelaxVertices.Clear();
+            m_AreaMeshes?.Clear();
+            if(m_Selection!=null)
+                m_SelectionMesh.Clear();
         }
-
-        private void Tick()
+        private void Tick(float _deltaTime)
         {
-            UHexagon.flat = m_Flat;
-            UHexagonArea.Init(m_AreaRadius,6,true);
-            m_IterateTimer.Tick(EditorTime.deltaTime);
+            m_IterateTimer.Tick(_deltaTime);
             if (m_IterateTimer.m_Timing)
                 return;
             m_IterateTimer.Replay();
@@ -299,32 +98,32 @@ namespace GridTest.HexagonSubdivide
             }
         }
         
-        void ValidateArea(PHexCube _positionCS)
+        void ValidateArea(PHexCube _areaCoord)
         {
-            var area = UHexagonArea.GetBelongingArea(_positionCS);
-            m_Iterator.AddLast(Validate(area));
-            m_Iterator.AddFirst(Relax(area));
+            m_Iterator.AddLast(Tesselation(_areaCoord));
+            m_Iterator.AddFirst(Relax(_areaCoord));
         }
-        IEnumerator Validate(HexagonArea _destArea)
+        
+        IEnumerator Tesselation(PHexCube _areaCoord)
         {
-            var areas = _destArea.IterateNearbyAreas().Extend(_destArea);
-            //Validate
-            foreach (HexagonArea tuple in areas)
+            foreach (HexagonArea tuple in _areaCoord.GetCoordsInRadius(1).Select(UHexagonArea.GetArea))
             {
                 var aCoord = tuple.coord;
                 if(!m_Areas.ContainsKey(aCoord))
-                    m_Areas.Add(aCoord,new Area(tuple));
+                    m_Areas.Add(aCoord,new AreaContainer(tuple));
                 
                 m_Iterator.AddLast(m_Areas[aCoord].SplitQuads());
                 yield return null;
             }
         }
-
-        IEnumerator Relax(HexagonArea _destArea)
+        IEnumerator Relax(PHexCube _areaCoord)
         {
-            var areas = _destArea.IterateNearbyAreas().Extend(_destArea);
+            var destArea = m_Areas[_areaCoord];
+            if (destArea.m_State >= EAreaState.Relaxed)
+                yield break;
+
             //Push Coords
-            foreach (var tuple in areas)
+            foreach (var tuple in  _areaCoord.GetCoordsInRadius(1).Select(UHexagonArea.GetArea))
             {
                 var area = m_Areas[tuple.coord];
                 if(area.m_State== EAreaState.Relaxed)
@@ -333,6 +132,7 @@ namespace GridTest.HexagonSubdivide
                 foreach (var quad in area.m_ProceduralQuads)
                 {
                     m_RelaxQuads.Add(quad);
+                    
                     AddCoord(quad.vertex0);
                     AddCoord(quad.vertex1);
                     AddCoord(quad.vertex2);
@@ -352,51 +152,49 @@ namespace GridTest.HexagonSubdivide
             {
                 var coord = p.ToPixel();
                 if (m_Vertices.ContainsKey(p))
-                    coord = m_Vertices[p].m_Position;
-                m_RelaxVertices.TryAdd(p, new Vertex(){m_Position = coord});
+                    coord = m_Vertices[p].m_Coord;
+                m_RelaxVertices.TryAdd(p, new Vertex(){m_Coord = coord});
             }
             
             //Relaxing
             Dictionary<PHexCube, Coord> relaxDirections = new Dictionary<PHexCube, Coord>();
+            Coord[] origins = new Coord[4];
+            Coord[] offsets = new Coord[4];
+            Coord[] directions = new Coord[4];
+            Coord[] relaxOffsets = new Coord[4];
             for (int i = 0; i < m_SmoothenTimes; i++)
             {
                 relaxDirections.Clear();
                 foreach (var quad in m_RelaxQuads)
                 { 
-                    var origins = quad.GetVertices(p => m_RelaxVertices[p].m_Position);
+                    quad.Select(p => m_RelaxVertices[p].m_Coord).Fill(origins);
                     var center = origins.Average((a, b) => a + b, (a, divide) => a / divide);
-                    var offsets = origins.Select(p => p - center).ToArray();
-            
-                    var directions = new Coord[]
-                    {
-                        offsets[0],
-                        UMath.m_Rotate270.Multiply(offsets[1]),
-                        UMath.m_Rotate180.Multiply(offsets[2]),
-                        UMath.m_Rotate90.Multiply(offsets[3])
-                    };
+                    origins.Select(p => p - center).Fill(offsets);
+
+                    directions[0] = offsets[0];
+                    directions[1] = UMath.m_Rotate270CW.Multiply(offsets[1]);
+                    directions[2] = UMath.m_Rotate180CW.Multiply(offsets[2]);
+                    directions[3] = UMath.m_Rotate90CW.Multiply(offsets[3]);
                     
                     var average = Coord.Normalize( directions.Sum((a,b)=>a+b))*UMath.SQRT2*3;
-                    directions = new Coord[]
-                    {
-                        average - offsets[0], 
-                        UMath.m_Rotate90.Multiply(average) - offsets[1],
-                        UMath.m_Rotate180.Multiply(average) - offsets[2],
-                        UMath.m_Rotate270.Multiply(average) - offsets[3]
-                    };
+
+                    directions[0] = average - offsets[0];
+                    directions[1] = UMath.m_Rotate90CW.Multiply(average) - offsets[1];
+                    directions[2] = UMath.m_Rotate180CW.Multiply(average) - offsets[2];
+                    directions[3] = UMath.m_Rotate270CW.Multiply(average) - offsets[3];
             
-                    var vertices = quad.vertices;
-                    var relaxOffsets =  directions.DeepCopy();
+                    relaxOffsets =  directions.MemberCopy(relaxOffsets);
                     for (int j = 0; j < 4; j++)
-                        if (m_Vertices.ContainsKey(vertices[j]))
+                        if (m_Vertices.ContainsKey(quad[j]))
                             for (int k = 0; k < 3; k++)
                                 relaxOffsets[(j + k)%4] -= directions[j];
                     for (int j = 0; j < 4; j++)
-                        if (m_Vertices.ContainsKey(vertices[j]))
+                        if (m_Vertices.ContainsKey(quad[j]))
                             relaxOffsets[j]=Coord.zero;
                     
-                    foreach (var tuple in vertices.LoopIndex())
+                    foreach (var tuple in quad.LoopIndex())
                     {
-                        if (m_Vertices.ContainsKey(vertices[tuple.index]))
+                        if (m_Vertices.ContainsKey(quad[tuple.index]))
                             continue;
                         relaxDirections.TryAdd(tuple.value, Coord.zero);
                         relaxDirections[tuple.value] += relaxOffsets[tuple.index];
@@ -404,45 +202,179 @@ namespace GridTest.HexagonSubdivide
                 }
             
                 foreach (var pair in relaxDirections)
-                    m_RelaxVertices[pair.Key].m_Position += pair.Value * m_SmoothenFactor;
+                    m_RelaxVertices[pair.Key].m_Coord += pair.Value * m_SmoothenFactor;
                 yield return null;
             }
             
             //Finalize Result
             foreach (HexQuad hexQuad in m_RelaxQuads)
             {
-                if(hexQuad.vertices.Any(p=>!_destArea.InRange(p)))
+                if(hexQuad.Any(p=>!destArea.m_Area.InRange(p)))
                     continue;
 
-                //A
-                foreach (var vertex in hexQuad.vertices)
+                foreach (var vertex in hexQuad)
                     if(!m_Vertices.ContainsKey(vertex))
                         m_Vertices.Add(vertex,m_RelaxVertices[vertex]);
 
                 var quad = new Quad(hexQuad, m_Vertices);
                 m_Quads.Add(quad);
-                
-                foreach (PHexCube vertex in hexQuad.vertices)
+                destArea.m_Quads.Add(quad);
+
+                foreach (PHexCube vertex in hexQuad)
                     m_Vertices[vertex].m_RelativeQuads.Add(quad);
                 yield return null;
             }
 
             //Inform Area
-            m_Iterator.AddLast(m_Areas[_destArea.coord].Relaxed());
+            m_Iterator.AddLast(m_Areas[_areaCoord].Relaxed());
             m_RelaxTriangles.Clear();
             m_RelaxVertices.Clear();
             m_RelaxQuads.Clear();
             yield return null;
         }
+    }
+
+    //Runtime
+    public partial class GridTest_HexagonSubdivide
+    {
+        private TObjectPoolClass<AreaMeshContainer> m_AreaMeshes;
+        private Camera m_Camera;
+        private Transform m_Selection;
+        private Mesh m_SelectionMesh;
         
+        private class AreaMeshContainer : ITransform
+        {
+            public Transform iTransform { get; }
+            public MeshFilter m_MeshFilter { get; }
+            public MeshRenderer m_MeshRenderer { get; }
+
+            public AreaMeshContainer(Transform _transform)
+            {
+                iTransform = _transform;
+                m_MeshFilter = _transform.GetComponent<MeshFilter>();
+                m_MeshRenderer = _transform.GetComponent<MeshRenderer>();
+            }
+
+            public void ApplyMesh(Mesh _sharedMesh)
+            {
+                m_MeshFilter.sharedMesh = _sharedMesh;
+            }
+        }
+        private void Awake()
+        {
+            if (!Application.isPlaying)
+                return;
+            Setup();
+            m_Camera = transform.Find("Camera").GetComponent<Camera>();
+            m_AreaMeshes = new TObjectPoolClass<AreaMeshContainer>(transform.Find("AreaContainer/AreaMesh"));
+            m_Selection = transform.Find("Selection");
+            m_SelectionMesh = new Mesh {name="Selection",hideFlags = HideFlags.HideAndDontSave};
+            m_Selection.GetComponent<MeshFilter>().sharedMesh = m_SelectionMesh;
+        }
+
+        void Update()
+        {
+            if (!Application.isPlaying)
+                return;
+            Tick(Time.deltaTime);
+            InputTick();
+        }
+
+        void InputTick()
+        {
+            GRay ray = m_Camera.ScreenPointToRay(Input.mousePosition);
+            GPlane plane = new GPlane(Vector3.up, transform.position);
+            var hitPos = ray.GetPoint(UGeometry.RayPlaneDistance(plane, ray));
+            var hitCoord = (transform.InverseTransformPoint(hitPos) / m_CellRadius).ToPixel();
+            var hitHex=hitCoord.ToAxial();
+            var hitArea = UHexagonArea.GetBelongAreaCoord(hitHex);
+            if (m_GridSelected.Check(ValidateSelection(hitCoord, out m_QuadSelected)))
+                PopulateSelectionMesh();
+            
+            if (Input.GetMouseButton(0))
+            {
+                ValidateArea(hitArea);
+                m_Iterator.AddFirst(PopulateGridMesh(hitArea));
+            }
+            
+            if(Input.GetKeyDown(KeyCode.R))
+                Clear();
+        }
+
+        void PopulateSelectionMesh()
+        {
+            bool valid = m_QuadSelected != -1;
+            m_Selection.SetActive(valid);
+            if (!valid)
+                return;
+
+            List<Vector3> vertices = TSPoolList<Vector3>.Spawn();
+            List<int> indices = TSPoolList<int>.Spawn();
+            List<Vector2> uvs = TSPoolList<Vector2>.Spawn();
+            
+            var selectVertex = m_Vertices[m_GridSelected];
+            foreach (Quad quad in selectVertex.m_RelativeQuads)
+            {
+                int startIndex = vertices.Count;
+                int[] indexes = {startIndex, startIndex + 1, startIndex + 2, startIndex + 3};
+
+                var hexQuad = quad.m_HexQuad;
+                var hexVertices = hexQuad;
+                var offset = hexVertices.FindIndex(p=>p==m_GridSelected);
+                for (int i = 0; i < 4; i++)
+                {
+                    int index=(i+offset)%4;
+                    vertices.Add( m_TransformMatrix.MultiplyPoint( m_Vertices[hexQuad[index]].m_Coord.ToWorld()));
+                    uvs.Add(URender.IndexToQuadUV(i));
+                }
+
+                indices.Add(indexes[0]);
+                indices.Add(indexes[1]);
+                indices.Add(indexes[3]);
+                indices.Add(indexes[1]);
+                indices.Add(indexes[2]);
+                indices.Add(indexes[3]);
+            }
+            
+            m_SelectionMesh.Clear();
+            m_SelectionMesh.SetVertices(vertices);
+            m_SelectionMesh.SetUVs(0,uvs);
+            m_SelectionMesh.SetIndices(indices,MeshTopology.Triangles,0,false);
+            
+            TSPoolList<Vector3>.Recycle(vertices);
+            TSPoolList<Vector2>.Recycle(uvs);
+            TSPoolList<int>.Recycle(indices);
+        }
+
+        IEnumerator PopulateGridMesh(PHexCube _areaCoord)
+        {
+            if (!m_Areas.ContainsKey(_areaCoord))
+                yield break;
+            var area = m_Areas[_areaCoord];
+            if (area.m_State >= EAreaState.Meshed)
+                yield break;
+            area.SetupMesh(area.m_Quads,m_Vertices,m_TransformMatrix);
+            m_AreaMeshes.AddItem().ApplyMesh(area.m_Mesh);
+            yield return null;
+        }
+    }
+    
+    // Editor
 #if UNITY_EDITOR
-        private void OnValidate() => Clear();
+    public partial class GridTest_HexagonSubdivide
+    {
+        private void OnValidate()
+        {
+            Setup();
+            Clear();
+        }
         private void OnEnable()
         {
             if (Application.isPlaying)
                 return;
             
-            EditorApplication.update += Tick;
+            Setup();
+            EditorApplication.update += EditorTick;
             SceneView.duringSceneGui += OnSceneGUI;
         }
 
@@ -451,21 +383,25 @@ namespace GridTest.HexagonSubdivide
             if (Application.isPlaying)
                 return;
 
-            EditorApplication.update -= Tick;
+            Clear();
+            EditorApplication.update -= EditorTick;
             SceneView.duringSceneGui -= OnSceneGUI;
         }
 
+        void EditorTick() => Tick(EditorTime.deltaTime);
+
         private void OnSceneGUI(SceneView sceneView)
         {
-            GRay ray = sceneView.camera.ScreenPointToRay(TEditor.UECommon.GetScreenPoint(sceneView));
+            GRay ray = sceneView.camera.ScreenPointToRay(sceneView.GetScreenPoint());
             GPlane plane = new GPlane(Vector3.up, transform.position);
             var hitPos = ray.GetPoint(UGeometry.RayPlaneDistance(plane, ray));
             var hitCoord = (transform.InverseTransformPoint(hitPos) / m_CellRadius).ToPixel();
             var hitHex=hitCoord.ToAxial();
+            var hitArea = UHexagonArea.GetBelongAreaCoord(hitHex);
             if (Event.current.type == EventType.MouseDown)
                 switch (Event.current.button)
                 {
-                    case 0: ValidateArea(hitHex);  break;
+                    case 0: ValidateArea(hitArea);  break;
                     case 1: break;
                 }
 
@@ -476,13 +412,13 @@ namespace GridTest.HexagonSubdivide
                     case KeyCode.R: Clear(); break;
                 }
             }
-            ValidateSelection(hitCoord,out m_QuadSelected,out m_GridSelected);
+            m_GridSelected.Check( ValidateSelection(hitCoord,out m_QuadSelected));
         }
         
         #region Gizmos
         private void OnDrawGizmos()
         {
-            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Scale(Vector3.one*m_CellRadius);
+            Gizmos.matrix = m_TransformMatrix;
             DrawAreaProcedural();
             DrawRelaxProcedural();
             DrawGrid();
@@ -491,16 +427,16 @@ namespace GridTest.HexagonSubdivide
         
         void DrawAreaProcedural()
         {
-            Gizmos.color = Color.grey;
-            foreach (Area area in m_Areas.Values)
+            foreach (AreaContainer area in m_Areas.Values)
             {
+                Gizmos.color = Color.white.SetAlpha(.5f);
                 foreach (var vertex in area.m_ProceduralVertices)
-                    Gizmos.DrawSphere(vertex.ToWorld(),.4f);
+                    Gizmos.DrawSphere(vertex.ToWorld(),.3f);
                 Gizmos.color = Color.white.SetAlpha(.2f);
                 foreach (var triangle in area.m_ProceduralTriangles)
-                    Gizmos_Extend.DrawLines(triangle.GetVertices(p=>p.ToWorld()));
+                    Gizmos_Extend.DrawLines(triangle.ConstructIteratorArray(p=>p.ToWorld(),3));
                 foreach (var quad in area.m_ProceduralQuads)
-                    Gizmos_Extend.DrawLines(quad.GetVertices(p=>p.ToWorld()));
+                    Gizmos_Extend.DrawLines(quad.ConstructIteratorArray(p=>p.ToWorld(),4));
             }
         }
 
@@ -508,20 +444,20 @@ namespace GridTest.HexagonSubdivide
         {
             Gizmos.color = Color.yellow;
             foreach (var vertex in m_RelaxVertices.Values)
-                Gizmos.DrawSphere(vertex.m_Position.ToWorld(),.2f);
+                Gizmos.DrawSphere(vertex.m_Coord.ToWorld(),.2f);
             foreach (var triangle in m_RelaxTriangles)
-                Gizmos_Extend.DrawLines(triangle.GetVertices(p=>m_RelaxVertices[p].m_Position.ToWorld()));
+                Gizmos_Extend.DrawLines(triangle.ConstructIteratorArray(p=>m_RelaxVertices[p].m_Coord.ToWorld(),3));
             foreach (var quad in m_RelaxQuads)
-                Gizmos_Extend.DrawLines(quad.GetVertices(p=>m_RelaxVertices[p].m_Position.ToWorld()));
+                Gizmos_Extend.DrawLines(quad.ConstructIteratorArray(p=>m_RelaxVertices[p].m_Coord.ToWorld(),4));
         }
 
         void DrawGrid()
         {
             Gizmos.color = Color.green.SetAlpha(.3f);
             foreach (var vertex in m_Vertices.Values)
-                Gizmos.DrawSphere(vertex.m_Position.ToWorld(),.2f);
+                Gizmos.DrawSphere(vertex.m_Coord.ToWorld(),.2f);
             foreach (var quad in m_Quads)
-                Gizmos_Extend.DrawLines(quad.m_HexQuad.GetVertices(p=>m_Vertices[p].m_Position.ToWorld()));
+                Gizmos_Extend.DrawLines(quad.m_HexQuad.ConstructIteratorArray(p=>m_Vertices[p].m_Coord.ToWorld(),4));
         }
 
         void DrawSelection()
@@ -529,15 +465,15 @@ namespace GridTest.HexagonSubdivide
             if (m_QuadSelected == -1)
                 return;
             Gizmos.color = Color.white.SetAlpha(.3f);
-            Gizmos_Extend.DrawLines(m_Quads[m_QuadSelected].m_HexQuad.GetVertices(p=>m_Vertices[p].m_Position.ToWorld()));
+            Gizmos_Extend.DrawLines(m_Quads[m_QuadSelected].m_HexQuad.ConstructIteratorArray(p=>m_Vertices[p].m_Coord.ToWorld(),4));
             Gizmos.color = Color.cyan;
             var vertex = m_Vertices[m_GridSelected];
-            Gizmos.DrawSphere(vertex.m_Position.ToWorld(),.5f);
+            Gizmos.DrawSphere(vertex.m_Coord.ToWorld(),.5f);
             Gizmos.color = Color.yellow;
             foreach (var quad in vertex.m_RelativeQuads)
                 Gizmos.DrawSphere(((Coord)(quad.m_GeometryQuad.center)).ToWorld(),.3f);
         }
         #endregion
-#endif
     }
+#endif
 }
