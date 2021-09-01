@@ -8,7 +8,7 @@ namespace Procedural.Hexagon.Geometry
 
     public static class UHexagonGeometry
     {
-        public static (PHexCube m01, PHexCube m12, PHexCube m20, PHexCube m012) GetTriangleMidVertices(this HexTriangle _triangle)
+        public static (HexagonCoordC m01, HexagonCoordC m12, HexagonCoordC m20, HexagonCoordC m012) GetTriangleMidVertices(this HexTriangle _triangle)
         {
             var v0 = _triangle.vertex0;
             var v1 = _triangle.vertex1;
@@ -16,7 +16,7 @@ namespace Procedural.Hexagon.Geometry
             
             return ((v0 + v1) / 2, (v1 + v2) / 2, (v2 + v0) / 2, (v0 + v1 + v2) / 3);
         }
-        public static (PHexCube m01, PHexCube m12, PHexCube m23, PHexCube m30,PHexCube m0123) GetQuadMidVertices(this HexQuad _quad)
+        public static (HexagonCoordC m01, HexagonCoordC m12, HexagonCoordC m23, HexagonCoordC m30,HexagonCoordC m0123) GetQuadMidVertices(this HexQuad _quad)
         {
             var v0 = _quad.vertex0;
             var v1 = _quad.vertex1;
@@ -28,8 +28,9 @@ namespace Procedural.Hexagon.Geometry
         public static int MatchVertexCount(this HexTriangle _triangle1,HexTriangle _triangle2)
         {
             int index=0;
-            foreach (PHexCube vertex in _triangle1)
+            for(int i=0;i<_triangle1.Length;i++)
             {
+                var vertex = _triangle1.GetElement(i);
                 if (_triangle2.vertex0 == vertex || _triangle2.vertex1 == vertex || _triangle2.vertex2 == vertex)
                     index++;
             }

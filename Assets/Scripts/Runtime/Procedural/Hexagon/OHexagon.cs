@@ -7,7 +7,7 @@ using OSwizzling;
 using UnityEngine;
 namespace Procedural.Hexagon
 {
-    public enum ECubeAxis
+    public enum ECubicAxis
     {
         X,
         Y,
@@ -15,81 +15,21 @@ namespace Procedural.Hexagon
     }
 
     [Serializable]
-    public struct PHexAxial
+    public struct HexagonCoordC:IEquatable<HexagonCoordC>,IEqualityComparer<HexagonCoordC>  //Cubic
     {
-        public static PHexAxial zero = new PHexAxial(0, 0);
-        public int col;
-        public int row;
-
-        public PHexAxial(int _col, int _row)
-        {
-            col = _col;
-            row = _row;
-        }
-
-        public PHexAxial SetCol(int _col)
-        {
-            col = _col;
-            return this;
-        }
-
-        public PHexAxial SetRow(int _row)
-        {
-            row = _row;
-            return this;
-        }
-
-        public PHexAxial((float, float) _float2) : this(Mathf.RoundToInt(_float2.Item1),
-            Mathf.RoundToInt(_float2.Item2))
-        {
-        }
-
-        public static PHexAxial operator +(PHexAxial _hex1, PHexAxial _hex2) =>
-            new PHexAxial(_hex1.col + _hex2.col, _hex1.row + _hex2.row);
-
-        public static PHexAxial operator -(PHexAxial _hex1, PHexAxial _hex2) =>
-            new PHexAxial(_hex1.col - _hex2.col, _hex1.row - _hex2.row);
-
-        public static PHexAxial operator -(PHexAxial pHex) => new PHexAxial(-pHex.col, -pHex.row);
-
-        public static bool operator ==(PHexAxial _hex1, PHexAxial _hex2) =>
-            _hex1.col == _hex2.col && _hex1.row == _hex2.row;
-
-        public static bool operator !=(PHexAxial _hex1, PHexAxial _hex2) =>
-            _hex1.col != _hex2.col || _hex1.row != _hex2.row;
-
-        public static implicit operator PHexCube(PHexAxial _axial) => _axial.ToCube();
-        public bool Equals(PHexAxial other) => col == other.col && row == other.row;
-        public override bool Equals(object obj) => obj is PHexAxial other && Equals(other);
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return (col * 397) ^ row;
-            }
-        }
-
-        public override string ToString() => $"{col},{row}";
-
-    }
-
-    [Serializable]
-    public struct PHexCube:IEquatable<PHexCube>,IEqualityComparer<PHexCube>
-    {
-        public static PHexCube zero = new PHexCube(0, 0, 0);
+        public static HexagonCoordC zero = new HexagonCoordC(0, 0, 0);
         public int x;
         public int y;
         public int z;
 
-        public PHexCube(int _x, int _y, int _z)
+        public HexagonCoordC(int _x, int _y, int _z)
         {
             x = _x;
             y = _y;
             z = _z;
         }
 
-        public PHexCube(float _x, float _y, float _z)
+        public HexagonCoordC(float _x, float _y, float _z)
         {
             var rx = Mathf.RoundToInt(_x);
             var ry = Mathf.RoundToInt(_y);
@@ -111,36 +51,34 @@ namespace Procedural.Hexagon
             z = rz;
         }
 
-        public static PHexCube operator +(PHexCube _hex1, PHexCube _hex2) =>
-            new PHexCube(_hex1.x + _hex2.x, _hex1.y + _hex2.y, _hex1.z + _hex2.z);
+        public static HexagonCoordC operator +(HexagonCoordC _hex1, HexagonCoordC _hex2) =>
+            new HexagonCoordC(_hex1.x + _hex2.x, _hex1.y + _hex2.y, _hex1.z + _hex2.z);
 
-        public static PHexCube operator -(PHexCube _hex1, PHexCube _hex2) =>
-            new PHexCube(_hex1.x - _hex2.x, _hex1.y - _hex2.y, _hex1.z - _hex2.z);
+        public static HexagonCoordC operator -(HexagonCoordC _hex1, HexagonCoordC _hex2) =>
+            new HexagonCoordC(_hex1.x - _hex2.x, _hex1.y - _hex2.y, _hex1.z - _hex2.z);
         
-        public static PHexCube operator *(PHexCube _hex1, int _value) =>
-            new PHexCube(_hex1.x * _value, _hex1.y *_value, _hex1.z * _value);
+        public static HexagonCoordC operator *(HexagonCoordC _hex1, int _value) =>
+            new HexagonCoordC(_hex1.x * _value, _hex1.y *_value, _hex1.z * _value);
         
-        public static PHexCube operator %(PHexCube _hex1, int _value) =>
-            new PHexCube(_hex1.x % _value, _hex1.y % _value, _hex1.z % _value);
+        public static HexagonCoordC operator %(HexagonCoordC _hex1, int _value) =>
+            new HexagonCoordC(_hex1.x % _value, _hex1.y % _value, _hex1.z % _value);
         
-        public static PHexCube operator /(PHexCube _hex1, int _value) =>
-            new PHexCube(_hex1.x / _value, _hex1.y / _value, _hex1.z / _value);
+        public static HexagonCoordC operator /(HexagonCoordC _hex1, int _value) =>
+            new HexagonCoordC(_hex1.x / _value, _hex1.y / _value, _hex1.z / _value);
 
-        public static PHexCube operator -(PHexCube _hex1) => new PHexCube(-_hex1.x, -_hex1.y, -_hex1.z);
+        public static HexagonCoordC operator -(HexagonCoordC _hex1) => new HexagonCoordC(-_hex1.x, -_hex1.y, -_hex1.z);
 
-        public static bool operator ==(PHexCube offset1, PHexCube offset2) =>
+        public static bool operator ==(HexagonCoordC offset1, HexagonCoordC offset2) =>
             offset1.x == offset2.x && offset1.y == offset2.y && offset1.z == offset2.z;
 
-        public static bool operator !=(PHexCube offset1, PHexCube offset2) =>
+        public static bool operator !=(HexagonCoordC offset1, HexagonCoordC offset2) =>
             offset1.x != offset2.x || offset1.y != offset2.y || offset1.z != offset2.z;
 
-        public static explicit operator PHexAxial(PHexCube cube) => cube.ToAxial();
+        public static explicit operator HexagonCoordA(HexagonCoordC cube) => cube.ToAxial();
 
 
         public override string ToString() => $"{x},{y},{z}";
-
-
-        public int GetHashCode(PHexCube obj)
+        public int GetHashCode(HexagonCoordC obj)
         {
             unchecked
             {
@@ -160,35 +98,92 @@ namespace Procedural.Hexagon
                 return hashCode;
             }
         }
-        public override bool Equals(object obj)
-        {
-            return obj is PHexCube other && Equals(other);
-        }
-        public bool Equals(PHexCube _src, PHexCube _dst)=> _src.x == _dst.x && _src.y == _dst.y && _src.z == _dst.z;
-        public bool Equals(PHexCube _dst)=> x == _dst.x && y == _dst.y && z == _dst.z;
+        public bool Equals(HexagonCoordC _src, HexagonCoordC _dst)=> _src.x == _dst.x && _src.y == _dst.y && _src.z == _dst.z;
+        public bool Equals(HexagonCoordC _dst)=> x == _dst.x && y == _dst.y && z == _dst.z;
+        public override bool Equals(object obj)=> obj is HexagonCoordC other && Equals(other);
     }
     
     [Serializable]
-    public struct PHexOffset
+    public struct HexagonCoordA //Axial
     {
+        public static HexagonCoordA zero = new HexagonCoordA(0, 0);
         public int col;
         public int row;
 
-        public PHexOffset(int _col, int _row)
+        public HexagonCoordA(int _col, int _row)
         {
             col = _col;
             row = _row;
         }
 
-        public static bool operator ==(PHexOffset _hex1, PHexOffset _hex2) =>
+        public HexagonCoordA SetCol(int _col)
+        {
+            col = _col;
+            return this;
+        }
+
+        public HexagonCoordA SetRow(int _row)
+        {
+            row = _row;
+            return this;
+        }
+
+        public HexagonCoordA((float, float) _float2) : this(Mathf.RoundToInt(_float2.Item1),
+            Mathf.RoundToInt(_float2.Item2))
+        {
+        }
+
+        public static HexagonCoordA operator +(HexagonCoordA _hex1, HexagonCoordA _hex2) =>
+            new HexagonCoordA(_hex1.col + _hex2.col, _hex1.row + _hex2.row);
+
+        public static HexagonCoordA operator -(HexagonCoordA _hex1, HexagonCoordA _hex2) =>
+            new HexagonCoordA(_hex1.col - _hex2.col, _hex1.row - _hex2.row);
+
+        public static HexagonCoordA operator -(HexagonCoordA pHex) => new HexagonCoordA(-pHex.col, -pHex.row);
+
+        public static bool operator ==(HexagonCoordA _hex1, HexagonCoordA _hex2) =>
             _hex1.col == _hex2.col && _hex1.row == _hex2.row;
 
-        public static bool operator !=(PHexOffset _hex1, PHexOffset _hex2) =>
+        public static bool operator !=(HexagonCoordA _hex1, HexagonCoordA _hex2) =>
             _hex1.col != _hex2.col || _hex1.row != _hex2.row;
 
-        public bool Equals(PHexOffset other) => col == other.col && row == other.row;
+        public static implicit operator HexagonCoordC(HexagonCoordA _axial) => _axial.ToCube();
+        public bool Equals(HexagonCoordA other) => col == other.col && row == other.row;
+        public override bool Equals(object obj) => obj is HexagonCoordA other && Equals(other);
 
-        public override bool Equals(object obj) => obj is PHexOffset other && Equals(other);
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (col * 397) ^ row;
+            }
+        }
+
+        public override string ToString() => $"{col},{row}";
+
+    }
+    
+    [Serializable]
+    public struct HexagonCoordO //Offset
+    {
+        public int col;
+        public int row;
+
+        public HexagonCoordO(int _col, int _row)
+        {
+            col = _col;
+            row = _row;
+        }
+
+        public static bool operator ==(HexagonCoordO _hex1, HexagonCoordO _hex2) =>
+            _hex1.col == _hex2.col && _hex1.row == _hex2.row;
+
+        public static bool operator !=(HexagonCoordO _hex1, HexagonCoordO _hex2) =>
+            _hex1.col != _hex2.col || _hex1.row != _hex2.row;
+
+        public bool Equals(HexagonCoordO other) => col == other.col && row == other.row;
+
+        public override bool Equals(object obj) => obj is HexagonCoordO other && Equals(other);
 
         public override int GetHashCode()
         {

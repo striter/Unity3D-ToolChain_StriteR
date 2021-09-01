@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Geometry.Three;
+using LinqExtentions;
 using UnityEngine;
 using UnityEditor;
 using Procedural;
@@ -21,7 +22,7 @@ namespace GridTest
         public int m_MaxAreaRadius = 4;
 #if UNITY_EDITOR
         private Coord m_HitPointCS;
-        private PHexAxial m_HitAxialCS;
+        private HexagonCoordA m_HitAxialCS;
 
         public enum EAxisVisualize
         {
@@ -31,7 +32,7 @@ namespace GridTest
         }
 
         [NonSerialized]
-        private readonly Dictionary<PHexCube, HexagonArea> m_Areas = new Dictionary<PHexCube, HexagonArea>();
+        private readonly Dictionary<HexagonCoordC, HexagonArea> m_Areas = new Dictionary<HexagonCoordC, HexagonArea>();
 
         private void OnEnable() => SceneView.duringSceneGui += OnSceneGUI;
         private void OnDisable() => SceneView.duringSceneGui -= OnSceneGUI;
@@ -49,11 +50,11 @@ namespace GridTest
             UHexagonArea.Init(m_AreaRadius, m_Tilling,m_Welded);
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Scale(Vector3.one * m_CellRadius);
 
-            foreach (var coord in UHexagon.GetCoordsInRadius( PHexCube.zero,50))
+            foreach (var coord in UHexagon.GetCoordsInRadius( HexagonCoordC.zero,50))
             {
                 var area = UHexagonArea.GetBelongingArea(coord);
 
-                var index = (area.coord.x-area.coord.y + int.MaxValue / 2) % 3;
+                var index = (area.m_Coord.x-area.m_Coord.y + int.MaxValue / 2) % 3;
                 // var index = (i - k + int.MaxValue) % 3;
                 switch (index)
                 {
@@ -69,17 +70,17 @@ namespace GridTest
             DrawTestGrids(m_HitPointCS, m_HitAxialCS);
         }
 
-        void ValidateArea(PHexCube _positionCS,bool _include)
+        void ValidateArea(HexagonCoordC _positionCS,bool _include)
         {
             var area = UHexagonArea.GetBelongingArea(_positionCS);
 
-            if (!area.coord.InRange(m_MaxAreaRadius))
+            if (!area.m_Coord.InRange(m_MaxAreaRadius))
                 return;
            
-            if(_include&&!m_Areas.ContainsKey(area.coord))
-                m_Areas.Add(area.coord, area);
-            else if (!_include && m_Areas.ContainsKey(area.coord))
-                m_Areas.Remove(area.coord);
+            if(_include&&!m_Areas.ContainsKey(area.m_Coord))
+                m_Areas.Add(area.m_Coord, area);
+            else if (!_include && m_Areas.ContainsKey(area.m_Coord))
+                m_Areas.Remove(area.m_Coord);
         }
         
         public EAxisVisualize m_AxisVisualize;
@@ -101,10 +102,10 @@ namespace GridTest
 
         private void OnSceneGUI(SceneView sceneView)
         {
-            GRay ray = sceneView.camera.ScreenPointToRay(TEditor.UECommon.GetScreenPoint(sceneView));
+            GRay ray = sceneView.camera.ScreenPointToRay( TEditor.UECommon.GetScreenPoint(sceneView));
             GPlane plane = new GPlane(Vector3.up, transform.position);
             var hitPoint = ray.GetPoint(UGeometry.RayPlaneDistance(plane, ray));
-            m_HitPointCS = (transform.InverseTransformPoint(hitPoint) / m_CellRadius).ToPixel();
+            m_HitPointCS = (transform.InverseTransformPoint(hitPoint) / m_CellRadius).ToCoord();
             m_HitAxialCS = m_HitPointCS.ToAxial();
             if (Event.current.type == EventType.MouseDown)
                 switch (Event.current.button)
@@ -141,11 +142,11 @@ namespace GridTest
         {
             Handles.matrix = transform.localToWorldMatrix * Matrix4x4.Scale(Vector3.one * m_CellRadius);
             foreach (var hex in m_Areas.Values)
-                Handles.Label(hex.centerCS.ToAxial().ToPixel().ToWorld(), $"A:{hex.coord}\nC:{hex.centerCS}",
+                Handles.Label(hex.centerCS.ToAxial().ToPixel().ToWorld(), $"A:{hex.m_Coord}\nC:{hex.centerCS}",
                     GUIHelper.m_AreaStyle);
             var area = UHexagonArea.GetBelongingArea(m_HitAxialCS);
             Handles.Label(m_HitPointCS.ToWorld(),
-                $"Cell:{m_HitAxialCS}\nArea:{area.coord}\nAPos{area.TransformCSToAS(m_HitAxialCS)}",
+                $"Cell:{m_HitAxialCS}\nArea:{area.m_Coord}\nAPos{area.TransformCSToAS(m_HitAxialCS)}",
                 GUIHelper.m_HitStyle);
         }
 
@@ -178,19 +179,19 @@ namespace GridTest
                 case EAxisVisualize.Axial:
                 {
                     Gizmos.color = GUIHelper.C_AxialColumn;
-                    Gizmos.DrawRay(Vector3.zero, new PHexAxial(1, 0).ToPixel().ToWorld());
+                    Gizmos.DrawRay(Vector3.zero, new HexagonCoordA(1, 0).ToPixel().ToWorld());
                     Gizmos.color = GUIHelper.C_AxialRow;
-                    Gizmos.DrawRay(Vector3.zero, new PHexAxial(0, 1).ToPixel().ToWorld());
+                    Gizmos.DrawRay(Vector3.zero, new HexagonCoordA(0, 1).ToPixel().ToWorld());
                 }
                     break;
                 case EAxisVisualize.Cube:
                 {
                     Gizmos.color = GUIHelper.C_CubeX;
-                    Gizmos.DrawRay(Vector3.zero, new PHexAxial(1, 0).ToPixel().ToWorld());
+                    Gizmos.DrawRay(Vector3.zero, new HexagonCoordA(1, 0).ToPixel().ToWorld());
                     Gizmos.color = GUIHelper.C_CubeY;
-                    Gizmos.DrawRay(Vector3.zero, new PHexAxial(1, -1).ToPixel().ToWorld());
+                    Gizmos.DrawRay(Vector3.zero, new HexagonCoordA(1, -1).ToPixel().ToWorld());
                     Gizmos.color = GUIHelper.C_CubeZ;
-                    Gizmos.DrawRay(Vector3.zero, new PHexAxial(0, 1).ToPixel().ToWorld());
+                    Gizmos.DrawRay(Vector3.zero, new HexagonCoordA(0, 1).ToPixel().ToWorld());
                 }
                     break;
             }
@@ -204,13 +205,13 @@ namespace GridTest
         public int m_Radius1;
 
         [MFoldout(nameof(m_Test), EGridAxialTest.Intersect, EGridAxialTest.Distance)]
-        public PHexAxial m_TestAxialPoint = new PHexAxial(2, 1);
+        public HexagonCoordA m_TestAxialPoint = new HexagonCoordA(2, 1);
 
         [MFoldout(nameof(m_Test), EGridAxialTest.Intersect)]
         public int m_Radius2;
 
         [MFoldout(nameof(m_Test), EGridAxialTest.Reflect)]
-        public ECubeAxis m_ReflectAxis = ECubeAxis.X;
+        public ECubicAxis m_ReflectAxis = ECubicAxis.X;
 
         public enum EGridAxialTest
         {
@@ -225,7 +226,7 @@ namespace GridTest
             Ring,
         }
 
-        void DrawTestGrids(Coord hitPixel, PHexAxial hitAxial)
+        void DrawTestGrids(Coord hitPixel, HexagonCoordA hitAxial)
         {
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Scale(Vector3.one * m_CellRadius);
             Gizmos.DrawRay(hitPixel.ToWorld(), Vector3.up);
@@ -260,13 +261,13 @@ namespace GridTest
                 case EGridAxialTest.Range:
                 {
                     Gizmos.color = Color.yellow;
-                    foreach (PHexAxial axialPoint in hitAxial.GetCoordsInRadius(m_Radius1))
+                    foreach (HexagonCoordA axialPoint in hitAxial.GetCoordsInRadius(m_Radius1))
                         axialPoint.DrawHexagon();
                 }
                     break;
                 case EGridAxialTest.Intersect:
                 {
-                    foreach (PHexAxial axialPoint in hitAxial.GetCoordsInRadius(m_Radius1)
+                    foreach (HexagonCoordA axialPoint in hitAxial.GetCoordsInRadius(m_Radius1)
                         .Extend(m_TestAxialPoint.GetCoordsInRadius(m_Radius2)))
                     {
                         var offset1 = m_TestAxialPoint - axialPoint;
@@ -288,7 +289,7 @@ namespace GridTest
                     break;
                 case EGridAxialTest.Distance:
                 {
-                    foreach (PHexAxial axialPoint in m_TestAxialPoint.GetCoordsInRadius(m_Radius1))
+                    foreach (HexagonCoordA axialPoint in m_TestAxialPoint.GetCoordsInRadius(m_Radius1))
                     {
                         int offset = m_TestAxialPoint.Distance(axialPoint);
                         Gizmos.color = Color.Lerp(Color.green, Color.yellow, ((float) offset) / m_Radius1);
@@ -312,7 +313,7 @@ namespace GridTest
                         Gizmos.color = Color.Lerp(Color.green, Color.red, ((float) i) / 6);
                         var axialOffset = UHexagon.RotateMirror(m_AreaRadius - 1, i).ToAxial();
                         var coords = hitAxial.GetCoordsInRadius(m_AreaRadius);
-                        foreach (PHexAxial axialPoint in coords)
+                        foreach (HexagonCoordA axialPoint in coords)
                             (axialPoint + axialOffset).DrawHexagon();
                     }
                 }

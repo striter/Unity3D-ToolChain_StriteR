@@ -5,46 +5,22 @@ using UnityEngine;
 
 namespace Procedural.Hexagon.Geometry
 {
-    public static class IterateArrayStorage<T>
-    {
-        public static T[] m_Array=new T[0];
-
-        public static void CheckLength(int length)
-        {
-            if (IterateArrayStorage<T>.m_Array.Length != length)
-                IterateArrayStorage<T>.m_Array = new T[length];
-        }
-    }
-    public static class IterateArrayHelper
-    {
-        public static T[] ConstructIteratorArray<T>(this IEnumerable<T> helper,int _length)
-        {
-            IterateArrayStorage<T>.CheckLength(_length);
-            foreach ((T value, int index) tuple in helper.LoopIndex())
-                IterateArrayStorage<T>.m_Array[ tuple.index] = tuple.value;
-            return IterateArrayStorage<T>.m_Array;
-        }
-        public static Y[] ConstructIteratorArray<T,Y>(this IEnumerable<T> helper,Func<T,Y> _convert,int _length)
-        {
-            IterateArrayStorage<Y>.CheckLength(_length);
-            foreach ((T value, int index) tuple in helper.LoopIndex())
-                IterateArrayStorage<Y>.m_Array[tuple.index] = _convert(tuple.value);
-            return IterateArrayStorage<Y>.m_Array;
-        }
-    }
     [Serializable]
-    public struct HexTriangle: IEquatable<HexTriangle>,IEnumerable<PHexCube>
+    public struct HexTriangle: IEquatable<HexTriangle>,IEqualityComparer<HexagonCoordC>,IIterate<HexagonCoordC>
     {
-        public readonly PHexCube vertex0;
-        public readonly PHexCube vertex1;
-        public readonly PHexCube vertex2;
-        public HexTriangle(PHexCube _vertex0,PHexCube _vertex1,PHexCube _vertex2) : this()
+        public readonly HexagonCoordC vertex0;
+        public readonly HexagonCoordC vertex1;
+        public readonly HexagonCoordC vertex2;
+        public int Length { get; set; }
+        public HexTriangle(HexagonCoordC _vertex0,HexagonCoordC _vertex1,HexagonCoordC _vertex2)
         {
             vertex0 = _vertex0;
             vertex1 = _vertex1;
             vertex2 = _vertex2;
+            Length = 3;
         }
-        public PHexCube this[int index]
+        public HexagonCoordC GetElement(int index) => this[index];
+        public HexagonCoordC this[int index]
         {
             get
             {
@@ -59,30 +35,37 @@ namespace Procedural.Hexagon.Geometry
         }
         public bool Equals(HexTriangle other) => vertex0 == other.vertex0 && vertex1 == other.vertex1 && vertex2 == other.vertex2;
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        public IEnumerator<PHexCube> GetEnumerator()
+        public bool Equals(HexagonCoordC x, HexagonCoordC y) => x.Equals(y);
+
+        public int GetHashCode(HexagonCoordC obj)
         {
-            yield return vertex0;
-            yield return vertex1;
-            yield return vertex2;
+            unchecked
+            {
+                int hashCode = obj.x;
+                hashCode = (hashCode * 397) ^ obj.y;
+                hashCode = (hashCode * 397) ^ obj.z;
+                return hashCode;
+            }
         }
     }
 
     [Serializable]
-    public struct HexQuad:IEquatable<HexQuad>,IEnumerable<PHexCube>
+    public struct HexQuad:IEquatable<HexQuad>,IIterate<HexagonCoordC>
     {
-        public readonly PHexCube vertex0;
-        public readonly PHexCube vertex1;
-        public readonly PHexCube vertex2;
-        public readonly PHexCube vertex3;
-        public HexQuad(PHexCube _vertex0,PHexCube _vertex1,PHexCube _vertex2,PHexCube _vertex3):this()
+        public readonly HexagonCoordC vertex0;
+        public readonly HexagonCoordC vertex1;
+        public readonly HexagonCoordC vertex2;
+        public readonly HexagonCoordC vertex3;
+        public int Length { get; set; }
+        public HexQuad(HexagonCoordC _vertex0,HexagonCoordC _vertex1,HexagonCoordC _vertex2,HexagonCoordC _vertex3)
         {
             vertex0 = _vertex0;
             vertex1 = _vertex1;
             vertex2 = _vertex2;
             vertex3 = _vertex3;
+            Length = 4;
         }
-        public PHexCube this[int _index]
+        public HexagonCoordC this[int _index]
         {
             get
             {
@@ -96,16 +79,7 @@ namespace Procedural.Hexagon.Geometry
                 }
             }
         }
+        public HexagonCoordC GetElement(int index) => this[index];
         public bool Equals(HexQuad other) => vertex0 == other.vertex0 && vertex1 == other.vertex1 && vertex2 == other.vertex2&&vertex3==other.vertex3;
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        public IEnumerator<PHexCube> GetEnumerator() 
-        {
-            yield return vertex0;
-            yield return vertex1;
-            yield return vertex2;
-            yield return vertex3;
-        }
-
     }
 }

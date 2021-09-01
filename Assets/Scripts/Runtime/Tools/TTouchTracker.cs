@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using LinqExtentions;
 using UnityEngine;
 
 namespace TTouchTracker
@@ -45,10 +46,11 @@ namespace TTouchTracker
                 return 0f;
 
             Vector2 center = _tracks.Average(p => p.m_Current);
+            var beginDelta = _tracks[0].m_Delta;
             return _tracks.Average(p =>
             {
                 float sign=Mathf.Sign( Vector2.Dot( p.m_Delta,center-p.m_Previous));
-                return p.m_Delta.magnitude*sign;
+                return (beginDelta-p.m_Delta).magnitude*sign;
             });
         }
 

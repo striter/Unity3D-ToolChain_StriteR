@@ -66,31 +66,31 @@ namespace Procedural.Hexagon
 
         public static bool flat
         {
-            set { m_Shaper = value ? (IHexagonShape) m_FlatHelper : m_PointHelper; }
+            set => m_Shaper = value ? (IHexagonShape) m_FlatHelper : m_PointHelper;
         }
 
         public static Coord[] GetHexagonPoints() => m_Shaper.m_PointOffsets;
 
         #region Transformation
 
-        public static Coord ToPixel(this PHexOffset _offset, bool _flat)
+        public static Coord ToPixel(this HexagonCoordO _offset, bool _flat)
         {
             if (_flat)
                 return new Coord(_offset.col * 1.5f, C_SQRT3Half * (_offset.row * 2 + _offset.col % 2));
             return new Coord(C_SQRT3Half * (_offset.col * 2 + _offset.row % 2), _offset.row * 1.5f);
         }
 
-        public static Coord ToPixel(this PHexAxial _axial) =>
+        public static Coord ToPixel(this HexagonCoordA _axial) =>
             new Coord(m_Shaper.m_AxialToPixel.Multiply(_axial.col, _axial.row));
 
-        public static Coord ToPixel(this PHexCube _cube) => _cube.ToAxial().ToPixel();
-        public static PHexAxial ToAxial(this Coord pPoint) =>
-            new PHexAxial(m_Shaper.m_PixelToAxial.Multiply(pPoint));
+        public static Coord ToPixel(this HexagonCoordC _cube) => _cube.ToAxial().ToPixel();
+        public static HexagonCoordA ToAxial(this Coord pPoint) =>
+            new HexagonCoordA(m_Shaper.m_PixelToAxial.Multiply(pPoint));
 
-        public static PHexAxial ToAxial(this PHexCube _cube) => new PHexAxial(_cube.x, _cube.z);
+        public static HexagonCoordA ToAxial(this HexagonCoordC _cube) => new HexagonCoordA(_cube.x, _cube.z);
 
-        public static PHexCube ToCube(this PHexAxial _axial) =>
-            new PHexCube(_axial.col, -_axial.col - _axial.row, _axial.row);
+        public static HexagonCoordC ToCube(this HexagonCoordA _axial) =>
+            new HexagonCoordC(_axial.col, -_axial.col - _axial.row, _axial.row);
 
         #endregion
 
@@ -106,20 +106,20 @@ namespace Procedural.Hexagon
             return new Coord(m_Shaper.m_AxialToPixel.Multiply(axialPixel));
         }
 
-        public static bool InRange(this PHexCube _cube, int _radius) => Mathf.Abs(_cube.x) <= _radius &&
+        public static bool InRange(this HexagonCoordC _cube, int _radius) => Mathf.Abs(_cube.x) <= _radius &&
                                                                        Mathf.Abs(_cube.y) <= _radius &&
                                                                        Mathf.Abs(_cube.z) <= _radius;
 
-        public static bool InRange(this PHexAxial _axial, int _radius) => _axial.ToCube().InRange(_radius);
+        public static bool InRange(this HexagonCoordA _axial, int _radius) => _axial.ToCube().InRange(_radius);
 
-        public static int Distance(this PHexAxial _axial1, PHexAxial _axial2) =>
-            Distance((PHexCube) _axial1, (PHexCube) _axial2);
+        public static int Distance(this HexagonCoordA _axial1, HexagonCoordA _axial2) =>
+            Distance((HexagonCoordC) _axial1, (HexagonCoordC) _axial2);
 
-        public static int Distance(this PHexCube _cube1, PHexCube _cube2) => (Mathf.Abs(_cube1.x - _cube2.x) +
+        public static int Distance(this HexagonCoordC _cube1, HexagonCoordC _cube2) => (Mathf.Abs(_cube1.x - _cube2.x) +
             Mathf.Abs(_cube1.y - _cube2.y) +
             Mathf.Abs(_cube1.z - _cube2.z)) / 2;
 
-        public static PHexCube Rotate(this PHexCube _cube, int _60degClockWiseCount)
+        public static HexagonCoordC Rotate(this HexagonCoordC _cube, int _60degClockWiseCount)
         {
             var x = _cube.x;
             var y = _cube.y;
@@ -127,21 +127,21 @@ namespace Procedural.Hexagon
             switch (_60degClockWiseCount % 6)
             {
                 default: return _cube;
-                case 1: return new PHexCube(-z, -x, -y);
-                case 2: return new PHexCube(y, z, x);
-                case 3: return new PHexCube(-x, -y, -z);
-                case 4: return new PHexCube(-y, -z, -x);
-                case 5: return new PHexCube(z, x, y);
+                case 1: return new HexagonCoordC(-z, -x, -y);
+                case 2: return new HexagonCoordC(y, z, x);
+                case 3: return new HexagonCoordC(-x, -y, -z);
+                case 4: return new HexagonCoordC(-y, -z, -x);
+                case 5: return new HexagonCoordC(z, x, y);
             }
         }
 
-        public static PHexCube RotateAround(this PHexCube _cube, PHexCube _dst, int _60degClockWiseCount)
+        public static HexagonCoordC RotateAround(this HexagonCoordC _cube, HexagonCoordC _dst, int _60degClockWiseCount)
         {
-            PHexCube offset = _dst - _cube;
+            HexagonCoordC offset = _dst - _cube;
             return _dst + offset.Rotate(_60degClockWiseCount);
         }
 
-        public static PHexCube Reflect(this PHexCube _cube, ECubeAxis _axis)
+        public static HexagonCoordC Reflect(this HexagonCoordC _cube, ECubicAxis _axis)
         {
             var x = _cube.x;
             var y = _cube.y;
@@ -149,47 +149,47 @@ namespace Procedural.Hexagon
             switch (_axis)
             {
                 default: throw new Exception("Invalid Axis:" + _axis);
-                case ECubeAxis.X: return new PHexCube(x, z, y);
-                case ECubeAxis.Y: return new PHexCube(z, y, x);
-                case ECubeAxis.Z: return new PHexCube(y, x, z);
+                case ECubicAxis.X: return new HexagonCoordC(x, z, y);
+                case ECubicAxis.Y: return new HexagonCoordC(z, y, x);
+                case ECubicAxis.Z: return new HexagonCoordC(y, x, z);
             }
         }
 
-        public static PHexCube ReflectAround(this PHexCube _cube, PHexCube _dst, ECubeAxis _axis)
+        public static HexagonCoordC ReflectAround(this HexagonCoordC _cube, HexagonCoordC _dst, ECubicAxis _axis)
         {
-            PHexCube offset = _dst - _cube;
+            HexagonCoordC offset = _dst - _cube;
             return _dst + offset.Reflect(_axis);
         }
 
-        public static PHexCube RotateMirror(int _radius, int _60degClockWiseCount)
+        public static HexagonCoordC RotateMirror(int _radius, int _60degClockWiseCount)
         {
-            return new PHexCube(2 * _radius + 1, -_radius, -_radius - 1).Rotate(_60degClockWiseCount);
+            return new HexagonCoordC(2 * _radius + 1, -_radius, -_radius - 1).Rotate(_60degClockWiseCount);
         }
 
-        public static IEnumerable<PHexCube> GetCoordsInRadius(this PHexCube _cube, int _radius)
+        public static IEnumerable<HexagonCoordC> GetCoordsInRadius(this HexagonCoordC _cube, int _radius)
         {
             foreach (var axial in _cube.ToAxial().GetCoordsInRadius(_radius))
                 yield return axial.ToCube();
         }
 
-        static readonly PHexAxial[] m_AxialNearbyCoords =
+        static readonly HexagonCoordA[] m_AxialNearbyCoords =
         {
-            new PHexAxial(1, 0), new PHexAxial(1, -1), new PHexAxial(0, -1),
-            new PHexAxial(-1, 0), new PHexAxial(-1, 1), new PHexAxial(0, 1)
+            new HexagonCoordA(1, 0), new HexagonCoordA(1, -1), new HexagonCoordA(0, -1),
+            new HexagonCoordA(-1, 0), new HexagonCoordA(-1, 1), new HexagonCoordA(0, 1)
         };
 
-        public static IEnumerable<PHexAxial> GetCoordsNearby(this PHexAxial _axial)
+        public static IEnumerable<HexagonCoordA> GetCoordsNearby(this HexagonCoordA _axial)
         {
-            foreach (PHexAxial nearbyCoords in m_AxialNearbyCoords)
+            foreach (HexagonCoordA nearbyCoords in m_AxialNearbyCoords)
                 yield return _axial + nearbyCoords;
         }
 
-        public static IEnumerable<PHexAxial> GetCoordsInRadius(this PHexAxial _axial, int _radius)
+        public static IEnumerable<HexagonCoordA> GetCoordsInRadius(this HexagonCoordA _axial, int _radius)
         {
             for (int i = -_radius; i <= _radius; i++)
             for (int j = -_radius; j <= _radius; j++)
             {
-                var offset = new PHexAxial(i, j);
+                var offset = new HexagonCoordA(i, j);
                 if (!offset.InRange(_radius))
                     continue;
                 yield return _axial + offset;
@@ -198,23 +198,23 @@ namespace Procedural.Hexagon
 
         
         //Range
-        static readonly PHexCube[] m_CubeNearbyCoords =
+        static readonly HexagonCoordC[] m_CubeNearbyCoords =
         {
-            new PHexCube(1, -1, 0), new PHexCube(1, 0, -1), new PHexCube(0, 1, -1),
-            new PHexCube(-1, 1, 0), new PHexCube(-1, 0, 1), new PHexCube(0, -1, 1)
+            new HexagonCoordC(1, -1, 0), new HexagonCoordC(1, 0, -1), new HexagonCoordC(0, 1, -1),
+            new HexagonCoordC(-1, 1, 0), new HexagonCoordC(-1, 0, 1), new HexagonCoordC(0, -1, 1)
         };
 
-        public static IEnumerable<PHexCube> GetCoordsNearby(PHexCube _cube)
+        public static IEnumerable<HexagonCoordC> GetCoordsNearby(HexagonCoordC _cube)
         {
-            foreach (PHexCube nearbyCoords in m_CubeNearbyCoords)
+            foreach (HexagonCoordC nearbyCoords in m_CubeNearbyCoords)
                 yield return _cube + nearbyCoords;
         }
 
-        public static PHexCube GetCoordsNearby(PHexCube _cube, int direction)
+        public static HexagonCoordC GetCoordsNearby(HexagonCoordC _cube, int direction)
         {
             return _cube + m_AxialNearbyCoords[direction % 6];
         }
-        public static IEnumerable<(int dir,bool first,PHexCube coord)> GetCoordsRinged(this PHexCube _center,int _radius)
+        public static IEnumerable<(int dir,bool first,HexagonCoordC coord)> GetCoordsRinged(this HexagonCoordC _center,int _radius)
         {
             if (_radius == 0)
                 yield return (-1,true,_center);
@@ -228,6 +228,6 @@ namespace Procedural.Hexagon
             }
         }
 
-        public static int GetCoordsRingedCount(this PHexCube _center, int _radius) => _radius==0?1:_radius * 6;
+        public static int GetCoordsRingedCount(this HexagonCoordC _center, int _radius) => _radius==0?1:_radius * 6;
     }
 }

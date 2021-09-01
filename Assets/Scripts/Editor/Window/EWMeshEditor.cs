@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Geometry.Index;
 using Geometry.Three;
+using LinqExtentions;
 using UnityEditor;
 using UnityEngine;
 
@@ -635,7 +636,7 @@ namespace TEditor
                             case EPaintNormal.Every: normalPassed = true; break;
                         }
                         return normalPassed && (hitPosition - p).sqrMagnitude < sqrRaidus;
-                    }).Fill(m_PaintAffectedIndices);
+                    }).FillCollection(m_PaintAffectedIndices);
                 }
             }
 

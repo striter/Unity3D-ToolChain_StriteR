@@ -33,12 +33,52 @@ namespace Procedural
         {
         }
 
-        public static Coord operator +(Coord _a,Coord _b)=>new Coord(_a.x+_b.x,_a.y+_b.y);
-        public static Coord operator -(Coord _a,Coord _b)=>new Coord(_a.x-_b.x,_a.y-_b.y);
-        public static Coord operator *(Coord _a,Coord _b)=>new Coord(_a.x*_b.x,_a.y*_b.y);
-        public static Coord operator /(Coord _a,Coord _b)=>new Coord(_a.x/_b.x,_a.y/_b.y);
-        public static Coord operator *(Coord _c, float _scale) => new Coord(_c.x * _scale, _c.y * _scale);
-        public static Coord operator /(Coord _c,float _div)=>new Coord(_c.x/_div,_c.y/_div);
+        public static Coord operator +(Coord _a, Coord _b)
+        {
+            ref var coord = ref _a;
+            coord.x += _b.x;
+            coord.y += _b.y;
+            return coord;
+        }
+        public static Coord operator *(Coord _a, Coord _b)
+        {
+            ref var coord = ref _a;
+            coord.x *= _b.x;
+            coord.y *= _b.y;
+            return coord;
+        }
+        public static Coord operator -(Coord _a, Coord _b)
+        {
+            ref var coord = ref _a;
+            coord.x -= _b.x;
+            coord.y -= _b.y;
+            return coord;
+        }
+        public static Coord operator /(Coord _a, Coord _b)
+        {
+            ref var coord = ref _a;
+            coord.x /= _b.x;
+            coord.y /= _b.y;
+            return coord;
+        }
+        public static Coord operator *(Coord _c, float _scale)
+        {
+            ref var coord = ref _c;
+            coord.x *= _scale;
+            coord.y *= _scale;
+            return coord;
+        }
+        public static Coord operator /(Coord _c, float _scale)
+        {
+            ref var coord = ref _c;
+            coord.x /= _scale;
+            coord.y /= _scale;
+            return coord;
+        }
+        public static Coord Normalize(Coord _src)=>_src/_src.magnitude;
+        public float sqrMagnitude => x * x + y * y;
+        public float magnitude => Mathf.Sqrt(sqrMagnitude);
+        
         
         public static implicit operator (float x, float y)(Coord _pos) => (_pos.x, _pos.y);
         public static implicit operator Coord( (float x, float y) _pos) => new Coord(_pos.x, _pos.y);
@@ -48,11 +88,6 @@ namespace Procedural
         public static readonly Coord zero = new Coord(0, 0);
         public static readonly Coord one = new Coord(1, 1);
 
-        public static Coord Normalize(Coord _src)
-        {
-            var length = Mathf.Sqrt(_src.x*_src.x+_src.y*_src.y);
-            return new Coord(_src.x/length,_src.y/length);
-        }
     }
 
 }

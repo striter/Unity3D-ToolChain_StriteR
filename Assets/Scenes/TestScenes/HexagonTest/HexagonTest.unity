@@ -633,7 +633,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Flat: 1
   m_CellRadius: 2
-  m_AreaRadius: 3
+  m_AreaRadius: 4
   m_SmoothenTimes: 256
   m_SmoothenFactor: 0.4
-  m_IteratePerFrame: 128
+  m_IteratePerFrame: 64
