@@ -236,16 +236,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Flat: 1
   m_CellRadius: 0.5
-  m_AreaRadius: 2
+  m_AreaRadius: 3
   m_Tilling: 2
   m_Welded: 1
   m_MaxAreaRadius: 20
   m_AxisVisualize: 2
-  m_Test: 0
-  m_Radius1: 2
+  m_Test: 7
+  m_Radius1: 5
   m_TestAxialPoint:
-    col: 2
-    row: 1
+    x: 2
+    y: 1
+    z: -1
   m_Radius2: 2
   m_ReflectAxis: 0
 --- !u!4 &524423576

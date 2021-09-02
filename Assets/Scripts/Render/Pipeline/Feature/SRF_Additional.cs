@@ -22,7 +22,7 @@ namespace Rendering.Pipeline
         [Tooltip("Screen Space World Position Reconstruction")]
         public bool m_NormalTexture=false;
         public bool m_CameraReflectionTexture=false;
-        [MFoldout(nameof(m_CameraReflectionTexture), true)] public SRD_PlanarReflectionData m_PlanarReflectionData= SRD_PlanarReflectionData.Default();
+        [MFoldout(nameof(m_CameraReflectionTexture), true)] public SRD_ReflectionData m_PlanarReflectionData= SRD_ReflectionData.Default();
         
         SRP_NormalTexture m_NormalPass;
         private SRP_ComponentBasedPostProcess m_OpaquePostProcess;

@@ -28,10 +28,10 @@ namespace ConvexGrid
 
         [Header("Iterate")] public int m_IteratePerFrame = 8;
 
-        private readonly Dictionary<HexagonCoordC, ConvexArea> m_Areas = new Dictionary<HexagonCoordC, ConvexArea>();
+        private readonly Dictionary<HexCoord, ConvexArea> m_Areas = new Dictionary<HexCoord, ConvexArea>();
 
-        private readonly Dictionary<HexagonCoordC, ConvexVertex> m_Vertices =
-            new Dictionary<HexagonCoordC, ConvexVertex>();
+        private readonly Dictionary<HexCoord, ConvexVertex> m_Vertices =
+            new Dictionary<HexCoord, ConvexVertex>();
 
         private readonly List<ConvexQuad> m_Quads = new List<ConvexQuad>();
 
@@ -44,7 +44,7 @@ namespace ConvexGrid
         private readonly Timer m_IterateTimer = new Timer(1f/60f);
 
         private int m_QuadSelected=-1;
-        private readonly ValueChecker<HexagonCoordC> m_GridSelected =new ValueChecker<HexagonCoordC>(HexagonCoordC.zero);
+        private readonly ValueChecker<HexCoord> m_GridSelected =new ValueChecker<HexCoord>(HexCoord.zero);
         private Matrix4x4 m_TransformMatrix;
         void Setup()
         {
@@ -52,19 +52,19 @@ namespace ConvexGrid
             UHexagonArea.Init(m_AreaRadius,6,true);
             m_TransformMatrix = transform.localToWorldMatrix*Matrix4x4.Scale(m_CellRadius*Vector3.one);
         } 
-        HexagonCoordC ValidateSelection(Coord _localPos,out int quadIndex)
+        HexCoord ValidateSelection(Coord _localPos,out int quadIndex)
         {
             var quad= m_Quads.Find(p =>p.m_GeometryQuad.IsPointInside(_localPos),out quadIndex);
             if (quadIndex != -1)
                 return quad.m_HexQuad[quad.m_GeometryQuad.NearestPointIndex(_localPos)];
-            return HexagonCoordC.zero;
+            return HexCoord.zero;
         }
 
         
         void Clear()
         {
             m_QuadSelected = -1;
-            m_GridSelected.Check(HexagonCoordC.zero);
+            m_GridSelected.Check(HexCoord.zero);
             m_Areas.Clear();
             m_Vertices.Clear();
             m_Quads.Clear();
@@ -94,7 +94,7 @@ namespace ConvexGrid
             }
         }
 
-        IEnumerator TessellateArea(HexagonCoordC _areaCoord)
+        IEnumerator TessellateArea(HexCoord _areaCoord)
         {
             if(!m_Areas.ContainsKey(_areaCoord))
                 m_Areas.Add(_areaCoord,new ConvexArea(UHexagonArea.GetArea(_areaCoord)));
@@ -105,7 +105,7 @@ namespace ConvexGrid
                 yield return null;
         }
 
-        IEnumerator RelaxArea(HexagonCoordC _areaCoord)
+        IEnumerator RelaxArea(HexCoord _areaCoord)
         {
             if (!m_Areas.ContainsKey(_areaCoord))
                 yield break;
@@ -115,7 +115,7 @@ namespace ConvexGrid
                 yield return null;
         }
 
-        void ValidateArea(HexagonCoordC _areaCoord)
+        void ValidateArea(HexCoord _areaCoord)
         {
             foreach (HexagonArea tuple in _areaCoord.GetCoordsInRadius(1).Select(UHexagonArea.GetArea))
                 m_ConvexIterator[EConvexIterate.Tesselation].Push(TessellateArea(tuple.m_Coord));
@@ -123,6 +123,6 @@ namespace ConvexGrid
             ValidateAreaRuntime(_areaCoord);
         }
 
-        partial void ValidateAreaRuntime(HexagonCoordC _areaCoord);
+        partial void ValidateAreaRuntime(HexCoord _areaCoord);
     }
 }

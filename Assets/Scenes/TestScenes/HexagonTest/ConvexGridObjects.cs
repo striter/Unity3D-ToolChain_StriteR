@@ -30,7 +30,7 @@ namespace ConvexGrid
     {
         public HexQuad m_HexQuad { get; private set; }
         public G2Quad m_GeometryQuad { get; private set; }
-        public ConvexQuad(HexQuad _hexQuad,Dictionary<HexagonCoordC,ConvexVertex> _vertices)
+        public ConvexQuad(HexQuad _hexQuad,Dictionary<HexCoord,ConvexVertex> _vertices)
         {
             m_HexQuad = _hexQuad;
             m_GeometryQuad=new G2Quad(
@@ -47,11 +47,11 @@ namespace ConvexGrid
         public EConvexIterate m_State { get; private set; }
         public readonly List<ConvexQuad> m_Quads = new List<ConvexQuad>();
         
-        public readonly List<HexagonCoordC> m_ProceduralVertices = new List<HexagonCoordC>(); 
+        public readonly List<HexCoord> m_ProceduralVertices = new List<HexCoord>(); 
         public readonly List<HexTriangle> m_ProceduralTriangles = new List<HexTriangle>(); 
         public readonly List<HexQuad> m_ProceduralQuads = new List<HexQuad>();
         
-        private readonly Dictionary<HexagonCoordC, ConvexVertex> m_RelaxVertices = new Dictionary<HexagonCoordC, ConvexVertex>();
+        private readonly Dictionary<HexCoord, ConvexVertex> m_RelaxVertices = new Dictionary<HexCoord, ConvexVertex>();
         private readonly List<HexTriangle> m_RelaxTriangles = new List<HexTriangle>(); 
         private readonly List<HexQuad> m_RelaxQuads = new List<HexQuad>();
         public ConvexArea(HexagonArea _area)
@@ -220,13 +220,13 @@ namespace ConvexGrid
             }
         }
 
-        public IEnumerator Relax(Dictionary<HexagonCoordC,ConvexArea> _areas,Dictionary<HexagonCoordC,ConvexVertex> _existVertices,List<ConvexQuad> _existQuad,int _smoothenTimes,float _smoothenFactor)
+        public IEnumerator Relax(Dictionary<HexCoord,ConvexArea> _areas,Dictionary<HexCoord,ConvexVertex> _existVertices,List<ConvexQuad> _existQuad,int _smoothenTimes,float _smoothenFactor)
         {
             if (m_State != EConvexIterate.Tesselation)
                 yield break;
 
             //Push Coords
-            void AddCoord(HexagonCoordC p)
+            void AddCoord(HexCoord p)
             {
                 var coord = p.ToPixel();
                 if (_existVertices.ContainsKey(p))
@@ -338,7 +338,7 @@ namespace ConvexGrid
             yield return null;
         }
 
-        public Mesh SetupMesh(Dictionary<HexagonCoordC,ConvexVertex> _vertices,Matrix4x4 _matrix)
+        public Mesh SetupMesh(Dictionary<HexCoord,ConvexVertex> _vertices,Matrix4x4 _matrix)
         {
             if (m_State != EConvexIterate.Relaxed)
                 return null;

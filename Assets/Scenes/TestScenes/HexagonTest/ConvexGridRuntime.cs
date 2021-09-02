@@ -61,7 +61,7 @@ namespace ConvexGrid
             m_Selection = transform.Find("Selection");
             m_SelectionMesh = new Mesh {name="Selection",hideFlags = HideFlags.HideAndDontSave};
             m_Selection.GetComponent<MeshFilter>().sharedMesh = m_SelectionMesh;
-            ValidateArea(HexagonCoordC.zero);
+            ValidateArea(HexCoord.zero);
             UIT_TouchConsole.InitDefaultCommands();
             UIT_TouchConsole.Command("Reset",KeyCode.R).Button(Clear);
         }
@@ -107,7 +107,7 @@ namespace ConvexGrid
             GPlane plane = new GPlane(Vector3.up, transform.position);
             var hitPos = ray.GetPoint(UGeometry.RayPlaneDistance(plane, ray));
             var hitCoord = (transform.InverseTransformPoint(hitPos) / m_CellRadius).ToCoord();
-            var hitHex=hitCoord.ToAxial();
+            var hitHex=hitCoord.ToCube();
             var hitArea = UHexagonArea.GetBelongAreaCoord(hitHex);
             if (m_GridSelected.Check(ValidateSelection(hitCoord, out m_QuadSelected)))
                 PopulateSelectionMesh();
@@ -115,14 +115,18 @@ namespace ConvexGrid
             ValidateArea(hitArea);
         }
 
-        partial void ValidateAreaRuntime(HexagonCoordC _areaCoord)
+        partial void ValidateAreaRuntime(HexCoord _areaCoord)
         {
+            if (!Application.isPlaying)
+                return;
             m_ConvexIterator[EConvexIterate.Meshed].Push(ConstructArea(_areaCoord));
             Debug.LogWarning($"Area Validated{_areaCoord}");
         }
 
         partial void ClearRuntime()
         {
+            if (!Application.isPlaying)
+                return;
             m_AreaMeshes?.Clear();
             if(m_Selection!=null)
                 m_SelectionMesh.Clear();
@@ -173,7 +177,7 @@ namespace ConvexGrid
             TSPoolList<int>.Recycle(indices);
         }
 
-        IEnumerator ConstructArea(HexagonCoordC _areaCoord)
+        IEnumerator ConstructArea(HexCoord _areaCoord)
         {
             if (!m_Areas.ContainsKey(_areaCoord))
                 yield break;
@@ -185,13 +189,6 @@ namespace ConvexGrid
         private void OnGUI()
         {
             TouchTracker.DrawDebugGUI();
-        }
-
-        partial void DrawGizmosRuntime()
-        {
-            Gizmos.matrix = Matrix4x4.identity;
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(m_RootPosition,1f);
         }
         #endif
     }

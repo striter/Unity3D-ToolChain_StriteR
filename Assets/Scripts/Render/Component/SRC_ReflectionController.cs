@@ -5,15 +5,15 @@ using Geometry.Three;
 namespace Rendering.Pipeline
 {
     [ExecuteInEditMode,RequireComponent(typeof(MeshRenderer),typeof(MeshFilter))]
-    public class SRC_ReflectionPlane : MonoBehaviour
+    public class SRC_ReflectionController : MonoBehaviour
     {
         [Range(-5f, 5f)] public float m_PlaneOffset = 0f;
         [Range(0f, 0.2f)] public float m_NormalDistort = .1f;
 
-        public static List<SRC_ReflectionPlane> m_ReflectionPlanes { get; private set; } = new List<SRC_ReflectionPlane>();
+        public static List<SRC_ReflectionController> m_ReflectionPlanes { get; private set; } = new List<SRC_ReflectionController>();
         public MeshRenderer m_MeshRenderer { get; private set; }
         public MeshFilter m_MeshFilter { get; private set; }
-        public GPlane m_PlaneData => new GPlane(transform.up,  m_PlaneOffset);
+        public GPlane m_PlaneData => new GPlane(transform.up,  transform.position + transform.up*m_PlaneOffset);
         private void OnEnable()
         {
             m_ReflectionPlanes.Add(this);

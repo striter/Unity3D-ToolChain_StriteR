@@ -5,8 +5,8 @@ namespace Procedural.Hexagon.Area
 {
     public class HexagonArea
     {
-        public HexagonCoordC centerCS;
-        public HexagonCoordC m_Coord;
+        public HexCoord centerCS;
+        public HexCoord m_Coord;
         public int RadiusAS => UHexagonArea.radius;
         public int RadiusCS => UHexagonArea.radius*UHexagonArea.tilling;
     }

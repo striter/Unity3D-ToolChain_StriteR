@@ -159,13 +159,13 @@ public static class UReflection
         static readonly Type m_FillElement = typeof(CPropertyFillElement);
         static readonly Dictionary<Type, Func<Transform, object>> m_BaseTypeHelper = new Dictionary<Type, Func<Transform, object>>()
     {
-        { typeof(Transform),(Transform transform)=>transform as Transform},
-        { typeof(RectTransform),(Transform transform)=>transform as RectTransform},
-        { typeof(Button),(Transform transform)=>transform.GetComponent<Button>() },
-        { typeof(Text),(Transform transform)=>transform.GetComponent<Text>() },
-        { typeof(InputField),(Transform transform)=>transform.GetComponent<InputField>() },
-        { typeof(Image),(Transform transform)=>transform.GetComponent<Image>() },
-        { typeof(RawImage),(Transform transform)=>transform.GetComponent<RawImage>() },
+        { typeof(Transform),transform=>transform},
+        { typeof(RectTransform),transform=>transform as RectTransform},
+        { typeof(Button),transform=>transform.GetComponent<Button>() },
+        { typeof(Text),transform=>transform.GetComponent<Text>() },
+        { typeof(InputField),transform=>transform.GetComponent<InputField>() },
+        { typeof(Image),transform=>transform.GetComponent<Image>() },
+        { typeof(RawImage),transform=>transform.GetComponent<RawImage>() },
     };
         static bool FillTypeMatch(Type type) => m_BaseTypeHelper.ContainsKey(type) || type.IsSubclassOf(typeof(CPropertyFillElement));
 

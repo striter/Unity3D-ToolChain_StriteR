@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Rendering.Pipeline
 {
     [Serializable]
-    public class SRD_PlanarReflectionData
+    public class SRD_ReflectionData
     {
         public EReflectionSpace m_ReflectionType;
         [MFoldout(nameof(m_ReflectionType), EReflectionSpace.ScreenSpace)] [Range(1, 4)] public int m_Sample;
@@ -20,9 +20,9 @@ namespace Rendering.Pipeline
         public bool m_EnableBlur;
         [MFoldout(nameof(m_EnableBlur), true)] public PPData_Blurs m_BlurParam;
 
-        public static SRD_PlanarReflectionData Default()
+        public static SRD_ReflectionData Default()
         {
-            return new SRD_PlanarReflectionData()
+            return new SRD_ReflectionData()
             {
                 m_ReflectionType = EReflectionSpace.ScreenSpace,
                 m_IncludeTransparent = false,

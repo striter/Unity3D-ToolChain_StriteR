@@ -8,7 +8,7 @@ namespace Procedural.Hexagon.Geometry
 
     public static class UHexagonGeometry
     {
-        public static (HexagonCoordC m01, HexagonCoordC m12, HexagonCoordC m20, HexagonCoordC m012) GetTriangleMidVertices(this HexTriangle _triangle)
+        public static (HexCoord m01, HexCoord m12, HexCoord m20, HexCoord m012) GetTriangleMidVertices(this HexTriangle _triangle)
         {
             var v0 = _triangle.vertex0;
             var v1 = _triangle.vertex1;
@@ -16,7 +16,7 @@ namespace Procedural.Hexagon.Geometry
             
             return ((v0 + v1) / 2, (v1 + v2) / 2, (v2 + v0) / 2, (v0 + v1 + v2) / 3);
         }
-        public static (HexagonCoordC m01, HexagonCoordC m12, HexagonCoordC m23, HexagonCoordC m30,HexagonCoordC m0123) GetQuadMidVertices(this HexQuad _quad)
+        public static (HexCoord m01, HexCoord m12, HexCoord m23, HexCoord m30,HexCoord m0123) GetQuadMidVertices(this HexQuad _quad)
         {
             var v0 = _quad.vertex0;
             var v1 = _quad.vertex1;

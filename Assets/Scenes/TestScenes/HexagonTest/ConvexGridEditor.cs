@@ -48,7 +48,7 @@ namespace ConvexGrid
             GPlane plane = new GPlane(Vector3.up, transform.position);
             var hitPos = ray.GetPoint(UGeometry.RayPlaneDistance(plane, ray));
             var hitCoord = (transform.InverseTransformPoint(hitPos) / m_CellRadius).ToCoord();
-            var hitHex=hitCoord.ToAxial();
+            var hitHex=hitCoord.ToCube();
             var hitArea = UHexagonArea.GetBelongAreaCoord(hitHex);
             if (Event.current.type == EventType.MouseDown)
                 switch (Event.current.button)
@@ -70,7 +70,6 @@ namespace ConvexGrid
         #region Gizmos
         private void OnDrawGizmos()
         {
-            DrawGizmosRuntime();
             Gizmos.matrix = m_TransformMatrix;
             foreach (ConvexArea area in m_Areas.Values)
                 area.DrawProceduralGizmos();
@@ -78,7 +77,6 @@ namespace ConvexGrid
             DrawSelection();
         }
 
-        partial void DrawGizmosRuntime();
         void DrawGrid()
         {
             Gizmos.color = Color.green.SetAlpha(.3f);

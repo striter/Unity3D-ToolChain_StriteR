@@ -160,7 +160,7 @@
             		atten=MainLightRealtimeShadow(i.shadowCoords);
             	#endif
 				float2 wave=WaveInteraction(positionWS);
-            	float3 albedo=_Color.rgb;
+            	float3 albedo=INSTANCE(_Color).rgb;
             	float2 screenUV=TransformHClipToNDC(i.positionHCS);
             	
             	half2 uvFlow;
@@ -168,10 +168,10 @@
             		half2 flowDir=SAMPLE_TEXTURE2D(_FlowTex,sampler_FlowTex,i.uv).xy;		//To Be Continued
 					uvFlow=flowDir*frac(_Time.y)*_FlowSpeed;
             	#else
-					uvFlow=_FlowDirection*_Time.y*_FlowSpeed;
+					uvFlow=INSTANCE(_FlowDirection)*_Time.y*INSTANCE(_FlowSpeed);
             	#endif
             	
-            	float uvScale=rcp(_Scale);
+            	float uvScale=rcp(INSTANCE(_Scale));
             	
             	#if _NORMALTEX
             	float2 surfaceUV=positionWS.xz+wave*.1;
@@ -188,7 +188,7 @@
 
             	float2 deepSurfaceUV=screenUV;
 				#if _DEPTHREFRACTION
-				float refraction=saturate(invlerp(0,_RefractionDistance,eyeDepthOffset+wave.x))*_RefractionAmount;
+				float refraction=saturate(invlerp(0,INSTANCE(_RefractionDistance),eyeDepthOffset+wave.x))*INSTANCE(_RefractionAmount);
             	deepSurfaceUV+=normalTS.xy*refraction*rcp(eyeDepthUnder);
             	#endif
             	float3 deepSurfaceColor=SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,deepSurfaceUV).rgb;
@@ -200,36 +200,36 @@
             	float2 causticUV=causticPositionWS.xz+uvFlow;
 				causticUV*=uvScale;
             	float caustic=SAMPLE_TEXTURE2D(_CausticTex,sampler_CausticTex,causticUV).r;
-            	deepSurfaceColor+=caustic*lightCol*_CausticStrength*causticAtten;
+            	deepSurfaceColor+=caustic*lightCol*INSTANCE(_CausticStrength)*causticAtten;
             	#endif
             	
 				#if _DEPTH
-            	float depth=smoothstep(_DepthBegin,_DepthBegin+_DepthDistance,eyeDepthOffset)*_DepthColor.a;
-            	float3 depthCol=deepSurfaceColor*_DepthColor.rgb;
+            	float depth=smoothstep(INSTANCE(_DepthBegin),INSTANCE(_DepthBegin)+INSTANCE(_DepthDistance),eyeDepthOffset)*INSTANCE(_DepthColor).a;
+            	float3 depthCol=deepSurfaceColor*INSTANCE(_DepthColor).rgb;
 				deepSurfaceColor=lerp(deepSurfaceColor,depthCol,depth);
             	#endif
             	
             	float3 aboveSurfaceColor=albedo;
             	float4 reflection=IndirectBRDFPlanarSpecular(screenUV,eyeDepthSurface,normalTS);
-				aboveSurfaceColor=lerp(aboveSurfaceColor, reflection.rgb,reflection.a*_Strength);
+				aboveSurfaceColor=lerp(aboveSurfaceColor, reflection.rgb,reflection.a*INSTANCE(_Strength));
             	
-            	float specular=GetSpecular(normalWS,lightDirWS,viewDirWS,_SpecularAmount);
+            	float specular=GetSpecular(normalWS,lightDirWS,viewDirWS,INSTANCE(_SpecularAmount));
             	specular*=atten;
             	aboveSurfaceColor=lerp(aboveSurfaceColor,lightCol,specular);
             	
 				#if _FOAM
-            	float foam=smoothstep(_FoamBegin+_FoamWidth,_FoamBegin,eyeDepthOffset+max(normalTS.xy)*_FoamDistort);
-            	float3 foamColor=lightCol*_FoamColor.rgb;
-				aboveSurfaceColor=lerp(aboveSurfaceColor,foamColor,foam*atten*_FoamColor.a);
+            	float foam=smoothstep(INSTANCE(_FoamBegin)+INSTANCE(_FoamWidth),INSTANCE(_FoamBegin),eyeDepthOffset+max(normalTS.xy)*INSTANCE(_FoamDistort));
+            	float3 foamColor=INSTANCE(_FoamColor).rgb;
+				aboveSurfaceColor=lerp(aboveSurfaceColor,foamColor,foam*atten*INSTANCE(_FoamColor).a);
             	#endif
-
+		
             	float fresnel=1;
             	#if _FRESNEL
             	fresnel=1.-Pow4(dot(viewDirWS,normalWS));
 				#endif
 
             	
-            	float3 riverCol=lerp(deepSurfaceColor,aboveSurfaceColor,fresnel*_Color.a);
+            	float3 riverCol=lerp(deepSurfaceColor,aboveSurfaceColor,fresnel*INSTANCE(_Color).a);
             	
             	return float4(riverCol,1);
             }
