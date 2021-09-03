@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Geometry.Three;
+using Geometry;
+using Geometry.Voxel;
 using LinqExtentions;
 using UnityEngine;
 using UnityEditor;
@@ -104,7 +105,7 @@ namespace GridTest
         {
             GRay ray = sceneView.camera.ScreenPointToRay( TEditor.UECommon.GetScreenPoint(sceneView));
             GPlane plane = new GPlane(Vector3.up, transform.position);
-            var hitPoint = ray.GetPoint(UGeometry.RayPlaneDistance(plane, ray));
+            var hitPoint = ray.GetPoint(UGeometryVoxel.RayPlaneDistance(plane, ray));
             m_HitPointCS = (transform.InverseTransformPoint(hitPoint) / m_CellRadius).ToCoord();
             m_HitAxialCS = m_HitPointCS.ToCube();
             if (Event.current.type == EventType.MouseDown)

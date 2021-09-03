@@ -1,6 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using Geometry;
 using UnityEngine;
 
 namespace Procedural
@@ -90,4 +89,34 @@ namespace Procedural
 
     }
 
+    [Serializable]
+    public struct CoordQuad : IQuad<Coord>
+    {
+        public Coord vertex0 { get; set; }
+        public Coord vertex1 { get; set; }
+        public Coord vertex2 { get; set; }
+        public Coord vertex3 { get; set; }
+        public Coord this[int index]
+        {
+            get
+            {
+                switch (index)
+                {
+                    default: throw new Exception("Invalid Index:"+index);
+                    case 0: return vertex0;
+                    case 1: return vertex1;
+                    case 2: return vertex2;
+                    case 3: return vertex3;
+                }
+            }
+        }
+
+        public CoordQuad(Coord _vertex0,Coord _vertex1,Coord _vertex2,Coord _vertex3)
+        {
+            vertex0 = _vertex0;
+            vertex1 = _vertex1;
+            vertex2 = _vertex2;
+            vertex3 = _vertex3;
+        }
+    }
 }

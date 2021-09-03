@@ -1,4 +1,5 @@
-﻿using Geometry.Three;
+﻿using Geometry;
+using Geometry.Voxel;
 using UnityEngine;
 namespace BoundingCollisionTest
 {
@@ -11,10 +12,10 @@ namespace BoundingCollisionTest
         {
             Gizmos.matrix = transform.localToWorldMatrix;
 
-            bool intersect = UGeometry.RayBSIntersect(m_Sphere,m_Ray);
+            bool intersect = UGeometryVoxel.RayBSIntersect(m_Sphere,m_Ray);
             Gizmos.color = intersect ? Color.green : Color.grey;
             Gizmos.DrawWireSphere(m_Sphere.center,m_Sphere.radius);
-            Vector2 distances = UGeometry.RayBSDistance(m_Sphere, m_Ray);
+            Vector2 distances = UGeometryVoxel.RayBSDistance(m_Sphere, m_Ray);
 
             Gizmos.color = intersect ? Color.white:Color.grey;
             float rayDistance = 1f;

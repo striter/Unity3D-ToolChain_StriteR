@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Geometry.Index;
-using Geometry.Three;
+using Geometry;
+using Geometry.Voxel;
 using LinqExtentions;
 using UnityEditor;
 using UnityEngine;
@@ -200,7 +201,7 @@ namespace TEditor
         public MeshEditor m_Parent { get; private set; }
         protected Mesh m_SourceMesh => m_Parent.m_SourceMesh;
         protected Mesh m_ModifingMesh => m_Parent.m_ModifingMesh;
-        protected GMeshTriangle[] m_Polygons { get; private set; }
+        protected GTriangleIndex[] m_Polygons { get; private set; }
         public MeshEditorHelperBase(MeshEditor _parent) { m_Parent = _parent; }
         public virtual void Begin()
         {
@@ -233,14 +234,14 @@ namespace TEditor
             return ray;
         }
 
-        protected static int RayDirectedTriangleIntersect(GMeshTriangle[] _polygons, Vector3[] _verticies, GRay _ray, out Vector3 hitPoint, out GTriangle hitTriangle)
+        protected static int RayDirectedTriangleIntersect(GTriangleIndex[] _polygons, Vector3[] _verticies, GRay _ray, out Vector3 hitPoint, out GTriangle hitTriangle)
         {
             collisionPoint = Vector3.zero;
             float minDistance = float.MaxValue;
             int index = _polygons.LastIndex(p =>
             {
-                GTriangle triangle = p.GetTriangle(_verticies);
-                bool intersect = UGeometry.RayDirectedTriangleIntersect(triangle, _ray, true, true, out float distance);
+                GTriangle triangle = new GTriangle(p.GetVertices(_verticies));
+                bool intersect = UGeometryVoxel.RayDirectedTriangleIntersect(triangle, _ray, true, true, out float distance);
                 if (intersect && minDistance > distance)
                 {
                     collisionTriangle = triangle;
@@ -314,9 +315,9 @@ namespace TEditor
             m_SubPolygons.Clear();
             if (_index < 0)
                 return;
-            GMeshTriangle _mainTriangle = m_Polygons[m_SelectedPolygon];
-            GTriangle mainTriangle = _mainTriangle.GetTriangle(m_Verticies);
-            m_SubPolygons=m_Polygons.CollectIndex((index, triangle) => index != m_SelectedPolygon && triangle.GetVertices(m_Verticies).Any(subVertex => mainTriangle.vertices.Any(mainVertex => mainVertex == subVertex))).ToList();
+            GTriangleIndex _mainTriangle = m_Polygons[m_SelectedPolygon];
+            GTriangle mainTriangle = new GTriangle( _mainTriangle.GetVertices(m_Verticies));
+            m_SubPolygons=m_Polygons.CollectIndex((index, triangle) => index != m_SelectedPolygon && triangle.GetEnumerator(m_Verticies).Any(subVertex => mainTriangle.Any(mainVertex => mainVertex == subVertex))).ToList();
         }
         void SelectVertex(int _index)
         {
@@ -369,28 +370,28 @@ namespace TEditor
             if (!m_SelectingPolygon)
                 return;
 
-            GMeshTriangle _mainTriangle = m_Polygons[m_SelectedPolygon];
+            GTriangleIndex _mainTriangle = m_Polygons[m_SelectedPolygon];
 
             foreach (var subPolygon in m_SubPolygons)
             {
-                GTriangle directedTriangle = m_Polygons[subPolygon].GetTriangle(m_Verticies);
+                GTriangle directedTriangle = new GTriangle( m_Polygons[subPolygon].GetVertices(m_Verticies));
                 if (Vector3.Dot(directedTriangle.normal, _sceneView.camera.transform.forward) > 0)
                     continue;
                 Handles.color = Color.yellow.SetAlpha(.1f);
-                Handles.DrawAAConvexPolygon(directedTriangle.vertices);
+                Handles.DrawAAConvexPolygon(directedTriangle.ConstructIteratorArray());
                 Handles.color = Color.yellow;
                 Handles.DrawLines(directedTriangle.GetDrawLineVertices());
             }
-            GTriangle mainTriangle =  _mainTriangle.GetTriangle(m_Verticies);
+            GTriangle mainTriangle = new GTriangle( _mainTriangle.GetVertices(m_Verticies));
             Handles.color = Color.green.SetAlpha(.3f);
-            Handles.DrawAAConvexPolygon(mainTriangle.vertices);
+            Handles.DrawAAConvexPolygon(mainTriangle.ConstructIteratorArray());
             Handles.color = Color.green;
             Handles.DrawLines(mainTriangle.GetDrawLineVertices());
 
             if (!m_EditingVectors)
                 return;
             Handles.color = Color.green;
-            foreach (var indice in _mainTriangle.indices)
+            foreach (var indice in _mainTriangle)
             {
                 Handles_Extend.DrawArrow(m_Verticies[indice], m_VertexDatas[indice], .1f * m_GUISize, .01f * m_GUISize);
                 if (m_SelectedVertexIndex == indice)
@@ -400,7 +401,7 @@ namespace TEditor
             Handles.color = Color.yellow;
             foreach (var subPolygon in m_SubPolygons)
             {
-                foreach (var indice in m_Polygons[subPolygon].indices)
+                foreach (var indice in m_Polygons[subPolygon])
                     Handles.DrawLine(m_Verticies[indice], m_Verticies[indice] + m_VertexDatas[indice] * .03f * m_GUISize);
             }
         }
@@ -460,11 +461,11 @@ namespace TEditor
             if (!m_SelectingPolygon)
                 return false;
 
-            foreach (var indice in m_Polygons[m_SelectedPolygon].indices)
+            foreach (var index in m_Polygons[m_SelectedPolygon])
             {
-                if (!UGeometry.RayBSIntersect(new GSphere( m_Verticies[indice], C_VertexSphereRadius * m_GUISize), _ray))
+                if (!UGeometryVoxel.RayBSIntersect(new GSphere( m_Verticies[index], C_VertexSphereRadius * m_GUISize), _ray))
                     continue;
-                SelectVertex(indice);
+                SelectVertex(index);
                 return true;
             }
             return false;

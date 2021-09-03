@@ -1,7 +1,8 @@
 ﻿using System;
 using UnityEditor;
 using UnityEngine;
-using Geometry.Three;
+using Geometry;
+using Geometry.Voxel;
 
 #if UNITY_EDITOR
 public static class Gizmos_Extend

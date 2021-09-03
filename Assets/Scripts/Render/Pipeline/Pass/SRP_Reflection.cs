@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Collections.Generic;
-using Geometry.Three;
+using Geometry;
+using Geometry.Voxel;
 using LinqExtentions;
 using UnityEngine;
 using UnityEngine.Rendering;

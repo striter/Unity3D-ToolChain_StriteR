@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Geometry.Three;
+using Geometry;
+using Geometry.Voxel;
 
 namespace Rendering.Pipeline
 {

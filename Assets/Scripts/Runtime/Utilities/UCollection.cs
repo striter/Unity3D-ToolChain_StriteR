@@ -10,7 +10,7 @@ using UnityEngine;
 public static class UCollection
 {
     
-    #region Enumerable
+    #region Enumerator
 
         public static void Traversal<T>(this IEnumerable<T> _collection, Action<T> _onEach)
         {
@@ -279,7 +279,7 @@ public static class UCollection
     #region List
     public static List<T> DeepCopy<T>(this List<T> _list)
     {
-        List<T> copyList = new List<T>();
+        List<T> copyList = new List<T>(_list.Count);
         copyList.AddRange(_list);
         return copyList;
     }
@@ -349,6 +349,14 @@ public static class UCollection
         _dic.Add(_key,_value);
         return true;
     }
+    public static bool TryAdd<T, Y>(this Dictionary<T, Y> _dic, T _key, Func<Y> _getValue)
+    {
+        if (_dic.ContainsKey(_key))
+            return false;
+        _dic.Add(_key,_getValue());
+        return true;
+    }
+
 
     public static bool TryRemove<T, Y>(this Dictionary<T, Y> _dic,  T _key)
     {

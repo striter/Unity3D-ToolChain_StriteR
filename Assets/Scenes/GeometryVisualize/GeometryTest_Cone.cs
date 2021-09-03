@@ -1,4 +1,5 @@
-using Geometry.Three;
+using Geometry;
+using Geometry.Voxel;
 using UnityEngine;
 namespace BoundingCollisionTest
 {
@@ -12,7 +13,7 @@ namespace BoundingCollisionTest
             Gizmos.color = Color.grey;
             Gizmos.matrix = transform.localToWorldMatrix;
             float rayDistance = 1f;
-            Vector2 distances= UGeometry.RayConeDistance(m_Data,m_Ray);
+            Vector2 distances= UGeometryVoxel.RayConeDistance(m_Data,m_Ray);
             if (distances.x>=0)
             {
                 Gizmos.color = Color.blue;

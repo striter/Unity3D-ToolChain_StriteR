@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Geometry.Three;
+﻿using Geometry.Voxel;
 using UnityEngine;
 
 namespace BoundingCollisionTest
@@ -23,7 +21,7 @@ namespace BoundingCollisionTest
                 Gizmos_Extend.DrawArrow(Triangle.GetUVPoint(.25f,.25f), Quaternion.LookRotation(Triangle.normal), .5f, .1f);
 
             float distance = 2f;
-            if( UGeometry.RayDirectedTriangleIntersect(Triangle,m_Ray, m_RayDirectionCheck,m_PlaneDirectionCheck,out float rayDistance))
+            if( UGeometryVoxel.RayDirectedTriangleIntersect(Triangle,m_Ray, m_RayDirectionCheck,m_PlaneDirectionCheck,out float rayDistance))
             {
                 distance = rayDistance;
                 Gizmos.color = Color.red;

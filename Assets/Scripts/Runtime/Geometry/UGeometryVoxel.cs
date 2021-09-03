@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
 
-namespace Geometry.Three
+namespace Geometry.Voxel
 {
-    
-    public static class UGeometry
+    public static class UGeometryVoxel
     {
-        #region 3DIntersections
         #region Line&Ray
         public static Vector3 RayRayProjection(GRay _ray1,GRay _ray2)
         {
@@ -222,26 +220,7 @@ namespace Geometry.Three
             return distances;
         }
         #endregion
-        #endregion
 
-        #region UVConvertions
-        public static (Vector3 bary, Vector3 u, Vector3 v, Vector3 w) GetBaryCenterUVW(this GTriangle _triangle)
-        {
-            Vector3 bary = _triangle.vertex0+_triangle.vertex1+_triangle.vertex2;
-            bary /= 3f;
-            Vector3 u = _triangle.vertex0 - bary;
-            Vector3 v = _triangle.vertex1 - bary;
-            Vector3 w = _triangle.vertex2 - bary;
-            return (bary, u, v, w);
-        }
-
-        public static (Vector3 u, Vector3 v) GetUVDirection(this GTriangle _triangle)
-        {
-            return (_triangle.vertex1-_triangle.vertex0,_triangle.vertex2-_triangle.vertex0);
-        }
-
-        #endregion
-        
         public static Matrix4x4 GetMirrorMatrix(this GPlane _plane)
         {
             Matrix4x4 mirrorMatrix = Matrix4x4.identity;

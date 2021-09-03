@@ -2,25 +2,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using Geometry.Three;
-using Geometry.Two;
-using GridTest;
+using Geometry.Pixel;
 using ObjectPool;
-using ObjectPoolStatic;
 using UnityEngine;
 using Procedural;
 using Procedural.Hexagon;
 using Procedural.Hexagon.Area;
-using Procedural.Hexagon.Geometry;
 
 namespace ConvexGrid
 {
     [ExecuteInEditMode]
-    public partial class ConvexGrid : MonoBehaviour
+    public partial class GridGenerator : MonoBehaviour,IConvexGridControl
     {
         public bool m_Flat = false;
-        public float m_CellRadius = 1;
         public int m_AreaRadius = 8;
 
         [Header("Smoothen")] public int m_SmoothenTimes = 300;
@@ -30,52 +24,37 @@ namespace ConvexGrid
 
         private readonly Dictionary<HexCoord, ConvexArea> m_Areas = new Dictionary<HexCoord, ConvexArea>();
 
-        private readonly Dictionary<HexCoord, ConvexVertex> m_Vertices =
-            new Dictionary<HexCoord, ConvexVertex>();
-
-        private readonly List<ConvexQuad> m_Quads = new List<ConvexQuad>();
-
         private readonly Dictionary<EConvexIterate, Stack<IEnumerator>> m_ConvexIterator = 
             new Dictionary<EConvexIterate, Stack<IEnumerator>> () {
             {  EConvexIterate.Tesselation,new Stack<IEnumerator>() },
-            {  EConvexIterate.Relaxed,new Stack<IEnumerator>() },
-            {  EConvexIterate.Meshed,new Stack<IEnumerator>() } };
+            {  EConvexIterate.Relaxed,new Stack<IEnumerator>() }, };
         
         private readonly Timer m_IterateTimer = new Timer(1f/60f);
 
-        private int m_QuadSelected=-1;
-        private readonly ValueChecker<HexCoord> m_GridSelected =new ValueChecker<HexCoord>(HexCoord.zero);
-        private Matrix4x4 m_TransformMatrix;
+        public void Init(Transform _transform)
+        {
+            
+        }
         void Setup()
         {
+            ConvexGridHelper.InitRelax(m_SmoothenTimes,m_SmoothenFactor);
             UHexagon.flat = m_Flat;
             UHexagonArea.Init(m_AreaRadius,6,true);
-            m_TransformMatrix = transform.localToWorldMatrix*Matrix4x4.Scale(m_CellRadius*Vector3.one);
         } 
-        HexCoord ValidateSelection(Coord _localPos,out int quadIndex)
+        
+        public void Select(bool _valid,HexCoord _coord, ConvexVertex _vertex)
         {
-            var quad= m_Quads.Find(p =>p.m_GeometryQuad.IsPointInside(_localPos),out quadIndex);
-            if (quadIndex != -1)
-                return quad.m_HexQuad[quad.m_GeometryQuad.NearestPointIndex(_localPos)];
-            return HexCoord.zero;
         }
 
-        
-        void Clear()
+        public void Clear()
         {
-            m_QuadSelected = -1;
-            m_GridSelected.Check(HexCoord.zero);
             m_Areas.Clear();
-            m_Vertices.Clear();
-            m_Quads.Clear();
             foreach (var key in m_ConvexIterator.Keys)
                 m_ConvexIterator[key].Clear();
-            ClearRuntime();
         }
 
-        partial void ClearRuntime();
-        
-        private void Tick(float _deltaTime)
+
+        public void Tick(float _deltaTime)
         {
             m_IterateTimer.Tick(_deltaTime);
             if (m_IterateTimer.m_Timing)
@@ -100,29 +79,34 @@ namespace ConvexGrid
                 m_Areas.Add(_areaCoord,new ConvexArea(UHexagonArea.GetArea(_areaCoord)));
 
             var area = m_Areas[_areaCoord];
+            if (area.m_State >= EConvexIterate.Tesselation)
+                yield break;
+            
             var iterator = area.Tesselation();
             while (iterator.MoveNext())
                 yield return null;
         }
 
-        IEnumerator RelaxArea(HexCoord _areaCoord)
+        IEnumerator RelaxArea(HexCoord _areaCoord,Dictionary<HexCoord,ConvexVertex> _vertices,Action<ConvexArea> _onAreaFinish)
         {
             if (!m_Areas.ContainsKey(_areaCoord))
                 yield break;
             var area = m_Areas[_areaCoord];
-            var iterator = area.Relax(m_Areas,m_Vertices,m_Quads,m_SmoothenTimes,m_SmoothenFactor);
+            if (area.m_State >= EConvexIterate.Relaxed)
+                yield break;
+            
+            var iterator = area.Relax(m_Areas,_vertices);
             while (iterator.MoveNext())
                 yield return null;
+            
+            _onAreaFinish(area);
         }
 
-        void ValidateArea(HexCoord _areaCoord)
+        public void ValidateArea(HexCoord _areaCoord,Dictionary<HexCoord,ConvexVertex> _existVertices,Action<ConvexArea> _onAreaRelaxed)
         {
             foreach (HexagonArea tuple in _areaCoord.GetCoordsInRadius(1).Select(UHexagonArea.GetArea))
                 m_ConvexIterator[EConvexIterate.Tesselation].Push(TessellateArea(tuple.m_Coord));
-            m_ConvexIterator[EConvexIterate.Relaxed].Push(RelaxArea(_areaCoord));
-            ValidateAreaRuntime(_areaCoord);
+            m_ConvexIterator[EConvexIterate.Relaxed].Push(RelaxArea(_areaCoord,_existVertices,_onAreaRelaxed));
         }
-
-        partial void ValidateAreaRuntime(HexCoord _areaCoord);
     }
 }

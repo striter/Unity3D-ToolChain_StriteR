@@ -1,9 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Reflection;
-using OSwizzling;
 using UnityEngine;
 namespace Procedural.Hexagon
 {
@@ -60,22 +56,59 @@ namespace Procedural.Hexagon
             z = rz;
         }
 
-        public static HexCoord operator +(HexCoord _hex1, HexCoord _hex2) =>
-            new HexCoord(_hex1.x + _hex2.x, _hex1.y + _hex2.y, _hex1.z + _hex2.z);
+        public static HexCoord operator +(HexCoord _hex1, HexCoord _hex2)
+        {
+            ref var hex = ref _hex1;
+            hex.x += _hex2.x;
+            hex.y += _hex2.y;
+            hex.z += _hex2.z;
+            return hex;
+        }
+        
+        public static HexCoord operator -(HexCoord _hex1, HexCoord _hex2)
+        {
+            ref var hex = ref _hex1;
+            hex.x -= _hex2.x;
+            hex.y -= _hex2.y;
+            hex.z -= _hex2.z;
+            return hex;
+        }
+        
+        public static HexCoord operator *(HexCoord _hex1, int _value)
+        {
+            ref var hex = ref _hex1;
+            hex.x *= _value;
+            hex.y *= _value;
+            hex.z *= _value;
+            return hex;
+        }
+        
+        public static HexCoord operator %(HexCoord _hex1, int _value)
+        {
+            ref var hex = ref _hex1;
+            hex.x %= _value;
+            hex.y %= _value;
+            hex.z %= _value;
+            return hex;
+        }
 
-        public static HexCoord operator -(HexCoord _hex1, HexCoord _hex2) =>
-            new HexCoord(_hex1.x - _hex2.x, _hex1.y - _hex2.y, _hex1.z - _hex2.z);
-        
-        public static HexCoord operator *(HexCoord _hex1, int _value) =>
-            new HexCoord(_hex1.x * _value, _hex1.y *_value, _hex1.z * _value);
-        
-        public static HexCoord operator %(HexCoord _hex1, int _value) =>
-            new HexCoord(_hex1.x % _value, _hex1.y % _value, _hex1.z % _value);
-        
-        public static HexCoord operator /(HexCoord _hex1, int _value) =>
-            new HexCoord(_hex1.x / _value, _hex1.y / _value, _hex1.z / _value);
+        public static HexCoord operator /(HexCoord _hex1, int _value)
+        {
+            ref var hex = ref _hex1;
+            hex.x /= _value;
+            hex.y /= _value;
+            hex.z /= _value;
+            return hex;
+        }
 
-        public static HexCoord operator -(HexCoord _hex1) => new HexCoord(-_hex1.x, -_hex1.y, -_hex1.z);
+        public static HexCoord operator -(HexCoord _hex1)
+        {
+            ref var hex = ref _hex1;
+            hex.x = -_hex1.x;
+            hex.y = -_hex1.y;
+            hex.z = -_hex1.z;
+            return hex;
+        }
 
         public static bool operator ==(HexCoord offset1, HexCoord offset2) =>
             offset1.x == offset2.x && offset1.y == offset2.y && offset1.z == offset2.z;

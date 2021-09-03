@@ -8,11 +8,15 @@ public static class UCommon
 {
     public static bool InRange(this RangeFloat _value, float _check) => _value.start <= _check && _check <= _value.end;
     public static float InRangeScale(this RangeFloat _value, float _check) => Mathf.InverseLerp(_value.start, _value.end, _check);
+    public static readonly Dictionary<Type, Array> m_Enums = new Dictionary<Type, Array>();
     public static IEnumerable<object> GetEnumValues(Type _enumType)
     {
-        foreach(object enumObj in Enum.GetValues(_enumType))
+        if(!m_Enums.ContainsKey(_enumType))
+            m_Enums.Add(_enumType,Enum.GetValues(_enumType));
+        
+        foreach(Enum enumObj in m_Enums[_enumType])
         {
-            if (Convert.ToInt32(enumObj) == -1||_enumType.ToString() == "Invalid" )
+            if ( Convert.ToInt32(enumObj) == -1||_enumType.ToString() == "Invalid" )
                 continue;
             yield return enumObj;
         }
