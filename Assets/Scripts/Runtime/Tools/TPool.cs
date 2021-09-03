@@ -112,19 +112,27 @@ namespace ObjectPool
     }
     #endregion
     #region Object
-    public interface IPoolCallback
+
+    public static class ObjectPoolHelper
     {
-        void OnPoolInit(Action<int> _DoRecycle);
-        void OnPoolSpawn(int identity);
+        public static T AddItem<T>(this AObjectPool<int, T> _pool)
+        {
+            return _pool.AddItem(_pool.Count);
+        }
+    }
+    public interface IPoolCallback<T>
+    {
+        void OnPoolInit(Action<T> _DoRecycle);
+        void OnPoolSpawn(T identity);
         void OnPoolRecycle();
     }
     
-    public abstract class AObjectPool<T>
+    public abstract class AObjectPool<T,Y>
     {
         private readonly Transform transform;
         private readonly GameObject m_PoolItem;
-        public Dictionary<int, T> m_ActiveItems { get; } = new Dictionary<int, T>();
-        private List<T> m_PooledItems { get; } = new List<T>();
+        public Dictionary<T, Y> m_ActiveItems { get; } = new Dictionary<T, Y>();
+        private List<Y> m_PooledItems { get; } = new List<Y>();
         public int Count => m_ActiveItems.Count;
         protected AObjectPool(GameObject pooledItem,Transform _transform)
         {
@@ -132,18 +140,17 @@ namespace ObjectPool
             m_PoolItem = pooledItem;
             m_PoolItem.gameObject.SetActive(false);
         }
-        public T GetOrAddItem(int identity)
+        public Y TryAddItem(T identity)
         {
             if (ContainsItem(identity))
                 return GetItem(identity);
             return AddItem(identity);
         }
-        public bool ContainsItem(int identity) => m_ActiveItems.ContainsKey(identity);
-        public T GetItem(int identity) => m_ActiveItems[identity];
-        public T AddItem() => AddItem(Count + 1);
-        public T AddItem(int identity)
+        public bool ContainsItem(T identity) => m_ActiveItems.ContainsKey(identity);
+        public Y GetItem(T identity) => m_ActiveItems[identity];
+        public Y AddItem(T identity)
         {
-            T targetItem;
+            Y targetItem;
             if (m_PooledItems.Count > 0)
             {
                 targetItem = m_PooledItems[0];
@@ -152,7 +159,7 @@ namespace ObjectPool
             else
             {
                 targetItem = CreateNewItem(UnityEngine.Object.Instantiate(m_PoolItem, transform).transform);
-                if(targetItem is IPoolCallback iPoolInit)
+                if(targetItem is IPoolCallback<T> iPoolInit)
                     iPoolInit.OnPoolInit(RemoveItem);
             }
             if (m_ActiveItems.ContainsKey(identity)) Debug.LogError(identity + "Already Exists In Grid Dic");
@@ -162,26 +169,26 @@ namespace ObjectPool
             trans.name = identity.ToString();
             trans.SetActive(true);
             
-            if(targetItem is IPoolCallback iPoolSpawn)
+            if(targetItem is IPoolCallback<T> iPoolSpawn)
                 iPoolSpawn.OnPoolSpawn(identity);
             return targetItem;
         }
 
-        public void RemoveItem(int identity)
+        public void RemoveItem(T identity)
         {
-            T item = m_ActiveItems[identity];
+            Y item = m_ActiveItems[identity];
             m_PooledItems.Add(item);
             Transform itemTransform = GetItemTransform(item);
             itemTransform.SetActive(false);
             itemTransform.SetParent(transform);
-            if(item is IPoolCallback iPoolItem)
+            if(item is IPoolCallback<T> iPoolItem)
                 iPoolItem.OnPoolRecycle();
             m_ActiveItems.Remove(identity);
         }
 
-        public void Sort(Comparison<KeyValuePair<int,T>> Compare)
+        public void Sort(Comparison<KeyValuePair<T,Y>> Compare)
         {
-            List<KeyValuePair<int, T>> list = m_ActiveItems.ToList();
+            List<KeyValuePair<T, Y>> list = m_ActiveItems.ToList();
             list.Sort(Compare);
             m_ActiveItems.Clear();
             foreach (var pair in list)
@@ -197,26 +204,26 @@ namespace ObjectPool
                 RemoveItem(item.Key);
         } 
 
-        protected virtual T CreateNewItem(Transform instantiateTrans)
+        protected virtual Y CreateNewItem(Transform instantiateTrans)
         {
             Debug.LogError("Override This Please");
-            return default(T);
+            return default(Y);
         }
-        protected virtual Transform GetItemTransform(T targetItem)
+        protected virtual Transform GetItemTransform(Y targetItem)
         {
             Debug.LogError("Override This Please");
             return null;
         }
     }
 
-    public class TObjectPoolComponent<T> : AObjectPool<T> where T : Component
+    public class TObjectPoolComponent<T> : AObjectPool<int,T> where T : Component
     {
         public TObjectPoolComponent(Transform poolItem) : base(poolItem.gameObject,poolItem.transform.parent) {  }
         protected override T CreateNewItem(Transform instantiateTrans)=>instantiateTrans.GetComponent<T>();
         protected override Transform GetItemTransform(T targetItem) => targetItem.transform;
     }
 
-    public class TObjectPoolTransform : AObjectPool<Transform>
+    public class TObjectPoolTransform : AObjectPool<int,Transform>
     {
         public TObjectPoolTransform(Transform _poolItem) : base(_poolItem.gameObject,_poolItem.transform.parent) {  }
 
@@ -246,7 +253,7 @@ namespace ObjectPool
     }
     
 
-    public class TObjectPoolClass<T> : AObjectPool<T> where T :ITransform
+    public class TObjectPoolClass<T> : AObjectPool<int,T> where T :ITransform
     {
         private readonly Type m_Type;
         public TObjectPoolClass(Transform _poolTrans, Type type) : base(_poolTrans.gameObject,_poolTrans.parent) { m_Type = type; }
@@ -261,27 +268,26 @@ namespace ObjectPool
     }
     
     
-    public abstract class APoolMono : MonoBehaviour,IPoolCallback
+    public abstract class APoolMono<T> : MonoBehaviour,IPoolCallback<T>
     {
-        private Action<int> DoRecycle { get; set; }
-        public int m_Identity { get; private set; }
-        public virtual void OnPoolInit(Action<int> _DoRecycle)=>this.DoRecycle = _DoRecycle;
-        public virtual void OnPoolSpawn(int identity)=> m_Identity = identity;
-        public virtual void OnPoolRecycle()=>m_Identity = -1;
+        private Action<T> DoRecycle { get; set; }
+        public T m_Identity { get; private set; }
+        public virtual void OnPoolInit(Action<T> _DoRecycle)=>this.DoRecycle = _DoRecycle;
+        public virtual void OnPoolSpawn(T identity)=> m_Identity = identity;
+        public virtual void OnPoolRecycle()=> m_Identity = default;
         public void Recycle()=>DoRecycle(m_Identity);
     }
-    public class TObjectPoolMono<T> : AObjectPool<T> where T : APoolMono
+    public class TObjectPoolMono<T,Y> : AObjectPool<T,Y> where Y : APoolMono<T>
     {
-        private readonly Type m_Type;
-        public TObjectPoolMono(Transform _poolTrans, Type type) : base(_poolTrans.gameObject,_poolTrans.parent) { m_Type = type; }
-        public TObjectPoolMono(Transform _poolTrans) : this(_poolTrans,typeof(T) ) {}
-        protected override T CreateNewItem(Transform instantiateTrans)
+        public TObjectPoolMono(Transform _poolTrans) : base(_poolTrans.gameObject,_poolTrans.parent) {  }
+        protected override Y CreateNewItem(Transform instantiateTrans)
         {
-            T item = instantiateTrans.GetComponent<T>();
+            Y item = instantiateTrans.GetComponent<Y>();
             item.OnPoolInit(RemoveItem);
             return item;
         }
-        protected override Transform GetItemTransform(T targetItem) => targetItem.transform;
+        protected override Transform GetItemTransform(Y targetItem) => targetItem.transform;
     }
+    
     #endregion
 }

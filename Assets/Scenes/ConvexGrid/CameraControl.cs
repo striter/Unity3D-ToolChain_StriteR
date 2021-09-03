@@ -46,10 +46,15 @@ namespace ConvexGrid
                 Quaternion.Slerp(m_Camera.transform.rotation,rotation,_deltaTime*10f));
         }
 
-        public void Select(bool _valid,HexCoord _coord, ConvexVertex _vertex)
+        public void OnSelectVertex(ConvexVertex _vertex)
         {
             m_RootPosition = _vertex.m_Coord.ToWorld();
         }
+
+        public void OnAreaConstruct(ConvexArea _area)
+        {
+        }
+        
         public void Clear()
         {
             m_RootPosition = Vector3.zero;

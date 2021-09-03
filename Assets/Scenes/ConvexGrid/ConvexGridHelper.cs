@@ -8,6 +8,7 @@ namespace ConvexGrid
 {
     public static class ConvexGridHelper
     {
+        public const float m_TileHeight = 2f;
         public static int m_SmoothTimes=256;
         public static float m_SmoothFactor = 0.4f;
         static Matrix4x4 TransformMatrix=Matrix4x4.identity;
@@ -30,7 +31,7 @@ namespace ConvexGrid
         public static Coord ToCoord(this Vector3 _world)
         {
             var coord = InvTransformMatrix * _world;
-            return  new Coord(coord.x,  coord.z);
+            return new Coord(coord.x,  coord.z);
         }
         
         public static Vector3 ToWorld(this HexCoord _hexCube)

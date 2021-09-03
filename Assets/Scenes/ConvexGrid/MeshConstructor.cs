@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using GridTest;
+using LinqExtentions;
 using ObjectPool;
 using ObjectPoolStatic;
 using Procedural.Hexagon;
@@ -14,9 +15,10 @@ namespace ConvexGrid
     {
         private Transform m_Selection;
         private Mesh m_SelectionMesh;
+        private readonly ValueChecker<ConvexVertex> m_VertexSelected =new ValueChecker<ConvexVertex>(null);
 
         private TObjectPoolClass<ConvexGridRenderer> m_Meshes;
-        private class ConvexGridRenderer : ITransform,IPoolCallback
+        private class ConvexGridRenderer : ITransform,IPoolCallback<int>
         {
             public Transform iTransform { get; }
             public MeshFilter m_MeshFilter { get; }
@@ -40,9 +42,9 @@ namespace ConvexGrid
             {
             }
 
-            public void ApplyMesh(ConvexArea _area,Dictionary<HexCoord,ConvexVertex> _vertices)
+            public void ApplyMesh(ConvexArea _area)
             {
-                m_Mesh.name = _area.m_Area.m_Coord.ToString();
+                m_Mesh.name = _area.m_Coord.ToString();
                 List<Vector3> vertices = TSPoolList<Vector3>.Spawn(); 
                 List<Vector2> uvs = TSPoolList<Vector2>.Spawn(); 
                 List<int> indices = TSPoolList<int>.Spawn();
@@ -53,12 +55,15 @@ namespace ConvexGrid
                     int index1 = index0 + 1;
                     int index2 = index0 + 2;
                     int index3 = index0 + 3;
-                    quad.Traversal((index, coord) =>
+                    foreach (var tuple in quad.m_CoordQuad.LoopIndex())
                     {
-                        var positionOS = _vertices[coord].m_Coord.ToWorld();
+                        var coord = tuple.value;
+                        var index = tuple.index;
+                        var positionOS = coord.ToWorld();
                         vertices.Add(positionOS);
                         uvs.Add(URender.IndexToQuadUV(index));
-                    });
+                    }
+                    
                     indices.Add(index0);
                     indices.Add(index1);
                     indices.Add(index3);
@@ -74,6 +79,9 @@ namespace ConvexGrid
             }
         }
         
+        public void Tick(float _deltaTime)
+        {
+        }
 
         public void Init(Transform _transform)
         {
@@ -83,22 +91,39 @@ namespace ConvexGrid
             m_Meshes = new TObjectPoolClass<ConvexGridRenderer>(_transform.Find("AreaContainer/AreaMesh"));
         }
 
-        public void Tick(float _deltaTime)
+        public void OnAreaConstruct(ConvexArea _area)
         {
+            Debug.LogWarning($"Area Mesh Populate {_area.m_Coord}");
+            m_Meshes.AddItem().ApplyMesh (_area);
+            PopulateSelectionMesh();
         }
 
-        public void Select(bool _valid,HexCoord _coord, ConvexVertex _vertex)
+        public void Clear()
         {
-            m_Selection.SetActive(_valid);
-            if (!_valid)
+            m_VertexSelected.Check(null);
+            m_Selection.SetActive(false);
+            m_SelectionMesh.Clear();
+            m_Meshes.Clear();
+        }
+
+        public void OnSelectVertex( ConvexVertex _vertex)
+        {
+            if(m_VertexSelected.Check(_vertex))
+                PopulateSelectionMesh();
+            m_Selection.SetActive(_vertex!=null);
+        }
+
+        void PopulateSelectionMesh()
+        {
+            if (m_VertexSelected.m_Value == null)
                 return;
 
-            
+            var startHex = m_VertexSelected.m_Value.m_Hex;
             List<Vector3> vertices = TSPoolList<Vector3>.Spawn();
             List<int> indices = TSPoolList<int>.Spawn();
             List<Vector2> uvs = TSPoolList<Vector2>.Spawn();
             
-            foreach (ConvexQuad quad in _vertex.m_RelativeQuads)
+            foreach (ConvexQuad quad in m_VertexSelected.m_Value.m_RelativeQuads)
             {
                 int startIndex = vertices.Count;
                 int[] indexes = {startIndex, startIndex + 1, startIndex + 2, startIndex + 3};
@@ -106,7 +131,7 @@ namespace ConvexGrid
                 var hexQuad = quad.m_HexQuad;
                 var geometryQuad = quad.m_CoordQuad;
                 var hexVertices = hexQuad;
-                var offset = hexVertices.FindIndex(p=>p==_coord);
+                var offset = hexVertices.FindIndex(p=>p==startHex);
                 for (int i = 0; i < 4; i++)
                 {
                     int index=(i+offset)%4;
@@ -130,20 +155,9 @@ namespace ConvexGrid
             TSPoolList<Vector3>.Recycle(vertices);
             TSPoolList<Vector2>.Recycle(uvs);
             TSPoolList<int>.Recycle(indices);
-        }
-
-
-        public void ConstructArea(ConvexArea _area,Dictionary<HexCoord,ConvexVertex> _vertices)
-        {
-            Debug.LogWarning($"Area Construct{_area}");
-            m_Meshes.AddItem().ApplyMesh (_area,_vertices);
-        }
-        
-        public void Clear()
-        {
-            m_Selection.SetActive(false);
-            m_SelectionMesh.Clear();
-            m_Meshes.Clear();
+            
+            Debug.LogWarning("Selection Mesh Populate");
+            
         }
     }
 }

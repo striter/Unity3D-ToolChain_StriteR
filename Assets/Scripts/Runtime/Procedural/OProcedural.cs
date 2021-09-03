@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Geometry;
 using UnityEngine;
 
@@ -90,7 +92,7 @@ namespace Procedural
     }
 
     [Serializable]
-    public struct CoordQuad : IQuad<Coord>
+    public struct CoordQuad : IQuad<Coord>,IEnumerable<Coord>
     {
         public Coord vertex0 { get; set; }
         public Coord vertex1 { get; set; }
@@ -117,6 +119,19 @@ namespace Procedural
             vertex1 = _vertex1;
             vertex2 = _vertex2;
             vertex3 = _vertex3;
+        }
+
+        public IEnumerator<Coord> GetEnumerator()
+        {
+            yield return vertex0;
+            yield return vertex1;
+            yield return vertex2;
+            yield return vertex3;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

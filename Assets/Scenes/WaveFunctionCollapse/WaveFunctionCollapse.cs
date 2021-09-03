@@ -9,14 +9,14 @@ using Procedural.Tile;
 public class WaveFunctionCollapse : MonoBehaviour
 {
     public int m_ResolvePerFrame = 1;
-    private TObjectPoolMono<WaveFunctionContainer>[] m_PossibilitiesPool;
+    private TObjectPoolMono<int,WaveFunctionContainer>[] m_PossibilitiesPool;
     private TObjectPoolClass<WFCTileContainer> m_ObjectPool;
     private Dictionary<Tile, WFCTileContainer> m_Axis=new Dictionary<Tile, WFCTileContainer>();
     private List<Tile> m_NoneFinalized=new List<Tile>();
     private void Awake()
     {
         m_ObjectPool = new TObjectPoolClass<WFCTileContainer>(transform.Find("Grids/Container"));
-        m_PossibilitiesPool = transform.Find("Possibilities").GetComponentsInChildren<WaveFunctionContainer>().Select(p => new TObjectPoolMono<WaveFunctionContainer>(p.transform)).ToArray();
+        m_PossibilitiesPool = transform.Find("Possibilities").GetComponentsInChildren<WaveFunctionContainer>().Select(p => new TObjectPoolMono<int,WaveFunctionContainer>(p.transform)).ToArray();
         Begin();
     }
 
@@ -116,7 +116,7 @@ public class WaveFunctionCollapse : MonoBehaviour
         return m_FillDic;
     }
     
-    class WFCTileContainer:AWFCTile<ETileDirection,WaveFunctionData>,ITransform,IPoolCallback
+    class WFCTileContainer:AWFCTile<ETileDirection,WaveFunctionData>,ITransform,IPoolCallback<int>
     {
         public Transform iTransform { get; }
         public Tile m_Tile;
@@ -221,7 +221,7 @@ public abstract class AWFCTile<T,Y> where T:Enum where Y:struct,IWFCCompare<T, Y
     }
 }
 
-public abstract class AWFCContainer<T,Y> :APoolMono where T:Enum where Y:struct,IWFCCompare<T, Y>
+public abstract class AWFCContainer<T,Y> :APoolMono<int> where T:Enum where Y:struct,IWFCCompare<T, Y>
 {
     [SerializeField] public Y m_Data;
 }

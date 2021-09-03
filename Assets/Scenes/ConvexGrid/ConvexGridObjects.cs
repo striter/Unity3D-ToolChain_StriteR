@@ -23,6 +23,7 @@ namespace ConvexGrid
 
     public class ConvexVertex
     {
+        public HexCoord m_Hex;
         public Coord m_Coord;
         public readonly List<ConvexQuad> m_RelativeQuads=new List<ConvexQuad>(6);
     }
@@ -43,6 +44,17 @@ namespace ConvexGrid
 
     public class ConvexArea
     {
+        public HexCoord m_Coord { get; private set; }
+        public readonly List<ConvexQuad> m_Quads = new List<ConvexQuad>();
+        public readonly List<ConvexVertex> m_Vertices = new List<ConvexVertex>();
+        public ConvexArea(HexCoord _coord)
+        {
+            m_Coord = _coord;
+        }
+    }
+
+    public class RelaxArea
+    {
         public HexagonArea m_Area { get; }
         public Random m_Random { get; }
         public EConvexIterate m_State { get; private set; }
@@ -55,7 +67,7 @@ namespace ConvexGrid
         
         private readonly Dictionary<HexCoord, Coord> m_RelaxVertices = new Dictionary<HexCoord, Coord>();
         private readonly List<HexQuad> m_RelaxQuads = new List<HexQuad>();
-        public ConvexArea(HexagonArea _area)
+        public RelaxArea(HexagonArea _area)
         {
             m_Area = _area;
             m_Random= new Random(("Test"+m_Area.m_Coord).GetHashCode());
@@ -211,7 +223,7 @@ namespace ConvexGrid
             m_ProceduralTriangles.Clear();
         }
 
-        public IEnumerator Relax(Dictionary<HexCoord,ConvexArea> _areas,Dictionary<HexCoord,ConvexVertex> _existVertices)
+        public IEnumerator Relax(Dictionary<HexCoord,RelaxArea> _areas,Dictionary<HexCoord,ConvexVertex> _existVertices)
         {
             if (m_State != EConvexIterate.Tesselation)
                 yield break;

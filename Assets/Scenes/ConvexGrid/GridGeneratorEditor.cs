@@ -62,11 +62,15 @@ namespace ConvexGrid
             }
         }
         
-        
+                
         #region Gizmos
+
+        public bool m_Gizmos;
         private void OnDrawGizmos()
         {
-            foreach (ConvexArea area in m_Areas.Values)
+            if (!m_Gizmos)
+                return;
+            foreach (RelaxArea area in m_Areas.Values)
                 area.DrawProceduralGizmos();
         }
 
