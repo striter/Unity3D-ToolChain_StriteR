@@ -49,7 +49,11 @@ namespace ConvexGrid
             foreach (var vertex in m_VertexSelected.Values)
             {
                 foreach (ConvexQuad quad in vertex.m_RelativeQuads)
-                    m_TileController.TryAddItem(quad.m_HexQuad).Init(quad);
+                {
+                    if(!m_TileController.ContainsItem(quad.m_HexQuad))
+                        m_TileController.AddItem(quad.m_HexQuad).Init(quad);
+                    m_TileController.GetItem(quad.m_HexQuad).AddConvexRelation(vertex);;
+                }
             }
         }
 
