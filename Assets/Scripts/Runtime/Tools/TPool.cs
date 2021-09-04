@@ -117,7 +117,7 @@ namespace ObjectPool
     {
         public static T AddItem<T>(this AObjectPool<int, T> _pool)
         {
-            return _pool.AddItem(_pool.Count);
+            return _pool.Spawn(_pool.Count);
         }
     }
     public interface IPoolCallback<T>
@@ -127,43 +127,35 @@ namespace ObjectPool
         void OnPoolRecycle();
     }
     
-    public abstract class AObjectPool<T,Y>
+    public abstract class AObjectPool<T,Y>:IEnumerable<Y>
     {
+        public readonly Dictionary<T, Y> m_ItemDic = new Dictionary<T, Y>();
+        readonly Stack<Y> m_PooledItems = new Stack<Y>();
         private readonly Transform transform;
         private readonly GameObject m_PoolItem;
-        public Dictionary<T, Y> m_ActiveItems { get; } = new Dictionary<T, Y>();
-        private List<Y> m_PooledItems { get; } = new List<Y>();
-        public int Count => m_ActiveItems.Count;
+        public int Count => m_ItemDic.Count;
         protected AObjectPool(GameObject pooledItem,Transform _transform)
         {
             transform = _transform;
             m_PoolItem = pooledItem;
             m_PoolItem.gameObject.SetActive(false);
         }
-        public Y TryAddItem(T identity)
-        {
-            if (ContainsItem(identity))
-                return GetItem(identity);
-            return AddItem(identity);
-        }
-        public bool ContainsItem(T identity) => m_ActiveItems.ContainsKey(identity);
-        public Y GetItem(T identity) => m_ActiveItems[identity];
-        public Y AddItem(T identity)
+        public bool Contains(T identity) => m_ItemDic.ContainsKey(identity);
+        public Y GetItem(T identity) => m_ItemDic[identity];
+        public Y this[T identity] => m_ItemDic[identity];
+        public Y Spawn(T identity)
         {
             Y targetItem;
             if (m_PooledItems.Count > 0)
-            {
-                targetItem = m_PooledItems[0];
-                m_PooledItems.Remove(targetItem);
-            }
+                targetItem = m_PooledItems.Pop();
             else
             {
                 targetItem = CreateNewItem(UnityEngine.Object.Instantiate(m_PoolItem, transform).transform);
                 if(targetItem is IPoolCallback<T> iPoolInit)
-                    iPoolInit.OnPoolInit(RemoveItem);
+                    iPoolInit.OnPoolInit(Recycle);
             }
-            if (m_ActiveItems.ContainsKey(identity)) Debug.LogError(identity + "Already Exists In Grid Dic");
-            else m_ActiveItems.Add(identity, targetItem);
+            if (m_ItemDic.ContainsKey(identity)) Debug.LogError(identity + "Already Exists In Grid Dic");
+            else m_ItemDic.Add(identity, targetItem);
             Transform trans = GetItemTransform(targetItem);
             trans.SetAsLastSibling();
             trans.name = identity.ToString();
@@ -174,34 +166,34 @@ namespace ObjectPool
             return targetItem;
         }
 
-        public void RemoveItem(T identity)
+        public void Recycle(T identity)
         {
-            Y item = m_ActiveItems[identity];
-            m_PooledItems.Add(item);
+            Y item = m_ItemDic[identity];
+            m_PooledItems.Push(item);
             Transform itemTransform = GetItemTransform(item);
             itemTransform.SetActive(false);
             itemTransform.SetParent(transform);
             if(item is IPoolCallback<T> iPoolItem)
                 iPoolItem.OnPoolRecycle();
-            m_ActiveItems.Remove(identity);
+            m_ItemDic.Remove(identity);
         }
 
         public void Sort(Comparison<KeyValuePair<T,Y>> Compare)
         {
-            List<KeyValuePair<T, Y>> list = m_ActiveItems.ToList();
+            List<KeyValuePair<T, Y>> list = m_ItemDic.ToList();
             list.Sort(Compare);
-            m_ActiveItems.Clear();
+            m_ItemDic.Clear();
             foreach (var pair in list)
             {
                 GetItemTransform(pair.Value).SetAsLastSibling();
-                m_ActiveItems.Add(pair.Key,pair.Value);
+                m_ItemDic.Add(pair.Key,pair.Value);
             }
         }
 
         public void Clear()
         {
-            foreach (var item in m_ActiveItems.ToArray())
-                RemoveItem(item.Key);
+            foreach (var item in m_ItemDic.ToArray())
+                Recycle(item.Key);
         } 
 
         protected virtual Y CreateNewItem(Transform instantiateTrans)
@@ -213,6 +205,17 @@ namespace ObjectPool
         {
             Debug.LogError("Override This Please");
             return null;
+        }
+
+        public IEnumerator<Y> GetEnumerator()
+        {
+            foreach (var value in m_ItemDic.Values)
+                yield return value;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 
@@ -283,7 +286,7 @@ namespace ObjectPool
         protected override Y CreateNewItem(Transform instantiateTrans)
         {
             Y item = instantiateTrans.GetComponent<Y>();
-            item.OnPoolInit(RemoveItem);
+            item.OnPoolInit(Recycle);
             return item;
         }
         protected override Transform GetItemTransform(Y targetItem) => targetItem.transform;

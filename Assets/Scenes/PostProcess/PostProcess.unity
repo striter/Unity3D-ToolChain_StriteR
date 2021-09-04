@@ -2012,7 +2012,7 @@ MonoBehaviour:
   m_Preview: 1
   m_Data:
     m_BlurType: 2
-    m_BlurSize: 0.45
+    m_BlurSize: 0.42
     m_Iteration: 4
     m_DownSample: 1
     m_Angle: 0

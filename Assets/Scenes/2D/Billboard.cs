@@ -34,8 +34,8 @@ public class Billboard : MonoBehaviour
     void NextTerrain(int index)
     {
         if(index>=0)
-            m_TerrainPool.RemoveItem(index);
+            m_TerrainPool.Recycle(index);
         m_Index++;
-        m_TerrainPool.AddItem(m_Index).transform.position = new Vector3(0,0,20f*(m_Index-1));
+        m_TerrainPool.Spawn(m_Index).transform.position = new Vector3(0,0,20f*(m_Index-1));
     }
 }

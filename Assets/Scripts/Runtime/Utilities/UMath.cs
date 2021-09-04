@@ -13,13 +13,15 @@ public static class UMath
     public static readonly Matrix2x2 m_Rotate180CW = GetRotateMatrix(180*Deg2Rad,true);
     public static readonly Matrix2x2 m_Rotate270CW = GetRotateMatrix(270*Deg2Rad,true);
     
-    public static float GetRadBetween(Vector2 _vec1, Vector2 _vec2)
+    public static float GetRadClockWise(Vector2 _axis,Vector2 _vector)
     {
-        float sin = _vec1.x * _vec2.y - _vec2.x * _vec1.y;
-        float cos = _vec1.x * _vec2.x + _vec1.y * _vec2.y;
+        float sin = _vector.x * _axis.y - _axis.x * _vector.y;
+        float cos = _vector.x * _axis.x + _vector.y * _axis.y;
         
+        Debug.Log(_vector+" "+_axis+"\n"+Mathf.Atan2(sin,cos)*Rad2Deg);
         return Mathf.Atan2(sin,cos);
     }
+
     public static Matrix2x2 GetRotateMatrix(float _rad,bool _clockWise=false)
     {
         float sinA = Mathf.Sin(_rad);

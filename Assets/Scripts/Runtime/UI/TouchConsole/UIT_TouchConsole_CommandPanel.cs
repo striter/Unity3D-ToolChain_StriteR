@@ -74,7 +74,7 @@ public static class UIT_TouchConsoleHelper
         });
         selection.Play(_values, (int value) => {
             OnClick(value);
-            foreach (var button in selection.m_ButtonGrid.m_ActiveItems.Values)
+            foreach (var button in selection.m_ButtonGrid)
                 button.Highlight(button.m_Identity == value);
             if (foldOutButton != null)
                 foldOutButton.m_ButtonTitle.text = _values[value];
@@ -231,7 +231,7 @@ public partial class UIT_TouchConsole
     [PartialMethod(EPartialMethods.Tick,EPartialSorting.CommandConsole)]
     internal void TickConsole(float _deltaTime)
     {
-        foreach (var command in  m_CommandContainers.m_ActiveItems.Values)
+        foreach (var command in  m_CommandContainers)
             command.KeycodeTick();
 
         m_FastKeyCooldownTimer.Tick(_deltaTime);
@@ -249,23 +249,23 @@ public partial class UIT_TouchConsole
             UpdateCommandData();
         }
     }
-    void AddNewPage(string _page) => m_PageSelection.AddItem(m_PageSelection.Count).Init(_page, SelectPage);
+    void AddNewPage(string _page) => m_PageSelection.Spawn(m_PageSelection.Count).Init(_page, SelectPage);
 
     void UpdateCommandData()
     {
-        foreach (var command in m_CommandContainers.m_ActiveItems.Values)
+        foreach (var command in m_CommandContainers)
             command.UpdateItems();
     }
 
-    CommandContainer AddCommandLine(KeyCode _keyCode = KeyCode.None) => m_CommandContainers.AddItem(m_CommandContainers.Count).Init(m_PageSelection.Count - 1, _keyCode, CommandItemCreate, CommandItemRecycle);
-    CommandItemBase CommandItemCreate(Type type) => m_CommandItems[type].AddItem(m_CommandItems[type].Count);
-    void CommandItemRecycle(CommandItemBase item) => m_CommandItems[item.GetType()].RemoveItem(item.m_Identity);
+    CommandContainer AddCommandLine(KeyCode _keyCode = KeyCode.None) => m_CommandContainers.Spawn(m_CommandContainers.Count).Init(m_PageSelection.Count - 1, _keyCode, CommandItemCreate, CommandItemRecycle);
+    CommandItemBase CommandItemCreate(Type type) => m_CommandItems[type].Spawn(m_CommandItems[type].Count);
+    void CommandItemRecycle(CommandItemBase item) => m_CommandItems[item.GetType()].Recycle(item.m_Identity);
     void SelectPage(int _page)
     {
         m_CurrentPage = _page;
-        foreach (var page in m_PageSelection.m_ActiveItems.Values)
+        foreach (var page in m_PageSelection)
             page.Highlight(page.m_Identity == m_CurrentPage);
-        foreach (var command in m_CommandContainers.m_ActiveItems.Values)
+        foreach (var command in m_CommandContainers)
             command.iTransform.SetActive(command.m_PageIndex == m_CurrentPage);
         LayoutRebuilder.ForceRebuildLayoutImmediate(m_LogPanelRect.transform as RectTransform);
     }
@@ -369,13 +369,13 @@ public partial class UIT_TouchConsole
             m_ToggleGrid.Clear();
             foreach (T enumValue in UCommon.GetEnumValues<T>())
             {
-                Toggle tog = m_ToggleGrid.AddItem(Convert.ToInt32(enumValue));
+                Toggle tog = m_ToggleGrid.Spawn(Convert.ToInt32(enumValue));
                 tog.isOn = defaultValue.IsFlagEnable(enumValue);
                 tog.GetComponentInChildren<Text>().text = enumValue.ToString();
                 tog.onValueChanged.RemoveAllListeners();
                 tog.onValueChanged.AddListener(changed => {
                     int totalIndex = 0;
-                    foreach ((int _index, var _toggle) in m_ToggleGrid.m_ActiveItems.SelectPairs())
+                    foreach ((int _index, var _toggle) in m_ToggleGrid.m_ItemDic.SelectPairs())
                         totalIndex += (_toggle.isOn ? _index : 0);
                     _OnFlagChanged((T)Enum.ToObject(typeof(T), totalIndex));
                 });
@@ -395,14 +395,14 @@ public partial class UIT_TouchConsole
             int index=0;
             foreach (var value in values)
             {
-                ButtonSelect btn = m_ButtonGrid.AddItem(index++);
+                ButtonSelect btn = m_ButtonGrid.Spawn(index++);
                 btn.Init(value, _OnClick);
             }
             return this;
         }
         public void Highlight(int _value)
         {
-            foreach (var item in m_ButtonGrid.m_ActiveItems.Values)
+            foreach (var item in m_ButtonGrid)
                 item.Highlight(item.m_Identity == _value);
         }
     }

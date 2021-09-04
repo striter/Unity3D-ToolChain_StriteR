@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Procedural.Hexagon.Geometry;
 
@@ -81,6 +82,7 @@ public static class UIterate
                 return true;
         return false;
     }
+    
     public static bool All<T>(this IIterate<T> _src, Predicate<T> _validate)
     {
         int length = _src.Length;
@@ -88,5 +90,12 @@ public static class UIterate
             if (!_validate(_src.GetElement(i)))
                 return false;
         return true;
+    }
+    
+    public static void AddRange<T>(this IList<T> _src,IIterate<T> _iterate)
+    {
+        int length = _iterate.Length;
+        for(int i=0;i<length;i++)
+            _src.Add(_iterate.GetElement(i));
     }
 }

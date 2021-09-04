@@ -114,7 +114,7 @@ public partial class UIT_TouchConsole
         if (!m_Data.m_Collapse)
         {
             foreach (var logData in m_LogDataQueue)
-                m_Logs.AddItem(m_Logs.Count).Init(logData, m_Stack.ShowTrack).SetData(false, 0);
+                m_Logs.Spawn(m_Logs.Count).Init(logData, m_Stack.ShowTrack).SetData(false, 0);
         }
         else
         {
@@ -128,7 +128,7 @@ public partial class UIT_TouchConsole
                     logCollapses.Add(logData, 1);
             }
             foreach (var logCollapse in logCollapses)
-                m_Logs.AddItem(m_Logs.Count).Init(logCollapse.Key, m_Stack.ShowTrack).SetData(true, logCollapse.Value);
+                m_Logs.Spawn(m_Logs.Count).Init(logCollapse.Key, m_Stack.ShowTrack).SetData(true, logCollapse.Value);
         }
 
         m_Logs.Sort((a, b) => b.Key - a.Key);

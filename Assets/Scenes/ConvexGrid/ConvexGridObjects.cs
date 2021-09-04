@@ -29,6 +29,7 @@ namespace ConvexGrid
     }
     public class ConvexQuad
     {
+        public HexCoord m_Identity { get; private set; }
         public HexQuad m_HexQuad { get; private set; }
         public CoordQuad m_CoordQuad { get; private set; }
         public ConvexQuad(HexQuad _hexQuad,Dictionary<HexCoord,ConvexVertex> _vertices)
@@ -39,6 +40,7 @@ namespace ConvexGrid
                 _vertices[m_HexQuad.vertex1].m_Coord,
                 _vertices[m_HexQuad.vertex2].m_Coord,
                 _vertices[m_HexQuad.vertex3].m_Coord);
+            m_Identity = m_HexQuad.vertex0+m_HexQuad.vertex1+m_HexQuad.vertex2+_hexQuad.vertex3;
         }
     }
 
