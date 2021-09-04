@@ -18,7 +18,6 @@ public static class UMath
         float sin = _vector.x * _axis.y - _axis.x * _vector.y;
         float cos = _vector.x * _axis.x + _vector.y * _axis.y;
         
-        Debug.Log(_vector+" "+_axis+"\n"+Mathf.Atan2(sin,cos)*Rad2Deg);
         return Mathf.Atan2(sin,cos);
     }
 
