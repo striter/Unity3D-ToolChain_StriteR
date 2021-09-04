@@ -103,9 +103,9 @@ namespace Rendering.PostProcess
         public struct Data_Bloom
         {
             public EBloomSample m_SampleMode;
-            [MFoldout(nameof(m_SampleMode),EBloomSample.Luminance)] [Range(0.0f, 2f)] public float m_Threshold;
+            [MFoldout(nameof(m_SampleMode),EBloomSample.Luminance)] [Range(0.0f, 3f)] public float m_Threshold;
             [MFoldout(nameof(m_SampleMode),EBloomSample.Redraw)][CullingMask] public int m_LayerMask;
-            [ColorUsage(false,true)] public Color m_Color;
+            [ColorUsage(true,true)] public Color m_Color;
             public PPData_Blurs m_Blur;
             public bool m_BloomDebug;
 

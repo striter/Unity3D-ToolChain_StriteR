@@ -63,13 +63,13 @@
 			//Bloom
 			#pragma shader_feature_local _BLOOM
 			#if _BLOOM
-		    half3 _BloomColor;
+		    half4 _BloomColor;
 			TEXTURE2D(_Bloom_Blur);SAMPLER(sampler_Bloom_Blur);
 			#endif
 			half3 Bloom(half3 col,float2 uv)
             {
 				#if _BLOOM
-					col += SAMPLE_TEXTURE2D(_Bloom_Blur,sampler_Bloom_Blur, uv).rgb *_BloomColor;
+					col += SAMPLE_TEXTURE2D(_Bloom_Blur,sampler_Bloom_Blur, uv).rgb *_BloomColor.rgb*_BloomColor.a;
 				#endif
 	            return col;
             }

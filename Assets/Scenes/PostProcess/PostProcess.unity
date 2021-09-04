@@ -1909,14 +1909,14 @@ MonoBehaviour:
     m_Bloom: 1
     m_BloomData:
       m_SampleMode: 0
-      m_Threshold: 0.99
+      m_Threshold: 1.22
       m_LayerMask: 0
-      m_Color: {r: 1, g: 1, b: 1, a: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
       m_Blur:
-        m_BlurType: 0
-        m_BlurSize: 1.78
-        m_Iteration: 5
-        m_DownSample: 4
+        m_BlurType: 3
+        m_BlurSize: 0.99
+        m_Iteration: 6
+        m_DownSample: 2
         m_Angle: 0
         m_Vector: {x: 0, y: 0}
       m_BloomDebug: 0

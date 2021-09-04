@@ -105,7 +105,7 @@
 
 	half4 fragDualFilteringUpSample(v2f_img i):SV_TARGET
 	{
-		float2 uvDelta=_MainTex_TexelSize.xy;
+		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
 		half4 sum =0;
 		sum += SampleMainBlur(i.uv , float2(0, 2)*uvDelta);
 		sum += SampleMainBlur(i.uv , float2(2,0)*uvDelta);

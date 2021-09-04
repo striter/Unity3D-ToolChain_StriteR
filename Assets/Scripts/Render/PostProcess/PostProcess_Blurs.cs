@@ -60,7 +60,7 @@ namespace Rendering.PostProcess
     public struct PPData_Blurs
     {
         [MTitle] public EBlurType m_BlurType;
-        [Range(0.15f, 2.5f)] public float m_BlurSize;
+        [Range(0.05f, 2f)] public float m_BlurSize;
         [MFold(nameof(m_BlurType), EBlurType.Grainy)]
         [Range(1, 13)] public int m_Iteration;
         [MFoldout(nameof(m_BlurType), EBlurType.Kawase, EBlurType.GaussianVHSeperated, EBlurType.AverageVHSeperated, EBlurType.Hexagon, EBlurType.DualFiltering)]
@@ -191,7 +191,7 @@ namespace Rendering.PostProcess
                         int upSamplePass = (int)EBlurPass.DualFiltering_UpSample;
 
                         int downSampleCount = Mathf.FloorToInt(_data.m_Iteration / 2f);
-                        m_Material.SetFloat(ID_BlurSize, _data.m_BlurSize / _data.m_DownSample);
+                        m_Material.SetFloat(ID_BlurSize, _data.m_BlurSize / _data.m_DownSample*4f);
 
                         int[] tempIDs = new int[_data.m_Iteration - 1];
                         RenderTargetIdentifier[] tempTextures = new RenderTargetIdentifier[_data.m_Iteration - 1];
