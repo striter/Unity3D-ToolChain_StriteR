@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: PolarBear_GPU_Bone
   m_Shader: {fileID: 4800000, guid: e79474b8018424a458f64c7a68eaf79a, type: 3}
-  m_ShaderKeywords: _BONE _GPU_BONE _INSTANCE_BONE _OPTIMIZE_1BONE
+  m_ShaderKeywords: _ANIM_BONE _BONE _GPU_BONE _INSTANCE_BONE _OPTIMIZE_1BONE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -20,8 +20,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _AnimTex:
-        m_Texture: {fileID: -7975149132758514205, guid: 3810b0f00865ad141adb159b8d668738,
-          type: 2}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BoneAnimTex:
@@ -76,6 +75,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AnimFrameBegin: 0
+    - _AnimFrameEnd: 0
+    - _AnimFrameInterpolate: 0
     - _BeginFrame: 1
     - _BoneCount: 0
     - _BumpScale: 1

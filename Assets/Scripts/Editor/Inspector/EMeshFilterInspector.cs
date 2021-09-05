@@ -50,6 +50,9 @@ namespace TEditor
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
+            if (m_SharedMesh.m_Value == null)
+                return;
+            
             EditorGUILayout.BeginVertical();
             m_EnableVertexDataVisualize = EditorGUILayout.Foldout(m_EnableVertexDataVisualize, "Vertex Data Visualize");
 

@@ -73,8 +73,8 @@ namespace TEditor
         public override void OnPreviewSettings()
         {
             base.OnPreviewSettings();
-            AnimationInstanceParam param= m_PreviewTarget.m_Timer.m_Anim;
-            GUILayout.Label(string.Format("{0},Loop:{1}",param.m_Name, param.m_Loop?1:0));
+            AnimationTickerClip param= m_PreviewTarget.m_Ticker.m_Anim;
+            GUILayout.Label(string.Format("{0},Loop:{1}",param.name, param.loop?1:0));
         }
         public override void OnPreviewGUI(Rect r, GUIStyle background)
         {
@@ -97,14 +97,14 @@ namespace TEditor
         void PreviewGUI()
         {
             GPUAnimationData m_Data = m_PreviewTarget.m_Data;
-            string[] anims = new string[m_Data.m_Animations.Length];
+            string[] anims = new string[m_Data.m_AnimationClips.Length];
             for (int i = 0; i < anims.Length; i++)
-                anims[i] = m_Data.m_Animations[i].m_Name.Substring(m_Data.m_Animations[i].m_Name.LastIndexOf("_") + 1);
+                anims[i] = m_Data.m_AnimationClips[i].name.Substring(m_Data.m_AnimationClips[i].name.LastIndexOf("_") + 1);
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Play:");
-            m_PreviewAnimIndex = GUILayout.SelectionGrid(m_PreviewAnimIndex, anims, m_Data.m_Animations.Length > 5 ? 5 : m_Data.m_Animations.Length);
-            if (m_PreviewTarget.m_Timer.m_AnimIndex != m_PreviewAnimIndex)
+            m_PreviewAnimIndex = GUILayout.SelectionGrid(m_PreviewAnimIndex, anims, m_Data.m_AnimationClips.Length > 5 ? 5 : m_Data.m_AnimationClips.Length);
+            if (m_PreviewTarget.m_Ticker.m_AnimIndex != m_PreviewAnimIndex)
                 m_PreviewTarget.SetAnimation(m_PreviewAnimIndex);
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();

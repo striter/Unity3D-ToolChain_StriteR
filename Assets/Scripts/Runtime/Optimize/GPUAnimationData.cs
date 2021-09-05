@@ -1,40 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 namespace Rendering.Optimize
 {
+    public enum EGPUAnimationMode
+    {
+        Vertex=1,
+        Bone=2,
+    }
+    
     public class GPUAnimationData : ScriptableObject
     {
-        public Mesh m_InstancedMesh;
-        public Texture2D m_AnimationAtlas;
-        public AnimationInstanceParam[] m_Animations;
-        public AnimationInstanceExposeBone[] m_ExposeBones;
+        public EGPUAnimationMode m_Mode;
+        public Mesh m_BakedMesh;
+        public Texture2D m_BakeTexture;
+        public AnimationTickerClip[] m_AnimationClips;
+        public GPUAnimationExposeBone[] m_ExposeBones;
     }
 
-    [System.Serializable]
-    public class AnimationInstanceParam
-    {
-        public string m_Name;
-        public int m_FrameBegin;
-        public float m_FrameRate;
-        public int m_FrameCount;
-        public float m_Length;
-        public bool m_Loop;
-        public AnimationInstanceEvent[] m_Events;
-        public AnimationInstanceParam(string _name, int _startFrame, float _frameRate, float _length, bool _loop, AnimationInstanceEvent[] _events)
-        {
-            m_Name = _name;
-            m_FrameBegin = _startFrame;
-            m_FrameRate = _frameRate;
-            m_FrameCount = (int)(_frameRate * _length);
-            m_Events = _events;
-            m_Length = _length;
-            m_Loop = _loop;
-        }
-    }
-
-    [System.Serializable]
-    public class AnimationInstanceExposeBone
+    [Serializable]
+    public class GPUAnimationExposeBone
     {
         public string m_BoneName;
         public int m_BoneIndex;
@@ -42,15 +28,4 @@ namespace Rendering.Optimize
         public Vector3 m_Direction;
     }
 
-    [System.Serializable]
-    public class AnimationInstanceEvent
-    {
-        public float m_EventFrame;
-        public string m_EventIdentity;
-        public AnimationInstanceEvent(AnimationEvent _event, float frameRate)
-        {
-            m_EventFrame = _event.time * frameRate;
-            m_EventIdentity = _event.functionName;
-        }
-    }
 }

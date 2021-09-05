@@ -155,7 +155,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_X: 24
   m_Y: 24
-  m_Data: {fileID: 11400000, guid: 5f5c2ba9531440e4298da718cbd6c528, type: 2}
+  m_Data: {fileID: 11400000, guid: 800cf71833f33334689c9707a3c559b0, type: 2}
   m_Material: {fileID: 2100000, guid: da59fd264ba4029479aef936c79169b1, type: 2}
 --- !u!4 &504845166
 Transform:
@@ -295,7 +295,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_X: 24
   m_Y: 24
-  m_Data: {fileID: 11400000, guid: 3810b0f00865ad141adb159b8d668738, type: 2}
+  m_Data: {fileID: 11400000, guid: b7053d98b6327eb488a3b2807937aa97, type: 2}
   m_Material: {fileID: 2100000, guid: f385cae1138e86240affe0aef116805d, type: 2}
 --- !u!4 &881906845
 Transform:
