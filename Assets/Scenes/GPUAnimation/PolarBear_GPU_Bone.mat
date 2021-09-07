@@ -20,7 +20,8 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _AnimTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 776161617397314490, guid: b7053d98b6327eb488a3b2807937aa97,
+          type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BoneAnimTex:
