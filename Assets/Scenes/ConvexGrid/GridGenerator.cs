@@ -33,7 +33,7 @@ namespace ConvexGrid
 
         public void Init(Transform _transform)
         {
-            
+            Setup();
         }
         void Setup()
         {
@@ -42,7 +42,7 @@ namespace ConvexGrid
             UHexagonArea.Init(m_AreaRadius,6,true);
         } 
         
-        public void OnSelectVertex(ConvexVertex _vertex)
+        public void OnSelectVertex(ConvexVertex _vertex, byte _height, bool _construct)
         {
             
         }

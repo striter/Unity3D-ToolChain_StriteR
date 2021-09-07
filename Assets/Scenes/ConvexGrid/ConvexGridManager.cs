@@ -7,33 +7,36 @@ using Procedural.Hexagon;
 using Procedural.Hexagon.Area;
 using TTouchTracker;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
-namespace  ConvexGrid
+namespace ConvexGrid
 {
     public interface IConvexGridControl
     {
         void Init(Transform _transform);
         void Tick(float _deltaTime);
-        void OnSelectVertex(ConvexVertex _vertex);
+        void OnSelectVertex(ConvexVertex _vertex,byte _height ,bool _construct);
         void OnAreaConstruct(ConvexArea _area);
         void Clear();
     }
-
+    
+    public interface IGridRaycast
+    {
+        (HexCoord,byte) GetCornerData();
+        (HexCoord,byte) GetNearbyCornerData(ref RaycastHit _hit);
+    }
     public class ConvexGridManager : MonoBehaviour
     {
         private GridGenerator m_GridGenerator;
         private CameraControl m_CameraControl;
         private MeshConstructor m_MeshConstructor;
-        private TileManager m_TileManager;
+        private GridManager m_GridManager;
         private IConvexGridControl[] m_Controls;
         
         public float m_CellRadius = 1;
-        public readonly Dictionary<HexCoord, ConvexArea> m_Areas = new Dictionary<HexCoord, ConvexArea>();
+        private readonly Dictionary<HexCoord, ConvexArea> m_Areas = new Dictionary<HexCoord, ConvexArea>();
         private readonly Dictionary<HexCoord, ConvexVertex> m_Vertices = new Dictionary<HexCoord, ConvexVertex>();
-
-        private readonly List<ConvexQuad> m_Quads = new List<ConvexQuad>();
-
+        private readonly Dictionary<HexCoord,ConvexQuad> m_Quads = new Dictionary<HexCoord, ConvexQuad>();
+        
         private void OnValidate() => ConvexGridHelper.InitMatrix(transform, m_CellRadius);
 
         private void Awake()
@@ -42,11 +45,12 @@ namespace  ConvexGrid
             m_GridGenerator =  GetComponent<GridGenerator>();
             m_CameraControl = new CameraControl(); 
             m_MeshConstructor = new MeshConstructor();
-            m_TileManager = GetComponent<TileManager>();
-            m_Controls = new IConvexGridControl[]{m_GridGenerator,  m_CameraControl, m_MeshConstructor,m_TileManager};
+            m_GridManager = GetComponent<GridManager>();
+            m_Controls = new IConvexGridControl[]{m_GridGenerator,  m_CameraControl, m_MeshConstructor,m_GridManager};
             m_Controls.Traversal(p=>p.Init(transform));
             UIT_TouchConsole.InitDefaultCommands();
-            UIT_TouchConsole.Command("Reset",KeyCode.R).Button(Clear);
+            UIT_TouchConsole.Command("Reset Grid",KeyCode.R).Button(m_GridManager.Clear);
+            UIT_TouchConsole.Command("Reset All",KeyCode.T).Button(Clear);
 
             DoAreaConstruct(new HexCoord(0, 0, 0));
         }
@@ -70,7 +74,7 @@ namespace  ConvexGrid
             float deltaTime = Time.unscaledDeltaTime;
             var touch=TouchTracker.Execute(deltaTime);
             foreach (var clickPos in touch.ResolveClicks()) 
-                Click(clickPos);
+                Click(clickPos,touch.Count==1);
 
             int dragCount = touch.Count;
             var drag = touch.CombinedDrag()*deltaTime*5f;
@@ -86,23 +90,30 @@ namespace  ConvexGrid
             }
         }
         
-        void Click(Vector2 screenPos)
+        void Click(Vector2 screenPos,bool construct)
         {
-            GRay ray = m_CameraControl.m_Camera.ScreenPointToRay(screenPos);
+            Ray ray=m_CameraControl.m_Camera.ScreenPointToRay(screenPos);
+            if(Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, int.MaxValue))
+            {
+                var raycast = hit.collider.GetComponent<IGridRaycast>();
+                var tuple = construct? raycast.GetNearbyCornerData(ref hit):raycast.GetCornerData();
+                m_Controls.Traversal(p=>p.OnSelectVertex(m_Vertices[tuple.Item1],tuple.Item2,construct));
+                return;
+            }
+
             GPlane plane = new GPlane(Vector3.up, transform.position);
             var hitPos = ray.GetPoint(UGeometryVoxel.RayPlaneDistance(plane, ray));
             var hitCoord =  hitPos.ToCoord();
             var hitHex=hitCoord.ToCube();
-
-            if (ValidateSelection(hitCoord, out HexCoord selectCoord))
-                m_Controls.Traversal(p=>p.OnSelectVertex(m_Vertices[selectCoord]));
+            if (ValidateGridSelection(hitCoord, out HexCoord selectCoord))
+                m_Controls.Traversal(p=>p.OnSelectVertex(m_Vertices[selectCoord],0,construct));
             DoAreaConstruct(UHexagonArea.GetBelongAreaCoord(hitHex));
         }
 
-        public bool ValidateSelection(Coord _localPos,out HexCoord coord)
+        public bool ValidateGridSelection(Coord _localPos,out HexCoord coord)
         {
             coord=HexCoord.zero;
-            var quad= m_Quads.Find(p =>p.m_CoordQuad.IsPointInside(_localPos),out int quadIndex);
+            var quad= m_Quads.Values.Find(p =>p.m_CoordQuad.IsPointInside(_localPos),out int quadIndex);
             if (quadIndex != -1)
             {
                 var quadVertexIndex = quad.m_CoordQuad.NearestPointIndex(_localPos);
@@ -126,25 +137,33 @@ namespace  ConvexGrid
             var areaCoord = _area.m_Area.m_Coord;
             var area = new ConvexArea(areaCoord);
             m_Areas.Add(areaCoord,area);
-            //Push Veritices
+            //Insert Vertices&Quads
             foreach (var pair in _area.m_Vertices)
             {
                 var hex = pair.Key;
                 var coord = pair.Value;
+                
                 m_Vertices.TryAdd(hex, () => new ConvexVertex() {m_Hex = hex,m_Coord = coord});
                 area.m_Vertices.Add(m_Vertices[hex]);
             }
 
-            //Push Quads
             foreach (var quad in _area.m_Quads)
             {
                 var convexQuad = new ConvexQuad(quad,m_Vertices);
-                m_Quads.Add(convexQuad);
+                m_Quads.Add(convexQuad.m_Identity,convexQuad);
                 area.m_Quads.Add(convexQuad);
-                
-                for (int i = 0; i < quad.Length; i++)
-                    m_Vertices[ quad[i]].m_RelativeQuads.Add(convexQuad);
             }
+
+            //Fill Relations
+            foreach (var areaQuad in _area.m_Quads)
+            {
+                for (int i = 0; i < areaQuad.Length; i++)
+                {
+                    var convexQuad = m_Quads[areaQuad.m_Identity];
+                    m_Vertices[areaQuad[i]].AddNearbyQuads(convexQuad);
+                }
+            }
+
             _area.CleanData();
             
             m_Controls.Traversal(p=>p.OnAreaConstruct(m_Areas[areaCoord]));
@@ -163,9 +182,9 @@ namespace  ConvexGrid
                 return;
             Gizmos.color = Color.green.SetAlpha(.3f);
             foreach (var vertex in m_Vertices.Values)
-                Gizmos.DrawSphere(vertex.m_Coord.ToWorld(),.2f);
+                Gizmos.DrawSphere(vertex.m_Coord.ToPosition(),.2f);
             foreach (var quad in m_Quads)
-                Gizmos_Extend.DrawLines(quad.m_HexQuad.ConstructIteratorArray(p=>m_Vertices[p].m_Coord.ToWorld()));
+                Gizmos_Extend.DrawLines(quad.Value.m_HexQuad.ConstructIteratorArray(p=>m_Vertices[p].m_Coord.ToPosition()));
         }
 #endif
     }

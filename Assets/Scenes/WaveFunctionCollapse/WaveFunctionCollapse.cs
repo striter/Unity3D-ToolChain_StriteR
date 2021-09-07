@@ -58,10 +58,10 @@ public class WaveFunctionCollapse : MonoBehaviour
         for(int y=-4;y<=4;y++)
             for (int x = -7; x <=7; x++)
             {
-                var possibilities = m_PossibilitiesPool.Select(p => p.AddItem()).ToList();
+                var possibilities = m_PossibilitiesPool.Select(p => p.Spawn()).ToList();
                 
                 var tile = new Tile(x, y);
-                var container =m_ObjectPool.AddItem().Warmup(tile,possibilities,OnSelect) ;
+                var container =m_ObjectPool.Spawn().Warmup(tile,possibilities,OnSelect) ;
                 container.m_RectTransform.anchoredPosition =  new Vector2(tile.x*102,tile.y*102);
                 transform.gameObject.name = tile.ToString();
                 m_Axis.Add(tile,  container);
@@ -221,7 +221,7 @@ public abstract class AWFCTile<T,Y> where T:Enum where Y:struct,IWFCCompare<T, Y
     }
 }
 
-public abstract class AWFCContainer<T,Y> :APoolMono<int> where T:Enum where Y:struct,IWFCCompare<T, Y>
+public abstract class AWFCContainer<T,Y> :PoolBehaviour<int> where T:Enum where Y:struct,IWFCCompare<T, Y>
 {
     [SerializeField] public Y m_Data;
 }

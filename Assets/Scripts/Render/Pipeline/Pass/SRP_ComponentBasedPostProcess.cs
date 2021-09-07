@@ -33,7 +33,7 @@ namespace Rendering.Pipeline
             ConfigureTarget(colorAttachment,depthAttachment);
         }
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
-        {
+        {            
             CommandBuffer cmd = CommandBufferPool.Get("Component Based Post Process");
             var descriptor = renderingData.cameraData.cameraTargetDescriptor;
             descriptor.msaaSamples = 1;

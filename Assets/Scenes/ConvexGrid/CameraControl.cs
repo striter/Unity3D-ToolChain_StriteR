@@ -12,9 +12,9 @@ namespace ConvexGrid
         private Transform m_CameraRoot;
         public  Camera m_Camera { get; private set; }
         private Vector3 m_RootPosition;
-        public float m_Pitch;
-        public float m_Yaw;
-        public float m_Offset;
+        float m_Pitch;
+        float m_Yaw;
+        float m_Offset;
 
         public void Init(Transform _transform)
         {
@@ -46,9 +46,9 @@ namespace ConvexGrid
                 Quaternion.Slerp(m_Camera.transform.rotation,rotation,_deltaTime*10f));
         }
 
-        public void OnSelectVertex(ConvexVertex _vertex)
+        public void OnSelectVertex( ConvexVertex _vertex, byte _height, bool _construct)
         {
-            m_RootPosition = _vertex.m_Coord.ToWorld();
+            m_RootPosition = _vertex.m_Coord.ToPosition();
         }
 
         public void OnAreaConstruct(ConvexArea _area)

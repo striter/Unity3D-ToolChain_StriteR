@@ -17,8 +17,8 @@ public struct WaveFunctionData:IWFCCompare<ETileDirection,WaveFunctionData>
         switch (_dir)
         {
             default:throw new Exception("Invalid Direction Found:" + _dir);
-            case ETileDirection.Top:return m_Top == _dst.m_Bottom;
-            case ETileDirection.Bottom:return m_Bottom == _dst.m_Top;
+            case ETileDirection.Forward:return m_Top == _dst.m_Bottom;
+            case ETileDirection.Back:return m_Bottom == _dst.m_Top;
             case ETileDirection.Left:return m_Left == _dst.m_Right;
             case ETileDirection.Right:return m_Right == _dst.m_Left;
         }

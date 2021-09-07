@@ -15,9 +15,7 @@ namespace ConvexGrid
     {
         private Transform m_Selection;
         private Mesh m_SelectionMesh;
-        private readonly ValueChecker<ConvexVertex> m_VertexSelected =new ValueChecker<ConvexVertex>(null);
-
-        private TObjectPoolClass<ConvexGridRenderer> m_Meshes;
+        private TObjectPoolClass<ConvexGridRenderer> m_AreaMeshes;
         private class ConvexGridRenderer : ITransform,IPoolCallback<int>
         {
             public Transform iTransform { get; }
@@ -45,9 +43,13 @@ namespace ConvexGrid
             public void ApplyMesh(ConvexArea _area)
             {
                 m_Mesh.name = _area.m_Coord.ToString();
-                List<Vector3> vertices = TSPoolList<Vector3>.Spawn(); 
-                List<Vector2> uvs = TSPoolList<Vector2>.Spawn(); 
-                List<int> indices = TSPoolList<int>.Spawn();
+                int quadCount = _area.m_Quads.Count;
+                int vertexCount = quadCount * 4;
+                int indexCount = quadCount * 6;
+                List<Vector3> vertices = TSPoolList<Vector3>.Spawn(vertexCount);
+                List<Vector3> normals = TSPoolList<Vector3>.Spawn(vertexCount);
+                List<Vector2> uvs = TSPoolList<Vector2>.Spawn(vertexCount); 
+                List<int> indices = TSPoolList<int>.Spawn(indexCount);
 
                 foreach (var quad in _area.m_Quads)
                 {
@@ -59,8 +61,9 @@ namespace ConvexGrid
                     {
                         var coord = tuple.value;
                         var index = tuple.index;
-                        var positionOS = coord.ToWorld();
+                        var positionOS = coord.ToPosition();
                         vertices.Add(positionOS);
+                        normals.Add(Vector3.up);
                         uvs.Add(URender.IndexToQuadUV(index));
                     }
                     
@@ -74,8 +77,14 @@ namespace ConvexGrid
             
                 m_Mesh.Clear();
                 m_Mesh.SetVertices(vertices);
+                m_Mesh.SetNormals(normals);
                 m_Mesh.SetUVs(0,uvs);
-                m_Mesh.SetIndices(indices,MeshTopology.Triangles,0,true);
+                m_Mesh.SetIndices(indices,MeshTopology.Triangles,0,false);
+                
+                TSPoolList<Vector3>.Recycle(vertices);
+                TSPoolList<Vector3>.Recycle(normals);
+                TSPoolList<Vector2>.Recycle(uvs);
+                TSPoolList<int>.Recycle(indices);
             }
         }
         
@@ -88,54 +97,50 @@ namespace ConvexGrid
             m_Selection = _transform.Find("Selection");
             m_SelectionMesh = new Mesh {name="Selection",hideFlags = HideFlags.HideAndDontSave};
             m_Selection.GetComponent<MeshFilter>().sharedMesh = m_SelectionMesh;
-            m_Meshes = new TObjectPoolClass<ConvexGridRenderer>(_transform.Find("AreaContainer/AreaMesh"));
+            m_AreaMeshes = new TObjectPoolClass<ConvexGridRenderer>(_transform.Find("AreaContainer/AreaMesh"));
         }
 
         public void OnAreaConstruct(ConvexArea _area)
         {
             Debug.LogWarning($"Area Mesh Populate {_area.m_Coord}");
-            m_Meshes.AddItem().ApplyMesh (_area);
-            PopulateSelectionMesh();
+            m_AreaMeshes.Spawn().ApplyMesh (_area);
         }
 
         public void Clear()
         {
-            m_VertexSelected.Check(null);
             m_Selection.SetActive(false);
             m_SelectionMesh.Clear();
-            m_Meshes.Clear();
+            m_AreaMeshes.Clear();
         }
 
-        public void OnSelectVertex( ConvexVertex _vertex)
+        public void OnSelectVertex(ConvexVertex _vertex,byte _height,bool _construct)
         {
-            if(m_VertexSelected.Check(_vertex))
-                PopulateSelectionMesh();
-            m_Selection.SetActive(_vertex!=null);
+            m_Selection.SetActive(_construct);
+            if(_construct)            
+                PopulateSelectionMesh(_vertex,_height);
         }
 
-        void PopulateSelectionMesh()
+        void PopulateSelectionMesh(ConvexVertex _vertex,int _height)
         {
-            if (m_VertexSelected.m_Value == null)
-                return;
-
-            var startHex = m_VertexSelected.m_Value.m_Hex;
-            List<Vector3> vertices = TSPoolList<Vector3>.Spawn();
-            List<int> indices = TSPoolList<int>.Spawn();
-            List<Vector2> uvs = TSPoolList<Vector2>.Spawn();
+            int quadCount = _vertex.m_NearbyQuads.Count;
+            int vertexCount = quadCount * 4;
+            int indexCount = quadCount * 6;
+            List<Vector3> vertices = TSPoolList<Vector3>.Spawn(vertexCount);
+            // List<Vector3> normals=TSPoolList<Vector3>.Spawn(vertexCount);
+            List<Vector2> uvs = TSPoolList<Vector2>.Spawn(vertexCount);
+            List<int> indices = TSPoolList<int>.Spawn(indexCount);
             
-            foreach (ConvexQuad quad in m_VertexSelected.m_Value.m_RelativeQuads)
+            foreach (var tuple in _vertex.m_NearbyQuads.LoopIndex())
             {
                 int startIndex = vertices.Count;
                 int[] indexes = {startIndex, startIndex + 1, startIndex + 2, startIndex + 3};
-
-                var hexQuad = quad.m_HexQuad;
+                var quad = tuple.value;
+                var offset = _vertex.m_NearbyQuadsStartIndex[tuple.index];
                 var geometryQuad = quad.m_CoordQuad;
-                var hexVertices = hexQuad;
-                var offset = hexVertices.FindIndex(p=>p==startHex);
                 for (int i = 0; i < 4; i++)
                 {
-                    int index=(i+offset)%4;
-                    vertices.Add(  geometryQuad[index].ToWorld());
+                    vertices.Add(  geometryQuad[(i+offset)%4].ToPosition());
+                    // normals.Add(Vector3.up);
                     uvs.Add(URender.IndexToQuadUV(i));
                 }
 
@@ -148,16 +153,17 @@ namespace ConvexGrid
             }
             
             m_SelectionMesh.Clear();
+            // m_SelectionMesh.SetNormals(normals);
             m_SelectionMesh.SetVertices(vertices);
             m_SelectionMesh.SetUVs(0,uvs);
             m_SelectionMesh.SetIndices(indices,MeshTopology.Triangles,0,false);
             
             TSPoolList<Vector3>.Recycle(vertices);
+            // TSPoolList<Vector3>.Recycle(normals);
             TSPoolList<Vector2>.Recycle(uvs);
             TSPoolList<int>.Recycle(indices);
             
-            Debug.LogWarning("Selection Mesh Populate");
-            
+            // Debug.LogWarning("Selection Mesh Populate");
         }
     }
 }

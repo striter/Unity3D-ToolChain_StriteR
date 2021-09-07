@@ -281,14 +281,14 @@ MonoBehaviour:
     m_Highlight: 1
     m_HighlightData:
       m_CullingMask: 256
-      m_Color: {r: 4.867145, g: 3.389164, b: 3.5050652, a: 1}
+      m_Color: {r: 1.6379936, g: 0.6567427, b: 0.7420689, a: 1}
       m_ZClip: 1
       m_ZLesser: 1
       m_ZOffset: 0.2
       m_Blur:
         m_BlurType: 3
-        m_BlurSize: 2.48
-        m_Iteration: 4
+        m_BlurSize: 0.69
+        m_Iteration: 7
         m_DownSample: 1
         m_Angle: 0
         m_Vector: {x: 0.5, y: 0.5}
@@ -1915,7 +1915,7 @@ MonoBehaviour:
       m_Blur:
         m_BlurType: 3
         m_BlurSize: 0.99
-        m_Iteration: 6
+        m_Iteration: 7
         m_DownSample: 2
         m_Angle: 0
         m_Vector: {x: 0, y: 0}

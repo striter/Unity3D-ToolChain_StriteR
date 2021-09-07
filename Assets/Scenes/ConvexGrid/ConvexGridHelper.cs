@@ -1,14 +1,19 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Procedural;
 using Procedural.Hexagon;
+using Procedural.Tile;
 using UnityEngine;
 
 namespace ConvexGrid
 {
+
     public static class ConvexGridHelper
     {
-        public const float m_TileHeight = 2f;
+        public static readonly Vector3 m_TileHeight = 4f*Vector3.up;
+        public static readonly Vector3 m_CornerOffset = m_TileHeight / 2f;
+        
         public static int m_SmoothTimes=256;
         public static float m_SmoothFactor = 0.4f;
         static Matrix4x4 TransformMatrix=Matrix4x4.identity;
@@ -23,7 +28,7 @@ namespace ConvexGrid
             m_SmoothTimes = _smoothTimes;
             m_SmoothFactor = _smoothFactor;
         }
-        public static Vector3 ToWorld(this Coord _pixel)
+        public static Vector3 ToPosition(this Coord _pixel)
         {
             return TransformMatrix* new Vector3(_pixel.x,0,_pixel.y);
         }
@@ -34,9 +39,19 @@ namespace ConvexGrid
             return new Coord(coord.x,  coord.z);
         }
         
-        public static Vector3 ToWorld(this HexCoord _hexCube)
+        public static Vector3 ToPosition(this HexCoord _hexCube)
         {
-            return _hexCube.ToPixel().ToWorld();
+            return _hexCube.ToPixel().ToPosition();
+        }
+
+        public static Vector3 GetVoxelHeight(GridPile _id)
+        {
+            return m_CornerOffset + m_TileHeight * _id.height;
+        }
+
+        public static Vector3 GetCornerHeight(GridPile _id)
+        {
+            return m_TileHeight * _id.height;
         }
     }
 }

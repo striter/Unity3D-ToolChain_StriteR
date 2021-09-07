@@ -65,7 +65,6 @@ namespace Rendering.PostProcess
 
         public virtual void OnValidate(ref T _data) 
         {  
-        
         }
         public virtual void ExecutePostProcessBuffer( CommandBuffer _buffer,  RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _descriptor,ref T _data)
         {

@@ -25,13 +25,21 @@ namespace ConvexGrid
     {
         public HexCoord m_Hex;
         public Coord m_Coord;
-        public readonly List<ConvexQuad> m_RelativeQuads=new List<ConvexQuad>(6);
+        public readonly List<ConvexQuad> m_NearbyQuads = new List<ConvexQuad>();
+        public readonly int[] m_NearbyQuadsStartIndex = new int[6];
+        public void AddNearbyQuads(ConvexQuad _quad)
+        {
+            m_NearbyQuadsStartIndex[m_NearbyQuads.Count] = _quad.m_HexQuad.FindIndex(p => p == m_Hex);
+            m_NearbyQuads.Add(_quad);
+        }
     }
     public class ConvexQuad
     {
-        public HexCoord m_Identity { get; private set; }
+        public HexCoord m_Identity => m_HexQuad.m_Identity;
         public HexQuad m_HexQuad { get; private set; }
         public CoordQuad m_CoordQuad { get; private set; }
+        public Coord m_CoordCenter { get; private set; }
+        public readonly ConvexVertex[] m_Vertices = new ConvexVertex[4];
         public ConvexQuad(HexQuad _hexQuad,Dictionary<HexCoord,ConvexVertex> _vertices)
         {
             m_HexQuad = _hexQuad;
@@ -40,7 +48,11 @@ namespace ConvexGrid
                 _vertices[m_HexQuad.vertex1].m_Coord,
                 _vertices[m_HexQuad.vertex2].m_Coord,
                 _vertices[m_HexQuad.vertex3].m_Coord);
-            m_Identity = m_HexQuad.vertex0+m_HexQuad.vertex1+m_HexQuad.vertex2+_hexQuad.vertex3;
+            m_Vertices[0] = _vertices[m_HexQuad.vertex0];
+            m_Vertices[1] = _vertices[m_HexQuad.vertex1];
+            m_Vertices[2] = _vertices[m_HexQuad.vertex2];
+            m_Vertices[3] = _vertices[m_HexQuad.vertex3];
+            m_CoordCenter = m_CoordQuad.GetBaryCenter();
         }
     }
 
@@ -338,24 +350,24 @@ namespace ConvexGrid
         {
             Gizmos.color = Color.white.SetAlpha(.5f);
             foreach (var vertex in m_ProceduralVertices)
-                Gizmos.DrawSphere(vertex.ToWorld(),.3f);
+                Gizmos.DrawSphere(vertex.ToPosition(),.3f);
             Gizmos.color = Color.white.SetAlpha(.2f);
             foreach (var triangle in m_ProceduralTriangles)
-                Gizmos_Extend.DrawLines(triangle.ConstructIteratorArray(p=>p.ToWorld()));
+                Gizmos_Extend.DrawLines(triangle.ConstructIteratorArray(p=>p.ToPosition()));
             foreach (var quad in m_ProceduralQuads)
-                Gizmos_Extend.DrawLines(quad.ConstructIteratorArray(p=>p.ToWorld()));
+                Gizmos_Extend.DrawLines(quad.ConstructIteratorArray(p=>p.ToPosition()));
             
             Gizmos.color = Color.yellow;
             foreach (var vertex in m_RelaxVertices.Values)
-                Gizmos.DrawSphere(vertex.ToWorld(),.2f);
+                Gizmos.DrawSphere(vertex.ToPosition(),.2f);
             foreach (var quad in m_RelaxQuads)
-                Gizmos_Extend.DrawLines(quad.ConstructIteratorArray(p=>m_RelaxVertices[p].ToWorld()));
+                Gizmos_Extend.DrawLines(quad.ConstructIteratorArray(p=>m_RelaxVertices[p].ToPosition()));
 
             Gizmos.color = Color.green;
             foreach (var vertex in m_Vertices.Values)
-                Gizmos.DrawSphere(vertex.ToWorld(),.2f);
+                Gizmos.DrawSphere(vertex.ToPosition(),.2f);
             foreach (var quad in m_Quads)
-                Gizmos_Extend.DrawLines(quad.ConstructIteratorArray(p=>m_Vertices[p].ToWorld()));
+                Gizmos_Extend.DrawLines(quad.ConstructIteratorArray(p=>m_Vertices[p].ToPosition()));
         }
         #endif
     }

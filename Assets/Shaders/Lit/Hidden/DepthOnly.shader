@@ -2,17 +2,11 @@
 {
     SubShader
     {
-		Pass
-		{
-			Blend Off
-			ZWrite On
-			ZTest LEqual
+		Blend Off
+		ZWrite On
+		ZTest LEqual
 			
-			NAME "MAIN"
-			Tags{"LightMode" = "DepthOnly"}
-			HLSLPROGRAM
-			#pragma vertex ShadowVertex
-			#pragma fragment ShadowFragment
+    	HLSLINCLUDE
 			#pragma multi_compile_instancing
 			#include "Assets/Shaders/Library/Common.hlsl"
 			#include "Assets/Shaders/Library/Additional/HorizonBend.hlsl"
@@ -44,6 +38,26 @@
 			{
 				return 0;
 			}
+    	ENDHLSL
+		Pass
+		{
+			NAME "MAIN"
+			Tags{"LightMode" = "DepthOnly"}
+			HLSLPROGRAM
+			#pragma vertex ShadowVertex
+			#pragma fragment ShadowFragment
+
+			ENDHLSL
+		}		
+    	
+    	Pass
+		{
+			NAME "Forward"
+			Tags{"LightMode" = "UniversalForward"}
+			HLSLPROGRAM
+			#pragma vertex ShadowVertex
+			#pragma fragment ShadowFragment
+
 			ENDHLSL
 		}
     }
