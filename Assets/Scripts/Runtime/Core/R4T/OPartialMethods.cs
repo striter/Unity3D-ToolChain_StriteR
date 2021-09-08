@@ -7,8 +7,8 @@ using LinqExtentions;
 [AttributeUsage(AttributeTargets.Method)]
 public class PartialMethodAttribute : Attribute
 {
-    public object m_Trigger;
-    public object m_Sorting;
+    public readonly object m_Trigger;
+    public readonly object m_Sorting;
     public PartialMethodAttribute(object _trigger, object _sorting)
     {
         if (!_trigger.GetType().IsValueType || !_sorting.GetType().IsValueType)
@@ -19,19 +19,19 @@ public class PartialMethodAttribute : Attribute
     }
 }
 public interface IPartialMethods<T, Y> where T : Enum where Y : struct { }
-public static class ParticalMethods_Helper 
+public static class PartialMethodsHelper 
 {
-    static readonly Type s_ParticalAttribute = typeof(PartialMethodAttribute);
-    static Dictionary<Type, Dictionary<Enum, MethodInfo[]>> s_CollectedMethods=new Dictionary<Type, Dictionary<Enum, MethodInfo[]>>();
+    static readonly Type m_PartialAttribute = typeof(PartialMethodAttribute);
+    static readonly Dictionary<Type, Dictionary<Enum, MethodInfo[]>> m_MethodsCollected=new Dictionary<Type, Dictionary<Enum, MethodInfo[]>>();
     public static void InitMethods<T,Y>(this IPartialMethods<T,Y> _target) where T : Enum where Y : struct
     {
         Type targetType = _target.GetType();
-        if (s_CollectedMethods.ContainsKey(targetType))
+        if (m_MethodsCollected.ContainsKey(targetType))
             return;
         Type triggerType = typeof(T);
         Type sortingType = typeof(Y);
         var triggerMethods = targetType.GetMethods(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic)
-            .Select(p => (p,(PartialMethodAttribute)p.GetCustomAttribute(s_ParticalAttribute))).Collect(p=>
+            .Select(p => (p,(PartialMethodAttribute)p.GetCustomAttribute(m_PartialAttribute))).Collect(p=>
             {
                 var attribute = p.Item2;
             if (attribute == null)
@@ -47,16 +47,19 @@ public static class ParticalMethods_Helper
         Dictionary<Enum, MethodInfo[]> collectedMethods = new Dictionary<Enum, MethodInfo[]>();
         foreach (var methodGroup in triggerMethods)
             collectedMethods.Add(methodGroup.Key, methodGroup.OrderBy(p=>p.Key).Select(p=>p.Value).ToArray());
-        s_CollectedMethods.Add(targetType, collectedMethods);
+        m_MethodsCollected.Add(targetType, collectedMethods);
     }
 
     public static void InvokeMethods<T,Y>(this IPartialMethods<T,Y> _target,T _trigger,params object[] _objects) where T : Enum where Y:struct
     {
         Type type = _target.GetType();
-        if (!s_CollectedMethods.ContainsKey(type))
-            throw new Exception("Should Init Before Trigger:" + type);
+        if (!m_MethodsCollected.ContainsKey(type))
+            return;
 
-        foreach (var method in s_CollectedMethods[type][_trigger])
+        if (!m_MethodsCollected[type].ContainsKey(_trigger))
+            return;
+        
+        foreach (var method in m_MethodsCollected[type][_trigger])
             method.Invoke(_target,_objects);
     }
 }

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Geometry;
 using Geometry.Pixel;
-using GridTest;
-using ObjectPoolStatic;
+using TPoolStatic;
 using Procedural;
 using Procedural.Hexagon;
 using UnityEngine;
@@ -58,12 +57,14 @@ namespace ConvexGrid
 
     public class ConvexArea
     {
-        public HexCoord m_Coord { get; private set; }
+        public HexCoord m_Coord;
+        public Coord m_Center;
         public readonly List<ConvexQuad> m_Quads = new List<ConvexQuad>();
         public readonly List<ConvexVertex> m_Vertices = new List<ConvexVertex>();
-        public ConvexArea(HexCoord _coord)
+        public ConvexArea(HexCoord _area,Coord _center)
         {
-            m_Coord = _coord;
+            m_Coord = _area;
+            m_Center = _center;
         }
     }
 

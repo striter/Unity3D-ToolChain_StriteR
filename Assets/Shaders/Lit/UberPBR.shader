@@ -91,9 +91,9 @@
 
 			struct a2f
 			{
-				half3 positionOS : POSITION;
-				half3 normalOS:NORMAL;
-				half4 tangentOS:TANGENT;
+				float3 positionOS : POSITION;
+				float3 normalOS:NORMAL;
+				float4 tangentOS:TANGENT;
 				float2 uv:TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -108,7 +108,7 @@
 				half3 tangentWS:TEXCOORD4;
 				half3 biTangentWS:TEXCOORD5;
 				half3 viewDirWS:TEXCOORD6;
-				FOG_COORD(7)
+				FOG_COORD(6)
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -120,12 +120,12 @@
 				o.uv = float4( TRANSFORM_TEX_INSTANCE(v.uv,_MainTex),TRANSFORM_TEX_INSTANCE(v.uv,_DetailNormalTex));
 				o.positionWS=TransformObjectToWorld(v.positionOS);
 				o.positionWS=HorizonBend(o.positionWS);
-				o.positionCS = TransformWorldToHClip(o.positionWS);
+				o.positionCS = TransformObjectToHClip(v.positionOS);
 				o.positionHCS=o.positionCS;
 				o.normalWS=normalize(mul((float3x3)unity_ObjectToWorld,v.normalOS));
 				o.tangentWS=normalize(mul((float3x3)unity_ObjectToWorld,v.tangentOS.xyz));
 				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
-				o.viewDirWS=TransformWorldToViewDir(o.positionWS,UNITY_MATRIX_V);
+				o.viewDirWS=GetWorldSpaceViewDir(o.positionWS);
 				FOG_TRANSFER(o);
 				return o;
 			}
@@ -148,16 +148,16 @@
             #pragma multi_compile_fog
             #pragma target 3.5
 			
-			half4 frag(v2f i,out float depth:SV_DEPTH) :SV_TARGET
+			float4 frag(v2f i,out float depth:SV_DEPTH) :SV_TARGET
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
 				
 				float3 positionWS=i.positionWS;
-				half3 normalWS=normalize(i.normalWS);
+				float3 normalWS=normalize(i.normalWS);
 				half3 biTangentWS=normalize(i.biTangentWS);
 				half3 tangentWS=normalize(i.tangentWS);
 				float3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
-				half3 viewDirWS=normalize(i.viewDirWS);
+				float3 viewDirWS=normalize(i.viewDirWS);
 				half3 normalTS=half3(0,0,1);
 				float2 baseUV=i.uv.xy;
 				depth=i.positionCS.z;
@@ -186,22 +186,52 @@
 					metallic=mix.g;
 					ao=mix.b;
 				#endif
+
 				BRDFSurface surface=BRDFSurface_Ctor(albedo,glossiness,metallic,ao,normalWS,tangentWS,viewDirWS);
-				
-				half3 brdfColor=0;
 				half3 indirectDiffuse=IndirectBRDFDiffuse(surface.normal);
 				half3 indirectSpecular=IndirectBRDFSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
-				brdfColor+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 
+				half3 brdfColor=0;
+				brdfColor+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 				Light mainLight=GetMainLight(TransformWorldToShadowCoord(positionWS));
 				#if _MATCAP
 					float2 matcapUV=float2(dot(UNITY_MATRIX_V[0].xyz,normalWS),dot(UNITY_MATRIX_V[1].xyz,normalWS));
 					matcapUV=matcapUV*.5h+.5h;
 					mainLight.color=SAMPLE_TEXTURE2D(_Matcap,sampler_Matcap,matcapUV).rgb;
 				#endif
+				
 				BRDFLight brdfMainLight=BRDFLight_Ctor(surface,mainLight.direction,mainLight.color,mainLight.shadowAttenuation,anisotropic);
 				brdfColor+=BRDFLighting(surface,brdfMainLight);
+float3 halfDir = SafeNormalize(float3(mainLight.direction) + float3(viewDirWS));
 
+    float NoH = saturate(dot(normalWS, halfDir));
+    half LoH = saturate(dot(mainLight.direction, halfDir));
+
+    // GGX Distribution multiplied by combined approximation of Visibility and Fresnel
+    // BRDFspec = (D * V * F) / 4.0
+    // D = roughness^2 / ( NoH^2 * (roughness^2 - 1) + 1 )^2
+    // V * F = 1.0 / ( LoH^2 * (roughness + 0.5) )
+    // See "Optimizing PBR for Mobile" from Siggraph 2015 moving mobile graphics course
+    // https://community.arm.com/events/1155
+
+    // Final BRDFspec = roughness^2 / ( NoH^2 * (roughness^2 - 1) + 1 )^2 * (LoH^2 * (roughness + 0.5) * 4.0)
+    // We further optimize a few light invariant terms
+    // brdfData.normalizationTerm = (roughness + 0.5) * 4.0 rewritten as roughness * 4.0 + 2.0 to a fit a MAD.
+    float d = NoH * NoH * (surface.roughness2-1.) + 1.00001f;
+
+    half LoH2 = LoH * LoH;
+    half specularTerm = surface.roughness2 / ((d * d) * max(0.1h, LoH2) * (surface.roughness*4.+2.));
+
+    // On platforms where half actually means something, the denominator has a risk of overflow
+    // clamp below was added specifically to "fix" that, but dx compiler (we convert bytecode to metal/gles)
+    // sees that specularTerm have only non-negative terms, so it skips max(0,..) in clamp (leaving only min(100,...))
+#if defined (SHADER_API_MOBILE) || defined (SHADER_API_SWITCH)
+    specularTerm = specularTerm - HALF_MIN;
+    specularTerm = clamp(specularTerm, 0.0, 100.0); // Prevent FP16 overflow on mobiles
+#endif
+
+				float3 finalCol=specularTerm;//NDF_CookTorrance(dot(normalWS,normalize(viewDirWS+normalize(_MainLightPosition.xyz))),surface.roughness2);//BRDFLighting(surface,brdfMainLight);
+				return float4(finalCol,1);
 				#if _ADDITIONAL_LIGHTS
             	uint pixelLightCount = GetAdditionalLightsCount();
 			    for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)

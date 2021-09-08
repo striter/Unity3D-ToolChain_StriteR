@@ -12,7 +12,7 @@
 	uint _Iteration;
 	half _Angle;
 	half2 _Vector;
-    #pragma shader_feature_local _DOF
+    #pragma multi_compile_local _ _DOF
     #if _DOF
 		#define IDEPTH
         half _FocalStart;

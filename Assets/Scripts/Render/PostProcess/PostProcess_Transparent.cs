@@ -25,7 +25,7 @@ namespace Rendering.PostProcess
         private const string KW_VolumetricLight = "_VOLUMETRICLIGHT";
         #endregion
         readonly PPCore_Blurs m_VolumetricBlur;
-        public PPCore_Transparent():base()
+        public PPCore_Transparent()
         {
             m_VolumetricBlur = new PPCore_Blurs();
         }
@@ -50,28 +50,28 @@ namespace Rendering.PostProcess
                 _buffer.Blit(_src,_dst);
                 return;
             }
-                var sampleDescriptor = _descriptor;
-                sampleDescriptor.width /= _data.m_VolumetricDownSample;
-                sampleDescriptor.height /= _data.m_VolumetricDownSample;
-                sampleDescriptor.colorFormat = RenderTextureFormat.ARGB32;
-                sampleDescriptor.depthBufferBits = 0;
-            
-                _buffer.GetTemporaryRT(RT_ID_Sample, sampleDescriptor,FilterMode.Bilinear);
+            var sampleDescriptor = _descriptor;
+            sampleDescriptor.width /= _data.m_VolumetricDownSample;
+            sampleDescriptor.height /= _data.m_VolumetricDownSample;
+            sampleDescriptor.colorFormat = RenderTextureFormat.ARGB32;
+            sampleDescriptor.depthBufferBits = 0;
+        
+            _buffer.GetTemporaryRT(RT_ID_Sample, sampleDescriptor,FilterMode.Bilinear);
 
-                if (!_data.m_EnableVolumetricBlur)
-                {
-                    _buffer.Blit(_src, RT_ID_Sample, m_Material, (int)EPassIndex.Sample);
-                }
-                else
-                {
-                    _buffer.GetTemporaryRT(RT_ID_Blur, sampleDescriptor, FilterMode.Bilinear);
-                    _buffer.Blit(_src, RT_ID_Blur, m_Material,  (int)EPassIndex.Sample);
-                    m_VolumetricBlur.ExecutePostProcessBuffer(_buffer, RT_ID_Blur, RT_ID_Sample, sampleDescriptor,ref _data.m_VolumetricBlur); 
-                    _buffer.ReleaseTemporaryRT(RT_ID_Blur);
-                }
-                
-                _buffer.Blit(_src, _dst, m_Material,  (int)EPassIndex.Combine);
-                _buffer.ReleaseTemporaryRT(RT_ID_Sample);
+            if (!_data.m_EnableVolumetricBlur)
+            {
+                _buffer.Blit(_src, RT_ID_Sample, m_Material, (int)EPassIndex.Sample);
+            }
+            else
+            {
+                _buffer.GetTemporaryRT(RT_ID_Blur, sampleDescriptor, FilterMode.Bilinear);
+                _buffer.Blit(_src, RT_ID_Blur, m_Material,  (int)EPassIndex.Sample);
+                m_VolumetricBlur.ExecutePostProcessBuffer(_buffer, RT_ID_Blur, RT_ID_Sample, sampleDescriptor,ref _data.m_VolumetricBlur); 
+                _buffer.ReleaseTemporaryRT(RT_ID_Blur);
+            }
+            
+            _buffer.Blit(_src, _dst, m_Material,  (int)EPassIndex.Combine);
+            _buffer.ReleaseTemporaryRT(RT_ID_Sample);
 
         }
     }

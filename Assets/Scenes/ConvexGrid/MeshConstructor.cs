@@ -1,13 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using GridTest;
+using System.Linq;
 using LinqExtentions;
-using ObjectPool;
-using ObjectPoolStatic;
+using TPool;
+using TPoolStatic;
 using Procedural.Hexagon;
 using TTouchTracker;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace ConvexGrid
 {
@@ -20,29 +21,16 @@ namespace ConvexGrid
         {
             public Transform iTransform { get; }
             public MeshFilter m_MeshFilter { get; }
-            private Mesh m_Mesh;
 
             public ConvexGridRenderer(Transform _transform)
             {
                 iTransform = _transform;
                 m_MeshFilter = _transform.GetComponent<MeshFilter>();
-                m_Mesh = new Mesh(){hideFlags = HideFlags.HideAndDontSave};
-                m_MeshFilter.sharedMesh = m_Mesh;
             }
             public void OnPoolInit(Action<int> _DoRecycle) { }
 
-            public void OnPoolSpawn(int identity)
+            public void GenerateMesh(ConvexArea _area)
             {
-                
-            }
-
-            public void OnPoolRecycle()
-            {
-            }
-
-            public void ApplyMesh(ConvexArea _area)
-            {
-                m_Mesh.name = _area.m_Coord.ToString();
                 int quadCount = _area.m_Quads.Count;
                 int vertexCount = quadCount * 4;
                 int indexCount = quadCount * 6;
@@ -50,41 +38,53 @@ namespace ConvexGrid
                 List<Vector3> normals = TSPoolList<Vector3>.Spawn(vertexCount);
                 List<Vector2> uvs = TSPoolList<Vector2>.Spawn(vertexCount); 
                 List<int> indices = TSPoolList<int>.Spawn(indexCount);
-
+                var center = _area.m_Center;
                 foreach (var quad in _area.m_Quads)
                 {
-                    int index0 = vertices.Count;
-                    int index1 = index0 + 1;
-                    int index2 = index0 + 2;
-                    int index3 = index0 + 3;
+                    int startIndex = vertices.Count;
                     foreach (var tuple in quad.m_CoordQuad.LoopIndex())
                     {
                         var coord = tuple.value;
                         var index = tuple.index;
-                        var positionOS = coord.ToPosition();
+                        var positionOS = (coord-center).ToPosition();
                         vertices.Add(positionOS);
                         normals.Add(Vector3.up);
                         uvs.Add(URender.IndexToQuadUV(index));
                     }
-                    
-                    indices.Add(index0);
-                    indices.Add(index1);
-                    indices.Add(index3);
-                    indices.Add(index1);
-                    indices.Add(index2);
-                    indices.Add(index3);
+
+                    indices.Add(startIndex);
+                    indices.Add(startIndex+1);
+                    indices.Add(startIndex+2);
+                    indices.Add(startIndex+3);
                 }
             
-                m_Mesh.Clear();
-                m_Mesh.SetVertices(vertices);
-                m_Mesh.SetNormals(normals);
-                m_Mesh.SetUVs(0,uvs);
-                m_Mesh.SetIndices(indices,MeshTopology.Triangles,0,false);
+                var areaMesh = new Mesh {hideFlags = HideFlags.HideAndDontSave, name = _area.m_Coord.ToString()};
+                areaMesh.SetVertices(vertices);
+                areaMesh.SetNormals(normals);
+                areaMesh.SetIndices(indices,MeshTopology.Quads,0);
+                areaMesh.SetUVs(0,uvs);
+                areaMesh.Optimize();
+                areaMesh.UploadMeshData(true);
+                m_MeshFilter.sharedMesh = areaMesh;
+                iTransform.SetPositionAndRotation(_area.m_Center.ToPosition(),Quaternion.identity);
+                iTransform.localScale=Vector3.one;
                 
                 TSPoolList<Vector3>.Recycle(vertices);
                 TSPoolList<Vector3>.Recycle(normals);
                 TSPoolList<Vector2>.Recycle(uvs);
                 TSPoolList<int>.Recycle(indices);
+            }
+            public void OnPoolSpawn(int identity)
+            {
+                
+            }
+
+            public void OnPoolRecycle()
+            {
+                if (m_MeshFilter.sharedMesh == null)
+                    return;
+                GameObject.DestroyImmediate(m_MeshFilter.mesh);
+                m_MeshFilter.sharedMesh = null;
             }
         }
         
@@ -96,6 +96,7 @@ namespace ConvexGrid
         {
             m_Selection = _transform.Find("Selection");
             m_SelectionMesh = new Mesh {name="Selection",hideFlags = HideFlags.HideAndDontSave};
+            m_SelectionMesh.MarkDynamic();
             m_Selection.GetComponent<MeshFilter>().sharedMesh = m_SelectionMesh;
             m_AreaMeshes = new TObjectPoolClass<ConvexGridRenderer>(_transform.Find("AreaContainer/AreaMesh"));
         }
@@ -103,7 +104,7 @@ namespace ConvexGrid
         public void OnAreaConstruct(ConvexArea _area)
         {
             Debug.LogWarning($"Area Mesh Populate {_area.m_Coord}");
-            m_AreaMeshes.Spawn().ApplyMesh (_area);
+            m_AreaMeshes.Spawn().GenerateMesh (_area);
         }
 
         public void Clear()
@@ -157,6 +158,7 @@ namespace ConvexGrid
             m_SelectionMesh.SetVertices(vertices);
             m_SelectionMesh.SetUVs(0,uvs);
             m_SelectionMesh.SetIndices(indices,MeshTopology.Triangles,0,false);
+            m_SelectionMesh.MarkModified();
             
             TSPoolList<Vector3>.Recycle(vertices);
             // TSPoolList<Vector3>.Recycle(normals);

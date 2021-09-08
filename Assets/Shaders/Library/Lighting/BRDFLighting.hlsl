@@ -3,9 +3,9 @@
     half3 brdf = surface.diffuse;
     
     half D = light.normalDistribution;
-    half invVF = light.invNormalizationTerm;
+    half VF = light.normalizationTerm;
     
-    brdf += surface.specular * D / invVF *.25h;
+    brdf += surface.specular * D * rcp(VF);
     return brdf*light.radiance;
 }
 

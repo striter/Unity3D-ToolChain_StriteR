@@ -12,7 +12,7 @@ Shader "Hidden/PostProcess/Transparent"
             #include "Assets/Shaders/Library/PostProcess.hlsl"
             #define IGeometryDetection
             #include "Assets/Shaders/Library/Geometry.hlsl"
-            #pragma shader_feature_local _VOLUMETRICLIGHT
+            #pragma multi_compile_local _ _VOLUMETRICLIGHT
         ENDHLSL
         Pass
         {
@@ -50,7 +50,7 @@ Shader "Hidden/PostProcess/Transparent"
 
 
             #if _VOLUMETRICLIGHT
-            #pragma shader_feature_local _DITHER
+            #pragma multi_compile_local _ _DITHER
             #include "Assets/Shaders/Library/Lighting.hlsl"
             // #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #define _MAIN_LIGHT_SHADOWS

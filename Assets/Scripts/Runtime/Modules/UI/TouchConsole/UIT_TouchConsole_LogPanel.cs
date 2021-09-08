@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using TDataPersistent;
 using UnityEngine;
 using UnityEngine.UI;
-using ObjectPool;
+using TPool;
 public partial class UIT_TouchConsole
 {
     [Flags]
@@ -36,23 +36,21 @@ public partial class UIT_TouchConsole
         m_Stack = new StackPanel(transform.Find("Stack"));
 
         m_LogFilter.Find("Clear").GetComponent<Button>().onClick.AddListener(ClearConsoleLog);
-    }
-    [PartialMethod(EPartialMethods.Reset, EPartialSorting.LogPanel)]
-    void LogFrameReset()
-    {
-        m_Stack.HideStack();
-        ClearConsoleLog();
-    }
-    [PartialMethod(EPartialMethods.OnEnable, EPartialSorting.LogPanel)]
-    void LogEnable()
-    {
         Application.logMessageReceived += OnLogReceived;
     }
-    [PartialMethod(EPartialMethods.OnDisable, EPartialSorting.LogPanel)]
-    void LogDisable()
+    [PartialMethod(EPartialMethods.Destroy, EPartialSorting.LogPanel)]
+    void LogDestroy()
     {
         Application.logMessageReceived -= OnLogReceived;
     }
+    
+    // [PartialMethod(EPartialMethods.Reset, EPartialSorting.LogPanel)]
+    // void LogFrameReset()
+    // {
+    //     m_Stack.HideStack();
+    //     ClearConsoleLog();
+    // }
+    
     public void ClearConsoleLog()
     {
         m_LogDataQueue.Clear();

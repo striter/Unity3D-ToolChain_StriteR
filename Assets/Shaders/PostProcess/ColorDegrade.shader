@@ -15,9 +15,9 @@
             
             #include "Assets/Shaders/Library/PostProcess.hlsl"
             #pragma multi_compile_local _ _SCREENCUT_HARD _SCREENCUT_SCALED
-            #pragma shader_feature_local _LINEDISTORT
-            #pragma shader_feature_local _PIXELDISTORT
-            #pragma shader_feature_local _VORTEXDISTORT
+            #pragma multi_compile_local _ _LINEDISTORT
+            #pragma multi_compile_local _ _PIXELDISTORT
+            #pragma multi_compile_local _ _VORTEXDISTORT
             float2 _ScreenCutTarget;
             #if _LINEDISTORT
             float _LineDistortSpeed;
@@ -70,10 +70,10 @@
             	return uv;
             }
 
-            #pragma shader_feature_local _COLORBLEED
-            #pragma shader_feature_local _GRAIN
-            #pragma shader_feature_local _GRAIN_CIRCLE
-            #pragma shader_feature_local _VIGNETTE
+            #pragma multi_compile_local _ _COLORBLEED
+            #pragma multi_compile_local _ _GRAIN
+            #pragma multi_compile_local _ _GRAIN_CIRCLE
+            #pragma multi_compile_local _ _VIGNETTE
             #if _COLORBLEED
             float _ColorBleedStrength;
             float _ColorBleedIteration;

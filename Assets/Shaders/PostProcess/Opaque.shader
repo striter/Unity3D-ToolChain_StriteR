@@ -14,8 +14,8 @@
 				#include "Assets/Shaders/Library/PostProcess.hlsl"
 				#define IGeometryDetection
 				#include "Assets/Shaders/Library/Geometry.hlsl"
-				#pragma shader_feature_local _AO
-	            #pragma shader_feature_local _VOLUMETRICCLOUD
+				#pragma multi_compile_local _ _AO
+	            #pragma multi_compile_local _ _VOLUMETRICCLOUD
 			ENDHLSL
 			Pass
 			{
@@ -24,7 +24,7 @@
 				#pragma vertex vert_img
 				#pragma fragment frag
 				
-				#pragma shader_feature_local _SCAN
+				#pragma multi_compile_local _ _SCAN
 				#if _SCAN
 					float4 _ScanColor;
 					float3 _ScanOrigin;
@@ -32,14 +32,14 @@
 					float _ScanMinSqrDistance;
 					float _ScanMaxSqrDistance;
 					float _ScanFadingPow;
-					#pragma shader_feature_local _MASK_TEXTURE
+					#pragma multi_compile_local _ _MASK_TEXTURE
 					#if _MASK_TEXTURE
 						TEXTURE2D( _ScanMaskTexture);SAMPLER(sampler_ScanMaskTexture);
 						float _ScanMaskTextureScale;
 					#endif
 				#endif
 				
-				#pragma shader_feature_local _AREA
+				#pragma multi_compile_local _ _AREA
 				#if _AREA
 					TEXTURE2D(_AreaFillTexture);SAMPLER(sampler_AreaFillTexture);
 					float3 _AreaOrigin;
@@ -51,7 +51,7 @@
 					float _AreaSqrEdgeMax;
 				#endif
 				
-				#pragma shader_feature_local _OUTLINE
+				#pragma multi_compile_local _ _OUTLINE
 				#if _OUTLINE
 					// #pragma multi_compile_local _CONVOLUTION_SOBEL
 					// #pragma multi_compile_local _DETECT_COLOR _DETECT_NORMAL
@@ -90,7 +90,7 @@
 					half _Bias;
 				#endif
 
-				#pragma shader_feature_local _HIGHLIGHT
+				#pragma multi_compile_local _ _HIGHLIGHT
 				#if _HIGHLIGHT
 					half3 _HighlightColor;
 					TEXTURE2D(_OUTLINE_MASK);SAMPLER(sampler_OUTLINE_MASK);
@@ -181,7 +181,7 @@
 			#pragma vertex vert_img
 			#pragma fragment frag
 			
-			#pragma shader_feature_local _DITHER
+			#pragma multi_compile_local _ _DITHER
 			#if _AO
 				#define MAX_SAMPLE_COUNT 64u
 				half3 _AOSampleSphere[MAX_SAMPLE_COUNT];
@@ -216,9 +216,9 @@
 				}
 			#endif
             #if _VOLUMETRICCLOUD
-	            #pragma shader_feature_local _LIGHTMARCH
-	            #pragma shader_feature_local _LIGHTSCATTER
-	            #pragma shader_feature_local _SHAPEMASK
+	            #pragma multi_compile_local _ _LIGHTMARCH
+	            #pragma multi_compile_local _ _LIGHTSCATTER
+	            #pragma multi_compile_local _ _SHAPEMASK
 
 	            float _VerticalStart;
 	            float _VerticalEnd;

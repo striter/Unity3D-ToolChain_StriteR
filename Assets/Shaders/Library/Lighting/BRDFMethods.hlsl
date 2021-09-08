@@ -28,19 +28,17 @@ float NDF_GGX(float NDH,float roughness, float sqrRoughness)
     float tanSqrNDH = (1 - sqrNDH) / sqrNDH;
     return max ( 0.00001, INV_PI * pow2(roughness / (sqrNDH * (sqrRoughness + tanSqrNDH))));
 }
-float NDF_CookTorrance(float NDH,float LDH,float roughness,float roughness2)
+float NDF_CookTorrance(float NDH,float roughness2)
 {
     NDH = saturate(NDH);
-    LDH = saturate(LDH);
-    float d = NDH * NDH *( roughness2-1.) +1.00001f;
-    float sqrLDH = pow2(LDH);
+    float d = NDH * NDH * (roughness2-1.f) +1.00001f;
     return roughness2 / (d * d);
 }
-float NDF_TrowbridgeReitz(float NDH, float roughness,float sqrRoughness)
+float NDF_TrowbridgeReitz(float NDH,float sqrRoughness)
 {
     float sqrNDH = dot(NDH, NDH);
     float distribution = sqrNDH * (sqrRoughness - 1.0) + 1.0;
-    return sqrRoughness / (PI * distribution * distribution+1e-5f);
+    return sqrRoughness / (PI * distribution * distribution+FLT_MIN);
 }
 //Anisotropic NDF
 float NDFA_TrowbridgeReitz(float NDH, float HDX, float HDY, float anisotropic, float glossiness)
@@ -66,11 +64,11 @@ float NDFA_Ward(float NDL, float NDV, float NDH, float HDX, float HDY, float ani
 float InvVF_GGX(float LDH, float roughness)
 {
     float sqrLDH = pow2(LDH);
-    return max(0.1h, sqrLDH) * (roughness + .5);
+    return max(0.1h, sqrLDH) * (roughness*4 + 2);
 }
 float InvVF_BlinnPhong(float LDH)
 {
-    return max(0.1h, pow3(LDH));
+    return max(0.1h, pow3(LDH)) * 4;
 }
 
 //Fresnel

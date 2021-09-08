@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace ObjectPoolStatic
+namespace TPoolStatic
 {
     public interface ISPoolItem
     {
@@ -72,7 +72,7 @@ namespace ObjectPoolStatic
         }
     }
 }
-namespace ObjectPool
+namespace TPool
 {
         
     #region Reference 
@@ -246,7 +246,7 @@ namespace ObjectPool
     #endregion
     #region Implement
 
-    public abstract class APoolItem:ITransform
+    public abstract class APoolItem:ITransform,IPoolCallback<int>
     {
         public Transform iTransform { get; }
         private Action<int> DoRecycle { get; set; }

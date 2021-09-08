@@ -94,7 +94,7 @@ namespace Rendering.PostProcess
             Combine=0,
             Sample=1,
         }
-        public PPCore_Opaque():base()
+        public PPCore_Opaque()
         {
             m_HighlightBlur = new PPCore_Blurs();
             m_RenderMaterial = new Material(Shader.Find("Game/Unlit/Color")) { hideFlags = HideFlags.HideAndDontSave };

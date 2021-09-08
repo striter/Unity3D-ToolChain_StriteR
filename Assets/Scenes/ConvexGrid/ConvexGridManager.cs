@@ -135,7 +135,7 @@ namespace ConvexGrid
         void OnAreaConstruct(RelaxArea _area)
         {
             var areaCoord = _area.m_Area.m_Coord;
-            var area = new ConvexArea(areaCoord);
+            var area = new ConvexArea(_area.m_Area.m_Coord,_area.m_Vertices[_area.m_Area.centerCS]);
             m_Areas.Add(areaCoord,area);
             //Insert Vertices&Quads
             foreach (var pair in _area.m_Vertices)

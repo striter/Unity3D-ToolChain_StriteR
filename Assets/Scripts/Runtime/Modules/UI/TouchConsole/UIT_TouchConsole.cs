@@ -10,6 +10,7 @@ public partial class UIT_TouchConsole :MonoBehaviour, IPartialMethods<EPartialMe
     public enum EPartialMethods
     {
         Init,
+        Destroy,
         Tick,
         Reset,
         OnEnable,
@@ -47,37 +48,31 @@ public partial class UIT_TouchConsole :MonoBehaviour, IPartialMethods<EPartialMe
     }
 
     private static UIT_TouchConsole m_Instance;
-
-    public static UIT_TouchConsole Instance
+    private static UIT_TouchConsole Instance
     {
         get
         {
             if (m_Instance == null)
-                m_Instance = TResources.Instantiate("TouchConsole").GetComponent<UIT_TouchConsole>().Init();
+            {
+                m_Instance = TResources.Instantiate("TouchConsole").GetComponent<UIT_TouchConsole>();
+                m_Instance.Init();
+            }
             return m_Instance;
         }
     }
     
-    UIT_TouchConsole Init()
+    void Init()
     {
-        if (m_Instance!=null)
-            return this;
-        m_Instance = this;
+        DontDestroyOnLoad(gameObject);
         m_Data.ReadPersistentData();
         this.InitMethods();
         this.InvokeMethods(EPartialMethods.Init);
         this.InvokeMethods(EPartialMethods.Reset);
         SetLogFramePanel(m_Data.m_FilterSetting.m_RefValue);
-        return this;
     }
-    protected void Awake()
-    {
-        Init();
-    }
-
-
     void OnDestroy()
     {
+        this.InvokeMethods(EPartialMethods.Destroy);
         m_Instance = null;
     }
 
@@ -90,8 +85,8 @@ public partial class UIT_TouchConsole :MonoBehaviour, IPartialMethods<EPartialMe
         this.InvokeMethods(EPartialMethods.OnDisable);
     }
 
-    public static UIT_TouchConsole InitDefaultCommands()=>Instance.Defaultcommands();
-    protected UIT_TouchConsole Defaultcommands()
+    public static UIT_TouchConsole InitDefaultCommands()=>Instance.DefaultCommands();
+    private UIT_TouchConsole DefaultCommands()
     {
         this.InvokeMethods(EPartialMethods.Reset);
         NewPage("Console");

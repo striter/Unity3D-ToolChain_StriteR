@@ -76,12 +76,14 @@ namespace Rendering.PostProcess
     {
         public bool m_Preview = false;
         [MTitle] public Y m_Data;
-        public T m_Effect { get; private set; }
-        public IPostProcessPipeline<Y> m_EffectPipeline { get; private set; }
-        protected Camera m_Camera { get; private set; }
+        protected T m_Effect { get; private set; }
+        private IPostProcessPipeline<Y> m_EffectPipeline { get; set; }
+        private Camera m_Camera { get; set; }
+
         protected void Awake()=>Init();
         protected void OnDestroy()=>Destroy();
-        public override void OnValidate() => m_Effect?.OnValidate(ref m_Data);
+
+        public override void OnValidate()=>m_Effect?.OnValidate(ref m_Data);
         void OnDidApplyAnimationProperties() => OnValidate();       //Undocumented Magic Fucntion ,Triggered By AnimationClip
         void Reset() => m_Data = UPipeline.GetDefaultPostProcessData<Y>();
         void Init()
@@ -112,7 +114,7 @@ namespace Rendering.PostProcess
 #if UNITY_EDITOR
     #region Editor Preview
     [ExecuteInEditMode, RequireComponent(typeof(Camera))]
-    public abstract partial class PostProcessComponentBase<T, Y> : APostProcessBase where T : PostProcessCore<Y>, new() where Y : struct
+    public abstract partial class PostProcessComponentBase<T, Y>  where T : PostProcessCore<Y>, new() where Y : struct
     {
         PostProcessComponentBase<T, Y> m_SceneComponent = null;
         private FieldInfo[] m_Fields;
