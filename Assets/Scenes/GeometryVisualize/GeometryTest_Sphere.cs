@@ -12,10 +12,10 @@ namespace BoundingCollisionTest
         {
             Gizmos.matrix = transform.localToWorldMatrix;
 
-            bool intersect = UGeometryVoxel.RayBSIntersect(m_Sphere,m_Ray);
+            bool intersect = UGeometryIntersect.RayBSIntersect(m_Sphere,m_Ray);
             Gizmos.color = intersect ? Color.green : Color.grey;
             Gizmos.DrawWireSphere(m_Sphere.center,m_Sphere.radius);
-            Vector2 distances = UGeometryVoxel.RayBSDistance(m_Sphere, m_Ray);
+            Vector2 distances = UGeometryIntersect.RayBSDistance(m_Sphere, m_Ray);
 
             Gizmos.color = intersect ? Color.white:Color.grey;
             float rayDistance = 1f;

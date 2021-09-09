@@ -207,7 +207,7 @@ Material:
     - _FRESNEL: 0
     - _GSF: 6
     - _GlossMapScale: 0
-    - _Glossiness: 0.934
+    - _Glossiness: 1
     - _GlossyReflections: 0
     - _Grid: 0
     - _HeightTransition: 0

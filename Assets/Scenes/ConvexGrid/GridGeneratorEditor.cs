@@ -42,7 +42,7 @@ namespace ConvexGrid
         {
             GRay ray = sceneView.camera.ScreenPointToRay(TEditor.UECommon.GetScreenPoint(sceneView));
             GPlane plane = new GPlane(Vector3.up, transform.position);
-            var hitPos = ray.GetPoint(UGeometryVoxel.RayPlaneDistance(plane, ray));
+            var hitPos = ray.GetPoint(UGeometryIntersect.RayPlaneDistance(plane, ray));
             var hitCoord = hitPos.ToCoord();
             var hitHex=hitCoord.ToCube();
             var hitArea = UHexagonArea.GetBelongAreaCoord(hitHex);

@@ -8,22 +8,22 @@ using UnityEngine;
 
 namespace ConvexGrid
 {
-    public class GridCorner : PoolBehaviour<GridPile>,IGridRaycast
+    public class TileCorner : PoolBehaviour<PileID>,IGridRaycast
     {
         public byte m_Height => m_PoolID.height;
         public HexCoord m_VertID => m_BaseVertex.m_Vertex.m_Hex;
-        public GridVertex m_BaseVertex { get; private set; }
+        public TileVertex m_BaseVertex { get; private set; }
         public MeshCollider m_Collider { get; private set; }
         public MeshFilter m_MeshFilter { get; private set; }
 
-        public override void OnPoolInit(Action<GridPile> _DoRecycle)
+        public override void OnPoolInit(Action<PileID> _DoRecycle)
         {
             base.OnPoolInit(_DoRecycle);
-            m_Collider = GetComponent<MeshCollider>();
             m_MeshFilter = GetComponent<MeshFilter>();
+            m_Collider = GetComponent<MeshCollider>();
         }
         
-        public GridCorner Init(GridVertex _vertex)
+        public TileCorner Init(TileVertex _vertex)
         {
             m_BaseVertex = _vertex;
             transform.SetParent(m_BaseVertex.transform);

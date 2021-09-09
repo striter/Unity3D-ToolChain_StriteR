@@ -13,11 +13,11 @@ namespace BoundingCollisionTest
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
-            bool intersect = UGeometryVoxel.RayAABBIntersect(m_Box,m_Ray);
+            bool intersect = UGeometryIntersect.RayAABBIntersect(m_Box,m_Ray);
             Gizmos.color = intersect ? Color.green : Color.grey;
             Gizmos.DrawWireCube(m_Box.center,m_Box.Size);
 
-            Vector2 distances = UGeometryVoxel.RayAABBDistance(m_Box,m_Ray);
+            Vector2 distances = UGeometryIntersect.RayAABBDistance(m_Box,m_Ray);
             if (distances.y > 0)
             {
                 Gizmos.color = Color.red;

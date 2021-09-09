@@ -121,50 +121,19 @@ namespace ConvexGrid
                 PopulateSelectionMesh(_vertex,_height);
         }
 
-        void PopulateSelectionMesh(ConvexVertex _vertex,int _height)
+        void PopulateSelectionMesh(ConvexVertex _vertex,byte _height)
         {
-            int quadCount = _vertex.m_NearbyQuads.Count;
-            int vertexCount = quadCount * 4;
-            int indexCount = quadCount * 6;
-            List<Vector3> vertices = TSPoolList<Vector3>.Spawn(vertexCount);
-            // List<Vector3> normals=TSPoolList<Vector3>.Spawn(vertexCount);
-            List<Vector2> uvs = TSPoolList<Vector2>.Spawn(vertexCount);
-            List<int> indices = TSPoolList<int>.Spawn(indexCount);
-            
-            foreach (var tuple in _vertex.m_NearbyQuads.LoopIndex())
+            Vector3 centerWS;
+            if (_height == 0)
             {
-                int startIndex = vertices.Count;
-                int[] indexes = {startIndex, startIndex + 1, startIndex + 2, startIndex + 3};
-                var quad = tuple.value;
-                var offset = _vertex.m_NearbyQuadsStartIndex[tuple.index];
-                var geometryQuad = quad.m_CoordQuad;
-                for (int i = 0; i < 4; i++)
-                {
-                    vertices.Add(  geometryQuad[(i+offset)%4].ToPosition());
-                    // normals.Add(Vector3.up);
-                    uvs.Add(URender.IndexToQuadUV(i));
-                }
-
-                indices.Add(indexes[0]);
-                indices.Add(indexes[1]);
-                indices.Add(indexes[3]);
-                indices.Add(indexes[1]);
-                indices.Add(indexes[2]);
-                indices.Add(indexes[3]);
+                _vertex.ConstructLocalMesh(m_SelectionMesh,EGridQuadGeometry.Full,EGridVoxelGeometry.Plane,out centerWS,true,false);
+                m_Selection.position = centerWS;
             }
-            
-            m_SelectionMesh.Clear();
-            // m_SelectionMesh.SetNormals(normals);
-            m_SelectionMesh.SetVertices(vertices);
-            m_SelectionMesh.SetUVs(0,uvs);
-            m_SelectionMesh.SetIndices(indices,MeshTopology.Triangles,0,false);
-            m_SelectionMesh.MarkModified();
-            
-            TSPoolList<Vector3>.Recycle(vertices);
-            // TSPoolList<Vector3>.Recycle(normals);
-            TSPoolList<Vector2>.Recycle(uvs);
-            TSPoolList<int>.Recycle(indices);
-            
+            else
+            {
+                _vertex.ConstructLocalMesh(m_SelectionMesh,EGridQuadGeometry.Half,EGridVoxelGeometry.VoxelTopBottom,out centerWS,true,false);
+                m_Selection.position = ConvexGridHelper.GetCornerHeight(_height)+ centerWS;
+            }
             // Debug.LogWarning("Selection Mesh Populate");
         }
     }

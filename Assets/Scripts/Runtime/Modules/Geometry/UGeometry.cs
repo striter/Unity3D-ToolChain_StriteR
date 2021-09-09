@@ -1,36 +1,92 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Geometry.Voxel;
 using UnityEngine;
 
 namespace Geometry
 {
     public static class UQuad
     {
+        public static EQuadCorners IndexToCorner(int _index)
+        {
+            switch (_index)
+            {
+                default: throw new Exception("Invalid Corner Index:"+_index);
+                case 0: return EQuadCorners.B;
+                case 1: return EQuadCorners.L;
+                case 2: return EQuadCorners.F;
+                case 3: return EQuadCorners.R;
+            }
+        }
+        
+        public static int CornerToIndex(this EQuadCorners _corners)
+        {
+            switch (_corners)
+            {
+                default: throw new Exception("Invalid Corner:"+_corners);
+                case EQuadCorners.B: return 0;
+                case EQuadCorners.L: return 1;
+                case EQuadCorners.F: return 2;
+                case EQuadCorners.R: return 3;
+            }
+        }
+
+        public static (EQuadCorners i0, EQuadCorners i1) GetRelativeVertIndexesCW(this EQuadFaces _face)
+        {
+            switch (_face)
+            {
+                default: throw new Exception("Invalid Face:"+_face);
+                case EQuadFaces.BL: return (EQuadCorners.B,EQuadCorners.L);
+                case EQuadFaces.LF: return (EQuadCorners.L,EQuadCorners.F);
+                case EQuadFaces.FR: return (EQuadCorners.F,EQuadCorners.R);
+                case EQuadFaces.RB: return (EQuadCorners.R,EQuadCorners.B);
+            }
+        }
+
+        public static T GetVertex<T>(this IQuad<T> _quad, int _corner) where T : struct => GetVertex(_quad, IndexToCorner(_corner));
+        public static T GetVertex<T>(this IQuad<T> _quad,EQuadCorners _corner) where T:struct
+        {
+            switch (_corner)
+            {
+                default: throw new Exception("Invalid Corner:"+_corner);
+                case EQuadCorners.B: return _quad.vB;
+                case EQuadCorners.L: return _quad.vL;
+                case EQuadCorners.F: return _quad.vF;
+                case EQuadCorners.R: return _quad.vR;
+            }
+        }
+
+        public static (T v0, T v1) ToRelativeVertex<T>(this EQuadFaces _patch, IQuad<T> _quad) where T : struct
+        {
+            var patch = GetRelativeVertIndexesCW(_patch);
+            return (_quad.GetVertex(patch.i0), _quad.GetVertex(patch.i1));
+        }
+        
         public static T GetBaryCenter<T>(this IQuad<T> _quad) where T:struct
         {
-            dynamic vertex0 = _quad.vertex0;
-            dynamic vertex1 = _quad.vertex1;
-            dynamic vertex2 = _quad.vertex2;
-            dynamic vertex3 = _quad.vertex3;
+            dynamic vertex0 = _quad.vB;
+            dynamic vertex1 = _quad.vL;
+            dynamic vertex2 = _quad.vF;
+            dynamic vertex3 = _quad.vR;
             return (vertex0+vertex1+vertex2+vertex3)/4;
         }
         
         public static (T m01, T m12, T m23, T m30,T m0123) GetQuadMidVertices<T>(this IQuad<T> _quad) where T:struct
         {
-            dynamic v0 = _quad.vertex0;
-            dynamic v1 = _quad.vertex1;
-            dynamic v2 = _quad.vertex2;
-            dynamic v3 = _quad.vertex3;
+            dynamic v0 = _quad.vB;
+            dynamic v1 = _quad.vL;
+            dynamic v2 = _quad.vF;
+            dynamic v3 = _quad.vR;
             return ((v0 + v1) / 2, (v1 + v2) / 2, (v2 + v3)/2,(v3+v0)/2,(v0+v1+v2+v3)/4);
         }
         
         public static bool IsPointInside<T> (this IQuad<T> _quad,T _point) where T:struct
         { 
-            dynamic A = _quad.vertex0;
-            dynamic B = _quad.vertex1;
-            dynamic C = _quad.vertex2;
-            dynamic D = _quad.vertex3;
+            dynamic A = _quad.vB;
+            dynamic B = _quad.vL;
+            dynamic C = _quad.vF;
+            dynamic D = _quad.vR;
             dynamic point = _point;
             dynamic x = point.x;
             dynamic y = point.y;
@@ -87,14 +143,6 @@ namespace Geometry
             dynamic v1 = _triangle.vertex1;
             dynamic v2 = _triangle.vertex2;
             return ((v0 + v1) / 2, (v1 + v2) / 2, (v2 + v0) / 2, (v0 + v1 + v2) / 3);
-        }
-
-        public static (Vector3 u, Vector3 v) GetUVDirection<T>(this ITriangle<T> _triangle) where T:struct
-        {
-            dynamic vertex0 = _triangle.vertex0;
-            dynamic vertex1 = _triangle.vertex1;
-            dynamic vertex2 = _triangle.vertex2;
-            return (vertex1-vertex0,vertex2-vertex0);
         }
 
         public static T GetBaryCenter<T>(this ITriangle<T> _triangle) where T:struct

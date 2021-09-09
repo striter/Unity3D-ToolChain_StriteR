@@ -241,7 +241,7 @@ namespace TEditor
             int index = _polygons.LastIndex(p =>
             {
                 GTriangle triangle = new GTriangle(p.GetVertices(_verticies));
-                bool intersect = UGeometryVoxel.RayDirectedTriangleIntersect(triangle, _ray, true, true, out float distance);
+                bool intersect = UGeometryIntersect.RayDirectedTriangleIntersect(triangle, _ray, true, true, out float distance);
                 if (intersect && minDistance > distance)
                 {
                     collisionTriangle = triangle;
@@ -378,13 +378,13 @@ namespace TEditor
                 if (Vector3.Dot(directedTriangle.normal, _sceneView.camera.transform.forward) > 0)
                     continue;
                 Handles.color = Color.yellow.SetAlpha(.1f);
-                Handles.DrawAAConvexPolygon(directedTriangle.ConstructIteratorArray());
+                Handles.DrawAAConvexPolygon(directedTriangle.Iterate());
                 Handles.color = Color.yellow;
                 Handles.DrawLines(directedTriangle.GetDrawLineVertices());
             }
             GTriangle mainTriangle = new GTriangle( _mainTriangle.GetVertices(m_Verticies));
             Handles.color = Color.green.SetAlpha(.3f);
-            Handles.DrawAAConvexPolygon(mainTriangle.ConstructIteratorArray());
+            Handles.DrawAAConvexPolygon(mainTriangle.Iterate());
             Handles.color = Color.green;
             Handles.DrawLines(mainTriangle.GetDrawLineVertices());
 
@@ -463,7 +463,7 @@ namespace TEditor
 
             foreach (var index in m_Polygons[m_SelectedPolygon])
             {
-                if (!UGeometryVoxel.RayBSIntersect(new GSphere( m_Verticies[index], C_VertexSphereRadius * m_GUISize), _ray))
+                if (!UGeometryIntersect.RayBSIntersect(new GSphere( m_Verticies[index], C_VertexSphereRadius * m_GUISize), _ray))
                     continue;
                 SelectVertex(index);
                 return true;

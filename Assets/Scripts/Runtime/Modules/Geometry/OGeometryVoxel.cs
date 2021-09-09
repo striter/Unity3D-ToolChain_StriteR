@@ -6,6 +6,50 @@ using UnityEngine;
 
 namespace Geometry.Voxel
 {
+    #region Enums
+    [Flags]
+    public enum EQubeCorner
+    {
+        BB=1,
+        BL=2,
+        BF=8,
+        BR=16,
+        
+        TB=32,
+        TL=64,
+        TF=128,
+        TR=256,
+    }
+    
+    [Flags]
+    public enum ECubeFace
+    {
+        T=1,
+        B=2,
+        LF=4,
+        FR=8,
+        BL=16,
+        RB=32,
+    }
+    #endregion
+    
+    #region Interface
+    public interface IQube<T> where T : struct
+    {
+        T vertBB { get; set; }
+        T vertBL { get; set; }
+        T vertBF { get; set; }
+        T vertBR { get; set; }
+        T vertTB { get; set; }
+        T vertTL { get; set; }
+        T vertTF { get; set; }
+        T vertTR { get; set; }
+        T this[int _index] { get; }
+        T this[EQubeCorner _index] { get; }
+    }
+    #endregion
+    
+    #region Defines
     [Serializable]
     public struct GRay
     {
@@ -62,51 +106,70 @@ namespace Geometry.Voxel
         {
         }
 
-        public GTriangle(Vector3 _vertex0, Vector3 _vertex1, Vector3 _vertex2):this()
+        public GTriangle(Vector3 _vertex0, Vector3 _vertex1, Vector3 _vertex2)
         {
             vertex0 = _vertex0;
             vertex1 = _vertex1;
             vertex2 = _vertex2;
-            var uv = this.GetUVDirection();
-            uOffset = uv.u;
-            vOffset = uv.v;
+            uOffset = vertex1-vertex0;
+            vOffset = vertex2-vertex0;
             normal= Vector3.Cross(uOffset,vOffset);
         }
         public Vector3 GetUVPoint(float u,float v)=>(1f - u - v) * vertex0 + u * uOffset + v * vOffset;
     }
 
     [Serializable]
-    public struct GQuad:IIterate<Vector3>
+    public struct GQuad:IQuad<Vector3>, IIterate<Vector3>
     {
-        public Vector3 Vertex0 { get; set; }
-        public Vector3 Vertex1 { get; set; }
-        public Vector3 Vertex2 { get; set; }
-        public Vector3 Vertex3 { get; set; }
-        public Vector3 this[int index] => GetElement(index);
+        public Vector3 vB { get; set; }
+        public Vector3 vL { get; set; }
+        public Vector3 vF { get; set; }
+        public Vector3 vR { get; set; }
+        public Vector3 normal;
 
-        public GQuad(Vector3 _vertex0, Vector3 _vertex1, Vector3 _vertex2, Vector3 _vertex3)
+        public GQuad(Vector3 _vb, Vector3 _vl, Vector3 _vf, Vector3 _vr)
         {
-            Vertex0 = _vertex0;
-            Vertex1 = _vertex1;
-            Vertex2 = _vertex2;
-            Vertex3 = _vertex3;
+            vB = _vb;
+            vL = _vl;
+            vF = _vf;
+            vR = _vr;
+            normal= Vector3.Cross(vL-vB,vF-vB);
         }
-
         public int Length => 4;
-        public Vector3 GetElement(int index)
-        {
-            switch (index)
-            {
-                default: Debug.LogError("Invalid Index:" + index); return Vertex0;
-                case 0: return Vertex0;
-                case 1: return Vertex1;
-                case 2: return Vertex2;
-                case 3: return Vertex3;
-            }
-        }
-
+        public Vector3 this[int _index] => this.GetVertex(_index);
+        public Vector3 this[EQuadCorners _corner] => this.GetVertex(_corner);
+        public Vector3 GetElement(int index) => this.GetVertex(index);
     }
 
+    [Serializable]
+    public struct GQube:IQube<Vector3>
+    {
+        public Vector3 vertBB { get; set; }
+        public Vector3 vertBL { get; set; }
+        public Vector3 vertBF { get; set; }
+        public Vector3 vertBR { get; set; }
+        public Vector3 vertTB { get; set; }
+        public Vector3 vertTL { get; set; }
+        public Vector3 vertTF { get; set; }
+        public Vector3 vertTR { get; set; }
+        
+        public GQube(Vector3 _vertBB, Vector3 _vertBL, Vector3 _vertBF, Vector3 _vertBR,
+            Vector3 _vertTB, Vector3 _vertTL, Vector3 _vertTF, Vector3 _vertTR)
+        {
+            vertBB = _vertBB;
+            vertBL = _vertBL;
+            vertBF = _vertBF;
+            vertBR = _vertBR;
+            vertTB = _vertTB;
+            vertTL = _vertTL;
+            vertTF = _vertTF;
+            vertTR = _vertTR;
+        }
+
+        public Vector3 this[int _index] => this.GetVertex(_index);
+        public Vector3 this[EQubeCorner _corner] => this.GetVertex(_corner);
+    }
+    
     [Serializable]
     public struct GSphere
     {
@@ -133,7 +196,7 @@ namespace Geometry.Voxel
         public float distance;
         public Vector3 Position => normal * distance;
         public GPlane(Vector3 _normal, float _distance) { normal = _normal; distance = _distance; }
-        public GPlane(Vector3 _normal, Vector3 _position) : this(_normal, UGeometryVoxel.PointPlaneDistance(_position, new GPlane(_normal, 0))) { }
+        public GPlane(Vector3 _normal, Vector3 _position) : this(_normal, UGeometryIntersect.PointPlaneDistance(_position, new GPlane(_normal, 0))) { }
     }
     [Serializable]
     public struct GCone
@@ -163,4 +226,6 @@ namespace Geometry.Voxel
         }
         public static implicit operator GCone(GHeightCone _cone)=>new GCone(_cone.origin,_cone.normal,_cone.angle);
     }
+    #endregion
+    
 }

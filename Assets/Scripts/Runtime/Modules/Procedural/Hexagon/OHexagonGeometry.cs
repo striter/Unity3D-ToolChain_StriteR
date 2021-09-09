@@ -52,10 +52,10 @@ namespace Procedural.Hexagon.Geometry
     public struct HexQuad:IQuad<HexCoord>, IEquatable<HexQuad>,IIterate<HexCoord>
     {
         public HexCoord m_Identity { get; set; }
-        public HexCoord vertex0 { get; set; }
-        public HexCoord vertex1 { get; set; }
-        public HexCoord vertex2 { get; set; }
-        public HexCoord vertex3 { get; set; }
+        public HexCoord vB { get; set; }
+        public HexCoord vL { get; set; }
+        public HexCoord vF { get; set; }
+        public HexCoord vR { get; set; }
         public int Length => 4;
 
         public HexQuad((HexCoord _vertex0, HexCoord _vertex1, HexCoord _vertex2, HexCoord _vertex3) _tuple) 
@@ -65,27 +65,15 @@ namespace Procedural.Hexagon.Geometry
 
         public HexQuad(HexCoord _vertex0,HexCoord _vertex1,HexCoord _vertex2,HexCoord _vertex3)
         {
-            vertex0 = _vertex0;
-            vertex1 = _vertex1;
-            vertex2 = _vertex2;
-            vertex3 = _vertex3;
-            m_Identity = vertex0 + vertex1 + vertex2 + vertex3;
+            vB = _vertex0;
+            vL = _vertex1;
+            vF = _vertex2;
+            vR = _vertex3;
+            m_Identity = vB + vL + vF + vR;
         }
-        public HexCoord this[int _index]
-        {
-            get
-            {
-                switch (_index)
-                {
-                    default:throw new Exception("Invalid Index:" + _index);
-                    case 0: return vertex0;
-                    case 1: return vertex1;
-                    case 2: return vertex2;
-                    case 3: return vertex3;
-                }
-            }
-        }
-        public HexCoord GetElement(int index) => this[index];
-        public bool Equals(HexQuad other) => vertex0 == other.vertex0 && vertex1 == other.vertex1 && vertex2 == other.vertex2&&vertex3==other.vertex3;
+        public HexCoord this[int _index] => this.GetVertex(_index);
+        public HexCoord this[EQuadCorners _corner] => this.GetVertex(_corner);
+        public HexCoord GetElement(int index) => this.GetVertex(index);
+        public bool Equals(HexQuad other) => vB == other.vB && vL == other.vL && vF == other.vF&&vR==other.vR;
     }
 }

@@ -15,14 +15,14 @@ public static class UIterate
                 m_Array = new T[length];
         }
     }
-    public static T[] ConstructIteratorArray<T>(this IIterate<T> helper)
+    public static T[] Iterate<T>(this IIterate<T> helper)
     {
         ArrayStorage<T>.CheckLength(helper.Length);
         for (int i = 0; i < helper.Length; i++)
             ArrayStorage<T>.m_Array[ i] = helper.GetElement(i);
         return ArrayStorage<T>.m_Array;
     }
-    public static Y[] ConstructIteratorArray<T,Y>(this IIterate<T> helper,Func<T,Y> _convert)
+    public static Y[] Iterate<T,Y>(this IIterate<T> helper,Func<T,Y> _convert)
     {
         ArrayStorage<Y>.CheckLength(helper.Length);
         for(int i=0;i<helper.Length;i++)

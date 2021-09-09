@@ -4,13 +4,20 @@
 	{
 		_MainTex("Main Tex",2D) = "white"{}
 		[HDR]_Color("Color",Color) = (1,1,1,1)
+		
+		[Header(Render Options)]
+        [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
+        [Enum(Off,0,Front,1,Back,2)]_Cull("Cull",int)=2
 	}
 	SubShader
 	{
 		Tags{ "RenderType" = "Transparent" "IgnoreProjector" = "True" "Queue" = "Transparent" "PreviewType" = "Plane"} 
 		Blend SrcAlpha OneMinusSrcAlpha
-		Cull Back Lighting Off ZWrite Off Fog { Color(0,0,0,0) }
-
+		Cull [_Cull]
+		ZTest [_ZTest]
+		Lighting Off 
+		ZWrite Off
+		
 		Pass
 		{		
 			name "Main"

@@ -14,7 +14,7 @@ namespace BoundingCollisionTest
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            float distance = UGeometryVoxel.RayPlaneDistance(m_Plane,m_Ray);
+            float distance = UGeometryIntersect.RayPlaneDistance(m_Plane,m_Ray);
 
             Gizmos.matrix = transform.localToWorldMatrix;
             Vector3 planeSize = new Vector3(1,0,1);

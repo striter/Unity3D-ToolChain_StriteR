@@ -104,7 +104,7 @@
 				float4 uv:TEXCOORD0;
 				float3 positionWS:TEXCOORD1;
 				float4 positionHCS:TEXCOORD2;
-				half3 normalWS:TEXCOORD3;
+				float3 normalWS:TEXCOORD3;
 				half3 tangentWS:TEXCOORD4;
 				half3 biTangentWS:TEXCOORD5;
 				half3 viewDirWS:TEXCOORD6;
@@ -202,36 +202,7 @@
 				
 				BRDFLight brdfMainLight=BRDFLight_Ctor(surface,mainLight.direction,mainLight.color,mainLight.shadowAttenuation,anisotropic);
 				brdfColor+=BRDFLighting(surface,brdfMainLight);
-float3 halfDir = SafeNormalize(float3(mainLight.direction) + float3(viewDirWS));
-
-    float NoH = saturate(dot(normalWS, halfDir));
-    half LoH = saturate(dot(mainLight.direction, halfDir));
-
-    // GGX Distribution multiplied by combined approximation of Visibility and Fresnel
-    // BRDFspec = (D * V * F) / 4.0
-    // D = roughness^2 / ( NoH^2 * (roughness^2 - 1) + 1 )^2
-    // V * F = 1.0 / ( LoH^2 * (roughness + 0.5) )
-    // See "Optimizing PBR for Mobile" from Siggraph 2015 moving mobile graphics course
-    // https://community.arm.com/events/1155
-
-    // Final BRDFspec = roughness^2 / ( NoH^2 * (roughness^2 - 1) + 1 )^2 * (LoH^2 * (roughness + 0.5) * 4.0)
-    // We further optimize a few light invariant terms
-    // brdfData.normalizationTerm = (roughness + 0.5) * 4.0 rewritten as roughness * 4.0 + 2.0 to a fit a MAD.
-    float d = NoH * NoH * (surface.roughness2-1.) + 1.00001f;
-
-    half LoH2 = LoH * LoH;
-    half specularTerm = surface.roughness2 / ((d * d) * max(0.1h, LoH2) * (surface.roughness*4.+2.));
-
-    // On platforms where half actually means something, the denominator has a risk of overflow
-    // clamp below was added specifically to "fix" that, but dx compiler (we convert bytecode to metal/gles)
-    // sees that specularTerm have only non-negative terms, so it skips max(0,..) in clamp (leaving only min(100,...))
-#if defined (SHADER_API_MOBILE) || defined (SHADER_API_SWITCH)
-    specularTerm = specularTerm - HALF_MIN;
-    specularTerm = clamp(specularTerm, 0.0, 100.0); // Prevent FP16 overflow on mobiles
-#endif
-
-				float3 finalCol=specularTerm;//NDF_CookTorrance(dot(normalWS,normalize(viewDirWS+normalize(_MainLightPosition.xyz))),surface.roughness2);//BRDFLighting(surface,brdfMainLight);
-				return float4(finalCol,1);
+		
 				#if _ADDITIONAL_LIGHTS
             	uint pixelLightCount = GetAdditionalLightsCount();
 			    for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
