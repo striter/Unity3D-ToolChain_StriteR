@@ -200,8 +200,8 @@ namespace ConvexGrid
                     foreach (var quad in cornerQuads)
                     {
                         var qube = quad.ConvertToQube(m_TileHeight,.5f);
-                        qube.FillFacingQuad(ECubeFace.T,vertices,indices,generateUV?uvs:null,generateNormals?normals:null);
-                        qube.FillFacingQuad(ECubeFace.B,vertices,indices,generateUV?uvs:null,generateNormals?normals:null);
+                        qube.FillFacingQuad(ECubeFacing.T,vertices,indices,generateUV?uvs:null,generateNormals?normals:null);
+                        qube.FillFacingQuad(ECubeFacing.D,vertices,indices,generateUV?uvs:null,generateNormals?normals:null);
                     }
                 }
                 break;

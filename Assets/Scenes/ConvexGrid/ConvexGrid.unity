@@ -408,6 +408,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 923fb642d8923a641b05410092fc6b22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Mesh: {fileID: 0}
 --- !u!23 &681300826
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1203,14 +1204,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94969701822ab7843b8ac4203069162e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_VertexGizmos: 1
-  m_QuadGizmos: 1
+  m_VertexGizmos: 0
+  m_QuadGizmos: 0
   m_RelativeQuadGizmos: 0
   m_RelativeVertexGizmos: 0
-  m_CornerGizmos: 1
+  m_CornerGizmos: 0
   m_CornerMeshGizmos: 0
   m_VoxelGizmos: 1
-  m_VoxelRelations: 1
+  m_VoxelCornerRelations: 0
+  m_VoxelSideRelations: 1
 --- !u!1 &1290556885
 GameObject:
   m_ObjectHideFlags: 0

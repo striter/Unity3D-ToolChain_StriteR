@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/ExampleHelperScene.unity
     guid: 0600e4da9bdccee4ab819bf25ea95bdf
   - enabled: 0
@@ -29,9 +29,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ConvexGrid/ConvexGrid.unity
     guid: 2768d856855ead046955578826c5c0d1
-  - enabled: 0
-    path: Assets/Scenes/ConvexGrid/Test 1.unity
-    guid: 1a658e948310b18428cfba49bf891c3c
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 347a74a6abbfda5409b4cb31b51a2451,
       type: 2}

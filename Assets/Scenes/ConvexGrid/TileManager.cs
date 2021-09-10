@@ -65,7 +65,7 @@ namespace ConvexGrid
             if (m_Corners.Contains(_cornerID))
                 return;
             var vertex = m_GridVertices[_cornerID.gridID];
-            var corner = m_Corners.Spawn(_cornerID).Init(vertex);
+            m_Corners.Spawn(_cornerID).Init(vertex);
         }
 
         void FillVoxels(HexCoord _quadID)
@@ -74,8 +74,9 @@ namespace ConvexGrid
             for (byte i = 0; i <= maxHeight; i++)
             {
                 var cornerID = new PileID(_quadID, i);
-                TileVoxel voxel = m_Voxels.Contains(cornerID) ? m_Voxels.Get(cornerID): m_Voxels.Spawn(cornerID).Init(m_GridQuads[_quadID]);
-                voxel.RefreshRelations(m_Corners);
+                if(m_Voxels.Contains(cornerID))
+                    continue; 
+                m_Voxels.Spawn(cornerID).Init(m_GridQuads[_quadID]);
             }
         }
         
@@ -112,8 +113,15 @@ namespace ConvexGrid
             var srcHeight = m_Voxels.Max(_quadID);
             for (var i = maxHeight; i <= srcHeight; i++)
                 m_Voxels.Recycle(new PileID(_quadID, i));
-            for (var i=byte.MinValue; i < maxHeight; i++)
-                m_Voxels.Get(new PileID(_quadID, i)).RefreshRelations(m_Corners);
+        }
+
+        void RefreshVoxels(HexCoord _quadID)
+        {
+            if (m_Voxels.Count(_quadID)==0)
+                return;
+            var maxHeight = GetMaxCornerHeight(_quadID);
+            for (byte i = 0; i <= maxHeight; i++)
+                m_Voxels.Get(new PileID(_quadID, i)).RefreshRelations(m_Corners,m_Voxels);
         }
         
         public void Tick(float _deltaTime)
@@ -129,9 +137,12 @@ namespace ConvexGrid
                 FillVertex(_vertex);
                 foreach (var convexQuad in _vertex.m_NearbyQuads)
                     FillQuad(convexQuad);
+                
                 FillCorner(corner);
                 foreach (var quad in _vertex.m_NearbyQuads)
                     FillVoxels(quad.m_Identity);
+                foreach (var quad in _vertex.m_NearbyQuads)
+                    RefreshVoxels(quad.m_Identity);
             }
             
             if(!_construct&&contains)
@@ -139,6 +150,9 @@ namespace ConvexGrid
                 RemoveCorner(corner);
                 foreach (var quad in _vertex.m_NearbyQuads)
                     RemoveVoxels(quad.m_Identity);
+                foreach (var quad in _vertex.m_NearbyQuads)
+                    RefreshVoxels(quad.m_Identity);
+                
                 RemoveVertex(_vertex.m_Hex);
                 foreach (var quad in _vertex.m_NearbyQuads)
                     RemoveQuad(quad.m_Identity);
@@ -160,8 +174,8 @@ namespace ConvexGrid
         public bool m_CornerGizmos;
         [MFoldout(nameof(m_CornerGizmos), true)] public bool m_CornerMeshGizmos;
         public bool m_VoxelGizmos;
-        [MFoldout(nameof(m_VoxelGizmos),true)]
-        public bool m_VoxelRelations;
+        [MFoldout(nameof(m_VoxelGizmos),true)] public bool m_VoxelCornerRelations;
+        [MFoldout(nameof(m_VoxelGizmos),true)] public bool m_VoxelSideRelations;
         private void OnDrawGizmos()
         {
             if (m_VertexGizmos && m_GridVertices != null) 
@@ -222,18 +236,23 @@ namespace ConvexGrid
                     Gizmos.matrix = voxel.transform.localToWorldMatrix;
                     Gizmos.DrawWireCube(Vector3.zero,Vector3.one);
                     Gizmos.matrix = Matrix4x4.identity;
-                    if (m_VoxelRelations)
+                    if (m_VoxelCornerRelations)
                     {
                         for (int i = 0; i < 8; i++)
                         {
                             Gizmos.color = URender.IndexToColor(i%4);
                             if (voxel.m_CornerRelations[i])
-                            {
-                                var cornerID = voxel.GetCornerID(i);
-                                if(!m_Corners.Contains(cornerID))
-                                    continue;
-                                Gizmos.DrawLine(voxel.transform.position,m_Corners.Get(cornerID).transform.position);
-                            }
+                                Gizmos.DrawLine(voxel.transform.position,m_Corners.Get(voxel.GetCornerID(i)).transform.position);
+                        }
+                    }
+
+                    if (m_VoxelSideRelations)
+                    {
+                        for (int i = 0; i < 6; i++)
+                        {
+                            Gizmos.color = URender.IndexToColor(i);
+                            if(voxel.m_SideRelations[i])
+                                Gizmos.DrawLine(voxel.transform.position,(voxel.transform.position+m_Voxels.Get(voxel.GetFacingID(i)).transform.position)/2);
                         }
                     }
                 }

@@ -134,7 +134,7 @@ Material:
     - _Glossiness: 1
     - _GlossyReflections: 0
     - _HueShift: 0
-    - _Metallic: 0
+    - _Metallic: 0.23
     - _NDF: 2
     - _OcclusionStrength: 1
     - _Parallax: 0.005

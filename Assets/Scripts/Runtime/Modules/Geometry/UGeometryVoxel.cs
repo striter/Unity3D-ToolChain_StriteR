@@ -12,10 +12,10 @@ namespace Geometry.Voxel
             switch (_corners)
             {
                 default: throw new Exception("Invalid Corner:"+_corners);
-                case EQubeCorner.BB: return 0;
-                case EQubeCorner.BL: return 1;
-                case EQubeCorner.BF: return 2;
-                case EQubeCorner.BR: return 3;
+                case EQubeCorner.DB: return 0;
+                case EQubeCorner.DL: return 1;
+                case EQubeCorner.DF: return 2;
+                case EQubeCorner.DR: return 3;
                 case EQubeCorner.TB: return 4;
                 case EQubeCorner.TL: return 5;
                 case EQubeCorner.TF: return 6;
@@ -28,40 +28,40 @@ namespace Geometry.Voxel
             switch (_index)
             {
                 default: throw new Exception("Invalid Corner:"+_index);
-                case 0:return EQubeCorner.BB; 
-                case 1:return EQubeCorner.BL;
-                case 2:return EQubeCorner.BF;
-                case 3:return EQubeCorner.BR;
+                case 0:return EQubeCorner.DB; 
+                case 1:return EQubeCorner.DL;
+                case 2:return EQubeCorner.DF;
+                case 3:return EQubeCorner.DR;
                 case 4:return EQubeCorner.TB;
                 case 5:return EQubeCorner.TL;
                 case 6:return EQubeCorner.TF;
                 case 7:return EQubeCorner.TR;
             }
         }
-        public static (EQubeCorner v0, EQubeCorner v1, EQubeCorner v2, EQubeCorner v3) GetRelativeVertsCW(this ECubeFace _face)
+        public static (EQubeCorner v0, EQubeCorner v1, EQubeCorner v2, EQubeCorner v3) GetRelativeVertsCW(this ECubeFacing _facing)
         {
-            switch (_face)
+            switch (_facing)
             {
-                default: throw new Exception("Invalid Face:"+_face);
-                case ECubeFace.BL:return (EQubeCorner.BB,EQubeCorner.BL,EQubeCorner.TL,EQubeCorner.TB);
-                case ECubeFace.LF:return (EQubeCorner.BL,EQubeCorner.BF,EQubeCorner.TF,EQubeCorner.TL);
-                case ECubeFace.FR:return (EQubeCorner.BF,EQubeCorner.BR,EQubeCorner.TR,EQubeCorner.TF);
-                case ECubeFace.RB:return (EQubeCorner.BR,EQubeCorner.BB,EQubeCorner.TB,EQubeCorner.TR);
-                case ECubeFace.T:return (EQubeCorner.TB,EQubeCorner.TL,EQubeCorner.TF,EQubeCorner.TR);
-                case ECubeFace.B:return (EQubeCorner.BB,EQubeCorner.BR,EQubeCorner.BF,EQubeCorner.BL);
+                default: throw new Exception("Invalid Face:"+_facing);
+                case ECubeFacing.BL:return (EQubeCorner.DB,EQubeCorner.DL,EQubeCorner.TL,EQubeCorner.TB);
+                case ECubeFacing.LF:return (EQubeCorner.DL,EQubeCorner.DF,EQubeCorner.TF,EQubeCorner.TL);
+                case ECubeFacing.FR:return (EQubeCorner.DF,EQubeCorner.DR,EQubeCorner.TR,EQubeCorner.TF);
+                case ECubeFacing.RB:return (EQubeCorner.DR,EQubeCorner.DB,EQubeCorner.TB,EQubeCorner.TR);
+                case ECubeFacing.T:return (EQubeCorner.TB,EQubeCorner.TL,EQubeCorner.TF,EQubeCorner.TR);
+                case ECubeFacing.D:return (EQubeCorner.DB,EQubeCorner.DR,EQubeCorner.DF,EQubeCorner.DL);
             }
         }
 
-        public static T GetVertex<T>(this IQube<T> _qube, int _corner) where T : struct => GetVertex(_qube, IndexToCorner(_corner));
-        public static T GetVertex<T>(this IQube<T> _qube,EQubeCorner _corner) where T:struct
+        public static Y GetVertex<T,Y>(this T _qube, int _corner) where T:IQube<Y> where Y : struct => GetVertex<T,Y>(_qube, IndexToCorner(_corner));
+        public static Y GetVertex<T,Y>(this T _qube,EQubeCorner _corner)  where T:IQube<Y> where Y:struct
         {
             switch (_corner)
             {
                 default: throw new Exception("Invalid Corner:"+_corner);
-                case EQubeCorner.BB: return _qube.vertBB;
-                case EQubeCorner.BL: return _qube.vertBL;
-                case EQubeCorner.BF: return _qube.vertBF;
-                case EQubeCorner.BR: return _qube.vertBR;
+                case EQubeCorner.DB: return _qube.vertDB;
+                case EQubeCorner.DL: return _qube.vertDL;
+                case EQubeCorner.DF: return _qube.vertDF;
+                case EQubeCorner.DR: return _qube.vertDR;
                 case EQubeCorner.TB: return _qube.vertTB;
                 case EQubeCorner.TL: return _qube.vertTL;
                 case EQubeCorner.TF: return _qube.vertTF;
@@ -69,12 +69,58 @@ namespace Geometry.Voxel
             }
         }
 
-        public static (T v0, T v1, T v2, T v3) GetVertsCW<T>(this IQube<T> _qube, ECubeFace _face) where T : struct
+        public static (T v0, T v1, T v2, T v3) GetVertsCW<T>(this IQube<T> _qube, ECubeFacing _facing) where T : struct
         {
-            var corners = _face.GetRelativeVertsCW();
+            var corners = _facing.GetRelativeVertsCW();
             return (_qube[corners.v0],_qube[corners.v1],_qube[corners.v2],_qube[corners.v3] );
         }
+        
+        
+        public static int FacingToIndex(this ECubeFacing _facing)
+        {
+            switch (_facing)
+            {
+                default: throw new Exception("Invalid Face:"+_facing);
+                case ECubeFacing.BL: return 0;
+                case ECubeFacing.LF: return 1;
+                case ECubeFacing.FR: return 2;
+                case ECubeFacing.RB: return 3;
+                case ECubeFacing.T: return 4;
+                case ECubeFacing.D: return 5;
+            }
+        } 
+        
+        public static ECubeFacing IndexToFacing(int _index)
+        {
+            switch (_index)
+            {
+                default: throw new Exception("Invalid Corner:"+_index);
+                case 0:return ECubeFacing.BL;
+                case 1:return ECubeFacing.LF;
+                case 2:return ECubeFacing.FR;
+                case 3:return ECubeFacing.RB;
+                case 4:return ECubeFacing.T;
+                case 5:return ECubeFacing.D;
+            }
+        }
+        
+        public static Y GetFacing<T,Y>(this T _cubeFace, int _corner) where T : ICubeFace<Y> where Y : struct => GetFacing<T,Y>(_cubeFace, IndexToFacing(_corner));
+        public static Y GetFacing<T, Y>(this T _cubeFace, ECubeFacing _facing) where T : ICubeFace<Y> where Y : struct
+        {
+            switch (_facing)
+            {
+                default: throw new Exception("Invalid Facing:"+_facing);
+                case ECubeFacing.BL: return _cubeFace.fBL;
+                case ECubeFacing.LF: return _cubeFace.fLF;
+                case ECubeFacing.FR: return _cubeFace.fFR;
+                case ECubeFacing.RB: return _cubeFace.fRB;
+                case ECubeFacing.T: return _cubeFace.fT;
+                case ECubeFacing.D: return _cubeFace.fD;
+            }
+        }
+
     }
+    
     public static class UGeometryVoxel
     {
         public static GQube ConvertToQube(this GQuad _quad, Vector3 _expand,float _baryCenter=0)
@@ -86,11 +132,10 @@ namespace Geometry.Voxel
                              _quad.vB+expand,_quad.vL+expand,_quad.vF+expand,_quad.vR+expand);
         }
         
-        
-        public static void FillFacingQuad(this IQube<Vector3> _qube,ECubeFace _face,List<Vector3> _vertices,List<int> _indices,List<Vector2> _uvs,List<Vector3> _normals)
+        public static void FillFacingQuad(this IQube<Vector3> _qube,ECubeFacing _facing,List<Vector3> _vertices,List<int> _indices,List<Vector2> _uvs,List<Vector3> _normals)
         {
             int indexOffset = _vertices.Count;
-            var vertsCW = _qube.GetVertsCW(_face);
+            var vertsCW = _qube.GetVertsCW(_facing);
             _vertices.Add(vertsCW.v0);
             _vertices.Add(vertsCW.v1);
             _vertices.Add(vertsCW.v2);

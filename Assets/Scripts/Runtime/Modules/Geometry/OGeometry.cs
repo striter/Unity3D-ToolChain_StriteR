@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Geometry.Voxel;
 using UnityEngine;
 
 namespace Geometry
@@ -26,7 +27,7 @@ namespace Geometry
     #endregion
     
     #region
-    public interface IQuad<T> where T:struct
+    public interface IQuad<T> where T : struct
     {
         T vB { get; set; }
         T vL { get; set; }
@@ -35,7 +36,8 @@ namespace Geometry
         T this[int _index] { get; }
         T this[EQuadCorners _corner] { get; }
     }
-    public interface ITriangle<T> where T:struct
+
+    public interface ITriangle<T> where T : struct
     {
         T vertex0 { get; set; }
         T vertex1 { get; set; }

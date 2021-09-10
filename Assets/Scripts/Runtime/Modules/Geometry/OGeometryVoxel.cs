@@ -10,10 +10,10 @@ namespace Geometry.Voxel
     [Flags]
     public enum EQubeCorner
     {
-        BB=1,
-        BL=2,
-        BF=8,
-        BR=16,
+        DB=1,
+        DL=2,
+        DF=8,
+        DR=16,
         
         TB=32,
         TL=64,
@@ -22,30 +22,41 @@ namespace Geometry.Voxel
     }
     
     [Flags]
-    public enum ECubeFace
+    public enum ECubeFacing
     {
-        T=1,
-        B=2,
-        LF=4,
-        FR=8,
-        BL=16,
-        RB=32,
+        LF=1,
+        FR=2,
+        BL=4,
+        RB=8,
+        T=16,
+        D=32,
     }
     #endregion
     
     #region Interface
     public interface IQube<T> where T : struct
     {
-        T vertBB { get; set; }
-        T vertBL { get; set; }
-        T vertBF { get; set; }
-        T vertBR { get; set; }
+        T vertDB { get; set; }
+        T vertDL { get; set; }
+        T vertDF { get; set; }
+        T vertDR { get; set; }
         T vertTB { get; set; }
         T vertTL { get; set; }
         T vertTF { get; set; }
         T vertTR { get; set; }
         T this[int _index] { get; }
         T this[EQubeCorner _index] { get; }
+    }
+    public interface ICubeFace<T> where T : struct
+    {
+        public T fBL { get; set; }
+        public T fLF { get; set; }
+        public T fFR { get; set; }
+        public T fRB { get; set; }
+        public T fT { get; set; }
+        public T fD { get; set; }
+        T this[int _index] { get; }
+        T this[ECubeFacing _facing] { get; }
     }
     #endregion
     
@@ -144,30 +155,30 @@ namespace Geometry.Voxel
     [Serializable]
     public struct GQube:IQube<Vector3>
     {
-        public Vector3 vertBB { get; set; }
-        public Vector3 vertBL { get; set; }
-        public Vector3 vertBF { get; set; }
-        public Vector3 vertBR { get; set; }
+        public Vector3 vertDB { get; set; }
+        public Vector3 vertDL { get; set; }
+        public Vector3 vertDF { get; set; }
+        public Vector3 vertDR { get; set; }
         public Vector3 vertTB { get; set; }
         public Vector3 vertTL { get; set; }
         public Vector3 vertTF { get; set; }
         public Vector3 vertTR { get; set; }
         
-        public GQube(Vector3 _vertBB, Vector3 _vertBL, Vector3 _vertBF, Vector3 _vertBR,
+        public GQube(Vector3 _vertDB, Vector3 _vertDL, Vector3 _vertDF, Vector3 _vertDR,
             Vector3 _vertTB, Vector3 _vertTL, Vector3 _vertTF, Vector3 _vertTR)
         {
-            vertBB = _vertBB;
-            vertBL = _vertBL;
-            vertBF = _vertBF;
-            vertBR = _vertBR;
+            vertDB = _vertDB;
+            vertDL = _vertDL;
+            vertDF = _vertDF;
+            vertDR = _vertDR;
             vertTB = _vertTB;
             vertTL = _vertTL;
             vertTF = _vertTF;
             vertTR = _vertTR;
         }
 
-        public Vector3 this[int _index] => this.GetVertex(_index);
-        public Vector3 this[EQubeCorner _corner] => this.GetVertex(_corner);
+        public Vector3 this[int _index] => this.GetVertex<GQube,Vector3>(_index);
+        public Vector3 this[EQubeCorner _corner] => this.GetVertex<GQube,Vector3>(_corner);
     }
     
     [Serializable]

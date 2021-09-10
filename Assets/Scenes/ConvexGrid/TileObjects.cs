@@ -28,33 +28,57 @@ namespace ConvexGrid
         public bool this[int _index]=>this.GetVertex<QuadRelations,bool>(_index); 
         public bool this[EQuadCorners _corner] =>this.GetVertex<QuadRelations,bool>(_corner);
     }
-    public struct QubeRelations : IQube<bool>
+
+    public struct VoxelSideRelation:ICubeFace<bool>
     {
-        public bool vertBB { get; set; }
-        public bool vertBL { get; set; }
-        public bool vertBF { get; set; }
-        public bool vertBR { get; set; }
+        public bool fBL { get; set; }
+        public bool fLF { get; set; }
+        public bool fFR { get; set; }
+        public bool fRB { get; set; }
+        public bool fT { get; set; }
+        public bool fD { get; set; }
+
+        public VoxelSideRelation( bool _fBL, bool _fLF, bool _fFR, bool _fRB,bool _fT,bool _fD)
+        {
+            fBL = _fBL;
+            fLF = _fLF;
+            fFR = _fFR;
+            fRB = _fRB;
+            fT = _fT;
+            fD = _fD;
+        }
+
+        public bool this[int _index] => this.GetFacing<VoxelSideRelation,bool>(_index);
+
+        public bool this[ECubeFacing _facing] => this.GetFacing<VoxelSideRelation, bool>(_facing);
+    }
+    public struct VoxelCornerRelation : IQube<bool>
+    {
+        public bool vertDB { get; set; }
+        public bool vertDL { get; set; }
+        public bool vertDF { get; set; }
+        public bool vertDR { get; set; }
         public bool vertTB { get; set; }
         public bool vertTL { get; set; }
         public bool vertTF { get; set; }
         public bool vertTR { get; set; }
 
-        public QubeRelations(QuadRelations _relationBottom,QuadRelations _relationTop)
+        public VoxelCornerRelation(QuadRelations _relationDown,QuadRelations _relationTop)
         {
-            vertBB = _relationBottom.vB;
-            vertBL = _relationBottom.vL;
-            vertBF = _relationBottom.vF;
-            vertBR = _relationBottom.vR;
+            vertDB = _relationDown.vB;
+            vertDL = _relationDown.vL;
+            vertDF = _relationDown.vF;
+            vertDR = _relationDown.vR;
             vertTB = _relationTop.vB;
             vertTL = _relationTop.vL;
             vertTF = _relationTop.vF;
             vertTR = _relationTop.vR;
         }
-        public bool this[int _index] => this.GetVertex(_index);
-        public bool this[EQubeCorner _index] =>  this.GetVertex(_index);
+        public bool this[int _index] => this.GetVertex<VoxelCornerRelation,bool>(_index);
+        public bool this[EQubeCorner _index] =>  this.GetVertex<VoxelCornerRelation,bool>(_index);
     }
     
-    [System.Serializable]
+    [Serializable]
     public struct PileID:IEquatable<PileID>
     {
         public HexCoord gridID;
