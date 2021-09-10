@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Geometry.Voxel;
-using GridTest;
 using LinqExtentions;
 using Procedural;
 using Procedural.Hexagon;
@@ -99,7 +98,7 @@ namespace ConvexGrid
         {
             var cornerQuads = TSPoolList<GQuad>.Spawn();
             Coord center = _vertex.m_Coord;
-            _centerWS = center.ToWorld();
+            _centerWS = center.ToPosition();
             foreach (var tuple in _vertex.m_NearbyQuads.LoopIndex())
                 cornerQuads.Add(ConstructLocalGeometry(tuple.value,center,_vertex.GetQuadVertsCW(tuple.index),_geometry));
             
