@@ -25,7 +25,7 @@ namespace ConvexGrid
     public static class ConvexGridHelper
     {
         public static readonly Vector3 m_TileHeight = 4f * Vector3.up;
-        public static readonly Vector3 m_CornerOffset = m_TileHeight / 2f;
+        public static readonly Vector3 m_TileHeightHalf = m_TileHeight / 2f;
 
         public static int m_SmoothTimes = 256;
         public static float m_SmoothFactor = 0.4f;
@@ -72,7 +72,7 @@ namespace ConvexGrid
 
         public static Vector3 GetCornerHeight(byte _height)
         {
-            return m_CornerOffset+m_TileHeight * _height;
+            return m_TileHeightHalf+m_TileHeight * _height;
         }
 
         public static GQuad ConstructLocalGeometry(this ConvexQuad _quad,Coord _center, int[] indexes,EGridQuadGeometry _geometry)
@@ -200,8 +200,8 @@ namespace ConvexGrid
                     foreach (var quad in cornerQuads)
                     {
                         var qube = quad.ConvertToQube(m_TileHeight,.5f);
-                        qube.FillFaceMesh(ECubeFace.T,vertices,indices,generateUV?uvs:null,generateNormals?normals:null);
-                        qube.FillFaceMesh(ECubeFace.B,vertices,indices,generateUV?uvs:null,generateNormals?normals:null);
+                        qube.FillFacingQuad(ECubeFace.T,vertices,indices,generateUV?uvs:null,generateNormals?normals:null);
+                        qube.FillFacingQuad(ECubeFace.B,vertices,indices,generateUV?uvs:null,generateNormals?normals:null);
                     }
                 }
                 break;

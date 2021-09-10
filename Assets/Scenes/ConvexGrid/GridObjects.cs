@@ -187,33 +187,15 @@ namespace ConvexGrid
             {
                 var splitQuad = m_ProceduralQuads[0];
                 m_ProceduralQuads.RemoveAt(0);
-            
-                var index0 = splitQuad.vB;
-                var index1 = splitQuad.vL;
-                var index2 = splitQuad.vF;
-                var index3 = splitQuad.vR;
-                var midTuple = splitQuad.GetQuadMidVertices();
-                
-                var index01 = midTuple.m01;
-                var index12 = midTuple.m12;
-                var index23 = midTuple.m23;
-                var index30 = midTuple.m30;
-                var index0123 = midTuple.m0123;
-                
-                m_ProceduralVertices.TryAdd(index01);
-                m_ProceduralVertices.TryAdd(index12);
-                m_ProceduralVertices.TryAdd(index23);
-                m_ProceduralVertices.TryAdd(index30);
-                m_ProceduralVertices.TryAdd(index0123);
-                
-                m_ProceduralQuads.Add(new HexQuad(index0,index01,index0123,index30));
-                yield return null;
-                m_ProceduralQuads.Add(new HexQuad(index01,index1,index12,index0123));
-                yield return null;
-                m_ProceduralQuads.Add(new HexQuad(index30,index0123,index23,index3));
-                yield return null;
-                m_ProceduralQuads.Add(new HexQuad(index0123,index12,index2,index23));
-                yield return null;
+
+                foreach (var tuple in splitQuad.SplitQuads<HexQuad,HexCoord>())
+                {
+                    m_ProceduralVertices.TryAdd(tuple.vB);
+                    m_ProceduralVertices.TryAdd(tuple.vL);
+                    m_ProceduralVertices.TryAdd(tuple.vF);
+                    m_ProceduralVertices.TryAdd(tuple.vR);
+                    m_ProceduralQuads.Add(new HexQuad(tuple.vB,tuple.vL,tuple.vF,tuple.vR));
+                }
             }
             
             //Split Triangles

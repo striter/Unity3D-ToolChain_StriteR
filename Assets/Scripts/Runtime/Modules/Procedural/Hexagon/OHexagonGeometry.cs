@@ -18,7 +18,7 @@ namespace Procedural.Hexagon.Geometry
             vertex1 = _vertex1;
             vertex2 = _vertex2;
         }
-        public HexCoord GetElement(int index) => this[index];
+        public HexCoord GetElement(int _index) => this[_index];
         public HexCoord this[int index]
         {
             get
@@ -71,9 +71,11 @@ namespace Procedural.Hexagon.Geometry
             vR = _vertex3;
             m_Identity = vB + vL + vF + vR;
         }
-        public HexCoord this[int _index] => this.GetVertex(_index);
-        public HexCoord this[EQuadCorners _corner] => this.GetVertex(_corner);
-        public HexCoord GetElement(int index) => this.GetVertex(index);
+
+        public HexCoord this[int _index]=>this.GetVertex<HexQuad,HexCoord>(_index); 
+        public HexCoord this[EQuadCorners _corner] =>this.GetVertex<HexQuad,HexCoord>(_corner); 
+        public HexCoord GetElement(int _index) => this[_index];
         public bool Equals(HexQuad other) => vB == other.vB && vL == other.vL && vF == other.vF&&vR==other.vR;
     }
+
 }

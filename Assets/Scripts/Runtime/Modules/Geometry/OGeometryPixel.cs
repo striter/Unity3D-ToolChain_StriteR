@@ -18,11 +18,11 @@ namespace Geometry.Pixel
             vertex2 = _vertex2;
         }
         public int Length => 3;
-        public Vector2 GetElement(int index)
+        public Vector2 GetElement(int _index)
         {
-            switch (index)
+            switch (_index)
             {
-                default: throw new Exception("Invalid Index:" + index);
+                default: throw new Exception("Invalid Index:" + _index);
                 case 0: return vertex0;
                 case 1: return vertex1;
                 case 2: return vertex2;
@@ -37,11 +37,6 @@ namespace Geometry.Pixel
         public Vector2 vL { get; set; }
         public Vector2 vF { get; set; }
         public Vector2 vR { get; set; }
-        public Vector2 this[int _index] => this.GetVertex(_index);
-
-        public Vector2 this[EQuadCorners _corner] => this.GetVertex(_corner);
-        public Vector2 GetElement(int index) => this.GetVertex(index);
-        public int Length => 4;
 
         public G2Quad(Vector2 _vertex0, Vector2 _vertex1, Vector2 _vertex2, Vector2 _vertex3)
         {
@@ -50,6 +45,10 @@ namespace Geometry.Pixel
             vF = _vertex2;
             vR = _vertex3;
         }
+        public Vector2 this[int _index]=>this.GetVertex<G2Quad,Vector2>(_index); 
+        public Vector2 this[EQuadCorners _corner] =>this.GetVertex<G2Quad,Vector2>(_corner);
+        public Vector2 GetElement(int _index) => this[_index];
+        public int Length => 4;
 
     }
 }

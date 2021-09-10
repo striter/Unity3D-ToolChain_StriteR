@@ -98,8 +98,8 @@ namespace Procedural
         public Coord vL { get; set; }
         public Coord vF { get; set; }
         public Coord vR { get; set; }
-        public Coord this[int _index] => this.GetVertex(_index);
-        public Coord this[EQuadCorners _corner] => this.GetVertex(_corner);
+        public Coord this[int _index]=>this.GetVertex<CoordQuad,Coord>(_index); 
+        public Coord this[EQuadCorners _corner] =>this.GetVertex<CoordQuad,Coord>(_corner);
 
         public CoordQuad(Coord _vertex0,Coord _vertex1,Coord _vertex2,Coord _vertex3)
         {

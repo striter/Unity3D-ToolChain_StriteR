@@ -71,7 +71,6 @@ namespace ConvexGrid
         void FillVoxels(HexCoord _quadID)
         {
             var maxHeight = GetMaxCornerHeight(_quadID);
-            Debug.Log(maxHeight);
             for (byte i = 0; i <= maxHeight; i++)
             {
                 var cornerID = new PileID(_quadID, i);
@@ -109,12 +108,12 @@ namespace ConvexGrid
         void RemoveVoxels(HexCoord _quadID)
         {
             var maxHeight = GetMaxCornerHeight(_quadID);
-            Debug.Log(maxHeight);
             maxHeight = maxHeight == byte.MinValue ? byte.MinValue : UByte.ForwardOne(maxHeight);
             var srcHeight = m_Voxels.Max(_quadID);
-            Debug.Log(maxHeight+" "+srcHeight);
             for (var i = maxHeight; i <= srcHeight; i++)
                 m_Voxels.Recycle(new PileID(_quadID, i));
+            for (var i=byte.MinValue; i < maxHeight; i++)
+                m_Voxels.Get(new PileID(_quadID, i)).RefreshRelations(m_Corners);
         }
         
         public void Tick(float _deltaTime)
@@ -179,7 +178,7 @@ namespace ConvexGrid
                     Gizmos.color = Color.white;
                     Gizmos.matrix = quad.transform.localToWorldMatrix;
                     
-                    Gizmos_Extend.DrawLines(quad.m_ShapeOS.Iterate());
+                    Gizmos_Extend.DrawLines(quad.m_OrientedShapeOS.Iterate());
                     // Gizmos.DrawLine(Vector3.up,Vector3.up+Vector3.forward);
 
                     Gizmos.matrix = Matrix4x4.identity;

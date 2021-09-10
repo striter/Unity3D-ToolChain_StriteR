@@ -42,11 +42,11 @@ namespace Geometry.Index
 
         IEnumerator IEnumerable.GetEnumerator()=>GetEnumerator();
 
-        public int GetElement(int index)
+        public int GetElement(int _index)
         {
-            switch (index)
+            switch (_index)
             {
-                default: throw new Exception("Invalid Index:" + index);
+                default: throw new Exception("Invalid Index:" + _index);
                 case 0: return index0;
                 case 1: return index1;
                 case 2: return index2;
@@ -85,11 +85,11 @@ namespace Geometry.Index
         IEnumerator IEnumerable.GetEnumerator()=>GetEnumerator();
 
         public int Length => 3;
-        public int GetElement(int index)
+        public int GetElement(int _index)
         {
-            switch (index)
+            switch (_index)
             {
-                default: throw new Exception("Invalid Index:" + index);
+                default: throw new Exception("Invalid Index:" + _index);
                 case 0: return index0;
                 case 1: return index1;
                 case 2: return index2;

@@ -91,11 +91,11 @@ namespace Geometry.Voxel
         public int Length => 3;
         public Vector3[] GetDrawLineVertices() => new Vector3[] { vertex0, vertex1, vertex2, vertex0 };
         public Vector3 this[int index] => GetElement(index);
-        public Vector3 GetElement(int index)
+        public Vector3 GetElement(int _index)
         {
-            switch (index)
+            switch (_index)
             {
-                default: Debug.LogError("Invalid Index:" + index); return vertex0;
+                default: Debug.LogError("Invalid Index:" + _index); return vertex0;
                 case 0: return vertex0;
                 case 1: return vertex1;
                 case 2: return vertex2;
@@ -136,9 +136,9 @@ namespace Geometry.Voxel
             normal= Vector3.Cross(vL-vB,vF-vB);
         }
         public int Length => 4;
-        public Vector3 this[int _index] => this.GetVertex(_index);
-        public Vector3 this[EQuadCorners _corner] => this.GetVertex(_corner);
-        public Vector3 GetElement(int index) => this.GetVertex(index);
+        public Vector3 this[int _index]=>this.GetVertex<GQuad,Vector3>(_index); 
+        public Vector3 this[EQuadCorners _corner] =>this.GetVertex<GQuad,Vector3>(_corner);
+        public Vector3 GetElement(int _index) => this[_index];
     }
 
     [Serializable]

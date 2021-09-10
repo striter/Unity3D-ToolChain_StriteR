@@ -15,7 +15,7 @@ namespace ConvexGrid
     public class TileQuad : PoolBehaviour<HexCoord>
     {
         public ConvexQuad m_Quad { get; private set; }
-        public GQuad m_ShapeOS { get;private set; }
+        public GQuad m_OrientedShapeOS { get;private set; }
         public HexQuad m_NearbyVertsCW { get; private set; }
         public HexQuad m_NearbyQuadsCW { get; private set; }
 
@@ -38,7 +38,8 @@ namespace ConvexGrid
             Quaternion rotation = Quaternion.Euler(0, radHelper[0].rad * UMath.Rad2Deg, 0);
             transform.SetPositionAndRotation( m_Quad.m_CoordCenter.ToPosition() , rotation);
             var inverseRotation = Quaternion.Inverse(rotation);
-            m_ShapeOS = new GQuad(inverseRotation*offsets[0].ToPosition(),inverseRotation*offsets[1].ToPosition(),inverseRotation*offsets[2].ToPosition(),inverseRotation*offsets[3].ToPosition());
+            m_OrientedShapeOS = new GQuad(inverseRotation*offsets[ radHelper[0].index].ToPosition(),inverseRotation*offsets[ radHelper[1].index].ToPosition(),
+                inverseRotation*offsets[ radHelper[2].index].ToPosition(),inverseRotation*offsets[ radHelper[3].index].ToPosition());
             
             availableQuads.Clear();
             availableQuads.AddRange(m_Quad.m_Vertices[0].m_NearbyQuads.Extend(m_Quad.m_Vertices[2].m_NearbyQuads).Collect(quad =>quad.m_Identity!=m_Quad.m_Identity&&quad.m_HexQuad.MatchVertexCount(m_Quad.m_HexQuad) == 2));

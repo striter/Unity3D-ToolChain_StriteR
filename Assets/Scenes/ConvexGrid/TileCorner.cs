@@ -14,12 +14,10 @@ namespace ConvexGrid
         public HexCoord m_VertID => m_BaseVertex.m_Vertex.m_Hex;
         public TileVertex m_BaseVertex { get; private set; }
         public MeshCollider m_Collider { get; private set; }
-        public MeshFilter m_MeshFilter { get; private set; }
 
         public override void OnPoolInit(Action<PileID> _DoRecycle)
         {
             base.OnPoolInit(_DoRecycle);
-            m_MeshFilter = GetComponent<MeshFilter>();
             m_Collider = GetComponent<MeshCollider>();
         }
         
@@ -30,7 +28,6 @@ namespace ConvexGrid
             transform.localPosition = ConvexGridHelper.GetCornerHeight(m_PoolID);
             transform.localRotation = Quaternion.identity;
             m_Collider.sharedMesh = _vertex.m_CornerMesh;
-            m_MeshFilter.sharedMesh = _vertex.m_CornerMesh;
             return this;
         }
 

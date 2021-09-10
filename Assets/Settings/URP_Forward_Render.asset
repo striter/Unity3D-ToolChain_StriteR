@@ -58,10 +58,10 @@ MonoBehaviour:
   m_NormalTexture: 1
   m_CameraReflectionTexture: 1
   m_PlanarReflectionData:
-    m_ReflectionType: 1
+    m_ReflectionType: 0
     m_Sample: 4
     m_Recull: 1
-    m_AdditionalLightcount: 8
+    m_AdditionalLightcount: 0
     m_IncludeTransparent: 0
     m_DownSample: 1
     m_EnableBlur: 1

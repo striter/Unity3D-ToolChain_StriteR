@@ -77,16 +77,17 @@ namespace Geometry.Voxel
     }
     public static class UGeometryVoxel
     {
-        public static GQube ConvertToQube(this GQuad _quad, Vector3 _offset,float _centerOffset=0)
+        public static GQube ConvertToQube(this GQuad _quad, Vector3 _expand,float _baryCenter=0)
         {
-            var shrink= _offset*(1-_centerOffset);
-            var expand= _offset * _centerOffset;
+            var shrink= _expand * (1-_baryCenter);
+            var expand= _expand * _baryCenter;
             
             return new GQube(_quad.vB-shrink,_quad.vL-shrink,_quad.vF-shrink,_quad.vR-shrink,
                              _quad.vB+expand,_quad.vL+expand,_quad.vF+expand,_quad.vR+expand);
         }
         
-        public static void FillFaceMesh(this IQube<Vector3> _qube,ECubeFace _face,List<Vector3> _vertices,List<int> _indices,List<Vector2> _uvs,List<Vector3> _normals)
+        
+        public static void FillFacingQuad(this IQube<Vector3> _qube,ECubeFace _face,List<Vector3> _vertices,List<int> _indices,List<Vector2> _uvs,List<Vector3> _normals)
         {
             int indexOffset = _vertices.Count;
             var vertsCW = _qube.GetVertsCW(_face);

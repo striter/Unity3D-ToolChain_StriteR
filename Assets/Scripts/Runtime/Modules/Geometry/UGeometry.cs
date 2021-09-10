@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Geometry.Voxel;
 using UnityEngine;
 
@@ -43,9 +44,11 @@ namespace Geometry
                 case EQuadFaces.RB: return (EQuadCorners.R,EQuadCorners.B);
             }
         }
-
-        public static T GetVertex<T>(this IQuad<T> _quad, int _corner) where T : struct => GetVertex(_quad, IndexToCorner(_corner));
-        public static T GetVertex<T>(this IQuad<T> _quad,EQuadCorners _corner) where T:struct
+        public static Y GetVertex<T,Y>(this T _quad, int _corner) where T:IQuad<Y> where Y : struct
+        {   
+            return GetVertex<T,Y>(_quad, IndexToCorner(_corner));
+        }
+        public static Y GetVertex<T,Y>(this T _quad, EQuadCorners _corner) where T:IQuad<Y> where Y : struct
         {
             switch (_corner)
             {
@@ -60,7 +63,7 @@ namespace Geometry
         public static (T v0, T v1) ToRelativeVertex<T>(this EQuadFaces _patch, IQuad<T> _quad) where T : struct
         {
             var patch = GetRelativeVertIndexesCW(_patch);
-            return (_quad.GetVertex(patch.i0), _quad.GetVertex(patch.i1));
+            return (_quad[patch.i0], _quad[patch.i1]);
         }
         
         public static T GetBaryCenter<T>(this IQuad<T> _quad) where T:struct
@@ -72,13 +75,33 @@ namespace Geometry
             return (vertex0+vertex1+vertex2+vertex3)/4;
         }
         
-        public static (T m01, T m12, T m23, T m30,T m0123) GetQuadMidVertices<T>(this IQuad<T> _quad) where T:struct
+        public static (T vBL, T vLF, T vFR, T vRB, T vC) GetQuadMidVertices<T>(this IQuad<T> _quad) where T:struct
         {
-            dynamic v0 = _quad.vB;
-            dynamic v1 = _quad.vL;
-            dynamic v2 = _quad.vF;
-            dynamic v3 = _quad.vR;
-            return ((v0 + v1) / 2, (v1 + v2) / 2, (v2 + v3)/2,(v3+v0)/2,(v0+v1+v2+v3)/4);
+            dynamic vB = _quad.vB;
+            dynamic vL = _quad.vL;
+            dynamic vF = _quad.vF;
+            dynamic vR = _quad.vR;
+            return ((vB + vL) / 2, (vL + vF) / 2, (vF + vR)/2,(vR+vB)/2,(vB+vL+vF+vR)/4);
+        }
+
+        public static IEnumerable<(Y vB,Y vL,Y vF,Y vR)> SplitQuads<T,Y>(this T _quad) where T:IQuad<Y> where Y:struct
+        {
+            var vB = _quad.vB;
+            var vL = _quad.vL;
+            var vF = _quad.vF;
+            var vR = _quad.vR;
+            var midTuple = _quad.GetQuadMidVertices();
+                
+            var vBL = midTuple.vBL;
+            var vLF = midTuple.vLF;
+            var vFR = midTuple.vFR;
+            var vRB = midTuple.vRB;
+            var vC = midTuple.vC;
+                
+            yield return (vB,vBL,vC,vRB);   //B
+            yield return (vBL,vL,vLF,vC);   //L
+            yield return (vC,vLF,vF,vFR);   //F
+            yield return (vRB,vC,vFR,vR);   //R
         }
         
         public static bool IsPointInside<T> (this IQuad<T> _quad,T _point) where T:struct

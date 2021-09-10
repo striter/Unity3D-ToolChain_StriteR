@@ -25,9 +25,8 @@ namespace ConvexGrid
             vF = _vF;
             vR = _vR;
         }
-        public bool this[int _index] => this.GetVertex(_index);
-
-        public bool this[EQuadCorners _corner] => this.GetVertex(_corner);
+        public bool this[int _index]=>this.GetVertex<QuadRelations,bool>(_index); 
+        public bool this[EQuadCorners _corner] =>this.GetVertex<QuadRelations,bool>(_corner);
     }
     public struct QubeRelations : IQube<bool>
     {
