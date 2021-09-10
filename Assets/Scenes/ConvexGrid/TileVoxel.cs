@@ -89,9 +89,9 @@ namespace ConvexGrid
             var normals = TSPoolList<Vector3>.Spawn();
             var qubes = TSPoolList<GQube>.Spawn(8);
 
-            foreach (var quad in m_Quad.m_OrientedShapeOS.SplitQuads<GQuad,Vector3>())
+            foreach (var quad in m_Quad.m_OrientedShapeOS.SplitToQuads<GQuad,Vector3>())
                 qubes.Add(new GQuad(quad.vB,quad.vL,quad.vF,quad.vR).ConvertToQube(ConvexGridHelper.m_TileHeightHalf,0f));
-            foreach (var quad in m_Quad.m_OrientedShapeOS.SplitQuads<GQuad,Vector3>())
+            foreach (var quad in m_Quad.m_OrientedShapeOS.SplitToQuads<GQuad,Vector3>())
                 qubes.Add(new GQuad(quad.vB,quad.vL,quad.vF,quad.vR).ConvertToQube(ConvexGridHelper.m_TileHeightHalf,1f));
 
             for (int i = 0; i < 8; i++)

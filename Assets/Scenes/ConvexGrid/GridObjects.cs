@@ -188,7 +188,7 @@ namespace ConvexGrid
                 var splitQuad = m_ProceduralQuads[0];
                 m_ProceduralQuads.RemoveAt(0);
 
-                foreach (var tuple in splitQuad.SplitQuads<HexQuad,HexCoord>())
+                foreach (var tuple in splitQuad.SplitToQuads<HexQuad,HexCoord>())
                 {
                     m_ProceduralVertices.TryAdd(tuple.vB);
                     m_ProceduralVertices.TryAdd(tuple.vL);
@@ -204,27 +204,15 @@ namespace ConvexGrid
                 var splitTriangle = m_ProceduralTriangles[0];
                 m_ProceduralTriangles.RemoveAt(0);
 
-                var index0 = splitTriangle.vertex0;
-                var index1 = splitTriangle.vertex1;
-                var index2 = splitTriangle.vertex2;
-            
-                var midTuple = splitTriangle.GetMiddleVertices();
-                var index01 = midTuple.m01;
-                var index12 = midTuple.m12;
-                var index20 = midTuple.m20;
-                var index012 = midTuple.m012;
-                
-                m_ProceduralVertices.TryAdd(index01);
-                m_ProceduralVertices.TryAdd(index12);
-                m_ProceduralVertices.TryAdd(index20);
-                m_ProceduralVertices.TryAdd(index012);
-                
-                m_ProceduralQuads.Add(new HexQuad(index0,index01,index012,index20));
-                yield return null;
-                m_ProceduralQuads.Add(new HexQuad(index01,index1,index12,index012));
-                yield return null;
-                m_ProceduralQuads.Add(new HexQuad(index20,index012,index12,index2));
-                yield return null;
+                foreach (var tuple in splitTriangle.SplitToQuads<HexTriangle,HexCoord>())
+                {
+                    m_ProceduralVertices.TryAdd(tuple.v0);
+                    m_ProceduralVertices.TryAdd(tuple.v1);
+                    m_ProceduralVertices.TryAdd(tuple.v2);
+                    m_ProceduralVertices.TryAdd(tuple.v3);
+                    m_ProceduralQuads.Add(new HexQuad(tuple.v0,tuple.v1,tuple.v2,tuple.v3));
+                    yield return null;
+                }
             }
             m_ProceduralTriangles.Clear();
         }

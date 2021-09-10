@@ -37,9 +37,9 @@ namespace ConvexGrid
             var maxHeight = byte.MinValue;
             for (int i = 0; i < m_GridQuads[_quadID].m_NearbyVertsCW.Length; i++)
             {
-                var vertex = m_GridQuads[_quadID].m_NearbyVertsCW[i];
-                if (m_Corners.Count(vertex) != 0)
-                    maxHeight = Math.Max(maxHeight, UByte.ForwardOne( m_Corners.Max(vertex)));
+                var vertexID = m_GridQuads[_quadID].m_NearbyVertsCW[i];
+                if (m_Corners.Contains(vertexID))
+                    maxHeight = Math.Max(maxHeight, UByte.ForwardOne( m_Corners.Max(vertexID)));
             }
             return maxHeight;
         }
@@ -52,12 +52,15 @@ namespace ConvexGrid
             m_GridVertices.Spawn(vertexID).Init(_vertexData);
         }
 
-        void FillQuad(ConvexQuad _quadData)
+        void FillQuads(ConvexVertex _vertex)
         {
-            var quadID = _quadData.m_Identity;
-            if (m_GridQuads.Contains(quadID))
-                return;
-            m_GridQuads.Spawn(quadID).Init(_quadData);
+            foreach (var quad in _vertex.m_NearbyQuads)
+            {
+                var quadID = quad.m_Identity;
+                if (m_GridQuads.Contains(quadID))
+                    continue;
+                m_GridQuads.Spawn(quadID).Init(quad);
+            }
         }
 
         void FillCorner(PileID _cornerID)
@@ -68,35 +71,37 @@ namespace ConvexGrid
             m_Corners.Spawn(_cornerID).Init(vertex);
         }
 
-        void FillVoxels(HexCoord _quadID)
+        void FillVoxels(ConvexVertex _vertex)
         {
-            var maxHeight = GetMaxCornerHeight(_quadID);
-            for (byte i = 0; i <= maxHeight; i++)
+            foreach (var quadID in _vertex.m_NearbyQuads.Select(p=>p.m_Identity))
             {
-                var cornerID = new PileID(_quadID, i);
-                if(m_Voxels.Contains(cornerID))
-                    continue; 
-                m_Voxels.Spawn(cornerID).Init(m_GridQuads[_quadID]);
+                var maxHeight = GetMaxCornerHeight(quadID);
+                for (byte i = 0; i <= maxHeight; i++)
+                {
+                    var voxelID = new PileID(quadID, i);
+                    if(m_Voxels.Contains(voxelID))
+                        continue; 
+                    m_Voxels.Spawn(voxelID).Init(m_GridQuads[quadID]);
+                }
             }
         }
         
-        void RemoveVertex(HexCoord _vertex)
+        void RemoveVertex(ConvexVertex _vertex)
         {
-            if (m_Corners.Count(_vertex) != 0)
+            var vertexID = _vertex.m_Hex;
+            if (m_Corners.Contains(vertexID)||!m_GridVertices.Contains(vertexID))
                 return;
-            
-            if (!m_GridVertices.Contains(_vertex))
-                return;
-            m_GridVertices.Recycle(_vertex);
+            m_GridVertices.Recycle(vertexID);
         }
 
-        void RemoveQuad(HexCoord _quadIdentity)
+        void RemoveQuads(ConvexVertex _vertex)
         {
-            if (m_Voxels.Count(_quadIdentity) != 0)
-                return;
-            if (!m_GridQuads.Contains(_quadIdentity))
-                return;
-            m_GridQuads.Recycle(_quadIdentity);
+            foreach (var quadID in _vertex.m_NearbyQuads.Select(p => p.m_Identity))
+            {
+                if (m_Voxels.Contains(quadID)||!m_GridQuads.Contains(quadID))
+                    continue;
+                m_GridQuads.Recycle(quadID);
+            }
         }
         
         void RemoveCorner(PileID _cornerID)
@@ -106,22 +111,42 @@ namespace ConvexGrid
             var corner=m_Corners.Recycle(_cornerID);
         }
 
-        void RemoveVoxels(HexCoord _quadID)
+        void RemoveVoxels(ConvexVertex _vertex)
         {
-            var maxHeight = GetMaxCornerHeight(_quadID);
-            maxHeight = maxHeight == byte.MinValue ? byte.MinValue : UByte.ForwardOne(maxHeight);
-            var srcHeight = m_Voxels.Max(_quadID);
-            for (var i = maxHeight; i <= srcHeight; i++)
-                m_Voxels.Recycle(new PileID(_quadID, i));
+            foreach (var _quadID in _vertex.m_NearbyQuads.Select(p => p.m_Identity))
+            {
+                var maxHeight = GetMaxCornerHeight(_quadID);
+                maxHeight = maxHeight == byte.MinValue ? byte.MinValue : UByte.ForwardOne(maxHeight);
+                var srcHeight = m_Voxels.Max(_quadID);
+                for (var i = maxHeight; i <= srcHeight; i++)
+                    m_Voxels.Recycle(new PileID(_quadID, i));
+            }
         }
 
-        void RefreshVoxels(HexCoord _quadID)
+        void RefreshVoxels(ConvexVertex _vertex)
         {
-            if (m_Voxels.Count(_quadID)==0)
-                return;
-            var maxHeight = GetMaxCornerHeight(_quadID);
-            for (byte i = 0; i <= maxHeight; i++)
-                m_Voxels.Get(new PileID(_quadID, i)).RefreshRelations(m_Corners,m_Voxels);
+            var quadRefreshing = TSPoolList<HexCoord>.Spawn(_vertex.m_NearbyQuads.Count*3);
+            
+            foreach (var _quadID in _vertex.m_NearbyQuads.Select(p => p.m_Identity))
+            {
+                quadRefreshing.Add(_quadID);
+                var quad = m_GridQuads[_quadID];
+                quadRefreshing.TryAdd(quad.m_NearbyQuadsCW.vB);
+                quadRefreshing.TryAdd(quad.m_NearbyQuadsCW.vL);
+                quadRefreshing.TryAdd(quad.m_NearbyQuadsCW.vF);
+                quadRefreshing.TryAdd(quad.m_NearbyQuadsCW.vR);
+            }
+
+            foreach (var _quadID in quadRefreshing)
+            {
+                if (!m_Voxels.Contains(_quadID))
+                   continue;
+                var maxHeight = GetMaxCornerHeight(_quadID);
+                for (byte i = 0; i <= maxHeight; i++)
+                    m_Voxels.Get(new PileID(_quadID, i)).RefreshRelations(m_Corners,m_Voxels);
+            }
+            
+            TSPoolList<HexCoord>.Recycle(quadRefreshing);
         }
         
         public void Tick(float _deltaTime)
@@ -135,27 +160,21 @@ namespace ConvexGrid
             if (_construct&&!contains)
             {
                 FillVertex(_vertex);
-                foreach (var convexQuad in _vertex.m_NearbyQuads)
-                    FillQuad(convexQuad);
+                FillQuads(_vertex);
                 
                 FillCorner(corner);
-                foreach (var quad in _vertex.m_NearbyQuads)
-                    FillVoxels(quad.m_Identity);
-                foreach (var quad in _vertex.m_NearbyQuads)
-                    RefreshVoxels(quad.m_Identity);
+                FillVoxels(_vertex);
+                RefreshVoxels(_vertex);
             }
             
             if(!_construct&&contains)
             {
                 RemoveCorner(corner);
-                foreach (var quad in _vertex.m_NearbyQuads)
-                    RemoveVoxels(quad.m_Identity);
-                foreach (var quad in _vertex.m_NearbyQuads)
-                    RefreshVoxels(quad.m_Identity);
+                RemoveVoxels(_vertex);
+                RefreshVoxels(_vertex);
                 
-                RemoveVertex(_vertex.m_Hex);
-                foreach (var quad in _vertex.m_NearbyQuads)
-                    RemoveQuad(quad.m_Identity);
+                RemoveVertex(_vertex);
+                RemoveQuads(_vertex);
             }
         }
 
@@ -234,7 +253,7 @@ namespace ConvexGrid
                 {
                     Gizmos.color = Color.white;
                     Gizmos.matrix = voxel.transform.localToWorldMatrix;
-                    Gizmos.DrawWireCube(Vector3.zero,Vector3.one);
+                    Gizmos.DrawSphere(Vector3.zero,.3f);
                     Gizmos.matrix = Matrix4x4.identity;
                     if (m_VoxelCornerRelations)
                     {

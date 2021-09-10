@@ -119,6 +119,8 @@ namespace ConvexGrid
                 return false;
             return m_Items[_pileID.gridID].Contains(_pileID.height);
         }
+
+        public bool Contains(HexCoord _coord) => m_Items.ContainsKey(_coord);
         public T Spawn(PileID _pileID)
         {
             T item = m_Pool.Spawn( _pileID);

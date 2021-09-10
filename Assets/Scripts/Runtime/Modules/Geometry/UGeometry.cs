@@ -84,7 +84,7 @@ namespace Geometry
             return ((vB + vL) / 2, (vL + vF) / 2, (vF + vR)/2,(vR+vB)/2,(vB+vL+vF+vR)/4);
         }
 
-        public static IEnumerable<(Y vB,Y vL,Y vF,Y vR)> SplitQuads<T,Y>(this T _quad) where T:IQuad<Y> where Y:struct
+        public static IEnumerable<(Y vB,Y vL,Y vF,Y vR)> SplitToQuads<T,Y>(this T _quad) where T:IQuad<Y> where Y:struct
         {
             var vB = _quad.vB;
             var vL = _quad.vL;
@@ -196,6 +196,22 @@ namespace Geometry
             return index;
         }
 
+        public static IEnumerable<(T v0, T v1, T v2,T v3)> SplitToQuads<Y,T>(this Y splitTriangle) where Y:ITriangle<T> where T:struct
+        {
+            var index0 = splitTriangle.vertex0;
+            var index1 = splitTriangle.vertex1;
+            var index2 = splitTriangle.vertex2;
+            
+            var midTuple = splitTriangle.GetMiddleVertices();
+            var index01 = midTuple.m01;
+            var index12 = midTuple.m12;
+            var index20 = midTuple.m20;
+            var index012 = midTuple.m012;
+                
+            yield return (index0,index01,index012,index20);
+            yield return (index01, index1, index12, index012);
+            yield return (index20, index012, index12, index2);
+        }
         public static (T v1,T v2,T v3,T v4) CombineTriangle<T>(this ITriangle<T> _triangle1,ITriangle<T> _triangle2) where T:struct,IEquatable<T>
         {
             int diff1=0;
