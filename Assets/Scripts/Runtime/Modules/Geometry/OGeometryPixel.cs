@@ -46,7 +46,7 @@ namespace Geometry.Pixel
             vR = _vertex3;
         }
         public Vector2 this[int _index]=>this.GetVertex<G2Quad,Vector2>(_index); 
-        public Vector2 this[EQuadCorners _corner] =>this.GetVertex<G2Quad,Vector2>(_corner);
+        public Vector2 this[EQuadCorner _corner] =>this.GetVertex<G2Quad,Vector2>(_corner);
         public Vector2 GetElement(int _index) => this[_index];
         public int Length => 4;
 

@@ -29,24 +29,23 @@ namespace ConvexGrid
         private GridGenerator m_GridGenerator;
         private CameraControl m_CameraControl;
         private MeshConstructor m_MeshConstructor;
+        private ModuleManager m_ModuleManager;
         private TileManager m_TileManager;
         private IConvexGridControl[] m_Controls;
         
-        public float m_CellRadius = 1;
+
         private readonly Dictionary<HexCoord, ConvexArea> m_Areas = new Dictionary<HexCoord, ConvexArea>();
         private readonly Dictionary<HexCoord, ConvexVertex> m_Vertices = new Dictionary<HexCoord, ConvexVertex>();
         private readonly Dictionary<HexCoord,ConvexQuad> m_Quads = new Dictionary<HexCoord, ConvexQuad>();
         
-        private void OnValidate() => ConvexGridHelper.InitMatrix(transform, m_CellRadius);
-
         private void Awake()
         {
-            OnValidate();
             m_GridGenerator =  GetComponent<GridGenerator>();
             m_CameraControl = new CameraControl(); 
             m_MeshConstructor = new MeshConstructor();
             m_TileManager = GetComponent<TileManager>();
-            m_Controls = new IConvexGridControl[]{m_GridGenerator,  m_CameraControl, m_MeshConstructor,m_TileManager};
+            m_ModuleManager = GetComponent<ModuleManager>();
+            m_Controls = new IConvexGridControl[]{m_GridGenerator,  m_CameraControl, m_MeshConstructor,m_TileManager,m_ModuleManager};
             m_Controls.Traversal(p=>p.Init(transform));
             UIT_TouchConsole.InitDefaultCommands();
             UIT_TouchConsole.Command("Reset Grid",KeyCode.R).Button(m_TileManager.Clear);
@@ -107,6 +106,7 @@ namespace ConvexGrid
             var hitHex=hitCoord.ToCube();
             if (ValidateGridSelection(hitCoord, out HexCoord selectCoord))
                 m_Controls.Traversal(p=>p.OnSelectVertex(m_Vertices[selectCoord],0,construct));
+            
             DoAreaConstruct(UHexagonArea.GetBelongAreaCoord(hitHex));
         }
 
@@ -184,7 +184,7 @@ namespace ConvexGrid
             foreach (var vertex in m_Vertices.Values)
                 Gizmos.DrawSphere(vertex.m_Coord.ToPosition(),.2f);
             foreach (var quad in m_Quads)
-                Gizmos_Extend.DrawLines(quad.Value.m_HexQuad.Iterate(p=>m_Vertices[p].m_Coord.ToPosition()));
+                Gizmos_Extend.DrawLinesConcat(quad.Value.m_HexQuad.Iterate(p=>m_Vertices[p].m_Coord.ToPosition()));
         }
 #endif
     }

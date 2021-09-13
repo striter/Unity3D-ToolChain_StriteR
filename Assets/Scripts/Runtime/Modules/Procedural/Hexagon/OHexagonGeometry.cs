@@ -73,7 +73,7 @@ namespace Procedural.Hexagon.Geometry
         }
 
         public HexCoord this[int _index]=>this.GetVertex<HexQuad,HexCoord>(_index); 
-        public HexCoord this[EQuadCorners _corner] =>this.GetVertex<HexQuad,HexCoord>(_corner); 
+        public HexCoord this[EQuadCorner _corner] =>this.GetVertex<HexQuad,HexCoord>(_corner); 
         public HexCoord GetElement(int _index) => this[_index];
         public bool Equals(HexQuad other) => vB == other.vB && vL == other.vL && vF == other.vF&&vR==other.vR;
     }

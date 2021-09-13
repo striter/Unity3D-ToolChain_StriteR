@@ -9,58 +9,58 @@ namespace Geometry
 {
     public static class UQuad
     {
-        public static EQuadCorners IndexToCorner(int _index)
+        public static EQuadCorner IndexToCorner(int _index)
         {
             switch (_index)
             {
                 default: throw new Exception("Invalid Corner Index:"+_index);
-                case 0: return EQuadCorners.B;
-                case 1: return EQuadCorners.L;
-                case 2: return EQuadCorners.F;
-                case 3: return EQuadCorners.R;
+                case 0: return EQuadCorner.B;
+                case 1: return EQuadCorner.L;
+                case 2: return EQuadCorner.F;
+                case 3: return EQuadCorner.R;
             }
         }
         
-        public static int CornerToIndex(this EQuadCorners _corners)
+        public static int CornerToIndex(this EQuadCorner corner)
         {
-            switch (_corners)
+            switch (corner)
             {
-                default: throw new Exception("Invalid Corner:"+_corners);
-                case EQuadCorners.B: return 0;
-                case EQuadCorners.L: return 1;
-                case EQuadCorners.F: return 2;
-                case EQuadCorners.R: return 3;
+                default: throw new Exception("Invalid Corner:"+corner);
+                case EQuadCorner.B: return 0;
+                case EQuadCorner.L: return 1;
+                case EQuadCorner.F: return 2;
+                case EQuadCorner.R: return 3;
             }
         }
 
-        public static (EQuadCorners i0, EQuadCorners i1) GetRelativeVertIndexesCW(this EQuadFaces _face)
+        public static (EQuadCorner i0, EQuadCorner i1) GetRelativeVertIndexesCW(this EQuadFacing _facing)
         {
-            switch (_face)
+            switch (_facing)
             {
-                default: throw new Exception("Invalid Face:"+_face);
-                case EQuadFaces.BL: return (EQuadCorners.B,EQuadCorners.L);
-                case EQuadFaces.LF: return (EQuadCorners.L,EQuadCorners.F);
-                case EQuadFaces.FR: return (EQuadCorners.F,EQuadCorners.R);
-                case EQuadFaces.RB: return (EQuadCorners.R,EQuadCorners.B);
+                default: throw new Exception("Invalid Face:"+_facing);
+                case EQuadFacing.BL: return (EQuadCorner.B,EQuadCorner.L);
+                case EQuadFacing.LF: return (EQuadCorner.L,EQuadCorner.F);
+                case EQuadFacing.FR: return (EQuadCorner.F,EQuadCorner.R);
+                case EQuadFacing.RB: return (EQuadCorner.R,EQuadCorner.B);
             }
         }
         public static Y GetVertex<T,Y>(this T _quad, int _corner) where T:IQuad<Y> where Y : struct
         {   
             return GetVertex<T,Y>(_quad, IndexToCorner(_corner));
         }
-        public static Y GetVertex<T,Y>(this T _quad, EQuadCorners _corner) where T:IQuad<Y> where Y : struct
+        public static Y GetVertex<T,Y>(this T _quad, EQuadCorner _corner) where T:IQuad<Y> where Y : struct
         {
             switch (_corner)
             {
                 default: throw new Exception("Invalid Corner:"+_corner);
-                case EQuadCorners.B: return _quad.vB;
-                case EQuadCorners.L: return _quad.vL;
-                case EQuadCorners.F: return _quad.vF;
-                case EQuadCorners.R: return _quad.vR;
+                case EQuadCorner.B: return _quad.vB;
+                case EQuadCorner.L: return _quad.vL;
+                case EQuadCorner.F: return _quad.vF;
+                case EQuadCorner.R: return _quad.vR;
             }
         }
 
-        public static (T v0, T v1) ToRelativeVertex<T>(this EQuadFaces _patch, IQuad<T> _quad) where T : struct
+        public static (T v0, T v1) ToRelativeVertex<T>(this EQuadFacing _patch, IQuad<T> _quad) where T : struct
         {
             var patch = GetRelativeVertIndexesCW(_patch);
             return (_quad[patch.i0], _quad[patch.i1]);

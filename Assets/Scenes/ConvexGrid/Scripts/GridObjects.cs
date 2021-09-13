@@ -333,21 +333,21 @@ namespace ConvexGrid
                 Gizmos.DrawSphere(vertex.ToPosition(),.3f);
             Gizmos.color = Color.white.SetAlpha(.2f);
             foreach (var triangle in m_ProceduralTriangles)
-                Gizmos_Extend.DrawLines(triangle.Iterate(p=>p.ToPosition()));
+                Gizmos_Extend.DrawLinesConcat(triangle.Iterate(p=>p.ToPosition()));
             foreach (var quad in m_ProceduralQuads)
-                Gizmos_Extend.DrawLines(quad.Iterate(p=>p.ToPosition()));
+                Gizmos_Extend.DrawLinesConcat(quad.Iterate(p=>p.ToPosition()));
             
             Gizmos.color = Color.yellow;
             foreach (var vertex in m_RelaxVertices.Values)
                 Gizmos.DrawSphere(vertex.ToPosition(),.2f);
             foreach (var quad in m_RelaxQuads)
-                Gizmos_Extend.DrawLines(quad.Iterate(p=>m_RelaxVertices[p].ToPosition()));
+                Gizmos_Extend.DrawLinesConcat(quad.Iterate(p=>m_RelaxVertices[p].ToPosition()));
 
             Gizmos.color = Color.green;
             foreach (var vertex in m_Vertices.Values)
                 Gizmos.DrawSphere(vertex.ToPosition(),.2f);
             foreach (var quad in m_Quads)
-                Gizmos_Extend.DrawLines(quad.Iterate(p=>m_Vertices[p].ToPosition()));
+                Gizmos_Extend.DrawLinesConcat(quad.Iterate(p=>m_Vertices[p].ToPosition()));
         }
         #endif
     }

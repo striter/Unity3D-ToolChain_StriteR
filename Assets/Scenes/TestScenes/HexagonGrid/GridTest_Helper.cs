@@ -25,7 +25,7 @@ namespace GridTest
         public static void DrawHexagon(this HexCoord _coord)
         {
             Vector3[] hexagonList = UHexagon.GetHexagonPoints().Select(p=>p.ToWorld() + _coord.ToWorld()).ToArray();
-            Gizmos_Extend.DrawLines(hexagonList);
+            Gizmos_Extend.DrawLinesConcat(hexagonList);
         }
 #endif
     }

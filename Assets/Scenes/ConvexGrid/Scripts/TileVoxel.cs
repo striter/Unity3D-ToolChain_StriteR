@@ -88,11 +88,8 @@ namespace ConvexGrid
             var uvs = TSPoolList<Vector2>.Spawn();
             var normals = TSPoolList<Vector3>.Spawn();
             var qubes = TSPoolList<GQube>.Spawn(8);
-
-            foreach (var quad in m_Quad.m_OrientedShapeOS.SplitToQuads<GQuad,Vector3>())
-                qubes.Add(new GQuad(quad.vB,quad.vL,quad.vF,quad.vR).ConvertToQube(ConvexGridHelper.m_TileHeightHalf,0f));
-            foreach (var quad in m_Quad.m_OrientedShapeOS.SplitToQuads<GQuad,Vector3>())
-                qubes.Add(new GQuad(quad.vB,quad.vL,quad.vF,quad.vR).ConvertToQube(ConvexGridHelper.m_TileHeightHalf,1f));
+    
+            qubes.AddRange(m_Quad.m_OrientedShapeOS.SplitToQubes(ConvexGridHelper.m_TileHeightHalf));
 
             for (int i = 0; i < 8; i++)
             {

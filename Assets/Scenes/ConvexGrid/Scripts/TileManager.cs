@@ -211,7 +211,7 @@ namespace ConvexGrid
                     Gizmos.color = Color.white;
                     Gizmos.matrix = quad.transform.localToWorldMatrix;
                     
-                    Gizmos_Extend.DrawLines(quad.m_OrientedShapeOS.Iterate());
+                    Gizmos_Extend.DrawLinesConcat(quad.m_OrientedShapeOS.Iterate());
                     // Gizmos.DrawLine(Vector3.up,Vector3.up+Vector3.forward);
 
                     Gizmos.matrix = Matrix4x4.identity;

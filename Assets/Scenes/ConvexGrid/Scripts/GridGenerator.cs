@@ -11,9 +11,9 @@ using Procedural.Hexagon.Area;
 
 namespace ConvexGrid
 {
-    [ExecuteInEditMode]
     public partial class GridGenerator : MonoBehaviour,IConvexGridControl
     {
+        public float m_CellRadius = 1;
         public bool m_Flat = false;
         public int m_AreaRadius = 8;
 
@@ -30,13 +30,13 @@ namespace ConvexGrid
             {  EConvexIterate.Relaxed,new Stack<IEnumerator>() }, };
         
         private readonly Timer m_IterateTimer = new Timer(1f/60f);
-
         public void Init(Transform _transform)
         {
             Setup();
         }
         void Setup()
         {
+            ConvexGridHelper.InitMatrix(transform, m_CellRadius);
             ConvexGridHelper.InitRelax(m_SmoothenTimes,m_SmoothenFactor);
             UHexagon.flat = m_Flat;
             UHexagonArea.Init(m_AreaRadius,6,true);

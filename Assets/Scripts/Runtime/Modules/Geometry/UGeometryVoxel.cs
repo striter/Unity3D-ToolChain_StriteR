@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TPoolStatic;
 using UnityEngine;
 
@@ -52,12 +54,26 @@ namespace Geometry.Voxel
             }
         }
 
-        public static Y GetVertex<T,Y>(this T _qube, int _corner) where T:IQube<Y> where Y : struct => GetVertex<T,Y>(_qube, IndexToCorner(_corner));
+        public static Y GetVertex<T, Y>(this T _qube, int _corner) where T : IQube<Y> where Y : struct
+        {
+            switch (_corner)
+            {
+                default: throw new IndexOutOfRangeException();
+                case 0: return _qube.vertDB;
+                case 1: return _qube.vertDL;
+                case 2: return _qube.vertDF;
+                case 3: return _qube.vertDR;
+                case 4: return _qube.vertTB;
+                case 5: return _qube.vertTL;
+                case 6: return _qube.vertTF;
+                case 7: return _qube.vertTR;
+            }
+        }
         public static Y GetVertex<T,Y>(this T _qube,EQubeCorner _corner)  where T:IQube<Y> where Y:struct
         {
             switch (_corner)
             {
-                default: throw new Exception("Invalid Corner:"+_corner);
+                default: throw new IndexOutOfRangeException();
                 case EQubeCorner.DB: return _qube.vertDB;
                 case EQubeCorner.DL: return _qube.vertDL;
                 case EQubeCorner.DF: return _qube.vertDF;
@@ -67,6 +83,19 @@ namespace Geometry.Voxel
                 case EQubeCorner.TF: return _qube.vertTF;
                 case EQubeCorner.TR: return _qube.vertTR;
             }
+        }
+
+        public static T SetByteCorners<T, Y>(this T _qube,Y _db,Y _dl,Y _df,Y _dr,Y _tb,Y _tl,Y _tf,Y _tr) where T:struct,IQube<Y> where Y:struct
+        {
+            _qube.vertDB = _db;
+            _qube.vertDL = _dl;
+            _qube.vertDF = _df;
+            _qube.vertDR = _dr;
+            _qube.vertTB = _tb;
+            _qube.vertTL = _tl;
+            _qube.vertTF = _tf;
+            _qube.vertTR = _tr;
+            return _qube;
         }
 
         public static (T v0, T v1, T v2, T v3) GetVertsCW<T>(this IQube<T> _qube, ECubeFacing _facing) where T : struct
@@ -118,7 +147,18 @@ namespace Geometry.Voxel
                 case ECubeFacing.D: return _cubeFace.fD;
             }
         }
+        
+        public static byte ToByte(this IQube<bool> _qube)
+        {
+            return UByte.ToByte(_qube[0],_qube[1],_qube[2],_qube[3],
+                _qube[4],_qube[5],_qube[6],_qube[7]);
+        }
 
+        public static void SetByteCorners<T>(this T _qube, byte _byte) where T:struct,IQube<bool>
+        {
+            _qube.SetByteCorners(UByte.PosValid(_byte,0),UByte.PosValid(_byte,1),UByte.PosValid(_byte,2),UByte.PosValid(_byte,3),
+                UByte.PosValid(_byte,4),UByte.PosValid(_byte,5),UByte.PosValid(_byte,6),UByte.PosValid(_byte,7));
+        }
     }
     
     public static class UGeometryVoxel
@@ -130,6 +170,15 @@ namespace Geometry.Voxel
             
             return new GQube(_quad.vB-shrink,_quad.vL-shrink,_quad.vF-shrink,_quad.vR-shrink,
                              _quad.vB+expand,_quad.vL+expand,_quad.vF+expand,_quad.vR+expand);
+        }
+
+        public static IEnumerable<GQube> SplitToQubes(this GQuad _quad, Vector3 _halfSize)
+        {
+            var quads = _quad.SplitToQuads<GQuad, Vector3>().ToArray();
+            foreach (var quad in quads)
+                yield return new GQuad(quad.vB,quad.vL,quad.vF,quad.vR).ConvertToQube(_halfSize,0f);
+            foreach (var quad in quads)
+                yield return  new GQuad(quad.vB,quad.vL,quad.vF,quad.vR).ConvertToQube(_halfSize,1f);
         }
         
         public static void FillFacingQuad(this IQube<Vector3> _qube,ECubeFacing _facing,List<Vector3> _vertices,List<int> _indices,List<Vector2> _uvs,List<Vector3> _normals)

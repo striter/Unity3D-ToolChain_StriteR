@@ -146,9 +146,14 @@ namespace Geometry.Voxel
             vR = _vr;
             normal= Vector3.Cross(vL-vB,vF-vB);
         }
+
+        public GQuad((Vector3 _vb, Vector3 _vl, Vector3 _vf, Vector3 _vr) _tuple) : this(_tuple._vb,_tuple._vl,_tuple._vf,_tuple._vr)
+        {
+        }
+
         public int Length => 4;
         public Vector3 this[int _index]=>this.GetVertex<GQuad,Vector3>(_index); 
-        public Vector3 this[EQuadCorners _corner] =>this.GetVertex<GQuad,Vector3>(_corner);
+        public Vector3 this[EQuadCorner _corner] =>this.GetVertex<GQuad,Vector3>(_corner);
         public Vector3 GetElement(int _index) => this[_index];
     }
 
