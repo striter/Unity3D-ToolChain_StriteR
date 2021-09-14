@@ -14,7 +14,7 @@ namespace ConvexGrid
     {
         void Init(Transform _transform);
         void Tick(float _deltaTime);
-        void OnSelectVertex(ConvexVertex _vertex,byte _height ,bool _construct);
+        void OnSelectVertex(ConvexVertex _vertex,byte _height);
         void OnAreaConstruct(ConvexArea _area);
         void Clear();
     }
@@ -33,7 +33,6 @@ namespace ConvexGrid
         private TileManager m_TileManager;
         private IConvexGridControl[] m_Controls;
         
-
         private readonly Dictionary<HexCoord, ConvexArea> m_Areas = new Dictionary<HexCoord, ConvexArea>();
         private readonly Dictionary<HexCoord, ConvexVertex> m_Vertices = new Dictionary<HexCoord, ConvexVertex>();
         private readonly Dictionary<HexCoord,ConvexQuad> m_Quads = new Dictionary<HexCoord, ConvexQuad>();
@@ -96,18 +95,28 @@ namespace ConvexGrid
             {
                 var raycast = hit.collider.GetComponent<IGridRaycast>();
                 var tuple = construct? raycast.GetNearbyCornerData(ref hit):raycast.GetCornerData();
-                m_Controls.Traversal(p=>p.OnSelectVertex(m_Vertices[tuple.Item1],tuple.Item2,construct));
+                DoCornerConstruction(m_Vertices[tuple.Item1],tuple.Item2,construct);
                 return;
             }
 
             GPlane plane = new GPlane(Vector3.up, transform.position);
             var hitPos = ray.GetPoint(UGeometryIntersect.RayPlaneDistance(plane, ray));
             var hitCoord =  hitPos.ToCoord();
-            var hitHex=hitCoord.ToCube();
             if (ValidateGridSelection(hitCoord, out HexCoord selectCoord))
-                m_Controls.Traversal(p=>p.OnSelectVertex(m_Vertices[selectCoord],0,construct));
+                DoCornerConstruction(m_Vertices[selectCoord],0,construct);
             
-            DoAreaConstruct(UHexagonArea.GetBelongAreaCoord(hitHex));
+            //DoAreaConstruct(UHexagonArea.GetBelongAreaCoord(hitHex));
+        }
+
+        void DoCornerConstruction(ConvexVertex _vertex,byte _height ,bool _construct)
+        {
+            if(_construct)
+                m_TileManager.CornerConstruction(_vertex,_height,m_ModuleManager.SpawnModules);
+            else
+                m_TileManager.CornerDeconstruction(_vertex,_height,m_ModuleManager.RecycleModules);
+            
+            m_Controls.Traversal(p=>p.OnSelectVertex(_vertex,_height));
+            m_ModuleManager.ValidateModules(m_TileManager.CollectAvailableModules(_vertex,_height));
         }
 
         public bool ValidateGridSelection(Coord _localPos,out HexCoord coord)

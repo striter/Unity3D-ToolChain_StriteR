@@ -23,7 +23,7 @@ namespace ConvexGrid
 
     public static class ConvexGridHelper
     {
-        public static readonly Vector3 m_TileHeight = 4f * Vector3.up;
+        public static readonly Vector3 m_TileHeight = 2f * Vector3.up;
         public static readonly Vector3 m_TileHeightHalf = m_TileHeight / 2f;
 
         public static int m_SmoothTimes = 256;

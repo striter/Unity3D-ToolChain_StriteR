@@ -66,7 +66,6 @@ public static class Gizmos_Extend
         for(int i=0;i<count;i++)
             Gizmos.DrawLine(_points[i],_points[(i+1)%count]);
     }
-
 }
 public static class Handles_Extend
 {

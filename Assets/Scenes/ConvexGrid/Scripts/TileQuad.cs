@@ -35,11 +35,11 @@ namespace ConvexGrid
             m_NearbyVertsCW = new HexQuad( m_Quad.m_HexQuad[radHelper[0].index], m_Quad.m_HexQuad[ radHelper[1].index],
                 m_Quad.m_HexQuad[ radHelper[2].index], m_Quad.m_HexQuad[radHelper[3].index]);
             
-            Quaternion rotation = Quaternion.Euler(0, radHelper[0].rad * UMath.Rad2Deg, 0);
+            Quaternion rotation = Quaternion.Euler(0, radHelper[0].rad * UMath.Rad2Deg+180, 0);
             transform.SetPositionAndRotation( m_Quad.m_CoordCenter.ToPosition() , rotation);
             var inverseRotation = Quaternion.Inverse(rotation);
-            m_OrientedShapeOS = new GQuad(inverseRotation*offsets[ radHelper[0].index].ToPosition(),inverseRotation*offsets[ radHelper[1].index].ToPosition(),
-                inverseRotation*offsets[ radHelper[2].index].ToPosition(),inverseRotation*offsets[ radHelper[3].index].ToPosition());
+            m_OrientedShapeOS = new GQuad(inverseRotation*offsets[ radHelper[2].index].ToPosition(),inverseRotation*offsets[ radHelper[3].index].ToPosition(),
+                inverseRotation*offsets[ radHelper[0].index].ToPosition(),inverseRotation*offsets[ radHelper[1].index].ToPosition());
             
             availableQuads.Clear();
             availableQuads.AddRange(m_Quad.m_Vertices[0].m_NearbyQuads.Extend(m_Quad.m_Vertices[2].m_NearbyQuads).Collect(quad =>quad.m_Identity!=m_Quad.m_Identity&&quad.m_HexQuad.MatchVertexCount(m_Quad.m_HexQuad) == 2));

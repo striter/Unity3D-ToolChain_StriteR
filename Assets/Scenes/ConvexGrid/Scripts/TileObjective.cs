@@ -11,25 +11,25 @@ using UnityEngine;
 
 namespace ConvexGrid
 {
-    public struct QuadRelations : IQuad<bool>
+    public struct BQuad : IQuad<bool>
     {
         public bool vB { get; set; }
         public bool vL { get; set; }
         public bool vF { get; set; }
         public bool vR { get; set; }
 
-        public QuadRelations(bool _vB, bool _vL, bool _vF, bool _vR)
+        public BQuad(bool _vB, bool _vL, bool _vF, bool _vR)
         {
             vB = _vB;
             vL = _vL;
             vF = _vF;
             vR = _vR;
         }
-        public bool this[int _index]=>this.GetVertex<QuadRelations,bool>(_index); 
-        public bool this[EQuadCorner _corner] =>this.GetVertex<QuadRelations,bool>(_corner);
+        public bool this[int _index]=>this.GetVertex<BQuad,bool>(_index); 
+        public bool this[EQuadCorner _corner] =>this.GetVertex<BQuad,bool>(_corner);
     }
 
-    public struct VoxelSideRelation:ICubeFace<bool>
+    public struct BCubeFacing:ICubeFace<bool>
     {
         public bool fBL { get; set; }
         public bool fLF { get; set; }
@@ -38,7 +38,7 @@ namespace ConvexGrid
         public bool fT { get; set; }
         public bool fD { get; set; }
 
-        public VoxelSideRelation( bool _fBL, bool _fLF, bool _fFR, bool _fRB,bool _fT,bool _fD)
+        public BCubeFacing( bool _fBL, bool _fLF, bool _fFR, bool _fRB,bool _fT,bool _fD)
         {
             fBL = _fBL;
             fLF = _fLF;
@@ -48,11 +48,11 @@ namespace ConvexGrid
             fD = _fD;
         }
 
-        public bool this[int _index] => this.GetFacing<VoxelSideRelation,bool>(_index);
+        public bool this[int _index] => this.GetFacing<BCubeFacing,bool>(_index);
 
-        public bool this[ECubeFacing _facing] => this.GetFacing<VoxelSideRelation, bool>(_facing);
+        public bool this[ECubeFacing _facing] => this.GetFacing<BCubeFacing, bool>(_facing);
     }
-    public struct VoxelCornerRelation : IQube<bool>
+    public struct BQube : IQube<bool>
     {
         public bool vertDB { get; set; }
         public bool vertDL { get; set; }
@@ -63,7 +63,7 @@ namespace ConvexGrid
         public bool vertTF { get; set; }
         public bool vertTR { get; set; }
 
-        public VoxelCornerRelation(QuadRelations _relationDown,QuadRelations _relationTop)
+        public BQube(BQuad _relationDown,BQuad _relationTop)
         {
             vertDB = _relationDown.vB;
             vertDL = _relationDown.vL;
@@ -74,8 +74,8 @@ namespace ConvexGrid
             vertTF = _relationTop.vF;
             vertTR = _relationTop.vR;
         }
-        public bool this[int _index] => this.GetVertex<VoxelCornerRelation,bool>(_index);
-        public bool this[EQubeCorner _index] =>  this.GetVertex<VoxelCornerRelation,bool>(_index);
+        public bool this[int _index] => this.GetVertex<BQube,bool>(_index);
+        public bool this[EQubeCorner _corner] =>  this.GetVertex<BQube,bool>(_corner);
     }
     
     [Serializable]

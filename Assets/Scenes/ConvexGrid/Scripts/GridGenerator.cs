@@ -42,15 +42,9 @@ namespace ConvexGrid
             UHexagonArea.Init(m_AreaRadius,6,true);
         } 
         
-        public void OnSelectVertex(ConvexVertex _vertex, byte _height, bool _construct)
-        {
-            
-        }
+        public void OnSelectVertex(ConvexVertex _vertex, byte _height) { }
 
-        public void OnAreaConstruct(ConvexArea _area)
-        {
-            
-        }
+        public void OnAreaConstruct(ConvexArea _area) {  }
 
         public void Clear()
         {

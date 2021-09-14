@@ -7,8 +7,9 @@ namespace  ConvexGrid
 {
     [Serializable]
     //[CreateAssetMenu(menuName = "Module/Data")]
-    public class ModuleData : ScriptableObject
+    public class ConvexMeshData : ScriptableObject
     {
-        public ModulePossibilityData[] m_ModulesData;
+        public ModuleData[] m_ModuleData;
+        public ModuleMesh[] m_ModuleMeshes;
     }
 }

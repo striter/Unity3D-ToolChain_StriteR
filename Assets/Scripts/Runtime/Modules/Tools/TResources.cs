@@ -1,51 +1,24 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-public partial class TResources
+public class TResources
 {
     public static class EditorDefaultResources
-    {
-        static Texture3D _Noise3D = null;
-        public static Texture3D Noise3D
+    { static T LoadEditorResources<T>(string _path) where T:UnityEngine.Object
         {
-            get
-            {
+            T temp = null;
 #if UNITY_EDITOR
-                if(!_Noise3D)
-                    _Noise3D =  UnityEditor.AssetDatabase.LoadAssetAtPath<Texture3D>("Assets/ArtPreset/Textures/Noise/Texture3D_Noise_1.asset");
+            temp = UnityEditor.AssetDatabase.LoadAssetAtPath<T>(_path);
 #endif
-                return _Noise3D;
-            }
+            return temp;
         }
+        
+        public static readonly Instance<Texture3D> Noise3D = new Instance<Texture3D>(() => LoadEditorResources<Texture3D>( "Assets/ArtPreset/Textures/Noise/Texture3D_Noise_1.asset"));
 
-        static Texture2D _Noise2D = null;
-        public static Texture2D Noise2D
-        {
-            get
-            {
-#if UNITY_EDITOR
-                if (!_Noise2D)
-                    _Noise2D = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/ArtPreset/Textures/Noise/Texture_Noise_1.jpg");
-#endif
-                return _Noise2D;
-            }
-        }
-        static Texture2D _Ramp = null;
-        public static Texture2D Ramp
-        {
-            get
-            {
-#if UNITY_EDITOR
-                if (!_Ramp)
-                    _Ramp = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/ArtPreset/Textures/Ramp/Texture_Ramp1D_Linear0.png");
-#endif
-                return _Ramp;
-            }
-        }
+        public static readonly Instance<Texture2D> Noise2D = new Instance<Texture2D>(() =>LoadEditorResources<Texture2D>("Assets/ArtPreset/Textures/Noise/Texture_Noise_1.jpg"));
+
+        public static readonly Instance<Texture2D> Ramp = new Instance<Texture2D>(() =>LoadEditorResources<Texture2D>("Assets/ArtPreset/Textures/Ramp/Texture_Ramp1D_Linear0.png"));
     }
-
 
     public static GameObject Instantiate(string path, Transform toParent=null)
     {

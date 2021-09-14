@@ -7,30 +7,39 @@ using UnityEngine;
 
 namespace ConvexGrid
 {
-    [Serializable]
-    public struct ModulePossibilityData
-    {
-        public byte m_Identity;
-        public Vector3[] m_Vertices;
-        public Vector2[] m_UVs;
-        public int[] m_Indexes;
-        public Vector3[] m_Normals;
-    }
-    
     public class ModuleManager : MonoBehaviour,IConvexGridControl
     {
-        public ModuleData m_Data;
-        public TObjectPoolMono<int, ModuleContainer> m_Containers;
+        public ConvexMeshData m_Data;
+        public TObjectPoolMono<PileID, ModuleContainer> m_Containers { get; set; }
         public void Init(Transform _transform)
         {
-            m_Containers = new TObjectPoolMono<int, ModuleContainer>(_transform.Find("Modules/Container"));
+            m_Containers = new TObjectPoolMono<PileID, ModuleContainer>(_transform.Find("Modules/Container"));
         }
 
+        public void Clear()
+        {
+            m_Containers.Clear();
+        }
+        
+        public void SpawnModules(IModuleCollector _module)
+        {
+            // if(m_Containers.Contains(_module.m_Identity))
+            //     return;
+            Debug.Log(_module.m_Identity.gridID+" "+_module.m_Identity.height);
+            m_Containers.Spawn(_module.m_Identity).Init(_module);
+        }
+        public void RecycleModules(PileID _moduleID)
+        {
+            // if (!m_Containers.Contains(_moduleID))
+            //     return;
+            m_Containers.Recycle(_moduleID);
+        }
+        
         public void Tick(float _deltaTime)
         {
         }
 
-        public void OnSelectVertex(ConvexVertex _vertex, byte _height, bool _construct)
+        public void OnSelectVertex(ConvexVertex _vertex, byte _height)
         {
         }
 
@@ -38,10 +47,28 @@ namespace ConvexGrid
         {
         }
 
-        public void Clear()
+
+        public void ValidateModules(IEnumerable<PileID> _moduleID)
         {
-            m_Containers.Clear();
-            
+            foreach (var module in _moduleID)
+                m_Containers.Get(module).ModuleValidate(m_Data);
         }
+        
+        #region Gizmos
+
+        public bool m_Gizmos;
+        void OnDrawGizmos()
+        {
+            if (!m_Gizmos||m_Containers==null)
+                return;
+
+            Gizmos.color = Color.white.SetAlpha(.5f);
+            foreach (ModuleContainer moduleContainer in m_Containers)
+            {
+                Gizmos.matrix = moduleContainer.transform.localToWorldMatrix;
+                Gizmos.DrawWireSphere(Vector3.zero,.3f);
+            }
+        }
+        #endregion
     }
 }

@@ -26,13 +26,6 @@ public static class URuntime
         for (int i = 0; i < count; i++)
             GameObject.Destroy(trans.GetChild(i).gameObject);
     }
-    public static void SetParentResetTransform(this Transform source, Transform target)
-    {
-        source.SetParent(target);
-        source.transform.localPosition = Vector3.zero;
-        source.transform.localScale = Vector3.one;
-        source.transform.localRotation = Quaternion.identity;
-    }
     public static void SetChildLayer(this Transform trans, int layer)
     {
         foreach (Transform temp in trans.gameObject.GetComponentsInChildren<Transform>(true))

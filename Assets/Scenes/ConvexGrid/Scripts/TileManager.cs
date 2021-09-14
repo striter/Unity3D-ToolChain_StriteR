@@ -32,6 +32,56 @@ namespace ConvexGrid
             m_Voxels.Clear();
         }
 
+        public void OnSelectVertex(ConvexVertex _vertex, byte _height)
+        {
+        }
+
+        public void OnAreaConstruct(ConvexArea _area)
+        {
+        }
+
+        public void CornerConstruction( ConvexVertex _vertex, byte _height,Action<IModuleCollector> _moduleSpawn)
+        {
+            var corner = new PileID(_vertex.m_Hex, _height);
+            if (m_Corners.Contains(corner))
+                return;
+            
+            FillVertex(_vertex);
+            FillQuads(_vertex);
+            
+            FillCorner(corner);
+            FillVoxels(_vertex,_moduleSpawn);
+            RefreshVoxels(_vertex);
+        }
+
+        public void CornerDeconstruction(ConvexVertex _vertex, byte _height,Action<PileID> _moduleRecycle)
+        {
+            var corner = new PileID(_vertex.m_Hex, _height);
+            if (!m_Corners.Contains(corner))
+                return;
+            
+            RemoveCorner(corner);
+            RemoveVoxels(_vertex,_moduleRecycle);
+            RefreshVoxels(_vertex);
+            
+            RemoveVertex(_vertex);
+            RemoveQuads(_vertex);
+        }
+
+        public IEnumerable<PileID> CollectAvailableModules(ConvexVertex _vertex,byte _height)
+        {
+            foreach (var quad in _vertex.m_NearbyQuads)
+            {
+                var quadID = quad.m_Identity;
+                var curPile = new PileID(quadID, _height);
+                var nextPile = new PileID(quadID,UByte.ForwardOne(_height));
+                if (m_Voxels.Contains(curPile))
+                    yield return curPile;
+                if (m_Voxels.Contains(nextPile))
+                    yield return nextPile;
+            }
+        }
+
         byte GetMaxCornerHeight(HexCoord _quadID)
         {
             var maxHeight = byte.MinValue;
@@ -71,7 +121,7 @@ namespace ConvexGrid
             m_Corners.Spawn(_cornerID).Init(vertex);
         }
 
-        void FillVoxels(ConvexVertex _vertex)
+        void FillVoxels(ConvexVertex _vertex,Action<IModuleCollector> _spawn)
         {
             foreach (var quadID in _vertex.m_NearbyQuads.Select(p=>p.m_Identity))
             {
@@ -81,7 +131,7 @@ namespace ConvexGrid
                     var voxelID = new PileID(quadID, i);
                     if(m_Voxels.Contains(voxelID))
                         continue; 
-                    m_Voxels.Spawn(voxelID).Init(m_GridQuads[quadID]);
+                    _spawn(m_Voxels.Spawn(voxelID).Init(m_GridQuads[quadID]));
                 }
             }
         }
@@ -111,7 +161,7 @@ namespace ConvexGrid
             var corner=m_Corners.Recycle(_cornerID);
         }
 
-        void RemoveVoxels(ConvexVertex _vertex)
+        void RemoveVoxels(ConvexVertex _vertex,Action<PileID> _recycle)
         {
             foreach (var _quadID in _vertex.m_NearbyQuads.Select(p => p.m_Identity))
             {
@@ -119,7 +169,11 @@ namespace ConvexGrid
                 maxHeight = maxHeight == byte.MinValue ? byte.MinValue : UByte.ForwardOne(maxHeight);
                 var srcHeight = m_Voxels.Max(_quadID);
                 for (var i = maxHeight; i <= srcHeight; i++)
-                    m_Voxels.Recycle(new PileID(_quadID, i));
+                {
+                    var voxelID = new PileID(_quadID, i);
+                    m_Voxels.Recycle(voxelID);
+                    _recycle(voxelID);
+                }
             }
         }
 
@@ -130,6 +184,8 @@ namespace ConvexGrid
             foreach (var _quadID in _vertex.m_NearbyQuads.Select(p => p.m_Identity))
             {
                 quadRefreshing.Add(_quadID);
+                if(!m_GridQuads.Contains(_quadID))
+                    continue;
                 var quad = m_GridQuads[_quadID];
                 quadRefreshing.TryAdd(quad.m_NearbyQuadsCW.vB);
                 quadRefreshing.TryAdd(quad.m_NearbyQuadsCW.vL);
@@ -148,41 +204,11 @@ namespace ConvexGrid
             
             TSPoolList<HexCoord>.Recycle(quadRefreshing);
         }
-        
+
         public void Tick(float _deltaTime)
         {
         }
 
-        public void OnSelectVertex(ConvexVertex _vertex, byte _height, bool _construct)
-        {
-            var corner = new PileID(_vertex.m_Hex, _height);
-            bool contains = m_Corners.Contains(corner);
-            if (_construct&&!contains)
-            {
-                FillVertex(_vertex);
-                FillQuads(_vertex);
-                
-                FillCorner(corner);
-                FillVoxels(_vertex);
-                RefreshVoxels(_vertex);
-            }
-            
-            if(!_construct&&contains)
-            {
-                RemoveCorner(corner);
-                RemoveVoxels(_vertex);
-                RefreshVoxels(_vertex);
-                
-                RemoveVertex(_vertex);
-                RemoveQuads(_vertex);
-            }
-        }
-
-        public void OnAreaConstruct(ConvexArea _area)
-        {
-            
-        }
-        
         #if UNITY_EDITOR
         #region Gizmos
         [Header("Gizmos")] 
@@ -260,7 +286,7 @@ namespace ConvexGrid
                         for (int i = 0; i < 8; i++)
                         {
                             Gizmos.color = URender.IndexToColor(i%4);
-                            if (voxel.m_CornerRelations[i])
+                            if (voxel.m_CornerRelation[i])
                                 Gizmos.DrawLine(voxel.transform.position,m_Corners.Get(voxel.GetCornerID(i)).transform.position);
                         }
                     }
@@ -270,7 +296,7 @@ namespace ConvexGrid
                         for (int i = 0; i < 6; i++)
                         {
                             Gizmos.color = URender.IndexToColor(i);
-                            if(voxel.m_SideRelations[i])
+                            if(voxel.m_SideRelation[i])
                                 Gizmos.DrawLine(voxel.transform.position,(voxel.transform.position+m_Voxels.Get(voxel.GetFacingID(i)).transform.position)/2);
                         }
                     }

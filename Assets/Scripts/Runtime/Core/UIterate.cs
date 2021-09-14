@@ -98,4 +98,13 @@ public static class UIterate
         for(int i=0;i<length;i++)
             _src.Add(_iterate.GetElement(i));
     }
+
+    public static T[] ToArray<T>(this IIterate<T> _iterate)
+    {
+        int length = _iterate.Length;
+        T[] array = new T[length];
+        for(int i=0;i<length;i++)
+            array[i]=_iterate.GetElement(i);
+        return array;
+    }
 }

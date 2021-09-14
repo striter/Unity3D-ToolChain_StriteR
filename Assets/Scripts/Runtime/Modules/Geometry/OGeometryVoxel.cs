@@ -45,7 +45,7 @@ namespace Geometry.Voxel
         T vertTF { get; set; }
         T vertTR { get; set; }
         T this[int _index] { get; }
-        T this[EQubeCorner _index] { get; }
+        T this[EQubeCorner _corner] { get; }
     }
     public interface ICubeFace<T> where T : struct
     {
@@ -155,6 +155,7 @@ namespace Geometry.Voxel
         public Vector3 this[int _index]=>this.GetVertex<GQuad,Vector3>(_index); 
         public Vector3 this[EQuadCorner _corner] =>this.GetVertex<GQuad,Vector3>(_corner);
         public Vector3 GetElement(int _index) => this[_index];
+        public static GQuad operator +(GQuad _src, Vector3 _offset) => new GQuad(_src.vB+_offset,_src.vL+_offset,_src.vF+_offset,_src.vR+_offset);
     }
 
     [Serializable]

@@ -92,6 +92,7 @@ namespace ConvexGrid
         {
         }
 
+
         public void Init(Transform _transform)
         {
             m_Selection = _transform.Find("Selection");
@@ -114,14 +115,7 @@ namespace ConvexGrid
             m_AreaMeshes.Clear();
         }
 
-        public void OnSelectVertex(ConvexVertex _vertex,byte _height,bool _construct)
-        {
-            m_Selection.SetActive(_construct);
-            if(_construct)            
-                PopulateSelectionMesh(_vertex,_height);
-        }
-
-        void PopulateSelectionMesh(ConvexVertex _vertex,byte _height)
+        public void OnSelectVertex(ConvexVertex _vertex,byte _height)
         {
             Vector3 centerWS;
             if (_height == 0)
@@ -134,7 +128,6 @@ namespace ConvexGrid
                 _vertex.ConstructLocalMesh(m_SelectionMesh,EGridQuadGeometry.Half,EGridVoxelGeometry.VoxelTopBottom,out centerWS,true,false);
                 m_Selection.position = ConvexGridHelper.GetCornerHeight(_height)+ centerWS;
             }
-            // Debug.LogWarning("Selection Mesh Populate");
         }
     }
 }

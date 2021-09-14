@@ -85,7 +85,22 @@ namespace Geometry.Voxel
             }
         }
 
-        public static T SetByteCorners<T, Y>(this T _qube,Y _db,Y _dl,Y _df,Y _dr,Y _tb,Y _tl,Y _tf,Y _tr) where T:struct,IQube<Y> where Y:struct
+        public static void SetCorner<T,Y>(ref this T _qube, int _index,Y _value)where T:struct,IQube<Y> where Y:struct
+        {
+            switch (_index)
+            {
+                default: throw new IndexOutOfRangeException();
+                case 0: _qube.vertDB = _value; break;
+                case 1: _qube.vertDL = _value; break;
+                case 2: _qube.vertDF = _value; break;
+                case 3: _qube.vertDR = _value; break;
+                case 4: _qube.vertTB = _value; break;
+                case 5: _qube.vertTL = _value; break;
+                case 6: _qube.vertTF = _value; break;
+                case 7: _qube.vertTR = _value; break;
+            }
+        }
+        public static void SetCorners<T, Y>(ref this T _qube,Y _db,Y _dl,Y _df,Y _dr,Y _tb,Y _tl,Y _tf,Y _tr) where T:struct,IQube<Y> where Y:struct
         {
             _qube.vertDB = _db;
             _qube.vertDL = _dl;
@@ -95,7 +110,6 @@ namespace Geometry.Voxel
             _qube.vertTL = _tl;
             _qube.vertTF = _tf;
             _qube.vertTR = _tr;
-            return _qube;
         }
 
         public static (T v0, T v1, T v2, T v3) GetVertsCW<T>(this IQube<T> _qube, ECubeFacing _facing) where T : struct
@@ -147,16 +161,16 @@ namespace Geometry.Voxel
                 case ECubeFacing.D: return _cubeFace.fD;
             }
         }
-        
+
         public static byte ToByte(this IQube<bool> _qube)
         {
             return UByte.ToByte(_qube[0],_qube[1],_qube[2],_qube[3],
                 _qube[4],_qube[5],_qube[6],_qube[7]);
         }
 
-        public static void SetByteCorners<T>(this T _qube, byte _byte) where T:struct,IQube<bool>
+        public static void SetByteCorners<T>(ref this T _qube, byte _byte) where T:struct,IQube<bool>
         {
-            _qube.SetByteCorners(UByte.PosValid(_byte,0),UByte.PosValid(_byte,1),UByte.PosValid(_byte,2),UByte.PosValid(_byte,3),
+            _qube.SetCorners(UByte.PosValid(_byte,0),UByte.PosValid(_byte,1),UByte.PosValid(_byte,2),UByte.PosValid(_byte,3),
                 UByte.PosValid(_byte,4),UByte.PosValid(_byte,5),UByte.PosValid(_byte,6),UByte.PosValid(_byte,7));
         }
     }
@@ -171,6 +185,10 @@ namespace Geometry.Voxel
             return new GQube(_quad.vB-shrink,_quad.vL-shrink,_quad.vF-shrink,_quad.vR-shrink,
                              _quad.vB+expand,_quad.vL+expand,_quad.vF+expand,_quad.vR+expand);
         }
+        public static GQuad Shrink(this GQuad _src, float _shrinkScale) => new GQuad(_src.vB*_shrinkScale,_src.vL*_shrinkScale,_src.vF*_shrinkScale,_src.vR*_shrinkScale);
+
+        public static GQube Shrink(this GQube _src, float _shrinkScale) => new GQube(_src.vertDB*_shrinkScale,_src.vertDL*_shrinkScale,_src.vertDF*_shrinkScale,_src.vertDR*_shrinkScale,
+            _src.vertTB*_shrinkScale,_src.vertTL*_shrinkScale,_src.vertTF*_shrinkScale,_src.vertTR*_shrinkScale);
 
         public static IEnumerable<GQube> SplitToQubes(this GQuad _quad, Vector3 _halfSize)
         {
@@ -207,7 +225,6 @@ namespace Geometry.Voxel
                 for(int i=0;i<4;i++)
                     _normals.Add(normal);
             }
-
         }
         public static Matrix4x4 GetMirrorMatrix(this GPlane _plane)
         {

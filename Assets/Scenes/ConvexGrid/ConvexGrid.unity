@@ -1223,7 +1223,7 @@ MonoBehaviour:
   m_SmoothenTimes: 256
   m_SmoothenFactor: 0.4
   m_IteratePerFrame: 128
-  m_Gizmos: 1
+  m_Gizmos: 0
 --- !u!114 &1227246352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1255,7 +1255,7 @@ MonoBehaviour:
   m_RelativeVertexGizmos: 0
   m_CornerGizmos: 0
   m_CornerMeshGizmos: 0
-  m_VoxelGizmos: 1
+  m_VoxelGizmos: 0
   m_VoxelCornerRelations: 0
   m_VoxelSideRelations: 1
 --- !u!114 &1227246354
@@ -1271,6 +1271,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Data: {fileID: 11400000, guid: 07eeb58689efccc4185f6274efe9ce34, type: 2}
+  m_Gizmos: 1
 --- !u!1 &1290556885
 GameObject:
   m_ObjectHideFlags: 0
@@ -1408,6 +1409,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2036110397}
   - component: {fileID: 2036110398}
+  - component: {fileID: 2036110399}
+  - component: {fileID: 2036110400}
   m_Layer: 0
   m_Name: Container
   m_TagString: Untagged
@@ -1441,3 +1444,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c35a63f2d89d094285131b3cf30beda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!33 &2036110399
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2036110396}
+  m_Mesh: {fileID: 0}
+--- !u!23 &2036110400
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2036110396}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: c3454afc0cc030d4299417ed4f421244, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}

@@ -46,7 +46,8 @@ namespace ConvexGrid
                 Quaternion.Slerp(m_Camera.transform.rotation,rotation,_deltaTime*10f));
         }
 
-        public void OnSelectVertex( ConvexVertex _vertex, byte _height, bool _construct)
+
+        public void OnSelectVertex( ConvexVertex _vertex, byte _height)
         {
             m_RootPosition = _vertex.m_Coord.ToPosition();
         }
