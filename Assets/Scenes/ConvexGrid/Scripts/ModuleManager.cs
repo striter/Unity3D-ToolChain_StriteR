@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Geometry.Voxel;
+using Procedural;
 using TPool;
 using UnityEngine;
 
@@ -25,7 +26,6 @@ namespace ConvexGrid
         {
             // if(m_Containers.Contains(_module.m_Identity))
             //     return;
-            Debug.Log(_module.m_Identity.gridID+" "+_module.m_Identity.height);
             m_Containers.Spawn(_module.m_Identity).Init(_module);
         }
         public void RecycleModules(PileID _moduleID)
@@ -57,6 +57,7 @@ namespace ConvexGrid
         #region Gizmos
 
         public bool m_Gizmos;
+        [MFoldout(nameof(m_Gizmos),true)] public bool m_ShapeGizmos;
         void OnDrawGizmos()
         {
             if (!m_Gizmos||m_Containers==null)
@@ -67,6 +68,9 @@ namespace ConvexGrid
             {
                 Gizmos.matrix = moduleContainer.transform.localToWorldMatrix;
                 Gizmos.DrawWireSphere(Vector3.zero,.3f);
+                if(m_ShapeGizmos)
+                    foreach (var quad in moduleContainer.m_Collector.m_ModuleShapeLS)
+                        Gizmos_Extend.DrawLinesConcat(quad.Iterate(p=>((Coord)p).ToPosition()));
             }
         }
         #endregion

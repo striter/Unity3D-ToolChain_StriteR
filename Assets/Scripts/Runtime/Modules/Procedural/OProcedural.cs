@@ -85,14 +85,29 @@ namespace Procedural
         public static implicit operator Coord( (float x, float y) _pos) => new Coord(_pos.x, _pos.y);
         public static implicit operator Vector2(Coord _pos) => new Vector2(_pos.x, _pos.y);
         public static implicit operator Coord(Vector2 _pos) => new Coord(_pos.x, _pos.y);
-        public override string ToString() => $"Hex(Pixel):{x:F1},{y:F1}";
+        public override string ToString() => $"{x:F1},{y:F1}";
         public static readonly Coord zero = new Coord(0, 0);
         public static readonly Coord one = new Coord(1, 1);
 
+        public static Coord operator *(Quaternion rotation, Coord point)
+        {
+            float num1 = rotation.x * 2f;
+            float num2 = rotation.y * 2f;
+            float num3 = rotation.z * 2f;
+            float num4 = rotation.x * num1;
+            float num5 = rotation.y * num2;
+            float num6 = rotation.z * num3;
+            float num7 = rotation.x * num2;
+            float num12 = rotation.w * num3;
+            Coord coord;
+            coord.x = (1.0f - (num5 + num6)) *  point.x + ( num7 -  num12) *  point.y;
+            coord.y = (num7 +  num12) * point.x + (1.0f - ( num4 +  num6)) *  point.y;
+            return coord;
+        }
     }
 
     [Serializable]
-    public struct CoordQuad : IQuad<Coord>,IEnumerable<Coord>
+    public struct CoordQuad : IQuad<Coord>,IEnumerable<Coord>,IIterate<Coord>
     {
         public Coord vB { get; set; }
         public Coord vL { get; set; }
@@ -121,5 +136,9 @@ namespace Procedural
         {
             return GetEnumerator();
         }
+
+        public Coord GetElement(int _index) => this[_index];
+
+        public int Length => 4;
     }
 }

@@ -1,0 +1,2396 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55fa62b771b4be24fa29b8e4033956e5, type: 3}
+  m_Name: ModuleData
+  m_EditorClassIdentifier: 
+  m_ModuleData:
+  - identity: 0
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 1
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 2
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 3
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 4
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 5
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 6
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 7
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 8
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 9
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 10
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 11
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 12
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 13
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 14
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 15
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 16
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 17
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 18
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 19
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 20
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 21
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 22
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 23
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 24
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 25
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 26
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 27
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 28
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 29
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 30
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 31
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: -1
+  - identity: 32
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 33
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 34
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 35
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 36
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 37
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 38
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 39
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 40
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 41
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 42
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 43
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 44
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 45
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 46
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 47
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 48
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 49
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 50
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 51
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 52
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 53
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 54
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 55
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 56
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 57
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 58
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 59
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 60
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 61
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 62
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 63
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: -1
+  - identity: 64
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 65
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 66
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 67
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 68
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 69
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 70
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 71
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 72
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 73
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 74
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 75
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 76
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 77
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 78
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 79
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 80
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 81
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 82
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 83
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 84
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 85
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 86
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 87
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 88
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 89
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 90
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 91
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 92
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 93
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 94
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 95
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: -1
+  - identity: 96
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 97
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 98
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 99
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 100
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 101
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 102
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 103
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 104
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 105
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 106
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 107
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 108
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 109
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 110
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 111
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 112
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 113
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 114
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 115
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 116
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 117
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 118
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 119
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 120
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 121
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 122
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 123
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 124
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 125
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 126
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 127
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: -1
+  - identity: 128
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 129
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 130
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 131
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 132
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 133
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 134
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 135
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 136
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 137
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 138
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 139
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 140
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 141
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 142
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 143
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 144
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 145
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 146
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 147
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 148
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 149
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 150
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 151
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 152
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 153
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 154
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 155
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 156
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 157
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 158
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 159
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: -1
+    TR: 0
+  - identity: 160
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 161
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 162
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 163
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 164
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 165
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 166
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 167
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 168
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 169
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 170
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 171
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 172
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 173
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 174
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 175
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 176
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 177
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 178
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 179
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 180
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 181
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 182
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 183
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 184
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 185
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 186
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 187
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 188
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 189
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 190
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 191
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: -1
+    TR: 0
+  - identity: 192
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 193
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 194
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 195
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 196
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 197
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 198
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 199
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 200
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 201
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 202
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 203
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 204
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 205
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 206
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 207
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 208
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 209
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 210
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 211
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 212
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 213
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 214
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 215
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 216
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 217
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 218
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 219
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 220
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 221
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 222
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 223
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: -1
+    TF: 0
+    TR: 0
+  - identity: 224
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 225
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 226
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 227
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 228
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 229
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 230
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 231
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 232
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 233
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 234
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 235
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 236
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 237
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 238
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 239
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: -1
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 240
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 241
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 242
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 243
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 244
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 245
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 246
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 247
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: -1
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 248
+    DB: -1
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 249
+    DB: 0
+    DL: -1
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 250
+    DB: -1
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 251
+    DB: 0
+    DL: 0
+    DF: -1
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 252
+    DB: -1
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 253
+    DB: 0
+    DL: -1
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 254
+    DB: -1
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: 0
+  - identity: 255
+    DB: 0
+    DL: 0
+    DF: 0
+    DR: 0
+    TB: 0
+    TL: 0
+    TF: 0
+    TR: 0
+  m_ModuleMeshes:
+  - m_Vertices:
+    - {x: 0, y: 2.5, z: 0}
+    - {x: -0.70710677, y: 2.5, z: 0.70710677}
+    - {x: 0, y: 2.5, z: 1.4142135}
+    - {x: 0.70710677, y: 2.5, z: 0.70710677}
+    - {x: 0, y: 0, z: 0}
+    - {x: 0.70710677, y: 0, z: 0.70710677}
+    - {x: 0, y: 0, z: 1.4142135}
+    - {x: -0.70710677, y: 0, z: 0.70710677}
+    - {x: 0, y: 0, z: 0}
+    - {x: -0.70710677, y: 0, z: 0.70710677}
+    - {x: -0.70710677, y: 2.5, z: 0.70710677}
+    - {x: 0, y: 2.5, z: 0}
+    - {x: -0.70710677, y: 0, z: 0.70710677}
+    - {x: 0, y: 0, z: 1.4142135}
+    - {x: 0, y: 2.5, z: 1.4142135}
+    - {x: -0.70710677, y: 2.5, z: 0.70710677}
+    - {x: 0, y: 0, z: 1.4142135}
+    - {x: 0.70710677, y: 0, z: 0.70710677}
+    - {x: 0.70710677, y: 2.5, z: 0.70710677}
+    - {x: 0, y: 2.5, z: 1.4142135}
+    - {x: 0.70710677, y: 0, z: 0.70710677}
+    - {x: 0, y: 0, z: 0}
+    - {x: 0, y: 2.5, z: 0}
+    - {x: 0.70710677, y: 2.5, z: 0.70710677}
+    m_UVs:
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 1, y: 1}
+    - {x: 0, y: 1}
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 1, y: 1}
+    - {x: 0, y: 1}
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 1, y: 1}
+    - {x: 0, y: 1}
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 1, y: 1}
+    - {x: 0, y: 1}
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 1, y: 1}
+    - {x: 0, y: 1}
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 1, y: 1}
+    - {x: 0, y: 1}
+    m_Indexes: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f0000001000000011000000120000001300000014000000150000001600000017000000
+    m_Normals:
+    - {x: 0, y: 0.99999994, z: -0}
+    - {x: 0, y: 0.99999994, z: -0}
+    - {x: 0, y: 0.99999994, z: -0}
+    - {x: 0, y: 0.99999994, z: -0}
+    - {x: 0, y: -0.99999994, z: 0}
+    - {x: 0, y: -0.99999994, z: 0}
+    - {x: 0, y: -0.99999994, z: 0}
+    - {x: 0, y: -0.99999994, z: 0}
+    - {x: -1.767767, y: 0, z: -1.767767}
+    - {x: -1.767767, y: 0, z: -1.767767}
+    - {x: -1.767767, y: 0, z: -1.767767}
+    - {x: -1.767767, y: 0, z: -1.767767}
+    - {x: -1.767767, y: 0, z: 1.767767}
+    - {x: -1.767767, y: 0, z: 1.767767}
+    - {x: -1.767767, y: 0, z: 1.767767}
+    - {x: -1.767767, y: 0, z: 1.767767}
+    - {x: 1.767767, y: -0, z: 1.767767}
+    - {x: 1.767767, y: -0, z: 1.767767}
+    - {x: 1.767767, y: -0, z: 1.767767}
+    - {x: 1.767767, y: -0, z: 1.767767}
+    - {x: 1.767767, y: 0, z: -1.767767}
+    - {x: 1.767767, y: 0, z: -1.767767}
+    - {x: 1.767767, y: 0, z: -1.767767}
+    - {x: 1.767767, y: 0, z: -1.767767}

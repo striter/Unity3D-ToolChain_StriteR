@@ -33,7 +33,8 @@ namespace ConvexGrid
             UModule.halfQubeFwd.FillFacingQuad(ECubeFacing.FR,vertices,indexes,uvs,normals);
             UModule.halfQubeFwd.FillFacingQuad(ECubeFacing.RB,vertices,indexes,uvs,normals);
             
-            totalModuleMeshes.Add(new ModuleMesh(){
+            totalModuleMeshes.Add(new ModuleMesh
+            {
                 m_Vertices = vertices.ToArray(),
                 m_UVs=uvs.ToArray(),
                 m_Indexes = indexes.ToArray(),
@@ -59,6 +60,7 @@ namespace ConvexGrid
 
             m_Data.m_ModuleData = totalModules.ToArray();
             m_Data.m_ModuleMeshes = totalModuleMeshes.ToArray();
+            EditorUtility.SetDirty(m_Data);
         }
 
         public bool m_Gizmos;
@@ -69,7 +71,7 @@ namespace ConvexGrid
             
             int width = -8;
             int height = -8;
-            var shrinkQube = UModule.unitQube.Shrink(.8f);
+            var shrinkQube = UModule.unitQube.Shrink<GQube,Vector3>(.8f);
             foreach (var moduleData in m_Data.m_ModuleData)
             {
                 var possibility = moduleData.identity;
@@ -87,7 +89,7 @@ namespace ConvexGrid
 
                 Gizmos.matrix = translateMatrix;
                 Gizmos.color = Color.cyan;
-                Gizmos_Extend.DrawLinesConcat(UModule.unitQuad.ToArray());
+                Gizmos_Extend.DrawLinesConcat(UModule.unitGQuad.ToArray());
                 for (int i = 0; i < 8; i++)
                 {
                     Gizmos.color = UByte.PosValid(possibility, i) ? Color.green : Color.red;

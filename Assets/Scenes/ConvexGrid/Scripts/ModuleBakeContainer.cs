@@ -10,7 +10,7 @@ namespace ConvexGrid
     {
         public EQubeCorner m_Corners;
 
-        private static readonly GQube m_Qube = new GQuad(Vector3.left+Vector3.back,Vector3.left+Vector3.forward,Vector3.forward+Vector3.right,Vector3.right+Vector3.back).ConvertToQube(Vector3.up*2f,.5f);
+        private static readonly GQube m_Qube = new GQuad(Vector3.left+Vector3.back,Vector3.left+Vector3.forward,Vector3.forward+Vector3.right,Vector3.right+Vector3.back).ExpandToQUbe(Vector3.up*2f,.5f);
         public void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;

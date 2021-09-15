@@ -5,6 +5,7 @@ using System.Linq;
 using LinqExtentions;
 using TPool;
 using TPoolStatic;
+using Procedural;
 using Procedural.Hexagon;
 using UnityEngine;
 
@@ -237,14 +238,14 @@ namespace ConvexGrid
                     Gizmos.color = Color.white;
                     Gizmos.matrix = quad.transform.localToWorldMatrix;
                     
-                    Gizmos_Extend.DrawLinesConcat(quad.m_OrientedShapeOS.Iterate());
+                    Gizmos_Extend.DrawLinesConcat(quad.m_QuadShapeLS.Iterate());
                     // Gizmos.DrawLine(Vector3.up,Vector3.up+Vector3.forward);
 
                     Gizmos.matrix = Matrix4x4.identity;
                     if(m_RelativeVertexGizmos)
                         for(int i=0;i<quad.m_NearbyVertsCW.Length;i++)
                         {
-                            Gizmos.color = URender.IndexToColor(i);
+                            Gizmos.color = UColor.IndexToColor(i);
                             if(m_GridVertices.Contains(quad.m_NearbyVertsCW[i]))
                                 Gizmos.DrawLine(quad.transform.position,m_GridVertices[quad.m_NearbyVertsCW[i]].m_Vertex.m_Coord.ToPosition());
                         }
@@ -253,7 +254,7 @@ namespace ConvexGrid
                     if(m_RelativeQuadGizmos)
                         for(int i=0;i<quad.m_NearbyQuadsCW.Length;i++)
                         {
-                            Gizmos.color = URender.IndexToColor(i);
+                            Gizmos.color = UColor.IndexToColor(i);
                             if(m_GridQuads.Contains(quad.m_NearbyQuadsCW[i]))
                                 Gizmos.DrawLine(quad.transform.position,(quad.transform.position+ m_GridQuads[quad.m_NearbyQuadsCW[i]].m_Quad.m_CoordCenter.ToPosition())/2f);
                         }
@@ -285,7 +286,7 @@ namespace ConvexGrid
                     {
                         for (int i = 0; i < 8; i++)
                         {
-                            Gizmos.color = URender.IndexToColor(i%4);
+                            Gizmos.color = UColor.IndexToColor(i%4);
                             if (voxel.m_CornerRelation[i])
                                 Gizmos.DrawLine(voxel.transform.position,m_Corners.Get(voxel.GetCornerID(i)).transform.position);
                         }
@@ -295,7 +296,7 @@ namespace ConvexGrid
                     {
                         for (int i = 0; i < 6; i++)
                         {
-                            Gizmos.color = URender.IndexToColor(i);
+                            Gizmos.color = UColor.IndexToColor(i);
                             if(voxel.m_SideRelation[i])
                                 Gizmos.DrawLine(voxel.transform.position,(voxel.transform.position+m_Voxels.Get(voxel.GetFacingID(i)).transform.position)/2);
                         }

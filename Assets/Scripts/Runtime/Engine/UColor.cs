@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 public static class UColor
 {
+    #region ColorTransform
     public static Color SetAlpha(this Color color, float alpha) => new Color(color.r, color.g, color.b, alpha);
     //Vector
     public static Color VectorToColor(Vector3 colorVector) => new Color(colorVector.x, colorVector.y, colorVector.z);
@@ -133,6 +134,22 @@ public static class UColor
             case EColorVisualize.G: return Color.white * _color.g;
             case EColorVisualize.B: return Color.white * _color.b;
             case EColorVisualize.A: return Color.white * _color.a;
+        }
+    }
+    #endregion
+
+
+    public static Color IndexToColor(int _index)
+    {
+        switch (_index)
+        {
+            default: return Color.magenta;
+            case 0: return Color.red;
+            case 1: return Color.green;
+            case 2: return Color.blue;
+            case 3: return Color.yellow;
+            case 4: return Color.cyan;
+            case 5: return Color.white;
         }
     }
 }

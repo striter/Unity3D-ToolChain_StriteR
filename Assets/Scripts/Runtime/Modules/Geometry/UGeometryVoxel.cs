@@ -173,30 +173,46 @@ namespace Geometry.Voxel
             _qube.SetCorners(UByte.PosValid(_byte,0),UByte.PosValid(_byte,1),UByte.PosValid(_byte,2),UByte.PosValid(_byte,3),
                 UByte.PosValid(_byte,4),UByte.PosValid(_byte,5),UByte.PosValid(_byte,6),UByte.PosValid(_byte,7));
         }
+        
+        public static T Shrink<T,Y>(this T _qube, float _shrinkScale) where  T: struct,IQube<Y> where Y:struct
+        {
+            dynamic db = _qube.vertDB;
+            dynamic dl = _qube.vertDL;
+            dynamic df = _qube.vertDF;
+            dynamic dr = _qube.vertDR;
+            dynamic tb = _qube.vertTB;
+            dynamic tl = _qube.vertTL;
+            dynamic tf = _qube.vertTF;
+            dynamic tr = _qube.vertTR;
+            _qube.vertDB = db * _shrinkScale;
+            _qube.vertDL = dl * _shrinkScale;
+            _qube.vertDF = df * _shrinkScale;
+            _qube.vertDR = dr * _shrinkScale;
+            _qube.vertTB = tb * _shrinkScale;
+            _qube.vertTL = tl * _shrinkScale;
+            _qube.vertTF = tf * _shrinkScale;
+            _qube.vertTR = tr * _shrinkScale;
+            return _qube;
+        }
     }
     
     public static class UGeometryVoxel
     {
-        public static GQube ConvertToQube(this GQuad _quad, Vector3 _expand,float _baryCenter=0)
+        public static GQube ExpandToQUbe(this GQuad _quad, Vector3 _expand,float _baryCenter=0)
         {
-            var shrink= _expand * (1-_baryCenter);
-            var expand= _expand * _baryCenter;
+            var expand= _expand * (1-_baryCenter);
+            var shrink= _expand * _baryCenter;
             
             return new GQube(_quad.vB-shrink,_quad.vL-shrink,_quad.vF-shrink,_quad.vR-shrink,
                              _quad.vB+expand,_quad.vL+expand,_quad.vF+expand,_quad.vR+expand);
         }
-        public static GQuad Shrink(this GQuad _src, float _shrinkScale) => new GQuad(_src.vB*_shrinkScale,_src.vL*_shrinkScale,_src.vF*_shrinkScale,_src.vR*_shrinkScale);
-
-        public static GQube Shrink(this GQube _src, float _shrinkScale) => new GQube(_src.vertDB*_shrinkScale,_src.vertDL*_shrinkScale,_src.vertDF*_shrinkScale,_src.vertDR*_shrinkScale,
-            _src.vertTB*_shrinkScale,_src.vertTL*_shrinkScale,_src.vertTF*_shrinkScale,_src.vertTR*_shrinkScale);
-
-        public static IEnumerable<GQube> SplitToQubes(this GQuad _quad, Vector3 _halfSize)
+        public static IEnumerable<GQube> SplitToQubes(this GQuad _quad, Vector3 _halfSize,bool insideOut)
         {
-            var quads = _quad.SplitToQuads<GQuad, Vector3>().ToArray();
+            var quads = _quad.SplitToQuads<GQuad, Vector3>(insideOut).ToArray();
             foreach (var quad in quads)
-                yield return new GQuad(quad.vB,quad.vL,quad.vF,quad.vR).ConvertToQube(_halfSize,0f);
+                yield return new GQuad(quad.vB,quad.vL,quad.vF,quad.vR).ExpandToQUbe(_halfSize,1f);
             foreach (var quad in quads)
-                yield return  new GQuad(quad.vB,quad.vL,quad.vF,quad.vR).ConvertToQube(_halfSize,1f);
+                yield return  new GQuad(quad.vB,quad.vL,quad.vF,quad.vR).ExpandToQUbe(_halfSize,0f);
         }
         
         public static void FillFacingQuad(this IQube<Vector3> _qube,ECubeFacing _facing,List<Vector3> _vertices,List<int> _indices,List<Vector2> _uvs,List<Vector3> _normals)

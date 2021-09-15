@@ -50,5 +50,14 @@ namespace Geometry.Pixel
         public Vector2 GetElement(int _index) => this[_index];
         public int Length => 4;
 
+        public static G2Quad operator +(G2Quad _quad, Vector2 _vector)
+        {
+            ref var quad = ref _quad;
+            quad.vB += _vector;
+            quad.vL += _vector;
+            quad.vF += _vector;
+            quad.vR += _vector;
+            return quad;
+        }
     }
 }

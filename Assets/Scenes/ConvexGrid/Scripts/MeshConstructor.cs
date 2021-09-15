@@ -1,14 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using LinqExtentions;
+using Procedural;
 using TPool;
 using TPoolStatic;
-using Procedural.Hexagon;
-using TTouchTracker;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace ConvexGrid
 {

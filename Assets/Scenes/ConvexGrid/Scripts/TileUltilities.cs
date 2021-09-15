@@ -23,35 +23,18 @@ namespace ConvexGrid
 
     public static class ConvexGridHelper
     {
-        public static readonly Vector3 m_TileHeight = 2f * Vector3.up;
-        public static readonly Vector3 m_TileHeightHalf = m_TileHeight / 2f;
+        public const float m_TileHeight = 5f;
+        public const float m_TileHeightHalf = m_TileHeight / 2f;
+        public static readonly Vector3 m_TileHeightVector = m_TileHeight * Vector3.up;
+        public static readonly Vector3 m_TileHeightHalfVector = m_TileHeightHalf*Vector3.up;
 
         public static int m_SmoothTimes = 256;
         public static float m_SmoothFactor = 0.4f;
-        static Matrix4x4 TransformMatrix = Matrix4x4.identity;
-        static Matrix4x4 InvTransformMatrix = Matrix4x4.identity;
-
-        public static void InitMatrix(Transform _transform, float _scale)
-        {
-            TransformMatrix = _transform.localToWorldMatrix * Matrix4x4.Scale(_scale * Vector3.one);
-            InvTransformMatrix = _transform.worldToLocalMatrix * Matrix4x4.Scale(Vector3.one / _scale);
-        }
 
         public static void InitRelax(int _smoothTimes, float _smoothFactor)
         {
             m_SmoothTimes = _smoothTimes;
             m_SmoothFactor = _smoothFactor;
-        }
-
-        public static Vector3 ToPosition(this Coord _pixel)
-        {
-            return TransformMatrix * new Vector3(_pixel.x, 0, _pixel.y);
-        }
-
-        public static Coord ToCoord(this Vector3 _world)
-        {
-            var coord = InvTransformMatrix * _world;
-            return new Coord(coord.x, coord.z);
         }
 
         public static Vector3 ToPosition(this HexCoord _hexCube)
@@ -61,7 +44,7 @@ namespace ConvexGrid
 
         public static Vector3 GetVoxelHeight(PileID _id)
         {
-            return  m_TileHeight * _id.height;
+            return  m_TileHeightVector * _id.height;
         }
 
         public static Vector3 GetCornerHeight(PileID _id)
@@ -71,7 +54,7 @@ namespace ConvexGrid
 
         public static Vector3 GetCornerHeight(byte _height)
         {
-            return m_TileHeightHalf+m_TileHeight * _height;
+            return m_TileHeightHalfVector+m_TileHeightVector * _height;
         }
 
         public static GQuad ConstructLocalGeometry(this ConvexQuad _quad,Coord _center, int[] indexes,EGridQuadGeometry _geometry)
@@ -160,7 +143,7 @@ namespace ConvexGrid
                     foreach (var quad in cornerQuads)
                     {                
                         int indexOffset = vertices.Count;
-                        var qube = quad.ConvertToQube(m_TileHeight,.5f);
+                        var qube = quad.ExpandToQUbe(m_TileHeightVector,.5f);
                         for (int i = 0; i < 8; i++)
                         {
                             vertices.Add(qube[i]);
@@ -198,7 +181,7 @@ namespace ConvexGrid
                 {
                     foreach (var quad in cornerQuads)
                     {
-                        var qube = quad.ConvertToQube(m_TileHeight,.5f);
+                        var qube = quad.ExpandToQUbe(m_TileHeightVector,.5f);
                         qube.FillFacingQuad(ECubeFacing.T,vertices,indices,generateUV?uvs:null,generateNormals?normals:null);
                         qube.FillFacingQuad(ECubeFacing.D,vertices,indices,generateUV?uvs:null,generateNormals?normals:null);
                     }

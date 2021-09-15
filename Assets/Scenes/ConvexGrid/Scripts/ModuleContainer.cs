@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
+using Procedural;
 using TPool;
 using TPoolStatic;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace  ConvexGrid
 {
     public class ModuleContainer : PoolBehaviour<PileID>
     {
-        private IModuleCollector m_Collector;
+        public IModuleCollector m_Collector { get; private set; }
         private Mesh m_Mesh;
         public override void OnPoolInit(Action<PileID> _DoRecycle)
         {
@@ -36,7 +37,7 @@ namespace  ConvexGrid
         public void ModuleValidate(ConvexMeshData _data)
         {
             byte moduleByte = m_Collector.m_ModuleByte;
-            ref var data =ref _data.m_ModuleData[moduleByte];
+            ref var moduleData =ref _data.m_ModuleData[moduleByte];
 
             var vertices = TSPoolList<Vector3>.Spawn();
             var indexes = TSPoolList<int>.Spawn();
@@ -44,24 +45,25 @@ namespace  ConvexGrid
             var normals = TSPoolList<Vector3>.Spawn();
             for (int i = 0; i < 8; i++)
             {
-                if(data[i]<0)
+                if(moduleData[i]<0)
                     continue;
-                ref var moduleMesh=ref _data.m_ModuleMeshes[i];
-                ref var localToModuleMatrix=ref UModule.LocalToModuleMatrix[i];
-
-                var moduleDirection = localToModuleMatrix.MultiplyPoint(Vector3.forward);
-
+                ref var moduleMesh=ref _data.m_ModuleMeshes[moduleData[i]];
+                ref var localToOrientedModuleMatrix=ref UModule.LocalToModuleMatrix[i];
+                ref var localShapeLS = ref m_Collector.m_ModuleShapeLS[i % 4];
+                var localVertexOriginOffset = UModule.GetModuleMeshOffset(i );
                 int indexOffset = vertices.Count;
-                indexes.AddRange(moduleMesh.m_Indexes.Select(p=>p+=indexOffset));
-
-                for (int j = 0; j <  moduleMesh.m_Vertices.Length; i++)
-                {
-                    Vector3 srcVector = moduleMesh.m_Vertices[j];
-                    Vector3 dstVector = srcVector;
-                    vertices.Add(dstVector);
-                }
+                indexes.AddRange(moduleMesh.m_Indexes.Select(p=> p + indexOffset));
                 
-                normals.AddRange(moduleMesh.m_Normals);
+                var vertexCount = moduleMesh.m_Vertices.Length;
+                for (int j = 0; j < vertexCount; j++)
+                {
+                    var dstVertex = UModule.RemapModuleVertex( moduleMesh.m_Vertices[j],ref localShapeLS)+localVertexOriginOffset;
+                    var srcNormal = moduleMesh.m_Normals[j];
+                    // var dstVertex = localToOrientedModuleMatrix.MultiplyPoint(srcVertex);
+                    var dstNormal = localToOrientedModuleMatrix.MultiplyVector(srcNormal);
+                    vertices.Add(dstVertex);
+                    normals.Add(dstNormal);
+                }
                 uvs.AddRange(moduleMesh.m_UVs);
             }
             

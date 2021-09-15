@@ -25,8 +25,15 @@ public static class UVector
         lookDirection.Normalize();
         return lookDirection;
     }
-    public static Vector3 RotateDirectionClockwise(this Vector3 _, Vector3 axis, float angle) => (Quaternion.AngleAxis(angle, axis) * _).normalized;
-
+    public static Vector3 RotateDirectionClockwise(this Vector3 _src, Vector3 axis, float angle) => (Quaternion.AngleAxis(angle, axis) * _src).normalized;
+    
+    public static float SqrMagnitude(Vector3 _src) => _src.x * _src.x + _src.y * _src.y + _src.z * _src.z;
+    public static float Dot(Vector3 _src, Vector3 _dst) => _src.x * _dst.x + _src.y * _dst.y + _src.z * _dst.z;
+    public static Vector3 Project(Vector3 _src, Vector3 _dst) => (Dot(_src, _dst) / SqrMagnitude(_dst)) * _dst;
+    
+    public static Vector3 Cross(Vector3 _src, Vector3 _dst) => new Vector3(_src.y * _dst.z - _src.z * _dst.y, _src.z * _dst.x - _src.x * _dst.z, _src.x * _dst.y - _src.y * _dst.x);
+    public static float Cross2(dynamic _src, dynamic _dst) => _src.x * _dst.y - _src.y * _dst.x;
+    
     public static float Max(this Vector3 _src) => Mathf.Max(Mathf.Max(_src.x, _src.y), _src.z);
     public static float Min(this Vector3 _src) => Mathf.Min(Mathf.Min(_src.x, _src.y), _src.z);
     public static float Max(this Vector4 _src) => Mathf.Max(Mathf.Max(Mathf.Max(_src.x, _src.y), _src.z), _src.w);

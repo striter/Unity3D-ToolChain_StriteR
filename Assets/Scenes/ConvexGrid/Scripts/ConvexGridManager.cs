@@ -129,7 +129,6 @@ namespace ConvexGrid
                 coord=quad.m_HexQuad[quadVertexIndex];
                 return true;
             }
-
             return false;
         }
 

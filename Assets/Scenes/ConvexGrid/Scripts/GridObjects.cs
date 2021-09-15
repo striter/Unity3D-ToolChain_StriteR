@@ -188,7 +188,7 @@ namespace ConvexGrid
                 var splitQuad = m_ProceduralQuads[0];
                 m_ProceduralQuads.RemoveAt(0);
 
-                foreach (var tuple in splitQuad.SplitToQuads<HexQuad,HexCoord>())
+                foreach (var tuple in splitQuad.SplitToQuads<HexQuad,HexCoord>(false))
                 {
                     m_ProceduralVertices.TryAdd(tuple.vB);
                     m_ProceduralVertices.TryAdd(tuple.vL);

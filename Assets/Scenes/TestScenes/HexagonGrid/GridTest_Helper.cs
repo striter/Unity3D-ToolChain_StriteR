@@ -7,24 +7,14 @@ namespace GridTest
 {
     public static class GridHelper
     {
-        public static Vector3 ToWorld(this Coord _pixel)
-        {
-            return new Vector3(_pixel.x,0,_pixel.y);
-        }
-
-        public static Coord ToCoord(this Vector3 _world)
-        {
-            return new Coord(_world.x,  _world.z);
-        }
-        
         public static Vector3 ToWorld(this HexCoord _hexCube)
         {
-            return _hexCube.ToPixel().ToWorld();
+            return _hexCube.ToPixel().ToPosition();
         }
 #if UNITY_EDITOR
         public static void DrawHexagon(this HexCoord _coord)
         {
-            Vector3[] hexagonList = UHexagon.GetHexagonPoints().Select(p=>p.ToWorld() + _coord.ToWorld()).ToArray();
+            Vector3[] hexagonList = UHexagon.GetHexagonPoints().Select(p=>p.ToPosition() + _coord.ToWorld()).ToArray();
             Gizmos_Extend.DrawLinesConcat(hexagonList);
         }
 #endif

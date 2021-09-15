@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -41,23 +42,45 @@ public static class UMath
     }
     public static float Frac(float _src) => _src - Mathf.Floor(_src);
     public static float Mod(float _src, float _dst) => _src - _dst * Mathf.Floor(_src/_dst);
-    
-    public static float BilinearLerp(float tl, float tr, float bl, float br, float u,float v)
+
+
+    public static dynamic BilinearLerp(dynamic tl, dynamic tr, dynamic br, dynamic bl,dynamic _uv)
     {
-        float lerpB = Mathf.Lerp(bl, br, u);
-        float lerpT = Mathf.Lerp(tl, tr, u);
-        return Mathf.Lerp(lerpB, lerpT, v);
+        float u = _uv.x;
+        float v = _uv.y;
+        return tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
     }
-    public static Vector2 BilinearLerp(Vector2 tl, Vector2 tr, Vector2 bl, Vector2 br, float u,float v)
+    public static dynamic InvBilinearLerp(dynamic tl, dynamic tr, dynamic br, dynamic bl, dynamic p)
     {
-        Vector2 lerpB = Vector2.Lerp(bl, br, u);
-        Vector2 lerpT = Vector2.Lerp(tl, tr, u);
-        return Vector2.Lerp(lerpB, lerpT, v);
-    }
-    public static Vector3 BilinearLerp(Vector3 tl, Vector3 tr, Vector3 bl, Vector3 br, float u,float v)
-    {
-        Vector3 lerpB = Vector3.Lerp(bl, br, u);
-        Vector3 lerpT = Vector3.Lerp(tl, tr, u);
-        return Vector3.Lerp(lerpB, lerpT, v);
+        var e = tr - tl;
+        var f = bl - tl;
+        var g = tl - tr + br - bl;
+        var h = p - tl;
+        var k2 = UVector.Cross2(g,f);
+        var k1 = UVector.Cross2(e, f);
+        var k0 = UVector.Cross2(h, e);
+        if (Mathf.Abs(k2) > float.Epsilon)
+        {
+            float w = k1 * k1 - 4f * k0 * k2;
+            if (w < 0f)
+                return -Vector2.one;
+            w = Mathf.Sqrt(w);
+            float ik2 = .5f / k2;
+            float v = (-k1 - w) * ik2;
+            float u = (h.x - f.x * v) / (e.x + g.x * v);
+            if (!UCommon.m_Range01.InRange(u) || !UCommon.m_Range01.InRange(v))
+            {
+                v = (-k1 + w) * ik2;
+                u = (h.x - f.x * v) / (e.x + g.x * v);
+            }
+            
+            return new Vector2(u,v);
+        }
+        else
+        {
+            float u=(h.x*k1+f.x*k0)/(e.x*k1-g.x*k0);
+            float v = -k0 / k1;
+            return new Vector2(u,v);
+        }
     }
 }

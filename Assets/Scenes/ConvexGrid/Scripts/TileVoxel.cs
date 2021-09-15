@@ -2,8 +2,10 @@ using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Geometry;
+using Geometry.Pixel;
 using Geometry.Voxel;
 using LinqExtentions;
+using Procedural;
 using TPool;
 using Procedural.Hexagon;
 using TPoolStatic;
@@ -15,22 +17,12 @@ namespace ConvexGrid
     {
         public TileQuad m_Quad { get; private set; }
         public byte m_Height => m_PoolID.height;
-        public Mesh m_VoxelMesh { get; private set; }
-        
         public BQube m_CornerRelation { get;  set; }
         public BCubeFacing m_SideRelation { get; set; }
-        public override void OnPoolInit(Action<PileID> _DoRecycle)
-        {
-            base.OnPoolInit(_DoRecycle);
-            m_VoxelMesh = new Mesh() {hideFlags = HideFlags.HideAndDontSave};
-            m_VoxelMesh.MarkDynamic();
-            GetComponent<MeshFilter>().sharedMesh = m_VoxelMesh;
-        }
 
         public TileVoxel Init(TileQuad _srcQuad)
         {
             m_Quad = _srcQuad;
-            m_VoxelMesh.name = $"Voxel:{_srcQuad.m_Quad.m_Identity}";
             transform.SetParent(m_Quad.transform);
             transform.localPosition = ConvexGridHelper.GetVoxelHeight(m_PoolID);
             transform.localRotation = Quaternion.identity;
@@ -77,52 +69,12 @@ namespace ConvexGrid
 
             m_SideRelation = new BCubeFacing(_voxels.Contains(GetFacingID(0)),_voxels.Contains(GetFacingID(1)),_voxels.Contains(GetFacingID(2)),
                 _voxels.Contains(GetFacingID(3)),_voxels.Contains(GetFacingID(4)),_voxels.Contains(GetFacingID(5)));
-            
-            //RefreshCubes();
         }
 
-        // void RefreshCubes()
-        // {
-        //     var vertices = TSPoolList<Vector3>.Spawn();
-        //     var indexes = TSPoolList<int>.Spawn();
-        //     var uvs = TSPoolList<Vector2>.Spawn();
-        //     var normals = TSPoolList<Vector3>.Spawn();
-        //     var qubes = TSPoolList<GQube>.Spawn(8);
-        //
-        //     qubes.AddRange(m_Quad.m_OrientedShapeOS.SplitToQubes(ConvexGridHelper.m_TileHeightHalf));
-        //
-        //     for (int i = 0; i < 8; i++)
-        //     {
-        //         if(!m_CornerRelation[i])
-        //             continue;
-        //         
-        //         qubes[i].FillFacingQuad(ECubeFacing.T,vertices,indexes,uvs,normals);
-        //         qubes[i].FillFacingQuad(ECubeFacing.D,vertices,indexes,uvs,normals);
-        //         qubes[i].FillFacingQuad(ECubeFacing.BL,vertices,indexes,uvs,normals);
-        //         qubes[i].FillFacingQuad(ECubeFacing.LF,vertices,indexes,uvs,normals);
-        //         qubes[i].FillFacingQuad(ECubeFacing.FR,vertices,indexes,uvs,normals);
-        //         qubes[i].FillFacingQuad(ECubeFacing.RB,vertices,indexes,uvs,normals);
-        //     }
-        //     TSPoolList<GQube>.Recycle(qubes);
-        //
-        //     m_VoxelMesh.Clear();
-        //     m_VoxelMesh.SetVertices(vertices);
-        //     m_VoxelMesh.SetIndices(indexes,MeshTopology.Quads,0,false);
-        //     m_VoxelMesh.SetUVs(0,uvs);
-        //     m_VoxelMesh.SetNormals(normals);
-        //     m_VoxelMesh.RecalculateBounds();
-        //     m_VoxelMesh.MarkModified();
-        //     
-        //     TSPoolList<Vector3>.Recycle(vertices);
-        //     TSPoolList<int>.Recycle(indexes);
-        //     TSPoolList<Vector2>.Recycle(uvs);
-        //     TSPoolList<Vector3>.Recycle(normals);
-        // }
         
         public PileID m_Identity => m_PoolID;
         public Transform m_ModuleTransform => transform;
         public byte m_ModuleByte => m_CornerRelation.ToByte();
-
-        public GQuad m_OrientedShapeOS =>  m_Quad.m_OrientedShapeOS;
+        public CoordQuad[] m_ModuleShapeLS =>  m_Quad.m_SplitQuadLS;
     }
 }

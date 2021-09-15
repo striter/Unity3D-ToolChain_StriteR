@@ -143,10 +143,10 @@ namespace GridTest
         {
             Handles.matrix = transform.localToWorldMatrix * Matrix4x4.Scale(Vector3.one * m_CellRadius);
             foreach (var hex in m_Areas.Values)
-                Handles.Label(hex.centerCS.ToPixel().ToWorld(), $"A:{hex.m_Coord}\nC:{hex.centerCS}",
+                Handles.Label(hex.centerCS.ToPixel().ToPosition(), $"A:{hex.m_Coord}\nC:{hex.centerCS}",
                     GUIHelper.m_AreaStyle);
             var area = UHexagonArea.GetBelongingArea(m_HitAxialCS);
-            Handles.Label(m_HitPointCS.ToWorld(),
+            Handles.Label(m_HitPointCS.ToPosition(),
                 $"Cell:{m_HitAxialCS}\nArea:{area.m_Coord}\nAPos{area.TransformCSToAS(m_HitAxialCS)}",
                 GUIHelper.m_HitStyle);
         }
@@ -173,26 +173,26 @@ namespace GridTest
         void DrawAxis()
         {
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Scale(Vector3.one * m_CellRadius) *
-                            Matrix4x4.Translate(m_HitAxialCS.ToPixel().ToWorld());
+                            Matrix4x4.Translate(m_HitAxialCS.ToPixel().ToPosition());
             switch (m_AxisVisualize)
             {
                 default: return;
                 case EAxisVisualize.Axial:
                 {
                     Gizmos.color = GUIHelper.C_AxialColumn;
-                    Gizmos.DrawRay(Vector3.zero, new HexCoord(1, 0).ToPixel().ToWorld());
+                    Gizmos.DrawRay(Vector3.zero, new HexCoord(1, 0).ToPixel().ToPosition());
                     Gizmos.color = GUIHelper.C_AxialRow;
-                    Gizmos.DrawRay(Vector3.zero, new HexCoord(0, 1).ToPixel().ToWorld());
+                    Gizmos.DrawRay(Vector3.zero, new HexCoord(0, 1).ToPixel().ToPosition());
                 }
                     break;
                 case EAxisVisualize.Cube:
                 {
                     Gizmos.color = GUIHelper.C_CubeX;
-                    Gizmos.DrawRay(Vector3.zero, new HexCoord(1, 0).ToPixel().ToWorld());
+                    Gizmos.DrawRay(Vector3.zero, new HexCoord(1, 0).ToPixel().ToPosition());
                     Gizmos.color = GUIHelper.C_CubeY;
-                    Gizmos.DrawRay(Vector3.zero, new HexCoord(1, -1).ToPixel().ToWorld());
+                    Gizmos.DrawRay(Vector3.zero, new HexCoord(1, -1).ToPixel().ToPosition());
                     Gizmos.color = GUIHelper.C_CubeZ;
-                    Gizmos.DrawRay(Vector3.zero, new HexCoord(0, 1).ToPixel().ToWorld());
+                    Gizmos.DrawRay(Vector3.zero, new HexCoord(0, 1).ToPixel().ToPosition());
                 }
                     break;
             }
@@ -229,7 +229,7 @@ namespace GridTest
         void DrawTestGrids(Coord hitPixel, HexCoord hitAxial)
         {
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Scale(Vector3.one * m_CellRadius);
-            Gizmos.DrawRay(hitPixel.ToWorld(), Vector3.up);
+            Gizmos.DrawRay(hitPixel.ToPosition(), Vector3.up);
             switch (m_Test)
             {
                 case EGridAxialTest.Hit:
@@ -247,15 +247,15 @@ namespace GridTest
                     var rowPixel = hitPixel.SetRow(0);
                     var rowAxis = rowPixel.ToCube();
                     Gizmos.color = GUIHelper.C_AxialColumn;
-                    Gizmos.DrawRay(colPixel.ToWorld(), Vector3.up);
-                    Gizmos.DrawLine(Vector3.zero, colPixel.ToWorld());
-                    Gizmos.DrawLine(colPixel.ToWorld(), hitPixel.ToWorld());
+                    Gizmos.DrawRay(colPixel.ToPosition(), Vector3.up);
+                    Gizmos.DrawLine(Vector3.zero, colPixel.ToPosition());
+                    Gizmos.DrawLine(colPixel.ToPosition(), hitPixel.ToPosition());
                     colAxis.DrawHexagon();
                     Gizmos.color = GUIHelper.C_AxialRow;
-                    Gizmos.DrawRay(rowPixel.ToWorld(), Vector3.up);
-                    Gizmos.DrawLine(Vector3.zero, rowPixel.ToWorld());
+                    Gizmos.DrawRay(rowPixel.ToPosition(), Vector3.up);
+                    Gizmos.DrawLine(Vector3.zero, rowPixel.ToPosition());
                     rowAxis.DrawHexagon();
-                    Gizmos.DrawLine(rowPixel.ToWorld(), hitPixel.ToWorld());
+                    Gizmos.DrawLine(rowPixel.ToPosition(), hitPixel.ToPosition());
                 }
                     break;
                 case EGridAxialTest.Range:

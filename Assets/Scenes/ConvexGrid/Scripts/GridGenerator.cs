@@ -36,7 +36,7 @@ namespace ConvexGrid
         }
         void Setup()
         {
-            ConvexGridHelper.InitMatrix(transform, m_CellRadius);
+            UProcedural.InitMatrix(transform.localToWorldMatrix, m_CellRadius);
             ConvexGridHelper.InitRelax(m_SmoothenTimes,m_SmoothenFactor);
             UHexagon.flat = m_Flat;
             UHexagonArea.Init(m_AreaRadius,6,true);

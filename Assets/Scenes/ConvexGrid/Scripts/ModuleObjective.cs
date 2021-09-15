@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Geometry.Pixel;
 using Geometry.Voxel;
+using Procedural;
 using UnityEngine;
 
 namespace ConvexGrid
@@ -45,6 +47,6 @@ namespace ConvexGrid
         PileID m_Identity { get; }
         byte m_ModuleByte { get; }
         BCubeFacing m_SideRelation { get; set; }
-        GQuad m_OrientedShapeOS { get; }
+        CoordQuad[] m_ModuleShapeLS { get; }
     }
 }

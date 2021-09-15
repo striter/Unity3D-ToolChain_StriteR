@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Geometry.Voxel;
 using UnityEngine;
 
 namespace Geometry
@@ -65,7 +62,31 @@ namespace Geometry
             var patch = GetRelativeVertIndexesCW(_patch);
             return (_quad[patch.i0], _quad[patch.i1]);
         }
+
+        public static Vector2 GetUV(this IQuad<Vector2> _quad, Vector2 _position)
+        {
+            return UMath.InvBilinearLerp(_quad.vB,_quad.vL,_quad.vF,_quad.vR,_position);
+        }
+
+        public static Y GetPoint<T,Y>(this T _quad, Vector2 _uv) where T:struct,IQuad<Y> where Y: struct
+        {
+            return UMath.BilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _uv);
+        }
         
+        
+        public static T Shrink<T,Y>(this T _quad, float _shrinkScale) where T:struct,IQuad<Y> where Y:struct
+        {
+            dynamic vertex0 = _quad.vB;
+            dynamic vertex1 = _quad.vL;
+            dynamic vertex2 = _quad.vF;
+            dynamic vertex3 = _quad.vR;
+            _quad.vB = vertex0 * _shrinkScale;
+            _quad.vL = vertex1 * _shrinkScale;
+            _quad.vF = vertex2 * _shrinkScale;
+            _quad.vR = vertex3 * _shrinkScale;
+            return _quad;
+        }
+
         public static T GetBaryCenter<T>(this IQuad<T> _quad) where T:struct
         {
             dynamic vertex0 = _quad.vB;
@@ -84,7 +105,7 @@ namespace Geometry
             return ((vB + vL) / 2, (vL + vF) / 2, (vF + vR)/2,(vR+vB)/2,(vB+vL+vF+vR)/4);
         }
 
-        public static IEnumerable<(Y vB,Y vL,Y vF,Y vR)> SplitToQuads<T,Y>(this T _quad) where T:IQuad<Y> where Y:struct
+        public static IEnumerable<(Y vB,Y vL,Y vF,Y vR)> SplitToQuads<T,Y>(this T _quad,bool _insideOut) where T:IQuad<Y> where Y:struct
         {
             var vB = _quad.vB;
             var vL = _quad.vL;
@@ -97,11 +118,21 @@ namespace Geometry
             var vFR = midTuple.vFR;
             var vRB = midTuple.vRB;
             var vC = midTuple.vC;
-                
-            yield return (vB,vBL,vC,vRB);   //B
-            yield return (vBL,vL,vLF,vC);   //L
-            yield return (vC,vLF,vF,vFR);   //F
-            yield return (vRB,vC,vFR,vR);   //R
+
+            if (_insideOut) 
+            {
+                yield return (vC, vRB, vB, vBL);    //B
+                yield return (vC, vBL, vL, vLF);    //L
+                yield return (vC, vLF, vF, vFR);    //F
+                yield return (vC, vFR, vR, vRB);    //R
+            }
+            else   //Forwarded 
+            {
+                yield return (vB,vBL,vC,vRB);   //B
+                yield return (vBL,vL,vLF,vC);   //L
+                yield return (vC,vLF,vF,vFR);   //F
+                yield return (vRB,vC,vFR,vR);   //R
+            }
         }
         
         public static bool IsPointInside<T> (this IQuad<T> _quad,T _point) where T:struct
