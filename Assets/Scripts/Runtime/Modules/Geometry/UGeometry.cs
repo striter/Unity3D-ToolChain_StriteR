@@ -63,7 +63,7 @@ namespace Geometry
             return (_quad[patch.i0], _quad[patch.i1]);
         }
 
-        public static Vector2 GetUV(this IQuad<Vector2> _quad, Vector2 _position)
+        public static Y GetUV<T,Y>(this T  _quad, Vector2 _position) where T:struct,IQuad<Y> where Y: struct
         {
             return UMath.InvBilinearLerp(_quad.vB,_quad.vL,_quad.vF,_quad.vR,_position);
         }
@@ -74,7 +74,7 @@ namespace Geometry
         }
         
         
-        public static T Shrink<T,Y>(this T _quad, float _shrinkScale) where T:struct,IQuad<Y> where Y:struct
+        public static T Resize<T,Y>(this T _quad, float _shrinkScale) where T:struct,IQuad<Y> where Y:struct
         {
             dynamic vertex0 = _quad.vB;
             dynamic vertex1 = _quad.vL;

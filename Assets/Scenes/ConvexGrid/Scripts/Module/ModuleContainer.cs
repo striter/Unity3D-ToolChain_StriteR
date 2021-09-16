@@ -33,8 +33,9 @@ namespace  ConvexGrid
         {
             base.OnPoolRecycle();
             m_Collector = null;
+            m_Mesh.Clear();
         }
-        public void ModuleValidate(ConvexMeshData _data)
+        public void ModuleValidate(ModuleRuntimeData _data)
         {
             byte moduleByte = m_Collector.m_ModuleByte;
             ref var moduleData =ref _data.m_ModuleData[moduleByte];
@@ -45,22 +46,18 @@ namespace  ConvexGrid
             var normals = TSPoolList<Vector3>.Spawn();
             for (int i = 0; i < 8; i++)
             {
-                if(moduleData[i]<0)
+                if(moduleData.corners[i]<0)
                     continue;
-                ref var moduleMesh=ref _data.m_ModuleMeshes[moduleData[i]];
-                ref var localToOrientedModuleMatrix=ref UModule.LocalToModuleMatrix[i];
-                ref var localShapeLS = ref m_Collector.m_ModuleShapeLS[i % 4];
-                var localVertexOriginOffset = UModule.GetModuleMeshOffset(i );
+                ref var moduleMesh=ref _data.m_ModuleMeshes[moduleData.corners[i]];
+                ref var localToOrientedModuleMatrix = ref UModule.m_QuadRotations[i % 4];
                 int indexOffset = vertices.Count;
                 indexes.AddRange(moduleMesh.m_Indexes.Select(p=> p + indexOffset));
                 
                 var vertexCount = moduleMesh.m_Vertices.Length;
                 for (int j = 0; j < vertexCount; j++)
                 {
-                    var dstVertex = UModule.RemapModuleVertex( moduleMesh.m_Vertices[j],ref localShapeLS)+localVertexOriginOffset;
-                    var srcNormal = moduleMesh.m_Normals[j];
-                    // var dstVertex = localToOrientedModuleMatrix.MultiplyPoint(srcVertex);
-                    var dstNormal = localToOrientedModuleMatrix.MultiplyVector(srcNormal);
+                    var dstVertex = UModule.ModuleToObjectVertex(i, moduleMesh.m_Vertices[j],m_Collector.m_ModuleShapeLS,ConvexGridHelper.m_TileHeightHalf);
+                    var dstNormal = localToOrientedModuleMatrix*(moduleMesh.m_Normals[j]);
                     vertices.Add(dstVertex);
                     normals.Add(dstNormal);
                 }
@@ -69,7 +66,7 @@ namespace  ConvexGrid
             
             m_Mesh.Clear();
             m_Mesh.SetVertices(vertices);
-            m_Mesh.SetIndices(indexes,MeshTopology.Quads,0);
+            m_Mesh.SetIndices(indexes,MeshTopology.Triangles,0);
             m_Mesh.SetNormals(normals);
             m_Mesh.SetUVs(0,uvs);
             

@@ -11,73 +11,6 @@ using UnityEngine;
 
 namespace ConvexGrid
 {
-    public struct BQuad : IQuad<bool>
-    {
-        public bool vB { get; set; }
-        public bool vL { get; set; }
-        public bool vF { get; set; }
-        public bool vR { get; set; }
-
-        public BQuad(bool _vB, bool _vL, bool _vF, bool _vR)
-        {
-            vB = _vB;
-            vL = _vL;
-            vF = _vF;
-            vR = _vR;
-        }
-        public bool this[int _index]=>this.GetVertex<BQuad,bool>(_index); 
-        public bool this[EQuadCorner _corner] =>this.GetVertex<BQuad,bool>(_corner);
-    }
-
-    public struct BCubeFacing:ICubeFace<bool>
-    {
-        public bool fBL { get; set; }
-        public bool fLF { get; set; }
-        public bool fFR { get; set; }
-        public bool fRB { get; set; }
-        public bool fT { get; set; }
-        public bool fD { get; set; }
-
-        public BCubeFacing( bool _fBL, bool _fLF, bool _fFR, bool _fRB,bool _fT,bool _fD)
-        {
-            fBL = _fBL;
-            fLF = _fLF;
-            fFR = _fFR;
-            fRB = _fRB;
-            fT = _fT;
-            fD = _fD;
-        }
-
-        public bool this[int _index] => this.GetFacing<BCubeFacing,bool>(_index);
-
-        public bool this[ECubeFacing _facing] => this.GetFacing<BCubeFacing, bool>(_facing);
-    }
-    public struct BQube : IQube<bool>
-    {
-        public bool vertDB { get; set; }
-        public bool vertDL { get; set; }
-        public bool vertDF { get; set; }
-        public bool vertDR { get; set; }
-        public bool vertTB { get; set; }
-        public bool vertTL { get; set; }
-        public bool vertTF { get; set; }
-        public bool vertTR { get; set; }
-
-        public BQube(BQuad _relationDown,BQuad _relationTop)
-        {
-            vertDB = _relationDown.vB;
-            vertDL = _relationDown.vL;
-            vertDF = _relationDown.vF;
-            vertDR = _relationDown.vR;
-            vertTB = _relationTop.vB;
-            vertTL = _relationTop.vL;
-            vertTF = _relationTop.vF;
-            vertTR = _relationTop.vR;
-        }
-        public bool this[int _index] => this.GetVertex<BQube,bool>(_index);
-        public bool this[EQubeCorner _corner] =>  this.GetVertex<BQube,bool>(_corner);
-    }
-    
     [Serializable]
     public struct PileID:IEquatable<PileID>
     {
@@ -90,7 +23,7 @@ namespace ConvexGrid
             height = _height;
         }
 
-        public override string ToString() => height.ToString();
+        public override string ToString() => $"{gridID}|{height}";
 
         public bool Equals(PileID other)=> gridID.Equals(other.gridID) && height == other.height;
 

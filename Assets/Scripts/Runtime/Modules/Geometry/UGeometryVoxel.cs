@@ -59,29 +59,40 @@ namespace Geometry.Voxel
             switch (_corner)
             {
                 default: throw new IndexOutOfRangeException();
-                case 0: return _qube.vertDB;
-                case 1: return _qube.vertDL;
-                case 2: return _qube.vertDF;
-                case 3: return _qube.vertDR;
-                case 4: return _qube.vertTB;
-                case 5: return _qube.vertTL;
-                case 6: return _qube.vertTF;
-                case 7: return _qube.vertTR;
+                case 0: return _qube.vDB;
+                case 1: return _qube.vDL;
+                case 2: return _qube.vDF;
+                case 3: return _qube.vDR;
+                case 4: return _qube.vTB;
+                case 5: return _qube.vTL;
+                case 6: return _qube.vTF;
+                case 7: return _qube.vTR;
             }
+        }
+        public static IEnumerator<Y> GetEnumerator<T,Y>(this T _qube) where T : IQube<Y> where Y : struct
+        {
+               yield return _qube.vDB;
+               yield return _qube.vDL;
+               yield return _qube.vDF;
+               yield return _qube.vDR;
+               yield return _qube.vTB;
+               yield return _qube.vTL;
+               yield return _qube.vTF;
+               yield return _qube.vTR;
         }
         public static Y GetVertex<T,Y>(this T _qube,EQubeCorner _corner)  where T:IQube<Y> where Y:struct
         {
             switch (_corner)
             {
                 default: throw new IndexOutOfRangeException();
-                case EQubeCorner.DB: return _qube.vertDB;
-                case EQubeCorner.DL: return _qube.vertDL;
-                case EQubeCorner.DF: return _qube.vertDF;
-                case EQubeCorner.DR: return _qube.vertDR;
-                case EQubeCorner.TB: return _qube.vertTB;
-                case EQubeCorner.TL: return _qube.vertTL;
-                case EQubeCorner.TF: return _qube.vertTF;
-                case EQubeCorner.TR: return _qube.vertTR;
+                case EQubeCorner.DB: return _qube.vDB;
+                case EQubeCorner.DL: return _qube.vDL;
+                case EQubeCorner.DF: return _qube.vDF;
+                case EQubeCorner.DR: return _qube.vDR;
+                case EQubeCorner.TB: return _qube.vTB;
+                case EQubeCorner.TL: return _qube.vTL;
+                case EQubeCorner.TF: return _qube.vTF;
+                case EQubeCorner.TR: return _qube.vTR;
             }
         }
 
@@ -90,26 +101,36 @@ namespace Geometry.Voxel
             switch (_index)
             {
                 default: throw new IndexOutOfRangeException();
-                case 0: _qube.vertDB = _value; break;
-                case 1: _qube.vertDL = _value; break;
-                case 2: _qube.vertDF = _value; break;
-                case 3: _qube.vertDR = _value; break;
-                case 4: _qube.vertTB = _value; break;
-                case 5: _qube.vertTL = _value; break;
-                case 6: _qube.vertTF = _value; break;
-                case 7: _qube.vertTR = _value; break;
+                case 0: _qube.vDB = _value; break;
+                case 1: _qube.vDL = _value; break;
+                case 2: _qube.vDF = _value; break;
+                case 3: _qube.vDR = _value; break;
+                case 4: _qube.vTB = _value; break;
+                case 5: _qube.vTL = _value; break;
+                case 6: _qube.vTF = _value; break;
+                case 7: _qube.vTR = _value; break;
             }
         }
         public static void SetCorners<T, Y>(ref this T _qube,Y _db,Y _dl,Y _df,Y _dr,Y _tb,Y _tl,Y _tf,Y _tr) where T:struct,IQube<Y> where Y:struct
         {
-            _qube.vertDB = _db;
-            _qube.vertDL = _dl;
-            _qube.vertDF = _df;
-            _qube.vertDR = _dr;
-            _qube.vertTB = _tb;
-            _qube.vertTL = _tl;
-            _qube.vertTF = _tf;
-            _qube.vertTR = _tr;
+            _qube.vDB = _db;
+            _qube.vDL = _dl;
+            _qube.vDF = _df;
+            _qube.vDR = _dr;
+            _qube.vTB = _tb;
+            _qube.vTL = _tl;
+            _qube.vTF = _tf;
+            _qube.vTR = _tr;
+        }
+
+        public static T CreateQube<T, Y>(IQuad<Y> _relationDown,IQuad<Y> _relationTop) where T:struct,IQube<Y> where Y:struct
+        {
+            T qube = default;
+            qube.SetCorners(
+                _relationDown.vB,_relationDown.vL,_relationDown.vF,_relationDown.vR,
+                _relationTop.vB, _relationTop.vL,_relationTop.vF,_relationTop.vR
+            );
+            return qube;
         }
 
         public static (T v0, T v1, T v2, T v3) GetVertsCW<T>(this IQube<T> _qube, ECubeFacing _facing) where T : struct
@@ -174,24 +195,24 @@ namespace Geometry.Voxel
                 UByte.PosValid(_byte,4),UByte.PosValid(_byte,5),UByte.PosValid(_byte,6),UByte.PosValid(_byte,7));
         }
         
-        public static T Shrink<T,Y>(this T _qube, float _shrinkScale) where  T: struct,IQube<Y> where Y:struct
+        public static T Resize<T,Y>(this T _qube, float _shrinkScale) where  T: struct,IQube<Y> where Y:struct
         {
-            dynamic db = _qube.vertDB;
-            dynamic dl = _qube.vertDL;
-            dynamic df = _qube.vertDF;
-            dynamic dr = _qube.vertDR;
-            dynamic tb = _qube.vertTB;
-            dynamic tl = _qube.vertTL;
-            dynamic tf = _qube.vertTF;
-            dynamic tr = _qube.vertTR;
-            _qube.vertDB = db * _shrinkScale;
-            _qube.vertDL = dl * _shrinkScale;
-            _qube.vertDF = df * _shrinkScale;
-            _qube.vertDR = dr * _shrinkScale;
-            _qube.vertTB = tb * _shrinkScale;
-            _qube.vertTL = tl * _shrinkScale;
-            _qube.vertTF = tf * _shrinkScale;
-            _qube.vertTR = tr * _shrinkScale;
+            dynamic db = _qube.vDB;
+            dynamic dl = _qube.vDL;
+            dynamic df = _qube.vDF;
+            dynamic dr = _qube.vDR;
+            dynamic tb = _qube.vTB;
+            dynamic tl = _qube.vTL;
+            dynamic tf = _qube.vTF;
+            dynamic tr = _qube.vTR;
+            _qube.vDB = db * _shrinkScale;
+            _qube.vDL = dl * _shrinkScale;
+            _qube.vDF = df * _shrinkScale;
+            _qube.vDR = dr * _shrinkScale;
+            _qube.vTB = tb * _shrinkScale;
+            _qube.vTL = tl * _shrinkScale;
+            _qube.vTF = tf * _shrinkScale;
+            _qube.vTR = tr * _shrinkScale;
             return _qube;
         }
     }

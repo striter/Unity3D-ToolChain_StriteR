@@ -1,0 +1,2796 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55fa62b771b4be24fa29b8e4033956e5, type: 3}
+  m_Name: ConvexGridRuntimeData
+  m_EditorClassIdentifier: 
+  m_ModuleData:
+  - identity: 0
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 1
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 2
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 3
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 4
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 5
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 6
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 7
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 8
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 9
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 10
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 11
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 12
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 13
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 14
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 15
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 16
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 17
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 18
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 19
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 20
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 21
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 22
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 23
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 24
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 25
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 26
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 27
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 28
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 29
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 30
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 31
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: -1
+  - identity: 32
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 33
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 34
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 35
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 36
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 37
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 38
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 39
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 40
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 41
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 42
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 43
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 44
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 45
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 46
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 47
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 48
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 49
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 50
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 51
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 52
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 53
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 54
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 55
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 56
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 57
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 58
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 59
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 60
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 61
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 62
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 63
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: -1
+  - identity: 64
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 65
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 66
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 67
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 68
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 69
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 70
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 71
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 72
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 73
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 74
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 75
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 76
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 77
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 78
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 79
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 80
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 81
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 82
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 83
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 84
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 85
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 86
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 87
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 88
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 89
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 90
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 91
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 92
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 93
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 94
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 95
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: -1
+  - identity: 96
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 97
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 98
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 99
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 100
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 101
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 102
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 103
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 104
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 105
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 106
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 107
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 108
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 109
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 110
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 111
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 112
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 113
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 114
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 115
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 116
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 117
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 118
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 119
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 120
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 121
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 122
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 123
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 124
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 125
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 126
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 127
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: -1
+  - identity: 128
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 129
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 130
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 131
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 132
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 133
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 134
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 135
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 136
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 137
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 138
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 139
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 140
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 141
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 142
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 143
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 144
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 145
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 146
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 147
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 148
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 149
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 150
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 151
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 152
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 153
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 154
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 155
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 156
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 157
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 158
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 159
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: -1
+      TR: 0
+  - identity: 160
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 161
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 162
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 163
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 164
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 165
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 166
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 167
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 168
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 169
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 170
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 171
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 172
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 173
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 174
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 175
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 176
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 177
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 178
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 179
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 180
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 181
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 182
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 183
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 184
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 185
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 186
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 187
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 188
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 189
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 190
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 191
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: -1
+      TR: 0
+  - identity: 192
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 193
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 194
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 195
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 196
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 197
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 198
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 199
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 200
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 201
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 202
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 203
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 204
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 205
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 206
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 207
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 208
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 209
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 210
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 211
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 212
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 213
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 214
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 215
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 216
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 217
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 218
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 219
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 220
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 221
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 222
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 223
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: -1
+      TF: 0
+      TR: 0
+  - identity: 224
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 225
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 226
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 227
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 228
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 229
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 230
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 231
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 232
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 233
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 234
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 235
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 236
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 237
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 238
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 239
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: -1
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 240
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 241
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 242
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 243
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 244
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 245
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 246
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 247
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: -1
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 248
+    corners:
+      DB: -1
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 249
+    corners:
+      DB: 0
+      DL: -1
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 250
+    corners:
+      DB: -1
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 251
+    corners:
+      DB: 0
+      DL: 0
+      DF: -1
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 252
+    corners:
+      DB: -1
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 253
+    corners:
+      DB: 0
+      DL: -1
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 254
+    corners:
+      DB: -1
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: 0
+  - identity: 255
+    corners:
+      DB: 0
+      DL: 0
+      DF: 0
+      DR: 0
+      TB: 0
+      TL: 0
+      TF: 0
+      TR: 0
+  m_ModuleMeshes:
+  - m_Vertices:
+    - {x: 0.650535, y: 0.35279, z: 1.023}
+    - {x: 0.951465, y: 0.35279, z: 1.023}
+    - {x: 0.650535, y: 0.64721, z: 1.023}
+    - {x: 0.951465, y: 0.64721, z: 1.023}
+    - {x: 0.650535, y: 0.64721, z: 0.023000002}
+    - {x: 0.951465, y: 0.64721, z: 0.023000002}
+    - {x: 0.650535, y: 0.35279, z: 0.023000002}
+    - {x: 0.951465, y: 0.35279, z: 0.023000002}
+    - {x: 0.650535, y: 0.64721, z: 1.023}
+    - {x: 0.951465, y: 0.64721, z: 1.023}
+    - {x: 0.650535, y: 0.64721, z: 0.023000002}
+    - {x: 0.951465, y: 0.64721, z: 0.023000002}
+    - {x: 0.650535, y: 0.35279, z: 0.023000002}
+    - {x: 0.650535, y: 0.35279, z: 1.023}
+    - {x: 0.951465, y: 0.35279, z: 1.023}
+    - {x: 0.951465, y: 0.35279, z: 0.023000002}
+    - {x: 0.951465, y: 0.35279, z: 1.023}
+    - {x: 0.951465, y: 0.64721, z: 1.023}
+    - {x: 0.951465, y: 0.64721, z: 0.023000002}
+    - {x: 0.951465, y: 0.35279, z: 0.023000002}
+    - {x: 0.650535, y: 0.35279, z: 0.023000002}
+    - {x: 0.650535, y: 0.64721, z: 0.023000002}
+    - {x: 0.650535, y: 0.64721, z: 1.023}
+    - {x: 0.650535, y: 0.35279, z: 1.023}
+    - {x: 0.016000003, y: 0.060615003, z: 1}
+    - {x: 0.51600003, y: 0.060615003, z: 1}
+    - {x: 0.016000003, y: 0.639385, z: 1}
+    - {x: 0.51600003, y: 0.639385, z: 1}
+    - {x: 0.016000003, y: 0.639385, z: 0}
+    - {x: 0.51600003, y: 0.639385, z: 0}
+    - {x: 0.016000003, y: 0.060615003, z: 0}
+    - {x: 0.51600003, y: 0.060615003, z: 0}
+    - {x: 0.016000003, y: 0.639385, z: 1}
+    - {x: 0.51600003, y: 0.639385, z: 1}
+    - {x: 0.016000003, y: 0.639385, z: 0}
+    - {x: 0.51600003, y: 0.639385, z: 0}
+    - {x: 0.016000003, y: 0.060615003, z: 0}
+    - {x: 0.016000003, y: 0.060615003, z: 1}
+    - {x: 0.51600003, y: 0.060615003, z: 1}
+    - {x: 0.51600003, y: 0.060615003, z: 0}
+    - {x: 0.51600003, y: 0.060615003, z: 1}
+    - {x: 0.51600003, y: 0.639385, z: 1}
+    - {x: 0.51600003, y: 0.639385, z: 0}
+    - {x: 0.51600003, y: 0.060615003, z: 0}
+    - {x: 0.016000003, y: 0.060615003, z: 0}
+    - {x: 0.016000003, y: 0.639385, z: 0}
+    - {x: 0.016000003, y: 0.639385, z: 1}
+    - {x: 0.016000003, y: 0.060615003, z: 1}
+    - {x: 0.397535, y: -0.050000012, z: 0.974}
+    - {x: 0.698465, y: -0.050000012, z: 0.974}
+    - {x: 0.397535, y: 0.95, z: 0.974}
+    - {x: 0.698465, y: 0.95, z: 0.974}
+    - {x: 0.397535, y: 0.95, z: -0.026000023}
+    - {x: 0.698465, y: 0.95, z: -0.026000023}
+    - {x: 0.397535, y: -0.050000012, z: -0.026000023}
+    - {x: 0.698465, y: -0.050000012, z: -0.026000023}
+    - {x: 0.397535, y: 0.95, z: 0.974}
+    - {x: 0.698465, y: 0.95, z: 0.974}
+    - {x: 0.397535, y: 0.95, z: -0.026000023}
+    - {x: 0.698465, y: 0.95, z: -0.026000023}
+    - {x: 0.397535, y: -0.050000012, z: -0.026000023}
+    - {x: 0.397535, y: -0.050000012, z: 0.974}
+    - {x: 0.698465, y: -0.050000012, z: 0.974}
+    - {x: 0.698465, y: -0.050000012, z: -0.026000023}
+    - {x: 0.698465, y: -0.050000012, z: 0.974}
+    - {x: 0.698465, y: 0.95, z: 0.974}
+    - {x: 0.698465, y: 0.95, z: -0.026000023}
+    - {x: 0.698465, y: -0.050000012, z: -0.026000023}
+    - {x: 0.397535, y: -0.050000012, z: -0.026000023}
+    - {x: 0.397535, y: 0.95, z: -0.026000023}
+    - {x: 0.397535, y: 0.95, z: 0.974}
+    - {x: 0.397535, y: -0.050000012, z: 0.974}
+    m_UVs:
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 0, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 1, y: 0}
+    - {x: 0, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 1, y: 0}
+    - {x: 0, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 1, y: 0}
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 0, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 1, y: 0}
+    - {x: 0, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 1, y: 0}
+    - {x: 0, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 1, y: 0}
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 0, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 1, y: 0}
+    - {x: 0, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 1, y: 0}
+    - {x: 0, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 1, y: 0}
+    m_Indexes: 0000000002000000030000000000000003000000010000000800000004000000050000000800000005000000090000000a00000006000000070000000a000000070000000b0000000c0000000d0000000e0000000c0000000e0000000f000000100000001100000012000000100000001200000013000000140000001500000016000000140000001600000017000000180000001a0000001b000000180000001b00000019000000200000001c0000001d000000200000001d00000021000000220000001e0000001f000000220000001f0000002300000024000000250000002600000024000000260000002700000028000000290000002a000000280000002a0000002b0000002c0000002d0000002e0000002c0000002e0000002f0000003000000032000000330000003000000033000000310000003800000034000000350000003800000035000000390000003a00000036000000370000003a000000370000003b0000003c0000003d0000003e0000003c0000003e0000003f000000400000004100000042000000400000004200000043000000440000004500000046000000440000004600000047000000
+    m_Normals:
+    - {x: 0, y: 0, z: 1}
+    - {x: 0, y: 0, z: 1}
+    - {x: 0, y: 0, z: 1}
+    - {x: 0, y: 0, z: 1}
+    - {x: 0, y: 1, z: 0}
+    - {x: 0, y: 1, z: 0}
+    - {x: 0, y: 0, z: -1}
+    - {x: 0, y: 0, z: -1}
+    - {x: 0, y: 1, z: 0}
+    - {x: 0, y: 1, z: 0}
+    - {x: 0, y: 0, z: -1}
+    - {x: 0, y: 0, z: -1}
+    - {x: 0, y: -1, z: 0}
+    - {x: 0, y: -1, z: 0}
+    - {x: 0, y: -1, z: 0}
+    - {x: 0, y: -1, z: 0}
+    - {x: -1, y: 0, z: 0}
+    - {x: -1, y: 0, z: 0}
+    - {x: -1, y: 0, z: 0}
+    - {x: -1, y: 0, z: 0}
+    - {x: 1, y: 0, z: 0}
+    - {x: 1, y: 0, z: 0}
+    - {x: 1, y: 0, z: 0}
+    - {x: 1, y: 0, z: 0}
+    - {x: 0, y: 0, z: 1}
+    - {x: 0, y: 0, z: 1}
+    - {x: 0, y: 0, z: 1}
+    - {x: 0, y: 0, z: 1}
+    - {x: 0, y: 1, z: 0}
+    - {x: 0, y: 1, z: 0}
+    - {x: 0, y: 0, z: -1}
+    - {x: 0, y: 0, z: -1}
+    - {x: 0, y: 1, z: 0}
+    - {x: 0, y: 1, z: 0}
+    - {x: 0, y: 0, z: -1}
+    - {x: 0, y: 0, z: -1}
+    - {x: 0, y: -1, z: 0}
+    - {x: 0, y: -1, z: 0}
+    - {x: 0, y: -1, z: 0}
+    - {x: 0, y: -1, z: 0}
+    - {x: -1, y: 0, z: 0}
+    - {x: -1, y: 0, z: 0}
+    - {x: -1, y: 0, z: 0}
+    - {x: -1, y: 0, z: 0}
+    - {x: 1, y: 0, z: 0}
+    - {x: 1, y: 0, z: 0}
+    - {x: 1, y: 0, z: 0}
+    - {x: 1, y: 0, z: 0}
+    - {x: 0, y: 0, z: 1}
+    - {x: 0, y: 0, z: 1}
+    - {x: 0, y: 0, z: 1}
+    - {x: 0, y: 0, z: 1}
+    - {x: 0, y: 1, z: 0}
+    - {x: 0, y: 1, z: 0}
+    - {x: 0, y: 0, z: -1}
+    - {x: 0, y: 0, z: -1}
+    - {x: 0, y: 1, z: 0}
+    - {x: 0, y: 1, z: 0}
+    - {x: 0, y: 0, z: -1}
+    - {x: 0, y: 0, z: -1}
+    - {x: 0, y: -1, z: 0}
+    - {x: 0, y: -1, z: 0}
+    - {x: 0, y: -1, z: 0}
+    - {x: 0, y: -1, z: 0}
+    - {x: -1, y: 0, z: 0}
+    - {x: -1, y: 0, z: 0}
+    - {x: -1, y: 0, z: 0}
+    - {x: -1, y: 0, z: 0}
+    - {x: 1, y: 0, z: 0}
+    - {x: 1, y: 0, z: 0}
+    - {x: 1, y: 0, z: 0}
+    - {x: 1, y: 0, z: 0}

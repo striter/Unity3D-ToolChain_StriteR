@@ -73,7 +73,6 @@ public static class UMath
                 v = (-k1 + w) * ik2;
                 u = (h.x - f.x * v) / (e.x + g.x * v);
             }
-            
             return new Vector2(u,v);
         }
         else

@@ -36,14 +36,14 @@ namespace Geometry.Voxel
     #region Interface
     public interface IQube<T> where T : struct
     {
-        T vertDB { get; set; }
-        T vertDL { get; set; }
-        T vertDF { get; set; }
-        T vertDR { get; set; }
-        T vertTB { get; set; }
-        T vertTL { get; set; }
-        T vertTF { get; set; }
-        T vertTR { get; set; }
+        T vDB { get; set; }
+        T vDL { get; set; }
+        T vDF { get; set; }
+        T vDR { get; set; }
+        T vTB { get; set; }
+        T vTL { get; set; }
+        T vTF { get; set; }
+        T vTR { get; set; }
         T this[int _index] { get; }
         T this[EQubeCorner _corner] { get; }
     }
@@ -159,32 +159,34 @@ namespace Geometry.Voxel
     }
 
     [Serializable]
-    public struct GQube:IQube<Vector3>
+    public struct GQube:IQube<Vector3>,IIterate<Vector3>
     {
-        public Vector3 vertDB { get; set; }
-        public Vector3 vertDL { get; set; }
-        public Vector3 vertDF { get; set; }
-        public Vector3 vertDR { get; set; }
-        public Vector3 vertTB { get; set; }
-        public Vector3 vertTL { get; set; }
-        public Vector3 vertTF { get; set; }
-        public Vector3 vertTR { get; set; }
+        public Vector3 vDB { get; set; }
+        public Vector3 vDL { get; set; }
+        public Vector3 vDF { get; set; }
+        public Vector3 vDR { get; set; }
+        public Vector3 vTB { get; set; }
+        public Vector3 vTL { get; set; }
+        public Vector3 vTF { get; set; }
+        public Vector3 vTR { get; set; }
         
         public GQube(Vector3 _vertDB, Vector3 _vertDL, Vector3 _vertDF, Vector3 _vertDR,
             Vector3 _vertTB, Vector3 _vertTL, Vector3 _vertTF, Vector3 _vertTR)
         {
-            vertDB = _vertDB;
-            vertDL = _vertDL;
-            vertDF = _vertDF;
-            vertDR = _vertDR;
-            vertTB = _vertTB;
-            vertTL = _vertTL;
-            vertTF = _vertTF;
-            vertTR = _vertTR;
+            vDB = _vertDB;
+            vDL = _vertDL;
+            vDF = _vertDF;
+            vDR = _vertDR;
+            vTB = _vertTB;
+            vTL = _vertTL;
+            vTF = _vertTF;
+            vTR = _vertTR;
         }
 
         public Vector3 this[int _index] => this.GetVertex<GQube,Vector3>(_index);
         public Vector3 this[EQubeCorner _corner] => this.GetVertex<GQube,Vector3>(_corner);
+        public Vector3 GetElement(int _index) => this[_index];
+        public int Length => 8;
     }
     
     [Serializable]

@@ -10,7 +10,7 @@ namespace ConvexGrid
 {
     public class ModuleManager : MonoBehaviour,IConvexGridControl
     {
-        public ConvexMeshData m_Data;
+        public ModuleRuntimeData m_Data;
         public TObjectPoolMono<PileID, ModuleContainer> m_Containers { get; set; }
         public void Init(Transform _transform)
         {

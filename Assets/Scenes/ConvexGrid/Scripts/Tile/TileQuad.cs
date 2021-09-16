@@ -18,7 +18,7 @@ namespace ConvexGrid
     {
         public ConvexQuad m_Quad { get; private set; }
         public GQuad m_QuadShapeLS { get; private set; }
-        public CoordQuad[] m_SplitQuadLS { get;private set; }
+        public G2Quad[] m_SplitQuadLS { get;private set; }
         public HexQuad m_NearbyVertsCW { get; private set; }
         public HexQuad m_NearbyQuadsCW { get; private set; }
 
@@ -47,7 +47,7 @@ namespace ConvexGrid
                 inverseRotation * offsets[radHelper[1].index].ToPosition(),
                 inverseRotation * offsets[radHelper[2].index].ToPosition(),
                 inverseRotation * offsets[radHelper[3].index].ToPosition());
-            m_SplitQuadLS = m_QuadShapeLS.SplitToQuads<GQuad,Vector3>(true).Select(p=>new CoordQuad(p.vB.ToCoord(),p.vL.ToCoord(),p.vF.ToCoord(),p.vR.ToCoord())).ToArray();
+            m_SplitQuadLS = m_QuadShapeLS.SplitToQuads<GQuad,Vector3>(true).Select(p=>new G2Quad(p.vB.ToCoord(),p.vL.ToCoord(),p.vF.ToCoord(),p.vR.ToCoord())).ToArray();
             
             availableQuads.Clear();
             availableQuads.AddRange(m_Quad.m_Vertices[0].m_NearbyQuads.Extend(m_Quad.m_Vertices[2].m_NearbyQuads).Collect(quad =>quad.m_Identity!=m_Quad.m_Identity&&quad.m_HexQuad.MatchVertexCount(m_Quad.m_HexQuad) == 2));

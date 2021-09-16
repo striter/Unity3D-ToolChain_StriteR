@@ -10,8 +10,7 @@ using UnityEngine;
 public static class UCollection
 {
     
-    #region Enumerator
-
+    #region Ienumerator
         public static void Traversal<T>(this IEnumerable<T> _collection, Action<T> _onEach)
         {
             if (_collection is IList<T> list)

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Geometry;
+using Geometry.Extend;
 using Geometry.Pixel;
 using Geometry.Voxel;
 using LinqExtentions;
@@ -17,7 +18,7 @@ namespace ConvexGrid
     {
         public TileQuad m_Quad { get; private set; }
         public byte m_Height => m_PoolID.height;
-        public BQube m_CornerRelation { get;  set; }
+        public BoolQube m_CornerRelation { get;  set; }
         public BCubeFacing m_SideRelation { get; set; }
 
         public TileVoxel Init(TileQuad _srcQuad)
@@ -65,8 +66,8 @@ namespace ConvexGrid
                     _corners.Contains(GetCornerID(2)),_corners.Contains(GetCornerID(3)));
             BQuad relationTop = new BQuad(_corners.Contains(GetCornerID(4)),_corners.Contains(GetCornerID(5)),
                 _corners.Contains(GetCornerID(6)),_corners.Contains(GetCornerID(7)));
-            m_CornerRelation = new BQube(relationBottom, relationTop);
-
+            m_CornerRelation = UQube.CreateQube<BoolQube,bool>(relationBottom, relationTop);
+            
             m_SideRelation = new BCubeFacing(_voxels.Contains(GetFacingID(0)),_voxels.Contains(GetFacingID(1)),_voxels.Contains(GetFacingID(2)),
                 _voxels.Contains(GetFacingID(3)),_voxels.Contains(GetFacingID(4)),_voxels.Contains(GetFacingID(5)));
         }
@@ -75,6 +76,6 @@ namespace ConvexGrid
         public PileID m_Identity => m_PoolID;
         public Transform m_ModuleTransform => transform;
         public byte m_ModuleByte => m_CornerRelation.ToByte();
-        public CoordQuad[] m_ModuleShapeLS =>  m_Quad.m_SplitQuadLS;
+        public G2Quad[] m_ModuleShapeLS =>  m_Quad.m_SplitQuadLS;
     }
 }
