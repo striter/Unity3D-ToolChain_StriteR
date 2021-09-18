@@ -48,7 +48,7 @@ namespace ConvexGrid
             
             m_Data.m_ModuleData = totalModules.ToArray();
             m_Data.m_OrientedMeshes = totalModuleMeshes.ToArray();
-            // EditorUtility.SetDirty(m_Data);
+            EditorUtility.SetDirty(m_Data);
         }
 
         public void GenerateTemplates()
