@@ -268,17 +268,17 @@ namespace ConvexGrid
 
                     //Rotate To Sample Direction
                     directions[0] = offsets[0];
-                    directions[1] = UMath.m_Rotate270CW.Multiply(offsets[1]);
-                    directions[2] = UMath.m_Rotate180CW.Multiply(offsets[2]);
-                    directions[3] = UMath.m_Rotate90CW.Multiply(offsets[3]);
+                    directions[1] = UMath.m_RotateCW270.Multiply(offsets[1]);
+                    directions[2] = UMath.m_RotateCW180.Multiply(offsets[2]);
+                    directions[3] = UMath.m_RotateCW90.Multiply(offsets[3]);
                     
                     var average = Coord.Normalize( directions.Sum((a,b)=>a+b))*UMath.SQRT2*3;
                     
                     //Rotate back
                     directions[0] = average - offsets[0];
-                    directions[1] = UMath.m_Rotate90CW.Multiply(average) - offsets[1];
-                    directions[2] = UMath.m_Rotate180CW.Multiply(average) - offsets[2];
-                    directions[3] = UMath.m_Rotate270CW.Multiply(average) - offsets[3];
+                    directions[1] = UMath.m_RotateCW90.Multiply(average) - offsets[1];
+                    directions[2] = UMath.m_RotateCW180.Multiply(average) - offsets[2];
+                    directions[3] = UMath.m_RotateCW270.Multiply(average) - offsets[3];
                     
                     //Inform Relaxing
                     relaxOffsets =  directions.MemberCopy(relaxOffsets);

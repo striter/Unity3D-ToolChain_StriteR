@@ -100,7 +100,8 @@ BRDFLight BRDFLight_Ctor(BRDFSurface surface, half3 lightDir, half3 lightCol, ha
 #else
 	0;
 #endif
-    
+    light.normalDistribution=clamp(light.normalDistribution,0,100.h);
+        
     light.normalizationTerm =
 #if _VF_GGX
         InvVF_GGX(LDH,roughness);

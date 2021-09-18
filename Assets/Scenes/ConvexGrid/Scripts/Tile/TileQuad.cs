@@ -47,7 +47,7 @@ namespace ConvexGrid
                 inverseRotation * offsets[radHelper[1].index].ToPosition(),
                 inverseRotation * offsets[radHelper[2].index].ToPosition(),
                 inverseRotation * offsets[radHelper[3].index].ToPosition());
-            m_SplitQuadLS = m_QuadShapeLS.SplitToQuads<GQuad,Vector3>(true).Select(p=>new G2Quad(p.vB.ToCoord(),p.vL.ToCoord(),p.vF.ToCoord(),p.vR.ToCoord())).ToArray();
+            m_SplitQuadLS = m_QuadShapeLS.SplitToQuads<GQuad,Vector3>(false).Select(p=>new G2Quad(p.vB.ToCoord(),p.vL.ToCoord(),p.vF.ToCoord(),p.vR.ToCoord())).ToArray();
             
             availableQuads.Clear();
             availableQuads.AddRange(m_Quad.m_Vertices[0].m_NearbyQuads.Extend(m_Quad.m_Vertices[2].m_NearbyQuads).Collect(quad =>quad.m_Identity!=m_Quad.m_Identity&&quad.m_HexQuad.MatchVertexCount(m_Quad.m_HexQuad) == 2));

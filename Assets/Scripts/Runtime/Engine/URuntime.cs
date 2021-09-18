@@ -18,13 +18,24 @@ public static class URuntime
     }
 
     #region Transform
-    public static void DestroyChildren(this Transform trans)
+    public static void DestroyChildren(this Transform _trans,bool immediately)
     {
-        int count = trans.childCount;
+        int count = _trans.childCount;
         if (count <= 0)
             return;
+        Transform[] transforms = new Transform[count];
         for (int i = 0; i < count; i++)
-            GameObject.Destroy(trans.GetChild(i).gameObject);
+            transforms[i] = _trans.GetChild(i);
+        
+        foreach (var transform in transforms)
+        {
+            if(transform==_trans)
+                continue;
+            if(immediately)
+                GameObject.DestroyImmediate(transform.gameObject);
+            else
+                GameObject.Destroy(transform.gameObject);
+        }
     }
     public static void SetChildLayer(this Transform trans, int layer)
     {

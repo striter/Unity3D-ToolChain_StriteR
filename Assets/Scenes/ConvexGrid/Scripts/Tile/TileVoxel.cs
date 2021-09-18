@@ -60,13 +60,13 @@ namespace ConvexGrid
         
         public void RefreshRelations(PilePool<TileCorner> _corners,PilePool<TileVoxel> _voxels)
         {
-            BQuad relationBottom = new BQuad(false,false,false,false);
+            BoolQuad relationBottom = new BoolQuad(false,false,false,false);
             if (m_Height != 0)
-                relationBottom =new BQuad(_corners.Contains(GetCornerID(0)),_corners.Contains(GetCornerID(1)),
+                relationBottom =new BoolQuad(_corners.Contains(GetCornerID(0)),_corners.Contains(GetCornerID(1)),
                     _corners.Contains(GetCornerID(2)),_corners.Contains(GetCornerID(3)));
-            BQuad relationTop = new BQuad(_corners.Contains(GetCornerID(4)),_corners.Contains(GetCornerID(5)),
+            BoolQuad relationTop = new BoolQuad(_corners.Contains(GetCornerID(4)),_corners.Contains(GetCornerID(5)),
                 _corners.Contains(GetCornerID(6)),_corners.Contains(GetCornerID(7)));
-            m_CornerRelation = UQube.CreateQube<BoolQube,bool>(relationBottom, relationTop);
+            m_CornerRelation = UQube.CombineToQube<BoolQube,bool>(relationBottom, relationTop);
             
             m_SideRelation = new BCubeFacing(_voxels.Contains(GetFacingID(0)),_voxels.Contains(GetFacingID(1)),_voxels.Contains(GetFacingID(2)),
                 _voxels.Contains(GetFacingID(3)),_voxels.Contains(GetFacingID(4)),_voxels.Contains(GetFacingID(5)));

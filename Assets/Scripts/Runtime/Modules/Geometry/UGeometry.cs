@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Geometry.Voxel;
 using UnityEngine;
 
 namespace Geometry
@@ -55,6 +56,14 @@ namespace Geometry
                 case EQuadCorner.F: return _quad.vF;
                 case EQuadCorner.R: return _quad.vR;
             }
+        }
+
+        public static void SetVertex<T, Y>(ref this T _quad, Y _vb, Y _vl, Y _vf, Y _vr) where T :struct, IQuad<Y> where Y : struct
+        {
+            _quad.vB = _vb;
+            _quad.vL = _vl;
+            _quad.vF = _vf;
+            _quad.vR = _vr;
         }
 
         public static (T v0, T v1) ToRelativeVertex<T>(this EQuadFacing _patch, IQuad<T> _quad) where T : struct
@@ -186,6 +195,24 @@ namespace Geometry
                 minDistance = sqrDistance;
             }
             return minIndex;
+        }
+
+        public static T RotateYawCW<T, Y>(this T _quad,ushort _rotateIndex) where T : struct, IQuad<Y> where Y : struct
+        {
+            var b = _quad.vB;
+            var l = _quad.vL;
+            var f = _quad.vF;
+            var r = _quad.vR;
+            T rotatedQuad = default;
+            switch (_rotateIndex)
+            {
+                default: throw new IndexOutOfRangeException();
+                case 1: rotatedQuad.SetVertex(r,b,l,f);break;
+                case 2: rotatedQuad.SetVertex(f,r,b,l); break;
+                case 3: rotatedQuad.SetVertex(l,f,r,b);break;
+            }
+
+            return rotatedQuad;
         }
     }
     

@@ -11,11 +11,12 @@ namespace ConvexGrid
     public struct ModuleData
     {
         public byte identity;
-        public ShortQube corners;
+        public IntQube modules;
+        public IntQube orientations;
     }
-
+    
     [Serializable]
-    public struct OrientedModuleMesh
+    public struct OrientedModuleMeshData
     {
         public Vector3[] m_Vertices;
         public Vector2[] m_UVs;

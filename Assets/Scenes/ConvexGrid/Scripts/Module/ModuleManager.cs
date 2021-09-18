@@ -54,6 +54,7 @@ namespace ConvexGrid
                 m_Containers.Get(module).ModuleValidate(m_Data);
         }
         
+        #if UNITY_EDITOR
         #region Gizmos
 
         public bool m_Gizmos;
@@ -74,5 +75,6 @@ namespace ConvexGrid
             }
         }
         #endregion
+        #endif
     }
 }

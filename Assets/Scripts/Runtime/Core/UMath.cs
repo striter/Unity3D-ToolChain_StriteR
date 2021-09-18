@@ -10,9 +10,11 @@ public static class UMath
     public const float Deg2Rad = PI  / 180f;
     public const float Rad2Deg = 180f / PI;
     
-    public static readonly Matrix2x2 m_Rotate90CW = GetRotateMatrix(90*Deg2Rad,true);
-    public static readonly Matrix2x2 m_Rotate180CW = GetRotateMatrix(180*Deg2Rad,true);
-    public static readonly Matrix2x2 m_Rotate270CW = GetRotateMatrix(270*Deg2Rad,true);
+    public static readonly Matrix2x2 m_RotateCW90 = Rotate2D(90*Deg2Rad,true);
+    public static readonly Matrix2x2 m_RotateCW180 = Rotate2D(180*Deg2Rad,true);
+    public static readonly Matrix2x2 m_RotateCW270 = Rotate2D(270*Deg2Rad,true);
+    public static readonly Matrix2x2[] m_Rotate2DCW = { Matrix2x2.Identity,m_RotateCW90,m_RotateCW180,m_RotateCW270};
+    public static readonly Quaternion[] m_Rotate3DCW = {Quaternion.Euler(0f,0f,0f),Quaternion.Euler(0f,90f,0f),Quaternion.Euler(0f,180f,0f),Quaternion.Euler(0f,270f,0f)};
     
     public static float GetRadClockWise(Vector2 _axis,Vector2 _vector)
     {
@@ -22,7 +24,7 @@ public static class UMath
         return Mathf.Atan2(sin,cos);
     }
 
-    public static Matrix2x2 GetRotateMatrix(float _rad,bool _clockWise=false)
+    public static Matrix2x2 Rotate2D(float _rad,bool _clockWise=false)
     {
         float sinA = Mathf.Sin(_rad);
         float cosA = Mathf.Cos(_rad);

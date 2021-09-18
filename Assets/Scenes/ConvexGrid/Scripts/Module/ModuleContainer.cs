@@ -46,18 +46,19 @@ namespace  ConvexGrid
             var normals = TSPoolList<Vector3>.Spawn();
             for (int i = 0; i < 8; i++)
             {
-                if(moduleData.corners[i]<0)
+                if(moduleData.modules[i]<0)
                     continue;
-                ref var moduleMesh=ref _data.m_ModuleMeshes[moduleData.corners[i]];
-                ref var localToOrientedModuleMatrix = ref UModule.m_QuadRotations[i % 4];
+                ref var moduleMesh=ref _data.m_OrientedMeshes[moduleData.modules[i]];
+                var moduleOrientation = moduleData.orientations[i];
+                ref var orientedRotation = ref UMath.m_Rotate3DCW[moduleData.orientations[i]];
                 int indexOffset = vertices.Count;
                 indexes.AddRange(moduleMesh.m_Indexes.Select(p=> p + indexOffset));
-                
+
                 var vertexCount = moduleMesh.m_Vertices.Length;
                 for (int j = 0; j < vertexCount; j++)
                 {
-                    var dstVertex = UModule.ModuleToObjectVertex(i, moduleMesh.m_Vertices[j],m_Collector.m_ModuleShapeLS,ConvexGridHelper.m_TileHeightHalf);
-                    var dstNormal = localToOrientedModuleMatrix*(moduleMesh.m_Normals[j]);
+                    var dstVertex = UModule.ModuleToObjectVertex(i,moduleOrientation, moduleMesh.m_Vertices[j],m_Collector.m_ModuleShapeLS,ConvexGridHelper.m_TileHeightHalf);
+                    var dstNormal =orientedRotation* moduleMesh.m_Normals[j];
                     vertices.Add(dstVertex);
                     normals.Add(dstNormal);
                 }

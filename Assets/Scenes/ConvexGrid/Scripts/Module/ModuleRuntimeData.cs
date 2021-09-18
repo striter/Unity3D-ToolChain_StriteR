@@ -10,6 +10,6 @@ namespace  ConvexGrid
     public class ModuleRuntimeData : ScriptableObject
     {
         public ModuleData[] m_ModuleData;
-        public OrientedModuleMesh[] m_ModuleMeshes;
+        public OrientedModuleMeshData[] m_OrientedMeshes;
     }
 }

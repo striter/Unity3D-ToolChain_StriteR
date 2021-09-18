@@ -183,8 +183,8 @@ namespace Geometry.Voxel
             vTR = _vertTR;
         }
 
-        public Vector3 this[int _index] => this.GetVertex<GQube,Vector3>(_index);
-        public Vector3 this[EQubeCorner _corner] => this.GetVertex<GQube,Vector3>(_corner);
+        public Vector3 this[int _index] => this.GetQubeCorner<GQube,Vector3>(_index);
+        public Vector3 this[EQubeCorner _corner] => this.GetQubeCorner<GQube,Vector3>(_corner);
         public Vector3 GetElement(int _index) => this[_index];
         public int Length => 8;
     }

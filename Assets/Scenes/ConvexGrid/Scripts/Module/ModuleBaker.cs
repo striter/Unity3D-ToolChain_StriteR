@@ -13,6 +13,7 @@ using UnityEngine;
 
 namespace ConvexGrid
 {
+#if UNITY_EDITOR
     using UnityEditor;
     public class ModuleBaker : MonoBehaviour
     {
@@ -22,33 +23,77 @@ namespace ConvexGrid
         {
             if (m_Data == null)
                 throw new Exception("Invalid Module Data Set!");
-
-            List<OrientedModuleMesh> totalModuleMeshes = new List<OrientedModuleMesh>();
+            
+            List<OrientedModuleMeshData> totalModuleMeshes = new List<OrientedModuleMeshData>();
             
             foreach (var moduleBakeMesh in GetComponentsInChildren<ModuleBakeMesh>())
-            {
                 totalModuleMeshes.Add(moduleBakeMesh.CollectModuleMesh());
-            }
             
             List<ModuleData> totalModules = new List<ModuleData>();
             
-            for (int i = 0; i < 256; i++)
+            for (int i = 0; i <= byte.MaxValue; i++)
             {
-                var possibility = (byte) i;
+                var voxel = UModule.voxelModule[i];
+            
                 ModuleData data = default;
-                data.identity = possibility;
+                data.identity = (byte)i;
                 for (int j = 0; j < 8; j++)
-                    data.corners.SetCorner(j,(short)(UByte.PosValid(possibility,j)?0:-1));
+                {
+                    UModule.GetVoxelModuleUnit( voxel[j],out var moduleIndex,out var moduleOrientation);
+                    data.modules.SetCorner(j,moduleIndex);
+                    data.orientations.SetCorner(j,moduleOrientation);
+                }
                 totalModules.Add(data);
             }
-
+            
             m_Data.m_ModuleData = totalModules.ToArray();
-            m_Data.m_ModuleMeshes = totalModuleMeshes.ToArray();
-            EditorUtility.SetDirty(m_Data);
+            m_Data.m_OrientedMeshes = totalModuleMeshes.ToArray();
+            // EditorUtility.SetDirty(m_Data);
+        }
+
+        public void GenerateTemplates()
+        {
+            if (transform.childCount > 0)
+            {
+                Debug.LogWarning("Please Clear All Child Of this Object");
+                return;
+            }
+            transform.DestroyChildren(true);
+            int width = -4;
+            int height = -4;
+            foreach (var tuple in UModule.IterateAllVoxelModuleBytes().LoopIndex())
+            {
+                var moduleByte =tuple .value;
+                var possibility = new BoolQube();
+                possibility.SetByteCorners(moduleByte);
+                
+                var moduleBakerMesh = new GameObject($"Module:{moduleByte}").transform;
+                moduleBakerMesh.SetParent(transform);
+                moduleBakerMesh.localPosition = Vector3.right * (3f * width) + Vector3.forward * (3f * height) + Vector3.up * 1f;
+                moduleBakerMesh.gameObject.AddComponent<ModuleBakeMesh>().m_Relation = possibility;
+
+                for (int j = 0; j < 8; j++)
+                {
+                    if(!possibility[j])
+                        continue;
+
+                    var subCube = GameObject.CreatePrimitive( PrimitiveType.Cube).transform;
+                    subCube.SetParent(moduleBakerMesh);
+                    subCube.localScale = Vector3.one * .5f;
+                    subCube.localPosition = UModule.halfUnitQube[j]+Vector3.up*.25f;
+                }
+                
+                width++;
+                if (width > 3)
+                {
+                    width = -4;
+                    height++;
+                }
+            }
         }
 
         public bool m_Gizmos;
-        public static readonly G2Quad[] splitG2Quads = UModule.unitG2Quad.SplitToQuads<G2Quad, Vector2>(true).Select(p=>new G2Quad(p.vB,p.vL,p.vF,p.vR)).ToArray();
+        public static readonly G2Quad[] splitG2Quads = UModule.unitG2Quad.SplitToQuads<G2Quad, Vector2>(false).Select(p=>new G2Quad(p.vB,p.vL,p.vF,p.vR)).ToArray();
         public static readonly GQube  shrinkQube = UModule.unitGQuad.ExpandToQUbe(Vector3.up,.5f).Resize<GQube,Vector3>(1f);
         private void OnDrawGizmos()
         {
@@ -62,15 +107,17 @@ namespace ConvexGrid
             {
                 var possibility = moduleData.identity;
                 Gizmos.color = Color.white.SetAlpha(.3f);
-                Gizmos.matrix=Matrix4x4.Translate( Vector3.right * (3f * width) + Vector3.forward * (3f * height) + Vector3.up * 1f)*Matrix4x4.Scale(Vector3.one*2f);
+                Gizmos.matrix =Matrix4x4.Translate( Vector3.right * (3f * width) + Vector3.forward * (3f * height) + Vector3.up * 1f)*Matrix4x4.Scale(Vector3.one*2f);
                 for (int i = 0; i < 8; i++)
                 {
-                    if(moduleData.corners[i]<0)
+                    if(moduleData.modules[i]<0)
                         continue;
                     Gizmos.color = Color.white.SetAlpha(.5f);
-                    ref var mesh = ref m_Data.m_ModuleMeshes[moduleData.corners[i]];
+                    // Gizmos.DrawSphere(UModule.unitQube[i],.1f);
+                    ref var mesh = ref m_Data.m_OrientedMeshes[moduleData.modules[i]];
+                    var orientation = moduleData.orientations[i];
                     list.Clear();
-                    mesh.m_Vertices.Select(p=>UModule.ModuleToObjectVertex(i,p,splitG2Quads,.5f)).FillCollection(list);
+                    mesh.m_Vertices.Select(p=>UModule.ModuleToObjectVertex(i,orientation,p,splitG2Quads,.5f)).FillCollection(list);
                     Gizmos_Extend.DrawLines(list);
                 }
 
@@ -101,9 +148,12 @@ namespace ConvexGrid
         {
             base.OnInspectorGUI();
             GUILayout.BeginVertical();
+            if (GUILayout.Button("Templates"))
+                (target as ModuleBaker).GenerateTemplates();
             if(GUILayout.Button("Bake"))
                 (target as ModuleBaker).Bake();
             GUILayout.EndVertical();
         }
     }
+    #endif
 }

@@ -96,9 +96,9 @@ public static class UCollection
             foreach (var element in _collections)
             {
                 builder.Append(OnEachAppend!=null?OnEachAppend(element):element.ToString());
-                curIndex++;
                 if (curIndex != maxIndex)
                     builder.Append(breakAppend);
+                curIndex++;
             }
             return builder.ToString();
         }

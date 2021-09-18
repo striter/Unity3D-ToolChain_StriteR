@@ -7,22 +7,22 @@ using UnityEngine;
 namespace Geometry.Extend
 {
 
-    public struct BQuad : IQuad<bool>
+    public struct BoolQuad : IQuad<bool>
     {
         public bool vB { get; set; }
         public bool vL { get; set; }
         public bool vF { get; set; }
         public bool vR { get; set; }
 
-        public BQuad(bool _vB, bool _vL, bool _vF, bool _vR)
+        public BoolQuad(bool _vB, bool _vL, bool _vF, bool _vR)
         {
             vB = _vB;
             vL = _vL;
             vF = _vF;
             vR = _vR;
         }
-        public bool this[int _index]=>this.GetVertex<BQuad,bool>(_index); 
-        public bool this[EQuadCorner _corner] =>this.GetVertex<BQuad,bool>(_corner);
+        public bool this[int _index]=>this.GetVertex<BoolQuad,bool>(_index); 
+        public bool this[EQuadCorner _corner] =>this.GetVertex<BoolQuad,bool>(_corner);
     }
 
     public struct BCubeFacing:ICubeFace<bool>
@@ -49,7 +49,7 @@ namespace Geometry.Extend
         public bool this[ECubeFacing _facing] => this.GetFacing<BCubeFacing, bool>(_facing);
     }
     [Serializable]
-    public struct BoolQube : IQube<bool>,IEnumerable<bool>
+    public struct BoolQube : IQube<bool>,IEnumerable<bool>,IEquatable<BoolQube>
     {
         public bool DB;
         public bool DL;
@@ -67,13 +67,33 @@ namespace Geometry.Extend
         public bool vTL { get=>TL; set=>TL=value; }
         public bool vTF { get=>TF; set=>TF=value; }
         public bool vTR { get=>TR; set=>TR=value; }
-        public bool this[int _index] => this.GetVertex<BoolQube,bool>(_index);
-        public bool this[EQubeCorner _corner] =>  this.GetVertex<BoolQube,bool>(_corner);
+        public bool this[int _index] => this.GetQubeCorner<BoolQube,bool>(_index);
+        public bool this[EQubeCorner _corner] =>  this.GetQubeCorner<BoolQube,bool>(_corner);
         public IEnumerator<bool> GetEnumerator() => this.GetEnumerator<BoolQube, bool>();
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public bool Equals(BoolQube other)=>DB == other.DB && DL == other.DL && DF == other.DF && DR == other.DR && TB == other.TB && TL == other.TL && TF == other.TF && TR == other.TR;
+
+        public override bool Equals(object obj)=> obj is BoolQube other && Equals(other);
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = DB.GetHashCode();
+                hashCode = (hashCode * 397) ^ DL.GetHashCode();
+                hashCode = (hashCode * 397) ^ DF.GetHashCode();
+                hashCode = (hashCode * 397) ^ DR.GetHashCode();
+                hashCode = (hashCode * 397) ^ TB.GetHashCode();
+                hashCode = (hashCode * 397) ^ TL.GetHashCode();
+                hashCode = (hashCode * 397) ^ TF.GetHashCode();
+                hashCode = (hashCode * 397) ^ TR.GetHashCode();
+                return hashCode;
+            }
         }
     }
 
@@ -96,30 +116,30 @@ namespace Geometry.Extend
         public byte vTL { get=>TL; set=>TL=value; }
         public byte vTF { get=>TF; set=>TF=value; }
         public byte vTR { get=>TR; set=>TR=value; }
-        public byte this[int _index] => this.GetVertex<ByteQube, byte>(_index);
-        public byte this[EQubeCorner _corner] => this.GetVertex<ByteQube, byte>(_corner);
+        public byte this[int _index] => this.GetQubeCorner<ByteQube, byte>(_index);
+        public byte this[EQubeCorner _corner] => this.GetQubeCorner<ByteQube, byte>(_corner);
     }   
     
     [Serializable]
-    public struct ShortQube : IQube<short>
+    public struct IntQube : IQube<int>
     {
-        public short DB;
-        public short DL;
-        public short DF;
-        public short DR;
-        public short TB;
-        public short TL;
-        public short TF;
-        public short TR;
-        public short vDB { get=>DB; set=>DB=value; }
-        public short vDL { get=>DL; set=>DL=value; }
-        public short vDF { get=>DF; set=>DF=value; }
-        public short vDR { get=>DR; set=>DR=value; }
-        public short vTB { get=>TB; set=>TB=value; }
-        public short vTL { get=>TL; set=>TL=value; }
-        public short vTF { get=>TF; set=>TF=value; }
-        public short vTR { get=>TR; set=>TR=value; }
-        public short this[int _index] => this.GetVertex<ShortQube, short>(_index);
-        public short this[EQubeCorner _corner] => this.GetVertex<ShortQube, short>(_corner);
+        public int DB;
+        public int DL;
+        public int DF;
+        public int DR;
+        public int TB;
+        public int TL;
+        public int TF;
+        public int TR;
+        public int vDB { get=>DB; set=>DB=value; }
+        public int vDL { get=>DL; set=>DL=value; }
+        public int vDF { get=>DF; set=>DF=value; }
+        public int vDR { get=>DR; set=>DR=value; }
+        public int vTB { get=>TB; set=>TB=value; }
+        public int vTL { get=>TL; set=>TL=value; }
+        public int vTF { get=>TF; set=>TF=value; }
+        public int vTR { get=>TR; set=>TR=value; }
+        public int this[int _index] => this.GetQubeCorner<IntQube, int>(_index);
+        public int this[EQubeCorner _corner] => this.GetQubeCorner<IntQube, int>(_corner);
     }
 }
