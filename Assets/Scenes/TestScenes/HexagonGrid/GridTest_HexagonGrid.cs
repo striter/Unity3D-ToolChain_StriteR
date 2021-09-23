@@ -55,7 +55,7 @@ namespace GridTest
             {
                 var area = UHexagonArea.GetBelongingArea(coord);
 
-                var index = (area.m_Coord.x-area.m_Coord.y + int.MaxValue / 2) % 3;
+                var index = (area.coord.x-area.coord.y + int.MaxValue / 2) % 3;
                 // var index = (i - k + int.MaxValue) % 3;
                 switch (index)
                 {
@@ -75,13 +75,13 @@ namespace GridTest
         {
             var area = UHexagonArea.GetBelongingArea(_positionCS);
 
-            if (!area.m_Coord.InRange(m_MaxAreaRadius))
+            if (!area.coord.InRange(m_MaxAreaRadius))
                 return;
            
-            if(_include&&!m_Areas.ContainsKey(area.m_Coord))
-                m_Areas.Add(area.m_Coord, area);
-            else if (!_include && m_Areas.ContainsKey(area.m_Coord))
-                m_Areas.Remove(area.m_Coord);
+            if(_include&&!m_Areas.ContainsKey(area.coord))
+                m_Areas.Add(area.coord, area);
+            else if (!_include && m_Areas.ContainsKey(area.coord))
+                m_Areas.Remove(area.coord);
         }
         
         public EAxisVisualize m_AxisVisualize;
@@ -143,11 +143,11 @@ namespace GridTest
         {
             Handles.matrix = transform.localToWorldMatrix * Matrix4x4.Scale(Vector3.one * m_CellRadius);
             foreach (var hex in m_Areas.Values)
-                Handles.Label(hex.centerCS.ToPixel().ToPosition(), $"A:{hex.m_Coord}\nC:{hex.centerCS}",
+                Handles.Label(hex.centerCS.ToCoord().ToPosition(), $"A:{hex.coord}\nC:{hex.centerCS}",
                     GUIHelper.m_AreaStyle);
             var area = UHexagonArea.GetBelongingArea(m_HitAxialCS);
             Handles.Label(m_HitPointCS.ToPosition(),
-                $"Cell:{m_HitAxialCS}\nArea:{area.m_Coord}\nAPos{area.TransformCSToAS(m_HitAxialCS)}",
+                $"Cell:{m_HitAxialCS}\nArea:{area.coord}\nAPos{area.TransformCSToAS(m_HitAxialCS)}",
                 GUIHelper.m_HitStyle);
         }
 
@@ -173,26 +173,26 @@ namespace GridTest
         void DrawAxis()
         {
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Scale(Vector3.one * m_CellRadius) *
-                            Matrix4x4.Translate(m_HitAxialCS.ToPixel().ToPosition());
+                            Matrix4x4.Translate(m_HitAxialCS.ToCoord().ToPosition());
             switch (m_AxisVisualize)
             {
                 default: return;
                 case EAxisVisualize.Axial:
                 {
                     Gizmos.color = GUIHelper.C_AxialColumn;
-                    Gizmos.DrawRay(Vector3.zero, new HexCoord(1, 0).ToPixel().ToPosition());
+                    Gizmos.DrawRay(Vector3.zero, new HexCoord(1, 0).ToCoord().ToPosition());
                     Gizmos.color = GUIHelper.C_AxialRow;
-                    Gizmos.DrawRay(Vector3.zero, new HexCoord(0, 1).ToPixel().ToPosition());
+                    Gizmos.DrawRay(Vector3.zero, new HexCoord(0, 1).ToCoord().ToPosition());
                 }
                     break;
                 case EAxisVisualize.Cube:
                 {
                     Gizmos.color = GUIHelper.C_CubeX;
-                    Gizmos.DrawRay(Vector3.zero, new HexCoord(1, 0).ToPixel().ToPosition());
+                    Gizmos.DrawRay(Vector3.zero, new HexCoord(1, 0).ToCoord().ToPosition());
                     Gizmos.color = GUIHelper.C_CubeY;
-                    Gizmos.DrawRay(Vector3.zero, new HexCoord(1, -1).ToPixel().ToPosition());
+                    Gizmos.DrawRay(Vector3.zero, new HexCoord(1, -1).ToCoord().ToPosition());
                     Gizmos.color = GUIHelper.C_CubeZ;
-                    Gizmos.DrawRay(Vector3.zero, new HexCoord(0, 1).ToPixel().ToPosition());
+                    Gizmos.DrawRay(Vector3.zero, new HexCoord(0, 1).ToCoord().ToPosition());
                 }
                     break;
             }

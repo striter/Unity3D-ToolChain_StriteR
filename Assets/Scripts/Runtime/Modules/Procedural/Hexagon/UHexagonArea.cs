@@ -10,6 +10,7 @@ namespace Procedural.Hexagon.Area
         public static int radius { get; private set; } = 1;
         public static int tilling { get; private set; } = 1;
         public static bool welded { get; private set; }
+        
         private static int r;
         private static int s;
         private static int a;
@@ -70,7 +71,7 @@ namespace Procedural.Hexagon.Area
             var centerCS = new HexCoord((r + 1) * i - r * k, (r + 1) * j - r * i, (r + 1) * k - r * j);
             if (welded)
                 centerCS -= _areaCoord;
-            return new HexagonArea() {m_Coord =_areaCoord, centerCS = centerCS};
+            return new HexagonArea() { coord = _areaCoord, centerCS = centerCS,};
         }
         public static HexagonArea GetBelongingArea(HexCoord _positionCS) => GetArea( GetBelongAreaCoord(_positionCS));
 

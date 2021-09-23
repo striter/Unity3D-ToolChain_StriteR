@@ -46,13 +46,13 @@ public static class UMath
     public static float Mod(float _src, float _dst) => _src - _dst * Mathf.Floor(_src/_dst);
 
 
-    public static dynamic BilinearLerp(dynamic tl, dynamic tr, dynamic br, dynamic bl,dynamic _uv)
+    public static Vector2 BilinearLerp(Vector2 tl, Vector2 tr, Vector2 br, Vector2 bl,Vector2 _uv)
     {
         float u = _uv.x;
         float v = _uv.y;
         return tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
     }
-    public static dynamic InvBilinearLerp(dynamic tl, dynamic tr, dynamic br, dynamic bl, dynamic p)
+    public static Vector2 InvBilinearLerp(Vector2 tl, Vector2 tr, Vector2 br, Vector2 bl, Vector2 p)
     {
         var e = tr - tl;
         var f = bl - tl;

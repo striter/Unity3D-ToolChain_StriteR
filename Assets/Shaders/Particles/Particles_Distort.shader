@@ -17,7 +17,7 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			#include "UnityCG.cginc"
-			struct appdata
+			struct a2v
 			{
 				float4 vertex : POSITION;
 				float2 uv:TEXCOORD0;
@@ -31,7 +31,7 @@
 			sampler2D _CameraOpaqueTexture;
 			sampler2D _DistortTex;
 			float _DistortStrength;
-			v2f vert(appdata v)
+			v2f vert(a2v v)
 			{
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);

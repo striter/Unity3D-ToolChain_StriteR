@@ -190,7 +190,6 @@
 				BRDFSurface surface=BRDFSurface_Ctor(albedo,glossiness,metallic,ao,normalWS,tangentWS,viewDirWS);
 				half3 indirectDiffuse=IndirectBRDFDiffuse(surface.normal);
 				half3 indirectSpecular=IndirectBRDFSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
-
 				half3 brdfColor=0;
 				brdfColor+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 				Light mainLight=GetMainLight(TransformWorldToShadowCoord(positionWS));

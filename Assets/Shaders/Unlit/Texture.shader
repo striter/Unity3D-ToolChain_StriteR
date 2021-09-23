@@ -28,7 +28,7 @@
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "Assets/Shaders/Library/Additional/Algorithms/HSL.hlsl"
             TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
-            struct appdata
+            struct a2v
             {
                 half3 positionOS : POSITION;
                 float2 uv : TEXCOORD0;
@@ -41,7 +41,7 @@
                 FOG_COORD(1)
             };
 
-            v2f vert (appdata v)
+            v2f vert (a2v v)
             {
                 v2f o;
                 o.positionCS = TransformObjectToHClip(v.positionOS);

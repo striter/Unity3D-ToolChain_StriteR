@@ -45,6 +45,7 @@ half3 IndirectBRDFCubeSpecular(half3 reflectDir, float perceptualRoughness)
     return irradiance;
 }
 
+
 half3 IndirectBRDFSpecular(float3 reflectDir, float perceptualRoughness, half4 positionHCS, half3 normalTS)
 {
     half3 specular = IndirectBRDFCubeSpecular(reflectDir, perceptualRoughness);

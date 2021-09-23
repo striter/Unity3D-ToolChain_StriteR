@@ -15,18 +15,17 @@ namespace ConvexGrid
 {
 #if UNITY_EDITOR
     using UnityEditor;
+    using TEditor;
     public class ModuleBaker : MonoBehaviour
     {
-        public ModuleRuntimeData m_Data;
-    
         public void Bake()
         {
-            if (m_Data == null)
-                throw new Exception("Invalid Module Data Set!");
+            if (!UEAsset.SaveFilePath(out string filePath, "asset")) 
+                return;
             
             List<OrientedModuleMeshData> totalModuleMeshes = new List<OrientedModuleMeshData>();
             
-            foreach (var moduleBakeMesh in GetComponentsInChildren<ModuleBakeMesh>())
+            foreach (var moduleBakeMesh in GetComponentsInChildren<ModuleBakerModel>())
                 totalModuleMeshes.Add(moduleBakeMesh.CollectModuleMesh());
             
             List<ModuleData> totalModules = new List<ModuleData>();
@@ -45,10 +44,12 @@ namespace ConvexGrid
                 }
                 totalModules.Add(data);
             }
-            
-            m_Data.m_ModuleData = totalModules.ToArray();
-            m_Data.m_OrientedMeshes = totalModuleMeshes.ToArray();
-            EditorUtility.SetDirty(m_Data);
+
+            ModuleRuntimeData _data = ScriptableObject.CreateInstance<ModuleRuntimeData>();
+            _data.m_ModuleData = totalModules.ToArray();
+            _data.m_OrientedMeshes = totalModuleMeshes.ToArray();
+            _data= UEAsset.CreateAssetCombination(UEPath.FileToAssetPath( filePath), _data);
+            m_Data = _data;
         }
 
         public void GenerateTemplates()
@@ -70,7 +71,7 @@ namespace ConvexGrid
                 var moduleBakerMesh = new GameObject($"Module:{moduleByte}").transform;
                 moduleBakerMesh.SetParent(transform);
                 moduleBakerMesh.localPosition = Vector3.right * (3f * width) + Vector3.forward * (3f * height) + Vector3.up * 1f;
-                moduleBakerMesh.gameObject.AddComponent<ModuleBakeMesh>().m_Relation = possibility;
+                moduleBakerMesh.gameObject.AddComponent<ModuleBakerModel>().m_Relation = possibility;
 
                 for (int j = 0; j < 8; j++)
                 {
@@ -93,6 +94,7 @@ namespace ConvexGrid
         }
 
         public bool m_Gizmos;
+        public ModuleRuntimeData m_Data;
         public static readonly G2Quad[] splitG2Quads = UModule.unitG2Quad.SplitToQuads<G2Quad, Vector2>(false).Select(p=>new G2Quad(p.vB,p.vL,p.vF,p.vR)).ToArray();
         public static readonly GQube  shrinkQube = UModule.unitGQuad.ExpandToQUbe(Vector3.up,.5f).Resize<GQube,Vector3>(1f);
         private void OnDrawGizmos()

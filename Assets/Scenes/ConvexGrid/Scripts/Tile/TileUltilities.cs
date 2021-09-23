@@ -23,30 +23,21 @@ namespace ConvexGrid
 
     public static class ConvexGridHelper
     {
-        public const float m_TileHeight = 5f;
-        public const float m_TileHeightHalf = m_TileHeight / 2f;
-        public static readonly Vector3 m_TileHeightVector = m_TileHeight * Vector3.up;
-        public static readonly Vector3 m_TileHeightHalfVector = m_TileHeightHalf*Vector3.up;
-
-        public static int m_SmoothTimes = 256;
-        public static float m_SmoothFactor = 0.4f;
-
-        public static void InitRelax(int _smoothTimes, float _smoothFactor)
-        {
-            m_SmoothTimes = _smoothTimes;
-            m_SmoothFactor = _smoothFactor;
-        }
-
         public static Vector3 ToPosition(this HexCoord _hexCube)
         {
-            return _hexCube.ToPixel().ToPosition();
+            return _hexCube.ToCoord().ToPosition();
         }
 
         public static Vector3 GetVoxelHeight(PileID _id)
         {
-            return  m_TileHeightVector * _id.height;
+            return KConvexGrid.tileHeightVector * _id.height;
         }
 
+        public static Vector3 GetCornerPositionWS(this ConvexVertex _vertex,byte _height)
+        {
+            return _vertex.m_Coord.ToPosition() + GetCornerHeight(_height);
+        }
+        
         public static Vector3 GetCornerHeight(PileID _id)
         {
             return GetCornerHeight( _id.height);
@@ -54,7 +45,7 @@ namespace ConvexGrid
 
         public static Vector3 GetCornerHeight(byte _height)
         {
-            return m_TileHeightHalfVector+m_TileHeightVector * _height;
+            return KConvexGrid.tileHeightHalfVector+KConvexGrid.tileHeightVector * _height;
         }
 
         public static GQuad ConstructLocalGeometry(this ConvexQuad _quad,Coord _center, int[] indexes,EGridQuadGeometry _geometry)
@@ -143,7 +134,7 @@ namespace ConvexGrid
                     foreach (var quad in cornerQuads)
                     {                
                         int indexOffset = vertices.Count;
-                        var qube = quad.ExpandToQUbe(m_TileHeightVector,.5f);
+                        var qube = quad.ExpandToQUbe(KConvexGrid.tileHeightVector,.5f);
                         for (int i = 0; i < 8; i++)
                         {
                             vertices.Add(qube[i]);
@@ -181,7 +172,7 @@ namespace ConvexGrid
                 {
                     foreach (var quad in cornerQuads)
                     {
-                        var qube = quad.ExpandToQUbe(m_TileHeightVector,.5f);
+                        var qube = quad.ExpandToQUbe(KConvexGrid.tileHeightVector,.5f);
                         qube.FillFacingQuad(ECubeFacing.T,vertices,indices,generateUV?uvs:null,generateNormals?normals:null);
                         qube.FillFacingQuad(ECubeFacing.D,vertices,indices,generateUV?uvs:null,generateNormals?normals:null);
                     }

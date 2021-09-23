@@ -29,7 +29,7 @@
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "Assets/Shaders/Library/Geometry.hlsl"
 
-            struct appdata
+            struct a2v
             {
                 half3 positionOS : POSITION;
             };
@@ -48,7 +48,7 @@
             half _Pow;
             half _Depth;
             CBUFFER_END
-            v2f vert(appdata v)
+            v2f vert(a2v v)
             {
                 v2f o;
                 o.positionCS = TransformObjectToHClip(v.positionOS);

@@ -19,7 +19,7 @@ Shader "Hidden/VertexColorVisualize"
             #pragma multi_compile_local _ _VISUALIZE_R _VISUALIZE_G _VISUALIZE_B _VISUALIZE_A
 			#include "Assets/Shaders/Library/Common.hlsl"
 
-            struct appdata
+            struct a2v
             {
                 float3 positionOS : POSITION;
                 #if  _SAMPLE_COLOR
@@ -54,7 +54,7 @@ Shader "Hidden/VertexColorVisualize"
             };
 
 
-            v2f vert (appdata v)
+            v2f vert (a2v v)
             {
                 v2f o;
                 o.positionCS = TransformObjectToHClip(v.positionOS);

@@ -93,7 +93,7 @@ namespace TEditor
             string folderPath = EditorUtility.OpenFolderPanel("Select Directory", fbxDirectory, "");
             if (folderPath.Length == 0)
                 return false;
-            directoryPath = UEPath.FilePathToAssetPath(folderPath) + "/";
+            directoryPath = UEPath.FileToAssetPath(folderPath) + "/";
             objName = UEPath.GetPathName(assetPath);
             return true;
         }

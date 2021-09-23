@@ -26,7 +26,7 @@
 			#pragma fragment frag
 			#include "UnityCG.cginc"
 			#pragma multi_compile_instancing
-			struct appdata
+			struct a2v
 			{
 				float4 vertex : POSITION;
 				float4 color:COLOR;
@@ -44,7 +44,7 @@
 			float4 _MainTex_ST;
 			float4 _Color;
 
-			v2f vert(appdata v)
+			v2f vert(a2v v)
 			{
 				UNITY_SETUP_INSTANCE_ID(v);
 				v2f o;

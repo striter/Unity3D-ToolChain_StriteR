@@ -9,7 +9,7 @@ namespace GridTest
     {
         public static Vector3 ToWorld(this HexCoord _hexCube)
         {
-            return _hexCube.ToPixel().ToPosition();
+            return _hexCube.ToCoord().ToPosition();
         }
 #if UNITY_EDITOR
         public static void DrawHexagon(this HexCoord _coord)

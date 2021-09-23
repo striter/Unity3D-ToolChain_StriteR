@@ -72,12 +72,12 @@ namespace Geometry
             return (_quad[patch.i0], _quad[patch.i1]);
         }
 
-        public static Y GetUV<T,Y>(this T  _quad, Vector2 _position) where T:struct,IQuad<Y> where Y: struct
+        public static Vector2 GetUV<T>(this T  _quad, Vector2 _position) where T:struct,IQuad<Vector2>
         {
             return UMath.InvBilinearLerp(_quad.vB,_quad.vL,_quad.vF,_quad.vR,_position);
         }
 
-        public static Y GetPoint<T,Y>(this T _quad, Vector2 _uv) where T:struct,IQuad<Y> where Y: struct
+        public static Vector2 GetPoint<T>(this T _quad, Vector2 _uv) where T:struct,IQuad<Vector2>
         {
             return UMath.BilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _uv);
         }
@@ -143,8 +143,25 @@ namespace Geometry
                 yield return (vRB,vC,vFR,vR);   //R
             }
         }
-        
-        public static bool IsPointInside<T> (this IQuad<T> _quad,T _point) where T:struct
+
+        public static IEnumerable<(T v0, T v1, T v2)> SplitToTriangle<Y, T>(this Y splitQuad, T v0, T v1) where Y : IQuad<T> where T : struct
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                if (splitQuad[i].Equals(v0))
+                {
+                    yield return (splitQuad[i], splitQuad[(i + 1) % 4], splitQuad[(i + 2) % 4]);
+                }
+
+                if (splitQuad[i].Equals(v1))
+                {
+                    yield return (splitQuad[i], splitQuad[(i + 1) % 4], splitQuad[(i + 2) % 4]);
+                }
+            }
+
+        }
+
+    public static bool IsPointInside<T> (this IQuad<T> _quad,T _point) where T:struct
         { 
             dynamic A = _quad.vB;
             dynamic B = _quad.vL;
@@ -253,7 +270,6 @@ namespace Geometry
             }
             return index;
         }
-
         public static IEnumerable<(T v0, T v1, T v2,T v3)> SplitToQuads<Y,T>(this Y splitTriangle) where Y:ITriangle<T> where T:struct
         {
             var index0 = splitTriangle.vertex0;

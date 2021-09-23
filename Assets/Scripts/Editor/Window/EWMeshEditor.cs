@@ -193,7 +193,7 @@ namespace TEditor
             if (!UEAsset.SaveFilePath(out string filePath, "asset", m_ModifingMesh.name))
                 return;
 
-            UEAsset.CreateOrReplaceMainAsset(m_ModifingMesh, UEPath.FilePathToAssetPath(filePath));
+            UEAsset.CreateOrReplaceMainAsset(m_ModifingMesh, UEPath.FileToAssetPath(filePath));
         }
     }
     public class MeshEditorHelperBase

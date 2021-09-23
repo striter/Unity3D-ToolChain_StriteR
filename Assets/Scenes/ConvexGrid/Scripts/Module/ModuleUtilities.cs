@@ -116,7 +116,7 @@ namespace ConvexGrid
 
         public static Vector3 ObjectToModuleVertex(Vector3 _srcVertexOS)
         {
-            var uv=unitG2Quad.GetUV<G2Quad, Vector2>(new Vector2(_srcVertexOS.x,_srcVertexOS.z));
+            var uv=unitG2Quad.GetUV<G2Quad>(new Vector2(_srcVertexOS.x,_srcVertexOS.z));
             return new Vector3(uv.x,_srcVertexOS.y,uv.y);
         }
         public static Vector3 ModuleToObjectVertex(int _qubeIndex,int _orientation,Vector3 _orientedVertex, G2Quad[] _moduleShapes,float _height)
@@ -127,7 +127,7 @@ namespace ConvexGrid
             uv = UMath.m_Rotate2DCW[(4-_orientation)%4].MultiplyVector(uv);
             uv += Vector2.one * .5f;
             
-            var point = quad.GetPoint<G2Quad,Vector2>(uv);
+            var point =  quad.GetPoint<G2Quad>(uv);
             var offset = _qubeIndex < 4 ? -1 : 0;
             return new Vector3(point.x,offset*_height + _orientedVertex.y*_height,point.y);
         }

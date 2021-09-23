@@ -2,7 +2,7 @@ namespace TEditor
 {
     public static class UEPath
     {
-        public static string FilePathToAssetPath(string path)
+        public static string FileToAssetPath(string path)
         {
             int assetIndex = path.IndexOf("/Assets") + 1;
             if (assetIndex != 0)

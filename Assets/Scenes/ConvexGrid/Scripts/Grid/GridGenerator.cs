@@ -2,8 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Geometry.Pixel;
-using TPool;
 using UnityEngine;
 using Procedural;
 using Procedural.Hexagon;
@@ -37,7 +35,6 @@ namespace ConvexGrid
         void Setup()
         {
             UProcedural.InitMatrix(transform.localToWorldMatrix, m_CellRadius);
-            ConvexGridHelper.InitRelax(m_SmoothenTimes,m_SmoothenFactor);
             UHexagon.flat = m_Flat;
             UHexagonArea.Init(m_AreaRadius,6,true);
         } 
@@ -95,7 +92,7 @@ namespace ConvexGrid
             if (area.m_State >= EConvexIterate.Relaxed)
                 yield break;
             
-            var iterator = area.Relax(m_Areas,_vertices);
+            var iterator = area.Relax(m_Areas,_vertices,m_SmoothenTimes,m_SmoothenFactor);
             while (iterator.MoveNext())
                 yield return null;
             
@@ -105,8 +102,9 @@ namespace ConvexGrid
         public void ValidateArea(HexCoord _areaCoord,Dictionary<HexCoord,ConvexVertex> _existVertices,Action<RelaxArea> _onAreaRelaxed)
         {
             foreach (HexagonArea tuple in _areaCoord.GetCoordsInRadius(1).Select(UHexagonArea.GetArea))
-                m_ConvexIterator[EConvexIterate.Tesselation].Push(TessellateArea(tuple.m_Coord));
+                m_ConvexIterator[EConvexIterate.Tesselation].Push(TessellateArea(tuple.coord));
             m_ConvexIterator[EConvexIterate.Relaxed].Push(RelaxArea(_areaCoord,_existVertices,_onAreaRelaxed));
         }
+
     }
 }

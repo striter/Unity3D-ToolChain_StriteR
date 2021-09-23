@@ -33,7 +33,7 @@
             #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
             #pragma multi_compile _ _SHADOWS_SOFT
 
-            struct appdata
+            struct a2v
             {
                 float3 positionOS : POSITION;
                 float2 uv : TEXCOORD0;
@@ -67,7 +67,7 @@
                 return smoothstep(_DensityClip,1,density);
             }
 
-            v2f vert (appdata v)
+            v2f vert (a2v v)
             {
                 v2f o;
                 o.positionCS = TransformObjectToHClip(v.positionOS);

@@ -32,7 +32,7 @@
 			#pragma shader_feature_local _MASK
 			
 			#include "Assets/Shaders/Library/Common.hlsl"
-			struct appdata
+			struct a2v
 			{
 				float3 positionOS : POSITION;
 				float4 color : COLOR;
@@ -53,7 +53,7 @@
 				INSTANCING_PROP(float,_ClipSpaceForwardAmount)
 			INSTANCING_BUFFER_END
 
-			v2f vert(appdata v)
+			v2f vert(a2v v)
 			{
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);

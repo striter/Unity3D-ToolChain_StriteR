@@ -32,7 +32,7 @@ public static class UVector
     public static Vector3 Project(Vector3 _src, Vector3 _dst) => (Dot(_src, _dst) / SqrMagnitude(_dst)) * _dst;
     
     public static Vector3 Cross(Vector3 _src, Vector3 _dst) => new Vector3(_src.y * _dst.z - _src.z * _dst.y, _src.z * _dst.x - _src.x * _dst.z, _src.x * _dst.y - _src.y * _dst.x);
-    public static float Cross2(dynamic _src, dynamic _dst) => _src.x * _dst.y - _src.y * _dst.x;
+    public static float Cross2(Vector2 _src, Vector2 _dst) => _src.x * _dst.y - _src.y * _dst.x;
     
     public static float Max(this Vector3 _src) => Mathf.Max(Mathf.Max(_src.x, _src.y), _src.z);
     public static float Min(this Vector3 _src) => Mathf.Min(Mathf.Min(_src.x, _src.y), _src.z);

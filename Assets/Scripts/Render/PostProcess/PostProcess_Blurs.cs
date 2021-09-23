@@ -105,6 +105,10 @@ namespace Rendering.PostProcess
         private static readonly int ID_FocalBegin = Shader.PropertyToID("_FocalStart");
         private static readonly int ID_FocalEnd = Shader.PropertyToID("_FocalEnd");
 
+        private static readonly string KW_FirstBlur = "_FIRSTBLUR";
+        private static readonly string KW_FinalBlur = "_FINALBLUR";
+        private static readonly string KW_Encoding = "_ENCODE";
+
         public bool SetFocal(bool _focal,ref PPData_DepthOfField focalData)
         {
             if (m_Material.EnableKeyword(KW_Focal, _focal))
@@ -128,6 +132,7 @@ namespace Rendering.PostProcess
             _buffer.BeginSample(C_BlurSample);
             int startWidth = _descriptor.width / _data.m_DownSample;
             int startHeight = _descriptor.height / _data.m_DownSample;
+            m_Material.EnableKeyword(KW_Encoding,_descriptor.colorFormat!=RenderTextureFormat.ARGB32);
             switch (_data.m_BlurType)
             {
                 case EBlurType.Kawase:
@@ -136,9 +141,9 @@ namespace Rendering.PostProcess
                     {
                         int idTemp1 = Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp1");
                         int idTemp2 = Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp2");
-                        _buffer.GetTemporaryRT(idTemp1, startWidth, startHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
+                        _buffer.GetTemporaryRT(idTemp1, startWidth, startHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
                         RenderTargetIdentifier rtTemp1 = new RenderTargetIdentifier(idTemp1);
-                        _buffer.GetTemporaryRT(idTemp2, startWidth, startHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
+                        _buffer.GetTemporaryRT(idTemp2, startWidth, startHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
                         RenderTargetIdentifier rtTemp2 = new RenderTargetIdentifier(idTemp2);
                         for (int i = 0; i < _data.m_Iteration; i++)
                         {
@@ -149,7 +154,9 @@ namespace Rendering.PostProcess
                                 case EBlurType.Kawase:
                                     {
                                         int pass = (int)EBlurPass.Kawase;
-                                        m_Material.SetFloat(ID_BlurSize, _data.m_BlurSize / _data.m_DownSample * (1 + i));
+                                        m_Material.SetInt(ID_BlurSize, (int)(_data.m_BlurSize / _data.m_DownSample * (1 + i)));
+                                        _buffer.EnableGlobalKeyword(KW_FirstBlur, i==0);
+                                        _buffer.EnableGlobalKeyword(KW_FinalBlur,i==_data.m_Iteration-1);
                                         _buffer.Blit(blitSrc, blitTarget, m_Material, pass);
                                     }
                                     break;
@@ -170,12 +177,16 @@ namespace Rendering.PostProcess
                                         }
 
                                         m_Material.SetFloat(ID_BlurSize, _data.m_BlurSize / _data.m_DownSample * (1 + i));
-
+                                        
                                         int tempID3 = Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp3");
-                                        _buffer.GetTemporaryRT(tempID3, startWidth, startHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
+                                        _buffer.GetTemporaryRT(tempID3, startWidth, startHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
                                         RenderTargetIdentifier rtTemp3 = new RenderTargetIdentifier(tempID3);
+                                        _buffer.EnableGlobalKeyword(KW_FirstBlur, i==0);
                                         _buffer.Blit(blitSrc, rtTemp3, m_Material, horizontalPass);
+                                        _buffer.EnableGlobalKeyword(KW_FirstBlur, false);
+                                        _buffer.EnableGlobalKeyword(KW_FinalBlur,i==_data.m_Iteration-1);
                                         _buffer.Blit(rtTemp3, blitTarget, m_Material, verticalPass);
+                                        _buffer.EnableGlobalKeyword(KW_FinalBlur,false);
                                         _buffer.ReleaseTemporaryRT(tempID3);
                                     }
                                     break;
@@ -183,6 +194,7 @@ namespace Rendering.PostProcess
                         }
                         _buffer.ReleaseTemporaryRT(idTemp1);
                         _buffer.ReleaseTemporaryRT(idTemp2);
+                        _buffer.EnableGlobalKeyword(KW_FinalBlur,false);
                     }
                     break;
                 case EBlurType.DualFiltering:
@@ -201,20 +213,21 @@ namespace Rendering.PostProcess
                             int filterWidth = startWidth / filterSample;
                             int filterHeight = startHeight / filterSample;
                             tempIDs[i] = Shader.PropertyToID("_PostProcessing_Blit_DualFiltering_Temp" + i.ToString());
-                            _buffer.GetTemporaryRT(tempIDs[i], filterWidth, filterHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
+                            _buffer.GetTemporaryRT(tempIDs[i], filterWidth, filterHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
                             tempTextures[i] = new RenderTargetIdentifier(tempIDs[i]);
                         }
                         for (int i = 0; i < _data.m_Iteration; i++)
                         {
+                            _buffer.EnableGlobalKeyword(KW_FirstBlur, i==0);
+                            _buffer.EnableGlobalKeyword(KW_FinalBlur,i==_data.m_Iteration-1);
                             int filterPass = i <= downSampleCount ? downSamplePass : upSamplePass;
                             RenderTargetIdentifier blitSrc = i == 0 ? _src : tempTextures[i - 1];
                             RenderTargetIdentifier blitTarget = i == _data.m_Iteration - 1 ? _dst : tempTextures[i];
                             _buffer.Blit(blitSrc, blitTarget, m_Material, filterPass);
                         }
                         for (int i = 0; i < _data.m_Iteration - 1; i++)
-                        {
                             _buffer.ReleaseTemporaryRT(tempIDs[i]);
-                        }
+                        _buffer.EnableGlobalKeyword(KW_FinalBlur,false);
                         tempTextures = null;
                     }
                     break;

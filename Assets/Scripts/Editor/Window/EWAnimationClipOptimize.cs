@@ -31,7 +31,7 @@ namespace TEditor
                 if (UEAsset.SaveFilePath(out string filePath, "anim", UEPath.RemoveExtension(UEPath.GetPathName(AssetDatabase.GetAssetPath(m_OptimizeAsset))) + "_O"))
                 {
                     AnimationClip clip = OptimizeAnimation(m_OptimizeAsset, m_OptimizePresicion, m_OptimizeScale);
-                    string assetPath = UEPath.FilePathToAssetPath(filePath);
+                    string assetPath = UEPath.FileToAssetPath(filePath);
                     AssetDatabase.CreateAsset(clip, assetPath);
                 }
             }

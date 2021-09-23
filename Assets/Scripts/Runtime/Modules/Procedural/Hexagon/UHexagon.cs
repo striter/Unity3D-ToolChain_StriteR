@@ -73,14 +73,14 @@ namespace Procedural.Hexagon
 
         #region Transformation
 
-        public static Coord ToPixel(this HexagonCoordO _offset, bool _flat)
+        public static Coord ToCoord(this HexagonCoordO _offset, bool _flat)
         {
             if (_flat)
                 return new Coord(_offset.col * 1.5f, C_SQRT3Half * (_offset.row * 2 + _offset.col % 2));
             return new Coord(C_SQRT3Half * (_offset.col * 2 + _offset.row % 2), _offset.row * 1.5f);
         }
 
-        public static Coord ToPixel(this HexCoord _axial) =>
+        public static Coord ToCoord(this HexCoord _axial) =>
             new Coord(m_Shaper.m_AxialToPixel.Multiply(_axial.col, _axial.row));
 
         public static HexCoord ToCube(this Coord pPoint) =>

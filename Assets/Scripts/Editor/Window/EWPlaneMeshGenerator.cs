@@ -113,7 +113,7 @@ namespace TEditor
             if (!UEAsset.SaveFilePath( out string path, "asset", "CustomPlane"))
                 return;
 
-            UEAsset.CreateOrReplaceMainAsset(mesh, UEPath.FilePathToAssetPath( path));
+            UEAsset.CreateOrReplaceMainAsset(mesh, UEPath.FileToAssetPath( path));
         }
     }
 }

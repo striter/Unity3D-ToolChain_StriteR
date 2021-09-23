@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using LinqExtentions;
 using Procedural;
+using Procedural.Hexagon;
 using TPool;
 using TPoolStatic;
 using UnityEngine;
@@ -34,7 +35,7 @@ namespace ConvexGrid
                 List<Vector3> normals = TSPoolList<Vector3>.Spawn(vertexCount);
                 List<Vector2> uvs = TSPoolList<Vector2>.Spawn(vertexCount); 
                 List<int> indices = TSPoolList<int>.Spawn(indexCount);
-                var center = _area.m_Center;
+                var center = _area.m_Identity.centerCS.ToCoord();
                 foreach (var quad in _area.m_Quads)
                 {
                     int startIndex = vertices.Count;
@@ -54,7 +55,7 @@ namespace ConvexGrid
                     indices.Add(startIndex+3);
                 }
             
-                var areaMesh = new Mesh {hideFlags = HideFlags.HideAndDontSave, name = _area.m_Coord.ToString()};
+                var areaMesh = new Mesh {hideFlags = HideFlags.HideAndDontSave, name = _area.m_Identity.coord.ToString()};
                 areaMesh.SetVertices(vertices);
                 areaMesh.SetNormals(normals);
                 areaMesh.SetIndices(indices,MeshTopology.Quads,0);
@@ -62,7 +63,7 @@ namespace ConvexGrid
                 areaMesh.Optimize();
                 areaMesh.UploadMeshData(true);
                 m_MeshFilter.sharedMesh = areaMesh;
-                iTransform.SetPositionAndRotation(_area.m_Center.ToPosition(),Quaternion.identity);
+                iTransform.SetPositionAndRotation(_area.m_Identity.centerCS.ToPosition(),Quaternion.identity);
                 iTransform.localScale=Vector3.one;
                 
                 TSPoolList<Vector3>.Recycle(vertices);
@@ -88,7 +89,6 @@ namespace ConvexGrid
         {
         }
 
-
         public void Init(Transform _transform)
         {
             m_Selection = _transform.Find("Selection");
@@ -100,7 +100,7 @@ namespace ConvexGrid
 
         public void OnAreaConstruct(ConvexArea _area)
         {
-            Debug.LogWarning($"Area Mesh Populate {_area.m_Coord}");
+            Debug.LogWarning($"Area Mesh Populate {_area.m_Identity.coord}");
             m_AreaMeshes.Spawn().GenerateMesh (_area);
         }
 

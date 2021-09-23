@@ -19,6 +19,7 @@ namespace ConvexGrid
 
         public void Clear()
         {
+            Debug.Log("Clear");
             m_Containers.Clear();
         }
         

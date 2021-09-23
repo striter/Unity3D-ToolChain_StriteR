@@ -72,7 +72,7 @@
 			INSTANCING_PROP(float,_DistortFrequency)
 			INSTANCING_BUFFER_END
 
-			struct appdata
+			struct a2v
 			{
 				float3 positionOS : POSITION;
 				float3 normalOS:NORMAL;
@@ -93,7 +93,7 @@
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
-			v2f vert (appdata v)
+			v2f vert (a2v v)
 			{
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);

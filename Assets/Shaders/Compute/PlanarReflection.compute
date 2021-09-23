@@ -21,7 +21,8 @@ void ReflectionMapping(float2 uv)
     float normalProj = dot(positionWS.xyz - _PlanePosition, _PlaneNormal);
     float3 positionWSM = positionWS.xyz - normalProj * _PlaneNormal * 2;
     float4 positionCSM = TransformWorldToHClip(positionWSM);
-    if (normalProj>0.05&& positionCSM.w > 0 && DepthLesser( depth,Z_END))
+    
+    if (normalProj>.2&& positionCSM.w > 0 && DepthLesser( depth,Z_END))
     {
         half2 uvM=0.h;
         half depthM = 0.h;
@@ -32,7 +33,7 @@ void ReflectionMapping(float2 uv)
 //          if (!DepthGreater(depthM, _Result[resultIDM].a))
 //             _Result[resultIDM]= float4(_Input.SampleLevel(sampler_PointClamp, uv, 0).rgb,depthM);
 // #endif
-            _Result[resultIDM]= float4(_Input.SampleLevel(sampler_PointClamp, uv, 0).rgb,1);
+        _Result[resultIDM]= float4(_Input.SampleLevel(sampler_PointClamp, uv, 0).rgb,1);
     }
 }
 [numthreads(8, 8, 1)]

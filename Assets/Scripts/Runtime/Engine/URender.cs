@@ -3,6 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using Geometry.Index;
+using UnityEngine.Rendering;
+
 public static class URender
 {
     public static GTriangleIndex[] GetPolygons(int[] _indices)
@@ -238,6 +240,13 @@ public static class URender
             Shader.EnableKeyword(_keyword);
         else
             Shader.DisableKeyword(_keyword);
+    }
+    public static void EnableGlobalKeyword(this CommandBuffer _buffer,string _keyword, bool _enable)
+    {
+        if (_enable)
+            _buffer.EnableShaderKeyword(_keyword);
+        else
+            _buffer.DisableShaderKeyword(_keyword);
     }
 
     public static Vector2 IndexToQuadUV(int _index)

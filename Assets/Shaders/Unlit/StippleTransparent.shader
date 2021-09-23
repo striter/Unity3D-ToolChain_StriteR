@@ -18,7 +18,7 @@ Shader "Unlit/StippleTransparent"
 
             #include "Assets/Shaders/Library/Common.hlsl"
 
-            struct appdata
+            struct a2v
             {
                 float3 positionOS : POSITION;
                 float2 uv : TEXCOORD0;
@@ -37,7 +37,7 @@ Shader "Unlit/StippleTransparent"
             half _Transparency;
             half _Scale;
             CBUFFER_END
-            v2f vert (appdata v)
+            v2f vert (a2v v)
             {
                 v2f o;
                 o.positionCS = TransformObjectToHClip(v.positionOS);

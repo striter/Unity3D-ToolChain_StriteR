@@ -33,7 +33,7 @@ namespace TEditor
             m_GenerateUV = (EVertexData)EditorGUILayout.EnumPopup("Generate UV:", m_GenerateUV);
             if (m_GenerateUV != EVertexData.None && GUILayout.Button("Generate"))
                 if (UEAsset.SaveFilePath(out string filePath, "prefab", UEPath.RemoveExtension(UEPath.GetPathName(AssetDatabase.GetAssetPath(m_ModelPrefab))) + "_SN"))
-                    GenerateSkinnedTarget(UEPath.FilePathToAssetPath(filePath), m_ModelPrefab, m_GenerateUV);
+                    GenerateSkinnedTarget(UEPath.FileToAssetPath(filePath), m_ModelPrefab, m_GenerateUV);
 
             EditorGUILayout.EndVertical();
         }

@@ -15,7 +15,7 @@
 		CGINCLUDE
 			#pragma multi_compile_instancing
 			#include "UnityCG.cginc"
-			struct appdata
+			struct a2v
 			{
 				float4 vertex : POSITION;
 				float4 color : COLOR;
@@ -35,7 +35,7 @@
 				UNITY_DEFINE_INSTANCED_PROP(float4, _ScanColor)
 			UNITY_INSTANCING_BUFFER_END(Props)
 
-			v2f vert(appdata v)
+			v2f vert(a2v v)
 			{
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);

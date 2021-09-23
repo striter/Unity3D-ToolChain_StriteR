@@ -43,7 +43,7 @@ Shader "Game/Effects/PlantsWaving_Vertex"
 			#pragma fragment frag
 			#pragma multi_compile_instancing
 
-			struct appdata
+			struct a2v
 			{
 				float3 positionOS : POSITION;
 				float3 normalOS:NORMAL;
@@ -63,7 +63,7 @@ Shader "Game/Effects/PlantsWaving_Vertex"
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
-			v2f vert(appdata v)
+			v2f vert(a2v v)
 			{
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);

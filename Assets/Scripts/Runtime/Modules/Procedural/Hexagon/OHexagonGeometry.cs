@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Geometry;
+using UnityEngine;
 
 namespace Procedural.Hexagon.Geometry
 {
@@ -51,11 +52,15 @@ namespace Procedural.Hexagon.Geometry
     [Serializable]
     public struct HexQuad:IQuad<HexCoord>, IEquatable<HexQuad>,IIterate<HexCoord>
     {
-        public HexCoord m_Identity { get; set; }
-        public HexCoord vB { get; set; }
-        public HexCoord vL { get; set; }
-        public HexCoord vF { get; set; }
-        public HexCoord vR { get; set; }
+        [SerializeField] public HexCoord identity;
+        [SerializeField] private HexCoord b;
+        [SerializeField] private HexCoord l;
+        [SerializeField] private HexCoord f;
+        [SerializeField] private HexCoord r;
+        public HexCoord vB { get=>b; set=>b=value; }
+        public HexCoord vL { get=>l; set=>l=value; }
+        public HexCoord vF { get=>f; set=>f=value; }
+        public HexCoord vR { get=>r; set=>r=value; }
         public int Length => 4;
 
         public HexQuad((HexCoord _vertex0, HexCoord _vertex1, HexCoord _vertex2, HexCoord _vertex3) _tuple) 
@@ -65,11 +70,11 @@ namespace Procedural.Hexagon.Geometry
 
         public HexQuad(HexCoord _vertex0,HexCoord _vertex1,HexCoord _vertex2,HexCoord _vertex3)
         {
-            vB = _vertex0;
-            vL = _vertex1;
-            vF = _vertex2;
-            vR = _vertex3;
-            m_Identity = vB + vL + vF + vR;
+            b = _vertex0;
+            l = _vertex1;
+            f = _vertex2;
+            r = _vertex3;
+            identity = b + l + f + r;
         }
 
         public HexCoord this[int _index]=>this.GetVertex<HexQuad,HexCoord>(_index); 

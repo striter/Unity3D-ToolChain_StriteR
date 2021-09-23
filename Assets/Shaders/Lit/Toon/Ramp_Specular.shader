@@ -52,7 +52,7 @@
 			INSTANCING_PROP(float ,_RimRange)
 			INSTANCING_BUFFER_END
 
-			struct appdata
+			struct a2v
 			{
 				float3 positionOS : POSITION;
 				float3 normalOS:NORMAL;
@@ -72,7 +72,7 @@
 			};
 
 
-			v2f vert (appdata v)
+			v2f vert (a2v v)
 			{
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);

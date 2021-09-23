@@ -39,11 +39,22 @@ namespace  ConvexGrid
         {
             byte moduleByte = m_Collector.m_ModuleByte;
             ref var moduleData =ref _data.m_ModuleData[moduleByte];
+            int totalVerticies=0;
+            int totalIndexes=0;
+            for (int i = 0; i < 8; i++)
+            {
+                if (moduleData.modules[i] < 0)
+                    continue;
+                
+                ref var moduleMesh=ref _data.m_OrientedMeshes[moduleData.modules[i]];
+                totalVerticies += moduleMesh.m_Vertices.Length;
+                totalIndexes += moduleMesh.m_Indexes.Length;
+            }
 
-            var vertices = TSPoolList<Vector3>.Spawn();
-            var indexes = TSPoolList<int>.Spawn();
-            var uvs = TSPoolList<Vector2>.Spawn();
-            var normals = TSPoolList<Vector3>.Spawn();
+            var vertices = TSPoolList<Vector3>.Spawn(totalVerticies);
+            var uvs = TSPoolList<Vector2>.Spawn(totalVerticies);
+            var normals = TSPoolList<Vector3>.Spawn(totalVerticies);
+            var indexes = TSPoolList<int>.Spawn(totalIndexes);
             for (int i = 0; i < 8; i++)
             {
                 if(moduleData.modules[i]<0)
@@ -57,7 +68,7 @@ namespace  ConvexGrid
                 var vertexCount = moduleMesh.m_Vertices.Length;
                 for (int j = 0; j < vertexCount; j++)
                 {
-                    var dstVertex = UModule.ModuleToObjectVertex(i,moduleOrientation, moduleMesh.m_Vertices[j],m_Collector.m_ModuleShapeLS,ConvexGridHelper.m_TileHeightHalf);
+                    var dstVertex = UModule.ModuleToObjectVertex(i,moduleOrientation, moduleMesh.m_Vertices[j],m_Collector.m_ModuleShapeLS,KConvexGrid.tileHeightHalf);
                     var dstNormal =orientedRotation* moduleMesh.m_Normals[j];
                     vertices.Add(dstVertex);
                     normals.Add(dstNormal);

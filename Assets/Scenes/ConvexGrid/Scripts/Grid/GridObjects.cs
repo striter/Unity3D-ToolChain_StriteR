@@ -21,62 +21,6 @@ namespace ConvexGrid
         Relaxed=2,
     }
 
-    public class ConvexVertex
-    {
-        public HexCoord m_Hex;
-        public Coord m_Coord;
-        public readonly List<ConvexQuad> m_NearbyQuads = new List<ConvexQuad>();
-        private readonly int[] m_NearbyQuadsStartIndex = new int[6];
-        private static readonly int[] s_QuadIndexHelper = new int[4];
-        public int[] GetQuadVertsCW(int _index)
-        {
-            int offset = m_NearbyQuadsStartIndex[_index];
-            s_QuadIndexHelper[0] = offset;
-            s_QuadIndexHelper[1] = (offset + 1) % 4;
-            s_QuadIndexHelper[2] = (offset + 2) % 4;
-            s_QuadIndexHelper[3] = (offset + 3) % 4;
-            return s_QuadIndexHelper;
-        }
-        public void AddNearbyQuads(ConvexQuad _quad)
-        {
-            m_NearbyQuadsStartIndex[m_NearbyQuads.Count] = _quad.m_HexQuad.FindIndex(p => p == m_Hex);
-            m_NearbyQuads.Add(_quad);
-        }
-    }
-    public class ConvexQuad
-    {
-        public HexCoord m_Identity => m_HexQuad.m_Identity;
-        public HexQuad m_HexQuad { get; private set; }
-        public CoordQuad m_CoordQuad { get; private set; }
-        public Coord m_CoordCenter { get; private set; }
-        public readonly ConvexVertex[] m_Vertices = new ConvexVertex[4];
-        public ConvexQuad(HexQuad _hexQuad,Dictionary<HexCoord,ConvexVertex> _vertices)
-        {
-            m_HexQuad = _hexQuad;
-            m_CoordQuad=new CoordQuad(
-                _vertices[m_HexQuad.vB].m_Coord,
-                _vertices[m_HexQuad.vL].m_Coord,
-                _vertices[m_HexQuad.vF].m_Coord,
-                _vertices[m_HexQuad.vR].m_Coord);
-            m_Vertices[0] = _vertices[m_HexQuad.vB];
-            m_Vertices[1] = _vertices[m_HexQuad.vL];
-            m_Vertices[2] = _vertices[m_HexQuad.vF];
-            m_Vertices[3] = _vertices[m_HexQuad.vR];
-            m_CoordCenter = m_CoordQuad.GetBaryCenter();
-        }
-    }
-    public class ConvexArea
-    {
-        public HexCoord m_Coord;
-        public Coord m_Center;
-        public readonly List<ConvexQuad> m_Quads = new List<ConvexQuad>();
-        public readonly List<ConvexVertex> m_Vertices = new List<ConvexVertex>();
-        public ConvexArea(HexCoord _area,Coord _center)
-        {
-            m_Coord = _area;
-            m_Center = _center;
-        }
-    }
     public class RelaxArea
     {
         public HexagonArea m_Area { get; }
@@ -94,7 +38,7 @@ namespace ConvexGrid
         public RelaxArea(HexagonArea _area)
         {
             m_Area = _area;
-            m_Random= new Random(("Test"+m_Area.m_Coord).GetHashCode());
+            m_Random= new Random(("Test"+m_Area.coord).GetHashCode());
             m_State = EConvexIterate.Empty;
         }
         public IEnumerator Tesselation()
@@ -217,7 +161,7 @@ namespace ConvexGrid
             m_ProceduralTriangles.Clear();
         }
 
-        public IEnumerator Relax(Dictionary<HexCoord,RelaxArea> _areas,Dictionary<HexCoord,ConvexVertex> _existVertices)
+        public IEnumerator Relax(Dictionary<HexCoord,RelaxArea> _areas,Dictionary<HexCoord,ConvexVertex> _existVertices,int _smoothenTimes,float _smoothenFactor)
         {
             if (m_State != EConvexIterate.Tesselation)
                 yield break;
@@ -226,17 +170,17 @@ namespace ConvexGrid
             //Push Coords
             void AddCoord(HexCoord p)
             {
-                var coord = p.ToPixel();
+                var coord = p.ToCoord();
                 if (_existVertices.ContainsKey(p))
                     coord = _existVertices[p].m_Coord;
                 m_RelaxVertices.TryAdd(p, coord);
             }
             
-            var areaCoord = m_Area.m_Coord;
+            var areaCoord = m_Area.coord;
             foreach (var tuple in  areaCoord.GetCoordsInRadius(1).Select(UHexagonArea.GetArea))
             {
-                var nearbyArea = _areas[tuple.m_Coord];
-                if (nearbyArea.m_Area.m_Coord!=m_Area.m_Coord&&nearbyArea.m_State>EConvexIterate.Tesselation)
+                var nearbyArea = _areas[tuple.coord];
+                if (nearbyArea.m_Area.coord!=m_Area.coord&&nearbyArea.m_State>EConvexIterate.Tesselation)
                     continue;
 
                 foreach (var quad in nearbyArea.m_ProceduralQuads)
@@ -254,7 +198,7 @@ namespace ConvexGrid
             Coord[] offsets = new Coord[4];
             Coord[] directions = new Coord[4];
             Coord[] relaxOffsets = new Coord[4];
-            int count = ConvexGridHelper.m_SmoothTimes;
+            int count = _smoothenTimes;
             while (count-->1)
             {
                 foreach (var quad in m_RelaxQuads)
@@ -295,7 +239,7 @@ namespace ConvexGrid
                         var value = quad[i];
                         if (_existVertices.ContainsKey(value))
                             continue;
-                        m_RelaxVertices[value] += relaxOffsets[i] * ConvexGridHelper.m_SmoothFactor;
+                        m_RelaxVertices[value] += relaxOffsets[i] * _smoothenFactor;
                     }
                 }
                 yield return null;
