@@ -122,7 +122,7 @@ namespace ConvexGrid
             else
             {
                 _vertex.ConstructLocalMesh(m_SelectionMesh,EGridQuadGeometry.Half,EGridVoxelGeometry.VoxelTopBottom,out centerWS,true,false);
-                m_Selection.position = ConvexGridHelper.GetCornerHeight(_height)+ centerWS;
+                m_Selection.position = UTile.GetCornerHeight(_height)+ centerWS;
             }
         }
     }

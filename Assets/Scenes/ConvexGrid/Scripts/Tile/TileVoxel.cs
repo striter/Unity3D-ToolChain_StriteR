@@ -25,7 +25,7 @@ namespace ConvexGrid
         {
             m_Quad = _srcQuad;
             transform.SetParent(m_Quad.transform);
-            transform.localPosition = ConvexGridHelper.GetVoxelHeight(m_PoolID);
+            transform.localPosition = UTile.GetVoxelHeight(m_PoolID);
             transform.localRotation = Quaternion.identity;
             return this;
         }

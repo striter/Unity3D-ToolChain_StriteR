@@ -25,7 +25,7 @@ namespace ConvexGrid
         {
             m_BaseVertex = _vertex;
             transform.SetParent(m_BaseVertex.transform);
-            transform.localPosition = ConvexGridHelper.GetCornerHeight(m_PoolID);
+            transform.localPosition = UTile.GetCornerHeight(m_PoolID);
             transform.localRotation = Quaternion.identity;
             m_Collider.sharedMesh = _vertex.m_CornerMesh;
             return this;
