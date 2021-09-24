@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Procedural;
@@ -11,6 +12,7 @@ namespace  ConvexGrid
         public float m_Range=5f;
         private Timer m_PopTimer;
 
+        private static readonly string kPopKeyword = "_POP";
         private static readonly int kPopPosition = Shader.PropertyToID("_PopPosition");
         private static readonly int kPopStrength = Shader.PropertyToID("_PopStrength");
         private static readonly int kPopRadiusSqr = Shader.PropertyToID("_PopRadiusSqr");
@@ -19,6 +21,11 @@ namespace  ConvexGrid
         {
             m_PopTimer = new Timer(m_PopCurve.length, true);
             m_Light = transform.Find("Render/Directional Light");
+        }
+
+        private void OnDisable()
+        {
+            EndPop();
         }
 
         public void Tick(float _deltaTime)
@@ -34,11 +41,13 @@ namespace  ConvexGrid
             Shader.SetGlobalVector(kPopPosition,_position);
             Shader.SetGlobalFloat(kPopRadiusSqr,m_Range*m_Range);
             Shader.SetGlobalFloat(kPopStrength,1f);
+            URender.EnableGlobalKeyword(kPopKeyword,true);
         }
 
         void EndPop()
         {
             Shader.SetGlobalFloat(kPopStrength,1f);
+            URender.EnableGlobalKeyword(kPopKeyword,false);
         }
 
         void TickPop(float _deltaTime)

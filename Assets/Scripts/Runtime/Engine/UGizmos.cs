@@ -1,5 +1,4 @@
 #if UNITY_EDITOR
-using System.Collections;
 using System.Collections.Generic;
 using Geometry.Voxel;
 using UnityEditor;
@@ -65,6 +64,20 @@ public static class Gizmos_Extend
         int count = _points.Count;
         for(int i=0;i<count;i++)
             Gizmos.DrawLine(_points[i],_points[(i+1)%count]);
+    }
+
+    public static void DrawString(Vector3 positionLS,string text)
+    {
+        if (SceneView.currentDrawingSceneView == null)
+            return;
+        Handles.BeginGUI();
+        var screenPos=SceneView.currentDrawingSceneView.camera.WorldToScreenPoint(Gizmos.matrix.MultiplyPoint(positionLS));
+
+        screenPos.y = SceneView.currentDrawingSceneView.camera.pixelHeight - screenPos.y-20;
+        var size=GUI.skin.label.CalcSize(new GUIContent(text));
+        GUI.color = Gizmos.color;
+        GUI.Label(new Rect(screenPos,Vector2.zero).Expand(size),text);
+        Handles.EndGUI();
     }
 }
 

@@ -61,7 +61,7 @@ namespace ConvexGrid
             int index = m_IteratePerFrame;
             while (index-- > 0)
             {
-                EConvexIterate curState = UCommon.GetEnumValues<EConvexIterate>().Find(p=>m_ConvexIterator.ContainsKey(p)&&m_ConvexIterator[p].Count>0);
+                EConvexIterate curState = UEnum.GetValues<EConvexIterate>().Find(p=>m_ConvexIterator.ContainsKey(p)&&m_ConvexIterator[p].Count>0);
                 if (curState == 0)
                     break;
 

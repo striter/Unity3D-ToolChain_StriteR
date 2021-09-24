@@ -7,28 +7,50 @@ using UnityEngine;
 
 namespace ConvexGrid
 {
-    [Serializable]
-    public struct ModuleData
+    public enum EModuleType
     {
-        public byte identity;
-        public IntQube modules;
-        public IntQube orientations;
+        Invalid=-1,
+        Green,
+        Red,
     }
     
-    [Serializable]
-    public struct OrientedModuleMeshData
+    public struct PileQube : IQube<PileID>
     {
-        public Vector3[] m_Vertices;
-        public Vector2[] m_UVs;
-        public int[] m_Indexes;
-        public Vector3[] m_Normals;
+        public PileID vDB { get; set; }
+        public PileID vDL { get; set; }
+        public PileID vDF { get; set; }
+        public PileID vDR { get; set; }
+        public PileID vTB { get; set; }
+        public PileID vTL { get; set; }
+        public PileID vTF { get; set; }
+        public PileID vTR { get; set; }
+
+        public PileID this[int _index]
+        {
+            get => this.GetCorner<PileQube, PileID>(_index);
+            set => this.SetCorner(_index, value);
+        }
+
+        public PileID this[EQubeCorner _corner]
+        {
+            get => this.GetCorner<PileQube, PileID>(_corner);
+            set => this.SetCorner(_corner, value);
+        }
     }
-    public interface IModuleCollector
+
+    public interface IVoxel
     { 
-        Transform m_ModuleTransform { get; }
-        PileID m_Identity { get; }
-        byte m_ModuleByte { get; }
-        BCubeFacing m_SideRelation { get; set; }
-        G2Quad[] m_ModuleShapeLS { get; }
+        Transform Transform { get; }
+        PileID Identity { get; }
+        PileQube QubeCorners { get; }
+        BoolQube CornerRelations { get; }
+        BCubeFacing SideRelations { get;}
+        G2Quad[] CornerShapeLS { get; }
+    }
+
+    public interface ICorner
+    {
+        Transform Transform { get; }
+        PileID Identity { get; }
     }
 }

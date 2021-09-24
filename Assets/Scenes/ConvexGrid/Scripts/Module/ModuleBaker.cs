@@ -27,32 +27,12 @@ namespace ConvexGrid
             
             foreach (var moduleBakeMesh in GetComponentsInChildren<ModuleBakerModel>())
                 totalModuleMeshes.Add(moduleBakeMesh.CollectModuleMesh());
-            
-            List<ModuleData> totalModules = new List<ModuleData>();
-            
-            for (int i = 0; i <= byte.MaxValue; i++)
-            {
-                var voxel = UModule.voxelModule[i];
-            
-                ModuleData data = default;
-                data.identity = (byte)i;
-                for (int j = 0; j < 8; j++)
-                {
-                    UModule.GetVoxelModuleUnit( voxel[j],out var moduleIndex,out var moduleOrientation);
-                    data.modules.SetCorner(j,moduleIndex);
-                    data.orientations.SetCorner(j,moduleOrientation);
-                }
-                totalModules.Add(data);
-            }
 
             ModuleRuntimeData _data = ScriptableObject.CreateInstance<ModuleRuntimeData>();
-            _data.m_ModuleData = totalModules.ToArray();
             _data.m_OrientedMeshes = totalModuleMeshes.ToArray();
-            _data= UEAsset.CreateAssetCombination(UEPath.FileToAssetPath( filePath), _data);
-            m_Data = _data;
+            UEAsset.CreateAssetCombination(UEPath.FileToAssetPath( filePath), _data);
         }
-
-        public void GenerateTemplates()
+        public void GenerateCubeTemplates(Mesh[] _meshes,Material _sharedMaterial)
         {
             if (transform.childCount > 0)
             {
@@ -62,27 +42,47 @@ namespace ConvexGrid
             transform.DestroyChildren(true);
             int width = -4;
             int height = -4;
+            List<GameObject> selections = new List<GameObject>();
             foreach (var tuple in UModule.IterateAllVoxelModuleBytes().LoopIndex())
             {
                 var moduleByte =tuple .value;
                 var possibility = new BoolQube();
                 possibility.SetByteCorners(moduleByte);
                 
-                var moduleBakerMesh = new GameObject($"Module:{moduleByte}").transform;
-                moduleBakerMesh.SetParent(transform);
-                moduleBakerMesh.localPosition = Vector3.right * (3f * width) + Vector3.forward * (3f * height) + Vector3.up * 1f;
-                moduleBakerMesh.gameObject.AddComponent<ModuleBakerModel>().m_Relation = possibility;
+                var bakerModel = new GameObject($"Module:{moduleByte}").transform;
+                Undo.RegisterCreatedObjectUndo(bakerModel.gameObject,"Bake");
+                bakerModel.SetParent(transform);
+                bakerModel.localPosition = Vector3.right * (3f * width) + Vector3.forward * (3f * height) + Vector3.up * 1f;
+                bakerModel.gameObject.AddComponent<ModuleBakerModel>().m_Relation = possibility;
 
-                for (int j = 0; j < 8; j++)
+                var moduleName = moduleByte.ToString();
+                var mesh = _meshes?.Find(p => p.name.LastEquals(moduleName));
+                if (mesh == null)
                 {
-                    if(!possibility[j])
-                        continue;
+                    for (int j = 0; j < 8; j++)
+                    {
+                        if(!possibility[j])
+                            continue;
 
-                    var subCube = GameObject.CreatePrimitive( PrimitiveType.Cube).transform;
-                    subCube.SetParent(moduleBakerMesh);
-                    subCube.localScale = Vector3.one * .5f;
-                    subCube.localPosition = UModule.halfUnitQube[j]+Vector3.up*.25f;
+                        var subCube = GameObject.CreatePrimitive( PrimitiveType.Cube).transform;
+                        subCube.GetComponent<MeshRenderer>().sharedMaterial = _sharedMaterial;
+                        subCube.SetParent(bakerModel);
+                        subCube.localScale = Vector3.one * .5f;
+                        subCube.localPosition = UModule.halfUnitQube[j]+Vector3.up*.25f;
+                        selections.Add(subCube.gameObject);
+                    }
                 }
+                else
+                {
+                    var subMesh = new GameObject(mesh.name);
+                    subMesh.AddComponent<MeshFilter>().sharedMesh = mesh;
+                    subMesh.AddComponent<MeshRenderer>().sharedMaterial=_sharedMaterial;
+                    subMesh.transform.SetParent(bakerModel);
+                    subMesh.transform.localPosition = Vector3.zero;
+                    selections.Add(subMesh);
+                }
+
+                
                 
                 width++;
                 if (width > 3)
@@ -91,69 +91,39 @@ namespace ConvexGrid
                     height++;
                 }
             }
+            Selection.objects = selections.ToArray();
         }
-
-        public bool m_Gizmos;
-        public ModuleRuntimeData m_Data;
-        public static readonly G2Quad[] splitG2Quads = UModule.unitG2Quad.SplitToQuads<G2Quad, Vector2>(false).Select(p=>new G2Quad(p.vB,p.vL,p.vF,p.vR)).ToArray();
-        public static readonly GQube  shrinkQube = UModule.unitGQuad.ExpandToQUbe(Vector3.up,.5f).Resize<GQube,Vector3>(1f);
-        private void OnDrawGizmos()
-        {
-            if (!m_Gizmos||!m_Data)
-                return;
-            
-            int width = -8;
-            int height = -8;
-            var  list = TSPoolList<Vector3>.Spawn();
-            foreach (var moduleData in m_Data.m_ModuleData)
-            {
-                var possibility = moduleData.identity;
-                Gizmos.color = Color.white.SetAlpha(.3f);
-                Gizmos.matrix =Matrix4x4.Translate( Vector3.right * (3f * width) + Vector3.forward * (3f * height) + Vector3.up * 1f)*Matrix4x4.Scale(Vector3.one*2f);
-                for (int i = 0; i < 8; i++)
-                {
-                    if(moduleData.modules[i]<0)
-                        continue;
-                    Gizmos.color = Color.white.SetAlpha(.5f);
-                    // Gizmos.DrawSphere(UModule.unitQube[i],.1f);
-                    ref var mesh = ref m_Data.m_OrientedMeshes[moduleData.modules[i]];
-                    var orientation = moduleData.orientations[i];
-                    list.Clear();
-                    mesh.m_Vertices.Select(p=>UModule.ModuleToObjectVertex(i,orientation,p,splitG2Quads,.5f)).FillCollection(list);
-                    Gizmos_Extend.DrawLines(list);
-                }
-
-                Gizmos.color = Color.cyan;
-                Gizmos_Extend.DrawLinesConcat(UModule.unitGQuad.ToArray());
-                for (int i = 0; i < 8; i++)
-                {
-                    Gizmos.color = UByte.PosValid(possibility, i) ? Color.green : Color.red;
-                    Gizmos.DrawWireSphere(shrinkQube[i],.05f);
-                }
-                
-                width++;
-                if (width > 7)
-                {
-                    width = -8;
-                    height++;
-                }
-            }
-            TSPoolList<Vector3>.Recycle(list);
-        }
-        
     }
 
+    
     [CustomEditor(typeof(ModuleBaker))]
     public class ModuleBakerEditor : Editor
     {
+        public UnityEngine.Object m_ModelCombination;
+        public Material m_ModelMaterial;
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
+            var baker = (target as ModuleBaker);
             GUILayout.BeginVertical();
-            if (GUILayout.Button("Templates"))
-                (target as ModuleBaker).GenerateTemplates();
+            GUILayout.Space(10f);
+            GUILayout.Label("Template",UEGUIStyle_Window.m_TitleLabel);
+            m_ModelCombination = EditorGUILayout.ObjectField(m_ModelCombination,typeof(UnityEngine.Object),false);
+            m_ModelMaterial=(Material)EditorGUILayout.ObjectField(m_ModelMaterial,typeof(Material),false);
+            if (GUILayout.Button("Generate Templates"))
+            {
+                Mesh[] templates = null;
+                if (m_ModelCombination &&  (AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(m_ModelCombination)) as ModelImporter != null))
+                    templates=AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GetAssetPath(m_ModelCombination))  .Collect(p => p is Mesh).Select(p => p as Mesh).ToArray();
+                
+                baker.GenerateCubeTemplates(templates,m_ModelMaterial);
+            }
+            
+            GUILayout.Space(10f);
+            GUILayout.Label("Persistent",UEGUIStyle_Window.m_TitleLabel);
             if(GUILayout.Button("Bake"))
-                (target as ModuleBaker).Bake();
+                baker.Bake();
+            
             GUILayout.EndVertical();
         }
     }

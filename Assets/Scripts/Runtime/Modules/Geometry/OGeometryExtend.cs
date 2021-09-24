@@ -67,8 +67,18 @@ namespace Geometry.Extend
         public bool vTL { get=>TL; set=>TL=value; }
         public bool vTF { get=>TF; set=>TF=value; }
         public bool vTR { get=>TR; set=>TR=value; }
-        public bool this[int _index] => this.GetQubeCorner<BoolQube,bool>(_index);
-        public bool this[EQubeCorner _corner] =>  this.GetQubeCorner<BoolQube,bool>(_corner);
+
+        public bool this[int _index]
+        {
+            get => this.GetCorner<BoolQube,bool>(_index);
+            set => this.SetCorner(_index,value);
+        }
+
+        public bool this[EQubeCorner _corner]
+        {
+            get => this.GetCorner<BoolQube, bool>(_corner);
+            set => this.SetCorner(_corner, value);
+        }
         public IEnumerator<bool> GetEnumerator() => this.GetEnumerator<BoolQube, bool>();
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -116,8 +126,18 @@ namespace Geometry.Extend
         public byte vTL { get=>TL; set=>TL=value; }
         public byte vTF { get=>TF; set=>TF=value; }
         public byte vTR { get=>TR; set=>TR=value; }
-        public byte this[int _index] => this.GetQubeCorner<ByteQube, byte>(_index);
-        public byte this[EQubeCorner _corner] => this.GetQubeCorner<ByteQube, byte>(_corner);
+
+        public byte this[int _index]
+        {
+            get => this.GetCorner<ByteQube, byte>(_index);
+            set => this.SetCorner(_index, value);
+        }
+
+        public byte this[EQubeCorner _corner]
+        {
+            get => this.GetCorner<ByteQube, byte>(_corner);
+            set => this.SetCorner(_corner, value);
+        }
     }   
     
     [Serializable]
@@ -139,7 +159,51 @@ namespace Geometry.Extend
         public int vTL { get=>TL; set=>TL=value; }
         public int vTF { get=>TF; set=>TF=value; }
         public int vTR { get=>TR; set=>TR=value; }
-        public int this[int _index] => this.GetQubeCorner<IntQube, int>(_index);
-        public int this[EQubeCorner _corner] => this.GetQubeCorner<IntQube, int>(_corner);
+        public int this[int _index]
+        {
+            get => this.GetCorner<IntQube, int>(_index);
+            set => this.SetCorner(_index,value);
+        }
+
+        public int this[EQubeCorner _corner]
+        {
+            get => this.GetCorner<IntQube, int>(_corner);
+            set => this.SetCorner(_corner, value);
+        }
+
+        IntQube(int _index)  { DB = _index;  DL = _index; DF = _index; DR = _index; TB = _index; TL = _index; TF = _index; TR = _index; }
+        public static readonly IntQube Zero = new IntQube(0);
+        public static readonly IntQube NegOne = new IntQube(-1);
+        public static readonly IntQube One = new IntQube(1);
+    }
+    
+    public struct EnumQube<T> : IQube<T> where T:struct,Enum
+    {
+        public T vDB { get; set; }
+        public T vDL { get; set; }
+        public T vDF { get; set; }
+        public T vDR { get; set; }
+        public T vTB { get; set; }
+        public T vTL { get; set; }
+        public T vTF { get; set; }
+        public T vTR { get; set; }
+
+        public T this[int _index]
+        {
+           get=> this.GetCorner<EnumQube<T>, T>(_index);
+           set => this.SetCorner(_index,value);
+        }
+
+        public T this[EQubeCorner _corner]
+        {
+            get => this.GetCorner<EnumQube<T>, T>(_corner);
+            set => this.SetCorner(_corner, value);
+        }
+        
+        public static EnumQube<T> Invalid = new EnumQube<T>()
+        {
+            vDB = UEnum.GetInvalid<T>(),vDL = UEnum.GetInvalid<T>(),vDF = UEnum.GetInvalid<T>(),vDR = UEnum.GetInvalid<T>(),
+            vTB = UEnum.GetInvalid<T>(),vTL = UEnum.GetInvalid<T>(),vTF = UEnum.GetInvalid<T>(),vTR = UEnum.GetInvalid<T>()
+        };
     }
 }

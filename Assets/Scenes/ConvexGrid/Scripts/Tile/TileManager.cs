@@ -41,7 +41,7 @@ namespace ConvexGrid
         {
         }
 
-        public void CornerConstruction( ConvexVertex _vertex, byte _height,Action<IModuleCollector> _moduleSpawn)
+        public void CornerConstruction( ConvexVertex _vertex, byte _height,Action<ICorner> _cornerSpawn,Action<IVoxel> _moduleSpawn)
         {
             var corner = new PileID(_vertex.m_Hex, _height);
             if (m_Corners.Contains(corner))
@@ -50,18 +50,18 @@ namespace ConvexGrid
             FillVertex(_vertex);
             FillQuads(_vertex);
             
-            FillCorner(corner);
+            FillCorner(corner,_cornerSpawn);
             FillVoxels(_vertex,_moduleSpawn);
             RefreshVoxels(_vertex);
         }
 
-        public void CornerDeconstruction(ConvexVertex _vertex, byte _height,Action<PileID> _moduleRecycle)
+        public void CornerDeconstruction(ConvexVertex _vertex, byte _height,Action<PileID> _cornerRecycle,Action<PileID> _moduleRecycle)
         {
             var corner = new PileID(_vertex.m_Hex, _height);
             if (!m_Corners.Contains(corner))
                 return;
             
-            RemoveCorner(corner);
+            RemoveCorner(corner,_cornerRecycle);
             RemoveVoxels(_vertex,_moduleRecycle);
             RefreshVoxels(_vertex);
             
@@ -114,15 +114,16 @@ namespace ConvexGrid
             }
         }
 
-        void FillCorner(PileID _cornerID)
+        void FillCorner(PileID _cornerID,Action<ICorner> _cornerSpawn)
         {
             if (m_Corners.Contains(_cornerID))
                 return;
             var vertex = m_GridVertices[_cornerID.gridID];
-            m_Corners.Spawn(_cornerID).Init(vertex);
+            var corner=m_Corners.Spawn(_cornerID).Init(vertex);
+            _cornerSpawn?.Invoke(corner);
         }
 
-        void FillVoxels(ConvexVertex _vertex,Action<IModuleCollector> _spawn)
+        void FillVoxels(ConvexVertex _vertex,Action<IVoxel> _spawn)
         {
             foreach (var quadID in _vertex.m_NearbyQuads.Select(p=>p.m_Identity))
             {
@@ -155,11 +156,12 @@ namespace ConvexGrid
             }
         }
         
-        void RemoveCorner(PileID _cornerID)
+        void RemoveCorner(PileID _cornerID,Action<PileID> _cornerRecycle)
         {
             if (!m_Corners.Contains(_cornerID))
                 return;
             var corner=m_Corners.Recycle(_cornerID);
+            _cornerRecycle?.Invoke(_cornerID);
         }
 
         void RemoveVoxels(ConvexVertex _vertex,Action<PileID> _recycle)
@@ -180,7 +182,7 @@ namespace ConvexGrid
 
         void RefreshVoxels(ConvexVertex _vertex)
         {
-            var quadRefreshing = TSPoolList<HexCoord>.Spawn(_vertex.m_NearbyQuads.Count*3);
+            var quadRefreshing = TSPoolList<HexCoord>.Spawn();
             
             foreach (var _quadID in _vertex.m_NearbyQuads.Select(p => p.m_Identity))
             {
@@ -287,8 +289,8 @@ namespace ConvexGrid
                         for (int i = 0; i < 8; i++)
                         {
                             Gizmos.color = UColor.IndexToColor(i%4);
-                            if (voxel.m_CornerRelation[i])
-                                Gizmos.DrawLine(voxel.transform.position,m_Corners.Get(voxel.GetCornerID(i)).transform.position);
+                            if (voxel.CornerRelations[i])
+                                Gizmos.DrawLine(voxel.transform.position,m_Corners.Get(voxel.QubeCorners[i]).transform.position);
                         }
                     }
 
@@ -297,7 +299,7 @@ namespace ConvexGrid
                         for (int i = 0; i < 6; i++)
                         {
                             Gizmos.color = UColor.IndexToColor(i);
-                            if(voxel.m_SideRelation[i])
+                            if(voxel.SideRelations[i])
                                 Gizmos.DrawLine(voxel.transform.position,(voxel.transform.position+m_Voxels.Get(voxel.GetFacingID(i)).transform.position)/2);
                         }
                     }

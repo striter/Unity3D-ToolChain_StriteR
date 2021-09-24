@@ -8,9 +8,12 @@ Shader "Unlit/ConvexModule"
     SubShader
     {
         Tags { "RenderType"="Opaque" }
-
+		
+    	Blend Off
+    	ZWrite On
         HLSLINCLUDE
 			#pragma multi_compile_instancing
+			#pragma multi_compile _ _POP
             #include "Assets/Shaders/Library/Common.hlsl"
 			#define IGI
 			#include "Assets/Shaders/Library/Lighting.hlsl"
@@ -58,7 +61,9 @@ Shader "Unlit/ConvexModule"
             {
                 v2f o;
                 float3 positionWS=TransformObjectToWorld(v.positionOS);
+            	#if _POP
                 positionWS=PopPosition(positionWS);
+            	#endif
                 o.positionCS = TransformWorldToHClip(positionWS);
             	o.normalWS=TransformObjectToWorldNormal(v.normalOS);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
@@ -68,7 +73,7 @@ Shader "Unlit/ConvexModule"
 
             float4 frag (v2f i) : SV_Target
             {
-            	float3 lightDirWS=normalize(_MainLightPosition);
+            	float3 lightDirWS=normalize(_MainLightPosition.xyz);
 				float3 normalWS=normalize(i.normalWS);
             	
             	half3 indirectDiffuse=IndirectBRDFDiffuse(i.normalWS);
@@ -106,7 +111,9 @@ Shader "Unlit/ConvexModule"
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				float3 positionWS=TransformObjectToWorld(v.positionOS);
-				positionWS=PopPosition(positionWS);
+            	#if _POP
+                positionWS=PopPosition(positionWS);
+            	#endif
 				o.positionCS=TransformWorldToHClip(positionWS);
 				return o;
 			}
@@ -148,7 +155,9 @@ Shader "Unlit/ConvexModule"
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v,o);
 				float3 positionWS=TransformObjectToWorld(v.positionOS.xyz);
-				positionWS=PopPosition(positionWS);
+            	#if _POP
+                positionWS=PopPosition(positionWS);
+            	#endif
 				SHADOW_CASTER_VERTEX(v,positionWS);
 				return o;
 			}

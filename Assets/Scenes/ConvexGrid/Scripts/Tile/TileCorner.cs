@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace ConvexGrid
 {
-    public class TileCorner : PoolBehaviour<PileID>,IGridRaycast
+    public class TileCorner : PoolBehaviour<PileID>,IGridRaycast,ICorner
     {
         public byte m_Height => m_PoolID.height;
         public HexCoord m_VertID => m_BaseVertex.m_Vertex.m_Hex;
@@ -60,5 +60,8 @@ namespace ConvexGrid
             
             return (destCorner.vertex,m_Height);
         }
+
+        public Transform Transform => transform;
+        public PileID Identity => m_PoolID;
     }
 }

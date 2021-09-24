@@ -72,10 +72,10 @@ namespace ConvexGrid
             }
 
 
-            List<Vector3> vertices = TSPoolList<Vector3>.Spawn(totalVertex);
-            List<int> indices = TSPoolList<int>.Spawn(totalIndex);
-            List<Vector3> normals = TSPoolList<Vector3>.Spawn(totalVertex);
-            List<Vector2> uvs = TSPoolList<Vector2>.Spawn(totalVertex);
+            List<Vector3> vertices = TSPoolList<Vector3>.Spawn();
+            List<int> indices = TSPoolList<int>.Spawn();
+            List<Vector3> normals = TSPoolList<Vector3>.Spawn();
+            List<Vector2> uvs = TSPoolList<Vector2>.Spawn();
 
             switch (_volumeGeometry)
             {
@@ -103,7 +103,7 @@ namespace ConvexGrid
                     foreach (var quad in cornerQuads)
                     {                
                         int indexOffset = vertices.Count;
-                        var qube = quad.ExpandToQUbe(KConvexGrid.tileHeightVector,.5f);
+                        var qube = quad.ExpandToQube(KConvexGrid.tileHeightVector,.5f);
                         for (int i = 0; i < 8; i++)
                         {
                             vertices.Add(qube[i]);
@@ -141,7 +141,7 @@ namespace ConvexGrid
                 {
                     foreach (var quad in cornerQuads)
                     {
-                        var qube = quad.ExpandToQUbe(KConvexGrid.tileHeightVector,.5f);
+                        var qube = quad.ExpandToQube(KConvexGrid.tileHeightVector,.5f);
                         qube.FillFacingQuad(ECubeFacing.T,vertices,indices,generateUV?uvs:null,generateNormals?normals:null);
                         qube.FillFacingQuad(ECubeFacing.D,vertices,indices,generateUV?uvs:null,generateNormals?normals:null);
                     }

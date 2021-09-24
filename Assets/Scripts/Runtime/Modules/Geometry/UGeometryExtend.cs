@@ -7,7 +7,7 @@ namespace Geometry.Extend
 {
     public static class UGeometryExtend
     {
-        public static BoolQube[] SplitByteQubes(this BoolQube _qube)
+        public static ByteQube SplitByteQubes(this BoolQube _qube)
         {
             BoolQube[] splitQubes = new BoolQube[8];
             for (int i = 0; i < 8; i++)
@@ -16,7 +16,7 @@ namespace Geometry.Extend
                 splitQubes[i].SetByteCorners(_qube[i]?byte.MaxValue:byte.MinValue);
             }
 
-            foreach (var corner in UCommon.GetEnumValues<EQubeCorner>())
+            foreach (var corner in UEnum.GetValues<EQubeCorner>())
             {
                 if(_qube[corner])
                     continue;
@@ -45,7 +45,11 @@ namespace Geometry.Extend
                 }
 
             }
-            return splitQubes;
+
+            ByteQube byteQube = default;
+            byteQube.SetQubeCorners(splitQubes[0].ToByte(),splitQubes[1].ToByte(),splitQubes[2].ToByte(),splitQubes[3].ToByte(),
+                splitQubes[4].ToByte(),splitQubes[5].ToByte(),splitQubes[6].ToByte(),splitQubes[7].ToByte());
+            return byteQube;
         }
         
         public static byte ToByte(this IQube<bool> _qube)

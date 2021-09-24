@@ -2968,7 +2968,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Gizmos: 0
-  m_Data: {fileID: 11400000, guid: 3ade9a13e8a106e488b156450fd5161d, type: 2}
+  m_Data: {fileID: 0}
 --- !u!4 &796404063
 Transform:
   m_ObjectHideFlags: 0
@@ -6000,7 +6000,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Gizmos: 0
-  m_Data: {fileID: 11400000, guid: 07eeb58689efccc4185f6274efe9ce34, type: 2}
+  m_Data: {fileID: 0}
 --- !u!4 &1560804543
 Transform:
   m_ObjectHideFlags: 0

@@ -31,10 +31,10 @@ namespace ConvexGrid
                 int quadCount = _area.m_Quads.Count;
                 int vertexCount = quadCount * 4;
                 int indexCount = quadCount * 6;
-                List<Vector3> vertices = TSPoolList<Vector3>.Spawn(vertexCount);
-                List<Vector3> normals = TSPoolList<Vector3>.Spawn(vertexCount);
-                List<Vector2> uvs = TSPoolList<Vector2>.Spawn(vertexCount); 
-                List<int> indices = TSPoolList<int>.Spawn(indexCount);
+                List<Vector3> vertices = TSPoolList<Vector3>.Spawn();
+                List<Vector3> normals = TSPoolList<Vector3>.Spawn();
+                List<Vector2> uvs = TSPoolList<Vector2>.Spawn(); 
+                List<int> indices = TSPoolList<int>.Spawn();
                 var center = _area.m_Identity.centerCS.ToCoord();
                 foreach (var quad in _area.m_Quads)
                 {

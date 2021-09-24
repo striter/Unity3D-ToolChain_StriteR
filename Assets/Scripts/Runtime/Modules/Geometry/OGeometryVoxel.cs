@@ -44,8 +44,8 @@ namespace Geometry.Voxel
         T vTL { get; set; }
         T vTF { get; set; }
         T vTR { get; set; }
-        T this[int _index] { get; }
-        T this[EQubeCorner _corner] { get; }
+        T this[int _index] { get; set; }
+        T this[EQubeCorner _corner] { get; set; }
     }
     public interface ICubeFace<T> where T : struct
     {
@@ -183,8 +183,17 @@ namespace Geometry.Voxel
             vTR = _vertTR;
         }
 
-        public Vector3 this[int _index] => this.GetQubeCorner<GQube,Vector3>(_index);
-        public Vector3 this[EQubeCorner _corner] => this.GetQubeCorner<GQube,Vector3>(_corner);
+        public Vector3 this[int _index]
+        {
+            get => this.GetCorner<GQube, Vector3>(_index);
+            set => this.SetCorner(_index, value);
+        }
+
+        public Vector3 this[EQubeCorner _corner]
+        {
+            get => this.GetCorner<GQube, Vector3>(_corner);
+            set => this.SetCorner(_corner, value);
+        }
         public Vector3 GetElement(int _index) => this[_index];
         public int Length => 8;
     }

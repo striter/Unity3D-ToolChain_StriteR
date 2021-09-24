@@ -149,9 +149,9 @@ namespace ConvexGrid
         void DoSelectVertex(ConvexVertex _vertex,byte _height ,bool _construct)
         {
             if(_construct)
-                m_TileManager.CornerConstruction(_vertex,_height,m_ModuleManager.SpawnModules);
+                m_TileManager.CornerConstruction(_vertex,_height,m_ModuleManager.SpawnCorners,m_ModuleManager.SpawnModules);
             else
-                m_TileManager.CornerDeconstruction(_vertex,_height,m_ModuleManager.RecycleModules);
+                m_TileManager.CornerDeconstruction(_vertex,_height,m_ModuleManager.RecycleCorners,m_ModuleManager.RecycleModules);
             
             m_Controls.Traversal(p=>p.OnSelectVertex(_vertex,_height));
             m_ModuleManager.ValidateModules(m_TileManager.CollectAvailableModules(_vertex,_height));

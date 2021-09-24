@@ -12,5 +12,9 @@ namespace Geometry.Pixel
         {
             return new G2Quad(_convert(_quad.vB),_convert(_quad.vL),_convert(_quad.vF),_convert(_quad.vR));
         }
+        public static GQuad ConvertToGQuad(this G2Quad _quad, Func<Vector2,Vector3> _convert)
+        {
+            return new GQuad(_convert(_quad.vB),_convert(_quad.vL),_convert(_quad.vF),_convert(_quad.vR));
+        }
     }
 }

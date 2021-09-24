@@ -54,11 +54,10 @@ namespace TPoolStatic
     public static class TSPoolList<T> 
     {
         public static Stack<List<T>> m_PoolItems { get; private set; } = new Stack<List<T>>();
-        public static List<T> Spawn(int _capacity=0)
+        public static List<T> Spawn()
         {
             List<T> list=m_PoolItems.Count > 0?m_PoolItems.Pop():new List<T>();
             list.Clear();
-            list.Capacity = _capacity;
             return list;
         }
         public static void Recycle(List<T> item)

@@ -367,7 +367,7 @@ public partial class UIT_TouchConsole
         public void Play<T>(T defaultValue, Action<T> _OnFlagChanged) where T : Enum
         {
             m_ToggleGrid.Clear();
-            foreach (T enumValue in UCommon.GetEnumValues<T>())
+            foreach (T enumValue in UEnum.GetValues<T>())
             {
                 Toggle tog = m_ToggleGrid.Spawn(Convert.ToInt32(enumValue));
                 tog.isOn = defaultValue.IsFlagEnable(enumValue);

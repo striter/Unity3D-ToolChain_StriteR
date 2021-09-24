@@ -106,7 +106,7 @@ namespace Geometry.Voxel
             }
         }
 
-        public static Y GetQubeCorner<T, Y>(this T _qube, int _corner) where T : IQube<Y> where Y : struct
+        public static Y GetCorner<T, Y>(this T _qube, int _corner) where T : IQube<Y> where Y : struct
         {
             switch (_corner)
             {
@@ -132,7 +132,7 @@ namespace Geometry.Voxel
                yield return _qube.vTF;
                yield return _qube.vTR;
         }
-        public static Y GetQubeCorner<T,Y>(this T _qube,EQubeCorner _corner)  where T:IQube<Y> where Y:struct
+        public static Y GetCorner<T,Y>(this T _qube,EQubeCorner _corner)  where T:IQube<Y> where Y:struct
         {
             switch (_corner)
             {
@@ -394,7 +394,7 @@ namespace Geometry.Voxel
     
     public static class UGeometryVoxel
     {
-        public static GQube ExpandToQUbe(this GQuad _quad, Vector3 _expand,float _baryCenter=0)
+        public static GQube ExpandToQube(this GQuad _quad, Vector3 _expand,float _baryCenter=0)
         {
             var expand= _expand * (1-_baryCenter);
             var shrink= _expand * _baryCenter;
@@ -406,9 +406,9 @@ namespace Geometry.Voxel
         {
             var quads = _quad.SplitToQuads<GQuad, Vector3>(insideOut).ToArray();
             foreach (var quad in quads)
-                yield return new GQuad(quad.vB,quad.vL,quad.vF,quad.vR).ExpandToQUbe(_halfSize,1f);
+                yield return new GQuad(quad.vB,quad.vL,quad.vF,quad.vR).ExpandToQube(_halfSize,1f);
             foreach (var quad in quads)
-                yield return  new GQuad(quad.vB,quad.vL,quad.vF,quad.vR).ExpandToQUbe(_halfSize,0f);
+                yield return  new GQuad(quad.vB,quad.vL,quad.vF,quad.vR).ExpandToQube(_halfSize,0f);
         }
         
         public static void FillFacingQuad(this IQube<Vector3> _qube,ECubeFacing _facing,List<Vector3> _vertices,List<int> _indices,List<Vector2> _uvs,List<Vector3> _normals)
