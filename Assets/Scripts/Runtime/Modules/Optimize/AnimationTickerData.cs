@@ -33,7 +33,7 @@ namespace Rendering.Optimize
     {
         public float keyFrame;
         public string identity;
-        public AnimationTickerEvent(UnityEngine.AnimationEvent _event, float frameRate)
+        public AnimationTickerEvent(AnimationEvent _event, float frameRate)
         {
             keyFrame = _event.time * frameRate;
             identity = _event.functionName;

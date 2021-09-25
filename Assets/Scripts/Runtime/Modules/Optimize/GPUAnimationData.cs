@@ -7,7 +7,7 @@ namespace Rendering.Optimize
     public enum EGPUAnimationMode
     {
         Vertex=1,
-        Bone=2,
+        Transform=2,
     }
     
     public class GPUAnimationData : ScriptableObject
@@ -16,16 +16,16 @@ namespace Rendering.Optimize
         public Mesh m_BakedMesh;
         public Texture2D m_BakeTexture;
         public AnimationTickerClip[] m_AnimationClips;
-        public GPUAnimationExposeBone[] m_ExposeBones;
+        public GPUAnimationExposeBone[] m_ExposeTransforms;
     }
 
     [Serializable]
-    public class GPUAnimationExposeBone
+    public struct GPUAnimationExposeBone
     {
-        public string m_BoneName;
-        public int m_BoneIndex;
-        public Vector3 m_Position;
-        public Vector3 m_Direction;
+        public string name;
+        public int index;
+        public Vector3 position;
+        public Vector3 direction;
     }
 
 }

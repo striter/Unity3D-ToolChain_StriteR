@@ -18,8 +18,7 @@
             #include "Assets/Shaders/Library/Lighting.hlsl"
             #include "GPUAnimationInclude.hlsl"
             #pragma multi_compile_instancing
-			#pragma shader_feature_local _ANIM_BONE _ANIM_VERTEX
-			#pragma shader_feature_local _OPTIMIZE_1BONE _OPTIMIZE_2BONE
+			#pragma shader_feature_local _ANIM_TRANSFORM _ANIM_VERTEX
         ENDHLSL
         Pass
         {
@@ -35,9 +34,9 @@
 				#if _ANIM_VERTEX
                 uint vertexID:SV_VertexID;
             	#endif
-            	#if _ANIM_BONE
-                float4 boneIndexes:TEXCOORD1;
-                float4 boneWeights:TEXCOORD2;
+            	#if _ANIM_TRANSFORM
+                float4 transformIndexes:TEXCOORD1;
+                float4 transformWeights:TEXCOORD2;
             	#endif
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
@@ -55,10 +54,10 @@
             {
                 v2f o;
                 UNITY_SETUP_INSTANCE_ID(v);
-            	#if _ANIM_BONE
-                SampleBoneInstance(v.boneIndexes,v.boneWeights, v.positionOS, v.normalOS);
+            	#if _ANIM_TRANSFORM
+                SampleTransform(v.transformIndexes,v.transformWeights, v.positionOS, v.normalOS);
 				#elif _ANIM_VERTEX
-            	SampleVertexInstance(v.vertexID,v.positionOS,v.normalOS);
+            	SampleVertex(v.vertexID,v.positionOS,v.normalOS);
             	#endif
                 o.diffuse=dot(v.normalOS,normalize( TransformWorldToObjectNormal(_MainLightPosition.xyz)));
                 o.positionCS = TransformObjectToHClip(v.positionOS);
@@ -85,8 +84,13 @@
             struct a2fs
             {
                 A2V_SHADOW_CASTER;
-                float4 boneIndexes:TEXCOORD1;
-                float4 boneWeights:TEXCOORD2;
+				#if _ANIM_VERTEX
+                uint vertexID:SV_VertexID;
+            	#endif
+            	#if _ANIM_TRANSFORM
+                float4 transformIndexes:TEXCOORD1;
+                float4 transformWeights:TEXCOORD2;
+            	#endif
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 				
@@ -99,7 +103,11 @@
 			{
 				UNITY_SETUP_INSTANCE_ID(v);
 				v2fs o;
-                SampleBoneInstance(v.boneIndexes,v.boneWeights, v.positionOS, v.normalOS);
+            	#if _ANIM_TRANSFORM
+                SampleTransform(v.transformIndexes,v.transformWeights, v.positionOS, v.normalOS);
+				#elif _ANIM_VERTEX
+            	SampleVertex(v.vertexID,v.positionOS,v.normalOS);
+            	#endif
                 SHADOW_CASTER_VERTEX(v,TransformObjectToWorld(v.positionOS));
 				return o;
 			}

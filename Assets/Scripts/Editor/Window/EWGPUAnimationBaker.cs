@@ -14,7 +14,7 @@ namespace TEditor
         [SerializeField] AnimationClip[] m_TargetAnimations;
         SerializedProperty m_AnimationProperty;
         string m_BoneExposeRegex="";
-        EGPUAnimationMode m_Mode= EGPUAnimationMode.Bone;
+        EGPUAnimationMode m_Mode= EGPUAnimationMode.Transform;
 
         void OnEnable()
         {
@@ -44,8 +44,6 @@ namespace TEditor
         void DrawGUI()
         {
             //Select Prefab
-            bool havePrefab = m_TargetPrefab == null;
-
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Select FBX&Animation Datas");
             m_TargetPrefab = (GameObject)EditorGUILayout.ObjectField(m_TargetPrefab, typeof(GameObject), false);
@@ -80,7 +78,7 @@ namespace TEditor
                 return;
 
             EditorGUILayout.BeginHorizontal();
-            m_Mode = (EGPUAnimationMode)EditorGUILayout.EnumPopup("Generate Bone Or Vertex Animation Instance:",m_Mode);
+            m_Mode = (EGPUAnimationMode)EditorGUILayout.EnumPopup("Typs:",m_Mode);
             EditorGUILayout.EndHorizontal();
 
             if(m_Mode==EGPUAnimationMode.Vertex)
@@ -106,13 +104,13 @@ namespace TEditor
             }
         }
 
-        static int GetInstanceParams(UnityEngine.AnimationClip[] _clips, out AnimationTickerClip[] instanceParams)
+        static int GetInstanceParams(AnimationClip[] _clips, out AnimationTickerClip[] instanceParams)
         {
             int totalHeight = 0;
             instanceParams = new AnimationTickerClip[_clips.Length];
             for (int i = 0; i < _clips.Length; i++)
             {
-                UnityEngine.AnimationClip clip = _clips[i];
+                AnimationClip clip = _clips[i];
 
                 AnimationTickerEvent[] instanceEvents = new AnimationTickerEvent[clip.events.Length];
                 for (int j = 0; j < clip.events.Length; j++)
@@ -123,7 +121,7 @@ namespace TEditor
             }
             return totalHeight;
         }
-        void GenerateVertexTexture(GameObject _targetFBX, UnityEngine.AnimationClip[] _clips)
+        void GenerateVertexTexture(GameObject _targetFBX, AnimationClip[] _clips)
         {
             if (!UEAsset.SelectDirectory(_targetFBX, out string savePath, out string meshName))
             {
@@ -192,6 +190,7 @@ namespace TEditor
                 if (mesh)
                     data.m_BakedMesh = mesh;
             }
+            EditorUtility.SetDirty(data);
             AssetDatabase.SaveAssets();
         }
 
@@ -209,7 +208,7 @@ namespace TEditor
                 Matrix4x4[] bindPoses = _skinnedMeshRenderer.sharedMesh.bindposes;
                 Transform[] bones = _skinnedMeshRenderer.bones;
                 #region Record Expose Bone
-                List<GPUAnimationExposeBone> exposeBoneParam = new List<GPUAnimationExposeBone>();
+                List<GPUAnimationExposeBone> exposeTransformParam = new List<GPUAnimationExposeBone>();
                 if (exposeBones != "")
                 {
                     Transform[] activeTransforms = _instantiatedObj.GetComponentsInChildren<Transform>();
@@ -231,19 +230,19 @@ namespace TEditor
 
                         Matrix4x4 rootWorldToLocal = _skinnedMeshRenderer.transform.worldToLocalMatrix;
 
-                        exposeBoneParam.Add(new GPUAnimationExposeBone()
+                        exposeTransformParam.Add(new GPUAnimationExposeBone()
                         {
-                            m_BoneIndex = relativeBoneIndex,
-                            m_BoneName = activeTransforms[i].name,
-                            m_Position = rootWorldToLocal.MultiplyPoint(activeTransforms[i].transform.position),
-                            m_Direction = rootWorldToLocal.MultiplyVector(activeTransforms[i].transform.forward)
+                            index = relativeBoneIndex,
+                            name = activeTransforms[i].name,
+                            position = rootWorldToLocal.MultiplyPoint(activeTransforms[i].transform.position),
+                            direction = rootWorldToLocal.MultiplyVector(activeTransforms[i].transform.forward)
                         });
                     }
                 }
                 #endregion
                 #region Bake Animation Atlas
-                int boneCount = _skinnedMeshRenderer.sharedMesh.bindposes.Length;
-                int totalWdith = boneCount * 3;
+                int transformCount = _skinnedMeshRenderer.sharedMesh.bindposes.Length;
+                int totalWdith = transformCount * 3;
                 int totalFrame = GetInstanceParams(_clips, out AnimationTickerClip[] instanceParams);
                 List<AnimationTickerEvent> instanceEvents = new List<AnimationTickerEvent>();
 
@@ -262,12 +261,12 @@ namespace TEditor
                     for (int j = 0; j < frameCount; j++)
                     {
                         clip.SampleAnimation(_instantiatedObj, length * j / frameCount);
-                        for (int k = 0; k < boneCount; k++)
+                        for (int k = 0; k < transformCount; k++)
                         {
-                            Matrix4x4 curFrameBoneMatrix = _skinnedMeshRenderer.transform.worldToLocalMatrix * bones[k].localToWorldMatrix * bindPoses[k];
-                            atlasTexture.SetPixel(k * 3, startFrame + j, UColor.VectorToColor(curFrameBoneMatrix.GetRow(0)));
-                            atlasTexture.SetPixel(k * 3 + 1, startFrame + j, UColor.VectorToColor(curFrameBoneMatrix.GetRow(1)));
-                            atlasTexture.SetPixel(k * 3 + 2, startFrame + j, UColor.VectorToColor( curFrameBoneMatrix.GetRow(2)));
+                            Matrix4x4 curFrameTransformMatrix = bones[k].localToWorldMatrix * bindPoses[k];
+                            atlasTexture.SetPixel(k * 3, startFrame + j, UColor.VectorToColor(curFrameTransformMatrix.GetRow(0)));
+                            atlasTexture.SetPixel(k * 3 + 1, startFrame + j, UColor.VectorToColor(curFrameTransformMatrix.GetRow(1)));
+                            atlasTexture.SetPixel(k * 3 + 2, startFrame + j, UColor.VectorToColor( curFrameTransformMatrix.GetRow(2)));
                         }
 
                         Mesh boundsCheckMesh = new Mesh();
@@ -283,13 +282,13 @@ namespace TEditor
                 #endregion
                 #region Bake Mesh
                 Mesh instanceMesh = _skinnedMeshRenderer.sharedMesh.Copy();
-                BoneWeight[] boneWeights = instanceMesh.boneWeights;
-                Vector4[] uv1 = new Vector4[boneWeights.Length];
-                Vector4[] uv2 = new Vector4[boneWeights.Length];
-                for (int i = 0; i < boneWeights.Length; i++)
+                BoneWeight[] transformWeights = instanceMesh.boneWeights;
+                Vector4[] uv1 = new Vector4[transformWeights.Length];
+                Vector4[] uv2 = new Vector4[transformWeights.Length];
+                for (int i = 0; i < transformWeights.Length; i++)
                 {
-                    uv1[i] = new Vector4(boneWeights[i].boneIndex0, boneWeights[i].boneIndex1, boneWeights[i].boneIndex2, boneWeights[i].boneIndex3);
-                    uv2[i] = new Vector4(boneWeights[i].weight0, boneWeights[i].weight1, boneWeights[i].weight2, boneWeights[i].weight3);
+                    uv1[i] = new Vector4(transformWeights[i].boneIndex0, transformWeights[i].boneIndex1, transformWeights[i].boneIndex2, transformWeights[i].boneIndex3);
+                    uv2[i] = new Vector4(transformWeights[i].weight0, transformWeights[i].weight1, transformWeights[i].weight2, transformWeights[i].weight3);
                 }
                 instanceMesh.SetUVs(1, uv1);
                 instanceMesh.SetUVs(2, uv2);
@@ -300,11 +299,11 @@ namespace TEditor
                 DestroyImmediate(_instantiatedObj);
 
                 GPUAnimationData data = ScriptableObject.CreateInstance<GPUAnimationData>();
-                data.m_Mode = EGPUAnimationMode.Bone;
+                data.m_Mode = EGPUAnimationMode.Transform;
                 data.m_AnimationClips = instanceParams;
-                data.m_ExposeBones = exposeBoneParam.ToArray();
+                data.m_ExposeTransforms = exposeTransformParam.ToArray();
 
-                data = UEAsset.CreateAssetCombination(savePath + meshName + "_GPU_Bone.asset",data, new KeyValuePair<string,Object>(meshName + "_AnimationAtlas",atlasTexture), new KeyValuePair<string,Object>(meshName + "_InstanceMesh",instanceMesh));
+                data = UEAsset.CreateAssetCombination(savePath + meshName + "_GPU_Transform.asset",data, new KeyValuePair<string,Object>(meshName + "_AnimationAtlas",atlasTexture), new KeyValuePair<string,Object>(meshName + "_InstanceMesh",instanceMesh));
                 Object[] assets=AssetDatabase.LoadAllAssetsAtPath( AssetDatabase.GetAssetPath(data));
                 foreach(var asset in assets)
                 {
@@ -315,6 +314,7 @@ namespace TEditor
                     if (mesh)
                         data.m_BakedMesh = mesh;
                 }
+                EditorUtility.SetDirty(data);
                 AssetDatabase.SaveAssets();
             }
             catch (System.Exception e)

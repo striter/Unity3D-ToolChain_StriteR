@@ -55,7 +55,7 @@ namespace Rendering.Optimize
         Transform[] m_ExposeBones;
         void InitExposeBones()
         {
-            var exposeBoners = m_Data.m_ExposeBones;
+            var exposeBoners = m_Data.m_ExposeTransforms;
             if (exposeBoners==null||exposeBoners.Length <= 0)
                 return;
             m_ExposeBoneParent = new GameObject("Bones") { hideFlags = HideFlags.DontSave }.transform;
@@ -63,27 +63,27 @@ namespace Rendering.Optimize
             m_ExposeBoneParent.localPosition = Vector3.zero;
             m_ExposeBoneParent.localRotation = Quaternion.identity;
             m_ExposeBoneParent.localScale = Vector3.one;
-            m_ExposeBones = new Transform[m_Data.m_ExposeBones.Length];
-            for (int i = 0; i < m_Data.m_ExposeBones.Length; i++)
+            m_ExposeBones = new Transform[m_Data.m_ExposeTransforms.Length];
+            for (int i = 0; i < m_Data.m_ExposeTransforms.Length; i++)
             {
-                m_ExposeBones[i] = new GameObject(m_Data.m_ExposeBones[i].m_BoneName) { hideFlags = HideFlags.DontSave }.transform;
+                m_ExposeBones[i] = new GameObject(m_Data.m_ExposeTransforms[i].name) { hideFlags = HideFlags.DontSave }.transform;
                 m_ExposeBones[i].SetParent(m_ExposeBoneParent);
             }
         }
         void TickExposeBones(AnimationTickerOutput _output)
         {
-            if (m_Data.m_ExposeBones.Length <= 0)
+            if (m_Data.m_ExposeTransforms.Length <= 0)
                 return;
-            for (int i = 0; i < m_Data.m_ExposeBones.Length; i++)
+            for (int i = 0; i < m_Data.m_ExposeTransforms.Length; i++)
             {
-                int boneIndex = m_Data.m_ExposeBones[i].m_BoneIndex;
+                int boneIndex = m_Data.m_ExposeTransforms[i].index;
                 Matrix4x4 recordMatrix = new Matrix4x4();
                 recordMatrix.SetRow(0, Vector4.Lerp(ReadAnimationTexture(boneIndex, 0, _output.cur), ReadAnimationTexture(boneIndex, 0, _output.next), _output.interpolate));
                 recordMatrix.SetRow(1, Vector4.Lerp(ReadAnimationTexture(boneIndex, 1, _output.cur), ReadAnimationTexture(boneIndex, 1, _output.next), _output.interpolate));
                 recordMatrix.SetRow(2, Vector4.Lerp(ReadAnimationTexture(boneIndex, 2, _output.cur), ReadAnimationTexture(boneIndex, 2, _output.next), _output.interpolate));
                 recordMatrix.SetRow(3, new Vector4(0, 0, 0, 1));
-                m_ExposeBones[i].transform.localPosition = recordMatrix.MultiplyPoint(m_Data.m_ExposeBones[i].m_Position);
-                m_ExposeBones[i].transform.localRotation = Quaternion.LookRotation(recordMatrix.MultiplyVector(m_Data.m_ExposeBones[i].m_Direction));
+                m_ExposeBones[i].transform.localPosition = recordMatrix.MultiplyPoint(m_Data.m_ExposeTransforms[i].position);
+                m_ExposeBones[i].transform.localRotation = Quaternion.LookRotation(recordMatrix.MultiplyVector(m_Data.m_ExposeTransforms[i].direction));
             }
         }
         Vector4 ReadAnimationTexture(int boneIndex, int row, int frame)

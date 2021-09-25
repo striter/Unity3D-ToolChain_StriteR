@@ -68,7 +68,7 @@ MonoBehaviour:
     m_BlurParam:
       m_BlurType: 2
       m_BlurSize: 0.64
-      m_Iteration: 9
-      m_DownSample: 2
+      m_Iteration: 4
+      m_DownSample: 1
       m_Angle: 0
       m_Vector: {x: 0, y: 0}

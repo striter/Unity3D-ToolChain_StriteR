@@ -177,8 +177,8 @@ MonoBehaviour:
   m_Name: Model_PolarBear_GPU_Bone
   m_EditorClassIdentifier: 
   m_Mode: 2
-  m_BakedMesh: {fileID: 0}
-  m_BakeTexture: {fileID: 0}
+  m_BakedMesh: {fileID: -6476896660870855711}
+  m_BakeTexture: {fileID: 776161617397314490}
   m_AnimationClips:
   - name: Animation_PolarBear_Walk
     frameBegin: 0
