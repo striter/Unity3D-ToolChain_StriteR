@@ -122,7 +122,7 @@ namespace Geometry
             }
         }
 
-        public static IEnumerable<Triangle<T>> SplitToTriangle<T>(this Quad<T> splitQuad, T v0, T v1) where T:struct
+        public static IEnumerable<Triangle<T>> SplitToTriangle<T>(this IQuad<T> splitQuad, T v0, T v1) where T:struct
         {
             for (int i = 0; i < 4; i++)
             {
@@ -270,7 +270,7 @@ namespace Geometry
             yield return new Quad<Y>(index01, index1, index12, index012);
             yield return new Quad<Y>(index20, index012, index12, index2);
         }
-        public static Quad<T> CombineTriangle<T>(this Triangle<T> _triangle1,Triangle<T> _triangle2) where T:struct
+        public static Quad<T> CombineTriangle<T>(this ITriangle<T> _triangle1,ITriangle<T> _triangle2) where T:struct,IEquatable<T>
         {
             int diff1=0;
             for (; diff1 < 3; diff1++)

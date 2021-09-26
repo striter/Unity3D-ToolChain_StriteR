@@ -105,7 +105,7 @@ namespace ConvexGrid
                 for(int i=0;i<availableLength;i++)
                 {
                     var triangle = availableTriangles[i];
-                    if(triangle.triangle.MatchVertexCount(curTriangle.triangle)!=2)
+                    if(triangle.MatchVertexCount(curTriangle)!=2)
                         continue;
                     relativeTriangleIndex = i;
                 }
@@ -116,7 +116,7 @@ namespace ConvexGrid
                 var nextTriangle = availableTriangles[relativeTriangleIndex];
                 availableTriangles.RemoveAt(relativeTriangleIndex);
 
-                m_ProceduralQuads.Add(new HexQuad(curTriangle.triangle.CombineTriangle(nextTriangle.triangle)));
+                m_ProceduralQuads.Add(new HexQuad(curTriangle.CombineTriangle(nextTriangle)));
                 m_ProceduralTriangles.Remove(curTriangle);
                 m_ProceduralTriangles.Remove(nextTriangle);
                 yield return null;
