@@ -8,13 +8,13 @@ using UnityEngine;
 
 namespace ConvexGrid
 {
-    public enum EGridQuadGeometry
+    public enum ETileQuadGeometry
     {
         Full,
         Half,
     }
 
-    public enum EGridVoxelGeometry
+    public enum ETileVoxelGeometry
     {
         Plane,
         VoxelTight,

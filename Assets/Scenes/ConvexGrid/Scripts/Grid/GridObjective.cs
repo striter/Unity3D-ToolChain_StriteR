@@ -2,9 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
-using Geometry.Pixel;
-using LinqExtentions;
-using TPoolStatic;
 using Procedural;
 using Procedural.Hexagon;
 using UnityEngine;
@@ -104,13 +101,13 @@ namespace ConvexGrid
                 availableTriangles.RemoveAt(validateIndex);
 
                 int relativeTriangleIndex = -1;
-                int index = -1;
-                foreach (HexTriangle triangle in availableTriangles)        //Kinda Expensive 
+                int availableLength = availableTriangles.Count;
+                for(int i=0;i<availableLength;i++)
                 {
-                    index++;
-                    if(triangle.MatchVertexCount(curTriangle)!=2)
+                    var triangle = availableTriangles[i];
+                    if(triangle.triangle.MatchVertexCount(curTriangle.triangle)!=2)
                         continue;
-                    relativeTriangleIndex = index;
+                    relativeTriangleIndex = i;
                 }
                 
                 if(relativeTriangleIndex==-1)
@@ -119,7 +116,7 @@ namespace ConvexGrid
                 var nextTriangle = availableTriangles[relativeTriangleIndex];
                 availableTriangles.RemoveAt(relativeTriangleIndex);
 
-                m_ProceduralQuads.Add(new HexQuad(curTriangle.CombineTriangle(nextTriangle)));
+                m_ProceduralQuads.Add(new HexQuad(curTriangle.triangle.CombineTriangle(nextTriangle.triangle)));
                 m_ProceduralTriangles.Remove(curTriangle);
                 m_ProceduralTriangles.Remove(nextTriangle);
                 yield return null;
@@ -138,7 +135,7 @@ namespace ConvexGrid
                     m_ProceduralVertices.TryAdd(tuple.vL);
                     m_ProceduralVertices.TryAdd(tuple.vF);
                     m_ProceduralVertices.TryAdd(tuple.vR);
-                    m_ProceduralQuads.Add(new HexQuad(tuple.vB,tuple.vL,tuple.vF,tuple.vR));
+                    m_ProceduralQuads.Add(new HexQuad(tuple));
                 }
             }
             
@@ -148,20 +145,20 @@ namespace ConvexGrid
                 var splitTriangle = m_ProceduralTriangles[0];
                 m_ProceduralTriangles.RemoveAt(0);
 
-                foreach (var tuple in splitTriangle.SplitToQuads<HexTriangle,HexCoord>())
+                foreach (var quad in splitTriangle.SplitToQuads<HexTriangle,HexCoord>())
                 {
-                    m_ProceduralVertices.TryAdd(tuple.v0);
-                    m_ProceduralVertices.TryAdd(tuple.v1);
-                    m_ProceduralVertices.TryAdd(tuple.v2);
-                    m_ProceduralVertices.TryAdd(tuple.v3);
-                    m_ProceduralQuads.Add(new HexQuad(tuple.v0,tuple.v1,tuple.v2,tuple.v3));
+                    m_ProceduralVertices.TryAdd(quad[0]);
+                    m_ProceduralVertices.TryAdd(quad[1]);
+                    m_ProceduralVertices.TryAdd(quad[2]);
+                    m_ProceduralVertices.TryAdd(quad[3]);
+                    m_ProceduralQuads.Add(new HexQuad(quad));
                     yield return null;
                 }
             }
             m_ProceduralTriangles.Clear();
         }
 
-        public IEnumerator Relax(Dictionary<HexCoord,RelaxArea> _areas,Dictionary<HexCoord,ConvexVertex> _existVertices,int _smoothenTimes,float _smoothenFactor)
+        public IEnumerator Relax(Dictionary<HexCoord,RelaxArea> _areas,Dictionary<HexCoord,Coord> _existVertices,int _smoothenTimes,float _smoothenFactor)
         {
             if (m_State != EConvexIterate.Tesselation)
                 yield break;
@@ -172,7 +169,7 @@ namespace ConvexGrid
             {
                 var coord = p.ToCoord();
                 if (_existVertices.ContainsKey(p))
-                    coord = _existVertices[p].m_Coord;
+                    coord = _existVertices[p];
                 m_RelaxVertices.TryAdd(p, coord);
             }
             
@@ -186,10 +183,10 @@ namespace ConvexGrid
                 foreach (var quad in nearbyArea.m_ProceduralQuads)
                 {
                     m_RelaxQuads.Add(quad);
-                    AddCoord(quad.vB);
-                    AddCoord(quad.vL);
-                    AddCoord(quad.vF);
-                    AddCoord(quad.vR);
+                    AddCoord(quad[0]);
+                    AddCoord(quad[1]);
+                    AddCoord(quad[2]);
+                    AddCoord(quad[3]);
                 }
             }
             
@@ -205,7 +202,7 @@ namespace ConvexGrid
                 { 
                     //Get Offsets & Center
                     for (int i= 0; i < 4; i++)
-                        origins[i] = m_RelaxVertices[quad.GetElement(i)];
+                        origins[i] = m_RelaxVertices[quad[i]];
                     var center = origins.Average((a, b) => a + b, (a, divide) => a / divide);
                     for (int i = 0; i < 4; i++)
                         offsets[i] = origins[i]- center;

@@ -118,7 +118,7 @@ namespace ConvexGrid
         {
             if (m_Corners.Contains(_cornerID))
                 return;
-            var vertex = m_GridVertices[_cornerID.gridID];
+            var vertex = m_GridVertices[_cornerID.location];
             var corner=m_Corners.Spawn(_cornerID).Init(vertex);
             _cornerSpawn?.Invoke(corner);
         }
@@ -190,10 +190,10 @@ namespace ConvexGrid
                 if(!m_GridQuads.Contains(_quadID))
                     continue;
                 var quad = m_GridQuads[_quadID];
-                quadRefreshing.TryAdd(quad.m_NearbyQuadsCW.vB);
-                quadRefreshing.TryAdd(quad.m_NearbyQuadsCW.vL);
-                quadRefreshing.TryAdd(quad.m_NearbyQuadsCW.vF);
-                quadRefreshing.TryAdd(quad.m_NearbyQuadsCW.vR);
+                quadRefreshing.TryAdd(quad.m_NearbyQuadsCW.B);
+                quadRefreshing.TryAdd(quad.m_NearbyQuadsCW.L);
+                quadRefreshing.TryAdd(quad.m_NearbyQuadsCW.F);
+                quadRefreshing.TryAdd(quad.m_NearbyQuadsCW.R);
             }
 
             foreach (var _quadID in quadRefreshing)

@@ -116,12 +116,12 @@ namespace ConvexGrid
             Vector3 centerWS;
             if (_height == 0)
             {
-                _vertex.ConstructLocalMesh(m_SelectionMesh,EGridQuadGeometry.Full,EGridVoxelGeometry.Plane,out centerWS,true,false);
+                _vertex.ConstructLocalMesh(m_SelectionMesh,ETileQuadGeometry.Full,ETileVoxelGeometry.Plane,out centerWS,true,false);
                 m_Selection.position = centerWS;
             }
             else
             {
-                _vertex.ConstructLocalMesh(m_SelectionMesh,EGridQuadGeometry.Half,EGridVoxelGeometry.VoxelTopBottom,out centerWS,true,false);
+                _vertex.ConstructLocalMesh(m_SelectionMesh,ETileQuadGeometry.Half,ETileVoxelGeometry.VoxelTopBottom,out centerWS,true,false);
                 m_Selection.position = UTile.GetCornerHeight(_height)+ centerWS;
             }
         }

@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Geometry.Voxel;
-using UnityEngine;
 namespace Geometry.Index
 {
     [Serializable]
@@ -42,15 +40,18 @@ namespace Geometry.Index
 
         IEnumerator IEnumerable.GetEnumerator()=>GetEnumerator();
 
-        public int GetElement(int _index)
+        public int this[int _index]
         {
-            switch (_index)
+            get
             {
-                default: throw new Exception("Invalid Index:" + _index);
-                case 0: return index0;
-                case 1: return index1;
-                case 2: return index2;
-                case 3: return index3;
+                switch (_index)
+                {
+                    default: throw new Exception("Invalid Index:" + _index);
+                    case 0: return index0;
+                    case 1: return index1;
+                    case 2: return index2;
+                    case 3: return index3;
+                }
             }
         }
     }
@@ -85,14 +86,17 @@ namespace Geometry.Index
         IEnumerator IEnumerable.GetEnumerator()=>GetEnumerator();
 
         public int Length => 3;
-        public int GetElement(int _index)
+        public int this[int _index]
         {
-            switch (_index)
+            get
             {
-                default: throw new Exception("Invalid Index:" + _index);
-                case 0: return index0;
-                case 1: return index1;
-                case 2: return index2;
+                switch (_index)
+                {
+                    default: throw new Exception("Invalid Index:" + _index);
+                    case 0: return index0;
+                    case 1: return index1;
+                    case 2: return index2;
+                }
             }
         }
 

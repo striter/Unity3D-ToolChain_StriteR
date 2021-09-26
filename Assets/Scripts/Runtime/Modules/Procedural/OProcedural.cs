@@ -105,40 +105,4 @@ namespace Procedural
             return coord;
         }
     }
-
-    [Serializable]
-    public struct CoordQuad : IQuad<Coord>,IEnumerable<Coord>,IIterate<Coord>
-    {
-        public Coord vB { get; set; }
-        public Coord vL { get; set; }
-        public Coord vF { get; set; }
-        public Coord vR { get; set; }
-        public Coord this[int _index]=>this.GetVertex<CoordQuad,Coord>(_index); 
-        public Coord this[EQuadCorner _corner] =>this.GetVertex<CoordQuad,Coord>(_corner);
-
-        public CoordQuad(Coord _vertex0,Coord _vertex1,Coord _vertex2,Coord _vertex3)
-        {
-            vB = _vertex0;
-            vL = _vertex1;
-            vF = _vertex2;
-            vR = _vertex3;
-        }
-
-        public IEnumerator<Coord> GetEnumerator()
-        {
-            yield return vB;
-            yield return vL;
-            yield return vF;
-            yield return vR;
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public Coord GetElement(int _index) => this[_index];
-
-        public int Length => 4;
-    }
 }

@@ -1,6 +1,6 @@
 
     public interface IIterate<T>
     {
-        T GetElement(int _index);
+        T this[int _index] { get; }
         int Length { get; }
     }

@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Geometry.Extend;
-using LinqExtentions;
+using Geometry;
 using TPoolStatic;
 using UnityEngine;
 
@@ -10,8 +6,7 @@ namespace ConvexGrid
 {
     public class ModuleBakerModel : MonoBehaviour
     {
-        public BoolQube m_Relation;
-
+        public Qube<bool> m_Relation;
         public OrientedModuleMeshData CollectModuleMesh()
         {
             var vertices = TSPoolList<Vector3>.Spawn();

@@ -7,80 +7,60 @@ using UnityEngine;
 namespace Procedural.Hexagon.Geometry
 {
     [Serializable]
-    public struct HexTriangle: ITriangle<HexCoord>, IEquatable<HexTriangle>,IEqualityComparer<HexCoord>,IIterate<HexCoord>
+    public struct HexTriangle: ITriangle<HexCoord>, IEquatable<HexTriangle>,IEqualityComparer<HexTriangle>,IIterate<HexCoord>
     {
-        public HexCoord vertex0 { get; set; }
-        public HexCoord vertex1 { get; set; }
-        public HexCoord vertex2 { get; set; }
-        public int Length => 3;
+        public Triangle<HexCoord> triangle;
+        public int Length => triangle.Length;
         public HexTriangle(HexCoord _vertex0,HexCoord _vertex1,HexCoord _vertex2)
         {
-            vertex0 = _vertex0;
-            vertex1 = _vertex1;
-            vertex2 = _vertex2;
+            triangle = new Triangle<HexCoord>(_vertex0, _vertex1, _vertex2);
         }
-        public HexCoord GetElement(int _index) => this[_index];
-        public HexCoord this[int index]
+        public HexCoord this[int _index] => triangle[_index];
+        public bool Equals(HexTriangle other) => triangle.V0==other.V0&&triangle.V1==other.V1&&triangle.V2==other.V2;
+        public HexCoord V0 => triangle.v0;
+        public HexCoord V1 => triangle.v1;
+        public HexCoord V2 => triangle.v2;
+
+        public bool Equals(HexTriangle x, HexTriangle y)
         {
-            get
-            {
-                switch (index)
-                {
-                    default: throw new Exception("Invalid Index:" + index);
-                    case 0: return vertex0;
-                    case 1: return vertex1;
-                    case 2: return vertex2;
-                }
-            }
+            return x.triangle.Equals(y.triangle);
         }
-        public bool Equals(HexTriangle other) => vertex0 == other.vertex0 && vertex1 == other.vertex1 && vertex2 == other.vertex2;
 
-        public bool Equals(HexCoord x, HexCoord y) => x.Equals(y);
-
-        public int GetHashCode(HexCoord obj)
+        public int GetHashCode(HexTriangle obj)
         {
-            unchecked
-            {
-                int hashCode = obj.x;
-                hashCode = (hashCode * 397) ^ obj.y;
-                hashCode = (hashCode * 397) ^ obj.z;
-                return hashCode;
-            }
+            return obj.triangle.GetHashCode();
         }
     }
 
     [Serializable]
     public struct HexQuad:IQuad<HexCoord>, IEquatable<HexQuad>,IIterate<HexCoord>
     {
-        [SerializeField] public HexCoord identity;
-        [SerializeField] private HexCoord b;
-        [SerializeField] private HexCoord l;
-        [SerializeField] private HexCoord f;
-        [SerializeField] private HexCoord r;
-        public HexCoord vB { get=>b; set=>b=value; }
-        public HexCoord vL { get=>l; set=>l=value; }
-        public HexCoord vF { get=>f; set=>f=value; }
-        public HexCoord vR { get=>r; set=>r=value; }
-        public int Length => 4;
-
-        public HexQuad((HexCoord _vertex0, HexCoord _vertex1, HexCoord _vertex2, HexCoord _vertex3) _tuple) 
-            : this(_tuple._vertex0, _tuple._vertex1, _tuple._vertex2, _tuple._vertex3)
+        public HexCoord identity;
+        public Quad<HexCoord> quad;
+        public int Length => quad.Length;
+        public HexQuad((HexCoord _vB, HexCoord _vL, HexCoord _vF, HexCoord _vR) _tuple) 
+            : this(_tuple._vB, _tuple._vL, _tuple._vF, _tuple._vR)
         {
         }
 
-        public HexQuad(HexCoord _vertex0,HexCoord _vertex1,HexCoord _vertex2,HexCoord _vertex3)
+        public HexQuad(HexCoord _vB, HexCoord _vL, HexCoord _vF, HexCoord _vR) : this(
+            new Quad<HexCoord>(_vB, _vL, _vF, _vR))
         {
-            b = _vertex0;
-            l = _vertex1;
-            f = _vertex2;
-            r = _vertex3;
-            identity = b + l + f + r;
         }
 
-        public HexCoord this[int _index]=>this.GetVertex<HexQuad,HexCoord>(_index); 
-        public HexCoord this[EQuadCorner _corner] =>this.GetVertex<HexQuad,HexCoord>(_corner); 
-        public HexCoord GetElement(int _index) => this[_index];
-        public bool Equals(HexQuad other) => vB == other.vB && vL == other.vL && vF == other.vF&&vR==other.vR;
+        public HexQuad(Quad<HexCoord> _hexQuad)
+        {
+            quad = _hexQuad;
+            identity = _hexQuad.vB + _hexQuad.vL + _hexQuad.vF + _hexQuad.vR;
+        }
+        
+        public HexCoord this[int _index] => quad[_index];
+        public HexCoord this[EQuadCorner _corner] => quad[_corner];
+        public HexCoord B => quad.B;
+        public HexCoord L => quad.L;
+        public HexCoord F => quad.F;
+        public HexCoord R => quad.R;
+        public bool Equals(HexQuad other) => quad.Equals(other.quad);
     }
 
 }

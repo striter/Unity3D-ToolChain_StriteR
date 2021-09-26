@@ -23,7 +23,7 @@ namespace ConvexGrid
         {
             m_Vertex = _vertex;
             m_CornerMesh.name = $"GridVertex: {m_Vertex.m_Hex}";
-            _vertex.ConstructLocalMesh(m_CornerMesh,EGridQuadGeometry.Half,EGridVoxelGeometry.VoxelTight,out Vector3 positionWS,true,true);
+            _vertex.ConstructLocalMesh(m_CornerMesh,ETileQuadGeometry.Half,ETileVoxelGeometry.VoxelTight,out Vector3 positionWS,true,true);
             m_RelativeCornerDirections.Clear();
             foreach (var tuple in _vertex.m_NearbyQuads.LoopIndex())
             {

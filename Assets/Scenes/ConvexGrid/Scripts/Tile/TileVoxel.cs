@@ -2,8 +2,6 @@ using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Geometry;
-using Geometry.Extend;
-using Geometry.Pixel;
 using Geometry.Voxel;
 using LinqExtentions;
 using Procedural;
@@ -14,13 +12,14 @@ using UnityEngine;
 
 namespace ConvexGrid
 {
-    public class TileVoxel : PoolBehaviour<PileID>,IVoxel
+    public class TileVoxel : PoolBehaviour<PileID>,IVoxel,IPile
     {
         private TileQuad m_Quad { get; set; }
         private byte m_Height => m_PoolID.height;
-        private PileQube m_QubeCorners;
-        private BoolQube m_CornerRelation;
-        private BCubeFacing m_SideRelation;
+        private Qube<PileID> m_QubeCorners;
+        private Qube<bool> m_CornerRelation;
+        private CubeFacing<bool> m_SideRelation;
+        private IPile _pileStatus;
 
         public TileVoxel Init(TileQuad _srcQuad)
         {
@@ -28,12 +27,12 @@ namespace ConvexGrid
             transform.SetParent(m_Quad.transform);
             transform.localPosition = UTile.GetVoxelHeight(m_PoolID);
             transform.localRotation = Quaternion.identity;
-            m_QubeCorners = new PileQube();
+            m_QubeCorners = new Qube<PileID>();
             for (int i = 0; i < 8; i++)
             {
                 HexCoord corner = m_Quad.m_NearbyVertsCW[i % 4];
                 byte height = i >= 4 ? m_Height : UByte.BackOne(m_Height);
-                m_QubeCorners.SetCorner(i, new PileID(corner,height));
+                m_QubeCorners[i]= new PileID(corner,height);
             }
             return this;
         }
@@ -46,7 +45,7 @@ namespace ConvexGrid
 
         public PileID GetFacingID(int _index)
         {
-            var _facing = UQube.IndexToFacing(_index);
+            var _facing = UCubeFacing.IndexToFacing(_index);
             switch (_facing)
             {
                 default: throw new Exception("Invalid Facing:" + _facing);
@@ -61,24 +60,27 @@ namespace ConvexGrid
         
         public void RefreshRelations(PilePool<TileCorner> _corners,PilePool<TileVoxel> _voxels)
         {
-            BoolQuad relationBottom = new BoolQuad(false,false,false,false);
+            Quad<bool> relationBottom = new Quad<bool>(false,false,false,false);
             if (m_Height != 0)
-                relationBottom =new BoolQuad(_corners.Contains(m_QubeCorners[0]),_corners.Contains(m_QubeCorners[1]),
+                relationBottom =new Quad<bool>(_corners.Contains(m_QubeCorners[0]),_corners.Contains(m_QubeCorners[1]),
                     _corners.Contains(m_QubeCorners[2]),_corners.Contains(m_QubeCorners[3]));
-            BoolQuad relationTop = new BoolQuad(_corners.Contains(m_QubeCorners[4]),_corners.Contains(m_QubeCorners[5]),
+            Quad<bool> relationTop = new Quad<bool>(_corners.Contains(m_QubeCorners[4]),_corners.Contains(m_QubeCorners[5]),
                 _corners.Contains(m_QubeCorners[6]),_corners.Contains(m_QubeCorners[7]));
-            m_CornerRelation = UQube.CombineToQube<BoolQube,bool>(relationBottom, relationTop);
+            m_CornerRelation = new Qube<bool>(relationBottom, relationTop);
             
-            m_SideRelation = new BCubeFacing(_voxels.Contains(GetFacingID(0)),_voxels.Contains(GetFacingID(1)),_voxels.Contains(GetFacingID(2)),
+            m_SideRelation = new CubeFacing<bool>(_voxels.Contains(GetFacingID(0)),_voxels.Contains(GetFacingID(1)),_voxels.Contains(GetFacingID(2)),
                 _voxels.Contains(GetFacingID(3)),_voxels.Contains(GetFacingID(4)),_voxels.Contains(GetFacingID(5)));
         }
 
-        
+        public EPileStatus Status { get; set; }
         public PileID Identity => m_PoolID;
-        public PileQube QubeCorners => m_QubeCorners;
-        public BoolQube CornerRelations => m_CornerRelation;
-        public BCubeFacing SideRelations => m_SideRelation;
+        public Qube<PileID> QubeCorners => m_QubeCorners;
+        public Qube<bool> CornerRelations => m_CornerRelation;
+        public CubeFacing<bool> SideRelations => m_SideRelation;
         public Transform Transform => transform;
-        public G2Quad[] CornerShapeLS =>  m_Quad.m_SplitQuadLS;
+        public Quad<Vector2>[] CornerShapeLS =>  m_Quad.m_SplitQuadLS;
+
+        public IPile Pile => this;
+
     }
 }

@@ -16,6 +16,7 @@ namespace ConvexGrid
     [ExecuteInEditMode]
     public partial class GridGenerator
     {
+        public readonly Dictionary<HexCoord, Coord> m_ExistVertices = new Dictionary<HexCoord, Coord>();
         private void OnValidate()
         {
             Setup();
@@ -54,7 +55,14 @@ namespace ConvexGrid
             if (Event.current.type == EventType.MouseDown)
                 switch (Event.current.button)
                 {
-                    case 0: ValidateArea(hitArea,new Dictionary<HexCoord, ConvexVertex>(),area=>Debug.Log($"Area{area.m_Area.coord} Constructed!"));  break;
+                    case 0:
+                        ValidateArea(hitArea, m_ExistVertices, area =>
+                        {
+                            Debug.Log($"Area{area.m_Area.coord} Constructed!");
+                            foreach (var pair in area.m_Vertices)
+                                m_ExistVertices.TryAdd(pair.Key,pair.Value);
+                        });
+                        break;
                     case 1: break;
                 }
         

@@ -1,12 +1,18 @@
 using System;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+
 public static class UString
 {
-    public static bool LastEquals(this string _src,string _dst)
+    public static string CollectAllNumber(this string _src)
     {
-        int index = _src.LastIndexOf(_dst, StringComparison.Ordinal);
-        if (index < 0)
-            return false;
-
-        return index + _dst.Length == _src.Length;
+        StringBuilder var = new StringBuilder();
+        foreach (var VARIABLE in _src)
+        {
+            if (VARIABLE >= '0' && VARIABLE <= '9')
+                var.Append(VARIABLE);
+        }
+        return var.ToString();
     }
 }

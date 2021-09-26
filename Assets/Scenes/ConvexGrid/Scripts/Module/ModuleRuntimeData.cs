@@ -13,11 +13,13 @@ namespace  ConvexGrid
         public int[] m_Indexes;
         public Vector3[] m_Normals;
     }
-    
+
     [Serializable]
-    //[CreateAssetMenu(menuName = "Module/Data")]
     public class ModuleRuntimeData : ScriptableObject
     {
+        public EModuleType m_Type;
+        public bool m_Top;
+        public bool m_Bottom;
         public OrientedModuleMeshData[] m_OrientedMeshes;
     }
 }

@@ -2,18 +2,21 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Geometry;
 using UnityEngine;
 using Procedural;
 using Procedural.Hexagon;
 using Procedural.Hexagon.Area;
+using Procedural.Hexagon.Geometry;
 
 namespace ConvexGrid
 {
-    public partial class GridGenerator : MonoBehaviour,IConvexGridControl
+    public partial class GridGenerator : MonoBehaviour
     {
         public float m_CellRadius = 1;
         public bool m_Flat = false;
         public int m_AreaRadius = 8;
+        
 
         [Header("Smoothen")] public int m_SmoothenTimes = 300;
         [Range(0.001f, 0.5f)] public float m_SmoothenFactor = .1f;
@@ -28,10 +31,7 @@ namespace ConvexGrid
             {  EConvexIterate.Relaxed,new Stack<IEnumerator>() }, };
         
         private readonly Timer m_IterateTimer = new Timer(1f/60f);
-        public void Init(Transform _transform)
-        {
-            Setup();
-        }
+
         void Setup()
         {
             UProcedural.InitMatrix(transform.localToWorldMatrix, m_CellRadius);
@@ -39,17 +39,12 @@ namespace ConvexGrid
             UHexagonArea.Init(m_AreaRadius,6,true);
         } 
         
-        public void OnSelectVertex(ConvexVertex _vertex, byte _height) { }
-
-        public void OnAreaConstruct(ConvexArea _area) {  }
-
         public void Clear()
         {
             m_Areas.Clear();
             foreach (var key in m_ConvexIterator.Keys)
                 m_ConvexIterator[key].Clear();
         }
-
 
         public void Tick(float _deltaTime)
         {
@@ -84,7 +79,7 @@ namespace ConvexGrid
                 yield return null;
         }
 
-        IEnumerator RelaxArea(HexCoord _areaCoord,Dictionary<HexCoord,ConvexVertex> _vertices,Action<RelaxArea> _onAreaFinish)
+        IEnumerator RelaxArea(HexCoord _areaCoord,Dictionary<HexCoord,Coord> _vertices,Action<RelaxArea> _onAreaFinish)
         {
             if (!m_Areas.ContainsKey(_areaCoord))
                 yield break;
@@ -99,7 +94,7 @@ namespace ConvexGrid
             _onAreaFinish(area);
         }
 
-        public void ValidateArea(HexCoord _areaCoord,Dictionary<HexCoord,ConvexVertex> _existVertices,Action<RelaxArea> _onAreaRelaxed)
+        public void ValidateArea(HexCoord _areaCoord,Dictionary<HexCoord,Coord> _existVertices,Action<RelaxArea> _onAreaRelaxed)
         {
             foreach (HexagonArea tuple in _areaCoord.GetCoordsInRadius(1).Select(UHexagonArea.GetArea))
                 m_ConvexIterator[EConvexIterate.Tesselation].Push(TessellateArea(tuple.coord));

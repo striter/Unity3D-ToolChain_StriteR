@@ -36,6 +36,13 @@ public static class Handles_Extend
             Handles.DrawLine(Vector3.zero,Vector3.forward*_line.length);
         }
     }
+    public static void DrawLines_Concat(Vector3[] _lines)
+    {
+        int length = _lines.Length;
+        for (int i = 0; i < length; i++)
+            Handles.DrawLine(_lines[i],_lines[(i+1)%length]);
+    }
+    
     public static void DrawWireCapsule(Vector3 _pos, Quaternion _rot, Vector3 _scale, float _radius, float _height)
     {
         using (new Handles.DrawingScope(Handles.color, Handles.matrix * Matrix4x4.TRS(_pos, _rot, _scale)))

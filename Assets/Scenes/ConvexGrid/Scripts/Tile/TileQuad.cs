@@ -2,14 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
-using Geometry.Pixel;
-using Geometry.Voxel;
 using LinqExtentions;
 using TPool;
 using Procedural;
 using Procedural.Hexagon;
 using Procedural.Hexagon.Geometry;
-using Procedural.Tile;
 using UnityEngine;
 
 namespace ConvexGrid
@@ -17,8 +14,8 @@ namespace ConvexGrid
     public class TileQuad : PoolBehaviour<HexCoord>
     {
         public ConvexQuad m_Quad { get; private set; }
-        public GQuad m_QuadShapeLS { get; private set; }
-        public G2Quad[] m_SplitQuadLS { get;private set; }
+        public Quad<Vector3> m_QuadShapeLS { get; private set; }
+        public Quad<Vector2>[] m_SplitQuadLS { get;private set; }
         public HexQuad m_NearbyVertsCW { get; private set; }
         public HexQuad m_NearbyQuadsCW { get; private set; }
 
@@ -43,14 +40,14 @@ namespace ConvexGrid
             
             var inverseRotation = Quaternion.Inverse(rotation);
             
-            m_QuadShapeLS = new GQuad((inverseRotation * offsets[radHelper[0].index].ToPosition()),
+            m_QuadShapeLS = new Quad<Vector3>((inverseRotation * offsets[radHelper[0].index].ToPosition()),
                 inverseRotation * offsets[radHelper[1].index].ToPosition(),
                 inverseRotation * offsets[radHelper[2].index].ToPosition(),
                 inverseRotation * offsets[radHelper[3].index].ToPosition());
-            m_SplitQuadLS = m_QuadShapeLS.SplitToQuads<GQuad,Vector3>(false).Select(p=>new G2Quad(p.vB.ToCoord(),p.vL.ToCoord(),p.vF.ToCoord(),p.vR.ToCoord())).ToArray();
+            m_SplitQuadLS = m_QuadShapeLS.SplitToQuads<Quad<Vector3>,Vector3>(false).Select(p=>new Quad<Vector2>(p.vB.ToCoord(),p.vL.ToCoord(),p.vF.ToCoord(),p.vR.ToCoord())).ToArray();
             
             availableQuads.Clear();
-            availableQuads.AddRange(m_Quad.m_Vertices[0].m_NearbyQuads.Extend(m_Quad.m_Vertices[2].m_NearbyQuads).Collect(quad =>quad.m_Identity!=m_Quad.m_Identity&&quad.m_HexQuad.MatchVertexCount(m_Quad.m_HexQuad) == 2));
+            availableQuads.AddRange(m_Quad.m_Vertices[0].m_NearbyQuads.Extend(m_Quad.m_Vertices[2].m_NearbyQuads).Collect(quad =>quad.m_Identity!=m_Quad.m_Identity&&quad.m_HexQuad.MatchVertexCount(m_Quad.m_HexQuad.quad) == 2));
             if(availableQuads.Count!=4)
                 throw new Exception("Invalid Nearby Quads Count:"+availableQuads.Count);
 

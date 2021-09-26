@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Geometry.Voxel;
 using Procedural;
 using TPool;
@@ -11,7 +12,7 @@ namespace ConvexGrid
     public class ModuleManager : MonoBehaviour,IConvexGridControl
     {
         public EModuleType m_SpawnModule;
-        public ModuleRuntimeData m_Data;
+        public List<ModuleRuntimeData> m_Data;
         public TObjectPoolMono<PileID, ModuleVoxel> m_Voxels { get; private set; }
         public TObjectPoolMono<PileID, ModuleCorner> m_Corners { get; private set; }
         public void Init(Transform _transform)
@@ -23,6 +24,11 @@ namespace ConvexGrid
         {
             m_Voxels.Clear();
             m_Corners.Clear();
+        }
+
+        private void OnValidate()
+        {
+            m_Data.Sort((a,b)=>a.m_Type-b.m_Type);
         }
 
         public void SpawnCorners(ICorner _corner)=> m_Corners.Spawn(_corner.Identity).Init(_corner,m_SpawnModule);

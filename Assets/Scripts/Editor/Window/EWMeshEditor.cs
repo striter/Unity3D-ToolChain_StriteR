@@ -222,7 +222,7 @@ namespace TEditor
             Handles.DrawLine(mouseRay.origin, mouseRay.direction * 10f + mouseRay.origin);
             Handles.matrix = _meshObject.transform.localToWorldMatrix;
             Handles.SphereHandleCap(0, collisionPoint, Quaternion.identity, .05f, EventType.Repaint);
-            Handles.DrawLines(collisionTriangle.GetDrawLineVertices());
+            Handles_Extend.DrawLines_Concat(collisionTriangle.Iterate());
         }
 
         protected static Ray ObjLocalSpaceRay(SceneView _sceneView, GameObject _meshObj)
@@ -380,13 +380,13 @@ namespace TEditor
                 Handles.color = Color.yellow.SetAlpha(.1f);
                 Handles.DrawAAConvexPolygon(directedTriangle.Iterate());
                 Handles.color = Color.yellow;
-                Handles.DrawLines(directedTriangle.GetDrawLineVertices());
+                Handles_Extend.DrawLines_Concat(directedTriangle.Iterate());
             }
             GTriangle mainTriangle = new GTriangle( _mainTriangle.GetVertices(m_Verticies));
             Handles.color = Color.green.SetAlpha(.3f);
             Handles.DrawAAConvexPolygon(mainTriangle.Iterate());
             Handles.color = Color.green;
-            Handles.DrawLines(mainTriangle.GetDrawLineVertices());
+            Handles_Extend.DrawLines_Concat(mainTriangle.Iterate());
 
             if (!m_EditingVectors)
                 return;

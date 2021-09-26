@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
-using Geometry.Extend;
-using Geometry.Pixel;
 using Geometry.Voxel;
 using Procedural;
 using TPool;
@@ -18,8 +16,8 @@ namespace  ConvexGrid
     {
         public IVoxel m_Voxel { get; private set; }
         private Mesh m_Mesh;
-        private EnumQube<EModuleType> m_CornerTypes=EnumQube<EModuleType>.Invalid;
-        private ByteQube m_CornerBytes = default;
+        private Qube<EModuleType> m_CornerTypes=KEnumQube<EModuleType>.Invalid;
+        private Qube<byte> m_CornerBytes = default;
         public override void OnPoolInit(Action<PileID> _DoRecycle)
         {
             base.OnPoolInit(_DoRecycle);
@@ -38,12 +36,12 @@ namespace  ConvexGrid
         public override void OnPoolRecycle()
         {
             base.OnPoolRecycle();
-            m_CornerTypes = EnumQube<EModuleType>.Invalid;
+            m_CornerTypes = KEnumQube<EModuleType>.Invalid;
             m_CornerBytes = default;
             m_Voxel = null;
             m_Mesh.Clear();
         }
-        public void ModuleValidate(ModuleRuntimeData _data,Dictionary<PileID,ModuleCorner> _corners)
+        public void ModuleValidate(List<ModuleRuntimeData> _datas,Dictionary<PileID,ModuleCorner> _corners)
         {
             for (int i = 0; i < 8; i++)
             {
@@ -51,18 +49,18 @@ namespace  ConvexGrid
                 var corner = m_Voxel.QubeCorners[i];
                 if (_corners.ContainsKey(corner))
                     type = _corners[corner].m_Type;
-                m_CornerTypes.SetCorner(i,type);
+                m_CornerTypes[i]=type;
             }
             
-            IntQube moduleIndexes=IntQube.NegOne;
-            IntQube moduleOrientations = default;
+            Qube<int> moduleIndexes=KQube.NegOne;
+            Qube<int> moduleOrientations = default;
             for (int i = 0; i < 8; i++)
             {
                 if(m_CornerTypes[i]== EModuleType.Invalid)
                     continue;
                 
-                m_CornerBytes[i] = m_CornerTypes.GetCornerByte(i);
-                UModule.GetCornerModule(m_CornerBytes[i] ,out var index,out var orientation);
+                m_CornerBytes[i] = m_CornerTypes.CalculateCornerByte(i);
+                UModuleByteDealer.GetModuleOrientedIndex(m_CornerBytes[i] ,out var index,out var orientation);
                 moduleIndexes[i] = index;
                 moduleOrientations[i] = orientation;
             }
@@ -77,7 +75,7 @@ namespace  ConvexGrid
                 if(moduleIndex<0)
                     continue;
                 var moduleOrientation = moduleOrientations[i];
-                ref var moduleMesh=ref _data.m_OrientedMeshes[moduleIndex];
+                ref var moduleMesh=ref _datas[(int)m_CornerTypes[i]].m_OrientedMeshes[moduleIndex];
                 ref var orientedRotation = ref UMath.m_Rotate3DCW[moduleOrientation];
                 int indexOffset = vertices.Count;
                 indexes.AddRange(moduleMesh.m_Indexes.Select(p=> p + indexOffset));
@@ -111,6 +109,9 @@ namespace  ConvexGrid
             if (m_Voxel == null)
                 return;
             Gizmos.matrix = transform.localToWorldMatrix;
+            Gizmos.color = Color.white;
+            Gizmos.DrawSphere(Vector3.zero,.1f);
+            Gizmos_Extend.DrawString(Vector3.up*.2f,$"{m_Voxel.Pile.Status}");
             for (int i = 0; i < 8; i++)
             {
                 if (m_CornerTypes[i] == EModuleType.Invalid)
@@ -119,8 +120,10 @@ namespace  ConvexGrid
                 var qubeCenterLS = UModule.ModuleToObjectVertex(i, 0, Vector3.one * .5f, m_Voxel.CornerShapeLS,
                     KConvexGrid.tileHeightHalf);
                 Gizmos.color = m_CornerTypes[i].ToColor();
+                Gizmos.DrawLine(Vector3.zero,qubeCenterLS);
                 Gizmos.DrawWireSphere(qubeCenterLS,.1f);
-                Gizmos_Extend.DrawString(qubeCenterLS,$"{m_CornerTypes[i]} {m_CornerBytes[i]}");
+                
+                Gizmos_Extend.DrawString(qubeCenterLS,$"{m_CornerTypes[i]} { UModuleByteDealer.GetModuleByte(m_CornerBytes[i])}");
             }
         }
         #endif

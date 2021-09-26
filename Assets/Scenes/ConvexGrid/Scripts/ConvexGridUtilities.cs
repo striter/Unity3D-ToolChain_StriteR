@@ -1,5 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
+using Geometry;
 using Geometry.Voxel;
 using LinqExtentions;
 using Procedural;
@@ -17,14 +17,14 @@ namespace ConvexGrid
             return _hexCube.ToCoord().ToPosition();
         }
 
-        public static GQuad ConstructLocalGeometry(this ConvexQuad _quad,Coord _center, int[] indexes,EGridQuadGeometry _geometry)
+        public static GQuad ConstructLocalGeometry(this ConvexQuad _quad,Coord _center, int[] indexes,ETileQuadGeometry _geometry)
         {
             var cdOS0 = _quad.m_CoordQuad[indexes[0]] - _center;
             var cdOS1 = _quad.m_CoordQuad[indexes[1]] - _center;
             var cdOS2 = _quad.m_CoordQuad[indexes[2]] - _center;
             var cdOS3 = _quad.m_CoordQuad[indexes[3]] - _center;
 
-            if (_geometry == EGridQuadGeometry.Half)
+            if (_geometry == ETileQuadGeometry.Half)
             {
                 var cdOS0123 = _quad.m_CoordCenter - _center;
                 var posOS0 = cdOS0.ToPosition();
@@ -36,8 +36,8 @@ namespace ConvexGrid
             return new GQuad(cdOS0.ToPosition(), cdOS1.ToPosition(), cdOS2.ToPosition(), cdOS3.ToPosition());
         }
 
-        public static void ConstructLocalMesh(this ConvexVertex _vertex, Mesh _mesh, EGridQuadGeometry _geometry,
-            EGridVoxelGeometry _volumeGeometry, out Vector3 _centerWS,bool generateUV,bool generateNormals)
+        public static void ConstructLocalMesh(this ConvexVertex _vertex, Mesh _mesh, ETileQuadGeometry _geometry,
+            ETileVoxelGeometry _volumeGeometry, out Vector3 _centerWS,bool generateUV,bool generateNormals)
         {
             var cornerQuads = TSPoolList<GQuad>.Spawn();
             Coord center = _vertex.m_Coord;
@@ -51,19 +51,19 @@ namespace ConvexGrid
             var totalIndex = 0;
             switch (_volumeGeometry)
             {
-                case EGridVoxelGeometry.Plane:
+                case ETileVoxelGeometry.Plane:
                 {
                     totalVertex = totalQuad * 4;
                     totalIndex=totalQuad * 4;
                 }
                 break;
-                case EGridVoxelGeometry.VoxelTight:
+                case ETileVoxelGeometry.VoxelTight:
                 {
                     totalVertex = totalQuad * 8;
                     totalIndex = totalQuad * 16;
                 }
                 break;
-                case EGridVoxelGeometry.VoxelTopBottom:
+                case ETileVoxelGeometry.VoxelTopBottom:
                 {
                     totalVertex = totalQuad * 16;
                     totalIndex = totalQuad * 16;
@@ -79,7 +79,7 @@ namespace ConvexGrid
 
             switch (_volumeGeometry)
             {
-                case EGridVoxelGeometry.Plane:
+                case ETileVoxelGeometry.Plane:
                 {
                     foreach (var quad in cornerQuads)
                     {
@@ -98,7 +98,7 @@ namespace ConvexGrid
                     }
                 }
                 break;
-                case EGridVoxelGeometry.VoxelTight:
+                case ETileVoxelGeometry.VoxelTight:
                 {
                     foreach (var quad in cornerQuads)
                     {                
@@ -137,7 +137,7 @@ namespace ConvexGrid
                     }
                 }
                 break;
-                case EGridVoxelGeometry.VoxelTopBottom:
+                case ETileVoxelGeometry.VoxelTopBottom:
                 {
                     foreach (var quad in cornerQuads)
                     {
