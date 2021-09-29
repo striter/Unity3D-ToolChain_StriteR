@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System;
 using System.Collections.Generic;
 using Geometry.Voxel;
 using UnityEditor;
@@ -57,7 +58,13 @@ public static class Gizmos_Extend
     {
         int count = _points.Count;
         for(int i=0;i<count-1;i++)
-            Gizmos.DrawLine(_points[i],_points[(i+1)%count]);
+            Gizmos.DrawLine(_points[i],_points[i+1]);
+    }
+    public static void DrawLines<T>(IList<T> _points,Func<T,Vector3> _convert)
+    {
+        int count = _points.Count;
+        for(int i=0;i<count-1;i++)
+            Gizmos.DrawLine(_convert(_points[i]),_convert(_points[i+1]));
     }
     public static void DrawLinesConcat(IList<Vector3> _points)
     {
@@ -65,6 +72,13 @@ public static class Gizmos_Extend
         for(int i=0;i<count;i++)
             Gizmos.DrawLine(_points[i],_points[(i+1)%count]);
     }
+    public static void DrawLinesConcat<T>(IList<T> _points,Func<T,Vector3> _convert)
+    {
+        int count = _points.Count;
+        for(int i=0;i<count;i++)
+            Gizmos.DrawLine(_convert(_points[i]),_convert(_points[(i+1)%count]));
+    }
+
 
     public static void DrawString(Vector3 positionLS,string text)
     {

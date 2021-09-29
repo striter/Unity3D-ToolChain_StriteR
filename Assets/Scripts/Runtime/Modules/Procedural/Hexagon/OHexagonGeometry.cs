@@ -33,7 +33,7 @@ namespace Procedural.Hexagon.Geometry
     }
 
     [Serializable]
-    public struct HexQuad:IQuad<HexCoord>, IEquatable<HexQuad>,IIterate<HexCoord>
+    public struct HexQuad:IQuad<HexCoord>, IEquatable<HexQuad>,IIterate<HexCoord>,IEnumerable<HexCoord>
     {
         public HexCoord identity;
         public Quad<HexCoord> quad;
@@ -61,6 +61,12 @@ namespace Procedural.Hexagon.Geometry
         public HexCoord F => quad.F;
         public HexCoord R => quad.R;
         public bool Equals(HexQuad other) => quad.Equals(other.quad);
+        public IEnumerator<HexCoord> GetEnumerator() => quad.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 
 }

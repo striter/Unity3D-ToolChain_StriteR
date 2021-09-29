@@ -9,10 +9,10 @@ namespace Procedural
         static Matrix4x4 TransformMatrix = Matrix4x4.identity;
         static Matrix4x4 InvTransformMatrix = Matrix4x4.identity;
 
-        public static void InitMatrix(Matrix4x4 _transformMatrix, float _scale)
+        public static void InitMatrix(Matrix4x4 _transformMatrix,Matrix4x4 _invTransformMatrix, float _scale)
         {
             TransformMatrix = _transformMatrix * Matrix4x4.Scale(_scale * Vector3.one);
-            InvTransformMatrix = _transformMatrix * Matrix4x4.Scale(Vector3.one / _scale);
+            InvTransformMatrix = Matrix4x4.Scale(Vector3.one / _scale)*_invTransformMatrix ;
         }
         
         public static Vector3 ToPosition(this Coord _pixel)
@@ -22,6 +22,7 @@ namespace Procedural
 
         public static Coord ToCoord(this Vector3 _world)
         {
+            _world = InvTransformMatrix.MultiplyPoint(_world);
             return new Coord(_world.x,  _world.z);
         }
         

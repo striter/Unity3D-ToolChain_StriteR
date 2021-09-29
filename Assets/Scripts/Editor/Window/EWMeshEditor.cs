@@ -317,7 +317,7 @@ namespace TEditor
                 return;
             GTriangleIndex _mainTriangle = m_Polygons[m_SelectedPolygon];
             GTriangle mainTriangle = new GTriangle( _mainTriangle.GetVertices(m_Verticies));
-            m_SubPolygons=m_Polygons.CollectIndex((index, triangle) => index != m_SelectedPolygon && triangle.GetEnumerator(m_Verticies).Any(subVertex => mainTriangle.Any(mainVertex => mainVertex == subVertex))).ToList();
+            m_SubPolygons=m_Polygons.CollectIndex((index, triangle) => index != m_SelectedPolygon && triangle.GetEnumerator(m_Verticies).Any(subVertex => mainTriangle.IterateAny(mainVertex => mainVertex == subVertex))).ToList();
         }
         void SelectVertex(int _index)
         {

@@ -424,6 +424,7 @@ namespace Geometry
             return new Qube<T>(down,top);
         }
         
+            
         public static Qube<byte> SplitByteQubes(this Qube<bool> _qube)
         {
             Qube<bool>[] splitQubes = new Qube<bool>[8];

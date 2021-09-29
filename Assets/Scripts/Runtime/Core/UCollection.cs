@@ -383,5 +383,13 @@ public static class UCollection
         foreach (var element in _collection)
             _stack.Push(element);
     }
+
+    public static bool TryPush<T>(this Stack<T> _stack, T _item)
+    {
+        if (_stack.Contains(_item))
+            return false;
+        _stack.Push(_item);
+        return true;
+    }
     #endregion
 }

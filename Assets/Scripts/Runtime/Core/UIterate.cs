@@ -31,21 +31,21 @@ public static class UIterate
     }
     #endregion
 
-    public static void Traversal<T>(this IIterate<T> _src, Action<T> _OnEach)
+    public static void Iterate<T>(this IIterate<T> _src, Action<T> _OnEach)
     {
         int length = _src.Length;
         for(int i=0;i<length;i++)
             _OnEach(_src[i]);
     }
     
-    public static void Traversal<T>(this IIterate<T> _src, Action<int,T> _OnEach)
+    public static void Iterate<T>(this IIterate<T> _src, Action<int,T> _OnEach)
     {
         int length = _src.Length;
         for(int i=0;i<length;i++)
             _OnEach(i,_src[i]);
     }
 
-    public static T Find<T>(this IIterate<T> _src,Predicate<T> _predicate)
+    public static T IterateFind<T>(this IIterate<T> _src,Predicate<T> _predicate)
     {
         int length = _src.Length;
         for(int i=0;i<length;i++)
@@ -57,7 +57,7 @@ public static class UIterate
         return default;
     }
     
-    public static int FindIndex<T>(this IIterate<T> _src,Predicate<T> _predicate)
+    public static int IterateFindIndex<T>(this IIterate<T> _src,Predicate<T> _predicate)
     {
         int length = _src.Length;
         for(int i=0;i<length;i++)
@@ -66,7 +66,7 @@ public static class UIterate
         return -1;
     }
 
-    public static bool Contains<T>(this IIterate<T> _src, T _element) 
+    public static bool IterateContains<T>(this IIterate<T> _src, T _element) 
     {
         int length = _src.Length;
         for(int i=0;i<length;i++)
@@ -74,7 +74,7 @@ public static class UIterate
                 return true;
         return false;
     }
-    public static bool Any<T>(this IIterate<T> _src, Predicate<T> _validate)
+    public static bool IterateAny<T>(this IIterate<T> _src, Predicate<T> _validate)
     {
         int length = _src.Length;
         for(int i=0;i<length;i++)
@@ -83,7 +83,7 @@ public static class UIterate
         return false;
     }
     
-    public static bool All<T>(this IIterate<T> _src, Predicate<T> _validate)
+    public static bool IterateAll<T>(this IIterate<T> _src, Predicate<T> _validate)
     {
         int length = _src.Length;
         for(int i=0;i<length;i++)
@@ -92,14 +92,14 @@ public static class UIterate
         return true;
     }
     
-    public static void AddRange<T>(this IList<T> _src,IIterate<T> _iterate)
+    public static void IterateAddRange<T>(this IList<T> _src,IIterate<T> _iterate)
     {
         int length = _iterate.Length;
         for(int i=0;i<length;i++)
             _src.Add(_iterate[i]);
     }
 
-    public static T[] ToArray<T>(this IIterate<T> _iterate)
+    public static T[] IterateToArray<T>(this IIterate<T> _iterate)
     {
         int length = _iterate.Length;
         T[] array = new T[length];

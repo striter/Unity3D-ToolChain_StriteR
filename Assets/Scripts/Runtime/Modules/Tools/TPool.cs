@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -51,24 +52,36 @@ namespace TPoolStatic
         }
     }
 
-    public static class TSPoolList<T> 
+    public static class TSPoolCollection<T,Y> where T:ICollection,new()
     {
-        public static Stack<List<T>> m_PoolItems { get; private set; } = new Stack<List<T>>();
-        public static List<T> Spawn()
+        private static readonly MethodInfo kClearMethod = typeof(T).GetMethod("Clear");
+        private static Stack<T> m_PoolItems { get; set; } = new Stack<T>();
+        public static T Spawn()
         {
-            List<T> list=m_PoolItems.Count > 0?m_PoolItems.Pop():new List<T>();
-            list.Clear();
-            return list;
+            T collection=m_PoolItems.Count > 0?m_PoolItems.Pop():new T();
+            kClearMethod.Invoke(collection,null);
+            return collection;
         }
-        public static void Recycle(List<T> item)
+        public static void Recycle(T item)
         {
             m_PoolItems.Push(item);
         }
-        public static void Dispose()
-        {
-            m_PoolItems.Clear();
-            m_PoolItems = null;
-        }
+    }
+
+    public static class TSPoolList<T>
+    {
+        public static List<T> Spawn() => TSPoolCollection<List<T>, T>.Spawn();
+        public static void Recycle(List<T> _list) => TSPoolCollection<List<T>, T>.Recycle(_list);
+    }
+    public static class TSPoolStack<T> 
+    {
+        public static Stack<T> Spawn() => TSPoolCollection<Stack<T>, T>.Spawn();
+        public static void Recycle(Stack<T> _stack) => TSPoolCollection<Stack<T>, T>.Recycle(_stack);
+    }
+    public static class TSPoolQueue<T> 
+    {
+        public static Queue<T> Spawn() => TSPoolCollection<Queue<T>, T>.Spawn();
+        public static void Recycle(Queue<T> _queue) => TSPoolCollection<Queue<T>, T>.Recycle(_queue);
     }
 }
 namespace TPool

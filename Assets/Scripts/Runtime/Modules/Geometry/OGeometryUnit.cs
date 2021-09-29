@@ -266,7 +266,7 @@ namespace Geometry
 
     
     [Serializable]
-    public struct CubeFacing<T> where T:struct
+    public struct CubeFacing<T>:IEnumerable<T> where T:struct
     {
         public T fBL;
         public T fLF;
@@ -285,12 +285,12 @@ namespace Geometry
             fD = _fD;
         }
 
-
         public T this[ECubeFacing _facing]
         {
             get => this[_facing.FacingToIndex()];
             set => this[_facing.FacingToIndex()] = value;
         }
+        
         public T this[int _index]
         {
             get
@@ -319,6 +319,21 @@ namespace Geometry
                     case 5: fD=value; break;
                 }
             }
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            yield return fBL;
+            yield return fLF;
+            yield return fFR;
+            yield return fRB;
+            yield return fT;
+            yield return fD;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
     
@@ -435,5 +450,6 @@ namespace Geometry
             }
         }
 
+        public override string ToString()=> $"{vDB} {vDL} {vDF} {vDR} / {vTB} {vTL} {vTF} {vTR}";
     }
 }

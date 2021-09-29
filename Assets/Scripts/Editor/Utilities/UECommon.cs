@@ -29,5 +29,21 @@ namespace TEditor
             return dic;
         }
 
+        public static void UndoDestroyChildren(this Transform _transform)
+        {
+            int count = _transform.childCount;
+            if (count <= 0)
+                return;
+            Transform[] transforms = new Transform[count];
+            for (int i = 0; i < count; i++)
+                transforms[i] = _transform.GetChild(i);
+        
+            foreach (var transform in transforms)
+            {
+                if(transform==_transform)
+                    continue;
+                Undo.DestroyObjectImmediate(transform.gameObject);;
+            }
+        }
     }
 }

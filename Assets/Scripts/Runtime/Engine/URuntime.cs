@@ -18,7 +18,7 @@ public static class URuntime
     }
 
     #region Transform
-    public static void DestroyChildren(this Transform _trans,bool immediately)
+    public static void DestroyChildren(this Transform _trans)
     {
         int count = _trans.childCount;
         if (count <= 0)
@@ -31,10 +31,7 @@ public static class URuntime
         {
             if(transform==_trans)
                 continue;
-            if(immediately)
-                GameObject.DestroyImmediate(transform.gameObject);
-            else
-                GameObject.Destroy(transform.gameObject);
+            GameObject.Destroy(transform.gameObject);
         }
     }
     public static void SetChildLayer(this Transform trans, int layer)

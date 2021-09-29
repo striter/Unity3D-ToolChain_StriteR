@@ -9,6 +9,13 @@ namespace LinqExtentions
 {
     public static class Linq_Extend
     {
+        public static void VoidExecute<T>(this IEnumerable<T> _collection)
+        {
+            foreach (var item in _collection)
+            {
+                //Empty;
+            }
+        }
         public static IEnumerable<(T value, int index)> LoopIndex<T>(this IEnumerable<T> _collection)
         {
             int index = 0;
