@@ -45,32 +45,6 @@ namespace PolyGrid
                 cornerQuads.Add(ConstructLocalGeometry(tuple.value,center,_vertex.GetQuadVertsCW(tuple.index),_geometry));
             
             _mesh.Clear();
-            int totalQuad = cornerQuads.Count;
-            var totalVertex =0;
-            var totalIndex = 0;
-            switch (_volumeGeometry)
-            {
-                case EVoxelGeometry.Plane:
-                {
-                    totalVertex = totalQuad * 4;
-                    totalIndex=totalQuad * 4;
-                }
-                break;
-                case EVoxelGeometry.VoxelTight:
-                {
-                    totalVertex = totalQuad * 8;
-                    totalIndex = totalQuad * 16;
-                }
-                break;
-                case EVoxelGeometry.VoxelTopBottom:
-                {
-                    totalVertex = totalQuad * 16;
-                    totalIndex = totalQuad * 16;
-                }
-                break;
-            }
-
-
             List<Vector3> vertices = TSPoolList<Vector3>.Spawn();
             List<int> indices = TSPoolList<int>.Spawn();
             List<Vector3> normals = TSPoolList<Vector3>.Spawn();
