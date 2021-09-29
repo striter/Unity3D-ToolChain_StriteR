@@ -219,7 +219,8 @@ namespace PolyGrid.Tile
         [MFoldout(nameof(m_QuadGizmos),true)] public bool m_RelativeQuadGizmos;
         [MFoldout(nameof(m_QuadGizmos),true)] public bool m_RelativeVertexGizmos;
         public bool m_CornerGizmos;
-        [MFoldout(nameof(m_CornerGizmos), true)] public bool m_CornerRelationGizmos;
+        [MFoldout(nameof(m_CornerGizmos), true)] public bool m_CornerSideRelations;
+        [MFoldout(nameof(m_CornerGizmos), true)] public bool m_CornerVoxelRelations;
         [MFoldout(nameof(m_CornerGizmos), true)] public bool m_CornerMeshGizmos;
         public bool m_VoxelGizmos;
         [MFoldout(nameof(m_VoxelGizmos),true)] public bool m_VoxelCornerRelations;
@@ -249,7 +250,7 @@ namespace PolyGrid.Tile
                         {
                             Gizmos.color = UColor.IndexToColor(i);
                             if(m_GridVertices.Contains(quad.m_NearbyVertsCW[i]))
-                                Gizmos.DrawLine(quad.transform.position,m_GridVertices[quad.m_NearbyVertsCW[i]].m_Vertex.m_Coord.ToPosition());
+                                Gizmos_Extend.DrawLine(quad.transform.position,m_GridVertices[quad.m_NearbyVertsCW[i]].m_Vertex.m_Coord.ToPosition(),.8f);
                         }
                     
 
@@ -258,7 +259,7 @@ namespace PolyGrid.Tile
                         {
                             Gizmos.color = UColor.IndexToColor(i);
                             if(m_GridQuads.Contains(quad.m_NearbyQuadsCW[i]))
-                                Gizmos.DrawLine(quad.transform.position,(quad.transform.position+ m_GridQuads[quad.m_NearbyQuadsCW[i]].m_Quad.m_CoordCenter.ToPosition())/2f);
+                                Gizmos_Extend.DrawLine(quad.transform.position,m_GridQuads[quad.m_NearbyQuadsCW[i]].m_Quad.m_CoordCenter.ToPosition(),.4f);
                         }
                 }
             }
@@ -268,23 +269,31 @@ namespace PolyGrid.Tile
                 
                 foreach (var corner in m_Corners)
                 {
-                    if (m_CornerRelationGizmos)
-                    {
-                        Gizmos.matrix=Matrix4x4.identity;
-                        Gizmos.color = Color.green;
-                        foreach (var cornerID in corner.NearbyCorners)
-                            Gizmos.DrawRay(corner.transform.position,(m_Corners[cornerID].transform.position-corner.transform.position)*.4f);
-
-                        Gizmos.color = Color.yellow;
-                        foreach (var voxel in corner.NearbyVoxels)
-                            Gizmos.DrawRay(corner.transform.position,(m_Voxels[voxel].transform.position-corner.transform.position)*.8f);
-                    }
                     
                     Gizmos.color = Color.cyan;
                     Gizmos.matrix = corner.transform.localToWorldMatrix;
                     Gizmos.DrawWireSphere(Vector3.zero,.5f);
-                    if(m_CornerMeshGizmos)
+                    if (m_CornerMeshGizmos)
+                    {
+                        Gizmos.color = Color.green.SetAlpha(.5f);
                         Gizmos.DrawWireMesh(corner.m_BaseVertex.m_CornerMesh);
+                    }
+                    
+                    if (m_CornerSideRelations)
+                    {
+                        Gizmos.matrix = Matrix4x4.identity;
+                        Gizmos.color = Color.green;
+                        foreach (var cornerID in corner.NearbyCorners)
+                            Gizmos_Extend.DrawLine(corner.transform.position, m_Corners[cornerID].transform.position , .4f);
+                    }
+
+                    if(m_CornerVoxelRelations)
+                    {
+                        Gizmos.matrix = Matrix4x4.identity;
+                        Gizmos.color = Color.yellow;
+                        foreach (var voxel in corner.NearbyVoxels)
+                            Gizmos_Extend.DrawLine(corner.transform.position,m_Voxels[voxel].transform.position,.8f);
+                    }
                 }
             }
 

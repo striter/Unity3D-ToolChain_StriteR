@@ -54,6 +54,11 @@ public static class Gizmos_Extend
         Handles_Extend.DrawLine(_line);
     }
 
+    public static void DrawLine(Vector3 _src, Vector3 _dest, float _normalizedLength)
+    {
+        Gizmos.DrawLine(_src,(_src+(_dest-_src)*_normalizedLength));
+    }
+
     public static void DrawLines(IList<Vector3> _points)
     {
         int count = _points.Count;
