@@ -179,14 +179,15 @@ namespace PolyGrid.Module
             return byteQubeIndexer[qube.ToByte()][_qubeIndex] ;
         }
 
-        public static void GetOrientedIndex(byte _qubeByte,ECornerStatus _status,out int _moduleIndex,out int _orientation)
+        public static void GetOrientedIndex(this ModuleRuntimeData _data, byte _qubeByte, ECornerStatus _status,out int _moduleIndex,out int _orientation)
         {
             _moduleIndex = -1;
             _orientation = 0;
-            if (!typedModuleIndexes.ContainsKey(_status))
-                return;
+            var moduleIndexes = typedModuleIndexes[_status];
+            if (!_data.m_AvailableStatus.IsFlagEnable(_status))
+                moduleIndexes = typedModuleIndexes[ECornerStatus.Body];
             
-            var moduleIndexer=typedModuleIndexes[_status][_qubeByte];
+            var moduleIndexer=moduleIndexes[_qubeByte];
             if (moduleIndexer.moduleIndex == -1)
                 return;
             

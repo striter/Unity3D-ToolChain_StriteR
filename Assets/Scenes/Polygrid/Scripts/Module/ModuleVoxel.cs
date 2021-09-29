@@ -79,15 +79,16 @@ namespace PolyGrid.Module
                 m_CornerBytes[i] = cornerByte;
                 if(!UModuleByte.IsValidByte(cornerByte))
                     continue;
-                
+
+                var cornerData = _data[(int)m_CornerTypes[i]];
                 var cornerStatus = m_CornerStatus[i];
-                UModuleByte.GetOrientedIndex(cornerByte ,cornerStatus ,out var moduleIndex,out var moduleOrientation);
+                cornerData.GetOrientedIndex(cornerByte ,m_CornerStatus[i],out var moduleIndex,out var moduleOrientation);
                 if (moduleIndex == -1)
                 {
                     Debug.LogError($"Invalid Byte:{cornerByte} {cornerStatus}");
                     continue;
                 }
-                ref var moduleMesh=ref _data[(int)m_CornerTypes[i]][cornerStatus][moduleIndex];
+                ref var moduleMesh=ref cornerData[cornerStatus][moduleIndex];
                 ref var orientedRotation = ref UMath.m_Rotate3DCW[moduleOrientation];
                 int indexOffset = vertices.Count;
                 indexes.AddRange(moduleMesh.m_Indexes.Select(p=> p + indexOffset));
@@ -123,6 +124,8 @@ namespace PolyGrid.Module
         private void OnDrawGizmosSelected()
         {
             if (m_Voxel == null)
+                return;
+            if (Selection.activeObject != this.gameObject)
                 return;
             Gizmos.matrix = transform.localToWorldMatrix;
             Gizmos.color = Color.white;
