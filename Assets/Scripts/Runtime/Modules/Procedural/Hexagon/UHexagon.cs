@@ -166,6 +166,15 @@ namespace Procedural.Hexagon
             }
         }
 
+        public static IEnumerable<HexCoord> GetCoordsInSize(this HexCoord _axial, int _width, int _height)
+        {
+            for (int i = 0; i < _width; i++)
+                for (int j = 0; j < _height; j++)
+                {
+                    var offset = new HexCoord(i, -i - j);
+                    yield return _axial + offset;
+                }
+        }
         
         //Range
         static readonly HexCoord[] m_CubeNearbyCoords =
