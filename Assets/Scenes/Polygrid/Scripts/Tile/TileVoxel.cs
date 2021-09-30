@@ -3,7 +3,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Geometry;
 using Geometry.Voxel;
-using LinqExtentions;
+using LinqExtension;
 using Procedural;
 using TPool;
 using Procedural.Hexagon;
@@ -43,7 +43,7 @@ namespace PolyGrid.Tile
             m_Quad = null;
         }
 
-        public PileID GetFacingID(int _index)
+        PileID GetFacingID(int _index)
         {
             var _facing = UCubeFacing.IndexToFacing(_index);
             switch (_facing)
@@ -68,12 +68,10 @@ namespace PolyGrid.Tile
                 _corners.Contains(m_QubeCorners[6]),_corners.Contains(m_QubeCorners[7]));
             m_CornerRelation = new Qube<bool>(relationBottom, relationTop);
 
-            m_CubeSides = new CubeFacing<PileID>(GetFacingID(0),GetFacingID(1),GetFacingID(2),GetFacingID(3),GetFacingID(4),GetFacingID(5));
-            m_SideRelation = new CubeFacing<bool>(_voxels.Contains(m_CubeSides[0]),_voxels.Contains(m_CubeSides[1]),_voxels.Contains(m_CubeSides[2]),
-                _voxels.Contains(m_CubeSides[4]),_voxels.Contains(m_CubeSides[4]),_voxels.Contains(m_CubeSides[5]));
+            m_CubeSides = new CubeFacing<PileID>(new PileID(m_Quad.m_NearbyQuadsCW[0], m_Height),new PileID(m_Quad.m_NearbyQuadsCW[1], m_Height),new PileID(m_Quad.m_NearbyQuadsCW[2], m_Height),
+                new PileID(m_Quad.m_NearbyQuadsCW[3], m_Height), new PileID(m_Quad.m_Quad.m_Identity,UByte.ForwardOne( m_Height)), new PileID(m_Quad.m_Quad.m_Identity, UByte.BackOne(m_Height))) ;
+            m_SideRelation = CubeFacing<bool>.Create(m_CubeSides, _voxels.Contains);
         }
-
-        public Action OnStatusChange { get; set; }
         public PileID Identity => m_PoolID;
         public Qube<PileID> QubeCorners => m_QubeCorners;
         public Qube<bool> CornerRelations => m_CornerRelation;

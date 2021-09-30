@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Procedural.Hexagon.Geometry;
 
 public static class UIterate
 {
     #region Array
     static class ArrayStorage<T>
     {
-        public static T[] m_Array=new T[0];
+        public static T[] m_Array=Array.Empty<T>();
         public static void CheckLength(int length)
         {
             if (m_Array.Length != length)

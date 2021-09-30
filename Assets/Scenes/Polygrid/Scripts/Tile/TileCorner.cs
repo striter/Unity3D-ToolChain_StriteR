@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using LinqExtentions;
+using LinqExtension;
 using TPool;
 using Procedural.Hexagon;
 using UnityEngine;

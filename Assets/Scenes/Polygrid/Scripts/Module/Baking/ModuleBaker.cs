@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using Geometry;
 using Geometry.Voxel;
-using LinqExtentions;
+using LinqExtension;
 using TPoolStatic;
 using Unity.Mathematics;
 using UnityEngine;

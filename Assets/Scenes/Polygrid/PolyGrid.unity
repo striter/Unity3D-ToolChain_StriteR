@@ -1213,7 +1213,8 @@ MonoBehaviour:
   m_RelativeQuadGizmos: 0
   m_RelativeVertexGizmos: 0
   m_CornerGizmos: 0
-  m_CornerRelationGizmos: 1
+  m_CornerSideRelations: 0
+  m_CornerVoxelRelations: 0
   m_CornerMeshGizmos: 0
   m_VoxelGizmos: 0
   m_VoxelCornerRelations: 0
@@ -1234,9 +1235,9 @@ MonoBehaviour:
   m_Data:
   - {fileID: 11400000, guid: 07eeb58689efccc4185f6274efe9ce34, type: 2}
   - {fileID: 11400000, guid: d848fb2ae6b9ee64aaae18bc6f743860, type: 2}
-  m_CornerGizmos: 1
+  m_CornerGizmos: 0
   m_CornerStatus: 0
-  m_VoxelGizmos: 1
+  m_VoxelGizmos: 0
   m_ShapeGizmos: 0
   m_PropagandaGizmos: 0
   m_PropagandaChainsGizmos: 0

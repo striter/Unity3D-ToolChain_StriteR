@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TPoolStatic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -25,18 +26,17 @@ public static class UBatch
         foreach (var group in groups)
         {
             string meshName = "Batched Mesh:";
-            List<Vector3> vertices = new List<Vector3>();
-            List<Vector3> normals = new List<Vector3>();
-            List<Vector4> tangents = new List<Vector4>();
-            List<Color> colors = new List<Color>();
-            List<int> triangles = new List<int>();
-            Dictionary<int, List<Vector4>> uvs = new Dictionary<int, List<Vector4>>();
+            List<Vector3> vertices = TSPoolList<Vector3>.Spawn();
+            List<Vector3> normals = TSPoolList<Vector3>.Spawn();
+            List<Vector4> tangents = TSPoolList<Vector4>.Spawn();
+            List<Color> colors = TSPoolList<Color>.Spawn();
+            List<int> triangles = TSPoolList<int>.Spawn();
+            List<Vector4>[] uvs = new List<Vector4>[8];
             for (int i = 0; i < 8; i++)
-                uvs.Add(i, new List<Vector4>());
-            List<Transform> bones = new List<Transform>();
-            List<BoneWeight> boneWeightes = new List<BoneWeight>();
-
-            List<Vector4> tempUVfiller=new List<Vector4>();
+                uvs[i]= TSPoolList<Vector4>.Spawn();
+            List<Transform> bones = TSPoolList<Transform>.Spawn();
+            List<BoneWeight> boneWeights = TSPoolList<BoneWeight>.Spawn();
+            List<Vector4> tempUV = TSPoolList<Vector4>.Spawn();
             foreach (var renderer in group)
             {
                 Mesh concatMesh = renderer.sharedMesh;
@@ -44,27 +44,27 @@ public static class UBatch
                 int triangleOffset = vertices.Count;
                 int boneOffset = bones.Count;
 
-                var concatVerticies = concatMesh.vertices;
-                int verticiesCount = concatVerticies.Length;
-                vertices.AddRange(concatVerticies);
+                var concatVertices = concatMesh.vertices;
+                int verticesCount = concatVertices.Length;
+                vertices.AddRange(concatVertices);
                 var concatNormals = concatMesh.normals;
-                normals.AddRange(concatNormals.Length > 0 ? concatNormals : new Vector3[verticiesCount]);
+                normals.AddRange(concatNormals.Length > 0 ? concatNormals : new Vector3[verticesCount]);
                 var concatTangents = concatMesh.tangents;
-                tangents.AddRange(concatTangents.Length > 0 ? concatTangents : new Vector4[verticiesCount]);
+                tangents.AddRange(concatTangents.Length > 0 ? concatTangents : new Vector4[verticesCount]);
                 var concatColors = concatMesh.colors;
-                colors.AddRange(concatColors.Length > 0 ? concatColors : new Color[verticiesCount]);
+                colors.AddRange(concatColors.Length > 0 ? concatColors : new Color[verticesCount]);
 
                 foreach (var triangle in concatMesh.triangles)
                     triangles.Add(triangleOffset + triangle);
 
                 for (int i = 0; i < 8; i++)
                 {
-                    concatMesh.GetUVs(i, tempUVfiller);
-                    uvs[i].AddRange(tempUVfiller);
+                    concatMesh.GetUVs(i, tempUV);
+                    uvs[i].AddRange(tempUV);
                 }
 
                 bones.AddRange(renderer.bones);
-                boneWeightes.AddRange(concatMesh.boneWeights.Select(boneWeight => new BoneWeight()
+                boneWeights.AddRange(concatMesh.boneWeights.Select(boneWeight => new BoneWeight()
                 {
                     boneIndex0 = boneWeight.boneIndex0 + boneOffset,
                     boneIndex1 = boneWeight.boneIndex1 + boneOffset,
@@ -84,9 +84,21 @@ public static class UBatch
             batchMesh.SetTangents(tangents);
             batchMesh.SetTriangles(triangles, 0);
             batchMesh.SetColors(colors);
-            batchMesh.boneWeights = boneWeightes.ToArray();
+            batchMesh.boneWeights = boneWeights.ToArray();
             for (int i = 0; i < 8; i++)
                 batchMesh.SetUVsResize(i, uvs[i]);
+                
+            TSPoolList<Vector3>.Recycle(vertices);
+            TSPoolList<Vector3>.Recycle(normals);
+            TSPoolList<Vector4>.Recycle(tangents);
+            TSPoolList<Color>.Recycle(colors);
+            TSPoolList<int>.Recycle(triangles);
+            for (int i = 0; i < 8; i++)
+                TSPoolList<Vector4>.Recycle(uvs[i]);
+            TSPoolList<Transform>.Recycle(bones);
+            TSPoolList<BoneWeight>.Recycle(boneWeights);
+            TSPoolList<Vector4>.Recycle(tempUV);
+            
             int rendererIndex=-1;
             foreach (var renderer in group)
             {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Geometry;
 using Geometry.Voxel;
-using LinqExtentions;
+using LinqExtension;
 using Procedural;
 using Procedural.Hexagon;
 using Procedural.Hexagon.Area;

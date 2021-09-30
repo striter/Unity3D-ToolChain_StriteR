@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using LinqExtentions;
+using LinqExtension;
 using TPool;
 using TPoolStatic;
 using Procedural;
@@ -214,10 +214,12 @@ namespace PolyGrid.Tile
         #if UNITY_EDITOR
         #region Gizmos
         [Header("Gizmos")] 
+        [Header("2 Dimension")]
         public bool m_VertexGizmos;
         public bool m_QuadGizmos;
         [MFoldout(nameof(m_QuadGizmos),true)] public bool m_RelativeQuadGizmos;
         [MFoldout(nameof(m_QuadGizmos),true)] public bool m_RelativeVertexGizmos;
+        [Header("3 Dimension")]
         public bool m_CornerGizmos;
         [MFoldout(nameof(m_CornerGizmos), true)] public bool m_CornerSideRelations;
         [MFoldout(nameof(m_CornerGizmos), true)] public bool m_CornerVoxelRelations;
@@ -313,19 +315,17 @@ namespace PolyGrid.Tile
                         {
                             Gizmos.color = UColor.IndexToColor(i%4);
                             if (voxel.CornerRelations[i])
-                                Gizmos.DrawLine(voxel.transform.position,m_Corners[voxel.QubeCorners[i]].transform.position);
+                                Gizmos_Extend.DrawLine(voxel.transform.position,m_Corners[voxel.QubeCorners[i]].transform.position,.8f);
                         }
                     }
                     
-                    
-
                     if (m_VoxelSideRelations)
                     {
                         for (int i = 0; i < 6; i++)
                         {
                             Gizmos.color = UColor.IndexToColor(i);
                             if(voxel.SideRelations[i])
-                                Gizmos.DrawLine(voxel.transform.position,(voxel.transform.position+m_Voxels[voxel.GetFacingID(i)].transform.position)/2);
+                                Gizmos_Extend.DrawLine(voxel.transform.position,m_Voxels[voxel.CubeSides[i]].transform.position,.4f);
                         }
                     }
                 }

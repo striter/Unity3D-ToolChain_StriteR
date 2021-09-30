@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using LinqExtentions;
-using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 
 public interface ITransform
 {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
-using LinqExtentions;
+using LinqExtension;
 using TPool;
 using Procedural;
 using Procedural.Hexagon;

@@ -4,7 +4,7 @@ using System.Linq;
 using Geometry.Index;
 using Geometry;
 using Geometry.Voxel;
-using LinqExtentions;
+using LinqExtension;
 using UnityEditor;
 using UnityEngine;
 

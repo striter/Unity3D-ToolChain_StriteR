@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Geometry;
 using Geometry.Voxel;
-using LinqExtentions;
+using LinqExtension;
 using UnityEngine;
 using UnityEditor;
 using Procedural;

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry.Voxel;
-using LinqExtentions;
+using LinqExtension;
 using Procedural;
 using Procedural.Hexagon;
 using TPool;

@@ -275,7 +275,7 @@ namespace Geometry
         public T fT;
         public T fD;
 
-        public CubeFacing( T _fBL, T _fLF, T _fFR, T _fRB,T _fT,T _fD)
+        public CubeFacing(T _fBL, T _fLF, T _fFR, T _fRB,T _fT,T _fD)
         {
             fBL = _fBL;
             fLF = _fLF;
@@ -285,6 +285,9 @@ namespace Geometry
             fD = _fD;
         }
 
+        public static CubeFacing<T> Create<Y>(CubeFacing<Y> _src, Func<Y, T> _convert) where Y : struct =>
+            new CubeFacing<T>(_convert(_src.fBL),_convert(_src.fLF),_convert(_src.fFR),_convert(_src.fRB),_convert(_src.fT),_convert(_src.fD));
+        
         public T this[ECubeFacing _facing]
         {
             get => this[_facing.FacingToIndex()];

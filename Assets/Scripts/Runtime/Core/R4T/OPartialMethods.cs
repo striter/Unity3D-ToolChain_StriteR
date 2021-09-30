@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using LinqExtentions;
+using LinqExtension;
 
 [AttributeUsage(AttributeTargets.Method)]
 public class PartialMethodAttribute : Attribute
