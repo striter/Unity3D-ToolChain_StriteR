@@ -78,7 +78,7 @@ namespace TEditor
                 return;
 
             EditorGUILayout.BeginHorizontal();
-            m_Mode = (EGPUAnimationMode)EditorGUILayout.EnumPopup("Typs:",m_Mode);
+            m_Mode = (EGPUAnimationMode)EditorGUILayout.EnumPopup("Type:",m_Mode);
             EditorGUILayout.EndHorizontal();
 
             if(m_Mode==EGPUAnimationMode.Vertex)
@@ -135,10 +135,12 @@ namespace TEditor
             int totalVertexRecord = vertexCount * 2;
             int totalFrame = GetInstanceParams(_clips, out AnimationTickerClip[] instanceParams);
 
-            Texture2D atlasTexture = new Texture2D(Mathf.NextPowerOfTwo(totalVertexRecord), Mathf.NextPowerOfTwo(totalFrame), TextureFormat.RGBAHalf, false);
-            atlasTexture.filterMode = FilterMode.Point;
-            atlasTexture.wrapModeU = TextureWrapMode.Clamp;
-            atlasTexture.wrapModeV = TextureWrapMode.Repeat;
+            Texture2D atlasTexture = new Texture2D(Mathf.NextPowerOfTwo(totalVertexRecord), Mathf.NextPowerOfTwo(totalFrame), TextureFormat.RGBAHalf, false)
+                {
+                    filterMode = FilterMode.Point,
+                    wrapModeU = TextureWrapMode.Clamp,
+                    wrapModeV = TextureWrapMode.Repeat
+                };
             UBoundsChecker.Begin();
             for (int i = 0; i < _clips.Length; i++)
             {
@@ -212,12 +214,12 @@ namespace TEditor
                 if (exposeBones != "")
                 {
                     Transform[] activeTransforms = _instantiatedObj.GetComponentsInChildren<Transform>();
-                    for (int i = 0; i < activeTransforms.Length; i++)
+                    foreach (var activeTransform in activeTransforms)
                     {
-                        if (!System.Text.RegularExpressions.Regex.Match(activeTransforms[i].name, exposeBones).Success)
+                        if (!System.Text.RegularExpressions.Regex.Match(activeTransform.name, exposeBones).Success)
                             continue;
                         int relativeBoneIndex = -1;
-                        Transform relativeBone = activeTransforms[i];
+                        Transform relativeBone = activeTransform;
                         while (relativeBone != null)
                         {
                             relativeBoneIndex = System.Array.FindIndex( bones,p => p == relativeBone);
@@ -233,23 +235,25 @@ namespace TEditor
                         exposeTransformParam.Add(new GPUAnimationExposeBone()
                         {
                             index = relativeBoneIndex,
-                            name = activeTransforms[i].name,
-                            position = rootWorldToLocal.MultiplyPoint(activeTransforms[i].transform.position),
-                            direction = rootWorldToLocal.MultiplyVector(activeTransforms[i].transform.forward)
+                            name = activeTransform.name,
+                            position = rootWorldToLocal.MultiplyPoint(activeTransform.transform.position),
+                            direction = rootWorldToLocal.MultiplyVector(activeTransform.transform.forward)
                         });
                     }
                 }
                 #endregion
                 #region Bake Animation Atlas
                 int transformCount = _skinnedMeshRenderer.sharedMesh.bindposes.Length;
-                int totalWdith = transformCount * 3;
+                int totalWidth = transformCount * 3;
                 int totalFrame = GetInstanceParams(_clips, out AnimationTickerClip[] instanceParams);
                 List<AnimationTickerEvent> instanceEvents = new List<AnimationTickerEvent>();
 
-                Texture2D atlasTexture = new Texture2D(Mathf.NextPowerOfTwo(totalWdith), Mathf.NextPowerOfTwo(totalFrame), TextureFormat.RGBAHalf, false);
-                atlasTexture.filterMode = FilterMode.Point;
-                atlasTexture.wrapModeU = TextureWrapMode.Clamp;
-                atlasTexture.wrapModeV = TextureWrapMode.Repeat;
+                Texture2D atlasTexture = new Texture2D(Mathf.NextPowerOfTwo(totalWidth), Mathf.NextPowerOfTwo(totalFrame), TextureFormat.RGBAHalf, false)
+                    {
+                        filterMode = FilterMode.Point,
+                        wrapModeU = TextureWrapMode.Clamp,
+                        wrapModeV = TextureWrapMode.Repeat
+                    };
                 UBoundsChecker.Begin();
                 for (int i = 0; i < _clips.Length; i++)
                 {
@@ -271,9 +275,9 @@ namespace TEditor
 
                         Mesh boundsCheckMesh = new Mesh();
                         _skinnedMeshRenderer.BakeMesh(boundsCheckMesh);
-                        Vector3[] verticies = boundsCheckMesh.vertices;
-                        for (int k = 0; k < verticies.Length; k++)
-                            UBoundsChecker.CheckBounds(verticies[k].Divide(_skinnedMeshRenderer.transform.localScale));
+                        Vector3[] vertices = boundsCheckMesh.vertices;
+                        for (int k = 0; k < vertices.Length; k++)
+                            UBoundsChecker.CheckBounds(vertices[k].Divide(_skinnedMeshRenderer.transform.localScale));
 
                         boundsCheckMesh.Clear();
                     }

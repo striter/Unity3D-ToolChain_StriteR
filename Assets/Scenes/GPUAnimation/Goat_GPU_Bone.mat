@@ -31,7 +31,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AnimFrameBegin: 0
-    - _AnimFrameEnd: 0
-    - _AnimFrameInterpolate: 0
+    - _AnimFrameEnd: 131.35
+    - _AnimFrameInterpolate: 1
     m_Colors: []
   m_BuildTextureStacks: []
