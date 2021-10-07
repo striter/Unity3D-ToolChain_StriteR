@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Rendering.Optimize;
-public class GPUAnimationSampleHelper : MonoBehaviour
+public class GPUAnimationInstanceSample : MonoBehaviour
 {
     public int m_X=32,m_Y=32;
     public GPUAnimationData m_Data;

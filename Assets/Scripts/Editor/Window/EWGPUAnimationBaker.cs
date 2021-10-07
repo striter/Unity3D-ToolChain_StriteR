@@ -159,8 +159,11 @@ namespace TEditor
                     for (int k = 0; k < vertexCount; k++)
                     {
                         UBoundsChecker.CheckBounds(vertices[k]);
-                        atlasTexture.SetPixel(k * 2, startFrame + j, UColor.VectorToColor(vertices[k]));
-                        atlasTexture.SetPixel(k * 2 + 1, startFrame + j, UColor.VectorToColor(normals[k]));
+                        var frame = startFrame + j;
+                        var pixel = UGPUAnimation.GetVertexPositionPixel(k,frame);
+                        atlasTexture.SetPixel(pixel.x,pixel.y, UColor.VectorToColor(vertices[k]));
+                        pixel = UGPUAnimation.GetVertexNormalPixel(k,frame);
+                        atlasTexture.SetPixel(pixel.x,pixel.y, UColor.VectorToColor(normals[k]));
                     }
                 }
                 vertexBakeMesh.Clear();
@@ -268,9 +271,13 @@ namespace TEditor
                         for (int k = 0; k < transformCount; k++)
                         {
                             Matrix4x4 curFrameTransformMatrix = bones[k].localToWorldMatrix * bindPoses[k];
-                            atlasTexture.SetPixel(k * 3, startFrame + j, UColor.VectorToColor(curFrameTransformMatrix.GetRow(0)));
-                            atlasTexture.SetPixel(k * 3 + 1, startFrame + j, UColor.VectorToColor(curFrameTransformMatrix.GetRow(1)));
-                            atlasTexture.SetPixel(k * 3 + 2, startFrame + j, UColor.VectorToColor( curFrameTransformMatrix.GetRow(2)));
+                            var frame = startFrame + j;
+                            var pixel = UGPUAnimation.GetTransformPixel(k,0,frame);
+                            atlasTexture.SetPixel(pixel.x,pixel.y, UColor.VectorToColor(curFrameTransformMatrix.GetRow(0)));
+                            pixel = UGPUAnimation.GetTransformPixel(k,1,frame);
+                            atlasTexture.SetPixel(pixel.x, pixel.y, UColor.VectorToColor(curFrameTransformMatrix.GetRow(1)));
+                            pixel = UGPUAnimation.GetTransformPixel(k,2,frame);
+                            atlasTexture.SetPixel(pixel.x, pixel.y, UColor.VectorToColor( curFrameTransformMatrix.GetRow(2)));
                         }
 
                         Mesh boundsCheckMesh = new Mesh();

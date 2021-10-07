@@ -1,12 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Rendering.Optimize
 {
-    public static class GPUAnimationHelper
+    public static class UGPUAnimation
     {
-        
         #region ShaderProperties
         static readonly int ID_AnimationTex = Shader.PropertyToID("_AnimTex");
         private static readonly string[] KW_Modes ={"_ANIM_VERTEX","_ANIM_BONE"};
@@ -26,6 +23,20 @@ namespace Rendering.Optimize
             _block.SetInt(ID_FrameBegin, _output.cur);
             _block.SetInt(ID_FrameEnd, _output.next);
             _block.SetFloat(ID_FrameInterpolate, _output.interpolate);
+        }
+        
+        public static Int2 GetTransformPixel(int _transformIndex,int row, int frame)
+        {
+            return new Int2(_transformIndex * 3 + row, frame);
+        }
+
+        public static Int2 GetVertexPositionPixel(int _vertexIndex, int frame)
+        {
+            return new Int2(_vertexIndex*2, frame);
+        }
+        public static Int2 GetVertexNormalPixel(int _vertexIndex, int frame)
+        {
+            return new Int2(_vertexIndex*2+1, frame);
         }
     }
 }

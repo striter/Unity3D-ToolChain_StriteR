@@ -59,7 +59,7 @@
 				#elif _ANIM_VERTEX
             	SampleVertex(v.vertexID,v.positionOS,v.normalOS);
             	#endif
-                o.diffuse=dot(v.normalOS,normalize( TransformWorldToObjectNormal(_MainLightPosition.xyz)));
+                o.diffuse=saturate(dot(v.normalOS,normalize( TransformWorldToObjectNormal(_MainLightPosition.xyz))));
                 o.positionCS = TransformObjectToHClip(v.positionOS);
                 o.uv = v.uv;
 
@@ -69,7 +69,7 @@
             float4 frag (v2f i) : SV_Target
             {
                 float4 col = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv);
-                return col*i.diffuse;
+                return col*(i.diffuse*.5+.5);
             }
             ENDHLSL
         }

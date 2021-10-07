@@ -88,7 +88,8 @@ namespace Rendering.Optimize
         }
         Vector4 ReadAnimationTexture(int boneIndex, int row, int frame)
         {
-            return m_Data.m_BakeTexture.GetPixel(boneIndex * 3 + row, frame);
+            var pixel = UGPUAnimation.GetTransformPixel(boneIndex, row, frame);
+            return m_Data.m_BakeTexture.GetPixel(pixel.x,pixel.y);
         }
         #endregion
     }
