@@ -32,7 +32,6 @@ namespace PolyGrid.Tile
             m_Corners.Clear();
             m_Voxels.Clear();
         }
-
         public void CornerConstruction( PolyVertex _vertex, byte _height,Action<PolyVertex> _vertexSpawn,Action<PolyQuad> _quadSpawn, Action<ICorner> _cornerSpawn,Action<IVoxel> _moduleSpawn)
         {
             var corner = new PileID(_vertex.m_Identity, _height);

@@ -1239,8 +1239,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a3baf102df0734b9879b22d98c51be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SelectionValid: {r: 5.278032, g: 5.278032, b: 5.278032, a: 1}
-  m_SelectionInvalid: {r: 13.819563, g: 1.6386833, b: 1.6386833, a: 1}
+  m_SelectionValid: {r: 345.34903, g: 373.45883, b: 995.8902, a: 1}
+  m_SelectionInvalid: {r: 766.9961, g: 92.36079, b: 92.36079, a: 1}
 --- !u!114 &1227246352
 MonoBehaviour:
   m_ObjectHideFlags: 0

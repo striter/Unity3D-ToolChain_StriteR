@@ -77,6 +77,7 @@ public static class TDataConvert
     static readonly Dictionary<Type, KeyValuePair<Func<object, string>, Func<string, object>>> s_BaseTypeConvert = new Dictionary<Type, KeyValuePair<Func<object, string>, Func<string, object>>>() {
         { typeof(char),new KeyValuePair<Func<object, string>, Func<string, object>>( target=>target.ToString(),str=>char.Parse(str)) },
         { typeof(string), new KeyValuePair<Func<object, string>, Func<string, object>>( target => target as string,str=>str)},
+        { typeof(byte),new KeyValuePair<Func<object, string>, Func<string, object>>(data =>data.ToString(), str =>byte.Parse(str) )},
         { typeof(int),new KeyValuePair<Func<object, string>, Func<string, object>>(data =>data.ToString(), str =>int.Parse(str) )},
         { typeof(long),new KeyValuePair<Func<object, string>, Func<string, object>>(data => data.ToString(), str => long.Parse(str) )},
         { typeof(double),new KeyValuePair<Func<object, string>, Func<string, object>>(target => target.ToString(),str => double.Parse(str))},
@@ -209,9 +210,6 @@ public static class TDataConvert
     static Dictionary<Type, FieldInfo[]> m_XmlConvertFieldInfos = new Dictionary<Type, FieldInfo[]>();
     static bool CheckSerializeType(Type type)
     {
-        if (!type.IsSerializable)
-            return false;
-
         if (!m_XmlConvertFieldInfos.ContainsKey(type))
             m_XmlConvertFieldInfos.Add(type, type.GetFields(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public));
         return true;
@@ -250,8 +248,8 @@ public static class TDataConvert
         {
             FieldInfo field = m_XmlConvertFieldInfos[type][i];
             string fieldString = splitString[i];
-            object fieldValule = ConvertToObject(field.FieldType, fieldString, iteration);
-            field.SetValue(objectData, fieldValule);
+            object fieldValue = ConvertToObject(field.FieldType, fieldString, iteration);
+            field.SetValue(objectData, fieldValue);
         }
         return objectData;
     }

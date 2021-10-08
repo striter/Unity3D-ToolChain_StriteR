@@ -18,7 +18,6 @@ namespace TDataPersistent
         private const string c_DataCryptKey = "StriteRTestCrypt";
         private static readonly string s_persistentPath = Application.persistentDataPath + "/Save/";
         private static XmlDocument m_Doc = new XmlDocument();
-        private static string GetStreamingPathInDevice<T>(string fileName = null) where T : CDataSave<T>, new() => "Save/" +(fileName == null ? CDataSave<T>.s_FilePath : fileName);
         public static string GetPersistentPath<T>(string fileName = null) where T : CDataSave<T>, new() => s_persistentPath +(fileName == null ? CDataSave<T>.s_FilePath : fileName) + ".sav";
         public static void ReadPersistentData<T>(this T _data, string fileName = null) where T : CDataSave<T>,new ()
         {
@@ -29,7 +28,7 @@ namespace TDataPersistent
             }
             catch (Exception ePersistent)
             {
-                Debug.LogWarning("Data Read Fail,Use Persistent Data:\n" + ePersistent.Message);
+                Debug.LogWarning("Data Read Fail,Use Persistent Data:\n" + ePersistent.Message+"\n"+ePersistent.StackTrace);
                 ReadDefaultData(_data,fileName);
             }
         }       
@@ -44,7 +43,7 @@ namespace TDataPersistent
             }
             catch(Exception e)
             {
-                Debug.LogWarning("Data Save Error,Use Persistent Data\n" + e.Message);
+                Debug.LogWarning("Data Save Error,Use Persistent Data\n" + e.Message+"\n"+e.StackTrace);
                 ReadDefaultData(_data,fileName);
             }
         }

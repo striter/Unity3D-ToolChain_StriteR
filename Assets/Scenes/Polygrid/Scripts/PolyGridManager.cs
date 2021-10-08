@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using LinqExtension;
@@ -7,12 +9,30 @@ using Procedural;
 using Procedural.Hexagon;
 using TTouchTracker;
 using UnityEngine;
-
+using TDataPersistent;
 namespace PolyGrid
 {
+    [Serializable]
+    public struct CornerPersistent
+    {
+        public PileID identity;
+        public EModuleType type;
+    }
+    public class PersistentData:CDataSave<PersistentData>
+    {
+        public override bool DataCrypt() => false;
+        public List<CornerPersistent> m_CornerData=new List<CornerPersistent>();
+
+        public void Record(IEnumerable<CornerPersistent> _corners)
+        {
+            m_CornerData.Clear();
+            m_CornerData.AddRange(_corners);
+        }
+    }
     public class PolyGridManager : MonoBehaviour
     {
         public GridRuntimeData m_GridData;
+        private readonly PersistentData m_PersistentData=new PersistentData();
         
         private TileManager m_TileManager;
         private SelectionManager m_SelectionManager;
@@ -52,6 +72,19 @@ namespace PolyGrid
             UIT_TouchConsole.Command("Reset",KeyCode.R).Button(Clear);
 
             LoadArea(m_GridData);
+            this.StartCoroutine(Generate());
+        }
+
+        IEnumerator Generate()
+        {
+            m_PersistentData.ReadPersistentData();
+            m_PersistentData.m_CornerData.Sort((a,b)=>(a.identity.height-b.identity.height));
+            foreach (var cornerData in m_PersistentData.m_CornerData)
+            {
+                m_ModuleManager.m_SpawnModule = cornerData.type;
+                DoCornerConstruction(cornerData.identity,true);
+                yield return new WaitForSeconds(.1f);
+            }
         }
 
         void Clear()
@@ -104,9 +137,9 @@ namespace PolyGrid
         {
             InputTick();
             m_Controls.Traversal(p=>p.Tick(Time.deltaTime));
-            #if UNITY_EDITOR
-            EditorTick();
-            #endif
+            // #if UNITY_EDITOR
+            // EditorTick();
+            // #endif
         }
         
         void InputTick()
@@ -138,16 +171,24 @@ namespace PolyGrid
                 return;
             if(!_construct&&!m_SelectionManager.VerifyDeconstruction(ray, out selection))
                 return;
-
-            var vertex = m_Vertices[selection.location];
-            if (vertex.m_Invalid)
-                return;
             
+            DoCornerConstruction(selection, _construct);
+            m_PersistentData.Record(m_ModuleManager.CollectAllCornerData());
+            m_PersistentData.SavePersistentData();
+        }
+
+        bool DoCornerConstruction(PileID _selection,bool _construct)
+        {
+            var vertex = m_Vertices[_selection.location];
+            if (vertex.m_Invalid)
+                return false;
+
             if(_construct)
-                m_TileManager.CornerConstruction(vertex,selection.height,OnVertexSpawn,OnQuadSpawn,OnCornerSpawn,OnVoxelSpawn);
+                m_TileManager.CornerConstruction(vertex,_selection.height,OnVertexSpawn,OnQuadSpawn,OnCornerSpawn,OnVoxelSpawn);
             else
-                m_TileManager.CornerDeconstruction(vertex,selection.height,OnVertexRecycle,OnQuadRecycle,OnCornerRecycle,OnVoxelRecycle);
-            m_ModifyCallbacks.Traversal(p=>p.OnVertexModify(vertex,selection.height,_construct));
+                m_TileManager.CornerDeconstruction(vertex,_selection.height,OnVertexRecycle,OnQuadRecycle,OnCornerRecycle,OnVoxelRecycle);
+            m_ModifyCallbacks.Traversal(p=>p.OnVertexModify(vertex,_selection.height,_construct));
+            return true;
         }
 
         void OnVertexSpawn(PolyVertex _vertex) => m_VertexCallbacks.Traversal(p => p.OnPopulateVertex(_vertex));
