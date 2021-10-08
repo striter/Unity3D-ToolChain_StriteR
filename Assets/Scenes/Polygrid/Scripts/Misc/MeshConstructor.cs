@@ -9,17 +9,69 @@ using UnityEngine;
 
 namespace PolyGrid
 {
-    public class MeshConstructor : IPolyGridControl
+    public class MeshConstructor :MonoBehaviour, IPolyGridControl,IPolyGridModifyCallback
     {
+        [ColorUsage(true,true)]public Color m_SelectionValid;
+        [ColorUsage(true,true)]public Color m_SelectionInvalid;
+        
         private Transform m_Selection;
         private Mesh m_SelectionMesh;
-        private TObjectPoolClass<ConvexGridRenderer> m_AreaMeshes;
-        private class ConvexGridRenderer : ITransform,IPoolCallback<int>
+        private MeshRenderer m_SelectionRenderer;
+        private MaterialPropertyBlock m_SelectionRendererBlock;
+        private TObjectPoolClass<AreaRenderer> m_AreaMeshes;
+        
+        public void Tick(float _deltaTime)
+        {
+        }
+
+        public void Init(Transform _transform)
+        {
+            m_Selection = _transform.Find("Selection");
+            m_SelectionMesh = new Mesh {name="Selection",hideFlags = HideFlags.HideAndDontSave};
+            m_SelectionMesh.MarkDynamic();
+            m_Selection.GetComponent<MeshFilter>().sharedMesh = m_SelectionMesh;
+            m_SelectionRenderer = m_Selection.GetComponent<MeshRenderer>();
+            m_SelectionRendererBlock = new MaterialPropertyBlock();
+            m_AreaMeshes = new TObjectPoolClass<AreaRenderer>(_transform.Find("AreaContainer/AreaMesh"));
+        }
+
+        public void OnVertexModify(PolyVertex _vertex, byte _height, bool _construct) => ConstructCornerMarkup(_vertex,_height);
+        public void ConstructCornerMarkup(PolyVertex _vertex,byte _height)
+        {
+            bool invalid = _vertex.m_Invalid;
+            m_SelectionRendererBlock.SetColor(URender.kIDColor,invalid?m_SelectionInvalid:m_SelectionValid);
+            m_SelectionRenderer.SetPropertyBlock(m_SelectionRendererBlock);
+            
+            if (_height == 0)
+            {
+                _vertex.ConstructLocalMesh(m_SelectionMesh,EQuadGeometry.Half,EVoxelGeometry.Plane,true,false);
+                m_Selection.position = _vertex.m_Coord.ToPosition();
+            }
+            else
+            {
+                _vertex.ConstructLocalMesh(m_SelectionMesh,EQuadGeometry.Half,EVoxelGeometry.VoxelFull,true,false);
+                m_Selection.position = DPolyGrid.GetCornerHeight(_height)+ _vertex.m_Coord.ToPosition();
+            }
+        }
+        public void ConstructArea(PolyArea _area)
+        {
+            Debug.LogWarning($"Area Mesh Populate {_area.m_Identity.coord}");
+            m_AreaMeshes.Spawn().GenerateMesh (_area);
+        }
+
+        public void Clear()
+        {
+            m_Selection.SetActive(false);
+            m_SelectionMesh.Clear();
+            m_AreaMeshes.Clear();
+        }
+
+        private class AreaRenderer : ITransform,IPoolCallback<int>
         {
             public Transform iTransform { get; }
             public MeshFilter m_MeshFilter { get; }
 
-            public ConvexGridRenderer(Transform _transform)
+            public AreaRenderer(Transform _transform)
             {
                 iTransform = _transform;
                 m_MeshFilter = _transform.GetComponent<MeshFilter>();
@@ -29,8 +81,6 @@ namespace PolyGrid
             public void GenerateMesh(PolyArea _area)
             {
                 int quadCount = _area.m_Quads.Count;
-                int vertexCount = quadCount * 4;
-                int indexCount = quadCount * 6;
                 List<Vector3> vertices = TSPoolList<Vector3>.Spawn();
                 List<Vector3> normals = TSPoolList<Vector3>.Spawn();
                 List<Vector2> uvs = TSPoolList<Vector2>.Spawn(); 
@@ -82,47 +132,6 @@ namespace PolyGrid
                     return;
                 GameObject.DestroyImmediate(m_MeshFilter.mesh);
                 m_MeshFilter.sharedMesh = null;
-            }
-        }
-        
-        public void Tick(float _deltaTime)
-        {
-        }
-
-        public void Init(Transform _transform)
-        {
-            m_Selection = _transform.Find("Selection");
-            m_SelectionMesh = new Mesh {name="Selection",hideFlags = HideFlags.HideAndDontSave};
-            m_SelectionMesh.MarkDynamic();
-            m_Selection.GetComponent<MeshFilter>().sharedMesh = m_SelectionMesh;
-            m_AreaMeshes = new TObjectPoolClass<ConvexGridRenderer>(_transform.Find("AreaContainer/AreaMesh"));
-        }
-
-        public void OnAreaConstruct(PolyArea _area)
-        {
-            Debug.LogWarning($"Area Mesh Populate {_area.m_Identity.coord}");
-            m_AreaMeshes.Spawn().GenerateMesh (_area);
-        }
-
-        public void Clear()
-        {
-            m_Selection.SetActive(false);
-            m_SelectionMesh.Clear();
-            m_AreaMeshes.Clear();
-        }
-
-        public void OnSelectVertex(PolyVertex _vertex,byte _height)
-        {
-            Vector3 centerWS;
-            if (_height == 0)
-            {
-                _vertex.ConstructLocalMesh(m_SelectionMesh,EQuadGeometry.Full,EVoxelGeometry.Plane,out centerWS,true,false);
-                m_Selection.position = centerWS;
-            }
-            else
-            {
-                _vertex.ConstructLocalMesh(m_SelectionMesh,EQuadGeometry.Half,EVoxelGeometry.VoxelTopBottom,out centerWS,true,false);
-                m_Selection.position = DPolyGrid.GetCornerHeight(_height)+ centerWS;
             }
         }
     }

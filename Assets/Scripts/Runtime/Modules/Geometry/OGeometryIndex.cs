@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-namespace Geometry.Index
+namespace Geometry.Polygon
 {
     [Serializable]
     public struct GQuadIndex:IEnumerable<int>,IIterate<int>
@@ -56,13 +56,13 @@ namespace Geometry.Index
         }
     }
     [Serializable]
-    public struct GTriangleIndex:IEnumerable<int>,IIterate<int>
+    public struct GTrianglePolygon:IEnumerable<int>,IIterate<int>
     {
         public int index0;
         public int index1;
         public int index2;
 
-        public GTriangleIndex(int _index0, int _index1, int _index2)
+        public GTrianglePolygon(int _index0, int _index1, int _index2)
         {
             index0 = _index0;
             index1 = _index1;

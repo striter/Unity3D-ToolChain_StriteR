@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace PolyGrid
 {
-    public class CameraManager : IPolyGridControl
+    public class CameraManager : IPolyGridControl,IPolyGridCornerCallback
     {
         private Transform m_CameraRoot;
         public  Camera m_Camera { get; private set; }
@@ -47,13 +47,12 @@ namespace PolyGrid
                 Quaternion.Slerp(m_Camera.transform.rotation,rotation,_deltaTime*10f));
         }
 
-
-        public void OnSelectVertex( PolyVertex _vertex, byte _height)
+        public void OnPopulateCorner(ICorner _corner)
         {
-            m_RootPosition = _vertex.m_Coord.ToPosition();
+            //m_RootPosition = _corner.Identity.location.ToPosition();
         }
 
-        public void OnAreaConstruct(PolyArea _area)
+        public void OnDeconstructCorner(PileID _cornerID)
         {
         }
         

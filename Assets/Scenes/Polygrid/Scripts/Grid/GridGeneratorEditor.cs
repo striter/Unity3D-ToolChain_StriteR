@@ -16,7 +16,6 @@ namespace PolyGrid
     [ExecuteInEditMode]
     public partial class GridGenerator
     {
-        public readonly Dictionary<HexCoord, Coord> m_ExistVertices = new Dictionary<HexCoord, Coord>();
         private void OnValidate()
         {
             Setup();
@@ -56,12 +55,7 @@ namespace PolyGrid
                 switch (Event.current.button)
                 {
                     case 0:
-                        ValidateArea(hitArea, m_ExistVertices, area =>
-                        {
-                            Debug.Log($"Area{area.m_Area.coord} Constructed!");
-                            foreach (var pair in area.m_Vertices)
-                                m_ExistVertices.TryAdd(pair.Key,pair.Value);
-                        });
+                        ValidateArea(hitArea);
                         break;
                     case 1: break;
                 }
@@ -70,7 +64,12 @@ namespace PolyGrid
             {
                 switch (Event.current.keyCode)
                 {
-                    case KeyCode.R: Clear(); break;
+                    case KeyCode.R:
+                    {
+                        Clear(); 
+                        break;
+                    }
+                    
                 }
             }
         }
@@ -94,20 +93,36 @@ namespace PolyGrid
             if (!UEAsset.SaveFilePath(out string filePath, "asset")) 
                 return;
 
+            //Check Invalid Quads
+            List<HexQuad> quads = new List<HexQuad>();
+            foreach (var area in m_Areas.Values)
+                quads.AddRange(area.m_Quads);
+
+            List<HexCoord> invalidCoords = new List<HexCoord>();
+            foreach (var quad in quads)
+            {
+                if(quads.Count(p=>p.MatchVertexCount(quad) == 2)==4)
+                    continue;
+                invalidCoords.TryAddRange(quad);
+            }
+
             List<GridAreaData> areaData = new List<GridAreaData>();
             foreach (var area in m_Areas.Values)
             {
                 if(area.m_State!= EConvexIterate.Relaxed)
                     continue;
-                GridAreaData data = new GridAreaData
-                {
-                    identity = area.m_Area, m_Quads = new HexQuad[area.m_Quads.Count]
+                GridAreaData data = new GridAreaData {
+                    identity = area.m_Area, m_Quads = new HexQuad[area.m_Quads.Count],m_Vertices = new GridVertexData[area.m_Vertices.Count]
                 };
                 foreach (var valueTuple in area.m_Quads.LoopIndex())
                     data.m_Quads[valueTuple.index]= valueTuple.value;
-                data.m_Vertices = new GridVertexData[area.m_Vertices.Count];
                 foreach (var valueTuple in area.m_Vertices.LoopIndex())
-                    data.m_Vertices[valueTuple.index] = new GridVertexData(){identity = valueTuple.value.Key,coord = valueTuple.value.Value*1f/6f*UMath.SQRT2};
+                {
+                    var identity = valueTuple.value.Key;
+                    var coord = valueTuple.value.Value * 1f / 6f * UMath.SQRT2;
+                    var invalid = invalidCoords.Contains(identity);
+                    data.m_Vertices[valueTuple.index] = new GridVertexData(){identity = identity,coord = coord,invalid=invalid};
+                }
                 areaData.Add(data);
             }
             

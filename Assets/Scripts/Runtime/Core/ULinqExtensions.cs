@@ -42,15 +42,13 @@ namespace LinqExtension
             }
         }
         
-        public static  IEnumerator<T> CollectItem<T>(this IEnumerable<T> _collection, Predicate<T> _Predicate)
+        public static  IEnumerable<Y> Collect<T,Y>(this IEnumerable<T> _collection) where T:class where Y:class
         {
-            using var enumerator = _collection.GetEnumerator();
-            while (enumerator.MoveNext())
+            foreach (T element in _collection)
             {
-                var element = enumerator.Current;
-                if (!_Predicate(element))
+                if (!(element is Y element1))
                     continue;
-                yield return element;
+                yield return element1;
             }
         }
 

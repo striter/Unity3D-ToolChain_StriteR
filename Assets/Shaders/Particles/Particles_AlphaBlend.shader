@@ -3,6 +3,7 @@
 	Properties
 	{
 		_MainTex("Main Tex",2D) = "white"{}
+		[Toggle(_ALPHAMASK)]_AlphaMask("Alpha Mask",int)=0
 		[HDR]_Color("Color",Color) = (1,1,1,1)
 		
 		[Header(Render Options)]
@@ -21,11 +22,12 @@
 		Pass
 		{		
 			name "Main"
-			CGPROGRAM
+			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			#include "UnityCG.cginc"
+			#include "Assets/Shaders/Library/Common.hlsl"
 			#pragma multi_compile_instancing
+			#pragma shader_feature_local _ALPHAMASK
 			struct a2v
 			{
 				float4 vertex : POSITION;
@@ -48,18 +50,23 @@
 			{
 				UNITY_SETUP_INSTANCE_ID(v);
 				v2f o;
-				o.vertex = UnityObjectToClipPos(v.vertex);
+				o.vertex = TransformObjectToHClip(v.vertex);
 				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 				o.color = v.color;
 				return o;
 			}
 
-			fixed4 frag(v2f i) : SV_Target
+			float4 frag(v2f i) : SV_Target
 			{
-				fixed4 col = tex2D(_MainTex,i.uv)*_Color*i.color;
+				float4 col = _Color*i.color;
+				#if _ALPHAMASK
+					col.a=tex2D(_MainTex,i.uv).r;
+				#else
+					col*=tex2D(_MainTex,i.uv);
+				#endif
 				return col;
 			}
-			ENDCG
+			ENDHLSL
 		}
 	}
 }

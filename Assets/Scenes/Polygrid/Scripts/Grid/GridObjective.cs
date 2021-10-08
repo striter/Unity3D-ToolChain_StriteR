@@ -162,7 +162,6 @@ namespace PolyGrid
         {
             if (m_State != EConvexIterate.Tesselation)
                 yield break;
-            m_State += 1;
 
             //Push Coords
             void AddCoord(HexCoord p)
@@ -257,13 +256,8 @@ namespace PolyGrid
             m_ProceduralQuads.Clear();
             m_RelaxQuads.Clear();
             m_RelaxVertices.Clear();
+            m_State += 1;
             yield return null;
-        }
-
-        public void CleanData()
-        {
-            m_Vertices.Clear();
-            m_Quads.Clear();
         }
 
         #if UNITY_EDITOR

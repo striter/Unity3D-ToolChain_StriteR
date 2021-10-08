@@ -147,7 +147,7 @@ namespace Geometry
             return new Quad<Vector3>(_convert(_quad.vB),_convert(_quad.vL),_convert(_quad.vF),_convert(_quad.vR));
         }
 
-        public static bool IsPointInside<T> (this IQuad<T> _quad,T _point) where T:struct
+        public static bool IsPointInsideDynamic<T> (this IQuad<T> _quad,T _point) where T:struct
         { 
             dynamic A = _quad.B;
             dynamic B = _quad.L;

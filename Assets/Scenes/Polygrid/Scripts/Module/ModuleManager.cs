@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace PolyGrid.Module
 {
-    public class ModuleManager : MonoBehaviour,IPolyGridControl
+    public class ModuleManager : MonoBehaviour,IPolyGridControl,IPolyGridCornerCallback,IPolyGridVoxelCallback,IPolyGridModifyCallback
     {
         public EModuleType m_SpawnModule;
         public List<ModuleRuntimeData> m_Data;
@@ -36,10 +36,11 @@ namespace PolyGrid.Module
             m_Data.Sort((a,b)=>a.m_Type-b.m_Type);
         }
 
-        public void SpawnCorners(ICorner _corner)=> m_Corners.Spawn(_corner.Identity).Init(_corner,m_SpawnModule);
-        public void RecycleCorners(PileID _cornerID)=>m_Corners.Recycle(_cornerID);
-        public void SpawnModules(IVoxel _module)=>m_Voxels.Spawn(_module.Identity).Init(_module);
-        public void RecycleModules(PileID _moduleID)=>m_Voxels.Recycle(_moduleID);
+        public void OnPopulateCorner(ICorner _corner)=> m_Corners.Spawn(_corner.Identity).Init(_corner,m_SpawnModule);
+        public void OnDeconstructCorner(PileID _cornerID)=>m_Corners.Recycle(_cornerID);
+
+        public void OnPopulateVoxel(IVoxel _voxel)=>m_Voxels.Spawn(_voxel.Identity).Init(_voxel);
+        public void OnDeconstructVoxel(PileID _voxelID)=>m_Voxels.Recycle(_voxelID);
         
         public void Tick(float _deltaTime)
         {
@@ -47,7 +48,7 @@ namespace PolyGrid.Module
                 m_SpawnModule = m_SpawnModule.Next();
         }
 
-        public void OnSelectVertex(PolyVertex _vertex, byte _height)
+        public void OnVertexModify(PolyVertex _vertex, byte _height, bool _construct)
         {
             CollectPropagandaCorners(_vertex,_height);
             CollectPropagandaChain();
@@ -136,17 +137,7 @@ namespace PolyGrid.Module
             foreach (var moduleID in affectedModules)
                 m_Voxels[moduleID].ModuleValidate(m_Data,m_Corners.m_Dic);
         }
-        
-        public void OnAreaConstruct(PolyArea _area)
-        {
-        }
-
-        public void UpdateModules(IEnumerable<PileID> _modules)
-        {
-            foreach (var pileID in _modules)
-                m_Voxels[pileID].ModuleValidate(m_Data,m_Corners.m_Dic);
-        }
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         #region Gizmos
 
         public bool m_CornerGizmos;

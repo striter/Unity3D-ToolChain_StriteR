@@ -14,6 +14,7 @@ namespace PolyGrid
     {
         public HexCoord identity;
         public Coord coord;
+        public bool invalid;
     }
     
     [Serializable]

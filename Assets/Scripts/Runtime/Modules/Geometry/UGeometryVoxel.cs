@@ -26,33 +26,15 @@ namespace Geometry.Voxel
             foreach (var quad in quads)
                 yield return  new Quad<Vector3>(quad.vB,quad.vL,quad.vF,quad.vR).ExpandToQube(_halfSize,0f);
         }
-        
-        public static void FillFacingQuad(this Qube<Vector3> _qube,ECubeFacing _facing,List<Vector3> _vertices,List<int> _indices,List<Vector2> _uvs,List<Vector3> _normals)
-        {
-            int indexOffset = _vertices.Count;
-            var vertsCW = _qube.GetFacingCornersCW(_facing);
-            _vertices.Add(vertsCW.v0);
-            _vertices.Add(vertsCW.v1);
-            _vertices.Add(vertsCW.v2);
-            _vertices.Add(vertsCW.v3);
-            _indices.Add(indexOffset);
-            _indices.Add(indexOffset+1);
-            _indices.Add(indexOffset+2);
-            _indices.Add(indexOffset+3);
-            if (_uvs!=null)
-            {
-                _uvs.Add(URender.IndexToQuadUV(0));
-                _uvs.Add(URender.IndexToQuadUV(1));
-                _uvs.Add(URender.IndexToQuadUV(2));
-                _uvs.Add(URender.IndexToQuadUV(3));
-            }
 
-            if (_normals!=null)
-            {
-                var normal = Vector3.Cross(vertsCW.v1-vertsCW.v0,vertsCW.v3-vertsCW.v0);
-                for(int i=0;i<4;i++)
-                    _normals.Add(normal);
-            }
+        public static void FillFacingQuadTriangle(this Qube<Vector3> _qube,ECubeFacing _facing,List<Vector3> _vertices,List<int> _indices,List<Vector2> _uvs,List<Vector3> _normals)
+        {
+            new GQuad(_qube.GetFacingCornersCW(_facing)).FillQuadTriangle(_vertices,_indices,_uvs,_normals);
+        }        
+        public static void FillFacingSplitQuadTriangle(this Qube<Vector3> _qube,ECubeFacing _facing,List<Vector3> _vertices,List<int> _indices,List<Vector2> _uvs,List<Vector3> _normals)
+        {
+            foreach (var quad in new GQuad(_qube.GetFacingCornersCW(_facing)).SplitToQuads<GQuad,Vector3>(true))
+                new GQuad(quad.B, quad.L, quad.F, quad.R).FillQuadTriangle(_vertices,_indices,_uvs,_normals);
         }
         public static Matrix4x4 GetMirrorMatrix(this GPlane _plane)
         {

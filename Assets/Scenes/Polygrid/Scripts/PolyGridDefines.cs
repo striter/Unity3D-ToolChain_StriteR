@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Geometry;
 using Procedural;
+using Procedural.Hexagon;
 using UnityEngine;
 
 namespace PolyGrid
@@ -18,7 +19,7 @@ namespace PolyGrid
     {
         Plane,
         VoxelTight,
-        VoxelTopBottom,
+        VoxelFull,
     }
 
     public static class KPolyGrid
@@ -34,11 +35,6 @@ namespace PolyGrid
 
     public static class DPolyGrid
     {
-        public static Vector3 GetCornerHeight(PileID _id)
-        {
-            return GetCornerHeight( _id.height);
-        }
-
         public static Vector3 GetCornerHeight(byte _height)
         {
             return KPolyGrid.tileHeightHalfVector+KPolyGrid.tileHeightVector * _height;
@@ -48,20 +44,26 @@ namespace PolyGrid
         {
             return KPolyGrid.tileHeightVector * _id.height;
         }
-        
-        public static Vector3 GetCornerPositionWS(this PolyVertex _vertex,byte _height)
-        {
-            return _vertex.m_Coord.ToPosition() + GetCornerHeight(_height);
-        }
 
+        public static Vector3 ToCornerPosition(this PolyVertex _vertex, byte _height)=> _vertex.m_Coord.ToPosition() + GetCornerHeight(_height);
+        public static Vector3 ToCornerPosition(this ICorner _corner) => _corner.Vertex.ToCornerPosition(_corner.Identity.height);
+
+        public static PileID Upward(this PileID _src)
+        {
+            return new PileID(_src.location, UByte.ForwardOne(_src.height));
+        }
+        public static PileID Downward(this PileID _src)
+        {
+            return new PileID(_src.location, UByte.BackOne(_src.height));
+        }
         public static IEnumerable<PileID> AllNearbyCorner(this PolyVertex _vertex,byte _height)
         {
             if (_height != byte.MinValue)
-                yield return new PileID(_vertex.m_Identity,UByte.BackOne(_height));
+                yield return new PileID(_vertex.m_Identity,_height).Downward();
             foreach (var vertex in _vertex.m_NearbyVertex)
                 yield return new PileID(vertex,_height);
             if (_height != byte.MaxValue)
-                yield return new PileID(_vertex.m_Identity,UByte.ForwardOne(_height));
+                yield return new PileID(_vertex.m_Identity,_height).Upward();
         }
         public static IEnumerable<PileID> AllNearbyVoxels(this PolyVertex _vertex,byte _height)
         {

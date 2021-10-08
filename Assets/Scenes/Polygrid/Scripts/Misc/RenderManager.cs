@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace  PolyGrid
 {
-    public class RenderManager : MonoBehaviour,IPolyGridControl
+    public class RenderManager : MonoBehaviour,IPolyGridControl,IPolyGridModifyCallback
     {
         public AnimationCurve m_PopCurve;
         public float m_RangeMultiplier=5f;
@@ -62,18 +62,15 @@ namespace  PolyGrid
             EndPop();
         }
 
-        public void OnSelectVertex(PolyVertex _vertex, byte _height)
+        public void OnVertexModify(PolyVertex _vertex, byte _height, bool _construct)
         {
-            BeginPop(_vertex.GetCornerPositionWS(_height));
+            BeginPop(_vertex.ToCornerPosition(_height));
         }
-
-        public void OnAreaConstruct(PolyArea _area)
-        {
-        }
-
+        
         public void Clear()
         {
         }
+
     }
 
 }

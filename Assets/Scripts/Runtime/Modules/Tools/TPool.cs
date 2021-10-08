@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.Pool;
+using Object = System.Object;
 
 namespace TPoolStatic
 {
@@ -24,7 +25,7 @@ namespace TPoolStatic
     }
     public static class TSPool<T> where T : ISPoolItem, new()
     {
-        public static Stack<T> m_PoolItems { get; private set; } = new Stack<T>();
+        static Stack<T> m_PoolItems = new Stack<T>();
         public static T Spawn()
         {
             T item;
@@ -47,6 +48,31 @@ namespace TPoolStatic
         }
         public static void Dispose()
         {
+            m_PoolItems.Clear();
+            m_PoolItems = null;
+        }
+    }
+
+    public static class TSPoolObject<T> where T : UnityEngine.Object, new()
+    {
+        static Stack<T> m_PoolItems = new Stack<T>();
+        public static T Spawn()
+        {
+            T item;
+            if (m_PoolItems.Count > 0)
+                item = m_PoolItems.Pop();
+            else
+                item = new T();
+            return item;
+        }
+        public static void Recycle(T item)
+        {
+            m_PoolItems.Push(item);
+        }
+        public static void Dispose()
+        {
+            foreach (var item in m_PoolItems)
+                UnityEngine.Object.DestroyImmediate(item);
             m_PoolItems.Clear();
             m_PoolItems = null;
         }
@@ -292,7 +318,7 @@ namespace TPool
     public abstract class PoolBehaviour<T> : MonoBehaviour,IPoolCallback<T>
     {
         private Action<T> DoRecycle { get; set; }
-        protected T m_PoolID { get; private set; }
+        public T m_PoolID { get; private set; }
         public virtual void OnPoolInit(Action<T> _DoRecycle)=>this.DoRecycle = _DoRecycle;
         public virtual void OnPoolSpawn(T identity)=> m_PoolID = identity;
         public virtual void OnPoolRecycle()=> m_PoolID = default;

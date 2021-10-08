@@ -14,33 +14,93 @@ using UnityEngine;
 
 namespace PolyGrid
 {
+    
+#region Bridge
+    public interface IPolyGridControl
+    {
+        void Init(Transform _transform);
+        void Tick(float _deltaTime);
+        void Clear();
+    }
+
+    public interface IVoxel
+    { 
+        PileID Identity { get; }
+        Transform Transform { get; }
+        PolyQuad Quad { get; }
+        Qube<PileID> QubeCorners { get; }
+        Qube<bool> CornerRelations { get; }
+        CubeFacing<bool> SideRelations { get;}
+        Quad<Vector2>[] CornerShapeLS { get; }
+    }
+
+    public interface ICorner
+    {
+        PileID Identity { get; }
+        Transform Transform { get; }
+        PolyVertex Vertex { get; }
+        List<PileID> NearbyCorners { get; }
+        List<PileID> NearbyVoxels { get; }
+    }
+
+    public interface IPolyGridVertexCallback
+    {
+        void OnPopulateVertex(PolyVertex _vertex);
+        void OnDeconstructVertex(HexCoord _vertexID);
+    }
+
+    public interface IPolyGridQuadCallback
+    {
+        void OnPopulateQuad(PolyQuad _quad);
+        void OnDeconstructQuad(HexCoord _quadID);
+    }
+    
+    public interface IPolyGridCornerCallback
+    {
+        void OnPopulateCorner(ICorner _corner);
+        void OnDeconstructCorner(PileID _cornerID);
+    }
+
+    public interface IPolyGridVoxelCallback
+    {
+        void OnPopulateVoxel(IVoxel _voxel);
+        void OnDeconstructVoxel(PileID _voxelID);
+    }
+
+    public interface IPolyGridModifyCallback
+    {
+        void OnVertexModify(PolyVertex _vertex, byte _height, bool _construct);
+    }
+#endregion
+    
 #region GridRuntime
     public class PolyVertex
     {
         public HexCoord m_Identity;
         public Coord m_Coord;
+        public bool m_Invalid;
         public readonly List<PolyQuad> m_NearbyQuads = new List<PolyQuad>();
         public readonly List<HexCoord> m_NearbyVertex = new List<HexCoord>();
-        private readonly int[] m_NearbyQuadsStartIndex = new int[6];
+        private readonly int[] m_QuadIndexOffsets = new int[6];
+        public void AddNearbyQuads(PolyQuad _quad)
+        {
+            var quadStartIndex=_quad.m_HexQuad.IterateFindIndex(p => p == m_Identity);
+            m_QuadIndexOffsets[m_NearbyQuads.Count] = quadStartIndex;
+            m_NearbyVertex.TryAdd(_quad.m_HexQuad[(quadStartIndex+1)%4]);
+            m_NearbyVertex.TryAdd(_quad.m_HexQuad[(quadStartIndex+3)%4]);
+            m_NearbyQuads.Add(_quad);
+        }
+
         private static readonly int[] s_QuadIndexHelper = new int[4];
         public int[] GetQuadVertsCW(int _index)
         {
-            int offset = m_NearbyQuadsStartIndex[_index];
+            int offset = m_QuadIndexOffsets[_index];
             s_QuadIndexHelper[0] = offset;
             s_QuadIndexHelper[1] = (offset + 1) % 4;
             s_QuadIndexHelper[2] = (offset + 2) % 4;
             s_QuadIndexHelper[3] = (offset + 3) % 4;
             return s_QuadIndexHelper;
         }
-        public void AddNearbyQuads(PolyQuad _quad)
-        {
-            var quadStartIndex=_quad.m_HexQuad.IterateFindIndex(p => p == m_Identity);
-            m_NearbyQuadsStartIndex[m_NearbyQuads.Count] = quadStartIndex;
-            m_NearbyVertex.TryAdd(_quad.m_HexQuad[(quadStartIndex+1)%4]);
-            m_NearbyVertex.TryAdd(_quad.m_HexQuad[(quadStartIndex+3)%4]);
-            m_NearbyQuads.Add(_quad);
-        }
-
     }
     
     public class PolyQuad
@@ -182,26 +242,6 @@ namespace PolyGrid
         }
         public IEnumerator<T> GetEnumerator() => m_Pool.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator()=> GetEnumerator();
-    }
-#endregion
-
-#region Bridge
-    public interface IVoxel
-    { 
-        Transform Transform { get; }
-        PileID Identity { get; }
-        Qube<PileID> QubeCorners { get; }
-        Qube<bool> CornerRelations { get; }
-        CubeFacing<bool> SideRelations { get;}
-        Quad<Vector2>[] CornerShapeLS { get; }
-    }
-
-    public interface ICorner
-    {
-        PileID Identity { get; }
-        Transform Transform { get; }
-        List<PileID> NearbyCorners { get; }
-        List<PileID> NearbyVoxels { get; }
     }
 #endregion
 }

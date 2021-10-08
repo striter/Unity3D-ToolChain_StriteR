@@ -24,9 +24,7 @@ namespace PolyGrid.Tile
         public TileVoxel Init(TileQuad _srcQuad)
         {
             m_Quad = _srcQuad;
-            transform.SetParent(m_Quad.transform);
-            transform.localPosition = DPolyGrid.GetVoxelHeight(m_PoolID);
-            transform.localRotation = Quaternion.identity;
+            transform.SetPositionAndRotation(m_Quad.transform.position+DPolyGrid.GetVoxelHeight(m_PoolID),m_Quad.transform.rotation);
             m_QubeCorners = new Qube<PileID>();
             for (int i = 0; i < 8; i++)
             {
@@ -73,6 +71,7 @@ namespace PolyGrid.Tile
             m_SideRelation = CubeFacing<bool>.Create(m_CubeSides, _voxels.Contains);
         }
         public PileID Identity => m_PoolID;
+        public PolyQuad Quad => m_Quad.m_Quad;
         public Qube<PileID> QubeCorners => m_QubeCorners;
         public Qube<bool> CornerRelations => m_CornerRelation;
         public CubeFacing<PileID> CubeSides => m_CubeSides;

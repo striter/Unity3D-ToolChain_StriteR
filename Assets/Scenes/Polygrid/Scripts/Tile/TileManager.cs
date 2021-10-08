@@ -33,22 +33,14 @@ namespace PolyGrid.Tile
             m_Voxels.Clear();
         }
 
-        public void OnSelectVertex(PolyVertex _vertex, byte _height)
-        {
-        }
-
-        public void OnAreaConstruct(PolyArea _area)
-        {
-        }
-
-        public void CornerConstruction( PolyVertex _vertex, byte _height,Action<ICorner> _cornerSpawn,Action<IVoxel> _moduleSpawn)
+        public void CornerConstruction( PolyVertex _vertex, byte _height,Action<PolyVertex> _vertexSpawn,Action<PolyQuad> _quadSpawn, Action<ICorner> _cornerSpawn,Action<IVoxel> _moduleSpawn)
         {
             var corner = new PileID(_vertex.m_Identity, _height);
             if (m_Corners.Contains(corner))
                 return;
             
-            FillVertex(_vertex);
-            FillQuads(_vertex);
+            FillVertex(_vertex,_vertexSpawn);
+            FillQuads(_vertex,_quadSpawn);
             
             FillCorner(corner,_cornerSpawn);
             FillVoxels(_vertex,_moduleSpawn);
@@ -56,8 +48,8 @@ namespace PolyGrid.Tile
             RefreshCornerRelations(_vertex,_height);
             RefreshVoxelRelations(_vertex);
         }
-
-        public void CornerDeconstruction(PolyVertex _vertex, byte _height,Action<PileID> _cornerRecycle,Action<PileID> _moduleRecycle)
+        
+        public void CornerDeconstruction(PolyVertex _vertex, byte _height,Action<HexCoord> _vertexRecycle,Action<HexCoord> _quadRecycle,Action<PileID> _cornerRecycle,Action<PileID> _moduleRecycle)
         {
             var corner = new PileID(_vertex.m_Identity, _height);
             if (!m_Corners.Contains(corner))
@@ -66,8 +58,8 @@ namespace PolyGrid.Tile
             RemoveCorner(corner,_cornerRecycle);
             RemoveVoxels(_vertex,_moduleRecycle);
             
-            RemoveVertex(_vertex);
-            RemoveQuads(_vertex);
+            RemoveVertex(_vertex,_vertexRecycle);
+            RemoveQuads(_vertex,_quadRecycle);
             
             RefreshCornerRelations(_vertex,_height);
             RefreshVoxelRelations(_vertex);
@@ -85,15 +77,16 @@ namespace PolyGrid.Tile
             return maxHeight;
         }
         
-        void FillVertex(PolyVertex _vertexData)
+        void FillVertex(PolyVertex _vertex,Action<PolyVertex> _vertexSpawn)
         {
-            var vertexID = _vertexData.m_Identity;
+            var vertexID = _vertex.m_Identity;
             if (m_GridVertices.Contains(vertexID))
                 return;
-            m_GridVertices.Spawn(vertexID).Init(_vertexData);
+            m_GridVertices.Spawn(vertexID).Init(_vertex);
+            _vertexSpawn(_vertex);
         }
 
-        void FillQuads(PolyVertex _vertex)
+        void FillQuads(PolyVertex _vertex,Action<PolyQuad> _quadSpawn)
         {
             foreach (var quad in _vertex.m_NearbyQuads)
             {
@@ -101,6 +94,7 @@ namespace PolyGrid.Tile
                 if (m_GridQuads.Contains(quadID))
                     continue;
                 m_GridQuads.Spawn(quadID).Init(quad);
+                _quadSpawn(quad);
             }
         }
 
@@ -110,10 +104,10 @@ namespace PolyGrid.Tile
                 return;
             var vertex = m_GridVertices[_cornerID.location];
             var corner=m_Corners.Spawn(_cornerID).Init(vertex);
-            _cornerSpawn?.Invoke(corner);
+            _cornerSpawn(corner);
         }
 
-        void FillVoxels(PolyVertex _vertex,Action<IVoxel> _spawn)
+        void FillVoxels(PolyVertex _vertex,Action<IVoxel> _voxelSpawn)
         {
             foreach (var quadID in _vertex.m_NearbyQuads.Select(p=>p.m_Identity))
             {
@@ -123,26 +117,28 @@ namespace PolyGrid.Tile
                     var voxelID = new PileID(quadID, i);
                     if(m_Voxels.Contains(voxelID))
                         continue; 
-                    _spawn(m_Voxels.Spawn(voxelID).Init(m_GridQuads[quadID]));
+                    _voxelSpawn(m_Voxels.Spawn(voxelID).Init(m_GridQuads[quadID]));
                 }
             }
         }
         
-        void RemoveVertex(PolyVertex _vertex)
+        void RemoveVertex(PolyVertex _vertex,Action<HexCoord> _vertexRecycle)
         {
             var vertexID = _vertex.m_Identity;
             if (m_Corners.Contains(vertexID)||!m_GridVertices.Contains(vertexID))
                 return;
             m_GridVertices.Recycle(vertexID);
+            _vertexRecycle(vertexID);
         }
 
-        void RemoveQuads(PolyVertex _vertex)
+        void RemoveQuads(PolyVertex _vertex,Action<HexCoord> _quadRecycle)
         {
             foreach (var quadID in _vertex.m_NearbyQuads.Select(p => p.m_Identity))
             {
                 if (m_Voxels.Contains(quadID)||!m_GridQuads.Contains(quadID))
                     continue;
                 m_GridQuads.Recycle(quadID);
+                _quadRecycle(quadID);
             }
         }
         
@@ -150,11 +146,11 @@ namespace PolyGrid.Tile
         {
             if (!m_Corners.Contains(_cornerID))
                 return;
-            var corner=m_Corners.Recycle(_cornerID);
-            _cornerRecycle?.Invoke(_cornerID);
+            m_Corners.Recycle(_cornerID);
+            _cornerRecycle(_cornerID);
         }
 
-        void RemoveVoxels(PolyVertex _vertex,Action<PileID> _recycle)
+        void RemoveVoxels(PolyVertex _vertex,Action<PileID> _voxelRecycle)
         {
             foreach (var _quadID in _vertex.m_NearbyQuads.Select(p => p.m_Identity))
             {
@@ -165,7 +161,7 @@ namespace PolyGrid.Tile
                 {
                     var voxelID = new PileID(_quadID, i);
                     m_Voxels.Recycle(voxelID);
-                    _recycle(voxelID);
+                    _voxelRecycle(voxelID);
                 }
             }
         }
@@ -179,6 +175,7 @@ namespace PolyGrid.Tile
                  m_Corners[cornerID].RefreshRelations(m_Corners,m_Voxels);
             }
         }
+        
         void RefreshVoxelRelations(PolyVertex _vertex)
         {
             var quadRefreshing = TSPoolList<HexCoord>.Spawn();
@@ -223,7 +220,6 @@ namespace PolyGrid.Tile
         public bool m_CornerGizmos;
         [MFoldout(nameof(m_CornerGizmos), true)] public bool m_CornerSideRelations;
         [MFoldout(nameof(m_CornerGizmos), true)] public bool m_CornerVoxelRelations;
-        [MFoldout(nameof(m_CornerGizmos), true)] public bool m_CornerMeshGizmos;
         public bool m_VoxelGizmos;
         [MFoldout(nameof(m_VoxelGizmos),true)] public bool m_VoxelCornerRelations;
         [MFoldout(nameof(m_VoxelGizmos),true)] public bool m_VoxelSideRelations;
@@ -275,11 +271,6 @@ namespace PolyGrid.Tile
                     Gizmos.color = Color.cyan;
                     Gizmos.matrix = corner.transform.localToWorldMatrix;
                     Gizmos.DrawWireSphere(Vector3.zero,.5f);
-                    if (m_CornerMeshGizmos)
-                    {
-                        Gizmos.color = Color.green.SetAlpha(.5f);
-                        Gizmos.DrawWireMesh(corner.m_BaseVertex.m_CornerMesh);
-                    }
                     
                     if (m_CornerSideRelations)
                     {

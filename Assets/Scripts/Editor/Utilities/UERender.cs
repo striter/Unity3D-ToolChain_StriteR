@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Geometry.Index;
+using Geometry.Polygon;
 using Geometry.Voxel;
 using UnityEngine;
 
@@ -12,7 +12,7 @@ namespace TEditor
         static Vector3[] RenegerateNormals(int[] _indices, Vector3[] _verticies)
         {
             Vector3[] normals = new Vector3[_verticies.Length];
-            GTriangleIndex[] polygons = URender.GetPolygons(_indices);
+            GTrianglePolygon[] polygons = UPolygon.GetPolygons(_indices);
             foreach(var polygon in polygons)
             {
                 GTriangle triangle = new GTriangle(polygon.GetVertices(_verticies));

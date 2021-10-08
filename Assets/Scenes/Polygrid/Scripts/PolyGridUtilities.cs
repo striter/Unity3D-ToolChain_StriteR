@@ -36,19 +36,18 @@ namespace PolyGrid
         }
 
         public static void ConstructLocalMesh(this PolyVertex _vertex, Mesh _mesh, EQuadGeometry _geometry,
-            EVoxelGeometry _volumeGeometry, out Vector3 _centerWS,bool generateUV,bool generateNormals)
+            EVoxelGeometry _volumeGeometry,bool generateUV,bool generateNormals)
         {
             var cornerQuads = TSPoolList<GQuad>.Spawn();
             Coord center = _vertex.m_Coord;
-            _centerWS = center.ToPosition();
             foreach (var tuple in _vertex.m_NearbyQuads.LoopIndex())
                 cornerQuads.Add(ConstructLocalGeometry(tuple.value,center,_vertex.GetQuadVertsCW(tuple.index),_geometry));
             
             _mesh.Clear();
             List<Vector3> vertices = TSPoolList<Vector3>.Spawn();
             List<int> indices = TSPoolList<int>.Spawn();
-            List<Vector3> normals = TSPoolList<Vector3>.Spawn();
-            List<Vector2> uvs = TSPoolList<Vector2>.Spawn();
+            List<Vector3> normals =generateNormals? TSPoolList<Vector3>.Spawn():null;
+            List<Vector2> uvs = generateUV? TSPoolList<Vector2>.Spawn():null;
 
             switch (_volumeGeometry)
             {
@@ -60,14 +59,11 @@ namespace PolyGrid
                         for (int i = 0; i < 4; i++)
                         {
                             vertices.Add(quad[i]);
-                            if (generateUV) uvs.Add(URender.IndexToQuadUV(i));
-                            if (generateNormals) uvs.Add(quad.normal);
+                            uvs?.Add(URender.IndexToQuadUV(i));
+                            normals?.Add(quad.normal);
                         }
                         
-                        indices.Add(indexOffset);
-                        indices.Add(indexOffset + 1);
-                        indices.Add(indexOffset + 2);
-                        indices.Add(indexOffset + 3);
+                        UPolygon.QuadToTriangleIndices(indices,indexOffset+0,indexOffset+1,indexOffset+2,indexOffset+3);
                     }
                 }
                 break;
@@ -80,44 +76,32 @@ namespace PolyGrid
                         for (int i = 0; i < 8; i++)
                         {
                             vertices.Add(qube[i]);
-                            if(generateUV) uvs.Add(URender.IndexToQuadUV(i%4));
-                            if (generateNormals) normals.Add(quad.normal);
+                            uvs?.Add(URender.IndexToQuadUV(i%4));
+                            normals?.Add(quad.normal);
                         };
                         
                         //Bottom
-                        indices.Add(indexOffset+0);
-                        indices.Add(indexOffset+3);
-                        indices.Add(indexOffset+2);
-                        indices.Add(indexOffset+1);
-
+                        UPolygon.QuadToTriangleIndices(indices,indexOffset+0,indexOffset+3,indexOffset+2,indexOffset+1);
                         //Top
-                        indices.Add(indexOffset+4);
-                        indices.Add(indexOffset+5);
-                        indices.Add(indexOffset+6);
-                        indices.Add(indexOffset+7);
-
+                        UPolygon.QuadToTriangleIndices(indices,indexOffset+4,indexOffset+5,indexOffset+6,indexOffset+7);
                         //Forward Left
-                        indices.Add(indexOffset+1);
-                        indices.Add(indexOffset+2);
-                        indices.Add(indexOffset+6);
-                        indices.Add(indexOffset+5);
-
+                        UPolygon.QuadToTriangleIndices(indices,indexOffset+1,indexOffset+2,indexOffset+6,indexOffset+5);
                         //Forward Right
-                        indices.Add(indexOffset+2);
-                        indices.Add(indexOffset+3);
-                        indices.Add(indexOffset+7);
-                        indices.Add(indexOffset+6);
+                        UPolygon.QuadToTriangleIndices(indices,indexOffset+2,indexOffset+3,indexOffset+7,indexOffset+6);
                     }
                 }
                 break;
-                case EVoxelGeometry.VoxelTopBottom:
+                case EVoxelGeometry.VoxelFull:
                 {
                     foreach (var quad in cornerQuads)
                     {
-                        var qube = quad.ExpandToQube(KPolyGrid.tileHeightVector,.5f);
-                        qube.FillFacingQuad(ECubeFacing.T,vertices,indices,generateUV?uvs:null,generateNormals?normals:null);
-                        qube.FillFacingQuad(ECubeFacing.D,vertices,indices,generateUV?uvs:null,generateNormals?normals:null);
+                        var qube = quad.ExpandToQube(KPolyGrid.tileHeightVector, .5f);
+                        qube.FillFacingQuadTriangle(ECubeFacing.T,vertices,indices,uvs,normals);
+                        qube.FillFacingSplitQuadTriangle(ECubeFacing.LF,vertices,indices,uvs,normals);
+                        qube.FillFacingSplitQuadTriangle(ECubeFacing.FR,vertices,indices,uvs,normals);
+                        qube.FillFacingQuadTriangle(ECubeFacing.D,vertices,indices,uvs,normals);
                     }
+
                 }
                 break;
             }
@@ -126,16 +110,16 @@ namespace PolyGrid
             _mesh.SetVertices(vertices);
             TSPoolList<Vector3>.Recycle(vertices);
             
-            _mesh.SetIndices(indices, MeshTopology.Quads, 0, false);
+            _mesh.SetIndices(indices, MeshTopology.Triangles, 0, false);
             TSPoolList<int>.Recycle(indices);
             
-            if (generateUV)
+            if (uvs!=null)
             {
                 _mesh.SetUVs(0, uvs);
                 TSPoolList<Vector2>.Recycle(uvs);
             }
 
-            if (generateNormals)
+            if (normals!=null)
             {
                 _mesh.SetNormals(normals);
                 TSPoolList<Vector3>.Recycle(normals);

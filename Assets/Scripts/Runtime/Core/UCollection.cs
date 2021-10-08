@@ -23,6 +23,18 @@ public static class UCollection
             }
         }
 
+        public static int Count<T>(this IEnumerable<T> _collection, Predicate<T> _predicate)
+        {
+            int count = 0;
+            foreach (var element in _collection)
+            {
+                if (!_predicate(element))
+                    continue;
+                count++;
+            }
+
+            return count;
+        }
         public static void Traversal<T>(this IEnumerable<T> _collection, Action<int,T> _onEach)
         {
             if (_collection is IList<T> list)
@@ -302,6 +314,11 @@ public static class UCollection
             return false;
         _list.Add(_element);
         return true;
+    }
+    public static void TryAddRange<T>(this List<T> _list, IEnumerable<T> _collection)
+    {
+        foreach (var element in _collection)
+            _list.TryAdd(element);
     }
 
     public static bool TryRemove<T>(this List<T> _list, T _element)

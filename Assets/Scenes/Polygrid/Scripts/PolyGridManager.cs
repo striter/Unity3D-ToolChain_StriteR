@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using Geometry;
-using Geometry.Voxel;
+using System.Linq;
+using LinqExtension;
 using PolyGrid.Module;
 using PolyGrid.Tile;
 using Procedural;
@@ -10,43 +10,44 @@ using UnityEngine;
 
 namespace PolyGrid
 {
-    public interface IPolyGridControl
-    {
-        void Init(Transform _transform);
-        void Tick(float _deltaTime);
-        void OnSelectVertex(PolyVertex _vertex,byte _height);
-        void OnAreaConstruct(PolyArea _area);
-        void Clear();
-    }
-    
-    public interface IGridRaycast
-    {
-        (HexCoord,byte) GetCornerData();
-        (HexCoord,byte) GetNearbyCornerData(ref RaycastHit _hit);
-    }
     public class PolyGridManager : MonoBehaviour
     {
+        public GridRuntimeData m_GridData;
+        
+        private TileManager m_TileManager;
+        private SelectionManager m_SelectionManager;
+        private ModuleManager m_ModuleManager;
         private CameraManager m_CameraManager;
         private MeshConstructor m_MeshConstructor;
-        private ModuleManager m_ModuleManager;
-        private TileManager m_TileManager;
         private RenderManager m_RenderManager;
+        
         private IPolyGridControl[] m_Controls;
+        private IPolyGridVertexCallback[] m_VertexCallbacks;
+        private IPolyGridQuadCallback[] m_QuadCallbacks;
+        private IPolyGridCornerCallback[] m_CornerCallbacks;
+        private IPolyGridVoxelCallback[] m_VoxelCallbacks;
+        private IPolyGridModifyCallback[] m_ModifyCallbacks;
         
         private readonly Dictionary<HexCoord, PolyArea> m_Areas = new Dictionary<HexCoord, PolyArea>();
         private readonly Dictionary<HexCoord, PolyVertex> m_Vertices = new Dictionary<HexCoord, PolyVertex>();
         private readonly Dictionary<HexCoord,PolyQuad> m_Quads = new Dictionary<HexCoord, PolyQuad>();
-
-        public GridRuntimeData m_GridData;
         private void Awake()
         {
-            m_CameraManager = new CameraManager(); 
-            m_MeshConstructor = new MeshConstructor();
             m_TileManager = GetComponent<TileManager>();
             m_ModuleManager = GetComponent<ModuleManager>();
+            m_CameraManager = new CameraManager();
+            m_MeshConstructor = GetComponent<MeshConstructor>();
+            m_SelectionManager = new SelectionManager();
             m_RenderManager = GetComponent<RenderManager>();
-            m_Controls = new IPolyGridControl[]{ m_CameraManager,m_MeshConstructor,m_TileManager,m_RenderManager,m_ModuleManager};
+            m_Controls = new IPolyGridControl[]{ m_TileManager,m_SelectionManager,m_ModuleManager,m_CameraManager,m_MeshConstructor,m_RenderManager};
             m_Controls.Traversal(p=>p.Init(transform));
+
+            m_VertexCallbacks = m_Controls.Collect<IPolyGridControl, IPolyGridVertexCallback>().ToArray();
+            m_QuadCallbacks = m_Controls.Collect<IPolyGridControl, IPolyGridQuadCallback>().ToArray();
+            m_CornerCallbacks = m_Controls.Collect<IPolyGridControl, IPolyGridCornerCallback>().ToArray();
+            m_VoxelCallbacks = m_Controls.Collect<IPolyGridControl, IPolyGridVoxelCallback>().ToArray();
+            m_ModifyCallbacks=m_Controls.Collect<IPolyGridControl, IPolyGridModifyCallback>().ToArray();
+            
             UIT_TouchConsole.InitDefaultCommands();
             UIT_TouchConsole.Command("Reset",KeyCode.R).Button(Clear);
 
@@ -70,12 +71,12 @@ namespace PolyGrid
                 var area = new PolyArea(_area.identity);
                 m_Areas.Add(areaCoord,area);
                 //Insert Vertices&Quads
-                foreach (var pair in _area.m_Vertices)
+                foreach (var data in _area.m_Vertices)
                 {
-                    var identity = pair.identity;
-                    var coord = pair.coord*KPolyGrid.tileSize;
+                    var identity = data.identity;
+                    var coord = data.coord*KPolyGrid.tileSize;
                 
-                    m_Vertices.TryAdd(identity, () => new PolyVertex() {m_Identity = identity,m_Coord = coord});
+                    m_Vertices.TryAdd(identity, () => new PolyVertex() {m_Identity = identity,m_Coord = coord,m_Invalid = data.invalid});
                     area.m_Vertices.Add(m_Vertices[identity]);
                 }
 
@@ -96,13 +97,16 @@ namespace PolyGrid
                     }
                 }
 
-                m_Controls.Traversal(p=>p.OnAreaConstruct(m_Areas[areaCoord]));
+                m_MeshConstructor.ConstructArea(m_Areas[areaCoord]);
             }
         }
         private void Update()
         {
             InputTick();
             m_Controls.Traversal(p=>p.Tick(Time.deltaTime));
+            #if UNITY_EDITOR
+            EditorTick();
+            #endif
         }
         
         void InputTick()
@@ -126,52 +130,47 @@ namespace PolyGrid
             }
         }
         
-        void Click(Vector2 screenPos,bool construct)
+        void Click(Vector2 _screenPos,bool _construct)
         {
-            Ray ray=m_CameraManager.m_Camera.ScreenPointToRay(screenPos);
-            if(Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, int.MaxValue))
-            {
-                var raycast = hit.collider.GetComponent<IGridRaycast>();
-                var tuple = construct? raycast.GetNearbyCornerData(ref hit):raycast.GetCornerData();
-                DoSelectVertex(m_Vertices[tuple.Item1],tuple.Item2,construct);
+            var ray = m_CameraManager.m_Camera.ScreenPointToRay(_screenPos);
+            PileID selection=default;
+            if (_construct&&!m_SelectionManager.VerifyConstruction(ray, m_Quads.Values, out selection))
                 return;
-            }
+            if(!_construct&&!m_SelectionManager.VerifyDeconstruction(ray, out selection))
+                return;
 
-            GPlane plane = new GPlane(Vector3.up, transform.position);
-            var hitPos = ray.GetPoint(UGeometryIntersect.RayPlaneDistance(plane, ray));
-            var hitCoord =  hitPos.ToCoord();
-            if (ValidateGridSelection(hitCoord, out HexCoord selectCoord))
-                DoSelectVertex(m_Vertices[selectCoord],0,construct);
+            var vertex = m_Vertices[selection.location];
+            if (vertex.m_Invalid)
+                return;
             
-            //DoAreaConstruct(UHexagonArea.GetBelongAreaCoord(hitHex));
-        }
-
-        void DoSelectVertex(PolyVertex _vertex,byte _height ,bool _construct)
-        {
             if(_construct)
-                m_TileManager.CornerConstruction(_vertex,_height,m_ModuleManager.SpawnCorners,m_ModuleManager.SpawnModules);
+                m_TileManager.CornerConstruction(vertex,selection.height,OnVertexSpawn,OnQuadSpawn,OnCornerSpawn,OnVoxelSpawn);
             else
-                m_TileManager.CornerDeconstruction(_vertex,_height,m_ModuleManager.RecycleCorners,m_ModuleManager.RecycleModules);
-            
-            m_Controls.Traversal(p=>p.OnSelectVertex(_vertex,_height));
+                m_TileManager.CornerDeconstruction(vertex,selection.height,OnVertexRecycle,OnQuadRecycle,OnCornerRecycle,OnVoxelRecycle);
+            m_ModifyCallbacks.Traversal(p=>p.OnVertexModify(vertex,selection.height,_construct));
         }
 
-        public bool ValidateGridSelection(Coord _localPos,out HexCoord coord)
-        {
-            coord=HexCoord.zero;
-            var quad= m_Quads.Values.Find(p =>p.m_CoordQuad.IsPointInside(_localPos),out int quadIndex);
-            if (quadIndex != -1)
-            {
-                var quadVertexIndex = quad.m_CoordQuad.NearestPointIndex(_localPos);
-                coord=quad.m_HexQuad[quadVertexIndex];
-                return true;
-            }
-            return false;
-        }
+        void OnVertexSpawn(PolyVertex _vertex) => m_VertexCallbacks.Traversal(p => p.OnPopulateVertex(_vertex));
+        void OnVertexRecycle(HexCoord _vertexID) => m_VertexCallbacks.Traversal(p => p.OnDeconstructVertex(_vertexID));
+        void OnQuadSpawn(PolyQuad _quad) => m_QuadCallbacks.Traversal(p => p.OnPopulateQuad(_quad));
+        void OnQuadRecycle(HexCoord _quadID) => m_QuadCallbacks.Traversal(p => p.OnDeconstructQuad(_quadID));
+        void OnCornerSpawn(ICorner _corner)=>m_CornerCallbacks.Traversal(p=>p.OnPopulateCorner(_corner));
+        void OnCornerRecycle(PileID _cornerID)=>m_CornerCallbacks.Traversal(p=>p.OnDeconstructCorner(_cornerID));
+        void OnVoxelSpawn(IVoxel _voxel)=>m_VoxelCallbacks.Traversal(p=>p.OnPopulateVoxel(_voxel));
+        void OnVoxelRecycle(PileID _voxelID)=>m_VoxelCallbacks.Traversal(p=>p.OnDeconstructVoxel(_voxelID));
 
         
 #if UNITY_EDITOR
-        public bool m_Gizmos=false;
+        private void EditorTick()
+        {
+            var ray = m_CameraManager.m_Camera.ScreenPointToRay(Input.mousePosition);
+            if (!m_SelectionManager.VerifyConstruction(ray, m_Quads.Values, out var _selection))
+                return;
+            m_MeshConstructor.ConstructCornerMarkup(m_Vertices[_selection.location],_selection.height);
+        }
+        
+        #region Gizmos
+        public bool m_Gizmos;
         private void OnGUI()
         {
             TouchTracker.DrawDebugGUI();
@@ -181,12 +180,16 @@ namespace PolyGrid
         {
             if (!m_Gizmos)
                 return;
-            Gizmos.color = Color.green.SetAlpha(.3f);
             foreach (var vertex in m_Vertices.Values)
+            {
+                Gizmos.color = vertex.m_Invalid?Color.red:Color.green;
                 Gizmos.DrawSphere(vertex.m_Coord.ToPosition(),.2f);
+            }
+            Gizmos.color = Color.white.SetAlpha(.3f);
             foreach (var quad in m_Quads)
                 Gizmos_Extend.DrawLinesConcat(quad.Value.m_HexQuad.Iterate(p=>m_Vertices[p].m_Coord.ToPosition()));
         }
+        #endregion
 #endif
     }
     

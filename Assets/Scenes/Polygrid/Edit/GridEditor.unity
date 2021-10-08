@@ -153,9 +153,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Flat: 1
-  m_AreaRadius: 8
+  m_AreaRadius: 10
   m_SmoothenTimes: 256
-  m_SmoothenFactor: 0.4
+  m_SmoothenFactor: 0.41
   m_IteratePerFrame: 64
   m_Gizmos: 1
 --- !u!4 &1017085998

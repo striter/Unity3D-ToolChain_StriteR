@@ -2,29 +2,13 @@
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-using Geometry.Index;
+using Geometry.Polygon;
 using UnityEngine.Rendering;
 
 public static class URender
 {
-    public static GTriangleIndex[] GetPolygons(int[] _indices)
-    {
-        GTriangleIndex[] polygons = new GTriangleIndex[_indices.Length / 3];
-        for (int i = 0; i < polygons.Length; i++)
-        {
-            int startIndex = i * 3;
-            int triangle0 = _indices[startIndex];
-            int triangle1 = _indices[startIndex + 1];
-            int triangle2 = _indices[startIndex + 2];
-            polygons[i] = new GTriangleIndex(triangle0, triangle1, triangle2);
-        }
-        return polygons;
-    }
-    public static GTriangleIndex[] GetPolygons(this Mesh _srcMesh, out int[] _indices)
-    {
-        _indices = _srcMesh.triangles;
-        return GetPolygons(_indices);
-    }
+    public static readonly int kIDColor = Shader.PropertyToID("_Color");
+    
     #region Mesh Edit
     public static void TraversalBlendShapes(this Mesh _srcMesh, int _VertexCount, Action<string, int, int, float, Vector3[], Vector3[], Vector3[]> _OnEachFrame)
     {

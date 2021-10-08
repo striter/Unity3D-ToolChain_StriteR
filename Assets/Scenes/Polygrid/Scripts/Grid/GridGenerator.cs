@@ -22,6 +22,7 @@ namespace PolyGrid
         [Header("Iterate")] public int m_IteratePerFrame = 8;
 
         private readonly Dictionary<HexCoord, RelaxArea> m_Areas = new Dictionary<HexCoord, RelaxArea>();
+        public readonly Dictionary<HexCoord, Coord> m_ExistVertices = new Dictionary<HexCoord, Coord>();
 
         private readonly Dictionary<EConvexIterate, Stack<IEnumerator>> m_ConvexIterator = 
             new Dictionary<EConvexIterate, Stack<IEnumerator>> () {
@@ -37,8 +38,9 @@ namespace PolyGrid
             UHexagonArea.Init(m_AreaRadius,6,true);
         } 
         
-        public void Clear()
+        void Clear()
         {
+            m_ExistVertices.Clear();
             m_Areas.Clear();
             foreach (var key in m_ConvexIterator.Keys)
                 m_ConvexIterator[key].Clear();
@@ -92,11 +94,16 @@ namespace PolyGrid
             _onAreaFinish(area);
         }
 
-        public void ValidateArea(HexCoord _areaCoord,Dictionary<HexCoord,Coord> _existVertices,Action<RelaxArea> _onAreaRelaxed)
+        public void ValidateArea(HexCoord _areaCoord)
         {
             foreach (HexagonArea tuple in _areaCoord.GetCoordsInRadius(1).Select(UHexagonArea.GetArea))
                 m_ConvexIterator[EConvexIterate.Tesselation].Push(TessellateArea(tuple.coord));
-            m_ConvexIterator[EConvexIterate.Relaxed].Push(RelaxArea(_areaCoord,_existVertices,_onAreaRelaxed));
+            m_ConvexIterator[EConvexIterate.Relaxed].Push(RelaxArea(_areaCoord,m_ExistVertices,area =>
+            {
+                Debug.Log($"Area{area.m_Area.coord} Constructed!");
+                foreach (var pair in area.m_Vertices)
+                    m_ExistVertices.TryAdd(pair.Key,pair.Value);
+            }));
         }
 
     }
