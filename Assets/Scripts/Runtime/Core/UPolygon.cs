@@ -17,28 +17,16 @@ public static class UPolygon
     }
     
     public static void FillQuadTriangle(this GQuad _quad, List<Vector3> _vertices, List<int> _indices,
-        List<Vector2> _uvs, List<Vector3> _normals)
+        List<Vector2> _uvs, List<Vector3> _normals,List<Color> _colors,Color _color=default)
     {
         int indexOffset = _vertices.Count;
-        _vertices.Add(_quad[0]);
-        _vertices.Add(_quad[1]);
-        _vertices.Add(_quad[2]);
-        _vertices.Add(_quad[3]);
-        if (_uvs!=null)
+        for (int i = 0; i < 4; i++)
         {
-            _uvs.Add(URender.IndexToQuadUV(0));
-            _uvs.Add(URender.IndexToQuadUV(1));
-            _uvs.Add(URender.IndexToQuadUV(2));
-            _uvs.Add(URender.IndexToQuadUV(3));
+            _vertices.Add(_quad[i]);
+            _uvs?.Add(URender.IndexToQuadUV(i));
+            _normals?.Add(_quad.normal);
+            _colors?.Add(_color);
         }
-
-        if (_normals!=null)
-        {
-            var normal = Vector3.Cross(_quad[1]-_quad[0],_quad[3]-_quad[0]);
-            for(int i=0;i<4;i++)
-                _normals.Add(normal);
-        }
-            
         QuadToTriangleIndices(_indices, indexOffset + 0, indexOffset + 1, indexOffset + 2,indexOffset+3);
     }
 

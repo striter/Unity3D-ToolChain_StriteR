@@ -290,6 +290,8 @@ public struct Int2
     public int y;
     public Int2(int _x, int _y) { x = _x; y = _y; }
     public static implicit operator (int, int)(Int2 int2) => (int2.x, int2.y);
+
+    public static readonly Int2 One = new Int2(1, 1);
 }
 [Serializable]
 public struct Int3

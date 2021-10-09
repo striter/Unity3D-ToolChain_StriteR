@@ -1,10 +1,10 @@
-﻿Shader "Game/Particles/AlphaBlend"
+﻿Shader "Hidden/AlphaBlend"
 {
 	Properties
 	{
 		_MainTex("Main Tex",2D) = "white"{}
-		[Toggle(_ALPHAMASK)]_AlphaMask("Alpha Mask",int)=0
-		[HDR]_Color("Color",Color) = (1,1,1,1)
+		_Intensity("Intensity",Range(5,20))=5
+		_Alpha("Alpha",Range(0,1)) = 1
 		
 		[Header(Render Options)]
         [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
@@ -27,7 +27,11 @@
 			#pragma fragment frag
 			#include "Assets/Shaders/Library/Common.hlsl"
 			#pragma multi_compile_instancing
-			#pragma shader_feature_local _ALPHAMASK
+
+			INSTANCING_BUFFER_START
+				INSTANCING_PROP(float,_Alpha)
+			INSTANCING_BUFFER_END
+			
 			struct a2v
 			{
 				float3 positionOS : POSITION;
@@ -38,18 +42,21 @@
 
 			struct v2f
 			{
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 				float4 positionCS : SV_POSITION;
 				float4 color:TEXCOORD0;
 				float2 uv:TEXCOORD1;
 			};
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
-			float4 _Color;
+			float _Intensity;
+			
 
 			v2f vert(a2v v)
 			{
-				UNITY_SETUP_INSTANCE_ID(v);
 				v2f o;
+				UNITY_SETUP_INSTANCE_ID(v);
+				UNITY_TRANSFER_INSTANCE_ID(v,o);
 				o.positionCS = TransformObjectToHClip(v.positionOS);
 				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 				o.color = v.color;
@@ -58,12 +65,8 @@
 
 			float4 frag(v2f i) : SV_Target
 			{
-				float4 col = _Color*i.color;
-				#if _ALPHAMASK
-					col.a=tex2D(_MainTex,i.uv).r;
-				#else
-					col*=tex2D(_MainTex,i.uv);
-				#endif
+				float4 col = _Intensity*i.color;
+				col.a*=tex2D(_MainTex,i.uv).r*INSTANCE(_Alpha);
 				return col;
 			}
 			ENDHLSL

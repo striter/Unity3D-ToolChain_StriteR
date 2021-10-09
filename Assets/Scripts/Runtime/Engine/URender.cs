@@ -8,6 +8,7 @@ using UnityEngine.Rendering;
 public static class URender
 {
     public static readonly int kIDColor = Shader.PropertyToID("_Color");
+    public static readonly int kIDAlpha = Shader.PropertyToID("_Alpha");
     
     #region Mesh Edit
     public static void TraversalBlendShapes(this Mesh _srcMesh, int _VertexCount, Action<string, int, int, float, Vector3[], Vector3[], Vector3[]> _OnEachFrame)
