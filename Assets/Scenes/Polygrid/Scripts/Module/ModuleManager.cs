@@ -21,7 +21,7 @@ namespace PolyGrid.Module
         private readonly Queue<PileID> m_CornerPropaganda=new Queue<PileID>();
         private readonly Stack<Stack<PileID>> m_PropagandaChains = new Stack<Stack<PileID>>();
 
-        public IEnumerable<CornerPersistent> CollectAllCornerData() => m_Corners.Select(p => new CornerPersistent() { identity = p.m_PoolID,type = p.m_Type});
+        public IEnumerable<CornerData> CollectAllCornerData() => m_Corners.Select(p => new CornerData() { identity = p.m_PoolID,type = p.m_Type});
         public void Init(Transform _transform)
         {
             m_Voxels = new TObjectPoolMono<PileID, ModuleVoxel>(_transform.Find("Modules/Voxel/Item"));

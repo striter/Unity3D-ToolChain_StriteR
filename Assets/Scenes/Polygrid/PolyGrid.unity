@@ -1239,8 +1239,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a3baf102df0734b9879b22d98c51be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SelectionValid: {r: 345.34903, g: 373.45883, b: 995.8902, a: 1}
-  m_SelectionInvalid: {r: 766.9961, g: 92.36079, b: 92.36079, a: 1}
+  m_SelectionValid: {r: 0.28773582, g: 1, b: 0.49510396, a: 1}
+  m_SelectionInvalid: {r: 0.8490566, g: 0.1481844, b: 0.1481844, a: 1}
+  m_SelectionFade:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 20
+      outSlope: 20
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.05
+      value: 1
+      inSlope: 6.666667
+      outSlope: 6.666667
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.2
+      value: 0
+      inSlope: -6.6666665
+      outSlope: -6.6666665
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &1227246352
 MonoBehaviour:
   m_ObjectHideFlags: 0

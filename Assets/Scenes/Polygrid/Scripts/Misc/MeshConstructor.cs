@@ -9,11 +9,12 @@ using UnityEngine;
 
 namespace PolyGrid
 {
-    public class MeshConstructor :MonoBehaviour, IPolyGridControl,IPolyGridModifyCallback
+    public class MeshConstructor :MonoBehaviour, IPolyGridControl
     {
-        [ColorUsage(true,true)]public Color m_SelectionValid;
-        [ColorUsage(true,true)]public Color m_SelectionInvalid;
-        
+        [ColorUsage(false,false)]public Color m_SelectionValid;
+        [ColorUsage(false,false)]public Color m_SelectionInvalid;
+        public AnimationCurve m_SelectionFade;
+        private Timer m_SelectionFadeTimer;
         private Transform m_Selection;
         private Mesh m_SelectionMesh;
         private MeshRenderer m_SelectionRenderer;
@@ -22,8 +23,13 @@ namespace PolyGrid
         
         public void Tick(float _deltaTime)
         {
+            if (!m_SelectionFadeTimer.m_Timing)
+                return;
+            
+            m_SelectionFadeTimer.Tick(_deltaTime);
+            m_SelectionRendererBlock.SetFloat(URender.kIDAlpha,m_SelectionFade.Evaluate( m_SelectionFadeTimer.m_TimeElapsed));
+            m_SelectionRenderer.SetPropertyBlock(m_SelectionRendererBlock);
         }
-
         public void Init(Transform _transform)
         {
             m_Selection = _transform.Find("Selection");
@@ -33,25 +39,28 @@ namespace PolyGrid
             m_SelectionRenderer = m_Selection.GetComponent<MeshRenderer>();
             m_SelectionRendererBlock = new MaterialPropertyBlock();
             m_AreaMeshes = new TObjectPoolClass<AreaRenderer>(_transform.Find("AreaContainer/AreaMesh"));
+      
+            OnValidate();
         }
-
-        public void OnVertexModify(PolyVertex _vertex, byte _height, bool _construct) => ConstructCornerMarkup(_vertex,_height);
+        private void OnValidate()
+        {
+            m_SelectionFadeTimer = new Timer(m_SelectionFade.length);
+            m_SelectionFadeTimer.Replay();
+        }
         public void ConstructCornerMarkup(PolyVertex _vertex,byte _height)
         {
-            bool invalid = _vertex.m_Invalid;
-            m_SelectionRendererBlock.SetColor(URender.kIDColor,invalid?m_SelectionInvalid:m_SelectionValid);
-            m_SelectionRenderer.SetPropertyBlock(m_SelectionRendererBlock);
-            
+            var color = _vertex.m_Invalid ? m_SelectionInvalid : m_SelectionValid;
             if (_height == 0)
             {
-                _vertex.ConstructLocalMesh(m_SelectionMesh,EQuadGeometry.Half,EVoxelGeometry.Plane,true,false);
+                _vertex.ConstructLocalMesh(m_SelectionMesh,EQuadGeometry.Half,EVoxelGeometry.Plane,true,false,true,color);
                 m_Selection.position = _vertex.m_Coord.ToPosition();
             }
             else
             {
-                _vertex.ConstructLocalMesh(m_SelectionMesh,EQuadGeometry.Half,EVoxelGeometry.VoxelFull,true,false);
+                _vertex.ConstructLocalMesh(m_SelectionMesh,EQuadGeometry.Half,EVoxelGeometry.VoxelFull,true,false,true,color);
                 m_Selection.position = DPolyGrid.GetCornerHeight(_height)+ _vertex.m_Coord.ToPosition();
             }
+            m_SelectionFadeTimer.Replay();
         }
         public void ConstructArea(PolyArea _area)
         {

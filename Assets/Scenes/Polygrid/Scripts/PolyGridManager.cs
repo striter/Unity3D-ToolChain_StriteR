@@ -12,23 +12,6 @@ using UnityEngine;
 using TDataPersistent;
 namespace PolyGrid
 {
-    [Serializable]
-    public struct CornerPersistent
-    {
-        public PileID identity;
-        public EModuleType type;
-    }
-    public class PersistentData:CDataSave<PersistentData>
-    {
-        public override bool DataCrypt() => false;
-        public List<CornerPersistent> m_CornerData=new List<CornerPersistent>();
-
-        public void Record(IEnumerable<CornerPersistent> _corners)
-        {
-            m_CornerData.Clear();
-            m_CornerData.AddRange(_corners);
-        }
-    }
     public class PolyGridManager : MonoBehaviour
     {
         public GridRuntimeData m_GridData;
@@ -137,9 +120,6 @@ namespace PolyGrid
         {
             InputTick();
             m_Controls.Traversal(p=>p.Tick(Time.deltaTime));
-            // #if UNITY_EDITOR
-            // EditorTick();
-            // #endif
         }
         
         void InputTick()
@@ -180,6 +160,7 @@ namespace PolyGrid
         bool DoCornerConstruction(PileID _selection,bool _construct)
         {
             var vertex = m_Vertices[_selection.location];
+            m_MeshConstructor.ConstructCornerMarkup(vertex,_selection.height);
             if (vertex.m_Invalid)
                 return false;
 
@@ -202,13 +183,6 @@ namespace PolyGrid
 
         
 #if UNITY_EDITOR
-        private void EditorTick()
-        {
-            var ray = m_CameraManager.m_Camera.ScreenPointToRay(Input.mousePosition);
-            if (!m_SelectionManager.VerifyConstruction(ray, m_Quads.Values, out var _selection))
-                return;
-            m_MeshConstructor.ConstructCornerMarkup(m_Vertices[_selection.location],_selection.height);
-        }
         
         #region Gizmos
         public bool m_Gizmos;

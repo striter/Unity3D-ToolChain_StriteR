@@ -36,7 +36,7 @@ namespace PolyGrid
         }
 
         public static void ConstructLocalMesh(this PolyVertex _vertex, Mesh _mesh, EQuadGeometry _geometry,
-            EVoxelGeometry _volumeGeometry,bool generateUV,bool generateNormals)
+            EVoxelGeometry _volumeGeometry,bool generateUV,bool generateNormals,bool generateColors=false,Color _color=default)
         {
             var cornerQuads = TSPoolList<GQuad>.Spawn();
             Coord center = _vertex.m_Coord;
@@ -48,6 +48,7 @@ namespace PolyGrid
             List<int> indices = TSPoolList<int>.Spawn();
             List<Vector3> normals =generateNormals? TSPoolList<Vector3>.Spawn():null;
             List<Vector2> uvs = generateUV? TSPoolList<Vector2>.Spawn():null;
+            List<Color> colors = generateColors? TSPoolList<Color>.Spawn():null;
 
             switch (_volumeGeometry)
             {
@@ -61,6 +62,7 @@ namespace PolyGrid
                             vertices.Add(quad[i]);
                             uvs?.Add(URender.IndexToQuadUV(i));
                             normals?.Add(quad.normal);
+                            colors?.Add(_color);
                         }
                         
                         UPolygon.QuadToTriangleIndices(indices,indexOffset+0,indexOffset+1,indexOffset+2,indexOffset+3);
@@ -78,6 +80,7 @@ namespace PolyGrid
                             vertices.Add(qube[i]);
                             uvs?.Add(URender.IndexToQuadUV(i%4));
                             normals?.Add(quad.normal);
+                            colors?.Add(_color);
                         };
                         
                         //Bottom
@@ -96,10 +99,10 @@ namespace PolyGrid
                     foreach (var quad in cornerQuads)
                     {
                         var qube = quad.ExpandToQube(KPolyGrid.tileHeightVector, .5f);
-                        qube.FillFacingQuadTriangle(ECubeFacing.T,vertices,indices,uvs,normals);
-                        qube.FillFacingSplitQuadTriangle(ECubeFacing.LF,vertices,indices,uvs,normals);
-                        qube.FillFacingSplitQuadTriangle(ECubeFacing.FR,vertices,indices,uvs,normals);
-                        qube.FillFacingQuadTriangle(ECubeFacing.D,vertices,indices,uvs,normals);
+                        qube.FillFacingQuadTriangle(ECubeFacing.T,vertices,indices,uvs,normals,colors,_color);
+                        qube.FillFacingSplitQuadTriangle(ECubeFacing.LF,vertices,indices,uvs,normals,colors,_color);
+                        qube.FillFacingSplitQuadTriangle(ECubeFacing.FR,vertices,indices,uvs,normals,colors,_color);
+                        qube.FillFacingQuadTriangle(ECubeFacing.D,vertices,indices,uvs,normals,colors,_color);
                     }
 
                 }
@@ -123,6 +126,12 @@ namespace PolyGrid
             {
                 _mesh.SetNormals(normals);
                 TSPoolList<Vector3>.Recycle(normals);
+            }
+
+            if (colors != null)
+            {
+                _mesh.SetColors(colors);
+                TSPoolList<Color>.Recycle(colors);
             }
         }
     }

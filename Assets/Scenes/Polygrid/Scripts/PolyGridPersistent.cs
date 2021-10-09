@@ -10,7 +10,7 @@ namespace PolyGrid
     public struct CornerData
     {
         public PileID identity;
-        public ECornerType type;
+        public EModuleType type;
     }
     
     public class PersistentData:CDataSave<PersistentData>

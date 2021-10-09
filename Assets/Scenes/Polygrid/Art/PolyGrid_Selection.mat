@@ -109,7 +109,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _HueShift: 0
-    - _Intensity: 10
+    - _Intensity: 20
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
