@@ -300,6 +300,8 @@ public struct Int3
     public int y;
     public int z;
     public Int3(int _x, int _y, int _z) { x = _x; y = _y; z = _z; }
+    
+    public static readonly Int3 One = new Int3(1, 1,1);
 }
 [Serializable]
 public struct Int4

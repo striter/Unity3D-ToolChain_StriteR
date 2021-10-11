@@ -62,6 +62,8 @@ namespace Geometry.Voxel
         public Vector3 R => quad.R;
         public int Length => quad.Length;
 
+        public static GQuad operator +(GQuad _src, Vector3 _dst)=> new GQuad(_src.B + _dst, _src.L + _dst, _src.F + _dst,_src.R+_dst);
+        public static GQuad operator -(GQuad _src, Vector3 _dst)=> new GQuad(_src.B - _dst, _src.L - _dst, _src.F - _dst,_src.R-_dst);
     }
 
     [Serializable]

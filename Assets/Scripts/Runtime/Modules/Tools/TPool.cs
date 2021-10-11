@@ -78,7 +78,7 @@ namespace TPoolStatic
         }
     }
 
-    public static class TSPoolCollection<T,Y> where T:ICollection,new()
+    public static class TSPoolCollection<T> where T:new()
     {
         private static readonly MethodInfo kClearMethod = typeof(T).GetMethod("Clear");
         private static Stack<T> m_PoolItems { get; set; } = new Stack<T>();
@@ -96,18 +96,30 @@ namespace TPoolStatic
 
     public static class TSPoolList<T>
     {
-        public static List<T> Spawn() => TSPoolCollection<List<T>, T>.Spawn();
-        public static void Recycle(List<T> _list) => TSPoolCollection<List<T>, T>.Recycle(_list);
+        public static List<T> Spawn() => TSPoolCollection<List<T>>.Spawn();
+
+        public static List<T> Spawn(int _capacity)
+        {
+            var list=TSPoolCollection<List<T>>.Spawn();
+            list.Capacity = _capacity;
+            return list;
+        }
+        public static void Recycle(List<T> _list) => TSPoolCollection<List<T>>.Recycle(_list);
     }
     public static class TSPoolStack<T> 
     {
-        public static Stack<T> Spawn() => TSPoolCollection<Stack<T>, T>.Spawn();
-        public static void Recycle(Stack<T> _stack) => TSPoolCollection<Stack<T>, T>.Recycle(_stack);
+        public static Stack<T> Spawn() => TSPoolCollection<Stack<T>>.Spawn();
+        public static void Recycle(Stack<T> _stack) => TSPoolCollection<Stack<T>>.Recycle(_stack);
     }
     public static class TSPoolQueue<T> 
     {
-        public static Queue<T> Spawn() => TSPoolCollection<Queue<T>, T>.Spawn();
-        public static void Recycle(Queue<T> _queue) => TSPoolCollection<Queue<T>, T>.Recycle(_queue);
+        public static Queue<T> Spawn() => TSPoolCollection<Queue<T>>.Spawn();
+        public static void Recycle(Queue<T> _queue) => TSPoolCollection<Queue<T>>.Recycle(_queue);
+    }
+    public static class TSPoolHashset<T> 
+    {
+        public static HashSet<T> Spawn() => TSPoolCollection<HashSet<T>>.Spawn();
+        public static void Recycle(HashSet<T> _queue) => TSPoolCollection<HashSet<T>>.Recycle(_queue);
     }
 }
 namespace TPool

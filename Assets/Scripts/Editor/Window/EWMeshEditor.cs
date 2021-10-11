@@ -637,7 +637,7 @@ namespace TEditor
                             case EPaintNormal.Every: normalPassed = true; break;
                         }
                         return normalPassed && (hitPosition - p).sqrMagnitude < sqrRaidus;
-                    }).FillCollection(m_PaintAffectedIndices);
+                    }).FillList(m_PaintAffectedIndices);
                 }
             }
 

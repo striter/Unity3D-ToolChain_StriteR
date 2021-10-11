@@ -44,7 +44,15 @@ namespace Geometry
             }
         }
         
-        public static (T v0, T v1) ToRelativeVertex<T>(this EQuadFacing _patch, Quad<T> _quad) where T : struct
+        
+
+        public static Quad<T> Convert<T,Y>(IQuad<Y> _srcQuad, Func<Y, T> _convert)
+        {
+            return new Quad<T>(_convert(_srcQuad.B), _convert(_srcQuad.L), _convert(_srcQuad.F),
+                _convert(_srcQuad.R));
+        }
+        
+        public static (T v0, T v1) ToRelativeVertex<T>(this EQuadFacing _patch, Quad<T> _quad)
         {
             var patch = GetRelativeVertIndexesCW(_patch);
             return (_quad[patch.i0], _quad[patch.i1]);
@@ -60,8 +68,7 @@ namespace Geometry
             return UMath.BilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _uv);
         }
         
-        
-        public static Quad<T> Resize<T>(this Quad<T> _quad, float _shrinkScale) where T:struct
+        public static Quad<T> Resize<T>(this Quad<T> _quad, float _shrinkScale) 
         {
             dynamic vertex0 = _quad.vB;
             dynamic vertex1 = _quad.vL;
@@ -74,7 +81,7 @@ namespace Geometry
             return _quad;
         }
 
-        public static T GetBaryCenter<T>(this Quad<T> _quad) where T:struct
+        public static T GetBaryCenter<T>(this Quad<T> _quad)
         {
             dynamic vertex0 = _quad.vB;
             dynamic vertex1 = _quad.vL;
@@ -83,7 +90,7 @@ namespace Geometry
             return (vertex0+vertex1+vertex2+vertex3)/4;
         }
         
-        public static (Y vBL, Y vLF, Y vFR, Y vRB, Y vC) GetQuadMidVertices<T,Y>(this T _quad) where T:IQuad<Y> where Y:struct
+        public static (Y vBL, Y vLF, Y vFR, Y vRB, Y vC) GetQuadMidVertices<T,Y>(this T _quad) where T:IQuad<Y> 
         {
             dynamic vB = _quad.B;
             dynamic vL = _quad.L;
@@ -92,7 +99,7 @@ namespace Geometry
             return ((vB + vL) / 2, (vL + vF) / 2, (vF + vR)/2,(vR+vB)/2,(vB+vL+vF+vR)/4);
         }
 
-        public static IEnumerable<Quad<Y>> SplitToQuads<T,Y>(this T _quad,bool _insideOut) where T:IQuad<Y> where Y:struct
+        public static IEnumerable<Quad<Y>> SplitToQuads<T,Y>(this T _quad,bool _insideOut) where T:IQuad<Y> 
         {
             var vB = _quad.B;
             var vL = _quad.L;
@@ -122,7 +129,7 @@ namespace Geometry
             }
         }
 
-        public static IEnumerable<Triangle<T>> SplitToTriangle<T>(this IQuad<T> splitQuad, T v0, T v1) where T:struct
+        public static IEnumerable<Triangle<T>> SplitToTriangle<T>(this IQuad<T> splitQuad, T v0, T v1)  where T:struct
         {
             for (int i = 0; i < 4; i++)
             {
@@ -147,7 +154,7 @@ namespace Geometry
             return new Quad<Vector3>(_convert(_quad.vB),_convert(_quad.vL),_convert(_quad.vF),_convert(_quad.vR));
         }
 
-        public static bool IsPointInsideDynamic<T> (this IQuad<T> _quad,T _point) where T:struct
+        public static bool IsPointInsideDynamic<T> (this IQuad<T> _quad,T _point) 
         { 
             dynamic A = _quad.B;
             dynamic B = _quad.L;
@@ -163,7 +170,7 @@ namespace Geometry
             return Mathf.Abs( a + b + c + d) == 4;
         }
 
-        public static bool Contains<T>(this IQuad<T> _quad, T _element) where T : struct,IEquatable<T>
+        public static bool Contains<T>(this IQuad<T> _quad, T _element) where T :IEquatable<T>
         {
             for (int i = 0; i < 4; i++)
                 if (_element.Equals(_quad[i]))
@@ -171,7 +178,7 @@ namespace Geometry
             return false;
         }
         
-        public static int MatchVertexCount<T>(this IQuad<T> _quad1,IQuad<T> _quad2) where T:struct,IEquatable<T>
+        public static int MatchVertexCount<T>(this IQuad<T> _quad1,IQuad<T> _quad2) where T:IEquatable<T>
         {
             int index=0;
             for(int i=0;i<4;i++)
@@ -183,7 +190,7 @@ namespace Geometry
             return index;
         }
 
-        public static int NearestPointIndex<T>(this Quad<T> _quad, T _point) where T:struct
+        public static int NearestPointIndex<T>(this Quad<T> _quad, T _point) 
         {
             float minDistance = float.MaxValue;
             int minIndex = 0;
@@ -201,7 +208,7 @@ namespace Geometry
             return minIndex;
         }
 
-        public static Quad<T> RotateYawCW<T>(this Quad<T> _quad,ushort _rotateIndex) where T : struct
+        public static Quad<T> RotateYawCW<T>(this Quad<T> _quad,ushort _rotateIndex)
         {
             var b = _quad.vB;
             var l = _quad.vL;

@@ -12,6 +12,9 @@ namespace TDataPersistent
         public static readonly FieldInfo[] s_FieldInfos = typeof(T).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
         public static readonly string s_FilePath =   typeof(T).Name ;
         public virtual bool DataCrypt() => true;
+        public virtual void Validate()
+        {
+        }
     }
     public static class TDataSave
     {
@@ -70,6 +73,7 @@ namespace TDataPersistent
                 if (dataCrypt) readData = TDataCrypt.EasyCryptData(readData, c_DataCryptKey);
                 fieldInfo[i].SetValue(_data, TDataConvert.Convert(fieldInfo[i].FieldType, readData));
             }
+            _data.Validate();
         }
         
         static void SaveData<T>(CDataSave<T> _data, XmlNode _node,string _path) where T : CDataSave<T>, new()
@@ -110,8 +114,10 @@ namespace TDataPersistent
                 var node = m_Doc.AppendChild(m_Doc.CreateElement(typeof(T).Name));
                 foreach(var fieldInfo in CDataSave<T>.s_FieldInfos)
                     node.AppendChild(m_Doc.CreateElement(fieldInfo.Name));
-            
-                SaveData(new T(),node,filePath);
+
+                var defaultData = new T();
+                defaultData.Validate();
+                SaveData(defaultData,node,filePath);
             }
         }
     }

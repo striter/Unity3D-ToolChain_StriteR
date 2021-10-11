@@ -82,7 +82,7 @@ namespace LinqExtension
             }
         }
 
-        public static void FillCollection<T>(this IEnumerable<T> _collection, List<T> _list)
+        public static void FillList<T>(this IEnumerable<T> _collection, List<T> _list)
         {
             _list.Clear();
             foreach (var element in _collection)

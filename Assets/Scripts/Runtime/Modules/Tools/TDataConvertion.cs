@@ -41,7 +41,7 @@ public static class TDataConvert
         if (CheckSerializeType(type))
             return SerializeToString(type, value, iteration);
 
-        throw new Exception("Xml Error Invlid Type:" + type.ToString() + " For Base Type To Phrase");
+        throw new Exception("Xml Error Invalid Type:" + type.ToString() + " For Base Type To Phrase");
     }
 
     static object ConvertToObject(Type _type, string _xmlData, int _iteration)

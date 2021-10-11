@@ -128,7 +128,7 @@ namespace Geometry
 #endregion
     }
     
-    public interface IQuad<T> where T : struct
+    public interface IQuad<T>
     {
         T this[int _index] { get; }
         T this[EQuadCorner _corner] { get; }
@@ -139,7 +139,7 @@ namespace Geometry
     }
 
     [Serializable]
-    public struct Quad<T> : IQuad<T>,IEquatable<Quad<T>>,IEqualityComparer<Quad<T>>,IIterate<T>,IEnumerable<T> where T:struct
+    public struct Quad<T> : IQuad<T>,IEquatable<Quad<T>>,IEqualityComparer<Quad<T>>,IIterate<T>,IEnumerable<T>
     {
         public T vB;
         public T vL;
