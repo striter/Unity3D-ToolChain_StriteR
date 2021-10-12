@@ -72,6 +72,18 @@ public static class UCollection
             return default;
         }
 
+        public static bool TryFind<T>(this IEnumerable<T> _collection,Predicate<T> _OnEachElement, out T _element)
+        {
+            _element = default;
+            foreach (var element in _collection)
+                if (_OnEachElement(element))
+                {
+                    _element= element;
+                    return true;
+                }
+            return false;
+        }
+
         public static T Find<T>(this IEnumerable<T> _collection, Predicate<T> _validate,out int index)
         {
             index = -1;

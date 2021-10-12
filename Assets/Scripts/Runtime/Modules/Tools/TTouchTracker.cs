@@ -58,6 +58,35 @@ namespace TTouchTracker
         {
             return _tracks.Collect(p => p.m_Phase == TouchPhase.Ended && p.m_Lifetime < _clickSenseTime).Select(p=>p.m_Start);
         }
+
+        private static int hDragID=-1;
+        private static Vector2 hLastDrag = Vector2.zero;
+        public static void ResolveSingleDrag(this List<TrackData> _tracks,Action<Vector2,bool> _onDragStatus,Action<Vector2> _onDrag,float _senseTime=.1f)
+        {
+            if (hDragID == -1)
+            {
+                if (_tracks.Count != 1)
+                    return;
+                
+                if (_tracks.TryFind(p => p.m_Lifetime > _senseTime, out var dragBegin))
+                {
+                    hDragID = dragBegin.m_Index;
+                    hLastDrag = dragBegin.m_Current;
+                    _onDragStatus(dragBegin.m_Current, true);
+                }
+                return;
+            }
+
+            if (!_tracks.TryFind(p => p.m_Index == hDragID, out var dragging))
+            {
+                hDragID = -1;
+                _onDragStatus(hLastDrag, false);
+                return;
+            }
+
+            hLastDrag = dragging.m_Current;
+            _onDrag(hLastDrag);
+        }
     }
 
     public static class TouchTracker
@@ -88,7 +117,7 @@ namespace TTouchTracker
                 TouchPhase phase = getPhase(index, Input.GetMouseButton(index), position);
                 if(phase== TouchPhase.Canceled)
                     continue;
-               simulateTouches.Add(new Touch(){fingerId = index,phase=phase,position = position});
+                simulateTouches.Add(new Touch(){fingerId = index,phase=phase,position = position});
             }
 
             //LeftCtrl Touches 3
@@ -110,6 +139,7 @@ namespace TTouchTracker
         }
 
         public static void Init() => m_TrackData.Clear();
+        private static readonly List<TrackData> kTracks = new List<TrackData>();
         public static List<TrackData> Execute(float _unscaledDeltaTime)
         {
             foreach (var trackIndex in m_TrackData.Keys.Collect(p => m_TrackData[p].m_Phase == TouchPhase.Ended||m_TrackData[p].m_Phase== TouchPhase.Canceled).ToArray())
@@ -131,7 +161,8 @@ namespace TTouchTracker
                         break;
                 }
             }
-            return  m_TrackData.Values.ToList();
+            m_TrackData.Values.FillList(kTracks);
+            return kTracks;
         }
         
         #if UNITY_EDITOR

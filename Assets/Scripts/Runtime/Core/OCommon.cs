@@ -302,6 +302,8 @@ public struct Int3
     public Int3(int _x, int _y, int _z) { x = _x; y = _y; z = _z; }
     
     public static readonly Int3 One = new Int3(1, 1,1);
+    public static bool operator ==(Int3 _src, Int3 _dst) => _src.x == _dst.x && _src.y == _dst.y && _src.z == _dst.z;
+    public static bool operator !=(Int3 _src, Int3 _dst) => _src.x != _dst.x && _src.y != _dst.y && _src.z != _dst.z;
 }
 [Serializable]
 public struct Int4
