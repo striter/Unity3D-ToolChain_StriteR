@@ -70,7 +70,7 @@ namespace PolyGrid.Module.Baking
                 if (m_Baker.m_AvailableStatus.IsFlagEnable(status))
                 {
                     var parent = m_Baker.transform.Find(status.ToString());
-                    foreach (var moduleBakeMesh in parent.GetComponentsInChildren<ModuleBakerModel>())
+                    foreach (var moduleBakeMesh in parent.GetComponentsInChildren<ModuleBakerCollector>())
                         totalModuleMeshes.Add(moduleBakeMesh.CollectModuleMesh(m_Baker.m_ModuleType,status));
                 }
                 _data[status] = totalModuleMeshes.ToArray();
@@ -111,7 +111,7 @@ namespace PolyGrid.Module.Baking
                     bakerModel.SetParent(parent);
                     bakerModel.localPosition =
                         Vector3.right * (3f * width) + Vector3.forward * (3f * height) + Vector3.up * 1f;
-                    bakerModel.gameObject.AddComponent<ModuleBakerModel>().m_Relation = possibility;
+                    bakerModel.gameObject.AddComponent<ModuleBakerCollector>().m_Relation = possibility;
 
                     var mesh = meshes?.Find(p => p.name.LastEquals(name));
                     if (mesh == null)

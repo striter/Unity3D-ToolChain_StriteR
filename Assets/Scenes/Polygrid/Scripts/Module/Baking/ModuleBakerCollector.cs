@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace PolyGrid.Module.Baking
 {
-    public class ModuleBakerModel : MonoBehaviour
+    public class ModuleBakerCollector : MonoBehaviour
     {
         public Qube<bool> m_Relation;
         public OrientedModuleMeshData CollectModuleMesh(EModuleType _type,ECornerStatus _status)
@@ -34,7 +34,7 @@ namespace PolyGrid.Module.Baking
                     var normalOS = worldToLocalMatrix.MultiplyVector(normalWS);
                     vertices.Add(UModule.ObjectToModuleVertex(positionOS));
                     normals.Add(normalOS);
-                    colors.Add(_type.ToColor() );//curColors[i]);
+                    colors.Add(curColors[i]);
                 }
 
                 foreach (var index in mesh.GetIndices(0))

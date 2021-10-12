@@ -65,9 +65,8 @@
 
 			float4 frag(v2f i) : SV_Target
 			{
-				float4 col = _Intensity*i.color;
-				col.a*=tex2D(_MainTex,i.uv).r*INSTANCE(_Alpha);
-				return col;
+				float3 col = _Intensity*i.color.rgb;
+				return float4(col,tex2D(_MainTex,i.uv).r*INSTANCE(_Alpha));
 			}
 			ENDHLSL
 		}
