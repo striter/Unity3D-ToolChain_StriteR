@@ -510,6 +510,7 @@ MonoBehaviour:
     origin: {x: -9.48, y: -0.19751443, z: -6.382374}
     direction: {x: -0.2823822, y: 0.035172924, z: -0.95865697}
     length: 0.72
+    end: {x: 0, y: 0, z: 0}
   m_Ray20:
     origin: {x: -5.854789, y: 0, z: -6.7031293}
     direction: {x: 0, y: -0.056490414, z: 0.99840313}
@@ -968,7 +969,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1365951602}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 77.06, y: 84.30086, z: -29.36}
+  m_LocalPosition: {x: 76.93, y: 84.30086, z: -26.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 603151350}
@@ -983,12 +984,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1365951602}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b394c35683008949835f5441a51211f, type: 3}
+  m_Script: {fileID: 11500000, guid: 6649dbd30dd171f4f879da63d86f3a63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Radius: 0.5
-  m_CellSizeX: 4
-  m_CellSizeY: 2
 --- !u!1 &1630316435
 GameObject:
   m_ObjectHideFlags: 0

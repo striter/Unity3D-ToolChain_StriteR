@@ -329,6 +329,31 @@ public static class UCollection
         return true;
     }
 
+    public static void Reindex<T>(this List<T> _list,int _index)
+    {
+        for (int i = 0; i < _index; i++)
+        {
+            var first = _list[0];
+            _list.RemoveAt(0);
+            _list.Add(first);
+        }
+    }
+
+    public static int FindLastIndex<T>(this List<T> _list, Comparison<T> _compare)
+    {
+        T current = _list[0];
+        int index = 0;
+        var count = _list.Count;
+        for (int i = 1; i < count; i++)
+        {
+            var compare = _list[i];
+            if(_compare(current,compare)!=1)
+                continue;
+            current = compare;
+            index = i;
+        }
+        return index;
+    }
     #endregion
     #region Dictionary
 
