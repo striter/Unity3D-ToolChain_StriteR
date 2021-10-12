@@ -234,13 +234,13 @@ namespace TEditor
             return ray;
         }
 
-        protected static int RayDirectedTriangleIntersect(GTrianglePolygon[] _polygons, Vector3[] _verticies, GRay _ray, out Vector3 hitPoint, out GTriangle hitTriangle)
+        protected static int RayDirectedTriangleIntersect(GTrianglePolygon[] _polygons, Vector3[] _vertices, GRay _ray, out Vector3 hitPoint, out GTriangle hitTriangle)
         {
             collisionPoint = Vector3.zero;
             float minDistance = float.MaxValue;
             int index = _polygons.LastIndex(p =>
             {
-                GTriangle triangle = new GTriangle(p.GetVertices(_verticies));
+                GTriangle triangle = new GTriangle(p.GetVertices(_vertices));
                 bool intersect = UGeometryIntersect.RayDirectedTriangleIntersect(triangle, _ray, true, true, out float distance);
                 if (intersect && minDistance > distance)
                 {
