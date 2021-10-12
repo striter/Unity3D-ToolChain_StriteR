@@ -15,11 +15,17 @@ namespace TEditor
         [MenuItem("Work Flow/Hotkeys/Take Screen Shot _F12", false, 104)]
         static void TakeScreenShot() => Hotkeys.TakeScreenShot();
         #endregion
+
+        #region Helpers
+        [MenuItem("Work Flow/Helper/Clean Persistent Data",false,200)]
+        static void CleanPersistentData() => Helper.CleanPersistentData();
+        
+        [MenuItem("Work Flow/Helper/UI/Missing Fonts Replacer", false, 210)]
+        static void ShowFontsReplacerWindow() => EditorWindow.GetWindow<UIFontsMissingReplacerWindow>().titleContent=new GUIContent("Missing Fonts Replacer",EditorGUIUtility.IconContent("FilterByLabel").image);
+        #endregion
+        
         #region Window
         //BuiltIn Texture Ref:https://unitylist.com/p/5c3/Unity-editor-icons
-        //UI
-        [MenuItem("Work Flow/UI/Missing Fonts Replacer", false, 203)]
-        static void ShowFontsReplacerWindow() => EditorWindow.GetWindow<UIFontsMissingReplacerWindow>().titleContent=new GUIContent("Missing Fonts Replacer",EditorGUIUtility.IconContent("FilterByLabel").image);
         //Art
         [MenuItem("Work Flow/Art/Plane Mesh Generator", false, 301)]
         static void ShowPlaneGenerator() => EditorWindow.GetWindow(typeof(PlaneMeshGenerator)).titleContent=new GUIContent("Plane Generator", EditorGUIUtility.IconContent("CustomTool").image);

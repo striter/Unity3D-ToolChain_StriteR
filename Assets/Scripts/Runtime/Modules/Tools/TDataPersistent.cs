@@ -19,9 +19,8 @@ namespace TDataPersistent
     public static class TDataSave
     {
         private const string c_DataCryptKey = "StriteRTestCrypt";
-        private static readonly string s_persistentPath = Application.persistentDataPath + "/Save/";
         private static XmlDocument m_Doc = new XmlDocument();
-        public static string GetPersistentPath<T>(string fileName = null) where T : CDataSave<T>, new() => s_persistentPath +(fileName == null ? CDataSave<T>.s_FilePath : fileName) + ".sav";
+        public static string GetPersistentPath<T>(string fileName = null) where T : CDataSave<T>, new() => DRuntime.kDataPersistentPath +(fileName == null ? CDataSave<T>.s_FilePath : fileName) + ".sav";
         public static void ReadPersistentData<T>(this T _data, string fileName = null) where T : CDataSave<T>,new ()
         {
             try
@@ -104,8 +103,8 @@ namespace TDataPersistent
             {
                 Debug.LogWarning("Persistent Data Invalid,Use BuiltIn-Code:\n"+eStreaming.Message);
 
-                if (!Directory.Exists(s_persistentPath))
-                    Directory.CreateDirectory(s_persistentPath);
+                if (!Directory.Exists( DRuntime.kDataPersistentPath))
+                    Directory.CreateDirectory( DRuntime.kDataPersistentPath);
         
                 if (File.Exists(filePath))
                     File.Delete(filePath);
@@ -115,9 +114,8 @@ namespace TDataPersistent
                 foreach(var fieldInfo in CDataSave<T>.s_FieldInfos)
                     node.AppendChild(m_Doc.CreateElement(fieldInfo.Name));
 
-                var defaultData = new T();
-                defaultData.Validate();
-                SaveData(defaultData,node,filePath);
+                SaveData(new T(),node,filePath);
+                ReadData(_data,node);
             }
         }
     }
