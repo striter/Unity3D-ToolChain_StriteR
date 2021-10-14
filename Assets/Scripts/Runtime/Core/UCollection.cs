@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TPoolStatic;
 using UnityEngine;
 
 public static class UCollection
@@ -341,6 +343,15 @@ public static class UCollection
         return true;
     }
 
+    public static void SortIndex<T>(this List<T> _list, IEnumerable<int> _indexes)
+    {
+        var tempList = TSPoolList<T>.Spawn();
+        foreach (var index in _indexes)
+            tempList.Add(_list[index]);
+        _list.Clear();
+        _list.AddRange(tempList);
+        TSPoolList<T>.Recycle(tempList);
+    }
     public static void Reindex<T>(this List<T> _list,int _index)
     {
         for (int i = 0; i < _index; i++)
@@ -440,6 +451,26 @@ public static class UCollection
         if (_stack.Contains(_item))
             return false;
         _stack.Push(_item);
+        return true;
+    }
+    #endregion
+    #region HashSet
+
+    public static bool TryAdd<T>(this HashSet<T> _hashSet, T _element)
+    {
+        if (_hashSet.Contains(_element))
+            return false;
+
+        _hashSet.Add(_element);
+        return true;
+    }  
+    
+    public static bool TryRemove<T>(this HashSet<T> _hashSet, T _element)
+    {
+        if (!_hashSet.Contains(_element))
+            return false;
+
+        _hashSet.Remove(_element);
         return true;
     }
     #endregion

@@ -180,7 +180,7 @@ Material:
     - _ZWrite: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 0.500623, g: 0.76545507, b: 0.8490566, a: 0.57254905}
+    - _Color: {r: 0.2352941, g: 0.61868125, b: 0.94509804, a: 0.38431373}
     - _DepthColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlowDirection: {r: 1, g: 1, b: 0, a: 0}

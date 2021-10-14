@@ -81,6 +81,11 @@ namespace TEditor
             targetView.pivot = m_SceneViewSyncObject.transform.position;
         }
         #endregion
+
+        public static void SwitchPause()
+        {
+            EditorApplication.isPaused = !EditorApplication.isPaused;
+        }
         public static void TakeScreenShot()
         {
             DirectoryInfo directory = new DirectoryInfo(Application.persistentDataPath + "/ScreenShots");
@@ -89,12 +94,5 @@ namespace TEditor
             ScreenCapture.CaptureScreenshot(path);
         }
 
-        public static void SwitchDeveleporMode()
-        {
-            bool internalDebug = !EditorPrefs.GetBool("DeveloperMode");
-            EditorPrefs.SetBool("DeveloperMode",internalDebug);
-            Debug.LogWarning("Editor Developer Mode Switch:"+(internalDebug?"ON":"OFF"));
-
-        }
     }
 }

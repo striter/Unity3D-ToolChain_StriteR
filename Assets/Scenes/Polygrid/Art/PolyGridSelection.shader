@@ -65,8 +65,7 @@
 
 			float4 frag(v2f i) : SV_Target
 			{
-				float3 col = _Intensity*i.color.rgb;
-				return float4(col,tex2D(_MainTex,i.uv).r*INSTANCE(_Alpha));
+				return float4(i.color.rgb*_Intensity,saturate(tex2D(_MainTex,i.uv).r*INSTANCE(_Alpha)*_Intensity));
 			}
 			ENDHLSL
 		}

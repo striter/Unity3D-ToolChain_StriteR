@@ -458,7 +458,7 @@ namespace Geometry
                     if(!_qube[qube])
                         continue;
                     var qubeIndex = qube.CornerToIndex();
-                    foreach (var facingCorner in facing.Opposite().GetFacingCorners())
+                    foreach (var facingCorner in facing.Opposite().FacingCorners())
                         splitQubes[qubeIndex][facingCorner] = false;
                 }
                 
@@ -554,50 +554,18 @@ namespace Geometry
                     break;
             }
         }
-        public static IEnumerable<EQubeCorner> GetFacingCorners(this ECubeFacing _facing) 
-        {
-            switch (_facing)
-            {
-                default: throw new IndexOutOfRangeException();
-                case ECubeFacing.D:
-                    yield return EQubeCorner.DB;
-                    yield return EQubeCorner.DL;
-                    yield return EQubeCorner.DF;
-                    yield return EQubeCorner.DR;
-                    break;
-                case ECubeFacing.T:
-                    yield return EQubeCorner.TB;
-                    yield return EQubeCorner.TL;
-                    yield return EQubeCorner.TF;
-                    yield return EQubeCorner.TR;
-                    break;
-                case ECubeFacing.BL:
-                    yield return EQubeCorner.DB;
-                    yield return EQubeCorner.TB;
-                    yield return EQubeCorner.DL;
-                    yield return EQubeCorner.TL;
-                    break;
-                case ECubeFacing.LF:
-                    yield return EQubeCorner.DL;
-                    yield return EQubeCorner.TL;
-                    yield return EQubeCorner.DF;
-                    yield return EQubeCorner.TF;
-                    break;
-                case ECubeFacing.FR:
-                    yield return EQubeCorner.DF;
-                    yield return EQubeCorner.TF;
-                    yield return EQubeCorner.DR;
-                    yield return EQubeCorner.TR;
-                    break;
-                case ECubeFacing.RB:
-                    yield return EQubeCorner.DR;
-                    yield return EQubeCorner.TR;
-                    yield return EQubeCorner.DB;
-                    yield return EQubeCorner.TB;
-                    break;
-            }
-        }
 
+        static readonly Dictionary<ECubeFacing, EQubeCorner[]> kFacingCorners = new Dictionary<ECubeFacing, EQubeCorner[]>()
+            {
+                { ECubeFacing.D, new[] { EQubeCorner.DB, EQubeCorner.DL, EQubeCorner.DF, EQubeCorner.DR } },
+                { ECubeFacing.T, new[] { EQubeCorner.TB, EQubeCorner.TL, EQubeCorner.TF, EQubeCorner.TR } },
+                { ECubeFacing.BL,new []{ EQubeCorner.DB, EQubeCorner.TB, EQubeCorner.DL, EQubeCorner.TL}},
+                { ECubeFacing.LF,new []{ EQubeCorner.DL, EQubeCorner.TL, EQubeCorner.DF,EQubeCorner.TF }},
+                { ECubeFacing.FR,new []{ EQubeCorner.DF, EQubeCorner.TF,EQubeCorner.DR,EQubeCorner.TR }},
+                { ECubeFacing.RB,new []{ EQubeCorner.DR, EQubeCorner.TR, EQubeCorner.DB, EQubeCorner.TB}}
+            };
+
+        public static EQubeCorner[] FacingCorners(this ECubeFacing _facing) => kFacingCorners[_facing];
 
         public static (T v0, T v1, T v2, T v3) GetFacingCornersCW<T>(this Qube<T> _qube, ECubeFacing _facing) where T : struct
         {

@@ -6,14 +6,16 @@ using LinqExtension;
 
 public static class UEnum
 {
-    static class EnumStorage<T> where T:Enum
+    private static class EnumStorage<T> where T:Enum
     {
         public static readonly T[] m_Values;
-        public static readonly Dictionary<int, T> m_ValueDic=new Dictionary<int, T>();
         public static readonly T m_Invalid;
+        public static readonly Dictionary<int, T> m_ValueDic=new Dictionary<int, T>();
+        public static readonly Dictionary<T, int> m_IndexDic = new Dictionary<T, int>();
         static EnumStorage()
         {
             List<T> values = new List<T>();
+            int index = 0;
             foreach (var value in Enum.GetValues(typeof(T)))
             {
                 var enumIndex = Convert.ToInt32(value);
@@ -25,6 +27,7 @@ public static class UEnum
                 }
                 values.Add(enumObj);
                 m_ValueDic.Add(enumIndex,enumObj);
+                m_IndexDic.Add(enumObj,index++);
             }
 
             m_Values = values.ToArray();
@@ -32,6 +35,8 @@ public static class UEnum
     }
 
     public static T GetInvalid<T>() where T : Enum => EnumStorage<T>.m_Invalid;
+    public static int GetIndex<T>(T _enum) where T:Enum=> EnumStorage<T>.m_IndexDic[_enum];
+    public static int Count<T>() where T : Enum => EnumStorage<T>.m_Values.Length;
     public static T GetValue<T>(int _index) where T:Enum=> EnumStorage<T>.m_ValueDic[_index];
     public static T[] GetValues<T>() where T:Enum=> EnumStorage<T>.m_Values;
     public static T Next<T>(this T enumValue) where T : Enum

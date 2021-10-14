@@ -83,8 +83,8 @@ Shader "Hidden/PolyGridModule"
             	
                 float3 col =indirectDiffuse*.5 + tex2D(_MainTex, i.uv).rgb;//*i.color.rgb;
             	half ndl=dot(normalWS,lightDirWS);
-            	half atten=MainLightRealtimeShadow(i.shadowCoordWS);
-            	half diffuse=ndl*atten*_Lambert+(1-_Lambert);
+            	half attenuation=MainLightRealtimeShadow(i.shadowCoordWS);
+            	half diffuse=min(saturate(ndl),attenuation)*_Lambert+(1-_Lambert);
                 return float4( col*diffuse,1);
             }
             ENDHLSL

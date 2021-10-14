@@ -10,9 +10,9 @@ namespace TEditor
         public static void SyncObjectToSceneView() => Hotkeys.SyncSelectedToSceneViewCamera();
         [MenuItem("Work Flow/Hotkeys/Scene View Camera Sync To Selected _F6", false, 102)]
         public static void SceneViewCameraSyncSelected() => Hotkeys.SceneViewCameraSyncSelected();
-        [MenuItem("Work Flow/Hotkeys/Switch Developer Mode _F11", false, 103)]
-        static void SwitchDeveloperMode() => Hotkeys.SwitchDeveleporMode();
-        [MenuItem("Work Flow/Hotkeys/Take Screen Shot _F12", false, 104)]
+        [MenuItem("Work Flow/Hotkeys/Fast Pause _F10", false, 103)]
+        static void FastPause() => Hotkeys.SwitchPause();
+        [MenuItem("Work Flow/Hotkeys/Take Screen Shot _F12", false, 105)]
         static void TakeScreenShot() => Hotkeys.TakeScreenShot();
         #endregion
 
@@ -20,6 +20,8 @@ namespace TEditor
         [MenuItem("Work Flow/Helper/Clean Persistent Data",false,200)]
         static void CleanPersistentData() => Helper.CleanPersistentData();
         
+        [MenuItem("Work Flow/Hotkeys/Switch Developer Mode _F11", false, 104)]
+        static void SwitchDevelopMode() => Helper.SwitchDevelopMode();
         [MenuItem("Work Flow/Helper/UI/Missing Fonts Replacer", false, 210)]
         static void ShowFontsReplacerWindow() => EditorWindow.GetWindow<UIFontsMissingReplacerWindow>().titleContent=new GUIContent("Missing Fonts Replacer",EditorGUIUtility.IconContent("FilterByLabel").image);
         #endregion

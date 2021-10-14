@@ -16,6 +16,7 @@ namespace TTouchTracker
         public Vector2 m_Previous { get; private set; }
         public Vector2 m_Delta { get; private set; }
         public TouchPhase m_Phase { get; private set; }
+        public float m_PhaseTime { get; private set; }
         public TrackData(Touch _touch)
         {
             m_Index = _touch.fingerId;
@@ -29,11 +30,16 @@ namespace TTouchTracker
 
         public void Record(Touch _touch,float _deltaTime)
         {
-            m_Phase = _touch.phase;
             m_Lifetime += _deltaTime;
             m_Previous = m_Current;
             m_Current = _touch.position;
             m_Delta = m_Current - m_Previous;
+            
+            if (m_Phase == _touch.phase)
+                m_PhaseTime += _deltaTime;
+            else
+                m_PhaseTime = 0f;
+            m_Phase = _touch.phase;
         }
     }
     
@@ -67,13 +73,15 @@ namespace TTouchTracker
             {
                 if (_tracks.Count != 1)
                     return;
-                
-                if (_tracks.TryFind(p => p.m_Lifetime > _senseTime, out var dragBegin))
-                {
-                    hDragID = dragBegin.m_Index;
-                    hLastDrag = dragBegin.m_Current;
-                    _onDragStatus(dragBegin.m_Current, true);
-                }
+                var dragTrack = _tracks[0];
+                if (dragTrack.m_Phase != TouchPhase.Stationary)
+                    return;
+                if (dragTrack.m_PhaseTime < _senseTime)
+                    return;
+                    
+                hDragID = dragTrack.m_Index;
+                hLastDrag = dragTrack.m_Current;
+                _onDragStatus(dragTrack.m_Current, true);
                 return;
             }
 
