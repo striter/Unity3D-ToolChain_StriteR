@@ -71,11 +71,11 @@ namespace PolyGrid.Module
             {
                 default: throw new InvalidEnumArgumentException();
                 case ECornerStatus.Rooftop:
-                    if (ECubeFacing.T.GetFacingCorners().Any(p => _srcBool[p] == true))
+                    if (ECubeFacing.T.FacingCorners().Any(p => _srcBool[p] == true))
                         return false;
                     break;
                 case ECornerStatus.Bottom:
-                    if (ECubeFacing.D.GetFacingCorners().Any(p => _srcBool[p] == true))
+                    if (ECubeFacing.D.FacingCorners().Any(p => _srcBool[p] == true))
                         return false;
                     break;
             }
