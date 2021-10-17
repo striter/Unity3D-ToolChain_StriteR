@@ -5694,25 +5694,24 @@ MonoBehaviour:
     m_Brightness: 1
     m_Saturation: 1
     m_Contrast: 1
-    m_ChannelMix: 0
+    m_ChannelMix: 1
     m_MixRed: {x: 0, y: 0, z: 0}
     m_MixGreen: {x: 0, y: 0, z: 0}
-    m_MixBlue: {x: 0, y: 0, z: 0}
+    m_MixBlue: {x: 0, y: 0, z: 0.1}
     m_Bloom: 1
     m_BloomData:
       m_SampleMode: 0
-      m_Threshold: 1.08
-      m_CullingMask: 0
-      m_Color: {r: 1, g: 1, b: 1, a: 0}
+      m_Threshold: 1.53
+      m_LayerMask: 0
+      m_Color: {r: 4, g: 4, b: 4, a: 0.28235295}
       m_Blur:
-        m_BlurType: 0
-        m_BlurSize: 1.13
-        m_Iteration: 4
+        m_BlurType: 3
+        m_BlurSize: 0.8
+        m_Iteration: 6
         m_DownSample: 2
         m_Angle: 0
         m_Vector: {x: 0, y: 0}
       m_BloomDebug: 0
-  m_Opaque: 0
 --- !u!114 &1483932181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5766,7 +5765,7 @@ MonoBehaviour:
         m_DownSample: 0
         m_Angle: 0
         m_Vector: {x: 0, y: 0}
-    m_DownSample: 2
+    m_DownSample: 1
     m_SSAO: 1
     m_SSAOData:
       m_Color: {r: 0, g: 0, b: 0, a: 0}

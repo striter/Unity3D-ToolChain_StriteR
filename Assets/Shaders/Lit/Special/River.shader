@@ -12,7 +12,8 @@
     	_FlowSpeed("Flow Speed",Range(0.01,10))=2
     	
     	[Header(Lighting)]
-    	_SpecularAmount("Specular Amount",Range(.3,1))=1
+    	_SpecularAmount("Specular Amount",Range(.8,0.99999))=1
+    	_SpecularStrength("Specular Strength",Range(0.5,5))=1
     	[Toggle(_RECEIVESHADOW)]_ReceiveShadow("Receive Shadow",int)=1
     	
     	[Header(_Refraction)]
@@ -82,6 +83,7 @@
 				INSTANCING_PROP(float2,_FlowDirection)
 				INSTANCING_PROP(float,_FlowSpeed)
 				INSTANCING_PROP(float,_SpecularAmount)
+				INSTANCING_PROP(float,_SpecularStrength)
 				INSTANCING_PROP(float,_RefractionDistance)
 				INSTANCING_PROP(float,_RefractionAmount)
 	            INSTANCING_PROP(float4,_FoamColor)
@@ -191,16 +193,18 @@
 				float refraction=saturate(invlerp(0,INSTANCE(_RefractionDistance),eyeDepthOffset+wave.x))*INSTANCE(_RefractionAmount);
             	deepSurfaceUV+=normalTS.xy*refraction*rcp(eyeDepthUnder);
             	#endif
+            	
             	float3 deepSurfaceColor=SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,deepSurfaceUV).rgb;
             	#if _CAUSTIC
 				float3 positionWSDepth=TransformNDCToWorld(screenUV,underRawDepth);
             	float verticalDistance=positionWSDepth.y-positionWS.y;
             	float3 causticPositionWS=positionWSDepth+lightDirWS*verticalDistance* rcp(dot(float3(0,-1,0),lightDirWS));
-            	float causticAtten=1;
-            	float2 causticUV=causticPositionWS.xz+uvFlow;
-				causticUV*=uvScale;
-            	float caustic=SAMPLE_TEXTURE2D(_CausticTex,sampler_CausticTex,causticUV).r;
-            	deepSurfaceColor+=caustic*lightCol*INSTANCE(_CausticStrength)*causticAtten;
+            	float2 causticUV=causticPositionWS.xz;
+            	float2 causticForward=(causticUV+uvFlow)*uvScale;
+            	float2 causticBackward=(causticUV-uvFlow*.5)*uvScale;
+            	float caustic=SAMPLE_TEXTURE2D(_CausticTex,sampler_CausticTex,causticForward).r;
+            	caustic*=SAMPLE_TEXTURE2D(_CausticTex,sampler_CausticTex,causticBackward).r;
+            	deepSurfaceColor+=caustic*lightCol*INSTANCE(_CausticStrength);
             	#endif
             	
 				#if _DEPTH
@@ -214,8 +218,8 @@
 				aboveSurfaceColor=lerp(aboveSurfaceColor, reflection.rgb,reflection.a*INSTANCE(_Strength));
             	
             	float specular=GetSpecular(normalWS,lightDirWS,viewDirWS,INSTANCE(_SpecularAmount));
-            	specular*=atten;
-            	aboveSurfaceColor=lerp(aboveSurfaceColor,lightCol,specular);
+            	specular*=atten*INSTANCE(_SpecularStrength);
+            	aboveSurfaceColor=aboveSurfaceColor+lightCol*specular;
             	
 				#if _FOAM
             	float foam=smoothstep(INSTANCE(_FoamBegin)+INSTANCE(_FoamWidth),INSTANCE(_FoamBegin),eyeDepthOffset+max(normalTS.xy)*INSTANCE(_FoamDistort));

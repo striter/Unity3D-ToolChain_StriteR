@@ -134,7 +134,7 @@ Material:
     - _BumpScale: 1
     - _Caustic: 1
     - _CausticClip: 1
-    - _CausticStrength: 1
+    - _CausticStrength: 2
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _CrackDistance: 0.5
@@ -205,9 +205,10 @@ Material:
     - _Scale: 5
     - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
-    - _SpecularAmount: 0.99
+    - _SpecularAmount: 0.992
     - _SpecularHighlights: 1
     - _SpecularRange: 0.9
+    - _SpecularStrength: 5
     - _SrcBlend: 1
     - _SteepCount: 128
     - _SteepParallex: 0
