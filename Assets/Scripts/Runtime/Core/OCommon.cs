@@ -304,6 +304,26 @@ public struct Int3
     public static readonly Int3 One = new Int3(1, 1,1);
     public static bool operator ==(Int3 _src, Int3 _dst) => _src.x == _dst.x && _src.y == _dst.y && _src.z == _dst.z;
     public static bool operator !=(Int3 _src, Int3 _dst) => _src.x != _dst.x && _src.y != _dst.y && _src.z != _dst.z;
+    public bool Equals(Int3 other)
+    {
+        return x == other.x && y == other.y && z == other.z;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is Int3 other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            int hashCode = x;
+            hashCode = (hashCode * 397) ^ y;
+            hashCode = (hashCode * 397) ^ z;
+            return hashCode;
+        }
+    }
 }
 [Serializable]
 public struct Int4
