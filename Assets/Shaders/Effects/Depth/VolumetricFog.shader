@@ -3,7 +3,7 @@
     Properties
     {
         [HDR]_Color("Color",Color) = (1,1,1,1)
-        [KeywordEnum(Point,Spot)]_Type("Type",float)=0
+        [KeywordEnum(Point,Cube,Spot)]_Type("Type",float)=0
         _Density("Density",Range(0,10)) = 1
         _Pow("Density Pow",Range(0,10))=2
         [Header(Depth)]
@@ -23,7 +23,7 @@
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma multi_compile_local _TYPE_POINT _TYPE_SPOT
+            #pragma multi_compile_local _TYPE_POINT _TYPE_CUBE _TYPE_SPOT
 
             #define IGeometryDetection
             #include "Assets/Shaders/Library/Common.hlsl"
@@ -63,21 +63,29 @@
                 half depthDstWS = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, i.screenPos.xy/i.screenPos.w),_ZBufferParams).r - i.screenPos.w;
                 half depthDstOS =length(mul((float3x3)unity_WorldToObject,float3(0,depthDstWS,0)));
                 half3 origin=0.h;
-                float density=.0h;
-                float2 sdfDstOS=0.;
+                half density=1.h;
+                float2 distances=0.;
                 GRay viewRayOS=GRay_Ctor(i.positionOS,viewDirOS);
                 #if _TYPE_POINT
-                sdfDstOS= SphereRayDistance(GSphere_Ctor(origin,.5) ,viewRayOS);
-                half closestDst=PointRayProjection(viewRayOS,0);
-                closestDst= length(0.-viewRayOS.GetPoint(closestDst))*2;
-                density= saturate(1-closestDst);
+                //radius =.5 inv = 2
+                distances= SphereRayDistance(GSphere_Ctor(origin,.5) ,viewRayOS);
+                half3 closestPoint=viewRayOS.GetPoint(PointRayProjection(viewRayOS,origin));
+                half originDistance= length(origin-closestPoint);
+                density= 1;//saturate(1-originDistance*2);
+                #elif _TYPE_CUBE
+                distances=AABBRayDistance( GBox_Ctor(origin,1.h),viewRayOS);
+                distances.y+=distances.x;
+
+                half distance0=saturate(viewRayOS.GetPoint(distances.x).z+.5);
+                half distance1=saturate(viewRayOS.GetPoint(distances.y).z+.5);
+                half bottomDistance = min(distance0,distance1);
+                density*=(1-bottomDistance);
                 #elif _TYPE_SPOT
                 GHeightCone cone= GHeightCone_Ctor( float3(.0,.5,.0),float3(.0,-1.,.0),55.,1);
-                sdfDstOS =ConeRayDistance(cone,viewRayOS);
-                density=1;
+                distances =ConeRayDistance(cone,viewRayOS);
                 #endif
-                sdfDstOS.y=min(depthDstOS,sdfDstOS.y);
-                float travelDst=saturate(sdfDstOS.y-sdfDstOS.x);
+                distances.y=min(depthDstOS,distances.y);
+                float travelDst=saturate(distances.y-distances.x);
                 density*=saturate( smoothstep(0,_Depth,travelDst));
                 density=pow(density,_Pow);
                 density*=_Density;
