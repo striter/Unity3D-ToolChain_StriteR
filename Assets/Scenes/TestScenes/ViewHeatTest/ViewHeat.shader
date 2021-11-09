@@ -19,7 +19,7 @@ Shader "Unlit/ViewHeatTest"
 
             struct a2v
             {
-                float4 positionOS : POSITION;
+                float3 positionOS : POSITION;
                 float4 color:COLOR;
                 float3 normalOS:NORMAL;
             };
