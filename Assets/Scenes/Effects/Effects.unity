@@ -136,7 +136,6 @@ GameObject:
   - component: {fileID: 15725972}
   - component: {fileID: 15725971}
   - component: {fileID: 15725977}
-  - component: {fileID: 15725974}
   - component: {fileID: 15725976}
   m_Layer: 0
   m_Name: Main Camera
@@ -210,29 +209,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 57.064, y: 0, z: 0}
---- !u!114 &15725974
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 15725970}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b62db4376f6a80241a778bd4d3ab7a35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectData:
-    threshold: 1.13
-    intensity: 0.31
-    m_BlurParams:
-      m_BlurType: 5
-      m_BlurSize: 0.75
-      m_Iteration: 13
-      m_DownSample: 1
-      m_Angle: 0.04
-      m_Vector: {x: 0, y: 0}
-  m_SceneViewPreview: 1
 --- !u!114 &15725976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -272,46 +248,45 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 15725970}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e24f8465e5911194a9d11d5acb09953c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Preview: 0
+  m_Preview: 1
   m_Data:
     m_FXAA: 0
-    m_AdditionalSample: 0
+    m_AdditionalSample: 1
     m_UseDepth: 0
-    m_ContrastSkip: 0
-    m_RelativeSkip: 0
-    m_SubPixelBlend: 0
+    m_ContrastSkip: 0.1
+    m_RelativeSkip: 0.2
+    m_SubPixelBlend: 1
     m_LUT: 0
     m_LUTTex: {fileID: 0}
-    m_LUTCellCount: 0
-    m_LUTWeight: 0
+    m_LUTCellCount: 16
+    m_LUTWeight: 1
     m_BSC: 0
-    m_Brightness: 0
-    m_Saturation: 0
-    m_Contrast: 0
+    m_Brightness: 1
+    m_Saturation: 1
+    m_Contrast: 1
     m_ChannelMix: 0
     m_MixRed: {x: 0, y: 0, z: 0}
     m_MixGreen: {x: 0, y: 0, z: 0}
     m_MixBlue: {x: 0, y: 0, z: 0}
-    m_Bloom: 0
+    m_Bloom: 1
     m_BloomData:
       m_SampleMode: 0
-      m_Threshold: 0
-      m_CullingMask: 0
-      m_Color: {r: 0, g: 0, b: 0, a: 0}
+      m_Threshold: 1.91
+      m_LayerMask: 2147483647
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
       m_Blur:
-        m_BlurType: 0
-        m_BlurSize: 0
-        m_Iteration: 0
-        m_DownSample: 0
+        m_BlurType: 3
+        m_BlurSize: 0.25
+        m_Iteration: 7
+        m_DownSample: 2
         m_Angle: 0
-        m_Vector: {x: 0, y: 0}
+        m_Vector: {x: 0.5, y: 0.5}
       m_BloomDebug: 0
-  m_Opaque: 0
 --- !u!1 &57150664
 GameObject:
   m_ObjectHideFlags: 0
