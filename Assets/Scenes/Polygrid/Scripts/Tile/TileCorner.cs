@@ -18,7 +18,7 @@ namespace PolyGrid.Tile
         public TileCorner Init(TileVertex _vertex)
         {
             m_Vertex = _vertex;
-            transform.SetPositionAndRotation(_vertex.transform.position,_vertex.transform.rotation);
+            transform.SetPositionAndRotation(_vertex.transform.position+DPolyGrid.GetCornerHeight(m_Height),_vertex.transform.rotation);
             return this;
         }
 

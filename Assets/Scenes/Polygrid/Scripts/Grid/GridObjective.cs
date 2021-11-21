@@ -137,6 +137,7 @@ namespace PolyGrid
                     m_ProceduralVertices.TryAdd(tuple.vR);
                     m_ProceduralQuads.Add(new HexQuad(tuple));
                 }
+                yield return null;
             }
             
             //Split Triangles

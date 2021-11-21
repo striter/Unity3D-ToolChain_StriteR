@@ -95,10 +95,10 @@ namespace GridTest
             public static readonly Color C_CubeZ = Color.blue;
 
             public static readonly GUIStyle m_AreaStyle = new GUIStyle
-                {alignment = TextAnchor.MiddleCenter, fontSize = 14, fontStyle = FontStyle.Normal};
+                {alignment = TextAnchor.MiddleCenter, fontSize = 14, fontStyle = FontStyle.Normal,normal=new GUIStyleState(){textColor = Color.yellow}};
 
             public static readonly GUIStyle m_HitStyle = new GUIStyle
-                {alignment = TextAnchor.MiddleCenter, fontSize = 12, fontStyle = FontStyle.Normal};
+                {alignment = TextAnchor.MiddleCenter, fontSize = 12, fontStyle = FontStyle.Normal,normal=new GUIStyleState(){textColor = Color.yellow}};
         }
 
         private void OnSceneGUI(SceneView sceneView)
