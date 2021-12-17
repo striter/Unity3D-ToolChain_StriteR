@@ -209,6 +209,8 @@ namespace Geometry
             }
         }
 
+        public static Quad<T> Convert<Y>(Quad<Y> _srcQuad, Func<Y, T> _convert) => new Quad<T>(_convert(_srcQuad.vB), _convert(_srcQuad.vL), _convert(_srcQuad.vF), _convert(_srcQuad.vR));
+        public static Quad<T> Convert<Y>(Quad<Y> _srcQuad, Func<int,Y, T> _convert) => new Quad<T>(_convert(0, _srcQuad.vB), _convert(1, _srcQuad.vL), _convert(2, _srcQuad.vF),_convert(3, _srcQuad.vR));
         #region Implements
         public IEnumerator<T> GetEnumerator()
         {
@@ -266,7 +268,7 @@ namespace Geometry
 
     
     [Serializable]
-    public struct CubeFacing<T>:IEnumerable<T> where T:struct
+    public struct CubeFacing<T>:IEnumerable<T> 
     {
         public T fBL;
         public T fLF;
@@ -285,7 +287,7 @@ namespace Geometry
             fD = _fD;
         }
 
-        public static CubeFacing<T> Create<Y>(CubeFacing<Y> _src, Func<Y, T> _convert) where Y : struct =>
+        public static CubeFacing<T> Create<Y>(CubeFacing<Y> _src, Func<Y, T> _convert)  =>
             new CubeFacing<T>(_convert(_src.fBL),_convert(_src.fLF),_convert(_src.fFR),_convert(_src.fRB),_convert(_src.fT),_convert(_src.fD));
         
         public T this[ECubeFacing _facing]
@@ -341,7 +343,7 @@ namespace Geometry
     }
     
     [Serializable]
-    public struct Qube<T> : IEquatable<Qube<T>>,IIterate<T>,IEnumerable<T> where T:struct
+    public struct Qube<T> : IEquatable<Qube<T>>,IIterate<T>,IEnumerable<T>
     {
         public T vDB;
         public T vDL;
@@ -426,6 +428,22 @@ namespace Geometry
             yield return vTF;
             yield return vTR;
         }
+
+        public IEnumerable<T> IterateTop()
+        {
+            yield return vTB;
+            yield return vTL;
+            yield return vTF;
+            yield return vTR;
+        }
+        
+        public IEnumerable<T> IterateDown()
+        {
+            yield return vDB;
+            yield return vDL;
+            yield return vDF;
+            yield return vDR;
+        }
         
         public override bool Equals(object obj)
         {
@@ -433,7 +451,8 @@ namespace Geometry
         }
         public bool Equals(Qube<T> other)
         {
-            return vDB.Equals(other.vDB) && vDL.Equals(other.vDL) && vDF.Equals(other.vDF) && vDR.Equals(other.vDR) && vTB.Equals(other.vTB) && vTL.Equals(other.vTL) && vTF.Equals(other.vTF) && vTR.Equals(other.vTR);
+            return vDB.Equals(other.vDB) && vDL.Equals(other.vDL) && vDF.Equals(other.vDF) && vDR.Equals(other.vDR) && 
+                   vTB.Equals(other.vTB) && vTL.Equals(other.vTL) && vTF.Equals(other.vTF) && vTR.Equals(other.vTR);
         }
 
 
@@ -454,5 +473,17 @@ namespace Geometry
         }
 
         public override string ToString()=> $"{vDB} {vDL} {vDF} {vDR} / {vTB} {vTL} {vTF} {vTR}";
+        
+        public static Qube<T> Convert<Y>(Qube<Y> _srcQuad, Func<Y, T> _convert)
+        {
+            return new Qube<T>(_convert(_srcQuad.vDB), _convert(_srcQuad.vDL), _convert(_srcQuad.vDF), _convert(_srcQuad.vDR),
+                _convert(_srcQuad.vTB), _convert(_srcQuad.vTL), _convert(_srcQuad.vTF), _convert(_srcQuad.vTR));
+        }
+        public static Qube<T> Convert<Y>(Qube<Y> _srcQuad, Func<int,Y, T> _convert)
+        {
+            return new Qube<T>(_convert(0,_srcQuad.vDB), _convert(1,_srcQuad.vDL), _convert(2,_srcQuad.vDF), _convert(3,_srcQuad.vDR),
+                _convert(4,_srcQuad.vTB), _convert(5,_srcQuad.vTL), _convert(6,_srcQuad.vTF), _convert(7,_srcQuad.vTR));
+        }
+
     }
 }

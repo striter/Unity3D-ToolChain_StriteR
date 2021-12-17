@@ -16,22 +16,25 @@ namespace TEditor
 
         bool m_DrawBiTangents = false;
         float m_BiTangentsLength = .5f;
-        Color m_BitangentColor = Color.yellow;
+        Color m_BiTangentsColor = Color.yellow;
         EColorVisualize m_DrawColorType;
         float m_ColorLength = .5f;
 
-        ValueChecker<EVertexData> m_ColorVertexDataType = new ValueChecker<EVertexData>(EVertexData.None);
+        readonly ValueChecker<EVertexData> m_ColorVertexDataType = new ValueChecker<EVertexData>(EVertexData.None);
         float m_VertexData = .5f;
         bool m_DrawDirection;
 
-        Color m_VectorVertexDataColor = Color.blue;
+        readonly Color m_VectorVertexDataColor = Color.blue;
 
-        ValueChecker<Mesh> m_SharedMesh=new ValueChecker<Mesh>(null);
-        Vector3[] m_Verticies;
-        Vector3[] m_Normals;
-        Vector4[] m_Tangents;
-        Color[] m_Colors;
-        List<Vector4> m_ColorVertexData = new List<Vector4>();
+        readonly ValueChecker<Mesh> m_SharedMesh=new ValueChecker<Mesh>(null);
+        private Vector3[] m_vertices;
+        private Vector3[] m_Normals;
+        private Vector4[] m_Tangents;
+        private Color[] m_Colors;
+        readonly List<Vector4> m_ColorVertexData = new List<Vector4>();
+
+        public bool m_EnableMeshDataOutput;
+        
         void OnEnable()
         {
             m_Target = target as MeshFilter;
@@ -41,22 +44,21 @@ namespace TEditor
         {
             if (m_SharedMesh.Check(m_Target.sharedMesh))
             {
-                m_Verticies = m_Target.sharedMesh.vertices;
-                m_Normals = m_Target.sharedMesh.normals;
-                m_Tangents = m_Target.sharedMesh.tangents;
-                m_Colors = m_Target.sharedMesh.colors;
+                var sharedMesh = m_Target.sharedMesh;
+                m_vertices = sharedMesh.vertices;
+                m_Normals = sharedMesh.normals;
+                m_Tangents = sharedMesh.tangents;
+                m_Colors = sharedMesh.colors;
             }
         }
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            if (m_SharedMesh.m_Value == null)
+            if (m_SharedMesh.m_Value == null||!m_SharedMesh.m_Value.isReadable)
                 return;
             
-            EditorGUILayout.BeginVertical();
-            m_EnableVertexDataVisualize = EditorGUILayout.Foldout(m_EnableVertexDataVisualize, "Vertex Data Visualize");
-
-            if (m_EnableVertexDataVisualize)
+            m_EnableVertexDataVisualize=EditorGUILayout.BeginFoldoutHeaderGroup(m_EnableVertexDataVisualize, "Visualize");
+            if(m_EnableVertexDataVisualize)
             {
                 bool haveNormals =m_Normals.Length > 0;
                 bool haveTangents = m_Tangents.Length > 0;
@@ -91,7 +93,7 @@ namespace TEditor
                 if (haveNormals && haveTangents)
                 {
                     m_DrawBiTangents = EditorGUILayout.Toggle("Draw Bi-Tangents", m_DrawBiTangents);
-                    m_BitangentColor = EditorGUILayout.ColorField(m_BitangentColor);
+                    m_BiTangentsColor = EditorGUILayout.ColorField(m_BiTangentsColor);
                     m_BiTangentsLength = EditorGUILayout.Slider(m_BiTangentsLength, 0f, 2f);
                 }
                 else
@@ -113,7 +115,15 @@ namespace TEditor
                 }
                 EditorGUILayout.EndHorizontal();
             }
-            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndFoldoutHeaderGroup();
+
+            m_EnableMeshDataOutput = EditorGUILayout.BeginFoldoutHeaderGroup(m_EnableMeshDataOutput, "Output");
+            if (m_EnableMeshDataOutput)
+            {
+                if(GUILayout.Button("Output Mesh"))
+                    OutputMesh();
+            }
+            EditorGUILayout.EndFoldoutHeaderGroup();
         }
         private void OnSceneGUI()
         {
@@ -130,18 +140,18 @@ namespace TEditor
                 for (int i = 0; i < triangleCount; i++)
                 {
                     int startIndex = i * 3;
-                    Handles.DrawLine(m_Verticies[indices[startIndex]], m_Verticies[indices[startIndex + 1]]);
-                    Handles.DrawLine(m_Verticies[indices[startIndex + 1]], m_Verticies[indices[startIndex + 2]]);
-                    Handles.DrawLine(m_Verticies[indices[startIndex + 2]], m_Verticies[indices[startIndex]]);
+                    Handles.DrawLine(m_vertices[indices[startIndex]], m_vertices[indices[startIndex + 1]]);
+                    Handles.DrawLine(m_vertices[indices[startIndex + 1]], m_vertices[indices[startIndex + 2]]);
+                    Handles.DrawLine(m_vertices[indices[startIndex + 2]], m_vertices[indices[startIndex]]);
                 }
             }
 
-            for (int i = 0; i < m_Verticies.Length; i++)
+            for (int i = 0; i < m_vertices.Length; i++)
             {
                 if (m_DrawBiTangents)
                 {
                     Handles.color = Color.yellow;
-                    Handles.DrawLine(m_Verticies[i], m_Verticies[i] + Vector3.Cross(m_Tangents[i],m_Normals[i]).normalized * m_BiTangentsLength);
+                    Handles.DrawLine(m_vertices[i], m_vertices[i] + Vector3.Cross(m_Tangents[i],m_Normals[i]).normalized * m_BiTangentsLength);
                 }
 
                 if (m_ColorVertexData.Count != 0)
@@ -149,12 +159,12 @@ namespace TEditor
                     if(m_DrawDirection)
                     {
                         Handles.color = m_VectorVertexDataColor;
-                        Handles.DrawLine(m_Verticies[i], m_Verticies[i] + m_ColorVertexData[i].ToVector3() * m_VertexData);
+                        Handles.DrawLine(m_vertices[i], m_vertices[i] + m_ColorVertexData[i].ToVector3() * m_VertexData);
                     }
                     else
                     {
                         Handles.color = m_ColorVertexData[i].ToColor().SetAlpha(1f);
-                        Handles.DrawLine(m_Verticies[i], m_Verticies[i] + m_Normals[i] * m_VertexData);
+                        Handles.DrawLine(m_vertices[i], m_vertices[i] + m_Normals[i] * m_VertexData);
                     }
 
                 }
@@ -163,9 +173,19 @@ namespace TEditor
                 {
                     Color vertexColor = Color.clear;
                     Handles.color = m_DrawColorType.FilterColor(m_Colors[i]);
-                    Handles.DrawLine(m_Verticies[i], m_Verticies[i] + m_Normals[i] * m_ColorLength);
+                    Handles.DrawLine(m_vertices[i], m_vertices[i] + m_Normals[i] * m_ColorLength);
                 }
             }
+        }
+
+        private void OutputMesh()
+        {
+            if (!UEAsset.SaveFilePath(out string filePath, "asset", m_SharedMesh.m_Value.name))
+                return;
+
+            Mesh mesh = new Mesh();
+            UEAsset.CopyMesh(m_SharedMesh,mesh);
+            UEAsset.CreateOrReplaceMainAsset(mesh,UEPath.FileToAssetPath(filePath));
         }
     }
 }

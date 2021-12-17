@@ -1,10 +1,13 @@
+using System;
+using UnityEngine;
+
 namespace TEditor
 {
     public static class UEPath
     {
         public static string FileToAssetPath(string path)
         {
-            int assetIndex = path.IndexOf("/Assets") + 1;
+            int assetIndex = path.IndexOf("/Assets", StringComparison.Ordinal) + 1;
             if (assetIndex != 0)
                 path = path.Substring(assetIndex, path.Length - assetIndex);
             return path;

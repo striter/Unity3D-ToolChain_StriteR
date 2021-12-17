@@ -47,5 +47,7 @@ namespace Procedural
             int d = (int)Mathf.Sign((A.x - D.x) * (y - D.y) - (A.y - D.y) * (x - D.x));
             return Mathf.Abs( a + b + c + d) == 4;
         }
+
+        public static Coord GetPoint(this Quad<Coord> _quad, float _u,float _v)=>UMath.BilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _u,_v);
     }
 }

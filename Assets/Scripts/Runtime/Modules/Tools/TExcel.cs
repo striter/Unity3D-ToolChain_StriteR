@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Data;
 using System.Reflection;
 
 using UnityEngine;
@@ -10,22 +9,22 @@ using ExcelDataReader;
 
 namespace TExcel
 {
-    public interface ISExcel<T> where T:struct
+    public interface ISExcel
     {
     }
 
-    static class Properties<T, Y> where T : struct where Y : struct, ISExcel<T>
+    static class Properties<T, Y> where T : struct where Y : struct, ISExcel
     {
-        static Dictionary<T,Y> m_Properties=null;
-        public static bool B_Inited => m_Properties != null;
-        public static int I_ColumnCount => m_Properties.Count;
+        static Dictionary<T,Y> m_Properties;
+        public static bool Initialized => m_Properties != null;
+        public static int ColumnCount => m_Properties.Count;
         public static Y Get(T key)
         {
             if (m_Properties == null)
-              throw new Exception(typeof(Y).ToString() + ",Excel Not Inited,Shoulda Init Property First");
+              throw new Exception(typeof(Y) + ",Excel Not Initialized,Should Init Property First");
 
             if (!m_Properties.ContainsKey(key))
-                throw new Exception(typeof(T).ToString()+"Excel Not Contains Key:"+key);
+                throw new Exception(typeof(T)+"Excel Not Contains Key:"+key);
 
             return m_Properties[key];
         }
@@ -40,29 +39,31 @@ namespace TExcel
         }
     }
 
-    struct SheetProperty<T,Y> where T:struct where Y : struct,ISExcel<T>
+    struct SheetProperty<T,Y> where T:struct where Y : struct,ISExcel
     {
         public string m_SheetName { get; private set; }
         public Dictionary<T,Y> m_Properties { get; private set; }
-        public static SheetProperty<T,Y> Create(string sheetName,Dictionary<T,Y> _properties)
+        public static SheetProperty<T,Y> Create(string _sheetName,Dictionary<T,Y> _properties)
         {
-            SheetProperty<T,Y> item=new SheetProperty<T,Y>();
-            item.m_SheetName = sheetName;
-            item.m_Properties = _properties;
+            SheetProperty<T,Y> item=new SheetProperty<T,Y>
+            {
+                m_SheetName = _sheetName,
+                m_Properties = _properties
+            };
             return item;
         }
     }
 
-    static class SheetProperties<T,Y> where T:struct where Y : struct, ISExcel<T>
+    static class SheetProperties<T,Y> where T:struct where Y : struct, ISExcel
     {
-        static Dictionary<int, SheetProperty<T,Y>> m_AllProperties = null;
-        public static bool B_Inited => m_AllProperties != null;
+        static Dictionary<int, SheetProperty<T,Y>> m_AllProperties;
+        public static bool Initialized => m_AllProperties != null;
         public static int I_SheetCount => m_AllProperties.Count;
         public static Dictionary<T,Y> GetPropertiesList(int i)
         {
             if (m_AllProperties == null)
             {
-                Debug.LogError(typeof(Y).ToString() + ",Excel Not Inited,Shoulda Init Property First");
+                Debug.LogError(typeof(Y) + ",Excel Not Initialized,Should Init Property First");
                 return null;
             }
             return m_AllProperties[i].m_Properties;
@@ -70,9 +71,9 @@ namespace TExcel
         public static void Init()
         {
             m_AllProperties = new Dictionary<int, SheetProperty<T,Y>>();
-            Dictionary<string, List<string[]>> m_AllDatas = Tools.ReadExcelMultipleSheetData(Resources.Load<TextAsset>("Excel/"+typeof(Y).Name));
-            foreach(string sheetName in m_AllDatas.Keys)
-                m_AllProperties.Add(m_AllProperties.Count, SheetProperty<T,Y>.Create(sheetName, Tools.GetFieldData<T,Y>(m_AllDatas[sheetName])));
+            Dictionary<string, List<string[]>> allSheets = Tools.ReadExcelMultipleSheetData(Resources.Load<TextAsset>("Excel/"+typeof(Y).Name));
+            foreach(string sheetName in allSheets.Keys)
+                m_AllProperties.Add(m_AllProperties.Count, SheetProperty<T,Y>.Create(sheetName, Tools.GetFieldData<T,Y>(allSheets[sheetName])));
         }
         
         public static void Clear()
@@ -82,11 +83,12 @@ namespace TExcel
         }
     }
 
-    class Tools
+    internal static class Tools
     {
         public static List<string[]> ReadExcelFirstSheetData(TextAsset excelAsset) => ReadExcelData(excelAsset,false).First().Value;
         public static Dictionary<string, List<string[]>> ReadExcelMultipleSheetData(TextAsset excelAsset) => ReadExcelData(excelAsset, true);
-        static Dictionary<string, List<string[]>> ReadExcelData(TextAsset excelAsset,bool readExtraSheet)
+
+        private static Dictionary<string, List<string[]>> ReadExcelData(TextAsset excelAsset,bool readExtraSheet)
         {
             IExcelDataReader reader = ExcelReaderFactory.CreateReader(new MemoryStream(excelAsset.bytes));
             Dictionary<string, List<string[]>> result = new Dictionary<string, List<string[]>>();
@@ -112,7 +114,7 @@ namespace TExcel
             return result;
         }
 
-        public static Dictionary<T,Y> GetFieldData<T,Y>(List<string[]> data) where T:struct where Y :struct,ISExcel<T>
+        public static Dictionary<T,Y> GetFieldData<T,Y>(List<string[]> data) where T:struct where Y :struct,ISExcel
         {
             Type valueType = typeof(Y);
             FieldInfo[] fields = valueType.GetFields(BindingFlags.NonPublic|BindingFlags.DeclaredOnly | BindingFlags.Instance);
@@ -126,19 +128,15 @@ namespace TExcel
                     for (int j = 0; j < fields.Length; j++)
                     {
                         Type phraseType = fields[j].FieldType;
-                        object fieldValue = null;
-                        string phraseValue = data[i][j + 1].ToString();
+                        string phraseValue = data[i][j + 1];
                         try
                         {
-                            if (phraseValue.Length == 0)
-                                fieldValue = TDataConvert.Default(phraseType);
-                            else
-                                fieldValue = TDataConvert.Convert(phraseType, phraseValue);
+                            object fieldValue = phraseValue.Length == 0 ? TDataConvert.Default(phraseType) : TDataConvert.Convert(phraseType, phraseValue);
                             fields[j].SetValue(value, fieldValue);
                         }
                         catch (Exception e)
                         {
-                            throw new Exception("Inner Info:|" + data[i][j+1].ToString() + "|,Field:" + fields[j].Name + "|" + fields[j].FieldType.ToString() + ", Rows/Column:" + (i).ToString() + "/" + (j + 1).ToString() + "    Message:" + e.Message);
+                            throw new Exception("Inner Info:|" + data[i][j+1] + "|,Field:" + fields[j].Name + "|" + fields[j].FieldType + ", Rows/Column:" + i + "/" + (j + 1) + "    Message:" + e.Message);
                         }
                     }
                     targetData.Add(key, (Y)value);
@@ -146,7 +144,7 @@ namespace TExcel
             }
             catch (Exception e)
             {
-                Debug.LogError("Excel|" + typeof(Y).Name.ToString() + " Error:" + e.Message + e.StackTrace);
+                Debug.LogError("Excel|" + typeof(Y).Name + " Error:" + e.Message + e.StackTrace);
             }
             return targetData;
         }

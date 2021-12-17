@@ -4,13 +4,15 @@ using UnityEngine;
 public static class UNoise
 {
     #region Random
-    static readonly Vector3 s_RandomVec = new Vector3(12.0909f,89.233f,37.719f);
     static readonly float s_RandomValue = 143758.5453f;
-    static float ValueUnit(float _dotValue) => UMath.Frac(Mathf.Sin(_dotValue) * s_RandomValue);
-    public static float ValueUnit(float _x, float _y) => ValueUnit(new Vector2(_x, _y));
-    public static float ValueUnit(float _x, float _y,float _z) => ValueUnit(new Vector3(_x, _y,_z));
+    public static float ValueUnit(float _unitValue) => UMath.Frac(Mathf.Sin(_unitValue) * s_RandomValue);
+    
+    
+    static readonly Vector3 s_RandomVec = new Vector3(12.0909f,89.233f,37.719f);
     public static float ValueUnit(Vector2 _random) => ValueUnit(Vector2.Dot(_random, s_RandomVec));
     public static float ValueUnit(Vector3 _random) => ValueUnit(Vector3.Dot(_random, s_RandomVec));
+    public static float ValueUnit(float _x, float _y) => ValueUnit(new Vector2(_x, _y));
+    public static float ValueUnit(float _x, float _y,float _z) => ValueUnit(new Vector3(_x, _y,_z));
     public static Vector2 VelueUnitVec2(Vector2 _random) => new Vector2(ValueUnit(new Vector2(_random.y, _random.x)), ValueUnit(_random));
     #endregion
     #region Perlin

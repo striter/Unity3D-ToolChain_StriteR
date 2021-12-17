@@ -5,6 +5,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Object = UnityEngine.Object;
 
 namespace TEditor
 {
@@ -45,5 +46,11 @@ namespace TEditor
                 Undo.DestroyObjectImmediate(transform.gameObject);;
             }
         }
+        public static void DestroyChildrenComponent<T>(this Transform _transform) where T:Component
+        {
+            foreach (var component in _transform.GetComponentsInChildren<T>())
+                Object.DestroyImmediate(component);
+        }
     }
+    
 }

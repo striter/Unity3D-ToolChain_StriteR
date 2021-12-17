@@ -14,6 +14,18 @@ namespace TEditor
     
         }
 
+        public static void ExportLightmapCollection()
+        {
+            if (!UEAsset.SaveFilePath(out var filePath, "asset", "LightmapCollection_Default"))
+                return;
+            if (Selection.activeTransform==null)
+                return;
+            
+            LightmapCollection collection = Editor.CreateInstance<LightmapCollection>();
+            collection.Export(Selection.activeTransform);
+            UEAsset.CreateOrReplaceMainAsset(collection,UEPath.FileToAssetPath(filePath));
+        }
+        
         public static void CleanPersistentData()
         {
             if (!Directory.Exists(DRuntime.kDataPersistentPath))

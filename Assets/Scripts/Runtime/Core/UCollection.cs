@@ -8,8 +8,83 @@ using UnityEngine;
 
 public static class UCollection
 {
-    
-    #region Ienumerator
+    #region IEnumrable
+        public static void Execute(this IEnumerator _iterator)
+        {
+            while (_iterator.MoveNext()) {
+                //Empty;
+            }
+        }
+        public static IEnumerable<(int index,T value)> LoopIndex<T>(this IEnumerable<T> _collection)
+        {
+            int index = 0;
+            foreach (T element in _collection)
+                yield return (index++,element);
+        }
+        public static IEnumerable<T> Extend<T>(this IEnumerable<T> _collection, IEnumerable<T> _extend)
+        {
+            foreach (T element in _collection)
+                yield return element;
+            foreach (T element in _extend)
+                yield return element;
+        }
+        public static IEnumerable<T> Extend<T>(this IEnumerable<T> _collection, T _extend)
+        {
+            foreach (T element in _collection)
+                yield return element;
+            yield return _extend;
+        }
+
+        public static  IEnumerable<T> Collect<T>(this IEnumerable<T> _collection, Predicate<T> _Predicate)
+        {
+            foreach (T element in _collection)
+            {
+                if (!_Predicate(element))
+                    continue;
+                yield return element;
+            }
+        }
+        
+        public static  IEnumerable<Y> Collect<T,Y>(this IEnumerable<T> _collection) where T:class where Y:class
+        {
+            foreach (T element in _collection)
+            {
+                if (!(element is Y element1))
+                    continue;
+                yield return element1;
+            }
+        }
+
+        public static IEnumerable<T> Collect<T>(this IEnumerable<T> _collections, Func<int,T,bool> _Predicate)
+        {
+            foreach (var (index,value) in _collections.LoopIndex())
+            {
+                if(!_Predicate(index,value))
+                    continue;
+                yield return value;
+            }
+        }
+        
+        public static IEnumerable<int> CollectIndex<T>(this IEnumerable<T> _collection, Predicate<T> _Predicate)
+        {
+            foreach (var (index,value) in _collection.LoopIndex())
+            {
+                if (!_Predicate(value))
+                    continue;  
+                yield return index;
+            }
+        }
+        
+        public static IEnumerable<int> CollectIndex<T>(this IEnumerable<T> _collection, Func<int,T,bool> _Predicate)
+        {
+            foreach (var (index,value) in _collection.LoopIndex())
+            {
+                if (!_Predicate(index,value))
+                    continue;  
+                yield return index;
+            }
+        }
+
         public static void Traversal<T>(this IEnumerable<T> _collection, Action<T> _onEach)
         {
             if (_collection is IList<T> list)
@@ -23,19 +98,6 @@ public static class UCollection
                 foreach (T element in _collection)
                     _onEach(element);
             }
-        }
-
-        public static int Count<T>(this IEnumerable<T> _collection, Predicate<T> _predicate)
-        {
-            int count = 0;
-            foreach (var element in _collection)
-            {
-                if (!_predicate(element))
-                    continue;
-                count++;
-            }
-
-            return count;
         }
         public static void Traversal<T>(this IEnumerable<T> _collection, Action<int,T> _onEach)
         {
@@ -52,6 +114,19 @@ public static class UCollection
                     _onEach(index++,element);
             }
         }
+
+        public static int Count<T>(this IEnumerable<T> _collection, Predicate<T> _predicate)
+        {
+            int count = 0;
+            foreach (var element in _collection)
+            {
+                if (!_predicate(element))
+                    continue;
+                count++;
+            }
+
+            return count;
+        }
         
         public static int LastIndex<T>(this IEnumerable<T> _collection,Predicate<T> _OnEachElement )
         {
@@ -66,6 +141,34 @@ public static class UCollection
             return index;
         }
 
+        public static int MinIndex<T>(this IEnumerable<T> _collection, Func<T, int> _sorting)
+        {
+            int minIndex = 0;
+            int minValue = int.MaxValue;
+            foreach (var (index,element) in _collection.LoopIndex())
+            {
+                int value = _sorting(element);
+                if(minValue<value)
+                    continue;
+                minValue = value;
+                minIndex = index;
+            }
+            return minIndex;
+        }
+        public static int MaxIndex<T>(this IEnumerable<T> _collection, Func<T, int> _sorting)
+        {
+            int maxIndex = 0;
+            int maxValue = int.MinValue;
+            foreach (var (index,element) in _collection.LoopIndex())
+            {
+                int value = _sorting(element);
+                if(maxValue>value)
+                    continue;
+                maxValue = value;
+                maxIndex = index;
+            }
+            return maxIndex;
+        }
         public static T Find<T>(this IEnumerable<T> _collection,Predicate<T> _OnEachElement)
         {
             foreach (var element in _collection)
@@ -189,19 +292,7 @@ public static class UCollection
             }
             return index==0?Vector3.zero:sum / index;
         }
-
         
-        public static bool Contains<T>(this IEnumerable<T> _collection1, IEnumerable<T> _collection2) where T:IEquatable<T>
-        {
-            foreach (T element1 in _collection1)
-            {
-                foreach (T element2 in _collection2)
-                    if (element1.Equals(element2))
-                        return true;
-            }
-
-            return false;
-        }
     #endregion
     #region Array
     public static IEnumerable<object> GetEnumerable(this Array _array)
@@ -255,6 +346,9 @@ public static class UCollection
     public static T[] Resize<T>(this T[] _srcArray,int _length,bool _fillWithLast=true)
     {
         T[] dstArray = new T[_length];
+        if (_srcArray.Length == 0)
+            return dstArray;
+        
         for (int i = 0; i < dstArray.Length; i++)
         {
             if (i >= _srcArray.Length && !_fillWithLast)
@@ -297,6 +391,25 @@ public static class UCollection
                 return true;
         return false;
     }
+    
+    public static void SortIndex<T>(this T[] _array, IEnumerable<int> _indexes)
+    {
+        TSPoolList<T>.Spawn(out var tempList);
+        foreach (var index in _indexes)
+            tempList.Add(_array[index]);
+
+        for (int i = 0; i < tempList.Count; i++)
+            _array[i] = tempList[i];
+        TSPoolList<T>.Recycle(tempList);
+    }
+
+    public static T LastElement<T>(this T[] _array)=> _array[_array.Length - 1];
+    public static void FillArray<T>(this IEnumerable<T> _collection, T[] _array)
+    {
+        int index=0;
+        foreach (var element in _collection)
+            _array[index++] = element;
+    }
     #endregion
     #region List
     public static List<T> DeepCopy<T>(this List<T> _list)
@@ -305,6 +418,10 @@ public static class UCollection
         copyList.AddRange(_list);
         return copyList;
     }
+    
+    public static T LastElement<T>(this List<T> _list) => _list[_list.Count - 1];
+    
+    public static void RemoveLast<T>(this List<T> _list) => _list.RemoveAt(_list.Count - 1);
     
     public static void RemoveRange<T>(this List<T> _list, IEnumerable<T> _collections, bool containsCheck = false)
     {
@@ -329,6 +446,7 @@ public static class UCollection
         _list.Add(_element);
         return true;
     }
+    
     public static void TryAddRange<T>(this List<T> _list, IEnumerable<T> _collection)
     {
         foreach (var element in _collection)
@@ -345,13 +463,14 @@ public static class UCollection
 
     public static void SortIndex<T>(this List<T> _list, IEnumerable<int> _indexes)
     {
-        var tempList = TSPoolList<T>.Spawn();
+        TSPoolList<T>.Spawn(out var tempList);
         foreach (var index in _indexes)
             tempList.Add(_list[index]);
         _list.Clear();
         _list.AddRange(tempList);
         TSPoolList<T>.Recycle(tempList);
     }
+    
     public static void Reindex<T>(this List<T> _list,int _index)
     {
         for (int i = 0; i < _index; i++)
@@ -377,6 +496,25 @@ public static class UCollection
         }
         return index;
     }
+    
+    public static bool Contains<T>(this IList<T> _collection1, IList<T> _collection2) where T:IEquatable<T>
+    {
+        foreach (T element1 in _collection1)
+        {
+            foreach (T element2 in _collection2)
+                if (element1.Equals(element2))
+                    return true;
+        }
+        return false;
+    }
+    
+    public static void FillList<T>(this IEnumerable<T> _collection, List<T> _list)
+    {
+        _list.Clear();
+        foreach (var element in _collection)
+            _list.Add(element);
+    }
+
     #endregion
     #region Dictionary
 
@@ -417,8 +555,7 @@ public static class UCollection
         _dic.Add(_key,_getValue());
         return true;
     }
-
-
+    
     public static bool TryRemove<T, Y>(this Dictionary<T, Y> _dic,  T _key)
     {
         if (!_dic.ContainsKey(_key))
@@ -455,6 +592,12 @@ public static class UCollection
     }
     #endregion
     #region HashSet
+
+    public static void AddRange<T>(this HashSet<T> _hashSet, IEnumerable<T> _collections)
+    {
+        foreach (var element in _collections)
+            _hashSet.Add(element);
+    }  
 
     public static bool TryAdd<T>(this HashSet<T> _hashSet, T _element)
     {

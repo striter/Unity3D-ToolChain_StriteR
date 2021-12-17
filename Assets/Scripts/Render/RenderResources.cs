@@ -12,7 +12,7 @@ namespace Rendering.Pipeline
     public class RenderResources : ScriptableObject
     {
         [SerializeField][PreloadAssets("Shaders/PostProcess")] private Shader[] m_PostProcesses;
-        [SerializeField][PreloadAssets("Shaders/Hidden")] private Shader[] m_HiddenShaders;
+        [SerializeField][PreloadAssets("Shaders/Hidden")] private Shader[] m_IncludeShaders;
         [SerializeField][PreloadAssets("Shaders/Compute")] private ComputeShader[] m_ComputeShaders;
         
         private static RenderResources Instance;
@@ -23,17 +23,26 @@ namespace Rendering.Pipeline
         }
         public static Shader FindPostProcess(string _name)
         {
-            return Instance.m_PostProcesses.Find(p => p.name == _name);
+            var shader=Instance.m_PostProcesses.Find(p => p!=null&&p.name == _name);
+            if (shader == null)
+                throw new Exception($"Invalid Post Process Shader:{_name} Found!");
+            return shader;
         }
 
         public static ComputeShader FindComputeShader(string _name)
-        {
-            return Instance.m_ComputeShaders.Find(p => p.name == _name);
+        {            
+            var shader=Instance.m_ComputeShaders.Find(p => p!=null&&p.name == _name);
+            if (shader == null)
+                throw new Exception($"Invalid Compute shader Shader:{_name} Found!");
+            return shader;
         }
 
-        public static Shader FindHiddenShader(string _name)
-        {
-            return Instance.m_HiddenShaders.Find(p => p.name == _name);
+        public static Shader FindInclude(string _name)
+        {            
+            var shader=Instance.m_IncludeShaders.Find(p => p!=null&&p.name == _name);
+            if (shader == null)
+                throw new Exception($"Invalid Include Shader:{_name} Found!");
+            return shader;
         }
         
     }   

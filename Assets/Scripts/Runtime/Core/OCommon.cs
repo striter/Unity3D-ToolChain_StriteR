@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 #region Unit
 [Serializable]
@@ -250,10 +251,10 @@ public class Timer
     }
     void TickDelta(float _timeCheck)
     {
-        m_TimeLeft = _timeCheck;
+        m_TimeLeft = Mathf.Clamp( _timeCheck,0f,m_TimerDuration);
         m_TimeElapsed = m_TimerDuration - m_TimeLeft;
         m_Timing = m_TimeLeft > 0;
-        m_TimeLeftScale = Mathf.Max(m_TimerDuration == 0 ? 0 : m_TimeLeft / m_TimerDuration, 0);
+        m_TimeLeftScale = m_TimeLeft / m_TimerDuration;
         m_TimeElapsedScale = 1f - m_TimeLeftScale;
     }
     public void Replay() => TickDelta(m_TimerDuration);
@@ -284,7 +285,7 @@ public class Timer
 #endregion
 #region Swizzling
 [Serializable]
-public struct Int2
+public struct Int2:IEquatable<Int2>, IEqualityComparer<Int2>
 {
     public int x;
     public int y;
@@ -292,28 +293,65 @@ public struct Int2
     public static implicit operator (int, int)(Int2 int2) => (int2.x, int2.y);
 
     public static readonly Int2 One = new Int2(1, 1);
+    public static readonly Int2 Zero = new Int2(0, 0);
+    
+    public static Int2 operator+(Int2 _src,Int2 _dst) =>new Int2(_src.x+_dst.x,_src.y+_dst.y);
+    public static explicit operator Int2(Vector2 _src) =>new Int2((int)_src.x,(int)_src.y);
+    public static Int2 Max(Int2 _src, Int2 _dst) => new Int2(Mathf.Max(_src.x,_dst.x),Mathf.Max(_src.y,_dst.y));
+    public static Int2 Min(Int2 _src, Int2 _dst) => new Int2(Mathf.Min(_src.x,_dst.x),Mathf.Min(_src.y,_dst.y));
+    public override string ToString() => $"{x},{y}";
+
+    #region Implement
+    public bool Equals(Int2 x, Int2 y)=> x.x == y.x && x.y == y.y;
+    public bool Equals(Int2 other)=> x == other.x && y == other.y;
+    public int GetHashCode(Int2 obj)
+    {
+        unchecked
+        {
+            return (obj.x * 397) ^ obj.y;
+        }
+    }
+    public override bool Equals(object obj)
+    {
+        return obj is Int2 other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            return (x * 397) ^ y;
+        }
+    }
+    #endregion
 }
+
 [Serializable]
-public struct Int3
+public struct Int3 : IEquatable<Int3>
 {
     public int x;
     public int y;
     public int z;
     public Int3(int _x, int _y, int _z) { x = _x; y = _y; z = _z; }
+    public Int2 xy => new Int2(x, y);
+    public Int2 xz => new Int2(x, z);
     
     public static readonly Int3 One = new Int3(1, 1,1);
+    public static readonly Int3 Zero = new Int3(0, 0,0);
     public static bool operator ==(Int3 _src, Int3 _dst) => _src.x == _dst.x && _src.y == _dst.y && _src.z == _dst.z;
     public static bool operator !=(Int3 _src, Int3 _dst) => _src.x != _dst.x && _src.y != _dst.y && _src.z != _dst.z;
+    public static Int3 operator *(Int3 _src, int _scale) => new Int3(_src.x * _scale, _src.y * _scale, _src.z * _scale);
+
+    public int Max() => Mathf.Max(x, y,z);
+    #region Implement
     public bool Equals(Int3 other)
     {
         return x == other.x && y == other.y && z == other.z;
     }
-
     public override bool Equals(object obj)
     {
         return obj is Int3 other && Equals(other);
     }
-
     public override int GetHashCode()
     {
         unchecked
@@ -324,6 +362,9 @@ public struct Int3
             return hashCode;
         }
     }
+
+    public override string ToString() => $"{x},{y},{z}";
+    #endregion
 }
 [Serializable]
 public struct Int4

@@ -5,23 +5,24 @@ using UnityEngine.Rendering.Universal;
 
 namespace Rendering.PostProcess
 {
-    public class PostProcess_Blurs : PostProcessComponentBase<PPCore_Blurs, PPData_Blurs>
+    public class PostProcess_Blurs : PostProcessBehaviour<PPCore_Blurs, PPData_Blurs>
     {
         public override bool m_OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.DepthOfField;
 
-        public bool m_Focal;
-        [MFoldout(nameof(m_Focal),true)]public PPData_DepthOfField m_FocalData;
-        
-        public override void OnValidate()
+        public enum_Focal m_Focal;
+        [MFold(nameof(m_Focal),enum_Focal.None)]public PPData_DepthOfField m_FocalData;
+
+        protected override void ApplyParameters()
         {
-            base.OnValidate();
+            base.ApplyParameters();
             m_Effect?.SetFocal(m_Focal,ref m_FocalData);
         }
     }
 
     public enum EBlurType
     {
+        None=-1,
         Kawase = 0,
         AverageVHSeperated,
         GaussianVHSeperated,
@@ -56,8 +57,14 @@ namespace Rendering.PostProcess
         Directional,
     }
 
+    public enum enum_Focal
+    {
+        None=0,
+        Default,
+        ClipSky,
+    }
     [Serializable]
-    public struct PPData_Blurs
+    public struct PPData_Blurs:IPostProcessParameter
     {
         [MTitle] public EBlurType m_BlurType;
         [Range(0.05f, 2f)] public float m_BlurSize;
@@ -69,6 +76,7 @@ namespace Rendering.PostProcess
         [Range(-1, 1)] public float m_Angle;
         [MFoldout(nameof(m_BlurType), EBlurType.Directional, EBlurType.Radial)]
         [RangeVector(0, 1)] public Vector2 m_Vector;
+        public bool Validate() => m_BlurType != EBlurType.None;
         public static readonly PPData_Blurs m_Default = new PPData_Blurs()
         {
             m_BlurSize = 1.3f,
@@ -101,7 +109,7 @@ namespace Rendering.PostProcess
         private static readonly int ID_Angle = Shader.PropertyToID("_Angle");
         private static readonly int ID_Vector = Shader.PropertyToID("_Vector");
 
-        private const string KW_Focal = "_DOF";
+        private static readonly string[] KW_Focal = {"_DOF","_DOF_CLIPSKY"};
         private static readonly int ID_FocalBegin = Shader.PropertyToID("_FocalStart");
         private static readonly int ID_FocalEnd = Shader.PropertyToID("_FocalEnd");
 
@@ -109,14 +117,14 @@ namespace Rendering.PostProcess
         private static readonly string KW_FinalBlur = "_FINALBLUR";
         private static readonly string KW_Encoding = "_ENCODE";
 
-        public bool SetFocal(bool _focal,ref PPData_DepthOfField focalData)
+        public bool SetFocal(enum_Focal _focal,ref PPData_DepthOfField focalData)
         {
-            if (m_Material.EnableKeyword(KW_Focal, _focal))
+            if (m_Material.EnableKeywords(KW_Focal, _focal))
             {
                 m_Material.SetFloat(ID_FocalBegin,focalData.m_Begin);
                 m_Material.SetFloat(ID_FocalEnd,focalData.m_Begin+focalData.m_Width);
             }
-            return _focal;
+            return _focal!= enum_Focal.None;
         }
         #endregion
 
@@ -155,8 +163,8 @@ namespace Rendering.PostProcess
                                     {
                                         int pass = (int)EBlurPass.Kawase;
                                         m_Material.SetInt(ID_BlurSize, (int)(_data.m_BlurSize / _data.m_DownSample * (1 + i)));
-                                        _buffer.EnableGlobalKeyword(KW_FirstBlur, i==0);
-                                        _buffer.EnableGlobalKeyword(KW_FinalBlur,i==_data.m_Iteration-1);
+                                        _buffer.EnableKeyword(KW_FirstBlur, i==0);
+                                        _buffer.EnableKeyword(KW_FinalBlur,i==_data.m_Iteration-1);
                                         _buffer.Blit(blitSrc, blitTarget, m_Material, pass);
                                     }
                                     break;
@@ -181,12 +189,12 @@ namespace Rendering.PostProcess
                                         int tempID3 = Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp3");
                                         _buffer.GetTemporaryRT(tempID3, startWidth, startHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
                                         RenderTargetIdentifier rtTemp3 = new RenderTargetIdentifier(tempID3);
-                                        _buffer.EnableGlobalKeyword(KW_FirstBlur, i==0);
+                                        _buffer.EnableKeyword(KW_FirstBlur, i==0);
                                         _buffer.Blit(blitSrc, rtTemp3, m_Material, horizontalPass);
-                                        _buffer.EnableGlobalKeyword(KW_FirstBlur, false);
-                                        _buffer.EnableGlobalKeyword(KW_FinalBlur,i==_data.m_Iteration-1);
+                                        _buffer.EnableKeyword(KW_FirstBlur, false);
+                                        _buffer.EnableKeyword(KW_FinalBlur,i==_data.m_Iteration-1);
                                         _buffer.Blit(rtTemp3, blitTarget, m_Material, verticalPass);
-                                        _buffer.EnableGlobalKeyword(KW_FinalBlur,false);
+                                        _buffer.EnableKeyword(KW_FinalBlur,false);
                                         _buffer.ReleaseTemporaryRT(tempID3);
                                     }
                                     break;
@@ -194,7 +202,7 @@ namespace Rendering.PostProcess
                         }
                         _buffer.ReleaseTemporaryRT(idTemp1);
                         _buffer.ReleaseTemporaryRT(idTemp2);
-                        _buffer.EnableGlobalKeyword(KW_FinalBlur,false);
+                        _buffer.EnableKeyword(KW_FinalBlur,false);
                     }
                     break;
                 case EBlurType.DualFiltering:
@@ -218,8 +226,8 @@ namespace Rendering.PostProcess
                         }
                         for (int i = 0; i < _data.m_Iteration; i++)
                         {
-                            _buffer.EnableGlobalKeyword(KW_FirstBlur, i==0);
-                            _buffer.EnableGlobalKeyword(KW_FinalBlur,i==_data.m_Iteration-1);
+                            _buffer.EnableKeyword(KW_FirstBlur, i==0);
+                            _buffer.EnableKeyword(KW_FinalBlur,i==_data.m_Iteration-1);
                             int filterPass = i <= downSampleCount ? downSamplePass : upSamplePass;
                             RenderTargetIdentifier blitSrc = i == 0 ? _src : tempTextures[i - 1];
                             RenderTargetIdentifier blitTarget = i == _data.m_Iteration - 1 ? _dst : tempTextures[i];
@@ -227,7 +235,7 @@ namespace Rendering.PostProcess
                         }
                         for (int i = 0; i < _data.m_Iteration - 1; i++)
                             _buffer.ReleaseTemporaryRT(tempIDs[i]);
-                        _buffer.EnableGlobalKeyword(KW_FinalBlur,false);
+                        _buffer.EnableKeyword(KW_FinalBlur,false);
                         tempTextures = null;
                     }
                     break;

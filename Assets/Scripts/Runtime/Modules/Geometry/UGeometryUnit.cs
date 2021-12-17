@@ -44,14 +44,6 @@ namespace Geometry
             }
         }
         
-        
-
-        public static Quad<T> Convert<T,Y>(IQuad<Y> _srcQuad, Func<Y, T> _convert)
-        {
-            return new Quad<T>(_convert(_srcQuad.B), _convert(_srcQuad.L), _convert(_srcQuad.F),
-                _convert(_srcQuad.R));
-        }
-        
         public static (T v0, T v1) ToRelativeVertex<T>(this EQuadFacing _patch, Quad<T> _quad)
         {
             var patch = GetRelativeVertIndexesCW(_patch);
@@ -63,11 +55,8 @@ namespace Geometry
             return UMath.InvBilinearLerp(_quad.vB,_quad.vL,_quad.vF,_quad.vR,_position);
         }
 
-        public static Vector2 GetPoint(this Quad<Vector2> _quad, Vector2 _uv)
-        {
-            return UMath.BilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _uv);
-        }
-        
+        public static Vector2 GetPoint(this Quad<Vector2> _quad, float _u,float _v)=>UMath.BilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _u,_v);
+        public static float GetPoint(this Quad<float> _quad, float _u,float _v)=>UMath.BilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _u,_v);
         public static Quad<T> Resize<T>(this Quad<T> _quad, float _shrinkScale) 
         {
             dynamic vertex0 = _quad.vB;
@@ -129,6 +118,23 @@ namespace Geometry
             }
         }
 
+        
+        public static IEnumerable<Quad<Y>> SplitTopDownQuads<T, Y>(this T _quad) where T : IQuad<Y>
+        {
+            var vB = _quad.B;
+            var vL = _quad.L;
+            var vF = _quad.F;
+            var vR = _quad.R;
+            var midTuple = _quad.GetQuadMidVertices<T,Y>();
+                
+            var vLF = midTuple.vLF;
+            var vRB = midTuple.vRB;
+            
+            yield return new Quad<Y>(vB,vL,vLF,vRB);
+            yield return new Quad<Y>(vRB,vLF,vF,vR);
+        }
+        
+
         public static IEnumerable<Triangle<T>> SplitToTriangle<T>(this IQuad<T> splitQuad, T v0, T v1)  where T:struct
         {
             for (int i = 0; i < 4; i++)
@@ -145,15 +151,18 @@ namespace Geometry
             }
         }
 
-        public static Quad<Vector2> ConvertToG2Quad(this Quad<Vector3> _quad, Func<Vector3,Vector2> _convert)
+        public static Quad<Y> Convert<T,Y>(this IQuad<T> _srcQuad, Func<T, Y> _convert)
         {
-            return new Quad<Vector2>(_convert(_quad.vB),_convert(_quad.vL),_convert(_quad.vF),_convert(_quad.vR));
+            return new Quad<Y>(_convert(_srcQuad.B), _convert(_srcQuad.L), _convert(_srcQuad.F),
+                _convert(_srcQuad.R));
         }
-        public static Quad<Vector3> ConvertToGQuad(this Quad<Vector2> _quad, Func<Vector2,Vector3> _convert)
+        
+        public static Quad<Y> Convert<T,Y>(this IQuad<T> _srcQuad, Func<int,T, Y> _convert)
         {
-            return new Quad<Vector3>(_convert(_quad.vB),_convert(_quad.vL),_convert(_quad.vF),_convert(_quad.vR));
+            return new Quad<Y>(_convert(0,_srcQuad.B), _convert(1,_srcQuad.L), _convert(2,_srcQuad.F),
+                _convert(3,_srcQuad.R));
         }
-
+        
         public static bool IsPointInsideDynamic<T> (this IQuad<T> _quad,T _point) 
         { 
             dynamic A = _quad.B;
@@ -170,7 +179,7 @@ namespace Geometry
             return Mathf.Abs( a + b + c + d) == 4;
         }
 
-        public static bool Contains<T>(this IQuad<T> _quad, T _element) where T :IEquatable<T>
+        public static bool MatchVertex<T>(this IQuad<T> _quad, T _element) where T :IEquatable<T>
         {
             for (int i = 0; i < 4; i++)
                 if (_element.Equals(_quad[i]))
@@ -184,7 +193,7 @@ namespace Geometry
             for(int i=0;i<4;i++)
             {
                 var vertex = _quad1[i];
-                if (_quad2.Contains(vertex))
+                if (_quad2.MatchVertex(vertex))
                     index++;
             }
             return index;
@@ -221,6 +230,17 @@ namespace Geometry
                 case 2: return new Quad<T>(f,r,b,l);
                 case 3: return new Quad<T>(l,f,r,b);
             }
+        }
+        
+        public static void SetByteElement(ref this Quad<bool> _qube, byte _byte)
+        {
+            for (int i = 0; i < 4; i++)
+                _qube[i] = UByte.PosValid(_byte,i);
+        }
+        public static byte ToByte(this Quad<bool> _qube)
+        {
+            return UByte.ToByte(_qube[0],_qube[1],_qube[2],_qube[3],
+                false,false,false,false);
         }
     }
     
@@ -426,8 +446,8 @@ namespace Geometry
         public static Qube<T> RotateYawCW<T>(this Qube<T> _qube,ushort _90DegMult) where T:struct
         {
             var quads = _qube.SplitTopDownQuads<T>();
-            var top = quads._topQuad.RotateYawCW<T>(_90DegMult);
-            var down = quads._downQuad.RotateYawCW<T>(_90DegMult);
+            var top = quads._topQuad.RotateYawCW(_90DegMult);
+            var down = quads._downQuad.RotateYawCW(_90DegMult);
             return new Qube<T>(down,top);
         }
         
@@ -438,7 +458,7 @@ namespace Geometry
             for (int i = 0; i < 8; i++)
             {
                 splitQubes[i] = default;
-                splitQubes[i].SetByteCorners(_qube[i]?byte.MaxValue:byte.MinValue);
+                splitQubes[i].SetByteElement(_qube[i]?byte.MaxValue:byte.MinValue);
             }
 
             foreach (var corner in UEnum.GetValues<EQubeCorner>())
@@ -478,17 +498,19 @@ namespace Geometry
             return byteQube;
         }
         
+
+        public static void SetByteElement(ref this Qube<bool> _qube, byte _byte)
+        {
+            for (int i = 0; i < 8; i++)
+                _qube[i] = UByte.PosValid(_byte,i);
+        }
         public static byte ToByte(this Qube<bool> _qube)
         {
             return UByte.ToByte(_qube[0],_qube[1],_qube[2],_qube[3],
                 _qube[4],_qube[5],_qube[6],_qube[7]);
         }
-
-        public static void SetByteCorners(ref this Qube<bool> _qube, byte _byte)
-        {
-            for (int i = 0; i < 8; i++)
-                _qube[i] = UByte.PosValid(_byte,i);
-        }
+        
+        public static Qube<bool> And(this Qube<bool> _srcQube,Qube<bool> _dstQube)=> Qube<bool>.Convert(_srcQube,(index,value)=>value&&_dstQube[index]);
     }
 
     public static class UCubeFacing
@@ -565,6 +587,7 @@ namespace Geometry
                 { ECubeFacing.RB,new []{ EQubeCorner.DR, EQubeCorner.TR, EQubeCorner.DB, EQubeCorner.TB}}
             };
 
+        public static Quad<T> GetSideFacing<T>(this CubeFacing<T> _facing) => new Quad<T>(_facing.fBL,_facing.fLF,_facing.fFR,_facing.fRB);
         public static EQubeCorner[] FacingCorners(this ECubeFacing _facing) => kFacingCorners[_facing];
 
         public static (T v0, T v1, T v2, T v3) GetFacingCornersCW<T>(this Qube<T> _qube, ECubeFacing _facing) where T : struct

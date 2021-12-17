@@ -5,7 +5,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace Rendering.PostProcess
 {
-    public class PostProcess_ColorUpgrade : PostProcessComponentBase<PPCore_ColorUpgrade, PPData_ColorUpgrade>
+    public class PostProcess_ColorUpgrade : PostProcessBehaviour<PPCore_ColorUpgrade, PPData_ColorUpgrade>
     {
         public override bool m_OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.ColorUpgrade;
@@ -39,7 +39,7 @@ namespace Rendering.PostProcess
         Redraw,
     }
     [System.Serializable]
-    public struct PPData_ColorUpgrade
+    public struct PPData_ColorUpgrade:IPostProcessParameter
     {
         [MTitle] public EFXAA m_FXAA;
         [MFold(nameof(m_FXAA),EFXAA.None)] public bool m_AdditionalSample;
@@ -64,6 +64,7 @@ namespace Rendering.PostProcess
 
         [MTitle]public bool m_Bloom;
         [MFoldout(nameof(m_Bloom),true)] public Data_Bloom m_BloomData;
+        public bool Validate() => m_FXAA != EFXAA.None || m_LUT || m_BSC || m_ChannelMix || m_Bloom;
         
         public static readonly PPData_ColorUpgrade m_Default = new PPData_ColorUpgrade()
         {
@@ -121,9 +122,10 @@ namespace Rendering.PostProcess
             }
             #endregion
         }
+
     }
 
-    public class PPCore_ColorUpgrade : PostProcessCore<PPData_ColorUpgrade>,IPostProcessPipeline<PPData_ColorUpgrade>
+    public class PPCore_ColorUpgrade : PostProcessCore<PPData_ColorUpgrade>,IPostProcessPipelineCallback<PPData_ColorUpgrade>
     {
         #region ShaderProperties
         const string KW_FXAA = "_FXAA";

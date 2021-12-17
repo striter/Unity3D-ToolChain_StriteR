@@ -53,8 +53,12 @@ namespace Procedural.Hexagon.Geometry
             quad = _hexQuad;
             identity = _hexQuad.vB + _hexQuad.vL + _hexQuad.vF + _hexQuad.vR;
         }
-        
-        public HexCoord this[int _index] => quad[_index];
+
+        public HexCoord this[int _index]
+        {
+            get => quad[_index];
+            set => quad[_index] = value;
+        }
         public HexCoord this[EQuadCorner _corner] => quad[_corner];
         public HexCoord B => quad.B;
         public HexCoord L => quad.L;

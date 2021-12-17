@@ -45,7 +45,7 @@ namespace TEditor
         {
             //Select Prefab
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Select FBX&Animation Datas");
+            EditorGUILayout.LabelField("Select FBX&Animation Data");
             m_TargetPrefab = (GameObject)EditorGUILayout.ObjectField(m_TargetPrefab, typeof(GameObject), false);
             EditorGUILayout.EndHorizontal();
 
@@ -184,7 +184,10 @@ namespace TEditor
             GPUAnimationData data = ScriptableObject.CreateInstance<GPUAnimationData>();
             data.m_Mode = EGPUAnimationMode.Vertex;
             data.m_AnimationClips = instanceParams;
-            data=UEAsset.CreateAssetCombination(savePath + meshName + "_GPU_Vertex.asset", data, new KeyValuePair< string, Object>(meshName + "_AnimationAtlas", atlasTexture),new KeyValuePair<string,Object>( meshName + "_InstanceMesh",instanceMesh));
+
+            atlasTexture.name = meshName + "_AnimationAtlas";
+            instanceMesh.name = meshName + "_InstanceMesh";
+            data=UEAsset.CreateAssetCombination(savePath + meshName + "_GPU_Vertex.asset", data, new Object[]{atlasTexture,instanceMesh});
             Object[] assets = AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GetAssetPath(data));
             foreach (var asset in assets)
             {
@@ -314,7 +317,9 @@ namespace TEditor
                 data.m_AnimationClips = instanceParams;
                 data.m_ExposeTransforms = exposeTransformParam.ToArray();
 
-                data = UEAsset.CreateAssetCombination(savePath + meshName + "_GPU_Transform.asset",data, new KeyValuePair<string,Object>(meshName + "_AnimationAtlas",atlasTexture), new KeyValuePair<string,Object>(meshName + "_InstanceMesh",instanceMesh));
+                atlasTexture.name = meshName + "_AnimationAtlas";
+                instanceMesh.name = meshName + "_InstanceMesh";
+                data = UEAsset.CreateAssetCombination(savePath + meshName + "_GPU_Transform.asset",data, new Object[]{atlasTexture,instanceMesh});
                 Object[] assets=AssetDatabase.LoadAllAssetsAtPath( AssetDatabase.GetAssetPath(data));
                 foreach(var asset in assets)
                 {

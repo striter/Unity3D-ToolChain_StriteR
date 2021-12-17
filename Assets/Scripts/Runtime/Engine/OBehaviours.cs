@@ -2,7 +2,7 @@
 
 public interface ITransform
 {
-    Transform iTransform { get; }
+    Transform Transform { get; }
 }
 public class SingletonMono<T> : MonoBehaviour where T : MonoBehaviour
 {

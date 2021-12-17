@@ -13,18 +13,18 @@ namespace Rendering.Pipeline
         private static readonly RenderTargetIdentifier m_BlitTemp1 = new RenderTargetIdentifier(ID_Blit_Temp1);
         private static readonly RenderTargetIdentifier m_BlitTemp2 = new RenderTargetIdentifier(ID_Blit_Temp2);
         private string m_Name;
-        private List<APostProcessBase>  m_Effects;
+        private readonly List<IPostProcessBehaviour>  m_Effects=new List<IPostProcessBehaviour>();
+        public SRP_ComponentBasedPostProcess Setup(IEnumerable<IPostProcessBehaviour> effect)
+        {
+            effect.FillList(m_Effects);
+            m_Effects.Sort((a, b) => a.Event - b.Event);
+            return this;
+        }
         public void Dispose()
         {
 
         }
 
-        public SRP_ComponentBasedPostProcess Setup(IEnumerable<APostProcessBase> effect)
-        {
-            m_Effects = effect.ToList();
-            m_Effects.Sort((a, b) => (int) (a.Event - b.Event));
-            return this;
-        }
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
             base.Configure(cmd, cameraTextureDescriptor);
@@ -40,20 +40,16 @@ namespace Rendering.Pipeline
             cmd.GetTemporaryRT(ID_Blit_Temp1, descriptor);
             cmd.GetTemporaryRT(ID_Blit_Temp2, descriptor);
             var renderer = renderingData.cameraData.renderer;
-            int finalIndex = m_Effects.Count() - 1;
+            int lastIndex = m_Effects.Count - 1;
             int blitIndex = 0;
-            bool blitSwap = false;
+            bool blitSwap = true;
             foreach (var effect in m_Effects)
             {
-                bool firstBlit = blitIndex == 0;
-                bool finalBlit = blitIndex == finalIndex;
-                blitIndex++;
-            
                 RenderTargetIdentifier src = blitSwap ? m_BlitTemp1 : m_BlitTemp2;
                 RenderTargetIdentifier dst = blitSwap ? m_BlitTemp2 : m_BlitTemp1;
-                if (firstBlit)
+                if (blitIndex == 0)
                     src = renderer.cameraColorTarget;
-                else if (finalBlit)
+                else if (blitIndex == lastIndex)
                     dst = renderer.cameraColorTarget;
                 blitSwap = !blitSwap;
             
@@ -62,14 +58,15 @@ namespace Rendering.Pipeline
                 effect.ExecuteContext(renderer, context, ref renderingData);
                 effect.ExecuteBuffer(cmd, src, dst, descriptor);
                 cmd.EndSample(name);
+                
+                blitIndex++;
             }
-            if (blitIndex == 1)
-                cmd.Blit(m_BlitTemp1, renderer.cameraColorTarget);
+            if (lastIndex == 0)
+                cmd.Blit(m_BlitTemp2, renderer.cameraColorTarget);
             
             cmd.ReleaseTemporaryRT(ID_Blit_Temp1);
             cmd.ReleaseTemporaryRT(ID_Blit_Temp2);
             context.ExecuteCommandBuffer(cmd);
-            cmd.Clear();
             CommandBufferPool.Release(cmd);
         }
         public override void FrameCleanup(CommandBuffer cmd)

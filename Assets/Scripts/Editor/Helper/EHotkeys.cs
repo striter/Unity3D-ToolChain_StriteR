@@ -93,6 +93,6 @@ namespace TEditor
             Debug.LogFormat("ScreenShot Successful:\n<Color=#F1F635FF>{0}</Color>", path);
             ScreenCapture.CaptureScreenshot(path);
         }
-
+        public static void OutputActiveWindowDirectory()=> Debug.Log(  UEAsset.GetCurrentProjectWindowDirectory());
     }
 }

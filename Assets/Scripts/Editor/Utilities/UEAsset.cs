@@ -5,6 +5,8 @@ using System.IO;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
+
 namespace TEditor
 {
 
@@ -38,28 +40,37 @@ namespace TEditor
             EditorGUIUtility.PingObject(replacedAsset);
             return replacedAsset;
         }
-        public static void CreateOrReplaceSubAsset(string _path, params KeyValuePair<string, UnityEngine.Object>[] _subValues)
+        public static void CreateOrReplaceSubAsset(string _mainAssetPath, IEnumerable<UnityEngine.Object> _subValues)
         {
-            UnityEngine.Object mainAsset = AssetDatabase.LoadMainAssetAtPath(_path);
+            UnityEngine.Object mainAsset = AssetDatabase.LoadMainAssetAtPath(_mainAssetPath);
             if (!mainAsset)
-                throw new Exception("Invalid Main Assets:" + _path);
-            UnityEngine.Object[] assets = AssetDatabase.LoadAllAssetsAtPath(_path);
-            foreach (KeyValuePair<string, UnityEngine.Object> subValue in _subValues)
+                throw new Exception("Invalid Main Assets:" + _mainAssetPath);
+            UnityEngine.Object[] assets = AssetDatabase.LoadAllAssetsAtPath(_mainAssetPath);
+            foreach (var dstAsset in _subValues)
             {
-                subValue.Value.name = subValue.Key;
-                UnityEngine.Object subAsset = Array.Find(assets, p => p.name == subValue.Key && p.GetType() == subValue.Value.GetType());
-
-                if (subAsset)
-                    if (CopyPropertyTo(subValue.Value, subAsset))
+                dstAsset.name = dstAsset.name;
+                UnityEngine.Object srcAsset = Array.Find(assets, p => AssetDatabase.IsSubAsset(p)&& p.name == dstAsset.name && p.GetType() == dstAsset.GetType());
+                if (srcAsset)
+                    if (CopyPropertyTo(dstAsset, srcAsset))
                         AssetDatabase.SaveAssets();
                     else
-                        EditorUtility.CopySerialized(subValue.Value, subAsset);
+                        EditorUtility.CopySerialized(dstAsset, srcAsset);
                 else
-                    AssetDatabase.AddObjectToAsset(subValue.Value, mainAsset);
+                    AssetDatabase.AddObjectToAsset(dstAsset, mainAsset);
             }
             AssetDatabase.SaveAssets();
         }
-        public static T CreateAssetCombination<T>(string _path, T _mainAsset, params KeyValuePair<string, UnityEngine.Object>[] _subAssets) where T : UnityEngine.Object
+
+        public static void ClearSubAssets(string _mainAssetPath)
+        {
+            foreach (var asset in AssetDatabase.LoadAllAssetsAtPath(_mainAssetPath))
+            {
+                if(!AssetDatabase.IsSubAsset(asset))
+                    continue;
+                AssetDatabase.RemoveObjectFromAsset(asset);
+            }
+        }
+        public static T CreateAssetCombination<T>(string _path, T _mainAsset, IEnumerable<UnityEngine.Object> _subAssets) where T : UnityEngine.Object
         {
             T mainAsset = CreateOrReplaceMainAsset(_mainAsset, _path);
             CreateOrReplaceSubAsset(_path, _subAssets);
@@ -67,10 +78,10 @@ namespace TEditor
             return mainAsset;
         }
 
-        public static string GetCurrentProjectWindowPath() => (string)(typeof(ProjectWindowUtil).GetMethod("GetActiveFolderPath", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, null));
-        public static bool SelectFilePath(out string filePath, string extensiton = "", string startDirectory = null)
+        public static string GetCurrentProjectWindowDirectory() => (string)(typeof(ProjectWindowUtil).GetMethod("GetActiveFolderPath", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, null));
+        public static bool SelectFilePath(out string filePath, string extension = "", string startDirectory = null)
         {
-            filePath = EditorUtility.OpenFilePanel("Select File Path", startDirectory == null ? GetCurrentProjectWindowPath() : startDirectory, extensiton);
+            filePath = EditorUtility.OpenFilePanel("Select File To Open", startDirectory ?? GetCurrentProjectWindowDirectory(), extension);
             if (filePath.Length == 0)
                 return false;
             return true;
@@ -78,7 +89,7 @@ namespace TEditor
 
         public static bool SaveFilePath(out string filePath, string extension = "", string defaultName = "", string startDirectory = null)
         {
-            filePath = EditorUtility.SaveFilePanel("Select Save File Path", startDirectory == null ? GetCurrentProjectWindowPath() : startDirectory, defaultName, extension);
+            filePath = EditorUtility.SaveFilePanel("Select File To Save", startDirectory ?? GetCurrentProjectWindowDirectory(), defaultName, extension);
             if (filePath.Length == 0)
                 return false;
             return true;
@@ -145,8 +156,8 @@ namespace TEditor
         public static void CopyMesh(Mesh _src, Mesh _tar)
         {
             _tar.Clear();
-            Vector3[] verticies = _src.vertices;
-            _tar.vertices = verticies;
+            Vector3[] vertices = _src.vertices;
+            _tar.vertices = vertices;
             _tar.normals = _src.normals;
             _tar.tangents = _src.tangents;
             _tar.name = _src.name;
@@ -154,7 +165,6 @@ namespace TEditor
             _tar.bindposes = _src.bindposes;
             _tar.colors = _src.colors;
             _tar.boneWeights = _src.boneWeights;
-            _tar.triangles = _src.triangles;
             List<Vector4> uvs = new List<Vector4>();
             for (int i = 0; i < 8; i++)
             {
@@ -164,10 +174,13 @@ namespace TEditor
 
             _tar.subMeshCount = _src.subMeshCount;
             for (int i = 0; i < _src.subMeshCount; i++)
-                _tar.SetSubMesh(i, _src.GetSubMesh(i));
+            {
+                _tar.SetIndices(_src.GetIndices(i),MeshTopology.Triangles,i,false);
+                _tar.SetSubMesh(i,_src.GetSubMesh(i),MeshUpdateFlags.DontRecalculateBounds);
+            }
 
             _tar.ClearBlendShapes();
-            _src.TraversalBlendShapes(verticies.Length, (name, index, frame, weight, deltaVerticies, deltaNormals, deltaTangents) => _tar.AddBlendShapeFrame(name, weight, deltaVerticies, deltaNormals, deltaTangents));
+            _src.TraversalBlendShapes(vertices.Length, (name, index, frame, weight, deltaVertices, deltaNormals, deltaTangents) => _tar.AddBlendShapeFrame(name, weight, deltaVertices, deltaNormals, deltaTangents));
         }
 
         public static void CopyAnimationClip(AnimationClip _src, AnimationClip _dstClip)

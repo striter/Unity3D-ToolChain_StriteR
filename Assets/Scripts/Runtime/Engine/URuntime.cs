@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 public static class URuntime
 {
     public static bool SetActive(this Transform _transform, bool _active) => SetActive(_transform.gameObject, _active);
-    public static bool SetActive(this MonoBehaviour _monobehaviour, bool _active) => SetActive(_monobehaviour.gameObject, _active);
+    public static bool SetActive(this MonoBehaviour _behaviour, bool _active) => SetActive(_behaviour.gameObject, _active);
     public static bool SetActive(this GameObject _transform, bool _active)
     {
         if (_transform.activeSelf == _active)
@@ -18,6 +18,15 @@ public static class URuntime
     }
 
     #region Transform
+    public static IEnumerable<Transform> GetSubChildren(this Transform _transform)
+    {
+        int count = _transform.childCount;
+        for (int i = 0; i < count; i++)
+            yield return _transform.GetChild(i);
+    }
+    
+    public static void SyncPositionRotation(this Transform _transform, Transform _dst)=>_transform.SetPositionAndRotation(_dst.position,_dst.rotation);
+    
     public static void DestroyChildren(this Transform _trans)
     {
         int count = _trans.childCount;
@@ -68,7 +77,7 @@ public static class URuntime
             childList.Add(transform.GetChild(i));
             childIndexList.Add(int.Parse(childList[i].gameObject.name));
         }
-        childIndexList.Sort((a, b) => { return a <= b ? (higherUpper ? 1 : -1) : (higherUpper ? -1 : 1); });
+        childIndexList.Sort((a, b) => a <= b ? (higherUpper ? 1 : -1) : (higherUpper ? -1 : 1));
 
         for (int i = 0; i < childList.Count; i++)
         {
@@ -84,7 +93,7 @@ public static class URuntime
     public static Rect Expand(this Rect _rect, Vector2 _size) { _rect.position -= _size / 2; _rect.size += _size; return _rect; }
     public static Rect Collapse(this Rect _rect,Vector2 _size) { _rect.position += _size / 2;_rect.size -= _size;return _rect; }
 
-    public static Vector3 GetPoint(this Bounds _bound, Vector3 _normalizedSize) => _bound.center + _bound.size.Multiply(_normalizedSize);
+    public static Vector3 GetPoint(this Bounds _bound, Vector3 _normalizedSideOffset) => _bound.center + _bound.size.Multiply(_normalizedSideOffset);
     public static Bounds Resize(this Bounds _srcBounds,Bounds _dstBounds)
     {
         Vector3 min = Vector3.Min(_srcBounds.min, _dstBounds.min);

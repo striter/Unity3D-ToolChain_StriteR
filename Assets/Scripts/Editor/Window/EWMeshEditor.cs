@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Geometry.Polygon;
-using Geometry;
 using Geometry.Voxel;
-using LinqExtension;
 using UnityEditor;
 using UnityEngine;
 
@@ -573,8 +571,8 @@ namespace TEditor
         List<Vector4> m_VertexDatas = new List<Vector4>();
         bool m_AvailableDatas => m_VertexDatas.Count > 0;
         public override Material GetDefaultMaterial() => new Material(Shader.Find("Hidden/VertexColorVisualize")) { hideFlags = HideFlags.HideAndDontSave };
-        static readonly string[] KW_Sample = new string[] { "_SAMPLE_UV0", "_SAMPLE_UV1", "_SAMPLE_UV2", "_SAMPLE_UV3", "_SAMPLE_UV4", "_SAMPLE_UV5", "_SAMPLE_UV6", "_SAMPLE_UV7", "_SAMPLE_COLOR", "_SAMPLE_NORMAL", "_SAMPLE_TANGENT" };
-        static readonly string[] KW_Color = new string[] { "_VISUALIZE_R", "_VISUALIZE_G", "_VISUALIZE_B", "_VISUALIZE_A" };
+        static readonly string[] KW_Sample = { "_SAMPLE_UV0", "_SAMPLE_UV1", "_SAMPLE_UV2", "_SAMPLE_UV3", "_SAMPLE_UV4", "_SAMPLE_UV5", "_SAMPLE_UV6", "_SAMPLE_UV7", "_SAMPLE_COLOR", "_SAMPLE_NORMAL", "_SAMPLE_TANGENT" };
+        static readonly string[] KW_Color = { "_VISUALIZE_R", "_VISUALIZE_G", "_VISUALIZE_B", "_VISUALIZE_A" };
         public MeshEditorHelper_Paint(MeshEditor _parent) : base(_parent)
         {
             m_PaintColor.Bind(value => {

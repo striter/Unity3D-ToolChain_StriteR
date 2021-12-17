@@ -8,8 +8,8 @@ public static class UMath
     public const float SQRT2 = 1.4142135623731f;
     public const float SQRT3 = 1.7320508075689f;
     public const float PI = 3.141593f;
-    public const float Deg2Rad = PI  / 180f;
-    public const float Rad2Deg = 180f / PI;
+    public const float Deg2Rad = 0.017453292519943f;//PI / 180
+    public const float Rad2Deg = 57.295779513082f ;//180f / PI;
     
     public static readonly Matrix2x2 m_RotateCW90 = Rotate2D(90*Deg2Rad,true);
     public static readonly Matrix2x2 m_RotateCW180 = Rotate2D(180*Deg2Rad,true);
@@ -47,12 +47,9 @@ public static class UMath
     public static float Mod(float _src, float _dst) => _src - _dst * Mathf.Floor(_src/_dst);
 
 
-    public static Vector2 BilinearLerp(Vector2 tl, Vector2 tr, Vector2 br, Vector2 bl,Vector2 _uv)
-    {
-        float u = _uv.x;
-        float v = _uv.y;
-        return tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
-    }
+    public static Vector3 BilinearLerp(Vector3 tl, Vector3 tr, Vector3 br, Vector3 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
+    public static Vector2 BilinearLerp(Vector2 tl, Vector2 tr, Vector2 br, Vector2 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
+    public static float BilinearLerp(float tl, float tr, float br, float bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
     public static Vector2 InvBilinearLerp(Vector2 tl, Vector2 tr, Vector2 br, Vector2 bl, Vector2 p)
     {
         var e = tr - tl;
@@ -84,5 +81,14 @@ public static class UMath
             float v = -k0 / k1;
             return new Vector2(u,v);
         }
+    }
+
+    public static bool BoolLerp(bool _src, bool _dst, float _interpolate)
+    {
+        if (Math.Abs(_interpolate - 1) < float.Epsilon)
+            return _dst;
+        if (_interpolate == 0)
+            return _src;
+        return _src || _dst;
     }
 }

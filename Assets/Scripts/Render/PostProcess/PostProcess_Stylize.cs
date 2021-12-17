@@ -9,6 +9,7 @@ namespace Rendering.PostProcess
 {
     public enum EStylize
     {
+        None=-1,
         Pixel=0,
         OilPaint=1,
         BilateralFilter=2,
@@ -21,14 +22,14 @@ namespace Rendering.PostProcess
         Circle,
     }
 
-    public class PostProcess_Stylize : PostProcessComponentBase<PPCore_Stylize, PPData_Stylize>
+    public class PostProcess_Stylize : PostProcessBehaviour<PPCore_Stylize, PPData_Stylize>
     {
         public override bool m_OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.Stylize;
     }
     
     [Serializable]
-    public struct PPData_Stylize
+    public struct PPData_Stylize:IPostProcessParameter
     {
         [MTitle]public EStylize m_Stylize;
         [MFoldout(nameof(m_Stylize),EStylize.Pixel)] [ Range(2,20)] public int m_DownSample;
@@ -42,6 +43,7 @@ namespace Rendering.PostProcess
         [MFoldout(nameof(m_Stylize), EStylize.ObraDithering)] public Color m_ObraDitherColor;
         [MFoldout(nameof(m_Stylize), EStylize.BilateralFilter)] [Range(0.1f, 5f)] public float m_BilaterailSize;
         [MFoldout(nameof(m_Stylize), EStylize.BilateralFilter)] [Range(0.01f, 1f)] public float m_BilateralFactor;
+        public bool Validate() => m_Stylize != EStylize.None;
         public static readonly PPData_Stylize m_Default = new PPData_Stylize()
         {
             m_Stylize = EStylize.Pixel,
@@ -57,6 +59,7 @@ namespace Rendering.PostProcess
             m_BilaterailSize = 5f,
             m_BilateralFactor=.5f,
         };
+
     }
 
     public class PPCore_Stylize:PostProcessCore<PPData_Stylize>

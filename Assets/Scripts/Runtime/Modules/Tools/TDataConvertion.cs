@@ -9,6 +9,7 @@ public static class TDataConvert
 {
     static readonly char[] m_PhraseIterateBreakPoints = new char[12] { ',', ';', '[', ']', '{', '}', '(', ')', ';', ':', '/', '`' };
     const char m_PhraseBaseBreakPoint = '|';
+    public static string Convert<T>(T xmlData) => ConvertToString(typeof(T), xmlData, -1);
     public static string Convert(Type type, object value) => ConvertToString(type, value, -1);
     public static T Convert<T>(string xmlData) => (T)ConvertToObject(typeof(T), xmlData, -1);
     public static object Convert(Type type, string xmlData) => ConvertToObject(type, xmlData, -1);
@@ -23,7 +24,6 @@ public static class TDataConvert
 
         if (s_BaseTypeConvert.ContainsKey(type))
             return s_BaseTypeConvert[type].Key(value);
-
 
         //Iteration Type
         iteration = DoIteration(iteration);
@@ -99,9 +99,9 @@ public static class TDataConvert
             xmlData => {string[] split = xmlData.Split(m_PhraseBaseBreakPoint);
             return new Vector4(float.Parse(split[0]), float.Parse(split[1]), float.Parse(split[2]), float.Parse(split[3]));})},
         { typeof(RangeInt),new KeyValuePair<Func<object, string>, Func<string, object>>(
-            data => { return ((RangeInt)data).start.ToString() + m_PhraseBaseBreakPoint + ((RangeInt)data).length.ToString(); },
+            data => ((RangeInt)data).start.ToString() + m_PhraseBaseBreakPoint + ((RangeInt)data).length,
             xmlData => { string[] split = xmlData.Split(m_PhraseBaseBreakPoint); return new RangeInt(int.Parse(split[0]), int.Parse(split[1]));})},
-        { typeof(RangeFloat), new KeyValuePair<Func<object, string>, Func<string, object>>( data => { return ((RangeFloat)data).start.ToString() + m_PhraseBaseBreakPoint + ((RangeFloat)data).length.ToString(); },
+        { typeof(RangeFloat), new KeyValuePair<Func<object, string>, Func<string, object>>( data => { return ((RangeFloat)data).start.ToString() + m_PhraseBaseBreakPoint + ((RangeFloat)data).length; },
             xmlData => { string[] split = xmlData.Split(m_PhraseBaseBreakPoint); return new RangeFloat(float.Parse(split[0]), float.Parse(split[1])); } )}
     };
     #endregion
@@ -135,22 +135,22 @@ public static class TDataConvert
     {
         Type elementType = arrayType.GetElementType();
         char dataBreak = m_PhraseIterateBreakPoints[iteration];
-        string[] datas = xmlData.Split(dataBreak);
-        Array array =  (Array)Activator.CreateInstance(arrayType, datas.Length);
-        for (int i = 0; i < datas.Length; i++)
-            array.SetValue(ConvertToObject(elementType, datas[i],iteration),i);
+        string[] data = xmlData.Split(dataBreak);
+        Array array =  (Array)Activator.CreateInstance(arrayType, data.Length);
+        for (int i = 0; i < data.Length; i++)
+            array.SetValue(ConvertToObject(elementType, data[i],iteration),i);
         return array;
     }
     #endregion
     #region Generic List/Dictionary
-    static Type m_GenericDicType = typeof(Dictionary<,>);
-    static Type m_GenericListType = typeof(List<>);
-    static bool CheckGenericPhrase(Type genericDefinition) => genericDefinition == m_GenericDicType || genericDefinition == m_GenericListType;
+    static readonly Type kGenericDicType = typeof(Dictionary<,>);
+    static readonly Type kGenericListType = typeof(List<>);
+    static bool CheckGenericPhrase(Type genericDefinition) => genericDefinition == kGenericDicType || genericDefinition == kGenericListType;
     static string GenericPhraseToString(Type type, Type genericDefinition, object data, int iteration)
     {
         char dataBreak = m_PhraseIterateBreakPoints[iteration];
         StringBuilder convertData = new StringBuilder();
-        if (genericDefinition == m_GenericListType)
+        if (genericDefinition == kGenericListType)
         {
             Type listType = type.GetGenericArguments()[0];
             foreach (object obj in (IEnumerable) data)
@@ -161,7 +161,7 @@ public static class TDataConvert
             if (convertData.Length != 0)
                 convertData.Remove(convertData.Length - 1, 1);
         }
-        else if (genericDefinition == m_GenericDicType)
+        else if (genericDefinition == kGenericDicType)
         {
             Type keyType = type.GetGenericArguments()[0];
             Type valueType = type.GetGenericArguments()[1];
@@ -181,7 +181,7 @@ public static class TDataConvert
     {
         char dataBreak = m_PhraseIterateBreakPoints[iteration];
         
-        if (genericDefinition == m_GenericListType)
+        if (genericDefinition == kGenericListType)
         {
             Type listType = type.GetGenericArguments()[0];
             IList iListTarget = (IList)Activator.CreateInstance(type);
@@ -192,7 +192,7 @@ public static class TDataConvert
 
             return iListTarget;
         }
-        else if (genericDefinition == m_GenericDicType)
+        else if (genericDefinition == kGenericDicType)
         {
             Type keyType = type.GetGenericArguments()[0];
             Type valueType = type.GetGenericArguments()[1];
@@ -207,11 +207,11 @@ public static class TDataConvert
     }
     #endregion
     #region IDataConvert
-    static Dictionary<Type, FieldInfo[]> m_XmlConvertFieldInfos = new Dictionary<Type, FieldInfo[]>();
+    static readonly Dictionary<Type, FieldInfo[]> m_XmlConvertFieldInfos = new Dictionary<Type, FieldInfo[]>();
     static bool CheckSerializeType(Type type)
     {
         if (!m_XmlConvertFieldInfos.ContainsKey(type))
-            m_XmlConvertFieldInfos.Add(type, type.GetFields(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public));
+            m_XmlConvertFieldInfos.Add(type, type.GetFields(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic));
         return true;
     }
 
@@ -261,10 +261,10 @@ public static class TDataCrypt
 {
     public static string EasyCryptData(string data, string key)
     {
-        byte[] bdata = Encoding.UTF8.GetBytes(data);
-        byte[] bkey = Encoding.UTF8.GetBytes(key);
-        for (int i = 0; i < bdata.Length; i++)
-            bdata[i] ^= bkey[i % key.Length];
-        return Encoding.UTF8.GetString(bdata);
+        byte[] byteData = Encoding.UTF8.GetBytes(data);
+        byte[] byteKey = Encoding.UTF8.GetBytes(key);
+        for (int i = 0; i < byteData.Length; i++)
+            byteData[i] ^= byteKey[i % key.Length];
+        return Encoding.UTF8.GetString(byteData);
     }
 }

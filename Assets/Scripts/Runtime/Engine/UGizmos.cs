@@ -85,17 +85,22 @@ public static class Gizmos_Extend
     }
 
 
-    public static void DrawString(Vector3 positionLS,string text)
+    public static void DrawString(Vector3 positionLS,string text,float offset=.075f)
     {
         if (SceneView.currentDrawingSceneView == null)
             return;
         Handles.BeginGUI();
-        var screenPos=SceneView.currentDrawingSceneView.camera.WorldToScreenPoint(Gizmos.matrix.MultiplyPoint(positionLS));
-
-        screenPos.y = SceneView.currentDrawingSceneView.camera.pixelHeight - screenPos.y-20;
-        var size=GUI.skin.label.CalcSize(new GUIContent(text));
-        GUI.color = Gizmos.color;
-        GUI.Label(new Rect(screenPos,Vector2.zero).Expand(size),text);
+        var positionWS = Gizmos.matrix.MultiplyPoint(positionLS);
+        var camera = SceneView.currentDrawingSceneView.camera;
+        var positionVS = camera.WorldToViewportPoint(positionWS);
+        positionVS.y += offset;
+        if (KRect.kRect01.Contains(positionVS)&&positionVS.z>0)
+        {
+            var screenPos = new Vector2(positionVS.x*camera.pixelWidth,(1-positionVS.y)*camera.pixelHeight);
+            var size=GUI.skin.label.CalcSize(new GUIContent(text));
+            GUI.color = Gizmos.color;
+            GUI.Label(new Rect(screenPos,Vector2.zero).Expand(size),text);
+        }
         Handles.EndGUI();
     }
 }

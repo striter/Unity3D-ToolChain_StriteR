@@ -1,8 +1,6 @@
 using System.Linq;
 using System.Collections.Generic;
-using Geometry;
 using Geometry.Voxel;
-using LinqExtension;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -56,7 +54,7 @@ namespace Rendering.Pipeline
             if (SRC_ReflectionController.m_ReflectionPlanes.Count == 0)
                 return;
 
-            foreach (var (groups,index) in SRC_ReflectionController.m_ReflectionPlanes.FindAll(p=>p.m_MeshRenderer.isVisible).GroupBy(p=>p.m_PlaneData).LoopIndex())
+            foreach (var (index,groups) in SRC_ReflectionController.m_ReflectionPlanes.FindAll(p=>p.m_MeshRenderer.isVisible).GroupBy(p=>p.m_PlaneData).LoopIndex())
             {
                 if (index >= C_MaxReflectionTextureCount)
                 {

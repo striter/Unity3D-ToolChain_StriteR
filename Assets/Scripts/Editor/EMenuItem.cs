@@ -10,10 +10,13 @@ namespace TEditor
         public static void SyncObjectToSceneView() => Hotkeys.SyncSelectedToSceneViewCamera();
         [MenuItem("Work Flow/Hotkeys/Scene View Camera Sync To Selected _F6", false, 102)]
         public static void SceneViewCameraSyncSelected() => Hotkeys.SceneViewCameraSyncSelected();
-        [MenuItem("Work Flow/Hotkeys/Fast Pause _F10", false, 103)]
+        [MenuItem("Work Flow/Hotkeys/Fast Pause _F9", false, 103)]
         static void FastPause() => Hotkeys.SwitchPause();
         [MenuItem("Work Flow/Hotkeys/Take Screen Shot _F12", false, 105)]
         static void TakeScreenShot() => Hotkeys.TakeScreenShot();
+        
+        [MenuItem("Work Flow/Hotkeys/Output Window Asset Path _&-", false, 110)]
+        static void OutputWindowAssetPath() => Hotkeys.OutputActiveWindowDirectory();
         #endregion
 
         #region Helpers
@@ -26,7 +29,7 @@ namespace TEditor
         static void ShowFontsReplacerWindow() => EditorWindow.GetWindow<UIFontsMissingReplacerWindow>().titleContent=new GUIContent("Missing Fonts Replacer",EditorGUIUtility.IconContent("FilterByLabel").image);
         #endregion
         
-        #region Window
+        #region Art
         //BuiltIn Texture Ref:https://unitylist.com/p/5c3/Unity-editor-icons
         //Art
         [MenuItem("Work Flow/Art/Plane Mesh Generator", false, 301)]
@@ -43,6 +46,13 @@ namespace TEditor
         static void ShowOptimizeWindow() => EditorWindow.GetWindow(typeof(GPUAnimationBaker)).titleContent = new GUIContent("GPU Animation Instance Baker", EditorGUIUtility.IconContent("AvatarSelector").image);
         [MenuItem("Work Flow/Art/(Optimize)Animation Clip Optimize", false, 401)]
         static void ShowAssetOptimizeWindow() => EditorWindow.GetWindow(typeof(AnimationClipOptimize)).titleContent = new GUIContent("Asset Optimize", EditorGUIUtility.IconContent("Toolbar Plus More").image);
+
+
+        [MenuItem("Work Flow/Art/Export Lightmap Data", false, 501)]
+        static void ExportLightmapData() => Helper.ExportLightmapCollection();
+        
+        [MenuItem("Work Flow/Testing/Scriptable Objects Combiner", false, 601)]
+        static void ShowScriptableObjectsCombinerWindow() => EditorWindow.GetWindow(typeof(ScriptableObjectCombiner)).titleContent = new GUIContent("Scriptable Objects Combiner", EditorGUIUtility.IconContent("d_Import").image);
         #endregion
         
         #region MenuItems
@@ -51,10 +61,7 @@ namespace TEditor
         static void RemoveAllSelectedColliders()
         {
             foreach (Transform transform in Selection.transforms)
-            {
-                foreach (Collider collider in transform.GetComponents<Collider>())
-                    Object.DestroyImmediate(collider);
-            }
+                transform.DestroyChildrenComponent<Collider>();
         }
         #endregion
     }

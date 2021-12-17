@@ -92,7 +92,7 @@ namespace TDataPersistent
 
         static void ReadDefaultData<T>(CDataSave<T> _data, string fileName = null) where T : CDataSave<T>, new()
         {
-            string filePath =  GetPersistentPath<T>(fileName);
+            string filePath = GetPersistentPath<T>(fileName);
             try
             {
                 Validate<T>(File.ReadAllText(filePath),out XmlNode node);

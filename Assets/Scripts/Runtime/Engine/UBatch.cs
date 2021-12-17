@@ -26,17 +26,17 @@ public static class UBatch
         foreach (var group in groups)
         {
             string meshName = "Batched Mesh:";
-            List<Vector3> vertices = TSPoolList<Vector3>.Spawn();
-            List<Vector3> normals = TSPoolList<Vector3>.Spawn();
-            List<Vector4> tangents = TSPoolList<Vector4>.Spawn();
-            List<Color> colors = TSPoolList<Color>.Spawn();
-            List<int> triangles = TSPoolList<int>.Spawn();
+            TSPoolList<Vector3>.Spawn(out var vertices);
+            TSPoolList<Vector3>.Spawn(out var normals);
+            TSPoolList<Vector4>.Spawn(out var tangents);
+            TSPoolList<Color>.Spawn(out var colors);
+            TSPoolList<int>.Spawn(out var triangles);
             List<Vector4>[] uvs = new List<Vector4>[8];
             for (int i = 0; i < 8; i++)
                 uvs[i]= TSPoolList<Vector4>.Spawn();
-            List<Transform> bones = TSPoolList<Transform>.Spawn();
-            List<BoneWeight> boneWeights = TSPoolList<BoneWeight>.Spawn();
-            List<Vector4> tempUV = TSPoolList<Vector4>.Spawn();
+            TSPoolList<Transform>.Spawn(out var bones);
+            TSPoolList<BoneWeight>.Spawn(out var boneWeights);
+            TSPoolList<Vector4>.Spawn(out var tempUV);
             foreach (var renderer in group)
             {
                 Mesh concatMesh = renderer.sharedMesh;

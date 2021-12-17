@@ -7,7 +7,7 @@ namespace Rendering.Pipeline
     {
         static readonly int ID_CameraNormalTex = Shader.PropertyToID("_CameraNormalTexture");
         static readonly RenderTargetIdentifier RT_ID_CameraNormalTex = new RenderTargetIdentifier(ID_CameraNormalTex);
-        Instance<Material> m_NormalMaterial=new Instance<Material>(()=>new Material( RenderResources.FindHiddenShader("Hidden/NormalsFromDepth"))  {hideFlags = HideFlags.HideAndDontSave});
+        Instance<Material> m_NormalMaterial=new Instance<Material>(()=>new Material( RenderResources.FindInclude("Hidden/NormalsFromDepth"))  {hideFlags = HideFlags.HideAndDontSave});
         public void Dispose() 
         {
             GameObject.DestroyImmediate(m_NormalMaterial);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
@@ -213,20 +214,22 @@ public static class URender
             _computeShader.EnableKeyword(_keywords[i], i + 1 == _target);
     }
     //Global
-    public static void EnableGlobalKeywords<T>(string[] _keywords, T _target) where T : Enum => EnableGlobalKeywords(_keywords, Convert.ToInt32(_target));
-    public static void EnableGlobalKeywords(string[] _keywords, int _target)
+    public static bool EnableGlobalKeywords<T>(string[] _keywords, T _target) where T : Enum => EnableGlobalKeywords(_keywords, Convert.ToInt32(_target));
+    public static bool EnableGlobalKeywords(string[] _keywords, int _target)
     {
         for (int i = 0; i < _keywords.Length; i++)
             EnableGlobalKeyword(_keywords[i], (i + 1) == _target);
+        return _target != 0;
     }
-    public static void EnableGlobalKeyword(string _keyword, bool _enable)
+    public static bool EnableGlobalKeyword(string _keyword, bool _enable)
     {
         if (_enable)
             Shader.EnableKeyword(_keyword);
         else
             Shader.DisableKeyword(_keyword);
+        return _enable;
     }
-    public static void EnableGlobalKeyword(this CommandBuffer _buffer,string _keyword, bool _enable)
+    public static void EnableKeyword(this CommandBuffer _buffer,string _keyword, bool _enable)
     {
         if (_enable)
             _buffer.EnableShaderKeyword(_keyword);
@@ -244,6 +247,46 @@ public static class URender
             case 3: return Vector2.up;
             default: throw new Exception("Invalid Index:" + _index);
         }
+    }
+
+    public static void CalculatePerspectiveFrustumCorners(this Camera camera,out Vector3 tl,out Vector3 tr,out Vector3 bl,out Vector3 br)
+    {
+        float fov = camera.fieldOfView;
+        float near = camera.nearClipPlane;
+        float aspect = camera.aspect;
+        float halfHeight = near * Mathf.Tan(fov * .5f * Mathf.Deg2Rad);
+        Transform cameraTrans = camera.transform;
+        Vector3 forward = cameraTrans.forward;
+        Vector3 toRight = cameraTrans.right * halfHeight * aspect;
+        Vector3 toTop = cameraTrans.up * halfHeight;
+            
+        tl = forward * near + toTop - toRight;
+        float scale = tl.magnitude / near;
+        tl.Normalize();
+        tl *= scale;
+        tr = forward * near + toTop + toRight;
+        tr.Normalize();
+        tr *= scale;
+        bl = forward * near - toTop - toRight;
+        bl.Normalize();
+        bl *= scale;
+        br = forward * near - toTop + toRight;
+        br.Normalize();
+        br *= scale;
+    }
+
+    public static void CalculateOrthographicPositions(this Camera camera, out Vector3 tl, out Vector3 tr,out Vector3 bl, out Vector3 br)
+    {
+        float aspect = camera.aspect;
+        float halfHeight = camera.orthographicSize;
+        Transform cameraTrans = camera.transform;
+        Vector3 toRight = cameraTrans.right * halfHeight * aspect;
+        Vector3 toTop = cameraTrans.up * halfHeight;
+        Vector3 startPos = cameraTrans.position+cameraTrans.forward*camera.nearClipPlane;
+        tl = startPos - toRight + toTop;
+        tr = startPos + toRight + toTop;
+        bl = startPos - toRight - toTop;
+        br = startPos + toRight - toTop;
     }
 }
 
@@ -263,10 +306,10 @@ public static class UBoundsChecker
     }
     public static Bounds CalculateBounds() => new Bounds((m_BoundsMin + m_BoundsMax) / 2, m_BoundsMax - m_BoundsMin);
 
-    public static Bounds GetBounds(Vector3[] _verticies)
+    public static Bounds GetBounds(IEnumerable<Vector3> _vertices)
     {
         Begin();
-        foreach (var vertex in _verticies)
+        foreach (var vertex in _vertices)
             CheckBounds(vertex);
         return CalculateBounds();
     }

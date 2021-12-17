@@ -1,7 +1,14 @@
 using System;
 namespace Geometry.Voxel
 {
-    public static class KQube
+    public partial class KGeometry
+    {
+        public static readonly GPlane kZeroPlane = new GPlane(UnityEngine.Vector3.up, 0f);
+        
+        
+    }
+    
+    public partial class KQube
     {
         public static readonly Qube<int> Zero = new Qube<int>(0);
         public static readonly Qube<int> NegOne = new Qube<int>(-1);

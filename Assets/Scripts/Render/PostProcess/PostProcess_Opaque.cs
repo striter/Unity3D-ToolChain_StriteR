@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Rendering.Pipeline;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -8,7 +9,7 @@ using Random = System.Random;
 
 namespace Rendering.PostProcess
 {
-    public class PostProcess_Opaque:PostProcessComponentBase<PPCore_Opaque, PPData_Opaque>
+    public class PostProcess_Opaque:PostProcessBehaviour<PPCore_Opaque, PPData_Opaque>
     {
         public override bool m_OpaqueProcess => true;
         public override EPostProcess Event => EPostProcess.Opaque;
@@ -24,10 +25,10 @@ namespace Rendering.PostProcess
             m_Data.m_ScanData.m_Origin = origin;
             m_ScanCoroutine.Start(TIEnumerators.ChangeValueTo((float value) => {
                 m_Data.m_ScanData.m_Elapse= radius * value; 
-                OnValidate();
+                ValidateParameters();
             }, 0, 1, duration, () => { 
                 m_Data.m_Scan = false;
-                OnValidate();
+                ValidateParameters();
             }));
         }
         #endregion
@@ -65,7 +66,7 @@ namespace Rendering.PostProcess
         }
 #endif
     }
-    public class PPCore_Opaque:PostProcessCore<PPData_Opaque>,IPostProcessPipeline<PPData_Opaque>
+    public class PPCore_Opaque:PostProcessCore<PPData_Opaque>,IPostProcessPipelineCallback<PPData_Opaque>
     {
         private const string KW_Scan = "_SCAN";
         private const string KW_Area = "_AREA";
@@ -89,7 +90,7 @@ namespace Rendering.PostProcess
         readonly List<ShaderTagId> m_ShaderTagIDs = new List<ShaderTagId>();
         readonly PPCore_Blurs m_HighlightBlur;
         
-        public enum EPassIndex
+        enum EPassIndex
         {
             Combine=0,
             Sample=1,
@@ -97,8 +98,8 @@ namespace Rendering.PostProcess
         public PPCore_Opaque()
         {
             m_HighlightBlur = new PPCore_Blurs();
-            m_RenderMaterial = new Material(Shader.Find("Game/Unlit/Color")) { hideFlags = HideFlags.HideAndDontSave };
-            m_RenderDepthMaterial = new Material(Shader.Find("Hidden/CopyDepth")) { hideFlags = HideFlags.HideAndDontSave };
+            m_RenderMaterial = new Material(RenderResources.FindInclude("Game/Unlit/Color")) { hideFlags = HideFlags.HideAndDontSave };
+            m_RenderDepthMaterial = new Material(RenderResources.FindInclude("Hidden/CopyDepth")) { hideFlags = HideFlags.HideAndDontSave };
             m_RenderMaterial.SetColor(ID_Color, Color.white);
             m_ShaderTagIDs.FillWithDefaultTags();
         }
@@ -206,7 +207,7 @@ namespace Rendering.PostProcess
     }
 
     [Serializable]
-    public struct PPData_Opaque
+    public struct PPData_Opaque:IPostProcessParameter
     {
         [MTitle] public bool m_Scan;
         [MFoldout(nameof(m_Scan), true)] public Data_Scan m_ScanData;
@@ -223,7 +224,7 @@ namespace Rendering.PostProcess
         [MFoldout(nameof(m_SSAO), true)] public Data_SSAO m_SSAOData;
         public bool m_VolumetricCloud;
         [MFoldout(nameof(m_VolumetricCloud), true)] public Data_VolumetricCloud m_VolumetricCloudData;
-        
+        public bool Validate() => m_Scan || m_Area || m_Outline || m_Highlight || m_SSAO || m_VolumetricCloud;
         public static readonly PPData_Opaque m_Default = new PPData_Opaque()
         {
             m_Scan = true,
@@ -527,6 +528,7 @@ namespace Rendering.PostProcess
             [MFoldout(nameof(m_LightScatter), true), Range(.5f, 1)] public float m_ScatterRange;
             [MFoldout(nameof(m_LightScatter), true), Range(0, 1)] public float m_ScatterStrength;
             
+
             #region ShaderProperties
             static readonly int ID_VerticalStart = Shader.PropertyToID("_VerticalStart");
             static readonly int ID_VerticalEnd = Shader.PropertyToID("_VerticalEnd");

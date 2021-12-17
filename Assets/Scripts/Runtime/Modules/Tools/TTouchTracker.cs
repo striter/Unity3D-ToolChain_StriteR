@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using LinqExtension;
 using UnityEngine;
 
 namespace TTouchTracker
@@ -64,17 +63,26 @@ namespace TTouchTracker
         {
             return _tracks.Collect(p => p.m_Phase == TouchPhase.Ended && p.m_Lifetime < _clickSenseTime).Select(p=>p.m_Start);
         }
+        public static IEnumerable<TrackData> ResolvePress(this List<TrackData> _tracks)
+        {
+            return _tracks.Collect(p => p.m_Phase == TouchPhase.Stationary);
+        }
+        
+        public static IEnumerable<Vector2> ResolveTouch(this List<TrackData> _tracks, float _senseTime=.3f, TouchPhase tp = TouchPhase.Stationary)
+        {
+            return _tracks.Collect(p => p.m_Phase == tp && p.m_Lifetime > _senseTime).Select(p=>p.m_Start);
+        }
 
         private static int hDragID=-1;
         private static Vector2 hLastDrag = Vector2.zero;
-        public static void ResolveSingleDrag(this List<TrackData> _tracks,Action<Vector2,bool> _onDragStatus,Action<Vector2> _onDrag,float _senseTime=.1f)
+        public static void ResolveSingleDrag(this List<TrackData> _tracks,Action<Vector2,bool> _onDragStatus,Action<Vector2> _onDrag,float _senseTime=.1f,bool _removeTacker=true)
         {
             if (hDragID == -1)
             {
                 if (_tracks.Count != 1)
                     return;
                 var dragTrack = _tracks[0];
-                if (dragTrack.m_Phase != TouchPhase.Stationary)
+                if (dragTrack.m_Phase != TouchPhase.Stationary&&dragTrack.m_Phase!=TouchPhase.Moved)
                     return;
                 if (dragTrack.m_PhaseTime < _senseTime)
                     return;
@@ -88,12 +96,15 @@ namespace TTouchTracker
             if (!_tracks.TryFind(p => p.m_Index == hDragID, out var dragging))
             {
                 hDragID = -1;
-                _onDragStatus(hLastDrag, false);
+                hLastDrag = Vector2.zero;
+                _onDragStatus?.Invoke(hLastDrag, false);
                 return;
             }
 
+            if (_removeTacker)
+                _tracks.Remove(dragging);
             hLastDrag = dragging.m_Current;
-            _onDrag(hLastDrag);
+            _onDrag?.Invoke(hLastDrag);
         }
     }
 
@@ -145,8 +156,6 @@ namespace TTouchTracker
       return Input.touches;
 #endif
         }
-
-        public static void Init() => m_TrackData.Clear();
         private static readonly List<TrackData> kTracks = new List<TrackData>();
         public static List<TrackData> Execute(float _unscaledDeltaTime)
         {

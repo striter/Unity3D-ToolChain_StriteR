@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Rendering.PostProcess
 {
 
-    public class PostProcess_ColorDegrade : PostProcessComponentBase<PPCore_ColorDegrade, PPData_ColorDegrade>
+    public class PostProcess_ColorDegrade : PostProcessBehaviour<PPCore_ColorDegrade, PPData_ColorDegrade>
     {
         public override bool m_OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.ColorDegrade;
@@ -18,7 +18,7 @@ namespace Rendering.PostProcess
         Scaled=2,
     }
     [Serializable]
-    public struct PPData_ColorDegrade
+    public struct PPData_ColorDegrade:IPostProcessParameter
     {
         [Header("UVs")]
         [MTitle] public EVHSScreenCut m_ScreenCut;
@@ -61,6 +61,8 @@ namespace Rendering.PostProcess
         [MFoldout(nameof(m_Vignette), true)] public Color m_VignetteColor;
         [MFoldout(nameof(m_Vignette), true), Range(0, 10)] public float m_VignetteValue;
 
+        public bool Validate() => m_ScreenCut != EVHSScreenCut.None || m_PixelDistort || m_LineDistort ||
+                                  m_VortexDistort || m_ColorBleed || m_Grain || m_Vignette;
         public static readonly PPData_ColorDegrade m_Default = new PPData_ColorDegrade()
         {
             m_ScreenCut = EVHSScreenCut.Hard,
@@ -101,6 +103,7 @@ namespace Rendering.PostProcess
             m_VignetteColor = Color.black,
             m_VignetteValue = 2f,
         };
+
     }
     public class PPCore_ColorDegrade:PostProcessCore<PPData_ColorDegrade>
     {

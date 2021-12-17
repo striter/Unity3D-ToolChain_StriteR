@@ -101,7 +101,6 @@ public partial class UIT_TouchConsole :MonoBehaviour, IPartialMethods<EPartialMe
         float deltaTime = Time.unscaledDeltaTime;
         this.InvokeMethods( EPartialMethods.Tick,deltaTime);
     }
-    
     protected void SetLogFramePanel(EConsoleSetting _panelSetting)
     {
         m_FrameRate.SetActive(_panelSetting.IsFlagEnable(EConsoleSetting.FPS));

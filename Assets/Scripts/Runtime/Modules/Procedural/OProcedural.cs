@@ -76,6 +76,8 @@ namespace Procedural
             coord.y /= _scale;
             return coord;
         }
+
+        public static Coord Lerp(Coord _src, Coord _dst, float _value)=> new Coord(_src.x + _dst.x*_value, _src.y + _dst.y * _value);
         public static Coord Normalize(Coord _src)=>_src/_src.magnitude;
         public float sqrMagnitude => x * x + y * y;
         public float magnitude => Mathf.Sqrt(sqrMagnitude);

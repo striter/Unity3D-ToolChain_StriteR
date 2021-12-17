@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 
 namespace Rendering.PostProcess
 {
-    public class PostProcess_Transparent : PostProcessComponentBase<PPCore_Transparent, PPData_Transparent>
+    public class PostProcess_Transparent : PostProcessBehaviour<PPCore_Transparent, PPData_Transparent>
     {
         public override bool m_OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.Volumetric;
@@ -76,7 +76,7 @@ namespace Rendering.PostProcess
         }
     }
     [Serializable]
-    public struct PPData_Transparent
+    public struct PPData_Transparent:IPostProcessParameter
     {
         public enum EMarchTimes
         {
@@ -93,6 +93,7 @@ namespace Rendering.PostProcess
         [Range(1, 4)] public int m_VolumetricDownSample;
         [MTitle] public bool m_EnableVolumetricBlur;
         [MFoldout(nameof(m_EnableVolumetricBlur), true)] public PPData_Blurs m_VolumetricBlur;
+        public bool Validate() => m_VolumetricLight;
         public static readonly PPData_Transparent m_Default = new PPData_Transparent()
         {
             m_VolumetricLight = true,

@@ -51,8 +51,8 @@ public static class UIT_TouchConsoleHelper
             return _container.Insert<T>();
         _button = _container.Insert<CommandItem_Button>();
         T item = _container.Insert<T>();
-        _button.m_Button.onClick.AddListener(() => item.iTransform.SetActive(!item.iTransform.gameObject.activeSelf));
-        item.iTransform.SetActive(false);
+        _button.m_Button.onClick.AddListener(() => item.Transform.SetActive(!item.Transform.gameObject.activeSelf));
+        item.Transform.SetActive(false);
         return item;
     }
     public static void EnumSelection<T>(this CommandContainer _container, Ref<T> _valueRef, Action<T> OnClick, bool foldOut = true) where T : struct, Enum => EnumSelection(_container, _valueRef.m_RefValue, enumObj => { _valueRef.SetValue((T)enumObj); OnClick?.Invoke(_valueRef.m_RefValue); }, foldOut);
@@ -198,10 +198,10 @@ public partial class UIT_TouchConsole
     Timer m_FastKeyCooldownTimer = new Timer(.5f);
     public bool m_ConsoleOpening { get; private set; } = false;
     ScrollRect m_ConsoleCommandScrollRect;
-    TObjectPoolClass<CommandContainer> m_CommandContainers;
+    TObjectPoolClass<int,CommandContainer> m_CommandContainers;
     int m_CurrentPage;
-    TObjectPoolClass<ButtonSelect> m_PageSelection;
-    Dictionary<Type, TObjectPoolClass<CommandItemBase>> m_CommandItems = new Dictionary<Type, TObjectPoolClass<CommandItemBase>>();
+    TObjectPoolClass<int,ButtonSelect> m_PageSelection;
+    Dictionary<Type, TObjectPoolClass<int,CommandItemBase>> m_CommandItems = new Dictionary<Type, TObjectPoolClass<int,CommandItemBase>>();
 
     Action<bool> OnConsoleShow;
     public void SetOnConsoleShow(Action<bool> _OnConsoleShow)
@@ -212,14 +212,14 @@ public partial class UIT_TouchConsole
     void InitConsole()
     {
         m_ConsoleCommandScrollRect = transform.Find("Command").GetComponent<ScrollRect>();
-        m_CommandContainers = new TObjectPoolClass<CommandContainer>(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content/GridItem"));
+        m_CommandContainers = new TObjectPoolClass<int,CommandContainer>(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content/GridItem"));
         Transform containerItemPool = m_ConsoleCommandScrollRect.transform.Find("Viewport/CommandItemPool");
-        UReflection.TraversalAllInheritedClasses<CommandItemBase>(type => m_CommandItems.Add(type, new TObjectPoolClass<CommandItemBase>(containerItemPool.Find(type.Name), type)));
+        UReflection.TraversalAllInheritedClasses<CommandItemBase>(type => m_CommandItems.Add(type, new TObjectPoolClass<int,CommandItemBase>(containerItemPool.Find(type.Name), type)));
 
         m_ConsoleOpening = false;
         m_ConsoleCommandScrollRect.SetActive(m_ConsoleOpening);
 
-        m_PageSelection = new TObjectPoolClass<ButtonSelect>(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content/PageSelect/GridItem"));
+        m_PageSelection = new TObjectPoolClass<int,ButtonSelect>(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content/PageSelect/GridItem"));
     }
     [PartialMethod(EPartialMethods.Reset,EPartialSorting.CommandConsole)]
     void ResetConsole()
@@ -266,7 +266,7 @@ public partial class UIT_TouchConsole
         foreach (var page in m_PageSelection)
             page.Highlight(page.m_Identity == m_CurrentPage);
         foreach (var command in m_CommandContainers)
-            command.iTransform.SetActive(command.m_PageIndex == m_CurrentPage);
+            command.Transform.SetActive(command.m_PageIndex == m_CurrentPage);
         LayoutRebuilder.ForceRebuildLayoutImmediate(m_LogPanelRect.transform as RectTransform);
     }
     void SetConsoleTimeScale(float _timeScale)
@@ -275,16 +275,16 @@ public partial class UIT_TouchConsole
             return;
         Time.timeScale = _timeScale;
     }
-    public class ButtonSelect : APoolItem
+    public class ButtonSelect : APoolItem<int>
     {
         Text m_Title;
         Transform m_Highlight;
         Action<int> OnClick;
         public ButtonSelect(Transform _transform) : base(_transform)
         {
-            iTransform.GetComponentInChildren<Button>().onClick.AddListener(() => OnClick?.Invoke(m_Identity));
-            m_Title = iTransform.GetComponentInChildren<Text>();
-            m_Highlight = iTransform.Find("Highlight");
+            Transform.GetComponentInChildren<Button>().onClick.AddListener(() => OnClick?.Invoke(m_Identity));
+            m_Title = Transform.GetComponentInChildren<Text>();
+            m_Highlight = Transform.Find("Highlight");
         }
         public void Init(string _title, Action<int> _OnClick)
         {
@@ -297,7 +297,7 @@ public partial class UIT_TouchConsole
             m_Highlight.SetActive(_highlight);
         }
     }
-    public class CommandContainer : APoolItem
+    public class CommandContainer : APoolItem<int>
     {
         #region Predefine Classes
         #endregion
@@ -333,7 +333,7 @@ public partial class UIT_TouchConsole
         public T Insert<T>() where T : CommandItemBase
         {
             T item = CreateItem(typeof(T)) as T;
-            item.iTransform.SetParent(iTransform);
+            item.Transform.SetParent(Transform);
             m_Items.Add(item);
             return item;
         }
@@ -346,7 +346,7 @@ public partial class UIT_TouchConsole
             m_KeyCode = KeyCode.None;
         }
     }
-    public class CommandItemBase : APoolItem
+    public class CommandItemBase : APoolItem<int>
     {
         public CommandItemBase(Transform _transform) : base(_transform) { }
         public virtual void OnFastKeyTrigger() { }
@@ -384,10 +384,10 @@ public partial class UIT_TouchConsole
     }
     public class CommandItem_ButtonSelection : CommandItemBase
     {
-        public TObjectPoolClass<ButtonSelect> m_ButtonGrid { get; private set; }
+        public TObjectPoolClass<int,ButtonSelect> m_ButtonGrid { get; private set; }
         public CommandItem_ButtonSelection(Transform _transform) : base(_transform)
         {
-            m_ButtonGrid = new TObjectPoolClass<ButtonSelect>(_transform.Find("GridItem"));
+            m_ButtonGrid = new TObjectPoolClass<int,ButtonSelect>(_transform.Find("GridItem"));
         }
         public CommandItem_ButtonSelection Play(List<string> values, Action<int> _OnClick)
         {
@@ -428,7 +428,7 @@ public partial class UIT_TouchConsole
         public Text m_ToggleTitle { get; private set; }
         public CommandItem_Toggle(Transform _transform) : base(_transform)
         {
-            m_Toggle = iTransform.GetComponent<Toggle>();
+            m_Toggle = Transform.GetComponent<Toggle>();
             m_ToggleTitle = _transform.Find("Title").GetComponent<Text>();
         }
         public override void OnPoolSpawn(int identity)
@@ -454,8 +454,8 @@ public partial class UIT_TouchConsole
         public Text m_Value { get; private set; }
         public CommandItem_Slider(Transform _transform) : base(_transform)
         {
-            m_Slider = iTransform.Find("Slider").GetComponent<Slider>();
-            m_Value = iTransform.Find("Value").GetComponent<Text>();
+            m_Slider = Transform.Find("Slider").GetComponent<Slider>();
+            m_Value = Transform.Find("Value").GetComponent<Text>();
         }
         public override void OnPoolSpawn(int identity)
         {

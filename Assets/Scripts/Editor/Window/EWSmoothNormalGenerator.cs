@@ -40,7 +40,7 @@ namespace TEditor
 
         public static void GenerateSkinnedTarget(string assetPath, GameObject _targetFBX, EVertexData _generateUV)
         {
-            GameObject prefabSource = GameObject.Instantiate(_targetFBX);
+            GameObject prefabSource = Instantiate(_targetFBX);
 
             SkinnedMeshRenderer[] skinnedRenderers = prefabSource.GetComponentsInChildren<SkinnedMeshRenderer>();
             MeshFilter[] meshFilters = prefabSource.GetComponentsInChildren<MeshFilter>();
@@ -49,13 +49,9 @@ namespace TEditor
                 sourceMeshes.Add(renderer.sharedMesh);
             foreach (MeshFilter filter in meshFilters)
                 sourceMeshes.Add(filter.sharedMesh);
-
-            List<KeyValuePair<string, Object>> targetSubAsset = new List<KeyValuePair<string, Object>>();
-            for (int i = 0; i < sourceMeshes.Count; i++)
-                targetSubAsset.Add(new KeyValuePair<string, Object>(sourceMeshes[i].name, GenerateMesh(sourceMeshes[i], _generateUV)));
-
+            
             GameObject mainAsset = PrefabUtility.SaveAsPrefabAsset(prefabSource, assetPath);
-            UEAsset.CreateOrReplaceSubAsset(assetPath, targetSubAsset.ToArray());
+            UEAsset.CreateOrReplaceSubAsset(assetPath, sourceMeshes);
             Mesh[] meshes = AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath).Select(obj=>(Mesh)obj).ToArray();
 
             skinnedRenderers = mainAsset.GetComponentsInChildren<SkinnedMeshRenderer>();

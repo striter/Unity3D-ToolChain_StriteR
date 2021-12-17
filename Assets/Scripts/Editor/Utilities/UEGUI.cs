@@ -47,6 +47,8 @@ namespace TEditor
             }
             return fieldInfo;
         }
+
+        public static IEnumerable<MethodInfo> AllMethods(this SerializedProperty _property)=>_property.serializedObject.targetObject.GetType().GetMethods(BindingFlags.Instance |  BindingFlags.Public | BindingFlags.NonPublic);
         public static IEnumerable<(FieldInfo, object)> AllRelativeFields(this SerializedProperty _property)
         {
             foreach (var fieldInfos in _property.FieldsSearch())
@@ -54,13 +56,6 @@ namespace TEditor
                 foreach (var subfield in fieldInfos.Item1.GetFields())
                     yield return (subfield, subfield.GetValue(fieldInfos.Item2));
             }
-        }
-        public static Object GetPropertyField(this SerializedProperty _property,Action<FieldInfo> _OnEachField=null)
-        {
-            Object targetObject=null;
-            foreach (var tuple in _property.FieldsSearch())
-                targetObject = tuple.Item2;
-            return targetObject;
         }
         public static IEnumerable<(Type,object)> FieldsSearch(this SerializedProperty _property)
         {
@@ -108,19 +103,27 @@ namespace TEditor
     }
     public static class GUILayout_Extend
     {
-        public static T[] ArrayField<T>(T[] _src, string _context = "", bool _allowSceneObjects = false) where T : UnityEngine.Object
+        public static T[] ArrayField<T>(T[] _src, string _title = "",Func<int,string> _getElementName=null, bool _allowSceneObjects = false) where T : UnityEngine.Object
         {
             GUILayout.BeginVertical();
-            if (_context != "")
-                EditorGUILayout.LabelField(_context, UEGUIStyle_Window.m_TitleLabel);
-            int length = Mathf.Clamp(EditorGUILayout.IntField("Length", _src.Length), 1, 128);
+            if (_title != "")
+                EditorGUILayout.LabelField(_title, UEGUIStyle_Window.m_TitleLabel);
+            if (_src == null)
+                _src = Array.Empty<T>();
+            int length = Mathf.Clamp(EditorGUILayout.IntField("Array Length", _src.Length), 0, 128);
             if (length != _src.Length)
                 _src = _src.Resize(length);
 
             Type type = typeof(T);
             T[] modifiedField = _src.DeepCopy();
             for (int i = 0; i < modifiedField.Length; i++)
+            {
+                GUILayout.BeginHorizontal();
+                string name = _getElementName == null ? $"  Element {i}" : _getElementName(i);
+                EditorGUILayout.LabelField(name);
                 modifiedField[i] = (T)EditorGUILayout.ObjectField(modifiedField[i], type, _allowSceneObjects);
+                GUILayout.EndHorizontal();
+            }
             GUILayout.EndVertical();
             for (int i = 0; i < modifiedField.Length; i++)
                 if (modifiedField[i] != _src[i])
