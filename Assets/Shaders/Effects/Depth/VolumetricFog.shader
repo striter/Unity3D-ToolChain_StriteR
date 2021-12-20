@@ -60,12 +60,12 @@
             half4 frag(v2f i) : SV_Target
             {
                 float2 screenUV = TransformHClipToNDC(i.positionHCS);
-                half3 viewDirWS = GetViewDirectionWS(i.positionWS);
+                half3 directionWS = GetCameraRealDirectionWS(i.positionWS);
                 float3 cameraPosWS = GetCameraRealPositionWS(screenUV);
                 half3 origin=0.h;
                 half density=1.h;
                 float2 distances=0.;
-                GRay viewRayOS=GRay_Ctor(TransformWorldToObject(cameraPosWS),TransformWorldToObjectDir(viewDirWS));
+                GRay viewRayOS=GRay_Ctor(TransformWorldToObject(cameraPosWS),TransformWorldToObjectDir(directionWS));
                 #if _TYPE_POINT
                 //radius =.5 inv = 2
                 distances= SphereRayDistance(GSphere_Ctor(origin,.5) ,viewRayOS);
@@ -81,7 +81,7 @@
                 #if _DEPTH
                     float rawDepth=SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).r;
                     float depthDstWS = GetCameraDepthDistance(screenUV,rawDepth);
-                    float depthDstOS = length( TransformWorldToObjectDir (viewDirWS*depthDstWS,false));
+                    float depthDstOS = length( TransformWorldToObjectDir (directionWS*depthDstWS,false));
                     distances.y=min(depthDstOS,distances.y);
                 #endif
                 

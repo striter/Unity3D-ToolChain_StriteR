@@ -71,8 +71,9 @@ Shader "Game/Unlit/CubeSample"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            float4 frag(v2f i):SV_TARGET
+            float4 frag (v2f i,out float depth:SV_DEPTH) : SV_Target
             {
+                SDFFragment(i,depth);
                 return 0;
             }
             ENDHLSL
