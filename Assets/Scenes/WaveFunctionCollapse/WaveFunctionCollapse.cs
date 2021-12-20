@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using LinqExtension;
 using UnityEngine;
 using TPool;
 using Procedural.Tile;
@@ -10,12 +9,12 @@ public class WaveFunctionCollapse : MonoBehaviour
 {
     public int m_ResolvePerFrame = 1;
     private TObjectPoolMono<int,WaveFunctionContainer>[] m_PossibilitiesPool;
-    private TObjectPoolClass<WFCTileContainer> m_ObjectPool;
+    private TObjectPoolClass<int,WFCTileContainer> m_ObjectPool;
     private Dictionary<Tile, WFCTileContainer> m_Axis=new Dictionary<Tile, WFCTileContainer>();
     private List<Tile> m_NoneFinalized=new List<Tile>();
     private void Awake()
     {
-        m_ObjectPool = new TObjectPoolClass<WFCTileContainer>(transform.Find("Grids/Container"));
+        m_ObjectPool = new TObjectPoolClass<int,WFCTileContainer>(transform.Find("Grids/Container"));
         m_PossibilitiesPool = transform.Find("Possibilities").GetComponentsInChildren<WaveFunctionContainer>().Select(p => new TObjectPoolMono<int,WaveFunctionContainer>(p.transform)).ToArray();
         Begin();
     }
@@ -118,15 +117,15 @@ public class WaveFunctionCollapse : MonoBehaviour
     
     class WFCTileContainer:AWFCTile<ETileDirection,WaveFunctionData>,ITransform,IPoolCallback<int>
     {
-        public Transform iTransform { get; }
+        public Transform Transform { get; }
         public Tile m_Tile;
         public readonly RectTransform m_RectTransform;
         
         private Action<Tile> OnTileSelect;
         public WFCTileContainer(Transform _transform) :base()
         {
-            iTransform = _transform;
-            m_RectTransform = iTransform as RectTransform;
+            Transform = _transform;
+            m_RectTransform = Transform as RectTransform;
         }
 
         public WFCTileContainer Warmup(Tile _tile, List<WaveFunctionContainer> _allPossibilities,Action<Tile> _OnTileSelect)
@@ -139,7 +138,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                 var index = tuple.index;
                 var possibility = tuple.value;
                 Transform transform1;
-                (transform1 = possibility.transform).SetParent(iTransform);
+                (transform1 = possibility.transform).SetParent(Transform);
                 int i = index % 4;
                 int j = index / 4;
                 possibility.m_RectTransform.anchoredPosition = new Vector2(100f/4f*i,100/4f*j);

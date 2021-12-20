@@ -79,7 +79,7 @@ Shader "Hidden/PolyGridModule"
             	float3 lightDirWS=normalize(_MainLightPosition.xyz);
 				float3 normalWS=normalize(i.normalWS);
             	
-            	half3 indirectDiffuse=IndirectBRDFDiffuse(i.normalWS);
+            	half3 indirectDiffuse=SampleSH(i.normalWS);
             	
                 float3 col =indirectDiffuse*.5 + tex2D(_MainTex, i.uv).rgb;//*i.color.rgb;
             	half ndl=dot(normalWS,lightDirWS);

@@ -1,18 +1,17 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using LinqExtension;
 using PolyGrid;
 using Procedural;
 using Procedural.Hexagon;
 using TPool;
 using UnityEngine;
 
-public class SelectionContainer : PoolBehaviour<PileID>
+public class SelectionContainer : PoolBehaviour<PolyID>
 {
+    public PolyID Identity => m_PoolID;
     public readonly List<(Vector3 position,HexCoord _vertex)> m_RelativeCornerDirections=new List<(Vector3 position, HexCoord _vertex)>();
     public MeshCollider m_Collider { get; private set; }
-    public override void OnPoolInit(Action<PileID> _DoRecycle)
+    public override void OnPoolInit(Action<PolyID> _DoRecycle)
     {
         base.OnPoolInit(_DoRecycle);
         m_Collider = GetComponent<MeshCollider>();
@@ -38,7 +37,7 @@ public class SelectionContainer : PoolBehaviour<PileID>
         }
     }
         
-    public PileID ValidateRaycast(ref RaycastHit _hit)
+    public PolyID ValidateRaycast(ref RaycastHit _hit)
     {
         if (Vector3.Dot(_hit.normal, Vector3.up) > .95f)
             return m_PoolID.Upward();
@@ -56,7 +55,7 @@ public class SelectionContainer : PoolBehaviour<PileID>
             minSqrDistance = sqrDistance;
             destCorner = tuple;
         }
-        return new PileID(destCorner.vertex,m_PoolID.height);
+        return new PolyID(destCorner.vertex,m_PoolID.height);
     }
 
 }

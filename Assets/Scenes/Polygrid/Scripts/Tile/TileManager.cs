@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using LinqExtension;
 using TPool;
 using TPoolStatic;
 using Procedural;
@@ -34,7 +33,7 @@ namespace PolyGrid.Tile
         }
         public void CornerConstruction( PolyVertex _vertex, byte _height,Action<PolyVertex> _vertexSpawn,Action<PolyQuad> _quadSpawn, Action<ICorner> _cornerSpawn,Action<IVoxel> _moduleSpawn)
         {
-            var corner = new PileID(_vertex.m_Identity, _height);
+            var corner = new PolyID(_vertex.m_Identity, _height);
             if (m_Corners.Contains(corner))
                 return;
             
@@ -48,9 +47,9 @@ namespace PolyGrid.Tile
             RefreshVoxelRelations(_vertex);
         }
         
-        public void CornerDeconstruction(PolyVertex _vertex, byte _height,Action<HexCoord> _vertexRecycle,Action<HexCoord> _quadRecycle,Action<PileID> _cornerRecycle,Action<PileID> _moduleRecycle)
+        public void CornerDeconstruction(PolyVertex _vertex, byte _height,Action<HexCoord> _vertexRecycle,Action<HexCoord> _quadRecycle,Action<PolyID> _cornerRecycle,Action<PolyID> _moduleRecycle)
         {
-            var corner = new PileID(_vertex.m_Identity, _height);
+            var corner = new PolyID(_vertex.m_Identity, _height);
             if (!m_Corners.Contains(corner))
                 return;
             
@@ -97,7 +96,7 @@ namespace PolyGrid.Tile
             }
         }
 
-        void FillCorner(PileID _cornerID,Action<ICorner> _cornerSpawn)
+        void FillCorner(PolyID _cornerID,Action<ICorner> _cornerSpawn)
         {
             if (m_Corners.Contains(_cornerID))
                 return;
@@ -113,7 +112,7 @@ namespace PolyGrid.Tile
                 var maxHeight = GetMaxCornerHeight(quadID);
                 for (byte i = 0; i <= maxHeight; i++)
                 {
-                    var voxelID = new PileID(quadID, i);
+                    var voxelID = new PolyID(quadID, i);
                     if(m_Voxels.Contains(voxelID))
                         continue; 
                     _voxelSpawn(m_Voxels.Spawn(voxelID).Init(m_GridQuads[quadID]));
@@ -141,7 +140,7 @@ namespace PolyGrid.Tile
             }
         }
         
-        void RemoveCorner(PileID _cornerID,Action<PileID> _cornerRecycle)
+        void RemoveCorner(PolyID _cornerID,Action<PolyID> _cornerRecycle)
         {
             if (!m_Corners.Contains(_cornerID))
                 return;
@@ -149,7 +148,7 @@ namespace PolyGrid.Tile
             _cornerRecycle(_cornerID);
         }
 
-        void RemoveVoxels(PolyVertex _vertex,Action<PileID> _voxelRecycle)
+        void RemoveVoxels(PolyVertex _vertex,Action<PolyID> _voxelRecycle)
         {
             foreach (var _quadID in _vertex.m_NearbyQuads.Select(p => p.m_Identity))
             {
@@ -158,7 +157,7 @@ namespace PolyGrid.Tile
                 var srcHeight = m_Voxels.Max(_quadID);
                 for (var i = maxHeight; i <= srcHeight; i++)
                 {
-                    var voxelID = new PileID(_quadID, i);
+                    var voxelID = new PolyID(_quadID, i);
                     m_Voxels.Recycle(voxelID);
                     _voxelRecycle(voxelID);
                 }
@@ -167,7 +166,7 @@ namespace PolyGrid.Tile
 
         void RefreshCornerRelations(PolyVertex _vertex,byte _height)
         {
-            foreach (var cornerID in _vertex.AllNearbyCorner(_height).Extend(new PileID(_vertex.m_Identity,_height)))
+            foreach (var cornerID in _vertex.AllNearbyCorner(_height).Extend(new PolyID(_vertex.m_Identity,_height)))
             {
                  if(!m_Corners.Contains(cornerID))
                      continue;
@@ -197,7 +196,7 @@ namespace PolyGrid.Tile
                    continue;
                 var maxHeight = GetMaxCornerHeight(_quadID);
                 for (byte i = 0; i <= maxHeight; i++)
-                    m_Voxels[new PileID(_quadID, i)].RefreshRelations(m_Corners,m_Voxels);
+                    m_Voxels[new PolyID(_quadID, i)].RefreshRelations(m_Corners,m_Voxels);
             }
             
             TSPoolList<HexCoord>.Recycle(quadRefreshing);

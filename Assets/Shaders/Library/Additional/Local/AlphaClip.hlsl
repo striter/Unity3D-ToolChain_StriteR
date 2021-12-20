@@ -2,7 +2,7 @@
 //INSTANCE(float,_AlphaClipRange)
 void AlphaClip(half alpha)
 {
-    #if _ALPHACLIP
+    #ifdef _ALPHACLIP
     clip(alpha-INSTANCE(_AlphaClipRange));
     #endif
 }

@@ -135,14 +135,14 @@ half min(half3 _Target)
 
 
 //Interpolate
-half3 triLerp(half3 tl,half3 tm,half3 tr,half a)       //-1 tl,0 tm,1 tr
+half3 triLerp(half3 l,half3 m,half3 r,half a)       //-1 tl,0 tm,1 tr
 {
-    return tm*(1.h-abs(a))+tl*max(0.h,-a)+tr*max(0,a);
+    return m*(1.h-abs(a))+l*max(0.h,-a)+r*max(0,a);
 }
 
-float3 triLerp(float3 tl,float3 tm,float3 tr,float a)       //-1 tl,0 tm,1 tr
+float3 triLerp(float3 l,float3 m,float3 r,float a)       //-1 tl,0 tm,1 tr
 {
-    return tm*(1.-abs(a))+tl*max(0.,-a)+tr*max(0,a);
+    return m*(1.-abs(a))+l*max(0.,-a)+r*max(0,a);
 }
 
 float bilinearLerp(float tl, float tr, float bl, float br, float2 uv)

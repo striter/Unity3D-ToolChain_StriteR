@@ -1,11 +1,6 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Geometry.Voxel;
-using LinqExtension;
 using Procedural;
-using Procedural.Hexagon;
 using TPool;
 using TPoolStatic;
 using UnityEngine;
@@ -16,16 +11,16 @@ namespace PolyGrid.Module
     {
         public EModuleType m_SpawnModule;
         public List<ModuleRuntimeData> m_Data;
-        private TObjectPoolMono<PileID, ModuleVoxel> m_Voxels { get; set; }
-        private TObjectPoolMono<PileID, ModuleCorner> m_Corners { get; set; }
-        private readonly Queue<PileID> m_CornerPropaganda=new Queue<PileID>();
-        private readonly Stack<Stack<PileID>> m_PropagandaChains = new Stack<Stack<PileID>>();
+        private TObjectPoolMono<PolyID, ModuleVoxel> m_Voxels { get; set; }
+        private TObjectPoolMono<PolyID, ModuleCorner> m_Corners { get; set; }
+        private readonly Queue<PolyID> m_CornerPropaganda=new Queue<PolyID>();
+        private readonly Stack<Stack<PolyID>> m_PropagandaChains = new Stack<Stack<PolyID>>();
 
-        public IEnumerable<CornerData> CollectAllCornerData() => m_Corners.Select(p => new CornerData() { identity = p.m_PoolID,type = p.m_Type});
+        public IEnumerable<CornerData> CollectAllCornerData() => m_Corners.Select(p => new CornerData() { identity = p.Identity,type = p.m_Type});
         public void Init(Transform _transform)
         {
-            m_Voxels = new TObjectPoolMono<PileID, ModuleVoxel>(_transform.Find("Modules/Voxel/Item"));
-            m_Corners = new TObjectPoolMono<PileID, ModuleCorner>(_transform.Find("Modules/Corner/Item"));
+            m_Voxels = new TObjectPoolMono<PolyID, ModuleVoxel>(_transform.Find("Modules/Voxel/Item"));
+            m_Corners = new TObjectPoolMono<PolyID, ModuleCorner>(_transform.Find("Modules/Corner/Item"));
         }
         public void Clear()
         {
@@ -39,10 +34,10 @@ namespace PolyGrid.Module
         }
 
         public void OnPopulateCorner(ICorner _corner)=> m_Corners.Spawn(_corner.Identity).Init(_corner,m_SpawnModule);
-        public void OnDeconstructCorner(PileID _cornerID)=>m_Corners.Recycle(_cornerID);
+        public void OnDeconstructCorner(PolyID _cornerID)=>m_Corners.Recycle(_cornerID);
 
         public void OnPopulateVoxel(IVoxel _voxel)=>m_Voxels.Spawn(_voxel.Identity).Init(_voxel);
-        public void OnDeconstructVoxel(PileID _voxelID)=>m_Voxels.Recycle(_voxelID);
+        public void OnDeconstructVoxel(PolyID _voxelID)=>m_Voxels.Recycle(_voxelID);
         
         public void Tick(float _deltaTime)
         {
@@ -61,9 +56,9 @@ namespace PolyGrid.Module
         {
             m_CornerPropaganda.Clear();
 
-            var propagandaStack = TSPoolStack<PileID>.Spawn();
+            var propagandaStack = TSPoolStack<PolyID>.Spawn();
             
-            void TryPropaganda(PileID _cornerID)
+            void TryPropaganda(PolyID _cornerID)
             {
                 if (!m_Corners.Contains(_cornerID))
                     return;
@@ -77,7 +72,7 @@ namespace PolyGrid.Module
                 propagandaStack.Push(_cornerID);
             }
 
-            var beginCorner = new PileID(_vertex.m_Identity, _height);
+            var beginCorner = new PolyID(_vertex.m_Identity, _height);
             if(m_Corners.Contains(beginCorner))
                 TryPropaganda(beginCorner);
             else
@@ -92,13 +87,13 @@ namespace PolyGrid.Module
                 foreach (var corner in m_Corners[propagandaCornerID].m_Corner.NearbyCorners)
                     TryPropaganda(corner);
             }
-            TSPoolStack<PileID>.Recycle(propagandaStack);
+            TSPoolStack<PolyID>.Recycle(propagandaStack);
         }
 
         void CollectPropagandaChain()
         {
             foreach (var chain in m_PropagandaChains)
-                TSPoolStack<PileID>.Recycle(chain);
+                TSPoolStack<PolyID>.Recycle(chain);
             m_PropagandaChains.Clear();
 
             foreach (var propagandaCorner in m_CornerPropaganda)
@@ -106,7 +101,7 @@ namespace PolyGrid.Module
                 var chain =  m_PropagandaChains.Find(chain=>chain.Any(chainedCorner => m_Corners[chainedCorner].m_Corner.NearbyCorners.Contains(propagandaCorner)));
                 if (chain == null)
                 {
-                    chain = TSPoolStack<PileID>.Spawn();
+                    chain = TSPoolStack<PolyID>.Spawn();
                     m_PropagandaChains.Push(chain);
                 }
                 chain.Push(propagandaCorner);
@@ -115,7 +110,7 @@ namespace PolyGrid.Module
 
         void PropagandaChainedModules(PolyVertex _vertex,byte _height)
         {
-            Stack<PileID> affectedModules = new Stack<PileID>();
+            Stack<PolyID> affectedModules = new Stack<PolyID>();
             foreach (var chain in m_PropagandaChains)
             {
                 byte maxCornerHeight = chain.Max(p => p.height);

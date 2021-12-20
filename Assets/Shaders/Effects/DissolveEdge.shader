@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/Dissolve"
+﻿Shader "Game/Effects/DissolveEdge"
 {
 	Properties
 	{

@@ -25,7 +25,7 @@ public struct WaveFunctionData:IWFCCompare<ETileDirection,WaveFunctionData>
     }
 
 }
-public class WaveFunctionContainer :  AWFCContainer<ETileDirection,WaveFunctionData>,IPoolCallback<int>,ITransform
+public class WaveFunctionContainer :  AWFCContainer<ETileDirection,WaveFunctionData>,IPoolCallback<int>
 {
     public RectTransform m_RectTransform { get; private set; }
     private UIT_EventTriggerListener m_Listener;

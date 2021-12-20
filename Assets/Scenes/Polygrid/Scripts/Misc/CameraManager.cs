@@ -52,7 +52,7 @@ namespace PolyGrid
             //m_RootPosition = _corner.Identity.location.ToPosition();
         }
 
-        public void OnDeconstructCorner(PileID _cornerID)
+        public void OnDeconstructCorner(PolyID _cornerID)
         {
         }
         

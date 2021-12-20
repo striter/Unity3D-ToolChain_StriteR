@@ -41,6 +41,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DepthRamp:
+        m_Texture: {fileID: 2800000, guid: 9a6f1a58be8e58e44a45d51db40836b0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _DepthTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -175,10 +179,10 @@ Material:
     - _FRESNEL: 0
     - _FlowSpeed: 3
     - _Foam: 1
-    - _FoamBegin: 0.11
+    - _FoamBegin: 0
     - _FoamDistort: 1
     - _FoamOffset: 0.18
-    - _FoamWidth: 0.5
+    - _FoamWidth: 0.01
     - _Fresnel: 1
     - _FresnelPow: 1
     - _GSF: 6
@@ -208,9 +212,11 @@ Material:
     - _SpecularAmount: 0.98
     - _SpecularHighlights: 1
     - _SpecularRange: 0.9
+    - _SpecularStrength: 1
     - _SrcBlend: 1
     - _SteepCount: 128
     - _SteepParallex: 0
+    - _Strength: 1
     - _Surface: 0
     - _Thickness: 0.1
     - _VF: 1
@@ -219,11 +225,13 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 0, g: 0.943182, b: 1, a: 0.57254905}
+    - _Color: {r: 0, g: 0.943182, b: 1, a: 0}
     - _CrackColor: {r: 1, g: 1, b: 1, a: 1}
-    - _DepthColor: {r: 0.1980242, g: 0.32448143, b: 0.4716981, a: 0.6156863}
+    - _DepthColor: {r: 0.25640798, g: 0.7784162, b: 0.8113208, a: 0.6156863}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlowDirection: {r: -1, g: 0, b: 0, a: 0}
+    - _FlowDirection1: {r: 1, g: 1, b: 0, a: 0}
+    - _FlowDirection2: {r: 1, g: 1, b: 0, a: 0}
     - _FoamColor: {r: 1.4980392, g: 1.4980392, b: 1.4980392, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []

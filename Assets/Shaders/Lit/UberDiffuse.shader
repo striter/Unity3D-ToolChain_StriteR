@@ -158,7 +158,7 @@ Shader "Game/2D/UberDiffuse"
 				o.normalWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.normalOS));
 				o.tangentWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.tangentOS.xyz));
 				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
-				o.viewDirWS=TransformWorldToViewDir(o.positionWS,UNITY_MATRIX_V);
+				o.viewDirWS=GetViewDirectionWS(o.positionWS);
                 return o;
             }
         ENDHLSL
@@ -281,9 +281,9 @@ Shader "Game/2D/UberDiffuse"
 			Tags{"LightMode" = "DepthOnly"}
 			HLSLPROGRAM
 			#pragma vertex vert
-			#pragma fragment ShadowFragment
+			#pragma fragment DepthFragment
 				
-			float4 ShadowFragment(v2f i,out float depth:SV_DEPTH) :SV_TARGET
+			float4 DepthFragment(v2f i,out float depth:SV_DEPTH) :SV_TARGET
 			{
 				half3 normalWS=normalize(i.normalWS);
 				half3 biTangentWS=normalize(i.biTangentWS);

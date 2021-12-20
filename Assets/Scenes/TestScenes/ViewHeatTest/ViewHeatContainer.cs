@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using LinqExtension;
 using UnityEngine;
 
 namespace TestScenes.ViewHeat
@@ -43,7 +40,7 @@ namespace TestScenes.ViewHeat
             position = transform.worldToLocalMatrix.MultiplyPoint(position);
             int lastIndex = 0;
             float lastDistance = float.MaxValue;
-            foreach (var (p,index) in m_Vertices.LoopIndex())
+            foreach (var (index,p) in m_Vertices.LoopIndex())
             {
                 var sqrDistance = Vector3.SqrMagnitude(position - p);
                 if (sqrDistance > lastDistance)

@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using LinqExtension;
 using TPool;
 using Procedural;
 using Procedural.Hexagon;
-using UnityEngine;
 
 namespace PolyGrid.Tile
 {

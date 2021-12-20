@@ -35,7 +35,6 @@
 			struct a2v
 			{
 				float3 positionOS : POSITION;
-				float4 color : COLOR;
 				float2 uv:TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -64,7 +63,7 @@
 				#endif
 				o.positionCS =positionOS;
 				o.uv = v.uv;
-				o.color = v.color*INSTANCE(_Color);
+				o.color = INSTANCE(_Color);
 				return o;
 			}
 

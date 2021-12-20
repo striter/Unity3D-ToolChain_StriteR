@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Geometry;
 using Geometry.Voxel;
-using LinqExtension;
 using Procedural;
 using Procedural.Hexagon;
 using Procedural.Hexagon.Area;
@@ -128,7 +127,7 @@ namespace PolyGrid
             
             GridRuntimeData _data = ScriptableObject.CreateInstance<GridRuntimeData>();
             _data.areaData = areaData.ToArray();
-            UEAsset.CreateAssetCombination(UEPath.FileToAssetPath( filePath), _data);
+            UEAsset.CreateOrReplaceMainAsset(_data,UEPath.FileToAssetPath( filePath));
         }
     }
 

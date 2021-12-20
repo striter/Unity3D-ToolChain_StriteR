@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using LinqExtension;
 using Procedural;
 using Procedural.Hexagon;
 using TPool;
@@ -19,7 +18,7 @@ namespace PolyGrid
         private Mesh m_SelectionMesh;
         private MeshRenderer m_SelectionRenderer;
         private MaterialPropertyBlock m_SelectionRendererBlock;
-        private TObjectPoolClass<AreaRenderer> m_AreaMeshes;
+        private TObjectPoolClass<int,AreaRenderer> m_AreaMeshes;
         
         public void Tick(float _deltaTime)
         {
@@ -38,7 +37,7 @@ namespace PolyGrid
             m_Selection.GetComponent<MeshFilter>().sharedMesh = m_SelectionMesh;
             m_SelectionRenderer = m_Selection.GetComponent<MeshRenderer>();
             m_SelectionRendererBlock = new MaterialPropertyBlock();
-            m_AreaMeshes = new TObjectPoolClass<AreaRenderer>(_transform.Find("AreaContainer/AreaMesh"));
+            m_AreaMeshes = new TObjectPoolClass<int,AreaRenderer>(_transform.Find("AreaContainer/AreaMesh"));
       
             OnValidate();
         }
@@ -77,12 +76,12 @@ namespace PolyGrid
 
         private class AreaRenderer : ITransform,IPoolCallback<int>
         {
-            public Transform iTransform { get; }
+            public Transform Transform { get; }
             public MeshFilter m_MeshFilter { get; }
 
             public AreaRenderer(Transform _transform)
             {
-                iTransform = _transform;
+                Transform = _transform;
                 m_MeshFilter = _transform.GetComponent<MeshFilter>();
             }
             public void OnPoolInit(Action<int> _DoRecycle) { }
@@ -122,8 +121,8 @@ namespace PolyGrid
                 areaMesh.Optimize();
                 areaMesh.UploadMeshData(true);
                 m_MeshFilter.sharedMesh = areaMesh;
-                iTransform.SetPositionAndRotation(_area.m_Identity.centerCS.ToPosition(),Quaternion.identity);
-                iTransform.localScale=Vector3.one;
+                Transform.SetPositionAndRotation(_area.m_Identity.centerCS.ToPosition(),Quaternion.identity);
+                Transform.localScale=Vector3.one;
                 
                 TSPoolList<Vector3>.Recycle(vertices);
                 TSPoolList<Vector3>.Recycle(normals);

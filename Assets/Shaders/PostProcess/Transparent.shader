@@ -52,8 +52,7 @@ Shader "Hidden/PostProcess/Transparent"
             #if _VOLUMETRICLIGHT
             #pragma multi_compile_local _ _DITHER
             #include "Assets/Shaders/Library/Lighting.hlsl"
-            // #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
-            #define _MAIN_LIGHT_SHADOWS
+			#pragma multi_compile_fragment _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             
             // #include "Assets/Shaders/Library/Additional/CloudShadow.hlsl"
             // #pragma multi_compile _ _CLOUDSHADOW

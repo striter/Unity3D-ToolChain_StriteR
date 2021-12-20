@@ -9,7 +9,7 @@ namespace PolyGrid
     [Serializable]
     public struct CornerData
     {
-        public PileID identity;
+        public PolyID identity;
         public EModuleType type;
     }
     

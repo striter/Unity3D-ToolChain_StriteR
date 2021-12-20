@@ -1,15 +1,7 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using Geometry;
-using Geometry.Voxel;
-using LinqExtension;
-using TPoolStatic;
-using Unity.Mathematics;
 using UnityEngine;
-using Object = System.Object;
 
 namespace PolyGrid.Module.Baking
 {
@@ -76,7 +68,7 @@ namespace PolyGrid.Module.Baking
                 _data[status] = totalModuleMeshes.ToArray();
             }
            
-            UEAsset.CreateAssetCombination(UEPath.FileToAssetPath( filePath), _data);
+            UEAsset.CreateOrReplaceMainAsset(_data,UEPath.FileToAssetPath( filePath));
         }
 
         private void GenerateCubeTemplates()
@@ -103,7 +95,7 @@ namespace PolyGrid.Module.Baking
                 {
                     var moduleByte = tuple.value;
                     var possibility = new Qube<bool>();
-                    possibility.SetByteCorners(moduleByte);
+                    possibility.SetByteElement(moduleByte);
 
                     var name= ModuleBakingDefines.GetModuleName(status,moduleByte);
                     var bakerModel = new GameObject(name).transform;

@@ -53,10 +53,9 @@
             {
                 float4 positionCS : SV_POSITION;
                 float3 positionWS:TEXCOORD0;
-                float3 viewDirWS:TEXCOORD1;
-                float3 centerWS:TEXCOORD2;
-                float3 sizeWS:TEXCOORD3;
-                float4 screenPos : TEXCOORD4;
+                float3 centerWS:TEXCOORD1;
+                float3 sizeWS:TEXCOORD2;
+                float4 screenPos : TEXCOORD3;
             };
             
             TEXTURE2D( _CameraDepthTexture); SAMPLER(sampler_CameraDepthTexture);
@@ -105,7 +104,6 @@
                 v2f o;
                 o.positionCS = TransformObjectToHClip(v.positionOS);
                 o.positionWS=TransformObjectToWorld(v.positionOS);
-                o.viewDirWS=o.positionWS-GetCameraPositionWS();
                 o.centerWS=TransformObjectToWorld(0);
                 o.sizeWS=TransformObjectToWorldDir(1,false);
                 o.screenPos=ComputeScreenPos(o.positionCS);
@@ -114,7 +112,7 @@
             
             float4 frag (v2f i) : SV_Target
             {
-                float3 marchDirWS=normalize( i.viewDirWS);
+                float3 marchDirWS=GetViewDirectionWS( i.positionWS);
                 GBox boxWS=GBox_Ctor(i.centerWS,i.sizeWS);
                 GRay rayWS=GRay_Ctor(i.positionWS,marchDirWS);
                 float marchDstWS=AABBRayDistance(boxWS,rayWS).y;

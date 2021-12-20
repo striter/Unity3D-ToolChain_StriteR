@@ -130,9 +130,8 @@ public partial class UIT_TouchConsole
         container.Insert<CommandItem_CommandTitle>().m_CommandTitle.text = _title;
         return container;
     }
-    public static void InitSerializeCommands<T>(T _target, Action<T> _OnSerializeDataChanged) where T : MonoBehaviour {
+    public static void InitSerializeCommands<T>(T _target, Action<T> _OnSerializeDataChanged) {
         Type targetType = _target.GetType();
-        Command("Enable").Toggle(_target.enabled, value => _target.enabled = value);
         foreach (var fieldStack in targetType.GetBaseTypeFieldStacks(BindingFlags.Instance))
         {
             object startValue = fieldStack.Value.GetValue(_target);

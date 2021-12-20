@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using LinqExtension;
 using PolyGrid.Module;
 using PolyGrid.Tile;
 using Procedural;
@@ -146,7 +145,7 @@ namespace PolyGrid
         void Click(Vector2 _screenPos,bool _construct)
         {
             var ray = m_CameraManager.m_Camera.ScreenPointToRay(_screenPos);
-            PileID selection=default;
+            PolyID selection=default;
             if (_construct&&!m_SelectionManager.VerifyConstruction(ray, m_Quads.Values, out selection))
                 return;
             if(!_construct&&!m_SelectionManager.VerifyDeconstruction(ray, out selection))
@@ -157,7 +156,7 @@ namespace PolyGrid
             m_PersistentData.SavePersistentData();
         }
 
-        bool DoCornerConstruction(PileID _selection,bool _construct)
+        bool DoCornerConstruction(PolyID _selection,bool _construct)
         {
             var vertex = m_Vertices[_selection.location];
             m_MeshConstructor.ConstructCornerMarkup(vertex,_selection.height);
@@ -177,9 +176,9 @@ namespace PolyGrid
         void OnQuadSpawn(PolyQuad _quad) => m_QuadCallbacks.Traversal(p => p.OnPopulateQuad(_quad));
         void OnQuadRecycle(HexCoord _quadID) => m_QuadCallbacks.Traversal(p => p.OnDeconstructQuad(_quadID));
         void OnCornerSpawn(ICorner _corner)=>m_CornerCallbacks.Traversal(p=>p.OnPopulateCorner(_corner));
-        void OnCornerRecycle(PileID _cornerID)=>m_CornerCallbacks.Traversal(p=>p.OnDeconstructCorner(_cornerID));
+        void OnCornerRecycle(PolyID _cornerID)=>m_CornerCallbacks.Traversal(p=>p.OnDeconstructCorner(_cornerID));
         void OnVoxelSpawn(IVoxel _voxel)=>m_VoxelCallbacks.Traversal(p=>p.OnPopulateVoxel(_voxel));
-        void OnVoxelRecycle(PileID _voxelID)=>m_VoxelCallbacks.Traversal(p=>p.OnDeconstructVoxel(_voxelID));
+        void OnVoxelRecycle(PolyID _voxelID)=>m_VoxelCallbacks.Traversal(p=>p.OnDeconstructVoxel(_voxelID));
 
         
 #if UNITY_EDITOR

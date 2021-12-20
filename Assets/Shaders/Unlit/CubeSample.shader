@@ -8,6 +8,7 @@ Shader "Game/Unlit/CubeSample"
     SubShader
     {
         Tags { "Queue" = "Geometry" }
+            ZTest Always
         HLSLINCLUDE
             #define IGeometryDetection
             #include "Assets/Shaders/Library/Common.hlsl"
@@ -51,7 +52,8 @@ Shader "Game/Unlit/CubeSample"
         ENDHLSL
         
         Pass
-        {
+        {       
+             ZTEST LEqual
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -69,9 +71,8 @@ Shader "Game/Unlit/CubeSample"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            float4 frag(v2f i,out float depth:SV_DEPTH):SV_TARGET
+            float4 frag(v2f i):SV_TARGET
             {
-                SDFFragment(i,depth);
                 return 0;
             }
             ENDHLSL

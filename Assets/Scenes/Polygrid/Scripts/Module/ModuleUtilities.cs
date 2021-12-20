@@ -13,7 +13,7 @@ namespace PolyGrid.Module
     public static class UModule
     {
         public static readonly Quad<Vector3> unitGQuad = new Quad<Vector3>( Vector3.right+Vector3.back,Vector3.back+Vector3.left, Vector3.left+Vector3.forward ,Vector3.forward+Vector3.right).Resize(.5f);
-        public static readonly Quad<Vector2> unitG2Quad = unitGQuad.ConvertToG2Quad(p=>p.ToCoord());
+        public static readonly Quad<Vector2> unitG2Quad = unitGQuad.Convert<Vector3,Vector2>(p=>p.ToCoord());
         public static readonly Qube<Vector3> unitQube = unitGQuad.ExpandToQube(Vector3.up,0f);
 
         public static readonly Qube<Vector3> halfUnitQube = unitQube.Resize(.5f);
@@ -31,7 +31,7 @@ namespace PolyGrid.Module
             uv = UMath.m_Rotate2DCW[(4-_orientation)%4].MultiplyVector(uv);
             uv += Vector2.one * .5f;
             
-            var point =  quad.GetPoint(uv);
+            var point =  quad.GetPoint(uv.x,uv.y);
             var offset = _qubeIndex < 4 ? -1 : 0;
             return new Vector3(point.x,offset*_height + _orientedVertex.y*_height,point.y);
         }
@@ -66,16 +66,16 @@ namespace PolyGrid.Module
             if (_status == ECornerStatus.Body)
                 return true;
             Qube<bool> _srcBool = default;
-            _srcBool.SetByteCorners(_srcByte);
+            _srcBool.SetByteElement(_srcByte);
             switch (_status)
             {
                 default: throw new InvalidEnumArgumentException();
                 case ECornerStatus.Rooftop:
-                    if (ECubeFacing.T.FacingCorners().Any(p => _srcBool[p] == true))
+                    if (ECubeFacing.T.FacingCorners().Any(p => _srcBool[p]))
                         return false;
                     break;
                 case ECornerStatus.Bottom:
-                    if (ECubeFacing.D.FacingCorners().Any(p => _srcBool[p] == true))
+                    if (ECubeFacing.D.FacingCorners().Any(p => _srcBool[p]))
                         return false;
                     break;
             }
@@ -92,7 +92,7 @@ namespace PolyGrid.Module
             {
                 var srcByte = (byte) i;
                 var qube = new Qube<bool>();
-                qube.SetByteCorners(srcByte);
+                qube.SetByteElement(srcByte);
 
                 byte orientation = 0; 
                 for (ushort j = 1; j <= 3; j++)
@@ -118,7 +118,7 @@ namespace PolyGrid.Module
             {
                 var posByte = (byte) i;
                 Qube<bool> corner = default;
-                corner.SetByteCorners(posByte);
+                corner.SetByteElement(posByte);
                 byteQubeIndexer[i] =  corner.SplitByteQubes();
             }
             

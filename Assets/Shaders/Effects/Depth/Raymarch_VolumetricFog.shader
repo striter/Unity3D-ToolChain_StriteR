@@ -84,7 +84,7 @@
             {
                 float3 marchDirWS=normalize( i.viewDirWS);
                 float marchDstWS=AABBRayDistance(GBox_Ctor( i.centerWS,i.sizeWS),GRay_Ctor(i.positionWS,marchDirWS)).y;
-                float depthDstWS=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, i.screenPos.xy/i.screenPos.w),_ZBufferParams).r-i.screenPos.w;
+                float depthDstWS=RawToEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, i.screenPos.xy/i.screenPos.w).r);
                 float marchDistance= max(0,min(marchDstWS, depthDstWS));
                 
                 float sumDensity=0;

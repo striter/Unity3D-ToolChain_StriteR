@@ -12,11 +12,11 @@
 	uint _Iteration;
 	half _Angle;
 	half2 _Vector;
-    #pragma multi_compile_local _ _DOF
+    #pragma multi_compile_local _ _DOF _DOF_CLIPSKY
     #pragma multi_compile _ _FIRSTBLUR
     #pragma multi_compile _ _FINALBLUR
     #pragma multi_compile_local _ _ENCODE
-    #if _DOF
+	#if defined(_DOF)||defined(_DOF_CLIPSKY)
 		#define IDEPTH
         half _FocalStart;
         half _FocalEnd;
@@ -25,9 +25,12 @@
     #include "Assets/Shaders/Library/PostProcess.hlsl"
 	half4 SampleBlurTex(TEXTURE2D_PARAM(_tex,_sampler),float2 uv,float2 offset)
 	{
-		#if _DOF
-			float eyeDepth=SampleEyeDepth(uv+offset);
-    		half focal=saturate(invlerp(_FocalStart,_FocalEnd,eyeDepth));
+		#if defined(_DOF)||defined(_DOF_CLIPSKY)
+			float rawDepth=SampleRawDepth(uv+offset);
+    		half focal=saturate(invlerp(_FocalStart,_FocalEnd,RawToEyeDepth(rawDepth)));
+			#if _DOF_CLIPSKY
+			focal*=DepthLesser(rawDepth,Z_END)?1:0;
+			#endif
     		offset*=focal;
     	#endif
 

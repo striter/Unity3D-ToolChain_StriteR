@@ -6,8 +6,9 @@ float ParallaxMappingPOM(TEXTURE2D_PARAM(_texture,_sampler), float depthOffset,f
     float layer=0.h;
     float parallaxSample=SAMPLE_TEXTURE2D_LOD(_texture,_sampler,uv,0).r-depthOffset;
     float preParallaxSample=0.h;
+    uint loopTimes=min(marchCount,128u);
     [unroll]
-    for(uint i=0u;i<128u;i+=1u)
+    for(uint i=0u;i<loopTimes;i+=1u)
     {
         if(parallaxSample<layer)
             break;
@@ -61,7 +62,7 @@ void ParallaxUVMapping(inout float2 uv,inout float depth,inout float3 positionWS
     
     #if _DEPTHBUFFER
         float projectionDistance=parallax*INSTANCE(_DepthScale)*step(0.01h,marchDelta)* rcp(marchDelta);
-        positionWS = positionWS- viewDirWS*projectionDistance*INSTANCE(_DepthBufferScale);
+        positionWS = positionWS - viewDirWS*projectionDistance*INSTANCE(_DepthBufferScale);
         depth=EyeToRawDepth(TransformWorldToEyeDepth(positionWS,UNITY_MATRIX_V));
     #endif
     

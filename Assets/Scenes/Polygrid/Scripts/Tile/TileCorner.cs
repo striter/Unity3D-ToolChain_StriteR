@@ -1,19 +1,15 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using LinqExtension;
 using TPool;
-using Procedural.Hexagon;
 using UnityEngine;
 
 namespace PolyGrid.Tile
 {
-    public class TileCorner : PoolBehaviour<PileID>,ICorner
+    public class TileCorner : PoolBehaviour<PolyID>,ICorner
     {
         private byte m_Height => m_PoolID.height;
         private TileVertex m_Vertex { get; set; }
-        private readonly List<PileID> m_NearbyValidCorners = new List<PileID>();
-        private readonly List<PileID> m_NearbyValidVoxels = new List<PileID>();
+        private readonly List<PolyID> m_NearbyValidCorners = new List<PolyID>();
+        private readonly List<PolyID> m_NearbyValidVoxels = new List<PolyID>();
 
         public TileCorner Init(TileVertex _vertex)
         {
@@ -27,14 +23,14 @@ namespace PolyGrid.Tile
             m_NearbyValidCorners.Clear();
             m_NearbyValidVoxels.Clear();
             
-            void AddCorner(PilePool<TileCorner> _corners,PileID _cornerID)
+            void AddCorner(PilePool<TileCorner> _corners,PolyID _cornerID)
             {
                 if (!_corners.Contains(_cornerID))
                     return;
                 m_NearbyValidCorners.Add(_cornerID);
             }
 
-            void AddQuad(PilePool<TileVoxel> _voxels, PileID _voxelID)
+            void AddQuad(PilePool<TileVoxel> _voxels, PolyID _voxelID)
             {
                 if (!_voxels.Contains(_voxelID))
                     return;
@@ -51,8 +47,8 @@ namespace PolyGrid.Tile
 
         public PolyVertex Vertex => m_Vertex.m_Vertex;
         public Transform Transform => transform;
-        public PileID Identity => m_PoolID;
-        public List<PileID> NearbyCorners => m_NearbyValidCorners;
-        public List<PileID> NearbyVoxels => m_NearbyValidVoxels;
+        public PolyID Identity => m_PoolID;
+        public List<PolyID> NearbyCorners => m_NearbyValidCorners;
+        public List<PolyID> NearbyVoxels => m_NearbyValidVoxels;
     }
 }

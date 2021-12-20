@@ -32,8 +32,7 @@
 			{
 				half4 positionCS:SV_POSITION;
 				half3 positionWS:TEXCOORD0;
-				half3 viewDirWS:TEXCOORD1;
-				half4 positionHCS: TEXCOORD2;
+				half4 positionHCS: TEXCOORD1;
 			};
 			
 			TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
@@ -47,7 +46,6 @@
 				v2f o;
 				o.positionCS = TransformObjectToHClip(positionOS);
 				o.positionWS=TransformObjectToWorld(positionOS);
-				o.viewDirWS=TransformWorldToViewDir(o.positionWS,UNITY_MATRIX_V);
 				o.positionHCS = o.positionCS;
 				return o;
 			}
@@ -55,7 +53,7 @@
 			half4 frag(v2f i):SV_Target
 			{
 				float2 ndc=TransformHClipToNDC(i.positionHCS);
-				float3 positionWS=TransformNDCToWorld(ndc ,SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, TransformHClipToNDC(i.positionHCS)).r);
+				float3 positionWS= TransformNDCToWorld(ndc ,SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, ndc).r);
 				half3 positionOS = TransformWorldToObject(positionWS);
 				half2 decalUV=positionOS.xy+.5;
 				decalUV=TRANSFORM_TEX(decalUV,_MainTex);

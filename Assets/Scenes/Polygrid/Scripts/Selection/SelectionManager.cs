@@ -12,11 +12,11 @@ namespace PolyGrid
     public class SelectionManager:IPolyGridControl,IPolyGridVertexCallback,IPolyGridCornerCallback
     {
         private static readonly GPlane kZeroPlane = new GPlane(Vector3.up, 0f);
-        TObjectPoolMono<PileID, SelectionContainer> m_SelectionContainer;
+        TObjectPoolMono<PolyID, SelectionContainer> m_SelectionContainer;
         private readonly Dictionary<HexCoord, Mesh> m_CornerMeshes=new Dictionary<HexCoord, Mesh>();
         public void Init(Transform _transform)
         {
-            m_SelectionContainer = new TObjectPoolMono<PileID, SelectionContainer>(_transform.Find("Selections/Item"));
+            m_SelectionContainer = new TObjectPoolMono<PolyID, SelectionContainer>(_transform.Find("Selections/Item"));
         }
         public void Clear()
         {
@@ -44,9 +44,9 @@ namespace PolyGrid
         }
         
         public void OnPopulateCorner(ICorner _corner) => m_SelectionContainer.Spawn(_corner.Identity).Init(_corner,m_CornerMeshes[_corner.Identity.location]);
-        public void OnDeconstructCorner(PileID _cornerID) => m_SelectionContainer.Recycle(_cornerID);
+        public void OnDeconstructCorner(PolyID _cornerID) => m_SelectionContainer.Recycle(_cornerID);
 
-        public bool VerifyConstruction(Ray _ray,IEnumerable<PolyQuad> _quads,out PileID _selection)
+        public bool VerifyConstruction(Ray _ray,IEnumerable<PolyQuad> _quads,out PolyID _selection)
         {
             _selection = default;
             if(Physics.Raycast(_ray, out RaycastHit hit, float.MaxValue, int.MaxValue))
@@ -60,19 +60,19 @@ namespace PolyGrid
             var hitCoord =  hitPos.ToCoord();
             if (ValidatePlaneSelection(hitCoord, _quads,out HexCoord planeCoord))
             {
-                _selection= new PileID(planeCoord,0);
+                _selection= new PolyID(planeCoord,0);
                 return true;
             }
             return false;
         }
 
-        public bool VerifyDeconstruction(Ray _ray,out PileID _selection)
+        public bool VerifyDeconstruction(Ray _ray,out PolyID _selection)
         {
             _selection = default;
             if (!Physics.Raycast(_ray, out RaycastHit hit, float.MaxValue, int.MaxValue))
                 return false;
             var raycast = hit.collider.GetComponent<SelectionContainer>();
-            _selection = raycast.m_PoolID;
+            _selection = raycast.Identity;
             return true;
         }
         

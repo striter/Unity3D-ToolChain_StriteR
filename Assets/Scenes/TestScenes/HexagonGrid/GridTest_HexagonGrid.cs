@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Geometry;
 using Geometry.Voxel;
-using LinqExtension;
 using UnityEngine;
 using UnityEditor;
 using Procedural;
@@ -14,12 +12,12 @@ namespace GridTest
     [ExecuteInEditMode]
     public class GridTest_HexagonGrid : MonoBehaviour
     {
-        public bool m_Flat = false;
+        public bool m_Flat;
         public float m_CellRadius = 1;
         [Header("Area")]
         public int m_AreaRadius = 8;
         public int m_Tilling = 1;
-        public bool m_Welded = false;
+        public bool m_Welded;
         public int m_MaxAreaRadius = 4;
 #if UNITY_EDITOR
         private Coord m_HitPointCS;

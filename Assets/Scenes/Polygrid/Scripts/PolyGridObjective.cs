@@ -25,10 +25,10 @@ namespace PolyGrid
 
     public interface IVoxel
     { 
-        PileID Identity { get; }
+        PolyID Identity { get; }
         Transform Transform { get; }
         PolyQuad Quad { get; }
-        Qube<PileID> QubeCorners { get; }
+        Qube<PolyID> QubeCorners { get; }
         Qube<bool> CornerRelations { get; }
         CubeFacing<bool> SideRelations { get;}
         Quad<Vector2>[] CornerShapeLS { get; }
@@ -36,11 +36,11 @@ namespace PolyGrid
 
     public interface ICorner
     {
-        PileID Identity { get; }
+        PolyID Identity { get; }
         Transform Transform { get; }
         PolyVertex Vertex { get; }
-        List<PileID> NearbyCorners { get; }
-        List<PileID> NearbyVoxels { get; }
+        List<PolyID> NearbyCorners { get; }
+        List<PolyID> NearbyVoxels { get; }
     }
 
     public interface IPolyGridVertexCallback
@@ -58,13 +58,13 @@ namespace PolyGrid
     public interface IPolyGridCornerCallback
     {
         void OnPopulateCorner(ICorner _corner);
-        void OnDeconstructCorner(PileID _cornerID);
+        void OnDeconstructCorner(PolyID _cornerID);
     }
 
     public interface IPolyGridVoxelCallback
     {
         void OnPopulateVoxel(IVoxel _voxel);
-        void OnDeconstructVoxel(PileID _voxelID);
+        void OnDeconstructVoxel(PolyID _voxelID);
     }
 
     public interface IPolyGridModifyCallback
@@ -140,12 +140,12 @@ namespace PolyGrid
     
 #region Pile
     [Serializable]
-    public struct PileID:IEquatable<PileID>,IEqualityComparer<PileID>
+    public struct PolyID:IEquatable<PolyID>,IEqualityComparer<PolyID>
     {
         public HexCoord location;
         public byte height;
 
-        public PileID(HexCoord _location, byte _height)
+        public PolyID(HexCoord _location, byte _height)
         {
             location = _location;
             height = _height;
@@ -153,9 +153,9 @@ namespace PolyGrid
 
         public override string ToString() => $"{location}|{height}";
 
-        public bool Equals(PileID other)=> location.Equals(other.location) && height == other.height;
+        public bool Equals(PolyID other)=> location.Equals(other.location) && height == other.height;
 
-        public override bool Equals(object obj)=> obj is PileID other && Equals(other);
+        public override bool Equals(object obj)=> obj is PolyID other && Equals(other);
 
         public override int GetHashCode()
         {
@@ -165,12 +165,12 @@ namespace PolyGrid
             }
         }
 
-        public bool Equals(PileID x, PileID y)
+        public bool Equals(PolyID x, PolyID y)
         {
             return x.location.Equals(y.location) && x.height == y.height;
         }
 
-        public int GetHashCode(PileID obj)
+        public int GetHashCode(PolyID obj)
         {
             unchecked
             {
@@ -179,38 +179,38 @@ namespace PolyGrid
         }
     }
 
-    public class PilePool<T> : IEnumerable<T> where T:PoolBehaviour<PileID>
+    public class PilePool<T> : IEnumerable<T> where T:PoolBehaviour<PolyID>
     {
         private readonly Dictionary<HexCoord, List<byte>> m_Piles = new Dictionary<HexCoord, List<byte>>();
-        readonly TObjectPoolMono<PileID,T> m_Pool;
+        readonly TObjectPoolMono<PolyID,T> m_Pool;
 
         public PilePool(Transform _transform)
         {
-            m_Pool = new TObjectPoolMono<PileID, T>(_transform);
+            m_Pool = new TObjectPoolMono<PolyID, T>(_transform);
         }
-        public bool Contains(PileID _pileID)
+        public bool Contains(PolyID _polyID)
         {
-            if (!m_Piles.ContainsKey(_pileID.location))
+            if (!m_Piles.ContainsKey(_polyID.location))
                 return false;
-            return m_Piles[_pileID.location].Contains(_pileID.height);
+            return m_Piles[_polyID.location].Contains(_polyID.height);
         }
 
         public bool Contains(HexCoord _coord) => m_Piles.ContainsKey(_coord);
-        public T this[PileID _pileID]=> m_Pool.Get(_pileID);
-        public T Spawn(PileID _pileID)
+        public T this[PolyID _polyID]=> m_Pool.Get(_polyID);
+        public T Spawn(PolyID _polyID)
         {
-            T item = m_Pool.Spawn( _pileID);
-            var location = _pileID.location;
+            T item = m_Pool.Spawn( _polyID);
+            var location = _polyID.location;
             if (!m_Piles.ContainsKey(location))
                 m_Piles.Add(location,TSPoolList<byte>.Spawn());
-            m_Piles[location].Add(_pileID.height);
+            m_Piles[location].Add(_polyID.height);
             return item;
         }
-        public T Recycle(PileID _pileID)
+        public T Recycle(PolyID _polyID)
         {
-            T item = m_Pool.Recycle(_pileID);
-            var location = _pileID.location;
-            m_Piles[location].Remove(_pileID.height);
+            T item = m_Pool.Recycle(_polyID);
+            var location = _polyID.location;
+            m_Piles[location].Remove(_polyID.height);
             if (m_Piles[location].Count == 0)
             {
                 TSPoolList<byte>.Recycle(m_Piles[location]);

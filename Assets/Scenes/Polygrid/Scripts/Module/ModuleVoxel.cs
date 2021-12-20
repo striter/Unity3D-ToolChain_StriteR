@@ -13,14 +13,14 @@ using UnityEngine;
 
 namespace PolyGrid.Module
 {
-    public class ModuleVoxel : PoolBehaviour<PileID>
+    public class ModuleVoxel : PoolBehaviour<PolyID>
     {
         public IVoxel m_Voxel { get; private set; }
         private Mesh m_Mesh;
         private Qube<EModuleType> m_CornerTypes=KEnumQube<EModuleType>.Invalid;
         private Qube<ECornerStatus> m_CornerStatus = KEnumQube<ECornerStatus>.Invalid;
         private Qube<byte> m_CornerBytes = default;
-        public override void OnPoolInit(Action<PileID> _DoRecycle)
+        public override void OnPoolInit(Action<PolyID> _DoRecycle)
         {
             base.OnPoolInit(_DoRecycle);
             m_Mesh = new Mesh() {hideFlags = HideFlags.HideAndDontSave};
@@ -45,7 +45,7 @@ namespace PolyGrid.Module
             m_Mesh.Clear();
         }
         
-        public void ModuleValidate(List<ModuleRuntimeData> _data,Dictionary<PileID,ModuleCorner> _corners)
+        public void ModuleValidate(List<ModuleRuntimeData> _data,Dictionary<PolyID,ModuleCorner> _corners)
         {
             //Collect Data
             for (int i = 0; i < 8; i++)

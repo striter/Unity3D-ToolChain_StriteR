@@ -1,5 +1,4 @@
-﻿
-//Fog
+﻿//Distance Fog
 #if defined(FOG_LINEAR)||defined(FOG_EXP)||defined(FOG_EXP2)
     #define IFOG
 #endif

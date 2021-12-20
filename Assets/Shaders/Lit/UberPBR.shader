@@ -11,7 +11,10 @@
 		[ToggleTex(_PBRMAP)] [NoScaleOffset]_PBRTex("PBR Tex(Roughness.Metallic.AO)",2D)="white"{}
 		[Fold(_PBRMAP)]_Glossiness("Glossiness",Range(0,1))=1
         [Fold(_PBRMAP)]_Metallic("Metalness",Range(0,1))=0
-        [KeywordEnum(BlinnPhong,CookTorrance,Beckmann,Gaussian,GGX,TrowbridgeReitz,Anisotropic_TrowbridgeReitz,Anisotropic_Ward)]_NDF("Normal Distribution:",float) = 2
+		[NoScaleOffset]_EmissionTex("Emission",2D)="white"{}
+		[HDR]_EmissionColor("Emission Color",Color)=(0,0,0,0)
+		[Header(_Settings)]
+        [KeywordEnum(BlinnPhong,CookTorrance,Beckmann,Gaussian,GGX,TrowbridgeReitz,Anisotropic_TrowbridgeReitz,Anisotropic_Ward)]_NDF("Normal Distribution:",float) = 1
 		[Foldout(_NDF_ANISOTROPIC_TROWBRIDGEREITZ,_NDF_ANISOTROPIC_WARD)]_AnisoTropicValue("Anisotropic Value:",Range(0,1))=1
 		[KeywordEnum(BlinnPhong,GGX)]_VF("Vsibility * Fresnel:",float)=1
 	
@@ -48,23 +51,21 @@
 		
 		HLSLINCLUDE
 			#include "Assets/Shaders/Library/Common.hlsl"
+			#include "Assets/Shaders/Library/Lighting.hlsl"
 			#pragma multi_compile_instancing
 			#pragma shader_feature_local _PBRMAP
-			#pragma shader_feature_local _SPECULAR
 			#pragma shader_feature_local _NORMALMAP
 			#pragma shader_feature_local _DETAILNORMALMAP
 			#pragma shader_feature_local _MATCAP
 
-			#pragma shader_feature_local _NDF_BLINNPHONG _NDF_COOKTORRANCE _NDF_BECKMANN _NDF_GAUSSIAN _NDF_GGX _NDF_TROWBRIDGEREITZ _NDF_ANISOTROPIC_TROWBRIDGEREITZ _NDF_ANISOTROPIC_WARD
-			#pragma shader_feature_local _VF_BLINNPHONG _VF_GGX
-		
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_PBRTex);SAMPLER(sampler_PBRTex);
-			TEXTURE2D(_Matcap);SAMPLER(sampler_Matcap);
+			TEXTURE2D(_EmissionTex);SAMPLER(sampler_EmissionTex);
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
+			TEXTURE2D(_Matcap);SAMPLER(sampler_Matcap);
 			TEXTURE2D(_DetailNormalTex);SAMPLER(sampler_DetailNormalTex);
 			TEXTURE2D(_DepthTex);SAMPLER(sampler_DepthTex);
-			UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
+			INSTANCING_BUFFER_START
 				INSTANCING_PROP(float,_Glossiness)
 				INSTANCING_PROP(float,_Metallic)
 				INSTANCING_PROP(float,_DetailBlendMode)
@@ -72,15 +73,13 @@
 				INSTANCING_PROP(float4,_MainTex_ST)
 				INSTANCING_PROP(float4,_DetailNormalTex_ST)
 				INSTANCING_PROP(float4, _Color)
+				INSTANCING_PROP(float4, _EmissionColor)
 				INSTANCING_PROP(float,_DepthScale)
 				INSTANCING_PROP(float,_DepthOffset)
 				INSTANCING_PROP(float,_DepthBufferScale)
 				INSTANCING_PROP(int ,_ParallaxCount)
 				INSTANCING_PROP(float,_AlphaClipRange)
-			UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
-			
-			#include "Assets/Shaders/Library/Additional/HorizonBend.hlsl"
-			#pragma multi_compile _ _HORIZONBEND
+			INSTANCING_BUFFER_END
 			
 			#include "Assets/Shaders/Library/Additional/Local/Parallax.hlsl"
 			#pragma shader_feature_local _PARALLAX
@@ -95,6 +94,7 @@
 				float3 normalOS:NORMAL;
 				float4 tangentOS:TANGENT;
 				float2 uv:TEXCOORD0;
+				A2V_LIGHTMAP
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -107,8 +107,8 @@
 				float3 normalWS:TEXCOORD3;
 				half3 tangentWS:TEXCOORD4;
 				half3 biTangentWS:TEXCOORD5;
-				half3 viewDirWS:TEXCOORD6;
-				FOG_COORD(6)
+				FOG_COORD(7)
+				V2F_LIGHTMAP(8)
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -119,14 +119,13 @@
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				o.uv = float4( TRANSFORM_TEX_INSTANCE(v.uv,_MainTex),TRANSFORM_TEX_INSTANCE(v.uv,_DetailNormalTex));
 				o.positionWS=TransformObjectToWorld(v.positionOS);
-				o.positionWS=HorizonBend(o.positionWS);
 				o.positionCS = TransformObjectToHClip(v.positionOS);
-				o.positionHCS=o.positionCS;
+				o.positionHCS = o.positionCS;
 				o.normalWS=normalize(mul((float3x3)unity_ObjectToWorld,v.normalOS));
 				o.tangentWS=normalize(mul((float3x3)unity_ObjectToWorld,v.tangentOS.xyz));
 				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
-				o.viewDirWS=GetWorldSpaceViewDir(o.positionWS);
-				FOG_TRANSFER(o);
+				LIGHTMAP_TRANSFER(v,o)
+				FOG_TRANSFER(o)
 				return o;
 			}
 		ENDHLSL
@@ -137,17 +136,78 @@
 			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			#define IBRDF
-			#define IGI
-			#include "Assets/Shaders/Library/Lighting.hlsl"
+			#include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
+			#include "Assets/Shaders/Library/BRDF/BRDFInput.hlsl"
 			
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
-            #pragma multi_compile _ _MAIN_LIGHT_CALCULATE_SHADOWS
-            #pragma multi_compile _ _SHADOWS_SOFT
+			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile _ _ADDITIONAL_LIGHTS
+            #pragma multi_compile_fragment _ _SHADOWS_SOFT
+
+			#pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
+            #pragma multi_compile _ SHADOWS_SHADOWMASK
+            #pragma multi_compile _ DIRLIGHTMAP_COMBINED
+            #pragma multi_compile _ LIGHTMAP_ON
+			
             #pragma multi_compile_fog
             #pragma target 3.5
+			#pragma shader_feature_local_fragment _NDF_BLINNPHONG _NDF_COOKTORRANCE _NDF_BECKMANN _NDF_GAUSSIAN _NDF_GGX _NDF_TROWBRIDGEREITZ _NDF_ANISOTROPIC_TROWBRIDGEREITZ _NDF_ANISOTROPIC_WARD
+			#pragma shader_feature_local_fragment _VF_BLINNPHONG _VF_GGX
+
+			float GetGeometryShadow(BRDFSurface surface,BRDFLightSurface lightSurface)
+			{
+				return lightSurface.NDL;
+			}
+
+			float GetNormalDistribution(BRDFSurface surface,BRDFLightSurface lightSurface)
+			{
+				half glossiness = surface.smoothness;
+				half roughness=surface.roughness;
+				half sqrRoughness=surface.roughness2;
+				half anisotropic=surface.anisotropic;
+				half3 normal=surface.normal;
+				half NDV=surface.NDV;
+				half NDH=lightSurface.NDH;
+				half NDL=lightSurface.NDL;
+				half3 tangent=surface.tangent;
+				half3 halfDir=lightSurface.halfDir;
+				
+				half normalDistribution=
+				#if _NDF_BLINNPHONG
+				        NDF_BlinnPhong(NDH, glossiness,max(1, glossiness *40));
+				#elif _NDF_COOKTORRANCE
+				        NDF_CookTorrance(NDH,sqrRoughness);
+				#elif _NDF_BECKMANN
+				        NDF_Beckmann(NDH,sqrRoughness);
+				#elif _NDF_GAUSSIAN
+				        NDF_Gaussian(NDH,sqrRoughness);
+				#elif _NDF_GGX
+				        NDF_GGX(NDH,roughness,sqrRoughness);
+				#elif _NDF_TROWBRIDGEREITZ
+				        NDF_TrowbridgeReitz(NDH,sqrRoughness);
+				#elif _NDF_ANISOTROPIC_TROWBRIDGEREITZ
+				        NDFA_TrowbridgeReitz(NDH, dot(halfDir, tangent), dot(halfDir, cross(normal,tangent)), anisotropic, glossiness);
+				#elif _NDF_ANISOTROPIC_WARD
+				        NDFA_Ward(NDL, NDV, NDH, dot(halfDir, tangent), dot(halfDir,  cross(normal,tangent)), anisotropic, glossiness);
+				#else
+					0;
+				#endif
+				normalDistribution=clamp(normalDistribution,0,100.h);
+				return normalDistribution;
+			}
 			
+			float GetNormalizationTerm(BRDFSurface surface,BRDFLightSurface lightSurface)
+			{
+				#if _VF_GGX
+				        return InvVF_GGX(lightSurface.LDH,surface.roughness);
+				#elif _VF_BLINNPHONG
+				        return InvVF_BlinnPhong(lightSurface.LDH);
+				#else
+				        return 0;
+				#endif
+			}
+			
+			#include "Assets/Shaders/Library/BRDF/BRDFLighting.hlsl"
+
 			float4 frag(v2f i,out float depth:SV_DEPTH) :SV_TARGET
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
@@ -157,7 +217,7 @@
 				half3 biTangentWS=normalize(i.biTangentWS);
 				half3 tangentWS=normalize(i.tangentWS);
 				float3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
-				float3 viewDirWS=normalize(i.viewDirWS);
+				float3 viewDirWS=GetViewDirectionWS(positionWS);
 				half3 normalTS=half3(0,0,1);
 				float2 baseUV=i.uv.xy;
 				depth=i.positionCS.z;
@@ -175,6 +235,7 @@
 				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV)*INSTANCE(_Color);
 				AlphaClip(color.a);
 				half3 albedo=color.rgb;
+				half3 emission=SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,baseUV).rgb*INSTANCE(_EmissionColor).rgb;
 
 				half glossiness=INSTANCE(_Glossiness);
 				half metallic=INSTANCE(_Metallic);
@@ -187,35 +248,48 @@
 					ao=mix.b;
 				#endif
 
-				BRDFSurface surface=BRDFSurface_Ctor(albedo,glossiness,metallic,ao,normalWS,tangentWS,viewDirWS);
-				half3 indirectDiffuse=IndirectBRDFDiffuse(surface.normal);
+				BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,glossiness,metallic,ao,normalWS,tangentWS,viewDirWS,anisotropic);
+				
+				half3 finalCol=0;
+				Light mainLight=GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
+				half3 indirectDiffuse= IndirectBRDFDiffuse(mainLight,i.lightmapUV,normalWS);
 				half3 indirectSpecular=IndirectBRDFSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
-				half3 brdfColor=0;
-				brdfColor+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
-				Light mainLight=GetMainLight(TransformWorldToShadowCoord(positionWS));
+				finalCol+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
+				
 				#if _MATCAP
 					float2 matcapUV=float2(dot(UNITY_MATRIX_V[0].xyz,normalWS),dot(UNITY_MATRIX_V[1].xyz,normalWS));
 					matcapUV=matcapUV*.5h+.5h;
 					mainLight.color=SAMPLE_TEXTURE2D(_Matcap,sampler_Matcap,matcapUV).rgb;
 				#endif
 				
-				BRDFLight brdfMainLight=BRDFLight_Ctor(surface,mainLight.direction,mainLight.color,mainLight.shadowAttenuation,anisotropic);
-				brdfColor+=BRDFLighting(surface,brdfMainLight);
+				finalCol+=BRDFLighting(surface,mainLight,anisotropic);
 		
 				#if _ADDITIONAL_LIGHTS
             	uint pixelLightCount = GetAdditionalLightsCount();
 			    for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
-			    {
-			    	BRDFLight light=BRDFLight_Ctor(surface, GetAdditionalLight(lightIndex,i.positionWS),anisotropic);
-					brdfColor+=BRDFLighting(surface,light);
-			    }
+					finalCol+=BRDFLighting(surface, GetAdditionalLight(lightIndex,i.positionWS),anisotropic);
             	#endif
 				FOG_MIX(i,brdfColor);
-				return half4(brdfColor,1.h);
+				finalCol+=surface.emission;
+				return half4(finalCol,1.h);
 			}
 			ENDHLSL
 		}
 
+		Pass
+		{
+            Name "Meta"
+            Tags{"LightMode" = "Meta"}
+
+            Cull Off
+
+            HLSLPROGRAM
+            #pragma vertex MetaVertex
+            #pragma fragment MetaFragment
+            #include "Assets/Shaders/Library/Meta.hlsl"
+            ENDHLSL
+		}
+		
 		Pass
 		{
 			NAME "MAIN"
@@ -230,7 +304,7 @@
 				half3 biTangentWS=normalize(i.biTangentWS);
 				half3 tangentWS=normalize(i.tangentWS);
 				half3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
-				half3 viewDirWS=normalize(TransformWorldToViewDir(i.positionWS,UNITY_MATRIX_V));
+				half3 viewDirWS=GetViewDirectionWS(i.positionWS);
 				depth=i.positionCS.z;
             	ParallaxUVMapping(i.uv.xy,depth,i.positionWS,TBNWS,viewDirWS);
 				AlphaClip(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv.xy).a*INSTANCE(_Color.a));

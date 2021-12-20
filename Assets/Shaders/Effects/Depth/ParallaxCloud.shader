@@ -41,7 +41,7 @@
             struct v2f
             {
                 half4 positionCS : SV_POSITION;
-                float3 viewDirWS:TEXCOORD0;
+                float3 positionWS:TEXCOORD0;
                 float2 uv:TEXCOORD1;
             };
 
@@ -63,10 +63,9 @@
             {
                 v2f o;
                 o.positionCS = TransformObjectToHClip(v.positionOS);
-                float3 positionWS=TransformObjectToWorld(v.positionOS);
-                o.viewDirWS=TransformWorldToViewDir(positionWS,UNITY_MATRIX_V);
+                o.positionWS=TransformObjectToWorld(v.positionOS);
 
-                float2 uv=positionWS.xz;
+                float2 uv=o.positionWS.xz;
                 uv+=float2(_FlowX,_FlowY)*_Time.y;
                 uv/=_Scale;
                 o.uv=uv;
@@ -75,7 +74,7 @@
             
             half4 frag(v2f i) : SV_Target
             {
-                float3 viewDirWS=normalize(i.viewDirWS);
+                float3 viewDirWS=GetCameraRealDirectionWS(i.positionWS);
                 viewDirWS.xz/=viewDirWS.y;
                 viewDirWS*=_DepthScale;
                 float depth= ParallaxMappingPOM(TEXTURE2D_ARGS(_DepthTex,sampler_DepthTex),_DepthOffset,i.uv,viewDirWS.xz,_ParallaxCount);

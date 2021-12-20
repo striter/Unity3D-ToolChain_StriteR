@@ -1,14 +1,4 @@
-﻿half3 IndirectBRDFDiffuse(half3 normal)
-{
-    float3 res = SHEvalLinearL0L1(normal, unity_SHAr, unity_SHAg, unity_SHAb);
-    res += SHEvalLinearL2(normal, unity_SHBr, unity_SHBg, unity_SHBb, unity_SHC);
-    #ifdef UNITY_COLORSPACE_GAMMA
-	    res = LinearToSRGB(res);
-    #endif
-    return res;
-}
-
-sampler2D _CameraReflectionTexture0;
+﻿sampler2D _CameraReflectionTexture0;
 sampler2D _CameraReflectionTexture1;
 sampler2D _CameraReflectionTexture2;
 sampler2D _CameraReflectionTexture3;
@@ -37,14 +27,44 @@ half4 IndirectBRDFPlanarSpecular(half2 screenUV,float eyeDepth, half3 normalTS)
     return 0;
 }
 
-half3 IndirectBRDFCubeSpecular(half3 reflectDir, float perceptualRoughness)
+half3 SAMPLE_SH(half3 normal)
 {
-    half mip = perceptualRoughness * (1.7 - 0.7 * perceptualRoughness) * UNITY_SPECCUBE_LOD_STEPS;
-    half4 encodedIrradiance = SAMPLE_TEXTURECUBE_LOD(unity_SpecCube0, samplerunity_SpecCube0, reflectDir, mip);
-    half3 irradiance = DecodeHDREnvironment(encodedIrradiance, unity_SpecCube0_HDR);
-    return irradiance;
+    float3 res = SHEvalLinearL0L1(normal, unity_SHAr, unity_SHAg, unity_SHAb);
+    res += SHEvalLinearL2(normal, unity_SHBr, unity_SHBg, unity_SHBb, unity_SHC);
+    #ifdef UNITY_COLORSPACE_GAMMA
+    res = LinearToSRGB(res);
+    #endif
+    return res;
 }
 
+half3 SampleLightmap(inout Light mainLight,float2 lightmapUV,float3 normalWS)
+{
+    half3 lightSample=SampleLightmap(lightmapUV,normalWS);
+    MixRealtimeAndBakedGI(mainLight,normalWS,lightSample);
+    return lightSample;
+}
+
+#ifdef LIGHTMAP_ON
+    #define A2V_LIGHTMAP float2 lightmapUV:TEXCOORD1;
+    #define V2F_LIGHTMAP(index) float2 lightmapUV:TEXCOORD##index;
+    #define LIGHTMAP_TRANSFER(v,o) o.lightmapUV=v.lightmapUV*unity_LightmapST.xy+unity_LightmapST.zw;
+    #define IndirectBRDFDiffuse(mainLight,lightmapUV,normalWS) SampleLightmap(mainLight,lightmapUV,normalWS)
+#else
+    #define A2V_LIGHTMAP
+    #define V2F_LIGHTMAP(index)
+    #define LIGHTMAP_TRANSFER(v,o)
+    #define IndirectBRDFDiffuse(mainLight,lightmapUV,normalWS) SAMPLE_SH(normalWS)
+#endif
+
+half3 IndirectBRDFCubeSpecular(half3 reflectDir, float perceptualRoughness)
+{
+    #if defined(_ENVIRONMENTREFLECTIONS_OFF)
+        return _GlossyEnvironmentColor.rgb;
+    #endif
+    half mip = perceptualRoughness * (1.7 - 0.7 * perceptualRoughness) * UNITY_SPECCUBE_LOD_STEPS;
+    half4 encodedIrradiance = SAMPLE_TEXTURECUBE_LOD(unity_SpecCube0, samplerunity_SpecCube0, reflectDir, mip);
+    return DecodeHDREnvironment(encodedIrradiance, unity_SpecCube0_HDR);
+}
 
 half3 IndirectBRDFSpecular(float3 reflectDir, float perceptualRoughness, half4 positionHCS, half3 normalTS)
 {

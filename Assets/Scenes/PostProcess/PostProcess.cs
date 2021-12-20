@@ -17,12 +17,11 @@ public class PostProcess : MonoBehaviour
         m_Controller = GetComponentInChildren<PostProcess_Opaque>();
         m_ControlCamera = m_Controller.GetComponent<Camera>();
         UIT_TouchConsole.InitDefaultCommands();
-        foreach(var postEffects in GetComponentsInChildren<APostProcessBase>())
+        foreach(var postEffects in GetComponentsInChildren<MonoBehaviour>().Collect<MonoBehaviour,IPostProcessBehaviour>())
         {
             UIT_TouchConsole.NewPage(postEffects.GetType(). Name);
-            UIT_TouchConsole.InitSerializeCommands(postEffects,effect=>effect.OnValidate());
+            UIT_TouchConsole.InitSerializeCommands(postEffects,effect=>effect.ValidateParameters());
         }
-        TouchTracker.Init();
     }
 
     private void Update()
@@ -53,11 +52,11 @@ public class PostProcess : MonoBehaviour
         {
             m_Controller.m_Data.m_Area = true;
             m_Controller.m_Data.m_AreaData.m_Radius = m_AreaRadius * value;
-            m_Controller.OnValidate();
+            m_Controller.ValidateParameters();
         }, 1,0, .2f, () =>
         {
             m_Controller.m_Data.m_Area = false;
-            m_Controller.OnValidate();
+            m_Controller.ValidateParameters();
         }));
     }
     void OnPressCheck(Vector2 stretch1Pos, Vector2 strech2Pos)
@@ -68,7 +67,7 @@ public class PostProcess : MonoBehaviour
             m_AreaRadius = Vector3.Distance( _hit2.point,_hit1.point)/2f;
             m_Controller.m_Data.m_AreaData.m_Radius = m_AreaRadius;
             m_Controller.m_Data.m_AreaData.m_Origin = m_AreaOrigin;
-            m_Controller.OnValidate();
+            m_Controller.ValidateParameters();
         }
 
     }

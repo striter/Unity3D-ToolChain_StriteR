@@ -6,8 +6,9 @@ using UnityEngine;
 
 namespace PolyGrid.Module
 {
-    public class ModuleCorner : PoolBehaviour<PileID>
+    public class ModuleCorner : PoolBehaviour<PolyID>
     {
+        public PolyID Identity => m_PoolID;
         public ICorner m_Corner { get; private set; }
         public EModuleType m_Type { get; private set; }
         public ECornerStatus m_Status { get; private set; }

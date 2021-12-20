@@ -6,8 +6,7 @@
         [KeywordEnum(Point,Cube,Spot)]_Type("Type",float)=0
         _Density("Density",Range(0,10)) = 1
         _Pow("Density Pow",Range(0,10))=2
-        [Header(Depth)]
-        _Depth("Depth Sensitivity",Range(0,1))=.5
+        [Toggle(_DEPTH)]_DepthSample("Depth Sample",int)=0
         [Header(Misc)]
         [Enum(UnityEngine.Rendering.BlendMode)]_SrcBlend("Src Blend",float)=1
         [Enum(UnityEngine.Rendering.BlendMode)]_DstBlend("Dst Blend",float)=1
@@ -23,7 +22,8 @@
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma multi_compile_local _TYPE_POINT _TYPE_CUBE _TYPE_SPOT
+            #pragma multi_compile_local_fragment _TYPE_POINT _TYPE_CUBE _TYPE_SPOT
+            #pragma shader_feature_local_fragment _DEPTH
 
             #define IGeometryDetection
             #include "Assets/Shaders/Library/Common.hlsl"
@@ -37,60 +37,75 @@
             struct v2f
             {
                 half4 positionCS : SV_POSITION;
-                half3 positionOS:TEXCOORD0;
-                half4 screenPos : TEXCOORD2;
+                float3 positionWS:TEXCOORD1;
+                float4 positionHCS:TEXCOORD2;
             };
             
             TEXTURE2D(_CameraDepthTexture); SAMPLER(sampler_CameraDepthTexture);
+            TEXTURE2D(_CameraOpaqueTexture); SAMPLER(sampler_CameraOpaqueTexture);
             CBUFFER_START(UnityPerMaterial)
             half4 _Color;
             half _Density;
             half _Pow;
-            half _Depth;
             CBUFFER_END
             v2f vert(a2v v)
             {
                 v2f o;
                 o.positionCS = TransformObjectToHClip(v.positionOS);
-                o.positionOS = v.positionOS;
-                o.screenPos = ComputeScreenPos(o.positionCS);
+                o.positionWS = TransformObjectToWorld(v.positionOS);
+                o.positionHCS =o.positionCS ;
                 return o;
             }
             
             half4 frag(v2f i) : SV_Target
             {
-                half3 viewDirOS=TransformWorldToObjectNormal(TransformObjectToWorld(i.positionOS)-GetCameraPositionWS());
-                half depthDstWS = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, i.screenPos.xy/i.screenPos.w),_ZBufferParams).r - i.screenPos.w;
-                half depthDstOS =length(mul((float3x3)unity_WorldToObject,float3(0,depthDstWS,0)));
+                float2 screenUV = TransformHClipToNDC(i.positionHCS);
+                half3 viewDirWS = GetViewDirectionWS(i.positionWS);
+                float3 cameraPosWS = GetCameraRealPositionWS(screenUV);
                 half3 origin=0.h;
                 half density=1.h;
                 float2 distances=0.;
-                GRay viewRayOS=GRay_Ctor(i.positionOS,viewDirOS);
+                GRay viewRayOS=GRay_Ctor(TransformWorldToObject(cameraPosWS),TransformWorldToObjectDir(viewDirWS));
                 #if _TYPE_POINT
                 //radius =.5 inv = 2
                 distances= SphereRayDistance(GSphere_Ctor(origin,.5) ,viewRayOS);
-                half3 closestPoint=viewRayOS.GetPoint(PointRayProjection(viewRayOS,origin));
-                half originDistance= length(origin-closestPoint);
-                density= 1;//saturate(1-originDistance*2);
                 #elif _TYPE_CUBE
                 distances=AABBRayDistance( GBox_Ctor(origin,1.h),viewRayOS);
                 distances.y+=distances.x;
-
-                half distance0=saturate(viewRayOS.GetPoint(distances.x).z+.5);
-                half distance1=saturate(viewRayOS.GetPoint(distances.y).z+.5);
-                half bottomDistance = min(distance0,distance1);
-                density*=(1-bottomDistance);
                 #elif _TYPE_SPOT
                 GHeightCone cone= GHeightCone_Ctor( float3(.0,.5,.0),float3(.0,-1.,.0),55.,1);
                 distances =ConeRayDistance(cone,viewRayOS);
                 #endif
-                distances.y=min(depthDstOS,distances.y);
+
+                // return TransformWorldToEyeDepth(world,UNITY_MATRIX_V)/10;
+                #if _DEPTH
+                    float rawDepth=SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).r;
+                    float depthDstWS = GetCameraDepthDistance(screenUV,rawDepth);
+                    float depthDstOS = length( TransformWorldToObjectDir (viewDirWS*depthDstWS,false));
+                    distances.y=min(depthDstOS,distances.y);
+                #endif
+                
                 float travelDst=saturate(distances.y-distances.x);
-                density*=saturate( smoothstep(0,_Depth,travelDst));
+                density*=travelDst;
+
+                #if _TYPE_POINT
+                    half closestDistance= PointRayProjection(viewRayOS,origin);
+                    closestDistance=min(closestDistance,distances.y);
+                    half originDistance= length(origin-viewRayOS.GetPoint(closestDistance));
+                    density *= saturate(.5-originDistance);
+                #elif _TYPE_CUBE
+                    half distance0=saturate(viewRayOS.GetPoint(distances.x).z+.5);
+                    half distance1=saturate(viewRayOS.GetPoint(distances.y).z+.5);
+                    half bottomDistance = min(distance0,distance1);
+                    density*=(1-bottomDistance);
+                #endif
+                
+                density=saturate(density);
                 density=pow(density,_Pow);
                 density*=_Density;
-                density=saturate(density);
-                return half4( _Color*  density);
+                float4 finalCol=_Color*density;
+                finalCol.a=saturate(finalCol.a);
+                return finalCol;
             }
             ENDHLSL
         }

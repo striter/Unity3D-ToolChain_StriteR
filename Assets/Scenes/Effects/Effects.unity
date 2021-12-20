@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44824666, g: 0.49827367, b: 0.57558364, a: 1}
+  m_IndirectSpecularColor: {r: 0.1692265, g: 0.21244678, b: 0.2907881, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -137,6 +137,7 @@ GameObject:
   - component: {fileID: 15725971}
   - component: {fileID: 15725977}
   - component: {fileID: 15725976}
+  - component: {fileID: 15725974}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -209,6 +210,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 57.064, y: 0, z: 0}
+--- !u!114 &15725974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 15725970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 700a36809ef0bd64f919f357b45b0fa8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Normal: 2
+  m_Reflection: 2
+  m_PostProcessPreview: 1
 --- !u!114 &15725976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,7 +247,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -253,7 +269,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e24f8465e5911194a9d11d5acb09953c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Preview: 1
   m_Data:
     m_FXAA: 0
     m_AdditionalSample: 1
@@ -276,7 +291,7 @@ MonoBehaviour:
     m_Bloom: 1
     m_BloomData:
       m_SampleMode: 0
-      m_Threshold: 1.91
+      m_Threshold: 1.71
       m_LayerMask: 2147483647
       m_Color: {r: 1, g: 1, b: 1, a: 1}
       m_Blur:
@@ -2096,7 +2111,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1314644219}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.501, y: 1.059, z: -0.325}
+  m_LocalPosition: {x: 0.63, y: 0.655, z: -0.19}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2115797319}

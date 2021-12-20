@@ -9,9 +9,6 @@
     	HLSLINCLUDE
 			#pragma multi_compile_instancing
 			#include "Assets/Shaders/Library/Common.hlsl"
-			#include "Assets/Shaders/Library/Additional/HorizonBend.hlsl"
-			#pragma multi_compile_ _ _HORIZONBEND
-
 			
 			struct a2f
 			{
@@ -24,17 +21,16 @@
 				float4 positionCS:SV_POSITION;
 			};
 
-			v2f ShadowVertex(a2f v)
+			v2f DepthVertex(a2f v)
 			{
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				float3 positionWS=TransformObjectToWorld(v.positionOS);
-				positionWS=HorizonBend(positionWS);
 				o.positionCS=TransformWorldToHClip(positionWS);
 				return o;
 			}
 
-			float4 ShadowFragment(v2f i) :SV_TARGET
+			float4 DepthFragment(v2f i) :SV_TARGET
 			{
 				return 0;
 			}
@@ -44,9 +40,8 @@
 			NAME "MAIN"
 			Tags{"LightMode" = "DepthOnly"}
 			HLSLPROGRAM
-			#pragma vertex ShadowVertex
-			#pragma fragment ShadowFragment
-
+			#pragma vertex DepthVertex
+			#pragma fragment DepthFragment
 			ENDHLSL
 		}		
     	
@@ -55,9 +50,8 @@
 			NAME "Forward"
 			Tags{"LightMode" = "UniversalForward"}
 			HLSLPROGRAM
-			#pragma vertex ShadowVertex
-			#pragma fragment ShadowFragment
-
+			#pragma vertex DepthVertex
+			#pragma fragment DepthFragment
 			ENDHLSL
 		}
     }

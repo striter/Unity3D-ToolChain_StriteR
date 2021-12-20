@@ -1,14 +1,17 @@
-﻿float2x2 Rotate2x2(float _angle)
+﻿#define Deg2Rad 0.017453292519943//PI / 180
+#define Rad2Deg 57.295779513082 //180f / PI
+
+float2x2 Rotate2x2(float _angle)
 {
     float sinAngle, cosAngle;
     sincos(_angle, sinAngle, cosAngle);
     return float2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
 }
 
-float3x3 Rotate3x3(float _angle, float3 _axis)
+float3x3 Rotate3x3(float _radin, float3 _axis)
 {
     float s, c;
-    sincos(_angle, s, c);
+    sincos(_radin, s, c);
 
     float t = 1 - c;
     float x = _axis.x;

@@ -4,22 +4,17 @@
     {
     	_Color("Color",Color)=(1,1,1,1)
 		[ToggleTex(_NORMALTEX)][NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
-    	[Foldout(_NORMALTEX)]_Scale("Scale",Range(1,20))=10
+    	[Foldout(_NORMALTEX)]_Scale("Scale",Range(1,50))=10
     	
     	[Header(Flow)]
 		[ToggleTex(_FLOWTEX)][NoScaleOffset]_FlowTex("Flow Tex",2D)="black"{}
-    	[Fold(_FLOWTEX)]_FlowDirection("Flow Direction",Vector)=(1,1,0,0)
-    	_FlowSpeed("Flow Speed",Range(0.01,10))=2
+    	[Vector2]_FlowDirection1("Flow Direction 1",Vector)=(1,1,0,0)
+    	[Vector2]_FlowDirection2("Flow Direction 2",Vector)=(1,1,0,0)
     	
     	[Header(Lighting)]
     	_SpecularAmount("Specular Amount",Range(.8,0.99999))=1
     	_SpecularStrength("Specular Strength",Range(0.5,5))=1
-    	[Toggle(_RECEIVESHADOW)]_ReceiveShadow("Receive Shadow",int)=1
     	
-    	[Header(_Refraction)]
-    	[Toggle(_DEPTHREFRACTION)] _DepthRefraction("Enable",int)=1
-    	[Foldout(_DEPTHREFRACTION)] _RefractionDistance("Refraction Distance",Range(0.01,5))=1 
-    	[Foldout(_DEPTHREFRACTION)]_RefractionAmount("Refraction Amount",Range(0,.5))=0.1
     	[Header(_Fresnel)]
     	[Toggle(_FRESNEL)]_Fresnel("Enable",int)=1
     	
@@ -28,9 +23,15 @@
     		
     	[Header(Depth)]
     	[Toggle(_DEPTH)]_Depth("Enable",int)=1
+    	[Foldout(_DEPTH)]_DepthRamp("Ramp",2D)="white"{}
     	[Foldout(_DEPTH)]_DepthColor("Color",Color)=(1,1,1,1)
-    	[Foldout(_DEPTH)]_DepthBegin("Begin",Range(0,10))=2
-    	[Foldout(_DEPTH)]_DepthDistance("Distance",Range(0,10))=2
+    	[Foldout(_DEPTH)]_DepthBegin("Begin",Range(0,20))=2
+    	[Foldout(_DEPTH)]_DepthDistance("Distance",Range(0,40))=2
+    	
+    	[Header(_Refraction)]
+    	[Toggle(_DEPTHREFRACTION)] _DepthRefraction("Enable",int)=1
+    	[Foldout(_DEPTHREFRACTION)] _RefractionDistance("Refraction Distance",Range(0.01,5))=1 
+    	[Foldout(_DEPTHREFRACTION)]_RefractionAmount("Refraction Amount",Range(0,.5))=0.1
     	
     	[Header(Foam)]
     	[Toggle(_FOAM)]_Foam("Enable",int)=1
@@ -60,28 +61,27 @@
 			#pragma multi_compile_instancing
             #pragma shader_feature_local _NORMALTEX
             #pragma shader_feature_local _FLOWTEX
-            #pragma shader_feature_local _RECEIVESHADOW
 			#pragma shader_feature_local _FOAM
             #pragma shader_feature_local _DEPTH
             #pragma shader_feature_local _DEPTHREFRACTION
 			#pragma shader_feature_local _CAUSTIC
             #pragma shader_feature_local _FRESNEL
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             
-            #define IGI
 			#include "Assets/Shaders/Library/Common.hlsl"
+            #define IGI
 			#include "Assets/Shaders/Library/Lighting.hlsl"
             
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
             TEXTURE2D(_CausticTex);SAMPLER(sampler_CausticTex);
             TEXTURE2D(_FlowTex);SAMPLER(sampler_FlowTex);
+            TEXTURE2D(_DepthRamp);SAMPLER(sampler_DepthRamp);
 			TEXTURE2D(_CameraOpaqueTexture);SAMPLER(sampler_CameraOpaqueTexture);
             TEXTURE2D(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
 			INSTANCING_BUFFER_START
 				INSTANCING_PROP(float4,_Color)
 				INSTANCING_PROP(float,_Scale)
-				INSTANCING_PROP(float2,_FlowDirection)
-				INSTANCING_PROP(float,_FlowSpeed)
+				INSTANCING_PROP(float2,_FlowDirection1)
+				INSTANCING_PROP(float2,_FlowDirection2)
 				INSTANCING_PROP(float,_SpecularAmount)
 				INSTANCING_PROP(float,_SpecularStrength)
 				INSTANCING_PROP(float,_RefractionDistance)
@@ -121,7 +121,6 @@
 				half3 biTangentWS:TEXCOORD4;
 				float3 viewDirWS:TEXCOORD5;
             	float2 uv:TEXCOORD6;
-            	float4 shadowCoords:TEXCOORD7;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 			
@@ -138,9 +137,8 @@
 				o.normalWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.normalOS));
 				o.tangentWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.tangentOS.xyz));
 				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
-				o.viewDirWS=TransformWorldToViewDir(o.positionWS,UNITY_MATRIX_V);
+				o.viewDirWS=GetViewDirectionWS(o.positionWS);
             	o.uv=v.uv;
-            	o.shadowCoords=TransformWorldToShadowCoord(o.positionWS);
                 return o;
             }
 
@@ -157,29 +155,31 @@
             	half3 lightCol=_MainLightColor.rgb;
 				half3 normalTS=float3(0,0,1);
             	
-            	float atten=1;
-            	#if _RECEIVESHADOW
-            		atten=MainLightRealtimeShadow(i.shadowCoords);
-            	#endif
+            	float fresnel=1;
+            	#if _FRESNEL
+            	fresnel=1.-Pow4(dot(viewDirWS,normalWS));
+				#endif
+
 				float2 wave=WaveInteraction(positionWS);
             	float3 albedo=INSTANCE(_Color).rgb;
             	float2 screenUV=TransformHClipToNDC(i.positionHCS);
             	
-            	half2 uvFlow;
+            	half2 uvFlow1=INSTANCE(_FlowDirection1)*_Time.y;
+				half2 uvFlow2=INSTANCE(_FlowDirection2)*_Time.y;
             	#if _FLOWTEX
-            		half2 flowDir=SAMPLE_TEXTURE2D(_FlowTex,sampler_FlowTex,i.uv).xy;		//To Be Continued
-					uvFlow=flowDir*frac(_Time.y)*_FlowSpeed;
-            	#else
-					uvFlow=INSTANCE(_FlowDirection)*_Time.y*INSTANCE(_FlowSpeed);
+            		half2 flowDir=SAMPLE_TEXTURE2D(_FlowTex,sampler_FlowTex,i.uv).xy*frac(_Time.y);		//To Be Continued
+					uvFlow1*=flowDir;
+            		uvFlow2*=flowDir;
             	#endif
             	
             	float uvScale=rcp(INSTANCE(_Scale));
             	
             	#if _NORMALTEX
-            	float2 surfaceUV=positionWS.xz+wave*.1;
-            	surfaceUV+=uvFlow;
-            	surfaceUV*=uvScale;
-            	normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,surfaceUV));
+            	float2 uv1=(positionWS.xz+uvFlow1)*uvScale;
+            	float2 uv2=(positionWS.xz+uvFlow2)*uvScale;
+            	float3 normalTS1=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,uv1));
+            	float3 normalTS2=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,uv2));
+            	normalTS=BlendNormal(normalTS1,normalTS2,4);
 				normalWS=normalize(mul(transpose(TBNWS), normalTS));
             	#endif
 
@@ -200,16 +200,16 @@
             	float verticalDistance=positionWSDepth.y-positionWS.y;
             	float3 causticPositionWS=positionWSDepth+lightDirWS*verticalDistance* rcp(dot(float3(0,-1,0),lightDirWS));
             	float2 causticUV=causticPositionWS.xz;
-            	float2 causticForward=(causticUV+uvFlow)*uvScale;
-            	float2 causticBackward=(causticUV-uvFlow*.5)*uvScale;
-            	float caustic=SAMPLE_TEXTURE2D(_CausticTex,sampler_CausticTex,causticForward).r;
-            	caustic*=SAMPLE_TEXTURE2D(_CausticTex,sampler_CausticTex,causticBackward).r;
+            	float2 causticForward=(causticUV+uvFlow1)*uvScale;
+            	float2 causticBackward=(causticUV-uvFlow2)*uvScale;
+            	float caustic=min(SAMPLE_TEXTURE2D(_CausticTex,sampler_CausticTex,causticForward).r,SAMPLE_TEXTURE2D(_CausticTex,sampler_CausticTex,causticBackward).r);
             	deepSurfaceColor+=caustic*lightCol*INSTANCE(_CausticStrength);
             	#endif
             	
 				#if _DEPTH
-            	float depth=smoothstep(INSTANCE(_DepthBegin),INSTANCE(_DepthBegin)+INSTANCE(_DepthDistance),eyeDepthOffset)*INSTANCE(_DepthColor).a;
-            	float3 depthCol=deepSurfaceColor*INSTANCE(_DepthColor).rgb;
+            	float depth=saturate(invlerp(INSTANCE(_DepthBegin),INSTANCE(_DepthBegin)+INSTANCE(_DepthDistance),eyeDepthOffset));
+            	float4 depthSample=SAMPLE_TEXTURE2D_LOD(_DepthRamp,sampler_DepthRamp,1-depth,0)*INSTANCE(_DepthColor);
+            	float3 depthCol=lerp(deepSurfaceColor,depthSample.rgb,depthSample.a);
 				deepSurfaceColor=lerp(deepSurfaceColor,depthCol,depth);
             	#endif
             	
@@ -218,22 +218,16 @@
 				aboveSurfaceColor=lerp(aboveSurfaceColor, reflection.rgb,reflection.a*INSTANCE(_Strength));
             	
             	float specular=GetSpecular(normalWS,lightDirWS,viewDirWS,INSTANCE(_SpecularAmount));
-            	specular*=atten*INSTANCE(_SpecularStrength);
+            	specular*=INSTANCE(_SpecularStrength);
             	aboveSurfaceColor=aboveSurfaceColor+lightCol*specular;
+            	
+            	float3 riverCol=lerp(deepSurfaceColor,aboveSurfaceColor,fresnel*INSTANCE(_Color).a);
             	
 				#if _FOAM
             	float foam=smoothstep(INSTANCE(_FoamBegin)+INSTANCE(_FoamWidth),INSTANCE(_FoamBegin),eyeDepthOffset+max(normalTS.xy)*INSTANCE(_FoamDistort));
             	float3 foamColor=INSTANCE(_FoamColor).rgb;
-				aboveSurfaceColor=lerp(aboveSurfaceColor,foamColor,foam*atten*INSTANCE(_FoamColor).a);
+				riverCol=lerp(riverCol,foamColor,foam*INSTANCE(_FoamColor).a);
             	#endif
-		
-            	float fresnel=1;
-            	#if _FRESNEL
-            	fresnel=1.-Pow4(dot(viewDirWS,normalWS));
-				#endif
-
-            	
-            	float3 riverCol=lerp(deepSurfaceColor,aboveSurfaceColor,fresnel*INSTANCE(_Color).a);
             	
             	return float4(riverCol,1);
             }

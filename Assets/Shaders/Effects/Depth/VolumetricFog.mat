@@ -8,8 +8,8 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: VolumetricFog
-  m_Shader: {fileID: 4800000, guid: 60370191e630cc9409e94aeb42476317, type: 3}
-  m_ShaderKeywords: _TYPE_POINT
+  m_Shader: {fileID: 4800000, guid: aaa57f15e19449d44ac3ea3c8d4894e1, type: 3}
+  m_ShaderKeywords: _DEPTH _TYPE_POINT
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -62,9 +62,11 @@ Material:
     m_Ints: []
     m_Floats:
     - _BumpScale: 1
+    - _ColorSample: 0
     - _Cutoff: 0.5
-    - _Density: 1.1
+    - _Density: 0.4
     - _Depth: 1
+    - _DepthSample: 1
     - _DetailNormalMapScale: 1
     - _Distance: 5
     - _DstBlend: 1
@@ -78,7 +80,7 @@ Material:
     - _NoiseScale: 10
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Pow: 3.2
+    - _Pow: 2.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -86,7 +88,7 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 1.7536343, g: 0.70286036, b: 0.4053212, a: 1}
+    - _Color: {r: 63.25359, g: 29.854067, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _NoiseFlow: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
