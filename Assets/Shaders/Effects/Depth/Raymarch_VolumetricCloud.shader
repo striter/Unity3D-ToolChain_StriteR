@@ -112,7 +112,7 @@
             
             float4 frag (v2f i) : SV_Target
             {
-                float3 marchDirWS=GetViewDirectionWS( i.positionWS);
+                float3 marchDirWS=GetCameraRealDirectionWS( i.positionWS);
                 GBox boxWS=GBox_Ctor(i.centerWS,i.sizeWS);
                 GRay rayWS=GRay_Ctor(i.positionWS,marchDirWS);
                 float marchDstWS=AABBRayDistance(boxWS,rayWS).y;
