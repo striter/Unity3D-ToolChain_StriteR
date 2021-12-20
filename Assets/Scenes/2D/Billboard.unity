@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.6917369, g: 0.6951622, b: 0.66039103, a: 1}
+  m_IndirectSpecularColor: {r: 0.43631124, g: 0.44113004, b: 0.39363942, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5656,7 +5656,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -5678,7 +5678,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e24f8465e5911194a9d11d5acb09953c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Preview: 1
   m_Data:
     m_FXAA: 0
     m_AdditionalSample: 1
@@ -5724,7 +5723,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0d691f066f07e4fbd5e0dba44664e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Preview: 1
   m_Data:
     m_Scan: 0
     m_ScanData:
@@ -5812,7 +5810,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03933548f0649d64a950fbfc4aecb912, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Preview: 1
   m_Data:
     m_VolumetricLight: 1
     m_VolumetricLightData:
@@ -5843,7 +5840,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd77a91bcac115943bbc6807fe1070b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Preview: 1
   m_Data:
     m_Stylize: 1
     m_DownSample: 7
@@ -9460,6 +9456,12 @@ MonoBehaviour:
     m_BendBegin: 14.03
     m_BendWidth: 10.88
     m_BendDirection: {x: -1.46, y: -2.59, z: -2.2}
+  m_VerticalFog:
+    m_Enable: 0
+    m_FogBegin: 0
+    m_FogDistance: 2
+    m_FogPow: 1
+    m_FogColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &2130721560
 MonoBehaviour:
   m_ObjectHideFlags: 0
