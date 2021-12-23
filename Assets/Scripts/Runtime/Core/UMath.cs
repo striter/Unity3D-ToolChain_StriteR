@@ -43,10 +43,12 @@ public static class UMath
             dst *= _src;
         return dst;
     }
+
+    public static float Pow2(float _src) => _src * _src;
     public static float Frac(float _src) => _src - Mathf.Floor(_src);
     public static float Mod(float _src, float _dst) => _src - _dst * Mathf.Floor(_src/_dst);
 
-
+    public static float InvLerp(float _a, float _b, float _value)=> (_value - _a) / (_b - _a);
     public static Vector3 BilinearLerp(Vector3 tl, Vector3 tr, Vector3 br, Vector3 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
     public static Vector2 BilinearLerp(Vector2 tl, Vector2 tr, Vector2 br, Vector2 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
     public static float BilinearLerp(float tl, float tr, float br, float bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);

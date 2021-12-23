@@ -135,6 +135,17 @@ half min(half3 _Target)
 
 
 //Interpolate
+
+half2 triLerp(half2 l,half2 m,half2 r,half a)       //-1 tl,0 tm,1 tr
+{
+    return m*(1.h-abs(a))+l*max(0.h,-a)+r*max(0,a);
+}
+
+float2 triLerp(float2 l,float2 m,float2 r,half a)       //-1 tl,0 tm,1 tr
+{
+    return m*(1.h-abs(a))+l*max(0.h,-a)+r*max(0,a);
+}
+
 half3 triLerp(half3 l,half3 m,half3 r,half a)       //-1 tl,0 tm,1 tr
 {
     return m*(1.h-abs(a))+l*max(0.h,-a)+r*max(0,a);

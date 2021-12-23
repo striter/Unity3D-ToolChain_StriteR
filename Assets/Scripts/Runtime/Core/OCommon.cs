@@ -208,20 +208,21 @@ public class Ticker
     public Ticker(float _tick)
     {
         m_Duration = _tick;
-        Stop();
+        Reset();
     }
-    public void Stop()
+    public void Reset()
     {
         m_Elapsed = 0;
         m_Tick = 0;
         m_TickScale = 0f;
     }
+    
     public bool Tick(float _delta)
     {
         m_Elapsed += _delta;
         m_Tick += _delta;
         bool availableTick = false;
-        if(m_Tick>=m_Duration)
+        if(m_Tick > m_Duration)
         {
             m_Tick -= m_Duration;
             availableTick = true;
