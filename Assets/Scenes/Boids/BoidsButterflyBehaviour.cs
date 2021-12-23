@@ -7,6 +7,7 @@ namespace Boids
 {
     public enum EButterFlyBehaviour
     {
+        Startle,
         Floating,
         Landing,
         Perching,
@@ -14,15 +15,15 @@ namespace Boids
     
     public class ButterflyBehaviourController:BoidsBehaviourController<ButterflyBehaviour>
     {
-        public override void Init(BoidsActor _actor, Vector3 _position)
+        public override void Spawn(Vector3 _position, Quaternion rotation)
         {
-            base.Init(_actor, _position);
+            base.Spawn(_position, rotation);
             SetBehaviour(EButterFlyBehaviour.Floating);
         }
 
         public override void Startle()
         {
-            
+            SetBehaviour(EButterFlyBehaviour.Startle);
         }
 
         public void SetBehaviour(EButterFlyBehaviour _behaviour)
@@ -39,6 +40,7 @@ namespace Boids
             switch (_behaviour)
             {
                 default: throw new InvalidEnumArgumentException();
+                case EButterFlyBehaviour.Startle: behaviour = TSPool<ButterflyStartleBehaviour>.Spawn(); break;
                 case EButterFlyBehaviour.Floating: behaviour = TSPool<ButterflyFloatingBehaviour>.Spawn(); break;
                 case EButterFlyBehaviour.Landing: behaviour = TSPool<ButterFlyLandingBehaviour>.Spawn();break;
                 case EButterFlyBehaviour.Perching: behaviour = TSPool<ButterFlyPerchingBehaviour>.Spawn();break;
@@ -53,6 +55,7 @@ namespace Boids
             switch (_behaviour.m_Behaviour)
             {
                 default: throw new InvalidEnumArgumentException();
+                case EButterFlyBehaviour.Startle: TSPool<ButterflyStartleBehaviour>.Recycle(_behaviour as ButterflyStartleBehaviour); break;
                 case EButterFlyBehaviour.Floating: TSPool<ButterflyFloatingBehaviour>.Recycle(_behaviour as ButterflyFloatingBehaviour); break;
                 case EButterFlyBehaviour.Landing: TSPool<ButterFlyLandingBehaviour>.Recycle(_behaviour as ButterFlyLandingBehaviour);break;
                 case EButterFlyBehaviour.Perching: TSPool<ButterFlyPerchingBehaviour>.Recycle(_behaviour as ButterFlyPerchingBehaviour);break;
@@ -63,7 +66,7 @@ namespace Boids
     public abstract class ButterflyBehaviour : IBoidsBehaviour
     {
         public EButterFlyBehaviour m_Behaviour { get; private set; }
-        private ButterflyBehaviourController m_Controller { get; set; }
+        public ButterflyBehaviourController m_Controller { get; private set; }
         public void Init(EButterFlyBehaviour _behaviour,ButterflyBehaviourController _controller)
         {
             m_Behaviour = _behaviour;
@@ -87,6 +90,23 @@ namespace Boids
         }
     }
 
+    public class ButterflyStartleBehaviour : ButterflyBehaviour,IBoidsTransformVelocity
+    {
+        public override void Begin(BoidsActor _actor)
+        {
+            base.Begin(_actor);
+            _actor.m_Animation.SetAnimation("Butterfly_Flap");
+        }
+
+        public void TickVelocity(BoidsActor _actor, IEnumerable<BoidsActor> _flock, float _deltaTime, ref Vector3 _velocity)
+        {
+            _velocity += this.TickFlocking(_actor,_flock,_deltaTime);
+            _velocity += this.TickFlapping(_actor,_deltaTime);
+            _velocity += this.TickRandom(_actor, _deltaTime);
+            _velocity += this.TickAvoid(_actor, _deltaTime);
+        }
+    }
+
     public class ButterflyFloatingBehaviour : ButterflyBehaviour,IBoidsTransformVelocity
     {
         public override void Begin(BoidsActor _actor)
@@ -97,8 +117,8 @@ namespace Boids
         public void TickVelocity(BoidsActor _actor, IEnumerable<BoidsActor> _flock, float _deltaTime, ref Vector3 _velocity)
         {
             _velocity += this.TickFlocking(_actor,_flock,_deltaTime);
-            _velocity += this.TickHovering(_actor,_deltaTime);
-            _velocity += this.TickRandom(_actor, _deltaTime);
+            _velocity += this.TickHovering(_actor,_deltaTime);;
+            _velocity += this.TickAvoid(_actor, _deltaTime);
         }
     }
 

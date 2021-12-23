@@ -22,8 +22,8 @@ namespace Boids
             m_Config = _config;
             
             m_Target.m_Destination = _position;
-            m_Behaviour = _behaviour;
-            m_Behaviour.Init(this,_position);
+            m_Behaviour=_behaviour.Init(this);
+            m_Behaviour.Spawn(m_Target.m_Destination,Quaternion.identity);
             return this;
         }
         
@@ -44,8 +44,6 @@ namespace Boids
         }
         public void DrawGizmosSelected()
         {
-            Gizmos.matrix=Matrix4x4.identity;
-            
             m_Behaviour?.DrawGizmosSelected();
             // Gizmos.DrawRay(Vector3.zero,m_HoverDirection);
         }

@@ -17,7 +17,8 @@ Shader "Hidden/BoidsActorAnimation"
         Tags { "Queue"="Geometry" }
 		HLSLINCLUDE
         #include "Assets/Shaders/Library/Common.hlsl"
-			#include "Assets/Shaders/Library/Lighting.hlsl"
+		#include "Assets/Shaders/Library/Lighting.hlsl"
+		#pragma multi_compile_instancing
         INSTANCING_BUFFER_START
         INSTANCING_PROP(float,_Scale)
         INSTANCING_PROP(float,_Speed)
@@ -50,6 +51,7 @@ Shader "Hidden/BoidsActorAnimation"
                 float2 uv : TEXCOORD0;
                 float2 uv1:TEXCOORD1;
                 float2 uv2:TEXCOORD2;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
@@ -63,6 +65,7 @@ Shader "Hidden/BoidsActorAnimation"
             v2f vert (a2f v)
             {
                 v2f o;
+				UNITY_SETUP_INSTANCE_ID(v);
                 o.positionCS = TransformObjectToHClip(GETANIMATEDVERTEX(v));
                 o.uv = v.uv;
                 return o;
@@ -75,7 +78,43 @@ Shader "Hidden/BoidsActorAnimation"
             }
             ENDHLSL
         }	
-    		
+    	
+    	Pass
+		{
+			NAME "MAIN"
+			Tags{"LightMode" = "DepthOnly"}
+			HLSLPROGRAM
+			#pragma vertex DepthVertex
+			#pragma fragment DepthFragment
+			
+			struct a2f
+			{
+				float3 positionOS:POSITION;
+            	float2 uv1:TEXCOORD1;
+            	float2 uv2:TEXCOORD2;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+			};
+
+			struct v2f
+			{
+				float4 positionCS:SV_POSITION;
+			};
+
+			v2f DepthVertex(a2f v)
+			{
+				v2f o;
+				UNITY_SETUP_INSTANCE_ID(v);
+				o.positionCS=TransformObjectToHClip(GETANIMATEDVERTEX(v));
+				return o;
+			}
+
+			float4 DepthFragment(v2f i) :SV_TARGET
+			{
+				return 0;
+			}
+			ENDHLSL
+		}		
+    			
     	Pass
 		{
 			Blend Off
@@ -87,7 +126,6 @@ Shader "Hidden/BoidsActorAnimation"
 			HLSLPROGRAM
 			#pragma vertex ShadowVertex
 			#pragma fragment ShadowFragment
-			#pragma multi_compile_instancing
 			
 			struct a2f
 			{

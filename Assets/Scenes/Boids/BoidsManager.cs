@@ -15,12 +15,12 @@ namespace Boids
             {
                 m_Flocks[0].Spawn(10);
             });
-            UIT_TouchConsole.Command("More Butterflies",KeyCode.Alpha3).Button( ()=>
+            UIT_TouchConsole.Command("More Butterflies",KeyCode.Alpha2).Button( ()=>
             {
                 m_Flocks[1].Spawn(10);
             });
             
-            UIT_TouchConsole.Command("Birds Startle",KeyCode.Alpha4).Button( ()=>
+            UIT_TouchConsole.Command("Birds Startle",KeyCode.Alpha3).Button( ()=>
             {
                 m_Flocks[0].Startle();
             });            

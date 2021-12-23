@@ -33,12 +33,16 @@ namespace Boids
         protected Quaternion m_Rotation;
         protected Vector3 m_Velocity;
         public abstract void Startle();
-        public virtual void Init(BoidsActor _actor,Vector3 _position)
+        public ABoidsBehaviourController Init(BoidsActor _actor)
         {
             m_Actor = _actor;
-            
+            return this;
+        }
+
+        public virtual void Spawn(Vector3 _position,Quaternion rotation)
+        {
             m_Position = _position;
-            m_Rotation = Quaternion.identity;
+            m_Rotation = rotation;
         }
 
         public virtual void Recycle()

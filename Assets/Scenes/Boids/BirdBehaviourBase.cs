@@ -18,9 +18,9 @@ namespace  Boids
 
     public class BirdBehaviourController : BoidsBehaviourController<BirdBehaviourBase>
     {
-        public override void Init(BoidsActor _actor, Vector3 _position)
+        public override void Spawn(Vector3 _position, Quaternion rotation)
         {
-            base.Init(_actor, _position);
+            base.Spawn(_position, rotation);
             SetBehaviour(EBirdBehaviour.Perching);
         }
 
