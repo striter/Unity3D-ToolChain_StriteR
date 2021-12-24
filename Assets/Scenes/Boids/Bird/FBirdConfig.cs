@@ -16,15 +16,18 @@ namespace Boids.Bird
     [CreateAssetMenu(fileName = "Bird Config",menuName = "Config/Boids/Bird")]
     public class FBirdConfig:ScriptableObject
     {
-        [Header("Base")]
+        [Header("Flying")]
         public BoidsStartleConfig startleConfig;
         public BoidsFlyingConfig flyingConfig;
         public BoidsHoveringConfig hoveringConfig;
         public BoidsLandingConfig landConfig;
-        public BoidsPerchConfig perchConfig;
-        
-        [Header("Additional")]
+        [Header("_Additional")]
         public BoidsFlockingConfig flockingConfig;
         public BoidsEvadeConfig evadeConfig;
+
+        [Header("Perching")]
+        public BoidsPerchConfig perchConfig;
+        [Header("_Additional")]
+        public BoidsFlockingConfig perchFlocking;
     }
 }

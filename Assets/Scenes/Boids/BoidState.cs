@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Boids.Behaviours
@@ -65,10 +66,10 @@ namespace Boids.Behaviours
         private readonly ValueChecker<bool> m_Gliding=new ValueChecker<bool>();
         
         public T m_NextBehaviour { get; private set; }
-        public Flying<T> Init(BoidsFlyingConfig _hovering,BoidsFlockingConfig _flocking,BoidsEvadeConfig _evade,T _nextBehaviour)
+        public Flying<T> Init(BoidsFlyingConfig _config,BoidsFlockingConfig _flocking,BoidsEvadeConfig _evade,T _nextBehaviour)
         {
+            m_Config = _config;
             m_FlockingConfig = _flocking;
-            m_Config = _hovering;
             m_EvadeConfig = _evade;
             m_NextBehaviour = _nextBehaviour;
             return this;
@@ -95,15 +96,15 @@ namespace Boids.Behaviours
         public void TickVelocity(BoidsActor _actor, ABoidsBehaviour _behaviour, IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,
             ref Vector3 _velocity)
         {
-            Vector3 offset = _actor.m_Target.m_Destination - _behaviour.Position;
-            float sqrDistance = offset.sqrMagnitude;
-            float height = offset.y;
+            Vector3 originOffset = _actor.m_Target.m_Destination - _behaviour.Position;
+            float originDistance = originOffset.sqrMagnitude;
 
-            if (sqrDistance > m_Config.sqrBorder)
-                _velocity += offset.normalized;
+            if (originDistance > m_Config.sqrBorder)
+                _velocity += originOffset.normalized*_deltaTime*m_Config.borderDamping;
 
-            _velocity += (height - m_Config.maintainHeight) / m_Config.maintainHeight * Vector3.up;
-            
+            float height = originOffset.y;
+            _velocity += Vector3.up * Mathf.Sign(height - m_Config.maintainHeight) * _deltaTime * m_Config.heightDamping;
+
             _velocity += _behaviour.TickFlocking(_flock,_deltaTime,m_FlockingConfig);
             _velocity += _behaviour.TickEvading(_deltaTime,m_EvadeConfig);
             
@@ -121,7 +122,6 @@ namespace Boids.Behaviours
         public void DrawGizmosSelected()
         {
         }
-
     }
 
     public class Floating : IBoidsState,IStateTransformVelocity
@@ -150,8 +150,7 @@ namespace Boids.Behaviours
         public void TickVelocity(BoidsActor _actor, ABoidsBehaviour _behaviour, IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,
             ref Vector3 _velocity)
         {
-            
-            Vector3 offset = _behaviour.Position - _actor.m_Target.m_Destination;
+            Vector3 offset =  _actor.m_Target.m_Destination - _behaviour.Position;
             if (offset.sqrMagnitude > m_Config.sqrRadius) _velocity+= offset * _deltaTime * m_Config.damping;
             
             _velocity += _behaviour.TickFlocking(_flock,_deltaTime,m_FlockingConfig);
@@ -251,13 +250,13 @@ namespace Boids.Behaviours
         }
 
 
-        public void TickTransform(BoidsActor _actor, ABoidsBehaviour _behaviour, IEnumerable<BoidsActor> _flock, float _deltaTime,
+        public void TickTransform(BoidsActor _actor, ABoidsBehaviour _behaviour, IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,
             ref Vector3 _position, ref Quaternion _rotation)
         {
             float sqrDistance = speed*speed;
             Vector3 direction =  _actor.m_Target.m_Destination - _actor.m_Behaviour.Position;
             float scale = direction.sqrMagnitude / sqrDistance;
-            _rotation = Quaternion.Lerp(Quaternion.LookRotation(direction,Vector3.up),  Quaternion.LookRotation(Vector3.up,-direction),scale);
+            _rotation = Quaternion.Lerp(Quaternion.LookRotation(direction,Vector3.up),  Quaternion.LookRotation(Vector3.up,-direction),scale*.75f);
         }
 
         public void DrawGizmosSelected()
@@ -269,64 +268,148 @@ namespace Boids.Behaviours
 
     public class Perching : IBoidsState,IStateTransformSetter
     {
-        private readonly Timer m_Stand = new Timer(5f);
-        private readonly Timer m_HalfStand = new Timer(5f);
-
-        private BoidsPerchConfig m_PerchConfig;
-        public Perching Init(BoidsPerchConfig _config)
+        enum EPerchingState
         {
-            m_PerchConfig = _config;
+            Move,
+            Alert,
+            Idle,
+            Relax,
+        }
+
+        private EPerchingState m_State;
+        private BoidsPerchConfig m_Config;
+        private BoidsFlockingConfig m_FlockingConfig;
+        
+        private readonly Timer m_StateTimer = new Timer();
+        private readonly Timer m_RotateTimer = new Timer();
+        private readonly Timer m_RotateCooldown = new Timer();
+        private float rotateSpeed;
+        public Perching Init(BoidsPerchConfig _config,BoidsFlockingConfig _flockingConfig)
+        {
+            m_Config = _config;
+            m_FlockingConfig = _flockingConfig;
             return this;
         }
+        
         public void Begin(BoidsActor _actor)
         {
-            m_Stand.Replay();
-            m_HalfStand.Replay();
-            _actor.m_Animation.SetAnimation(m_PerchConfig.standAnim);
+            SetState(_actor,EPerchingState.Move);
         }
-
+        
         public void End()
         {
             
         }
 
-        public void TickTransform(BoidsActor _actor, ABoidsBehaviour _behaviour, IEnumerable<BoidsActor> _flock, float _deltaTime,
-            ref Vector3 _position, ref Quaternion _rotation)
+        void SetState(BoidsActor _actor, EPerchingState _state)
         {
-            _rotation = Quaternion.LookRotation(Vector3.forward,Vector3.up);
-
-            if (TickMoving(_actor,_deltaTime))
-                return;
-
-            if (TickStanding(_actor, _deltaTime))
-                return;
+            m_State = _state;
+            switch (_state)
+            {
+                case EPerchingState.Move:
+                {
+                    _actor.m_Animation.SetAnimation(m_Config.moveAnim);
+                    m_StateTimer.Set(m_Config.moveCheck);
+                }
+                    break;
+                case EPerchingState.Alert:
+                {
+                    _actor.m_Animation.SetAnimation(m_Config.alertAnim);
+                    m_StateTimer.Set(m_Config.alertDuration.Random());
+                }
+                    break;
+                case EPerchingState.Idle:
+                {
+                    _actor.m_Animation.SetAnimation(m_Config.idleAnim);
+                    m_StateTimer.Set(m_Config.idleDuration.Random());
+                }
+                    break;
+                case EPerchingState.Relax:
+                {
+                    _actor.m_Animation.SetAnimation(m_Config.relaxAnim);
+                    m_StateTimer.Set(m_Config.relaxDuration.Random());
+                }
+                    break;
+            }
         }
         
-        bool TickMoving(BoidsActor _actor, float _deltaTime)
+        public void TickTransform(BoidsActor _actor, ABoidsBehaviour _behaviour, IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,
+            ref Vector3 _position, ref Quaternion _rotation)
         {
-            if (!m_Stand.m_Timing)
-                return false;
+            m_StateTimer.Tick(_deltaTime);
+            switch (m_State)
+            {
+                case EPerchingState.Move:
+                {
+                    Vector3 flocking = _behaviour.TickFlocking(_flock,_deltaTime,m_FlockingConfig).SetY(0f);
+                    flocking += _behaviour.TickRandom(_deltaTime).SetY(0f) * .1f;
+                    _position += flocking.normalized * (m_Config.moveSpeed * _deltaTime);
+                    _rotation = Quaternion.LookRotation(flocking,Vector3.up);
 
-            m_Stand.Tick(_deltaTime);
-            if(!m_Stand.m_Timing)
-                _actor.m_Animation.SetAnimation(m_PerchConfig.standAnim);
-            return true;
+                    if (flocking.sqrMagnitude>.1f)
+                        m_StateTimer.Replay();
+                    
+                    if(!m_StateTimer.m_Timing)
+                        SetState(_actor,EPerchingState.Alert);
+                }
+                    break;
+                case EPerchingState.Alert:
+                {
+                    TickRotate(_deltaTime,ref _rotation);
+                    if (m_StateTimer.m_Timing)
+                        return;
+                    
+                    if ( _behaviour.TickFlocking(_flock,_deltaTime,m_FlockingConfig).sqrMagnitude >  0.00001f)
+                    {
+                        SetState(_actor,EPerchingState.Move);
+                        return;
+                    }
+                    SetState(_actor,EPerchingState.Idle);
+                }
+                    break;
+                case EPerchingState.Idle:
+                {
+                    TickRotate(_deltaTime,ref _rotation);
+                    if (m_StateTimer.m_Timing)
+                        return;
+                    SetState(_actor,EPerchingState.Relax);
+                }
+                    break;
+                case EPerchingState.Relax:
+                {
+                    if (m_StateTimer.m_Timing)
+                        return;
+                    SetState(_actor,EPerchingState.Alert);
+                }
+                    break;
+            }
+
+            ResetRotation();
         }
 
-        bool TickStanding(BoidsActor _actor,float _deltaTime)
+        void ResetRotation()
         {
-            if (!m_HalfStand.m_Timing)
-                return false;
-            m_HalfStand.Tick(_deltaTime);
-            if (!m_HalfStand.m_Timing)
-                _actor.m_Animation.SetAnimation(m_PerchConfig.standAnim);
-            return true;
+            m_RotateTimer.Set(m_Config.rotateDuration.Random());
+            m_RotateCooldown.Set(m_Config.rotateCooldown.Random());
+            rotateSpeed = m_Config.rotateSpeed.Random();
         }
+        void TickRotate(float _deltaTime,ref Quaternion _rotation)
+        {
+            m_RotateCooldown.Tick(_deltaTime);
+            if (m_RotateCooldown.m_Timing)
+                return;
+
+            _rotation *= Quaternion.Euler(0f,rotateSpeed*_deltaTime,0f);
+            if (!m_RotateTimer.Tick(_deltaTime))
+                return;
+            ResetRotation();
+        }
+
 
         public void DrawGizmosSelected()
         {
+            Gizmos_Extend.DrawString(Vector3.up*.2f,m_State.ToString());
         }
-
     }
 
     public class Idle : IBoidsState,IStateTransformSetter
@@ -351,7 +434,7 @@ namespace Boids.Behaviours
         {
         }
 
-        public void TickTransform(BoidsActor _actor, ABoidsBehaviour _behaviour, IEnumerable<BoidsActor> _flock, float _deltaTime,
+        public void TickTransform(BoidsActor _actor, ABoidsBehaviour _behaviour, IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,
             ref Vector3 _position, ref Quaternion _rotation)
         {
         }

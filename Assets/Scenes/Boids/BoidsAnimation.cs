@@ -9,7 +9,7 @@ namespace Boids
         private readonly MeshFilter m_BlendFilter;
         private readonly MeshRenderer m_MainRenderer;
         private readonly MeshRenderer m_BlendRenderer;
-        private readonly Timer m_BlendTimer = new Timer(.35f);
+        private readonly Timer m_BlendTimer = new Timer(.25f);
         private float m_Time;
         public BoidsAnimation(Transform _transform)
         {

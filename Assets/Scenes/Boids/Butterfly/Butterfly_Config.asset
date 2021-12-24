@@ -17,23 +17,23 @@ MonoBehaviour:
     duration:
       start: 0.5
       length: 1
-    damping: 2
+    damping: 1
     animName: Butterfly_Flap
   floatingConfig:
-    speed: 1
-    damping: 2
-    sqrRadius: 1.5
-    anim: Butterfly_SitFlap
+    speed: 2
+    damping: 1
+    sqrRadius: 1
+    anim: Butterfly_Flap
   landConfig:
     speed: 0.5
     distanceBias: 0.5
     damping: 1
-    anim: Butterfly_Flap
+    anim: Butterfly_SitFlap
   idleConfig:
     anim: Butterfly_Sit
   flockingConfig:
     sqrVisualizeRange: 1
-    sqrSeparationDistance: 1
+    sqrSeparationDistance: 0.25
     separateDamping: 0.5
     cohesionDamping: -0.5
     alignmentDamping: -0.5

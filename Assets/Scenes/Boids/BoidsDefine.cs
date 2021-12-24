@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 namespace Boids
 {
@@ -16,9 +17,10 @@ namespace Boids
     public struct BoidsFlyingConfig
     {
         public float speed;
-        public float damping;
         public float maintainHeight;
+        public float heightDamping;
         public float sqrBorder;
+        public float borderDamping;
         public RangeFloat tiringDuration;
         public string flyAnim;
         public string glideAnim;
@@ -74,10 +76,21 @@ namespace Boids
     [Serializable]
     public struct BoidsPerchConfig
     {
+        [Header("Move")] 
+        public float moveSpeed;
+        public float moveCheck;
         public string moveAnim;
-        public string standAnim;
+
+        public RangeFloat rotateCooldown;
+        public RangeFloat rotateSpeed;
+        public RangeFloat rotateDuration;
+        
+        public RangeFloat alertDuration;
+        public string alertAnim;
+        public RangeFloat idleDuration;
+        public RangeFloat relaxDuration;
         public string idleAnim;
-        public string stopAnim;
+        public string relaxAnim;
     }
     [Serializable]
     public struct BoidsIdleConfig

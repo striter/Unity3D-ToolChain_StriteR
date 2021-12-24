@@ -14,7 +14,7 @@ namespace Boids
 
     public interface IStateTransformSetter
     {
-        void TickTransform(BoidsActor _actor,ABoidsBehaviour _behaviour,IEnumerable<BoidsActor> _flock, float _deltaTime,ref Vector3 _position,ref Quaternion _rotation);
+        void TickTransform(BoidsActor _actor,ABoidsBehaviour _behaviour,IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,ref Vector3 _position,ref Quaternion _rotation);
     }
     public interface IStateTransformVelocity
     {
@@ -124,7 +124,7 @@ namespace Boids
         {
             if (m_TransformSetter == null)
                 return;
-            m_TransformSetter.TickTransform(m_Actor,this,_flock,_deltaTime,ref m_Position,ref m_Rotation);
+            m_TransformSetter.TickTransform(m_Actor,this,_flock.Select(p=>p.m_Behaviour),_deltaTime,ref m_Position,ref m_Rotation);
         }
         
         void TickVelocity(float _deltaTime,IEnumerable<BoidsActor> _flock)

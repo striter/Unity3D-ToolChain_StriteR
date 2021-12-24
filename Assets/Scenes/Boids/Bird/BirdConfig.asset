@@ -10,20 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 192ae5091f8855a42ab3984bbb5b5728, type: 3}
-  m_Name: Bird_Default
+  m_Name: BirdConfig
   m_EditorClassIdentifier: 
   startleConfig:
     speed: 10
     duration:
-      start: 1
-      length: 2
-    damping: 0.2
+      start: 0.5
+      length: 1
+    damping: 1
     animName: Bird_Flapping
   flyingConfig:
     speed: 8
-    damping: 0.5
     maintainHeight: 10
+    heightDamping: 0.1
     sqrBorder: 400
+    borderDamping: 1
     tiringDuration:
       start: 10
       length: 20
@@ -42,19 +43,45 @@ MonoBehaviour:
   landConfig:
     speed: 3
     distanceBias: 0.1
-    damping: 0.5
+    damping: 2
     anim: Bird_Landing
-  perchConfig:
-    moveAnim: Bird_Flapping
-    standAnim: Bird_Stop_Standing
-    idleAnim: Bird_Stop_HalfStanding
-    stopAnim: Bird_Stop_Sitting
   flockingConfig:
-    sqrVisualizeRange: 4
-    sqrSeparationDistance: 2.25
+    sqrVisualizeRange: 16
+    sqrSeparationDistance: 4
     separateDamping: 0.5
-    cohesionDamping: 0.1
-    alignmentDamping: 0.1
+    cohesionDamping: 0.25
+    alignmentDamping: 0.25
   evadeConfig:
     evadeDistance: 20
     evadeDamping: 10
+  perchConfig:
+    moveSpeed: 1
+    moveCheck: 0.3
+    moveAnim: Bird_Flapping
+    rotateCooldown:
+      start: 1
+      length: 2
+    rotateSpeed:
+      start: -5
+      length: 10
+    rotateDuration:
+      start: 1
+      length: 1
+    alertDuration:
+      start: 2
+      length: 1
+    alertAnim: Bird_Stop_Standing
+    idleDuration:
+      start: 2
+      length: 3
+    relaxDuration:
+      start: 5
+      length: 3
+    idleAnim: Bird_Stop_HalfStanding
+    relaxAnim: Bird_Stop_Sitting
+  perchFlocking:
+    sqrVisualizeRange: 1
+    sqrSeparationDistance: 0.25
+    separateDamping: 0.5
+    cohesionDamping: -0.2
+    alignmentDamping: -0.2

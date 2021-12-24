@@ -18,21 +18,22 @@ public class BoidsManager : MonoBehaviour
         UIT_TouchConsole.Command("Clear",KeyCode.R).Button( Clear);
         
         UIT_TouchConsole.Header("Birds");
-        UIT_TouchConsole.Command("Spawn",KeyCode.Alpha1).Drag((status,position) =>
+        var spawn=UIT_TouchConsole.Command("Spawn",KeyCode.Alpha1);
+        spawn.Button(()=>m_BirdFlock.Spawn( new Vector2(Screen.width/2f,Screen.height/2f)));
+            spawn.Drag((status,position) =>
         {
-            Debug.LogWarning(status);
             if (status)
                 return;
             m_BirdFlock.Spawn(position);
         });
-        UIT_TouchConsole.Command("Clear",KeyCode.Alpha1).Button(m_BirdFlock.Clear);
-        UIT_TouchConsole.Command("Startle",KeyCode.Alpha3).Button(m_BirdFlock.Startle);
+        UIT_TouchConsole.Command("Startle",KeyCode.Alpha2).Button(m_BirdFlock.Startle);
+        UIT_TouchConsole.Command("Clear",KeyCode.Alpha3).Button(m_BirdFlock.Clear);
         
         UIT_TouchConsole.Header("Butterflies");
-        UIT_TouchConsole.Command("Spawn",KeyCode.Alpha4).Button( m_ButterflyFlock.Spawn);
-        UIT_TouchConsole.Command("Clear",KeyCode.Alpha4).Button( m_ButterflyFlock.Spawn);
-        UIT_TouchConsole.Command("Recall",KeyCode.Alpha5).Button(m_ButterflyFlock.Recall);
-        UIT_TouchConsole.Command("Startle",KeyCode.Alpha6).Button(m_ButterflyFlock.Startle);
+        UIT_TouchConsole.Command("Spawn",KeyCode.Q).Button( m_ButterflyFlock.Spawn);
+        UIT_TouchConsole.Command("Recall",KeyCode.E).Button(m_ButterflyFlock.Startle);
+        UIT_TouchConsole.Command("Startle",KeyCode.R).Button(m_ButterflyFlock.Recall);
+        UIT_TouchConsole.Command("Clear",KeyCode.W).Button(m_ButterflyFlock.Clear );
     }
 
     void Clear()
