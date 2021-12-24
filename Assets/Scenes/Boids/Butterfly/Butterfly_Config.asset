@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startleConfig:
     speed: 3
+    reaction:
+      start: 0.25
+      length: 0.25
     duration:
       start: 0.5
       length: 1

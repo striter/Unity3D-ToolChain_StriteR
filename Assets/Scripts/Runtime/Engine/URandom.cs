@@ -46,6 +46,7 @@ public static class URandom
     public static T RandomKey<T, Y>(this Dictionary<T, Y> dic, System.Random randomSeed = null) => dic.ElementAt(RandomInt(dic.Count, randomSeed)).Key;
     public static Y RandomValue<T, Y>(this Dictionary<T, Y> dic, System.Random randomSeed = null) => dic.ElementAt(RandomInt(dic.Count, randomSeed)).Value;
     public static bool RandomBool(System.Random seed = null) => seed != null ? seed.Next(0, 2) > 0 : UnityEngine.Random.Range(0, 2) > 0;
+    public static int RandomSign(System.Random seed = null) => (seed != null ? seed.Next(0, 2) > 0 : UnityEngine.Random.Range(0, 2) > 0)?1:-1;
     public static Color RandomColor(System.Random seed = null, float alpha = -1) => new Color(Random01( seed), Random01( seed), Random01( seed), alpha < 0 ? Random01( seed) : alpha);
     public static int RandomPercentageInt(System.Random random = null) => random?.Next(0, 101) ?? UnityEngine.Random.Range(0, 101);
     public static float RandomPercentageFloat(System.Random random = null) => Random01( random)*100f;

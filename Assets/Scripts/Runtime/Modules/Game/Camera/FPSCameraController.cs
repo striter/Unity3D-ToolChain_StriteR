@@ -16,7 +16,7 @@ public class FPSCameraController : CameraController
     public float f_angleSmoothParam = .1f;
     public float f_recoilPitchEdge=20f,f_recoilYawEdge=5f;
     protected float f_fovCurrent,f_fovStart;
-    protected Timer m_RecoilTimer = new Timer();
+    protected Counter m_RecoilTimer = new Counter();
     protected float f_recoilPitch, f_recoilYaw;
     protected float f_sprintRoll;
     protected float f_damagePitch, f_damageYaw, f_damageRoll;
@@ -35,7 +35,7 @@ public class FPSCameraController : CameraController
         if (B_SelfSetoffRecoil)
         {
             m_RecoilTimer.Tick(_deltaTime);
-            if (!m_RecoilTimer.m_Timing)
+            if (!m_RecoilTimer.m_Counting)
             {
                 f_recoilPitch = Mathf.Lerp(f_recoilPitch, 0, f_angleSmoothParam);
                 f_recoilYaw = Mathf.Lerp(f_recoilYaw, 0, f_angleSmoothParam);

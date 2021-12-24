@@ -201,7 +201,7 @@ public partial class UIT_TouchConsole
         }
     }
 
-    Timer m_FastKeyCooldownTimer = new Timer(.5f);
+    Counter m_FastKeyCooldownTimer = new Counter(.5f);
     public bool m_ConsoleOpening { get; private set; } = false;
     ScrollRect m_ConsoleCommandScrollRect;
     TObjectPoolClass<int,CommandContainer> m_CommandContainers;
@@ -241,7 +241,7 @@ public partial class UIT_TouchConsole
             command.KeycodeTick();
 
         m_FastKeyCooldownTimer.Tick(_deltaTime);
-        if (m_FastKeyCooldownTimer.m_Timing)
+        if (m_FastKeyCooldownTimer.m_Counting)
             return;
         if (Input.touchCount >= 5 || Input.GetKey(KeyCode.BackQuote))
         {

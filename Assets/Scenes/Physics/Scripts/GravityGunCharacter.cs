@@ -16,14 +16,14 @@ namespace PhysicsTest
         bool m_AltFiring;
         Rigidbody m_TargetObject;
         LineRenderer m_GravityLine;
-        Timer m_GravityGunCooldown = new Timer(.35f);
+        readonly Counter m_GravityGunCounter = new Counter(.35f);
         bool m_Sprinting;
-        Timer m_JumpTimer = new Timer(.5f,true);
+        readonly Counter m_JumpCounter = new Counter(.5f,true);
         void OnJump()
         {
             if (!m_Body.isGrounded)
                 return;
-            m_JumpTimer.Replay();
+            m_JumpCounter.Replay();
         }
         void OnSprint(bool _sprint) => m_Sprinting = _sprint;
         public override void OnTakeControl(TPSCameraController _controller)
@@ -49,7 +49,7 @@ namespace PhysicsTest
         }
         public override void Tick(float _deltaTime)
         {
-            m_JumpTimer.Tick(_deltaTime);
+            m_JumpCounter.Tick(_deltaTime);
             m_Head.position = m_Body.transform.position + Vector3.up * .9f;
             if (m_TargetObject)
             {
@@ -57,15 +57,15 @@ namespace PhysicsTest
                 m_TargetObject.velocity = Vector3.zero;
             }
             m_Head.rotation = TickRotation();
-            m_Body.Move((TickMovement()*(m_Sprinting?3f:1f) + Vector3.up* Mathf.Lerp(-9.8f,9.8f, m_JumpTimer.m_TimeLeftScale))*_deltaTime);
+            m_Body.Move((TickMovement()*(m_Sprinting?3f:1f) + Vector3.up* Mathf.Lerp(-9.8f,9.8f, m_JumpCounter.m_TimeLeftScale))*_deltaTime);
         }
         public override void FixedTick(float _deltaTime)
         {
             if (m_TargetObject)
                 return;
 
-            m_GravityGunCooldown.Tick(_deltaTime);
-            if (m_GravityGunCooldown.m_Timing||!m_AltFiring)
+            m_GravityGunCounter.Tick(_deltaTime);
+            if (m_GravityGunCounter.m_Counting||!m_AltFiring)
                 return;
 
             if (!Physics.Raycast(m_Head.position, m_Head.forward, out RaycastHit _hit, float.MaxValue, -1) || !TargetInteractable(_hit.collider, out Rigidbody suckTarget))
@@ -83,7 +83,7 @@ namespace PhysicsTest
         {
             if (altFire&&m_TargetObject)
             {
-                m_GravityGunCooldown.Replay();
+                m_GravityGunCounter.Replay();
                 ReleaseTarget();
                 return;
             }
@@ -93,7 +93,7 @@ namespace PhysicsTest
         void OnMainFire()
         {
             ReleaseTarget();
-            m_GravityGunCooldown.Replay();
+            m_GravityGunCounter.Replay();
             Rigidbody burstTarget = m_TargetObject;
             Vector3 hitPosition = m_TargetObject?m_TargetObject.transform.position:Vector3.zero;
             if(burstTarget==null)

@@ -22,18 +22,17 @@ Shader "Hidden/BoidsActorAnimation"
         INSTANCING_BUFFER_START
         INSTANCING_PROP(float,_Scale)
         INSTANCING_PROP(float,_Speed)
-        float _Anim1;
-        float _Anim2;
-        float _Anim3;
-        float _Anim4;
-        float4 _Emission;
+        INSTANCING_PROP(float,_Anim1)
+        INSTANCING_PROP(float,_Anim2)
+        INSTANCING_PROP(float,_Anim3)
+        INSTANCING_PROP(float,_Anim4)
         INSTANCING_BUFFER_END
 		float3 GetAnimPositionOS(float3 positionOS,float2 uv1,float2 uv2)
 		{
-            positionOS.y+=uv1.x* _Anim1*INSTANCE(_Scale);
-            positionOS.y+=uv1.y*_Anim2*INSTANCE(_Scale);
-            positionOS.y+=uv2.x* _Anim3*INSTANCE(_Scale);
-            positionOS.y+=uv2.y*_Anim4*INSTANCE(_Scale);
+            positionOS.y+=uv1.x*INSTANCE( _Anim1)*INSTANCE(_Scale);
+            positionOS.y+=uv1.y*INSTANCE(_Anim2)*INSTANCE(_Scale);
+            positionOS.y+=uv2.x* INSTANCE(_Anim3)*INSTANCE(_Scale);
+            positionOS.y+=uv2.y*INSTANCE(_Anim4)*INSTANCE(_Scale);
 			return positionOS;
 		}
 		#define GETANIMATEDVERTEX(i) GetAnimPositionOS(i.positionOS,i.uv1,i.uv2) 
@@ -73,7 +72,7 @@ Shader "Hidden/BoidsActorAnimation"
 
             float4 frag (v2f i) : SV_Target
             {
-                float4 col = tex2D(_MainTex, i.uv)+_Emission;
+                float4 col = tex2D(_MainTex, i.uv);
                 return col;
             }
             ENDHLSL
@@ -138,14 +137,12 @@ Shader "Hidden/BoidsActorAnimation"
 			struct v2f
 			{
 				V2F_SHADOW_CASTER;
-				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			v2f ShadowVertex(a2f v)
 			{
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
-				UNITY_TRANSFER_INSTANCE_ID(v,o);
 				SHADOW_CASTER_VERTEX(v,TransformObjectToWorld(GETANIMATEDVERTEX(v)));
 				return o;
 			}

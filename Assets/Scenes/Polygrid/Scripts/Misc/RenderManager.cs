@@ -10,7 +10,7 @@ namespace  PolyGrid
     {
         public AnimationCurve m_PopCurve;
         public float m_RangeMultiplier=5f;
-        private Timer m_PopTimer;
+        private Counter m_PopCounter;
 
         private static readonly string kPopKeyword = "_POP";
         private static readonly int kPopPosition = Shader.PropertyToID("_PopPosition");
@@ -19,7 +19,7 @@ namespace  PolyGrid
         private Transform m_Light;
         public void Init(Transform _transform)
         {
-            m_PopTimer = new Timer(m_PopCurve.length, true);
+            m_PopCounter = new Counter(m_PopCurve.length, true);
             m_Light = transform.Find("Render/Directional Light");
         }
 
@@ -36,7 +36,7 @@ namespace  PolyGrid
 
         void BeginPop(Vector3 _position)
         {
-            m_PopTimer.Replay();
+            m_PopCounter.Replay();
             
             Shader.SetGlobalVector(kPopPosition,_position);
             var radius = KPolyGrid.tileSize * m_RangeMultiplier;
@@ -53,11 +53,11 @@ namespace  PolyGrid
 
         void TickPop(float _deltaTime)
         {
-            if (!m_PopTimer.m_Timing)
+            if (!m_PopCounter.m_Counting)
                 return;
-            m_PopTimer.Tick(_deltaTime);
-            Shader.SetGlobalFloat(kPopStrength,m_PopCurve.Evaluate(m_PopTimer.m_TimeElapsed));
-            if (m_PopTimer.m_Timing)
+            m_PopCounter.Tick(_deltaTime);
+            Shader.SetGlobalFloat(kPopStrength,m_PopCurve.Evaluate(m_PopCounter.m_TimeElapsed));
+            if (m_PopCounter.m_Counting)
                 return;
             EndPop();
         }

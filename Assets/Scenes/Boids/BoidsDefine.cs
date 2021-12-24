@@ -8,6 +8,7 @@ namespace Boids
     public struct BoidsStartleConfig
     {
         public float speed;
+        public RangeFloat reaction;
         public RangeFloat duration;
         public float damping;
         public string animName;
@@ -78,17 +79,19 @@ namespace Boids
     {
         [Header("Move")] 
         public float moveSpeed;
-        public float moveCheck;
         public string moveAnim;
+        public RangeFloat moveDuration;
 
+        [Header("Rotate")]
         public RangeFloat rotateCooldown;
         public RangeFloat rotateSpeed;
         public RangeFloat rotateDuration;
         
         public RangeFloat alertDuration;
-        public string alertAnim;
         public RangeFloat idleDuration;
         public RangeFloat relaxDuration;
+        [Range(0f,1f)]public float relaxedMovingPossibility;
+        public string alertAnim;
         public string idleAnim;
         public string relaxAnim;
     }

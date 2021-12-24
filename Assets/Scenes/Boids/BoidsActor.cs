@@ -37,7 +37,7 @@ namespace Boids
             m_Behaviour.Tick(_deltaTime,_flock,out var position,out var rotation);
             
             Transform.position = position;
-            Transform.rotation = Quaternion.Lerp(Transform.rotation, rotation, _deltaTime * 5f);
+            Transform.rotation = rotation;
         }
         public void DrawGizmosSelected()
         {

@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace Boids.Behaviours
@@ -13,7 +11,8 @@ namespace Boids.Behaviours
         private BoidsStartleConfig m_StartleConfig;
         private BoidsFlockingConfig m_FlockingConfig;
         public T m_NextBehaviour { get; private set; }
-        public readonly Timer m_StartleTimer = new Timer();
+        private readonly Counter m_StartleCounter = new Counter();
+        private readonly Counter m_ReactionCounter = new Counter();
         public Startle<T> Init(BoidsStartleConfig _config,BoidsFlockingConfig _flockingConfig,T _nextBehaviour)
         {
             m_StartleConfig = _config;
@@ -24,10 +23,10 @@ namespace Boids.Behaviours
         
         public void Begin(BoidsActor _actor)
         {
-            _actor.m_Animation.SetAnimation(m_StartleConfig.animName);
             m_StartleDirection = URandom.RandomVector3();
             m_StartleDirection *= Mathf.Sign(Vector3.Dot(m_StartleDirection, Vector3.up));
-            m_StartleTimer.Set(m_StartleConfig.duration.Random());
+            m_StartleCounter.Set(m_StartleConfig.duration.Random());
+            m_ReactionCounter.Set(m_StartleConfig.reaction.Random());
         }
         
         public void End()
@@ -37,21 +36,33 @@ namespace Boids.Behaviours
 
         public bool TickStateSwitch(BoidsActor _actor, float _deltaTime)
         {
-            m_StartleTimer.Tick(_deltaTime);
-            return !m_StartleTimer.m_Timing;
+            if (m_ReactionCounter.m_Counting)
+                return false;
+            
+            m_StartleCounter.Tick(_deltaTime);
+            return !m_StartleCounter.m_Counting;
         }
+        
         public void TickVelocity(BoidsActor _actor, ABoidsBehaviour _behaviour, IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,
             ref Vector3 _velocity)
         {
+            if (m_ReactionCounter.m_Counting)
+            {
+                if(m_ReactionCounter.Tick(_deltaTime))
+                    _actor.m_Animation.SetAnimation(m_StartleConfig.animName);
+
+                return;
+            }
+            
             _velocity += _behaviour.TickFlocking(_flock, _deltaTime,m_FlockingConfig);
             _velocity += _behaviour.TickRandom(_deltaTime);
-            _velocity += m_StartleDirection*_deltaTime*m_StartleConfig.damping;
+            _velocity += m_StartleDirection * (_deltaTime * m_StartleConfig.damping);
         }
         
         public void DrawGizmosSelected()
         {
+            Gizmos_Extend.DrawString(Vector3.up*.2f,$"{m_ReactionCounter:F1}");
         }
-
     }
 
     public class Flying<T> : IBoidsState,IStateTransformVelocity,IStateSwitch<T> where T:Enum
@@ -61,8 +72,8 @@ namespace Boids.Behaviours
         BoidsFlockingConfig m_FlockingConfig;
         BoidsEvadeConfig m_EvadeConfig;
 
-        private Timer m_TiringTimer = new Timer();
-        private readonly Timer m_AnimationTimer = new Timer(1f);
+        private readonly Counter m_TiringCounter = new Counter();
+        private readonly Counter m_AnimationCounter = new Counter(1f);
         private readonly ValueChecker<bool> m_Gliding=new ValueChecker<bool>();
         
         public T m_NextBehaviour { get; private set; }
@@ -77,10 +88,10 @@ namespace Boids.Behaviours
         
         public void Begin(BoidsActor _actor)
         {
-            m_TiringTimer.Set(m_Config.tiringDuration.Random());
+            m_TiringCounter.Set(m_Config.tiringDuration.Random());
             m_Gliding.Check(true);
             _actor.m_Animation.SetAnimation(m_Config.flyAnim);
-            m_AnimationTimer.Replay();
+            m_AnimationCounter.Replay();
         }
 
         public void End()
@@ -89,8 +100,8 @@ namespace Boids.Behaviours
 
         public bool TickStateSwitch(BoidsActor _actor, float _deltaTime)
         {
-            m_TiringTimer.Tick(_deltaTime);
-            return !m_TiringTimer.m_Timing;
+            m_TiringCounter.Tick(_deltaTime);
+            return !m_TiringCounter.m_Counting;
         }
 
         public void TickVelocity(BoidsActor _actor, ABoidsBehaviour _behaviour, IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,
@@ -100,22 +111,22 @@ namespace Boids.Behaviours
             float originDistance = originOffset.sqrMagnitude;
 
             if (originDistance > m_Config.sqrBorder)
-                _velocity += originOffset.normalized*_deltaTime*m_Config.borderDamping;
+                _velocity += originOffset.normalized * (_deltaTime * m_Config.borderDamping);
 
             float height = originOffset.y;
-            _velocity += Vector3.up * Mathf.Sign(height - m_Config.maintainHeight) * _deltaTime * m_Config.heightDamping;
+            _velocity += Vector3.up * (Mathf.Sign(height - m_Config.maintainHeight) * _deltaTime * m_Config.heightDamping);
 
             _velocity += _behaviour.TickFlocking(_flock,_deltaTime,m_FlockingConfig);
             _velocity += _behaviour.TickEvading(_deltaTime,m_EvadeConfig);
             
-            m_AnimationTimer.Tick(_deltaTime);
-            if (m_AnimationTimer.m_Timing)
+            m_AnimationCounter.Tick(_deltaTime);
+            if (m_AnimationCounter.m_Counting)
                 return;
             
             if (m_Gliding.Check(_velocity.y > 0))
             {
                 _actor.m_Animation.SetAnimation(m_Gliding?m_Config.glideAnim:m_Config.flyAnim);
-                m_AnimationTimer.Replay();
+                m_AnimationCounter.Replay();
             }
         }
         
@@ -151,7 +162,7 @@ namespace Boids.Behaviours
             ref Vector3 _velocity)
         {
             Vector3 offset =  _actor.m_Target.m_Destination - _behaviour.Position;
-            if (offset.sqrMagnitude > m_Config.sqrRadius) _velocity+= offset * _deltaTime * m_Config.damping;
+            if (offset.sqrMagnitude > m_Config.sqrRadius) _velocity+= offset * (_deltaTime * m_Config.damping);
             
             _velocity += _behaviour.TickFlocking(_flock,_deltaTime,m_FlockingConfig);
         }
@@ -168,7 +179,7 @@ namespace Boids.Behaviours
         public float speed => m_Config.speed;
         public T m_NextBehaviour { get; private set; }
 
-        private readonly Timer m_HoverTimer=new Timer();
+        private readonly Counter m_HoverCounter=new Counter();
         public Hovering<T> Init(BoidsHoveringConfig _hoverConfig,BoidsFlockingConfig _flockConfig,BoidsEvadeConfig _evadeConfig,T _nextBehaviour) 
         {
             m_Config = _hoverConfig;
@@ -180,7 +191,7 @@ namespace Boids.Behaviours
         public void Begin(BoidsActor _actor)
         {
             _actor.m_Animation.SetAnimation(m_Config.flyAnim);
-            m_HoverTimer.Set(m_Config.duration.Random());
+            m_HoverCounter.Set(m_Config.duration.Random());
         }
 
         public void End()
@@ -188,8 +199,8 @@ namespace Boids.Behaviours
         }
         public bool TickStateSwitch(BoidsActor _actor, float _deltaTime)
         {
-            m_HoverTimer.Tick(_deltaTime);
-            return !m_HoverTimer.m_Timing;
+            m_HoverCounter.Tick(_deltaTime);
+            return !m_HoverCounter.m_Counting;
         }
         public void TickVelocity(BoidsActor _actor, ABoidsBehaviour _behaviour, IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,
             ref Vector3 _velocity)
@@ -249,7 +260,6 @@ namespace Boids.Behaviours
             _velocity += (_actor.m_Target.m_Destination - _actor.m_Behaviour.Position).normalized * _deltaTime * m_Config.damping;
         }
 
-
         public void TickTransform(BoidsActor _actor, ABoidsBehaviour _behaviour, IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,
             ref Vector3 _position, ref Quaternion _rotation)
         {
@@ -279,10 +289,11 @@ namespace Boids.Behaviours
         private EPerchingState m_State;
         private BoidsPerchConfig m_Config;
         private BoidsFlockingConfig m_FlockingConfig;
+        private Vector3 m_RandomDirection;
         
-        private readonly Timer m_StateTimer = new Timer();
-        private readonly Timer m_RotateTimer = new Timer();
-        private readonly Timer m_RotateCooldown = new Timer();
+        private readonly Counter m_StateCounter = new Counter();
+        private readonly Counter m_RotateCounter = new Counter();
+        private readonly Counter m_RotateCooldown = new Counter();
         private float rotateSpeed;
         public Perching Init(BoidsPerchConfig _config,BoidsFlockingConfig _flockingConfig)
         {
@@ -304,30 +315,32 @@ namespace Boids.Behaviours
         void SetState(BoidsActor _actor, EPerchingState _state)
         {
             m_State = _state;
+            ResetRotation();
             switch (_state)
             {
                 case EPerchingState.Move:
                 {
+                    m_RandomDirection = URandom.RandomVector3().SetY(0f).normalized;
                     _actor.m_Animation.SetAnimation(m_Config.moveAnim);
-                    m_StateTimer.Set(m_Config.moveCheck);
+                    m_StateCounter.Set(m_Config.moveDuration.Random());
                 }
                     break;
                 case EPerchingState.Alert:
                 {
                     _actor.m_Animation.SetAnimation(m_Config.alertAnim);
-                    m_StateTimer.Set(m_Config.alertDuration.Random());
+                    m_StateCounter.Set(m_Config.alertDuration.Random());
                 }
                     break;
                 case EPerchingState.Idle:
                 {
                     _actor.m_Animation.SetAnimation(m_Config.idleAnim);
-                    m_StateTimer.Set(m_Config.idleDuration.Random());
+                    m_StateCounter.Set(m_Config.idleDuration.Random());
                 }
                     break;
                 case EPerchingState.Relax:
                 {
                     _actor.m_Animation.SetAnimation(m_Config.relaxAnim);
-                    m_StateTimer.Set(m_Config.relaxDuration.Random());
+                    m_StateCounter.Set(m_Config.relaxDuration.Random());
                 }
                     break;
             }
@@ -336,30 +349,28 @@ namespace Boids.Behaviours
         public void TickTransform(BoidsActor _actor, ABoidsBehaviour _behaviour, IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,
             ref Vector3 _position, ref Quaternion _rotation)
         {
-            m_StateTimer.Tick(_deltaTime);
+            m_StateCounter.Tick(_deltaTime);
             switch (m_State)
             {
                 case EPerchingState.Move:
                 {
                     Vector3 flocking = _behaviour.TickFlocking(_flock,_deltaTime,m_FlockingConfig).SetY(0f);
-                    flocking += _behaviour.TickRandom(_deltaTime).SetY(0f) * .1f;
-                    _position += flocking.normalized * (m_Config.moveSpeed * _deltaTime);
-                    _rotation = Quaternion.LookRotation(flocking,Vector3.up);
+                    if(flocking.sqrMagnitude < 0.001f)
+                        flocking = m_RandomDirection * (m_Config.moveSpeed * _deltaTime);
+                    _position += flocking;
+                    _rotation = Quaternion.Lerp(_rotation, Quaternion.LookRotation(flocking,Vector3.up),_deltaTime*5f);
 
-                    if (flocking.sqrMagnitude>.1f)
-                        m_StateTimer.Replay();
-                    
-                    if(!m_StateTimer.m_Timing)
+                    if(!m_StateCounter.m_Counting)
                         SetState(_actor,EPerchingState.Alert);
                 }
                     break;
                 case EPerchingState.Alert:
                 {
                     TickRotate(_deltaTime,ref _rotation);
-                    if (m_StateTimer.m_Timing)
+                    if (m_StateCounter.m_Counting)
                         return;
                     
-                    if ( _behaviour.TickFlocking(_flock,_deltaTime,m_FlockingConfig).sqrMagnitude >  0.00001f)
+                    if ( _behaviour.TickFlocking(_flock,_deltaTime,m_FlockingConfig).sqrMagnitude > float.Epsilon)
                     {
                         SetState(_actor,EPerchingState.Move);
                         return;
@@ -370,37 +381,42 @@ namespace Boids.Behaviours
                 case EPerchingState.Idle:
                 {
                     TickRotate(_deltaTime,ref _rotation);
-                    if (m_StateTimer.m_Timing)
+                    if (m_StateCounter.m_Counting)
                         return;
                     SetState(_actor,EPerchingState.Relax);
                 }
                     break;
                 case EPerchingState.Relax:
                 {
-                    if (m_StateTimer.m_Timing)
+                    if (m_StateCounter.m_Counting)
                         return;
+
+                    if (URandom.Random01() <= m_Config.relaxedMovingPossibility)
+                    {
+                        SetState(_actor,EPerchingState.Move);
+                        return;
+                    }
+                    
                     SetState(_actor,EPerchingState.Alert);
                 }
                     break;
             }
-
-            ResetRotation();
         }
 
         void ResetRotation()
         {
-            m_RotateTimer.Set(m_Config.rotateDuration.Random());
+            m_RotateCounter.Set(m_Config.rotateDuration.Random());
             m_RotateCooldown.Set(m_Config.rotateCooldown.Random());
-            rotateSpeed = m_Config.rotateSpeed.Random();
+            rotateSpeed = URandom.RandomSign()* m_Config.rotateSpeed.Random();
         }
         void TickRotate(float _deltaTime,ref Quaternion _rotation)
         {
             m_RotateCooldown.Tick(_deltaTime);
-            if (m_RotateCooldown.m_Timing)
+            if (m_RotateCooldown.m_Counting)
                 return;
 
             _rotation *= Quaternion.Euler(0f,rotateSpeed*_deltaTime,0f);
-            if (!m_RotateTimer.Tick(_deltaTime))
+            if (!m_RotateCounter.Tick(_deltaTime))
                 return;
             ResetRotation();
         }
@@ -408,13 +424,13 @@ namespace Boids.Behaviours
 
         public void DrawGizmosSelected()
         {
-            Gizmos_Extend.DrawString(Vector3.up*.2f,m_State.ToString());
+            Gizmos_Extend.DrawString(Vector3.up*.2f,$"{m_State} {m_StateCounter.m_TimeLeft:F1}");
         }
     }
 
     public class Idle : IBoidsState,IStateTransformSetter
     {
-        public BoidsIdleConfig m_Config;
+        private BoidsIdleConfig m_Config;
         public Idle Init(BoidsIdleConfig _config)
         {
             m_Config = _config;

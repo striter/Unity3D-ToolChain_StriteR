@@ -20,11 +20,11 @@ public class WaveInteraction : MonoBehaviour
     
     private WaterInteractions m_WaterInteractions;
     private Vector3 m_Destination;
-    private readonly Timer m_StepStaionaryClicker=new Timer();
-    private readonly Timer m_StepDynamicClicker=new Timer();
+    private readonly Counter m_StepStationaryClicker=new Counter();
+    private readonly Counter m_StepDynamicClicker=new Counter();
     private void Awake()
     {
-        m_StepStaionaryClicker.Set(m_StepStationaryDuration);
+        m_StepStationaryClicker.Set(m_StepStationaryDuration);
         m_StepDynamicClicker.Set(m_StepDynamicDuration);
         m_WaterInteractions = new WaterInteractions(m_WaterMesh.material);
         m_WaterInteractions.Clear();
@@ -50,13 +50,13 @@ public class WaveInteraction : MonoBehaviour
         
         Vector3 src = m_StepObj.transform.position;
         Vector3 dest = Vector3.Lerp(src,m_Destination,deltaTime*10f);
-        dest.y = m_StepCurve.Evaluate(m_StepStaionaryClicker.m_TimeElapsedScale);
+        dest.y = m_StepCurve.Evaluate(m_StepStationaryClicker.m_TimeElapsedScale);
         m_StepObj.transform.position = dest;
         
-        if (m_StepStaionaryClicker.Tick(deltaTime))
+        if (m_StepStationaryClicker.Tick(deltaTime))
         {
             m_WaterInteractions.Click(dest,m_StepStationarySpeed,m_StepStationaryDuration,m_StepStationaryWidth,m_StepStationaryOffset,Vector3.zero);
-            m_StepStaionaryClicker.Set(m_StepStationaryTick);
+            m_StepStationaryClicker.Set(m_StepStationaryTick);
             m_StepDynamicClicker.Set(m_StepDynamicTick);
         }
         
@@ -68,7 +68,7 @@ public class WaveInteraction : MonoBehaviour
             Debug.DrawRay(m_Destination,direction,Color.blue,1f);
             Debug.DrawRay(m_Destination,Vector3.up,Color.green,1f);
             m_WaterInteractions.Click(dest+direction*deltaTime,m_StepDynamicSpeed,m_StepDynamicDuration,m_StepDynamicWidth,m_StepDynamicOffset,direction);
-            m_StepStaionaryClicker.Set(m_StepStationaryTick);
+            m_StepStationaryClicker.Set(m_StepStationaryTick);
             m_StepDynamicClicker.Set(m_StepDynamicTick);
         }
 

@@ -9,7 +9,7 @@ namespace Boids
         private readonly MeshFilter m_BlendFilter;
         private readonly MeshRenderer m_MainRenderer;
         private readonly MeshRenderer m_BlendRenderer;
-        private readonly Timer m_BlendTimer = new Timer(.25f);
+        private readonly Counter m_BlendCounter = new Counter(.25f);
         private float m_Time;
         public BoidsAnimation(Transform _transform)
         {
@@ -37,23 +37,25 @@ namespace Boids
             }
             m_BlendFilter.sharedMesh = mesh;
             m_BlendFilter.gameObject.SetActive(true);
-            m_BlendTimer.Replay();
+            m_BlendFilter.transform.localScale = Vector3.zero;
+            m_BlendCounter.Replay();
             m_Time = 0f;
         }
         
         public void Tick(float _deltaTime)
         {
             m_Time += _deltaTime;
-            if (!m_BlendTimer.m_Timing)
+            if (!m_BlendCounter.m_Counting)
                 return;
-            m_BlendTimer.Tick(_deltaTime);
-            m_MainFilter.transform.localScale = Vector3.one * m_BlendTimer.m_TimeLeftScale;
-            m_BlendFilter.transform.localScale = Vector3.one * m_BlendTimer.m_TimeElapsedScale;
-            if (m_BlendTimer.m_Timing)
+            m_BlendCounter.Tick(_deltaTime);
+            m_MainFilter.transform.localScale = Vector3.one * m_BlendCounter.m_TimeLeftScale;
+            m_BlendFilter.transform.localScale = Vector3.one * m_BlendCounter.m_TimeElapsedScale;
+            if (m_BlendCounter.m_Counting)
                 return;
             m_MainFilter.sharedMesh = m_BlendFilter.sharedMesh;
             m_MainFilter.transform.localScale = Vector3.one;
             m_BlendFilter.gameObject.SetActive(false);
+            m_BlendFilter.transform.localScale = Vector3.zero;
         }
     }
 }

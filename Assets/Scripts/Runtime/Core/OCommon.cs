@@ -231,15 +231,15 @@ public class Ticker
         return availableTick;
     }
 }
-public class Timer
+public class Counter
 {
     public float m_TimerDuration { get; private set; } = 0;
-    public bool m_Timing { get; private set; } = false;
+    public bool m_Counting { get; private set; } = false;
     public float m_TimeLeft { get; private set; } = -1;
     public float m_TimeLeftScale { get; private set; } = 0;
     public float m_TimeElapsed { get; private set; }
     public float m_TimeElapsedScale { get; private set; } = 0;
-    public Timer(float countDuration = 0, bool startOff = false)
+    public Counter(float countDuration = 0, bool startOff = false)
     {
         Set(countDuration);
         if (startOff)
@@ -254,7 +254,7 @@ public class Timer
     {
         m_TimeLeft = Mathf.Clamp( _timeCheck,0f,m_TimerDuration);
         m_TimeElapsed = m_TimerDuration - m_TimeLeft;
-        m_Timing = m_TimeLeft > 0;
+        m_Counting = m_TimeLeft > 0;
         m_TimeLeftScale = m_TimeLeft / m_TimerDuration;
         m_TimeElapsedScale = 1f - m_TimeLeftScale;
     }
@@ -265,7 +265,7 @@ public class Timer
         if (m_TimeLeft <= 0)
             return false;
         TickDelta(m_TimeLeft - deltaTime);
-        if (!m_Timing)
+        if (!m_Counting)
         {
             m_TimeLeft = 0;
             return true;
@@ -275,10 +275,10 @@ public class Timer
 
     public bool TickValid(float deltaTime)
     {
-        if (!m_Timing)
+        if (!m_Counting)
             return false;
         Tick(deltaTime);
-        if (m_Timing)
+        if (m_Counting)
             return false;
         return true;
     }

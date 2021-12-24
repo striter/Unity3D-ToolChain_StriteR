@@ -46,8 +46,8 @@ namespace Boids.Bird
             switch (_behaviourType)
             {
                 default: throw new InvalidEnumArgumentException();
-                case EBirdBehaviour.Startling:return  TSPool<Behaviours.Startle<EBirdBehaviour>>.Spawn().Init(m_Config.startleConfig,m_Config.flockingConfig,EBirdBehaviour.Flying);
-                case EBirdBehaviour.Flying:return  TSPool<Behaviours.Flying<EBirdBehaviour>>.Spawn().Init(m_Config.flyingConfig,m_Config.flockingConfig,m_Config.evadeConfig,EBirdBehaviour.Hovering); 
+                case EBirdBehaviour.Startling:return TSPool<Behaviours.Startle<EBirdBehaviour>>.Spawn().Init(m_Config.startleConfig,m_Config.flockingConfig,EBirdBehaviour.Flying);
+                case EBirdBehaviour.Flying:return TSPool<Behaviours.Flying<EBirdBehaviour>>.Spawn().Init(m_Config.flyingConfig,m_Config.flockingConfig,m_Config.evadeConfig,EBirdBehaviour.Hovering); 
                 case EBirdBehaviour.Hovering:return TSPool<Behaviours.Hovering<EBirdBehaviour>>.Spawn().Init(m_Config.hoveringConfig,m_Config.flockingConfig,m_Config.evadeConfig,EBirdBehaviour.Landing);
                 case EBirdBehaviour.Landing:return TSPool<Behaviours.Landing<EBirdBehaviour>>.Spawn().Init(m_Config.landConfig,EBirdBehaviour.Perching); 
                 case EBirdBehaviour.Perching:return TSPool<Behaviours.Perching>.Spawn().Init(m_Config.perchConfig,m_Config.perchFlocking); 

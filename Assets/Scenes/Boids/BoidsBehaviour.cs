@@ -144,7 +144,7 @@ namespace Boids
                 Vector3 direction = m_Velocity.normalized;
                 float speed = Mathf.Clamp01(m_Velocity.magnitude);
                 m_Velocity = direction * speed;
-                m_Rotation = Quaternion.Lerp(m_Rotation,Quaternion.LookRotation(direction,Vector3.up),_deltaTime*5f);
+                m_Rotation = Quaternion.LookRotation(direction,Vector3.up);
             }
         }
         

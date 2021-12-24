@@ -29,7 +29,7 @@ namespace PolyGrid
             {  EConvexIterate.Tesselation,new Stack<IEnumerator>() },
             {  EConvexIterate.Relaxed,new Stack<IEnumerator>() }, };
         
-        private readonly Timer m_IterateTimer = new Timer(1f/60f);
+        private readonly Counter m_IterateCounter = new Counter(1f/60f);
 
         void Setup()
         {
@@ -48,10 +48,10 @@ namespace PolyGrid
 
         public void Tick(float _deltaTime)
         {
-            m_IterateTimer.Tick(_deltaTime);
-            if (m_IterateTimer.m_Timing)
+            m_IterateCounter.Tick(_deltaTime);
+            if (m_IterateCounter.m_Counting)
                 return;
-            m_IterateTimer.Replay();
+            m_IterateCounter.Replay();
             
             int index = m_IteratePerFrame;
             while (index-- > 0)
