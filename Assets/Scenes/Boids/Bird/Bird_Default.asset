@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 192ae5091f8855a42ab3984bbb5b5728, type: 3}
+  m_Name: Bird_Default
+  m_EditorClassIdentifier: 
+  startleConfig:
+    speed: 10
+    duration:
+      start: 1
+      length: 2
+    damping: 0.2
+    animName: Bird_Flapping
+  flyingConfig:
+    speed: 8
+    damping: 0.5
+    maintainHeight: 10
+    sqrBorder: 400
+    tiringDuration:
+      start: 10
+      length: 20
+    flyAnim: Bird_Flying
+    glideAnim: Bird_Gliding
+  hoveringConfig:
+    speed: 6
+    duration:
+      start: 7
+      length: 5
+    damping: 0.25
+    distance: 4
+    height: 5
+    flyAnim: Bird_Flying
+    glideAnim: Bird_Gliding
+  landConfig:
+    speed: 3
+    distanceBias: 0.1
+    damping: 0.5
+    anim: Bird_Landing
+  perchConfig:
+    moveAnim: Bird_Flapping
+    standAnim: Bird_Stop_Standing
+    idleAnim: Bird_Stop_HalfStanding
+    stopAnim: Bird_Stop_Sitting
+  flockingConfig:
+    sqrVisualizeRange: 4
+    sqrSeparationDistance: 2.25
+    separateDamping: 0.5
+    cohesionDamping: 0.1
+    alignmentDamping: 0.1
+  evadeConfig:
+    evadeDistance: 20
+    evadeDamping: 10

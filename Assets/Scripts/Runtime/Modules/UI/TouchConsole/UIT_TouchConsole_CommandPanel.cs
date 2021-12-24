@@ -14,8 +14,15 @@ public static class UIT_TouchConsoleHelper
     {
         CommandItem_Button button = _container.Insert<CommandItem_Button>();
         button.m_Button.onClick.AddListener(() => OnClick());
-        button.m_ButtonTitle.text = _container.m_KeyCode.GetKeyCodeString();
+        button.m_Title.text = _container.m_KeyCode.GetKeyCodeString();
     }
+
+    public static void Drag(this CommandContainer _container, Action<bool,Vector2> OnDrag)
+    {
+        CommandItem_Drag drag = _container.Insert<CommandItem_Drag>();
+        drag.m_Listener.D_OnDragStatus = OnDrag;
+    }
+    
     public static void Toggle(this CommandContainer _container, Ref<bool> _refValue, Action<bool> OnToggleChange)
     {
         CommandItem_Toggle toggle = _container.Insert<CommandItem_Toggle>();
@@ -70,14 +77,14 @@ public static class UIT_TouchConsoleHelper
         selection.SetDataUpdate(() => {
             selection.Highlight(_refEnum.m_RefValue);
             if (foldOutButton != null)
-                foldOutButton.m_ButtonTitle.text = _values[_refEnum.m_RefValue];
+                foldOutButton.m_Title.text = _values[_refEnum.m_RefValue];
         });
         selection.Play(_values, (int value) => {
             OnClick(value);
             foreach (var button in selection.m_ButtonGrid)
                 button.Highlight(button.m_Identity == value);
             if (foldOutButton != null)
-                foldOutButton.m_ButtonTitle.text = _values[value];
+                foldOutButton.m_Title.text = _values[value];
         }).Highlight(_refEnum.m_RefValue);
     }
     public static void FlagsSelection<T>(this CommandContainer _container, Ref<T> _refFlags, Action<T> _logFilter, bool foldOut = true) where T : struct, Enum
@@ -86,11 +93,11 @@ public static class UIT_TouchConsoleHelper
         selection.SetDataUpdate(() => selection.Play(_refFlags.m_RefValue, flags => {
             _refFlags.SetValue(flags);
             if (foldOutButton != null)
-                foldOutButton.m_ButtonTitle.text = flags.GetNumerable().ToString('|', value => value ? "√" : "×");
+                foldOutButton.m_Title.text = flags.GetNumerable().ToString('|', value => value ? "√" : "×");
             _logFilter(flags);
         }));
         if (foldOutButton != null)
-            foldOutButton.m_ButtonTitle.text = _refFlags.m_RefValue.GetNumerable().ToString('|', value => value ? "√" : "×");
+            foldOutButton.m_Title.text = _refFlags.m_RefValue.GetNumerable().ToString('|', value => value ? "√" : "×");
     }
     public static void InputField(this CommandContainer _container, Ref<string> _refText, Action<string> OnValueClick)
     {
@@ -470,17 +477,17 @@ public partial class UIT_TouchConsole
     public class CommandItem_Button : CommandItemBase
     {
         public Button m_Button { get; private set; }
-        public Text m_ButtonTitle { get; private set; }
+        public Text m_Title { get; private set; }
         public CommandItem_Button(Transform _transform) : base(_transform)
         {
             m_Button = _transform.GetComponent<Button>();
-            m_ButtonTitle = _transform.Find("Title").GetComponent<Text>();
+            m_Title = _transform.Find("Title").GetComponent<Text>();
         }
         public override void OnPoolSpawn(int identity)
         {
             base.OnPoolSpawn(identity);
             m_Button.onClick.RemoveAllListeners();
-            m_ButtonTitle.text = "";
+            m_Title.text = "";
         }
         public override void OnPoolRecycle()
         {
@@ -491,6 +498,21 @@ public partial class UIT_TouchConsole
         {
             base.OnFastKeyTrigger();
             m_Button.onClick.Invoke();
+        }
+    }
+
+    public class CommandItem_Drag : CommandItemBase
+    {
+        public UIT_EventTriggerListener m_Listener { get; private set; }
+        public CommandItem_Drag(Transform _transform) : base(_transform)
+        {
+            m_Listener = _transform.GetComponent<UIT_EventTriggerListener>();
+        }
+
+        public override void OnPoolRecycle()
+        {
+            base.OnPoolRecycle();
+            m_Listener.D_OnDrag = null;
         }
     }
 

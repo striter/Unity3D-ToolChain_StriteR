@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80c2416c8f907d0478476b914b001e49, type: 3}
+  m_Name: Butterfly_Config
+  m_EditorClassIdentifier: 
+  startleConfig:
+    speed: 3
+    duration:
+      start: 0.5
+      length: 1
+    damping: 2
+    animName: Butterfly_Flap
+  floatingConfig:
+    speed: 1
+    damping: 2
+    sqrRadius: 1.5
+    anim: Butterfly_SitFlap
+  landConfig:
+    speed: 0.5
+    distanceBias: 0.5
+    damping: 1
+    anim: Butterfly_Flap
+  idleConfig:
+    anim: Butterfly_Sit
+  flockingConfig:
+    sqrVisualizeRange: 1
+    sqrSeparationDistance: 1
+    separateDamping: 0.5
+    cohesionDamping: -0.5
+    alignmentDamping: -0.5

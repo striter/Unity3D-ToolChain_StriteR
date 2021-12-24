@@ -1299,10 +1299,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 838780294}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 454d0033770a9a342959cd9827e96564, type: 3}
+  m_Script: {fileID: 11500000, guid: cba57b85aac4f654e9b7160a87bdd852, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  butterfly: 0
   m_Meshes:
   - {fileID: 4300000, guid: fb96b29435ab3494e9294b528c62e5d8, type: 2}
   - {fileID: 4300000, guid: ac918e8e4dbc0cc41a63e8de6dddf36a, type: 2}
@@ -1312,24 +1311,7 @@ MonoBehaviour:
   - {fileID: 4300000, guid: 3d44366a98d145d4bb9a09392f7d5d0b, type: 2}
   - {fileID: 4300000, guid: 5ef5995c0d58f9349a1bf27314e8b46d, type: 2}
   m_Material: {fileID: 2100000, guid: 1f03124da9874fe4bb1bdefd9102415c, type: 2}
-  m_Data:
-    speed: 5
-    flockingConfig:
-      sqrVisualizeRange: 4
-      sqrSeparationDistance: 2.25
-      separateDamping: 2
-      cohesionDamping: 1
-      alignmentDamping: 1
-    hoveringConfig:
-      damping: 3
-      type: 0
-      distance: 7
-      height: 5
-    evade: 1
-    evadeConfig:
-      evadeDistance: 10
-      evadeDamping: 20
-  m_Count: 10
+  fBirdConfig: {fileID: 11400000, guid: 1e34315e103fbd64a8e41c1f358462d2, type: 2}
 --- !u!1 &1046372942
 GameObject:
   m_ObjectHideFlags: 0
@@ -1565,7 +1547,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1102901698}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1046372943}
@@ -1581,33 +1563,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1102901698}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 454d0033770a9a342959cd9827e96564, type: 3}
+  m_Script: {fileID: 11500000, guid: 4b359f92aacd5af4b8882e607da33752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  butterfly: 1
   m_Meshes:
   - {fileID: 4300000, guid: e4d8484c32103254f823dcc8a24e2443, type: 2}
   - {fileID: 4300000, guid: 7f559ecc8e0408348b75e639bdc7733f, type: 2}
   - {fileID: 4300000, guid: ae70cfb98cdf7d1428a95cb7a8b2cfa9, type: 2}
   m_Material: {fileID: 2100000, guid: 89b5f530771c9bb4993efcef9bf5fe3b, type: 2}
-  m_Data:
-    speed: 2
-    flockingConfig:
-      sqrVisualizeRange: 2.25
-      sqrSeparationDistance: 1
-      separateDamping: 4
-      cohesionDamping: -2
-      alignmentDamping: -1.5
-    hoveringConfig:
-      damping: 1
-      type: 1
-      distance: 2
-      height: 2
-    evade: 0
-    evadeConfig:
-      evadeDistance: 20
-      evadeDamping: 5
-  m_Count: 15
+  m_Config: {fileID: 11400000, guid: 409a16ae1abb5624b94734da708cecb0, type: 2}
+  m_Count: 5
 --- !u!1 &1250863963
 GameObject:
   m_ObjectHideFlags: 0

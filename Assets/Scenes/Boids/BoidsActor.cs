@@ -6,8 +6,7 @@ namespace Boids
 {
     public class BoidsActor : APoolItem<int>
     {
-        public BoidsConfig m_Config { get; private set; }
-        public ABoidsBehaviourController m_Behaviour { get; private set; }
+        public ABoidsBehaviour m_Behaviour { get; private set; }
         public readonly BoidsAnimation m_Animation;
         public readonly BoidsTarget m_Target;
         
@@ -16,11 +15,9 @@ namespace Boids
             m_Animation = new BoidsAnimation(_transform);
             m_Target = new BoidsTarget();
         }
-        public BoidsActor Spawn(BoidsConfig _config,ABoidsBehaviourController _behaviour,Vector3 _position,Mesh[] _blendMeshes,Material _material)
+        public BoidsActor Spawn(ABoidsBehaviour _behaviour,Vector3 _position,Mesh[] _blendMeshes,Material _material)
         { 
             m_Animation.Init(_material,_blendMeshes);
-            m_Config = _config;
-            
             m_Target.m_Destination = _position;
             m_Behaviour=_behaviour.Init(this);
             m_Behaviour.Spawn(m_Target.m_Destination,Quaternion.identity);

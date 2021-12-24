@@ -3,41 +3,59 @@ using UnityEngine;
 
 namespace Boids
 {
-    public enum EBoidHovering
-    {
-        AroundHeight,
-        Disorder,
-    }
-
     [Serializable]
-    public struct BoidsConfig
+    public struct BoidsStartleConfig
     {
         public float speed;
-        public BoidFlockingConfig flockingConfig;
-        public BoidHoveringConfig hoveringConfig;
-        public bool evade;
-        [MFoldout(nameof(evade),true)] public BoidEvadeConfig evadeConfig;
-
-        public static readonly BoidsConfig Default = new BoidsConfig()
-        {
-            speed=3f,
-            flockingConfig = new BoidFlockingConfig(){alignmentDamping = .1f,cohesionDamping = .1f,separateDamping = .3f,sqrSeparationDistance=2.25f,sqrVisualizeRange=4f},
-            hoveringConfig = new BoidHoveringConfig(){damping = .4f,distance = 7f,height = 2f,type = EBoidHovering.AroundHeight},
-            evadeConfig = new BoidEvadeConfig(){evadeDamping = 5f,evadeDistance = 20f}
-        };
-    }
-
-    [Serializable]
-    public struct BoidHoveringConfig
-    {
+        public RangeFloat duration;
         public float damping;
-        public EBoidHovering type;
-        public float distance;
-        [MFoldout(nameof(type),EBoidHovering.AroundHeight)]public float height;
+        public string animName;
     }
 
     [Serializable]
-    public struct BoidFlockingConfig
+    public struct BoidsFlyingConfig
+    {
+        public float speed;
+        public float damping;
+        public float maintainHeight;
+        public float sqrBorder;
+        public RangeFloat tiringDuration;
+        public string flyAnim;
+        public string glideAnim;
+    }
+    
+    [Serializable]
+    public struct BoidsHoveringConfig
+    {
+        public float speed;
+        public RangeFloat duration;
+        public float damping;
+        public float distance;
+        public float height;
+        public string flyAnim;
+        public string glideAnim;
+    }
+    
+    [Serializable]
+    public struct BoidsFloatingConfig
+    {
+        public float speed;
+        public float damping;
+        public float sqrRadius;
+        public string anim;
+    }
+    
+    [Serializable]
+    public struct BoidsLandingConfig
+    {
+        public float speed;
+        public float distanceBias;
+        public float damping;
+        public string anim;
+    }
+    
+    [Serializable]
+    public struct BoidsFlockingConfig
     {
         public float sqrVisualizeRange;
         public float sqrSeparationDistance;
@@ -47,9 +65,23 @@ namespace Boids
     }
 
     [Serializable]
-    public struct BoidEvadeConfig
+    public struct BoidsEvadeConfig
     {
         public float evadeDistance;
         public float evadeDamping;
+    }
+
+    [Serializable]
+    public struct BoidsPerchConfig
+    {
+        public string moveAnim;
+        public string standAnim;
+        public string idleAnim;
+        public string stopAnim;
+    }
+    [Serializable]
+    public struct BoidsIdleConfig
+    {
+        public string anim;
     }
 }
