@@ -22,7 +22,7 @@ namespace Boids.Butterfly
         [Header("Base")]
         public BoidsStartleConfig startleConfig;
         public BoidsFloatingConfig floatingConfig;
-        public BoidsLandingConfig landConfig;
+        public BoidsHoverLandingConfig landConfig;
         public BoidsIdleConfig idleConfig;
         [Header("Additional")]
         public BoidsFlockingConfig flockingConfig;

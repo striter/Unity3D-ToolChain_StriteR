@@ -26,38 +26,33 @@ MonoBehaviour:
     speed: 8
     maintainHeight: 10
     heightDamping: 0.2
-    sqrBorder: 400
-    borderDamping: 0.5
+    boderRange: 30
+    borderDamping: 1
     tiringDuration:
-      start: 10
+      start: 20
       length: 20
     flyAnim: Bird_Flying
     glideAnim: Bird_Gliding
   hoveringConfig:
     speed: 6
     duration:
-      start: 7
-      length: 5
-    damping: 0.2
-    distance: 4
-    height: 5
+      start: 12
+      length: 6
+    damping: 5
+    distance: 3
+    height: 2
     flyAnim: Bird_Flying
     glideAnim: Bird_Gliding
-  tryLandingConfig:
-    speed: 4
-    damping: 1.5
-    distanceBias: 16
-    anim: Bird_Flying
   landConfig:
-    speed: 3
-    damping: 0.5
+    speed: 5
+    damping: 1.5
     anim: Bird_Landing
   flockingConfig:
     sqrVisualizeRange: 16
     sqrSeparationDistance: 4
     separateDamping: 0.5
-    cohesionDamping: 0.25
-    alignmentDamping: 0.25
+    cohesionDamping: 0.1
+    alignmentDamping: 0.1
   evadeConfig:
     evadeDistance: 20
     evadeDamping: 1

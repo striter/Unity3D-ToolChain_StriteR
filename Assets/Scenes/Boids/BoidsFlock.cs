@@ -7,20 +7,19 @@ namespace Boids
 {
     public abstract class ABoidsFlock:MonoBehaviour
     {
-        public Mesh[] m_Meshes;
-        public Material m_Material;
         protected TObjectPoolClass<int, BoidsActor> m_Actors { get; private set; }
         protected abstract ABoidsBehaviour GetController();
         protected abstract ABoidsTarget GetTarget();
+        protected abstract IBoidsAnimation GetAnimation();
         public virtual void Init()
         {
             m_Actors = new TObjectPoolClass<int, BoidsActor>(transform.Find("Actor"),GetParameters);
         }
         object[] GetParameters()=>
-            new object[] { GetController(), GetTarget() };
+            new object[] { GetController(), GetTarget(),GetAnimation() };
         protected void SpawnActor(Matrix4x4 _landing)
         {
-            m_Actors.Spawn().Spawn(_landing,m_Meshes,m_Material);
+            m_Actors.Spawn().Spawn(_landing);
         }
 
         public void Clear()

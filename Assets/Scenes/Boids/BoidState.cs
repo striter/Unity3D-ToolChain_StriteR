@@ -60,7 +60,7 @@ namespace Boids.Behaviours
             _velocity += m_StartleDirection * (_deltaTime * m_StartleConfig.damping);
         }
         
-        public void DrawGizmosSelected()
+        public void DrawGizmosSelected(BoidsActor _actor)
         {
             Gizmos_Extend.DrawString(Vector3.up*.2f,$"{m_ReactionCounter:F1}");
         }
@@ -77,6 +77,7 @@ namespace Boids.Behaviours
         private readonly Counter m_AnimationCounter = new Counter(1f);
         private readonly ValueChecker<bool> m_Gliding=new ValueChecker<bool>();
         private T m_TiredBehaviour;
+        private float m_SQRBorder;
         
         public Flying<T> Init(BoidsFlyingConfig _config,BoidsFlockingConfig _flocking,BoidsEvadeConfig _evade,T _tiredBehaviour)
         {
@@ -84,6 +85,7 @@ namespace Boids.Behaviours
             m_FlockingConfig = _flocking;
             m_EvadeConfig = _evade;
             m_TiredBehaviour = _tiredBehaviour;
+            m_SQRBorder = UMath.Pow2(m_Config.boderRange);
             return this;
         }
         
@@ -102,7 +104,6 @@ namespace Boids.Behaviours
         public bool TickStateSwitch(BoidsActor _actor, float _deltaTime,out T _tiredBehaviour)
         {
             _tiredBehaviour = m_TiredBehaviour;
-            
             m_TiringCounter.Tick(_deltaTime);
             if (m_TiringCounter.m_Counting)
                 return false;
@@ -116,13 +117,13 @@ namespace Boids.Behaviours
         public void TickVelocity(BoidsActor _actor, ABoidsBehaviour _behaviour, IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,
             ref Vector3 _velocity)
         {
-            Vector3 originOffset = _behaviour.Position - _actor.m_Target.m_Destination;
-            float originDistance = originOffset.sqrMagnitude;
-
-            if (originDistance > m_Config.sqrBorder)
+            Vector3 originOffset = (_behaviour.Position - _actor.m_Target.m_Destination);
+            
+            if (originOffset.sqrMagnitude > m_SQRBorder)
                 _velocity += -originOffset.normalized * (_deltaTime * m_Config.borderDamping);
 
-            _velocity += Vector3.up * (Mathf.Sign(m_Config.maintainHeight - originOffset.y) * _deltaTime * m_Config.heightDamping);
+            Vector3 upward = Vector3.up * (Mathf.Sign(m_Config.maintainHeight - originOffset.y));
+            _velocity += upward* m_Config.heightDamping * _deltaTime;
 
             _velocity += _behaviour.TickFlocking(_flock,_deltaTime,m_FlockingConfig);
             _velocity += _behaviour.TickEvading(_deltaTime,m_EvadeConfig);
@@ -138,9 +139,13 @@ namespace Boids.Behaviours
             }
         }
         
-        public void DrawGizmosSelected()
+        public void DrawGizmosSelected(BoidsActor _actor)
         {
             Gizmos_Extend.DrawString(Vector3.up*.2f,$"{m_TiringCounter.m_TimeLeft:F1}");
+            Gizmos.matrix = Matrix4x4.identity;
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(_actor.m_Target.m_Destination,m_Config.boderRange);
+            Gizmos.DrawLine(_actor.m_Behaviour.Position,_actor.m_Behaviour.Position.SetY(m_Config.maintainHeight+_actor.m_Target.m_Destination.y));
         }
     }
 
@@ -176,7 +181,7 @@ namespace Boids.Behaviours
             _velocity += _behaviour.TickFlocking(_flock,_deltaTime,m_FlockingConfig);
         }
         
-        public void DrawGizmosSelected()
+        public void DrawGizmosSelected(BoidsActor _actor)
         {
         }
     }
@@ -201,9 +206,9 @@ namespace Boids.Behaviours
         {
             _actor.m_Animation.SetAnimation(m_Config.flyAnim);
             
-            Vector3 centerOffset = _actor.m_Behaviour.Position - _actor.m_Target.m_Destination;
-            Vector3 hoverDirection = new Vector3(centerOffset.x,0f, centerOffset.z).normalized;
-            m_Clockwise = Mathf.Sign(Vector3.Dot(Vector3.Cross(Vector3.right,hoverDirection),centerOffset));
+            Vector3 _destination = _actor.m_Target.m_Destination;
+            Vector3 centerOffset = _actor.m_Behaviour.Position - _destination;
+            m_Clockwise = Mathf.Sign(Vector3.Dot( Vector3.Cross(_actor.m_Target.m_Up,centerOffset),_actor.m_Behaviour.Velocity));
             m_HoverCounter.Set(m_Config.duration.Random());
         }
 
@@ -212,95 +217,54 @@ namespace Boids.Behaviours
         }
         public bool TickStateSwitch(BoidsActor _actor, float _deltaTime,out T _nextBehaviour)
         {
-            m_HoverCounter.Tick(_deltaTime);
             _nextBehaviour = m_NextBehaviour;
+            m_HoverCounter.Tick(_deltaTime);
             return !m_HoverCounter.m_Counting;
         }
+
+        private Vector3 hoverPosition;
+        private Vector3 hoverTangent;
         public void TickVelocity(BoidsActor _actor, ABoidsBehaviour _behaviour, IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,
             ref Vector3 _velocity)
         {
-            Vector3 _destination = _actor.m_Target.m_Destination;
-            
-            Vector3 centerOffset = _behaviour.Position - _destination;
-            Vector3 hoverDirection = new Vector3(centerOffset.x,0f, centerOffset.z).normalized;
-            Vector3 hoverTangent = Vector3.Cross(Vector3.up,hoverDirection)*m_Clockwise;
+            Vector3 destination = _actor.m_Target.m_Destination + Vector3.up * m_Config.height;
+
+            Vector3 centerOffset = _behaviour.Position - destination;
+            Vector3 hoverDirection = centerOffset.SetY(0f).normalized;
+            hoverTangent = Vector3.Cross(Vector3.up,hoverDirection)*m_Clockwise;
+            hoverPosition = destination + hoverDirection * m_Config.distance;
+            Vector3 hoverOffset = hoverPosition - _behaviour.Position;
     
-            Vector3 hoverTowards = _destination +  hoverDirection * m_Config.distance + Vector3.up * m_Config.height;
-            Vector3 hoverOffset = hoverTowards - _behaviour.Position;
-    
-            float hoverElapse = hoverOffset.sqrMagnitude/(m_Config.distance*m_Config.height);
-            Vector3 direction = (hoverOffset.normalized + hoverTangent)*hoverElapse;
+            Vector3 direction = (hoverOffset + hoverTangent)/2f;
             
             _velocity += direction * (_deltaTime * m_Config.damping);
             
             _velocity += _behaviour.TickFlocking(_flock,_deltaTime,m_FlockConfig);
             _velocity += _behaviour.TickEvading(_deltaTime,m_EvadeConfig);
         }
-        public void DrawGizmosSelected()
+        public void DrawGizmosSelected(BoidsActor _actor)
         {
             Gizmos_Extend.DrawString(Vector3.up*.2f,$"Time:{m_HoverCounter.m_TimeLeft:F1}, CW:{m_Clockwise}");
+            Gizmos.matrix = Matrix4x4.identity;
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(_actor.m_Behaviour.Position,hoverPosition);
+            Gizmos.DrawWireSphere(_actor.m_Behaviour.Position,.2f);
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(hoverPosition,hoverPosition+hoverTangent*.2f);
         }
 
-    }
-
-    public class TryLanding<T> : IBoidsState, IStateTransformVelocity, IStateSwitch<T>
-    {
-        private BoidsTryLandingConfig m_Config;
-        public float speed => m_Config.speed;
-        private T m_NextBehaviour;
-        private T m_PreBehaviour;
-
-        public TryLanding<T> Init(BoidsTryLandingConfig _config,BoidsEvadeConfig _evade,T _nextBehaviour,T _preBehaviour)
-        {
-            m_Config = _config;
-            m_NextBehaviour = _nextBehaviour;
-            m_PreBehaviour = _preBehaviour;
-            return this;
-        }
-        public void Begin(BoidsActor _actor)
-        {
-            _actor.m_Animation.SetAnimation(m_Config.anim);
-        }
-        public void End()
-        {
-            
-        }
-        public void TickVelocity(BoidsActor _actor, ABoidsBehaviour _behaviour, IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,
-            ref Vector3 _velocity)
-        {
-            _velocity += (_actor.m_Target.m_Destination - _actor.m_Behaviour.Position).normalized * (_deltaTime * m_Config.damping);
-        }
-        public bool TickStateSwitch(BoidsActor _actor, float _deltaTime,out T _nextBehaviour)
-        {
-            _nextBehaviour = default;
-            Vector3 offset = (_actor.m_Behaviour.Position - _actor.m_Target.m_Destination);
-            if (offset.sqrMagnitude > m_Config.distanceBias)
-                return false;
-            
-            if (Vector3.Dot(offset,_actor.m_Target.m_Up) < .3f)
-            {
-                _nextBehaviour = m_PreBehaviour;
-                return true;
-            }
-            
-            _nextBehaviour = m_NextBehaviour;
-            return true;
-        }
-        public void DrawGizmosSelected()
-        {
-        }
     }
 
     public class HoverLanding<T> : IBoidsState, IStateTransformApply,IStateTransformVelocity, IStateSwitch<T>
     {
         private BoidsHoverLandingConfig m_Config;
         private T m_NextBehaviour;
-        public float speed => Mathf.Lerp(m_Config.speed * .5f, m_Config.speed, interpolate);
-        private float interpolate;
-        private float distance;
+        public float speed => Mathf.Lerp(m_Config.speed * .5f, m_Config.speed, m_Interpolation);
+        private float m_Interpolation;
+        private float m_Distance;
 
-        private Counter velocityCounter = new Counter(1f);
-        private Vector3 startVelocity;
+        private readonly Counter m_VelocityCounter = new Counter(3f);
+        private Vector3 m_StartVelocity;
 
         public HoverLanding<T> Spawn(BoidsHoverLandingConfig _config,T _nextBehaviour)
         {
@@ -311,10 +275,10 @@ namespace Boids.Behaviours
         public void Begin(BoidsActor _actor)
         {
             _actor.m_Animation.SetAnimation(m_Config.anim);
-            distance = (_actor.m_Behaviour.Position - _actor.m_Target.m_Destination).magnitude;
-            interpolate = 1f;
-            startVelocity = _actor.m_Behaviour.Velocity;
-            velocityCounter.Replay();
+            m_Distance = (_actor.m_Behaviour.Position - _actor.m_Target.m_Destination).magnitude;
+            m_Interpolation = 1f;
+            m_StartVelocity = _actor.m_Behaviour.Velocity;
+            m_VelocityCounter.Replay();
         }
 
         public void End()
@@ -325,30 +289,31 @@ namespace Boids.Behaviours
         public void TickVelocity(BoidsActor _actor, ABoidsBehaviour _behaviour, IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,
             ref Vector3 _velocity)
         {
-            velocityCounter.Tick(_deltaTime);
-            _velocity = Vector3.Lerp(startVelocity,
+            m_VelocityCounter.Tick(_deltaTime);
+            _velocity = Vector3.Lerp(m_StartVelocity,
                 (_actor.m_Target.m_Destination - _actor.m_Behaviour.Position).normalized,
-                velocityCounter.m_TimeElapsedScale);
+                m_VelocityCounter.m_TimeElapsedScale);
         }
 
         public bool TickStateSwitch(BoidsActor _actor, float _deltaTime, out T _nextState)
         {
-            interpolate = (_actor.m_Behaviour.Position - _actor.m_Target.m_Destination).magnitude /distance;
+            m_Interpolation = (_actor.m_Behaviour.Position - _actor.m_Target.m_Destination).magnitude / m_Distance;
             _nextState = m_NextBehaviour;
-            return interpolate<=0.01;
+            return m_Interpolation<=0.025f;
         }
         
         public void TickTransform(BoidsActor _actor, ABoidsBehaviour _behaviour, IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,
             ref Vector3 _position, ref Quaternion _rotation)
         {
-            Vector3 direction = _actor.m_Target.m_Destination - _actor.m_Behaviour.Position;
-            _rotation = Quaternion.Lerp(Quaternion.LookRotation(_behaviour.Velocity),  Quaternion.LookRotation(_actor.m_Target.m_Up,direction),interpolate);
+            Vector3 direction = _actor.m_Target.m_Destination-_actor.m_Behaviour.Position;
+            var rotation= Quaternion.Lerp(Quaternion.LookRotation(_actor.m_Target.m_Up,-m_StartVelocity),Quaternion.LookRotation(direction),m_VelocityCounter.m_TimeElapsedScale);
+            _rotation = Quaternion.Lerp(_rotation,rotation,_deltaTime*20f);
         }
 
 
-        public void DrawGizmosSelected()
+        public void DrawGizmosSelected(BoidsActor _actor)
         {
-            Gizmos_Extend.DrawString(Vector3.up*.2f,$"{interpolate:F1}");
+            Gizmos_Extend.DrawString(Vector3.up*.2f,$"{m_Interpolation:F1} ${m_VelocityCounter.m_TimeElapsedScale:F1}");
         }
 
     }
@@ -395,7 +360,7 @@ namespace Boids.Behaviours
                 return false;
             return true;
         }
-        public void DrawGizmosSelected()
+        public void DrawGizmosSelected(BoidsActor _actor)
         {
         }
     }
@@ -549,13 +514,13 @@ namespace Boids.Behaviours
         }
 
 
-        public void DrawGizmosSelected()
+        public void DrawGizmosSelected(BoidsActor _actor)
         {
             Gizmos_Extend.DrawString(Vector3.up*.2f,$"{m_State} {m_StateCounter.m_TimeLeft:F1}");
         }
     }
 
-    public class Idle : IBoidsState,IStateTransformApply
+    public class Idle : IBoidsState
     {
         private BoidsIdleConfig m_Config;
         public Idle Init(BoidsIdleConfig _config)
@@ -572,14 +537,9 @@ namespace Boids.Behaviours
         {
         }
 
-
-        public void DrawGizmosSelected()
+        public void DrawGizmosSelected(BoidsActor _actor)
         {
         }
 
-        public void TickTransform(BoidsActor _actor, ABoidsBehaviour _behaviour, IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,
-            ref Vector3 _position, ref Quaternion _rotation)
-        {
-        }
     }
 }

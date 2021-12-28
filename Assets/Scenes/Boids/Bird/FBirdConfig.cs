@@ -9,9 +9,8 @@ namespace Boids.Bird
         Flying=1,
         
         Hovering=2,
-        TryLanding=3,
-        Landing=4,
-        Perching=5,
+        Landing=3,
+        Perching=4,
     }
 
     [CreateAssetMenu(fileName = "Bird Config",menuName = "Config/Boids/Bird")]
@@ -21,7 +20,6 @@ namespace Boids.Bird
         public BoidsStartleConfig startleConfig;
         public BoidsFlyingConfig flyingConfig;
         public BoidsHoveringConfig hoveringConfig;
-        public BoidsTryLandingConfig tryLandingConfig;
         public BoidsHoverLandingConfig landConfig;
         [Header("_Additional")]
         public BoidsFlockingConfig flockingConfig;

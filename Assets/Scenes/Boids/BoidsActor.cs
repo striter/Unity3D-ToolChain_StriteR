@@ -6,18 +6,19 @@ namespace Boids
 {
     public class BoidsActor : APoolItem<int>
     {
-        public readonly BoidsAnimation m_Animation;
+        public readonly IBoidsAnimation m_Animation;
         public readonly ABoidsTarget m_Target;
         public readonly ABoidsBehaviour m_Behaviour;
-        public BoidsActor(Transform _transform,ABoidsBehaviour _behaviour,ABoidsTarget _target) : base(_transform)
+        public BoidsActor(Transform _transform,ABoidsBehaviour _behaviour,ABoidsTarget _target,IBoidsAnimation _animation) : base(_transform)
         {
             m_Behaviour = _behaviour;
             m_Target = _target;
-            m_Animation = new BoidsAnimation(_transform);
+            m_Animation = _animation;
+            m_Animation.Init(_transform);
         }
-        public BoidsActor Spawn(Matrix4x4 _landing,Mesh[] _blendMeshes,Material _material)
+        public BoidsActor Spawn(Matrix4x4 _landing)
         {
-            m_Animation.Spawn(_material,_blendMeshes);
+            m_Animation.Spawn();
             m_Target.Spawn(this,_landing);
             m_Behaviour.Spawn(this,_landing);
             return this;

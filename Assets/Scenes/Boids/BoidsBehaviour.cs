@@ -9,7 +9,7 @@ namespace Boids
     {
         void Begin(BoidsActor _actor);
         void End();
-        void DrawGizmosSelected();
+        void DrawGizmosSelected(BoidsActor _actor);
     }
     public interface IStateTransformApply
     {
@@ -36,7 +36,7 @@ namespace Boids
         public virtual void Spawn(BoidsActor _actor, Matrix4x4 _landing)
         {
             m_Actor = _actor;
-            m_Position = _landing.MultiplyVector(Vector3.zero);
+            m_Position = _landing.MultiplyPoint(Vector3.zero);
             m_Rotation = _landing.rotation;
         }
 
@@ -143,7 +143,7 @@ namespace Boids
         {
             Gizmos.matrix=Matrix4x4.identity;
             Gizmos.DrawSphere(m_Position,.1f);
-            Gizmos.DrawLine(m_Position,m_Position+m_Rotation*Vector3.forward*.2f);
+            Gizmos.DrawLine(m_Position,m_Position+m_Velocity*.2f);
 
             Gizmos.DrawLine(m_Position,m_Actor.m_Target.m_Destination);
             Gizmos.color = Color.red;
@@ -157,7 +157,7 @@ namespace Boids
             Gizmos.color = Color.black;
             Gizmos.matrix = Matrix4x4.TRS(m_Position,m_Rotation,Vector3.one);
             Gizmos_Extend.DrawString(Vector3.up*.1f,m_CurrentState.ToString());
-            m_State.DrawGizmosSelected();
+            m_State.DrawGizmosSelected(m_Actor);
         }
     }
 

@@ -90,7 +90,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTex:
-        m_Texture: {fileID: 2800000, guid: c8b4f464be45a5b44a9113a28f2bfd85, type: 3}
+        m_Texture: {fileID: 2800000, guid: 1af8c9dba40d07841823c9aa75513739, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -138,7 +138,7 @@ Material:
     - _BumpScale: 1
     - _Caustic: 1
     - _CausticClip: 1
-    - _CausticStrength: 0.29
+    - _CausticStrength: 0.9
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _CrackDistance: 0.5
@@ -149,10 +149,10 @@ Material:
     - _Cull: 2
     - _Cutoff: 0.5
     - _Depth: 1
-    - _DepthBegin: 1
+    - _DepthBegin: 0
     - _DepthBuffer: 1
     - _DepthBufferScale: 1
-    - _DepthDistance: 1.3
+    - _DepthDistance: 40
     - _DepthOffset: 0.42
     - _DepthPow: 2
     - _DepthRefraction: 1
@@ -204,15 +204,15 @@ Material:
     - _ReceiveShadow: 1
     - _ReceiveShadows: 1
     - _ReflectionAmount: 0.51
-    - _RefractionAmount: 0.279
+    - _RefractionAmount: 0.048
     - _RefractionDistance: 0.47
-    - _Scale: 11.3
+    - _Scale: 16
     - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularAmount: 0.98
     - _SpecularHighlights: 1
     - _SpecularRange: 0.9
-    - _SpecularStrength: 1
+    - _SpecularStrength: 5
     - _SrcBlend: 1
     - _SteepCount: 128
     - _SteepParallex: 0
@@ -225,9 +225,9 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 0, g: 0.943182, b: 1, a: 0}
+    - _Color: {r: 0, g: 0.4814489, b: 1, a: 0.27058825}
     - _CrackColor: {r: 1, g: 1, b: 1, a: 1}
-    - _DepthColor: {r: 0.25640798, g: 0.7784162, b: 0.8113208, a: 0.6156863}
+    - _DepthColor: {r: 0.0139212515, g: 0, b: 0.44339618, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlowDirection: {r: -1, g: 0, b: 0, a: 0}
     - _FlowDirection1: {r: 1, g: 1, b: 0, a: 0}

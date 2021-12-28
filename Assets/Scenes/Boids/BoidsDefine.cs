@@ -20,7 +20,7 @@ namespace Boids
         public float speed;
         public float maintainHeight;
         public float heightDamping;
-        public float sqrBorder;
+        public float boderRange;
         public float borderDamping;
         public RangeFloat tiringDuration;
         public string flyAnim;
@@ -36,7 +36,6 @@ namespace Boids
         public float distance;
         public float height;
         public string flyAnim;
-        public string glideAnim;
     }
     
     [Serializable]
@@ -47,16 +46,6 @@ namespace Boids
         public float sqrRadius;
         public string anim;
     }
-    
-    [Serializable]
-    public struct BoidsTryLandingConfig
-    {
-        public float speed;
-        public float damping;
-        public float distanceBias;
-        public string anim;
-    }
-
     [Serializable]
     public struct BoidsHoverLandingConfig
     {

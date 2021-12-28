@@ -6,9 +6,12 @@ namespace Boids.Butterfly
 {
     public class FButterflyFlock : BoidsFlock<FButterflyBehaviour>
     {        
+        public Material m_Material;
+        public Mesh[] m_Meshes;
         public FButterflyConfig m_Config;
         protected override ABoidsBehaviour GetController() => new FButterflyBehaviour(m_Config);
         protected override ABoidsTarget GetTarget() => new FButterflyTarget();
+        protected override IBoidsAnimation GetAnimation() => new BoidsMeshAnimation(m_Material,m_Meshes);
 
         public int m_Count=5;
         public void Spawn()
@@ -57,7 +60,7 @@ namespace Boids.Butterfly
                 default: throw new InvalidEnumArgumentException();
                 case EButterFlyBehaviour.Startle:  return TSPool<Behaviours.Startle<EButterFlyBehaviour>>.Spawn().Init(m_Config.startleConfig,m_Config.flockingConfig,EButterFlyBehaviour.Floating);
                 case EButterFlyBehaviour.Floating: return TSPool<Behaviours.Floating>.Spawn().Init(m_Config.floatingConfig,m_Config.flockingConfig);
-                case EButterFlyBehaviour.Landing:return TSPool<Behaviours.Landing<EButterFlyBehaviour>>.Spawn().Init(m_Config.landConfig,EButterFlyBehaviour.Stopped);
+                case EButterFlyBehaviour.Landing:return TSPool<Behaviours.HoverLanding<EButterFlyBehaviour>>.Spawn().Spawn(m_Config.landConfig,EButterFlyBehaviour.Stopped);
                 case EButterFlyBehaviour.Stopped:return TSPool<Behaviours.Idle>.Spawn().Init(m_Config.idleConfig);
             }
         }
@@ -69,7 +72,7 @@ namespace Boids.Butterfly
                 default: throw new InvalidEnumArgumentException();
                 case EButterFlyBehaviour.Startle: TSPool<Behaviours.Startle<EButterFlyBehaviour>>.Recycle(state as Behaviours.Startle<EButterFlyBehaviour>); break;
                 case EButterFlyBehaviour.Floating: TSPool<Behaviours.Floating>.Recycle(state as Behaviours.Floating); break;
-                case EButterFlyBehaviour.Landing: TSPool<Behaviours.Landing<EButterFlyBehaviour>>.Recycle(state as Behaviours.Landing<EButterFlyBehaviour>); break;
+                case EButterFlyBehaviour.Landing: TSPool<Behaviours.HoverLanding<EButterFlyBehaviour>>.Recycle(state as Behaviours.HoverLanding<EButterFlyBehaviour>); break;
                 case EButterFlyBehaviour.Stopped:TSPool<Behaviours.Idle>.Recycle(state as Behaviours.Idle); break;
             }
         }

@@ -16,20 +16,14 @@ public class BoidsManager : MonoBehaviour
         m_Flocks.Traversal(p=>p.Init());
         UIT_TouchConsole.Header("Birds");
         var spawn=UIT_TouchConsole.Command("Spawn",KeyCode.Alpha1);
-        spawn.Button(()=>m_BirdFlock.Spawn( new Vector2(Screen.width/2f,Screen.height/2f)));
-            spawn.Drag((status,position) =>
-        {
-            if (status)
-                return;
-            m_BirdFlock.Spawn(position);
-        });
+        spawn.Button(m_BirdFlock.Spawn);
         UIT_TouchConsole.Command("Startle",KeyCode.Alpha2).Button(m_BirdFlock.Startle);
         UIT_TouchConsole.Command("Clear",KeyCode.Alpha3).Button(m_BirdFlock.Clear);
         
         UIT_TouchConsole.Header("Butterflies");
         UIT_TouchConsole.Command("Spawn",KeyCode.Q).Button( m_ButterflyFlock.Spawn);
-        UIT_TouchConsole.Command("Startle",KeyCode.W).Button(m_ButterflyFlock.Recall);
-        UIT_TouchConsole.Command("Recall",KeyCode.E).Button(m_ButterflyFlock.Startle);
+        UIT_TouchConsole.Command("Startle",KeyCode.W).Button(m_ButterflyFlock.Startle);
+        UIT_TouchConsole.Command("Recall",KeyCode.E).Button(m_ButterflyFlock.Recall);
         UIT_TouchConsole.Command("Clear",KeyCode.R).Button(m_ButterflyFlock.Clear );
     }
 
