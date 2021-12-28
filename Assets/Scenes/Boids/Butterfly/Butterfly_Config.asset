@@ -28,9 +28,9 @@ MonoBehaviour:
     sqrRadius: 1
     anim: Butterfly_Flap
   landConfig:
-    speed: 0.5
-    distanceBias: 0.5
-    damping: 1
+    duration:
+      start: 2
+      length: 2
     anim: Butterfly_SitFlap
   idleConfig:
     anim: Butterfly_Sit

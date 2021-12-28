@@ -11,8 +11,7 @@ namespace Boids
         void End();
         void DrawGizmosSelected();
     }
-
-    public interface IStateTransformSetter
+    public interface IStateTransformApply
     {
         void TickTransform(BoidsActor _actor,ABoidsBehaviour _behaviour,IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,ref Vector3 _position,ref Quaternion _rotation);
     }
@@ -22,29 +21,23 @@ namespace Boids
         void TickVelocity(BoidsActor _actor,ABoidsBehaviour _behaviour, IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,ref Vector3 _velocity);
     }
     
-    public interface IStateSwitch<T> where T:Enum
+    public interface IStateSwitch<T>
     {
-        T m_NextBehaviour { get; }
-        bool TickStateSwitch(BoidsActor _actor, float _deltaTime);
+        bool TickStateSwitch(BoidsActor _actor, float _deltaTime,out T _nextState);
     }
 
     public abstract class ABoidsBehaviour
     {
-        protected BoidsActor m_Actor;
+        protected BoidsActor m_Actor { get; private set; }
         public int Identity => m_Actor.m_Identity;
         protected Vector3 m_Position;
         protected Quaternion m_Rotation;
         protected Vector3 m_Velocity;
-        public ABoidsBehaviour Init(BoidsActor _actor)
+        public virtual void Spawn(BoidsActor _actor, Matrix4x4 _landing)
         {
             m_Actor = _actor;
-            return this;
-        }
-
-        public virtual void Spawn(Vector3 _position,Quaternion rotation)
-        {
-            m_Position = _position;
-            m_Rotation = rotation;
+            m_Position = _landing.MultiplyVector(Vector3.zero);
+            m_Rotation = _landing.rotation;
         }
 
         public virtual void Recycle()
@@ -52,7 +45,7 @@ namespace Boids
             m_Actor = null;
         }
 
-        public abstract void Tick(float _deltaTime, IEnumerable<BoidsActor> _flock, out Vector3 position, out Quaternion rotation);
+        public abstract void Tick(float _deltaTime, IEnumerable<BoidsActor> _flock);
 
         public virtual void DrawGizmosSelected()
         {
@@ -60,7 +53,6 @@ namespace Boids
             Gizmos.DrawLine(m_Position,m_Position+m_Rotation*Vector3.forward*.4f);
 
             Gizmos.DrawLine(m_Position,m_Actor.m_Target.m_Destination);
-            Gizmos.DrawWireSphere(m_Actor.m_Target.m_Destination,.5f);
             Gizmos.matrix = Matrix4x4.TRS(m_Position,m_Rotation,Vector3.one);
         }
         
@@ -75,9 +67,9 @@ namespace Boids
         private IBoidsState m_State;
         private IStateSwitch<T> m_Switch;
         private IStateTransformVelocity m_TransformVelocity;
-        private IStateTransformSetter m_TransformSetter;
+        private IStateTransformApply m_TransformApply;
         
-        public T m_StateType { get; private set; }
+        public T m_CurrentState { get; private set; }
         protected abstract IBoidsState SpawnBehaviour(T _behaviourType);
         protected abstract void RecycleBehaviour(T _behaviourType,IBoidsState state);
         public void SetBehaviour(T _behaviour)
@@ -85,20 +77,21 @@ namespace Boids
             if (m_State != null)
             {
                 m_State.End();
-                RecycleBehaviour(m_StateType,m_State);
+                RecycleBehaviour(m_CurrentState,m_State);
             }
 
             m_State = null;
             m_Switch = null;
-            m_TransformSetter = null;
+            m_TransformApply = null;
             m_TransformVelocity = null;
 
-            m_StateType = _behaviour;
-            m_State=SpawnBehaviour(m_StateType);
+            m_CurrentState = _behaviour;
+            m_State = SpawnBehaviour(m_CurrentState);
+            
             m_State.Begin(m_Actor);
 
             m_Switch=m_State as IStateSwitch<T>;
-            m_TransformSetter = m_State as IStateTransformSetter;
+            m_TransformApply = m_State as IStateTransformApply;
             m_TransformVelocity = m_State as IStateTransformVelocity;
             if (m_TransformVelocity == null)
                 m_Velocity = Vector3.zero;
@@ -106,25 +99,23 @@ namespace Boids
             m_VelocityTicker.Reset();
             m_VelocityTicker.Tick(m_VelocityTicker.m_Duration);
         }
-
         
-        public override void Tick(float _deltaTime,IEnumerable<BoidsActor> _flock,out Vector3 _position,out Quaternion _rotation)
+        public override void Tick(float _deltaTime,IEnumerable<BoidsActor> _flock)
         {
-            if (m_Switch != null && m_Switch.TickStateSwitch(m_Actor, _deltaTime))
-                SetBehaviour((T)Enum.ToObject(typeof(T),m_Switch.m_NextBehaviour));
+            if (m_Switch != null && m_Switch.TickStateSwitch(m_Actor, _deltaTime,out T _nextState))
+                SetBehaviour(_nextState);
             
-            TickTransform(_deltaTime,_flock);
             TickVelocity(_deltaTime,_flock);
+            TickTransform(_deltaTime,_flock);
             
-            _position = m_Position;
-            _rotation = m_Rotation;
+            m_Actor.Transform.position = m_Position;
+            m_Actor.Transform.rotation = m_Rotation;
         }
-
         void TickTransform(float _deltaTime,IEnumerable<BoidsActor> _flock)
         {
-            if (m_TransformSetter == null)
+            if (m_TransformApply == null)
                 return;
-            m_TransformSetter.TickTransform(m_Actor,this,_flock.Select(p=>p.m_Behaviour),_deltaTime,ref m_Position,ref m_Rotation);
+            m_TransformApply.TickTransform(m_Actor,this,_flock.Select(p=>p.m_Behaviour),_deltaTime,ref m_Position,ref m_Rotation);
         }
         
         void TickVelocity(float _deltaTime,IEnumerable<BoidsActor> _flock)
@@ -155,10 +146,17 @@ namespace Boids
             Gizmos.DrawLine(m_Position,m_Position+m_Rotation*Vector3.forward*.2f);
 
             Gizmos.DrawLine(m_Position,m_Actor.m_Target.m_Destination);
+            Gizmos.color = Color.red;
+            Gizmos.DrawRay(m_Actor.m_Target.m_Destination,m_Actor.m_Target.m_Right);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawRay(m_Actor.m_Target.m_Destination,m_Actor.m_Target.m_Forward);
+            Gizmos.color = Color.green;
+            Gizmos.DrawRay(m_Actor.m_Target.m_Destination,m_Actor.m_Target.m_Up);
             Gizmos.DrawWireSphere(m_Actor.m_Target.m_Destination,.2f);
-            Gizmos.matrix = Matrix4x4.TRS(m_Position,m_Rotation,Vector3.one);
 
-            Gizmos_Extend.DrawString(Vector3.up*.1f,m_StateType.ToString());
+            Gizmos.color = Color.black;
+            Gizmos.matrix = Matrix4x4.TRS(m_Position,m_Rotation,Vector3.one);
+            Gizmos_Extend.DrawString(Vector3.up*.1f,m_CurrentState.ToString());
             m_State.DrawGizmosSelected();
         }
     }

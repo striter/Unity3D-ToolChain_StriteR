@@ -15,8 +15,8 @@ MonoBehaviour:
   startleConfig:
     speed: 10
     reaction:
-      start: 0.2
-      length: 0.5
+      start: 0
+      length: 0.2
     duration:
       start: 0.5
       length: 1
@@ -25,9 +25,9 @@ MonoBehaviour:
   flyingConfig:
     speed: 8
     maintainHeight: 10
-    heightDamping: 0.1
+    heightDamping: 0.2
     sqrBorder: 400
-    borderDamping: 1
+    borderDamping: 0.5
     tiringDuration:
       start: 10
       length: 20
@@ -38,15 +38,19 @@ MonoBehaviour:
     duration:
       start: 7
       length: 5
-    damping: 0.25
+    damping: 0.2
     distance: 4
     height: 5
     flyAnim: Bird_Flying
     glideAnim: Bird_Gliding
+  tryLandingConfig:
+    speed: 4
+    damping: 1.5
+    distanceBias: 16
+    anim: Bird_Flying
   landConfig:
     speed: 3
-    distanceBias: 0.1
-    damping: 2
+    damping: 0.5
     anim: Bird_Landing
   flockingConfig:
     sqrVisualizeRange: 16
@@ -56,7 +60,7 @@ MonoBehaviour:
     alignmentDamping: 0.25
   evadeConfig:
     evadeDistance: 20
-    evadeDamping: 10
+    evadeDamping: 1
   perchConfig:
     moveSpeed: 1
     moveAnim: Bird_Flapping

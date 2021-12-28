@@ -6,6 +6,8 @@ namespace Boids.Butterfly
 {
     public enum EButterFlyBehaviour
     {
+        Invalid=-1,
+        
         Startle,
         Floating,
         

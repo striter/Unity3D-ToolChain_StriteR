@@ -9,7 +9,8 @@ namespace Boids.Bird
         Flying=1,
         
         Hovering=2,
-        Landing=3,
+        TryLanding=3,
+        Landing=4,
         Perching=5,
     }
 
@@ -20,7 +21,8 @@ namespace Boids.Bird
         public BoidsStartleConfig startleConfig;
         public BoidsFlyingConfig flyingConfig;
         public BoidsHoveringConfig hoveringConfig;
-        public BoidsLandingConfig landConfig;
+        public BoidsTryLandingConfig tryLandingConfig;
+        public BoidsHoverLandingConfig landConfig;
         [Header("_Additional")]
         public BoidsFlockingConfig flockingConfig;
         public BoidsEvadeConfig evadeConfig;

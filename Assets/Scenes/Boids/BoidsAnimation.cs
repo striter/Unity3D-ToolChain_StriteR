@@ -19,12 +19,13 @@ namespace Boids
             m_BlendRenderer=m_BlendFilter.GetComponent<MeshRenderer>();
         }
 
-        public void Init(Material _material,Mesh[] _animations)
+        public void Spawn(Material _material,Mesh[] _animations)
         {
             m_MainRenderer.sharedMaterial = _material;
             m_BlendRenderer.sharedMaterial = _material;
             m_Animations = _animations;
             m_BlendFilter.gameObject.SetActive(false);
+            m_MainFilter.transform.localScale = Vector3.zero;
         }
 
         public void SetAnimation(string _animation)

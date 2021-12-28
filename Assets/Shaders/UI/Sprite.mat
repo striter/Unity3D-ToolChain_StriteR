@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Burn
-  m_Shader: {fileID: 4800000, guid: 62efde75b9f8dea45b2db65db0ca2542, type: 3}
+  m_Name: Sprite
+  m_Shader: {fileID: 4800000, guid: 457fc035eec56f54f9a0f7a2c0c8a687, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -39,6 +39,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _FlowTex:
+        m_Texture: {fileID: 2800000, guid: d312a60fd3a7a4a4d856ae2a36d15848, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HoloTex:
+        m_Texture: {fileID: 2800000, guid: d312a60fd3a7a4a4d856ae2a36d15848, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -48,7 +56,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NoiseTex:
-        m_Texture: {fileID: 2800000, guid: fa57e5ff6a47ada49b4a0ec740c02bec, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -59,13 +67,20 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
+    - _Brightness: 1
     - _BumpScale: 1
-    - _BurnWidth: 0.0612
     - _ColorMask: 15
+    - _Contrast: 1
     - _Cutoff: 0.5
+    - _DeltaX: 1
+    - _DeltaY: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _FlowTexMultiply: 1
+    - _FlowX: -0.1
+    - _FlowY: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -73,7 +88,8 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Progress: 0.48
+    - _Saturation: 1
+    - _ShineWidth: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -84,9 +100,14 @@ Material:
     - _StencilWriteMask: 255
     - _UVSec: 0
     - _UseUIAlphaClip: 0
+    - _Width: 2.63
     - _ZWrite: 1
     m_Colors:
-    - _BurnColor: {r: 1, g: 1, b: 1, a: 0.5686275}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _BSC: {r: 1, g: 0, b: 1, a: 1}
+    - _Color: {r: 2.510569, g: 4.2359276, b: 7.3772106, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FlowVec: {r: 0, g: 0, b: -0.1, a: 0}
+    - _LightColor: {r: 1, g: 1, b: 1, a: 0}
+    - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SpriteRect: {r: 0.061062366, g: 0, b: 0.99776113, a: 0.99769324}
   m_BuildTextureStacks: []

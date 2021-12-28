@@ -340,12 +340,19 @@ namespace TPool
     public class TObjectPoolClass<T,Y> : AObjectPool<T,Y> where Y :ITransform
     {
         private readonly Type m_Type;
+        private readonly Func<object[]> m_GetParameters;
         public TObjectPoolClass(Transform _poolTrans, Type type) : base(_poolTrans.gameObject,_poolTrans.parent) { m_Type = type; }
-        public TObjectPoolClass(Transform _poolTrans) : this(_poolTrans,typeof(Y) ) {}
+
+        public TObjectPoolClass(Transform _poolTrans, Func<object[]> _getParameters = null) : this(_poolTrans,
+            typeof(Y))
+        {
+            m_GetParameters = _getParameters;
+        }
         protected override Y CreateNewItem(Transform instantiateTrans)
         {
-            Y item = UReflection.CreateInstance<Y>(m_Type, instantiateTrans);
-            return item;
+            if(m_GetParameters!=null)
+                return UReflection.CreateInstance<Y>(m_Type,  new object[]{ instantiateTrans }.Add(m_GetParameters.Invoke()));
+            return UReflection.CreateInstance<Y>(m_Type, instantiateTrans);
         }
 
         protected override Transform GetItemTransform(Y targetItem) => targetItem.Transform;

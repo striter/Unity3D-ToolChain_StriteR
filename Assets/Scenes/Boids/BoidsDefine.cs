@@ -49,11 +49,26 @@ namespace Boids
     }
     
     [Serializable]
-    public struct BoidsLandingConfig
+    public struct BoidsTryLandingConfig
     {
         public float speed;
-        public float distanceBias;
         public float damping;
+        public float distanceBias;
+        public string anim;
+    }
+
+    [Serializable]
+    public struct BoidsHoverLandingConfig
+    {
+        public float speed;
+        public float damping;
+        public string anim;
+    }
+
+    [Serializable]
+    public struct BoidsLandingConfig
+    {
+        public RangeFloat duration;
         public string anim;
     }
     

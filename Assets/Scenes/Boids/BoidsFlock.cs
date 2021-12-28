@@ -11,14 +11,16 @@ namespace Boids
         public Material m_Material;
         protected TObjectPoolClass<int, BoidsActor> m_Actors { get; private set; }
         protected abstract ABoidsBehaviour GetController();
-        public void Init()
+        protected abstract ABoidsTarget GetTarget();
+        public virtual void Init()
         {
-            m_Actors = new TObjectPoolClass<int, BoidsActor>(transform.Find("Actor"));
+            m_Actors = new TObjectPoolClass<int, BoidsActor>(transform.Find("Actor"),GetParameters);
         }
-
-        protected void SpawnActor(Vector3 position,Vector3 normal)
+        object[] GetParameters()=>
+            new object[] { GetController(), GetTarget() };
+        protected void SpawnActor(Matrix4x4 _landing)
         {
-            m_Actors.Spawn().Spawn( GetController(),position,m_Meshes,m_Material);
+            m_Actors.Spawn().Spawn(_landing,m_Meshes,m_Material);
         }
 
         public void Clear()
@@ -33,7 +35,7 @@ namespace Boids
         
 
 #if UNITY_EDITOR
-        private void OnDrawGizmos()
+        protected virtual void OnDrawGizmos()
         {  
             m_Actors?.Collect(p=>UnityEditor.Selection.activeObject==p.Transform.gameObject).Traversal(p=>p.DrawGizmosSelected());
         }
