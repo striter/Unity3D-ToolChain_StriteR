@@ -189,8 +189,6 @@ namespace Boids.Behaviours
             switch (m_Config.constrain)
             {
                 default: throw new InvalidEnumArgumentException();
-                case EBoidsFloatingConstrain.Box:
-                    return false;
                 case EBoidsFloatingConstrain.Spherical:
                     return _offset.sqrMagnitude > m_Config.sqrRadius;
             }
@@ -208,40 +206,32 @@ namespace Boids.Behaviours
         {
         }
     }
-    public class Hovering<T> : IBoidsState,IStateTransformVelocity,IStateSwitch<T> where T:Enum
+
+    public class Hovering : IBoidsState, IStateTransformVelocity
     {
         private BoidsHoveringConfig m_Config;
         private BoidsFlockingConfig m_FlockConfig;
+        private bool m_Evade;
         private BoidsEvadeConfig m_EvadeConfig;
         public float speed => m_Config.speed;
-        private readonly Counter m_HoverCounter=new Counter();
-        private T m_NextBehaviour;
         private float m_Clockwise;
-        public Hovering<T> Init(BoidsHoveringConfig _hoverConfig,BoidsFlockingConfig _flockConfig,BoidsEvadeConfig _evadeConfig,T _nextBehaviour) 
+        
+        public Hovering Init(BoidsHoveringConfig _hoverConfig,BoidsFlockingConfig _flockConfig,BoidsEvadeConfig? _evadeConfig=null) 
         {
             m_Config = _hoverConfig;
             m_FlockConfig = _flockConfig;
-            m_EvadeConfig = _evadeConfig;
-            m_NextBehaviour = _nextBehaviour;
+            m_Evade = _evadeConfig.HasValue;
+            if (m_Evade) m_EvadeConfig = _evadeConfig.Value;
             return this;
         }
-        public void Begin(BoidsActor _actor)
+        public virtual void Begin(BoidsActor _actor)
         {
-            _actor.m_Animation.SetAnimation(m_Config.flyAnim);
-            
+            _actor.m_Animation.SetAnimation(m_Config.anim);
             Vector3 centerOffset = _actor.Position - _actor.m_Target.m_Destination;
             m_Clockwise = Mathf.Sign(Vector3.Dot( Vector3.Cross(_actor.m_Target.m_Up,centerOffset),_actor.Velocity));
-            m_HoverCounter.Set(m_Config.duration.Random());
         }
-
-        public void End()
+        public virtual void End()
         {
-        }
-        public bool TickStateSwitch(BoidsActor _actor, float _deltaTime,out T _nextBehaviour)
-        {
-            _nextBehaviour = m_NextBehaviour;
-            m_HoverCounter.Tick(_deltaTime);
-            return !m_HoverCounter.m_Counting;
         }
 
         private Vector3 hoverPosition;
@@ -262,19 +252,53 @@ namespace Boids.Behaviours
             _velocity += direction * (_deltaTime * m_Config.damping);
             
             _velocity += this.TickFlocking(_actor,_flock,_deltaTime,m_FlockConfig);
-            _velocity += this.TickEvading(_actor,_deltaTime,m_EvadeConfig);
+            
+            if(m_Evade)
+                _velocity += this.TickEvading(_actor,_deltaTime,m_EvadeConfig);
         }
-        public void DrawGizmosSelected(BoidsActor _actor)
+        public virtual void DrawGizmosSelected(BoidsActor _actor)
         {
-            Gizmos_Extend.DrawString(Vector3.up*.2f,$"Time:{m_HoverCounter.m_TimeLeft:F1}, CW:{m_Clockwise}");
             Gizmos.matrix = Matrix4x4.identity;
             Gizmos.color = Color.red;
             Gizmos.DrawLine(_actor.Position,hoverPosition);
             Gizmos.DrawWireSphere(_actor.Position,.2f);
             Gizmos.color = Color.green;
             Gizmos.DrawLine(hoverPosition,hoverPosition+hoverTangent*.2f);
+            Gizmos_Extend.DrawString( _actor.Position+Vector3.up*.2f,$"CW:{m_Clockwise}");
         }
 
+    }
+    
+    public class Hovering<T> : Hovering, IStateSwitch<T> where T:Enum
+    {
+        private readonly Counter m_HoverCounter=new Counter();
+        private T m_NextBehaviour;
+        private RangeFloat m_HoverDuration;
+        public Hovering<T> Init(BoidsHoveringConfig _hoverConfig,BoidsFlockingConfig _flockConfig,BoidsEvadeConfig _evadeConfig,RangeFloat _duration,T _nextBehaviour)
+        {
+            base.Init(_hoverConfig, _flockConfig, _evadeConfig);
+            m_HoverDuration = _duration;
+            m_NextBehaviour = _nextBehaviour;
+            return this;
+        }
+
+        public override void Begin(BoidsActor _actor)
+        {
+            base.Begin(_actor);
+            m_HoverCounter.Set(m_HoverDuration.Random());
+        }
+        public bool TickStateSwitch(BoidsActor _actor, float _deltaTime,out T _nextBehaviour)
+        {
+            _nextBehaviour = m_NextBehaviour;
+            m_HoverCounter.Tick(_deltaTime);
+            return !m_HoverCounter.m_Counting;
+        }
+
+        public override void DrawGizmosSelected(BoidsActor _actor)
+        {
+            base.DrawGizmosSelected(_actor);
+            Gizmos_Extend.DrawString(_actor.Position+Vector3.up*.3f,$"Time:{m_HoverCounter.m_TimeLeft:F1}");
+        }
     }
 
     public class HoverLanding<T> : IBoidsState, IStateTransformApply,IStateTransformVelocity, IStateSwitch<T>

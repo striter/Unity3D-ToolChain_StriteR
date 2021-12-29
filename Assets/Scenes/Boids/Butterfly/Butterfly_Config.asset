@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Butterfly_Config
   m_EditorClassIdentifier: 
   startleConfig:
-    speed: 3
+    speed: 2
     reaction:
       start: 0.25
       length: 0.25
@@ -23,9 +23,11 @@ MonoBehaviour:
     damping: 1
     animName: Butterfly_Flap
   floatingConfig:
-    speed: 2
+    constrain: 0
+    speed: 1.2
     damping: 1
     sqrRadius: 1
+    boxSize: {x: 0, y: 0, z: 0}
     anim: Butterfly_Flap
   landConfig:
     speed: 2

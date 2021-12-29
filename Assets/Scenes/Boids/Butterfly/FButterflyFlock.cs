@@ -11,8 +11,8 @@ namespace Boids.Butterfly
         public Mesh[] m_Meshes;
         public FButterflyConfig m_Config;
         protected override ABoidsBehaviour GetController() => new FButterflyBehaviour(m_Config);
-        protected override ABoidsTarget GetTarget() => new FButterflyTarget();
-        protected override IBoidsAnimation GetAnimation() => new BoidsMeshAnimation(m_Material,m_Meshes);
+        protected override ABoidsTarget GetTarget() => new FBoidsTargetEmpty();
+        protected override IBoidsAnimation GetAnimation() => new FBoidsMeshAnimation(m_Material,m_Meshes);
 
         public int m_Count=5;
         public void Spawn()
@@ -33,11 +33,6 @@ namespace Boids.Butterfly
         }
     }
     
-
-    public class FButterflyTarget : ABoidsTarget
-    {
-        
-    }
     public sealed class FButterflyBehaviour:BoidsBehaviour<EButterFlyBehaviour>
     {
         private readonly FButterflyConfig m_Config;

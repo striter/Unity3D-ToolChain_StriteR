@@ -34,7 +34,7 @@ namespace Boids
         public virtual void Spawn(BoidsActor _actor,Matrix4x4 _landing)
         {
             m_Actor = _actor;
-            m_Velocity = Vector3.zero;
+            m_Velocity = _landing.MultiplyVector(URandom.RandomVector3());
             
             m_DesiredPosition = _landing.MultiplyPoint(Vector3.zero);
             m_DesiredRotation = _landing.rotation;
@@ -60,7 +60,8 @@ namespace Boids
         private T m_CurrentState;
         protected abstract IBoidsState SpawnBehaviour(T _behaviourType);
         protected abstract void RecycleBehaviour(T _behaviourType,IBoidsState _state);
-        public void SetBehaviour(T _behaviour)
+
+        protected void SetBehaviour(T _behaviour)
         {
             if (m_State != null)
             {

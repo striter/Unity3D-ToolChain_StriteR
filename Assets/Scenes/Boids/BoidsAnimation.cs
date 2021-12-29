@@ -30,14 +30,14 @@ namespace Boids
         }
     }
     
-    public class BoidsMeshAnimation:IBoidsAnimation
+    public class FBoidsMeshAnimation:IBoidsAnimation
     {
         private readonly Material m_Material;
         private readonly Mesh[] m_AnimationMeshes;
         private readonly Counter m_BlendCounter = new Counter(.25f);
         private MeshFilter m_MainFilter;
         private MeshFilter m_BlendFilter;
-        public BoidsMeshAnimation(Material _material,Mesh[] _meshes)
+        public FBoidsMeshAnimation(Material _material,Mesh[] _meshes)
         {
             m_Material = _material;
             m_AnimationMeshes = _meshes;

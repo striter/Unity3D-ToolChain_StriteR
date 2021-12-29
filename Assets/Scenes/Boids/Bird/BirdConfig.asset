@@ -35,14 +35,13 @@ MonoBehaviour:
     glideAnim: Bird_Gliding
   hoveringConfig:
     speed: 6
-    duration:
-      start: 12
-      length: 6
     damping: 5
     distance: 3
     height: 2
-    flyAnim: Bird_Flying
-    glideAnim: Bird_Gliding
+    anim: Bird_Flying
+  hoveringDuration:
+    start: 10
+    length: 10
   landConfig:
     speed: 5
     damping: 1.5

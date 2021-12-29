@@ -14,7 +14,7 @@ namespace Boids.Bird
         public Mesh[] m_Meshes;
         protected override ABoidsBehaviour GetController() => new FBirdBehaviour(fBirdConfig);
         protected override ABoidsTarget GetTarget() => new FBirdTarget(this);
-        protected override IBoidsAnimation GetAnimation() => new BoidsMeshAnimation(m_Material,m_Meshes);
+        protected override IBoidsAnimation GetAnimation() => new FBoidsMeshAnimation(m_Material,m_Meshes);
 
         public override void Init()
         {
@@ -80,7 +80,7 @@ namespace Boids.Bird
                 default: throw new InvalidEnumArgumentException();
                 case EBirdBehaviour.Startling: return TSPool<Behaviours.Startle<EBirdBehaviour>>.Spawn().Init(m_Config.startleConfig,m_Config.flockingConfig,EBirdBehaviour.Flying);
                 case EBirdBehaviour.Flying: return TSPool<Behaviours.Flying<EBirdBehaviour>>.Spawn().Init(m_Config.flyingConfig,m_Config.flockingConfig,m_Config.evadeConfig,EBirdBehaviour.Hovering); 
-                case EBirdBehaviour.Hovering:return TSPool<Behaviours.Hovering<EBirdBehaviour>>.Spawn().Init(m_Config.hoveringConfig,m_Config.flockingConfig,m_Config.evadeConfig,EBirdBehaviour.Landing);
+                case EBirdBehaviour.Hovering:return TSPool<Behaviours.Hovering<EBirdBehaviour>>.Spawn().Init(m_Config.hoveringConfig,m_Config.flockingConfig,m_Config.evadeConfig,m_Config.hoveringDuration,EBirdBehaviour.Landing);
                 case EBirdBehaviour.Landing:return TSPool<Behaviours.HoverLanding<EBirdBehaviour>>.Spawn().Spawn(m_Config.landConfig,EBirdBehaviour.Perching); 
                 case EBirdBehaviour.Perching:return TSPool<Behaviours.Perching>.Spawn().Init(m_Config.perchConfig,m_Config.perchFlocking); 
             }

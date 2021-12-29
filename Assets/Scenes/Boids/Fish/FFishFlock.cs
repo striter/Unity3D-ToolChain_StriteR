@@ -12,7 +12,7 @@ namespace Boids.Fish
         public FFishConfig m_Config;
         protected override ABoidsBehaviour GetController() => new FFishBehaviour(m_Config);
 
-        protected override ABoidsTarget GetTarget() => new BoidsTargetDefault();
+        protected override ABoidsTarget GetTarget() => new FBoidsTargetEmpty();
         protected override IBoidsAnimation GetAnimation() => new BoidsEmptyAnimation();
 
         public void Spawn()
@@ -46,7 +46,7 @@ namespace Boids.Fish
             switch (_behaviourType)
             {
                 default: throw new InvalidEnumArgumentException();
-                case EFishBehaviour.Floating: return TSPool<Floating>.Spawn().Init(m_Config.floating,m_Config.flocking);
+                case EFishBehaviour.Floating: return TSPool<Hovering>.Spawn().Init(m_Config.hovering,m_Config.flocking);
             }
         }
 
@@ -55,7 +55,7 @@ namespace Boids.Fish
             switch (_behaviourType)
             {
                 default: throw new InvalidEnumArgumentException();
-                case EFishBehaviour.Floating: TSPool<Floating>.Recycle(_state as Floating); break;
+                case EFishBehaviour.Floating: TSPool<Hovering>.Recycle(_state as Hovering); break;
             }
         }
     }

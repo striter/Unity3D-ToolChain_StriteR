@@ -20,6 +20,7 @@ namespace Boids.Bird
         public BoidsStartleConfig startleConfig;
         public BoidsFlyingConfig flyingConfig;
         public BoidsHoveringConfig hoveringConfig;
+        public RangeFloat hoveringDuration;
         public BoidsHoverLandingConfig landConfig;
         [Header("_Additional")]
         public BoidsFlockingConfig flockingConfig;

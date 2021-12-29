@@ -44,7 +44,7 @@ namespace Boids
         }
     }
 
-    public class BoidsTargetDefault:ABoidsTarget
+    public class FBoidsTargetEmpty:ABoidsTarget
     {
         
     }

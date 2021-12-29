@@ -2824,10 +2824,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Config:
-    floating:
+    hovering:
       speed: 3
-      damping: 0.1
-      sqrRadius: 10
+      damping: 0.2
+      distance: 2
+      height: 0
       anim: 
     flocking:
       sqrVisualizeRange: 3

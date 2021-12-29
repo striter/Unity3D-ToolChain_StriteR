@@ -8,7 +8,7 @@ namespace Boids.Fish
     [Serializable]
     public struct FFishConfig
     {
-        public BoidsFloatingConfig floating;
+        public BoidsHoveringConfig hovering;
         public BoidsFlockingConfig flocking;
     }
 }

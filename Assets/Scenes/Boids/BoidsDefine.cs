@@ -31,11 +31,10 @@ namespace Boids
     public struct BoidsHoveringConfig
     {
         public float speed;
-        public RangeFloat duration;
         public float damping;
         public float distance;
         public float height;
-        public string flyAnim;
+        public string anim;
     }
 
 
