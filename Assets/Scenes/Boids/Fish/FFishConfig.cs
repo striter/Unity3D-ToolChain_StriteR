@@ -1,10 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Boids.Fish
 {
-    public class FFishConfig : MonoBehaviour
+    [Serializable]
+    public struct FFishConfig
     {
+        public BoidsFloatingConfig floating;
+        public BoidsFlockingConfig flocking;
     }
 }

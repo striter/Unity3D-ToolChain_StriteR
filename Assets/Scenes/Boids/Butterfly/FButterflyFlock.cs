@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel;
 using TPoolStatic;
 using UnityEngine;
@@ -65,15 +66,15 @@ namespace Boids.Butterfly
             }
         }
 
-        protected override void RecycleBehaviour(EButterFlyBehaviour _behaviourType, IBoidsState state)
+        protected override void RecycleBehaviour(EButterFlyBehaviour _behaviourType, IBoidsState _state)
         {
             switch (_behaviourType)
             {
                 default: throw new InvalidEnumArgumentException();
-                case EButterFlyBehaviour.Startle: TSPool<Behaviours.Startle<EButterFlyBehaviour>>.Recycle(state as Behaviours.Startle<EButterFlyBehaviour>); break;
-                case EButterFlyBehaviour.Floating: TSPool<Behaviours.Floating>.Recycle(state as Behaviours.Floating); break;
-                case EButterFlyBehaviour.Landing: TSPool<Behaviours.HoverLanding<EButterFlyBehaviour>>.Recycle(state as Behaviours.HoverLanding<EButterFlyBehaviour>); break;
-                case EButterFlyBehaviour.Stopped:TSPool<Behaviours.Idle>.Recycle(state as Behaviours.Idle); break;
+                case EButterFlyBehaviour.Startle: TSPool<Behaviours.Startle<EButterFlyBehaviour>>.Recycle(_state as Behaviours.Startle<EButterFlyBehaviour>); break;
+                case EButterFlyBehaviour.Floating: TSPool<Behaviours.Floating>.Recycle(_state as Behaviours.Floating); break;
+                case EButterFlyBehaviour.Landing: TSPool<Behaviours.HoverLanding<EButterFlyBehaviour>>.Recycle(_state as Behaviours.HoverLanding<EButterFlyBehaviour>); break;
+                case EButterFlyBehaviour.Stopped:TSPool<Behaviours.Idle>.Recycle(_state as Behaviours.Idle); break;
             }
         }
     }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Boids
@@ -13,12 +12,12 @@ namespace Boids
     }
     public interface IStateTransformApply
     {
-        void TickTransform(BoidsActor _actor,ABoidsBehaviour _behaviour,IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,ref Vector3 _position,ref Quaternion _rotation);
+        void TickTransform(BoidsActor _actor,IEnumerable<BoidsActor> _flock, float _deltaTime,ref Vector3 _position,ref Quaternion _rotation);
     }
     public interface IStateTransformVelocity
     {
         float speed { get; }
-        void TickVelocity(BoidsActor _actor,ABoidsBehaviour _behaviour, IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,ref Vector3 _velocity);
+        void TickVelocity(BoidsActor _actor, IEnumerable<BoidsActor> _flock, float _deltaTime,ref Vector3 _velocity);
     }
     
     public interface IStateSwitch<T>
@@ -29,15 +28,16 @@ namespace Boids
     public abstract class ABoidsBehaviour
     {
         protected BoidsActor m_Actor { get; private set; }
-        public int Identity => m_Actor.m_Identity;
-        protected Vector3 m_Position;
-        protected Quaternion m_Rotation;
-        protected Vector3 m_Velocity;
-        public virtual void Spawn(BoidsActor _actor, Matrix4x4 _landing)
+        public Vector3 m_Velocity;
+        protected Vector3 m_DesiredPosition;
+        protected Quaternion m_DesiredRotation;
+        public virtual void Spawn(BoidsActor _actor,Matrix4x4 _landing)
         {
             m_Actor = _actor;
-            m_Position = _landing.MultiplyPoint(Vector3.zero);
-            m_Rotation = _landing.rotation;
+            m_Velocity = Vector3.zero;
+            
+            m_DesiredPosition = _landing.MultiplyPoint(Vector3.zero);
+            m_DesiredRotation = _landing.rotation;
         }
 
         public virtual void Recycle()
@@ -45,20 +45,9 @@ namespace Boids
             m_Actor = null;
         }
 
-        public abstract void Tick(float _deltaTime, IEnumerable<BoidsActor> _flock);
+        public abstract void Tick(float _deltaTime, IEnumerable<BoidsActor> _flock,out Vector3 _position,out  Quaternion _rotation);
 
-        public virtual void DrawGizmosSelected()
-        {
-            Gizmos.DrawSphere(m_Position,.2f);
-            Gizmos.DrawLine(m_Position,m_Position+m_Rotation*Vector3.forward*.4f);
-
-            Gizmos.DrawLine(m_Position,m_Actor.m_Target.m_Destination);
-            Gizmos.matrix = Matrix4x4.TRS(m_Position,m_Rotation,Vector3.one);
-        }
-        
-        public Vector3 Position => m_Position;
-        public Quaternion Rotation => m_Rotation;
-        public Vector3 Velocity => m_Velocity;
+        public abstract void DrawGizmosSelected();
     }
     
     public abstract class BoidsBehaviour<T> : ABoidsBehaviour where T:Enum 
@@ -68,10 +57,9 @@ namespace Boids
         private IStateSwitch<T> m_Switch;
         private IStateTransformVelocity m_TransformVelocity;
         private IStateTransformApply m_TransformApply;
-        
-        public T m_CurrentState { get; private set; }
+        private T m_CurrentState;
         protected abstract IBoidsState SpawnBehaviour(T _behaviourType);
-        protected abstract void RecycleBehaviour(T _behaviourType,IBoidsState state);
+        protected abstract void RecycleBehaviour(T _behaviourType,IBoidsState _state);
         public void SetBehaviour(T _behaviour)
         {
             if (m_State != null)
@@ -100,22 +88,21 @@ namespace Boids
             m_VelocityTicker.Tick(m_VelocityTicker.m_Duration);
         }
         
-        public override void Tick(float _deltaTime,IEnumerable<BoidsActor> _flock)
+        public override void Tick(float _deltaTime,IEnumerable<BoidsActor> _flock,out Vector3 _position,out Quaternion _rotation)
         {
             if (m_Switch != null && m_Switch.TickStateSwitch(m_Actor, _deltaTime,out T _nextState))
                 SetBehaviour(_nextState);
             
             TickVelocity(_deltaTime,_flock);
             TickTransform(_deltaTime,_flock);
-            
-            m_Actor.Transform.position = m_Position;
-            m_Actor.Transform.rotation = m_Rotation;
+            _position = m_DesiredPosition;
+            _rotation = m_DesiredRotation;
         }
         void TickTransform(float _deltaTime,IEnumerable<BoidsActor> _flock)
         {
             if (m_TransformApply == null)
                 return;
-            m_TransformApply.TickTransform(m_Actor,this,_flock.Select(p=>p.m_Behaviour),_deltaTime,ref m_Position,ref m_Rotation);
+            m_TransformApply.TickTransform(m_Actor,_flock,_deltaTime,ref m_DesiredPosition,ref m_DesiredRotation);
         }
         
         void TickVelocity(float _deltaTime,IEnumerable<BoidsActor> _flock)
@@ -126,36 +113,23 @@ namespace Boids
             if (m_VelocityTicker.Tick(_deltaTime))
             {
                 float behaviourDeltaTime = m_VelocityTicker.m_Duration;
-                m_TransformVelocity.TickVelocity(m_Actor,this,_flock.Select(p=>p.m_Behaviour),behaviourDeltaTime,ref m_Velocity);
+                m_TransformVelocity.TickVelocity(m_Actor,_flock,behaviourDeltaTime,ref m_Velocity);
             }
             
-            m_Position += m_Velocity * ( m_TransformVelocity.speed * _deltaTime);
+            m_DesiredPosition += m_Velocity * ( m_TransformVelocity.speed * _deltaTime);
             if (m_Velocity.sqrMagnitude > 0)
             {
                 Vector3 direction = m_Velocity.normalized;
                 float speed = Mathf.Clamp01(m_Velocity.magnitude);
                 m_Velocity = direction * speed;
-                m_Rotation = Quaternion.LookRotation(direction,Vector3.up);
+                m_DesiredRotation = Quaternion.LookRotation(direction,Vector3.up);
             }
         }
         
         public override void DrawGizmosSelected()
         {
-            Gizmos.matrix=Matrix4x4.identity;
-            Gizmos.DrawSphere(m_Position,.1f);
-            Gizmos.DrawLine(m_Position,m_Position+m_Velocity*.2f);
-
-            Gizmos.DrawLine(m_Position,m_Actor.m_Target.m_Destination);
-            Gizmos.color = Color.red;
-            Gizmos.DrawRay(m_Actor.m_Target.m_Destination,m_Actor.m_Target.m_Right);
-            Gizmos.color = Color.blue;
-            Gizmos.DrawRay(m_Actor.m_Target.m_Destination,m_Actor.m_Target.m_Forward);
-            Gizmos.color = Color.green;
-            Gizmos.DrawRay(m_Actor.m_Target.m_Destination,m_Actor.m_Target.m_Up);
-            Gizmos.DrawWireSphere(m_Actor.m_Target.m_Destination,.2f);
-
             Gizmos.color = Color.black;
-            Gizmos.matrix = Matrix4x4.TRS(m_Position,m_Rotation,Vector3.one);
+            Gizmos.matrix = Matrix4x4.TRS(m_DesiredPosition,m_DesiredRotation,Vector3.one);
             Gizmos_Extend.DrawString(Vector3.up*.1f,m_CurrentState.ToString());
             m_State.DrawGizmosSelected(m_Actor);
         }
@@ -164,7 +138,7 @@ namespace Boids
     
     public static class BoidsBehaviour_Extend
     {
-        public static Vector3 TickFlocking(this ABoidsBehaviour _behaviour,IEnumerable<ABoidsBehaviour> _flock, float _deltaTime,BoidsFlockingConfig _config) 
+        public static Vector3 TickFlocking(this IBoidsState _state,BoidsActor _actor,IEnumerable<BoidsActor> _flock, float _deltaTime,BoidsFlockingConfig _config) 
         {
             Vector3 separation = Vector3.zero;
             Vector3 com = Vector3.zero;
@@ -172,15 +146,15 @@ namespace Boids
             int localBehaviourCount = 0;
             foreach (var flockActor in _flock)
             {
-                if(flockActor.Identity==_behaviour.Identity)
+                if(flockActor.m_Identity==_actor.m_Identity)
                     continue;
-                if((flockActor.Position-_behaviour.Position).sqrMagnitude>_config.sqrVisualizeRange)
+                if((flockActor.Position-_actor.Position).sqrMagnitude>_config.sqrVisualizeRange)
                     continue;
                 localBehaviourCount++;
                 com += flockActor.Position;
                 alignment += flockActor.Velocity;
                 
-                Vector3 offset = flockActor.Position - _behaviour.Position;
+                Vector3 offset = flockActor.Position - _actor.Position;
                 float sqrDistance = offset.sqrMagnitude;
                 if(sqrDistance>_config.sqrSeparationDistance)
                     continue;
@@ -190,22 +164,22 @@ namespace Boids
             if (localBehaviourCount > 0)
             {
                 com /= localBehaviourCount;
-                final +=  (com - _behaviour.Position) * (_deltaTime * _config.cohesionDamping);
+                final +=  (com - _actor.Position) * (_deltaTime * _config.cohesionDamping);
             }
             final += separation * (_deltaTime * _config.separateDamping);
             final +=  alignment * (_deltaTime * _config.alignmentDamping);
             return final;
         }
 
-        public static Vector3 TickRandom(this ABoidsBehaviour _behaviour,float _deltaTime)
+        public static Vector3 TickRandom(this IBoidsState _state,BoidsActor _actor,float _deltaTime)
         {
             return URandom.RandomUnitSphere()*_deltaTime;
         }
         
-        public static Vector3 TickEvading(this ABoidsBehaviour _behaviour,float _deltaTime,BoidsEvadeConfig _config)
+        public static Vector3 TickEvading(this IBoidsState _state,BoidsActor _actor,float _deltaTime,BoidsEvadeConfig _config)
         {
             float distance = _config.evadeDistance;
-            if (!Physics.Raycast(new Ray(_behaviour.Position,_behaviour.Rotation*Vector3.forward),out var hitInfo,distance,int.MaxValue))
+            if (!Physics.Raycast(new Ray(_actor.Position,_actor.Rotation*Vector3.forward),out var hitInfo,distance,int.MaxValue))
                 return Vector3.zero;
 
             Vector3 normal = hitInfo.normal;

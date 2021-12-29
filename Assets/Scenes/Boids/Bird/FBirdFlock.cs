@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.Linq;
-using Geometry.Voxel;
 using TPoolStatic;
 using UnityEngine;
 
@@ -87,16 +86,16 @@ namespace Boids.Bird
             }
         }
 
-        protected override void RecycleBehaviour(EBirdBehaviour _behaviourType, IBoidsState state)
+        protected override void RecycleBehaviour(EBirdBehaviour _behaviourType, IBoidsState _state)
         {
             switch (_behaviourType)
             {
                 default: throw new InvalidEnumArgumentException();
-                case EBirdBehaviour.Startling:  TSPool<Behaviours.Startle<EBirdBehaviour>>.Recycle(state as Behaviours.Startle<EBirdBehaviour>); break;
-                case EBirdBehaviour.Flying: TSPool<Behaviours.Flying<EBirdBehaviour>>.Recycle(state as Behaviours.Flying<EBirdBehaviour>); break;
-                case EBirdBehaviour.Hovering:  TSPool<Behaviours.Hovering<EBirdBehaviour>>.Recycle(state as Behaviours.Hovering<EBirdBehaviour>); break;
-                case EBirdBehaviour.Landing: TSPool<Behaviours.Landing<EBirdBehaviour>>.Recycle(state as Behaviours.Landing<EBirdBehaviour>); break;
-                case EBirdBehaviour.Perching: TSPool<Behaviours.Perching>.Recycle(state as Behaviours.Perching); break;
+                case EBirdBehaviour.Startling:  TSPool<Behaviours.Startle<EBirdBehaviour>>.Recycle(_state as Behaviours.Startle<EBirdBehaviour>); break;
+                case EBirdBehaviour.Flying: TSPool<Behaviours.Flying<EBirdBehaviour>>.Recycle(_state as Behaviours.Flying<EBirdBehaviour>); break;
+                case EBirdBehaviour.Hovering:  TSPool<Behaviours.Hovering<EBirdBehaviour>>.Recycle(_state as Behaviours.Hovering<EBirdBehaviour>); break;
+                case EBirdBehaviour.Landing: TSPool<Behaviours.Landing<EBirdBehaviour>>.Recycle(_state as Behaviours.Landing<EBirdBehaviour>); break;
+                case EBirdBehaviour.Perching: TSPool<Behaviours.Perching>.Recycle(_state as Behaviours.Perching); break;
             }
         }
     }

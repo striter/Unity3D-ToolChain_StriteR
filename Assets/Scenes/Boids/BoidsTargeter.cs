@@ -27,5 +27,25 @@ namespace Boids
             m_Rotation = _landing.rotation;
         }
         public virtual bool TryLanding() => true;
+        public virtual bool IsCrowded() => false;
+
+        public virtual void OnDrawGizmosSelected()
+        {
+            Gizmos.matrix=Matrix4x4.identity;
+            Gizmos.DrawLine(m_Actor.Position,m_Actor.m_Target.m_Destination);
+            Gizmos.color = Color.red;
+            Gizmos.DrawRay(m_Actor.m_Target.m_Destination,m_Actor.m_Target.m_Right);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawRay(m_Actor.m_Target.m_Destination,m_Actor.m_Target.m_Forward);
+            Gizmos.color = Color.green;
+            Gizmos.DrawRay(m_Actor.m_Target.m_Destination,m_Actor.m_Target.m_Up);
+            Gizmos.DrawWireSphere(m_Actor.m_Target.m_Destination,.2f);
+
+        }
+    }
+
+    public class BoidsTargetDefault:ABoidsTarget
+    {
+        
     }
 }

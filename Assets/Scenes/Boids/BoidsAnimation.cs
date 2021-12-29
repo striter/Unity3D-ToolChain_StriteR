@@ -11,6 +11,25 @@ namespace Boids
         void Tick(float _deltaTime);
     }
 
+    public class BoidsEmptyAnimation : IBoidsAnimation
+    {
+        public void Init(Transform _transform)
+        {
+        }
+
+        public void Spawn()
+        {
+        }
+
+        public void SetAnimation(string _animation)
+        {
+        }
+
+        public void Tick(float _deltaTime)
+        {
+        }
+    }
+    
     public class BoidsMeshAnimation:IBoidsAnimation
     {
         private readonly Material m_Material;

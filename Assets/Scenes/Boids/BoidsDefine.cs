@@ -37,13 +37,22 @@ namespace Boids
         public float height;
         public string flyAnim;
     }
+
+
+    public enum EBoidsFloatingConstrain
+    {
+        Spherical,
+        Box,
+    }
     
     [Serializable]
     public struct BoidsFloatingConfig
     {
+        public EBoidsFloatingConstrain constrain;
         public float speed;
         public float damping;
-        public float sqrRadius;
+        [MFoldout(nameof(constrain),EBoidsFloatingConstrain.Spherical)]public float sqrRadius;
+        [MFoldout(nameof(constrain),EBoidsFloatingConstrain.Box)] public Vector3 boxSize;
         public string anim;
     }
     [Serializable]

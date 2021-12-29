@@ -2823,6 +2823,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2e3f88328c8a0d428152d98b127ce5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Config:
+    floating:
+      speed: 3
+      damping: 0.1
+      sqrRadius: 10
+      anim: 
+    flocking:
+      sqrVisualizeRange: 3
+      sqrSeparationDistance: 0.25
+      separateDamping: 0.5
+      cohesionDamping: 0.1
+      alignmentDamping: 0.1
 --- !u!1 &2077857143
 GameObject:
   m_ObjectHideFlags: 0
