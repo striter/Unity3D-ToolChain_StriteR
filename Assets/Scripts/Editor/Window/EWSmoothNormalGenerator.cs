@@ -50,8 +50,12 @@ namespace TEditor
             foreach (MeshFilter filter in meshFilters)
                 sourceMeshes.Add(filter.sharedMesh);
             
+            List<Object> targetSubAsset = new List<Object>();
+            for (int i = 0; i < sourceMeshes.Count; i++)
+                targetSubAsset.Add( GenerateMesh(sourceMeshes[i], _generateUV));
+
             GameObject mainAsset = PrefabUtility.SaveAsPrefabAsset(prefabSource, assetPath);
-            UEAsset.CreateOrReplaceSubAsset(assetPath, sourceMeshes);
+            UEAsset.CreateOrReplaceSubAsset(assetPath, targetSubAsset.ToArray());
             Mesh[] meshes = AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath).Select(obj=>(Mesh)obj).ToArray();
 
             skinnedRenderers = mainAsset.GetComponentsInChildren<SkinnedMeshRenderer>();

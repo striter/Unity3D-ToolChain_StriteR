@@ -48,7 +48,6 @@ namespace TEditor
             UnityEngine.Object[] assets = AssetDatabase.LoadAllAssetsAtPath(_mainAssetPath);
             foreach (var dstAsset in _subValues)
             {
-                dstAsset.name = dstAsset.name;
                 UnityEngine.Object srcAsset = Array.Find(assets, p => AssetDatabase.IsSubAsset(p)&& p.name == dstAsset.name && p.GetType() == dstAsset.GetType());
                 if (srcAsset)
                     if (CopyPropertyTo(dstAsset, srcAsset))
