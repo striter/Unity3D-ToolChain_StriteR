@@ -72,7 +72,7 @@ namespace Rendering.Optimize
         }
         void TickExposeBones(AnimationTickerOutput _output)
         {
-            if (m_Data.m_ExposeTransforms.Length <= 0)
+            if (m_Data.m_ExposeTransforms == null || m_Data.m_ExposeTransforms.Length <= 0)
                 return;
             for (int i = 0; i < m_Data.m_ExposeTransforms.Length; i++)
             {

@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_RendererFeatures:
   - {fileID: 9038337560460315165}
-  m_RendererFeatureMap: 1dca4ec31fa06e7d
+  - {fileID: 1555153714847200901}
+  m_RendererFeatureMap: 1dca4ec31fa06e7d85b6986810049515
   postProcessData: {fileID: 0}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
   shaders:
@@ -41,6 +42,25 @@ MonoBehaviour:
   m_ShadowTransparentReceive: 1
   m_RenderingMode: 0
   m_AccurateGbufferNormals: 0
+--- !u!114 &1555153714847200901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c76ed90412f3e7e40bc29ae00187f3d0, type: 3}
+  m_Name: FurRender
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  m_PassName: Fur
+  m_Shell: 1
+  m_ShellCount: 31
+  m_Event: 250
+  m_PerObjectData: 2147483647
+  m_Layermask: 2147483647
 --- !u!114 &9038337560460315165
 MonoBehaviour:
   m_ObjectHideFlags: 0

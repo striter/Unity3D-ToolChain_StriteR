@@ -52,9 +52,13 @@ BRDFSurface BRDFSurface_Ctor(half3 albedo,half3 emission, half smoothness, half 
     return surface;
 }
 
-struct BRDFLightSurface
+struct BRDFLightInput
 {
     half3 halfDir;
+    half3 lightDirection;
+    half3 lightColor;
+    half shadowAttenuation;
+    half distanceAttenuation;
     half NDL;
     half VDH;
     half LDV;
@@ -62,13 +66,17 @@ struct BRDFLightSurface
     half LDH;
 };
 
-BRDFLightSurface BRDFLightInput_Ctor(BRDFSurface surface,float3 lightDir)
+BRDFLightInput BRDFLightInput_Ctor(BRDFSurface surface,half3 lightDir,half3 lightColor,half shadowAttenuation,half distanceAttenuation)
 {
     half3 viewDir = surface.viewDir;
     half3 normal = surface.normal;
     float3 halfDir = SafeNormalize(float3(viewDir) + float3(lightDir));
 
-    BRDFLightSurface input;
+    BRDFLightInput input;
+    input.lightDirection=lightDir;
+    input.lightColor=lightColor;
+    input.shadowAttenuation=shadowAttenuation;
+    input.distanceAttenuation=distanceAttenuation;
     input.halfDir=halfDir;
     input.NDL = max(0., dot(normal, lightDir));
     input.VDH = max(0., dot(viewDir, halfDir));
@@ -76,4 +84,9 @@ BRDFLightSurface BRDFLightInput_Ctor(BRDFSurface surface,float3 lightDir)
     input.NDH = max(0., dot(normal, halfDir));
     input.LDH = max(0., dot(lightDir, halfDir));
     return input;
+}
+
+BRDFLightInput BRDFLightInput_Ctor(BRDFSurface surface,Light light)
+{
+    return BRDFLightInput_Ctor(surface,light.direction,light.color,light.shadowAttenuation,light.distanceAttenuation);
 }

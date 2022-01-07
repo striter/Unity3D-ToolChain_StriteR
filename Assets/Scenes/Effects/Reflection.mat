@@ -56,6 +56,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _EmissionTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -141,7 +145,7 @@ Material:
     - _FRESNEL: 0
     - _GSF: 6
     - _GlossMapScale: 0
-    - _Glossiness: 1
+    - _Glossiness: 0.55
     - _GlossyReflections: 0
     - _Ior: 1
     - _Lambert: 0

@@ -11,13 +11,12 @@ struct BRDFLight
     half normalDistribution;
     half normalizationTerm;
 };
-BRDFLight BRDFLight_Ctor(BRDFSurface surface, half3 lightDir, half3 lightCol, half3 lightAtten, half anisotropic)
+BRDFLight BRDFLight_Ctor(BRDFSurface surface,BRDFLightInput input)
 {
-    BRDFLightSurface input=BRDFLightInput_Ctor(surface,lightDir);
     BRDFLight light;
-    light.lightDir = lightDir;
-    light.color = lightCol;
-    light.radiance = lightCol * (lightAtten * GEOMETRY_SHADOW(surface,input));
+    light.lightDir = input.lightDirection;
+    light.color = input.lightColor;
+    light.radiance = input.lightColor * (input.distanceAttenuation*input.shadowAttenuation * GEOMETRY_SHADOW(surface,input));
     light.normalDistribution = NORMAL_DISTRIBUTION(surface,input);
     light.normalizationTerm = NORMALIZATION_TERM(surface,input);
     return light;
@@ -26,7 +25,6 @@ BRDFLight BRDFLight_Ctor(BRDFSurface surface, half3 lightDir, half3 lightCol, ha
 half3 BRDFLighting(BRDFSurface surface,BRDFLight light)
 {
     half3 brdf = surface.diffuse;
-    
     half D = light.normalDistribution;
     half VF = light.normalizationTerm;
     
@@ -34,9 +32,10 @@ half3 BRDFLighting(BRDFSurface surface,BRDFLight light)
     return brdf*light.radiance;
 }
 
-half3 BRDFLighting(BRDFSurface surface, Light light,half anisotropic)
+half3 BRDFLighting(BRDFSurface surface, Light light)
 {
-    BRDFLight brdfLight=BRDFLight_Ctor(surface,light.direction,light.color,light.shadowAttenuation*light.distanceAttenuation,anisotropic);
+    BRDFLightInput input=BRDFLightInput_Ctor(surface,light.direction,light.color,light.shadowAttenuation,light.distanceAttenuation);
+    BRDFLight brdfLight=BRDFLight_Ctor(surface,input);
     return BRDFLighting(surface,brdfLight);
 }
 

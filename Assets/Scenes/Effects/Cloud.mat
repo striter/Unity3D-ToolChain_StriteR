@@ -138,8 +138,8 @@ Material:
     - _EnvironmentReflections: 1
     - _F: 0
     - _FRESNEL: 0
-    - _FlowX: 0
-    - _FlowY: 0.05
+    - _FlowX: 5
+    - _FlowY: 5
     - _GSF: 6
     - _GlossMapScale: 0
     - _Glossiness: 1
