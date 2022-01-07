@@ -155,7 +155,7 @@
 
 			float GetGeometryShadow(BRDFSurface surface,BRDFLightInput lightSurface)
 			{
-				return lightSurface.NDL;
+				return max(0., lightSurface.NDL);
 			}
 
 			float GetNormalDistribution(BRDFSurface surface,BRDFLightInput lightSurface)
@@ -165,9 +165,9 @@
 				half sqrRoughness=surface.roughness2;
 				half anisotropic=surface.anisotropic;
 				half3 normal=surface.normal;
-				half NDV=surface.NDV;
-				half NDH=lightSurface.NDH;
-				half NDL=lightSurface.NDL;
+				half NDV=max(0., surface.NDV);
+				half NDH=max(0., lightSurface.NDH);
+				half NDL=max(0., lightSurface.NDL);
 				half3 tangent=surface.tangent;
 				half3 halfDir=lightSurface.halfDir;
 				
@@ -197,10 +197,11 @@
 			
 			float GetNormalizationTerm(BRDFSurface surface,BRDFLightInput lightSurface)
 			{
+				float LDH=max(0., lightSurface.LDH);
 				#if _VF_GGX
-				        return InvVF_GGX(lightSurface.LDH,surface.roughness);
+				        return InvVF_GGX(LDH,surface.roughness);
 				#elif _VF_BLINNPHONG
-				        return InvVF_BlinnPhong(lightSurface.LDH);
+				        return InvVF_BlinnPhong(LDH);
 				#else
 				        return 0;
 				#endif

@@ -100,7 +100,7 @@ float3 GetViewDirectionWS(float3 _positionWS)
     return -GetCameraRealDirectionWS(_positionWS);
 }
 
-float3 GetCameraDepthDistance(float2 uv,float rawDepth)
+float GetCameraDepthDistance(float2 uv,float rawDepth)
 {
     [branch]
     if(unity_OrthoParams.w)

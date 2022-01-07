@@ -4,7 +4,8 @@
 	{
 		[Header(Base Tex)]
 		_MainTex("Main Tex",2D) = "white"{}
-		_Color("Color Tint",Color) = (1,1,1,1)
+		_RootColor("Root Color",Color)=(0,0,0,0)
+		_EdgeColor("Edge Color",Color)=(1,1,1,1)
 		[ToggleTex(_NORMALMAP)][NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
 		
 		[Header(Fur)]
@@ -12,8 +13,9 @@
 		_FurLength("Length",Range(0,1))=0.1
 		_FurAlphaClip("Alpha Clip",Range(0,1))=0.5
 		_FurShadow("Inner Shadow",Range(0,1))=0.5
-		_FURUVDelta("UV Delta",Range(0,2))=0.1
+		_FURUVDelta("UV Delta",Range(0,5))=0.1
 		_FurGravity("Gravity",Range(0,1))=.1
+		_FurScattering("Scattering",Range(0,2))=1
 		
 		[Header(PBR)]
 		[ToggleTex(_PBRMAP)] [NoScaleOffset]_PBRTex("PBR Tex(Roughness.Metallic.AO)",2D)="white"{}
@@ -49,12 +51,14 @@
 				INSTANCING_PROP(float,_Metallic)
 				INSTANCING_PROP(float4,_MainTex_ST)
 				INSTANCING_PROP(float4,_FurTex_ST)
-				INSTANCING_PROP(float4, _Color)
+				INSTANCING_PROP(float4, _RootColor)
+				INSTANCING_PROP(float4, _EdgeColor)
 				INSTANCING_PROP(float,_FurAlphaClip)
 				INSTANCING_PROP(float,_FurLength)
 				INSTANCING_PROP(float,_FurShadow)
 				INSTANCING_PROP(float,_FURUVDelta)
 				INSTANCING_PROP(float,_FurGravity)
+				INSTANCING_PROP(float,_FurScattering)
 			INSTANCING_BUFFER_END
 			
 			#include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
@@ -74,50 +78,21 @@
             #pragma multi_compile_fog
             #pragma target 3.5
 
-			float GetGeometryShadow(BRDFSurface surface,BRDFLightInput lightSurface)
-			{
-				return lightSurface.NDL;
-			}
-
-			float GetNormalDistribution(BRDFSurface surface,BRDFLightInput lightSurface)
-			{
-				half glossiness = surface.smoothness;
-				half roughness=surface.roughness;
-				half sqrRoughness=surface.roughness2;
-				half anisotropic=surface.anisotropic;
-				half3 normal=surface.normal;
-				half NDV=surface.NDV;
-				half NDH=lightSurface.NDH;
-				half NDL=lightSurface.NDL;
-				half3 tangent=surface.tangent;
-				half3 halfDir=lightSurface.halfDir;
-				
-				half normalDistribution = NDF_CookTorrance(NDH,sqrRoughness);
-				normalDistribution=clamp(normalDistribution,0,100.h);
-				return normalDistribution;
-			}
-			
-			float GetNormalizationTerm(BRDFSurface surface,BRDFLightInput lightSurface)
-			{
-				return InvVF_GGX(lightSurface.LDH,surface.roughness);
-			}
-			
-			#include "Assets/Shaders/Library/BRDF/BRDFLighting.hlsl"
 
 		ENDHLSL
-		Pass
-		{
-			NAME "SKIN"
-			Tags{"LightMode" = "UniversalForward"}
-			HLSLPROGRAM
-			#define SHELLINDEX 0
-			#define SKIN
-
-			#include "FurPBRInclude.hlsl"
-			#pragma vertex vert
-			#pragma fragment frag
-			ENDHLSL
-		}
+//		Pass
+//		{
+//			NAME "SKIN"
+//			Tags{"LightMode" = "UniversalForward"}
+//			HLSLPROGRAM
+//			#define SHELLINDEX 0
+//			#define SKIN
+//
+//			#include "FurPBRInclude.hlsl"
+//			#pragma vertex vert
+//			#pragma fragment frag
+//			ENDHLSL
+//		}
 		
 		Pass
 		{
@@ -159,7 +134,6 @@
 		{
 			NAME "FUR3"
 			Tags{"LightMode" = "FUR3"}
-			Cull Off
 			HLSLPROGRAM
 			#define SHELLINDEX 3
 			#include "FurPBRInclude.hlsl"
@@ -171,7 +145,6 @@
 		{
 			NAME "FUR4"
 			Tags{"LightMode" = "FUR4"}
-			Cull Off
 			HLSLPROGRAM
 			#define SHELLINDEX 4
 			#include "FurPBRInclude.hlsl"

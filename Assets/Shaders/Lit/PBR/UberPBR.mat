@@ -125,7 +125,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PBRTex:
-        m_Texture: {fileID: 2800000, guid: d6d7f4ee76e86874a85f43c3f41aee68, type: 3}
+        m_Texture: {fileID: 2800000, guid: dfce2bddb4109c947876b4e4ebbd1094, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
@@ -216,7 +216,7 @@ Material:
     - _FRESNEL: 0
     - _GSF: 6
     - _GlossMapScale: 0
-    - _Glossiness: 1
+    - _Glossiness: 0
     - _GlossyReflections: 0
     - _Grid: 0
     - _HeightTransition: 0

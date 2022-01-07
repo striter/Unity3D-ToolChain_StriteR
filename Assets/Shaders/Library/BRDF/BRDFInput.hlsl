@@ -16,7 +16,6 @@ struct BRDFSurface
     half NDV;
     
     half grazingTerm;
-    half fresnelTerm;
     half perceptualRoughness;
     half roughness;
     half roughness2;
@@ -42,10 +41,9 @@ BRDFSurface BRDFSurface_Ctor(half3 albedo,half3 emission, half smoothness, half 
     surface.tangent = tangent;
     surface.viewDir = viewDir;
     surface.reflectDir = normalize(reflect(-surface.viewDir, surface.normal));
-    surface.NDV = max(0.h, dot(surface.normal,surface.viewDir));
+    surface.NDV = dot(surface.normal,surface.viewDir);
     
     surface.grazingTerm = saturate(smoothness + reflectivity);
-    surface.fresnelTerm=F_Schlick(surface.NDV);
     surface.perceptualRoughness = 1.0h - surface.smoothness;
     surface.roughness = max(HALF_MIN_SQRT, surface.perceptualRoughness * surface.perceptualRoughness);
     surface.roughness2 = max(HALF_MIN, surface.roughness * surface.roughness);
@@ -78,11 +76,11 @@ BRDFLightInput BRDFLightInput_Ctor(BRDFSurface surface,half3 lightDir,half3 ligh
     input.shadowAttenuation=shadowAttenuation;
     input.distanceAttenuation=distanceAttenuation;
     input.halfDir=halfDir;
-    input.NDL = max(0., dot(normal, lightDir));
-    input.VDH = max(0., dot(viewDir, halfDir));
-    input.LDV = max(0., dot(lightDir, viewDir));
-    input.NDH = max(0., dot(normal, halfDir));
-    input.LDH = max(0., dot(lightDir, halfDir));
+    input.NDL = dot(normal, lightDir);
+    input.VDH = dot(viewDir, halfDir);
+    input.LDV = dot(lightDir, viewDir);
+    input.NDH = dot(normal, halfDir);
+    input.LDH = dot(lightDir, halfDir);
     return input;
 }
 

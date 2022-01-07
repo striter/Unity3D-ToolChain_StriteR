@@ -76,7 +76,7 @@
                 GHeightCone cone= GHeightCone_Ctor( float3(.0,.5,.0),float3(.0,-1.,.0),55.,1);
                 distances =ConeRayDistance(cone,viewRayOS);
                 #endif
-
+                
                 // return TransformWorldToEyeDepth(world,UNITY_MATRIX_V)/10;
                 #if _DEPTH
                     float rawDepth=SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).r;

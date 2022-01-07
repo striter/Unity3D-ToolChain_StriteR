@@ -1,4 +1,29 @@
 ﻿			#define SHELLDELTA (SHELLINDEX+1)/SHELLCOUNT
+
+			float GetGeometryShadow(BRDFSurface surface,BRDFLightInput lightSurface)
+			{
+				return saturate(invlerp(-SHELLDELTA*INSTANCE(_FurScattering),1,lightSurface.NDL));
+			}
+
+			float GetNormalDistribution(BRDFSurface surface,BRDFLightInput lightSurface)
+			{
+				half sqrRoughness=surface.roughness2;
+				half NDH=max(0., lightSurface.NDH);
+							
+				half normalDistribution = NDF_CookTorrance(NDH,sqrRoughness);
+				normalDistribution=clamp(normalDistribution,0,100.h);
+
+				// normalDistribution+=pow5(1.0-surface.NDV)*SHELLDELTA*20;
+				return normalDistribution;
+			}
+						
+			float GetNormalizationTerm(BRDFSurface surface,BRDFLightInput lightSurface)
+			{
+				return InvVF_GGX(max(0., lightSurface.LDH),surface.roughness);
+			}
+						
+			#include "Assets/Shaders/Library/BRDF/BRDFLighting.hlsl"
+
 			struct a2f
 			{
 				float3 positionOS : POSITION;
@@ -31,13 +56,12 @@
 				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
 				o.positionWS=TransformObjectToWorld(v.positionOS);
 				o.uv = float4( TRANSFORM_TEX_INSTANCE(v.uv,_MainTex),TRANSFORM_TEX_INSTANCE(v.uv,_FurTex));
-				#ifndef SKIN
-					float delta=SHELLDELTA;
-					float amount=delta+=(delta- delta*delta);
-					o.positionWS+=o.normalWS*INSTANCE(_FurLength)*amount;
-					o.positionWS+=amount*normalize(o.normalWS+float3(0,-1,0))*_FurGravity;
-					o.uv.w+=delta*INSTANCE(_FURUVDelta);
-				#endif
+				float delta=SHELLDELTA;
+				float amount=delta+=(delta- delta*delta);
+				
+				o.positionWS+=o.normalWS*INSTANCE(_FurLength)*amount;
+				// o.positionWS+=dot(o.normalWS,float3(0,1,0))*amount*float3(0,INSTANCE(_FurGravity),0);
+				o.uv.yw+=amount*INSTANCE(_FURUVDelta);
 				o.positionCS = TransformWorldToHClip(o.positionWS);
 				o.positionHCS = o.positionCS;
 				FOG_TRANSFER(o)
@@ -59,33 +83,30 @@
 				float2 baseUV=i.uv.xy;
 				depth=i.positionCS.z;
 
-				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV)*INSTANCE(_Color);
+				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV);
 				half3 albedo=color.rgb;
 				
 				half glossiness=INSTANCE(_Glossiness);
 				half metallic=INSTANCE(_Metallic);
 				half ao=1.h;
 				#if _PBRMAP
-				half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
-				glossiness=1.h-mix.r;
-				metallic=mix.g;
-				ao=mix.b;
+					half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
+					glossiness=1.h-mix.r;
+					metallic=mix.g;
+					ao=mix.b;
 				#endif
 
-				#ifndef SKIN
-					float delta= SHELLDELTA;
-					ao-=(1-delta)*INSTANCE(_FurShadow);
-					float furAmount=SAMPLE_TEXTURE2D(_FurTex,sampler_FurTex,i.uv.zw);
-					clip(furAmount-delta*INSTANCE(_FurAlphaClip));
-				#else
-					ao-=INSTANCE(_FurShadow);
-				#endif
+				float delta= SHELLDELTA;
+				albedo*=lerp(INSTANCE(_RootColor),INSTANCE(_EdgeColor),delta);
+				ao=saturate(ao-(1-delta)*INSTANCE(_FurShadow));
+				float furSample=SAMPLE_TEXTURE2D(_FurTex,sampler_FurTex,i.uv.zw).r;
+				clip(furSample-delta*delta*INSTANCE(_FurAlphaClip));
 				
 				#if _NORMALMAP
 					normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
+					normalWS=normalize(mul(transpose(TBNWS), normalTS));
 				#endif
 				
-
 				BRDFSurface surface=BRDFSurface_Ctor(albedo,0,glossiness,metallic,ao,normalWS,tangentWS,viewDirWS,0);
 				
 				half3 finalCol=0;
