@@ -14,8 +14,8 @@
 		[NoScaleOffset]_EmissionTex("Emission",2D)="white"{}
 		[HDR]_EmissionColor("Emission Color",Color)=(0,0,0,0)
 		[Header(_Settings)]
-        [KeywordEnum(BlinnPhong,CookTorrance,Beckmann,Gaussian,GGX,TrowbridgeReitz,Anisotropic_TrowbridgeReitz,Anisotropic_Ward)]_NDF("Normal Distribution:",float) = 1
-		[Foldout(_NDF_ANISOTROPIC_TROWBRIDGEREITZ,_NDF_ANISOTROPIC_WARD)]_AnisoTropicValue("Anisotropic Value:",Range(0,1))=1
+        [KeywordEnum(BlinnPhong,CookTorrance,Beckmann,Gaussian,GGX,TrowbridgeReitz,Anisotropic_TrowbridgeReitz,Anisotropic_Ward,Anisotropic_Beckmann,Anisotropic_GGX)]_NDF("Normal Distribution:",float) = 1
+		[Foldout(_NDF_ANISOTROPIC_TROWBRIDGEREITZ,_NDF_ANISOTROPIC_WARD,_NDF_ANISOTROPIC_GGX,_NDF_ANISOTROPIC_BECKMANN)]_AnisoTropicValue("Anisotropic Value:",Range(0,1))=1
 		[KeywordEnum(BlinnPhong,GGX)]_VF("Vsibility * Fresnel:",float)=1
 	
 		[Header(Detail Tex)]
@@ -150,7 +150,7 @@
 			
             #pragma multi_compile_fog
             #pragma target 3.5
-			#pragma shader_feature_local_fragment _NDF_BLINNPHONG _NDF_COOKTORRANCE _NDF_BECKMANN _NDF_GAUSSIAN _NDF_GGX _NDF_TROWBRIDGEREITZ _NDF_ANISOTROPIC_TROWBRIDGEREITZ _NDF_ANISOTROPIC_WARD
+			#pragma shader_feature_local_fragment _NDF_BLINNPHONG _NDF_COOKTORRANCE _NDF_BECKMANN _NDF_GAUSSIAN _NDF_GGX _NDF_TROWBRIDGEREITZ _NDF_ANISOTROPIC_TROWBRIDGEREITZ _NDF_ANISOTROPIC_WARD _NDF_ANISOTROPIC_BECKMANN _NDF_ANISOTROPIC_GGX
 			#pragma shader_feature_local_fragment _VF_BLINNPHONG _VF_GGX
 
 			float GetGeometryShadow(BRDFSurface surface,BRDFLightInput lightSurface)
@@ -160,20 +160,22 @@
 
 			float GetNormalDistribution(BRDFSurface surface,BRDFLightInput lightSurface)
 			{
-				half glossiness = surface.smoothness;
 				half roughness=surface.roughness;
 				half sqrRoughness=surface.roughness2;
-				half anisotropic=surface.anisotropic;
 				half3 normal=surface.normal;
 				half NDV=max(0., surface.NDV);
 				half NDH=max(0., lightSurface.NDH);
 				half NDL=max(0., lightSurface.NDL);
-				half3 tangent=surface.tangent;
-				half3 halfDir=lightSurface.halfDir;
+
+				half smoothness=surface.smoothness;
+				half roughnessT=surface.roughnessT;
+				half roughnessB=surface.roughnessB;
+				half TDH= lightSurface.TDH;
+				half BDH= lightSurface.BDH;
 				
 				half normalDistribution=
 				#if _NDF_BLINNPHONG
-				        NDF_BlinnPhong(NDH, glossiness,max(1, glossiness *40));
+				        NDF_BlinnPhong(NDH, smoothness,max(1, smoothness *40));
 				#elif _NDF_COOKTORRANCE
 				        NDF_CookTorrance(NDH,sqrRoughness);
 				#elif _NDF_BECKMANN
@@ -185,9 +187,13 @@
 				#elif _NDF_TROWBRIDGEREITZ
 				        NDF_TrowbridgeReitz(NDH,sqrRoughness);
 				#elif _NDF_ANISOTROPIC_TROWBRIDGEREITZ
-				        NDFA_TrowbridgeReitz(NDH, dot(halfDir, tangent), dot(halfDir, cross(normal,tangent)), anisotropic, glossiness);
+				        NDFA_TrowbridgeReitz(NDH, TDH, BDH, roughnessT, roughnessB);
 				#elif _NDF_ANISOTROPIC_WARD
-				        NDFA_Ward(NDL, NDV, NDH, dot(halfDir, tangent), dot(halfDir,  cross(normal,tangent)), anisotropic, glossiness);
+				        NDFA_Ward(NDL, NDV, NDH,TDH, BDH, roughnessT, roughnessB);
+				#elif  _NDF_ANISOTROPIC_BECKMANN
+						NDFA_Beckmann(NDH,TDH,BDH,roughnessT,roughnessB);
+				#elif _NDF_ANISOTROPIC_GGX
+						NDFA_GGX(NDH,TDH,BDH,roughnessT,roughnessB);
 				#else
 					0;
 				#endif
@@ -249,7 +255,7 @@
 					ao=mix.b;
 				#endif
 
-				BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,glossiness,metallic,ao,normalWS,tangentWS,viewDirWS,anisotropic);
+				BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,glossiness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,anisotropic);
 				
 				half3 finalCol=0;
 				Light mainLight=GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
@@ -282,7 +288,7 @@
             Name "Meta"
             Tags{"LightMode" = "Meta"}
 
-            Cull Off
+            Cull Back
 
             HLSLPROGRAM
             #pragma vertex MetaVertex

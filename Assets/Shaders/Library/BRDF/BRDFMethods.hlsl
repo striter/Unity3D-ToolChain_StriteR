@@ -41,25 +41,31 @@ float NDF_TrowbridgeReitz(float NDH,float sqrRoughness)
     return sqrRoughness / (PI * distribution * distribution+FLT_MIN);
 }
 //Anisotropic NDF
-float NDFA_TrowbridgeReitz(float NDH, float HDX, float HDY, float anisotropic, float glossiness)
+float NDFA_TrowbridgeReitz(float NDH, float TDH, float BDH, float roughnessT,float roughnessB)
 {
-    float aspect = sqrt(1.0h - anisotropic * 0.9h);
-    glossiness = pow2(1.0 - glossiness);
-    float X = max(.001, glossiness / aspect) * 5;
-    float Y = max(.001, glossiness * aspect) * 5;
-    return 1.0 / (PI * X * Y * pow2(pow2(HDX / X) + pow2(HDY / Y) + pow2(NDH)));
+    return 1.0 / (PI * roughnessT * roughnessB * pow2(pow2(TDH / roughnessT) + pow2(BDH / roughnessB) + pow2(NDH)));
 }
-float NDFA_Ward(float NDL, float NDV, float NDH, float HDX, float HDY, float anisotropic, float glossiness)
+float NDFA_Ward(float NDL, float NDV, float NDH, float TDH, float BDH, float roughnessT,float roughnessB)
 {
-    float aspect = sqrt(1.0h - anisotropic * 0.9h);
-    glossiness = pow2(1.0 - glossiness);
-    float X = max(.001, glossiness / aspect) * 5;
-    float Y = max(.001, glossiness * aspect) * 5;
-    float exponent = -(pow2(HDX / X) + pow2(HDY / Y)) / pow2(NDH);
-    float distribution = 1. / (FOUR_PI * X * Y) * sqrt(NDL*NDV);
+    float exponent = -(pow2(TDH / roughnessT) + pow2(BDH / roughnessB)) / pow2(NDH);
+    float distribution = 1. / (FOUR_PI * roughnessT * roughnessB) * sqrt(NDL*NDV);
     distribution *= exp(exponent);
     return distribution;
 }
+
+float NDFA_Beckmann(float NDH,float TDH,float BDH,float roughnessT,float roughnessB)
+{    
+    float NDH2 = pow2(NDH);
+    float d = -(pow2(TDH)/pow2(roughnessT)+pow2(BDH)/pow2(roughnessB)) / NDH2;
+    return exp(d)*rcp(PI*roughnessT*roughnessB*pow2(NDH2));
+}
+
+float NDFA_GGX(float NDH,float TDH,float BDH,float roughnessX,float roughnessY)
+{
+    float d=pow2(TDH)/pow2(roughnessX)+pow2(BDH)/pow2(roughnessY)+pow2(NDH);
+    return 1/(PI*roughnessX*roughnessY*pow2(d));
+}
+
 //VF: (VisibilityTerm * FresnelTerm) * 4.0
 float InvVF_GGX(float LDH, float roughness)
 {
@@ -77,3 +83,5 @@ float F_Schlick(float NDV)
     float x = saturate(1. - NDV);
     return pow4(x);//pow5(x);
 }
+
+

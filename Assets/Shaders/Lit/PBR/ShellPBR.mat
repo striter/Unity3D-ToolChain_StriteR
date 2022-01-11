@@ -7,9 +7,10 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: FurPBR
+  m_Name: ShellPBR
   m_Shader: {fileID: 4800000, guid: fdfa701d43a47f142adaf904a5ebb997, type: 3}
-  m_ShaderKeywords: _DEPTHMAP _NDF_GGX _PARALLAX _SPECULARHIGHLIGHTS_OFF _VF_GGX
+  m_ShaderKeywords: _ANISOTROPIC _DEPTHMAP _NDF_GGX _PARALLAX _SPECULARHIGHLIGHTS_OFF
+    _VF_GGX
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -77,7 +78,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 4, y: 4}
+        m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Mask0:
         m_Texture: {fileID: 0}
@@ -192,6 +193,7 @@ Material:
     - _AlphaClip: 0
     - _AlphaClipRange: 0.01
     - _AnisoTropicValue: 1
+    - _Anisotropic: 1
     - _Atlas: 0
     - _AtlasHeight: 0
     - _AtlasIndex: 0
@@ -221,22 +223,22 @@ Material:
     - _EnvironmentReflections: 1
     - _F: 0
     - _FRESNEL: 0
-    - _FURUVDelta: 1.49
+    - _FURUVDelta: 1.08
     - _FurAlphaClip: 1
     - _FurGravity: 0
-    - _FurLength: 0.28
-    - _FurScattering: 0.83
+    - _FurLength: 0.06
+    - _FurScattering: 0.94
     - _FurShadow: 1
     - _GSF: 6
     - _GlossMapScale: 0
-    - _Glossiness: 0
+    - _Glossiness: 0.66
     - _GlossyReflections: 0
     - _Grid: 0
     - _HeightTransition: 0
     - _Ior: 1
     - _Lambert: 0
     - _Lighting: 1
-    - _Metallic: 0
+    - _Metallic: 0.17
     - _Metallic0: 0
     - _Metallic1: 0
     - _Metallic2: 0
@@ -254,6 +256,7 @@ Material:
     - _ReceiveShadow: 1
     - _ReceiveShadows: 1
     - _RimIntensity: 0.5
+    - _ShellDelta: 0
     - _Smoothness: 0
     - _Smoothness0: 0.5
     - _Smoothness1: 0.5
@@ -280,9 +283,9 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EdgeColor: {r: 0.9716981, g: 0.9716981, b: 0.9716981, a: 1}
+    - _EdgeColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _RootColor: {r: 0.38661444, g: 0.4528302, b: 0.44838908, a: 0}
+    - _RootColor: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _UpperBlendColor: {r: 1, g: 1, b: 1, a: 1}
     - _WaveDirection: {r: 1, g: 1, b: 1, a: 1}

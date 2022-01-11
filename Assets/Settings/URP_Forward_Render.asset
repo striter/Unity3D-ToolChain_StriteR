@@ -56,10 +56,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   m_PassName: Fur
-  m_Shell: 1
-  m_ShellCount: 31
-  m_Event: 250
-  m_PerObjectData: 2147483647
+  m_Shell: 0
+  m_ShellCount: 32
+  m_Event: 300
+  m_PerObjectData: 1919
   m_Layermask: 2147483647
 --- !u!114 &9038337560460315165
 MonoBehaviour:

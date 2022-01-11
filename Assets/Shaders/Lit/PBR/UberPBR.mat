@@ -9,8 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UberPBR
   m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
-  m_ShaderKeywords: _DEPTHBUFFER _DEPTHMAP _NDF_GGX _NORMALMAP _PARALLAX _PBRMAP
-    _SPECULARHIGHLIGHTS_OFF _VF_GGX
+  m_ShaderKeywords: _DEPTHMAP _NDF_ANISOTRPIC_WARD _NDF_COOKTORRANCE _NORMALMAP _PARALLAX
+    _PBRMAP _SPECULARHIGHLIGHTS_OFF _VF_GGX
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -195,7 +195,7 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
-    - _DepthBuffer: 1
+    - _DepthBuffer: 0
     - _DepthBufferScale: 80
     - _DepthOffset: 0.13
     - _DepthScale: 0.019
@@ -216,19 +216,19 @@ Material:
     - _FRESNEL: 0
     - _GSF: 6
     - _GlossMapScale: 0
-    - _Glossiness: 0
+    - _Glossiness: 1
     - _GlossyReflections: 0
     - _Grid: 0
     - _HeightTransition: 0
     - _Ior: 1
     - _Lambert: 0
     - _Lighting: 1
-    - _Metallic: 0
+    - _Metallic: 1
     - _Metallic0: 0
     - _Metallic1: 0
     - _Metallic2: 0
     - _Metallic3: 0
-    - _NDF: 4
+    - _NDF: 1
     - _NumLayersCount: 1
     - _OcclusionStrength: 0
     - _Parallax: 1

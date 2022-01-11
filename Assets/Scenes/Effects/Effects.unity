@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1692265, g: 0.21244678, b: 0.2907881, a: 1}
+  m_IndirectSpecularColor: {r: 0.1815474, g: 0.22718953, b: 0.30740747, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1086,6 +1086,7 @@ GameObject:
   - component: {fileID: 364766936}
   - component: {fileID: 364766938}
   - component: {fileID: 364766937}
+  - component: {fileID: 364766939}
   m_Layer: 0
   m_Name: PBRFur
   m_TagString: Untagged
@@ -1127,7 +1128,22 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 921ed3a89fefe5b439f87059ef2ae72d, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1157,6 +1173,20 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 364766935}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &364766939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 364766935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40fa8d0e10e70c246a327dc30791bdc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShellCount: 16
+  m_ShellMaterial: {fileID: 2100000, guid: 921ed3a89fefe5b439f87059ef2ae72d, type: 2}
 --- !u!1 &494962584
 GameObject:
   m_ObjectHideFlags: 0
@@ -3134,7 +3164,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 0.9945573, g: 1, b: 0.9292453, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -3470,7 +3500,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1747490751}
-  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &1781932855
 GameObject:
   m_ObjectHideFlags: 0
@@ -3705,7 +3735,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1804724714}
   m_LocalRotation: {x: 0.2588191, y: -0, z: -0, w: 0.9659258}
-  m_LocalPosition: {x: 9.64, y: 6, z: 3}
+  m_LocalPosition: {x: 9.531, y: 6.45, z: 2.22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3722,8 +3752,8 @@ Light:
   serializedVersion: 10
   m_Type: 2
   m_Shape: 0
-  m_Color: {r: 0.9356878, g: 1, b: 0.4292453, a: 1}
-  m_Intensity: 6.49
+  m_Color: {r: 0.427451, g: 1, b: 0.86675525, a: 1}
+  m_Intensity: 22.07
   m_Range: 2.15
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
