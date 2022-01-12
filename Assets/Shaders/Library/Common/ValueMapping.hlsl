@@ -177,6 +177,12 @@ float3 bilinearLerp(float3 tl, float3 tr, float3 bl, float3 br, float2 uv)
     return lerp(lerpB, lerpT, uv.y);
 }
 
+float4 bilinearLerp(float4 tl, float4 tr, float4 bl, float4 br, float2 uv)
+{
+    float4 lerpB = lerp(bl, br, uv.x);
+    float4 lerpT = lerp(tl, tr, uv.x);
+    return lerp(lerpB, lerpT, uv.y);
+}
 
 //Blend
 half Blend_Overlay(half _src,half _dst){

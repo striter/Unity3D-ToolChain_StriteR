@@ -37,7 +37,7 @@
         [Enum(UnityEngine.Rendering.BlendMode)]_DstBlend("Dst Blend",int)=0
         [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
         [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
-        [Enum(Off,0,Front,1,Back,2)]_Cull("Cull",int)=2
+        [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
         [Toggle(_ALPHACLIP)]_AlphaClip("Alpha Clip",float)=0
         [Foldout(_ALPHACLIP)]_AlphaClipRange("Range",Range(0.01,1))=0.01
 	}

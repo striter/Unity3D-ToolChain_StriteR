@@ -14,8 +14,8 @@
 				#include "Assets/Shaders/Library/PostProcess.hlsl"
 				#define IGeometryDetection
 				#include "Assets/Shaders/Library/Geometry.hlsl"
-				#pragma multi_compile_local _ _AO
-	            #pragma multi_compile_local _ _VOLUMETRICCLOUD
+				#pragma multi_compile_local_fragment _ _AO
+	            #pragma multi_compile_local_fragment _ _VOLUMETRICCLOUD
 			ENDHLSL
 			Pass
 			{
@@ -24,7 +24,7 @@
 				#pragma vertex vert_img
 				#pragma fragment frag
 				
-				#pragma multi_compile_local _ _SCAN
+				#pragma multi_compile_local_fragment _ _SCAN
 				#if _SCAN
 					float4 _ScanColor;
 					float3 _ScanOrigin;
@@ -32,14 +32,14 @@
 					float _ScanMinSqrDistance;
 					float _ScanMaxSqrDistance;
 					float _ScanFadingPow;
-					#pragma multi_compile_local _ _MASK_TEXTURE
+					#pragma multi_compile_local_fragment _ _MASK_TEXTURE
 					#if _MASK_TEXTURE
 						TEXTURE2D( _ScanMaskTexture);SAMPLER(sampler_ScanMaskTexture);
 						float _ScanMaskTextureScale;
 					#endif
 				#endif
 				
-				#pragma multi_compile_local _ _AREA
+				#pragma multi_compile_local_fragment _ _AREA
 				#if _AREA
 					TEXTURE2D(_AreaFillTexture);SAMPLER(sampler_AreaFillTexture);
 					float3 _AreaOrigin;
@@ -51,7 +51,7 @@
 					float _AreaSqrEdgeMax;
 				#endif
 				
-				#pragma multi_compile_local _ _OUTLINE
+				#pragma multi_compile_local_fragment _ _OUTLINE
 				#if _OUTLINE
 					// #pragma multi_compile_local _CONVOLUTION_SOBEL
 					// #pragma multi_compile_local _DETECT_COLOR _DETECT_NORMAL
@@ -90,7 +90,7 @@
 					half _Bias;
 				#endif
 
-				#pragma multi_compile_local _ _HIGHLIGHT
+				#pragma multi_compile_local_fragment _ _HIGHLIGHT
 				#if _HIGHLIGHT
 					half3 _HighlightColor;
 					TEXTURE2D(_OUTLINE_MASK);SAMPLER(sampler_OUTLINE_MASK);
@@ -105,6 +105,7 @@
 	                TEXTURE2D(_ColorRamp);SAMPLER(sampler_ColorRamp);
 	            #endif
 				TEXTURE2D(_Opaque_Sample);SAMPLER(sampler_Opaque_Sample);
+
 				half4 frag (v2f_img i) : SV_Target
 				{
 					float3 positionWS=TransformNDCToWorld(i.uv);
@@ -118,10 +119,11 @@
 	                #if _VOLUMETRICCLOUD
 	                    half cloudDensity=sample.g;
 	                    half lightIntensity=sample.b;
-	                    half3 rampCol=SAMPLE_TEXTURE2D(_ColorRamp,sampler_ColorRamp,  lightIntensity).rgb;
-	                    half3 cloudLightCol = lerp(rampCol,_MainLightColor.rgb, lightIntensity);
+	                    half3 rampCol=SAMPLE_TEXTURE2D(_ColorRamp,sampler_ColorRamp, lightIntensity).rgb;
+	                    half3 cloudLightCol = lerp(rampCol,_MainLightColor.rgb, cloudDensity*lightIntensity);
 	                    col=lerp(cloudLightCol,col, cloudDensity) ;
 	                #endif
+					
 					
 					#if _SCAN
 						half scanSQRDistance=sqrDistance(_ScanOrigin-positionWS);
@@ -143,7 +145,7 @@
 						
 						float2 uv = (positionWS.xz-_AreaOrigin.xz + _AreaTextureFlow.xy * _Time.y)* _AreaTextureScale;
 						float fillMask=SAMPLE_TEXTURE2D(_AreaFillTexture,sampler_AreaFillTexture, uv ).r;
-						float3 fillColor = fillMask*_AreaFillColor.rgb;
+						float3 fillColor = lerp(col,_AreaFillColor.rgb,fillMask);
 						float3 edgeColor = _AreaEdgeColor.rgb;
 						
 						col=lerp(col,fillColor,fill*_AreaFillColor.a);
@@ -176,21 +178,60 @@
 			
 		Pass
 		{
-			NAME "SAMPLE"
+			NAME "Volumetric Sample"
 			HLSLPROGRAM
 			#pragma vertex vert_img
 			#pragma fragment frag
 			
-			#pragma multi_compile_local _ _DITHER
-			#if _AO
-				#define MAX_SAMPLE_COUNT 64u
-				half3 _AOSampleSphere[MAX_SAMPLE_COUNT];
-				uint _AOSampleCount;
-				float _AOIntensity;
-				float _AORadius;
-				float _AOBias;
-				half GetAO(float2 uv,half3 normalWS,float3 positionWS,float rawDepth)
-				{
+			#pragma multi_compile_local_fragment _ _DITHER
+	            #pragma multi_compile_local_fragment _ _SHAPE
+
+			#define MAX_SAMPLE_COUNT 64u
+			half3 _AOSampleSphere[MAX_SAMPLE_COUNT];
+			uint _AOSampleCount;
+			float _AOIntensity;
+			float _AORadius;
+			float _AOBias;
+			
+            float _VerticalStart;
+            float _VerticalEnd;
+            
+            int _RayMarchTimes;
+            float _Distance;
+            float _Density;
+            float _DensityClip;
+            float _DensitySmooth;
+            float _Opacity;
+            
+            float _ScatterRange;
+            float _ScatterStrength;
+
+            sampler3D _MainNoise;
+            float3 _MainNoiseScale;
+            float3 _MainNoiseFlow;
+
+			TEXTURE2D(_VOLUMETRIC_DEPTH);
+			SAMPLER(sampler_VOLUMETRIC_DEPTH);
+
+            float SampleDensity(float3 worldPos)  {
+                return  tex3Dlod(_MainNoise,float4( (worldPos+_MainNoiseFlow*_Time.y)/_MainNoiseScale,0)).r*_Density;
+            }
+		
+			half4 frag(v2f_img i):SV_TARGET
+			{
+				float2 uv=i.uv;
+				float rawDepth=SampleRawDepth(uv);
+				float eyeDepth=RawToEyeDepth(rawDepth);
+				float3 cameraPositionWS=GetCameraPositionWS();
+				half3 cameraDirectionWS=TransformNDCToFrustumCornersRay(uv);
+				half eyeDepthProjection=length(cameraDirectionWS);
+                half3 marchDirWS=cameraDirectionWS/eyeDepthProjection;
+				
+				float3 positionWS=cameraPositionWS+eyeDepth*marchDirWS;
+				float actualDepth=eyeDepth*eyeDepthProjection;
+				half3 normalWS=SampleNormalWS(uv);
+                half ao=0;
+				#if _AO
 					float occlusion = 0;
 					half radius=_AORadius;
 					#if _DITHER
@@ -212,119 +253,58 @@
 					occlusion*=rcp(_AOSampleCount);
 					occlusion = saturate(occlusion  * _AOIntensity);
 					occlusion*=step(HALF_MIN,abs(rawDepth-Z_END));		//Clip Skybox
-					return occlusion;
-				}
-			#endif
-            #if _VOLUMETRICCLOUD
-	            #pragma multi_compile_local _ _LIGHTMARCH
-	            #pragma multi_compile_local _ _LIGHTSCATTER
-	            #pragma multi_compile_local _ _SHAPEMASK
-
-	            float _VerticalStart;
-	            float _VerticalEnd;
-	            
-	            int _RayMarchTimes;
-	            float _Distance;
-	            float _Density;
-	            float _DensityClip;
-	            float _DensitySmooth;
-	            float _Opacity;
-	            
-	            float _ScatterRange;
-	            float _ScatterStrength;
-
-	            float _LightAbsorption;
-	            float _LightMarchMinimalDistance;
-	            uint _LightMarchTimes;
-
-	            sampler3D _MainNoise;
-	            float3 _MainNoiseScale;
-	            float3 _MainNoiseFlow;
-	            sampler2D _ShapeMask;
-	            float2 _ShapeMaskScale;
-	            float2 _ShapeMaskFlow;
-
-	            float SampleDensity(float3 worldPos)  {
-	                float densityParam= saturate(min(abs(worldPos.y-_VerticalStart)/_DensitySmooth,abs(worldPos.y-_VerticalEnd)/_DensitySmooth));
-	                #if _SHAPEMASK
-	                float mask=tex2Dlod(_ShapeMask,float4(worldPos.xz/_ShapeMaskScale+_Time.y*_ShapeMaskFlow,0,0)).r;
-	                densityParam*=mask;
-	                #endif
-	                return  smoothstep(_DensityClip,1 , tex3Dlod(_MainNoise,float4( (worldPos+_MainNoiseFlow*_Time.y)/_MainNoiseScale,0)).r)*_Density*densityParam;
-	            }
-
-	            #if _LIGHTMARCH
-	            float lightMarch(GPlane _planeStart,GPlane _planeEnd, GRay lightRay,float marchDst)
-	            {
-	                float distance1=PlaneRayDistance(_planeStart,lightRay);
-	                float distance2=PlaneRayDistance(_planeEnd,lightRay);
-	                float distanceInside=max(distance1,distance2);
-	                float distanceLimitParam=saturate(distanceInside/_LightMarchMinimalDistance);
-	                float cloudDensity=0;
-	                float totalDst=0;
-	                [unroll]
-	                for(uint i=0u;i<16u;i+=1u)
-	                {
-	                    if(i>=_LightMarchTimes||totalDst>=distanceInside)
-	                        break;
-	                    float3 marchPos=lightRay.GetPoint(totalDst);
-	                    cloudDensity+=SampleDensity(marchPos);
-	                    totalDst+=marchDst;
-	                }
-	                return cloudDensity/_LightMarchTimes*distanceLimitParam;
-	            }
-	            #endif
-
-	            half2 VolumetricCloud(float3 positionWS,float3 viewDirWS,float marchDst)
-	            {
+					ao=occlusion;
+				#endif
+				
+                half2 cloud=0;
+                #if _VOLUMETRICCLOUD
 	                float3 lightDirWS=normalize(_MainLightPosition.xyz);
-	                GPlane planeStartWS=GPlane_Ctor( float3(0,1,0),_VerticalStart);
-	                GPlane planeEndWS=GPlane_Ctor(float3(0,1,0),_VerticalEnd);
-	                GRay viewRayWS=GRay_Ctor( positionWS,viewDirWS);
-	                float distance1=PlaneRayDistance(planeStartWS,viewRayWS);
-	                float distance2=PlaneRayDistance(planeEndWS,viewRayWS);
-	                distance1=min(marchDst,distance1);
-	                distance2=min(marchDst,distance2);
-	                float3 marchBegin=positionWS;
-	                float marchDistance=-1;
-	                if(_VerticalStart< positionWS.y && positionWS.y<_VerticalEnd)
-	                {
-	                    marchDistance=max(distance1,distance2);
-	                }
-	                else if(distance1>0)
-	                {
-	                    float distanceOffset=distance1-distance2;
-	                    marchBegin=_WorldSpaceCameraPos+viewDirWS* (distanceOffset>0?distance2:distance1);
-	                    marchDistance=abs(distanceOffset);
-	                }
+	                GRay viewRayWS=GRay_Ctor(cameraPositionWS,marchDirWS);
+					float3 marchBegin=cameraPositionWS;
+					float marchDistance=0;
+	            	#if _SHAPE
+	            		float2 distances=SAMPLE_TEXTURE2D(_VOLUMETRIC_DEPTH,sampler_VOLUMETRIC_DEPTH,uv).rg;
+						float distance1=RawToEyeDepth(distances.y)*eyeDepthProjection;
+						float distance2=RawToEyeDepth(distances.x)*eyeDepthProjection;
+		                distance1=min(actualDepth,distance1);
+		                distance2=min(actualDepth,distance2);
+						marchDistance=distance2-distance1;
+						marchBegin=cameraPositionWS+marchDirWS*distance1;
+	            	#else
+		                GPlane planeStartWS=GPlane_Ctor( float3(0,1,0),_VerticalStart);
+		                GPlane planeEndWS=GPlane_Ctor(float3(0,1,0),_VerticalEnd);
+		                float distance1 = PlaneRayDistance(planeStartWS,viewRayWS);
+						float distance2 = PlaneRayDistance(planeEndWS,viewRayWS);
+		                distance1=min(actualDepth,distance1);
+		                distance2=min(actualDepth,distance2);
+		                if(_VerticalStart< cameraPositionWS.y && cameraPositionWS.y<_VerticalEnd)
+		                {
+		                    marchDistance=max(distance1,distance2);
+		                }
+		                else if(distance1>0)
+		                {
+		                    float distanceOffset=distance1-distance2;
+		                    marchBegin=cameraPositionWS+marchDirWS* (distanceOffset>0?distance2:distance1);
+		                    marchDistance=abs(distanceOffset);
+		                }
+	            	#endif
 
 	                float cloudDensity=1;
 	                float lightIntensity=1;
-	                if(marchDistance>0)
+	                if(marchDistance>1)
 	                {
-	                    float scatter=1;
-	                    #if _LIGHTSCATTER
-	                    scatter=(1-smoothstep(_ScatterRange,1,dot(viewDirWS,lightDirWS))*_ScatterStrength);
-	                    #endif
 	                    float cloudMarchDst= _Distance/_RayMarchTimes;
 	                    float cloudMarchParam=1.0/_RayMarchTimes;
-	                    float lightMarchParam=_LightAbsorption*_Opacity;
-	                    float lightMarchDst=_Distance/_LightMarchTimes/2;
 	                    float dstMarched=0;
 	                    float totalDensity=0;
 	                    for(int index=0;index<_RayMarchTimes;index++)
 	                    {
-	                        float3 marchPos=marchBegin+viewDirWS*dstMarched;
+	                        float3 marchPos=marchBegin+marchDirWS*dstMarched;
 	                        float density=SampleDensity(marchPos)*cloudMarchParam;
 	                        if(density>0)
 	                        {
 	                            cloudDensity*= exp(-density*_Opacity);
-	                            #if _LIGHTMARCH
-	                            GRay lightRayWS=GRay_Ctor( marchPos,lightDirWS);
-	                            lightIntensity *= exp(-density*scatter*cloudDensity*lightMarchParam*lightMarch(planeStartWS,planeEndWS,lightRayWS,lightMarchDst));
-	                            #else
-	                            lightIntensity -= density*scatter*cloudDensity*lightMarchParam;
-	                            #endif
+	                            lightIntensity -= density*cloudDensity;
 	                        }
 
 	                        dstMarched+=cloudMarchDst;
@@ -332,20 +312,9 @@
 	                            break;
 	                    }
 	                }
-	                return half2(cloudDensity,lightIntensity);
-	            }
-            #endif
-			half4 frag(v2f_img i):SV_TARGET
-			{
-                half3 marchDirWS=normalize( TransformNDCToViewDirWS(i.uv));
-				float rawDepth=SampleRawDepth(i.uv);
-                half ao=0;
-				#if _AO
-					ao=GetAO(i.uv,SampleNormalWS(i.uv),TransformNDCToWorld(i.uv),rawDepth);
-				#endif
-                half2 cloud=0;
-                #if _VOLUMETRICCLOUD
-                    cloud=VolumetricCloud(GetCameraPositionWS(),marchDirWS,RawToEyeDepth(rawDepth));
+					cloudDensity=step(_DensityClip,cloudDensity);
+				
+	                cloud= half2(cloudDensity,lightIntensity);
                 #endif
 				return half4(ao,cloud,1);
 			}

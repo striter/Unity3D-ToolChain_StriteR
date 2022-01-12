@@ -1,11 +1,15 @@
 ﻿Shader "Hidden/DepthOnly"
 {
+	Properties
+	{
+		[Header(Misc)]
+		[Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
+		[Enum(UnityEngine.Rendering.ColorWriteMask)]_ColorMask("Color Mask",int)=15
+		[Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
+	}
+	
     SubShader
     {
-		Blend Off
-		ZWrite On
-		ZTest LEqual
-			
     	HLSLINCLUDE
 			#pragma multi_compile_instancing
 			#include "Assets/Shaders/Library/Common.hlsl"
@@ -32,11 +36,15 @@
 
 			float4 DepthFragment(v2f i) :SV_TARGET
 			{
-				return 0;
+				return i.positionCS.z;
 			}
     	ENDHLSL
 		Pass
 		{
+			Blend Off
+			ZTest Less
+			Cull Back
+			
 			NAME "MAIN"
 			Tags{"LightMode" = "DepthOnly"}
 			HLSLPROGRAM
@@ -47,6 +55,11 @@
     	
     	Pass
 		{
+			Blend Off
+			ZTest [_ZTest]
+			ColorMask [_ColorMask]
+			Cull [_Cull]
+			
 			NAME "Forward"
 			Tags{"LightMode" = "UniversalForward"}
 			HLSLPROGRAM

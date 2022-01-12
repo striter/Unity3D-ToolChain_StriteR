@@ -54,14 +54,7 @@ void TransformHClipToUVDepth(float4 positionCS,out float2 uv,out float rawDepth)
     #endif
 }
 
-//Screen Space Calculations
-float3 _FrustumCornersRayBL;
-float3 _FrustumCornersRayBR;
-float3 _FrustumCornersRayTL;
-float3 _FrustumCornersRayTR;
-
-float3 TransformNDCToViewDirWS(float2 uv){return bilinearLerp(_FrustumCornersRayTL, _FrustumCornersRayTR, _FrustumCornersRayBL, _FrustumCornersRayBR, uv);}
-float3 TransformNDCToWorld_Perspective(float2 uv,float _rawDepth){ return GetCameraPositionWS() + RawToEyeDepth(_rawDepth) *  TransformNDCToViewDirWS(uv);}
+float3 TransformNDCToWorld_Perspective(float2 uv,float _rawDepth){ return GetCameraPositionWS() + RawToEyeDepth(_rawDepth) *  TransformNDCToFrustumCornersRay(uv);}
 float3 TransformNDCToWorld_VPMatrix(float2 uv,float _rawDepth){ return TransformClipToWorld(TransformNDCToClip(uv,_rawDepth));}
 float3 TransformNDCToWorld(float2 uv,float rawDepth)
 {
@@ -70,41 +63,4 @@ float3 TransformNDCToWorld(float2 uv,float rawDepth)
         return TransformNDCToWorld_VPMatrix(uv,rawDepth);
     else
         return TransformNDCToWorld_Perspective(uv,rawDepth);
-}
-
-float3 _OrthoCameraPosBL;
-float3 _OrthoCameraPosBR;
-float3 _OrthoCameraPosTL;
-float3 _OrthoCameraPosTR;
-float3 GetCameraRealPositionWS(float2 uv)
-{
-    [branch]
-    if(unity_OrthoParams.w)
-        return bilinearLerp(_OrthoCameraPosTL,_OrthoCameraPosTR,_OrthoCameraPosBL,_OrthoCameraPosBR,uv);
-    else
-        return _WorldSpaceCameraPos;
-}
-
-float3 _OrthoCameraDirection;
-float3 GetCameraRealDirectionWS(float3 _positionWS)
-{
-    [branch]
-    if(unity_OrthoParams.w)
-        return _OrthoCameraDirection;
-    else
-        return normalize(_positionWS-_WorldSpaceCameraPos);
-}
-
-float3 GetViewDirectionWS(float3 _positionWS)
-{
-    return -GetCameraRealDirectionWS(_positionWS);
-}
-
-float GetCameraDepthDistance(float2 uv,float rawDepth)
-{
-    [branch]
-    if(unity_OrthoParams.w)
-        return RawToEyeDepth(rawDepth)-_ProjectionParams.y;
-    else
-        return RawToEyeDepth(rawDepth)* length(TransformNDCToViewDirWS(uv));
 }

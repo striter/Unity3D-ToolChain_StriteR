@@ -95,7 +95,7 @@ Shader "Hidden/PostProcess/Transparent"
             half4 frag (v2f_img i) : SV_Target
             {
                 float3 positionWS=_WorldSpaceCameraPos;
-                half3 marchDirWS=normalize( TransformNDCToViewDirWS(i.uv));
+                half3 marchDirWS=normalize( TransformNDCToFrustumCornersRay(i.uv));
                 float eyeDepth=SampleEyeDepth(i.uv);
                 half light=0;
                 #if _VOLUMETRICLIGHT

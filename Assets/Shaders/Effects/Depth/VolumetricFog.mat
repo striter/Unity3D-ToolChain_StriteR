@@ -64,7 +64,7 @@ Material:
     - _BumpScale: 1
     - _ColorSample: 0
     - _Cutoff: 0.5
-    - _Density: 0.4
+    - _Density: 0.23
     - _Depth: 1
     - _DepthSample: 1
     - _DetailNormalMapScale: 1
@@ -80,7 +80,7 @@ Material:
     - _NoiseScale: 10
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Pow: 2.5
+    - _Pow: 1.45
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1

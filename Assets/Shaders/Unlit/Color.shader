@@ -6,9 +6,9 @@
 	    [HDR]_Color("HDR Color",Color)=(1,1,1,1)
 
 		[Header(Misc)]
-		[Toggle(_CSFORWARD)]_ClipSpaceForward("Clip Space Forward",float)=0
-		[Foldout(_CSFORWARD)]_ClipSpaceForwardAmount("Forward Amount",Range(0.01,1))=.2
 		[Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
+		[Enum(UnityEngine.Rendering.ColorWriteMask)]_ColorMask("Color Mask",int)=15
+		[Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
 	}
 
 	SubShader
@@ -17,6 +17,8 @@
 		
 		Lighting Off Fog { Color(0,0,0,0) }
 		ZTest [_ZTest]
+		Cull [_Cull]
+		ColorMask [_ColorMask]
 		ZWrite On
 		Blend SrcAlpha OneMinusSrcAlpha
 
@@ -28,7 +30,6 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile_instancing
-			#pragma shader_feature_local _CSFORWARD
 			#pragma shader_feature_local _MASK
 			
 			#include "Assets/Shaders/Library/Common.hlsl"
@@ -49,7 +50,6 @@
 			sampler2D _MainTex;
 			INSTANCING_BUFFER_START
 				INSTANCING_PROP(float4, _Color)
-				INSTANCING_PROP(float,_ClipSpaceForwardAmount)
 			INSTANCING_BUFFER_END
 
 			v2f vert(a2v v)
@@ -57,10 +57,6 @@
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				float4 positionOS= TransformObjectToHClip(v.positionOS);
-				#if _CSFORWARD
-				float forward=_ClipSpaceForwardAmount*positionOS.z*Z_Multiply;
-				positionOS.z-=forward;
-				#endif
 				o.positionCS =positionOS;
 				o.uv = v.uv;
 				o.color = INSTANCE(_Color);

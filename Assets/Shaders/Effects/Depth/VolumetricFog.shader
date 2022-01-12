@@ -80,7 +80,7 @@
                 // return TransformWorldToEyeDepth(world,UNITY_MATRIX_V)/10;
                 #if _DEPTH
                     float rawDepth=SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).r;
-                    float depthDstWS = GetCameraDepthDistance(screenUV,rawDepth);
+                    float depthDstWS = RawToDistance(rawDepth,screenUV);
                     float depthDstOS = length( TransformWorldToObjectDir (directionWS*depthDstWS,false));
                     distances.y=min(depthDstOS,distances.y);
                 #endif

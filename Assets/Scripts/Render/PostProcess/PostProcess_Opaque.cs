@@ -75,21 +75,28 @@ namespace Rendering.PostProcess
         private const string KW_AO = "_AO";
         private const string KW_VolumetricCloud = "_VOLUMETRICCLOUD";
         
-        private static readonly int ID_MaskRender = Shader.PropertyToID("_OUTLINE_MASK");
-        private static readonly RenderTargetIdentifier RT_ID_MaskRender = new RenderTargetIdentifier(ID_MaskRender);
-        private static readonly int ID_MaskDepth = Shader.PropertyToID("_OUTLINE_MASK_DEPTH");
-        private static readonly RenderTargetIdentifier RT_ID_MaskDepth = new RenderTargetIdentifier(ID_MaskDepth);
-        private static readonly int ID_MaskRenderBlur = Shader.PropertyToID("_OUTLINE_MASK_BLUR");
-        private static readonly RenderTargetIdentifier RT_ID_MaskRenderBlur = new RenderTargetIdentifier(ID_MaskRenderBlur);
+        private static readonly int ID_Highlight_Mask = Shader.PropertyToID("_OUTLINE_MASK");
+        private static readonly RenderTargetIdentifier RT_ID_Highlight_Mask = new RenderTargetIdentifier(ID_Highlight_Mask);
+        private static readonly int ID_Highlight_Mask_Blur = Shader.PropertyToID("_OUTLINE_MASK_BLUR");
+        private static readonly RenderTargetIdentifier RT_ID_Highlight_Mask_Blur = new RenderTargetIdentifier(ID_Highlight_Mask_Blur);
+
         private static readonly int ID_Color=Shader.PropertyToID("_Color");
+        private static readonly int ID_ColorMask=Shader.PropertyToID("_ColorMask");
+        private static readonly int ID_ZTest=Shader.PropertyToID("_ZTest");
+        private static readonly int ID_Cull=Shader.PropertyToID("_Cull");
+
         private static readonly int RT_ID_Sample = Shader.PropertyToID("_Opaque_Sample");
         
-        RenderTextureDescriptor m_Descriptor;
-        readonly Material m_RenderMaterial;
-        readonly Material m_RenderDepthMaterial;
-        readonly List<ShaderTagId> m_ShaderTagIDs = new List<ShaderTagId>();
-        readonly PPCore_Blurs m_HighlightBlur;
-        
+        private RenderTextureDescriptor m_HighlightDescriptor;
+        private readonly Material m_HighlightRender;
+        private readonly PPCore_Blurs m_HighlightBlur;
+
+        private RenderTextureDescriptor m_VolumetricCloudDescriptor;
+        private readonly Material m_RenderFrontDepth;
+        private readonly Material m_RenderBackDepth;
+        private static readonly int ID_VolumetricCloud_Depth = Shader.PropertyToID("_VOLUMETRIC_DEPTH");
+        private static readonly RenderTargetIdentifier RT_ID_VolumetricCloud_Depth=new RenderTargetIdentifier(ID_VolumetricCloud_Depth);
+
         enum EPassIndex
         {
             Combine=0,
@@ -98,10 +105,16 @@ namespace Rendering.PostProcess
         public PPCore_Opaque()
         {
             m_HighlightBlur = new PPCore_Blurs();
-            m_RenderMaterial = new Material(RenderResources.FindInclude("Game/Unlit/Color")) { hideFlags = HideFlags.HideAndDontSave };
-            m_RenderDepthMaterial = new Material(RenderResources.FindInclude("Hidden/CopyDepth")) { hideFlags = HideFlags.HideAndDontSave };
-            m_RenderMaterial.SetColor(ID_Color, Color.white);
-            m_ShaderTagIDs.FillWithDefaultTags();
+            m_HighlightRender = new Material(RenderResources.FindInclude("Game/Unlit/Color")) { hideFlags = HideFlags.HideAndDontSave };
+            m_HighlightRender.SetColor(ID_Color, Color.white);
+            m_RenderBackDepth = new Material(RenderResources.FindInclude("Hidden/DepthOnly")){hideFlags = HideFlags.HideAndDontSave};
+            m_RenderBackDepth.SetInt(ID_ColorMask,(int)ColorWriteMask.Red);
+            m_RenderBackDepth.SetInt(ID_ZTest,(int)CompareFunction.Greater);
+            m_RenderBackDepth.SetInt(ID_Cull,(int)CullMode.Front);
+            m_RenderFrontDepth = new Material(RenderResources.FindInclude("Hidden/DepthOnly")) { hideFlags = HideFlags.HideAndDontSave };
+            m_RenderFrontDepth.SetInt(ID_ColorMask,(int)ColorWriteMask.Green);
+            m_RenderFrontDepth.SetInt(ID_ZTest,(int)CompareFunction.Less);
+            m_RenderFrontDepth.SetInt(ID_Cull,(int)CullMode.Back);
         }
         
         public override void OnValidate(ref PPData_Opaque _data)
@@ -112,9 +125,9 @@ namespace Rendering.PostProcess
             if(m_Material.EnableKeyword(KW_Area,_data.m_Area))
                 _data.m_AreaData.Apply(m_Material);
             if (m_Material.EnableKeyword(KW_Outline, _data.m_Outline))
-                _data.m_OutlineData.Apply(m_Material,m_RenderMaterial);
+                _data.m_OutlineData.Apply(m_Material,m_HighlightRender);
             if(m_Material.EnableKeyword(KW_Highlight,_data.m_Highlight))
-                _data.m_HighlightData.Apply(m_Material,m_RenderMaterial,m_HighlightBlur);
+                _data.m_HighlightData.Apply(m_Material,m_HighlightBlur);
             if (m_Material.EnableKeyword(KW_AO, _data.m_SSAO))
                 _data.m_SSAOData.Apply(m_Material);
             if(m_Material.EnableKeyword(KW_VolumetricCloud,_data.m_VolumetricCloud))
@@ -124,57 +137,86 @@ namespace Rendering.PostProcess
         public override void Destroy()
         {
             base.Destroy();
-            UnityEngine.Object.DestroyImmediate(m_RenderMaterial);
+            UnityEngine.Object.DestroyImmediate(m_HighlightRender);
         }
 
         public void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor,ref PPData_Opaque _data)
         {
-            if (!_data.m_Highlight)
-                return;
-            
-            var highlightData = _data.m_HighlightData;
-            m_Descriptor = new RenderTextureDescriptor(_descriptor.width, _descriptor.height, RenderTextureFormat.R8, 0, 0);
+            if (_data.m_Highlight)
+            {
+                m_HighlightDescriptor = new RenderTextureDescriptor(_descriptor.width, _descriptor.height, RenderTextureFormat.R8, 0, 0);
 
-            _buffer.GetTemporaryRT(ID_MaskRender, m_Descriptor, FilterMode.Bilinear);
-            _buffer.GetTemporaryRT(ID_MaskRenderBlur, m_Descriptor, FilterMode.Bilinear);
+                _buffer.GetTemporaryRT(ID_Highlight_Mask, m_HighlightDescriptor, FilterMode.Bilinear);
+                _buffer.GetTemporaryRT(ID_Highlight_Mask_Blur, m_HighlightDescriptor, FilterMode.Bilinear);
+            }
 
-            if (!highlightData.m_ZClip)
-                return;
-            var depthDescriptor = new RenderTextureDescriptor(_descriptor.width, _descriptor.height, RenderTextureFormat.Depth, 32, 0);
-            _buffer.GetTemporaryRT(ID_MaskDepth, depthDescriptor);
-            _buffer.Blit(RenderTargetHandle.CameraTarget.id, RT_ID_MaskDepth, m_RenderDepthMaterial);
+            if (_data.m_VolumetricCloud && _data.m_VolumetricCloudData.m_Shape)
+            {
+                var depthDescriptor = new RenderTextureDescriptor(_descriptor.width, _descriptor.height, RenderTextureFormat.RGFloat, 32, 0);
+                _buffer.GetTemporaryRT(ID_VolumetricCloud_Depth, depthDescriptor, FilterMode.Bilinear);
+            }
         }
 
         public void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,ref PPData_Opaque _data)
         {
-            if (!_data.m_Highlight)
-                return;
-            
-            var highlightData = _data.m_HighlightData;
-            CommandBuffer buffer = CommandBufferPool.Get("Highlight Execute");
-            if (!highlightData.m_ZClip)
-                buffer.SetRenderTarget(RT_ID_MaskRender);
-            else
-                buffer.SetRenderTarget(RT_ID_MaskRender, RT_ID_MaskDepth);
-            buffer.ClearRenderTarget(false, true, Color.black);
-            _context.ExecuteCommandBuffer(buffer);
+            if (_data.m_Highlight)
+            {
+                var highlightData = _data.m_HighlightData;
+                CommandBuffer buffer = CommandBufferPool.Get("Highlight Mask");
+                buffer.SetRenderTarget(RT_ID_Highlight_Mask);
+                buffer.ClearRenderTarget(false, true, Color.black);
+                _context.ExecuteCommandBuffer(buffer);
 
-            DrawingSettings drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
-            drawingSettings.overrideMaterial = m_RenderMaterial;
-            FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = highlightData.m_CullingMask };
-            _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
+                DrawingSettings drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
+                m_HighlightRender.SetInt(ID_ColorMask,(int)ColorWriteMask.All);
+                m_HighlightRender.SetInt(ID_ZTest,(int)CompareFunction.Less);
+                m_HighlightRender.SetInt(ID_Cull,(int)CullMode.Back);
+                drawingSettings.overrideMaterial = m_HighlightRender;
+                FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = highlightData.m_CullingMask };
+                _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
 
-            buffer.Clear();
-            buffer.SetRenderTarget(_renderer.cameraColorTarget);
-            _context.ExecuteCommandBuffer(buffer);
-            CommandBufferPool.Release(buffer);
+                buffer.Clear();
+                buffer.SetRenderTarget(_renderer.cameraColorTarget);
+                _context.ExecuteCommandBuffer(buffer);
+                CommandBufferPool.Release(buffer);
+            }
+
+            if (_data.m_VolumetricCloud && _data.m_VolumetricCloudData.m_Shape)
+            {
+                var volumetricData = _data.m_VolumetricCloudData;
+                CommandBuffer buffer = CommandBufferPool.Get("Volumetric Fog Mask");
+                buffer.SetRenderTarget(RT_ID_VolumetricCloud_Depth);
+                buffer.ClearRenderTarget(RTClearFlags.ColorDepth,Color.clear,0,0);
+                _context.ExecuteCommandBuffer(buffer);
+
+                DrawingSettings drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
+                if (_renderingData.cameraData.camera.TryGetCullingParameters(out var parameters))
+                {
+                    parameters.cullingOptions = CullingOptions.None;
+                    parameters.cullingMask = (uint)_data.m_VolumetricCloudData.m_CullingMask;
+                    
+                    
+                    FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = volumetricData.m_CullingMask };
+                    drawingSettings.overrideMaterialPassIndex=1;
+                    drawingSettings.overrideMaterial = m_RenderBackDepth;
+                    _context.DrawRenderers(_context.Cull(ref parameters), ref drawingSettings, ref filterSettings);
+                    drawingSettings.overrideMaterial = m_RenderFrontDepth;
+                    _context.DrawRenderers(_context.Cull(ref parameters), ref drawingSettings, ref filterSettings);
+                    
+                }
+
+                buffer.Clear();
+                buffer.SetRenderTarget(_renderer.cameraColorTarget);
+                _context.ExecuteCommandBuffer(buffer);
+                CommandBufferPool.Release(buffer);
+            }
         }
 
         public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,
             RenderTextureDescriptor _descriptor, ref PPData_Opaque _data)
         {
             if(_data.m_Highlight) 
-                m_HighlightBlur.ExecutePostProcessBuffer(_buffer, RT_ID_MaskRender, RT_ID_MaskRenderBlur, m_Descriptor,ref _data.m_HighlightData.m_Blur);
+                m_HighlightBlur.ExecutePostProcessBuffer(_buffer, RT_ID_Highlight_Mask, RT_ID_Highlight_Mask_Blur, m_HighlightDescriptor,ref _data.m_HighlightData.m_Blur);
 
             if (!_data.m_SSAO && !_data.m_VolumetricCloud)
             {
@@ -195,14 +237,14 @@ namespace Rendering.PostProcess
 
         public void FrameCleanUp(CommandBuffer _buffer,ref PPData_Opaque _data)
         {
-            if (!_data.m_Highlight)
-                return;
-            
-            _buffer.ReleaseTemporaryRT(ID_MaskRender);
-            _buffer.ReleaseTemporaryRT(ID_MaskRenderBlur);
-            if (! _data.m_HighlightData.m_ZClip)
-                return;
-            _buffer.ReleaseTemporaryRT(ID_MaskDepth);
+            if (_data.m_Highlight)
+            {
+                _buffer.ReleaseTemporaryRT(ID_Highlight_Mask);
+                _buffer.ReleaseTemporaryRT(ID_Highlight_Mask_Blur);
+            }
+
+            if (_data.m_VolumetricCloud && _data.m_VolumetricCloudData.m_Shape)
+                _buffer.ReleaseTemporaryRT(ID_VolumetricCloud_Depth);
         }
     }
 
@@ -222,7 +264,7 @@ namespace Rendering.PostProcess
         [Range(1, 4)] public int m_DownSample;
         [MTitle] public bool m_SSAO;
         [MFoldout(nameof(m_SSAO), true)] public Data_SSAO m_SSAOData;
-        public bool m_VolumetricCloud;
+        [MTitle] public bool m_VolumetricCloud;
         [MFoldout(nameof(m_VolumetricCloud), true)] public Data_VolumetricCloud m_VolumetricCloudData;
         public bool Validate() => m_Scan || m_Area || m_Outline || m_Highlight || m_SSAO || m_VolumetricCloud;
         public static readonly PPData_Opaque m_Default = new PPData_Opaque()
@@ -263,9 +305,6 @@ namespace Rendering.PostProcess
             {
                 m_Color=Color.blue,
                 m_CullingMask = int.MaxValue,
-                m_ZClip=true,
-                m_ZOffset=.2f,
-                m_ZLesser=true,
                 m_Blur = PPData_Blurs.m_Default,
             },
                 
@@ -288,9 +327,6 @@ namespace Rendering.PostProcess
                 m_MainNoise = TResources.EditorDefaultResources.Noise3D,
                 m_MainNoiseScale = Vector3.one * 500f,
                 m_MainNoiseFlow = Vector3.one * 0.1f,
-                m_ShapeMask = TResources.EditorDefaultResources.Noise2D,
-                m_ShapeMaskScale = Vector3.one * 500f,
-                m_ShapeMaskFlow = Vector3.one * 0.1f,
 
                 m_Density = 50f,
                 m_DensityClip = .6f,
@@ -301,13 +337,6 @@ namespace Rendering.PostProcess
 
                 m_ColorRamp = TResources.EditorDefaultResources.Ramp,
                 m_LightAbsorption = .2f,
-                m_LightMarch = true,
-                m_LightMarchClip = 0.1f,
-                m_LightMarchTimes = 4,
-
-                m_LightScatter = true,
-                m_ScatterRange = .8f,
-                m_ScatterStrength = .8f,
             },
         };
         
@@ -396,9 +425,9 @@ namespace Rendering.PostProcess
             public float m_Width;
             [ColorUsage(true,true)]public Color m_FillColor;
             [ColorUsage(true,true)]public Color m_EdgeColor;
-            public Texture2D m_FillTexure;
-            [MFold(nameof(m_FillTexure),null), RangeVector(-5,5)] public Vector2 m_FillTextureFlow;
-            [MFold(nameof(m_FillTexure),null),Clamp(0.000001f)] public float m_FillTextureScale;
+            public Texture2D m_FillTexture;
+            [MFold(nameof(m_FillTexture),null), RangeVector(-5,5)] public Vector2 m_FillTextureFlow;
+            [MFold(nameof(m_FillTexture),null),Clamp(0.000001f)] public float m_FillTextureScale;
 
             #region ShaderProperties
                 static readonly int ID_Origin = Shader.PropertyToID("_AreaOrigin");
@@ -418,7 +447,7 @@ namespace Rendering.PostProcess
                     _material.SetVector(ID_Origin, m_Origin);
                     _material.SetColor(ID_FillColor, m_FillColor);
                     _material.SetColor(ID_EdgeColor, m_EdgeColor);
-                    _material.SetTexture(ID_FillTexture, m_FillTexure);
+                    _material.SetTexture(ID_FillTexture, m_FillTexture);
                     _material.SetFloat(ID_FillTextureScale, 1f/m_FillTextureScale);
                     _material.SetVector(ID_FillTextureFlow, m_FillTextureFlow);
                 }
@@ -473,27 +502,14 @@ namespace Rendering.PostProcess
         {
             [CullingMask] public int m_CullingMask;
             [ColorUsage(true,true)]public Color m_Color;
-            public bool m_ZClip;
-            [MFoldout(nameof(m_ZClip), true)] public bool m_ZLesser;
-            [MFoldout(nameof(m_ZClip),true)] [Range(0.01f,1f)] public float m_ZOffset;
             public PPData_Blurs m_Blur;
             
             #region Properties
-            const string KW_DepthForward = "_CSFORWARD";
             static readonly int ID_EdgeColor = Shader.PropertyToID("_HighlightColor");
-            static readonly int ID_ZTest = Shader.PropertyToID("_ZTest");
-            static readonly int ID_DepthForwardAmount = Shader.PropertyToID("_ClipSpaceForwardAmount");
-
-            public void Apply(Material _material, Material m_RenderMaterial,PPCore_Blurs _blur)
+            public void Apply(Material _material,PPCore_Blurs _blur)
             {
                 _material.SetColor(ID_EdgeColor,m_Color);
                 _blur.OnValidate(ref m_Blur);
-                
-                if (m_RenderMaterial.EnableKeyword(KW_DepthForward, m_ZClip))
-                {
-                    m_RenderMaterial.SetInt(ID_ZTest, (int)(m_ZLesser ?CompareFunction.Less:CompareFunction.Greater));
-                    m_RenderMaterial.SetFloat(ID_DepthForwardAmount, m_ZOffset);
-                }
             }
             #endregion
         }
@@ -501,12 +517,15 @@ namespace Rendering.PostProcess
         [Serializable]
         public struct Data_VolumetricCloud
         {
+            [MTitle]public bool m_Shape;
+            [MFoldout(nameof(m_Shape),true)] [CullingMask] public int m_CullingMask;
+            [MFoldout(nameof(m_Shape),false)] public float m_VerticalStart;
+            [MFoldout(nameof(m_Shape),false)] public float m_VerticalLength;
+            
             [MTitle] public Texture3D m_MainNoise;
             [MFold(nameof(m_MainNoise)), RangeVector(0f, 1000f)] public Vector3 m_MainNoiseScale;
             [MFold(nameof(m_MainNoise)), RangeVector(0f, 10f)] public Vector3 m_MainNoiseFlow;
-
-            public float m_VerticalStart;
-            public float m_VerticalLength;
+            
             [Range(0f, 100f)] public float m_Density;
             [Range(0, 1)] public float m_DensityClip;
             [Range(0, 1)] public float m_DensitySmooth;
@@ -514,22 +533,13 @@ namespace Rendering.PostProcess
             [IntEnum(16,32,64,128)]public int m_MarchTimes ;
             [Range(0, 1)] public float m_Opacity;
 
-            [MTitle] public Texture2D m_ShapeMask;
-            [MFold(nameof(m_ShapeMask)), RangeVector(0f, 1000f)] public Vector2 m_ShapeMaskScale;
-            [MFold(nameof(m_ShapeMask)), RangeVector(0f, 10f)] public Vector2 m_ShapeMaskFlow;
-
             [Header("Light Setting")] 
             public Texture2D m_ColorRamp;
             [Range(0, 1)] public float m_LightAbsorption;
-            [MTitle]public bool m_LightMarch;
-            [MFoldout(nameof(m_LightMarch),true), Range(0, 1)] public float m_LightMarchClip;
-            [MFoldout(nameof(m_LightMarch), true)] [IntEnum(4,8,16)]public int m_LightMarchTimes;
-            [MTitle] public bool m_LightScatter;
-            [MFoldout(nameof(m_LightScatter), true), Range(.5f, 1)] public float m_ScatterRange;
-            [MFoldout(nameof(m_LightScatter), true), Range(0, 1)] public float m_ScatterStrength;
-            
-
             #region ShaderProperties
+
+            private const string KW_Shape = "_SHAPE";
+            
             static readonly int ID_VerticalStart = Shader.PropertyToID("_VerticalStart");
             static readonly int ID_VerticalEnd = Shader.PropertyToID("_VerticalEnd");
 
@@ -545,21 +555,10 @@ namespace Rendering.PostProcess
             static readonly int ID_MainNoiseScale = Shader.PropertyToID("_MainNoiseScale");
             static readonly int ID_MainNoiseFlow = Shader.PropertyToID("_MainNoiseFlow");
 
-            const string KW_ShapeMask = "_SHAPEMASK";
-            static readonly int ID_ShapeMask = Shader.PropertyToID("_ShapeMask");
-            static readonly int ID_ShapeScale = Shader.PropertyToID("_ShapeMaskScale");
-            static readonly int ID_ShapeFlow = Shader.PropertyToID("_ShapeMaskFlow");
-
             static readonly int ID_LightAbsorption = Shader.PropertyToID("_LightAbsorption");
-            const string KW_LightMarch = "_LIGHTMARCH";
-            static readonly int ID_LightMarchTimes = Shader.PropertyToID("_LightMarchTimes");
-            static readonly int ID_LightMarchMinimalDistance = Shader.PropertyToID("_LightMarchMinimalDistance");
-
-            const string KW_LightScatter = "_LIGHTSCATTER";
-            static readonly int ID_ScatterRange = Shader.PropertyToID("_ScatterRange");
-            static readonly int ID_ScatterStrength = Shader.PropertyToID("_ScatterStrength");
             public  void Apply(Material _material)
             {
+                _material.EnableKeyword(KW_Shape, m_Shape);
                 _material.SetFloat(ID_VerticalStart, m_VerticalStart);
                 _material.SetFloat(ID_VerticalEnd, m_VerticalStart+m_VerticalLength);
                 _material.SetFloat(ID_Opacity, m_Opacity);
@@ -572,17 +571,7 @@ namespace Rendering.PostProcess
                 _material.SetTexture(ID_MainNoise, m_MainNoise);
                 _material.SetVector(ID_MainNoiseScale, m_MainNoiseScale);
                 _material.SetVector(ID_MainNoiseFlow, m_MainNoiseFlow);
-                _material.EnableKeyword(KW_ShapeMask, m_ShapeMask != null);
-                _material.SetTexture(ID_ShapeMask, m_ShapeMask);
-                _material.SetVector(ID_ShapeScale, m_ShapeMaskScale);
-                _material.SetVector(ID_ShapeFlow, m_ShapeMaskFlow);
                 _material.SetFloat(ID_LightAbsorption, m_LightAbsorption);
-                _material.EnableKeyword(KW_LightMarch,m_LightMarch);
-                _material.SetInt(ID_LightMarchTimes,(int)m_LightMarchTimes);
-                _material.EnableKeyword(KW_LightScatter, m_LightScatter);
-                _material.SetFloat(ID_LightMarchMinimalDistance, m_Distance* m_LightMarchClip);
-                _material.SetFloat(ID_ScatterRange, m_ScatterRange);
-                _material.SetFloat(ID_ScatterStrength, m_ScatterStrength);
             }
             #endregion
         }

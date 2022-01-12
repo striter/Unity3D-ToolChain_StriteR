@@ -227,18 +227,18 @@ Material:
     - _FurAlphaClip: 1
     - _FurGravity: 0
     - _FurLength: 0.06
-    - _FurScattering: 0.94
+    - _FurScattering: 0
     - _FurShadow: 1
     - _GSF: 6
     - _GlossMapScale: 0
-    - _Glossiness: 0.66
+    - _Glossiness: 0.86
     - _GlossyReflections: 0
     - _Grid: 0
     - _HeightTransition: 0
     - _Ior: 1
     - _Lambert: 0
     - _Lighting: 1
-    - _Metallic: 0.17
+    - _Metallic: 1
     - _Metallic0: 0
     - _Metallic1: 0
     - _Metallic2: 0

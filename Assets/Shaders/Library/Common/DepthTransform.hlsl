@@ -82,6 +82,7 @@ float RawToEyeDepth(float _rawDepth)
     else
         return RawToEyeDepthPerspective(_rawDepth,_ZBufferParams);
 }
+
 float RawTo01Depth(float _rawDepth)
 {
     [branch]
@@ -90,6 +91,7 @@ float RawTo01Depth(float _rawDepth)
     else
         return RawTo01DepthPerspective(_rawDepth,_ZBufferParams);
 }
+
 float EyeToRawDepth(float _eyeDepth)
 {
     [branch]
@@ -97,4 +99,15 @@ float EyeToRawDepth(float _eyeDepth)
         return EyeToRawDepthOrtho(_eyeDepth,_ProjectionParams);
     else
         return EyeToRawDepthPerspective(_eyeDepth,_ZBufferParams);
+}
+
+//TL TR BR BL
+float4 _FrustumCornersScaling;
+float RawToDistance(float _rawDepth,float2 _uv)
+{
+    float eyeDepth=RawToEyeDepth(_rawDepth);
+    if(unity_OrthoParams.w)
+        return eyeDepth;
+    else
+        return eyeDepth * length(TransformNDCToFrustumCornersRay(_uv));
 }

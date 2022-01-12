@@ -50,7 +50,7 @@ float4 fragSDF (v2fSDF i) : SV_Target
 {
     float2 positionNDC=TransformHClipToNDC(i.positionHCS);
 
-    float3 viewDirWS=normalize(TransformNDCToViewDirWS(positionNDC));
+    float3 viewDirWS=normalize(TransformNDCToFrustumCornersRay(positionNDC));
     GRay viewRay=GRay_Ctor(GetCameraPositionWS(),viewDirWS);
                 
     SDFOutput  output;

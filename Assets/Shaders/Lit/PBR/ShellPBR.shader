@@ -19,7 +19,6 @@
 		_FurShadow("Inner Shadow",Range(0,1))=0.5
 		_FURUVDelta("UV Delta",Range(0,5))=0.1
 		_FurGravity("Gravity",Range(0,1))=.1
-		_FurScattering("Scattering",Range(0,2))=1
 		
 		[Header(PBR)]
 		[ToggleTex(_PBRMAP)] [NoScaleOffset]_PBRTex("PBR Tex(Roughness.Metallic.AO)",2D)="white"{}
@@ -63,7 +62,6 @@
 				INSTANCING_PROP(float,_FurShadow)
 				INSTANCING_PROP(float,_FURUVDelta)
 				INSTANCING_PROP(float,_FurGravity)
-				INSTANCING_PROP(float,_FurScattering)
 			INSTANCING_BUFFER_END
 			
 			#include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
@@ -98,7 +96,7 @@
 			
 			float GetGeometryShadow(BRDFSurface surface,BRDFLightInput lightSurface)
 			{
-				return saturate(invlerp(-INSTANCE(_ShellDelta)*INSTANCE(_FurScattering),1,lightSurface.NDL));
+				return max(0.,lightSurface.NDL);
 			}
 
 			float GetNormalDistribution(BRDFSurface surface,BRDFLightInput lightSurface)
@@ -113,7 +111,6 @@
 				#endif
 
 				normalDistribution=clamp(normalDistribution,0,100.h);
-				// normalDistribution+=pow5(1.0-surface.NDV)*SHELLDELTA*20;
 				return normalDistribution;
 			}
 						
