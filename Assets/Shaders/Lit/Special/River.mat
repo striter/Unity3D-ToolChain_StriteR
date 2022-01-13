@@ -225,9 +225,9 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 0, g: 0.4814489, b: 1, a: 0.27058825}
+    - _Color: {r: 1, g: 1, b: 1, a: 0.3764706}
     - _CrackColor: {r: 1, g: 1, b: 1, a: 1}
-    - _DepthColor: {r: 0.0139212515, g: 0, b: 0.44339618, a: 1}
+    - _DepthColor: {r: 0.0139212515, g: 0, b: 0.44339615, a: 0.49019608}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlowDirection: {r: -1, g: 0, b: 0, a: 0}
     - _FlowDirection1: {r: 1, g: 1, b: 0, a: 0}
