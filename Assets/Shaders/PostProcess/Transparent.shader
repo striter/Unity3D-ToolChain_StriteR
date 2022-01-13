@@ -12,7 +12,7 @@ Shader "Hidden/PostProcess/Transparent"
             #include "Assets/Shaders/Library/PostProcess.hlsl"
             #define IGeometryDetection
             #include "Assets/Shaders/Library/Geometry.hlsl"
-            #pragma multi_compile_local _ _VOLUMETRICLIGHT
+            #pragma multi_compile_local_fragment _ _VOLUMETRICLIGHT
         ENDHLSL
         Pass
         {
@@ -47,7 +47,6 @@ Shader "Hidden/PostProcess/Transparent"
             HLSLPROGRAM
             #pragma vertex vert_img
             #pragma fragment frag
-
 
             #if _VOLUMETRICLIGHT
             #pragma multi_compile_local _ _DITHER

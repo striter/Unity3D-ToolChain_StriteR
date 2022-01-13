@@ -18,9 +18,9 @@
 			HLSLPROGRAM
 			#pragma vertex vert_img
 			#pragma fragment frag
-			#pragma multi_compile_local _ _LUT
-			#pragma multi_compile_local _ _BSC
-			#pragma multi_compile_local _ _CHANNEL_MIXER
+			#pragma multi_compile_local_fragment _ _LUT
+			#pragma multi_compile_local_fragment _ _BSC
+			#pragma multi_compile_local_fragment _ _CHANNEL_MIXER
 
 			//Color Grading
 			#if _LUT
@@ -61,7 +61,7 @@
 			}
 
 			//Bloom
-			#pragma multi_compile_local _ _BLOOM
+			#pragma multi_compile_local_fragment _ _BLOOM
 			#if _BLOOM
 		    half4 _BloomColor;
 			TEXTURE2D(_Bloom_Blur);SAMPLER(sampler_Bloom_Blur);
@@ -75,10 +75,10 @@
             }
 
 			//FXAA
-			#pragma multi_compile_local _ _FXAA
-			#pragma multi_compile_local _ _FXAA_DEPTH
+			#pragma multi_compile_local_fragment _ _FXAA
+			#pragma multi_compile_local_fragment _ _FXAA_DEPTH
 			// #pragma multi_compile_local _ _FXAA_SUBPIXEL
-			#pragma multi_compile_local _ _FXAA_ADDITIONAL_SAMPLE
+			#pragma multi_compile_local_fragment _ _FXAA_ADDITIONAL_SAMPLE
 			// #pragma multi_compile_local _ _FXAA_EDGE
 			
 			half _FXAAContrastSkip;

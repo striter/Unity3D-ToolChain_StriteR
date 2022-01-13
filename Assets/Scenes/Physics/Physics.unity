@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44824684, g: 0.4982733, b: 0.57558316, a: 1}
+  m_IndirectSpecularColor: {r: 0.18154761, g: 0.22718978, b: 0.3074065, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -97,7 +97,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: f43501ca13a8b5541b0e7aaa2a5f78d9,
+    type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -9947,7 +9948,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03933548f0649d64a950fbfc4aecb912, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Preview: 1
   m_Data:
     m_VolumetricLight: 1
     m_VolumetricLightData:
@@ -9999,7 +9999,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0d691f066f07e4fbd5e0dba44664e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Preview: 1
   m_Data:
     m_Scan: 0
     m_ScanData:
@@ -10017,7 +10016,7 @@ MonoBehaviour:
       m_Width: 1
       m_FillColor: {r: 1, g: 1, b: 1, a: 1}
       m_EdgeColor: {r: 0, g: 0, b: 0, a: 1}
-      m_FillTexure: {fileID: 0}
+      m_FillTexture: {fileID: 0}
       m_FillTextureFlow: {x: 1, y: 1}
       m_FillTextureScale: 1
     m_Outline: 0
@@ -10030,9 +10029,6 @@ MonoBehaviour:
     m_HighlightData:
       m_CullingMask: 2147483647
       m_Color: {r: 0, g: 0, b: 1, a: 1}
-      m_ZClip: 1
-      m_ZLesser: 1
-      m_ZOffset: 0.2
       m_Blur:
         m_BlurType: 3
         m_BlurSize: 1.3
@@ -10052,28 +10048,21 @@ MonoBehaviour:
       m_RandomVectorKeywords: Test2
     m_VolumetricCloud: 0
     m_VolumetricCloudData:
+      m_Shape: 0
+      m_CullingMask: 0
+      m_VerticalStart: 20
+      m_VerticalLength: 100
       m_MainNoise: {fileID: 11700000, guid: d7cdc3d1f96e777489126e46f6ca72c0, type: 2}
       m_MainNoiseScale: {x: 500, y: 500, z: 500}
       m_MainNoiseFlow: {x: 0.1, y: 0.1, z: 0.1}
-      m_VerticalStart: 20
-      m_VerticalLength: 100
       m_Density: 50
       m_DensityClip: 0.6
       m_DensitySmooth: 0.1
       m_Distance: 100
       m_MarchTimes: 32
       m_Opacity: 0.8
-      m_ShapeMask: {fileID: 0}
-      m_ShapeMaskScale: {x: 500, y: 500}
-      m_ShapeMaskFlow: {x: 0.1, y: 0.1}
       m_ColorRamp: {fileID: 2800000, guid: 89fc341d5ec36d74ba6f9959730276ae, type: 3}
       m_LightAbsorption: 0.2
-      m_LightMarch: 1
-      m_LightMarchClip: 0.1
-      m_LightMarchTimes: 4
-      m_LightScatter: 1
-      m_ScatterRange: 0.8
-      m_ScatterStrength: 0.8
   m_DrawGizmos: 1
 --- !u!114 &1604089979
 MonoBehaviour:

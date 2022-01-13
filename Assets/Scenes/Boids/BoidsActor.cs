@@ -39,6 +39,7 @@ namespace Boids
             Transform.position = position;
             Transform.rotation = rotation;
         }
+#if UNITY_EDITOR
         public void DrawGizmosSelected()
         {
             Gizmos.DrawSphere(Position,.2f);
@@ -52,5 +53,6 @@ namespace Boids
             m_Target?.OnDrawGizmosSelected();
             m_Behaviour?.DrawGizmosSelected();
         }
+#endif
     }
 }

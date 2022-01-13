@@ -60,10 +60,12 @@ namespace Boids.Behaviours
             _velocity += m_StartleDirection * (_deltaTime * m_StartleConfig.damping);
         }
         
+        #if UNITY_EDITOR
         public void DrawGizmosSelected(BoidsActor _actor)
         {
             Gizmos_Extend.DrawString(Vector3.up*.2f,$"{m_ReactionCounter:F1}");
         }
+        #endif
     }
 
     public class Flying<T> : IBoidsState,IStateTransformVelocity,IStateSwitch<T> where T:Enum
@@ -142,6 +144,7 @@ namespace Boids.Behaviours
             }
         }
         
+#if UNITY_EDITOR
         public void DrawGizmosSelected(BoidsActor _actor)
         {
             Gizmos_Extend.DrawString(Vector3.up*.2f,$"{m_TiringCounter.m_TimeLeft:F1}");
@@ -150,6 +153,7 @@ namespace Boids.Behaviours
             Gizmos.DrawWireSphere(_actor.m_Target.m_Destination,m_Config.boderRange);
             Gizmos.DrawLine(_actor.Position,_actor.Position.SetY(m_Config.maintainHeight+_actor.m_Target.m_Destination.y));
         }
+#endif
     }
 
     public class Floating : IBoidsState,IStateTransformVelocity
@@ -202,9 +206,11 @@ namespace Boids.Behaviours
             return offset * (_deltaTime * m_Config.damping);
         }
         
+#if UNITY_EDITOR
         public void DrawGizmosSelected(BoidsActor _actor)
         {
         }
+#endif
     }
 
     public class Hovering : IBoidsState, IStateTransformVelocity
@@ -256,6 +262,7 @@ namespace Boids.Behaviours
             if(m_Evade)
                 _velocity += this.TickEvading(_actor,_deltaTime,m_EvadeConfig);
         }
+#if UNITY_EDITOR
         public virtual void DrawGizmosSelected(BoidsActor _actor)
         {
             Gizmos.matrix = Matrix4x4.identity;
@@ -266,7 +273,7 @@ namespace Boids.Behaviours
             Gizmos.DrawLine(hoverPosition,hoverPosition+hoverTangent*.2f);
             Gizmos_Extend.DrawString( _actor.Position+Vector3.up*.2f,$"CW:{m_Clockwise}");
         }
-
+#endif
     }
     
     public class Hovering<T> : Hovering, IStateSwitch<T> where T:Enum
@@ -294,11 +301,13 @@ namespace Boids.Behaviours
             return !m_HoverCounter.m_Counting;
         }
 
+#if UNITY_EDITOR
         public override void DrawGizmosSelected(BoidsActor _actor)
         {
             base.DrawGizmosSelected(_actor);
             Gizmos_Extend.DrawString(_actor.Position+Vector3.up*.3f,$"Time:{m_HoverCounter.m_TimeLeft:F1}");
         }
+#endif
     }
 
     public class HoverLanding<T> : IBoidsState, IStateTransformApply,IStateTransformVelocity, IStateSwitch<T>
@@ -357,11 +366,12 @@ namespace Boids.Behaviours
         }
 
 
+#if UNITY_EDITOR
         public void DrawGizmosSelected(BoidsActor _actor)
         {
             Gizmos_Extend.DrawString(Vector3.up*.2f,$"{m_Interpolation:F1} ${m_VelocityCounter.m_TimeElapsedScale:F1}");
         }
-
+#endif
     }
     
     public class Landing<T> : IBoidsState,IStateTransformApply,IStateSwitch<T>
@@ -405,9 +415,11 @@ namespace Boids.Behaviours
                 return false;
             return true;
         }
+#if UNITY_EDITOR
         public void DrawGizmosSelected(BoidsActor _actor)
         {
         }
+#endif
     }
 
 
@@ -559,10 +571,12 @@ namespace Boids.Behaviours
         }
 
 
+#if UNITY_EDITOR
         public void DrawGizmosSelected(BoidsActor _actor)
         {
             Gizmos_Extend.DrawString(Vector3.up*.2f,$"{m_State} {m_StateCounter.m_TimeLeft:F1}");
         }
+#endif
     }
 
     public class Idle : IBoidsState
@@ -582,9 +596,10 @@ namespace Boids.Behaviours
         {
         }
 
+#if UNITY_EDITOR
         public void DrawGizmosSelected(BoidsActor _actor)
         {
         }
-
+#endif
     }
 }

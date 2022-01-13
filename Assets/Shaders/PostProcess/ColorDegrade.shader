@@ -14,10 +14,10 @@
             #pragma fragment frag
             
             #include "Assets/Shaders/Library/PostProcess.hlsl"
-            #pragma multi_compile_local _ _SCREENCUT_HARD _SCREENCUT_SCALED
-            #pragma multi_compile_local _ _LINEDISTORT
-            #pragma multi_compile_local _ _PIXELDISTORT
-            #pragma multi_compile_local _ _VORTEXDISTORT
+            #pragma multi_compile_local_fragment _ _SCREENCUT_HARD _SCREENCUT_SCALED
+            #pragma multi_compile_local_fragment _ _LINEDISTORT
+            #pragma multi_compile_local_fragment _ _PIXELDISTORT
+            #pragma multi_compile_local_fragment _ _VORTEXDISTORT
             float2 _ScreenCutTarget;
             #if _LINEDISTORT
             float _LineDistortSpeed;
@@ -70,10 +70,10 @@
             	return uv;
             }
 
-            #pragma multi_compile_local _ _COLORBLEED
-            #pragma multi_compile_local _ _GRAIN
-            #pragma multi_compile_local _ _GRAIN_CIRCLE
-            #pragma multi_compile_local _ _VIGNETTE
+            #pragma multi_compile_local_fragment _ _COLORBLEED
+            #pragma multi_compile_local_fragment _ _GRAIN
+            #pragma multi_compile_local_fragment _ _GRAIN_CIRCLE
+            #pragma multi_compile_local_fragment _ _VIGNETTE
             #if _COLORBLEED
             float _ColorBleedStrength;
             float _ColorBleedIteration;

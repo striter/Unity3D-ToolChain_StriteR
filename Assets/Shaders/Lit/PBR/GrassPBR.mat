@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ShellPBR
-  m_Shader: {fileID: 4800000, guid: fdfa701d43a47f142adaf904a5ebb997, type: 3}
+  m_Name: GrassPBR
+  m_Shader: {fileID: 4800000, guid: a3ed444ff715cb6458df4360304125a6, type: 3}
   m_ShaderKeywords: _ANISOTROPIC _DEPTHMAP _NDF_GGX _PARALLAX _SPECULARHIGHLIGHTS_OFF
     _VF_GGX
   m_LightmapFlags: 4
@@ -68,9 +68,13 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _FlowTex:
+        m_Texture: {fileID: 2800000, guid: 4885e105013f21f488121cc7a80b69af, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _FurTex:
-        m_Texture: {fileID: 2800000, guid: a2c5bee31601d3e48b2ad9e1f78ef66c, type: 3}
-        m_Scale: {x: 20, y: 8}
+        m_Texture: {fileID: 2800000, guid: d2409ec56dc566740a007bdeadd4eed2, type: 3}
+        m_Scale: {x: 16, y: 16}
         m_Offset: {x: 0, y: 0}
     - _FurTexture:
         m_Texture: {fileID: 2800000, guid: d2409ec56dc566740a007bdeadd4eed2, type: 3}
@@ -223,12 +227,15 @@ Material:
     - _EnvironmentReflections: 1
     - _F: 0
     - _FRESNEL: 0
-    - _FURUVDelta: 1.08
-    - _FurAlphaClip: 1
+    - _FURUVDelta: 0
+    - _FlowScale1: 20
+    - _FlowScale2: 100
+    - _FlowStrength: 0.47
+    - _FurAlphaClip: 0.34
     - _FurGravity: 0
-    - _FurLength: 0.06
+    - _FurLength: 0.39
     - _FurScattering: 0
-    - _FurShadow: 0.87
+    - _FurShadow: 1
     - _GSF: 6
     - _GlossMapScale: 0
     - _Glossiness: 0.86
@@ -283,9 +290,11 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EdgeColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EdgeColor: {r: 0.4365038, g: 0.9339623, b: 0.39208794, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _RootColor: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 0}
+    - _FlowSpeed1: {r: 1, g: 0, b: 0, a: 0}
+    - _FlowSpeed2: {r: 20, g: 0, b: 0, a: 0}
+    - _RootColor: {r: 0.17662628, g: 0.8679245, b: 0.061409745, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _UpperBlendColor: {r: 1, g: 1, b: 1, a: 1}
     - _WaveDirection: {r: 1, g: 1, b: 1, a: 1}

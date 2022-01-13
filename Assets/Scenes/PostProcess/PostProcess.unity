@@ -818,7 +818,7 @@ MonoBehaviour:
     m_PixelGrid: 0
     m_GridWidth: 0.1
     m_PixelGridColor: {r: 1, g: 1, b: 1, a: 0.5}
-    m_OilPaintKernel: 9
+    m_OilPaintKernel: 7
     m_OilPaintSize: 1.02
     m_ObraDitherScale: 0.689
     m_ObraDitherStrength: 0.406
@@ -2492,7 +2492,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Data:
     m_BlurType: 2
-    m_BlurSize: 0.42
+    m_BlurSize: 0.69
     m_Iteration: 4
     m_DownSample: 1
     m_Angle: 0
@@ -2620,7 +2620,7 @@ MonoBehaviour:
   m_Data:
     m_VolumetricLight: 1
     m_VolumetricLightData:
-      m_Strength: 1
+      m_Strength: 2.61
       m_Distance: 20
       m_MarchTimes: 64
       m_MarchStrength: 0.3

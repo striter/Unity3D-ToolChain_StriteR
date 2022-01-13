@@ -12,10 +12,10 @@
 	uint _Iteration;
 	half _Angle;
 	half2 _Vector;
-    #pragma multi_compile_local _ _DOF _DOF_CLIPSKY
+    #pragma multi_compile_local_fragment _ _DOF _DOF_CLIPSKY
     #pragma multi_compile _ _FIRSTBLUR
     #pragma multi_compile _ _FINALBLUR
-    #pragma multi_compile_local _ _ENCODE
+    #pragma multi_compile_local_fragment _ _ENCODE
 	#if defined(_DOF)||defined(_DOF_CLIPSKY)
 		#define IDEPTH
         half _FocalStart;

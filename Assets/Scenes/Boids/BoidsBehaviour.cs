@@ -8,7 +8,9 @@ namespace Boids
     {
         void Begin(BoidsActor _actor);
         void End();
+        #if UNITY_EDITOR
         void DrawGizmosSelected(BoidsActor _actor);
+        #endif
     }
     public interface IStateTransformApply
     {
@@ -47,7 +49,9 @@ namespace Boids
 
         public abstract void Tick(float _deltaTime, IEnumerable<BoidsActor> _flock,out Vector3 _position,out  Quaternion _rotation);
 
+#if UNITY_EDITOR
         public abstract void DrawGizmosSelected();
+#endif
     }
     
     public abstract class BoidsBehaviour<T> : ABoidsBehaviour where T:Enum 
@@ -127,6 +131,7 @@ namespace Boids
             }
         }
         
+#if UNITY_EDITOR
         public override void DrawGizmosSelected()
         {
             Gizmos.color = Color.black;
@@ -134,6 +139,7 @@ namespace Boids
             Gizmos_Extend.DrawString(Vector3.up*.1f,m_CurrentState.ToString());
             m_State.DrawGizmosSelected(m_Actor);
         }
+#endif
     }
 
     
