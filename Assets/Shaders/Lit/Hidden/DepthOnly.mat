@@ -60,6 +60,8 @@ Material:
     - _BumpScale: 1
     - _ClipSpaceForward: 0
     - _ClipSpaceForwardAmount: 0.2
+    - _ColorMask: 15
+    - _Cull: 2
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
