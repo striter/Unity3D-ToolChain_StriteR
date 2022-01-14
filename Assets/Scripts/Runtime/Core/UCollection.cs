@@ -169,6 +169,33 @@ public static class UCollection
             }
             return maxIndex;
         }
+
+        
+        public static T Last<T>(this IEnumerable<T> _collection, Func<T, Vector3> _getPosition,Vector3 _origin,bool _minimum)
+        {
+            T elementRecorded = default;
+            float distanceRecord = _minimum?float.MaxValue:float.MinValue;
+            foreach (var element in _collection)
+            {
+                Vector3 position = _getPosition(element);
+                float sqrDistance = (position - _origin).sqrMagnitude;
+                if (_minimum)
+                {
+                    if (sqrDistance > distanceRecord)
+                        continue;
+                }
+                else
+                {
+                    if (sqrDistance < distanceRecord)
+                        continue;
+                }
+
+                elementRecorded = element;
+                distanceRecord = sqrDistance;
+            }
+            return elementRecorded;
+        }
+                
         public static T Find<T>(this IEnumerable<T> _collection,Predicate<T> _OnEachElement)
         {
             foreach (var element in _collection)

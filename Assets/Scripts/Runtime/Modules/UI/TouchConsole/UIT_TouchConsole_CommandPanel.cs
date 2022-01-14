@@ -437,9 +437,9 @@ public partial class UIT_TouchConsole
             m_Toggle = Transform.GetComponent<Toggle>();
             m_ToggleTitle = _transform.Find("Title").GetComponent<Text>();
         }
-        public override void OnPoolSpawn(int identity)
+        public override void OnPoolSpawn(int _identity)
         {
-            base.OnPoolSpawn(identity);
+            base.OnPoolSpawn(_identity);
             m_Toggle.onValueChanged.RemoveAllListeners();
         }
         public override void OnPoolRecycle()
@@ -463,9 +463,9 @@ public partial class UIT_TouchConsole
             m_Slider = Transform.Find("Slider").GetComponent<Slider>();
             m_Value = Transform.Find("Value").GetComponent<Text>();
         }
-        public override void OnPoolSpawn(int identity)
+        public override void OnPoolSpawn(int _identity)
         {
-            base.OnPoolSpawn(identity);
+            base.OnPoolSpawn(_identity);
             m_Slider.onValueChanged.RemoveAllListeners();
         }
         public override void OnPoolRecycle()
@@ -483,9 +483,9 @@ public partial class UIT_TouchConsole
             m_Button = _transform.GetComponent<Button>();
             m_Title = _transform.Find("Title").GetComponent<Text>();
         }
-        public override void OnPoolSpawn(int identity)
+        public override void OnPoolSpawn(int _identity)
         {
-            base.OnPoolSpawn(identity);
+            base.OnPoolSpawn(_identity);
             m_Button.onClick.RemoveAllListeners();
             m_Title.text = "";
         }

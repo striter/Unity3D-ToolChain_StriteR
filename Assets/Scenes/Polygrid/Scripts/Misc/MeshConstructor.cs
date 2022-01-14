@@ -129,7 +129,7 @@ namespace PolyGrid
                 TSPoolList<Vector2>.Recycle(uvs);
                 TSPoolList<int>.Recycle(indices);
             }
-            public void OnPoolSpawn(int identity)
+            public void OnPoolSpawn(int _identity)
             {
                 
             }
