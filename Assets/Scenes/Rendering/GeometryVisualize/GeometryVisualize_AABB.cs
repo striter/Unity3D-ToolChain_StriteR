@@ -5,7 +5,7 @@ using Geometry.Voxel;
 using UnityEngine;
 namespace ExampleScenes.Rendering.GeometryVisualize
 {
-    public class GeometryTest_AABB : MonoBehaviour
+    public class GeometryVisualize_AABB : MonoBehaviour
     {
         public GBox m_Box;
         public GRay m_Ray;

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace ExampleScenes.Rendering.GeometryVisualize
 {
-    public class GeometryTest_Plane : MonoBehaviour
+    public class GeometryVisualize_Plane : MonoBehaviour
     {
         public GPlane m_Plane;
         public GRay m_Ray;

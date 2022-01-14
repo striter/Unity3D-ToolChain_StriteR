@@ -3,7 +3,7 @@ using Geometry.Voxel;
 using UnityEngine;
 namespace ExampleScenes.Rendering.GeometryVisualize
 {
-    public class GeometryTest_Cone : MonoBehaviour
+    public class GeometryVisualize_Cone : MonoBehaviour
     {
         public GHeightCone m_Data;
         public GRay m_Ray;

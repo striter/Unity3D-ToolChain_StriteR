@@ -4,7 +4,7 @@ using Geometry.Voxel;
 using UnityEngine;
 namespace ExampleScenes.Rendering.GeometryVisualize
 {
-    public class GeometryTest_Point : MonoBehaviour
+    public class GeometryVisualize_Point : MonoBehaviour
     {
         [Header("Ray & Point")]
         public GRay m_Ray;

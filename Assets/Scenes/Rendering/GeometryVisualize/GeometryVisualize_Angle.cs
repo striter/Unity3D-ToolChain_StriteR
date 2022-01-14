@@ -9,17 +9,15 @@ namespace ExampleScenes.Rendering.GeometryVisualize
 {
     #if UNITY_EDITOR
     using TEditor;
-    public class GeometryTest_Angle : MonoBehaviour
+    public class GeometryVisualize_Angle : MonoBehaviour
     {
+        public Vector3 m_Position;
         private void OnDrawGizmos()
         {
             if (SceneView.currentDrawingSceneView == null)
                 return;
             var plane = new GPlane(Vector3.up, Vector3.zero);
             var ray=SceneView.currentDrawingSceneView.camera.ScreenPointToRay(SceneView.currentDrawingSceneView.GetScreenPoint());
-            var distance=UGeometryIntersect.RayPlaneDistance(plane, ray);
-            if (distance < 0)
-                return;
             
             Gizmos.matrix = transform.localToWorldMatrix;
             Gizmos.color = Color.red;
@@ -27,11 +25,9 @@ namespace ExampleScenes.Rendering.GeometryVisualize
 
 
             Gizmos.color = Color.green;
-            var hitPositionWS = ray.GetPoint(distance);
-            var hitPositionLS = transform.worldToLocalMatrix.MultiplyPoint(hitPositionWS);
-            Gizmos.DrawLine(Vector3.zero,hitPositionLS);
+            Gizmos.DrawLine(Vector3.zero,m_Position);
 
-            var rad = UMath.GetRadClockWise(Vector2.up,new Vector2(hitPositionLS.x,hitPositionLS.z));
+            var rad = UMath.GetRadClockWise(Vector2.up,new Vector2(m_Position.x,m_Position.z));
             Gizmos_Extend.DrawString( Vector3.zero,(UMath.Rad2Deg*rad).ToString());
         }
     }

@@ -3,7 +3,7 @@ using Geometry.Voxel;
 using UnityEngine;
 namespace ExampleScenes.Rendering.GeometryVisualize
 {
-    public class GeometryTest_Sphere : MonoBehaviour
+    public class GeometryVisualize_Sphere : MonoBehaviour
     {
         public GSphere m_Sphere;
         public GRay m_Ray;

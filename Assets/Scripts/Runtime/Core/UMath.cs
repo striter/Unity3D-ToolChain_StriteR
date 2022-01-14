@@ -45,6 +45,8 @@ public static class UMath
     }
 
     public static float Pow2(float _src) => _src * _src;
+    public static float Pow3(float _src) => _src * _src* _src;
+    public static float Pow4(float _src) => _src * _src* _src* _src;
     public static float Frac(float _src) => _src - Mathf.Floor(_src);
     public static float Mod(float _src, float _dst) => _src - _dst * Mathf.Floor(_src/_dst);
 
@@ -92,5 +94,20 @@ public static class UMath
         if (_interpolate == 0)
             return _src;
         return _src || _dst;
+    }
+
+    public static Vector3 QuadraticBezierCurve(Vector3 _src,Vector3 _dst,Vector3 _control,float _interpolation)
+    {
+        float value = _interpolation;
+        float oneMinusValue = 1 - value;
+        return Pow2(oneMinusValue) * _src + 2 * (oneMinusValue) * value * _control + Pow2(value) * _dst;
+    }
+
+    public static Vector3 CubicBezierCurve(Vector3 _src, Vector3 _dst, Vector3 _controlSrc, Vector3 _dstControl, float _interpolation)
+    {
+        float value = _interpolation;
+        float oneMinusValue = 1 - value;
+        float controlValue = 3 * Pow2(oneMinusValue) * value;
+        return Pow3(oneMinusValue) * _src + controlValue * _controlSrc + controlValue * _dstControl + Pow3(value) * _dst;
     }
 }

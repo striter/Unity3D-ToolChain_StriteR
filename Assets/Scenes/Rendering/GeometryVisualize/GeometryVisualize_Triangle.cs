@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ExampleScenes.Rendering.GeometryVisualize
 {
-    public class GeometryTest_Triangle : MonoBehaviour
+    public class GeometryVisualize_Triangle : MonoBehaviour
     {
         public GTriangle Triangle=new GTriangle( new Vector3(0, 0, 1), new Vector3(1, 0, -1), new Vector3(-1, 0, -1) );
         public GRay m_Ray = new GRay(new Vector3(0, 2, 0), new Vector3(-.1f, -1, .1f));
