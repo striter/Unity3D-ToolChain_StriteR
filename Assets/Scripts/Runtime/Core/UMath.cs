@@ -103,11 +103,10 @@ public static class UMath
         return Pow2(oneMinusValue) * _src + 2 * (oneMinusValue) * value * _control + Pow2(value) * _dst;
     }
 
-    public static Vector3 CubicBezierCurve(Vector3 _src, Vector3 _dst, Vector3 _controlSrc, Vector3 _dstControl, float _interpolation)
+    public static Vector3 CubicBezierCurve(Vector3 _src, Vector3 _dst, Vector3 _controlSrc, Vector3 _controlDst, float _interpolation)
     {
         float value = _interpolation;
         float oneMinusValue = 1 - value;
-        float controlValue = 3 * Pow2(oneMinusValue) * value;
-        return Pow3(oneMinusValue) * _src + controlValue * _controlSrc + controlValue * _dstControl + Pow3(value) * _dst;
+        return Pow3(oneMinusValue) * _src +  3 * Pow2(oneMinusValue) * value * _controlSrc +  3 * oneMinusValue * Pow2(value) * _controlDst + Pow3(value) * _dst;
     }
 }

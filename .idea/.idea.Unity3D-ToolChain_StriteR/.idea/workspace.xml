@@ -13,18 +13,19 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Rendering/GeometryVisualize/GeometryVisualize_Angle.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/29a6c1945f57447495fcad42118554c7363d00/5a/4a4fcedf/Timer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c0ab07853db942d29ba827338fda0f7a144200/da/b7536a8f/ColorWriteMask.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c0ab07853db942d29ba827338fda0f7a144200/5b/e91a0f39/Component.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c0ab07853db942d29ba827338fda0f7a144200/1c/dedca491/Quaternion.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c0ab07853db942d29ba827338fda0f7a144200/87/e7b1157b/CullingOptions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/IL/985dba2601d347b38d9867f0b3f43e8376da00/ec/261b2ce1/02000948.il" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/985dba2601d347b38d9867f0b3f43e8376da00/58/30f2e4d1/EditorApplication.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/985dba2601d347b38d9867f0b3f43e8376da00/2f/e12556e1/MaterialPropertyDrawer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Render/Component/SRC_ShellController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Rendering/GeometryVisualize/GeometryVisualize_Bezier.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c0ab07853db942d29ba827338fda0f7a144200/5b/e91a0f39/Component.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c0ab07853db942d29ba827338fda0f7a144200/87/e7b1157b/CullingOptions.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/985dba2601d347b38d9867f0b3f43e8376da00/58/30f2e4d1/EditorApplication.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c0ab07853db942d29ba827338fda0f7a144200/5b/7ae4c3ce/Vector3.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Rendering/GeometryVisualize/GeometryVisualize_Point.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Rendering/GeometryVisualize/GeometryVisualize_Sphere.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Rendering/GeometryVisualize/GeometryVisualize_Cone.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/Bezier/OBezier.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Rendering/GeometryVisualize/GeometryVisualize_Plane.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="22P5bXtufA9fJYHWcjMMuDifiml" />

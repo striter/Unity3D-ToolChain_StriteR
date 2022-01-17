@@ -600,7 +600,7 @@ GameObject:
   - component: {fileID: 586433004}
   - component: {fileID: 586433003}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Bezier
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -618,10 +618,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c03458a3b390664c8b5d3171fadb85b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_QuadraticSource: {x: 0, y: 0, z: 0}
-  m_QuadraticControl: {x: 0, y: 0.5, z: 0}
-  m_QuadraticDestination: {x: 0, y: 0, z: 1}
-  m_Desntiy: 20
+  m_QuadraticCurve:
+    source: {x: 0, y: 0, z: 0}
+    destination: {x: 0, y: 0, z: 1}
+    control: {x: 0, y: 1, z: 0.5}
+  m_CubicCurve:
+    source: {x: 1, y: 0, z: 0}
+    destination: {x: 1, y: 0, z: 1}
+    controlSource: {x: 0.5, y: 0.5, z: 0}
+    controlDestination: {x: 1.5, y: 0.5, z: 1}
 --- !u!4 &586433004
 Transform:
   m_ObjectHideFlags: 0
