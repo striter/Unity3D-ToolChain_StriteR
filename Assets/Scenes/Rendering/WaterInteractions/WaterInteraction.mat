@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: WaterInteraction
   m_Shader: {fileID: 4800000, guid: 7afe38b685a46a34286c6167ed5f04a5, type: 3}
-  m_ShaderKeywords: _CAUSTIC _DEPTH _DEPTHREFRACTION _FOAM _FRESNEL _NORMALTEX
+  m_ShaderKeywords: _CAUSTIC _DEPTH _DEPTHREFRACTION _FOAM _FRESNEL _NORMALTEX _WAVE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -130,6 +130,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
+    - _Amplitude: 1
     - _AnisoTropicValue: 1
     - _BeginOpacity: 0.5
     - _Blend: 0
@@ -147,10 +148,10 @@ Material:
     - _Cull: 2
     - _Cutoff: 0.5
     - _Depth: 1
-    - _DepthBegin: 0.42
+    - _DepthBegin: 1
     - _DepthBuffer: 1
     - _DepthBufferScale: 1
-    - _DepthDistance: 3.3
+    - _DepthDistance: 3.6
     - _DepthOffset: 0.42
     - _DepthPow: 2
     - _DepthRefraction: 1
@@ -175,6 +176,8 @@ Material:
     - _EnvironmentReflections: 1
     - _F: 0
     - _FRESNEL: 0
+    - _Flow1Amplitude: 0.2
+    - _Flow2Amplitude: 0.09
     - _FlowSpeed: 0.1
     - _Foam: 1
     - _FoamBegin: 0.232
@@ -204,13 +207,15 @@ Material:
     - _ReflectionAmount: 0.51
     - _RefractionAmount: 0.108
     - _RefractionDistance: 0.47
-    - _Scale: 11.3
+    - _Scale: 8.5
     - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
-    - _SpecularAmount: 0.99
+    - _SpecularAmount: 0.998
     - _SpecularHighlights: 1
     - _SpecularRange: 0.9
-    - _SpecularStrength: 1
+    - _SpecularStrength: 5
+    - _Spike1Amplitude: 0.15
+    - _Spike2Amplitude: 0
     - _SrcBlend: 1
     - _SteepCount: 128
     - _SteepParallex: 0
@@ -218,7 +223,7 @@ Material:
     - _Surface: 0
     - _Thickness: 0.1
     - _VF: 1
-    - _Wave: 0
+    - _Wave: 1
     - _WorkflowMode: 1
     - _ZTest: 2
     - _ZWrite: 1
@@ -229,8 +234,8 @@ Material:
     - _DepthColor: {r: 0.26584196, g: 0.45703566, b: 0.5471698, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlowDirection: {r: 1, g: 1, b: 0, a: 0}
-    - _FlowDirection1: {r: 1, g: 1, b: 0, a: 0}
-    - _FlowDirection2: {r: 1, g: 1, b: 0, a: 0}
+    - _FlowDirection1: {r: 0.5, g: 0, b: 0, a: 0}
+    - _FlowDirection2: {r: 0.5, g: 1, b: 0, a: 0}
     - _FoamColor: {r: 1.8047799, g: 2.0213478, b: 2.0907834, a: 0.48235294}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []

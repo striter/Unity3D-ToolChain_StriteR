@@ -9,7 +9,11 @@
     	[Header(Flow)]
     	[Toggle(_WAVE)]_Wave("Vertex Wave",int)=0
     	[Vector2]_FlowDirection1("Flow Direction 1",Vector)=(1,1,0,0)
+    	[Foldout(_WAVE)]_Flow1Amplitude("Flow Amplitidue 1",float)=1
+    	[Foldout(_WAVE)]_Spike1Amplitude("Spike Amplitidue 1",float)=1
     	[Vector2]_FlowDirection2("Flow Direction 2",Vector)=(1,1,0,0)
+    	[Foldout(_WAVE)]_Flow2Amplitude("Flow Amplitidue 2",float)=1
+    	[Foldout(_WAVE)]_Spike2Amplitude("Spike Amplitidue 2",float)=1
     	
     	[Header(Lighting)]
     	_SpecularAmount("Specular Amount",Range(.8,0.99999))=1
@@ -82,6 +86,10 @@
 				INSTANCING_PROP(float,_Scale)
 				INSTANCING_PROP(float2,_FlowDirection1)
 				INSTANCING_PROP(float2,_FlowDirection2)
+				INSTANCING_PROP(float,_Flow1Amplitude)
+				INSTANCING_PROP(float,_Spike1Amplitude)
+				INSTANCING_PROP(float,_Flow2Amplitude)
+				INSTANCING_PROP(float,_Spike2Amplitude)
 				INSTANCING_PROP(float,_SpecularAmount)
 				INSTANCING_PROP(float,_SpecularStrength)
 				INSTANCING_PROP(float,_RefractionDistance)
@@ -121,24 +129,37 @@
             	float2 uv:TEXCOORD6;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
-			
+
+			float3 GerstnerWave(float2 uv,float2 flow,float amplitude,float spikeAmplitude)
+			{
+				float2 flowUV=uv+_Time.y*flow;
+				float2 flowSin=flowUV.x*flow.x+flowUV.y*flow.y;
+				float spherical=(flowSin.x*flow.x+flowSin.y*flow.y)*PI;
+				float sinFlow;
+				float cosFlow;
+				sincos(spherical,sinFlow,cosFlow);
+				float spike=spikeAmplitude*cosFlow;
+				return float3(spike*flow.x, amplitude*sinFlow,spike*flow.y);
+			}
+            
             v2f vert (a2v v)
             {
                 v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v,o);
             	float3 positionWS=TransformObjectToWorld(v.positionOS);
+				float3 normalWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.normalOS));
+				float3 tangentWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.tangentOS.xyz));
             	#if _WAVE
-            		float3 wave=0;
-					wave.y+=sin(positionWS.x+positionWS.z);
-            		positionWS+=wave;
-            	#endif
+					positionWS+=GerstnerWave(positionWS.xz,INSTANCE(_FlowDirection1),INSTANCE(_Flow1Amplitude),INSTANCE(_Spike1Amplitude));
+					positionWS+=GerstnerWave(positionWS.xz,INSTANCE(_FlowDirection2),INSTANCE(_Flow2Amplitude),INSTANCE(_Spike2Amplitude));
+				#endif
             	o.positionWS=positionWS;
             	o.positionCS=TransformWorldToHClip(o.positionWS);
             	o.positionHCS=o.positionCS;
-				o.normalWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.normalOS));
-				o.tangentWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.tangentOS.xyz));
-				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
+				o.normalWS=normalWS;
+				o.tangentWS=tangentWS;
+				o.biTangentWS=cross(normalWS,tangentWS)*v.tangentOS.w;
 				o.viewDirWS=GetViewDirectionWS(o.positionWS);
             	o.uv=v.uv;
                 return o;
@@ -159,7 +180,7 @@
             	
             	float fresnel=1;
             	#if _FRESNEL
-            	fresnel=1.-Pow4(dot(viewDirWS,normalWS));
+            		fresnel=1.-Pow4(dot(viewDirWS,normalWS));
 				#endif
 
 				float2 wave=WaveInteraction(positionWS);
@@ -171,12 +192,12 @@
             	float uvScale=rcp(INSTANCE(_Scale));
             	
             	#if _NORMALTEX
-            	float2 uv1=(positionWS.xz+uvFlow1)*uvScale;
-            	float2 uv2=(positionWS.xz+uvFlow2)*uvScale;
-            	float3 normalTS1=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,uv1));
-            	float3 normalTS2=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,uv2));
-            	normalTS=BlendNormal(normalTS1,normalTS2,4);
-				normalWS=normalize(mul(transpose(TBNWS), normalTS));
+            		float2 uv1=(positionWS.xz+uvFlow1)*uvScale;
+            		float2 uv2=(positionWS.xz+uvFlow2)*uvScale;
+            		float3 normalTS1=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,uv1));
+            		float3 normalTS2=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,uv2));
+            		normalTS=BlendNormal(normalTS1,normalTS2,4);
+					normalWS=normalize(mul(transpose(TBNWS), normalTS));
             	#endif
 
             	float underRawDepth=SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).r;
@@ -192,21 +213,21 @@
             	
             	float3 deepSurfaceColor=SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,deepSurfaceUV).rgb;
             	#if _CAUSTIC
-				float3 positionWSDepth=TransformNDCToWorld(screenUV,underRawDepth);
-            	float verticalDistance=positionWSDepth.y-positionWS.y;
-            	float3 causticPositionWS=positionWSDepth+lightDirWS*verticalDistance* rcp(dot(float3(0,-1,0),lightDirWS));
-            	float2 causticUV=causticPositionWS.xz;
-            	float2 causticForward=(causticUV+uvFlow1)*uvScale;
-            	float2 causticBackward=(causticUV-uvFlow2)*uvScale;
-            	float caustic=min(SAMPLE_TEXTURE2D(_CausticTex,sampler_CausticTex,causticForward).r,SAMPLE_TEXTURE2D(_CausticTex,sampler_CausticTex,causticBackward).r);
-            	deepSurfaceColor+=caustic*lightCol*INSTANCE(_CausticStrength);
+					float3 positionWSDepth=TransformNDCToWorld(screenUV,underRawDepth);
+            		float verticalDistance=positionWSDepth.y-positionWS.y;
+            		float3 causticPositionWS=positionWSDepth+lightDirWS*verticalDistance* rcp(dot(float3(0,-1,0),lightDirWS));
+            		float2 causticUV=causticPositionWS.xz;
+            		float2 causticForward=(causticUV+uvFlow1)*uvScale;
+            		float2 causticBackward=(causticUV-uvFlow2)*uvScale;
+            		float caustic=min(SAMPLE_TEXTURE2D(_CausticTex,sampler_CausticTex,causticForward).r,SAMPLE_TEXTURE2D(_CausticTex,sampler_CausticTex,causticBackward).r);
+            		deepSurfaceColor+=caustic*lightCol*INSTANCE(_CausticStrength);
             	#endif
             	
 				#if _DEPTH
-            	float depth=saturate(invlerp(INSTANCE(_DepthBegin),INSTANCE(_DepthBegin)+INSTANCE(_DepthDistance),eyeDepthOffset));
-            	float4 depthSample=SAMPLE_TEXTURE2D_LOD(_DepthRamp,sampler_DepthRamp,1-depth,0)*INSTANCE(_DepthColor);
-            	float3 depthCol=lerp(deepSurfaceColor,depthSample.rgb,depthSample.a);
-				deepSurfaceColor=lerp(deepSurfaceColor,depthCol,depth);
+            		float depth=saturate(invlerp(INSTANCE(_DepthBegin),INSTANCE(_DepthBegin)+INSTANCE(_DepthDistance),eyeDepthOffset));
+            		float4 depthSample=SAMPLE_TEXTURE2D_LOD(_DepthRamp,sampler_DepthRamp,1-depth,0)*INSTANCE(_DepthColor);
+            		float3 depthCol=lerp(deepSurfaceColor,depthSample.rgb,depthSample.a);
+					deepSurfaceColor=lerp(deepSurfaceColor,depthCol,depth);
             	#endif
             	
             	float3 aboveSurfaceColor=albedo;
@@ -220,9 +241,9 @@
             	float3 riverCol=lerp(deepSurfaceColor,aboveSurfaceColor,fresnel*INSTANCE(_Color).a);
             	
 				#if _FOAM
-            	float foam=smoothstep(INSTANCE(_FoamBegin)+INSTANCE(_FoamWidth),INSTANCE(_FoamBegin),eyeDepthOffset+max(normalTS.xy)*INSTANCE(_FoamDistort));
-            	float3 foamColor=INSTANCE(_FoamColor).rgb;
-				riverCol=lerp(riverCol,foamColor,foam*INSTANCE(_FoamColor).a);
+            		float foam=smoothstep(INSTANCE(_FoamBegin)+INSTANCE(_FoamWidth),INSTANCE(_FoamBegin),eyeDepthOffset+max(normalTS.xy)*INSTANCE(_FoamDistort));
+            		float3 foamColor=INSTANCE(_FoamColor).rgb;
+					riverCol=lerp(riverCol,foamColor,foam*INSTANCE(_FoamColor).a);
             	#endif
             	
             	return float4(riverCol,1);
