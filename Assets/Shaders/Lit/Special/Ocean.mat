@@ -130,7 +130,7 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularAmount: 0.98
     - _SpecularHighlights: 1
-    - _SpecularStrength: 1
+    - _SpecularStrength: 2.21
     - _Speed1: 1
     - _Spike1Amplitude: 1
     - _Spike2Amplitude: 1
