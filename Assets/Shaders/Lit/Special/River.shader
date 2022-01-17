@@ -7,7 +7,7 @@
     	[Foldout(_NORMALTEX)]_Scale("Scale",Range(1,50))=10
     	
     	[Header(Flow)]
-		[ToggleTex(_FLOWTEX)][NoScaleOffset]_FlowTex("Flow Tex",2D)="black"{}
+    	[Toggle(_WAVE)]_Wave("Vertex Wave",int)=0
     	[Vector2]_FlowDirection1("Flow Direction 1",Vector)=(1,1,0,0)
     	[Vector2]_FlowDirection2("Flow Direction 2",Vector)=(1,1,0,0)
     	
@@ -59,13 +59,13 @@
             #pragma vertex vert
             #pragma fragment frag
 			#pragma multi_compile_instancing
-            #pragma shader_feature_local _NORMALTEX
-            #pragma shader_feature_local _FLOWTEX
-			#pragma shader_feature_local _FOAM
-            #pragma shader_feature_local _DEPTH
-            #pragma shader_feature_local _DEPTHREFRACTION
-			#pragma shader_feature_local _CAUSTIC
-            #pragma shader_feature_local _FRESNEL
+            #pragma shader_feature_local_vertex _WAVE
+            #pragma shader_feature_local_fragment _NORMALTEX
+			#pragma shader_feature_local_fragment _FOAM
+            #pragma shader_feature_local_fragment _DEPTH
+            #pragma shader_feature_local_fragment _DEPTHREFRACTION
+			#pragma shader_feature_local_fragment _CAUSTIC
+            #pragma shader_feature_local_fragment _FRESNEL
             
 			#include "Assets/Shaders/Library/Common.hlsl"
             #define IGI
@@ -99,8 +99,6 @@
 
             #include "Assets/Shaders/Library/Additional/Local/WaveInteraction.hlsl"
             #pragma multi_compile_local _ _WAVEINTERACTION
-            #include "Assets/Shaders/Library/Additional/HorizonBend.hlsl"
-            #pragma multi_compile _ _HORIZONBEND
 
             struct a2v
             {
@@ -130,7 +128,11 @@
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v,o);
             	float3 positionWS=TransformObjectToWorld(v.positionOS);
-            	positionWS=HorizonBend(positionWS);
+            	#if _WAVE
+            		float3 wave=0;
+					wave.y+=sin(positionWS.x+positionWS.z);
+            		positionWS+=wave;
+            	#endif
             	o.positionWS=positionWS;
             	o.positionCS=TransformWorldToHClip(o.positionWS);
             	o.positionHCS=o.positionCS;
@@ -151,7 +153,7 @@
 				half3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
 				half3 viewDirWS=normalize(i.viewDirWS);
 				half3 lightDirWS=normalize(_MainLightPosition.xyz);
-            	half3 positionWS=i.positionWS;
+            	float3 positionWS=i.positionWS;
             	half3 lightCol=_MainLightColor.rgb;
 				half3 normalTS=float3(0,0,1);
             	
@@ -166,12 +168,6 @@
             	
             	half2 uvFlow1=INSTANCE(_FlowDirection1)*_Time.y;
 				half2 uvFlow2=INSTANCE(_FlowDirection2)*_Time.y;
-            	#if _FLOWTEX
-            		half2 flowDir=SAMPLE_TEXTURE2D(_FlowTex,sampler_FlowTex,i.uv).xy*frac(_Time.y);		//To Be Continued
-					uvFlow1*=flowDir;
-            		uvFlow2*=flowDir;
-            	#endif
-            	
             	float uvScale=rcp(INSTANCE(_Scale));
             	
             	#if _NORMALTEX

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Geometry.Voxel;
 using UnityEngine;
 using UnityEditor;
@@ -10,7 +11,7 @@ using Procedural.Hexagon.Area;
 namespace ExampleScenes.Algorithm.HexagonGrid
 {
     [ExecuteInEditMode]
-    public class GridTest_HexagonGrid : MonoBehaviour
+    public class HexagonGridGizmos : MonoBehaviour
     {
         public bool m_Flat;
         public float m_CellRadius = 1;
@@ -329,6 +330,22 @@ namespace ExampleScenes.Algorithm.HexagonGrid
             }
         }
         #endif
+    }
+    
+    
+    public static class GridHelper
+    {
+        public static Vector3 ToWorld(this HexCoord _hexCube)
+        {
+            return _hexCube.ToCoord().ToPosition();
+        }
+#if UNITY_EDITOR
+        public static void DrawHexagon(this HexCoord _coord)
+        {
+            Vector3[] hexagonList = UHexagon.GetHexagonPoints().Select(p=>p.ToPosition() + _coord.ToWorld()).ToArray();
+            Gizmos_Extend.DrawLinesConcat(hexagonList);
+        }
+#endif
     }
     
 }

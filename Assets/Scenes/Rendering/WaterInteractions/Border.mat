@@ -52,6 +52,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _EmissionTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: 646da4453bd230f48a5994f17b37095a, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -99,6 +103,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
+    - _AlphaClipRange: 0.01
     - _AnisoTropicValue: 1
     - _Blend: 0
     - _BumpScale: 1

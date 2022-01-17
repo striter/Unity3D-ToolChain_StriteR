@@ -9,9 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: WaterInteraction
   m_Shader: {fileID: 4800000, guid: 7afe38b685a46a34286c6167ed5f04a5, type: 3}
-  m_ShaderKeywords: _AOMAP _CAUSTIC _CRACK _CRACKPARALLEX _CRACKTOP _DEPTH _DEPTHREFRACTION
-    _DETAILNORMALMAP _DISTORT _FOAM _FRESNEL _F_IMPLICIT _F_SCHLICK _GSF_COOKTORRANCE
-    _NDF_COOKTORRANCE _NORMALTEX _OPACITY _PARALLEXMAP _RECEIVESHADOW _SPECULAR _THICK
+  m_ShaderKeywords: _CAUSTIC _DEPTH _DEPTHREFRACTION _FOAM _FRESNEL _NORMALTEX
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -38,6 +36,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CrackTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DepthRamp:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -208,12 +210,15 @@ Material:
     - _SpecularAmount: 0.99
     - _SpecularHighlights: 1
     - _SpecularRange: 0.9
+    - _SpecularStrength: 1
     - _SrcBlend: 1
     - _SteepCount: 128
     - _SteepParallex: 0
+    - _Strength: 1
     - _Surface: 0
     - _Thickness: 0.1
     - _VF: 1
+    - _Wave: 0
     - _WorkflowMode: 1
     - _ZTest: 2
     - _ZWrite: 1
@@ -224,6 +229,8 @@ Material:
     - _DepthColor: {r: 0.26584196, g: 0.45703566, b: 0.5471698, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlowDirection: {r: 1, g: 1, b: 0, a: 0}
+    - _FlowDirection1: {r: 1, g: 1, b: 0, a: 0}
+    - _FlowDirection2: {r: 1, g: 1, b: 0, a: 0}
     - _FoamColor: {r: 1.8047799, g: 2.0213478, b: 2.0907834, a: 0.48235294}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
