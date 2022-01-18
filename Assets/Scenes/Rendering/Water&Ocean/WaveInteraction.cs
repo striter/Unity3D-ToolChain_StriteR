@@ -14,7 +14,7 @@ namespace  ExampleScenes.Rendering.WaveInteraction
         public float m_StepStationaryDuration = 3.5f;
         public float m_StepStationaryWidth = .15f;
         public float m_StepStationaryOffset = .5f;
-        [Header("Dyanmic")]
+        [Header("Dynamic")]
         public float m_StepDynamicTick = .5f;
         public float m_StepDynamicSpeed = 5f;
         public float m_StepDynamicDuration = .2f;
