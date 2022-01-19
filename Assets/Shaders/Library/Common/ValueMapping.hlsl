@@ -207,6 +207,11 @@ float invlerp(float _a, float _b, float _value)
     return (_value - _a) / (_b - _a);
 }
 
+float2 invlerp(float2 _a, float2 _b, float2 _value)
+{
+    return (_value - _a) / (_b - _a);
+}
+
 half remap(half _value, half _from1, half _to1, half _from2, half _to2)
 {
     return lerp(_from2, _to2, invlerp(_from1, _to1, _value));
