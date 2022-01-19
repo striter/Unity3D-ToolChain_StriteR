@@ -119,6 +119,8 @@ namespace Geometry.Voxel
             Vector3 extend = size / 2;
             return new GBox(_min+extend,extend);
         }
+        
+        public void DrawGizmos()=>Gizmos.DrawWireCube(center,Size);
     }
 
 

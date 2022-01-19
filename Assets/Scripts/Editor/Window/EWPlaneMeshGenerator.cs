@@ -113,7 +113,7 @@ namespace TEditor
                 return;
 
             Vector3 tileSize = new Vector3(_tileSize, 0, _tileSize);
-            Vector3 size = new Vector3(_width,0f,_height).Multiply(tileSize);
+            Vector3 size = new Vector3(_width,0f,_height).mul(tileSize);
             Vector3 offset = new Vector3(size.x*_pivot.x,0f,size.z* _pivot.y);
             List<Vector3> vertices = new List<Vector3>();
             List<Vector2> uvs = new List<Vector2>();
@@ -132,10 +132,10 @@ namespace TEditor
                 for (int j = 0; j < _height; j++)
                 {
                     int startIndex = tileIndex * 4;
-                    Vector3 v0 = new Vector3(i, 0, j).Multiply(tileSize)-offset;
-                    Vector3 v1 = new Vector3(i + 1, 0, j).Multiply(tileSize)-offset;
-                    Vector3 v2 = new Vector3(i, 0, j + 1).Multiply(tileSize)-offset;
-                    Vector3 v3 = new Vector3(i + 1, 0, j + 1).Multiply(tileSize)-offset;
+                    Vector3 v0 = new Vector3(i, 0, j).mul(tileSize)-offset;
+                    Vector3 v1 = new Vector3(i + 1, 0, j).mul(tileSize)-offset;
+                    Vector3 v2 = new Vector3(i, 0, j + 1).mul(tileSize)-offset;
+                    Vector3 v3 = new Vector3(i + 1, 0, j + 1).mul(tileSize)-offset;
 
                     vertices.Add(v0);
                     vertices.Add(v1);
@@ -208,10 +208,10 @@ namespace TEditor
                         continue;
 
                     int startIndex = tileIndex * 4;
-                    Vector3 v0 = -halfSize + new Vector3(i, 0, j).Multiply(tileSize);
-                    Vector3 v1 = -halfSize + new Vector3(i + 1, 0, j).Multiply(tileSize);
-                    Vector3 v2 = -halfSize + new Vector3(i, 0, j + 1).Multiply(tileSize);
-                    Vector3 v3 = -halfSize + new Vector3(i + 1, 0, j + 1).Multiply(tileSize);
+                    Vector3 v0 = -halfSize + new Vector3(i, 0, j).mul(tileSize);
+                    Vector3 v1 = -halfSize + new Vector3(i + 1, 0, j).mul(tileSize);
+                    Vector3 v2 = -halfSize + new Vector3(i, 0, j + 1).mul(tileSize);
+                    Vector3 v3 = -halfSize + new Vector3(i + 1, 0, j + 1).mul(tileSize);
 
                     vertices.Add(v0);
                     vertices.Add(v1);

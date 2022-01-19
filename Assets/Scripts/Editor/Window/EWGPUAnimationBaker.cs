@@ -287,7 +287,7 @@ namespace TEditor
                         _skinnedMeshRenderer.BakeMesh(boundsCheckMesh);
                         Vector3[] vertices = boundsCheckMesh.vertices;
                         for (int k = 0; k < vertices.Length; k++)
-                            UBoundsChecker.CheckBounds(vertices[k].Divide(_skinnedMeshRenderer.transform.localScale));
+                            UBoundsChecker.CheckBounds(vertices[k].div(_skinnedMeshRenderer.transform.localScale));
 
                         boundsCheckMesh.Clear();
                     }

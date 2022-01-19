@@ -13,7 +13,7 @@ public static class UColor
     public static Vector4 ToRGBA32(this Color color) => color.ToVector().Multiply(m_RGBA32_MaxValue);
     public static Color RGB32toColor(Vector3 rgb) => RGBA32toColor(rgb.x, rgb.y, rgb.z);
     public static Color RGBA32toColor(float r, float g, float b, float a = 255f) => RGBA32toColor(new Vector4(r, g, b, a));
-    public static Color RGBA32toColor(Vector4 rgba) => rgba.Divide(m_RGBA32_MaxValue);
+    public static Color RGBA32toColor(Vector4 rgba) => rgba.div(m_RGBA32_MaxValue);
 
     //Hexademic
     public static readonly string m_HEX_MaxValue = @"#FFFFFFFF";
@@ -82,7 +82,7 @@ public static class UColor
     public static Color HSVAtoColor(float h, float s, float v, float a = 255f) => HSVAtoColor(new Vector4(h, s, v, a));
     public static Color HSVAtoColor(Vector4 hsva)
     {
-        Vector4 nhsva = hsva.Divide(m_HSV_MaxValue);
+        Vector4 nhsva = hsva.div(m_HSV_MaxValue);
 
         float h = nhsva.x;
         float s = nhsva.y;

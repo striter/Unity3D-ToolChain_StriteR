@@ -84,7 +84,7 @@ public static class UNoise
     static float Mod289(float _x) { return _x - Mathf.Floor(_x * c_Mod289) * 289f; }
     static Vector2 Mod289(Vector2 _vec) => new Vector2(Mod289(_vec.x),Mod289(_vec.y));
     static Vector3 Mod289(Vector3 _vec) => new Vector3(Mod289(_vec.x), Mod289(_vec.y), Mod289(_vec.z));
-    static Vector3 Permute(Vector3 vec) { return Mod289((vec * 34f + 1f.ToVector3()).Multiply(vec)); }
+    static Vector3 Permute(Vector3 vec) { return Mod289((vec * 34f + 1f.ToVector3()).mul(vec)); }
     public static float Simplex(float _x, float _y) => SimplexUnit(new Vector2(_x,_y));
     public static float SimplexUnit(Vector2 _v)
     {
@@ -98,13 +98,13 @@ public static class UNoise
         Vector2 x12xy = new Vector2(x12.x, x12.y);
         Vector2 x12zw = new Vector2(x12.z, x12.w);
         Vector3 m = Vector3.Max(0.5f.ToVector3()-new Vector3(Vector2.Dot(x0,x0),Vector2.Dot(x12xy,x12xy),Vector2.Dot(x12zw,x12zw)) ,Vector3.zero);
-        m=m.Multiply(m);
-        m = m.Multiply(m);
+        m=m.mul(m);
+        m = m.mul(m);
         Vector3 x = 2.0f * Swizzling.Frac(p*s_Simplex_C.w)-1.0f.ToVector3();
         Vector3 h = Swizzling.Abs(x)-0.5f.ToVector3();
         Vector3 ox = Swizzling.Floor(x + 0.5f.ToVector3());
         Vector3 a0 = x - ox;
-        m = m.Multiply(s_Simplex_M1 - s_Simplex_M2 * (a0.Multiply(a0) + h.Multiply(h)));
+        m = m.mul(s_Simplex_M1 - s_Simplex_M2 * (a0.mul(a0) + h.mul(h)));
         float gx = a0.x*x0.x+h.x*x0.y;
         Vector2 gyz = new Vector2(a0.y,a0.z)*new Vector2(x12.x,x12.z)+new Vector2(h.y,h.z)*new Vector2(x12.y,x12.w);
         return 130f * Vector3.Dot(m,new Vector3(gx,gyz.x,gyz.y));

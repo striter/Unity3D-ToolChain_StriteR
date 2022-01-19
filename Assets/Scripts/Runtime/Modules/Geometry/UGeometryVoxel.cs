@@ -10,6 +10,10 @@ namespace Geometry.Voxel
 {
     public static class UGeometryVoxel
     {
+        public static bool IsPointInside(this GBox _box, Vector3 _point)=> 
+            _point.x >= _box.Min.x && _point.x <= _box.Max.x && 
+            _point.y >= _box.Min.y && _point.y <= _box.Max.y && 
+            _point.z >= _box.Min.z && _point.z <= _box.Max.z;
         public static Qube<Vector3> ExpandToQube<T>(this T _quad, Vector3 _expand, float _baryCenter = 0) where T : IQuad<Vector3>
         {
             var expand = _expand * (1 - _baryCenter);

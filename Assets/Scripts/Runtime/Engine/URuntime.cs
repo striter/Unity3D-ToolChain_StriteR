@@ -93,7 +93,7 @@ public static class URuntime
     public static Rect Expand(this Rect _rect, Vector2 _size) { _rect.position -= _size / 2; _rect.size += _size; return _rect; }
     public static Rect Collapse(this Rect _rect,Vector2 _size) { _rect.position += _size / 2;_rect.size -= _size;return _rect; }
 
-    public static Vector3 GetPoint(this Bounds _bound, Vector3 _normalizedSideOffset) => _bound.center + _bound.size.Multiply(_normalizedSideOffset);
+    public static Vector3 GetPoint(this Bounds _bound, Vector3 _normalizedSideOffset) => _bound.center + _bound.size.mul(_normalizedSideOffset);
     public static Bounds Resize(this Bounds _srcBounds,Bounds _dstBounds)
     {
         Vector3 min = Vector3.Min(_srcBounds.min, _dstBounds.min);

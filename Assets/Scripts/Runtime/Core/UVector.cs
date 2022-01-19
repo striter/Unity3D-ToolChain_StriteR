@@ -38,10 +38,10 @@ public static class UVector
     public static float Min(this Vector3 _src) => Mathf.Min(Mathf.Min(_src.x, _src.y), _src.z);
     public static float Max(this Vector4 _src) => Mathf.Max(Mathf.Max(Mathf.Max(_src.x, _src.y), _src.z), _src.w);
     public static float Min(this Vector4 _src) => Mathf.Min(Mathf.Min(Mathf.Min(_src.x, _src.y), _src.z), _src.w);
-    public static Vector3 Multiply(this Vector3 _src, Vector3 _tar) => new Vector3(_src.x * _tar.x, _src.y * _tar.y, _src.z * _tar.z);
+    public static Vector3 mul(this Vector3 _src, Vector3 _tar) => new Vector3(_src.x * _tar.x, _src.y * _tar.y, _src.z * _tar.z);
     public static Vector4 Multiply(this Vector4 _src, Vector4 _tar) => new Vector4(_src.x * _tar.x, _src.y * _tar.y, _src.z * _tar.z, _src.w * _tar.w);
-    public static Vector3 Divide(this Vector3 _src, Vector3 _tar) => new Vector3(_src.x / _tar.x, _src.y / _tar.y, _src.z / _tar.z);
-    public static Vector4 Divide(this Vector4 _src, Vector4 _tar) => new Vector4(_src.x / _tar.x, _src.y / _tar.y, _src.z / _tar.z, _src.w / _tar.w);
+    public static Vector3 div(this Vector3 _src, Vector3 _tar) => new Vector3(_src.x / _tar.x, _src.y / _tar.y, _src.z / _tar.z);
+    public static Vector4 div(this Vector4 _src, Vector4 _tar) => new Vector4(_src.x / _tar.x, _src.y / _tar.y, _src.z / _tar.z, _src.w / _tar.w);
     public static Vector2 SetX(this Vector2 _vector, float _x) => new Vector2(_x, _vector.y);
     public static Vector2 SetY(this Vector2 _vector, float _y) => new Vector2(_vector.x, _y);
     public static Vector3 SetX(this Vector3 _vector, float _x) => new Vector3(_x, _vector.y, _vector.z);
@@ -54,4 +54,17 @@ public static class UVector
     public static Vector2 ToVector2(this Vector3 _vector) => new Vector2(_vector.x, _vector.y);
     public static Vector4 ToVector4(this Vector3 _vector, float _fill = 0) => new Vector4(_vector.x, _vector.y, _vector.z, _fill);
     public static Vector3 ToVector3(this Vector4 _vector) => new Vector3(_vector.x, _vector.y, _vector.z);
+
+    public static IEnumerable<bool> Greater(this Vector3 _vector, float _comparer)
+    {
+        yield return _vector.x > _comparer;
+        yield return _vector.y > _comparer;
+        yield return _vector.z > _comparer;
+    }
+
+    public static Vector3 Clamp(this Vector3 _value,Vector3 _min,Vector3 _max)
+    {
+        return Vector3.Min(Vector3.Max(_value,_min) ,_max);
+    }
+    
 }

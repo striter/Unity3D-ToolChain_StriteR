@@ -21,6 +21,7 @@ Shader "Hidden/SDF_SphereBox"
     {
         Tags { "RenderType"="UniversalForward" "RenderQueue"="Transparent"}
         Blend SrcAlpha OneMinusSrcAlpha
+        Cull Off
 
         Pass
         {

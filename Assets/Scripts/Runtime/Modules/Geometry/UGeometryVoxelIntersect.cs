@@ -185,9 +185,9 @@ namespace Geometry.Voxel
 
         static void RayAABBCalculate(GBox _box, GRay _ray, out Vector3 _tmin, out Vector3 _tmax)
         {
-            Vector3 invRayDir = Vector3.one.Divide(_ray.direction);
-            Vector3 t0 = (_box.Min - _ray.origin).Multiply(invRayDir);
-            Vector3 t1 = (_box.Max - _ray.origin).Multiply(invRayDir);
+            Vector3 invRayDir = Vector3.one.div(_ray.direction);
+            Vector3 t0 = (_box.Min - _ray.origin).mul(invRayDir);
+            Vector3 t1 = (_box.Max - _ray.origin).mul(invRayDir);
             _tmin = Vector3.Min(t0, t1);
             _tmax = Vector3.Max(t0, t1);
         }
