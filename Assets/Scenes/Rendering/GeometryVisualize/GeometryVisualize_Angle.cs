@@ -16,9 +16,6 @@ namespace ExampleScenes.Rendering.GeometryVisualize
         {
             if (SceneView.currentDrawingSceneView == null)
                 return;
-            var plane = new GPlane(Vector3.up, Vector3.zero);
-            var ray=SceneView.currentDrawingSceneView.camera.ScreenPointToRay(SceneView.currentDrawingSceneView.GetScreenPoint());
-            
             Gizmos.matrix = transform.localToWorldMatrix;
             Gizmos.color = Color.red;
             Gizmos.DrawLine(Vector3.zero,Vector3.forward);

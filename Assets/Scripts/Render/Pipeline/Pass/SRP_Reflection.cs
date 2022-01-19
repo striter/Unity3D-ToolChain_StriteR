@@ -20,8 +20,11 @@ namespace Rendering.Pipeline
 
             switch (_data.m_Type)
             {
-                case EReflectionSpace.MirrorSpace:
                 case EReflectionSpace.ScreenSpace:
+                    m_Pass = new SRP_ScreenSpaceReflection(m_Blurs){renderPassEvent = _event};
+                    break;
+                case EReflectionSpace.PlanarMirrorSpace:
+                case EReflectionSpace.PlanarScreenSpace:
                     m_Pass = new SRP_PlanarReflectionBase(m_Blurs){renderPassEvent = _event};
                     break;
             }
@@ -43,7 +46,40 @@ namespace Rendering.Pipeline
     {
         ScriptableRenderPass Setup(SRD_ReflectionData _data, ScriptableRenderer _renderer);
     }
-    
+    #region Screen Space Reflection
+
+    class SRP_ScreenSpaceReflection:ScriptableRenderPass, IReflectionPass
+    {
+        
+        private readonly PPCore_Blurs m_Blur;
+
+        public SRP_ScreenSpaceReflection(PPCore_Blurs _blurs)
+        {
+            m_Blur = _blurs;
+        }
+        public ScriptableRenderPass Setup(SRD_ReflectionData _data, ScriptableRenderer _renderer)
+        {
+
+            return this;
+        }
+        
+        public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
+        {
+            CommandBuffer cmd = CommandBufferPool.Get("Planar Reflection Pass");
+            
+            
+            context.ExecuteCommandBuffer(cmd);
+            cmd.Clear();
+            CommandBufferPool.Release(cmd);
+        }
+        
+        public void Dispose()
+        {
+        }
+
+    }
+        
+    #endregion
     #region Planar Reflections
     public sealed class SRP_PlanarReflectionBase :  ScriptableRenderPass,IReflectionPass
     {
@@ -54,7 +90,7 @@ namespace Rendering.Pipeline
         const int kMaxReflectionTextures = 4;
         private SRD_ReflectionData m_Data;
 
-        private PPCore_Blurs m_Blur;
+        private readonly PPCore_Blurs m_Blur;
         private readonly List<APlanarReflection> m_ReflectionPasses = new();
 
         public SRP_PlanarReflectionBase(PPCore_Blurs _blurs)
@@ -90,11 +126,11 @@ namespace Rendering.Pipeline
                 APlanarReflection reflection=null;
                 switch (m_Data.m_Type)
                 {
-                    case EReflectionSpace.ScreenSpace:
+                    case EReflectionSpace.PlanarScreenSpace:
                         reflection = new FPlanarReflection_ScreenSpace();
                         break;
-                    case EReflectionSpace.MirrorSpace:
-                        reflection = new SRP_PlanarReflection_MirrorSpace();
+                    case EReflectionSpace.PlanarMirrorSpace:
+                        reflection = new FPlanarReflection_MirrorSpace();
                         break;
                 }
 
@@ -218,7 +254,7 @@ namespace Rendering.Pipeline
          public virtual void Dispose(){}
     }
     
-    class FPlanarReflection_ScreenSpace:APlanarReflection
+    class FPlanarReflection_ScreenSpace : APlanarReflection
     {
         static readonly int ID_SampleCount = Shader.PropertyToID( "_SAMPLE_COUNT");
         static readonly int ID_Result_TexelSize = Shader.PropertyToID("_Result_TexelSize");
@@ -262,7 +298,7 @@ namespace Rendering.Pipeline
             _cmd.DispatchCompute(m_ReflectionComputeShader, m_Kernels, m_ThreadGroups.x,m_ThreadGroups.y, 1);
         }
     }
-    class SRP_PlanarReflection_MirrorSpace : APlanarReflection
+    class FPlanarReflection_MirrorSpace : APlanarReflection
     {
         private const string kReflectionDepth = "_CameraReflectionDepthComparer";
         static readonly int ID_CameraWorldPosition = Shader.PropertyToID("_WorldSpaceCameraPos");

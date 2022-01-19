@@ -9,11 +9,11 @@ namespace Rendering.Pipeline
     public class SRD_ReflectionData
     {
         public EReflectionSpace m_Type;
-        [MFoldout(nameof(m_Type), EReflectionSpace.ScreenSpace)] [Range(1, 4)] public int m_Sample;
+        [MFoldout(nameof(m_Type), EReflectionSpace.PlanarScreenSpace)] [Range(1, 4)] public int m_Sample;
 
-        [MFoldout(nameof(m_Type), EReflectionSpace.MirrorSpace)] public bool m_Recull;
-        [MFoldout(nameof(m_Type), EReflectionSpace.MirrorSpace,nameof(m_Recull),true)] [Range(0,8)]public int m_AdditionalLightcount;
-        [MFoldout(nameof(m_Type), EReflectionSpace.MirrorSpace)] public bool m_IncludeTransparent;
+        [MFoldout(nameof(m_Type), EReflectionSpace.PlanarMirrorSpace)] public bool m_Recull;
+        [MFoldout(nameof(m_Type), EReflectionSpace.PlanarMirrorSpace,nameof(m_Recull),true)] [Range(0,8)]public int m_AdditionalLightcount;
+        [MFoldout(nameof(m_Type), EReflectionSpace.PlanarMirrorSpace)] public bool m_IncludeTransparent;
         
         [Header("Blur")]
         [Range(1,4)] public int m_DownSample;
@@ -24,7 +24,7 @@ namespace Rendering.Pipeline
         {
             return new SRD_ReflectionData()
             {
-                m_Type = EReflectionSpace.ScreenSpace,
+                m_Type = EReflectionSpace.PlanarScreenSpace,
                 m_IncludeTransparent = false,
                 m_Recull = false,
                 m_DownSample=2,

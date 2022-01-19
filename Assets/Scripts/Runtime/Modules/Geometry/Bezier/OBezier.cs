@@ -1,4 +1,5 @@
 using System;
+using Geometry.Voxel;
 using UnityEngine;
 
 namespace Geometry.Bezier
@@ -16,8 +17,16 @@ namespace Geometry.Bezier
             destination = _dst;
             control = _control;
         }
-
         public Vector3 Evaluate(float _value)=> UMath.QuadraticBezierCurve(source,destination,control,_value);
+
+        // public GBox GetBoundingBox()
+        // {
+        //     Vector3 min = Vector3.Min(source,destination);
+        //     Vector3 max = Vector3.Min(source,destination);
+        //     GBox box = GBox.MinMax(min, max);
+        //     Bounds bounds;
+        //     bounds.GetPoint()
+        // }
         
 #if UNITY_EDITOR
         public void DrawGizmos(int _density=64)
@@ -49,7 +58,7 @@ namespace Geometry.Bezier
 
         public Vector3 Evaluate(float _value) =>
             UMath.CubicBezierCurve(source, destination, controlSource, controlDestination, _value);
-
+        
 #if UNITY_EDITOR
         public void DrawGizmos(int _density=64)
         {

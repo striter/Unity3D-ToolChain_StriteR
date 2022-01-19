@@ -112,6 +112,13 @@ namespace Geometry.Voxel
         public Vector3 Min => center - extend;
         public Vector3 Max => center + extend;
         public GBox(Vector3 _center,Vector3 _extend) { center = _center;extend = _extend; }
+
+        public static GBox MinMax(Vector3 _min, Vector3 _max)
+        {
+            Vector3 size = _max - _min;
+            Vector3 extend = size / 2;
+            return new GBox(_min+extend,extend);
+        }
     }
 
 
@@ -129,9 +136,9 @@ namespace Geometry.Voxel
     {
         public Vector3 origin;
         public Vector3 normal;
-        [Range(0, 180)] public float angle;
+        [Range(0, 90f)] public float angle;
         public GCone(Vector3 _origin, Vector3 _normal, float _angle) { origin = _origin;normal = _normal;angle = _angle; }
-        public float GetRadius(float _height) => _height * Mathf.Tan(angle*UMath.Rad2Deg);
+        public float GetRadius(float _height) => _height * Mathf.Tan(angle*UMath.Deg2Rad);
     }
 
     [Serializable]
@@ -139,15 +146,15 @@ namespace Geometry.Voxel
     {
         public Vector3 origin;
         public Vector3 normal;
-        [Range(0,180)]public float angle;
+        [Range(0,90f)]public float angle;
         public float height;
         public float Radius => ((GCone)this).GetRadius(height);
         public Vector3 Bottom => origin + normal * height;
-        public GHeightCone(Vector3 _origin, Vector3 _normal, float _radin, float _height)
+        public GHeightCone(Vector3 _origin, Vector3 _normal, float _angle, float _height)
         {
             origin = _origin;
             normal =_normal;
-            angle = _radin;
+            angle = _angle;
             height = _height;
         }
         public static implicit operator GCone(GHeightCone _cone)=>new GCone(_cone.origin,_cone.normal,_cone.angle);

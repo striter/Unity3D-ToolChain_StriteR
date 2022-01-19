@@ -19,10 +19,11 @@ namespace ExampleScenes.Rendering.GeometryVisualize
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
+            
             Gizmos.color = Color.white;
             Gizmos.DrawSphere(m_Point, .1f);
             float distances= UGeometryIntersect.PointRayProjection(m_Point, m_Ray);
-            Handles_Extend.DrawLine(m_Ray.ToLine(distances));
+            Gizmos_Extend.DrawLine(m_Ray.ToLine(distances));
             Gizmos.color = Color.blue;
             Gizmos.DrawSphere(m_Ray.GetPoint(distances),.1f);
 
