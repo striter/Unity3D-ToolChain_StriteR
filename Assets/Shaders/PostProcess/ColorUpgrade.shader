@@ -8,8 +8,6 @@
 	{
 		Cull Off ZWrite Off ZTest Always
 		HLSLINCLUDE
-			#define ICOLOR
-			#define IDEPTH
 			#include "Assets/Shaders/Library/PostProcess.hlsl"
 		ENDHLSL
 		Pass

@@ -8,23 +8,38 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial_PlanarReflection)
     INSTANCING_PROP(half, _CameraReflectionNormalDistort)
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial_PlanarReflection)
 
-half4 IndirectBRDFPlanarSpecular(half2 screenUV,float eyeDepth, half3 normalTS)
+sampler2D _ScreenSpaceReflectionTexture;
+
+half4 IndirectSpecular(half2 screenUV,float eyeDepth, half3 normalTS)
 {
     screenUV += normalTS.xy * UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_PlanarReflection, _CameraReflectionNormalDistort)*rcp(eyeDepth);
+    half4 indirectSpecular=0;
     [branch]
-    switch (UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_PlanarReflection, _CameraReflectionTextureIndex))
+    if (UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_PlanarReflection, _CameraReflectionTextureOn) == 1)
     {
-        default:return 0;
-        case 0u:
-            return tex2D(_CameraReflectionTexture0, screenUV);
-        case 1u:
-            return tex2D(_CameraReflectionTexture1, screenUV);
-        case 2u:
-            return tex2D(_CameraReflectionTexture2, screenUV);
-        case 3u:
-            return tex2D(_CameraReflectionTexture3, screenUV);
+        [branch]
+        switch (UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_PlanarReflection, _CameraReflectionTextureIndex))
+        {
+            default:return 0;
+            case 0u:
+                indirectSpecular= tex2D(_CameraReflectionTexture0, screenUV);
+                break;
+            case 1u:
+                indirectSpecular= tex2D(_CameraReflectionTexture1, screenUV);
+                break;
+            case 2u:
+                indirectSpecular= tex2D(_CameraReflectionTexture2, screenUV);
+                break;
+            case 3u:
+                indirectSpecular= tex2D(_CameraReflectionTexture3, screenUV);
+                break;
+            case 4u:
+                indirectSpecular=tex2D(_ScreenSpaceReflectionTexture,screenUV);
+                break;
+        }
     }
-    return 0;
+    
+    return indirectSpecular;
 }
 
 half3 SAMPLE_SH(half3 normal)
@@ -69,11 +84,6 @@ half3 IndirectBRDFCubeSpecular(half3 reflectDir, float perceptualRoughness)
 half3 IndirectBRDFSpecular(float3 reflectDir, float perceptualRoughness, half4 positionHCS, half3 normalTS)
 {
     half3 specular = IndirectBRDFCubeSpecular(reflectDir, perceptualRoughness);
-    [branch]
-    if (UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_PlanarReflection, _CameraReflectionTextureOn) == 1)
-    {
-        half4 planarReflection = IndirectBRDFPlanarSpecular(TransformHClipToNDC(positionHCS),RawToEyeDepth(positionHCS.z/positionHCS.w), normalTS);
-        specular = lerp(specular, planarReflection.rgb,  planarReflection.a );
-    }
-    return specular;
+    half4 indirectSpecular=IndirectSpecular(TransformHClipToNDC(positionHCS),RawToEyeDepth(positionHCS.z/positionHCS.w), normalTS);
+    return lerp(specular,indirectSpecular.rgb,indirectSpecular.a);
 }

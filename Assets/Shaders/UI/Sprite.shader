@@ -48,7 +48,6 @@
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#define ICOLOR
 			#include "Assets/Shaders/Library/Common.hlsl"
 
 			#pragma shader_feature_local_fragment _ALPHAMASK

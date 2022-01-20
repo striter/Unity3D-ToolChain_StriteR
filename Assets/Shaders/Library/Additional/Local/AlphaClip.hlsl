@@ -3,6 +3,6 @@
 void AlphaClip(half alpha)
 {
     #ifdef _ALPHACLIP
-    clip(alpha-INSTANCE(_AlphaClipRange));
+        clip(alpha-INSTANCE(_AlphaClipRange));
     #endif
 }

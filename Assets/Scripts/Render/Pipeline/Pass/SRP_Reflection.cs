@@ -50,49 +50,69 @@ namespace Rendering.Pipeline
 
     class SRP_ScreenSpaceReflection:ScriptableRenderPass, IReflectionPass
     {
-        
+        private SRD_ReflectionData m_Data;
+        private readonly Instance<Shader> m_ReflectionBlit=new Instance<Shader>(()=>RenderResources.FindInclude("Hidden/ScreenSpaceReflection"));
         private readonly PPCore_Blurs m_Blur;
+        private ScriptableRenderer m_Renderer;
+        private readonly Material m_Material;
+        static readonly int ID_SSRTex = Shader.PropertyToID("_ScreenSpaceReflectionTexture");
+        static readonly RenderTargetIdentifier RT_ID_SSR = new RenderTargetIdentifier(ID_SSRTex);
 
         public SRP_ScreenSpaceReflection(PPCore_Blurs _blurs)
         {
+            m_Material = new Material(m_ReflectionBlit){hideFlags = HideFlags.HideAndDontSave};
             m_Blur = _blurs;
         }
+        
+        public void Dispose()
+        {            
+            GameObject.DestroyImmediate(m_Material);
+        }
+
         public ScriptableRenderPass Setup(SRD_ReflectionData _data, ScriptableRenderer _renderer)
         {
-
+            m_Data = _data;
+            m_Renderer = _renderer;
+            MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+            foreach (var reflection in SRC_ReflectionController.m_Reflections)
+                reflection.SetPropertyBlock(propertyBlock,4);
             return this;
         }
-        
+
+        public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
+        {
+            cmd.GetTemporaryRT(ID_SSRTex, cameraTextureDescriptor.width, cameraTextureDescriptor.height, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
+            ConfigureTarget(RT_ID_SSR);
+            base.Configure(cmd, cameraTextureDescriptor);
+        }
+
+        public override void OnCameraCleanup(CommandBuffer cmd)
+        {
+            base.OnCameraCleanup(cmd);
+            cmd.ReleaseTemporaryRT(ID_SSRTex);
+        }
+
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get("Planar Reflection Pass");
-            
+            cmd.Blit(m_Renderer.cameraColorTarget,RT_ID_SSR,m_Material);
             
             context.ExecuteCommandBuffer(cmd);
             cmd.Clear();
             CommandBufferPool.Release(cmd);
         }
         
-        public void Dispose()
-        {
-        }
-
     }
-        
     #endregion
+    
     #region Planar Reflections
     public sealed class SRP_PlanarReflectionBase :  ScriptableRenderPass,IReflectionPass
     {
-        static readonly int ID_ReflectionTextureOn = Shader.PropertyToID("_CameraReflectionTextureOn");
-        static readonly int ID_ReflectionTextureIndex = Shader.PropertyToID("_CameraReflectionTextureIndex");
-        static readonly int ID_ReflectionNormalDistort = Shader.PropertyToID("_CameraReflectionNormalDistort");
-
         const int kMaxReflectionTextures = 4;
         private SRD_ReflectionData m_Data;
 
         private readonly PPCore_Blurs m_Blur;
-        private readonly List<APlanarReflection> m_ReflectionPasses = new();
-
+        private readonly List<APlanarReflection> m_ReflectionPasses = new List<APlanarReflection>();
         public SRP_PlanarReflectionBase(PPCore_Blurs _blurs)
         {
             m_Blur = _blurs;
@@ -101,27 +121,19 @@ namespace Rendering.Pipeline
         {
             m_Data = _data;
             m_ReflectionPasses.Clear();
-            if (SRC_ReflectionController.m_ReflectionPlanes.Count == 0)
+            if (SRC_ReflectionController.m_Reflections.Count == 0)
                 return this;
             
-            MaterialPropertyBlock propertyBlock = new();
-            foreach (var (index,groups) in SRC_ReflectionController.m_ReflectionPlanes.FindAll(p=>p.m_MeshRenderer.isVisible).GroupBy(p=>p.m_PlaneData).LoopIndex())
+            MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+            foreach (var (index,groups) in SRC_ReflectionController.m_Reflections.FindAll(p=>p.Available).GroupBy(p=>p.m_PlaneData).LoopIndex())
             {
                 if (index >= kMaxReflectionTextures)
                 {
                     Debug.LogWarning("Reflection Plane Outta Limit!");
                     break;
                 }
-                propertyBlock.SetInt(ID_ReflectionTextureOn, 1);
-                propertyBlock.SetInt(ID_ReflectionTextureIndex,index);
                 foreach (SRC_ReflectionController planeComponent in groups)
-                {
-#if UNITY_EDITOR
-                    planeComponent.EditorApplyIndex(index);
-#endif
-                    propertyBlock.SetFloat(ID_ReflectionNormalDistort, planeComponent.m_NormalDistort);
-                    planeComponent.m_MeshRenderer.SetPropertyBlock(propertyBlock);
-                }
+                    planeComponent.SetPropertyBlock(propertyBlock,index);
 
                 APlanarReflection reflection=null;
                 switch (m_Data.m_Type)
@@ -275,12 +287,6 @@ namespace Rendering.Pipeline
             m_Kernels = ((ComputeShader)m_ReflectionComputeShader).FindKernel("Generate");
             m_ThreadGroups = new Int2(_descriptor.width / 8, _descriptor.height / 8);
         }
-
-        protected override void OnCameraSetup(ScriptableRenderPass _pass, CommandBuffer _cmd, RenderTargetIdentifier _target,
-            RenderTextureDescriptor _descriptor)
-        {
-            base.OnCameraSetup(_pass, _cmd, _target, _descriptor);
-        }
         protected override void Execute(ScriptableRenderPass _pass, ref SRD_ReflectionData _data, ScriptableRenderContext _context,
             ref RenderingData _renderingData, CommandBuffer _cmd, ref GPlane _plane, ref RenderTextureDescriptor _descriptor,
             ref RenderTargetIdentifier _target,ref ScriptableRenderer _renderer)
@@ -303,7 +309,7 @@ namespace Rendering.Pipeline
         private const string kReflectionDepth = "_CameraReflectionDepthComparer";
         static readonly int ID_CameraWorldPosition = Shader.PropertyToID("_WorldSpaceCameraPos");
 
-        readonly List<ShaderTagId> m_ShaderTagIDs = new();
+        readonly List<ShaderTagId> m_ShaderTagIDs = new List<ShaderTagId>();
          int m_ReflectionDepth;
          RenderTargetIdentifier m_ReflectionDepthID ;
 

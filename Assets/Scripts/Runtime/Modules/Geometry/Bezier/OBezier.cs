@@ -77,7 +77,7 @@ namespace Geometry.Bezier
             Vector3 h = b.mul(b) - a.mul(c);
             if (b.Greater(0f).Any())
             {
-                Vector3 g = new(Mathf.Sqrt(Mathf.Abs(h.x)),Mathf.Sqrt(Mathf.Abs(h.y)),Mathf.Sqrt(Mathf.Abs(h.z)));
+                Vector3 g = new Vector3(Mathf.Sqrt(Mathf.Abs(h.x)),Mathf.Sqrt(Mathf.Abs(h.y)),Mathf.Sqrt(Mathf.Abs(h.z)));
                 Vector3 t1 = (-b - g).div(a).Clamp(Vector3.zero, Vector3.one);
                 Vector3 s1 = Vector3.one - t1;
                 Vector3 t2 = (-b + g).div(a).Clamp(Vector3.zero, Vector3.one);

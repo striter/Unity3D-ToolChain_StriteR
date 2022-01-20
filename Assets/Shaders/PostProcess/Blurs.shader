@@ -21,7 +21,6 @@
         half _FocalStart;
         half _FocalEnd;
     #endif
-    #define ICOLOR
     #include "Assets/Shaders/Library/PostProcess.hlsl"
 	half4 SampleBlurTex(TEXTURE2D_PARAM(_tex,_sampler),float2 uv,float2 offset)
 	{
@@ -43,7 +42,7 @@
 		#if defined(_FIRSTBLUR)||!defined(_ENCODE)
 			return color;
 		#endif
-		color.rgb=DecodeRGBM(color);
+		color.rgb=DecodeFromRGBM(color);
 		return color;
     }
 
@@ -52,7 +51,7 @@
 		#if defined(_FINALBLUR)||!defined(_ENCODE)
 			return _color;
 		#endif
-		return EncodeRGBM(_color.rgb);
+		return EncodeToRGBM(_color.rgb);
 	}
 	
     

@@ -11,9 +11,11 @@
     	[Vector2]_FlowDirection1("Flow Direction 1",Vector)=(1,1,0,0)
     	[Foldout(_WAVE)]_Flow1Amplitude("Flow Amplitidue 1",float)=1
     	[Foldout(_WAVE)]_Spike1Amplitude("Spike Amplitidue 1",float)=1
+    	[Foldout(_WAVE)]_Flow1Speed("Speed 1",float)=1
     	[Vector2]_FlowDirection2("Flow Direction 2",Vector)=(1,1,0,0)
     	[Foldout(_WAVE)]_Flow2Amplitude("Flow Amplitidue 2",float)=1
     	[Foldout(_WAVE)]_Spike2Amplitude("Spike Amplitidue 2",float)=1
+    	[Foldout(_WAVE)]_Flow2Speed("Speed 2",float)=1
     	
     	[Header(Lighting)]
     	_SpecularAmount("Specular Amount",Range(.8,0.99999))=1
@@ -88,8 +90,10 @@
 				INSTANCING_PROP(float2,_FlowDirection2)
 				INSTANCING_PROP(float,_Flow1Amplitude)
 				INSTANCING_PROP(float,_Spike1Amplitude)
+				INSTANCING_PROP(float,_Flow1Speed)
 				INSTANCING_PROP(float,_Flow2Amplitude)
 				INSTANCING_PROP(float,_Spike2Amplitude)
+				INSTANCING_PROP(float,_Flow2Speed)
 				INSTANCING_PROP(float,_SpecularAmount)
 				INSTANCING_PROP(float,_SpecularStrength)
 				INSTANCING_PROP(float,_RefractionDistance)
@@ -130,9 +134,9 @@
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-			float3 GerstnerWave(float2 uv,float2 flow,float amplitude,float spikeAmplitude)
+			float3 GerstnerWave(float2 uv,float2 flow,float amplitude,float spikeAmplitude,float speed)
 			{
-				float2 flowUV=uv+_Time.y*flow;
+				float2 flowUV=uv+_Time.y*flow*speed;
 				float2 flowSin=flowUV.x*flow.x+flowUV.y*flow.y;
 				float spherical=(flowSin.x*flow.x+flowSin.y*flow.y)*PI;
 				float sinFlow;
@@ -151,8 +155,8 @@
 				float3 normalWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.normalOS));
 				float3 tangentWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.tangentOS.xyz));
             	#if _WAVE
-					positionWS+=GerstnerWave(positionWS.xz,INSTANCE(_FlowDirection1),INSTANCE(_Flow1Amplitude),INSTANCE(_Spike1Amplitude));
-					positionWS+=GerstnerWave(positionWS.xz,INSTANCE(_FlowDirection2),INSTANCE(_Flow2Amplitude),INSTANCE(_Spike2Amplitude));
+					positionWS+=GerstnerWave(positionWS.xz,INSTANCE(_FlowDirection1),INSTANCE(_Flow1Amplitude),INSTANCE(_Spike1Amplitude),INSTANCE(_Flow1Speed));
+					positionWS+=GerstnerWave(positionWS.xz,INSTANCE(_FlowDirection2),INSTANCE(_Flow2Amplitude),INSTANCE(_Spike2Amplitude),INSTANCE(_Flow2Speed));
 				#endif
             	o.positionWS=positionWS;
             	o.positionCS=TransformWorldToHClip(o.positionWS);
@@ -231,7 +235,7 @@
             	#endif
             	
             	float3 aboveSurfaceColor=albedo;
-            	float4 reflection=IndirectBRDFPlanarSpecular(screenUV,eyeDepthSurface,normalTS);
+            	float4 reflection=IndirectSpecular(screenUV,eyeDepthSurface,normalTS);
 				aboveSurfaceColor=lerp(aboveSurfaceColor, reflection.rgb,reflection.a*INSTANCE(_Strength));
             	
             	float specular=GetSpecular(normalWS,lightDirWS,viewDirWS,INSTANCE(_SpecularAmount));

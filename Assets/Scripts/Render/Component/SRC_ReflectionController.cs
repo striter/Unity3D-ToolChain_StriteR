@@ -11,19 +11,35 @@ namespace Rendering.Pipeline
         [Range(-5f, 5f)] public float m_PlaneOffset = 0f;
         [Range(0f, 0.2f)] public float m_NormalDistort = .1f;
 
-        public static List<SRC_ReflectionController> m_ReflectionPlanes { get; private set; } = new List<SRC_ReflectionController>();
-        public MeshRenderer m_MeshRenderer { get; private set; }
-        public MeshFilter m_MeshFilter { get; private set; }
+        public static List<SRC_ReflectionController> m_Reflections { get; private set; } = new List<SRC_ReflectionController>();
+        public bool Available => m_MeshRenderer.enabled;
+        
+        private MeshRenderer m_MeshRenderer;
+        private MeshFilter m_MeshFilter;
         public GPlane m_PlaneData => new GPlane(transform.up,  transform.position + transform.up*m_PlaneOffset);
         private void OnEnable()
         {
-            m_ReflectionPlanes.Add(this);
+            m_Reflections.Add(this);
             m_MeshFilter = GetComponent<MeshFilter>();
             m_MeshRenderer = GetComponent<MeshRenderer>();
         }
         private void OnDisable()
         {
-            m_ReflectionPlanes.Remove(this);
+            m_Reflections.Remove(this);
+        }
+
+        static readonly int ID_ReflectionTextureOn = Shader.PropertyToID("_CameraReflectionTextureOn");
+        static readonly int ID_ReflectionTextureIndex = Shader.PropertyToID("_CameraReflectionTextureIndex");
+        static readonly int ID_ReflectionNormalDistort = Shader.PropertyToID("_CameraReflectionNormalDistort");
+        public void SetPropertyBlock(MaterialPropertyBlock _block,int _reflectionIndex)
+        {
+            _block.SetInt(ID_ReflectionTextureOn, 1);
+            _block.SetInt(ID_ReflectionTextureIndex,_reflectionIndex);
+            _block.SetFloat(ID_ReflectionNormalDistort, m_NormalDistort);
+            m_MeshRenderer.SetPropertyBlock(_block);
+            #if UNITY_EDITOR
+                  m_Index=_reflectionIndex;
+            #endif
         }
 #if UNITY_EDITOR
         private int m_Index=-1;
@@ -41,10 +57,11 @@ namespace Rendering.Pipeline
             switch (index)
             {
                 default: return Color.magenta;
-                case 0: return Color.white;
+                case 0: return Color.green;
                 case 1: return Color.blue;
                 case 2: return Color.red;
                 case 3: return Color.yellow;
+                case 4: return Color.white;
             }
         }
 #endif

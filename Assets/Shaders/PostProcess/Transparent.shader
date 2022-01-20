@@ -8,9 +8,7 @@ Shader "Hidden/PostProcess/Transparent"
     {
         Cull Off ZWrite Off ZTest Always
         HLSLINCLUDE
-            #define IDEPTH
             #include "Assets/Shaders/Library/PostProcess.hlsl"
-            #define IGeometryDetection
             #include "Assets/Shaders/Library/Geometry.hlsl"
             #pragma multi_compile_local_fragment _ _VOLUMETRICLIGHT
         ENDHLSL

@@ -28,14 +28,7 @@ v2f_img vert_img(a2v_img v)
     o.uv = v.uv;
     return o;
 }
-#ifdef ICOLOR
+
 #include "PostProcess/Color.hlsl"
-#endif
-
-#ifdef IDEPTH
 #include "PostProcess/Depth.hlsl"
-#endif
-
-#ifdef INORMAL
 #include "PostProcess/Normal.hlsl"
-#endif

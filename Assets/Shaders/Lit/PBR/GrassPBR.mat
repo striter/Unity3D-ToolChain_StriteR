@@ -231,7 +231,7 @@ Material:
     - _FlowScale1: 20
     - _FlowScale2: 100
     - _FlowStrength: 0.47
-    - _FurAlphaClip: 0.34
+    - _FurAlphaClip: 1
     - _FurGravity: 0
     - _FurLength: 0.39
     - _FurScattering: 0

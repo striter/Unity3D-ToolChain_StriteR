@@ -484,6 +484,10 @@ namespace Geometry
             return new Qube<T>(_convert(0,_srcQuad.vDB), _convert(1,_srcQuad.vDL), _convert(2,_srcQuad.vDF), _convert(3,_srcQuad.vDR),
                 _convert(4,_srcQuad.vTB), _convert(5,_srcQuad.vTL), _convert(6,_srcQuad.vTF), _convert(7,_srcQuad.vTR));
         }
-
+        public static CubeFacing<T> Convert<Y>(CubeFacing<Y> _srcQuad, Func<Y, T> _convert)
+        {
+            return new CubeFacing<T>(_convert(_srcQuad.fBL), _convert(_srcQuad.fLF), _convert(_srcQuad.fFR), _convert(_srcQuad.fRB),
+                _convert(_srcQuad.fT), _convert(_srcQuad.fD));
+        }
     }
 }
