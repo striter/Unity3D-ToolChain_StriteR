@@ -92,7 +92,7 @@ MonoBehaviour:
   m_NormalTexture: 1
   m_CameraReflectionTexture: 1
   m_PlanarReflectionData:
-    m_Type: 2
+    m_Type: 1
     m_Sample: 4
     m_Recull: 1
     m_AdditionalLightcount: 0

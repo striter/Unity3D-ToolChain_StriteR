@@ -11,7 +11,7 @@ namespace Rendering.Pipeline
     {
         private readonly PPCore_Blurs m_Blurs;
         private readonly IReflectionPass m_Pass;
-        private SRD_ReflectionData m_Data;
+        private readonly SRD_ReflectionData m_Data;
         public SRP_Reflection(SRD_ReflectionData _data,RenderPassEvent _event)
         {
             m_Data = _data;
@@ -20,7 +20,7 @@ namespace Rendering.Pipeline
 
             switch (_data.m_Type)
             {
-                case EReflectionSpace.ScreenSpace:
+                case EReflectionSpace.ScreenSpace_Undone:
                     m_Pass = new SRP_ScreenSpaceReflection(m_Blurs){renderPassEvent = _event};
                     break;
                 case EReflectionSpace.PlanarMirrorSpace:

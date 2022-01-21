@@ -11,9 +11,9 @@ public static class UMath
     public const float Deg2Rad = 0.017453292519943f;//PI / 180
     public const float Rad2Deg = 57.295779513082f ;//180f / PI;
     
-    public static readonly Matrix2x2 m_RotateCW90 = Rotate2D(90*Deg2Rad,true);
-    public static readonly Matrix2x2 m_RotateCW180 = Rotate2D(180*Deg2Rad,true);
-    public static readonly Matrix2x2 m_RotateCW270 = Rotate2D(270*Deg2Rad,true);
+    public static readonly Matrix2x2 m_RotateCW90 = URotation.Rotate2D(90*Deg2Rad,true);
+    public static readonly Matrix2x2 m_RotateCW180 = URotation.Rotate2D(180*Deg2Rad,true);
+    public static readonly Matrix2x2 m_RotateCW270 = URotation.Rotate2D(270*Deg2Rad,true);
     public static readonly Matrix2x2[] m_Rotate2DCW = { Matrix2x2.Identity,m_RotateCW90,m_RotateCW180,m_RotateCW270};
     public static readonly Quaternion[] m_Rotate3DCW = {Quaternion.Euler(0f,0f,0f),Quaternion.Euler(0f,90f,0f),Quaternion.Euler(0f,180f,0f),Quaternion.Euler(0f,270f,0f)};
     
@@ -25,15 +25,7 @@ public static class UMath
         return Mathf.Atan2(sin,cos);
     }
 
-    public static Matrix2x2 Rotate2D(float _rad,bool _clockWise=false)
-    {
-        float sinA = Mathf.Sin(_rad);
-        float cosA = Mathf.Cos(_rad);
-        if (_clockWise)
-            return new Matrix2x2(cosA,sinA,-sinA,cosA);
-        return new Matrix2x2(cosA,-sinA,sinA,cosA);
-    }
-    
+
     public static int Pow(int _src, int _pow)
     {
         if (_pow == 0) return 1;

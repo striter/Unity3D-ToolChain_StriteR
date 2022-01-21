@@ -5,26 +5,6 @@ namespace ExampleScenes.Rendering.FogOfWar2D
 {
     public class FogOfWar2D : MonoBehaviour
     {
-        public Vector3 m_SrcVector = Vector3.one;
-        public Vector3 m_DstVector = Vector3.down;
-        public float m_RotateAngle;
-        void OnDrawGizmos()
-        {
-            Gizmos.matrix = transform.localToWorldMatrix;
-            Gizmos.DrawLine(Vector3.zero, m_SrcVector);
-            Gizmos.DrawLine(Vector3.zero, m_DstVector);
-
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(Vector3.zero,UQuaternion.AngleAxisToRotateMatrix(m_RotateAngle,m_DstVector)*m_SrcVector);
-            Gizmos.color = Color.blue;
-            Gizmos.DrawLine(Vector3.zero, UQuaternion.AngleAxisToQuaternion(m_RotateAngle, m_DstVector)*m_SrcVector);
-            Gizmos.color = Color.green;
-            Gizmos.DrawLine(Vector3.zero, Quaternion.AngleAxis(m_RotateAngle, m_DstVector)* m_SrcVector);
-            //Debug.Log(TVector.SqrMagnitude(m_SrcVector) + " " +  m_SrcVector.sqrMagnitude);
-            //Debug.Log(TVector.Dot(m_SrcVector, m_DstVector) + " " + Vector3.Dot(m_SrcVector, m_DstVector));
-            //Debug.Log(TVector.Project(m_SrcVector, m_DstVector) + " " + Vector3.Project(m_SrcVector, m_DstVector));
-            //Debug.Log(TVector.Cross(m_SrcVector, m_DstVector) + " " + Vector3.Cross(m_SrcVector, m_DstVector));
-        }
         private void Start()
         {
             UIT_TouchConsole.InitDefaultCommands();

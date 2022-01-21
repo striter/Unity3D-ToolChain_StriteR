@@ -1,0 +1,7 @@
+#ifndef #SCRIPTNAME#
+#define #SCRIPTNAME#
+
+
+
+
+#endif
