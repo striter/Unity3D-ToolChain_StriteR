@@ -1,12 +1,20 @@
-Shader "Game/Unfinished/Liquid1"
+Shader "Game/Unfinished/Liquid"
 {
     Properties
     {
-        _MainTex("Main Tex",2D)="white"{}
-        _Color("Color Tint",Color)=(1,1,1,1)
+        _NormalOffset("Normal Offset",Range(-1,1))=-.1
+        _SurfaceColor("Color Surface",Color)=(1,1,0,1)
+        _FoamColor("Color Foam",Color)=(1,1,1,1)
+        _LiquidColor("Color Liquid",Color)=(0,1,1,1)
+        
+        _FoamWidth("Foam Width",Range(0,1))=.1
     }
     SubShader
     {
+        Cull Off
+        ZWrite On
+        Blend Off
+		Tags{"LightMode" = "UniversalForward"}
         Pass
         {
             HLSLPROGRAM
@@ -18,21 +26,24 @@ Shader "Game/Unfinished/Liquid1"
             struct appdata
             {
                 float3 positionOS : POSITION;
-                float2 uv : TEXCOORD0;
-				UNITY_VERTEX_INPUT_INSTANCE_ID
+                float3 normalOS:NORMAL;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
             {
                 float4 positionCS : SV_POSITION;
-                float2 uv : TEXCOORD0;
+                float3 positionWS:TEXCOORD0;
+                float3 normalWS:TEXCOORD1;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
             INSTANCING_BUFFER_START
-                INSTANCING_PROP(float4,_Color)
-                INSTANCING_PROP(float4,_MainTex_ST)
+                INSTANCING_PROP(float,_NormalOffset)
+                INSTANCING_PROP(float4,_LiquidColor)
+                INSTANCING_PROP(float4,_FoamColor)
+                INSTANCING_PROP(float4,_SurfaceColor)
+                INSTANCING_PROP(float,_FoamWidth)
             INSTANCING_BUFFER_END
             
             v2f vert (appdata v)
@@ -40,15 +51,28 @@ Shader "Game/Unfinished/Liquid1"
                 v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-                o.positionCS = TransformObjectToHClip(v.positionOS);
-                o.uv = TRANSFORM_TEX_INSTANCE(v.uv, _MainTex);
+                float3 positionWS=TransformObjectToWorld(v.positionOS);
+                float3 normalWS=TransformObjectToWorldNormal(v.normalOS);
+                positionWS+=INSTANCE(_NormalOffset)*normalWS;
+                o.positionCS = TransformWorldToHClip(positionWS);
+                o.positionWS=positionWS;
+                o.normalWS=normalWS;
                 return o;
             }
 
-            float4 frag (v2f i) : SV_Target
+            float4 frag (v2f i,float facing:VFACE) : SV_Target
             {
 				UNITY_SETUP_INSTANCE_ID(i);
-                float3 finalCol=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb * INSTANCE(_Color).rgb;
+                float clipping=-i.positionWS.y;
+                float3 liquidCol= INSTANCE(_LiquidColor).rgb;
+                clip(clipping);
+
+                float3 viewDirWS=normalize(GetCameraPositionWS()-i.positionWS);
+                float3 normalWS=normalize(i.normalWS);
+                float ndv=pow5(1-dot(viewDirWS,normalWS));
+                liquidCol+=ndv;
+                float3 topCol= lerp(INSTANCE(_FoamColor).rgb,liquidCol,step(INSTANCE(_FoamWidth),clipping));
+                float3 finalCol=lerp(INSTANCE(_SurfaceColor).rgb,topCol,step(0,facing));
                 return float4(finalCol,1);
             }
             ENDHLSL

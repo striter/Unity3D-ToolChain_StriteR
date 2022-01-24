@@ -56,7 +56,7 @@ namespace Rendering.Pipeline
 
             bool cameraNormalTexture = m_NormalTexture;
             bool cameraReflectionTexture = m_CameraReflectionTexture;
-            if(renderingData.cameraData.camera.TryGetComponent(out SRC_PipelineAdditionalOverride param))
+            if(renderingData.cameraData.camera.TryGetComponent(out SRC_CameraBehaviour param))
             {
                 cameraNormalTexture = param.m_Normal.IsEnabled(cameraNormalTexture);
                 cameraReflectionTexture = param.m_Reflection.IsEnabled(cameraReflectionTexture);
@@ -74,8 +74,8 @@ namespace Rendering.Pipeline
 
         private readonly List<IPostProcessBehaviour> m_OpaqueProcessing = new List<IPostProcessBehaviour>();
         private readonly List<IPostProcessBehaviour> m_ScreenProcessing = new List<IPostProcessBehaviour>();
-        private SRC_PipelineAdditionalOverride m_PostProcessingPreview;
-        void EnqueuePostProcess(ScriptableRenderer _renderer,RenderingData _data,SRC_PipelineAdditionalOverride _override)
+        private SRC_CameraBehaviour m_PostProcessingPreview;
+        void EnqueuePostProcess(ScriptableRenderer _renderer,RenderingData _data,SRC_CameraBehaviour _override)
         {
             if (_data.postProcessingEnabled)
             {

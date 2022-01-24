@@ -104,7 +104,7 @@
 				float4 uv:TEXCOORD0;
 				float3 positionWS:TEXCOORD1;
 				float4 positionHCS:TEXCOORD2;
-				float3 normalWS:TEXCOORD3;
+				half3 normalWS:TEXCOORD3;
 				half3 tangentWS:TEXCOORD4;
 				half3 biTangentWS:TEXCOORD5;
 				FOG_COORD(7)

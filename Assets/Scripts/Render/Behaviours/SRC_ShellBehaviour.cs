@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Rendering.Pipeline
 {
     [ExecuteInEditMode,RequireComponent(typeof(MeshRenderer),typeof(MeshFilter))]
-    public class SRC_ShellController : MonoBehaviour
+    public class SRC_ShellBehaviour : MonoBehaviour
     {
         [Clamp(0,256)]public int m_ShellCount = 32;
         public Material m_ShellMaterial;

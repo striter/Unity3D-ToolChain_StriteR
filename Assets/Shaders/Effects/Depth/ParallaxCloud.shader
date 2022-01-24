@@ -24,7 +24,7 @@
         Pass
         {
             Blend Off
-            ZWrite Off
+            ZWrite On
             Cull Back
             HLSLPROGRAM
             #pragma vertex vert

@@ -84,6 +84,7 @@ half3 IndirectBRDFCubeSpecular(half3 reflectDir, float perceptualRoughness)
 half3 IndirectBRDFSpecular(float3 reflectDir, float perceptualRoughness, half4 positionHCS, half3 normalTS)
 {
     half3 specular = IndirectBRDFCubeSpecular(reflectDir, perceptualRoughness);
+    return specular;
     half4 indirectSpecular=IndirectSpecular(TransformHClipToNDC(positionHCS),RawToEyeDepth(positionHCS.z/positionHCS.w), normalTS);
     return lerp(specular,indirectSpecular.rgb,indirectSpecular.a);
 }
