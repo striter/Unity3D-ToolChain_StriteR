@@ -230,7 +230,6 @@ namespace Rendering.Pipeline
 
          protected virtual void OnCameraSetup(ScriptableRenderPass _pass,CommandBuffer _cmd, RenderTargetIdentifier _target,RenderTextureDescriptor _descriptor)
          {
-             
          }
 
          protected virtual void ConfigureColorDescriptor(ref RenderTextureDescriptor _descriptor,ref SRD_ReflectionData _data)
@@ -250,12 +249,9 @@ namespace Rendering.Pipeline
 
          public void Execute(ScriptableRenderPass _pass,ref SRD_ReflectionData _data,  ScriptableRenderContext _context,ref RenderingData _renderingData,CommandBuffer _cmd,PPCore_Blurs _blurs)
          {
-             var type = _data.m_Type.ToString()+m_Index;
-             _cmd.BeginSample(type);
              Execute(_pass,ref _data,_context,ref _renderingData,_cmd,ref m_Plane,ref m_ColorDescriptor,ref m_ColorTarget,ref m_Renderer);
              if(_data.m_EnableBlur)
                  _blurs.ExecutePostProcessBuffer(_cmd, m_ColorTarget, m_ReflectionTextureID, m_ColorDescriptor ,ref _data.m_BlurParam); 
-             _cmd.EndSample(type);
          }
 
          protected abstract void Execute(ScriptableRenderPass _pass, ref SRD_ReflectionData _data,
@@ -287,6 +283,14 @@ namespace Rendering.Pipeline
             m_Kernels = ((ComputeShader)m_ReflectionComputeShader).FindKernel("Generate");
             m_ThreadGroups = new Int2(_descriptor.width / 8, _descriptor.height / 8);
         }
+
+        protected override void OnCameraSetup(ScriptableRenderPass _pass, CommandBuffer _cmd, RenderTargetIdentifier _target,
+            RenderTextureDescriptor _descriptor)
+        {
+            base.OnCameraSetup(_pass, _cmd, _target, _descriptor);
+            _pass.ConfigureTarget(_target);
+        }
+
         protected override void Execute(ScriptableRenderPass _pass, ref SRD_ReflectionData _data, ScriptableRenderContext _context,
             ref RenderingData _renderingData, CommandBuffer _cmd, ref GPlane _plane, ref RenderTextureDescriptor _descriptor,
             ref RenderTargetIdentifier _target,ref ScriptableRenderer _renderer)
@@ -336,6 +340,7 @@ namespace Rendering.Pipeline
              depthDescriptor.depthBufferBits = 32;
              depthDescriptor.enableRandomWrite = false;
              _cmd.GetTemporaryRT(m_ReflectionDepth, depthDescriptor, FilterMode.Point);
+             _pass.ConfigureTarget(_target,m_ReflectionDepth);
          }
 
          public override void DoCameraCleanUp(ScriptableRenderPass _pass, ref SRD_ReflectionData _data, CommandBuffer cmd)

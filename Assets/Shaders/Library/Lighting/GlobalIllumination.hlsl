@@ -13,7 +13,7 @@ sampler2D _ScreenSpaceReflectionTexture;
 half4 IndirectSpecular(half2 screenUV,float eyeDepth, half3 normalTS)
 {
     screenUV += normalTS.xy * UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_PlanarReflection, _CameraReflectionNormalDistort)*rcp(eyeDepth);
-    half4 indirectSpecular=0;
+    half4 indirectSpecular = 0;
     [branch]
     if (UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_PlanarReflection, _CameraReflectionTextureOn) == 1)
     {
@@ -84,7 +84,6 @@ half3 IndirectBRDFCubeSpecular(half3 reflectDir, float perceptualRoughness)
 half3 IndirectBRDFSpecular(float3 reflectDir, float perceptualRoughness, half4 positionHCS, half3 normalTS)
 {
     half3 specular = IndirectBRDFCubeSpecular(reflectDir, perceptualRoughness);
-    return specular;
     half4 indirectSpecular=IndirectSpecular(TransformHClipToNDC(positionHCS),RawToEyeDepth(positionHCS.z/positionHCS.w), normalTS);
     return lerp(specular,indirectSpecular.rgb,indirectSpecular.a);
 }

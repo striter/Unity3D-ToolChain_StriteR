@@ -73,7 +73,7 @@ Material:
     - _NORMALSAMPLE: 0
     - _OcclusionStrength: 1
     - _OutlineSmoothFactor: 0
-    - _OutlineWidth: 0.014
+    - _OutlineWidth: 0.002
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

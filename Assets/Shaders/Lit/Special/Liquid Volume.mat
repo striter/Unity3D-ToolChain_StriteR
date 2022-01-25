@@ -7,9 +7,9 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Glass
-  m_Shader: {fileID: 4800000, guid: 384252ef09d1aa148b5f2f0574a80c81, type: 3}
-  m_ShaderKeywords: 
+  m_Name: Liquid Volume
+  m_Shader: {fileID: 4800000, guid: 966a28afbe7dd0a4ab3d4f789f8d106b, type: 3}
+  m_ShaderKeywords: _NORMALTEX
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -52,7 +52,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 1af8c9dba40d07841823c9aa75513739, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -86,10 +86,10 @@ Material:
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _ConnectionBegin: 0.1
-    - _ConnectionWidth: 0.1
     - _Cull: 2
     - _Cutoff: 0.5
+    - _DepthDistance: 0.07
+    - _DepthWidth: 0.23
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DistortStrength: 0.05
@@ -99,15 +99,15 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0
+    - _NormalOffset: -0.05
+    - _NormalStrength: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
-    - _SpecularGlossiness: 0.75
     - _SpecularHighlights: 1
-    - _SpecularStrength: 1
     - _SrcBlend: 1
     - _Surface: 0
     - _WorkflowMode: 1
@@ -115,8 +115,9 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _ColorTint: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorTint: {r: 0.83208466, g: 0.9254902, b: 0.317647, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _NormalFlow: {r: 0.05, g: 0.05, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &8185305271653397282

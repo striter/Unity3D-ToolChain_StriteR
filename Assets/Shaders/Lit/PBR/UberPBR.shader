@@ -278,7 +278,7 @@
             	#endif
 				FOG_MIX(i,finalCol);
 				finalCol+=surface.emission;
-				return half4(finalCol,1.h);
+				return half4(finalCol,color.a);
 			}
 			ENDHLSL
 		}

@@ -1,21 +1,21 @@
-Shader "Game/Unfinished/Glass"
+Shader "Game/Unfinished/LiquidVolume"
 {
     Properties
     {
         [ToggleTex(_NORMALTEX)]_NormalTex("Normal Tex",2D)="white"{}
+    	_NormalOffset("Normal Offset",Range(-1,1))=-.1
+    	_NormalStrength("Normal Strength",Range(0,1))=1
+    	_DepthDistance("Depth Distance",Range(0,1))=0.5
+    	_DepthWidth("Depth Width",Range(0,1))=0.1
+    	[Vector2]_NormalFlow("Distort Strength",Vector)=(0.05,0.05,1,1)
+        _ColorTint("Color Tint",Color)=(1,1,1,1)
     	_DistortStrength("Distort Strength",Range(0,0.1))=0.05
-    	_ConnectionBegin("Connection Begin",Range(0,1))=0.1
-    	_ConnectionWidth("Connection Width",Range(0,1))=0.1
-    	
-    	[Header(Specular)]
-        [HDR]_ColorTint("Color Tint",Color)=(1,1,1,1)
-    	_SpecularStrength("Specular Strength",Range(0,5))=1
-    	_SpecularGlossiness("Specular Glossiness",Range(0,1))=0.75
     }
     SubShader
     {
-        ZWrite On
-        Blend One One
+        ZWrite Off
+        Blend Off
+        Cull Back
         Pass
         {
             HLSLPROGRAM
@@ -49,14 +49,17 @@ Shader "Game/Unfinished/Glass"
             };
 
             TEXTURE2D(_NormalTex);SAMPLER(sampler_NormalTex);
+            TEXTURE2D(_CameraOpaqueTexture);SAMPLER(sampler_CameraOpaqueTexture);
             TEXTURE2D(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
             INSTANCING_BUFFER_START
+				INSTANCING_PROP(float,_NormalStrength)
+				INSTANCING_PROP(float,_NormalOffset)
                 INSTANCING_PROP(float4,_ColorTint)
                 INSTANCING_PROP(float4,_NormalTex_ST)
+				INSTANCING_PROP(float2,_NormalFlow)
 				INSTANCING_PROP(float,_DistortStrength)
-				INSTANCING_PROP(float,_SpecularGlossiness)
-				INSTANCING_PROP(float,_ConnectionBegin)
-            	INSTANCING_PROP(float,_ConnectionWidth)
+				INSTANCING_PROP(float,_DepthDistance)
+				INSTANCING_PROP(float,_DepthWidth)
             INSTANCING_BUFFER_END
             
             v2f vert (appdata v)
@@ -64,14 +67,18 @@ Shader "Game/Unfinished/Glass"
                 v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-                o.positionCS = TransformObjectToHClip(v.positionOS);
-                o.positionHCS=o.positionCS;
-                o.uv = TRANSFORM_TEX_INSTANCE(v.uv, _NormalTex);
-                o.positionWS=TransformObjectToWorld(v.positionOS);
 				o.normalWS=normalize(mul((float3x3)unity_ObjectToWorld,v.normalOS));
 				o.tangentWS=normalize(mul((float3x3)unity_ObjectToWorld,v.tangentOS.xyz));
 				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
+            	float3 positionWS=TransformObjectToWorld(v.positionOS);
+
+            	float wave=1 + (sin((_Time.y+v.positionOS.y*5)*PI)+1)*.5;
+            	positionWS+=o.normalWS*(INSTANCE(_NormalOffset)*wave);
+                o.positionWS=positionWS;
 				o.depthDistance=-TransformWorldToView(o.positionWS).z;
+                o.positionCS = TransformWorldToHClip(positionWS);
+                o.positionHCS=o.positionCS;
+                o.uv = TRANSFORM_TEX_INSTANCE(v.uv, _NormalTex)+INSTANCE(_NormalFlow)*_Time.y;
                 return o;
             }
 
@@ -85,31 +92,29 @@ Shader "Game/Unfinished/Glass"
             	float3 cameraDirWS=GetCameraRealDirectionWS(i.positionWS);
             	float3 viewDirWS=-cameraDirWS;
             	float3 reflectDirWS=normalize(reflect(cameraDirWS, normalWS));
-            	float3 lightDirWS=normalize(_MainLightPosition.xyz);
-            	float3 halfDirWS=normalize(lightDirWS+viewDirWS);
-            	float2 screenUV=TransformHClipToNDC(i.positionHCS)+normalTS.xy*INSTANCE(_DistortStrength)/i.depthDistance;
-            	float depthDistance=RawToDistance(SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).r,screenUV);
-				float depthOffset=depthDistance-i.depthDistance;
-            	float depthParameter=invlerp(INSTANCE(_ConnectionBegin)+INSTANCE(_ConnectionWidth),INSTANCE(_ConnectionBegin),depthOffset);
             	
 				#if _NORMALTEX
 					float3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
-					normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv));
+					normalTS=lerp(normalTS,DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv)),INSTANCE(_NormalStrength));
 					normalWS=normalize(mul(transpose(TBNWS), normalTS));
 				#endif
             	
+            	float2 screenUV=TransformHClipToNDC(i.positionHCS)+normalTS.xy*INSTANCE(_DistortStrength)/i.depthDistance;
+            	float depthDistance=RawToDistance(SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).r,screenUV);
+            	float depthOffset=depthDistance-i.depthDistance;
                 float ndv=dot(viewDirWS,normalWS);
-            	float fresnel=pow5(1-ndv)+saturate(depthParameter);
-                float3 indirectSpecular = IndirectBRDFCubeSpecular(reflectDirWS,0) * INSTANCE(_ColorTint.rgb);
             	
-            	float3 finalCol=indirectSpecular;
-				float alpha=saturate(fresnel);
+            	float3 opaqueCol=SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,screenUV);
             	
-				float specular= GetSpecular(normalWS,halfDirWS,INSTANCE(_SpecularGlossiness))*INSTANCE(_SpecularGlossiness);
-				finalCol +=_MainLightColor.rgb*specular;
-            	alpha +=saturate(specular);
+				float thickness=min(ndv,depthOffset);
+            	float thicknessParam=saturate(invlerp(INSTANCE(_DepthDistance),INSTANCE(_DepthDistance)+INSTANCE(_DepthWidth),thickness));
+            	float3 finalCol= lerp(opaqueCol,_ColorTint.rgb,_ColorTint.a*thicknessParam);
             	
-                return float4(finalCol*saturate(alpha),1);
+            	float fresnel=pow5(1-ndv);
+            	
+            	finalCol += _MainLightColor*_ColorTint.rgb*fresnel;
+            	
+                return float4(finalCol,1);
             }
             ENDHLSL
         }

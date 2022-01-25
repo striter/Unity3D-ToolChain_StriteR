@@ -67,7 +67,8 @@ Shader "Game/Unfinished/Liquid"
                 float3 liquidCol= INSTANCE(_LiquidColor).rgb;
                 clip(clipping);
 
-                float3 viewDirWS=normalize(GetCameraPositionWS()-i.positionWS);
+                float3 viewDirWS= normalize(GetCameraPositionWS()-i.positionWS);
+                
                 float3 normalWS=normalize(i.normalWS);
                 float ndv=pow5(1-dot(viewDirWS,normalWS));
                 liquidCol+=ndv;

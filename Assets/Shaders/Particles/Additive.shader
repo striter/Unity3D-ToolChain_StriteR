@@ -57,13 +57,10 @@ Shader "Game/Particles/Additive"
             float4 frag (v2f i) : SV_Target
             {
 				UNITY_SETUP_INSTANCE_ID(i);
-                float4 texSample=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
-                float3 albedo = texSample.rgb;
 
-                float4 color = i.color*INSTANCE(_Color);
-                albedo*= color.rgb;
+                float4 color =SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)* i.color*INSTANCE(_Color);
 
-                return float4(albedo*color.a,1);
+                return float4(color.rgb*color.a,1);
             }
             ENDHLSL
         }

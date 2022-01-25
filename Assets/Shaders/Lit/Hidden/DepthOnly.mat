@@ -23,6 +23,6 @@ Material:
     m_Floats:
     - _ColorMask: 15
     - _Cull: 2
-    - _ZTest: 2
+    - _ZTest: 4
     m_Colors: []
   m_BuildTextureStacks: []

@@ -11,6 +11,7 @@
     	
 		[Header(Stencil)]
 		_Stencil("Stencil ID", Float) = 0
+        [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
 		[Enum(UnityEngine.Rendering.CompareFunction)]_StencilComp("Stencil Comparison", Float) = 0
 		[Enum(UnityEngine.Rendering.StencilOp)]_StencilOp("Stencil Operation", Float) = 0
 		_StencilWriteMask("Stencil Write Mask", Float) = 255
@@ -31,8 +32,9 @@
 			}
         	
 		    Name "OutLine"
-            ZWrite On
+            ZWrite [_ZWrite]
 			Cull Front
+        	Blend SrcAlpha OneMinusSrcAlpha
         	
 			HLSLPROGRAM
 			#pragma vertex vert
