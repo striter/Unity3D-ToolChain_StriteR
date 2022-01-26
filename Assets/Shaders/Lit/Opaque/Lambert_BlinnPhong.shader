@@ -1,4 +1,4 @@
-Shader "Game/Unfinished/HalfLambert_BlinnPhong"
+Shader "Game/Unfinished/Lambert_BlinnPhong"
 {
     Properties
     {

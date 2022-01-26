@@ -54,7 +54,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _NoiseTex:
         m_Texture: {fileID: 2800000, guid: f124d1b11f0e2114fbe42bbc72e64b1d, type: 3}
-        m_Scale: {x: 2, y: 2}
+        m_Scale: {x: 4, y: 2}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
@@ -64,6 +64,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
@@ -77,10 +78,10 @@ Material:
     - _InstanceFrameInterpolate: 1
     - _Metallic: 0
     - _Mode: 0
-    - _NoiseFlowX: 0.1
+    - _NoiseFlowX: -2
     - _NoiseFlowY: 1
     - _NoisePow: 5
-    - _NoiseStrength: 1
+    - _NoiseStrength: 0.9
     - _OPTIMIZE: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
@@ -90,7 +91,7 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 15.104688, g: 8.496737, b: 5.9136276, a: 1}
+    - _Color: {r: 440.52353, g: 202.96371, b: 106.09467, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _NoiseFlow: {r: 0.1, g: 0.1, b: 0, a: 0}
   m_BuildTextureStacks: []

@@ -1,4 +1,4 @@
-﻿Shader "Game/Lit/Special/River"
+﻿Shader "Game/Lit/Transparency/River"
 {
     Properties
     {

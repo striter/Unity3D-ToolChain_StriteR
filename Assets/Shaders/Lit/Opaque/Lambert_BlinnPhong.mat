@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: HalfLambert_BlinnPhong
+  m_Name: Lambert_BlinnPhong
   m_Shader: {fileID: 4800000, guid: 2c7f3cd4e81136940a5a02e1409455e9, type: 3}
   m_ShaderKeywords: _BITANGENT _NORMALMAP
   m_LightmapFlags: 4

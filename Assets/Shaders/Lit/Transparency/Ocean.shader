@@ -1,4 +1,4 @@
-﻿Shader "Game/Lit/Special/Ocean"
+﻿Shader "Game/Lit/Transparency/Ocean"
 {
     Properties
     {
