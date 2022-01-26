@@ -22,7 +22,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: BoneFire
   m_Shader: {fileID: 4800000, guid: 623a8fafd99f201468235763d654b43a, type: 3}
-  m_ShaderKeywords: _ALPHACLIP _BILLBOARD
+  m_ShaderKeywords: _ALPHACLIP _DEPTHBUFFER _PARALLAX
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -72,6 +72,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _NormalTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -104,6 +108,10 @@ Material:
     m_Floats:
     - _AlphaClip: 1
     - _AlphaClipRange: 0.33
+    - _Atlas: 0
+    - _AtlasHeight: 0
+    - _AtlasIndex: 0
+    - _AtlasWidth: 0
     - _BillBoard: 1
     - _Blend: 0
     - _BumpScale: 1

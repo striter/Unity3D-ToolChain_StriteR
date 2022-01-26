@@ -1,4 +1,4 @@
-﻿Shader "Game/Lit/ShellPBR"
+﻿Shader "Game/Lit/PBR/ShellGrass"
 {
 	Properties
 	{

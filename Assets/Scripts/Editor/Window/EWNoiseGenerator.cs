@@ -40,11 +40,11 @@ namespace TEditor
             noiseY *= scale;
             switch (noiseType)
             {
-                case ENoiseType.Value: noise = UNoise.ValueUnit(Mathf.Floor(noiseX) , Mathf.Floor( noiseY) ); break;
-                case ENoiseType.Perlin: noise = UNoise.PerlinUnit( noiseX ,noiseY, 0); break;
-                case ENoiseType.Simplex: noise = UNoise.Simplex(noiseX , noiseY ); break;
-                case ENoiseType.VoronoiUnit: noise = UNoise.VoronoiUnit(noiseX, noiseY).y; break;
-                case ENoiseType.VoronoiDistance: noise = UNoise.VoronoiUnit(noiseX, noiseY).x;break;
+                case ENoiseType.Value: noise = UNoise.Value.Unit1f2(Mathf.Floor(noiseX) , Mathf.Floor( noiseY) ); break;
+                case ENoiseType.Perlin: noise = UNoise.Perlin.Unit1f3( noiseX ,noiseY, 0); break;
+                case ENoiseType.Simplex: noise = UNoise.Simplex.Unit1f2(noiseX , noiseY ); break;
+                case ENoiseType.VoronoiUnit: noise = UNoise.Voronoi.Unit2f2(noiseX, noiseY).y; break;
+                case ENoiseType.VoronoiDistance: noise = UNoise.Voronoi.Unit2f2(noiseX, noiseY).x;break;
             }
             return noise;
         }
