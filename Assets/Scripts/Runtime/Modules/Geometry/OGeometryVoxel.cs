@@ -161,6 +161,64 @@ namespace Geometry.Voxel
         }
         public static implicit operator GCone(GHeightCone _cone)=>new GCone(_cone.origin,_cone.normal,_cone.angle);
     }
+
+
+    [Serializable]
+    public struct GFrustum
+    {
+        public float fov;
+        public float aspect;
+        public float zNear;
+        public float zFar;
+        
+        public GFrustumPlanes GetFrustumPlanes(Vector3 _translate,Quaternion _rotation)
+        {
+            float an = fov * UMath.Deg2Rad;
+            float s = Mathf.Sin(an);
+            float c = Mathf.Cos(an);
+
+            Vector3 forward = _rotation * new Vector3(0f, 0f, 1f);
+            return new GFrustumPlanes()
+            {
+                left = new GPlane(_rotation * new Vector3(c, 0f, s * aspect), _translate),
+                right = new GPlane(_rotation * new Vector3(-c, 0f, s * aspect), _translate),
+                top = new GPlane(_rotation * new Vector3(0f, -c, s), _translate),
+                bottom = new GPlane(_rotation * new Vector3(0f, c, s), _translate),
+                far = new GPlane(forward, zFar*forward),
+                near = new GPlane(-forward, -zNear*forward),
+            };
+        }
+    }
+    public struct GFrustumPlanes
+    {
+        public GPlane left;
+        public GPlane right;
+        public GPlane near;
+        public GPlane far;
+        public GPlane top;
+        public GPlane bottom;
+    }
+
+    public struct GFrustumCorners
+    {
+        public Vector3 nearBottomLeft;
+        public Vector3 nearBottomRight;
+        public Vector3 nearTopRight;
+        public Vector3 nearTopLeft;
+        public Vector3 farBottomLeft;
+        public Vector3 farBottomRight;
+        public Vector3 farTopRight;
+        public Vector3 farTopLeft;
+    }
+
+    public struct GFrustumRays
+    {
+        public Vector3 bottomLeft;
+        public Vector3 bottomRight;
+        public Vector3 topRight;
+        public Vector3 topLeft;
+    }
+    
     #endregion
     
 }

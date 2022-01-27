@@ -8,6 +8,7 @@ public static class UMath
     public const float SQRT2 = 1.4142135623731f;
     public const float SQRT3 = 1.7320508075689f;
     public const float PI = 3.141593f;
+    public const float PI2 = PI * 2;
     public const float Deg2Rad = 0.017453292519943f;//PI / 180
     public const float Rad2Deg = 57.295779513082f ;//180f / PI;
     

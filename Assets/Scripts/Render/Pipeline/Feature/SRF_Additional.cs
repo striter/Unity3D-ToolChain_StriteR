@@ -127,7 +127,6 @@ namespace Rendering.Pipeline
             private static readonly int ID_FrustumCornersRayBR = Shader.PropertyToID("_FrustumCornersRayBR");
             private static readonly int ID_FrustumCornersRayTL = Shader.PropertyToID("_FrustumCornersRayTL");
             private static readonly int ID_FrustumCornersRayTR = Shader.PropertyToID("_FrustumCornersRayTR");
-            private static readonly int ID_FrustumCornerScaling = Shader.PropertyToID("_FrustumCornersScaling");
 
             private static readonly int ID_OrthoCameraDirection = Shader.PropertyToID("_OrthoCameraDirection");
             private static readonly int ID_OrthoCameraPositionBL = Shader.PropertyToID("_OrthoCameraPosBL");

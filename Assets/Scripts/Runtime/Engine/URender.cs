@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using Geometry.Polygon;
+using Geometry.Voxel;
 using UnityEngine.Rendering;
 
 public static class URender
@@ -249,6 +250,16 @@ public static class URender
         }
     }
 
+    public static GFrustum CalculatePerspectiveFrustum(this Camera _camera)
+    {
+        Quaternion rotation = _camera.transform.rotation;
+        
+        // GFrustum frustum=new GFrustum(_camera.fieldOfView,_camera.aspect,_camera.nearClipPlane,_camera.farClipPlane);
+
+        
+        return frustum;
+    }
+    
     public static void CalculatePerspectiveFrustumCorners(this Camera camera,out Vector3 tl,out Vector3 tr,out Vector3 bl,out Vector3 br)
     {
         float fov = camera.fieldOfView;

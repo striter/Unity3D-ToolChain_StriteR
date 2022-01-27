@@ -139,6 +139,14 @@ public static class UColor
     #endregion
 
 
+    public static Color Cos(Color _value)
+    {
+        return new Color(Mathf.Cos(_value.r), Mathf.Cos(_value.g), Mathf.Cos(_value.b), Mathf.Cos(_value.a));
+    }
+    public static Color Palette(Color _a, Color _b, Color _c, Color _d, float _value)
+    {
+        return _a + _b * Cos(UMath.PI2*(_c*_value+_d));
+    }
     public static Color IndexToColor(int _index)
     {
         switch (_index)
