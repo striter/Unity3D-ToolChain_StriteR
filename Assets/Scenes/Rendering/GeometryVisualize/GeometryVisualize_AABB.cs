@@ -30,7 +30,7 @@ namespace ExampleScenes.Rendering.GeometryVisualize
             }
 
             Gizmos.color = intersect ? Color.white:Color.grey;
-            Gizmos_Extend.DrawLine(m_Ray.ToLine(distances.x + distances.y)); 
+            Gizmos_Extend.DrawGizmos(m_Ray.ToLine(distances.x + distances.y)); 
         }
 #endif
     }

@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using System.Linq;
+using Geometry.Voxel;
 using Rendering.PostProcess;
 using UnityEngine.Rendering;
 
@@ -153,11 +154,11 @@ namespace Rendering.Pipeline
                 }
                 else
                 {
-                    camera.CalculatePerspectiveFrustumCorners(out var topLeft,out var topRight,out var bottomLeft,out var bottomRight);
-                    Shader.SetGlobalVector(ID_FrustumCornersRayBL, bottomLeft);
-                    Shader.SetGlobalVector(ID_FrustumCornersRayBR, bottomRight);
-                    Shader.SetGlobalVector(ID_FrustumCornersRayTL, topLeft);
-                    Shader.SetGlobalVector(ID_FrustumCornersRayTR, topRight);
+                    var rays = new GFrustum(camera).GetFrustumRays(camera.transform.position, camera.transform.rotation);
+                    Shader.SetGlobalVector(ID_FrustumCornersRayBL, rays.bottomLeft.direction);
+                    Shader.SetGlobalVector(ID_FrustumCornersRayBR, rays.bottomRight.direction);
+                    Shader.SetGlobalVector(ID_FrustumCornersRayTL, rays.topLeft.direction);
+                    Shader.SetGlobalVector(ID_FrustumCornersRayTR, rays.topRight.direction);
                 }
             
                 Matrix4x4 projection = GL.GetGPUProjectionMatrix(_renderingData.cameraData.GetProjectionMatrix(),_renderingData.cameraData.IsCameraProjectionMatrixFlipped());

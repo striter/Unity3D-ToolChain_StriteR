@@ -112,14 +112,12 @@ namespace Geometry.Voxel
         public Vector3 Min => center - extend;
         public Vector3 Max => center + extend;
         public GBox(Vector3 _center,Vector3 _extend) { center = _center;extend = _extend; }
-
-        public static GBox MinMax(Vector3 _min, Vector3 _max)
+        public static GBox GBoxCtor_MinMax(Vector3 _min, Vector3 _max)
         {
             Vector3 size = _max - _min;
             Vector3 extend = size / 2;
             return new GBox(_min+extend,extend);
         }
-        
         public void DrawGizmos()=>Gizmos.DrawWireCube(center,Size);
     }
 
@@ -129,9 +127,22 @@ namespace Geometry.Voxel
     {
         public Vector3 normal;
         public float distance;
-        public Vector3 Position => normal * distance;
-        public GPlane(Vector3 _normal, float _distance) { normal = _normal; distance = _distance; }
-        public GPlane(Vector3 _normal, Vector3 _position) : this(_normal, UGeometryIntersect.PointPlaneDistance(_position, new GPlane(_normal, 0))) { }
+        public Vector3 position;
+        public GPlane(Vector3 _normal, float _distance) 
+        { 
+            normal = _normal;
+            distance = _distance;
+            position = _normal * distance;
+        }
+
+        public GPlane(Vector3 _normal, Vector3 _position)
+        {
+            normal = _normal;
+            position = _position;
+            distance = UGeometryIntersect.PointPlaneDistance(_position, new GPlane(_normal, 0));
+        }
+        
+        public static implicit operator Vector4(GPlane _plane)=>_plane.normal.ToVector4(_plane.distance);
     }
     [Serializable]
     public struct GCone
@@ -166,59 +177,108 @@ namespace Geometry.Voxel
     [Serializable]
     public struct GFrustum
     {
-        public float fov;
+        [Clamp(0)]public float fov;
         public float aspect;
-        public float zNear;
-        public float zFar;
-        
-        public GFrustumPlanes GetFrustumPlanes(Vector3 _translate,Quaternion _rotation)
+        [Clamp(0)]public float zNear;
+        [Clamp(0)]public float zFar;
+        public GFrustum(Camera _camera)
         {
-            float an = fov * UMath.Deg2Rad;
+            fov = _camera.fieldOfView;
+            aspect = _camera.aspect;
+            zNear = _camera.nearClipPlane;
+            zFar = _camera.farClipPlane;
+        }
+        
+        public GFrustumPlanes GetFrustumPlanes()
+        {
+            float an = fov * .5f  * UMath.Deg2Rad;
             float s = Mathf.Sin(an);
             float c = Mathf.Cos(an);
+            float aspectC = c / aspect;
 
-            Vector3 forward = _rotation * new Vector3(0f, 0f, 1f);
-            return new GFrustumPlanes()
+            Vector3 forward = new Vector3(0f, 0f, 1f);
+            float centerDistance = zNear + (zFar-zNear)/2f;
+            return new GFrustumPlanes
             {
-                left = new GPlane(_rotation * new Vector3(c, 0f, s * aspect), _translate),
-                right = new GPlane(_rotation * new Vector3(-c, 0f, s * aspect), _translate),
-                top = new GPlane(_rotation * new Vector3(0f, -c, s), _translate),
-                bottom = new GPlane(_rotation * new Vector3(0f, c, s), _translate),
-                far = new GPlane(forward, zFar*forward),
-                near = new GPlane(-forward, -zNear*forward),
+                left = new GPlane( new Vector3(-aspectC , 0f,-s  ), new Vector3(-s,0f,aspectC).normalized*centerDistance),
+                right = new GPlane( new Vector3(aspectC, 0f, -s ), new Vector3(s,0f,aspectC).normalized*centerDistance),
+                top = new GPlane( new Vector3(0f, c, -s), new Vector3(0f,s,c).normalized*centerDistance),
+                bottom = new GPlane( new Vector3(0f, -c, -s), new Vector3(0f,-s,c).normalized*centerDistance),
+                near = new GPlane(-forward, -zNear),
+                far = new GPlane(forward, zFar),
+            };
+        }
+        public GFrustumRays GetFrustumRays(Vector3 _translate=default, Quaternion rotation=default)
+        {
+            float halfHeight = zNear * Mathf.Tan(fov * .5f * Mathf.Deg2Rad);
+            Vector3 forward = rotation*Vector3.forward;
+            Vector3 toRight = rotation*Vector3.right * halfHeight * aspect;
+            Vector3 toTop = rotation*Vector3.up * halfHeight;
+
+            Vector3 tl = forward * zNear + toTop - toRight;
+            float scale = tl.magnitude / zNear;
+            tl.Normalize();
+            tl *= scale;
+            Vector3 tr = forward * zNear + toTop + toRight;
+            tr.Normalize();
+            tr *= scale;
+            Vector3 bl = forward * zNear - toTop - toRight;
+            bl.Normalize();
+            bl *= scale;
+            Vector3 br = forward * zNear - toTop + toRight;
+            br.Normalize();
+            br *= scale;
+
+            return new GFrustumRays()
+            {
+                topLeft = new GRay(_translate+tl*zNear,tl),
+                topRight = new GRay(_translate+tr*zNear,tr),
+                bottomLeft =  new GRay(_translate+bl*zNear,bl) ,
+                bottomRight = new GRay(_translate+br*zNear,br),
+                farDistance=zFar-zNear
             };
         }
     }
-    public struct GFrustumPlanes
+    public struct GFrustumPlanes:IEnumerable<GPlane>
     {
         public GPlane left;
         public GPlane right;
-        public GPlane near;
-        public GPlane far;
         public GPlane top;
         public GPlane bottom;
+        public GPlane near;
+        public GPlane far;
+
+        public IEnumerator<GPlane> GetEnumerator()
+        {
+            yield return left;
+            yield return right;
+            yield return top;
+            yield return bottom;
+            yield return near;
+            yield return far;
+        }
+        
+        IEnumerator IEnumerable.GetEnumerator()=>GetEnumerator();
     }
 
-    public struct GFrustumCorners
+    public struct GFrustumRays:IEnumerable<GRay>
     {
-        public Vector3 nearBottomLeft;
-        public Vector3 nearBottomRight;
-        public Vector3 nearTopRight;
-        public Vector3 nearTopLeft;
-        public Vector3 farBottomLeft;
-        public Vector3 farBottomRight;
-        public Vector3 farTopRight;
-        public Vector3 farTopLeft;
-    }
+        public GRay bottomLeft;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+        public GRay bottomRight;
+        public GRay topRight;
+        public GRay topLeft;
+        public float farDistance;
 
-    public struct GFrustumRays
-    {
-        public Vector3 bottomLeft;
-        public Vector3 bottomRight;
-        public Vector3 topRight;
-        public Vector3 topLeft;
+        public IEnumerator<GRay> GetEnumerator()
+        {
+            yield return bottomLeft;
+            yield return bottomRight;
+            yield return topRight;
+            yield return topLeft;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()=> GetEnumerator();
     }
     
     #endregion
-    
 }

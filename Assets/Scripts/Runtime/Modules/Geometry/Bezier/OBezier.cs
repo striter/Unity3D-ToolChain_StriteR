@@ -24,13 +24,13 @@ namespace Geometry.Bezier
         {
             Vector3 min = Vector3.Min(source,destination);
             Vector3 max = Vector3.Max(source,destination);
-            GBox box = GBox.MinMax(min, max);
+            GBox box = GBox.GBoxCtor_MinMax(min, max);
             if (!box.IsPointInside(control))
             {
                 Vector3 t =  (source - control).div(source - 2 * control + destination).Clamp(Vector3.zero,Vector3.one);
                 Vector3 s = Vector3.one - t;
                 Vector3 q = s.mul(s).mul(source) + 2*s.mul(t).mul(control)+ t.mul(t).mul(destination);
-                box = GBox.MinMax(Vector3.Min(min,q),Vector3.Max(max,q));
+                box = GBox.GBoxCtor_MinMax(Vector3.Min(min,q),Vector3.Max(max,q));
             }
             return box;
         }
@@ -108,7 +108,7 @@ namespace Geometry.Bezier
                 }
             }
 
-            return GBox.MinMax(min, max);
+            return GBox.GBoxCtor_MinMax(min, max);
         }
         
 #if UNITY_EDITOR

@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Geometry.Voxel;
 using UnityEditor;
 using UnityEngine;
@@ -41,20 +42,7 @@ public static class Gizmos_Extend
         Handles.matrix = Gizmos.matrix;
         Handles_Extend.DrawTrapezium(_pos, _rot, trapeziumInfo);
     }
-    public static void DrawCone(GHeightCone _cone)
-    {
-        Handles.color = Gizmos.color;
-        Handles.matrix = Gizmos.matrix;
-        Handles_Extend.DrawCone(_cone);
-    }
-    public static void DrawLine(GLine _line)
-    {
-        Handles.color = Gizmos.color;
-        Handles.matrix = Gizmos.matrix;
-        Handles_Extend.DrawLine(_line);
-    }
-
-    public static void DrawLine(Vector3 _src, Vector3 _dest, float _normalizedLength)
+    public static void DrawLine(Vector3 _src, Vector3 _dest, float _normalizedLength=1f)
     {
         Gizmos.DrawLine(_src,(_src+(_dest-_src)*_normalizedLength));
     }
@@ -71,6 +59,8 @@ public static class Gizmos_Extend
         for(int i=0;i<count-1;i++)
             Gizmos.DrawLine(_convert(_points[i]),_convert(_points[i+1]));
     }
+    
+    public static void DrawLinesConcat(params Vector3[] _lines) => DrawLinesConcat(_lines.ToList());
     public static void DrawLinesConcat(IList<Vector3> _points)
     {
         int count = _points.Count;
@@ -85,6 +75,34 @@ public static class Gizmos_Extend
     }
 
 
+    public static void DrawGizmos(this GHeightCone _cone)
+    {
+        Handles.color = Gizmos.color;
+        Handles.matrix = Gizmos.matrix;
+        Handles_Extend.DrawCone(_cone);
+    }
+    public static void DrawGizmos(this GLine _line)
+    {
+        Handles.color = Gizmos.color;
+        Handles.matrix = Gizmos.matrix;
+        Handles_Extend.DrawLine(_line);
+    }
+
+    public static void DrawGizmos(this GFrustumRays _frustumRays)
+    {
+        Vector3 farBottomLeft = _frustumRays.bottomLeft.GetPoint(_frustumRays.farDistance);
+        Vector3 farBottomRight = _frustumRays.bottomRight.GetPoint(_frustumRays.farDistance);
+        Vector3 farTopLeft = _frustumRays.topLeft.GetPoint(_frustumRays.farDistance);
+        Vector3 farTopRight = _frustumRays.topRight.GetPoint(_frustumRays.farDistance);
+        
+        DrawLinesConcat(_frustumRays.bottomLeft.origin,_frustumRays.bottomRight.origin,_frustumRays.topRight.origin,_frustumRays.topLeft.origin);
+        DrawLine(farBottomLeft,_frustumRays.bottomLeft.origin);
+        DrawLine(farBottomRight,_frustumRays.bottomRight.origin);
+        DrawLine(farTopLeft,_frustumRays.topLeft.origin);
+        DrawLine(farTopRight,_frustumRays.topRight.origin);
+        DrawLinesConcat(farBottomLeft,farBottomRight,farTopRight,farTopLeft);
+    }
+    
     public static void DrawString(Vector3 positionLS,string text,float offset=.075f)
     {
         if (SceneView.currentDrawingSceneView == null)

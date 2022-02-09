@@ -10,7 +10,7 @@ public static class UColor
     public static Color ToColor(this Vector4 vector)=>new Color(vector.x,vector.y,vector.z,vector.w);
     //RGBA32
     public static readonly Vector4 m_RGBA32_MaxValue = Vector4.one * 255f;
-    public static Vector4 ToRGBA32(this Color color) => color.ToVector().Multiply(m_RGBA32_MaxValue);
+    public static Vector4 ToRGBA32(this Color color) => color.ToVector().mul(m_RGBA32_MaxValue);
     public static Color RGB32toColor(Vector3 rgb) => RGBA32toColor(rgb.x, rgb.y, rgb.z);
     public static Color RGBA32toColor(float r, float g, float b, float a = 255f) => RGBA32toColor(new Vector4(r, g, b, a));
     public static Color RGBA32toColor(Vector4 rgba) => rgba.div(m_RGBA32_MaxValue);
@@ -54,7 +54,7 @@ public static class UColor
     //HSVA
     public static readonly Vector4 m_HSV_MaxValue = new Vector4(360f, 100f, 100f, 255f);
     const float m_Hue_CellSize = 1f / 6f;
-    public static Vector4 ToHSVA(this Color color) => ToHSVA_Normalized(color).Multiply(m_HSV_MaxValue);
+    public static Vector4 ToHSVA(this Color color) => ToHSVA_Normalized(color).mul(m_HSV_MaxValue);
     public static Vector4 ToHSVA_Normalized(this Color color)
     {
         float cmax = Mathf.Max(color.r, Mathf.Max(color.g, color.b));

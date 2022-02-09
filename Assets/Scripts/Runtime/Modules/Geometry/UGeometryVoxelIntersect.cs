@@ -245,5 +245,29 @@ namespace Geometry.Voxel
         }
 
         #endregion
+        
+        #region Frustum
+
+        public static bool TestPlaneAABB(this GPlane _plane, GBox _box)
+        {
+            Vector3 c = _box.center;
+            Vector3 e = _box.extend.abs();
+
+            Vector3 n = _plane.normal;
+            float d = _plane.distance;
+            float r = Vector3.Dot(e,n.abs());
+            float s = Vector3.Dot(n, c) - d;
+            return s <= r;
+        }
+        public static bool FrustumAABBIntersection(this GFrustumPlanes _frustumPlanes,GBox _box)
+        {
+            foreach (var plane in _frustumPlanes)
+            {
+                if (!TestPlaneAABB(plane,_box)) 
+                    return false;
+            }
+            return true;
+        }
+        #endregion
     }
 }

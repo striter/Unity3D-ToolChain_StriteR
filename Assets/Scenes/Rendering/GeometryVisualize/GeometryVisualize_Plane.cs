@@ -30,8 +30,8 @@ namespace ExampleScenes.Rendering.GeometryVisualize
             }
 
             Gizmos.color = intersect? Color.white:Color.grey;
-            Gizmos_Extend.DrawLine(m_Ray.ToLine(rayDistance));
-            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.TRS(m_Plane.Position, Quaternion.LookRotation(Vector3.forward, m_Plane.normal), Vector3.one);
+            Gizmos_Extend.DrawGizmos(m_Ray.ToLine(rayDistance));
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.TRS(m_Plane.position, Quaternion.LookRotation(Vector3.forward, m_Plane.normal), Vector3.one);
             Gizmos.color = intersect ? Color.green : Color.grey;
             Gizmos_Extend.DrawArrow(Vector3.zero,Quaternion.LookRotation(Vector3.up), .3f, .1f);
             Gizmos.DrawWireCube(Vector3.zero, planeSize);

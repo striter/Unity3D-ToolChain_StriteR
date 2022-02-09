@@ -28,9 +28,9 @@ namespace ExampleScenes.Rendering.GeometryVisualize
                 Gizmos.DrawSphere(m_Ray.GetPoint(rayDistance), .1f);
                 Gizmos.color = Color.green;
             }
-            Gizmos_Extend.DrawCone(m_Data);
+            Gizmos_Extend.DrawGizmos(m_Data);
             Gizmos.color = Color.white;
-            Gizmos_Extend.DrawLine(m_Ray.ToLine(rayDistance));
+            Gizmos_Extend.DrawGizmos(m_Ray.ToLine(rayDistance));
         }
 #endif
     }

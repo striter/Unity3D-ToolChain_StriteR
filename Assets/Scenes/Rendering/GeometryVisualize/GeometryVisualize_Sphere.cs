@@ -32,7 +32,7 @@ namespace ExampleScenes.Rendering.GeometryVisualize
                 Gizmos.DrawSphere(m_Ray.GetPoint(distances.y), .1f);
             }
             Gizmos.color = Color.white;
-            Gizmos_Extend.DrawLine(m_Ray.ToLine(rayDistance));
+            Gizmos_Extend.DrawGizmos(m_Ray.ToLine(rayDistance));
         }
 #endif
     }

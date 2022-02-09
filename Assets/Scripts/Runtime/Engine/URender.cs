@@ -260,32 +260,6 @@ public static class URender
     //     return frustum;
     // }
     //
-    public static void CalculatePerspectiveFrustumCorners(this Camera camera,out Vector3 tl,out Vector3 tr,out Vector3 bl,out Vector3 br)
-    {
-        float fov = camera.fieldOfView;
-        float near = camera.nearClipPlane;
-        float aspect = camera.aspect;
-        float halfHeight = near * Mathf.Tan(fov * .5f * Mathf.Deg2Rad);
-        Transform cameraTrans = camera.transform;
-        Vector3 forward = cameraTrans.forward;
-        Vector3 toRight = cameraTrans.right * halfHeight * aspect;
-        Vector3 toTop = cameraTrans.up * halfHeight;
-            
-        tl = forward * near + toTop - toRight;
-        float scale = tl.magnitude / near;
-        tl.Normalize();
-        tl *= scale;
-        tr = forward * near + toTop + toRight;
-        tr.Normalize();
-        tr *= scale;
-        bl = forward * near - toTop - toRight;
-        bl.Normalize();
-        bl *= scale;
-        br = forward * near - toTop + toRight;
-        br.Normalize();
-        br *= scale;
-    }
-
     public static void CalculateOrthographicPositions(this Camera camera, out Vector3 tl, out Vector3 tr,out Vector3 bl, out Vector3 br)
     {
         float aspect = camera.aspect;
