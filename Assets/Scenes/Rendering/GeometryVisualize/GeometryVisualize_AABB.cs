@@ -9,14 +9,17 @@ namespace ExampleScenes.Rendering.GeometryVisualize
     {
         public GBox m_Box;
         public GRay m_Ray;
+
+        public GBox m_CollisionBox1;
+        public GBox m_CollisionBox2;
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
             bool intersect = UGeometryIntersect.RayAABBIntersect(m_Box,m_Ray);
             Gizmos.color = intersect ? Color.green : Color.grey;
-            Gizmos.DrawWireCube(m_Box.center,m_Box.Size);
-
+            m_Box.DrawGizmos();
+            
             Vector2 distances = UGeometryIntersect.RayAABBDistance(m_Box,m_Ray);
             if (distances.y > 0)
             {
@@ -29,8 +32,13 @@ namespace ExampleScenes.Rendering.GeometryVisualize
                 }
             }
 
+            Gizmos.color = m_Box.AABBIntersection(m_CollisionBox1) ? Color.green:Color.red;
+            m_CollisionBox1.DrawGizmos();
+            Gizmos.color = m_Box.AABBIntersection(m_CollisionBox2) ? Color.green:Color.red;
+            m_CollisionBox2.DrawGizmos();
+
             Gizmos.color = intersect ? Color.white:Color.grey;
-            Gizmos_Extend.DrawGizmos(m_Ray.ToLine(distances.x + distances.y)); 
+            m_Ray.ToLine(distances.x + distances.y).DrawGizmos(); 
         }
 #endif
     }

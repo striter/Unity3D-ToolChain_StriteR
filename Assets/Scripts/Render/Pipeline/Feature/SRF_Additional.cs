@@ -154,7 +154,7 @@ namespace Rendering.Pipeline
                 }
                 else
                 {
-                    var rays = new GFrustum(camera).GetFrustumRays(camera.transform.position, camera.transform.rotation);
+                    var rays = new GFrustum(camera).GetFrustumRays();
                     Shader.SetGlobalVector(ID_FrustumCornersRayBL, rays.bottomLeft.direction);
                     Shader.SetGlobalVector(ID_FrustumCornersRayBR, rays.bottomRight.direction);
                     Shader.SetGlobalVector(ID_FrustumCornersRayTL, rays.topLeft.direction);

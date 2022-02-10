@@ -59,6 +59,7 @@ namespace Geometry
         T V2 { get; }
     }
 
+    [Serializable]
     public struct Triangle<T>: ITriangle<T>,IEquatable<Triangle<T>>,IIterate<T> where T : struct
     {
         public T v0;

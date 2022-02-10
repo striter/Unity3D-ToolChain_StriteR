@@ -73,8 +73,6 @@ public static class Gizmos_Extend
         for(int i=0;i<count;i++)
             Gizmos.DrawLine(_convert(_points[i]),_convert(_points[(i+1)%count]));
     }
-
-
     public static void DrawGizmos(this GHeightCone _cone)
     {
         Handles.color = Gizmos.color;
@@ -88,19 +86,15 @@ public static class Gizmos_Extend
         Handles_Extend.DrawLine(_line);
     }
 
-    public static void DrawGizmos(this GFrustumRays _frustumRays)
+    public static void DrawGizmos(this GBox _box)=>Gizmos.DrawWireCube(_box.center,_box.size);
+    public static void DrawGizmos(this GFrustumPoints _frustumPoints)
     {
-        Vector3 farBottomLeft = _frustumRays.bottomLeft.GetPoint(_frustumRays.farDistance);
-        Vector3 farBottomRight = _frustumRays.bottomRight.GetPoint(_frustumRays.farDistance);
-        Vector3 farTopLeft = _frustumRays.topLeft.GetPoint(_frustumRays.farDistance);
-        Vector3 farTopRight = _frustumRays.topRight.GetPoint(_frustumRays.farDistance);
-        
-        DrawLinesConcat(_frustumRays.bottomLeft.origin,_frustumRays.bottomRight.origin,_frustumRays.topRight.origin,_frustumRays.topLeft.origin);
-        DrawLine(farBottomLeft,_frustumRays.bottomLeft.origin);
-        DrawLine(farBottomRight,_frustumRays.bottomRight.origin);
-        DrawLine(farTopLeft,_frustumRays.topLeft.origin);
-        DrawLine(farTopRight,_frustumRays.topRight.origin);
-        DrawLinesConcat(farBottomLeft,farBottomRight,farTopRight,farTopLeft);
+        DrawLinesConcat(_frustumPoints.nearBottomLeft,_frustumPoints.nearBottomRight,_frustumPoints.nearTopRight,_frustumPoints.nearTopLeft);
+        DrawLine(_frustumPoints.farBottomLeft,_frustumPoints.nearBottomLeft);
+        DrawLine(_frustumPoints.farBottomRight,_frustumPoints.nearBottomRight);
+        DrawLine(_frustumPoints.farTopLeft,_frustumPoints.nearTopLeft);
+        DrawLine(_frustumPoints.farTopRight,_frustumPoints.nearTopRight);
+        DrawLinesConcat(_frustumPoints.farBottomLeft,_frustumPoints.farBottomRight,_frustumPoints.farTopRight,_frustumPoints.farTopLeft);
     }
     
     public static void DrawString(Vector3 positionLS,string text,float offset=.075f)

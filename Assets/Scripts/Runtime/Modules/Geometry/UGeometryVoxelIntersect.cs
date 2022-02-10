@@ -186,8 +186,8 @@ namespace Geometry.Voxel
         static void RayAABBCalculate(GBox _box, GRay _ray, out Vector3 _tmin, out Vector3 _tmax)
         {
             Vector3 invRayDir = Vector3.one.div(_ray.direction);
-            Vector3 t0 = (_box.Min - _ray.origin).mul(invRayDir);
-            Vector3 t1 = (_box.Max - _ray.origin).mul(invRayDir);
+            Vector3 t0 = (_box.min - _ray.origin).mul(invRayDir);
+            Vector3 t1 = (_box.max - _ray.origin).mul(invRayDir);
             _tmin = Vector3.Min(t0, t1);
             _tmax = Vector3.Max(t0, t1);
         }
@@ -246,9 +246,8 @@ namespace Geometry.Voxel
 
         #endregion
         
-        #region Frustum
-
-        public static bool TestPlaneAABB(this GPlane _plane, GBox _box)
+        #region Plane
+        public static bool PlaneAABBIntersection(this GPlane _plane, GBox _box)
         {
             Vector3 c = _box.center;
             Vector3 e = _box.extend.abs();
@@ -259,13 +258,52 @@ namespace Geometry.Voxel
             float s = Vector3.Dot(n, c) - d;
             return s <= r;
         }
-        public static bool FrustumAABBIntersection(this GFrustumPlanes _frustumPlanes,GBox _box)
+
+        #endregion
+        
+        #region Axis Aligned Bounding Box
+
+        public static bool AABBIntersection(this GBox _src, GBox _dst)
         {
-            foreach (var plane in _frustumPlanes)
+            return (_src.min.x <= _dst.max.x && _src.max.x >= _dst.min.x) &&
+                   (_src.min.y <= _dst.max.y && _src.max.y >= _dst.min.y) &&
+                   (_src.min.z <= _dst.max.z && _src.max.z >= _dst.min.z);
+        }
+        
+        #endregion
+        
+        #region Frustum
+        public static bool FrustumPlaneAABBIntersection(this GFrustumPlanes _frustumPlanes,GBox _box)
+        {
+            for (int i = 0; i < _frustumPlanes.Length; i++)
             {
-                if (!TestPlaneAABB(plane,_box)) 
+                if (!PlaneAABBIntersection(_frustumPlanes[i],_box)) 
                     return false;
             }
+            return true;
+        }
+        
+        // static bool FrustumPointsAABBIntersection(this GFrustumPoints _frustumPoints, GBox _box)
+        // {
+        //     bool outside;
+        //     outside = true; for (int i = 0; i < 8; i++) outside &= _frustumPoints[i].x > _box.max.x; if(outside) return false;
+        //     outside = true; for (int i = 0; i < 8; i++) outside &= _frustumPoints[i].x < _box.min.x; if(outside) return false;
+        //     outside = true; for (int i = 0; i < 8; i++) outside &= _frustumPoints[i].y > _box.max.y; if(outside) return false;
+        //     outside = true; for (int i = 0; i < 8; i++) outside &= _frustumPoints[i].y < _box.min.y; if(outside) return false;
+        //     outside = true; for (int i = 0; i < 8; i++) outside &= _frustumPoints[i].z > _box.max.z; if(outside) return false;
+        //     outside = true; for (int i = 0; i < 8; i++) outside &= _frustumPoints[i].z < _box.min.z; if(outside) return false;
+        //     return true;
+        // }
+        
+        public static bool FrustumPlaneAABBIntersection(this GFrustumPlanes _frustumPlanes, GBox _box,
+            GFrustumPoints _frustumPoints)
+        {
+            if (!FrustumPlaneAABBIntersection(_frustumPlanes, _box))
+                return false;
+            
+            if (!_frustumPoints.bounding.AABBIntersection(_box))
+                return false;
+            
             return true;
         }
         #endregion

@@ -334,9 +334,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Triangle:
-    normal: {x: 0, y: 4, z: 0}
-    uOffset: {x: 1, y: 0, z: -2}
-    vOffset: {x: -2, y: 0, z: 0}
+    triangle:
+      v0: {x: 0, y: 0, z: 1}
+      v1: {x: 1, y: 0, z: -1}
+      v2: {x: -1, y: 0, z: -1}
   m_Ray:
     origin: {x: 0, y: 2, z: 0}
     direction: {x: -0.119525, y: -0.98790395, z: 0.09879038}
@@ -847,9 +848,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Triangle:
-    normal: {x: 0, y: 4, z: 0}
-    uOffset: {x: 1, y: 0, z: -2}
-    vOffset: {x: -2, y: 0, z: 0}
+    triangle:
+      v0: {x: 0, y: 0, z: 1}
+      v1: {x: 1, y: 0, z: -1}
+      v2: {x: -1, y: 0, z: -1}
   m_Ray:
     origin: {x: 0, y: -0.17, z: 0}
     direction: {x: -0.11952503, y: -0.98790395, z: 0.0987903}
@@ -1285,7 +1287,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1763637943}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.25, y: -0.61, z: -2.1}
+  m_LocalPosition: {x: 7.53, y: 0.51, z: -1.54}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1305,21 +1307,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Frustum:
+    origin: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0, w: 1}
     fov: 60
     aspect: 1.7
     zNear: 0.3
     zFar: 3.36
   m_DrawPlanes: 0
   m_DrawRays: 1
+  m_DrawBounding: 1
   m_IntersectionAABBs:
-  - center: {x: -0.85, y: -0.65, z: 0.22}
-    extend: {x: 0.7, y: 0.16, z: 0.29}
-  - center: {x: 0.77, y: -0.02, z: 2.1}
-    extend: {x: 0.57, y: 0.66, z: -0.41}
-  - center: {x: 3.94, y: 0.37, z: 0.42}
-    extend: {x: 1.6, y: 0.95, z: 1.03}
-  - center: {x: -3.52, y: 3.07, z: 2.43}
-    extend: {x: 1.6, y: 0.95, z: 1.03}
+  - center: {x: -1.72, y: -0.65, z: 0.69}
+    extend: {x: 0.7, y: 1.57, z: 0.29}
+  - center: {x: 4.98, y: -0.02, z: 3.64}
+    extend: {x: 1.68, y: 1.36, z: 0.41}
+  - center: {x: 1.99, y: 0.37, z: 0.42}
+    extend: {x: 0.7, y: 0.95, z: 1.03}
+  - center: {x: -1.97, y: 2.18, z: 2.59}
+    extend: {x: 0.48, y: 0.2, z: 0.95}
+  - center: {x: 0.08, y: 0.02, z: 2.2}
+    extend: {x: 0.48, y: 0.29, z: 0.48}
 --- !u!1 &1824406048
 GameObject:
   m_ObjectHideFlags: 0
@@ -1350,9 +1357,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Triangle:
-    normal: {x: 0, y: 4, z: 0}
-    uOffset: {x: 1, y: 0, z: -2}
-    vOffset: {x: -2, y: 0, z: 0}
+    triangle:
+      v0: {x: 0, y: 0, z: 1}
+      v1: {x: 1, y: 0, z: -1}
+      v2: {x: -1, y: 0, z: -1}
   m_Ray:
     origin: {x: 0.21, y: -0.31, z: 0}
     direction: {x: -0.37560293, y: 0.54810876, z: 0.74732804}
@@ -1384,7 +1392,7 @@ GameObject:
   - component: {fileID: 1899185938}
   - component: {fileID: 1899185939}
   m_Layer: 0
-  m_Name: AABBRayCollision
+  m_Name: AABB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1398,7 +1406,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1899185937}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.111412, y: 0, z: 0}
+  m_LocalPosition: {x: 3.08, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1423,3 +1431,9 @@ MonoBehaviour:
   m_Ray:
     origin: {x: 0.71147275, y: -0.081962764, z: -1.448267}
     direction: {x: -0.33242807, y: 0.23028132, z: 0.914583}
+  m_CollisionBox1:
+    center: {x: -0.69, y: 0, z: 0}
+    extend: {x: 0.2, y: 0.2, z: 0.2}
+  m_CollisionBox2:
+    center: {x: -0.91, y: 0, z: 0}
+    extend: {x: 0.2, y: 0.2, z: 0.2}
