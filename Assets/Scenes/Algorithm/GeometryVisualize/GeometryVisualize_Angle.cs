@@ -5,7 +5,7 @@ using Geometry.Voxel;
 using UnityEditor;
 using UnityEngine;
 
-namespace ExampleScenes.Rendering.GeometryVisualize
+namespace ExampleScenes.Algorithm.Geometry
 {
     #if UNITY_EDITOR
     using TEditor;

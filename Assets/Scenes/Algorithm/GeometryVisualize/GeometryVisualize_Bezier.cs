@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Geometry.Bezier;
 using UnityEngine;
 
-namespace ExampleScenes.Rendering.GeometryVisualize
+namespace ExampleScenes.Algorithm.Geometry
 {
     public class GeometryVisualize_Bezier : MonoBehaviour
     {

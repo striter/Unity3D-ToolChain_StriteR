@@ -1,113 +1,62 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace TTouchTracker
 {
-    public class TrackData
+    public struct TrackData
     {
-        public int m_Index { get; private set; }
-        public float m_Lifetime { get; private set; }
-        public Vector2 m_Start { get; private set; }
-        public Vector2 m_Current { get;private set; }
-        public Vector2 m_Previous { get; private set; }
-        public Vector2 m_Delta { get; private set; }
-        public TouchPhase m_Phase { get; private set; }
-        public float m_PhaseTime { get; private set; }
-        public TrackData(Touch _touch)
+        public int index;
+        public Vector2 origin;
+        public float lifeTime;
+        public Vector2 current;
+        public Vector2 previous;
+        public Vector2 delta;
+        public TouchPhase phase;
+        public float phaseDuration;
+        public Vector2 originNormalized;
+        public Vector2 previousNormalized;
+        public Vector2 currentNormalized;
+        public Vector2 deltaNormalized;
+        public TrackData(Touch _touch,Vector2 _screenSize)
         {
-            m_Index = _touch.fingerId;
-            m_Start = _touch.position;
-            m_Current = m_Start;
-            m_Previous = m_Current;
-            m_Delta = Vector2.zero;
-            m_Lifetime = 0f;
-            m_Phase = _touch.phase;
+            index = _touch.fingerId;
+            origin = _touch.position;
+            
+            current = origin;
+            previous = current;
+            delta = Vector2.zero;
+            lifeTime = 0f;
+            phase = _touch.phase;
+            phaseDuration = 0f;
+            
+            originNormalized = origin / _screenSize;
+            currentNormalized = originNormalized;
+            previousNormalized = originNormalized;
+            deltaNormalized = Vector2.zero;
         }
 
-        public void Record(Touch _touch,float _deltaTime)
+        public TrackData Record(Touch _touch,Vector2 _screenSize, float _deltaTime)
         {
-            m_Lifetime += _deltaTime;
-            m_Previous = m_Current;
-            m_Current = _touch.position;
-            m_Delta = m_Current - m_Previous;
-            
-            if (m_Phase == _touch.phase)
-                m_PhaseTime += _deltaTime;
+            lifeTime += _deltaTime;
+            previous = current;
+            current = _touch.position;
+            delta = current - previous;
+                
+            if (phase == _touch.phase)
+                phaseDuration += _deltaTime;
             else
-                m_PhaseTime = 0f;
-            m_Phase = _touch.phase;
+                phaseDuration = 0f;
+            phase = _touch.phase;
+
+            previousNormalized = currentNormalized;
+            currentNormalized = current /_screenSize;
+            deltaNormalized = delta / _screenSize;
+            return this;
         }
     }
     
-    public static class TouchTracker_Helper
-    {
-        public static Vector2 CombinedDrag(this List<TrackData> _tracks)=> _tracks.Average(p => p.m_Delta);
-        public static float CombinedPinch(this List<TrackData> _tracks)
-        {
-            if (_tracks.Count<2)
-                return 0f;
-
-            Vector2 center = _tracks.Average(p => p.m_Current);
-            var beginDelta = _tracks[0].m_Delta;
-            return _tracks.Average(p =>
-            {
-                float sign=Mathf.Sign( Vector2.Dot( p.m_Delta,center-p.m_Previous));
-                return (beginDelta-p.m_Delta).magnitude*sign;
-            });
-        }
-
-        public static IEnumerable<Vector2> ResolveClicks(this List<TrackData> _tracks,float _clickSenseTime=.1f)
-        {
-            return _tracks.Collect(p => p.m_Phase == TouchPhase.Ended && p.m_Lifetime < _clickSenseTime).Select(p=>p.m_Start);
-        }
-        public static IEnumerable<TrackData> ResolvePress(this List<TrackData> _tracks)
-        {
-            return _tracks.Collect(p => p.m_Phase == TouchPhase.Stationary);
-        }
-        
-        public static IEnumerable<Vector2> ResolveTouch(this List<TrackData> _tracks, float _senseTime=.3f, TouchPhase tp = TouchPhase.Stationary)
-        {
-            return _tracks.Collect(p => p.m_Phase == tp && p.m_Lifetime > _senseTime).Select(p=>p.m_Start);
-        }
-
-        private static int hDragID=-1;
-        private static Vector2 hLastDrag = Vector2.zero;
-        public static void ResolveSingleDrag(this List<TrackData> _tracks,Action<Vector2,bool> _onDragStatus,Action<Vector2> _onDrag,float _senseTime=.1f,bool _removeTacker=true)
-        {
-            if (hDragID == -1)
-            {
-                if (_tracks.Count != 1)
-                    return;
-                var dragTrack = _tracks[0];
-                if (dragTrack.m_Phase != TouchPhase.Stationary&&dragTrack.m_Phase!=TouchPhase.Moved)
-                    return;
-                if (dragTrack.m_PhaseTime < _senseTime)
-                    return;
-                    
-                hDragID = dragTrack.m_Index;
-                hLastDrag = dragTrack.m_Current;
-                _onDragStatus(dragTrack.m_Current, true);
-                return;
-            }
-
-            if (!_tracks.TryFind(p => p.m_Index == hDragID, out var dragging))
-            {
-                hDragID = -1;
-                hLastDrag = Vector2.zero;
-                _onDragStatus?.Invoke(hLastDrag, false);
-                return;
-            }
-
-            if (_removeTacker)
-                _tracks.Remove(dragging);
-            hLastDrag = dragging.m_Current;
-            _onDrag?.Invoke(hLastDrag);
-        }
-    }
-
     public static class TouchTracker
     {
         static readonly Dictionary<int,TrackData> m_TrackData=new Dictionary<int, TrackData>();
@@ -116,24 +65,24 @@ namespace TTouchTracker
 #if UNITY_EDITOR
             List<Touch> simulateTouches = new List<Touch>();
 
-            Func<int, bool, Vector2, TouchPhase> getPhase = (id, pressing, position2) =>
+            TouchPhase GETPhase(int id, bool pressing, Vector2 position2)
             {
                 if (pressing)
                     if (m_TrackData.ContainsKey(id))
-                        return m_TrackData[id].m_Current == position2 ? TouchPhase.Stationary : TouchPhase.Moved;
+                        return m_TrackData[id].current == position2 ? TouchPhase.Stationary : TouchPhase.Moved;
                     else
                         return TouchPhase.Began;
 
-                if (m_TrackData.ContainsKey(id))
-                    return TouchPhase.Ended;
+                if (m_TrackData.ContainsKey(id)) return TouchPhase.Ended;
 
                 return TouchPhase.Canceled;
-            };
+            }
+
             Vector2 position = Input.mousePosition;
             //LRM Mouse Button 0,1,2
             for (int index = 0; index < 3; index++)
             {
-                TouchPhase phase = getPhase(index, Input.GetMouseButton(index), position);
+                TouchPhase phase = GETPhase(index, Input.GetMouseButton(index), position);
                 if(phase== TouchPhase.Canceled)
                     continue;
                 simulateTouches.Add(new Touch(){fingerId = index,phase=phase,position = position});
@@ -141,7 +90,7 @@ namespace TTouchTracker
 
             //LeftCtrl Touches 3
             {
-                TouchPhase phase = getPhase(3, Input.GetKey(KeyCode.LeftControl), position);
+                TouchPhase phase = GETPhase(3, Input.GetKey(KeyCode.LeftControl), position);
                 if (phase != TouchPhase.Canceled)
                 {
                     simulateTouches.Add(new Touch(){fingerId = 3,phase=phase,position =position});
@@ -159,7 +108,8 @@ namespace TTouchTracker
         private static readonly List<TrackData> kTracks = new List<TrackData>();
         public static List<TrackData> Execute(float _unscaledDeltaTime)
         {
-            foreach (var trackIndex in m_TrackData.Keys.Collect(p => m_TrackData[p].m_Phase == TouchPhase.Ended||m_TrackData[p].m_Phase== TouchPhase.Canceled).ToArray())
+            Vector2 screenSize = new Vector2(Screen.width, Screen.height);
+            foreach (var trackIndex in m_TrackData.Keys.Collect(p => m_TrackData[p].phase == TouchPhase.Ended||m_TrackData[p].phase== TouchPhase.Canceled).ToArray())
                 m_TrackData.Remove(trackIndex);
             
             foreach (Touch touch in GetTouches())
@@ -168,13 +118,13 @@ namespace TTouchTracker
                 switch (touch.phase)
                 {
                     case TouchPhase.Began:
-                        m_TrackData.Add(id,new TrackData(touch));
+                        m_TrackData.Add(id,new TrackData(touch,screenSize));
                         break;
                     case TouchPhase.Stationary:
                     case TouchPhase.Moved:
                     case TouchPhase.Canceled:
                     case TouchPhase.Ended:
-                        m_TrackData[id].Record(touch,_unscaledDeltaTime);
+                        m_TrackData[id]=m_TrackData[id].Record(touch,screenSize,_unscaledDeltaTime);
                         break;
                 }
             }
@@ -188,11 +138,117 @@ namespace TTouchTracker
         {
             foreach (TrackData trackPosition in m_TrackData.Values)
             {
-                Rect screenRect = new Rect(trackPosition.m_Current, Vector2.one * 60f);
+                Rect screenRect = new Rect(trackPosition.current, Vector2.one * 60f);
                 screenRect.y = Screen.height - screenRect.y;
                 GUI.DrawTexture(screenRect,m_GUITexture );   
             }
         }
         #endif
     }
+    
+    
+    public static class TouchTracker_Extension
+    {
+        public static IEnumerable<Vector2> ResolveClicks(this List<TrackData> _tracks,float _clickSenseTime=.1f)=>_tracks.Collect(p => p.phase == TouchPhase.Ended && p.lifeTime < _clickSenseTime).Select(p=>p.origin);
+        public static IEnumerable<TrackData> ResolvePress(this List<TrackData> _tracks)=>_tracks.Collect(p => p.phase == TouchPhase.Stationary);
+        public static IEnumerable<Vector2> ResolveTouch(this List<TrackData> _tracks, float _senseTime=.3f, TouchPhase tp = TouchPhase.Stationary)=>_tracks.Collect(p => p.phase == tp && p.lifeTime > _senseTime).Select(p=>p.origin);
+
+        public static Vector2 CombinedDrag(this List<TrackData> _tracks)=> _tracks.Average(p => p.delta);
+        public static float CombinedPinch(this List<TrackData> _tracks)
+        {
+            if (_tracks.Count<2)
+                return 0f;
+
+            Vector2 center = _tracks.Average(p => p.current);
+            var beginDelta = _tracks[0].delta;
+            return _tracks.Average(p =>
+            {
+                float sign=Mathf.Sign( Vector2.Dot( p.delta,center-p.previous));
+                return (beginDelta-p.delta).magnitude*sign;
+            });
+        }
+
+
+    }
+
+    public static class TouchTracker_Extension_Advanced
+    {
+        #region Joystick
+
+        public static Vector2 Input_ScreenDelta(this List<TrackData> _tracks, RangeFloat _xActive)=> _tracks.Collect(p=>_xActive.InRange( p.originNormalized.x)).Average(p=>p.delta);
+        private static int m_JoystickID = -1;
+        private static Vector2 m_JoystickStationaryPos = Vector2.zero;
+        public static void Joystick_Stationary(this List<TrackData> _trackData,Action<Vector2,bool> _onJoyStickSet,Action<Vector2> _normalizedTrackDelta,RangeFloat _activeXRange,float _joystickRadius,bool _removeTracker=true)
+        {
+            if (m_JoystickID == -1)
+            {
+                foreach (var track in _trackData)
+                {
+                    if (track.phase != TouchPhase.Began || !_activeXRange.InRange(track.originNormalized.x))
+                        continue;
+
+                    m_JoystickID = track.index;
+                    m_JoystickStationaryPos = track.origin;
+                    _onJoyStickSet?.Invoke(m_JoystickStationaryPos,true);
+                    break;
+                }
+            }
+
+            if (m_JoystickID == -1)
+                return;
+
+            if (!_trackData.TryFind(p => p.index == m_JoystickID,out var trackData))
+            {
+                _onJoyStickSet?.Invoke(m_JoystickStationaryPos,false);
+                m_JoystickID = -1;
+                m_JoystickStationaryPos = Vector2.zero;
+                return;
+            }
+
+            Vector2 joystickDelta = trackData.current - trackData.origin;
+            Vector2 direction = joystickDelta.normalized;
+            float magnitude=Mathf.Clamp01(joystickDelta.magnitude/_joystickRadius);
+            _normalizedTrackDelta?.Invoke(direction*magnitude);
+            if (_removeTracker)
+                _trackData.Remove(trackData);
+        }
+        #endregion
+        
+        #region Single Drag
+        private static int m_DragID=-1;
+        private static Vector2 m_LastDrag = Vector2.zero;
+        public static void Input_SingleDrag(this List<TrackData> _tracks,Action<Vector2,bool> _onDragStatus,Action<Vector2> _onDrag,float _senseTime=.1f,bool _removeTacker=true)
+        {
+            if (m_DragID == -1)
+            {
+                if (_tracks.Count != 1)
+                    return;
+                var dragTrack = _tracks[0];
+                if (dragTrack.phase != TouchPhase.Stationary&&dragTrack.phase!=TouchPhase.Moved)
+                    return;
+                if (dragTrack.phaseDuration < _senseTime)
+                    return;
+                    
+                m_DragID = dragTrack.index;
+                m_LastDrag = dragTrack.current;
+                _onDragStatus(dragTrack.current, true);
+                return;
+            }
+
+            if (!_tracks.TryFind(p => p.index == m_DragID, out var dragging))
+            {
+                m_DragID = -1;
+                m_LastDrag = Vector2.zero;
+                _onDragStatus?.Invoke(m_LastDrag, false);
+                return;
+            }
+
+            if (_removeTacker)
+                _tracks.Remove(dragging);
+            m_LastDrag = dragging.current;
+            _onDrag?.Invoke(m_LastDrag);
+        }
+        #endregion
+    }
+
 }

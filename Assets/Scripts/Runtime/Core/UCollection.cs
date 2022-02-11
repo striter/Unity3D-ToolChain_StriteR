@@ -284,28 +284,39 @@ public static class UCollection
                 _dst[index++] = element;
             }
             return index;
-        }
-        public static Vector2 Average<T>(this IEnumerable<T> _collection, Func<T, Vector2> _OnEachElement)      //To Be Continued With Demical
+        }        
+        public static (Vector2 total,int count) Sum(this IEnumerable<Vector2> _collection)      //To Be Continued With Demical
         {
             Vector2 sum = Vector2.zero;
-            int index = 0;
-            foreach (var element in _collection)
-            {
-                sum += _OnEachElement(element);
-                index++;
-            }
-            return index==0?Vector2.zero:sum / index;
-        }
-        public static Vector2 Average(this IEnumerable<Vector2> _collection)      //To Be Continued With Demical
-        {
-            Vector2 sum = Vector3.zero;
-            int index = 0;
+            int count = 0;
             foreach (var element in _collection)
             {
                 sum += element;
-                index++;
+                count += 1;
             }
-            return index==0?Vector2.zero:sum / index;
+            return (sum, count);
+        }
+        public static (Vector2 value, int count) Sum<T>(this IEnumerable<T> _collection, Func<T, Vector2> _OnEachElement)      //To Be Continued With Demical
+        {
+            Vector2 sum = Vector2.zero;
+            int count = 0;
+            foreach (var element in _collection)
+            {
+                sum += _OnEachElement(element);
+                count += 1;
+            }
+            return (sum, count);
+        }
+
+        public static Vector2 Average<T>(this IEnumerable<T> _collection, Func<T, Vector2> _OnEachElement)      //To Be Continued With Demical
+        {
+            var tuple = _collection.Sum(_OnEachElement);
+            return tuple.value / Mathf.Max(tuple.count,1);
+        }
+        public static Vector2 Average(this IEnumerable<Vector2> _collection)      //To Be Continued With Demical
+        {
+            var tuple = _collection.Sum();
+            return tuple.total / Mathf.Max(tuple.count,1);
         }
 
         public static Vector3 Average(this IEnumerable<Vector3> _collection)      //To Be Continued With Demical
@@ -320,6 +331,22 @@ public static class UCollection
             return index==0?Vector3.zero:sum / index;
         }
         
+        public static T Closest<T>(this IEnumerable<T> _collection,Vector3 _targetPoint,Func<T,Vector3> _onEachElement)
+        {
+            T target = default;
+            float maxSQRdst = float.MaxValue;
+            foreach (var element in _collection)
+            {
+                var pos = _onEachElement(element);
+                float sqrDst = (_targetPoint - pos).sqrMagnitude;
+                if (maxSQRdst > sqrDst)
+                {
+                    maxSQRdst = sqrDst;
+                    target = element;
+                }
+            }
+            return target;
+        }
     #endregion
     #region Array
     public static IEnumerable<object> GetEnumerable(this Array _array)

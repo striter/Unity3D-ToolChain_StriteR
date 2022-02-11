@@ -177,9 +177,10 @@ namespace TPool
     public interface IPoolCallback<T>
     {
         void OnPoolInit(Action<T> _DoRecycle);
-        void OnPoolSpawn(T identity);
+        void OnPoolSpawn(T _identity);
         void OnPoolRecycle();
     }
+    
     public abstract class AObjectPool<T,Y>:IEnumerable<Y>
     {
         public readonly Dictionary<T, Y> m_Dic = new Dictionary<T, Y>();
@@ -331,7 +332,7 @@ namespace TPool
             Transform = _transform;
         }
         public virtual void OnPoolInit(Action<T> _DoRecycle)=>this.DoRecycle = _DoRecycle;
-        public virtual void OnPoolSpawn(T identity)=> m_Identity = identity;
+        public virtual void OnPoolSpawn(T _identity)=> m_Identity = _identity;
         public virtual void OnPoolRecycle()=>m_Identity = default;
         public void Recycle()=>DoRecycle(m_Identity);
     }
@@ -371,9 +372,9 @@ namespace TPool
             m_Recycled = true;
         }
 
-        public virtual void OnPoolSpawn(T identity)
+        public virtual void OnPoolSpawn(T _identity)
         {
-            m_PoolID = identity;
+            m_PoolID = _identity;
             m_Recycled = false;
         }
 

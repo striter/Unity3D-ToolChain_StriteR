@@ -20,7 +20,7 @@ public partial class UIT_TouchConsole :MonoBehaviour, IPartialMethods<EPartialMe
     {
         CommandConsole,
         LogPanel,
-        Miscs,
+        Misc,
     }
     
     public TouchConsoleSaveData m_Data = new TouchConsoleSaveData();
