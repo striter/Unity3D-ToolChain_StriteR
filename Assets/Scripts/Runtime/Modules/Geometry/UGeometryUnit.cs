@@ -226,11 +226,14 @@ namespace Geometry
             switch (_rotateIndex)
             {
                 default: throw new IndexOutOfRangeException();
+                case 0: return _quad;
                 case 1: return new Quad<T>(r,b,l,f);
                 case 2: return new Quad<T>(f,r,b,l);
                 case 3: return new Quad<T>(l,f,r,b);
             }
         }
+
+        public static Quad<T> MirrorLR<T>(this Quad<T> _quad) => new Quad<T>(_quad.vB,_quad.vR,_quad.vF,_quad.vL);
         
         public static void SetByteElement(ref this Quad<bool> _qube, byte _byte)
         {
@@ -450,8 +453,13 @@ namespace Geometry
             var down = quads._downQuad.RotateYawCW(_90DegMult);
             return new Qube<T>(down,top);
         }
+
+        public static Qube<T> MirrorLR<T>(this Qube<T> _qube) where T:struct
+        {
+            var quads = _qube.SplitTopDownQuads<T>();
+            return new Qube<T>(quads._downQuad.MirrorLR(),quads._topQuad.MirrorLR());
+        }
         
-            
         public static Qube<byte> SplitByteQubes(this Qube<bool> _qube)
         {
             Qube<bool>[] splitQubes = new Qube<bool>[8];

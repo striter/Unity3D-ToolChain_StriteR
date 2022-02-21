@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Geometry;
 using Geometry.Voxel;
-using TPool;
 using TPoolStatic;
 using TTouchTracker;
-using Unity.Mathematics;
 using UnityEngine;
 using TDataPersistent;
+using UnityEngine.SocialPlatforms;
 
 namespace ExampleScenes.Algorithm.MarchingCube
 {
@@ -17,6 +16,7 @@ namespace ExampleScenes.Algorithm.MarchingCube
         public Int3 m_Size;
         public Mesh[] m_Meshes;
 
+        public bool m_DrawAllCubeElements;
         private Mesh m_Mesh;
         private MeshFilter m_MeshFilter;
         private MeshCollider m_MeshCollider;
@@ -27,7 +27,7 @@ namespace ExampleScenes.Algorithm.MarchingCube
         private readonly Dictionary<Int3, Cube> m_CubePool = new Dictionary<Int3, Cube>();
         private readonly Dictionary<byte, MarchingCubeMesh> m_CubeMeshes = new Dictionary<byte, MarchingCubeMesh>();
 
-        private MarchingCubePersistent m_Persistent = new MarchingCubePersistent();
+        private readonly MarchingCubePersistent m_Persistent = new MarchingCubePersistent();
         protected override void Awake()
         {
             base.Awake();
@@ -99,6 +99,7 @@ namespace ExampleScenes.Algorithm.MarchingCube
             m_Actor.Tick(deltaTime);
         }
 
+        private readonly Vector3 kMirrorMultiplier = new Vector3(-1, 1, -1);
         void Refresh()
         {
             m_Mesh.Clear();
@@ -113,7 +114,7 @@ namespace ExampleScenes.Algorithm.MarchingCube
                 cube.Refresh(m_GridPool);
 
                 var srcByte = cube.m_GridAvailable.ToByte();
-                if (!MarchingCubeDefines.GetOrientedModule(srcByte,out var module,out var orientation))
+                if ( !MarchingCubeDefines.GetOrientedModule(srcByte,out var module,out var orientation))
                     continue;
                 if (!m_CubeMeshes.ContainsKey(module))
                 {
@@ -126,7 +127,7 @@ namespace ExampleScenes.Algorithm.MarchingCube
                 var position = cube.position;
                 
                 int indexStart = vertices.Count;
-                vertices.AddRange(mesh.vertices.Select(p=>  position + rotation*p * MarchingCubeDefines.kGridSize ));
+                vertices.AddRange(mesh.vertices.Select(p=>   position + rotation * p * MarchingCubeDefines.kGridSize));
                 normals.AddRange(mesh.normals.Select(p=>rotation*p));
                 indices.AddRange(mesh.indices.Select(p=>p+indexStart));
                 uvs.AddRange(mesh.uvs);
@@ -171,15 +172,16 @@ namespace ExampleScenes.Algorithm.MarchingCube
             
             foreach (var grid in m_GridPool.Values)
             {
-                Gizmos.color = grid.m_Active ? Color.green : Color.red;
+                Gizmos.color = grid.m_CubeActive ? Color.green : Color.red;
                 Gizmos.DrawWireSphere(grid.position,.1f);
             }
 
             Gizmos.color = Color.white.SetAlpha(.5f);
             foreach (var cube in m_CubePool.Values)
             {
-                if( MarchingCubeDefines.GetOrientedModule(cube.m_GridAvailable.ToByte(),out var module,out var orientation) && !m_CubeMeshes.ContainsKey(module))
-                    Gizmos_Extend.DrawString(cube.position,$"{module},{orientation}");
+                var cubeByte = cube.m_GridAvailable.ToByte();
+                if( MarchingCubeDefines.GetOrientedModule(cubeByte,out var module,out var orientation) && (m_DrawAllCubeElements || !m_CubeMeshes.ContainsKey(module)))
+                    Gizmos_Extend.DrawString(cube.position,$"{cubeByte},{module},{orientation}");
             }
         }
     }
@@ -322,8 +324,8 @@ namespace ExampleScenes.Algorithm.MarchingCube
 
         public static bool GetOrientedModule(byte _src, out byte _module, out int _orientation)
         {
-            _module = default;
-            _orientation = default;
+            _module = byte.MinValue;
+            _orientation = 0;
             if (_src == byte.MinValue || _src == byte.MaxValue)
                 return false;
 
@@ -341,25 +343,27 @@ namespace ExampleScenes.Algorithm.MarchingCube
             {
                 var cubeByte = (byte)i;
                 byteQube.SetByteElement(cubeByte);
+                bool predicted = false;
 
                 var module = cubeByte;
-                var orientation = 0;
-                
+                var rotationCW = 0;
                 for (byte j = 1; j <= 3; j++)
                 {
-                    var orientedModule = byteQube.RotateYawCW(j).ToByte();
-                    if (iteratedBytes.Contains(orientedModule))
+                    var orientedPrediction = byteQube.RotateYawCW(j);
+                    var modulePrediction = orientedPrediction.ToByte();
+                    if (iteratedBytes.Contains(modulePrediction))
                     {
-                        module = orientedModule;
-                        orientation = 4-j;
+                        module = modulePrediction;
+                        rotationCW = 4 - j;
+                        predicted = true;
                         break;
                     }
                 }
-                
-                if(orientation==0)
+
+                if(!predicted)
                     iteratedBytes.Add(module);
 
-                kOrientedBytes[i]=(module,orientation);
+                kOrientedBytes[i]=(module,rotationCW);
             }
         }
     }

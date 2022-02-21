@@ -88,7 +88,7 @@ public static class UMath
             return _src;
         return _src || _dst;
     }
-
+    
     public static Vector3 QuadraticBezierCurve(Vector3 _src,Vector3 _dst,Vector3 _control,float _interpolation)
     {
         float value = _interpolation;

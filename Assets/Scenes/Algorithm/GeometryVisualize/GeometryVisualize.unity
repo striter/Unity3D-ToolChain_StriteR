@@ -188,7 +188,7 @@ GameObject:
   - component: {fileID: 314156686}
   - component: {fileID: 314156685}
   m_Layer: 0
-  m_Name: PRayCollision
+  m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -213,6 +213,7 @@ MonoBehaviour:
   m_Ray:
     origin: {x: -0.58448786, y: 0.72717476, z: -0.8852818}
     direction: {x: 0.047317713, y: -0.47419655, z: 0.8791466}
+  m_Point: {x: 0.33, y: 0.52, z: 0}
 --- !u!4 &314156686
 Transform:
   m_ObjectHideFlags: 0

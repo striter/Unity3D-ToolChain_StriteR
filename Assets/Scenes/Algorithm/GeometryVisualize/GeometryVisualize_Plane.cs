@@ -11,6 +11,7 @@ namespace ExampleScenes.Algorithm.Geometry
         public GPlane m_Plane;
         public GRay m_Ray;
 
+        public Vector3 m_Point;
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
@@ -35,6 +36,11 @@ namespace ExampleScenes.Algorithm.Geometry
             Gizmos.color = intersect ? Color.green : Color.grey;
             Gizmos_Extend.DrawArrow(Vector3.zero,Quaternion.LookRotation(Vector3.up), .3f, .1f);
             Gizmos.DrawWireCube(Vector3.zero, planeSize);
+
+            Gizmos.color = Color.white;
+            Gizmos.matrix = transform.localToWorldMatrix;
+            float projection = m_Plane.PlanePointProjection(m_Point);
+            Gizmos.DrawLine(m_Point,m_Point-projection*m_Plane.normal);
         }
 #endif
     }

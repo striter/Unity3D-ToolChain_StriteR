@@ -247,6 +247,8 @@ namespace Geometry.Voxel
         #endregion
         
         #region Plane
+
+        public static float PlanePointProjection(this GPlane _plane, Vector3 _point)=>Vector4.Dot(_plane, _point.ToVector4(1f));
         public static bool PlaneAABBIntersection(this GPlane _plane, GBox _box)
         {
             Vector3 c = _box.center;
