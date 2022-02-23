@@ -1,4 +1,4 @@
-﻿Shader "Game/Lit/PBR/Uber"
+﻿Shader "Game/Lit/UberPBR"
 {
 	Properties
 	{
@@ -9,8 +9,8 @@
 		
 		[Header(PBR)]
 		[ToggleTex(_PBRMAP)] [NoScaleOffset]_PBRTex("PBR Tex(Roughness.Metallic.AO)",2D)="white"{}
-		[Fold(_PBRMAP)]_Glossiness("Glossiness",Range(0,1))=1
-        [Fold(_PBRMAP)]_Metallic("Metalness",Range(0,1))=0
+		_Glossiness("Glossiness",Range(0,1))=1
+        _Metallic("Metalness",Range(0,1))=0
 		[NoScaleOffset]_EmissionTex("Emission",2D)="white"{}
 		[HDR]_EmissionColor("Emission Color",Color)=(0,0,0,0)
 		[Header(_Settings)]
@@ -22,6 +22,7 @@
 		[ToggleTex(_DETAILNORMALMAP)]_DetailNormalTex("Normal Tex",2D)="white"{}
 		[Enum(Linear,0,Overlay,1,PartialDerivative,2,UDN,3,Reoriented,4)]_DetailBlendMode("Normal Blend Mode",int)=0
 		[ToggleTex(_MATCAP)] [NoScaleOffset]_Matcap("Mat Cap",2D)="white"{}		
+		[Foldout(_MATCAP)][HDR]_MatCapColor("MatCap Color",Color)=(1,1,1,1)
 		
 		[Header(Depth)]
 		[ToggleTex(_DEPTHMAP)][NoScaleOffset]_DepthTex("Texure",2D)="white"{}
@@ -48,6 +49,7 @@
 		Cull [_Cull]
 		ZWrite [_ZWrite]
 		ZTest [_ZTest]
+		
 		
 		HLSLINCLUDE
 			#include "Assets/Shaders/Library/Common.hlsl"
@@ -79,6 +81,7 @@
 				INSTANCING_PROP(float,_DepthBufferScale)
 				INSTANCING_PROP(int ,_ParallaxCount)
 				INSTANCING_PROP(float,_AlphaClipRange)
+				INSTANCING_PROP(float3,_MatCapColor)
 			INSTANCING_BUFFER_END
 			
 			#include "Assets/Shaders/Library/Additional/Local/Parallax.hlsl"
@@ -107,7 +110,7 @@
 				half3 normalWS:TEXCOORD3;
 				half3 tangentWS:TEXCOORD4;
 				half3 biTangentWS:TEXCOORD5;
-				FOG_COORD(7)
+				V2F_FOG(7)
 				V2F_LIGHTMAP(8)
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -250,9 +253,9 @@
 				half anisotropic=INSTANCE(_AnisoTropicValue);
 				#if _PBRMAP
 					half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
-					glossiness=1.h-mix.r;
-					metallic=mix.g;
-					ao=mix.b;
+					glossiness*=1.h-mix.r;
+					metallic*=mix.g;
+					ao*=mix.b;
 				#endif
 
 				BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,glossiness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,anisotropic);
@@ -266,7 +269,8 @@
 				#if _MATCAP
 					float2 matcapUV=float2(dot(UNITY_MATRIX_V[0].xyz,normalWS),dot(UNITY_MATRIX_V[1].xyz,normalWS));
 					matcapUV=matcapUV*.5h+.5h;
-					mainLight.color=SAMPLE_TEXTURE2D(_Matcap,sampler_Matcap,matcapUV).rgb;
+					mainLight.color=SAMPLE_TEXTURE2D(_Matcap,sampler_Matcap,matcapUV).rgb*INSTANCE(_MatCapColor).rgb;
+					mainLight.distanceAttenuation = 1;
 				#endif
 				
 				finalCol+=BRDFLighting(surface,mainLight);

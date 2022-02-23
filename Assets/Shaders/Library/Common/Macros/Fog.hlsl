@@ -45,11 +45,11 @@ half3 FogInterpolate(half3 srcColor,half fogFactor)
 }
 
 #if !defined(IFOG)||defined(NFOG)
-    #define FOG_COORD(index)  
+    #define V2F_FOG(index)  
     #define FOG_TRANSFER(v)  
     #define FOG_MIX(i,col) 
 #else
-    #define FOG_COORD(index) half fogFactor:TEXCOORDindex;
+    #define V2F_FOG(index) half fogFactor:TEXCOORDindex;
     #define FOG_TRANSFER(v) v.fogFactor=FogFactor(v.positionCS.z);
     #define FOG_MIX(i,col) col=FogInterpolate(col,i.fogFactor);
 #endif

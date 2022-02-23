@@ -119,7 +119,7 @@
 				#if _OPACITY
 				float4 screenPos:TEXCOORD6;
 				#endif
-            	FOG_COORD(7)
+            	V2F_FOG(7)
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 			

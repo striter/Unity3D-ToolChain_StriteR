@@ -10,6 +10,7 @@ Shader "Game/Particles/AlphaBlend"
         [Header(Optional)]
         [ToggleTex(_SECONDARY)]_SecondaryTex("Secondary Tex",2D)="white"{}
         [Vector2]_SecondaryTexFlow("Flow",Vector)=(1,1,1,1)
+        [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
     }
     SubShader
     {
@@ -17,9 +18,9 @@ Shader "Game/Particles/AlphaBlend"
         Pass
         {
             Blend SrcAlpha OneMinusSrcAlpha
-		    Cull Back
 		    ZWrite Off
 		    ZTest Less
+		    Cull [_Cull]
             
             HLSLPROGRAM
             #pragma vertex vert

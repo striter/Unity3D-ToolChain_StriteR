@@ -33,7 +33,6 @@ Material:
     - _AlphaClipRange: 0.01
     - _Cull: 2
     - _DstBlend: 1
-    - _InvFade: 1
     - _Mask: 0
     - _SecondaryFlowX: 0.5
     - _SecondaryFlowY: 0.5
@@ -43,7 +42,6 @@ Material:
     m_Colors:
     - _Color: {r: 4.5947943, g: 0.8886158, b: 0.8886158, a: 1}
     - _SecondaryFlow: {r: 1, g: 1, b: 0, a: 0}
-    - _TintColor: {r: 1, g: 0.4669811, b: 0.4669811, a: 0.5}
   m_BuildTextureStacks: []
 --- !u!114 &8363284013944699640
 MonoBehaviour:

@@ -4,6 +4,7 @@ Shader "Game/Particles/Additive"
     {
         _MainTex("Main Tex",2D)="white"{}
         [HDR] _Color("Color Tint",Color)=(1,1,1,1)
+        [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
     }
     SubShader
     {
@@ -11,9 +12,9 @@ Shader "Game/Particles/Additive"
         Pass
         {
             Blend One One
-		    Cull Back
 		    ZWrite Off
 		    ZTest Less
+		    Cull [_Cull]
             
             HLSLPROGRAM
             #pragma vertex vert

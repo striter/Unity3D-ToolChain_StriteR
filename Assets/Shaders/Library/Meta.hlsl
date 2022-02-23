@@ -3,7 +3,7 @@
 struct a2vMeta
 {
     float4 positionOS:POSITION;
-    float3 normalOS:NORMAL;
+    // float3 normalOS:NORMAL;
     float2 uv0:TEXCOORD0;
     float2 uv1:TEXCOORD1;
     float2 uv2:TEXCOORD2;

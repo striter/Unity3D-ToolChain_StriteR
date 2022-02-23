@@ -7,10 +7,10 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GrassPBR
-  m_Shader: {fileID: 4800000, guid: a3ed444ff715cb6458df4360304125a6, type: 3}
-  m_ShaderKeywords: _ANISOTROPIC _DEPTHMAP _NDF_GGX _PARALLAX _SPECULARHIGHLIGHTS_OFF
-    _VF_GGX
+  m_Name: TerrainPBR
+  m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
+  m_ShaderKeywords: _DEPTHBUFFER _DEPTHMAP _NDF_ANISOTRPIC_WARD _NDF_COOKTORRANCE
+    _NORMALMAP _PARALLAX _PBRMAP _SPECULARHIGHLIGHTS_OFF _VF_GGX
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -41,7 +41,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DepthTex:
-        m_Texture: {fileID: 2800000, guid: a731e8696e6d50f41b1bd4e03fc713d5, type: 3}
+        m_Texture: {fileID: 2800000, guid: ca90503c15d611047b6c093becc5ef12, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -68,20 +68,8 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _FlowTex:
-        m_Texture: {fileID: 2800000, guid: 4885e105013f21f488121cc7a80b69af, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _FurTex:
-        m_Texture: {fileID: 2800000, guid: d2409ec56dc566740a007bdeadd4eed2, type: 3}
-        m_Scale: {x: 16, y: 16}
-        m_Offset: {x: 0, y: 0}
-    - _FurTexture:
-        m_Texture: {fileID: 2800000, guid: d2409ec56dc566740a007bdeadd4eed2, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 365eec42b6f49034f8b502619dc5bfd4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Mask0:
@@ -129,7 +117,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: b2fc8316b66de4c409d06675d65073ac, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -137,7 +125,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PBRTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: dfce2bddb4109c947876b4e4ebbd1094, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
@@ -197,7 +185,6 @@ Material:
     - _AlphaClip: 0
     - _AlphaClipRange: 0.01
     - _AnisoTropicValue: 1
-    - _Anisotropic: 1
     - _Atlas: 0
     - _AtlasHeight: 0
     - _AtlasIndex: 0
@@ -208,10 +195,10 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
-    - _DepthBuffer: 0
-    - _DepthBufferScale: 80
-    - _DepthOffset: -0.01
-    - _DepthScale: 0.5
+    - _DepthBuffer: 1
+    - _DepthBufferScale: 10
+    - _DepthOffset: 0.13
+    - _DepthScale: 0.019
     - _DetailAlbedoMapScale: 1
     - _DetailBlendMode: 3
     - _DetailNormalMapScale: 1
@@ -227,34 +214,28 @@ Material:
     - _EnvironmentReflections: 1
     - _F: 0
     - _FRESNEL: 0
-    - _FURUVDelta: 0
-    - _FlowScale1: 20
-    - _FlowScale2: 100
-    - _FlowStrength: 0.47
-    - _FurAlphaClip: 1
-    - _FurGravity: 0
-    - _FurLength: 0.39
-    - _FurScattering: 0
-    - _FurShadow: 1
     - _GSF: 6
     - _GlossMapScale: 0
-    - _Glossiness: 0.86
+    - _Glossiness: 1
+    - _Glossiness1: 1
+    - _Glossiness2: 1
+    - _Glossiness3: 1
     - _GlossyReflections: 0
     - _Grid: 0
     - _HeightTransition: 0
     - _Ior: 1
     - _Lambert: 0
     - _Lighting: 1
-    - _Metallic: 0.11
+    - _Metallic: 1
     - _Metallic0: 0
     - _Metallic1: 0
     - _Metallic2: 0
     - _Metallic3: 0
-    - _NDF: 4
+    - _NDF: 1
     - _NumLayersCount: 1
     - _OcclusionStrength: 0
     - _Parallax: 1
-    - _ParallaxCount: 128
+    - _ParallaxCount: 32
     - _Parallex: 1
     - _ParallexCount: 128
     - _ParallexOffset: 1
@@ -263,7 +244,6 @@ Material:
     - _ReceiveShadow: 1
     - _ReceiveShadows: 1
     - _RimIntensity: 0.5
-    - _ShellDelta: 0
     - _Smoothness: 0
     - _Smoothness0: 0.5
     - _Smoothness1: 0.5
@@ -290,11 +270,12 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EdgeColor: {r: 0.4365038, g: 0.9339623, b: 0.39208794, a: 1}
+    - _Color0: {r: 1, g: 1, b: 1, a: 1}
+    - _Color1: {r: 1, g: 1, b: 1, a: 1}
+    - _Color2: {r: 1, g: 1, b: 1, a: 1}
+    - _Color3: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FlowSpeed1: {r: 1, g: 0, b: 0, a: 0}
-    - _FlowSpeed2: {r: 20, g: 0, b: 0, a: 0}
-    - _RootColor: {r: 0.17662628, g: 0.8679245, b: 0.061409745, a: 0}
+    - _MatCapColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _UpperBlendColor: {r: 1, g: 1, b: 1, a: 1}
     - _WaveDirection: {r: 1, g: 1, b: 1, a: 1}

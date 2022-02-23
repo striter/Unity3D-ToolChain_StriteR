@@ -1,4 +1,4 @@
-﻿Shader "Game/Lit/PBR/ShellGrass"
+﻿Shader "Game/Lit/ShellPBR"
 {
 	Properties
 	{
@@ -152,7 +152,7 @@
 				float3 normalWS:TEXCOORD3;
 				half3 tangentWS:TEXCOORD4;
 				half3 biTangentWS:TEXCOORD5;
-				FOG_COORD(6)
+				V2F_FOG(6)
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 

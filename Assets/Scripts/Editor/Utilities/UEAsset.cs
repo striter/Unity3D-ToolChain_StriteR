@@ -108,6 +108,16 @@ namespace TEditor
             return true;
         }
 
+        public static bool SelectDirectory(out string directoryPath)
+        {
+            directoryPath = "";
+            string folderPath = EditorUtility.OpenFolderPanel("Select Directory",GetCurrentProjectWindowDirectory() , "");
+            if (folderPath.Length == 0)
+                return false;
+            directoryPath = UEPath.FileToAssetPath(folderPath) + "/";
+            return true;
+        }
+
         public static bool CreateOrReplaceFile(string path, byte[] bytes)
         {
             try

@@ -23,6 +23,9 @@ namespace TEditor
         [MenuItem("Work Flow/Helper/Clean Persistent Data",false,200)]
         static void CleanPersistentData() => Helper.CleanPersistentData();
         
+        [MenuItem("Work Flow/Helper/Assets Rename",false,200)]
+        static void AssetsRenameWindow() => EditorWindow.GetWindow<EAssetsBatchRename>().titleContent=new GUIContent("Assets Rename",EditorGUIUtility.IconContent("FilterByLabel").image);
+        
         [MenuItem("Work Flow/Hotkeys/Switch Developer Mode _F11", false, 104)]
         static void SwitchDevelopMode() => Helper.SwitchDevelopMode();
         [MenuItem("Work Flow/Helper/UI/Missing Fonts Replacer", false, 210)]

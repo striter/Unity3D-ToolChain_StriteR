@@ -79,7 +79,7 @@ Shader "Game/Lit/PBR/GrassSurface"
                 float3 positionWS:TEXCOORD2;
                 float4 uv:TEXCOORD3;
                 float4 flowUV : TEXCOORD4;
-                FOG_COORD(5)
+                V2F_FOG(5)
             };
 
             TEXTURE2D( _MainTex);SAMPLER(sampler_MainTex);

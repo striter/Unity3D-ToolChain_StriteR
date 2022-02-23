@@ -38,7 +38,7 @@
             {
                 float4 positionCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
-                FOG_COORD(1)
+                V2F_FOG(1)
             };
 
             v2f vert (a2v v)
