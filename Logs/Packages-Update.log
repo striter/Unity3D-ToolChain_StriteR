@@ -77,3 +77,12 @@ Update Mode: updateDependencies
 
 The following packages were updated:
   com.unity.render-pipelines.universal from version 11.0.0 to 12.1.2
+
+=== Mon Feb 28 14:02:48 2022
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.ide.rider from version 3.0.7 to 3.0.12
+  com.unity.render-pipelines.universal from version 11.0.0 to 12.1.4

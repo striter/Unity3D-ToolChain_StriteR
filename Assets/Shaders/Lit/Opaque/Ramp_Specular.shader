@@ -90,7 +90,6 @@
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
 				float3 normalWS=normalize(i.normalWS);
-				return float4(i.normalWS,1);
 				float3 lightDirWS=normalize(_MainLightPosition.xyz);
 				float3 viewDirWS = normalize(i.viewDirWS);
 				

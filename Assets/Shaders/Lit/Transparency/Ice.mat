@@ -101,7 +101,7 @@ Material:
     - _SpecularHighlights: 1
     - _SpecularRange: 0.9436
     - _SrcBlend: 1
-    - _Thickness: 0.22
+    - _Thickness: 0.01
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:

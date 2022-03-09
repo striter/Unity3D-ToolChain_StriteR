@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 484e01c1de5f6c940884c8677f916259, type: 3}
+  m_Name: GI_Lightmap
+  m_EditorClassIdentifier: 
+  m_Parameters:
+  - index: 0
+    scaleOffset: {x: 0.11904471, y: 0.11904471, z: 0.3920953, w: 0.3040992}
+  - index: 0
+    scaleOffset: {x: 0.15347913, y: 0.15347913, z: 0.39195564, w: 0.2024322}
+  - index: 0
+    scaleOffset: {x: 0.15347913, y: 0.15347913, z: 0.39195564, w: 0.10090487}
+  - index: 0
+    scaleOffset: {x: 0.15347913, y: 0.15347913, z: 0.39195564, w: -0.0006224755}
+  - index: 0
+    scaleOffset: {x: 0.390625, y: 0.390625, z: 0, w: 0}
+  - index: 0
+    scaleOffset: {x: 0.109457694, y: 0.109457694, z: 0.546875, w: 0}

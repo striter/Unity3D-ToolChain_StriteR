@@ -381,9 +381,9 @@
 			ZTest LEqual
 
             HLSLPROGRAM
+            #pragma vertex VertexMeta
+            #pragma fragment FragmentMeta
             #include "Assets/Shaders/Library/Passes/Meta.hlsl"
-            #pragma vertex MetaVertex
-            #pragma fragment MetaFragment
             ENDHLSL
 		}
 	}

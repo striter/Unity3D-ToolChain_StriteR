@@ -1,7 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="92a6fb5e-0b8c-4e1a-8b06-b7827ef4a308" name="Changes" comment="" />
+    <list default="true" id="92a6fb5e-0b8c-4e1a-8b06-b7827ef4a308" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/THair_Normal.tga.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/THair_Normal.tga.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TIce_Normal.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TIce_Normal.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TNormal_Aniso_Crack1.bmp.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TNormal_Aniso_Crack1.bmp.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TNormal_Base.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TNormal_Base.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TNormal_Detail1.bmp.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TNormal_Detail1.bmp.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TNormal_Detail2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TNormal_Detail2.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Noise/TNoise_WhiteNormal.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Noise/TNoise_WhiteNormal.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TBrick_Normal.tif.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TBrick_Normal.tif.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TCobblestoneMixed_Normal.tif.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TCobblestoneMixed_Normal.tif.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TConcreteBlocksHollow_Normal.tif.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TConcreteBlocksHollow_Normal.tif.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TConcrete_Normal.tif.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TConcrete_Normal.tif.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TGrindedSteel_Normal.tif.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TGrindedSteel_Normal.tif.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TGroundRubble_Normal.tif.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TGroundRubble_Normal.tif.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TIndoorSliding_Normal.tif.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TIndoorSliding_Normal.tif.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TLogWall_Normal.tif.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TLogWall_Normal.tif.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TMoss_Normal.tif.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TMoss_Normal.tif.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TObsidian_Normal.tif.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/PBR/TObsidian_Normal.tif.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/TDefault_Normal.tga.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/TDefault_Normal.tga.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/Effects/Effects.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/Effects/Effects.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Settings/URP_Forward.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Settings/URP_Forward.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Library/Lighting/Normal.hlsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Library/Lighting/Normal.hlsl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Library/Passes/Meta.hlsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Library/Passes/Meta.hlsl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/Opaque/Ramp_Specular.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/Opaque/Ramp_Specular.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/PBR/UberPBR.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/PBR/UberPBR.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Ice.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Ice.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logs/Packages-Update.log" beforeDir="false" afterPath="$PROJECT_DIR$/Logs/Packages-Update.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/packages-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/PackageManagerSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/PackageManagerSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectVersion.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectVersion.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/ShaderGraphSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ShaderGraphSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/URPProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/URPProjectSettings.asset" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -12,6 +46,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Algorithm/MarchingCube/MarchingCube.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Editor/Templates/EScriptTemplates.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/EventSystem/EventSystem.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.universal@12.1.4/Shaders/LitInput.hlsl" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Algorithm/HexagonGrid/HexagonGridGizmos.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Runtime/Core/URotation.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.mathematics@1.2.5/Unity.Mathematics/double2x4.gen.cs" root0="SKIP_HIGHLIGHTING" />
@@ -69,6 +104,8 @@
       <option name="presentableId" value="Default" />
       <updated>1646800010070</updated>
       <workItem from="1646800010071" duration="903000" />
+      <workItem from="1646805055491" duration="1365000" />
+      <workItem from="1646806721988" duration="7841000" />
     </task>
     <servers />
   </component>

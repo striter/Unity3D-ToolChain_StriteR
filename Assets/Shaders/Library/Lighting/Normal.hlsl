@@ -1,7 +1,7 @@
 ﻿//Normals
 half3 DecodeNormalMap(float4 _normal)
 {
-    #if UNITY_NO_DXT5nm
+    #if defined(UNITY_NO_DXT5nm)
         return _normal.xyz*2.h-1.h;
     #else
         half3 normal=half3(_normal.ag,0)*2.h-1.h;

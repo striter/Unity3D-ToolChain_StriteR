@@ -16,7 +16,7 @@ struct v2fMeta
     float4 color:COLOR;
 };
 
-v2fMeta MetaVertex(a2vMeta v)
+v2fMeta VertexMeta(a2vMeta v)
 {
     v2fMeta o;
     o.positionCS=MetaVertexPosition(v.positionOS,v.uv1,v.uv2,unity_LightmapST,unity_DynamicLightmapST);
@@ -25,7 +25,7 @@ v2fMeta MetaVertex(a2vMeta v)
     return o;
 }
 
-float4 MetaFragment(v2fMeta i):SV_TARGET
+float4 FragmentMeta(v2fMeta i):SV_TARGET
 {
     half3 albedo = GET_ALBEDO(i);
     half3 emission = GET_EMISSION(i);
