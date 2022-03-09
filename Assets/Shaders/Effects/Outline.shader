@@ -114,16 +114,16 @@
 				#endif
 				
 				#if _CLIPSPACEADPATION
-				float4 clipPosition=TransformObjectToHClip(positionOS);
-				float3 normalCS =  mul((float3x3)UNITY_MATRIX_MVP, normalOS);
-				float2 screenOffset =normalize(normalCS.xy)/_ScreenParams.xy*clipPosition.w*INSTANCE(_AdaptFactor);
-				clipPosition.xy+=screenOffset*INSTANCE(_OutlineWidth);
-				o.positionCS= clipPosition;
+					float4 clipPosition=TransformObjectToHClip(positionOS);
+					float3 normalCS = TransformObjectToWorld() mul((float3x3)UNITY_MATRIX_MVP, normalOS);
+					float2 screenOffset =normalize(normalCS.xy)/_ScreenParams.xy*clipPosition.w*INSTANCE(_AdaptFactor);
+					clipPosition.xy+=screenOffset*INSTANCE(_OutlineWidth);
+					o.positionCS= clipPosition;
 				#else
-				float3 normalWS=mul((float3x3)unity_ObjectToWorld,normalOS);
-				float3 worldPos=TransformObjectToWorld(positionOS);
-				worldPos+=normalWS*_OutlineWidth;
-				o.positionCS= TransformWorldToHClip(worldPos);
+					float3 normalWS=mul((float3x3)unity_ObjectToWorld,normalOS);
+					float3 worldPos=TransformObjectToWorld(positionOS);
+					worldPos+=normalWS*_OutlineWidth;
+					o.positionCS= TransformWorldToHClip(worldPos);
 				#endif
 				return o;
 			}

@@ -99,7 +99,7 @@ namespace Rendering.Pipeline
             
             m_OpaqueProcessing.Clear();
             m_ScreenProcessing.Clear();
-            foreach (var postProcess in postProcesses)
+            foreach (var postProcess in postProcesses.Extend(PostProcessGlobalVolume.sVolumes.Select(p=>p.m_PostProcesses).Resolve() ))
             {
                 #if UNITY_EDITOR
                     postProcess.ValidateParameters();

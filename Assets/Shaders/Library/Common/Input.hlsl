@@ -34,5 +34,5 @@ float3 GetCameraRealDirectionWS(float3 _positionWS)
 
 float3 GetViewDirectionWS(float3 _positionWS)
 {
-    return -GetCameraRealDirectionWS(_positionWS);
+    return normalize(_WorldSpaceCameraPos-_positionWS);
 }

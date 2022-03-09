@@ -207,8 +207,8 @@
 				
 				half3 finalCol=0;
 				Light mainLight=GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
-				half3 indirectDiffuse= IndirectBRDFDiffuse(mainLight,i.lightmapUV,normalWS);
-				half3 indirectSpecular=IndirectBRDFSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
+				half3 indirectDiffuse= IndirectDiffuse(mainLight,i,normalWS);
+				half3 indirectSpecular=IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
 				finalCol+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 				
 				finalCol+=BRDFLighting(surface,mainLight);

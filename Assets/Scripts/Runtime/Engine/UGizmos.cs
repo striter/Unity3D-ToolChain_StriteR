@@ -86,6 +86,12 @@ public static class Gizmos_Extend
         Handles_Extend.DrawLine(_line);
     }
 
+    public static void DrawString(Vector3 positionLS,string text,float offset=1f)
+    {
+        Handles.matrix = Gizmos.matrix;
+        Handles.Label(positionLS+offset*Vector3.up,text);
+    }
+    
     public static void DrawGizmos(this GBox _box)=>Gizmos.DrawWireCube(_box.center,_box.size);
     public static void DrawGizmos(this GFrustumPoints _frustumPoints)
     {
@@ -95,25 +101,6 @@ public static class Gizmos_Extend
         DrawLine(_frustumPoints.farTopLeft,_frustumPoints.nearTopLeft);
         DrawLine(_frustumPoints.farTopRight,_frustumPoints.nearTopRight);
         DrawLinesConcat(_frustumPoints.farBottomLeft,_frustumPoints.farBottomRight,_frustumPoints.farTopRight,_frustumPoints.farTopLeft);
-    }
-    
-    public static void DrawString(Vector3 positionLS,string text,float offset=.075f)
-    {
-        if (SceneView.currentDrawingSceneView == null)
-            return;
-        Handles.BeginGUI();
-        var positionWS = Gizmos.matrix.MultiplyPoint(positionLS);
-        var camera = SceneView.currentDrawingSceneView.camera;
-        var positionVS = camera.WorldToViewportPoint(positionWS);
-        positionVS.y += offset;
-        if (KRect.kRect01.Contains(positionVS)&&positionVS.z>0)
-        {
-            var screenPos = new Vector2(positionVS.x*camera.pixelWidth,(1-positionVS.y)*camera.pixelHeight);
-            var size=GUI.skin.label.CalcSize(new GUIContent(text));
-            GUI.color = Gizmos.color;
-            GUI.Label(new Rect(screenPos,Vector2.zero).Expand(size),text);
-        }
-        Handles.EndGUI();
     }
 }
 

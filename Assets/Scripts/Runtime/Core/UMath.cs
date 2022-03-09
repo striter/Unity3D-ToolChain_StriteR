@@ -80,6 +80,7 @@ public static class UMath
         }
     }
 
+    public static int IntLerp(int _src, int _dst, float _interpolate)=> (int)Mathf.Lerp(_src, _dst, _interpolate);
     public static bool BoolLerp(bool _src, bool _dst, float _interpolate)
     {
         if (Math.Abs(_interpolate - 1) < float.Epsilon)

@@ -101,7 +101,7 @@ Shader "Game/Lit/Transparecy/Glass"
             	
                 float ndv=dot(viewDirWS,normalWS);
             	float fresnel=pow5(1-ndv)+saturate(depthParameter);
-                float3 indirectSpecular = IndirectBRDFCubeSpecular(reflectDirWS,0) * INSTANCE(_ColorTint.rgb);
+                float3 indirectSpecular = IndirectCubeSpecular(reflectDirWS,0) * INSTANCE(_ColorTint.rgb);
             	
             	float3 finalCol=indirectSpecular;
 				float alpha=saturate(fresnel);

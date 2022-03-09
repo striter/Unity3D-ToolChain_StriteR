@@ -14,9 +14,9 @@ Shader "Hidden/ScreenSpaceReflection"
             #pragma fragment frag
             #include "Assets/Shaders/Library/PostProcess.hlsl"
 
-            struct appdata
+            struct a2v
             {
-                float4 positionOS : POSITION;
+                float3 positionOS : POSITION;
                 float2 uv : TEXCOORD0;
             };
 
@@ -26,7 +26,7 @@ Shader "Hidden/ScreenSpaceReflection"
                 float2 uv : TEXCOORD0;
             };
 
-            v2f vert (appdata v)
+            v2f vert (a2v v)
             {
                 v2f o;
                 o.positionCS = TransformObjectToHClip(v.positionOS);

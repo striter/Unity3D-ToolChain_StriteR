@@ -15,6 +15,18 @@ public static class UCollection
                 //Empty;
             }
         }
+
+        public static IEnumerable<T> Resolve<T>(this IEnumerable<IEnumerable<T>> _collections)
+        {
+            foreach (var collection in _collections)
+            {
+                foreach (var element in collection)
+                {
+                    yield return element;
+                }
+            }
+        }
+
         public static IEnumerable<(int index,T value)> LoopIndex<T>(this IEnumerable<T> _collection)
         {
             int index = 0;
@@ -170,7 +182,6 @@ public static class UCollection
             return maxIndex;
         }
 
-        
         public static T Last<T>(this IEnumerable<T> _collection, Func<T, Vector3> _getPosition,Vector3 _origin,bool _minimum)
         {
             T elementRecorded = default;

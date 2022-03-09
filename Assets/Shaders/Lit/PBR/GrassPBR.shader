@@ -206,9 +206,9 @@
 				float delta= INSTANCE(_ShellDelta);
 				float2 uv=i.uv.zw;
 				float2 flow1UV=(uv+_FlowSpeed1*_Time.y)/_FlowScale1;
-				float2 flow1=SAMPLE_TEXTURE2D(_FlowTex,sampler_FlowTex,flow1UV)*2-1;
+				float2 flow1=SAMPLE_TEXTURE2D(_FlowTex,sampler_FlowTex,flow1UV).xy*2-1;
 				float2 flow2UV=(uv+_FlowSpeed2*_Time.y)/_FlowScale2;
-				float2 flow2=SAMPLE_TEXTURE2D(_FlowTex,sampler_FlowTex,flow2UV)*2-1;
+				float2 flow2=SAMPLE_TEXTURE2D(_FlowTex,sampler_FlowTex,flow2UV).xy*2-1;
 
 				float2 finalFlow=(flow1*flow2);
 				uv+=finalFlow*_FlowStrength*delta;
@@ -228,8 +228,8 @@
 				
 				half3 finalCol=0;
 				Light mainLight=GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
-				half3 indirectDiffuse= IndirectBRDFDiffuse(mainLight,i.lightmapUV,normalWS);
-				half3 indirectSpecular=IndirectBRDFSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
+				half3 indirectDiffuse= IndirectDiffuse(mainLight,i,normalWS);
+				half3 indirectSpecular=IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
 				finalCol+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 				
 				finalCol+=BRDFLighting(surface,mainLight);

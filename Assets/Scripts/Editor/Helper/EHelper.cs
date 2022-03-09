@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Rendering;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,19 +11,19 @@ namespace TEditor
     {
         public static void CleanupMaterialProperties()
         {
-        
-    
+            //To Be Continued
         }
 
         public static void ExportLightmapCollection()
         {
-            if (!UEAsset.SaveFilePath(out var filePath, "asset", "LightmapCollection_Default"))
-                return;
             if (Selection.activeTransform==null)
                 return;
             
-            LightmapCollection collection = Editor.CreateInstance<LightmapCollection>();
-            collection.Export(Selection.activeTransform);
+            if (!UEAsset.SaveFilePath(out var filePath, "asset", "LightmapCollection_Default"))
+                return;
+            
+            LightmapParameterCollection collection = Editor.CreateInstance<LightmapParameterCollection>();
+            collection.ExportFromScene(Selection.activeTransform);
             UEAsset.CreateOrReplaceMainAsset(collection,UEPath.FileToAssetPath(filePath));
         }
         

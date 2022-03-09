@@ -5,7 +5,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace Rendering.PostProcess
 {
-    [ExecuteInEditMode, RequireComponent(typeof(Camera))]
+    [ExecuteInEditMode]
     public class PostProcessBehaviour<T,Y> : MonoBehaviour,IPostProcessBehaviour where T : PostProcessCore<Y>, new() where Y:struct,IPostProcessParameter
     {
         [MTitle] public Y m_Data;

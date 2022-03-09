@@ -1,4 +1,25 @@
-﻿
+﻿half3 TransformObjectDirToWorld(float3 _dirOS,bool _doNormalize = true)
+{
+    half3 dirWS=mul((float3x3)unity_ObjectToWorld,_dirOS);
+    if(_doNormalize)
+        dirWS=normalize(dirWS);
+    return dirWS;
+}
+
+half3 TransformObjectNormalToWorld(float3 _normalOS,bool _doNormalize = true)
+{
+    #ifdef UNITY_ASSUME_UNIFORM_SCALING
+        return TransformObjectDirToWorld(normalOS,_doNormalize);
+    #else
+
+    half3 normalWS=mul(_normalOS,(float3x3)unity_WorldToObject);
+    if(_doNormalize)
+        normalWS=normalize(normalWS);
+    return normalWS;
+    #endif
+}
+
+
 float4 TransformObjectToView(float3 positionOS)
 {
     return mul(UNITY_MATRIX_MV,float4(positionOS,1));
@@ -20,7 +41,7 @@ float3 TransformNDCToClip(float2 _uv,float _depth)
 
 float2 TransformHClipToNDC(float4 _hClip)
 {
-    float2 uv=_hClip.xy*rcp(_hClip.w);
+    float2 uv=_hClip.xy/max(FLT_EPS,_hClip.w);
     uv=uv*.5h+.5h;
     #if UNITY_UV_STARTS_AT_TOP
         uv.y=1.h-uv.y;

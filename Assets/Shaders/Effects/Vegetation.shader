@@ -161,7 +161,7 @@ Shader "Geme/Lit/Vegetation"
                 #endif
 
                 Light mainLight=GetMainLight();
-				half3 indirectDiffuse= IndirectBRDFDiffuse(mainLight,i.lightmapUV,normalize(i.normalWS));
+				half3 indirectDiffuse= IndirectDiffuse(mainLight,i,normalize(i.normalWS));
                 float3 finalCol=albedo*indirectDiffuse;
                 FOG_MIX(i,finalCol);
                 return float4(finalCol,alpha);

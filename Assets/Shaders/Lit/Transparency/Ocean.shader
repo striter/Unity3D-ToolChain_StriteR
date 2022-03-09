@@ -142,7 +142,7 @@
             	
             	float3 albedo=INSTANCE(_Color).rgb;
 
-            	float3 diffuse=SAMPLE_SH(normalWS);
+            	float3 diffuse=IndirectDiffuse_SH(normalWS);
             	float specular=GetSpecular(normalWS,lightDirWS,viewDirWS,INSTANCE(_SpecularAmount));
             	specular*=INSTANCE(_SpecularStrength);
             	float3 riverCol = diffuse*albedo+ albedo*lightCol*specular;

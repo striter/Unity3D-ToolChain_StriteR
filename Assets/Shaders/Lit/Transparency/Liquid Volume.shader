@@ -104,7 +104,7 @@ Shader "Game/Lit/Transparency/LiquidVolume"
             	float depthOffset=depthDistance-i.depthDistance;
                 float ndv=dot(viewDirWS,normalWS);
             	
-            	float3 opaqueCol=SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,screenUV);
+            	float3 opaqueCol=SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,screenUV).rgb;
             	
 				float thickness=min(ndv,depthOffset);
             	float thicknessParam=saturate(invlerp(INSTANCE(_DepthDistance),INSTANCE(_DepthDistance)+INSTANCE(_DepthWidth),thickness));
@@ -112,7 +112,7 @@ Shader "Game/Lit/Transparency/LiquidVolume"
             	
             	float fresnel=pow5(1-ndv);
             	
-            	finalCol += _MainLightColor*_ColorTint.rgb*fresnel;
+            	finalCol += _MainLightColor.rgb*_ColorTint.rgb*fresnel;
             	
                 return float4(finalCol,1);
             }

@@ -76,8 +76,8 @@ Shader "Game/Unfinished/GeometryOcclusion"
             {
 				UNITY_SETUP_INSTANCE_ID(i);
                 float2 screenUV=TransformHClipToNDC(i.positionHCS);
-                float rawDepth=SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);
-                float3 normalWS= (SAMPLE_TEXTURE2D(_CameraNormalTexture,sampler_CameraNormalTexture,screenUV)-.5h)*2;
+                float rawDepth=SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).r;
+                float3 normalWS= (SAMPLE_TEXTURE2D(_CameraNormalTexture,sampler_CameraNormalTexture,screenUV).rgb-.5h)*2;
                 float3 positionWS=TransformNDCToWorld(screenUV,rawDepth);
                 
                 float occlusion=0;

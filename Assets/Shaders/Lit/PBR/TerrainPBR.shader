@@ -42,6 +42,8 @@
         [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
         [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
         [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
+		[Foldout(LIGHTMAP_CUSTOM,LIGHTMAP_INTERPOLATE)]_LightmapST("CLightmap UV",Vector)=(1,1,1,1)
+		[Foldout(LIGHTMAP_CUSTOM,LIGHTMAP_INTERPOLATE)]_LightmapIndex("CLightmap Index",int)=0
 	}
 	SubShader
 	{
@@ -53,7 +55,6 @@
 		
 		HLSLINCLUDE
 			#include "Assets/Shaders/Library/Common.hlsl"
-			#include "Assets/Shaders/Library/Lighting.hlsl"
 			#pragma multi_compile_instancing
 			#pragma shader_feature_local _MATCAP
 			#pragma shader_feature_local _TEX1
@@ -94,10 +95,14 @@
 				INSTANCING_PROP(float,_NormalIntensity3)
 		
 				INSTANCING_PROP(float3,_MatCapColor)
+				
+			    INSTANCING_PROP(float4,_LightmapST)
+			    INSTANCING_PROP(float,_LightmapIndex)
 			INSTANCING_BUFFER_END
 
 			TEXTURE2D(_Matcap);SAMPLER(sampler_Matcap);
 			TEXTURE2D(_Control);SAMPLER(sampler_Control);
+			#include "Assets/Shaders/Library/Lighting.hlsl"
 
 			struct Output
 			{
@@ -218,7 +223,7 @@
 			#pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
             #pragma multi_compile _ SHADOWS_SHADOWMASK
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
-            #pragma multi_compile _ LIGHTMAP_ON
+            #pragma multi_compile _ LIGHTMAP_ON LIGHTMAP_CUSTOM LIGHTMAP_INTERPOLATE
 			
             #pragma multi_compile_fog
             #pragma target 3.5
@@ -262,8 +267,8 @@
 				BRDFSurface surface=BRDFSurface_Ctor( o.albedo,0,o.glossiness,o.metallic,1,normalWS,tangentWS,biTangentWS,viewDirWS,0);
 				half3 finalCol=0;
 				Light mainLight=GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
-				half3 indirectDiffuse= IndirectBRDFDiffuse(mainLight,i.lightmapUV,normalWS);
-				half3 indirectSpecular=IndirectBRDFSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,o.normalTS);
+				half3 indirectDiffuse = IndirectDiffuse(mainLight,i,normalWS);
+				half3 indirectSpecular=IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,o.normalTS);
 				finalCol+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 				
 				#if _MATCAP
@@ -294,7 +299,7 @@
             Cull Back
 
             HLSLPROGRAM
-#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
             #pragma vertex Vertex
             #pragma fragment Fragment
 			struct a2vm

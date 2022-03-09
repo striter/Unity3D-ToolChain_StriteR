@@ -41,6 +41,9 @@
         [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
         [Toggle(_ALPHACLIP)]_AlphaClip("Alpha Clip",float)=0
         [Foldout(_ALPHACLIP)]_AlphaClipRange("Range",Range(0.01,1))=0.01
+		
+		[Foldout(LIGHTMAP_CUSTOM,LIGHTMAP_INTERPOLATE)]_LightmapST("CLightmap UV",Vector)=(1,1,1,1)
+		[Foldout(LIGHTMAP_CUSTOM,LIGHTMAP_INTERPOLATE)]_LightmapIndex("CLightmap Index",int)=0
 	}
 	SubShader
 	{
@@ -50,10 +53,9 @@
 		ZWrite [_ZWrite]
 		ZTest [_ZTest]
 		
-		
 		HLSLINCLUDE
 			#include "Assets/Shaders/Library/Common.hlsl"
-			#include "Assets/Shaders/Library/Lighting.hlsl"
+			
 			#pragma multi_compile_instancing
 			#pragma shader_feature_local _PBRMAP
 			#pragma shader_feature_local _NORMALMAP
@@ -61,29 +63,33 @@
 			#pragma shader_feature_local _MATCAP
 
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
-			TEXTURE2D(_PBRTex);SAMPLER(sampler_PBRTex);
 			TEXTURE2D(_EmissionTex);SAMPLER(sampler_EmissionTex);
+			TEXTURE2D(_PBRTex);SAMPLER(sampler_PBRTex);
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
 			TEXTURE2D(_Matcap);SAMPLER(sampler_Matcap);
 			TEXTURE2D(_DetailNormalTex);SAMPLER(sampler_DetailNormalTex);
 			TEXTURE2D(_DepthTex);SAMPLER(sampler_DepthTex);
 			INSTANCING_BUFFER_START
+				INSTANCING_PROP(float4,_MainTex_ST)
+				INSTANCING_PROP(float4, _Color)
+				INSTANCING_PROP(float4, _EmissionColor)
 				INSTANCING_PROP(float,_Glossiness)
 				INSTANCING_PROP(float,_Metallic)
 				INSTANCING_PROP(float,_DetailBlendMode)
 				INSTANCING_PROP(float,_AnisoTropicValue)
-				INSTANCING_PROP(float4,_MainTex_ST)
 				INSTANCING_PROP(float4,_DetailNormalTex_ST)
-				INSTANCING_PROP(float4, _Color)
-				INSTANCING_PROP(float4, _EmissionColor)
 				INSTANCING_PROP(float,_DepthScale)
 				INSTANCING_PROP(float,_DepthOffset)
 				INSTANCING_PROP(float,_DepthBufferScale)
 				INSTANCING_PROP(int ,_ParallaxCount)
-				INSTANCING_PROP(float,_AlphaClipRange)
 				INSTANCING_PROP(float3,_MatCapColor)
+
+				INSTANCING_PROP(float,_AlphaClipRange)
+				INSTANCING_PROP(float4,_LightmapST)
+			    INSTANCING_PROP(float,_LightmapIndex)
 			INSTANCING_BUFFER_END
-			
+
+			#include "Assets/Shaders/Library/Lighting.hlsl"
 			#include "Assets/Shaders/Library/Additional/Local/Parallax.hlsl"
 			#pragma shader_feature_local _PARALLAX
 			#pragma shader_feature_local _DEPTHBUFFER
@@ -97,6 +103,7 @@
 				float3 normalOS:NORMAL;
 				float4 tangentOS:TANGENT;
 				float2 uv:TEXCOORD0;
+				float3 color:COLOR;
 				A2V_LIGHTMAP
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -104,41 +111,68 @@
 			struct v2f
 			{
 				float4 positionCS : SV_POSITION;
+				float3 color:COLOR;
 				float4 uv:TEXCOORD0;
 				float3 positionWS:TEXCOORD1;
 				float4 positionHCS:TEXCOORD2;
 				half3 normalWS:TEXCOORD3;
 				half3 tangentWS:TEXCOORD4;
 				half3 biTangentWS:TEXCOORD5;
+				half3 viewDirWS:TEXCOORD6;
 				V2F_FOG(7)
 				V2F_LIGHTMAP(8)
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
+			struct f2o
+			{
+				float4 result:SV_TARGET;
+				float depth:SV_DEPTH;
+			};
+		
 			v2f vert(a2f v)
 			{
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				o.uv = float4( TRANSFORM_TEX_INSTANCE(v.uv,_MainTex),TRANSFORM_TEX_INSTANCE(v.uv,_DetailNormalTex));
-				o.positionWS=TransformObjectToWorld(v.positionOS);
+				o.positionWS= TransformObjectToWorld(v.positionOS);
 				o.positionCS = TransformObjectToHClip(v.positionOS);
 				o.positionHCS = o.positionCS;
-				o.normalWS=normalize(mul((float3x3)unity_ObjectToWorld,v.normalOS));
-				o.tangentWS=normalize(mul((float3x3)unity_ObjectToWorld,v.tangentOS.xyz));
-				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
+				o.normalWS = TransformObjectNormalToWorld(v.normalOS);
+				o.tangentWS = normalize(mul((float3x3)unity_ObjectToWorld,v.tangentOS.xyz));
+				o.biTangentWS = cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
+				o.viewDirWS = GetViewDirectionWS(o.positionWS);
+				o.color = v.color;
 				LIGHTMAP_TRANSFER(v,o)
 				FOG_TRANSFER(o)
 				return o;
 			}
+			float3 CalculateAlbedo(float2 uv,float4 color)
+			{
+				float4 sample = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv)*INSTANCE(_Color);
+				AlphaClip(sample.a);
+				return sample.rgb*color.rgb;
+			}
+
+			float3 CalculateEmission(float2 uv,float4 color)
+			{
+				return SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,uv).rgb*INSTANCE(_EmissionColor).rgb;
+			}
+		
+			#define TRANSFER_POSITION_WS(v) TransformObjectToWorld(v.positionOS)
+			#define GET_ALBEDO(i) CalculateAlbedo(i.uv,i.color);
+			#define GET_EMISSION(i) CalculateEmission(i.uv,i.color);
+		
 		ENDHLSL
+		
 		Pass
 		{
 			NAME "FORWARD"
 			Tags{"LightMode" = "UniversalForward"}
 			HLSLPROGRAM
 			#pragma vertex vert
-			#pragma fragment frag
+			#pragma fragment fragForward
 			#include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
 			#include "Assets/Shaders/Library/BRDF/BRDFInput.hlsl"
 			
@@ -149,7 +183,7 @@
 			#pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
             #pragma multi_compile _ SHADOWS_SHADOWMASK
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
-            #pragma multi_compile _ LIGHTMAP_ON
+            #pragma multi_compile _ LIGHTMAP_ON LIGHTMAP_CUSTOM LIGHTMAP_INTERPOLATE
 			
             #pragma multi_compile_fog
             #pragma target 3.5
@@ -218,20 +252,21 @@
 			
 			#include "Assets/Shaders/Library/BRDF/BRDFLighting.hlsl"
 
-			float4 frag(v2f i,out float depth:SV_DEPTH) :SV_TARGET
+			f2o fragForward(v2f i)
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
+				f2o o;
 				
+				o.depth=i.positionCS.z;
 				float3 positionWS=i.positionWS;
 				float3 normalWS=normalize(i.normalWS);
 				half3 biTangentWS=normalize(i.biTangentWS);
 				half3 tangentWS=normalize(i.tangentWS);
 				float3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
-				float3 viewDirWS=-GetCameraRealDirectionWS(positionWS);
+				float3 viewDirWS=normalize(i.viewDirWS);
 				half3 normalTS=half3(0,0,1);
 				float2 baseUV=i.uv.xy;
-				depth=i.positionCS.z;
-				ParallaxUVMapping(baseUV,depth,positionWS,TBNWS,viewDirWS);
+				ParallaxUVMapping(baseUV,o.depth,positionWS,TBNWS,viewDirWS);
 				
 				#if _NORMALMAP
 					normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
@@ -244,9 +279,8 @@
 				
 				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV)*INSTANCE(_Color);
 				AlphaClip(color.a);
-				half3 albedo=color.rgb;
+				half3 albedo=color.rgb*i.color.rgb;
 				half3 emission=SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,baseUV).rgb*INSTANCE(_EmissionColor).rgb;
-
 				half glossiness=INSTANCE(_Glossiness);
 				half metallic=INSTANCE(_Metallic);
 				half ao=1.h;
@@ -259,11 +293,11 @@
 				#endif
 
 				BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,glossiness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,anisotropic);
-				
+
 				half3 finalCol=0;
 				Light mainLight=GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
-				half3 indirectDiffuse= IndirectBRDFDiffuse(mainLight,i.lightmapUV,normalWS);
-				half3 indirectSpecular=IndirectBRDFSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
+				half3 indirectDiffuse= IndirectDiffuse(mainLight,i,normalWS);
+				half3 indirectSpecular=IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
 				finalCol+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 				
 				#if _MATCAP
@@ -282,48 +316,76 @@
             	#endif
 				FOG_MIX(i,finalCol);
 				finalCol+=surface.emission;
-				return half4(finalCol,color.a);
+
+				o.result=half4(finalCol,color.a);
+				return o;
 			}
 			ENDHLSL
 		}
 
 		Pass
 		{
-            Name "Meta"
-            Tags{"LightMode" = "Meta"}
-
-            Cull Back
-
-            HLSLPROGRAM
-            #pragma vertex MetaVertex
-            #pragma fragment MetaFragment
-            #include "Assets/Shaders/Library/Meta.hlsl"
-            ENDHLSL
-		}
-		
-		Pass
-		{
-			NAME "MAIN"
+			NAME "DEPTH"
 			Tags{"LightMode" = "DepthOnly"}
+			
+			Blend Off
+			ZWrite On
+			ZTest LEqual
+			
 			HLSLPROGRAM
 			#pragma vertex vert
-			#pragma fragment ShadowFragment
-				
-			float4 ShadowFragment(v2f i,out float depth:SV_DEPTH) :SV_TARGET
+			#pragma fragment DepthFragment
+			f2o DepthFragment(v2f i)
 			{
+				f2o o;
+				o.depth=i.positionCS.z;
 				half3 normalWS=normalize(i.normalWS);
 				half3 biTangentWS=normalize(i.biTangentWS);
 				half3 tangentWS=normalize(i.tangentWS);
 				half3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
 				half3 viewDirWS=GetViewDirectionWS(i.positionWS);
-				depth=i.positionCS.z;
-            	ParallaxUVMapping(i.uv.xy,depth,i.positionWS,TBNWS,viewDirWS);
+            	ParallaxUVMapping(i.uv.xy,o.depth,i.positionWS,TBNWS,viewDirWS);
 				AlphaClip(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv.xy).a*INSTANCE(_Color.a));
-				return 0;
+				o.result=i.positionCS.z;
+				return o;
 			}
 			ENDHLSL
 		}
-		
-		USEPASS "Hidden/ShadowCaster/MAIN"
+		Pass
+		{
+			NAME "SHADOWCASTER"
+			Tags{"LightMode" = "ShadowCaster"}
+			
+			Blend Off
+			ZWrite On
+			ZTest LEqual
+			
+			HLSLPROGRAM
+			#define A2V_SHADOW_DEPTH float2 uv:TEXCOORD0;
+			#define V2F_SHADOW_DEPTH float2 uv:TEXCOORD0;
+			#define TRANSFER_SHADOW_DEPTH(v,o) o.uv=TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
+			#define MIX_SHADOW_DEPTH(i) AlphaClip(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv.xy).a*INSTANCE(_Color.a));
+			
+            #include "Assets/Shaders/Library/Passes/ShadowCaster.hlsl"
+			#pragma vertex ShadowVertex
+			#pragma fragment ShadowFragment
+			ENDHLSL
+		}
+		Pass
+		{
+            Name "META"
+            Tags{"LightMode" = "Meta"}
+            Cull Back
+			Blend Off
+			ZWrite On
+			ZTest LEqual
+
+            HLSLPROGRAM
+            #include "Assets/Shaders/Library/Passes/Meta.hlsl"
+            #pragma vertex MetaVertex
+            #pragma fragment MetaFragment
+            ENDHLSL
+		}
 	}
+	
 }

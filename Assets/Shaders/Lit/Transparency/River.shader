@@ -19,7 +19,7 @@
     	
     	[Header(Lighting)]
     	_SpecularAmount("Specular Amount",Range(.8,0.99999))=1
-    	_SpecularStrength("Specular Strength",Range(0.5,5))=1
+    	_SpecularStrength("Specular Strength",Range(0,1))=1
     	
     	[Header(_Fresnel)]
     	[Toggle(_FRESNEL)]_Fresnel("Enable",int)=1
@@ -74,7 +74,6 @@
             #pragma shader_feature_local_fragment _FRESNEL
             
 			#include "Assets/Shaders/Library/Common.hlsl"
-            #define IGI
 			#include "Assets/Shaders/Library/Lighting.hlsl"
             
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
@@ -238,7 +237,7 @@
             	float4 reflection=IndirectSpecular(screenUV,eyeDepthSurface,normalTS);
 				aboveSurfaceColor=lerp(aboveSurfaceColor, reflection.rgb,reflection.a*INSTANCE(_Strength));
             	
-            	float specular=GetSpecular(normalWS,lightDirWS,viewDirWS,INSTANCE(_SpecularAmount));
+            	float specular=GetSpecular(normalWS,lightDirWS,viewDirWS,INSTANCE(_SpecularAmount))*40;
             	specular*=INSTANCE(_SpecularStrength);
             	aboveSurfaceColor=aboveSurfaceColor+lightCol*specular;
             	

@@ -62,6 +62,7 @@ namespace TEditor
                 return;
             
             List<Vector3> vertices = new List<Vector3>();
+            // List<Vector2> uvs = new List<Vector2>();
             List<int> indices = new List<int>();
             List<Vector3> normals = new List<Vector3>();
             List<Vector4> tangents = new List<Vector4>();
@@ -79,7 +80,7 @@ namespace TEditor
                 for (int i = 0; i < 6; i++)
                 {
                     normals.Add(Vector3.up);
-                    tangents.Add(Vector3.right);
+                    tangents.Add(Vector3.right.ToVector4(1f));
                 }
                 
                 indices.Add(index+0);

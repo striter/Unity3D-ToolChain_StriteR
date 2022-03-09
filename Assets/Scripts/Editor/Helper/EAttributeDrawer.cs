@@ -11,12 +11,12 @@ namespace TEditor
     #region Attributes
     public class MainAttributePropertyDrawer<T> : PropertyDrawer where T : Attribute
     {
-        static readonly Type s_PropertyDrawerType = typeof(PropertyDrawer);
-        PropertyDrawer m_PropertyDrawer;
+        static readonly Type kPropertyDrawerType = typeof(PropertyDrawer);
+        private PropertyDrawer m_SubPropertyDrawer;
         PropertyDrawer GetSubPropertyDrawer(SerializedProperty _property)
         {
-            if (m_PropertyDrawer != null)
-                return m_PropertyDrawer;
+            if (m_SubPropertyDrawer != null)
+                return m_SubPropertyDrawer;
 
             FieldInfo targetField = _property.GetFieldInfo();
             IEnumerable<Attribute> attributes = targetField.GetCustomAttributes();
@@ -27,25 +27,26 @@ namespace TEditor
             Attribute nextAttribute = attributes.ElementAt(order);
             Type attributeType = nextAttribute.GetType();
             Type propertyDrawerType = (Type)Type.GetType("UnityEditor.ScriptAttributeUtility,UnityEditor").GetMethod("GetDrawerTypeForType", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { attributeType });
-            m_PropertyDrawer = (PropertyDrawer)Activator.CreateInstance(propertyDrawerType);
-            s_PropertyDrawerType.GetField("m_FieldInfo", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(m_PropertyDrawer, targetField);
-            s_PropertyDrawerType.GetField("m_Attribute", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(m_PropertyDrawer, nextAttribute);
-            m_PropertyDrawer.attribute.order = order;
-            return m_PropertyDrawer;
+            m_SubPropertyDrawer = (PropertyDrawer)Activator.CreateInstance(propertyDrawerType);
+            kPropertyDrawerType.GetField("m_FieldInfo", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(m_SubPropertyDrawer, targetField);
+            kPropertyDrawerType.GetField("m_Attribute", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(m_SubPropertyDrawer, nextAttribute);
+            return m_SubPropertyDrawer;
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             var customDrawerHeight = GetSubPropertyDrawer(property)?.GetPropertyHeight(property, label);
-            return customDrawerHeight.HasValue ? customDrawerHeight.Value : EditorGUI.GetPropertyHeight(property, label, true);
+            return customDrawerHeight ?? EditorGUI.GetPropertyHeight(property, label, true);
         }
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             var customDrawer = GetSubPropertyDrawer(property);
             if (customDrawer != null)
+            {
                 customDrawer.OnGUI(position, property, label);
-            else
-                EditorGUI.PropertyField(position, property, label, true);
+                return;
+            }
+            EditorGUI.PropertyField(position, property, label, true);
         }
         public bool CheckPropertyAvailable(bool fold, SerializedProperty _property, MFoldoutAttribute _attribute)
         {
@@ -63,6 +64,7 @@ namespace TEditor
         public bool OnGUIAttributePropertyCheck(Rect _position, SerializedProperty _property, out T _targetAttribute, params SerializedPropertyType[] _checkTypes)
         {
             _targetAttribute = null;
+            
             if (_checkTypes.Length!=0&&_checkTypes.All(p => _property.propertyType != p))
             {
                 EditorGUI.LabelField(_position,
@@ -142,7 +144,6 @@ namespace TEditor
     [CustomPropertyDrawer(typeof(ExtendButtonAttribute))]
     public class ButtonPropertyDrawer : SubAttributePropertyDrawer<ExtendButtonAttribute>
     {
-
         bool GetMethod(SerializedProperty _property, string _methodName, out MethodInfo _info)
         {
             _info = null;
@@ -161,11 +162,13 @@ namespace TEditor
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             var buttonAttribute = attribute as ExtendButtonAttribute;
-            return EditorGUI.GetPropertyHeight(property, label,true) + buttonAttribute.m_Buttons.Length*20f;
+            return EditorGUI.GetPropertyHeight(property,label) + buttonAttribute.m_Buttons.Length*20f;
         }
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var buttonAttribute = attribute as ExtendButtonAttribute;
+            if (!OnGUIAttributePropertyCheck(position, property, out var buttonAttribute))
+                return;
+            
             EditorGUI.PropertyField(position.Resize(position.size-new Vector2(0,20*buttonAttribute.m_Buttons.Length)), property, label,true);
             position = position.Reposition(position.x, position.y + EditorGUI.GetPropertyHeight(property, label,true) + 2);
             foreach (var (title,method,parameters) in buttonAttribute.m_Buttons)
