@@ -44,6 +44,8 @@
 		
 		[Foldout(LIGHTMAP_CUSTOM,LIGHTMAP_INTERPOLATE)]_LightmapST("CLightmap UV",Vector)=(1,1,1,1)
 		[Foldout(LIGHTMAP_CUSTOM,LIGHTMAP_INTERPOLATE)]_LightmapIndex("CLightmap Index",int)=0
+		[Foldout(LIGHTMAP_INTERPOLATE)]_LightmapInterpolateST("CLightmap Interpolate UV",Vector)=(1,1,1,1)
+		[Foldout(LIGHTMAP_INTERPOLATE)]_LightmapInterpolateIndex("CLightmap Interpolate Index",int)=0
 	}
 	SubShader
 	{
@@ -87,6 +89,9 @@
 				INSTANCING_PROP(float,_AlphaClipRange)
 				INSTANCING_PROP(float4,_LightmapST)
 			    INSTANCING_PROP(float,_LightmapIndex)
+		
+				INSTANCING_PROP(float4,_LightmapInterpolateST)
+			    INSTANCING_PROP(float,_LightmapInterpolateIndex)
 			INSTANCING_BUFFER_END
 
 			#include "Assets/Shaders/Library/Lighting.hlsl"

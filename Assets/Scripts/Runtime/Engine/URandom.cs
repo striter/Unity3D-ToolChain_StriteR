@@ -16,8 +16,8 @@ public static class URandom
         Vector2 randomCirlce = new Vector2(Mathf.Sin(radin), Mathf.Cos(radin));
         return new Vector2(randomCirlce.x, randomCirlce.y);
     }
-    public static Vector3 RandomUnitSphere(System.Random seed = null) => Random01(seed) * RandomVector3(seed);
-    public static Vector3 RandomVector3(System.Random seed = null)
+    public static Vector3 RandomUnitSphere(System.Random seed = null) => Random01(seed) * RandomDirection(seed);
+    public static Vector3 RandomDirection(System.Random seed = null)
     {
         //Normalization
         // float x = RandomUnit(seed);
@@ -26,8 +26,9 @@ public static class URandom
         // return new Vector3(x, y, z).normalized;
         
         //Spehrerical
-        float theta = Random01(seed) * Mathf.PI;
-        float phi = Mathf.Acos( RandomUnit(seed));
+        float v = Random01(seed);
+        float theta = v * Mathf.PI * 2;
+        float phi = Mathf.Acos(  RandomUnit(seed));
         float sinPhi = Mathf.Sin(phi);
         float cosPhi = Mathf.Cos(phi);
         float sinTheta = Mathf.Sin(theta);

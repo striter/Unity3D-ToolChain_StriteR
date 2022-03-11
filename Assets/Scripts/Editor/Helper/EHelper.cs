@@ -22,8 +22,8 @@ namespace TEditor
             if (!UEAsset.SaveFilePath(out var filePath, "asset", "LightmapCollection_Default"))
                 return;
             
-            LightmapParameterCollection collection = Editor.CreateInstance<LightmapParameterCollection>();
-            collection.ExportFromScene(Selection.activeTransform);
+            EnvironmentCollection collection = Editor.CreateInstance<EnvironmentCollection>();
+            collection.Export(Selection.activeTransform);
             UEAsset.CreateOrReplaceMainAsset(collection,UEPath.FileToAssetPath(filePath));
         }
         

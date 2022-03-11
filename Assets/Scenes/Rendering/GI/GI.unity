@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 2619091}
   - component: {fileID: 2619090}
   - component: {fileID: 2619089}
+  - component: {fileID: 2619092}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -199,14 +200,47 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2619088}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.10250238, y: -0, z: -0, w: 0.9947328}
+  m_LocalPosition: {x: 0, y: 1.43, z: -5.66}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 11.767, y: 0, z: 0}
+--- !u!114 &2619092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2619088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
 --- !u!1001 &463510168
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -294,6 +328,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e75a6036637d704c8da6ef2fc59041f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Lightmaps: {fileID: 11400000, guid: 4c3a7d363ab5ff940b43a16c03d989a6, type: 2}
-  m_Src: {fileID: 11400000, guid: 57b2f98005e5e59479d908a4e06f148c, type: 2}
-  m_Dst: {fileID: 11400000, guid: 37a784c9c3e0d0e4ba7bd836005a410f, type: 2}
+  m_Src: {fileID: 11400000, guid: 4f49832e854135e478d8feae49edc2e3, type: 2}
+  m_Dst: {fileID: 11400000, guid: 57b2f98005e5e59479d908a4e06f148c, type: 2}

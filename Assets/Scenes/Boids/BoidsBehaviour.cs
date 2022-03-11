@@ -36,7 +36,7 @@ namespace Boids
         public virtual void Spawn(BoidsActor _actor,Matrix4x4 _landing)
         {
             m_Actor = _actor;
-            m_Velocity = _landing.MultiplyVector(URandom.RandomVector3());
+            m_Velocity = _landing.MultiplyVector(URandom.RandomDirection());
             
             m_DesiredPosition = _landing.MultiplyPoint(Vector3.zero);
             m_DesiredRotation = _landing.rotation;

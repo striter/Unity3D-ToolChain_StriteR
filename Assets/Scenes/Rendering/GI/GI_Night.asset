@@ -9,13 +9,32 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2900b9921869c294a9dd0b7e087cc6c7, type: 3}
-  m_Name: GI_Night
+  m_Script: {fileID: 11500000, guid: 484e01c1de5f6c940884c8677f916259, type: 3}
+  m_Name: GI_Night.asset
   m_EditorClassIdentifier: 
-  m_Environment:
-    m_LightmapColors:
-    - {fileID: 2800000, guid: 7dd36fed0ee468e45ab47acd1a2750d8, type: 3}
-    m_EnvironmentReflection: {fileID: 0}
-    m_SkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
-    m_EquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
-    m_GroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
+  m_Parameters:
+  - index: 0
+    scaleOffset: {x: 0.12986696, y: 0.12986696, z: 0.43306705, w: 0.34055293}
+  - index: 0
+    scaleOffset: {x: 0.16922058, y: 0.16922058, z: 0.43290743, w: 0.2267001}
+  - index: 0
+    scaleOffset: {x: 0.16922058, y: 0.16922058, z: 0.43290743, w: 0.11300689}
+  - index: 0
+    scaleOffset: {x: 0.16922058, y: 0.16922058, z: 0.43290743, w: -0.00068631914}
+  - index: 0
+    scaleOffset: {x: 0.4296875, y: 0.4296875, z: 0, w: 0}
+  - index: 0
+    scaleOffset: {x: 0.1192307, y: 0.1192307, z: 0.60546875, w: 0}
+  m_LightmapColors:
+  - {fileID: 2800000, guid: 7dd36fed0ee468e45ab47acd1a2750d8, type: 3}
+  m_EnvironmentReflection: {fileID: 0}
+  m_SHData:
+    l00: {x: 0.4426313, y: 0.47663823, z: 0.5111611}
+    l10: {x: -0.0009562527, y: -0.0010308208, z: -0.001149866}
+    l11: {x: 0.084449135, y: 0.09438141, z: 0.11564708}
+    l12: {x: 0.00038625888, y: 0.00040021693, z: 0.00033566687}
+    l20: {x: -0.0034560245, y: -0.0036927334, z: -0.0040053204}
+    l21: {x: 0.000008967323, y: 0.00004679912, z: -0.00007577942}
+    l22: {x: 0.0011932438, y: 0.0026805876, z: 0.002288702}
+    l23: {x: -0.00039058187, y: -0.00041851238, z: -0.00031542813}
+    l24: {x: 0.005699318, y: 0.008497912, z: 0.008120772}

@@ -365,7 +365,7 @@ namespace Rendering.PostProcess
                     Random random = new Random(m_RandomVectorKeywords?.GetHashCode() ?? "AOCodeDefault".GetHashCode());
                     Vector4[] randomVectors = new Vector4[m_MaxArraySize];
                     for (int i = 0; i < m_MaxArraySize; i++)
-                        randomVectors[i] = URandom.RandomVector3(random)*Mathf.Lerp( 1f-m_Radius,1f,URandom.Random01(random));
+                        randomVectors[i] = URandom.RandomDirection(random)*Mathf.Lerp( 1f-m_Radius,1f,URandom.Random01(random));
                     _material.SetFloat(ID_Bias,m_Radius+m_Bias);
                     _material.SetFloat(ID_Radius, m_Radius);
                     _material.SetInt(ID_SampleCount, m_SampleCount);

@@ -73,11 +73,11 @@ Material:
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _DisintegrateAmount: 0.22
+    - _DisintegrateAmount: 0.69
     - _DissolveEdgeWidth: 0.124
     - _DstBlend: 0
     - _FlowAmount: 5
-    - _FlowExpand: 5
+    - _FlowExpand: 1.71
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1

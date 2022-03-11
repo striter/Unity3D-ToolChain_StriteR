@@ -24,7 +24,7 @@ namespace Boids.Behaviours
         
         public void Begin(BoidsActor _actor)
         {
-            m_StartleDirection = URandom.RandomVector3();
+            m_StartleDirection = URandom.RandomDirection();
             m_StartleDirection *= Mathf.Sign(Vector3.Dot(m_StartleDirection,   _actor.m_Target.m_Up));
             m_StartleCounter.Set(m_StartleConfig.duration.Random());
             m_ReactionCounter.Set(m_StartleConfig.reaction.Random());
