@@ -3,40 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="92a6fb5e-0b8c-4e1a-8b06-b7827ef4a308" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Cubemap/TCM_Church.cubemap" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Cubemap/TCM_Church.cubemap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Boids/BoidState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Boids/BoidState.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Boids/BoidsBehaviour.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Boids/BoidsBehaviour.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/Effects/Effects.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/Effects/Effects.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GIExport.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GIExport.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GIImport.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GIImport.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GIPersistent.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GIPersistent.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GISetting.lighting" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GISetting.lighting" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Day.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Day.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Day.asset.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Day.asset.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Day.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Day.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Day/LightingData.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Day/LightingData.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Day/Lightmap-0_comp_light.exr" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Day/Lightmap-0_comp_light.exr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Lightmap.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Lightmap.asset.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night.asset.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night.asset.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night/LightingData.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night/LightingData.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night/Lightmap-0_comp_dir.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night/Lightmap-0_comp_dir.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night/Lightmap-0_comp_light.exr" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night/Lightmap-0_comp_light.exr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Helper/EHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Helper/EHelper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/PostProcess/PostProcess_Opaque.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/PostProcess/PostProcess_Opaque.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/Utilities.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/Utilities/LightmapParameterCollection.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/Utilities/LightmapParameterCollection.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Engine/URandom.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Engine/URandom.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Effects/Depth/Decal.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Effects/Depth/Decal.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Effects/Dissolve.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Effects/Dissolve.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Effects/Geometry/Disintegrate.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Effects/Geometry/Disintegrate.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/IndirectDiffuse/EnvironmentCollection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/IndirectDiffuse/EnvironmentCollection.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Shaders/Library/Lighting/GlobalIllumination.hlsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Library/Lighting/GlobalIllumination.hlsl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/PBR/UberPBR.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/PBR/UberPBR.shader" afterDir="false" />
     </list>
@@ -125,7 +94,7 @@
       <workItem from="1646912871400" duration="127000" />
       <workItem from="1646913011295" duration="2247000" />
       <workItem from="1646963483846" duration="1155000" />
-      <workItem from="1646967436390" duration="8898000" />
+      <workItem from="1646967436390" duration="9817000" />
     </task>
     <servers />
   </component>

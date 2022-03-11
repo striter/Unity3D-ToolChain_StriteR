@@ -147,7 +147,6 @@ namespace Rendering
                 }
             }
         }
-
         public static void Dispose()
         {
             URender.EnableGlobalKeywords(kEnvironmentKeywords, -1);

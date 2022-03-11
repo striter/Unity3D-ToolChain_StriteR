@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 484e01c1de5f6c940884c8677f916259, type: 3}
-  m_Name: GI_Night.asset
+  m_Name: GI_Night
   m_EditorClassIdentifier: 
   m_Parameters:
   - index: 0
@@ -27,7 +27,8 @@ MonoBehaviour:
     scaleOffset: {x: 0.1192307, y: 0.1192307, z: 0.60546875, w: 0}
   m_LightmapColors:
   - {fileID: 2800000, guid: 7dd36fed0ee468e45ab47acd1a2750d8, type: 3}
-  m_EnvironmentReflection: {fileID: 0}
+  m_EnvironmentReflection: {fileID: 8900000, guid: e32cac85d58dbdc43b1753ee900767d0,
+    type: 3}
   m_SHData:
     l00: {x: 0.4426313, y: 0.47663823, z: 0.5111611}
     l10: {x: -0.0009562527, y: -0.0010308208, z: -0.001149866}

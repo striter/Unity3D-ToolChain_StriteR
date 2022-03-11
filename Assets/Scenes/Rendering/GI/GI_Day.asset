@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 484e01c1de5f6c940884c8677f916259, type: 3}
-  m_Name: GI_Day.asset
+  m_Name: GI_Day
   m_EditorClassIdentifier: 
   m_Parameters:
   - index: 0
@@ -27,7 +27,8 @@ MonoBehaviour:
     scaleOffset: {x: 0.1192307, y: 0.1192307, z: 0.60546875, w: 0}
   m_LightmapColors:
   - {fileID: 2800000, guid: 4163505c2d47c2643b11b0e9845270a0, type: 3}
-  m_EnvironmentReflection: {fileID: 0}
+  m_EnvironmentReflection: {fileID: 8900000, guid: 3dcf04e5c18643140b6a93b6dd9897ef,
+    type: 3}
   m_SHData:
     l00: {x: 0.84707505, y: 1.0161873, z: 0.98348093}
     l10: {x: -0.008255918, y: -0.01037547, z: -0.010771989}

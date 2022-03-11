@@ -24,7 +24,8 @@ half3 IndirectDiffuse_SH(half3 _normal)
     #endif
 
     #if defined(ENVIRONMENT_INTERPOLATE)
-        half3 shl2Interpolate = SampleSHL2(_normal,unity_SHArL,unity_SHAgL,unity_SHAbL,unity_SHBrL,unity_SHBgL,unity_SHBbL,unity_SHCL);
+        half3 shl2Interpolate = SampleSHL2(_normal,_SHArL,_SHAgL,_SHAbL,_SHBrL,_SHBgL,_SHBbL,_SHCL);
+        shl2=lerp(shl2,shl2Interpolate,_EnvironmentInterpolate);
     #endif
     return shl2;
 }
@@ -198,14 +199,6 @@ half4 IndirectSpecular(float2 screenUV,float eyeDepth, half3 normalTS)
 //Indirect Specular
 TEXTURECUBE(_SpecCube0);SAMPLER(sampler_SpecCube0);
 TEXTURECUBE(_SpecCube0_Interpolate);SAMPLER(sampler_SpecCube0_Interpolate);
-#if defined(ENVIRONMENT_CUSTOM) || defined(ENVIRONMENT_INTERPOLATE)
-    #define SPECCUBE0 _SpecCube0
-    #define SPECCUBESAMPLER sampler_SpecCube0
-#else
-    #define SPECCUBE0 unity_SpecCube0
-    #define SPECCUBESAMPLER samplerunity_SpecCube0
-#endif
-
 half3 SampleCubeSpecular(TEXTURECUBE_PARAM(cube,cubeSampler) ,half3 reflectDir,float perceptualRoughness)
 {
     half mip = perceptualRoughness * (1.7 - 0.7 * perceptualRoughness) * UNITY_SPECCUBE_LOD_STEPS;
@@ -218,10 +211,16 @@ half3 IndirectCubeSpecular(half3 reflectDir, float perceptualRoughness)
     #if defined(_ENVIRONMENTREFLECTIONS_OFF)
         return _GlossyEnvironmentColor.rgb;
     #endif
-    half3 specular = SampleCubeSpecular(TEXTURECUBE_ARGS(SPECCUBE0,SPECCUBESAMPLER),reflectDir,perceptualRoughness);
-    #if LIGHTMAP_INTERPOLATE
-        specular = lerp(specular , SampleCubeSpecular(TEXTURECUBE_ARGS(_SpecCube0_Interpolate,sampler_SpecCube0_Interpolate),reflectDir,perceptualRoughness),_EnvironmentInterpolate);
-    #endif 
+    
+    #if defined(ENVIRONMENT_CUSTOM) || defined(ENVIRONMENT_INTERPOLATE)
+    half3 specular = SampleCubeSpecular(TEXTURECUBE_ARGS(_SpecCube0,sampler_SpecCube0),reflectDir,perceptualRoughness);
+        #if ENVIRONMENT_INTERPOLATE
+            specular = lerp(specular , SampleCubeSpecular(TEXTURECUBE_ARGS(_SpecCube0_Interpolate,sampler_SpecCube0_Interpolate),reflectDir,perceptualRoughness),_EnvironmentInterpolate);
+        #endif 
+    #else
+        half3 specular = SampleCubeSpecular(TEXTURECUBE_ARGS(unity_SpecCube0,samplerunity_SpecCube0),reflectDir,perceptualRoughness);
+    #endif
+    
     return specular;
 }
 
