@@ -361,7 +361,7 @@ namespace Rendering.Pipeline
             camera.cullingMatrix = cullingMatrix * planeMirrorMatrix;
 
             DrawingSettings drawingSettings = _pass.CreateDrawingSettings(m_ShaderTagIDs, ref _renderingData,  SortingCriteria.CommonOpaque);
-            FilteringSettings m_FilterSettings = new FilteringSettings(_data.m_IncludeTransparent? RenderQueueRange.all : RenderQueueRange.opaque);
+            FilteringSettings filterSettings = new FilteringSettings(_data.m_IncludeTransparent? RenderQueueRange.all : RenderQueueRange.opaque);
             Matrix4x4 projectionMatrix = GL.GetGPUProjectionMatrix(cameraData.GetProjectionMatrix(), cameraData.IsCameraProjectionMatrixFlipped());
             Matrix4x4 viewMatrix = cameraData.GetViewMatrix();
             viewMatrix*= planeMirrorMatrix;
@@ -379,12 +379,12 @@ namespace Rendering.Pipeline
                 if (cameraData.camera.TryGetCullingParameters(out ScriptableCullingParameters cullingParameters))
                 {
                     cullingParameters.maximumVisibleLights = _data.m_AdditionalLightcount;
-                    _context.DrawRenderers(_context.Cull(ref cullingParameters), ref drawingSettings, ref m_FilterSettings);
+                    _context.DrawRenderers(_context.Cull(ref cullingParameters), ref drawingSettings, ref filterSettings);
                 }
             }
             else
             {
-                _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref m_FilterSettings);
+                _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
             }
             
             _cmd.Clear();

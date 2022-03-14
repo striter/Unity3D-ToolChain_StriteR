@@ -165,6 +165,7 @@ namespace ExampleScenes.Algorithm.MarchingCube
             Refresh();
         }
 
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             if (!Application.isPlaying)
@@ -184,6 +185,7 @@ namespace ExampleScenes.Algorithm.MarchingCube
                     Gizmos_Extend.DrawString(cube.position,$"{cubeByte},{module},{orientation}");
             }
         }
+#endif
     }
 
     public class MarchingCubeActor:ITransform

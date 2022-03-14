@@ -15,7 +15,7 @@ namespace TEditor
         #region Assets
         public static T CreateOrReplaceMainAsset<T>(T asset, string path) where T : UnityEngine.Object
         {
-            asset.name = UEPath.GetFileName(path);
+            asset.name = UEPath.RemoveExtension(UEPath.GetFileName(path));
             UnityEngine.Object previousAsset = AssetDatabase.LoadMainAssetAtPath(path);
             T replacedAsset = null;
 

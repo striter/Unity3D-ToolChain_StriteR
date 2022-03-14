@@ -18,6 +18,7 @@ namespace ExampleScenes.Algorithm
         public Vector3 m_ToVector = Vector3.forward;
 
         public Vector3 m_FromToRotateVector = Vector3.up;
+#if UNITY_EDITOR
         void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
@@ -50,6 +51,7 @@ namespace ExampleScenes.Algorithm
             Gizmos.DrawLine(Vector3.zero,URotation.FromTo3x3(from,to)*m_FromToRotateVector*.5f);
 
         }
+#endif
     }
 
 }

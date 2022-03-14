@@ -37,6 +37,11 @@ namespace ExampleScenes.Rendering.GI
 
             EnvironmentCollection.Interpolate(m_Renderers,src,dst,m_SwitchTimer.m_TimeElapsedScale);
         }
+
+        private void OnDestroy()
+        {
+            EnvironmentCollection.Dispose();
+        }
     }
 
 }

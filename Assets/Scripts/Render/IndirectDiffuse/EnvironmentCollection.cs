@@ -26,6 +26,7 @@ namespace Rendering
             // shadowMask = _data.shadowMask;
         }
     }
+    
     [Serializable]
     public class EnvironmentCollection:ScriptableObject
     {
@@ -43,6 +44,7 @@ namespace Rendering
             m_EnvironmentReflection = RenderSettings.customReflection;
             m_SHData = SphericalHarmonicsExport.ExportL2Gradient(4096,RenderSettings.ambientSkyColor,RenderSettings.ambientEquatorColor,RenderSettings.ambientGroundColor);
         }
+
         private const int kMaxLightmapCount = 10;
         private static int[] GetLightmapIDs(string _keyword)
         {
@@ -52,15 +54,14 @@ namespace Rendering
             return ids;
         }
 
-        
         private static readonly int kEnvironmentInterpolate = Shader.PropertyToID("_EnvironmentInterpolate");
-        
-        private static readonly string[] kLightmapKeywords = {"LIGHTMAP_CUSTOM", "LIGHTMAP_INTERPOLATE"};
+
+        private static readonly string kLightmapKeyword = "LIGHTMAP_ON";
+        private static readonly string[] kEnvironmentKeywords = {"ENVIRONMENT_CUSTOM", "ENVIRONMENT_INTERPOLATE"};
         private static readonly int kLightmapIndex = Shader.PropertyToID("_LightmapIndex");        private static readonly int kLightmapInterpolateIndex = Shader.PropertyToID("_LightmapInterpolateIndex");
         private static readonly int kLightmapSTID = Shader.PropertyToID("_LightmapST");        private static readonly int kLightmapInterpolateSTID = Shader.PropertyToID("_LightmapInterpolateST");
         private static readonly int[] kLightmapIDs = GetLightmapIDs("_Lightmap");        private static readonly int[] kLightmapInterpolateIDs = GetLightmapIDs("_Lightmap_Interpolate");
 
-        private static readonly string[] kEnvironmentKeywords = {"ENVIRONMENT_CUSTOM", "ENVIRONMENT_INTERPOLATE"};
         private static readonly int kSpecCube0ID = Shader.PropertyToID("_SpecCube0"); private static readonly int kSpecCube0InterpolateID = Shader.PropertyToID("_SpecCube0_Interpolate");
 
         private static readonly int kSHAr = Shader.PropertyToID("_SHAr");        private static readonly int kSHArL = Shader.PropertyToID("_SHArL");
@@ -70,9 +71,9 @@ namespace Rendering
         private static readonly int kSHBg = Shader.PropertyToID("_SHBg");        private static readonly int kSHBgL = Shader.PropertyToID("_SHBgL");
         private static readonly int kSHBb = Shader.PropertyToID("_SHBb");        private static readonly int kSHBbL = Shader.PropertyToID("_SHBbL");
         private static readonly int kSHC = Shader.PropertyToID("_SHC");          private static readonly int kSHCL = Shader.PropertyToID("_SHCL");
+
         public void Apply(MeshRenderer[] _renderers)
         {
-            URender.EnableGlobalKeywords(kEnvironmentKeywords, 1);
             //To do: Spherical Harmonics L2 Calculation
             m_SHData.OutputSH(out var _SHAr,out var _SHAg,out var _SHAb,out var _SHBr,out var _SHBg,out var _SHBb,out var _SHC);
             Shader.SetGlobalVector(kSHAr,_SHAr);
@@ -82,7 +83,7 @@ namespace Rendering
             Shader.SetGlobalVector(kSHBg,_SHBg);
             Shader.SetGlobalVector(kSHBb,_SHBb);
             Shader.SetGlobalVector(kSHC,_SHC);
-            
+
             if(m_EnvironmentReflection)
                 Shader.SetGlobalTexture(kSpecCube0ID,m_EnvironmentReflection);
 
@@ -100,8 +101,9 @@ namespace Rendering
                 var renderer = _renderers[i];
                 renderer.material.SetVector(kLightmapSTID,param.scaleOffset);
                 renderer.material.SetInt(kLightmapIndex,param.index);
-                renderer.material.EnableKeywords(kLightmapKeywords, 1);
+                renderer.material.EnableKeyword(kLightmapKeyword,true);
             }
+            URender.EnableGlobalKeywords(kEnvironmentKeywords, 1);
         }
         public static void Interpolate( MeshRenderer[] _renderers, EnvironmentCollection _collection1,EnvironmentCollection _collection2,float _interpolate)
         {
@@ -114,7 +116,8 @@ namespace Rendering
             _collection1.Apply(_renderers);
             if (_interpolate <= float.Epsilon)
                 return;
-            
+
+            URender.EnableGlobalKeywords(kEnvironmentKeywords, 2);
             Shader.SetGlobalFloat(kEnvironmentInterpolate,_interpolate);
             
             _collection2.m_SHData.OutputSH(out var _SHAr,out var _SHAg,out var _SHAb,out var _SHBr,out var _SHBg,out var _SHBb,out var _SHC);
@@ -126,7 +129,6 @@ namespace Rendering
             Shader.SetGlobalVector(kSHBbL,_SHBb);
             Shader.SetGlobalVector(kSHCL,_SHC);
             
-            URender.EnableGlobalKeywords(kEnvironmentKeywords, 2);
             if(_collection2.m_EnvironmentReflection)
                 Shader.SetGlobalTexture(kSpecCube0InterpolateID,_collection2.m_EnvironmentReflection);
 
@@ -137,8 +139,6 @@ namespace Rendering
             for (int i = 0; i < _renderers.Length; i++)
             {
                 var renderer = _renderers[i];
-                renderer.material.EnableKeywords(kLightmapKeywords, 2);
-                
                 var parameter2 = _collection2.m_Parameters[i];
                 if (parameter2.index != -1)
                 {

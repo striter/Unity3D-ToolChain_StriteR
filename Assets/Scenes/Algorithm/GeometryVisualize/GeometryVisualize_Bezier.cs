@@ -12,7 +12,7 @@ namespace ExampleScenes.Algorithm.Geometry
         public FBezierCurveQuadratic m_QuadraticCurve;
         [Header("Cubic")] 
         public FBezierCurveCubic m_CubicCurve;
-        
+        #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
@@ -24,6 +24,7 @@ namespace ExampleScenes.Algorithm.Geometry
             Gizmos.color = Color.grey;
             m_CubicCurve.GetBoundingBox().DrawGizmos();
         }
+        #endif
     }
 
 }

@@ -28,9 +28,9 @@
 		[ToggleTex(_DEPTHMAP)][NoScaleOffset]_DepthTex("Texure",2D)="white"{}
 		[Foldout(_DEPTHMAP)]_DepthScale("Scale",Range(0.001,.5))=1
 		[Foldout(_DEPTHMAP)]_DepthOffset("Offset",Range(-.5,.5))=0
-		[Toggle(_DEPTHBUFFER)]_DepthBuffer("Affect Buffer",float)=0
+		[Toggle(_DEPTHBUFFER)]_DepthBuffer("Affect Buffer",int)=0
 		[Foldout(_DEPTHBUFFER)]_DepthBufferScale("Affect Scale",float)=0
-		[Toggle(_PARALLAX)]_Parallax("Parallax",float)=0
+		[Toggle(_PARALLAX)]_Parallax("Parallax",int)=0
 		[Enum(_16,16,_32,32,_64,64,_128,128)]_ParallaxCount("Parallax Count",int)=16
 		
 		[Header(Render Options)]
@@ -42,8 +42,8 @@
         [Toggle(_ALPHACLIP)]_AlphaClip("Alpha Clip",float)=0
         [Foldout(_ALPHACLIP)]_AlphaClipRange("Range",Range(0.01,1))=0.01
 		
-		[Foldout(LIGHTMAP_CUSTOM,LIGHTMAP_INTERPOLATE)]_LightmapST("CLightmap UV",Vector)=(1,1,1,1)
-		[Foldout(LIGHTMAP_CUSTOM,LIGHTMAP_INTERPOLATE)]_LightmapIndex("CLightmap Index",int)=0
+		[Foldout(LIGHTMAP_ON,LIGHTMAP_INTERPOLATE)]_LightmapST("CLightmap UV",Vector)=(1,1,1,1)
+		[Foldout(LIGHTMAP_ON,LIGHTMAP_INTERPOLATE)]_LightmapIndex("CLightmap Index",int)=0
 		[Foldout(LIGHTMAP_INTERPOLATE)]_LightmapInterpolateST("CLightmap Interpolate UV",Vector)=(1,1,1,1)
 		[Foldout(LIGHTMAP_INTERPOLATE)]_LightmapInterpolateIndex("CLightmap Interpolate Index",int)=0
 	}
@@ -59,10 +59,6 @@
 			#include "Assets/Shaders/Library/Common.hlsl"
 			
 			#pragma multi_compile_instancing
-			#pragma shader_feature_local _PBRMAP
-			#pragma shader_feature_local _NORMALMAP
-			#pragma shader_feature_local _DETAILNORMALMAP
-			#pragma shader_feature_local _MATCAP
 
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_EmissionTex);SAMPLER(sampler_EmissionTex);
@@ -89,7 +85,6 @@
 				INSTANCING_PROP(float,_AlphaClipRange)
 				INSTANCING_PROP(float4,_LightmapST)
 			    INSTANCING_PROP(float,_LightmapIndex)
-		
 				INSTANCING_PROP(float4,_LightmapInterpolateST)
 			    INSTANCING_PROP(float,_LightmapInterpolateIndex)
 			INSTANCING_BUFFER_END
@@ -168,9 +163,8 @@
 			#define TRANSFER_POSITION_WS(v) TransformObjectToWorld(v.positionOS)
 			#define GET_ALBEDO(i) CalculateAlbedo(i.uv,i.color);
 			#define GET_EMISSION(i) CalculateEmission(i.uv,i.color);
-		
 		ENDHLSL
-		
+
 		Pass
 		{
 			NAME "FORWARD"
@@ -180,16 +174,21 @@
 			#pragma fragment fragForward
 			#include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
 			#include "Assets/Shaders/Library/BRDF/BRDFInput.hlsl"
-			
-			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
-            #pragma multi_compile _ _ADDITIONAL_LIGHTS
+
+			#pragma multi_compile_fragment _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+            #pragma multi_compile_fragment _ _ADDITIONAL_LIGHTS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
 
 			#pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
             #pragma multi_compile _ SHADOWS_SHADOWMASK
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
-            #pragma multi_compile _ LIGHTMAP_ON LIGHTMAP_CUSTOM LIGHTMAP_INTERPOLATE
+            #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ ENVIRONMENT_CUSTOM ENVIRONMENT_INTERPOLATE
+
+			#pragma shader_feature_local _PBRMAP
+			#pragma shader_feature_local _NORMALMAP
+			#pragma shader_feature_local _DETAILNORMALMAP
+			#pragma shader_feature_local _MATCAP
 			
             #pragma multi_compile_fog
             #pragma target 3.5
@@ -215,7 +214,7 @@
 				half roughnessB=surface.roughnessB;
 				half TDH= lightSurface.TDH;
 				half BDH= lightSurface.BDH;
-				
+
 				half normalDistribution=
 				#if _NDF_BLINNPHONG
 				        NDF_BlinnPhong(NDH, smoothness,max(1, smoothness *40));
@@ -243,7 +242,7 @@
 				normalDistribution=clamp(normalDistribution,0,100.h);
 				return normalDistribution;
 			}
-			
+
 			float GetNormalizationTerm(BRDFSurface surface,BRDFLightInput lightSurface)
 			{
 				float LDH=max(0., lightSurface.LDH);
@@ -255,7 +254,7 @@
 				        return 0;
 				#endif
 			}
-			
+
 			#include "Assets/Shaders/Library/BRDF/BRDFLighting.hlsl"
 
 			f2o fragForward(v2f i)
@@ -273,7 +272,7 @@
 				half3 normalTS=half3(0,0,1);
 				float2 baseUV=i.uv.xy;
 				ParallaxUVMapping(baseUV,o.depth,positionWS,TBNWS,viewDirWS);
-				
+
 				#if _NORMALMAP
 					normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
 					#if _DETAILNORMALMAP
@@ -282,7 +281,7 @@
 					#endif
 					normalWS=normalize(mul(transpose(TBNWS), normalTS));
 				#endif
-				
+
 				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV)*INSTANCE(_Color);
 				AlphaClip(color.a);
 				half3 albedo=color.rgb*i.color.rgb;
@@ -305,16 +304,16 @@
 				half3 indirectDiffuse= IndirectDiffuse(mainLight,i,normalWS);
 				half3 indirectSpecular=IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
 				finalCol+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
-				
+
 				#if _MATCAP
 					float2 matcapUV=float2(dot(UNITY_MATRIX_V[0].xyz,normalWS),dot(UNITY_MATRIX_V[1].xyz,normalWS));
 					matcapUV=matcapUV*.5h+.5h;
 					mainLight.color=SAMPLE_TEXTURE2D(_Matcap,sampler_Matcap,matcapUV).rgb*INSTANCE(_MatCapColor).rgb;
 					mainLight.distanceAttenuation = 1;
 				#endif
-				
+
 				finalCol+=BRDFLighting(surface,mainLight);
-		
+
 				#if _ADDITIONAL_LIGHTS
             	uint pixelLightCount = GetAdditionalLightsCount();
 			    for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)

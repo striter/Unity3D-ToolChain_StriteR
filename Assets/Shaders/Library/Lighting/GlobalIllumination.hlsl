@@ -31,10 +31,6 @@ half3 IndirectDiffuse_SH(half3 _normal)
 }
 
 //Lightmaps
-#if defined(LIGHTMAP_ON) || defined(LIGHTMAP_CUSTOM) || defined(LIGHTMAP_INTERPOLATE)
-    #define ILIGHTMAPPED
-#endif
-
 half3 SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_PARAM(lightmapTex,lightmapSampler),float2 lightmapUV)
 {
     #ifdef UNITY_LIGHTMAP_FULL_HDR
@@ -54,99 +50,92 @@ half3 SampleLightmapDirectional(TEXTURE2D_LIGHTMAP_PARAM(lightmapTex,lightmapSam
     return illuminance * directionParam;
 }
 
-#if defined(LIGHTMAP_CUSTOM) || defined(LIGHTMAP_INTERPOLATE)
 
-
-SAMPLER(sampler_Lightmap0);
-TEXTURE2D(_Lightmap0); TEXTURE2D(_Lightmap_Interpolate0); 
-TEXTURE2D(_Lightmap1); TEXTURE2D(_Lightmap_Interpolate1);
-TEXTURE2D(_Lightmap2); TEXTURE2D(_Lightmap_Interpolate2);
-TEXTURE2D(_Lightmap3); TEXTURE2D(_Lightmap_Interpolate3);
-TEXTURE2D(_Lightmap4); TEXTURE2D(_Lightmap_Interpolate4);
-TEXTURE2D(_Lightmap5); TEXTURE2D(_Lightmap_Interpolate5);
-TEXTURE2D(_Lightmap6); TEXTURE2D(_Lightmap_Interpolate6);
-TEXTURE2D(_Lightmap7); TEXTURE2D(_Lightmap_Interpolate7);
-TEXTURE2D(_Lightmap8); TEXTURE2D(_Lightmap_Interpolate8);
-TEXTURE2D(_Lightmap9); TEXTURE2D(_Lightmap_Interpolate9);
-
-half3 SampleCustomLightmap(float4 _lightmapUV)
-{
-    half3 illuminance = 0;
-    float2 lightmapUV = _lightmapUV.xy;
-    [branch]
-    switch(_LightmapIndex)
-    {
-        case 0:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap0,sampler_Lightmap0),lightmapUV);break;
-        case 1:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap1,sampler_Lightmap0),lightmapUV);break;
-        case 2:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap2,sampler_Lightmap0),lightmapUV);break;
-        case 3:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap3,sampler_Lightmap0),lightmapUV);break;
-        case 4:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap4,sampler_Lightmap0),lightmapUV);break;
-        case 5:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap5,sampler_Lightmap0),lightmapUV);break;
-        case 6:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap6,sampler_Lightmap0),lightmapUV);break;
-        case 7:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap7,sampler_Lightmap0),lightmapUV);break;
-        case 8:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap8,sampler_Lightmap0),lightmapUV);break;
-        case 9:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap9,sampler_Lightmap0),lightmapUV);break;
-    }
-
-    #if LIGHTMAP_INTERPOLATE
-    half3 interpolate=0;
-    float2 interpolateUV = _lightmapUV.zw;
-    [branch]
-    switch(_LightmapInterpolateIndex)
-    {
-        case 0:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate0,sampler_Lightmap0),interpolateUV);break;
-        case 1:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate1,sampler_Lightmap0),interpolateUV);break;
-        case 2:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate2,sampler_Lightmap0),interpolateUV);break;
-        case 3:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate3,sampler_Lightmap0),interpolateUV);break;
-        case 4:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate4,sampler_Lightmap0),interpolateUV);break;
-        case 5:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate5,sampler_Lightmap0),interpolateUV);break;
-        case 6:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate6,sampler_Lightmap0),interpolateUV);break;
-        case 7:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate7,sampler_Lightmap0),interpolateUV);break;
-        case 8:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate8,sampler_Lightmap0),interpolateUV);break;
-        case 9:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate9,sampler_Lightmap0),interpolateUV);break;
-    }
-    illuminance = lerp(illuminance,interpolate,_EnvironmentInterpolate);
-    #endif
-    return illuminance;
-}
-
-
-half3 IndirectDiffuse_CustomLightmap(inout Light mainLight,float4 lightmapUV,half3 normalWS)
-{
-    half3 illuminance =  SampleCustomLightmap(lightmapUV);
-    MixRealtimeAndBakedGI(mainLight,normalWS,illuminance);
-    return illuminance;
-}
-
-#endif
-
-
-half3 IndirectDiffuse_Lightmap(inout Light mainLight,float2 lightmapUV,half3 normalWS)
-{
-    half3 illuminance=
-    #if defined(DIRLIGHTMAP_COMBINED)
-        SampleLightmapDirectional(TEXTURE2D_LIGHTMAP_ARGS(unity_Lightmap,samplerunity_Lightmap),TEXTURE2D_LIGHTMAP_ARGS(unity_LightmapInd,samplerunity_Lightmap),lightmapUV.xy,normalWS);
-    #else
-        SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(unity_Lightmap,samplerunity_Lightmap), lightmapUV.xy);
-    #endif
-    MixRealtimeAndBakedGI(mainLight,normalWS,illuminance);
-    return illuminance;
-}
-
-
-#ifdef ILIGHTMAPPED
+#if defined(LIGHTMAP_ON)
     #define A2V_LIGHTMAP float2 lightmapUV:TEXCOORD1;
-    #if defined(LIGHTMAP_CUSTOM) || defined(LIGHTMAP_INTERPOLATE)
+    #if defined(ENVIRONMENT_CUSTOM) || defined(ENVIRONMENT_INTERPOLATE)
+        SAMPLER(sampler_Lightmap0);
+        TEXTURE2D(_Lightmap0); TEXTURE2D(_Lightmap_Interpolate0); 
+        TEXTURE2D(_Lightmap1); TEXTURE2D(_Lightmap_Interpolate1);
+        TEXTURE2D(_Lightmap2); TEXTURE2D(_Lightmap_Interpolate2);
+        TEXTURE2D(_Lightmap3); TEXTURE2D(_Lightmap_Interpolate3);
+        TEXTURE2D(_Lightmap4); TEXTURE2D(_Lightmap_Interpolate4);
+        TEXTURE2D(_Lightmap5); TEXTURE2D(_Lightmap_Interpolate5);
+        TEXTURE2D(_Lightmap6); TEXTURE2D(_Lightmap_Interpolate6);
+        TEXTURE2D(_Lightmap7); TEXTURE2D(_Lightmap_Interpolate7);
+        TEXTURE2D(_Lightmap8); TEXTURE2D(_Lightmap_Interpolate8);
+        TEXTURE2D(_Lightmap9); TEXTURE2D(_Lightmap_Interpolate9);
+        half3 SampleCustomLightmap(float4 _lightmapUV)
+        {
+            half3 illuminance = 0;
+            float2 lightmapUV = _lightmapUV.xy;
+            [branch]
+            switch(_LightmapIndex)
+            {
+                case 0:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap0,sampler_Lightmap0),lightmapUV);break;
+                case 1:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap1,sampler_Lightmap0),lightmapUV);break;
+                case 2:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap2,sampler_Lightmap0),lightmapUV);break;
+                case 3:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap3,sampler_Lightmap0),lightmapUV);break;
+                case 4:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap4,sampler_Lightmap0),lightmapUV);break;
+                case 5:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap5,sampler_Lightmap0),lightmapUV);break;
+                case 6:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap6,sampler_Lightmap0),lightmapUV);break;
+                case 7:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap7,sampler_Lightmap0),lightmapUV);break;
+                case 8:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap8,sampler_Lightmap0),lightmapUV);break;
+                case 9:illuminance= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap9,sampler_Lightmap0),lightmapUV);break;
+            }
+
+            #if defined(ENVIRONMENT_INTERPOLATE)
+                half3 interpolate=0;
+                float2 interpolateUV = _lightmapUV.zw;
+                [branch]
+                switch(_LightmapInterpolateIndex)
+                {
+                    case 0:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate0,sampler_Lightmap0),interpolateUV);break;
+                    case 1:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate1,sampler_Lightmap0),interpolateUV);break;
+                    case 2:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate2,sampler_Lightmap0),interpolateUV);break;
+                    case 3:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate3,sampler_Lightmap0),interpolateUV);break;
+                    case 4:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate4,sampler_Lightmap0),interpolateUV);break;
+                    case 5:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate5,sampler_Lightmap0),interpolateUV);break;
+                    case 6:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate6,sampler_Lightmap0),interpolateUV);break;
+                    case 7:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate7,sampler_Lightmap0),interpolateUV);break;
+                    case 8:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate8,sampler_Lightmap0),interpolateUV);break;
+                    case 9:interpolate= SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap_Interpolate9,sampler_Lightmap0),interpolateUV);break;
+                }
+                illuminance = lerp(illuminance,interpolate,_EnvironmentInterpolate);
+            #endif
+            return illuminance;
+        }
+
+        half3 IndirectDiffuse_CustomLightmap(inout Light mainLight,float4 lightmapUV,half3 normalWS)
+        {
+            half3 illuminance =  SampleCustomLightmap(lightmapUV);
+            MixRealtimeAndBakedGI(mainLight,normalWS,illuminance);
+            return illuminance;
+        }
+
         #define V2F_LIGHTMAP(index) float4 lightmapUV:TEXCOORD##index;
         #define LIGHTMAP_TRANSFER(v,o) o.lightmapUV=float4(v.lightmapUV*_LightmapST.xy+_LightmapST.zw,v.lightmapUV*_LightmapInterpolateST.xy + _LightmapInterpolateST.zw);
         #define IndirectDiffuse(mainLight,i,normalWS) IndirectDiffuse_CustomLightmap(mainLight,i.lightmapUV,normalWS)
     #else
+
+        half3 IndirectDiffuse_Lightmap(inout Light mainLight,float2 lightmapUV,half3 normalWS)
+        {
+            half3 illuminance=
+            #if defined(DIRLIGHTMAP_COMBINED)
+                SampleLightmapDirectional(TEXTURE2D_LIGHTMAP_ARGS(unity_Lightmap,samplerunity_Lightmap),TEXTURE2D_LIGHTMAP_ARGS(unity_LightmapInd,samplerunity_Lightmap),lightmapUV.xy,normalWS);
+            #else
+            SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(unity_Lightmap,samplerunity_Lightmap), lightmapUV.xy);
+            #endif
+            MixRealtimeAndBakedGI(mainLight,normalWS,illuminance);
+            return illuminance;
+        }
+
         #define V2F_LIGHTMAP(index) float2 lightmapUV:TEXCOORD##index;
         #define LIGHTMAP_TRANSFER(v,o) o.lightmapUV=v.lightmapUV*unity_LightmapST.xy+unity_LightmapST.zw;
         #define IndirectDiffuse(mainLight,i,normalWS) IndirectDiffuse_Lightmap(mainLight,i.lightmapUV,normalWS)
     #endif
-#else
 
+#else
     #define A2V_LIGHTMAP
     #define V2F_LIGHTMAP(index)
     #define LIGHTMAP_TRANSFER(v,o)

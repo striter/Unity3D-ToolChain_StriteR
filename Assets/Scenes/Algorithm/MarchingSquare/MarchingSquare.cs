@@ -82,6 +82,7 @@ namespace ExampleScenes.Algorithm.MarchingSquare
                 square.Refresh(m_Nodes.m_Dic);
         }
 
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             if (m_Squares == null)
@@ -89,11 +90,11 @@ namespace ExampleScenes.Algorithm.MarchingSquare
             foreach (var squares in m_Squares)
                 Gizmos_Extend.DrawString(squares.m_Position,squares.m_Byte.ToString());
         }
-
         private void OnGUI()
         {
             TouchTracker.DrawDebugGUI();
         }
+#endif
     }
 
     public class Node : ITransform,IPoolCallback<Int2>

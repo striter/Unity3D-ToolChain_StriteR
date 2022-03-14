@@ -12,6 +12,7 @@ namespace ExampleScenes.Algorithm.Geometry
         public bool m_DrawBounding;
 
         public GBox[] m_IntersectionAABBs;
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             var frustumPlanes = m_Frustum.GetFrustumPlanes();
@@ -53,7 +54,7 @@ namespace ExampleScenes.Algorithm.Geometry
                 Gizmos.color = Color.white.SetAlpha(.5f);
                 frustumPoints.bounding.DrawGizmos();
             }
-            
         }
+#endif
     }
 }
