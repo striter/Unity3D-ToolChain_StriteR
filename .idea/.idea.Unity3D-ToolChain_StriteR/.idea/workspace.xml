@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="92a6fb5e-0b8c-4e1a-8b06-b7827ef4a308" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GITest.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GITest.shader" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Material0.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Material0.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Library/Lighting/GlobalIllumination.hlsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Library/Lighting/GlobalIllumination.hlsl" afterDir="false" />
-    </list>
+    <list default="true" id="92a6fb5e-0b8c-4e1a-8b06-b7827ef4a308" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -96,6 +90,7 @@
       <workItem from="1646983560569" duration="9585000" />
       <workItem from="1647221512476" duration="8514000" />
       <workItem from="1647237669650" duration="15674000" />
+      <workItem from="1647318197610" duration="235000" />
     </task>
     <servers />
   </component>
