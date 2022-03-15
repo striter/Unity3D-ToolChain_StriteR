@@ -30,6 +30,7 @@ namespace TEditor
             m_SubPropertyDrawer = (PropertyDrawer)Activator.CreateInstance(propertyDrawerType);
             kPropertyDrawerType.GetField("m_FieldInfo", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(m_SubPropertyDrawer, targetField);
             kPropertyDrawerType.GetField("m_Attribute", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(m_SubPropertyDrawer, nextAttribute);
+            m_SubPropertyDrawer.attribute.order = order;
             return m_SubPropertyDrawer;
         }
 

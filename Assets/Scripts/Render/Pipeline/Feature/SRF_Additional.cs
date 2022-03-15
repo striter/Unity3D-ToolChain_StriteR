@@ -78,9 +78,11 @@ namespace Rendering.Pipeline
         private SRC_CameraBehaviour m_PostProcessingPreview;
         void EnqueuePostProcess(ScriptableRenderer _renderer,RenderingData _data,SRC_CameraBehaviour _override)
         {
+            var globals = PostProcessGlobalVolume.sVolumes.Select(p => p.GetComponents<IPostProcessBehaviour>())
+                .Resolve();
             if (_data.postProcessingEnabled)
             {
-                EnqueuePostProcesses(_renderer, _data.cameraData.camera.transform);
+                EnqueuePostProcesses(_renderer, _data.cameraData.camera.transform,globals);
                 if (_override != null && _override.m_PostProcessPreview)
                     m_PostProcessingPreview = _override;
             }
@@ -89,17 +91,17 @@ namespace Rendering.Pipeline
             {
                 if (m_PostProcessingPreview == null || !m_PostProcessingPreview.m_PostProcessPreview)
                     return;
-                EnqueuePostProcesses(_renderer,m_PostProcessingPreview.transform);
+                EnqueuePostProcesses(_renderer,m_PostProcessingPreview.transform,globals);
             }
         }
 
-        void EnqueuePostProcesses(ScriptableRenderer _renderer, Transform _camera)
+        void EnqueuePostProcesses(ScriptableRenderer _renderer, Transform _camera,IEnumerable<IPostProcessBehaviour> _globals)
         {
             var postProcesses = _camera.GetComponents<IPostProcessBehaviour>();
             
             m_OpaqueProcessing.Clear();
             m_ScreenProcessing.Clear();
-            foreach (var postProcess in postProcesses.Extend(PostProcessGlobalVolume.sVolumes.Select(p=>p.m_PostProcesses).Resolve() ))
+            foreach (var postProcess in _globals.Extend(postProcesses))
             {
                 #if UNITY_EDITOR
                     postProcess.ValidateParameters();

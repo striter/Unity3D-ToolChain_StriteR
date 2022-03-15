@@ -3,32 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="92a6fb5e-0b8c-4e1a-8b06-b7827ef4a308" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Algorithm/GeometryVisualize/GeometryVisualize_Bezier.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Algorithm/GeometryVisualize/GeometryVisualize_Bezier.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Algorithm/GeometryVisualize/GeometryVisualize_Frustum.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Algorithm/GeometryVisualize/GeometryVisualize_Frustum.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Algorithm/MarchingCube/MarchingCube.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Algorithm/MarchingCube/MarchingCube.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Algorithm/MarchingSquare/MarchingSquare.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Algorithm/MarchingSquare/MarchingSquare.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Algorithm/Rotation/Rotation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Algorithm/Rotation/Rotation.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GIImport.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GIImport.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Day.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Day.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Environment.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Environment.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GITest.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GITest.shader" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Material0.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Material0.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night/LightingData.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night/LightingData.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night/Lightmap-0_comp_light.exr" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GI_Night/Lightmap-0_comp_light.exr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UEAsset.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UEAsset.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/IndirectDiffuse/EnvironmentCollection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/IndirectDiffuse/EnvironmentCollection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/Pipeline/Pass/SRP_Reflection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/Pipeline/Pass/SRP_Reflection.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Shaders/Library/Lighting/GlobalIllumination.hlsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Library/Lighting/GlobalIllumination.hlsl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/PBR/UberPBR.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/PBR/UberPBR.shader" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logs/Packages-Update.log" beforeDir="false" afterPath="$PROJECT_DIR$/Logs/Packages-Update.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/packages-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/GraphicsSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/GraphicsSettings.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectVersion.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectVersion.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/QualitySettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/QualitySettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,9 +29,11 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Algorithm/HexagonGrid/HexagonGridGizmos.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e3b5c42ff2fa4e1a881dfa28c9fbe357157400/aa/e4fcdaaa/Mathf.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.mathematics@1.2.5/Unity.Mathematics/double2x4.gen.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scenes/Algorithm/Rotation/Rotation.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.core@12.1.5/ShaderLibrary/EntityLighting.hlsl" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.core@12.1.5/ShaderLibrary/API/D3D11.hlsl" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Runtime/Core/URotation.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/Bezier/OBezier.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scenes/Algorithm/Rotation/Rotation.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e3b5c42ff2fa4e1a881dfa28c9fbe357157400/81/0679d8fe/CubemapFace.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -114,7 +94,8 @@
       <workItem from="1646963483846" duration="1155000" />
       <workItem from="1646967436390" duration="10933000" />
       <workItem from="1646983560569" duration="9585000" />
-      <workItem from="1647221512476" duration="7746000" />
+      <workItem from="1647221512476" duration="8514000" />
+      <workItem from="1647237669650" duration="15674000" />
     </task>
     <servers />
   </component>

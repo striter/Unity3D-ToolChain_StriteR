@@ -80,8 +80,8 @@ namespace Geometry.Voxel
 
         public GTriangle(Vector3 _vertex0, Vector3 _vertex1, Vector3 _vertex2)
         {
-            triangle = new Triangle<Vector3>(_vertex0, _vertex1, _vertex2);
             this = default;
+            triangle = new Triangle<Vector3>(_vertex0, _vertex1, _vertex2);
             GTriangle_Ctor();
         }
 
