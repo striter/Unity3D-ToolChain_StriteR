@@ -11,7 +11,8 @@ namespace Rendering.PostProcess
 {
     public class PostProcess_Opaque:PostProcessBehaviour<PPCore_Opaque, PPData_Opaque>
     {
-        public override bool m_OpaqueProcess => true;
+        public bool m_Opaque = true;
+        public override bool m_OpaqueProcess => m_Opaque;
         public override EPostProcess Event => EPostProcess.Opaque;
 
         #region HelperFunc

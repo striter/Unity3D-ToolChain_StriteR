@@ -75,9 +75,9 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 	half anisotropic=1;
 	#if _PBRMAP
 		half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
-		glossiness=1.h-mix.r;
-		metallic=mix.g;
-		ao=mix.b;
+		glossiness*=(1.h-mix.r);
+		metallic*=mix.g;
+		ao*=mix.b;
 	#endif
 
 	BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,glossiness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,anisotropic);

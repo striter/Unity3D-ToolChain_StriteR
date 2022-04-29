@@ -573,11 +573,16 @@ public static class UCollection
         return false;
     }
     
-    public static void FillList<T>(this IEnumerable<T> _collection, List<T> _list)
+    public static void FillList<T>(this IEnumerable<T> _collection, List<T> _list,bool _sameCheck = false)
     {
         _list.Clear();
         foreach (var element in _collection)
-            _list.Add(element);
+        {
+            if (_sameCheck)
+                _list.TryAdd(element);
+            else
+                _list.Add(element);
+        }
     }
 
     #endregion
@@ -664,6 +669,7 @@ public static class UCollection
             _hashSet.Add(element);
     }  
 
+    
     public static bool TryAdd<T>(this HashSet<T> _hashSet, T _element)
     {
         if (_hashSet.Contains(_element))
@@ -673,6 +679,12 @@ public static class UCollection
         return true;
     }  
     
+    
+    public static void TryAddRange<T>(this HashSet<T> _hashSet,IEnumerable<T> _collections)
+    {
+        foreach (var element in _collections)
+            _hashSet.TryAdd(element);
+    }  
     public static bool TryRemove<T>(this HashSet<T> _hashSet, T _element)
     {
         if (!_hashSet.Contains(_element))

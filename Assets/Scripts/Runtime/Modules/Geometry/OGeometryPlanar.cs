@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Geometry.Voxel;
 using UnityEngine;
 
@@ -10,18 +11,18 @@ namespace Geometry
     [Flags]
     public enum EQuadCorner
     {
-        F=1,
-        R=2,
-        B=4,
-        L=8,
+        B=1,
+        L=2,
+        F=4,
+        R=8,
     }
     
     [Flags]
     public enum EQuadFacing
     {
-        LF=1,
-        FR=2,
-        BL=4,
+        BL=1,
+        LF=2,
+        FR=4,
         RB=8,
     }
     
@@ -30,21 +31,21 @@ namespace Geometry
     {
         DB=1,
         DL=2,
-        DF=8,
-        DR=16,
+        DF=4,
+        DR=8,
         
-        TB=32,
-        TL=64,
-        TF=128,
-        TR=256,
+        TB=16,
+        TL=32,
+        TF=64,
+        TR=128,
     }
     
     [Flags]
     public enum ECubeFacing
     {
-        LF=1,
-        FR=2,
-        BL=4,
+        BL=1,
+        LF=2,
+        FR=4,
         RB=8,
         T=16,
         D=32,
@@ -296,6 +297,21 @@ namespace Geometry
             get => this[_facing.FacingToIndex()];
             set => this[_facing.FacingToIndex()] = value;
         }
+
+        public T this[EQuadFacing _quadFacing]
+        {
+            get
+            {
+                switch (_quadFacing)
+                {
+                    default: throw new InvalidEnumArgumentException();
+                    case EQuadFacing.BL: return fBL;
+                    case EQuadFacing.FR: return fFR;
+                    case EQuadFacing.LF: return fLF;
+                    case EQuadFacing.RB: return fRB;
+                }
+            }
+        }
         
         public T this[int _index]
         {
@@ -484,11 +500,6 @@ namespace Geometry
         {
             return new Qube<T>(_convert(0,_srcQuad.vDB), _convert(1,_srcQuad.vDL), _convert(2,_srcQuad.vDF), _convert(3,_srcQuad.vDR),
                 _convert(4,_srcQuad.vTB), _convert(5,_srcQuad.vTL), _convert(6,_srcQuad.vTF), _convert(7,_srcQuad.vTR));
-        }
-        public static CubeFacing<T> Convert<Y>(CubeFacing<Y> _srcQuad, Func<Y, T> _convert)
-        {
-            return new CubeFacing<T>(_convert(_srcQuad.fBL), _convert(_srcQuad.fLF), _convert(_srcQuad.fFR), _convert(_srcQuad.fRB),
-                _convert(_srcQuad.fT), _convert(_srcQuad.fD));
         }
     }
 }

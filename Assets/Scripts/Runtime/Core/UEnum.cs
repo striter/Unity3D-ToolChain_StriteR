@@ -34,6 +34,7 @@ public static class UEnum
 
     public static T GetInvalid<T>() where T : Enum => EnumStorage<T>.m_Invalid;
     public static int GetIndex<T>(T _enum) where T:Enum=> EnumStorage<T>.m_IndexDic[_enum];
+    public static T IndexToValue<T>(int _index) where T : Enum => GetValues<T>()[_index];
     public static int Count<T>() where T : Enum => EnumStorage<T>.m_Values.Length;
     public static T GetValue<T>(int _index) where T:Enum=> EnumStorage<T>.m_ValueDic[_index];
     public static T[] GetValues<T>() where T:Enum=> EnumStorage<T>.m_Values;
@@ -47,12 +48,12 @@ public static class UEnum
         return allEnums[(index + 1) % allEnums.Length];
     }
 
-    public static bool IsFlagEnable<T>(this T _flag,T _compare) where T:Enum
-    {
-        int srcFlag = Convert.ToInt32(_flag);
-        int compareFlag = Convert.ToInt32(_compare);
-        return (srcFlag&compareFlag)== compareFlag;
-    }
+    public static bool IsFlagEnable<T>(this T _flag, T _compare) where T : Enum =>
+        IsFlagEnable(Convert.ToInt32(_flag), Convert.ToInt32((_compare)));
+    public static bool IsFlagEnable<T>(this T _flag, int _compare) where T : Enum =>
+        IsFlagEnable(Convert.ToInt32(_flag), _compare);
+    public static bool IsFlagEnable(this int _flag,int _compare)=> (_flag&_compare) == _compare;
+    
     public static bool IsFlagClear<T>(this T _flag) where T : Enum => Convert.ToInt32(_flag) == 0;
     public static IEnumerable<bool> GetNumerable<T>(this T _flags) where T:Enum
     {

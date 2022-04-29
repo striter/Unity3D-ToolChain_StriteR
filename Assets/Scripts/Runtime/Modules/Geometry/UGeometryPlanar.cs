@@ -391,7 +391,7 @@ namespace Geometry
             }
         }
 
-        public static EQubeCorner FlooredDiagonalCorner(this EQubeCorner _corner)
+        public static EQubeCorner HorizontalDiagonalCorner(this EQubeCorner _corner)
         {
             switch (_corner)
             {
@@ -409,7 +409,7 @@ namespace Geometry
         public static IEnumerable<(EQubeCorner _qube, EQubeCorner _adjactileCorner1, EQubeCorner _adjactileCorner2)> NearbyValidCornerQube(this EQubeCorner _srcCorner)
         {
             var flip = _srcCorner.FlipFloor();
-            var qube0 =  _srcCorner.FlooredDiagonalCorner();
+            var qube0 =  _srcCorner.HorizontalDiagonalCorner();
             yield return (qube0,_srcCorner,_srcCorner.FlipFloor());
 
             var qube1 = flip.NextCornerFlooredCW(1);
@@ -498,7 +498,6 @@ namespace Geometry
                     splitQubes[qube.CornerToIndex()][tuple._adjactileCorner1]=false;
                     splitQubes[qube.CornerToIndex()][tuple._adjactileCorner2]=false;
                 }
-
             }
 
             Qube<byte> byteQube = new Qube<byte>(splitQubes[0].ToByte(),splitQubes[1].ToByte(),splitQubes[2].ToByte(),splitQubes[3].ToByte(),

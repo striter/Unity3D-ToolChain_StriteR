@@ -221,3 +221,10 @@ float remap(float _value, float _from1, float _to1, float _from2, float _to2)
 {
     return lerp(_from2, _to2, invlerp(_from1, _to1, _value));
 }
+
+half2 Atlas(half2 _uv,uint2 _wh,int _index)
+{
+    half2 scale=1.0h/_wh;
+    half2 tiling=half2( _index%_wh.x,_wh.y-1u- _index/_wh.y);
+    return _uv*scale+scale*tiling;
+}

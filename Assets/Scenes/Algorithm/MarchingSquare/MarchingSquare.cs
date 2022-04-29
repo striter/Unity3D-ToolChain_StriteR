@@ -113,7 +113,7 @@ namespace ExampleScenes.Algorithm.MarchingSquare
             m_Renderer = _transform.GetComponent<MeshRenderer>();
         }
 
-        public void OnPoolInit(Action<Int2> _DoRecycle)
+        public void OnPoolCreate(Action<Int2> _DoRecycle)
         {
         }
 

@@ -9,101 +9,130 @@ namespace MeshFragment
 {
     internal class MeshFragmentCollector
     {
-        public int embedMaterial;
-        public List<Vector3> vertices;
-        public List<int> indexes;
-        public List<Vector3> normals;
-        public List<Vector4> tangents;
-        public List<Color> colors;
-        public List<Vector2> uvs;
-        private MeshFragmentCollector() {  }
-        public static MeshFragmentCollector Spawn(int _materialIndex)
+        public  int embedMaterial { get; private set; }
+        public readonly List<Vector3> vertices=new List<Vector3>();
+        public readonly List<Vector3> normals=new List<Vector3>();
+        public readonly List<Vector4> tangents=new List<Vector4>();
+        public readonly List<Color> colors=new List<Color>();
+        public readonly List<Vector2> uvs=new List<Vector2>();
+        public readonly List<int> indexes=new List<int>();
+
+        public MeshFragmentCollector Initialize(int _materialIndex)
         {
-            return new MeshFragmentCollector()
-            {
-                embedMaterial = _materialIndex,
-                vertices = TSPoolList<Vector3>.Spawn(),
-                indexes = TSPoolList<int>.Spawn(),
-                normals = TSPoolList<Vector3>.Spawn(),
-                tangents=TSPoolList<Vector4>.Spawn(),
-                colors = TSPoolList<Color>.Spawn(),
-                uvs = TSPoolList<Vector2>.Spawn(),
-            };
+            embedMaterial = _materialIndex;
+            return this;
         }
-        public static void Recycle(MeshFragmentCollector _collector)
+    
+        public void Append(IEnumerable<IMeshFragment> _meshFragments)
         {
-            TSPoolList<Vector3>.Recycle(_collector.vertices);
-            TSPoolList<int>.Recycle(_collector.indexes);
-            TSPoolList<Vector3>.Recycle(_collector.normals);
-            TSPoolList<Vector4>.Recycle(_collector.tangents);
-            TSPoolList<Color>.Recycle(_collector.colors);
-            TSPoolList<Vector2>.Recycle(_collector.uvs);
+            TSPoolList<IMeshFragment>.Spawn(out var tempList);
+            _meshFragments.FillList(tempList);
+
+
+            vertices.Clear();
+            normals.Clear();
+            tangents.Clear();
+            colors.Clear();
+            uvs.Clear();
+            indexes.Clear();
+            // int totalVertexCount = 0;
+            // int totalIndexCount = 0;
+            // foreach (var fragment in tempList)
+            // {
+            //     totalVertexCount += fragment.vertices.Count;
+            //     totalIndexCount += fragment.indexes.Count;
+            // }
+            // if (totalVertexCount > vertices.Count)
+            // {
+            //     vertices.Capacity = totalVertexCount;
+            //     normals.Capacity = totalVertexCount;
+            //     tangents.Capacity = totalVertexCount;
+            //     colors.Capacity = totalVertexCount;
+            //     uvs.Capacity = totalVertexCount;
+            //     indexes.Capacity = totalIndexCount;
+            // }
+            
+            foreach (var fragment in tempList)
+            {
+                int indexOffset = vertices.Count;
+                indexes.AddRange(fragment.indexes.Select(p=> p + indexOffset));
+                var vertexCount = fragment.vertices.Count;
+
+                var colorValid = fragment.colors != null && fragment.colors.Count > 0;
+                var tangentValid = fragment.tangents != null && fragment.tangents.Count > 0;
+                for (int i = 0; i < vertexCount; i++)
+                {
+                    vertices.Add(fragment.vertices[i]);
+                    normals.Add(fragment.normals[i]);
+                    uvs.Add( fragment.uvs[i]);
+                
+                    if(colorValid)
+                        colors.Add(fragment.colors[i]);
+                    if(tangentValid)
+                        tangents.Add(fragment.tangents[i]);
+                }
+            }
+            TSPoolList<IMeshFragment>.Recycle(tempList);
         }
     }
 
     public static class UMeshFragment
     {
-        static void AppendSubMesh(this MeshFragmentCollector _collector,MeshFragmentData _meshFragment)
-        {
-            int indexOffset = _collector.vertices.Count;
-            _collector.indexes.AddRange(_meshFragment.indexes.Select(p=> p + indexOffset));
-            var vertexCount = _meshFragment.vertices.Length;
+        private static readonly List<Vector3> kVertices=new List<Vector3>();
+        private static readonly List<Vector3> kNormals=new List<Vector3>();
+        private static readonly List<Vector4> kTangents=new List<Vector4>();
+        private static readonly List<Vector2> kUVs=new List<Vector2>();
+        private static readonly List<Color> kColors=new List<Color>();
+        private static readonly List<int> kIndexes=new List<int>();
 
-            var colorValid = _meshFragment.colors != null && _meshFragment.colors.Length > 0;
-            var tangentValid = _meshFragment.tangents != null && _meshFragment.tangents.Length > 0;
-            for (int i = 0; i < vertexCount; i++)
-            {
-                _collector.vertices.Add(_meshFragment.vertices[i]);
-                _collector.normals.Add(_meshFragment.normals[i]);
-                _collector.uvs.Add( _meshFragment.uvs[i]);
-                
-                if(colorValid)
-                    _collector.colors.Add(_meshFragment.colors[i]);
-                if(tangentValid)
-                    _collector.tangents.Add(_meshFragment.tangents[i]);
-            }
-        }
-        
-        public static void Combine(IList<MeshFragmentData> subMeshes,Mesh _mesh,Material[] _materialLibrary,out Material[] _embedMaterials)
+        public static void Combine(IEnumerable<IMeshFragment> _subMeshes,Mesh _mesh,Material[] _materialLibrary,out Material[] _embedMaterials)
         {
             TSPoolList<MeshFragmentCollector>.Spawn(out var subMeshCollectors);
-            foreach (var meshData in subMeshes)
+            var vertexCount = 0;
+            var indexCount = 0;
+            foreach (var meshGroup in _subMeshes.GroupBy(p=>p.embedMaterial))
             {
-                var embedMaterial = meshData.embedMaterial;
-                var subMeshCollector = subMeshCollectors.Find(p => p.embedMaterial == embedMaterial);
-                if (subMeshCollector == null)
-                {
-                    subMeshCollector=MeshFragmentCollector.Spawn(embedMaterial);
-                    subMeshCollectors.Add(subMeshCollector);
-                }
-
-                subMeshCollector.AppendSubMesh(meshData);
+                TSPool<MeshFragmentCollector>.Spawn(out var subMeshCollector);
+                subMeshCollector.Initialize(meshGroup.Key).Append(meshGroup);
+                subMeshCollectors.Add(subMeshCollector);
+                vertexCount += subMeshCollector.vertices.Count;
+                indexCount += subMeshCollector.indexes.Count;
             }
             
             _mesh.Clear();
             
-            TSPoolList<Vector3>.Spawn(out var vertices);
-            TSPoolList<int>.Spawn(out var indexes); 
-            TSPoolList<Vector3>.Spawn(out var normals);
-            TSPoolList<Vector4>.Spawn(out var tangents);
-            TSPoolList<Color>.Spawn(out var colors);
-            TSPoolList<Vector2>.Spawn(out var uvs);
+            kVertices.Clear();
+            kNormals.Clear();
+            kTangents.Clear();
+            kUVs.Clear();
+            kColors.Clear();
+            kIndexes.Clear();
+            // if (kVertices.Capacity < vertexCount)
+            // {
+            //     kVertices.Capacity = vertexCount;
+            //     kNormals.Capacity = vertexCount;
+            //     kTangents.Capacity = vertexCount;
+            //     kUVs.Capacity = vertexCount;
+            //     kColors.Capacity = vertexCount;
+            //     kIndexes.Capacity = indexCount;
+            // }
+            
             var subMeshCount = subMeshCollectors.Count;
             for (int i = 0; i < subMeshCount; i++)
             {
                 var subMesh = subMeshCollectors[i]; 
-                vertices.AddRange(subMesh.vertices);
-                normals.AddRange(subMesh.normals);
-                tangents.AddRange(subMesh.tangents);
-                uvs.AddRange(subMesh.uvs);
-                colors.AddRange(subMesh.colors);
+                kVertices.AddRange(subMesh.vertices);
+                kNormals.AddRange(subMesh.normals);
+                kTangents.AddRange(subMesh.tangents);
+                kUVs.AddRange(subMesh.uvs);
+                kColors.AddRange(subMesh.colors);
             }
             
-            _mesh.SetVertices(vertices);
-            _mesh.SetNormals(normals);
-            _mesh.SetTangents(tangents);
-            _mesh.SetUVs(0,uvs);
-            _mesh.SetColors(colors);
+            _mesh.SetVertices(kVertices);
+            _mesh.SetNormals(kNormals);
+            _mesh.SetTangents(kTangents);
+            _mesh.SetUVs(0,kUVs);
+            _mesh.SetColors(kColors);
             _embedMaterials = new Material[subMeshCount];
 
             var indexStart = 0;
@@ -112,23 +141,15 @@ namespace MeshFragment
             for (int i = 0; i < subMeshCount; i++)
             {
                 var subMesh = subMeshCollectors[i];
-                indexes.Clear();
-                indexes.AddRange(subMesh.indexes.Select(p=>p+indexOffset));
-                _mesh.SetIndices(indexes,MeshTopology.Triangles,i,false);
+                kIndexes.Clear();
+                kIndexes.AddRange(subMesh.indexes.Select(p=>p+indexOffset));
+                _mesh.SetIndices(kIndexes,MeshTopology.Triangles,i,false);
                 _mesh.SetSubMesh(i,new SubMeshDescriptor(indexStart,subMesh.indexes.Count));
                 indexStart += subMesh.indexes.Count;
                 indexOffset += subMesh.vertices.Count;
                 _embedMaterials[i] = _materialLibrary[subMesh.embedMaterial];
             }
-            
-            TSPoolList<Vector3>.Recycle(vertices);
-            TSPoolList<int>.Recycle(indexes);
-            TSPoolList<Vector3>.Recycle(normals);
-            TSPoolList<Vector4>.Recycle(tangents);
-            TSPoolList<Color>.Recycle(colors);
-            TSPoolList<Vector2>.Recycle(uvs);
-
-            subMeshCollectors.Traversal(MeshFragmentCollector.Recycle);
+            subMeshCollectors.Traversal(TSPool<MeshFragmentCollector>.Recycle);
             TSPoolList<MeshFragmentCollector>.Recycle(subMeshCollectors);
         }
     }

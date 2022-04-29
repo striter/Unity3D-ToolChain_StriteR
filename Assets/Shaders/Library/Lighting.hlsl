@@ -38,3 +38,4 @@ float StrandSpecular(float3 T,float3 N,float3 H,float exponent,float3 shift)
 }
 
 #include "Assets/Shaders/Library/Lighting/Shadow.hlsl"
+#include "Assets/Shaders/Library/Lighting/SSS.hlsl"

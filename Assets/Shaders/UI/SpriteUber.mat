@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Sprite
+  m_Name: SpriteUber
   m_Shader: {fileID: 4800000, guid: 457fc035eec56f54f9a0f7a2c0c8a687, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -106,7 +106,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BSC: {r: 1, g: 0, b: 1, a: 1}
-    - _Color: {r: 2.510569, g: 4.2359276, b: 7.3772106, a: 1}
+    - _Color: {r: 2, g: 2, b: 2, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlowVec: {r: 0, g: 0, b: -0.1, a: 0}
     - _LightColor: {r: 1, g: 1, b: 1, a: 0}

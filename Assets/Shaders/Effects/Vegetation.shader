@@ -1,4 +1,4 @@
-Shader "Geme/Lit/Vegetation"
+Shader "Game/Lit/Vegetation"
 {
     Properties
     {
@@ -71,9 +71,9 @@ Shader "Geme/Lit/Vegetation"
             INSTANCING_BUFFER_END
             
 			#include "Assets/Shaders/Library/Additional/Local/AlphaClip.hlsl"
-			#pragma shader_feature_local _ALPHACLIP
-            #pragma shader_feature_local _COLORMASK
-            #pragma shader_feature_local _WIGGLE
+			#pragma shader_feature_local_fragment _ALPHACLIP
+            #pragma shader_feature_local_fragment _COLORMASK
+            #pragma shader_feature_local_vertex _WIGGLE
 
             TEXTURE2D(_WindFlowTex);SAMPLER(sampler_WindFlowTex);
 
@@ -145,6 +145,7 @@ Shader "Geme/Lit/Vegetation"
                 float4 sample=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
                 half alpha=sample.a;
                 AlphaClip(alpha);
+
                 float3 albedo = 0;
                 #if _COLORMASK
                     float root=step(0.05,sample.r);

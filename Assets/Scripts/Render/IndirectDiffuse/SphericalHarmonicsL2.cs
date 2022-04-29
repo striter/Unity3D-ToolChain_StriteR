@@ -135,7 +135,7 @@ namespace Rendering.IndirectDiffuse.SphericalHarmonics
                 int width = _cubemap.width - 1;
                 int x = (int) (width * uv.x);
                 int y = (int) (width * uv.y);
-                return _cubemap.GetPixel((CubemapFace) index, x, y, 0);
+                return _cubemap.GetPixel((CubemapFace) index, x, y);
             },_randomSeed);
         }
 }

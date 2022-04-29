@@ -95,7 +95,7 @@ namespace OEntityProperty
         }
         public override string ToString_Detailed() => string.Format("{0}:C|{1:F1},M|{2:F1},MD|{3:F1}", m_Identity, m_CurAmount, m_MaxAmount, m_MaxModify);
     }
-    public class EntitySheildItem : ISPoolItem
+    public class EntitySheildItem : IPoolClass
     {
         public int m_ID { get; private set; }
         public float m_Amount { get; private set; }
@@ -107,8 +107,8 @@ namespace OEntityProperty
         }
         public void AddDelta(float _delta) => m_Amount += _delta;
 
-        public void OnPoolInit() { }
-        public void OnPoolSpawn() { }
+        public void OnPoolCreate() { }
+        public void OnPoolInitialize() { }
         public void OnPoolRecycle() { }
     }
     public class EntityShieldCombine

@@ -235,7 +235,7 @@ namespace TTouchTracker
                 return;
             }
 
-            if (!_tracks.TryFind(p => p.index == m_DragID, out var dragging))
+            if (!_tracks.TryFind(p => p.index == m_DragID, out var dragging) || _tracks[0].phase == TouchPhase.Ended)
             {
                 m_DragID = -1;
                 m_LastDrag = Vector2.zero;

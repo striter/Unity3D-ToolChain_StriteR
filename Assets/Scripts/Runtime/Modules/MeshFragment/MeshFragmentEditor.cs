@@ -66,7 +66,7 @@ namespace MeshFragment
             TSPoolList<Vector2>.Recycle(curUVs);
         }
         
-        public static MeshFragmentData[] BakeMeshFragment(Transform _transform, ref List<Material> _materialLibrary,Func<Vector3,Vector3> _objectToOrientedVertex)
+        public static FMeshFragmentData[] BakeMeshFragment(Transform _transform, ref List<Material> _materialLibrary,Func<Vector3,Vector3> _objectToOrientedVertex)
         {
            TSPoolList<MeshFragmentCollector>.Spawn(out var collectList); 
             
@@ -92,7 +92,7 @@ namespace MeshFragment
                     var collector = collectList.Find(p => p.embedMaterial == materialIndex);
                     if (collector == null)
                     {
-                        collector = MeshFragmentCollector.Spawn(materialIndex);
+                        collector = new MeshFragmentCollector().Initialize(materialIndex);
                         collectList.Add(collector);
                     }
 
@@ -100,7 +100,7 @@ namespace MeshFragment
                 }
             }
 
-            var data = collectList.Select(p => new MeshFragmentData
+            var data = collectList.Select(p => new FMeshFragmentData
             {
                 embedMaterial = p.embedMaterial,
                 vertices = p.vertices.ToArray(),
@@ -111,7 +111,6 @@ namespace MeshFragment
                 colors = p.colors.ToArray()
             }).ToArray();
             
-            collectList.Traversal(MeshFragmentCollector.Recycle);
             TSPoolList<MeshFragmentCollector>.Recycle(collectList);
             return data;
         }

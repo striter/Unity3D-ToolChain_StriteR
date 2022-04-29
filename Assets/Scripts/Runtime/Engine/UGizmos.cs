@@ -36,11 +36,11 @@ public static class Gizmos_Extend
         Handles_Extend.DrawCylinder(_pos, _rot, _radius, _height);
     }
 
-    public static void DrawTrapezium(Vector3 _pos, Quaternion _rot, Vector4 trapeziumInfo)
+    public static void DrawTrapezium(Vector3 _pos, Quaternion _rot, Vector4 _trapeziumInfo)
     {
         Handles.color = Gizmos.color;
         Handles.matrix = Gizmos.matrix;
-        Handles_Extend.DrawTrapezium(_pos, _rot, trapeziumInfo);
+        Handles_Extend.DrawTrapezium(_pos, _rot, _trapeziumInfo);
     }
     public static void DrawLine(Vector3 _src, Vector3 _dest, float _normalizedLength=1f)
     {
@@ -53,13 +53,24 @@ public static class Gizmos_Extend
         for(int i=0;i<count-1;i++)
             Gizmos.DrawLine(_points[i],_points[i+1]);
     }
-    public static void DrawLines<T>(IList<T> _points,Func<T,Vector3> _convert)
+
+    public static void DrawLines<T>(IEnumerable<T> _points,Func<T,Vector3> _convert)
     {
-        int count = _points.Count;
-        for(int i=0;i<count-1;i++)
-            Gizmos.DrawLine(_convert(_points[i]),_convert(_points[i+1]));
+        Vector3 tempPoint=default;
+        foreach (var (index,value) in _points.LoopIndex())
+        {
+            var point = _convert(value);
+            if (index == 0)
+            {
+                tempPoint = point;
+                continue;
+            }
+
+            Gizmos.DrawLine(tempPoint,point);
+            tempPoint = point;
+        }
     }
-    
+
     public static void DrawLinesConcat(params Vector3[] _lines) => DrawLinesConcat(_lines.ToList());
     public static void DrawLinesConcat(IList<Vector3> _points)
     {
@@ -86,10 +97,10 @@ public static class Gizmos_Extend
         Handles_Extend.DrawLine(_line);
     }
 
-    public static void DrawString(Vector3 positionLS,string text,float offset=1f)
+    public static void DrawString(Vector3 _positionLS,string _text,float _offset=1f)
     {
         Handles.matrix = Gizmos.matrix;
-        Handles.Label(positionLS+offset*Vector3.up,text);
+        Handles.Label(_positionLS+_offset*Vector3.up,_text);
     }
     
     public static void DrawGizmos(this GBox _box)=>Gizmos.DrawWireCube(_box.center,_box.size);

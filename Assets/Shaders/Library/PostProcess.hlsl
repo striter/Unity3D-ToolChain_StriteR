@@ -1,6 +1,7 @@
 ﻿#include "Common.hlsl"
 
 TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
+float4 _MainTex_ST;
 float4 _MainTex_TexelSize;
 #define _MainTex_TexelRight float2(1,0)*_MainTex_TexelSize.xy
 #define _MainTex_TexelUp float2(0,1)*_MainTex_TexelSize.xy

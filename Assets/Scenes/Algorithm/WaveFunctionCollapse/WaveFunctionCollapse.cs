@@ -198,7 +198,7 @@ namespace ExampleScenes.Algorithm.WaveFunctionCollapse
                 return removeList.Count > 0;
             }
 
-            public void OnPoolInit(Action<int> _DoRecycle)
+            public void OnPoolCreate(Action<int> _DoRecycle)
             {
             }
 

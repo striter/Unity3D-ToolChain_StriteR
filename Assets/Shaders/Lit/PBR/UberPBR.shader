@@ -23,6 +23,9 @@
 		[Enum(Linear,0,Overlay,1,PartialDerivative,2,UDN,3,Reoriented,4)]_DetailBlendMode("Normal Blend Mode",int)=0
 		[ToggleTex(_MATCAP)] [NoScaleOffset]_Matcap("Mat Cap",2D)="white"{}		
 		[Foldout(_MATCAP)][HDR]_MatCapColor("MatCap Color",Color)=(1,1,1,1)
+		[ToggleTex(_SSS)][NoScaleOffset]_ThicknessMap("SSS Thickness",2D)="black"{}
+		[Foldout(_SSS)]_SSSNormalInfluence("SSS Normal Influence",Range(0,1))=1
+		[Foldout(_SSS)]_SSSIntensity("SSS Intensity",Range(0.1,10))=1
 		
 		[Header(Depth)]
 		[ToggleTex(_DEPTHMAP)][NoScaleOffset]_DepthTex("Texure",2D)="white"{}
@@ -65,6 +68,7 @@
 			TEXTURE2D(_PBRTex);SAMPLER(sampler_PBRTex);
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
 			TEXTURE2D(_Matcap);SAMPLER(sampler_Matcap);
+			TEXTURE2D(_ThicknessMap);SAMPLER(sampler_ThicknessMap);
 			TEXTURE2D(_DetailNormalTex);SAMPLER(sampler_DetailNormalTex);
 			TEXTURE2D(_DepthTex);SAMPLER(sampler_DepthTex);
 			INSTANCING_BUFFER_START
@@ -82,6 +86,9 @@
 				INSTANCING_PROP(int ,_ParallaxCount)
 				INSTANCING_PROP(float3,_MatCapColor)
 
+				INSTANCING_PROP(float,_SSSIntensity)
+				INSTANCING_PROP(float,_SSSNormalInfluence)
+		
 				INSTANCING_PROP(float,_AlphaClipRange)
 				INSTANCING_PROP(float4,_LightmapST)
 			    INSTANCING_PROP(float,_LightmapIndex)
@@ -91,11 +98,12 @@
 
 			#include "Assets/Shaders/Library/Lighting.hlsl"
 			#include "Assets/Shaders/Library/Additional/Local/Parallax.hlsl"
-			#pragma shader_feature_local _PARALLAX
-			#pragma shader_feature_local _DEPTHBUFFER
-			#pragma shader_feature_local _DEPTHMAP
+			#pragma shader_feature_local_fragment _PARALLAX
+			#pragma shader_feature_local_fragment _DEPTHBUFFER
+			#pragma shader_feature_local_fragment _DEPTHMAP
 			#include "Assets/Shaders/Library/Additional/Local/AlphaClip.hlsl"
-			#pragma shader_feature_local _ALPHACLIP
+			#pragma shader_feature_local_fragment _ALPHACLIP
+			#pragma shader_feature_local_fragment _SSS
 
 			struct a2f
 			{
@@ -290,11 +298,17 @@
 				half metallic=INSTANCE(_Metallic);
 				half ao=1.h;
 				half anisotropic=INSTANCE(_AnisoTropicValue);
+				half thickness = 0;
+				half sssInfluence = INSTANCE(_SSSNormalInfluence);
+				half sssIntensity = INSTANCE(_SSSIntensity);
 				#if _PBRMAP
 					half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
 					glossiness*=1.h-mix.r;
 					metallic*=mix.g;
 					ao*=mix.b;
+				#endif
+				#if _SSS
+					thickness=SAMPLE_TEXTURE2D(_ThicknessMap,sampler_ThicknessMap,baseUV);
 				#endif
 
 				BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,glossiness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,anisotropic);
@@ -313,11 +327,20 @@
 				#endif
 
 				finalCol+=BRDFLighting(surface,mainLight);
+				#if _SSS
+					finalCol += SSSLighting(thickness,sssInfluence,sssIntensity,mainLight,surface.normal,surface.viewDir)*surface.diffuse;
+				#endif
 
 				#if _ADDITIONAL_LIGHTS
             	uint pixelLightCount = GetAdditionalLightsCount();
 			    for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
-					finalCol+=BRDFLighting(surface, GetAdditionalLight(lightIndex,i.positionWS));
+			    {
+			    	Light additionalLight = GetAdditionalLight(lightIndex,i.positionWS);
+					finalCol+=BRDFLighting(surface, additionalLight);
+				    #if _SSS
+						finalCol += SSSLighting(thickness,sssInfluence,sssIntensity,additionalLight,surface.normal,surface.viewDir)*surface.diffuse;
+					#endif
+			    }
             	#endif
 				FOG_MIX(i,finalCol);
 				finalCol+=surface.emission;

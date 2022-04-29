@@ -14,18 +14,18 @@ namespace TEditor
             //To Be Continued
         }
 
-        public static void ExportLightmapCollection()
-        {
-            if (Selection.activeTransform==null)
-                return;
-            
-            if (!UEAsset.SaveFilePath(out var filePath, "asset", "LightmapCollection_Default"))
-                return;
-            
-            EnvironmentCollection collection = Editor.CreateInstance<EnvironmentCollection>();
-            collection.Export(Selection.activeTransform);
-            UEAsset.CreateOrReplaceMainAsset(collection,UEPath.FileToAssetPath(filePath));
-        }
+        // public static void ExportLightmapCollection()
+        // {
+        //     if (Selection.activeTransform==null)
+        //         return;
+        //     
+        //     if (!UEAsset.SaveFilePath(out var filePath, "asset", "LightmapCollection_Default"))
+        //         return;
+        //     
+        //     EnvironmentCollection collection = Editor.CreateInstance<EnvironmentCollection>();
+        //     collection.Export(Selection.activeTransform);
+        //     UEAsset.CreateOrReplaceMainAsset(collection,UEPath.FileToAssetPath(filePath));
+        // }
         
         public static void CleanPersistentData()
         {

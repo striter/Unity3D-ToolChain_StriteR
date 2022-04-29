@@ -84,7 +84,7 @@ namespace PolyGrid
                 Transform = _transform;
                 m_MeshFilter = _transform.GetComponent<MeshFilter>();
             }
-            public void OnPoolInit(Action<int> _DoRecycle) { }
+            public void OnPoolCreate(Action<int> _DoRecycle) { }
 
             public void GenerateMesh(PolyArea _area)
             {

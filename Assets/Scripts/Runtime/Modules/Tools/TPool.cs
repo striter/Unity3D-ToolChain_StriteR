@@ -9,47 +9,49 @@ using Object = System.Object;
 
 namespace TPoolStatic
 {
-    public interface ISPoolItem
+    public interface IPoolClass
     {
-        void OnPoolInit();
-        void OnPoolSpawn();
+        void OnPoolCreate();
+        void OnPoolInitialize();
         void OnPoolRecycle();
     }
     public static class TSPool<T> where T : new()
     {
-        static Stack<T> m_PoolItems = new Stack<T>();
+        private static Stack<T> kPoolItems = new Stack<T>();
         public static T Spawn()
         {
             T item;
-            if (m_PoolItems.Count > 0)
+            if (kPoolItems.Count > 0)
             {
-                item = m_PoolItems.Pop();
+                item = kPoolItems.Pop();
             }
             else
             {
                 item = new T();
-                (item as ISPoolItem)?.OnPoolInit();
+                (item as IPoolClass)?.OnPoolCreate();
             }
-            (item as ISPoolItem)?.OnPoolSpawn();
+            (item as IPoolClass)?.OnPoolInitialize();
             return item;
         }
 
         public static T Spawn(out T _data) => _data = Spawn();
         public static void Recycle(T item)
         {
-            (item as ISPoolItem)?.OnPoolRecycle();
-            m_PoolItems.Push(item);
+            (item as IPoolClass)?.OnPoolRecycle();
+            kPoolItems.Push(item);
         }
         public static void Dispose()
         {
-            m_PoolItems.Clear();
-            m_PoolItems = null;
+            kPoolItems.Clear();
+            kPoolItems = null;
         }
+
+        public static void Clear() => kPoolItems.Clear();
     }
 
     public static class TSPool_Extend
     {
-        public static void Recycle<T>(this T poolItem) where T : ISPoolItem, new()
+        public static void Recycle<T>(this T poolItem) where T : IPoolClass, new()
         {
             TSPool<T>.Recycle(poolItem);
             poolItem.OnPoolRecycle();
@@ -94,6 +96,8 @@ namespace TPoolStatic
         {
             m_PoolItems.Push(item);
         }
+
+        public static void Clear() => m_PoolItems.Clear();
     }
 
     public static class TSPoolList<T>
@@ -101,6 +105,7 @@ namespace TPoolStatic
         public static List<T> Spawn() => TSPoolCollection<List<T>>.Spawn();
         public static void Spawn(out List<T> _list) =>_list=TSPoolCollection<List<T>>.Spawn();
         public static void Recycle(List<T> _list) => TSPoolCollection<List<T>>.Recycle(_list);
+        public static void Clear()=>TSPoolCollection<List<T>>.Clear();
     }
     public static class TSPoolStack<T> 
     {
@@ -176,7 +181,7 @@ namespace TPool
     }
     public interface IPoolCallback<T>
     {
-        void OnPoolInit(Action<T> _DoRecycle);
+        void OnPoolCreate(Action<T> _doRecycle);
         void OnPoolSpawn(T _identity);
         void OnPoolRecycle();
     }
@@ -209,7 +214,7 @@ namespace TPool
             {
                 targetItem = CreateNewItem(UnityEngine.Object.Instantiate(m_PoolItem, transform).transform);
                 if(targetItem is IPoolCallback<T> iPoolInit)
-                    iPoolInit.OnPoolInit(DoRecycle);
+                    iPoolInit.OnPoolCreate(DoRecycle);
             }
             if (m_Dic.ContainsKey(identity)){
                 Debug.LogError(identity + "Already Exists In Grid Dic");
@@ -331,7 +336,7 @@ namespace TPool
         {
             Transform = _transform;
         }
-        public virtual void OnPoolInit(Action<T> _DoRecycle)=>this.DoRecycle = _DoRecycle;
+        public virtual void OnPoolCreate(Action<T> _doRecycle)=>this.DoRecycle = _doRecycle;
         public virtual void OnPoolSpawn(T _identity)=> m_Identity = _identity;
         public virtual void OnPoolRecycle()=>m_Identity = default;
         public void Recycle()=>DoRecycle(m_Identity);
@@ -366,9 +371,9 @@ namespace TPool
         protected T m_PoolID { get; private set; }
         private Action<T> DoRecycle { get; set; }
 
-        public virtual void OnPoolInit(Action<T> _DoRecycle)
+        public virtual void OnPoolCreate(Action<T> _doRecycle)
         {
-            this.DoRecycle = _DoRecycle;
+            this.DoRecycle = _doRecycle;
             m_Recycled = true;
         }
 

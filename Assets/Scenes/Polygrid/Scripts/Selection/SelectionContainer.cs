@@ -11,9 +11,9 @@ public class SelectionContainer : PoolBehaviour<PolyID>
     public PolyID Identity => m_PoolID;
     public readonly List<(Vector3 position,HexCoord _vertex)> m_RelativeCornerDirections=new List<(Vector3 position, HexCoord _vertex)>();
     public MeshCollider m_Collider { get; private set; }
-    public override void OnPoolInit(Action<PolyID> _DoRecycle)
+    public override void OnPoolCreate(Action<PolyID> _DoRecycle)
     {
-        base.OnPoolInit(_DoRecycle);
+        base.OnPoolCreate(_DoRecycle);
         m_Collider = GetComponent<MeshCollider>();
     }
 

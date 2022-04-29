@@ -28,19 +28,19 @@ namespace Rendering
     }
     
     [Serializable]
-    public class EnvironmentCollection:ScriptableObject
+    public class EnvironmentCollection
     {
-        public LightmapParameter[] m_Parameters;
-        public Texture2D[] m_LightmapColors;
+        // public LightmapParameter[] m_Parameters;
+        // public Texture2D[] m_LightmapColors;
         public Texture m_EnvironmentReflection;
 
         public SHL2Data m_SHData;
         public void Export(Transform _rootTransform)
         {
-            Debug.Assert(LightmapSettings.lightmapsMode== LightmapsMode.NonDirectional,"Only none-directional mode supported");
-            m_Parameters = _rootTransform.GetComponentsInChildren<MeshRenderer>().Select(p => new LightmapParameter()
-                {index = p.lightmapIndex, scaleOffset = p.lightmapScaleOffset}).ToArray();
-            m_LightmapColors = LightmapSettings.lightmaps.Select(p => p.lightmapColor).ToArray();
+            // Debug.Assert(LightmapSettings.lightmapsMode== LightmapsMode.NonDirectional,"Only none-directional mode supported");
+            // m_Parameters = _rootTransform.GetComponentsInChildren<MeshRenderer>().Select(p => new LightmapParameter()
+            //     {index = p.lightmapIndex, scaleOffset = p.lightmapScaleOffset}).ToArray();
+            // m_LightmapColors = LightmapSettings.lightmaps.Select(p => p.lightmapColor).ToArray();
             m_EnvironmentReflection = RenderSettings.customReflection;
             m_SHData = SphericalHarmonicsExport.ExportL2Gradient(4096,RenderSettings.ambientSkyColor,RenderSettings.ambientEquatorColor,RenderSettings.ambientGroundColor);
         }
@@ -87,22 +87,22 @@ namespace Rendering
             if(m_EnvironmentReflection)
                 Shader.SetGlobalTexture(kSpecCube0ID,m_EnvironmentReflection);
 
-            int lightmapCount = m_LightmapColors.Length;
-            Debug.Assert(lightmapCount <= kMaxLightmapCount ,"Lightmap Error: Lightmap Length Greater Than Max!");
-            for (int i = 0; i < lightmapCount; i++)
-                Shader.SetGlobalTexture(kLightmapIDs[i], m_LightmapColors[i]);
+            // int lightmapCount = m_LightmapColors.Length;
+            // Debug.Assert(lightmapCount <= kMaxLightmapCount ,"Lightmap Error: Lightmap Length Greater Than Max!");
+            // for (int i = 0; i < lightmapCount; i++)
+            //     Shader.SetGlobalTexture(kLightmapIDs[i], m_LightmapColors[i]);
         
-            for (int i = 0; i < _renderers.Length; i++)
-            {
-                var param = m_Parameters[i];
-                if(param.index == -1)
-                    continue;
-            
-                var renderer = _renderers[i];
-                renderer.material.SetVector(kLightmapSTID,param.scaleOffset);
-                renderer.material.SetInt(kLightmapIndex,param.index);
-                renderer.material.EnableKeyword(kLightmapKeyword,true);
-            }
+            // for (int i = 0; i < _renderers.Length; i++)
+            // {
+            //     var param = m_Parameters[i];
+            //     if(param.index == -1)
+            //         continue;
+            //
+            //     var renderer = _renderers[i];
+            //     renderer.material.SetVector(kLightmapSTID,param.scaleOffset);
+            //     renderer.material.SetInt(kLightmapIndex,param.index);
+            //     renderer.material.EnableKeyword(kLightmapKeyword,true);
+            // }
             URender.EnableGlobalKeywords(kEnvironmentKeywords, 1);
         }
         public static void Interpolate( MeshRenderer[] _renderers, EnvironmentCollection _collection1,EnvironmentCollection _collection2,float _interpolate)
@@ -132,20 +132,20 @@ namespace Rendering
             if(_collection2.m_EnvironmentReflection)
                 Shader.SetGlobalTexture(kSpecCube0InterpolateID,_collection2.m_EnvironmentReflection);
 
-            int lightmapCount = _collection2.m_LightmapColors.Length;
-            for (int i = 0; i < lightmapCount; i++)
-                Shader.SetGlobalTexture(kLightmapInterpolateIDs[i],_collection2.m_LightmapColors[i]);
+            // int lightmapCount = _collection2.m_LightmapColors.Length;
+            // for (int i = 0; i < lightmapCount; i++)
+            //     Shader.SetGlobalTexture(kLightmapInterpolateIDs[i],_collection2.m_LightmapColors[i]);
 
-            for (int i = 0; i < _renderers.Length; i++)
-            {
-                var renderer = _renderers[i];
-                var parameter2 = _collection2.m_Parameters[i];
-                if (parameter2.index != -1)
-                {
-                    renderer.material.SetVector(kLightmapInterpolateSTID,parameter2.scaleOffset);
-                    renderer.material.SetInt(kLightmapInterpolateIndex,parameter2.index);
-                }
-            }
+            // for (int i = 0; i < _renderers.Length; i++)
+            // {
+            //     var renderer = _renderers[i];
+            //     var parameter2 = _collection2.m_Parameters[i];
+            //     if (parameter2.index != -1)
+            //     {
+            //         renderer.material.SetVector(kLightmapInterpolateSTID,parameter2.scaleOffset);
+            //         renderer.material.SetInt(kLightmapInterpolateIndex,parameter2.index);
+            //     }
+            // }
         }
         public static void Dispose()
         {

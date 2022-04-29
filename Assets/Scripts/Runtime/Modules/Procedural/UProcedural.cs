@@ -48,6 +48,12 @@ namespace Procedural
             return Mathf.Abs( a + b + c + d) == 4;
         }
 
-        public static Coord GetPoint(this Quad<Coord> _quad, float _u,float _v)=>UMath.BilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _u,_v);
+        public static Coord GetPoint(this Quad<Coord> _quad, float _u,float _v)
+        {
+            return new Coord(
+                UMath.BilinearLerp(_quad.B.x, _quad.L.x, _quad.F.x, _quad.R.x, _u, _v),
+                UMath.BilinearLerp(_quad.B.y, _quad.L.y, _quad.F.y, _quad.R.y, _u, _v)
+            );
+        }
     }
 }

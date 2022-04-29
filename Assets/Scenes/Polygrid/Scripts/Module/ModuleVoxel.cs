@@ -20,9 +20,9 @@ namespace PolyGrid.Module
         private Qube<EModuleType> m_CornerTypes=KEnumQube<EModuleType>.Invalid;
         private Qube<ECornerStatus> m_CornerStatus = KEnumQube<ECornerStatus>.Invalid;
         private Qube<byte> m_CornerBytes = default;
-        public override void OnPoolInit(Action<PolyID> _DoRecycle)
+        public override void OnPoolCreate(Action<PolyID> _DoRecycle)
         {
-            base.OnPoolInit(_DoRecycle);
+            base.OnPoolCreate(_DoRecycle);
             m_Mesh = new Mesh() {hideFlags = HideFlags.HideAndDontSave};
             m_Mesh.MarkDynamic();
             GetComponent<MeshFilter>().sharedMesh = m_Mesh;

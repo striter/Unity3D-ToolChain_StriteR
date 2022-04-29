@@ -149,7 +149,7 @@ public static class UColor
     }
     public static Color IndexToColor(int _index)
     {
-        switch (_index)
+        switch (_index % 6)
         {
             default: return Color.magenta;
             case 0: return Color.red;

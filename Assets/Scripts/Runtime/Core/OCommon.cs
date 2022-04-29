@@ -417,6 +417,12 @@ public struct Matrix2x2
         return new Vector2(float2.x, float2.y);
     }
 
+    public void Multiply(float _x,float _y,out float x,out float y)
+    {
+        x = _x * m00 + _y * m10;
+        y = _x * m01 + _y * m11;
+    }
+    
     public override string ToString()=>$"{m00} {m01}\n{m10} {m11}";
     public static Matrix2x2 Identity = new Matrix2x2(1f, 0f, 0f, 1f);
 }

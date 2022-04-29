@@ -51,8 +51,8 @@ namespace TEditor
         static void ShowAssetOptimizeWindow() => EditorWindow.GetWindow(typeof(AnimationClipOptimize)).titleContent = new GUIContent("Asset Optimize", EditorGUIUtility.IconContent("Toolbar Plus More").image);
 
 
-        [MenuItem("Work Flow/Art/Export Lightmap Data", false, 501)]
-        static void ExportLightmapData() => Helper.ExportLightmapCollection();
+        // [MenuItem("Work Flow/Art/Export Lightmap Data", false, 501)]
+        // static void ExportLightmapData() => Helper.ExportLightmapCollection();
         
         [MenuItem("Work Flow/Testing/Scriptable Objects Combiner", false, 601)]
         static void ShowScriptableObjectsCombinerWindow() => EditorWindow.GetWindow(typeof(ScriptableObjectCombiner)).titleContent = new GUIContent("Scriptable Objects Combiner", EditorGUIUtility.IconContent("d_Import").image);

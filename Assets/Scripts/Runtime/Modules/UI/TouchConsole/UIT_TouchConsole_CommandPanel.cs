@@ -523,9 +523,9 @@ public partial class UIT_TouchConsole
         {
             m_InputField = _transform.GetComponent<InputField>();
         }
-        public override void OnPoolInit(Action<int> _DoRecycle)
+        public override void OnPoolCreate(Action<int> _doRecycle)
         {
-            base.OnPoolInit(_DoRecycle);
+            base.OnPoolCreate(_doRecycle);
             m_InputField.onValueChanged.RemoveAllListeners();
         }
 

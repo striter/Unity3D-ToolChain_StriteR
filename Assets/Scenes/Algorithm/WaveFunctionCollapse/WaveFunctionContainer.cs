@@ -32,9 +32,9 @@ namespace ExampleScenes.Algorithm.WaveFunctionCollapse
         private Action<int> OnSelect;
         private Action<int> OnRecycle;
         private int m_PoolIdentity;
-        public override void OnPoolInit(Action<int> _DoRecycle)
+        public override void OnPoolCreate(Action<int> _DoRecycle)
         {
-            base.OnPoolInit(_DoRecycle);
+            base.OnPoolCreate(_DoRecycle);
             m_RectTransform=transform as RectTransform;;
             m_Listener = GetComponent<UIT_EventTriggerListener>();
             m_Listener.OnWorldClick = OnWorldClick;
