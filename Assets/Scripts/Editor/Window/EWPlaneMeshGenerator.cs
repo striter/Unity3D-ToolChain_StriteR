@@ -58,7 +58,7 @@ namespace TEditor
 
         void CreateHexagon(float _tileSize, int _radius)
         {
-            if (!UEAsset.SaveFilePath( out string path, "asset", "CustomPlane"))
+            if (!EUAsset.SaveFilePath( out string path, "asset", "CustomPlane"))
                 return;
             
             List<Vector3> vertices = new List<Vector3>();
@@ -105,12 +105,12 @@ namespace TEditor
             mesh.SetTangents(tangents);
             mesh.SetIndices(indices, MeshTopology.Triangles, 0);
 
-            UEAsset.CreateOrReplaceMainAsset(mesh, UEPath.FileToAssetPath( path));
+            EUAsset.CreateOrReplaceMainAsset(mesh, EUPath.FileToAssetPath( path));
         }
 
         void CreatePlane(float _tileSize,int _width,int _height,Vector2 _pivot)
         {
-            if (!UEAsset.SaveFilePath( out string path, "asset", "CustomPlane"))
+            if (!EUAsset.SaveFilePath( out string path, "asset", "CustomPlane"))
                 return;
 
             Vector3 tileSize = new Vector3(_tileSize, 0, _tileSize);
@@ -180,11 +180,11 @@ namespace TEditor
             mesh.SetTangents(tangents);
             mesh.SetIndices(indices, MeshTopology.Triangles, 0);
 
-            UEAsset.CreateOrReplaceMainAsset(mesh, UEPath.FileToAssetPath( path));
+            EUAsset.CreateOrReplaceMainAsset(mesh, EUPath.FileToAssetPath( path));
         }
         void CreateCircleSquare(float _tileSize,int _radius)
         {
-            if (!UEAsset.SaveFilePath( out string path, "asset", "CustomPlane"))
+            if (!EUAsset.SaveFilePath( out string path, "asset", "CustomPlane"))
                 return;
 
             Vector3 tileSize = new Vector3(_tileSize/2f, 0, _tileSize/2f);
@@ -256,7 +256,7 @@ namespace TEditor
             mesh.SetTangents(tangents);
             mesh.SetIndices(indices, MeshTopology.Triangles, 0);
 
-            UEAsset.CreateOrReplaceMainAsset(mesh, UEPath.FileToAssetPath( path));
+            EUAsset.CreateOrReplaceMainAsset(mesh, EUPath.FileToAssetPath( path));
         }
     }
 }

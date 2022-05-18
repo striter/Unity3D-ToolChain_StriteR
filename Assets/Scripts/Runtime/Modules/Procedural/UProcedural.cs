@@ -48,6 +48,42 @@ namespace Procedural
             return Mathf.Abs( a + b + c + d) == 4;
         }
 
+        public static bool IsPointInsideOrOnSegment(this IQuad<Coord> _quad, Coord _point)
+        {
+            var A = _quad.B;
+            var B = _quad.L;
+            var C = _quad.F;
+            var D = _quad.R;
+            var point = _point;
+            var x = point.x;
+            var y = point.y;
+            int a = (int)Mathf.Sign((B.x - A.x) * (y - A.y) - (B.y - A.y) * (x - A.x));
+            int b = (int)Mathf.Sign((C.x - B.x) * (y - B.y) - (C.y - B.y) * (x - B.x));
+            int c = (int)Mathf.Sign((D.x - C.x) * (y - C.y) - (D.y - C.y) * (x - C.x));
+            int d = (int)Mathf.Sign((A.x - D.x) * (y - D.y) - (A.y - D.y) * (x - D.x));
+            if (Mathf.Abs(a + b + c + d) == 4)
+                return true;
+
+            bool onSegment(Coord Pi, Coord Pj, Coord Q)
+            {
+                if ((Q.x - Pi.x) * (Pj.y - Pi.y) == (Pj.x - Pi.x) * (Q.y - Pi.y)
+                   && Mathf.Min(Pi.x, Pj.x) <= Q.x && Q.x <= Mathf.Max(Pi.x, Pj.x)
+                   && Mathf.Min(Pi.y, Pj.y) <= Q.y && Q.y <= Mathf.Max(Pi.y, Pj.y))
+                    return true;
+                else
+                    return false;
+            }
+            if (onSegment(A, B, _point))
+                return true;
+            if (onSegment(B, C, _point))
+                return true;
+            if (onSegment(C, D, _point))
+                return true;
+            if (onSegment(D, A, _point))
+                return true;
+            return false;
+        }
+
         public static Coord GetPoint(this Quad<Coord> _quad, float _u,float _v)
         {
             return new Coord(

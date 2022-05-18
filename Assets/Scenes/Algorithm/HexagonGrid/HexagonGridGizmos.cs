@@ -102,7 +102,7 @@ namespace ExampleScenes.Algorithm.HexagonGrid
 
         private void OnSceneGUI(SceneView sceneView)
         {
-            GRay ray = sceneView.camera.ScreenPointToRay( TEditor.UECommon.GetScreenPoint(sceneView));
+            GRay ray = sceneView.camera.ScreenPointToRay( TEditor.EUCommon.GetScreenPoint(sceneView));
             GPlane plane = new GPlane(Vector3.up, transform.position);
             var hitPoint = ray.GetPoint(UGeometryIntersect.RayPlaneDistance(plane, ray));
             m_HitPointCS = (transform.InverseTransformPoint(hitPoint) / m_CellRadius).ToCoord();

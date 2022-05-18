@@ -40,11 +40,11 @@ namespace PolyGrid
             SceneView.duringSceneGui -= OnSceneGUI;
         }
         
-        void EditorTick() => Tick(TEditor.EditorTime.deltaTime);
+        void EditorTick() => Tick(ETime.deltaTime);
         
         private void OnSceneGUI(SceneView sceneView)
         {
-            GRay ray = sceneView.camera.ScreenPointToRay(TEditor.UECommon.GetScreenPoint(sceneView));
+            GRay ray = sceneView.camera.ScreenPointToRay(EUCommon.GetScreenPoint(sceneView));
             GPlane plane = new GPlane(Vector3.up, transform.position);
             var hitPos = ray.GetPoint(UGeometryIntersect.RayPlaneDistance(plane, ray));
             var hitCoord = hitPos.ToCoord();
@@ -89,7 +89,7 @@ namespace PolyGrid
 
         public void Bake()
         {
-            if (!UEAsset.SaveFilePath(out string filePath, "asset")) 
+            if (!EUAsset.SaveFilePath(out string filePath, "asset")) 
                 return;
 
             //Check Invalid Quads
@@ -127,7 +127,7 @@ namespace PolyGrid
             
             GridRuntimeData _data = ScriptableObject.CreateInstance<GridRuntimeData>();
             _data.areaData = areaData.ToArray();
-            UEAsset.CreateOrReplaceMainAsset(_data,UEPath.FileToAssetPath( filePath));
+            EUAsset.CreateOrReplaceMainAsset(_data,EUPath.FileToAssetPath( filePath));
         }
     }
 

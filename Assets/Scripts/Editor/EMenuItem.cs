@@ -17,6 +17,10 @@ namespace TEditor
         
         [MenuItem("Work Flow/Hotkeys/Output Window Asset Path _&-", false, 110)]
         static void OutputWindowAssetPath() => Hotkeys.OutputActiveWindowDirectory();
+        
+        
+        [MenuItem("Work Flow/Hotkeys/Output Select Asset Path _&=", false, 111)]
+        static void OutputSelectAssetPath() => Hotkeys.OutputAssetDirectory();
         #endregion
 
         #region Helpers

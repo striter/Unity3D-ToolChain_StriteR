@@ -2,20 +2,30 @@ Shader "Game/Lit/Transparecy/Glass"
 {
     Properties
     {
+    	_ColorTint("Color Tint",Color)=(1,1,1,0.5)
+    	[MinMaxRange]_Fresnel("Fresnel",Range(0,1))=0
+    	[HideInInspector]_FresnelEnd("",float)=0
+    	
+    	[Header(Rim)]
+    	[HDR]_RimColor("Rim Color",Color)=(1,1,1,1)
+    	[MinMaxRange]_Rim("Rim",Range(0,1))=0.1
+    	[HideInInspector]_RimEnd("",float)=0.15
+    	
+    	[Header(Normal)]
         [ToggleTex(_NORMALTEX)]_NormalTex("Normal Tex",2D)="white"{}
-    	_DistortStrength("Distort Strength",Range(0,0.1))=0.05
-    	_ConnectionBegin("Connection Begin",Range(0,1))=0.1
-    	_ConnectionWidth("Connection Width",Range(0,1))=0.1
+    	_DistortStrength("Distort Strength",Range(0,5))=0.05
+    	
+    	[Header(Reflection)]
+    	_ReflectionOffset("_Visibility",Range(-7,7)) = 8
     	
     	[Header(Specular)]
-        [HDR]_ColorTint("Color Tint",Color)=(1,1,1,1)
     	_SpecularStrength("Specular Strength",Range(0,5))=1
     	_SpecularGlossiness("Specular Glossiness",Range(0,1))=0.75
     }
     SubShader
     {
         ZWrite On
-        Blend One One
+        Blend Off
     	Cull Back
         Pass
         {
@@ -23,11 +33,12 @@ Shader "Game/Lit/Transparecy/Glass"
             #pragma vertex vert
             #pragma fragment frag
             #pragma shader_feature_local_fragment _NORMALTEX
+            #pragma multi_compile _ ENVIRONMENT_CUSTOM ENVIRONMENT_INTERPOLATE
 
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "Assets/Shaders/Library/Lighting.hlsl"
 
-            struct appdata
+            struct a2v
             {
                 float3 positionOS : POSITION;
                 float3 normalOS:NORMAL;
@@ -50,17 +61,24 @@ Shader "Game/Lit/Transparecy/Glass"
             };
 
             TEXTURE2D(_NormalTex);SAMPLER(sampler_NormalTex);
-            TEXTURE2D(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
+            TEXTURE2D(_CameraOpaqueTexture);SAMPLER(sampler_CameraOpaqueTexture);
             INSTANCING_BUFFER_START
                 INSTANCING_PROP(float4,_ColorTint)
+				INSTANCING_PROP(float,_Fresnel)
+				INSTANCING_PROP(float,_FresnelEnd)
+
+				INSTANCING_PROP(float4,_RimColor)
+				INSTANCING_PROP(float,_Rim)
+				INSTANCING_PROP(float,_RimEnd)
+            
                 INSTANCING_PROP(float4,_NormalTex_ST)
 				INSTANCING_PROP(float,_DistortStrength)
+				INSTANCING_PROP(float,_SpecularStrength)
 				INSTANCING_PROP(float,_SpecularGlossiness)
-				INSTANCING_PROP(float,_ConnectionBegin)
-            	INSTANCING_PROP(float,_ConnectionWidth)
+				INSTANCING_PROP(int,_ReflectionOffset)
             INSTANCING_BUFFER_END
             
-            v2f vert (appdata v)
+            v2f vert (a2v v)
             {
                 v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
@@ -83,34 +101,36 @@ Shader "Game/Lit/Transparecy/Glass"
 				half3 biTangentWS=normalize(i.biTangentWS);
 				half3 tangentWS=normalize(i.tangentWS);
 				half3 normalTS=half3(0,0,1);
+            	float3 albedo = INSTANCE(_ColorTint.rgb);
+            	
             	float3 cameraDirWS=GetCameraRealDirectionWS(i.positionWS);
             	float3 viewDirWS=-cameraDirWS;
             	float3 reflectDirWS=normalize(reflect(cameraDirWS, normalWS));
             	float3 lightDirWS=normalize(_MainLightPosition.xyz);
             	float3 halfDirWS=normalize(lightDirWS+viewDirWS);
-            	float2 screenUV=TransformHClipToNDC(i.positionHCS)+normalTS.xy*INSTANCE(_DistortStrength)/i.depthDistance;
-            	float depthDistance=RawToDistance(SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).r,screenUV);
-				float depthOffset=depthDistance-i.depthDistance;
-            	float depthParameter=invlerp(INSTANCE(_ConnectionBegin)+INSTANCE(_ConnectionWidth),INSTANCE(_ConnectionBegin),depthOffset);
-            	
+                float ndv=dot(viewDirWS,normalWS);
+
 				#if _NORMALTEX
 					float3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
 					normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv));
 					normalWS=normalize(mul(transpose(TBNWS), normalTS));
 				#endif
             	
-                float ndv=dot(viewDirWS,normalWS);
-            	float fresnel=pow5(1-ndv)+saturate(depthParameter);
-                float3 indirectSpecular = IndirectCubeSpecular(reflectDirWS,0) * INSTANCE(_ColorTint.rgb);
+            	float opacityFresnel=saturate(max(invlerp(_FresnelEnd,_Fresnel,ndv),_ColorTint.a));
+            	float2 screenUV=TransformHClipToNDC(i.positionHCS)+normalTS.xy*INSTANCE(_DistortStrength)/i.depthDistance;
+            	float3 baseCol = SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,screenUV) *  lerp(1,albedo,opacityFresnel);
             	
-            	float3 finalCol=indirectSpecular;
-				float alpha=saturate(fresnel);
+            	float3 specularColor=0;
+                float3 indirectSpecular = IndirectCubeSpecular(reflectDirWS,1,_ReflectionOffset);
+            	specularColor +=  indirectSpecular*albedo;
+
+				float rim = saturate(invlerp(_RimEnd,_Rim,ndv));
+            	specularColor += rim * _RimColor.rgb * _RimColor.a;
             	
-				float specular= GetSpecular(normalWS,halfDirWS,INSTANCE(_SpecularGlossiness))*INSTANCE(_SpecularGlossiness);
-				finalCol +=_MainLightColor.rgb*specular;
-            	alpha +=saturate(specular);
-            	
-                return float4(finalCol*saturate(alpha),1);
+				float specular= GetSpecular(normalWS,halfDirWS,INSTANCE(_SpecularGlossiness))*INSTANCE(_SpecularStrength);
+				specularColor += specular * _MainLightColor.rgb;
+
+                return float4(baseCol+specularColor,1);
             }
             ENDHLSL
         }

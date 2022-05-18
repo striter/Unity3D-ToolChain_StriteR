@@ -5,11 +5,9 @@ Shader "Game/Particles/AlphaBlend"
         _MainTex("Main Tex",2D)="white"{}
         [Toggle(_MASK)]_Mask("Is Mask",int)=0
         [HDR] _Color("Color Tint",Color)=(1,1,1,1)
-        [Vector2]_MainTexFlow("Flow",Vector)=(0,0,1,1)
         
         [Header(Optional)]
         [ToggleTex(_SECONDARY)]_SecondaryTex("Secondary Tex",2D)="white"{}
-        [Vector2]_SecondaryTexFlow("Flow",Vector)=(1,1,1,1)
         [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
     }
     SubShader
@@ -51,9 +49,7 @@ Shader "Game/Particles/AlphaBlend"
             INSTANCING_BUFFER_START
                 INSTANCING_PROP(float4,_Color)
                 INSTANCING_PROP(float4,_MainTex_ST)
-                INSTANCING_PROP(float2,_MainTexFlow)
                 INSTANCING_PROP(float4,_SecondaryTex_ST)
-                INSTANCING_PROP(float2,_SecondaryTexFlow)
             INSTANCING_BUFFER_END
             
             v2f vert (a2v v)
@@ -62,7 +58,7 @@ Shader "Game/Particles/AlphaBlend"
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
                 o.positionCS = TransformObjectToHClip(v.positionOS);
-                o.uv = float4(TRANSFORM_TEX_INSTANCE(v.uv, _MainTex)+_Time.y*INSTANCE(_MainTexFlow),TRANSFORM_TEX_INSTANCE(v.uv,_SecondaryTex)+_Time.y*INSTANCE(_SecondaryTexFlow));
+                o.uv = float4(TRANSFORM_TEX_FLOW_INSTANCE(v.uv, _MainTex),TRANSFORM_TEX_FLOW_INSTANCE(v.uv,_SecondaryTex));
                 o.color=v.color;
                 return o;
             }

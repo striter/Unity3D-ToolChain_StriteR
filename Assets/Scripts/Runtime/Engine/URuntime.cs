@@ -86,13 +86,31 @@ public static class URuntime
     }
     #endregion
 
+    #region Rect/Bounds
+    //Rect
+    
+    public static Rect Move(this Rect _rect, Vector2 _deltaPosition) { _rect.position += _deltaPosition; return _rect; }
+    public static Rect MoveX(this Rect _rect, float _deltaX) { _rect.position += new Vector2(_deltaX,0); return _rect; }
+    public static Rect MoveY(this Rect _rect, float _deltaY) { _rect.position += new Vector2(0,_deltaY); return _rect; }
+    
     public static Rect Reposition(this Rect _rect, float _newPositionX, float _newPositionY) => Reposition(_rect, new Vector2(_newPositionX, _newPositionY));
     public static Rect Reposition(this Rect _rect, Vector2 _newPosition) { _rect.position = _newPosition; return _rect; }
     public static Rect Resize(this Rect _rect, float _newSizeX, float _newSizeY) => Resize(_rect, new Vector2(_newSizeX, _newSizeY));
     public static Rect Resize(this Rect _rect, Vector2 _newSize) { _rect.size = _newSize; return _rect; }
+    public static Rect ResizeX(this Rect _rect, float _newSizeX) => Resize(_rect, new Vector2(_newSizeX, _rect.size.y));
+    public static Rect ResizeY(this Rect _rect, float _newSizeY) => Resize(_rect, new Vector2(_rect.size.x, _newSizeY));
     public static Rect Expand(this Rect _rect, Vector2 _size) { _rect.position -= _size / 2; _rect.size += _size; return _rect; }
+    
     public static Rect Collapse(this Rect _rect,Vector2 _size) { _rect.position += _size / 2;_rect.size -= _size;return _rect; }
 
+    public static Rect Collapse(this Rect _rect, Vector2 _size, Vector2 _center)
+    {
+        _rect.position += _size.mul(_center);
+        _rect.size -= _size;
+        return _rect;
+    }
+    
+    //Bounds
     public static Vector3 GetPoint(this Bounds _bound, Vector3 _normalizedSideOffset) => _bound.center + _bound.size.mul(_normalizedSideOffset);
     public static Bounds Resize(this Bounds _srcBounds,Bounds _dstBounds)
     {
@@ -101,7 +119,8 @@ public static class URuntime
         Vector3 size = min - max;
         return new Bounds(min + size / 2, size);
     }
-
+    #endregion
+    
     #region Camera Helper
     public static bool InputRayCheck(this Camera _camera, Vector2 _inputPos, out RaycastHit _hit, int _layerMask = -1)
     {

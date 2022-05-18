@@ -4,6 +4,10 @@ Shader "Game/Particles/Additive"
     {
         _MainTex("Main Tex",2D)="white"{}
         [HDR] _Color("Color Tint",Color)=(1,1,1,1)
+        
+        [Header(Mask)]
+        _MaskTex("Mask Tex",2D)="white"{}
+        
         [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
     }
     SubShader
@@ -34,14 +38,16 @@ Shader "Game/Particles/Additive"
             {
                 float4 positionCS : SV_POSITION;
                 float4 color:COLOR;
-                float2 uv : TEXCOORD0;
+                float4 uv : TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
+            TEXTURE2D(_MaskTex);SAMPLER(sampler_MaskTex);
             INSTANCING_BUFFER_START
                 INSTANCING_PROP(float4,_Color)
                 INSTANCING_PROP(float4,_MainTex_ST)
+                INSTANCING_PROP(float4,_MaskTex_ST)
             INSTANCING_BUFFER_END
             
             v2f vert (a2v v)
@@ -50,7 +56,7 @@ Shader "Game/Particles/Additive"
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
                 o.positionCS = TransformObjectToHClip(v.positionOS);
-                o.uv = TRANSFORM_TEX_INSTANCE(v.uv, _MainTex);
+                o.uv = float4(TRANSFORM_TEX_FLOW_INSTANCE(v.uv, _MainTex),TRANSFORM_TEX_FLOW_INSTANCE(v.uv,_MaskTex));
                 o.color=v.color;
                 return o;
             }
@@ -59,9 +65,11 @@ Shader "Game/Particles/Additive"
             {
 				UNITY_SETUP_INSTANCE_ID(i);
 
-                float4 color =SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)* i.color*INSTANCE(_Color);
+                float4 color =SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv.xy)* i.color*INSTANCE(_Color);
 
-                return float4(color.rgb*color.a,1);
+                float mask = SAMPLE_TEXTURE2D(_MaskTex,sampler_MaskTex,i.uv.zw).r;
+                
+                return float4(color.rgb*color.a*mask,1);
             }
             ENDHLSL
         }

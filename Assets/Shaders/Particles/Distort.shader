@@ -7,45 +7,53 @@
 	}
 	SubShader
 	{
-		Tags{ "RenderType" = "Transparent" "IgnoreProjector" = "True" "Queue" = "Transparent-1" "PreviewType"="Plane"}
-		Cull Off Lighting Off ZWrite Off Fog { Color(0,0,0,0) }
-
+		Tags{"Queue" = "Transparent"}
 		Pass
 		{		
+			Cull Back
+			Blend Off
+			ZWrite On
+			
 			name "Main"
-			CGPROGRAM
+			HLSLPROGRAM
+			#pragma multi_compile_instancing
 			#pragma vertex vert
 			#pragma fragment frag
-			#include "UnityCG.cginc"
+			#include "Assets/Shaders/Library/Common.hlsl"
 			struct a2v
 			{
-				float4 vertex : POSITION;
+				float3 positionOS : POSITION;
 				float2 uv:TEXCOORD0;
 			};
 
 			struct v2f
 			{
-				float4 vertex : SV_POSITION;
-				float4 screenPos:TEXCOORD2;
+				float4 positionCS : SV_POSITION;
+				float2 uv:TEXCOORD0;
+				float4 screenPos:TEXCOORD1;
 			};
-			sampler2D _CameraOpaqueTexture;
-			sampler2D _DistortTex;
-			float _DistortStrength;
+			TEXTURE2D(_CameraOpaqueTexture);SAMPLER(sampler_CameraOpaqueTexture);
+			TEXTURE2D(_DistortTex);SAMPLER(sampler_DistortTex);
+			INSTANCING_BUFFER_START
+				INSTANCING_PROP(float4,_DistortTex_ST)
+				INSTANCING_PROP(float,_DistortStrength)
+			INSTANCING_BUFFER_END
 			v2f vert(a2v v)
 			{
 				v2f o;
-				o.vertex = UnityObjectToClipPos(v.vertex);
-				o.screenPos = ComputeScreenPos(o.vertex);
+				o.positionCS = TransformObjectToHClip(v.positionOS);
+				o.uv =  TRANSFORM_TEX(v.uv,_DistortTex);
+				o.screenPos = ComputeScreenPos(o.positionCS);
 				return o;
 			}
 
-			fixed4 frag(v2f i) : SV_Target
+			float4 frag(v2f i) : SV_Target
 			{
-				float2 uv = i.screenPos.xy / i.screenPos.w;
-				fixed4 col = tex2D(_CameraOpaqueTexture,uv + tex2D(_DistortTex,uv) *_DistortStrength);
-				return col;
+				float2 baseUV= i.screenPos.xy/i.screenPos.w;
+				float2 distort = (SAMPLE_TEXTURE2D(_DistortTex,sampler_DistortTex,i.uv).rg*2-1) * _DistortStrength;
+				return  SAMPLE_TEXTURE2D(_CameraOpaqueTexture, sampler_CameraOpaqueTexture, baseUV + distort);
 			}
-			ENDCG
+			ENDHLSL
 		}
 	}
 }

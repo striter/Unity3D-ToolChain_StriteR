@@ -44,11 +44,11 @@ namespace PolyGrid
             m_Controls = new IPolyGridControl[]{ m_TileManager,m_SelectionManager,m_ModuleManager,m_CameraManager,m_MeshConstructor,m_RenderManager};
             m_Controls.Traversal(p=>p.Init(transform));
 
-            m_VertexCallbacks = m_Controls.Collect<IPolyGridControl, IPolyGridVertexCallback>().ToArray();
-            m_QuadCallbacks = m_Controls.Collect<IPolyGridControl, IPolyGridQuadCallback>().ToArray();
-            m_CornerCallbacks = m_Controls.Collect<IPolyGridControl, IPolyGridCornerCallback>().ToArray();
-            m_VoxelCallbacks = m_Controls.Collect<IPolyGridControl, IPolyGridVoxelCallback>().ToArray();
-            m_ModifyCallbacks=m_Controls.Collect<IPolyGridControl, IPolyGridModifyCallback>().ToArray();
+            m_VertexCallbacks = m_Controls.CollectAs<IPolyGridControl, IPolyGridVertexCallback>().ToArray();
+            m_QuadCallbacks = m_Controls.CollectAs<IPolyGridControl, IPolyGridQuadCallback>().ToArray();
+            m_CornerCallbacks = m_Controls.CollectAs<IPolyGridControl, IPolyGridCornerCallback>().ToArray();
+            m_VoxelCallbacks = m_Controls.CollectAs<IPolyGridControl, IPolyGridVoxelCallback>().ToArray();
+            m_ModifyCallbacks=m_Controls.CollectAs<IPolyGridControl, IPolyGridModifyCallback>().ToArray();
             
             UIT_TouchConsole.InitDefaultCommands();
             UIT_TouchConsole.Command("Reset",KeyCode.R).Button(Clear);

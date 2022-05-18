@@ -34,9 +34,16 @@ public class ExtendButtonAttribute : PropertyAttribute
         m_Buttons = new (string title, string method, object[] parameters)[]{(_title1,_method1,_parameters1),(_title2,_method2,_parameters2)};
     }
 }
+
+
+[AttributeUsage(AttributeTargets.Field)]
+public class ScriptableObjectEditAttribute : PropertyAttribute { }
+
 [AttributeUsage(AttributeTargets.Field)]
 public class MTitleAttribute : PropertyAttribute { }
 
+[AttributeUsage(AttributeTargets.Field)]
+public class Readonly:PropertyAttribute{ }
 
 [AttributeUsage(AttributeTargets.Field)]
 public class IntEnumAttribute : PropertyAttribute
@@ -52,10 +59,29 @@ public class IntEnumAttribute : PropertyAttribute
         #endif 
     }
 }
+
 [AttributeUsage(AttributeTargets.Field)]
 public class PositionAttribute : PropertyAttribute { }
 [AttributeUsage(AttributeTargets.Field)]
 public class CullingMaskAttribute : PropertyAttribute { }
+
+
+
+[AttributeUsage(AttributeTargets.Field)]
+public class MinMaxRangeAttribute : PropertyAttribute
+{
+    public readonly float m_Min;
+    public readonly float m_Max;
+    public readonly string m_MaxTarget;
+
+    public MinMaxRangeAttribute(string _maxTarget,float _min,float _max)
+    {
+        m_Min = _min;
+        m_Max = _max;
+        m_MaxTarget = _maxTarget;
+    }
+}
+
 [AttributeUsage(AttributeTargets.Field)]
 public class RangeVectorAttribute : PropertyAttribute
 {
@@ -84,7 +110,6 @@ public class ClampAttribute:PropertyAttribute
 public class PreloadAssetsAttribute : PropertyAttribute
 {
     public readonly string m_Path;
-
     public PreloadAssetsAttribute(string _path)
     {
         m_Path = _path;

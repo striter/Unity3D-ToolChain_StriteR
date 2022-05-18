@@ -12,21 +12,14 @@ half3 SampleSHL2(half3 _normalWS,half4 _SHAr,half4 _SHAg,half4 _SHAb,half4 _SHBr
 
 float _EnvironmentInterpolate;
 float4 _SHAr,_SHAg,_SHAb,_SHBr,_SHBg,_SHBb,_SHC;
-float4 _SHArL,_SHAgL,_SHAbL,_SHBrL,_SHBgL,_SHBbL,_SHCL;
 
 half3 IndirectDiffuse_SH(half3 _normal)
 {
     half3 shl2=0;
     #if defined(ENVIRONMENT_CUSTOM) || defined(ENVIRONMENT_INTERPOLATE)
         shl2 = SampleSHL2(_normal,_SHAr,_SHAg,_SHAb,_SHBr,_SHBg,_SHBb,_SHC);
-    #else
-        shl2 = SampleSHL2(_normal,unity_SHAr,unity_SHAg,unity_SHAb,unity_SHBr,unity_SHBg,unity_SHBb,unity_SHC);
     #endif
 
-    #if defined(ENVIRONMENT_INTERPOLATE)
-        half3 shl2Interpolate = SampleSHL2(_normal,_SHArL,_SHAgL,_SHAbL,_SHBrL,_SHBgL,_SHBbL,_SHCL);
-        shl2=lerp(shl2,shl2Interpolate,_EnvironmentInterpolate);
-    #endif
     return shl2;
 }
 
@@ -188,26 +181,29 @@ half4 IndirectSpecular(float2 screenUV,float eyeDepth, half3 normalTS)
 //Indirect Specular
 TEXTURECUBE(_SpecCube0);SAMPLER(sampler_SpecCube0); half4 _SpecCube0_HDR;
 TEXTURECUBE(_SpecCube0_Interpolate);SAMPLER(sampler_SpecCube0_Interpolate); half4 _SpecCube0_Interpolate_HDR;
-half3 SampleCubeSpecular(TEXTURECUBE_PARAM(cube,cubeSampler),half4 _decodeInstruction ,half3 reflectDir,float perceptualRoughness,int offset=0)
+half _SpecCube0_Intensity;
+
+half3 SampleCubeSpecular(TEXTURECUBE_PARAM(cube,cubeSampler),half4 _decodeInstruction ,half3 reflectDir,float perceptualRoughness,half offset=0)
 {
     half mip = perceptualRoughness * (1.7 - 0.7 * perceptualRoughness) * (UNITY_SPECCUBE_LOD_STEPS+offset);
     half4 encodedIrradiance = SAMPLE_TEXTURECUBE_LOD(cube, cubeSampler, reflectDir, mip);
     return DecodeHDREnvironment(encodedIrradiance, _decodeInstruction);
 }
 
-half3 IndirectCubeSpecular(half3 reflectDir, float perceptualRoughness)
+half3 IndirectCubeSpecular(half3 reflectDir, float perceptualRoughness,int offset = 0)
 {
     #if defined(_ENVIRONMENTREFLECTIONS_OFF)
         return _GlossyEnvironmentColor.rgb;
     #endif
     
     #if defined(ENVIRONMENT_CUSTOM) || defined(ENVIRONMENT_INTERPOLATE)
-    half3 specular = SampleCubeSpecular(TEXTURECUBE_ARGS(_SpecCube0,sampler_SpecCube0),_SpecCube0_HDR,reflectDir,perceptualRoughness);
+    half3 specular = SampleCubeSpecular(TEXTURECUBE_ARGS(_SpecCube0,sampler_SpecCube0),_SpecCube0_HDR,reflectDir,perceptualRoughness,offset);
         #if ENVIRONMENT_INTERPOLATE
-            specular = lerp(specular , SampleCubeSpecular(TEXTURECUBE_ARGS(_SpecCube0_Interpolate,sampler_SpecCube0_Interpolate),_SpecCube0_Interpolate_HDR,reflectDir,perceptualRoughness),_EnvironmentInterpolate);
-        #endif 
+            specular = lerp(specular , SampleCubeSpecular(TEXTURECUBE_ARGS(_SpecCube0_Interpolate,sampler_SpecCube0_Interpolate),_SpecCube0_Interpolate_HDR,reflectDir,perceptualRoughness,offset),_EnvironmentInterpolate);
+        #endif
+    specular *= _SpecCube0_Intensity;
     #else
-        half3 specular = SampleCubeSpecular(TEXTURECUBE_ARGS(unity_SpecCube0,samplerunity_SpecCube0),unity_SpecCube0_HDR,reflectDir,perceptualRoughness);
+        half3 specular = SampleCubeSpecular(TEXTURECUBE_ARGS(unity_SpecCube0,samplerunity_SpecCube0),unity_SpecCube0_HDR,reflectDir,perceptualRoughness,offset);
     #endif
     
     return specular;

@@ -1,4 +1,5 @@
 ﻿float2 TransformTex(float2 _uv, float4 _st) {return _uv * _st.xy + _st.zw;}
+float2 TransformTex_Flow(float2 _uv,float4 _st) {return _uv * _st.xy + _Time.y*_st.zw;}
 
 float2 UVRemap_Triplanar(float3 _positionWS, half3 _normalWS)
 {

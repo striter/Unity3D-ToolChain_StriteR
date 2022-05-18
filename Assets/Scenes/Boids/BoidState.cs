@@ -87,7 +87,7 @@ namespace Boids.Behaviours
             m_FlockingConfig = _flocking;
             m_EvadeConfig = _evade;
             m_TiredBehaviour = _tiredBehaviour;
-            m_SQRBorder = UMath.Pow2(m_Config.boderRange);
+            m_SQRBorder = UMath.po2(m_Config.boderRange);
             return this;
         }
         

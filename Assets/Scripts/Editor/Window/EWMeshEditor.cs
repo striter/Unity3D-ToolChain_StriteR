@@ -109,7 +109,7 @@ namespace TEditor
         private void OnGUI()
         {
             EditorGUILayout.BeginVertical();
-            if (!UEGUI.EditorApplicationPlayingCheck())
+            if (!EUGUI.EditorApplicationPlayingCheck())
                 return;
             EditorWindowGUI();
             EditorGUILayout.EndVertical();
@@ -188,10 +188,10 @@ namespace TEditor
         }
         public void Save()
         {
-            if (!UEAsset.SaveFilePath(out string filePath, "asset", m_ModifingMesh.name))
+            if (!EUAsset.SaveFilePath(out string filePath, "asset", m_ModifingMesh.name))
                 return;
 
-            UEAsset.CreateOrReplaceMainAsset(m_ModifingMesh, UEPath.FileToAssetPath(filePath));
+            EUAsset.CreateOrReplaceMainAsset(m_ModifingMesh, EUPath.FileToAssetPath(filePath));
         }
     }
     public class MeshEditorHelperBase

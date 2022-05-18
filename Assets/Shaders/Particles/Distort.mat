@@ -20,7 +20,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _DistortTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: eec618cb356b9594e91e7778126bb5dc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -36,7 +36,7 @@ Material:
     - _AlphaClip: 0
     - _AlphaClipRange: 0.01
     - _Cull: 2
-    - _DistortStrength: 0.005
+    - _DistortStrength: 0.0987
     - _DstBlend: 1
     - _Mask: 0
     - _SecondaryFlowX: 0.5

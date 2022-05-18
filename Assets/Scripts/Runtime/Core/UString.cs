@@ -23,4 +23,15 @@ public static class UString
             return false;
         return index + _dst.Length == _src.Length;
     }
+
+    public static bool ReplaceLast(this string _src, string _match,string _replace,out string _replaced)
+    {
+        _replaced = null;
+        int index = _src.LastIndexOf(_match, StringComparison.Ordinal);
+        if (index < 0)
+            return false;
+        _replaced = _src.Remove(index, _match.Length);
+        _replaced = _replaced.Insert(index,_replace);
+        return true;
+    }
 }

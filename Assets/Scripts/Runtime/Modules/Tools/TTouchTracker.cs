@@ -156,16 +156,26 @@ namespace TTouchTracker
         public static Vector2 CombinedDrag(this List<TrackData> _tracks)=> _tracks.Average(p => p.delta);
         public static float CombinedPinch(this List<TrackData> _tracks)
         {
-            if (_tracks.Count<2)
-                return 0f;
-
-            Vector2 center = _tracks.Average(p => p.current);
-            var beginDelta = _tracks[0].delta;
-            return _tracks.Average(p =>
+            float pinch = 0;
+            
+            #if UNITY_EDITOR
+                pinch += Input.GetAxis("Mouse ScrollWheel")*500f;
+            #endif
+            
+            if (_tracks.Count >= 2)
             {
-                float sign=Mathf.Sign( Vector2.Dot( p.delta,center-p.previous));
-                return (beginDelta-p.delta).magnitude*sign;
-            });
+                Vector2 center = _tracks.Average(p => p.current);
+                var beginDelta = _tracks[0].delta;
+            
+                pinch += _tracks.Average(p =>
+                {
+                    float sign=Mathf.Sign( Vector2.Dot( p.delta,center-p.previous));
+                    return (beginDelta-p.delta).magnitude*sign;
+                });
+            
+                return pinch;
+            }
+            return pinch;
         }
 
 

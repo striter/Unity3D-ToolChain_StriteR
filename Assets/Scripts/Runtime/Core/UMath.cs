@@ -37,7 +37,7 @@ public static class UMath
         return dst;
     }
 
-    public static float Pow2(float _src) => _src * _src;
+    public static float po2(float _src) => _src * _src;
     public static float Pow3(float _src) => _src * _src* _src;
     public static float Pow4(float _src) => _src * _src* _src* _src;
     public static float Frac(float _src) => _src - Mathf.Floor(_src);
@@ -65,7 +65,7 @@ public static class UMath
             float ik2 = .5f / k2;
             float v = (-k1 - w) * ik2;
             float u = (h.x - f.x * v) / (e.x + g.x * v);
-            if (!UCommon.m_Range01.InRange(u) || !UCommon.m_Range01.InRange(v))
+            if (!UCommon.kRange01.InRange(u) || !UCommon.kRange01.InRange(v))
             {
                 v = (-k1 + w) * ik2;
                 u = (h.x - f.x * v) / (e.x + g.x * v);
@@ -94,13 +94,13 @@ public static class UMath
     {
         float value = _interpolation;
         float oneMinusValue = 1 - value;
-        return Pow2(oneMinusValue) * _src + 2 * (oneMinusValue) * value * _control + Pow2(value) * _dst;
+        return po2(oneMinusValue) * _src + 2 * (oneMinusValue) * value * _control + po2(value) * _dst;
     }
 
     public static Vector3 CubicBezierCurve(Vector3 _src, Vector3 _dst, Vector3 _controlSrc, Vector3 _controlDst, float _interpolation)
     {
         float value = _interpolation;
         float oneMinusValue = 1 - value;
-        return Pow3(oneMinusValue) * _src +  3 * Pow2(oneMinusValue) * value * _controlSrc +  3 * oneMinusValue * Pow2(value) * _controlDst + Pow3(value) * _dst;
+        return Pow3(oneMinusValue) * _src +  3 * po2(oneMinusValue) * value * _controlSrc +  3 * oneMinusValue * po2(value) * _controlDst + Pow3(value) * _dst;
     }
 }

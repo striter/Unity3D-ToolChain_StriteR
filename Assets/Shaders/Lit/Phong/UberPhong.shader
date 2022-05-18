@@ -81,7 +81,7 @@ Shader "Game/Lit/UberPhong"
             	float ndh = saturate(dot(normal,halfDir));
 
             	float3 radiance = light.color * light.shadowAttenuation*light.distanceAttenuation; 
-            	return radiance*albedo*ndl +  radiance* specular*pow(ndh,150);
+            	return radiance*albedo*ndl +  radiance* specular*pow(ndh,150)*5;
             }
             
             float4 frag (v2f i) : SV_Target

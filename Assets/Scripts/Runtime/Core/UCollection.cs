@@ -47,17 +47,17 @@ public static class UCollection
             yield return _extend;
         }
 
-        public static  IEnumerable<T> Collect<T>(this IEnumerable<T> _collection, Predicate<T> _Predicate)
+        public static IEnumerable<T> Collect<T>(this IEnumerable<T> _collection, Predicate<T> _predicate)
         {
             foreach (T element in _collection)
             {
-                if (!_Predicate(element))
+                if (!_predicate(element))
                     continue;
                 yield return element;
             }
         }
-        
-        public static  IEnumerable<Y> Collect<T,Y>(this IEnumerable<T> _collection) where T:class where Y:class
+
+        public static  IEnumerable<Y> CollectAs<T,Y>(this IEnumerable<T> _collection) where T:class where Y:class
         {
             foreach (T element in _collection)
             {
@@ -227,16 +227,22 @@ public static class UCollection
             return false;
         }
 
-        public static T Find<T>(this IEnumerable<T> _collection, Predicate<T> _validate,out int index)
+        public static bool TryFindIndex<T>(this IEnumerable<T> _collection, Predicate<T> _predicate, out int _index)
         {
-            index = -1;
+            _index = FindIndex(_collection, _predicate);
+            return _index != -1;
+        }
+
+        public static T Find<T>(this IEnumerable<T> _collection, Predicate<T> _validate,out int _index)
+        {
+            _index = -1;
             foreach (var element in _collection)
             {
-                index++;
+                _index++;
                 if (_validate(element))
                     return element;
             }
-            index = -1;
+            _index = -1;
             return default;
         }
         

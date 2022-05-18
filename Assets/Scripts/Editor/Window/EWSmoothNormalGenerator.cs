@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace TEditor
 {
-    using static UERender;
+    using static UMesh;
     public class SmoothNormalGenerator : EditorWindow
     {
         GameObject m_ModelPrefab;
@@ -32,13 +32,13 @@ namespace TEditor
 
             m_GenerateUV = (EVertexData)EditorGUILayout.EnumPopup("Generate UV:", m_GenerateUV);
             if (m_GenerateUV != EVertexData.None && GUILayout.Button("Generate"))
-                if (UEAsset.SaveFilePath(out string filePath, "prefab", UEPath.RemoveExtension(UEPath.GetPathName(AssetDatabase.GetAssetPath(m_ModelPrefab))) + "_SN"))
-                    GenerateSkinnedTarget(UEPath.FileToAssetPath(filePath), m_ModelPrefab, m_GenerateUV);
+                if (EUAsset.SaveFilePath(out string filePath, "prefab", EUPath.RemoveExtension(EUPath.GetPathName(AssetDatabase.GetAssetPath(m_ModelPrefab))) + "_SN"))
+                    GenerateSkinnedTarget(EUPath.FileToAssetPath(filePath), m_ModelPrefab, m_GenerateUV);
 
             EditorGUILayout.EndVertical();
         }
 
-        public static void GenerateSkinnedTarget(string assetPath, GameObject _targetFBX, EVertexData _generateUV)
+        public static void GenerateSkinnedTarget(string _assetPath, GameObject _targetFBX, EVertexData _generateUV)
         {
             GameObject prefabSource = Instantiate(_targetFBX);
 
@@ -54,9 +54,9 @@ namespace TEditor
             for (int i = 0; i < sourceMeshes.Count; i++)
                 targetSubAsset.Add( GenerateMesh(sourceMeshes[i], _generateUV));
 
-            GameObject mainAsset = PrefabUtility.SaveAsPrefabAsset(prefabSource, assetPath);
-            UEAsset.CreateOrReplaceSubAsset(assetPath, targetSubAsset.ToArray());
-            Mesh[] meshes = AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath).Select(obj=>(Mesh)obj).ToArray();
+            GameObject mainAsset = PrefabUtility.SaveAsPrefabAsset(prefabSource, _assetPath);
+            EUAsset.CreateOrReplaceSubAsset(_assetPath, targetSubAsset.ToArray());
+            Mesh[] meshes = AssetDatabase.LoadAllAssetRepresentationsAtPath(_assetPath).Select(obj=>(Mesh)obj).ToArray();
 
             skinnedRenderers = mainAsset.GetComponentsInChildren<SkinnedMeshRenderer>();
             for (int i = 0; i < skinnedRenderers.Length; i++)

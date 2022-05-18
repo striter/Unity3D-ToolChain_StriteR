@@ -19,7 +19,7 @@ namespace ExampleScenes.Rendering.PostProcess
             m_Controller = GetComponentInChildren<PostProcess_Opaque>();
             m_ControlCamera = m_Controller.GetComponent<Camera>();
             UIT_TouchConsole.InitDefaultCommands();
-            foreach(var postEffects in GetComponentsInChildren<MonoBehaviour>().Collect<MonoBehaviour,IPostProcessBehaviour>())
+            foreach(var postEffects in GetComponentsInChildren<MonoBehaviour>().CollectAs<MonoBehaviour,IPostProcessBehaviour>())
             {
                 UIT_TouchConsole.NewPage(postEffects.GetType(). Name);
                 UIT_TouchConsole.InitSerializeCommands(postEffects,effect=>effect.ValidateParameters());
