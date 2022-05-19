@@ -43,24 +43,9 @@ namespace QuadricErrorsMetric
         private class QEMVertex
         {
             public Matrix4x4 errorMatrix = Matrix4x4.zero;
-            public List<int> edges = new List<int>();
+            public List<int> adjacentVertexIndexes = new List<int>();
             public List<float> errors = new List<float>();
             public List<Vector3> vBest = new List<Vector3>();
-            
-            public void TryRemoveEdge(int _index)
-            {
-                if (!edges.TryFindIndex(_p => _p == _index, out var dataIndex))
-                    return;
-                edges.RemoveAt(dataIndex);
-                errors.RemoveAt(dataIndex);
-                vBest.RemoveAt(dataIndex);
-
-                for (int i = 0; i < edges.Count; i++)
-                {
-                    if (edges[i] > _index)
-                        edges[i] -= 1;
-                }
-            }
         }
 
         private List<GTrianglePolygon> polygons;
@@ -87,29 +72,15 @@ namespace QuadricErrorsMetric
             
             qemVertices = new List<QEMVertex>(vertexLength);
             for (int i = 0; i < vertexLength; i++)
-            {
-                var qemVertex = new QEMVertex();
+                qemVertices.Add(new QEMVertex());
 
-                int srcIndex = i;
-                var srcVertex = vertices[i];
-                var edgeIndexes = 
-                    polygons.Collect(_p => _p.Contains(srcIndex)).Select(_p => (IEnumerable<int>) _p).Resolve().
-                        Concat(vertices.CollectIndex(_position=>Vector3.Distance(srcVertex,_position)<KQEM.kEdgeClosure)).      
-                        Collect(_p => _p != srcIndex).
-                        Distinct();
-                
-                qemVertex.edges.AddRange(edgeIndexes);
-
-                qemVertices.Add(qemVertex);
-            }
-
+            //Initialize
             for (int i = 0; i < triangleLength; i++)
             {
                 var polygon = polygons[i];
                 var triangle = triangles[i];
                 var errorMatrix = KQEM.GetQuadricErrorMatrix( triangle.GetPlane());
                 
-                //Initialize
                 for (int j = 0; j < 3; j++)
                 {
                     var vertexIndex = indexes[polygon[j]];
@@ -119,20 +90,32 @@ namespace QuadricErrorsMetric
             }
 
             for (int i = 0; i < vertexLength; i++)
+            {
+                int srcIndex = i;
+                var qemVertex = qemVertices[srcIndex];
+                var vertex = vertices[srcIndex];
+                var edgeIndexes = 
+                    polygons.Collect(_p => _p.Contains(srcIndex)).Select(_p => (IEnumerable<int>) _p).Resolve().
+                        Concat(vertices.CollectIndex(_position=>Vector3.Distance(vertex,_position)<KQEM.kEdgeClosure)).      
+                        Collect(_p => _p != srcIndex).
+                        Distinct();
+                
+                qemVertex.adjacentVertexIndexes.AddRange(edgeIndexes);
                 CalcError(i);
+            }
         }
 
-        public void Contract(Mesh _mesh,int _count)
+        public void DoContract(Mesh _mesh,int _count)
         {
             for (int iterate = 0; iterate < _count; iterate++)
             {
                 if (vertices.Count < 50)
                     break;
             
-                var tuple = FindBestContract();
-                Contract(tuple.v0,tuple.v1,tuple.newPos);
+                Contract();
             }
             
+            _mesh.Clear();
             _mesh.SetVertices(vertices);
             _mesh.SetNormals(normals);
             _mesh.SetTangents(tangents);
@@ -149,10 +132,10 @@ namespace QuadricErrorsMetric
             var srcEdge = _index;
             var srcVertex = vertices[srcEdge];
             
-            int edgeCount = srcQemVertex.edges.Count;
+            int edgeCount = srcQemVertex.adjacentVertexIndexes.Count;
             for (int i = 0; i < edgeCount; i++)
             {
-                var dstEdge = srcQemVertex.edges[i];
+                var dstEdge = srcQemVertex.adjacentVertexIndexes[i];
                 var dstQemVertex = qemVertices[dstEdge];
                 var dstVertex = vertices[dstEdge];
                 float finalError;
@@ -206,11 +189,42 @@ namespace QuadricErrorsMetric
                 srcQemVertex.vBest.Add(finalBestVertex);
             }
         }
-
-
-        (int v0, int v1, Vector3 newPos) FindBestContract()
+        
+        void RemoveVertex(int _index)
         {
-            (int v0, int v1, Vector3 newPos) tuple=default;
+            vertices.RemoveAt(_index);
+            tangents.RemoveAt(_index);
+            normals.RemoveAt(_index);
+            uvs.RemoveAt(_index);
+
+            qemVertices.RemoveAt(_index);
+            foreach (var qemVertex in qemVertices)
+            {
+                if (qemVertex.adjacentVertexIndexes.TryFindIndex(_p => _p == _index, out var dataIndex))
+                {
+                    qemVertex.adjacentVertexIndexes.RemoveAt(dataIndex);
+                    qemVertex.errors.RemoveAt(dataIndex);
+                    qemVertex.vBest.RemoveAt(dataIndex);
+                }
+
+                for (int i = 0; i < qemVertex.adjacentVertexIndexes.Count; i++)
+                {
+                    if (qemVertex.adjacentVertexIndexes[i] > _index)
+                        qemVertex.adjacentVertexIndexes[i] -= 1;
+                }
+            }
+            
+            for (int i = 0; i < indexes.Count; i++)
+            {
+                if(indexes[i] > _index)
+                    indexes[i] -= 1;
+            }
+        }
+        
+        void Contract()
+        {
+            int index0=default, index1=default;
+            Vector3 finalPos=default;
             
             float minError = float.MaxValue;
             foreach ((var index,var qemVertex) in qemVertices.LoopIndex())
@@ -221,53 +235,36 @@ namespace QuadricErrorsMetric
                     minError = min;
 
                     var errorIndex = qemVertex.errors.IndexOf(min);
-                    tuple.v0 = index;
-                    tuple.v1 = qemVertex.edges[errorIndex];
-                    tuple.newPos = qemVertex.vBest[errorIndex];
+                    index0 = index;
+                    index1 = qemVertex.adjacentVertexIndexes[errorIndex];
+                    finalPos = qemVertex.vBest[errorIndex];
                 }
             }
+
             
-            return tuple;
-        }
-
-        void RemoveVertex(int _index)
-        {
-            vertices.RemoveAt(_index);
-            tangents.RemoveAt(_index);
-            normals.RemoveAt(_index);
-            uvs.RemoveAt(_index);
-
-            qemVertices.RemoveAt(_index);
-            foreach (var qemVertex in qemVertices)
-                qemVertex.TryRemoveEdge(_index);
-        }
-        
-        
-        void Contract(int _index0,int _index1,Vector3 _finalPos)
-        {
             int newVertexId = vertices.Count;
-            vertices.Add(_finalPos);
-            normals.Add(normals[_index0]);
-            uvs.Add(uvs[_index0]);
-            tangents.Add(tangents[_index0]);
+            vertices.Add(finalPos);
+            normals.Add(normals[index0]);
+            uvs.Add(uvs[index0]);
+            tangents.Add(tangents[index0]);
             
             QEMVertex newQemVertex = new QEMVertex();
-            newQemVertex.errorMatrix = qemVertices[_index0].errorMatrix.add(qemVertices[_index1].errorMatrix);
-            qemVertices[_index0].edges.Concat(qemVertices[_index1].edges).Distinct().FillList(newQemVertex.edges);
+            newQemVertex.errorMatrix = qemVertices[index0].errorMatrix.add(qemVertices[index1].errorMatrix);
+            qemVertices[index0].adjacentVertexIndexes.Concat(qemVertices[index1].adjacentVertexIndexes).Distinct().FillList(newQemVertex.adjacentVertexIndexes);
             qemVertices.Add(newQemVertex);
             
             CalcError(newVertexId);
-            if (_index0 < _index1)
-                (_index0, _index1) = (_index1, _index0);
+            if (index0 < index1)
+                (index0, index1) = (index1, index0);
             
-            RemoveVertex(_index0);
-            RemoveVertex(_index1);
+            RemoveVertex(index0);
+            RemoveVertex(index1);
             
             newVertexId = vertices.Count - 1;
-            for (int i = 0; i < newQemVertex.edges.Count; i++)
+            for (int i = 0; i < newQemVertex.adjacentVertexIndexes.Count; i++)
             {
-                var edgeVertices = qemVertices[newQemVertex.edges[i]];
-                edgeVertices.edges.Add(newVertexId);
+                var edgeVertices = qemVertices[newQemVertex.adjacentVertexIndexes[i]];
+                edgeVertices.adjacentVertexIndexes.Add(newVertexId);
                 edgeVertices.errors.Add(newQemVertex.errors[i]);
                 edgeVertices.vBest.Add(newQemVertex.vBest[i]);
             }
@@ -275,29 +272,19 @@ namespace QuadricErrorsMetric
             for (int i = polygons.Count - 1; i >= 2 ;i-=3)
             {
                 var polygon = polygons[i];
-                var matchCount = polygon.Count(p => p==_index1 || p==_index0);
+                var matchCount = polygon.Count(p => p==index1 || p==index0);
                 if(matchCount==0)
                     continue;
                 
                 if (matchCount == 1)
                 {
-                    indexes[i+polygon.FindIndex(p=>p==_index1||p==_index0)] = newVertexId;
+                    indexes[i+polygon.FindIndex(p=>p==index1||p==index0)] = newVertexId;
                     return;
                 }
                 
                 indexes.RemoveAt(i);
                 indexes.RemoveAt(i+1);
                 indexes.RemoveAt(i+2);
-            }
-            
-            for (int i = 0; i < indexes.Count; i++)
-            {
-                int index = indexes[i];
-                if (index > _index0)
-                    index-=1;
-                if (index > _index1)
-                    index -= 1;
-                indexes[i] = index;
             }
         }
     }

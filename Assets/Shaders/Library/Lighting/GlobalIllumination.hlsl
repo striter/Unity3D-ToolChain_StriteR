@@ -10,7 +10,6 @@ half3 SampleSHL2(half3 _normalWS,half4 _SHAr,half4 _SHAg,half4 _SHAb,half4 _SHBr
 }
 
 
-float _EnvironmentInterpolate;
 float4 _SHAr,_SHAg,_SHAb,_SHBr,_SHBg,_SHBb,_SHC;
 
 half3 IndirectDiffuse_SH(half3 _normal)
@@ -18,6 +17,8 @@ half3 IndirectDiffuse_SH(half3 _normal)
     half3 shl2=0;
     #if defined(ENVIRONMENT_CUSTOM) || defined(ENVIRONMENT_INTERPOLATE)
         shl2 = SampleSHL2(_normal,_SHAr,_SHAg,_SHAb,_SHBr,_SHBg,_SHBb,_SHC);
+    #else
+        shl2 = SampleSHL2(_normal,unity_SHAr,unity_SHAg,unity_SHAb,unity_SHBr,unity_SHBg,unity_SHBb,unity_SHC);
     #endif
 
     return shl2;
@@ -44,6 +45,7 @@ half3 SampleLightmapDirectional(TEXTURE2D_LIGHTMAP_PARAM(lightmapTex,lightmapSam
 }
 
 
+float _EnvironmentInterpolate;
 #if defined(LIGHTMAP_ON)
     #define A2V_LIGHTMAP float2 lightmapUV:TEXCOORD1;
     // #if defined(ENVIRONMENT_CUSTOM) || defined(ENVIRONMENT_INTERPOLATE)

@@ -3,67 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="92a6fb5e-0b8c-4e1a-8b06-b7827ef4a308" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/TSF/TSF.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/TSF/TSF.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Algorithm/HexagonGrid/HexagonGridGizmos.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Algorithm/HexagonGrid/HexagonGridGizmos.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Boids/BoidState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Boids/BoidState.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Art/PolyGrid_Selection.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Art/PolyGrid_Selection.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/Grid/GridGeneratorEditor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/Grid/GridGeneratorEditor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/Module/Baking/ModuleBaker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/Module/Baking/ModuleBaker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/PolyGridManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/PolyGridManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/PolyGridUtilities.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/PolyGridUtilities.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/PostProcess/PostProcess.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/PostProcess/PostProcess.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/EMenuItem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/EMenuItem.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Helper/EAttributeDrawer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Helper/EAttributeDrawer.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Helper/EHotkeys.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Helper/EHotkeys.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Helper/EMaterialPropertyDrawer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Helper/EMaterialPropertyDrawer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Helper/EPropertyDrawer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Helper/EPropertyDrawer.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Inspector/EEditorExtend_UI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Inspector/EEditorExtend_UI.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Inspector/EMeshFilterInspector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Inspector/EMeshFilterInspector.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UEAsset.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UEAsset.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UECommon.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UECommon.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UEGUI.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UEGUI.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UEPath.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UEPath.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UERender.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UERender.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UEStyle.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UEStyle.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EAssetsBatchRename.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EAssetsBatchRename.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EWAnimationClipOptimize.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EWAnimationClipOptimize.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EWGPUAnimationBaker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EWGPUAnimationBaker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EWMeshEditor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EWMeshEditor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EWNoiseGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EWNoiseGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EWPlaneMeshGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EWPlaneMeshGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EWScriptableObjectCombiner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EWScriptableObjectCombiner.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EWSmoothNormalGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EWSmoothNormalGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EWTextureEditor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EWTextureEditor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/IndirectDiffuse.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/IndirectDiffuse/EnvironmentCollection.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/IndirectDiffuse/EnvironmentCollection.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/IndirectDiffuse/SphericalHarmonicsL2.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/IndirectDiffuse/SphericalHarmonicsL2.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UCollection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UCollection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UMath.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UMath.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UPolygon.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UPolygon.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UString.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UString.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UVector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UVector.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Engine/OAttributes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Engine/OAttributes.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Engine/UCommon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Engine/UCommon.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Engine/URuntime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Engine/URuntime.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/OGeometryIndex.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/OGeometryIndex.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/OGeometryVolume.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/OGeometryVolume.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Procedural/UProcedural.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Procedural/UProcedural.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Tools/TTouchTracker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Tools/TTouchTracker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/UI/TouchConsole/UIT_TouchConsole_Miscs.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/UI/TouchConsole/UIT_TouchConsole_Miscs.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/QuadricErrorMetrics/QuadricErrorMetrics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/QuadricErrorMetrics/QuadricErrorMetrics.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/QuadricErrorMetrics/QuadricErrorMetrics.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/QuadricErrorMetrics/QuadricErrorMetrics.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Polygon/UQEM.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Polygon/UQEM.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Library/Lighting/GlobalIllumination.hlsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Library/Lighting/GlobalIllumination.hlsl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/Phong/UberPhong.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/Phong/UberPhong.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/Phong/UberPhong.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/Phong/UberPhong.shader" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,10 +68,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="21012">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" value="21012" />
+      <option name="pid" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
@@ -160,7 +104,8 @@
       <workItem from="1652178577525" duration="662000" />
       <workItem from="1652694250967" duration="3387000" />
       <workItem from="1652756339574" duration="17257000" />
-      <workItem from="1652844396400" duration="13506000" />
+      <workItem from="1652844396400" duration="17289000" />
+      <workItem from="1652924325723" duration="4235000" />
     </task>
     <servers />
   </component>

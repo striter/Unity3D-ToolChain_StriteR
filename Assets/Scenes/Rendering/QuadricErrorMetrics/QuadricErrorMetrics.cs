@@ -33,7 +33,7 @@ namespace ExampleScenes.Rendering.QuadricErrorMetrics
             if (m_Constructor==null)
                 return;
             
-            m_Constructor.Contract(m_QEMMesh,1);
+            m_Constructor.DoContract(m_QEMMesh,1);
         }
     }
 }
