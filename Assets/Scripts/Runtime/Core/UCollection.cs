@@ -227,22 +227,16 @@ public static class UCollection
             return false;
         }
 
-        public static bool TryFindIndex<T>(this IEnumerable<T> _collection, Predicate<T> _predicate, out int _index)
+        public static T Find<T>(this IEnumerable<T> _collection, Predicate<T> _validate,out int index)
         {
-            _index = FindIndex(_collection, _predicate);
-            return _index != -1;
-        }
-
-        public static T Find<T>(this IEnumerable<T> _collection, Predicate<T> _validate,out int _index)
-        {
-            _index = -1;
+            index = -1;
             foreach (var element in _collection)
             {
-                _index++;
+                index++;
                 if (_validate(element))
                     return element;
             }
-            _index = -1;
+            index = -1;
             return default;
         }
         

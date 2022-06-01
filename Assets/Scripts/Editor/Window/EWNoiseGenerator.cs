@@ -5,7 +5,7 @@ using UnityEngine;
 using UAlgorithm;
 namespace TEditor
 {
-    using static EUGUI;
+    using static UEGUI;
     public class NoiseGenerator : EditorWindow
     {
         public enum ENoiseType
@@ -73,38 +73,38 @@ namespace TEditor
         private void OnGUI()
         {
             EditorGUI.BeginChangeCheck();
-            EHorizontalScope.Begin(5, 5, 20);
-            EditorGUI.LabelField(EHorizontalScope.NextRect(0, 60), "Type:", UEGUIStyle_Window.m_TitleLabel);
-            m_NoiseType = (ENoiseType)EditorGUI.EnumPopup(EHorizontalScope.NextRect(5, 120), m_NoiseType);
+            HorizontalScope.Begin(5, 5, 20);
+            EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Type:", UEGUIStyle_Window.m_TitleLabel);
+            m_NoiseType = (ENoiseType)EditorGUI.EnumPopup(HorizontalScope.NextRect(5, 120), m_NoiseType);
 
             bool noiseSampleSupported = NoiseSampleSupported(m_NoiseType);
             if (noiseSampleSupported)
             {
-                EHorizontalScope.NextLine(2, 20);
-                EditorGUI.LabelField(EHorizontalScope.NextRect(0, 60), "Sample:", UEGUIStyle_Window.m_TitleLabel);
-                m_NoiseSample = (ENoiseSample)EditorGUI.EnumPopup(EHorizontalScope.NextRect(5, 120), m_NoiseSample);
+                HorizontalScope.NextLine(2, 20);
+                EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Sample:", UEGUIStyle_Window.m_TitleLabel);
+                m_NoiseSample = (ENoiseSample)EditorGUI.EnumPopup(HorizontalScope.NextRect(5, 120), m_NoiseSample);
             }
-            EHorizontalScope.NextLine(2, 20);
-            EditorGUI.LabelField(EHorizontalScope.NextRect(0, 60), "Filter:", UEGUIStyle_Window.m_TitleLabel);
-            m_FilterMode = (FilterMode)EditorGUI.EnumPopup(EHorizontalScope.NextRect(5, 120), m_FilterMode);
-            EHorizontalScope.NextLine(2, 20);
-            EditorGUI.LabelField(EHorizontalScope.NextRect(0, 60), "Size:", UEGUIStyle_Window.m_TitleLabel);
-            m_SizePower = EditorGUI.IntSlider(EHorizontalScope.NextRect(5, 120), m_SizePower, 3, 10);
+            HorizontalScope.NextLine(2, 20);
+            EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Filter:", UEGUIStyle_Window.m_TitleLabel);
+            m_FilterMode = (FilterMode)EditorGUI.EnumPopup(HorizontalScope.NextRect(5, 120), m_FilterMode);
+            HorizontalScope.NextLine(2, 20);
+            EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Size:", UEGUIStyle_Window.m_TitleLabel);
+            m_SizePower = EditorGUI.IntSlider(HorizontalScope.NextRect(5, 120), m_SizePower, 3, 10);
             int size = Mathf.RoundToInt(Mathf.Pow(2, m_SizePower));
-            EditorGUI.LabelField(EHorizontalScope.NextRect(5, 40), size.ToString());
-            EHorizontalScope.NextLine(2, 20);
-            EditorGUI.LabelField(EHorizontalScope.NextRect(0, 60), "Scale:", UEGUIStyle_Window.m_TitleLabel);
-            m_Scale = EditorGUI.Slider(EHorizontalScope.NextRect(5, 120), m_Scale, 1f, 30f);
+            EditorGUI.LabelField(HorizontalScope.NextRect(5, 40), size.ToString());
+            HorizontalScope.NextLine(2, 20);
+            EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Scale:", UEGUIStyle_Window.m_TitleLabel);
+            m_Scale = EditorGUI.Slider(HorizontalScope.NextRect(5, 120), m_Scale, 1f, 30f);
 
-            EHorizontalScope.NextLine(2, 20);
-            EditorGUI.LabelField(EHorizontalScope.NextRect(0, 60), "Octave:", UEGUIStyle_Window.m_TitleLabel);
-            m_Octave = EditorGUI.Toggle(EHorizontalScope.NextRect(5, 20), m_Octave);
+            HorizontalScope.NextLine(2, 20);
+            EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Octave:", UEGUIStyle_Window.m_TitleLabel);
+            m_Octave = EditorGUI.Toggle(HorizontalScope.NextRect(5, 20), m_Octave);
             if (m_Octave)
             {
-                EHorizontalScope.NextLine(2, 20);
-                EditorGUI.LabelField(EHorizontalScope.NextRect(0, 60), "Count:", UEGUIStyle_Window.m_TitleLabel);
-                m_OctaveCount = EditorGUI.IntSlider(EHorizontalScope.NextRect(5, 120), m_OctaveCount, 2, 7);
-                EHorizontalScope.NextLine(2, 20);
+                HorizontalScope.NextLine(2, 20);
+                EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Count:", UEGUIStyle_Window.m_TitleLabel);
+                m_OctaveCount = EditorGUI.IntSlider(HorizontalScope.NextRect(5, 120), m_OctaveCount, 2, 7);
+                HorizontalScope.NextLine(2, 20);
             }
 
             if (!m_Texture || EditorGUI.EndChangeCheck())
@@ -132,15 +132,15 @@ namespace TEditor
                 m_Texture.Apply();
                 Undo.RecordObject(this, "Noise Generator Change");
             }
-            EHorizontalScope.NextLine(2, 256);
-            Rect textureRect = EHorizontalScope.NextRect(0, 256);
+            HorizontalScope.NextLine(2, 256);
+            Rect textureRect = HorizontalScope.NextRect(0, 256);
             GUI.DrawTexture(textureRect, EditorGUIUtility.whiteTexture);
             GUI.DrawTexture(textureRect.Collapse(Vector2.one*10f), m_Texture);
-            EHorizontalScope.NextLine(2, 20);
-            if (GUI.Button(EHorizontalScope.NextRect(0, 80), "Export"))
+            HorizontalScope.NextLine(2, 20);
+            if (GUI.Button(HorizontalScope.NextRect(0, 80), "Export"))
             {
-                if (EUAsset.SaveFilePath(out string filePath, "png", "CustomNoise_" + m_NoiseType.ToString()))
-                    EUAsset.CreateOrReplaceFile(filePath, m_Texture.EncodeToPNG());
+                if (UEAsset.SaveFilePath(out string filePath, "png", "CustomNoise_" + m_NoiseType.ToString()))
+                    UEAsset.CreateOrReplaceFile(filePath, m_Texture.EncodeToPNG());
             }
         }
     }

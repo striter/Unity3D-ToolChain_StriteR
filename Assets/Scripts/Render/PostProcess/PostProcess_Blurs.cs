@@ -67,8 +67,8 @@ namespace Rendering.PostProcess
     public struct PPData_Blurs:IPostProcessParameter
     {
         [MTitle] public EBlurType m_BlurType;
-        [Range(0.05f, 2f)] public float m_BlurSize;
-        [MFold(nameof(m_BlurType), EBlurType.Grainy)]
+        [MFold(nameof(m_BlurType), EBlurType.None)] [Range(0.05f, 2f)] public float m_BlurSize;
+        [MFold(nameof(m_BlurType),  EBlurType.None,EBlurType.Grainy)]
         [Range(1, 13)] public int m_Iteration;
         [MFoldout(nameof(m_BlurType), EBlurType.Kawase, EBlurType.GaussianVHSeperated, EBlurType.AverageVHSeperated, EBlurType.Hexagon, EBlurType.DualFiltering)]
         [Range(1, 4)] public int m_DownSample;

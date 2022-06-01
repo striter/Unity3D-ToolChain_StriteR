@@ -42,8 +42,8 @@ namespace TEditor
 
             var mainPath = AssetDatabase.GetAssetPath(_src);
             if (m_ClearMain)
-                EUAsset.ClearSubAssets(mainPath);
-            EUAsset.CreateOrReplaceSubAsset(mainPath,subAssets);
+                UEAsset.ClearSubAssets(mainPath);
+            UEAsset.CreateOrReplaceSubAsset(mainPath,subAssets);
             if (_keepCombines)
                 return;
             foreach (var asset in _combines)

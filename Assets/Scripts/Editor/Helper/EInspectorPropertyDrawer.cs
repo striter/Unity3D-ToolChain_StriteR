@@ -310,7 +310,7 @@ namespace TEditor
         {
             if (!OnGUIAttributePropertyCheck(position, property, out CullingMaskAttribute attribute, SerializedPropertyType.Integer))
                 return;
-            Dictionary<int, string> allLayers = EUCommon.GetAllLayers(true);
+            Dictionary<int, string> allLayers = UECommon.GetAllLayers(true);
             List<string> values = new List<string>();
             foreach (int key in allLayers.Keys)
                 values.Add(allLayers[key] == string.Empty ? null : allLayers[key]);
@@ -468,13 +468,13 @@ namespace TEditor
         {
             float width = position.size.x;
             float propertyHeight = EditorGUI.GetPropertyHeight(property);
-            EHorizontalScope.Begin(position.x, position.y, propertyHeight);
-            EditorGUI.PropertyField(EHorizontalScope.NextRect(0f, width), property, new GUIContent(m_Name, m_ToolTip), true);
+            HorizontalScope.Begin(position.x, position.y, propertyHeight);
+            EditorGUI.PropertyField(HorizontalScope.NextRect(0f, width), property, new GUIContent(m_Name, m_ToolTip), true);
             if (!property.isExpanded)
                 return;
-            EHorizontalScope.NextLine(2f, 18f);
-            EHorizontalScope.NextRect(0f, width * 5f / 6f);
-            if (GUI.Button(EHorizontalScope.NextRect(0f, width / 6f), "Edit"))
+            HorizontalScope.NextLine(2f, 18f);
+            HorizontalScope.NextRect(0f, width * 5f / 6f);
+            if (GUI.Button(HorizontalScope.NextRect(0f, width / 6f), "Edit"))
                 GUITransformHandles.Begin(m_PositionProperty, m_DirecitonProperty);
         }
     }

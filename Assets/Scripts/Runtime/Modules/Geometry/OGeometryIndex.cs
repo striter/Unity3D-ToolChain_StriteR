@@ -4,14 +4,14 @@ using System.Collections.Generic;
 namespace Geometry.Polygon
 {
     [Serializable]
-    public struct GQuadPolygon:IEnumerable<int>,IIterate<int>
+    public struct GQuadIndex:IEnumerable<int>,IIterate<int>
     {
         public int index0 { get; set; }
         public int index1 { get; set; }
         public int index2 { get; set; }
         public int index3 { get; set; }
 
-        public GQuadPolygon(int _index0, int _index1, int _index2, int _index3)
+        public GQuadIndex(int _index0, int _index1, int _index2, int _index3)
         {
             index0 = _index0;
             index1 = _index1;

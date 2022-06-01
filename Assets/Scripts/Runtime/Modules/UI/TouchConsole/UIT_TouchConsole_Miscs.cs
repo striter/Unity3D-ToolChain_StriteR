@@ -58,7 +58,7 @@ public partial class UIT_TouchConsole
             m_AnimationCounter.Tick(_deltaTime);
 
             float destScale =  (m_JoystickActive ? 1f : 0f);
-            m_Joystick.transform.localScale = Mathf.Lerp(1f-destScale,destScale,UMath.po2(m_AnimationCounter.m_TimeElapsedScale)) * Vector3.one;
+            m_Joystick.transform.localScale = Mathf.Lerp(1f-destScale,destScale,UMath.Pow2(m_AnimationCounter.m_TimeElapsedScale)) * Vector3.one;
             if (!m_JoystickActive && !m_AnimationCounter.m_Counting)
                 m_Joystick.SetActive(false);
         }

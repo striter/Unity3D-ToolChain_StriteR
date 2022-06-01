@@ -52,35 +52,35 @@ namespace TEditor
         }
         private void OnGUI()
         {
-            EHorizontalScope.Begin(5,5,18);
-            EditorGUI.LabelField(EHorizontalScope.NextRect(0, 80),"Editor Mode:",UEGUIStyle_Window.m_TitleLabel);
-            m_EditorMode = (ETextureEditorMode)EditorGUI.EnumPopup(EHorizontalScope.NextRect(5,100),m_EditorMode);
+            HorizontalScope.Begin(5,5,18);
+            EditorGUI.LabelField(HorizontalScope.NextRect(0, 80),"Editor Mode:",UEGUIStyle_Window.m_TitleLabel);
+            m_EditorMode = (ETextureEditorMode)EditorGUI.EnumPopup(HorizontalScope.NextRect(5,100),m_EditorMode);
 
-            EHorizontalScope.NextLine(2,20);
+            HorizontalScope.NextLine(2,20);
             var textureEditor = m_Editors[m_EditorMode];
             if (!textureEditor.OnGUIExportValid(ref m_TargetTexture, UpdateTexture))
                 return;
 
             EditorGUI.BeginChangeCheck();
-            EHorizontalScope.NextLine(2, 18);
-            EditorGUI.LabelField(EHorizontalScope.NextRect(0, 60), "Display:", UEGUIStyle_Window.m_TitleLabel);
-            EHorizontalScope.NextLine(2, 18);
-            EditorGUI.LabelField(EHorizontalScope.NextRect(0, 60), "Visualize:");
-            m_ColorVisualize= (EColorVisualize)EditorGUI.EnumPopup(EHorizontalScope.NextRect(5,40),m_ColorVisualize);
+            HorizontalScope.NextLine(2, 18);
+            EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Display:", UEGUIStyle_Window.m_TitleLabel);
+            HorizontalScope.NextLine(2, 18);
+            EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Visualize:");
+            m_ColorVisualize= (EColorVisualize)EditorGUI.EnumPopup(HorizontalScope.NextRect(5,40),m_ColorVisualize);
 
             if (EditorGUI.EndChangeCheck())
                 UpdateDisplayTexture();
 
-            EHorizontalScope.NextLine(2, 256);
-            Rect textureRect = EHorizontalScope.NextRect(0, 256);
+            HorizontalScope.NextLine(2, 256);
+            Rect textureRect = HorizontalScope.NextRect(0, 256);
             GUI.DrawTexture(textureRect, EditorGUIUtility.whiteTexture);
             GUI.DrawTexture(textureRect.Collapse(Vector2.one * 10f), m_DisplayTexture);
-            EHorizontalScope.NextLine(2, 20);
+            HorizontalScope.NextLine(2, 20);
 
-            EHorizontalScope.NextLine(2, 18);
-            EditorGUI.LabelField(EHorizontalScope.NextRect(5, 50), "Export:", UEGUIStyle_Window.m_TitleLabel);
-            m_TextureExportType =(ETextureExportType) EditorGUI.EnumPopup(EHorizontalScope.NextRect(0,50), m_TextureExportType);
-            if (GUI.Button(EHorizontalScope.NextRect(20, 80), "Export"))
+            HorizontalScope.NextLine(2, 18);
+            EditorGUI.LabelField(HorizontalScope.NextRect(5, 50), "Export:", UEGUIStyle_Window.m_TitleLabel);
+            m_TextureExportType =(ETextureExportType) EditorGUI.EnumPopup(HorizontalScope.NextRect(0,50), m_TextureExportType);
+            if (GUI.Button(HorizontalScope.NextRect(20, 80), "Export"))
                 ExportTexture(m_TargetTexture,m_TargetTexture.name,m_TextureExportType);
         }
 
@@ -116,7 +116,7 @@ namespace TEditor
             }
 
 
-            if (!EUAsset.SaveFilePath(out string filePath, extend, _name + "_M"))
+            if (!UEAsset.SaveFilePath(out string filePath, extend, _name + "_M"))
                 return;
             byte[] bytes = null; 
             switch(_exportType)
@@ -126,7 +126,7 @@ namespace TEditor
                 case ETextureExportType.JPG: bytes = _saveTexture.EncodeToJPG(); break;
                 case ETextureExportType.PNG: bytes = _saveTexture.EncodeToPNG(); break;
             }
-            EUAsset.CreateOrReplaceFile(filePath,bytes);
+            UEAsset.CreateOrReplaceFile(filePath,bytes);
         }
         class TE_ChannelModifier : ITextureEditor
         {
@@ -138,14 +138,14 @@ namespace TEditor
             }
             public bool OnGUIExportValid(ref Texture2D _targetTexture, Action DisplayNotify)
             {
-                EditorGUI.LabelField(EHorizontalScope.NextRect(0, 60), "Texture:");
+                EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Texture:");
                 EditorGUI.BeginChangeCheck();
-                m_ModifyTexture = (Texture2D)EditorGUI.ObjectField(EHorizontalScope.NextRect(5, 65), m_ModifyTexture, typeof(Texture2D), false);
+                m_ModifyTexture = (Texture2D)EditorGUI.ObjectField(HorizontalScope.NextRect(5, 65), m_ModifyTexture, typeof(Texture2D), false);
 
                 if (m_ModifyTexture == null || !m_ModifyTexture.isReadable)
                 {
-                    EHorizontalScope.NextLine(2, 20);
-                    EditorGUI.LabelField(EHorizontalScope.NextRect(0, 240), "Select Readable Texture To Begin", UEGUIStyle_Window.m_ErrorLabel);
+                    HorizontalScope.NextLine(2, 20);
+                    EditorGUI.LabelField(HorizontalScope.NextRect(0, 240), "Select Readable Texture To Begin", UEGUIStyle_Window.m_ErrorLabel);
                     return false;
                 }
                 if (EditorGUI.EndChangeCheck())
@@ -155,31 +155,31 @@ namespace TEditor
                     DisplayNotify();
                 }
 
-                EHorizontalScope.NextLine(2, 20);
-                EditorGUI.LabelField(EHorizontalScope.NextRect(5, 60), "Modify:", UEGUIStyle_Window.m_TitleLabel);
-                m_ChannelModify = (EColorVisualize)EditorGUI.EnumPopup(EHorizontalScope.NextRect(5, 120), m_ChannelModify);
+                HorizontalScope.NextLine(2, 20);
+                EditorGUI.LabelField(HorizontalScope.NextRect(5, 60), "Modify:", UEGUIStyle_Window.m_TitleLabel);
+                m_ChannelModify = (EColorVisualize)EditorGUI.EnumPopup(HorizontalScope.NextRect(5, 120), m_ChannelModify);
 
                 if (m_ChannelModify != EColorVisualize.None)
                 {
-                    EHorizontalScope.NextLine(2, 20);
-                    if (GUI.Button(EHorizontalScope.NextRect(10, 60), "Reverse"))
+                    HorizontalScope.NextLine(2, 20);
+                    if (GUI.Button(HorizontalScope.NextRect(10, 60), "Reverse"))
                     {
                         DoColorModify(_targetTexture, m_ChannelModify, value => 1 - value);
                         DisplayNotify();
                     }
-                    if (GUI.Button(EHorizontalScope.NextRect(10, 60), "Fill"))
+                    if (GUI.Button(HorizontalScope.NextRect(10, 60), "Fill"))
                     {
                         DoColorModify(_targetTexture, m_ChannelModify, value => 1);
                         DisplayNotify();
                     }
-                    if (GUI.Button(EHorizontalScope.NextRect(10, 60), "Clear"))
+                    if (GUI.Button(HorizontalScope.NextRect(10, 60), "Clear"))
                     {
                         DoColorModify(_targetTexture, m_ChannelModify, value => 0);
                         DisplayNotify();
                     }
                 }
 
-                if (GUI.Button(EHorizontalScope.NextRect(5, 80), "Reset"))
+                if (GUI.Button(HorizontalScope.NextRect(5, 80), "Reset"))
                 {
                     ResetModifyTexture(_targetTexture);
                     DisplayNotify();
@@ -254,25 +254,25 @@ namespace TEditor
             public bool OnGUIExportValid(ref Texture2D _targetTexture, Action DisplayNotify)
             {
                 EditorGUI.BeginChangeCheck();
-                EditorGUI.LabelField(EHorizontalScope.NextRect(0, 20), "R:");
-                m_R = (Texture2D)EditorGUI.ObjectField(EHorizontalScope.NextRect(5, 65), m_R, typeof(Texture2D), false);
+                EditorGUI.LabelField(HorizontalScope.NextRect(0, 20), "R:");
+                m_R = (Texture2D)EditorGUI.ObjectField(HorizontalScope.NextRect(5, 65), m_R, typeof(Texture2D), false);
                 if (!ValidTexture(m_R))
-                    m_RDefault = EditorGUI.Slider(EHorizontalScope.NextRect(5, 150), m_RDefault, 0f, 1f);
-                EHorizontalScope.NextLine(2, 20);
-                EditorGUI.LabelField(EHorizontalScope.NextRect(0, 20), "G:");
-                m_G = (Texture2D)EditorGUI.ObjectField(EHorizontalScope.NextRect(5, 65), m_G, typeof(Texture2D), false);
+                    m_RDefault = EditorGUI.Slider(HorizontalScope.NextRect(5, 150), m_RDefault, 0f, 1f);
+                HorizontalScope.NextLine(2, 20);
+                EditorGUI.LabelField(HorizontalScope.NextRect(0, 20), "G:");
+                m_G = (Texture2D)EditorGUI.ObjectField(HorizontalScope.NextRect(5, 65), m_G, typeof(Texture2D), false);
                 if (!ValidTexture(m_G))
-                    m_GDefault = EditorGUI.Slider(EHorizontalScope.NextRect(5, 150), m_GDefault, 0f, 1f);
-                EHorizontalScope.NextLine(2, 20);
-                EditorGUI.LabelField(EHorizontalScope.NextRect(0, 20), "B:");
-                m_B = (Texture2D)EditorGUI.ObjectField(EHorizontalScope.NextRect(5, 65), m_B, typeof(Texture2D), false);
+                    m_GDefault = EditorGUI.Slider(HorizontalScope.NextRect(5, 150), m_GDefault, 0f, 1f);
+                HorizontalScope.NextLine(2, 20);
+                EditorGUI.LabelField(HorizontalScope.NextRect(0, 20), "B:");
+                m_B = (Texture2D)EditorGUI.ObjectField(HorizontalScope.NextRect(5, 65), m_B, typeof(Texture2D), false);
                 if (!ValidTexture(m_B))
-                    m_BDefault = EditorGUI.Slider(EHorizontalScope.NextRect(5, 150), m_BDefault, 0f, 1f);
-                EHorizontalScope.NextLine(2, 20);
-                EditorGUI.LabelField(EHorizontalScope.NextRect(0, 20), "A:");
-                m_A = (Texture2D)EditorGUI.ObjectField(EHorizontalScope.NextRect(5, 65), m_A, typeof(Texture2D), false);
+                    m_BDefault = EditorGUI.Slider(HorizontalScope.NextRect(5, 150), m_BDefault, 0f, 1f);
+                HorizontalScope.NextLine(2, 20);
+                EditorGUI.LabelField(HorizontalScope.NextRect(0, 20), "A:");
+                m_A = (Texture2D)EditorGUI.ObjectField(HorizontalScope.NextRect(5, 65), m_A, typeof(Texture2D), false);
                 if (!ValidTexture(m_A))
-                    m_ADefault = EditorGUI.Slider(EHorizontalScope.NextRect(5, 150), m_ADefault, 0f, 1f);
+                    m_ADefault = EditorGUI.Slider(HorizontalScope.NextRect(5, 150), m_ADefault, 0f, 1f);
 
                 bool validTextures = ValidCheck(out int maxWidth, out int maxHeight, out bool rValid, out bool gValid, out bool bValid, out bool aValid);
                 if (!validTextures)

@@ -80,11 +80,13 @@ namespace Rendering.Pipeline
         {
             var globals = PostProcessGlobalVolume.sVolumes.Select(p => p.GetComponents<IPostProcessBehaviour>())
                 .Resolve();
-            if (_data.postProcessingEnabled)
+            
+            if (_data.postProcessingEnabled && _data.cameraData.postProcessEnabled)
             {
                 EnqueuePostProcesses(_renderer, _data.cameraData.camera.transform,globals);
                 if (_override != null && _override.m_PostProcessPreview)
                     m_PostProcessingPreview = _override;
+                return;
             }
 
             if (_data.cameraData.isSceneViewCamera)

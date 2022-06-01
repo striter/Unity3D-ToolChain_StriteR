@@ -2,7 +2,14 @@ Shader "Game/Lit/Transparecy/Glass"
 {
     Properties
     {
+        _MainTex("Texture",2D)="white"{}
     	_ColorTint("Color Tint",Color)=(1,1,1,0.5)
+        [ToggleTex(_NORMALTEX)][NoScaleOffset]_NormalTex("Normal Tex",2D)="white"{}
+    	
+    	[Toggle(_REFRACTION)]_Refraction("Refraction",int)=0
+    	[Foldout(_REFRACTION)]_DistortStrength("Distort Strength",Range(0,5))=0.05
+    	
+    	[Header(Fresnel)]
     	[MinMaxRange]_Fresnel("Fresnel",Range(0,1))=0
     	[HideInInspector]_FresnelEnd("",float)=0
     	
@@ -11,28 +18,34 @@ Shader "Game/Lit/Transparecy/Glass"
     	[MinMaxRange]_Rim("Rim",Range(0,1))=0.1
     	[HideInInspector]_RimEnd("",float)=0.15
     	
-    	[Header(Normal)]
-        [ToggleTex(_NORMALTEX)]_NormalTex("Normal Tex",2D)="white"{}
-    	_DistortStrength("Distort Strength",Range(0,5))=0.05
-    	
     	[Header(Reflection)]
     	_ReflectionOffset("_Visibility",Range(-7,7)) = 8
     	
     	[Header(Specular)]
     	_SpecularStrength("Specular Strength",Range(0,5))=1
     	_SpecularGlossiness("Specular Glossiness",Range(0,1))=0.75
+    	
+    	[Header(Render Options)]
+        [Enum(UnityEngine.Rendering.BlendMode)]_SrcBlend("Src Blend",int)=1
+        [Enum(UnityEngine.Rendering.BlendMode)]_DstBlend("Dst Blend",int)=0
+        [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
+        [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
+        [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
     }
     SubShader
     {
-        ZWrite On
-        Blend Off
-    	Cull Back
+		Blend [_SrcBlend] [_DstBlend]
+		Cull [_Cull]
+		ZWrite [_ZWrite]
+		ZTest [_ZTest]
+    	
         Pass
         {
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #pragma shader_feature_local_fragment _NORMALTEX
+            #pragma shader_feature_local_fragment _REFRACTION
             #pragma multi_compile _ ENVIRONMENT_CUSTOM ENVIRONMENT_INTERPOLATE
 
             #include "Assets/Shaders/Library/Common.hlsl"
@@ -60,6 +73,7 @@ Shader "Game/Lit/Transparecy/Glass"
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
+			TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
             TEXTURE2D(_NormalTex);SAMPLER(sampler_NormalTex);
             TEXTURE2D(_CameraOpaqueTexture);SAMPLER(sampler_CameraOpaqueTexture);
             INSTANCING_BUFFER_START
@@ -71,7 +85,7 @@ Shader "Game/Lit/Transparecy/Glass"
 				INSTANCING_PROP(float,_Rim)
 				INSTANCING_PROP(float,_RimEnd)
             
-                INSTANCING_PROP(float4,_NormalTex_ST)
+                INSTANCING_PROP(float4,_MainTex_ST)
 				INSTANCING_PROP(float,_DistortStrength)
 				INSTANCING_PROP(float,_SpecularStrength)
 				INSTANCING_PROP(float,_SpecularGlossiness)
@@ -85,7 +99,7 @@ Shader "Game/Lit/Transparecy/Glass"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
                 o.positionCS = TransformObjectToHClip(v.positionOS);
                 o.positionHCS=o.positionCS;
-                o.uv = TRANSFORM_TEX_INSTANCE(v.uv, _NormalTex);
+                o.uv = TRANSFORM_TEX_INSTANCE(v.uv, _MainTex);
                 o.positionWS=TransformObjectToWorld(v.positionOS);
 				o.normalWS=normalize(mul((float3x3)unity_ObjectToWorld,v.normalOS));
 				o.tangentWS=normalize(mul((float3x3)unity_ObjectToWorld,v.tangentOS.xyz));
@@ -101,7 +115,8 @@ Shader "Game/Lit/Transparecy/Glass"
 				half3 biTangentWS=normalize(i.biTangentWS);
 				half3 tangentWS=normalize(i.tangentWS);
 				half3 normalTS=half3(0,0,1);
-            	float3 albedo = INSTANCE(_ColorTint.rgb);
+				float4 colorSample = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
+            	float3 albedo = colorSample.rgb * INSTANCE(_ColorTint.rgb);
             	
             	float3 cameraDirWS=GetCameraRealDirectionWS(i.positionWS);
             	float3 viewDirWS=-cameraDirWS;
@@ -116,9 +131,8 @@ Shader "Game/Lit/Transparecy/Glass"
 					normalWS=normalize(mul(transpose(TBNWS), normalTS));
 				#endif
             	
-            	float opacityFresnel=saturate(max(invlerp(_FresnelEnd,_Fresnel,ndv),_ColorTint.a));
+            	float opacityFresnel=saturate(max(invlerp(_FresnelEnd,_Fresnel,ndv),_ColorTint.a*colorSample.a));
             	float2 screenUV=TransformHClipToNDC(i.positionHCS)+normalTS.xy*INSTANCE(_DistortStrength)/i.depthDistance;
-            	float3 baseCol = SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,screenUV) *  lerp(1,albedo,opacityFresnel);
             	
             	float3 specularColor=0;
                 float3 indirectSpecular = IndirectCubeSpecular(reflectDirWS,1,_ReflectionOffset);
@@ -130,7 +144,12 @@ Shader "Game/Lit/Transparecy/Glass"
 				float specular= GetSpecular(normalWS,halfDirWS,INSTANCE(_SpecularGlossiness))*INSTANCE(_SpecularStrength);
 				specularColor += specular * _MainLightColor.rgb;
 
-                return float4(baseCol+specularColor,1);
+            	#if _REFRACTION
+            		float3 baseCol = lerp(SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,screenUV).rgb,albedo,opacityFresnel);
+	                return float4(baseCol+specularColor,1);
+				#else
+					return float4(albedo+specularColor,max(opacityFresnel,specular,rim));
+				#endif
             }
             ENDHLSL
         }

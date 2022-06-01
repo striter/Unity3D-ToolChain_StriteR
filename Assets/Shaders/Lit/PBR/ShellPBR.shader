@@ -22,8 +22,8 @@
 		
 		[Header(PBR)]
 		[ToggleTex(_PBRMAP)] [NoScaleOffset]_PBRTex("PBR Tex(Roughness.Metallic.AO)",2D)="white"{}
-		[Fold(_PBRMAP)]_Glossiness("Glossiness",Range(0,1))=1
-        [Fold(_PBRMAP)]_Metallic("Metalness",Range(0,1))=0
+		_Glossiness("Glossiness",Range(0,1))=1
+        _Metallic("Metalness",Range(0,1))=0
 	
 		[Header(Render Options)]
         [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1

@@ -163,14 +163,12 @@
 				return sample.rgb*color.rgb;
 			}
 
-			float3 CalculateEmission(float2 uv,float4 color)
-			{
-				return SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,uv).rgb*INSTANCE(_EmissionColor).rgb;
-			}
-		
-			#define TRANSFER_POSITION_WS(v) TransformObjectToWorld(v.positionOS)
 			#define GET_ALBEDO(i) CalculateAlbedo(i.uv,i.color);
-			#define GET_EMISSION(i) CalculateEmission(i.uv,i.color);
+			
+			#define A2V_SHADOW_DEPTH float2 uv:TEXCOORD0;
+			#define V2F_SHADOW_DEPTH float2 uv:TEXCOORD0;
+			#define TRANSFER_SHADOW_DEPTH(v,o) o.uv=TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
+			#define MIX_SHADOW_DEPTH(i) AlphaClip(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv.xy).a*INSTANCE(_Color.a));
 		ENDHLSL
 
 		Pass
@@ -348,6 +346,7 @@
 				o.result=half4(finalCol,color.a);
 				return o;
 			}
+
 			ENDHLSL
 		}
 
@@ -389,10 +388,6 @@
 			ZTest LEqual
 			
 			HLSLPROGRAM
-			#define A2V_SHADOW_DEPTH float2 uv:TEXCOORD0;
-			#define V2F_SHADOW_DEPTH float2 uv:TEXCOORD0;
-			#define TRANSFER_SHADOW_DEPTH(v,o) o.uv=TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
-			#define MIX_SHADOW_DEPTH(i) AlphaClip(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv.xy).a*INSTANCE(_Color.a));
 			
             #include "Assets/Shaders/Library/Passes/ShadowCaster.hlsl"
 			#pragma vertex ShadowVertex

@@ -7,7 +7,7 @@ namespace TEditor
 {
     internal static class ScriptTemplates
     {
-        private const string kTemplateFolder = "Assets/Scripts/Editor/Templates/";
+        private const string kTemplateFolder = "Assets/Shaders/Templates/";
         [MenuItem(itemName:"Assets/Create/Shader/HLSLShader")]
         static void CreateHLSLShaderTemplates()
         {

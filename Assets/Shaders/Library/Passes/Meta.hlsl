@@ -27,8 +27,19 @@ v2fMeta VertexMeta(a2vMeta v)
 
 float4 FragmentMeta(v2fMeta i):SV_TARGET
 {
+#if defined(GET_ALBEDO)
     half3 albedo = GET_ALBEDO(i);
-    half3 emission = GET_EMISSION(i);
+#else
+    half3 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*INSTANCE(_Color)*i.color.rgb;
+#endif
+
+#if defined(GET_EMISSION)
+    half3 emission = GET_EMISSION(i); 
+#else
+    half3 emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,i.uv).rgb*INSTANCE(_EmissionColor).rgb;
+#endif
+
+    
     half4 res = 0;
     if (unity_MetaFragmentControl.x)
     {

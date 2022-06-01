@@ -34,7 +34,11 @@ v2ff ForwardVertex(a2vf v)
 	UNITY_SETUP_INSTANCE_ID(v);
 	UNITY_TRANSFER_INSTANCE_ID(v, o);
 	o.uv = TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
-	float3 positionWS=TRANSFER_POSITION_WS(v);
+#if defined(GET_POSITION_WS)
+	float3 positionWS = GET_POSITION_WS(v);
+#else
+	float3 positionWS=TransformObjectToWorld(v.positionOS);
+#endif
 	o.positionWS = positionWS;
 	o.positionCS = TransformWorldToHClip(positionWS);
 	o.positionHCS = o.positionCS;
@@ -60,42 +64,58 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 	half3 normalTS=half3(0,0,1);
 	float2 baseUV=i.uv.xy;
 
-	#if _NORMALMAP
-		float3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
-		normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
-		normalWS=normalize(mul(transpose(TBNWS), normalTS));
-	#endif
+	float3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
+	normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
+	normalWS=normalize(mul(transpose(TBNWS), normalTS));
 
+#if defined(GET_ALBEDO)
 	half3 albedo = GET_ALBEDO(i);
-	half3 emission= GET_EMISSION(i); 
+#else
+	half3 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*INSTANCE(_Color).rgb*i.color.rgb;
+#endif
+
+#if defined(GET_EMISSION)
+	half3 emission = GET_EMISSION(i); 
+#else
+	half3 emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,i.uv).rgb*INSTANCE(_EmissionColor).rgb;
+#endif
 
 	half glossiness=INSTANCE(_Glossiness);
 	half metallic=INSTANCE(_Metallic);
 	half ao=1.h;
 	half anisotropic=1;
-	#if _PBRMAP
-		half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
-		glossiness*=(1.h-mix.r);
-		metallic*=mix.g;
-		ao*=mix.b;
-	#endif
+
+	half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
+	glossiness*=(1.h-mix.r);
+	metallic*=mix.g;
+	ao*=mix.b;
 
 	BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,glossiness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,anisotropic);
 
 	half3 finalCol=0;
-	Light mainLight=GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
 
-	half3 indirectDiffuse= IndirectDiffuse(mainLight,i,normalWS);
+#if defined GET_MAINLIGHT
+	Light mainLight = GET_MAINLIGHT
+#else
+	Light mainLight=GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
+#endif
+
+	half3 indirectDiffuse= 
+#if defined GET_INDIRECTDIFFUSE
+	GET_INDIRECTDIFFUSE(i)
+#else
+	IndirectDiffuse(mainLight,i,normalWS);
+#endif
 	half3 indirectSpecular=IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
 	finalCol+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 
 	finalCol+=BRDFLighting(surface,mainLight);
 
-	#if _ADDITIONAL_LIGHTS
+#if _ADDITIONAL_LIGHTS
 	uint pixelLightCount = GetAdditionalLightsCount();
 	for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
 		finalCol+=BRDFLighting(surface, GetAdditionalLight(lightIndex,i.positionWS));
-	#endif
+#endif
 	FOG_MIX(i,finalCol);
 	finalCol+=surface.emission;
 	return half4(finalCol,1.h);

@@ -10,11 +10,11 @@ using static UIT_TouchConsole;
 public static class UIT_TouchConsoleHelper
 {
     public static string GetKeyCodeString(this KeyCode _keyCode) => _keyCode == KeyCode.None ? "" : _keyCode.ToString();
-    public static void Button(this CommandContainer _container, Action OnClick)
+    public static void Button(this CommandContainer _container, Action OnClick,string _title = null)
     {
         CommandItem_Button button = _container.Insert<CommandItem_Button>();
         button.m_Button.onClick.AddListener(() => OnClick());
-        button.m_Title.text = _container.m_KeyCode.GetKeyCodeString();
+        button.m_Title.text = _title ?? _container.m_KeyCode.GetKeyCodeString();
     }
 
     public static void Drag(this CommandContainer _container, Action<bool,Vector2> OnDrag)

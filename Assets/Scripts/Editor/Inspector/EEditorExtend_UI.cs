@@ -165,7 +165,7 @@ namespace TEditor
         void DrawGUI()
         {
 
-            if (!EUGUI.EditorApplicationPlayingCheck())
+            if (!UEGUI.EditorApplicationPlayingCheck())
                 return;
 
             if (m_parent == null)

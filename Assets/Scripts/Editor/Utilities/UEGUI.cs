@@ -8,7 +8,32 @@ using Object = System.Object;
 
 namespace TEditor
 {
-    public static class EUGUI
+    public static class HorizontalScope
+    {
+        static Vector2 m_StartPos;
+        static Vector2 m_Offset;
+        public static float m_CurrentY { get; private set; }
+        public static Vector2 m_CurrentPos => m_StartPos + m_Offset;
+        public static void Begin(float _startX, float _startY, float _startSizeY)
+        {
+            m_CurrentY = _startSizeY;
+            m_StartPos = new Vector2(_startX, _startY);
+            m_Offset = Vector2.zero;
+        }
+        public static Rect NextRect(float _spacingX, float _sizeX)
+        {
+            Vector2 originOffset = m_Offset;
+            m_Offset.x += _sizeX + _spacingX;
+            return new Rect(m_StartPos + originOffset, new Vector2(_sizeX, m_CurrentY));
+        }
+        public static void NextLine(float _spacingY, float _sizeY)
+        {
+            m_Offset.y += m_CurrentY + _spacingY;
+            m_CurrentY = _sizeY;
+            m_Offset.x = 0;
+        }
+    }
+    public static class UEGUI
     {
         public static FieldInfo GetFieldInfo(this SerializedProperty _property,out object _parentObject)
         {

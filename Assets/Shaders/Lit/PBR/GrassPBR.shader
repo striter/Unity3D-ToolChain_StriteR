@@ -7,7 +7,7 @@
 		_MainTex("Main Tex",2D) = "white"{}
 		_RootColor("Root Color",Color)=(0,0,0,0)
 		_EdgeColor("Edge Color",Color)=(1,1,1,1)
-		[ToggleTex(_NORMALMAP)][NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
+		[NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
 		
 		[Toggle(_ANISOTROPIC)]_Anisotropic("Anisotropic",int)=0
 		[Foldout(_ANISOTROPIC)]_AnisoTropicValue("Anisotropic Value:",Range(0,1))=1
@@ -29,9 +29,9 @@
 		
 		
 		[Header(PBR)]
-		[ToggleTex(_PBRMAP)] [NoScaleOffset]_PBRTex("PBR Tex(Roughness.Metallic.AO)",2D)="white"{}
-		[Fold(_PBRMAP)]_Glossiness("Glossiness",Range(0,1))=1
-        [Fold(_PBRMAP)]_Metallic("Metalness",Range(0,1))=0
+		[NoScaleOffset]_PBRTex("PBR Tex(Roughness.Metallic.AO)",2D)="white"{}
+		_Glossiness("Glossiness",Range(0,1))=1
+        _Metallic("Metalness",Range(0,1))=0
 	
 		[Header(Render Options)]
         [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
@@ -82,9 +82,6 @@
 
 			#pragma shader_feature_local_fragment _ANISOTROPIC
 		
-			#pragma shader_feature_local_fragment _PBRMAP
-			#pragma shader_feature_local_fragment _NORMALMAP
-			
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile _ _ADDITIONAL_LIGHTS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
