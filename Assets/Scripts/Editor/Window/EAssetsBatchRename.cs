@@ -18,7 +18,7 @@ namespace TEditor
         {
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Current Folder:"+m_FolderPath);
-            m_FolderPath = UEAsset.GetCurrentProjectWindowDirectory();
+            m_FolderPath = EUAsset.GetCurrentProjectWindowDirectory();
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginVertical();
@@ -34,7 +34,7 @@ namespace TEditor
         void RenameAssets()
         {
             int count = 0;
-            foreach (var assetPath in System.IO.Directory.GetFiles(UEPath.AssetToFilePath(m_FolderPath)))
+            foreach (var assetPath in System.IO.Directory.GetFiles(EUPath.AssetToFilePath(m_FolderPath)))
             {
                 count++;
                 string assetName = Path.GetFileName(assetPath);

@@ -44,7 +44,7 @@ namespace PolyGrid
         
         private void OnSceneGUI(SceneView sceneView)
         {
-            GRay ray = sceneView.camera.ScreenPointToRay(EUCommon.GetScreenPoint(sceneView));
+            GRay ray = sceneView.camera.ScreenPointToRay(sceneView.GetScreenPoint());
             GPlane plane = new GPlane(Vector3.up, transform.position);
             var hitPos = ray.GetPoint(UGeometryIntersect.RayPlaneDistance(plane, ray));
             var hitCoord = hitPos.ToCoord();

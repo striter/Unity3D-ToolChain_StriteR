@@ -227,6 +227,18 @@ public static class UCollection
             return false;
         }
 
+        public static bool TryFindIndex<T>(this IEnumerable<T> _collection,Predicate<T> _OnEachElement, out int _index)
+        {
+            _index = -1;
+            foreach (var element in _collection)
+            {
+                _index++;
+                if (_OnEachElement(element))
+                    return true;
+            }
+            return false;
+        }
+        
         public static T Find<T>(this IEnumerable<T> _collection, Predicate<T> _validate,out int index)
         {
             index = -1;

@@ -131,7 +131,7 @@ Shader "Game/Lit/Transparecy/Glass"
 					normalWS=normalize(mul(transpose(TBNWS), normalTS));
 				#endif
             	
-            	float opacityFresnel=saturate(max(invlerp(_FresnelEnd,_Fresnel,ndv),_ColorTint.a*colorSample.a));
+            	float opacityFresnel=saturate(max(invlerp(_FresnelEnd,_Fresnel,ndv),_ColorTint.a+colorSample.a));
             	float2 screenUV=TransformHClipToNDC(i.positionHCS)+normalTS.xy*INSTANCE(_DistortStrength)/i.depthDistance;
             	
             	float3 specularColor=0;

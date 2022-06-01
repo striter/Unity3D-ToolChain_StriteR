@@ -11,6 +11,8 @@ namespace ExampleScenes.Rendering.QuadricErrorMetrics
     {
         [ExtendButton("Optimize",nameof(Optimize))]
         public Mesh m_SharedMesh;
+
+        public int m_OptimizeCount = 5;
         private MeshFilter m_Filter;
         private QEMConstructor m_Constructor;
 
@@ -33,7 +35,7 @@ namespace ExampleScenes.Rendering.QuadricErrorMetrics
             if (m_Constructor==null)
                 return;
             
-            m_Constructor.DoContract(m_QEMMesh,1);
+            m_Constructor.DoContract(m_QEMMesh,m_OptimizeCount);
         }
     }
 }

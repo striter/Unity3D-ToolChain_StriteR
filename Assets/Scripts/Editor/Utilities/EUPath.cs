@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TEditor
 {
-    public static class UEPath
+    public static class EUPath
     {
         public static string FileToAssetPath(string assetPath)
         {

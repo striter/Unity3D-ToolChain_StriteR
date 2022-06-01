@@ -70,8 +70,7 @@ namespace Rendering
     [Serializable]
     public class EnvironmentCollection:ISerializationCallbackReceiver
     {
-
-        public Cubemap m_EnvironmentReflection;
+        public Texture m_EnvironmentReflection;
         public EnvironmentParameters m_Parameters=EnvironmentParameters.kDefault;
         
         // public LightmapParameter[] m_Parameters;

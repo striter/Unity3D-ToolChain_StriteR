@@ -180,12 +180,12 @@ namespace TEditor
 
         private void OutputMesh()
         {
-            if (!UEAsset.SaveFilePath(out string filePath, "asset", m_SharedMesh.m_Value.name))
+            if (!EUAsset.SaveFilePath(out string filePath, "asset", m_SharedMesh.m_Value.name))
                 return;
 
             Mesh mesh = new Mesh();
-            UEAsset.CopyMesh(m_SharedMesh,mesh);
-            UEAsset.CreateOrReplaceMainAsset(mesh,UEPath.FileToAssetPath(filePath));
+            EUAsset.CopyMesh(m_SharedMesh,mesh);
+            EUAsset.CreateOrReplaceMainAsset(mesh,EUPath.FileToAssetPath(filePath));
         }
     }
 }

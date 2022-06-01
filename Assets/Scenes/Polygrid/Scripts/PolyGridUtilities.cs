@@ -64,7 +64,7 @@ namespace PolyGrid
                             colors?.Add(_color);
                         }
                         
-                        UMesh.QuadToTriangleIndices(indices,indexOffset+0,indexOffset+1,indexOffset+2,indexOffset+3);
+                        UPolygon.QuadToTriangleIndices(indices,indexOffset+0,indexOffset+1,indexOffset+2,indexOffset+3);
                     }
                 }
                 break;
@@ -83,13 +83,13 @@ namespace PolyGrid
                         };
                         
                         //Bottom
-                        UMesh.QuadToTriangleIndices(indices,indexOffset+0,indexOffset+3,indexOffset+2,indexOffset+1);
+                        UPolygon.QuadToTriangleIndices(indices,indexOffset+0,indexOffset+3,indexOffset+2,indexOffset+1);
                         //Top
-                        UMesh.QuadToTriangleIndices(indices,indexOffset+4,indexOffset+5,indexOffset+6,indexOffset+7);
+                        UPolygon.QuadToTriangleIndices(indices,indexOffset+4,indexOffset+5,indexOffset+6,indexOffset+7);
                         //Forward Left
-                        UMesh.QuadToTriangleIndices(indices,indexOffset+1,indexOffset+2,indexOffset+6,indexOffset+5);
+                        UPolygon.QuadToTriangleIndices(indices,indexOffset+1,indexOffset+2,indexOffset+6,indexOffset+5);
                         //Forward Right
-                        UMesh.QuadToTriangleIndices(indices,indexOffset+2,indexOffset+3,indexOffset+7,indexOffset+6);
+                        UPolygon.QuadToTriangleIndices(indices,indexOffset+2,indexOffset+3,indexOffset+7,indexOffset+6);
                     }
                 }
                 break;

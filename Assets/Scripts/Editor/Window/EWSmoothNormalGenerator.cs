@@ -32,8 +32,8 @@ namespace TEditor
 
             m_GenerateUV = (EVertexData)EditorGUILayout.EnumPopup("Generate UV:", m_GenerateUV);
             if (m_GenerateUV != EVertexData.None && GUILayout.Button("Generate"))
-                if (UEAsset.SaveFilePath(out string filePath, "prefab", UEPath.RemoveExtension(UEPath.GetPathName(AssetDatabase.GetAssetPath(m_ModelPrefab))) + "_SN"))
-                    GenerateSkinnedTarget(UEPath.FileToAssetPath(filePath), m_ModelPrefab, m_GenerateUV);
+                if (EUAsset.SaveFilePath(out string filePath, "prefab", EUPath.RemoveExtension(EUPath.GetPathName(AssetDatabase.GetAssetPath(m_ModelPrefab))) + "_SN"))
+                    GenerateSkinnedTarget(EUPath.FileToAssetPath(filePath), m_ModelPrefab, m_GenerateUV);
 
             EditorGUILayout.EndVertical();
         }
@@ -55,7 +55,7 @@ namespace TEditor
                 targetSubAsset.Add( GenerateMesh(sourceMeshes[i], _generateUV));
 
             GameObject mainAsset = PrefabUtility.SaveAsPrefabAsset(prefabSource, assetPath);
-            UEAsset.CreateOrReplaceSubAsset(assetPath, targetSubAsset.ToArray());
+            EUAsset.CreateOrReplaceSubAsset(assetPath, targetSubAsset.ToArray());
             Mesh[] meshes = AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath).Select(obj=>(Mesh)obj).ToArray();
 
             skinnedRenderers = mainAsset.GetComponentsInChildren<SkinnedMeshRenderer>();

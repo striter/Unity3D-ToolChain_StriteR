@@ -310,7 +310,7 @@ namespace TEditor
         {
             if (!OnGUIAttributePropertyCheck(position, property, out CullingMaskAttribute attribute, SerializedPropertyType.Integer))
                 return;
-            Dictionary<int, string> allLayers = UECommon.GetAllLayers(true);
+            Dictionary<int, string> allLayers = EUCommon.GetAllLayers(true);
             List<string> values = new List<string>();
             foreach (int key in allLayers.Keys)
                 values.Add(allLayers[key] == string.Empty ? null : allLayers[key]);

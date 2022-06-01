@@ -11,12 +11,12 @@ using UnityEngine.Rendering;
 namespace TEditor
 {
 
-    public static class UEAsset
+    public static class EUAsset
     {
         #region Assets
         public static T CreateOrReplaceMainAsset<T>(T asset, string path) where T : UnityEngine.Object
         {
-            asset.name = UEPath.RemoveExtension(UEPath.GetFileName(path));
+            asset.name = EUPath.RemoveExtension(EUPath.GetFileName(path));
             UnityEngine.Object previousAsset = AssetDatabase.LoadMainAssetAtPath(path);
             T replacedAsset = null;
 
@@ -105,8 +105,8 @@ namespace TEditor
             string folderPath = EditorUtility.OpenFolderPanel("Select Directory", fbxDirectory, "");
             if (folderPath.Length == 0)
                 return false;
-            directoryPath = UEPath.FileToAssetPath(folderPath) + "/";
-            objName = UEPath.GetPathName(assetPath);
+            directoryPath = EUPath.FileToAssetPath(folderPath) + "/";
+            objName = EUPath.GetPathName(assetPath);
             return true;
         }
 
@@ -116,7 +116,7 @@ namespace TEditor
             string folderPath = EditorUtility.OpenFolderPanel("Select Directory",GetCurrentProjectWindowDirectory() , "");
             if (folderPath.Length == 0)
                 return false;
-            directoryPath = UEPath.FileToAssetPath(folderPath) + "/";
+            directoryPath = EUPath.FileToAssetPath(folderPath) + "/";
             return true;
         }
 
@@ -141,8 +141,8 @@ namespace TEditor
         }
 
         public static IEnumerable<string> GetAllAssetsPathAtDirectory(string _assetDirectory) => Directory
-            .GetFiles(UEPath.AssetToFilePath(_assetDirectory)).Select(UEPath.FileToAssetPath)
-            .Collect(p => UEPath.GetExtension(p) != ".meta");
+            .GetFiles(EUPath.AssetToFilePath(_assetDirectory)).Select(EUPath.FileToAssetPath)
+            .Collect(p => EUPath.GetExtension(p) != ".meta");
         #endregion
         #region Serialize Helper
         static readonly Dictionary<Type, Action<UnityEngine.Object, UnityEngine.Object>> m_CopyHelper = new Dictionary<Type, Action<UnityEngine.Object, UnityEngine.Object>>() {
