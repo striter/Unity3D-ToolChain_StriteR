@@ -198,8 +198,9 @@ namespace QuadricErrorsMetric
             _index1 = -1;
             _finalPos = Vector3.zero;
             float minError = float.MaxValue;
-            foreach ((var index,var qemVertex) in qemVertices.LoopIndex())
+            for (int index = 0; index < qemVertices.Count; index++)
             {
+                var qemVertex = qemVertices[index];
                 if(qemVertex.errors.Count<=0)
                     continue;
                 
@@ -255,14 +256,22 @@ namespace QuadricErrorsMetric
             for (int i = 0; i<indexes.Count;i+=3)
             {
                 var polygon = new GTrianglePolygon(indexes[i], indexes[i + 1], indexes[i + 2]);
-                var matchCount = polygon.Count(_p => _p==_index1 || _p==_index0);
+
+                int matchCount = 0;
+                int matchIndex=-1;
+                for(int j=0;j<polygon.Length;j++)
+                    if (polygon[j] == _index0 || polygon[j] == _index1)
+                    {
+                        matchCount++;
+                        matchIndex = j;
+                    }
+                
                 if (matchCount == 0)
                     continue;
                 
                 if (matchCount == 1)
                 {
-                    var index = polygon.FindIndex(_p => _p == _index1 || _p == _index0);
-                    indexes[i+index] = concatVertex;
+                    indexes[i+matchIndex] = concatVertex;
                     continue;
                 }
                 
@@ -274,11 +283,16 @@ namespace QuadricErrorsMetric
             {
                 for (int i = 0; i < 2; i++)
                 {
-                    if (qemVertex.adjacentVertexIndexes.TryFindIndex(_p => _p == _index0||_p==_index1, out var dataIndex))
+                    for (int j = 0; j < qemVertex.adjacentVertexIndexes.Count; j++)
                     {
-                        qemVertex.adjacentVertexIndexes.RemoveAt(dataIndex);
-                        qemVertex.errors.RemoveAt(dataIndex);
-                        qemVertex.vBest.RemoveAt(dataIndex);
+                        if(j==_index0||j==_index1)
+                            continue;
+                        
+                        
+                        qemVertex.adjacentVertexIndexes.RemoveAt(j);
+                        qemVertex.errors.RemoveAt(j);
+                        qemVertex.vBest.RemoveAt(j);
+                        break;
                     }
                 }
 
