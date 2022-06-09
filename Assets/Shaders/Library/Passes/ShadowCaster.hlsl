@@ -30,16 +30,16 @@ v2fs ShadowVertex(a2fs v)
 #endif 
 	
 	SHADOW_CASTER_VERTEX(v,positionWS);
-	#if defined(TRANSFER_SHADOW_DEPTH)
-		TRANSFER_SHADOW_DEPTH(v,o)
+	#if defined(VERTEX_SHADOW_DEPTH)
+		VERTEX_SHADOW_DEPTH(v,o)
 	#endif
 	return o;
 }
 
 float4 ShadowFragment(v2fs i) :SV_TARGET
 {
-	#if defined(MIX_SHADOW_DEPTH)
-		MIX_SHADOW_DEPTH(i)
+	#if defined(FRAGMENT_SHADOW_DEPTH)
+		FRAGMENT_SHADOW_DEPTH(i)
 	#endif
 	return 0;
 }

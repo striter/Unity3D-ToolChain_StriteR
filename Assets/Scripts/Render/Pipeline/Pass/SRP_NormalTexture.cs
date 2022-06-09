@@ -28,8 +28,11 @@ namespace Rendering.Pipeline
             cmd.Clear();
             CommandBufferPool.Release(cmd);
         }
-        public void Dispose() 
+        public void Dispose()
         {
+            if (m_NormalMaterial==null)
+                return;
+            
             GameObject.DestroyImmediate(m_NormalMaterial);
             m_NormalMaterial = null;
         }

@@ -167,8 +167,8 @@
 			
 			#define A2V_SHADOW_DEPTH float2 uv:TEXCOORD0;
 			#define V2F_SHADOW_DEPTH float2 uv:TEXCOORD0;
-			#define TRANSFER_SHADOW_DEPTH(v,o) o.uv=TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
-			#define MIX_SHADOW_DEPTH(i) AlphaClip(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv.xy).a*INSTANCE(_Color.a));
+			#define VERTEX_SHADOW_DEPTH(v,o) o.uv=TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
+			#define FRAGMENT_SHADOW_DEPTH(i) AlphaClip(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv.xy).a*INSTANCE(_Color.a));
 		ENDHLSL
 
 		Pass
@@ -296,7 +296,6 @@
 				half metallic=INSTANCE(_Metallic);
 				half ao=1.h;
 				half anisotropic=INSTANCE(_AnisoTropicValue);
-				half thickness = 0;
 				half sssInfluence = INSTANCE(_SSSNormalInfluence);
 				half sssIntensity = INSTANCE(_SSSIntensity);
 				#if _PBRMAP
@@ -304,9 +303,6 @@
 					glossiness*=1.h-mix.r;
 					metallic*=mix.g;
 					ao*=mix.b;
-				#endif
-				#if _SSS
-					thickness=SAMPLE_TEXTURE2D(_ThicknessMap,sampler_ThicknessMap,baseUV);
 				#endif
 
 				BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,glossiness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,anisotropic);
@@ -326,6 +322,7 @@
 
 				finalCol+=BRDFLighting(surface,mainLight);
 				#if _SSS
+					float thickness=SAMPLE_TEXTURE2D(_ThicknessMap,sampler_ThicknessMap,baseUV);
 					finalCol += SSSLighting(thickness,sssInfluence,sssIntensity,mainLight,surface.normal,surface.viewDir)*surface.diffuse;
 				#endif
 

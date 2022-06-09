@@ -42,7 +42,7 @@ v2ff ForwardVertex(a2vf v)
 	o.positionWS = positionWS;
 	o.positionCS = TransformWorldToHClip(positionWS);
 	o.positionHCS = o.positionCS;
-	o.normalWS = TransformObjectToWorldNormal(v.normalOS);
+	o.normalWS = TransformObjectNormalToWorld(v.normalOS);
 	o.tangentWS = normalize(mul((float3x3)unity_ObjectToWorld,v.tangentOS.xyz));
 	o.biTangentWS = cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
 	o.viewDirWS = GetViewDirectionWS(o.positionWS);
@@ -64,10 +64,13 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 	half3 normalTS=half3(0,0,1);
 	float2 baseUV=i.uv.xy;
 
+#if defined (_NORMALOFF)
+#else
 	float3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
 	normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
 	normalWS=normalize(mul(transpose(TBNWS), normalTS));
-
+#endif
+	
 #if defined(GET_ALBEDO)
 	half3 albedo = GET_ALBEDO(i);
 #else
@@ -94,23 +97,27 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 
 	half3 finalCol=0;
 
+	Light mainLight =
 #if defined GET_MAINLIGHT
-	Light mainLight = GET_MAINLIGHT
+	GET_MAINLIGHT(surface,positionWS)
 #else
-	Light mainLight=GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
+	GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
 #endif
 
 	half3 indirectDiffuse= 
 #if defined GET_INDIRECTDIFFUSE
-	GET_INDIRECTDIFFUSE(i)
+	GET_INDIRECTDIFFUSE(surface)
 #else
 	IndirectDiffuse(mainLight,i,normalWS);
 #endif
 	half3 indirectSpecular=IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
 	finalCol+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 
+#if defined BRDF_MAINLIGHTING
+	BRDF_MAINLIGHTING(mainLight,surface)
+#endif
 	finalCol+=BRDFLighting(surface,mainLight);
-
+	
 #if _ADDITIONAL_LIGHTS
 	uint pixelLightCount = GetAdditionalLightsCount();
 	for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
@@ -118,5 +125,6 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 #endif
 	FOG_MIX(i,finalCol);
 	finalCol+=surface.emission;
+	
 	return half4(finalCol,1.h);
 }

@@ -40,7 +40,7 @@ namespace PolyGrid
             SceneView.duringSceneGui -= OnSceneGUI;
         }
         
-        void EditorTick() => Tick(ETime.deltaTime);
+        void EditorTick() => Tick(EditorTime.deltaTime);
         
         private void OnSceneGUI(SceneView sceneView)
         {
@@ -89,7 +89,7 @@ namespace PolyGrid
 
         public void Bake()
         {
-            if (!EUAsset.SaveFilePath(out string filePath, "asset")) 
+            if (!UEAsset.SaveFilePath(out string filePath, "asset")) 
                 return;
 
             //Check Invalid Quads
@@ -127,7 +127,7 @@ namespace PolyGrid
             
             GridRuntimeData _data = ScriptableObject.CreateInstance<GridRuntimeData>();
             _data.areaData = areaData.ToArray();
-            EUAsset.CreateOrReplaceMainAsset(_data,EUPath.FileToAssetPath( filePath));
+            UEAsset.CreateOrReplaceMainAsset(_data,UEPath.FileToAssetPath( filePath));
         }
     }
 

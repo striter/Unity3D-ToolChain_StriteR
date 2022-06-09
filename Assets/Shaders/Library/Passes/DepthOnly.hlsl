@@ -33,8 +33,8 @@ v2fd DepthVertex(a2fd v)
 		float3 positionWS=TransformObjectToWorld(v.positionOS);
 	#endif 
 	o.positionCS=TransformWorldToHClip(positionWS);
-	#if defined(TRANSFER_SHADOW_DEPTH)
-		TRANSFER_SHADOW_DEPTH(v,o)
+	#if defined(VERTEX_SHADOW_DEPTH)
+		VERTEX_SHADOW_DEPTH(v,o)
 	#else
 		o.uv=TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
 	#endif
@@ -44,8 +44,8 @@ v2fd DepthVertex(a2fd v)
 
 float4 DepthFragment(v2fd i) :SV_TARGET
 {
-	#if defined(MIX_SHADOW_DEPTH)
-		MIX_SHADOW_DEPTH(i)
+	#if defined(FRAGMENT_SHADOW_DEPTH)
+		FRAGMENT_SHADOW_DEPTH(i)
 	#endif
 	return i.positionCS.z;
 }

@@ -139,8 +139,8 @@ namespace TEditor
             HorizontalScope.NextLine(2, 20);
             if (GUI.Button(HorizontalScope.NextRect(0, 80), "Export"))
             {
-                if (EUAsset.SaveFilePath(out string filePath, "png", "CustomNoise_" + m_NoiseType.ToString()))
-                    EUAsset.CreateOrReplaceFile(filePath, m_Texture.EncodeToPNG());
+                if (UEAsset.SaveFilePath(out string filePath, "png", "CustomNoise_" + m_NoiseType.ToString()))
+                    UEAsset.CreateOrReplaceFile(filePath, m_Texture.EncodeToPNG());
             }
         }
     }

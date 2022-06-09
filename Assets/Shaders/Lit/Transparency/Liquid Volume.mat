@@ -88,7 +88,7 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
-    - _DepthDistance: 0.11
+    - _DepthDistance: 0
     - _DepthWidth: 0.53
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
@@ -99,7 +99,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0
-    - _NormalOffset: -0.02
+    - _NormalOffset: -0.05
     - _NormalStrength: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.005

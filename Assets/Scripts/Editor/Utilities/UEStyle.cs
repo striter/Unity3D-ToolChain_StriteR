@@ -17,7 +17,7 @@ namespace TEditor
         public static GUIStyle m_ErrorLabel => new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontSize = 24, fontStyle = FontStyle.BoldAndItalic, richText = true };
     }
 
-    public static class ETime
+    public static class EditorTime
     {
         public static double m_Cur;
 

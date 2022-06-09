@@ -123,7 +123,7 @@ namespace TEditor
         }
         void GenerateVertexTexture(GameObject _targetFBX, AnimationClip[] _clips)
         {
-            if (!EUAsset.SelectDirectory(_targetFBX, out string savePath, out string meshName))
+            if (!UEAsset.SelectDirectory(_targetFBX, out string savePath, out string meshName))
             {
                 Debug.LogWarning("Invalid Folder Selected");
                 return;
@@ -187,7 +187,7 @@ namespace TEditor
 
             atlasTexture.name = meshName + "_AnimationAtlas";
             instanceMesh.name = meshName + "_InstanceMesh";
-            data=EUAsset.CreateAssetCombination(savePath + meshName + "_GPU_Vertex.asset", data, new Object[]{atlasTexture,instanceMesh});
+            data=UEAsset.CreateAssetCombination(savePath + meshName + "_GPU_Vertex.asset", data, new Object[]{atlasTexture,instanceMesh});
             Object[] assets = AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GetAssetPath(data));
             foreach (var asset in assets)
             {
@@ -204,7 +204,7 @@ namespace TEditor
 
         void GenerateBoneInstanceMeshAndTexture(GameObject _targetFBX, AnimationClip[] _clips, string exposeBones)
         {
-            if (!EUAsset.SelectDirectory(_targetFBX, out string savePath, out string meshName))
+            if (!UEAsset.SelectDirectory(_targetFBX, out string savePath, out string meshName))
             {
                 Debug.LogWarning("Invalid Folder Selected");
                 return;
@@ -319,7 +319,7 @@ namespace TEditor
 
                 atlasTexture.name = meshName + "_AnimationAtlas";
                 instanceMesh.name = meshName + "_InstanceMesh";
-                data = EUAsset.CreateAssetCombination(savePath + meshName + "_GPU_Transform.asset",data, new Object[]{atlasTexture,instanceMesh});
+                data = UEAsset.CreateAssetCombination(savePath + meshName + "_GPU_Transform.asset",data, new Object[]{atlasTexture,instanceMesh});
                 Object[] assets=AssetDatabase.LoadAllAssetsAtPath( AssetDatabase.GetAssetPath(data));
                 foreach(var asset in assets)
                 {

@@ -48,7 +48,7 @@ namespace PolyGrid.Module.Baking
         
         public void Bake()
         {
-            if (!EUAsset.SaveFilePath(out string filePath, "asset")) 
+            if (!UEAsset.SaveFilePath(out string filePath, "asset")) 
                 return;
             
             ModuleRuntimeData _data = CreateInstance<ModuleRuntimeData>();
@@ -68,7 +68,7 @@ namespace PolyGrid.Module.Baking
                 _data[status] = totalModuleMeshes.ToArray();
             }
            
-            EUAsset.CreateOrReplaceMainAsset(_data,EUPath.FileToAssetPath( filePath));
+            UEAsset.CreateOrReplaceMainAsset(_data,UEPath.FileToAssetPath( filePath));
         }
 
         private void GenerateCubeTemplates()

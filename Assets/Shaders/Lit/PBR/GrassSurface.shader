@@ -70,6 +70,7 @@ Shader "Game/Lit/PBR/GrassSurface"
             {
                 float3 positionOS : POSITION;
                 float3 normalOS:NORMAL;
+            	A2V_LIGHTMAP
             };
 
             struct v2f
@@ -80,6 +81,7 @@ Shader "Game/Lit/PBR/GrassSurface"
                 float4 uv:TEXCOORD3;
                 float4 flowUV : TEXCOORD4;
                 V2F_FOG(5)
+            	V2F_LIGHTMAP(6)
             };
 
             TEXTURE2D( _MainTex);SAMPLER(sampler_MainTex);
@@ -119,6 +121,7 @@ Shader "Game/Lit/PBR/GrassSurface"
                 o.uv= float4(TRANSFORM_TEX(baseUV,_MainTex),baseUV);
                 o.flowUV = float4((baseUV+_Time.y*_Flow0)*rcp(_Scale0),(baseUV+_Time.y*_Flow1)*rcp(_Scale1));
             	FOG_TRANSFER(o)
+            	LIGHTMAP_TRANSFER(v,o)
                 return o;
             }
 

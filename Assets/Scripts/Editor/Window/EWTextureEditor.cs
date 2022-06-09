@@ -116,7 +116,7 @@ namespace TEditor
             }
 
 
-            if (!EUAsset.SaveFilePath(out string filePath, extend, _name + "_M"))
+            if (!UEAsset.SaveFilePath(out string filePath, extend, _name + "_M"))
                 return;
             byte[] bytes = null; 
             switch(_exportType)
@@ -126,7 +126,7 @@ namespace TEditor
                 case ETextureExportType.JPG: bytes = _saveTexture.EncodeToJPG(); break;
                 case ETextureExportType.PNG: bytes = _saveTexture.EncodeToPNG(); break;
             }
-            EUAsset.CreateOrReplaceFile(filePath,bytes);
+            UEAsset.CreateOrReplaceFile(filePath,bytes);
         }
         class TE_ChannelModifier : ITextureEditor
         {

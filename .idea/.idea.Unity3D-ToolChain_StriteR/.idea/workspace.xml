@@ -1,25 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="92a6fb5e-0b8c-4e1a-8b06-b7827ef4a308" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/bunny.obj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/bunny.obj.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/QuadricErrorMetrics/QuadricErrorMetricsTest.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/QuadricErrorMetrics/QuadricErrorMetricsTest.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Model_Stair.FBX.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Model_Stair.FBX.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Model_Teapot.FBX.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Model_Teapot.FBX.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Model_Torus.FBX.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Model_Torus.FBX.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Quad_Forward_Centric.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Quad_Forward_Centric.fbx.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Quad_Upward_Rooted.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Quad_Upward_Rooted.fbx.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/QuadricErrorMetrics/QuadricErrorMetrics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/QuadricErrorMetrics/QuadricErrorMetrics.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/QuadricErrorMetrics/QuadricErrorMetrics.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/QuadricErrorMetrics/QuadricErrorMetrics.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/IndirectDiffuse/EnvironmentCollection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/IndirectDiffuse/EnvironmentCollection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UCollection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UCollection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/OGeometryVolume.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/OGeometryVolume.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Polygon/UQEM.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Polygon/UQEM.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Glass.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Glass.shader" afterDir="false" />
-    </list>
+    <list default="true" id="92a6fb5e-0b8c-4e1a-8b06-b7827ef4a308" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -133,6 +115,8 @@
       <workItem from="1653464872212" duration="11210000" />
       <workItem from="1653531145412" duration="11199000" />
       <workItem from="1654070125140" duration="308000" />
+      <workItem from="1654756482861" duration="6000" />
+      <workItem from="1654756602825" duration="2290000" />
     </task>
     <servers />
   </component>

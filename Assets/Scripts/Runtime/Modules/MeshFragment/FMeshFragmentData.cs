@@ -49,13 +49,6 @@ namespace MeshFragment
         private readonly  List<Color> m_Colors=new List<Color>();
         private readonly List<int> m_Indexes=new List<int>();
         
-        int IMeshFragment.embedMaterial => m_EmbedMaterial;
-        public IList<Vector3> vertices => m_Vertices;
-        public IList<Vector2> uvs => m_UVs;
-        public IList<Vector3> normals => m_Normals;
-        public IList<Vector4> tangents => m_Tangents;
-        public IList<Color> colors => m_Colors;
-        public IList<int> indexes => m_Indexes;
         public void OnPoolCreate()
         {
         }
@@ -79,5 +72,44 @@ namespace MeshFragment
             m_Colors.Clear();
             m_Indexes.Clear();
         }
+        
+        int IMeshFragment.embedMaterial => m_EmbedMaterial;
+        public IList<Vector3> vertices => m_Vertices;
+        public IList<Vector2> uvs => m_UVs;
+        public IList<Vector3> normals => m_Normals;
+        public IList<Vector4> tangents => m_Tangents;
+        public IList<Color> colors => m_Colors;
+        public IList<int> indexes => m_Indexes;
     }
+    
+    // public struct MeshFragmentArray:IMeshFragment
+    // {
+    //
+    //     public int m_EmbedMaterial;
+    //     private Vector3[] m_Vertices;
+    //     private Vector2[] m_UVs;
+    //     private Vector3[] m_Normals;
+    //     private Vector4[] m_Tangents;
+    //     private Color[] m_Colors;
+    //     private int[] m_Indexes;
+    //     
+    //     public MeshFragmentArray(int _embedMaterial,int _vertexCount,int _indexCount)
+    //     {
+    //         m_EmbedMaterial = _embedMaterial;
+    //         m_Vertices = new Vector3[_vertexCount];
+    //         m_UVs = new Vector2[_vertexCount];
+    //         m_Normals = new Vector3[_vertexCount];
+    //         m_Tangents = new Vector4[_vertexCount];
+    //         m_Colors = new Color[_vertexCount];
+    //         m_Indexes = new int[_indexCount];
+    //     }
+    //     
+    //     int IMeshFragment.embedMaterial => m_EmbedMaterial;
+    //     public IList<Vector3> vertices => m_Vertices;
+    //     public IList<Vector2> uvs => m_UVs;
+    //     public IList<Vector3> normals => m_Normals;
+    //     public IList<Vector4> tangents => m_Tangents;
+    //     public IList<Color> colors => m_Colors;
+    //     public IList<int> indexes => m_Indexes;
+    // }
 }

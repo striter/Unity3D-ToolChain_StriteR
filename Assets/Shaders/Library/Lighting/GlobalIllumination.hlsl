@@ -117,10 +117,11 @@ float _EnvironmentInterpolate;
         {
             half3 illuminance=
             #if defined(DIRLIGHTMAP_COMBINED)
-                SampleLightmapDirectional(TEXTURE2D_LIGHTMAP_ARGS(unity_Lightmap,samplerunity_Lightmap),TEXTURE2D_LIGHTMAP_ARGS(unity_LightmapInd,samplerunity_Lightmap),lightmapUV.xy,normalWS);
+                SampleLightmapDirectional(TEXTURE2D_LIGHTMAP_ARGS(unity_Lightmap,samplerunity_Lightmap),TEXTURE2D_LIGHTMAP_ARGS(unity_LightmapInd,samplerunity_Lightmap),lightmapUV,normalWS);
             #else
-            SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(unity_Lightmap,samplerunity_Lightmap), lightmapUV.xy);
+                SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(unity_Lightmap,samplerunity_Lightmap), lightmapUV);
             #endif
+
             MixRealtimeAndBakedGI(mainLight,normalWS,illuminance);
             return illuminance;
         }

@@ -2,6 +2,7 @@
 {
     Properties
     {
+    	_MainTex("Main Tex",2D)="white"{}
     	_Color("Color",Color)=(1,1,1,1)
 		[ToggleTex(_NORMALTEX)][NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
     	[Foldout(_NORMALTEX)]_Scale("Scale",Range(1,50))=10
@@ -25,11 +26,11 @@
     	[Toggle(_FRESNEL)]_Fresnel("Enable",int)=1
     	
     	[Header(Reflection)]
-		_Strength("Strength",Range(0,1))=1
+    	_ReflectionColor("Color",Color)=(1,1,1,1)
     		
     	[Header(Depth)]
     	[Toggle(_DEPTH)]_Depth("Enable",int)=1
-    	[Foldout(_DEPTH)]_DepthRamp("Ramp",2D)="white"{}
+    	[Foldout(_DEPTH)][NoScaleOffset]_DepthRamp("Ramp",2D)="white"{}
     	[Foldout(_DEPTH)]_DepthColor("Color",Color)=(1,1,1,1)
     	[Foldout(_DEPTH)]_DepthBegin("Begin",Range(0,20))=2
     	[Foldout(_DEPTH)]_DepthDistance("Distance",Range(0,40))=2
@@ -65,6 +66,8 @@
             #pragma vertex vert
             #pragma fragment frag
 			#pragma multi_compile_instancing
+			#pragma multi_compile_fragment _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+            #pragma multi_compile_fragment _ _SHADOWS_SOFT
             #pragma shader_feature_local_vertex _WAVE
             #pragma shader_feature_local_fragment _NORMALTEX
 			#pragma shader_feature_local_fragment _FOAM
@@ -75,7 +78,7 @@
             
 			#include "Assets/Shaders/Library/Common.hlsl"
 			#include "Assets/Shaders/Library/Lighting.hlsl"
-            
+
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
             TEXTURE2D(_CausticTex);SAMPLER(sampler_CausticTex);
             TEXTURE2D(_FlowTex);SAMPLER(sampler_FlowTex);
@@ -105,7 +108,7 @@
 				INSTANCING_PROP(float,_DepthBegin)
 				INSTANCING_PROP(float,_DepthDistance)
 				INSTANCING_PROP(float,_CausticStrength)
-				INSTANCING_PROP(float,_Strength)
+				INSTANCING_PROP(float4,_ReflectionColor)
 			INSTANCING_BUFFER_END
 
             #include "Assets/Shaders/Library/Additional/Local/WaveInteraction.hlsl"
@@ -176,9 +179,11 @@
 				half3 tangentWS=normalize(i.tangentWS);
 				half3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
 				half3 viewDirWS=normalize(i.viewDirWS);
-				half3 lightDirWS=normalize(_MainLightPosition.xyz);
+
+            	Light light = GetMainLight(TransformWorldToShadowCoord(i.positionWS),i.positionWS,unity_ProbesOcclusion);
+				half3 lightDirWS=normalize(light.direction);
             	float3 positionWS=i.positionWS;
-            	half3 lightCol=_MainLightColor.rgb;
+            	half3 lightCol=light.color;
 				half3 normalTS=float3(0,0,1);
             	
             	float fresnel=1;
@@ -210,8 +215,8 @@
 
             	float2 deepSurfaceUV=screenUV;
 				#if _DEPTHREFRACTION
-				float refraction=saturate(invlerp(0,INSTANCE(_RefractionDistance),eyeDepthOffset+wave.x))*INSTANCE(_RefractionAmount);
-            	deepSurfaceUV+=normalTS.xy*refraction*rcp(eyeDepthUnder);
+					float refraction=saturate(invlerp(0,INSTANCE(_RefractionDistance),eyeDepthOffset+wave.x))*INSTANCE(_RefractionAmount);
+            		deepSurfaceUV+=normalTS.xy*refraction*rcp(eyeDepthUnder);
             	#endif
             	
             	float3 deepSurfaceColor=SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,deepSurfaceUV).rgb;
@@ -233,9 +238,9 @@
 					deepSurfaceColor=lerp(deepSurfaceColor,depthCol,depth);
             	#endif
             	
-            	float3 aboveSurfaceColor=albedo;
-            	float4 reflection=IndirectSpecular(screenUV,eyeDepthSurface,normalTS);
-				aboveSurfaceColor=lerp(aboveSurfaceColor, reflection.rgb,reflection.a*INSTANCE(_Strength));
+            	float3 aboveSurfaceColor=albedo*light.shadowAttenuation;
+            	float4 reflection=IndirectSpecular(screenUV,eyeDepthSurface,normalTS)*INSTANCE(_ReflectionColor);
+				aboveSurfaceColor=lerp(aboveSurfaceColor, reflection.rgb,reflection.a);
             	
             	float specular=GetSpecular(normalWS,lightDirWS,viewDirWS,INSTANCE(_SpecularAmount))*40;
             	specular*=INSTANCE(_SpecularStrength);

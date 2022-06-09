@@ -4,6 +4,7 @@ Shader "Game/Lit/Vegetation"
     {
         [Header(Albedo)]
         _MainTex ("Main", 2D) = "white" {}
+    	[HDR]_ColorTint("Color Tint",Color)=(1,1,1,1)
         [Toggle(_COLORMASK)] _ColorMask("Masked Vegetation",int)=0
         [Foldout(_COLORMASK)]_MaskR1("Root Color",color)=(1,1,1,1)
         [Foldout(_COLORMASK)]_MaskR2("Edge Color",color)=(0.5,1,0.5,1)
@@ -52,6 +53,7 @@ Shader "Game/Lit/Vegetation"
 
             TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
             INSTANCING_BUFFER_START
+				INSTANCING_PROP(float4,_ColorTint)
                 INSTANCING_PROP(float4,_MainTex_ST)
 			    INSTANCING_PROP(float,_AlphaClipRange)
                 INSTANCING_PROP(float3,_MaskR1)
@@ -132,7 +134,7 @@ Shader "Game/Lit/Vegetation"
                 float3 positionWS=TransformObjectToWorld(v.positionOS);
 				positionWS+=Wind(positionWS,v.color.b,INSTANCE(_BendStrength));
                 o.positionCS = TransformWorldToHClip(positionWS);
-                o.uv = TRANSFORM_TEX_INSTANCE(v.uv, _MainTex);
+                o.uv = TRANSFORM_TEX_FLOW_INSTANCE(v.uv, _MainTex);
                 o.color=v.color;
                 o.normalWS=TransformObjectToWorldNormal(v.normalOS);
                 FOG_TRANSFER(o)
@@ -163,9 +165,9 @@ Shader "Game/Lit/Vegetation"
 
                 Light mainLight=GetMainLight();
 				half3 indirectDiffuse= IndirectDiffuse(mainLight,i,normalize(i.normalWS));
-                float3 finalCol=albedo*indirectDiffuse;
+                float3 finalCol=albedo*indirectDiffuse*_ColorTint.rgb;
                 FOG_MIX(i,finalCol);
-                return float4(finalCol,alpha);
+                return float4(finalCol,alpha*_ColorTint.a);
             }
             ENDHLSL
         }

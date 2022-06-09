@@ -28,34 +28,36 @@ namespace MeshFragment
             TSPoolList<IMeshFragment>.Spawn(out var tempList);
             _meshFragments.FillList(tempList);
 
-
             vertices.Clear();
             normals.Clear();
             tangents.Clear();
             colors.Clear();
             uvs.Clear();
             indexes.Clear();
-            // int totalVertexCount = 0;
-            // int totalIndexCount = 0;
-            // foreach (var fragment in tempList)
-            // {
-            //     totalVertexCount += fragment.vertices.Count;
-            //     totalIndexCount += fragment.indexes.Count;
-            // }
-            // if (totalVertexCount > vertices.Count)
-            // {
-            //     vertices.Capacity = totalVertexCount;
-            //     normals.Capacity = totalVertexCount;
-            //     tangents.Capacity = totalVertexCount;
-            //     colors.Capacity = totalVertexCount;
-            //     uvs.Capacity = totalVertexCount;
-            //     indexes.Capacity = totalIndexCount;
-            // }
+            
+            int totalVertexCount = 0;
+            int totalIndexCount = 0;
+            foreach (var fragment in tempList)
+            {
+                totalVertexCount += fragment.vertices.Count;
+                totalIndexCount += fragment.indexes.Count;
+            }
+            if (totalVertexCount > vertices.Count)
+            {
+                vertices.Capacity = totalVertexCount;
+                normals.Capacity = totalVertexCount;
+                tangents.Capacity = totalVertexCount;
+                colors.Capacity = totalVertexCount;
+                uvs.Capacity = totalVertexCount;
+                indexes.Capacity = totalIndexCount;
+            }
             
             foreach (var fragment in tempList)
             {
                 int indexOffset = vertices.Count;
-                indexes.AddRange(fragment.indexes.Select(p=> p + indexOffset));
+                for (int i = 0; i < fragment.indexes.Count; i++)
+                    indexes.Add(fragment.indexes[i]+indexOffset);
+                
                 var vertexCount = fragment.vertices.Count;
 
                 var colorValid = fragment.colors != null && fragment.colors.Count > 0;
@@ -107,15 +109,6 @@ namespace MeshFragment
             kUVs.Clear();
             kColors.Clear();
             kIndexes.Clear();
-            // if (kVertices.Capacity < vertexCount)
-            // {
-            //     kVertices.Capacity = vertexCount;
-            //     kNormals.Capacity = vertexCount;
-            //     kTangents.Capacity = vertexCount;
-            //     kUVs.Capacity = vertexCount;
-            //     kColors.Capacity = vertexCount;
-            //     kIndexes.Capacity = indexCount;
-            // }
             
             var subMeshCount = subMeshCollectors.Count;
             for (int i = 0; i < subMeshCount; i++)
@@ -141,11 +134,13 @@ namespace MeshFragment
             for (int i = 0; i < subMeshCount; i++)
             {
                 var subMesh = subMeshCollectors[i];
+                var indexes = subMesh.indexes;
                 kIndexes.Clear();
-                kIndexes.AddRange(subMesh.indexes.Select(p=>p+indexOffset));
+                for(int j=0;j<subMesh.indexes.Count;j++)
+                    kIndexes.Add(indexes[j]+indexOffset);
                 _mesh.SetIndices(kIndexes,MeshTopology.Triangles,i,false);
-                _mesh.SetSubMesh(i,new SubMeshDescriptor(indexStart,subMesh.indexes.Count));
-                indexStart += subMesh.indexes.Count;
+                _mesh.SetSubMesh(i,new SubMeshDescriptor(indexStart,indexes.Count));
+                indexStart += indexes.Count;
                 indexOffset += subMesh.vertices.Count;
                 _embedMaterials[i] = _materialLibrary[subMesh.embedMaterial];
             }

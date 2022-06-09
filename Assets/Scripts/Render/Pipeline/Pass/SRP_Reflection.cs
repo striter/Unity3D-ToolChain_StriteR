@@ -280,6 +280,7 @@ namespace Rendering.Pipeline
             base.ConfigureColorDescriptor(ref _descriptor, ref _data);
             _descriptor.enableRandomWrite = true;
             _descriptor.colorFormat = RenderTextureFormat.ARGB32;
+            _descriptor.msaaSamples = 1;
             m_Kernels = ((ComputeShader)m_ReflectionComputeShader).FindKernel("Generate");
             m_ThreadGroups = new Int2(_descriptor.width / 8, _descriptor.height / 8);
         }

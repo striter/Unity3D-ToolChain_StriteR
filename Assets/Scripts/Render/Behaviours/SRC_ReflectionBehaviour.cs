@@ -10,13 +10,23 @@ namespace Rendering.Pipeline
     {
         [Range(-5f, 5f)] public float m_PlaneOffset = 0f;
         [Range(0f, 0.2f)] public float m_NormalDistort = .1f;
+        public bool m_Upward = true;
 
         public static List<SRC_ReflectionBehaviour> m_Reflections { get; private set; } = new List<SRC_ReflectionBehaviour>();
         public bool Available => m_MeshRenderer.enabled;
         
         private MeshRenderer m_MeshRenderer;
         private MeshFilter m_MeshFilter;
-        public GPlane m_PlaneData => new GPlane(transform.up,  transform.position + transform.up*m_PlaneOffset);
+
+        public GPlane m_PlaneData
+        {
+            get
+            {
+                var upward = m_Upward ? transform.up : transform.forward;
+                return new GPlane(upward,transform.position + upward * m_PlaneOffset);
+            }
+        }
+
         private void OnEnable()
         {
             m_Reflections.Add(this);

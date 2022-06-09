@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace TEditor
 {
-    public static class EUCommon
+    public static class UECommon
     {
         public static Vector2 GetScreenPoint(this SceneView _sceneView)
         {

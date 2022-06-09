@@ -70,7 +70,8 @@ namespace Rendering
     [Serializable]
     public class EnvironmentCollection:ISerializationCallbackReceiver
     {
-        public Texture m_EnvironmentReflection;
+
+        public Cubemap m_EnvironmentReflection;
         public EnvironmentParameters m_Parameters=EnvironmentParameters.kDefault;
         
         // public LightmapParameter[] m_Parameters;
@@ -87,7 +88,7 @@ namespace Rendering
                 //     {index = p.lightmapIndex, scaleOffset = p.lightmapScaleOffset}).ToArray();
                 // m_LightmapColors = LightmapSettings.lightmaps.Select(p => p.lightmapColor).ToArray();
 
-                m_EnvironmentReflection = RenderSettings.customReflection,
+                m_EnvironmentReflection = (Cubemap) RenderSettings.customReflection,
                 m_Parameters = new EnvironmentParameters()
                 {
                     reflectionIntensity = RenderSettings.reflectionIntensity,
