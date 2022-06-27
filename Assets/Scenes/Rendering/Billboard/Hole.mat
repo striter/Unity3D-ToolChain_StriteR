@@ -15,14 +15,22 @@ MonoBehaviour:
   version: 4
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Hole
   m_Shader: {fileID: 4800000, guid: 623a8fafd99f201468235763d654b43a, type: 3}
-  m_ShaderKeywords: _DEPTHBUFFER _DEPTHMAP _GRID _LIGHTING _PARALLAX _PARALLEX _RECEIVESHADOW
+  m_ValidKeywords:
+  - _DEPTHBUFFER
+  - _DEPTHMAP
+  - _GRID
+  - _LIGHTING
+  - _PARALLAX
+  - _RECEIVESHADOW
+  m_InvalidKeywords:
+  - _PARALLEX
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -122,7 +130,7 @@ Material:
     - _DepthBuffer: 1
     - _DepthBufferScale: 8
     - _DepthOffset: 0
-    - _DepthScale: 0.07
+    - _DepthScale: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _Diffuse: 0.5

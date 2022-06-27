@@ -27,7 +27,7 @@ half3 BRDFLighting(BRDFSurface surface,BRDFLight light)
     half3 brdf = surface.diffuse;
     half D = light.normalDistribution;
     half VF = light.normalizationTerm;
-    
+
     brdf += surface.specular * D * rcp(VF);
     return brdf*light.radiance;
 }

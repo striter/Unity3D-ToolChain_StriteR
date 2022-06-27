@@ -14,7 +14,7 @@ namespace Rendering.Pipeline
         [Tooltip("Screen Space World Position Reconstruction")]
         public bool m_NormalTexture=false;
         public bool m_CameraReflectionTexture=false;
-        [MFoldout(nameof(m_CameraReflectionTexture), true)] public SRD_ReflectionData m_PlanarReflectionData= SRD_ReflectionData.Default();
+        [MFoldout(nameof(m_CameraReflectionTexture), true)] public SRD_ReflectionData m_PlanarReflectionData= SRD_ReflectionData.kDefault;
         
         private SRP_AdditionalParameters m_AdditionalParameters;
         private SRP_NormalTexture m_NormalPass;
@@ -56,7 +56,7 @@ namespace Rendering.Pipeline
                 return;
 
             bool cameraNormalTexture = m_NormalTexture;
-            bool cameraReflectionTexture = m_CameraReflectionTexture;
+            bool cameraReflectionTexture = renderingData.cameraData.isSceneViewCamera || m_CameraReflectionTexture;
             if(renderingData.cameraData.camera.TryGetComponent(out SRC_CameraBehaviour param))
             {
                 cameraNormalTexture = param.m_Normal.IsEnabled(cameraNormalTexture);

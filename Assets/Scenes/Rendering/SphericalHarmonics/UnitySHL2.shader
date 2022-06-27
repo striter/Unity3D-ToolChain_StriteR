@@ -31,7 +31,7 @@ Shader "Game/Unfinished/UnitySHL2"
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
                 o.positionCS = TransformObjectToHClip(v.positionOS);
-                o.normalWS=TransformObjectNormalToWorld(v.normalOS);
+                o.normalWS=TransformObjectToWorldNormal(v.normalOS);
                 return o;
             }
 

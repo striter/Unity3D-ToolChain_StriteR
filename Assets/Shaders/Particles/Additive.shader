@@ -9,6 +9,7 @@ Shader "Game/Particles/Additive"
         _MaskTex("Mask Tex",2D)="white"{}
         
         [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
+        [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
     }
     SubShader
     {
@@ -17,7 +18,7 @@ Shader "Game/Particles/Additive"
         {
             Blend One One
 		    ZWrite Off
-		    ZTest Less
+		    ZTest [_ZTest]
 		    Cull [_Cull]
             
             HLSLPROGRAM

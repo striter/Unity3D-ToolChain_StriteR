@@ -61,13 +61,10 @@ Shader "Game/Lit/UberPhong"
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
                 o.positionCS = TransformObjectToHClip(v.positionOS);
-                o.uv = TRANSFORM_TEX_INSTANCE(v.uv, _MainTex);
-                				UNITY_SETUP_INSTANCE_ID(v);
-				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				o.uv = TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
 				o.positionWS= TransformObjectToWorld(v.positionOS);
 				o.positionCS = TransformObjectToHClip(v.positionOS);
-				o.normalWS = TransformObjectNormalToWorld(v.normalOS);
+				o.normalWS = TransformObjectToWorldNormal(v.normalOS);
 				o.tangentWS = normalize(mul((float3x3)unity_ObjectToWorld,v.tangentOS.xyz));
 				o.biTangentWS = cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
 				o.viewDirWS = GetViewDirectionWS(o.positionWS);

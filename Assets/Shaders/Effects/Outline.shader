@@ -122,7 +122,7 @@
 				#else
 					float3 normalWS=mul((float3x3)unity_ObjectToWorld,normalOS);
 					float3 worldPos=TransformObjectToWorld(positionOS);
-					worldPos+=normalWS*_OutlineWidth;
+					worldPos+=normalWS*INSTANCE(_OutlineWidth);
 					o.positionCS= TransformWorldToHClip(worldPos);
 				#endif
 				return o;

@@ -81,6 +81,8 @@ public struct RangeFloat
         start = _start;
         length = _length;
     }
+
+    public static readonly RangeFloat k01 = new RangeFloat(0f,1f);
 }
 [Serializable]
 public struct RangeInt

@@ -42,8 +42,8 @@ v2ff ForwardVertex(a2vf v)
 	o.positionWS = positionWS;
 	o.positionCS = TransformWorldToHClip(positionWS);
 	o.positionHCS = o.positionCS;
-	o.normalWS = TransformObjectNormalToWorld(v.normalOS);
-	o.tangentWS = normalize(mul((float3x3)unity_ObjectToWorld,v.tangentOS.xyz));
+	o.normalWS = TransformObjectToWorldNormal(v.normalOS);
+	o.tangentWS = TransformObjectToWorldDir(v.tangentOS.xyz);
 	o.biTangentWS = cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
 	o.viewDirWS = GetViewDirectionWS(o.positionWS);
 	o.color=v.color;
@@ -110,14 +110,14 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 #else
 	IndirectDiffuse(mainLight,i,normalWS);
 #endif
+
 	half3 indirectSpecular=IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
 	finalCol+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
-
 #if defined BRDF_MAINLIGHTING
 	BRDF_MAINLIGHTING(mainLight,surface)
 #endif
 	finalCol+=BRDFLighting(surface,mainLight);
-	
+
 #if _ADDITIONAL_LIGHTS
 	uint pixelLightCount = GetAdditionalLightsCount();
 	for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)

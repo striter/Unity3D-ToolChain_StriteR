@@ -158,7 +158,7 @@ namespace Geometry.Voxel
 
 
     [Serializable]
-    public struct GPlane
+    public struct GPlane:IEquatable<GPlane>,IEqualityComparer<GPlane>
     {
         public Vector3 normal;
         public float distance;
@@ -178,6 +178,15 @@ namespace Geometry.Voxel
         }
         
         public static implicit operator Vector4(GPlane _plane)=>_plane.normal.ToVector4(_plane.distance);
+
+        public static bool operator ==(GPlane _src, GPlane _dst) =>  _src.normal == _dst.normal && Math.Abs(_src.distance - _dst.distance) < float.Epsilon;
+        public static bool operator !=(GPlane _src, GPlane _dst) => !(_src == _dst);
+        public bool Equals(GPlane _dst) => this == _dst;
+        public bool Equals(GPlane _src, GPlane _dst) => _src == _dst;
+        public int GetHashCode(GPlane _target)=>HashCode.Combine(_target.normal, _target.distance);
+
+        public static readonly GPlane kComparer = new GPlane();
+        public static readonly GPlane kZeroPlane = new GPlane(Vector3.up, 0f);
     }
     [Serializable]
     public struct GCone

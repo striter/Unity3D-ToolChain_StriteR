@@ -4,17 +4,18 @@ Shader "Game/Unlit/CubeSample"
     {
         _CubeMap("Cube Map",CUBE)=""{}
         _Offset("Offset",Range(0,.5))=1
+        [Toggle(_SPHERICAL)]_Spherical("Spherical",int)=0
     }
     SubShader
     {
         Tags { "Queue" = "Geometry" }
             ZTest Always
         HLSLINCLUDE
-            #define IGeometryDetection
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "Assets/Shaders/Library/Geometry.hlsl"
+            #pragma shader_feature_local _SPHERICAL
             CBUFFER_START(UnityPerMaterial)
-            float _Offset;
+                float _Offset;
             CBUFFER_END
         
             struct v2f
@@ -38,11 +39,17 @@ Shader "Game/Unlit/CubeSample"
             {
                 half3 viewDirOS=normalize(i.viewDirOS);
                 float3 offset=float3(0,0,_Offset);
-                GBox _box=GBox_Ctor(float3(0,0,.5),1);
-                GRay _ray=GRay_Ctor(i.positionOS,viewDirOS);
+                GRay viewRay=GRay_Ctor(i.positionOS,viewDirOS);
+
+                #if _SPHERICAL
+                    GSphere sphere = GSphere_Ctor(float3(0,0,.5),1);
+                    float distance = max(SphereRayDistance(sphere,viewRay));
+                #else
+                    GBox box=GBox_Ctor(float3(0,0,.5),1);
+                    float distance=sum(AABBRayDistance(box,viewRay));
+                #endif
                 
-                float2 distances=AABBRayDistance(_box,_ray);
-                float3 sdfPosOS=_ray.GetPoint(distances.x+distances.y);
+                float3 sdfPosOS=viewRay.GetPoint(distance);
 
                 float4 positionVS = TransformObjectToView(sdfPosOS);
                 positionVS.xyz/=positionVS.w;

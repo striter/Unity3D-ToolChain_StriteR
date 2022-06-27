@@ -132,23 +132,24 @@ Shader "Game/Lit/Transparecy/Glass"
 				#endif
             	
             	float opacityFresnel=saturate(max(invlerp(_FresnelEnd,_Fresnel,ndv),_ColorTint.a*colorSample.a));
-            	float2 screenUV=TransformHClipToNDC(i.positionHCS)+normalTS.xy*INSTANCE(_DistortStrength)/i.depthDistance;
             	
             	float3 specularColor=0;
+            	float3 indirectDiffuse = IndirectDiffuse_SH(normalWS);
                 float3 indirectSpecular = IndirectCubeSpecular(reflectDirWS,1,_ReflectionOffset);
             	specularColor +=  indirectSpecular*albedo;
 
 				float rim = saturate(invlerp(_RimEnd,_Rim,ndv));
-            	specularColor += rim * _RimColor.rgb * _RimColor.a;
+            	specularColor += rim * _RimColor.rgb * _RimColor.a * _MainLightColor.rgb;
             	
 				float specular= GetSpecular(normalWS,halfDirWS,INSTANCE(_SpecularGlossiness))*INSTANCE(_SpecularStrength);
 				specularColor += specular * _MainLightColor.rgb;
 
             	#if _REFRACTION
-            		float3 baseCol = lerp(SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,screenUV).rgb,albedo,opacityFresnel);
+            	float2 screenUV=TransformHClipToNDC(i.positionHCS)+normalTS.xy*INSTANCE(_DistortStrength)/i.depthDistance;
+            		float3 baseCol = lerp(SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,screenUV).rgb,albedo*indirectDiffuse,opacityFresnel);
 	                return float4(baseCol+specularColor,1);
 				#else
-					return float4(albedo+specularColor,max(opacityFresnel,specular,rim));
+					return float4(albedo*indirectDiffuse+specularColor,max(opacityFresnel,specular,rim));
 				#endif
             }
             ENDHLSL

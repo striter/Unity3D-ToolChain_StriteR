@@ -2,14 +2,19 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Material_Human
   m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
-  m_ShaderKeywords: _NDF_COOKTORRANCE _PARALLAX _VF_GGX
+  m_ValidKeywords:
+  - _NDF_COOKTORRANCE
+  - _PARALLAX
+  - _VF_GGX
+  m_InvalidKeywords:
+  - _SPECULAR
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -79,6 +84,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _ThicknessMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
@@ -99,12 +108,16 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 1
     - _Lambert: 0.5
+    - _LightmapIndex: 0
+    - _LightmapInterpolateIndex: 0
     - _Metallic: 0
     - _Mode: 0
     - _NDF: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _ParallaxCount: 16
+    - _SSSIntensity: 1
+    - _SSSNormalInfluence: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SpecularRange: 0.98
@@ -116,4 +129,7 @@ Material:
     m_Colors:
     - _Color: {r: 0.990566, g: 0.990566, b: 0.990566, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _LightmapInterpolateST: {r: 1, g: 1, b: 1, a: 1}
+    - _LightmapST: {r: 1, g: 1, b: 1, a: 1}
+    - _MatCapColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

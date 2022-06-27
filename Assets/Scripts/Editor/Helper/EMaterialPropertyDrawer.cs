@@ -146,12 +146,6 @@ namespace TEditor
         private float m_ValueMin;
         private float m_ValueMax;
         private MaterialProperty property;
-        public float GetFloat(MaterialEditor editor, string propertyName, out bool hasMixedValue)
-        {
-            hasMixedValue = editor.targets.Length > 1;
-            return  ((Material) editor.targets[0]).HasFloat(propertyName)?((Material) editor.targets[0]) .GetFloat(propertyName):0;;
-        }
-
         public override bool PropertyTypeCheck(MaterialProperty.PropType type) => type == MaterialProperty.PropType.Range;
 
         public override void OnPropertyGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
@@ -180,6 +174,23 @@ namespace TEditor
             
             EditorGUI.showMixedValue = false;
             EditorGUIUtility.labelWidth = labelWidth;
+        }
+    }
+
+    public class Rotation2DDrawer : MaterialPropertyDrawerBase
+    {
+        public override void OnPropertyGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            EditorGUI.BeginChangeCheck();
+            prop.floatValue = EditorGUI.Slider(position,label,prop.floatValue, 0f,360f);
+            if (EditorGUI.EndChangeCheck())
+            {
+                var rotationMatrix = URotation.Rotate2D(prop.floatValue*UMath.Deg2Rad);
+                
+                var matrixProperty = MaterialEditor.GetMaterialProperty(editor.targets, prop.name+"Matrix");
+                matrixProperty.vectorValue = new Vector4(rotationMatrix.m00, rotationMatrix.m10, 
+                    rotationMatrix.m01,rotationMatrix.m11);
+            }
         }
     }
 }

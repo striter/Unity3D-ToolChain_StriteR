@@ -10,10 +10,12 @@ namespace Rendering.Pipeline
     public  class SRP_Reflection: ISRPBase
     {
         private readonly PPCore_Blurs m_Blurs;
-        private readonly IReflectionPass m_Pass;
+        private readonly IReflectionManager m_Manager;
         private readonly SRD_ReflectionData m_Data;
+        private readonly RenderPassEvent m_Event;
         public SRP_Reflection(SRD_ReflectionData _data,RenderPassEvent _event)
         {
+            m_Event = _event;
             m_Data = _data;
             m_Blurs = new PPCore_Blurs();
             m_Blurs.OnValidate(ref _data.m_BlurParam);
@@ -21,34 +23,34 @@ namespace Rendering.Pipeline
             switch (_data.m_Type)
             {
                 case EReflectionSpace.ScreenSpace_Undone:
-                    m_Pass = new SRP_ScreenSpaceReflection(m_Blurs){renderPassEvent = _event};
+                    m_Manager = new SRP_ScreenSpaceReflection(m_Blurs);
                     break;
                 case EReflectionSpace.PlanarMirrorSpace:
                 case EReflectionSpace.PlanarScreenSpace:
-                    m_Pass = new SRP_PlanarReflectionBase(m_Blurs){renderPassEvent = _event};
+                    m_Manager = new SRP_PlanarReflectionBase(m_Blurs);
                     break;
             }
         }
 
         public void EnqueuePass(ScriptableRenderer _renderer)
         {
-            _renderer.EnqueuePass(m_Pass.Setup(m_Data,_renderer));
+            m_Manager.EnqueuePass(m_Data,_renderer,m_Event);
         }
         
         public void Dispose()
         {
             m_Blurs.Destroy();
-            m_Pass.Dispose();
+            m_Manager.Dispose();
         }
     }
 
-    interface IReflectionPass:ISRPBase
+    interface IReflectionManager:ISRPBase
     {
-        ScriptableRenderPass Setup(SRD_ReflectionData _data, ScriptableRenderer _renderer);
+        void EnqueuePass( SRD_ReflectionData _data, ScriptableRenderer _renderer,RenderPassEvent _event);
     }
     #region Screen Space Reflection
 
-    class SRP_ScreenSpaceReflection:ScriptableRenderPass, IReflectionPass
+    class SRP_ScreenSpaceReflection:ScriptableRenderPass, IReflectionManager
     {
         private SRD_ReflectionData m_Data;
         private readonly Instance<Shader> m_ReflectionBlit=new Instance<Shader>(()=>RenderResources.FindInclude("Hidden/ScreenSpaceReflection"));
@@ -69,14 +71,15 @@ namespace Rendering.Pipeline
             GameObject.DestroyImmediate(m_Material);
         }
 
-        public ScriptableRenderPass Setup(SRD_ReflectionData _data, ScriptableRenderer _renderer)
+        public void EnqueuePass(SRD_ReflectionData _data, ScriptableRenderer _renderer,RenderPassEvent _event)
         {
+            this.renderPassEvent = _event;
+            _renderer.EnqueuePass(this);
             m_Data = _data;
             m_Renderer = _renderer;
             MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
             foreach (var reflection in SRC_ReflectionBehaviour.m_Reflections)
                 reflection.SetPropertyBlock(propertyBlock,4);
-            return this;
         }
 
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
@@ -106,26 +109,26 @@ namespace Rendering.Pipeline
     #endregion
     
     #region Planar Reflections
-    public sealed class SRP_PlanarReflectionBase :  ScriptableRenderPass,IReflectionPass
+    public sealed class SRP_PlanarReflectionBase :  IReflectionManager
     {
         const int kMaxReflectionTextures = 4;
         private SRD_ReflectionData m_Data;
 
         private readonly PPCore_Blurs m_Blur;
-        private readonly List<APlanarReflection> m_ReflectionPasses = new List<APlanarReflection>();
         public SRP_PlanarReflectionBase(PPCore_Blurs _blurs)
         {
             m_Blur = _blurs;
         }
-        public ScriptableRenderPass Setup(SRD_ReflectionData _data,ScriptableRenderer _renderer)
+
+
+        public void EnqueuePass(SRD_ReflectionData _data,ScriptableRenderer _renderer,RenderPassEvent _event)
         {
             m_Data = _data;
-            m_ReflectionPasses.Clear();
             if (SRC_ReflectionBehaviour.m_Reflections.Count == 0)
-                return this;
+                return;
             
             MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-            foreach (var (index,groups) in SRC_ReflectionBehaviour.m_Reflections.FindAll(p=>p.Available).GroupBy(p=>p.m_PlaneData).LoopIndex())
+            foreach (var (index,groups) in SRC_ReflectionBehaviour.m_Reflections.FindAll(p=>p.Available).GroupBy(p=>p.m_PlaneData,GPlane.kComparer).LoopIndex())
             {
                 if (index >= kMaxReflectionTextures)
                 {
@@ -146,51 +149,26 @@ namespace Rendering.Pipeline
                         break;
                 }
 
-                m_ReflectionPasses.Add(reflection.Setup(groups.Key, _renderer, index));
+                _renderer.EnqueuePass(reflection.Setup(m_Data,m_Blur, groups.Key,_renderer,index,_event));
             }
 
-            return this;
         }
 
         public void Dispose()
         {
-            foreach (var pass in m_ReflectionPasses)
-                pass.Dispose();
-        }
-
-        public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
-        {
-            base.OnCameraSetup(cmd, ref renderingData);
-            foreach (var pass in m_ReflectionPasses)
-                pass.DoCameraSetup(this,ref m_Data,cmd,ref renderingData);
-        }
-
-        public override void OnCameraCleanup(CommandBuffer cmd)
-        {
-            foreach (var pass in m_ReflectionPasses)
-                pass.DoCameraCleanUp(this,ref m_Data,cmd);
-        }
-        public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
-        {
-            CommandBuffer cmd = CommandBufferPool.Get("Planar Reflection Pass");
-            
-            foreach (var pass in m_ReflectionPasses)
-                pass.Execute(this,ref m_Data,context,ref renderingData,cmd,m_Blur);
-            
-            context.ExecuteCommandBuffer(cmd);
-            cmd.Clear();
-            CommandBufferPool.Release(cmd);
         }
     }
 
-    abstract class APlanarReflection
+    abstract class APlanarReflection:ScriptableRenderPass
     {
         #region ID
         const string C_ReflectionTex = "_CameraReflectionTexture";
         const string C_ReflectionTempTexture = "_CameraReflectionBlur";
         #endregion
 
-         private int m_Index;
+         protected SRD_ReflectionData m_Data;
+         protected PPCore_Blurs m_Blur;
+         protected  int m_Index { get; private set; }
          private GPlane m_Plane;
          private RenderTextureDescriptor m_ColorDescriptor;
          private RenderTargetIdentifier m_ColorTarget;
@@ -200,9 +178,12 @@ namespace Rendering.Pipeline
          private int m_ReflectionBlurTexture;
          private RenderTargetIdentifier m_ReflectionBlurTextureID;
          
-         public virtual APlanarReflection Setup(GPlane _planeData,ScriptableRenderer _renderer,int _index)
+         public virtual APlanarReflection Setup(SRD_ReflectionData _data,PPCore_Blurs _blur, GPlane _planeData,ScriptableRenderer _renderer,int _index,RenderPassEvent _event)
          {
+             renderPassEvent = _event;
              m_Index = _index;
+             m_Data = _data;
+             m_Blur = _blur;
              m_Renderer = _renderer;
              m_Plane = _planeData;
              m_ReflectionTexture = Shader.PropertyToID( C_ReflectionTex + _index);
@@ -212,24 +193,21 @@ namespace Rendering.Pipeline
              return this;
          }
 
-         public void DoCameraSetup(ScriptableRenderPass _pass,  ref SRD_ReflectionData _data, CommandBuffer cmd,ref RenderingData _renderingData)
+         public sealed override void Configure(CommandBuffer _cmd, RenderTextureDescriptor _cameraTextureDescriptor)
          {
-             m_ColorDescriptor = _renderingData.cameraData.cameraTargetDescriptor;
-             ConfigureColorDescriptor(ref m_ColorDescriptor,ref _data);
+             base.Configure(_cmd, _cameraTextureDescriptor);
+             m_ColorDescriptor = _cameraTextureDescriptor;
+             ConfigureColorDescriptor(ref m_ColorDescriptor,ref m_Data);
 
-             cmd.GetTemporaryRT(m_ReflectionTexture, m_ColorDescriptor,FilterMode.Bilinear);
+             _cmd.GetTemporaryRT(m_ReflectionTexture, m_ColorDescriptor,FilterMode.Bilinear);
             
              m_ColorTarget = m_ReflectionTextureID;
-             if (_data.m_EnableBlur)
+             if (m_Data.m_BlurParam.m_BlurType!=EBlurType.None)
              {
-                 cmd.GetTemporaryRT(m_ReflectionBlurTexture, m_ColorDescriptor, FilterMode.Bilinear);
+                 _cmd.GetTemporaryRT(m_ReflectionBlurTexture, m_ColorDescriptor, FilterMode.Bilinear);
                  m_ColorTarget = m_ReflectionBlurTextureID;
              }
-             OnCameraSetup(_pass,cmd,m_ColorTarget,m_ColorDescriptor);
-         }
-
-         protected virtual void OnCameraSetup(ScriptableRenderPass _pass,CommandBuffer _cmd, RenderTargetIdentifier _target,RenderTextureDescriptor _descriptor)
-         {
+             DoConfigure(_cmd,m_ColorDescriptor,m_ColorTarget);
          }
 
          protected virtual void ConfigureColorDescriptor(ref RenderTextureDescriptor _descriptor,ref SRD_ReflectionData _data)
@@ -238,28 +216,37 @@ namespace Rendering.Pipeline
              _descriptor.width /= downSample;
              _descriptor.height /= downSample;
          }
-
-         public virtual void DoCameraCleanUp(ScriptableRenderPass _pass,ref SRD_ReflectionData _data,CommandBuffer cmd)
+         protected virtual void DoConfigure(CommandBuffer _cmd, RenderTextureDescriptor _descriptor,  RenderTargetIdentifier _colorTarget)
          {
-             if (_data.m_EnableBlur)
-                 cmd.ReleaseTemporaryRT(m_ReflectionBlurTexture);
-             cmd.ReleaseTemporaryRT(m_ReflectionTexture);
+             
          }
 
 
-         public void Execute(ScriptableRenderPass _pass,ref SRD_ReflectionData _data,  ScriptableRenderContext _context,ref RenderingData _renderingData,CommandBuffer _cmd,PPCore_Blurs _blurs)
+         public override void OnCameraCleanup(CommandBuffer _cmd)
          {
-             Execute(_pass,ref _data,_context,ref _renderingData,_cmd,ref m_Plane,ref m_ColorDescriptor,ref m_ColorTarget,ref m_Renderer);
-             if(_data.m_EnableBlur)
-                 _blurs.ExecutePostProcessBuffer(_cmd, m_ColorTarget, m_ReflectionTextureID, m_ColorDescriptor ,ref _data.m_BlurParam); 
+             base.OnCameraCleanup(_cmd);
+             if (m_Data.m_BlurParam.m_BlurType!=EBlurType.None)
+                 _cmd.ReleaseTemporaryRT(m_ReflectionBlurTexture);
+             _cmd.ReleaseTemporaryRT(m_ReflectionTexture);
          }
 
-         protected abstract void Execute(ScriptableRenderPass _pass, ref SRD_ReflectionData _data,
+         public sealed override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
+         {
+             CommandBuffer cmd = CommandBufferPool.Get($"Planar Reflection Pass ({m_Index})");
+             
+             Execute(ref m_Data,_context,ref _renderingData,cmd,ref m_Plane,ref m_ColorDescriptor,ref m_ColorTarget,ref m_Renderer);
+             if (m_Data.m_BlurParam.m_BlurType!=EBlurType.None)
+                 m_Blur.ExecutePostProcessBuffer(cmd, m_ColorTarget, m_ReflectionTextureID, m_ColorDescriptor ,ref m_Data.m_BlurParam); 
+            
+             _context.ExecuteCommandBuffer(cmd);
+             cmd.Clear();
+             CommandBufferPool.Release(cmd);
+         }
+
+         protected abstract void Execute(ref SRD_ReflectionData _data,
              ScriptableRenderContext _context, ref RenderingData _renderingData, CommandBuffer _cmd,
              ref GPlane _plane, ref RenderTextureDescriptor _descriptor, 
              ref RenderTargetIdentifier _target,ref ScriptableRenderer _renderer);
-         
-         public virtual void Dispose(){}
     }
     
     class FPlanarReflection_ScreenSpace : APlanarReflection
@@ -285,20 +272,17 @@ namespace Rendering.Pipeline
             m_ThreadGroups = new Int2(_descriptor.width / 8, _descriptor.height / 8);
         }
 
-        protected override void OnCameraSetup(ScriptableRenderPass _pass, CommandBuffer _cmd, RenderTargetIdentifier _target,
-            RenderTextureDescriptor _descriptor)
+        protected override void DoConfigure(CommandBuffer _cmd, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _colorTarget)
         {
-            base.OnCameraSetup(_pass, _cmd, _target, _descriptor);
-            _pass.ConfigureTarget(_target);
+            base.DoConfigure(_cmd, _descriptor, _colorTarget);
+            ConfigureTarget(_colorTarget);
+            ConfigureClear(ClearFlag.Color,Color.clear);
         }
 
-        protected override void Execute(ScriptableRenderPass _pass, ref SRD_ReflectionData _data, ScriptableRenderContext _context,
+        protected override void Execute(ref SRD_ReflectionData _data, ScriptableRenderContext _context,
             ref RenderingData _renderingData, CommandBuffer _cmd, ref GPlane _plane, ref RenderTextureDescriptor _descriptor,
             ref RenderTargetIdentifier _target,ref ScriptableRenderer _renderer)
         {
-            _cmd.SetRenderTarget(_target);
-            _cmd.ClearRenderTarget(false,true,Color.clear);
-            
             _cmd.SetComputeIntParam(m_ReflectionComputeShader, ID_SampleCount, _data.m_Sample);
             _cmd.SetComputeVectorParam(m_ReflectionComputeShader, ID_PlaneNormal, _plane.normal.normalized);
             _cmd.SetComputeVectorParam(m_ReflectionComputeShader, ID_PlanePosition, _plane.distance * _plane.normal);
@@ -318,41 +302,43 @@ namespace Rendering.Pipeline
          int m_ReflectionDepth;
          RenderTargetIdentifier m_ReflectionDepthID ;
 
-         public override APlanarReflection Setup(GPlane _planeData, ScriptableRenderer _renderer, int _index)
+         public override APlanarReflection Setup(SRD_ReflectionData _data, PPCore_Blurs _blur, GPlane _planeData, ScriptableRenderer _renderer,
+             int _index,RenderPassEvent _event)
          {
-             base.Setup(_planeData, _renderer, _index);
              m_ShaderTagIDs.FillWithDefaultTags();
              m_ReflectionDepth = Shader.PropertyToID(kReflectionDepth + _index);
              m_ReflectionDepthID = new RenderTargetIdentifier(m_ReflectionDepth);
-             return this;
+             return base.Setup(_data, _blur, _planeData, _renderer, _index,_event);
          }
+
          protected override void ConfigureColorDescriptor(ref RenderTextureDescriptor _descriptor, ref SRD_ReflectionData _data)
          {
              base.ConfigureColorDescriptor(ref _descriptor, ref _data);
              _descriptor.colorFormat = RenderTextureFormat.ARGB32;
          }
 
-         protected override void OnCameraSetup(ScriptableRenderPass _pass, CommandBuffer _cmd, RenderTargetIdentifier _target,
-             RenderTextureDescriptor _descriptor)
+         protected override void DoConfigure(CommandBuffer _cmd, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _colorTarget)
          {
-             base.OnCameraSetup(_pass, _cmd, _target, _descriptor);
+             base.DoConfigure(_cmd, _descriptor, _colorTarget);
              var depthDescriptor = _descriptor;
              depthDescriptor.colorFormat = RenderTextureFormat.Depth;
              depthDescriptor.depthBufferBits = 32;
              depthDescriptor.enableRandomWrite = false;
              _cmd.GetTemporaryRT(m_ReflectionDepth, depthDescriptor, FilterMode.Point);
-             _pass.ConfigureTarget(_target,m_ReflectionDepth);
+             ConfigureTarget(_colorTarget,m_ReflectionDepth);
+             ConfigureClear(ClearFlag.All,Color.clear);
          }
 
-         public override void DoCameraCleanUp(ScriptableRenderPass _pass, ref SRD_ReflectionData _data, CommandBuffer cmd)
+
+         public override void OnCameraCleanup(CommandBuffer _cmd)
          {
-             base.DoCameraCleanUp(_pass, ref _data, cmd);
-             cmd.ReleaseTemporaryRT(m_ReflectionDepth);
+             base.OnCameraCleanup(_cmd);
+             _cmd.ReleaseTemporaryRT(m_ReflectionDepth);
          }
 
-         protected override void Execute(ScriptableRenderPass _pass, ref SRD_ReflectionData _data, ScriptableRenderContext _context,
-             ref RenderingData _renderingData, CommandBuffer _cmd, ref GPlane _plane, ref RenderTextureDescriptor _descriptor,
-             ref RenderTargetIdentifier _target,ref ScriptableRenderer _renderer)
+         protected override void Execute(ref SRD_ReflectionData _data, ScriptableRenderContext _context, ref RenderingData _renderingData,
+             CommandBuffer _cmd, ref GPlane _plane, ref RenderTextureDescriptor _descriptor, ref RenderTargetIdentifier _target,
+             ref ScriptableRenderer _renderer)
          {
              ref var cameraData = ref _renderingData.cameraData;
              ref Camera camera = ref cameraData.camera;
@@ -361,7 +347,7 @@ namespace Rendering.Pipeline
             Matrix4x4 cullingMatrix = camera.cullingMatrix;
             camera.cullingMatrix = cullingMatrix * planeMirrorMatrix;
 
-            DrawingSettings drawingSettings = _pass.CreateDrawingSettings(m_ShaderTagIDs, ref _renderingData,  SortingCriteria.CommonOpaque);
+            DrawingSettings drawingSettings = CreateDrawingSettings(m_ShaderTagIDs, ref _renderingData,  SortingCriteria.CommonOpaque);
             FilteringSettings filterSettings = new FilteringSettings(_data.m_IncludeTransparent? RenderQueueRange.all : RenderQueueRange.opaque);
             Matrix4x4 projectionMatrix = GL.GetGPUProjectionMatrix(cameraData.GetProjectionMatrix(), cameraData.IsCameraProjectionMatrixFlipped());
             Matrix4x4 viewMatrix = cameraData.GetViewMatrix();
@@ -371,8 +357,6 @@ namespace Rendering.Pipeline
             var cameraPosition = camera.transform.position;
             _cmd.SetGlobalVector( ID_CameraWorldPosition,planeMirrorMatrix.MultiplyPoint(cameraPosition));
             _cmd.SetInvertCulling(true);
-            _cmd.SetRenderTarget(_target,m_ReflectionDepthID);
-            _cmd.ClearRenderTarget(true,true,Color.clear);
             _context.ExecuteCommandBuffer(_cmd);
 
             if (_data.m_Recull)

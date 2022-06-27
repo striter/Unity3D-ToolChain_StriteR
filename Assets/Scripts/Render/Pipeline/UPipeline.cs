@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -9,7 +7,27 @@ namespace Rendering
 {
     public static class UPipeline
     {
-        public static DrawingSettings CreateDrawingSettings(bool fillDefault, Camera _camera)
+        static List<ShaderTagId>  kInternalDefaultSahderTags;
+        public static List<ShaderTagId> kDefaultShaderTags
+        {
+            get
+            {
+                if (kInternalDefaultSahderTags == null)
+                {
+                    kInternalDefaultSahderTags= new List<ShaderTagId>()
+                    {
+                        new ShaderTagId("SRPDefaultUnlit"),
+                        new ShaderTagId("UniversalForward"),
+                        new ShaderTagId("UniversalForwardOnly"),
+                        new ShaderTagId("LightweightForward"),
+                    };
+                }
+                return kInternalDefaultSahderTags;
+            }
+        }
+        
+
+        public static DrawingSettings CreateDrawingSettings(bool _fillDefault, Camera _camera)
         {
             DrawingSettings settings = new DrawingSettings
             {
@@ -17,22 +35,17 @@ namespace Rendering
                 enableDynamicBatching = true,
                 enableInstancing = true
             };
-            if (fillDefault)
+            if (_fillDefault)
             {
-                settings.SetShaderPassName(0, new ShaderTagId("SRPDefaultUnlit"));
-                settings.SetShaderPassName(1, new ShaderTagId("UniversalForward"));
-                settings.SetShaderPassName(2, new ShaderTagId("UniversalForwardOnly"));
-                settings.SetShaderPassName(3, new ShaderTagId("LightweightForward"));
+                for (int i = 0; i < kDefaultShaderTags.Count; i++)
+                    settings.SetShaderPassName(i, kDefaultShaderTags[i]);
             }
             return settings;
         }
         public static void FillWithDefaultTags(this List<ShaderTagId> _tagList)
         {
             _tagList.Clear();
-            _tagList.Add(new ShaderTagId("SRPDefaultUnlit"));
-            _tagList.Add(new ShaderTagId("UniversalForward"));
-            _tagList.Add(new ShaderTagId("UniversalForwardOnly"));
-            _tagList.Add(new ShaderTagId("LightweightForward"));
+            _tagList.AddRange(kDefaultShaderTags);
         }
 
         public static T GetDefaultPostProcessData<T>() where T : struct => (T)typeof(T).GetField("m_Default", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).GetValue(null);

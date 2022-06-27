@@ -1,24 +1,4 @@
-﻿half3 TransformObjectDirToWorld(float3 _dirOS,bool _doNormalize = true)
-{
-    half3 dirWS=mul((float3x3)unity_ObjectToWorld,_dirOS);
-    if(_doNormalize)
-        dirWS=normalize(dirWS);
-    return dirWS;
-}
-
-half3 TransformObjectNormalToWorld(float3 _normalOS,bool _doNormalize = true)
-{
-    #ifdef UNITY_ASSUME_UNIFORM_SCALING
-        return TransformObjectDirToWorld(normalOS,_doNormalize);
-    #else
-
-    half3 normalWS=mul(_normalOS,(float3x3)unity_WorldToObject);
-    if(_doNormalize)
-        normalWS=normalize(normalWS);
-    return normalWS;
-    #endif
-}
-
+﻿
 
 float4 TransformObjectToView(float3 positionOS)
 {

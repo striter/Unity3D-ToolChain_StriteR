@@ -2,7 +2,7 @@
 {
 	Properties
 	{
-		[ToggleTex(_MASK)][NoScaleOffset]_MainTex("Mask Tex",2D)="white"{}
+		[NoScaleOffset]_MainTex("Mask Tex",2D)="white"{}
 	    [HDR]_Color("HDR Color",Color)=(1,1,1,1)
 
 		[Header(Misc)]
@@ -30,7 +30,6 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile_instancing
-			#pragma shader_feature_local _MASK
 			
 			#include "Assets/Shaders/Library/Common.hlsl"
 			struct a2v
@@ -66,9 +65,7 @@
 			half4 frag(v2f i) : SV_Target
 			{
 				half4 col=i.color;
-				#if _MASK
-					col*=tex2D(_MainTex,i.uv).r;
-				#endif
+					col*=tex2D(_MainTex,i.uv);
 				return col;
 			}
 			ENDHLSL

@@ -9,6 +9,7 @@ Shader "Game/Particles/AlphaBlend"
         [Header(Optional)]
         [ToggleTex(_SECONDARY)]_SecondaryTex("Secondary Tex",2D)="white"{}
         [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
+        [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
     }
     SubShader
     {
@@ -17,7 +18,7 @@ Shader "Game/Particles/AlphaBlend"
         {
             Blend SrcAlpha OneMinusSrcAlpha
 		    ZWrite Off
-		    ZTest Less
+		    ZTest [_ZTest]
 		    Cull [_Cull]
             
             HLSLPROGRAM

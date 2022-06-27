@@ -1,7 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="92a6fb5e-0b8c-4e1a-8b06-b7827ef4a308" name="Changes" comment="" />
+    <list default="true" id="92a6fb5e-0b8c-4e1a-8b06-b7827ef4a308" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/97Vert/Material_97Vert_Blue.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/97Vert/Material_97Vert_Blue.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/97Vert/Material_97Vert_Green.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/97Vert/Material_97Vert_Green.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/97Vert/Material_97Vert_Grey.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/97Vert/Material_97Vert_Grey.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/97Vert/Material_97Vert_Red.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/97Vert/Material_97Vert_Red.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/97Vert/Model_Goat_SN.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/97Vert/Model_Goat_SN.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Bat/TBat.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Bat/TBat.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Goat/TGoat.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Goat/TGoat.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Human/Material_Human.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Human/Material_Human.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Mouse/Model_Mouse.FBX.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Mouse/Model_Mouse.FBX.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Mouse/TMouse.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Mouse/TMouse.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/PolarBear/TPolarBear.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/PolarBear/TPolarBear.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Model_Stair.FBX.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Model_Stair.FBX.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Model_Teapot.FBX.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Model_Teapot.FBX.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Model_Torus.FBX.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Model_Torus.FBX.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Quad_Forward_Centric.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Quad_Forward_Centric.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Quad_Upward_Rooted.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Meshes/Primitives/Quad_Upward_Rooted.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Cubemap/TCM_Church.cubemap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Cubemap/TCM_Church.cubemap.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Cubemap/TChurch_NegX.jpg.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Cubemap/TChurch_NegX.jpg.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Cubemap/TChurch_NegY.jpg.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Cubemap/TChurch_NegY.jpg.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Cubemap/TChurch_NegZ.jpg.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Cubemap/TChurch_NegZ.jpg.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Cubemap/TChurch_PosX.jpg.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Cubemap/TChurch_PosX.jpg.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Cubemap/TChurch_PosY.jpg.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Cubemap/TChurch_PosY.jpg.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Cubemap/TChurch_PosZ.jpg.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Cubemap/TChurch_PosZ.jpg.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Flow/TFlowmap_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Flow/TFlowmap_1.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Flow/TFlowmap_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Flow/TFlowmap_2.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Flow/TFlowmap_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Flow/TFlowmap_3.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Flow/TFlowmap_4.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Flow/TFlowmap_4.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Flow/TFlowmap_5.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Flow/TFlowmap_5.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Flow/TFlowmap_6.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Flow/TFlowmap_6.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/THair_KKShift2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/THair_KKShift2.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/THexGrid_1.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/THexGrid_1.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/THexGrid_2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/THexGrid_2.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/THolograph1.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/THolograph1.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TNormal_Ocean.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TNormal_Ocean.jpg.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TShape_Circle.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TShape_Circle.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TShape_Feather.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TShape_Feather.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TShape_Snow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TShape_Snow.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TShape_Star.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TShape_Star.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TStars.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Misc/TStars.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Noise/TNoise_Caustic2.png" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Noise/TNoise_Caustic2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Noise/TNoise_Caustic2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Noise/TNoise_Caustic2.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Noise/TNoise_Caustic3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Noise/TNoise_Caustic3.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Noise/TNoise_Caustic4.png" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Noise/TNoise_Caustic4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Noise/TNoise_Caustic4.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Noise/TNoise_Caustic4.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Ramp/TRamp1D_Linear2.png" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ArtPreset/Textures/Ramp/TRamp1D_Linear2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Algorithm/MarchingCube/Terrain.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Algorithm/MarchingCube/Terrain.mat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Algorithm/MarchingSquare/MarchingSquare.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Algorithm/MarchingSquare/MarchingSquare.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/Billboard/Billboard.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/Billboard/Billboard.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/Billboard/BillboardUber.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/Billboard/BillboardUber.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/Billboard/Hole.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/Billboard/Hole.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/Billboard/Pond.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/Billboard/Pond.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/Effects/Effects.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/Effects/Effects.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GITest.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GITest.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/QuadricErrorMetrics/QuadricErrorMetrics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/QuadricErrorMetrics/QuadricErrorMetrics.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/SphericalHarmonics/SphericalHarmonics.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/SphericalHarmonics/SphericalHarmonics.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/SphericalHarmonics/UnitySHL2.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/SphericalHarmonics/UnitySHL2.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/Water&amp;Ocean/Water&amp;Ocean.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/Water&amp;Ocean/Water&amp;Ocean.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/Water&amp;Ocean/WaterInteraction.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/Water&amp;Ocean/WaterInteraction.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/EMenuItem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/EMenuItem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Helper/EMaterialPropertyDrawer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Helper/EMaterialPropertyDrawer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EWMeshEditor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Window/EWMeshEditor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/IndirectDiffuse/EnvironmentCollection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/IndirectDiffuse/EnvironmentCollection.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/Pipeline/Data/SRD_ReflectionData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/Pipeline/Data/SRD_ReflectionData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/Pipeline/Feature/SRF_Additional.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/Pipeline/Feature/SRF_Additional.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/Pipeline/Pass/SRP_Reflection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/Pipeline/Pass/SRP_Reflection.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/Pipeline/UPipeline.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/Pipeline/UPipeline.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/OCommon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/OCommon.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/KGeometryVolume.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/KGeometryVolume.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/OGeometryVolume.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/OGeometryVolume.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Settings/URP_Forward.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Settings/URP_Forward.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Effects/Outline.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Effects/Outline.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Effects/PerEntityShadow.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Effects/PerEntityShadow.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Effects/Vegetation.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Effects/Vegetation.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Library/BRDF/BRDFLighting.hlsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Library/BRDF/BRDFLighting.hlsl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Library/Common/SpaceTransform.hlsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Library/Common/SpaceTransform.hlsl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Library/Common/ValueMapping.hlsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Library/Common/ValueMapping.hlsl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Library/Passes/ForwardPBR.hlsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Library/Passes/ForwardPBR.hlsl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/PBR/UberPBR.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/PBR/UberPBR.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/PBR/UberPBR.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/PBR/UberPBR.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/Phong/UberPhong.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/Phong/UberPhong.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Glass.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Glass.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Glass.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Glass.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Liquid Volume.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Liquid Volume.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Liquid.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Liquid.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Ocean.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Ocean.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Ocean.mat.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Ocean.mat.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Ocean.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Ocean.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/River.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/River.mat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/River.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/River.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Particles/Additive.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Particles/Additive.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Particles/AlphaBlend.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Particles/AlphaBlend.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Unlit/Color.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Unlit/Color.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Unlit/CubeSample.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Unlit/CubeSample.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Unlit/CubeSample.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Unlit/CubeSample.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logs/Packages-Update.log" beforeDir="false" afterPath="$PROJECT_DIR$/Logs/Packages-Update.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/packages-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectVersion.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectVersion.txt" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -17,26 +140,32 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Algorithm/MarchingCube/MarchingCube.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scenes/Utilities/DataPersistent.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/f24bb2d49e314a5f9757a7936742877080e200/23/e0f438f6/PropertyDrawer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/EventSystem/EventSystem.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Editor/Templates/EScriptTemplates.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2bf2860464e948b0936aec80a52d89b177800/9b/8631b1a1/InspectorElement.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/f24bb2d49e314a5f9757a7936742877080e200/fa/a7afac5e/PropertyHandler.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Algorithm/HexagonGrid/HexagonGridGizmos.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e3b5c42ff2fa4e1a881dfa28c9fbe357157400/aa/e4fcdaaa/Mathf.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.mathematics@1.2.5/Unity.Mathematics/double2x4.gen.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.searcher@4.9.1/Tests/Editor/SearcherTests.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Algorithm/Rotation/Rotation.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.core@12.1.5/ShaderLibrary/EntityLighting.hlsl" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/feaaa6313e32495d9f259b175aa6b59746a800/0e/d50f4fdd/ThrowHelper.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/feaaa6313e32495d9f259b175aa6b59746a800/fa/b1782832/MethodBase.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ec69c01cdc394cb5bd57bfa59a57994a157600/61/ff37423f/RenderSettings.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.core@12.1.5/ShaderLibrary/API/D3D11.hlsl" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/feaaa6313e32495d9f259b175aa6b59746a800/f0/fb768382/RuntimeMethodInfo.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Runtime/Core/URotation.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/Bezier/OBezier.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/70be8a7d3f80407d88db16649925edcf28e00/a6/a6824cc3/GUIUtility.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e3b5c42ff2fa4e1a881dfa28c9fbe357157400/81/0679d8fe/CubemapFace.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scenes/Utilities/DataPersistent.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/edef46c9b2db4b878c98495bfdc516fa568ba8/fd/2383227e/IEqualityComparer`1.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Editor/Templates/EScriptTemplates.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2bf2860464e948b0936aec80a52d89b177800/9b/8631b1a1/InspectorElement.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e3b5c42ff2fa4e1a881dfa28c9fbe357157400/aa/e4fcdaaa/Mathf.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/599ef6b6d50f4e488ca73e2010b5243610fc00/f9/b0fd3c44/Lookup`2.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/ColorBlock.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/599ef6b6d50f4e488ca73e2010b5243610fc00/8a/eea6f14e/GroupedEnumerable`2.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/feaaa6313e32495d9f259b175aa6b59746a800/0e/d50f4fdd/ThrowHelper.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ec69c01cdc394cb5bd57bfa59a57994a157600/61/ff37423f/RenderSettings.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/599ef6b6d50f4e488ca73e2010b5243610fc00/fd/088fe720/Enumerable.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Runtime/Core/URotation.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/70be8a7d3f80407d88db16649925edcf28e00/a6/a6824cc3/GUIUtility.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.searcher@4.9.1/Editor/Searcher/SearcherTreeUtility.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -71,10 +200,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="15948">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" />
+      <option name="pid" value="15948" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
@@ -116,7 +245,10 @@
       <workItem from="1653531145412" duration="11199000" />
       <workItem from="1654070125140" duration="308000" />
       <workItem from="1654756482861" duration="6000" />
-      <workItem from="1654756602825" duration="2290000" />
+      <workItem from="1654756602825" duration="3724000" />
+      <workItem from="1654761429052" duration="3690000" />
+      <workItem from="1654826154406" duration="1003000" />
+      <workItem from="1656299323483" duration="8944000" />
     </task>
     <servers />
   </component>

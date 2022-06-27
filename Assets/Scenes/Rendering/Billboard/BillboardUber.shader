@@ -216,7 +216,7 @@ Shader "Hidden/BillboardUber"
             	specular+=step(1,atten)*backRim*INSTANCE(_RimIntensity);
             	#endif
             	
-            	half3 finalCol=diffuseCol*atten*lightCol+ambient+specular*lightCol;
+            	half3 finalCol=diffuseCol*atten*lightCol*ambient+specular*lightCol;
             	#if _ADDITIONAL_LIGHTS
             	uint pixelLightCount = GetAdditionalLightsCount();
 			    for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)

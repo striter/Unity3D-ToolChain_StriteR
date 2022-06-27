@@ -5,15 +5,6 @@ Shader "Game/Lit/Vegetation"
         [Header(Albedo)]
         _MainTex ("Main", 2D) = "white" {}
     	[HDR]_ColorTint("Color Tint",Color)=(1,1,1,1)
-        [Toggle(_COLORMASK)] _ColorMask("Masked Vegetation",int)=0
-        [Foldout(_COLORMASK)]_MaskR1("Root Color",color)=(1,1,1,1)
-        [Foldout(_COLORMASK)]_MaskR2("Edge Color",color)=(0.5,1,0.5,1)
-        [Foldout(_COLORMASK)]_MaskRGradientBegin("Root Begin",Range(0,1))=0
-        [Foldout(_COLORMASK)]_MaskRGradientWidth("Root Width",Range(0,1))=0
-        [Foldout(_COLORMASK)]_MaskF1("Flower 1 Edge",color)=(1,1,1,1)
-        [Foldout(_COLORMASK)]_MaskF1C("Flower 1 Core",color)=(1,0,0,1)
-        [Foldout(_COLORMASK)]_MaskF2("Flower 2 Edge",color)=(0,1,0,1)
-        [Foldout(_COLORMASK)]_MaskF2C("Flower 2 Core",color)=(0,0,1,1)
           
         [Header(Flow)]
         _WindFlowTex("Flow Texture",2D)="white"{}
@@ -56,14 +47,6 @@ Shader "Game/Lit/Vegetation"
 				INSTANCING_PROP(float4,_ColorTint)
                 INSTANCING_PROP(float4,_MainTex_ST)
 			    INSTANCING_PROP(float,_AlphaClipRange)
-                INSTANCING_PROP(float3,_MaskR1)
-                INSTANCING_PROP(float3,_MaskR2)
-                INSTANCING_PROP(float,_MaskRGradientBegin)
-                INSTANCING_PROP(float,_MaskRGradientWidth)
-                INSTANCING_PROP(float3,_MaskF1)
-                INSTANCING_PROP(float3,_MaskF1C)
-                INSTANCING_PROP(float3,_MaskF2)
-                INSTANCING_PROP(float3,_MaskF2C)
 
                 INSTANCING_PROP(float4,_WindFlowTex_ST)
 			    INSTANCING_PROP(float,_WiggleStrength)
@@ -74,35 +57,10 @@ Shader "Game/Lit/Vegetation"
             
 			#include "Assets/Shaders/Library/Additional/Local/AlphaClip.hlsl"
 			#pragma shader_feature_local_fragment _ALPHACLIP
-            #pragma shader_feature_local_fragment _COLORMASK
             #pragma shader_feature_local_vertex _WIGGLE
 
             TEXTURE2D(_WindFlowTex);SAMPLER(sampler_WindFlowTex);
 
-            float3 _BendDirection;
-            float3 Wind(float3 positionWS,float windEffect,float _bendStrength)
-            {
-                float4 windParameters=INSTANCE(_WindFlowTex_ST);
-                float2 bendUV= positionWS.xz+_Time.y*windParameters.zw;
-                bendUV*=windParameters.xy;
-                float2 flowSample=SAMPLE_TEXTURE2D_LOD(_WindFlowTex,sampler_WindFlowTex,bendUV,0).rg;
-                float windInput= flowSample.x-flowSample.y;
-            	
-                float3x3 bendRotation=Rotate3x3(_bendStrength*windInput*Deg2Rad,_BendDirection);
-                float3 offset=float3(0,windEffect,0);
-
-                float3 bendOffset=mul(bendRotation,offset);
-                bendOffset-=offset;
-
-                #if _WIGGLE
-				    float wiggleDensity=INSTANCE(_WiggleDensity);
-				    float2 wiggleClip=abs((positionWS.xz+_Time.y*windParameters.zw)%wiggleDensity-wiggleDensity*.5f)/wiggleDensity;
-				    float wiggle=wiggleClip.x+wiggleClip.y;
-				    bendOffset.y +=  wiggle*INSTANCE(_WiggleStrength)*windEffect;
-				#endif
-            	
-                return bendOffset;
-            }
 
 			#pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
             #pragma multi_compile _ SHADOWS_SHADOWMASK
@@ -128,6 +86,30 @@ Shader "Game/Lit/Vegetation"
 				V2F_LIGHTMAP(2)
             };
 
+            float3 _BendDirection;
+            float3 Wind(float3 positionWS,float windEffect,float _bendStrength)
+            {
+                float4 windParameters=INSTANCE(_WindFlowTex_ST);
+                float2 bendUV= positionWS.xz+_Time.y*windParameters.zw;
+                bendUV*=windParameters.xy;
+                float2 flowSample=SAMPLE_TEXTURE2D_LOD(_WindFlowTex,sampler_WindFlowTex,bendUV,0).rg;
+                float windInput= flowSample.x-flowSample.y;
+            	
+                float3x3 bendRotation=Rotate3x3(_bendStrength*windInput*Deg2Rad,_BendDirection);
+                float3 offset=float3(0,windEffect,0);
+
+                float3 bendOffset=mul(bendRotation,offset);
+                bendOffset-=offset;
+
+                #if _WIGGLE
+				    float wiggleDensity=INSTANCE(_WiggleDensity);
+				    float2 wiggleClip=abs((positionWS.xz+_Time.y*windParameters.zw)%wiggleDensity-wiggleDensity*.5f)/wiggleDensity;
+				    float wiggle=wiggleClip.x+wiggleClip.y;
+				    bendOffset.y +=  wiggle*INSTANCE(_WiggleStrength)*windEffect;
+				#endif
+            	
+                return bendOffset;
+            }
             v2f vert (a2v v)
             {
                 v2f o;
@@ -148,21 +130,7 @@ Shader "Game/Lit/Vegetation"
                 half alpha=sample.a;
                 AlphaClip(alpha);
 
-                float3 albedo = 0;
-                #if _COLORMASK
-                    float root=step(0.05,sample.r);
-                    float rootGradient=saturate(invlerp(INSTANCE(_MaskRGradientBegin),INSTANCE(_MaskRGradientBegin)+INSTANCE(_MaskRGradientWidth),i.color.r));
-                    albedo += lerp(INSTANCE(_MaskR1),INSTANCE(_MaskR2),rootGradient)*sample.r * root;
-                    
-                    float flower=1-root;
-                    float flower1= step(i.color.g,0.05);
-                    float3 flowerEdgeCol=lerp(_MaskF1,_MaskF2,flower1);
-                    float3 flowerCoreColor=lerp(_MaskF1C,_MaskF2C,flower1);
-                    albedo+= flowerCoreColor*flower*sample.g+flowerEdgeCol*flower*sample.b;
-                #else
-                    albedo = sample.rgb;
-                #endif
-
+                float3 albedo = sample.rgb;
                 Light mainLight=GetMainLight();
 				half3 indirectDiffuse= IndirectDiffuse(mainLight,i,normalize(i.normalWS));
                 float3 finalCol=albedo*indirectDiffuse*_ColorTint.rgb;

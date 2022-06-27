@@ -107,6 +107,16 @@ float max(float3 _target)
     return max(_target.x, _target.y, _target.z);
 }
 
+float sum(float2 _target)
+{
+    return _target.x+_target.y;
+}
+
+float sum(float3 _target)
+{
+    return _target.x+_target.y+_target.z;
+}
+
 //Min Half
 half min(half _min1,half _min2,half _min3)
 {

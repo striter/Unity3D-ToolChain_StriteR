@@ -163,7 +163,7 @@ namespace TEditor
 
 
         static bool m_RightClicking;
-        static readonly List<KeyCode> s_RightClickIgnoreKeycodes = new List<KeyCode>() { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.LeftShift };
+        static readonly List<KeyCode> kRightClickIgnoreKeycodes = new List<KeyCode>() { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.LeftShift };
         void OnKeyboradInteract()
         {
             if (Event.current.type == EventType.MouseDown && Event.current.button == 1)
@@ -171,13 +171,13 @@ namespace TEditor
             else if (Event.current.type == EventType.MouseUp && Event.current.button == 1)
                 m_RightClicking = false;
 
-            KeyCode _keyCode = Event.current.keyCode;
-            if (Event.current.type != EventType.KeyDown || (m_RightClicking && s_RightClickIgnoreKeycodes.Contains(_keyCode)))
+            KeyCode keycode = Event.current.keyCode;
+            if (Event.current.type != EventType.KeyDown || (m_RightClicking && kRightClickIgnoreKeycodes.Contains(keycode)))
                 return;
 
-            switch (_keyCode)
+            switch (keycode)
             {
-                default: m_Helper.OnKeyboradInteract(_keyCode); break;
+                default: m_Helper.OnKeyboradInteract(keycode); break;
                 case KeyCode.BackQuote: m_EditorMode.Check(m_EditorMode.m_Value.Next()); break;
                 case KeyCode.UpArrow: m_MeshObject.transform.Rotate(90f, 0, 0, Space.World); break;
                 case KeyCode.DownArrow: m_MeshObject.transform.Rotate(-90f, 0, 0, Space.World); break;

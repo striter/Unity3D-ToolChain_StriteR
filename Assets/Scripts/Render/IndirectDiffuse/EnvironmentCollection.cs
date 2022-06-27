@@ -70,8 +70,7 @@ namespace Rendering
     [Serializable]
     public class EnvironmentCollection:ISerializationCallbackReceiver
     {
-
-        public Cubemap m_EnvironmentReflection;
+        public Texture m_EnvironmentReflection;
         public EnvironmentParameters m_Parameters=EnvironmentParameters.kDefault;
         
         // public LightmapParameter[] m_Parameters;
@@ -88,7 +87,7 @@ namespace Rendering
                 //     {index = p.lightmapIndex, scaleOffset = p.lightmapScaleOffset}).ToArray();
                 // m_LightmapColors = LightmapSettings.lightmaps.Select(p => p.lightmapColor).ToArray();
 
-                m_EnvironmentReflection = (Cubemap) RenderSettings.customReflection,
+                m_EnvironmentReflection = RenderSettings.customReflection,
                 m_Parameters = new EnvironmentParameters()
                 {
                     reflectionIntensity = RenderSettings.reflectionIntensity,
@@ -110,10 +109,10 @@ namespace Rendering
 
         private static readonly int kEnvironmentInterpolate = Shader.PropertyToID("_EnvironmentInterpolate");
 
-        private static readonly string kLightmapKeyword = "LIGHTMAP_ON";
+        // private static readonly string kLightmapKeyword = "LIGHTMAP_ON";
         private static readonly string[] kEnvironmentKeywords = {"ENVIRONMENT_CUSTOM", "ENVIRONMENT_INTERPOLATE"};
-        private static readonly int kLightmapIndex = Shader.PropertyToID("_LightmapIndex");        private static readonly int kLightmapInterpolateIndex = Shader.PropertyToID("_LightmapInterpolateIndex");
-        private static readonly int kLightmapSTID = Shader.PropertyToID("_LightmapST");        private static readonly int kLightmapInterpolateSTID = Shader.PropertyToID("_LightmapInterpolateST");
+        // private static readonly int kLightmapIndex = Shader.PropertyToID("_LightmapIndex");        private static readonly int kLightmapInterpolateIndex = Shader.PropertyToID("_LightmapInterpolateIndex");
+        // private static readonly int kLightmapSTID = Shader.PropertyToID("_LightmapST");        private static readonly int kLightmapInterpolateSTID = Shader.PropertyToID("_LightmapInterpolateST");
         private static readonly int[] kLightmapIDs = GetLightmapIDs("_Lightmap");        private static readonly int[] kLightmapInterpolateIDs = GetLightmapIDs("_Lightmap_Interpolate");
 
         private static readonly int kSpecCube0ID = Shader.PropertyToID("_SpecCube0"); private static readonly int kSpecCube0InterpolateID = Shader.PropertyToID("_SpecCube0_Interpolate");

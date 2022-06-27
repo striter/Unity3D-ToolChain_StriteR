@@ -47,7 +47,7 @@ Shader "Game/Unfinished/GITest"
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
                 o.positionCS = TransformObjectToHClip(v.positionOS);
-                o.normalWS=TransformObjectNormalToWorld(v.normalOS);
+                o.normalWS=TransformObjectToWorldNormal(v.normalOS);
 				o.lightmapUV=float4(v.lightmapUV*_LightmapST.xy+_LightmapST.zw,v.lightmapUV*_LightmapInterpolateST.xy + _LightmapInterpolateST.zw);
                 return o;
             }

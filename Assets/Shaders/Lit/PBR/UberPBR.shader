@@ -147,8 +147,8 @@
 				o.positionWS= TransformObjectToWorld(v.positionOS);
 				o.positionCS = TransformObjectToHClip(v.positionOS);
 				o.positionHCS = o.positionCS;
-				o.normalWS = TransformObjectNormalToWorld(v.normalOS);
-				o.tangentWS = normalize(mul((float3x3)unity_ObjectToWorld,v.tangentOS.xyz));
+				o.normalWS = TransformObjectToWorldNormal(v.normalOS);
+				o.tangentWS = TransformObjectToWorldDir(v.tangentOS.xyz);
 				o.biTangentWS = cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
 				o.viewDirWS = GetViewDirectionWS(o.positionWS);
 				o.color = v.color;
