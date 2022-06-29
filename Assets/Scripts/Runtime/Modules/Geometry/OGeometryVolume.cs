@@ -89,7 +89,7 @@ namespace Geometry.Voxel
         {
             uOffset = V1-V0;
             vOffset = V2-V0;
-            normal= Vector3.Cross(uOffset,vOffset);
+            normal = Vector3.Cross(uOffset.normalized,vOffset.normalized).normalized;
         }
         public Vector3 GetUVPoint(float u,float v)=>(1f - u - v) * this[0] + u * uOffset + v * vOffset;
 
@@ -158,35 +158,56 @@ namespace Geometry.Voxel
 
 
     [Serializable]
-    public struct GPlane:IEquatable<GPlane>,IEqualityComparer<GPlane>
+    public struct GPlane:IEquatable<GPlane>,IEqualityComparer<GPlane>,ISerializationCallbackReceiver
     {
         public Vector3 normal;
         public float distance;
         [HideInInspector]public Vector3 position;
         public GPlane(Vector3 _normal, float _distance) 
         { 
+            this = default;
             normal = _normal;
             distance = _distance;
-            position = _normal * distance;
+            GPlane_Ctor(true);
         }
 
         public GPlane(Vector3 _normal, Vector3 _position)
         {
+            this = default;
             normal = _normal;
             position = _position;
-            distance = UGeometryIntersect.PointPlaneDistance(_position, new GPlane(_normal, 0));
+            GPlane_Ctor(false);
         }
-        
+
+        void GPlane_Ctor(bool _position)
+        {
+            if (_position)
+                position = normal * distance;
+            else
+                distance = -Vector3.Dot(normal, position);// UGeometryIntersect.PointPlaneDistance(_position, new GPlane(_normal, 0));
+        }
+
+        public void OnBeforeSerialize() { }
+
+        public void OnAfterDeserialize()
+        {
+            normal = normal.normalized;
+            GPlane_Ctor(true);
+        }
         public static implicit operator Vector4(GPlane _plane)=>_plane.normal.ToVector4(_plane.distance);
 
         public static bool operator ==(GPlane _src, GPlane _dst) =>  _src.normal == _dst.normal && Math.Abs(_src.distance - _dst.distance) < float.Epsilon;
         public static bool operator !=(GPlane _src, GPlane _dst) => !(_src == _dst);
         public bool Equals(GPlane _dst) => this == _dst;
         public bool Equals(GPlane _src, GPlane _dst) => _src == _dst;
+        public override bool Equals(object obj)=> obj is GPlane other && Equals(other);
         public int GetHashCode(GPlane _target)=>HashCode.Combine(_target.normal, _target.distance);
+        public override int GetHashCode()=> HashCode.Combine(normal, distance, position);
 
         public static readonly GPlane kComparer = new GPlane();
         public static readonly GPlane kZeroPlane = new GPlane(Vector3.up, 0f);
+        public override string ToString() => $"{normal},{distance}";
+
     }
     [Serializable]
     public struct GCone

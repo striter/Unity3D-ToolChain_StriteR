@@ -153,20 +153,21 @@ public static class UCollection
             return index;
         }
 
-        public static int MinIndex<T>(this IEnumerable<T> _collection, Func<T, int> _sorting)
+        public static float Min<T>(this IEnumerable<T> _collection, Func<T, float> _getValue, out int _minIndex)
         {
-            int minIndex = 0;
-            int minValue = int.MaxValue;
+            _minIndex = -1;
+            float minValue = float.MaxValue;
             foreach (var (index,element) in _collection.LoopIndex())
             {
-                int value = _sorting(element);
+                var value = _getValue(element);
                 if(minValue<value)
                     continue;
                 minValue = value;
-                minIndex = index;
+                _minIndex = index;
             }
-            return minIndex;
+            return minValue;
         }
+        
         public static int MaxIndex<T>(this IEnumerable<T> _collection, Func<T, int> _sorting)
         {
             int maxIndex = 0;

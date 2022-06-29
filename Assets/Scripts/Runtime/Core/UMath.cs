@@ -80,6 +80,15 @@ public static class UMath
         }
     }
 
+
+    public static Matrix4x4 add(this Matrix4x4 _src, Matrix4x4 _dst)
+    {
+        Matrix4x4 dst = Matrix4x4.identity;
+        for(int i=0;i<4;i++)
+            dst.SetRow(i,_src.GetRow(i)+_dst.GetRow(i));
+        return dst;
+    }
+    
     public static int IntLerp(int _src, int _dst, float _interpolate)=> (int)Mathf.Lerp(_src, _dst, _interpolate);
     public static bool BoolLerp(bool _src, bool _dst, float _interpolate)
     {

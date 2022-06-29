@@ -39,8 +39,9 @@ namespace Rendering.PostProcess
         [MFoldout(nameof(m_Stylize), EStylize.OilPaint)] [Range(1,20)]public int m_OilPaintKernel;
         [MFoldout(nameof(m_Stylize), EStylize.OilPaint)] [Range(0.1f, 5f)] public float m_OilPaintSize;
         [MFoldout(nameof(m_Stylize), EStylize.ObraDithering)] [Range(0.001f,1f)]public float m_ObraDitherScale;
-        [MFoldout(nameof(m_Stylize), EStylize.ObraDithering)] [Range(0.1f,1f)]public float m_ObraDitherStrength;
+        [MFoldout(nameof(m_Stylize), EStylize.ObraDithering)] [Range(0.001f,1f)]public float m_ObraDitherStrength;
         [MFoldout(nameof(m_Stylize), EStylize.ObraDithering)] public Color m_ObraDitherColor;
+        [MFoldout(nameof(m_Stylize), EStylize.ObraDithering)] [Range(0,1f)] public float m_ObraDitherStep;
         [MFoldout(nameof(m_Stylize), EStylize.BilateralFilter)] [Range(0.1f, 5f)] public float m_BilaterailSize;
         [MFoldout(nameof(m_Stylize), EStylize.BilateralFilter)] [Range(0.01f, 1f)] public float m_BilateralFactor;
         public bool Validate() => m_Stylize != EStylize.None;
@@ -58,6 +59,7 @@ namespace Rendering.PostProcess
             m_ObraDitherStrength = .5f,
             m_BilaterailSize = 5f,
             m_BilateralFactor=.5f,
+            m_ObraDitherStep = 0f,
         };
 
     }
@@ -77,6 +79,7 @@ namespace Rendering.PostProcess
         static readonly int ID_ObraDitherScale = Shader.PropertyToID("_ObraDitherScale");
         static readonly int ID_ObraDitherStrength = Shader.PropertyToID("_ObraDitherStrength");
         static readonly int ID_ObraDitherColor = Shader.PropertyToID("_ObraDitherColor");
+        private static readonly int ID_ObraDitherStep = Shader.PropertyToID("_ObraDitherStep");
 
         static readonly int ID_BilateralSize = Shader.PropertyToID("_BilateralSize");
         static readonly int ID_BilateralFactor = Shader.PropertyToID("_BilateralFactor");
@@ -105,6 +108,7 @@ namespace Rendering.PostProcess
                     m_Material.SetFloat(ID_ObraDitherScale, _ssaoData.m_ObraDitherScale);
                     m_Material.SetFloat(ID_ObraDitherStrength, _ssaoData.m_ObraDitherStrength);
                     m_Material.SetColor(ID_ObraDitherColor, _ssaoData.m_ObraDitherColor);
+                    m_Material.SetFloat(ID_ObraDitherStep,_ssaoData.m_ObraDitherStep);
                 } break;
                 case EStylize.OilPaint:
                 {

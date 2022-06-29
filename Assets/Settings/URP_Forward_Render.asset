@@ -98,7 +98,6 @@ MonoBehaviour:
     m_AdditionalLightcount: 0
     m_IncludeTransparent: 0
     m_DownSample: 2
-    m_EnableBlur: 1
     m_BlurParam:
       m_BlurType: 2
       m_BlurSize: 0.05

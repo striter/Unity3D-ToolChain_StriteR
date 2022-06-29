@@ -10,17 +10,17 @@ namespace ExampleScenes.Rendering.QuadricErrorMetrics
     [RequireComponent(typeof(MeshFilter),typeof(MeshRenderer))]
     public class QuadricErrorMetrics : MonoBehaviour
     {
-        [ExtendButton("Optimize",nameof(Optimize),null,
-            "Reset",nameof(OnValidate),null
-        )]
         public Mesh m_SharedMesh;
+        [ExtendButton("Initialize",nameof(Init),null,
+            "Optimize",nameof(Optimize),null )]
+        public ContractConfigure m_Data;
 
-        public int m_OptimizeCount = 5;
         private MeshFilter m_Filter;
         private QEMConstructor m_Constructor;
 
         private Mesh m_QEMMesh;
-        private void OnValidate()
+
+        void Init()
         {
             m_Filter = GetComponent<MeshFilter>();
             if (!m_Filter||m_SharedMesh == null)
@@ -28,18 +28,33 @@ namespace ExampleScenes.Rendering.QuadricErrorMetrics
 
             m_Constructor = new QEMConstructor(m_SharedMesh);
             if(m_QEMMesh)
-                Object.Destroy(m_SharedMesh);
+                Object.DestroyImmediate(m_QEMMesh);
+        }
+        private void Optimize()
+        {
+            if (m_Constructor == null)
+                return;
             
             m_QEMMesh = new Mesh(){name = "Test", hideFlags = HideFlags.HideAndDontSave};
             m_Filter.sharedMesh = m_QEMMesh;
-        }
-        
-        void Optimize()
-        {
-            if (m_Constructor==null)
-                return;
             
-            m_Constructor.DoContract(m_QEMMesh,m_OptimizeCount);
+            m_Constructor.DoContract(m_QEMMesh,m_Data);
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (m_Constructor == null)
+                return;
+
+            Gizmos.matrix = transform.localToWorldMatrix;
+            
+            int count = m_Constructor.vertices.Count;
+            for (int i = 0; i < count; i++)
+            {
+                var vertex = m_Constructor.vertices[i];
+                var qemVertex = m_Constructor.qemVertices[i];
+                Gizmos.DrawSphere(vertex,.01f / Gizmos.matrix.lossyScale.x);
+            }
         }
     }
 }

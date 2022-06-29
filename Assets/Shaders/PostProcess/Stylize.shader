@@ -27,15 +27,15 @@ Shader "Hidden/PostProcess/Stylize"
             {
                 float3 finalCol=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).xyz;
 				#if _PIXEL_GRID
-                float2 pixelUV= (i.uv*_MainTex_TexelSize.zw)%1;
-                float pixelGrid= max(step(pixelUV.y,_PixelGridWidth.x),step(_PixelGridWidth.y,pixelUV.y),step(pixelUV.x,_PixelGridWidth.x),step(_PixelGridWidth.y,pixelUV.x));
-                finalCol=lerp(finalCol,_PixelGridColor.rgb,pixelGrid*_PixelGridColor.a);
-            #elif _PIXEL_CIRCLE
-                float2 pixelUV=(i.uv*_MainTex_TexelSize.zw)%1-.5;
-                float pixelCircle= dot(pixelUV,pixelUV);
-                pixelCircle= step(.5-_PixelGridWidth.x,pixelCircle);
-                finalCol=lerp(finalCol,_PixelGridColor.rgb,pixelCircle*_PixelGridColor.a);
-            #endif
+	                float2 pixelUV= (i.uv*_MainTex_TexelSize.zw)%1;
+	                float pixelGrid= max(step(pixelUV.y,_PixelGridWidth.x),step(_PixelGridWidth.y,pixelUV.y),step(pixelUV.x,_PixelGridWidth.x),step(_PixelGridWidth.y,pixelUV.x));
+	                finalCol=lerp(finalCol,_PixelGridColor.rgb,pixelGrid*_PixelGridColor.a);
+	            #elif _PIXEL_CIRCLE
+	                float2 pixelUV=(i.uv*_MainTex_TexelSize.zw)%1-.5;
+	                float pixelCircle= dot(pixelUV,pixelUV);
+	                pixelCircle= step(.5-_PixelGridWidth.x,pixelCircle);
+	                finalCol=lerp(finalCol,_PixelGridColor.rgb,pixelCircle*_PixelGridColor.a);
+	            #endif
                 return float4(finalCol,1);
             }
             ENDHLSL
@@ -116,17 +116,19 @@ Shader "Hidden/PostProcess/Stylize"
             float _ObraDitherScale;
             float _ObraDitherStrength;
             float3 _ObraDitherColor;
+            float _ObraDitherStep;
             float4 frag(v2f_img i):SV_TARGET
             {
-                float lum=RGBtoLuminance( SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).xyz);
+            	float3 color =SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).xyz;
+                float lum=RGBtoLuminance(color );
 
                 i.uv*=_MainTex_TexelSize.zw*_ObraDitherScale;
                 i.uv=floor(i.uv)*.1;
 
                 lum=1-step( lum,random01(i.uv)*_ObraDitherStrength);
 
-
-                return float4(lerp(_ObraDitherColor,1,lum) ,1);
+				
+                return float4(lerp(_ObraDitherColor,lerp(color,1,_ObraDitherStep),lum),1);
             }
             ENDHLSL
         }
