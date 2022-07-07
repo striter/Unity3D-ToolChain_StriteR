@@ -20,6 +20,9 @@
 		[Foldout(_BSC)]_Brightness("Brightness",Range(0,2))=1
 		[Foldout(_BSC)]_Saturation("Saturation",Range(0,2))=1
 		[Foldout(_BSC)]_Contrast("Contrast",Range(0,2))=1
+		[Toggle(_DISTORT)]_Distort("Distort",int)=0
+		[Foldout(_DISTORT)]_DistortTex("Texture",2D)="black"{}
+		[Foldout(_DISTORT)]_DistortStrength("Strength",Range(0,200))=1
 	}
 
 	SubShader
@@ -68,35 +71,45 @@
 			{
 				float4 positionCS   : SV_POSITION;
 				float4 color : COLOR;
-				half2 uv  : TEXCOORD0;
+				half4 uv : TEXCOORD0;
 				float4 positionHCS:TEXCOORD1;
 			};
 
 			//Additional
 			#pragma shader_feature_local_fragment _ALPHAMASK
 			#pragma shader_feature_local_fragment _BSC
+			#pragma shader_feature_local_fragment _DISTORT
 			float4 _Color;
 			half _Brightness;
 			half _Saturation;
 			half _Contrast;
+			half _DistortStrength;
+			half4 _DistortTex_ST;
 			TEXTURE2D(_AlphaMask); SAMPLER(sampler_AlphaMask);
+			TEXTURE2D(_DistortTex);SAMPLER(sampler_DistortTex);
 		
 			v2f vert(appdata_t i)
 			{
 				v2f o;
 				o.positionCS = TransformObjectToHClip(i.positionOS);
 				o.positionHCS=o.positionCS;
-				o.uv = TRANSFORM_TEX(i.uv,_MainTex);
+				o.uv = half4( TRANSFORM_TEX(i.uv,_MainTex),TRANSFORM_TEX_FLOW_INSTANCE(i.uv,_DistortTex));
 				o.color = i.color;
 				return o;
 			}
 			
 			half4 frag(v2f i) : SV_Target
 			{
-				half4 finalCol = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*_Color;
+				half2 uv = i.uv.xy;
+				#if _DISTORT
+					half2 distortSample = SAMPLE_TEXTURE2D(_DistortTex,sampler_DistortTex,i.uv.zw).xy*2-1;
+					uv+= _MainTex_TexelSize.xy*distortSample*_DistortStrength;
+				#endif
+				
+				half4 finalCol = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv)*_Color;
 			
 				#if _ALPHAMASK
-					finalCol.a *= SAMPLE_TEXTURE2D(_AlphaMask,sampler_AlphaMask,i.uv).r;
+					finalCol.a *= SAMPLE_TEXTURE2D(_AlphaMask,sampler_AlphaMask,uv).r;
 				#endif
 
 				#if _BSC
@@ -104,6 +117,7 @@
 					finalCol.rgb = lerp(.5h, finalCol.rgb, _Contrast);
 					finalCol.rgb = Saturation(finalCol.rgb,_Saturation);
 				#endif
+
 				return finalCol;
 			}
 		ENDHLSL

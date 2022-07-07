@@ -201,8 +201,8 @@ namespace Geometry.Voxel
         public bool Equals(GPlane _dst) => this == _dst;
         public bool Equals(GPlane _src, GPlane _dst) => _src == _dst;
         public override bool Equals(object obj)=> obj is GPlane other && Equals(other);
-        public int GetHashCode(GPlane _target)=>HashCode.Combine(_target.normal, _target.distance);
-        public override int GetHashCode()=> HashCode.Combine(normal, distance, position);
+        public int GetHashCode(GPlane _target)=>_target.normal.GetHashCode()+_target.distance.GetHashCode();
+        public override int GetHashCode()=> normal.GetHashCode()+distance.GetHashCode()+position.GetHashCode();
 
         public static readonly GPlane kComparer = new GPlane();
         public static readonly GPlane kZeroPlane = new GPlane(Vector3.up, 0f);

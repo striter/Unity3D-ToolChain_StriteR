@@ -7,7 +7,7 @@ using UnityEngine.Windows;
 using System.IO;
 using Directory = UnityEngine.Windows.Directory;
 
-namespace TEditor
+namespace UnityEngine.Editor.Extensions
 {
     public class EAssetsBatchRename : EditorWindow
     {

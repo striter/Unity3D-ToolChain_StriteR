@@ -10,7 +10,6 @@ Shader "Hidden/PostProcess/Stylize"
 		Cull Off ZWrite Off ZTest Always
         
     	HLSLINCLUDE
-        #define ICOLOR
         #include "Assets/Shaders/Library/PostProcess.hlsl"
         ENDHLSL
     	
@@ -140,7 +139,7 @@ Shader "Hidden/PostProcess/Stylize"
             #pragma vertex vert_img
             #pragma fragment frag
             
-	static const float gaussianWeight4[4]= {0.37004,0.31718,0.19823,0.11453};
+			static const float gaussianWeight4[4]= {0.37004,0.31718,0.19823,0.11453};
             float _BilateralSize;
             float _BilateralFactor;
 

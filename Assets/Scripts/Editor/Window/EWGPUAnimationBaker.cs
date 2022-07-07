@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using Rendering.Optimize;
 
-namespace TEditor
+namespace UnityEngine.Editor.Extensions
 {
     public class GPUAnimationBaker : EditorWindow
     {

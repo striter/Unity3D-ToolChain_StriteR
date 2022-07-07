@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PerEntityShadow
+  m_Name: Shadow
   m_Shader: {fileID: 4800000, guid: 979576290d72a0440a03446a6ff35826, type: 3}
   m_ShaderKeywords: _NORMALSAMPLE_NORMAL
   m_LightmapFlags: 4
@@ -57,6 +57,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _: 0
     - _AdaptFactor: 1000
     - _BreakFixing: 0
     - _BumpScale: 1
@@ -65,18 +66,22 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _FallOff: 0
+    - _FallOffEnd: 0.10000002
     - _FixFactor: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _Metallic: 0
+    - _Mirror: 0
     - _Mode: 0
     - _NORMALSAMPLE: 0
     - _OcclusionStrength: 1
     - _OutlineSmoothFactor: 0
     - _OutlineWidth: 0.014
     - _Parallax: 0.02
-    - _PlaneDistance: -0.35
+    - _PlaneDistance: 0
+    - _SHAPE: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -93,4 +98,5 @@ Material:
     - _Color: {r: 0, g: 0, b: 0, a: 0.44705883}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 0}
+    - _PlaneNormal: {r: 0, g: 0, b: 1, a: 0}
   m_BuildTextureStacks: []

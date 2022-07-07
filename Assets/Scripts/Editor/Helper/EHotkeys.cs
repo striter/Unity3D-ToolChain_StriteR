@@ -5,7 +5,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace TEditor
+namespace UnityEngine.Editor.Extensions
 {
     public static class Hotkeys
     {

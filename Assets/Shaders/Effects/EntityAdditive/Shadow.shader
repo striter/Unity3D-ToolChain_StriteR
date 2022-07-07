@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/PerEntityShadow"
+﻿Shader "Game/Effects/EntityAdditive/Shadow"
 {
     Properties
     {
@@ -7,8 +7,8 @@
     	_PlaneDistance("Plane Distance",float)=-.5
     	
     	[Header(Color)]
-        _Color("Color",Color)=(0,0,0,0)
-    	[Toggle(_FALLOFF)]_("Enable",int)=1
+        _Color("Color",Color)=(0,0,0,1)
+    	[Toggle(_FALLOFF)]_("Enable",int)=0
     	[MinMaxRange]_FallOff("FallOff",Range(0,1))=0
     	[HideInInspector]_FallOffEnd("",float)=0.1
     	

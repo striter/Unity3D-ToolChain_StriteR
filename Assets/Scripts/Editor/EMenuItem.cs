@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace TEditor
+namespace UnityEngine.Editor.Extensions
 {
     public static class EMenuItem
     {

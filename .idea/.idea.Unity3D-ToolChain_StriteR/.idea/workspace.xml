@@ -3,20 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="92a6fb5e-0b8c-4e1a-8b06-b7827ef4a308" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GPUAnimation/Model_Goat_GPU_Bone.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GPUAnimation/Model_Goat_GPU_Bone.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GPUAnimation/Model_PolarBear_GPU_Bone.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GPUAnimation/Model_PolarBear_GPU_Bone.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/QuadricErrorMetrics/QuadricErrorMetrics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/QuadricErrorMetrics/QuadricErrorMetrics.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/QuadricErrorMetrics/QuadricErrorMetrics.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/QuadricErrorMetrics/QuadricErrorMetrics.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/QuadricErrorMetrics/QuadricErrorMetricsTest.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/QuadricErrorMetrics/QuadricErrorMetricsTest.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/PostProcess/PostProcess_Stylize.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/PostProcess/PostProcess_Stylize.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UCollection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UCollection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UMath.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UMath.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/OGeometryVolume.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/OGeometryVolume.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Polygon/UQEM.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Polygon/UQEM.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Settings/URP_Forward_Render.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Settings/URP_Forward_Render.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Ocean.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/Transparency/Ocean.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/PostProcess/Stylize.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/PostProcess/Stylize.shader" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -148,6 +134,7 @@
       <workItem from="1656421786495" duration="2463000" />
       <workItem from="1656467582452" duration="4030000" />
       <workItem from="1656476408708" duration="1001000" />
+      <workItem from="1656487990260" duration="625000" />
     </task>
     <servers />
   </component>

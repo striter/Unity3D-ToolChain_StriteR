@@ -11,7 +11,7 @@ namespace QuadricErrorsMetric
 {
     public static class KQEM
     {
-         public static Bounds kBounds = new(Vector3.zero, Vector3.one * .2f);
+         public static Bounds kBounds = new Bounds(Vector3.zero, Vector3.one * .2f);
          public static float kSqrEdgeClosure = 0.01f*0.01f;
          
          public static Matrix4x4 GetQuadricErrorMatrix(GPlane _plane)

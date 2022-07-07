@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using Geometry.Voxel;
 
-namespace TEditor
+namespace UnityEngine.Editor.Extensions
 {
     public class MainAttributePropertyDrawer<T> : PropertyDrawer where T : Attribute
     {

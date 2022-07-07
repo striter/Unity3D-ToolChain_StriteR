@@ -3,13 +3,13 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace TEditor
+namespace UnityEngine.Editor.Extensions
 {
     [CustomEditor(typeof(ModelImporter))]
-    public class ModelImporterInspector : Editor
+    public class ModelImporterInspector : UnityEditor.Editor
     {
         static readonly Type s_ModelImporterType = Type.GetType("UnityEditor.ModelImporterEditor,UnityEditor");
-        Editor m_ModelImporterEditor;
+        UnityEditor.Editor m_ModelImporterEditor;
         //FieldInfo m_ActiveEditorIndex;
         private void OnEnable()
         {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace TEditor
+namespace UnityEngine.Editor.Extensions
 {
     public static class UEGUIStyle_Window
     {

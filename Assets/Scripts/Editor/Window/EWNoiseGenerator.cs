@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UAlgorithm;
-namespace TEditor
+namespace UnityEngine.Editor.Extensions
 {
     using static UEGUI;
     public class NoiseGenerator : EditorWindow

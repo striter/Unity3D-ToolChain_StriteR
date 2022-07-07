@@ -24,7 +24,12 @@ public static class URuntime
         for (int i = 0; i < count; i++)
             yield return _transform.GetChild(i);
     }
-    
+
+    public static void SetParentAndSyncPositionRotation(this Transform _src, Transform _dst)
+    {
+        _src.SetParent(_dst);
+        _src.SetPositionAndRotation(_dst.position,_dst.rotation);
+    }
     public static void SyncPositionRotation(this Transform _transform, Transform _dst)=>_transform.SetPositionAndRotation(_dst.position,_dst.rotation);
     
     public static void DestroyChildren(this Transform _trans)
@@ -112,6 +117,7 @@ public static class URuntime
     
     //Bounds
     public static Vector3 GetPoint(this Bounds _bound, Vector3 _normalizedSideOffset) => _bound.center + _bound.size.mul(_normalizedSideOffset);
+    public static Vector3 GetNormalizedPoint(this Bounds _bound, Vector3 _point) => (_point - _bound.min).div(_bound.max-_bound.min);
     public static Bounds Resize(this Bounds _srcBounds,Bounds _dstBounds)
     {
         Vector3 min = Vector3.Min(_srcBounds.min, _dstBounds.min);

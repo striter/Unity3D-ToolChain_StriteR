@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Object = UnityEngine.Object;
 
-namespace TEditor
+namespace UnityEngine.Editor.Extensions
 {
     public static class UECommon
     {

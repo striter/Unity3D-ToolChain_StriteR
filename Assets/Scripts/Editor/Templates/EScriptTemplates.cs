@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace TEditor
+namespace UnityEngine.Editor.Extensions
 {
     internal static class ScriptTemplates
     {
@@ -20,6 +20,4 @@ namespace TEditor
             ProjectWindowUtil.CreateScriptAssetFromTemplateFile(kTemplateFolder+"HLSLIncludeTemplate.hlsl.txt","DefaultHLSLInclude.hlsl");
         }
     }
-    
-    
 }

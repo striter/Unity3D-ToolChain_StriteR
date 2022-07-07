@@ -2,13 +2,13 @@
 using UnityEngine;
 using Rendering.Optimize;
 
-namespace TEditor
+namespace UnityEngine.Editor.Extensions
 {
-    [CustomEditor(typeof(Rendering.Optimize.GPUAnimationController))]
-    public class GPUAnimationController : Editor
+    [CustomEditor(typeof(global::Rendering.Optimize.GPUAnimationController))]
+    public class GPUAnimationController : UnityEditor.Editor
     {
         PreviewRenderUtility m_Preview;
-        Rendering.Optimize.GPUAnimationController m_PreviewTarget;
+        global::Rendering.Optimize.GPUAnimationController m_PreviewTarget;
         MeshRenderer m_PreviewMeshRenderer;
         GameObject m_BoundsViewer;
         MaterialPropertyBlock m_TargetBlock;
@@ -20,7 +20,7 @@ namespace TEditor
         float m_CameraDistance=8f;
         public override bool HasPreviewGUI()
         {
-            if (!(target as Rendering.Optimize.GPUAnimationController).m_Data)
+            if (!(target as global::Rendering.Optimize.GPUAnimationController).m_Data)
                 return false;
             return true;
         } 
@@ -35,7 +35,7 @@ namespace TEditor
             m_Preview.camera.farClipPlane = 1000;
             m_Preview.camera.transform.position = m_CameraDirection * m_CameraDistance;
 
-            m_PreviewTarget = GameObject.Instantiate(((Component)target).gameObject).GetComponent<Rendering.Optimize.GPUAnimationController>();
+            m_PreviewTarget = GameObject.Instantiate(((Component)target).gameObject).GetComponent<global::Rendering.Optimize.GPUAnimationController>();
             m_Preview.AddSingleGO(m_PreviewTarget.gameObject);
             m_PreviewMeshRenderer = m_PreviewTarget.GetComponent<MeshRenderer>();
             m_TargetBlock = new MaterialPropertyBlock();

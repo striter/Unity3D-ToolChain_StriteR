@@ -4,12 +4,12 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace TEditor
+namespace UnityEngine.Editor.Extensions
 {
     #region UI
     #region Inspector
     [CustomEditor(typeof(UIComponentBase), true), CanEditMultipleObjects]
-    public class UIComponent : Editor
+    public class UIComponent : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
         {

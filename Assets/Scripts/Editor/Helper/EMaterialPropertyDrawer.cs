@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace TEditor
+namespace UnityEngine.Editor.Extensions
 {
     public class MaterialPropertyDrawerBase: MaterialPropertyDrawer
     {

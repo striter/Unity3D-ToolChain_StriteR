@@ -4,10 +4,10 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
 
-namespace TEditor
+namespace UnityEngine.Editor.Extensions
 {
     [CustomEditor(typeof(MeshFilter)), CanEditMultipleObjects]
-    public class MeshFilterInspector : Editor
+    public class MeshFilterInspector : UnityEditor.Editor
     {
         MeshFilter m_Target;
         bool m_EnableVertexDataVisualize;

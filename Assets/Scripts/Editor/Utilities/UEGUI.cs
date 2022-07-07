@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = System.Object;
 
-namespace TEditor
+namespace UnityEngine.Editor.Extensions
 {
     public static class HorizontalScope
     {
