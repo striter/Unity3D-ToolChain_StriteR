@@ -1,4 +1,4 @@
-﻿Shader "Hidden/ShadowCaster"
+﻿Shader "Game/Additive/ShadowCaster"
 {
     SubShader
     {

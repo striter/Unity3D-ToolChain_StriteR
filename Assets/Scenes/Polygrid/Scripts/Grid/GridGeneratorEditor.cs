@@ -10,8 +10,8 @@ using UnityEngine;
 namespace PolyGrid
 {
     #if UNITY_EDITOR
-    using TEditor;
     using UnityEditor;
+    using UnityEditor.Extensions;
     [ExecuteInEditMode]
     public partial class GridGenerator
     {

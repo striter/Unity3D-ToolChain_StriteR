@@ -5,7 +5,7 @@ using Geometry.Polygon;
 using Geometry.Voxel;
 using UnityEngine;
 
-namespace UnityEngine.Editor.Extensions
+namespace UnityEditor.Extensions
 {
     public static class UERender
     {

@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace UnityEngine.Editor.Extensions
+namespace UnityEditor.Extensions
 {
     public class ScriptableObjectCombiner : EditorWindow
     {

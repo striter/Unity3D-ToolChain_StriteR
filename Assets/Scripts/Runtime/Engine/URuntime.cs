@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Geometry.Voxel;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -117,6 +118,13 @@ public static class URuntime
     
     //Bounds
     public static Vector3 GetPoint(this Bounds _bound, Vector3 _normalizedSideOffset) => _bound.center + _bound.size.mul(_normalizedSideOffset);
+
+    public static IEnumerable<Vector3> GetEdges(this Bounds _bound)
+    {
+        foreach (var point in KQube.unitQube)
+            yield return _bound.GetPoint(point);
+    }
+    
     public static Vector3 GetNormalizedPoint(this Bounds _bound, Vector3 _point) => (_point - _bound.min).div(_bound.max-_bound.min);
     public static Bounds Resize(this Bounds _srcBounds,Bounds _dstBounds)
     {

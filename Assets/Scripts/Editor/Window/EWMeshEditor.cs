@@ -6,7 +6,7 @@ using Geometry.Voxel;
 using UnityEditor;
 using UnityEngine;
 
-namespace UnityEngine.Editor.Extensions
+namespace UnityEditor.Extensions
 {
     public class MeshEditor : EditorWindow
     {

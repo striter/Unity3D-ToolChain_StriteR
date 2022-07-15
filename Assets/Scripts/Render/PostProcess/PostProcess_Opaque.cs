@@ -108,11 +108,11 @@ namespace Rendering.PostProcess
             m_HighlightBlur = new PPCore_Blurs();
             m_HighlightRender = new Material(RenderResources.FindInclude("Game/Unlit/Color")) { hideFlags = HideFlags.HideAndDontSave };
             m_HighlightRender.SetColor(ID_Color, Color.white);
-            m_RenderBackDepth = new Material(RenderResources.FindInclude("Hidden/DepthOnly")){hideFlags = HideFlags.HideAndDontSave};
+            m_RenderBackDepth = new Material(RenderResources.FindInclude("Game/Additive/DepthOnly")){hideFlags = HideFlags.HideAndDontSave};
             m_RenderBackDepth.SetInt(ID_ColorMask,(int)ColorWriteMask.Red);
             m_RenderBackDepth.SetInt(ID_ZTest,(int)CompareFunction.Greater);
             m_RenderBackDepth.SetInt(ID_Cull,(int)CullMode.Front);
-            m_RenderFrontDepth = new Material(RenderResources.FindInclude("Hidden/DepthOnly")) { hideFlags = HideFlags.HideAndDontSave };
+            m_RenderFrontDepth = new Material(RenderResources.FindInclude("Game/Additive/DepthOnly")) { hideFlags = HideFlags.HideAndDontSave };
             m_RenderFrontDepth.SetInt(ID_ColorMask,(int)ColorWriteMask.Green);
             m_RenderFrontDepth.SetInt(ID_ZTest,(int)CompareFunction.Less);
             m_RenderFrontDepth.SetInt(ID_Cull,(int)CullMode.Back);

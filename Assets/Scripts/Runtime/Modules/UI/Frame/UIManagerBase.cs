@@ -56,7 +56,7 @@ public class UIManagerBase : SingletonMono<UIManagerBase>
         for (int i = 0; i < m_Pages.Count; i++)
         {
             bool pageOverlay = pageShow && m_Pages.Count - 1 == i;
-            TUI.ReparentRestretchUI(m_Pages[i].rectTransform, pageOverlay ? tf_OverlayPage : tf_CameraPage);
+            UUserInterface.ReparentRestretchUI(m_Pages[i].rectTransform, pageOverlay ? tf_OverlayPage : tf_CameraPage);
         }
     }
 
@@ -135,7 +135,7 @@ public class UIManagerBase : SingletonMono<UIManagerBase>
             return;
         }
 
-        TUI.ReparentRestretchUI(control.rectTransform, overlay ? tf_OverlayControl : tf_CameraControl);
+        UUserInterface.ReparentRestretchUI(control.rectTransform, overlay ? tf_OverlayControl : tf_CameraControl);
         control.transform.SetSiblingIndex(m_ControlSiblings[control]);
     }
     #endregion

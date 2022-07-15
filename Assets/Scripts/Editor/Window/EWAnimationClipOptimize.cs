@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-namespace UnityEngine.Editor.Extensions
+namespace UnityEditor.Extensions
 {
     public class AnimationClipOptimize : EditorWindow
     {

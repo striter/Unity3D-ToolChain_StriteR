@@ -27,7 +27,7 @@ namespace ExampleScenes.Algorithm.WaveFunctionCollapse
     public class WaveFunctionContainer :  AWFCContainer<ETileDirection,WaveFunctionData>
     {
         public RectTransform m_RectTransform { get; private set; }
-        private UIT_EventTriggerListener m_Listener;
+        private UIEventTriggerListenerExtension m_Listener;
         private int m_Index;
         private Action<int> OnSelect;
         private Action<int> OnRecycle;
@@ -36,7 +36,7 @@ namespace ExampleScenes.Algorithm.WaveFunctionCollapse
         {
             base.OnPoolCreate(_DoRecycle);
             m_RectTransform=transform as RectTransform;;
-            m_Listener = GetComponent<UIT_EventTriggerListener>();
+            m_Listener = GetComponent<UIEventTriggerListenerExtension>();
             m_Listener.OnWorldClick = OnWorldClick;
         }
 

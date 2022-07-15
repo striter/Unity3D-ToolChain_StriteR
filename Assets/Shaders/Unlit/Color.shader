@@ -6,6 +6,7 @@
 	    [HDR]_Color("HDR Color",Color)=(1,1,1,1)
 
 		[Header(Misc)]
+        [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
 		[Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
 		[Enum(UnityEngine.Rendering.ColorWriteMask)]_ColorMask("Color Mask",int)=15
 		[Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
@@ -19,7 +20,7 @@
 		ZTest [_ZTest]
 		Cull [_Cull]
 		ColorMask [_ColorMask]
-		ZWrite On
+		ZWrite [_ZWrite]
 		Blend SrcAlpha OneMinusSrcAlpha
 
 		Pass
@@ -36,6 +37,7 @@
 			{
 				float3 positionOS : POSITION;
 				float2 uv:TEXCOORD0;
+				float4 color:COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -58,7 +60,7 @@
 				float4 positionOS= TransformObjectToHClip(v.positionOS);
 				o.positionCS =positionOS;
 				o.uv = v.uv;
-				o.color = INSTANCE(_Color);
+				o.color = v.color * INSTANCE(_Color);
 				return o;
 			}
 

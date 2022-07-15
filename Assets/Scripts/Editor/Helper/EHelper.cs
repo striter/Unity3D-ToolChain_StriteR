@@ -5,7 +5,7 @@ using Rendering;
 using UnityEditor;
 using UnityEngine;
 
-namespace UnityEngine.Editor.Extensions
+namespace UnityEditor.Extensions
 {
     public static class Helper
     {

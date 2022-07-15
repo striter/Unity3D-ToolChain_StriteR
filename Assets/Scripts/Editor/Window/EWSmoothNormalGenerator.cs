@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace UnityEngine.Editor.Extensions
+namespace UnityEditor.Extensions
 {
     using static UERender;
     public class SmoothNormalGenerator : EditorWindow

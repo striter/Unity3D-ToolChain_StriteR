@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace UnityEngine.Editor.Extensions
+namespace UnityEditor.Extensions
 {
     public class MaterialPropertyDrawerBase: MaterialPropertyDrawer
     {
@@ -81,7 +81,7 @@ namespace UnityEngine.Editor.Extensions
         public FoldoutDrawer(string _kw1) : base(new string[] { _kw1 }) {}
         public FoldoutDrawer(string _kw1, string _kw2) : base(new string[] { _kw1, _kw2 }) { }
         public FoldoutDrawer(string _kw1, string _kw2,string _kw3) : base(new string[] { _kw1, _kw2 ,_kw3}) { }
-        public FoldoutDrawer(string _kw1, string _kw2,string _kw3,string _kw4) : base(new string[] { _kw1, _kw2 ,_kw3,_kw4}) { Debug.Log(_kw1); }
+        public FoldoutDrawer(string _kw1, string _kw2,string _kw3,string _kw4) : base(new string[] { _kw1, _kw2 ,_kw3,_kw4}) { }
         public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
         {
             return 0;

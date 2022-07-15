@@ -3,7 +3,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace UnityEngine.Editor.Extensions
+namespace UnityEditor.Extensions
 {
     [CustomEditor(typeof(ModelImporter))]
     public class ModelImporterInspector : UnityEditor.Editor

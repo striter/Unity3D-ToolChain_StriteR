@@ -1,4 +1,4 @@
-Shader "Game/Effects/EntityAdditive/ScreenDelta"		//Find this a better name
+Shader "Game/Additive/ScreenDelta"
 {
     Properties
     {
@@ -84,7 +84,7 @@ Shader "Game/Effects/EntityAdditive/ScreenDelta"		//Find this a better name
             ENDHLSL
         }
         
-        USEPASS "Hidden/DepthOnly/MAIN"
-        USEPASS "Hidden/ShadowCaster/MAIN"
+        USEPASS "Game/Additive/DepthOnly/MAIN"
+        USEPASS "Game/Additive/ShadowCaster/MAIN"
     }
 }

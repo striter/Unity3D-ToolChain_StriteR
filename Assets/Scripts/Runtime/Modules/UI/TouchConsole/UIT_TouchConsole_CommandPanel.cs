@@ -503,10 +503,10 @@ public partial class UIT_TouchConsole
 
     public class CommandItem_Drag : CommandItemBase
     {
-        public UIT_EventTriggerListener m_Listener { get; private set; }
+        public UIEventTriggerListenerExtension m_Listener { get; private set; }
         public CommandItem_Drag(Transform _transform) : base(_transform)
         {
-            m_Listener = _transform.GetComponent<UIT_EventTriggerListener>();
+            m_Listener = _transform.GetComponent<UIEventTriggerListenerExtension>();
         }
 
         public override void OnPoolRecycle()

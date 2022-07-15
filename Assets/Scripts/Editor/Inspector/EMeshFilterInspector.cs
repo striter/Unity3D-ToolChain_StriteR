@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
 
-namespace UnityEngine.Editor.Extensions
+namespace UnityEditor.Extensions
 {
     [CustomEditor(typeof(MeshFilter)), CanEditMultipleObjects]
     public class MeshFilterInspector : UnityEditor.Editor

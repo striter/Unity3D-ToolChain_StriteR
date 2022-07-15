@@ -1,4 +1,4 @@
-﻿Shader "Hidden/DepthOnly"
+﻿Shader "Game/Additive/DepthOnly"
 {
 	Properties
 	{

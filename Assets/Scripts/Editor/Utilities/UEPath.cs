@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace UnityEngine.Editor.Extensions
+namespace UnityEditor.Extensions
 {
     public static class UEPath
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace UnityEngine.Editor.Extensions
+namespace UnityEditor.Extensions
 {
     internal static class ScriptTemplates
     {

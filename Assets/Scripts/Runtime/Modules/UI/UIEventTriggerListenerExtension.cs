@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UIT_EventTriggerListener : EventTrigger
+public class UIEventTriggerListenerExtension : EventTrigger
 {
     public Action<Vector2> OnWorldClick;
     public override void OnPointerClick(PointerEventData eventData)

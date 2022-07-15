@@ -7,7 +7,7 @@ namespace PolyGrid.Module.Baking
 {
 #if UNITY_EDITOR
     using UnityEditor;
-    using TEditor;
+    using UnityEditor.Extensions;
     public class ModuleBaker : MonoBehaviour
     {
         public EModuleType m_ModuleType;

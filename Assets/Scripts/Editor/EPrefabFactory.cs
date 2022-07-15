@@ -3,15 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.Animations;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
-namespace UnityEngine.Editor.Extensions
+namespace UnityEditor.Extensions
 {
-    public interface IPrefabFactoryAsset<T> where T:Object
+    public interface IPrefabFactoryAsset<T> where T:UnityEngine.Object
     {
         public T m_Asset { get; }
     }
     
-    public class PrefabFactoryLoadAsset<T>:IPrefabFactoryAsset<T> where T:Object
+    public class PrefabFactoryLoadAsset<T>:IPrefabFactoryAsset<T> where T:UnityEngine.Object
     {
         public T m_Asset { get; }
         public PrefabFactoryLoadAsset(string _assetPath)
@@ -22,7 +24,7 @@ namespace UnityEngine.Editor.Extensions
         }
     }
     
-    public class APrefabFactoryLoadOrCreateAsset<T>:IPrefabFactoryAsset<T> where T : Object
+    public class APrefabFactoryLoadOrCreateAsset<T>:IPrefabFactoryAsset<T> where T : UnityEngine.Object
     {       
         public T m_Asset { get; }
         public APrefabFactoryLoadOrCreateAsset(string _assetPath,Func<T> _createAsset) 

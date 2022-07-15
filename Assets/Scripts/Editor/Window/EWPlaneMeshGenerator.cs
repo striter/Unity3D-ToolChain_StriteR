@@ -7,7 +7,7 @@ using UnityEngine;
 using Procedural.Hexagon;
 using Procedural.Hexagon.Area;
 
-namespace UnityEngine.Editor.Extensions
+namespace UnityEditor.Extensions
 {
     public class PlaneMeshGenerator : EditorWindow
     {

@@ -8,7 +8,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace UnityEngine.Editor.Extensions
+namespace UnityEditor.Extensions
 {
 
     public static class UEAsset

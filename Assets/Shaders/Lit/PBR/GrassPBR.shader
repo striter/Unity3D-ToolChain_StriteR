@@ -242,6 +242,6 @@
 			}
 			ENDHLSL
 		}
-		USEPASS "Hidden/ShadowCaster/MAIN"
+		USEPASS "Game/Additive/ShadowCaster/MAIN"
 	}
 }

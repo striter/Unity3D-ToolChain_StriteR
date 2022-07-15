@@ -175,6 +175,6 @@ Shader "Game/Lit/PBR/GrassSurface"
             }
             ENDHLSL
         }
-        USEPASS "Hidden/DepthOnly/MAIN"
+        USEPASS "Game/Additive/DepthOnly/MAIN"
     }
 }

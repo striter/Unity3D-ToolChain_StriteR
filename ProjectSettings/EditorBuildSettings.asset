@@ -5,13 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Boot.unity
     guid: 0600e4da9bdccee4ab819bf25ea95bdf
   - enabled: 0
     path: Assets/Scenes/Boids/Boids.unity
     guid: 0a8c10a62a773144f9506281c4155a51
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Rendering/GI/GI.unity
     guid: 8f4db0d9de6e4ee41a5926b446f218bd
   - enabled: 0
@@ -41,6 +41,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Rendering/Water&Ocean/Water&Ocean.unity
     guid: cc226ce06d2088f48a0a5ae04254f2cc
+  - enabled: 1
+    path: Assets/Scenes/UnityGUIExtensions/UnityGUIExtensions.unity
+    guid: 27507fd8c4cf2d44ca00077fb133f302
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 347a74a6abbfda5409b4cb31b51a2451,
       type: 2}

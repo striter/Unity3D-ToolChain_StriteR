@@ -26,6 +26,9 @@ struct v2ff
 	half3 viewDirWS:TEXCOORD5;
 	V2F_FOG(6)
 	V2F_LIGHTMAP(7)
+	#if defined(V2F_ADDITIONAL)
+		V2F_ADDITIONAL
+	#endif
 };
 
 v2ff ForwardVertex(a2vf v)
@@ -49,6 +52,9 @@ v2ff ForwardVertex(a2vf v)
 	o.color=v.color;
 	LIGHTMAP_TRANSFER(v,o)
 	FOG_TRANSFER(o)
+	#if defined(V2F_ADDITIONAL_TRANSFER)
+		V2F_ADDITIONAL_TRANSFER(v,o)
+	#endif
 	return o;
 }
 
@@ -66,8 +72,12 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 
 #if defined (_NORMALOFF)
 #else
+	#if defined(GET_NORMAL)
+		normalTS = GET_NORMAL(i);
+	#else
+		normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
+	#endif
 	float3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
-	normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
 	normalWS=normalize(mul(transpose(TBNWS), normalTS));
 #endif
 	
@@ -125,6 +135,10 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 #endif
 	FOG_MIX(i,finalCol);
 	finalCol+=surface.emission;
+
+#if defined(GET_FINALCOL)
+	finalCol = GET_FINALCOL(finalCol,i,surface);
+#endif
 	
 	return half4(finalCol,1.h);
 }

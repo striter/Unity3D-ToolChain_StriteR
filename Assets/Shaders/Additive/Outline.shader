@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/EntityAdditive/Outline"
+﻿Shader "Game/Additive/Outline"
 {
     Properties
     {
@@ -9,9 +9,11 @@
 		[Toggle(_CLIPSPACEADPATION)]_ClipSpaceAdapt("Clip Space Adapting",float)=0
 		_AdaptFactor("Adapting Factor(Pixel Multiply)",float)=100
     	
+    	[Header(Misc)]
+        [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
+        [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
 		[Header(Stencil)]
 		_Stencil("Stencil ID", Float) = 0
-        [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
 		[Enum(UnityEngine.Rendering.CompareFunction)]_StencilComp("Stencil Comparison", Float) = 0
 		[Enum(UnityEngine.Rendering.StencilOp)]_StencilOp("Stencil Operation", Float) = 0
 		_StencilWriteMask("Stencil Write Mask", Float) = 255
@@ -33,6 +35,7 @@
         	
 		    Name "OutLine"
             ZWrite [_ZWrite]
+        	ZTest [_ZTest]
 			Cull Front
         	Blend SrcAlpha OneMinusSrcAlpha
         	

@@ -2,7 +2,7 @@
 using UnityEngine;
 using Rendering.Optimize;
 
-namespace UnityEngine.Editor.Extensions
+namespace UnityEditor.Extensions
 {
     [CustomEditor(typeof(global::Rendering.Optimize.GPUAnimationController))]
     public class GPUAnimationController : UnityEditor.Editor

@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UnityEngine.Editor.Extensions
+namespace UnityEditor.Extensions
 {
     #region UI
     #region Inspector
@@ -19,7 +19,7 @@ namespace UnityEngine.Editor.Extensions
         }
     }
 
-    [CustomEditor(typeof(UIT_TextExtend)), CanEditMultipleObjects]
+    [CustomEditor(typeof(UITextExtension)), CanEditMultipleObjects]
     public class UITextExtend : UnityEditor.UI.TextEditor
     {
         [MenuItem("GameObject/UI/TextExtend")]
@@ -30,18 +30,18 @@ namespace UnityEngine.Editor.Extensions
 
             if (go != null)
                 textExtend.transform.SetParent(go.transform);
-            UIT_TextExtend extend = textExtend.AddComponent<UIT_TextExtend>();
-            extend.text = "New Text Extend";
-            extend.color = Color.black;
-            extend.rectTransform.anchoredPosition = Vector2.zero;
+            UITextExtension text = textExtend.AddComponent<UITextExtension>();
+            text.text = "New Text Extend";
+            text.color = Color.black;
+            text.rectTransform.anchoredPosition = Vector2.zero;
         }
 
-        UIT_TextExtend m_target = null;
+        UITextExtension m_target = null;
         string targetLocalize;
         protected override void OnEnable()
         {
             base.OnEnable();
-            m_target = target as UIT_TextExtend;
+            m_target = target as UITextExtension;
             TLocalization.SetRegion(ELanguageRegion.CN);
             targetLocalize = m_target.m_LocalizeKey;
         }

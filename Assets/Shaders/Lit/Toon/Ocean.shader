@@ -202,7 +202,7 @@ Shader "Game/Lit/Toon/Ocean"
 
             	float diffuseSample = SAMPLE_TEXTURE2D(_DiffuseTex,sampler_DiffuseTex,i.uvDiffuse.xy).r*SAMPLE_TEXTURE2D(_DiffuseTex,sampler_DiffuseTex,i.uvDiffuse.zw).r;
 
-				float3 depthColor = SAMPLE_TEXTURE2D(_DepthRamp,sampler_DepthRamp,depthParameters)*_DepthColor.rgb;
+				float3 depthColor = SAMPLE_TEXTURE2D(_DepthRamp,sampler_DepthRamp,depthParameters).rgb*_DepthColor.rgb;
             	float3 shadowColor = _ShadowColor;
             	float3 baseCol=lerp(shadowColor,depthColor,mainLight.shadowAttenuation)*indirectDiffuse;
 
@@ -217,7 +217,7 @@ Shader "Game/Lit/Toon/Ocean"
             ENDHLSL
         }
         
-        USEPASS "Hidden/DepthOnly/MAIN"
-        USEPASS "Hidden/ShadowCaster/MAIN"
+        USEPASS "Game/Additive/DepthOnly/MAIN"
+        USEPASS "Game/Additive/ShadowCaster/MAIN"
     }
 }

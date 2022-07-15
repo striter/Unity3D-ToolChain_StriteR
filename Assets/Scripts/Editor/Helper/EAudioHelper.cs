@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-namespace UnityEngine.Editor.Extensions
+namespace UnityEditor.Extensions
 {
     //using UnityEditor.AudioUtil; 
     public static class AudioHelper

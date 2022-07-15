@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public static class TUI
+public static class UUserInterface
 {
     public static void SetAnchor(this RectTransform rect, Vector2 anchor)
     {
@@ -48,7 +48,7 @@ public static class TUI
         EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
         for (int i = 0; i < results.Count; i++)
         {
-            UIT_EventTriggerListener listener = results[i].gameObject.GetComponent<UIT_EventTriggerListener>();
+            UIEventTriggerListenerExtension listener = results[i].gameObject.GetComponent<UIEventTriggerListenerExtension>();
             if (listener != null)
                 listener.OnRaycast();
         }

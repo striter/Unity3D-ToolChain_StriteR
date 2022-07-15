@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/EntityAdditive/Shadow"
+﻿Shader "Game/Additive/Shadow"
 {
     Properties
     {

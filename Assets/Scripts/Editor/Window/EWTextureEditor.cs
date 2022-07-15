@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-namespace UnityEngine.Editor.Extensions
+namespace UnityEditor.Extensions
 {
     public class TextureEditor : EditorWindow
     {
