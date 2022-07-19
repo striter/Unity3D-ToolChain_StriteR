@@ -2,18 +2,6 @@
 {   
 	Properties
 	{
-        [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
-        _Color ("Tint", Color) = (1,1,1,1)
-
-        _StencilComp ("Stencil Comparison", Float) = 8
-        _Stencil ("Stencil ID", Float) = 0
-        _StencilOp ("Stencil Operation", Float) = 0
-        _StencilWriteMask ("Stencil Write Mask", Float) = 255
-        _StencilReadMask ("Stencil Read Mask", Float) = 255
-
-        _ColorMask ("Color Mask", Float) = 15
-
-		[Header(Additional)]
 		[HDR]_Color("Tint", Color) = (1,1,1,1)
 		[NoScaleOffset][ToggleTex(_ALPHAMASK)]_AlphaMask("Alpha Mask",2D)="white"{}
 		[Toggle(_BSC)]_BSC("Brightness Saturation Contrast",int)=0
@@ -23,6 +11,21 @@
 		[Toggle(_DISTORT)]_Distort("Distort",int)=0
 		[Foldout(_DISTORT)]_DistortTex("Texture",2D)="black"{}
 		[Foldout(_DISTORT)]_DistortStrength("Strength",Range(0,200))=1
+		
+		[Header(Misc)]
+        [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=0
+        [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
+		
+		[Header(PreRenderData)]
+        [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
+
+        _StencilComp ("Stencil Comparison", Float) = 8
+        _Stencil ("Stencil ID", Float) = 0
+        _StencilOp ("Stencil Operation", Float) = 0
+        _StencilWriteMask ("Stencil Write Mask", Float) = 255
+        _StencilReadMask ("Stencil Read Mask", Float) = 255
+
+        _ColorMask ("Color Mask", Float) = 15
 	}
 
 	SubShader
@@ -45,9 +48,9 @@
             WriteMask [_StencilWriteMask]
         }
 
-        Cull Off
         Lighting Off
-        ZWrite Off
+        Cull [_Cull]
+        ZWrite [_ZWrite]
         ZTest [unity_GUIZTestMode]
         Blend SrcAlpha OneMinusSrcAlpha
         ColorMask [_ColorMask]
@@ -117,7 +120,7 @@
 					finalCol.rgb = lerp(.5h, finalCol.rgb, _Contrast);
 					finalCol.rgb = Saturation(finalCol.rgb,_Saturation);
 				#endif
-
+				clip(finalCol.a-0.01);
 				return finalCol;
 			}
 		ENDHLSL

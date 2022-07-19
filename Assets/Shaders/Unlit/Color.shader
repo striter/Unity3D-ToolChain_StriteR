@@ -37,14 +37,12 @@
 			{
 				float3 positionOS : POSITION;
 				float2 uv:TEXCOORD0;
-				float4 color:COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct v2f
 			{
 				float4 positionCS : SV_POSITION;
-				float4 color : TEXCOORD0;
 				float2 uv:TEXCOORD1;
 			};
 
@@ -60,14 +58,12 @@
 				float4 positionOS= TransformObjectToHClip(v.positionOS);
 				o.positionCS =positionOS;
 				o.uv = v.uv;
-				o.color = v.color * INSTANCE(_Color);
 				return o;
 			}
 
 			half4 frag(v2f i) : SV_Target
 			{
-				half4 col=i.color;
-					col*=tex2D(_MainTex,i.uv);
+				half4 col = tex2D(_MainTex,i.uv) * INSTANCE(_Color);
 				return col;
 			}
 			ENDHLSL

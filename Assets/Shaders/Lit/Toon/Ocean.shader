@@ -199,7 +199,8 @@ Shader "Game/Lit/Toon/Ocean"
             	float depthParameters = saturate(invlerp(INSTANCE(_DepthRange),INSTANCE(_DepthRangeEnd),eyeDepthOffset));
             	float fresnelParameters = pow2(saturate(invlerp(_FresnelRange,_FresnelRangeEnd, dot(viewDirWS,normalWS))));
 				float foamParameters = saturate(invlerp(INSTANCE(_FoamRange),INSTANCE(_FoamRangeEnd),eyeDepthOffset-((SAMPLE_TEXTURE2D(_FoamDistortTex,sampler_FoamDistortTex,i.uv.zw).r*2-1))*_FoamDistortStrength));
-
+				foamParameters = (1-foamParameters)*step(0,eyeDepthOffset);
+            	
             	float diffuseSample = SAMPLE_TEXTURE2D(_DiffuseTex,sampler_DiffuseTex,i.uvDiffuse.xy).r*SAMPLE_TEXTURE2D(_DiffuseTex,sampler_DiffuseTex,i.uvDiffuse.zw).r;
 
 				float3 depthColor = SAMPLE_TEXTURE2D(_DepthRamp,sampler_DepthRamp,depthParameters).rgb*_DepthColor.rgb;
@@ -209,7 +210,7 @@ Shader "Game/Lit/Toon/Ocean"
             	baseCol = lerp(baseCol,_RisingTideColor.rgb*indirectDiffuse, risingTideSample*_RisingTideColor.a*fresnelParameters);
             	baseCol = lerp(baseCol,_DiffuseColor.rgb*indirectDiffuse,diffuseSample*_DiffuseColor.a*fresnelParameters);
             	baseCol += indirectSpecular * (1-fresnelParameters);
-            	baseCol = lerp(baseCol,_FoamColor.rgb*indirectDiffuse,(1-foamParameters)*_FoamColor.a);
+            	baseCol = lerp(baseCol,_FoamColor.rgb*indirectDiffuse,foamParameters*_FoamColor.a);
 
                 float3 finalCol = baseCol + specular;
                 return float4(finalCol,1);

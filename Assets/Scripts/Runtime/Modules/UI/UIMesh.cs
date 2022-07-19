@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-[ExecuteInEditMode]
+[ExecuteInEditMode,RequireComponent(typeof(CanvasRenderer))]
 public class UIMesh : MaskableGraphic
 {
     public Mesh m_Mesh;

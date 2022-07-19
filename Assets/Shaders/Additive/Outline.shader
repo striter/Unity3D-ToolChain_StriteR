@@ -60,21 +60,21 @@
 				float3 positionOS : POSITION;
 				float3 normalOS:NORMAL;
 				float4 tangentOS:TANGENT;
-				#if _NORMALSAMPLE_UV1
+			#if _NORMALSAMPLE_UV1
 				float3 uv1:TEXCOORD1;
-				#elif _NORMALSAMPLE_UV2
+			#elif _NORMALSAMPLE_UV2
 				float3 uv2:TEXCOORD2;
-				#elif _NORMALSAMPLE_UV3
+			#elif _NORMALSAMPLE_UV3
 				float3 uv3:TEXCOORD3;
-				#elif _NORMALSAMPLE_UV4
+			#elif _NORMALSAMPLE_UV4
 				float3 uv4:TEXCOORD4;
-				#elif _NORMALSAMPLE_UV5
+			#elif _NORMALSAMPLE_UV5
 				float3 uv5:TEXCOORD5;
-				#elif _NORMALSAMPLE_UV6
+			#elif _NORMALSAMPLE_UV6
 				float3 uv6:TEXCOORD6;
-				#elif _NORMALSAMPLE_UV7
+			#elif _NORMALSAMPLE_UV7
 				float3 uv7:TEXCOORD7;
-				#endif
+			#endif
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -91,43 +91,43 @@
 				
 				float3 positionOS=v.positionOS;
 				float3 normalOS=0;
-				#if _NORMALSAMPLE_NORMAL
+			#if _NORMALSAMPLE_NORMAL
 				normalOS=normalize(v.normalOS);
-				#elif _NORMALSAMPLE_TANGENT
+			#elif _NORMALSAMPLE_TANGENT
 				normalOS=normalize(v.tangentOS.xyz);
-				#elif _NORMALSAMPLE_UV1
+			#elif _NORMALSAMPLE_UV1
 				normalOS=normalize(v.uv1);
-				#elif _NORMALSAMPLE_UV2
+			#elif _NORMALSAMPLE_UV2
 				normalOS=normalize(v.uv2);
-				#elif _NORMALSAMPLE_UV3
+			#elif _NORMALSAMPLE_UV3
 				normalOS=normalize(v.uv3);
-				#elif _NORMALSAMPLE_UV4
+			#elif _NORMALSAMPLE_UV4
 				normalOS=normalize(v.uv4);
-				#elif _NORMALSAMPLE_UV5
+			#elif _NORMALSAMPLE_UV5
 				normalOS=normalize(v.uv5);
-				#elif _NORMALSAMPLE_UV6
+			#elif _NORMALSAMPLE_UV6
 				normalOS=normalize(v.uv6);
-				#elif _NORMALSAMPLE_UV7
+			#elif _NORMALSAMPLE_UV7
 				normalOS=normalize(v.uv7);
-				#endif
+			#endif
 
-				#if _NORMALSAMPLE_UV1||_NORMALSAMPLE_UV1||_NORMALSAMPLE_UV2||_NORMALSAMPLE_UV3||_NORMALSAMPLE_UV4||_NORMALSAMPLE_UV5||_NORMALSAMPLE_UV6||_NORMALSAMPLE_UV7
+			#if _NORMALSAMPLE_UV1||_NORMALSAMPLE_UV1||_NORMALSAMPLE_UV2||_NORMALSAMPLE_UV3||_NORMALSAMPLE_UV4||_NORMALSAMPLE_UV5||_NORMALSAMPLE_UV6||_NORMALSAMPLE_UV7
 				float3x3 TBNOS=float3x3(v.tangentOS.xyz,cross(v.normalOS,v.tangentOS.xyz)*v.tangentOS.w,v.normalOS);
 				normalOS=mul(normalOS,TBNOS);
-				#endif
-				
-				#if _CLIPSPACEADPATION
-					float4 clipPosition=TransformObjectToHClip(positionOS);
-					float3 normalCS = mul((float3x3)UNITY_MATRIX_MVP, normalOS);
-					float2 screenOffset = normalize(normalCS.xy)/_ScreenParams.xy*clipPosition.w*INSTANCE(_AdaptFactor);
-					clipPosition.xy+=screenOffset*INSTANCE(_OutlineWidth);
-					o.positionCS= clipPosition;
-				#else
-					float3 normalWS=mul((float3x3)unity_ObjectToWorld,normalOS);
-					float3 worldPos=TransformObjectToWorld(positionOS);
-					worldPos+=normalWS*INSTANCE(_OutlineWidth);
-					o.positionCS= TransformWorldToHClip(worldPos);
-				#endif
+			#endif
+			
+			#if _CLIPSPACEADPATION
+				float4 clipPosition=TransformObjectToHClip(positionOS);
+				float3 normalCS = mul((float3x3)UNITY_MATRIX_MVP, normalOS);
+				float2 screenOffset = normalize(normalCS.xy)/_ScreenParams.xy*clipPosition.w*INSTANCE(_AdaptFactor);
+				clipPosition.xy+=screenOffset*INSTANCE(_OutlineWidth);
+				o.positionCS= clipPosition;
+			#else
+				float3 normalWS = normalize(mul((float3x3)unity_ObjectToWorld,normalOS));
+				float3 worldPos=TransformObjectToWorld(positionOS);
+				worldPos+=normalWS*INSTANCE(_OutlineWidth);
+				o.positionCS= TransformWorldToHClip(worldPos);
+			#endif
 				return o;
 			}
 			float4 frag(v2f i) :SV_TARGET

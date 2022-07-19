@@ -13,6 +13,9 @@
         _Metallic("Metalness",Range(0,1))=0
 		[NoScaleOffset]_EmissionTex("Emission",2D)="white"{}
 		[HDR]_EmissionColor("Emission Color",Color)=(0,0,0,0)
+		[Toggle(_EMISSIONFLASH)]_EmissionFlash("Emission Flash",float)=1
+		_EmissionFlashColor("Emission Flash Color",Color)=(1,1,1,1)
+		_EmissionFlashRatio("Emission Flash Ratio",Range(0,1))=0
 		[Header(_Settings)]
         [KeywordEnum(BlinnPhong,CookTorrance,Beckmann,Gaussian,GGX,TrowbridgeReitz,Anisotropic_TrowbridgeReitz,Anisotropic_Ward,Anisotropic_Beckmann,Anisotropic_GGX)]_NDF("Normal Distribution:",float) = 1
 		[Foldout(_NDF_ANISOTROPIC_TROWBRIDGEREITZ,_NDF_ANISOTROPIC_WARD,_NDF_ANISOTROPIC_GGX,_NDF_ANISOTROPIC_BECKMANN)]_AnisoTropicValue("Anisotropic Value:",Range(0,1))=1
@@ -75,6 +78,8 @@
 				INSTANCING_PROP(float4,_MainTex_ST)
 				INSTANCING_PROP(float4, _Color)
 				INSTANCING_PROP(float4, _EmissionColor)
+				INSTANCING_PROP(float4,_EmissionFlashColor)
+				INSTANCING_PROP(float,_EmissionFlashRatio)
 				INSTANCING_PROP(float,_Glossiness)
 				INSTANCING_PROP(float,_Metallic)
 				INSTANCING_PROP(float,_DetailBlendMode)
@@ -104,6 +109,7 @@
 			#include "Assets/Shaders/Library/Additional/Local/AlphaClip.hlsl"
 			#pragma shader_feature_local_fragment _ALPHACLIP
 			#pragma shader_feature_local_fragment _SSS
+			#pragma shader_feature_local _EMISSIONFLASH
 
 			struct a2f
 			{
@@ -156,14 +162,23 @@
 				FOG_TRANSFER(o)
 				return o;
 			}
-			float3 CalculateAlbedo(float2 uv,float4 color)
+			float3 CalculateAlbedo(float2 uv,float3 color)
 			{
 				float4 sample = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv)*INSTANCE(_Color);
 				AlphaClip(sample.a);
 				return sample.rgb*color.rgb;
 			}
+			half3 OverrideEmission(float2 uv,float3 color)
+			{
+				half3 emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,uv).rgb*INSTANCE(_EmissionColor).rgb;
+				#if _EMISSIONFLASH
+					return lerp(emission,_EmissionFlashColor.rgb,_EmissionFlashRatio);
+				#endif
+				return emission;
+			}
 
 			#define GET_ALBEDO(i) CalculateAlbedo(i.uv,i.color);
+			#define GET_EMISSION(i) OverrideEmission(i.uv,i.color);
 			
 			#define A2V_SHADOW_DEPTH float2 uv:TEXCOORD0;
 			#define V2F_SHADOW_DEPTH float2 uv:TEXCOORD0;
@@ -291,7 +306,6 @@
 				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV)*INSTANCE(_Color);
 				AlphaClip(color.a);
 				half3 albedo=color.rgb*i.color.rgb;
-				half3 emission=SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,baseUV).rgb*INSTANCE(_EmissionColor).rgb;
 				half glossiness=INSTANCE(_Glossiness);
 				half metallic=INSTANCE(_Metallic);
 				half ao=1.h;
@@ -305,7 +319,13 @@
 					ao*=mix.b;
 				#endif
 
-				BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,glossiness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,anisotropic);
+				#if defined(GET_EMISSION)
+					half3 emission = GET_EMISSION(i); 
+				#else
+					half3 emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,i.uv).rgb*INSTANCE(_EmissionColor).rgb;
+				#endif
+
+				BRDFSurface surface = BRDFSurface_Ctor(albedo,emission,glossiness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,anisotropic);
 
 				half3 finalCol=0;
 				Light mainLight=GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
