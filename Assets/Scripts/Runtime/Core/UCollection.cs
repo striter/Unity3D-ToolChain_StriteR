@@ -267,6 +267,8 @@ public static class UCollection
             }
             return builder.ToString();
         }
+
+        public static T Last<T>(this IList<T> _src)=> _src[^1];
         
         public static void FillArray<T>(this IList<T> _src, IList<T> _dst)
         {

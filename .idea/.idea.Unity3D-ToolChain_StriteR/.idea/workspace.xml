@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="92a6fb5e-0b8c-4e1a-8b06-b7827ef4a308" name="Changes" comment="" />
+    <list default="true" id="92a6fb5e-0b8c-4e1a-8b06-b7827ef4a308" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/UnityGUIExtensions/UnityGUIExtensions.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/UnityGUIExtensions/UnityGUIExtensions.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UCollection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UCollection.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Particles/AlphaBlend2.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Particles/AlphaBlend2.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/SurfaceEffects/Additive.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/SurfaceEffects/Additive.mat" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -87,10 +93,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="19520">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" />
+      <option name="pid" value="19520" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
@@ -148,6 +154,7 @@
       <workItem from="1657763860340" duration="19911000" />
       <workItem from="1657852150240" duration="5317000" />
       <workItem from="1657866070178" duration="1791000" />
+      <workItem from="1658199372483" duration="12527000" />
     </task>
     <servers />
   </component>
