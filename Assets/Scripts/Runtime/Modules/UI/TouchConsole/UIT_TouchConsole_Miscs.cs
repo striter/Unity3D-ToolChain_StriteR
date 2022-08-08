@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public partial class UIT_TouchConsole
+public partial class TouchConsole
 {
     Transform m_FrameRate;
     Text m_FrameRateValue;

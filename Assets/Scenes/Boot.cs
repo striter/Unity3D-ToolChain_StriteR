@@ -13,9 +13,9 @@ namespace  ExampleScenes
         {
             for (int i = 1; i < SceneManager.sceneCountInBuildSettings; i++)
                 m_SceneNames.Add(GetSceneName( SceneUtility.GetScenePathByBuildIndex(i)));
-            UIT_TouchConsole.InitDefaultCommands();
-            UIT_TouchConsole.NewPage("Select");
-            UIT_TouchConsole.Command("Scene").EnumSelection(0,  m_SceneNames, index=> ChangeScene(m_SceneNames[index]));
+            TouchConsole.InitDefaultCommands();
+            TouchConsole.NewPage("Select");
+            TouchConsole.Command("Scene").EnumSelection(0,  m_SceneNames, index=> ChangeScene(m_SceneNames[index]));
             Application.targetFrameRate = 60;
             GameObject.DontDestroyOnLoad(this);
             ChangeScene(m_SceneNames[0]);

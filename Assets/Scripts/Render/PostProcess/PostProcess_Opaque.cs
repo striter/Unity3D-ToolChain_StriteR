@@ -69,27 +69,19 @@ namespace Rendering.PostProcess
     }
     public class PPCore_Opaque:PostProcessCore<PPData_Opaque>,IPostProcessPipelineCallback<PPData_Opaque>
     {
-        private const string KW_Scan = "_SCAN";
-        private const string KW_Area = "_AREA";
-        private const string KW_Outline = "_OUTLINE";
-        private const string KW_Highlight = "_HIGHLIGHT";
-        private const string KW_AO = "_AO";
-        private const string KW_VolumetricCloud = "_VOLUMETRICCLOUD";
+        private const string kScanKW = "_SCAN";
+        private const string kAreaKW = "_AREA";
+        private const string kOutlineKW = "_OUTLINE";
+        private const string kHighlightKW = "_HIGHLIGHT";
+        private const string kAmbientOcclusionKW = "_AO";
+        private const string kVolumetricCloudKW = "_VOLUMETRICCLOUD";
         
-        private static readonly int ID_Highlight_Mask = Shader.PropertyToID("_OUTLINE_MASK");
-        private static readonly RenderTargetIdentifier RT_ID_Highlight_Mask = new RenderTargetIdentifier(ID_Highlight_Mask);
-        private static readonly int ID_Highlight_Mask_Blur = Shader.PropertyToID("_OUTLINE_MASK_BLUR");
-        private static readonly RenderTargetIdentifier RT_ID_Highlight_Mask_Blur = new RenderTargetIdentifier(ID_Highlight_Mask_Blur);
+        private static readonly int kHighlightMaskBlurID = Shader.PropertyToID("_OUTLINE_MASK_BLUR");
+        private static readonly RenderTargetIdentifier kHighlightMaskBlurRT = new RenderTargetIdentifier(kHighlightMaskBlurID);
 
-        private static readonly int ID_Color=Shader.PropertyToID("_Color");
-        private static readonly int ID_ColorMask=Shader.PropertyToID("_ColorMask");
-        private static readonly int ID_ZTest=Shader.PropertyToID("_ZTest");
-        private static readonly int ID_Cull=Shader.PropertyToID("_Cull");
-
-        private static readonly int RT_ID_Sample = Shader.PropertyToID("_Opaque_Sample");
+        private static readonly int kSampleID = Shader.PropertyToID("_Opaque_Sample");
         
         private RenderTextureDescriptor m_HighlightDescriptor;
-        private readonly Material m_HighlightRender;
         private readonly PPCore_Blurs m_HighlightBlur;
 
         private RenderTextureDescriptor m_VolumetricCloudDescriptor;
@@ -106,49 +98,40 @@ namespace Rendering.PostProcess
         public PPCore_Opaque()
         {
             m_HighlightBlur = new PPCore_Blurs();
-            m_HighlightRender = new Material(RenderResources.FindInclude("Game/Unlit/Color")) { hideFlags = HideFlags.HideAndDontSave };
-            m_HighlightRender.SetColor(ID_Color, Color.white);
             m_RenderBackDepth = new Material(RenderResources.FindInclude("Game/Additive/DepthOnly")){hideFlags = HideFlags.HideAndDontSave};
-            m_RenderBackDepth.SetInt(ID_ColorMask,(int)ColorWriteMask.Red);
-            m_RenderBackDepth.SetInt(ID_ZTest,(int)CompareFunction.Greater);
-            m_RenderBackDepth.SetInt(ID_Cull,(int)CullMode.Front);
+            m_RenderBackDepth.SetInt(DShaderProperties.kColorMask,(int)ColorWriteMask.Red);
+            m_RenderBackDepth.SetInt(DShaderProperties.kZTest,(int)CompareFunction.Greater);
+            m_RenderBackDepth.SetInt(DShaderProperties.kCull,(int)CullMode.Front);
             m_RenderFrontDepth = new Material(RenderResources.FindInclude("Game/Additive/DepthOnly")) { hideFlags = HideFlags.HideAndDontSave };
-            m_RenderFrontDepth.SetInt(ID_ColorMask,(int)ColorWriteMask.Green);
-            m_RenderFrontDepth.SetInt(ID_ZTest,(int)CompareFunction.Less);
-            m_RenderFrontDepth.SetInt(ID_Cull,(int)CullMode.Back);
+            m_RenderFrontDepth.SetInt(DShaderProperties.kColorMask,(int)ColorWriteMask.Green);
+            m_RenderFrontDepth.SetInt(DShaderProperties.kZTest,(int)CompareFunction.Less);
+            m_RenderFrontDepth.SetInt(DShaderProperties.kCull,(int)CullMode.Back);
         }
         
         public override void OnValidate(ref PPData_Opaque _data)
         {
             base.OnValidate(ref _data);
-            if(m_Material.EnableKeyword(KW_Scan,_data.m_Scan))
+            if(m_Material.EnableKeyword(kScanKW,_data.m_Scan))
                 _data.m_ScanData.Apply(m_Material);
-            if(m_Material.EnableKeyword(KW_Area,_data.m_Area))
+            if(m_Material.EnableKeyword(kAreaKW,_data.m_Area))
                 _data.m_AreaData.Apply(m_Material);
-            if (m_Material.EnableKeyword(KW_Outline, _data.m_Outline))
-                _data.m_OutlineData.Apply(m_Material,m_HighlightRender);
-            if(m_Material.EnableKeyword(KW_Highlight,_data.m_Highlight))
+            if (m_Material.EnableKeyword(kOutlineKW, _data.m_Outline))
+                _data.m_OutlineData.Apply(m_Material);
+            if(m_Material.EnableKeyword(kHighlightKW,_data.m_MaskedHighlight))
                 _data.m_HighlightData.Apply(m_Material,m_HighlightBlur);
-            if (m_Material.EnableKeyword(KW_AO, _data.m_SSAO))
+            if (m_Material.EnableKeyword(kAmbientOcclusionKW, _data.m_SSAO))
                 _data.m_SSAOData.Apply(m_Material);
-            if(m_Material.EnableKeyword(KW_VolumetricCloud,_data.m_VolumetricCloud))
+            if(m_Material.EnableKeyword(kVolumetricCloudKW,_data.m_VolumetricCloud))
                 _data.m_VolumetricCloudData.Apply(m_Material);
         }
         
-        public override void Destroy()
-        {
-            base.Destroy();
-            UnityEngine.Object.DestroyImmediate(m_HighlightRender);
-        }
 
         public void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor,ref PPData_Opaque _data)
         {
-            if (_data.m_Highlight)
+            if (_data.m_MaskedHighlight)
             {
                 m_HighlightDescriptor = new RenderTextureDescriptor(_descriptor.width, _descriptor.height, RenderTextureFormat.R8, 0, 0);
-
-                _buffer.GetTemporaryRT(ID_Highlight_Mask, m_HighlightDescriptor, FilterMode.Bilinear);
-                _buffer.GetTemporaryRT(ID_Highlight_Mask_Blur, m_HighlightDescriptor, FilterMode.Bilinear);
+                _buffer.GetTemporaryRT(kHighlightMaskBlurID, m_HighlightDescriptor, FilterMode.Bilinear);
             }
 
             if (_data.m_VolumetricCloud && _data.m_VolumetricCloudData.m_Shape)
@@ -160,26 +143,9 @@ namespace Rendering.PostProcess
 
         public void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,ref PPData_Opaque _data)
         {
-            if (_data.m_Highlight)
+            if (_data.m_MaskedHighlight)
             {
-                var highlightData = _data.m_HighlightData;
-                CommandBuffer buffer = CommandBufferPool.Get("Highlight Mask");
-                buffer.SetRenderTarget(RT_ID_Highlight_Mask);
-                buffer.ClearRenderTarget(false, true, Color.black);
-                _context.ExecuteCommandBuffer(buffer);
-
-                DrawingSettings drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
-                m_HighlightRender.SetInt(ID_ColorMask,(int)ColorWriteMask.All);
-                m_HighlightRender.SetInt(ID_ZTest,(int)CompareFunction.Less);
-                m_HighlightRender.SetInt(ID_Cull,(int)CullMode.Back);
-                drawingSettings.overrideMaterial = m_HighlightRender;
-                FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = highlightData.m_CullingMask };
-                _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
-
-                buffer.Clear();
-                buffer.SetRenderTarget(_renderer.cameraColorTarget);
-                _context.ExecuteCommandBuffer(buffer);
-                CommandBufferPool.Release(buffer);
+                //? Dude
             }
 
             if (_data.m_VolumetricCloud && _data.m_VolumetricCloudData.m_Shape)
@@ -216,8 +182,8 @@ namespace Rendering.PostProcess
         public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,
             RenderTextureDescriptor _descriptor, ref PPData_Opaque _data)
         {
-            if(_data.m_Highlight) 
-                m_HighlightBlur.ExecutePostProcessBuffer(_buffer, RT_ID_Highlight_Mask, RT_ID_Highlight_Mask_Blur, m_HighlightDescriptor,ref _data.m_HighlightData.m_Blur);
+            if(_data.m_MaskedHighlight) 
+                m_HighlightBlur.ExecutePostProcessBuffer(_buffer, DRenderTextures.kCameraMaskTextureRT, kHighlightMaskBlurRT, m_HighlightDescriptor,ref _data.m_HighlightData.m_Blur);
 
             if (!_data.m_SSAO && !_data.m_VolumetricCloud)
             {
@@ -230,18 +196,17 @@ namespace Rendering.PostProcess
             _descriptor.colorFormat = RenderTextureFormat.ARGB32;
             _descriptor.depthBufferBits = 0;
             
-            _buffer.GetTemporaryRT(RT_ID_Sample, _descriptor,FilterMode.Bilinear);
-            _buffer.Blit(_src, RT_ID_Sample, m_Material, (int)EPassIndex.Sample);
+            _buffer.GetTemporaryRT(kSampleID, _descriptor,FilterMode.Bilinear);
+            _buffer.Blit(_src, kSampleID, m_Material, (int)EPassIndex.Sample);
             _buffer.Blit(_src, _dst, m_Material,  (int)EPassIndex.Combine);
-            _buffer.ReleaseTemporaryRT(RT_ID_Sample);
+            _buffer.ReleaseTemporaryRT(kSampleID);
         }
 
         public void FrameCleanUp(CommandBuffer _buffer,ref PPData_Opaque _data)
         {
-            if (_data.m_Highlight)
+            if (_data.m_MaskedHighlight)
             {
-                _buffer.ReleaseTemporaryRT(ID_Highlight_Mask);
-                _buffer.ReleaseTemporaryRT(ID_Highlight_Mask_Blur);
+                _buffer.ReleaseTemporaryRT(kHighlightMaskBlurID);
             }
 
             if (_data.m_VolumetricCloud && _data.m_VolumetricCloudData.m_Shape)
@@ -258,8 +223,8 @@ namespace Rendering.PostProcess
         [MFoldout(nameof(m_Area), true)] public Data_Area m_AreaData;
         [MTitle] public bool m_Outline;
         [MFoldout(nameof(m_Outline),true)] public Data_Outline m_OutlineData;
-        [MTitle] public bool m_Highlight;
-        [MFoldout(nameof(m_Highlight), true)] public Data_Highlight m_HighlightData;
+        [MTitle] public bool m_MaskedHighlight;
+        [MFoldout(nameof(m_MaskedHighlight), true)] public Data_Highlight m_HighlightData;
         
         [Header("Multi Sample")]
         [Range(1, 4)] public int m_DownSample;
@@ -267,7 +232,7 @@ namespace Rendering.PostProcess
         [MFoldout(nameof(m_SSAO), true)] public Data_SSAO m_SSAOData;
         [MTitle] public bool m_VolumetricCloud;
         [MFoldout(nameof(m_VolumetricCloud), true)] public Data_VolumetricCloud m_VolumetricCloudData;
-        public bool Validate() => m_Scan || m_Area || m_Outline || m_Highlight || m_SSAO || m_VolumetricCloud;
+        public bool Validate() => m_Scan || m_Area || m_Outline || m_MaskedHighlight || m_SSAO || m_VolumetricCloud;
         public static readonly PPData_Opaque m_Default = new PPData_Opaque()
         {
             m_Scan = true,
@@ -301,11 +266,10 @@ namespace Rendering.PostProcess
                 m_Strength = 2f,
                 m_Bias = .5f,
             },
-            m_Highlight = true,
+            m_MaskedHighlight = true,
             m_HighlightData=new Data_Highlight()
             {
                 m_Color=Color.blue,
-                m_CullingMask = int.MaxValue,
                 m_Blur = PPData_Blurs.m_Default,
             },
                 
@@ -486,7 +450,7 @@ namespace Rendering.PostProcess
             // static readonly string[] KW_DetectType = new string[3] { "_DETECT_DEPTH", "_DETECT_NORMAL", "_DETECT_COLOR" };
             static readonly int ID_Strength = Shader.PropertyToID("_Strength");
             static readonly int ID_Bias = Shader.PropertyToID("_Bias");
-            public void Apply(Material m_Material,Material m_RenderMaterial)
+            public void Apply(Material m_Material)
             {
                 m_Material.SetColor(ID_EdgeColor, m_Color);
                 m_Material.SetFloat(ID_OutlineWidth, m_Width);
@@ -501,7 +465,6 @@ namespace Rendering.PostProcess
         [Serializable]
         public struct Data_Highlight
         {
-            [CullingMask] public int m_CullingMask;
             [ColorUsage(true,true)]public Color m_Color;
             public PPData_Blurs m_Blur;
             

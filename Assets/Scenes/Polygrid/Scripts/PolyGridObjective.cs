@@ -122,7 +122,7 @@ namespace PolyGrid
             m_Vertices[1] = _vertices[m_HexQuad[1]];
             m_Vertices[2] = _vertices[m_HexQuad[2]];
             m_Vertices[3] = _vertices[m_HexQuad[3]];
-            m_CoordCenter = m_CoordQuad.GetBaryCenter();
+            m_CoordCenter = m_CoordQuad.GetBaryCenter_Dynamic();
         }
     }
     

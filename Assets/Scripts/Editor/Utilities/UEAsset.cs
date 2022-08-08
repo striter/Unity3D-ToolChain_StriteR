@@ -143,6 +143,27 @@ namespace UnityEditor.Extensions
         public static IEnumerable<string> GetAllAssetsPathAtDirectory(string _assetDirectory) => Directory
             .GetFiles(UEPath.AssetToFilePath(_assetDirectory)).Select(UEPath.FileToAssetPath)
             .Collect(p => UEPath.GetExtension(p) != ".meta");
+
+        
+        public static IEnumerable<string> GetDepthPathByExtension(string path, List<string> FileList, string extension = "")
+        {
+            DirectoryInfo dir = new DirectoryInfo(path);
+            FileInfo[] fil = dir.GetFiles();
+            DirectoryInfo[] dii = dir.GetDirectories();
+            foreach (FileInfo f in fil)
+            {
+                if (extension != "" && !f.Name.EndsWith(extension))
+                {
+                    continue;
+                }
+                FileList.Add(f.FullName.Replace("\\","/").Replace(Application.dataPath, "Assets/"));
+            }
+            foreach (DirectoryInfo d in dii)
+            {
+                GetDepthPathByExtension(d.FullName, FileList,extension);
+            }
+            return FileList;
+        }
         #endregion
         #region Serialize Helper
         static readonly Dictionary<Type, Action<UnityEngine.Object, UnityEngine.Object>> m_CopyHelper = new Dictionary<Type, Action<UnityEngine.Object, UnityEngine.Object>>() {

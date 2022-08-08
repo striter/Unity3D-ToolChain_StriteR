@@ -89,7 +89,6 @@
 				#pragma multi_compile_local_fragment _ _HIGHLIGHT
 				#if _HIGHLIGHT
 					half3 _HighlightColor;
-					TEXTURE2D(_OUTLINE_MASK);SAMPLER(sampler_OUTLINE_MASK);
 					TEXTURE2D(_OUTLINE_MASK_BLUR);SAMPLER(sampler_OUTLINE_MASK_BLUR);
 				#endif
 
@@ -163,7 +162,7 @@
 					#endif
 					
 					#if _HIGHLIGHT
-						float mask=SAMPLE_TEXTURE2D(_OUTLINE_MASK_BLUR,sampler_OUTLINE_MASK_BLUR,i.uv).r-SAMPLE_TEXTURE2D(_OUTLINE_MASK,sampler_OUTLINE_MASK,i.uv).r;
+						float mask=SAMPLE_TEXTURE2D(_OUTLINE_MASK_BLUR,sampler_OUTLINE_MASK_BLUR,i.uv).r-SAMPLE_TEXTURE2D(_CameraMaskTexture,sampler_CameraMaskTexture,i.uv).r;
 						col+=saturate(mask)*_HighlightColor;
 					#endif
 

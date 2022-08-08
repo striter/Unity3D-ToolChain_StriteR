@@ -2,24 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using TPoolStatic;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace MeshFragment
 {
-    internal class MeshFragmentCollector
+    internal class MeshFragmentHarvester
     {
-        public  int embedMaterial { get; private set; }
-        public readonly List<Vector3> vertices=new List<Vector3>();
-        public readonly List<Vector3> normals=new List<Vector3>();
-        public readonly List<Vector4> tangents=new List<Vector4>();
-        public readonly List<Color> colors=new List<Color>();
-        public readonly List<Vector2> uvs=new List<Vector2>();
-        public readonly List<int> indexes=new List<int>();
+        public int m_EmbedMaterial { get; private set; }
+        private const int kStartVertexCount = 2048;
+        public readonly List<Vector3> vertices=new List<Vector3>(kStartVertexCount);
+        public readonly List<Vector3> normals=new List<Vector3>(kStartVertexCount);
+        public readonly List<Vector4> tangents=new List<Vector4>(kStartVertexCount);
+        public readonly List<Color> colors=new List<Color>(kStartVertexCount);
+        public readonly List<Vector2> uvs=new List<Vector2>(kStartVertexCount);
+        public readonly List<int> indexes=new List<int>(kStartVertexCount*2);
 
-        public MeshFragmentCollector Initialize(int _materialIndex)
+        public MeshFragmentHarvester Initialize(int _materialIndex)
         {
-            embedMaterial = _materialIndex;
+            m_EmbedMaterial = _materialIndex;
             return this;
         }
     
@@ -34,23 +36,6 @@ namespace MeshFragment
             colors.Clear();
             uvs.Clear();
             indexes.Clear();
-            
-            int totalVertexCount = 0;
-            int totalIndexCount = 0;
-            foreach (var fragment in tempList)
-            {
-                totalVertexCount += fragment.vertices.Count;
-                totalIndexCount += fragment.indexes.Count;
-            }
-            if (totalVertexCount > vertices.Count)
-            {
-                vertices.Capacity = totalVertexCount;
-                normals.Capacity = totalVertexCount;
-                tangents.Capacity = totalVertexCount;
-                colors.Capacity = totalVertexCount;
-                uvs.Capacity = totalVertexCount;
-                indexes.Capacity = totalIndexCount;
-            }
             
             foreach (var fragment in tempList)
             {
@@ -78,54 +63,95 @@ namespace MeshFragment
         }
     }
 
+    internal class MeshFragmentCombiner
+    {
+        public int m_EmbedMaterial { get; private set; }
+        public IList<IMeshFragment> m_MeshFragments { get; private set; } = new List<IMeshFragment>();
+        public int m_TotalIndexCount { get; private set; } = 0;
+        public int m_TotalVertexCount { get; private set; } = 0;
+        public MeshFragmentCombiner Initialize(int _materialIndex)
+        {
+            m_EmbedMaterial = _materialIndex;
+            m_MeshFragments.Clear();
+            m_TotalVertexCount = 0;
+            m_TotalIndexCount = 0;
+            return this;
+        }
+
+        public void Append(IMeshFragment _fragment)
+        {
+            m_MeshFragments.Add(_fragment);
+            m_TotalVertexCount += _fragment.vertices.Count;
+            m_TotalIndexCount += _fragment.indexes.Count;
+        }
+    }
+
     public static class UMeshFragment
     {
-        private static readonly List<Vector3> kVertices=new List<Vector3>();
-        private static readonly List<Vector3> kNormals=new List<Vector3>();
-        private static readonly List<Vector4> kTangents=new List<Vector4>();
-        private static readonly List<Vector2> kUVs=new List<Vector2>();
-        private static readonly List<Color> kColors=new List<Color>();
-        private static readonly List<int> kIndexes=new List<int>();
-
-        public static void Combine(IEnumerable<IMeshFragment> _subMeshes,Mesh _mesh,Material[] _materialLibrary,out Material[] _embedMaterials)
+        private static readonly Dictionary<int,MeshFragmentCombiner> kMeshFragmentHelper = new Dictionary<int, MeshFragmentCombiner>();
+        public static void Combine(IList<IMeshFragment> _fragments,Mesh _mesh,Material[] _materialLibrary,out Material[] _embedMaterials)
         {
-            TSPoolList<MeshFragmentCollector>.Spawn(out var subMeshCollectors);
-            var vertexCount = 0;
-            var indexCount = 0;
-            foreach (var meshGroup in _subMeshes.GroupBy(p=>p.embedMaterial))
+            TSPoolList<MeshFragmentCombiner>.Spawn(out var subMeshCombiners);
+            var totalVertexCount = 0;
+            kMeshFragmentHelper.Clear();
+            for (int i = 0; i < _fragments.Count; i++)
             {
-                TSPool<MeshFragmentCollector>.Spawn(out var subMeshCollector);
-                subMeshCollector.Initialize(meshGroup.Key).Append(meshGroup);
-                subMeshCollectors.Add(subMeshCollector);
-                vertexCount += subMeshCollector.vertices.Count;
-                indexCount += subMeshCollector.indexes.Count;
+                var fragment = _fragments[i];
+                if (!kMeshFragmentHelper.ContainsKey(fragment.embedMaterial))
+                {
+                    TSPool<MeshFragmentCombiner>.Spawn(out var fragmentCollectorInstance);
+                    subMeshCombiners.Add(fragmentCollectorInstance);
+                    kMeshFragmentHelper.Add(fragment.embedMaterial, fragmentCollectorInstance.Initialize(fragment.embedMaterial));
+                }
+
+                var fragmentCollector = kMeshFragmentHelper[fragment.embedMaterial];
+                fragmentCollector.Append(fragment);
+                totalVertexCount += fragment.vertices.Count;
             }
+            
+            NativeArray<Vector3> vertices=new NativeArray<Vector3>(totalVertexCount,Allocator.Temp);
+            NativeArray<Vector3> normals=new NativeArray<Vector3>(totalVertexCount,Allocator.Temp);
+            NativeArray<Vector4> tangents=new NativeArray<Vector4>(totalVertexCount,Allocator.Temp);
+            NativeArray<Vector2> uvs=new NativeArray<Vector2>(totalVertexCount,Allocator.Temp);
+            NativeArray<Color> colors=new NativeArray<Color>(totalVertexCount,Allocator.Temp);
             
             _mesh.Clear();
-            
-            kVertices.Clear();
-            kNormals.Clear();
-            kTangents.Clear();
-            kUVs.Clear();
-            kColors.Clear();
-            kIndexes.Clear();
-            
-            var subMeshCount = subMeshCollectors.Count;
+            var subMeshCount = subMeshCombiners.Count;
+            int currrentVertexIndex = 0;
             for (int i = 0; i < subMeshCount; i++)
             {
-                var subMesh = subMeshCollectors[i]; 
-                kVertices.AddRange(subMesh.vertices);
-                kNormals.AddRange(subMesh.normals);
-                kTangents.AddRange(subMesh.tangents);
-                kUVs.AddRange(subMesh.uvs);
-                kColors.AddRange(subMesh.colors);
+                var subMesh = subMeshCombiners[i];
+                
+                var subMeshFragmentCount = subMesh.m_MeshFragments.Count;
+                for (int j = 0; j < subMeshFragmentCount; j++)
+                {
+                    var fragment = subMesh.m_MeshFragments[j];
+                    var fragmentVertexCount = fragment.vertices.Count;
+                    for (int k = 0; k < fragmentVertexCount; k++)
+                    {
+                        vertices[currrentVertexIndex+k]=fragment.vertices[k];
+                        normals[currrentVertexIndex+k]=fragment.normals[k];
+                        tangents[currrentVertexIndex+k]=fragment.tangents[k];
+                        uvs[currrentVertexIndex+k]=fragment.uvs[k];
+                        colors[currrentVertexIndex+k]=fragment.colors[k];
+                    }
+
+                    currrentVertexIndex += fragmentVertexCount;
+                }
             }
             
-            _mesh.SetVertices(kVertices);
-            _mesh.SetNormals(kNormals);
-            _mesh.SetTangents(kTangents);
-            _mesh.SetUVs(0,kUVs);
-            _mesh.SetColors(kColors);
+            _mesh.SetVertices(vertices);
+            _mesh.SetNormals(normals);
+            _mesh.SetTangents(tangents);
+            _mesh.SetUVs(0,uvs);
+            _mesh.SetColors(colors);
+            
+            vertices.Dispose();
+            normals.Dispose();
+            tangents.Dispose();
+            uvs.Dispose();
+            colors.Dispose();
+            
             _embedMaterials = new Material[subMeshCount];
 
             var indexStart = 0;
@@ -133,19 +159,32 @@ namespace MeshFragment
             _mesh.subMeshCount = subMeshCount;
             for (int i = 0; i < subMeshCount; i++)
             {
-                var subMesh = subMeshCollectors[i];
-                var indexes = subMesh.indexes;
-                kIndexes.Clear();
-                for(int j=0;j<subMesh.indexes.Count;j++)
-                    kIndexes.Add(indexes[j]+indexOffset);
-                _mesh.SetIndices(kIndexes,MeshTopology.Triangles,i,false);
-                _mesh.SetSubMesh(i,new SubMeshDescriptor(indexStart,indexes.Count));
-                indexStart += indexes.Count;
-                indexOffset += subMesh.vertices.Count;
-                _embedMaterials[i] = _materialLibrary[subMesh.embedMaterial];
+                var subMeshCombiner = subMeshCombiners[i];
+
+                NativeArray<int> subMeshIndexes=new NativeArray<int>(subMeshCombiner.m_TotalIndexCount, Allocator.Temp);
+
+                var currentTriangleIndex = 0;
+                var subMeshFragmentCount = subMeshCombiner.m_MeshFragments.Count;
+                for (int j = 0; j < subMeshFragmentCount; j++)
+                {
+                    var fragment = subMeshCombiner.m_MeshFragments[j];
+                    var fragmentIndexCount = fragment.indexes.Count;
+                    for (int k = 0; k < fragmentIndexCount; k++)
+                        subMeshIndexes[ currentTriangleIndex + k ] = indexOffset+fragment.indexes[k];
+                    indexOffset += fragment.vertices.Count;
+                    currentTriangleIndex += fragmentIndexCount;
+                }
+                
+                _mesh.SetIndices(subMeshIndexes,MeshTopology.Triangles,i,false);
+                _mesh.SetSubMesh(i,new SubMeshDescriptor(indexStart,subMeshCombiner.m_TotalIndexCount));
+                indexStart += subMeshCombiner.m_TotalIndexCount;
+                subMeshIndexes.Dispose();
+                _embedMaterials[i] = _materialLibrary[subMeshCombiner.m_EmbedMaterial];
             }
-            subMeshCollectors.Traversal(TSPool<MeshFragmentCollector>.Recycle);
-            TSPoolList<MeshFragmentCollector>.Recycle(subMeshCollectors);
+
+            for (int i = 0; i < subMeshCombiners.Count; i++)
+                TSPool<MeshFragmentCombiner>.Recycle(subMeshCombiners[i]);
+            TSPoolList<MeshFragmentCombiner>.Recycle(subMeshCombiners);
         }
     }
 

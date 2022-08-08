@@ -6,7 +6,7 @@ using TDataPersistent;
 using UnityEngine;
 using UnityEngine.UI;
 using TPool;
-using static UIT_TouchConsole;
+using static TouchConsole;
 public static class UIT_TouchConsoleHelper
 {
     public static string GetKeyCodeString(this KeyCode _keyCode) => _keyCode == KeyCode.None ? "" : _keyCode.ToString();
@@ -120,7 +120,7 @@ public static class UIT_TouchConsoleHelper
 
 
 }
-public partial class UIT_TouchConsole
+public partial class TouchConsole
 {
     public static void NewPage(string _page)
     {

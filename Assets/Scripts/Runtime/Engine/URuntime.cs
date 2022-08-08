@@ -121,7 +121,7 @@ public static class URuntime
 
     public static IEnumerable<Vector3> GetEdges(this Bounds _bound)
     {
-        foreach (var point in KQube.unitQube)
+        foreach (var point in KQube.kUnitQubeBottomed)
             yield return _bound.GetPoint(point);
     }
     

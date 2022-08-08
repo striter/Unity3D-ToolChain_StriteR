@@ -32,6 +32,15 @@ namespace Procedural
             return _src + (_dst-_src) * _value;
         }
         
+
+        public static Coord GetPoint(this Quad<Coord> _quad, float _u,float _v)
+        {
+            return new Coord(
+                UMath.BilinearLerp(_quad.B.x, _quad.L.x, _quad.F.x, _quad.R.x, _u, _v),
+                UMath.BilinearLerp(_quad.B.y, _quad.L.y, _quad.F.y, _quad.R.y, _u, _v)
+            );
+        }
+        
         public static bool IsPointInside(this IQuad<Coord> _quad,Coord _point) 
         { 
             var A = _quad.B;
@@ -82,14 +91,6 @@ namespace Procedural
             if (onSegment(D, A, _point))
                 return true;
             return false;
-        }
-
-        public static Coord GetPoint(this Quad<Coord> _quad, float _u,float _v)
-        {
-            return new Coord(
-                UMath.BilinearLerp(_quad.B.x, _quad.L.x, _quad.F.x, _quad.R.x, _u, _v),
-                UMath.BilinearLerp(_quad.B.y, _quad.L.y, _quad.F.y, _quad.R.y, _u, _v)
-            );
         }
     }
 }

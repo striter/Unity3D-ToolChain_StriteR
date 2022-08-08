@@ -267,8 +267,6 @@ public static class UCollection
             }
             return builder.ToString();
         }
-
-        public static T Last<T>(this IList<T> _src)=> _src[^1];
         
         public static void FillArray<T>(this IList<T> _src, IList<T> _dst)
         {
@@ -574,6 +572,19 @@ public static class UCollection
                     return true;
         }
         return false;
+    }
+
+    public static byte Max(this IList<byte> _collection)
+    {
+        var maxByte = byte.MinValue;
+        var count = _collection.Count;
+        for (int i = 0; i < count; i++)
+        {
+            var compare = _collection[i];
+            maxByte = maxByte < compare ? compare : maxByte;
+        }
+        return maxByte;
+
     }
     
     public static void FillList<T>(this IEnumerable<T> _collection, List<T> _list,bool _sameCheck = false)

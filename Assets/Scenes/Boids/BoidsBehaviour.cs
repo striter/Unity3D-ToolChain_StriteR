@@ -180,7 +180,7 @@ namespace Boids
 
         public static Vector3 TickRandom(this IBoidsState _state,BoidsActor _actor,float _deltaTime)
         {
-            return URandom.RandomUnitSphere()*_deltaTime;
+            return URandom.RandomSphere()*_deltaTime;
         }
         
         public static Vector3 TickEvading(this IBoidsState _state,BoidsActor _actor,float _deltaTime,BoidsEvadeConfig _config)

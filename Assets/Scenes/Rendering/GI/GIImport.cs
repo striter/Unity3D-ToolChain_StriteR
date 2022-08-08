@@ -15,8 +15,8 @@ namespace ExampleScenes.Rendering.GI
         private void Awake()
         {
             m_Renderers = GetComponentsInChildren<MeshRenderer>();
-            UIT_TouchConsole.InitDefaultCommands();
-            UIT_TouchConsole.Command("Switch",KeyCode.Space).Button(SwitchPersistent);
+            TouchConsole.InitDefaultCommands();
+            TouchConsole.Command("Switch",KeyCode.Space).Button(SwitchPersistent);
             m_Switch = false;
             m_Src.Apply(m_Renderers);
         }

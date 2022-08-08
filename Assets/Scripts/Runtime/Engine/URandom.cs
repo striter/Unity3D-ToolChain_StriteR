@@ -5,18 +5,11 @@ using System.Linq;
 using UnityEngine;
 public static class URandom 
 {
-    public static float Random01( System.Random seed = null) => seed != null ? (float)seed.NextDouble()  : UnityEngine.Random.Range(0, 1f);
-    public static int RandomInt(int length, System.Random seed = null)=>seed?.Next(length) ?? UnityEngine.Random.Range(0,length);
-    public static float RandomUnit(System.Random seed = null) => Random01(seed)*2f-1f;
+    public static float Random01( System.Random _seed = null) => _seed != null ? (float)_seed.NextDouble()  : UnityEngine.Random.Range(0, 1f);
+    public static int RandomInt(int _length, System.Random _seed = null)=>_seed?.Next(_length) ?? UnityEngine.Random.Range(0,_length);
+    public static float RandomUnit(System.Random _seed = null) => Random01(_seed)*2f-1f;
     
-    public static Vector2 RandomUnitSphere2D(System.Random seed = null) =>Random01(seed)* RandomVector2(seed) ;
-    public static Vector2 RandomVector2(System.Random seed = null)
-    {
-        float radin = RandomUnit(seed) * Mathf.PI;
-        Vector2 randomCirlce = new Vector2(Mathf.Sin(radin), Mathf.Cos(radin));
-        return new Vector2(randomCirlce.x, randomCirlce.y);
-    }
-    public static Vector3 RandomUnitSphere(System.Random seed = null) => Random01(seed) * RandomDirection(seed);
+    public static Vector3 RandomSphere(System.Random seed = null) => Random01(seed) * RandomDirection(seed);
     public static Vector3 RandomDirection(System.Random seed = null)
     {
         //Normalization
@@ -35,7 +28,14 @@ public static class URandom
         float cosTheta = Mathf.Cos(theta);
         return new Vector3(sinPhi*cosTheta,sinPhi*sinTheta,cosPhi);
     }
-    
+
+    public static Vector2 Random2DSphere(System.Random _seed = null) =>Random01(_seed)* Random2DDirection(_seed) ;
+    public static Vector2 Random2DDirection(System.Random _seed = null)
+    {
+        float radin = RandomUnit(_seed) * Mathf.PI;
+        Vector2 randomCirlce = new Vector2(Mathf.Sin(radin), Mathf.Cos(radin));
+        return new Vector2(randomCirlce.x, randomCirlce.y);
+    }
     
     public static int Random(this RangeInt ir, System.Random seed = null) => ir.start + RandomInt(ir.length + 1, seed);
     public static float Random(this RangeFloat ir, System.Random seed = null) => seed?.Next((int)(ir.start * 1000), (int)(ir.end * 1000)) / 1000f ?? UnityEngine.Random.Range(ir.start, ir.end);

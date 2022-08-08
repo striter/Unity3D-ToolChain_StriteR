@@ -10,10 +10,10 @@ namespace MeshFragment
     using UnityEditor;
     public static class UMeshFragmentEditor
     {
-        static void AppendFragment(MeshFragmentCollector _collector,Matrix4x4 localToWorldMatrix,Matrix4x4 worldToLocalMatrix,Mesh mesh,int _subMeshIndex,Func<Vector3,Vector3> _objectToOrientedVertex)
+        static void AppendFragment(MeshFragmentHarvester _harvester,Matrix4x4 localToWorldMatrix,Matrix4x4 worldToLocalMatrix,Mesh mesh,int _subMeshIndex,Func<Vector3,Vector3> _objectToOrientedVertex)
         {
             var subMesh = mesh.GetSubMesh(_subMeshIndex);
-            var vertexBegin = _collector.vertices.Count;
+            var vertexBegin = _harvester.vertices.Count;
             
             var vertexOffset = subMesh.firstVertex;
             var vertexCount = subMesh.vertexCount;
@@ -44,19 +44,19 @@ namespace MeshFragment
                 var tangentWS = localToWorldMatrix.rotation*curTangents[vertexIndex].ToVector3();
                 var tangentOS = worldToLocalMatrix.rotation*tangentWS;
 
-                _collector.vertices.Add(_objectToOrientedVertex(positionOS));
-                _collector.normals.Add(normalOS);
-                _collector.tangents.Add(tangentOS.ToVector4(tangentDirection));
+                _harvester.vertices.Add(_objectToOrientedVertex(positionOS));
+                _harvester.normals.Add(normalOS);
+                _harvester.tangents.Add(tangentOS.ToVector4(tangentDirection));
                 var color = vertexIndex >= curColors.Count ? Color.white : curColors[vertexIndex];
-                _collector.colors.Add(color);
-                _collector.uvs.Add(curUVs[vertexIndex]);
+                _harvester.colors.Add(color);
+                _harvester.uvs.Add(curUVs[vertexIndex]);
             }
 
             mesh.GetIndices(curIndexes,_subMeshIndex);
             var indexDelta = subMesh.baseVertex-vertexBegin;
             var indexCount = subMesh.indexCount;
             for (int i = 0; i < indexCount; i++)
-                _collector.indexes.Add(curIndexes[i]-indexDelta-indexOffset);
+                _harvester.indexes.Add(curIndexes[i]-indexDelta-indexOffset);
             
             TSPoolList<Vector3>.Recycle(curVertices);
             TSPoolList<int>.Recycle(curIndexes);
@@ -68,7 +68,7 @@ namespace MeshFragment
         
         public static FMeshFragmentData[] BakeMeshFragment(Transform _transform, ref List<Material> _materialLibrary,Func<Vector3,Vector3> _objectToOrientedVertex)
         {
-           TSPoolList<MeshFragmentCollector>.Spawn(out var collectList); 
+           TSPoolList<MeshFragmentHarvester>.Spawn(out var collectList); 
             
             foreach (var meshFilter in _transform.GetComponentsInChildren<MeshFilter>())
             {
@@ -89,10 +89,10 @@ namespace MeshFragment
                         materialIndex = _materialLibrary.Count - 1;
                     }
 
-                    var collector = collectList.Find(p => p.embedMaterial == materialIndex);
+                    var collector = collectList.Find(p => p.m_EmbedMaterial == materialIndex);
                     if (collector == null)
                     {
-                        collector = new MeshFragmentCollector().Initialize(materialIndex);
+                        collector = new MeshFragmentHarvester().Initialize(materialIndex);
                         collectList.Add(collector);
                     }
 
@@ -102,7 +102,7 @@ namespace MeshFragment
 
             var data = collectList.Select(p => new FMeshFragmentData
             {
-                embedMaterial = p.embedMaterial,
+                embedMaterial = p.m_EmbedMaterial,
                 vertices = p.vertices.ToArray(),
                 indexes = p.indexes.ToArray(),
                 uvs = p.uvs.ToArray(),
@@ -111,7 +111,7 @@ namespace MeshFragment
                 colors = p.colors.ToArray()
             }).ToArray();
             
-            TSPoolList<MeshFragmentCollector>.Recycle(collectList);
+            TSPoolList<MeshFragmentHarvester>.Recycle(collectList);
             return data;
         }
     }

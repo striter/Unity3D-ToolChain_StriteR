@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Geometry
 {
-    public static class UQuad
+    public static partial class UQuad
     {
         public static EQuadCorner IndexToCorner(int _index)
         {
@@ -55,9 +55,22 @@ namespace Geometry
             return UMath.InvBilinearLerp(_quad.vB,_quad.vL,_quad.vF,_quad.vR,_position);
         }
 
-        public static Vector2 GetPoint(this Quad<Vector2> _quad, float _u,float _v)=>UMath.BilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _u,_v);
-        public static float GetPoint(this Quad<float> _quad, float _u,float _v)=>UMath.BilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _u,_v);
-        public static Quad<T> Resize<T>(this Quad<T> _quad, float _shrinkScale) 
+        
+        public static Vector2 GetPoint_Dynamic<T>(this Quad<T> _quad, float _u,float _v)
+        {
+            dynamic B = _quad.B;
+            dynamic L = _quad.L;
+            dynamic F = _quad.F;
+            dynamic R = _quad.R;
+
+            return new Vector2(
+                UMath.BilinearLerp(B.x, L.x, F.x, R.x, _u, _v),
+                UMath.BilinearLerp(B.y, L.y, F.y, R.y, _u, _v)
+            );
+        }
+
+        
+        public static Quad<T> Resize_Dynamic<T>(this Quad<T> _quad, float _shrinkScale) 
         {
             dynamic vertex0 = _quad.vB;
             dynamic vertex1 = _quad.vL;
@@ -70,7 +83,7 @@ namespace Geometry
             return _quad;
         }
 
-        public static T GetBaryCenter<T>(this Quad<T> _quad)
+        public static T GetBaryCenter_Dynamic<T>(this Quad<T> _quad)
         {
             dynamic vertex0 = _quad.vB;
             dynamic vertex1 = _quad.vL;
@@ -79,7 +92,7 @@ namespace Geometry
             return (vertex0+vertex1+vertex2+vertex3)/4;
         }
         
-        public static (Y vBL, Y vLF, Y vFR, Y vRB, Y vC) GetQuadMidVertices<T,Y>(this T _quad) where T:IQuad<Y> 
+        public static (Y vBL, Y vLF, Y vFR, Y vRB, Y vC) GetQuadMidVertices_Dynamic<T,Y>(this T _quad) where T:IQuad<Y> 
         {
             dynamic vB = _quad.B;
             dynamic vL = _quad.L;
@@ -88,13 +101,13 @@ namespace Geometry
             return ((vB + vL) / 2, (vL + vF) / 2, (vF + vR)/2,(vR+vB)/2,(vB+vL+vF+vR)/4);
         }
 
-        public static IEnumerable<Quad<Y>> SplitToQuads<T,Y>(this T _quad,bool _insideOut) where T:IQuad<Y> 
+        public static IEnumerable<Quad<Y>> SplitToQuads_Dynamic<T,Y>(this T _quad,bool _insideOut) where T:IQuad<Y> 
         {
             var vB = _quad.B;
             var vL = _quad.L;
             var vF = _quad.F;
             var vR = _quad.R;
-            var midTuple = _quad.GetQuadMidVertices<T,Y>();
+            var midTuple = _quad.GetQuadMidVertices_Dynamic<T,Y>();
                 
             var vBL = midTuple.vBL;
             var vLF = midTuple.vLF;
@@ -119,13 +132,13 @@ namespace Geometry
         }
 
         
-        public static IEnumerable<Quad<Y>> SplitTopDownQuads<T, Y>(this T _quad) where T : IQuad<Y>
+        public static IEnumerable<Quad<Y>> SplitTopDownQuads_Dynamic<T, Y>(this T _quad) where T : IQuad<Y>
         {
             var vB = _quad.B;
             var vL = _quad.L;
             var vF = _quad.F;
             var vR = _quad.R;
-            var midTuple = _quad.GetQuadMidVertices<T,Y>();
+            var midTuple = _quad.GetQuadMidVertices_Dynamic<T,Y>();
                 
             var vLF = midTuple.vLF;
             var vRB = midTuple.vRB;
@@ -163,7 +176,7 @@ namespace Geometry
                 _convert(3,_srcQuad.R));
         }
         
-        public static bool IsPointInsideDynamic<T> (this IQuad<T> _quad,T _point) 
+        public static bool IsPointInside_Dynamic<T> (this IQuad<T> _quad,T _point) 
         { 
             dynamic A = _quad.B;
             dynamic B = _quad.L;
@@ -199,7 +212,7 @@ namespace Geometry
             return index;
         }
 
-        public static int NearestPointIndex<T>(this Quad<T> _quad, T _point) 
+        public static int NearestPointIndex_Dynamic<T>(this Quad<T> _quad, T _point) 
         {
             float minDistance = float.MaxValue;
             int minIndex = 0;
@@ -217,7 +230,7 @@ namespace Geometry
             return minIndex;
         }
 
-        public static Quad<T> RotateYawCW<T>(this Quad<T> _quad,ushort _rotateIndex)
+        public static Quad<T> RotateYawCW<T>(this Quad<T> _quad,int _rotateIndex)
         {
             var b = _quad.vB;
             var l = _quad.vL;
@@ -249,7 +262,7 @@ namespace Geometry
     
     public static class UTriangle
     {
-        public static (Y m01, Y m12, Y m20, Y m012) GetMiddleVertices<T,Y>(this T _triangle) where T:struct,ITriangle<Y> where Y:struct
+        public static (Y m01, Y m12, Y m20, Y m012) GetMiddleVertices_Dynamic<T,Y>(this T _triangle) where T:struct,ITriangle<Y> where Y:struct
         {
             dynamic v0 = _triangle.V0;
             dynamic v1 = _triangle.V1;
@@ -257,7 +270,7 @@ namespace Geometry
             return ((v0 + v1) / 2, (v1 + v2) / 2, (v2 + v0) / 2, (v0 + v1 + v2) / 3);
         }
 
-        public static T GetBaryCenter<T>(this Triangle<T> _triangle) where T:struct
+        public static T GetBaryCenter_Dynamic<T>(this Triangle<T> _triangle) where T:struct
         {
             dynamic vertex0 = _triangle.v0;
             dynamic vertex1 = _triangle.v1;
@@ -284,13 +297,13 @@ namespace Geometry
             }
             return index;
         }
-        public static IEnumerable<Quad<Y>> SplitToQuads<T,Y>(this T splitTriangle) where T:struct,ITriangle<Y> where Y:struct
+        public static IEnumerable<Quad<Y>> SplitToQuads_Dynamic<T,Y>(this T splitTriangle) where T:struct,ITriangle<Y> where Y:struct
         {
             var index0 = splitTriangle[0];
             var index1 = splitTriangle[1];
             var index2 = splitTriangle[2];
             
-            var midTuple = splitTriangle.GetMiddleVertices<T,Y>();
+            var midTuple = splitTriangle.GetMiddleVertices_Dynamic<T,Y>();
             var index01 = midTuple.m01;
             var index12 = midTuple.m12;
             var index20 = midTuple.m20;
@@ -419,7 +432,7 @@ namespace Geometry
             yield return (qube2,_srcCorner,_srcCorner.NextCornerFlooredCW(1));
         }
         
-        public static Qube<T> Resize<T>(this Qube<T> _qube, float _shrinkScale) where  T: struct
+        public static Qube<T> Resize_Dynamic<T>(this Qube<T> _qube, float _shrinkScale) where  T: struct
         {
             dynamic db = _qube.vDB;
             dynamic dl = _qube.vDL;
@@ -446,7 +459,7 @@ namespace Geometry
             Quad<T> topQuad = new Quad<T>(_qube.vTB,_qube.vTL,_qube.vTF,_qube.vTR);
             return (downQuad, topQuad);
         }
-        public static Qube<T> RotateYawCW<T>(this Qube<T> _qube,ushort _90DegMult) where T:struct
+        public static Qube<T> RotateYawCW<T>(this Qube<T> _qube,int _90DegMult) where T:struct
         {
             var quads = _qube.SplitTopDownQuads<T>();
             var top = quads._topQuad.RotateYawCW(_90DegMult);
@@ -510,6 +523,13 @@ namespace Geometry
         {
             for (int i = 0; i < 8; i++)
                 _qube[i] = UByte.PosValid(_byte,i);
+        }
+
+        public static Qube<bool> ToQube(this byte _byte)
+        {
+            Qube<bool> qube = default;
+            qube.SetByteElement(_byte);
+            return qube;
         }
         public static byte ToByte(this Qube<bool> _qube)
         {

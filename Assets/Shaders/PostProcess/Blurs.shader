@@ -12,7 +12,7 @@
 	uint _Iteration;
 	half _Angle;
 	half2 _Vector;
-    #pragma multi_compile_local_fragment _ _DOF _DOF_CLIPSKY
+    #pragma multi_compile_local_fragment _ _DOF _DOF_MASK
     #pragma multi_compile _ _FIRSTBLUR
     #pragma multi_compile _ _FINALBLUR
     #pragma multi_compile_local_fragment _ _ENCODE
@@ -22,17 +22,17 @@
         half _FocalEnd;
     #endif
     #include "Assets/Shaders/Library/PostProcess.hlsl"
+    
 	half4 SampleBlurTex(TEXTURE2D_PARAM(_tex,_sampler),float2 uv,float2 offset)
 	{
 		#if defined(_DOF)||defined(_DOF_CLIPSKY)
 			float rawDepth=SampleRawDepth(uv+offset);
     		half focal=saturate(invlerp(_FocalStart,_FocalEnd,RawToEyeDepth(rawDepth)));
-			#if _DOF_CLIPSKY
-			focal*=DepthLesser(rawDepth,Z_END)?1:0;
-			#endif
     		offset*=focal;
-    	#endif
-
+    	#elif _DOF_MASK
+			offset *= (1-max(SAMPLE_TEXTURE2D(_CameraMaskTexture,sampler_CameraMaskTexture,uv+offset).r,SAMPLE_TEXTURE2D(_CameraMaskTexture,sampler_CameraMaskTexture,uv).r));
+		#endif
+		
 	    return SAMPLE_TEXTURE2D(_tex,_sampler,uv+offset);
 	}
     

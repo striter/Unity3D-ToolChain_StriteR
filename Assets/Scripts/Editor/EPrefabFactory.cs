@@ -16,11 +16,18 @@ namespace UnityEditor.Extensions
     public class PrefabFactoryLoadAsset<T>:IPrefabFactoryAsset<T> where T:UnityEngine.Object
     {
         public T m_Asset { get; }
+        public string AssetPath { get; }
+
         public PrefabFactoryLoadAsset(string _assetPath)
         {
+            AssetPath = _assetPath;
             m_Asset = AssetDatabase.LoadAssetAtPath<T>(_assetPath);
             if (m_Asset == null)
                 throw new Exception($"Invalid Asset<{typeof(T)}> at Path:\n{_assetPath}");
+        }
+        public void Import()
+        {
+            AssetDatabase.ImportAsset(AssetPath, ImportAssetOptions.ForceUpdate);
         }
     }
     
@@ -49,31 +56,20 @@ namespace UnityEditor.Extensions
     public class FPrefabFactoryModelAsset : PrefabFactoryLoadAsset<GameObject>
     {
         public ModelImporter m_Importer { get; }
-        public string m_AssetPath { get; }
         public FPrefabFactoryModelAsset(string _assetPath) : base(_assetPath)
         {
-            m_AssetPath = _assetPath;
             m_Importer = AssetImporter.GetAtPath(_assetPath) as ModelImporter;
-        }
-
-        public void Import()
-        {
-            AssetDatabase.ImportAsset(m_AssetPath, ImportAssetOptions.ForceUpdate);
         }
     }
 
     public class FPrefabFactoryTextureAsset : PrefabFactoryLoadAsset<Texture>
     {
         public TextureImporter m_Importer { get; }
-        public string m_AssetPath { get; }
 
         public FPrefabFactoryTextureAsset(string _assetPath) : base(_assetPath)
         {
             m_Importer = AssetImporter.GetAtPath(_assetPath) as TextureImporter;
         }
-        public void Import()
-        {
-            AssetDatabase.ImportAsset(m_AssetPath, ImportAssetOptions.ForceUpdate);
-        }
     }
+    
 }

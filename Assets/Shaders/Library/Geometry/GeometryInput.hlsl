@@ -218,6 +218,25 @@ GCylinderCapsule GCylinderCapsule_Ctor(float3 _center,float _radius,float3 _dire
     return capsule;
 }
 
+struct GCone
+{
+    float3 origin;
+    float3 normal;
+    float sqrCosA;
+    float tanA;
+};
+GCone GCone_Ctor(float3 _origin, float3 _normal, float _angle)
+{
+    GCone cone;
+    cone.origin = _origin;
+    cone.normal = _normal;
+    float radianA = _angle / 360. * PI;
+    float cosA = cos(radianA);
+    cone.sqrCosA = cosA * cosA;
+    cone.tanA = tan(radianA);
+    return cone;
+}
+
 struct GHeightCone
 {
     float3 origin;

@@ -13,11 +13,11 @@ public class TResources
             return temp;
         }
         
-        public static readonly Instance<Texture3D> Noise3D = new Instance<Texture3D>(() => LoadEditorResources<Texture3D>( "Assets/ArtPreset/Textures/Noise/Texture3D_Noise_1.asset"));
+        public static readonly PassiveInstance<Texture3D> Noise3D = new PassiveInstance<Texture3D>(() => LoadEditorResources<Texture3D>( "Assets/ArtPreset/Textures/Noise/Texture3D_Noise_1.asset"),null);
 
-        public static readonly Instance<Texture2D> Noise2D = new Instance<Texture2D>(() =>LoadEditorResources<Texture2D>("Assets/ArtPreset/Textures/Noise/Texture_Noise_1.jpg"));
+        public static readonly PassiveInstance<Texture2D> Noise2D = new PassiveInstance<Texture2D>(() =>LoadEditorResources<Texture2D>("Assets/ArtPreset/Textures/Noise/Texture_Noise_1.jpg"),null);
 
-        public static readonly Instance<Texture2D> Ramp = new Instance<Texture2D>(() =>LoadEditorResources<Texture2D>("Assets/ArtPreset/Textures/Ramp/Texture_Ramp1D_Linear0.png"));
+        public static readonly PassiveInstance<Texture2D> Ramp = new PassiveInstance<Texture2D>(() =>LoadEditorResources<Texture2D>("Assets/ArtPreset/Textures/Ramp/Texture_Ramp1D_Linear0.png"),null);
     }
 
     public static GameObject Instantiate(string path, Transform toParent=null)

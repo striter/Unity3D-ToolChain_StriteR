@@ -53,7 +53,7 @@ namespace Rendering.Pipeline
     class SRP_ScreenSpaceReflection:ScriptableRenderPass, IReflectionManager
     {
         private SRD_ReflectionData m_Data;
-        private readonly Instance<Shader> m_ReflectionBlit=new Instance<Shader>(()=>RenderResources.FindInclude("Hidden/ScreenSpaceReflection"));
+        private readonly PassiveInstance<Shader> m_ReflectionBlit=new PassiveInstance<Shader>(()=>RenderResources.FindInclude("Hidden/ScreenSpaceReflection"));
         private readonly PPCore_Blurs m_Blur;
         private ScriptableRenderer m_Renderer;
         private readonly Material m_Material;
@@ -261,7 +261,7 @@ namespace Rendering.Pipeline
         int m_Kernels;
         Int2 m_ThreadGroups;
         
-        private readonly Instance<ComputeShader> m_ReflectionComputeShader=new Instance<ComputeShader>(()=>RenderResources.FindComputeShader("PlanarReflection"));
+        private readonly PassiveInstance<ComputeShader> m_ReflectionComputeShader=new PassiveInstance<ComputeShader>(()=>RenderResources.FindComputeShader("PlanarReflection"));
         protected override void ConfigureColorDescriptor(ref RenderTextureDescriptor _descriptor, ref SRD_ReflectionData _data)
         {
             base.ConfigureColorDescriptor(ref _descriptor, ref _data);

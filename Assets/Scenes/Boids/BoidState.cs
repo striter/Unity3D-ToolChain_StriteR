@@ -468,7 +468,7 @@ namespace Boids.Behaviours
             {
                 case EPerchingState.Move:
                 {
-                    Vector2 randomDirection = URandom.RandomVector2();
+                    Vector2 randomDirection = URandom.Random2DDirection();
                     m_RandomDirection = randomDirection.x*_actor.m_Target.m_Right+randomDirection.y*_actor.m_Target.m_Forward;
                     _actor.m_Animation.SetAnimation(m_Config.moveAnim);
                     m_StateCounter.Set(m_Config.moveDuration.Random());

@@ -17,8 +17,8 @@ namespace ExampleScenes.Algorithm.MarchingSquare
         {
             m_Nodes = new TObjectPoolClass<Int2, Node>(transform.Find("Nodes/Node"));
             m_Squares = new TObjectPoolClass<Int2, Square>(transform.Find("Squares/Square"));
-            UIT_TouchConsole.Command("Clear",KeyCode.R).Button(()=>Initialize(m_Size));
-            UIT_TouchConsole.Command("Random",KeyCode.T).Button(Random);
+            TouchConsole.Command("Clear",KeyCode.R).Button(()=>Initialize(m_Size));
+            TouchConsole.Command("Random",KeyCode.T).Button(Random);
             
             Initialize(m_Size);
         }

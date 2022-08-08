@@ -50,8 +50,8 @@ namespace PolyGrid
             m_VoxelCallbacks = m_Controls.CollectAs<IPolyGridControl, IPolyGridVoxelCallback>().ToArray();
             m_ModifyCallbacks=m_Controls.CollectAs<IPolyGridControl, IPolyGridModifyCallback>().ToArray();
             
-            UIT_TouchConsole.InitDefaultCommands();
-            UIT_TouchConsole.Command("Reset",KeyCode.R).Button(Clear);
+            TouchConsole.InitDefaultCommands();
+            TouchConsole.Command("Reset",KeyCode.R).Button(Clear);
 
             LoadArea(m_GridData);
             this.StartCoroutine(Generate());

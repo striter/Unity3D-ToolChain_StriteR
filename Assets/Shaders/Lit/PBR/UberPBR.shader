@@ -172,7 +172,7 @@
 			{
 				half3 emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,uv).rgb*INSTANCE(_EmissionColor).rgb;
 				#if _EMISSIONFLASH
-					return lerp(emission,_EmissionFlashColor.rgb,_EmissionFlashRatio);
+					return lerp(emission,INSTANCE(_EmissionFlashColor).rgb,INSTANCE(_EmissionFlashRatio));
 				#endif
 				return emission;
 			}

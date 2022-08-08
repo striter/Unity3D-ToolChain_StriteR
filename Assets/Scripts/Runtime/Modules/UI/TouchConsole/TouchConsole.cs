@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Reflection;
 using TDataPersistent;
-using static UIT_TouchConsole;
-public partial class UIT_TouchConsole :MonoBehaviour, IPartialMethods<EPartialMethods,EPartialSorting>
+using static TouchConsole;
+public partial class TouchConsole :MonoBehaviour, IPartialMethods<EPartialMethods,EPartialSorting>
 {
     public enum EPartialMethods
     {
@@ -47,14 +47,14 @@ public partial class UIT_TouchConsole :MonoBehaviour, IPartialMethods<EPartialMe
         }
     }
 
-    private static UIT_TouchConsole m_Instance;
-    private static UIT_TouchConsole Instance
+    private static TouchConsole m_Instance;
+    private static TouchConsole Instance
     {
         get
         {
             if (m_Instance == null)
             {
-                m_Instance = TResources.Instantiate("TouchConsole").GetComponent<UIT_TouchConsole>();
+                m_Instance = TResources.Instantiate("TouchConsole").GetComponent<TouchConsole>();
                 m_Instance.Init();
             }
             return m_Instance;
@@ -85,8 +85,8 @@ public partial class UIT_TouchConsole :MonoBehaviour, IPartialMethods<EPartialMe
         this.InvokeMethods(EPartialMethods.OnDisable);
     }
 
-    public static UIT_TouchConsole InitDefaultCommands()=>Instance.DefaultCommands();
-    private UIT_TouchConsole DefaultCommands()
+    public static TouchConsole InitDefaultCommands()=>Instance.DefaultCommands();
+    private TouchConsole DefaultCommands()
     {
         this.InvokeMethods(EPartialMethods.Reset);
         NewPage("Console");

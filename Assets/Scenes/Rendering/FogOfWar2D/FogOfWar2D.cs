@@ -7,7 +7,7 @@ namespace ExampleScenes.Rendering.FogOfWar2D
     {
         private void Start()
         {
-            UIT_TouchConsole.InitDefaultCommands();
+            TouchConsole.InitDefaultCommands();
             
             m_Texture = RenderTexture.GetTemporary(1920, 1080);
             m_Texture.enableRandomWrite = true;
@@ -16,8 +16,8 @@ namespace ExampleScenes.Rendering.FogOfWar2D
             m_KernalHandle = m_ComputeShader.FindKernel("CSMain");
             transform.Find("Image").GetComponent<RawImage>().texture = m_Texture;
 
-            UIT_TouchConsole.NewPage("Compute Shader");
-            UIT_TouchConsole.Command("Random Lights", KeyCode.Space).Button(()=> {
+            TouchConsole.NewPage("Compute Shader");
+            TouchConsole.Command("Random Lights", KeyCode.Space).Button(()=> {
                 int randomCount = 5+URandom.RandomInt(8);
                 lights = new Vector4[randomCount];
                 for(int i=0;i<randomCount;i++)

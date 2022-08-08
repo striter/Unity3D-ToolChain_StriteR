@@ -24,7 +24,7 @@ namespace Geometry.Voxel
         }
         public static IEnumerable<Qube<Vector3>> SplitToQubes(this Quad<Vector3> _quad, Vector3 _halfSize, bool insideOut)
         {
-            var quads = _quad.SplitToQuads<Quad<Vector3>, Vector3>(insideOut).ToArray();
+            var quads = _quad.SplitToQuads(insideOut).ToArray();
             foreach (var quad in quads)
                 yield return new Quad<Vector3>(quad.vB, quad.vL, quad.vF, quad.vR).ExpandToQube(_halfSize, 1f);
             foreach (var quad in quads)
@@ -41,13 +41,13 @@ namespace Geometry.Voxel
         public static void FillFacingSplitQuadTriangle(this Qube<Vector3> _qube, ECubeFacing _facing, List<Vector3> _vertices, List<int> _indices,
             List<Vector2> _uvs, List<Vector3> _normals, List<Color> _colors = null, Color _color = default)
         {
-            foreach (var quad in new GQuad(_qube.GetFacingCornersCW(_facing)).SplitToQuads<GQuad, Vector3>(true))
+            foreach (var quad in new GQuad(_qube.GetFacingCornersCW(_facing)).SplitToQuads(true))
                 new GQuad(quad.B, quad.L, quad.F, quad.R).FillQuadTriangle(_vertices, _indices, _uvs, _normals, _colors, _color);
         }
         public static void FillTopDownQuadTriangle(this Qube<Vector3> _qube, ECubeFacing _facing, List<Vector3> _vertices, List<int> _indices,
             List<Vector2> _uvs, List<Vector3> _normals, List<Color> _colors = null, Color _color = default)
         {
-            foreach (var quad in new GQuad(_qube.GetFacingCornersCW(_facing)).SplitTopDownQuads<GQuad, Vector3>())
+            foreach (var quad in new GQuad(_qube.GetFacingCornersCW(_facing)).SplitTopDownQuads())
                 new GQuad(quad.B, quad.L, quad.F, quad.R).FillQuadTriangle(_vertices, _indices, _uvs, _normals, _colors, _color);
         }
 

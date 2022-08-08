@@ -272,12 +272,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Data:
-    m_FXAA: 0
-    m_AdditionalSample: 1
-    m_UseDepth: 0
-    m_ContrastSkip: 0.1
-    m_RelativeSkip: 0.2
-    m_SubPixelBlend: 1
     m_LUT: 0
     m_LUTTex: {fileID: 0}
     m_LUTCellCount: 16
@@ -290,6 +284,7 @@ MonoBehaviour:
     m_MixRed: {x: 0, y: 0, z: 0}
     m_MixGreen: {x: 0, y: 0, z: 0}
     m_MixBlue: {x: 0, y: 0, z: 0}
+    m_UseMaskTexture: 0
     m_Bloom: 1
     m_BloomData:
       m_SampleMode: 0
@@ -2702,7 +2697,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1314644219}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.34, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -12,11 +12,10 @@ namespace Rendering.Pipeline
         private static readonly int ID_Blit_Temp2 = Shader.PropertyToID("_PostProcessing_Blit_Temp2");
         private static readonly RenderTargetIdentifier m_BlitTemp1 = new RenderTargetIdentifier(ID_Blit_Temp1);
         private static readonly RenderTargetIdentifier m_BlitTemp2 = new RenderTargetIdentifier(ID_Blit_Temp2);
-        private string m_Name;
-        private readonly List<IPostProcessBehaviour>  m_Effects=new List<IPostProcessBehaviour>();
-        public SRP_ComponentBasedPostProcess Setup(IEnumerable<IPostProcessBehaviour> effect)
+        private List<IPostProcessBehaviour>  m_Effects;
+        public SRP_ComponentBasedPostProcess Setup(List<IPostProcessBehaviour> effect)
         {
-            effect.FillList(m_Effects);
+            m_Effects = effect;
             m_Effects.Sort((a, b) => a.Event - b.Event);
             return this;
         }
@@ -52,8 +51,8 @@ namespace Rendering.Pipeline
                 else if (blitIndex == lastIndex)
                     dst = renderer.cameraColorTarget;
                 blitSwap = !blitSwap;
-            
-                string name = effect.GetType().Name;
+
+                string name = effect.m_Name;
                 cmd.BeginSample(name);
                 effect.ExecuteContext(renderer, context, ref renderingData);
                 effect.ExecuteBuffer(cmd, src, dst, descriptor);

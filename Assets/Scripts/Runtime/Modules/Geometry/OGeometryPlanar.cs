@@ -360,7 +360,7 @@ namespace Geometry
     }
     
     [Serializable]
-    public struct Qube<T> : IEquatable<Qube<T>>,IIterate<T>,IEnumerable<T>
+    public struct Qube<T> : IEquatable<Qube<T>>,IEqualityComparer<Qube<T>>,IIterate<T>,IEnumerable<T>
     {
         public T vDB;
         public T vDL;
@@ -462,16 +462,18 @@ namespace Geometry
             yield return vDR;
         }
         
-        public override bool Equals(object obj)
-        {
-            return obj is Qube<T> other && Equals(other);
-        }
+        static readonly EqualityComparer<T> kComparer= EqualityComparer<T>.Default;
         public bool Equals(Qube<T> other)
         {
-            return vDB.Equals(other.vDB) && vDL.Equals(other.vDL) && vDF.Equals(other.vDF) && vDR.Equals(other.vDR) && 
-                   vTB.Equals(other.vTB) && vTL.Equals(other.vTL) && vTF.Equals(other.vTF) && vTR.Equals(other.vTR);
+            return kComparer.Equals(vDB,other.vDB) &&
+                   kComparer.Equals(vDL,other.vDL) &&
+                   kComparer.Equals(vDF,other.vDF) &&
+                   kComparer.Equals(vDR,other.vDR) && 
+                   kComparer.Equals(vTB,other.vTB) &&
+                   kComparer.Equals(vTL,other.vTL) &&
+                   kComparer.Equals(vTF,other.vTF) &&
+                   kComparer.Equals(vTR,other.vTR);
         }
-
 
         public override int GetHashCode()
         {
@@ -500,6 +502,27 @@ namespace Geometry
         {
             return new Qube<T>(_convert(0,_srcQuad.vDB), _convert(1,_srcQuad.vDL), _convert(2,_srcQuad.vDF), _convert(3,_srcQuad.vDR),
                 _convert(4,_srcQuad.vTB), _convert(5,_srcQuad.vTL), _convert(6,_srcQuad.vTF), _convert(7,_srcQuad.vTR));
+        }
+
+        public bool Equals(Qube<T> x, Qube<T> y)
+        {
+            return EqualityComparer<T>.Default.Equals(x.vDB, y.vDB) && EqualityComparer<T>.Default.Equals(x.vDL, y.vDL) && EqualityComparer<T>.Default.Equals(x.vDF, y.vDF) && EqualityComparer<T>.Default.Equals(x.vDR, y.vDR) && EqualityComparer<T>.Default.Equals(x.vTB, y.vTB) && EqualityComparer<T>.Default.Equals(x.vTL, y.vTL) && EqualityComparer<T>.Default.Equals(x.vTF, y.vTF) && EqualityComparer<T>.Default.Equals(x.vTR, y.vTR);
+        }
+
+        public int GetHashCode(Qube<T> obj)
+        {
+            unchecked
+            {
+                var hashCode = EqualityComparer<T>.Default.GetHashCode(obj.vDB);
+                hashCode = (hashCode * 397) ^ EqualityComparer<T>.Default.GetHashCode(obj.vDL);
+                hashCode = (hashCode * 397) ^ EqualityComparer<T>.Default.GetHashCode(obj.vDF);
+                hashCode = (hashCode * 397) ^ EqualityComparer<T>.Default.GetHashCode(obj.vDR);
+                hashCode = (hashCode * 397) ^ EqualityComparer<T>.Default.GetHashCode(obj.vTB);
+                hashCode = (hashCode * 397) ^ EqualityComparer<T>.Default.GetHashCode(obj.vTL);
+                hashCode = (hashCode * 397) ^ EqualityComparer<T>.Default.GetHashCode(obj.vTF);
+                hashCode = (hashCode * 397) ^ EqualityComparer<T>.Default.GetHashCode(obj.vTR);
+                return hashCode;
+            }
         }
     }
 }

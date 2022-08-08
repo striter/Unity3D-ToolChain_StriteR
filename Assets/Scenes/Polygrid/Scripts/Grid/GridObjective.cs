@@ -129,7 +129,7 @@ namespace PolyGrid
                 var splitQuad = m_ProceduralQuads[0];
                 m_ProceduralQuads.RemoveAt(0);
 
-                foreach (var tuple in splitQuad.SplitToQuads<HexQuad,HexCoord>(false))
+                foreach (var tuple in splitQuad.SplitToQuads(false))
                 {
                     m_ProceduralVertices.TryAdd(tuple.vB);
                     m_ProceduralVertices.TryAdd(tuple.vL);
@@ -146,7 +146,7 @@ namespace PolyGrid
                 var splitTriangle = m_ProceduralTriangles[0];
                 m_ProceduralTriangles.RemoveAt(0);
 
-                foreach (var quad in splitTriangle.SplitToQuads<HexTriangle,HexCoord>())
+                foreach (var quad in splitTriangle.SplitToQuads())
                 {
                     m_ProceduralVertices.TryAdd(quad[0]);
                     m_ProceduralVertices.TryAdd(quad[1]);

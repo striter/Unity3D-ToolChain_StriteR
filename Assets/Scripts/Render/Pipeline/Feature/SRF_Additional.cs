@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using System.Linq;
@@ -13,11 +14,15 @@ namespace Rendering.Pipeline
         public RenderResources m_Resources;
         [Tooltip("Screen Space World Position Reconstruction")]
         public bool m_NormalTexture=false;
+
+        public bool m_Mask = false;
+        [MFoldout(nameof(m_Mask), true)] public SRD_MaskData m_MaskData = SRD_MaskData.kDefault;
         public bool m_CameraReflectionTexture=false;
-        [MFoldout(nameof(m_CameraReflectionTexture), true)] public SRD_ReflectionData m_PlanarReflectionData= SRD_ReflectionData.kDefault;
+        [MFoldout(nameof(m_CameraReflectionTexture), true)] public SRD_ReflectionData m_PlanarReflectionData = SRD_ReflectionData.kDefault;
         
         private SRP_AdditionalParameters m_AdditionalParameters;
-        private SRP_NormalTexture m_NormalPass;
+        private SRP_NormalTexture m_ScreenSpaceNormal;
+        private SRP_MaskTexture m_ScreenSpaceMask;
 
         private SRP_ComponentBasedPostProcess m_OpaquePostProcess;
         private SRP_ComponentBasedPostProcess m_ScreenPostProcess;
@@ -27,9 +32,10 @@ namespace Rendering.Pipeline
         {
             if (!m_Available)
                 return;
-            
+
             m_AdditionalParameters = new SRP_AdditionalParameters() { renderPassEvent= RenderPassEvent.BeforeRendering };
-            m_NormalPass = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox};
+            m_ScreenSpaceMask = new SRP_MaskTexture(){renderPassEvent = RenderPassEvent.BeforeRenderingOpaques};
+            m_ScreenSpaceNormal = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox};
             m_Reflection = new SRP_Reflection(m_PlanarReflectionData, RenderPassEvent.AfterRenderingSkybox + 1);
             m_OpaquePostProcess=new SRP_ComponentBasedPostProcess(){renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 2};
             m_ScreenPostProcess=new SRP_ComponentBasedPostProcess(){renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing + 1};
@@ -41,8 +47,9 @@ namespace Rendering.Pipeline
                 return;
             
             base.Dispose(disposing);
-            m_NormalPass.Dispose();
             m_Reflection.Dispose();
+            m_ScreenSpaceNormal.Dispose();
+            m_ScreenSpaceMask.Dispose();
             m_OpaquePostProcess.Dispose();
             m_ScreenPostProcess.Dispose();
             m_AdditionalParameters.Dispose();
@@ -66,24 +73,31 @@ namespace Rendering.Pipeline
             EnqueuePostProcess(renderer,renderingData,param);
             renderer.EnqueuePass(m_AdditionalParameters);
 
-            
+            if(m_Mask)
+                renderer.EnqueuePass(m_ScreenSpaceMask.Setup(m_MaskData,renderer));
             if (cameraNormalTexture)
-                renderer.EnqueuePass(m_NormalPass);
+                renderer.EnqueuePass(m_ScreenSpaceNormal);
             if (cameraReflectionTexture)
                 m_Reflection.EnqueuePass(renderer);
         }
 
         private readonly List<IPostProcessBehaviour> m_OpaqueProcessing = new List<IPostProcessBehaviour>();
         private readonly List<IPostProcessBehaviour> m_ScreenProcessing = new List<IPostProcessBehaviour>();
+        private readonly List<IPostProcessBehaviour> kGlobalPostProcessTempList = new List<IPostProcessBehaviour>();
         private SRC_CameraBehaviour m_PostProcessingPreview;
         void EnqueuePostProcess(ScriptableRenderer _renderer,RenderingData _data,SRC_CameraBehaviour _override)
         {
-            var globals = PostProcessGlobalVolume.sVolumes.Select(p => p.GetComponents<IPostProcessBehaviour>())
-                .Resolve();
+            kGlobalPostProcessTempList.Clear();
+            if(PostProcessGlobalVolume.HasGlobal)
+            {
+                var components = PostProcessGlobalVolume.GlobalVolume.GetComponents<IPostProcessBehaviour>();
+                for(int j=0;j<components.Length;j++)
+                    kGlobalPostProcessTempList.Add(components[j]);
+            }
             
             if (_data.postProcessingEnabled && _data.cameraData.postProcessEnabled)
             {
-                EnqueuePostProcesses(_renderer, _data.cameraData.camera.transform,globals);
+                EnqueuePostProcesses(_renderer, _data.cameraData.camera.transform,kGlobalPostProcessTempList);
                 if (_override != null && _override.m_PostProcessPreview)
                     m_PostProcessingPreview = _override;
                 return;
@@ -93,36 +107,44 @@ namespace Rendering.Pipeline
             {
                 if (m_PostProcessingPreview == null || !m_PostProcessingPreview.m_PostProcessPreview)
                     return;
-                EnqueuePostProcesses(_renderer,m_PostProcessingPreview.transform,globals);
+                EnqueuePostProcesses(_renderer,m_PostProcessingPreview.transform,kGlobalPostProcessTempList);
             }
         }
 
-        void EnqueuePostProcesses(ScriptableRenderer _renderer, Transform _camera,IEnumerable<IPostProcessBehaviour> _globals)
+        void EnqueuePostProcesses(ScriptableRenderer _renderer, Transform _camera,IList<IPostProcessBehaviour> _globals)
         {
             var postProcesses = _camera.GetComponents<IPostProcessBehaviour>();
             
             m_OpaqueProcessing.Clear();
             m_ScreenProcessing.Clear();
-            foreach (var postProcess in _globals.Extend(postProcesses))
+            Action<IPostProcessBehaviour> EnqueuePostProcess = postProcess =>
             {
-                #if UNITY_EDITOR
-                    postProcess.ValidateParameters();
-                #endif
+#if UNITY_EDITOR
+                postProcess.ValidateParameters();
+#endif
                 
                 if (!postProcess.m_Enabled)
-                    continue;
+                    return;
                 
                 if(postProcess.m_OpaqueProcess)
                     m_OpaqueProcessing.Add(postProcess);
                 else
                     m_ScreenProcessing.Add(postProcess);
-            }
+            };
+
+            var globalPostProcessCount = _globals.Count;
+            for(int i=0;i<globalPostProcessCount;i++)
+                EnqueuePostProcess(_globals[i]);
+                
+            
+            var localPostProcessCount = postProcesses.Length;
+            for (int i = 0; i < localPostProcessCount; i++)
+                EnqueuePostProcess(postProcesses[i]);
 
             if(m_OpaqueProcessing.Count>0)
                 _renderer.EnqueuePass(m_OpaquePostProcess.Setup(m_OpaqueProcessing));
             if(m_ScreenProcessing.Count>0)
                 _renderer.EnqueuePass(m_ScreenPostProcess.Setup(m_ScreenProcessing));
-
         }
         
         public class SRP_AdditionalParameters : ScriptableRenderPass, ISRPBase

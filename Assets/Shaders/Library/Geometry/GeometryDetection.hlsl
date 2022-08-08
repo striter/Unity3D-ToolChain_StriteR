@@ -95,7 +95,6 @@ float2 SphereRayDistance(GSphere _sphere, GRay _ray)
  //Heighted Cone 
 float2 ConeRayDistance(GHeightCone _cone, GRay _ray)
 {
-    float2 distance = 0.;
     float3 offset = _ray.origin - _cone.origin;
 
     float RDV = dot(_ray.direction, _cone.normal);
@@ -104,21 +103,27 @@ float2 ConeRayDistance(GHeightCone _cone, GRay _ray)
     float a = RDV * RDV - _cone.sqrCosA;
     float b = 2. * (RDV * ODN - dot(_ray.direction, offset) * _cone.sqrCosA);
     float c = ODN * ODN - dot(offset, offset) * _cone.sqrCosA;
-    float determination = b * b - 4. * a * c;
-    float sqrtDetermination = sqrt(determination);
-    float t0 = (-b + sqrtDetermination) / (2. * a);
-    float t1 = (-b - sqrtDetermination) / (2. * a);
+    float det = b * b - 4. * a * c;
+    if (det < 0.) return 0;
+    float sqrtDet = sqrt(det);
+    float t0 = (-b + sqrtDet) *rcp (2. * a); 
+    float t1 = (-b - sqrtDet) *rcp (2. * a);
+
+    float t = t1;
+    if (t < 0. || t1 > 0. && t1 < t) t = t1;
+    // if (t < 0.) return 0;
+    
     float bpDistance = PlaneRayDistance(_cone.bottomPlane, _ray);
     float sqrRadius = _cone.bottomRadius * _cone.bottomRadius;
     if (sqrDistance(_cone.bottom - _ray.GetPoint(bpDistance)) > sqrRadius)
-        bpDistance = 0;
+        bpDistance = -1;
     float surfaceDst = dot(_cone.normal, _ray.GetPoint(t0) - _cone.origin);
     if (surfaceDst < 0 || surfaceDst > _cone.height)
         t0 = bpDistance;
-
+    
     surfaceDst = dot(_cone.normal, _ray.GetPoint(t1) - _cone.origin);
     if (surfaceDst < 0 || surfaceDst > _cone.height)
         t1 = bpDistance;
+
     return float2(t0, t1);
 }
-

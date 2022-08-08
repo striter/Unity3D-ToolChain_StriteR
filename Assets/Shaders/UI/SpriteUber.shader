@@ -109,7 +109,7 @@
 					uv+= _MainTex_TexelSize.xy*distortSample*_DistortStrength;
 				#endif
 				
-				half4 finalCol = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv)*_Color;
+				half4 finalCol = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv)*_Color*i.color;
 			
 				#if _ALPHAMASK
 					finalCol.a *= SAMPLE_TEXTURE2D(_AlphaMask,sampler_AlphaMask,uv).r;

@@ -82,14 +82,14 @@ namespace TPoolStatic
         }
     }
 #region Collections
+
     public static class TSPoolCollection<T> where T:new()
     {
-        private static readonly MethodInfo kClearMethod = typeof(T).GetMethod("Clear");
         private static Stack<T> m_PoolItems { get; set; } = new Stack<T>();
-        public static T Spawn()
+        public static T Spawn(Action<T> _clear)
         {
             T collection=m_PoolItems.Count > 0?m_PoolItems.Pop():new T();
-            kClearMethod.Invoke(collection,null);
+            _clear.Invoke(collection);
             return collection;
         }
         public static void Recycle(T item)
@@ -102,33 +102,33 @@ namespace TPoolStatic
 
     public static class TSPoolList<T>
     {
-        public static List<T> Spawn() => TSPoolCollection<List<T>>.Spawn();
-        public static void Spawn(out List<T> _list) =>_list=TSPoolCollection<List<T>>.Spawn();
+        public static List<T> Spawn() => TSPoolCollection<List<T>>.Spawn(_p=>_p.Clear());
+        public static void Spawn(out List<T> _list) =>_list=TSPoolCollection<List<T>>.Spawn(_p=>_p.Clear());
         public static void Recycle(List<T> _list) => TSPoolCollection<List<T>>.Recycle(_list);
         public static void Clear()=>TSPoolCollection<List<T>>.Clear();
     }
     public static class TSPoolStack<T> 
     {
-        public static Stack<T> Spawn() => TSPoolCollection<Stack<T>>.Spawn();
-        public static void Spawn(out Stack<T> _list) =>_list=TSPoolCollection<Stack<T>>.Spawn();
+        public static Stack<T> Spawn() => TSPoolCollection<Stack<T>>.Spawn(_p=>_p.Clear());
+        public static void Spawn(out Stack<T> _list) =>_list=TSPoolCollection<Stack<T>>.Spawn(_p=>_p.Clear());
         public static void Recycle(Stack<T> _stack) => TSPoolCollection<Stack<T>>.Recycle(_stack);
     }
     public static class TSPoolQueue<T> 
     {
-        public static Queue<T> Spawn() => TSPoolCollection<Queue<T>>.Spawn();
-        public static void Spawn(out Queue<T> _list) =>_list=TSPoolCollection<Queue<T>>.Spawn();
+        public static Queue<T> Spawn() => TSPoolCollection<Queue<T>>.Spawn(_p=>_p.Clear());
+        public static void Spawn(out Queue<T> _list) =>_list=TSPoolCollection<Queue<T>>.Spawn(_p=>_p.Clear());
         public static void Recycle(Queue<T> _queue) => TSPoolCollection<Queue<T>>.Recycle(_queue);
     }
     public static class TSPoolLinkedList<T> 
     {
-        public static LinkedList<T> Spawn() => TSPoolCollection<LinkedList<T>>.Spawn();
-        public static void Spawn(out LinkedList<T> _list) =>_list=TSPoolCollection<LinkedList<T>>.Spawn();
+        public static LinkedList<T> Spawn() => TSPoolCollection<LinkedList<T>>.Spawn(_p=>_p.Clear());
+        public static void Spawn(out LinkedList<T> _list) =>_list=TSPoolCollection<LinkedList<T>>.Spawn(_p=>_p.Clear());
         public static void Recycle(LinkedList<T> _queue) => TSPoolCollection<LinkedList<T>>.Recycle(_queue);
     }
     public static class TSPoolHashset<T> 
     {
-        public static HashSet<T> Spawn() => TSPoolCollection<HashSet<T>>.Spawn();
-        public static void Spawn(out HashSet<T> _list) =>_list=TSPoolCollection<HashSet<T>>.Spawn();
+        public static HashSet<T> Spawn() => TSPoolCollection<HashSet<T>>.Spawn(_p=>_p.Clear());
+        public static void Spawn(out HashSet<T> _list) =>_list=TSPoolCollection<HashSet<T>>.Spawn(_p=>_p.Clear());
         public static void Recycle(HashSet<T> _queue) => TSPoolCollection<HashSet<T>>.Recycle(_queue);
     }
 #endregion

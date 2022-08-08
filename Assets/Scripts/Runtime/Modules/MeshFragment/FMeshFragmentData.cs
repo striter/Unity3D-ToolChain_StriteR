@@ -42,11 +42,11 @@ namespace MeshFragment
     public class FMeshFragmentObject:IMeshFragment,IPoolClass     //Non Serializable Version, For object pool
     {
         public int m_EmbedMaterial;
-        private readonly  List<Vector3> m_Vertices = new List<Vector3>();
-        private readonly  List<Vector2> m_UVs=new List<Vector2>();
-        private readonly  List<Vector3> m_Normals=new List<Vector3>();
-        private readonly  List<Vector4> m_Tangents=new List<Vector4>();
-        private readonly  List<Color> m_Colors=new List<Color>();
+        private readonly List<Vector3> m_Vertices = new List<Vector3>();
+        private readonly List<Vector2> m_UVs=new List<Vector2>();
+        private readonly List<Vector3> m_Normals=new List<Vector3>();
+        private readonly List<Vector4> m_Tangents=new List<Vector4>();
+        private readonly List<Color> m_Colors=new List<Color>();
         private readonly List<int> m_Indexes=new List<int>();
         
         public void OnPoolCreate()

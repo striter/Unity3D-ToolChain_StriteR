@@ -5,7 +5,7 @@ using TDataPersistent;
 using UnityEngine;
 using UnityEngine.UI;
 using TPool;
-public partial class UIT_TouchConsole
+public partial class TouchConsole
 {
     [Flags]
     public  enum EConsoleSetting

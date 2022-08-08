@@ -41,12 +41,12 @@ namespace Rendering.PostProcess
     [System.Serializable]
     public struct PPData_ColorUpgrade:IPostProcessParameter
     {
-        [MTitle] public EFXAA m_FXAA;
-        [MFold(nameof(m_FXAA),EFXAA.None)] public bool m_AdditionalSample;
-        [MFold(nameof(m_FXAA),EFXAA.None)] public bool m_UseDepth;
-        [MFold(nameof(m_FXAA),EFXAA.None)] [Range(.01f,1f)] public float m_ContrastSkip;
-        [MFold(nameof(m_FXAA),EFXAA.None)] [Range(.01f,1f)] public float m_RelativeSkip;
-        [MFoldout(nameof(m_FXAA),EFXAA.SubPixel)] [Range(.1f,2f)] public float m_SubPixelBlend;
+        // [MTitle] public EFXAA m_FXAA;
+        // [MFold(nameof(m_FXAA),EFXAA.None)] public bool m_AdditionalSample;
+        // [MFold(nameof(m_FXAA),EFXAA.None)] public bool m_UseDepth;
+        // [MFold(nameof(m_FXAA),EFXAA.None)] [Range(.01f,1f)] public float m_ContrastSkip;
+        // [MFold(nameof(m_FXAA),EFXAA.None)] [Range(.01f,1f)] public float m_RelativeSkip;
+        // [MFoldout(nameof(m_FXAA),EFXAA.SubPixel)] [Range(.1f,2f)] public float m_SubPixelBlend;
         
         [MTitle]public bool m_LUT;
         [MFoldout(nameof(m_LUT),true)] public Texture2D m_LUTTex ;
@@ -62,17 +62,23 @@ namespace Rendering.PostProcess
         [MFoldout(nameof(m_ChannelMix),true)] [RangeVector(-1, 1)] public Vector3 m_MixGreen;
         [MFoldout(nameof(m_ChannelMix),true)] [RangeVector(-1, 1)] public Vector3 m_MixBlue;
 
+        public bool m_UseMaskTexture;
+        
         [MTitle]public bool m_Bloom;
         [MFoldout(nameof(m_Bloom),true)] public Data_Bloom m_BloomData;
-        public bool Validate() => m_FXAA != EFXAA.None || m_LUT || m_BSC || m_ChannelMix || m_Bloom;
+        public bool Validate() => //m_FXAA != EFXAA.None  || 
+                                  m_LUT  || 
+                                  m_BSC  || 
+                                  m_ChannelMix  || 
+                                  m_Bloom;
         
         public static readonly PPData_ColorUpgrade m_Default = new PPData_ColorUpgrade()
         {
-            m_FXAA =  EFXAA.None,
-            m_ContrastSkip = .1f,
-            m_RelativeSkip = .2f,
-            m_SubPixelBlend = 1f,
-            m_AdditionalSample=true,
+            // m_FXAA =  EFXAA.None,
+            // m_ContrastSkip = .1f,
+            // m_RelativeSkip = .2f,
+            // m_SubPixelBlend = 1f,
+            // m_AdditionalSample=true,
             
             m_LUT = false,
             m_LUTCellCount = ELUTCellCount._16,
@@ -87,6 +93,8 @@ namespace Rendering.PostProcess
             m_MixRed = Vector3.zero,
             m_MixGreen = Vector3.zero,
             m_MixBlue = Vector3.zero,
+            
+            m_UseMaskTexture = false,
             
             m_Bloom = false,
             m_BloomData = new Data_Bloom()
@@ -122,20 +130,19 @@ namespace Rendering.PostProcess
             }
             #endregion
         }
-
     }
 
     public class PPCore_ColorUpgrade : PostProcessCore<PPData_ColorUpgrade>,IPostProcessPipelineCallback<PPData_ColorUpgrade>
     {
         #region ShaderProperties
-        const string KW_FXAA = "_FXAA";
-        const string KW_FXAA_AdditionalSample="_FXAA_ADDITIONAL_SAMPLE";
-        const string KW_FXAADepth = "_FXAA_DEPTH";
-        const string KW_FXAASubPixelBlend="_FXAA_SUBPIXEL";
-        //const string KW_FXAAEdgeBlend="_FXAA_EDGE";
-        readonly int ID_ContrastSkip=Shader.PropertyToID("_FXAAContrastSkip");
-        readonly int ID_RelativeSkip=Shader.PropertyToID("_FXAARelativeSkip");
-        readonly int ID_BlendStrength=Shader.PropertyToID("_FXAABlendStrength");
+        // const string kFXAA = "_FXAA";
+        // const string kFXAA_AdditionalSample="_FXAA_ADDITIONAL_SAMPLE";
+        // const string kFXAA_Depth = "_FXAA_DEPTH";
+        // const string kFXAA_SubPixel="_FXAA_SUBPIXEL";
+        // const string KW_FXAAEdgeBlend="_FXAA_EDGE";
+        // readonly int kConstrastSkip=Shader.PropertyToID("_FXAAContrastSkip");
+        // readonly int kRelativeSkip=Shader.PropertyToID("_FXAARelativeSkip");
+        // readonly int kBlendStrength=Shader.PropertyToID("_FXAABlendStrength");
         
         const string KW_LUT = "_LUT";
         static readonly int ID_LUT = Shader.PropertyToID("_LUTTex");
@@ -154,6 +161,8 @@ namespace Rendering.PostProcess
         
         static readonly int RT_ID_Sample = Shader.PropertyToID("_Bloom_Sample");
         static readonly int RT_ID_Blur = Shader.PropertyToID("_Bloom_Blur");
+
+        static readonly string kUseMaskTexture = "_MASK";
         
         const string KW_BLOOM = "_BLOOM";
         static readonly RenderTargetIdentifier RT_Sample = new RenderTargetIdentifier(RT_ID_Sample);
@@ -177,46 +186,48 @@ namespace Rendering.PostProcess
             m_CoreBlurs.Destroy();
         }
         
-        public override void OnValidate(ref PPData_ColorUpgrade _ssaoData)
+        public override void OnValidate(ref PPData_ColorUpgrade _data)
         {
-            base.OnValidate(ref _ssaoData);
-            if (m_Material.EnableKeyword(KW_FXAA, _ssaoData.m_FXAA!= EFXAA.None))
+            base.OnValidate(ref _data);
+            // if (m_Material.EnableKeyword(kFXAA, _data.m_FXAA!= EFXAA.None))
+            // {
+            //     m_Material.SetFloat(kConstrastSkip,_data.m_ContrastSkip);
+            //     m_Material.SetFloat(kRelativeSkip,_data.m_RelativeSkip);
+            //     m_Material.EnableKeyword(kFXAA_Depth, _data.m_UseDepth);
+            //     m_Material.EnableKeyword(kFXAA_AdditionalSample,_data.m_AdditionalSample);
+            //
+            //     bool subPixel = _data.m_FXAA == EFXAA.SubPixel;//||_data.m_FXAA == EFXAA.Both  ;
+            //     if (m_Material.EnableKeyword(kFXAA_SubPixel,subPixel))
+            //         m_Material.SetFloat(kBlendStrength,_data.m_SubPixelBlend);
+            //     //bool edge = _data.m_FXAA == EFXAA.Both || _data.m_FXAA == EFXAA.EdgeDetect;
+            //     //m_Material.EnableKeyword(KW_FXAAEdgeBlend, edge);
+            // }
+            //
+            if (m_Material.EnableKeyword(KW_LUT, _data.m_LUT))
             {
-                m_Material.SetFloat(ID_ContrastSkip,_ssaoData.m_ContrastSkip);
-                m_Material.SetFloat(ID_RelativeSkip,_ssaoData.m_RelativeSkip);
-                m_Material.EnableKeyword(KW_FXAADepth, _ssaoData.m_UseDepth);
-                m_Material.EnableKeyword(KW_FXAA_AdditionalSample,_ssaoData.m_AdditionalSample);
-
-                bool subPixel = _ssaoData.m_FXAA == EFXAA.SubPixel;//||_data.m_FXAA == EFXAA.Both  ;
-                //bool edge = _data.m_FXAA == EFXAA.Both || _data.m_FXAA == EFXAA.EdgeDetect;
-                if (m_Material.EnableKeyword(KW_FXAASubPixelBlend,subPixel))
-                    m_Material.SetFloat(ID_BlendStrength,_ssaoData.m_SubPixelBlend);
-                //m_Material.EnableKeyword(KW_FXAAEdgeBlend, edge);
-            }
-            
-            if (m_Material.EnableKeyword(KW_LUT, _ssaoData.m_LUT))
-            {
-                m_Material.SetTexture(ID_LUT, _ssaoData.m_LUTTex);
-                m_Material.SetInt(ID_LUTCellCount, (int) _ssaoData.m_LUTCellCount);
-                m_Material.SetFloat(ID_LUTWeight,_ssaoData.m_LUTWeight);
-            }
-
-            if ( m_Material.EnableKeyword(KW_BSC, _ssaoData.m_BSC))
-            {
-                m_Material.SetFloat(ID_Brightness, _ssaoData.m_Brightness);
-                m_Material.SetFloat(ID_Saturation, _ssaoData.m_Saturation);
-                m_Material.SetFloat(ID_Contrast, _ssaoData.m_Contrast);
+                m_Material.SetTexture(ID_LUT, _data.m_LUTTex);
+                m_Material.SetInt(ID_LUTCellCount, (int) _data.m_LUTCellCount);
+                m_Material.SetFloat(ID_LUTWeight,_data.m_LUTWeight);
             }
 
-            if ( m_Material.EnableKeyword(KW_MixChannel, _ssaoData.m_ChannelMix))
+            if ( m_Material.EnableKeyword(KW_BSC, _data.m_BSC))
             {
-                m_Material.SetVector(ID_MixRed, _ssaoData.m_MixRed + Vector3.right);
-                m_Material.SetVector(ID_MixGreen, _ssaoData.m_MixGreen + Vector3.up);
-                m_Material.SetVector(ID_MixBlue, _ssaoData.m_MixBlue + Vector3.forward);
+                m_Material.SetFloat(ID_Brightness, _data.m_Brightness);
+                m_Material.SetFloat(ID_Saturation, _data.m_Saturation);
+                m_Material.SetFloat(ID_Contrast, _data.m_Contrast);
             }
 
-            if (m_Material.EnableKeyword(KW_BLOOM, _ssaoData.m_Bloom))
-                _ssaoData.m_BloomData.Apply(m_Material, m_CoreBlurs);
+            if ( m_Material.EnableKeyword(KW_MixChannel, _data.m_ChannelMix))
+            {
+                m_Material.SetVector(ID_MixRed, _data.m_MixRed + Vector3.right);
+                m_Material.SetVector(ID_MixGreen, _data.m_MixGreen + Vector3.up);
+                m_Material.SetVector(ID_MixBlue, _data.m_MixBlue + Vector3.forward);
+            }
+
+            m_Material.EnableKeyword(kUseMaskTexture, _data.m_UseMaskTexture);
+
+            if (m_Material.EnableKeyword(KW_BLOOM, _data.m_Bloom))
+                _data.m_BloomData.Apply(m_Material, m_CoreBlurs);
         }
 
         

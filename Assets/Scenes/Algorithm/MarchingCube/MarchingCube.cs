@@ -31,8 +31,8 @@ namespace ExampleScenes.Algorithm.MarchingCube
         protected override void Awake()
         {
             base.Awake();
-            UIT_TouchConsole.InitDefaultCommands();
-            UIT_TouchConsole.Command("Reset",KeyCode.R).Button(Clear);
+            TouchConsole.InitDefaultCommands();
+            TouchConsole.Command("Reset",KeyCode.R).Button(Clear);
             m_Actor = new MarchingCubeActor(transform.Find("Actor"));
             m_Mesh = new Mesh(){name="Marching Cube"};
             m_Mesh.MarkDynamic();
@@ -212,12 +212,12 @@ namespace ExampleScenes.Algorithm.MarchingCube
             tracks.ResolveClicks(.2f).Traversal(position=>Click(tracks.Count>1, position));
             
             tracks.Joystick_Stationary(
-                (position,active)=>{ UIT_TouchConsole.DoSetJoystick(position,active);if(!active) m_MoveDelta=Vector2.zero; },
-                (normalized)=>{m_MoveDelta = normalized;UIT_TouchConsole.DoTrackJoystick(normalized);},
-                UIT_TouchConsole.kJoystickRange,
-                UIT_TouchConsole.kJoystickRadius);
+                (position,active)=>{ TouchConsole.DoSetJoystick(position,active);if(!active) m_MoveDelta=Vector2.zero; },
+                (normalized)=>{m_MoveDelta = normalized;TouchConsole.DoTrackJoystick(normalized);},
+                TouchConsole.kJoystickRange,
+                TouchConsole.kJoystickRadius);
 
-            Vector2 rotateDelta = tracks.Input_ScreenDelta(UIT_TouchConsole.kScreenDeltaRange);
+            Vector2 rotateDelta = tracks.Input_ScreenDelta(TouchConsole.kScreenDeltaRange);
             rotateDelta /= 50f;
             pitchYaw.x = Mathf.Clamp(pitchYaw.x-rotateDelta.y,-60f,60f);
             pitchYaw.y += rotateDelta.x;

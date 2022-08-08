@@ -10,6 +10,8 @@ namespace Rendering.PostProcess
     {
         [MTitle] public Y m_Data;
         protected T m_Effect { get; private set; }
+        private static readonly string kDefaultName = typeof(T).Name;
+        public string m_Name => kDefaultName;
         public virtual bool m_OpaqueProcess => throw new NotImplementedException();
         public virtual EPostProcess Event => throw new NotImplementedException();
         public bool m_Enabled { get; private set;}

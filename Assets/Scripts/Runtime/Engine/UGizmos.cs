@@ -1,8 +1,11 @@
 #if UNITY_EDITOR
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Geometry;
 using Geometry.Voxel;
+using TPoolStatic;
 using UnityEditor;
 using UnityEngine;
 
@@ -84,6 +87,26 @@ public static class Gizmos_Extend
         for(int i=0;i<count;i++)
             Gizmos.DrawLine(_convert(_points[i]),_convert(_points[(i+1)%count]));
     }
+    
+    public static void DrawLinesConcat<T>(IEnumerable<T> _points,Func<T,Vector3> _convert)
+    {
+        Vector3 tempPoint=default;
+        Vector3 firstPoint = default;
+        foreach (var (index,value) in _points.LoopIndex())
+        {
+            var point = _convert(value);
+            if (index == 0)
+            {
+                tempPoint = point;
+                firstPoint = point;
+                continue;
+            }
+
+            Gizmos.DrawLine(tempPoint,point);
+            tempPoint = point;
+        }
+        Gizmos.DrawLine(tempPoint,firstPoint);
+    }
     public static void DrawGizmos(this GHeightCone _cone)
     {
         Handles.color = Gizmos.color;
@@ -97,10 +120,31 @@ public static class Gizmos_Extend
         Handles_Extend.DrawLine(_line);
     }
 
+    public static void DrawGizmos(this Qube<Vector3> _qube)
+    {
+        Handles.color = Gizmos.color;
+        Handles.matrix = Gizmos.matrix;
+        DrawLine(_qube.vDB,_qube.vDL);
+        DrawLine(_qube.vDL,_qube.vDF);
+        DrawLine(_qube.vDF,_qube.vDR);
+        DrawLine(_qube.vDR,_qube.vDB);
+        
+        DrawLine(_qube.vTB,_qube.vTL);
+        DrawLine(_qube.vTL,_qube.vTF);
+        DrawLine(_qube.vTF,_qube.vTR);
+        DrawLine(_qube.vTR,_qube.vTB);
+
+        DrawLine(_qube.vDB,_qube.vTB);
+        DrawLine(_qube.vDL,_qube.vTL);
+        DrawLine(_qube.vDF,_qube.vTF);
+        DrawLine(_qube.vDR,_qube.vTR);
+    }
+    
+    public static GUIStyle kLabelStyle => new GUIStyle(GUI.skin.label) { alignment = TextAnchor.LowerCenter,fontSize=12, fontStyle = FontStyle.Normal};
     public static void DrawString(Vector3 _positionLS,string _text,float _offset=1f)
     {
         Handles.matrix = Gizmos.matrix;
-        Handles.Label(_positionLS+_offset*Vector3.up,_text);
+        Handles.Label(_positionLS+_offset*Vector3.up,_text,kLabelStyle);
     }
     
     public static void DrawGizmos(this GBox _box)=>Gizmos.DrawWireCube(_box.center,_box.size);

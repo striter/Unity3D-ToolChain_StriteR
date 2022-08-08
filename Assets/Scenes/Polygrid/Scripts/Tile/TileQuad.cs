@@ -43,7 +43,7 @@ namespace PolyGrid.Tile
                 inverseRotation * offsets[radHelper[1].index].ToPosition(),
                 inverseRotation * offsets[radHelper[2].index].ToPosition(),
                 inverseRotation * offsets[radHelper[3].index].ToPosition());
-            m_SplitQuadLS = m_QuadShapeLS.SplitToQuads<Quad<Vector3>,Vector3>(false).Select(p=>new Quad<Vector2>(p.vB.ToCoord(),p.vL.ToCoord(),p.vF.ToCoord(),p.vR.ToCoord())).ToArray();
+            m_SplitQuadLS = m_QuadShapeLS.SplitToQuads(false).Select(p=>new Quad<Vector2>(p.vB.ToCoord(),p.vL.ToCoord(),p.vF.ToCoord(),p.vR.ToCoord())).ToArray();
             
             availableQuads.Clear();
             availableQuads.AddRange(m_Quad.m_Vertices[0].m_NearbyQuads.Extend(m_Quad.m_Vertices[2].m_NearbyQuads).Collect(quad =>quad.m_Identity!=m_Quad.m_Identity&&quad.m_HexQuad.MatchVertexCount(m_Quad.m_HexQuad.quad) == 2));

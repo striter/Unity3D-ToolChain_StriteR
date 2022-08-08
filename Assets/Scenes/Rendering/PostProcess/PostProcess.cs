@@ -18,11 +18,11 @@ namespace ExampleScenes.Rendering.PostProcess
             m_AreaCoroutine = CoroutineHelper.CreateSingleCoroutine();
             m_Controller = GetComponentInChildren<PostProcess_Opaque>();
             m_ControlCamera = m_Controller.GetComponent<Camera>();
-            UIT_TouchConsole.InitDefaultCommands();
+            TouchConsole.InitDefaultCommands();
             foreach(var postEffects in GetComponentsInChildren<MonoBehaviour>().CollectAs<MonoBehaviour,IPostProcessBehaviour>())
             {
-                UIT_TouchConsole.NewPage(postEffects.GetType(). Name);
-                UIT_TouchConsole.InitSerializeCommands(postEffects,effect=>effect.ValidateParameters());
+                TouchConsole.NewPage(postEffects.GetType(). Name);
+                TouchConsole.InitSerializeCommands(postEffects,effect=>effect.ValidateParameters());
             }
         }
 

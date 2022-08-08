@@ -22,15 +22,17 @@ public class Ref<T>
     public void SetValue(T _value) => m_RefValue = _value;
 }
 
-public class Instance<T> where T:class
+public class PassiveInstance<T> where T:class
 {
     private T m_Instance;
-    private readonly Func<T> GetInstance;
+    private readonly Func<T> CreateInstance;
+    private readonly Action<T> DisposeInstance;
     public bool m_Instanced => m_Instance != null;
 
-    public Instance(Func<T> _GetInstance)
+    public PassiveInstance(Func<T> _createInstance,Action<T> _DisposeInstance=null)
     {
-        GetInstance = _GetInstance;
+        CreateInstance = _createInstance;
+        DisposeInstance = _DisposeInstance;
     }
 
     public T m_Value
@@ -38,12 +40,19 @@ public class Instance<T> where T:class
         get
         {
             if (!m_Instanced)
-                m_Instance = GetInstance();
+                m_Instance = CreateInstance();
             return m_Instance;
         }
     }
 
-    public static implicit operator T(Instance<T> _instance) => _instance.m_Value;
+    public void Dispose()
+    {
+        if (m_Instanced)
+            DisposeInstance?.Invoke(m_Instance);
+        m_Instance = null;
+    }
+
+    public static implicit operator T(PassiveInstance<T> _passiveInstance) => _passiveInstance.m_Value;
 }
 
 public class ByteArray<T>
