@@ -9,9 +9,6 @@ namespace UnityEditor.Extensions
             [MenuItem("Work Flow/Hotkeys/Selected Object Sync Scene View &F", false, 101)]
             public static void SyncObjectToSceneView() => Hotkeys.SyncSelectedToSceneViewCamera();
             
-            [MenuItem("Work Flow/Hotkeys/Scene View Camera Sync To Selected _F6", false, 102)]
-            public static void SceneViewCameraSyncSelected() => Hotkeys.SceneViewCameraSyncSelected();
-            
             [MenuItem("Work Flow/Hotkeys/Take Screen Shot _F12", false, 103)]
             static void TakeScreenShot() => Hotkeys.TakeScreenShot();
             

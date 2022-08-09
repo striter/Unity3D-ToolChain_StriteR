@@ -207,7 +207,8 @@ namespace Geometry.Voxel
             Vector2 distances = RayConeCalculate(_cone, _ray);
             GPlane bottomPlane = new GPlane(_cone.normal, _cone.origin + _cone.normal * _cone.height);
             float rayPlaneDistance = RayPlaneDistance(bottomPlane, _ray);
-            float sqrRadius = _cone.Radius * _cone.Radius;
+            float sqrRadius = _cone.Radius;
+            sqrRadius *= sqrRadius;
             if ((_cone.Bottom - _ray.GetPoint(rayPlaneDistance)).sqrMagnitude > sqrRadius)
                 rayPlaneDistance = -1;
 

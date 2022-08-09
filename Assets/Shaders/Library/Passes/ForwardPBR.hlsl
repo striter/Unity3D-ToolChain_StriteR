@@ -70,8 +70,7 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 	half3 normalTS=half3(0,0,1);
 	float2 baseUV=i.uv.xy;
 
-#if defined (_NORMALOFF)
-#else
+#if !defined (_NORMALOFF)
 	#if defined(GET_NORMAL)
 		normalTS = GET_NORMAL(i);
 	#else

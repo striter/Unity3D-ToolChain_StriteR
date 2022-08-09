@@ -54,34 +54,6 @@ namespace UnityEditor.Extensions
             EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
         }
         #endregion
-        #region SyncCameraToSelection
-        public static void SceneViewCameraSyncSelected()
-        {
-            if (m_SceneViewSyncObject)
-            {
-                EditorApplication.update -= SceneViewSyncObject;
-                m_SceneViewSyncObject = null;
-                return;
-            }
-            if (!Selection.activeGameObject)
-                return;
-            m_SceneViewSyncObject = Selection.activeGameObject;
-            EditorApplication.update += SceneViewSyncObject;
-        }
-        static GameObject m_SceneViewSyncObject;
-        static void SceneViewSyncObject()
-        {
-            if (!m_SceneViewSyncObject || Selection.activeObject != m_SceneViewSyncObject)
-            {
-                EditorApplication.update -= SceneViewSyncObject;
-                m_SceneViewSyncObject = null;
-                return;
-            }
-            SceneView targetView = SceneView.sceneViews[0] as SceneView;
-            targetView.pivot = m_SceneViewSyncObject.transform.position;
-        }
-        #endregion
-
         public static void SwitchPause()
         {
             EditorApplication.isPaused = !EditorApplication.isPaused;

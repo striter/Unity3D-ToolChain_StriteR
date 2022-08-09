@@ -163,6 +163,8 @@ namespace UnityEditor.Extensions
         
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
+            if (serializedObject == null)
+                return EditorGUI.GetPropertyHeight(property,label);
             m_Heights.Clear();
             m_Properties.Clear();
             m_Heights.Add( base.GetPropertyHeight(property, label));
@@ -184,6 +186,12 @@ namespace UnityEditor.Extensions
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+            if (serializedObject == null)
+            {
+                EditorGUI.PropertyField(position, property, label);
+                return;
+            }
+            
             Rect rect = position.Resize(position.size.x, 0f);
             EditorGUI.BeginChangeCheck();
             foreach (var (index,scriptableObjectProperties) in m_Properties.LoopIndex())
