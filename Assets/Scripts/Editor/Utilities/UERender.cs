@@ -46,7 +46,7 @@ namespace UnityEditor.Extensions
                 Vector4[] tangents = _srcMesh.tangents;
                 for (int i = 0; i < smoothNormals.Length; i++)
                 {
-                    Vector3 tangent = tangents[i].ToVector3().normalized;
+                    Vector3 tangent = tangents[i].XYZ().normalized;
                     Vector3 normal = normals[i].normalized;
                     Vector3 biNormal = Vector3.Cross(normal, tangent).normalized * tangents[i].w;
                     Matrix3x3 tbnMatrix = Matrix3x3.identity;

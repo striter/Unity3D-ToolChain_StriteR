@@ -159,7 +159,7 @@ namespace UnityEditor.Extensions
                     if(m_DrawDirection)
                     {
                         Handles.color = m_VectorVertexDataColor;
-                        Handles.DrawLine(m_vertices[i], m_vertices[i] + m_ColorVertexData[i].ToVector3() * m_VertexData);
+                        Handles.DrawLine(m_vertices[i], m_vertices[i] + m_ColorVertexData[i].XYZ() * m_VertexData);
                     }
                     else
                     {

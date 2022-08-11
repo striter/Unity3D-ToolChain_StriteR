@@ -41,7 +41,7 @@ namespace MeshFragment
                 var normalOS = worldToLocalMatrix.rotation*normalWS;
 
                 var tangentDirection = curTangents[vertexIndex].w;
-                var tangentWS = localToWorldMatrix.rotation*curTangents[vertexIndex].ToVector3();
+                var tangentWS = localToWorldMatrix.rotation*curTangents[vertexIndex].XYZ();
                 var tangentOS = worldToLocalMatrix.rotation*tangentWS;
 
                 _harvester.vertices.Add(_objectToOrientedVertex(positionOS));

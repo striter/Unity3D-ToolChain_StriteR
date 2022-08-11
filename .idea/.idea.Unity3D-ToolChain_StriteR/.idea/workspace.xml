@@ -3,78 +3,21 @@
   <component name="ChangeListManager">
     <list default="true" id="92a6fb5e-0b8c-4e1a-8b06-b7827ef4a308" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Algorithm/MarchingCube/MarchingCube.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Algorithm/MarchingCube/MarchingCube.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Algorithm/MarchingSquare/MarchingSquare.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Algorithm/MarchingSquare/MarchingSquare.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Boids/BoidState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Boids/BoidState.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Boids/BoidsBehaviour.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Boids/BoidsBehaviour.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Boids/BoidsManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Boids/BoidsManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Boot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Boot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Physics/Scripts/PhysicsManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Physics/Scripts/PhysicsManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/Grid/GridObjective.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/Grid/GridObjective.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/PolyGridManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/PolyGridManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/PolyGridObjective.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/PolyGridObjective.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/Tile/TileQuad.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/Tile/TileQuad.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/Effects/Effects.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/Effects/Effects.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/Effects/Reflection.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/Effects/Reflection.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/FogOfWar2D/FogOfWar2D.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/FogOfWar2D/FogOfWar2D.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GIImport.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/GI/GIImport.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Rendering/PostProcess/PostProcess.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Rendering/PostProcess/PostProcess.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/EPrefabFactory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/EPrefabFactory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UEAsset.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UEAsset.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/Pipeline/Feature/SRF_Additional.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/Pipeline/Feature/SRF_Additional.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/Pipeline/Pass/SRP_ComponentBasedPostProcess.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/Pipeline/Pass/SRP_ComponentBasedPostProcess.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/Pipeline/Pass/SRP_NormalTexture.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/Pipeline/Pass/SRP_NormalTexture.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/Pipeline/Pass/SRP_Reflection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/Pipeline/Pass/SRP_Reflection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/PostProcess/PostProcessBehaviour.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/PostProcess/PostProcessBehaviour.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/PostProcess/PostProcessDefines.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/PostProcess/PostProcessDefines.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/PostProcess/PostProcessGlobalVolume.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/PostProcess/PostProcessGlobalVolume.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/PostProcess/PostProcess_Blurs.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/PostProcess/PostProcess_Blurs.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/PostProcess/PostProcess_ColorUpgrade.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/PostProcess/PostProcess_ColorUpgrade.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Render/PostProcess/PostProcess_Opaque.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Render/PostProcess/PostProcess_Opaque.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/OCommon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/OCommon.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UCollection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UCollection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/DRuntime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/DRuntime.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Engine/UGizmos.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Engine/UGizmos.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Engine/URandom.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Engine/URandom.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Engine/URuntime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Engine/URuntime.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/KGeometryVolume.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/KGeometryVolume.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/OGeometryPlanar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/OGeometryPlanar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/UGeometryPlanar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/UGeometryPlanar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/UGeometryVolume.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/UGeometryVolume.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/UGeometryVolumeIntersect.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Geometry/UGeometryVolumeIntersect.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/MeshFragment/FMeshFragmentData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/MeshFragment/FMeshFragmentData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/Grid/GridGeneratorEditor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/Grid/GridGeneratorEditor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/UnityGUIExtensions/UnityGUIExtensions.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/UnityGUIExtensions/UnityGUIExtensions.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Inspector/EMeshFilterInspector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Inspector/EMeshFilterInspector.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UERender.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UERender.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UEStyle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UEStyle.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/ARuntime.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/ARuntime.asmdef" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UVector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UVector.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Engine/URender.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Engine/URender.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/MeshFragment/MeshFragmentEditor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/MeshFragment/MeshFragmentEditor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/MeshFragment/MeshFragmentUtilities.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/MeshFragment/MeshFragmentUtilities.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Procedural/Hexagon/OHexagonGeometry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Procedural/Hexagon/OHexagonGeometry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Procedural/UProcedural.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Procedural/UProcedural.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Tools/TPool.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Tools/TPool.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Tools/TResources.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/Tools/TResources.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/UI/TouchConsole/UIT_TouchConsole.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/UI/TouchConsole/UIT_TouchConsole.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/UI/TouchConsole/UIT_TouchConsole_CommandPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/UI/TouchConsole/UIT_TouchConsole_CommandPanel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/UI/TouchConsole/UIT_TouchConsole_LogPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/UI/TouchConsole/UIT_TouchConsole_LogPanel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/UI/TouchConsole/UIT_TouchConsole_Miscs.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/UI/TouchConsole/UIT_TouchConsole_Miscs.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/UI/UILineDrawer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/UI/UILineDrawer.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/UI/UIMesh.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/UI/UIMesh.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Settings/URP_Forward.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Settings/URP_Forward.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Settings/URP_Forward_Render.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Settings/URP_Forward_Render.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Effects/Depth/GeometryFog.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Effects/Depth/GeometryFog.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Effects/Depth/GeometryFog.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Effects/Depth/GeometryFog.shader" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Library/Geometry/GeometryDetection.hlsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Library/Geometry/GeometryDetection.hlsl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Library/Geometry/GeometryInput.hlsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Library/Geometry/GeometryInput.hlsl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Library/PostProcess.hlsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Library/PostProcess.hlsl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/UI/UIMesh.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/UI/UIMesh.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Additive/Outline.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Additive/Outline.shader" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/PBR/UberPBR.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/PBR/UberPBR.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/PBR/UberPBR.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/PBR/UberPBR.shader" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Particles/AlphaBlend.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Particles/AlphaBlend.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Particles/AlphaBlend.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Particles/AlphaBlend.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Shaders/Particles/AlphaBlend2.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Particles/AlphaBlend2.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/PostProcess/Blurs.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/PostProcess/Blurs.shader" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/PostProcess/ColorUpgrade.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/PostProcess/ColorUpgrade.shader" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/PostProcess/Opaque.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/PostProcess/Opaque.shader" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/SurfaceEffects/Additive.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/SurfaceEffects/Additive.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/UI/SpriteUber.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/UI/SpriteUber.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/UI/SpriteUber.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/UI/SpriteUber.shader" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,9 +35,11 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Algorithm/MarchingCube/MarchingCube.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/f24bb2d49e314a5f9757a7936742877080e200/23/e0f438f6/PropertyDrawer.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/066b41adfd1c4a3b90759d491f1499e8157a00/fd/accacef0/TrailRenderer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/EventSystem/EventSystem.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/f24bb2d49e314a5f9757a7936742877080e200/fa/a7afac5e/PropertyHandler.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Algorithm/HexagonGrid/HexagonGridGizmos.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.searcher@4.9.1/Tests/Editor/SearcherItemCollectionEquivalentConstraint.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.searcher@4.9.1/Tests/Editor/SearcherTests.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.universal@12.1.7/Shaders/2D/Include/ShadowProjectVertex.hlsl" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Algorithm/Rotation/Rotation.cs" root0="FORCE_HIGHLIGHTING" />
@@ -113,18 +58,23 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Editor/Templates/EScriptTemplates.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2bf2860464e948b0936aec80a52d89b177800/9b/8631b1a1/InspectorElement.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/EventSystem/UIElements/PanelEventHandler.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Tests/Runtime/InputField/TouchInputFieldTests.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e3b5c42ff2fa4e1a881dfa28c9fbe357157400/aa/e4fcdaaa/Mathf.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/InputField.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.shadergraph@12.1.7/Editor/Drawing/Inspector/PropertyDrawers/MatrixPropertyDrawer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/599ef6b6d50f4e488ca73e2010b5243610fc00/f9/b0fd3c44/Lookup`2.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/ColorBlock.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/599ef6b6d50f4e488ca73e2010b5243610fc00/8a/eea6f14e/GroupedEnumerable`2.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/feaaa6313e32495d9f259b175aa6b59746a800/0e/d50f4fdd/ThrowHelper.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/ScrollRect.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ec69c01cdc394cb5bd57bfa59a57994a157600/61/ff37423f/RenderSettings.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.searcher@4.9.1/Editor/Searcher/SearcherControl.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Image.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/599ef6b6d50f4e488ca73e2010b5243610fc00/fd/088fe720/Enumerable.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/MaskableGraphic.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.core@12.1.7/ShaderLibrary/Common.hlsl" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Runtime/Core/URotation.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.searcher@4.9.1/Samples~/Editor/SearcherExampleWindow.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/70be8a7d3f80407d88db16649925edcf28e00/a6/a6824cc3/GUIUtility.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.searcher@4.9.1/Editor/Searcher/SearcherTreeUtility.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/066b41adfd1c4a3b90759d491f1499e8157a00/94/627bdee2/Mesh.cs" root0="SKIP_HIGHLIGHTING" />
@@ -225,6 +175,10 @@
       <workItem from="1657866070178" duration="1791000" />
       <workItem from="1658199372483" duration="12527000" />
       <workItem from="1659927172924" duration="13125000" />
+      <workItem from="1660040792305" duration="3528000" />
+      <workItem from="1660113366502" duration="15056000" />
+      <workItem from="1660183363663" duration="12553000" />
+      <workItem from="1660203675747" duration="5402000" />
     </task>
     <servers />
   </component>

@@ -12,6 +12,7 @@ Material:
   m_ValidKeywords:
   - _DEPTHBUFFER
   - _DEPTHMAP
+  - _EMISSIONFLASH
   - _NDF_COOKTORRANCE
   - _NORMALMAP
   - _PARALLAX
@@ -217,6 +218,8 @@ Material:
     - _DetailNormalMapScale: 1
     - _Diffuse: 1
     - _DstBlend: 0
+    - _EmissionFlash: 1
+    - _EmissionFlashRatio: 0
     - _EnableAOMap: 0
     - _EnableHeightBlend: 0
     - _EnableInstancedPerPixelNormal: 1
@@ -285,6 +288,7 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EmissionFlashColor: {r: 1, g: 1, b: 1, a: 1}
     - _LightmapInterpolateST: {r: 1, g: 1, b: 1, a: 1}
     - _LightmapST: {r: 1, g: 1, b: 1, a: 1}
     - _MatCapColor: {r: 1, g: 1, b: 1, a: 1}

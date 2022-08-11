@@ -88,7 +88,7 @@ public static class URender
                 _srcMesh.SetTangents(_data);
                 break;
             case EVertexData.Normal:
-                _srcMesh.SetNormals(_data.Select(vec4 => vec4.ToVector3()).ToArray());
+                _srcMesh.SetNormals(_data.Select(vec4 => vec4.XYZ()).ToArray());
                 break;
         }
     }
@@ -118,7 +118,7 @@ public static class URender
                 List<Vector4> tangents = new List<Vector4>();
                 _srcMesh.GetTangents(tangents);
                 foreach (var tangent in tangents)
-                    _data.Add(tangent.ToVector3());
+                    _data.Add(tangent.XYZ());
                 break;
             case EVertexData.Normal:
                 {

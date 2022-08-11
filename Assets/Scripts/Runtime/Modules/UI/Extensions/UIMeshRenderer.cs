@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [ExecuteInEditMode,RequireComponent(typeof(CanvasRenderer))]
-public class UIMesh : MaskableGraphic
+public class UIMeshRenderer : MaskableGraphic
 {
     public Mesh m_Mesh;
     public bool m_ConstantSize = true;
