@@ -3,20 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="92a6fb5e-0b8c-4e1a-8b06-b7827ef4a308" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Unity3D-ToolChain_StriteR/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/Grid/GridGeneratorEditor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Polygrid/Scripts/Grid/GridGeneratorEditor.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/UnityGUIExtensions/UnityGUIExtensions.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/UnityGUIExtensions/UnityGUIExtensions.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Inspector/EMeshFilterInspector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Inspector/EMeshFilterInspector.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UERender.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UERender.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UEStyle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/Utilities/UEStyle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/ARuntime.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/ARuntime.asmdef" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UVector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Core/UVector.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Engine/URender.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Engine/URender.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/MeshFragment/MeshFragmentEditor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/MeshFragment/MeshFragmentEditor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/UI/UIMesh.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Runtime/Modules/UI/UIMesh.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Additive/Outline.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Additive/Outline.shader" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Lit/PBR/UberPBR.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Lit/PBR/UberPBR.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shaders/Particles/AlphaBlend.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Particles/AlphaBlend.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Shaders/Particles/AlphaBlend2.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shaders/Particles/AlphaBlend2.mat" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -112,10 +99,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="10848">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" />
+      <option name="pid" value="10848" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
@@ -179,6 +166,7 @@
       <workItem from="1660113366502" duration="15056000" />
       <workItem from="1660183363663" duration="12553000" />
       <workItem from="1660203675747" duration="5402000" />
+      <workItem from="1660270276450" duration="3014000" />
     </task>
     <servers />
   </component>
