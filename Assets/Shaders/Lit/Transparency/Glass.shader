@@ -145,7 +145,7 @@ Shader "Game/Lit/Transparecy/Glass"
 				specularColor += specular * _MainLightColor.rgb;
 
             	#if _REFRACTION
-            	float2 screenUV=TransformHClipToNDC(i.positionHCS)+normalTS.xy*INSTANCE(_DistortStrength)/i.depthDistance;
+            		float2 screenUV=TransformHClipToNDC(i.positionHCS)+normalTS.xy*INSTANCE(_DistortStrength)/i.depthDistance;
             		float3 baseCol = lerp(SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,screenUV).rgb,albedo*indirectDiffuse,opacityFresnel);
 	                return float4(baseCol+specularColor,1);
 				#else

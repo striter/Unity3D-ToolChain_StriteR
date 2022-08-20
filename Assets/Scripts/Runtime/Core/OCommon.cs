@@ -242,6 +242,7 @@ public class Ticker
         return availableTick;
     }
 }
+
 public class Counter
 {
     public float m_TimerDuration { get; private set; } = 0;
@@ -283,15 +284,28 @@ public class Counter
         }
         return false;
     }
+}
 
-    public bool TickValid(float deltaTime)
+public class TimeCollector
+{
+#if UNITY_EDITOR
+    public double m_Cur =0f;
+#endif
+    
+    public float deltaTime
     {
-        if (!m_Counting)
-            return false;
-        Tick(deltaTime);
-        if (m_Counting)
-            return false;
-        return true;
+        get
+        {
+        #if UNITY_EDITOR
+            if (Application.isPlaying)
+            {
+                var last = m_Cur;
+                m_Cur = UnityEditor.EditorApplication.timeSinceStartup;
+                return Mathf.Max(0, (float)(m_Cur-last));
+            }
+        #endif
+            return Time.deltaTime;
+        }
     }
 }
 #endregion

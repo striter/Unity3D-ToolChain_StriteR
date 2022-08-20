@@ -1,4 +1,4 @@
-using Rendering.IndirectDiffuse.SphericalHarmonics;
+using Rendering.GI.SphericalHarmonics;
 using UnityEngine;
 
 namespace ExampleScenes.Rendering.SH

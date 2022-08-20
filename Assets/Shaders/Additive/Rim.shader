@@ -4,14 +4,18 @@ Shader "Game/SurfaceEffects/Rim"
     {
         [HDR] _RimColor("Color Tint",Color)=(1,1,1,1)
         _RimWidth("Rim Width",Range(0.1,10))=2
+		[Header(Render Options)]
+        [Enum(UnityEngine.Rendering.BlendMode)]_SrcBlend("Src Blend",int)=1
+        [Enum(UnityEngine.Rendering.BlendMode)]_DstBlend("Dst Blend",int)=1
     }
     SubShader
     {
         Tags{"Queue" = "Transparent"}
         Pass
         {
-            Blend One One
+            Blend [_SrcBlend] [_DstBlend]
             ZWrite Off
+            ZTest LEqual
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -57,12 +61,9 @@ Shader "Game/SurfaceEffects/Rim"
 				UNITY_SETUP_INSTANCE_ID(i);
                 float ndv = pow(1-saturate(dot(normalize(i.viewDirWS),normalize(i.normalWS))),INSTANCE(_RimWidth));
                 float4 color = INSTANCE(_RimColor);
-                return float4(ndv*color.rgb*color.a,1);
+                return float4(color.rgb,1)*ndv*color.a;
             }
             ENDHLSL
         }
-        
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
     }
 }

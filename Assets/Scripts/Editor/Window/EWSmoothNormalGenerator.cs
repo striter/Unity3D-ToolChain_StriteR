@@ -76,7 +76,7 @@ namespace UnityEditor.Extensions
             target.SetVertexData(_generateUV,smoothNormals.ToList());
             return target;
         }
-        static bool ConvertToTangentSpace(EVertexData _target)
+        public static bool ConvertToTangentSpace(EVertexData _target)
         {
             switch(_target)
             {

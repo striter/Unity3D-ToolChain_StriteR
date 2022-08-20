@@ -1,4 +1,4 @@
-Shader "Game/Unfinished/StencilOnly"
+Shader "Game/SurfaceEffects/StencilOnly"
 {
     Properties
     {

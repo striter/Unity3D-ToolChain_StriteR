@@ -9,7 +9,7 @@
     	[Header(Color)]
         _Color("Color",Color)=(0,0,0,1)
     	[Toggle(_FALLOFF)]_("Enable",int)=0
-    	[MinMaxRange]_FallOff("FallOff",Range(0,1))=0
+    	[MinMaxRange]_FallOff("FallOff",Range(0,2))=0
     	[HideInInspector]_FallOffEnd("",float)=0.1
     	
     	[Header(Mirror)]
@@ -86,18 +86,18 @@
 				#if _MIRROR
 				    float normalProj = dot(positionWS.xyz - plane.position, _PlaneNormal);
 					positionWS = positionWS.xyz - normalProj * _PlaneNormal * 2;
-				
+
+					o.alphaMultiplier = step(0,normalProj);
 					#if _FALLOFF
-						o.alphaMultiplier=1-saturate(invlerp(_FallOff,_FallOffEnd,normalProj));
+						o.alphaMultiplier*=(1-saturate(invlerp(_FallOff,_FallOffEnd,normalProj)));
 					#endif
 				#else
 					GRay ray=GRay_Ctor(positionWS,lightDir);
 					half distance=PlaneRayDistance(plane,ray);
 					float3 projectionPositionWS=ray.GetPoint(distance);
 
-					
 					#if _FALLOFF
-						o.alphaMultiplier=1-saturate(invlerp(_FallOff,_FallOffEnd,sqrDistance(positionWS-projectionPositionWS)));
+						o.alphaMultiplier*=(1-saturate(invlerp(_FallOff,_FallOffEnd,sqrDistance(positionWS-projectionPositionWS))));
 					#endif
 					positionWS=projectionPositionWS;
 				

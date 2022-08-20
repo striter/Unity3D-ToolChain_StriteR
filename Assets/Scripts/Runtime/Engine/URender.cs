@@ -92,6 +92,58 @@ public static class URender
                 break;
         }
     }
+    public static void SetVertexData(this Mesh _srcMesh, EVertexData _dataType, Vector4[] _data)
+    {
+        switch (_dataType)
+        {
+            default: throw new Exception("Invalid Vertex Data Type" + _dataType);
+            case EVertexData.UV0:
+            case EVertexData.UV1:
+            case EVertexData.UV2:
+            case EVertexData.UV3:
+            case EVertexData.UV4:
+            case EVertexData.UV5:
+            case EVertexData.UV6:
+            case EVertexData.UV7:
+                _srcMesh.SetUVs((int)_dataType, _data);
+                break;
+            case EVertexData.Color:
+                _srcMesh.SetColors(_data.Select(p => new Color(p.x, p.y, p.z, p.w)).ToArray());
+                break;
+            case EVertexData.Tangent:
+                _srcMesh.SetTangents(_data);
+                break;
+            case EVertexData.Normal:
+                _srcMesh.SetNormals(_data.Select(vec4 => vec4.XYZ()).ToArray());
+                break;
+        }
+    }
+    public static void SetVertexData(this Mesh _srcMesh, EVertexData _dataType, Vector3[] _data)
+    {
+        switch (_dataType)
+        {
+            default: throw new Exception("Invalid Vertex Data Type" + _dataType);
+            case EVertexData.UV0:
+            case EVertexData.UV1:
+            case EVertexData.UV2:
+            case EVertexData.UV3:
+            case EVertexData.UV4:
+            case EVertexData.UV5:
+            case EVertexData.UV6:
+            case EVertexData.UV7:
+                _srcMesh.SetUVs((int)_dataType, _data);
+                break;
+            case EVertexData.Color:
+                _srcMesh.SetColors(_data.Select(p => new Color(p.x, p.y, p.z, 1.0f)).ToArray());
+                break;
+            case EVertexData.Tangent:
+                _srcMesh.SetTangents(_data.Select(vec3 => new Vector4(vec3.x, vec3.y, vec3.z, 1.0f)).ToArray());
+                break;
+            case EVertexData.Normal:
+                _srcMesh.SetNormals(_data);
+                break;
+        }
+    }
     public static bool GetVertexData(this Mesh _srcMesh, EVertexData _dataType, List<Vector3> _data)
     {
         _data.Clear();

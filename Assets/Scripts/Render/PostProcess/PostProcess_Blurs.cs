@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -33,6 +34,7 @@ namespace Rendering.PostProcess
         Bokeh,
         Directional,
         Radial,
+        // NextGen,
     }
 
     enum EBlurPass
@@ -152,7 +154,7 @@ namespace Rendering.PostProcess
             return identifiers;
         }
 
-        const string kBlurSample = "Blur";
+        private static readonly Dictionary<EBlurType, string> kBlurSample = UEnum.GetValues<EBlurType>().ToDictionary(p=>p,p=>p.ToString());
         static readonly int kBlurTempID1 = Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp1");
         static readonly RenderTargetIdentifier kBlurTempRT1 = new RenderTargetIdentifier(kBlurTempID1);
         static readonly int kBlurTempID2 = Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp2");
@@ -173,7 +175,9 @@ namespace Rendering.PostProcess
                 _buffer.Blit(_src, _dst);
                 return;
             }
-            _buffer.BeginSample(kBlurSample);
+
+            var sampleName = kBlurSample[_data.m_BlurType];
+            _buffer.BeginSample(sampleName);
             int startWidth = _descriptor.width / _data.m_DownSample;
             int startHeight = _descriptor.height / _data.m_DownSample;
             m_Material.EnableKeyword(KW_Encoding,_descriptor.colorFormat!=RenderTextureFormat.ARGB32);
@@ -320,8 +324,13 @@ namespace Rendering.PostProcess
                         _buffer.Blit(_src, _dst, m_Material, pass);
                     }
                     break;
+                // case EBlurType.NextGen:
+                //     {
+                //         
+                //     }
+                //     break;
             }
-            _buffer.EndSample(kBlurSample);
+            _buffer.EndSample(sampleName);
         }
     }
 }

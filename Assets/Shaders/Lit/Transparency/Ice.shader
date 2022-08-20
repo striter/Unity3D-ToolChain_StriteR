@@ -3,6 +3,7 @@
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+    	_Color("Color Tint",Color)=(1,1,1,1)
 		[Header(Normal Mappping)]
 		[Toggle(_NORMALMAP)]_EnableNormalMap("Enable Normal Mapping",float)=1
 		[NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
@@ -81,6 +82,7 @@
 
 			INSTANCING_BUFFER_START
 			INSTANCING_PROP(float4,_MainTex_ST)
+            INSTANCING_PROP(float4,_Color)
 			INSTANCING_PROP(float,_Thickness)
 			INSTANCING_PROP(float,_Lambert)
 			INSTANCING_PROP(float,_SpecularRange)
@@ -163,7 +165,7 @@
 				normalTS= DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,normalUV));
 				#endif
 				
-				float3 albedo=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv).rgb;
+				float3 albedo=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv).rgb*_Color.rgb;
 				float3 lightCol=_MainLightColor.rgb;
 				float3 ambient=_GlossyEnvironmentColor.xyz;
 				float atten=MainLightRealtimeShadow(i.shadowCoordWS);

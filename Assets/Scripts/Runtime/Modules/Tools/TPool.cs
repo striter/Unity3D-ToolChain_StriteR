@@ -184,6 +184,7 @@ namespace TPool
         void OnPoolCreate(Action<T> _doRecycle);
         void OnPoolSpawn(T _identity);
         void OnPoolRecycle();
+        void OnPoolDispose();
     }
     
     public abstract class AObjectPool<T,Y>:IEnumerable<Y>
@@ -195,10 +196,10 @@ namespace TPool
         public int Count => m_Dic.Count;
         public int m_SpawnTimes { get; private set; } = 0;
 
-        protected AObjectPool(GameObject pooledItem,Transform _transform)
+        protected AObjectPool(GameObject _pooledItem,Transform _transform)
         {
             transform = _transform;
-            m_PoolItem = pooledItem;
+            m_PoolItem = _pooledItem;
             m_PoolItem.gameObject.SetActive(false);
             m_SpawnTimes = 0;
         }
@@ -223,7 +224,7 @@ namespace TPool
                 m_Dic.Add(identity, targetItem);
             Transform trans = GetItemTransform(targetItem);
             trans.SetAsLastSibling();
-            trans.name = identity.ToString();
+            // trans.name = identity.ToString();
             trans.SetActive(true);
             
             if(targetItem is IPoolCallback<T> iPoolSpawn)
@@ -255,6 +256,15 @@ namespace TPool
             return item;
         }
 
+        public bool TryRecycle(T _identity)
+        {
+            if (!Contains(_identity))
+                return false;
+
+            Recycle(_identity);
+            return true;
+        }
+
         public void Sort(Comparison<KeyValuePair<T,Y>> Compare)
         {
             List<KeyValuePair<T, Y>> list = m_Dic.ToList();
@@ -278,16 +288,20 @@ namespace TPool
         public void Dispose()
         {
             foreach (var item in m_Dic.Values)
-                GameObject.Destroy(GetItemTransform(item).gameObject);
+            {
+                if (item is IPoolCallback<T> iPoolItem)
+                    iPoolItem.OnPoolDispose();
+                UnityEngine.Object.Destroy(GetItemTransform(item).gameObject);
+            }
             m_Dic.Clear();
         }
 
-        protected virtual Y CreateNewItem(Transform instantiateTrans)
+        protected virtual Y CreateNewItem(Transform _instantiateTrans)
         {
             Debug.LogError("Override This Please");
             return default(Y);
         }
-        protected virtual Transform GetItemTransform(Y targetItem)
+        protected virtual Transform GetItemTransform(Y _targetItem)
         {
             Debug.LogError("Override This Please");
             return null;
@@ -308,22 +322,22 @@ namespace TPool
     {
         public TObjectPoolComponent(Transform poolItem) : base(poolItem.gameObject,poolItem.transform.parent) {  }
         
-        protected override T CreateNewItem(Transform instantiateTrans)=>instantiateTrans.GetComponent<T>();
-        protected override Transform GetItemTransform(T targetItem) => targetItem.transform;
+        protected override T CreateNewItem(Transform _instantiateTrans)=>_instantiateTrans.GetComponent<T>();
+        protected override Transform GetItemTransform(T _targetItem) => _targetItem.transform;
     }
     public class TObjectPoolTransform : AObjectPool<int,Transform>
     {
         public TObjectPoolTransform(Transform _poolItem) : base(_poolItem.gameObject,_poolItem.transform.parent) {  }
 
-        protected override Transform CreateNewItem(Transform instantiateTrans)=> instantiateTrans;
-        protected override Transform GetItemTransform(Transform targetItem) => targetItem;
+        protected override Transform CreateNewItem(Transform _instantiateTrans)=> _instantiateTrans;
+        protected override Transform GetItemTransform(Transform _targetItem) => _targetItem;
     } 
     public class TObjectPoolGameObject : AObjectPool<int,GameObject>
     {
         public TObjectPoolGameObject(Transform _poolItem) : base(_poolItem.gameObject,_poolItem.transform.parent) {  }
 
-        protected override GameObject CreateNewItem(Transform instantiateTrans)=> instantiateTrans.gameObject;
-        protected override Transform GetItemTransform(GameObject targetItem) => targetItem.transform;
+        protected override GameObject CreateNewItem(Transform _instantiateTrans)=> _instantiateTrans.gameObject;
+        protected override Transform GetItemTransform(GameObject _targetItem) => _targetItem.transform;
     } 
     #endregion
     #region Implement
@@ -339,6 +353,8 @@ namespace TPool
         public virtual void OnPoolCreate(Action<T> _doRecycle)=>this.DoRecycle = _doRecycle;
         public virtual void OnPoolSpawn(T _identity)=> m_Identity = _identity;
         public virtual void OnPoolRecycle()=>m_Identity = default;
+        public virtual void OnPoolDispose() {}
+
         public void Recycle()=>DoRecycle(m_Identity);
     }
     
@@ -346,22 +362,22 @@ namespace TPool
     public class TObjectPoolClass<T,Y> : AObjectPool<T,Y> where Y :ITransform
     {
         private readonly Type m_Type;
-        private readonly Func<object[]> m_GetParameters;
-        public TObjectPoolClass(Transform _poolTrans, Type type) : base(_poolTrans.gameObject,_poolTrans.parent) { m_Type = type; }
+        private readonly Func<object[]> CostructParameters;
+        public TObjectPoolClass(Transform _pooledElement, Type type) : base(_pooledElement.gameObject,_pooledElement.parent) { m_Type = type; }
 
-        public TObjectPoolClass(Transform _poolTrans, Func<object[]> _getParameters = null) : this(_poolTrans,
+        public TObjectPoolClass(Transform _pooledElement, Func<object[]> _constructParameters = null) : this(_pooledElement,
             typeof(Y))
         {
-            m_GetParameters = _getParameters;
+            CostructParameters = _constructParameters;
         }
-        protected override Y CreateNewItem(Transform instantiateTrans)
+        protected override Y CreateNewItem(Transform _instantiateTrans)
         {
-            if(m_GetParameters!=null)
-                return UReflection.CreateInstance<Y>(m_Type,  new object[]{ instantiateTrans }.Add(m_GetParameters.Invoke()));
-            return UReflection.CreateInstance<Y>(m_Type, instantiateTrans);
+            if(CostructParameters!=null)
+                return UReflection.CreateInstance<Y>(m_Type,  new object[]{ _instantiateTrans }.Add(CostructParameters.Invoke()));
+            return UReflection.CreateInstance<Y>(m_Type, _instantiateTrans);
         }
 
-        protected override Transform GetItemTransform(Y targetItem) => targetItem.Transform;
+        protected override Transform GetItemTransform(Y _targetItem) => _targetItem.Transform;
     }
     
     
@@ -387,13 +403,21 @@ namespace TPool
         {
             m_Recycled = true;
         }
+
+        public void OnPoolDispose()
+        {
+            m_Recycled = true;
+            m_PoolID = default;
+            DoRecycle = null;
+        }
+
         public void Recycle()=>DoRecycle(m_PoolID);
     }
     public class TObjectPoolMono<T,Y> : AObjectPool<T,Y> where Y : PoolBehaviour<T>
     {
         public TObjectPoolMono(Transform _poolTrans) : base(_poolTrans.gameObject,_poolTrans.parent) {  }
-        protected override Y CreateNewItem(Transform instantiateTrans)=>instantiateTrans.GetComponent<Y>();
-        protected override Transform GetItemTransform(Y targetItem) => targetItem.transform;
+        protected override Y CreateNewItem(Transform _instantiateTrans)=>_instantiateTrans.GetComponent<Y>();
+        protected override Transform GetItemTransform(Y _targetItem) => _targetItem.transform;
     }
     
     #endregion

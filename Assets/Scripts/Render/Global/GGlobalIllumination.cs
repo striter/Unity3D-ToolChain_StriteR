@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
-using Rendering.IndirectDiffuse.SphericalHarmonics;
+using Rendering.GI.SphericalHarmonics;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -31,7 +31,7 @@ namespace Rendering
     
     //These stuff should be interpolated at the CPU size
     [Serializable]
-    public struct EnvironmentParameters
+    public struct GGlobalIllumination
     {
         [ColorUsage(true,true)]public Color gradientSky;
         [ColorUsage(true,true)]public Color gradientEquator;
@@ -39,16 +39,16 @@ namespace Rendering
         [Range(0.1f,2f)] public float reflectionIntensity;
         [HideInInspector] public SHL2Data shData;
 
-        public EnvironmentParameters Ctor()
+        public GGlobalIllumination Ctor()
         {
             shData = SphericalHarmonicsExport.ExportL2Gradient(4096, gradientSky, gradientEquator,gradientGround,"Test");
             return this;
         }
 
-        public static EnvironmentParameters Interpolate(EnvironmentParameters _a, EnvironmentParameters _b,
+        public static GGlobalIllumination Interpolate(GGlobalIllumination _a, GGlobalIllumination _b,
             float _interpolate)
         {
-            return new EnvironmentParameters()
+            return new GGlobalIllumination()
             {
                 gradientSky = Color.Lerp(_a.gradientSky,_b.gradientSky,_interpolate),
                 gradientEquator = Color.Lerp(_a.gradientEquator,_b.gradientEquator,_interpolate),
@@ -58,7 +58,7 @@ namespace Rendering
             };
         }
 
-        public static readonly EnvironmentParameters kDefault = new EnvironmentParameters()
+        public static readonly GGlobalIllumination kDefault = new GGlobalIllumination()
         {
             gradientSky = Color.cyan,
             gradientGround = Color.black,
@@ -71,7 +71,7 @@ namespace Rendering
     public class EnvironmentCollection:ISerializationCallbackReceiver
     {
         public Texture m_EnvironmentReflection;
-        public EnvironmentParameters m_Parameters=EnvironmentParameters.kDefault;
+        public GGlobalIllumination m_Parameters=GGlobalIllumination.kDefault;
         
         // public LightmapParameter[] m_Parameters;
         // public Texture2D[] m_LightmapColors;
@@ -88,7 +88,7 @@ namespace Rendering
                 // m_LightmapColors = LightmapSettings.lightmaps.Select(p => p.lightmapColor).ToArray();
 
                 m_EnvironmentReflection = RenderSettings.customReflection,
-                m_Parameters = new EnvironmentParameters()
+                m_Parameters = new GGlobalIllumination()
                 {
                     reflectionIntensity = RenderSettings.reflectionIntensity,
                     gradientSky = RenderSettings.ambientSkyColor,
@@ -96,7 +96,7 @@ namespace Rendering
                     gradientGround = RenderSettings.ambientGroundColor
                 }.Ctor()
             };
-        }
+        } 
 
         private const int kMaxLightmapCount = 10;
         private static int[] GetLightmapIDs(string _keyword)
@@ -122,7 +122,7 @@ namespace Rendering
         private static readonly int kSHBr = Shader.PropertyToID("_SHBr"); private static readonly int kSHBg = Shader.PropertyToID("_SHBg");  private static readonly int kSHBb = Shader.PropertyToID("_SHBb");
         private static readonly int kSHC = Shader.PropertyToID("_SHC");
 
-        public static void ApplyParameters(EnvironmentParameters _collection)
+        public static void ApplyParameters(GGlobalIllumination _collection)
         {
             _collection.shData.OutputSH(out var _SHAr,out var _SHAg,out var _SHAb,out var _SHBr,out var _SHBg,out var _SHBb,out var _SHC);
             Shader.SetGlobalVector(kSHAr,_SHAr);
@@ -170,7 +170,7 @@ namespace Rendering
             if (_interpolate <= float.Epsilon)
                 return;
 
-            ApplyParameters(EnvironmentParameters.Interpolate(_collection1.m_Parameters,_collection2.m_Parameters,_interpolate));
+            ApplyParameters(GGlobalIllumination.Interpolate(_collection1.m_Parameters,_collection2.m_Parameters,_interpolate));
             URender.EnableGlobalKeywords(kEnvironmentKeywords, 2);
             Shader.SetGlobalFloat(kEnvironmentInterpolate,_interpolate);
             

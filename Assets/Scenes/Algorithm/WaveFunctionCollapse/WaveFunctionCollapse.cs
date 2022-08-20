@@ -210,6 +210,10 @@ namespace ExampleScenes.Algorithm.WaveFunctionCollapse
             {
                 m_Possibilities.Clear();
             }
+
+            public void OnPoolDispose()
+            {
+            }
         }
     }
 

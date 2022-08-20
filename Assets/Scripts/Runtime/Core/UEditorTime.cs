@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 #if UNITY_EDITOR
-public static class UEditorTime
+public class UEditorTime
 {
-    public static double m_Cur;
+    public double m_Cur =0f;
 
-    public static float deltaTime
+    public float deltaTime
     {
         get
         {

@@ -13,9 +13,6 @@
         _Metallic("Metalness",Range(0,1))=0
 		[NoScaleOffset]_EmissionTex("Emission",2D)="white"{}
 		[HDR]_EmissionColor("Emission Color",Color)=(0,0,0,0)
-		[Toggle(_EMISSIONFLASH)]_EmissionFlash("Emission Flash",float)=1
-		_EmissionFlashColor("Emission Flash Color",Color)=(1,1,1,1)
-		_EmissionFlashRatio("Emission Flash Ratio",Range(0,1))=0
 		[Header(_Settings)]
         [KeywordEnum(BlinnPhong,CookTorrance,Beckmann,Gaussian,GGX,TrowbridgeReitz,Anisotropic_TrowbridgeReitz,Anisotropic_Ward,Anisotropic_Beckmann,Anisotropic_GGX)]_NDF("Normal Distribution:",float) = 1
 		[Foldout(_NDF_ANISOTROPIC_TROWBRIDGEREITZ,_NDF_ANISOTROPIC_WARD,_NDF_ANISOTROPIC_GGX,_NDF_ANISOTROPIC_BECKMANN)]_AnisoTropicValue("Anisotropic Value:",Range(0,1))=1
@@ -78,8 +75,6 @@
 				INSTANCING_PROP(float4,_MainTex_ST)
 				INSTANCING_PROP(float4, _Color)
 				INSTANCING_PROP(float4, _EmissionColor)
-				INSTANCING_PROP(float4,_EmissionFlashColor)
-				INSTANCING_PROP(float,_EmissionFlashRatio)
 				INSTANCING_PROP(float,_Glossiness)
 				INSTANCING_PROP(float,_Metallic)
 				INSTANCING_PROP(float,_DetailBlendMode)
@@ -109,7 +104,6 @@
 			#include "Assets/Shaders/Library/Additional/Local/AlphaClip.hlsl"
 			#pragma shader_feature_local_fragment _ALPHACLIP
 			#pragma shader_feature_local_fragment _SSS
-			#pragma shader_feature_local _EMISSIONFLASH
 
 			struct a2f
 			{
@@ -162,23 +156,19 @@
 				FOG_TRANSFER(o)
 				return o;
 			}
-			float3 CalculateAlbedo(float2 uv,float3 color)
+			float3 CalculateAlbedo(float2 uv,float4 color)
 			{
 				float4 sample = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv)*INSTANCE(_Color);
 				AlphaClip(sample.a);
 				return sample.rgb*color.rgb;
 			}
-			half3 OverrideEmission(float2 uv,float3 color)
+			half3 OverrideEmission(float2 uv)
 			{
-				half3 emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,uv).rgb*INSTANCE(_EmissionColor).rgb;
-				#if _EMISSIONFLASH
-					return lerp(emission,INSTANCE(_EmissionFlashColor).rgb,INSTANCE(_EmissionFlashRatio));
-				#endif
-				return emission;
+				return SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,uv).rgb*INSTANCE(_EmissionColor).rgb;
 			}
 
 			#define GET_ALBEDO(i) CalculateAlbedo(i.uv,i.color);
-			#define GET_EMISSION(i) OverrideEmission(i.uv,i.color);
+			#define GET_EMISSION(i) OverrideEmission(i.uv.xy);
 			
 			#define A2V_SHADOW_DEPTH float2 uv:TEXCOORD0;
 			#define V2F_SHADOW_DEPTH float2 uv:TEXCOORD0;
@@ -339,25 +329,25 @@
 					mainLight.color=SAMPLE_TEXTURE2D(_Matcap,sampler_Matcap,matcapUV).rgb*INSTANCE(_MatCapColor).rgb;
 					mainLight.distanceAttenuation = 1;
 				#endif
-
+	   
 				finalCol+=BRDFLighting(surface,mainLight);
-				#if _SSS
-					float thickness=SAMPLE_TEXTURE2D(_ThicknessMap,sampler_ThicknessMap,baseUV);
-					finalCol += SSSLighting(thickness,sssInfluence,sssIntensity,mainLight,surface.normal,surface.viewDir)*surface.diffuse;
-				#endif
-
-				#if _ADDITIONAL_LIGHTS
-            	uint pixelLightCount = GetAdditionalLightsCount();
-			    for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
-			    {
-			    	Light additionalLight = GetAdditionalLight(lightIndex,i.positionWS);
-					finalCol+=BRDFLighting(surface, additionalLight);
-				    #if _SSS
-						finalCol += SSSLighting(thickness,sssInfluence,sssIntensity,additionalLight,surface.normal,surface.viewDir)*surface.diffuse;
-					#endif
-			    }
-            	#endif
-				FOG_MIX(i,finalCol);
+				// #if _SSS
+				// 	float thickness=SAMPLE_TEXTURE2D(_ThicknessMap,sampler_ThicknessMap,baseUV);
+				// 	finalCol += SSSLighting(thickness,sssInfluence,sssIntensity,mainLight,surface.normal,surface.viewDir)*surface.diffuse;
+				// #endif
+	   //
+				// #if _ADDITIONAL_LIGHTS
+    //         	uint pixelLightCount = GetAdditionalLightsCount();
+			 //    for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
+			 //    {
+			 //    	Light additionalLight = GetAdditionalLight(lightIndex,i.positionWS);
+				// 	finalCol+=BRDFLighting(surface, additionalLight);
+				//     #if _SSS
+				// 		finalCol += SSSLighting(thickness,sssInfluence,sssIntensity,additionalLight,surface.normal,surface.viewDir)*surface.diffuse;
+				// 	#endif
+			 //    }
+    //         	#endif
+				// FOG_MIX(i,finalCol);
 				finalCol+=surface.emission;
 
 				o.result=half4(finalCol,color.a);

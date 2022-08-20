@@ -163,8 +163,6 @@ namespace UnityEditor.Extensions
         
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            if (serializedObject == null)
-                return EditorGUI.GetPropertyHeight(property,label);
             m_Heights.Clear();
             m_Properties.Clear();
             m_Heights.Add( base.GetPropertyHeight(property, label));
@@ -173,6 +171,8 @@ namespace UnityEditor.Extensions
                 return m_Heights.Sum();
             
             serializedObject = new SerializedObject(property.objectReferenceValue);
+            if (serializedObject == null)
+                return EditorGUI.GetPropertyHeight(property,label);
             foreach (var field in property.objectReferenceValue.GetType().GetFields())
             {
                 var scriptableObjectProperty = serializedObject.FindProperty(field.Name);

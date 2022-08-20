@@ -1,10 +1,12 @@
-﻿Shader "Game/UI/SpriteUber"
+﻿Shader "Game/UI/UberSprite"
 {   
 	Properties
 	{
-		[HDR]_Color("Tint", Color) = (1,1,1,1)
-		[NoScaleOffset][ToggleTex(_ALPHAMASK)]_AlphaMask("Alpha Mask",2D)="white"{}
-		[Toggle(_BSC)]_BSC("Brightness Saturation Contrast",int)=0
+		[Toggle(_MAINALPHAMASK)]_MainAlphaMask("Main Tex Alpha Mask",int)=0
+		[Header(Additional)]
+		[HDR]_Color("Additional Color Tint", Color) = (1,1,1,1)
+		[NoScaleOffset][ToggleTex(_ALPHAMASK)]_AlphaMask("Additional Alpha Mask",2D)="white"{}
+		[Toggle(_BSC)]_BSC("Brightness/Saturation/Contrast",int)=0
 		[Foldout(_BSC)]_Brightness("Brightness",Range(0,2))=1
 		[Foldout(_BSC)]_Saturation("Saturation",Range(0,2))=1
 		[Foldout(_BSC)]_Contrast("Contrast",Range(0,2))=1
@@ -79,6 +81,7 @@
 			};
 
 			//Additional
+			#pragma shader_feature_local_fragment _MAINALPHAMASK
 			#pragma shader_feature_local_fragment _ALPHAMASK
 			#pragma shader_feature_local_fragment _BSC
 			#pragma shader_feature_local_fragment _DISTORT
@@ -108,9 +111,14 @@
 					half2 distortSample = SAMPLE_TEXTURE2D(_DistortTex,sampler_DistortTex,i.uv.zw).xy*2-1;
 					uv+= _MainTex_TexelSize.xy*distortSample*_DistortStrength;
 				#endif
+
+				half4 finalCol = i.color*_Color;
+				#if _MAINALPHAMASK
+					finalCol.a *= SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv).a;
+				#else
+					finalCol *= SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv);
+				#endif
 				
-				half4 finalCol = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv)*_Color*i.color;
-			
 				#if _ALPHAMASK
 					finalCol.a *= SAMPLE_TEXTURE2D(_AlphaMask,sampler_AlphaMask,uv).r;
 				#endif

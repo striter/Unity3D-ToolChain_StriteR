@@ -62,7 +62,10 @@ Material:
     - _BumpScale: 1
     - _ClipSpaceAdapt: 0
     - _Cutoff: 0.5
+    - _DISTANCEFADE: 10
     - _DetailNormalMapScale: 1
+    - _DistanceFade: 134.86536
+    - _DistanceFadeEnd: 115.01535
     - _DstBlend: 0
     - _FixFactor: 1
     - _GlossMapScale: 1
@@ -75,6 +78,7 @@ Material:
     - _OutlineSmoothFactor: 0
     - _OutlineWidth: 0.002
     - _Parallax: 0.02
+    - _SAMPLEBASECOLOR: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -85,6 +89,7 @@ Material:
     - _StencilWriteMask: 255
     - _TangentSpaceNormal: 0
     - _UVSec: 0
+    - _ZTest: 2
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

@@ -37,18 +37,19 @@ v2ff ForwardVertex(a2vf v)
 	UNITY_SETUP_INSTANCE_ID(v);
 	UNITY_TRANSFER_INSTANCE_ID(v, o);
 	o.uv = TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
-#if defined(GET_POSITION_WS)
-	float3 positionWS = GET_POSITION_WS(v);
-#else
-	float3 positionWS=TransformObjectToWorld(v.positionOS);
-#endif
-	o.positionWS = positionWS;
-	o.positionCS = TransformWorldToHClip(positionWS);
-	o.positionHCS = o.positionCS;
 	o.normalWS = TransformObjectToWorldNormal(v.normalOS);
 	o.tangentWS = TransformObjectToWorldDir(v.tangentOS.xyz);
 	o.biTangentWS = cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
+	//Positions
+	#if defined(GET_POSITION_WS)
+		float3 positionWS = GET_POSITION_WS(v,o);
+	#else
+		float3 positionWS=TransformObjectToWorld(v.positionOS);
+	#endif
+	o.positionWS = positionWS;
+	o.positionCS = TransformWorldToHClip(positionWS);
 	o.viewDirWS = GetViewDirectionWS(o.positionWS);
+	o.positionHCS = o.positionCS;
 	o.color=v.color;
 	LIGHTMAP_TRANSFER(v,o)
 	FOG_TRANSFER(o)
@@ -122,10 +123,12 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 
 	half3 indirectSpecular=IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
 	finalCol+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
+
 #if defined BRDF_MAINLIGHTING
 	BRDF_MAINLIGHTING(mainLight,surface)
 #endif
 	finalCol+=BRDFLighting(surface,mainLight);
+
 
 #if _ADDITIONAL_LIGHTS
 	uint pixelLightCount = GetAdditionalLightsCount();
@@ -138,6 +141,10 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 #if defined(GET_FINALCOL)
 	finalCol = GET_FINALCOL(finalCol,i,surface);
 #endif
+	half alpha = 1.h;
+#if defined(GET_ALPHA)
+	alpha = GET_ALPHA(i,surface);
+#endif
 	
-	return half4(finalCol,1.h);
+	return half4(finalCol,alpha);
 }

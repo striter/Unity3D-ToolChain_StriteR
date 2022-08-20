@@ -60,7 +60,6 @@ Shader "Game/Lit/UberPhong"
                 v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-                o.positionCS = TransformObjectToHClip(v.positionOS);
 				o.uv = TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
 				o.positionWS= TransformObjectToWorld(v.positionOS);
 				o.positionCS = TransformObjectToHClip(v.positionOS);
@@ -93,7 +92,7 @@ Shader "Game/Lit/UberPhong"
 				float2 baseUV=i.uv.xy;
             	float3 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb * INSTANCE(_Color).rgb;
             	float3 specular = SAMPLE_TEXTURE2D(_SpecularTex,sampler_MainTex,i.uv).rgb;
-            	float3 emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_MainTex,i.uv);
+            	float3 emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_MainTex,i.uv).rgb;
             	
 				normalWS=normalize(mul(transpose(TBNWS), DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_MainTex,baseUV))));
 				float3 ambient = IndirectDiffuse(mainLight,i,normalWS);

@@ -1,4 +1,5 @@
 
+using Rendering.GI.SphericalHarmonics;
 using UnityEngine;
 using UnityEditor;
 
@@ -172,11 +173,45 @@ namespace UnityEditor.Extensions
                 prop1.floatValue = value1;
             }
             
-            EditorGUI.showMixedValue = false;
+            // EditorGUI.showMixedValue = false;
             EditorGUIUtility.labelWidth = labelWidth;
         }
     }
 
+    public class SHGradientDrawer : MaterialPropertyDrawerBase
+    {   //Dude
+        public override bool PropertyTypeCheck(MaterialProperty.PropType type) => type == MaterialProperty.PropType.Color;
+
+        private string keyword;
+        public SHGradientDrawer(string _keyword)
+        {
+            keyword = _keyword;
+        }
+
+        public override void OnPropertyGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
+        {
+            EditorGUI.BeginChangeCheck();
+            prop.colorValue = EditorGUI.ColorField(position,new GUIContent(label),prop.colorValue,true,false,true);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                var sky = MaterialEditor.GetMaterialProperty(editor.targets, keyword+"Sky");
+                var equator =  MaterialEditor.GetMaterialProperty(editor.targets, keyword + "Equator");
+                var ground =  MaterialEditor.GetMaterialProperty(editor.targets, keyword + "Ground");
+                var shData = SphericalHarmonicsExport.ExportL2Gradient(4096, sky.colorValue, equator.colorValue, ground.colorValue);
+                shData.OutputSH(out var _SHAr,out var _SHAg,out var _SHAb,out var _SHBr,out var _SHBg,out var _SHBb,out var _SHC);
+                
+                MaterialEditor.GetMaterialProperty(editor.targets, keyword+"SHAr").vectorValue = _SHAr;
+                MaterialEditor.GetMaterialProperty(editor.targets, keyword+"SHAg").vectorValue = _SHAg;
+                MaterialEditor.GetMaterialProperty(editor.targets, keyword+"SHAb").vectorValue = _SHAb;
+                MaterialEditor.GetMaterialProperty(editor.targets, keyword+"SHBr").vectorValue = _SHBr;
+                MaterialEditor.GetMaterialProperty(editor.targets, keyword+"SHBg").vectorValue = _SHBg;
+                MaterialEditor.GetMaterialProperty(editor.targets, keyword+"SHBb").vectorValue = _SHBb;
+                MaterialEditor.GetMaterialProperty(editor.targets, keyword+"SHC").vectorValue = _SHC;
+            }
+        }
+    }
+    
     public class Rotation2DDrawer : MaterialPropertyDrawerBase
     {
         public override void OnPropertyGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)

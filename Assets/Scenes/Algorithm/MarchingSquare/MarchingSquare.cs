@@ -128,6 +128,10 @@ namespace ExampleScenes.Algorithm.MarchingSquare
         {
         }
 
+        public void OnPoolDispose()
+        {
+        }
+
         public void Switch() => Set(!m_Available);
 
         void Set(bool _available)

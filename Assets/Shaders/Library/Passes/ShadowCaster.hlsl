@@ -1,7 +1,8 @@
 ﻿
 struct a2fs
 {
-	A2V_SHADOW_CASTER;
+	float3 positionOS:POSITION;
+	float3 normalOS:NORMAL;
 	#if defined(A2V_SHADOW_DEPTH)
 		A2V_SHADOW_DEPTH
 	#endif
@@ -10,7 +11,8 @@ struct a2fs
 
 struct v2fs
 {
-	V2F_SHADOW_CASTER;
+	float4 positionCS:SV_POSITION;
+	float3 normalWS:NORMAL;
 	#if defined(V2F_SHADOW_DEPTH)
 		V2F_SHADOW_DEPTH
 	#endif
@@ -22,14 +24,14 @@ v2fs ShadowVertex(a2fs v)
 	v2fs o;
 	UNITY_SETUP_INSTANCE_ID(v);
 	UNITY_TRANSFER_INSTANCE_ID(v,o);
-
+	o.normalWS=TransformObjectToWorldNormal(v.normalOS);
 #if defined(GET_POSITION_WS)
-	float3 positionWS= GET_POSITION_WS(v)
+	float3 positionWS= GET_POSITION_WS(v,o)
 #else
 	float3 positionWS=TransformObjectToWorld(v.positionOS);
 #endif 
+	o.positionCS= ShadowCasterCS(positionWS,o.normalWS);
 	
-	SHADOW_CASTER_VERTEX(v,positionWS);
 	#if defined(VERTEX_SHADOW_DEPTH)
 		VERTEX_SHADOW_DEPTH(v,o)
 	#endif

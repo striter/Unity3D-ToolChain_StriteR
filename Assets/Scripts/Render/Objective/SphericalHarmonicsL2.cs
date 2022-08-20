@@ -1,10 +1,9 @@
 using System;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
-namespace Rendering.IndirectDiffuse.SphericalHarmonics
+namespace Rendering.GI.SphericalHarmonics
 {
-    [System.Serializable]
+    [Serializable]
     public struct SHL2Data
     {
         public Vector3 l00;

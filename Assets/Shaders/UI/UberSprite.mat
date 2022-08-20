@@ -7,11 +7,11 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Additive
-  m_Shader: {fileID: 4800000, guid: e0156e92fd80dda418da1ea3316134c1, type: 3}
-  m_ShaderKeywords: _OPTIMIZE_NONE
+  m_Name: UberSprite
+  m_Shader: {fileID: 4800000, guid: 457fc035eec56f54f9a0f7a2c0c8a687, type: 3}
+  m_ShaderKeywords: _DISTORT
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
+  m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -19,6 +19,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _AlphaMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -35,13 +39,20 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DistortTex:
+        m_Texture: {fileID: 2800000, guid: 4885e105013f21f488121cc7a80b69af, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: -0.2}
     - _EmissionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _InstanceAnimationTex:
-        m_Texture: {fileID: -7975149132758514205, guid: 3810b0f00865ad141adb159b8d668738,
-          type: 2}
+    - _FlowTex:
+        m_Texture: {fileID: 2800000, guid: d312a60fd3a7a4a4d856ae2a36d15848, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HoloTex:
+        m_Texture: {fileID: 2800000, guid: d312a60fd3a7a4a4d856ae2a36d15848, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -53,8 +64,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NoiseTex:
-        m_Texture: {fileID: 2800000, guid: 2696f69bd9d99d14a915a9ace437031f, type: 3}
-        m_Scale: {x: 5, y: 1}
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
@@ -66,32 +77,50 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _BSC: 0
+    - _Brightness: 1
     - _BumpScale: 1
+    - _ColorMask: 15
+    - _Contrast: 1
     - _Cutoff: 0.5
+    - _DeltaX: 1
+    - _DeltaY: 1
     - _DetailNormalMapScale: 1
+    - _Distort: 1
+    - _DistortStrength: 4
     - _DstBlend: 0
+    - _FlowTexMultiply: 1
+    - _FlowX: -0.1
+    - _FlowY: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _InstanceFrameBegin: 0
-    - _InstanceFrameEnd: 0
-    - _InstanceFrameInterpolate: 1
+    - _Mask: 0
     - _Metallic: 0
     - _Mode: 0
-    - _NoiseFlowX: 0
-    - _NoiseFlowY: -0.5
-    - _NoisePow: 2.28
-    - _NoiseStrength: 1.02
-    - _OPTIMIZE: 0
+    - _NoiseMask: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Saturation: 1
+    - _ShineWidth: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
     - _UVSec: 0
+    - _UseUIAlphaClip: 0
+    - _Width: 2.63
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 15.104688, g: 8.496737, b: 5.9136276, a: 1}
+    - _BSC: {r: 1, g: 0, b: 1, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _NoiseFlow: {r: 0.1, g: 0.1, b: 0, a: 0}
+    - _FlowVec: {r: 0, g: 0, b: -0.1, a: 0}
+    - _LightColor: {r: 1, g: 1, b: 1, a: 0}
+    - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SpriteRect: {r: 0.061062366, g: 0, b: 0.99776113, a: 0.99769324}
   m_BuildTextureStacks: []

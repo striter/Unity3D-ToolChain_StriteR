@@ -141,6 +141,10 @@ namespace PolyGrid
                 GameObject.DestroyImmediate(m_MeshFilter.mesh);
                 m_MeshFilter.sharedMesh = null;
             }
+
+            public void OnPoolDispose()
+            {
+            }
         }
     }
 }
