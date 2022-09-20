@@ -53,13 +53,13 @@ public partial class TouchConsole
         m_FrameRateValue.text = total.ToString();
 
 
-        if (m_AnimationCounter.m_Counting)
+        if (m_AnimationCounter.m_Playing)
         {
             m_AnimationCounter.Tick(_deltaTime);
 
             float destScale =  (m_JoystickActive ? 1f : 0f);
             m_Joystick.transform.localScale = Mathf.Lerp(1f-destScale,destScale,UMath.Pow2(m_AnimationCounter.m_TimeElapsedScale)) * Vector3.one;
-            if (!m_JoystickActive && !m_AnimationCounter.m_Counting)
+            if (!m_JoystickActive && !m_AnimationCounter.m_Playing)
                 m_Joystick.SetActive(false);
         }
     }

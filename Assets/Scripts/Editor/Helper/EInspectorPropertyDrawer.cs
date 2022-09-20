@@ -203,8 +203,8 @@ namespace UnityEditor.Extensions
 
             if (EditorGUI.EndChangeCheck())
             {
-                (property.serializedObject.targetObject).GetType().GetMethod("OnValidate",BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)?.Invoke(property.serializedObject.targetObject,null);
                 serializedObject.ApplyModifiedProperties();
+                (property.serializedObject.targetObject).GetType().GetMethod("OnValidate",BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)?.Invoke(property.serializedObject.targetObject,null);
             }
         }
     }

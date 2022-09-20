@@ -11,7 +11,8 @@ namespace OSwizzling
         public static Vector2 ToVector2(this float _value) => new Vector2(_value, _value);
         public static Vector3 ToVector3(this float _value) => new Vector3(_value, _value, _value);
         public static Vector4 ToVector4(this float _value) => new Vector4(_value, _value, _value);
-        public static Vector3 ToVector3(this Vector2 _value,float _preset=0) => new Vector3(_value.x, _value.y, _preset);
+        public static Vector3 ToVector3XY(this Vector2 _value,float _preset=0) => new Vector3(_value.x, _value.y, _preset);
+        public static Vector3 ToVector3XZ(this Vector2 _value,float _preset=0) => new Vector3(_value.x,  _preset,_value.y);
         public static Vector4 ToVector4(this Vector2 _value,float _preset=0) => new Vector4(_value.x, _value.y, _preset, _preset);
         public static Vector2 Abs(Vector2 _src) => new Vector2(Mathf.Abs(_src.x), Mathf.Abs(_src.y));
         public static Vector3 Abs(Vector3 _src) => new Vector3(Mathf.Abs(_src.x), Mathf.Abs(_src.y), Mathf.Abs(_src.z));

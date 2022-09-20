@@ -87,7 +87,6 @@ Shader "Game/Lit/Toon/Ocean"
             };
             #pragma multi_compile_fragment _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
-            #pragma multi_compile _ ENVIRONMENT_CUSTOM ENVIRONMENT_INTERPOLATE
             #pragma shader_feature_local_vertex _WAVE
 
             TEXTURE2D(_SurfaceNoise);SAMPLER(sampler_SurfaceNoise);
@@ -217,8 +216,5 @@ Shader "Game/Lit/Toon/Ocean"
             }
             ENDHLSL
         }
-        
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
     }
 }

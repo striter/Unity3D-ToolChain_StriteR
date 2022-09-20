@@ -119,12 +119,12 @@ namespace PolyGrid.Module
                 var posByte = (byte) i;
                 Qube<bool> corner = default;
                 corner.SetByteElement(posByte);
-                byteQubeIndexer[i] =  corner.SplitByteQubes();
+                byteQubeIndexer[i] =  corner.SplitByteQubes(false);
             }
             
             //Typed Modules Indexer
             List<byte> validModule = new List<byte>();
-            foreach (var status in UEnum.GetValues<ECornerStatus>())
+            foreach (var status in UEnum.GetEnums<ECornerStatus>())
             {
                 validModule.Clear();
                 var moduleIndexes = new ModuleByteData[byte.MaxValue + 1];

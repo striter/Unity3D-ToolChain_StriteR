@@ -9,9 +9,6 @@ using UnityEngine.Rendering;
 
 public static class URender
 {
-    public static readonly int kIDColor = Shader.PropertyToID("_Color");
-    public static readonly int kIDAlpha = Shader.PropertyToID("_Alpha");
-    
     #region Mesh Edit
     public static void TraversalBlendShapes(this Mesh _srcMesh, int _VertexCount, Action<string, int, int, float, Vector3[], Vector3[], Vector3[]> _OnEachFrame)
     {
@@ -79,7 +76,7 @@ public static class URender
             case EVertexData.UV5:
             case EVertexData.UV6:
             case EVertexData.UV7:
-                _srcMesh.SetUVs((int)_dataType, _data);
+                _srcMesh.SetUVs(UEnum.GetIndex(_dataType), _data);
                 break;
             case EVertexData.Color:
                 _srcMesh.SetColors(_data.Select(p => new Color(p.x, p.y, p.z, p.w)).ToArray());
@@ -131,7 +128,7 @@ public static class URender
             case EVertexData.UV5:
             case EVertexData.UV6:
             case EVertexData.UV7:
-                _srcMesh.SetUVs((int)_dataType, _data);
+                _srcMesh.SetUVs(UEnum.GetIndex(_dataType), _data);
                 break;
             case EVertexData.Color:
                 _srcMesh.SetColors(_data.Select(p => new Color(p.x, p.y, p.z, 1.0f)).ToArray());
@@ -240,17 +237,20 @@ public static class URender
         return _enable;
     }
 
-    public static bool EnableKeywords<T>(this Material _material, string[] _keywords, T _target) where T : Enum
-    {
-        int index = Convert.ToInt32(_target);
-        EnableKeywords(_material, _keywords, index);
-        return index != 0;
-    }
-
     public static void EnableKeywords(this Material _material, string[] _keywords, int _target)
     {
         for (int i = 0; i < _keywords.Length; i++)
             _material.EnableKeyword(_keywords[i], i + 1 == _target);
+    }
+
+    public static bool EnableKeywords<T>(this Material _material, T _target) where T:Enum
+    {
+        int index = UEnum.GetIndex(_target);
+        var keywords = UEnum.GetEnums<T>();
+        for (int i = 0; i < keywords.Length; i++)
+            _material.EnableKeyword(keywords[i].ToString(), i == index);
+
+        return index != 0;
     }
     //Compute Shader
     public static void EnableKeyword(this ComputeShader _computeShader, string _keyword, bool _enable)
@@ -267,13 +267,15 @@ public static class URender
             _computeShader.EnableKeyword(_keywords[i], i + 1 == _target);
     }
     //Global
-    public static bool EnableGlobalKeywords<T>(string[] _keywords, T _target) where T : Enum => EnableGlobalKeywords(_keywords, Convert.ToInt32(_target));
-    public static bool EnableGlobalKeywords(string[] _keywords, int _target)
+    public static bool EnableGlobalKeywords<T>(T _target) where T : Enum
     {
-        for (int i = 0; i < _keywords.Length; i++)
-            EnableGlobalKeyword(_keywords[i], (i + 1) == _target);
-        return _target != 0;
+        int index = UEnum.GetIndex(_target);
+        var keywords = UEnum.GetEnums<T>();
+        for (int i = 0; i < keywords.Length; i++)
+            EnableGlobalKeyword(keywords[i].ToString(), i==index);
+        return index != 0;
     }
+
     public static bool EnableGlobalKeyword(string _keyword, bool _enable)
     {
         if (_enable)
@@ -282,6 +284,7 @@ public static class URender
             Shader.DisableKeyword(_keyword);
         return _enable;
     }
+
     public static void EnableKeyword(this CommandBuffer _buffer,string _keyword, bool _enable)
     {
         if (_enable)

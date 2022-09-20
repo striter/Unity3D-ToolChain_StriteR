@@ -112,4 +112,20 @@ namespace MeshFragment
     //     public IList<Color> colors => m_Colors;
     //     public IList<int> indexes => m_Indexes;
     // }
+    
+    [Serializable]
+    public struct FMeshFragmentCluster:IEnumerable<FMeshFragmentData>
+    {
+        public FMeshFragmentData[] m_MeshFragments;
+        public IEnumerator<FMeshFragmentData> GetEnumerator()
+        {
+            foreach (var meshData in m_MeshFragments)
+                yield return meshData;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
 }

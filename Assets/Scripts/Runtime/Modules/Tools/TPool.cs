@@ -224,7 +224,7 @@ namespace TPool
                 m_Dic.Add(identity, targetItem);
             Transform trans = GetItemTransform(targetItem);
             trans.SetAsLastSibling();
-            // trans.name = identity.ToString();
+            trans.name = identity.ToString();
             trans.SetActive(true);
             
             if(targetItem is IPoolCallback<T> iPoolSpawn)

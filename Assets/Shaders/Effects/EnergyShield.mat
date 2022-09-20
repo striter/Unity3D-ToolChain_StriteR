@@ -88,7 +88,7 @@ Material:
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _InnerGlowClip: 0.81
-    - _InnerGlowFrequency: 1.47
+    - _InnerGlowFrequency: 3.7
     - _InnerGlowSpeed: 1.41
     - _InnerGlowWidth: 7.2
     - _Metallic: 0
@@ -107,7 +107,7 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _InnerColor: {r: 0, g: 0.1581002, b: 0.764151, a: 1}
-    - _InnerGlow: {r: 1.9388796, g: 2.0290165, b: 2.95714, a: 0}
+    - _InnerColor: {r: 0, g: 0.1581002, b: 0.764151, a: 0.65882355}
+    - _InnerGlow: {r: 0, g: 0, b: 0, a: 0}
     - _RimColor: {r: 1.925453, g: 2.1575997, b: 3.1544654, a: 1}
   m_BuildTextureStacks: []

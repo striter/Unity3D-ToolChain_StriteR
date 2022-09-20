@@ -37,17 +37,17 @@ namespace Boids.Behaviours
         public bool TickStateSwitch(BoidsActor _actor, float _deltaTime,out T _nextBehaviour)
         {
             _nextBehaviour = m_ChillBehaviour;
-            if (m_ReactionCounter.m_Counting)
+            if (m_ReactionCounter.m_Playing)
                 return false;
             
             m_StartleCounter.Tick(_deltaTime);
-            return !m_StartleCounter.m_Counting;
+            return !m_StartleCounter.m_Playing;
         }
         
         public void TickVelocity(BoidsActor _actor, IEnumerable<BoidsActor> _flock, float _deltaTime,
             ref Vector3 _velocity)
         {
-            if (m_ReactionCounter.m_Counting)
+            if (m_ReactionCounter.m_Playing)
             {
                 if(m_ReactionCounter.Tick(_deltaTime))
                     _actor.m_Animation.SetAnimation(m_StartleConfig.animName);
@@ -107,7 +107,7 @@ namespace Boids.Behaviours
         {
             _tiredBehaviour = m_TiredBehaviour;
             m_TiringCounter.Tick(_deltaTime);
-            if (m_TiringCounter.m_Counting)
+            if (m_TiringCounter.m_Playing)
                 return false;
 
             if (!_actor.m_Target.TryLanding())
@@ -134,7 +134,7 @@ namespace Boids.Behaviours
             _velocity += this.TickEvading(_actor,_deltaTime,m_EvadeConfig);
             
             m_AnimationCounter.Tick(_deltaTime);
-            if (m_AnimationCounter.m_Counting)
+            if (m_AnimationCounter.m_Playing)
                 return;
             
             if (m_Gliding.Check(_velocity.y > 0))
@@ -298,7 +298,7 @@ namespace Boids.Behaviours
         {
             _nextBehaviour = m_NextBehaviour;
             m_HoverCounter.Tick(_deltaTime);
-            return !m_HoverCounter.m_Counting;
+            return !m_HoverCounter.m_Playing;
         }
 
 #if UNITY_EDITOR
@@ -411,7 +411,7 @@ namespace Boids.Behaviours
         public bool TickStateSwitch(BoidsActor _actor, float _deltaTime,out T _nextBehaviour)
         {
             _nextBehaviour=m_NextBehaviour;
-            if (m_LandCounter.m_Counting)
+            if (m_LandCounter.m_Playing)
                 return false;
             return true;
         }
@@ -509,14 +509,14 @@ namespace Boids.Behaviours
                     _position += flocking;
                     _rotation = Quaternion.Lerp(_rotation, Quaternion.LookRotation(flocking,_actor.m_Target.m_Up),_deltaTime*5f);
 
-                    if(!m_StateCounter.m_Counting)
+                    if(!m_StateCounter.m_Playing)
                         SetState(_actor,EPerchingState.Alert);
                 }
                     break;
                 case EPerchingState.Alert:
                 {
                     TickRotate(_actor,_deltaTime,ref _rotation);
-                    if (m_StateCounter.m_Counting)
+                    if (m_StateCounter.m_Playing)
                         return;
                     
                     if ( this.TickFlocking(_actor,_flock,_deltaTime,m_FlockingConfig).sqrMagnitude > float.Epsilon)
@@ -530,14 +530,14 @@ namespace Boids.Behaviours
                 case EPerchingState.Idle:
                 {
                     TickRotate(_actor,_deltaTime,ref _rotation);
-                    if (m_StateCounter.m_Counting)
+                    if (m_StateCounter.m_Playing)
                         return;
                     SetState(_actor,EPerchingState.Relax);
                 }
                     break;
                 case EPerchingState.Relax:
                 {
-                    if (m_StateCounter.m_Counting)
+                    if (m_StateCounter.m_Playing)
                         return;
 
                     if (URandom.Random01() <= m_Config.relaxedMovingPossibility)
@@ -561,7 +561,7 @@ namespace Boids.Behaviours
         void TickRotate(BoidsActor _actor,float _deltaTime,ref Quaternion _rotation)
         {
             m_RotateCooldown.Tick(_deltaTime);
-            if (m_RotateCooldown.m_Counting)
+            if (m_RotateCooldown.m_Playing)
                 return;
 
             _rotation = Quaternion.AngleAxis(rotateSpeed*_deltaTime,_actor.m_Target.m_Up)*_rotation;

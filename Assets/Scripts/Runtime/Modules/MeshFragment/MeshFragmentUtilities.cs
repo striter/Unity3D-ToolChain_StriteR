@@ -89,7 +89,7 @@ namespace MeshFragment
     public static class UMeshFragment
     {
         private static readonly Dictionary<int,MeshFragmentCombiner> kMeshFragmentHelper = new Dictionary<int, MeshFragmentCombiner>();
-        public static void Combine(IList<IMeshFragment> _fragments,Mesh _mesh,Material[] _materialLibrary,out Material[] _embedMaterials)
+        public static void Combine(IList<IMeshFragment> _fragments,Mesh _mesh,Material[] _materialLibrary,out Material[] _embedMaterials,EVertexData _inputs = (EVertexData)int.MaxValue)
         {
             TSPoolList<MeshFragmentCombiner>.Spawn(out var subMeshCombiners);
             var totalVertexCount = 0;
@@ -108,6 +108,11 @@ namespace MeshFragment
                 fragmentCollector.Append(fragment);
                 totalVertexCount += fragment.vertices.Count;
             }
+
+            bool normalValid = _inputs.IsFlagEnable(EVertexData.Normal);
+            bool tangentValid = _inputs.IsFlagEnable(EVertexData.Tangent);
+            bool uvValid = _inputs.IsFlagEnable(EVertexData.UV0);
+            bool colorValid = _inputs.IsFlagEnable(EVertexData.Color);
             
             NativeArray<Vector3> vertices=new NativeArray<Vector3>(totalVertexCount,Allocator.Temp);
             NativeArray<Vector3> normals=new NativeArray<Vector3>(totalVertexCount,Allocator.Temp);
@@ -130,10 +135,10 @@ namespace MeshFragment
                     for (int k = 0; k < fragmentVertexCount; k++)
                     {
                         vertices[currrentVertexIndex+k]=fragment.vertices[k];
-                        normals[currrentVertexIndex+k]=fragment.normals[k];
-                        tangents[currrentVertexIndex+k]=fragment.tangents[k];
-                        uvs[currrentVertexIndex+k]=fragment.uvs[k];
-                        colors[currrentVertexIndex+k]=fragment.colors[k];
+                        if(normalValid) normals[currrentVertexIndex+k]=fragment.normals[k];
+                        if(tangentValid) tangents[currrentVertexIndex+k]=fragment.tangents[k];
+                        if(uvValid) uvs[currrentVertexIndex+k]=fragment.uvs[k];
+                        if(colorValid) colors[currrentVertexIndex+k]=fragment.colors[k];
                     }
 
                     currrentVertexIndex += fragmentVertexCount;
@@ -141,10 +146,10 @@ namespace MeshFragment
             }
             
             _mesh.SetVertices(vertices);
-            _mesh.SetNormals(normals);
-            _mesh.SetTangents(tangents);
-            _mesh.SetUVs(0,uvs);
-            _mesh.SetColors(colors);
+            if(normalValid) _mesh.SetNormals(normals);
+            if(tangentValid) _mesh.SetTangents(tangents);
+            if(uvValid) _mesh.SetUVs(0,uvs);
+            if(colorValid) _mesh.SetColors(colors);
             
             vertices.Dispose();
             normals.Dispose();

@@ -73,12 +73,12 @@ namespace Boids
         
         public void Tick(float _deltaTime)
         {
-            if (!m_BlendCounter.m_Counting)
+            if (!m_BlendCounter.m_Playing)
                 return;
             m_BlendCounter.Tick(_deltaTime);
             m_MainFilter.transform.localScale = Vector3.one * m_BlendCounter.m_TimeLeftScale;
             m_BlendFilter.transform.localScale = Vector3.one * m_BlendCounter.m_TimeElapsedScale;
-            if (m_BlendCounter.m_Counting)
+            if (m_BlendCounter.m_Playing)
                 return;
             m_MainFilter.sharedMesh = m_BlendFilter.sharedMesh;
             m_MainFilter.transform.localScale = Vector3.one;

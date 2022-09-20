@@ -66,7 +66,7 @@ namespace MeshFragment
             TSPoolList<Vector2>.Recycle(curUVs);
         }
         
-        public static FMeshFragmentData[] BakeMeshFragment(Transform _transform, ref List<Material> _materialLibrary,Func<Vector3,Vector3> _objectToOrientedVertex)
+        public static FMeshFragmentCluster BakeMeshFragment(Transform _transform, ref List<Material> _materialLibrary,Func<Vector3,Vector3> _objectToOrientedVertex)
         {
            TSPoolList<MeshFragmentHarvester>.Spawn(out var collectList); 
             
@@ -100,16 +100,19 @@ namespace MeshFragment
                 }
             }
 
-            var data = collectList.Select(p => new FMeshFragmentData
+            FMeshFragmentCluster data = new FMeshFragmentCluster()
             {
-                embedMaterial = p.m_EmbedMaterial,
-                vertices = p.vertices.ToArray(),
-                indexes = p.indexes.ToArray(),
-                uvs = p.uvs.ToArray(),
-                normals = p.normals.ToArray(),
-                tangents = p.tangents.ToArray(),
-                colors = p.colors.ToArray()
-            }).ToArray();
+                m_MeshFragments = collectList.Select(p => new FMeshFragmentData
+                {
+                    embedMaterial = p.m_EmbedMaterial,
+                    vertices = p.vertices.ToArray(),
+                    indexes = p.indexes.ToArray(),
+                    uvs = p.uvs.ToArray(),
+                    normals = p.normals.ToArray(),
+                    tangents = p.tangents.ToArray(),
+                    colors = p.colors.ToArray()
+                }).ToArray()
+            };
             
             TSPoolList<MeshFragmentHarvester>.Recycle(collectList);
             return data;

@@ -135,7 +135,7 @@ public class UITrailRenderer : MaskableGraphic
             var upward0 = new Vector2(-forward0.y, forward0.x);
             var upward1 = new Vector2(-forward1.y, forward1.x);
             // var clockwise = Vector2.Dot(upward1, forward0) > 0;
-            var cornerDirection = ((upward0 + upward1) / 2).ToVector3(0f) ;
+            var cornerDirection = ((upward0 + upward1) / 2).ToVector3XZ(0f) ;
             cornerDirection = objectToWorld.MultiplyVector(cornerDirection);
             cornerDirection *= m_Width.Evaluate((m_TimeElapsed-m_TrailPaths[i].time)/m_Time);
             var pointT = curPosition + cornerDirection;
@@ -157,7 +157,7 @@ public class UITrailRenderer : MaskableGraphic
 
         var finalPoint = transform.position;
         var lastForwardDirection = forwardDirections[forwardDirections.Length-1];
-        var lastUpDirection = (new Vector2(-lastForwardDirection.y,lastForwardDirection.x).normalized).ToVector3();
+        var lastUpDirection = (new Vector2(-lastForwardDirection.y,lastForwardDirection.x).normalized).ToVector3XZ();
         lastUpDirection = objectToWorld.MultiplyVector(lastUpDirection);
         var lastWidth = m_Width.Evaluate(0f);
         var lastColor = m_Gradient.Evaluate(0f);

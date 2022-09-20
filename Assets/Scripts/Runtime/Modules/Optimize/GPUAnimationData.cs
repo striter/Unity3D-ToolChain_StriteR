@@ -6,8 +6,8 @@ namespace Rendering.Optimize
 {
     public enum EGPUAnimationMode
     {
-        Vertex=1,
-        Transform=2,
+        _ANIM_VERTEX=1,
+        _ANIM_BONE=2,
     }
     
     public class GPUAnimationData : ScriptableObject

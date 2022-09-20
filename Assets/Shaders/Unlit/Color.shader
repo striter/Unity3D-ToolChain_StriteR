@@ -14,9 +14,8 @@
 
 	SubShader
 	{ 
-		Tags {"RenderType" = "HDREmitter" "IgnoreProjector" = "True" "Queue" = "Transparent" }
+		Tags {"Queue" = "Transparent" }
 		
-		Lighting Off Fog { Color(0,0,0,0) }
 		ZTest [_ZTest]
 		Cull [_Cull]
 		ColorMask [_ColorMask]
@@ -46,7 +45,7 @@
 				float2 uv:TEXCOORD1;
 			};
 
-			sampler2D _MainTex;
+			TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
 			INSTANCING_BUFFER_START
 				INSTANCING_PROP(float4, _Color)
 			INSTANCING_BUFFER_END
@@ -63,7 +62,7 @@
 
 			half4 frag(v2f i) : SV_Target
 			{
-				half4 col = tex2D(_MainTex,i.uv) * INSTANCE(_Color);
+				half4 col = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv) * INSTANCE(_Color);
 				return col;
 			}
 			ENDHLSL

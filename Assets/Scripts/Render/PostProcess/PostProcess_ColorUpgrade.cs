@@ -72,7 +72,7 @@ namespace Rendering.PostProcess
                                   m_ChannelMix  || 
                                   m_Bloom;
         
-        public static readonly PPData_ColorUpgrade m_Default = new PPData_ColorUpgrade()
+        public static readonly PPData_ColorUpgrade kDefault = new PPData_ColorUpgrade()
         {
             // m_FXAA =  EFXAA.None,
             // m_ContrastSkip = .1f,
@@ -103,7 +103,7 @@ namespace Rendering.PostProcess
                 m_LayerMask = int.MaxValue,
                 m_Threshold = 0.25f,
                 m_Color = Color.white,
-                m_Blur = PPData_Blurs.m_Default,
+                m_Blur = PPData_Blurs.kDefault,
                 m_BloomDebug = false,
             },
         };

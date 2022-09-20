@@ -18,8 +18,8 @@ namespace Rendering.PostProcess
     public enum EPixelBound
     {
         None=0,
-        Grid,
-        Circle,
+        _PIXEL_GRID,
+        _PIXEL_CIRCLE,
     }
 
     public class PostProcess_Stylize : PostProcessBehaviour<PPCore_Stylize, PPData_Stylize>
@@ -45,7 +45,7 @@ namespace Rendering.PostProcess
         [MFoldout(nameof(m_Stylize), EStylize.BilateralFilter)] [Range(0.1f, 5f)] public float m_BilaterailSize;
         [MFoldout(nameof(m_Stylize), EStylize.BilateralFilter)] [Range(0.01f, 1f)] public float m_BilateralFactor;
         public bool Validate() => m_Stylize != EStylize.None;
-        public static readonly PPData_Stylize m_Default = new PPData_Stylize()
+        public static readonly PPData_Stylize kDefault = new PPData_Stylize()
         {
             m_Stylize = EStylize.Pixel,
             m_DownSample = 7,
@@ -69,7 +69,6 @@ namespace Rendering.PostProcess
         #region ShaderProperties
         static readonly int ID_PixelizeDownSample = Shader.PropertyToID("_STYLIZE_PIXEL_DOWNSAMPLE");
         static readonly RenderTargetIdentifier RT_PixelizeDownSample = new RenderTargetIdentifier(ID_PixelizeDownSample);
-        static readonly string[] KW_PixelGrid = new string[] { "_PIXEL_GRID" ,"_PIXEL_CIRCLE"};
         static readonly int ID_PixelGridColor = Shader.PropertyToID("_PixelGridColor");
         static readonly int ID_PixelGridWidth = Shader.PropertyToID("_PixelGridWidth");
 
@@ -91,7 +90,7 @@ namespace Rendering.PostProcess
             {
                 case EStylize.Pixel:
                 {
-                    if (m_Material.EnableKeywords(KW_PixelGrid, _ssaoData.m_PixelGrid))
+                    if (m_Material.EnableKeywords(_ssaoData.m_PixelGrid))
                     {
                         m_Material.SetColor(ID_PixelGridColor,_ssaoData.m_PixelGridColor);
                         m_Material.SetVector(ID_PixelGridWidth, new Vector2(_ssaoData.m_GridWidth, 1f - _ssaoData.m_GridWidth));

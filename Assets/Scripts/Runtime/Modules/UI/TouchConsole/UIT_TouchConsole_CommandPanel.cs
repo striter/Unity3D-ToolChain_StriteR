@@ -241,7 +241,7 @@ public partial class TouchConsole
             command.KeycodeTick();
 
         m_FastKeyCooldownTimer.Tick(_deltaTime);
-        if (m_FastKeyCooldownTimer.m_Counting)
+        if (m_FastKeyCooldownTimer.m_Playing)
             return;
         if (Input.touchCount >= 5 || Input.GetKey(KeyCode.BackQuote))
         {
@@ -373,7 +373,7 @@ public partial class TouchConsole
         public void Play<T>(T defaultValue, Action<T> _OnFlagChanged) where T : Enum
         {
             m_ToggleGrid.Clear();
-            foreach (T enumValue in UEnum.GetValues<T>())
+            foreach (T enumValue in UEnum.GetEnums<T>())
             {
                 Toggle tog = m_ToggleGrid.Spawn(Convert.ToInt32(enumValue));
                 tog.isOn = defaultValue.IsFlagEnable(enumValue);

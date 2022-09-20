@@ -96,8 +96,6 @@ Shader "Hidden/BillboardUber"
 			#include "Assets/Shaders/Library/Additional/Local/AlphaClip.hlsl"
 			#pragma shader_feature_local _ALPHACLIP
 
-			#include "Assets/Shaders/Library/Additional/Grid.hlsl"
-			#pragma multi_compile _ _EDITGRID
 			#include "Assets/Shaders/Library/Additional/CloudShadow.hlsl"
 			#pragma shader_feature _CLOUDSHADOW
 			#include "Assets/Shaders/Library/Additional/HorizonBend.hlsl"

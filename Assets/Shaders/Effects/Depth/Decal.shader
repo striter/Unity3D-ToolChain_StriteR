@@ -3,6 +3,7 @@
 	Properties
 	{
 		_MainTex("Decal Texture",2D) = "white"{}
+		[Toggle(_SHAPE)]_Shape("Shape Texture",int)=0
 		_Color("Decal Color",Color)=(1,1,1,1)
 		[KeywordEnum(NONE, BOX,SPHERE)]_DECALCLIP("Decal Clip Volume",int)=0
 	}
@@ -19,7 +20,8 @@
 			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			#pragma multi_compile_local  _DECALCLIP_NONE _DECALCLIP_BOX _DECALCLIP_SPHERE
+			#pragma multi_compile_local_fragment  _DECALCLIP_NONE _DECALCLIP_BOX _DECALCLIP_SPHERE
+			#pragma multi_compile_local_fragment _SHAPE
 			
             // #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             // #pragma multi_compile_local _ _MAIN_LIGHT_CALCULATE_SHADOWS
@@ -57,7 +59,13 @@
 				half3 positionOS = TransformWorldToObject(positionWS);
 				half2 decalUV=positionOS.xy+.5;
 				decalUV=TRANSFORM_TEX(decalUV,_MainTex);
-				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,decalUV)* _Color;
+
+				#if _SHAPE
+					half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,decalUV).r;
+				#else
+					half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,decalUV);
+				#endif
+				color *= _Color;
 				#if _DECALCLIP_SPHERE
 				color.a*=step(sqrDistance(positionOS),.25h);
 				#elif _DECALCLIP_BOX

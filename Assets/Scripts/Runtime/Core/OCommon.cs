@@ -246,7 +246,7 @@ public class Ticker
 public class Counter
 {
     public float m_TimerDuration { get; private set; } = 0;
-    public bool m_Counting { get; private set; } = false;
+    public bool m_Playing { get; private set; } = false;
     public float m_TimeLeft { get; private set; } = -1;
     public float m_TimeLeftScale { get; private set; } = 0;
     public float m_TimeElapsed { get; private set; }
@@ -266,7 +266,7 @@ public class Counter
     {
         m_TimeLeft = Mathf.Clamp( _timeCheck,0f,m_TimerDuration);
         m_TimeElapsed = m_TimerDuration - m_TimeLeft;
-        m_Counting = m_TimeLeft > 0;
+        m_Playing = m_TimeLeft > 0;
         m_TimeLeftScale = m_TimeLeft / m_TimerDuration;
         m_TimeElapsedScale = 1f - m_TimeLeftScale;
     }
@@ -277,7 +277,7 @@ public class Counter
         if (m_TimeLeft <= 0)
             return false;
         TickDelta(m_TimeLeft - deltaTime);
-        if (!m_Counting)
+        if (!m_Playing)
         {
             m_TimeLeft = 0;
             return true;

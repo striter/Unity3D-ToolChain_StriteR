@@ -10,16 +10,16 @@ namespace Rendering.Pipeline
         public RenderPassEvent m_Event= RenderPassEvent.AfterRenderingTransparents;
         public PerObjectData m_PerObjectData;
         [CullingMask] public int m_Layermask;
-        SRP_MultiPass m_OutlinePass ;
+        SRP_MultiPass m_MultiPass ;
         public override void Create()
         {
-            m_OutlinePass = new SRP_MultiPass(m_PassName,m_Layermask,m_PerObjectData) {
+            m_MultiPass = new SRP_MultiPass(m_PassName,m_Layermask,m_PerObjectData) {
                 renderPassEvent = m_Event,
             };
         }
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
-            renderer.EnqueuePass(m_OutlinePass);
+            renderer.EnqueuePass(m_MultiPass);
         }
     }
     public class SRP_MultiPass:ScriptableRenderPass

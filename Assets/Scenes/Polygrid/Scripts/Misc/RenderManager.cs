@@ -53,11 +53,11 @@ namespace  PolyGrid
 
         void TickPop(float _deltaTime)
         {
-            if (!m_PopCounter.m_Counting)
+            if (!m_PopCounter.m_Playing)
                 return;
             m_PopCounter.Tick(_deltaTime);
             Shader.SetGlobalFloat(kPopStrength,m_PopCurve.Evaluate(m_PopCounter.m_TimeElapsed));
-            if (m_PopCounter.m_Counting)
+            if (m_PopCounter.m_Playing)
                 return;
             EndPop();
         }

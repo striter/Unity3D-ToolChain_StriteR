@@ -94,7 +94,7 @@ namespace Rendering.PostProcess
         [MTitle] public bool m_EnableVolumetricBlur;
         [MFoldout(nameof(m_EnableVolumetricBlur), true)] public PPData_Blurs m_VolumetricBlur;
         public bool Validate() => m_VolumetricLight;
-        public static readonly PPData_Transparent m_Default = new PPData_Transparent()
+        public static readonly PPData_Transparent kDefault = new PPData_Transparent()
         {
             m_VolumetricLight = true,
             m_VolumetricLightData = new Data_VolumetricLight()
@@ -108,7 +108,7 @@ namespace Rendering.PostProcess
             },
             m_VolumetricDownSample = 1,
             m_EnableVolumetricBlur=false,
-            m_VolumetricBlur=PPData_Blurs.m_Default,
+            m_VolumetricBlur=PPData_Blurs.kDefault,
         };
 
         [Serializable]

@@ -91,6 +91,13 @@ namespace Geometry.Voxel
             vOffset = V2-V0;
             normal = Vector3.Cross(uOffset.normalized,vOffset.normalized).normalized;
         }
+        /// <summary>
+        /// 获取未归一化的法线
+        /// </summary>
+        /// <returns></returns>
+        public Vector3 GetNormalUnnormalized() {
+            return Vector3.Cross(uOffset, vOffset);
+        }
         public Vector3 GetUVPoint(float u,float v)=>(1f - u - v) * this[0] + u * uOffset + v * vOffset;
 
         public GPlane GetPlane() => new GPlane(normal,V0);

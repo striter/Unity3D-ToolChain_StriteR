@@ -469,12 +469,26 @@ public static class UCollection
         TSPoolList<T>.Recycle(tempList);
     }
 
-    public static T LastElement<T>(this T[] _array)=> _array[_array.Length - 1];
+    public static T Last<T>(this T[] _array)=> _array[_array.Length - 1];
     public static void FillArray<T>(this IEnumerable<T> _collection, T[] _array)
     {
         int index=0;
         foreach (var element in _collection)
             _array[index++] = element;
+    }
+
+    public static int IndexOf<T>(this T[] _array, T _target, int _offset=0)
+    {
+        var count = _array.Length;
+        for (int i = 0; i < count; i++)
+        {
+            int curIndex = (_offset + i) % count;
+            if(!_array[curIndex].Equals(_target))
+                continue;
+            return curIndex;
+        }
+
+        return -1;
     }
     #endregion
     #region List

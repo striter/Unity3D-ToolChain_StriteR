@@ -46,7 +46,6 @@ Shader "Game/Lit/Transparecy/Glass"
             #pragma fragment frag
             #pragma shader_feature_local_fragment _NORMALTEX
             #pragma shader_feature_local_fragment _REFRACTION
-            #pragma multi_compile _ ENVIRONMENT_CUSTOM ENVIRONMENT_INTERPOLATE
 
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "Assets/Shaders/Library/Lighting.hlsl"

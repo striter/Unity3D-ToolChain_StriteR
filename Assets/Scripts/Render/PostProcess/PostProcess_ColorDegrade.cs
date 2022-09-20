@@ -14,8 +14,8 @@ namespace Rendering.PostProcess
     public enum EVHSScreenCut
     {
         None=0,
-        Hard=1,
-        Scaled=2,
+        _SCREENCUT_HARD=1,
+        _SCREENCUT_SCALED=2,
     }
     [Serializable]
     public struct PPData_ColorDegrade:IPostProcessParameter
@@ -63,9 +63,9 @@ namespace Rendering.PostProcess
 
         public bool Validate() => m_ScreenCut != EVHSScreenCut.None || m_PixelDistort || m_LineDistort ||
                                   m_VortexDistort || m_ColorBleed || m_Grain || m_Vignette;
-        public static readonly PPData_ColorDegrade m_Default = new PPData_ColorDegrade()
+        public static readonly PPData_ColorDegrade kDefault = new PPData_ColorDegrade()
         {
-            m_ScreenCut = EVHSScreenCut.Hard,
+            m_ScreenCut = EVHSScreenCut._SCREENCUT_HARD,
             m_ScreenCutDistance = Vector2.one * 0.1f,
 
             m_PixelDistort = true,
@@ -108,7 +108,6 @@ namespace Rendering.PostProcess
     public class PPCore_ColorDegrade:PostProcessCore<PPData_ColorDegrade>
     {
         #region ShaderProperties
-        static readonly string[] KW_SCREENCUT = { "_SCREENCUT_HARD", "_SCREENCUT_SCALED" };
         static readonly int ID_ScreenCutTarget = Shader.PropertyToID("_ScreenCutTarget");
 
         const string KW_PixelDistort = "_PIXELDISTORT";
@@ -151,8 +150,8 @@ namespace Rendering.PostProcess
         public override void OnValidate(ref PPData_ColorDegrade _data)
         {
             base.OnValidate(ref _data);
-            if(m_Material.EnableKeywords(KW_SCREENCUT, _data.m_ScreenCut))
-                m_Material.SetVector(ID_ScreenCutTarget,(Vector2.one+ (_data.m_ScreenCut == EVHSScreenCut.Scaled?1:-1)*_data.m_ScreenCutDistance) /2f);
+            if(m_Material.EnableKeywords(_data.m_ScreenCut))
+                m_Material.SetVector(ID_ScreenCutTarget,(Vector2.one+ (_data.m_ScreenCut == EVHSScreenCut._SCREENCUT_SCALED?1:-1)*_data.m_ScreenCutDistance) /2f);
 
             if (m_Material.EnableKeyword(KW_VortexDistort, _data.m_VortexDistort))
             {

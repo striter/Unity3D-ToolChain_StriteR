@@ -9,24 +9,26 @@ namespace Rendering.Pipeline
     {
         private ScriptableRenderer m_Renderer;
         private SRD_MaskData m_MaskData;
-        
-        private readonly PassiveInstance<Material> m_HighlightRender=new PassiveInstance<Material>(() =>
-        {
-            var m_HighlightRender = new Material(RenderResources.FindInclude("Game/Unlit/Color")) { hideFlags = HideFlags.HideAndDontSave };
-            m_HighlightRender.SetColor(DShaderProperties.kColor, Color.white);
-            return m_HighlightRender;
-        },GameObject.DestroyImmediate);
+
+        private readonly PassiveInstance<Material> m_HighlightRender=new PassiveInstance<Material>(() => new Material(RenderResources.FindInclude("Game/Additive/Outline")) { hideFlags = HideFlags.HideAndDontSave },GameObject.DestroyImmediate);
 
         public SRP_MaskTexture Setup(SRD_MaskData _cullingMask,ScriptableRenderer _renderer)
         {
             m_MaskData = _cullingMask;
             m_Renderer = _renderer;
+            m_HighlightRender.m_Value.SetColor("_OutlineColor",m_MaskData.color);
+            m_HighlightRender.m_Value.SetFloat("_OutlineWidth",m_MaskData.extendWidth);
+            m_HighlightRender.m_Value.EnableKeywords(m_MaskData.outlineVertex);
+            m_HighlightRender.m_Value.SetInt(KShaderProperties.kCull,(int)CullMode.Off);
+            m_HighlightRender.m_Value.SetInt(KShaderProperties.kColorMask,(int)ColorWriteMask.All);
+            m_HighlightRender.m_Value.SetInt(KShaderProperties.kZWrite,1);
             return this;
         }
 
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
-            cmd.GetTemporaryRT(DRenderTextures.kCameraMaskTexture, cameraTextureDescriptor.width, cameraTextureDescriptor.height, 0, FilterMode.Bilinear, RenderTextureFormat.R8);
+            cameraTextureDescriptor.colorFormat = RenderTextureFormat.R8;
+            cmd.GetTemporaryRT(DRenderTextures.kCameraMaskTexture, cameraTextureDescriptor);
             ConfigureTarget(DRenderTextures.kCameraMaskTexture);
             base.Configure(cmd, cameraTextureDescriptor);
         }
@@ -49,11 +51,8 @@ namespace Rendering.Pipeline
             _context.ExecuteCommandBuffer(buffer);
 
             DrawingSettings drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
-            m_HighlightRender.m_Value.SetInt(DShaderProperties.kColorMask,(int)ColorWriteMask.All);
-            m_HighlightRender.m_Value.SetInt(DShaderProperties.kZTest,(int)CompareFunction.Less);
-            m_HighlightRender.m_Value.SetInt(DShaderProperties.kCull,(int)CullMode.Back);
             drawingSettings.overrideMaterial = m_HighlightRender;
-            FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = m_MaskData.cullingMask };
+            FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = m_MaskData.renderMask };
             _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
 
             buffer.Clear();

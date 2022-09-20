@@ -11,16 +11,16 @@ half FogFactor(float z)
 {
     half fogFactor=0;
 
-    #if defined(FOG_LINEAR) || defined(FOG_EXP) || defined(FOG_EXP2)
+#if defined(FOG_LINEAR) || defined(FOG_EXP) || defined(FOG_EXP2)
     float clipZ01=UNITY_Z_0_FAR_FROM_CLIPSPACE(z);
-    #if defined(FOG_LINEAR)
+#if defined(FOG_LINEAR)
     fogFactor = saturate(clipZ01 * unity_FogParams.z + unity_FogParams.w);
-    #elif defined(FOG_EXP) || defined(FOG_EXP2)
+#elif defined(FOG_EXP) || defined(FOG_EXP2)
     // factor = exp(-(density*z)^2)
     // -density * z computed at vertex
     return real(unity_FogParams.x * clipZ01);
-    #endif
-    #endif
+#endif
+#endif
     
     return fogFactor;
 }
@@ -43,13 +43,14 @@ half3 FogInterpolate(half3 srcColor,half fogFactor)
     half density=FogDesnity(fogFactor);
     return lerp(srcColor,unity_FogColor.rgb,density*unity_FogColor.a);
 }
-
+#if !defined(NFOG)
 #if !defined(IFOG)||defined(NFOG)
     #define V2F_FOG(index)  
-    #define FOG_TRANSFER(v)  
+    #define FOG_TRANSFER(o)  
     #define FOG_MIX(i,col) 
 #else
     #define V2F_FOG(index) half fogFactor:TEXCOORDindex;
-    #define FOG_TRANSFER(v) v.fogFactor=FogFactor(v.positionCS.z);
+    #define FOG_TRANSFER(o) o.fogFactor=FogFactor(o.positionCS.z);
     #define FOG_MIX(i,col) col=FogInterpolate(col,i.fogFactor);
+#endif
 #endif

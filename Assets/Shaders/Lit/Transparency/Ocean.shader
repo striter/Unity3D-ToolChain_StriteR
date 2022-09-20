@@ -79,8 +79,6 @@
 			#pragma multi_compile_instancing
 			#pragma multi_compile_fragment _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
-            #pragma multi_compile _ ENVIRONMENT_CUSTOM ENVIRONMENT_INTERPOLATE
-		
             
             #pragma shader_feature_local_vertex _WAVE
             #pragma shader_feature_local_fragment _NORMALTEX
@@ -283,7 +281,7 @@
             	
             	float3 aboveSurfaceColor=albedo*indirectDiffuse+indirectSpecular;
             	
-            	float4 reflectionSample = IndirectSpecular(screenUV,eyeDepthSurface,normalTS);
+            	float4 reflectionSample = IndirectSSRSpecular(screenUV,eyeDepthSurface,normalTS);
             	float4 reflectionColor =  INSTANCE(_ReflectionColor);
 
             	float reflectionAmount = max(reflectionSample.a,(1-light.shadowAttenuation));

@@ -35,7 +35,7 @@ public class FPSCameraController : CameraController
         if (B_SelfSetoffRecoil)
         {
             m_RecoilTimer.Tick(_deltaTime);
-            if (!m_RecoilTimer.m_Counting)
+            if (!m_RecoilTimer.m_Playing)
             {
                 f_recoilPitch = Mathf.Lerp(f_recoilPitch, 0, f_angleSmoothParam);
                 f_recoilYaw = Mathf.Lerp(f_recoilYaw, 0, f_angleSmoothParam);

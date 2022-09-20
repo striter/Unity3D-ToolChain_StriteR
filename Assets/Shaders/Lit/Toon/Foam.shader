@@ -52,7 +52,6 @@ Shader "Game/Lit/Toon/Foam"
 				INSTANCING_PROP(float,_FoamDistortStrength)
 				INSTANCING_PROP(float4,_FoamDistortTex_ST)
             INSTANCING_BUFFER_END
-            #pragma multi_compile _ ENVIRONMENT_CUSTOM ENVIRONMENT_INTERPOLATE
             
             v2f vert (a2v v)
             {

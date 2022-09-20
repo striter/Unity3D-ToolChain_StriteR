@@ -214,12 +214,12 @@ float3 Blend_Screen(float3 _src, float3 _dst)
 //Value Remap
 float invlerp(float _a, float _b, float _value)
 {
-    return (_value - _a) / (_b - _a);
+    return (_value - _a) * rcp(_b - _a);
 }
 
 float2 invlerp(float2 _a, float2 _b, float2 _value)
 {
-    return (_value - _a) / (_b - _a);
+    return (_value - _a) * rcp(_b - _a);
 }
 
 half remap(half _value, half _from1, half _to1, half _from2, half _to2)

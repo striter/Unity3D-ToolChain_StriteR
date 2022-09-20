@@ -65,7 +65,7 @@ namespace PhysicsTest
                 return;
 
             m_GravityGunCounter.Tick(_deltaTime);
-            if (m_GravityGunCounter.m_Counting||!m_AltFiring)
+            if (m_GravityGunCounter.m_Playing||!m_AltFiring)
                 return;
 
             if (!Physics.Raycast(m_Head.position, m_Head.forward, out RaycastHit _hit, float.MaxValue, -1) || !TargetInteractable(_hit.collider, out Rigidbody suckTarget))

@@ -27,10 +27,19 @@ public static class TDataInterpolate
     
     private static readonly Type kInterpolate = typeof(IInterpolate<>);
     private static readonly Dictionary<Type, MethodInfo> kInterpolateMethod = new Dictionary<Type, MethodInfo>();
+    private static readonly HashSet<Type> kNoneInterpolation = new HashSet<Type>();
 
     public static T Interpolate<T>(T _src, T _dst, float _interpolate) where T:struct=> (T)Interpolate(typeof(T),_src,_dst,_interpolate);
     static object Interpolate(Type _type, object _src, object _dst, float _interpolate)
     {
+        if (kNoneInterpolation.Contains(_type))
+            return 1f-_interpolate < float.Epsilon ? _dst : _src;
+        if (_type.IsClass)
+        {
+            kNoneInterpolation.Add(_type);
+            return Interpolate(_type, _src, _dst, _interpolate);
+        }
+        
         if (kBasicInterpolations.ContainsKey(_type))
             return kBasicInterpolations[_type](_src, _dst, _interpolate);
 

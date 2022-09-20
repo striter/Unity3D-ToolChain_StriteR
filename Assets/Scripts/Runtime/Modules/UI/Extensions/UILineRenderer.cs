@@ -61,8 +61,8 @@ public class UILineRenderer : MaskableGraphic
             curIndex += 2;
         }
 
-        var lastPoint = m_LocalPositions.Last();
-        var lastUpDelta = upDeltas.Last().normalized;
+        var lastPoint = Enumerable.Last(m_LocalPositions);
+        var lastUpDelta = Enumerable.Last(upDeltas).normalized;
         totalLength += lastUpDelta.magnitude;
         var lastUpDirection = lastUpDelta.normalized;
         vertices.Add(new UIVertex() { position = lastPoint - lastUpDirection * m_Width, uv0 = new Vector4(totalLength, 0), color = color });

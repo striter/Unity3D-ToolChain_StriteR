@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Boids/Boids.unity
     guid: 0a8c10a62a773144f9506281c4155a51
   - enabled: 0
-    path: Assets/Scenes/Rendering/GI/GI.unity
+    path: Assets/Scenes/Rendering/GI/GIInterpolate.unity
     guid: 8f4db0d9de6e4ee41a5926b446f218bd
   - enabled: 0
     path: Assets/Scenes/Physics/Physics.unity

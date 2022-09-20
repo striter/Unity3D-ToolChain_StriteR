@@ -14,7 +14,7 @@ namespace UnityEditor.Extensions
         [SerializeField] AnimationClip[] m_TargetAnimations;
         SerializedProperty m_AnimationProperty;
         string m_BoneExposeRegex="";
-        EGPUAnimationMode m_Mode= EGPUAnimationMode.Transform;
+        EGPUAnimationMode m_Mode= EGPUAnimationMode._ANIM_BONE;
 
         void OnEnable()
         {
@@ -81,7 +81,7 @@ namespace UnityEditor.Extensions
             m_Mode = (EGPUAnimationMode)EditorGUILayout.EnumPopup("Type:",m_Mode);
             EditorGUILayout.EndHorizontal();
 
-            if(m_Mode==EGPUAnimationMode.Vertex)
+            if(m_Mode==EGPUAnimationMode._ANIM_VERTEX)
             {
                 if (GUILayout.Button("Generate"))
                     GenerateVertexTexture(m_TargetPrefab, m_TargetAnimations);
@@ -182,7 +182,7 @@ namespace UnityEditor.Extensions
             DestroyImmediate(instantiatedObj);
 
             GPUAnimationData data = ScriptableObject.CreateInstance<GPUAnimationData>();
-            data.m_Mode = EGPUAnimationMode.Vertex;
+            data.m_Mode = EGPUAnimationMode._ANIM_VERTEX;
             data.m_AnimationClips = instanceParams;
 
             atlasTexture.name = meshName + "_AnimationAtlas";
@@ -313,7 +313,7 @@ namespace UnityEditor.Extensions
                 DestroyImmediate(_instantiatedObj);
 
                 GPUAnimationData data = ScriptableObject.CreateInstance<GPUAnimationData>();
-                data.m_Mode = EGPUAnimationMode.Transform;
+                data.m_Mode = EGPUAnimationMode._ANIM_BONE;
                 data.m_AnimationClips = instanceParams;
                 data.m_ExposeTransforms = exposeTransformParam.ToArray();
 

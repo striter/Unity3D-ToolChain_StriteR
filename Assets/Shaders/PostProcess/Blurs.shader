@@ -22,44 +22,14 @@
         half _FocalEnd;
     #endif
     #include "Assets/Shaders/Library/PostProcess.hlsl"
-    
-	half4 SampleBlurTex(TEXTURE2D_PARAM(_tex,_sampler),float2 uv,float2 offset)
-	{
-		#if defined(_DOF)||defined(_DOF_CLIPSKY)
-			float rawDepth=SampleRawDepth(uv+offset);
-    		half focal=saturate(invlerp(_FocalStart,_FocalEnd,RawToEyeDepth(rawDepth)));
-    		offset*=focal;
-    	#elif _DOF_MASK
-			offset *= (1-max(SAMPLE_TEXTURE2D(_CameraMaskTexture,sampler_CameraMaskTexture,uv+offset).r,SAMPLE_TEXTURE2D(_CameraMaskTexture,sampler_CameraMaskTexture,uv).r));
-		#endif
-		
-	    return SAMPLE_TEXTURE2D(_tex,_sampler,uv+offset);
-	}
-    
-    half4 SampleMainBlur(float2 uv,float2 offset)
-    {
-		float4 color=SampleBlurTex(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),uv,offset);
-		#if defined(_FIRSTBLUR)||!defined(_ENCODE)
-			return color;
-		#endif
-		color.rgb=DecodeFromRGBM(color);
-		return color;
-    }
-
-    half4 RecordBlurTex(float4 _color)
-	{
-		#if defined(_FINALBLUR)||!defined(_ENCODE)
-			return _color;
-		#endif
-		return EncodeToRGBM(_color.rgb);
-	}
+	#include "BlurFilters.hlsl"
 	
     
 	//Kawase
 	half4 fragKawase(v2f_img i):SV_TARGET
 	{
 		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
-		half4 sum = 0;
+		half3 sum = 0;
 		sum += SampleMainBlur(i.uv , float2(0, 1)*uvDelta);
 		sum += SampleMainBlur(i.uv , float2(1,0)*uvDelta);
 		sum += SampleMainBlur(i.uv , float2(0, -1)*uvDelta);
@@ -71,7 +41,7 @@
 	half4 fragAverageBlurHorizontal(v2f_img i):SV_TARGET
 	{
 		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
-		half4 sum = SampleMainBlur(i.uv,0);
+		half3 sum = SampleMainBlur(i.uv,0);
 		sum += SampleMainBlur(i.uv , float2(1, 0)*uvDelta);
 		sum += SampleMainBlur(i.uv , float2(-1, 0)*uvDelta);
 		sum += SampleMainBlur(i.uv , float2(2, 0)*uvDelta);
@@ -81,7 +51,7 @@
 	half4 fragAverageBlurVertical(v2f_img i):SV_TARGET
 	{
 		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
-		half4 sum = SampleMainBlur(i.uv,0);
+		half3 sum = SampleMainBlur(i.uv,0);
 		sum += SampleMainBlur(i.uv , float2(0,1)*uvDelta);
 		sum += SampleMainBlur(i.uv , float2(0, -1)*uvDelta);
 		sum += SampleMainBlur(i.uv , float2(0, 2)*uvDelta);
@@ -94,7 +64,7 @@
 	half4 fragGaussianBlurHorizontal(v2f_img i) :SV_TARGET
 	{
 		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
-		half4 sum = SampleMainBlur(i.uv,0)*gaussianWeight3[0];
+		half3 sum = SampleMainBlur(i.uv,0)*gaussianWeight3[0];
 		sum += SampleMainBlur(i.uv , float2(1,0)*uvDelta)*gaussianWeight3[1];
 		sum += SampleMainBlur(i.uv , float2(-1,0)*uvDelta)*gaussianWeight3[1];
 		sum += SampleMainBlur(i.uv , float2(2,0)*uvDelta)*gaussianWeight3[2];
@@ -104,7 +74,7 @@
 	half4 fragGaussianBlurVertical(v2f_img i) :SV_TARGET
 	{
 		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
-		half4 sum = SampleMainBlur(i.uv,0)*gaussianWeight3[0];
+		half3 sum = SampleMainBlur(i.uv,0)*gaussianWeight3[0];
 		sum += SampleMainBlur(i.uv , float2(0,1)*uvDelta)*gaussianWeight3[1];
 		sum += SampleMainBlur(i.uv , float2(0,-1)*uvDelta)*gaussianWeight3[1];
 		sum += SampleMainBlur(i.uv , float2(0,2)*uvDelta)*gaussianWeight3[2];
@@ -115,28 +85,12 @@
 	//Dual Filtering
 	half4 fragDualFilteringDownSample(v2f_img i):SV_TARGET
 	{
-		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
-		half4 sum = SampleMainBlur(i.uv,0)*4;
-		sum += SampleMainBlur(i.uv , float2(0, 1)*uvDelta);
-		sum += SampleMainBlur(i.uv , float2(1, 0)*uvDelta);
-		sum += SampleMainBlur(i.uv , float2(0, -1)*uvDelta);
-		sum += SampleMainBlur(i.uv , float2(-1, 0)*uvDelta);
-		return RecordBlurTex(sum*.125h);
+		return RecordBlurTex(DualFilteringDownFilter(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),i.uv,_MainTex_TexelSize,_BlurSize));
 	}
 
 	half4 fragDualFilteringUpSample(v2f_img i):SV_TARGET
 	{
-		float2 uvDelta=_MainTex_TexelSize.xy *_BlurSize;
-		half4 sum =0;
-		sum += SampleMainBlur(i.uv , float2(0, 2)*uvDelta);
-		sum += SampleMainBlur(i.uv , float2(2,0)*uvDelta);
-		sum += SampleMainBlur(i.uv , float2(0, -2)*uvDelta);
-		sum += SampleMainBlur(i.uv , float2(-2, 0)*uvDelta);
-		sum += SampleMainBlur(i.uv , float2(1, 1)*uvDelta)*2;
-		sum += SampleMainBlur(i.uv , float2(1, -1)*uvDelta)*2;
-		sum += SampleMainBlur(i.uv , float2(-1, 1)*uvDelta)*2;
-		sum += SampleMainBlur(i.uv , float2(-1, -1)*uvDelta)*2;
-		return RecordBlurTex(sum*.08333h);
+		return RecordBlurTex(DualFilteringUpFilter(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),i.uv,_MainTex_TexelSize,_BlurSize));
 	}
 	
 	//Grainy
@@ -144,7 +98,7 @@
 	{
 		float2 delta=_MainTex_TexelSize.xy*_BlurSize;
 		float2 randomUV=randomUnitCircle(i.uv)*random01(i.uv)*delta;
-		return SampleBlurTex(TEXTURE2D_ARGS(_MainTex,sampler_MainTex), i.uv,randomUV);
+		return float4(SampleBlurTex(TEXTURE2D_ARGS(_MainTex,sampler_MainTex), i.uv,randomUV),1);
 	}
 
 	//Bokeh
@@ -160,19 +114,19 @@
 		{
 			r+=1.0/r;
 			rotate=mul(rot,rotate);
-			float4 bokeh=SampleBlurTex(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),i.uv,(r-1.0)*rotate*_MainTex_TexelSize.xy);
+			float4 bokeh=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+(r-1.0)*rotate*_MainTex_TexelSize.xy);
 			sum+=bokeh;
 		}
 		return sum/_Iteration;
 	}
 
 	//Hexagon Blur
-	half4 HexagonBlurTexture(TEXTURE2D_PARAM(_tex,_samp),float2 uv,float2 direction)
+	half3 HexagonBlurTexture(TEXTURE2D_PARAM(_tex,_samp),float2 uv,float2 direction)
 	{
-		float4 finalCol=0;
+		float3 finalCol=0;
 		for(uint i=0u;i<_Iteration;i++)
 		{
-			half4 hexagonBlur= SampleBlurTex(TEXTURE2D_ARGS(_tex,_samp),uv,direction*float2(i+.5,i+.5));
+			half3 hexagonBlur = SampleBlurTex(TEXTURE2D_ARGS(_tex,_samp),uv,direction*float2(i+.5,i+.5));
 			finalCol+=hexagonBlur;
 		}
 		return finalCol/_Iteration;
@@ -184,7 +138,7 @@
 		half sinA,cosA;
 		sincos(angle,sinA,cosA);
 		half2 dir=half2(cosA,sinA)*_MainTex_TexelSize.xy*_BlurSize;
-		return HexagonBlurTexture(TEXTURE2D_ARGS( _MainTex,sampler_MainTex),i.uv,dir);
+		return RecordBlurTex(HexagonBlurTexture(TEXTURE2D_ARGS( _MainTex,sampler_MainTex),i.uv,dir));
 	}
 
 	TEXTURE2D(_Hexagon_Vertical);SAMPLER(sampler_Hexagon_Vertical);
@@ -194,23 +148,20 @@
 		half sinA,cosA;
 		sincos(angle,sinA,cosA);
 		float2 dir=float2(cosA,sinA)*_MainTex_TexelSize.xy*_BlurSize;
-		return (SAMPLE_TEXTURE2D(_Hexagon_Vertical,sampler_Hexagon_Vertical,i.uv)+HexagonBlurTexture(TEXTURE2D_ARGS( _MainTex,sampler_MainTex),i.uv,dir))/2;
+		return RecordBlurTex(SampleBlurTex(TEXTURE2D_ARGS(_Hexagon_Vertical,sampler_Hexagon_Vertical), i.uv,0)+HexagonBlurTexture(TEXTURE2D_ARGS( _MainTex,sampler_MainTex),i.uv,dir)/2);
 	}
 
 	TEXTURE2D( _Hexagon_Diagonal);SAMPLER(sampler_Hexagon_Diagonal);
 	half4 fragHexagonRamboid(v2f_img i):SV_TARGET
 	{
-		half angle=_Angle+PI*0.16666h;
 		half sinA,cosA;
-		sincos(angle,sinA,cosA);
-		float2 verticalBlurDirection=float2(cos(_Angle+PI/6),sin(_Angle+PI/6))*_MainTex_TexelSize.xy*_BlurSize;
-		half4 vertical=HexagonBlurTexture(TEXTURE2D_ARGS( _Hexagon_Vertical,sampler_Hexagon_Vertical),i.uv,verticalBlurDirection);
-
-		angle=_Angle+PI*0.833333h;
-		sincos(angle,sinA,cosA);
+		sincos(_Angle+PI*0.16666h,sinA,cosA);
+		float2 verticalBlurDirection=float2(cosA,sinA)*_MainTex_TexelSize.xy*_BlurSize;
+		half3 vertical=HexagonBlurTexture(TEXTURE2D_ARGS( _Hexagon_Vertical,sampler_Hexagon_Vertical),i.uv,verticalBlurDirection);
+		sincos(_Angle+PI*0.833333h,sinA,cosA);
 		float2 diagonalBlurDirection=float2(cosA,sinA)*_MainTex_TexelSize.xy*_BlurSize;
-		half4 diagonal=HexagonBlurTexture(TEXTURE2D_ARGS( _Hexagon_Diagonal,sampler_Hexagon_Diagonal),i.uv,diagonalBlurDirection);
-		return (vertical+diagonal*2.0h)*0.3333h;
+		half3 diagonal=HexagonBlurTexture(TEXTURE2D_ARGS( _Hexagon_Diagonal,sampler_Hexagon_Diagonal),i.uv,diagonalBlurDirection);
+		return RecordBlurTex(vertical+diagonal*2.0h)*0.3333h;
 	}
 
 	//Radial
@@ -221,7 +172,7 @@
 		float2 sumOffset=0;
 		for(uint j=0;j<_Iteration;j++)
 		{
-			sum+=SampleBlurTex(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),i.uv,sumOffset);
+			sum+=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+sumOffset);
 			sumOffset+=offset;
 		}
 		return sum/_Iteration;
@@ -233,8 +184,30 @@
 		int iteration=max(_Iteration/2,1);
 		float2 offset=_Vector*_MainTex_TexelSize.xy*_BlurSize;
 		for(int j=-iteration;j<iteration;j++)
-			sum+=SampleBlurTex(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),i.uv,j*offset);
+			sum+=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+j*offset);
 		return sum/(iteration*2);
+	}
+    
+	//Dual Filtering
+	half4 fragNextGenDownSample(v2f_img i):SV_TARGET
+	{
+		return RecordBlurTex( DualFilteringDownFilter(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),i.uv,_MainTex_TexelSize,_BlurSize));
+	}
+
+    TEXTURE2D(_PreDownSample);
+    SAMPLER(sampler_PreDownSample);
+    float4 _PreDownSample_TexelSize;
+	half4 fragNextGenUpSample(v2f_img i):SV_TARGET
+	{
+		half3 srcCol = DualFilteringUpFilter(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),i.uv,_MainTex_TexelSize,_BlurSize);
+		half3 mipCol = DualFilteringUpFilter(TEXTURE2D_ARGS(_PreDownSample,sampler_PreDownSample),i.uv,_PreDownSample_TexelSize,_BlurSize);
+		
+		return RecordBlurTex(srcCol+mipCol);
+	}
+
+    half4 fragNextGenUpSampleFinal(v2f_img i):SV_TARGET
+	{
+		return RecordBlurTex(DualFilteringUpFilter(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),i.uv,_MainTex_TexelSize,_BlurSize));
 	}
 	ENDHLSL
 
@@ -365,5 +338,33 @@
 			#pragma fragment fragDirectional
 			ENDHLSL
 		}
+    	
+    	Pass
+		{
+			Name "NEXTGEN_DOWNSAMPLE"
+			HLSLPROGRAM
+			#pragma vertex vert_img
+			#pragma fragment fragNextGenDownSample
+			ENDHLSL
+		}
+
+		Pass
+		{
+			Name "NEXTGEN_UPSAMPLE"
+			HLSLPROGRAM
+			#pragma vertex vert_img
+			#pragma fragment fragNextGenUpSample
+			ENDHLSL
+		}
+		
+		Pass
+		{
+			Name "NEXTGEN_UPSAMPLE_FINAL"
+			HLSLPROGRAM
+			#pragma vertex vert_img
+			#pragma fragment fragNextGenUpSampleFinal
+			ENDHLSL
+		}
+		
 	}
 }

@@ -38,8 +38,10 @@ v2ff ForwardVertex(a2vf v)
 	UNITY_TRANSFER_INSTANCE_ID(v, o);
 	o.uv = TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
 	o.normalWS = TransformObjectToWorldNormal(v.normalOS);
-	o.tangentWS = TransformObjectToWorldDir(v.tangentOS.xyz);
-	o.biTangentWS = cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
+	#if !defined (_NORMALOFF)	//TBN Matrix
+		o.tangentWS = TransformObjectToWorldDir(v.tangentOS.xyz);
+		o.biTangentWS = cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
+	#endif
 	//Positions
 	#if defined(GET_POSITION_WS)
 		float3 positionWS = GET_POSITION_WS(v,o);
@@ -71,80 +73,86 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 	half3 normalTS=half3(0,0,1);
 	float2 baseUV=i.uv.xy;
 
-#if !defined (_NORMALOFF)
-	#if defined(GET_NORMAL)
-		normalTS = GET_NORMAL(i);
-	#else
-		normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
+	#if !defined (_NORMALOFF)
+		#if defined(GET_NORMAL)
+			normalTS = GET_NORMAL(i);
+		#else
+			normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
+		#endif
+		float3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
+		normalWS=normalize(mul(transpose(TBNWS), normalTS));
 	#endif
-	float3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
-	normalWS=normalize(mul(transpose(TBNWS), normalTS));
-#endif
 	
-#if defined(GET_ALBEDO)
-	half3 albedo = GET_ALBEDO(i);
-#else
-	half3 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*INSTANCE(_Color).rgb*i.color.rgb;
-#endif
+	#if defined(GET_ALBEDO)
+		half3 albedo = GET_ALBEDO(i);
+	#else
+		half3 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*INSTANCE(_Color).rgb*i.color.rgb;
+	#endif
 
-#if defined(GET_EMISSION)
-	half3 emission = GET_EMISSION(i); 
-#else
-	half3 emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,i.uv).rgb*INSTANCE(_EmissionColor).rgb;
-#endif
+	#if defined(GET_EMISSION)
+		half3 emission = GET_EMISSION(i); 
+	#else
+		half3 emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,i.uv).rgb*INSTANCE(_EmissionColor).rgb;
+	#endif
 
-	half glossiness=INSTANCE(_Glossiness);
-	half metallic=INSTANCE(_Metallic);
-	half ao=1.h;
-	half anisotropic=1;
 
 	half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
-	glossiness*=(1.h-mix.r);
-	metallic*=mix.g;
-	ao*=mix.b;
+	half glossiness=mix.r;
+	half metallic=mix.g;
+	half ao=mix.b;
 
-	BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,glossiness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,anisotropic);
+	#if defined(GET_PBRPARAM)
+		GET_PBRPARAM(glossiness,metallic,ao)
+	#else
+		glossiness *= INSTANCE(_Glossiness);
+		metallic *= INSTANCE(_Metallic);
+	#endif
+	
+	BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,glossiness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,1);
 
 	half3 finalCol=0;
 
 	Light mainLight =
-#if defined GET_MAINLIGHT
-	GET_MAINLIGHT(surface,positionWS)
-#else
-	GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
-#endif
+	#if defined GET_MAINLIGHT
+		GET_MAINLIGHT(surface,positionWS)
+	#else
+		GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
+	#endif
 
 	half3 indirectDiffuse= 
-#if defined GET_INDIRECTDIFFUSE
-	GET_INDIRECTDIFFUSE(surface)
-#else
-	IndirectDiffuse(mainLight,i,normalWS);
-#endif
+	#if defined GET_INDIRECTDIFFUSE
+		GET_INDIRECTDIFFUSE(surface)
+	#else
+		IndirectDiffuse(mainLight,i,normalWS);
+	#endif
 
-	half3 indirectSpecular=IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
+	half3 indirectSpecular=
+	#if defined GET_INDIRECTSPECULAR
+		GET_INDIRECTSPECULAR(surface)
+	#else
+		IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
+	#endif
 	finalCol+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 
-#if defined BRDF_MAINLIGHTING
-	BRDF_MAINLIGHTING(mainLight,surface)
-#endif
+	#if defined BRDF_MAINLIGHTING
+		BRDF_MAINLIGHTING(mainLight,surface)
+	#endif
 	finalCol+=BRDFLighting(surface,mainLight);
 
-
-#if _ADDITIONAL_LIGHTS
-	uint pixelLightCount = GetAdditionalLightsCount();
-	for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
+	#if _ADDITIONAL_LIGHTS
+		uint pixelLightCount = GetAdditionalLightsCount();
+		for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
 		finalCol+=BRDFLighting(surface, GetAdditionalLight(lightIndex,i.positionWS));
-#endif
+	#endif
 	FOG_MIX(i,finalCol);
 	finalCol+=surface.emission;
 
-#if defined(GET_FINALCOL)
-	finalCol = GET_FINALCOL(finalCol,i,surface);
-#endif
+	#if defined(GET_FINALCOL)
+		finalCol = GET_FINALCOL(finalCol,i,surface);
+	#endif
 	half alpha = 1.h;
-#if defined(GET_ALPHA)
-	alpha = GET_ALPHA(i,surface);
-#endif
-	
+	#if defined(GET_ALPHA)
+		alpha = GET_ALPHA(i,surface);
+	#endif
 	return half4(finalCol,alpha);
 }

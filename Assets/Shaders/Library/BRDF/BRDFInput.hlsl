@@ -31,7 +31,7 @@ BRDFSurface BRDFSurface_Ctor(half3 albedo,half3 emission, half smoothness, half 
     half reflectivity = 1.0h - oneMinusReflectivity;
 
     surface.diffuse = albedo * oneMinusReflectivity;
-    surface.emission=emission;
+    surface.emission = emission;
     surface.specular = lerp(DIELETRIC_SPEC.rgb, albedo, metallic);
     surface.metallic = metallic;
     surface.ao = ao;
@@ -43,7 +43,7 @@ BRDFSurface BRDFSurface_Ctor(half3 albedo,half3 emission, half smoothness, half 
     surface.reflectDir = normalize(reflect(-surface.viewDir, surface.normal));
     surface.NDV = dot(surface.normal,surface.viewDir);
 
-    surface.smoothness=smoothness;
+    surface.smoothness = smoothness;
     surface.grazingTerm = saturate(smoothness + reflectivity);
     surface.perceptualRoughness = 1.0h - smoothness;
     surface.roughness = max(HALF_MIN_SQRT, surface.perceptualRoughness * surface.perceptualRoughness);
@@ -81,7 +81,7 @@ BRDFLightInput BRDFLightInput_Ctor(BRDFSurface surface,half3 lightDir,half3 ligh
     input.lightColor=lightColor;
     input.shadowAttenuation=shadowAttenuation;
     input.distanceAttenuation=distanceAttenuation;
-    input.NDL = dot(normal, lightDir);
+    input.NDL = max(0,dot(normal, lightDir));
     input.VDH = dot(viewDir, halfDir);
     input.LDV = dot(lightDir, viewDir);
     input.NDH = dot(normal, halfDir);

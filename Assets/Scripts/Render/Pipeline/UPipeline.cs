@@ -48,7 +48,7 @@ namespace Rendering
             _tagList.AddRange(kDefaultShaderTags);
         }
 
-        public static T GetDefaultPostProcessData<T>() where T : struct => (T)typeof(T).GetField("m_Default", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).GetValue(null);
+        public static T GetDefaultPostProcessData<T>() where T : struct => (T)typeof(T).GetField("kDefault", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).GetValue(null);
         public static bool IsEnabled(this CameraOverrideOption _override,bool _default)=>_override == CameraOverrideOption.On || (_override == CameraOverrideOption.UsePipelineSettings && _default);
         public static Vector4 GetTexelSize(this RenderTextureDescriptor _descriptor) => new Vector4(1f/_descriptor.width,1f/_descriptor.height,_descriptor.width,_descriptor.height);
     }

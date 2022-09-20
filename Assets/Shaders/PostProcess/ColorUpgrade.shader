@@ -206,7 +206,7 @@
 		        {
 		            float4 color = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv);
 		            color*=step(_BloomThreshold+0.01,RGBtoLuminance(color.rgb));
-		            return color;
+		            return max(0,color);
 		        }
 	        ENDHLSL
         }

@@ -1,4 +1,5 @@
-﻿#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+﻿#define LIGHTING
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
 #include "Assets/Shaders/Library/Lighting/Normal.hlsl"
 #include "Assets/Shaders/Library/Lighting/GlobalIllumination.hlsl"

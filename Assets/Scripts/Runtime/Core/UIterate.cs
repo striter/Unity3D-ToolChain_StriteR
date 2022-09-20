@@ -97,6 +97,13 @@ public static class UIterate
             _src.Add(_iterate[i]);
     }
 
+    public static void AddRange<T>(this IList<T> _src, IList<T> _dst)
+    {
+        int count = _dst.Count;
+        for (int i = 0; i < count; i++)
+            _src.Add(_dst[i]);
+    }
+    
     public static T[] IterateToArray<T>(this IIterate<T> _iterate)
     {
         int length = _iterate.Length;

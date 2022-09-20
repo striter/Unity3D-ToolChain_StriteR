@@ -49,14 +49,14 @@ namespace PolyGrid
         public void Tick(float _deltaTime)
         {
             m_IterateCounter.Tick(_deltaTime);
-            if (m_IterateCounter.m_Counting)
+            if (m_IterateCounter.m_Playing)
                 return;
             m_IterateCounter.Replay();
             
             int index = m_IteratePerFrame;
             while (index-- > 0)
             {
-                EConvexIterate curState = UEnum.GetValues<EConvexIterate>().Find(p=>m_ConvexIterator.ContainsKey(p)&&m_ConvexIterator[p].Count>0);
+                EConvexIterate curState = UEnum.GetEnums<EConvexIterate>().Find(p=>m_ConvexIterator.ContainsKey(p)&&m_ConvexIterator[p].Count>0);
                 if (curState == 0)
                     break;
 

@@ -6,7 +6,6 @@ namespace Rendering.Optimize
     {
         #region ShaderProperties
         static readonly int ID_AnimationTex = Shader.PropertyToID("_AnimTex");
-        private static readonly string[] KW_Modes ={"_ANIM_VERTEX","_ANIM_BONE"};
         static readonly int ID_FrameBegin = Shader.PropertyToID("_AnimFrameBegin");
         static readonly int ID_FrameEnd = Shader.PropertyToID("_AnimFrameEnd");
         static readonly int ID_FrameInterpolate = Shader.PropertyToID("_AnimFrameInterpolate");
@@ -15,7 +14,7 @@ namespace Rendering.Optimize
         public static void ApplyMaterial(this GPUAnimationData _data,Material _sharedMaterial)
         {
             _sharedMaterial.SetTexture(ID_AnimationTex,_data.m_BakeTexture);
-            _sharedMaterial.EnableKeywords(KW_Modes,_data.m_Mode);
+            _sharedMaterial.EnableKeywords(_data.m_Mode);
         }
 
         public static void ApplyPropertyBlock(this AnimationTickerOutput _output, MaterialPropertyBlock _block)

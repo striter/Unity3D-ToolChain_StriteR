@@ -473,7 +473,7 @@ namespace Geometry
             return new Qube<T>(quads._downQuad.MirrorLR(),quads._topQuad.MirrorLR());
         }
         
-        public static Qube<byte> SplitByteQubes(this Qube<bool> _qube)
+        public static Qube<byte> SplitByteQubes(this Qube<bool> _qube,bool _fillHorizontalDiagonal)
         {
             Qube<bool>[] splitQubes = new Qube<bool>[8];
             for (int i = 0; i < 8; i++)
@@ -482,7 +482,7 @@ namespace Geometry
                 splitQubes[i].SetByteElement(_qube[i]?byte.MaxValue:byte.MinValue);
             }
 
-            foreach (var corner in UEnum.GetValues<EQubeCorner>())
+            foreach (var corner in UEnum.GetEnums<EQubeCorner>())
             {
                 if(_qube[corner])
                     continue;
@@ -510,6 +510,45 @@ namespace Geometry
                         continue;
                     splitQubes[qube.CornerToIndex()][tuple._adjactileCorner1]=false;
                     splitQubes[qube.CornerToIndex()][tuple._adjactileCorner2]=false;
+                }
+            }
+
+            if (_fillHorizontalDiagonal)
+            {
+                int bottomValidCount = 0;
+                int topValidCount = 0;
+                for (int i = 0; i < 8; i++)
+                {
+                    if (!_qube[i])
+                        continue;
+                    if (i < 4)
+                        bottomValidCount += 1;
+                    else
+                        topValidCount += 1;
+                }
+
+                for (int i = 0; i < 8; i++)
+                {
+                    if (i < 4)
+                    {
+                        if(bottomValidCount%2!=0)
+                            continue;
+                    }
+                    else
+                    {
+                        if (topValidCount % 2 != 0)
+                            continue;
+                    }
+                    
+                    if(!_qube[i])
+                        continue;
+                    
+                    var horizontalDiagonal = IndexToCorner(i).HorizontalDiagonalCorner();
+                    if (!_qube[horizontalDiagonal])
+                        continue;
+
+                    splitQubes[i][horizontalDiagonal] = true;
+                    splitQubes[horizontalDiagonal.CornerToIndex()][i] = true;
                 }
             }
 

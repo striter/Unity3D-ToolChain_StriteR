@@ -56,7 +56,7 @@ namespace PolyGrid.Module.Baking
             _data.m_AvailableStatus = m_Baker.m_AvailableStatus;
             
             List<OrientedModuleMeshData> totalModuleMeshes = new List<OrientedModuleMeshData>();
-            foreach (var status in UEnum.GetValues<ECornerStatus>())
+            foreach (var status in UEnum.GetEnums<ECornerStatus>())
             {
                 totalModuleMeshes.Clear();
                 if (m_Baker.m_AvailableStatus.IsFlagEnable(status))
@@ -82,7 +82,7 @@ namespace PolyGrid.Module.Baking
                 meshes=AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GetAssetPath(models)).Collect(p => p is Mesh).Select(p => p as Mesh).ToArray();
             List<GameObject> selections = new List<GameObject>();
             int height = -2;
-            foreach (var status in UEnum.GetValues<ECornerStatus>())
+            foreach (var status in UEnum.GetEnums<ECornerStatus>())
             {
                 if (!m_Baker.m_AvailableStatus.IsFlagEnable(status))
                     continue;

@@ -6,41 +6,36 @@ namespace ExampleScenes.Rendering.GI
 {
     public class GIImport : MonoBehaviour
     {
-        public EnvironmentCollection m_Src;
-        public EnvironmentCollection m_Dst;
+        public GIPersistent m_Src;
+        public GIPersistent m_Dst;
         
         private bool m_Switch;
-        private Counter m_SwitchTimer = new Counter(.5f);
+        private Counter kSwitchTimer = new Counter(.5f);
         private MeshRenderer[] m_Renderers;
         private void Awake()
         {
             m_Renderers = GetComponentsInChildren<MeshRenderer>();
             TouchConsole.InitDefaultCommands();
-            TouchConsole.Command("Switch",KeyCode.Space).Button(SwitchPersistent);
+            TouchConsole.Command("Switch",KeyCode.Space).Button(Switch);
             m_Switch = false;
-            m_Src.Apply(m_Renderers);
+            m_Src.m_Data.Apply(m_Renderers);
         }
 
-        void SwitchPersistent()
+        void Switch()
         {
             m_Switch = !m_Switch;
-            m_SwitchTimer.Replay();
+            kSwitchTimer.Replay();
         }
 
         private void Update()
         {
-            if (!m_SwitchTimer.m_Counting)
+            if (!kSwitchTimer.m_Playing)
                 return;
-            m_SwitchTimer.Tick(Time.deltaTime);
+            kSwitchTimer.Tick(Time.deltaTime);
             var src = m_Switch ? m_Src : m_Dst;
             var dst = m_Switch ? m_Dst : m_Src;
 
-            EnvironmentCollection.Interpolate(m_Renderers,src,dst,m_SwitchTimer.m_TimeElapsedScale);
-        }
-
-        private void OnDestroy()
-        {
-            EnvironmentCollection.Dispose();
+            GlobalIlluminationOverrideData.Apply(m_Renderers,src.m_Data,dst.m_Data,kSwitchTimer.m_TimeElapsedScale);
         }
     }
 

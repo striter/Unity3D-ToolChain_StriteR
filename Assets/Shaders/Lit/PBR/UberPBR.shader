@@ -9,8 +9,6 @@
 		
 		[Header(PBR)]
 		[ToggleTex(_PBRMAP)] [NoScaleOffset]_PBRTex("PBR Tex(Roughness.Metallic.AO)",2D)="white"{}
-		_Glossiness("Glossiness",Range(0,1))=1
-        _Metallic("Metalness",Range(0,1))=0
 		[NoScaleOffset]_EmissionTex("Emission",2D)="white"{}
 		[HDR]_EmissionColor("Emission Color",Color)=(0,0,0,0)
 		[Header(_Settings)]
@@ -44,12 +42,8 @@
         [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
         [Toggle(_ALPHACLIP)]_AlphaClip("Alpha Clip",float)=0
         [Foldout(_ALPHACLIP)]_AlphaClipRange("Range",Range(0.01,1))=0.01
-		
-		[Foldout(LIGHTMAP_ON,LIGHTMAP_INTERPOLATE)]_LightmapST("CLightmap UV",Vector)=(1,1,1,1)
-		[Foldout(LIGHTMAP_ON,LIGHTMAP_INTERPOLATE)]_LightmapIndex("CLightmap Index",int)=0
-		[Foldout(LIGHTMAP_INTERPOLATE)]_LightmapInterpolateST("CLightmap Interpolate UV",Vector)=(1,1,1,1)
-		[Foldout(LIGHTMAP_INTERPOLATE)]_LightmapInterpolateIndex("CLightmap Interpolate Index",int)=0
 	}
+	
 	SubShader
 	{
 		Tags { "Queue" = "Geometry" }
@@ -90,10 +84,6 @@
 				INSTANCING_PROP(float,_SSSNormalInfluence)
 		
 				INSTANCING_PROP(float,_AlphaClipRange)
-				INSTANCING_PROP(float4,_LightmapST)
-			    INSTANCING_PROP(float,_LightmapIndex)
-				INSTANCING_PROP(float4,_LightmapInterpolateST)
-			    INSTANCING_PROP(float,_LightmapInterpolateIndex)
 			INSTANCING_BUFFER_END
 
 			#include "Assets/Shaders/Library/Lighting.hlsl"
@@ -194,7 +184,6 @@
             #pragma multi_compile _ SHADOWS_SHADOWMASK
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
             #pragma multi_compile _ LIGHTMAP_ON	
-            #pragma multi_compile _ ENVIRONMENT_CUSTOM ENVIRONMENT_INTERPOLATE
 
 			#pragma shader_feature_local _PBRMAP
 			#pragma shader_feature_local _NORMALMAP
@@ -304,7 +293,7 @@
 				half sssIntensity = INSTANCE(_SSSIntensity);
 				#if _PBRMAP
 					half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
-					glossiness*=1.h-mix.r;
+					glossiness *= (1.h - mix.r) * (1.h - mix.r);
 					metallic*=mix.g;
 					ao*=mix.b;
 				#endif
@@ -320,7 +309,7 @@
 				half3 finalCol=0;
 				Light mainLight=GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
 				half3 indirectDiffuse= IndirectDiffuse(mainLight,i,normalWS);
-				half3 indirectSpecular=IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
+				half3 indirectSpecular=IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,0);
 				finalCol+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 
 				#if _MATCAP
@@ -349,7 +338,6 @@
     //         	#endif
 				// FOG_MIX(i,finalCol);
 				finalCol+=surface.emission;
-
 				o.result=half4(finalCol,color.a);
 				return o;
 			}

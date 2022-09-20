@@ -5,6 +5,7 @@ using Procedural.Hexagon;
 using TPool;
 using TPoolStatic;
 using UnityEngine;
+using Rendering;
 
 namespace PolyGrid
 {
@@ -22,11 +23,11 @@ namespace PolyGrid
         
         public void Tick(float _deltaTime)
         {
-            if (!m_SelectionFadeCounter.m_Counting)
+            if (!m_SelectionFadeCounter.m_Playing)
                 return;
             
             m_SelectionFadeCounter.Tick(_deltaTime);
-            m_SelectionRendererBlock.SetFloat(URender.kIDAlpha,m_SelectionFade.Evaluate( m_SelectionFadeCounter.m_TimeElapsed));
+            m_SelectionRendererBlock.SetFloat(KShaderProperties.kAlpha,m_SelectionFade.Evaluate( m_SelectionFadeCounter.m_TimeElapsed));
             m_SelectionRenderer.SetPropertyBlock(m_SelectionRendererBlock);
         }
         public void Init(Transform _transform)

@@ -3,6 +3,8 @@ struct a2fs
 {
 	float3 positionOS:POSITION;
 	float3 normalOS:NORMAL;
+	half4 color:COLOR;
+	
 	#if defined(A2V_SHADOW_DEPTH)
 		A2V_SHADOW_DEPTH
 	#endif

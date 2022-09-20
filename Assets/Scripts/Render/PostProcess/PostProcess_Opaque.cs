@@ -99,13 +99,13 @@ namespace Rendering.PostProcess
         {
             m_HighlightBlur = new PPCore_Blurs();
             m_RenderBackDepth = new Material(RenderResources.FindInclude("Game/Additive/DepthOnly")){hideFlags = HideFlags.HideAndDontSave};
-            m_RenderBackDepth.SetInt(DShaderProperties.kColorMask,(int)ColorWriteMask.Red);
-            m_RenderBackDepth.SetInt(DShaderProperties.kZTest,(int)CompareFunction.Greater);
-            m_RenderBackDepth.SetInt(DShaderProperties.kCull,(int)CullMode.Front);
+            m_RenderBackDepth.SetInt(KShaderProperties.kColorMask,(int)ColorWriteMask.Red);
+            m_RenderBackDepth.SetInt(KShaderProperties.kZTest,(int)CompareFunction.Greater);
+            m_RenderBackDepth.SetInt(KShaderProperties.kCull,(int)CullMode.Front);
             m_RenderFrontDepth = new Material(RenderResources.FindInclude("Game/Additive/DepthOnly")) { hideFlags = HideFlags.HideAndDontSave };
-            m_RenderFrontDepth.SetInt(DShaderProperties.kColorMask,(int)ColorWriteMask.Green);
-            m_RenderFrontDepth.SetInt(DShaderProperties.kZTest,(int)CompareFunction.Less);
-            m_RenderFrontDepth.SetInt(DShaderProperties.kCull,(int)CullMode.Back);
+            m_RenderFrontDepth.SetInt(KShaderProperties.kColorMask,(int)ColorWriteMask.Green);
+            m_RenderFrontDepth.SetInt(KShaderProperties.kZTest,(int)CompareFunction.Less);
+            m_RenderFrontDepth.SetInt(KShaderProperties.kCull,(int)CullMode.Back);
         }
         
         public override void OnValidate(ref PPData_Opaque _data)
@@ -143,11 +143,6 @@ namespace Rendering.PostProcess
 
         public void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,ref PPData_Opaque _data)
         {
-            if (_data.m_MaskedHighlight)
-            {
-                //? Dude
-            }
-
             if (_data.m_VolumetricCloud && _data.m_VolumetricCloudData.m_Shape)
             {
                 var volumetricData = _data.m_VolumetricCloudData;
@@ -233,7 +228,7 @@ namespace Rendering.PostProcess
         [MTitle] public bool m_VolumetricCloud;
         [MFoldout(nameof(m_VolumetricCloud), true)] public Data_VolumetricCloud m_VolumetricCloudData;
         public bool Validate() => m_Scan || m_Area || m_Outline || m_MaskedHighlight || m_SSAO || m_VolumetricCloud;
-        public static readonly PPData_Opaque m_Default = new PPData_Opaque()
+        public static readonly PPData_Opaque kDefault = new PPData_Opaque()
         {
             m_Scan = true,
             m_ScanData = new Data_Scan()
@@ -270,7 +265,7 @@ namespace Rendering.PostProcess
             m_HighlightData=new Data_Highlight()
             {
                 m_Color=Color.blue,
-                m_Blur = PPData_Blurs.m_Default,
+                m_Blur = PPData_Blurs.kDefault,
             },
                 
             m_DownSample = 1,

@@ -5,24 +5,24 @@ namespace UnityEditor.Extensions
 {
     public static class EMenuItem
     {
-        #region Hotkeys
-            [MenuItem("Work Flow/Hotkeys/Selected Object Sync Scene View &F", false, 101)]
-            public static void SyncObjectToSceneView() => Hotkeys.SyncSelectedToSceneViewCamera();
-            
-            [MenuItem("Work Flow/Hotkeys/Take Screen Shot _F12", false, 103)]
-            static void TakeScreenShot() => Hotkeys.TakeScreenShot();
-            
-            [MenuItem("Work Flow/Hotkeys/Fast Pause _HOME", false, 104)]
-            static void FastPause() => Hotkeys.SwitchPause();
-            
-            [MenuItem("Work Flow/Hotkeys/Output Window Asset Path _&-", false, 110)]
-            static void OutputWindowAssetPath() => Hotkeys.OutputActiveWindowDirectory();
-            
-            [MenuItem("Work Flow/Hotkeys/Output Select Asset Path _&=", false, 111)]
-            static void OutputSelectAssetPath() => Hotkeys.OutputAssetDirectory();
-        #endregion
+    #region Hotkeys
+        [MenuItem("Work Flow/Hotkeys/Selected Object Sync Scene View &F", false, 101)]
+        public static void SyncObjectToSceneView() => Hotkeys.SyncSelectedToSceneViewCamera();
+        
+        [MenuItem("Work Flow/Hotkeys/Take Screen Shot _F12", false, 103)]
+        static void TakeScreenShot() => Hotkeys.TakeScreenShot();
+        
+        [MenuItem("Work Flow/Hotkeys/Fast Pause _HOME", false, 104)]
+        static void FastPause() => Hotkeys.SwitchPause();
+        
+        [MenuItem("Work Flow/Hotkeys/Output Window Asset Path _&-", false, 110)]
+        static void OutputWindowAssetPath() => Hotkeys.OutputActiveWindowDirectory();
+        
+        [MenuItem("Work Flow/Hotkeys/Output Select Asset Path _&=", false, 111)]
+        static void OutputSelectAssetPath() => Hotkeys.OutputAssetDirectory();
+    #endregion
 
-        #region Helpers
+    #region Helpers
         [MenuItem("Work Flow/Helper/Clean Persistent Data",false,200)]
         static void CleanPersistentData() => Helper.CleanPersistentData();
         
@@ -33,9 +33,9 @@ namespace UnityEditor.Extensions
         static void SwitchDevelopMode() => Helper.SwitchDevelopMode();
         [MenuItem("Work Flow/Helper/UI/Missing Fonts Replacer", false, 210)]
         static void ShowFontsReplacerWindow() => EditorWindow.GetWindow<UIFontsMissingReplacerWindow>().titleContent=new GUIContent("Missing Fonts Replacer",EditorGUIUtility.IconContent("FilterByLabel").image);
-        #endregion
+    #endregion
         
-        #region Art
+    #region Art
         //BuiltIn Texture Ref:https://unitylist.com/p/5c3/Unity-editor-icons
         //Art
         [MenuItem("Work Flow/Art/Plane Mesh Generator", false, 301)]
@@ -53,10 +53,8 @@ namespace UnityEditor.Extensions
         [MenuItem("Work Flow/Art/(Optimize)Animation Clip Optimize", false, 401)]
         static void ShowAssetOptimizeWindow() => EditorWindow.GetWindow(typeof(AnimationClipOptimize)).titleContent = new GUIContent("Asset Optimize", EditorGUIUtility.IconContent("Toolbar Plus More").image);
 
-
-        // [MenuItem("Work Flow/Art/Export Lightmap Data", false, 501)]
-        // static void ExportLightmapData() => Helper.ExportLightmapCollection();
-        
+        [MenuItem("Work Flow/Testing/Export Global Illumination Data", false, 501)]
+        static void ExportLightmapData() => Helper.ExportLightmapCollection();
         [MenuItem("Work Flow/Testing/Scriptable Objects Combiner", false, 601)]
         static void ShowScriptableObjectsCombinerWindow() => EditorWindow.GetWindow(typeof(ScriptableObjectCombiner)).titleContent = new GUIContent("Scriptable Objects Combiner", EditorGUIUtility.IconContent("d_Import").image);
         #endregion
