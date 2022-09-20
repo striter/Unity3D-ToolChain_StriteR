@@ -224,10 +224,6 @@ Shader "Hidden/BillboardUber"
 			    }
             	#endif
 
-            	#if _GRID
-            	finalCol=MixGrid(positionWS,finalCol);
-				#endif
-            	
             	return half4(finalCol,alpha);
             }
             ENDHLSL

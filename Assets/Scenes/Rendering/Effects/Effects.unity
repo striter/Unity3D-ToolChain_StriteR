@@ -2697,8 +2697,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1314644219}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.34, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalPosition: {x: 0.94, y: -0.03, z: 3.26}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 429608770}
@@ -2863,7 +2863,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1401546427}
   m_LocalRotation: {x: -0.5490773, y: -0.07509678, z: 0.045408692, w: -0.83115137}
-  m_LocalPosition: {x: -1.64, y: -4.91, z: -12.38}
+  m_LocalPosition: {x: -2.05, y: -4.6, z: -11.57}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3795,7 +3795,6 @@ GameObject:
   - component: {fileID: 1781932859}
   - component: {fileID: 1781932858}
   - component: {fileID: 1781932857}
-  - component: {fileID: 1781932860}
   m_Layer: 0
   m_Name: Reflection
   m_TagString: Untagged
@@ -3883,21 +3882,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1781932855}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1781932860
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1781932855}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c85af998dd99edf45b824a71f34e3c08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PlaneOffset: 0
-  m_NormalDistort: 0.2
-  m_Upward: 1
 --- !u!1 &1796085905
 GameObject:
   m_ObjectHideFlags: 0

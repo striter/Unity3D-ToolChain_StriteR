@@ -157,7 +157,7 @@ Shader "Game/Lit/PBR/GrassSurface"
 
 				half3 finalCol=0;
 				half3 indirectDiffuse= IndirectDiffuse(mainLight,i,normalWS);
-				half3 indirectSpecular=IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,0,0);
+				half3 indirectSpecular=IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,0);
 				finalCol+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 
             	BRDFLightInput input=BRDFLightInput_Ctor(surface,mainLight);

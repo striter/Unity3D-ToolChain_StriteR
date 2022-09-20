@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4940546, g: 0.49579996, b: 0.42090625, a: 1}
+  m_IndirectSpecularColor: {r: 0.06607757, g: 0.07133453, b: 0.08158102, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5783,12 +5783,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Data:
-    m_FXAA: 0
-    m_AdditionalSample: 1
-    m_UseDepth: 0
-    m_ContrastSkip: 0.1
-    m_RelativeSkip: 0.2
-    m_SubPixelBlend: 1
     m_LUT: 0
     m_LUTTex: {fileID: 0}
     m_LUTCellCount: 16
@@ -5801,6 +5795,7 @@ MonoBehaviour:
     m_MixRed: {x: 0, y: 0, z: 0}
     m_MixGreen: {x: 0, y: 0, z: 0}
     m_MixBlue: {x: 0, y: 0, z: 0.1}
+    m_UseMaskTexture: 0
     m_Bloom: 1
     m_BloomData:
       m_SampleMode: 0
@@ -5853,9 +5848,8 @@ MonoBehaviour:
       m_Width: 0
       m_Strength: 0
       m_Bias: 0
-    m_Highlight: 0
+    m_MaskedHighlight: 0
     m_HighlightData:
-      m_CullingMask: 0
       m_Color: {r: 0, g: 0, b: 0, a: 0}
       m_Blur:
         m_BlurType: 0
@@ -5946,6 +5940,7 @@ MonoBehaviour:
     m_ObraDitherScale: 0.33
     m_ObraDitherStrength: 0.5
     m_ObraDitherColor: {r: 0.3, g: 0.2764706, b: 0.0047058826, a: 0.3}
+    m_ObraDitherStep: 0
     m_BilaterailSize: 5
     m_BilateralFactor: 0.5
 --- !u!1 &1487622205
@@ -9555,7 +9550,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2130721558}
   - component: {fileID: 2130721560}
-  - component: {fileID: 2130721559}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -9580,43 +9574,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2130721559
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2130721557}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90b08058af98ec54699c8c889f8f7e5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EditGrid:
-    m_Enable: 0
-    m_GridColor: {r: 2.1302884, g: 2.6082377, b: 2.2258782, a: 1}
-    m_GridSize: 0.0252
-  m_CloudShadow:
-    m_Enable: 1
-    m_ShadowTexture: {fileID: 2800000, guid: fc7bcaddb98dd384db623e98738d8595, type: 3}
-    m_ShadowStrength: 0.365
-    m_ShadowScale: 39.4
-    m_ShadowPlaneDistance: 28.8
-    m_StepBegin: 0.157
-    m_StepWidth: 0.176
-    m_Flow: {x: 0, y: 0.5}
-  m_HorizonBend:
-    m_Enable: 1
-    m_BendCamera: {fileID: 1483932176}
-    m_BendBegin: 14.03
-    m_BendWidth: 10.88
-    m_BendDirection: {x: -1.46, y: -2.59, z: -2.2}
-  m_VerticalFog:
-    m_Enable: 0
-    m_FogBegin: 0
-    m_FogDistance: 2
-    m_FogPow: 1
-    m_FogColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &2130721560
 MonoBehaviour:
   m_ObjectHideFlags: 0
