@@ -90,8 +90,5 @@ Shader "Game/Unfinished/SphericalHarmonicsL2"
             }
             ENDHLSL
         }
-        
-        USEPASS "Hidden/DepthOnly/MAIN"
-        USEPASS "Hidden/ShadowCaster/MAIN"
     }
 }

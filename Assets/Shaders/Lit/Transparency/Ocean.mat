@@ -193,10 +193,10 @@ Material:
     - _FoamBegin: 0
     - _FoamDistort: 1
     - _FoamNormalRange: 0
-    - _FoamNormalRangeEnd: 0.7083448
+    - _FoamNormalRangeEnd: 1
     - _FoamOffset: 0.18
-    - _FoamRange: 0.8143241
-    - _FoamRangeEnd: 1
+    - _FoamRange: 0.4295154
+    - _FoamRangeEnd: 0.6151914
     - _FoamWidth: 0.01
     - _Fresnel: 1
     - _FresnelPow: 1
@@ -223,7 +223,7 @@ Material:
     - _ReceiveShadows: 1
     - _ReflectionAmount: 0.51
     - _ReflectionDistort: 0.135
-    - _ReflectionOffset: -7
+    - _ReflectionOffset: 7
     - _RefractionAmount: 0.5
     - _RefractionDistance: 0.01
     - _Rotation: 45
@@ -262,8 +262,8 @@ Material:
     - _FlowDirection2: {r: 1, g: 1, b: 0, a: 0}
     - _FlowST1: {r: 0.05, g: 0.05, b: 0.01, a: 0.02}
     - _FlowST2: {r: 0.025, g: 0.025, b: -0.01, a: -0.01}
-    - _FoamColor: {r: 2.2433405, g: 2.297397, b: 1.7117859, a: 0.6784314}
-    - _ReflectionColor: {r: 1, g: 1, b: 1, a: 0.60784316}
+    - _FoamColor: {r: 2.2433405, g: 2.297397, b: 1.7117859, a: 0.46666667}
+    - _ReflectionColor: {r: 0.12649801, g: 0.9656854, b: 0.9811321, a: 0.6666667}
     - _RotationMatrix: {r: 0.70710677, g: 0.70710677, b: -0.70710677, a: 0.70710677}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _WaveST1: {r: 0.3, g: 0.3, b: 0.01, a: 0}

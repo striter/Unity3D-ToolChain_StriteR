@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 247573184}
   - component: {fileID: 247573185}
   m_Layer: 0
-  m_Name: SphericalHarmonics
+  m_Name: SHL2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -248,7 +248,7 @@ GameObject:
   - component: {fileID: 1345503067}
   - component: {fileID: 1345503066}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: UnitySHL2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

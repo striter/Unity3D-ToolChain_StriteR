@@ -284,8 +284,8 @@
             	float4 reflectionSample = IndirectSSRSpecular(screenUV,eyeDepthSurface,normalTS);
             	float4 reflectionColor =  INSTANCE(_ReflectionColor);
 
-            	float reflectionAmount = max(reflectionSample.a,(1-light.shadowAttenuation));
-				aboveSurfaceColor = lerp(aboveSurfaceColor,aboveSurfaceColor * reflectionColor.rgb,reflectionAmount*reflectionColor.a);
+            	float reflectionAmount = max(step(0.01,reflectionSample.r),(1-light.shadowAttenuation));
+				aboveSurfaceColor = lerp(aboveSurfaceColor,aboveSurfaceColor * reflectionColor.rgb,reflectionAmount*_ReflectionColor.a);
             	
             	float specular=pow(max(0,dot(normalWS,normalize(lightDirWS+viewDirWS))),INSTANCE(_SpecularAmount)*40);
             	specular*=INSTANCE(_SpecularStrength);

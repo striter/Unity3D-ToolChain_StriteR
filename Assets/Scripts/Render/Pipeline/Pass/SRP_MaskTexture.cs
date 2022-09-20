@@ -28,6 +28,7 @@ namespace Rendering.Pipeline
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
             cameraTextureDescriptor.colorFormat = RenderTextureFormat.R8;
+            cameraTextureDescriptor.depthBufferBits = 0;
             cmd.GetTemporaryRT(DRenderTextures.kCameraMaskTexture, cameraTextureDescriptor);
             ConfigureTarget(DRenderTextures.kCameraMaskTexture);
             base.Configure(cmd, cameraTextureDescriptor);

@@ -285,7 +285,7 @@ namespace Rendering.Pipeline
         {
             _cmd.SetComputeIntParam(m_ReflectionComputeShader, ID_SampleCount, _data.m_Sample);
             _cmd.SetComputeVectorParam(m_ReflectionComputeShader, ID_PlaneNormal, _plane.normal.normalized);
-            _cmd.SetComputeVectorParam(m_ReflectionComputeShader, ID_PlanePosition, _plane.distance * _plane.normal);
+            _cmd.SetComputeVectorParam(m_ReflectionComputeShader, ID_PlanePosition, _plane.position);
             _cmd.SetComputeVectorParam(m_ReflectionComputeShader, ID_Result_TexelSize, _descriptor.GetTexelSize());
             
             _cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels, ID_Input, _renderer.cameraColorTarget);

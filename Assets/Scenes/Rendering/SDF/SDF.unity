@@ -718,12 +718,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Data:
-    m_FXAA: 0
-    m_AdditionalSample: 0
-    m_UseDepth: 0
-    m_ContrastSkip: 0
-    m_RelativeSkip: 0
-    m_SubPixelBlend: 0
     m_LUT: 0
     m_LUTTex: {fileID: 0}
     m_LUTCellCount: 0
@@ -736,17 +730,18 @@ MonoBehaviour:
     m_MixRed: {x: 0, y: 0, z: 0}
     m_MixGreen: {x: 0, y: 0, z: 0}
     m_MixBlue: {x: 0, y: 0, z: 0}
+    m_UseMaskTexture: 0
     m_Bloom: 1
     m_BloomData:
       m_SampleMode: 0
-      m_Threshold: 2.09
+      m_Threshold: 0.73
       m_LayerMask: 0
-      m_Color: {r: 0.2735849, g: 0.2735849, b: 0.2735849, a: 1}
+      m_Color: {r: 0.3301887, g: 0.3301887, b: 0.3301887, a: 1}
       m_Blur:
-        m_BlurType: 3
-        m_BlurSize: 1.26
-        m_Iteration: 4
-        m_DownSample: 2
+        m_BlurType: 9
+        m_BlurSize: 0.59
+        m_Iteration: 5
+        m_DownSample: 1
         m_Angle: 0
         m_Vector: {x: 0, y: 0}
       m_BloomDebug: 0

@@ -335,7 +335,6 @@ namespace Rendering.PostProcess
                 case EBlurType.NextGen:
                     {
                         int iteration = Mathf.Clamp(_data.m_Iteration,2,(int)Mathf.Log(Mathf.ClosestPowerOfTwo(Mathf.Min(startWidth,startHeight)) -1,2));
-                        Debug.Log(iteration);
                         int downSamplePass = (int)EBlurPass.NextGen_DownSample;
                         int upSamplePass = (int)EBlurPass.NextGen_UpSample;
                         int upSampleFinalPass = (int) EBlurPass.NextGen_UpSampleFinal;

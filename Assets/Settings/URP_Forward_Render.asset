@@ -92,7 +92,10 @@ MonoBehaviour:
   m_NormalTexture: 1
   m_Mask: 0
   m_MaskData:
-    cullingMask: 2147483647
+    renderMask: 2147483647
+    color: {r: 1, g: 1, b: 1, a: 1}
+    extendWidth: 0.1
+    outlineVertex: 0
   m_CameraReflectionTexture: 1
   m_PlanarReflectionData:
     m_Type: 1

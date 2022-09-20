@@ -43,7 +43,5 @@ Shader "Game/Unfinished/UnitySHL2"
             ENDHLSL
         }
         
-        USEPASS "Hidden/DepthOnly/MAIN"
-        USEPASS "Hidden/ShadowCaster/MAIN"
     }
 }
