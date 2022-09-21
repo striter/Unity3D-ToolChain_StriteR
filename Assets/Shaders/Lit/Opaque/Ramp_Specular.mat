@@ -2,14 +2,19 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Ramp_Specular
   m_Shader: {fileID: 4800000, guid: c8e0eecdb2eaf98498f0a3c380e0c4d4, type: 3}
-  m_ShaderKeywords: _RAMP_RIM_V _RIM_SMOOTH _Rim _SPECULAR
+  m_ValidKeywords:
+  - _RAMP_RIM_V
+  - _RIM_SMOOTH
+  - _SPECULAR
+  m_InvalidKeywords:
+  - _Rim
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0

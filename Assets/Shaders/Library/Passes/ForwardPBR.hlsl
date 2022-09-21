@@ -103,9 +103,6 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 
 	#if defined(GET_PBRPARAM)
 		GET_PBRPARAM(glossiness,metallic,ao)
-	#else
-		glossiness *= INSTANCE(_Glossiness);
-		metallic *= INSTANCE(_Metallic);
 	#endif
 	
 	BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,glossiness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,1);
@@ -130,7 +127,7 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 	#if defined GET_INDIRECTSPECULAR
 		GET_INDIRECTSPECULAR(surface)
 	#else
-		IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
+		IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,0);
 	#endif
 	finalCol+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 

@@ -173,9 +173,6 @@
 			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment fragForward
-			#include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
-			#include "Assets/Shaders/Library/BRDF/BRDFInput.hlsl"
-
 			#pragma multi_compile_fragment _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHTS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
@@ -195,6 +192,7 @@
 			#pragma shader_feature_local_fragment _NDF_BLINNPHONG _NDF_COOKTORRANCE _NDF_BECKMANN _NDF_GAUSSIAN _NDF_GGX _NDF_TROWBRIDGEREITZ _NDF_ANISOTROPIC_TROWBRIDGEREITZ _NDF_ANISOTROPIC_WARD _NDF_ANISOTROPIC_BECKMANN _NDF_ANISOTROPIC_GGX
 			#pragma shader_feature_local_fragment _VF_BLINNPHONG _VF_GGX
 
+			#include "Assets/Shaders/Library/BRDF/BRDFInclude.hlsl"
 			float GetGeometryShadow(BRDFSurface surface,BRDFLightInput lightSurface)
 			{
 				return max(0., lightSurface.NDL);
@@ -255,7 +253,6 @@
 				#endif
 			}
 
-			#include "Assets/Shaders/Library/BRDF/BRDFLighting.hlsl"
 
 			f2o fragForward(v2f i)
 			{

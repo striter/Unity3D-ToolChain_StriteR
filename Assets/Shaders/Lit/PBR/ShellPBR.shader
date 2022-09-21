@@ -64,9 +64,6 @@
 				INSTANCING_PROP(float,_FurGravity)
 			INSTANCING_BUFFER_END
 			
-			#include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
-			#include "Assets/Shaders/Library/BRDF/BRDFInput.hlsl"
-
 			#pragma shader_feature_local_fragment _ANISOTROPIC
 		
 			#pragma shader_feature_local_fragment _PBRMAP
@@ -91,14 +88,11 @@
 			Tags{"LightMode" = "UniversalForward"}
 			Cull Off
 			HLSLPROGRAM
-			#pragma vertex vert
-			#pragma fragment frag
+			#pragma vertex ForwardVertex
+			#pragma fragment ForwardFragment
 			
-			float GetGeometryShadow(BRDFSurface surface,BRDFLightInput lightSurface)
-			{
-				return max(0.,lightSurface.NDL);
-			}
-
+			#include "Assets/Shaders/Library/BRDF/BRDFInput.hlsl"
+			#include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
 			float GetNormalDistribution(BRDFSurface surface,BRDFLightInput lightSurface)
 			{
 				half sqrRoughness=surface.roughness2;
@@ -113,115 +107,41 @@
 				normalDistribution=clamp(normalDistribution,0,100.h);
 				return normalDistribution;
 			}
-						
-			float GetNormalizationTerm(BRDFSurface surface,BRDFLightInput lightSurface)
-			{
-				return InvVF_GGX(max(0., lightSurface.LDH),surface.roughness);
-			}
-						
-			#include "Assets/Shaders/Library/BRDF/BRDFLighting.hlsl"
 
-			struct a2f
+			float3 GetPositionWS(float3 positionOS,float3 normalWS)
 			{
-				float3 positionOS : POSITION;
-				float3 normalOS:NORMAL;
-				float4 tangentOS:TANGENT;
-				float2 uv:TEXCOORD0;
-				UNITY_VERTEX_INPUT_INSTANCE_ID
-			};
-
-			struct v2f
-			{
-				float4 positionCS : SV_POSITION;
-				float4 uv:TEXCOORD0;
-				float3 positionWS:TEXCOORD1;
-				float4 positionHCS:TEXCOORD2;
-				float3 normalWS:TEXCOORD3;
-				half3 tangentWS:TEXCOORD4;
-				half3 biTangentWS:TEXCOORD5;
-				V2F_FOG(6)
-				UNITY_VERTEX_INPUT_INSTANCE_ID
-			};
-
-			v2f vert(a2f v)
-			{
-				v2f o;
-				UNITY_SETUP_INSTANCE_ID(v);
-				UNITY_TRANSFER_INSTANCE_ID(v, o);
-				o.normalWS=normalize(mul((float3x3)unity_ObjectToWorld,v.normalOS));
-				o.tangentWS=normalize(mul((float3x3)unity_ObjectToWorld,v.tangentOS.xyz));
-				o.biTangentWS=cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
-				o.positionWS=TransformObjectToWorld(v.positionOS);
-				o.uv = float4( TRANSFORM_TEX_INSTANCE(v.uv,_MainTex),TRANSFORM_TEX_INSTANCE(v.uv,_FurTex));
+				float3 positionWS = TransformObjectToWorld(positionOS);
+				
 				float delta=INSTANCE(_ShellDelta);
 				float amount=delta+=(delta- delta*delta);
 				
-				o.positionWS+=o.normalWS*INSTANCE(_FurLength)*amount;
-				// o.positionWS+=dot(o.normalWS,float3(0,1,0))*amount*float3(0,INSTANCE(_FurGravity),0);
-				o.uv.w+=amount*INSTANCE(_FURUVDelta);
-				o.positionCS = TransformWorldToHClip(o.positionWS);
-				o.positionHCS = o.positionCS;
-				FOG_TRANSFER(o)
-				return o;
+				positionWS+=normalWS*INSTANCE(_FurLength)*amount;
+				return positionWS;
 			}
-			
 
-			float4 frag(v2f i) :SV_TARGET
+			float3 GetAlbedo(float2 baseUV,float2 furUV)
 			{
-				UNITY_SETUP_INSTANCE_ID(i);
-				
-				float3 positionWS=i.positionWS;
-				float3 normalWS=normalize(i.normalWS);
-				half3 biTangentWS=normalize(i.biTangentWS);
-				half3 tangentWS=normalize(i.tangentWS);
-				float3 viewDirWS=-GetCameraRealDirectionWS(positionWS);
-				half3 normalTS=half3(0,0,1);
-				float2 baseUV=i.uv.xy;
-
-				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV);
-				half3 albedo=color.rgb;
-				
-				half glossiness=INSTANCE(_Glossiness);
-				half metallic=INSTANCE(_Metallic);
-				half ao=1.h;
-				#if _PBRMAP
-					half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
-					glossiness=1.h-mix.r;
-					metallic=mix.g;
-					ao=mix.b;
-				#endif
-
 				float delta= INSTANCE(_ShellDelta);
-				albedo*=lerp(INSTANCE(_RootColor).rgb,INSTANCE(_EdgeColor).rgb,delta);
-				ao=saturate(ao-(1-delta)*INSTANCE(_FurShadow));
-				float furSample=SAMPLE_TEXTURE2D(_FurTex,sampler_FurTex,i.uv.zw).r;
+				float furSample=SAMPLE_TEXTURE2D(_FurTex,sampler_FurTex,furUV).r;
 				clip(furSample-delta*delta*INSTANCE(_FurAlphaClip));
 				
-				#if _NORMALMAP
-					float3x3 TBNWS=transpose(half3x3(tangentWS,biTangentWS,normalWS));
-					normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
-					normalWS=normalize(mul(TBNWS), normalTS));
-				#endif
-				
-				BRDFSurface surface=BRDFSurface_Ctor(albedo,0,glossiness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,INSTANCE(_AnisoTropicValue));
-				
-				half3 finalCol=0;
-				Light mainLight=GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
-				half3 indirectDiffuse= IndirectDiffuse(mainLight,i,normalWS);
-				half3 indirectSpecular=IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,0);
-				finalCol+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
-				
-				finalCol+=BRDFLighting(surface,mainLight);
-		
-				#if _ADDITIONAL_LIGHTS
-            	uint pixelLightCount = GetAdditionalLightsCount();
-			    for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
-					finalCol+=BRDFLighting(surface, GetAdditionalLight(lightIndex,i.positionWS));
-            	#endif
-				FOG_MIX(i,finalCol);
-				finalCol+=surface.emission;
-				return half4(finalCol,1.h);
+				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV);
+				half3 albedo=color.rgb;
+				albedo*=lerp(INSTANCE(_RootColor).rgb,INSTANCE(_EdgeColor).rgb,delta);
+				return albedo;
 			}
+
+			#define V2F_ADDITIONAL float2 furUV:TEXCOORD8;
+			#define V2F_ADDITIONAL_TRANSFER(v,o) o.furUV = TRANSFORM_TEX(v.uv,_FurTex)+float2(0,pow2(INSTANCE(_ShellDelta))*INSTANCE(_FURUVDelta));
+			
+			#define GET_POSITION_WS(v,o) GetPositionWS(v.positionOS,o.normalWS)
+			#define GET_ALBEDO(i)  GetAlbedo(i.uv,i.furUV)
+			#define GET_PBRPARAM(glossiness,metallic,ao) ao=saturate(ao-(1-INSTANCE(_ShellDelta))*INSTANCE(_FurShadow));
+	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
+			#define GET_EMISSION(i) 0
+			#include "Assets/Shaders/Library/BRDF/BRDFLighting.hlsl"
+			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
+			
 			ENDHLSL
 		}
 		USEPASS "Game/Additive/ShadowCaster/MAIN"

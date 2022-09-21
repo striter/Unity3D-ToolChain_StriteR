@@ -1,11 +1,8 @@
-﻿#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
-#include "Assets/Shaders/Library/Lighting/Normal.hlsl"
 
 //Diffuse-Lambert
 float GetDiffuse(float3 normal,float3 lightDir)
 {
-	return  dot(normal, lightDir);
+    return  dot(normal, lightDir);
 }
 float GetDiffuse(float3 normal, float3 lightDir,float lambert,float atten)
 {
@@ -18,13 +15,13 @@ float GetDiffuse(float3 normal, float3 lightDir,float lambert,float atten)
 //Blinn-Phong Specular Optimized, range 0.9-1
 float GetSpecular(float3 normal,float3 halfDir,float range)
 {
-	float specular = dot(normal,halfDir);
-	return smoothstep(range, 1, specular);
+    float specular = dot(normal,halfDir);
+    return smoothstep(range, 1, specular);
 }
 
 float GetSpecular(float3 normal,float3 lightDir,float3 viewDir,float range)
 {
-	return GetSpecular(normal,normalize(lightDir+viewDir),range);
+    return GetSpecular(normal,normalize(lightDir+viewDir),range);
 }
 
 //Kajiya-Kay Anisotropic Lighting Model
@@ -42,11 +39,11 @@ float3 _LightDirection;
 float4 ShadowCasterCS(float3 positionWS, float3 normalWS)
 {
     float4 positionCS = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, _LightDirection));
-#if UNITY_REVERSED_Z
-	positionCS.z = min(positionCS.z, positionCS.w * UNITY_NEAR_CLIP_VALUE);
-#else
+    #if UNITY_REVERSED_Z
+    positionCS.z = min(positionCS.z, positionCS.w * UNITY_NEAR_CLIP_VALUE);
+    #else
     positionCS.z = max(positionCS.z, positionCS.w * UNITY_NEAR_CLIP_VALUE);
-#endif
+    #endif
     return positionCS;
 }
 

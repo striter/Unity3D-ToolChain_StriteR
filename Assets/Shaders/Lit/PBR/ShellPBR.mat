@@ -2,15 +2,23 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ShellPBR
   m_Shader: {fileID: 4800000, guid: fdfa701d43a47f142adaf904a5ebb997, type: 3}
-  m_ShaderKeywords: _ANISOTROPIC _DEPTHMAP _NDF_GGX _PARALLAX _SPECULARHIGHLIGHTS_OFF
-    _VF_GGX
+  m_ValidKeywords:
+  - _ANISOTROPIC
+  - _NORMALMAP
+  - _PBRMAP
+  m_InvalidKeywords:
+  - _DEPTHMAP
+  - _NDF_GGX
+  - _PARALLAX
+  - _SPECULARHIGHLIGHTS_OFF
+  - _VF_GGX
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -125,7 +133,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: f90e3449ad3674016962a3aba3d31a06, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -133,7 +141,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PBRTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: e4262459edff0b046a03fa129f3f54cb, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
@@ -223,12 +231,12 @@ Material:
     - _EnvironmentReflections: 1
     - _F: 0
     - _FRESNEL: 0
-    - _FURUVDelta: 1.08
+    - _FURUVDelta: 0.64
     - _FurAlphaClip: 1
     - _FurGravity: 0
-    - _FurLength: 0.06
+    - _FurLength: 0.137
     - _FurScattering: 0
-    - _FurShadow: 0.87
+    - _FurShadow: 0.285
     - _GSF: 6
     - _GlossMapScale: 0
     - _Glossiness: 0.86

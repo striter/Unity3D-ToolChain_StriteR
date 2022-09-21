@@ -35,6 +35,7 @@ Shader "Game/Hidden/SubstancePainterPBRtoUnity"
 		HLSLINCLUDE
 			#include "Assets/Shaders/Library/Common.hlsl"
 			#include "Assets/Shaders/Library/Lighting.hlsl"
+			#include "Assets/Shaders/Library/BRDF/BRDFInclude.hlsl"
 			// #pragma multi_compile_instancing
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_EmissionTex);SAMPLER(sampler_EmissionTex);
@@ -58,33 +59,6 @@ Shader "Game/Hidden/SubstancePainterPBRtoUnity"
 			NAME "FORWARD"
 			Tags{"LightMode" = "UniversalForward"}
 			HLSLPROGRAM
-			#include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
-			#include "Assets/Shaders/Library/BRDF/BRDFInput.hlsl"
-			float GetGeometryShadow(BRDFSurface surface,BRDFLightInput lightSurface)
-			{
-			    return lightSurface.NDL;
-			}
-
-			float GetNormalDistribution(BRDFSurface surface,BRDFLightInput lightSurface)
-			{
-			    half sqrRoughness=surface.roughness2;
-			    half NDH=lightSurface.NDH;
-
-			    NDH = saturate(NDH);
-			    float d = NDH * NDH * (sqrRoughness-1.f) +1.00001f;
-							
-			    float specular= sqrRoughness / (d * d);
-			    specular = clamp(specular,0,100);
-
-				return specular;
-			}
-						
-			float GetNormalizationTerm(BRDFSurface surface,BRDFLightInput lightSurface)
-			{
-			    float sqrLDH = pow2(lightSurface.LDH);
-			    return max(0.1h, sqrLDH) * (surface.roughness*4 + 2);
-			}
-			#include "Assets/Shaders/Library/BRDF/BRDFLighting.hlsl"
 			
 			float3 OverrideIndirectDiffuse(BRDFSurface surface)
 			{

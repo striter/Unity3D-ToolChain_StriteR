@@ -2,15 +2,21 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: GrassPBR
   m_Shader: {fileID: 4800000, guid: a3ed444ff715cb6458df4360304125a6, type: 3}
-  m_ShaderKeywords: _ANISOTROPIC _DEPTHMAP _NDF_GGX _PARALLAX _SPECULARHIGHLIGHTS_OFF
-    _VF_GGX
+  m_ValidKeywords:
+  - _ANISOTROPIC
+  m_InvalidKeywords:
+  - _DEPTHMAP
+  - _NDF_GGX
+  - _PARALLAX
+  - _SPECULARHIGHLIGHTS_OFF
+  - _VF_GGX
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -129,7 +135,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: f90e3449ad3674016962a3aba3d31a06, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -137,7 +143,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PBRTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: e4262459edff0b046a03fa129f3f54cb, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
@@ -233,19 +239,19 @@ Material:
     - _FlowStrength: 0.47
     - _FurAlphaClip: 1
     - _FurGravity: 0
-    - _FurLength: 0.39
+    - _FurLength: 0.328
     - _FurScattering: 0
     - _FurShadow: 1
     - _GSF: 6
     - _GlossMapScale: 0
-    - _Glossiness: 0.86
+    - _Glossiness: 1
     - _GlossyReflections: 0
     - _Grid: 0
     - _HeightTransition: 0
     - _Ior: 1
     - _Lambert: 0
     - _Lighting: 1
-    - _Metallic: 0.11
+    - _Metallic: 1
     - _Metallic0: 0
     - _Metallic1: 0
     - _Metallic2: 0

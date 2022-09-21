@@ -1,5 +1,4 @@
-﻿
-//NDF,Normal Distribution Function
+﻿//NDF,Normal Distribution Function
 float NDF_BlinnPhong(float NDH, float specularPower, float specularGloss)
 {
     float distribution = pow(NDH, specularGloss) * specularPower;
@@ -40,6 +39,7 @@ float NDF_TrowbridgeReitz(float NDH,float sqrRoughness)
     float distribution = sqrNDH * (sqrRoughness - 1.0) + 1.0;
     return sqrRoughness / (PI * distribution * distribution+FLT_MIN);
 }
+
 //Anisotropic NDF
 float NDFA_TrowbridgeReitz(float NDH, float TDH, float BDH, float roughnessT,float roughnessB)
 {

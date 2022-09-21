@@ -1,6 +1,3 @@
-﻿#define GEOMETRY_SHADOW(surface,lightSurface) GetGeometryShadow(surface,lightSurface)
-#define NORMALIZATION_TERM(surface,lightSurface) GetNormalizationTerm(surface,lightSurface)
-#define NORMAL_DISTRIBUTION(surface,lightSurface) GetNormalDistribution(surface,lightSurface)
 
 struct BRDFLight
 {
@@ -11,14 +8,38 @@ struct BRDFLight
     half normalDistribution;
     half normalizationTerm;
 };
+
 BRDFLight BRDFLight_Ctor(BRDFSurface surface,BRDFLightInput input)
 {
     BRDFLight light;
     light.lightDir = input.lightDirection;
     light.color = input.lightColor;
-    light.radiance = input.lightColor * (input.distanceAttenuation*input.shadowAttenuation * GEOMETRY_SHADOW(surface,input));
-    light.normalDistribution = NORMAL_DISTRIBUTION(surface,input);
-    light.normalizationTerm = NORMALIZATION_TERM(surface,input);
+   
+#if defined(GET_GEOMETRYSHADOW)
+    float geometryShadow = GET_GEOMETRYSHADOW(surface,input);
+#else
+    float geometryShadow = input.NDL;
+#endif
+    light.radiance = input.lightColor * (input.distanceAttenuation*input.shadowAttenuation * geometryShadow);
+    
+#if defined(GET_NORMALDISTRIBUTION)
+    light.normalDistribution = GET_NORMALDISTRIBUTION(surface,input);
+#else
+    half sqrRoughness=surface.roughness2;
+    half NDH=input.NDH;
+
+    NDH = saturate(NDH);
+    float d = NDH * NDH * (sqrRoughness-1.f) +1.00001f;
+							
+    light.normalDistribution = clamp(sqrRoughness / (d * d),0,100);
+#endif
+
+#if defined(GET_NORMALIZATIONTERM)
+    light.normalizationTerm = GET_NORMALIZATIONTERM(surface,input);
+#else
+    float sqrLDH = pow2(input.LDH);
+    light.normalizationTerm = max(0.1h, sqrLDH) * (surface.roughness*4 + 2);
+#endif
     return light;
 }
 
