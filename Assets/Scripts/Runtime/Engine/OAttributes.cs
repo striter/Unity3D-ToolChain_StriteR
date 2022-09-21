@@ -10,8 +10,8 @@ public class MFoldoutAttribute : PropertyAttribute
     public MFoldoutAttribute(string _foldoutFieldName, params object[] _refValues) : this(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
     public MFoldoutAttribute(string _foldoutFieldName1, object _refValue1, string _foldoutFieldName2, object _refValue2) : this(new KeyValuePair<string, object[]>(_foldoutFieldName1, new object[] { _refValue1 }), new KeyValuePair<string, object[]>(_foldoutFieldName2, new object[] { _refValue2 })) { }
     public MFoldoutAttribute(string _foldoutFieldName1, object _refValue1, string _foldoutFieldName2, object _refValue2,string _foldoutFieldName3, object _refValue3) : this(new KeyValuePair<string, object[]>(_foldoutFieldName1, new object[] { _refValue1 }), new KeyValuePair<string, object[]>(_foldoutFieldName2, new object[] { _refValue2 }),new KeyValuePair<string, object[]>(_foldoutFieldName3,new object[]{_refValue3})) { }
-
 }
+
 [AttributeUsage(AttributeTargets.Field)]
 public class MFoldAttribute : MFoldoutAttribute
 {
@@ -19,7 +19,6 @@ public class MFoldAttribute : MFoldoutAttribute
     public MFoldAttribute(string _foldoutFieldName, params object[] _refValues) : base(_foldoutFieldName, _refValues) { }
     public MFoldAttribute(params KeyValuePair<string, object[]>[] _pairs) : base(_pairs) { }
 }
-
 
 [AttributeUsage(AttributeTargets.Field)]
 public class ExtendButtonAttribute : PropertyAttribute
@@ -34,7 +33,6 @@ public class ExtendButtonAttribute : PropertyAttribute
         m_Buttons = new (string title, string method, object[] parameters)[]{(_title1,_method1,_parameters1),(_title2,_method2,_parameters2)};
     }
 }
-
 
 [AttributeUsage(AttributeTargets.Field)]
 public class ScriptableObjectEditAttribute : PropertyAttribute { }
@@ -62,9 +60,9 @@ public class IntEnumAttribute : PropertyAttribute
 
 [AttributeUsage(AttributeTargets.Field)]
 public class PositionAttribute : PropertyAttribute { }
+
 [AttributeUsage(AttributeTargets.Field)]
 public class CullingMaskAttribute : PropertyAttribute { }
-
 
 
 [AttributeUsage(AttributeTargets.Field)]

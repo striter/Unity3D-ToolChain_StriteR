@@ -6,37 +6,57 @@ using UnityEngine;
 namespace Geometry.Bezier
 {
     [Serializable]
-    public struct FBezierCurveQuadratic
+    public struct FBezierCurveQuadratic:ISerializationCallbackReceiver
     {
         public Vector3 source;
-        public Vector3 destination;
         public Vector3 control;
-
+        public Vector3 destination;
+        
+        [HideInInspector] public Vector3 tangentSource;
+        [HideInInspector] public Vector3 tangentDestination;
+        
         public FBezierCurveQuadratic(Vector3 _src, Vector3 _dst, Vector3 _control)
         {
             source = _src;
             destination = _dst;
             control = _control;
+            tangentSource = default;
+            tangentDestination = default;
+            Ctor();
         }
-        public Vector3 Evaluate(float _value)=> UMath.QuadraticBezierCurve(source,destination,control,_value);
+
+        void Ctor()
+        {
+            tangentSource = Vector3.Normalize(control - source);
+            tangentDestination = Vector3.Normalize(destination - control);
+        }
+
+        public Vector3 Evaluate(float _value)
+        {
+            float value = _value;
+            float oneMinusValue = 1 - value;
+            return UMath.Pow2(oneMinusValue) * source + 2 * (oneMinusValue) * value * control + UMath.Pow2(value) * destination;
+        }
+
+        public Vector3 GetTangent(float _value) => Vector3.Lerp(tangentSource,tangentDestination,_value).normalized;
 
         public GBox GetBoundingBox()
         {
             Vector3 min = Vector3.Min(source,destination);
             Vector3 max = Vector3.Max(source,destination);
-            GBox box = GBox.GBoxCtor_MinMax(min, max);
+            GBox box = GBox.Create(min, max);
             if (!box.IsPointInside(control))
             {
                 Vector3 t =  (source - control).div(source - 2 * control + destination).Clamp(Vector3.zero,Vector3.one);
                 Vector3 s = Vector3.one - t;
                 Vector3 q = s.mul(s).mul(source) + 2*s.mul(t).mul(control)+ t.mul(t).mul(destination);
-                box = GBox.GBoxCtor_MinMax(Vector3.Min(min,q),Vector3.Max(max,q));
+                box = GBox.Create(Vector3.Min(min,q),Vector3.Max(max,q));
             }
             return box;
         }
         
-#if UNITY_EDITOR
-        public void DrawGizmos(int _density=64)
+    #if UNITY_EDITOR
+        public void DrawGizmos(bool _tangents = false,int _density=64)
         {
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(source,.05f);
@@ -48,23 +68,44 @@ namespace Geometry.Bezier
             Gizmos.color = Color.white;
             
             Vector3[] points = new Vector3[_density + 1];
-            for (int i = 0; i < _density+1; i++)
-                points[i] = Evaluate(i / (float)_density);
+            for (int i = 0; i < _density + 1; i++)
+            {
+                var value = i / (float) _density;
+                points[i] =  Evaluate(value);
+            }
             Gizmos_Extend.DrawLines(points);
+
+            if (!_tangents)
+                return;
+            Gizmos.color = KColor.kOrange.SetAlpha(.1f);
+            for (int i = 0; i < _density + 1; i++)
+            {
+                var value = i / (float) _density;
+                Gizmos.DrawLine(points[i],points[i]+GetTangent(value)*.1f);
+            }
         }
-#endif
+    #endif
+        
+    #region Implements
+        public void OnBeforeSerialize() { }
+        public void OnAfterDeserialize()=> Ctor();
+    #endregion
     }
 
     [Serializable]
     public struct FBezierCurveCubic
     {
         public Vector3 source;
-        public Vector3 destination;
         public Vector3 controlSource;
+        public Vector3 destination;
         public Vector3 controlDestination;
 
-        public Vector3 Evaluate(float _value) =>
-            UMath.CubicBezierCurve(source, destination, controlSource, controlDestination, _value);
+        public Vector3 Evaluate(float _value)
+        {
+            float value = _value;
+            float oneMinusValue = 1 - value;
+            return UMath.Pow3(oneMinusValue) * source +  3 * UMath.Pow2(oneMinusValue) * value * controlSource +  3 * oneMinusValue * UMath.Pow2(value) * controlDestination + UMath.Pow3(value) * destination;
+        }
 
         public GBox GetBoundingBox()
         {
@@ -108,7 +149,7 @@ namespace Geometry.Bezier
                 }
             }
 
-            return GBox.GBoxCtor_MinMax(min, max);
+            return GBox.Create(min, max);
         }
         
 #if UNITY_EDITOR

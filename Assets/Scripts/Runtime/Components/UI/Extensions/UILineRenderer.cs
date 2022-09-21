@@ -69,6 +69,5 @@ public class UILineRenderer : MaskableGraphic
         vertices.Add(new UIVertex() { position = lastPoint + lastUpDirection * m_Width, uv0 = new Vector4(totalLength, 1), color = color });
 
         vh.AddUIVertexStream(vertices, indexes);
-
     }
 }

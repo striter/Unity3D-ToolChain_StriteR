@@ -10,13 +10,14 @@ namespace ExampleScenes.Algorithm.Geometry
     {
         [Header("Quadratic")] 
         public FBezierCurveQuadratic m_QuadraticCurve;
+        public bool quadraticTangents = false;
         [Header("Cubic")] 
         public FBezierCurveCubic m_CubicCurve;
         #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
-            m_QuadraticCurve.DrawGizmos();
+            m_QuadraticCurve.DrawGizmos(quadraticTangents);
             Gizmos.color = Color.grey;
             m_QuadraticCurve.GetBoundingBox().DrawGizmos();
             

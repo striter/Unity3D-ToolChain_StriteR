@@ -17,15 +17,6 @@ namespace PhysicsTest
         Rigidbody m_TargetObject;
         LineRenderer m_GravityLine;
         readonly Counter m_GravityGunCounter = new Counter(.35f);
-        bool m_Sprinting;
-        readonly Counter m_JumpCounter = new Counter(.5f,true);
-        void OnJump()
-        {
-            if (!m_Body.isGrounded)
-                return;
-            m_JumpCounter.Replay();
-        }
-        void OnSprint(bool _sprint) => m_Sprinting = _sprint;
         public override void OnTakeControl(TPSCameraController _controller)
         {
             base.OnTakeControl(_controller);
@@ -49,7 +40,6 @@ namespace PhysicsTest
         }
         public override void Tick(float _deltaTime)
         {
-            m_JumpCounter.Tick(_deltaTime);
             m_Head.position = m_Body.transform.position + Vector3.up * .9f;
             if (m_TargetObject)
             {
@@ -57,7 +47,7 @@ namespace PhysicsTest
                 m_TargetObject.velocity = Vector3.zero;
             }
             m_Head.rotation = TickRotation();
-            m_Body.Move((TickMovement()*(m_Sprinting?3f:1f) + Vector3.up* Mathf.Lerp(-9.8f,9.8f, m_JumpCounter.m_TimeLeftScale))*_deltaTime);
+            m_Body.Move(TickMovement());
         }
         public override void FixedTick(float _deltaTime)
         {

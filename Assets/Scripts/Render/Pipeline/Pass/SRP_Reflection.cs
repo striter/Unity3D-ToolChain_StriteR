@@ -78,7 +78,7 @@ namespace Rendering.Pipeline
             m_Data = _data;
             m_Renderer = _renderer;
             MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-            foreach (var reflection in SRC_ReflectionBehaviour.m_Reflections)
+            foreach (var reflection in SRC_ReflectionConfig.m_Reflections)
                 reflection.SetPropertyBlock(propertyBlock,4);
         }
 
@@ -124,18 +124,18 @@ namespace Rendering.Pipeline
         public void EnqueuePass(SRD_ReflectionData _data,ScriptableRenderer _renderer,RenderPassEvent _event)
         {
             m_Data = _data;
-            if (SRC_ReflectionBehaviour.m_Reflections.Count == 0)
+            if (SRC_ReflectionConfig.m_Reflections.Count == 0)
                 return;
             
             MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-            foreach (var (index,groups) in SRC_ReflectionBehaviour.m_Reflections.FindAll(p=>p.Available).GroupBy(p=>p.m_PlaneData,GPlane.kComparer).LoopIndex())
+            foreach (var (index,groups) in SRC_ReflectionConfig.m_Reflections.FindAll(p=>p.Available).GroupBy(p=>p.m_PlaneData,GPlane.kComparer).LoopIndex())
             {
                 if (index >= kMaxReflectionTextures)
                 {
                     Debug.LogWarning("Reflection Plane Outta Limit!");
                     break;
                 }
-                foreach (SRC_ReflectionBehaviour planeComponent in groups)
+                foreach (SRC_ReflectionConfig planeComponent in groups)
                     planeComponent.SetPropertyBlock(propertyBlock,index);
 
                 APlanarReflection reflection=null;

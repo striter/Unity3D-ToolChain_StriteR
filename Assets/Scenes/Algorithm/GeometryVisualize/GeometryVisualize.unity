@@ -374,12 +374,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_QuadraticCurve:
     source: {x: 2, y: 0, z: 0}
-    destination: {x: 2.5, y: 0, z: 0.5}
     control: {x: 2, y: 0.55, z: 0.5}
+    destination: {x: 2.5, y: 0, z: 0.5}
+    tangentSource: {x: 0, y: 0.7399401, z: 0.6726728}
+    tangentDestination: {x: 0.6726728, y: -0.7399401, z: 0}
+  quadraticTangents: 1
   m_CubicCurve:
     source: {x: 0, y: 0.001, z: 0}
-    destination: {x: 0, y: 0, z: 1}
     controlSource: {x: -0.5, y: 0.5, z: 0}
+    destination: {x: 0, y: 0, z: 1}
     controlDestination: {x: 1, y: 0.5, z: 1}
 --- !u!4 &586433004
 Transform:

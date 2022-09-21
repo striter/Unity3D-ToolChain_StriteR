@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-public static class UCommon
+﻿public static class UCommon
 {
     public static readonly RangeFloat kRange01 = new RangeFloat(0f, 1f);
     public static readonly RangeFloat kRangeNeg1Pos1 = new RangeFloat(-1f, 2f);

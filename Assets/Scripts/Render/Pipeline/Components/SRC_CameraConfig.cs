@@ -5,7 +5,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace Rendering.Pipeline
 {
-    public class SRC_CameraBehaviour : MonoBehaviour
+    public class SRC_CameraConfig : MonoBehaviour
     {
         public CameraOverrideOption m_Normal = CameraOverrideOption.UsePipelineSettings;
         public CameraOverrideOption m_Reflection = CameraOverrideOption.UsePipelineSettings;

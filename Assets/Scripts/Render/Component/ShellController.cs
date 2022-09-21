@@ -17,7 +17,7 @@ namespace Rendering.Pipeline
     }
     
     [ExecuteInEditMode,RequireComponent(typeof(MeshRenderer),typeof(MeshFilter))]
-    public class SRC_ShellBehaviour : MonoBehaviour
+    public class ShellController : MonoBehaviour
     {
         public EShellAmount m_ShellCount = EShellAmount._32;
         public Material m_ShellMaterial;

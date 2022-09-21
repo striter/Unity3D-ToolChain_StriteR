@@ -67,7 +67,7 @@ Material:
     - _BumpScale: 1
     - _ColorSample: 0
     - _Cutoff: 0.5
-    - _Density: 0
+    - _Density: 0.07
     - _Depth: 1
     - _DepthSample: 1
     - _DetailNormalMapScale: 1

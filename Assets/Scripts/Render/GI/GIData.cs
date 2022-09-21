@@ -9,30 +9,30 @@ using UnityEngine.Rendering;
 namespace Rendering
 {
     [Serializable]
-    public struct GSHGradient
+    public struct SHGradient
     {
         [ColorUsage(true,true)]public Color gradientSky;
         [ColorUsage(true,true)]public Color gradientEquator;
         [ColorUsage(true,true)]public Color gradientGround;
         [HideInInspector] public SHL2Data shData;
 
-        public GSHGradient Ctor()
+        public SHGradient Ctor()
         {
             shData = SphericalHarmonicsExport.ExportL2Gradient(4096, gradientSky, gradientEquator,gradientGround,"Test");
             return this;
         }
 
-        public static readonly GSHGradient kDefault = new GSHGradient()
+        public static readonly SHGradient kDefault = new SHGradient()
         {
             gradientSky = Color.cyan,
             gradientGround = Color.black,
             gradientEquator = Color.white.SetAlpha(.5f),
         }.Ctor();
         
-        public static GSHGradient Interpolate(GSHGradient _a, GSHGradient _b,
+        public static SHGradient Interpolate(SHGradient _a, SHGradient _b,
             float _interpolate)
         {
-            return new GSHGradient()
+            return new SHGradient()
             {
                 gradientSky = Color.Lerp(_a.gradientSky,_b.gradientSky,_interpolate),
                 gradientEquator = Color.Lerp(_a.gradientEquator,_b.gradientEquator,_interpolate),
@@ -42,7 +42,6 @@ namespace Rendering
         }
     }
 
-        
     [Serializable]
     public struct LightmapParameter
     {
@@ -59,7 +58,7 @@ namespace Rendering
             GI_OVERRIDE,
             GI_INTERPOLATE,
         }
-        public GSHGradient gradient=GSHGradient.kDefault;
+        public SHGradient gradient=SHGradient.kDefault;
         
         public Texture2D[] lightmapColors;
         [HideInInspector] public LightmapParameter[] lightmapParameters;
@@ -75,7 +74,7 @@ namespace Rendering
             Debug.Assert(LightmapSettings.lightmapsMode== LightmapsMode.NonDirectional,"Only none-directional mode supported");
             return new GlobalIlluminationOverrideData()
             {
-                gradient = new GSHGradient()
+                gradient = new SHGradient()
                 {
                     gradientSky = RenderSettings.ambientSkyColor,
                     gradientEquator = RenderSettings.ambientEquatorColor,
@@ -143,9 +142,9 @@ namespace Rendering
 
             URender.EnableGlobalKeywords(interpolate?EGIOverride.GI_INTERPOLATE: EGIOverride.GI_OVERRIDE);
             
-            ref GSHGradient gradient = ref _collection1.gradient;
+            ref SHGradient gradient = ref _collection1.gradient;
             if(interpolate)
-                gradient=GSHGradient.Interpolate(_collection1.gradient,_collection2.gradient,_interpolation);
+                gradient=SHGradient.Interpolate(_collection1.gradient,_collection2.gradient,_interpolation);
             gradient.shData.OutputSH(out var SHAr,out var SHAg,out var SHAb,out var SHBr,out var SHBg,out var SHBb,out var SHC);
             Shader.SetGlobalVector(kSHAr,SHAr);
             Shader.SetGlobalVector(kSHAg,SHAg);

@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-public static class UReflectionEngine
+public static class UEngineIntergration
 {
-    static readonly List<Type> s_SerializeBaseType = new List<Type>() {
+    static readonly List<Type> kSerializeBaseType = new List<Type>() {
         typeof(bool), typeof(string),typeof(char),
         typeof(float),  typeof(double),
         typeof(int),typeof(short),typeof(long),
@@ -36,7 +36,7 @@ public static class UReflectionEngine
 
             FieldInfo shallowField = curFieldStack.Dequeue();
             fieldStack.Push(shallowField);
-            bool isBaseType = shallowField.FieldType.IsEnum || shallowField.FieldType.IsArray || shallowField.FieldType.IsGenericType || s_SerializeBaseType.Contains(shallowField.FieldType);
+            bool isBaseType = shallowField.FieldType.IsEnum || shallowField.FieldType.IsArray || shallowField.FieldType.IsGenericType || kSerializeBaseType.Contains(shallowField.FieldType);
             if (!isBaseType && shallowField.FieldType.IsSerializable)
             {
                 totalFields.Push(new Queue<FieldInfo>(shallowField.FieldType.GetAllFields(_flags)));

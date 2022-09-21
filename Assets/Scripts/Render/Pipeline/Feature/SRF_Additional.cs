@@ -64,7 +64,7 @@ namespace Rendering.Pipeline
 
             bool cameraNormalTexture = m_NormalTexture;
             bool cameraReflectionTexture = renderingData.cameraData.isSceneViewCamera || m_CameraReflectionTexture;
-            if(renderingData.cameraData.camera.TryGetComponent(out SRC_CameraBehaviour param))
+            if(renderingData.cameraData.camera.TryGetComponent(out SRC_CameraConfig param))
             {
                 cameraNormalTexture = param.m_Normal.IsEnabled(cameraNormalTexture);
                 cameraReflectionTexture = param.m_Reflection.IsEnabled(cameraReflectionTexture);
@@ -84,8 +84,8 @@ namespace Rendering.Pipeline
         private readonly List<IPostProcessBehaviour> m_OpaqueProcessing = new List<IPostProcessBehaviour>();
         private readonly List<IPostProcessBehaviour> m_ScreenProcessing = new List<IPostProcessBehaviour>();
         private readonly List<IPostProcessBehaviour> kGlobalPostProcessTempList = new List<IPostProcessBehaviour>();
-        private SRC_CameraBehaviour m_PostProcessingPreview;
-        void EnqueuePostProcess(ScriptableRenderer _renderer,RenderingData _data,SRC_CameraBehaviour _override)
+        private SRC_CameraConfig m_PostProcessingPreview;
+        void EnqueuePostProcess(ScriptableRenderer _renderer,RenderingData _data,SRC_CameraConfig _override)
         {
             kGlobalPostProcessTempList.Clear();
             if(PostProcessGlobalVolume.HasGlobal)

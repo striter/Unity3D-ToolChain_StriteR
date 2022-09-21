@@ -98,18 +98,4 @@ public static class UMath
             return _src;
         return _src || _dst;
     }
-    
-    public static Vector3 QuadraticBezierCurve(Vector3 _src,Vector3 _dst,Vector3 _control,float _interpolation)
-    {
-        float value = _interpolation;
-        float oneMinusValue = 1 - value;
-        return Pow2(oneMinusValue) * _src + 2 * (oneMinusValue) * value * _control + Pow2(value) * _dst;
-    }
-
-    public static Vector3 CubicBezierCurve(Vector3 _src, Vector3 _dst, Vector3 _controlSrc, Vector3 _controlDst, float _interpolation)
-    {
-        float value = _interpolation;
-        float oneMinusValue = 1 - value;
-        return Pow3(oneMinusValue) * _src +  3 * Pow2(oneMinusValue) * value * _controlSrc +  3 * oneMinusValue * Pow2(value) * _controlDst + Pow3(value) * _dst;
-    }
 }

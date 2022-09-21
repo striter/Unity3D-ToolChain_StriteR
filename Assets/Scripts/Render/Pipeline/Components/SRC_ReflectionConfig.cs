@@ -6,13 +6,13 @@ using Geometry.Voxel;
 namespace Rendering.Pipeline
 {
     [ExecuteInEditMode,RequireComponent(typeof(MeshRenderer),typeof(MeshFilter))]
-    public class SRC_ReflectionBehaviour : MonoBehaviour
+    public class SRC_ReflectionConfig : MonoBehaviour
     {
         [Range(-5f, 5f)] public float m_PlaneOffset = 0f;
         [Range(0f, 0.2f)] public float m_NormalDistort = .1f;
         public bool m_Upward = true;
 
-        public static List<SRC_ReflectionBehaviour> m_Reflections { get; private set; } = new List<SRC_ReflectionBehaviour>();
+        public static List<SRC_ReflectionConfig> m_Reflections { get; private set; } = new List<SRC_ReflectionConfig>();
         public bool Available => m_MeshRenderer.enabled;
         
         private MeshRenderer m_MeshRenderer;

@@ -131,16 +131,16 @@ namespace Geometry.Voxel
             this = default;
             center = _center;
             extend = _extend;
-            GBox_Ctor();
+            Ctor();
         }
         
-        public static GBox GBoxCtor_MinMax(Vector3 _min, Vector3 _max)
+        public static GBox Create(Vector3 _min, Vector3 _max)
         {
             Vector3 size = _max - _min;
             Vector3 extend = size / 2;
             return new GBox(_min+extend,extend);
         }
-        public static GBox GBoxCtor_MinMax(params Vector3[] _points)
+        public static GBox Create(params Vector3[] _points)
         {
             int length = _points.Length;
             Vector3 min = Vector3.positiveInfinity;
@@ -150,9 +150,9 @@ namespace Geometry.Voxel
                 min = Vector3.Min(min,_points[i]);
                 max = Vector3.Max(max,_points[i]);
             }
-            return GBoxCtor_MinMax(min, max);
+            return Create(min, max);
         }
-        void GBox_Ctor()
+        void Ctor()
         {
             size = extend * 2f;
             min = center - extend;
@@ -160,7 +160,7 @@ namespace Geometry.Voxel
         }
         
         public void OnBeforeSerialize(){  }
-        public void OnAfterDeserialize()=>GBox_Ctor();
+        public void OnAfterDeserialize()=>Ctor();
     }
 
 
@@ -384,7 +384,7 @@ namespace Geometry.Voxel
                 farBottomRight = farBottomRight,
                 farTopRight = farTopRight,
                 farTopLeft = farTopLeft,
-                bounding = GBox.GBoxCtor_MinMax(bottomLeft.origin,bottomRight.origin,topRight.origin,topLeft.origin,farBottomLeft,farBottomRight,farTopRight,farTopLeft),
+                bounding = GBox.Create(bottomLeft.origin,bottomRight.origin,topRight.origin,topLeft.origin,farBottomLeft,farBottomRight,farTopRight,farTopLeft),
             };
         }
     }

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public static class Physics_Extend
+public static class UPhysics
 {
     #region Physics Cast
     public static RaycastHit[] BoxCastAll(Vector3 position, Vector3 forward, Vector3 up, Vector3 boxBounds, int layerMask = -1)
