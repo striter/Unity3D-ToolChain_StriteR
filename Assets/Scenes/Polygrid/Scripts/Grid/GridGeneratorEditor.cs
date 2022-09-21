@@ -45,7 +45,7 @@ namespace PolyGrid
         
         private void OnSceneGUI(SceneView sceneView)
         {
-            GRay ray = sceneView.camera.ScreenPointToRay(sceneView.GetScreenPoint());
+            GRay ray = sceneView.camera.ViewportPointToRay(sceneView.GetScreenPoint());
             GPlane plane = new GPlane(Vector3.up, transform.position);
             var hitPos = ray.GetPoint(UGeometryIntersect.RayPlaneDistance(plane, ray));
             var hitCoord = hitPos.ToCoord();
@@ -54,9 +54,7 @@ namespace PolyGrid
             if (Event.current.type == EventType.MouseDown)
                 switch (Event.current.button)
                 {
-                    case 0:
-                        ValidateArea(hitArea);
-                        break;
+                    case 0: ValidateArea(hitArea); break;
                     case 1: break;
                 }
         

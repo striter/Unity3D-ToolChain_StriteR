@@ -13,7 +13,7 @@ namespace UnityEditor.Extensions
     {
         public static Vector2 GetScreenPoint(this SceneView _sceneView)
         {
-            Vector2 screenPoint = Event.current.mousePosition;
+            Vector2 screenPoint = Event.current.getRealMousePosition();
             screenPoint.y = _sceneView.camera.pixelHeight - screenPoint.y;
             return screenPoint;
         }
