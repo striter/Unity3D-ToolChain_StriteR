@@ -40,8 +40,7 @@ namespace PolyGrid
             SceneView.duringSceneGui -= OnSceneGUI;
         }
 
-        private readonly UEditorTime kEditorTime = new UEditorTime();
-        void EditorTick() => Tick(kEditorTime.deltaTime);
+        void EditorTick() => Tick(UTime.deltaTime);
         
         private void OnSceneGUI(SceneView sceneView)
         {

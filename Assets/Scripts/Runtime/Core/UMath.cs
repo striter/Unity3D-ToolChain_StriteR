@@ -65,7 +65,7 @@ public static class UMath
             float ik2 = .5f / k2;
             float v = (-k1 - w) * ik2;
             float u = (h.x - f.x * v) / (e.x + g.x * v);
-            if (!UCommon.kRange01.Contains(u) || !UCommon.kRange01.Contains(v))
+            if (!KRuntime.kRange01.Contains(u) || !KRuntime.kRange01.Contains(v))
             {
                 v = (-k1 + w) * ik2;
                 u = (h.x - f.x * v) / (e.x + g.x * v);

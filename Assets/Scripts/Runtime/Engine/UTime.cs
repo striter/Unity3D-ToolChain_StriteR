@@ -1,8 +1,20 @@
 ﻿
 using System;
+using UnityEngine;
 
-    public static class UTime
+public static class UTime
     {
+        public static float deltaTime => GetDeltaTime();
+        static float GetDeltaTime()
+        {
+            #if UNITY_EDITOR
+                if(!Application.isPlaying)    
+                    return EditorTime.deltaTime;
+            #endif
+            return Time.deltaTime;
+        }
+        
+        
         public const int m_StampADay = 86400;
         public const int m_StampAnHour = 3600;
         public static readonly DateTime m_StampBegin = new DateTime(1970, 1, 1, 8, 0, 0);

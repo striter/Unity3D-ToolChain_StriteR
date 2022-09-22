@@ -1,19 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#if UNITY_EDITOR
-public class UEditorTime
-{
-    public double m_Cur =0f;
 
-    public float deltaTime
+public static class EditorTime
+{
+    static EditorTime() => UnityEditor.EditorApplication.update += Tick;
+    public static float deltaTime { get; private set; } = 0f;
+    public static double time { get; private set; } = 0f;
+    static void Tick()
     {
-        get
-        {
-            var last = m_Cur;
-            m_Cur = UnityEditor.EditorApplication.timeSinceStartup;
-            return Mathf.Max(0, (float)(m_Cur-last));
-        }
+        var last = time;
+        time = UnityEditor.EditorApplication.timeSinceStartup;
+        deltaTime = Mathf.Max(0, (float)(time-last));
     }
 }
-#endif

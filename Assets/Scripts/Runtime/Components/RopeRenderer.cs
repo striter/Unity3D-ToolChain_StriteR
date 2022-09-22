@@ -68,11 +68,11 @@ public class RopeRenderer : MonoBehaviour
 #endif
         control = (dstPosition + srcPosition) / 2 + Vector3.down * (m_Length-length);
     }
-    
+
     private void Update()
     {
         CalculatePositions(out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
-        control = m_ControlDamper.Tick(Time.deltaTime, control);
+        control = m_ControlDamper.Tick(UTime.deltaTime, control);
         m_Curve = new FBezierCurveQuadratic(srcPosition, dstPosition, control);
         Matrix4x4 worldToLocal = transform.worldToLocalMatrix;
 

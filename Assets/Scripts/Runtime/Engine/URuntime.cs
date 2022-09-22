@@ -95,6 +95,7 @@ public static class URuntime
     #region Rect/Bounds
     //Rect
     
+    public static Rect Move(this Rect _rect, float _deltaX,float _deltaY) { _rect.position += new Vector2(_deltaX,_deltaY); return _rect; }
     public static Rect Move(this Rect _rect, Vector2 _deltaPosition) { _rect.position += _deltaPosition; return _rect; }
     public static Rect MoveX(this Rect _rect, float _deltaX) { _rect.position += new Vector2(_deltaX,0); return _rect; }
     public static Rect MoveY(this Rect _rect, float _deltaY) { _rect.position += new Vector2(0,_deltaY); return _rect; }
@@ -133,6 +134,11 @@ public static class URuntime
         Vector3 size = min - max;
         return new Bounds(min + size / 2, size);
     }
+    #endregion
+    
+    #region Range
+    public static bool Contains(this RangeFloat _value, float _check) => _value.start <= _check && _check <= _value.end;
+    public static float NormalizedAmount(this RangeFloat _range, float _check) => UMath.InvLerp(_range.start, _range.end, _check);
     #endregion
     
     #region Camera Helper

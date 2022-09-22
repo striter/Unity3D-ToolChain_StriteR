@@ -5,16 +5,45 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Geometry.Voxel;
+using OSwizzling;
 
 namespace UnityEditor.Extensions
 {
-    #region Transformations
     [CustomPropertyDrawer(typeof(Damper))]
     public class DamperDrawer : PropertyDrawer
     {
-        
+        private const int kSize = 80;
+        private const int kAxisPadding = 7;
+        private const int kAxisWidth = 2;
+ 
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return EditorGUI.GetPropertyHeight(property, label,true) + kSize;
+        }
+
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            Rect propertyField = position.ResizeY(position.size.y-kSize);
+            EditorGUI.PropertyField(propertyField, property, label, true);
+            Rect imageField = position.MoveY(position.size.y - kSize).ResizeY(kSize);
+            EditorGUI.DrawRect(imageField,Color.grey);
+
+            Rect axisX = imageField.Move(kAxisPadding,imageField.size.y-kAxisPadding).Resize(imageField.size.x-kAxisPadding*2,kAxisWidth);
+            EditorGUI.DrawRect(axisX,Color.red.SetAlpha(.3f));
+            Rect axisY = imageField.Move(kAxisPadding,kAxisPadding).Resize(kAxisWidth,imageField.size.y-kAxisPadding*2);
+            EditorGUI.DrawRect(axisY,Color.blue.SetAlpha(.3f));
+
+            Rect textureField = imageField.Collapse(new Vector2(kAxisPadding*2,kAxisPadding*2));
+            int sizeX = (int) textureField.width; int sizeY = (int) textureField.height;
+            Texture previewTexture = new Texture2D(sizeX,sizeY);
+            Damper damper = new Damper(property.get);
+            EditorGUI.DrawTextureAlpha(textureField,previewTexture);
+            
+            GameObject.DestroyImmediate(previewTexture);
+        }
     }
-    
+
+    #region Transformations
     [CustomPropertyDrawer(typeof(GLine))]
     public class GLinePropertyDrawer : TransformHandlesDrawer
     {
