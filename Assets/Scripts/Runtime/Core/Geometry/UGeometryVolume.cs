@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Geometry.Voxel
 {
-    public static class UGeometryVoxel
+    public static class UGeometryVolume
     {
         public static bool IsPointInside(this GBox _box, Vector3 _point)=> 
             _point.x >= _box.min.x && _point.x <= _box.max.x && 
@@ -71,6 +71,11 @@ namespace Geometry.Voxel
             mirrorMatrix.m32 = 0;
             mirrorMatrix.m33 = 1;
             return mirrorMatrix;
+        }
+
+        public static Bounds ToBounds(this GBox _box)
+        {
+            return new Bounds(_box.center, _box.size);
         }
     }
 }

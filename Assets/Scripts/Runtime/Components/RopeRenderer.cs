@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Geometry.Bezier;
+using Geometry.Voxel;
 using TPoolStatic;
 using UnityEngine;
 
@@ -13,8 +14,8 @@ public enum ERopePosition
 [ExecuteInEditMode,RequireComponent(typeof(MeshFilter),typeof(MeshRenderer))]
 public class RopeRenderer : MonoBehaviour
 {
-    [Clamp(0)] public float m_Length;
-    [Clamp(0)] public float m_Width;
+    [Clamp(0)] public float m_Extend = 3;
+    [Clamp(0)] public float m_Width = 0.1f;
     public ERopePosition m_RopePosition = ERopePosition.Constant;
 
     [MFoldout(nameof(m_RopePosition), ERopePosition.Transform)] public Transform m_EndTransform;
@@ -50,7 +51,7 @@ public class RopeRenderer : MonoBehaviour
         {
             case ERopePosition.Constant: {
                 dstPosition = m_EndPosition;
-                srcBiTangent = m_EndBiTangent;
+                dstBiTangent = m_EndBiTangent;
             } break;
             case ERopePosition.Transform: {
                 if (!m_EndTransform)
@@ -60,13 +61,7 @@ public class RopeRenderer : MonoBehaviour
             } break;
         }
 
-        Vector3 offset = srcPosition - dstPosition;
-        float length = offset.magnitude;
-    
-#if UNITY_EDITOR
-        m_Length = Mathf.Max(m_Length,(srcPosition-dstPosition).magnitude);
-#endif
-        control = (dstPosition + srcPosition) / 2 + Vector3.down * (m_Length-length);
+        control = (dstPosition + srcPosition) / 2 + Vector3.down * m_Extend;
     }
 
     private void Update()
@@ -117,7 +112,7 @@ public class RopeRenderer : MonoBehaviour
             curIndex += 2;
         }
 
-        var lastPoint = ropePositions.Last();
+        var lastPoint = ropePositions.Last();v
         var lastUpDelta = ropeNormals.Last().normalized;
         totalLength += lastUpDelta.magnitude;
         var lastNormal = lastUpDelta.normalized;
@@ -129,6 +124,8 @@ public class RopeRenderer : MonoBehaviour
         m_Mesh.SetVertices(vertices);
         m_Mesh.SetUVs(0,uvs);
         m_Mesh.SetTriangles(indexes,0);
+        m_Mesh.RecalculateBounds();
+        m_Mesh.RecalculateNormals();
         
         TSPoolList<Vector3>.Recycle(ropePositions);
         TSPoolList<Vector3>.Recycle(ropeNormals);
@@ -137,8 +134,19 @@ public class RopeRenderer : MonoBehaviour
         TSPoolList<int>.Recycle(indexes);
     }
 
+#if UNITY_EDITOR
+    public bool m_DrawGizmos;
     private void OnDrawGizmos()
     {
-        // m_Curve.DrawGizmos();
+        if (!m_DrawGizmos)
+            return;
+        
+        CalculatePositions(out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(m_ControlDamper.position,.2f);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(control,.2f);
+        m_Curve.DrawGizmos();
     }
+#endif
 }

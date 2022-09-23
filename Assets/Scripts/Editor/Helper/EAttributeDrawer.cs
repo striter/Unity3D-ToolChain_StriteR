@@ -294,7 +294,7 @@ namespace UnityEditor.Extensions
             Rect minmaxRect = position.Collapse(new Vector2(position.size.x / 7, 0f),new Vector2(0f,0f));
             EditorGUI.MinMaxSlider(minmaxRect,label,ref min,ref max,attribute.m_Min,attribute.m_Max);
             Rect labelRect = position.Collapse(new Vector2(position.size.x* 6f / 7, 0f),new Vector2(1f,0f)).Move(new Vector2(4f,0f));
-            GUI.Label(labelRect,$"{min:F1}-{max:F1}");
+            GUI.Label(labelRect,$"{min:F2}-{max:F2}");
             if (!EditorGUI.EndChangeCheck())
                 return;
             switch (property.propertyType)

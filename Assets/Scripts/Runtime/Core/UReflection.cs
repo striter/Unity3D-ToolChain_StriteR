@@ -2,9 +2,16 @@
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
+using UnityEngine;
 
 public static class UReflection
 {
+    public static void CopyFields<T>(T _src, T _dst) where T : class
+    {
+        foreach (var fieldInfo in _src.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public))
+            fieldInfo.SetValue(_dst,fieldInfo.GetValue(_src));
+    }
+    
     public static T CreateInstance<T>(Type t,params object[] constructorArgs) => (T)Activator.CreateInstance(t, constructorArgs);
     public static void TraversalAllInheritedClasses<T>(Action<Type> OnEachClass)
     {
@@ -74,7 +81,7 @@ public static class UReflection
         if (_type == null)
             throw new NullReferenceException();
 
-        foreach (var fieldInfo in _type.GetFields(_flags | BindingFlags.Public|BindingFlags.NonPublic))
+        foreach (var fieldInfo in _type.GetFields(_flags | BindingFlags.Public | BindingFlags.NonPublic))
             yield return fieldInfo;
         var inheritStack = _type.GetInheritTypes();
         while(inheritStack.Count>0)

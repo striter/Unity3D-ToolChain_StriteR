@@ -12,9 +12,10 @@ namespace UnityEditor.Extensions
     [CustomPropertyDrawer(typeof(Damper))]
     public class DamperDrawer : PropertyDrawer
     {
-        private const int kSize = 80;
-        private const int kAxisPadding = 7;
+        private const int kSize = 120;
+        private const int kAxisPadding = 5;
         private const int kAxisWidth = 2;
+        private const float kDeltaTime = .05f;
  
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
@@ -28,18 +29,41 @@ namespace UnityEditor.Extensions
             Rect imageField = position.MoveY(position.size.y - kSize).ResizeY(kSize);
             EditorGUI.DrawRect(imageField,Color.grey);
 
-            Rect axisX = imageField.Move(kAxisPadding,imageField.size.y-kAxisPadding).Resize(imageField.size.x-kAxisPadding*2,kAxisWidth);
-            EditorGUI.DrawRect(axisX,Color.red.SetAlpha(.3f));
-            Rect axisY = imageField.Move(kAxisPadding,kAxisPadding).Resize(kAxisWidth,imageField.size.y-kAxisPadding*2);
-            EditorGUI.DrawRect(axisY,Color.blue.SetAlpha(.3f));
-
             Rect textureField = imageField.Collapse(new Vector2(kAxisPadding*2,kAxisPadding*2));
             int sizeX = (int) textureField.width; int sizeY = (int) textureField.height;
-            Texture previewTexture = new Texture2D(sizeX,sizeY);
-            Damper damper = new Damper(property.get);
-            EditorGUI.DrawTextureAlpha(textureField,previewTexture);
+            Texture2D previewTexture = new Texture2D(sizeX,sizeY,TextureFormat.ARGB32,false,true);
+            Damper damper = new Damper();
+            var fieldInfo = property.GetFieldInfo(out var parentObject);
+            UReflection.CopyFields(fieldInfo.GetValue(parentObject),damper);
+            damper.Begin(Vector3.zero);
+            for (int i = 0; i < sizeX; i++)
+            {
+                Vector3 point = i>=100? i>=200?Vector3.one * .5f:Vector3.one*.2f:Vector3.one*.8f;
+                var value = damper.Tick(kDeltaTime,point);
+                previewTexture.SetPixel(i,(int)(value.x*sizeY),Color.cyan);
+                previewTexture.SetPixel(i,(int)(point.x*sizeY),Color.red);
+            }
+            
+            previewTexture.Apply();
+            
+            EditorGUI.DrawPreviewTexture(textureField,previewTexture);
             
             GameObject.DestroyImmediate(previewTexture);
+            
+            Rect axisX = imageField.Move(kAxisPadding,imageField.size.y-kAxisPadding).Resize(imageField.size.x-kAxisPadding*2,kAxisWidth);
+            EditorGUI.DrawRect(axisX,Color.green);
+            Rect axisY = imageField.Move(kAxisPadding,kAxisPadding).Resize(kAxisWidth,imageField.size.y-kAxisPadding*2);
+            EditorGUI.DrawRect(axisY,Color.blue);
+
+            for (int i = 0; i < 60; i++)
+            {
+                var xDelta = i / kDeltaTime;
+                if (xDelta > sizeX)
+                    break;
+                
+                var xAxis1 = axisX.MoveX(xDelta).Resize(2f,-4f);
+                EditorGUI.DrawRect(xAxis1,Color.blue.SetAlpha(.3f));
+            }
         }
     }
 
