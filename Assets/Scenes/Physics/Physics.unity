@@ -13559,14 +13559,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9348aed9be69c7a4f9dde9b9a6623ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Length: 9.85
+  m_Extend: 3
   m_Width: 0.1
   m_RopePosition: 1
   m_EndTransform: {fileID: 1352949499}
   m_EndPosition: {x: 0, y: 0, z: 0}
   m_EndBiTangent: {x: 0, y: 0, z: 0}
   m_ControlDamper:
+    mode: 0
     halfLife: 1
+    stiffness: 15.2
+    damping: 2.4
+  m_DrawGizmos: 0
 --- !u!23 &1997819912
 MeshRenderer:
   m_ObjectHideFlags: 0

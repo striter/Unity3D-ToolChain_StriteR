@@ -41,6 +41,10 @@ namespace UnityEditor.Extensions
                 Vector3 point = i>=100? i>=200?Vector3.one * .5f:Vector3.one*.2f:Vector3.one*.8f;
                 var value = damper.Tick(kDeltaTime,point);
                 previewTexture.SetPixel(i,(int)(value.x*sizeY),Color.cyan);
+                previewTexture.SetPixel(i + 1,(int)(value.x*sizeY),Color.cyan);
+                previewTexture.SetPixel(i - 1,(int)(value.x*sizeY),Color.cyan);
+                previewTexture.SetPixel(i,(int)(value.x*sizeY) - 1,Color.cyan);
+                previewTexture.SetPixel(i,(int)(value.x*sizeY) + 1,Color.cyan);
                 previewTexture.SetPixel(i,(int)(point.x*sizeY),Color.red);
             }
             

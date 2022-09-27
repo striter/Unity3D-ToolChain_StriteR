@@ -116,7 +116,7 @@ namespace PolyGrid
                 foreach (var valueTuple in area.m_Vertices.LoopIndex())
                 {
                     var identity = valueTuple.value.Key;
-                    var coord = valueTuple.value.Value * 1f / 6f * UMath.SQRT2;
+                    var coord = valueTuple.value.Value * 1f / 6f * UMath.kSQRT2;
                     var invalid = invalidCoords.Contains(identity);
                     data.m_Vertices[valueTuple.index] = new GridVertexData(){identity = identity,coord = coord,invalid=invalid};
                 }

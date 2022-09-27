@@ -112,7 +112,7 @@ public class RopeRenderer : MonoBehaviour
             curIndex += 2;
         }
 
-        var lastPoint = ropePositions.Last();v
+        var lastPoint = ropePositions.Last();
         var lastUpDelta = ropeNormals.Last().normalized;
         totalLength += lastUpDelta.magnitude;
         var lastNormal = lastUpDelta.normalized;

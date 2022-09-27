@@ -29,6 +29,11 @@ namespace OSwizzling
         public static float Dot(Vector2 _vec, float _value) => Vector2.Dot(_vec, _value.ToVector2());
         public static float Dot(Vector3 _vec, float _value) => Vector3.Dot(_vec, _value.ToVector3());
         public static float Dot(Vector4 _vec, float _value) => Vector4.Dot(_vec, _value.ToVector4());
+        
+        public static Vector2 Convert(this Vector2 _vec, Func<float, float> _conversion) => new Vector2(_conversion(_vec.x),_conversion(_vec.y));
+        public static Vector3 Convert(this Vector3 _vec, Func<float, float> _conversion) => new Vector3(_conversion(_vec.x),_conversion(_vec.y),_conversion(_vec.z));
+        public static Vector3 Convert(this Vector3 _vec, Func<int,float, float> _conversion) => new Vector3(_conversion(0,_vec.x),_conversion(1,_vec.y),_conversion(2,_vec.z));
+        public static Vector4 Convert(this Vector4 _vec, Func<float, float> _conversion) => new Vector4(_conversion(_vec.x),_conversion(_vec.y),_conversion(_vec.z),_conversion(_vec.w));
     }
     public sealed class float4 : FloatSwizzling<float>
     {
@@ -69,7 +74,7 @@ namespace OSwizzling
             foreach (char c in name)
             {
                 if (!m_SwizzlingPositions.ContainsKey(c) | m_Value.Length - 1 < m_SwizzlingPositions[c])
-                    throw new Exception("Invalid Swizzing Binding:" + c + "," + this.GetType());
+                    throw new Exception("Invalid Swizzling Binding:" + c + "," + this.GetType());
             }
         }
         public override bool TryGetMember(GetMemberBinder binder, out object result)

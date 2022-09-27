@@ -1,22 +1,22 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public static class UMath
 {
-    public const float SQRT2 = 1.4142135623731f;
-    public const float SQRT3 = 1.7320508075689f;
-    public const float PI = 3.141593f;
-    public const float PI2 = PI * 2;
-    public const float Deg2Rad = 0.017453292519943f;//PI / 180
-    public const float Rad2Deg = 57.295779513082f ;//180f / PI;
+    public const float kSQRT2 = 1.4142135623731f;
+    public const float kSQRT3 = 1.7320508075689f;
+    public const float kPI = 3.141593f;
+    public const float kPIM2 = kPI * 2;
+    public const float kPID2 = 1.5707963267948966f;
+    public const float kPID4 = 0.7853981633974483f;
+    public const float kDeg2Rad = 0.017453292519943f;//PI / 180
+    public const float kRad2Deg = 57.295779513082f ;//180f / PI;
     
-    public static readonly Matrix2x2 m_RotateCW90 = URotation.Rotate2D(90*Deg2Rad,true);
-    public static readonly Matrix2x2 m_RotateCW180 = URotation.Rotate2D(180*Deg2Rad,true);
-    public static readonly Matrix2x2 m_RotateCW270 = URotation.Rotate2D(270*Deg2Rad,true);
-    public static readonly Matrix2x2[] m_Rotate2DCW = { Matrix2x2.Identity,m_RotateCW90,m_RotateCW180,m_RotateCW270};
-    public static readonly Quaternion[] m_Rotate3DCW = {Quaternion.Euler(0f,0f,0f),Quaternion.Euler(0f,90f,0f),Quaternion.Euler(0f,180f,0f),Quaternion.Euler(0f,270f,0f)};
+    public static readonly Matrix2x2 kRotateCW90 = URotation.Rotate2D(90*kDeg2Rad,true);
+    public static readonly Matrix2x2 kRotateCW180 = URotation.Rotate2D(180*kDeg2Rad,true);
+    public static readonly Matrix2x2 kRotateCW270 = URotation.Rotate2D(270*kDeg2Rad,true);
+    public static readonly Matrix2x2[] kRotate2DCW = { Matrix2x2.Identity,kRotateCW90,kRotateCW180,kRotateCW270};
+    public static readonly Quaternion[] kRotate3DCW = {Quaternion.Euler(0f,0f,0f),Quaternion.Euler(0f,90f,0f),Quaternion.Euler(0f,180f,0f),Quaternion.Euler(0f,270f,0f)};
     
     public static float GetRadClockWise(Vector2 _axis,Vector2 _vector)
     {
@@ -38,11 +38,12 @@ public static class UMath
     }
 
     public static float Pow2(float _src) => _src * _src;
+    public static float Square(float _src) => _src * _src;
     public static float Pow3(float _src) => _src * _src* _src;
     public static float Pow4(float _src) => _src * _src* _src* _src;
     public static float Frac(float _src) => _src - Mathf.Floor(_src);
     public static float Mod(float _src, float _dst) => _src - _dst * Mathf.Floor(_src/_dst);
-
+    
     public static float InvLerp(float _a, float _b, float _value)=> (_value - _a) / (_b - _a);
     public static Vector3 BilinearLerp(Vector3 tl, Vector3 tr, Vector3 br, Vector3 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
     public static Vector2 BilinearLerp(Vector2 tl, Vector2 tr, Vector2 br, Vector2 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
@@ -98,4 +99,27 @@ public static class UMath
             return _src;
         return _src || _dst;
     }
+
+    public static float CopySign(float _a, float _b)
+    {
+        var signA = Mathf.Sign(_a);
+        var signB = Mathf.Sign(_b);
+        return Math.Abs(signA - signB) < float.Epsilon ? _a : _a * signB;
+    }
+    
+    public static float NegExp_Fast(float _x)
+    {
+        return 1.0f / (1.0f + _x + 0.48f * _x * _x + 0.235f * _x * _x * _x);
+    }
+
+    public static float Atan_Fast(float _x)
+    {
+        float z = Mathf.Abs(_x);
+        float w = z > 1f ? 1f / z : z;
+        float y = (kPI / 4.0f) * w - w * (w - 1) * (0.2447f + 0.0663f * w);
+        return  CopySign(z > 1 ? kPID2 - y : y,_x);
+    }
+
+    public static float Cos(float _src) => Mathf.Cos(_src);
+    public static float Sin(float _src) => Mathf.Sin(_src);
 }

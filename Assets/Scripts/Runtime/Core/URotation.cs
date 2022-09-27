@@ -7,9 +7,9 @@ public static class URotation
     public static Quaternion EulerToQuaternion(Vector3 euler) => EulerToQuaternion(euler.x, euler.y, euler.z);
     public static Quaternion EulerToQuaternion(float _radin, float _angleY, float _angleZ)     //Euler Axis XYZ
     {
-        float radinHX = UMath.Deg2Rad*_radin;
-        float radinHY = UMath.Deg2Rad*_angleY;
-        float radinHZ = UMath.Deg2Rad*_angleZ;
+        float radinHX = UMath.kDeg2Rad*_radin;
+        float radinHY = UMath.kDeg2Rad*_angleY;
+        float radinHZ = UMath.kDeg2Rad*_angleZ;
         float sinHX = Mathf.Sin(radinHX); float cosHX = Mathf.Cos(radinHX);
         float sinHY = Mathf.Sin(radinHY); float cosHY = Mathf.Cos(radinHY);
         float sinHZ = Mathf.Sin(radinHZ); float cosHZ = Mathf.Cos(radinHZ);

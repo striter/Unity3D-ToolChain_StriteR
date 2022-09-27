@@ -34,7 +34,7 @@ namespace PolyGrid.Tile
             m_NearbyVertsCW = new HexQuad( m_Quad.m_HexQuad[radHelper[0].index], m_Quad.m_HexQuad[ radHelper[1].index],
                 m_Quad.m_HexQuad[ radHelper[2].index], m_Quad.m_HexQuad[radHelper[3].index]);
             
-            Quaternion rotation = Quaternion.Euler(0, radHelper[0].rad * UMath.Rad2Deg+180, 0);
+            Quaternion rotation = Quaternion.Euler(0, radHelper[0].rad * UMath.kRad2Deg+180, 0);
             transform.SetPositionAndRotation( m_Quad.m_CoordCenter.ToPosition() , rotation);
             
             var inverseRotation = Quaternion.Inverse(rotation);

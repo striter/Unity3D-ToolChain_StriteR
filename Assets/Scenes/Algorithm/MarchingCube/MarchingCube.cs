@@ -123,7 +123,7 @@ namespace ExampleScenes.Algorithm.MarchingCube
                 }
 
                 var mesh = m_CubeMeshes[module];
-                var rotation = UMath.m_Rotate3DCW[orientation];
+                var rotation = UMath.kRotate3DCW[orientation];
                 var position = cube.position;
                 
                 int indexStart = vertices.Count;

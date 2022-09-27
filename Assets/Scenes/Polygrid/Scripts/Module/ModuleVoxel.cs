@@ -89,7 +89,7 @@ namespace PolyGrid.Module
                     continue;
                 }
                 ref var moduleMesh=ref cornerData[cornerStatus][moduleIndex];
-                ref var orientedRotation = ref UMath.m_Rotate3DCW[moduleOrientation];
+                ref var orientedRotation = ref UMath.kRotate3DCW[moduleOrientation];
                 int indexOffset = vertices.Count;
                 indexes.AddRange(moduleMesh.m_Indexes.Select(p=> p + indexOffset));
 

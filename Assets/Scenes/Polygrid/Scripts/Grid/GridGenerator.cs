@@ -33,7 +33,7 @@ namespace PolyGrid
 
         void Setup()
         {
-            UProcedural.InitMatrix(transform.localToWorldMatrix,transform.worldToLocalMatrix, 1f/6f*UMath.SQRT2);
+            UProcedural.InitMatrix(transform.localToWorldMatrix,transform.worldToLocalMatrix, 1f/6f*UMath.kSQRT2);
             UHexagon.flat = m_Flat;
             UHexagonArea.Init(m_AreaRadius,6,true);
         } 

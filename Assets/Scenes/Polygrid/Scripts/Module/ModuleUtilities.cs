@@ -28,7 +28,7 @@ namespace PolyGrid.Module
             ref var quad = ref _moduleShapes[_qubeIndex % 4];
             var uv = (new Vector2(_orientedVertex.x, _orientedVertex.z));
             uv -= Vector2.one * .5f;
-            uv = UMath.m_Rotate2DCW[(4-_orientation)%4].MultiplyVector(uv);
+            uv = UMath.kRotate2DCW[(4-_orientation)%4].MultiplyVector(uv);
             uv += Vector2.one * .5f;
             
             var point =  quad.GetPoint(uv.x,uv.y);
