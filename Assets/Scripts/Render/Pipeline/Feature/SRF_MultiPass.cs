@@ -19,6 +19,8 @@ namespace Rendering.Pipeline
         }
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
+            if (renderingData.cameraData.isPreviewCamera)
+                return;
             renderer.EnqueuePass(m_MultiPass);
         }
     }

@@ -6,8 +6,6 @@
         [KeywordEnum(Point,Cube,Spot)]_Type("Type",float)=0
         _Density("Density",Range(0,10)) = 1
         _Pow("Density Pow",Range(0,10))=2
-        
-        _LightIntensity("Light Intensity",Range(0,20))=1
     }
     SubShader
     {
@@ -42,10 +40,9 @@
             TEXTURE2D(_CameraDepthTexture); SAMPLER(sampler_CameraDepthTexture);
             TEXTURE2D(_CameraOpaqueTexture); SAMPLER(sampler_CameraOpaqueTexture);
             CBUFFER_START(UnityPerMaterial)
-            half4 _Color;
-            half _Density;
-            half _Pow;
-            half _LightIntensity;
+                half4 _Color;
+                half _Density;
+                half _Pow;
             CBUFFER_END
             v2f vert(a2v v)
             {
@@ -104,15 +101,7 @@
                 density*=_Density;
 
                 float3 lightCol = _Color.rgb*_Color.a;
-                
-                float3 finalCol = lightCol*density;
-                float3 positionOS = TransformWorldToObject( TransformNDCToWorld(screenUV,rawDepth));
-                float dst = length(positionOS);
-                float pointLightStrength = (pow3(1-dst*2))*step(dst,.5);
-                float3 baseCol= SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,screenUV).rgb;
-                finalCol.rgb += pointLightStrength * baseCol * lightCol * _LightIntensity;
-                
-                return float4(finalCol,1);
+                return float4(lightCol*density,1);
             }
             ENDHLSL
         }

@@ -1,5 +1,18 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-2032893496463882635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8334ffd0770db9f44ae400d941e21845, type: 3}
+  m_Name: SRF_LightVolume
+  m_EditorClassIdentifier: 
+  m_Active: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10,14 +23,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de640fe3d0db1804a85f9fc8f5cadab6, type: 3}
-  m_Name: URP_Forward_Render
+  m_Name: URP_Renderer_LightVolume
   m_EditorClassIdentifier: 
   debugShaders:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7,
       type: 3}
   m_RendererFeatures:
-  - {fileID: 9038337560460315165}
-  m_RendererFeatureMap: 1dca4ec31fa06e7d
+  - {fileID: 2293182620490409217}
+  - {fileID: -2032893496463882635}
+  m_RendererFeatureMap: 01256e8b7105d31f758611bd22b6c9e3
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 0}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -57,7 +71,7 @@ MonoBehaviour:
   m_ClusteredRendering: 0
   m_TileSize: 32
   m_IntermediateTextureMode: 1
---- !u!114 &9038337560460315165
+--- !u!114 &2293182620490409217
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -67,19 +81,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59bf9e073cf798b41b61b969a7d7487c, type: 3}
-  m_Name: Additional
+  m_Name: SRFAdditional
   m_EditorClassIdentifier: 
   m_Active: 1
   m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
-  m_NormalTexture: 1
+  m_NormalTexture: 0
   m_Mask: 0
   m_MaskData:
     renderMask: 2147483647
     color: {r: 1, g: 1, b: 1, a: 1}
     extendWidth: 0.1
     outlineVertex: 0
-  m_LightMask: 1
-  m_CameraReflectionTexture: 1
+  m_CameraReflectionTexture: 0
   m_PlanarReflectionData:
     m_Type: 1
     m_Sample: 4
