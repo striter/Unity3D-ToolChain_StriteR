@@ -1,9 +1,9 @@
-Shader "Game/Additive/ScreenDelta"
+Shader "Game/Additive/Silhouette"
 {
     Properties
     {
         _Color("Color Tint",Color)=(1,1,1,1)
-        [Vector2]_ScreenDelta("Delta",Vector)=(10,10,0,0)
+        [Vector2]_SilhouetteDelta("Delta",Vector)=(10,10,0,0)
         
         [Header(Misc)]
         [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
@@ -60,7 +60,7 @@ Shader "Game/Additive/ScreenDelta"
             INSTANCING_BUFFER_START
                 INSTANCING_PROP(float4,_Color)
                 INSTANCING_PROP(float4,_MainTex_ST)
-                INSTANCING_PROP(float2,_ScreenDelta)
+                INSTANCING_PROP(float2,_SilhouetteDelta)
             INSTANCING_BUFFER_END
             
             v2f vert (a2v v)
@@ -69,7 +69,7 @@ Shader "Game/Additive/ScreenDelta"
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
                 float4 positionCS = TransformObjectToHClip(v.positionOS);
-                positionCS.xy += _ScreenDelta.xy /_ScreenParams.xy*positionCS.w;
+                positionCS.xy += _SilhouetteDelta.xy /_ScreenParams.xy*positionCS.w;
                 o.positionCS = positionCS;
                 o.uv = TRANSFORM_TEX_INSTANCE(v.uv, _MainTex);
                 o.color = TransformHClipToNDC(positionCS).y;

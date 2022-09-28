@@ -17,12 +17,15 @@ namespace Rendering.Pipeline
 
         public bool m_Mask = false;
         [MFoldout(nameof(m_Mask), true)] public SRD_MaskData m_MaskData = SRD_MaskData.kDefault;
+        public bool m_LightMask = false;
+        [MFoldout(nameof(m_LightMask), true)] public SRD_LightMask m_LightMaskData = SRD_LightMask.kDefault;
         public bool m_CameraReflectionTexture=false;
         [MFoldout(nameof(m_CameraReflectionTexture), true)] public SRD_ReflectionData m_PlanarReflectionData = SRD_ReflectionData.kDefault;
         
         private SRP_AdditionalParameters m_AdditionalParameters;
         private SRP_NormalTexture m_ScreenSpaceNormal;
-        private SRP_MaskTexture m_ScreenSpaceMask;
+        private SRP_Mask m_MaskPass;
+        private SRP_LightMask m_LightMaskPass;
 
         private SRP_ComponentBasedPostProcess m_OpaquePostProcess;
         private SRP_ComponentBasedPostProcess m_ScreenPostProcess;
@@ -34,9 +37,12 @@ namespace Rendering.Pipeline
                 return;
 
             m_AdditionalParameters = new SRP_AdditionalParameters() { renderPassEvent= RenderPassEvent.BeforeRendering };
-            m_ScreenSpaceMask = new SRP_MaskTexture(){renderPassEvent = RenderPassEvent.BeforeRenderingOpaques};
+            m_MaskPass = new SRP_Mask(){renderPassEvent = RenderPassEvent.BeforeRenderingOpaques - 1};
+            m_LightMaskPass = new SRP_LightMask(){renderPassEvent=RenderPassEvent.BeforeRenderingOpaques};
+            
             m_ScreenSpaceNormal = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox};
             m_Reflection = new SRP_Reflection(m_PlanarReflectionData, RenderPassEvent.AfterRenderingSkybox + 1);
+            
             m_OpaquePostProcess=new SRP_ComponentBasedPostProcess(){renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 2};
             m_ScreenPostProcess=new SRP_ComponentBasedPostProcess(){renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing + 1};
         }
@@ -49,7 +55,7 @@ namespace Rendering.Pipeline
             base.Dispose(disposing);
             m_Reflection.Dispose();
             m_ScreenSpaceNormal.Dispose();
-            m_ScreenSpaceMask.Dispose();
+            m_MaskPass.Dispose();
             m_OpaquePostProcess.Dispose();
             m_ScreenPostProcess.Dispose();
             m_AdditionalParameters.Dispose();
@@ -74,7 +80,9 @@ namespace Rendering.Pipeline
             renderer.EnqueuePass(m_AdditionalParameters);
 
             if(m_Mask)
-                renderer.EnqueuePass(m_ScreenSpaceMask.Setup(m_MaskData,renderer));
+                renderer.EnqueuePass(m_MaskPass.Setup(m_MaskData,renderer));
+            if(m_LightMask)
+                renderer.EnqueuePass(m_LightMaskPass.Setup(m_LightMaskData,renderer));
             if (cameraNormalTexture)
                 renderer.EnqueuePass(m_ScreenSpaceNormal);
             if (cameraReflectionTexture)

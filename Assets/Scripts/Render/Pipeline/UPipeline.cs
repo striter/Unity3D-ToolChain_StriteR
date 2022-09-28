@@ -7,24 +7,16 @@ namespace Rendering
 {
     public static class UPipeline
     {
-        static List<ShaderTagId>  kInternalDefaultSahderTags;
-        public static List<ShaderTagId> kDefaultShaderTags
-        {
-            get
+        public static PassiveInstance<List<ShaderTagId>> kDefaultShaderTags => new PassiveInstance<List<ShaderTagId>>(() =>
+            new List<ShaderTagId>()
             {
-                if (kInternalDefaultSahderTags == null)
-                {
-                    kInternalDefaultSahderTags= new List<ShaderTagId>()
-                    {
-                        new ShaderTagId("SRPDefaultUnlit"),
-                        new ShaderTagId("UniversalForward"),
-                        new ShaderTagId("UniversalForwardOnly"),
-                        new ShaderTagId("LightweightForward"),
-                    };
-                }
-                return kInternalDefaultSahderTags;
-            }
-        }
+                new ShaderTagId("SRPDefaultUnlit"),
+                new ShaderTagId("UniversalForward"),
+                new ShaderTagId("UniversalForwardOnly"),
+                new ShaderTagId("LightweightForward"),
+            });
+
+        public static readonly PassiveInstance<ShaderTagId> kLightVolumeTag =new PassiveInstance<ShaderTagId>(()=>new ShaderTagId("LightVolume"));
         
 
         public static DrawingSettings CreateDrawingSettings(bool _fillDefault, Camera _camera)
@@ -37,15 +29,10 @@ namespace Rendering
             };
             if (_fillDefault)
             {
-                for (int i = 0; i < kDefaultShaderTags.Count; i++)
-                    settings.SetShaderPassName(i, kDefaultShaderTags[i]);
+                for (int i = 0; i < kDefaultShaderTags.m_Value.Count; i++)
+                    settings.SetShaderPassName(i, kDefaultShaderTags.m_Value[i]);
             }
             return settings;
-        }
-        public static void FillWithDefaultTags(this List<ShaderTagId> _tagList)
-        {
-            _tagList.Clear();
-            _tagList.AddRange(kDefaultShaderTags);
         }
 
         public static T GetDefaultPostProcessData<T>() where T : struct => (T)typeof(T).GetField("kDefault", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).GetValue(null);

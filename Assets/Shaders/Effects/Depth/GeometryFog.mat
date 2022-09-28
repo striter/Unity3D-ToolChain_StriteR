@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: LightVolume
+  m_Name: GeometryFog
   m_Shader: {fileID: 4800000, guid: aaa57f15e19449d44ac3ea3c8d4894e1, type: 3}
   m_ValidKeywords:
   - _TYPE_POINT

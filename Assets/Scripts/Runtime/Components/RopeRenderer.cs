@@ -1,7 +1,5 @@
-using System;
 using System.Linq;
 using Geometry.Bezier;
-using Geometry.Voxel;
 using TPoolStatic;
 using UnityEngine;
 
@@ -148,5 +146,6 @@ public class RopeRenderer : MonoBehaviour
         Gizmos.DrawWireSphere(control,.2f);
         m_Curve.DrawGizmos();
     }
+
 #endif
 }

@@ -29,14 +29,14 @@
 			{
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
-				float3 positionWS=TransformObjectToWorld(v.positionOS);
-				o.positionCS=TransformWorldToHClip(positionWS);
+				float3 positionWS = TransformObjectToWorld(v.positionOS);
+				o.positionCS = TransformWorldToHClip(positionWS);
 				return o;
 			}
 
 			float4 DepthFragment(v2f i) :SV_TARGET
 			{
-				return i.positionCS.z;
+				return 0;
 			}
     	ENDHLSL
 		Pass

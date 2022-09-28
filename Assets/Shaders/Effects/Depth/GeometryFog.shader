@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/Depth/LightVolume"
+﻿Shader "Game/Effects/Depth/GeometryFog"
 {
     Properties
     {

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using Geometry.Voxel;
@@ -7,6 +8,32 @@ using UnityEngine.Rendering.Universal;
 namespace Rendering.Pipeline
 {
     using PostProcess;
+    [Serializable]
+    public class SRD_ReflectionData
+    {
+        public EReflectionSpace m_Type;
+        [MFoldout(nameof(m_Type), EReflectionSpace.PlanarScreenSpace)] [Range(1, 4)] public int m_Sample;
+
+        [MFoldout(nameof(m_Type), EReflectionSpace.PlanarMirrorSpace)] public bool m_Recull;
+        [MFoldout(nameof(m_Type), EReflectionSpace.PlanarMirrorSpace,nameof(m_Recull),true)] [Range(0,8)]public int m_AdditionalLightcount;
+        [MFoldout(nameof(m_Type), EReflectionSpace.PlanarMirrorSpace)] public bool m_IncludeTransparent;
+        
+        [Header("Blur")]
+        [Range(1,4)] public int m_DownSample;
+        public PPData_Blurs m_BlurParam;
+
+        public static readonly SRD_ReflectionData kDefault = new SRD_ReflectionData
+        {
+            m_Type = EReflectionSpace.PlanarScreenSpace,
+            m_IncludeTransparent = false,
+            m_Recull = false,
+            m_DownSample=2,
+            m_AdditionalLightcount=8,
+            m_Sample = 1,
+            m_BlurParam = UPipeline.GetDefaultPostProcessData<PPData_Blurs>(),
+        };
+    }
+    
     public  class SRP_Reflection: ISRPBase
     {
         private readonly PPCore_Blurs m_Blurs;
@@ -298,14 +325,12 @@ namespace Rendering.Pipeline
         private const string kReflectionDepth = "_CameraReflectionDepthComparer";
         static readonly int ID_CameraWorldPosition = Shader.PropertyToID("_WorldSpaceCameraPos");
 
-        readonly List<ShaderTagId> m_ShaderTagIDs = new List<ShaderTagId>();
          int m_ReflectionDepth;
          RenderTargetIdentifier m_ReflectionDepthID ;
 
          public override APlanarReflection Setup(SRD_ReflectionData _data, PPCore_Blurs _blur, GPlane _planeData, ScriptableRenderer _renderer,
              int _index,RenderPassEvent _event)
          {
-             m_ShaderTagIDs.FillWithDefaultTags();
              m_ReflectionDepth = Shader.PropertyToID(kReflectionDepth + _index);
              m_ReflectionDepthID = new RenderTargetIdentifier(m_ReflectionDepth);
              return base.Setup(_data, _blur, _planeData, _renderer, _index,_event);
@@ -347,7 +372,7 @@ namespace Rendering.Pipeline
             Matrix4x4 cullingMatrix = camera.cullingMatrix;
             camera.cullingMatrix = cullingMatrix * planeMirrorMatrix;
 
-            DrawingSettings drawingSettings = CreateDrawingSettings(m_ShaderTagIDs, ref _renderingData,  SortingCriteria.CommonOpaque);
+            DrawingSettings drawingSettings = CreateDrawingSettings(UPipeline.kDefaultShaderTags, ref _renderingData,  SortingCriteria.CommonOpaque);
             FilteringSettings filterSettings = new FilteringSettings(_data.m_IncludeTransparent? RenderQueueRange.all : RenderQueueRange.opaque);
             Matrix4x4 projectionMatrix = GL.GetGPUProjectionMatrix(cameraData.GetProjectionMatrix(), cameraData.IsCameraProjectionMatrixFlipped());
             Matrix4x4 viewMatrix = cameraData.GetViewMatrix();

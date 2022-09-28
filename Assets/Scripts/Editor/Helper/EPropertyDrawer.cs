@@ -47,7 +47,7 @@ namespace UnityEditor.Extensions
                 previewTexture.SetPixel(i,(int)(value.x*sizeY) + 1,Color.cyan);
                 previewTexture.SetPixel(i,(int)(point.x*sizeY),Color.red);
             }
-            
+
             previewTexture.Apply();
             
             EditorGUI.DrawPreviewTexture(textureField,previewTexture);

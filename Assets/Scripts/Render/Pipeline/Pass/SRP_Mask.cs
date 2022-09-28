@@ -1,3 +1,4 @@
+using System;
 using Rendering.Pipeline;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -5,14 +6,44 @@ using UnityEngine.Rendering.Universal;
 
 namespace Rendering.Pipeline
 {
-    public class SRP_MaskTexture : ScriptableRenderPass,ISRPBase
+    public enum EOutlineVertex
+    {
+        _NORMALSAMPLE_NORMAL,
+        _NORMALSAMPLE_TANGENT,
+        _NORMALSAMPLE_UV1,
+        _NORMALSAMPLE_UV2,
+        _NORMALSAMPLE_UV3,
+        _NORMALSAMPLE_UV4,
+        _NORMALSAMPLE_UV5,
+        _NORMALSAMPLE_UV6,
+        _NORMALSAMPLE_UV7
+    }
+
+    [Serializable]
+    public struct SRD_MaskData
+    {
+        [CullingMask]public int renderMask;
+        [Header("Misc")]
+        public Color color;
+        [Range(0,1)]public float extendWidth;
+        public EOutlineVertex outlineVertex;
+        public static readonly SRD_MaskData kDefault = new SRD_MaskData()
+        {
+            renderMask=int.MaxValue,
+            color = Color.white,
+            extendWidth = 0.1f,
+            outlineVertex  = EOutlineVertex._NORMALSAMPLE_NORMAL,
+        };
+    }
+    
+    public class SRP_Mask : ScriptableRenderPass,ISRPBase
     {
         private ScriptableRenderer m_Renderer;
         private SRD_MaskData m_MaskData;
 
         private readonly PassiveInstance<Material> m_HighlightRender=new PassiveInstance<Material>(() => new Material(RenderResources.FindInclude("Game/Additive/Outline")) { hideFlags = HideFlags.HideAndDontSave },GameObject.DestroyImmediate);
 
-        public SRP_MaskTexture Setup(SRD_MaskData _cullingMask,ScriptableRenderer _renderer)
+        public SRP_Mask Setup(SRD_MaskData _cullingMask,ScriptableRenderer _renderer)
         {
             m_MaskData = _cullingMask;
             m_Renderer = _renderer;

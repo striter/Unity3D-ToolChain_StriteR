@@ -10,7 +10,7 @@ namespace Rendering.Pipeline
         public RenderPassEvent m_Event= RenderPassEvent.AfterRenderingTransparents;
         public PerObjectData m_PerObjectData;
         [CullingMask] public int m_Layermask;
-        SRP_MultiPass m_MultiPass ;
+        SRP_MultiPass m_MultiPass;
         public override void Create()
         {
             m_MultiPass = new SRP_MultiPass(m_PassName,m_Layermask,m_PerObjectData) {

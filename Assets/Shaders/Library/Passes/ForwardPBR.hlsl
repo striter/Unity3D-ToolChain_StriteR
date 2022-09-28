@@ -111,7 +111,7 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 
 	Light mainLight =
 	#if defined GET_MAINLIGHT
-		GET_MAINLIGHT(surface,positionWS)
+		GET_MAINLIGHT(i)
 	#else
 		GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
 	#endif

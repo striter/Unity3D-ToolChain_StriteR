@@ -8,8 +8,8 @@ public enum EDamperMode
 {
     SpringSimple,
     SpringCritical,
-    Lerp,
     SpringImplicit,
+    Lerp,
 }
 
 [Serializable]

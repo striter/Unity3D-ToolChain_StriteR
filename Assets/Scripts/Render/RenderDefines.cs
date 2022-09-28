@@ -9,6 +9,9 @@ namespace Rendering.Pipeline
     {
         public static readonly int kCameraMaskTexture = Shader.PropertyToID("_CameraMaskTexture");
         public static readonly RenderTargetIdentifier kCameraMaskTextureRT = new RenderTargetIdentifier(kCameraMaskTexture);
+
+        public static readonly int kCameraLightMask = Shader.PropertyToID("_CameraLightMaskTexture");
+        public static readonly RenderTargetIdentifier kCameraLightMaskRT = new RenderTargetIdentifier(kCameraLightMask);
         
         public static readonly int kCameraNormalTex = Shader.PropertyToID("_CameraNormalTexture");
         

@@ -7,12 +7,12 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Outline
-  m_Shader: {fileID: 4800000, guid: ea5e8b0900aeddd40b9c7410c58736f7, type: 3}
-  m_ValidKeywords:
-  - _DISTANCEFADE
-  - _NORMALSAMPLE_NORMAL
-  m_InvalidKeywords: []
+  m_Name: LightVolume
+  m_Shader: {fileID: 4800000, guid: 6ef3ad11aa8ed43409a286464883499d, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _DEPTH
+  - _TYPE_POINT
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -50,6 +50,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Noise:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -60,43 +64,35 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AdaptFactor: 1000
-    - _BreakFixing: 0
     - _BumpScale: 1
-    - _ClipSpaceAdapt: 0
-    - _Cull: 1
+    - _ColorSample: 0
     - _Cutoff: 0.5
-    - _DISTANCEFADE: 10
+    - _Density: 0.07
+    - _Depth: 1
+    - _DepthSample: 1
     - _DetailNormalMapScale: 1
-    - _DistanceFade: 0.1
-    - _DistanceFadeEnd: 140.1298
-    - _DstBlend: 0
-    - _FixFactor: 1
+    - _Distance: 5
+    - _DstBlend: 1
+    - _FogType: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _LightIntensity: 11
+    - _March: 128
     - _Metallic: 0
     - _Mode: 0
-    - _NORMALSAMPLE: 0
+    - _NoiseScale: 10
     - _OcclusionStrength: 1
-    - _OutlineSmoothFactor: 0
-    - _OutlineWidth: 0.002
     - _Parallax: 0.02
-    - _SAMPLEBASECOLOR: 0
+    - _Pow: 1.45
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _Stencil: 0
-    - _StencilComp: 0
-    - _StencilOp: 0
-    - _StencilReadMask: 255
-    - _StencilWriteMask: 255
-    - _TangentSpaceNormal: 0
+    - _Type: 0
     - _UVSec: 0
-    - _ZTest: 2
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 1.0534712, g: 2.1333253, b: 2.3426847, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _OutlineColor: {r: 0, g: 0, b: 0, a: 0}
+    - _NoiseFlow: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

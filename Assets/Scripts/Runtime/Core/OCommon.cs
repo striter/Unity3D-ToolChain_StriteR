@@ -22,7 +22,7 @@ public class Ref<T>
     public void SetValue(T _value) => m_RefValue = _value;
 }
 
-public class PassiveInstance<T> where T:class
+public class PassiveInstance<T>
 {
     private T m_Instance;
     private readonly Func<T> CreateInstance;
@@ -49,7 +49,6 @@ public class PassiveInstance<T> where T:class
     {
         if (m_Instanced)
             DisposeInstance?.Invoke(m_Instance);
-        m_Instance = null;
     }
 
     public static implicit operator T(PassiveInstance<T> _passiveInstance) => _passiveInstance.m_Value;

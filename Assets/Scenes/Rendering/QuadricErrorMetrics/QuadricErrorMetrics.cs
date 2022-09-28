@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using QuadricErrorsMetric;
 using UnityEngine;
 using Object = UnityEngine.Object;

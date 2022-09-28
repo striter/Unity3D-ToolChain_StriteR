@@ -78,7 +78,7 @@ Shader "Game/Hidden/SubstancePainterPBRtoUnity"
 				return SampleCubeSpecular(TEXTURECUBE_ARGS(_SpecularCube,sampler_SpecularCube),_SpecularCube_HDR,surface.reflectDir,surface.perceptualRoughness);
 			}
 			
-			Light OverrideLighting(float3 _positionWS)
+			Light OverrideLighting()
 			{
 				Light mainLight;
 				mainLight.direction = normalize(float3(0,1,1));
@@ -90,7 +90,7 @@ Shader "Game/Hidden/SubstancePainterPBRtoUnity"
 
 			#define GET_INDIRECTDIFFUSE(surface) OverrideIndirectDiffuse(surface);
 			#define GET_INDIRECTSPECULAR(surface) OverrideIndirectSpecular(surface);
-			#define GET_MAINLIGHT(surface,positionWS) OverrideLighting(positionWS);
+			#define GET_MAINLIGHT(i) OverrideLighting();
 			#define GET_PBRPARAM(glossiness,metallic,ao) 
 			
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
