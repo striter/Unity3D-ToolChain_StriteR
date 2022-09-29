@@ -13566,10 +13566,13 @@ MonoBehaviour:
   m_EndPosition: {x: 0, y: 0, z: 0}
   m_EndBiTangent: {x: 0, y: 0, z: 0}
   m_ControlDamper:
-    mode: 2
-    halfLife: 0.5
-    stiffness: 12.3
-    damping: 2.4
+    mode: 4
+    halfLife: 1
+    stiffness: 100
+    damping: 3.5
+    f: 4.39
+    z: 0.143
+    r: -4.82
   m_DrawGizmos: 0
 --- !u!23 &1997819912
 MeshRenderer:

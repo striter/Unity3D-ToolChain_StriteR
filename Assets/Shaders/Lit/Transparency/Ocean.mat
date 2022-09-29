@@ -225,7 +225,7 @@ Material:
     - _ReflectionDistort: 0.135
     - _ReflectionOffset: 7
     - _RefractionAmount: 0.5
-    - _RefractionDistance: 0.01
+    - _RefractionDistance: 1.48
     - _Rotation: 45
     - _Scale: 16
     - _Smoothness: 1

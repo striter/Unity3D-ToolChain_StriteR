@@ -45,7 +45,7 @@
     	[Header(_Refraction)]
     	[Toggle(_DEPTHREFRACTION)] _DepthRefraction("Enable",int)=1
     	[Foldout(_DEPTHREFRACTION)] _RefractionDistance("Refraction Distance",Range(0.01,5))=1 
-    	[Foldout(_DEPTHREFRACTION)]_RefractionAmount("Refraction Amount",Range(0,.5))=0.1
+    	[Foldout(_DEPTHREFRACTION)]_RefractionAmount("Refraction Amount",Range(0,2))=0.1
     	
     	[Header(Foam)]
     	[Toggle(_FOAM)]_Foam("Enable",int)=1

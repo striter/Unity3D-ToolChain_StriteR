@@ -122,4 +122,6 @@ public static class UMath
 
     public static float Cos(float _src) => Mathf.Cos(_src);
     public static float Sin(float _src) => Mathf.Sin(_src);
+
+    public static float CosH(float _src) => (Mathf.Exp(_src) + Mathf.Exp(_src)) / 2;
 }

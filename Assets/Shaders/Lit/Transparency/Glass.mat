@@ -97,8 +97,8 @@ Material:
     - _DistortStrength: 0.05
     - _DstBlend: 10
     - _EnvironmentReflections: 1
-    - _Fresnel: 0
-    - _FresnelEnd: 1
+    - _Fresnel: 0.4521626
+    - _FresnelEnd: 0.59698564
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -113,9 +113,9 @@ Material:
     - _RimEnd: 0.27962455
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
-    - _SpecularGlossiness: 0.959
+    - _SpecularGlossiness: 0.97
     - _SpecularHighlights: 1
-    - _SpecularStrength: 5
+    - _SpecularStrength: 0.89
     - _SrcBlend: 5
     - _Surface: 0
     - _WorkflowMode: 1

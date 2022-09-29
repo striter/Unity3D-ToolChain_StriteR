@@ -83,31 +83,31 @@ namespace Rendering.Pipeline
 
         private readonly List<IPostProcessBehaviour> m_OpaqueProcessing = new List<IPostProcessBehaviour>();
         private readonly List<IPostProcessBehaviour> m_ScreenProcessing = new List<IPostProcessBehaviour>();
-        private readonly List<IPostProcessBehaviour> kGlobalPostProcessTempList = new List<IPostProcessBehaviour>();
+        private readonly List<IPostProcessBehaviour> kGlobalPostProcesses = new List<IPostProcessBehaviour>();
         private SRC_CameraConfig m_PostProcessingPreview;
         void EnqueuePostProcess(ScriptableRenderer _renderer,RenderingData _data,SRC_CameraConfig _override)
         {
-            kGlobalPostProcessTempList.Clear();
+            kGlobalPostProcesses.Clear();
             if(PostProcessGlobalVolume.HasGlobal)
             {
                 var components = PostProcessGlobalVolume.GlobalVolume.GetComponents<IPostProcessBehaviour>();
                 for(int j=0;j<components.Length;j++)
-                    kGlobalPostProcessTempList.Add(components[j]);
+                    kGlobalPostProcesses.Add(components[j]);
+            }
+            
+            if (_data.cameraData.isSceneViewCamera)
+            {
+                if (m_PostProcessingPreview == null || !m_PostProcessingPreview.m_PostProcessPreview)
+                    return; 
+                EnqueuePostProcesses(_renderer,m_PostProcessingPreview.transform,kGlobalPostProcesses);
+                return;
             }
             
             if (_data.postProcessingEnabled && _data.cameraData.postProcessEnabled)
             {
-                EnqueuePostProcesses(_renderer, _data.cameraData.camera.transform,kGlobalPostProcessTempList);
+                EnqueuePostProcesses(_renderer, _data.cameraData.camera.transform,kGlobalPostProcesses);
                 if (_override != null && _override.m_PostProcessPreview)
                     m_PostProcessingPreview = _override;
-                return;
-            }
-
-            if (_data.cameraData.isSceneViewCamera)
-            {
-                if (m_PostProcessingPreview == null || !m_PostProcessingPreview.m_PostProcessPreview)
-                    return;
-                EnqueuePostProcesses(_renderer,m_PostProcessingPreview.transform,kGlobalPostProcessTempList);
             }
         }
 

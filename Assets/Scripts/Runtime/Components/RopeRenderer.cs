@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Geometry.Bezier;
 using TPoolStatic;
@@ -30,7 +31,12 @@ public class RopeRenderer : MonoBehaviour
         m_Mesh.MarkDynamic();
         GetComponent<MeshFilter>().sharedMesh = m_Mesh;
         CalculatePositions(out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
-        m_ControlDamper.Begin(control);
+        m_ControlDamper.Initialize(control);
+    }
+
+    private void OnValidate()
+    {
+        
     }
 
     private void OnDestroy()
@@ -121,7 +127,7 @@ public class RopeRenderer : MonoBehaviour
         
         m_Mesh.SetVertices(vertices);
         m_Mesh.SetUVs(0,uvs);
-        m_Mesh.SetTriangles(indexes,0);
+        m_Mesh.SetTriangles(indexes,0,false);
         m_Mesh.RecalculateBounds();
         m_Mesh.RecalculateNormals();
         
@@ -141,7 +147,7 @@ public class RopeRenderer : MonoBehaviour
         
         CalculatePositions(out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
         Gizmos.color = Color.green;
-        Gizmos.DrawSphere(m_ControlDamper.position,.2f);
+        Gizmos.DrawSphere(m_ControlDamper.x,.2f);
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(control,.2f);
         m_Curve.DrawGizmos();

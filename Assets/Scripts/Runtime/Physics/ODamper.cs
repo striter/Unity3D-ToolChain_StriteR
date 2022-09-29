@@ -10,31 +10,51 @@ public enum EDamperMode
     SpringCritical,
     SpringImplicit,
     Lerp,
+    SecondOrderDynamics,
 }
 
 [Serializable]
-public class Damper
+public class Damper : ISerializationCallbackReceiver
 {
     public EDamperMode mode = EDamperMode.SpringSimple;
     [MFoldout(nameof(mode),EDamperMode.Lerp,EDamperMode.SpringCritical)][Clamp(0.05f)] public float halfLife = .5f;
     [MFoldout(nameof(mode),EDamperMode.SpringSimple,EDamperMode.SpringImplicit)][Range(0,100)] public float stiffness = 20f;
     [MFoldout(nameof(mode),EDamperMode.SpringSimple,EDamperMode.SpringImplicit)][Range(0,30)] public float damping = 4f;
-    
-    public Vector3 position { get; private set; }
-    private Vector3 velocity;
 
-    public void Begin(Vector3 _begin)
+    [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] [Range(0.01f, 20)] public float f = 5;
+    [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] [Range(0, 1.5f)] public float z = 0.35f;
+    [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] [Range(-5, 5)] public float r = -.5f;
+    public Vector3 x { get; private set; }
+    private Vector3 v;
+    
+    private Vector3 xp;
+    private float w,_d,k1, k2, k3;
+    
+    public void Initialize(Vector3 _begin)
     {
-        position = _begin;
-        velocity = Vector3.zero;
+        xp = _begin;
+        x = _begin;
+        v = Vector3.zero;
+        Ctor();
+    }
+
+    void Ctor()
+    {
+        w = 2 * kPI * f;
+        _d = w * Mathf.Sqrt(Mathf.Abs(z*z-1));
+        k1 = z / (kPI * f);
+        k2 = 1 / Square(w);
+        k3 = r * z / (w);
     }
 
     public Vector3 Tick(float _deltaTime,Vector3 _desirePosition,Vector3 _desireVelocity = default)
     {
-        var x = position;
-        var g = _desirePosition;
-        var v = velocity;
-        var q = _desireVelocity;
+        if (_deltaTime == 0)
+            return x;
+        
+        var xd = _desirePosition;
+        var vd = _desireVelocity;
+        
         var d = damping;
         var s = stiffness;
         var dt = _deltaTime;
@@ -42,37 +62,37 @@ public class Damper
         switch (mode)
         {
             case EDamperMode.Lerp: {
-                position = Vector3.Lerp(position,_desirePosition, 1.0f - NegExp_Fast( _deltaTime*0.69314718056f /(halfLife+float.Epsilon)));
+                x = Vector3.Lerp(x,xd, 1.0f - NegExp_Fast( dt*0.69314718056f /(halfLife+float.Epsilon)));
             } break;
             case EDamperMode.SpringSimple:
             {
-                velocity += _deltaTime * s * ( g - x) + _deltaTime * d * ( q - v);
-                position += _deltaTime * v;
+                v += _deltaTime * s * ( xd - x) + _deltaTime * d * ( vd - v);
+                x += _deltaTime * v;
             } break;
             case EDamperMode.SpringCritical:
             {
                 d = HalfLife2Damping(halfLife);
-                var c = g + (d * q) / (d*d/4.0f);
+                var c = xd + (d * vd) / (d*d/4.0f);
                 var y = d / 2.0f;
                 
                 var j0 = x - c;
                 var j1 = v + j0 * y;
                 var eydt = NegExp_Fast(y * dt);
-                position = eydt * (j0 + j1 * dt) + c;
-                velocity = eydt * (v - j1 * y * dt);
+                x = eydt * (j0 + j1 * dt) + c;
+                v = eydt * (v - j1 * y * dt);
             } break;
             case EDamperMode.SpringImplicit:
             {
                 var determination = s - d * d / 4.0f;
-                var c = g + (d * q) / (s + eps);
+                var c = xd + (d * vd) / (s + eps);
                 var y = d * .5f;
                 if (Mathf.Abs(determination) < eps)     //Critical Damped
                 {
                     var j0 = x - c;
                     var j1 = v + j0 * y;
                     float eydt = NegExp_Fast(y * dt);
-                    position = eydt * (j0 + j1 * dt) + c;
-                    velocity = eydt * (v - j1 * y * dt);
+                    x = eydt * (j0 + j1 * dt) + c;
+                    v = eydt * (v - j1 * y * dt);
                 }
                 else if (determination > 0)     //Under Damped
                 {
@@ -87,8 +107,8 @@ public class Damper
                     var sinParam = param.Convert(Sin);
                     var eydtJ = j *  NegExp_Fast(y * dt);
                     
-                    position = eydtJ.mul (cosParam) + c;
-                    velocity = -y * eydtJ.mul(cosParam) - w *eydtJ.mul(sinParam);
+                    x = eydtJ.mul (cosParam) + c;
+                    v = -y * eydtJ.mul(cosParam) - w *eydtJ.mul(sinParam);
                 }
                 else    //Over Damped
                 {
@@ -100,13 +120,44 @@ public class Damper
                     var ey0dt = NegExp_Fast(y0 * dt);
                     var ey1dt = NegExp_Fast(y1 * dt);
 
-                    position = j0 * ey0dt + j1 * ey1dt + c;
-                    velocity = -y0 * j0 * ey0dt - y1 * j1 * ey1dt;
+                    x = j0 * ey0dt + j1 * ey1dt + c;
+                    v = -y0 * j0 * ey0dt - y1 * j1 * ey1dt;
                 }
             } break;
+            case EDamperMode.SecondOrderDynamics:
+            {
+                if (vd == Vector3.zero)
+                {
+                    vd = (xd - xp) / dt;
+                    xp = xd;
+                }
+
+                float k1Stable, k2Stable;
+                if (w * dt < z)
+                {
+                    k1Stable = k1;
+                    k2Stable = Mathf.Max(k2,dt*dt/2 + dt*k1/2,dt*k1);
+                }
+                else
+                {
+                    float t1 = Mathf.Exp(-z * w * dt);
+                    float alpha = 2 * t1 * (z <= 1 ? Mathf.Cos(dt * _d) : UMath.CosH(dt * _d));
+                    float beta = Square(t1);
+                    float t2 = dt / (1 + beta - alpha);
+                    k1Stable = (1 - beta) * t2;
+                    k2Stable = dt * t2;
+                }
+                
+                x += v * dt;
+                v += dt * (xd + k3 * vd - x - k1Stable * v) / k2Stable;
+            } break;
         }
-        return position;
+
+        return x;
     }
+
+    public void OnBeforeSerialize(){}
+    public void OnAfterDeserialize() => Ctor();
 }
 
 public static class UDamper

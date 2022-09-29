@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8334ffd0770db9f44ae400d941e21845, type: 3}
-  m_Name: SRF_LightVolume
+  m_Name: SRFLightVolume
   m_EditorClassIdentifier: 
   m_Active: 1
 --- !u!114 &11400000

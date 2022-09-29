@@ -2,14 +2,16 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: TSF_Patch
   m_Shader: {fileID: 4800000, guid: 61f8f7715e8336f43b054d801578b11e, type: 3}
-  m_ShaderKeywords: _MASK
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _MASK
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -35,6 +37,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 93a76804828b6d64985a165d3cb458a5, type: 3}
         m_Scale: {x: 1, y: 0.09090909}
         m_Offset: {x: 0, y: 0.27272728}
+    - _MaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Matcap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}

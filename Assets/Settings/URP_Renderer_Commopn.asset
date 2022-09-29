@@ -78,7 +78,6 @@ MonoBehaviour:
     color: {r: 1, g: 1, b: 1, a: 1}
     extendWidth: 0.1
     outlineVertex: 0
-  m_LightMask: 1
   m_CameraReflectionTexture: 1
   m_PlanarReflectionData:
     m_Type: 1

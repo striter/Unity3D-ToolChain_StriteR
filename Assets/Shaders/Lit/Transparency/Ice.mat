@@ -15,6 +15,7 @@ Material:
   - _CRACKTOP
   - _DEPTH
   - _DISTORT
+  - _FRESNEL
   - _NORMALMAP
   - _OPACITY
   - _SPECULAR
@@ -93,7 +94,7 @@ Material:
     - _EnableCrackTop: 1
     - _EnableDepth: 1
     - _EnableDistort: 1
-    - _EnableFresnel: 0
+    - _EnableFresnel: 1
     - _EnableNormalMap: 1
     - _EnableOpacity: 1
     - _EnableSpecular: 1

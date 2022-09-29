@@ -267,6 +267,13 @@ public static class UCollection
             }
             return builder.ToString();
         }
+
+        public static void FillDefault<T>(this IList<T> _src, T _dst)
+        {
+            int length = _src.Count;
+            for (int i = 0; i < length; i++)
+                _src[i] = _dst;
+        }
         
         public static void FillArray<T>(this IList<T> _src, IList<T> _dst)
         {

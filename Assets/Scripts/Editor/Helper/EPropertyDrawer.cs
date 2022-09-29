@@ -16,6 +16,7 @@ namespace UnityEditor.Extensions
         private const int kAxisPadding = 5;
         private const int kAxisWidth = 2;
         private const float kDeltaTime = .05f;
+        private const float kEstimateSizeX = 600;
  
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
@@ -30,27 +31,52 @@ namespace UnityEditor.Extensions
             EditorGUI.DrawRect(imageField,Color.grey);
 
             Rect textureField = imageField.Collapse(new Vector2(kAxisPadding*2,kAxisPadding*2));
-            int sizeX = (int) textureField.width; int sizeY = (int) textureField.height;
+            int sizeX = (int) textureField.width*4; int sizeY = (int) textureField.height*2;
             Texture2D previewTexture = new Texture2D(sizeX,sizeY,TextureFormat.ARGB32,false,true);
             Damper damper = new Damper();
             var fieldInfo = property.GetFieldInfo(out var parentObject);
             UReflection.CopyFields(fieldInfo.GetValue(parentObject),damper);
-            damper.Begin(Vector3.zero);
+            damper.Initialize(Vector3.zero);
+            int totalSize = sizeX * sizeY;
+            Color[] colors = new Color[sizeX*sizeY];
+            colors.FillDefault(Color.black.SetAlpha(.5f));
+            Action<int, int, Color> SetPixel = (_x, _y, _color) =>
+            {
+                var dst = (_x + _y * sizeX);
+                if (dst < 0 || dst >= totalSize)
+                    return;
+                colors[dst] = _color;
+            };
+            float sizeAspect =  sizeX / kEstimateSizeX;
+            float deltaTime = kDeltaTime / sizeAspect;
+            int division1 =(int)( 10f/kDeltaTime * sizeAspect);
+            int division2 = (int)( 20f/kDeltaTime * sizeAspect);
             for (int i = 0; i < sizeX; i++)
             {
-                Vector3 point = i>=100? i>=200?Vector3.one * .5f:Vector3.one*.2f:Vector3.one*.8f;
-                var value = damper.Tick(kDeltaTime,point);
-                previewTexture.SetPixel(i,(int)(value.x*sizeY),Color.cyan);
-                previewTexture.SetPixel(i + 1,(int)(value.x*sizeY),Color.cyan);
-                previewTexture.SetPixel(i - 1,(int)(value.x*sizeY),Color.cyan);
-                previewTexture.SetPixel(i,(int)(value.x*sizeY) - 1,Color.cyan);
-                previewTexture.SetPixel(i,(int)(value.x*sizeY) + 1,Color.cyan);
-                previewTexture.SetPixel(i,(int)(point.x*sizeY),Color.red);
+                Vector3 point = i>=division1? i>=division2?Vector3.one * .5f:Vector3.one*.2f:Vector3.one*.8f;
+                var value = damper.Tick(deltaTime,point);
+                SetPixel(i , (int) (value.x * sizeY) , Color.cyan);
+                SetPixel(i + 1 , (int) (value.x * sizeY) , Color.cyan);
+                SetPixel(i - 1 , (int) (value.x * sizeY) , Color.cyan);
+                SetPixel(i , (int) (value.x * sizeY) + 1 , Color.cyan);
+                SetPixel(i , (int) (value.x * sizeY) - 1 , Color.cyan);
+                SetPixel(i , (int) (point.x * sizeY) , Color.red);
             }
-
+            
+            for (int i = 0; i < 60; i++)
+            {
+                var xDelta =(int) (i / deltaTime);
+                if (xDelta > sizeX)
+                    break;
+                
+                for(int j=0;j<sizeY;j++)
+                    SetPixel(xDelta , j , Color.green.SetAlpha(.3f));
+            }
+            
+            previewTexture.SetPixels(colors);
             previewTexture.Apply();
             
-            EditorGUI.DrawPreviewTexture(textureField,previewTexture);
+            EditorGUI.DrawTextureTransparent(textureField,previewTexture);
             
             GameObject.DestroyImmediate(previewTexture);
             
@@ -59,15 +85,6 @@ namespace UnityEditor.Extensions
             Rect axisY = imageField.Move(kAxisPadding,kAxisPadding).Resize(kAxisWidth,imageField.size.y-kAxisPadding*2);
             EditorGUI.DrawRect(axisY,Color.blue);
 
-            for (int i = 0; i < 60; i++)
-            {
-                var xDelta = i / kDeltaTime;
-                if (xDelta > sizeX)
-                    break;
-                
-                var xAxis1 = axisX.MoveX(xDelta).Resize(2f,-4f);
-                EditorGUI.DrawRect(xAxis1,Color.blue.SetAlpha(.3f));
-            }
         }
     }
 
