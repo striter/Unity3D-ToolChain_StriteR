@@ -24,6 +24,8 @@ public class Damper : ISerializationCallbackReceiver
     [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] [Range(0.01f, 20)] public float f = 5;
     [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] [Range(0, 1.5f)] public float z = 0.35f;
     [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] [Range(-5, 5)] public float r = -.5f;
+    [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] public bool poleMatching;
+    
     public Vector3 x { get; private set; }
     private Vector3 v;
     
@@ -133,7 +135,7 @@ public class Damper : ISerializationCallbackReceiver
                 }
 
                 float k1Stable, k2Stable;
-                if (w * dt < z)
+                if (!poleMatching || w * dt < z)
                 {
                     k1Stable = k1;
                     k2Stable = Mathf.Max(k2,dt*dt/2 + dt*k1/2,dt*k1);
