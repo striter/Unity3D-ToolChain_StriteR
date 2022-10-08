@@ -3486,7 +3486,7 @@ Transform:
   m_GameObject: {fileID: 779245770}
   m_LocalRotation: {x: 0.45919374, y: -0.53639084, z: 0.5035151, w: 0.49789414}
   m_LocalPosition: {x: 8.6, y: 50, z: -8.9}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 917909168}
@@ -13568,12 +13568,12 @@ MonoBehaviour:
   m_ControlDamper:
     mode: 4
     halfLife: 0.05
-    stiffness: 24.4
-    damping: 3.5
-    f: 2.6
-    z: 0.154
-    r: 4.13
-    poleMatching: 1
+    stiffness: 91.3
+    damping: 0.7
+    f: 1.27
+    z: 0.055
+    r: -4.46
+    poleMatching: 0
   m_DrawGizmos: 0
 --- !u!23 &1997819912
 MeshRenderer:

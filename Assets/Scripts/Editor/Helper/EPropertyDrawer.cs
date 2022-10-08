@@ -79,7 +79,7 @@ namespace UnityEditor.Extensions
             int preX = 0,preY = 0;
             for (int i = 0; i < sizeX; i++)
             {
-                Vector3 point = i>=division1? i>=division2?Vector3.one * .5f:Vector3.one*.2f:Vector3.one*.8f;
+                Vector3 point = i>=division1? i>=division2?Vector3.one*.8f:Vector3.one*.2f:Vector3.one * .5f;
                 var value = damper.Tick(deltaTime,point);
                 int x = i;
                 int y = (int) (value.x * sizeY);
