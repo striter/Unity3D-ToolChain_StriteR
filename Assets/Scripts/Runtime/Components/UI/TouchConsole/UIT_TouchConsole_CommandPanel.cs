@@ -20,7 +20,7 @@ public static class UIT_TouchConsoleHelper
     public static void Drag(this CommandContainer _container, Action<bool,Vector2> OnDrag)
     {
         CommandItem_Drag drag = _container.Insert<CommandItem_Drag>();
-        drag.m_Listener.D_OnDragStatus = OnDrag;
+        drag.m_Listener.onDragStatus = OnDrag;
     }
     
     public static void Toggle(this CommandContainer _container, Ref<bool> _refValue, Action<bool> OnToggleChange)
@@ -512,7 +512,7 @@ public partial class TouchConsole
         public override void OnPoolRecycle()
         {
             base.OnPoolRecycle();
-            m_Listener.D_OnDrag = null;
+            m_Listener.onDrag = null;
         }
     }
 

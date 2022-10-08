@@ -1,6 +1,17 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
+
+public enum ETouchConsoleButton
+{
+    Main,
+    Alt,
+    Special1,
+    Special2,
+}
+
 
 public partial class TouchConsole
 {
@@ -16,15 +27,22 @@ public partial class TouchConsole
     private RectTransform m_JoystickCore;
     private readonly Counter m_AnimationCounter=new Counter(.2f);
     private bool m_JoystickActive = false;
+    private Dictionary<ETouchConsoleButton,UIEventTriggerListenerExtension> m_ButtonListeners = new Dictionary<ETouchConsoleButton, UIEventTriggerListenerExtension>();
     
     [PartialMethod(EPartialMethods.Init,EPartialSorting.Misc)]
     internal void InitMisc()
     {
-        m_FrameRate = transform.Find("FrameRate");
+        var miscTransform = transform.Find("Misc");
+        m_FrameRate = miscTransform.Find("FrameRate");
         m_FrameRateValue = m_FrameRate.Find("Value/Value").GetComponent<Text>();
 
-        m_Joystick = transform.Find("Joystick") as RectTransform;
+        m_Joystick = miscTransform.Find("Joystick") as RectTransform;
         m_JoystickCore = m_Joystick.Find("Core") as RectTransform;
+        foreach (var buttonEnum in UEnum.GetEnums<ETouchConsoleButton>())
+        {
+            var buttonTransform = miscTransform.Find(buttonEnum.ToString());
+            m_ButtonListeners.Add(buttonEnum,buttonTransform.GetComponent<UIEventTriggerListenerExtension>());
+        }
     }
     
     [PartialMethod(EPartialMethods.Reset,EPartialSorting.Misc)]
@@ -32,7 +50,7 @@ public partial class TouchConsole
     {
         m_FrameRateQueue.Clear();
         m_FrameRateValue.text = "";
-
+        ClearButtons();
         SetJoystick(Vector2.zero, false);
     }
     
@@ -52,7 +70,6 @@ public partial class TouchConsole
 
         m_FrameRateValue.text = total.ToString();
 
-
         if (m_AnimationCounter.m_Playing)
         {
             m_AnimationCounter.Tick(_deltaTime);
@@ -63,7 +80,7 @@ public partial class TouchConsole
                 m_Joystick.SetActive(false);
         }
     }
-
+    
     public static void DoSetJoystick(Vector2 _position, bool _active) => Instance.SetJoystick(_position,_active);
     public static void DoTrackJoystick(Vector2 _normalizedPosition) => Instance.TrackJoystick(_normalizedPosition);
     private void SetJoystick(Vector2 _position, bool _active)
@@ -77,5 +94,20 @@ public partial class TouchConsole
     private void TrackJoystick(Vector2 _normalizedPosition)
     {
         m_JoystickCore.anchoredPosition = kJoystickRadius*_normalizedPosition;
+    }
+
+    public static UIEventTriggerListenerExtension InitButton(ETouchConsoleButton _button)
+    {
+        m_Instance.m_ButtonListeners[_button].SetActive(true);
+        return m_Instance.m_ButtonListeners[_button];
+    }
+    
+    public static void ClearButtons()
+    {
+        foreach (var button in m_Instance.m_ButtonListeners.Values)
+        {
+            button.Clear();
+            button.SetActive(false);
+        }
     }
 }

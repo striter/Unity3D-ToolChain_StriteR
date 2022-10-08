@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using OPhysics;
+using TTouchTracker;
 using UnityEngine;
 
-namespace PhysicsTest
+namespace ExampleScenes.PhysicsScenes
 {
     public class ActiveRagdollCharacter_Human_StaticAnimator : ActiveRagdollCharacter_HumanBase
     {
@@ -40,6 +41,7 @@ namespace PhysicsTest
         public override void OnTakeControl(TPSCameraController _controller)
         {
             base.OnTakeControl(_controller);
+            TouchConsole.InitButton(ETouchConsoleButton.Main).onClick=SwitchAnim;
         }
         public override void OnRemoveControl()
         {
@@ -58,9 +60,10 @@ namespace PhysicsTest
             base.Update();
             m_StaticAnimatorSynchonize.Traversal(sync => sync.Sync());
         }
-        public override void Tick(float _deltaTime)
+
+        protected override void Tick(float _deltaTime, ref List<TrackData> _data)
         {
-            base.Tick(_deltaTime);
+            base.Tick(_deltaTime, ref _data);
             m_Hips.rotation=Quaternion.Slerp(m_Hips.rotation, Quaternion.Euler(0,m_Yaw,0),_deltaTime*15f);
         }
     }

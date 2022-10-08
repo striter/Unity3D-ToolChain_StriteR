@@ -217,7 +217,7 @@ namespace ExampleScenes.Algorithm.MarchingCube
                 TouchConsole.kJoystickRange,
                 TouchConsole.kJoystickRadius);
 
-            Vector2 rotateDelta = tracks.Input_ScreenDelta(TouchConsole.kScreenDeltaRange);
+            Vector2 rotateDelta = tracks.Input_ScreenMove(TouchConsole.kScreenDeltaRange);
             rotateDelta /= 50f;
             pitchYaw.x = Mathf.Clamp(pitchYaw.x-rotateDelta.y,-60f,60f);
             pitchYaw.y += rotateDelta.x;

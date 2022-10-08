@@ -19,7 +19,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -128,7 +128,7 @@ Material:
     - _ZTest: 2
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.60381496, g: 0.030416004, b: 0.040283013, a: 0.39618504}
+    - _Color: {r: 0.6038149, g: 0.030416006, b: 0.040283013, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _LightmapInterpolateST: {r: 1, g: 1, b: 1, a: 1}
     - _LightmapST: {r: 1, g: 1, b: 1, a: 1}

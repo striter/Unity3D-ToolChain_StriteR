@@ -792,7 +792,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_MoveSpeed: 3
-  m_RotateSpeed: 1
+  m_RotateSpeed: 0.2
   m_Head: {fileID: 1014856373}
   m_Body: {fileID: 67379951}
   m_GravityPoint: {fileID: 1764583030}
@@ -13567,12 +13567,13 @@ MonoBehaviour:
   m_EndBiTangent: {x: 0, y: 0, z: 0}
   m_ControlDamper:
     mode: 4
-    halfLife: 1
-    stiffness: 100
+    halfLife: 0.05
+    stiffness: 24.4
     damping: 3.5
-    f: 4.39
-    z: 0.143
-    r: -4.82
+    f: 2.6
+    z: 0.154
+    r: 4.13
+    poleMatching: 1
   m_DrawGizmos: 0
 --- !u!23 &1997819912
 MeshRenderer:

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using OPhysics;
-namespace PhysicsTest
+namespace ExampleScenes.PhysicsScenes
 {
     [RequireComponent(typeof(ConfigurableJoint))]
     public class JointRot : MonoBehaviour

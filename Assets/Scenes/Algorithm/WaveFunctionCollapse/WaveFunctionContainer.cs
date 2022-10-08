@@ -37,7 +37,7 @@ namespace ExampleScenes.Algorithm.WaveFunctionCollapse
             base.OnPoolCreate(_DoRecycle);
             m_RectTransform=transform as RectTransform;;
             m_Listener = GetComponent<UIEventTriggerListenerExtension>();
-            m_Listener.OnWorldClick = OnWorldClick;
+            m_Listener.onClickWorld = OnWorldClick;
         }
 
         public WaveFunctionContainer Setup(int _index,Action<int> _OnSelect)

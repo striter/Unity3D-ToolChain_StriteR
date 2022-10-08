@@ -95,7 +95,6 @@ public struct RangeFloat
 [Serializable]
 public struct RangeInt
 {
-
     public int start;
     public int length;
     public int end => start + length;

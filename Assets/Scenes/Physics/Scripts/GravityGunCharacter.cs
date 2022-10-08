@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TTouchTracker;
 using UnityEngine;
 
-namespace PhysicsTest
+namespace ExampleScenes.PhysicsScenes
 {
     public class GravityGunCharacter : PhysicsCharacterBase
     {
@@ -25,6 +26,8 @@ namespace PhysicsTest
             _controller.m_MoveDamping = 0f;
             _controller.m_RotateDamping = 0f;
             m_GravityLine = m_GravityPoint.GetComponent<LineRenderer>();
+            TouchConsole.InitButton(ETouchConsoleButton.Main).onClick = OnMainFire;
+            TouchConsole.InitButton(ETouchConsoleButton.Alt).onPress = OnAltFire;
         }
         public override void OnRemoveControl()
         {
@@ -38,7 +41,8 @@ namespace PhysicsTest
             m_GravityLine.SetPosition(0, m_GravityPoint.position);
             m_GravityLine.SetPosition(1, m_TargetObject.position);
         }
-        public override void Tick(float _deltaTime)
+
+        protected override void Tick(float _deltaTime, ref List<TrackData> _data)
         {
             m_Head.position = m_Body.transform.position + Vector3.up * .9f;
             if (m_TargetObject)
@@ -47,8 +51,9 @@ namespace PhysicsTest
                 m_TargetObject.velocity = Vector3.zero;
             }
             m_Head.rotation = TickRotation();
-            m_Body.Move(TickMovement());
+            m_Body.Move(TickMovement()*_deltaTime);
         }
+
         public override void FixedTick(float _deltaTime)
         {
             if (m_TargetObject)
@@ -58,7 +63,7 @@ namespace PhysicsTest
             if (m_GravityGunCounter.m_Playing||!m_AltFiring)
                 return;
 
-            if (!Physics.Raycast(m_Head.position, m_Head.forward, out RaycastHit _hit, float.MaxValue, -1) || !TargetInteractable(_hit.collider, out Rigidbody suckTarget))
+            if (!UnityEngine.Physics.Raycast(m_Head.position, m_Head.forward, out RaycastHit _hit, float.MaxValue, -1) || !TargetInteractable(_hit.collider, out Rigidbody suckTarget))
                 return;
             if(Vector3.Distance(m_GravityPoint.transform.position,suckTarget.transform.position)<m_GravityGunAvailableDistance)
             {
@@ -69,15 +74,15 @@ namespace PhysicsTest
             suckTarget.AddForceAtPosition(-m_GravitySuckForce * (_hit.point - m_GravityPoint.transform.position).normalized,_hit.point);
         }
 
-        void OnAltFire(bool altFire)
+        void OnAltFire(bool _altFire,Vector2 _pos)
         {
-            if (altFire&&m_TargetObject)
+            if (_altFire&&m_TargetObject)
             {
                 m_GravityGunCounter.Replay();
                 ReleaseTarget();
                 return;
             }
-            m_AltFiring=altFire;
+            m_AltFiring=_altFire;
         }
 
         void OnMainFire()
@@ -88,7 +93,7 @@ namespace PhysicsTest
             Vector3 hitPosition = m_TargetObject?m_TargetObject.transform.position:Vector3.zero;
             if(burstTarget==null)
             {
-                if (!Physics.Raycast(m_Head.position, m_Head.forward, out RaycastHit _hit, m_GravityGunAvailableDistance, -1) || !TargetInteractable(_hit.collider, out burstTarget))
+                if (!UnityEngine.Physics.Raycast(m_Head.position, m_Head.forward, out RaycastHit _hit, m_GravityGunAvailableDistance, -1) || !TargetInteractable(_hit.collider, out burstTarget))
                     return;
                 hitPosition = burstTarget.position;
             }

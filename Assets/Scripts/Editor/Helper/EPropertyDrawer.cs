@@ -27,6 +27,7 @@ namespace UnityEditor.Extensions
         {
             Rect propertyField = position.ResizeY(position.size.y-kSize);
             EditorGUI.PropertyField(propertyField, property, label, true);
+            
             Rect imageField = position.MoveY(position.size.y - kSize).ResizeY(kSize);
             EditorGUI.DrawRect(imageField,Color.grey);
 
@@ -40,6 +41,7 @@ namespace UnityEditor.Extensions
             int totalSize = sizeX * sizeY;
             Color[] colors = new Color[sizeX*sizeY];
             colors.FillDefault(Color.black.SetAlpha(.5f));
+            
             Action<int, int, Color> SetPixel = (_x, _y, _color) =>
             {
                 var dst = (_x + _y * sizeX);
@@ -47,20 +49,44 @@ namespace UnityEditor.Extensions
                     return;
                 colors[dst] = _color;
             };
+            Action<int, int,int,int, Color> DrawPixel = (_x, _y,_preX,_preY, _color) =>
+            {
+                var transparent = _color.SetAlpha(.5f);
+                SetPixel(_x , _y , _color);
+                SetPixel(_x + 1 , _y , transparent);
+                SetPixel(_x - 1 , _y , transparent);
+                SetPixel(_x , _y + 1 , transparent);
+                SetPixel(_x , _y - 1 , transparent);
+                int xStart = Mathf.Min(_x, _preX);
+                int xEnd = Mathf.Max(_x, _preX);
+                int yStart = Mathf.Min(_y, _preY)+1;
+                int yEnd = Mathf.Max(_y, _preY)-1;
+                for(int i = xStart;i < xEnd;i++)
+                    for (int j = yStart; j < yEnd; j++)
+                    {
+                        SetPixel(i , j , _color);
+                        SetPixel(i + 1 , j , transparent);
+                        SetPixel(i - 1 , j , transparent);
+                        SetPixel(i , j + 1 , transparent);
+                        SetPixel(i , j - 1 , transparent);
+                    }
+            };
+            
             float sizeAspect =  sizeX / kEstimateSizeX;
             float deltaTime = kDeltaTime / sizeAspect;
             int division1 =(int)( 10f/kDeltaTime * sizeAspect);
             int division2 = (int)( 20f/kDeltaTime * sizeAspect);
+            int preX = 0,preY = 0;
             for (int i = 0; i < sizeX; i++)
             {
                 Vector3 point = i>=division1? i>=division2?Vector3.one * .5f:Vector3.one*.2f:Vector3.one*.8f;
                 var value = damper.Tick(deltaTime,point);
-                SetPixel(i , (int) (value.x * sizeY) , Color.cyan);
-                SetPixel(i + 1 , (int) (value.x * sizeY) , Color.cyan);
-                SetPixel(i - 1 , (int) (value.x * sizeY) , Color.cyan);
-                SetPixel(i , (int) (value.x * sizeY) + 1 , Color.cyan);
-                SetPixel(i , (int) (value.x * sizeY) - 1 , Color.cyan);
-                SetPixel(i , (int) (point.x * sizeY) , Color.red);
+                int x = i;
+                int y = (int) (value.x * sizeY);
+                DrawPixel(x,y,preX,preY,Color.cyan);
+                preX = x;
+                preY = y;
+                SetPixel(x , (int)(point.x*sizeY) , Color.red);
             }
             
             for (int i = 0; i < 60; i++)

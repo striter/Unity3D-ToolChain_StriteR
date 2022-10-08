@@ -30,7 +30,7 @@ public class Damper : ISerializationCallbackReceiver
     private Vector3 v;
     
     private Vector3 xp;
-    private float w,_d,k1, k2, k3;
+    private float w,d,k1, k2, k3;
     
     public void Initialize(Vector3 _begin)
     {
@@ -43,7 +43,7 @@ public class Damper : ISerializationCallbackReceiver
     void Ctor()
     {
         w = 2 * kPI * f;
-        _d = w * Mathf.Sqrt(Mathf.Abs(z*z-1));
+        d = w * Mathf.Sqrt(Mathf.Abs(z*z-1));
         k1 = z / (kPI * f);
         k2 = 1 / Square(w);
         k3 = r * z / (w);
@@ -143,7 +143,7 @@ public class Damper : ISerializationCallbackReceiver
                 else
                 {
                     float t1 = Mathf.Exp(-z * w * dt);
-                    float alpha = 2 * t1 * (z <= 1 ? Mathf.Cos(dt * _d) : UMath.CosH(dt * _d));
+                    float alpha = 2 * t1 * (z <= 1 ? Mathf.Cos(dt * this.d) : UMath.CosH(dt * this.d));
                     float beta = Square(t1);
                     float t2 = dt / (1 + beta - alpha);
                     k1Stable = (1 - beta) * t2;

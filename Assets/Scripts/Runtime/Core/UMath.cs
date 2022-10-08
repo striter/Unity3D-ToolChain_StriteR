@@ -100,13 +100,17 @@ public static class UMath
         return _src || _dst;
     }
 
+    public static float Cos(float _src) => Mathf.Cos(_src);
+    public static float Sin(float _src) => Mathf.Sin(_src);
+    public static float CosH(float _src) => (Mathf.Exp(_src) + Mathf.Exp(_src)) / 2;
     public static float CopySign(float _a, float _b)
     {
         var signA = Mathf.Sign(_a);
         var signB = Mathf.Sign(_b);
         return Math.Abs(signA - signB) < float.Epsilon ? _a : _a * signB;
     }
-    
+
+    //Shortcuts
     public static float NegExp_Fast(float _x)
     {
         return 1.0f / (1.0f + _x + 0.48f * _x * _x + 0.235f * _x * _x * _x);
@@ -117,11 +121,7 @@ public static class UMath
         float z = Mathf.Abs(_x);
         float w = z > 1f ? 1f / z : z;
         float y = (kPI / 4.0f) * w - w * (w - 1) * (0.2447f + 0.0663f * w);
-        return  CopySign(z > 1 ? kPID2 - y : y,_x);
+        return CopySign(z > 1 ? kPID2 - y : y,_x);
     }
 
-    public static float Cos(float _src) => Mathf.Cos(_src);
-    public static float Sin(float _src) => Mathf.Sin(_src);
-
-    public static float CosH(float _src) => (Mathf.Exp(_src) + Mathf.Exp(_src)) / 2;
 }

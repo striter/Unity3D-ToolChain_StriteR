@@ -185,7 +185,8 @@ namespace TTouchTracker
     {
         #region Joystick
 
-        public static Vector2 Input_ScreenDelta(this List<TrackData> _tracks, RangeFloat _xActive)=> _tracks.Collect(p=>_xActive.Contains( p.originNormalized.x)).Average(p=>p.delta);
+        public static Vector2 Input_ScreenMove(this List<TrackData> _tracks, RangeFloat _xActive)=> _tracks.Collect(p=>_xActive.Contains( p.originNormalized.x)).Average(p=>p.delta);
+        public static Vector2 Input_ScreenMove_Normalized(this List<TrackData> _tracks,RangeFloat _xActive) => Input_ScreenMove(_tracks,_xActive).div(Screen.width,Screen.height);
         private static int m_JoystickID = -1;
         private static Vector2 m_JoystickStationaryPos = Vector2.zero;
         public static void Joystick_Stationary(this List<TrackData> _trackData,Action<Vector2,bool> _onJoyStickSet,Action<Vector2> _normalizedTrackDelta,RangeFloat _activeXRange,float _joystickRadius,bool _removeTracker=true)

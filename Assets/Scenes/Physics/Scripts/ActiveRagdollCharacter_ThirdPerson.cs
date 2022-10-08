@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TTouchTracker;
 using UnityEngine;
 
-namespace PhysicsTest
+namespace ExampleScenes.PhysicsScenes
 {
     public class ActiveRagdollCharacter_ThirdPerson : PhysicsCharacterBase
     {
@@ -22,7 +23,7 @@ namespace PhysicsTest
         {
         }
 
-        public override void Tick(float _deltaTime)
+        protected override void Tick(float _deltaTime, ref List<TrackData> _data)
         {
             m_CameraAttach.transform.position = m_CameraFollow.position;
             m_CameraAttach.transform.rotation = TickRotation();

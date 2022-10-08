@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-namespace PhysicsTest
+using TTouchTracker;
+namespace ExampleScenes.PhysicsScenes
 {
     public class PhysicsManager : MonoBehaviour
     {
@@ -48,7 +48,7 @@ namespace PhysicsTest
         }
         private void Start()
         {
-            TouchConsole.InitDefaultCommands().SetOnConsoleShow(consoleOn => Cursor.lockState = consoleOn ? CursorLockMode.Confined : CursorLockMode.Locked);
+            TouchConsole.InitDefaultCommands();
             TouchConsole.NewPage("Level");
             TouchConsole.Command("Gravity", KeyCode.F1).Button(() => SetCharacter(m_GravityGunCharacter));
             TouchConsole.Command("Marionette", KeyCode.F2).Button(() => SetCharacter(m_marionetteCharacter));
@@ -93,23 +93,36 @@ namespace PhysicsTest
         }
         public virtual void OnRemoveControl()
         {
+            TouchConsole.ClearButtons();
         }
-        public abstract void Tick(float _deltaTime);
         public abstract void FixedTick(float _deltaTime);
         protected Vector2 m_MoveDelta { get; private set; }
         protected float m_Pitch, m_Yaw;
         protected Vector3 m_Forward { get; private set; }
         protected Vector3 m_Up { get; private set; }
         protected Vector3 m_Right { get; private set; }
-        void OnMove(Vector2 _delta) => m_MoveDelta = _delta;
-        void OnRotate(Vector2 _delta)
+        
+        
+        
+        public void Tick(float _deltaTime)
         {
-            _delta *= m_RotateSpeed;
-            m_Yaw += _delta.x;
-            m_Pitch -= _delta.y;
+            var trackers=TouchTracker.Execute(Time.unscaledTime);
+            Tick(_deltaTime,ref trackers);
+            trackers.Joystick_Stationary(
+                (position,active)=>{ TouchConsole.DoSetJoystick(position,active);if(!active) m_MoveDelta=Vector2.zero; },
+                (normalized)=>{m_MoveDelta = normalized;TouchConsole.DoTrackJoystick(normalized);},
+                TouchConsole.kJoystickRange,
+                TouchConsole.kJoystickRadius,
+                true);
+
+            var delta =  trackers.Input_ScreenMove(TouchConsole.kScreenDeltaRange);
+            delta *= m_RotateSpeed;
+            m_Yaw += delta.x;
+            m_Pitch -= delta.y;
             m_Pitch = Mathf.Clamp(m_Pitch, -75f, 75f);
         }
 
+        protected abstract void Tick(float _deltaTime, ref List<TrackData> _data);
         protected Quaternion TickRotation()
         {
             m_Forward = Vector3.forward.RotateDirectionClockwise(Vector3.up, m_Yaw);
@@ -117,7 +130,7 @@ namespace PhysicsTest
             m_Up = Vector3.up.RotateDirectionClockwise(Vector3.forward, m_Pitch);
             return Quaternion.Euler(m_Pitch, m_Yaw, 0);
         }
-        protected Vector3 TickMovement()=> (m_Forward * m_MoveDelta.y + m_Right * m_MoveDelta.x).normalized * m_MoveSpeed;
+        protected Vector3 TickMovement()=> Vector3.down*9.8f+(m_Forward * m_MoveDelta.y + m_Right * m_MoveDelta.x).normalized * m_MoveSpeed;
     }
 
     public static class PhysicsLayer
