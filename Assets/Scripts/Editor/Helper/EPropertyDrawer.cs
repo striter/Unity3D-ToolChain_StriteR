@@ -17,7 +17,7 @@ namespace UnityEditor.Extensions
         private const int kAxisWidth = 2;
         private const float kDeltaTime = .05f;
         private const float kEstimateSizeX = 600;
- 
+
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             return EditorGUI.GetPropertyHeight(property, label,true) + kSize;

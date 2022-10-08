@@ -20,7 +20,7 @@ public class Damper : ISerializationCallbackReceiver
     [MFoldout(nameof(mode),EDamperMode.Lerp,EDamperMode.SpringCritical)][Clamp(0.05f)] public float halfLife = .5f;
     [MFoldout(nameof(mode),EDamperMode.SpringSimple,EDamperMode.SpringImplicit)][Range(0,100)] public float stiffness = 20f;
     [MFoldout(nameof(mode),EDamperMode.SpringSimple,EDamperMode.SpringImplicit)][Range(0,30)] public float damping = 4f;
-
+    
     [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] [Range(0.01f, 20)] public float f = 5;
     [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] [Range(0, 1.5f)] public float z = 0.35f;
     [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] [Range(-5, 5)] public float r = -.5f;
@@ -29,12 +29,13 @@ public class Damper : ISerializationCallbackReceiver
     public Vector3 x { get; private set; }
     private Vector3 v;
     
-    private Vector3 xp;
-    private float w,d,k1, k2, k3;
+    //Used by second order dynamics
+    private Vector3 _xp;
+    private float _w,_d,_k1, _k2, _k3;
     
     public void Initialize(Vector3 _begin)
     {
-        xp = _begin;
+        _xp = _begin;
         x = _begin;
         v = Vector3.zero;
         Ctor();
@@ -42,11 +43,11 @@ public class Damper : ISerializationCallbackReceiver
 
     void Ctor()
     {
-        w = 2 * kPI * f;
-        d = w * Mathf.Sqrt(Mathf.Abs(z*z-1));
-        k1 = z / (kPI * f);
-        k2 = 1 / Square(w);
-        k3 = r * z / (w);
+        _w = 2 * kPI * f;
+        _d = _w * Mathf.Sqrt(Mathf.Abs(z*z-1));
+        _k1 = z / (kPI * f);
+        _k2 = 1 / Square(_w);
+        _k3 = r * z / (_w);
     }
 
     public Vector3 Tick(float _deltaTime,Vector3 _desirePosition,Vector3 _desireVelocity = default)
@@ -94,23 +95,24 @@ public class Damper : ISerializationCallbackReceiver
                     var j1 = v + j0 * y;
                     float eydt = NegExp_Fast(y * dt);
                     x = eydt * (j0 + j1 * dt) + c;
-                    v = eydt * (v - j1 * y * dt);
+                    v = eydt * (-y*j0 - y * j1 * dt+ j1);
                 }
                 else if (determination > 0)     //Under Damped
                 {
-                    var w = Mathf.Sqrt(s - (d * d) / 4.0f);
-                    var j =  ((v + y * (x - c)).Convert(Square) / (w * w + eps) + (x - c).Convert(Square)).sqrt();
-                    var p =  (v+(x-c)*y).div(-(x - c) * w + eps3).Convert(Atan_Fast);
+                    var w = Mathf.Sqrt(determination);
+                    var j = ((v + y*(x - c)).square() / (w*w + eps) + (x - c).square()).sqrt();
+                    var p = (v + (x - c) * y).div(-(x - c) * w + eps3).Convert(Atan_Fast);
                     
-                    j = j.Convert((index,value)=>(x[index]-value)>0?value:-value);
+                    j = j.Convert((index,value)=>(x[index]-c[index])>0?value:-value);
+                    
+                    var jeydt = j*NegExp_Fast(y * dt );
                     
                     var param = (w * dt).ToVector3() + p;
                     var cosParam = param.Convert(Cos);
                     var sinParam = param.Convert(Sin);
-                    var eydtJ = j *  NegExp_Fast(y * dt);
                     
-                    x = eydtJ.mul (cosParam) + c;
-                    v = -y * eydtJ.mul(cosParam) - w *eydtJ.mul(sinParam);
+                    x = jeydt.mul(cosParam) + c;
+                    v = -y * jeydt.mul(cosParam) - w * jeydt.mul(sinParam);
                 }
                 else    //Over Damped
                 {
@@ -130,20 +132,20 @@ public class Damper : ISerializationCallbackReceiver
             {
                 if (vd == Vector3.zero)
                 {
-                    vd = (xd - xp) / dt;
-                    xp = xd;
+                    vd = (xd - _xp) / dt;
+                    _xp = xd;
                 }
 
                 float k1Stable, k2Stable;
-                if (!poleMatching || w * dt < z)
+                if (!poleMatching || _w * dt < z)
                 {
-                    k1Stable = k1;
-                    k2Stable = Mathf.Max(k2,dt*dt/2 + dt*k1/2,dt*k1);
+                    k1Stable = _k1;
+                    k2Stable = Mathf.Max(_k2,dt*dt/2 + dt*_k1/2,dt*_k1);
                 }
                 else
                 {
-                    float t1 = Mathf.Exp(-z * w * dt);
-                    float alpha = 2 * t1 * (z <= 1 ? Mathf.Cos(dt * this.d) : UMath.CosH(dt * this.d));
+                    float t1 = Mathf.Exp(-z * _w * dt);
+                    float alpha = 2 * t1 * (z <= 1 ? Mathf.Cos(dt * this._d) : UMath.CosH(dt * this._d));
                     float beta = Square(t1);
                     float t2 = dt / (1 + beta - alpha);
                     k1Stable = (1 - beta) * t2;
@@ -151,7 +153,7 @@ public class Damper : ISerializationCallbackReceiver
                 }
                 
                 x += v * dt;
-                v += dt * (xd + k3 * vd - x - k1Stable * v) / k2Stable;
+                v += dt * (xd + _k3 * vd - x - k1Stable * v) / k2Stable;
             } break;
         }
 

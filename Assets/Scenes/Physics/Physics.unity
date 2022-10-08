@@ -13566,10 +13566,10 @@ MonoBehaviour:
   m_EndPosition: {x: 0, y: 0, z: 0}
   m_EndBiTangent: {x: 0, y: 0, z: 0}
   m_ControlDamper:
-    mode: 4
-    halfLife: 0.05
-    stiffness: 91.3
-    damping: 0.7
+    mode: 2
+    halfLife: 1
+    stiffness: 52.3
+    damping: 0.6
     f: 1.27
     z: 0.055
     r: -4.46
