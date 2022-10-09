@@ -39,6 +39,7 @@ Shader "Hidden/LightVolumeEnv"
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile _ _ADDITIONAL_LIGHTS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
+            #pragma multi_compile _ _LIGHTVOLUME
 
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_EmissionTex);SAMPLER(sampler_EmissionTex);
@@ -61,10 +62,12 @@ Shader "Hidden/LightVolumeEnv"
 			TEXTURE2D(_CameraLightMaskTexture);SAMPLER(sampler_CameraLightMaskTexture);
 			Light GetMainLight(float4 positionHCS,float3 positionWS)
 			{
-				Light mainLight = GetMainLight(TransformWorldToShadowCoord(positionWS));\
-				float3 sample = SAMPLE_TEXTURE2D(_CameraLightMaskTexture,sampler_CameraLightMaskTexture,TransformHClipToNDC(positionHCS));
-				mainLight.color += sample;
-				mainLight.shadowAttenuation += max(sample);
+				Light mainLight = GetMainLight(TransformWorldToShadowCoord(positionWS));
+				#if _LIGHTVOLUME
+					float3 sample = SAMPLE_TEXTURE2D(_CameraLightMaskTexture,sampler_CameraLightMaskTexture,TransformHClipToNDC(positionHCS));
+					mainLight.color += sample;
+					mainLight.shadowAttenuation += max(sample);
+				#endif
 				return mainLight;
 			}
 			#define  GET_MAINLIGHT(i) GetMainLight(i.positionHCS,i.positionWS);

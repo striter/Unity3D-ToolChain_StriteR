@@ -25,6 +25,7 @@ namespace Rendering.Pipeline
     
     public class SRP_LightMask : ScriptableRenderPass,ISRPBase
     {
+        private static readonly string kKeyword = "_LIGHTVOLUME";
         private ScriptableRenderer m_Renderer;
         public SRP_LightMask Setup(ScriptableRenderer _renderer)
         {
@@ -40,6 +41,7 @@ namespace Rendering.Pipeline
             cameraTextureDescriptor.colorFormat = RenderTextureFormat.ARGB32;
             cameraTextureDescriptor.depthBufferBits = 0;
             cmd.GetTemporaryRT(DRenderTextures.kCameraLightMask, cameraTextureDescriptor);
+            cmd.EnableShaderKeyword(kKeyword);
             ConfigureTarget(DRenderTextures.kCameraLightMaskRT);
             base.Configure(cmd, cameraTextureDescriptor);
         }
@@ -47,6 +49,7 @@ namespace Rendering.Pipeline
         public override void FrameCleanup(CommandBuffer cmd)
         {
             base.FrameCleanup(cmd);
+            cmd.DisableShaderKeyword(kKeyword);
             cmd.ReleaseTemporaryRT(DRenderTextures.kCameraLightMask);
         }
         
