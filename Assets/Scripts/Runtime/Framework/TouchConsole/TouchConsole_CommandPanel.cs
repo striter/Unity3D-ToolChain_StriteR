@@ -2,12 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using TDataPersistent;
 using UnityEngine;
 using UnityEngine.UI;
 using TPool;
 using static TouchConsole;
-public static class UIT_TouchConsoleHelper
+public static class TouchConsole_Extend
 {
     public static string GetKeyCodeString(this KeyCode _keyCode) => _keyCode == KeyCode.None ? "" : _keyCode.ToString();
     public static void Button(this CommandContainer _container, Action OnClick,string _title = null)
@@ -116,6 +115,7 @@ public static class UIT_TouchConsoleHelper
         input2.m_InputField.onValueChanged.AddListener(_value=>_refText2=_value);
         _container.Button(() => OnValueClick(input1.m_InputField.text, input2.m_InputField.text));
     }
+    
 }
 public partial class TouchConsole
 {
