@@ -53,21 +53,15 @@ Shader "Game/Unfinished/GeometryOcclusion"
                 float3 distance=_sphere.center-_position;
                 float l=length(distance);
                 float ndl=dot(_normal,distance/l);
-                float h= l/_sphere.radius;
-                float h2=h*h;
-                float k2=1.0-h2*ndl*ndl;
+                float h = l/_sphere.radius;
+                float h2 = h*h;
+                float k2 = 1.0-h2*ndl*ndl;
                 float res=max(0,ndl)/h2;
                 if(k2>0)
                 {
-                    #if 0
                         res=ndl*acos(-ndl*sqrt((h2-1.0)/(1.0-ndl*ndl)))-sqrt(k2*(h2-1.0));
                         res = res/h2 + atan(sqrt(k2/(h2-1.0)));
                         res /= PI;
-                    #else
-                        // res = (ndl*h+1.0)/h2;
-                        // res=  0.33*res*res;
-                        res = .5*(res+1.-sqrt(1.-1./h2)); 
-                    #endif
                 }
                 return saturate(invlerp(0.1,1,res));
             }
@@ -81,7 +75,7 @@ Shader "Game/Unfinished/GeometryOcclusion"
                 float3 positionWS=TransformNDCToWorld(screenUV,rawDepth);
                 
                 float occlusion=0;
-                occlusion=SphereOcclusion(TransformWorldToObject(positionWS),TransformWorldToObjectNormal(normalWS),GSphere_Ctor(0,.25f));
+                occlusion=SphereOcclusion(TransformWorldToObject(positionWS),TransformWorldToObjectNormal(normalWS),GSphere_Ctor(0,.25));
                 return float4(_Color.rgb,occlusion*_Color.a*_Strength);
             }
             ENDHLSL

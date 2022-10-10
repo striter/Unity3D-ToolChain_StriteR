@@ -99,26 +99,23 @@ public static class UIT_TouchConsoleHelper
         if (foldOutButton != null)
             foldOutButton.m_Title.text = _refFlags.m_RefValue.GetNumerable().ToString('|', value => value ? "√" : "×");
     }
-    public static void InputField(this CommandContainer _container, Ref<string> _refText, Action<string> OnValueClick)
+    public static void InputField(this CommandContainer _container, string _refText, Action<string> OnValueClick)
     {
         CommandItem_InputField input = _container.Insert<CommandItem_InputField>();
-        input.SetDataUpdate(() => { input.m_InputField.text = _refText.m_RefValue; });
-        input.m_InputField.onValueChanged.AddListener(_refText.SetValue);
+        input.SetDataUpdate(() => { input.m_InputField.text = _refText; });
+        input.m_InputField.onValueChanged.AddListener(_value=>_refText=_value);
         _container.Button(() => OnValueClick(input.m_InputField.text));
     }
-    public static void InpuptField(this CommandContainer _container, Ref<string> _refText1, Ref<string> _refText2, Action<string, string> OnValueClick)
+    public static void InpuptField(this CommandContainer _container, string _refText1, string _refText2, Action<string, string> OnValueClick)
     {
         CommandItem_InputField input1 = _container.Insert<CommandItem_InputField>();
         CommandItem_InputField input2 = _container.Insert<CommandItem_InputField>();
-        input1.SetDataUpdate(() => input1.m_InputField.text = _refText1.m_RefValue);
-        input2.SetDataUpdate(() => input2.m_InputField.text = _refText2.m_RefValue);
-        input1.m_InputField.onValueChanged.AddListener(_refText1.SetValue);
-        input2.m_InputField.onValueChanged.AddListener(_refText2.SetValue);
+        input1.SetDataUpdate(() => input1.m_InputField.text = _refText1);
+        input2.SetDataUpdate(() => input2.m_InputField.text = _refText2);
+        input1.m_InputField.onValueChanged.AddListener(_value=>_refText1=_value);
+        input2.m_InputField.onValueChanged.AddListener(_value=>_refText2=_value);
         _container.Button(() => OnValueClick(input1.m_InputField.text, input2.m_InputField.text));
     }
-
-
-
 }
 public partial class TouchConsole
 {

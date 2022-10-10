@@ -1,6 +1,7 @@
 ﻿
 #define MAX_MARCH_STEPS 128
 #define FLOAT_EPSILON 0.00001
+            #include "Assets/Shaders/Library/Lighting.hlsl"
 
 bool RaymarchSDF(GRay ray,float start,float end,out float distance,out SDFOutput _output)
 {
@@ -71,7 +72,7 @@ float4 fragSDF (v2fSDF i) : SV_Target
     float3 color=albedo*diffuse*lightColor;
 
     float specular=pow(NDH,PI);
-    color=lerp(color,specular*lightColor*albedo,specular);
+    color=IndirectDiffuse_SH(normalWS)+ lerp(color,specular*lightColor*albedo,specular);
 
     return float4(color,1);
 }

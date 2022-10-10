@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-#region Unit
+
 [Serializable]
-public class Ref<T>
+public class Ref<T> where T:struct
 {
     public T m_RefValue = default;
     public Ref() { }
@@ -77,7 +77,6 @@ public class ByteArray<T>
     public void Set(byte _index, T _value) => datas[_index] = _value;
 }
 
-
 [Serializable]
 public struct RangeFloat
 {
@@ -92,6 +91,7 @@ public struct RangeFloat
 
     public static readonly RangeFloat k01 = new RangeFloat(0f,1f);
 }
+
 [Serializable]
 public struct RangeInt
 {
@@ -103,75 +103,6 @@ public struct RangeInt
         start = _start;
         length = _length;
     }
-}
-#endregion
-#region ValueHelper
-public class ValueLerpBase
-{
-    float m_check;
-    float m_duration;
-    protected float m_value { get; private set; }
-    protected float m_previousValue { get; private set; }
-    protected float m_targetValue { get; private set; }
-    readonly Action<float> OnValueChanged;
-    public ValueLerpBase(float startValue, Action<float> _OnValueChanged)
-    {
-        m_targetValue = startValue;
-        m_previousValue = startValue;
-        m_value = m_targetValue;
-        OnValueChanged = _OnValueChanged;
-        OnValueChanged(m_value);
-    }
-
-    protected void SetLerpValue(float value, float duration)
-    {
-        if (Math.Abs(value - m_targetValue) < float.Epsilon)
-            return;
-        m_duration = duration;
-        m_check = m_duration;
-        m_previousValue = m_value;
-        m_targetValue = value;
-    }
-
-    public void SetFinalValue(float value)
-    {
-        if (Math.Abs(value - m_value) < float.Epsilon)
-            return;
-        m_value = value;
-        m_previousValue = m_value;
-        m_targetValue = m_value;
-        OnValueChanged(m_value);
-    }
-
-    public void TickDelta(float deltaTime)
-    {
-        if (m_check <= 0)
-            return;
-        m_check -= deltaTime;
-        m_value = GetValue(m_check / m_duration);
-        OnValueChanged(m_value);
-    }
-    protected virtual float GetValue(float checkLeftParam)
-    {
-        Debug.LogError("Override This Please");
-        return 0;
-    }
-}
-public class ValueLerpSeconds : ValueLerpBase
-{
-    readonly float m_perSecondValue;
-    readonly float m_maxDuration;
-    float m_maxDurationValue;
-    public ValueLerpSeconds(float startValue, float perSecondValue, float maxDuration, Action<float> _OnValueChanged) : base(startValue, _OnValueChanged)
-    {
-        m_perSecondValue = perSecondValue;
-        m_maxDuration = maxDuration;
-        m_maxDurationValue = m_perSecondValue * maxDuration;
-    }
-
-    public void SetLerpValue(float value) => SetLerpValue(value, Mathf.Abs(value - m_value) > m_maxDurationValue ? m_maxDuration : Mathf.Abs((value - m_value)) / m_perSecondValue);
-
-    protected override float GetValue(float checkLeftParam) => Mathf.Lerp(m_previousValue, m_targetValue, 1 - checkLeftParam);
 }
 
 public class ValueChecker<T> 
@@ -283,30 +214,6 @@ public class Counter
         return false;
     }
 }
-
-public class TimeCollector
-{
-#if UNITY_EDITOR
-    public double m_Cur =0f;
-#endif
-    
-    public float deltaTime
-    {
-        get
-        {
-        #if UNITY_EDITOR
-            if (Application.isPlaying)
-            {
-                var last = m_Cur;
-                m_Cur = UnityEditor.EditorApplication.timeSinceStartup;
-                return Mathf.Max(0, (float)(m_Cur-last));
-            }
-        #endif
-            return Time.deltaTime;
-        }
-    }
-}
-#endregion
 #region Swizzling
 [Serializable]
 public struct Int2:IEquatable<Int2>, IEqualityComparer<Int2>

@@ -68,10 +68,9 @@ public class UITrailRenderer : MaskableGraphic
         m_TrailPaths.Add(new TrailPath(){time = m_TimeElapsed,position = m_LastPosition });
     }
 
-    private readonly TimeCollector kTimeCollector = new TimeCollector();
     private void Update()
     {
-        float deltaTime = kTimeCollector.deltaTime;
+        float deltaTime = UTime.deltaTime;
         m_TimeElapsed += deltaTime;
         SetVerticesDirty();
 

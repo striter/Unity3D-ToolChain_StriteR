@@ -20,8 +20,8 @@
 			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			#pragma multi_compile_local_fragment  _DECALCLIP_NONE _DECALCLIP_BOX _DECALCLIP_SPHERE
-			#pragma multi_compile_local_fragment _SHAPE
+			#pragma shader_feature_local_fragment _DECALCLIP_NONE _DECALCLIP_BOX _DECALCLIP_SPHERE
+			#pragma shader_feature_local_fragment _SHAPE
 			
             // #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             // #pragma multi_compile_local _ _MAIN_LIGHT_CALCULATE_SHADOWS
