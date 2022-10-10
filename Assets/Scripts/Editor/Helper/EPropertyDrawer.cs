@@ -1,11 +1,6 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
+﻿using UnityEngine;
 using System;
-using System.Linq;
-using System.Reflection;
 using Geometry.Voxel;
-using OSwizzling;
 
 namespace UnityEditor.Extensions
 {

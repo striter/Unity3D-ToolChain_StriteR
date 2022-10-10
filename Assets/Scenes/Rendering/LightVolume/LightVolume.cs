@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Geometry.Bezier;
-using OSwizzling;
 using UnityEngine;
 
 //This stuff is inspired by deferred rendering
@@ -47,8 +43,8 @@ namespace ExampleScenes.Rendering.LightVolume
                 block.SetColor(KShaderProperties.kColor,URandom.RandomColor()*2);
                 renderer.SetPropertyBlock(block);
                 var startPosition = renderer.transform.position;
-                var endPosition = renderer.transform.position + URandom.Random2DDirection().ToVector3XZ()*10f;
-                transforms[index] = new VolumeTransforming(startPosition,endPosition,(startPosition+endPosition)+ URandom.Random2DDirection().ToVector3XZ()*5f,5f+URandom.Random01()*5f);
+                var endPosition = renderer.transform.position + URandom.Random2DDirection().ToVector3_XZ()*10f;
+                transforms[index] = new VolumeTransforming(startPosition,endPosition,(startPosition+endPosition)+ URandom.Random2DDirection().ToVector3_XZ()*5f,5f+URandom.Random01()*5f);
             }
         }
 

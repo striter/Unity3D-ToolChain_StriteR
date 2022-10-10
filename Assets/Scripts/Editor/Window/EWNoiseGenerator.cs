@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using UAlgorithm;
+using AlgorithmExtension;
 namespace UnityEditor.Extensions
 {
     using static UEGUI;
