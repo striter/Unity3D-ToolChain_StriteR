@@ -133,6 +133,21 @@ namespace Geometry.Voxel
             return (_plane.distance - nrO) / nrD;
         }
 
+        
+        static void RayBSCalculate(GSphere _sphere, GRay _ray, out float _dotOffsetDirection, out float _discriminant)
+        {
+            Vector3 shift = _ray.origin - _sphere.center;
+            _dotOffsetDirection = Vector3.Dot(_ray.direction, shift);
+            float sqrRadius = _sphere.radius * _sphere.radius;
+            float radiusDelta = Vector3.Dot(shift, shift) - sqrRadius;
+            _discriminant = -1;
+            if (_dotOffsetDirection > 0 && radiusDelta > 0)
+                return;
+
+            float dotOffset = Vector3.Dot(shift, shift);
+            _discriminant = _dotOffsetDirection * _dotOffsetDirection - dotOffset + sqrRadius;
+        }
+
         public static bool RayBSIntersect(GSphere _sphere, GRay _ray)
         {
             RayBSCalculate(_sphere, _ray, out float dotOffsetDirection, out float discriminant);
@@ -153,18 +168,46 @@ namespace Geometry.Voxel
             return new Vector2(t0, t1);
         }
 
-        static void RayBSCalculate(GSphere _sphere, GRay _ray, out float dotOffsetDirection, out float discriminant)
+        private static void RayBECalculate(GEllipsoid _ellipsoid, GRay _ray,out float _a,out float _b,out float _c,out float _discriminant)
         {
-            Vector3 offset = _ray.origin - _sphere.center;
-            dotOffsetDirection = Vector3.Dot(_ray.direction, offset);
-            float sqrRadius = _sphere.radius * _sphere.radius;
-            float radiusDelta = Vector3.Dot(offset, offset) - sqrRadius;
-            discriminant = -1;
-            if (dotOffsetDirection > 0 && radiusDelta > 0)
-                return;
+            var shift = _ray.origin - _ellipsoid.center;
+            _a = _ray.direction.x*_ray.direction.x/(_ellipsoid.radius.x*_ellipsoid.radius.x)
+                + _ray.direction.y*_ray.direction.y/(_ellipsoid.radius.y*_ellipsoid.radius.y)
+                + _ray.direction.z*_ray.direction.z/(_ellipsoid.radius.z*_ellipsoid.radius.z);
+            _b = 2*shift.x*_ray.direction.x/(_ellipsoid.radius.x*_ellipsoid.radius.x)
+                + 2*shift.y*_ray.direction.y/(_ellipsoid.radius.y*_ellipsoid.radius.y)
+                + 2*shift.z*_ray.direction.z/(_ellipsoid.radius.z*_ellipsoid.radius.z);
+            _c = shift.x*shift.x/(_ellipsoid.radius.x*_ellipsoid.radius.x)
+                + shift.y*shift.y/(_ellipsoid.radius.y*_ellipsoid.radius.y)
+                + shift.z*shift.z/(_ellipsoid.radius.z*_ellipsoid.radius.z) 
+                 - 1;
+            _discriminant = ((_b*_b)-(4*_a*_c));
+        }
+        public static bool RayBEIntersect(GEllipsoid _ellipsoid, GRay _ray)
+        {
+            RayBECalculate(_ellipsoid,_ray,out var a,out var b,out var c,out var discriminant);
+            return discriminant >= 0;
+        }
+        public static Vector2 RayBEDistance(GEllipsoid _ellipsoid, GRay _ray)
+        {
+            RayBECalculate(_ellipsoid,_ray,out var a,out var b,out var c,out var discriminant);
+            if ( discriminant < 0 ) { return Vector2.one*-1; }
+            discriminant = Mathf.Sqrt(discriminant);
+            float t0 = (-b - discriminant)/(2*a);
+            float t1 = (-b + discriminant)/(2*a);
 
-            float dotOffset = Vector3.Dot(offset, offset);
-            discriminant = dotOffsetDirection * dotOffsetDirection - dotOffset + sqrRadius;
+            if (t0 < 0)
+                t0 = t1;
+            return new Vector2(t0, t1);
+        }
+        
+        static void RayAABBCalculate(GBox _box, GRay _ray, out Vector3 _tmin, out Vector3 _tmax)
+        {
+            Vector3 invRayDir = Vector3.one.div(_ray.direction);
+            Vector3 t0 = (_box.min - _ray.origin).mul(invRayDir);
+            Vector3 t1 = (_box.max - _ray.origin).mul(invRayDir);
+            _tmin = Vector3.Min(t0, t1);
+            _tmax = Vector3.Max(t0, t1);
         }
 
         public static bool RayAABBIntersect(GBox _box, GRay _ray)
@@ -181,15 +224,6 @@ namespace Geometry.Voxel
             float dstToBox = Mathf.Max(0, dstA);
             float dstInsideBox = Mathf.Max(0, dstB - dstToBox);
             return new Vector2(dstToBox, dstInsideBox);
-        }
-
-        static void RayAABBCalculate(GBox _box, GRay _ray, out Vector3 _tmin, out Vector3 _tmax)
-        {
-            Vector3 invRayDir = Vector3.one.div(_ray.direction);
-            Vector3 t0 = (_box.min - _ray.origin).mul(invRayDir);
-            Vector3 t1 = (_box.max - _ray.origin).mul(invRayDir);
-            _tmin = Vector3.Min(t0, t1);
-            _tmax = Vector3.Max(t0, t1);
         }
 
         public static Vector2 RayConeDistance(GCone _cone, GRay _ray)

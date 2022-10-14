@@ -89,7 +89,7 @@ float2 SphereRayDistance(GSphere _sphere, GRay _ray)
     discriminant = sqrt(discriminant);
     float t0 = -dotOffsetDirection - discriminant;
     float t1 = -dotOffsetDirection + discriminant;
-    return float2(t0, t1) * step(0., discriminant) * step(dotOffsetDirection, 0.);
+    return max(0,float2(t0, t1));// * step(0., discriminant) * step(dotOffsetDirection, 0.);
 }
 
  //Heighted Cone 

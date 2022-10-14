@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace Geometry.Voxel
 {
-    #region Defines
     [Serializable]
     public struct GRay
     {
@@ -19,20 +18,24 @@ namespace Geometry.Voxel
     }
     
     [Serializable]
-    public struct GLine
+    public struct GLine:ISerializationCallbackReceiver
     {
         public Vector3 origin;
         public Vector3 direction;
         public float length;
-        public Vector3 end;
+        [HideInInspector]public Vector3 end;
         public Vector3 GetPoint(float _distance) => origin + direction * _distance;
         public GLine(Vector3 _position, Vector3 _direction, float _length) { 
             origin = _position; 
             direction = _direction; 
             length = _length;
-            end = origin + direction * length;
+            end = default;
+            Ctor();
         }
+        void Ctor(){end = origin + direction * length;}
         public static implicit operator GRay(GLine _line)=>new GRay(_line.origin,_line.direction);
+        public void OnBeforeSerialize() { }
+        public void OnAfterDeserialize() { Ctor(); }
     }
 
     
@@ -89,10 +92,6 @@ namespace Geometry.Voxel
             vOffset = V2-V0;
             normal = Vector3.Cross(uOffset.normalized,vOffset.normalized).normalized;
         }
-        /// <summary>
-        /// 获取未归一化的法线
-        /// </summary>
-        /// <returns></returns>
         public Vector3 GetNormalUnnormalized() {
             return Vector3.Cross(uOffset, vOffset);
         }
@@ -113,9 +112,20 @@ namespace Geometry.Voxel
     public struct GSphere
     {
         public Vector3 center;
-        public float radius;
+        [Clamp(0)] public float radius;
         public GSphere(Vector3 _center,float _radius) { center = _center;radius = _radius; }
+        public static readonly GSphere kDefault = new GSphere(Vector3.zero, .5f);
     }
+
+    [Serializable]
+    public struct GEllipsoid
+    {
+        public Vector3 center;
+        public Vector3 radius;
+        public GEllipsoid(Vector3 _center,Vector3 _radius) {  center = _center; radius = _radius;}
+        public static readonly GEllipsoid kDefault = new GEllipsoid(Vector3.zero, new Vector3(.5f,1f,0.5f));
+    }
+    
     [Serializable]
     public struct GBox:ISerializationCallbackReceiver
     {
@@ -126,10 +136,18 @@ namespace Geometry.Voxel
         [NonSerialized] public Vector3 max;
         public GBox(Vector3 _center, Vector3 _extend)
         {
-            this = default;
             center = _center;
             extend = _extend;
+            size = default;
+            min = default;
+            max = default;
             Ctor();
+        }
+        void Ctor()
+        {
+            size = extend * 2f;
+            min = center - extend;
+            max = center + extend;
         }
         
         public static GBox Create(Vector3 _min, Vector3 _max)
@@ -149,12 +167,6 @@ namespace Geometry.Voxel
                 max = Vector3.Max(max,_points[i]);
             }
             return Create(min, max);
-        }
-        void Ctor()
-        {
-            size = extend * 2f;
-            min = center - extend;
-            max = center + extend;
         }
         
         public void OnBeforeSerialize(){  }
@@ -432,7 +444,5 @@ namespace Geometry.Voxel
         }
 
         IEnumerator IEnumerable.GetEnumerator()=> GetEnumerator();
-
     }
-    #endregion
 }

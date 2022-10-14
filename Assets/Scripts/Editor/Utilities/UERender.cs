@@ -9,14 +9,14 @@ namespace UnityEditor.Extensions
 {
     public static class UERender
     {
-        static Vector3[] RenegerateNormals(int[] _indices, Vector3[] _verticies, bool weightedNormals =false)
+        static Vector3[] RenegerateNormals(int[] _indices, Vector3[] _verticies, bool _weightedNormals =false)
         {
             Vector3[] normals = new Vector3[_verticies.Length];
             GTrianglePolygon[] polygons = UPolygon.GetPolygons(_indices);
             foreach(var polygon in polygons)
             {
                 GTriangle triangle = new GTriangle(polygon.GetVertices(_verticies));
-                Vector3 normal = weightedNormals ? triangle.GetNormalUnnormalized() : triangle.normal;
+                Vector3 normal = _weightedNormals ? triangle.GetNormalUnnormalized() : triangle.normal;
                 foreach (var index in polygon)
                     normals[index] += normal;
             }
@@ -49,7 +49,7 @@ namespace UnityEditor.Extensions
                     Vector3 tangent = tangents[i].XYZ().normalized;
                     Vector3 normal = normals[i].normalized;
                     Vector3 biNormal = Vector3.Cross(normal, tangent).normalized * tangents[i].w;
-                    Matrix3x3 tbnMatrix = Matrix3x3.identity;
+                    Matrix3x3 tbnMatrix = Matrix3x3.kIdentity;
                     tbnMatrix.SetRow(0, tangent);
                     tbnMatrix.SetRow(1, biNormal);
                     tbnMatrix.SetRow(2, normal);

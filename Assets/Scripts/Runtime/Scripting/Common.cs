@@ -319,13 +319,14 @@ public struct Matrix2x2
 {
     public float m00, m01;
     public float m10, m11;
-
+    public float determinant;
     public Matrix2x2(float _00,float _01,float _10,float _11)
     {
         m00 = _00;
         m01 = _01;
         m10 = _10;
         m11 = _11;
+        determinant = m00 * m11 - m01 * m10;
     }
 
     public (float x,float y) Multiply(float x, float y) => (
@@ -363,7 +364,18 @@ public struct Matrix3x3
     public float m00, m01, m02;
     public float m10, m11, m12;
     public float m20, m21, m22;
-    public Matrix3x3(float _00, float _01, float _02, float _10, float _11, float _12, float _20, float _21, float _22) { m00 = _00; m01 = _01; m02 = _02; m10 = _10; m11 = _11; m12 = _12; m20 = _20; m21 = _21; m22 = _22; }
+    public float determinant;
+    public Matrix3x3(float _00, float _01, float _02,
+        float _10, float _11, float _12,
+        float _20, float _21, float _22)
+    {
+        m00 = _00; m01 = _01; m02 = _02; 
+        m10 = _10; m11 = _11; m12 = _12; 
+        m20 = _20; m21 = _21; m22 = _22;
+        determinant = m00 * (m11 * m22 - m12 * m21) 
+                    - m01 * (m10 * m22 - m12 * m20) 
+                    + m02 * (m10 * m21 - m20 * m21);
+    }
 
     public Vector3 MultiplyVector(Vector3 _srcVector) => new Vector3(
         _srcVector.x * m00 + _srcVector.y * m01 + _srcVector.z * m02,
@@ -385,16 +397,55 @@ public struct Matrix3x3
             case 2: m20 = _row.x; m21 = _row.y; m22 = _row.z; break;
         }
     }
-    public void SetColumn(int _index, Vector3 column)
+    public void SetColumn(int _index, Vector3 _column)
     {
         switch (_index)
         {
             default: throw new Exception("Invalid Column For Matrix3x3:" + _index.ToString());
-            case 0: m00 = column.x; m10 = column.y; m20 = column.z; break;
-            case 1: m01 = column.x; m11 = column.y; m21 = column.z; break;
-            case 2: m02 = column.x; m12 = column.y; m22 = column.z; break;
+            case 0: m00 = _column.x; m10 = _column.y; m20 = _column.z; break;
+            case 1: m01 = _column.x; m11 = _column.y; m21 = _column.z; break;
+            case 2: m02 = _column.x; m12 = _column.y; m22 = _column.z; break;
         }
     }
-    public static readonly Matrix3x3 identity = new Matrix3x3() { m00 = 0, m01 = 0, m02 = 0, m10 = 0, m11 = 0, m12 = 0, m20 = 0, m21 = 0, m22 = 0 };
+    public static readonly Matrix3x3 kIdentity = new Matrix3x3() { m00 = 0, m01 = 0, m02 = 0, m10 = 0, m11 = 0, m12 = 0, m20 = 0, m21 = 0, m22 = 0 };
     public static explicit operator Matrix3x3(Matrix4x4 _srcMatrix) => new Matrix3x3(_srcMatrix.m00, _srcMatrix.m01, _srcMatrix.m02, _srcMatrix.m10, _srcMatrix.m11, _srcMatrix.m12, _srcMatrix.m20, _srcMatrix.m21, _srcMatrix.m22);
+}
+
+[Serializable]
+public struct Matrix3x4     //To be continued
+{
+    public float m00, m01, m02, m03;
+    public float m10, m11, m12, m13;
+    public float m20, m21, m22, m23;
+    public Matrix3x4(float _00, float _01, float _02,float _03,
+        float _10, float _11, float _12, float _13,
+        float _20, float _21, float _22, float _23)
+    { 
+        m00 = _00; m01 = _01; m02 = _02; m03 = _03;
+        m10 = _10; m11 = _11; m12 = _12; m13 = _13;
+        m20 = _20; m21 = _21; m22 = _22; m23 = _23;
+    }
+
+    public static Vector3 operator *(Matrix3x4 _matrix, Vector3 _vector) => _matrix.MultiplyVector(_vector);
+    public Vector3 MultiplyVector(Vector3 _srcVector) => new Vector3(
+        _srcVector.x * m00 + _srcVector.y * m01 + _srcVector.z * m02,
+        _srcVector.x * m10 + _srcVector.y * m11 + _srcVector.z * m12,
+        _srcVector.x * m20 + _srcVector.y * m21 + _srcVector.z * m22);
+
+    public static Vector3 operator *(Matrix3x4 _matrix, Vector4 _vector)
+    {
+        return new Vector4(_vector.x * _matrix.m00 + _vector.y * _matrix.m01 + _vector.z * _matrix.m02 + _vector.w*_matrix.m03,
+                                    _vector.x * _matrix.m10 + _vector.y * _matrix.m11 + _vector.z * _matrix.m12 + _vector.w*_matrix.m13,
+                                    _vector.x * _matrix.m20 + _vector.y * _matrix.m21 + _vector.z * _matrix.m22 + _vector.w*_matrix.m23);    
+    }
+    public Vector3 MultiplyPoint(Vector3 _position) => new Vector3(
+        _position.x * m00 + _position.y * m01 + _position.z * m02 + m03,
+        _position.x * m10 + _position.y * m11 + _position.z * m12 + m13,
+        _position.x * m20 + _position.y * m21 + _position.z * m22 + m23);
+
+    public static Matrix3x4 TS(Vector3 _t, Vector3 _s) => new Matrix3x4(
+        _t.x,0f,0f,_s.x,
+        0f,_t.y,0f,_s.y,
+        0f,0f,_t.z,_s.z
+    );
 }

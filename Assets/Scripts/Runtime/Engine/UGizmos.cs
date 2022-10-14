@@ -139,6 +139,15 @@ public static class Gizmos_Extend
         DrawLine(_qube.vDF,_qube.vTF);
         DrawLine(_qube.vDR,_qube.vTR);
     }
+
+    public static void DrawGizmos(this GEllipsoid _ellipsoid)
+    {
+        //Dude
+        Matrix4x4 preMatrix = Gizmos.matrix;
+        Gizmos.matrix = preMatrix * Matrix4x4.TRS(_ellipsoid.center,Quaternion.identity, _ellipsoid.radius);
+        Gizmos.DrawWireSphere(Vector3.zero,1f);
+        Gizmos.matrix = preMatrix;
+    }
     
     public static GUIStyle kLabelStyle => new GUIStyle(GUI.skin.label) { alignment = TextAnchor.LowerCenter,fontSize=12, fontStyle = FontStyle.Normal};
     public static void DrawString(Vector3 _positionLS,string _text,float _offset=1f)
