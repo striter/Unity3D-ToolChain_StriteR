@@ -96,7 +96,7 @@ public class ClampAttribute:PropertyAttribute
 {
     public readonly float m_Min;
     public readonly float m_Max;
-    public ClampAttribute(float _min=float.MinValue, float _max=float.MaxValue)
+    public ClampAttribute(float _min=float.MinValue, float _max=int.MaxValue)
     {
         m_Min = _min;
         m_Max = _max;

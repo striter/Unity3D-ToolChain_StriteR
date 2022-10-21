@@ -24,7 +24,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 5000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -164,8 +164,8 @@ Material:
     - _DepthDistance: 40
     - _DepthOffset: 0.42
     - _DepthPow: 2
-    - _DepthRange: 2.110911
-    - _DepthRangeEnd: 4.3664913
+    - _DepthRange: 0.01
+    - _DepthRangeEnd: 2.2655804
     - _DepthRefraction: 1
     - _DepthScale: 1
     - _DetailAlbedoMapScale: 1
@@ -200,7 +200,7 @@ Material:
     - _FoamWidth: 0.01
     - _Fresnel: 1
     - _FresnelPow: 1
-    - _FresnelRange: 0.38887385
+    - _FresnelRange: 0.7528252
     - _FresnelRangeEnd: 1
     - _GSF: 6
     - _GlossMapScale: 0

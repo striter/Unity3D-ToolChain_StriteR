@@ -18,7 +18,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Physics/Physics.unity
     guid: 231e8973e87fdb74199ddf25bc6b8079
   - enabled: 0
-    path: Assets/Scenes/Polygrid/PolyGrid.unity
+    path: Assets/Scenes/PCG/ProceduralGeneration.unity
     guid: 2768d856855ead046955578826c5c0d1
   - enabled: 0
     path: Assets/Scenes/Algorithm/MarchingSquare/MarchingSquare.unity

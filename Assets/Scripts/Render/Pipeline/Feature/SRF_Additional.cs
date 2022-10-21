@@ -97,7 +97,7 @@ namespace Rendering.Pipeline
             
             if (_data.cameraData.isSceneViewCamera)
             {
-                if (m_PostProcessingPreview == null || !m_PostProcessingPreview.m_PostProcessPreview)
+                if (kGlobalPostProcesses.Count<=0 || m_PostProcessingPreview == null || !m_PostProcessingPreview.m_PostProcessPreview)
                     return; 
                 EnqueuePostProcesses(_renderer,m_PostProcessingPreview.transform,kGlobalPostProcesses);
                 return;
