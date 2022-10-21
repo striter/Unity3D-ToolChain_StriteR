@@ -81,44 +81,49 @@ namespace Rendering.Pipeline
                 m_Reflection.EnqueuePass(renderer);
         }
 
-        private readonly List<IPostProcessBehaviour> m_OpaqueProcessing = new List<IPostProcessBehaviour>();
-        private readonly List<IPostProcessBehaviour> m_ScreenProcessing = new List<IPostProcessBehaviour>();
-        private readonly List<IPostProcessBehaviour> kGlobalPostProcesses = new List<IPostProcessBehaviour>();
+        private readonly List<IPostProcessBehaviour> m_PostprocessQueue = new List<IPostProcessBehaviour>();
         private SRC_CameraConfig m_PostProcessingPreview;
         void EnqueuePostProcess(ScriptableRenderer _renderer,RenderingData _data,SRC_CameraConfig _override)
         {
-            kGlobalPostProcesses.Clear();
+            m_PostprocessQueue.Clear();
             if(PostProcessGlobalVolume.HasGlobal)
             {
                 var components = PostProcessGlobalVolume.GlobalVolume.GetComponents<IPostProcessBehaviour>();
                 for(int j=0;j<components.Length;j++)
-                    kGlobalPostProcesses.Add(components[j]);
+                    m_PostprocessQueue.Add(components[j]);
             }
             
             if (_data.cameraData.isSceneViewCamera)
             {
-                if (kGlobalPostProcesses.Count<=0 || m_PostProcessingPreview == null || !m_PostProcessingPreview.m_PostProcessPreview)
-                    return; 
-                EnqueuePostProcesses(_renderer,m_PostProcessingPreview.transform,kGlobalPostProcesses);
-                return;
+                if(m_PostProcessingPreview !=null && m_PostProcessingPreview.m_PostProcessPreview)
+                    m_PostprocessQueue.AddRange(m_PostProcessingPreview.GetComponentsInChildren<IPostProcessBehaviour>());
+            }
+            else
+            {
+                if (_data.postProcessingEnabled && _data.cameraData.postProcessEnabled)
+                {
+                    if (_override != null && _override.m_PostProcessPreview)
+                        m_PostProcessingPreview = _override;
+                    m_PostprocessQueue.AddRange(_data.cameraData.camera.GetComponentsInChildren<IPostProcessBehaviour>());
+                }
             }
             
-            if (_data.postProcessingEnabled && _data.cameraData.postProcessEnabled)
-            {
-                EnqueuePostProcesses(_renderer, _data.cameraData.camera.transform,kGlobalPostProcesses);
-                if (_override != null && _override.m_PostProcessPreview)
-                    m_PostProcessingPreview = _override;
-            }
+            if (m_PostprocessQueue.Count<=0)
+                return; 
+            EnqueuePostProcesses(_renderer,m_PostprocessQueue);
         }
 
-        void EnqueuePostProcesses(ScriptableRenderer _renderer, Transform _camera,IList<IPostProcessBehaviour> _globals)
+        private readonly List<IPostProcessBehaviour> m_OpaqueProcessing = new List<IPostProcessBehaviour>();
+        private readonly List<IPostProcessBehaviour> m_ScreenProcessing = new List<IPostProcessBehaviour>();
+        void EnqueuePostProcesses(ScriptableRenderer _renderer,IList<IPostProcessBehaviour> _postProcesses)
         {
-            var postProcesses = _camera.GetComponents<IPostProcessBehaviour>();
-            
             m_OpaqueProcessing.Clear();
             m_ScreenProcessing.Clear();
-            Action<IPostProcessBehaviour> EnqueuePostProcess = postProcess =>
+
+            var postProcessCount = _postProcesses.Count;
+            for (int i = 0; i < postProcessCount; i++)
             {
+                var postProcess = _postProcesses[i];
 #if UNITY_EDITOR
                 postProcess.ValidateParameters();
 #endif
@@ -130,16 +135,7 @@ namespace Rendering.Pipeline
                     m_OpaqueProcessing.Add(postProcess);
                 else
                     m_ScreenProcessing.Add(postProcess);
-            };
-
-            var globalPostProcessCount = _globals.Count;
-            for(int i=0;i<globalPostProcessCount;i++)
-                EnqueuePostProcess(_globals[i]);
-                
-            
-            var localPostProcessCount = postProcesses.Length;
-            for (int i = 0; i < localPostProcessCount; i++)
-                EnqueuePostProcess(postProcesses[i]);
+            }
 
             if(m_OpaqueProcessing.Count>0)
                 _renderer.EnqueuePass(m_OpaquePostProcess.Setup(m_OpaqueProcessing));

@@ -38,9 +38,10 @@ namespace PCG
 
         public void Tick(float _deltaTime)
         {
-            var rotation = Quaternion.Euler(m_RotationDamper.Tick(_deltaTime,new Vector3(m_PitchBase + m_PitchZoom, m_YawBase + m_YawZoom, 0)));
-            var position = m_PositionDamper.Tick(_deltaTime,m_RootPosition+ rotation * Vector3.forward * -m_Zoom) ;
-            m_Camera.transform.SetPositionAndRotation(Vector3.Lerp(m_Camera.transform.position, position, _deltaTime * 10f),Quaternion.Slerp(m_Camera.transform.rotation, rotation, _deltaTime * 10f));
+            var desireRotation = new Vector3(m_PitchBase + m_PitchZoom, m_YawBase + m_YawZoom, 0);
+            var position = m_RootPosition + Quaternion.Euler(desireRotation) * Vector3.forward * -m_Zoom;
+            var rotation = Quaternion.Euler(m_RotationDamper.Tick(_deltaTime, desireRotation));
+            m_Camera.transform.SetPositionAndRotation( m_PositionDamper.Tick(_deltaTime,position),rotation);
             m_Camera.fieldOfView = m_Fov + m_FovZoom;
         }
 

@@ -2649,7 +2649,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc33db6f48889fa4c93475f221474771, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_GridData: {fileID: 11400000, guid: 65cee1c676807aa429b303b97d4de549, type: 2}
+  m_GridData: {fileID: 11400000, guid: a6b860261a14d1044bbc5fafd04787cd, type: 2}
   m_ModuleData: {fileID: 11400000, guid: ade94a78d3178014d8f3340555f47bb8, type: 2}
   m_SimplexData: {fileID: 11400000, guid: 5e8b9b81292bda64ab5be57a8578156e, type: 2}
   m_Width: 3
@@ -3989,7 +3989,7 @@ MonoBehaviour:
     poleMatching: 0
   m_RotationDamper:
     mode: 1
-    halfLife: 0.02
+    halfLife: 0.05
     stiffness: 20
     damping: 4
     f: 5
@@ -6284,14 +6284,14 @@ MonoBehaviour:
     m_Bloom: 1
     m_BloomData:
       m_SampleMode: 0
-      m_Threshold: 1
+      m_Threshold: 1.44
       m_LayerMask: 2147483647
       m_Color: {r: 1, g: 1, b: 1, a: 1}
       m_Blur:
-        m_BlurType: 3
-        m_BlurSize: 1.3
-        m_Iteration: 7
-        m_DownSample: 2
+        m_BlurType: 9
+        m_BlurSize: 0.89
+        m_Iteration: 4
+        m_DownSample: 1
         m_Angle: 0
         m_Vector: {x: 0.5, y: 0.5}
       m_BloomDebug: 0

@@ -138,7 +138,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Center: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 1.7636075, g: 2.673141, b: 2.650957, a: 1}
+    - _Color: {r: 1.7154384, g: 1.9622641, b: 1.9622641, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GridColor: {r: 3.263711, g: 2.8813515, b: 1.652339, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
