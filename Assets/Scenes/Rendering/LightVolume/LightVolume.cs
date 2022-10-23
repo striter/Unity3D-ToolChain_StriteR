@@ -40,10 +40,10 @@ namespace ExampleScenes.Rendering.LightVolume
             transforms = new VolumeTransforming[renderers.Length];
             foreach (var (index,renderer) in renderers.LoopIndex())
             {
-                block.SetColor(KShaderProperties.kColor,URandom.RandomColor()*2);
+                block.SetColor(KShaderProperties.kColor,URandom.RandomColor()*1.5f);
                 renderer.SetPropertyBlock(block);
                 var startPosition = renderer.transform.position;
-                var endPosition = renderer.transform.position + URandom.Random2DDirection().ToVector3_XZ()*10f;
+                var endPosition = renderer.transform.position + URandom.Random2DDirection().ToVector3_XZ()*10f+Vector3.down*2;
                 transforms[index] = new VolumeTransforming(startPosition,endPosition,(startPosition+endPosition)+ URandom.Random2DDirection().ToVector3_XZ()*5f,5f+URandom.Random01()*5f);
             }
         }

@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/Depth/GeometryFog"
+﻿Shader "Game/Effects/Depth/LightVolume"
 {
     Properties
     {
@@ -17,9 +17,7 @@
             #pragma vertex vert
             #pragma fragment frag
 
-            #define IGeometryDetection
             #include "Assets/Shaders/Library/Common.hlsl"
-            #include "Assets/Shaders/Library/Geometry.hlsl"
             #include "Assets/Shaders/Library/Lighting.hlsl"
 
             struct a2v
