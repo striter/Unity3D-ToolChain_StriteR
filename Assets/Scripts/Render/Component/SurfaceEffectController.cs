@@ -246,7 +246,7 @@ public class FadeElement:ITransform,IPoolCallback<int>
     }
 
     
-    public FadeElement(Transform _transform,Renderer[] _renderers,MeshFilter[] _filters)
+    public FadeElement(Transform _transform, Renderer[] _renderers, MeshFilter[] _filters)
     {
         Transform = _transform;
         m_Renderers = new FadeMesh[_renderers.Length];
@@ -261,14 +261,15 @@ public class FadeElement:ITransform,IPoolCallback<int>
             element.transform.SetParentAndSyncPositionRotation(_transform);
             var filter = element.AddComponent<MeshFilter>();
             var renderer = element.AddComponent<MeshRenderer>();
-            var mesh = isSkinned?new Mesh(){name = $"{originRenderer.name}(Fade)",hideFlags = HideFlags.HideAndDontSave}:originFilter.sharedMesh;
+            var mesh = isSkinned ? new Mesh() { name = $"{originRenderer.name}(Fade)", hideFlags = HideFlags.HideAndDontSave } : originFilter.sharedMesh;
             filter.sharedMesh = mesh;
-            
-            m_Renderers[i] = new FadeMesh() {
-                mesh =  filter.sharedMesh,
-                isSkinned = true,
+
+            m_Renderers[i] = new FadeMesh()
+            {
+                mesh = filter.sharedMesh,
+                isSkinned = isSkinned,
                 renderer = renderer,
-            };   
+            };
         }
     }
     public void OnPoolDispose()
@@ -283,7 +284,7 @@ public class FadeElement:ITransform,IPoolCallback<int>
         }
     }
 
-    public void Play(EntityEffectAnimation _animation,Vector3 _velocity,Renderer[] _renderers)
+    public void Play(EntityEffectAnimation _animation, Vector3 _velocity, Renderer[] _renderers)
     {
         m_Position = Transform.position;
         m_Rotation = Transform.rotation;
@@ -293,13 +294,12 @@ public class FadeElement:ITransform,IPoolCallback<int>
         {
             var fadeMesh = m_Renderers[i];
             if (fadeMesh.isSkinned)
-            {
                 (_renderers[i] as SkinnedMeshRenderer).BakeMesh(fadeMesh.mesh);
-                fadeMesh.renderer.transform.SetPositionAndRotation(_renderers[i].transform.position,_renderers[i].transform.rotation);
-            }
+            fadeMesh.renderer.transform.SetPositionAndRotation(_renderers[i].transform.position, _renderers[i].transform.rotation);
             fadeMesh.renderer.sharedMaterial = _animation.Clip.material;
         }
     }
+
     
     public bool Tick(float _deltaTime)
     {

@@ -1,0 +1,107 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SField_Grass
+  m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
+  m_ValidKeywords:
+  - _ALPHACLIP
+  - _NDF_COOKTORRANCE
+  - _NORMALMAP
+  - _PBRMAP
+  - _VF_GGX
+  m_InvalidKeywords:
+  - _ALPHATEST_ON
+  - _FOLIAGE
+  - _LIGHTOFF
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _DepthTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 5401a3d8641492a4881c9a030a471ed1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Matcap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalTex:
+        m_Texture: {fileID: 2800000, guid: f90e3449ad3674016962a3aba3d31a06, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PBRTex:
+        m_Texture: {fileID: 2800000, guid: e4262459edff0b046a03fa129f3f54cb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ThicknessMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AlphaClip: 1
+    - _AlphaClipRange: 0.041
+    - _AnisoTropicValue: 1
+    - _Atlas: 0
+    - _AtlasHeight: 0
+    - _AtlasIndex: 0
+    - _AtlasWidth: 0
+    - _BendStrength: 50
+    - _Cull: 2
+    - _DepthBuffer: 0
+    - _DepthBufferScale: 0
+    - _DepthOffset: 0
+    - _DepthScale: 1
+    - _DetailBlendMode: 0
+    - _DstBlend: 0
+    - _Glossiness: 1
+    - _Gradient: 0
+    - _GradientBegin: 0
+    - _GradientWidth: 0
+    - _LightingOff: 1
+    - _LightmapIndex: 0
+    - _LightmapInterpolateIndex: 0
+    - _Metallic: 0
+    - _NDF: 1
+    - _Parallax: 0
+    - _ParallaxCount: 16
+    - _SSSIntensity: 1
+    - _SSSNormalInfluence: 1
+    - _SrcBlend: 1
+    - _VF: 1
+    - _Wiggle: 0
+    - _WiggleDensity: 1
+    - _WiggleStrength: 0.1
+    - _ZTest: 2
+    - _ZWrite: 1
+    m_Colors:
+    - _Color: {r: 1, g: 0.79881865, b: 0.16509432, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
+    - _GradientColor: {r: 1, g: 1, b: 1, a: 1}
+    - _LightmapInterpolateST: {r: 1, g: 1, b: 1, a: 1}
+    - _LightmapST: {r: 1, g: 1, b: 1, a: 1}
+    - _MatCapColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []

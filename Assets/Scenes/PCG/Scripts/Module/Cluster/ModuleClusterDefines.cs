@@ -100,12 +100,6 @@ namespace PCG.Module.Cluster
                                 dstStatus = EClusterStatus.Common;
                         }
                         break;
-                        case EClusterStatus.Base:
-                        {
-                            if (i < 4)
-                                dstStatus = EClusterStatus.Common;
-                        }
-                            break;
                     }
                 }
                 destStatuses[i] = dstStatus;
@@ -138,7 +132,13 @@ namespace PCG.Module.Cluster
                     break;
                 case EClusterStatus.Base:
                 {
-                    valid &= !ECubeFacing.D.FacingCorners().Any(_p => corners[_p]);
+                    if (ECubeFacing.T.FacingCorners().All(_p => !corners[_p])
+                        || ECubeFacing.D.FacingCorners().All(_p => !corners[_p]))
+                        return valid;
+
+                    if (ECubeFacing.D.FacingCorners().Count(_p => corners[_p]) <
+                        ECubeFacing.T.FacingCorners().Count(_p => corners[_p]))
+                        return false;
                 }                
                     break;
                 case EClusterStatus.Foundation:

@@ -74,23 +74,28 @@ namespace PCG.Module.Cluster
             if (moduleIndexes.index >= moduleMeshes.m_Units.Length)
                 throw new Exception($"Invalid Module Mesh Length! {clusterData.name} {_input.status}");
 
+            var orientation = moduleIndexes.orientation;
+            var index = moduleIndexes.index;
+            
             ref var clusterUnitData = ref moduleMeshes.m_Units[moduleIndexes.index];
-            var mixableWriteMask = ((byte)( _input.anchorByte | _input.relationByte)).ToQube().RotateYawCW((4-moduleIndexes.orientation)%4).ToByte();
+            var mixableModuleIndexes = UModuleByte.kByteOrientation[(byte)( _input.anchorByte | _input.relationByte)];
 
             var possibilityIndex = clusterUnitData.m_Possibilities.Length-1;
             for (int i = 0; i < clusterUnitData.m_Possibilities.Length -1; i++)
             {
                 ref var curPossibility = ref clusterUnitData.m_Possibilities[i];
-                if (mixableWriteMask == curPossibility.m_MixableReadMask)
+                var possibilityModuleIndexes = UModuleByte.kByteOrientation[curPossibility.m_MixableReadMask];
+                if ( mixableModuleIndexes._byte == possibilityModuleIndexes._byte)
                 {
                     possibilityIndex = i;
+                    orientation = Mathf.Max(orientation, (mixableModuleIndexes._orientation - possibilityModuleIndexes._orientation ) % 4);
                     break;
                 }
             }
 
             return new ModuleClusterCornerData {
-                index = moduleIndexes.index,
-                orientation = moduleIndexes.orientation,
+                index = index,
+                orientation = orientation,
                 possibility = possibilityIndex,
             };
         }

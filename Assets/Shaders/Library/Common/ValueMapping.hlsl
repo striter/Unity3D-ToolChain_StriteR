@@ -238,3 +238,13 @@ half2 Atlas(half2 _uv,uint2 _wh,int _index)
     half2 tiling=half2( _index%_wh.x,_wh.y-1u- _index/_wh.y);
     return _uv*scale+scale*tiling;
 }
+
+//Random
+half4 hash4(float2 _p)
+{
+    return frac(sin( float4(1.0+dot(_p,float2(37.0,17.0)),
+                            2.0+dot(_p,float2(11.0,47.0)),
+                            3.0+dot(_p,float2(41.0,29.0)),
+                            4.0+dot(_p,float2(23.0,31.0)))*130
+            ));
+}

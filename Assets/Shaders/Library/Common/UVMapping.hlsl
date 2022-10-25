@@ -45,3 +45,36 @@ half4 BiPlanarMapping(TEXTURE2D_PARAM(_tex,_sampler),float3 _position,half3 _nor
     w = pow(w,_sharpness/8.0);
     return (x*w.x+y*w.y)/sum(w);
 }
+
+//&https://iquilezles.org/articles/texturerepetition/
+half4 UnrepeatMapping(TEXTURE2D_PARAM(_tex,_sampler),float2 _uv)
+{
+    float2 iuv = floor(_uv);
+    float2 fuv = frac(_uv);
+
+    half4 ofa = hash4(iuv+float2(0,0));
+    half4 ofb = hash4(iuv+float2(1,0));
+    half4 ofc = hash4(iuv+float2(0,1));
+    half4 ofd = hash4(iuv+float2(1,1));
+
+    float2 dfdx = ddx(_uv);
+    float2 dfdy = ddy(_uv);
+
+    ofa.zw = sign(ofa.zw-0.5);
+    ofb.zw = sign(ofb.zw-0.5);
+    ofc.zw = sign(ofc.zw-0.5);
+    ofd.zw = sign(ofd.zw-0.5);
+
+    float2 uva = _uv*ofa.zw + ofa.xy,ddxa = dfdx*ofa.zw,ddya = dfdy*ofa.zw;
+    float2 uvb = _uv*ofb.zw + ofb.xy,ddxb = dfdx*ofb.zw,ddyb = dfdy*ofb.zw;
+    float2 uvc = _uv*ofc.zw + ofc.xy,ddxc = dfdx*ofc.zw,ddyc = dfdy*ofc.zw;
+    float2 uvd = _uv*ofd.zw + ofd.xy,ddxd = dfdx*ofd.zw,ddyd = dfdy*ofd.zw;
+
+    float2 b = smoothstep(0.25,0.75,fuv);
+    return lerp(
+        lerp(SAMPLE_TEXTURE2D_GRAD(_tex,_sampler,uva,ddxa,ddya),
+            SAMPLE_TEXTURE2D_GRAD(_tex,_sampler,uvb,ddxb,ddyb),b.x),
+        lerp(SAMPLE_TEXTURE2D_GRAD(_tex,_sampler,uvc,ddxc,ddyc),
+            SAMPLE_TEXTURE2D_GRAD(_tex,_sampler,uvd,ddxd,ddyd),b.x),
+            b.y);
+}

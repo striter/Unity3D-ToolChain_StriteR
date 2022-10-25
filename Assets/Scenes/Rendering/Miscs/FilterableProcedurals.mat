@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FilterableProcedurals
-  m_Shader: {fileID: 4800000, guid: 5b43e439993e27f418540c5b162124da, type: 3}
+  m_Shader: {fileID: 4800000, guid: e10b2f8139e2e4941b3cc16604d082f5, type: 3}
   m_ValidKeywords:
   - _FILTER
   - _SHAPE_CHECKER
