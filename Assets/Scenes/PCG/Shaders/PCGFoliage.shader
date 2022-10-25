@@ -1,4 +1,4 @@
-Shader "PCG/Structure"
+Shader "PCG/Foliage"
 {
     Properties
     {
@@ -13,21 +13,23 @@ Shader "PCG/Structure"
 		[Header(Detail Tex)]
 		_EmissionTex("Emission",2D)="white"{}
 		[HDR]_EmissionColor("Emission Color",Color)=(0,0,0,0)
-		
+    	
+		[Header(Flow)]
+        _WindFlowTex("Flow Texture",2D)="white"{}
+        _BendStrength("Strength (Angle)",float)=1
+    	
 		[Header(Render Options)]
         [Enum(UnityEngine.Rendering.BlendMode)]_SrcBlend("Src Blend",int)=1
         [Enum(UnityEngine.Rendering.BlendMode)]_DstBlend("Dst Blend",int)=0
         [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
         [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
         [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
+    	_AlphaCutoff("Cutoff",Range(0,1))=.9
     }
     SubShader
     {
-        Pass
-        {
-			NAME "FORWARD"
-			Tags{"LightMode" = "UniversalForward"}
-			HLSLPROGRAM
+    	HLSLINCLUDE
+
 			#include "Assets/Shaders/Library/Common.hlsl"
 			#include "Assets/Shaders/Library/Lighting.hlsl"
 			#include "PCGInclude.hlsl"
@@ -40,23 +42,67 @@ Shader "PCG/Structure"
 			TEXTURE2D(_EmissionTex);SAMPLER(sampler_EmissionTex);
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
 			TEXTURE2D(_PBRTex);SAMPLER(sampler_PBRTex);
+			TEXTURE2D(_WindFlowTex);SAMPLER(sampler_WindFlowTex);
 			INSTANCING_BUFFER_START
 				INSTANCING_PROP(float4,_MainTex_ST)
 				INSTANCING_PROP(float4, _Color)
 				INSTANCING_PROP(float4,_BlendTex_ST)
 				INSTANCING_PROP(float4,_BlendColor)
 				INSTANCING_PROP(float4,_EmissionColor)
+				INSTANCING_PROP(float,_AlphaCutoff)
+			
+                INSTANCING_PROP(float4,_WindFlowTex_ST)
+			    INSTANCING_PROP(float,_WiggleStrength)
+			    INSTANCING_PROP(float,_WiggleDensity)
+			    INSTANCING_PROP(float,_BendStrength)
 			INSTANCING_BUFFER_END
 			#include "Assets/Shaders/Library/BRDF/BRDFInput.hlsl"
 			#include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
 
+            float3 Wind(float3 positionWS,float windEffect,float _bendStrength)
+            {
+                float4 windParameters=INSTANCE(_WindFlowTex_ST);
+                float2 bendUV= positionWS.xz+_Time.y*windParameters.zw;
+                bendUV*=windParameters.xy;
+                float2 flowSample=SAMPLE_TEXTURE2D_LOD(_WindFlowTex,sampler_WindFlowTex,bendUV,0).rg;
+                float windInput= flowSample.x-flowSample.y;
+            	
+                float3x3 bendRotation=Rotate3x3(_bendStrength*windInput*Deg2Rad,float3(1,0,0));
+                float3 offset=float3(0,windEffect,0);
+
+                float3 bendOffset=mul(bendRotation,offset);
+                bendOffset-=offset;
+
+                #if _WIGGLE
+				    float wiggleDensity=INSTANCE(_WiggleDensity);
+				    float2 wiggleClip=abs((positionWS.xz+_Time.y*windParameters.zw)%wiggleDensity-wiggleDensity*.5f)/wiggleDensity;
+				    float wiggle=wiggleClip.x+wiggleClip.y;
+				    bendOffset.y +=  wiggle*INSTANCE(_WiggleStrength)*windEffect;
+				#endif
+            	
+                return bendOffset;
+            }
 			
+			float3 GetPositionWS(float3 _positionOS,float4 _color)
+			{
+				float3 positionWS = TransformObjectToWorld(_positionOS);
+				return positionWS + Wind(positionWS,_color.r,INSTANCE(_BendStrength));
+			}
 			float3 GetAlbedoOverride(float2 uv,float3 color)
 			{
-				return SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, uv).rgb* color * _Color;
+				float4 sample =SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, uv);
+				clip(sample.a-_AlphaCutoff);
+				return sample.rgb  * _Color;
 			}
-			
+
+			#define GET_POSITION_WS(v,o) GetPositionWS(v.positionOS,v.color)
 			#define GET_ALBEDO(i) GetAlbedoOverride(i.uv,i.color.rgb);
+    	ENDHLSL
+        Pass
+        {
+			NAME "FORWARD"
+			Tags{"LightMode" = "UniversalForward"}
+			HLSLPROGRAM
 			#include "Assets/Shaders/Library/BRDF/BRDFLighting.hlsl"
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			

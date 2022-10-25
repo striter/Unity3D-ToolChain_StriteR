@@ -223,7 +223,7 @@ Material:
     - _ReceiveShadows: 1
     - _ReflectionAmount: 0.51
     - _ReflectionDistort: 1
-    - _ReflectionOffset: -7
+    - _ReflectionOffset: -2.1
     - _RefractionAmount: 0.5
     - _RefractionDistance: 1.48
     - _Rotation: 45

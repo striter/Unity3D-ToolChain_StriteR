@@ -21,14 +21,14 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PropFoliage
-  m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
-  m_ValidKeywords:
+  m_Shader: {fileID: 4800000, guid: a1bbe26be34e12047a26e798030e2505, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords:
   - _DEPTHBUFFER
+  - _FOGOFF
   - _NDF_BECKMANN
   - _PARALLAX
   - _VF_GGX
-  m_InvalidKeywords:
-  - _FOGOFF
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -91,7 +91,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: f90e3449ad3674016962a3aba3d31a06, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -99,7 +99,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PBRTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: e4262459edff0b046a03fa129f3f54cb, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
@@ -118,6 +118,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _WindFlowTex:
+        m_Texture: {fileID: 2800000, guid: 4885e105013f21f488121cc7a80b69af, type: 3}
+        m_Scale: {x: 0.1, y: 0.1}
+        m_Offset: {x: 1, y: 1}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -134,12 +138,13 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaClipRange: 0.966
+    - _AlphaCutoff: 0.9
     - _AnisoTropicValue: 1
     - _Atlas: 0
     - _AtlasHeight: 0
     - _AtlasIndex: 0
     - _AtlasWidth: 0
-    - _BendStrength: 3
+    - _BendStrength: 20
     - _Blend: 0
     - _Brightness: 0
     - _BumpScale: 1

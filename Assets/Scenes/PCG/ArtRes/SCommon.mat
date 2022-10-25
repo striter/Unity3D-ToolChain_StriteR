@@ -115,6 +115,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _WindFlowTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -131,6 +135,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaClipRange: 0.01
+    - _AlphaCutoff: 0.9
     - _AnisoTropicValue: 1
     - _BendStrength: 5.84
     - _Blend: 0

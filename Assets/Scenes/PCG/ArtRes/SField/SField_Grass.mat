@@ -8,17 +8,17 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: SField_Grass
-  m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
-  m_ValidKeywords:
+  m_Shader: {fileID: 4800000, guid: a1bbe26be34e12047a26e798030e2505, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords:
   - _ALPHACLIP
+  - _ALPHATEST_ON
+  - _FOLIAGE
+  - _LIGHTOFF
   - _NDF_COOKTORRANCE
   - _NORMALMAP
   - _PBRMAP
   - _VF_GGX
-  m_InvalidKeywords:
-  - _ALPHATEST_ON
-  - _FOLIAGE
-  - _LIGHTOFF
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -41,7 +41,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 5401a3d8641492a4881c9a030a471ed1, type: 3}
+        m_Texture: {fileID: 2800000, guid: d7fe6b59e44ad6a488d54bc079a0b12d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Matcap:
@@ -60,16 +60,21 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _WindFlowTex:
+        m_Texture: {fileID: 2800000, guid: 4885e105013f21f488121cc7a80b69af, type: 3}
+        m_Scale: {x: 0.01, y: 0.01}
+        m_Offset: {x: 5, y: 1}
     m_Ints: []
     m_Floats:
     - _AlphaClip: 1
     - _AlphaClipRange: 0.041
+    - _AlphaCutoff: 0.031
     - _AnisoTropicValue: 1
     - _Atlas: 0
     - _AtlasHeight: 0
     - _AtlasIndex: 0
     - _AtlasWidth: 0
-    - _BendStrength: 50
+    - _BendStrength: 45
     - _Cull: 2
     - _DepthBuffer: 0
     - _DepthBufferScale: 0
