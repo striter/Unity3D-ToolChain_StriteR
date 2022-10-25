@@ -77,6 +77,7 @@
             #pragma vertex vert
             #pragma fragment frag
 			#pragma multi_compile_instancing
+            #pragma multi_compile_fog
 			#pragma multi_compile_fragment _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
             
@@ -163,6 +164,7 @@
 				float3 viewDirWS:TEXCOORD5;
             	float3 cameraDirWS:TEXCOORD6;
             	float2 uv:TEXCOORD7;
+            	V2F_FOG(8)
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -199,6 +201,7 @@
 				o.viewDirWS=GetViewDirectionWS(o.positionWS);
 				o.cameraDirWS= GetCameraRealDirectionWS (o.positionWS);
             	o.uv=v.uv;
+				FOG_TRANSFER(o);
                 return o;
             }
 
@@ -300,7 +303,8 @@
             		float3 foamColor=indirectDiffuse * INSTANCE(_FoamColor).rgb;
 					riverCol=lerp(riverCol,foamColor,foamParameter*INSTANCE(_FoamColor).a);
             	#endif
-            	
+
+            	FOG_MIX(i,riverCol);
             	return float4(riverCol,1);
             }
             ENDHLSL

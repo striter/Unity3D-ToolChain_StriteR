@@ -1,9 +1,8 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using PCG.Module;
 using PCG.Simplex;
-using Procedural.Hexagon;
 using TTouchTracker;
 using UnityEngine;
 using TDataPersistent;
@@ -11,7 +10,6 @@ using UnityEngine.UI;
 
 namespace PCG
 {
-    using static PCGDefines<int>;
     interface IPolyGridControl
     {
         void Init();
@@ -126,6 +124,11 @@ namespace PCG
             var pinch = touch.CombinedPinch() * _deltaTime * 5f;
             m_Camera.Rotate(drag.y, drag.x);
             m_Camera.Pinch(pinch);
+        }
+
+        private void OnDestroy()
+        {
+            m_Controls.Traversal(p=>p.Dispose());
         }
 #if UNITY_EDITOR
         

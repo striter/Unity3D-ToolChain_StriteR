@@ -11,7 +11,7 @@ namespace PCG.Module.BOIDS
         int BoidsIdentity { get; }
     }
     
-    public class TownBoidsManager : MonoBehaviour
+    public class ModuleBoidsManager : MonoBehaviour
     {
         public FBirdConfig m_BirdConfig;
         public FBOIDS_Bird m_Bird { get; private set; }

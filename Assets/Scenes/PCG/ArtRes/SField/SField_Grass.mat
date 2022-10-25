@@ -98,7 +98,7 @@ Material:
     - _ZTest: 2
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 1, g: 0.79881865, b: 0.16509432, a: 1}
+    - _Color: {r: 1, g: 0.90220386, b: 0.29874206, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _GradientColor: {r: 1, g: 1, b: 1, a: 1}
     - _LightmapInterpolateST: {r: 1, g: 1, b: 1, a: 1}
