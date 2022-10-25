@@ -88,7 +88,7 @@ namespace PCG.Module.Cluster
                 if ( mixableModuleIndexes._byte == possibilityModuleIndexes._byte)
                 {
                     possibilityIndex = i;
-                    orientation = Mathf.Max(orientation, (mixableModuleIndexes._orientation - possibilityModuleIndexes._orientation ) % 4);
+                    orientation = orientation==0?  (mixableModuleIndexes._orientation - possibilityModuleIndexes._orientation ) :orientation;
                     break;
                 }
             }
