@@ -328,6 +328,8 @@ public static class URender
         bl = startPos - toRight - toTop;
         br = startPos + toRight - toTop;
     }
+    
+    public static Vector4 GetTexelSizeParameters(this Texture _texture)=>new Vector4(1f/_texture.width,1f/_texture.height,_texture.width,_texture.height);
 }
 
 public static class UBoundsChecker

@@ -55,9 +55,13 @@ half3 BRDFLighting(BRDFSurface surface,BRDFLight light)
 
 half3 BRDFLighting(BRDFSurface surface, Light light)
 {
-    BRDFLightInput input=BRDFLightInput_Ctor(surface,light.direction,light.color,light.shadowAttenuation,light.distanceAttenuation);
-    BRDFLight brdfLight=BRDFLight_Ctor(surface,input);
-    return BRDFLighting(surface,brdfLight);
+    #if defined(GET_LIGHTING)
+        return GET_LIGHTING(surface,light);
+    #else
+        BRDFLightInput input=BRDFLightInput_Ctor(surface,light.direction,light.color,light.shadowAttenuation,light.distanceAttenuation);
+        BRDFLight brdfLight=BRDFLight_Ctor(surface,input);
+        return BRDFLighting(surface,brdfLight);
+    #endif
 }
 
 half3 BRDFGlobalIllumination(BRDFSurface surface,half3 indirectDiffuse,half3 indirectSpecular)

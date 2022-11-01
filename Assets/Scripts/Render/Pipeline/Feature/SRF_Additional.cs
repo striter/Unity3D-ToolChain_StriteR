@@ -22,7 +22,7 @@ namespace Rendering.Pipeline
         
         private SRP_AdditionalParameters m_AdditionalParameters;
         private SRP_NormalTexture m_ScreenSpaceNormal;
-        private SRP_Mask m_ScreenSpaceMask;
+        private SRP_MaskTexture m_ScreenSpaceMaskTexture;
 
         private SRP_ComponentBasedPostProcess m_OpaquePostProcess;
         private SRP_ComponentBasedPostProcess m_ScreenPostProcess;
@@ -34,7 +34,7 @@ namespace Rendering.Pipeline
                 return;
 
             m_AdditionalParameters = new SRP_AdditionalParameters() { renderPassEvent= RenderPassEvent.BeforeRendering };
-            m_ScreenSpaceMask = new SRP_Mask(){renderPassEvent = RenderPassEvent.BeforeRenderingOpaques};
+            m_ScreenSpaceMaskTexture = new SRP_MaskTexture(){renderPassEvent = RenderPassEvent.BeforeRenderingOpaques};
             m_ScreenSpaceNormal = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox};
             m_Reflection = new SRP_Reflection(m_PlanarReflectionData, RenderPassEvent.AfterRenderingSkybox + 1);
             m_OpaquePostProcess=new SRP_ComponentBasedPostProcess(){renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 2};
@@ -49,7 +49,7 @@ namespace Rendering.Pipeline
             base.Dispose(disposing);
             m_Reflection.Dispose();
             m_ScreenSpaceNormal.Dispose();
-            m_ScreenSpaceMask.Dispose();
+            m_ScreenSpaceMaskTexture.Dispose();
             m_OpaquePostProcess.Dispose();
             m_ScreenPostProcess.Dispose();
             m_AdditionalParameters.Dispose();
@@ -74,7 +74,7 @@ namespace Rendering.Pipeline
             renderer.EnqueuePass(m_AdditionalParameters);
 
             if(m_Mask)
-                renderer.EnqueuePass(m_ScreenSpaceMask.Setup(m_MaskData,renderer));
+                renderer.EnqueuePass(m_ScreenSpaceMaskTexture.Setup(m_MaskData,renderer));
             if (cameraNormalTexture)
                 renderer.EnqueuePass(m_ScreenSpaceNormal);
             if (cameraReflectionTexture)
@@ -129,7 +129,7 @@ namespace Rendering.Pipeline
 #endif
                 
                 if (!postProcess.m_Enabled)
-                    return;
+                    continue;
                 
                 if(postProcess.m_OpaqueProcess)
                     m_OpaqueProcessing.Add(postProcess);

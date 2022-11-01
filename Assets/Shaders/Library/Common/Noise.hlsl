@@ -77,3 +77,12 @@ float randomUnitPerlin(float2 value)
 {
     return random01Perlin(value) * 2 - 1;
 }
+
+half4 hash4(float2 _p)
+{
+    return frac(sin( float4(1.0+dot(_p,float2(37.0,17.0)),
+                            2.0+dot(_p,float2(11.0,47.0)),
+                            3.0+dot(_p,float2(41.0,29.0)),
+                            4.0+dot(_p,float2(23.0,31.0)))*130
+            ));
+}
