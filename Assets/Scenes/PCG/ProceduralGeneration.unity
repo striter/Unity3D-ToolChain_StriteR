@@ -28461,11 +28461,11 @@ MonoBehaviour:
   m_RootPosition: {x: 0, y: 0, z: 0}
   m_PitchBase: 45
   m_YawBase: 145
-  m_Fov: 55
-  m_Zoom: 35
+  m_Fov: 45
+  m_Zoom: 45
   m_ZoomRange:
-    start: 5
-    length: 30
+    start: 10
+    length: 45
   m_PitchZoomDelta: 15
   m_YawZoomDelta: 90
   m_FOVZoomDelta: 5
