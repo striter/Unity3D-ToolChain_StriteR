@@ -12862,6 +12862,89 @@ Transform:
   m_Father: {fileID: 1002298771}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &417015887
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 417015888}
+  - component: {fileID: 417015890}
+  - component: {fileID: 417015889}
+  m_Layer: 0
+  m_Name: _04
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &417015888
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 417015887}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0.5, y: -0.5, z: -0.46}
+  m_LocalScale: {x: 0.1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 700702358}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!23 &417015889
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 417015887}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 9ee107ce29661094996ef7092ac2fae9, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &417015890
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 417015887}
+  m_Mesh: {fileID: -3693079282347322142, guid: 2833c73b15ff86f4bb8af4d2096096eb, type: 3}
 --- !u!1 &421151883
 GameObject:
   m_ObjectHideFlags: 0
@@ -15122,6 +15205,89 @@ MonoBehaviour:
     vTL: 0
     vTF: 0
     vTR: 0
+--- !u!1 &501092983
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 501092984}
+  - component: {fileID: 501092986}
+  - component: {fileID: 501092985}
+  m_Layer: 0
+  m_Name: _06
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &501092984
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 501092983}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.46, y: -0.5, z: 0.5}
+  m_LocalScale: {x: 0.1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 700702358}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &501092985
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 501092983}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 9ee107ce29661094996ef7092ac2fae9, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &501092986
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 501092983}
+  m_Mesh: {fileID: -3693079282347322142, guid: 2833c73b15ff86f4bb8af4d2096096eb, type: 3}
 --- !u!1 &501452288
 GameObject:
   m_ObjectHideFlags: 0
@@ -16223,6 +16389,1309 @@ MonoBehaviour:
   m_SimplexData: {fileID: 11400000, guid: 5e8b9b81292bda64ab5be57a8578156e, type: 2}
   m_Width: 3
   m_Height: 3
+  m_ReadPersistent: 0
+  m_Persistent:
+    m_Modules:
+    - origin:
+        location:
+          value: 3074
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3128
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3120
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3105
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3124
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3150
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3158
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3154
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3058
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3101
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 49
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 47
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3102
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3054
+        height: 0
+      type: 0
+    - origin:
+        location:
+          value: 3104
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 33
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 28
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 25
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3070
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3071
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3073
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3056
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3077
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3082
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3089
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 24
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 23
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 20
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 19
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 18
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3042
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3047
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3140
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3144
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3148
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3106
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3109
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3114
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3118
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3113
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3108
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3138
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3134
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3130
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3139
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3129
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3119
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3149
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3159
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3107
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1528
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1523
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 501
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 502
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3037
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 499
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 500
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 504
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 503
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1522
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1524
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1517
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1525
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1521
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1526
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1527
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1529
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1531
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1532
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1530
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1520
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1516
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1518
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1519
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1625
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1623
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1624
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1628
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1627
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1632
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1626
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1629
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1618
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1622
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1621
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1617
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1523
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 501
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 502
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 1524
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 1525
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 1522
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 1526
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 1529
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 1530
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 1625
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 1626
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 1521
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 1520
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 1519
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 1624
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 1622
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 1517
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 1516
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 1518
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 1623
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 1618
+        height: 1
+      type: 2
+    - origin:
+        location:
+          value: 499
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3037
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 500
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 504
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 1528
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 503
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 1532
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 1527
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 1531
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 1628
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 1627
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 1632
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 1621
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 1629
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 1617
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3105
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 3105
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 18
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 18
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 3140
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 3144
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 3148
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 495
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 494
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3038
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3105
+        height: 3
+      type: 3
+    - origin:
+        location:
+          value: 3108
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 3113
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 49
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 49
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 49
+        height: 3
+      type: 3
+    - origin:
+        location:
+          value: 3118
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 18
+        height: 3
+      type: 3
+    - origin:
+        location:
+          value: 3120
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 3130
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 3129
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 3139
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 3119
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 3149
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 3150
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 3159
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 3106
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 3107
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 3120
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3119
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3105
+        height: 4
+      type: 3
+    - origin:
+        location:
+          value: 49
+        height: 4
+      type: 3
+    - origin:
+        location:
+          value: 3113
+        height: 4
+      type: 3
+    - origin:
+        location:
+          value: 3118
+        height: 4
+      type: 3
+    - origin:
+        location:
+          value: 3150
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3130
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3108
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3107
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3106
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3159
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3109
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3114
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 25
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3139
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3140
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3149
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3129
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3184
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1540
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1539
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3185
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3189
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3183
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3188
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3192
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1535
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1536
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3184
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3188
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3192
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 1536
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 1535
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3183
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3185
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3189
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 1540
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 1539
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 3187
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3186
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3186
+        height: 1
+      type: 0
+    - origin:
+        location:
+          value: 3187
+        height: 1
+      type: 0
+    - origin:
+        location:
+          value: 496
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3108
+        height: 4
+      type: 3
+    - origin:
+        location:
+          value: 3140
+        height: 4
+      type: 3
+    - origin:
+        location:
+          value: 3144
+        height: 4
+      type: 3
+    - origin:
+        location:
+          value: 3148
+        height: 4
+      type: 3
+    - origin:
+        location:
+          value: 18
+        height: 4
+      type: 3
+    - origin:
+        location:
+          value: 345
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 303
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 302
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 335
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 333
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 331
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 332
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 330
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 2295
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 2293
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 301
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 2233
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 334
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 343
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 342
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 341
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 337
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 336
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 2292
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 334
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 341
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 332
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 336
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 341
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 337
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 336
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 340
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 339
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 338
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 344
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 2294
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 307
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 318
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 329
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 270
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 271
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 274
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 328
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 326
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 317
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 316
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 273
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 278
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 289
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 0
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 3
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 8
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 22
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 280
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 281
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 325
+        height: 0
+      type: 4
+    - origin:
+        location:
+          value: 329
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 328
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 329
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 328
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 329
+        height: 3
+      type: 3
+    - origin:
+        location:
+          value: 335
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 335
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 330
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 331
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 330
+        height: 2
+      type: 3
 --- !u!1 &533566960
 GameObject:
   m_ObjectHideFlags: 0
@@ -22000,6 +23469,10 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2874578361888877339}
+  - {fileID: 1827987334}
+  - {fileID: 417015888}
+  - {fileID: 854577356}
+  - {fileID: 501092984}
   m_Father: {fileID: 919207035}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -26988,8 +28461,8 @@ MonoBehaviour:
   m_RootPosition: {x: 0, y: 0, z: 0}
   m_PitchBase: 45
   m_YawBase: 145
-  m_Fov: 30
-  m_Zoom: 10
+  m_Fov: 55
+  m_Zoom: 35
   m_ZoomRange:
     start: 5
     length: 30
@@ -27159,6 +28632,89 @@ MonoBehaviour:
     vTL: 1
     vTF: 1
     vTR: 1
+--- !u!1 &854577355
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 854577356}
+  - component: {fileID: 854577358}
+  - component: {fileID: 854577357}
+  m_Layer: 0
+  m_Name: _05
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &854577356
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854577355}
+  m_LocalRotation: {x: 1, y: 0, z: 0, w: 0}
+  m_LocalPosition: {x: -0.5, y: -0.5, z: -0.5}
+  m_LocalScale: {x: 0.1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 700702358}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 180, y: 0, z: 0}
+--- !u!23 &854577357
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854577355}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 9ee107ce29661094996ef7092ac2fae9, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &854577358
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854577355}
+  m_Mesh: {fileID: -3693079282347322142, guid: 2833c73b15ff86f4bb8af4d2096096eb, type: 3}
 --- !u!1 &860752496
 GameObject:
   m_ObjectHideFlags: 0
@@ -44198,12 +45754,13 @@ MonoBehaviour:
       m_LayerMask: 2147483647
       m_Color: {r: 1, g: 1, b: 1, a: 1}
       m_Blur:
-        m_BlurType: 9
-        m_BlurSize: 0.89
+        m_BlurType: 8
+        m_BlurSize: 0.33
         m_Iteration: 4
         m_DownSample: 1
         m_Angle: 0
         m_Vector: {x: 0.5, y: 0.5}
+        m_Attenuation: 0
       m_BloomDebug: 0
 --- !u!1 &1406816411
 GameObject:
@@ -57391,6 +58948,89 @@ MonoBehaviour:
     vTL: 1
     vTF: 1
     vTR: 0
+--- !u!1 &1827987333
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1827987334}
+  - component: {fileID: 1827987336}
+  - component: {fileID: 1827987335}
+  m_Layer: 0
+  m_Name: _03
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1827987334
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1827987333}
+  m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -0.5, y: -0.5, z: 0.46}
+  m_LocalScale: {x: 0.1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 700702358}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &1827987335
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1827987333}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 9ee107ce29661094996ef7092ac2fae9, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1827987336
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1827987333}
+  m_Mesh: {fileID: -3693079282347322142, guid: 2833c73b15ff86f4bb8af4d2096096eb, type: 3}
 --- !u!1001 &1828870283
 PrefabInstance:
   m_ObjectHideFlags: 0

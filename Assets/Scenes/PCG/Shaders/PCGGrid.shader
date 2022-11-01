@@ -88,7 +88,7 @@ Shader "PCG/Grid"
                 {
                     float param = timeElapsed*1.5;
                     positionWS.y += param*.5;
-                    o.color = float4(1,1,1,saturate(1-param)*(1-v.color.r));
+                    o.color = float4(1,1,1,saturate(1-param)*(1-v.color.r)*_Color.a);
                 }
                 o.uv = TRANSFORM_TEX_INSTANCE(v.uv, _MainTex);
                 o.positionCS = TransformWorldToHClip(positionWS);

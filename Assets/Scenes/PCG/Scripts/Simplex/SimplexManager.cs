@@ -6,6 +6,7 @@ using PCG.Module;
 using PCG.Module.Cluster;
 using TPoolStatic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace PCG.Simplex
 {
@@ -135,7 +136,7 @@ namespace PCG.Simplex
                     }
                 }
             }
-            UMeshFragment.Combine(orientedFragments,m_Mesh,m_Collection.m_MaterialLibrary,out var materials,kOutputVertexData );
+            UMeshFragment.Combine(orientedFragments,m_Mesh,m_Collection.m_MaterialLibrary,out var materials,kOutputVertexData,IndexFormat.UInt32 );
             for(int i=0;i<orientedFragments.Count;i++)
                 TSPool<FMeshFragmentObject>.Recycle(orientedFragments[i] as FMeshFragmentObject);
             TSPoolList<IMeshFragment>.Recycle(orientedFragments);

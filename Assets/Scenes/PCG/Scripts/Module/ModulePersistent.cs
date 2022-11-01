@@ -14,6 +14,7 @@ namespace PCG
         public int type;
     }
     
+    [Serializable]
     public class ModulePersistent:CDataSave<ModulePersistent>
     {
         public override bool DataCrypt() => false;

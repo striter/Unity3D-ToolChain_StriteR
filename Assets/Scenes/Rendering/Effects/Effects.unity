@@ -289,17 +289,17 @@ MonoBehaviour:
     m_Bloom: 1
     m_BloomData:
       m_SampleMode: 0
-      m_Threshold: 1.19
+      m_Threshold: 3
       m_LayerMask: 2147483647
-      m_Color: {r: 2, g: 2, b: 2, a: 1}
+      m_Color: {r: 0.35355338, g: 0.35355338, b: 0.35355338, a: 1}
       m_Blur:
         m_BlurType: 7
-        m_BlurSize: 1.53
+        m_BlurSize: 1.22
         m_Iteration: 6
         m_DownSample: 1
         m_Angle: -0.21
-        m_Vector: {x: 0.67, y: 1}
-        m_Attenuation: 0.9
+        m_Vector: {x: 1, y: 1}
+        m_Attenuation: 0.95
       m_BloomDebug: 0
 --- !u!114 &15725978
 MonoBehaviour:

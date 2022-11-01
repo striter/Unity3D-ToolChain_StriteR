@@ -10,6 +10,7 @@ using UnityEngine.UI;
 
 namespace PCG
 {
+    using static PCGDefines<int>;
     interface IPolyGridControl
     {
         void Init();
@@ -39,7 +40,15 @@ namespace PCG
         private string[] m_ModuleKeys;
         private string m_ModuleSpawning;
         private bool m_SimplexForward;
+
+        [ExtendButton("Copy To Clipboard",nameof(CopyToClipboard),null,
+            "Clipboard To Persistent",nameof(ClipboardToData),null)]
+        public bool m_ReadPersistent = true;
         public ModulePersistent m_Persistent = new ModulePersistent();
+
+        void CopyToClipboard()=> GUIUtility.systemCopyBuffer = TDataConvert.Convert(m_Persistent);
+        void ClipboardToData()=>m_Persistent = TDataConvert.Convert<ModulePersistent>(GUIUtility.systemCopyBuffer);
+        
         private void Awake()
         {
             KPCG.Setup(m_Width,m_Height);
@@ -58,30 +67,29 @@ namespace PCG
             TouchConsole.InitDefaultCommands();
             TouchConsole.Command("Reset",KeyCode.R).Button(Clear);
             TouchConsole.Command("Next Module", KeyCode.Alpha1).Button(NextModule);
-            TouchConsole.Command("Marker",KeyCode.Alpha2).Button(() => { 
-                if(!m_SimplexForward)
-                    m_Simplex.Construct(("Grid",m_Persistent.m_Modules.Select(p=>p.origin).ToList()));
-                else
-                    m_Simplex.Fade();
-                m_SimplexForward = !m_SimplexForward;
-            });
+            TouchConsole.Command("Marker",KeyCode.Alpha2).Button( SwitchGrid);
             NextModule();
-            this.StartCoroutine(LoadPersistent());
+            ReadPersistent();
+            SwitchGrid();
+        }
+
+        void SwitchGrid()
+        {
+            if(!m_SimplexForward)
+                m_Simplex.Construct(("Grid",m_Grid.m_Vertices.Select(p=>new PCGID(p.Key,1)).ToList()));
+            else
+                m_Simplex.Fade();
+            m_SimplexForward = !m_SimplexForward;
+        }
+
+        void ReadPersistent()
+        {
+            if(m_ReadPersistent)
+                m_Persistent.ReadPersistentData();
+            foreach (var cornerData in m_Persistent.m_Modules)
+                m_Module.Construct(cornerData.type,cornerData.origin);
         }
         
-        IEnumerator LoadPersistent()
-        {
-            m_Persistent.ReadPersistentData();
-            if (m_Persistent.m_Modules == null)
-                yield break;
-            
-            m_Persistent.m_Modules.Sort((a,b)=>(a.origin.height-b.origin.height));
-            foreach (var cornerData in m_Persistent.m_Modules)
-            {
-                m_Module.Construct(cornerData.type,cornerData.origin);
-                yield return new WaitForSeconds(.1f);
-            }
-        }
 
         void SavePersistent()
         {

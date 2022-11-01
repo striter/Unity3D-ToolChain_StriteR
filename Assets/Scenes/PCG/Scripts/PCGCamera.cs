@@ -34,6 +34,7 @@ namespace PCG
             m_Camera = transform.GetComponent<Camera>();
             m_PositionDamper.Initialize(m_RootPosition);
             m_RotationDamper.Initialize(new Vector3(m_PitchBase + m_PitchZoom, m_YawBase + m_YawZoom, 0));
+            Tick(1f);
         }
 
         public void Tick(float _deltaTime)
@@ -80,13 +81,6 @@ namespace PCG
             var v = 1 - _screenPos.y / Screen.height;
             var ray = new Ray(cameraPosition, UMath.BilinearLerp(frustumRays.topLeft.direction, frustumRays.topRight.direction, frustumRays.bottomRight.direction, frustumRays.bottomLeft.direction, u, v));
             return ray.GetPoint(UGeometryIntersect.RayPlaneDistance(GPlane.kZeroPlane, ray));
-        }
-        
-        public Vector3 ScreenToPlane(Vector2 pos)
-        {
-            var r = m_Camera.ScreenPointToRay(pos);
-            var p = r.GetPoint(UGeometryIntersect.RayPlaneDistance(GPlane.kZeroPlane, r));
-            return p;
         }
         
         public void Rotate(float _pitch, float _yaw)

@@ -89,7 +89,7 @@ namespace MeshFragment
     public static class UMeshFragment
     {
         private static readonly Dictionary<int,MeshFragmentCombiner> kMeshFragmentHelper = new Dictionary<int, MeshFragmentCombiner>();
-        public static void Combine(IList<IMeshFragment> _fragments,Mesh _mesh,Material[] _materialLibrary,out Material[] _embedMaterials,EVertexData _inputs = (EVertexData)int.MaxValue)
+        public static void Combine(IList<IMeshFragment> _fragments,Mesh _mesh,Material[] _materialLibrary,out Material[] _embedMaterials,EVertexData _inputs = (EVertexData)int.MaxValue,IndexFormat _indexFormat = IndexFormat.UInt16)
         {
             TSPoolList<MeshFragmentCombiner>.Spawn(out var subMeshCombiners);
             var totalVertexCount = 0;
@@ -162,6 +162,7 @@ namespace MeshFragment
             var indexStart = 0;
             var indexOffset = 0;
             _mesh.subMeshCount = subMeshCount;
+            _mesh.indexFormat = _indexFormat;
             for (int i = 0; i < subMeshCount; i++)
             {
                 var subMeshCombiner = subMeshCombiners[i];
