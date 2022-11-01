@@ -30,7 +30,7 @@ half4 EncodeToRGBM(float3 color)
     color*=kInvRGBMRange;
     half m=max(color);
     m=ceil(m*k8Byte)*kInv8Byte;
-    return half4(color*rcp(m),m);
+    return saturate(half4(color*rcp(m),m));
 }
 half3 DecodeFromRGBM(half4 rgbm)
 {

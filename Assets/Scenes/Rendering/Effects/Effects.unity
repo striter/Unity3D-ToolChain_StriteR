@@ -289,16 +289,17 @@ MonoBehaviour:
     m_Bloom: 1
     m_BloomData:
       m_SampleMode: 0
-      m_Threshold: 1.01
+      m_Threshold: 1.19
       m_LayerMask: 2147483647
-      m_Color: {r: 0.084905684, g: 0.084905684, b: 0.084905684, a: 1}
+      m_Color: {r: 2, g: 2, b: 2, a: 1}
       m_Blur:
-        m_BlurType: 9
-        m_BlurSize: 0.61
-        m_Iteration: 5
+        m_BlurType: 7
+        m_BlurSize: 1.53
+        m_Iteration: 6
         m_DownSample: 1
-        m_Angle: 0
-        m_Vector: {x: 0.5, y: 0.5}
+        m_Angle: -0.21
+        m_Vector: {x: 0.67, y: 1}
+        m_Attenuation: 0.9
       m_BloomDebug: 0
 --- !u!114 &15725978
 MonoBehaviour:
@@ -338,7 +339,7 @@ MonoBehaviour:
       m_Width: 1
       m_Strength: 2
       m_Bias: 0.5
-    m_MaskedHighlight: 1
+    m_MaskedHighlight: 0
     m_HighlightData:
       m_Color: {r: 9.385666, g: 7.8407, b: 3.5147967, a: 1}
       m_Blur:
@@ -348,6 +349,7 @@ MonoBehaviour:
         m_DownSample: 2
         m_Angle: 0
         m_Vector: {x: 0.5, y: 0.5}
+        m_Attenuation: 0
     m_DownSample: 1
     m_SSAO: 0
     m_SSAOData:
@@ -1797,7 +1799,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1010847133
 Transform:
   m_ObjectHideFlags: 0
@@ -4999,7 +5001,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2122842187
 Transform:
   m_ObjectHideFlags: 0

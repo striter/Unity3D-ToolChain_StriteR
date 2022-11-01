@@ -11,7 +11,10 @@
 	half _BlurSize;
 	uint _Iteration;
 	half _Angle;
-	half2 _Vector;
+
+    half4 _Vector;
+	half4 _Attenuation;
+    
     #pragma multi_compile_local_fragment _ _DOF _DOF_MASK
     #pragma multi_compile _ _FIRSTBLUR
     #pragma multi_compile _ _FINALBLUR
@@ -165,28 +168,33 @@
 	}
 
 	//Radial
-	half4 fragRadial(v2f_img i):SV_TARGET
+	half4 fragBlinkingRadial(v2f_img i):SV_TARGET
 	{
-		float2 offset=(_Vector-i.uv)*_BlurSize*_MainTex_TexelSize.xy;
-		float4 sum=0;
-		float2 sumOffset=0;
-		for(uint j=0;j<_Iteration;j++)
-		{
-			sum+=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+sumOffset);
-			sumOffset+=offset;
-		}
-		return sum/_Iteration;
+		float2 uvDelta = _MainTex_TexelSize.xy*_Vector.xy;
+		
+		half3 sum = 0;
+		sum += SampleMainBlur(i.uv , 0);
+		sum += SampleMainBlur(i.uv , uvDelta)*_Attenuation.y;
+		sum += SampleMainBlur(i.uv , uvDelta*2)*_Attenuation.z;
+		sum += SampleMainBlur(i.uv , uvDelta*3)*_Attenuation.w;
+
+		float2 uvDelta2 = _MainTex_TexelSize.xy*_Vector.zw;
+		sum += SampleMainBlur(i.uv , 0);
+		sum += SampleMainBlur(i.uv , uvDelta2)*_Attenuation.y;
+		sum += SampleMainBlur(i.uv , uvDelta2*2)*_Attenuation.z;
+		sum += SampleMainBlur(i.uv , uvDelta2*3)*_Attenuation.w;
+
+		return RecordBlurTex(sum*.125);
 	}
-	//Directional
-	half4 fragDirectional(v2f_img i):SV_TARGET
-	{
-		half4 sum=0;
-		int iteration=max(_Iteration/2,1);
-		float2 offset=_Vector*_MainTex_TexelSize.xy*_BlurSize;
-		for(int j=-iteration;j<iteration;j++)
-			sum+=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+j*offset);
-		return sum/(iteration*2);
-	}
+    
+	TEXTURE2D(_Blinking_Vertical);SAMPLER(sampler_Blinking_Vertical);
+	TEXTURE2D(_Blinking_Horizontal);SAMPLER(sampler_Blinking_Horizontal);
+    half4 fragBlinkingCombine(v2f_img i):SV_TARGET
+    {
+    	half3 vertical = SampleBlurTex(TEXTURE2D_ARGS(_Blinking_Vertical,sampler_Blinking_Vertical),i.uv,0);
+    	half3 horizontal = SampleBlurTex(TEXTURE2D_ARGS(_Blinking_Horizontal,sampler_Blinking_Horizontal),i.uv,0);
+    	return RecordBlurTex((vertical+horizontal)*.5);
+    }
     
 	//Dual Filtering
 	half4 fragNextGenDownSample(v2f_img i):SV_TARGET
@@ -322,22 +330,23 @@
 			ENDHLSL
 		}
 
-		pass
-		{
-			Name "Radial"
-			HLSLPROGRAM
-			#pragma vertex vert_img
-			#pragma fragment fragRadial
-			ENDHLSL
-		}
 		Pass
 		{
-			Name "Directional"
+			Name "BLINKING_RADIAL"
 			HLSLPROGRAM
 			#pragma vertex vert_img
-			#pragma fragment fragDirectional
+			#pragma fragment fragBlinkingRadial
 			ENDHLSL
 		}
+    	
+    	Pass
+    	{
+    		Name "BLINKING_COMBINE"
+    		HLSLPROGRAM
+			#pragma vertex vert_img
+    		#pragma fragment fragBlinkingCombine
+    		ENDHLSL
+    	}
     	
     	Pass
 		{

@@ -13,16 +13,15 @@ half3 SampleBlurTex(TEXTURE2D_PARAM(_tex,_sampler),float2 uv,float2 offset)
     float4 color = SAMPLE_TEXTURE2D(_tex,_sampler,uv+offset);
 
     #if defined(_FIRSTBLUR)||!defined(_ENCODE)
-        return color;
+        return color.rgb;
     #endif
-    color.rgb=DecodeFromRGBM(color);
-    return color;
+    return DecodeFromRGBM(color);
 }
 
 half4 RecordBlurTex(float3 _color)
 {
     #if defined(_FINALBLUR)||!defined(_ENCODE)
-    return float4(_color,1);
+        return float4(_color,1);
     #endif
     return EncodeToRGBM(_color.rgb);
 }

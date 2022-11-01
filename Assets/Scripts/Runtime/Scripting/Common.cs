@@ -329,20 +329,20 @@ public struct Matrix2x2
         determinant = m00 * m11 - m01 * m10;
     }
 
-    public (float x,float y) Multiply(float x, float y) => (
+    public readonly (float x,float y) Multiply(float x, float y) => (
         x * m00 + y * m01,
         x * m10 + y * m11
     );
 
-    public (float x,float y) InvMultiply(float x, float y) => (
+    public readonly (float x,float y) InvMultiply(float x, float y) => (
         x * m00 + y * m10,
         x * m01 + y * m11
     );
 
-    public (float x, float y) Multiply((float x, float y) float2) => Multiply(float2.x, float2.y);
-    public (float x, float y) InvMultiply((float x, float y) float2) => InvMultiply(float2.x, float2.y);
+    public readonly (float x, float y) Multiply((float x, float y) float2) => Multiply(float2.x, float2.y);
+    public readonly (float x, float y) InvMultiply((float x, float y) float2) => InvMultiply(float2.x, float2.y);
 
-    public Vector2 MultiplyVector(Vector2 _srcVector)
+    public readonly Vector2 MultiplyVector(Vector2 _srcVector)
     {
         var float2=Multiply(_srcVector.x,_srcVector.y);
         return new Vector2(float2.x, float2.y);
