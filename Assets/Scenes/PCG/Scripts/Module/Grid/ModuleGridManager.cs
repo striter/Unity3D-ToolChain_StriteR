@@ -40,11 +40,6 @@ namespace PCG.Module
             TSPool<ModuleCollapsePropagandaChain>.Clear();
         }
 
-        public IEnumerable<IModuleStructureElement> CollectStructures(IEnumerable<PCGID> _voxels)
-        {
-            yield break;
-        }
-
         public void Tick(float _deltaTime)
         {
         }

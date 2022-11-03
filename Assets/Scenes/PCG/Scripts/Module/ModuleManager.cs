@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using PCG.Module.BOIDS;
 using PCG.Module.Cluster;
 using PCG.Module.Path;
 using PCG.Module.Prop;
@@ -20,11 +21,13 @@ namespace PCG.Module
         private ModuleClusterManager m_ClusterManger;
         private ModulePropManager m_PropManager;
         private ModulePathManager m_PathManager;
+        private ModuleBoidsManager m_BoidsManager;
 
         private IModuleVertexCallback[] m_VertexCallbacks;
         private IModuleQuadCallback[] m_QuadCallbacks;
         private IModuleCornerCallback[] m_CornerCallbacks;
         private IModuleVoxelCallback[] m_VoxelCallbacks;
+        private IModuleStructure[] m_Structures;
         
         private IModuleCollapse[] m_ModuleCollapses;
         private EModuleCollapseStatus m_CollapseStatus;
@@ -42,17 +45,18 @@ namespace PCG.Module
             m_ClusterManger = transform.Find("Cluster").GetComponent<ModuleClusterManager>();
             m_PropManager = transform.Find("Prop").GetComponent<ModulePropManager>();
             m_PathManager = transform.Find("Path").GetComponent<ModulePathManager>();
+            m_BoidsManager = transform.Find("Boids").GetComponent<ModuleBoidsManager>();
             
-            m_Controls = new IModuleControl[] { m_GridManager , m_ClusterManger, m_PropManager , m_PathManager  };
+            m_Controls = new IModuleControl[] { m_GridManager , m_ClusterManger, m_PropManager , m_PathManager,m_BoidsManager  };
             m_VertexCallbacks = m_Controls.CollectAs<IModuleControl, IModuleVertexCallback>().ToArray();
             m_QuadCallbacks = m_Controls.CollectAs<IModuleControl, IModuleQuadCallback>().ToArray();
             m_CornerCallbacks = m_Controls.CollectAs<IModuleControl, IModuleCornerCallback>().ToArray();
             m_VoxelCallbacks = m_Controls.CollectAs<IModuleControl, IModuleVoxelCallback>().ToArray();
+            m_Structures = m_Controls.CollectAs<IModuleControl, IModuleStructure>().ToArray();
             m_ModuleCollapses = m_Controls.CollectAs<IModuleControl, IModuleCollapse>().ToArray();
+            
             m_Controls.Traversal(_p => _p.Init());
         }
-        
-
         
         public ModuleManager Setup(ModuleCollection _collection, GridManager _grid)
         {
@@ -178,7 +182,19 @@ namespace PCG.Module
         private void OnQuadRecycle(SurfaceID _quadID) => m_QuadCallbacks.Traversal(_p => _p.OnDeconstructQuad(_quadID));
         private void OnCornerSpawn(ICorner _corner) => m_CornerCallbacks.Traversal(_p => _p.OnCornerConstruct(_corner));
         private void OnCornerRecycle(PCGID _cornerID) => m_CornerCallbacks.Traversal(_p => _p.OnCornerDeconstruct(_cornerID));
-        private void OnVoxelSpawn(IVoxel _voxel) => m_VoxelCallbacks.Traversal(_p => _p.OnVoxelConstruct(_voxel));
-        private void OnVoxelRecycle(PCGID _voxelID) => m_VoxelCallbacks.Traversal(_p => _p.OnVoxelDeconstruct(_voxelID));
+
+        private void OnVoxelSpawn(IVoxel _voxel)
+        {
+            m_VoxelCallbacks.Traversal(_p => _p.OnVoxelConstruct(_voxel));
+            foreach (var structure in m_Structures)
+                    m_BoidsManager.OnModuleConstruct(structure.CollectStructure(_voxel.Identity));
+        }
+
+        private void OnVoxelRecycle(PCGID _voxelID)
+        {
+            foreach (var structure in m_Structures)
+                m_BoidsManager.OnModuleDeconstruct(structure.CollectStructure(_voxelID));
+            m_VoxelCallbacks.Traversal(_p => _p.OnVoxelDeconstruct(_voxelID));
+        }
     }
 }

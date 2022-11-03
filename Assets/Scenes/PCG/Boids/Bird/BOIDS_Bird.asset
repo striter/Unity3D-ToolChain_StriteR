@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d9e3f7e06ed8bb43a2be9e9da5e78f6, type: 3}
+  m_Name: BOIDS_Bird
+  m_EditorClassIdentifier: 
+  animConfig:
+    material: {fileID: 2100000, guid: 1f03124da9874fe4bb1bdefd9102415c, type: 2}
+    meshes:
+    - {fileID: 4300000, guid: fb96b29435ab3494e9294b528c62e5d8, type: 2}
+    - {fileID: 4300000, guid: ac918e8e4dbc0cc41a63e8de6dddf36a, type: 2}
+    - {fileID: 4300000, guid: cf054426a9eef4d4dba592a1e6c44286, type: 2}
+    - {fileID: 4300000, guid: bbe9575023672da4cac6e83b5e4f6101, type: 2}
+    - {fileID: 4300000, guid: 566bb2e42b4299343942d87b92548a26, type: 2}
+    - {fileID: 4300000, guid: 3d44366a98d145d4bb9a09392f7d5d0b, type: 2}
+    - {fileID: 4300000, guid: 5ef5995c0d58f9349a1bf27314e8b46d, type: 2}
+  startleConfig:
+    speed: 8
+    reaction:
+      start: 0
+      length: 0.05
+    duration:
+      start: 0.5
+      length: 1
+    damping: 1
+    animName: Bird_Flapping
+  flyingConfig:
+    borderOrigin: {x: 0, y: 30, z: 0}
+    borderRange: 100
+    borderDamping: 2
+    speed: 5
+    heightDamping: 0.3
+    tiringDuration:
+      start: 30
+      length: 4
+    flyAnim: Bird_Flying
+    glideAnim: Bird_Gliding
+  hoveringConfig:
+    speed: 5
+    damping: 2
+    distance: 5
+    height: 5
+    anim: Bird_Gliding
+  landConfig:
+    speed: 5
+    anim: Bird_Landing
+  flockingConfig:
+    sqrVisualizeRange: 25
+    sqrSeparationDistance: 16
+    separateDamping: 0.1
+    cohesionDamping: 0.05
+    alignmentDamping: 0.05
+  m_FollowingConfig:
+    cohesionDamping: 0
+    alignmentDamping: 0
+  evadeConfig:
+    evadeDistance: 20
+    evadeDamping: 1
+  perchConfig:
+    idleDuration:
+      start: 2
+      length: 3
+    idleAnim: Bird_Stop_HalfStanding
+    relaxDuration:
+      start: 5
+      length: 3
+    relaxAnim: Bird_Stop_Sitting
+    moveDuration:
+      start: 0.5
+      length: 0.5
+    moveAnim: Bird_Flapping
+    alertDuration:
+      start: 2
+      length: 2
+    alertMovePossibility: 0
+    alertAnim: Bird_Stop_Standing
+    rotateCooldown:
+      start: 2
+      length: 2
+    rotateSpeed:
+      start: 360
+      length: 180
+    rotateDuration:
+      start: 0.1
+      length: 0.1

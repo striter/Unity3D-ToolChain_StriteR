@@ -5,11 +5,12 @@ using UnityEngine;
 namespace PCG.Module.Cluster
 {
     using static PCGDefines<int>;
-    public class ModuleClusterManager : MonoBehaviour, IModuleControl,IModuleCornerCallback,IModuleVoxelCallback,IModuleCollapse
+    public class ModuleClusterManager : MonoBehaviour, IModuleControl,IModuleCornerCallback,IModuleVoxelCallback,IModuleCollapse,IModuleStructure
     {
         public GridManager m_Grid { get; set; }
         private TObjectPoolMono<PCGID, ModuleClusterCorner> m_ClusterCorners;
         private TObjectPoolMono<PCGID, ModuleClusterContainer> m_ClusterContainers;
+        public IModuleStructureElement CollectStructure(PCGID _voxelID)=>m_ClusterContainers[_voxelID];
 
         private readonly List<IEnumerator> m_ClusterIterators = new List<IEnumerator>();
         public void Init()
@@ -25,15 +26,6 @@ namespace PCG.Module.Cluster
         public void Dispose()
         {
         }
-
-        public IEnumerable<IModuleStructureElement> CollectStructures(IEnumerable<PCGID> _voxels)
-        {
-            foreach (var voxel in _voxels)
-            {
-                yield return m_ClusterContainers[voxel];
-            }
-        }
-
         public void Clear()
         {
             m_ClusterContainers.Clear();

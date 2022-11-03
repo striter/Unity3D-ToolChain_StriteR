@@ -13,8 +13,8 @@ namespace ExampleScenes.Algorithm.WaveFunctionCollapse
         public int m_ResolvePerFrame = 1;
         private TObjectPoolMono<int,WaveFunctionContainer>[] m_PossibilitiesPool;
         private TObjectPoolClass<int,WFCTileContainer> m_ObjectPool;
-        private readonly Dictionary<TileID, WFCTileContainer> m_Axis=new();
-        private readonly List<TileID> m_NoneFinalized=new();
+        private readonly Dictionary<TileCoord, WFCTileContainer> m_Axis=new();
+        private readonly List<TileCoord> m_NoneFinalized=new();
         private void Awake()
         {
             m_ObjectPool = new TObjectPoolClass<int,WFCTileContainer>(transform.Find("Grids/Container"));
@@ -62,7 +62,7 @@ namespace ExampleScenes.Algorithm.WaveFunctionCollapse
                 {
                     var possibilities = m_PossibilitiesPool.Select(p => p.Spawn()).ToList();
                     
-                    var tile = new TileID(x, y);
+                    var tile = new TileCoord(x, y);
                     var container =m_ObjectPool.Spawn().Warmup(tile,possibilities,OnSelect) ;
                     container.m_RectTransform.anchoredPosition =  new Vector2(tile.x*102,tile.y*102);
                     transform.gameObject.name = tile.ToString();
@@ -83,13 +83,13 @@ namespace ExampleScenes.Algorithm.WaveFunctionCollapse
         private readonly Dictionary<ETileDirection, WFCTileContainer> m_FillDic = new Dictionary<ETileDirection, WFCTileContainer>();
         private readonly WaveFunctionData[] m_DefaultData = {default};
 
-        void OnSelect(TileID _tileID)
+        void OnSelect(TileCoord _tileID)
         {
             if (m_Select != null)
                 return;
             m_Select = DoSelect(_tileID);
         }
-        IEnumerator DoSelect(TileID _tileID)
+        IEnumerator DoSelect(TileCoord _tileID)
         {
             m_ValidateStack.Push(m_Axis[ _tileID]);
             while (m_ValidateStack.Count>0)
@@ -110,7 +110,7 @@ namespace ExampleScenes.Algorithm.WaveFunctionCollapse
         
         
 
-        Dictionary<ETileDirection, WFCTileContainer> FillNearbyContainers(TileID _src)
+        Dictionary<ETileDirection, WFCTileContainer> FillNearbyContainers(TileCoord _src)
         {
             m_FillDic.Clear();
             foreach (var tuple in  _src.GetNearbyTilesDirection())
@@ -121,17 +121,17 @@ namespace ExampleScenes.Algorithm.WaveFunctionCollapse
         class WFCTileContainer:AWFCTile<ETileDirection,WaveFunctionData>,ITransform,IPoolCallback<int>
         {
             public Transform Transform { get; }
-            public TileID _TileID;
+            public TileCoord _TileID;
             public readonly RectTransform m_RectTransform;
             
-            private Action<TileID> OnTileSelect;
+            private Action<TileCoord> OnTileSelect;
             public WFCTileContainer(Transform _transform) :base()
             {
                 Transform = _transform;
                 m_RectTransform = Transform as RectTransform;
             }
 
-            public WFCTileContainer Warmup(TileID _tileID, List<WaveFunctionContainer> _allPossibilities,Action<TileID> _OnTileSelect)
+            public WFCTileContainer Warmup(TileCoord _tileID, List<WaveFunctionContainer> _allPossibilities,Action<TileCoord> _OnTileSelect)
             {
                 m_Finalized = false;
                 _TileID = _tileID;

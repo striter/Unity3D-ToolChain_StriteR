@@ -37,6 +37,7 @@ public static class UMath
         return dst;
     }
 
+    public static int Pow2(int _src) => _src * _src;
     public static float Pow2(float _src) => _src * _src;
     public static float Square(float _src) => _src * _src;
     public static float Pow3(float _src) => _src * _src* _src;

@@ -18,6 +18,7 @@ namespace ExampleScenes.Rendering.SH
         public ESphericalHarmonicsExport m_SHMode = ESphericalHarmonicsExport.Gradient;
 
         [MFoldout(nameof(m_SHMode),ESphericalHarmonicsExport.Cubemap)]public Cubemap m_Cubemap;
+        [MFoldout(nameof(m_SHMode),ESphericalHarmonicsExport.Cubemap)] [Range(0.1f,3f)]public float m_Intensity = 1f;
         [MFoldout(nameof(m_SHMode),ESphericalHarmonicsExport.Gradient)][ColorUsage(false, true)] public Color m_GradientTop = Color.red;
         [MFoldout(nameof(m_SHMode),ESphericalHarmonicsExport.Gradient)][ColorUsage(false, true)] public Color m_GradientEquator = Color.green;
         [MFoldout(nameof(m_SHMode),ESphericalHarmonicsExport.Gradient)][ColorUsage(false, true)] public Color m_GradientBottom = Color.blue;
@@ -30,7 +31,7 @@ namespace ExampleScenes.Rendering.SH
                         m_GradientBottom, "Test");
                     break;
                 case ESphericalHarmonicsExport.Cubemap:
-                    m_Data = SphericalHarmonicsExport.ExportL2Cubemap(m_SampleCount, m_Cubemap, "test");
+                    m_Data = SphericalHarmonicsExport.ExportL2Cubemap(m_SampleCount, m_Cubemap,m_Intensity, "test");
                     break;
             }
 

@@ -120,7 +120,15 @@ namespace Rendering.GI.SphericalHarmonics
             },_randomSeed);
         }
 
-        public static SHL2Data ExportL2Cubemap(int _sampleCount, Cubemap _cubemap, string _randomSeed)=> ExportData(_sampleCount, _p =>
+        public static SHL2Data ExportL2Cubemap(int _sampleCount, Cubemap _cubemap,float _intensity, string _randomSeed)
+        {
+            
+            if (!_cubemap.isReadable)
+            {
+                Debug.LogError($"{_cubemap.name} is Not Readable",_cubemap);
+                return default;
+            }
+            return ExportData(_sampleCount, _p =>
             {
                 float xAbs = Mathf.Abs(_p.x);
                 float yAbs = Mathf.Abs(_p.y);
@@ -150,7 +158,8 @@ namespace Rendering.GI.SphericalHarmonics
                 int width = _cubemap.width - 1;
                 int x = (int) (width * uv.x);
                 int y = (int) (width * uv.y);
-                return _cubemap.GetPixel((CubemapFace) index, x, y);
+                return _cubemap.GetPixel((CubemapFace) index, x, y)*_intensity;
             },_randomSeed);
         }
+    }
 }

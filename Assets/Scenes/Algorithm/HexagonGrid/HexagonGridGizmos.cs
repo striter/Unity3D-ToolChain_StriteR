@@ -341,7 +341,7 @@ namespace ExampleScenes.Algorithm.HexagonGrid
 #if UNITY_EDITOR
         public static void DrawHexagon(this HexCoord _coord)
         {
-            Vector3[] hexagonList = UHexagon.GetHexagonPoints().Select(p=>p.ToPosition() + _coord.ToWorld()).ToArray();
+            Vector3[] hexagonList = UHexagon.kUnitPoints.Select(p=>p.ToPosition() + _coord.ToWorld()).ToArray();
             Gizmos_Extend.DrawLinesConcat(hexagonList);
         }
 #endif

@@ -9,11 +9,13 @@ namespace PCG.Module.Path
 {
     using static PCGDefines<int>;
 
-    public class ModulePathManager : MonoBehaviour, IModuleControl, IModuleVoxelCallback, IModuleCollapse
+    public class ModulePathManager : MonoBehaviour, IModuleControl, IModuleVoxelCallback, IModuleCollapse , IModuleStructure
     {
         public GridManager m_Grid { get; set; }
 
         private TObjectPoolMono<PCGID, ModulePath> m_Paths;
+        public IModuleStructureElement CollectStructure(PCGID _voxelID)=> m_Paths[_voxelID];
+        
         private readonly List<PCGID> m_VoxelPathPropaganda = new List<PCGID>();
         private readonly Dictionary<PCGID, ModulePathCollapse> m_VoxelPathCollapsing = new Dictionary<PCGID, ModulePathCollapse>();
         private readonly List<IEnumerator> m_PathIterator = new List<IEnumerator>();
@@ -46,11 +48,6 @@ namespace PCG.Module.Path
         public void OnVoxelConstruct(IVoxel _voxel) => m_Paths.Spawn(_voxel.Identity).Init(_voxel);
         public void OnVoxelDeconstruct(PCGID _voxelID) => m_Paths.Recycle(_voxelID);
 
-        public IEnumerable<IModuleStructureElement> CollectStructures(IEnumerable<PCGID> _voxels)
-        {
-            foreach (var voxelID in _voxels)
-                yield return m_Paths[voxelID];
-        }
         
         void ClearPathCollapse()
         {

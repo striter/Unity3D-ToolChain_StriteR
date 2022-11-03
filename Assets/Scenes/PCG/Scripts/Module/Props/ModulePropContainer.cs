@@ -9,7 +9,7 @@ using UnityEngine;
 namespace PCG.Module.Prop
 {
     using static PCGDefines<int>;
-    public class ModulePropContainer : PoolBehaviour<PCGID>,IModuleStructureElement//,IButterflyAttractions
+    public class ModulePropContainer : PoolBehaviour<PCGID>,IModuleStructureElement,IButterflyAttractions
     {
         public IVoxel m_Voxel { get; private set; }
         public float m_Random { get; private set;}

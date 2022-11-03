@@ -232,6 +232,7 @@ MonoBehaviour:
   m_SampleCount: 6059
   m_SHMode: 0
   m_Cubemap: {fileID: 8900000, guid: 1135303bf34e08e49a54f2cef9219111, type: 2}
+  m_Intensity: 1
   m_GradientTop: {r: 1, g: 0, b: 0, a: 1}
   m_GradientEquator: {r: 0, g: 1, b: 0, a: 1}
   m_GradientBottom: {r: 0, g: 0, b: 1, a: 1}

@@ -24,7 +24,7 @@ Shader "Hidden/NormalsFromDepth"
                 return normalize(cross(position2-positionWS,position1-positionWS));
             }
             
-            // half3 ClipSpaceNormalFromDepth(float2 uv)
+            // half3 ClipSpaceNormalFromDepth(float2 uv) 
             // {
             //     half depth = SampleEyeDepth(uv);
             //     half depth1 = SampleEyeDepth(uv + _MainTex_TexelRight);

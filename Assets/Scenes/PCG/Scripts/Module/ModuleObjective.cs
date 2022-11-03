@@ -97,8 +97,11 @@ namespace PCG.Module
         void Clear();
         void Tick(float _deltaTime);
         void Dispose();
-        
-        IEnumerable<IModuleStructureElement> CollectStructures(IEnumerable<PCGID> _voxels);
+    }
+
+    public interface IModuleStructure
+    {
+        IModuleStructureElement CollectStructure(PCGID _voxelID);
     }
 
     

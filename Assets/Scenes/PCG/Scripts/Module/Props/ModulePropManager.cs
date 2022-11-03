@@ -10,11 +10,12 @@ using UnityEngine;
 namespace PCG.Module.Prop
 {
     using static PCGDefines<int>;
-    public class ModulePropManager : MonoBehaviour,IModuleControl,IModuleVoxelCallback,IModuleCollapse
+    public class ModulePropManager : MonoBehaviour,IModuleControl,IModuleVoxelCallback,IModuleCollapse,IModuleStructure
     {
         public GridManager m_Grid { get; set; }
         private TObjectPoolMono<PCGID, ModulePropContainer> m_PropContainers;
         private TObjectPoolClass<int, ModulePropElement> m_PropElements;
+        public IModuleStructureElement CollectStructure(PCGID _voxels)=>m_PropContainers[_voxels];
 
         private readonly List<PCGID> m_PropPropaganda = new List<PCGID>();
         private readonly Dictionary<PCGID, VoxelPropCollapse> m_PropCollapsing = new Dictionary<PCGID, VoxelPropCollapse>();
@@ -61,12 +62,6 @@ namespace PCG.Module.Prop
             TSPoolList<int>.Recycle(recycleList);
         }
 
-
-        public IEnumerable<IModuleStructureElement> CollectStructures(IEnumerable<PCGID> _voxels)
-        {
-            foreach (var voxelID in _voxels)
-                yield return m_PropContainers[voxelID];
-        }
 
         
         public void Propaganda(float _deltaTime, Stack<ModuleCollapsePropagandaChain> _propagandaChains)

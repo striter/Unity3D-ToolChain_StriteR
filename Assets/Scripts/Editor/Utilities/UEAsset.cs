@@ -10,7 +10,6 @@ using UnityEngine.Rendering;
 
 namespace UnityEditor.Extensions
 {
-
     public static class UEAsset
     {
         #region Assets
@@ -24,12 +23,7 @@ namespace UnityEditor.Extensions
             {
                 replacedAsset = previousAsset as T;
                 if (replacedAsset != null)
-                {
-                    if (CopyPropertyTo(asset, previousAsset))
-                        AssetDatabase.SaveAssets();
-                    else
-                        EditorUtility.CopySerialized(asset, previousAsset);
-                }
+                    CopyPropertyTo(asset, previousAsset);
                 else
                     AssetDatabase.DeleteAsset(path);
             }
@@ -52,10 +46,7 @@ namespace UnityEditor.Extensions
             {
                 UnityEngine.Object srcAsset = Array.Find(assets, p => AssetDatabase.IsSubAsset(p)&& p.name == dstAsset.name && p.GetType() == dstAsset.GetType());
                 if (srcAsset)
-                    if (CopyPropertyTo(dstAsset, srcAsset))
-                        AssetDatabase.SaveAssets();
-                    else
-                        EditorUtility.CopySerialized(dstAsset, srcAsset);
+                    CopyPropertyTo(dstAsset, srcAsset);
                 else
                     AssetDatabase.AddObjectToAsset(dstAsset, mainAsset);
             }
@@ -165,27 +156,18 @@ namespace UnityEditor.Extensions
             return FileList;
         }
         #endregion
-        #region Serialize Helper
-        static readonly Dictionary<Type, Action<UnityEngine.Object, UnityEngine.Object>> m_CopyHelper = new Dictionary<Type, Action<UnityEngine.Object, UnityEngine.Object>>() {
-            { typeof(Mesh),(src, dst) => CopyMesh((Mesh)src, (Mesh)dst)},
-            {typeof(AnimationClip),(src,dst)=>CopyAnimationClip((AnimationClip)src,(AnimationClip)dst) }
-        };
 
-        public static bool CopyPropertyTo(UnityEngine.Object _src, UnityEngine.Object _tar)
+        #region Serialize Helper
+
+        public static void CopyPropertyTo(UnityEngine.Object _src, UnityEngine.Object _tar)
         {
             Type type = _src.GetType();
             if (type != _tar.GetType())
-            {
-                Debug.LogError("Assets Type Not Match:" + _src.GetType() + "," + _tar.GetType());
-                return false;
-            }
+                throw new Exception("Assets Type Not Match:" + _src.GetType() + "," + _tar.GetType());
 
-            if (m_CopyHelper.ContainsKey(_src.GetType()))
-            {
-                m_CopyHelper[type](_src, _tar);
-                return true;
-            }
-            return false;
+            if (_tar is Mesh) (_tar as Mesh).Clear();
+            EditorUtility.CopySerialized(_src,_tar);
+            EditorUtility.SetDirty(_tar);
         }
 
         public static void CopyMesh(Mesh _src, Mesh _tar)

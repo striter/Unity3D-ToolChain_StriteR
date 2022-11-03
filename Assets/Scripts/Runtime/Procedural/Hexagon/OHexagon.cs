@@ -143,26 +143,26 @@ namespace Procedural.Hexagon
     }
     
     [Serializable]
-    public struct HexagonCoordO //Offset
+    public struct HexCoordO //Offset
     {
         public int col;
         public int row;
 
-        public HexagonCoordO(int _col, int _row)
+        public HexCoordO(int _col, int _row)
         {
             col = _col;
             row = _row;
         }
 
-        public static bool operator ==(HexagonCoordO _hex1, HexagonCoordO _hex2) =>
+        public static bool operator ==(HexCoordO _hex1, HexCoordO _hex2) =>
             _hex1.col == _hex2.col && _hex1.row == _hex2.row;
 
-        public static bool operator !=(HexagonCoordO _hex1, HexagonCoordO _hex2) =>
+        public static bool operator !=(HexCoordO _hex1, HexCoordO _hex2) =>
             _hex1.col != _hex2.col || _hex1.row != _hex2.row;
 
-        public bool Equals(HexagonCoordO other) => col == other.col && row == other.row;
+        public bool Equals(HexCoordO other) => col == other.col && row == other.row;
 
-        public override bool Equals(object obj) => obj is HexagonCoordO other && Equals(other);
+        public override bool Equals(object obj) => obj is HexCoordO other && Equals(other);
 
         public override int GetHashCode()
         {

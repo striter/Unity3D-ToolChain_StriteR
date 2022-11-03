@@ -17,9 +17,9 @@ namespace Procedural.Hexagon
 
     public interface IHexagonShape
     {
-        Coord[] m_PointOffsets { get; }
-        Matrix2x2 m_AxialToPixel { get; }
-        Matrix2x2 m_PixelToAxial { get; }
+        Coord[] kUnitPoints { get; }
+        Matrix2x2 kAxialToPixel { get; }
+        Matrix2x2 kPixelToAxial { get; }
     }
 
 
@@ -35,9 +35,9 @@ namespace Procedural.Hexagon
             new Coord(-.5f, C_SQRT3Half), new Coord(.5f, C_SQRT3Half)
         };
 
-        public Coord[] m_PointOffsets => C_FlatOffsets;
-        public Matrix2x2 m_AxialToPixel => C_AxialToPixel_Flat;
-        public Matrix2x2 m_PixelToAxial => C_PixelToAxial_Flat;
+        public Coord[] kUnitPoints => C_FlatOffsets;
+        public Matrix2x2 kAxialToPixel => C_AxialToPixel_Flat;
+        public Matrix2x2 kPixelToAxial => C_PixelToAxial_Flat;
     }
 
     internal sealed class UHexagonPointyHelper : IHexagonShape
@@ -52,9 +52,9 @@ namespace Procedural.Hexagon
             new Coord(-C_SQRT3Half, -.5f), new Coord(-C_SQRT3Half, .5f)
         };
 
-        public Coord[] m_PointOffsets => C_PointyOffsets;
-        public Matrix2x2 m_AxialToPixel => C_AxialToPixel_Pointy;
-        public Matrix2x2 m_PixelToAxial => C_PixelToAxial_Pointy;
+        public Coord[] kUnitPoints => C_PointyOffsets;
+        public Matrix2x2 kAxialToPixel => C_AxialToPixel_Pointy;
+        public Matrix2x2 kPixelToAxial => C_PixelToAxial_Pointy;
     }
     #endregion
 
@@ -69,11 +69,11 @@ namespace Procedural.Hexagon
             set => m_Shaper = value ? (IHexagonShape) m_FlatHelper : m_PointHelper;
         }
 
-        public static Coord[] GetHexagonPoints() => m_Shaper.m_PointOffsets;
+        public static Coord[] kUnitPoints => m_Shaper.kUnitPoints;
 
         #region Transformation
 
-        public static Coord ToCoord(this HexagonCoordO _offset, bool _flat)
+        public static Coord ToCoord(this HexCoordO _offset, bool _flat)
         {
             if (_flat)
                 return new Coord(_offset.col * 1.5f, C_SQRT3Half * (_offset.row * 2 + _offset.col % 2));
@@ -81,22 +81,22 @@ namespace Procedural.Hexagon
         }
 
         public static Coord ToCoord(this HexCoord _axial) =>
-            new Coord(m_Shaper.m_AxialToPixel.Multiply(_axial.col, _axial.row));
+            new Coord(m_Shaper.kAxialToPixel.Multiply(_axial.col, _axial.row));
 
         public static HexCoord ToCube(this Coord pPoint) =>
-            new HexCoord(m_Shaper.m_PixelToAxial.Multiply(pPoint));
+            new HexCoord(m_Shaper.kPixelToAxial.Multiply(pPoint));
         #endregion
 
         public static Coord SetCol(this Coord _pPoint, float _col)
         {
-            var axialPixel = new Coord(m_Shaper.m_PixelToAxial.Multiply(_pPoint)).SetY(_col);
-            return new Coord(m_Shaper.m_AxialToPixel.Multiply(axialPixel));
+            var axialPixel = new Coord(m_Shaper.kPixelToAxial.Multiply(_pPoint)).SetY(_col);
+            return new Coord(m_Shaper.kAxialToPixel.Multiply(axialPixel));
         }
 
         public static Coord SetRow(this Coord _pPoint, float _row)
         {
-            var axialPixel = new Coord(m_Shaper.m_PixelToAxial.Multiply(_pPoint)).SetX(_row);
-            return new Coord(m_Shaper.m_AxialToPixel.Multiply(axialPixel));
+            var axialPixel = new Coord(m_Shaper.kPixelToAxial.Multiply(_pPoint)).SetX(_row);
+            return new Coord(m_Shaper.kAxialToPixel.Multiply(axialPixel));
         }
 
         public static bool InRange(this HexCoord _cube, int _radius) => Mathf.Abs(_cube.x) <= _radius &&
@@ -154,15 +154,18 @@ namespace Procedural.Hexagon
             return new HexCoord(2 * _radius + 1, -_radius, -_radius - 1).Rotate(_60degClockWiseCount);
         }
 
-        public static IEnumerable<HexCoord> GetCoordsInRadius(this HexCoord _axial, int _radius)
+        public static IEnumerable<HexCoord> GetCoordsInRadius(this HexCoord _axial, int _radius,bool _rounded =false)
         {
+            int sqrRadius = UMath.Pow2(_radius+1);
             for (int i = -_radius; i <= _radius; i++)
             for (int j = -_radius; j <= _radius; j++)
             {
-                var offset = new HexCoord(i, j);
-                if (!offset.InRange(_radius))
+                var coord = new HexCoord(i, j);
+                if (!coord.InRange(_radius))
                     continue;
-                yield return _axial + offset;
+                if (_rounded && coord.x * coord.x + coord.y * coord.y + coord.z*coord.z >= sqrRadius)
+                    continue;
+                yield return _axial + coord;
             }
         }
 
