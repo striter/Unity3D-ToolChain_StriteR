@@ -56,7 +56,7 @@ namespace Rendering.Pipeline
         public void EditorApplyIndex(int _index) => m_Index = _index;
         private void OnDrawGizmos()
         {
-            if (!gameObject.activeInHierarchy||!enabled)
+            if (!gameObject.activeInHierarchy||!enabled||!m_MeshFilter.sharedMesh)
                 return;
             Gizmos.color = IndexToColor(m_Index);
             Gizmos.matrix = transform.localToWorldMatrix;

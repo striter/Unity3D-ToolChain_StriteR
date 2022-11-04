@@ -179,7 +179,7 @@ namespace PCG
                     radHelper.Add((i, UMath.GetRadClockWise(Vector2.up, srcCoords[i] - m_CenterWS)));
                 radHelper.Sort((a, b) => a.rad > b.rad ? 1 : -1);
 
-                m_Orientation = radHelper[0].rad * UMath.kDeg2Rad;
+                m_Orientation = radHelper[0].rad * KMath.kDeg2Rad;
 
                 m_Hex = new Quad<SurfaceID>(_hexQuad[radHelper[0].index], _hexQuad[radHelper[1].index], _hexQuad[radHelper[2].index], _hexQuad[radHelper[3].index]);
                 m_Vertices = m_Hex.Convert(p => _vertices[p]);

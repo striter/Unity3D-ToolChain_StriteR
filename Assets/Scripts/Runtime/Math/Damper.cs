@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using static UMath;
+using static KMath;
 using static UDamper;
 
 public enum EDamperMode
@@ -170,6 +171,6 @@ public static class UDamper
     public static float HalfLife2Damping(float _halfLife)=> (4.0f * 0.69314718056f) / (_halfLife + eps);
     public static float Damping2HalfLife(float _damping) => (4.0f * 0.69314718056f) / (_damping + eps);
 
-    public static float Frequency2Stiffness(float _frequency) => Square(kPIM2*_frequency);
-    public static float Stiffness2Frequency(float _stiffness) => Mathf.Sqrt(_stiffness) / kPIM2;
+    public static float Frequency2Stiffness(float _frequency) => Square(kPI2*_frequency);
+    public static float Stiffness2Frequency(float _stiffness) => Mathf.Sqrt(_stiffness) / kPI2;
 }

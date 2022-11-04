@@ -328,7 +328,7 @@ namespace UnityEditor.Extensions
         }
         void RecalculateBounds()
         {
-            m_ModifingMesh.bounds = UBoundsChecker.GetBounds(m_Verticies);
+            m_ModifingMesh.bounds = UBounds.GetBounds(m_Verticies);
         }
         void SelectVectorData(EVertexData _data)
         {

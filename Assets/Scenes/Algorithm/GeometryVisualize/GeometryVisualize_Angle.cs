@@ -25,7 +25,7 @@ namespace ExampleScenes.Algorithm.Geometry
             Gizmos.DrawLine(Vector3.zero,m_Position);
 
             var rad = UMath.GetRadClockWise(Vector2.up,new Vector2(m_Position.x,m_Position.z));
-            Gizmos_Extend.DrawString( Vector3.zero,(UMath.kRad2Deg*rad).ToString());
+            Gizmos_Extend.DrawString( Vector3.zero,(KMath.kRad2Deg*rad).ToString());
         }
     }
     #endif

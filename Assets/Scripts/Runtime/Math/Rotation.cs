@@ -1,15 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static KMath;
 
 public static class URotation
 {
     public static Quaternion EulerToQuaternion(Vector3 euler) => EulerToQuaternion(euler.x, euler.y, euler.z);
     public static Quaternion EulerToQuaternion(float _radin, float _angleY, float _angleZ)     //Euler Axis XYZ
     {
-        float radinHX = UMath.kDeg2Rad*_radin;
-        float radinHY = UMath.kDeg2Rad*_angleY;
-        float radinHZ = UMath.kDeg2Rad*_angleZ;
+        float radinHX = kDeg2Rad*_radin;
+        float radinHY = kDeg2Rad*_angleY;
+        float radinHZ = kDeg2Rad*_angleZ;
         float sinHX = Mathf.Sin(radinHX); float cosHX = Mathf.Cos(radinHX);
         float sinHY = Mathf.Sin(radinHY); float cosHY = Mathf.Cos(radinHY);
         float sinHZ = Mathf.Sin(radinHZ); float cosHZ = Mathf.Cos(radinHZ);

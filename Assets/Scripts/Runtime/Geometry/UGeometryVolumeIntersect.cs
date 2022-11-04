@@ -263,7 +263,7 @@ namespace Geometry.Voxel
 
             float RDV = Vector3.Dot(_ray.direction, _cone.normal);
             float ODN = Vector3.Dot(offset, _cone.normal);
-            float cosA = Mathf.Cos(UMath.kDeg2Rad * _cone.angle);
+            float cosA = Mathf.Cos(KMath.kDeg2Rad * _cone.angle);
             float sqrCosA = cosA * cosA;
 
             float a = RDV * RDV - sqrCosA;

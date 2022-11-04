@@ -213,7 +213,7 @@ namespace PCG
                     directions[2] = UMath.kRotateCW180.Multiply(offsets[2]);
                     directions[3] = UMath.kRotateCW90.Multiply(offsets[3]);
                     
-                    var average = Coord.Normalize( directions.Sum((a,b)=>a+b))*UMath.kSQRT2*3;
+                    var average = Coord.Normalize( directions.Sum((a,b)=>a+b))*KMath.kSQRT2*3;
                     
                     //Rotate back
                     directions[0] = average - offsets[0];

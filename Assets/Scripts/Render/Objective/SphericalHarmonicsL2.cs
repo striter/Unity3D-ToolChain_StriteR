@@ -48,7 +48,7 @@ namespace Rendering.GI.SphericalHarmonics
 
     public static class SHBasis
     {
-        public static readonly float kL00 = 0.5f * Mathf.Sqrt(1.0f / UMath.kPI); //Constant
+        public static readonly float kL00 = 0.5f * Mathf.Sqrt(1.0f / KMath.kPI); //Constant
 
         //L1
         static readonly float kL1P = Mathf.Sqrt(3f / (4f * Mathf.PI));
@@ -92,7 +92,7 @@ namespace Rendering.GI.SphericalHarmonics
                 data.l24 += color * SHBasis.kL24 * (x * x - y * y);
             }
 
-            float pi4d = 4f * UMath.kPI/_sampleCount;
+            float pi4d = 4f * KMath.kPI/_sampleCount;
             data.l00 = pi4d * data.l00;
             data.l10 = pi4d * data.l10;
             data.l11 = pi4d * data.l11;

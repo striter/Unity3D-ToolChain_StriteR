@@ -31,7 +31,7 @@ namespace PCG
 
         void Setup()
         {
-            UProcedural.InitMatrix(transform.localToWorldMatrix,transform.worldToLocalMatrix, 1f/6f*UMath.kSQRT2);
+            UProcedural.InitMatrix(transform.localToWorldMatrix,transform.worldToLocalMatrix, 1f/6f*KMath.kSQRT2);
             UHexagon.flat = m_Flat;
             UHexagonArea.Init(m_AreaRadius,6,true);
         } 

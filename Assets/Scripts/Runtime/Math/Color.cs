@@ -145,7 +145,7 @@ public static class UColor
     }
     public static Color Palette(Color _a, Color _b, Color _c, Color _d, float _value)
     {
-        return _a + _b * Cos(UMath.kPIM2*(_c*_value+_d));
+        return _a + _b * Cos(KMath.kPI2*(_c*_value+_d));
     }
     public static Color IndexToColor(int _index)
     {

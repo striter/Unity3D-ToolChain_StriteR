@@ -26,7 +26,7 @@ namespace PCG.Module
             transform.localPosition = m_Quad.m_CenterWS.ToPosition();
             transform.localRotation = Quaternion.Euler(0, m_Quad.m_Orientation, 0);
 
-            var worldToLocal = URotation.Rotate2D(-UMath.kDeg2Rad * m_Quad.m_Orientation, true);
+            var worldToLocal = URotation.Rotate2D(-KMath.kDeg2Rad * m_Quad.m_Orientation, true);
             Quad<float> edgeOrientations = default;
             Quad<SurfaceID> nearbyQuads = default;
             for (int i = 0; i < 4; i++)
@@ -37,7 +37,7 @@ namespace PCG.Module
                 nearbyQuads[i] = quad.m_Identity;
                 var edgeDirectionWS =  m_Quad.m_CenterWS - quad.m_CenterWS;
                 var edgeDirectionOS=(Coord)worldToLocal.MultiplyVector(edgeDirectionWS);
-                edgeOrientations[i] = UMath.kRad2Deg * UMath.GetRadClockWise(Vector2.up, edgeDirectionOS);
+                edgeOrientations[i] = KMath.kRad2Deg * UMath.GetRadClockWise(Vector2.up, edgeDirectionOS);
             }
             m_NearbyQuadCW = nearbyQuads;
             m_EdgeDirectionsCW = edgeOrientations;
@@ -47,14 +47,14 @@ namespace PCG.Module
             for (int orientation = 0; orientation < 4; orientation++)
             {
                 var orientedNormalOS = (m_ShapeOS[(orientation+3)%4] + m_ShapeOS[orientation%4])/2;
-                centerOrientations[orientation] = UMath.kRad2Deg*UMath.GetRadClockWise(Vector2.up, orientedNormalOS);     //Forward To Edge
+                centerOrientations[orientation] = KMath.kRad2Deg*UMath.GetRadClockWise(Vector2.up, orientedNormalOS);     //Forward To Edge
             }
             m_EdgeNormalsCW = centerOrientations;
             
             m_ShapeOS.SplitToQuads(false).FillArray(m_QubeQuads);
             m_QubeQuads.Select(_orientedShape => Quad<float>.Convert(_orientedShape, (_orientation,_coord) => {
                     var orientedLeft = _orientedShape[(_orientation+1)%4]-_orientedShape[_orientation];
-                    return UMath.kRad2Deg*UMath.GetRadClockWise(Vector2.left, orientedLeft);
+                    return KMath.kRad2Deg*UMath.GetRadClockWise(Vector2.left, orientedLeft);
                 })
             ).FillArray(m_QubeQuadsOrientation);
 

@@ -42,7 +42,7 @@ public class UIMeshRenderer : MaskableGraphic
         
         bool colorValid = colors.Length > 0;
 
-        var modelSize = UBoundsChecker.GetBounds(m_Mesh.bounds.GetEdges().Select(p => rotation * p)).size; 
+        var modelSize = UBounds.GetBounds(m_Mesh.bounds.GetEdges().Select(p => rotation * p)).size; 
         var rectSize = rectTransform.rect.size;
         var finalSize = Vector3.one;
         

@@ -169,7 +169,7 @@ namespace PCG
             TSPoolList<Vector3>.Spawn(out var vertices);
             TSPoolList<int>.Spawn(out var indices);
             TSPoolList<GQuad>.Spawn(out var cornerQuads);
-            UBoundsChecker.Begin();
+            UBounds.Begin();
             var center = _vertices[_origin.location].m_Coord;
             var srcHeight = _origin.height;
             foreach (var corner in _corners)
@@ -194,7 +194,7 @@ namespace PCG
             _mesh.Clear();
             _mesh.SetVertices(vertices);
             _mesh.SetIndices(indices, MeshTopology.Triangles, 0, false);
-            var output = (center.ToPosition() + KPCG.kCornerHeightVector * srcHeight, UBoundsChecker.GetBounds(vertices));
+            var output = (center.ToPosition() + KPCG.kCornerHeightVector * srcHeight, UBounds.GetBounds(vertices));
             TSPoolList<GQuad>.Recycle(cornerQuads);
             TSPoolList<Vector3>.Recycle(vertices);
             TSPoolList<int>.Recycle(indices);

@@ -412,7 +412,7 @@ namespace PCG.Module
             TSPoolList<Vector3>.Spawn(out var vertices);
             TSPoolList<int>.Spawn(out var indices);
             TSPoolList<GQuad>.Spawn(out var cornerQuads);
-            UBoundsChecker.Begin();
+            UBounds.Begin();
             var center = m_Grid.m_Vertices[_corner.location].m_Coord;
             
             var vertex = m_Grid.m_Vertices[_corner.location];

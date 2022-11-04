@@ -52,7 +52,7 @@ namespace PCG.Module.Prop
             var shapeQuad = m_Voxel.m_Quad.m_ShapeOS;
         
             var orientedLeft = shapeQuad[(orientation+1)%4]-shapeQuad[orientation];
-            var rotateAngle = UMath.kRad2Deg*UMath.GetRadClockWise(Vector2.left, orientedLeft);
+            var rotateAngle = KMath.kRad2Deg*UMath.GetRadClockWise(Vector2.left, orientedLeft);
             var directionRotation = Quaternion.Euler(0f, rotateAngle, 0f);
             foreach (var fragment in pathData.m_MeshFragments)
             {

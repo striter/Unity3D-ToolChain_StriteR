@@ -1,17 +1,24 @@
 ﻿using System;
 using UnityEngine;
+using static KMath;
 
-public static class UMath
+public static class KMath
 {
-    public const float kSQRT2 = 1.4142135623731f;
     public const float kSQRT3 = 1.7320508075689f;
+    public static readonly float kSQRT3Half = kSQRT3 / 2f;
+    public static readonly float kInvSQRT3 = 1f / kSQRT3;
+    
+    public const float kSQRT2 = 1.4142135623731f;
     public const float kPI = 3.141593f;
-    public const float kPIM2 = kPI * 2;
+    public const float kPI2 = kPI * 2;
     public const float kPID2 = 1.5707963267948966f;
     public const float kPID4 = 0.7853981633974483f;
     public const float kDeg2Rad = 0.017453292519943f;//PI / 180
     public const float kRad2Deg = 57.295779513082f ;//180f / PI;
-    
+}
+
+public static class UMath
+{
     public static readonly Matrix2x2 kRotateCW90 = URotation.Rotate2D(90*kDeg2Rad,true);
     public static readonly Matrix2x2 kRotateCW180 = URotation.Rotate2D(180*kDeg2Rad,true);
     public static readonly Matrix2x2 kRotateCW270 = URotation.Rotate2D(270*kDeg2Rad,true);

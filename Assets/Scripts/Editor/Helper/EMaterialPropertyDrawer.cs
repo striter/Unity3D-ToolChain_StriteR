@@ -247,7 +247,7 @@ namespace UnityEditor.Extensions
             prop.floatValue = EditorGUI.Slider(position,label,prop.floatValue, 0f,360f);
             if (EditorGUI.EndChangeCheck())
             {
-                var rotationMatrix = URotation.Rotate2D(prop.floatValue*UMath.kDeg2Rad);
+                var rotationMatrix = URotation.Rotate2D(prop.floatValue*KMath.kDeg2Rad);
                 
                 var matrixProperty = MaterialEditor.GetMaterialProperty(editor.targets, prop.name+"Matrix");
                 matrixProperty.vectorValue = new Vector4(rotationMatrix.m00, rotationMatrix.m10, 

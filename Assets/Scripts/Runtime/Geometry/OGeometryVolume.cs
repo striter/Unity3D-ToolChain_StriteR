@@ -233,7 +233,7 @@ namespace Geometry.Voxel
         public Vector3 normal;
         [Range(0, 90f)] public float angle;
         public GCone(Vector3 _origin, Vector3 _normal, float _angle) { origin = _origin;normal = _normal;angle = _angle; }
-        public float GetRadius(float _height) => _height * Mathf.Tan(angle*UMath.kDeg2Rad);
+        public float GetRadius(float _height) => _height * Mathf.Tan(angle*KMath.kDeg2Rad);
     }
 
     [Serializable]
@@ -276,7 +276,7 @@ namespace Geometry.Voxel
         }
         public GFrustumPlanes GetFrustumPlanes()
         {
-            float an = fov * .5f  * UMath.kDeg2Rad;
+            float an = fov * .5f  * KMath.kDeg2Rad;
             float s = Mathf.Sin(an);
             float c = Mathf.Cos(an);
             float aspectC = c / aspect;

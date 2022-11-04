@@ -6,97 +6,75 @@ using UnityEngine.PlayerLoop;
 
 namespace Procedural.Hexagon
 {
+    using static KMath;
     #region Flat&Pointy
-    using static HexagonConst;
-    public static class HexagonConst
+    public static class KHexagon
     {
-        public static readonly float C_SQRT3 = Mathf.Sqrt(3);
-        public static readonly float C_SQRT3Half = C_SQRT3 / 2f;
-        public static readonly float C_Inv_SQRT3 = 1f / C_SQRT3;
-    }
-
-    public interface IHexagonShape
-    {
-        Coord[] kUnitPoints { get; }
-        Matrix2x2 kAxialToPixel { get; }
-        Matrix2x2 kPixelToAxial { get; }
-    }
-
-
-    internal sealed class UHexagonFlatHelper : IHexagonShape
-    {
-        private static readonly Matrix2x2 C_AxialToPixel_Flat = new Matrix2x2( 1.5f, 0f, C_SQRT3Half, C_SQRT3);
-        private static readonly Matrix2x2 C_PixelToAxial_Flat = new Matrix2x2(2f / 3f, 0, -1f / 3f, C_Inv_SQRT3);
-
-        private static readonly Coord[] C_FlatOffsets =
+        public static readonly Matrix2x2 kFlatAxialToPixel = new Matrix2x2( 1.5f, 0f, kSQRT3Half, kSQRT3);
+        public static readonly Matrix2x2 kFlatPixelToAxial = new Matrix2x2(2f / 3f, 0, -1f / 3f, kInvSQRT3);
+        public static readonly Coord[] kFlatUnitPoints =
         {
-            new Coord(1, 0), new Coord(.5f, -C_SQRT3Half),
-            new Coord(-.5f, -C_SQRT3Half), new Coord(-1, 0),
-            new Coord(-.5f, C_SQRT3Half), new Coord(.5f, C_SQRT3Half)
+            new Coord(1, 0), new Coord(.5f, -kSQRT3Half),
+            new Coord(-.5f, -kSQRT3Half), new Coord(-1, 0),
+            new Coord(-.5f, kSQRT3Half), new Coord(.5f, kSQRT3Half)
         };
 
-        public Coord[] kUnitPoints => C_FlatOffsets;
-        public Matrix2x2 kAxialToPixel => C_AxialToPixel_Flat;
-        public Matrix2x2 kPixelToAxial => C_PixelToAxial_Flat;
-    }
-
-    internal sealed class UHexagonPointyHelper : IHexagonShape
-    {
-        private static readonly Matrix2x2 C_AxialToPixel_Pointy = new Matrix2x2(C_SQRT3, C_SQRT3Half, 0, 1.5f);
-        private static readonly Matrix2x2 C_PixelToAxial_Pointy = new Matrix2x2(C_Inv_SQRT3, -1f / 3f, 0f, 2f / 3f);
-
-        private static readonly Coord[] C_PointyOffsets =
+        public static readonly Matrix2x2 kPointyAxialToPixel = new Matrix2x2(kSQRT3, kSQRT3Half, 0, 1.5f);
+        public static readonly Matrix2x2 kPointyPixelToAxial = new Matrix2x2(kInvSQRT3, -1f / 3f, 0f, 2f / 3f);
+        public static readonly Coord[] kPointyUnitPoints =
         {
-            new Coord(0, 1), new Coord(C_SQRT3Half, .5f),
-            new Coord(C_SQRT3Half, -.5f), new Coord(0, -1),
-            new Coord(-C_SQRT3Half, -.5f), new Coord(-C_SQRT3Half, .5f)
+            new Coord(0, 1), new Coord(kSQRT3Half, .5f),
+            new Coord(kSQRT3Half, -.5f), new Coord(0, -1),
+            new Coord(-kSQRT3Half, -.5f), new Coord(-kSQRT3Half, .5f)
         };
-
-        public Coord[] kUnitPoints => C_PointyOffsets;
-        public Matrix2x2 kAxialToPixel => C_AxialToPixel_Pointy;
-        public Matrix2x2 kPixelToAxial => C_PixelToAxial_Pointy;
     }
     #endregion
 
     public static class UHexagon
     {
-        private static readonly UHexagonFlatHelper m_FlatHelper = new UHexagonFlatHelper();
-        private static readonly UHexagonPointyHelper m_PointHelper = new UHexagonPointyHelper();
-        static IHexagonShape m_Shaper = m_FlatHelper;
-
-        public static bool flat
+        static Matrix2x2 kAxialToPixel;
+        static Matrix2x2 kPixelToAxial;
+        public static Coord[] kUnitPoints;
+        static UHexagon()
         {
-            set => m_Shaper = value ? (IHexagonShape) m_FlatHelper : m_PointHelper;
+            flat = false;
         }
-
-        public static Coord[] kUnitPoints => m_Shaper.kUnitPoints;
-
+        
+        public static bool flat   {
+            set
+            {
+                kUnitPoints = value?KHexagon.kFlatUnitPoints:KHexagon.kPointyUnitPoints;
+                kAxialToPixel =value?KHexagon.kFlatAxialToPixel: KHexagon.kPointyAxialToPixel;
+                kPixelToAxial = value?KHexagon.kFlatPixelToAxial:KHexagon.kPointyPixelToAxial;
+            }
+        } 
+        
         #region Transformation
 
         public static Coord ToCoord(this HexCoordO _offset, bool _flat)
         {
             if (_flat)
-                return new Coord(_offset.col * 1.5f, C_SQRT3Half * (_offset.row * 2 + _offset.col % 2));
-            return new Coord(C_SQRT3Half * (_offset.col * 2 + _offset.row % 2), _offset.row * 1.5f);
+                return new Coord(_offset.col * 1.5f, kSQRT3Half * (_offset.row * 2 + _offset.col % 2));
+            return new Coord(kSQRT3Half * (_offset.col * 2 + _offset.row % 2), _offset.row * 1.5f);
         }
 
         public static Coord ToCoord(this HexCoord _axial) =>
-            new Coord(m_Shaper.kAxialToPixel.Multiply(_axial.col, _axial.row));
+            new Coord(kAxialToPixel.Multiply(_axial.col, _axial.row));
 
-        public static HexCoord ToCube(this Coord pPoint) =>
-            new HexCoord(m_Shaper.kPixelToAxial.Multiply(pPoint));
+        public static HexCoord ToCube(this Coord _pPoint) =>
+            new HexCoord(kPixelToAxial.Multiply(_pPoint));
         #endregion
 
         public static Coord SetCol(this Coord _pPoint, float _col)
         {
-            var axialPixel = new Coord(m_Shaper.kPixelToAxial.Multiply(_pPoint)).SetY(_col);
-            return new Coord(m_Shaper.kAxialToPixel.Multiply(axialPixel));
+            var axialPixel = new Coord(kPixelToAxial.Multiply(_pPoint)).SetY(_col);
+            return new Coord(kAxialToPixel.Multiply(axialPixel));
         }
 
         public static Coord SetRow(this Coord _pPoint, float _row)
         {
-            var axialPixel = new Coord(m_Shaper.kPixelToAxial.Multiply(_pPoint)).SetX(_row);
-            return new Coord(m_Shaper.kAxialToPixel.Multiply(axialPixel));
+            var axialPixel = new Coord(kPixelToAxial.Multiply(_pPoint)).SetX(_row);
+            return new Coord(kAxialToPixel.Multiply(axialPixel));
         }
 
         public static bool InRange(this HexCoord _cube, int _radius) => Mathf.Abs(_cube.x) <= _radius &&
