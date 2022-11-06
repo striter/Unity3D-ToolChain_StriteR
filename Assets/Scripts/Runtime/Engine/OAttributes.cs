@@ -44,6 +44,16 @@ public class MTitleAttribute : PropertyAttribute { }
 public class Readonly:PropertyAttribute{ }
 
 [AttributeUsage(AttributeTargets.Field)]
+public class Rename : PropertyAttribute
+{
+    public string name;
+    public Rename(string _name)
+    {
+        name = _name;
+    }
+}
+
+[AttributeUsage(AttributeTargets.Field)]
 public class IntEnumAttribute : PropertyAttribute
 {
     public readonly int[] m_Values;

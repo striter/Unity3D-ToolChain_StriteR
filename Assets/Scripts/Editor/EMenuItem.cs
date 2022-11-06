@@ -39,7 +39,7 @@ namespace UnityEditor.Extensions
         //BuiltIn Texture Ref:https://unitylist.com/p/5c3/Unity-editor-icons
         //Art
         [MenuItem("Work Flow/Art/Procedural Mesh Generator", false, 301)]
-        static void ShowPlaneGenerator() => EditorWindow.GetWindow(typeof(EProceduralMeshGenerator)).titleContent=new GUIContent("Plane Generator", EditorGUIUtility.IconContent("CustomTool").image);
+        static void ShowPlaneGenerator() => EditorWindow.GetWindow(typeof(EProceduralMeshGenerator)).titleContent=new GUIContent("Procedural Mesh Generator", EditorGUIUtility.IconContent("CustomTool").image);
         [MenuItem("Work Flow/Art/Mesh Smooth Normal Generator", false, 302)]
         static void ShowSmoothNormalGenerator() => EditorWindow.GetWindow(typeof(SmoothNormalGenerator)).titleContent = new GUIContent("Smooth Normal Generator", EditorGUIUtility.IconContent("CustomTool").image);
         [MenuItem("Work Flow/Art/Mesh Editor", false, 303)]

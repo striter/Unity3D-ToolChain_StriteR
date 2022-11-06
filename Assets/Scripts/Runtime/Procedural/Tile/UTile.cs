@@ -20,15 +20,13 @@ namespace Procedural.Tile
         }
 
         public static Coord ToCoord(this TileCoord _coord) => new Coord(){x=_coord.x,y=_coord.y};
+        public static int ToIndex(this TileCoord axis, int width) => axis.x + axis.y * width;
     }
     
     public static partial class UTile       //Deprecated
     {
-        static int AxisDimensionTransformation(int x, int y, int width) => x + y * width;
-
         public static bool InRange<T>(this TileCoord axis, T[,] range) => axis.x >= 0 && axis.x < range.GetLength(0) && axis.y >= 0 && axis.y < range.GetLength(1);
         public static bool InRange<T>(this TileCoord originSize, TileCoord sizeAxis, T[,] range) => InRange<T>(originSize + sizeAxis, range);
-        public static int Get1DAxisIndex(TileCoord axis, int width) => AxisDimensionTransformation(axis.x, axis.y, width);
         public static TileCoord GetAxisByIndex(int index, int width) => new TileCoord(index % width, index / width);
         public static T Get<T>(this T[,] tileArray, TileCoord _begin) where T : class => _begin.InRange(tileArray) ? tileArray[_begin.x, _begin.y] : null;
         public static bool Get<T>(this T[,] tileArray, TileCoord _begin, TileCoord _size, ref List<T> tileList) where T : class

@@ -144,6 +144,19 @@ namespace UnityEditor.Extensions
         }
     }
     
+    [CustomPropertyDrawer(typeof(Rename))]
+    public class RenamePropertyDrawer : SubAttributePropertyDrawer<Rename>
+    {
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            if(!OnGUIAttributePropertyCheck(position,property,out Rename attribute,SerializedPropertyType.Float,SerializedPropertyType.Integer))
+                return;
+            label.text = attribute.name;
+            EditorGUI.PropertyField(position, property, label, true);
+        }
+    }
+
+    
     [CustomPropertyDrawer(typeof(IntEnumAttribute))]
     public class IntEnumPropertyDrawer : SubAttributePropertyDrawer<IntEnumAttribute>
     {

@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 using Procedural.Hexagon;
 using Procedural.Tile;
 using Unity.Burst;
@@ -18,22 +16,21 @@ namespace Procedural
     {
         Hexagon,
         Plane,
+        UVPlane,
     }
     [Serializable]
     public struct ProceduralMeshInput
     {
         public EProceduralMeshType meshType;
-        public float tileSize;
-
         [MFoldout(nameof(meshType),EProceduralMeshType.Hexagon)] public HexagonGridGenerator m_Hexagon;
         [MFoldout(nameof(meshType), EProceduralMeshType.Plane)]  public SquareGridGenerator m_Plane;
-
+        [MFoldout(nameof(meshType), EProceduralMeshType.UVPlane)] public UVPlaneGenerator m_UVPlane;
         public static readonly ProceduralMeshInput kDefault = new ProceduralMeshInput()
         {
             meshType = EProceduralMeshType.Plane,
-            tileSize = 2f,
             m_Hexagon = HexagonGridGenerator.kDefault,
             m_Plane = SquareGridGenerator.kDefault,
+            m_UVPlane = UVPlaneGenerator.kDefault,
         };
 
         public void Output(Mesh _mesh)
@@ -43,12 +40,15 @@ namespace Procedural
             switch (meshType)
             {
                 default: throw new Exception($"Invalid Enum{meshType}");
-                case EProceduralMeshType.Hexagon: {
-                    new ProceduralMeshJob<HexagonGridGenerator>(meshData, m_Hexagon, tileSize).ScheduleParallel(m_Hexagon.jobLength,1,default).Complete();
+                case EProceduralMeshType.Hexagon:{
+                    new ProceduralMeshJob<HexagonGridGenerator>(meshData, m_Hexagon).ScheduleParallel(1,1,default).Complete();
                 } break;
                 case EProceduralMeshType.Plane:  {
-                    new ProceduralMeshJob<SquareGridGenerator>(meshData, m_Plane, tileSize).ScheduleParallel(m_Plane.jobLength,1,default).Complete(); 
+                    new ProceduralMeshJob<SquareGridGenerator>(meshData, m_Plane).ScheduleParallel(1,1,default).Complete(); 
                 } break;
+                case EProceduralMeshType.UVPlane: {
+                    new ProceduralMeshJob<UVPlaneGenerator>(meshData,m_UVPlane).ScheduleParallel(1,1,default).Complete();
+                }break;
             }
 
             _mesh.bounds = meshData.GetSubMesh(0).bounds;
@@ -68,8 +68,7 @@ namespace Procedural
     {
         public int vertexCount { get; }
         public int triangleCount { get;}
-        public int jobLength { get; }
-        void Execute(int _index,NativeArray<Vertex> _vertices, NativeArray<uint3> _triangles,float _tileSize);
+        void Execute(int _index,NativeArray<Vertex> _vertices, NativeArray<uint3> _triangles);
     }
 
     [BurstCompile(FloatPrecision.Standard, FloatMode.Fast, CompileSynchronously = true)]
@@ -77,16 +76,16 @@ namespace Procedural
     { 
         [WriteOnly]private Mesh.MeshData meshData;
         private T generator;
-        private float tileSize;
-        public ProceduralMeshJob(Mesh.MeshData _mesh,T _generator,float _tileSize)
+        public ProceduralMeshJob(Mesh.MeshData _mesh,T _generator)
         {
             meshData = _mesh;
             generator = _generator;
-            tileSize = _tileSize;
         }
-        
-        public void Execute(int _index)
+
+        public void Execute(int _jobIndex)
         {
+            int vertexCount = generator.vertexCount;
+            int indexCount = generator.triangleCount * 3;
             var vertexAttributes = new NativeArray<VertexAttributeDescriptor>(4,Allocator.Temp,NativeArrayOptions.UninitializedMemory);
             vertexAttributes[0] = new VertexAttributeDescriptor(VertexAttribute.Position , VertexAttributeFormat.Float32,3);
             vertexAttributes[1] = new VertexAttributeDescriptor(VertexAttribute.Normal , VertexAttributeFormat.Float32 , 3);
@@ -98,13 +97,10 @@ namespace Procedural
 
             var vertices = meshData.GetVertexData<Vertex>(0);
 
-            int vertexCount = generator.vertexCount;
-            int indexCount = generator.triangleCount * 3;
             meshData.SetIndexBufferParams(indexCount,IndexFormat.UInt32);
             var indices = meshData.GetIndexData<uint>().Reinterpret<uint3>(sizeof(uint));
+            generator.Execute(_jobIndex,vertices,indices);
             
-            generator.Execute(_index,vertices,indices,tileSize);
-
             Vector3 min = Vector3.zero;
             Vector3 max = Vector3.zero;
             for (int i = 0; i < vertexCount; i++)
@@ -114,22 +110,23 @@ namespace Procedural
                 max = Vector3.Max(max, compare);
             }
 
+            
             meshData.subMeshCount = 1;
-            meshData.SetSubMesh(0,new SubMeshDescriptor(0,indexCount){vertexCount = generator.vertexCount,bounds = UBounds.MinMax(min, max)});
+            meshData.SetSubMesh(0,new SubMeshDescriptor(0,indexCount){vertexCount = generator.vertexCount,bounds =UBounds.MinMax(min, max)});
         }
     }
     
     [Serializable]
     public struct HexagonGridGenerator:IProceduralMeshGenerator,ISerializationCallbackReceiver
     {
+        public float tileSize;
         public int radius;
         public bool centered;
         public bool rounded;
-        public static HexagonGridGenerator kDefault = new HexagonGridGenerator() {radius =  25,centered = false,rounded = false}.Ctor();
+        public static HexagonGridGenerator kDefault = new HexagonGridGenerator() {tileSize = 2f,radius =  25,centered = false,rounded = false}.Ctor();
         
         public int vertexCount { get; set; }
         public int triangleCount { get; set; }
-        public int jobLength => 1;
 
         private int vertexCountPerHexagon;
         private int triangleCountPerHexagon;
@@ -147,7 +144,7 @@ namespace Procedural
         public void OnBeforeSerialize(){}
         public void OnAfterDeserialize()=>Ctor();
         
-        public void Execute(int _index,NativeArray<Vertex> _vertices,NativeArray<uint3> _indices,float _tileSize)
+        public void Execute(int _index,NativeArray<Vertex> _vertices,NativeArray<uint3> _indices)
         {
             boundsMin = Vector3.zero;
             boundsMax = Vector3.zero;
@@ -173,7 +170,7 @@ namespace Procedural
                int curVertexIndex = (int)startVertex;
                if (centered)
                {
-                   Vector3 position = new Vector3(center.x, 0f, center.y)*_tileSize;
+                   Vector3 position = new Vector3(center.x, 0f, center.y)*tileSize;
                    _vertices[curVertexIndex++] = new Vertex()
                    {
                        position = new float3(position),
@@ -187,7 +184,7 @@ namespace Procedural
                {
                    var unitPoint = unitPoints[k];
                    var hexCorner = unitPoint + center;
-                   Vector3 position = new Vector3(hexCorner.x, 0f, hexCorner.y)*_tileSize;
+                   Vector3 position = new Vector3(hexCorner.x, 0f, hexCorner.y)*tileSize;
                    Vertex curVertex = new Vertex
                    {
                        position = new float3(position),
@@ -224,6 +221,7 @@ namespace Procedural
     [Serializable]
     public struct SquareGridGenerator : IProceduralMeshGenerator, ISerializationCallbackReceiver
     {
+        public float tileSize;
         public bool m_Disk;
         [MFoldout(nameof(m_Disk),true)]public int radius;
         [MFoldout(nameof(m_Disk),false)]public int width;
@@ -233,7 +231,6 @@ namespace Procedural
         
         public int vertexCount { get; set; }
         public int triangleCount { get; set; }
-        public int jobLength => 1;
         SquareGridGenerator Ctor()
         {
             int squareCount = m_Disk?  UTile.GetCoordsInRadius(TileCoord.kZero,radius).Count() : width*height;
@@ -242,17 +239,17 @@ namespace Procedural
             triangleCount = squareCount * 2;
             return this;
         }
-        public void Execute(int _index, NativeArray<Vertex> _vertices, NativeArray<uint3> _triangles, float _tileSize)
+        public void Execute(int _index, NativeArray<Vertex> _vertices, NativeArray<uint3> _triangles)
         {
             if(m_Disk)
-                PopulateDiskMesh(_vertices,_triangles,_tileSize);
+                PopulateDiskMesh(_vertices,_triangles);
             else
-                PopulateSquareMesh(_vertices,_triangles,_tileSize);
+                PopulateSquareMesh(_vertices,_triangles);
         }
 
-        void PopulateSquareMesh( NativeArray<Vertex> _vertices, NativeArray<uint3> _triangles,float _tileSize)
+        void PopulateSquareMesh( NativeArray<Vertex> _vertices, NativeArray<uint3> _triangles)
         {
-            float3 tileSize = new float3(_tileSize, 0, _tileSize);
+            float3 tileSize3 = new float3(tileSize, 0, tileSize);
             float3 size = new float3(width,0f,height)*tileSize;
             float3 pivotOffset = new float3(size.x*pivot.x,0f,size.z* pivot.y);
             int tileIndex = 0;
@@ -263,25 +260,25 @@ namespace Procedural
                     int startVertex = tileIndex * 4;
                     int startTriangle = tileIndex * 2;
                     _vertices[startVertex] = new Vertex() {
-                        position = new float3(i, 0, j) * tileSize - pivotOffset,
+                        position = new float3(i, 0, j) * tileSize3 - pivotOffset,
                         normal = new float3(0, 1, 0),
                         tangent = new half4( new float4(0f,0f,1f,1f)),
                         texCoord0 = new half2(new float2(0f, 0f)),
                     };
                     _vertices[startVertex+1] = new Vertex() {
-                        position = new float3(i + 1, 0, j)*tileSize-pivotOffset,
+                        position = new float3(i + 1, 0, j)*tileSize3-pivotOffset,
                         normal = new float3(0, 1, 0),
                         tangent = new half4( new float4(0f,0f,1f,1f)),
                         texCoord0 = new half2(new float2(1f, 0f)),
                     };
                     _vertices[startVertex+2] = new Vertex() {
-                        position = new float3(i, 0, j + 1)*tileSize-pivotOffset,
+                        position = new float3(i, 0, j + 1)*tileSize3-pivotOffset,
                         normal = new float3(0, 1, 0),
                         tangent = new half4( new float4(0f,0f,1f,1f)),
                         texCoord0 = new half2(new float2(0f, 1f)),
                     };
                     _vertices[startVertex+3] = new Vertex()  {
-                        position = new float3(i + 1, 0, j + 1)*tileSize-pivotOffset,
+                        position = new float3(i + 1, 0, j + 1)*tileSize3-pivotOffset,
                         normal = new float3(0, 1, 0),
                         tangent = new half4( new float4(0f,0f,1f,1f)),
                         texCoord0 = new half2(new float2(1f, 1f)),
@@ -298,9 +295,9 @@ namespace Procedural
             }
         }
         
-        public void PopulateDiskMesh( NativeArray<Vertex> _vertices, NativeArray<uint3> _triangles,float _tileSize)
+        public void PopulateDiskMesh( NativeArray<Vertex> _vertices, NativeArray<uint3> _triangles)
         {
-            float3 offset = -new float3(_tileSize/2f, 0, _tileSize/2f);
+            float3 offset = -new float3(tileSize/2f, 0, tileSize/2f);
             int tileIndex = 0;
             // foreach (var coord in UTile.GetCoordsInRadius(TileCoord.kZero, radius)) {
             int sqrRadius = UMath.Pow2(radius+1);
@@ -311,7 +308,7 @@ namespace Procedural
                 if (!(UMath.Pow2(Mathf.Abs(coord.x)) + UMath.Pow2(Mathf.Abs(coord.y)) <= sqrRadius))
                     continue;
                 var center = coord.ToCoord();
-                var startPos = new float3(center.x*_tileSize,0f,center.y*_tileSize) + offset;
+                var startPos = new float3(center.x*tileSize,0f,center.y*tileSize) + offset;
                 int startVertex = tileIndex * 4;
                 int startTriangle = tileIndex * 2;
                 _vertices[startVertex] = new Vertex() {
@@ -321,19 +318,19 @@ namespace Procedural
                     texCoord0 = new half2(new float2(0f, 0f)),
                 };
                 _vertices[startVertex+1] = new Vertex() {
-                    position = startPos + new float3(_tileSize, 0, 0),
+                    position = startPos + new float3(tileSize, 0, 0),
                     normal = new float3(0, 1, 0),
                     tangent = new half4( new float4(0f,0f,1f,1f)),
                     texCoord0 = new half2(new float2(1f, 0f)),
                 };
                 _vertices[startVertex+2] = new Vertex() {
-                    position = startPos + new float3(0, 0, _tileSize),
+                    position = startPos + new float3(0, 0, tileSize),
                     normal = new float3(0, 1, 0),
                     tangent = new half4( new float4(0f,0f,1f,1f)),
                     texCoord0 = new half2(new float2(0f, 1f)),
                 };
                 _vertices[startVertex+3] = new Vertex()  {
-                    position = startPos + new float3(_tileSize, 0, _tileSize),
+                    position = startPos + new float3(tileSize, 0, tileSize),
                     normal = new float3(0, 1, 0),
                     tangent = new half4( new float4(0f,0f,1f,1f)),
                     texCoord0 = new half2(new float2(1f, 1f)),
@@ -354,5 +351,45 @@ namespace Procedural
         }
 
         public void OnAfterDeserialize() => Ctor();
+    }
+    
+    [Serializable]
+    public struct UVPlaneGenerator:IProceduralMeshGenerator
+    { 
+         [Clamp(1,500)]public int resolution;
+        public static readonly UVPlaneGenerator kDefault = new UVPlaneGenerator(){resolution = 20};
+        
+        public int vertexCount => UMath.Pow2(resolution + 1);
+        public int triangleCount => resolution * resolution * 2;
+        public void Execute(int _index, NativeArray<Vertex> _vertices, NativeArray<uint3> _triangles)
+        {
+            int ti = 0;
+            float r = resolution;
+            float2 pivotOffset = new float2(.5f,.5f);
+            int vertexWidth = resolution + 1;
+            
+            var vertex = new Vertex();
+            vertex.texCoord0.y = new half();
+            vertex.normal.y = 1;
+            vertex.tangent.xw = new half2(new float2(1f, -1f));
+            for (int j = 0; j <= resolution; j++)
+                for (int i = 0; i <= resolution; i++ )
+                {
+                    var curIndex = new TileCoord(i, j).ToIndex(vertexWidth);
+                    vertex.position.xz = new float2(i/r,j / r )-pivotOffset;
+                    vertex.texCoord0.xy = (half2)new float2( i / r,j / r);
+                    _vertices[curIndex] = vertex;
+                    if ( i < resolution && j < resolution )
+                    {
+                        var iTR = new TileCoord(i + 1, j + 1).ToIndex(vertexWidth);
+                        var iTL = new TileCoord(i, j + 1).ToIndex(vertexWidth);
+                        var iBR = new TileCoord(i + 1, j).ToIndex(vertexWidth);
+                        var iBL = new TileCoord(i , j).ToIndex(vertexWidth);
+                        
+                        _triangles[ti++] =  (uint3)new int3( iTR,iBR,iBL);
+                        _triangles[ti++] = (uint3)new int3(iBL,iTL,iTR);
+                    }
+                }
+        }
     }
 }
