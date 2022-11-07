@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Geometry.Voxel;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Geometry
@@ -702,5 +703,6 @@ namespace Geometry
                 case 5:return ECubeFacing.D;
             }
         }
+        
     }
 }

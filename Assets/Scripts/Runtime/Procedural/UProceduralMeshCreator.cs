@@ -12,11 +12,14 @@ using UnityEngine.Rendering;
 
 namespace Procedural
 {
+    using static UMath;
+    using static KMath;
     public enum EProceduralMeshType
     {
         Hexagon,
         Plane,
-        UVPlane,
+        UVSphere,
+        Cube,
     }
     [Serializable]
     public struct ProceduralMeshInput
@@ -24,13 +27,15 @@ namespace Procedural
         public EProceduralMeshType meshType;
         [MFoldout(nameof(meshType),EProceduralMeshType.Hexagon)] public HexagonGridGenerator m_Hexagon;
         [MFoldout(nameof(meshType), EProceduralMeshType.Plane)]  public SquareGridGenerator m_Plane;
-        [MFoldout(nameof(meshType), EProceduralMeshType.UVPlane)] public UVPlaneGenerator m_UVPlane;
+        [MFoldout(nameof(meshType), EProceduralMeshType.UVSphere)] public UVSphereGenerator m_UVSphere;
+        [MFoldout(nameof(meshType), EProceduralMeshType.Cube)] public CubeGenerator m_Cube;
         public static readonly ProceduralMeshInput kDefault = new ProceduralMeshInput()
         {
             meshType = EProceduralMeshType.Plane,
             m_Hexagon = HexagonGridGenerator.kDefault,
             m_Plane = SquareGridGenerator.kDefault,
-            m_UVPlane = UVPlaneGenerator.kDefault,
+            m_UVSphere = UVSphereGenerator.kDefault,
+            m_Cube = CubeGenerator.kDefault,
         };
 
         public void Output(Mesh _mesh)
@@ -46,9 +51,12 @@ namespace Procedural
                 case EProceduralMeshType.Plane:  {
                     new ProceduralMeshJob<SquareGridGenerator>(meshData, m_Plane).ScheduleParallel(1,1,default).Complete(); 
                 } break;
-                case EProceduralMeshType.UVPlane: {
-                    new ProceduralMeshJob<UVPlaneGenerator>(meshData,m_UVPlane).ScheduleParallel(1,1,default).Complete();
+                case EProceduralMeshType.UVSphere: {
+                    new ProceduralMeshJob<UVSphereGenerator>(meshData,m_UVSphere).ScheduleParallel(1,1,default).Complete();
                 }break;
+                case EProceduralMeshType.Cube: {
+                    new ProceduralMeshJob<CubeGenerator>(meshData,m_Cube).ScheduleParallel(1,1,default).Complete();
+                } break;
             }
 
             _mesh.bounds = meshData.GetSubMesh(0).bounds;
@@ -227,7 +235,7 @@ namespace Procedural
         [MFoldout(nameof(m_Disk),false)]public int width;
         [MFoldout(nameof(m_Disk),false)]public int height;
         [MFoldout(nameof(m_Disk),false)]public Vector2 pivot;
-        public static readonly SquareGridGenerator kDefault = new SquareGridGenerator() {radius=20,width = 10,height = 10,pivot = KVector.kHalf2,m_Disk = false}.Ctor();
+        public static readonly SquareGridGenerator kDefault = new SquareGridGenerator() {tileSize = 2f,radius=5,width = 10,height = 10,pivot = KVector.kHalf2,m_Disk = false}.Ctor();
         
         public int vertexCount { get; set; }
         public int triangleCount { get; set; }
@@ -354,32 +362,40 @@ namespace Procedural
     }
     
     [Serializable]
-    public struct UVPlaneGenerator:IProceduralMeshGenerator
-    { 
-         [Clamp(1,500)]public int resolution;
-        public static readonly UVPlaneGenerator kDefault = new UVPlaneGenerator(){resolution = 20};
-        
-        public int vertexCount => UMath.Pow2(resolution + 1);
-        public int triangleCount => resolution * resolution * 2;
+    public struct UVSphereGenerator:IProceduralMeshGenerator
+    {
+        [Clamp(1,50f)]public float radius;
+        [Clamp(1,500)]public int resolution;
+        public static readonly UVSphereGenerator kDefault = new UVSphereGenerator(){radius=1f,resolution = 20};
+
+        private int resolutionU => 4 * resolution;
+        private int resolutionV => 2 * resolution;
+        public int vertexCount => (resolutionU+1)*(resolutionV+1);
+        public int triangleCount => resolutionU * resolutionV * 2;
         public void Execute(int _index, NativeArray<Vertex> _vertices, NativeArray<uint3> _triangles)
         {
             int ti = 0;
-            float r = resolution;
-            float2 pivotOffset = new float2(.5f,.5f);
-            int vertexWidth = resolution + 1;
+            int vertexWidth = resolutionU + 1;
             
             var vertex = new Vertex();
-            vertex.texCoord0.y = new half();
-            vertex.normal.y = 1;
-            vertex.tangent.xw = new half2(new float2(1f, -1f));
-            for (int j = 0; j <= resolution; j++)
-                for (int i = 0; i <= resolution; i++ )
+            vertex.tangent.w = new half(-1);
+            for (int j = 0; j <= resolutionV; j++)
+                for (int i = 0; i <= resolutionU; i++ )
                 {
                     var curIndex = new TileCoord(i, j).ToIndex(vertexWidth);
-                    vertex.position.xz = new float2(i/r,j / r )-pivotOffset;
-                    vertex.texCoord0.xy = (half2)new float2( i / r,j / r);
+                    float2 circle = new float2( i / (float)resolutionU,j / (float)resolutionV);
+                    float radius = Sin(circle.y * kPI);
+                    math.sincos(kPI2*circle.x,out vertex.position.z,out vertex.position.x);
+                    vertex.position.xz *= radius;
+                    vertex.position.y = -Cos(kPI*circle.y) ;
+                    circle.x = (i - .5f) / resolutionU;
+                    vertex.texCoord0.xy = (half2)circle;
+                    math.sincos(kPI2*circle.x,out var tangentZ,out var tangentX);
+                    vertex.tangent.xz = new half2(new float2(tangentX,tangentZ));
+                    vertex.normal = vertex.position.xyz;
+                    vertex.position *= this.radius;
                     _vertices[curIndex] = vertex;
-                    if ( i < resolution && j < resolution )
+                    if ( i < resolutionU && j < resolutionV )
                     {
                         var iTR = new TileCoord(i + 1, j + 1).ToIndex(vertexWidth);
                         var iTL = new TileCoord(i, j + 1).ToIndex(vertexWidth);
@@ -390,6 +406,120 @@ namespace Procedural
                         _triangles[ti++] = (uint3)new int3(iBL,iTL,iTR);
                     }
                 }
+        }
+    }
+
+    [Serializable]
+    public struct CubeGenerator : IProceduralMeshGenerator
+    {
+        [Clamp(1,500)]public int resolution;
+        public bool sphere;
+        public static CubeGenerator kDefault = new CubeGenerator() {resolution = 10};
+
+        private const int kSideCount = 6;
+        struct Side
+        {
+            public int index;
+            public float3 origin;
+            public float3 uDir;
+            public float3 vDir;
+        }
+
+        struct Point
+        {
+            public half2 uv;
+            public float3 position;
+            public int index;
+        }
+        
+        private int sideVertexCount => (resolution+1)*(resolution+1);
+        public int vertexCount => kSideCount * sideVertexCount;
+        public int triangleCount => kSideCount * resolution * resolution * 2;
+
+        Side GetCubeSide(int _index)
+        {
+            switch (_index)
+            {
+                default: throw new Exception("Invalid Index");
+                case 0: return new Side() { index = 0, origin = -1f, uDir = new float3(2, 0, 0), vDir = new float3(0, 2, 0) };
+                case 1: return new Side() { index = 1, origin = new float3(1f, -1f, -1f), uDir = new float3(0, 0, 2f), vDir = new float3(0, 2f, 0f) };
+                case 2: return new Side() { index = 2, origin = -1, uDir = new float3(0, 0, 2f), vDir = new float3(2f, 0, 0) };
+                case 3: return new Side() { index = 3, origin = new float3(-1f, -1f, 1f), uDir = new float3(0, 2f, 0), vDir = new float3(2f, 0, 0) };
+                case 4: return new Side() { index = 4, origin = -1f, uDir = new float3(0, 2f, 0), vDir = new float3(0f, 0, 2f) };
+                case 5: return new Side() { index = 5, origin = new float3(-1f, 1f, -1f), uDir = new float3(2f, 0f, 0), vDir = new float3(0f, 0, 2f) };
+            }
+        }
+
+        private float3 ConvertPoint(float3 _point)
+        {
+            if (sphere)
+            {
+                float3 p = _point;
+                float3 sqrP = p * p;
+                return p * math.sqrt(1f - (sqrP.yxx + sqrP.zzy) / 2f + sqrP.yxx * sqrP.zzy / 3f);
+            }
+            return _point;
+        }
+
+        private Point GetPoint(int _i,int _j,Side _side)
+        {
+            float r = resolution;
+            int vertexWidth = resolution + 1;
+            float2 uv = new float2(_i / r, _j / r);
+            int index = sideVertexCount * _side.index + new TileCoord(_i, _j).ToIndex(vertexWidth);
+            return new Point()
+            {
+                uv = (half2)uv,
+                index = index,
+                position = ConvertPoint(_side.origin + uv.x*_side.uDir + uv.y * _side.vDir),
+            };
+        }
+        
+        public void Execute(int _index, NativeArray<Vertex> _vertices, NativeArray<uint3> _triangles)
+        {
+            int ti = 0;
+            float r = resolution;
+
+            var vertex = new Vertex();
+            vertex.tangent.w = new half(-1);
+
+            for (int k = 0; k < kSideCount; k++)
+            {
+                var side = GetCubeSide(k);   
+                for (int j = 0; j < resolution; j++)
+                for (int i = 0; i < resolution; i++)
+                {
+                    var pTR = GetPoint(i + 1, j + 1, side);
+                    var pTL = GetPoint(i , j + 1, side);
+                    var pBR = GetPoint(i + 1, j, side);
+                    var pBL = GetPoint(i, j, side);
+                    
+                    vertex.tangent = (half4) new float4(math.normalize(pBR.position-pBL.position) , -1f);
+                    vertex.normal = math.normalize(math.cross(pTR.position-pBR.position,vertex.tangent.xyz));
+                    vertex.position = pTR.position;
+                    vertex.texCoord0.xy = pTR.uv;
+                    _vertices[pTR.index] = vertex;
+                    
+                    vertex.normal = math.normalize(math.cross(pTL.position-pBL.position,vertex.tangent.xyz));
+                    vertex.position = pTL.position;
+                    vertex.texCoord0.xy = pTL.uv;
+                    _vertices[pTL.index] = vertex;
+                    
+                    vertex.normal = math.normalize(math.cross(pTR.position-pBR.position,vertex.tangent.xyz));
+                    vertex.position = pBR.position;
+                    vertex.texCoord0.xy = pBR.uv;
+                    _vertices[pBR.index] = vertex;
+                    
+                    vertex.normal = math.normalize(math.cross(pTL.position-pBL.position,vertex.tangent.xyz));
+                    vertex.position = pBL.position;
+                    vertex.texCoord0.xy = pBL.uv;
+                    _vertices[pBL.index] = vertex;
+                    
+                    _triangles[ti++] = (uint3) new int3(pTR.index, pBR.index, pBL.index);
+                    _triangles[ti++] = (uint3) new int3(pBL.index, pTL.index, pTR.index);
+                }
+            }
+         
         }
     }
 }
