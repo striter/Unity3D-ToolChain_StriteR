@@ -138,20 +138,25 @@ namespace Procedural.Geometry.Sphere
     {
         [Clamp(1, 50f)] public float radius;
         [Clamp(1, 500)] public int resolution;
-        public static SeamlessCubeSphereGenerator kDefault = new SeamlessCubeSphereGenerator() {radius = .5f,resolution = 10};
+        [Rename("Tight As fuck")]public bool tight;
+        public static SeamlessCubeSphereGenerator kDefault = new SeamlessCubeSphereGenerator() {radius = .5f,resolution = 10,tight = false};
 
-        public int vertexCount =>
-            (resolution + 1) * (resolution + 1) +
-            (resolution + 1) * resolution +
-            resolution * resolution +
-            resolution * resolution +
-            (resolution - 1) * (resolution) +
-            (resolution - 1) * (resolution - 1);
+        public int vertexCount =>!tight?
+                                KCube.kSideCount*Pow2(resolution+1):
+                                (resolution + 1) * (resolution + 1) +
+                                 (resolution + 1) * resolution +
+                                 resolution * resolution +
+                                 resolution * resolution +
+                                 (resolution - 1) * (resolution) +
+                                 (resolution - 1) * (resolution - 1);
 
         public int triangleCount => KCube.kSideCount * resolution * resolution * 2;
 
         private int GetIndex(int _i, int _j, int _sideIndex)
         {
+            if (!tight)
+                return _sideIndex * Pow2(resolution + 1) + new TileCoord(_i, _j).ToIndex(resolution + 1);
+            
             bool firstColumn = _j == 0;
             bool lastColumn = _j == resolution;
             bool firstRow = _i == 0;

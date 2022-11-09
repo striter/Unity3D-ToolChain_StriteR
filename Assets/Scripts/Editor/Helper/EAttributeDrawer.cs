@@ -149,7 +149,7 @@ namespace UnityEditor.Extensions
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if(!OnGUIAttributePropertyCheck(position,property,out Rename attribute,SerializedPropertyType.Float,SerializedPropertyType.Integer))
+            if(!OnGUIAttributePropertyCheck(position,property,out Rename attribute))
                 return;
             label.text = attribute.name;
             EditorGUI.PropertyField(position, property, label, true);
