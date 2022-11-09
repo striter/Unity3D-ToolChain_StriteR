@@ -12,7 +12,7 @@ namespace Procedural.Geometry.Cube
         [RangeVector(0f,100f)] public Vector3 size;
         [Clamp(1, 500)] public int resolution;
         public static CubeGenerator kDefault = new CubeGenerator() {size = Vector3.one*.5f,resolution = 20};
-        public int vertexCount => triangleCount * 4;
+        public int vertexCount => triangleCount * 2;
         public int triangleCount => KCube.kSideCount*resolution * resolution * 2;
 
         private int curIndex;

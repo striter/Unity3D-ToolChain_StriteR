@@ -67,7 +67,7 @@ namespace Procedural.Geometry.Sphere
         [Clamp(1, 50f)] public float radius;
         [Clamp(1, 500)] public int resolution;
         public static CubeSphereGenerator kDefault = new CubeSphereGenerator() {radius = .5f,resolution = 20};
-        public int vertexCount => triangleCount * 4;
+        public int vertexCount => triangleCount * 2;
         public int triangleCount => KCube.kSideCount * resolution * resolution * 2;
 
         private int curIndex;
