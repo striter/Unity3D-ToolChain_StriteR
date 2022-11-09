@@ -64,7 +64,7 @@ namespace PCG.Module.Cluster
 
         public static byte CreateVoxelClusterByte(this Qube<ICorner> _corners,int _clusterIndex,EClusterType _clusterType)
         {
-            var clusterByte = KQube.False;
+            var clusterByte = KQube.kFalse;
             for (int i = 0; i < 8; i++)
                 clusterByte[i] = DModule.IsCornerAdjacent(_clusterIndex, _corners[i]?.m_Type ?? -1);
 

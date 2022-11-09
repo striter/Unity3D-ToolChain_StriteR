@@ -79,7 +79,7 @@ namespace PCG.Module
             //Recreate Cluster Data
             m_TypedCluster.Clear();
 
-            Qube<bool> cornerValidMask = KQube.False;
+            Qube<bool> cornerValidMask = KQube.kFalse;
             for (int i = 0; i < 8; i++)
             {
                 var corner = m_Corners[i];
@@ -95,8 +95,8 @@ namespace PCG.Module
                 m_TypedCluster.Add(corner.m_Type,m_Corners.CreateVoxelClusterByte(type,DModule.Collection[type].m_ClusterType));
             }
 
-            var clusterByte = KQube.MinByte;
-            var clusterMask = KQube.MinByte;
+            var clusterByte = KQube.kMinByte;
+            var clusterMask = KQube.kMinByte;
             var cornerValidByte = cornerValidMask.ToByte();
             for(int i=0;i<8;i++)
             {

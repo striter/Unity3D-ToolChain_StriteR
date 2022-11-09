@@ -1,4 +1,6 @@
+
 using UnityEngine;
+using Geometry.Voxel;
 
 public static class DRuntime
 {
@@ -25,10 +27,7 @@ namespace Geometry
         
         public static readonly Quad<Vector2> k2SquareCentered = k3SquareCentered.Convert(p=>new Vector2(p.x,p.z));
     }
-}
 
-namespace Geometry.Voxel
-{
     public partial class KQube
     {
         public static readonly Qube<Vector3> kUnitQubeBottomed = KQuad.k3SquareCentered.ExpandToQube(Vector3.up,0f);

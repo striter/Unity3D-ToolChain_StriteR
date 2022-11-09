@@ -1,7 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Geometry.Voxel;
+using Geometry;
 using UnityEngine;
 using UnityEngine.EventSystems;
 

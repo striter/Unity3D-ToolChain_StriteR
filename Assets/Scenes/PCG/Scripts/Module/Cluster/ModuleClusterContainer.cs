@@ -57,7 +57,7 @@ namespace PCG.Module.Cluster
         
         public void Prepare(Dictionary<PCGID,ModuleClusterCorner> _corners)
         {
-            m_Modified = KQube.False;
+            m_Modified = KQube.kFalse;
             var targetInput = new Qube<ModuleClusterInputData>(ModuleClusterInputData.kInvalid);
             var unitStatus = DModuleCluster.CollectClusterStatus(this,_corners);
             var unitType = Qube<int>.Convert(m_Voxel.m_Corners, _p => _p?.m_Type ?? -1);

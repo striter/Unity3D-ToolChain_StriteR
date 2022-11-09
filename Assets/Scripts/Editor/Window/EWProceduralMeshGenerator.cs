@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using Procedural;
+﻿using Procedural.Geometry;
 using UnityEngine;
 
 namespace UnityEditor.Extensions

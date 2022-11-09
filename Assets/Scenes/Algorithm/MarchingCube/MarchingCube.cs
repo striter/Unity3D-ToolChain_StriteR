@@ -272,7 +272,7 @@ namespace ExampleScenes.Algorithm.MarchingCube
         {
             position = MarchingCubeDefines.GetCubePosition(_identity);
             m_Grids = Qube<Int3>.Convert( MarchingCubeDefines.kQubeRelativeGrids,p=>_identity+p);
-            m_GridAvailable = KQube.True;
+            m_GridAvailable = KQube.kTrue;
             return this;
         }
         public void Refresh(Dictionary<Int3,Grid> _grids)

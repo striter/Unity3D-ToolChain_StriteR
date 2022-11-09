@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Geometry
 {
-    #region Enums
+#region Enums
     [Flags]
     public enum EQuadCorner
     {
@@ -50,7 +50,7 @@ namespace Geometry
         T=16,
         D=32,
     }
-    #endregion
+#endregion
     
     public interface ITriangle<T> where T : struct
     {
@@ -524,5 +524,13 @@ namespace Geometry
                 return hashCode;
             }
         }
+    }
+    
+    public struct Axis
+    {
+        public int index;
+        public Vector3 origin;
+        public Vector3 uDir;
+        public Vector3 vDir;
     }
 }

@@ -36,7 +36,7 @@ namespace PCG.Baking
             Gizmos.matrix = _transform.localToWorldMatrix;
             Gizmos.color = _color;
             Gizmos.DrawWireCube(Vector3.up*.5f,Vector3.one);
-            Qube<bool> mixableRelation = KQube.False;
+            Qube<bool> mixableRelation = KQube.kFalse;
             var possibility = _transform.GetComponent<ModuleClusterUnitPossibilityCollector>();
             if (possibility)
                 mixableRelation = possibility.m_MixableMask;

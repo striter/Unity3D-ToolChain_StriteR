@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using Geometry;
+using Geometry.Voxel;
 using TPoolStatic;
 
 namespace PCG.Module
@@ -66,7 +66,7 @@ namespace PCG.Module
                 for (byte i = 0; i < 1 << 4; i++)
                 {
                     var srcByte = i;
-                    var quad = KQuad.False;
+                    var quad = KQuad.kFalse;
                     quad.SetByteElement(i);
 
                     byte orientation = 0;
