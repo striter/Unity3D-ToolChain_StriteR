@@ -526,11 +526,4 @@ namespace Geometry
         }
     }
     
-    public struct Axis
-    {
-        public int index;
-        public Vector3 origin;
-        public Vector3 uDir;
-        public Vector3 vDir;
-    }
 }

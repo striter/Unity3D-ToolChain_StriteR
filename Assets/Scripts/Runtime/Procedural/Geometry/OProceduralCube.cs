@@ -9,21 +9,21 @@ namespace Procedural.Geometry.Cube
     [Serializable]
     public struct CubeGenerator : IProceduralMeshGenerator
     {
-        [RangeVector(0f,100f)] public Vector3 size;
+        [RangeVector(0f,100f)] public float3 size;
         [Clamp(1, 500)] public int resolution;
-        public static CubeGenerator kDefault = new CubeGenerator() {size = Vector3.one*.5f,resolution = 20};
+        public static CubeGenerator kDefault = new CubeGenerator() {size = new float3(1f,1f,1f),resolution = 20};
         public int vertexCount => triangleCount * 2;
-        public int triangleCount => KCube.kSideCount*resolution * resolution * 2;
+        public int triangleCount => KProceduralGeometry.kCubeFacingAxisCount*resolution * resolution * 2;
 
         private int curIndex;
-        private GeometryPoint GetPoint(int _i, int _j, Axis _axis)
+        private Point GetPoint(int _i, int _j, Axis _axis)
         {
             float r = resolution;
             float2 uv = new float2(_i / r, _j / r);
-            return new GeometryPoint()
+            return new Point()
             {
                 uv = (half2) uv,
-                position = (_axis.origin + uv.x * _axis.uDir + uv.y * _axis.vDir).mul(size),
+                position = (_axis.origin + uv.x * _axis.uDir + uv.y * _axis.vDir)*size/2f,
                 index = curIndex++,
             };
         }
@@ -35,9 +35,9 @@ namespace Procedural.Geometry.Cube
             var vertex = new Vertex();
             vertex.tangent.w = new half(-1);
 
-            for (int k = 0; k < KCube.kSideCount; k++)
+            for (int k = 0; k < KProceduralGeometry.kCubeFacingAxisCount; k++)
             {
-                var side = KCube.GetCubeSide(k);
+                var side = KProceduralGeometry.GetCubeFacingAxis(k);
                 for (int j = 0; j < resolution; j++)
                 for (int i = 0; i < resolution; i++)
                 {

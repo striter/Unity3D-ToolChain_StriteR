@@ -78,17 +78,6 @@ namespace Geometry.Voxel
         {
             return new Bounds(_box.center, _box.size);
         }
-
-        public static float3 CubeToSphere(float3 _point)
-        {
-            float3 sqrP = _point * _point;
-            return _point * math.sqrt(1f - (sqrP.yxx + sqrP.zzy) / 2f + sqrP.yxx * sqrP.zzy / 3f);
-        }
-
-        public static float2 SphereToUV(float3 _point)
-        {
-            return new float2(1-(math.atan2(_point.x, -_point.z) / KMath.kPI + 1) / 2, math.asin(_point.y) / KMath.kPI + .5f);
-        }
     }
     
     public static class UQube

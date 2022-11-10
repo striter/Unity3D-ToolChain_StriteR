@@ -29,12 +29,6 @@ namespace UnityEditor.Extensions
             m_Target = target as MeshFilter;
             
             m_SharedMesh= m_Target.sharedMesh;
-            if (m_SharedMesh == null)
-                return;
-            m_vertices = m_SharedMesh.vertices;
-            m_Normals = m_SharedMesh.normals;
-            m_Tangents = m_SharedMesh.tangents;
-            m_Colors = m_SharedMesh.colors;
         }
 
         private void OnDisable()
@@ -51,8 +45,15 @@ namespace UnityEditor.Extensions
             if (m_SharedMesh==null||!m_SharedMesh.isReadable)
                 return;
 
+            EditorGUI.BeginChangeCheck();
             m_Mode = (EMeshInspectMode)EditorGUILayout.EnumPopup(m_Mode);
-            
+            if (EditorGUI.EndChangeCheck())
+            {
+                m_vertices = m_SharedMesh.vertices;
+                m_Normals = m_SharedMesh.normals;
+                m_Tangents = m_SharedMesh.tangents;
+                m_Colors = m_SharedMesh.colors;
+            }
         }
         private void OnSceneGUI()
         {

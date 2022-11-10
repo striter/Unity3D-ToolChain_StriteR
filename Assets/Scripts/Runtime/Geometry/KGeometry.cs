@@ -21,24 +21,6 @@ namespace Geometry
         public static readonly Qube<byte> kMinByte = new Qube<byte>(byte.MinValue);
     }
 
-    public class KCube
-    {
-        public const int kSideCount = 6;
-        public static Axis GetCubeSide(int _index)
-        {
-            switch (_index)
-            {
-                default: throw new Exception("Invalid Index");
-                case 0: return new Axis() {index = 0, origin = -Vector3.one, uDir = new Vector3(2f, 0, 0), vDir = new Vector3(0, 2f, 0)};
-                case 1: return new Axis() {index = 1, origin = -Vector3.one, uDir = new Vector3(0, 2f, 0), vDir = new Vector3(0f, 0, 2f)};
-                case 2: return new Axis()  {index = 2, origin = -Vector3.one, uDir = new Vector3(0, 0, 2f), vDir = new Vector3(2f, 0, 0)};
-                case 3: return new Axis()  {  index = 3, origin = new Vector3(-1f, -1f, 1f), uDir = new Vector3(0, 2f, 0),  vDir = new Vector3(2f, 0, 0) };
-                case 4: return new Axis()  {  index = 4, origin = new Vector3(1f, -1f, -1f), uDir = new Vector3(0, 0, 2f),  vDir = new Vector3(0, 2f, 0f) };
-                case 5: return new Axis() { index = 5, origin = new Vector3(-1f, 1f, -1f), uDir = new Vector3(2f, 0f, 0),  vDir = new Vector3(0f, 0, 2f)  };
-            }
-        }
-    }
-    
     public static class KEnumQube<T> where T :struct, Enum
     {
         public static Qube<T> kInvalid = new Qube<T>()

@@ -51,6 +51,8 @@ public static class UMath
     public static float Pow4(float _src) => _src * _src* _src* _src;
     public static float Frac(float _src) => _src - Mathf.Floor(_src);
     public static float Mod(float _src, float _dst) => _src - _dst * Mathf.Floor(_src/_dst);
+
+    public static float Lerp(float _a, float _b, float _value) => Mathf.Lerp(_a, _b, _value);
     
     public static float InvLerp(float _a, float _b, float _value)=> (_value - _a) / (_b - _a);
     public static Vector3 BilinearLerp(Vector3 tl, Vector3 tr, Vector3 br, Vector3 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
