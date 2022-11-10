@@ -40,9 +40,9 @@ namespace Rendering.Pipeline
         {
             cameraTextureDescriptor.colorFormat = RenderTextureFormat.ARGB32;
             cameraTextureDescriptor.depthBufferBits = 0;
-            cmd.GetTemporaryRT(DRenderTextures.kCameraLightMask, cameraTextureDescriptor);
+            cmd.GetTemporaryRT(KRenderTextures.kCameraLightMask, cameraTextureDescriptor);
             cmd.EnableShaderKeyword(kKeyword);
-            ConfigureTarget(DRenderTextures.kCameraLightMaskRT);
+            ConfigureTarget(KRenderTextures.kCameraLightMaskRT);
             base.Configure(cmd, cameraTextureDescriptor);
         }
 
@@ -50,14 +50,14 @@ namespace Rendering.Pipeline
         {
             base.FrameCleanup(cmd);
             cmd.DisableShaderKeyword(kKeyword);
-            cmd.ReleaseTemporaryRT(DRenderTextures.kCameraLightMask);
+            cmd.ReleaseTemporaryRT(KRenderTextures.kCameraLightMask);
         }
         
         
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {                
             CommandBuffer buffer = CommandBufferPool.Get("Camera Light Mask");
-            buffer.SetRenderTarget(DRenderTextures.kCameraLightMaskRT,m_Renderer.cameraDepthTarget);
+            buffer.SetRenderTarget(KRenderTextures.kCameraLightMaskRT,m_Renderer.cameraDepthTarget);
             buffer.ClearRenderTarget(false, true, Color.black);
             _context.ExecuteCommandBuffer(buffer);
 

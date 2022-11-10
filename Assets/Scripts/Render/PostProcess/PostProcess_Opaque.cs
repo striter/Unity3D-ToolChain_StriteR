@@ -178,7 +178,7 @@ namespace Rendering.PostProcess
             RenderTextureDescriptor _descriptor, ref PPData_Opaque _data)
         {
             if(_data.m_MaskedHighlight) 
-                m_HighlightBlur.ExecutePostProcessBuffer(_buffer, DRenderTextures.kCameraMaskTextureRT, kHighlightMaskBlurRT, m_HighlightDescriptor,ref _data.m_HighlightData.m_Blur);
+                m_HighlightBlur.ExecutePostProcessBuffer(_buffer, KRenderTextures.kCameraMaskTextureRT, kHighlightMaskBlurRT, m_HighlightDescriptor,ref _data.m_HighlightData.m_Blur);
 
             if (!_data.m_SSAO && !_data.m_VolumetricCloud)
             {

@@ -84,8 +84,8 @@ namespace Rendering.Pipeline
         private readonly PPCore_Blurs m_Blur;
         private ScriptableRenderer m_Renderer;
         private readonly Material m_Material;
-        static readonly int ID_SSRTex = Shader.PropertyToID("_ScreenSpaceReflectionTexture");
-        static readonly RenderTargetIdentifier RT_ID_SSR = new RenderTargetIdentifier(ID_SSRTex);
+        static readonly int kSSRTex = Shader.PropertyToID("_ScreenSpaceReflectionTexture");
+        static readonly RenderTargetIdentifier kSSRTexID = new RenderTargetIdentifier(kSSRTex);
 
         public SRP_ScreenSpaceReflection(PPCore_Blurs _blurs)
         {
@@ -111,21 +111,21 @@ namespace Rendering.Pipeline
 
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
-            cmd.GetTemporaryRT(ID_SSRTex, cameraTextureDescriptor.width, cameraTextureDescriptor.height, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
-            ConfigureTarget(RT_ID_SSR);
+            cmd.GetTemporaryRT(kSSRTex, cameraTextureDescriptor.width, cameraTextureDescriptor.height, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
+            ConfigureTarget(kSSRTexID);
             base.Configure(cmd, cameraTextureDescriptor);
         }
 
         public override void OnCameraCleanup(CommandBuffer cmd)
         {
             base.OnCameraCleanup(cmd);
-            cmd.ReleaseTemporaryRT(ID_SSRTex);
+            cmd.ReleaseTemporaryRT(kSSRTex);
         }
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get("Planar Reflection Pass");
-            cmd.Blit(m_Renderer.cameraColorTarget,RT_ID_SSR,m_Material);
+            cmd.Blit(m_Renderer.cameraColorTarget,kSSRTexID,m_Material);
             
             context.ExecuteCommandBuffer(cmd);
             cmd.Clear();

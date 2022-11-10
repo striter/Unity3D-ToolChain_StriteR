@@ -72,14 +72,14 @@ namespace Rendering.Pipeline
         {
             cameraTextureDescriptor.colorFormat = RenderTextureFormat.R8;
             cameraTextureDescriptor.depthBufferBits = 0;
-            cmd.GetTemporaryRT(DRenderTextures.kCameraMaskTexture, cameraTextureDescriptor);
-            ConfigureTarget(DRenderTextures.kCameraMaskTexture);
+            cmd.GetTemporaryRT(KRenderTextures.kCameraMaskTexture, cameraTextureDescriptor);
+            ConfigureTarget(KRenderTextures.kCameraMaskTexture);
             base.Configure(cmd, cameraTextureDescriptor);
         }
-        public override void FrameCleanup(CommandBuffer cmd)
+        public override void FrameCleanup(CommandBuffer _cmd)
         {
-            base.FrameCleanup(cmd);
-            cmd.ReleaseTemporaryRT(DRenderTextures.kCameraMaskTexture);
+            base.FrameCleanup(_cmd);
+            _cmd.ReleaseTemporaryRT(KRenderTextures.kCameraMaskTexture);
         }
         
         public void Dispose()
@@ -91,7 +91,7 @@ namespace Rendering.Pipeline
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {                
             CommandBuffer buffer = CommandBufferPool.Get("Camera Mask Texture");
-            buffer.SetRenderTarget(DRenderTextures.kCameraMaskTextureRT);
+            buffer.SetRenderTarget(KRenderTextures.kCameraMaskTextureRT);
             buffer.ClearRenderTarget(false, true, Color.black);
             _context.ExecuteCommandBuffer(buffer);
 

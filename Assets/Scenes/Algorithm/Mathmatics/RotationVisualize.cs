@@ -1,17 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
-using Geometry;
 using UnityEngine;
 
 namespace ExampleScenes.Algorithm
 {
-    public class Rotation : MonoBehaviour
+    public class RotationVisualize : MonoBehaviour
     {
         [Header("Angle Axis")]
         public Vector3 m_SrcVector = Vector3.one;
         public Vector3 m_Axis = Vector3.down;
         public float m_RotateAngle;
-        
+
         [Header("From To")]
         public Vector3 m_FromVector=Vector3.up;
 
