@@ -1,7 +1,13 @@
 using System;
 using UnityEngine;
-public static class UNoise
+
+public static class Noise
 {
+    public static class Hash
+    {
+        
+    }
+    
     public static class Value
     {
         static readonly float s_RandomValue = 143758.5453f;
@@ -134,11 +140,5 @@ public static class UNoise
             }
             return new Vector2(sqrDstToCell,  Value.Unit1f2(closetCell) );
         }
-    }
-
-    public static class Gradient
-    {
-        
-        
     }
 }

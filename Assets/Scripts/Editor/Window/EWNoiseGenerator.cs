@@ -1,30 +1,72 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using System;
+using Unity.Burst;
+using Unity.Jobs;
 using UnityEngine;
-using AlgorithmExtension;
+using Object = UnityEngine.Object;
+
 namespace UnityEditor.Extensions
 {
-    using static UEGUI;
-    public class NoiseGenerator : EditorWindow
+    public enum ENoiseType
     {
-        public enum ENoiseType
+        Value,
+        Perlin,
+        Simplex,
+        VoronoiUnit,
+        VoronoiDistance,
+    }
+        
+    public enum ENoiseSample
+    {
+        Unit,
+        _01,
+        Absolute,
+    }
+
+    [Serializable]
+    public struct NoiseTextureInput
+    {
+        [Clamp(2,13)] public int sizePower;
+        public FilterMode filterMode;
+        [Clamp(1e-6f,1024f)] public float scale;
+        public ENoiseType noiseType;
+        public ENoiseSample noiseSample;
+        public bool octave;
+        [MFoldout(nameof(octave),true)] [Range( 2, 7)] public int octaveCount;
+        public static readonly NoiseTextureInput kDefault = new NoiseTextureInput() {sizePower = 9,filterMode = FilterMode.Bilinear,scale = 5f,noiseType = ENoiseType.Value,noiseSample = ENoiseSample._01,octave = false,octaveCount = 3};
+        
+        public static float GetNoiseOctave(float _x, float _y,float _scale, ENoiseType _noiseType, int _octaveCount)
         {
-            Value,
-            Perlin,
-            Simplex,
-            VoronoiUnit,
-            VoronoiDistance,
+            float value = 0;
+            float frequency = 1;
+            float amplitude = .6f;
+            for (int i = 0; i < _octaveCount; i++)
+            {
+                value += GetNoise(_x * frequency, _y * frequency, _scale, _noiseType) * amplitude;
+                amplitude *= .5f;
+                frequency *= 2;
+            }
+            return value;
         }
-        public enum ENoiseSample
+
+        public static float GetNoise(float _noiseX,float _noiseY,float _scale, ENoiseType _noiseType)
         {
-            Unit,
-            _01,
-            Absolute,
+            float noise = 0;
+            _noiseX *= _scale;
+            _noiseY *= _scale;
+            switch (_noiseType)
+            {
+                case ENoiseType.Value: noise = Noise.Value.Unit1f2(Mathf.Floor(_noiseX) , Mathf.Floor( _noiseY) ); break;
+                case ENoiseType.Perlin: noise = Noise.Perlin.Unit1f3( _noiseX ,_noiseY, 0); break;
+                case ENoiseType.Simplex: noise = Noise.Simplex.Unit1f2(_noiseX , _noiseY ); break;
+                case ENoiseType.VoronoiUnit: noise = Noise.Voronoi.Unit2f2(_noiseX, _noiseY).y; break;
+                case ENoiseType.VoronoiDistance: noise = Noise.Voronoi.Unit2f2(_noiseX, _noiseY).x;break;
+            }
+            return noise;
         }
-        public static bool NoiseSampleSupported(ENoiseType _type)
+
+        static bool NoiseSampleSupported(ENoiseType _type)
         {
-            switch(_type)
+            switch (_type)
             {
                 default:
                     return false;
@@ -33,113 +75,85 @@ namespace UnityEditor.Extensions
                     return true;
             }
         }
-        public static float GetNoise(float noiseX,float noiseY,float scale, ENoiseType noiseType)
+        
+        public Texture2D Output(Texture2D _texture)
         {
-            float noise = 0;
-            noiseX *= scale;
-            noiseY *= scale;
-            switch (noiseType)
+            int size = UMath.Pow(2, sizePower);
+            
+            if(_texture==null)
+                _texture = new Texture2D(size, size, TextureFormat.ARGB32, true);
+            if (_texture.width != size)
             {
-                case ENoiseType.Value: noise = UNoise.Value.Unit1f2(Mathf.Floor(noiseX) , Mathf.Floor( noiseY) ); break;
-                case ENoiseType.Perlin: noise = UNoise.Perlin.Unit1f3( noiseX ,noiseY, 0); break;
-                case ENoiseType.Simplex: noise = UNoise.Simplex.Unit1f2(noiseX , noiseY ); break;
-                case ENoiseType.VoronoiUnit: noise = UNoise.Voronoi.Unit2f2(noiseX, noiseY).y; break;
-                case ENoiseType.VoronoiDistance: noise = UNoise.Voronoi.Unit2f2(noiseX, noiseY).x;break;
+                Object.DestroyImmediate(_texture);
+                _texture = new Texture2D(size, size, TextureFormat.ARGB32, true);
             }
-            return noise;
+            
+            
+            Color[] colors = new Color[size * size];
+            float sizeF = size;
+            for (int i = 0; i < size; i++)
+            for (int j = 0; j < size; j++)
+            {
+                float noiseX = j / sizeF;
+                float noiseY = i / sizeF;
+                float noise = octave ? GetNoiseOctave(noiseX, noiseY, scale, noiseType, octaveCount) : GetNoise(noiseX, noiseY, scale, noiseType);
+                if (NoiseSampleSupported(noiseType))
+                {
+                    switch (noiseSample)
+                    {
+                        case ENoiseSample.Absolute: noise = Mathf.Abs(noise); break;
+                        case ENoiseSample._01: noise = noise / 2f + .5f; break;
+                    }
+                }
+                colors[i * size + j] = new Color(noise, noise, noise, 1);
+            }
+
+            _texture.filterMode = filterMode;
+            _texture.SetPixels( colors);
+            _texture.Apply();
+            return _texture;
         }
-        public static float GetNoiseOctave(float x, float y,float scale, ENoiseType noiseType, int octaveCount)
+    }
+    
+    public class EWNoiseTextureGenerator : EditorWindow
+    {
+        [SerializeField] public NoiseTextureInput m_Input = NoiseTextureInput.kDefault;
+        private SerializedObject m_SerializedWindow;
+        SerializedProperty m_InputProperty;
+        void OnEnable()
         {
-            float value = 0;
-            float frequency = 1;
-            float amplitude = .6f;
-            for (int i = 0; i < octaveCount; i++)
-            {
-                value += GetNoise(x * frequency, y * frequency, scale, noiseType) * amplitude;
-                amplitude *= .5f;
-                frequency *= 2;
-            }
-            return value;
+            m_SerializedWindow = new SerializedObject(this);
+            m_InputProperty = m_SerializedWindow.FindProperty(nameof(m_Input));
+            m_Texture = m_Input.Output(m_Texture);
+        }
+        void OnDisable()
+        {
+            m_InputProperty.Dispose();
         }
 
-        int m_SizePower=5;
-        float m_Scale = 1;
-        bool m_Octave;
-        int m_OctaveCount = 6;
-        ENoiseType m_NoiseType = ENoiseType.Perlin;
-        ENoiseSample m_NoiseSample = ENoiseSample.Unit;
-        FilterMode m_FilterMode = FilterMode.Bilinear;
         Texture2D m_Texture;
         private void OnGUI()
         {
             EditorGUI.BeginChangeCheck();
-            HorizontalScope.Begin(5, 5, 20);
-            EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Type:", UEGUIStyle_Window.m_TitleLabel);
-            m_NoiseType = (ENoiseType)EditorGUI.EnumPopup(HorizontalScope.NextRect(5, 120), m_NoiseType);
 
-            bool noiseSampleSupported = NoiseSampleSupported(m_NoiseType);
-            if (noiseSampleSupported)
+            EditorGUILayout.PropertyField(m_InputProperty);
+            HorizontalScope.Begin(5,5,EditorGUI.GetPropertyHeight(m_InputProperty,true));
+            
+            if (EditorGUI.EndChangeCheck())
             {
-                HorizontalScope.NextLine(2, 20);
-                EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Sample:", UEGUIStyle_Window.m_TitleLabel);
-                m_NoiseSample = (ENoiseSample)EditorGUI.EnumPopup(HorizontalScope.NextRect(5, 120), m_NoiseSample);
-            }
-            HorizontalScope.NextLine(2, 20);
-            EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Filter:", UEGUIStyle_Window.m_TitleLabel);
-            m_FilterMode = (FilterMode)EditorGUI.EnumPopup(HorizontalScope.NextRect(5, 120), m_FilterMode);
-            HorizontalScope.NextLine(2, 20);
-            EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Size:", UEGUIStyle_Window.m_TitleLabel);
-            m_SizePower = EditorGUI.IntSlider(HorizontalScope.NextRect(5, 120), m_SizePower, 3, 10);
-            int size = Mathf.RoundToInt(Mathf.Pow(2, m_SizePower));
-            EditorGUI.LabelField(HorizontalScope.NextRect(5, 40), size.ToString());
-            HorizontalScope.NextLine(2, 20);
-            EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Scale:", UEGUIStyle_Window.m_TitleLabel);
-            m_Scale = EditorGUI.Slider(HorizontalScope.NextRect(5, 120), m_Scale, 1f, 30f);
-
-            HorizontalScope.NextLine(2, 20);
-            EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Octave:", UEGUIStyle_Window.m_TitleLabel);
-            m_Octave = EditorGUI.Toggle(HorizontalScope.NextRect(5, 20), m_Octave);
-            if (m_Octave)
-            {
-                HorizontalScope.NextLine(2, 20);
-                EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Count:", UEGUIStyle_Window.m_TitleLabel);
-                m_OctaveCount = EditorGUI.IntSlider(HorizontalScope.NextRect(5, 120), m_OctaveCount, 2, 7);
-                HorizontalScope.NextLine(2, 20);
-            }
-
-            if (!m_Texture || EditorGUI.EndChangeCheck())
-            {
-                float sizeF = size;
-                Color[] colors = new Color[size * size];
-                for (int i = 0; i < size; i++)
-                    for (int j = 0; j < size; j++)
-                    {
-                        float noiseX = j / sizeF;
-                        float noiseY = i / sizeF;
-                        float noise = m_Octave ? GetNoiseOctave(noiseX, noiseY, m_Scale, m_NoiseType, m_OctaveCount) : GetNoise(noiseX, noiseY, m_Scale, m_NoiseType);
-                        if (noiseSampleSupported)
-                        {
-                            switch (m_NoiseSample)
-                            {
-                                case ENoiseSample.Absolute: noise = Mathf.Abs(noise); break;
-                                case ENoiseSample._01: noise = noise / 2f + .5f; break;
-                            }
-                        }
-                        colors[i * size + j] = new Color(noise, noise, noise, 1);
-                    }
-                m_Texture = new Texture2D(size, size, TextureFormat.ARGB32, true) { filterMode = m_FilterMode };
-                m_Texture.SetPixels(colors);
-                m_Texture.Apply();
+                m_SerializedWindow.ApplyModifiedPropertiesWithoutUndo();
+                m_Texture = m_Input.Output(m_Texture);
                 Undo.RecordObject(this, "Noise Generator Change");
             }
-            HorizontalScope.NextLine(2, 256);
+            
+            HorizontalScope.NextLine(0f,256);
             Rect textureRect = HorizontalScope.NextRect(0, 256);
             GUI.DrawTexture(textureRect, EditorGUIUtility.whiteTexture);
             GUI.DrawTexture(textureRect.Collapse(Vector2.one*10f), m_Texture);
             HorizontalScope.NextLine(2, 20);
             if (GUI.Button(HorizontalScope.NextRect(0, 80), "Export"))
             {
-                if (UEAsset.SaveFilePath(out string filePath, "png", "CustomNoise_" + m_NoiseType.ToString()))
+                if (UEAsset.SaveFilePath(out string filePath, "png", "m_NoiseType.ToString()"))
                     UEAsset.CreateOrReplaceFile(filePath, m_Texture.EncodeToPNG());
             }
         }

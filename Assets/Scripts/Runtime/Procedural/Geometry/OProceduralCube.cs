@@ -9,9 +9,9 @@ namespace Procedural.Geometry.Cube
     [Serializable]
     public struct CubeGenerator : IProceduralMeshGenerator
     {
-        [RangeVector(0f,100f)] public float3 size;
+        [RangeVector(0f,100f)] public Vector3 size;
         [Clamp(1, 500)] public int resolution;
-        public static CubeGenerator kDefault = new CubeGenerator() {size = new float3(1f,1f,1f),resolution = 20};
+        public static CubeGenerator kDefault = new CubeGenerator() {size = new Vector3(1f,1f,1f),resolution = 20};
         public int vertexCount => triangleCount * 2;
         public int triangleCount => KProceduralGeometry.kCubeFacingAxisCount*resolution * resolution * 2;
 
