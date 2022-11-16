@@ -7,9 +7,10 @@ namespace Rendering.Pipeline
     [ExecuteInEditMode,RequireComponent(typeof(MeshRenderer),typeof(MeshFilter))]
     public class SRC_ReflectionConfig : MonoBehaviour
     {
-        [Range(-5f, 5f)] public float m_PlaneOffset = 0f;
+        public EReflectionGeometry m_Geometry = EReflectionGeometry._PLANE;
         [Range(0f, 0.2f)] public float m_NormalDistort = .1f;
-        public bool m_Upward = true;
+        [MFoldout(nameof(m_Geometry),EReflectionGeometry._PLANE)][Range(-5f, 5f)] public float m_PlaneOffset = 0f;
+        [MFoldout(nameof(m_Geometry),EReflectionGeometry._PLANE)]public bool m_Upward = true;
 
         public static List<SRC_ReflectionConfig> m_Reflections { get; private set; } = new List<SRC_ReflectionConfig>();
         public bool Available => m_MeshRenderer.enabled;
@@ -26,6 +27,8 @@ namespace Rendering.Pipeline
             }
         }
 
+        public GSphere m_SphereData=>new GSphere(transform.position,transform.localScale.x);
+
         private void OnEnable()
         {
             m_Reflections.Add(this);
@@ -37,14 +40,14 @@ namespace Rendering.Pipeline
             m_Reflections.Remove(this);
         }
 
-        static readonly int ID_ReflectionTextureOn = Shader.PropertyToID("_CameraReflectionTextureOn");
-        static readonly int ID_ReflectionTextureIndex = Shader.PropertyToID("_CameraReflectionTextureIndex");
-        static readonly int ID_ReflectionNormalDistort = Shader.PropertyToID("_CameraReflectionNormalDistort");
+        static readonly int kReflectionTextureOn = Shader.PropertyToID("_CameraReflectionTextureOn");
+        static readonly int kReflectionTextureIndex = Shader.PropertyToID("_CameraReflectionTextureIndex");
+        static readonly int kReflectionNormalDistort = Shader.PropertyToID("_CameraReflectionNormalDistort");
         public void SetPropertyBlock(MaterialPropertyBlock _block,int _reflectionIndex)
         {
-            _block.SetInt(ID_ReflectionTextureOn, 1);
-            _block.SetInt(ID_ReflectionTextureIndex,_reflectionIndex);
-            _block.SetFloat(ID_ReflectionNormalDistort, m_NormalDistort);
+            _block.SetInt(kReflectionTextureOn, 1);
+            _block.SetInt(kReflectionTextureIndex,_reflectionIndex);
+            _block.SetFloat(kReflectionNormalDistort, m_NormalDistort);
             m_MeshRenderer.SetPropertyBlock(_block);
             #if UNITY_EDITOR
                   m_Index=_reflectionIndex;
@@ -52,7 +55,6 @@ namespace Rendering.Pipeline
         }
 #if UNITY_EDITOR
         private int m_Index=-1;
-        public void EditorApplyIndex(int _index) => m_Index = _index;
         private void OnDrawGizmos()
         {
             if (!gameObject.activeInHierarchy||!enabled||!m_MeshFilter.sharedMesh)

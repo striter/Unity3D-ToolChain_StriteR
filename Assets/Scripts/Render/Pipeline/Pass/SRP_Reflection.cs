@@ -11,7 +11,7 @@ namespace Rendering.Pipeline
     public class SRD_ReflectionData
     {
         public EReflectionSpace m_Type;
-        [MFoldout(nameof(m_Type), EReflectionSpace.PlanarScreenSpace)] [Range(1, 4)] public int m_Sample;
+        [MFoldout(nameof(m_Type), EReflectionSpace.ScreenSpaceGeometry)] [Range(1, 4)] public int m_Sample;
 
         [MFoldout(nameof(m_Type), EReflectionSpace.PlanarMirrorSpace)] public bool m_Recull;
         [MFoldout(nameof(m_Type), EReflectionSpace.PlanarMirrorSpace,nameof(m_Recull),true)] [Range(0,8)]public int m_AdditionalLightcount;
@@ -23,7 +23,7 @@ namespace Rendering.Pipeline
 
         public static readonly SRD_ReflectionData kDefault = new SRD_ReflectionData
         {
-            m_Type = EReflectionSpace.PlanarScreenSpace,
+            m_Type = EReflectionSpace.ScreenSpaceGeometry,
             m_IncludeTransparent = false,
             m_Recull = false,
             m_DownSample=2,
@@ -52,7 +52,7 @@ namespace Rendering.Pipeline
                     m_Manager = new SRP_ScreenSpaceReflection(m_Blurs);
                     break;
                 case EReflectionSpace.PlanarMirrorSpace:
-                case EReflectionSpace.PlanarScreenSpace:
+                case EReflectionSpace.ScreenSpaceGeometry:
                     m_Manager = new SRP_PlanarReflectionBase(m_Blurs);
                     break;
             }
@@ -134,7 +134,7 @@ namespace Rendering.Pipeline
     }
     #endregion
     
-    #region Planar Reflections
+    #region Geometry Reflections
     public sealed class SRP_PlanarReflectionBase :  IReflectionManager
     {
         const int kMaxReflectionTextures = 4;
@@ -154,28 +154,29 @@ namespace Rendering.Pipeline
                 return;
             
             MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-            foreach (var (index,groups) in SRC_ReflectionConfig.m_Reflections.FindAll(p=>p.Available).GroupBy(p=>p.m_PlaneData,GPlane.kComparer).LoopIndex())
+            int index = 0; 
+            foreach (var reflectionComponent in SRC_ReflectionConfig.m_Reflections)
             {
                 if (index >= kMaxReflectionTextures)
                 {
                     Debug.LogWarning("Reflection Plane Outta Limit!");
                     break;
                 }
-                foreach (SRC_ReflectionConfig planeComponent in groups)
-                    planeComponent.SetPropertyBlock(propertyBlock,index);
+                reflectionComponent.SetPropertyBlock(propertyBlock,index);
 
-                APlanarReflection reflection=null;
+                AReflectionBase reflectionPass=null;
                 switch (m_Data.m_Type)
                 {
-                    case EReflectionSpace.PlanarScreenSpace:
-                        reflection = new FPlanarReflection_ScreenSpace();
+                    case EReflectionSpace.ScreenSpaceGeometry:
+                        reflectionPass = new FGeometryReflectionScreenSpace();
                         break;
                     case EReflectionSpace.PlanarMirrorSpace:
-                        reflection = new FPlanarReflection_MirrorSpace();
+                        reflectionPass = new FGeometryReflectionMirrorSpace();
                         break;
                 }
 
-                _renderer.EnqueuePass(reflection.Setup(m_Data,m_Blur, groups.Key,_renderer,index,_event));
+                _renderer.EnqueuePass(reflectionPass.Setup(m_Data,m_Blur, reflectionComponent,_renderer,index,_event));
+                index++;
             }
 
         }
@@ -185,7 +186,7 @@ namespace Rendering.Pipeline
         }
     }
 
-    abstract class APlanarReflection:ScriptableRenderPass
+    abstract class AReflectionBase:ScriptableRenderPass
     {
         #region ID
         const string C_ReflectionTex = "_CameraReflectionTexture";
@@ -195,7 +196,7 @@ namespace Rendering.Pipeline
          protected SRD_ReflectionData m_Data;
          protected PPCore_Blurs m_Blur;
          protected  int m_Index { get; private set; }
-         private GPlane m_Plane;
+         private SRC_ReflectionConfig m_Plane;
          private RenderTextureDescriptor m_ColorDescriptor;
          private RenderTargetIdentifier m_ColorTarget;
          private ScriptableRenderer m_Renderer;
@@ -204,14 +205,14 @@ namespace Rendering.Pipeline
          private int m_ReflectionBlurTexture;
          private RenderTargetIdentifier m_ReflectionBlurTextureID;
          
-         public virtual APlanarReflection Setup(SRD_ReflectionData _data,PPCore_Blurs _blur, GPlane _planeData,ScriptableRenderer _renderer,int _index,RenderPassEvent _event)
+         public virtual AReflectionBase Setup(SRD_ReflectionData _data,PPCore_Blurs _blur,SRC_ReflectionConfig _component,ScriptableRenderer _renderer,int _index,RenderPassEvent _event)
          {
              renderPassEvent = _event;
              m_Index = _index;
              m_Data = _data;
              m_Blur = _blur;
              m_Renderer = _renderer;
-             m_Plane = _planeData;
+             m_Plane = _component;
              m_ReflectionTexture = Shader.PropertyToID( C_ReflectionTex + _index);
              m_ReflectionTextureID = new RenderTargetIdentifier(m_ReflectionTexture);
              m_ReflectionBlurTexture = Shader.PropertyToID(C_ReflectionTempTexture + _index);
@@ -247,7 +248,6 @@ namespace Rendering.Pipeline
              
          }
 
-
          public override void OnCameraCleanup(CommandBuffer _cmd)
          {
              base.OnCameraCleanup(_cmd);
@@ -271,21 +271,31 @@ namespace Rendering.Pipeline
 
          protected abstract void Execute(ref SRD_ReflectionData _data,
              ScriptableRenderContext _context, ref RenderingData _renderingData, CommandBuffer _cmd,
-             ref GPlane _plane, ref RenderTextureDescriptor _descriptor, 
+             ref SRC_ReflectionConfig _config, ref RenderTextureDescriptor _descriptor, 
              ref RenderTargetIdentifier _target,ref ScriptableRenderer _renderer);
     }
     
-    class FPlanarReflection_ScreenSpace : APlanarReflection
+    public enum EReflectionGeometry
     {
-        static readonly int ID_SampleCount = Shader.PropertyToID( "_SAMPLE_COUNT");
-        static readonly int ID_Result_TexelSize = Shader.PropertyToID("_Result_TexelSize");
+        _PLANE = 1,
+        _SPHERE = 2,
+    }
+    
+    class FGeometryReflectionScreenSpace : AReflectionBase
+    {
+        static readonly int kSampleCount = Shader.PropertyToID( "_SAMPLE_COUNT");
+        static readonly int kResultTexelSize = Shader.PropertyToID("_Result_TexelSize");
 
-        static readonly int ID_Input = Shader.PropertyToID("_Input");
-        static readonly int ID_Result = Shader.PropertyToID("_Result");
-        static readonly int ID_PlaneNormal = Shader.PropertyToID("_PlaneNormal");
-        static readonly int ID_PlanePosition = Shader.PropertyToID("_PlanePosition");
+        static readonly int kKernelInput = Shader.PropertyToID("_Input");
+        static readonly int kKernelResult = Shader.PropertyToID("_Result");
+        static readonly int kPlanePosition = Shader.PropertyToID("_PlanePosition");
+        static readonly int kPlaneNormal = Shader.PropertyToID("_PlaneNormal");
+        
+        static readonly int kSpherePosition = Shader.PropertyToID("_SpherePosition");
+        static readonly int kSphereRadius = Shader.PropertyToID("_SphereRadius");
         int m_Kernels;
         Int2 m_ThreadGroups;
+        LocalKeyword[] kKeywords;
         
         private readonly PassiveInstance<ComputeShader> m_ReflectionComputeShader=new PassiveInstance<ComputeShader>(()=>RenderResources.FindComputeShader("PlanarReflection"));
         protected override void ConfigureColorDescriptor(ref RenderTextureDescriptor _descriptor, ref SRD_ReflectionData _data)
@@ -294,7 +304,9 @@ namespace Rendering.Pipeline
             _descriptor.enableRandomWrite = true;
             _descriptor.colorFormat = RenderTextureFormat.ARGB32;
             _descriptor.msaaSamples = 1;
+            var shader = ((ComputeShader) m_ReflectionComputeShader);
             m_Kernels = ((ComputeShader)m_ReflectionComputeShader).FindKernel("Generate");
+            kKeywords = m_ReflectionComputeShader.m_Value.GetLocalKeywords<EReflectionGeometry>();
             m_ThreadGroups = new Int2(_descriptor.width / 8, _descriptor.height / 8);
         }
 
@@ -306,28 +318,40 @@ namespace Rendering.Pipeline
         }
 
         protected override void Execute(ref SRD_ReflectionData _data, ScriptableRenderContext _context,
-            ref RenderingData _renderingData, CommandBuffer _cmd, ref GPlane _plane, ref RenderTextureDescriptor _descriptor,
+            ref RenderingData _renderingData, CommandBuffer _cmd, ref SRC_ReflectionConfig _config,  ref RenderTextureDescriptor _descriptor,
             ref RenderTargetIdentifier _target,ref ScriptableRenderer _renderer)
         {
-            _cmd.SetComputeIntParam(m_ReflectionComputeShader, ID_SampleCount, _data.m_Sample);
-            _cmd.SetComputeVectorParam(m_ReflectionComputeShader, ID_PlaneNormal, _plane.normal.normalized);
-            _cmd.SetComputeVectorParam(m_ReflectionComputeShader, ID_PlanePosition, _plane.position);
-            _cmd.SetComputeVectorParam(m_ReflectionComputeShader, ID_Result_TexelSize, _descriptor.GetTexelSize());
+            _cmd.SetComputeIntParam(m_ReflectionComputeShader, kSampleCount, _data.m_Sample);
+            _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kResultTexelSize, _descriptor.GetTexelSize());
             
-            _cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels, ID_Input, _renderer.cameraColorTarget);
-            _cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels, ID_Result, _target);
+            _cmd.EnableLocalKeywords(m_ReflectionComputeShader.m_Value,kKeywords,_config.m_Geometry);
+            if (_config.m_Geometry == EReflectionGeometry._SPHERE)
+            {
+                var sphere = _config.m_SphereData;
+                _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kSpherePosition, sphere.center);
+                _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kSphereRadius,new Vector4(sphere.radius,sphere.radius*sphere.radius));
+            }
+            else if (_config.m_Geometry == EReflectionGeometry._PLANE)
+            {
+                var _plane = _config.m_PlaneData;
+                _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kPlaneNormal, _plane.normal.normalized);
+                _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kPlanePosition, _plane.position);
+            }
+            
+            _cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels, kKernelInput, _renderer.cameraColorTarget);
+            _cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels, kKernelResult, _target);
             _cmd.DispatchCompute(m_ReflectionComputeShader, m_Kernels, m_ThreadGroups.x,m_ThreadGroups.y, 1);
         }
     }
-    class FPlanarReflection_MirrorSpace : APlanarReflection
+    class FGeometryReflectionMirrorSpace : AReflectionBase
     {
         private const string kReflectionDepth = "_CameraReflectionDepthComparer";
-        static readonly int ID_CameraWorldPosition = Shader.PropertyToID("_WorldSpaceCameraPos");
+        static readonly int kCameraWorldPosition = Shader.PropertyToID("_WorldSpaceCameraPos");
 
          int m_ReflectionDepth;
-         RenderTargetIdentifier m_ReflectionDepthID ;
+         RenderTargetIdentifier m_ReflectionDepthID;
 
-         public override APlanarReflection Setup(SRD_ReflectionData _data, PPCore_Blurs _blur, GPlane _planeData, ScriptableRenderer _renderer,
+         public override AReflectionBase Setup(SRD_ReflectionData _data, PPCore_Blurs _blur, SRC_ReflectionConfig _planeData, ScriptableRenderer _renderer,
              int _index,RenderPassEvent _event)
          {
              m_ReflectionDepth = Shader.PropertyToID(kReflectionDepth + _index);
@@ -361,13 +385,13 @@ namespace Rendering.Pipeline
          }
 
          protected override void Execute(ref SRD_ReflectionData _data, ScriptableRenderContext _context, ref RenderingData _renderingData,
-             CommandBuffer _cmd, ref GPlane _plane, ref RenderTextureDescriptor _descriptor, ref RenderTargetIdentifier _target,
+             CommandBuffer _cmd, ref SRC_ReflectionConfig _config,  ref RenderTextureDescriptor _descriptor, ref RenderTargetIdentifier _target,
              ref ScriptableRenderer _renderer)
          {
              ref var cameraData = ref _renderingData.cameraData;
              ref Camera camera = ref cameraData.camera;
             
-            Matrix4x4 planeMirrorMatrix = _plane.GetMirrorMatrix();
+            Matrix4x4 planeMirrorMatrix = _config.m_PlaneData.GetMirrorMatrix();
             Matrix4x4 cullingMatrix = camera.cullingMatrix;
             camera.cullingMatrix = cullingMatrix * planeMirrorMatrix;
 
@@ -379,7 +403,7 @@ namespace Rendering.Pipeline
             
             RenderingUtils.SetViewAndProjectionMatrices(_cmd, viewMatrix , projectionMatrix, false);
             var cameraPosition = camera.transform.position;
-            _cmd.SetGlobalVector( ID_CameraWorldPosition,planeMirrorMatrix.MultiplyPoint(cameraPosition));
+            _cmd.SetGlobalVector( kCameraWorldPosition,planeMirrorMatrix.MultiplyPoint(cameraPosition));
             _cmd.SetInvertCulling(true);
             _context.ExecuteCommandBuffer(_cmd);
 
@@ -398,7 +422,7 @@ namespace Rendering.Pipeline
             
             _cmd.Clear();
             _cmd.SetInvertCulling(false);
-            _cmd.SetGlobalVector( ID_CameraWorldPosition,cameraPosition);
+            _cmd.SetGlobalVector( kCameraWorldPosition,cameraPosition);
             RenderingUtils.SetViewAndProjectionMatrices(_cmd, cameraData.GetViewMatrix(), cameraData.GetGPUProjectionMatrix(), false);
             camera.ResetCullingMatrix();
          }

@@ -1,9 +1,7 @@
-#pragma kernel Generate
 
 #include "Assets/Shaders/Library/Common.hlsl"
-
-float3 _PlaneNormal;
-float3 _PlanePosition;
+#pragma multi_compile_local _ _PLANE _SPHERE
+#pragma kernel Generate
 
 uint _SAMPLE_COUNT;
 float4 _Result_TexelSize;
@@ -13,16 +11,33 @@ RWTexture2D<float4> _Result;
 Texture2D<float> _CameraDepthTexture;
 SamplerState sampler_PointClamp;
 
+
+float3 _PlaneNormal;
+float3 _PlanePosition;
+
+float3 _SpherePosition;
+float2 _SphereRadius;
+
 void ReflectionMapping(float2 uv)
 {
     float depth = _CameraDepthTexture.SampleLevel(sampler_PointClamp, uv, 0);
     float3 positionWS=TransformNDCToWorld_VPMatrix(uv,depth);
+
+    bool valid;
+    float3 positionWSM;
+#if defined(_PLANE)
+    float normalProj = dot(positionWS - _PlanePosition, _PlaneNormal);
+    valid = normalProj > 0;
+    positionWSM = positionWS - normalProj * _PlaneNormal * 2;
+#else
+    float3 offset =  positionWS - _SpherePosition;
+    float3 sphereProj = offset - normalize(offset) * _SphereRadius.x;
+    positionWSM = offset - sphereProj*2 + _SpherePosition;
+    valid = sqrDistance(offset) > _SphereRadius.y;
+#endif
     
-    float normalProj = dot(positionWS.xyz - _PlanePosition, _PlaneNormal);
-    float3 positionWSM = positionWS.xyz - normalProj * _PlaneNormal * 2;
     float4 positionCSM = TransformWorldToHClip(positionWSM);
-    
-    if (normalProj>.2&& positionCSM.w > 0 && DepthLesser( depth,Z_END))
+    if (valid && positionCSM.w > 0 && DepthLesser( depth,Z_END))
     {
         half2 uvM=0.h;
         half depthM = 0.h;
@@ -36,6 +51,7 @@ void ReflectionMapping(float2 uv)
         _Result[resultIDM]= float4(_Input.SampleLevel(sampler_PointClamp, uv, 0).rgb,1);
     }
 }
+
 [numthreads(8, 8, 1)]
 void Generate(uint2 id : SV_DispatchThreadID)
 {

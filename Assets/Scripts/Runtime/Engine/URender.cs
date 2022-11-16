@@ -304,6 +304,29 @@ public static class URender
         }
     }
 
+    public static LocalKeyword[] GetLocalKeywords<T>(this ComputeShader _compute) where T:Enum
+    {
+        var keywords = UEnum.GetEnums<T>();
+        LocalKeyword[] localKeywords = new LocalKeyword[keywords.Length];
+        for (int i = 0; i < keywords.Length; i++)
+            localKeywords[i] = new LocalKeyword(_compute,keywords[i].ToString());
+        return localKeywords;
+    }
+
+    public static void EnableLocalKeywords<T>(this CommandBuffer _buffer,ComputeShader _shader,LocalKeyword[] _keywords,T _value) where T:Enum
+    {
+        int index = UEnum.GetIndex(_value);
+        var keywords = UEnum.GetEnums<T>();
+        LocalKeyword[] localKeywords = new LocalKeyword[keywords.Length];
+        for (int i = 0; i < keywords.Length; i++)
+        {
+            if(i==index)
+                _buffer.EnableKeyword(_shader,_keywords[i]);
+            else
+                _buffer.DisableKeyword(_shader,_keywords[i]);
+        }
+    }
+
     // public static GFrustum CalculatePerspectiveFrustum(this Camera _camera)
     // {
     //     Quaternion rotation = _camera.transform.rotation;

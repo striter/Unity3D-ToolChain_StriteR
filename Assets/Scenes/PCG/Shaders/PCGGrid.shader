@@ -29,6 +29,7 @@ Shader "PCG/Grid"
             struct a2v
             {
                 float3 positionOS : POSITION;
+                float3 normalOS :NORMAL;
                 float2 uv : TEXCOORD0;
                 float4 color:COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -65,6 +66,7 @@ Shader "PCG/Grid"
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
                 float3 positionWS = TransformObjectToWorld(v.positionOS);
+                float3 normalWS = TransformObjectToWorldNormal(v.normalOS);
                 float timeElapsed = _Time.y-_StartTime;
                 [branch]
                 if (_Forward != 0)
@@ -82,12 +84,12 @@ Shader "PCG/Grid"
                     o.color = lerp(INSTANCE(_Color),INSTANCE(_GridColor),v.color.r);
                     o.color.a *= lerp(edgeAlpha,gridAlpha ,v.color.r) + (1-step(_StartTime,_Time.y));
                     
-                    positionWS.y += lerp(edgeSpread*2,gridSpread*2,v.color.r);
+                    positionWS += normalWS*lerp(edgeSpread*5,gridSpread*5,v.color.r);
                 }
                 else
                 {
                     float param = timeElapsed*1.5;
-                    positionWS.y += param*.5;
+                    positionWS += normalWS*param*.5;
                     o.color = float4(_Color.rgb,saturate(1-param)*(1-v.color.r)*_Color.a);
                 }
                 o.uv = TRANSFORM_TEX_INSTANCE(v.uv, _MainTex);

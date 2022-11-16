@@ -35,6 +35,7 @@ Shader "PCG/Structure"
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile _ _ADDITIONAL_LIGHTS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
+            #pragma multi_compile_fog
 
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_EmissionTex);SAMPLER(sampler_EmissionTex);
@@ -57,8 +58,14 @@ Shader "PCG/Structure"
 				clip(albedo.a-.1f);
 				return albedo.rgb * color * _Color;
 			}
+
+			float3 GetEmissionOverride(float3 color)
+			{
+				return step(max(color),.01)*_EmissionColor;
+			}
 			
 			#define GET_ALBEDO(i) GetAlbedoOverride(i.uv,i.color.rgb);
+			#define GET_EMISSION(i) GetEmissionOverride(i.color.rgb);
 			#include "Assets/Shaders/Library/BRDF/BRDFLighting.hlsl"
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			

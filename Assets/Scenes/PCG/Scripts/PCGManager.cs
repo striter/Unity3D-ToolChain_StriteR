@@ -28,6 +28,7 @@ namespace PCG
         private ModuleManager m_Module;
         private SimplexManager m_Simplex;
         private PCGCamera m_Camera;
+        private PCGEnvironment m_Environment;
         private IPolyGridControl[] m_Controls;
 
         //Executions
@@ -50,7 +51,8 @@ namespace PCG
             m_Module = transform.Find("Module").GetComponent<ModuleManager>();
             m_Simplex = transform.Find("Simplex").GetComponent<SimplexManager>();
             m_Camera = transform.Find("Camera").GetComponent<PCGCamera>();
-            m_Controls = new IPolyGridControl[]{ m_Grid,m_Module,m_Simplex,m_Camera };
+            m_Environment = transform.Find("Environment").GetComponent<PCGEnvironment>();
+            m_Controls = new IPolyGridControl[]{ m_Grid,m_Module,m_Simplex,m_Camera,m_Environment };
             m_Controls.Traversal(p=>p.Init());
 
             m_Grid.Setup(m_GridData);
@@ -121,10 +123,12 @@ namespace PCG
                 SavePersistent();
             }
 
-            // touch.Input_SingleDrag(m_Camera.SetDrag, m_Camera.Drag, .0f, true);
             var drag = touch.CombinedDrag() * _deltaTime * 5f;
+            m_Camera.Rotate(drag.y,drag.x);
+            if (touch.Count > 1)
+                m_Environment.Rotate(drag.y, drag.x);
             var pinch = touch.CombinedPinch() * _deltaTime * 5f;
-            m_Camera.Rotate(drag.y, drag.x);
+            // touch.Input_SingleDrag(m_Camera.SetDrag, m_Camera.Drag, .0f, true);
             m_Camera.Pinch(pinch);
         }
 

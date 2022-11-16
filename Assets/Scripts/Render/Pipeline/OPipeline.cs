@@ -7,7 +7,7 @@ namespace Rendering
     public enum EReflectionSpace
     {
         ScreenSpace_Undone,
-        PlanarScreenSpace,
+        ScreenSpaceGeometry,
         PlanarMirrorSpace,
     }
 

@@ -286,8 +286,6 @@
 				half metallic=INSTANCE(_Metallic);
 				half ao=1.h;
 				half anisotropic=INSTANCE(_AnisoTropicValue);
-				half sssInfluence = INSTANCE(_SSSNormalInfluence);
-				half sssIntensity = INSTANCE(_SSSIntensity);
 				#if _PBRMAP
 					half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
 					glossiness *= (1.h - mix.r) * (1.h - mix.r);
@@ -318,6 +316,8 @@
 	   
 				finalCol+=BRDFLighting(surface,mainLight);
 				// #if _SSS
+				// half sssInfluence = INSTANCE(_SSSNormalInfluence);
+				// half sssIntensity = INSTANCE(_SSSIntensity);
 				// 	float thickness=SAMPLE_TEXTURE2D(_ThicknessMap,sampler_ThicknessMap,baseUV);
 				// 	finalCol += SSSLighting(thickness,sssInfluence,sssIntensity,mainLight,surface.normal,surface.viewDir)*surface.diffuse;
 				// #endif

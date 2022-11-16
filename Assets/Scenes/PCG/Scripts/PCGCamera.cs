@@ -84,7 +84,7 @@ namespace PCG
         
         public void Rotate(float _pitch, float _yaw)
         {
-            m_PitchBase = Mathf.Clamp(m_PitchBase + _pitch, -90f, 90);
+            m_PitchBase += _pitch;
             m_YawBase += _yaw;
         }
         

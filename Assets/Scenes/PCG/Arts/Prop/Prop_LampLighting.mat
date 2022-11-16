@@ -40,7 +40,7 @@ Material:
     - _BendStrength: 1
     - _Color: 0
     - _ColorSample: 0
-    - _Density: 4.52
+    - _Density: 6
     - _Depth: 1
     - _DepthSample: 1
     - _DstBlend: 1
