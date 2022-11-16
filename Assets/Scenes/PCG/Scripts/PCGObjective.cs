@@ -149,6 +149,7 @@ namespace PCG
         public Quad<GridID> m_Indexes { get; }
         public Vector3 position { get; }
         public Quaternion rotation { get; private set; }
+        public Vector3 forward { get; }
         
         public TrapezoidQuad m_ShapeOS { get; private set; }
         public TrapezoidQuad m_ShapeWS { get; private set; }
@@ -163,8 +164,9 @@ namespace PCG
             
             var shapeWS = new GQuad( m_Vertices.Convert(p => p.m_Position));
             position = shapeWS.GetBaryCenter();
-            rotation = Quaternion.LookRotation(m_Vertices.R.m_Position - m_Vertices.B.m_Position,m_ShapeWS.normal);
-
+            forward = m_Vertices.R.m_Position - m_Vertices.B.m_Position;
+            rotation = Quaternion.LookRotation(forward,m_ShapeWS.normal);
+            
             var invRotation = Quaternion.Inverse(rotation);
             m_ShapeOS = new TrapezoidQuad(m_Vertices.Convert(p=>invRotation*(p.m_Position-position)),m_Vertices.Convert(p=>invRotation*p.m_Normal));
         }

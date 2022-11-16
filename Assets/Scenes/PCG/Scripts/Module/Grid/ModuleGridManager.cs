@@ -433,8 +433,6 @@ namespace PCG.Module
         [Header("2 Dimension")]
         public bool m_VertexGizmos;
         public bool m_QuadGizmos;
-        [MFoldout(nameof(m_QuadGizmos),true)] public bool m_CenterDirectionGizmos;
-        [MFoldout(nameof(m_QuadGizmos),true)] public bool m_EdgeDirectionGizmos;
         [MFoldout(nameof(m_QuadGizmos),true)] public bool m_RelativeQuadGizmos;
         [Header("3 Dimension")]
         public bool m_CornerGizmos;
@@ -479,26 +477,6 @@ namespace PCG.Module
                             Gizmos.color = UColor.IndexToColor(i);
                             if(m_GridQuads.Contains(quad.m_NearbyQuadCW[i]))
                                 Gizmos_Extend.DrawLine(quad.transform.position,m_GridQuads[quad.m_NearbyQuadCW[i]].Quad.position,.4f);
-                        }
-                    }
-
-                    if (m_CenterDirectionGizmos)
-                    {
-                        Gizmos.matrix = quad.transform.localToWorldMatrix;
-                        for (int i = 0; i < 4; i++)
-                        {
-                            Gizmos.color = UColor.IndexToColor(i);
-                            Gizmos_Extend.DrawLine(Vector3.zero, Quaternion.Euler(0f,quad.m_EdgeNormalsCW[i],0f)*Vector3.forward,.8f);
-                        }
-                    }
-                    
-                    if (m_EdgeDirectionGizmos)
-                    {
-                        Gizmos.matrix = quad.transform.localToWorldMatrix;
-                        for (int i = 0; i < 4; i++)
-                        {
-                            Gizmos.color = UColor.IndexToColor(i);
-                            Gizmos_Extend.DrawLine(Vector3.zero, Quaternion.Euler(0f,quad.m_EdgeDirectionsCW[i],0f)*Vector3.forward,.8f);
                         }
                     }
                 }

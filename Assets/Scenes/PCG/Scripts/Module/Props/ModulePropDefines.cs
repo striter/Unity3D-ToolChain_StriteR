@@ -108,27 +108,10 @@ namespace PCG.Module.Prop
         
         public static void OrientedToObjectVertex(int _orientation,
             Vector3 _orientedVertex, TrapezoidQuad _quadShape,out Vector3 _objectPosition,
-            Quaternion _orientedRotation,Quad<float> _centerRotations,Quad<float> _edgeRotations,out Quaternion _objectRotation)
+            Quaternion _orientedRotation,out Quaternion _objectRotation)
         {
             _objectPosition = OrientedToObjectVertex(_quadShape,_orientedVertex,_orientation); 
-
-            float rotateYaw = _orientedRotation.eulerAngles.y;
-            int orientationOffset = (int)rotateYaw / 90;
-            int desireOrientation = (_orientation + orientationOffset)%4;
-            float yawDelta = (rotateYaw - orientationOffset * 90) / 90f;
-            
-            //Get Center Orientation
-            float centerYaw = InterpolateYaw(_centerRotations[desireOrientation],  _centerRotations[(desireOrientation +1) % 4] , yawDelta) - 90f;
-
-            //Get Edge Orientation
-            int edgeOrientation = (desireOrientation + 3)%4;
-            float edgeYaw = InterpolateYaw( _edgeRotations[edgeOrientation] , _centerRotations[(edgeOrientation +1) % 4] , yawDelta) + 90f;
-            
-            //Do Interpolate
-            Vector2 centeredUV = new Vector2(_orientedVertex.x, _orientedVertex.z) - Vector2.one * .5f;
-            float edgeFactor =Mathf.Clamp01(Mathf.Max(Mathf.Abs(centeredUV.x),Mathf.Abs(centeredUV.y))*2f);
-            float finalYaw = InterpolateYaw(centerYaw ,edgeYaw,edgeFactor) - rotateYaw;
-            _objectRotation = Quaternion.Euler(0f,finalYaw,0f) * _orientedRotation;
+            _objectRotation = Quaternion.Euler(0f,_orientation*90,0f) * _orientedRotation;
         }
 
     }

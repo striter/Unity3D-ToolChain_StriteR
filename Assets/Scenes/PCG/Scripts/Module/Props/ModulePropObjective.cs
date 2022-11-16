@@ -214,8 +214,7 @@ namespace PCG.Module.Prop
             m_MeshFilter.sharedMesh = _meshLibrary[_propData.meshIndex];
             m_MeshRenderer.sharedMaterials = _propData.embedMaterialIndex.Select(p=>_materialLibrary[p]).ToArray();
 
-            DModuleProp.OrientedToObjectVertex(_orientation,_propData.position,_voxel.m_Quad.m_ShapeOS,out var objectPosition,
-                _propData.rotation,_voxel.m_Quad.m_EdgeNormalsCW,_voxel.m_Quad.m_EdgeDirectionsCW,out var objectRotation);
+            DModuleProp.OrientedToObjectVertex(_orientation,_propData.position,_voxel.m_ShapeOS,out var objectPosition,  _propData.rotation, out var objectRotation);
             Transform.position = _voxel.Transform.localToWorldMatrix.MultiplyPoint(objectPosition);
             Transform.rotation = _voxel.Transform.rotation * objectRotation;
             Transform.localScale = Vector3.zero;

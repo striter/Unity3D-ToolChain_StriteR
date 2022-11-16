@@ -50,8 +50,6 @@ namespace PCG.Module
         Transform Transform { get; }
         PCGQuad Quad { get; }
         TrapezoidQuad m_ShapeOS { get; }
-        Quad<float> m_EdgeNormalsCW { get; }
-        Quad<float> m_EdgeDirectionsCW { get; }
         Quad<GridID> m_NearbyQuadCW { get;}
     }
 
