@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Geometry;
-using Geometry.Voxel;
 using UnityEngine;
 
 namespace ExampleScenes.Algorithm.Geometry

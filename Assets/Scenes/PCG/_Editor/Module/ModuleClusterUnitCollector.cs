@@ -6,7 +6,6 @@ using PCG.Module;
 namespace PCG.Baking
 {
     using Geometry;
-    using Geometry.Voxel;
     using UnityEngine;
     public class ModuleClusterUnitCollector : MonoBehaviour
     {

@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using Geometry.Voxel;
+using Geometry;
 using UnityEngine;
 namespace ExampleScenes.Algorithm.Geometry
 {

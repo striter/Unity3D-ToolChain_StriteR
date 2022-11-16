@@ -8,7 +8,6 @@ using UnityEngine;
 
 namespace PCG.Module.Prop
 {
-    using static PCGDefines<int>;
     public class ModulePropContainer : PoolBehaviour<PCGID>,IModuleStructureElement,IButterflyAttractions
     {
         public IVoxel m_Voxel { get; private set; }
@@ -81,19 +80,22 @@ namespace PCG.Module.Prop
                     continue;
 
                 var moduleSet = DModule.Collection.m_ModuleLibrary[propType];
-                if (!moduleSet.m_Decorations.decorationSets[propData.propIndex].GetOrientedProp(moduleSet.m_ClusterType,propData.propByte, out var decorationData, out var _orientation))
+                if (!moduleSet.m_Decorations.decorationSets[propData.propIndex].GetOrientedProp(moduleSet.m_ClusterType,propData.propByte, out var decorationData, out var orientation))
                     continue;
 
                 var propSet = decorationData.possibilities[(int)(m_Random*decorationData.possibilities.Length)];
                 foreach (var prop in propSet.props)
                 {
-                    var propElement= _propPool.Spawn().Init(m_Voxel,prop,_orientation,DModule.Collection.m_MeshLibrary,DModule.Collection.m_MaterialLibrary);
+                    var propElement= _propPool.Spawn().Init(m_Voxel,prop,orientation,DModule.Collection.m_MeshLibrary,DModule.Collection.m_MaterialLibrary);
                     propElement.Transform.SetParent(transform);
                     m_Props.Add(propElement);
                 }
             }
             
-            m_Props.Collect(p => p.m_Type == EModulePropType.Flower).Select(p =>new FBoidsVertex(){position = p.Transform.position + Vector3.up * .5f * KPCG.kPolyHeight,rotation = p.Transform.rotation}).FillList(m_ButterflyPositions);
+            m_Props.Collect(p => p.m_Type == EModulePropType.Flower).Select(
+                p =>new FBoidsVertex() {
+                    position = p.Transform.position,rotation = p.Transform.rotation
+                }).FillList(m_ButterflyPositions);
             RefreshLighting();
         }
         

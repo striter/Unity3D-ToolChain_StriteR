@@ -1,4 +1,4 @@
-﻿using Procedural.Geometry;
+﻿using Geometry.Explicit.Procedural;
 using UnityEngine;
 
 namespace UnityEditor.Extensions

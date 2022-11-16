@@ -7,7 +7,6 @@ using UnityEngine;
 
 namespace PCG.Module.Prop
 {
-    using static PCGDefines<int>;
     public class ModulePath : PoolBehaviour<PCGID>,IModuleStructureElement
     {
         public IVoxel m_Voxel { get; private set; }
@@ -49,11 +48,7 @@ namespace PCG.Module.Prop
             TSPoolList<Vector3>.Spawn(out var normals);
             TSPoolList<Vector4>.Spawn(out var tangents);
 
-            var shapeQuad = m_Voxel.m_Quad.m_ShapeOS;
-        
-            var orientedLeft = shapeQuad[(orientation+1)%4]-shapeQuad[orientation];
-            var rotateAngle = KMath.kRad2Deg*UMath.GetRadClockWise(Vector2.left, orientedLeft);
-            var directionRotation = Quaternion.Euler(0f, rotateAngle, 0f);
+            var directionRotation = Quaternion.Euler(0f, orientation*90, 0f);
             foreach (var fragment in pathData.m_MeshFragments)
             {
                 vertices.Clear();
@@ -67,7 +62,7 @@ namespace PCG.Module.Prop
                     var srcNormal = fragment.normals[i];
                     var srcTangents = fragment.tangents[i];
                     
-                    vertices.Add(DModuleProp.OrientedToObjectVertex(srcVertex,orientation,shapeQuad));
+                    vertices.Add(DModuleProp.OrientedToObjectVertex(m_Voxel.m_ShapeOS,srcVertex,orientation));
                     normals.Add(directionRotation*srcNormal);
                     tangents.Add((directionRotation*srcTangents).ToVector4(srcTangents.w));
                 }

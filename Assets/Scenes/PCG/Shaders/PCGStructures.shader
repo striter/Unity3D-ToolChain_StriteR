@@ -53,7 +53,9 @@ Shader "PCG/Structure"
 			
 			float3 GetAlbedoOverride(float2 uv,float3 color)
 			{
-				return SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, uv).rgb* color * _Color;
+				float4 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, uv);
+				clip(albedo.a-.1f);
+				return albedo.rgb * color * _Color;
 			}
 			
 			#define GET_ALBEDO(i) GetAlbedoOverride(i.uv,i.color.rgb);

@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using Geometry;
-using Geometry.Voxel;
 using PCG.Module.Cluster;
 using TPool;
 using TPoolStatic;
@@ -11,7 +9,6 @@ using UnityEngine;
 
 namespace PCG.Module.Prop
 {
-    using static PCGDefines<int>;
     public class ModulePathCollapse
     {
         public bool m_Collapsed { get; private set; }
@@ -26,17 +23,30 @@ namespace PCG.Module.Prop
             m_Collapsed = false;
             m_Result = KQuad.kFalse;
 
-            m_Priority = _voxel.Identity.GetHashCode(); //int.MinValue + _voxel.Identity.location.x * 1000 + _voxel.Identity.location.y * 1000000;
+            m_Priority = _voxel.Identity.GetHashCode(); 
             m_Random = Noise.Value.Unit1f1((float)m_Priority/ int.MaxValue);
             return this;
         }
 
-        public void Fill()
+        public void Fill(Dictionary<PCGID,ModulePathCollapse> _voxels)
         {
             m_Possibilities.Clear();
             foreach (var fillPossibility in DModuleProp.kAllPossibilities)
             {
-                if (UEnum.GetEnums<EQuadFacing>().LoopIndex().Any(_restriction => !m_Voxel.m_CubeSidesExists.IsFlagEnable((int)_restriction.value) && fillPossibility[_restriction.index]))
+                bool skip = false;
+                for (int i = 0; i < 4; i++)
+                {
+                    if(!fillPossibility[i])
+                        continue;
+                    
+                    if (!m_Voxel.m_CubeSidesExists.IsFlagEnable(i)||!_voxels.ContainsKey(m_Voxel.m_CubeSides[i]))
+                    {
+                        skip = true;
+                        break;
+                    }
+                }
+
+                if (skip)
                     continue;
                 m_Possibilities.Add(fillPossibility);
             }
@@ -199,15 +209,15 @@ namespace PCG.Module.Prop
         {
             enabled = true;
             m_Type = _propData.type;
+            m_Scale = _propData.scale;
             Transform.gameObject.name = _voxel.Identity.ToString();
             m_MeshFilter.sharedMesh = _meshLibrary[_propData.meshIndex];
             m_MeshRenderer.sharedMaterials = _propData.embedMaterialIndex.Select(p=>_materialLibrary[p]).ToArray();
 
             DModuleProp.OrientedToObjectVertex(_orientation,_propData.position,_voxel.m_Quad.m_ShapeOS,out var objectPosition,
                 _propData.rotation,_voxel.m_Quad.m_EdgeNormalsCW,_voxel.m_Quad.m_EdgeDirectionsCW,out var objectRotation);
-            Transform.position =  _voxel.Transform.localToWorldMatrix.MultiplyPoint(objectPosition);
+            Transform.position = _voxel.Transform.localToWorldMatrix.MultiplyPoint(objectPosition);
             Transform.rotation = _voxel.Transform.rotation * objectRotation;
-            m_Scale = KPCG.kPolyScale.mul(_propData.scale);
             Transform.localScale = Vector3.zero;
             
             m_Show = true;
@@ -226,18 +236,10 @@ namespace PCG.Module.Prop
             if (!m_Counter.m_Playing)
                 return false;
             m_Counter.Tick(_deltaTime);
-            Transform.localScale = m_Scale * (m_Show?m_Counter.m_TimeElapsedScale:m_Counter.m_TimeLeftScale);
+            Transform.localScale = (m_Show?m_Counter.m_TimeElapsedScale:m_Counter.m_TimeLeftScale)*m_Scale*DPCG.kUnitSize*2;
             if (!m_Counter.m_Playing&&!m_Show)
                 return true;
             return false;
-        }
-
-        
-        public override void OnPoolRecycle()
-        {
-            base.OnPoolRecycle();
-            // m_MeshRenderer.sharedMaterials = null;
-            // m_MeshFilter.sharedMesh = null;
         }
     }
 }

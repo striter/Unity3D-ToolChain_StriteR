@@ -168,6 +168,21 @@ public static class UCollection
             return minValue;
         }
         
+        public static T Min<T>(this IEnumerable<T> _collection, Func<T, float> _getValue)
+        {
+            T minElement = default;
+            float minValue = float.MaxValue;
+            foreach (var (index,element) in _collection.LoopIndex())
+            {
+                var value = _getValue(element);
+                if(minValue<value)
+                    continue;
+                minValue = value;
+                minElement = element;
+            }
+            return minElement;
+        }
+        
         public static int MaxIndex<T>(this IEnumerable<T> _collection, Func<T, int> _sorting)
         {
             int maxIndex = 0;
@@ -477,9 +492,9 @@ public static class UCollection
     }
 
     public static T Last<T>(this T[] _array)=> _array[_array.Length - 1];
-    public static void FillArray<T>(this IEnumerable<T> _collection, T[] _array)
+    public static void FillArray<T>(this IEnumerable<T> _collection, T[] _array,int _offset=0)
     {
-        int index=0;
+        int index=_offset;
         foreach (var element in _collection)
             _array[index++] = element;
     }

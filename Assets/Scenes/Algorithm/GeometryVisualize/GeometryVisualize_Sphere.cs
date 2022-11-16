@@ -1,5 +1,4 @@
 ﻿using Geometry;
-using Geometry.Voxel;
 using UnityEngine;
 namespace ExampleScenes.Algorithm.Geometry
 {

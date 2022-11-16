@@ -9,43 +9,19 @@ using UnityEngine;
 
 namespace PCG
 {
-    using static PCGDefines<int>;
     public enum EQuadGeometry
     {
         Full,
         Half,
     }
 
-    public static class KPCG
-    {
-        public static float kPolySize;
-        public static float kPolyHeight;
-        public static float kPolyHeightH;
-        public static Vector3 kCornerHeightVector;
-        public static Vector3 kCornerHeightVectorH;
-        public static Vector3 kPolyScale;
-
-        public static void Setup(float polySize, float polyHeight)
-        {
-            kPolySize = polySize;
-            kPolyHeight = polyHeight;
-            kPolyHeightH = kPolyHeight / 2f;
-            kCornerHeightVector = kPolyHeight * Vector3.up;
-            kCornerHeightVectorH = kPolyHeightH * Vector3.up;
-            kPolyScale = new Vector3(kPolySize,kPolyHeight,kPolySize);
-        }
-        
-        public static Vector3 GetPlaneHeight(byte _height) => kCornerHeightVector * _height;
-        public static Vector3 GetCornerHeight(int _height)=> kCornerHeightVectorH+kCornerHeightVector * _height;
-        public static Vector3 GetVoxelHeight(int _height)=>  kCornerHeightVector * _height;
-    }
-
     public static class DPCG
     {
-        public static Vector3 GetCornerHeight(this PCGID _voxelID) => KPCG.GetCornerHeight(_voxelID.height);
-        public static Vector3 GetCornerPosition(this PolyVertex _vertex, byte _height)=> _vertex.m_Coord.ToPosition() + KPCG.GetCornerHeight(_height);
-        public static Vector3 GetVoxelHeight(this PCGID _voxelID) => KPCG.GetVoxelHeight(_voxelID.height);
-        public static Vector3 GetVoxelPosition(this PolyQuad _quad,byte _height) => _quad.m_CenterWS.ToPosition() + KPCG.GetVoxelHeight(_height);
+        public const float kGridSize = 50f;
+        public const float kUnitSize = 1.5f;
+        
+        public static Vector3 GetCornerPosition(this PCGVertex _vertex, byte _height) =>  _vertex.m_Position + _vertex.m_Normal * (.5f + _height)*kUnitSize*2;
+        public static Vector3 GetVoxelPosition(this PCGQuad _quad,byte _height) => _quad.position + _quad.m_ShapeWS.normal*_height*kUnitSize*2;
         
         public static bool TryDownward(this PCGID _src, out PCGID _dst)
         {
@@ -74,7 +50,7 @@ namespace PCG
         }
 
         private static readonly List<PCGID> kIdentityHelpers=new List<PCGID>();
-        public static IList<PCGID> IterateAdjacentCorners(this PolyVertex _vertex,byte _height)
+        public static IList<PCGID> IterateAdjacentCorners(this PCGVertex _vertex,byte _height)
         {
             kIdentityHelpers.Clear();
             var srcID = new PCGID(_vertex.m_Identity, _height);
@@ -86,7 +62,7 @@ namespace PCG
                 kIdentityHelpers.Add(upperID);
             return kIdentityHelpers;
         }
-        public static IList<PCGID> IterateNearbyCorners(this PolyVertex _vertex, byte _height)
+        public static IList<PCGID> IterateNearbyCorners(this PCGVertex _vertex, byte _height)
         {
             kIdentityHelpers.Clear();
             var nearbyVertices = _vertex.IterateNearbyVertices();
@@ -95,7 +71,7 @@ namespace PCG
                 kIdentityHelpers.Add(new PCGID(nearbyVertices[i].m_Identity,_height));
             return kIdentityHelpers;
         }
-        public static IList<PCGID> IterateIntervalCorners(this PolyVertex _vertex, byte _height)
+        public static IList<PCGID> IterateIntervalCorners(this PCGVertex _vertex, byte _height)
         {
             kIdentityHelpers.Clear();
             var intervalVertices = _vertex.IterateIntervalVertices();
@@ -105,7 +81,7 @@ namespace PCG
             return kIdentityHelpers;
         }
         
-        public static IList<PCGID> IterateRelativeVoxels(this PolyVertex _vertex,byte _height)
+        public static IList<PCGID> IterateRelativeVoxels(this PCGVertex _vertex,byte _height)
         {
             kIdentityHelpers.Clear();
             var nextHeight = UByte.ForwardOne(_height);

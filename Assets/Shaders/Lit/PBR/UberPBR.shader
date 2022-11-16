@@ -69,8 +69,6 @@
 				INSTANCING_PROP(float4,_MainTex_ST)
 				INSTANCING_PROP(float4, _Color)
 				INSTANCING_PROP(float4, _EmissionColor)
-				INSTANCING_PROP(float,_Glossiness)
-				INSTANCING_PROP(float,_Metallic)
 				INSTANCING_PROP(float,_DetailBlendMode)
 				INSTANCING_PROP(float,_AnisoTropicValue)
 				INSTANCING_PROP(float4,_DetailNormalTex_ST)
@@ -79,6 +77,8 @@
 				INSTANCING_PROP(float,_DepthBufferScale)
 				INSTANCING_PROP(int ,_ParallaxCount)
 				INSTANCING_PROP(float3,_MatCapColor)
+				INSTANCING_PROP(float,_Glossiness)
+				INSTANCING_PROP(float,_Metallic)
 
 				INSTANCING_PROP(float,_SSSIntensity)
 				INSTANCING_PROP(float,_SSSNormalInfluence)

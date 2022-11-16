@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Geometry.Polygon;
-using Geometry.Voxel;
+using Geometry;
 using UnityEngine;
 
 namespace UnityEditor.Extensions
@@ -12,7 +10,7 @@ namespace UnityEditor.Extensions
         static Vector3[] RenegerateNormals(int[] _indices, Vector3[] _verticies, bool _weightedNormals =false)
         {
             Vector3[] normals = new Vector3[_verticies.Length];
-            GTrianglePolygon[] polygons = UPolygon.GetPolygons(_indices);
+            PTriangle[] polygons = UPolygon.GetPolygons(_indices);
             foreach(var polygon in polygons)
             {
                 GTriangle triangle = new GTriangle(polygon.GetVertices(_verticies));

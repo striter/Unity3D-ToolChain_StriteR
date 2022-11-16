@@ -1,10 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Procedural;
-using Procedural.Hexagon;
-using Procedural.Hexagon.Area;
-using Procedural.Hexagon.Geometry;
+using Geometry;
 using UnityEngine;
 
 namespace PCG
@@ -12,21 +7,26 @@ namespace PCG
     [Serializable]
     public struct GridVertexData
     {
-        public HexCoord identity;
-        public Coord coord;
+        public Vector3 position;
+        public Vector3 normal;
         public bool invalid;
+    }
+
+    [Serializable]
+    public struct GridQuadData
+    {
+        public PQuad vertices;
     }
     
     [Serializable]
-    public struct GridAreaData
+    public struct GridChunkData
     {
-        public HexagonArea identity;
-        public GridVertexData[] m_Vertices;
-        public HexQuad[] m_Quads;
+        public GridQuadData[] quads;
     }
 
     public class GridCollection : ScriptableObject
     {
-        public GridAreaData[] areaData;
+        public GridVertexData[] vertices;
+        public GridChunkData[] chunks;
     }
 }

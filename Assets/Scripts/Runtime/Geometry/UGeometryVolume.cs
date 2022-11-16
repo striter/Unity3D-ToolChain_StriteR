@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using TPoolStatic;
-using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Voxel
+namespace Geometry
 {
     public static class UGeometryVolume
     {
@@ -32,7 +29,7 @@ namespace Geometry.Voxel
                 yield return new Quad<Vector3>(quad.vB, quad.vL, quad.vF, quad.vR).ExpandToQube(_halfSize, 0f);
         }
 
-        public static Quad<T> GetQuad<T>(this CubeFacing<T> _facing) => new Quad<T>(_facing.fBL, _facing.fLF, _facing.fFR, _facing.fRB);
+        public static Quad<T> GetQuad<T>(this CubeSides<T> _sides) => new Quad<T>(_sides.fBL, _sides.fLF, _sides.fFR, _sides.fRB);
 
         public static void FillFacingQuadTriangle(this Qube<Vector3> _qube, ECubeFacing _facing, List<Vector3> _vertices, List<int> _indices,
             List<Vector2> _uvs, List<Vector3> _normals, List<Color> _colors = null, Color _color = default)
@@ -399,7 +396,7 @@ namespace Geometry.Voxel
                 { ECubeFacing.RB,new []{ EQubeCorner.DR, EQubeCorner.TR, EQubeCorner.DB, EQubeCorner.TB}}
             };
 
-        public static Quad<T> GetSideFacing<T>(this CubeFacing<T> _facing) => new Quad<T>(_facing.fBL,_facing.fLF,_facing.fFR,_facing.fRB);
+        public static Quad<T> GetSideFacing<T>(this CubeSides<T> _sides) => new Quad<T>(_sides.fBL,_sides.fLF,_sides.fFR,_sides.fRB);
         public static EQubeCorner[] FacingCorners(this ECubeFacing _facing) => kFacingCorners[_facing];
 
         public static (T v0, T v1, T v2, T v3) GetFacingCornersCW<T>(this Qube<T> _qube, ECubeFacing _facing) where T : struct

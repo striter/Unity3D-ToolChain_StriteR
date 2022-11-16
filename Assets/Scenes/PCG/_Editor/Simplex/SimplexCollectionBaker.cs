@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
-using Geometry.Voxel;
 using MeshFragment;
 using PCG.Simplex;
 using PCG.Module.Cluster;

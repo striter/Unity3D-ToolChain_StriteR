@@ -1,6 +1,5 @@
 
 using UnityEngine;
-using Geometry.Voxel;
 
 public static class DRuntime
 {
@@ -39,6 +38,6 @@ namespace Geometry
 
     public partial class KCubeFacing
     {
-        public static readonly CubeFacing<Vector3> kUnitFacing = new CubeFacing<Vector3>(Vector3.back*.5f,Vector3.left*.5f,Vector3.forward*.5f,Vector3.right*.5f,Vector3.up*.5f,Vector3.down*.5f);
+        public static readonly CubeSides<Vector3> kUnitSides = new CubeSides<Vector3>(Vector3.back*.5f,Vector3.left*.5f,Vector3.forward*.5f,Vector3.right*.5f,Vector3.up*.5f,Vector3.down*.5f);
     }
 }

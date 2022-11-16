@@ -16,7 +16,6 @@ Material:
   - _FOAM
   - _FRESNEL
   - _NORMALTEX
-  - _WAVE
   m_InvalidKeywords:
   - EFFECT_HUE_VARIATION
   - GEOM_TYPE_LEAF
@@ -241,7 +240,7 @@ Material:
     - _Surface: 0
     - _Thickness: 0.1
     - _VF: 1
-    - _Wave: 1
+    - _Wave: 0
     - _WaveAmplitude1: -0.09
     - _WaveAmplitude2: 0.1
     - _WaveSpikeAmplitude1: 0.51

@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using Geometry.Voxel;
 using Procedural;
 using Procedural.Hexagon;
 using Procedural.Hexagon.Geometry;
@@ -13,7 +11,6 @@ namespace Geometry      //Some copy from original codes
     {
         public static Vector2 GetPoint(this Quad<Vector2> _quad, float _u,float _v)=>UMath.BilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _u,_v);
         public static float GetPoint(this Quad<float> _quad, float _u,float _v)=>UMath.BilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _u,_v);
-        
         
         public static Qube<Vector3> Resize(this Qube<Vector3> _qube, float _shrinkScale)
         {
@@ -115,26 +112,6 @@ namespace Geometry      //Some copy from original codes
 
         
         //Coord
-        
-        
-        public static int NearestPointIndex(this Quad<Coord> _quad, Coord _point) 
-        {
-            float minDistance = float.MaxValue;
-            int minIndex = 0;
-            var srcPoint = _point;
-            for (int i = 0; i < 4; i++)
-            {
-                var dstPoint = _quad[i];
-                var offset = srcPoint - dstPoint;
-                var sqrDistance = offset.x*offset.x+offset.y*offset.y;
-                if(minDistance<sqrDistance)
-                    continue;
-                minIndex = i;
-                minDistance = sqrDistance;
-            }
-            return minIndex;
-        }
-
         public static (Coord vBL, Coord vLF, Coord vFR, Coord vRB, Coord vC) GetQuadMidVertices(this Quad<Coord> _quad)
         {
             var vB = _quad.B;

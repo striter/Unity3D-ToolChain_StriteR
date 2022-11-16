@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Geometry.Polygon;
-using Geometry.Voxel;
-using UnityEditor;
+using Geometry;
 using UnityEngine;
 
 namespace UnityEditor.Extensions
@@ -199,7 +197,7 @@ namespace UnityEditor.Extensions
         public MeshEditor m_Parent { get; private set; }
         protected Mesh m_SourceMesh => m_Parent.m_SourceMesh;
         protected Mesh m_ModifingMesh => m_Parent.m_ModifingMesh;
-        protected GTrianglePolygon[] m_Polygons { get; private set; }
+        protected PTriangle[] m_Polygons { get; private set; }
         public MeshEditorHelperBase(MeshEditor _parent) { m_Parent = _parent; }
         public virtual void Begin()
         {
@@ -232,7 +230,7 @@ namespace UnityEditor.Extensions
             return ray;
         }
 
-        protected static int RayDirectedTriangleIntersect(GTrianglePolygon[] _polygons, Vector3[] _vertices, GRay _ray, out Vector3 hitPoint, out GTriangle hitTriangle)
+        protected static int RayDirectedTriangleIntersect(PTriangle[] _polygons, Vector3[] _vertices, GRay _ray, out Vector3 hitPoint, out GTriangle hitTriangle)
         {
             collisionPoint = Vector3.zero;
             float minDistance = float.MaxValue;
@@ -313,7 +311,7 @@ namespace UnityEditor.Extensions
             m_SubPolygons.Clear();
             if (_index < 0)
                 return;
-            GTrianglePolygon _mainTriangle = m_Polygons[m_SelectedPolygon];
+            PTriangle _mainTriangle = m_Polygons[m_SelectedPolygon];
             GTriangle mainTriangle = new GTriangle( _mainTriangle.GetVertices(m_Verticies));
             m_SubPolygons=m_Polygons.CollectIndex((index, triangle) => index != m_SelectedPolygon && triangle.GetEnumerator(m_Verticies).Any(subVertex => mainTriangle.IterateAny(mainVertex => mainVertex == subVertex))).ToList();
         }
@@ -368,7 +366,7 @@ namespace UnityEditor.Extensions
             if (!m_SelectingPolygon)
                 return;
 
-            GTrianglePolygon _mainTriangle = m_Polygons[m_SelectedPolygon];
+            PTriangle _mainTriangle = m_Polygons[m_SelectedPolygon];
 
             foreach (var subPolygon in m_SubPolygons)
             {

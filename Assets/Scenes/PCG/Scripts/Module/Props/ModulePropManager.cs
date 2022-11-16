@@ -9,7 +9,6 @@ using UnityEngine;
 
 namespace PCG.Module.Prop
 {
-    using static PCGDefines<int>;
     public class ModulePropManager : MonoBehaviour,IModuleControl,IModuleVoxelCallback,IModuleCollapse,IModuleStructure
     {
         public GridManager m_Grid { get; set; }

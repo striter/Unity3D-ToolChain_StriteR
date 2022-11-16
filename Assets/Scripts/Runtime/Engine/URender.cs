@@ -3,8 +3,7 @@ using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-using Geometry.Polygon;
-using Geometry.Voxel;
+using Geometry;
 using UnityEngine.Rendering;
 
 public static class URender

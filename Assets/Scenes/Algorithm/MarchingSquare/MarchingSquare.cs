@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Geometry;
-using Geometry.Voxel;
 using TPool;
 using TTouchTracker;
 using UnityEngine;

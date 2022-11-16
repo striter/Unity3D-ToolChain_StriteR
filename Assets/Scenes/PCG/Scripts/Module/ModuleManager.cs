@@ -12,7 +12,6 @@ using UnityEngine;
 
 namespace PCG.Module
 {
-    using static PCGDefines<int>;
     public class ModuleManager : MonoBehaviour,IPolyGridControl
     {
         private IModuleControl[] m_Controls;
@@ -177,9 +176,9 @@ namespace PCG.Module
         }
 
         private void OnVertexSpawn(IVertex _vertex) => m_VertexCallbacks.Traversal(_p => _p.OnPopulateVertex(_vertex));
-        private void OnVertexRecycle(SurfaceID _vertexID) => m_VertexCallbacks.Traversal(_p => _p.OnDeconstructVertex(_vertexID));
+        private void OnVertexRecycle(GridID _vertexID) => m_VertexCallbacks.Traversal(_p => _p.OnDeconstructVertex(_vertexID));
         private void OnQuadSpawn(IQuad _quad) => m_QuadCallbacks.Traversal(_p => _p.OnPopulateQuad(_quad));
-        private void OnQuadRecycle(SurfaceID _quadID) => m_QuadCallbacks.Traversal(_p => _p.OnDeconstructQuad(_quadID));
+        private void OnQuadRecycle(GridID _quadID) => m_QuadCallbacks.Traversal(_p => _p.OnDeconstructQuad(_quadID));
         private void OnCornerSpawn(ICorner _corner) => m_CornerCallbacks.Traversal(_p => _p.OnCornerConstruct(_corner));
         private void OnCornerRecycle(PCGID _cornerID) => m_CornerCallbacks.Traversal(_p => _p.OnCornerDeconstruct(_cornerID));
 

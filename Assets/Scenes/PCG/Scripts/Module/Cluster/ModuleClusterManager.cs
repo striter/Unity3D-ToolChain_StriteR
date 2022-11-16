@@ -4,7 +4,6 @@ using TPool;
 using UnityEngine;
 namespace PCG.Module.Cluster
 {
-    using static PCGDefines<int>;
     public class ModuleClusterManager : MonoBehaviour, IModuleControl,IModuleCornerCallback,IModuleVoxelCallback,IModuleCollapse,IModuleStructure
     {
         public GridManager m_Grid { get; set; }
@@ -97,8 +96,9 @@ namespace PCG.Module.Cluster
         #region Gizmos
         [Header("Gizmos")]
         public bool m_CornerGizmos;
-        [MFoldout(nameof(m_CornerGizmos),true)]public bool m_CornerStatus;
+        [MFoldout(nameof(m_CornerGizmos),true)] public bool m_CornerStatus;
         public bool m_VoxelGizmos;
+        [MFoldout(nameof(m_VoxelGizmos),true)] public bool m_VoxelQuad;
         void OnDrawGizmos()
         {
             if (m_ClusterCorners==null)
@@ -116,9 +116,9 @@ namespace PCG.Module.Cluster
                         Gizmos_Extend.DrawString(Vector3.up * .2f, $"{corner.m_Status}");
                 }
             }
-
-            foreach (var container in m_ClusterContainers)
-                container.m_VoxelGizmos = m_VoxelGizmos;
+            if(m_VoxelGizmos)
+                foreach (var container in m_ClusterContainers)
+                        container.DrawGizmos(m_VoxelQuad);
         }
     #endregion
 #endif

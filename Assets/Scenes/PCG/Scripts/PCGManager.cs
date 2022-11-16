@@ -10,7 +10,6 @@ using UnityEngine.UI;
 
 namespace PCG
 {
-    using static PCGDefines<int>;
     interface IPolyGridControl
     {
         void Init();
@@ -32,10 +31,6 @@ namespace PCG
         private IPolyGridControl[] m_Controls;
 
         //Executions
-        [Header("Constant")]
-        public float m_Width = 1f;
-        public float m_Height = 1f;
-
         private Text m_Spawning;
         private string[] m_ModuleKeys;
         private string m_ModuleSpawning;
@@ -51,7 +46,6 @@ namespace PCG
         
         private void Awake()
         {
-            KPCG.Setup(m_Width,m_Height);
             m_Grid = transform.Find("Grid").GetComponent<GridManager>();
             m_Module = transform.Find("Module").GetComponent<ModuleManager>();
             m_Simplex = transform.Find("Simplex").GetComponent<SimplexManager>();
@@ -127,7 +121,7 @@ namespace PCG
                 SavePersistent();
             }
 
-            touch.Input_SingleDrag(m_Camera.SetDrag, m_Camera.Drag, .0f, true);
+            // touch.Input_SingleDrag(m_Camera.SetDrag, m_Camera.Drag, .0f, true);
             var drag = touch.CombinedDrag() * _deltaTime * 5f;
             var pinch = touch.CombinedPinch() * _deltaTime * 5f;
             m_Camera.Rotate(drag.y, drag.x);

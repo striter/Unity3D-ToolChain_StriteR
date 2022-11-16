@@ -59,7 +59,7 @@ Shader "PCG/Foliage"
 			#include "Assets/Shaders/Library/BRDF/BRDFInput.hlsl"
 			#include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
 
-            float3 Wind(float3 positionWS,float windEffect,float _bendStrength)
+            float3 Wind(float3 positionWS,float windEffect,float _bendStrength,float3 normal,float3 tangent)
             {
                 float4 windParameters=INSTANCE(_WindFlowTex_ST);
                 float2 bendUV= positionWS.xz+_Time.y*windParameters.zw;
@@ -67,26 +67,27 @@ Shader "PCG/Foliage"
                 float2 flowSample=SAMPLE_TEXTURE2D_LOD(_WindFlowTex,sampler_WindFlowTex,bendUV,0).rg;
                 float windInput= flowSample.x-flowSample.y;
             	
-                float3x3 bendRotation=Rotate3x3(_bendStrength*windInput*Deg2Rad,float3(1,0,0));
-                float3 offset=float3(0,windEffect,0);
+                float3x3 bendRotation=Rotate3x3(_bendStrength*windInput*Deg2Rad,tangent);
 
-                float3 bendOffset=mul(bendRotation,offset);
-                bendOffset-=offset;
+                float3 bendOffset=mul(bendRotation,normal*windEffect);
+                bendOffset-=normal*windEffect;
 
                 #if _WIGGLE
 				    float wiggleDensity=INSTANCE(_WiggleDensity);
 				    float2 wiggleClip=abs((positionWS.xz+_Time.y*windParameters.zw)%wiggleDensity-wiggleDensity*.5f)/wiggleDensity;
 				    float wiggle=wiggleClip.x+wiggleClip.y;
-				    bendOffset.y +=  wiggle*INSTANCE(_WiggleStrength)*windEffect;
+				    bendOffset +=  normal*wiggle*INSTANCE(_WiggleStrength)*windEffect;
 				#endif
             	
                 return bendOffset;
             }
 			
-			float3 GetPositionWS(float3 _positionOS,float4 _color)
+			float3 GetPositionWS(float3 _positionOS,float3 _normalOS,float3 _tangentOS,float4 _color)
 			{
 				float3 positionWS = TransformObjectToWorld(_positionOS);
-				return positionWS + Wind(positionWS,_color.r,INSTANCE(_BendStrength));
+				float3 normalWS = TransformObjectToWorldNormal(_normalOS);
+				float3 tangentWS = TransformObjectToWorldDir(_tangentOS);
+				return positionWS + Wind(positionWS,_color.r,INSTANCE(_BendStrength),normalWS,tangentWS);
 			}
 			float3 GetAlbedoOverride(float2 uv,float3 color)
 			{
@@ -95,7 +96,7 @@ Shader "PCG/Foliage"
 				return sample.rgb  * _Color;
 			}
 
-			#define GET_POSITION_WS(v,o) GetPositionWS(v.positionOS,v.color)
+			#define GET_POSITION_WS(v,o) GetPositionWS(v.positionOS,v.color,v.normalOS,v.tangentOS)
 			#define GET_ALBEDO(i) GetAlbedoOverride(i.uv,i.color.rgb);
     	ENDHLSL
         Pass

@@ -7,8 +7,6 @@ using UnityEngine;
 
 namespace PCG.Module.Path
 {
-    using static PCGDefines<int>;
-
     public class ModulePathManager : MonoBehaviour, IModuleControl, IModuleVoxelCallback, IModuleCollapse , IModuleStructure
     {
         public GridManager m_Grid { get; set; }
@@ -43,6 +41,7 @@ namespace PCG.Module.Path
 
         public void Tick(float _deltaTime)
         {
+            
         }
 
         public void OnVoxelConstruct(IVoxel _voxel) => m_Paths.Spawn(_voxel.Identity).Init(_voxel);
@@ -90,7 +89,7 @@ namespace PCG.Module.Path
             }
 
             foreach (var collapse in m_VoxelPathCollapsing.Values)
-                collapse.Fill();
+                collapse.Fill(m_VoxelPathCollapsing);
             m_VoxelPathPropaganda.Sort((_a, _b) => m_VoxelPathCollapsing[_a].m_Priority > m_VoxelPathCollapsing[_b].m_Priority ? 1 : -1);
 
             TSPoolStack<PCGID>.Spawn(out var propagandaStack);

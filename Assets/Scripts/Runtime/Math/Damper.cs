@@ -6,6 +6,7 @@ using static UDamper;
 
 public enum EDamperMode
 {
+    None,
     SpringSimple,
     SpringCritical,
     SpringImplicit,
@@ -64,6 +65,10 @@ public class Damper : ISerializationCallbackReceiver
         
         switch (mode)
         {
+            case EDamperMode.None:
+            {
+                x = xd;
+            } break;
             case EDamperMode.Lerp: {
                 x = Vector3.Lerp(x,xd, 1.0f - NegExp_Fast( dt*0.69314718056f /(halfLife+float.Epsilon)));
             } break;

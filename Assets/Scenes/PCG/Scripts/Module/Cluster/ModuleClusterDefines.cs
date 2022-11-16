@@ -2,14 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Geometry;
-using Geometry.Voxel;
 using Procedural;
 using UnityEngine;
 
 namespace PCG.Module.Cluster
 {
-    using static PCGDefines<int>;
-
     public enum EClusterType
     {
         Invalid=-1,
@@ -39,9 +36,9 @@ namespace PCG.Module.Cluster
             return new Vector3(uv.x, _vertexOS.y,uv.y);
         }
 
-        public static Vector3 ModuleToObjectVertex(int _qubeIndex,int _orientation,Vector3 _orientedVertex, Quad<Coord> _quad,float _height)
+        public static Vector3 ModuleToObjectVertex(TrapezoidQuad _quads,int _orientation,Vector3 _positionUS,int _offset=0)
         {
-            float u = _orientedVertex.x, v = _orientedVertex.z;
+            float u = _positionUS.x, v = _positionUS.z;
 
             u -= 0.5f;
             v -= 0.5f;
@@ -51,15 +48,7 @@ namespace PCG.Module.Cluster
 
             u += 0.5f;
             v += 0.5f;
-            
-            var verticalOffset = _qubeIndex < 4 ? -1 : 0;
-            var B = _quad.B; 
-            var L = _quad.L;
-            var F = _quad.F;
-            var R = _quad.R;
-            var orientedX = UMath.BilinearLerp(B.x,L.x,F.x,R.x, u, v);
-            var orientedZ = UMath.BilinearLerp(B.y,L.y,F.y,R.y, u, v);
-            return new Vector3(orientedX, (_orientedVertex.y+verticalOffset) * _height, orientedZ);
+            return _quads.GetPoint(u, v, (_positionUS.y+_offset) * DPCG.kUnitSize);
         }
 
         public static byte CreateVoxelClusterByte(this Qube<ICorner> _corners,int _clusterIndex,EClusterType _clusterType)
@@ -207,7 +196,7 @@ namespace PCG.Module.Cluster
             _lined = true;
             bool lastAvailable = false;
             
-            foreach (var corner in _srcCorner.Vertex.VertexData.IterateNearbyCorners(cornerID.height))
+            foreach (var corner in _srcCorner.Vertex.Vertex.IterateNearbyCorners(cornerID.height))
             {
                 if (_corners.TryGetValue(corner, out var nearbyCorner) && DModule.IsCornerAdjacent(nearbyCorner.Type, _srcCorner.Type))
                 {

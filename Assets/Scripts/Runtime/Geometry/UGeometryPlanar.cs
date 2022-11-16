@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using Geometry.Voxel;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace Geometry
@@ -279,7 +276,7 @@ namespace Geometry
             return (vertex0+vertex1+vertex2)/3;
         }
 
-        public static bool Contains<T>(this ITriangle<T> _triangle, T _element) where T : struct,IEquatable<T>
+        public static bool MatchVertex<T>(this ITriangle<T> _triangle, T _element) where T : struct,IEquatable<T>
         {
             for (int i = 0; i < 3; i++)
                 if (_element.Equals(_triangle[i]))
@@ -293,7 +290,7 @@ namespace Geometry
             for(int i=0;i<3;i++)
             {
                 var vertex = _triangle1[i];
-                if (_triangle2.Contains(vertex))
+                if (_triangle2.MatchVertex(vertex))
                     index++;
             }
             return index;
@@ -320,7 +317,7 @@ namespace Geometry
             for (; diff1 < 3; diff1++)
             {
                 var element= _triangle1[diff1];
-                if (!_triangle2.Contains(element))
+                if (!_triangle2.MatchVertex(element))
                     break;
             }
             
@@ -328,7 +325,7 @@ namespace Geometry
             for (; diff2 < 3; diff2++)
             {
                 var element= _triangle2[diff2];
-                if (!_triangle1.Contains(element))
+                if (!_triangle1.MatchVertex(element))
                     break;
             }
             

@@ -1,5 +1,5 @@
 using System;
-using Geometry.Voxel;
+using Geometry;
 using UnityEngine;
 
 namespace PCG
@@ -39,9 +39,8 @@ namespace PCG
 
         public void Tick(float _deltaTime)
         {
-            var desireRotation = new Vector3(m_PitchBase + m_PitchZoom, m_YawBase + m_YawZoom, 0);
-            var position = m_RootPosition + Quaternion.Euler(desireRotation) * Vector3.forward * -m_Zoom;
-            var rotation = Quaternion.Euler(m_RotationDamper.Tick(_deltaTime, desireRotation));
+            var rotation = Quaternion.Euler(m_RotationDamper.Tick(_deltaTime, new Vector3(m_PitchBase + m_PitchZoom, m_YawBase + m_YawZoom, 0)));
+            var position = m_RootPosition + rotation * Vector3.forward * -m_Zoom;
             m_Camera.transform.SetPositionAndRotation( m_PositionDamper.Tick(_deltaTime,position),rotation);
             m_Camera.fieldOfView = m_Fov + m_FovZoom;
         }
@@ -71,8 +70,8 @@ namespace PCG
 
         public void Drag(Vector2 _position)
         {
-            var delta = GetDragPosition(dragOrigin) - GetDragPosition(_position);
-            m_RootPosition = rootOrigin + delta;
+            // var delta = GetDragPosition(dragOrigin) - GetDragPosition(_position);
+            // m_RootPosition = rootOrigin + delta;
         }
 
         Vector3 GetDragPosition(Vector2 _screenPos)
@@ -85,7 +84,7 @@ namespace PCG
         
         public void Rotate(float _pitch, float _yaw)
         {
-            m_PitchBase = Mathf.Clamp(m_PitchBase + _pitch, 25, 90);
+            m_PitchBase = Mathf.Clamp(m_PitchBase + _pitch, -90f, 90);
             m_YawBase += _yaw;
         }
         

@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
-using Geometry.Polygon;
-using Geometry.Voxel;
 using UnityEngine;
 
 namespace QuadricErrorsMetric
@@ -264,7 +261,7 @@ namespace QuadricErrorsMetric
             int concatVertex = vertices.Count - 1;
             for (int i = 0; i<indexes.Count;i+=3)
             {
-                var polygon = new GTrianglePolygon(indexes[i], indexes[i + 1], indexes[i + 2]);
+                var polygon = new PTriangle(indexes[i], indexes[i + 1], indexes[i + 2]);
             
                 int matchCount = 0;
                 int matchIndex=-1;

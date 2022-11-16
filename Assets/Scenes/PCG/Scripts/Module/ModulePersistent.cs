@@ -6,7 +6,6 @@ using TDataPersistent;
 
 namespace PCG
 {
-    using static PCGDefines<int>;
     [Serializable]
     public struct ModuleInput
     {

@@ -4,7 +4,6 @@ using TPoolStatic;
 
 namespace PCG.Module.Prop
 {
-    using static PCGDefines<int>;
     public static class UModuleProp
     {
         private static readonly List<PCGID> kIdentityHelper = new List<PCGID>();

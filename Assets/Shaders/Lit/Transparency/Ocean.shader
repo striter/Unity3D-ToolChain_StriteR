@@ -168,7 +168,7 @@
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-			float3 GerstnerWave(float2 uv,float4 waveST,float amplitude,float spikeAmplitude)
+			float3 GerstnerWave(float2 uv,float4 waveST,float amplitude,float spikeAmplitude,float3 biTangent,float3 normal,float3 tangent)
 			{
 				float2 flowUV=uv+_Time.y*waveST.xy*waveST.zw;
 				float2 flowSin=flowUV.x*waveST.x+flowUV.y*waveST.y;
@@ -177,7 +177,7 @@
 				float cosFlow;
 				sincos(spherical,sinFlow,cosFlow);
 				float spike=spikeAmplitude*cosFlow;
-				return float3(spike*waveST.x, amplitude*sinFlow,spike*waveST.y);
+				return normal*sinFlow+amplitude + biTangent*spike*waveST.x + tangent * spike*waveST.y;
 			}
             
             v2f vert (a2v v)
@@ -189,8 +189,9 @@
 				float3 normalWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.normalOS));
 				float3 tangentWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.tangentOS.xyz));
             	#if _WAVE
-					positionWS+=GerstnerWave(positionWS.xz,INSTANCE(_WaveST1),INSTANCE(_WaveAmplitude1),INSTANCE(_WaveSpikeAmplitude1));
-					positionWS+=GerstnerWave(positionWS.xz,INSTANCE(_WaveST2),INSTANCE(_WaveAmplitude2),INSTANCE(_WaveSpikeAmplitude2));
+					float3 biTangentWS = cross(normalWS,tangentWS)*v.tangentOS.w;
+					positionWS+=GerstnerWave(positionWS.xz,INSTANCE(_WaveST1),INSTANCE(_WaveAmplitude1),INSTANCE(_WaveSpikeAmplitude1),biTangentWS,normalWS,tangentWS);
+					positionWS+=GerstnerWave(positionWS.xz,INSTANCE(_WaveST2),INSTANCE(_WaveAmplitude2),INSTANCE(_WaveSpikeAmplitude2),biTangentWS,normalWS,tangentWS);
 				#endif
             	o.positionWS=positionWS;
             	o.positionCS=TransformWorldToHClip(o.positionWS);

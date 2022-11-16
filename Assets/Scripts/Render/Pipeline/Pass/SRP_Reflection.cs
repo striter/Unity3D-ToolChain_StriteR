@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
-using System.Collections.Generic;
-using Geometry.Voxel;
+using Geometry;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;

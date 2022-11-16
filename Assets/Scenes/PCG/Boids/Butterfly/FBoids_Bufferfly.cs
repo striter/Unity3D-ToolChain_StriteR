@@ -8,7 +8,6 @@ using UnityEngine;
 
 namespace PCG.Module.BOIDS.Butterfly
 {
-    using static PCGDefines<int>;
     public interface IButterflyAttractions : IBoidsPerching
     {
         List<FBoidsVertex> m_ButterflyPositions { get; }

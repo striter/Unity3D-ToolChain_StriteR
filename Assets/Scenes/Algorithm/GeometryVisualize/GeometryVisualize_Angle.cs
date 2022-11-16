@@ -1,14 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Geometry.Voxel;
 using UnityEditor;
 using UnityEngine;
 
 namespace ExampleScenes.Algorithm.Geometry
 {
     #if UNITY_EDITOR
-    using UnityEditor.Extensions;
     public class GeometryVisualize_Angle : MonoBehaviour
     {
         public Vector3 m_Position;

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Geometry;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
-using System.Linq;
-using Geometry.Voxel;
 using Rendering.PostProcess;
 using UnityEngine.Rendering;
 

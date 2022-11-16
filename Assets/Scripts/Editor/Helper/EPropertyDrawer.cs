@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System;
-using Geometry.Voxel;
+using Geometry;
 
 namespace UnityEditor.Extensions
 {

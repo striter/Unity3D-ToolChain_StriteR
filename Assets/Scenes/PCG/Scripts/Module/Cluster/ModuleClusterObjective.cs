@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace PCG.Module.Cluster
 {
+    [Serializable]
     public struct ModuleClusterInputData:IEquatable<ModuleClusterInputData>,IEqualityComparer<ModuleClusterInputData>
     {
         public bool valid;
@@ -71,6 +72,7 @@ namespace PCG.Module.Cluster
 #endregion
     }
 
+    [Serializable]
     public struct ModuleClusterCornerData:IEquatable<ModuleClusterCornerData>,IEqualityComparer<ModuleClusterCornerData>
     {
         public int index;

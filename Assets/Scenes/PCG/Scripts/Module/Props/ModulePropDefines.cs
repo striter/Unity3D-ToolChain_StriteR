@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
-using Geometry.Voxel;
 using Procedural;
 using TPoolStatic;
 using UnityEngine;
@@ -51,13 +50,13 @@ namespace PCG.Module.Prop
         private static int ToPossibilityPercentage(this Quad<bool> _quad)
         {
             var count=_quad.Count(p => p);
-            switch (count)
+            switch (count)      //Sum 100
             {
-                default: return 5;
+                default: return 0;
                 case 1: return 20;
                 case 2: return 35;
                 case 3: return 25;
-                case 4: return 15;
+                case 4: return 20;
             }
         }
 
@@ -83,15 +82,13 @@ namespace PCG.Module.Prop
             return new Vector3(uv.x, _vertexOS.y,uv.y);
         }
 
-        public static Vector3 OrientedToObjectVertex(Vector3 _orientedVertex,int orientation, Quad<Coord> _quadShape)
+        public static Vector3 OrientedToObjectVertex(TrapezoidQuad _qubeShape , Vector3 _orientedVertex,int _orientation)
         {
             var uv = new Vector2(_orientedVertex.x, _orientedVertex.z);
             uv -= Vector2.one * .5f;
-            uv = UMath.kRotate2DCW[(4-orientation)%4].MultiplyVector(uv);     //Inverted Cause CC Bilinear Lerp Below
+            uv = UMath.kRotate2DCW[(4-_orientation)%4].MultiplyVector(uv);     //Inverted Cause CC Bilinear Lerp Below
             uv += Vector2.one * .5f;
-            
-            var point = _quadShape.GetPoint(uv.x,uv.y);    //CC Bilinear Lerp
-            return new Vector3(point.x,_orientedVertex.y*KPCG.kPolyHeight,point.y);
+            return _qubeShape.GetPoint(uv.x, uv.y,_orientedVertex.y*DPCG.kUnitSize*2);
         }
 
         static float InterpolateYaw(float _src, float _dst, float _value)
@@ -110,10 +107,10 @@ namespace PCG.Module.Prop
         }
         
         public static void OrientedToObjectVertex(int _orientation,
-            Vector3 _orientedVertex, Quad<Coord> _quadShape,out Vector3 _objectPosition,
+            Vector3 _orientedVertex, TrapezoidQuad _quadShape,out Vector3 _objectPosition,
             Quaternion _orientedRotation,Quad<float> _centerRotations,Quad<float> _edgeRotations,out Quaternion _objectRotation)
         {
-            _objectPosition = OrientedToObjectVertex(_orientedVertex,_orientation,_quadShape); 
+            _objectPosition = OrientedToObjectVertex(_quadShape,_orientedVertex,_orientation); 
 
             float rotateYaw = _orientedRotation.eulerAngles.y;
             int orientationOffset = (int)rotateYaw / 90;

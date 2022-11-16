@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using Geometry;
 using MeshFragment;
-using Procedural;
 using PCG.Module.BOIDS;
-using Geometry.Voxel;
 using PCG.Module.BOIDS.Bird;
 using TPool;
 using TPoolStatic;
@@ -13,7 +11,6 @@ using UnityEngine;
 
 namespace PCG.Module.Cluster
 {
-    using static PCGDefines<int>;
     public class ModuleClusterContainer : PoolBehaviour<PCGID> ,IModuleStructureElement,IBirdPerchingRoot
     {
         public IVoxel m_Voxel { get; private set; }
@@ -107,7 +104,6 @@ namespace PCG.Module.Cluster
         {
             var orientedToWorld = transform.localToWorldMatrix;
             var worldToObject = transform.worldToLocalMatrix;
-
             TSPoolList<IMeshFragment>.Spawn(out var _orientedMeshes);
 
             for (int i = 0; i < 8; i++)
@@ -120,9 +116,8 @@ namespace PCG.Module.Cluster
                 var moduleMesh = DModule.Collection.GetClusterData(input,output);
                 var moduleOrientation = output.orientation;
                 
-                var qubeQuadIndex = i % 4;
-                ref var orientedShape = ref m_Voxel.m_Quad.m_QubeQuads[qubeQuadIndex];
-                var orientedRotation = Quaternion.Euler(0f, m_Voxel.m_Quad.m_QubeQuadsOrientation[qubeQuadIndex][moduleOrientation], 0f);
+                ref var orientedShape = ref m_Voxel.m_ClusterQuads[i%4];
+                var orientedRotation = Quaternion.Euler(0f, moduleOrientation * 90, 0f);
 
                 bool birdLandingAvailable = input.status == EClusterStatus.Rooftop;
                 var animAvailable = m_Modified[i];
@@ -142,7 +137,7 @@ namespace PCG.Module.Cluster
                         Vector3 positionMS = fragmentInput.vertices[k];
                         
                         Vector3 normalOS = orientedRotation * fragmentInput.normals[k] ;
-                        Vector3 positionOS = DModuleCluster.ModuleToObjectVertex(i, moduleOrientation,  positionMS ,orientedShape,  KPCG.kPolyHeightH);
+                        Vector3 positionOS = DModuleCluster.ModuleToObjectVertex(orientedShape, moduleOrientation,  positionMS,i/4-1);
                         Vector3 positionWS = orientedToWorld.MultiplyPoint(positionOS);
 
                         fragmentOutput.vertices.Add(worldToObject.MultiplyPoint(positionWS));
@@ -193,14 +188,14 @@ namespace PCG.Module.Cluster
         
 #if UNITY_EDITOR
         private readonly Vector3 kClusterCube = Vector3.one * .3f;
-        [HideInInspector] public bool m_VoxelGizmos;    //Managed by clusterManager
-        public void OnDrawGizmos()
+        public void DrawGizmos(bool _quad)
         {
-            if (!m_VoxelGizmos)
-                return;
-            
             Gizmos.matrix = transform.localToWorldMatrix;
             Gizmos.DrawCube(Vector3.zero, kClusterCube);
+
+            if (!_quad||m_Voxel == null)
+                return;
+            m_Voxel.m_ClusterQuads.Traversal(p=>p.DrawGizmos());
         }
 
         private void OnDrawGizmosSelected()
@@ -225,8 +220,8 @@ namespace PCG.Module.Cluster
                 if (m_Voxel.m_Corners[i] == null)
                     continue;
 
-                var localQuad = m_Voxel.m_Quad.m_QubeQuads[i % 4];
-                var qubeCenterLS = DModuleCluster.ModuleToObjectVertex(i, 0, Vector3.one * .5f, localQuad,KPCG.kPolyHeightH);
+                var localQuad = m_Voxel.m_ClusterQuads[i % 4];
+                var qubeCenterLS = DModuleCluster.ModuleToObjectVertex(localQuad, 0, Vector3.one * .5f);
                 Gizmos.color = UColor.IndexToColor(m_Voxel.m_Corners[i].m_Type);
                 Gizmos.DrawLine(Vector3.zero,qubeCenterLS);
                 Gizmos.DrawSphere(qubeCenterLS,.02f);
@@ -243,7 +238,7 @@ namespace PCG.Module.Cluster
                 Gizmos_Extend.DrawString(qubeCenterLS,$"Qube Ind:{i}\nType:{input.type},{input.status}\nAnchor:{outputByte._byte},Ort:{outputByte._orientation}",0f);
                 var localQube = new Qube<Vector3>();
                 for (int j = 0; j < 8; j++)
-                    localQube[j]=qubeCenterLS+(localQuad[j%4].ToPosition()-qubeCenterLS).SetY(0f)*.25f+(-.5f+j/4)*Vector3.up*.5f;   //Da fk
+                    localQube[j]=qubeCenterLS+(localQuad.positions[j%4]-qubeCenterLS).SetY(0f)*.25f+(-.5f+j/4)*Vector3.up*.5f;   //Da fk
                 Gizmos.color = Color.white;
                 localQube.DrawGizmos();
                 for (int j = 0; j < 8; j++)

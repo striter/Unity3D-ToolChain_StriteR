@@ -15,7 +15,7 @@ Shader "Game/Skybox/AtomsphericScattering"
             ZWrite Off
             ZTest Always
             Blend One One
-            Cull Off
+            Cull Front
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -66,8 +66,7 @@ Shader "Game/Skybox/AtomsphericScattering"
             float CalculateDensityAtPoint(float3 _position,GSphere _atmoSphere)
             {
                 float density01 = saturate(invlerp(_Radius,_RadiusEnd,length(_atmoSphere.center-_position)));
-                float localDensity = exp(-density01*_DensityFallOff);
-                return localDensity;// * MainLightRealtimeShadow(TransformWorldToShadowCoord(_position));
+                return exp(-density01*_DensityFallOff);;
             }
             
             float CalculateOpticalDepth(GRay _ray,GSphere _atomSphere,float _scatterLength)
@@ -93,7 +92,7 @@ Shader "Game/Skybox/AtomsphericScattering"
                 float2 screenUV = TransformHClipToNDC(i.positionHCS);
                 float rawDepth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);
                 float depthDistance = RawToDistance(rawDepth,screenUV);
-                GSphere atmoSphere = GSphere_Ctor(float3(0,-_Radius,0),_RadiusEnd);
+                GSphere atmoSphere = GSphere_Ctor(float3(0,0,0),_RadiusEnd);
                 float2 travelDistance = SphereRayDistance(atmoSphere,GRay_Ctor(_WorldSpaceCameraPos,scatterDirection));
 
                 float marchbegin = travelDistance.x;
@@ -106,7 +105,7 @@ Shader "Game/Skybox/AtomsphericScattering"
                 float3 inScatterLight = 0;
                 for(int t=0;t<_ScatterTimes;t++)
                 {
-                    GRay scatterRay = GRay_Ctor(inScatterPoint,normalize(inScatterPoint-_MainLightPosition.xyz*1000));
+                    GRay scatterRay = GRay_Ctor(inScatterPoint,normalize(inScatterPoint+_MainLightPosition.xyz*1000));
                     float inScatterRayLength = SphereRayDistance(atmoSphere,scatterRay).y;
                     float sunRayOpticalDepth = CalculateOpticalDepth(scatterRay,atmoSphere,inScatterRayLength);
                     float viewRayOpticalDepth = CalculateOpticalDepth(GRay_Ctor(inScatterPoint,-scatterDirection),atmoSphere,scatterStepSize*(t+0.5f));
@@ -116,6 +115,7 @@ Shader "Game/Skybox/AtomsphericScattering"
                     inScatterPoint += scatterDirection * scatterStepSize;
                 }
                 return float4(inScatterLight,1);
+                
             }
             ENDHLSL
         }

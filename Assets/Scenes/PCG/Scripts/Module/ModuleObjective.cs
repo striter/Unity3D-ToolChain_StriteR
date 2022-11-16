@@ -6,8 +6,6 @@ using UnityEngine;
 
 namespace PCG.Module
 {
-    using static PCGDefines<int>;
-
     public enum EModuleCollapseStatus
     {
         Awaiting,
@@ -39,24 +37,22 @@ namespace PCG.Module
     #region Bridge
     public interface IVertex
     {
-        SurfaceID Identity { get; }
+        GridID Identity { get; }
         Transform Transform { get; }
-        PolyVertex VertexData { get; }
-        List<Coord> NearbyVertexPositionLS { get; }
-        List<Coord> NearbyVertexSurfaceDirectionLS { get; }
+        PCGVertex Vertex { get; }
+        List<Vector3> NearbyVertexPositionLS { get; }
+        List<Vector3> NearbyVertexSurfaceDirectionLS { get; }
     }
 
     public interface IQuad
     {
-        SurfaceID Identity { get; }
+        GridID Identity { get; }
         Transform Transform { get; }
-        PolyQuad m_Quad { get; }
-        Quad<Coord> m_ShapeOS { get; }
+        PCGQuad Quad { get; }
+        TrapezoidQuad m_ShapeOS { get; }
         Quad<float> m_EdgeNormalsCW { get; }
         Quad<float> m_EdgeDirectionsCW { get; }
-        Quad<Coord>[] m_QubeQuads { get; }
-        Quad<float>[] m_QubeQuadsOrientation { get; }
-        Quad<SurfaceID> m_NearbyQuadCW { get;}
+        Quad<GridID> m_NearbyQuadCW { get;}
     }
 
     public interface IVoxel
@@ -66,9 +62,11 @@ namespace PCG.Module
         IQuad m_Quad { get; }
         Qube<ICorner> m_Corners { get; }
         Dictionary<int,byte> m_TypedCluster { get; }
+        TrapezoidQuad m_ShapeOS { get; }
+        TrapezoidQuad[] m_ClusterQuads { get; }
         Qube<byte> m_ClusterUnitBaseBytes  { get; }
         Qube<byte> m_ClusterUnitAvailableBytes { get; }
-        CubeFacing<PCGID> m_CubeSides { get; }
+        CubeSides<PCGID> m_CubeSides { get; }
         ECubeFacing m_CubeSidesExists { get; }
     }
 
@@ -115,13 +113,13 @@ namespace PCG.Module
     public interface IModuleVertexCallback
     {
         void OnPopulateVertex(IVertex _vertex);
-        void OnDeconstructVertex(SurfaceID _vertexID);
+        void OnDeconstructVertex(GridID _vertexID);
     }
 
     public interface IModuleQuadCallback
     {
         void OnPopulateQuad(IQuad _quad);
-        void OnDeconstructQuad(SurfaceID _quadID);
+        void OnDeconstructQuad(GridID _quadID);
     }
         
     public interface IModuleCornerCallback

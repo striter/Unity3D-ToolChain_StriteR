@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Geometry;
-using Geometry.Voxel;
 using MeshFragment;
 using PCG.Module.BOIDS;
 using PCG.Module.Cluster;
@@ -10,36 +9,29 @@ using UnityEngine;
 
 namespace PCG.Module
 {
-    using static PCGDefines<int>;
     public class ModuleVoxel : PoolBehaviour<PCGID>,IVoxel
     {
         private Action<Transform, List<IMeshFragment>> populateMesh;
         public PCGID Identity => m_PoolID;
         public Transform Transform => transform;
-        public int BoidsIdentity => m_PoolID.location.value;
-        public Vector3 CenterWS => m_Quad.Transform.position;
-        public List<FBoidsVertex> m_BirdLandings { get; } = new List<FBoidsVertex>();
         private byte Height => m_PoolID.height;
         public IQuad m_Quad { get; private set; }
         public Qube<ICorner> m_Corners { get; private set; }
-        
+
         //Some of cluster data,should? be moved elsewhere
         public Dictionary<int, byte> m_TypedCluster { get; } = new Dictionary<int, byte>();
+        public TrapezoidQuad m_ShapeOS { get; private set; }
+        public TrapezoidQuad[] m_ClusterQuads { get; private set; } = new TrapezoidQuad[4];
         public Qube<byte> m_ClusterUnitBaseBytes { get; private set; }
         public Qube<byte> m_ClusterUnitAvailableBytes { get; private set; }
         
-        public CubeFacing<PCGID> m_CubeSides { get; private set; }
+        public CubeSides<PCGID> m_CubeSides { get; private set; }
         public ECubeFacing m_CubeSidesExists { get; private set; }
-        
-        //Don't touch these
-        public bool m_Dirty { get; set; }
-        public Action<PCGID> MarkDirty { get; set; }
-        public Action<Transform,List<IMeshFragment>, List<FBoidsVertex>> OnPopulateMesh { get; set; }
 
         public ModuleVoxel Init(IQuad _srcQuad)
         {
             m_Quad = _srcQuad;
-            transform.SetPositionAndRotation(m_Quad.m_Quad.GetVoxelPosition(m_PoolID.height), m_Quad.Transform.rotation);
+            transform.SetPositionAndRotation(m_Quad.Quad.GetVoxelPosition(m_PoolID.height), m_Quad.Transform.rotation);
             return this;
         }
 
@@ -57,16 +49,18 @@ namespace PCG.Module
 
         public void RefreshRelations(PilePool<ModuleCorner> _corners,PilePool<ModuleVoxel> _voxels)
         {
-            m_CubeSides = new CubeFacing<PCGID>(new PCGID(m_Quad.m_NearbyQuadCW[0], Height),new PCGID(m_Quad.m_NearbyQuadCW[1], Height),new PCGID(m_Quad.m_NearbyQuadCW[2], Height),
+            m_CubeSides = new CubeSides<PCGID>(new PCGID(m_Quad.m_NearbyQuadCW[0], Height),new PCGID(m_Quad.m_NearbyQuadCW[1], Height),new PCGID(m_Quad.m_NearbyQuadCW[2], Height),
                 new PCGID(m_Quad.m_NearbyQuadCW[3], Height), new PCGID(m_Quad.Identity,UByte.ForwardOne( Height)), new PCGID(m_Quad.Identity, UByte.BackOne(Height))) ;
             m_CubeSidesExists = 0;
+            m_ShapeOS = m_Quad.m_ShapeOS.Expand(m_PoolID.height*DPCG.kUnitSize*2);
+            m_Quad.m_ShapeOS.SplitToQuads(false,m_PoolID.height*DPCG.kUnitSize*2).FillArray(m_ClusterQuads);
             for (int i = 0; i < UEnum.GetEnums<ECubeFacing>().Length; i++)
             {
                 var facing = UEnum.GetEnums<ECubeFacing>()[i];
                 if (_voxels.Contains(m_CubeSides[facing]))
                     m_CubeSidesExists |= facing;
             }
-            
+
             var voxelIDs = this.CollectVoxelCorners();
             var corners = new Qube<ICorner>(null);
             for (int i = 0; i < 8; i++)
@@ -75,10 +69,8 @@ namespace PCG.Module
                 corners[i] = _corners.Contains(voxelID) ? _corners[voxelID] : null;
             }
             m_Corners = corners;
-            
             //Recreate Cluster Data
             m_TypedCluster.Clear();
-
             Qube<bool> cornerValidMask = KQube.kFalse;
             for (int i = 0; i < 8; i++)
             {
@@ -108,13 +100,6 @@ namespace PCG.Module
             m_ClusterUnitBaseBytes = clusterByte;
             m_ClusterUnitAvailableBytes = clusterMask;
         }
-
-        public bool LightEnabled { get; set; }
-        public void SetBaseLayer(int _layer) { //Do nothing
-        }
-        public void RefreshLighting() { // Do nothing literally
-        }
-
 
     }
 }

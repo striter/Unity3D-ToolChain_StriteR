@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Geometry.Voxel
+namespace Geometry
 {
-    public  static class UGeometryIntersect
+    public static class UGeometryIntersect
     {
         #region Line&Ray
         public static Vector3 RayRayProjection(GRay _ray1, GRay _ray2)

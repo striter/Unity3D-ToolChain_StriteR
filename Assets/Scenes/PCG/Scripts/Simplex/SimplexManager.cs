@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Geometry;
-using Geometry.Voxel;
 using MeshFragment;
 using PCG.Module;
 using PCG.Module.Cluster;
@@ -11,7 +10,6 @@ using UnityEngine.Rendering;
 
 namespace PCG.Simplex
 {
-    using static PCGDefines<int>;
     [RequireComponent(typeof(MeshFilter),typeof(MeshRenderer))]
     public class SimplexManager : MonoBehaviour,IPolyGridControl
     {
@@ -114,10 +112,9 @@ namespace PCG.Simplex
                         continue;
 
                     var simplexData = m_Collection.m_SimplexData[simplexIndex];
-                    Vector3 offset = KPCG.GetCornerHeight(voxel.height-1);
                     var fragmentInputs = simplexData.m_ModuleData[quadIndexer.index];
                     var orientation = quadIndexer.orientation;
-                    var quad = voxel.quad.m_CoordWS;
+                    var quad = voxel.quad.m_ShapeWS;
                     for (int i = 0; i < fragmentInputs.m_MeshFragments.Length; i++)
                     {
                         var fragmentInput = fragmentInputs.m_MeshFragments[i];
@@ -127,7 +124,7 @@ namespace PCG.Simplex
                         var vertexCount = verticesOS.Length;
                         for (int j = 0; j < vertexCount; j++)
                         {
-                            Vector3 positionWS = DModuleCluster.ModuleToObjectVertex(4, orientation,fragmentInput.vertices[j], quad,KPCG.kPolyHeight) + offset;
+                            Vector3 positionWS = DModuleCluster.ModuleToObjectVertex( quad,orientation, fragmentInput.vertices[j],0);
                             fragmentOutput.vertices.Add(positionWS);
                             fragmentOutput.uvs.Add(fragmentInput.uvs[j]);
                         }
@@ -137,6 +134,7 @@ namespace PCG.Simplex
                     }
                 }
             }
+            
             UMeshFragment.Combine(orientedFragments,m_Mesh,m_Collection.m_MaterialLibrary,out var materials,kOutputVertexData,IndexFormat.UInt32 );
             for(int i=0;i<orientedFragments.Count;i++)
                 TSPool<FMeshFragmentObject>.Recycle(orientedFragments[i] as FMeshFragmentObject);
@@ -204,7 +202,7 @@ namespace PCG.Simplex
         public Vector3 position;
         public int type;
 
-        public Corner(PCGID _identity,PolyVertex _vertex,int _type)
+        public Corner(PCGID _identity,PCGVertex _vertex,int _type)
         {
             position = _vertex.GetCornerPosition(_identity.height);
             type = _type;
@@ -214,16 +212,16 @@ namespace PCG.Simplex
     public struct Voxel
     {
         public byte height;
-        public PolyQuad quad;
+        public PCGQuad quad;
         public Qube<int> corners;
         public Vector3 position;
 
-        public Voxel(PCGID _identity, PolyQuad _quad,Qube<int> _cornerses)
+        public Voxel(PCGID _identity, PCGQuad _quad,Qube<int> _corners)
         {
             height = _identity.height;
             quad = _quad;
             position = _quad.GetVoxelPosition(_identity.height);
-            corners = _cornerses;
+            corners = _corners;
         }
         private static readonly Dictionary<int, byte> kVoxelHelper = new Dictionary<int, byte>();
 

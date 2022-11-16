@@ -2,31 +2,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
-using Geometry.Voxel;
-using PCG.Module.Cluster;
 using TPool;
 using TPoolStatic;
-using Procedural;
 using UnityEngine;
 
 namespace PCG.Module
 {
-    using static PCGDefines<int>;
     public class ModuleGridManager : MonoBehaviour,IModuleControl
     {
         public GridManager m_Grid { get; set; }
         
         private readonly Stack<ModuleCollapsePropagandaChain> m_PropagandaChains = new Stack<ModuleCollapsePropagandaChain>(12);
         //Local actors
-        private TObjectPoolMono<SurfaceID, ModuleVertex> m_GridVertices;
-        private TObjectPoolMono<SurfaceID,ModuleQuad> m_GridQuads;
+        private TObjectPoolMono<GridID, ModuleVertex> m_GridVertices;
+        private TObjectPoolMono<GridID,ModuleQuad> m_GridQuads;
         private PilePool<ModuleCorner> m_Corners;
         private PilePool<ModuleVoxel> m_Voxels;
 
         public void Init()
         {
-            m_GridVertices = new TObjectPoolMono<SurfaceID, ModuleVertex>(transform.Find("Vertex/Item"));
-            m_GridQuads = new TObjectPoolMono<SurfaceID,ModuleQuad>(transform.Find("Quad/Item"));
+            m_GridVertices = new TObjectPoolMono<GridID, ModuleVertex>(transform.Find("Vertex/Item"));
+            m_GridQuads = new TObjectPoolMono<GridID,ModuleQuad>(transform.Find("Quad/Item"));
             m_Corners = new PilePool<ModuleCorner>(transform.Find("Corner/Item"));
             m_Voxels = new PilePool<ModuleVoxel>(transform.Find("Voxel/Item"));
         }
@@ -62,7 +58,7 @@ namespace PCG.Module
             yield return new ModuleInput(){origin = corner.Identity,type = corner.m_Type};
     }
     
-        public void CornerConstruction(PCGID _cornerID,int _cornerType, PolyVertex _vertex,Action<IVertex> _vertexSpawn,Action<IQuad> _quadSpawn, Action<ICorner> _cornerSpawn,Action<IVoxel> _moduleSpawn)
+        public void CornerConstruction(PCGID _cornerID,int _cornerType, PCGVertex _vertex,Action<IVertex> _vertexSpawn,Action<IQuad> _quadSpawn, Action<ICorner> _cornerSpawn,Action<IVoxel> _moduleSpawn)
         {
             if (m_Corners.Contains(_cornerID))
                 return;
@@ -77,7 +73,7 @@ namespace PCG.Module
             RefreshVoxelRelations(_vertex);
         }
         
-        public void CornerDeconstruction(PCGID _cornerID,PolyVertex _vertex,Action<SurfaceID> _vertexRecycle,Action<SurfaceID> _quadRecycle,Action<PCGID> _cornerRecycle,Action<PCGID> _moduleRecycle)
+        public void CornerDeconstruction(PCGID _cornerID,PCGVertex _vertex,Action<GridID> _vertexRecycle,Action<GridID> _quadRecycle,Action<PCGID> _cornerRecycle,Action<PCGID> _moduleRecycle)
         {
             if (!m_Corners.Contains(_cornerID))
                 return;
@@ -92,19 +88,19 @@ namespace PCG.Module
             RefreshVoxelRelations(_vertex);
         }
 
-        byte GetMaxCornerHeight(SurfaceID _quadID)
+        byte GetMaxCornerHeight(GridID _quadID)
         {
             var maxHeight = byte.MinValue;
             for (int i = 0; i < 4; i++)
             {
-                var vertexID = m_GridQuads[_quadID].m_Quad.m_Hex[i];
+                var vertexID = m_GridQuads[_quadID].Quad.m_Indexes[i];
                 if (m_Corners.Contains(vertexID))
                     maxHeight = Math.Max(maxHeight, UByte.ForwardOne( m_Corners.Max(vertexID)));
             }
             return maxHeight;
         }
         
-        void FillVertex(PolyVertex _vertex,Action<IVertex> _vertexSpawn)
+        void FillVertex(PCGVertex _vertex,Action<IVertex> _vertexSpawn)
         {
             var vertexID = _vertex.m_Identity;
             if (m_GridVertices.Contains(vertexID))
@@ -113,7 +109,7 @@ namespace PCG.Module
             _vertexSpawn(vertex);
         }
 
-        void FillQuads(PolyVertex _vertex,Action<IQuad> _quadSpawn)
+        void FillQuads(PCGVertex _vertex,Action<IQuad> _quadSpawn)
         {
             foreach (var nearbyQuad in _vertex.m_NearbyQuads)
             {
@@ -130,11 +126,11 @@ namespace PCG.Module
             if (m_Corners.Contains(_cornerID))
                 return;
             var vertex = m_GridVertices[_cornerID.location];
-            var corner=m_Corners.Spawn(_cornerID).Init(vertex,_cornerType,ConstructCornerCollider);
+            var corner = m_Corners.Spawn(_cornerID).Init(vertex,_cornerType,ConstructCornerCollider);
             _cornerSpawn(corner);
         }
 
-        void FillVoxels(PolyVertex _vertex,Action<IVoxel> _voxelSpawn)
+        void FillVoxels(PCGVertex _vertex,Action<IVoxel> _voxelSpawn)
         {
             foreach (var quadID in _vertex.m_NearbyQuads.Select(p=>p.m_Identity))
             {
@@ -150,7 +146,7 @@ namespace PCG.Module
             }
         }
         
-        void RemoveVertex(PolyVertex _vertex,Action<SurfaceID> _vertexRecycle)
+        void RemoveVertex(PCGVertex _vertex,Action<GridID> _vertexRecycle)
         {
             var vertexID = _vertex.m_Identity;
             if (m_Corners.Contains(vertexID)||!m_GridVertices.Contains(vertexID))
@@ -159,7 +155,7 @@ namespace PCG.Module
             _vertexRecycle(vertexID);
         }
 
-        void RemoveQuads(PolyVertex _vertex,Action<SurfaceID> _quadRecycle)
+        void RemoveQuads(PCGVertex _vertex,Action<GridID> _quadRecycle)
         {
             foreach (var quadID in _vertex.m_NearbyQuads.Select(p => p.m_Identity))
             {
@@ -178,7 +174,7 @@ namespace PCG.Module
             _cornerRecycle(_cornerID);
         }
 
-        void RemoveVoxels(PolyVertex _vertex,Action<PCGID> _voxelRecycle)
+        void RemoveVoxels(PCGVertex _vertex,Action<PCGID> _voxelRecycle)
         {
             foreach (var quadID in _vertex.m_NearbyQuads.Select(_p => _p.m_Identity))
             {
@@ -194,7 +190,7 @@ namespace PCG.Module
             }
         }
         
-        void RefreshCornerRelations(PolyVertex _vertex,PCGID _cornerID)
+        void RefreshCornerRelations(PCGVertex _vertex,PCGID _cornerID)
         {
             TSPoolList<PCGID>.Spawn(out var corners);
 
@@ -212,10 +208,10 @@ namespace PCG.Module
             TSPoolList<PCGID>.Recycle(corners);
         }
         
-        void RefreshVoxelRelations(PolyVertex _vertex)
+        void RefreshVoxelRelations(PCGVertex _vertex)
         {
-            TSPoolHashset<SurfaceID>.Spawn(out var quadRefreshing);
-            TSPoolHashset<SurfaceID>.Spawn(out var vertexRefreshing);
+            TSPoolHashset<GridID>.Spawn(out var quadRefreshing);
+            TSPoolHashset<GridID>.Spawn(out var vertexRefreshing);
             
             foreach (var nearbyQuad in _vertex.m_NearbyQuads)
                 foreach (var intervalVertex in nearbyQuad.m_Vertices)
@@ -236,8 +232,8 @@ namespace PCG.Module
                     m_Voxels[new PCGID(quadID, i)].RefreshRelations(m_Corners,m_Voxels);
             }
             
-            TSPoolHashset<SurfaceID>.Recycle(quadRefreshing);
-            TSPoolHashset<SurfaceID>.Recycle(vertexRefreshing);
+            TSPoolHashset<GridID>.Recycle(quadRefreshing);
+            TSPoolHashset<GridID>.Recycle(vertexRefreshing);
         }
 
     #endregion
@@ -337,14 +333,15 @@ namespace PCG.Module
 
         public void CollectAffectedVoxel(HashSet<PCGID> _voxelSet, PCGID _corner)
         {
-            foreach (var voxelID in m_Corners[_corner].m_Vertex.VertexData.IterateRelativeVoxels(_corner.height))
+            foreach (var voxelID in m_Corners[_corner].m_Vertex.Vertex.IterateRelativeVoxels(_corner.height))
                 _voxelSet.Add(voxelID);
         }
+        
         public void CollectAffectedVoxels(HashSet<PCGID> _voxelSet, IEnumerable<PCGID> _corners)
         {
             foreach (var corner in _corners)
             {
-                foreach (var voxelID in m_Corners[corner].m_Vertex.VertexData.IterateRelativeVoxels(corner.height))
+                foreach (var voxelID in m_Corners[corner].m_Vertex.Vertex.IterateRelativeVoxels(corner.height))
                 {
                     if (_voxelSet.Contains(voxelID))
                         continue;
@@ -361,32 +358,23 @@ namespace PCG.Module
         public bool ConstructRaycast(Ray _ray, out PCGID _selectionID)
         {
             _selectionID = default;
-            if (Physics.Raycast(_ray, out var _hit, float.MaxValue, kLayer))
+            if (Physics.Raycast(_ray, out var hit, float.MaxValue, kLayer))
             {
-                var corner = _hit.collider.GetComponent<ModuleCorner>();
-                if (corner == null)
-                {
-                    if (m_Grid.ValidatePlaneSelection(_ray, GPlane.kZeroPlane, out var sideCorner))
-                    {
-                        _selectionID = new PCGID(sideCorner, 0);
-                        return true;
-                    }
-                }
-
-                var vertical = Vector3.Dot(_hit.normal, Vector3.up);
+                var corner = hit.collider.GetComponent<ModuleCorner>();
+                var vertical = Vector3.Dot(hit.normal, corner.m_Vertex.Vertex.m_Normal);
                 if (vertical > .95f && corner.Identity.TryUpward(out _selectionID))
                     return true;
                 if (vertical < -.95f && corner.Identity.TryDownward(out _selectionID))
                     return true;
 
-                if (!m_Grid.ValidateSideVertex(corner.Identity.location, _hit.point, out var sideLocation))
+                if (!m_Grid.ValidateSideVertex(corner.Identity.location, hit.point, out var sideLocation))
                     return false;
 
                 _selectionID = new PCGID(sideLocation, corner.Identity.height);
                 return true;
             }
 
-            if (m_Grid.ValidatePlaneSelection(_ray, GPlane.kZeroPlane, out var groundCorner))
+            if (m_Grid.ValidateGridSelection(_ray,out var groundCorner))
             {
                 _selectionID = new PCGID(groundCorner, 0);
                 return true;
@@ -407,23 +395,23 @@ namespace PCG.Module
             return true;
         }
         
-        void ConstructCornerCollider( Mesh _mesh,PCGID _corner)
+        void ConstructCornerCollider(Mesh _mesh,PCGVertex _vertex,PCGID _corner)
         {
             TSPoolList<Vector3>.Spawn(out var vertices);
             TSPoolList<int>.Spawn(out var indices);
-            TSPoolList<GQuad>.Spawn(out var cornerQuads);
+            TSPoolList<TrapezoidQuad>.Spawn(out var cornerQuads);
             UBounds.Begin();
-            var center = m_Grid.m_Vertices[_corner.location].m_Coord;
+            var center = m_Grid.m_Vertices[_corner.location].GetCornerPosition(_corner.height);
             
             var vertex = m_Grid.m_Vertices[_corner.location];
-            cornerQuads.Clear();
             foreach (var (index, quad) in vertex.m_NearbyQuads.LoopIndex())
-                cornerQuads.Add(quad.ConstructGeometry(center, vertex.GetQuadVertsArrayCW(index), EQuadGeometry.Half));
+                cornerQuads.Add(quad.m_ShapeWS.ConstructGeometry(vertex.GetQuadVertsArrayCW(index), EQuadGeometry.Half));
 
+            vertices.Clear();
             foreach (var cornerQuad in cornerQuads)
             { 
                 int indexOffset = vertices.Count;
-                vertices.AddRange(cornerQuad.ExpandToQube(KPCG.kCornerHeightVector, .5f));
+                vertices.AddRange(cornerQuad.ExpandToQube(center,_corner.height,0f));
                 UPolygon.QuadToTriangleIndices(indices, indexOffset + 0, indexOffset + 3, indexOffset + 2, indexOffset + 1); //Bottom
                 UPolygon.QuadToTriangleIndices(indices, indexOffset + 4, indexOffset + 5, indexOffset + 6, indexOffset + 7); //Top
                 UPolygon.QuadToTriangleIndices(indices, indexOffset + 1, indexOffset + 2, indexOffset + 6, indexOffset + 5); //Forward Left
@@ -433,7 +421,7 @@ namespace PCG.Module
             _mesh.Clear();
             _mesh.SetVertices(vertices);
             _mesh.SetIndices(indices, MeshTopology.Triangles, 0, false);
-            TSPoolList<GQuad>.Recycle(cornerQuads);
+            TSPoolList<TrapezoidQuad>.Recycle(cornerQuads);
             TSPoolList<Vector3>.Recycle(vertices);
             TSPoolList<int>.Recycle(indices);
         }
@@ -470,7 +458,7 @@ namespace PCG.Module
             {
                 Gizmos.color = Color.cyan;
                 foreach (var vertex in m_GridVertices)
-                    Gizmos.DrawWireSphere(vertex.m_Vertex.m_Coord.ToPosition(),.3f);
+                    Gizmos.DrawWireSphere(vertex.m_Vertex.m_Position,.3f);
             }
 
             if (m_QuadGizmos)
@@ -480,7 +468,7 @@ namespace PCG.Module
                     Gizmos.color = Color.white;
                     Gizmos.matrix = quad.transform.localToWorldMatrix;
                     
-                    Gizmos_Extend.DrawLinesConcat(quad.m_ShapeOS.Iterate(p=>((Coord)p).ToPosition()));
+                    Gizmos_Extend.DrawLinesConcat(quad.m_ShapeOS.positions.Iterate());
                     // Gizmos.DrawLine(Vector3.up,Vector3.up+Vector3.forward);
 
                     if (m_RelativeQuadGizmos)
@@ -490,7 +478,7 @@ namespace PCG.Module
                         {
                             Gizmos.color = UColor.IndexToColor(i);
                             if(m_GridQuads.Contains(quad.m_NearbyQuadCW[i]))
-                                Gizmos_Extend.DrawLine(quad.transform.position,m_GridQuads[quad.m_NearbyQuadCW[i]].m_Quad.m_CenterWS.ToPosition(),.4f);
+                                Gizmos_Extend.DrawLine(quad.transform.position,m_GridQuads[quad.m_NearbyQuadCW[i]].Quad.position,.4f);
                         }
                     }
 

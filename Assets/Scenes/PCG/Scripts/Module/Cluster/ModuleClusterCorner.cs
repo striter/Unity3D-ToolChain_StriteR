@@ -3,7 +3,6 @@ using TPool;
 
 namespace PCG.Module.Cluster
 {
-    using static  PCGDefines<int>;
     public class ModuleClusterCorner : PoolBehaviour<PCGID>
     {
         public EClusterStatus m_Status { get; private set; }

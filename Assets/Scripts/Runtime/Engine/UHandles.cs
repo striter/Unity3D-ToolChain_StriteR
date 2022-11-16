@@ -1,8 +1,6 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using Geometry;
-using Geometry.Voxel;
 
 #if UNITY_EDITOR
 public static class Handles_Extend
