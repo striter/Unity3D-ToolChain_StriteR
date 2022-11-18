@@ -18,7 +18,6 @@ namespace PCG.Module.BOIDS.Bird
         Perching = 4,
 
         Traveling = 11,
-        Traveling2 = 12,
     }
 
     public interface IBirdPerchingRoot : IBoidsPerching, ITransform
@@ -30,15 +29,13 @@ namespace PCG.Module.BOIDS.Bird
     public class FBirdPerchingRoot
     {
         public IBirdPerchingRoot m_Root { get; }
-        private readonly int[] m_AssignedBirds;
+        private int[] m_AssignedBirds;
         private int m_AvailableCount;
         public bool LandingAvailable => m_AvailableCount > 2;//&& m_Birds.Count<KBirds.kMaxPerchingCount;
         public FBirdPerchingRoot(IBirdPerchingRoot _root)
         {
             m_Root = _root;
-            m_AssignedBirds = new int[_root.m_BirdLandings.Count];
-            m_AvailableCount = m_AssignedBirds.Length;
-            Clear();
+            Reset();
         }
         public FBoidsVertex SwitchRandomSpot(int _boids)
         {
@@ -55,8 +52,10 @@ namespace PCG.Module.BOIDS.Bird
             return m_Root.m_BirdLandings[dispatchIndex];
         }
 
-        public void Clear()
+        public void Reset()
         {
+            m_AssignedBirds = new int[m_Root.m_BirdLandings.Count];
+            m_AvailableCount = m_AssignedBirds.Length;
             for (int i = 0; i < m_AssignedBirds.Length; i++)
                 m_AssignedBirds[i] = -1;
             m_AvailableCount = m_AssignedBirds.Length;

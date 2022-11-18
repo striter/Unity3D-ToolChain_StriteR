@@ -15,14 +15,15 @@ MonoBehaviour:
   version: 4
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Bird
   m_Shader: {fileID: 4800000, guid: d16fe428f761f8f499ad3236c6415d0b, type: 3}
-  m_ShaderKeywords: 
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -98,7 +99,7 @@ Material:
     - _Anim1: 0
     - _Anim2: 0
     - _Anim3: 0
-    - _Anim4: 0
+    - _Anim4: 0.51
     - _Blend: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
@@ -118,7 +119,7 @@ Material:
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Scale: 1.53
+    - _Scale: 2
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

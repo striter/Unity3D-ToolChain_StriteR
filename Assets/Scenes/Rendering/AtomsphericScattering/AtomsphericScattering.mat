@@ -102,7 +102,7 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
-    - _DensityFallOff: 11.5
+    - _DensityFallOff: 17.4
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -130,8 +130,8 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 0.8207547, g: 0.81511945, b: 0.73300105, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _ScatteringCoefficients: {r: 0.050460715, g: 0.15356208, b: 0.3, a: 0}
+    - _ScatteringCoefficients: {r: 0.16820237, g: 0.5118736, b: 1, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Tint: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
-    - _WaveLength: {r: 624.6, g: 472.9, b: 400, a: 0.3}
+    - _WaveLength: {r: 624.6, g: 472.9, b: 400, a: 1}
   m_BuildTextureStacks: []

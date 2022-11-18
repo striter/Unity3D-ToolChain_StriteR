@@ -61,7 +61,6 @@ namespace PCG.Module.Prop
             TSPoolList<int>.Recycle(recycleList);
         }
 
-
         
         public void Propaganda(float _deltaTime, Stack<ModuleCollapsePropagandaChain> _propagandaChains)
         {

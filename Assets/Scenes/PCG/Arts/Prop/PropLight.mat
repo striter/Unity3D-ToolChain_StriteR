@@ -58,6 +58,6 @@ Material:
     - _WiggleStrength: 0.1
     - _ZTest: 2
     m_Colors:
-    - _Color: {r: 8.682844, g: 5.5129766, b: 3.0034988, a: 1}
+    - _Color: {r: 0.16736129, g: 0.15721816, b: 0.07245078, a: 1}
     - _GradientColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

@@ -5,10 +5,6 @@ Shader "PCG/Foliage"
 		[Header(Base Tex)]
 		_MainTex("Main Tex",2D) = "white"{}
 		_Color("Color Tint",Color) = (1,1,1,1)
-		[NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
-		
-		[Header(PBR)]
-		[NoScaleOffset]_PBRTex("PBR Tex(Glossiness.Metallic.AO)",2D)="black"{}
 		
 		[Header(Detail Tex)]
 		_EmissionTex("Emission",2D)="white"{}
@@ -27,9 +23,12 @@ Shader "PCG/Foliage"
     	_AlphaCutoff("Cutoff",Range(0,1))=.9
     }
     SubShader
-    {
+    {		
+    	Blend [_SrcBlend] [_DstBlend]
+		Cull [_Cull]
+		ZWrite [_ZWrite]
+		ZTest [_ZTest]
     	HLSLINCLUDE
-
 			#include "Assets/Shaders/Library/Common.hlsl"
 			#include "Assets/Shaders/Library/Lighting.hlsl"
 			#include "PCGInclude.hlsl"
@@ -41,7 +40,6 @@ Shader "PCG/Foliage"
 
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_EmissionTex);SAMPLER(sampler_EmissionTex);
-			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
 			TEXTURE2D(_PBRTex);SAMPLER(sampler_PBRTex);
 			TEXTURE2D(_WindFlowTex);SAMPLER(sampler_WindFlowTex);
 			INSTANCING_BUFFER_START
@@ -96,10 +94,16 @@ Shader "PCG/Foliage"
 				clip(sample.a-_AlphaCutoff);
 				return sample.rgb  * _Color;
 			}
-
+    		
+			#define GET_EMISSION(i) 0;
 			#define GET_POSITION_WS(v,o) GetPositionWS(v.positionOS,v.color,v.normalOS,v.tangentOS)
 			#define GET_ALBEDO(i) GetAlbedoOverride(i.uv,i.color.rgb);
+			#define _NORMALOFF
+    		#define _ALPHACLIP
+			void GetPBRParameters(inout float g,inout float m,inout float a) { g = 0.5; m = 0; a = 1; }
+			#define GET_PBRPARAM(glossiness,metallic,ao) GetPBRParameters(glossiness,metallic,ao)
     	ENDHLSL
+    	
         Pass
         {
 			NAME "FORWARD"
@@ -114,7 +118,20 @@ Shader "PCG/Foliage"
 			ENDHLSL
         }
         
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
+		Pass
+		{
+			NAME "DEPTH"
+			Tags{"LightMode" = "DepthOnly"}
+			
+			Blend Off
+			ZWrite On
+			ZTest LEqual
+			
+			HLSLPROGRAM
+			#include "Assets/Shaders/Library/Passes/DepthOnly.hlsl"
+			#pragma vertex DepthVertex
+			#pragma fragment DepthFragment
+			ENDHLSL
+		}
     }
 }

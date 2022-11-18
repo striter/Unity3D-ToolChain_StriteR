@@ -23,6 +23,8 @@ Shader "Game/Skybox/AtomsphericScattering"
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "Assets/Shaders/Library/Lighting.hlsl"
             #include "Assets/Shaders/Library/Geometry.hlsl"
+            #include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
+            #include "Assets/Shaders/Library/BRDF/PhysicsMethods.hlsl"
 			#pragma multi_compile_fragment _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHTS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
@@ -88,7 +90,9 @@ Shader "Game/Skybox/AtomsphericScattering"
 				UNITY_SETUP_INSTANCE_ID(i);
 
                 float3 scatterDirection = GetCameraRealDirectionWS(i.positionWS);// i.viewDirWS);
-                
+
+                float3 lightPos = _MainLightPosition.xyz*1000;
+                float3 lightDir = normalize(_MainLightPosition.xyz);
                 float2 screenUV = TransformHClipToNDC(i.positionHCS);
                 float rawDepth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);
                 float depthDistance = RawToDistance(rawDepth,screenUV);
@@ -105,13 +109,13 @@ Shader "Game/Skybox/AtomsphericScattering"
                 float3 inScatterLight = 0;
                 for(int t=0;t<_ScatterTimes;t++)
                 {
-                    GRay scatterRay = GRay_Ctor(inScatterPoint,normalize(inScatterPoint+_MainLightPosition.xyz*1000));
+                    GRay scatterRay = GRay_Ctor(inScatterPoint,normalize(inScatterPoint+lightPos));
                     float inScatterRayLength = SphereRayDistance(atmoSphere,scatterRay).y;
                     float sunRayOpticalDepth = CalculateOpticalDepth(scatterRay,atmoSphere,inScatterRayLength);
                     float viewRayOpticalDepth = CalculateOpticalDepth(GRay_Ctor(inScatterPoint,-scatterDirection),atmoSphere,scatterStepSize*(t+0.5f));
                     float3 transmittance = exp(-(sunRayOpticalDepth + viewRayOpticalDepth)*_ScatteringCoefficients);
                     float scatterDensity = CalculateDensityAtPoint(inScatterPoint,atmoSphere);
-                    inScatterLight += scatterDensity * transmittance *_ScatteringCoefficients* scatterStepSize;
+                    inScatterLight += scatterDensity * transmittance *_ScatteringCoefficients* scatterStepSize ;
                     inScatterPoint += scatterDirection * scatterStepSize;
                 }
                 return float4(inScatterLight,1);

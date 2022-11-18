@@ -99,7 +99,6 @@ namespace PCG.Module
     {
         IModuleStructureElement CollectStructure(PCGID _voxelID);
     }
-
     
     public interface IModuleCollapse
     {
@@ -134,9 +133,8 @@ namespace PCG.Module
 
     public interface IModuleStructureElement
     {
-        public Transform Transform { get; }
-        public bool LightEnabled { get; set; }
-        public void RefreshLighting();
+        public int Identity { get; }
+        public void TickLighting(float _deltaTime,Vector3 _lightDir);
     }
     #endregion
 }

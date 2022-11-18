@@ -124,7 +124,7 @@ namespace PCG.Module.BOIDS
                 Vector3 direction = m_Direction.normalized;
                 float speed = Mathf.Clamp01(m_Direction.magnitude);
                 m_Direction = direction * speed;
-                m_DesiredRotation = Quaternion.LookRotation(direction, Vector3.up);
+                m_DesiredRotation = Quaternion.LookRotation(direction, Vector3.Normalize(m_DesiredPosition));
             }
         }
 
@@ -184,14 +184,12 @@ namespace PCG.Module.BOIDS
             return final;
         }
 
-        public static Vector3 TickMaintainHeight(this IBoidsState _state, BoidsActor _actor, Vector3 _offset,
-            float _deltaTime, float _damping)
+        public static Vector3 TickMaintainHeight(this IBoidsState _state, BoidsActor _actor, Vector3 _offset,Vector3 _up, float _deltaTime, float _damping,out float _sign)
         {
-            // Maintain Height
-            Vector3 verticalDesire = Vector3.up * Mathf.Sign(_offset.y);
-            if (Vector3.Dot(verticalDesire, _actor.Forward) < .7f)
-                return verticalDesire * _damping * _deltaTime * Mathf.Abs(_offset.y) / 2f;
-            return Vector3.zero;
+            float offsetLength = _offset.magnitude;
+            _sign = Mathf.Sign(Vector3.Dot(_up, _offset));
+            Vector3 verticalDesire = _up * offsetLength;
+            return verticalDesire * _sign* _damping * _deltaTime * offsetLength / 2f;
         }
 
         public static Vector3 TickRandom(this IBoidsState _state, BoidsActor _actor, float _deltaTime)

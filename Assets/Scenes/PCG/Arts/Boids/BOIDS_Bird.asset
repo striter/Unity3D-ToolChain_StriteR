@@ -33,10 +33,9 @@ MonoBehaviour:
     damping: 1
     animName: Bird_Flapping
   flyingConfig:
-    borderOrigin: {x: 0, y: 30, z: 0}
-    borderRange: 100
-    borderDamping: 2
+    origin: {x: 0, y: 0, z: 0}
     speed: 5
+    height: 70
     heightDamping: 0.3
     tiringDuration:
       start: 30
@@ -59,8 +58,8 @@ MonoBehaviour:
     cohesionDamping: 0.05
     alignmentDamping: 0.05
   m_FollowingConfig:
-    cohesionDamping: 0
-    alignmentDamping: 0
+    cohesionDamping: 0.005
+    alignmentDamping: 0.005
   evadeConfig:
     evadeDistance: 20
     evadeDamping: 1
@@ -80,7 +79,7 @@ MonoBehaviour:
     alertDuration:
       start: 2
       length: 2
-    alertMovePossibility: 0
+    alertMovePossibility: 0.25
     alertAnim: Bird_Stop_Standing
     rotateCooldown:
       start: 2

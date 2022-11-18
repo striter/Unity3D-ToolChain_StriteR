@@ -21,8 +21,6 @@ namespace PCG.Module
             transform.localPosition = Quad.position;
             transform.localRotation = Quad.rotation;
 
-            Quad<float> centerOrientations = default;
-            Quad<float> edgeOrientations = default;
             Quad<GridID> nearbyQuads = default;
             for (int i = 0; i < 4; i++)
             {

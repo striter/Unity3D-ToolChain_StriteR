@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using PCG.Module.BOIDS.Bird;
 using PCG.Module.BOIDS.Butterfly;
@@ -8,7 +9,8 @@ namespace PCG.Module.BOIDS
 {
     public interface IBoidsPerching
     {
-        int BoidsIdentity { get; }
+        int Identity { get; }
+        Action<int> SetDirty { get; set; }
     }
     
     public class ModuleBoidsManager : MonoBehaviour,IModuleControl
@@ -33,6 +35,7 @@ namespace PCG.Module.BOIDS
 
         public void Setup()
         {
+            m_Bird.SpawnFlyingFlocks(true);
         }
 
         public void Clear()
@@ -58,7 +61,7 @@ namespace PCG.Module.BOIDS
             {
                 m_BirdSpawnCounter.Replay();
                 if((m_ModuleCount / 20 + 1) > m_Bird.m_Flocks.Count)
-                    m_Bird.SpawnFlyingFlocks();
+                    m_Bird.SpawnFlyingFlocks(false);
             }
         }
 

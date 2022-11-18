@@ -51,7 +51,6 @@ namespace PCG.Simplex
                 m_Indexer.Add(simplexData.m_Name,m_Indexer.Count);
             return this;
         }
-
         public void Clear()
         {
             m_Corners.Clear();

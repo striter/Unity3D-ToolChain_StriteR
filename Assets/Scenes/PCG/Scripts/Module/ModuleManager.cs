@@ -6,14 +6,17 @@ using PCG.Module.BOIDS;
 using PCG.Module.Cluster;
 using PCG.Module.Path;
 using PCG.Module.Prop;
-using TDataPersistent;
-using TPoolStatic;
 using UnityEngine;
 
 namespace PCG.Module
 {
     public class ModuleManager : MonoBehaviour,IPolyGridControl
     {
+        [ColorUsage(false,true)]public Color[] m_EmissionColors;
+        [Header("Wave Function Collapse")]
+        public bool m_ForceIteration = false;
+        [MFoldout(nameof(m_ForceIteration),false)] [Clamp(1,1024)]public int m_IterationPerFrame =1;
+        
         private IModuleControl[] m_Controls;
         
         public ModuleGridManager m_GridManager { get; private set; }
@@ -26,17 +29,15 @@ namespace PCG.Module
         private IModuleQuadCallback[] m_QuadCallbacks;
         private IModuleCornerCallback[] m_CornerCallbacks;
         private IModuleVoxelCallback[] m_VoxelCallbacks;
-        private IModuleStructure[] m_Structures;
+        private IModuleStructure[] m_StructureManagers;
         
         private IModuleCollapse[] m_ModuleCollapses;
         private EModuleCollapseStatus m_CollapseStatus;
         
+        private readonly Dictionary<int, IModuleStructureElement> m_Structures = new Dictionary<int, IModuleStructureElement>();
         private readonly List<PCGID> m_DirtyCorners = new List<PCGID>();
+        
         private readonly Dictionary<string, int> m_ModuleIndexer = new Dictionary<string, int>();
-
-        [Header("Wave Function Collapse")]
-        public bool m_ForceIteration = false;
-        [MFoldout(nameof(m_ForceIteration),false)] [Clamp(1,1024)]public int m_IterationPerFrame =1;
         
         public void Init()
         {
@@ -46,12 +47,12 @@ namespace PCG.Module
             m_PathManager = transform.Find("Path").GetComponent<ModulePathManager>();
             m_BoidsManager = transform.Find("Boids").GetComponent<ModuleBoidsManager>();
             
-            m_Controls = new IModuleControl[] { m_GridManager , m_ClusterManger, m_PropManager , m_PathManager,m_BoidsManager  };
+            m_Controls = new IModuleControl[] { m_GridManager , m_ClusterManger, m_PropManager , m_PathManager,m_BoidsManager,transform.Find("Foliage").GetComponent<ModuleFoliage>()  };
             m_VertexCallbacks = m_Controls.CollectAs<IModuleControl, IModuleVertexCallback>().ToArray();
             m_QuadCallbacks = m_Controls.CollectAs<IModuleControl, IModuleQuadCallback>().ToArray();
             m_CornerCallbacks = m_Controls.CollectAs<IModuleControl, IModuleCornerCallback>().ToArray();
             m_VoxelCallbacks = m_Controls.CollectAs<IModuleControl, IModuleVoxelCallback>().ToArray();
-            m_Structures = m_Controls.CollectAs<IModuleControl, IModuleStructure>().ToArray();
+            m_StructureManagers = m_Controls.CollectAs<IModuleControl, IModuleStructure>().ToArray();
             m_ModuleCollapses = m_Controls.CollectAs<IModuleControl, IModuleCollapse>().ToArray();
             
             m_Controls.Traversal(_p => _p.Init());
@@ -61,6 +62,7 @@ namespace PCG.Module
         {
             Clear();
             DModule.Collection = _collection;
+            DModule.EmissionColors = m_EmissionColors;
             
             m_ModuleIndexer.Clear();
             foreach (var (type,data) in DModule.Collection.m_ModuleLibrary.LoopIndex())
@@ -74,9 +76,11 @@ namespace PCG.Module
             return this;
         }
 
+
         public void Clear()
         {
             m_Controls.Traversal(_p => _p.Clear());
+            m_Structures.Clear();
             m_DirtyCorners.Clear();
             m_CollapseStatus = EModuleCollapseStatus.Awaiting;
         }
@@ -161,20 +165,18 @@ namespace PCG.Module
         private static readonly int kMaxIterationTimes = 4096;
         public void Tick(float _deltaTime)
         {
-            bool collapsing = true;
             int iterationTimes = m_ForceIteration ? kMaxIterationTimes : m_IterationPerFrame;
             while (iterationTimes-- > 0)
-            {
-                collapsing &= TickCollapse(_deltaTime);
-                if (!collapsing)
-                    break;
-            }
+                TickCollapse(_deltaTime);
 
-            if (collapsing)
-                return;
             m_Controls.Traversal(_p => _p.Tick(_deltaTime));
         }
 
+        public void TickEnvironment(float _deltaTime, Vector3 _lightDir)
+        {
+            m_Structures.Values.Traversal(p=>p.TickLighting(_deltaTime,_lightDir));
+        }
+        
         private void OnVertexSpawn(IVertex _vertex) => m_VertexCallbacks.Traversal(_p => _p.OnPopulateVertex(_vertex));
         private void OnVertexRecycle(GridID _vertexID) => m_VertexCallbacks.Traversal(_p => _p.OnDeconstructVertex(_vertexID));
         private void OnQuadSpawn(IQuad _quad) => m_QuadCallbacks.Traversal(_p => _p.OnPopulateQuad(_quad));
@@ -185,14 +187,22 @@ namespace PCG.Module
         private void OnVoxelSpawn(IVoxel _voxel)
         {
             m_VoxelCallbacks.Traversal(_p => _p.OnVoxelConstruct(_voxel));
-            foreach (var structure in m_Structures)
-                    m_BoidsManager.OnModuleConstruct(structure.CollectStructure(_voxel.Identity));
+            foreach (var structureManager in m_StructureManagers)
+            {
+                var structure = structureManager.CollectStructure(_voxel.Identity);
+                m_Structures.Add(structure.Identity,structure);
+                m_BoidsManager.OnModuleConstruct(structure);
+            }
         }
 
         private void OnVoxelRecycle(PCGID _voxelID)
         {
-            foreach (var structure in m_Structures)
-                m_BoidsManager.OnModuleDeconstruct(structure.CollectStructure(_voxelID));
+            foreach (var structureManager in m_StructureManagers)
+            {
+                var structure = structureManager.CollectStructure(_voxelID);
+                m_Structures.Remove(structure.Identity);
+                m_BoidsManager.OnModuleDeconstruct(structure);
+            }
             m_VoxelCallbacks.Traversal(_p => _p.OnVoxelDeconstruct(_voxelID));
         }
     }

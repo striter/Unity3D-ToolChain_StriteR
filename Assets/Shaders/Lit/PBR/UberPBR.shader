@@ -41,7 +41,7 @@
         [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
         [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
         [Toggle(_ALPHACLIP)]_AlphaClip("Alpha Clip",float)=0
-        [Foldout(_ALPHACLIP)]_AlphaClipRange("Range",Range(0.01,1))=0.01
+        [Foldout(_ALPHACLIP)]_AlphaCutoff("Range",Range(0.01,1))=0.01
 	}
 	
 	SubShader
@@ -83,7 +83,7 @@
 				INSTANCING_PROP(float,_SSSIntensity)
 				INSTANCING_PROP(float,_SSSNormalInfluence)
 		
-				INSTANCING_PROP(float,_AlphaClipRange)
+				INSTANCING_PROP(float,_AlphaCutoff)
 			INSTANCING_BUFFER_END
 
 			#include "Assets/Shaders/Library/Lighting.hlsl"
@@ -159,11 +159,7 @@
 
 			#define GET_ALBEDO(i) CalculateAlbedo(i.uv,i.color);
 			#define GET_EMISSION(i) OverrideEmission(i.uv.xy);
-			
-			#define A2V_SHADOW_DEPTH float2 uv:TEXCOORD0;
-			#define V2F_SHADOW_DEPTH float2 uv:TEXCOORD0;
-			#define VERTEX_SHADOW_DEPTH(v,o) o.uv=TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
-			#define FRAGMENT_SHADOW_DEPTH(i) AlphaClip(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv.xy).a*INSTANCE(_Color.a));
+			#define _ALPHACLIP
 		ENDHLSL
 
 		Pass

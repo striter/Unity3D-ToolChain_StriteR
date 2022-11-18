@@ -31,9 +31,7 @@ namespace PCG.Module.BOIDS.Bird
                 case EBirdBehaviour.PreLanding: return new PreLanding<EBirdBehaviour>(m_Config.hoveringConfig, m_Config.flockingConfig, EBirdBehaviour.Landing);
                 case EBirdBehaviour.Landing: return new HoverLanding<EBirdBehaviour>(m_Config.landConfig, EBirdBehaviour.Perching);
                 case EBirdBehaviour.Perching: return new Perching(m_Config.perchConfig, DoPoopAction);
-                // case EBirdBehaviour.Traveling: return new Startle<EBirdBehaviour>(m_Config.startleConfig, m_Config.flockingConfig, m_Config.m_FollowingConfig, EBirdBehaviour.TravelingEnd);
-                case EBirdBehaviour.Traveling: return new Traveling(m_Config.flyingConfig.speed, m_Config.flyingConfig.glideAnim, m_Config.flyingConfig.flyAnim, m_Config.m_FollowingConfig, m_Config.flockingConfig);
-                case EBirdBehaviour.Traveling2: return new Startle<EBirdBehaviour>(m_Config.startleConfig, m_Config.flockingConfig, m_Config.m_FollowingConfig, EBirdBehaviour.Traveling);
+                case EBirdBehaviour.Traveling: return new Flying<EBirdBehaviour>(m_Config.flyingConfig, m_Config.flockingConfig, m_Config.m_FollowingConfig,EBirdBehaviour.Invalid);
             }
         }
     }

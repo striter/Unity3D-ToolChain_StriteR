@@ -86,7 +86,7 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 	#if defined(GET_ALBEDO)
 		half3 albedo = GET_ALBEDO(i);
 	#else
-		half3 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*INSTANCE(_Color).rgb*i.color.rgb;
+		half3 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*INSTANCE(_Color).rgb;
 	#endif
 
 	#if defined(GET_EMISSION)
@@ -102,7 +102,7 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 	half ao=mix.b;
 
 	#if defined(GET_PBRPARAM)
-		GET_PBRPARAM(glossiness,metallic,ao)
+		GET_PBRPARAM(glossiness,metallic,ao);
 	#endif
 	
 	BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,glossiness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,1);
@@ -111,28 +111,28 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 
 	Light mainLight =
 	#if defined GET_MAINLIGHT
-		GET_MAINLIGHT(i)
+		GET_MAINLIGHT(i);
 	#else
 		GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
 	#endif
 
 	half3 indirectDiffuse= 
 	#if defined GET_INDIRECTDIFFUSE
-		GET_INDIRECTDIFFUSE(surface)
+		GET_INDIRECTDIFFUSE(surface);
 	#else
 		IndirectDiffuse(mainLight,i,normalWS);
 	#endif
 
 	half3 indirectSpecular=
 	#if defined GET_INDIRECTSPECULAR
-		GET_INDIRECTSPECULAR(surface)
+		GET_INDIRECTSPECULAR(surface);
 	#else
 		IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,0);
 	#endif
 	finalCol+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 
 	#if defined BRDF_MAINLIGHTING
-		BRDF_MAINLIGHTING(mainLight,surface)
+		BRDF_MAINLIGHTING(mainLight,surface);
 	#endif
 	finalCol+=BRDFLighting(surface,mainLight);
 

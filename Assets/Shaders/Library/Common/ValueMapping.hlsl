@@ -1,9 +1,11 @@
 ﻿//Pow
+half sqr(half value) { return value * value; }
 half pow2(half value){ return value * value; }
 half pow3(half value) { return value*value*value; }
 half pow4(half value) { return value * value * value * value ;}
 half pow5(half value) { return value * value * value * value * value;}
 
+float sqr(float value) { return value * value; }
 float pow2(float value){ return value * value; }
 float pow3(float value) { return value*value*value; }
 float pow4(float value) { return value * value * value * value ;}

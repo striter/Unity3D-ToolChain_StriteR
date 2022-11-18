@@ -22,7 +22,8 @@ namespace PCG.Module.Cluster
         private MeshRenderer m_Renderer;
 
         public Transform Transform => transform;
-        public int BoidsIdentity => m_Voxel.Identity.location.value;
+        public int Identity => m_PoolID.GetIdentity(DModule.kIDCluster);
+        public Action<int> SetDirty { get; set; }
         public Vector3 CenterWS => transform.position;
         public List<FBoidsVertex> m_BirdLandings { get; } = new List<FBoidsVertex>();
 
@@ -150,7 +151,7 @@ namespace PCG.Module.Cluster
                         if (birdLandingAvailable)
                         {
                             Vector3 normalWS = orientedToWorld.MultiplyVector(normalOS);
-                            if (Vector3.Dot(normalWS, Vector3.up) > .95f)
+                            if (Vector3.Dot(normalWS, transform.up) > .95f)
                             {
                                 Vector3 rightWS = orientedToWorld.MultiplyVector(tangentOS);
                                 m_BirdLandings.Add(new FBoidsVertex {position = positionWS,rotation =  Quaternion.LookRotation( rightWS,normalWS)});
@@ -177,13 +178,8 @@ namespace PCG.Module.Cluster
                 
             UMeshFragment.Combine(_orientedMeshes,m_ClusterMesh,DModule.Collection.m_MaterialLibrary,out var materials,kOutputs);
             m_Renderer.sharedMaterials = materials;
+            SetDirty(Identity);
             TSPoolList<IMeshFragment>.Recycle(_orientedMeshes);
-        }
-        
-
-        public bool LightEnabled { get; set; }
-        public void RefreshLighting()
-        {
         }
         
 #if UNITY_EDITOR
@@ -260,8 +256,9 @@ namespace PCG.Module.Cluster
                 }
             }
         }
-        
-
 #endif
+        public void TickLighting(float _deltaTime, Vector3 _lightDir)
+        {
+        }
     }   
 }

@@ -256,6 +256,15 @@ namespace TPool
             return item;
         }
 
+        public bool TryGet(T _identity,out Y _element)
+        {
+            _element = default;
+            if (!Contains(_identity))
+                return false;
+            _element = this[_identity];
+            return true;
+        }
+        
         public bool TryRecycle(T _identity)
         {
             if (!Contains(_identity))

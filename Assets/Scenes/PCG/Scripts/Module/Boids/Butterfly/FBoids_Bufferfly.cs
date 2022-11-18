@@ -100,20 +100,28 @@ namespace PCG.Module.BOIDS.Butterfly
 
         public void OnAttractionsConstruct(IButterflyAttractions _attraction)
         {
-            if (m_Controls.ContainsKey(_attraction.BoidsIdentity))
+            if (m_Controls.ContainsKey(_attraction.Identity))
                 return;
-            m_Controls.Add(_attraction.BoidsIdentity, new FButterflyAttractionControl(_attraction));
+            _attraction.SetDirty += SetAttractionDirty;
+            m_Controls.Add(_attraction.Identity, new FButterflyAttractionControl(_attraction));
         }
 
         public void OnAttractionsDeconstruct(IButterflyAttractions _attraction)
         {
-            if (!m_Controls.ContainsKey(_attraction.BoidsIdentity))
+            if (!m_Controls.ContainsKey(_attraction.Identity))
                 return;
 
-            foreach (var identity in m_Controls[_attraction.BoidsIdentity].DesignActors())
+            foreach (var identity in m_Controls[_attraction.Identity].DesignActors())
                 RecycleActor(identity);
 
-            m_Controls.Remove(_attraction.BoidsIdentity);
+            _attraction.SetDirty -= SetAttractionDirty;
+            m_Controls.Remove(_attraction.Identity);
+        }
+
+        void SetAttractionDirty(int _attractionID)
+        {
+            foreach (var identity in m_Controls[_attractionID].DesignActors())
+                RecycleActor(identity);
         }
     }
 

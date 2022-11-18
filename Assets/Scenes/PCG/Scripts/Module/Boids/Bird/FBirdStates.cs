@@ -32,10 +32,8 @@ namespace PCG.Module.BOIDS.States.Bird
 
         private readonly Counter m_TiringCounter = new Counter();
         private readonly Counter m_AnimationCounter = new Counter(1f);
-        private readonly Counter m_BorderRedirectionCounter = new Counter(2f,true);
         private readonly ValueChecker<bool> m_Gliding=new ValueChecker<bool>();
         private T m_TiredBehaviour;
-        private float m_SQRBorder;
         
         public Flying(BoidsFlyingConfig _config,BoidsFlockingConfig _flocking,BoidsFollowingConfig _following,T _tiredBehaviour)
         {
@@ -43,7 +41,6 @@ namespace PCG.Module.BOIDS.States.Bird
             m_FlockingConfig = _flocking;
             followingConfig = _following;
             m_TiredBehaviour = _tiredBehaviour;
-            m_SQRBorder = UMath.Pow2(m_Config.borderRange);
         }
         
         public void Begin(BoidsActor _actor)
@@ -60,7 +57,9 @@ namespace PCG.Module.BOIDS.States.Bird
         public bool TickStateSwitch(BoidsActor _actor, float _deltaTime,out T _tiredBehaviour)
         {
             _tiredBehaviour = m_TiredBehaviour;
-
+            if (m_TiredBehaviour.Equals(UEnum.GetInvalid<T>())) 
+             return false;
+            
             m_TiringCounter.Tick(_deltaTime);
             if (m_TiringCounter.m_Playing)
                 return false;
@@ -77,31 +76,17 @@ namespace PCG.Module.BOIDS.States.Bird
         public void TickVelocity(BoidsActor _actor, IList<BoidsActor> _members, float _deltaTime,
             ref Vector3 _velocity)
         {
-            Vector3 originOffset = (m_Config.borderOrigin - _actor.Position);
-
-
-            _velocity += this.TickMaintainHeight(_actor,originOffset,_deltaTime,m_Config.heightDamping);
+            Vector3 up = _actor.Position.normalized;
+            _velocity += this.TickMaintainHeight(_actor,m_Config.origin+up*m_Config.height-_actor.Position,up,_deltaTime,m_Config.heightDamping,out var upward);
             _velocity += this.TickFlocking(_actor,_members,_deltaTime,m_FlockingConfig);
             var target = (_actor.m_Target as FBirdTarget);
             if(!target.m_IsLeader)
                 _velocity += this.TickFollowing(_actor,target.m_Leader,_deltaTime,followingConfig);
             
-            //Change direction when out of border
-            var sqrDistance = originOffset.sqrMagnitude;
-            if (sqrDistance > m_SQRBorder)
-                m_BorderRedirectionCounter.Replay();
-            if (m_BorderRedirectionCounter.m_Playing)
-            {
-                if (Vector3.Dot(originOffset.SetY(0f).normalized, _velocity.SetY(0f).normalized) < .9f)
-                    _velocity += Vector3.Cross(Vector3.up, _velocity) * (_deltaTime * m_Config.borderDamping);
-                else
-                    m_BorderRedirectionCounter.Stop();
-            }
-            
             m_AnimationCounter.Tick(_deltaTime);
             if (!m_AnimationCounter.m_Playing)
             {
-                if (m_Gliding.Check(_velocity.y < 0))
+                if (m_Gliding.Check(upward<0f))
                 {
                     _actor.m_Animation.SetAnimation(m_Gliding?m_Config.glideAnim:m_Config.flyAnim);
                     m_AnimationCounter.Replay();
@@ -115,58 +100,14 @@ namespace PCG.Module.BOIDS.States.Bird
             Gizmos_Extend.DrawString(Vector3.up*.2f,$"{m_TiringCounter.m_TimeLeft:F1}");
             Gizmos.matrix = Matrix4x4.identity;
             Gizmos.color = Color.white;
-            Gizmos.DrawLine(_actor.Position,m_Config.borderOrigin);
+            Gizmos.DrawLine(_actor.Position,m_Config.origin);
             Gizmos.color = Color.red;
             // Gizmos.DrawWireSphere(_actor.m_Target.m_Destination,m_Config.boderRange);
-            Gizmos.DrawLine(_actor.Position,_actor.Position.SetY(m_Config.borderOrigin.y));
+            Gizmos.DrawLine(_actor.Position,_actor.Position.normalized*(m_Config.height));
         }
 #endif
     }
 
-    public class Traveling : IBoidsState, IStateTransformVelocity
-    {
-        public float speed { get; private set; }
-        public string glideAnim { get; private set; }
-        public string flyAnim { get; private set; }
-        private BoidsFollowingConfig followingConfig;
-        private BoidsFlockingConfig flockingConfig;
-
-        public Traveling(float _speed,string _glideAnim,string _flyAnim, BoidsFollowingConfig _followingConfig, BoidsFlockingConfig _flockingConfig)
-        {
-            speed = _speed;
-            glideAnim = _glideAnim;
-            flyAnim = _flyAnim;
-            followingConfig = _followingConfig;
-            flockingConfig = _flockingConfig;
-        }
-        
-        public void Begin(BoidsActor _actor)
-        {
-            _actor.m_Animation.SetAnimation(flyAnim);
-        }
-
-        public void End()
-        {
-        }
-
-        public void TickVelocity(BoidsActor _actor, IList<BoidsActor> _members, float _deltaTime, ref Vector3 _direction)
-        {
-            var target = (_actor.m_Target as FBirdTarget);
-            var offset = target.m_Destination - _actor.Position;
-            _direction += this.TickMaintainHeight(_actor,offset,_deltaTime,.35f);
-            _direction += this.TickFlocking(_actor, _members, _deltaTime, flockingConfig);
-            if (Vector3.Dot(offset, _direction) > 0)
-                _direction += this.TickFollowing(_actor, target.m_Target, _deltaTime, followingConfig);
-            if (!target.m_IsLeader)
-                _direction += this.TickFollowing(_actor, target.m_Leader, _deltaTime, followingConfig);
-        }
-        
-        public void DrawGizmosSelected(BoidsActor _actor)
-        {
-        }
-
-    }
-    
     public class PreLanding<T> : IBoidsState, IStateTransformVelocity, IStateSwitch<T> where T:Enum
     {
         public float speed => m_Config.speed;
@@ -198,10 +139,10 @@ namespace PCG.Module.BOIDS.States.Bird
 
         void TickHoverParameters(BoidsActor _actor)
         {
-            Vector3 destination = _actor.m_Target.m_Destination + Vector3.up * m_Config.height;
+            Vector3 destination = _actor.m_Target.m_Destination + _actor.m_Target.m_Up * m_Config.height;
             Vector3 centerOffset = _actor.Position - destination;
             Vector3 hoverDirection = centerOffset.SetY(0f).normalized;
-            hoverTangent = Vector3.Cross(Vector3.up,hoverDirection)*m_Clockwise;
+            hoverTangent = Vector3.Cross(_actor.m_Target.m_Up,hoverDirection)*m_Clockwise;
             hoverPosition = destination + hoverDirection * m_Config.distance;
             hoverOffset = hoverPosition - _actor.Position;
         }
@@ -313,14 +254,13 @@ namespace PCG.Module.BOIDS.States.Bird
 
         private EPerchingState m_State;
         private BoidsPerchConfig m_Config;
-        private Vector3 m_RandomDirection;
         
         private readonly Counter m_StateCounter = new Counter();
         private readonly Counter m_RotateCounter = new Counter();
         private readonly Counter m_RotateCooldown = new Counter();
-        private float m_RotateSpeed=0f;
+        private float m_Rotation,m_RotateSpeed=0f;
         private Vector3 m_Origin=Vector3.zero;
-        private Quaternion m_Rotation;
+        private Vector3 m_MoveDirection;
 
         private Action<int> DoPoop;
         public Perching(BoidsPerchConfig _config,Action<int> _poop)
@@ -332,6 +272,7 @@ namespace PCG.Module.BOIDS.States.Bird
         public void Begin(BoidsActor _actor)
         {
             SetState(_actor,EPerchingState.Alert);
+            m_Rotation = URandom.Random01() * 360f;
         }
         
         public void End()
@@ -351,6 +292,7 @@ namespace PCG.Module.BOIDS.States.Bird
                     _actor.m_Target.PickAnotherSpot();
                     _actor.m_Animation.SetAnimation(m_Config.moveAnim);
                     m_StateCounter.Set(m_Config.moveDuration.Random());
+                    m_MoveDirection =  _actor.m_Target.m_Destination - m_Origin;
                 }
                     break;
                 case EPerchingState.Alert:
@@ -382,9 +324,8 @@ namespace PCG.Module.BOIDS.States.Bird
             {
                 case EPerchingState.Move:
                 {
-                    Vector3 offset = m_Origin - _actor.m_Target.m_Destination;
                     _position = Vector3.Lerp(m_Origin, _actor.m_Target.m_Destination, m_StateCounter.m_TimeElapsedScale);
-                    _rotation = Quaternion.Lerp(_rotation,   Quaternion.LookRotation(-offset,_actor.m_Target.m_Up),m_StateCounter.m_TimeElapsedScale);
+                    _rotation = Quaternion.Lerp(_rotation,   Quaternion.LookRotation(m_MoveDirection,_actor.m_Target.m_Up),m_StateCounter.m_TimeElapsedScale);
                 }
                     break;
                 case EPerchingState.Alert:
@@ -399,6 +340,8 @@ namespace PCG.Module.BOIDS.States.Bird
                 }
                     break;
             }
+
+            _rotation = _actor.m_Target.m_Rotation * Quaternion.Euler(0f,m_Rotation,0f);
         }
         public bool TickStateSwitch(BoidsActor _actor, float _deltaTime, out EBirdBehaviour _nextState)
         {
@@ -445,6 +388,7 @@ namespace PCG.Module.BOIDS.States.Bird
             m_RotateCounter.Set(m_Config.rotateDuration.Random());
             m_RotateCooldown.Set(m_Config.rotateCooldown.Random());
             m_RotateSpeed = URandom.RandomSign()* m_Config.rotateSpeed.Random();
+            
         }
         void TickRotate(BoidsActor _actor,float _deltaTime,ref Quaternion _rotation)
         {
@@ -452,7 +396,7 @@ namespace PCG.Module.BOIDS.States.Bird
             if (m_RotateCooldown.m_Playing)
                 return;
 
-            _rotation = Quaternion.AngleAxis(m_RotateSpeed*_deltaTime,_actor.m_Target.m_Up)*_rotation;
+            m_Rotation += m_RotateSpeed * _deltaTime;
             if (!m_RotateCounter.Tick(_deltaTime))
                 return;
             ResetRotation();

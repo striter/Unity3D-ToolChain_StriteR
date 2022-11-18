@@ -14,6 +14,7 @@ namespace PCG.Module.Prop
         private byte m_PathByte;
         private Mesh m_Mesh;
         private MeshRenderer m_Renderer;
+        public int Identity => m_PoolID.GetIdentity(DModule.kIDPath);
         
         public void Init(IVoxel _voxel)
         {
@@ -96,10 +97,11 @@ namespace PCG.Module.Prop
             Gizmos_Extend.DrawString(transform.position,$"{indexer.srcByte}");
         }
 #endif
-        public Transform Transform => transform;
-        public bool LightEnabled { get; set; }
-        public void RefreshLighting()
+
+
+        public void TickLighting(float _deltaTime, Vector3 _lightDir)
         {
+            
         }
     }
 

@@ -186,28 +186,28 @@ namespace PCG.Module.Prop
     
     public class ModulePropElement:APoolItem<int>
     {
-        public bool enabled
-        {
-            get => m_MeshRenderer.enabled;
-            set => m_MeshRenderer.enabled = value;
-        }
         public EModulePropType m_Type { get; private set; }
         private readonly MeshRenderer m_MeshRenderer;
         private readonly MeshFilter m_MeshFilter;
         
         private bool m_Show;
-        private readonly Counter m_Counter = new Counter(.25f,true);
         private Vector3 m_Scale;
+        private readonly Counter m_AnimationCounter = new Counter(.25f,true);
 
+        private readonly MaterialPropertyBlock m_PropertyBlock;
+        private bool m_Emissive;
+        private Color m_EmissionColor;
+        private readonly Counter m_EmissionCounter = new Counter(.25f,true);
+        
         public ModulePropElement(Transform _transform):base(_transform)
         {
             m_MeshFilter = _transform.gameObject.AddComponent<MeshFilter>();
             m_MeshRenderer = _transform.gameObject.AddComponent<MeshRenderer>();
+            m_PropertyBlock = new MaterialPropertyBlock();
         }
 
-        public ModulePropElement Init(IVoxel _voxel, ModulePropData _propData,int _orientation, IList<Mesh> _meshLibrary, IList<Material> _materialLibrary)
+        public ModulePropElement Init(IVoxel _voxel, ModulePropData _propData,int _orientation, IList<Mesh> _meshLibrary, IList<Material> _materialLibrary,Color _color)
         {
-            enabled = true;
             m_Type = _propData.type;
             m_Scale = _propData.scale;
             Transform.gameObject.name = _voxel.Identity.ToString();
@@ -220,25 +220,53 @@ namespace PCG.Module.Prop
             Transform.localScale = Vector3.zero;
             
             m_Show = true;
-            m_Counter.Replay();
+            m_AnimationCounter.Replay();
+            
+            m_EmissionCounter.Replay();
+            m_Emissive = false;
+            m_EmissionColor = _color;
+            m_PropertyBlock.SetColor(KShaderProperties.kEmissionColor,Color.black);
+            m_MeshRenderer.SetPropertyBlock(m_PropertyBlock);
             return this;
         }
 
         public void TryRecycle()
         {
             m_Show = false;
-            m_Counter.Replay();
+            m_AnimationCounter.Replay();
         }
         
         public bool TickRecycle(float _deltaTime)
         {
-            if (!m_Counter.m_Playing)
+            if (!m_AnimationCounter.m_Playing)
                 return false;
-            m_Counter.Tick(_deltaTime);
-            Transform.localScale = (m_Show?m_Counter.m_TimeElapsedScale:m_Counter.m_TimeLeftScale)*m_Scale*DPCG.kUnitSize*2;
-            if (!m_Counter.m_Playing&&!m_Show)
+            m_AnimationCounter.Tick(_deltaTime);
+            Transform.localScale = (m_Show?m_AnimationCounter.m_TimeElapsedScale:m_AnimationCounter.m_TimeLeftScale)*m_Scale*DPCG.kUnitSize*2;
+            if (!m_AnimationCounter.m_Playing&&!m_Show)
                 return true;
             return false;
         }
+
+        private static readonly RangeFloat kRandomEmission = new RangeFloat(.2f, 1.8f);
+        public void TickLighting(float _deltaTime,float _ndl)
+        {
+            float lightParam = _ndl;
+            bool enable = lightParam > .3f;
+            if (m_Emissive != enable)
+            {
+                m_Emissive = enable;
+                m_EmissionCounter.Set(kRandomEmission.Random());
+            }
+
+            if (!m_EmissionCounter.Tick(_deltaTime))
+                return;
+            
+            if (m_Type == EModulePropType.Light)
+                m_MeshRenderer.enabled = enable;
+
+            m_PropertyBlock.SetColor(KShaderProperties.kEmissionColor,m_Emissive?m_EmissionColor:Color.black);
+            m_MeshRenderer.SetPropertyBlock(m_PropertyBlock);
+        }
+
     }
 }

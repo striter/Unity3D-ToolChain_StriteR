@@ -18,12 +18,9 @@ namespace PCG.Module.BOIDS
     [Serializable]
     public struct BoidsFlyingConfig
     {
-        [Header("Restriction")]
-        public Vector3 borderOrigin;
-        public float borderRange;
-        public float borderDamping;
-        [Header("Parameters")]
+        public Vector3 origin;
         public float speed;
+        public float height;
         public float heightDamping;
         public RangeFloat tiringDuration;
         public string flyAnim;
@@ -33,7 +30,7 @@ namespace PCG.Module.BOIDS
         public void DrawGizmos()
         {
             Handles.matrix=Matrix4x4.identity;
-            Handles.DrawWireDisc(borderOrigin,Vector3.up,borderRange);
+            Handles_Extend.DrawWireSphere(origin,Vector3.up,height);
         }
     #endif
     }

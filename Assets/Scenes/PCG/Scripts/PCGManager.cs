@@ -13,7 +13,7 @@ namespace PCG
     interface IPolyGridControl
     {
         void Init();
-        void Tick(float _deltaTIme);
+        void Tick(float _deltaTime);
         void Clear();
         void Dispose();
     }
@@ -109,9 +109,11 @@ namespace PCG
 
         private void Update()
         {
-            float deltaTime = Time.unscaledDeltaTime;
-            m_Controls.Traversal(p=>p.Tick(Time.deltaTime));
-            InputTick(deltaTime);
+            InputTick(Time.unscaledDeltaTime);
+
+            float deltaTime = Time.deltaTime;
+            m_Controls.Traversal(p=>p.Tick(deltaTime));
+            m_Module.TickEnvironment(deltaTime,m_Environment.Output());
         }
         
         void InputTick(float _deltaTime)
@@ -136,15 +138,15 @@ namespace PCG
         {
             m_Controls.Traversal(p=>p.Dispose());
         }
-#if UNITY_EDITOR
-        
-        #region Gizmos
-        private void OnGUI()
-        {
-            TouchTracker.DrawDebugGUI();
-        }
-        #endregion
-#endif
+// #if UNITY_EDITOR
+//         
+//         #region Gizmos
+//         private void OnGUI()
+//         {
+//             TouchTracker.DrawDebugGUI();
+//         }
+//         #endregion
+// #endif
     }
     
 }

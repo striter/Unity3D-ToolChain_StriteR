@@ -12,8 +12,6 @@ namespace PCG.Module.BOIDS.Bird
         public readonly Dictionary<int, FBirdFlock> m_Flocks = new Dictionary<int, FBirdFlock>();
         private readonly TObjectPoolClass<int, FBirdPoop> m_Poops;
 
-        private readonly RangeFloat kRandomTraverllers = new RangeFloat(60f, 30f);
-        private Counter m_TraverlingCounter = new Counter(20f, false);
         public FBOIDS_Bird(FBirdConfig _birdConfig, Transform _transform) : base(_transform)
         {
             m_BirdConfig = _birdConfig;
@@ -24,7 +22,7 @@ namespace PCG.Module.BOIDS.Bird
         {
             base.Dispose();
             foreach (var landingControl in m_PerchingRoots.Values)
-                landingControl.Clear();
+                landingControl.Reset();
             m_Flocks.Clear();
         }
         public override void Dispose()
@@ -74,55 +72,24 @@ namespace PCG.Module.BOIDS.Bird
         }
 
         private static readonly RangeInt kFlockRange = new RangeInt(8, 4);
-        public void SpawnFlyingFlocks()
+        public void SpawnFlyingFlocks(bool _travelling)
         {
-            var randomDirection = URandom.Random2DDirection();
-            var direction = new Vector3(randomDirection.x, 0f, randomDirection.y);
-            var srcPosition = m_BirdConfig.flyingConfig.borderOrigin + direction * m_BirdConfig.flyingConfig.borderRange;
+            var randomDirection = URandom.RandomDirection();
+            var srcPosition = m_BirdConfig.flyingConfig.height * randomDirection;
             var flock = SpawnBirdFlock(kFlockRange.Random());
             foreach (var member in flock.members)
             {
                 var actor = this[member];
-                actor.Initialize(new FBoidsVertex() { position = srcPosition + URandom.RandomDirection() * .5f, rotation = Quaternion.LookRotation(-direction, Vector3.up) });
-                (actor.m_Behaviour as FBirdBehaviour).Initialize(EBirdBehaviour.Flying);
+                Vector3 direction = URandom.RandomDirection();
+                actor.Initialize(new FBoidsVertex() { position = srcPosition + direction * .5f, rotation = Quaternion.LookRotation(-direction, randomDirection) });
+                (actor.m_Behaviour as FBirdBehaviour).Initialize(_travelling?EBirdBehaviour.Traveling:EBirdBehaviour.Flying);
                 (actor.m_Target as FBirdTarget).Initialize(flock);
             }
-        }
-
-        public void SpawnTravelingFlock(Vector3 _position, FBoidsVertex _target, int _flockSize, float _elapseTime)
-        {
-            var flock = SpawnBirdFlock(_flockSize, _elapseTime);
-            foreach (var member in flock.members)
-            {
-                var actor = this[member];
-                actor.Initialize(new FBoidsVertex() { position = _position + URandom.RandomDirection() * .5f, rotation = Quaternion.LookRotation(Vector3.up, Vector3.forward) });
-                (actor.m_Behaviour as FBirdBehaviour).Initialize(EBirdBehaviour.Traveling);
-                (actor.m_Target as FBirdTarget).Initialize(flock);
-                (actor.m_Target as FBirdTarget).SetTarget(_target);
-            }
-        }
-
-        void SpawnRandomTravellers()
-        {
-            var travelDirection = URandom.Random2DDirection().ToVector3_XZ();
-            var travelOffset = travelDirection * m_BirdConfig.flyingConfig.borderRange;
-            var travelCenter = m_BirdConfig.flyingConfig.borderOrigin + Vector3.Cross(Vector3.up, travelDirection) * URandom.Random01() * m_BirdConfig.flyingConfig.borderRange * .5f;
-            SpawnTravelingFlock(
-                travelCenter - travelOffset,
-                new FBoidsVertex(travelCenter + travelOffset,
-                Quaternion.LookRotation(travelDirection, Vector3.up)),
-                kFlockRange.Random(), 45f);
         }
 
         public override void Tick(float _deltaTime)
         {
             base.Tick(_deltaTime);
-            if (m_TraverlingCounter.Tick(_deltaTime))
-            {
-                SpawnRandomTravellers();
-                m_TraverlingCounter.Set(kRandomTraverllers.Random());
-            }
-
             TSPoolList<int>.Spawn(out var poops);
             m_Poops.m_Dic.Keys.FillList(poops);
             foreach (var poop in poops)
@@ -157,26 +124,33 @@ namespace PCG.Module.BOIDS.Bird
 
         public void OnPerchingConstruct(IBirdPerchingRoot _perchingRoot)
         {
-            if (m_PerchingRoots.ContainsKey(_perchingRoot.BoidsIdentity))
+            if (m_PerchingRoots.ContainsKey(_perchingRoot.Identity))
                 return;
-
-            m_PerchingRoots.Add(_perchingRoot.BoidsIdentity, new FBirdPerchingRoot(_perchingRoot));
+            _perchingRoot.SetDirty += OnPerchingRootDirty;
+            m_PerchingRoots.Add(_perchingRoot.Identity, new FBirdPerchingRoot(_perchingRoot));
         }
 
         public void OnPerchingDeconstruct(IBirdPerchingRoot _perchingRoot)
         {
-            if (!m_PerchingRoots.ContainsKey(_perchingRoot.BoidsIdentity))
+            if (!m_PerchingRoots.ContainsKey(_perchingRoot.Identity))
                 return;
 
-            StartleRootedFlocks(_perchingRoot.BoidsIdentity);
-            m_PerchingRoots.Remove(_perchingRoot.BoidsIdentity);
+            StartleRoot(_perchingRoot.Identity);
+            _perchingRoot.SetDirty -= OnPerchingRootDirty;
+            m_PerchingRoots.Remove(_perchingRoot.Identity);
         }
 
-        public void StartleRootedFlocks(int _rootIdentity)
+        void StartleRoot(int _rootIdentity)
         {
             foreach (var flock in CollectAffectedFlock(_rootIdentity))
                 foreach (var member in m_Flocks[flock].members)
                     (this[member].m_Behaviour as FBirdBehaviour).Startle();
+        }
+        
+        void OnPerchingRootDirty(int _rootIdentity)
+        {
+            StartleRoot(_rootIdentity);
+            m_PerchingRoots[_rootIdentity].Reset();
         }
 
         IEnumerable<int> CollectAffectedFlock(int _root)
@@ -202,12 +176,7 @@ namespace PCG.Module.BOIDS.Bird
             Gizmos.matrix = Matrix4x4.identity;
             Gizmos.color = Color.white;
             foreach (var landing in m_PerchingRoots.Values)
-            {
-                if(landing.m_Root.m_BirdLandings.Count>0)
-                    Debug.Log(landing.m_Root.m_BirdLandings.Count);
                 landing.DrawGizmos();
-                
-            }
         }
 #endif
     }

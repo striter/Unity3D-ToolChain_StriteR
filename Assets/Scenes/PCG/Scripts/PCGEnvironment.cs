@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace PCG
@@ -18,9 +16,9 @@ namespace PCG
             m_RotationDamper.Initialize(new Vector3(0f,0f,0f));
         }
 
-        public void Tick(float _deltaTIme)
+        public void Tick(float _deltaTime)
         {
-            m_Light.transform.rotation = Quaternion.Euler(m_RotationDamper.Tick(_deltaTIme,new Vector3(pitch,yaw,0)));
+            m_Light.transform.rotation = Quaternion.Euler(m_RotationDamper.Tick(_deltaTime,new Vector3(pitch,yaw)));
         }
 
         public void Rotate(float _pitch,float _yaw)
@@ -28,6 +26,8 @@ namespace PCG
             pitch += _pitch;
             yaw += _yaw;
         }
+
+        public Vector3 Output() => m_Light.transform.forward;
 
         public void Clear()
         {

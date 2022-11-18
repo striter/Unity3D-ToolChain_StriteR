@@ -190,7 +190,7 @@ namespace PCG
     {
         public GridID location;
         public byte height;
-
+        
         public PCGID(GridID _location, byte _height)
         {
             location = _location;
@@ -227,6 +227,7 @@ namespace PCG
         public static bool operator ==(PCGID _src, PCGID _dst) => _src.Equals(_dst);
 
         public static bool operator !=(PCGID _src, PCGID _dst) => !_src.Equals(_dst);
+        public int GetIdentity(int _typeID) => location.value * 10000 + height * 10 + _typeID;
     }
 
     public struct TrapezoidQuad

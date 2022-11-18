@@ -20,7 +20,7 @@ public static class UEnum
             {
                 var enumValue = Convert.ToInt32(value);
                 var enumObj = (T) value;
-                if (enumValue == -1 || value.ToString() == "Invalid")
+                if (enumValue == -1)
                 {
                     m_Invalid = enumObj;
                     continue;

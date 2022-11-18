@@ -61,7 +61,15 @@ namespace Rendering.Pipeline
                 return;
             Gizmos.color = IndexToColor(m_Index);
             Gizmos.matrix = transform.localToWorldMatrix;
-            Gizmos.DrawWireCube(Vector3.up * m_PlaneOffset, m_MeshFilter.sharedMesh.bounds.size.SetY(0));
+            switch (m_Geometry)
+            {
+                case EReflectionGeometry._PLANE:
+                    Gizmos.DrawWireCube(Vector3.up * m_PlaneOffset, m_MeshFilter.sharedMesh.bounds.size.SetY(0));
+                    break;
+                case EReflectionGeometry._SPHERE:
+                    Gizmos.DrawWireSphere(m_SphereData.center,m_SphereData.radius);
+                    break;
+            }
         }
         private Color IndexToColor(int index)
         {

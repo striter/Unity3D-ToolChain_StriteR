@@ -163,8 +163,8 @@ Material:
     - _DepthDistance: 40
     - _DepthOffset: 0.42
     - _DepthPow: 2
-    - _DepthRange: 0.01
-    - _DepthRangeEnd: 3.0543764
+    - _DepthRange: 1.5243945
+    - _DepthRangeEnd: 3.8213859
     - _DepthRefraction: 0
     - _DepthScale: 1
     - _DetailAlbedoMapScale: 1
@@ -199,7 +199,7 @@ Material:
     - _FoamWidth: 0.01
     - _Fresnel: 1
     - _FresnelPow: 1
-    - _FresnelRange: 0.7241967
+    - _FresnelRange: 0.44836482
     - _FresnelRangeEnd: 1
     - _GSF: 6
     - _GlossMapScale: 0
@@ -222,14 +222,14 @@ Material:
     - _ReceiveShadows: 1
     - _ReflectionAmount: 0.51
     - _ReflectionDistort: 1
-    - _ReflectionOffset: -2.1
+    - _ReflectionOffset: -7
     - _RefractionAmount: 0.5
     - _RefractionDistance: 1.48
     - _Rotation: 45
     - _Scale: 16
     - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
-    - _SpecularAmount: 33.4
+    - _SpecularAmount: 40
     - _SpecularHighlights: 1
     - _SpecularRange: 0.9
     - _SpecularStrength: 10
@@ -252,21 +252,21 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _CausticFlowST1: {r: 0.05, g: 0.05, b: 0.1, a: 0.03}
     - _CausticFlowST2: {r: 0.05, g: 0.05, b: -0.1, a: -0.02}
-    - _Color: {r: 0.27044007, g: 1, b: 0.9613113, a: 1}
+    - _Color: {r: 0.7232704, g: 1, b: 0.8657048, a: 1}
     - _CrackColor: {r: 1, g: 1, b: 1, a: 1}
-    - _DepthColor: {r: 0.572327, g: 0.91949683, b: 1, a: 0}
+    - _DepthColor: {r: 0, g: 0.5855133, b: 0.8113207, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlowDirection: {r: -1, g: 0, b: 0, a: 0}
     - _FlowDirection1: {r: 1, g: 1, b: 0, a: 0}
     - _FlowDirection2: {r: 1, g: 1, b: 0, a: 0}
-    - _FlowST1: {r: 5, g: 5, b: 0.1, a: 0.02}
-    - _FlowST2: {r: 5, g: 2, b: -0.01, a: -0.01}
+    - _FlowST1: {r: 5, g: 5, b: 0.02, a: 0.02}
+    - _FlowST2: {r: 5, g: 2, b: -0.005, a: -0.01}
     - _FoamColor: {r: 2.670157, g: 2.670157, b: 2.670157, a: 1}
-    - _ReflectionColor: {r: 0.56651235, g: 0.67311424, b: 0.7264151, a: 0.27058825}
+    - _ReflectionColor: {r: 0.7704402, g: 0.908886, b: 1, a: 1}
     - _RotationMatrix: {r: 0.70710677, g: 0.70710677, b: -0.70710677, a: 0.70710677}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _WaveST1: {r: 3, g: 1, b: 0.01, a: -0.01}
-    - _WaveST2: {r: 0, g: 3, b: -0.01, a: 0.01}
+    - _WaveST2: {r: 0, g: 3, b: -0.005, a: -0.01}
   m_BuildTextureStacks: []
 --- !u!114 &1842042723372290674
 MonoBehaviour:

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using PCG.Module.BOIDS;
@@ -16,9 +17,8 @@ namespace PCG.Module.Prop
         public readonly List<ModulePropElement> m_Props = new List<ModulePropElement>();
         public Transform Transform => transform;
         
-        public PCGID Identity => m_PoolID;
-        public bool Recycled => m_Recycled;
-        public int BoidsIdentity => m_PoolID.location.value;
+        public int Identity => m_PoolID.GetIdentity(DModule.kIDProp);
+        public Action<int> SetDirty { get; set; }
         public List<FBoidsVertex> m_ButterflyPositions { get; } = new List<FBoidsVertex>();
         
         public void Init(IVoxel _voxel)
@@ -26,6 +26,7 @@ namespace PCG.Module.Prop
             m_Voxel = _voxel;
             transform.SyncPositionRotation(_voxel.Transform);
             m_Random = Noise.Value.Unit1f1(m_Voxel.Identity.GetHashCode());//float)m_Voxel.Identity.location.x/ int.MaxValue,(float)m_Voxel.Identity.location.y/int.MaxValue,(float)m_Voxel.Identity.height/byte.MaxValue);
+            
         }
         public override void OnPoolRecycle()
         {
@@ -86,7 +87,7 @@ namespace PCG.Module.Prop
                 var propSet = decorationData.possibilities[(int)(m_Random*decorationData.possibilities.Length)];
                 foreach (var prop in propSet.props)
                 {
-                    var propElement= _propPool.Spawn().Init(m_Voxel,prop,orientation,DModule.Collection.m_MeshLibrary,DModule.Collection.m_MaterialLibrary);
+                    var propElement= _propPool.Spawn().Init(m_Voxel,prop,orientation,DModule.Collection.m_MeshLibrary,DModule.Collection.m_MaterialLibrary,DModule.EmissionColors.RandomItem());
                     propElement.Transform.SetParent(transform);
                     m_Props.Add(propElement);
                 }
@@ -96,15 +97,15 @@ namespace PCG.Module.Prop
                 p =>new FBoidsVertex() {
                     position = p.Transform.position,rotation = p.Transform.rotation
                 }).FillList(m_ButterflyPositions);
-            RefreshLighting();
+            SetDirty(Identity);
         }
         
 
-        public bool LightEnabled { get; set; }
-        public void RefreshLighting()
+        public void TickLighting(float _deltaTime,Vector3 _lightDir)
         {
-            foreach (var prop in m_Props.Collect(p => p.m_Type == EModulePropType.Light))
-                prop.enabled = LightEnabled;
+            float ndl = Vector3.Dot(transform.up, _lightDir);
+            foreach (var prop in m_Props)
+                prop.TickLighting(_deltaTime,ndl);
         }
     }
 

@@ -68,13 +68,13 @@ Material:
     m_Floats:
     - _AlphaClip: 1
     - _AlphaClipRange: 0.041
-    - _AlphaCutoff: 0.031
+    - _AlphaCutoff: 0.04
     - _AnisoTropicValue: 1
     - _Atlas: 0
     - _AtlasHeight: 0
     - _AtlasIndex: 0
     - _AtlasWidth: 0
-    - _BendStrength: 45
+    - _BendStrength: 63.94
     - _Cull: 2
     - _DepthBuffer: 0
     - _DepthBufferScale: 0

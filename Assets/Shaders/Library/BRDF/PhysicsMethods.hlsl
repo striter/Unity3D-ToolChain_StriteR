@@ -1,19 +1,22 @@
 ﻿
+#define PI_SQRT2 4.442882938158
+
 //Unused
 float F0(float NDL, float NDV, float LDH, float roughness)
 {
     float fresnelLight = F_Schlick(NDL);
     float fresnelView = F_Schlick(NDV);
-    float fresnelDiffuse90 = .5 + 2 * sqr(LDH) * roughness;
+    float fresnelDiffuse90 = .5 + 2 * pow2(LDH) * roughness;
     return lerp(1, fresnelDiffuse90, fresnelLight) * lerp(1, fresnelDiffuse90, fresnelView);
 }
 
 //Fresnel
 float F_SchlickIOR(float NDV, float ior)
 {
-    float f0 = sqr((ior - 1.) / (ior + 1.));
+    float f0 = pow2((ior - 1.) / (ior + 1.));
     return f0 + (1. - f0) * F_Schlick(NDV);
 }
+
 float F_SphericalGaussian(float NDV)
 {
     float power = (-5.55473 * NDV - 6.98316) * NDV;
