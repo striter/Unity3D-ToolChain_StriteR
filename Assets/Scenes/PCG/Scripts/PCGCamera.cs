@@ -13,35 +13,40 @@ namespace PCG
         
         public Vector3 m_RootPosition = Vector3.zero;
         [Header("Constant?")] 
-        public float m_PitchBase = 45f;
-        public float m_YawBase = 145f;
         public float m_Fov = 30f;
+
+        public float m_SphericalHeight;
+        [Readonly] public float m_SphericalPitch, m_SphericalYaw;
         
         [Header("Zoom")]
         public float m_Zoom = 50f;
         public RangeFloat m_ZoomRange = new RangeFloat(20f, 60f);
         public float m_PitchZoomDelta = 15;
-        public float m_YawZoomDelta = 90;
         public float m_FOVZoomDelta = 5f;
+        public Vector3 m_ZoomOffsetDelta;
         public AnimationCurve m_ZoomValueCurve;
         
         [Readonly] public float m_PitchZoom=0f;
         [Readonly] public float m_YawZoom=0f;
         [Readonly] public float m_FovZoom = 0f;
+        [Readonly] public Vector3 m_OffsetZoom = Vector3.zero;
 
         public void Init()
         {
             m_Camera = transform.GetComponent<Camera>();
-            m_PositionDamper.Initialize(m_RootPosition);
-            m_RotationDamper.Initialize(new Vector3(m_PitchBase + m_PitchZoom, m_YawBase + m_YawZoom, 0));
+            m_PositionDamper.Initialize(new Vector3(m_SphericalPitch,m_SphericalYaw,0f));
+            m_RotationDamper.Initialize(new Vector3(m_PitchZoom, 0 , 0));
             Tick(1f);
         }
 
         public void Tick(float _deltaTime)
         {
-            var rotation = Quaternion.Euler(m_RotationDamper.Tick(_deltaTime, new Vector3(m_PitchBase + m_PitchZoom, m_YawBase + m_YawZoom, 0)));
-            var position = m_RootPosition + rotation * Vector3.forward * -m_Zoom;
-            m_Camera.transform.SetPositionAndRotation( m_PositionDamper.Tick(_deltaTime,position),rotation);
+            var baseRotation = Quaternion.Euler( m_PositionDamper.Tick(_deltaTime, new Vector3(m_SphericalPitch, m_SphericalYaw, 0f)));
+            var basePosition = m_RootPosition + baseRotation * Vector3.back * (m_SphericalHeight + m_Zoom);
+
+            var rotation = baseRotation * Quaternion.Euler(m_RotationDamper.Tick(_deltaTime, new Vector3(m_PitchZoom, m_YawZoom , 0))) ;
+            var position = basePosition + baseRotation * m_OffsetZoom;
+            m_Camera.transform.SetPositionAndRotation( position, rotation);
             m_Camera.fieldOfView = m_Fov + m_FovZoom;
         }
 
@@ -53,41 +58,12 @@ namespace PCG
         {
         }
 
-        private Vector3 cameraPosition;
-        private Vector3 rootOrigin;
-        private Vector2 dragOrigin;
-        private GFrustumRays frustumRays;
-        public void SetDrag(Vector2 _origin, bool _begin)
+        public void Drag(float _pitch,float _yaw)
         {
-            if (!_begin)
-                return;
-
-            cameraPosition = m_Camera.transform.position;
-            frustumRays = new GFrustum(m_Camera).GetFrustumRays();
-            rootOrigin = m_RootPosition;
-            dragOrigin = _origin;
+            m_SphericalYaw += _yaw;
+            m_SphericalPitch += _pitch;
         }
 
-        public void Drag(Vector2 _position)
-        {
-            // var delta = GetDragPosition(dragOrigin) - GetDragPosition(_position);
-            // m_RootPosition = rootOrigin + delta;
-        }
-
-        Vector3 GetDragPosition(Vector2 _screenPos)
-        {
-            var u = _screenPos.x / Screen.width;
-            var v = 1 - _screenPos.y / Screen.height;
-            var ray = new Ray(cameraPosition, UMath.BilinearLerp(frustumRays.topLeft.direction, frustumRays.topRight.direction, frustumRays.bottomRight.direction, frustumRays.bottomLeft.direction, u, v));
-            return ray.GetPoint(UGeometryIntersect.RayPlaneDistance(GPlane.kZeroPlane, ray));
-        }
-        
-        public void Rotate(float _pitch, float _yaw)
-        {
-            m_PitchBase += _pitch;
-            m_YawBase += _yaw;
-        }
-        
         public void Pinch(float _delta)
         {
             m_Zoom = Mathf.Clamp(m_Zoom + _delta, m_ZoomRange.start, m_ZoomRange.end);
@@ -95,9 +71,9 @@ namespace PCG
             float pitchNormalized = (1 - m_ZoomRange.NormalizedAmount(m_Zoom));
             pitchNormalized = m_ZoomValueCurve.Evaluate(pitchNormalized);
             
-            m_PitchZoom = pitchNormalized*-m_PitchZoomDelta;
-            m_YawZoom = pitchNormalized * -m_YawZoomDelta;
-            m_FovZoom = pitchNormalized * -m_FOVZoomDelta;
+            m_PitchZoom = pitchNormalized * m_PitchZoomDelta;
+            m_FovZoom = pitchNormalized * m_FOVZoomDelta;
+            m_OffsetZoom = pitchNormalized * m_ZoomOffsetDelta;
         }
 
         public void OnDrawGizmos()

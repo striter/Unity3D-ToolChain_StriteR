@@ -16651,9 +16651,9 @@ MonoBehaviour:
       type: 4
     - origin:
         location:
-          value: 2165
-        height: 0
-      type: 4
+          value: 1260
+        height: 1
+      type: 3
     - origin:
         location:
           value: 2164
@@ -16709,11 +16709,6 @@ MonoBehaviour:
           value: 2161
         height: 0
       type: 4
-    - origin:
-        location:
-          value: 2259
-        height: 0
-      type: 5
     - origin:
         location:
           value: 2277
@@ -16791,18 +16786,13 @@ MonoBehaviour:
       type: 5
     - origin:
         location:
-          value: 2259
+          value: 2241
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 2278
         height: 1
-      type: 3
-    - origin:
-        location:
-          value: 2259
-        height: 2
-      type: 3
-    - origin:
-        location:
-          value: 2259
-        height: 3
       type: 3
     - origin:
         location:
@@ -17061,7 +17051,7 @@ MonoBehaviour:
       type: 5
     - origin:
         location:
-          value: 1393
+          value: 370
         height: 0
       type: 5
     - origin:
@@ -17176,14 +17166,14 @@ MonoBehaviour:
       type: 5
     - origin:
         location:
-          value: 2026
+          value: 305
         height: 0
       type: 5
     - origin:
         location:
-          value: 2025
-        height: 0
-      type: 5
+          value: 1260
+        height: 2
+      type: 3
     - origin:
         location:
           value: 437
@@ -18533,7 +18523,7 @@ MonoBehaviour:
         location:
           value: 2316
         height: 0
-      type: 4
+      type: 5
     - origin:
         location:
           value: 2153
@@ -18551,9 +18541,9 @@ MonoBehaviour:
       type: 4
     - origin:
         location:
-          value: 2007
+          value: 263
         height: 0
-      type: 4
+      type: 5
     - origin:
         location:
           value: 28
@@ -19011,7 +19001,7 @@ MonoBehaviour:
       type: 5
     - origin:
         location:
-          value: 863
+          value: 1638
         height: 0
       type: 5
     - origin:
@@ -19041,9 +19031,9 @@ MonoBehaviour:
       type: 0
     - origin:
         location:
-          value: 863
-        height: 1
-      type: 0
+          value: 1618
+        height: 0
+      type: 5
     - origin:
         location:
           value: 883
@@ -19081,7 +19071,7 @@ MonoBehaviour:
       type: 5
     - origin:
         location:
-          value: 1185
+          value: 349
         height: 0
       type: 5
     - origin:
@@ -19511,7 +19501,7 @@ MonoBehaviour:
       type: 5
     - origin:
         location:
-          value: 1529
+          value: 229
         height: 0
       type: 5
     - origin:
@@ -19551,7 +19541,7 @@ MonoBehaviour:
       type: 5
     - origin:
         location:
-          value: 1509
+          value: 1352
         height: 0
       type: 5
     - origin:
@@ -19681,9 +19671,9 @@ MonoBehaviour:
       type: 3
     - origin:
         location:
-          value: 1526
+          value: 1260
         height: 0
-      type: 4
+      type: 5
     - origin:
         location:
           value: 245
@@ -19827,6 +19817,501 @@ MonoBehaviour:
     - origin:
         location:
           value: 1150
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 1659
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1660
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1640
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 2040
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1619
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1620
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 2400
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 2381
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1658
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 2039
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 2382
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 2002
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 2001
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 2020
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1660
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 1660
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 1660
+        height: 3
+      type: 3
+    - origin:
+        location:
+          value: 1660
+        height: 4
+      type: 3
+    - origin:
+        location:
+          value: 2039
+        height: 3
+      type: 0
+    - origin:
+        location:
+          value: 1638
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 2040
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 1659
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 1638
+        height: 3
+      type: 0
+    - origin:
+        location:
+          value: 2020
+        height: 3
+      type: 0
+    - origin:
+        location:
+          value: 2002
+        height: 3
+      type: 0
+    - origin:
+        location:
+          value: 1658
+        height: 3
+      type: 0
+    - origin:
+        location:
+          value: 2381
+        height: 4
+      type: 3
+    - origin:
+        location:
+          value: 2001
+        height: 4
+      type: 3
+    - origin:
+        location:
+          value: 2381
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 2381
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 2381
+        height: 3
+      type: 3
+    - origin:
+        location:
+          value: 2400
+        height: 3
+      type: 0
+    - origin:
+        location:
+          value: 412
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1372
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 391
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1618
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 1618
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 1618
+        height: 3
+      type: 3
+    - origin:
+        location:
+          value: 1618
+        height: 4
+      type: 3
+    - origin:
+        location:
+          value: 433
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 244
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 2001
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 2001
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 2001
+        height: 3
+      type: 3
+    - origin:
+        location:
+          value: 1640
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 264
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 328
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 2020
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 1658
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 1658
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 2382
+        height: 3
+      type: 0
+    - origin:
+        location:
+          value: 1620
+        height: 3
+      type: 0
+    - origin:
+        location:
+          value: 1619
+        height: 3
+      type: 0
+    - origin:
+        location:
+          value: 2039
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 2382
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 2039
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 1620
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 1619
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 1620
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 2400
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 2002
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 223
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 224
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1450
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 1629
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 225
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 228
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 226
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 227
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 2278
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 2259
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 2260
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 2279
+        height: 0
+      type: 5
+    - origin:
+        location:
+          value: 2278
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 2278
+        height: 3
+      type: 3
+    - origin:
+        location:
+          value: 2259
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 2259
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 2259
+        height: 3
+      type: 3
+    - origin:
+        location:
+          value: 2240
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 2241
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 2260
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 2279
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 2298
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 2317
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 2318
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 2319
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 2336
+        height: 3
+      type: 3
+    - origin:
+        location:
+          value: 2316
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 2315
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 2314
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 2333
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 2295
+        height: 1
+      type: 1
+    - origin:
+        location:
+          value: 2337
+        height: 3
+      type: 3
+    - origin:
+        location:
+          value: 2338
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 2338
+        height: 2
+      type: 3
+    - origin:
+        location:
+          value: 2338
+        height: 3
+      type: 3
+    - origin:
+        location:
+          value: 1809
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 1810
+        height: 1
+      type: 3
+    - origin:
+        location:
+          value: 1809
         height: 2
       type: 3
 --- !u!1 &533566960
@@ -30661,42 +31146,43 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_PositionDamper:
-    mode: 0
+    mode: 3
     halfLife: 0.2
-    stiffness: 20
-    damping: 4
+    stiffness: 81
+    damping: 13.6
     f: 5
     z: 0.35
     r: -0.5
     poleMatching: 0
   m_RotationDamper:
-    mode: 3
+    mode: 2
     halfLife: 0.05
-    stiffness: 100
-    damping: 15.4
+    stiffness: 97
+    damping: 30
     f: 4.1
     z: 0.53
     r: -0.3
     poleMatching: 0
   m_RootPosition: {x: 0, y: 0, z: 0}
-  m_PitchBase: -1.0802846
-  m_YawBase: 5337.3677
-  m_Fov: 45
-  m_Zoom: 150.78453
+  m_Fov: 50
+  m_SphericalHeight: 0
+  m_SphericalPitch: 1884.1365
+  m_SphericalYaw: 3215.8467
+  m_Zoom: 212
   m_ZoomRange:
-    start: 60
-    length: 200
-  m_PitchZoomDelta: 15
-  m_YawZoomDelta: 90
-  m_FOVZoomDelta: 5
+    start: 62
+    length: 150
+  m_PitchZoomDelta: -70
+  m_FOVZoomDelta: -5
+  m_ZoomOffsetDelta: {x: 0, y: -30, z: 0}
   m_ZoomValueCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 2
-      outSlope: 2
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -30704,18 +31190,19 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
+      inSlope: 3.3700283
+      outSlope: 2
+      tangentMode: 1
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.017478287
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  m_PitchZoom: -2.6372533
-  m_YawZoom: -15.823519
-  m_FovZoom: -0.8790844
+  m_PitchZoom: -0
+  m_YawZoom: 0
+  m_FovZoom: -0
+  m_OffsetZoom: {x: 0, y: -0, z: 0}
 --- !u!1 &850984688
 GameObject:
   m_ObjectHideFlags: 0

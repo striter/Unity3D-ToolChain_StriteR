@@ -18,6 +18,7 @@ namespace PCG
 
         public void Tick(float _deltaTime)
         {
+            yaw += _deltaTime * 10f;
             m_Light.transform.rotation = Quaternion.Euler(m_RotationDamper.Tick(_deltaTime,new Vector3(pitch,yaw)));
         }
 

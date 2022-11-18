@@ -126,11 +126,10 @@ namespace PCG
             }
 
             var drag = touch.CombinedDrag() * _deltaTime * 5f;
-            m_Camera.Rotate(drag.y,drag.x);
+            m_Camera.Drag(drag.y,drag.x);
             if (touch.Count > 1)
                 m_Environment.Rotate(drag.y, drag.x);
             var pinch = touch.CombinedPinch() * _deltaTime * 5f;
-            // touch.Input_SingleDrag(m_Camera.SetDrag, m_Camera.Drag, .0f, true);
             m_Camera.Pinch(pinch);
         }
 
