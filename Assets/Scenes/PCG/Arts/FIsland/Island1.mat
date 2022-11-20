@@ -153,7 +153,6 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _ParallaxCount: 16
-    - _Progress: 1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _SSSIntensity: 1

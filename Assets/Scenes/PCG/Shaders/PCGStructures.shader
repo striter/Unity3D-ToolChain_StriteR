@@ -5,6 +5,7 @@ Shader "PCG/Structure"
 		[Header(Base Tex)]
 		_MainTex("Main Tex",2D) = "white"{}
 		_Color("Color Tint",Color) = (1,1,1,1)
+    	_Progress("_Progress",Range(0,1))=0
 		[NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
 		
 		[Header(PBR)]
