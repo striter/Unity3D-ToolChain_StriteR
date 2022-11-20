@@ -51,7 +51,7 @@ public class FBirdPoop : ITransform , IPoolCallback<int>
     
     public void Tick(float _deltaTime)
     {
-        if (m_PoopRecycler.Tick(_deltaTime))
+        if (m_PoopRecycler.TickTrigger(_deltaTime))
             DoRecycle(m_Identity);
         m_Block.SetColor(KShaderProperties.kColor,m_BaseColor.SetAlpha(m_PoopRecycler.m_TimeLeftScale));
         m_Mesh.SetPropertyBlock(m_Block);

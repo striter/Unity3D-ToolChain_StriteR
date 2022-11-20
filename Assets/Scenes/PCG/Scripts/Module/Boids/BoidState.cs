@@ -48,7 +48,7 @@ namespace PCG.Module.BOIDS.States
         {
             if (m_ReactionCounter.m_Playing)       //Do nothing during reaction time
             {
-                if(m_ReactionCounter.Tick(_deltaTime))
+                if(m_ReactionCounter.TickTrigger(_deltaTime))
                     _actor.m_Animation.SetAnimation(m_StartleConfig.animName);
 
                 return;

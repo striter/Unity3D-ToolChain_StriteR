@@ -180,38 +180,35 @@ public class Counter
     public float m_TimeLeftScale { get; private set; } = 0;
     public float m_TimeElapsed { get; private set; }
     public float m_TimeElapsedScale { get; private set; } = 0;
-    public Counter(float countDuration = 0, bool startOff = false)
+    public Counter(float _countDuration = 0, bool _startOff = false)
     {
-        Set(countDuration);
-        if (startOff)
+        Set(_countDuration);
+        if (_startOff)
             Stop();
     }
-    public void Set(float duration)
+    void Validate(float _timeLeft)
     {
-        m_TimerDuration = duration;
-        TickDelta(m_TimerDuration);
-    }
-    void TickDelta(float _timeCheck)
-    {
-        m_TimeLeft = Mathf.Clamp( _timeCheck,0f,m_TimerDuration);
+        m_TimeLeft = Mathf.Clamp( _timeLeft,0f,m_TimerDuration);
         m_TimeElapsed = m_TimerDuration - m_TimeLeft;
         m_Playing = m_TimeLeft > 0;
         m_TimeLeftScale = m_TimeLeft / m_TimerDuration;
         m_TimeElapsedScale = 1f - m_TimeLeftScale;
     }
-    public void Replay() => TickDelta(m_TimerDuration);
-    public void Stop() => TickDelta(0);
-    public bool Tick(float deltaTime)
+    
+    public void Set(float _duration)
     {
-        if (m_TimeLeft <= 0)
-            return false;
-        TickDelta(m_TimeLeft - deltaTime);
+        m_TimerDuration = _duration;
+        Validate(m_TimerDuration);
+    }
+    public void Tick(float _deltaTime) => Validate(m_TimeLeft - _deltaTime);
+    public void Replay() => Validate(m_TimerDuration);
+    public void Stop() => Tick(0);
+    public bool TickTrigger(float _deltaTime)
+    {
         if (!m_Playing)
-        {
-            m_TimeLeft = 0;
-            return true;
-        }
-        return false;
+            return false;
+        Tick(_deltaTime);
+        return !m_Playing;
     }
 }
 

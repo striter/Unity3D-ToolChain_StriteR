@@ -95,7 +95,7 @@ namespace PCG.Module.BOIDS.Bird
             duration = new Counter(_duration);
         }
 
-        public bool Tick(float _deltaTime) => duration.Tick(_deltaTime);
+        public bool Tick(float _deltaTime) => duration.TickTrigger(_deltaTime);
     }
 
 }

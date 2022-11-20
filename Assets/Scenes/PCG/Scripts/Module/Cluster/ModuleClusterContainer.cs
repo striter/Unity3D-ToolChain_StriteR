@@ -27,9 +27,14 @@ namespace PCG.Module.Cluster
         public Vector3 CenterWS => transform.position;
         public List<FBoidsVertex> m_BirdLandings { get; } = new List<FBoidsVertex>();
 
+        private readonly Counter m_AnimationCounter = new Counter(.25f);
+        private MaterialPropertyBlock m_PropertyBlock ;
+        private static readonly int kProgressID = Shader.PropertyToID("_Progress");
+
         public override void OnPoolCreate(Action<PCGID> _doRecycle)
         {
             base.OnPoolCreate(_doRecycle);
+            m_PropertyBlock = new MaterialPropertyBlock();
             m_ClusterMesh = new Mesh();
             m_ClusterMesh.MarkDynamic();
             GetComponent<MeshFilter>().sharedMesh = m_ClusterMesh;
@@ -105,7 +110,7 @@ namespace PCG.Module.Cluster
         {
             var orientedToWorld = transform.localToWorldMatrix;
             var worldToObject = transform.worldToLocalMatrix;
-            TSPoolList<IMeshFragment>.Spawn(out var _orientedMeshes);
+            TSPoolList<IMeshFragment>.Spawn(out var orientedMeshes);
 
             for (int i = 0; i < 8; i++)
             {
@@ -172,16 +177,25 @@ namespace PCG.Module.Cluster
                         fragmentOutput.indexes.Add(index2);
                     }
                     
-                    _orientedMeshes.Add( fragmentOutput);
+                    orientedMeshes.Add( fragmentOutput);
                 }
             }
                 
-            UMeshFragment.Combine(_orientedMeshes,m_ClusterMesh,DModule.Collection.m_MaterialLibrary,out var materials,kOutputs);
+            m_AnimationCounter.Replay();
+            UMeshFragment.Combine(orientedMeshes,m_ClusterMesh,DModule.Collection.m_MaterialLibrary,out var materials,kOutputs);
             m_Renderer.sharedMaterials = materials;
             SetDirty(Identity);
-            TSPoolList<IMeshFragment>.Recycle(_orientedMeshes);
+            TSPoolList<IMeshFragment>.Recycle(orientedMeshes);
         }
         
+        public void TickLighting(float _deltaTime, Vector3 _lightDir)
+        {
+            if (!m_AnimationCounter.m_Playing)
+                return;
+            m_AnimationCounter.Tick(_deltaTime);
+            m_PropertyBlock.SetFloat(kProgressID,m_AnimationCounter.m_TimeLeftScale);
+            m_Renderer.SetPropertyBlock(m_PropertyBlock);
+        }
 #if UNITY_EDITOR
         private readonly Vector3 kClusterCube = Vector3.one * .3f;
         public void DrawGizmos(bool _quad)
@@ -257,8 +271,5 @@ namespace PCG.Module.Cluster
             }
         }
 #endif
-        public void TickLighting(float _deltaTime, Vector3 _lightDir)
-        {
-        }
     }   
 }

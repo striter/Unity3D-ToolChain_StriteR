@@ -157,7 +157,7 @@ namespace PCG.Simplex
 
         public void Tick(float _deltaTime)
         {
-            if (m_FadeCounter.Tick(_deltaTime))
+            if (m_FadeCounter.TickTrigger(_deltaTime))
             {
                 Clear();
                 m_Renderer.enabled = false;

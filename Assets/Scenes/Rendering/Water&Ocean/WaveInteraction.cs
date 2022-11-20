@@ -56,7 +56,7 @@ namespace  ExampleScenes.Rendering.WaveInteraction
             dest.y = m_StepCurve.Evaluate(m_StepStationaryClicker.m_TimeElapsedScale);
             m_StepObj.transform.position = dest;
             
-            if (m_StepStationaryClicker.Tick(deltaTime))
+            if (m_StepStationaryClicker.TickTrigger(deltaTime))
             {
                 m_WaterInteractions.Click(dest,m_StepStationarySpeed,m_StepStationaryDuration,m_StepStationaryWidth,m_StepStationaryOffset,Vector3.zero);
                 m_StepStationaryClicker.Set(m_StepStationaryTick);
@@ -65,7 +65,7 @@ namespace  ExampleScenes.Rendering.WaveInteraction
             
             Vector3 offset = dest - src;
             float moveStrength =  new Vector2(offset.x,offset.z).magnitude /2f;
-            if (m_StepDynamicClicker.Tick(moveStrength))
+            if (m_StepDynamicClicker.TickTrigger(moveStrength))
             {
                 Vector3 direction = (m_Destination-src).normalized;
                 Debug.DrawRay(m_Destination,direction,Color.blue,1f);

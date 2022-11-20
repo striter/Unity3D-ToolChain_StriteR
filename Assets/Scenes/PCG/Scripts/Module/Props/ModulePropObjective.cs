@@ -258,7 +258,7 @@ namespace PCG.Module.Prop
                 m_EmissionCounter.Set(kRandomEmission.Random());
             }
 
-            if (!m_EmissionCounter.Tick(_deltaTime))
+            if (!m_EmissionCounter.TickTrigger(_deltaTime))
                 return;
             
             if (m_Type == EModulePropType.Light)

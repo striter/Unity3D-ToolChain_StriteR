@@ -47,12 +47,18 @@ Shader "PCG/Structure"
 				INSTANCING_PROP(float4,_BlendTex_ST)
 				INSTANCING_PROP(float4,_BlendColor)
 				INSTANCING_PROP(float4,_EmissionColor)
+				INSTANCING_PROP(float,_Progress)
 			INSTANCING_BUFFER_END
 			#include "Assets/Shaders/Library/BRDF/BRDFInput.hlsl"
 			#include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
 
+			float3 GetPositionWSOverride(float3 _positionOS,float4 _color)
+			{
+				float3 positionWS = TransformObjectToWorld(_positionOS);
+				return positionWS - normalize(positionWS) * INSTANCE(_Progress) * .3f  ;
+			}
 			
-			float3 GetAlbedoOverride(float2 uv,float3 color)
+			float3 GetAlbedoOverride(float2 uv,float4 color)
 			{
 				float4 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, uv);
 				clip(albedo.a-.1f);
@@ -61,10 +67,11 @@ Shader "PCG/Structure"
 
 			float3 GetEmissionOverride(float3 color)
 			{
-				return step(max(color),.01)*_EmissionColor;
+				return step(max(color),.01)*_EmissionColor+INSTANCE(_Progress) * .8f;
 			}
-			
-			#define GET_ALBEDO(i) GetAlbedoOverride(i.uv,i.color.rgb);
+
+			#define GET_POSITION_WS(v,o) GetPositionWSOverride(v.positionOS,v.color)
+			#define GET_ALBEDO(i) GetAlbedoOverride(i.uv,i.color);
 			#define GET_EMISSION(i) GetEmissionOverride(i.color.rgb);
 			#include "Assets/Shaders/Library/BRDF/BRDFLighting.hlsl"
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"

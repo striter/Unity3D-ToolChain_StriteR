@@ -66,7 +66,7 @@ namespace PCG.Module.BOIDS.Butterfly
         public override void Tick(float _deltaTime)
         {
             base.Tick(_deltaTime);
-            if (!m_Counter.Tick(_deltaTime))
+            if (!m_Counter.TickTrigger(_deltaTime))
                 return;
             m_Counter.Replay();
             SpawnButterFlyActor();

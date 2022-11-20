@@ -57,7 +57,7 @@ namespace PCG.Module.BOIDS
             // m_FishFlock.Tick(_deltaTime);
 
             //Spawn flock automaticly
-            if (m_BirdSpawnCounter.Tick(_deltaTime))
+            if (m_BirdSpawnCounter.TickTrigger(_deltaTime))
             {
                 m_BirdSpawnCounter.Replay();
                 if((m_ModuleCount / 20 + 1) > m_Bird.m_Flocks.Count)

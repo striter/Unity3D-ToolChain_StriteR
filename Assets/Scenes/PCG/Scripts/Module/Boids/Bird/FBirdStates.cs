@@ -397,7 +397,7 @@ namespace PCG.Module.BOIDS.States.Bird
                 return;
 
             m_Rotation += m_RotateSpeed * _deltaTime;
-            if (!m_RotateCounter.Tick(_deltaTime))
+            if (!m_RotateCounter.TickTrigger(_deltaTime))
                 return;
             ResetRotation();
         }
