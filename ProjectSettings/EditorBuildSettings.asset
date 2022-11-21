@@ -12,37 +12,37 @@ EditorBuildSettings:
     path: Assets/Scenes/Boids/Boids.unity
     guid: 0a8c10a62a773144f9506281c4155a51
   - enabled: 0
-    path: Assets/Scenes/Rendering/GI/GIInterpolate.unity
+    path: Assets/Scenes/Examples/Rendering/GI/GIInterpolate.unity
     guid: 8f4db0d9de6e4ee41a5926b446f218bd
   - enabled: 0
-    path: Assets/Scenes/Physics/Physics.unity
+    path: Assets/Scenes/TechToys/Physics/Physics.unity
     guid: 231e8973e87fdb74199ddf25bc6b8079
   - enabled: 0
-    path: Assets/Scenes/PCG/ProceduralGeneration.unity
+    path: Assets/Scenes/TechToys/ThePlanet/ThePlanet.unity
     guid: 2768d856855ead046955578826c5c0d1
   - enabled: 0
-    path: Assets/Scenes/Algorithm/MarchingSquare/MarchingSquare.unity
+    path: Assets/Scenes/Examples/Algorithm/MarchingSquare/MarchingSquare.unity
     guid: e8fa718652c6f2541bf656cfd3058d2c
   - enabled: 0
-    path: Assets/Scenes/Algorithm/WaveFunctionCollapse/WaveFunctionCollapse.unity
+    path: Assets/Scenes/Examples/Algorithm/WaveFunctionCollapse/WaveFunctionCollapse.unity
     guid: e364703e7fbb4e64b890f25bd14df0c8
   - enabled: 0
-    path: Assets/Scenes/Rendering/Effects/Effects.unity
+    path: Assets/Scenes/Examples/Rendering/Effects/Effects.unity
     guid: 21f0777311e4d6049a9b325c34cbdc37
   - enabled: 0
-    path: Assets/Scenes/Rendering/PostProcess/PostProcess.unity
+    path: Assets/Scenes/Examples/Rendering/PostProcess/PostProcess.unity
     guid: c1695ceef3934ec44b866eb60161d834
   - enabled: 0
-    path: Assets/Scenes/Rendering/ComputeShaders/FogOfWar2D.unity
+    path: Assets/Scenes/Examples/Rendering/ComputeShaders/FogOfWar2D.unity
     guid: 414a5d9f6dee25d409efdb48a0110b72
   - enabled: 0
-    path: Assets/Scenes/Rendering/Billboard/Billboard.unity
+    path: Assets/Scenes/Examples/Rendering/Billboard/Billboard.unity
     guid: 41aeac364d33ad845b396b5e5970ab3e
   - enabled: 0
-    path: Assets/Scenes/Rendering/Water&Ocean/Water&Ocean.unity
+    path: Assets/Scenes/Examples/Rendering/Water&Ocean/Water&Ocean.unity
     guid: cc226ce06d2088f48a0a5ae04254f2cc
   - enabled: 1
-    path: Assets/Scenes/UGUIExtensions/UnityGUIExtensions.unity
+    path: Assets/Scenes/Examples/UGUIExtensions/UnityGUIExtensions.unity
     guid: 27507fd8c4cf2d44ca00077fb133f302
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 347a74a6abbfda5409b4cb31b51a2451,

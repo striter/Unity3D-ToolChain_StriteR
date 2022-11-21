@@ -2,10 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
-using UnityEngine.Pool;
-using Object = System.Object;
 
 namespace TPoolStatic
 {
@@ -350,12 +347,12 @@ namespace TPool
     } 
     #endregion
     #region Implement
-    public abstract class APoolItem<T>:ITransform,IPoolCallback<T>
+    public abstract class APoolTransform<T>:ITransform,IPoolCallback<T>
     {
         public Transform Transform { get; }
         private Action<T> DoRecycle { get; set; }
         public T m_Identity { get; private set; }
-        public APoolItem(Transform _transform)
+        public APoolTransform(Transform _transform)
         {
             Transform = _transform;
         }

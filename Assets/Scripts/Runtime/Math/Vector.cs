@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 public static class UVector
 {
@@ -70,7 +71,7 @@ public static class UVector
     public static Vector3 Convert(this Vector3 _vec, Func<float, float> _conversion) => new Vector3(_conversion(_vec.x),_conversion(_vec.y),_conversion(_vec.z));
     public static Vector4 Convert(this Vector4 _vec, Func<float, float> _conversion) => new Vector4(_conversion(_vec.x),_conversion(_vec.y),_conversion(_vec.z),_conversion(_vec.w));
     public static Vector3 Convert(this Vector3 _vec, Func<int,float, float> _conversion) => new Vector3(_conversion(0,_vec.x),_conversion(1,_vec.y),_conversion(2,_vec.z));
-    #endregion
+#endregion
     
 #region Swizzling
     public static Vector2 mod(Vector2 _src,float _value) => new Vector2(UMath.Mod(_src.x,_value), UMath.Mod(_src.y, _value));

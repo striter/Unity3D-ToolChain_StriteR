@@ -96,13 +96,15 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 	#endif
 
 
-	half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
-	half glossiness=mix.r;
-	half metallic=mix.g;
-	half ao=mix.b;
+	half glossiness=0,metallic=0,ao =0;
 
 	#if defined(GET_PBRPARAM)
 		GET_PBRPARAM(glossiness,metallic,ao);
+	#else
+		half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
+		glossiness=mix.r;
+		metallic=mix.g;
+		ao=mix.b;
 	#endif
 	
 	BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,glossiness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,1);

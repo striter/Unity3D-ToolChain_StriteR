@@ -66,8 +66,8 @@ namespace Geometry.Explicit.Procedural.Cube
                     vertex.texCoord0.xy = pBL.uv;
                     _vertices[pBL.index] = vertex;
 
-                    _triangles[ti++] = (uint3) new int3(pTR.index, pBR.index, pBL.index);
-                    _triangles[ti++] = (uint3) new int3(pBL.index, pTL.index, pTR.index);
+                    _triangles[ti++] = (uint3) new Unity.Mathematics.int3(pTR.index, pBR.index, pBL.index);
+                    _triangles[ti++] = (uint3) new Unity.Mathematics.int3(pBL.index, pTL.index, pTR.index);
                 }
             }
         }

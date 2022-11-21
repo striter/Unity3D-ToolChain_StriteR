@@ -19,7 +19,7 @@ public partial class TouchConsole
     ScrollRect m_LogPanelRect;
     RectTransform m_LogFilter;
     LogToggle m_FilterLog, m_FilterWarning, m_FilterError, m_FilterCollapse;
-    TObjectPoolClass<int,LogItem> m_Logs;
+    TObjectPoolClass<int,LogTransform> m_Logs;
     StackPanel m_Stack;
     [PartialMethod(EPartialMethods.Init,EPartialSorting.LogPanel)]
     void InitLog()
@@ -31,7 +31,7 @@ public partial class TouchConsole
         m_FilterWarning = new LogToggle(m_LogFilter.Find("Warning"), m_Data.m_Warning, OnLogToggled);
         m_FilterError = new LogToggle(m_LogFilter.Find("Error"), m_Data.m_Error, OnLogToggled);
         m_FilterCollapse = new LogToggle(m_LogFilter.Find("Collapse"), m_Data.m_Collapse, OnLogToggled);
-        m_Logs = new TObjectPoolClass<int,LogItem>(m_LogPanelRect.transform.Find("Viewport/Content/LogItem"));
+        m_Logs = new TObjectPoolClass<int,LogTransform>(m_LogPanelRect.transform.Find("Viewport/Content/LogItem"));
 
         m_Stack = new StackPanel(transform.Find("Stack"));
 
@@ -154,20 +154,20 @@ public partial class TouchConsole
     }
 
 
-    class LogItem : APoolItem<int>
+    class LogTransform : APoolTransform<int>
     {
         LogData m_Data;
         Button m_Stack;
         Image m_Type;
         Text m_Info;
-        public LogItem(Transform _transform) : base(_transform)
+        public LogTransform(Transform _transform) : base(_transform)
         {
             m_Type = Transform.Find("Type").GetComponent<Image>();
             m_Info = Transform.Find("Message").GetComponent<Text>();
             m_Stack = Transform.GetComponent<Button>();
         }
 
-        public LogItem Init(LogData _data, Action<LogData> OnStackClick)
+        public LogTransform Init(LogData _data, Action<LogData> OnStackClick)
         {
             m_Data = _data;
             m_Stack.onClick.RemoveAllListeners();

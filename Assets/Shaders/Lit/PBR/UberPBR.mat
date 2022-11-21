@@ -197,6 +197,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaClipRange: 0.01
+    - _AlphaCutoff: 0.01
     - _AnisoTropicValue: 1
     - _Atlas: 0
     - _AtlasHeight: 0

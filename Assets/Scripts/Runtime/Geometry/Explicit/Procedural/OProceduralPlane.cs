@@ -126,7 +126,7 @@ namespace Geometry.Explicit.Procedural.Sphere
         public int triangleCount { get; set; }
         SquareGridGenerator Ctor()
         {
-            int squareCount = m_Disk?  UTile.GetCoordsInRadius(TileCoord.kZero,radius).Count() : width*height;
+            int squareCount = m_Disk?  UTile.GetCoordsInRadius(Int2.kZero,radius).Count() : width*height;
             
             vertexCount = squareCount * 4;
             triangleCount = squareCount * 2;
@@ -197,7 +197,7 @@ namespace Geometry.Explicit.Procedural.Sphere
             for(int i=-radius;i<=radius;i++)
             for(int j=-radius;j<=radius;j++)
             {
-                var coord = new TileCoord(i, j);
+                var coord = new Int2(i, j);
                 if (!(UMath.Pow2(Mathf.Abs(coord.x)) + UMath.Pow2(Mathf.Abs(coord.y)) <= sqrRadius))
                     continue;
                 var center = coord.ToCoord();

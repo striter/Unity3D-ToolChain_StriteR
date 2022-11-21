@@ -623,6 +623,18 @@ public static class UCollection
 
     }
     
+    public static void FillHashset<T>(this IEnumerable<T> _collection, HashSet<T> _hashset,bool _sameCheck = false)
+    {
+        _hashset.Clear();
+        foreach (var element in _collection)
+        {
+            if (_sameCheck)
+                _hashset.TryAdd(element);
+            else
+                _hashset.Add(element);
+        }
+    }
+
     public static void FillList<T>(this IEnumerable<T> _collection, List<T> _list,bool _sameCheck = false)
     {
         _list.Clear();
@@ -634,7 +646,6 @@ public static class UCollection
                 _list.Add(element);
         }
     }
-
     #endregion
     #region Dictionary
 

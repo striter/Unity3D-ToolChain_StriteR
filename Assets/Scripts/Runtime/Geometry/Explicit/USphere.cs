@@ -30,14 +30,14 @@ namespace Geometry.Explicit
             int index = -1;
             if (_sideIndex == 0)
             {
-                index = new TileCoord(_i, _j).ToIndex(_resolution + 1);
+                index = new Int2(_i, _j).ToIndex(_resolution + 1);
             }
             else if (_sideIndex == 1)
             {
                 if (firstColumn)
                     index = GetCubeSphereIndex(_j, _i,_resolution, 0);
                 else
-                    index = (_resolution + 1) * (_resolution + 1) + new TileCoord(_i, _j - 1).ToIndex(_resolution + 1);
+                    index = (_resolution + 1) * (_resolution + 1) + new Int2(_i, _j - 1).ToIndex(_resolution + 1);
             }
             else if (_sideIndex == 2)
             {
@@ -47,7 +47,7 @@ namespace Geometry.Explicit
                     index = GetCubeSphereIndex(_j, _i,_resolution, 1);
                 else
                     index = (_resolution + 1) * (_resolution + 1) + (_resolution + 1) * _resolution +
-                            new TileCoord(_i - 1, _j - 1).ToIndex(_resolution);
+                            new Int2(_i - 1, _j - 1).ToIndex(_resolution);
             }
             else if (_sideIndex == 3)
             {
@@ -57,7 +57,7 @@ namespace Geometry.Explicit
                     index = GetCubeSphereIndex(_resolution, _j,_resolution, 2);
                 else
                     index = (_resolution + 1) * (_resolution + 1) + (_resolution + 1) * _resolution +
-                            _resolution * _resolution + new TileCoord(_i - 1, _j - 1).ToIndex(_resolution);
+                            _resolution * _resolution + new Int2(_i - 1, _j - 1).ToIndex(_resolution);
             }
             else if (_sideIndex == 4)
             {
@@ -70,7 +70,7 @@ namespace Geometry.Explicit
                 else
                     index = (_resolution + 1) * (_resolution + 1) + (_resolution + 1) * _resolution +
                             _resolution * _resolution + (_resolution * _resolution) +
-                            new TileCoord(_i - 1, _j - 1).ToIndex(_resolution - 1);
+                            new Int2(_i - 1, _j - 1).ToIndex(_resolution - 1);
             }
             else if (_sideIndex == 5)
             {
@@ -85,7 +85,7 @@ namespace Geometry.Explicit
                 else
                     index = (_resolution + 1) * (_resolution + 1) + (_resolution + 1) * _resolution +
                             _resolution * _resolution + (_resolution * _resolution) + (_resolution - 1) * (_resolution) +
-                            new TileCoord(_i - 1, _j - 1).ToIndex(_resolution - 1);
+                            new Int2(_i - 1, _j - 1).ToIndex(_resolution - 1);
             }
 
             return index;

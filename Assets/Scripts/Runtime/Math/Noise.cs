@@ -1,4 +1,5 @@
 using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 public static class Noise
@@ -14,13 +15,13 @@ public static class Noise
         public static float Unit1f1(float _unitValue) => UMath.Frac(Mathf.Sin(_unitValue) * s_RandomValue);
     
         static readonly Vector3 s_RandomVec = new Vector3(12.0909f,89.233f,37.719f);
-        public static float Unit1f2(Vector2 _random) => Unit1f1(Vector2.Dot(_random, s_RandomVec));
+        public static float Unit1f2(float2 _random) => Unit1f1(Vector2.Dot(_random, s_RandomVec));
         public static float Unit1f2(float _x, float _y) => Unit1f2(new Vector2(_x, _y));
         
-        public static float Unit1f3(Vector3 _random) => Unit1f1(Vector3.Dot(_random, s_RandomVec));
+        public static float Unit1f3(float3 _random) => Unit1f1(Vector3.Dot(_random, s_RandomVec));
         public static float Unit1f3(float _x, float _y,float _z) => Unit1f3(new Vector3(_x, _y,_z));
         
-        public static Vector2 Unit2f2(Vector2 _random) => new Vector2(Unit1f2(_random),Unit1f2(new Vector2(_random.y, _random.x)) );
+        public static Vector2 Unit2f2(float2 _random) => new Vector2(Unit1f2(_random),Unit1f2(new Vector2(_random.y, _random.x)) );
     }
     public static class Perlin
     {
@@ -52,14 +53,18 @@ public static class Noise
                 default: throw new Exception("Invalid Gradient Result Here!");
             }
         }
-        public static float Unit1f3(float x, float y, float z)
+
+        public static float Unit1f2(float2 _sample) => Unit1f3(_sample.x,0f,_sample.y);
+        public static float Unit1f2(float _x, float _y) => Unit1f3(_x,0f,_y);
+        public static float Unit1f3(float3 _sample) => Unit1f3(_sample.x, _sample.y, _sample.z);
+        public static float Unit1f3(float _x, float _y, float _z)
         {
-            int xi = (int)x & 255;
-            int yi = (int)y & 255;
-            int zi = (int)z & 255;
-            float xf = x - (int)x;
-            float yf = y - (int)y;
-            float zf = z - (int)z;
+            int xi = (int)_x & 255;
+            int yi = (int)_y & 255;
+            int zi = (int)_z & 255;
+            float xf = _x - (int)_x;
+            float yf = _y - (int)_y;
+            float zf = _z - (int)_z;
             float u = Fade(xf);
             float v = Fade(yf);
             float w = Fade(zf);

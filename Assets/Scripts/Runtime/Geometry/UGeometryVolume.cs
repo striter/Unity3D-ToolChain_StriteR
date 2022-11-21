@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Geometry
@@ -328,10 +329,10 @@ namespace Geometry
             switch (_facing)
             {
                 default: throw new Exception("Invalid Face:"+_facing);
-                case ECubeFacing.BL:return (EQubeCorner.DB,EQubeCorner.DL,EQubeCorner.TL,EQubeCorner.TB);
-                case ECubeFacing.LF:return (EQubeCorner.DL,EQubeCorner.DF,EQubeCorner.TF,EQubeCorner.TL);
-                case ECubeFacing.FR:return (EQubeCorner.DF,EQubeCorner.DR,EQubeCorner.TR,EQubeCorner.TF);
-                case ECubeFacing.RB:return (EQubeCorner.DR,EQubeCorner.DB,EQubeCorner.TB,EQubeCorner.TR);
+                case ECubeFacing.B:return (EQubeCorner.DB,EQubeCorner.DL,EQubeCorner.TL,EQubeCorner.TB);
+                case ECubeFacing.L:return (EQubeCorner.DL,EQubeCorner.DF,EQubeCorner.TF,EQubeCorner.TL);
+                case ECubeFacing.F:return (EQubeCorner.DF,EQubeCorner.DR,EQubeCorner.TR,EQubeCorner.TF);
+                case ECubeFacing.R:return (EQubeCorner.DR,EQubeCorner.DB,EQubeCorner.TB,EQubeCorner.TR);
                 case ECubeFacing.T:return (EQubeCorner.TB,EQubeCorner.TL,EQubeCorner.TF,EQubeCorner.TR);
                 case ECubeFacing.D:return (EQubeCorner.DB,EQubeCorner.DR,EQubeCorner.DF,EQubeCorner.DL);
             }
@@ -345,43 +346,43 @@ namespace Geometry
                 
                 case EQubeCorner.DB:
                     yield return (EQubeCorner.TB, ECubeFacing.T);
-                    yield return (EQubeCorner.DL, ECubeFacing.LF);
-                    yield return (EQubeCorner.DR, ECubeFacing.FR);
+                    yield return (EQubeCorner.DL, ECubeFacing.L);
+                    yield return (EQubeCorner.DR, ECubeFacing.F);
                     break;
                 case EQubeCorner.DL:
                     yield return (EQubeCorner.TL, ECubeFacing.T);
-                    yield return (EQubeCorner.DF, ECubeFacing.FR);
-                    yield return (EQubeCorner.DB, ECubeFacing.RB);
+                    yield return (EQubeCorner.DF, ECubeFacing.F);
+                    yield return (EQubeCorner.DB, ECubeFacing.R);
                     break;
                 case EQubeCorner.DF: 
                     yield return (EQubeCorner.TF, ECubeFacing.T);
-                    yield return (EQubeCorner.DR, ECubeFacing.RB);
-                    yield return (EQubeCorner.DL, ECubeFacing.BL);
+                    yield return (EQubeCorner.DR, ECubeFacing.R);
+                    yield return (EQubeCorner.DL, ECubeFacing.B);
                     break;
                 case EQubeCorner.DR:
                     yield return (EQubeCorner.TR, ECubeFacing.T);
-                    yield return (EQubeCorner.DB, ECubeFacing.BL);
-                    yield return (EQubeCorner.DF, ECubeFacing.LF);
+                    yield return (EQubeCorner.DB, ECubeFacing.B);
+                    yield return (EQubeCorner.DF, ECubeFacing.L);
                     break;
                 case EQubeCorner.TB: 
                     yield return (EQubeCorner.DB, ECubeFacing.D);
-                    yield return (EQubeCorner.TL, ECubeFacing.LF);
-                    yield return (EQubeCorner.TR, ECubeFacing.FR);
+                    yield return (EQubeCorner.TL, ECubeFacing.L);
+                    yield return (EQubeCorner.TR, ECubeFacing.F);
                     break;
                 case EQubeCorner.TL: 
                     yield return (EQubeCorner.DL, ECubeFacing.D);
-                    yield return (EQubeCorner.TF, ECubeFacing.FR);
-                    yield return (EQubeCorner.TB, ECubeFacing.RB);
+                    yield return (EQubeCorner.TF, ECubeFacing.F);
+                    yield return (EQubeCorner.TB, ECubeFacing.R);
                     break;
                 case EQubeCorner.TF: 
                     yield return (EQubeCorner.DF, ECubeFacing.D);
-                    yield return (EQubeCorner.TR, ECubeFacing.RB);
-                    yield return (EQubeCorner.TL, ECubeFacing.BL);
+                    yield return (EQubeCorner.TR, ECubeFacing.R);
+                    yield return (EQubeCorner.TL, ECubeFacing.B);
                     break;
                 case EQubeCorner.TR: 
                     yield return (EQubeCorner.DR, ECubeFacing.D);
-                    yield return (EQubeCorner.TB, ECubeFacing.BL);
-                    yield return (EQubeCorner.TF, ECubeFacing.LF);
+                    yield return (EQubeCorner.TB, ECubeFacing.B);
+                    yield return (EQubeCorner.TF, ECubeFacing.L);
                     break;
             }
         }
@@ -390,10 +391,10 @@ namespace Geometry
             {
                 { ECubeFacing.D, new[] { EQubeCorner.DB, EQubeCorner.DL, EQubeCorner.DF, EQubeCorner.DR } },
                 { ECubeFacing.T, new[] { EQubeCorner.TB, EQubeCorner.TL, EQubeCorner.TF, EQubeCorner.TR } },
-                { ECubeFacing.BL,new []{ EQubeCorner.DB, EQubeCorner.TB, EQubeCorner.DL, EQubeCorner.TL}},
-                { ECubeFacing.LF,new []{ EQubeCorner.DL, EQubeCorner.TL, EQubeCorner.DF,EQubeCorner.TF }},
-                { ECubeFacing.FR,new []{ EQubeCorner.DF, EQubeCorner.TF,EQubeCorner.DR,EQubeCorner.TR }},
-                { ECubeFacing.RB,new []{ EQubeCorner.DR, EQubeCorner.TR, EQubeCorner.DB, EQubeCorner.TB}}
+                { ECubeFacing.B,new []{ EQubeCorner.DB, EQubeCorner.TB, EQubeCorner.DL, EQubeCorner.TL}},
+                { ECubeFacing.L,new []{ EQubeCorner.DL, EQubeCorner.TL, EQubeCorner.DF,EQubeCorner.TF }},
+                { ECubeFacing.F,new []{ EQubeCorner.DF, EQubeCorner.TF,EQubeCorner.DR,EQubeCorner.TR }},
+                { ECubeFacing.R,new []{ EQubeCorner.DR, EQubeCorner.TR, EQubeCorner.DB, EQubeCorner.TB}}
             };
 
         public static Quad<T> GetSideFacing<T>(this CubeSides<T> _sides) => new Quad<T>(_sides.fBL,_sides.fLF,_sides.fFR,_sides.fRB);
@@ -410,10 +411,10 @@ namespace Geometry
             switch (_facing)
             {
                 default: throw new InvalidEnumArgumentException();
-                case ECubeFacing.BL: return 0;
-                case ECubeFacing.LF: return 1;
-                case ECubeFacing.FR: return 2;
-                case ECubeFacing.RB: return 3;
+                case ECubeFacing.B: return 0;
+                case ECubeFacing.L: return 1;
+                case ECubeFacing.F: return 2;
+                case ECubeFacing.R: return 3;
                 case ECubeFacing.T: return 4;
                 case ECubeFacing.D: return 5;
             }
@@ -423,10 +424,10 @@ namespace Geometry
             switch (_facing)
             {
                 default: throw new InvalidEnumArgumentException();
-                case ECubeFacing.BL: return ECubeFacing.FR;
-                case ECubeFacing.LF: return ECubeFacing.RB;
-                case ECubeFacing.FR: return ECubeFacing.BL;
-                case ECubeFacing.RB: return ECubeFacing.LF;
+                case ECubeFacing.B: return ECubeFacing.F;
+                case ECubeFacing.L: return ECubeFacing.R;
+                case ECubeFacing.F: return ECubeFacing.B;
+                case ECubeFacing.R: return ECubeFacing.L;
                 case ECubeFacing.T: return ECubeFacing.D;
                 case ECubeFacing.D: return ECubeFacing.T;
             }
@@ -437,14 +438,41 @@ namespace Geometry
             switch (_index)
             {
                 default:throw new IndexOutOfRangeException();
-                case 0:return ECubeFacing.BL;
-                case 1:return ECubeFacing.LF;
-                case 2:return ECubeFacing.FR;
-                case 3:return ECubeFacing.RB;
+                case 0:return ECubeFacing.B;
+                case 1:return ECubeFacing.L;
+                case 2:return ECubeFacing.F;
+                case 3:return ECubeFacing.R;
                 case 4:return ECubeFacing.T;
                 case 5:return ECubeFacing.D;
             }
         }
+
+        public static Int3 GetCubeOffset(ECubeFacing _facing)
+        {
+            switch (_facing)
+            {
+                default: throw new InvalidEnumArgumentException();
+                case ECubeFacing.B: return Int3.kBack;
+                case ECubeFacing.L: return Int3.kLeft;
+                case ECubeFacing.F: return Int3.kForward;
+                case ECubeFacing.R: return Int3.kRight;
+                case ECubeFacing.T: return Int3.kUp;
+                case ECubeFacing.D: return Int3.kDown;
+            }
+        }
         
+        public static void GetFacingQuadGeometry(ECubeFacing _facing,out float3 b,out float3 l,out float3 f,out float3 r,out half3 n,out half4 t)
+        {
+            switch (_facing)
+            {
+                default: throw new Exception("Invalid facing");
+                case ECubeFacing.B: { b = KQube.kUnitQubeCentered[0]; l = KQube.kUnitQubeCentered[1]; f = KQube.kUnitQubeCentered[5]; r = KQube.kUnitQubeCentered[4]; n = (half3)new float3(0f,0f,-1f);t = (half4)new float4(1f,0f,0f,1f);}break;
+                case ECubeFacing.L: { b = KQube.kUnitQubeCentered[1]; l = KQube.kUnitQubeCentered[2]; f = KQube.kUnitQubeCentered[6]; r = KQube.kUnitQubeCentered[5]; n = (half3)new float3(-1f,0f,0f);t = (half4)new float4(0f,0f,1f,1f);}break;
+                case ECubeFacing.F: { b = KQube.kUnitQubeCentered[2]; l = KQube.kUnitQubeCentered[3]; f = KQube.kUnitQubeCentered[7]; r = KQube.kUnitQubeCentered[6]; n = (half3)new float3(0f,0f,1f);t = (half4)new float4(-1f,0f,0f,1f); }break;
+                case ECubeFacing.R: { b = KQube.kUnitQubeCentered[3]; l = KQube.kUnitQubeCentered[0]; f = KQube.kUnitQubeCentered[4]; r = KQube.kUnitQubeCentered[7]; n = (half3)new float3(1f,0f,0f);t = (half4)new float4(0f,0f,-1f,1f); }break;
+                case ECubeFacing.T: { b = KQube.kUnitQubeCentered[4]; l = KQube.kUnitQubeCentered[5]; f = KQube.kUnitQubeCentered[6]; r = KQube.kUnitQubeCentered[7]; n = (half3)new float3(0f,1f,0f);t = (half4)new float4(1f,0f,0f,1f);}break;
+                case ECubeFacing.D: { b = KQube.kUnitQubeCentered[3]; l = KQube.kUnitQubeCentered[2]; f = KQube.kUnitQubeCentered[1]; r = KQube.kUnitQubeCentered[0]; n = (half3)new float3(0f,-1f,0f);t = (half4)new float4(-1f,0f,0f,1f); }break;
+            }
+        }
     }
 }

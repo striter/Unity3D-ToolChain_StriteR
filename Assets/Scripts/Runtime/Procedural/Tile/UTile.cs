@@ -1,80 +1,93 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Procedural.Tile
 {
     public static partial class UTile
     {
-        public static IEnumerable<TileCoord> GetCoordsInRadius(this TileCoord _center,int _radius)
+        public static IEnumerable<Int2> GetCoordsInRadius(this Int2 _center,int _radius)
         {
             int sqrRadius = UMath.Pow2(_radius+1);
             for(int i=-_radius;i<=_radius;i++)
                 for(int j=-_radius;j<=_radius;j++)
                 {
-                    var coord = new TileCoord(i, j);
+                    var coord = new Int2(i, j);
                     if (!(UMath.Pow2(Mathf.Abs(coord.x)) + UMath.Pow2(Mathf.Abs(coord.y)) <= sqrRadius))
                         continue;
                     yield return _center + coord;
                 }
         }
 
-        public static Coord ToCoord(this TileCoord _coord) => new Coord(){x=_coord.x,y=_coord.y};
-        public static int ToIndex(this TileCoord axis, int width) => axis.x + axis.y * width;
+        public static Coord ToCoord(this Int2 _coord) => new Coord(){x=_coord.x,y=_coord.y};
+        public static int ToIndex(this Int2 axis, int width) => axis.x + axis.y * width;
     }
     
     public static partial class UTile       //Deprecated
     {
-        public static bool InRange<T>(this TileCoord axis, T[,] range) => axis.x >= 0 && axis.x < range.GetLength(0) && axis.y >= 0 && axis.y < range.GetLength(1);
-        public static bool InRange<T>(this TileCoord originSize, TileCoord sizeAxis, T[,] range) => InRange<T>(originSize + sizeAxis, range);
-        public static TileCoord GetAxisByIndex(int index, int width) => new TileCoord(index % width, index / width);
-        public static T Get<T>(this T[,] tileArray, TileCoord _begin) where T : class => _begin.InRange(tileArray) ? tileArray[_begin.x, _begin.y] : null;
-        public static bool Get<T>(this T[,] tileArray, TileCoord _begin, TileCoord _size, ref List<T> tileList) where T : class
+        
+        public static readonly (ETileDirection,Int2)[] kNearbyTiles = {
+            (ETileDirection.Left, new Int2(-1, 0)),
+            (ETileDirection.Right, new Int2(1, 0)),
+            (ETileDirection.Forward, new Int2(0, 1)),
+            (ETileDirection.Back ,new Int2(0, -1))};
+    
+        public static Int2[] GetNearbyTiles(this Int2 _tile) => kNearbyTiles.Select(p => p.Item2+_tile).ToArray();
+
+        public static (ETileDirection, Int2)[] GetNearbyTilesDirection(this Int2 _tile) => kNearbyTiles.Select(p =>(p.Item1, p.Item2+_tile)).ToArray();
+
+        
+        public static bool InRange<T>(this Int2 axis, T[,] range) => axis.x >= 0 && axis.x < range.GetLength(0) && axis.y >= 0 && axis.y < range.GetLength(1);
+        public static bool InRange<T>(this Int2 originSize, Int2 sizeAxis, T[,] range) => InRange<T>(originSize + sizeAxis, range);
+        public static Int2 GetAxisByIndex(int index, int width) => new Int2(index % width, index / width);
+        public static T Get<T>(this T[,] tileArray, Int2 _begin) where T : class => _begin.InRange(tileArray) ? tileArray[_begin.x, _begin.y] : null;
+        public static bool Get<T>(this T[,] tileArray, Int2 _begin, Int2 _size, ref List<T> tileList) where T : class
         {
             tileList.Clear();
             for (int i = 0; i < _size.x; i++)
                 for (int j = 0; j < _size.y; j++)
                 {
-                    if (!InRange(_begin + new TileCoord(i, j), tileArray))
+                    if (!InRange(_begin + new Int2(i, j), tileArray))
                         return false;
-                    tileList.Add(tileArray.Get(_begin + new TileCoord(i, j)));
+                    tileList.Add(tileArray.Get(_begin + new Int2(i, j)));
                 }
             return true;
         }
 
-        public static List<TileCoord> GetAxisRange(int width, int height, TileCoord start, TileCoord end)
+        public static List<Int2> GetAxisRange(int width, int height, Int2 start, Int2 end)
         {
-            List<TileCoord> axisList = new List<TileCoord>();
+            List<Int2> axisList = new List<Int2>();
             for (int i = start.x; i <= end.x; i++)
                 for (int j = start.y; j <= end.y; j++)
                 {
                     if (i < 0 || j < 0 || i >= width || j >= height)
                         continue;
-                    axisList.Add(new TileCoord(i, j));
+                    axisList.Add(new Int2(i, j));
                 }
             return axisList;
         }
 
-        public static List<TileCoord> GetAxisRange(int width, int height, TileCoord centerAxis, int radius)
+        public static List<Int2> GetAxisRange(Int2 centerAxis, int radius)
         {
-            List<TileCoord> axisList = new List<TileCoord>();
+            List<Int2> axisList = new List<Int2>();
             int sqrRadius = radius * radius;
-            for (int i = 0; i < width; i++)
-                for (int j = 0; j < height; j++)
+            for (int i = -radius; i <= radius; i++)
+                for (int j = -radius; j <= radius; j++)
                 {
-                    if ((centerAxis - new TileCoord(i, j)).sqrMagnitude > sqrRadius)
+                    if ((centerAxis - new Int2(i, j)).sqrMagnitude > sqrRadius)
                         continue;
-                    axisList.Add(new TileCoord(i, j));
+                    axisList.Add(new Int2(i, j));
                 }
             return axisList;
         }
 
-        public static List<TileCoord> GetDirectionAxies(int width, int height, TileCoord centerAxis, List<ETileDirection> directions)
+        public static List<Int2> GetDirectionAxies(int width, int height, Int2 centerAxis, List<ETileDirection> directions)
         {
-            List<TileCoord> axisList = new List<TileCoord>();
+            List<Int2> axisList = new List<Int2>();
             foreach (ETileDirection direction in directions)
             {
-                TileCoord targetAxis = centerAxis.DirectionAxis(direction);
+                Int2 targetAxis = centerAxis.DirectionAxis(direction);
                 if (targetAxis.x < 0 || targetAxis.y < 0 || targetAxis.x >= width || targetAxis.y >= height)
                     continue;
                 axisList.Add(targetAxis);
@@ -82,12 +95,12 @@ namespace Procedural.Tile
             return axisList;
         }
 
-        public static Dictionary<ETileDirection, T> GetDirectionAxies<T>(int width, int height, TileCoord centerAxis, List<ETileDirection> directions, Func<TileCoord, T> OnItemGet)
+        public static Dictionary<ETileDirection, T> GetDirectionAxis<T>(int width, int height, Int2 centerAxis, List<ETileDirection> directions, Func<Int2, T> OnItemGet)
         {
             Dictionary<ETileDirection, T> axisList = new Dictionary<ETileDirection, T>();
             foreach (ETileDirection direction in directions)
             {
-                TileCoord targetAxis = centerAxis.DirectionAxis(direction);
+                Int2 targetAxis = centerAxis.DirectionAxis(direction);
                 if (targetAxis.x < 0 || targetAxis.y < 0 || targetAxis.x >= width || targetAxis.y >= height)
                     continue;
                 axisList.Add(direction, OnItemGet(targetAxis));
@@ -96,11 +109,11 @@ namespace Procedural.Tile
         }
 
 
-        public static bool CheckIsEdge<T>(this T[,] tileArray, TileCoord axis) where T : class, ITile => axis.x == 0 || axis.x == tileArray.GetLength(0) - 1 || axis.y == 0 || axis.y == tileArray.GetLength(1) - 1;
+        public static bool CheckIsEdge<T>(this T[,] tileArray, Int2 axis) where T : class, ITile => axis.x == 0 || axis.x == tileArray.GetLength(0) - 1 || axis.y == 0 || axis.y == tileArray.GetLength(1) - 1;
 
-        public static TileCoord GetDirectionedSize(TileCoord size, ETileDirection direction) => (int)direction % 2 == 0 ? size : size.Inverse();
-        public static Vector3 GetUnitScaleBySizeAxis(TileCoord directionedSize, int tileSize) => new Vector3(directionedSize.x, 1, directionedSize.y) * tileSize;
-        public static Vector3 GetLocalPosBySizeAxis(TileCoord directionedSize) => new Vector3(directionedSize.x, 0, directionedSize.y);
+        public static Int2 GetDirectionedSize(Int2 size, ETileDirection direction) => (int)direction % 2 == 0 ? size : size.Inverse();
+        public static Vector3 GetUnitScaleBySizeAxis(Int2 directionedSize, int tileSize) => new Vector3(directionedSize.x, 1, directionedSize.y) * tileSize;
+        public static Vector3 GetLocalPosBySizeAxis(Int2 directionedSize) => new Vector3(directionedSize.x, 0, directionedSize.y);
         public static Quaternion ToRotation(this ETileDirection direction) => Quaternion.Euler(0, (int)direction * 90, 0);
         public static ETileDirection Next(this ETileDirection direction)
         {
@@ -164,9 +177,9 @@ namespace Procedural.Tile
         public static readonly List<ETileDirection> m_AngleDirections = new List<ETileDirection>() { ETileDirection.ForwardRight, ETileDirection.BackRight, ETileDirection.BackLeft, ETileDirection.TopLeft };
         public static readonly List<ETileDirection> m_AllDirections = new List<ETileDirection>() { ETileDirection.Forward, ETileDirection.Right, ETileDirection.Back, ETileDirection.Left,
             ETileDirection.ForwardRight, ETileDirection.BackRight, ETileDirection.BackLeft, ETileDirection.TopLeft };
-        public static readonly Dictionary<ETileDirection, TileCoord> m_DirectionAxies = new Dictionary<ETileDirection, TileCoord>() {
-            { ETileDirection.Forward,new TileCoord(0,1) }, { ETileDirection.Right, new TileCoord(1, 0) }, { ETileDirection.Back, new TileCoord(0, -1) }, { ETileDirection.Left, new TileCoord(-1, 0) },
-            { ETileDirection.ForwardRight, new TileCoord(1, 1) }, { ETileDirection.BackRight, new TileCoord(1, -1) }, { ETileDirection.BackLeft, new TileCoord(-1, -1) }, { ETileDirection.TopLeft, new TileCoord(-1, 1) } };
+        public static readonly Dictionary<ETileDirection, Int2> m_DirectionAxies = new Dictionary<ETileDirection, Int2>() {
+            { ETileDirection.Forward,new Int2(0,1) }, { ETileDirection.Right, new Int2(1, 0) }, { ETileDirection.Back, new Int2(0, -1) }, { ETileDirection.Left, new Int2(-1, 0) },
+            { ETileDirection.ForwardRight, new Int2(1, 1) }, { ETileDirection.BackRight, new Int2(1, -1) }, { ETileDirection.BackLeft, new Int2(-1, -1) }, { ETileDirection.TopLeft, new Int2(-1, 1) } };
 
         public static ETileDirection Inverse(this ETileDirection direction)
         {
@@ -194,15 +207,15 @@ namespace Procedural.Tile
             }
         }
 
-        public static ETileDirection OffsetDirection(this TileCoord sourceAxis, TileCoord targetAxis)
+        public static ETileDirection OffsetDirection(this Int2 sourceAxis, Int2 targetAxis)
         {
-            TileCoord offset = targetAxis - sourceAxis;
+            Int2 offset = targetAxis - sourceAxis;
             if (offset.y == 0) return offset.x < 0 ? ETileDirection.Left : ETileDirection.Right;
             if (offset.x == 0) return offset.y > 0 ? ETileDirection.Forward : ETileDirection.Back;
             return ETileDirection.Invalid;
         }
 
-        public static TileCoord DirectionAxis(this TileCoord sourceAxis, ETileDirection direction) => sourceAxis + m_DirectionAxies[direction];
+        public static Int2 DirectionAxis(this Int2 sourceAxis, ETileDirection direction) => sourceAxis + m_DirectionAxies[direction];
 
         public static void PathFindForClosestApproach<T>(this T[,] tileArray, T t1, T t2, List<T> tilePathsAdd, Action<T> OnEachTilePath = null, Predicate<T> stopPredicate = null, Predicate<T> invalidPredicate = null) where T : class, ITile       //Temporary Solution, Not Required Yet
         {
@@ -210,14 +223,14 @@ namespace Procedural.Tile
                 Debug.LogError("Error Tile Not Included In Array");
 
             tilePathsAdd.Add(t1);
-            TileCoord _startTileID = t1.m_Axis;
+            Int2 _startTileID = t1.m_Axis;
             for (; ; )
             {
-                TileCoord _nextTileID = _startTileID;
+                Int2 _nextTileID = _startTileID;
                 float minDistance = (_startTileID - t2.m_Axis).sqrMagnitude;
                 float offsetDistance;
-                TileCoord _offsetTileID;
-                TileCoord[] nearbyFourTiles = _startTileID.GetNearbyTiles();
+                Int2 _offsetTileID;
+                Int2[] nearbyFourTiles = _startTileID.GetNearbyTiles();
                 for (int i = 0; i < nearbyFourTiles.Length; i++)
                 {
                     _offsetTileID = nearbyFourTiles[i];
@@ -298,9 +311,9 @@ namespace Procedural.Tile
             return targetTile;
         }
 
-        public static bool ArrayNearbyContains<T>(this T[,] tileArray, TileCoord origin, Predicate<T> predicate) where T : class, ITile
+        public static bool ArrayNearbyContains<T>(this T[,] tileArray, Int2 origin, Predicate<T> predicate) where T : class, ITile
         {
-            TileCoord[] nearbyTiles = origin.GetNearbyTiles();
+            Int2[] nearbyTiles = origin.GetNearbyTiles();
             for (int i = 0; i < nearbyTiles.Length; i++)
             {
                 if (origin.InRange(tileArray) && !predicate(tileArray.Get(nearbyTiles[i])))
@@ -309,7 +322,7 @@ namespace Procedural.Tile
             return true;
         }
 
-        public static List<T> TileRandomFill<T>(this T[,] tileArray, System.Random seed, TileCoord originAxis, Action<T> OnEachFill, Predicate<T> availableAxis, int fillCount) where T : class, ITile
+        public static List<T> TileRandomFill<T>(this T[,] tileArray, System.Random seed, Int2 originAxis, Action<T> OnEachFill, Predicate<T> availableAxis, int fillCount) where T : class, ITile
         {
             List<T> targetList = new List<T>();
             T targetAdd = tileArray.Get(originAxis);
@@ -320,7 +333,7 @@ namespace Procedural.Tile
                 T temp = targetList[i];
                 foreach (ETileDirection randomDirection in m_EdgeDirections.RandomLoop(seed))
                 {
-                    TileCoord axis = temp.m_Axis.DirectionAxis(randomDirection);
+                    Int2 axis = temp.m_Axis.DirectionAxis(randomDirection);
                     if (axis.InRange(tileArray))
                     {
                         targetAdd = tileArray.Get(axis);

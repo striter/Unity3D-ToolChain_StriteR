@@ -220,14 +220,27 @@ public struct Int2:IEquatable<Int2>, IEqualityComparer<Int2>
     public Int2(int _x, int _y) { x = _x; y = _y; }
     public static implicit operator (int, int)(Int2 int2) => (int2.x, int2.y);
 
-    public static readonly Int2 One = new Int2(1, 1);
-    public static readonly Int2 Zero = new Int2(0, 0);
+    public static Int2 operator -(Int2 a) => new Int2(-a.x, -a.y);
+    public static bool operator ==(Int2 a, Int2 b) => a.x == b.x && a.y == b.y;
+    public static bool operator !=(Int2 a, Int2 b) => a.x != b.x || a.y != b.y;
+    public static Int2 operator -(Int2 a, Int2 b) => new Int2(a.x - b.x, a.y - b.y);
+    public static Int2 operator +(Int2 a, Int2 b) => new Int2(a.x + b.x, a.y + b.y);
+    public static Int2 operator *(Int2 a, Int2 b) => new Int2(a.x * b.x, a.y * b.y);
+    public static Int2 operator /(Int2 a, Int2 b) => new Int2(a.x / b.x, a.y / b.y);
+
+    public static Int2 operator *(Int2 a, int b) => new Int2(a.x * b, a.y * b);
+    public static Int2 operator /(Int2 a, int b) => new Int2(a.x / b, a.y / b);
+    public Int2 Inverse() => new Int2(y, x);
+    public override string ToString() => x + "," + y;
+    public int sqrMagnitude => x * x + y * y;
     
-    public static Int2 operator+(Int2 _src,Int2 _dst) =>new Int2(_src.x+_dst.x,_src.y+_dst.y);
-    public static explicit operator Int2(Vector2 _src) =>new Int2((int)_src.x,(int)_src.y);
-    public static Int2 Max(Int2 _src, Int2 _dst) => new Int2(Mathf.Max(_src.x,_dst.x),Mathf.Max(_src.y,_dst.y));
-    public static Int2 Min(Int2 _src, Int2 _dst) => new Int2(Mathf.Min(_src.x,_dst.x),Mathf.Min(_src.y,_dst.y));
-    public override string ToString() => $"{x},{y}";
+    public static readonly Int2 kZero = new Int2(0, 0);
+    public static readonly Int2 kOne = new Int2(1, 1);
+    public static readonly Int2 kNegOne = new Int2(-1, -1);
+    public static readonly Int2 kBack = new Int2(0, -1);
+    public static readonly Int2 kRight = new Int2(1, 0);
+    public static readonly Int2 kLeft = new Int2(-1, 0);
+    public static readonly Int2 kForward = new Int2(0, 1);
 
     #region Implement
     public bool Equals(Int2 x, Int2 y)=> x.x == y.x && x.y == y.y;
@@ -266,9 +279,12 @@ public struct Int3 : IEquatable<Int3>
     
     public static readonly Int3 One = new Int3(1, 1,1);
     public static readonly Int3 Zero = new Int3(0, 0,0);
-    public static readonly Int3 Right = new Int3(1, 0, 0);
-    public static readonly Int3 Up = new Int3(0, 1, 0);
-    public static readonly Int3 Forward = new Int3(0, 0, 1);
+    public static readonly Int3 kRight = new Int3(1, 0, 0);
+    public static readonly Int3 kLeft = new Int3(-1, 0, 0);
+    public static readonly Int3 kUp = new Int3(0, 1, 0);
+    public static readonly Int3 kDown = new Int3(0, -1, 0);
+    public static readonly Int3 kForward = new Int3(0, 0, 1);
+    public static readonly Int3 kBack = new Int3(0, 0, -1);
     public static Int3 operator +(Int3 _src, Int3 _dst) => new Int3(_src.x + _dst.x, _src.y + _dst.y, _src.z + _dst.z);
     public static Int3 operator -(Int3 _src, Int3 _dst) => new Int3(_src.x - _dst.x, _src.y - _dst.y, _src.z - _dst.z);
     public static bool operator ==(Int3 _src, Int3 _dst) => _src.x == _dst.x && _src.y == _dst.y && _src.z == _dst.z;

@@ -35,7 +35,7 @@ namespace Geometry.Explicit.Procedural.Sphere
             for (int j = 0; j <= resolutionV; j++)
             for (int i = 0; i <= resolutionU; i++)
             {
-                var curIndex = new TileCoord(i, j).ToIndex(vertexWidth);
+                var curIndex = new Int2(i, j).ToIndex(vertexWidth);
                 float2 circle = new float2(i / (float) resolutionU, j / (float) resolutionV);
                 float uvRadius = Sin(circle.y * kPI);
                 math.sincos(kPI2 * circle.x, out vertex.position.z, out vertex.position.x);
@@ -50,13 +50,13 @@ namespace Geometry.Explicit.Procedural.Sphere
                 _vertices[curIndex] = vertex;
                 if (i < resolutionU && j < resolutionV)
                 {
-                    var iTR = new TileCoord(i + 1, j + 1).ToIndex(vertexWidth);
-                    var iTL = new TileCoord(i, j + 1).ToIndex(vertexWidth);
-                    var iBR = new TileCoord(i + 1, j).ToIndex(vertexWidth);
-                    var iBL = new TileCoord(i, j).ToIndex(vertexWidth);
+                    var iTR = new Int2(i + 1, j + 1).ToIndex(vertexWidth);
+                    var iTL = new Int2(i, j + 1).ToIndex(vertexWidth);
+                    var iBR = new Int2(i + 1, j).ToIndex(vertexWidth);
+                    var iBL = new Int2(i, j).ToIndex(vertexWidth);
 
-                    _triangles[ti++] = (uint3) new int3(iTR, iBR, iBL);
-                    _triangles[ti++] = (uint3) new int3(iBL, iTL, iTR);
+                    _triangles[ti++] = (uint3) new Unity.Mathematics.int3(iTR, iBR, iBL);
+                    _triangles[ti++] = (uint3) new Unity.Mathematics.int3(iBL, iTL, iTR);
                 }
             }
         }
@@ -77,7 +77,7 @@ namespace Geometry.Explicit.Procedural.Sphere
         private int GetIndex(int _i, int _j, int _sideIndex)
         {
             if (!tight)
-                return _sideIndex * Pow2(resolution + 1) + new TileCoord(_i, _j).ToIndex(resolution + 1);
+                return _sideIndex * Pow2(resolution + 1) + new Int2(_i, _j).ToIndex(resolution + 1);
             
             return USphereExplicit.GetCubeSphereIndex(_i,_j,resolution,_sideIndex);
         }
@@ -135,8 +135,8 @@ namespace Geometry.Explicit.Procedural.Sphere
                     vertex.texCoord0.xy = pBL.uv;
                     _vertices[pBL.index] = vertex;
 
-                    _triangles[ti++] = (uint3) new int3(pTR.index, pBR.index, pBL.index);
-                    _triangles[ti++] = (uint3) new int3(pBL.index, pTL.index, pTR.index);
+                    _triangles[ti++] = (uint3) new Unity.Mathematics.int3(pTR.index, pBR.index, pBL.index);
+                    _triangles[ti++] = (uint3) new Unity.Mathematics.int3(pBL.index, pTL.index, pTR.index);
                 }
             }
         }
@@ -157,7 +157,7 @@ namespace Geometry.Explicit.Procedural.Sphere
 
         private int GetIndex(int _i, int _j, int _sideIndex)
         {
-            return _sideIndex * Pow2(resolution + 1) + new TileCoord(_i, _j).ToIndex(resolution + 1);
+            return _sideIndex * Pow2(resolution + 1) + new Int2(_i, _j).ToIndex(resolution + 1);
         }
 
         private Point GetPoint(int _i, int _j, Axis _axis)
@@ -232,8 +232,8 @@ namespace Geometry.Explicit.Procedural.Sphere
                     vertex.texCoord0.xy = pBL.uv;
                     _vertices[pBL.index] = vertex;
 
-                    _triangles[ti++] = (uint3) new int3(pTR.index, pBR.index, pTL.index);
-                    _triangles[ti++] = (uint3) new int3(pTL.index, pBR.index, pBL.index);
+                    _triangles[ti++] = (uint3) new Unity.Mathematics.int3(pTR.index, pBR.index, pTL.index);
+                    _triangles[ti++] = (uint3) new Unity.Mathematics.int3(pTL.index, pBR.index, pBL.index);
                 }
             }
         }

@@ -42,10 +42,10 @@ namespace Geometry
     [Flags]
     public enum ECubeFacing
     {
-        BL=1,
-        LF=2,
-        FR=4,
-        RB=8,
+        B=1,        //BL
+        L=2,        //LF
+        F=4,        //FR
+        R=8,        //RB
         T=16,
         D=32,
     }
