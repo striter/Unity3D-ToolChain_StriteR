@@ -16,10 +16,9 @@ public static class UByte
         return _src;
     }
 
-    public static byte[] kPositions = new byte[] {1 << 0, 1 << 1, 1 << 2, 1 << 3, 1 << 4, 1 << 5, 1 << 6, 1 << 7};
     public static bool PosValid(byte _src, int _pos)
     {
-        byte compare = kPositions[_pos];
+        var compare = 1 << _pos;
         return (compare & _src) == compare;
     }
 

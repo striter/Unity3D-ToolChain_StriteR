@@ -10,6 +10,7 @@ namespace PCG
         public Camera m_Camera { get; private set; }
         public Damper m_PositionDamper = new Damper(){mode = EDamperMode.SpringCritical,halfLife = .2f};
         public Damper m_RotationDamper = new Damper(){mode = EDamperMode.SpringCritical,halfLife = .2f};
+        public Damper m_ZoomDamper = new Damper(){mode = EDamperMode.SpringCritical,halfLife = .2f};
         
         public Vector3 m_RootPosition = Vector3.zero;
         [Header("Constant?")] 
@@ -36,13 +37,14 @@ namespace PCG
             m_Camera = transform.GetComponent<Camera>();
             m_PositionDamper.Initialize(new Vector3(m_SphericalPitch,m_SphericalYaw,0f));
             m_RotationDamper.Initialize(new Vector3(m_PitchZoom, 0 , 0));
+            m_ZoomDamper.Initialize(new Vector3(m_Zoom,0f,0f));
             Tick(1f);
         }
 
         public void Tick(float _deltaTime)
         {
             var baseRotation = Quaternion.Euler( m_PositionDamper.Tick(_deltaTime, new Vector3(m_SphericalPitch, m_SphericalYaw, 0f)));
-            var basePosition = m_RootPosition + baseRotation * Vector3.back * (m_SphericalHeight + m_Zoom);
+            var basePosition = m_RootPosition + baseRotation * Vector3.back * (m_SphericalHeight + m_ZoomDamper.Tick(_deltaTime,Vector3.one*m_Zoom).x);
 
             var rotation = baseRotation * Quaternion.Euler(m_RotationDamper.Tick(_deltaTime, new Vector3(m_PitchZoom, m_YawZoom , 0))) ;
             var position = basePosition + baseRotation * m_OffsetZoom;

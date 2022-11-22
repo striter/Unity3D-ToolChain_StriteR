@@ -37,6 +37,7 @@ Shader "PCG/Structure"
             #pragma multi_compile _ _ADDITIONAL_LIGHTS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
             #pragma multi_compile_fog
+			#pragma multi_compile_instancing
 
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_EmissionTex);SAMPLER(sampler_EmissionTex);
@@ -63,12 +64,12 @@ Shader "PCG/Structure"
 			{
 				float4 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, uv);
 				clip(albedo.a-.1f);
-				return albedo.rgb * color * _Color;
+				return albedo.rgb * color * INSTANCE(_Color);
 			}
 
 			float3 GetEmissionOverride(float3 color)
 			{
-				return step(max(color),.01)*_EmissionColor+INSTANCE(_Progress) * .8f;
+				return step(max(color),.01)*INSTANCE(_EmissionColor)+INSTANCE(_Progress) * .8f;
 			}
 
 			#define GET_POSITION_WS(v,o) GetPositionWSOverride(v.positionOS,v.color)

@@ -11,20 +11,20 @@ public static class TouchConsole_Extend
     public static string GetKeyCodeString(this KeyCode _keyCode) => _keyCode == KeyCode.None ? "" : _keyCode.ToString();
     public static void Button(this CommandContainer _container, Action OnClick,string _title = null)
     {
-        CommandTransformButton button = _container.Insert<CommandTransformButton>();
+        CommandElementButton button = _container.Insert<CommandElementButton>();
         button.m_Button.onClick.AddListener(() => OnClick());
         button.m_Title.text = _title ?? _container.m_KeyCode.GetKeyCodeString();
     }
 
     public static void Drag(this CommandContainer _container, Action<bool,Vector2> OnDrag)
     {
-        CommandTransformDrag drag = _container.Insert<CommandTransformDrag>();
+        CommandElementDrag drag = _container.Insert<CommandElementDrag>();
         drag.m_Listener.onDragStatus = OnDrag;
     }
     
     public static void Toggle(this CommandContainer _container, Ref<bool> _refValue, Action<bool> OnToggleChange)
     {
-        CommandTransformToggle toggle = _container.Insert<CommandTransformToggle>();
+        CommandElementToggle toggle = _container.Insert<CommandElementToggle>();
         toggle.SetDataUpdate(() => toggle.m_Toggle.isOn = _refValue.m_RefValue);
         toggle.m_Toggle.onValueChanged.AddListener(value => {
             _refValue.SetValue(value);
@@ -35,7 +35,7 @@ public static class TouchConsole_Extend
     public static void Slider(this CommandContainer _container, int _minValue, int _maxValue, Ref<int> _refValue, Action<int> _SetValue, string _format = "{0}") => Slider(_container, _minValue, _maxValue, _refValue.m_RefValue, value => { _refValue.SetValue((int)value); _SetValue(_refValue.m_RefValue); }, _format, true);
     public static void Slider(this CommandContainer _container, float _minValue, float _maxValue, Ref<float> _refValue, Action<float> _SetValue, string _format = "{0:0.0}", bool _wholeNumbers = false)
     {
-        CommandTransformSlider slider = _container.Insert<CommandTransformSlider>();
+        CommandElementSlider slider = _container.Insert<CommandElementSlider>();
         slider.m_Slider.wholeNumbers = _wholeNumbers;
         slider.m_Slider.minValue = _minValue;
         slider.m_Slider.maxValue = _maxValue;
@@ -50,12 +50,12 @@ public static class TouchConsole_Extend
             _SetValue(value);
         });
     }
-    static T ButtonFoldOutItem<T>(this CommandContainer _container, bool foldOut, out CommandTransformButton _button) where T : CommandTransformBase
+    static T ButtonFoldOutItem<T>(this CommandContainer _container, bool foldOut, out CommandElementButton _button) where T : CommandElementBase
     {
         _button = null;
         if (!foldOut)
             return _container.Insert<T>();
-        _button = _container.Insert<CommandTransformButton>();
+        _button = _container.Insert<CommandElementButton>();
         T item = _container.Insert<T>();
         _button.m_Button.onClick.AddListener(() => item.Transform.SetActive(!item.Transform.gameObject.activeSelf));
         item.Transform.SetActive(false);
@@ -72,7 +72,7 @@ public static class TouchConsole_Extend
     }
     public static void EnumSelection(this CommandContainer _container, Ref<int> _refEnum, List<string> _values, Action<int> OnClick, bool foldOut = true)
     {
-        CommandTransformButtonSelection selection = _container.ButtonFoldOutItem<CommandTransformButtonSelection>(foldOut, out CommandTransformButton foldOutButton);
+        CommandElementButtonSelection selection = _container.ButtonFoldOutItem<CommandElementButtonSelection>(foldOut, out CommandElementButton foldOutButton);
         selection.SetDataUpdate(() => {
             selection.Highlight(_refEnum.m_RefValue);
             if (foldOutButton != null)
@@ -88,7 +88,7 @@ public static class TouchConsole_Extend
     }
     public static void FlagsSelection<T>(this CommandContainer _container, Ref<T> _refFlags, Action<T> _logFilter, bool foldOut = true) where T : struct, Enum
     {
-        CommandTransformFlagsSelection selection = _container.ButtonFoldOutItem<CommandTransformFlagsSelection>(foldOut, out CommandTransformButton foldOutButton);
+        CommandElementFlagsSelection selection = _container.ButtonFoldOutItem<CommandElementFlagsSelection>(foldOut, out CommandElementButton foldOutButton);
         selection.SetDataUpdate(() => selection.Play(_refFlags.m_RefValue, flags => {
             _refFlags.SetValue(flags);
             if (foldOutButton != null)
@@ -100,15 +100,15 @@ public static class TouchConsole_Extend
     }
     public static void InputField(this CommandContainer _container, string _refText, Action<string> OnValueClick)
     {
-        CommandTransformInputField input = _container.Insert<CommandTransformInputField>();
+        CommandElementInputField input = _container.Insert<CommandElementInputField>();
         input.SetDataUpdate(() => { input.m_InputField.text = _refText; });
         input.m_InputField.onValueChanged.AddListener(_value=>_refText=_value);
         _container.Button(() => OnValueClick(input.m_InputField.text));
     }
     public static void InpuptField(this CommandContainer _container, string _refText1, string _refText2, Action<string, string> OnValueClick)
     {
-        CommandTransformInputField input1 = _container.Insert<CommandTransformInputField>();
-        CommandTransformInputField input2 = _container.Insert<CommandTransformInputField>();
+        CommandElementInputField input1 = _container.Insert<CommandElementInputField>();
+        CommandElementInputField input2 = _container.Insert<CommandElementInputField>();
         input1.SetDataUpdate(() => input1.m_InputField.text = _refText1);
         input2.SetDataUpdate(() => input2.m_InputField.text = _refText2);
         input1.m_InputField.onValueChanged.AddListener(_value=>_refText1=_value);
@@ -127,11 +127,11 @@ public partial class TouchConsole
         Instance.SelectPage(Instance.m_PageSelection.Count-1);
     }
     public static void EmptyLine() => Instance.AddCommandLine();
-    public static void Header(string _title) => Instance.AddCommandLine().Insert<CommandTransformHeader>().m_HeaderTitle.text = _title;
+    public static void Header(string _title) => Instance.AddCommandLine().Insert<CommandElementHeader>().m_HeaderTitle.text = _title;
     public static CommandContainer Command(string _title, KeyCode _keyCode = KeyCode.None)
     {
         CommandContainer container = Instance.AddCommandLine(_keyCode);
-        container.Insert<CommandTransformCommandTitle>().m_CommandTitle.text = _title;
+        container.Insert<CommandElementCommandTitle>().m_CommandTitle.text = _title;
         return container;
     }
     public static void InitSerializeCommands<T>(T _target, Action<T> _OnSerializeDataChanged) {
@@ -204,7 +204,7 @@ public partial class TouchConsole
     TObjectPoolClass<int,CommandContainer> m_CommandContainers;
     int m_CurrentPage;
     TObjectPoolClass<int,ButtonSelect> m_PageSelection;
-    Dictionary<Type, TObjectPoolClass<int,CommandTransformBase>> m_CommandItems = new Dictionary<Type, TObjectPoolClass<int,CommandTransformBase>>();
+    Dictionary<Type, TObjectPoolClass<int,CommandElementBase>> m_CommandItems = new Dictionary<Type, TObjectPoolClass<int,CommandElementBase>>();
 
     Action<bool> OnConsoleShow;
     public void SetOnConsoleShow(Action<bool> _OnConsoleShow)
@@ -217,7 +217,7 @@ public partial class TouchConsole
         m_ConsoleCommandScrollRect = transform.Find("Command").GetComponent<ScrollRect>();
         m_CommandContainers = new TObjectPoolClass<int,CommandContainer>(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content/GridItem"));
         Transform containerItemPool = m_ConsoleCommandScrollRect.transform.Find("Viewport/CommandItemPool");
-        UReflection.TraversalAllInheritedClasses<CommandTransformBase>(type => m_CommandItems.Add(type, new TObjectPoolClass<int,CommandTransformBase>(containerItemPool.Find(type.Name), type)));
+        UReflection.TraversalAllInheritedClasses<CommandElementBase>(type => m_CommandItems.Add(type, new TObjectPoolClass<int,CommandElementBase>(containerItemPool.Find(type.Name), type)));
 
         m_ConsoleOpening = false;
         m_ConsoleCommandScrollRect.SetActive(m_ConsoleOpening);
@@ -261,8 +261,8 @@ public partial class TouchConsole
     }
 
     CommandContainer AddCommandLine(KeyCode _keyCode = KeyCode.None) => m_CommandContainers.Spawn(m_CommandContainers.Count).Init(m_PageSelection.Count - 1, _keyCode, CommandItemCreate, CommandItemRecycle);
-    CommandTransformBase CommandItemCreate(Type type) => m_CommandItems[type].Spawn(m_CommandItems[type].Count);
-    void CommandItemRecycle(CommandTransformBase _transform) => m_CommandItems[_transform.GetType()].Recycle(_transform.m_Identity);
+    CommandElementBase CommandItemCreate(Type type) => m_CommandItems[type].Spawn(m_CommandItems[type].Count);
+    void CommandItemRecycle(CommandElementBase _element) => m_CommandItems[_element.GetType()].Recycle(_element.m_Identity);
     void SelectPage(int _page)
     {
         m_CurrentPage = _page;
@@ -304,13 +304,13 @@ public partial class TouchConsole
     {
         #region Predefine Classes
         #endregion
-        List<CommandTransformBase> m_Items = new List<CommandTransformBase>();
+        List<CommandElementBase> m_Items = new List<CommandElementBase>();
         public CommandContainer(Transform _transform) : base(_transform) { }
         public int m_PageIndex { get; private set; }
         public KeyCode m_KeyCode { get; private set; }
-        Func<Type, CommandTransformBase> CreateItem;
-        Action<CommandTransformBase> RecycleItem;
-        public CommandContainer Init(int _pageIndex, KeyCode _keyCode, Func<Type, CommandTransformBase> _CreateItem, Action<CommandTransformBase> _RecycleItem)
+        Func<Type, CommandElementBase> CreateItem;
+        Action<CommandElementBase> RecycleItem;
+        public CommandContainer Init(int _pageIndex, KeyCode _keyCode, Func<Type, CommandElementBase> _CreateItem, Action<CommandElementBase> _RecycleItem)
         {
             m_PageIndex = _pageIndex;
             m_KeyCode = _keyCode;
@@ -324,16 +324,16 @@ public partial class TouchConsole
                 return;
 
             if (Input.GetKeyDown(m_KeyCode))
-                foreach (CommandTransformBase commandItemBase in m_Items)
+                foreach (CommandElementBase commandItemBase in m_Items)
                     commandItemBase.OnFastKeyTrigger();
         }
 
         public void UpdateItems()
         { 
-            foreach (CommandTransformBase commandItemBase in m_Items)
+            foreach (CommandElementBase commandItemBase in m_Items)
                 commandItemBase.OnDataUpdated?.Invoke();
         }
-        public T Insert<T>() where T : CommandTransformBase
+        public T Insert<T>() where T : CommandElementBase
         {
             T item = CreateItem(typeof(T)) as T;
             item.Transform.SetParent(Transform);
@@ -343,15 +343,15 @@ public partial class TouchConsole
         public override void OnPoolRecycle()
         {
             base.OnPoolRecycle();
-            foreach (CommandTransformBase commandItemBase in m_Items)
+            foreach (CommandElementBase commandItemBase in m_Items)
                 RecycleItem(commandItemBase);
             m_Items.Clear();
             m_KeyCode = KeyCode.None;
         }
     }
-    public class CommandTransformBase : APoolTransform<int>
+    public class CommandElementBase : APoolTransform<int>
     {
-        public CommandTransformBase(Transform _transform) : base(_transform) { }
+        public CommandElementBase(Transform _transform) : base(_transform) { }
         public virtual void OnFastKeyTrigger() { }
         public Action OnDataUpdated { get; private set; }
         public void SetDataUpdate(Action _OnDataUpdated)
@@ -360,10 +360,10 @@ public partial class TouchConsole
             OnDataUpdated?.Invoke();
         }
     }
-    public class CommandTransformFlagsSelection : CommandTransformBase
+    public class CommandElementFlagsSelection : CommandElementBase
     {
         TObjectPoolComponent<Toggle> m_ToggleGrid;
-        public CommandTransformFlagsSelection(Transform _transform) : base(_transform)
+        public CommandElementFlagsSelection(Transform _transform) : base(_transform)
         {
             m_ToggleGrid = new TObjectPoolComponent<Toggle>(_transform.Find("GridItem"));
         }
@@ -385,14 +385,14 @@ public partial class TouchConsole
             }
         }
     }
-    public class CommandTransformButtonSelection : CommandTransformBase
+    public class CommandElementButtonSelection : CommandElementBase
     {
         public TObjectPoolClass<int,ButtonSelect> m_ButtonGrid { get; private set; }
-        public CommandTransformButtonSelection(Transform _transform) : base(_transform)
+        public CommandElementButtonSelection(Transform _transform) : base(_transform)
         {
             m_ButtonGrid = new TObjectPoolClass<int,ButtonSelect>(_transform.Find("GridItem"));
         }
-        public CommandTransformButtonSelection Play(List<string> values, Action<int> _OnClick)
+        public CommandElementButtonSelection Play(List<string> values, Action<int> _OnClick)
         {
             m_ButtonGrid.Clear();
             int index=0;
@@ -409,27 +409,27 @@ public partial class TouchConsole
                 item.Highlight(item.m_Identity == _value);
         }
     }
-    public class CommandTransformHeader : CommandTransformBase
+    public class CommandElementHeader : CommandElementBase
     {
         public Text m_HeaderTitle { get; private set; }
-        public CommandTransformHeader(Transform _transform) : base(_transform)
+        public CommandElementHeader(Transform _transform) : base(_transform)
         {
             m_HeaderTitle = _transform.Find("Title").GetComponent<Text>();
         }
     }
-    public class CommandTransformCommandTitle : CommandTransformBase
+    public class CommandElementCommandTitle : CommandElementBase
     {
         public Text m_CommandTitle { get; private set; }
-        public CommandTransformCommandTitle(Transform _transform) : base(_transform)
+        public CommandElementCommandTitle(Transform _transform) : base(_transform)
         {
             m_CommandTitle = _transform.Find("Title").GetComponent<Text>();
         }
     }
-    public class CommandTransformToggle : CommandTransformBase
+    public class CommandElementToggle : CommandElementBase
     {
         public Toggle m_Toggle { get; private set; }
         public Text m_ToggleTitle { get; private set; }
-        public CommandTransformToggle(Transform _transform) : base(_transform)
+        public CommandElementToggle(Transform _transform) : base(_transform)
         {
             m_Toggle = Transform.GetComponent<Toggle>();
             m_ToggleTitle = _transform.Find("Title").GetComponent<Text>();
@@ -451,11 +451,11 @@ public partial class TouchConsole
             m_Toggle.onValueChanged.Invoke(m_Toggle.isOn);
         }
     }
-    public class CommandTransformSlider : CommandTransformBase
+    public class CommandElementSlider : CommandElementBase
     {
         public Slider m_Slider { get; private set; }
         public Text m_Value { get; private set; }
-        public CommandTransformSlider(Transform _transform) : base(_transform)
+        public CommandElementSlider(Transform _transform) : base(_transform)
         {
             m_Slider = Transform.Find("Slider").GetComponent<Slider>();
             m_Value = Transform.Find("Value").GetComponent<Text>();
@@ -471,11 +471,11 @@ public partial class TouchConsole
             m_Slider.onValueChanged.RemoveAllListeners();
         }
     }
-    public class CommandTransformButton : CommandTransformBase
+    public class CommandElementButton : CommandElementBase
     {
         public Button m_Button { get; private set; }
         public Text m_Title { get; private set; }
-        public CommandTransformButton(Transform _transform) : base(_transform)
+        public CommandElementButton(Transform _transform) : base(_transform)
         {
             m_Button = _transform.GetComponent<Button>();
             m_Title = _transform.Find("Title").GetComponent<Text>();
@@ -498,10 +498,10 @@ public partial class TouchConsole
         }
     }
 
-    public class CommandTransformDrag : CommandTransformBase
+    public class CommandElementDrag : CommandElementBase
     {
         public UIEventTriggerListenerExtension m_Listener { get; private set; }
-        public CommandTransformDrag(Transform _transform) : base(_transform)
+        public CommandElementDrag(Transform _transform) : base(_transform)
         {
             m_Listener = _transform.GetComponent<UIEventTriggerListenerExtension>();
         }
@@ -513,10 +513,10 @@ public partial class TouchConsole
         }
     }
 
-    public class CommandTransformInputField : CommandTransformBase
+    public class CommandElementInputField : CommandElementBase
     {
         public InputField m_InputField { get; private set; }
-        public CommandTransformInputField(Transform _transform) : base(_transform)
+        public CommandElementInputField(Transform _transform) : base(_transform)
         {
             m_InputField = _transform.GetComponent<InputField>();
         }

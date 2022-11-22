@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 0.651
   m_CustomReflection: {fileID: 8900000, guid: d4c8dc343ae5d4673b7720ffdb1ddf00, type: 3}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.07885833, g: 0.12168949, b: 0.21841411, a: 0.651}
+  m_IndirectSpecularColor: {r: 0.07461714, g: 0.21498027, b: 0.46365932, a: 0.651}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -31163,12 +31163,21 @@ MonoBehaviour:
     z: 0.53
     r: -0.3
     poleMatching: 0
+  m_ZoomDamper:
+    mode: 3
+    halfLife: 0.1
+    stiffness: 80.6
+    damping: 14.1
+    f: 5
+    z: 0.35
+    r: -0.5
+    poleMatching: 0
   m_RootPosition: {x: 0, y: 0, z: 0}
   m_Fov: 50
   m_SphericalHeight: 0
-  m_SphericalPitch: 1884.1365
-  m_SphericalYaw: 3215.8467
-  m_Zoom: 212
+  m_SphericalPitch: 1840.8242
+  m_SphericalYaw: 3959.273
+  m_Zoom: 62
   m_ZoomRange:
     start: 62
     length: 150
@@ -31199,10 +31208,10 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  m_PitchZoom: -0
+  m_PitchZoom: -70
   m_YawZoom: 0
-  m_FovZoom: -0
-  m_OffsetZoom: {x: 0, y: -0, z: 0}
+  m_FovZoom: -5
+  m_OffsetZoom: {x: 0, y: -30, z: 0}
 --- !u!1 &850984688
 GameObject:
   m_ObjectHideFlags: 0
@@ -31860,7 +31869,7 @@ MonoBehaviour:
   - {r: 0.97737974, g: 1.2743853, b: 1.3875303, a: 0}
   - {r: 1.8349857, g: 1.7019083, b: 1.1624779, a: 0}
   m_ForceIteration: 0
-  m_IterationPerFrame: 32
+  m_IterationPerFrame: 16
 --- !u!1 &879199603
 GameObject:
   m_ObjectHideFlags: 0

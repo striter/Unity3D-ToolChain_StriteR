@@ -1,4 +1,5 @@
 
+using Unity.Burst;
 using UnityEngine;
 
 public static class DRuntime
@@ -18,6 +19,7 @@ public partial class KColor
 
 namespace Geometry
 {
+    [BurstCompile]
     public partial class KQuad
     {
         public static readonly Quad<Vector3> k3SquareCentered = new Quad<Vector3>( Vector3.right+Vector3.back,Vector3.back+Vector3.left, Vector3.left+Vector3.forward ,Vector3.forward+Vector3.right).Resize(.5f);

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace TheVoxel
@@ -16,10 +14,10 @@ namespace TheVoxel
     {
         public const float kVoxelSize = 2f;
 
-        public const int kVisualizeRange = 0;
+        public const int kVisualizeRange = 1;
         
         public const int kChunkVoxelSize = 128;
-        public const int kTerrainHeight = 48;
+        public const int kTerrainHeight = 80;
 
         public static Int2 GetChunkID(Vector3 _positionWS) => new Int2((int)(_positionWS.x/kVoxelSize*kChunkVoxelSize),(int)(_positionWS.z/kVoxelSize*kChunkVoxelSize));
         public static Vector3 GetChunkPositionWS(Int2 _chunkID) => new Vector3(_chunkID.x*kChunkVoxelSize*kVoxelSize,-kTerrainHeight*kVoxelSize,_chunkID.y*kChunkVoxelSize*kVoxelSize);

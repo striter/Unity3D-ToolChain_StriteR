@@ -1,10 +1,18 @@
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Geometry;
 using Unity.Mathematics;
 using UnityEngine;
 
 namespace TheVoxel
 {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MeshVoxelOutput
+    {
+        public Int3 identity;
+        public byte sides;
+    }
+    
     public class ChunkVoxel
     {
         public EVoxelType m_Type { get; private set; }
@@ -30,6 +38,20 @@ namespace TheVoxel
                 m_SideGeometry[i] = sideValid;
                 m_SideCount += sideValid?1:0;
             }
+        }
+
+        public MeshVoxelOutput Output()
+        {
+            MeshVoxelOutput output = default;
+            output.identity = m_Identity;
+            if (m_SideCount == 0)
+                return output;
+
+            for (int i = 0; i < 6; i++)
+                if(m_SideGeometry[i])
+                    output.sides |= (byte)(1 << i);
+
+            return output;
         }
     }
 }

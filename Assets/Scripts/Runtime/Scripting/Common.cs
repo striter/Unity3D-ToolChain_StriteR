@@ -202,7 +202,7 @@ public class Counter
     }
     public void Tick(float _deltaTime) => Validate(m_TimeLeft - _deltaTime);
     public void Replay() => Validate(m_TimerDuration);
-    public void Stop() => Tick(0);
+    public void Stop() => Validate(0);
     public bool TickTrigger(float _deltaTime)
     {
         if (!m_Playing)

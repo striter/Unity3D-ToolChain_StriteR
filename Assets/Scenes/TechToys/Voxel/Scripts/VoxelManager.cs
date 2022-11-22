@@ -11,6 +11,10 @@ namespace TheVoxel
         {
             m_Chunk = GetComponentInChildren<ChunkManager>();
             m_Chunk.Init();
+        }
+
+        void Update()
+        {
             m_Chunk.ChunkValidate(Vector3.zero);
         }
     }

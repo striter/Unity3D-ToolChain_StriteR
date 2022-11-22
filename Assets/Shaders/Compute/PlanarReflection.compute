@@ -23,21 +23,20 @@ void ReflectionMapping(float2 uv)
     float depth = _CameraDepthTexture.SampleLevel(sampler_PointClamp, uv, 0);
     float3 positionWS=TransformNDCToWorld_VPMatrix(uv,depth);
 
-    bool valid;
     float3 positionWSM;
+    float projDistance;
 #if defined(_PLANE)
-    float normalProj = dot(positionWS - _PlanePosition, _PlaneNormal);
-    valid = normalProj > 0;
-    positionWSM = positionWS - normalProj * _PlaneNormal * 2;
+    projDistance = dot(positionWS - _PlanePosition, _PlaneNormal);
+    positionWSM = positionWS - projDistance * _PlaneNormal * 2;
 #else
     float3 offset =  positionWS - _SpherePosition;
     float3 sphereProj = offset - normalize(offset) * _SphereRadius.x;
     positionWSM = offset - sphereProj*2 + _SpherePosition;
-    valid = sqrDistance(offset) > _SphereRadius.y;
+    projDistance = length(offset) - _SphereRadius.x;
 #endif
     
     float4 positionCSM = TransformWorldToHClip(positionWSM);
-    if (valid && positionCSM.w > 0 && DepthLesser( depth,Z_END))
+    if (projDistance>0 && positionCSM.w > 0 && DepthLesser( depth,Z_END))
     {
         half2 uvM=0.h;
         half depthM = 0.h;

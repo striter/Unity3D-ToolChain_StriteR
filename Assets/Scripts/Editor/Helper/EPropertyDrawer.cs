@@ -12,22 +12,30 @@ namespace UnityEditor.Extensions
         private const int kAxisWidth = 2;
         private const float kDeltaTime = .05f;
         private const float kEstimateSizeX = 600;
-
+        private const float kButtonSize = 50f;
+        private bool m_Visualize = false;
+        private float AdditionalSize => (m_Visualize ? kSize : 0f);
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return EditorGUI.GetPropertyHeight(property, label,true) + kSize;
+            return EditorGUI.GetPropertyHeight(property, label,true) + AdditionalSize;
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            Rect propertyField = position.ResizeY(position.size.y-kSize);
+            Rect propertyField = position.ResizeY(position.size.y- AdditionalSize);
+            if(GUI.Button(position.Move(position.size.x-kButtonSize,0f).ResizeY(20).ResizeX(kButtonSize),"Visual"))
+                m_Visualize = !m_Visualize;
             EditorGUI.PropertyField(propertyField, property, label, true);
+            
+            if (!m_Visualize)
+                return;
             
             Rect imageField = position.MoveY(position.size.y - kSize).ResizeY(kSize);
             EditorGUI.DrawRect(imageField,Color.grey);
 
             Rect textureField = imageField.Collapse(new Vector2(kAxisPadding*2,kAxisPadding*2));
             int sizeX = (int) textureField.width*4; int sizeY = (int) textureField.height*2;
+
             Texture2D previewTexture = new Texture2D(sizeX,sizeY,TextureFormat.ARGB32,false,true);
             Damper damper = new Damper();
             var fieldInfo = property.GetFieldInfo(out var parentObject);
@@ -105,7 +113,6 @@ namespace UnityEditor.Extensions
             EditorGUI.DrawRect(axisX,Color.green);
             Rect axisY = imageField.Move(kAxisPadding,kAxisPadding).Resize(kAxisWidth,imageField.size.y-kAxisPadding*2);
             EditorGUI.DrawRect(axisY,Color.blue);
-
         }
     }
 

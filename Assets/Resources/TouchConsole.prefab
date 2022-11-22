@@ -211,7 +211,7 @@ GameObject:
   - component: {fileID: 114734062882833604}
   - component: {fileID: 114929736827317640}
   m_Layer: 5
-  m_Name: CommandItem_Button
+  m_Name: CommandElementButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -356,7 +356,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 15, y: 0}
   m_SizeDelta: {x: 0, y: 60}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &8911821832122438783
@@ -412,7 +412,7 @@ GameObject:
   - component: {fileID: 114607803628595744}
   - component: {fileID: 114906007778741196}
   m_Layer: 5
-  m_Name: CommandItem_InputField
+  m_Name: CommandElementInputField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -667,7 +667,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 98940.055}
+  m_AnchoredPosition: {x: 0, y: 115974.42}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2875952949393902014
@@ -841,7 +841,7 @@ GameObject:
   - component: {fileID: 114333748383194058}
   - component: {fileID: 564227874607368792}
   m_Layer: 5
-  m_Name: CommandItem_ButtonSelection
+  m_Name: CommandElementButtonSelection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1630,7 +1630,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 81, y: 0}
   m_SizeDelta: {x: 0, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1265219178556775640
@@ -3266,7 +3266,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 565, y: 0}
   m_SizeDelta: {x: 0, y: 35}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1217886927165674959
@@ -3622,7 +3622,7 @@ GameObject:
   - component: {fileID: 6489662078273080824}
   - component: {fileID: 7461460026253000550}
   m_Layer: 5
-  m_Name: CommandItem_Header
+  m_Name: CommandElementHeader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3870,7 +3870,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 565, y: 0}
   m_SizeDelta: {x: 0, y: 35}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &1539599509637143099
@@ -4270,7 +4270,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 109, y: 0}
   m_SizeDelta: {x: 0, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5946027744870596568
@@ -4364,7 +4364,7 @@ GameObject:
   - component: {fileID: 9208961709134035054}
   - component: {fileID: 6651757480388299348}
   m_Layer: 5
-  m_Name: CommandItem_Drag
+  m_Name: CommandElementDrag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4956,7 +4956,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 15, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &180499421596889054
@@ -6331,7 +6331,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 97037.37}
+  m_AnchoredPosition: {x: 0, y: 113744.125}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1864190916637336796
@@ -6394,7 +6394,7 @@ GameObject:
   - component: {fileID: 4133985842140052171}
   - component: {fileID: 5125974163505219342}
   m_Layer: 5
-  m_Name: CommandItem_CommandTitle
+  m_Name: CommandElementCommandTitle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6625,7 +6625,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8903485673826524775}
   m_Layer: 5
-  m_Name: CommandItem_Slider
+  m_Name: CommandElementSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6758,7 +6758,7 @@ GameObject:
   - component: {fileID: 9215416513258117542}
   - component: {fileID: 3066802346474269190}
   m_Layer: 5
-  m_Name: CommandItem_Toggle
+  m_Name: CommandElementToggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9160,7 +9160,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -5708.0796}
+  m_AnchoredPosition: {x: 0, y: -6690.8125}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9091071255502527642
@@ -9465,7 +9465,7 @@ GameObject:
   - component: {fileID: 8648516550964058983}
   - component: {fileID: 845007620582066941}
   m_Layer: 5
-  m_Name: CommandItem_FlagsSelection
+  m_Name: CommandElementFlagsSelection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

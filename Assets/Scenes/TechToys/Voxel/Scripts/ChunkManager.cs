@@ -1,4 +1,5 @@
 
+using System;
 using Procedural.Tile;
 using TPool;
 using TPoolStatic;
@@ -41,6 +42,15 @@ namespace TheVoxel
 
             TSPoolHashset<Int2>.Recycle(nearbyChunkList);
             TSPoolHashset<Int2>.Recycle(removeChunkList);
+        }
+
+        public void Update()
+        {
+            foreach (var chunk in m_Chunks)
+            {
+                if (chunk.PopulateExplicit())
+                    break;
+            }
         }
     }
     
