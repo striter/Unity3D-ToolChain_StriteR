@@ -1,5 +1,5 @@
 
-using Unity.Burst;
+using Unity.Mathematics;
 using UnityEngine;
 
 public static class DRuntime
@@ -19,7 +19,6 @@ public partial class KColor
 
 namespace Geometry
 {
-    [BurstCompile]
     public partial class KQuad
     {
         public static readonly Quad<Vector3> k3SquareCentered = new Quad<Vector3>( Vector3.right+Vector3.back,Vector3.back+Vector3.left, Vector3.left+Vector3.forward ,Vector3.forward+Vector3.right).Resize(.5f);
@@ -41,5 +40,15 @@ namespace Geometry
     public partial class KCubeFacing
     {
         public static readonly CubeSides<Vector3> kUnitSides = new CubeSides<Vector3>(Vector3.back*.5f,Vector3.left*.5f,Vector3.forward*.5f,Vector3.right*.5f,Vector3.up*.5f,Vector3.down*.5f);
+    }
+
+    public partial class KCube
+    {
+        public static readonly float3[] kVoxelPositions = new float3[]
+        {
+            new float3(.5f,-.5f,-.5f),new float3(-.5f,-.5f,-.5f),new float3(-.5f,-.5f,.5f),new float3(.5f,-.5f,.5f),
+            new float3(.5f,.5f,-.5f),new float3(-.5f,.5f,-.5f),new float3(-.5f,.5f,.5f),new float3(.5f,.5f,.5f),
+        };
+
     }
 }

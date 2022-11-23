@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Geometry;
@@ -7,51 +8,29 @@ using UnityEngine;
 namespace TheVoxel
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct MeshVoxelOutput
+    public struct ChunkVoxel : IEquatable<ChunkVoxel>
     {
         public Int3 identity;
-        public byte sides;
-    }
-    
-    public class ChunkVoxel
-    {
-        public EVoxelType m_Type { get; private set; }
-        public Int3 m_Identity { get; private set; }
-        public bool[] m_SideGeometry { get; private set; } = new bool[6];
-        public int m_SideCount { get; private set; } = 0;
-        public ChunkVoxel(){}
+        public EVoxelType type;
+        public byte sideGeometry;
+        public int sideCount;
+        public int cornerAO;
 
-        public ChunkVoxel Init(Int3 _identity,EVoxelType _type)
+        public static readonly ChunkVoxel kInvalid = new ChunkVoxel() {type = EVoxelType.Air};
+
+        public bool Equals(ChunkVoxel other)
         {
-            m_Identity = _identity;
-            m_Type = _type;
-            m_SideCount = 0;
-            return this;
+            return identity.Equals(other.identity) && type == other.type && sideGeometry == other.sideGeometry && sideCount == other.sideCount && other.cornerAO == cornerAO;
         }
 
-        public void Refresh(Dictionary<Int3,ChunkVoxel> _voxels)
+        public override bool Equals(object obj)
         {
-            m_SideCount = 0;
-            for (int i = 0; i < 6; i++)
-            {
-                bool sideValid =  !_voxels.ContainsKey(m_Identity + UCubeFacing.GetCubeOffset(UCubeFacing.IndexToFacing(i)));
-                m_SideGeometry[i] = sideValid;
-                m_SideCount += sideValid?1:0;
-            }
+            return obj is ChunkVoxel other && Equals(other);
         }
 
-        public MeshVoxelOutput Output()
+        public override int GetHashCode()
         {
-            MeshVoxelOutput output = default;
-            output.identity = m_Identity;
-            if (m_SideCount == 0)
-                return output;
-
-            for (int i = 0; i < 6; i++)
-                if(m_SideGeometry[i])
-                    output.sides |= (byte)(1 << i);
-
-            return output;
+            return HashCode.Combine(identity);
         }
     }
 }

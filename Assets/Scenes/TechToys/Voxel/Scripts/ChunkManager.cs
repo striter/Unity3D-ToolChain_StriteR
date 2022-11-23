@@ -46,12 +46,11 @@ namespace TheVoxel
 
         public void Update()
         {
+            float deltaTime = Time.unscaledDeltaTime;
             foreach (var chunk in m_Chunks)
-            {
-                if (chunk.PopulateExplicit())
-                    break;
-            }
+                chunk.Tick(deltaTime,m_Chunks.m_Dic);
         }
+
     }
     
 }

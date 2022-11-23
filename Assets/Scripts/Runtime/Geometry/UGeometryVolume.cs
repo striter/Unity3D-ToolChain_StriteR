@@ -78,50 +78,50 @@ namespace Geometry
         }
     }
     
-    public static class UQube
+    public static class UCube
     {
-        public static int CornerToIndex(this EQubeCorner _corners)
+        public static int CornerToIndex(this ECubeCorner _corners)
         {
             switch (_corners)
             {
-                default: throw new Exception("Invalid Corner:"+_corners);
-                case EQubeCorner.DB: return 0;
-                case EQubeCorner.DL: return 1;
-                case EQubeCorner.DF: return 2;
-                case EQubeCorner.DR: return 3;
-                case EQubeCorner.TB: return 4;
-                case EQubeCorner.TL: return 5;
-                case EQubeCorner.TF: return 6;
-                case EQubeCorner.TR: return 7;
+                default:throw new InvalidEnumArgumentException();
+                case ECubeCorner.DB: return 0;
+                case ECubeCorner.DL: return 1;
+                case ECubeCorner.DF: return 2;
+                case ECubeCorner.DR: return 3;
+                case ECubeCorner.TB: return 4;
+                case ECubeCorner.TL: return 5;
+                case ECubeCorner.TF: return 6;
+                case ECubeCorner.TR: return 7;
             }
         } 
         
-        public static EQubeCorner IndexToCorner(int _index)
+        public static ECubeCorner IndexToCorner(int _index)
         {
             switch (_index)
             {
-                default: throw new Exception("Invalid Corner:"+_index);
-                case 0:return EQubeCorner.DB; 
-                case 1:return EQubeCorner.DL;
-                case 2:return EQubeCorner.DF;
-                case 3:return EQubeCorner.DR;
-                case 4:return EQubeCorner.TB;
-                case 5:return EQubeCorner.TL;
-                case 6:return EQubeCorner.TF;
-                case 7:return EQubeCorner.TR;
+                default:throw new InvalidEnumArgumentException();
+                case 0:return ECubeCorner.DB; 
+                case 1:return ECubeCorner.DL;
+                case 2:return ECubeCorner.DF;
+                case 3:return ECubeCorner.DR;
+                case 4:return ECubeCorner.TB;
+                case 5:return ECubeCorner.TL;
+                case 6:return ECubeCorner.TF;
+                case 7:return ECubeCorner.TR;
             }
         }
 
-        public static bool IsTopFloor(this EQubeCorner _corner)=> _corner.CornerToIndex() >= 4;
+        public static bool IsTopFloor(this ECubeCorner _corner)=> _corner.CornerToIndex() >= 4;
         
-        public static EQubeCorner FlipFloor(this EQubeCorner _corner)
+        public static ECubeCorner FlipFloor(this ECubeCorner _corner)
         {
             var _index = _corner.CornerToIndex();
             _index += _corner.IsTopFloor() ? -4 : 4;
             return IndexToCorner(_index);
         }
 
-        public static EQubeCorner NextCornerFlooredCW(this EQubeCorner _corner,int _step)
+        public static ECubeCorner NextCornerFlooredCW(this ECubeCorner _corner,int _step)
         {
             var _index = _corner.CornerToIndex();
             var baseIndex = _corner.IsTopFloor() ? 4:0;
@@ -131,38 +131,38 @@ namespace Geometry
             return IndexToCorner(baseIndex+_index);
         }
 
-        public static EQubeCorner DiagonalCorner(this EQubeCorner _corner)
+        public static ECubeCorner DiagonalCorner(this ECubeCorner _corner)
         {
             switch (_corner)
             {
                 default: throw new Exception("Invalid Corner:"+_corner);
-                case EQubeCorner.DB: return EQubeCorner.TF;
-                case EQubeCorner.DL: return EQubeCorner.TR;
-                case EQubeCorner.DF: return EQubeCorner.TB;
-                case EQubeCorner.DR: return EQubeCorner.TL;
-                case EQubeCorner.TB: return EQubeCorner.DF;
-                case EQubeCorner.TL: return EQubeCorner.DR;
-                case EQubeCorner.TF: return EQubeCorner.DB;
-                case EQubeCorner.TR: return EQubeCorner.DL;
+                case ECubeCorner.DB: return ECubeCorner.TF;
+                case ECubeCorner.DL: return ECubeCorner.TR;
+                case ECubeCorner.DF: return ECubeCorner.TB;
+                case ECubeCorner.DR: return ECubeCorner.TL;
+                case ECubeCorner.TB: return ECubeCorner.DF;
+                case ECubeCorner.TL: return ECubeCorner.DR;
+                case ECubeCorner.TF: return ECubeCorner.DB;
+                case ECubeCorner.TR: return ECubeCorner.DL;
             }
         }
 
-        public static EQubeCorner HorizontalDiagonalCorner(this EQubeCorner _corner)
+        public static ECubeCorner HorizontalDiagonalCorner(this ECubeCorner _corner)
         {
             switch (_corner)
             {
                 default: throw new Exception("Invalid Corner:"+_corner);
-                case EQubeCorner.DB: return EQubeCorner.DF;
-                case EQubeCorner.DL: return EQubeCorner.DR;
-                case EQubeCorner.DF: return EQubeCorner.DB;
-                case EQubeCorner.DR: return EQubeCorner.DL;
-                case EQubeCorner.TB: return EQubeCorner.TF;
-                case EQubeCorner.TL: return EQubeCorner.TR;
-                case EQubeCorner.TF: return EQubeCorner.TB;
-                case EQubeCorner.TR: return EQubeCorner.TL;
+                case ECubeCorner.DB: return ECubeCorner.DF;
+                case ECubeCorner.DL: return ECubeCorner.DR;
+                case ECubeCorner.DF: return ECubeCorner.DB;
+                case ECubeCorner.DR: return ECubeCorner.DL;
+                case ECubeCorner.TB: return ECubeCorner.TF;
+                case ECubeCorner.TL: return ECubeCorner.TR;
+                case ECubeCorner.TF: return ECubeCorner.TB;
+                case ECubeCorner.TR: return ECubeCorner.TL;
             }
         }
-        public static IEnumerable<(EQubeCorner _qube, EQubeCorner _adjactileCorner1, EQubeCorner _adjactileCorner2)> NearbyValidCornerQube(this EQubeCorner _srcCorner)
+        public static IEnumerable<(ECubeCorner _qube, ECubeCorner _adjactileCorner1, ECubeCorner _adjactileCorner2)> NearbyValidCornerQube(this ECubeCorner _srcCorner)
         {
             var flip = _srcCorner.FlipFloor();
             var qube0 =  _srcCorner.HorizontalDiagonalCorner();
@@ -225,7 +225,7 @@ namespace Geometry
                 splitQubes[i].SetByteElement(_qube[i]?byte.MaxValue:byte.MinValue);
             }
 
-            foreach (var corner in UEnum.GetEnums<EQubeCorner>())
+            foreach (var corner in UEnum.GetEnums<ECubeCorner>())
             {
                 if(_qube[corner])
                     continue;
@@ -320,85 +320,82 @@ namespace Geometry
         }
         
         public static Qube<bool> And(this Qube<bool> _srcQube,Qube<bool> _dstQube)=> Qube<bool>.Convert(_srcQube,(index,value)=>value&&_dstQube[index]);
-    }
 
-    public static class UCubeFacing
-    {
-        public static (EQubeCorner v0, EQubeCorner v1, EQubeCorner v2, EQubeCorner v3) GetRelativeVertsCW(this ECubeFacing _facing)
+        public static (ECubeCorner v0, ECubeCorner v1, ECubeCorner v2, ECubeCorner v3) GetRelativeVertsCW(this ECubeFacing _facing)
         {
             switch (_facing)
             {
                 default: throw new Exception("Invalid Face:"+_facing);
-                case ECubeFacing.B:return (EQubeCorner.DB,EQubeCorner.DL,EQubeCorner.TL,EQubeCorner.TB);
-                case ECubeFacing.L:return (EQubeCorner.DL,EQubeCorner.DF,EQubeCorner.TF,EQubeCorner.TL);
-                case ECubeFacing.F:return (EQubeCorner.DF,EQubeCorner.DR,EQubeCorner.TR,EQubeCorner.TF);
-                case ECubeFacing.R:return (EQubeCorner.DR,EQubeCorner.DB,EQubeCorner.TB,EQubeCorner.TR);
-                case ECubeFacing.T:return (EQubeCorner.TB,EQubeCorner.TL,EQubeCorner.TF,EQubeCorner.TR);
-                case ECubeFacing.D:return (EQubeCorner.DB,EQubeCorner.DR,EQubeCorner.DF,EQubeCorner.DL);
+                case ECubeFacing.B:return (ECubeCorner.DB,ECubeCorner.DL,ECubeCorner.TL,ECubeCorner.TB);
+                case ECubeFacing.L:return (ECubeCorner.DL,ECubeCorner.DF,ECubeCorner.TF,ECubeCorner.TL);
+                case ECubeFacing.F:return (ECubeCorner.DF,ECubeCorner.DR,ECubeCorner.TR,ECubeCorner.TF);
+                case ECubeFacing.R:return (ECubeCorner.DR,ECubeCorner.DB,ECubeCorner.TB,ECubeCorner.TR);
+                case ECubeFacing.T:return (ECubeCorner.TB,ECubeCorner.TL,ECubeCorner.TF,ECubeCorner.TR);
+                case ECubeFacing.D:return (ECubeCorner.DB,ECubeCorner.DR,ECubeCorner.DF,ECubeCorner.DL);
             }
         }
         
-        public static IEnumerable<(EQubeCorner _cornerQube, ECubeFacing _facingDir)> NearbyValidQubeFacing(this EQubeCorner _srcCorner)
+        public static IEnumerable<(ECubeCorner _cornerQube, ECubeFacing _facingDir)> NearbyValidQubeFacing(this ECubeCorner _srcCorner)
         {
             switch (_srcCorner)
             {
                 default: throw new IndexOutOfRangeException();
                 
-                case EQubeCorner.DB:
-                    yield return (EQubeCorner.TB, ECubeFacing.T);
-                    yield return (EQubeCorner.DL, ECubeFacing.L);
-                    yield return (EQubeCorner.DR, ECubeFacing.F);
+                case ECubeCorner.DB:
+                    yield return (ECubeCorner.TB, ECubeFacing.T);
+                    yield return (ECubeCorner.DL, ECubeFacing.L);
+                    yield return (ECubeCorner.DR, ECubeFacing.F);
                     break;
-                case EQubeCorner.DL:
-                    yield return (EQubeCorner.TL, ECubeFacing.T);
-                    yield return (EQubeCorner.DF, ECubeFacing.F);
-                    yield return (EQubeCorner.DB, ECubeFacing.R);
+                case ECubeCorner.DL:
+                    yield return (ECubeCorner.TL, ECubeFacing.T);
+                    yield return (ECubeCorner.DF, ECubeFacing.F);
+                    yield return (ECubeCorner.DB, ECubeFacing.R);
                     break;
-                case EQubeCorner.DF: 
-                    yield return (EQubeCorner.TF, ECubeFacing.T);
-                    yield return (EQubeCorner.DR, ECubeFacing.R);
-                    yield return (EQubeCorner.DL, ECubeFacing.B);
+                case ECubeCorner.DF: 
+                    yield return (ECubeCorner.TF, ECubeFacing.T);
+                    yield return (ECubeCorner.DR, ECubeFacing.R);
+                    yield return (ECubeCorner.DL, ECubeFacing.B);
                     break;
-                case EQubeCorner.DR:
-                    yield return (EQubeCorner.TR, ECubeFacing.T);
-                    yield return (EQubeCorner.DB, ECubeFacing.B);
-                    yield return (EQubeCorner.DF, ECubeFacing.L);
+                case ECubeCorner.DR:
+                    yield return (ECubeCorner.TR, ECubeFacing.T);
+                    yield return (ECubeCorner.DB, ECubeFacing.B);
+                    yield return (ECubeCorner.DF, ECubeFacing.L);
                     break;
-                case EQubeCorner.TB: 
-                    yield return (EQubeCorner.DB, ECubeFacing.D);
-                    yield return (EQubeCorner.TL, ECubeFacing.L);
-                    yield return (EQubeCorner.TR, ECubeFacing.F);
+                case ECubeCorner.TB: 
+                    yield return (ECubeCorner.DB, ECubeFacing.D);
+                    yield return (ECubeCorner.TL, ECubeFacing.L);
+                    yield return (ECubeCorner.TR, ECubeFacing.F);
                     break;
-                case EQubeCorner.TL: 
-                    yield return (EQubeCorner.DL, ECubeFacing.D);
-                    yield return (EQubeCorner.TF, ECubeFacing.F);
-                    yield return (EQubeCorner.TB, ECubeFacing.R);
+                case ECubeCorner.TL: 
+                    yield return (ECubeCorner.DL, ECubeFacing.D);
+                    yield return (ECubeCorner.TF, ECubeFacing.F);
+                    yield return (ECubeCorner.TB, ECubeFacing.R);
                     break;
-                case EQubeCorner.TF: 
-                    yield return (EQubeCorner.DF, ECubeFacing.D);
-                    yield return (EQubeCorner.TR, ECubeFacing.R);
-                    yield return (EQubeCorner.TL, ECubeFacing.B);
+                case ECubeCorner.TF: 
+                    yield return (ECubeCorner.DF, ECubeFacing.D);
+                    yield return (ECubeCorner.TR, ECubeFacing.R);
+                    yield return (ECubeCorner.TL, ECubeFacing.B);
                     break;
-                case EQubeCorner.TR: 
-                    yield return (EQubeCorner.DR, ECubeFacing.D);
-                    yield return (EQubeCorner.TB, ECubeFacing.B);
-                    yield return (EQubeCorner.TF, ECubeFacing.L);
+                case ECubeCorner.TR: 
+                    yield return (ECubeCorner.DR, ECubeFacing.D);
+                    yield return (ECubeCorner.TB, ECubeFacing.B);
+                    yield return (ECubeCorner.TF, ECubeFacing.L);
                     break;
             }
         }
 
-        static readonly Dictionary<ECubeFacing, EQubeCorner[]> kFacingCorners = new Dictionary<ECubeFacing, EQubeCorner[]>()
+        static readonly Dictionary<ECubeFacing, ECubeCorner[]> kFacingCorners = new Dictionary<ECubeFacing, ECubeCorner[]>()
             {
-                { ECubeFacing.D, new[] { EQubeCorner.DB, EQubeCorner.DL, EQubeCorner.DF, EQubeCorner.DR } },
-                { ECubeFacing.T, new[] { EQubeCorner.TB, EQubeCorner.TL, EQubeCorner.TF, EQubeCorner.TR } },
-                { ECubeFacing.B,new []{ EQubeCorner.DB, EQubeCorner.TB, EQubeCorner.DL, EQubeCorner.TL}},
-                { ECubeFacing.L,new []{ EQubeCorner.DL, EQubeCorner.TL, EQubeCorner.DF,EQubeCorner.TF }},
-                { ECubeFacing.F,new []{ EQubeCorner.DF, EQubeCorner.TF,EQubeCorner.DR,EQubeCorner.TR }},
-                { ECubeFacing.R,new []{ EQubeCorner.DR, EQubeCorner.TR, EQubeCorner.DB, EQubeCorner.TB}}
+                { ECubeFacing.D, new[] { ECubeCorner.DB, ECubeCorner.DL, ECubeCorner.DF, ECubeCorner.DR } },
+                { ECubeFacing.T, new[] { ECubeCorner.TB, ECubeCorner.TL, ECubeCorner.TF, ECubeCorner.TR } },
+                { ECubeFacing.B,new []{ ECubeCorner.DB, ECubeCorner.TB, ECubeCorner.DL, ECubeCorner.TL}},
+                { ECubeFacing.L,new []{ ECubeCorner.DL, ECubeCorner.TL, ECubeCorner.DF,ECubeCorner.TF }},
+                { ECubeFacing.F,new []{ ECubeCorner.DF, ECubeCorner.TF,ECubeCorner.DR,ECubeCorner.TR }},
+                { ECubeFacing.R,new []{ ECubeCorner.DR, ECubeCorner.TR, ECubeCorner.DB, ECubeCorner.TB}}
             };
 
         public static Quad<T> GetSideFacing<T>(this CubeSides<T> _sides) => new Quad<T>(_sides.fBL,_sides.fLF,_sides.fFR,_sides.fRB);
-        public static EQubeCorner[] FacingCorners(this ECubeFacing _facing) => kFacingCorners[_facing];
+        public static ECubeCorner[] FacingCorners(this ECubeFacing _facing) => kFacingCorners[_facing];
 
         public static (T v0, T v1, T v2, T v3) GetFacingCornersCW<T>(this Qube<T> _qube, ECubeFacing _facing) where T : struct
         {
@@ -460,7 +457,73 @@ namespace Geometry
                 case ECubeFacing.D: return Int3.kDown;
             }
         }
-        
+        public static void GetCubeAORelation(ECubeCorner _corner,out Int3 _side1,out Int3 _side2,out Int3 _cornerSide)
+        {
+            _side1 = default;
+            _side2 = default;
+            _cornerSide = default;
+            switch (_corner)
+            {
+                default: throw new InvalidEnumArgumentException();
+                case ECubeCorner.DB:
+                {
+                    _side1 = new Int3(1, -1, 0);
+                    _cornerSide= new Int3(1,-1,-1);
+                    _side2 = new Int3(0, -1, -1);
+                }
+                    break;
+                case ECubeCorner.DL:
+                {
+                    _side1 = new Int3(0, -1, -1);
+                    _cornerSide= new Int3(-1,-1,-1);
+                    _side2 = new Int3(-1, -1, 0);
+                }
+                    break;
+                case ECubeCorner.DF:
+                {
+                    _side1 = new Int3(-1, -1, 0);
+                    _cornerSide= new Int3(-1,-1,1);
+                    _side2 = new Int3(0, -1, 1);
+                }
+                    break;
+                case ECubeCorner.DR:
+                {
+                    _side1 = new Int3(0, -1, 1);
+                    _cornerSide= new Int3(1,-1,1);
+                    _side2 = new Int3(1, -1, 0);
+                }
+                    break;
+                case ECubeCorner.TB:
+                {
+                    _side1 = new Int3(1, 1, 0);
+                    _cornerSide= new Int3(1,1,-1);
+                    _side2 = new Int3(0, 1, -1);
+                }
+                    break;
+                case ECubeCorner.TL:
+                {
+                    _side1 = new Int3(0, 1, -1);
+                    _cornerSide= new Int3(-1,1,-1);
+                    _side2 = new Int3(-1, 1, 0);
+                }
+                    break;
+                case ECubeCorner.TF:
+                {
+                    _side1 = new Int3(-1, 1, 0);
+                    _cornerSide= new Int3(-1,1,1);
+                    _side2 = new Int3(0, 1, 1);
+                }
+                    break;
+                case ECubeCorner.TR:
+                {
+                    _side1 = new Int3(0, 1, 1);
+                    _cornerSide= new Int3(1,1,1);
+                    _side2 = new Int3(1, 1, 0);
+                }
+                    break;
+            }
+        }
+
         public static void GetFacingQuadGeometry(ECubeFacing _facing,out float3 b,out float3 l,out float3 f,out float3 r,out half3 n,out half4 t)
         {
             switch (_facing)

@@ -26,7 +26,7 @@ namespace Geometry
     }
     
     [Flags]
-    public enum EQubeCorner
+    public enum ECubeCorner
     {
         DB=1,
         DL=2,
@@ -413,7 +413,7 @@ namespace Geometry
         {
         }
 
-        public T this[EQubeCorner _corner]
+        public T this[ECubeCorner _corner]
         {
             get => this[_corner.CornerToIndex()];
             set => this[_corner.CornerToIndex()]=value;

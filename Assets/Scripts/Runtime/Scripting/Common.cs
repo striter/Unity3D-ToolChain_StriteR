@@ -285,6 +285,9 @@ public struct Int3 : IEquatable<Int3>
     public static readonly Int3 kDown = new Int3(0, -1, 0);
     public static readonly Int3 kForward = new Int3(0, 0, 1);
     public static readonly Int3 kBack = new Int3(0, 0, -1);
+    public static Int3 operator +(Int3 _src, int _dst) => new Int3(_src.x + _dst, _src.y + _dst, _src.z + _dst);
+    public static Int3 operator -(Int3 _src, int _dst) => new Int3(_src.x - _dst, _src.y - _dst, _src.z - _dst);
+    public static Int3 operator %(Int3 _src, int _dst) => new Int3(_src.x % _dst, _src.y % _dst, _src.z % _dst);
     public static Int3 operator +(Int3 _src, Int3 _dst) => new Int3(_src.x + _dst.x, _src.y + _dst.y, _src.z + _dst.z);
     public static Int3 operator -(Int3 _src, Int3 _dst) => new Int3(_src.x - _dst.x, _src.y - _dst.y, _src.z - _dst.z);
     public static bool operator ==(Int3 _src, Int3 _dst) => _src.x == _dst.x && _src.y == _dst.y && _src.z == _dst.z;
