@@ -15,6 +15,11 @@ namespace TheVoxel
         {
             m_Chunks = new TObjectPoolMono<Int2, ChunkElement>(transform.Find("Element"));
         }
+
+        public void Dispose()
+        {
+            m_Chunks.Dispose();
+        }
         
         public void ChunkValidate(Vector3 _position)
         {

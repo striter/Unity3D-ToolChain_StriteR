@@ -410,7 +410,7 @@ namespace TPool
             m_Recycled = true;
         }
 
-        public void OnPoolDispose()
+        public virtual void OnPoolDispose()
         {
             m_Recycled = true;
             m_PoolID = default;

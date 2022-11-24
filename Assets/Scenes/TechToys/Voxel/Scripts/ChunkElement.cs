@@ -1,10 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Geometry;
 using TPool;
-using TPoolStatic;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
@@ -28,8 +27,8 @@ namespace TheVoxel
         public EChunkDirty m_Status { get; private set; }
         private MeshFilter m_Filter;
         private Mesh m_Mesh;
-        public Dictionary<Int3, ChunkVoxel> m_Voxels { get; private set; } = new Dictionary<Int3, ChunkVoxel>();
-        public Dictionary<Int3, byte> m_AOs { get; private set; } = new Dictionary<Int3, byte>();
+
+        [NativeDisableContainerSafetyRestriction] public NativeHashMap<Int3, ChunkVoxel> m_Voxels;
         public override void OnPoolSpawn(Int2 _identity)
         {
             base.OnPoolSpawn(_identity);
@@ -41,10 +40,11 @@ namespace TheVoxel
             m_Status = EChunkDirty.Generation;
         }
 
-        public override void OnPoolRecycle()
+        public override void OnPoolDispose()
         {
-            base.OnPoolRecycle();
-            m_Voxels.Clear();
+            base.OnPoolDispose();
+            if(m_Voxels.IsCreated)
+                m_Voxels.Dispose();
         }
         
         public void Tick(float _deltaTime, Dictionary<Int2, ChunkElement> _chunks)
@@ -87,6 +87,7 @@ namespace TheVoxel
         {
             NativeList<VoxelInput> list = new NativeList<VoxelInput>(Allocator.TempJob);
             new ImplicitJob(m_PoolID,list).ScheduleParallel(1,1,default).Complete();
+            m_Voxels =  new NativeHashMap<Int3, ChunkVoxel>(list.Length,Allocator.Persistent);
             foreach (var input in list)
                 m_Voxels.Add(input.identity, new ChunkVoxel(){identity = input.identity,type = input.type,sideCount = 0,sideGeometry = byte.MinValue});
             list.Dispose();
@@ -110,35 +111,58 @@ namespace TheVoxel
                 idenitity = _identity;
                 voxelInputs = _voxelInputs;
             }
-            
+
+            private static readonly int kHalfMax = 10000;
             public void Execute(int _)
             {
                 float r = DVoxel.kChunkSize;
                 for (int i = 0; i < DVoxel.kChunkSize; i++)
                 for (int j = 0; j < DVoxel.kChunkSize; j++)
                 {
-                    float2 p2D = new float2(i / r  + idenitity.x, j / r + idenitity.y) ;
-                    int heightOffset = (int) (Noise.Perlin.Unit1f2(p2D * 5f) * 5f);
-                    int groundHeight = DVoxel.kTerrainHeight + heightOffset;
-                    int dirtOffset = 5 + (int)(Noise.Value.Unit1f2(p2D)*2f);
-                    int stoneHeight = groundHeight - dirtOffset;
-                    int dirtHeight = groundHeight;
-                
-                    for (int k = 0; k <= groundHeight; k++)
-                    {
-                        EVoxelType type = EVoxelType.Air;
-                        if (k < stoneHeight)
-                            type = EVoxelType.Stone;
-                        else if (k < dirtHeight)
-                            type = EVoxelType.Dirt;
-                        else if (k == groundHeight)
-                            type = EVoxelType.Grass;
+                    float2 p2D = new float2(i / r  + idenitity.x + kHalfMax, j / r + idenitity.y + kHalfMax) ;
 
+                    ETerrainForm form = ETerrainForm.Plane;
+                    float terrainFormPerlin = Noise.Perlin.Unit1f2(p2D * .5f);
+                    if (terrainFormPerlin > 0)
+                        form = ETerrainForm.Mountains;
+                    
+                    EVoxelType surfaceType = EVoxelType.Grass;
+
+                    float terrainDensity = 3f;
+                    RangeInt stoneRandom = new RangeInt(DVoxel.kTerrainHeight,1);
+                    RangeInt dirtRandom = new RangeInt(4,1);
+                    if (form == ETerrainForm.Mountains)
+                    {
+                        terrainDensity = 5f;
+                        surfaceType = EVoxelType.Snow;
+                        dirtRandom = new RangeInt(0, 3);
+                        stoneRandom = new RangeInt(DVoxel.kTerrainHeight, DVoxel.kMountainHeight);
+                    }
+
+                    float terrainRandom = Noise.Perlin.Unit1f2(p2D * terrainDensity);
+                    int stoneHeight = stoneRandom.start + (int) (terrainRandom* stoneRandom.length);
+                    int dirtHeight = dirtRandom.start + (int) (terrainRandom*dirtRandom.length);
+
+                    int stoneStart = stoneHeight;
+                    int dirtStart = stoneStart + dirtHeight;
+                    int surface = dirtStart;
+                    
+                    for (int k = 0; k <= surface; k++)
+                    {
+                        EVoxelType voxel = EVoxelType.Air;
+                        if(k < stoneStart)
+                            voxel = EVoxelType.Stone;
+                        else if (k < dirtStart)
+                            voxel = EVoxelType.Dirt;
+                        else if (k == surface)
+                            voxel = surfaceType;
+
+                        //Caves
                         float3 p3D = new float3(p2D.x,k/r,p2D.y);
                         if (Noise.Perlin.Unit1f3(p3D * 3) > .5f)
                             continue;
                         
-                        voxelInputs.Add(new VoxelInput(){identity =  new Int3(i,k,j),type = type});
+                        voxelInputs.Add(new VoxelInput(){identity =  new Int3(i,k,j),type = voxel});
                     }
                 }
             }
@@ -146,78 +170,115 @@ namespace TheVoxel
 
         void PopulateRelation(Dictionary<Int2,ChunkElement> _chunks)
         {
-            Func<Int3, ChunkVoxel> getVoxel = (_voxelID) =>
-            {
-                Int2 chunkOffset = Int2.kZero;
+            NativeList<ChunkVoxel> voxelsDelta = new NativeList<ChunkVoxel>(Allocator.TempJob);
+            var back = _chunks.TryGetValue(m_PoolID + Int2.kBack, out var backChunk)?backChunk.m_Voxels : new NativeHashMap<Int3, ChunkVoxel>(0,Allocator.TempJob);
+            var left = _chunks.TryGetValue(m_PoolID + Int2.kLeft, out var leftChunk)?leftChunk.m_Voxels : new NativeHashMap<Int3, ChunkVoxel>(0,Allocator.TempJob);
+            var forward = _chunks.TryGetValue(m_PoolID + Int2.kForward, out var forwardChunk)?forwardChunk.m_Voxels : new NativeHashMap<Int3, ChunkVoxel>(0,Allocator.TempJob);
+            var right = _chunks.TryGetValue(m_PoolID + Int2.kRight, out var rightChunk)?rightChunk.m_Voxels : new NativeHashMap<Int3, ChunkVoxel>(0,Allocator.TempJob);
 
-                if (_voxelID.x < 0)
-                    chunkOffset.x -= 1;
-                if (_voxelID.x >= DVoxel.kChunkSize)
-                    chunkOffset.x += 1;
-                if (_voxelID.z < 0)
-                    chunkOffset.y -= 1;
-                if (_voxelID.z >= DVoxel.kChunkSize)
-                    chunkOffset.y += 1;
-
-                var chunk = m_PoolID + chunkOffset;
-                if (!_chunks.ContainsKey(chunk))
-                    return ChunkVoxel.kInvalid;
-
-                var voxels = _chunks[chunk].m_Voxels;
-                _voxelID = (_voxelID + DVoxel.kChunkSize) % DVoxel.kChunkSize;
-                return voxels.ContainsKey(_voxelID) ? voxels[_voxelID] : ChunkVoxel.kInvalid;
-            };
-
-
-            TSPoolList<ChunkVoxel>.Spawn(out var voxelsDelta);
-
-            foreach (var voxelID in m_Voxels.Keys)
-            {
-                ChunkVoxel srcVoxel = m_Voxels[voxelID];
-                ChunkVoxel dstVoxel = srcVoxel;
-                for (int i = 0; i < 6; i++)
-                {
-                    var facingVoxel = getVoxel(voxelID + UCube.GetCubeOffset(UCube.IndexToFacing(i)));
-                    bool sideValid =  facingVoxel.type != EVoxelType.Air;
-                    var sideByte = (sideValid ? 0 : 1) << i;
-                    dstVoxel.sideGeometry += (byte)sideByte;
-                    dstVoxel.sideCount += sideValid?0:1;
-                }
-
-                for (int i = 0; i < 8; i++)
-                {
-                    UCube.GetCubeAORelation(UCube.IndexToCorner(i), out var side1, out var side2, out var corner);
-                    var side1Voxel = getVoxel(voxelID + side1);
-                    var side2Voxel = getVoxel(voxelID + side2);
-                    var cornerVoxel = getVoxel(voxelID + corner);
-                    dstVoxel.cornerAO += side1Voxel.type != EVoxelType.Air? 1 << (3 * i ) : 0;
-                    dstVoxel.cornerAO += side2Voxel.type != EVoxelType.Air? 1 << (3 * i + 1) : 0;
-                    dstVoxel.cornerAO += cornerVoxel.type != EVoxelType.Air? 1 << (3 * i + 2) : 0;
-                }
-            
-                if(dstVoxel.Equals(srcVoxel))
-                    continue;
-                
-                voxelsDelta.Add(dstVoxel);
-            }
+            new RefreshRelationJob(voxelsDelta, m_Voxels, back,left,forward,right).ScheduleParallel(1,1,default).Complete();
 
             foreach (var voxel in voxelsDelta)
-                m_Voxels[voxel.identity] = voxel;
+            {
+                m_Voxels.Remove(voxel.identity);
+                m_Voxels.Add(voxel.identity,voxel);
+            }
+
+            if (back.IsEmpty) back.Dispose();
+            if (left.IsEmpty) left.Dispose();
+            if (forward.IsEmpty) forward.Dispose();
+            if (right.IsEmpty) right.Dispose();
+            voxelsDelta.Dispose();
+        }
+
+        [BurstCompile(FloatPrecision.Standard, FloatMode.Fast, CompileSynchronously = true)]
+        public struct RefreshRelationJob : IJobFor
+        {
+            [ReadOnly] [NativeDisableContainerSafetyRestriction] private NativeList<ChunkVoxel> voxelsDelta;
+            [ReadOnly] [NativeDisableContainerSafetyRestriction] private NativeHashMap<Int3, ChunkVoxel> curVoxels;
+            [ReadOnly] [NativeDisableContainerSafetyRestriction] private readonly NativeHashMap<Int3, ChunkVoxel> backVoxels;
+            [ReadOnly] [NativeDisableContainerSafetyRestriction] private readonly NativeHashMap<Int3, ChunkVoxel> leftVoxels;
+            [ReadOnly] [NativeDisableContainerSafetyRestriction] private readonly NativeHashMap<Int3, ChunkVoxel> forwardVoxels;
+            [ReadOnly] [NativeDisableContainerSafetyRestriction] private readonly NativeHashMap<Int3, ChunkVoxel> rightvoxels;
+            public RefreshRelationJob(NativeList<ChunkVoxel> _voxelsDelta,NativeHashMap<Int3, ChunkVoxel> _curVoxels, NativeHashMap<Int3, ChunkVoxel> _backVoxels,NativeHashMap<Int3, ChunkVoxel> _leftVoxels,NativeHashMap<Int3, ChunkVoxel> _forwardVoxels,NativeHashMap<Int3, ChunkVoxel> _rightVoxels)
+            {
+                voxelsDelta = _voxelsDelta;
+                curVoxels = _curVoxels;
+                backVoxels = _backVoxels;
+                leftVoxels = _leftVoxels;
+                forwardVoxels = _forwardVoxels;
+                rightvoxels = _rightVoxels;
+            }
             
-            TSPoolList<ChunkVoxel>.Recycle(voxelsDelta);
+            ChunkVoxel GetVoxel(Int3 _voxelID)
+            {
+                ChunkVoxel voxel = ChunkVoxel.kInvalid;
+                NativeHashMap<Int3, ChunkVoxel> voxels = curVoxels;
+                if (_voxelID.x < 0)
+                    voxels = leftVoxels;
+                if (_voxelID.x >= DVoxel.kChunkSize)
+                    voxels = rightvoxels;
+                if (_voxelID.z < 0)
+                    voxels = backVoxels;
+                if (_voxelID.z >= DVoxel.kChunkSize)
+                    voxels = forwardVoxels;
+
+                if(!voxels.TryGetValue((_voxelID + DVoxel.kChunkSize) % DVoxel.kChunkSize,out voxel))
+                    voxel = ChunkVoxel.kInvalid;
+                return voxel;
+            }
+            
+            public void Execute(int _)
+            {
+                var keys = curVoxels.GetKeyArray(Allocator.Temp);
+                var length = keys.Length;
+                for(int index=0;index<length;index++)
+                {
+                    var voxelID = keys[index];
+                    ChunkVoxel srcVoxel = curVoxels[voxelID];
+                    ChunkVoxel dstVoxel = new ChunkVoxel() {identity = srcVoxel.identity, type = srcVoxel.type};
+                    for (int i = 0; i < 6; i++)
+                    {
+                        var facingVoxel = GetVoxel(voxelID + UCube.GetCubeOffset(UCube.IndexToFacing(i)));
+                        bool sideValid =  facingVoxel.type != EVoxelType.Air;
+                        dstVoxel.sideGeometry += (byte)((sideValid ? 1 : 0) << i);
+                        dstVoxel.sideCount += (byte)(sideValid?0:1);
+                    }
+
+                    if(dstVoxel.sideCount==0)
+                        continue;
+                    for (int i = 0; i < 8; i++)
+                    {
+                        var cornerVoxel =  GetVoxel(voxelID+KCube.kCornerIdentity[i]);
+                        bool cornerValid = cornerVoxel.type != EVoxelType.Air;
+                        var cornerByte = (cornerValid ? 1 : 0) << i;
+                        dstVoxel.cornerGeometry += (byte) cornerByte;
+                    }
+
+                    for (int i = 0; i < 12; i++)
+                    {
+                        var intervalVoxel =  GetVoxel(voxelID + KCube.kIntervalIdentity[i]);
+                        bool interValid = intervalVoxel.type != EVoxelType.Air;
+                        var intervalByte = (interValid ? 1 : 0) << i;
+                        dstVoxel.intervalGeometry += (ushort)intervalByte;
+                    }
+                
+                    if(dstVoxel.Equals(srcVoxel))
+                        continue;
+                
+                    voxelsDelta.Add(dstVoxel);
+                }
+                keys.Dispose();
+            }
         }
         
         public void PopulateVertices()
         {
-            NativeArray<ChunkVoxel> outputs = new NativeArray<ChunkVoxel>(m_Voxels.Count,Allocator.TempJob,NativeArrayOptions.UninitializedMemory);
+            NativeArray<ChunkVoxel> outputs = m_Voxels.GetValueArray(Allocator.TempJob);
             int sideCount = 0;
-            int curIndex = 0;
-            
-            foreach (var voxel in m_Voxels.Values)
-            {
+            foreach (var voxel in outputs)
                 sideCount += voxel.sideCount;
-                outputs[curIndex++] = voxel;
-            }
+            
             Mesh.MeshDataArray meshDataArray = Mesh.AllocateWritableMeshData(1);
             Mesh.MeshData meshData = meshDataArray[0];
 
@@ -246,7 +307,7 @@ namespace TheVoxel
                 public half2 uv;
             }
             
-            [Readonly] [NativeDisableContainerSafetyRestriction] private NativeArray<ChunkVoxel> voxels;
+            [ReadOnly] [NativeDisableContainerSafetyRestriction] private NativeArray<ChunkVoxel> voxels;
             [WriteOnly] [NativeDisableContainerSafetyRestriction] private NativeArray<Vertex> vertices;
             [WriteOnly] [NativeDisableContainerSafetyRestriction] private NativeArray<uint3> indexes;
 
@@ -270,30 +331,12 @@ namespace TheVoxel
                 vertexAttributes.Dispose();
             }
 
-            public static void GetFacingQuadGeometry(ECubeFacing _facing,out float3 b,out float3 l,out float3 f,out float3 r,out half3 n,out half4 t,out int cb,out int cl,out int cf,out int cr)
+            static float ConvertToAO(int _intervalSrc,int _side1,int _side2,int _cornerByte,int _corner)
             {
-                switch (_facing)
-                {
-                    default: throw new InvalidEnumArgumentException();
-                    case ECubeFacing.B: { cb = 0; cl = 1; cf = 5; cr = 4; n = (half3)new float3(0f,0f,-1f);t = (half4)new float4(1f,0f,0f,1f);}break;
-                    case ECubeFacing.L: { cb = 1; cl = 2; cf = 6; cr = 5; n = (half3)new float3(-1f,0f,0f);t = (half4)new float4(0f,0f,1f,1f);}break;
-                    case ECubeFacing.F: { cb = 2; cl = 3; cf = 7; cr = 6; n = (half3)new float3(0f,0f,1f);t = (half4)new float4(-1f,0f,0f,1f); }break;
-                    case ECubeFacing.R: { cb = 3; cl = 0; cf = 4; cr = 7; n = (half3)new float3(1f,0f,0f);t = (half4)new float4(0f,0f,-1f,1f); }break;
-                    case ECubeFacing.T: { cb = 4; cl = 5; cf = 6; cr = 7; n = (half3)new float3(0f,1f,0f);t = (half4)new float4(1f,0f,0f,1f);}break;
-                    case ECubeFacing.D: { cb = 0; cl = 3; cf = 2; cr = 1; n = (half3)new float3(0f,-1f,0f);t = (half4)new float4(-1f,0f,0f,1f); }break;
-                }
-                b = KCube.kVoxelPositions[cb]; l = KCube.kVoxelPositions[cl];  f = KCube.kVoxelPositions[cf]; r = KCube.kVoxelPositions[cr];
-            }
+                var side1 = (_intervalSrc >> _side1) & 1;
+                var side2 = (_intervalSrc >> _side2) & 1;
 
-            static float ConvertToAO(int _aoSrc,int _corner)
-            {
-                var aoParameters = _aoSrc >> (_corner*3);
-                var side1 = (aoParameters & 1);
-                var side2 = (aoParameters & 2) >> 1;
-                if (side1 + side2 == 2)
-                    return 0;
-                
-                var corner = (aoParameters & 4) >> 2;
+                var corner = (_cornerByte >> _corner) & 1;
                 return (3-side1-side2-corner)/3f;
             }
             
@@ -314,35 +357,32 @@ namespace TheVoxel
                     float3 centerOS = DVoxel.GetVoxelPositionOS(voxel.identity);
                     for (int j = 0; j < 6; j++)
                     {
-                        if (!UByte.PosValid(voxel.sideGeometry, j))
+                        if (UByte.PosValid(voxel.sideGeometry, j))
                             continue;
 
                         var facing = UCube.IndexToFacing(j);
-                        GetFacingQuadGeometry(facing,
-                            out var b,out var l,out var f,out var r,out var n,out var t,
-                            out var cb,out var cl,out var cf,out var cr);
-
-                        float aob = ConvertToAO(voxel.cornerAO, cb),
-                            aol = ConvertToAO(voxel.cornerAO, cl),
-                            aof = ConvertToAO(voxel.cornerAO, cf),
-                            aor = ConvertToAO(voxel.cornerAO, cr);
+                        UCube.GetCornerGeometry(facing ,out var b,out var l,out var f,out var r,out var n,out var t);
+                        float aob = ConvertToAO(voxel.intervalGeometry, b.side1, b.side2, voxel.cornerGeometry,b.corner),
+                            aol = ConvertToAO(voxel.intervalGeometry, l.side1, l.side2, voxel.cornerGeometry, l.corner),
+                            aof = ConvertToAO(voxel.intervalGeometry, f.side1, f.side2, voxel.cornerGeometry, f.corner),
+                            aor = ConvertToAO(voxel.intervalGeometry, r.side1, r.side2, voxel.cornerGeometry, r.corner);
                         
                         v.normal = n;
                         v.tangent = t;
 
-                        v.position = b * DVoxel.kVoxelSize + centerOS;
+                        v.position = b.position * DVoxel.kVoxelSize + centerOS;
                         v.uv = (half2) new float2(0, 0);
                         v.color.w = (half)aob;
                         vertices[vertexIndex+0] = v;
-                        v.position = l * DVoxel.kVoxelSize + centerOS;
+                        v.position = l.position * DVoxel.kVoxelSize + centerOS;
                         v.color.w = (half)aol;
                         v.uv = (half2) new float2(0, 1);
                         vertices[vertexIndex+1] = v;
-                        v.position = f * DVoxel.kVoxelSize + centerOS;
+                        v.position = f.position * DVoxel.kVoxelSize + centerOS;
                         v.color.w = (half)aof;
                         v.uv = (half2) new float2(1, 1);
                         vertices[vertexIndex+2] = v;
-                        v.position = r * DVoxel.kVoxelSize + centerOS;
+                        v.position = r.position * DVoxel.kVoxelSize + centerOS;
                         v.color.w = (half) aor;
                         v.uv = (half2) new float2(1, 0);
                         vertices[vertexIndex+3] = v;

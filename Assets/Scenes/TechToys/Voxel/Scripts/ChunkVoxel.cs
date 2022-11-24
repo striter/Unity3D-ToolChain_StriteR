@@ -12,16 +12,13 @@ namespace TheVoxel
     {
         public Int3 identity;
         public EVoxelType type;
+        public byte sideCount;
         public byte sideGeometry;
-        public int sideCount;
-        public int cornerAO;
-
+        public byte cornerGeometry;
+        public ushort intervalGeometry;
+        
         public static readonly ChunkVoxel kInvalid = new ChunkVoxel() {type = EVoxelType.Air};
 
-        public bool Equals(ChunkVoxel other)
-        {
-            return identity.Equals(other.identity) && type == other.type && sideGeometry == other.sideGeometry && sideCount == other.sideCount && other.cornerAO == cornerAO;
-        }
 
         public override bool Equals(object obj)
         {
@@ -30,7 +27,12 @@ namespace TheVoxel
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(identity);
+            return identity.GetHashCode();
+        }
+
+        public bool Equals(ChunkVoxel other)
+        {
+            return identity.Equals(other.identity) && type == other.type && sideGeometry == other.sideGeometry && sideCount == other.sideCount && cornerGeometry == other.cornerGeometry && intervalGeometry == other.intervalGeometry;
         }
     }
 }

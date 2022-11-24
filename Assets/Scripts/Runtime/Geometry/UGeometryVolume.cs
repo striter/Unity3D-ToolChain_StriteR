@@ -78,6 +78,14 @@ namespace Geometry
         }
     }
     
+    public struct CornerGeometry
+    {
+        public float3 position;
+        public ushort corner;
+        public ushort side1;
+        public ushort side2;
+    }
+
     public static class UCube
     {
         public static int CornerToIndex(this ECubeCorner _corners)
@@ -111,6 +119,63 @@ namespace Geometry
                 case 7:return ECubeCorner.TR;
             }
         }
+        
+        public static void GetCornerGeometry(ECubeFacing _facing,out CornerGeometry b,out CornerGeometry l,out CornerGeometry f,out CornerGeometry r,out half3 n,out half4 t)
+        {
+            ushort cb, cl, cf, cr,sb1,sb2,sl1,sl2,sf1,sf2,sr1,sr2;
+            switch (_facing)
+            {
+                default: throw new InvalidEnumArgumentException();
+                case ECubeFacing.B:
+                {
+                    cb = 0; cl = 1; cf = 5; cr = 4;
+                    sb1 = 1; sl1 = 1; sf1 = 9; sr1 = 9;
+                    sb2 = 4;  sl2 = 5; sf2 = 5; sr2 = 4;
+                    n = (half3)new float3(0f,0f,-1f);t = (half4)new float4(1f,0f,0f,1f);
+                }break;
+                case ECubeFacing.L:
+                {
+                    cb = 1; cl = 2; cf = 6; cr = 5;
+                    sb1 = 2; sl1 = 2; sf1 = 10; sr1 = 10;
+                    sb2 = 5;  sl2 = 6; sf2 = 6; sr2 = 5;
+                    n = (half3)new float3(-1f,0f,0f);t = (half4)new float4(0f,0f,1f,1f);
+                }break;
+                case ECubeFacing.F:
+                {
+                    cb = 2; cl = 3; cf = 7; cr = 6;
+                    sb1 = 3; sl1 = 3; sf1 = 11; sr1 = 11;
+                    sb2 = 6;  sl2 = 7; sf2 = 7; sr2 = 6;
+                    n = (half3)new float3(0f,0f,1f);t = (half4)new float4(-1f,0f,0f,1f);
+                }break;
+                case ECubeFacing.R:
+                {
+                    cb = 3; cl = 0; cf = 4; cr = 7; 
+                    sb1 = 0; sl1 = 0; sf1 = 8; sr1 = 8;
+                    sb2 = 7;  sl2 = 4; sf2 = 4; sr2 = 7;
+                    n = (half3)new float3(1f,0f,0f);t = (half4)new float4(0f,0f,-1f,1f);
+                }break;
+                case ECubeFacing.T:
+                {
+                    cb = 4; cl = 5; cf = 6; cr = 7; 
+                    sb1 = 8; sl1 = 9; sf1 = 10; sr1 = 11;
+                    sb2 = 9;  sl2 = 10; sf2 = 11; sr2 = 8;
+                    n = (half3)new float3(0f,1f,0f);t = (half4)new float4(1f,0f,0f,1f);
+                }break;
+                case ECubeFacing.D:
+                {
+                    cb = 0; cl = 3; cf = 2; cr = 1; 
+                    sb1 = 1;  sl1 = 0; sf1 = 3; sr1 = 2;
+                    sb2 = 0;  sl2 = 3; sf2 = 2; sr2 = 1;
+                    n = (half3)new float3(0f,-1f,0f);t = (half4)new float4(-1f,0f,0f,1f);
+                }break;
+            }
+
+            b = new CornerGeometry { position = KCube.kPositions[cb], corner = cb,side1 = sb1, side2 = sb2,};
+            l = new CornerGeometry { position = KCube.kPositions[cl], corner = cl,side1 = sl1, side2 = sl2,};
+            f = new CornerGeometry { position = KCube.kPositions[cf], corner = cf,side1 = sf1, side2 = sf2,};
+            r = new CornerGeometry { position = KCube.kPositions[cr], corner = cr,side1 = sr1, side2 = sr2,};
+        }
+
 
         public static bool IsTopFloor(this ECubeCorner _corner)=> _corner.CornerToIndex() >= 4;
         
@@ -455,86 +520,6 @@ namespace Geometry
                 case ECubeFacing.R: return Int3.kRight;
                 case ECubeFacing.T: return Int3.kUp;
                 case ECubeFacing.D: return Int3.kDown;
-            }
-        }
-        public static void GetCubeAORelation(ECubeCorner _corner,out Int3 _side1,out Int3 _side2,out Int3 _cornerSide)
-        {
-            _side1 = default;
-            _side2 = default;
-            _cornerSide = default;
-            switch (_corner)
-            {
-                default: throw new InvalidEnumArgumentException();
-                case ECubeCorner.DB:
-                {
-                    _side1 = new Int3(1, -1, 0);
-                    _cornerSide= new Int3(1,-1,-1);
-                    _side2 = new Int3(0, -1, -1);
-                }
-                    break;
-                case ECubeCorner.DL:
-                {
-                    _side1 = new Int3(0, -1, -1);
-                    _cornerSide= new Int3(-1,-1,-1);
-                    _side2 = new Int3(-1, -1, 0);
-                }
-                    break;
-                case ECubeCorner.DF:
-                {
-                    _side1 = new Int3(-1, -1, 0);
-                    _cornerSide= new Int3(-1,-1,1);
-                    _side2 = new Int3(0, -1, 1);
-                }
-                    break;
-                case ECubeCorner.DR:
-                {
-                    _side1 = new Int3(0, -1, 1);
-                    _cornerSide= new Int3(1,-1,1);
-                    _side2 = new Int3(1, -1, 0);
-                }
-                    break;
-                case ECubeCorner.TB:
-                {
-                    _side1 = new Int3(1, 1, 0);
-                    _cornerSide= new Int3(1,1,-1);
-                    _side2 = new Int3(0, 1, -1);
-                }
-                    break;
-                case ECubeCorner.TL:
-                {
-                    _side1 = new Int3(0, 1, -1);
-                    _cornerSide= new Int3(-1,1,-1);
-                    _side2 = new Int3(-1, 1, 0);
-                }
-                    break;
-                case ECubeCorner.TF:
-                {
-                    _side1 = new Int3(-1, 1, 0);
-                    _cornerSide= new Int3(-1,1,1);
-                    _side2 = new Int3(0, 1, 1);
-                }
-                    break;
-                case ECubeCorner.TR:
-                {
-                    _side1 = new Int3(0, 1, 1);
-                    _cornerSide= new Int3(1,1,1);
-                    _side2 = new Int3(1, 1, 0);
-                }
-                    break;
-            }
-        }
-
-        public static void GetFacingQuadGeometry(ECubeFacing _facing,out float3 b,out float3 l,out float3 f,out float3 r,out half3 n,out half4 t)
-        {
-            switch (_facing)
-            {
-                default: throw new Exception("Invalid facing");
-                case ECubeFacing.B: { b = KQube.kUnitQubeCentered[0]; l = KQube.kUnitQubeCentered[1]; f = KQube.kUnitQubeCentered[5]; r = KQube.kUnitQubeCentered[4]; n = (half3)new float3(0f,0f,-1f);t = (half4)new float4(1f,0f,0f,1f);}break;
-                case ECubeFacing.L: { b = KQube.kUnitQubeCentered[1]; l = KQube.kUnitQubeCentered[2]; f = KQube.kUnitQubeCentered[6]; r = KQube.kUnitQubeCentered[5]; n = (half3)new float3(-1f,0f,0f);t = (half4)new float4(0f,0f,1f,1f);}break;
-                case ECubeFacing.F: { b = KQube.kUnitQubeCentered[2]; l = KQube.kUnitQubeCentered[3]; f = KQube.kUnitQubeCentered[7]; r = KQube.kUnitQubeCentered[6]; n = (half3)new float3(0f,0f,1f);t = (half4)new float4(-1f,0f,0f,1f); }break;
-                case ECubeFacing.R: { b = KQube.kUnitQubeCentered[3]; l = KQube.kUnitQubeCentered[0]; f = KQube.kUnitQubeCentered[4]; r = KQube.kUnitQubeCentered[7]; n = (half3)new float3(1f,0f,0f);t = (half4)new float4(0f,0f,-1f,1f); }break;
-                case ECubeFacing.T: { b = KQube.kUnitQubeCentered[4]; l = KQube.kUnitQubeCentered[5]; f = KQube.kUnitQubeCentered[6]; r = KQube.kUnitQubeCentered[7]; n = (half3)new float3(0f,1f,0f);t = (half4)new float4(1f,0f,0f,1f);}break;
-                case ECubeFacing.D: { b = KQube.kUnitQubeCentered[3]; l = KQube.kUnitQubeCentered[2]; f = KQube.kUnitQubeCentered[1]; r = KQube.kUnitQubeCentered[0]; n = (half3)new float3(0f,-1f,0f);t = (half4)new float4(-1f,0f,0f,1f); }break;
             }
         }
     }

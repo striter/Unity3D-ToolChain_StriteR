@@ -44,11 +44,23 @@ namespace Geometry
 
     public partial class KCube
     {
-        public static readonly float3[] kVoxelPositions = new float3[]
+        public static readonly float3[] kPositions = new float3[]
         {
             new float3(.5f,-.5f,-.5f),new float3(-.5f,-.5f,-.5f),new float3(-.5f,-.5f,.5f),new float3(.5f,-.5f,.5f),
             new float3(.5f,.5f,-.5f),new float3(-.5f,.5f,-.5f),new float3(-.5f,.5f,.5f),new float3(.5f,.5f,.5f),
         };
 
+        public static readonly Int3[] kIntervalIdentity = new Int3[]
+        {
+            new Int3(1,-1,0),new Int3(0,-1,-1),new Int3(-1,-1,0),new Int3(0,-1,1),
+            new Int3(1,0,-1),new Int3(-1,0,-1),new Int3(-1,0,1),new Int3(1,0,1),
+            new Int3(1,1,0),new Int3(0,1,-1),new Int3(-1,1,0),new Int3(0,1,1),
+        };
+
+        public static readonly Int3[] kCornerIdentity = new Int3[]
+        {
+            new Int3(1, -1, -1), new Int3(-1, -1, -1), new Int3(-1, -1, 1), new Int3(1, -1, 1),
+            new Int3(1, 1, -1), new Int3(-1, 1, -1), new Int3(-1, 1, 1), new Int3(1, 1, 1),
+        };
     }
 }
