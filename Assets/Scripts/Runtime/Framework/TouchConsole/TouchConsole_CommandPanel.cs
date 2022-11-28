@@ -362,10 +362,10 @@ public partial class TouchConsole
     }
     public class CommandElementFlagsSelection : CommandElementBase
     {
-        TObjectPoolComponent<Toggle> m_ToggleGrid;
+        ObjectPoolComponent<Toggle> m_ToggleGrid;
         public CommandElementFlagsSelection(Transform _transform) : base(_transform)
         {
-            m_ToggleGrid = new TObjectPoolComponent<Toggle>(_transform.Find("GridItem"));
+            m_ToggleGrid = new ObjectPoolComponent<Toggle>(_transform.Find("GridItem"));
         }
         public void Play<T>(T defaultValue, Action<T> _OnFlagChanged) where T : Enum
         {

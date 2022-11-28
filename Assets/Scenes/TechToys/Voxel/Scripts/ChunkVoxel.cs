@@ -12,7 +12,6 @@ namespace TheVoxel
     {
         public Int3 identity;
         public EVoxelType type;
-        public byte sideCount;
         public byte sideGeometry;
         public byte cornerGeometry;
         public ushort intervalGeometry;
@@ -32,7 +31,7 @@ namespace TheVoxel
 
         public bool Equals(ChunkVoxel other)
         {
-            return identity.Equals(other.identity) && type == other.type && sideGeometry == other.sideGeometry && sideCount == other.sideCount && cornerGeometry == other.cornerGeometry && intervalGeometry == other.intervalGeometry;
+            return identity.Equals(other.identity) && type == other.type && sideGeometry == other.sideGeometry && cornerGeometry == other.cornerGeometry && intervalGeometry == other.intervalGeometry;
         }
     }
 }

@@ -103,6 +103,10 @@ public struct RangeInt
         start = _start;
         length = _length;
     }
+
+    public static RangeInt operator +(RangeInt _src, RangeInt _dst) => new RangeInt(_src.start+_dst.start,_src.length+_dst.length);
+    public int GetValue(float _normalized) => (int) (start + length * _normalized);
+    public int GetValueContains(float _normalized) => (int) (start + length * _normalized) + _normalized>=.99f?1:0;
 }
 
 public class ValueChecker<T> 

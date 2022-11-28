@@ -75,9 +75,9 @@ namespace Procedural.Tile
             for (int i = -radius; i <= radius; i++)
                 for (int j = -radius; j <= radius; j++)
                 {
-                    if ((centerAxis - new Int2(i, j)).sqrMagnitude > sqrRadius)
+                    if ((new Int2(i, j)).sqrMagnitude > sqrRadius)
                         continue;
-                    axisList.Add(new Int2(i, j));
+                    axisList.Add(centerAxis - new Int2(i, j));
                 }
             return axisList;
         }

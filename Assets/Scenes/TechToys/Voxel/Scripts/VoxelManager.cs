@@ -20,7 +20,10 @@ namespace TheVoxel
 
         void Update()
         {
-            m_Chunk.ChunkValidate(Vector3.zero);
+            m_Chunk.Tick(Time.unscaledDeltaTime);
+            #if UNITY_EDITOR
+                m_Chunk.ChunkValidate((UnityEditor.SceneView.sceneViews[0] as UnityEditor.SceneView).camera.transform.position);
+            #endif
         }
     }
 }

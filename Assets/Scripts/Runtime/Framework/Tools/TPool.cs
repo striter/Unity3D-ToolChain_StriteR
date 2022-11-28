@@ -293,13 +293,13 @@ namespace TPool
 
         public void Dispose()
         {
-            foreach (var item in m_Dic.Values)
+            Clear();
+            foreach (var item in m_PooledItems)
             {
                 if (item is IPoolCallback<T> iPoolItem)
                     iPoolItem.OnPoolDispose();
                 UnityEngine.Object.Destroy(GetItemTransform(item).gameObject);
             }
-            m_Dic.Clear();
         }
 
         protected virtual Y CreateNewItem(Transform _instantiateTrans)
@@ -324,23 +324,23 @@ namespace TPool
             return GetEnumerator();
         }
     }
-    public class TObjectPoolComponent<T> : AObjectPool<int,T> where T : Component
+    public class ObjectPoolComponent<T> : AObjectPool<int,T> where T : Component
     {
-        public TObjectPoolComponent(Transform poolItem) : base(poolItem.gameObject,poolItem.transform.parent) {  }
+        public ObjectPoolComponent(Transform poolItem) : base(poolItem.gameObject,poolItem.transform.parent) {  }
         
         protected override T CreateNewItem(Transform _instantiateTrans)=>_instantiateTrans.GetComponent<T>();
         protected override Transform GetItemTransform(T _targetItem) => _targetItem.transform;
     }
-    public class TObjectPoolTransform : AObjectPool<int,Transform>
+    public class ObjectPoolTransform : AObjectPool<int,Transform>
     {
-        public TObjectPoolTransform(Transform _poolItem) : base(_poolItem.gameObject,_poolItem.transform.parent) {  }
+        public ObjectPoolTransform(Transform _poolItem) : base(_poolItem.gameObject,_poolItem.transform.parent) {  }
 
         protected override Transform CreateNewItem(Transform _instantiateTrans)=> _instantiateTrans;
         protected override Transform GetItemTransform(Transform _targetItem) => _targetItem;
     } 
-    public class TObjectPoolGameObject : AObjectPool<int,GameObject>
+    public class ObjectPoolGameObject : AObjectPool<int,GameObject>
     {
-        public TObjectPoolGameObject(Transform _poolItem) : base(_poolItem.gameObject,_poolItem.transform.parent) {  }
+        public ObjectPoolGameObject(Transform _poolItem) : base(_poolItem.gameObject,_poolItem.transform.parent) {  }
 
         protected override GameObject CreateNewItem(Transform _instantiateTrans)=> _instantiateTrans.gameObject;
         protected override Transform GetItemTransform(GameObject _targetItem) => _targetItem.transform;

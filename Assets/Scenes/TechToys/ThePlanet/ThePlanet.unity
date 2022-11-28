@@ -31155,19 +31155,19 @@ MonoBehaviour:
     r: -0.5
     poleMatching: 0
   m_RotationDamper:
-    mode: 2
+    mode: 3
     halfLife: 0.05
     stiffness: 97
-    damping: 30
+    damping: 22.9
     f: 4.1
     z: 0.53
     r: -0.3
     poleMatching: 0
   m_ZoomDamper:
     mode: 3
-    halfLife: 0.1
+    halfLife: 0.3
     stiffness: 80.6
-    damping: 14.1
+    damping: 16.8
     f: 5
     z: 0.35
     r: -0.5
@@ -31175,9 +31175,9 @@ MonoBehaviour:
   m_RootPosition: {x: 0, y: 0, z: 0}
   m_Fov: 50
   m_SphericalHeight: 0
-  m_SphericalPitch: 1840.8242
-  m_SphericalYaw: 3959.273
-  m_Zoom: 62
+  m_SphericalPitch: 1766.0198
+  m_SphericalYaw: 4882.608
+  m_Zoom: 212
   m_ZoomRange:
     start: 62
     length: 150
