@@ -7,13 +7,47 @@ using UnityEngine;
 
 namespace TheVoxel
 {
+    [Serializable]
+    public struct TerrainData
+    {
+        public int baseHeight;
+        public float formScale;
+        public float mountainValidation;
+
+        [Header("Plane")] 
+        public float planeScale;
+        public RangeInt planeHeight;
+        public RangeInt dirtRandom;
+        
+        [Header("Mountain")] 
+        public float mountainScale;
+        public RangeInt mountainHeight;
+        public int mountainForm;
+        
+        [Header("Cave")] 
+        public float caveScale;
+        public float caveValidation;
+    }
+    
     public class ChunkManager : MonoBehaviour
     {
+        public static TerrainData Instance;
+        public TerrainData m_TerrainData;
+        
         private TObjectPoolMono<Int2, ChunkElement> m_Chunks;
 
         public void Init()
         {
+            Instance = m_TerrainData;
             m_Chunks = new TObjectPoolMono<Int2, ChunkElement>(transform.Find("Element"));
+        }
+
+        private void OnValidate()
+        {
+            if (m_Chunks == null)
+                return;
+            Instance = m_TerrainData;
+            m_Chunks.Clear();
         }
 
         public void Dispose()

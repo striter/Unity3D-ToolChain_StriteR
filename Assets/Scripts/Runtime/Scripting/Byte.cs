@@ -25,9 +25,14 @@ public static class UByte
     public static int PosValidCount(byte _src)
     {
         int count = 0;
-        for(int i=0;i<8;i++)
-            if (PosValid(_src, i))
-                count++;
+        count += (_src >> 0) & 1;
+        count += (_src >> 1) & 1;
+        count += (_src >> 2) & 1;
+        count += (_src >> 3) & 1;
+        count += (_src >> 4) & 1;
+        count += (_src >> 5) & 1;
+        count += (_src >> 6) & 1;
+        count += (_src >> 7) & 1;
         return count;
     }
     

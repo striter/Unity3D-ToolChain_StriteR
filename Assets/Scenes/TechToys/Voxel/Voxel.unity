@@ -491,6 +491,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb466456f4ad7b84d9a91cef6ba7434e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TerrainData:
+    baseHeight: 60
+    formScale: 2
+    mountainValidation: 0.7
+    planeScale: 1
+    planeHeight:
+      start: 0
+      length: 10
+    dirtRandom:
+      start: 2
+      length: 3
+    mountainScale: 4
+    mountainHeight:
+      start: 0
+      length: 150
+    mountainForm: 100
+    caveScale: 6
+    caveValidation: 0.4
 --- !u!1 &1513338087
 GameObject:
   m_ObjectHideFlags: 0

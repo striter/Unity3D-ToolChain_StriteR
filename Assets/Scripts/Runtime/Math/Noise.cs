@@ -14,11 +14,11 @@ public static class Noise
         static readonly float s_RandomValue = 143758.5453f;
         public static float Unit1f1(float _unitValue) => UMath.Frac(Mathf.Sin(_unitValue) * s_RandomValue);
     
-        static readonly Vector3 s_RandomVec = new Vector3(12.0909f,89.233f,37.719f);
-        public static float Unit1f2(float2 _random) => Unit1f1(Vector2.Dot(_random, s_RandomVec));
+        static readonly Vector3 kRandomVec = new Vector3(12.0909f,89.233f,37.719f);
+        public static float Unit1f2(float2 _randomUnit) => Unit1f1(Vector2.Dot(_randomUnit, kRandomVec));
         public static float Unit1f2(float _x, float _y) => Unit1f2(new Vector2(_x, _y));
         
-        public static float Unit1f3(float3 _random) => Unit1f1(Vector3.Dot(_random, s_RandomVec));
+        public static float Unit1f3(float3 _random) => Unit1f1(Vector3.Dot(_random, kRandomVec));
         public static float Unit1f3(float _x, float _y,float _z) => Unit1f3(new Vector3(_x, _y,_z));
         
         public static Vector2 Unit2f2(float2 _random) => new Vector2(Unit1f2(_random),Unit1f2(new Vector2(_random.y, _random.x)) );
