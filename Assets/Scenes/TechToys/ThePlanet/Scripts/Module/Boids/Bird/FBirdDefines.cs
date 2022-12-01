@@ -20,7 +20,7 @@ namespace PCG.Module.BOIDS.Bird
         Traveling = 11,
     }
 
-    public interface IBirdPerchingRoot : IBoidsPerching, ITransform
+    public interface IBirdPerchingRoot : IBoidsPerching, ITransformHandle
     {
         Vector3 CenterWS { get; }
         List<FBoidsVertex> m_BirdLandings { get; }

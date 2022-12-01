@@ -319,6 +319,7 @@ public static class UCollection
             }
             return index;
         }        
+        //Vector2 
         public static (Vector2 total,int count) Sum(this IEnumerable<Vector2> _collection)      //To Be Continued With Demical
         {
             Vector2 sum = Vector2.zero;
@@ -341,7 +342,6 @@ public static class UCollection
             }
             return (sum, count);
         }
-
         public static Vector2 Average<T>(this IEnumerable<T> _collection, Func<T, Vector2> _OnEachElement)      //To Be Continued With Demical
         {
             var tuple = _collection.Sum(_OnEachElement);
@@ -352,7 +352,24 @@ public static class UCollection
             var tuple = _collection.Sum();
             return tuple.total / Mathf.Max(tuple.count,1);
         }
-
+        
+        public static (Vector3 value, int count) Sum<T>(this IEnumerable<T> _collection, Func<T, Vector3> _OnEachElement)      //To Be Continued With Demical
+        {
+            Vector3 sum = Vector3.zero;
+            int count = 0;
+            foreach (var element in _collection)
+            {
+                sum += _OnEachElement(element);
+                count += 1;
+            }
+            return (sum, count);
+        }
+        //Vector3 
+        public static Vector3 Average<T>(this IEnumerable<T> _collection, Func<T, Vector3> _OnEachElement)      //To Be Continued With Demical
+        {
+            var tuple = _collection.Sum(_OnEachElement);
+            return tuple.value / Mathf.Max(tuple.count,1);
+        }
         public static Vector3 Average(this IEnumerable<Vector3> _collection)      //To Be Continued With Demical
         {
             Vector3 sum = Vector3.zero;

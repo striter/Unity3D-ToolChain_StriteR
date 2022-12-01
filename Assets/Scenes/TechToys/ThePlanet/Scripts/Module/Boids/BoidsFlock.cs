@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace PCG.Module.BOIDS
 {
-    public abstract class BoidsFlock<TBoidsBehaviour,TBoidsTarget>:ITransform where TBoidsBehaviour:ABoidsBehaviour where TBoidsTarget:ABoidsTarget
+    public abstract class BoidsFlock<TBoidsBehaviour,TBoidsTarget>:ITransformHandle where TBoidsBehaviour:ABoidsBehaviour where TBoidsTarget:ABoidsTarget
     {
         public Transform Transform { get; private set; }
         public BoidsActor this[int _index] => m_Actors[_index];

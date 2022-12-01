@@ -221,7 +221,7 @@ public class EntityEffectAnimation : IEquatable<EntityEffectAnimation>
     }
 }
 
-public class FadeElement:ITransform,IPoolCallback<int>
+public class FadeElement:ITransformHandle,IPoolCallback<int>
 {
     struct FadeMesh
     {

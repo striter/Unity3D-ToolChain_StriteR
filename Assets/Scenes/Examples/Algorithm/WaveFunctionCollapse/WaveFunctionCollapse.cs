@@ -118,7 +118,7 @@ namespace ExampleScenes.Algorithm.WaveFunctionCollapse
             return m_FillDic;
         }
         
-        class WFCTileContainer:AWFCTile<ETileDirection,WaveFunctionData>,ITransform,IPoolCallback<int>
+        class WFCTileContainer:AWFCTile<ETileDirection,WaveFunctionData>,ITransformHandle,IPoolCallback<int>
         {
             public Transform Transform { get; }
             public Int2 _TileID;

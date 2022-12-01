@@ -96,7 +96,7 @@ namespace ExampleScenes.Algorithm.MarchingSquare
 #endif
     }
 
-    public class Node : ITransform,IPoolCallback<Int2>
+    public class Node : ITransformHandle,IPoolCallback<Int2>
     {
         public Int2 m_Identity { get; private set; }
         public Transform Transform { get; }
@@ -140,7 +140,7 @@ namespace ExampleScenes.Algorithm.MarchingSquare
             m_Renderer.SetPropertyBlock(m_Properties);
         }
     }
-    public class Square:ITransform
+    public class Square:ITransformHandle
     {
         public Transform Transform { get; }
 

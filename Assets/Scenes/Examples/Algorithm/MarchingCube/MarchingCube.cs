@@ -186,7 +186,7 @@ namespace ExampleScenes.Algorithm.MarchingCube
 #endif
     }
 
-    public class MarchingCubeActor:ITransform
+    public class MarchingCubeActor:ITransformHandle
     {
         private readonly Transform m_CameraAttacher;
         public Transform Transform { get; }

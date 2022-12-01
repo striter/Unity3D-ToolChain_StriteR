@@ -33,6 +33,7 @@ namespace TheVoxel
         Everything = int.MaxValue,
     }
 
+
     public class ChunkElement : PoolBehaviour<Int2>
     {
         public EChunkDirty m_Status { get; private set; }

@@ -43,6 +43,7 @@
 			{
 				float4 positionCS : SV_POSITION;
 				float2 uv:TEXCOORD1;
+				float4 color:COLOR;
 			};
 
 			TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
@@ -57,12 +58,13 @@
 				float4 positionOS= TransformObjectToHClip(v.positionOS);
 				o.positionCS =positionOS;
 				o.uv = v.uv;
+				o.color = INSTANCE(_Color);
 				return o;
 			}
 
 			half4 frag(v2f i) : SV_Target
 			{
-				half4 col = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv) * INSTANCE(_Color);
+				half4 col = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv) * i.color;
 				return col;
 			}
 			ENDHLSL

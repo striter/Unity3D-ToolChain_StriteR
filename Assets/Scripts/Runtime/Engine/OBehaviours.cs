@@ -2,8 +2,14 @@
 
 public interface ITransform
 {
+    Vector3 position { get; }
+}
+
+public interface ITransformHandle
+{
     Transform Transform { get; }
 }
+
 public class SingletonMono<T> : MonoBehaviour where T : MonoBehaviour
 {
     static T instance;
