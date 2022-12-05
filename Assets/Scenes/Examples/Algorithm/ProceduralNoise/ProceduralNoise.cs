@@ -25,7 +25,7 @@ namespace ExampleScenes.Algorithm.Procedural
                             kConfigID = Shader.PropertyToID("_Config");
 
         public TransformData m_HashTransform = TransformData.kDefault;
-        
+        public float elementSize = 1f;
         [Range(-2f,2f)]public float displacement;
         public int seed;
         public Mesh m_InstanceMesh;
@@ -98,7 +98,7 @@ namespace ExampleScenes.Algorithm.Procedural
             m_MaterialPropertyBlock.SetBuffer(kHashID,m_HashBuffer);
             m_MaterialPropertyBlock.SetBuffer(kPositions,m_PositionBuffer);
             m_MaterialPropertyBlock.SetBuffer(kNormals,m_NormalBuffer);
-            m_MaterialPropertyBlock.SetVector(kConfigID,new Vector4(m_Resolution,1f/m_Resolution,displacement));
+            m_MaterialPropertyBlock.SetVector(kConfigID,new Vector4(m_Resolution,elementSize/m_Resolution,displacement));
             SHL2Data l2 = SphericalHarmonicsExport.ExportL2Gradient(512,RenderSettings.ambientSkyColor,RenderSettings.ambientEquatorColor,RenderSettings.ambientGroundColor);
             l2.OutputSH(out var shAr,out var shAg,out var shAb,out var shBr,out var shBg,out var shBb,out var shc);
             m_MaterialPropertyBlock.SetVector("unity_SHAr",shAr);
@@ -180,12 +180,17 @@ namespace ExampleScenes.Algorithm.Procedural
         public Point4 GetPoint(int _i, float _resolution, float _invResolution)
         {
             float4x2 uv = IShape.IndexTo4UV(_i,_resolution,_invResolution);
-            float r = 0.5f;
-            float4 s = r * math.sin(KMath.kPI * uv.c1);
             float4x3 p;
-            p.c0 = s * math.sin(KMath.kPI2 * uv.c0);
-            p.c1 = r * math.cos(KMath.kPI * uv.c1);
-            p.c2 = s * math.cos(KMath.kPI2 * uv.c0);
+            p.c0 = uv.c0 - 0.5f;
+            p.c1 = uv.c1 - 0.5f;
+            p.c2 = 0.5f - math.abs(p.c0) - math.abs(p.c1);
+            float4 offset = math.max(-p.c2, 0f);
+            p.c0 += math.@select(-offset,offset,p.c0<0f);
+            p.c1 += math.@select(-offset,offset,p.c1<0f);
+            float4 scale = 0.5f * math.rsqrt(p.c0 * p.c0 + p.c1 * p.c1 + p.c2 * p.c2);
+            p.c0 *= scale;
+            p.c1 *= scale;
+            p.c2 *= scale;
             return new Point4(){positions = p,normals = p};
         }
     }
