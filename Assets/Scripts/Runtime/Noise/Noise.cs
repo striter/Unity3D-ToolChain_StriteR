@@ -2,13 +2,8 @@ using System;
 using Unity.Mathematics;
 using UnityEngine;
 
-public static class Noise
+public static class UNoise
 {
-    public static class Hash
-    {
-        
-    }
-    
     public static class Value
     {
         static readonly float s_RandomValue = 143758.5453f;

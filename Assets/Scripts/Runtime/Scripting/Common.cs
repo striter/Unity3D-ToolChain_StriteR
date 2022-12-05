@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Mathematics;
 
 [Serializable]
 public class Ref<T> where T:struct
@@ -432,40 +433,38 @@ public struct Matrix3x3
 }
 
 [Serializable]
-public struct Matrix3x4     //To be continued
+public struct HomogeneousCoordinateTransformMatrix  //float3x4
 {
-    public float m00, m01, m02, m03;
-    public float m10, m11, m12, m13;
-    public float m20, m21, m22, m23;
-    public Matrix3x4(float _00, float _01, float _02,float _03,
-        float _10, float _11, float _12, float _13,
-        float _20, float _21, float _22, float _23)
-    { 
-        m00 = _00; m01 = _01; m02 = _02; m03 = _03;
-        m10 = _10; m11 = _11; m12 = _12; m13 = _13;
-        m20 = _20; m21 = _21; m22 = _22; m23 = _23;
-    }
+    public float3 c0, c1, c2, c3;
+    
+    private HomogeneousCoordinateTransformMatrix(float3 _c0,float3 _c1,float3 _c2,float3 _c3) { c0 = _c0;  c1 = _c1; c2 = _c2; c3 = _c3; }
+    private HomogeneousCoordinateTransformMatrix( 
+        float _00, float _01, float _02,float _03,
+        float _10, float _11, float _12,float _13,
+        float _20, float _21, float _22,float _23): this(
+            new float3(_00, _10, _20),
+            new float3(_01, _11, _21),
+            new float3(_02, _12, _22), 
+            new float3(_03, _13, _23)) { }
 
-    public static Vector3 operator *(Matrix3x4 _matrix, Vector3 _vector) => _matrix.MultiplyVector(_vector);
-    public Vector3 MultiplyVector(Vector3 _srcVector) => new Vector3(
-        _srcVector.x * m00 + _srcVector.y * m01 + _srcVector.z * m02,
-        _srcVector.x * m10 + _srcVector.y * m11 + _srcVector.z * m12,
-        _srcVector.x * m20 + _srcVector.y * m21 + _srcVector.z * m22);
-
-    public static Vector3 operator *(Matrix3x4 _matrix, Vector4 _vector)
-    {
-        return new Vector4(_vector.x * _matrix.m00 + _vector.y * _matrix.m01 + _vector.z * _matrix.m02 + _vector.w*_matrix.m03,
-                                    _vector.x * _matrix.m10 + _vector.y * _matrix.m11 + _vector.z * _matrix.m12 + _vector.w*_matrix.m13,
-                                    _vector.x * _matrix.m20 + _vector.y * _matrix.m21 + _vector.z * _matrix.m22 + _vector.w*_matrix.m23);    
-    }
-    public Vector3 MultiplyPoint(Vector3 _position) => new Vector3(
-        _position.x * m00 + _position.y * m01 + _position.z * m02 + m03,
-        _position.x * m10 + _position.y * m11 + _position.z * m12 + m13,
-        _position.x * m20 + _position.y * m21 + _position.z * m22 + m23);
-
-    public static Matrix3x4 TS(Vector3 _t, Vector3 _s) => new Matrix3x4(
-        _t.x,0f,0f,_s.x,
-        0f,_t.y,0f,_s.y,
-        0f,0f,_t.z,_s.z
+    public static HomogeneousCoordinateTransformMatrix TS(float3 _t, float3 _s) => new HomogeneousCoordinateTransformMatrix(
+        _s.x,0f,0f,_t.x,
+        0f,_s.y,0f,_t.y,
+        0f,0f,_s.z,_t.z
     );
+
+    public static HomogeneousCoordinateTransformMatrix TRS(float3 _t, quaternion _q, float3 _s)
+    {
+        var r = new float3x3(_q);
+        return new HomogeneousCoordinateTransformMatrix(
+            r.c0.x*_s.x, r.c0.y*_s.x ,r.c0.z*_s.x,_t.x,
+            r.c1.x*_s.y, r.c1.y*_s.y ,r.c1.z*_s.y,_t.y,
+            r.c2.x*_s.z, r.c2.y*_s.z ,r.c2.z*_s.z,_t.z
+            );
+    }
+
+    public float3 mulDirection(float3 _srcVector) => c0*_srcVector.x + c1*_srcVector.y + c2*_srcVector.z;
+    public float3 mulPosition(float3 _position) =>  c0*_position.x + c1*_position.y + c2*_position.z + c3;
+    public static implicit operator float3x4(HomogeneousCoordinateTransformMatrix _matrix) => new float3x4(_matrix.c0,_matrix.c1,_matrix.c2,_matrix.c3);
+    public static implicit operator HomogeneousCoordinateTransformMatrix(float4x4 _srcMatrix)=>new HomogeneousCoordinateTransformMatrix(_srcMatrix.c0.xyz,_srcMatrix.c1.xyz,_srcMatrix.c2.xyz,_srcMatrix.c3.xyz);
 }

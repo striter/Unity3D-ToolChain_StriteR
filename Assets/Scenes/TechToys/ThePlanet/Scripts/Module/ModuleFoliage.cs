@@ -24,7 +24,7 @@ namespace PCG.Module
             foreach (var quad in m_Grid.m_Quads)
             {
                 Vector3 position = (quad.Value.position/DPCG.kGridSize + Vector3.one)*m_Scale;
-                var random = Noise.Perlin.Unit1f3(position.x, position.y, position.z) / 2 + .5f; 
+                var random = UNoise.Perlin.Unit1f3(position.x, position.y, position.z) / 2 + .5f; 
                 if(m_Density>random)
                     m_Foliage.Spawn(quad.Key).Init(quad.Value);
             }

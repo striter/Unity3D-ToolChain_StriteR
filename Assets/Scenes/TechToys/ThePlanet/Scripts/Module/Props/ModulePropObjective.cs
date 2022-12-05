@@ -24,7 +24,7 @@ namespace PCG.Module.Prop
             m_Result = KQuad.kFalse;
 
             m_Priority = _voxel.Identity.GetHashCode(); 
-            m_Random = Noise.Value.Unit1f1((float)m_Priority/ int.MaxValue);
+            m_Random = UNoise.Value.Unit1f1((float)m_Priority/ int.MaxValue);
             return this;
         }
 

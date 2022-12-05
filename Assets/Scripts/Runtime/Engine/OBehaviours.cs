@@ -1,4 +1,18 @@
-﻿using UnityEngine;
+﻿using System;
+using Unity.Mathematics;
+using UnityEngine;
+
+[Serializable]
+public struct TransformData
+{
+    public float3 position;
+    public float3 rotation;
+    public float3 scale;
+    
+    public static TransformData kDefault = new TransformData(){position = Vector3.zero,rotation = Vector3.zero,scale = Vector3.one};
+    
+    public HomogeneousCoordinateTransformMatrix transformMatrix=>HomogeneousCoordinateTransformMatrix.TRS(position,quaternion.EulerZXY(rotation),scale);
+}
 
 public interface ITransform
 {

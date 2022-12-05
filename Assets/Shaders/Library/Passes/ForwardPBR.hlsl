@@ -89,22 +89,27 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 		half3 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*INSTANCE(_Color).rgb;
 	#endif
 
-	#if defined(GET_EMISSION)
-		half3 emission = GET_EMISSION(i); 
-	#else
-		half3 emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,i.uv).rgb*INSTANCE(_EmissionColor).rgb;
+	half3 emission =0;
+	#if !defined(_EMISSIONOFF)
+		#if defined(GET_EMISSION)
+			emission = GET_EMISSION(i); 
+		#else
+			emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,i.uv).rgb*INSTANCE(_EmissionColor).rgb;
+		#endif
 	#endif
 
 
-	half glossiness=0,metallic=0,ao =0;
+	half glossiness=0.5,metallic=0,ao =1;
 
-	#if defined(GET_PBRPARAM)
-		GET_PBRPARAM(glossiness,metallic,ao);
-	#else
-		half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
-		glossiness=mix.r;
-		metallic=mix.g;
-		ao=mix.b;
+	#if !defined(_PBROFF)
+		#if defined(GET_PBRPARAM)
+			GET_PBRPARAM(glossiness,metallic,ao);
+		#else
+			half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
+			glossiness=mix.r;
+			metallic=mix.g;
+			ao=mix.b;
+		#endif
 	#endif
 	
 	BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,glossiness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,1);
@@ -132,7 +137,6 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 		IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,0);
 	#endif
 	finalCol+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
-
 	#if defined BRDF_MAINLIGHTING
 		BRDF_MAINLIGHTING(mainLight,surface);
 	#endif

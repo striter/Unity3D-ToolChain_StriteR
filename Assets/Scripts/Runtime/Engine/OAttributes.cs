@@ -72,10 +72,6 @@ public class IntEnumAttribute : PropertyAttribute
 public class PositionAttribute : PropertyAttribute { }
 
 [AttributeUsage(AttributeTargets.Field)]
-public class CullingMaskAttribute : PropertyAttribute { }
-
-
-[AttributeUsage(AttributeTargets.Field)]
 public class MinMaxRangeAttribute : PropertyAttribute
 {
     public readonly float m_Min;
@@ -123,3 +119,9 @@ public class PreloadAssetsAttribute : PropertyAttribute
         m_Path = _path;
     }
 }
+
+[AttributeUsage(AttributeTargets.Field)]
+public class CullingMaskAttribute : PropertyAttribute { }
+
+[AttributeUsage(AttributeTargets.Field)]
+public class Rotation2x2Attribute : PropertyAttribute { }

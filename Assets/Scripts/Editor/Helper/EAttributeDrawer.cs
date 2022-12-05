@@ -280,7 +280,7 @@ namespace UnityEditor.Extensions
             switch (property.propertyType)
             {
                 case SerializedPropertyType.Integer:
-                    property.intValue = Mathf.Clamp(property.intValue, (int)attribute.m_Min, (int)attribute.m_Max);
+                    property.intValue = (int) Mathf.Clamp(property.intValue,attribute.m_Min, attribute.m_Max);
                     break;
                 case SerializedPropertyType.Float:
                     property.floatValue = Mathf.Clamp(property.floatValue, attribute.m_Min, attribute.m_Max);

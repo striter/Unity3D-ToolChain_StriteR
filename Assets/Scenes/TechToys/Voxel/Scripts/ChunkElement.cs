@@ -160,7 +160,7 @@ namespace TheVoxel
                 float r = DVoxel.kChunkSize;
                 float3 p3D = new float3(_p2D.x,_height/r,_p2D.y);
                 
-                float noise = Noise.Perlin.Unit1f3(p3D * terrainData.caveScale);
+                float noise = UNoise.Perlin.Unit1f3(p3D * terrainData.caveScale);
                 return noise > terrainData.caveValidation;
             }
             
@@ -174,20 +174,20 @@ namespace TheVoxel
                     float2 p2D = new float2(i / r  + identity.x + kHalfMax, j / r + identity.y + kHalfMax) ;
 
                     ETerrainForm terrainForm = ETerrainForm.Plane;
-                    float formRandom = Noise.Perlin.Unit1f2(p2D / terrainData.formScale) * .5f + .5f;
+                    float formRandom = UNoise.Perlin.Unit1f2(p2D / terrainData.formScale) * .5f + .5f;
                     if (formRandom > terrainData.mountainValidation)
                         terrainForm = ETerrainForm.Mountains;
 
                     Insert(new Int3(i, 0, j), EVoxelType.BedRock);
                     int surfaceHeight = terrainData.baseHeight;
-                    float noiseRandom = Noise.Value.Unit1f2(p2D-.5f);
+                    float noiseRandom = UNoise.Value.Unit1f2(p2D-.5f);
                     switch (terrainForm)
                     {
                         case ETerrainForm.Mountains:
                         {
                             float mountainFormStrength = UMath.InvLerp(terrainData.mountainValidation,1f,formRandom);
-                            float terrainRandom = Noise.Perlin.Unit1f2(p2D * terrainData.planeScale);
-                            float mountainRandom = Noise.Perlin.Unit1f2(p2D * terrainData.mountainScale) *.5f + .5f;
+                            float terrainRandom = UNoise.Perlin.Unit1f2(p2D * terrainData.planeScale);
+                            float mountainRandom = UNoise.Perlin.Unit1f2(p2D * terrainData.mountainScale) *.5f + .5f;
 
                             var height = math.max(terrainData.mountainHeight.GetValueContains(mountainRandom * mountainFormStrength), terrainData.planeHeight.GetValueContains(terrainRandom));
                             surfaceHeight +=  height;
@@ -209,7 +209,7 @@ namespace TheVoxel
                             break;
                         case ETerrainForm.Plane:
                         {
-                            float planeRandom = Noise.Perlin.Unit1f2(p2D * terrainData.planeScale);
+                            float planeRandom = UNoise.Perlin.Unit1f2(p2D * terrainData.planeScale);
                             int dirtRandom = terrainData.dirtRandom.GetValueContains(noiseRandom);
                             surfaceHeight += terrainData.planeHeight.GetValueContains(planeRandom) - dirtRandom;
                             int stoneHeight = surfaceHeight;

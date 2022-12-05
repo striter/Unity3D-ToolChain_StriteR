@@ -81,6 +81,11 @@ public static class UValueMapping
     {
         return Pow(4.0f*_x*(1.0f-_x),_k);
     }
+
+    public static float Triangle(float _x)
+    {
+        return 1.0f - 2.0f * Abs(_x - 0.5f);
+    }
     
     public static float PowerCurve(float _x, float _a, float _b)
     {
