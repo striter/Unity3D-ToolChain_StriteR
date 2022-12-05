@@ -7,11 +7,11 @@ using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Explicit.Procedural.Sphere
+namespace Geometry.Explicit.Mesh.Sphere
 {
     using static UMath;
     using static KMath;
-    using static KProceduralGeometry;
+    using static KGeometryMesh;
 
     [Serializable]
     public struct UVSphereGenerator : IProceduralMeshGenerator
@@ -87,7 +87,7 @@ namespace Geometry.Explicit.Procedural.Sphere
             float r = resolution;
             int index = GetIndex(_i, _j, _axis.index);
             float2 uv = new float2(_i / r, _j / r);
-            float3 position = UProceduralGeometry.CubeToSphere(_axis.origin + uv.x * _axis.uDir + uv.y * _axis.vDir);
+            float3 position = UGeometryMesh.CubeToSphere(_axis.origin + uv.x * _axis.uDir + uv.y * _axis.vDir);
             position *= radius;
 
             return new Point()
@@ -182,7 +182,7 @@ namespace Geometry.Explicit.Procedural.Sphere
             position = math.normalize(position);
             
             if (overlapUV)
-                uv = UProceduralGeometry.SphereToUV(position,_axis.index==rhombusCount-1);
+                uv = UGeometryMesh.SphereToUV(position,_axis.index==rhombusCount-1);
 
             return new Point()
             {

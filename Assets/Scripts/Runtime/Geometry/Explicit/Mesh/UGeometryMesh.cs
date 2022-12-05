@@ -1,7 +1,7 @@
 using Unity.Mathematics;
 namespace Geometry
 {
-    public static class UProceduralGeometry
+    public static class UGeometryMesh
     {
         public static float3 CubeToSphere(float3 _point)
         {

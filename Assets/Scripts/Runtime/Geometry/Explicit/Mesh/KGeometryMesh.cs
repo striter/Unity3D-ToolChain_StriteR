@@ -2,9 +2,9 @@ using System;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Explicit.Procedural
+namespace Geometry.Explicit.Mesh
 {
-    public static class KProceduralGeometry
+    public static class KGeometryMesh
     {
         public const int kCubeFacingAxisCount = 6;
         public static Axis GetCubeFacingAxis(int _index) => _index switch

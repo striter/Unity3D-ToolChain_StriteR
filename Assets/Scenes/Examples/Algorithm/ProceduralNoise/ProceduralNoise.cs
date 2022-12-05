@@ -1,4 +1,3 @@
-using System;
 using Noise;
 using Rendering.GI.SphericalHarmonics;
 using Unity.Burst;
@@ -6,6 +5,8 @@ using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
+using Geometry.Explicit.Shape;
+
 namespace ExampleScenes.Algorithm.Procedural
 {
     public enum EShape
@@ -49,7 +50,7 @@ namespace ExampleScenes.Algorithm.Procedural
             switch (m_Shape)
             {
                 case EShape.Plane:
-                    new ShapeJob<Plane>()
+                    new ShapeJob<SPlane>()
                     {
                         positions = m_Positions,
                         normals = m_Normals,
@@ -59,7 +60,7 @@ namespace ExampleScenes.Algorithm.Procedural
                     }.ScheduleParallel(length,m_Resolution,default).Complete();
                     break;
                 case EShape.Sphere:
-                    new ShapeJob<Sphere>()
+                    new ShapeJob<SSphere>()
                     {
                         positions = m_Positions,
                         normals = m_Normals,
@@ -69,7 +70,7 @@ namespace ExampleScenes.Algorithm.Procedural
                     }.ScheduleParallel(length,m_Resolution,default).Complete();
                     break;
                 case EShape.Torus:
-                    new ShapeJob<Torus>()
+                    new ShapeJob<STorus>()
                     {
                         positions = m_Positions,
                         normals = m_Normals,
@@ -80,7 +81,7 @@ namespace ExampleScenes.Algorithm.Procedural
                     break;
             }
             
-            new HashJob()
+            new NoiseJob()
             {
                 hashes = m_Hashes,
                 positions = m_Positions,
@@ -143,78 +144,8 @@ namespace ExampleScenes.Algorithm.Procedural
                 OnEnable();
             }
         }
-
     }
 
-    struct Point4
-    {
-        public float4x3 positions, normals;
-    }
-
-    interface IShape
-    {
-        Point4 GetPoint(int _i, float _resolution, float _invResolution);
-
-        static float4x2 IndexTo4UV(int _i, float _resolution, float _invResolution)
-        {
-            float4x2 uv;
-            float4 i4 = 4f * _i + new float4(0, 1, 2, 3);
-            uv.c1 = math.floor(_invResolution * i4 + 0.00001f);
-            uv.c0 = _invResolution * (i4 - _resolution * uv.c1 + 0.5f) ;
-            uv.c1 = _invResolution * (uv.c1 + 0.5f);
-            return uv;
-        }
-    }
-
-    struct Plane :IShape
-    {
-        public Point4 GetPoint(int _i, float _resolution, float _invResolution)
-        {
-            float4x2 uv = IShape.IndexTo4UV(_i,_resolution,_invResolution);
-            return new Point4() {positions = new float4x3(uv.c0-.5f, 0, uv.c1-.5f),normals = new float4x3(0,1,0)};
-        }
-    }
-
-    struct Sphere : IShape
-    {
-        public Point4 GetPoint(int _i, float _resolution, float _invResolution)
-        {
-            float4x2 uv = IShape.IndexTo4UV(_i,_resolution,_invResolution);
-            float4x3 p;
-            p.c0 = uv.c0 - 0.5f;
-            p.c1 = uv.c1 - 0.5f;
-            p.c2 = 0.5f - math.abs(p.c0) - math.abs(p.c1);
-            float4 offset = math.max(-p.c2, 0f);
-            p.c0 += math.@select(-offset,offset,p.c0<0f);
-            p.c1 += math.@select(-offset,offset,p.c1<0f);
-            float4 scale = 0.5f * math.rsqrt(p.c0 * p.c0 + p.c1 * p.c1 + p.c2 * p.c2);
-            p.c0 *= scale;
-            p.c1 *= scale;
-            p.c2 *= scale;
-            return new Point4(){positions = p,normals = p};
-        }
-    }
-
-    struct Torus : IShape
-    {
-        public Point4 GetPoint(int _i, float _resolution, float _invResolution)
-        {            
-            float4x2 uv = IShape.IndexTo4UV(_i,_resolution,_invResolution);
-            float r1 = 0.375f;
-            float r2 = 0.125f;
-            float4 s = r1 + r2 * math.cos(KMath.kPI2 * uv.c1);
-            float4x3 p;
-            p.c0 = s * math.sin(KMath.kPI2 * uv.c0);
-            p.c1 = r2 * math.sin(KMath.kPI2 * uv.c1);
-            p.c2 = s * math.cos(KMath.kPI2 * uv.c0);
-
-            float4x3 n = p;
-            n.c0 -= r1 * math.sin(KMath.kPI2 * uv.c0);
-            n.c2 -= r1 * math.cos(KMath.kPI2 * uv.c0);
-            return new Point4(){positions = p,normals = n};
-        }
-    }
-    
     [BurstCompile(FloatPrecision.Standard, FloatMode.Fast, CompileSynchronously = true)]
     struct ShapeJob<T> : IJobFor where T:struct,IShape
     {
@@ -240,7 +171,7 @@ namespace ExampleScenes.Algorithm.Procedural
     }
     
     [BurstCompile(FloatPrecision.Standard,FloatMode.Fast,CompileSynchronously = true)]
-    struct HashJob : IJobFor
+    struct NoiseJob : IJobFor
     {
         public SmallXXHash4 hash;
         [ReadOnly] public NativeArray<float3x4> positions;

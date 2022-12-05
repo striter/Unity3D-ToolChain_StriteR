@@ -1,4 +1,4 @@
-using Geometry.Explicit.Procedural;
+using Geometry.Explicit.Mesh;
 using Procedural;
 using Procedural.Tile;
 
@@ -8,7 +8,7 @@ namespace Geometry.Explicit
     {
         public static int GetCubeSphereQuadCount(int resolution)
         {
-            return resolution * resolution * KProceduralGeometry.kCubeFacingAxisCount;
+            return resolution * resolution * KGeometryMesh.kCubeFacingAxisCount;
         }
         
         public static int GetCubeSphereVertexCount(int resolution)

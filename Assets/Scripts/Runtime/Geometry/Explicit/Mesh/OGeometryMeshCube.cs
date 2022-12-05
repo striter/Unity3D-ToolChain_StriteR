@@ -3,7 +3,7 @@ using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Explicit.Procedural.Cube
+namespace Geometry.Explicit.Mesh.Cube
 {
     [Serializable]
     public struct CubeGenerator : IProceduralMeshGenerator
@@ -12,7 +12,7 @@ namespace Geometry.Explicit.Procedural.Cube
         [Clamp(1, 500)] public int resolution;
         public static CubeGenerator kDefault = new CubeGenerator() {size = new Vector3(1f,1f,1f),resolution = 20};
         public int vertexCount => triangleCount * 2;
-        public int triangleCount => KProceduralGeometry.kCubeFacingAxisCount*resolution * resolution * 2;
+        public int triangleCount => KGeometryMesh.kCubeFacingAxisCount*resolution * resolution * 2;
 
         private int curIndex;
         private Point GetPoint(int _i, int _j, Axis _axis)
@@ -34,9 +34,9 @@ namespace Geometry.Explicit.Procedural.Cube
             var vertex = new Vertex();
             vertex.tangent.w = new half(-1);
 
-            for (int k = 0; k < KProceduralGeometry.kCubeFacingAxisCount; k++)
+            for (int k = 0; k < KGeometryMesh.kCubeFacingAxisCount; k++)
             {
-                var side = KProceduralGeometry.GetCubeFacingAxis(k);
+                var side = KGeometryMesh.GetCubeFacingAxis(k);
                 for (int j = 0; j < resolution; j++)
                 for (int i = 0; i < resolution; i++)
                 {

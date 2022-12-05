@@ -1,4 +1,4 @@
-﻿using Geometry.Explicit.Procedural;
+﻿using Geometry.Explicit.Mesh;
 using UnityEngine;
 
 namespace UnityEditor.Extensions

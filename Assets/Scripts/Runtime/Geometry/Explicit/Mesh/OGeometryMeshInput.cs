@@ -1,6 +1,6 @@
 using System;
-using Geometry.Explicit.Procedural.Cube;
-using Geometry.Explicit.Procedural.Sphere;
+using Geometry.Explicit.Mesh.Cube;
+using Geometry.Explicit.Mesh.Sphere;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
@@ -8,7 +8,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Geometry.Explicit.Procedural
+namespace Geometry.Explicit.Mesh
 {
     public enum EProceduralMeshType
     {
@@ -41,10 +41,10 @@ namespace Geometry.Explicit.Procedural
             m_PolygonSphere = PolygonSphereGenerator.kDefault,
         };
 
-        public void Output(Mesh _mesh)
+        public void Output(UnityEngine.Mesh _mesh)
         {
-            Mesh.MeshDataArray meshDataArray = Mesh.AllocateWritableMeshData(1);
-            Mesh.MeshData meshData = meshDataArray[0];
+            UnityEngine.Mesh.MeshDataArray meshDataArray = UnityEngine.Mesh.AllocateWritableMeshData(1);
+            UnityEngine.Mesh.MeshData meshData = meshDataArray[0];
             switch (meshType)
             {
                 default: throw new Exception($"Invalid Enum{meshType}");
@@ -69,16 +69,16 @@ namespace Geometry.Explicit.Procedural
             }
 
             _mesh.bounds = meshData.GetSubMesh(0).bounds;
-            Mesh.ApplyAndDisposeWritableMeshData(meshDataArray,_mesh, MeshUpdateFlags.DontRecalculateBounds);
+            UnityEngine.Mesh.ApplyAndDisposeWritableMeshData(meshDataArray,_mesh, MeshUpdateFlags.DontRecalculateBounds);
         }
     }
     
     [BurstCompile(FloatPrecision.Standard, FloatMode.Fast, CompileSynchronously = true)]
     public struct ProceduralMeshJob<T>:IJobFor where T:struct,IProceduralMeshGenerator
     { 
-        [WriteOnly]private Mesh.MeshData meshData;
+        [WriteOnly]private UnityEngine.Mesh.MeshData meshData;
         private T generator;
-        public ProceduralMeshJob(Mesh.MeshData _mesh,T _generator)
+        public ProceduralMeshJob(UnityEngine.Mesh.MeshData _mesh,T _generator)
         {
             meshData = _mesh;
             generator = _generator;

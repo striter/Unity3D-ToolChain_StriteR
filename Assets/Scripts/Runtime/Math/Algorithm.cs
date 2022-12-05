@@ -27,6 +27,7 @@ namespace AlgorithmExtension
             switch (sortType)
             {
                 case ESortType.Bubble:
+                    BubbleSort(sortTarget, _comparison);
                     break;
                 case ESortType.Selection:
                     SelectionSort(sortTarget,_comparison);
