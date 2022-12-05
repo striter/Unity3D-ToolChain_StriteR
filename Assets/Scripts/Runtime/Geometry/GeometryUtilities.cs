@@ -31,7 +31,6 @@ namespace Geometry
             _quad.vR = vertex3 * _shrinkScale;
             return _quad;
         }
-
         
         public static Qube<Vector3> Resize(this Qube<Vector3> _qube, float _shrinkScale)
         {
