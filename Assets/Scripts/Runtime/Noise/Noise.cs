@@ -6,8 +6,8 @@ public static class UNoise
 {
     public static class Value
     {
-        static readonly float s_RandomValue = 143758.5453f;
-        public static float Unit1f1(float _unitValue) => UMath.Frac(Mathf.Sin(_unitValue) * s_RandomValue);
+        static readonly float kRandomValue = 143758.5453f;
+        public static float Unit1f1(float _unitValue) => UMath.Frac(Mathf.Sin(_unitValue) * kRandomValue);
     
         static readonly Vector3 kRandomVec = new Vector3(12.0909f,89.233f,37.719f);
         public static float Unit1f2(float2 _randomUnit) => Unit1f1(Vector2.Dot(_randomUnit, kRandomVec));
@@ -18,6 +18,8 @@ public static class UNoise
         
         public static Vector2 Unit2f2(float2 _random) => new Vector2(Unit1f2(_random),Unit1f2(new Vector2(_random.y, _random.x)) );
     }
+    
+    
     public static class Perlin
     {
         //Simply extend the size to avoid out of range
