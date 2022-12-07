@@ -406,17 +406,17 @@ namespace PCG.Grid
 
                     //Rotate To Sample Direction
                     directions[0] = offsets[0];
-                    directions[1] = UMath.kRotateCW270.Multiply(offsets[1]);
-                    directions[2] = UMath.kRotateCW180.Multiply(offsets[2]);
-                    directions[3] = UMath.kRotateCW90.Multiply(offsets[3]);
+                    directions[1] = KRotation.kRotateCW270.Multiply(offsets[1]);
+                    directions[2] = KRotation.kRotateCW180.Multiply(offsets[2]);
+                    directions[3] = KRotation.kRotateCW90.Multiply(offsets[3]);
                     
                     var average = Coord.Normalize( directions.Sum((a,b)=>a+b))*KMath.kSQRT2*3;
                     
                     //Rotate back
                     directions[0] = average - offsets[0];
-                    directions[1] = UMath.kRotateCW90.Multiply(average) - offsets[1];
-                    directions[2] = UMath.kRotateCW180.Multiply(average) - offsets[2];
-                    directions[3] = UMath.kRotateCW270.Multiply(average) - offsets[3];
+                    directions[1] = KRotation.kRotateCW90.Multiply(average) - offsets[1];
+                    directions[2] = KRotation.kRotateCW180.Multiply(average) - offsets[2];
+                    directions[3] = KRotation.kRotateCW270.Multiply(average) - offsets[3];
                     
                     //Inform Relaxing
                     relaxOffsets =  directions.MemberCopy(relaxOffsets);

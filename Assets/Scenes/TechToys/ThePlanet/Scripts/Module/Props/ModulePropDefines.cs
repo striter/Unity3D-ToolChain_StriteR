@@ -86,7 +86,7 @@ namespace PCG.Module.Prop
         {
             var uv = new Vector2(_orientedVertex.x, _orientedVertex.z);
             uv -= Vector2.one * .5f;
-            uv = UMath.kRotate2DCW[(4-_orientation)%4].MultiplyVector(uv);     //Inverted Cause CC Bilinear Lerp Below
+            uv = KRotation.kRotate2DCW[(4-_orientation)%4].MultiplyVector(uv);     //Inverted Cause CC Bilinear Lerp Below
             uv += Vector2.one * .5f;
             return _qubeShape.GetPoint(uv.x, uv.y,_orientedVertex.y*DPCG.kUnitSize*2);
         }

@@ -67,7 +67,7 @@ namespace Rendering.PostProcess
         }
 #endif
     }
-    public class PPCore_Opaque:PostProcessCore<PPData_Opaque>,IPostProcessPipelineCallback<PPData_Opaque>
+    public class PPCore_Opaque:PostProcessCore<PPData_Opaque>
     {
         private const string kScanKW = "_SCAN";
         private const string kAreaKW = "_AREA";
@@ -124,9 +124,8 @@ namespace Rendering.PostProcess
             if(m_Material.EnableKeyword(kVolumetricCloudKW,_data.m_VolumetricCloud))
                 _data.m_VolumetricCloudData.Apply(m_Material);
         }
-        
 
-        public void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor,ref PPData_Opaque _data)
+        public override  void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor,ref PPData_Opaque _data)
         {
             if (_data.m_MaskedHighlight)
             {
@@ -141,7 +140,7 @@ namespace Rendering.PostProcess
             }
         }
 
-        public void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,ref PPData_Opaque _data)
+        public override void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,ref PPData_Opaque _data)
         {
             if (_data.m_VolumetricCloud && _data.m_VolumetricCloudData.m_Shape)
             {
@@ -197,7 +196,7 @@ namespace Rendering.PostProcess
             _buffer.ReleaseTemporaryRT(kSampleID);
         }
 
-        public void FrameCleanUp(CommandBuffer _buffer,ref PPData_Opaque _data)
+        public override void FrameCleanUp(CommandBuffer _buffer,ref PPData_Opaque _data)
         {
             if (_data.m_MaskedHighlight)
             {

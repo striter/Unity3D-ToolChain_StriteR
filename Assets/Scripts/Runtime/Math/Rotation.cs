@@ -3,6 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using static KMath;
 
+public static class KRotation
+{
+    public static readonly Matrix2x2 kRotateCW90 = URotation.Rotate2D(90*kDeg2Rad,true);
+    public static readonly Matrix2x2 kRotateCW180 = URotation.Rotate2D(180*kDeg2Rad,true);
+    public static readonly Matrix2x2 kRotateCW270 = URotation.Rotate2D(270*kDeg2Rad,true);
+    public static readonly Matrix2x2[] kRotate2DCW = { Matrix2x2.Identity,kRotateCW90,kRotateCW180,kRotateCW270};
+    public static readonly Quaternion[] kRotate3DCW = { 
+        URotation.EulerToQuaternion(0f,0f,0f),
+        URotation.EulerToQuaternion(0f,90f,0f),
+        URotation.EulerToQuaternion(0f,180f,0f),
+        URotation.EulerToQuaternion(0f,270f,0f)};
+}
+
 public static class URotation
 {
     public static Quaternion EulerToQuaternion(Vector3 euler) => EulerToQuaternion(euler.x, euler.y, euler.z);

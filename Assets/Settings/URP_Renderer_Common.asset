@@ -82,16 +82,24 @@ MonoBehaviour:
   m_CameraReflectionTexture: 1
   m_PlanarReflectionData:
     m_Type: 1
-    m_Sample: 1
+    m_Sample: 4
     m_Recull: 1
     m_AdditionalLightcount: 0
     m_IncludeTransparent: 0
     m_DownSample: 2
     m_BlurParam:
-      m_BlurType: 3
-      m_BlurSize: 0.3
-      m_Iteration: 4
+      m_BlurType: 2
+      m_BlurSize: 0.05
+      m_Iteration: 2
       m_DownSample: 1
       m_Angle: 0
       m_Vector: {x: 0, y: 0}
       m_Attenuation: 0.9
+  m_AntiAliasing:
+    mode: 2
+    fxaa: 2
+    m_AdditionalSample: 1
+    m_UseDepth: 1
+    m_ContrastSkip: 0.25
+    m_RelativeSkip: 0.317
+    m_SubPixelBlend: 2

@@ -82,7 +82,6 @@ namespace Procedural
         public float sqrMagnitude => x * x + y * y;
         public float magnitude => Mathf.Sqrt(sqrMagnitude);
         
-        
         public static implicit operator (float x, float y)(Coord _pos) => (_pos.x, _pos.y);
         public static implicit operator Coord( (float x, float y) _pos) => new Coord(_pos.x, _pos.y);
         public static implicit operator Vector2(Coord _pos) => new Vector2(_pos.x, _pos.y);

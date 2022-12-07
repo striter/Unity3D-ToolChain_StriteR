@@ -22,6 +22,9 @@ namespace Rendering.Pipeline
         private SRP_NormalTexture m_ScreenSpaceNormal;
         private SRP_MaskTexture m_ScreenSpaceMaskTexture;
 
+        public PPData_AntiAliasing m_AntiAliasing = PPData_AntiAliasing.kDefault;
+        private PostProcess_TAAPrePass m_TAAPrePass;
+        private PostProcess_AntiAliasing m_AntiAliasingPostProcess;
         private SRP_ComponentBasedPostProcess m_OpaquePostProcess;
         private SRP_ComponentBasedPostProcess m_ScreenPostProcess;
         private SRP_Reflection m_Reflection;
@@ -31,12 +34,15 @@ namespace Rendering.Pipeline
             if (!m_Available)
                 return;
 
+            m_TAAPrePass = new PostProcess_TAAPrePass() {renderPassEvent = RenderPassEvent.BeforeRendering};
             m_AdditionalParameters = new SRP_AdditionalParameters() { renderPassEvent= RenderPassEvent.BeforeRendering };
             m_ScreenSpaceMaskTexture = new SRP_MaskTexture(){renderPassEvent = RenderPassEvent.BeforeRenderingOpaques};
             m_ScreenSpaceNormal = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox};
             m_Reflection = new SRP_Reflection(m_PlanarReflectionData, RenderPassEvent.AfterRenderingSkybox + 1);
             m_OpaquePostProcess=new SRP_ComponentBasedPostProcess(){renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 2};
             m_ScreenPostProcess=new SRP_ComponentBasedPostProcess(){renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing + 1};
+
+            m_AntiAliasingPostProcess = new PostProcess_AntiAliasing(m_AntiAliasing);
         }
         
         protected override void Dispose(bool disposing)
@@ -45,6 +51,8 @@ namespace Rendering.Pipeline
                 return;
             
             base.Dispose(disposing);
+            m_TAAPrePass.Dispose();
+            m_AntiAliasingPostProcess.Dispose();
             m_Reflection.Dispose();
             m_ScreenSpaceNormal.Dispose();
             m_ScreenSpaceMaskTexture.Dispose();
@@ -68,8 +76,8 @@ namespace Rendering.Pipeline
                 cameraReflectionTexture = param.m_Reflection.IsEnabled(cameraReflectionTexture);
             }
             
-            EnqueuePostProcess(renderer,renderingData,param);
             renderer.EnqueuePass(m_AdditionalParameters);
+            EnqueuePostProcess(renderer,ref renderingData,param);
 
             if(m_Mask)
                 renderer.EnqueuePass(m_ScreenSpaceMaskTexture.Setup(m_MaskData,renderer));
@@ -80,10 +88,19 @@ namespace Rendering.Pipeline
         }
 
         private readonly List<IPostProcessBehaviour> m_PostprocessQueue = new List<IPostProcessBehaviour>();
+        private readonly List<IPostProcessBehaviour> m_OpaqueProcessing = new List<IPostProcessBehaviour>();
+        private readonly List<IPostProcessBehaviour> m_ScreenProcessing = new List<IPostProcessBehaviour>();
         private SRC_CameraConfig m_PostProcessingPreview;
-        void EnqueuePostProcess(ScriptableRenderer _renderer,RenderingData _data,SRC_CameraConfig _override)
+        void EnqueuePostProcess(ScriptableRenderer _renderer,ref RenderingData _data,SRC_CameraConfig _override)
         {
             m_PostprocessQueue.Clear();
+            //Enqueue AntiAliasing
+            if (m_AntiAliasing.mode != EAntiAliasing.None)
+                m_PostprocessQueue.Add(m_AntiAliasingPostProcess);
+            if(m_AntiAliasing.mode == EAntiAliasing.TAA)
+                _renderer.EnqueuePass(m_TAAPrePass);
+
+            //Enqueue Global
             if(PostProcessGlobalVolume.HasGlobal)
             {
                 var components = PostProcessGlobalVolume.GlobalVolume.GetComponents<IPostProcessBehaviour>();
@@ -91,6 +108,7 @@ namespace Rendering.Pipeline
                     m_PostprocessQueue.Add(components[j]);
             }
             
+            //Enqueue Camera Preview
             if (_data.cameraData.isSceneViewCamera)
             {
                 if(m_PostProcessingPreview !=null && m_PostProcessingPreview.m_PostProcessPreview)
@@ -108,20 +126,14 @@ namespace Rendering.Pipeline
             
             if (m_PostprocessQueue.Count<=0)
                 return; 
-            EnqueuePostProcesses(_renderer,m_PostprocessQueue);
-        }
-
-        private readonly List<IPostProcessBehaviour> m_OpaqueProcessing = new List<IPostProcessBehaviour>();
-        private readonly List<IPostProcessBehaviour> m_ScreenProcessing = new List<IPostProcessBehaviour>();
-        void EnqueuePostProcesses(ScriptableRenderer _renderer,IList<IPostProcessBehaviour> _postProcesses)
-        {
+            //Sort&Enqeuue
             m_OpaqueProcessing.Clear();
             m_ScreenProcessing.Clear();
 
-            var postProcessCount = _postProcesses.Count;
+            var postProcessCount = m_PostprocessQueue.Count;
             for (int i = 0; i < postProcessCount; i++)
             {
-                var postProcess = _postProcesses[i];
+                var postProcess = m_PostprocessQueue[i];
 #if UNITY_EDITOR
                 postProcess.ValidateParameters();
 #endif
@@ -140,7 +152,7 @@ namespace Rendering.Pipeline
             if(m_ScreenProcessing.Count>0)
                 _renderer.EnqueuePass(m_ScreenPostProcess.Setup(m_ScreenProcessing));
         }
-        
+
         public class SRP_AdditionalParameters : ScriptableRenderPass, ISRPBase
         {
             #region IDs

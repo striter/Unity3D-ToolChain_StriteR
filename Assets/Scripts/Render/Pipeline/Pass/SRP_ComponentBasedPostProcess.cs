@@ -13,15 +13,16 @@ namespace Rendering.Pipeline
         private static readonly RenderTargetIdentifier m_BlitTemp1 = new RenderTargetIdentifier(ID_Blit_Temp1);
         private static readonly RenderTargetIdentifier m_BlitTemp2 = new RenderTargetIdentifier(ID_Blit_Temp2);
         private List<IPostProcessBehaviour>  m_Effects;
-        public SRP_ComponentBasedPostProcess Setup(List<IPostProcessBehaviour> effect)
+        
+        public SRP_ComponentBasedPostProcess Setup(List<IPostProcessBehaviour> effects)
         {
-            m_Effects = effect;
+            m_Effects = effects;
             m_Effects.Sort((a, b) => a.Event - b.Event);
             return this;
         }
+        
         public void Dispose()
         {
-
         }
 
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)

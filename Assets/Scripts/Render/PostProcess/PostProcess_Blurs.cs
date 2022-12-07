@@ -341,7 +341,7 @@ namespace Rendering.PostProcess
                         };
 
                     DoRadialBlur(_data.m_Iteration,_data.m_Vector,_data.m_BlurSize,_data.m_DownSample,_data.m_Attenuation,kBlinkingVerticalRT);
-                    DoRadialBlur(_data.m_Iteration, UMath.kRotateCW90.MultiplyVector(_data.m_Vector),_data.m_BlurSize,_data.m_DownSample,_data.m_Attenuation,kBlinkingHorizontalRT);
+                    DoRadialBlur(_data.m_Iteration, KRotation.kRotateCW90.MultiplyVector(_data.m_Vector),_data.m_BlurSize,_data.m_DownSample,_data.m_Attenuation,kBlinkingHorizontalRT);
                     
                     _buffer.EnableKeyword(kKWFinalBlur,true);
                     _buffer.Blit(_src,_dst,m_Material,combinePass);

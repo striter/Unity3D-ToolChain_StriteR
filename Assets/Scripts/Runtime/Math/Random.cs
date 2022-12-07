@@ -107,4 +107,39 @@ public static class URandom
         }
         return default;
     }
+
+    public static void Shuffle<T>(T[] _array,int _dimension, System.Random _random=null)
+    {
+        int shuffleTimes = _array.Length / _dimension;
+        
+        for (int i = 0; i < shuffleTimes; i++)
+        {
+            int other = i + (int)(Random01(_random) * (shuffleTimes - i));
+            other *= _dimension;
+            var src = i * _dimension;
+            for (int j = 0; j < _dimension; j++)
+            {
+                var srcDimension = src + j;
+                var otherDimension = other + j;
+                (_array[srcDimension], _array[otherDimension]) = (_array[otherDimension], _array[srcDimension]);
+            }
+        }
+    }
+
+    public static void LatinHypercube<T>(T[] _array, int _dimension, System.Random _random = null)
+    {
+        int shuffleTimes = _array.Length / _dimension;
+        for (int i = 0; i < shuffleTimes; i++)
+        {
+            int other = i + (int)(Random01(_random) * (shuffleTimes - i));
+            other *= _dimension;
+            int src = i * _dimension;
+            int replace = (int) (Random01(_random) * _dimension);
+
+            other += replace;
+            src += replace;
+            (_array[src], _array[other]) = (_array[other], _array[src]);
+        }
+
+    }
 }

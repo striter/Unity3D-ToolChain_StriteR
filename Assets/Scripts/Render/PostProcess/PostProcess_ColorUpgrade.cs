@@ -11,13 +11,6 @@ namespace Rendering.PostProcess
         public override EPostProcess Event => EPostProcess.ColorUpgrade;
     }
 
-    public enum EFXAA
-    {
-        None=0,
-        SubPixel,
-        // EdgeDetect,
-        // Both,
-    }
     public enum EMixChannel
     {
         None = 0,
@@ -41,13 +34,6 @@ namespace Rendering.PostProcess
     [System.Serializable]
     public struct PPData_ColorUpgrade:IPostProcessParameter
     {
-        // [MTitle] public EFXAA m_FXAA;
-        // [MFold(nameof(m_FXAA),EFXAA.None)] public bool m_AdditionalSample;
-        // [MFold(nameof(m_FXAA),EFXAA.None)] public bool m_UseDepth;
-        // [MFold(nameof(m_FXAA),EFXAA.None)] [Range(.01f,1f)] public float m_ContrastSkip;
-        // [MFold(nameof(m_FXAA),EFXAA.None)] [Range(.01f,1f)] public float m_RelativeSkip;
-        // [MFoldout(nameof(m_FXAA),EFXAA.SubPixel)] [Range(.1f,2f)] public float m_SubPixelBlend;
-        
         [MTitle]public bool m_LUT;
         [MFoldout(nameof(m_LUT),true)] public Texture2D m_LUTTex ;
         [MFoldout(nameof(m_LUT),true)] public ELUTCellCount m_LUTCellCount ;
@@ -66,7 +52,7 @@ namespace Rendering.PostProcess
         
         [MTitle]public bool m_Bloom;
         [MFoldout(nameof(m_Bloom),true)] public Data_Bloom m_BloomData;
-        public bool Validate() => //m_FXAA != EFXAA.None  || 
+        public bool Validate() => 
                                   m_LUT  || 
                                   m_BSC  || 
                                   m_ChannelMix  || 
@@ -74,12 +60,6 @@ namespace Rendering.PostProcess
         
         public static readonly PPData_ColorUpgrade kDefault = new PPData_ColorUpgrade()
         {
-            // m_FXAA =  EFXAA.None,
-            // m_ContrastSkip = .1f,
-            // m_RelativeSkip = .2f,
-            // m_SubPixelBlend = 1f,
-            // m_AdditionalSample=true,
-            
             m_LUT = false,
             m_LUTCellCount = ELUTCellCount._16,
             m_LUTWeight = 1f,
@@ -132,18 +112,9 @@ namespace Rendering.PostProcess
         }
     }
 
-    public class PPCore_ColorUpgrade : PostProcessCore<PPData_ColorUpgrade>,IPostProcessPipelineCallback<PPData_ColorUpgrade>
+    public class PPCore_ColorUpgrade : PostProcessCore<PPData_ColorUpgrade>
     {
         #region ShaderProperties
-        // const string kFXAA = "_FXAA";
-        // const string kFXAA_AdditionalSample="_FXAA_ADDITIONAL_SAMPLE";
-        // const string kFXAA_Depth = "_FXAA_DEPTH";
-        // const string kFXAA_SubPixel="_FXAA_SUBPIXEL";
-        // const string KW_FXAAEdgeBlend="_FXAA_EDGE";
-        // readonly int kConstrastSkip=Shader.PropertyToID("_FXAAContrastSkip");
-        // readonly int kRelativeSkip=Shader.PropertyToID("_FXAARelativeSkip");
-        // readonly int kBlendStrength=Shader.PropertyToID("_FXAABlendStrength");
-        
         const string KW_LUT = "_LUT";
         static readonly int ID_LUT = Shader.PropertyToID("_LUTTex");
         readonly int ID_LUTCellCount = Shader.PropertyToID("_LUTCellCount");
@@ -189,20 +160,7 @@ namespace Rendering.PostProcess
         public override void OnValidate(ref PPData_ColorUpgrade _data)
         {
             base.OnValidate(ref _data);
-            // if (m_Material.EnableKeyword(kFXAA, _data.m_FXAA!= EFXAA.None))
-            // {
-            //     m_Material.SetFloat(kConstrastSkip,_data.m_ContrastSkip);
-            //     m_Material.SetFloat(kRelativeSkip,_data.m_RelativeSkip);
-            //     m_Material.EnableKeyword(kFXAA_Depth, _data.m_UseDepth);
-            //     m_Material.EnableKeyword(kFXAA_AdditionalSample,_data.m_AdditionalSample);
-            //
-            //     bool subPixel = _data.m_FXAA == EFXAA.SubPixel;//||_data.m_FXAA == EFXAA.Both  ;
-            //     if (m_Material.EnableKeyword(kFXAA_SubPixel,subPixel))
-            //         m_Material.SetFloat(kBlendStrength,_data.m_SubPixelBlend);
-            //     //bool edge = _data.m_FXAA == EFXAA.Both || _data.m_FXAA == EFXAA.EdgeDetect;
-            //     //m_Material.EnableKeyword(KW_FXAAEdgeBlend, edge);
-            // }
-            //
+
             if (m_Material.EnableKeyword(KW_LUT, _data.m_LUT))
             {
                 m_Material.SetTexture(ID_LUT, _data.m_LUTTex);
@@ -252,7 +210,7 @@ namespace Rendering.PostProcess
                 _buffer.Blit(_src, _dst, m_Material, (int)EPassIndex.Process);
         }
 
-        public void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, ref PPData_ColorUpgrade _data)
+        public override void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, ref PPData_ColorUpgrade _data)
         {
             if (!_data.m_Bloom)
                 return;
@@ -263,7 +221,7 @@ namespace Rendering.PostProcess
             _buffer.GetTemporaryRT(RT_ID_Blur, _descriptor ,FilterMode.Bilinear);
         }
 
-        public void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,
+        public override void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,
             ref PPData_ColorUpgrade _data)
         {
             if (!_data.m_Bloom)
@@ -289,7 +247,7 @@ namespace Rendering.PostProcess
             CommandBufferPool.Release(buffer);
         }
 
-        public void FrameCleanUp(CommandBuffer _buffer, ref PPData_ColorUpgrade _data)
+        public override void FrameCleanUp(CommandBuffer _buffer, ref PPData_ColorUpgrade _data)
         {
             if (!_data.m_Bloom)
                 return;

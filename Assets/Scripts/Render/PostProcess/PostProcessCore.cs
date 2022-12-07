@@ -33,6 +33,10 @@ namespace Rendering.PostProcess
             m_Material = null;
         }
 
+        public virtual void Setup(CommandBuffer _buffer,ref RenderingData _renderingData){}
+        public virtual void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor,ref  T _data){}
+        public virtual void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,ref T _data){}
+        public virtual void FrameCleanUp(CommandBuffer _buffer,ref T _data){}
         public virtual void OnValidate(ref T _data) 
         {  
         }
