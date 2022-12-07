@@ -22,9 +22,8 @@ public static class ULowDiscrepancySequences
         ulong n1 = ReverseBits32((uint) (_n >> 32));
         return (n0 << 32) | n1;
     }
-    
-    public static float VanDerCorputElement2Base(uint _i) => ReverseBits32(_i) * 2.3283064365386963e-10f;
-    public static float VanDerCorputElement(uint _i, uint _base)
+
+    public static float VanDerCorput(uint _i, uint _base)
     {
         var invB = 1f / _base;
         var element = 0f;
@@ -41,12 +40,7 @@ public static class ULowDiscrepancySequences
     }
 
     
-    public static float[] HaltonSequence(uint _size, uint _primeIndex=0)
-    {
-        float[] sequence = new float[_size];
-        for (uint i = 0; i < _size; i++)
-            sequence[i] = VanDerCorputElement(i,KMath.kPrimes[_primeIndex]);
-        return sequence;
-    }
-
+    public static float VanDerCorputElement2Base(uint _i) => ReverseBits32(_i) * 2.3283064365386963e-10f;
+    public static float Halton(uint _index, uint _dimension) => VanDerCorput(_index,KMath.kPrimes128[_dimension]);
+    public static float Hammersley(uint _index,uint _dimension,uint _numSamples)=>_index==0?(_index/(float)_numSamples):VanDerCorput(_index,_dimension-1);
 }

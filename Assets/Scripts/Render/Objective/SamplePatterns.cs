@@ -29,7 +29,7 @@ namespace Rendering.Pipeline
                 var jy = _jitter ? URandom.Random01(_random) : .5f;
                 grid[y * _width + x] = start + new float2(x+jx,y+jy)*uvOffset;
             }
-            URandom.LatinHypercube(grid,_width,_random);
+            URandom.LatinHypercube(grid,(uint)grid.Length,(uint)_width,_random);
             return grid;
         }
         
@@ -37,7 +37,7 @@ namespace Rendering.Pipeline
         {
             float2[] sequence = new float2[_size];
             for (uint i = 0; i < _size; i++)
-                sequence[i] = new float2(VanDerCorputElement2Base(i),VanDerCorputElement(i,KMath.kPrimes[1])) - .5f;
+                sequence[i] = new float2( VanDerCorputElement2Base(i),VanDerCorput(i,KMath.kPrimes128[1])) - .5f;
             return sequence;
         }
 
