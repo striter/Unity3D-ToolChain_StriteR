@@ -26,9 +26,9 @@ namespace Rendering.PostProcess
         bool m_OpaqueProcess { get; }
         bool m_Enabled { get; }
         EPostProcess Event { get; }
-        void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData);
         void Configure( CommandBuffer _buffer, RenderTextureDescriptor _descriptor);
-        void ExecuteBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _executeData);
+        void Execute(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _executeData,
+            ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData);
         void FrameCleanUp(CommandBuffer _buffer);
         void ValidateParameters();
     }

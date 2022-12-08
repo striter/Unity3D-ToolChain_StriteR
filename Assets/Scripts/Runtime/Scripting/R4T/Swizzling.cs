@@ -26,6 +26,7 @@ namespace Swizzling
         protected override void OnValueChanged(float[] _value) => m_Value = new Vector4(_value[0], _value[1], _value[2], _value[3]);
         public static explicit operator Vector4(float4 src) { return src.m_Value; }
     }
+    
     public class FloatSwizzling<T> : DynamicObject
     {
         static readonly Dictionary<char, int> m_SwizzlingPositions = new Dictionary<char, int>() { { 'x', 0 }, { 'r', 0 }, { 'y', 1 }, { 'g', 1 }, { 'z', 2 }, { 'b', 2 }, { 'w', 3 }, { 'a', 3 } };

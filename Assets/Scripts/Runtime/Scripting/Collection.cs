@@ -127,6 +127,7 @@ public static class UCollection
             }
         }
 
+
         public static int Count<T>(this IEnumerable<T> _collection, Predicate<T> _predicate)
         {
             int count = 0;
@@ -528,6 +529,18 @@ public static class UCollection
         }
 
         return -1;
+    }
+    
+    public static T[] Remake<T>(this T[] _array, Func<int, T, T> _onEach)
+    {
+        var count = _array.Length;
+        for (int i = 0; i < count; i++)
+        {
+            var element = _array[i];
+            _array[i] = _onEach(i, element);
+        }
+
+        return _array;
     }
     #endregion
     #region List

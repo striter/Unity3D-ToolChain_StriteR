@@ -52,9 +52,12 @@ namespace Rendering.PostProcess
         {
             m_Effect.OnValidate(ref m_Data);
         }
-        public void ExecuteBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _descriptor)  => m_Effect.ExecutePostProcessBuffer(_buffer, _src, _dst, _descriptor,ref  m_Data);
+        
         public void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor) => m_Effect.Configure(_buffer,_descriptor,ref m_Data);
-        public void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData) =>  m_Effect.ExecuteContext(_renderer, _context, ref _renderingData,ref m_Data);
+        public void Execute(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _executeData, 
+            ScriptableRenderer _renderer, ScriptableRenderContext _context,ref RenderingData _renderingData)=>
+            m_Effect.Execute(_executeData,ref  m_Data,_buffer, _src, _dst ,_renderer, _context, ref _renderingData);
+
         public void FrameCleanUp(CommandBuffer _buffer) =>  m_Effect.FrameCleanUp(_buffer,ref m_Data);
     }
 }

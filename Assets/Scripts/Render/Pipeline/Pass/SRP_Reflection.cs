@@ -262,7 +262,7 @@ namespace Rendering.Pipeline
              
              Execute(ref m_Data,_context,ref _renderingData,cmd,ref m_Plane,ref m_ColorDescriptor,ref m_ColorTarget,ref m_Renderer);
              if (m_Data.m_BlurParam.m_BlurType!=EBlurType.None)
-                 m_Blur.ExecutePostProcessBuffer(cmd, m_ColorTarget, m_ReflectionTextureID, m_ColorDescriptor ,ref m_Data.m_BlurParam); 
+                 m_Blur.Execute(m_ColorDescriptor ,ref m_Data.m_BlurParam,cmd, m_ColorTarget, m_ReflectionTextureID,m_Renderer,_context,ref _renderingData); 
             
              _context.ExecuteCommandBuffer(cmd);
              cmd.Clear();

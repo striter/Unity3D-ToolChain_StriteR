@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using Geometry;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using Rendering.PostProcess;
-using UnityEngine.Rendering;
 
 namespace Rendering.Pipeline
 {
@@ -18,51 +16,49 @@ namespace Rendering.Pipeline
         public bool m_CameraReflectionTexture=false;
         [MFoldout(nameof(m_CameraReflectionTexture), true)] public SRD_ReflectionData m_PlanarReflectionData = SRD_ReflectionData.kDefault;
         
-        private SRP_AdditionalParameters m_AdditionalParameters;
+        private SRP_GlobalParameters m_GlobalParameters;
         private SRP_NormalTexture m_ScreenSpaceNormal;
         private SRP_MaskTexture m_ScreenSpaceMaskTexture;
 
         public PPData_AntiAliasing m_AntiAliasing = PPData_AntiAliasing.kDefault;
-        private PostProcess_TAAPrePass m_TAAPrePass;
+        private SRP_TAAPass m_TAAPass;
         private PostProcess_AntiAliasing m_AntiAliasingPostProcess;
         private SRP_ComponentBasedPostProcess m_OpaquePostProcess;
         private SRP_ComponentBasedPostProcess m_ScreenPostProcess;
         private SRP_Reflection m_Reflection;
-        private bool m_Available => m_Resources;
+
         public override void Create()
         {
-            if (!m_Available)
+            if (!m_Resources)
                 return;
 
-            m_TAAPrePass = new PostProcess_TAAPrePass() {renderPassEvent = RenderPassEvent.BeforeRendering};
-            m_AdditionalParameters = new SRP_AdditionalParameters() { renderPassEvent= RenderPassEvent.BeforeRendering };
-            m_ScreenSpaceMaskTexture = new SRP_MaskTexture(){renderPassEvent = RenderPassEvent.BeforeRenderingOpaques};
-            m_ScreenSpaceNormal = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox};
+            m_GlobalParameters = new SRP_GlobalParameters() { renderPassEvent= RenderPassEvent.BeforeRendering };
+            m_TAAPass = new SRP_TAAPass() { renderPassEvent = RenderPassEvent.BeforeRenderingOpaques - 1 };
+            m_ScreenSpaceMaskTexture = new SRP_MaskTexture() { renderPassEvent = RenderPassEvent.BeforeRenderingOpaques };
+            m_ScreenSpaceNormal = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox };
             m_Reflection = new SRP_Reflection(m_PlanarReflectionData, RenderPassEvent.AfterRenderingSkybox + 1);
-            m_OpaquePostProcess=new SRP_ComponentBasedPostProcess(){renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 2};
-            m_ScreenPostProcess=new SRP_ComponentBasedPostProcess(){renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing + 1};
-
-            m_AntiAliasingPostProcess = new PostProcess_AntiAliasing(m_AntiAliasing);
+            
+            m_OpaquePostProcess=new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 2 };
+            m_ScreenPostProcess=new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing + 1 };
+            m_AntiAliasingPostProcess = new PostProcess_AntiAliasing(m_AntiAliasing,m_TAAPass);
         }
-        
+
         protected override void Dispose(bool disposing)
         {
-            if (!m_Available)
-                return;
-            
             base.Dispose(disposing);
-            m_TAAPrePass.Dispose();
+            m_TAAPass.Dispose();
             m_AntiAliasingPostProcess.Dispose();
             m_Reflection.Dispose();
             m_ScreenSpaceNormal.Dispose();
             m_ScreenSpaceMaskTexture.Dispose();
             m_OpaquePostProcess.Dispose();
             m_ScreenPostProcess.Dispose();
-            m_AdditionalParameters.Dispose();
+            m_GlobalParameters.Dispose();
         }
+
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
-            if (!m_Available)
+            if (!m_Resources)
                 return;
             
             if (renderingData.cameraData.isPreviewCamera)
@@ -76,7 +72,7 @@ namespace Rendering.Pipeline
                 cameraReflectionTexture = param.m_Reflection.IsEnabled(cameraReflectionTexture);
             }
             
-            renderer.EnqueuePass(m_AdditionalParameters);
+            renderer.EnqueuePass(m_GlobalParameters);
             EnqueuePostProcess(renderer,ref renderingData,param);
 
             if(m_Mask)
@@ -98,7 +94,7 @@ namespace Rendering.Pipeline
             if (m_AntiAliasing.mode != EAntiAliasing.None)
                 m_PostprocessQueue.Add(m_AntiAliasingPostProcess);
             if(m_AntiAliasing.mode == EAntiAliasing.TAA)
-                _renderer.EnqueuePass(m_TAAPrePass);
+                _renderer.EnqueuePass(m_TAAPass);
 
             //Enqueue Global
             if(PostProcessGlobalVolume.HasGlobal)
@@ -151,59 +147,6 @@ namespace Rendering.Pipeline
                 _renderer.EnqueuePass(m_OpaquePostProcess.Setup(m_OpaqueProcessing));
             if(m_ScreenProcessing.Count>0)
                 _renderer.EnqueuePass(m_ScreenPostProcess.Setup(m_ScreenProcessing));
-        }
-
-        public class SRP_AdditionalParameters : ScriptableRenderPass, ISRPBase
-        {
-            #region IDs
-            private static readonly int ID_FrustumCornersRayBL = Shader.PropertyToID("_FrustumCornersRayBL");
-            private static readonly int ID_FrustumCornersRayBR = Shader.PropertyToID("_FrustumCornersRayBR");
-            private static readonly int ID_FrustumCornersRayTL = Shader.PropertyToID("_FrustumCornersRayTL");
-            private static readonly int ID_FrustumCornersRayTR = Shader.PropertyToID("_FrustumCornersRayTR");
-
-            private static readonly int ID_OrthoCameraDirection = Shader.PropertyToID("_OrthoCameraDirection");
-            private static readonly int ID_OrthoCameraPositionBL = Shader.PropertyToID("_OrthoCameraPosBL");
-            private static readonly int ID_OrthoCameraPositionBR = Shader.PropertyToID("_OrthoCameraPosBR");
-            private static readonly int ID_OrthoCameraPositionTL = Shader.PropertyToID("_OrthoCameraPosTL");
-            private static readonly int ID_OrthoCameraPositionTR = Shader.PropertyToID("_OrthoCameraPosTR");
-
-            private static readonly int ID_Matrix_VP = Shader.PropertyToID("_Matrix_VP");
-            private static readonly int ID_Matrix_I_VP=Shader.PropertyToID("_Matrix_I_VP");
-            private static readonly int ID_Matrix_V = Shader.PropertyToID("_Matrix_V");
-            #endregion
-
-            public override void Execute(ScriptableRenderContext context, ref RenderingData _renderingData)
-            {
-                var camera = _renderingData.cameraData.camera;
-                if (_renderingData.cameraData.camera.orthographic)
-                {
-                    Shader.SetGlobalVector(ID_OrthoCameraDirection,camera.transform.forward);
-                    camera.CalculateOrthographicPositions(out var topLeft,out var topRight,out var bottomLeft,out var bottomRight);
-                    Shader.SetGlobalVector(ID_OrthoCameraPositionBL, bottomLeft);
-                    Shader.SetGlobalVector(ID_OrthoCameraPositionBR, bottomRight);
-                    Shader.SetGlobalVector(ID_OrthoCameraPositionTL, topLeft);
-                    Shader.SetGlobalVector(ID_OrthoCameraPositionTR, topRight);
-                }
-                else
-                {
-                    var rays = new GFrustum(camera).GetFrustumRays();
-                    Shader.SetGlobalVector(ID_FrustumCornersRayBL, rays.bottomLeft.direction);
-                    Shader.SetGlobalVector(ID_FrustumCornersRayBR, rays.bottomRight.direction);
-                    Shader.SetGlobalVector(ID_FrustumCornersRayTL, rays.topLeft.direction);
-                    Shader.SetGlobalVector(ID_FrustumCornersRayTR, rays.topRight.direction);
-                }
-            
-                Matrix4x4 projection = GL.GetGPUProjectionMatrix(_renderingData.cameraData.GetProjectionMatrix(),_renderingData.cameraData.IsCameraProjectionMatrixFlipped());
-                Matrix4x4 view = _renderingData.cameraData.GetViewMatrix();
-                Matrix4x4 vp = projection * view;
-
-                Shader.SetGlobalMatrix(ID_Matrix_VP,vp);
-                Shader.SetGlobalMatrix(ID_Matrix_I_VP,vp.inverse);
-                Shader.SetGlobalMatrix(ID_Matrix_V,view);
-            }
-            public void Dispose()
-            {
-            }
         }
     }
 }

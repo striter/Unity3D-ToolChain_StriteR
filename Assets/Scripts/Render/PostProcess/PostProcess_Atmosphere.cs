@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 namespace Rendering.PostProcess
 {
@@ -43,7 +44,10 @@ namespace Rendering.PostProcess
                 _data.m_VolumetricLightData.Apply(m_Material);
             m_VolumetricBlur.OnValidate(ref _data.m_VolumetricBlur);
         }
-        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor,ref PPData_Transparent _data)
+
+        public override void Execute(RenderTextureDescriptor _descriptor, ref PPData_Transparent _data, CommandBuffer _buffer,
+            RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderer _renderer,
+            ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             if (!_data.m_VolumetricLight)
             {
@@ -66,7 +70,7 @@ namespace Rendering.PostProcess
             {
                 _buffer.GetTemporaryRT(RT_ID_Blur, sampleDescriptor, FilterMode.Bilinear);
                 _buffer.Blit(_src, RT_ID_Blur, m_Material,  (int)EPassIndex.Sample);
-                m_VolumetricBlur.ExecutePostProcessBuffer(_buffer, RT_ID_Blur, RT_ID_Sample, sampleDescriptor,ref _data.m_VolumetricBlur); 
+                m_VolumetricBlur.Execute(sampleDescriptor,ref _data.m_VolumetricBlur,_buffer, RT_ID_Blur, RT_ID_Sample,_renderer,_context,ref _renderingData ); 
                 _buffer.ReleaseTemporaryRT(RT_ID_Blur);
             }
             

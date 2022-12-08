@@ -117,12 +117,15 @@ namespace Rendering.PostProcess
                 } break;
             }
         }
-        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor,ref PPData_Stylize _data)
+
+        public override void Execute(RenderTextureDescriptor _descriptor, ref PPData_Stylize _data, CommandBuffer _buffer,
+            RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderer _renderer,
+            ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             switch (_data.m_Stylize)
             {
                 default:
-                    base.ExecutePostProcessBuffer(_buffer, _src, _dst, _descriptor,ref _data);
+                    base.Execute(_descriptor, ref _data, _buffer, _src, _dst, _renderer, _context, ref _renderingData);
                     break;
                 case EStylize.Pixel:
                     _buffer.GetTemporaryRT(ID_PixelizeDownSample, _descriptor.width / _data.m_DownSample, _descriptor.height / _data.m_DownSample, 0, FilterMode.Point, _descriptor.colorFormat);

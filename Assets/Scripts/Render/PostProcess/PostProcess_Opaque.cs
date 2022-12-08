@@ -140,8 +140,11 @@ namespace Rendering.PostProcess
             }
         }
 
-        public override void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,ref PPData_Opaque _data)
+        public override void Execute(RenderTextureDescriptor _descriptor, ref PPData_Opaque _data, CommandBuffer _buffer,
+            RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderer _renderer,
+            ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
+            
             if (_data.m_VolumetricCloud && _data.m_VolumetricCloudData.m_Shape)
             {
                 var volumetricData = _data.m_VolumetricCloudData;
@@ -171,13 +174,9 @@ namespace Rendering.PostProcess
                 _context.ExecuteCommandBuffer(buffer);
                 CommandBufferPool.Release(buffer);
             }
-        }
-
-        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,
-            RenderTextureDescriptor _descriptor, ref PPData_Opaque _data)
-        {
+            
             if(_data.m_MaskedHighlight) 
-                m_HighlightBlur.ExecutePostProcessBuffer(_buffer, KRenderTextures.kCameraMaskTextureRT, kHighlightMaskBlurRT, m_HighlightDescriptor,ref _data.m_HighlightData.m_Blur);
+                m_HighlightBlur.Execute(m_HighlightDescriptor,ref _data.m_HighlightData.m_Blur,_buffer, KRenderTextures.kCameraMaskTextureRT, kHighlightMaskBlurRT,_renderer,_context,ref _renderingData);
 
             if (!_data.m_SSAO && !_data.m_VolumetricCloud)
             {

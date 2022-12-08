@@ -1,18 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class UMathmatics : MonoBehaviour
+using Unity.Mathematics;
+public static  class UMathmatics
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public static float4 to4(this float2 _value, float _z = 0, float _w = 0) => new float4(_value.x,_value.y,_z,_w);
 }

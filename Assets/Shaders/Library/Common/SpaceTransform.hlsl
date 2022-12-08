@@ -59,7 +59,6 @@ float3 TransformNDCToWorld_Perspective(float2 uv,float _rawDepth){ return GetCam
 float3 TransformNDCToWorld_VPMatrix(float2 uv,float _rawDepth){ return TransformClipToWorld(TransformNDCToClip(uv,_rawDepth));}
 float3 TransformNDCToWorld(float2 uv,float rawDepth)
 {
-    [branch]
     if(unity_OrthoParams.w)
         return TransformNDCToWorld_VPMatrix(uv,rawDepth);
     else

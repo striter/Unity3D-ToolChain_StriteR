@@ -136,5 +136,35 @@ Shader "Hidden/PostProcess/AntiAliasing"
 			}
 			ENDHLSL
 		}
+		
+		Pass
+		{
+			Name "TAA_Blend"
+			HLSLPROGRAM
+			#pragma vertex vert_img
+			#pragma fragment frag
+			TEXTURE2D(_HistoryBuffer);SAMPLER(sampler_HistoryBuffer);
+			float _Blend;
+
+			float4x4 _Matrix_VP_Pre;
+			float2 _Jitter_Pre;
+			float2 _Jitter_Cur;
+			
+			float2 Reprojection(float3 _worldPos)
+			{
+				float4 p = mul(_Matrix_VP_Pre,float4(_worldPos,1));
+				float2 uv = p.xy/p.w * .5 + .5;
+				return  uv;
+			}
+			
+			half4 frag (v2f_img i) : SV_Target
+			{
+				half4 current = SampleMainTex(i.uv);
+				
+				half4 history = SAMPLE_TEXTURE2D(_HistoryBuffer,sampler_HistoryBuffer,Reprojection( TransformNDCToWorld(i.uv)));
+				return lerp(history,current,_Blend);
+			}
+			ENDHLSL
+		}
 	}
 }

@@ -180,7 +180,9 @@ namespace Rendering.PostProcess
         static readonly int kHexagonDiagonalID = Shader.PropertyToID("_Hexagon_Diagonal");
         static readonly RenderTargetIdentifier kDiagonalRT = new RenderTargetIdentifier(kHexagonDiagonalID);
 
-        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _descriptor,ref PPData_Blurs _data)
+        public override void Execute(RenderTextureDescriptor _descriptor, ref PPData_Blurs _data, CommandBuffer _buffer,
+            RenderTargetIdentifier _src, RenderTargetIdentifier _dst, 
+            ScriptableRenderer _renderer,ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             if (_data.m_DownSample <= 0)
             {

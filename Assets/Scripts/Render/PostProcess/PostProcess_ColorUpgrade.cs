@@ -188,10 +188,13 @@ namespace Rendering.PostProcess
                 _data.m_BloomData.Apply(m_Material, m_CoreBlurs);
         }
 
-        
-        public override void ExecutePostProcessBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,
-            RenderTextureDescriptor _descriptor, ref PPData_ColorUpgrade _data)
+
+        public override void Execute(RenderTextureDescriptor _descriptor, ref PPData_ColorUpgrade _data, CommandBuffer _buffer,
+            RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderer _renderer,
+            ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
+            
+            
             if (!_data.m_Bloom)
             {
                 _buffer.Blit(_src, _dst, m_Material, (int)EPassIndex.Process);
@@ -199,10 +202,27 @@ namespace Rendering.PostProcess
             }
 
             ref var bloomData = ref _data.m_BloomData;
-            if (bloomData.m_SampleMode == EBloomSample.Luminance)
+            if (bloomData.m_SampleMode == EBloomSample.Redraw)
+            {
+                CommandBuffer buffer = CommandBufferPool.Get("Bloom Redraw Execute");
+                buffer.SetRenderTarget(RT_ID_Sample);
+                buffer.ClearRenderTarget(true, true, Color.black);
+                _context.ExecuteCommandBuffer(buffer);
+
+                DrawingSettings drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
+                drawingSettings.perObjectData = (PerObjectData)int.MaxValue;
+                FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = bloomData.m_LayerMask };
+                _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
+
+                buffer.Clear();
+                buffer.SetRenderTarget(_renderer.cameraColorTarget);
+                _context.ExecuteCommandBuffer(buffer);
+                CommandBufferPool.Release(buffer);
+            }
+            else if(bloomData.m_SampleMode == EBloomSample.Luminance)
                 _buffer.Blit(_src, RT_Sample, m_Material, (int)EPassIndex.BloomSample);
 
-            m_CoreBlurs.ExecutePostProcessBuffer(_buffer, RT_Sample, RT_Blur, _descriptor, ref bloomData.m_Blur);
+            m_CoreBlurs.Execute(_descriptor, ref bloomData.m_Blur,_buffer, RT_Sample, RT_Blur, _renderer,_context,ref _renderingData);
 
             if(bloomData.m_BloomDebug)
                 _buffer.Blit(RT_Blur,_dst);
@@ -221,31 +241,6 @@ namespace Rendering.PostProcess
             _buffer.GetTemporaryRT(RT_ID_Blur, _descriptor ,FilterMode.Bilinear);
         }
 
-        public override void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,
-            ref PPData_ColorUpgrade _data)
-        {
-            if (!_data.m_Bloom)
-                return;
-            
-            ref var bloomData = ref _data.m_BloomData;
-            if (bloomData.m_SampleMode != EBloomSample.Redraw)
-                return;
-            
-            CommandBuffer buffer = CommandBufferPool.Get("Bloom Redraw Execute");
-            buffer.SetRenderTarget(RT_ID_Sample);
-            buffer.ClearRenderTarget(true, true, Color.black);
-            _context.ExecuteCommandBuffer(buffer);
-
-            DrawingSettings drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
-            drawingSettings.perObjectData = (PerObjectData)int.MaxValue;
-            FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = bloomData.m_LayerMask };
-            _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
-
-            buffer.Clear();
-            buffer.SetRenderTarget(_renderer.cameraColorTarget);
-            _context.ExecuteCommandBuffer(buffer);
-            CommandBufferPool.Release(buffer);
-        }
 
         public override void FrameCleanUp(CommandBuffer _buffer, ref PPData_ColorUpgrade _data)
         {

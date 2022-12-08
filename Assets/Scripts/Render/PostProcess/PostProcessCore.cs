@@ -35,14 +35,15 @@ namespace Rendering.PostProcess
 
         public virtual void Setup(CommandBuffer _buffer,ref RenderingData _renderingData){}
         public virtual void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor,ref  T _data){}
-        public virtual void ExecuteContext(ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData,ref T _data){}
         public virtual void FrameCleanUp(CommandBuffer _buffer,ref T _data){}
         public virtual void OnValidate(ref T _data) 
         {  
         }
-        public virtual void ExecutePostProcessBuffer( CommandBuffer _buffer,  RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _descriptor,ref T _data)
+        public virtual void Execute(RenderTextureDescriptor _descriptor,ref T _data,
+            CommandBuffer _buffer,  RenderTargetIdentifier _src, RenderTargetIdentifier _dst,
+            ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
-            _buffer.Blit(_src, _dst, m_Material);
+            _buffer.Blit(_src, _dst, m_Material,0);
         }
     }
 }
