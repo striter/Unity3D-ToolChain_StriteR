@@ -92,7 +92,6 @@ Shader "Game/Skybox/AtomsphericScattering"
                 float3 scatterDirection = GetCameraRealDirectionWS(i.positionWS);// i.viewDirWS);
 
                 float3 lightPos = _MainLightPosition.xyz*1000;
-                float3 lightDir = normalize(_MainLightPosition.xyz);
                 float2 screenUV = TransformHClipToNDC(i.positionHCS);
                 float rawDepth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);
                 float depthDistance = RawToDistance(rawDepth,screenUV);

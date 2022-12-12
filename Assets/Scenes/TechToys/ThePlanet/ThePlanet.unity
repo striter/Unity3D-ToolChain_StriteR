@@ -48605,7 +48605,7 @@ MonoBehaviour:
     m_Bloom: 1
     m_BloomData:
       m_SampleMode: 0
-      m_Threshold: 1.44
+      m_Threshold: 1.4
       m_LayerMask: 2147483647
       m_Color: {r: 1, g: 1, b: 1, a: 1}
       m_Blur:
@@ -48617,6 +48617,9 @@ MonoBehaviour:
         m_Vector: {x: 0.5, y: 0.5}
         m_Attenuation: 0
       m_BloomDebug: 0
+    motionBlur: 1
+    iteration: 2
+    intensity: 0.3
 --- !u!1 &1406816411
 GameObject:
   m_ObjectHideFlags: 0

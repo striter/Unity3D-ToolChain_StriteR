@@ -28,13 +28,13 @@ half FogFactor(float z)
 half FogDesnity(float fogFactor)
 {
     half fogDensity=0;
-    #if defined(FOG_EXP)
+#if defined(FOG_EXP)
     fogDensity = saturate(exp2(-fogFactor));
-    #elif defined(FOG_EXP2)
+#elif defined(FOG_EXP2)
     fogDensity = saturate(exp2(-fogFactor * fogFactor));
-    #elif defined(FOG_LINEAR)
+#elif defined(FOG_LINEAR)
     fogDensity = fogFactor;
-    #endif
+#endif
     return 1.h-fogDensity;
 }
 

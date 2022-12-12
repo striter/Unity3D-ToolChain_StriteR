@@ -150,7 +150,7 @@ Shader "Hidden/PostProcess/AntiAliasing"
 			void SampleMinMax(float2 uv,inout float3 _min,inout float3 _max)
 			{
 				float3 color = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv).rgb;
-				color = RGBToYCoCg(color);
+				color = ConvertRGBToYCoCg(color);
 				_min = min(_min,color);
 				_max = max(_max,color);
 			}
@@ -165,7 +165,7 @@ Shader "Hidden/PostProcess/AntiAliasing"
 				history = lerp(current,history,step(max(historyUV),1) * step(0,min(historyUV))); //Clamp
 
 				//Neighbor Clamping
-				half3 minCur = RGBToYCoCg(current);
+				half3 minCur = ConvertRGBToYCoCg(current);
 				half3 maxCur = minCur;
 				SampleMinMax(i.uv + float2(-1,1)*_MainTex_TexelSize.xy,minCur,maxCur);
 				SampleMinMax(i.uv + float2(-1,0)*_MainTex_TexelSize.xy,minCur,maxCur);
@@ -175,9 +175,9 @@ Shader "Hidden/PostProcess/AntiAliasing"
 				SampleMinMax(i.uv + float2(1,-1)*_MainTex_TexelSize.xy,minCur,maxCur);
 				SampleMinMax(i.uv + float2(1,0)*_MainTex_TexelSize.xy,minCur,maxCur);
 				SampleMinMax(i.uv + float2(1,1)*_MainTex_TexelSize.xy,minCur,maxCur);
-				history = RGBToYCoCg(history);
+				history = ConvertRGBToYCoCg(history);
 				history = clamp(history,minCur,maxCur);
-				history = YCoCgToRGB(history);
+				history = ConvertYCoCgToRGB(history);
 				
 				return half4(lerp(current,history,1 - _Blend),1);
 			}

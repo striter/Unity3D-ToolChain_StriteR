@@ -21,7 +21,7 @@ half3 SampleLUT( half3 sampleCol,TEXTURE2D_PARAM(_lutTex,_lutSampler),float4 _lu
     return lerp( SAMPLE_TEXTURE2D(_lutTex,_lutSampler,uv0).rgb,SAMPLE_TEXTURE2D(_lutTex,_lutSampler,uv1).rgb,zOffset) ;
 }
 
-float3 RGBToYCoCg(float3 color)
+float3 ConvertRGBToYCoCg(float3 color)
 {
     float3x3 mat = {
         .25,  .5, .25,
@@ -31,7 +31,7 @@ float3 RGBToYCoCg(float3 color)
     return mul(mat, color);
 }
 
-float3 YCoCgToRGB(float3 color)
+float3 ConvertYCoCgToRGB(float3 color)
 {
     float3x3 mat = {
         1,  1,  -1,
