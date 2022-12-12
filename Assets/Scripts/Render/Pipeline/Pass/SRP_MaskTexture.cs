@@ -41,16 +41,14 @@ namespace Rendering.Pipeline
     
     public class SRP_MaskTexture : ScriptableRenderPass,ISRPBase
     {
-        private ScriptableRenderer m_Renderer;
         private SRD_MaskData m_Data;
 
-        private readonly PassiveInstance<Material> m_OutlineRenderer=new PassiveInstance<Material>(() => new Material(RenderResources.FindInclude("Game/Additive/Outline")) { hideFlags = HideFlags.HideAndDontSave },GameObject.DestroyImmediate);
-        private readonly PassiveInstance<Material> m_NormalRenderer = new PassiveInstance<Material>(()=>new Material(RenderResources.FindInclude("Game/Unlit/Color")) { hideFlags = HideFlags.HideAndDontSave },GameObject.DestroyImmediate);
+        private readonly PassiveInstance<Material> m_OutlineRenderer = new PassiveInstance<Material>(() => new Material(RenderResources.FindInclude("Game/Additive/Outline")) { hideFlags = HideFlags.HideAndDontSave },GameObject.DestroyImmediate);
+        private readonly PassiveInstance<Material> m_NormalRenderer = new PassiveInstance<Material>(() => new Material(RenderResources.FindInclude("Game/Unlit/Color")) { hideFlags = HideFlags.HideAndDontSave },GameObject.DestroyImmediate);
 
-        public SRP_MaskTexture Setup(SRD_MaskData _data,ScriptableRenderer _renderer)
+        public SRP_MaskTexture Setup(SRD_MaskData _data)
         {
             m_Data = _data;
-            m_Renderer = _renderer;
             var renderer = _data.m_Outline ? m_OutlineRenderer : m_NormalRenderer;
             if (_data.m_Outline)
             {
@@ -81,7 +79,8 @@ namespace Rendering.Pipeline
             base.FrameCleanup(_cmd);
             _cmd.ReleaseTemporaryRT(KRenderTextures.kCameraMaskTexture);
         }
-        
+
+
         public void Dispose()
         {
             m_OutlineRenderer.Dispose();
@@ -101,7 +100,7 @@ namespace Rendering.Pipeline
             _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
 
             buffer.Clear();
-            buffer.SetRenderTarget(m_Renderer.cameraColorTarget);
+            buffer.SetRenderTarget(_renderingData.cameraData.renderer.cameraColorTarget);
             _context.ExecuteCommandBuffer(buffer);
             CommandBufferPool.Release(buffer);
         }

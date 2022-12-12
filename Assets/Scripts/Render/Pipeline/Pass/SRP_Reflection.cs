@@ -8,7 +8,7 @@ namespace Rendering.Pipeline
 {
     using PostProcess;
     [Serializable]
-    public class SRD_ReflectionData
+    public struct SRD_ReflectionData
     {
         public EReflectionSpace m_Type;
         [MFoldout(nameof(m_Type), EReflectionSpace.ScreenSpaceGeometry)] [Range(1, 4)] public int m_Sample;
@@ -62,7 +62,8 @@ namespace Rendering.Pipeline
         {
             m_Manager.EnqueuePass(m_Data,_renderer,m_Event);
         }
-        
+
+
         public void Dispose()
         {
             m_Blurs.Destroy();
@@ -72,7 +73,7 @@ namespace Rendering.Pipeline
 
     interface IReflectionManager:ISRPBase
     {
-        void EnqueuePass( SRD_ReflectionData _data, ScriptableRenderer _renderer,RenderPassEvent _event);
+        void EnqueuePass( SRD_ReflectionData _data,ScriptableRenderer _renderer,RenderPassEvent _event);
     }
     #region Screen Space Reflection
 
@@ -81,7 +82,6 @@ namespace Rendering.Pipeline
         private SRD_ReflectionData m_Data;
         private readonly PassiveInstance<Shader> m_ReflectionBlit=new PassiveInstance<Shader>(()=>RenderResources.FindInclude("Hidden/ScreenSpaceReflection"));
         private readonly PPCore_Blurs m_Blur;
-        private ScriptableRenderer m_Renderer;
         private readonly Material m_Material;
         static readonly int kSSRTex = Shader.PropertyToID("_ScreenSpaceReflectionTexture");
         static readonly RenderTargetIdentifier kSSRTexID = new RenderTargetIdentifier(kSSRTex);
@@ -91,42 +91,41 @@ namespace Rendering.Pipeline
             m_Material = new Material(m_ReflectionBlit){hideFlags = HideFlags.HideAndDontSave};
             m_Blur = _blurs;
         }
-        
+
         public void Dispose()
         {            
             GameObject.DestroyImmediate(m_Material);
         }
 
-        public void EnqueuePass(SRD_ReflectionData _data, ScriptableRenderer _renderer,RenderPassEvent _event)
+        public void EnqueuePass(SRD_ReflectionData _data,ScriptableRenderer _renderer,RenderPassEvent _event)
         {
             this.renderPassEvent = _event;
-            _renderer.EnqueuePass(this);
             m_Data = _data;
-            m_Renderer = _renderer;
+            _renderer.EnqueuePass(this);
             MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
             foreach (var reflection in SRC_ReflectionConfig.m_Reflections)
                 reflection.SetPropertyBlock(propertyBlock,4);
         }
 
-        public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
+        public override void Configure(CommandBuffer _cmd, RenderTextureDescriptor _cameraTextureDescriptor)
         {
-            cmd.GetTemporaryRT(kSSRTex, cameraTextureDescriptor.width, cameraTextureDescriptor.height, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
+            _cmd.GetTemporaryRT(kSSRTex, _cameraTextureDescriptor.width, _cameraTextureDescriptor.height, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
             ConfigureTarget(kSSRTexID);
-            base.Configure(cmd, cameraTextureDescriptor);
+            base.Configure(_cmd, _cameraTextureDescriptor);
         }
 
-        public override void OnCameraCleanup(CommandBuffer cmd)
+        public override void OnCameraCleanup(CommandBuffer _cmd)
         {
-            base.OnCameraCleanup(cmd);
-            cmd.ReleaseTemporaryRT(kSSRTex);
+            base.OnCameraCleanup(_cmd);
+            _cmd.ReleaseTemporaryRT(kSSRTex);
         }
 
-        public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
+        public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get("Planar Reflection Pass");
-            cmd.Blit(m_Renderer.cameraColorTarget,kSSRTexID,m_Material);
+            cmd.Blit(_renderingData.cameraData.renderer.cameraColorTarget,kSSRTexID,m_Material);
             
-            context.ExecuteCommandBuffer(cmd);
+            _context.ExecuteCommandBuffer(cmd);
             cmd.Clear();
             CommandBufferPool.Release(cmd);
         }
@@ -145,7 +144,6 @@ namespace Rendering.Pipeline
         {
             m_Blur = _blurs;
         }
-
 
         public void EnqueuePass(SRD_ReflectionData _data,ScriptableRenderer _renderer,RenderPassEvent _event)
         {
@@ -184,6 +182,7 @@ namespace Rendering.Pipeline
         public void Dispose()
         {
         }
+
     }
 
     abstract class AReflectionBase:ScriptableRenderPass

@@ -1,31 +1,51 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using Rendering.PostProcess;
 
 namespace Rendering.Pipeline
 {
-    public class SRF_Additional : ScriptableRendererFeature
+    [Serializable]
+    public struct FPipelineExtensionParameters
+    {
+        [Header("Screen Space"),Tooltip("Screen Space World Position Reconstruction")]
+        public bool m_Normal;
+        public bool m_Mask;
+        [MFoldout(nameof(m_Mask), true)] public SRD_MaskData m_MaskData;
+        public bool m_MotionVector;
+        public bool m_Reflection;
+        [MFoldout(nameof(m_Reflection), true)] public SRD_ReflectionData m_PlanarReflection;
+        public PPData_AntiAliasing m_AntiAliasing;
+
+        public static FPipelineExtensionParameters kDefault = new FPipelineExtensionParameters()
+        {
+            m_Normal = false,
+            m_Mask = false,
+            m_MaskData = SRD_MaskData.kDefault,
+            m_MotionVector = false,
+            m_Reflection = false,
+            m_PlanarReflection = SRD_ReflectionData.kDefault,
+            m_AntiAliasing = PPData_AntiAliasing.kDefault,
+        };
+    }
+    
+    public class SRF_PipelineExtension : ScriptableRendererFeature
     {
         public RenderResources m_Resources;
-        [Tooltip("Screen Space World Position Reconstruction")]
-        public bool m_NormalTexture=false;
-
-        public bool m_Mask = false;
-        [MFoldout(nameof(m_Mask), true)] public SRD_MaskData m_MaskData = SRD_MaskData.kDefault;
-        public bool m_CameraReflectionTexture=false;
-        [MFoldout(nameof(m_CameraReflectionTexture), true)] public SRD_ReflectionData m_PlanarReflectionData = SRD_ReflectionData.kDefault;
+        public FPipelineExtensionParameters m_Data = FPipelineExtensionParameters.kDefault;
         
         private SRP_GlobalParameters m_GlobalParameters;
-        private SRP_NormalTexture m_ScreenSpaceNormal;
-        private SRP_MaskTexture m_ScreenSpaceMaskTexture;
+        private SRP_NormalTexture m_Normal;
+        private SRP_MaskTexture m_Mask;
+        private SRP_MotionVectorTexture m_MotionVectorTexture;
+        private SRP_Reflection m_Reflection;
 
-        public PPData_AntiAliasing m_AntiAliasing = PPData_AntiAliasing.kDefault;
-        private SRP_TAAPass m_TAAPass;
-        private PostProcess_AntiAliasing m_AntiAliasingPostProcess;
+        private SRP_TAAPass m_TAA;
         private SRP_ComponentBasedPostProcess m_OpaquePostProcess;
         private SRP_ComponentBasedPostProcess m_ScreenPostProcess;
-        private SRP_Reflection m_Reflection;
+        private PostProcess_AntiAliasing m_AntiAliasingPostProcess;
+        private ISRPBase[] m_Passes;
 
         public override void Create()
         {
@@ -33,54 +53,58 @@ namespace Rendering.Pipeline
                 return;
 
             m_GlobalParameters = new SRP_GlobalParameters() { renderPassEvent= RenderPassEvent.BeforeRendering };
-            m_TAAPass = new SRP_TAAPass() { renderPassEvent = RenderPassEvent.BeforeRenderingOpaques - 1 };
-            m_ScreenSpaceMaskTexture = new SRP_MaskTexture() { renderPassEvent = RenderPassEvent.BeforeRenderingOpaques };
-            m_ScreenSpaceNormal = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox };
-            m_Reflection = new SRP_Reflection(m_PlanarReflectionData, RenderPassEvent.AfterRenderingSkybox + 1);
+            m_TAA = new SRP_TAAPass() { renderPassEvent = RenderPassEvent.BeforeRenderingOpaques - 1 };
+            m_MotionVectorTexture = new SRP_MotionVectorTexture() {renderPassEvent = RenderPassEvent.BeforeRenderingOpaques - 1};
+            m_Mask = new SRP_MaskTexture() { renderPassEvent = RenderPassEvent.BeforeRenderingOpaques };
+            m_Normal = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox };
+            m_Reflection = new SRP_Reflection(m_Data.m_PlanarReflection, RenderPassEvent.AfterRenderingSkybox + 1);
             
             m_OpaquePostProcess=new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 2 };
             m_ScreenPostProcess=new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing + 1 };
-            m_AntiAliasingPostProcess = new PostProcess_AntiAliasing(m_AntiAliasing,m_TAAPass);
+            m_AntiAliasingPostProcess = new PostProcess_AntiAliasing(m_Data.m_AntiAliasing,m_TAA);
+
+            m_Passes = new ISRPBase[] {m_GlobalParameters,
+                m_Normal,m_Mask,m_MotionVectorTexture,m_Reflection
+                ,m_TAA,m_OpaquePostProcess,m_ScreenPostProcess};
         }
 
-        protected override void Dispose(bool disposing)
+        protected override void Dispose(bool _disposing)
         {
-            base.Dispose(disposing);
-            m_TAAPass.Dispose();
+            base.Dispose(_disposing);
             m_AntiAliasingPostProcess.Dispose();
-            m_Reflection.Dispose();
-            m_ScreenSpaceNormal.Dispose();
-            m_ScreenSpaceMaskTexture.Dispose();
-            m_OpaquePostProcess.Dispose();
-            m_ScreenPostProcess.Dispose();
-            m_GlobalParameters.Dispose();
+            m_Passes.Traversal(_p=>_p.Dispose());
         }
 
-        public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
+        public override void AddRenderPasses(ScriptableRenderer _renderer, ref RenderingData _renderingData)
         {
             if (!m_Resources)
                 return;
             
-            if (renderingData.cameraData.isPreviewCamera)
+            if (_renderingData.cameraData.isPreviewCamera)
                 return;
 
-            bool cameraNormalTexture = m_NormalTexture;
-            bool cameraReflectionTexture = renderingData.cameraData.isSceneViewCamera || m_CameraReflectionTexture;
-            if(renderingData.cameraData.camera.TryGetComponent(out SRC_CameraConfig param))
+            bool mask = m_Data.m_Mask;
+            bool normal = m_Data.m_Normal;
+            bool motionVector = m_Data.m_MotionVector;
+            bool reflection = _renderingData.cameraData.isSceneViewCamera || m_Data.m_Reflection;
+            if(_renderingData.cameraData.camera.TryGetComponent(out SRC_CameraConfig param))
             {
-                cameraNormalTexture = param.m_Normal.IsEnabled(cameraNormalTexture);
-                cameraReflectionTexture = param.m_Reflection.IsEnabled(cameraReflectionTexture);
+                normal = param.m_Normal.IsEnabled(normal);
+                reflection = param.m_Reflection.IsEnabled(reflection);
+                motionVector = param.m_MotionVector.IsEnabled(motionVector);
             }
             
-            renderer.EnqueuePass(m_GlobalParameters);
-            EnqueuePostProcess(renderer,ref renderingData,param);
-
-            if(m_Mask)
-                renderer.EnqueuePass(m_ScreenSpaceMaskTexture.Setup(m_MaskData,renderer));
-            if (cameraNormalTexture)
-                renderer.EnqueuePass(m_ScreenSpaceNormal);
-            if (cameraReflectionTexture)
-                m_Reflection.EnqueuePass(renderer);
+            if(mask)
+                _renderer.EnqueuePass(m_Mask.Setup(m_Data.m_MaskData));
+            if (normal)
+                _renderer.EnqueuePass(m_Normal);
+            if(motionVector)
+                _renderer.EnqueuePass(m_MotionVectorTexture);
+            if (reflection)
+                m_Reflection.EnqueuePass(_renderer);
+            
+            _renderer.EnqueuePass(m_GlobalParameters);
+            EnqueuePostProcess(_renderer,ref _renderingData,param);
         }
 
         private readonly List<IPostProcessBehaviour> m_PostprocessQueue = new List<IPostProcessBehaviour>();
@@ -91,10 +115,10 @@ namespace Rendering.Pipeline
         {
             m_PostprocessQueue.Clear();
             //Enqueue AntiAliasing
-            if (m_AntiAliasing.mode != EAntiAliasing.None)
+            if (m_Data.m_AntiAliasing.mode != EAntiAliasing.None)
                 m_PostprocessQueue.Add(m_AntiAliasingPostProcess);
-            if(m_AntiAliasing.mode == EAntiAliasing.TAA)
-                _renderer.EnqueuePass(m_TAAPass);
+            if(m_Data.m_AntiAliasing.mode == EAntiAliasing.TAA)
+                _renderer.EnqueuePass(m_TAA);
 
             //Enqueue Global
             if(PostProcessGlobalVolume.HasGlobal)

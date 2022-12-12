@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -31,6 +30,7 @@ public static class TimeScaleController<T> where T : struct
             Time.timeScale = m_BulletTime;
     }
 }
+
 public class AnimationSingleControl
 {
     public Animation m_Animation { get; private set; }
@@ -52,6 +52,7 @@ public class AnimationSingleControl
         m_Animation.Stop();
     }
 }
+
 public class AnimationFrameControl<T> where T : Enum
 {
     struct BoneTransformRecord
@@ -127,6 +128,7 @@ public class AnimationFrameControl<T> where T : Enum
         curClip.SampleAnimation(gameObject, curClip.length * _scale);
     }
 }
+
 public class ParticleControlBase
 {
     public Transform transform { get; private set; }

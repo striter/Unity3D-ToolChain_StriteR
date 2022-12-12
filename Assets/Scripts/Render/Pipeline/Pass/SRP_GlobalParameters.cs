@@ -10,7 +10,7 @@ namespace Rendering.Pipeline
     
         public class SRP_GlobalParameters : ScriptableRenderPass, ISRPBase
         {
-            #region IDs
+        #region IDs
             private static readonly int kFrustumCornersRayBL = Shader.PropertyToID("_FrustumCornersRayBL");
             private static readonly int kFrustumCornersRayBR = Shader.PropertyToID("_FrustumCornersRayBR");
             private static readonly int kFrustumCornersRayTL = Shader.PropertyToID("_FrustumCornersRayTL");
@@ -22,10 +22,10 @@ namespace Rendering.Pipeline
             private static readonly int kOrthoCameraPositionTL = Shader.PropertyToID("_OrthoCameraPosTL");
             private static readonly int kOrthoCameraPositionTR = Shader.PropertyToID("_OrthoCameraPosTR");
 
-            private static readonly int kMatrixVP = Shader.PropertyToID("_Matrix_VP");
-            private static readonly int kMatrixI_VP=Shader.PropertyToID("_Matrix_I_VP");
             private static readonly int kMatrixV = Shader.PropertyToID("_Matrix_V");
-            #endregion
+            private static readonly int kMatrix_VP = Shader.PropertyToID("_Matrix_VP");
+            private static readonly int kMatrix_I_VP=Shader.PropertyToID("_Matrix_I_VP");
+        #endregion
 
             public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
             {
@@ -52,10 +52,12 @@ namespace Rendering.Pipeline
                 Matrix4x4 view = _renderingData.cameraData.GetViewMatrix();
                 Matrix4x4 vp = projection * view;
 
-                Shader.SetGlobalMatrix(kMatrixVP,vp);
-                Shader.SetGlobalMatrix(kMatrixI_VP,vp.inverse);
+                Shader.SetGlobalMatrix(kMatrix_VP,vp);
+                Shader.SetGlobalMatrix(kMatrix_I_VP,vp.inverse);
                 Shader.SetGlobalMatrix(kMatrixV,view);
             }
+
+
             public void Dispose()
             {
             }

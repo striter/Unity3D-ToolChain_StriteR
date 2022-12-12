@@ -71,6 +71,7 @@ namespace Rendering.PostProcess
         [MFoldout(nameof(mode),EAntiAliasing.FXAA)] [Range(.01f,1f)] public float m_RelativeSkip;
         [MFoldout(nameof(mode),EAntiAliasing.FXAA, nameof(fxaa),new object[]{EFXAA.SubPixel,EFXAA.Both})] [Range(.1f,2f)] public float m_SubPixelBlend;
         
+        [MFoldout(nameof(mode),EAntiAliasing.TAA)] [Range(0,1)] public float blend;
         public bool Validate() =>mode != EAntiAliasing.None;
         public static PPData_AntiAliasing kDefault = new PPData_AntiAliasing()
         {
@@ -84,7 +85,7 @@ namespace Rendering.PostProcess
     }
 #endregion
 
-    public class SRP_TAAPass : ScriptableRenderPass
+    public class SRP_TAAPass : ScriptableRenderPass,ISRPBase
     {
         private const int kJitterAmount = 16;
         private uint jitterIndex = 0;
@@ -98,8 +99,6 @@ namespace Rendering.PostProcess
             private static uint historyBufferIndex = 0u;
             public RenderTextureDescriptor descriptor;
             public RenderTexture buffer;
-            public float4x4 viewProjection;
-            public float2 jitter;
 
             static RenderTextureDescriptor OutputDescriptor(RenderTextureDescriptor _descriptor)
             {
@@ -130,6 +129,7 @@ namespace Rendering.PostProcess
             m_FirstBuffer = true;
         }
 
+
         public void Dispose()
         {
             foreach (var buffer in m_Buffers.Values)
@@ -145,7 +145,6 @@ namespace Rendering.PostProcess
             var jitter = kJitters[jitterIndex];
             var projectionMatrix =  camera.projectionMatrix;
             var viewMatrix = camera.worldToCameraMatrix;
-            var viewProjectionMatrix =  projectionMatrix * viewMatrix;
             projectionMatrix.m02 += jitter.x / camera.pixelWidth;
             projectionMatrix.m12 += jitter.y / camera.pixelHeight;
 
@@ -160,39 +159,32 @@ namespace Rendering.PostProcess
 
             if (!m_Buffers.ContainsKey(instanceID))
             {                
-                currentBuffer = new TAAHistoryBuffer(_renderingData.cameraData.cameraTargetDescriptor){viewProjection = viewProjectionMatrix,jitter = jitter};
+                currentBuffer = new TAAHistoryBuffer(_renderingData.cameraData.cameraTargetDescriptor);
                 m_Buffers.Add(instanceID,currentBuffer);
+                m_FirstBuffer = true;
             }
             
             var cmd = CommandBufferPool.Get("TAA PrePass");
-            cmd.SetViewProjectionMatrices(camera.worldToCameraMatrix, projectionMatrix);
+            cmd.SetViewProjectionMatrices(viewMatrix, projectionMatrix);
             cmd.SetGlobalTexture(kHistoryBufferID,currentBuffer.buffer);
-            cmd.SetGlobalFloat("_Blend",.1f);
-            cmd.SetGlobalMatrix("_Matrix_VP_Pre",currentBuffer.viewProjection);
-            cmd.SetGlobalVector("_Jitter_Pre",currentBuffer.jitter.to4());
-            cmd.SetGlobalVector("_Jitter_Cur",jitter.to4());
-            
-            currentBuffer.viewProjection = viewProjectionMatrix;
-            currentBuffer.jitter = jitter;
             
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }
 
-        public void ExecuteBuffer(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _descriptor,
+        public void ExecuteBuffer(CommandBuffer _cmd, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _descriptor,
             ref PPData_AntiAliasing _data,Material _material,ref RenderingData _renderingData)
         {
             if (m_FirstBuffer)
             {
-                _buffer.Blit(_src,currentBuffer.buffer);
+                _cmd.Blit(_src,currentBuffer.buffer);
                 m_FirstBuffer = false;
             }
-
-                
             
-            _buffer.Blit(_src,_dst,_material,1);
-            _buffer.Blit(_dst,currentBuffer.buffer);
-            _buffer.SetViewProjectionMatrices(_renderingData.cameraData.camera.worldToCameraMatrix,_renderingData.cameraData.camera.projectionMatrix);
+            _cmd.SetGlobalFloat("_Blend",_data.blend);
+            _cmd.Blit(_src,_dst,_material,1);
+            _cmd.Blit(_dst,currentBuffer.buffer);
+            _cmd.SetViewProjectionMatrices(_renderingData.cameraData.camera.worldToCameraMatrix,_renderingData.cameraData.camera.projectionMatrix);
             jitterIndex = (jitterIndex + 1) % kJitterAmount;
         }
     }

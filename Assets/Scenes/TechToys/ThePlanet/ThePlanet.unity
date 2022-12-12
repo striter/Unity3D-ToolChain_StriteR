@@ -31041,14 +31041,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 848409041}
-  m_LocalRotation: {x: 0.052670833, y: -0.28445798, z: 0.017720675, w: 0.9570765}
-  m_LocalPosition: {x: 1.8763406, y: 51.192787, z: -3.5317118}
+  m_LocalRotation: {x: 0.2618677, y: 0.12786774, z: -0.03593735, w: 0.9559204}
+  m_LocalPosition: {x: 20.9, y: 125.68042, z: -134.04547}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 529285521}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 19.63, z: 0}
 --- !u!114 &848409043
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48602,7 +48602,7 @@ MonoBehaviour:
     m_MixGreen: {x: 0, y: 0, z: 0}
     m_MixBlue: {x: 0, y: 0, z: 0}
     m_UseMaskTexture: 0
-    m_Bloom: 1
+    m_Bloom: 0
     m_BloomData:
       m_SampleMode: 0
       m_Threshold: 1.44

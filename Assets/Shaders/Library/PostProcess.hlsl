@@ -33,6 +33,17 @@ v2f_img vert_img(a2v_img v)
     return o;
 }
 
+v2f_img vert_img_procedural( uint vertexID:SV_VertexID)
+{
+    v2f_img o;
+    o.positionCS = GetFullScreenTriangleVertexPosition(vertexID);
+    o.uv = GetFullScreenTriangleTexCoord(vertexID);
+    return o;
+}
 #include "PostProcess/Color.hlsl"
 #include "PostProcess/Depth.hlsl"
 #include "PostProcess/Normal.hlsl"
+#include "PostProcess/MotionVector.hlsl"
+
+
+

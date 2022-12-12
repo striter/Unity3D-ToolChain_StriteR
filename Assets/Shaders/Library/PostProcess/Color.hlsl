@@ -36,3 +36,23 @@ half3 DecodeFromRGBM(half4 rgbm)
 {
     return rgbm.rgb*rgbm.w*kRGBMEncodeRange;
 }
+
+float3 RGBToYCoCg(float3 color)
+{
+    float3x3 mat = {
+        .25,  .5, .25,
+        .5,   0,  -.5,
+        -.25, .5, -.25
+    };
+    return mul(mat, color);
+}
+
+float3 YCoCgToRGB(float3 color)
+{
+    float3x3 mat = {
+        1,  1,  -1,
+        1,  0,   1,
+        1, -1,  -1
+    };
+    return mul(mat, color);
+}

@@ -71,35 +71,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
-  m_NormalTexture: 1
-  m_Mask: 1
-  m_MaskData:
-    renderMask: 256
-    color: {r: 1, g: 1, b: 1, a: 1}
-    m_Outline: 0
-    extendWidth: 0.1
-    outlineVertex: 0
-  m_CameraReflectionTexture: 1
-  m_PlanarReflectionData:
-    m_Type: 1
-    m_Sample: 4
-    m_Recull: 1
-    m_AdditionalLightcount: 0
-    m_IncludeTransparent: 0
-    m_DownSample: 2
-    m_BlurParam:
-      m_BlurType: 2
-      m_BlurSize: 0.05
-      m_Iteration: 2
+  m_Data:
+    m_Normal: 0
+    m_Mask: 0
+    m_MaskData:
+      renderMask: 0
+      color: {r: 0, g: 0, b: 0, a: 0}
+      m_Outline: 0
+      extendWidth: 0
+      outlineVertex: 0
+    m_MotionVector: 1
+    m_Reflection: 1
+    m_PlanarReflection:
+      m_Type: 1
+      m_Sample: 1
+      m_Recull: 0
+      m_AdditionalLightcount: 0
+      m_IncludeTransparent: 0
       m_DownSample: 1
-      m_Angle: 0
-      m_Vector: {x: 0, y: 0}
-      m_Attenuation: 0.9
-  m_AntiAliasing:
-    mode: 2
-    fxaa: 2
-    m_AdditionalSample: 1
-    m_UseDepth: 1
-    m_ContrastSkip: 0.25
-    m_RelativeSkip: 0.317
-    m_SubPixelBlend: 2
+      m_BlurParam:
+        m_BlurType: 2
+        m_BlurSize: 0.4
+        m_Iteration: 3
+        m_DownSample: 2
+        m_Angle: 0
+        m_Vector: {x: 0, y: 0}
+        m_Attenuation: 0
+    m_AntiAliasing:
+      mode: 2
+      fxaa: 2
+      m_AdditionalSample: 1
+      m_UseDepth: 1
+      m_ContrastSkip: 0.61
+      m_RelativeSkip: 0.22
+      m_SubPixelBlend: 2
+      blend: 0.1

@@ -23,7 +23,7 @@ namespace Rendering.Pipeline
         }
     }
     
-    public class SRP_LightMask : ScriptableRenderPass,ISRPBase
+    public class SRP_LightMask : ScriptableRenderPass
     {
         private static readonly string kKeyword = "_LIGHTVOLUME";
         private ScriptableRenderer m_Renderer;
@@ -33,9 +33,6 @@ namespace Rendering.Pipeline
             return this;
         }
         
-        public void Dispose()
-        {
-        }
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
             cameraTextureDescriptor.colorFormat = RenderTextureFormat.ARGB32;

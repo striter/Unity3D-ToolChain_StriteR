@@ -1,4 +1,5 @@
-﻿TEXTURE2D( _CameraDepthTexture); SAMPLER(sampler_CameraDepthTexture);
+﻿
+TEXTURE2D( _CameraDepthTexture); SAMPLER(sampler_CameraDepthTexture);
 float4 _CameraDepthTexture_TexelSize;
 
 float SampleRawDepth(float2 uv){return SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture,uv).r;}

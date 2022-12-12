@@ -146,23 +146,39 @@ Shader "Hidden/PostProcess/AntiAliasing"
 			TEXTURE2D(_HistoryBuffer);SAMPLER(sampler_HistoryBuffer);
 			float _Blend;
 
-			float4x4 _Matrix_VP_Pre;
-			float2 _Jitter_Pre;
-			float2 _Jitter_Cur;
-			
-			float2 Reprojection(float3 _worldPos)
+			void SampleMinMax(float2 uv,inout float3 _min,inout float3 _max)
 			{
-				float4 p = mul(_Matrix_VP_Pre,float4(_worldPos,1));
-				float2 uv = p.xy/p.w * .5 + .5;
-				return  uv;
+				float3 color = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv).rgb;
+				color = RGBToYCoCg(color);
+				_min = min(_min,color);
+				_max = max(_max,color);
 			}
 			
 			half4 frag (v2f_img i) : SV_Target
 			{
-				half4 current = SampleMainTex(i.uv);
+				float2 motionVector = SampleMotionVector(i.uv);
 				
-				half4 history = SAMPLE_TEXTURE2D(_HistoryBuffer,sampler_HistoryBuffer,Reprojection( TransformNDCToWorld(i.uv)));
-				return lerp(history,current,_Blend);
+				half3 current = SampleMainTex(i.uv).rgb;
+				float2 historyUV = i.uv-motionVector;
+				half3 history = SAMPLE_TEXTURE2D(_HistoryBuffer,sampler_HistoryBuffer,historyUV).rgb;
+				history = lerp(current,history,step(max(historyUV),1) * step(0,min(historyUV))); //Clamp
+
+				//Neighbor Clamping
+				half3 minCur = RGBToYCoCg(current);
+				half3 maxCur = minCur;
+				SampleMinMax(i.uv + float2(-1,1)*_MainTex_TexelSize.xy,minCur,maxCur);
+				SampleMinMax(i.uv + float2(-1,0)*_MainTex_TexelSize.xy,minCur,maxCur);
+				SampleMinMax(i.uv + float2(-1,1)*_MainTex_TexelSize.xy,minCur,maxCur);
+				SampleMinMax(i.uv + float2(0,-1)*_MainTex_TexelSize.xy,minCur,maxCur);
+				SampleMinMax(i.uv + float2(0,1)*_MainTex_TexelSize.xy,minCur,maxCur);
+				SampleMinMax(i.uv + float2(1,-1)*_MainTex_TexelSize.xy,minCur,maxCur);
+				SampleMinMax(i.uv + float2(1,0)*_MainTex_TexelSize.xy,minCur,maxCur);
+				SampleMinMax(i.uv + float2(1,1)*_MainTex_TexelSize.xy,minCur,maxCur);
+				history = RGBToYCoCg(history);
+				history = clamp(history,minCur,maxCur);
+				history = YCoCgToRGB(history);
+				
+				return half4(lerp(current,history,1 - _Blend),1);
 			}
 			ENDHLSL
 		}

@@ -20,7 +20,7 @@ namespace Rendering.Pipeline
             m_Effects.Sort((a, b) => a.Event - b.Event);
             return this;
         }
-        
+
         public void Dispose()
         {
         }

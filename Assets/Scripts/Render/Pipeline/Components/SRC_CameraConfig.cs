@@ -9,6 +9,7 @@ namespace Rendering.Pipeline
     {
         public CameraOverrideOption m_Normal = CameraOverrideOption.UsePipelineSettings;
         public CameraOverrideOption m_Reflection = CameraOverrideOption.UsePipelineSettings;
+        public CameraOverrideOption m_MotionVector = CameraOverrideOption.UsePipelineSettings;
         public bool m_PostProcessPreview = false;
     }
 }

@@ -29,5 +29,7 @@ MonoBehaviour:
   - {fileID: 4800000, guid: a0c450d9116574b498f39ec4637aeb0b, type: 3}
   - {fileID: 4800000, guid: 9f9a4f19364097c4185667a2affd27f2, type: 3}
   - {fileID: 4800000, guid: ea5e8b0900aeddd40b9c7410c58736f7, type: 3}
+  - {fileID: 4800000, guid: 592f33f0e371a454e8bbdad68efa1870, type: 3}
+  - {fileID: 4800000, guid: af107aa15f28f1643b5c68c5521a7234, type: 3}
   m_ComputeShaders:
   - {fileID: 7200000, guid: f5a23fffb62c7304f8c65cf797424e7b, type: 3}
