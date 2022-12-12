@@ -48,6 +48,7 @@ Shader "Hidden/PostProcess/AntiAliasing"
 				half minAA=min(m,n,s,e,w);
 				half contrast=maxAA-minAA;
 				half contrastThreshold=max(_FXAAContrastSkip,_FXAARelativeSkip*maxAA);
+				
 				if(contrast<contrastThreshold)
 					return SampleMainTex(uv).rgb;
 				
@@ -139,7 +140,7 @@ Shader "Hidden/PostProcess/AntiAliasing"
 		
 		Pass
 		{
-			Name "TAA_Blend"
+			Name "TAA Blend Pass"
 			HLSLPROGRAM
 			#pragma vertex vert_img
 			#pragma fragment frag

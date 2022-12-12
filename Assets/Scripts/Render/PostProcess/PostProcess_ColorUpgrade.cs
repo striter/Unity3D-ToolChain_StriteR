@@ -52,7 +52,11 @@ namespace Rendering.PostProcess
         
         [MTitle]public bool m_Bloom;
         [MFoldout(nameof(m_Bloom),true)] public Data_Bloom m_BloomData;
-        public bool Validate() => 
+
+        [MTitle] public bool motionBlur;
+        [MFoldout(nameof(motionBlur), true)] [Clamp(1,8)]public int iteration;
+        [MFoldout(nameof(motionBlur), true)] [Range(-5,5)] public float intensity;
+        public bool Validate() => motionBlur ||
                                   m_LUT  || 
                                   m_BSC  || 
                                   m_ChannelMix  || 
@@ -86,6 +90,10 @@ namespace Rendering.PostProcess
                 m_Blur = PPData_Blurs.kDefault,
                 m_BloomDebug = false,
             },
+            
+            motionBlur =  false,
+            iteration = 2,
+            intensity = 1,
         };
 
         [Serializable]
@@ -115,29 +123,33 @@ namespace Rendering.PostProcess
     public class PPCore_ColorUpgrade : PostProcessCore<PPData_ColorUpgrade>
     {
         #region ShaderProperties
-        const string KW_LUT = "_LUT";
-        static readonly int ID_LUT = Shader.PropertyToID("_LUTTex");
-        readonly int ID_LUTCellCount = Shader.PropertyToID("_LUTCellCount");
-        readonly int ID_LUTWeight = Shader.PropertyToID("_LUTWeight");
+        const string kLUT = "_LUT";
+        static readonly int kLUTTex = Shader.PropertyToID("_LUTTex");
+        readonly int kLUTCellCount = Shader.PropertyToID("_LUTCellCount");
+        readonly int kLUTWeight = Shader.PropertyToID("_LUTWeight");
 
-        const string KW_BSC = "_BSC";
-        static readonly int ID_Brightness = Shader.PropertyToID("_Brightness");
-        static readonly int ID_Saturation = Shader.PropertyToID("_Saturation");
-        static readonly int ID_Contrast = Shader.PropertyToID("_Contrast");
+        const string kBSC = "_BSC";
+        static readonly int kBrightness = Shader.PropertyToID("_Brightness");
+        static readonly int kSaturation = Shader.PropertyToID("_Saturation");
+        static readonly int kContrast = Shader.PropertyToID("_Contrast");
 
-        const string KW_MixChannel = "_CHANNEL_MIXER";
-        static readonly int ID_MixRed = Shader.PropertyToID("_MixRed");
-        static readonly int ID_MixGreen = Shader.PropertyToID("_MixGreen");
-        static readonly int ID_MixBlue = Shader.PropertyToID("_MixBlue");
+        const string kMixChannel = "_CHANNEL_MIXER";
+        static readonly int kMixRed = Shader.PropertyToID("_MixRed");
+        static readonly int kMixGreen = Shader.PropertyToID("_MixGreen");
+        static readonly int kMixBlue = Shader.PropertyToID("_MixBlue");
         
-        static readonly int RT_ID_Sample = Shader.PropertyToID("_Bloom_Sample");
-        static readonly int RT_ID_Blur = Shader.PropertyToID("_Bloom_Blur");
+        static readonly int kSampleID = Shader.PropertyToID("_Bloom_Sample");
+        static readonly int kBlurID = Shader.PropertyToID("_Bloom_Blur");
 
+        private const string kMotionBlur = "_MOTIONBLUR";
+        private static readonly int kMotionBlurIntensity = Shader.PropertyToID("_Intensity");
+        private static readonly int kMotionBlurIteration = Shader.PropertyToID("_Iteration");
+        
+        const string kBloom = "_BLOOM";
+        static readonly RenderTargetIdentifier RT_Sample = new RenderTargetIdentifier(kSampleID);
+        static readonly RenderTargetIdentifier RT_Blur = new RenderTargetIdentifier(kBlurID);
+        
         static readonly string kUseMaskTexture = "_MASK";
-        
-        const string KW_BLOOM = "_BLOOM";
-        static readonly RenderTargetIdentifier RT_Sample = new RenderTargetIdentifier(RT_ID_Sample);
-        static readonly RenderTargetIdentifier RT_Blur = new RenderTargetIdentifier(RT_ID_Blur);
         #endregion
         
         enum EPassIndex
@@ -161,31 +173,37 @@ namespace Rendering.PostProcess
         {
             base.OnValidate(ref _data);
 
-            if (m_Material.EnableKeyword(KW_LUT, _data.m_LUT))
+            if (m_Material.EnableKeyword(kLUT, _data.m_LUT))
             {
-                m_Material.SetTexture(ID_LUT, _data.m_LUTTex);
-                m_Material.SetInt(ID_LUTCellCount, (int) _data.m_LUTCellCount);
-                m_Material.SetFloat(ID_LUTWeight,_data.m_LUTWeight);
+                m_Material.SetTexture(kLUTTex, _data.m_LUTTex);
+                m_Material.SetInt(kLUTCellCount, (int) _data.m_LUTCellCount);
+                m_Material.SetFloat(kLUTWeight,_data.m_LUTWeight);
             }
 
-            if ( m_Material.EnableKeyword(KW_BSC, _data.m_BSC))
+            if ( m_Material.EnableKeyword(kBSC, _data.m_BSC))
             {
-                m_Material.SetFloat(ID_Brightness, _data.m_Brightness);
-                m_Material.SetFloat(ID_Saturation, _data.m_Saturation);
-                m_Material.SetFloat(ID_Contrast, _data.m_Contrast);
+                m_Material.SetFloat(kBrightness, _data.m_Brightness);
+                m_Material.SetFloat(kSaturation, _data.m_Saturation);
+                m_Material.SetFloat(kContrast, _data.m_Contrast);
             }
 
-            if ( m_Material.EnableKeyword(KW_MixChannel, _data.m_ChannelMix))
+            if ( m_Material.EnableKeyword(kMixChannel, _data.m_ChannelMix))
             {
-                m_Material.SetVector(ID_MixRed, _data.m_MixRed + Vector3.right);
-                m_Material.SetVector(ID_MixGreen, _data.m_MixGreen + Vector3.up);
-                m_Material.SetVector(ID_MixBlue, _data.m_MixBlue + Vector3.forward);
+                m_Material.SetVector(kMixRed, _data.m_MixRed + Vector3.right);
+                m_Material.SetVector(kMixGreen, _data.m_MixGreen + Vector3.up);
+                m_Material.SetVector(kMixBlue, _data.m_MixBlue + Vector3.forward);
             }
 
             m_Material.EnableKeyword(kUseMaskTexture, _data.m_UseMaskTexture);
 
-            if (m_Material.EnableKeyword(KW_BLOOM, _data.m_Bloom))
+            if (m_Material.EnableKeyword(kBloom, _data.m_Bloom))
                 _data.m_BloomData.Apply(m_Material, m_CoreBlurs);
+
+            if (m_Material.EnableKeyword(kMotionBlur, _data.motionBlur))
+            {
+                m_Material.SetInt(kMotionBlurIteration,_data.iteration);
+                m_Material.SetFloat(kMotionBlurIntensity,_data.intensity);
+            }
         }
 
 
@@ -205,7 +223,7 @@ namespace Rendering.PostProcess
             if (bloomData.m_SampleMode == EBloomSample.Redraw)
             {
                 CommandBuffer buffer = CommandBufferPool.Get("Bloom Redraw Execute");
-                buffer.SetRenderTarget(RT_ID_Sample);
+                buffer.SetRenderTarget(kSampleID);
                 buffer.ClearRenderTarget(true, true, Color.black);
                 _context.ExecuteCommandBuffer(buffer);
 
@@ -237,8 +255,8 @@ namespace Rendering.PostProcess
             ref var data = ref _data.m_BloomData;
             _descriptor.mipCount = 0;
 
-            _buffer.GetTemporaryRT(RT_ID_Sample, _descriptor, FilterMode.Bilinear);
-            _buffer.GetTemporaryRT(RT_ID_Blur, _descriptor ,FilterMode.Bilinear);
+            _buffer.GetTemporaryRT(kSampleID, _descriptor, FilterMode.Bilinear);
+            _buffer.GetTemporaryRT(kBlurID, _descriptor ,FilterMode.Bilinear);
         }
 
 
@@ -246,8 +264,8 @@ namespace Rendering.PostProcess
         {
             if (!_data.m_Bloom)
                 return;
-            _buffer.ReleaseTemporaryRT(RT_ID_Sample);
-            _buffer.ReleaseTemporaryRT(RT_ID_Blur);
+            _buffer.ReleaseTemporaryRT(kSampleID);
+            _buffer.ReleaseTemporaryRT(kBlurID);
         }
     }
 }

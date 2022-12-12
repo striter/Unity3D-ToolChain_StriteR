@@ -74,3 +74,19 @@ half3 Saturation(half3 c,half _saturation)
     half lum = RGBtoLuminance(c);
     return lum.xxx + _saturation.xxx * (c - lum.xxx);
 }
+
+static const float kRGBMEncodeRange=8.0;
+static const float kInvRGBMRange=.125;
+static const float k8Byte=255.;
+static const float kInv8Byte=0.003921568627451;
+half4 EncodeToRGBM(float3 color)
+{
+    color*=kInvRGBMRange;
+    half m=max(color);
+    m=ceil(m*k8Byte)*kInv8Byte;
+    return saturate(half4(color*rcp(m),m));
+}
+half3 DecodeFromRGBM(half4 rgbm)
+{
+    return rgbm.rgb*rgbm.w*kRGBMEncodeRange;
+}

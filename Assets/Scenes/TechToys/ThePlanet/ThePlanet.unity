@@ -48602,7 +48602,7 @@ MonoBehaviour:
     m_MixGreen: {x: 0, y: 0, z: 0}
     m_MixBlue: {x: 0, y: 0, z: 0}
     m_UseMaskTexture: 0
-    m_Bloom: 0
+    m_Bloom: 1
     m_BloomData:
       m_SampleMode: 0
       m_Threshold: 1.44
