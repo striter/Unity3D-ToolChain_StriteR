@@ -91,7 +91,7 @@ namespace Rendering.PostProcess
         private uint jitterIndex = 0;
 
         private int kHistoryBufferID;
-        private static readonly float2[] kJitters = SamplePattern2D.Halton(kJitterAmount);
+        private static readonly float2[] kJitters = ULowDiscrepancySequences.Halton2D(kJitterAmount);
         private static readonly Dictionary<int, TAAHistoryBuffer> m_Buffers = new Dictionary<int, TAAHistoryBuffer>();
         
         class TAAHistoryBuffer

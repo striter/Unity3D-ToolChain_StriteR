@@ -11,6 +11,7 @@ namespace ExampleScenes.Algorithm.SamplePatternVisualize
         Stratified,
         Halton,
         HammersLey,
+        Sobol,
     }
     
     public class SamplePatternVisualize : MonoBehaviour
@@ -25,16 +26,19 @@ namespace ExampleScenes.Algorithm.SamplePatternVisualize
             switch (patternType)
             {
                 case ESamplePattern.Grid:
-                    patterns=SamplePattern2D.Grid(patternWidth,patternHeight);
+                    patterns= ULowDiscrepancySequences.Grid2D(patternWidth,patternHeight);
                     break;
                 case ESamplePattern.Stratified:
-                    patterns=SamplePattern2D.Stratified(patternWidth,patternHeight,true);
+                    patterns= ULowDiscrepancySequences.Stratified2D(patternWidth,patternHeight,true);
                     break;
                 case ESamplePattern.Halton:
-                    patterns = SamplePattern2D.Halton((uint)(patternWidth * patternHeight));
+                    patterns = ULowDiscrepancySequences.Halton2D((uint)(patternWidth * patternHeight));
                     break;
                 case ESamplePattern.HammersLey:
-                    patterns = SamplePattern2D.Hammersley((uint)(patternWidth * patternHeight));
+                    patterns = ULowDiscrepancySequences.Hammersley2D((uint)(patternWidth * patternHeight));
+                    break;
+                case ESamplePattern.Sobol:
+                    patterns = ULowDiscrepancySequences.Sobol2D((uint) (patternWidth * patternHeight));
                     break;
             }
         }
