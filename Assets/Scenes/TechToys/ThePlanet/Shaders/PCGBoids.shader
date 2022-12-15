@@ -56,8 +56,8 @@ Shader "PCG/Bird"
             #pragma multi_compile_fog
 
 			#pragma multi_compile_instancing
-			#include "Assets/Shaders/Library/BRDF/BRDFInput.hlsl"
-			#include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
 			#include "PCGInclude.hlsl"
 			
 			TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
@@ -66,7 +66,7 @@ Shader "PCG/Bird"
 			#define _NORMALOFF
 			void GetPBRParameters(inout float g,inout float m,inout float a) { g = 0.5; m = 0; a = 1; }
 			#define GET_PBRPARAM(glossiness,metallic,ao) GetPBRParameters(glossiness,metallic,ao)
-			#include "Assets/Shaders/Library/BRDF/BRDFLighting.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			
             #pragma target 3.5

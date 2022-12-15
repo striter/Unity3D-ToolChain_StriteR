@@ -232,10 +232,8 @@ namespace UnityEditor.Extensions
             Vector4 srcValue = prop.vectorValue;
             Vector3 waveLength = srcValue;
             float strength = srcValue.w;
-            // waveLength = EditorGUI.Vector3Field(position.ResizeY(position.y-20), label,waveLength );
-            // strength = EditorGUI.Slider(position.MoveY(position.y-20).ResizeY(20),"Strength",strength,0,10);
-            // prop.vectorValue = waveLength.ToVector4(strength);
-            MaterialEditor.GetMaterialProperty(editor.targets, keyword).vectorValue = new Vector3(Mathf.Pow(400f/waveLength.x,4),Mathf.Pow(400f/waveLength.y,4),Mathf.Pow(400f/waveLength.z,4))*strength;
+            MaterialEditor.GetMaterialProperty(editor.targets, keyword).vectorValue = new Vector3(
+                Mathf.Pow(400f/waveLength.x,4),Mathf.Pow(400f/waveLength.y,4),Mathf.Pow(400f/waveLength.z,4))*strength;
         }
     }
     

@@ -23,8 +23,8 @@ Shader "Game/Skybox/AtomsphericScattering"
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "Assets/Shaders/Library/Lighting.hlsl"
             #include "Assets/Shaders/Library/Geometry.hlsl"
-            #include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
-            #include "Assets/Shaders/Library/BRDF/PhysicsMethods.hlsl"
+            #include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
+            #include "Assets/Shaders/Library/PBR/PhysicsMethods.hlsl"
 			#pragma multi_compile_fragment _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHTS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT

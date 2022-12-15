@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Rendering.PostProcess
 {
 
-    public class PostProcess_ColorDegrade : PostProcessBehaviour<PPCore_ColorDegrade, PPData_ColorDegrade>
+    public class PostProcess_ColorDegrade : PostProcessBehaviour<FColorDegradeCore, DColorDegrade>
     {
         public override bool m_OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.ColorDegrade;
@@ -15,7 +15,7 @@ namespace Rendering.PostProcess
         _SCREENCUT_SCALED=2,
     }
     [Serializable]
-    public struct PPData_ColorDegrade:IPostProcessParameter
+    public struct DColorDegrade:IPostProcessParameter
     {
         [Header("UVs")]
         [MTitle] public EVHSScreenCut m_ScreenCut;
@@ -60,7 +60,7 @@ namespace Rendering.PostProcess
 
         public bool Validate() => m_ScreenCut != EVHSScreenCut.None || m_PixelDistort || m_LineDistort ||
                                   m_VortexDistort || m_ColorBleed || m_Grain || m_Vignette;
-        public static readonly PPData_ColorDegrade kDefault = new PPData_ColorDegrade()
+        public static readonly DColorDegrade kDefault = new DColorDegrade()
         {
             m_ScreenCut = EVHSScreenCut._SCREENCUT_HARD,
             m_ScreenCutDistance = Vector2.one * 0.1f,
@@ -102,7 +102,7 @@ namespace Rendering.PostProcess
         };
 
     }
-    public class PPCore_ColorDegrade:PostProcessCore<PPData_ColorDegrade>
+    public class FColorDegradeCore:PostProcessCore<DColorDegrade>
     {
         #region ShaderProperties
         static readonly int ID_ScreenCutTarget = Shader.PropertyToID("_ScreenCutTarget");
@@ -144,7 +144,7 @@ namespace Rendering.PostProcess
         static readonly int ID_VignetteValue = Shader.PropertyToID("_VignetteValue");
         #endregion
 
-        public override void OnValidate(ref PPData_ColorDegrade _data)
+        public override void OnValidate(ref DColorDegrade _data)
         {
             base.OnValidate(ref _data);
             if(m_Material.EnableKeywords(_data.m_ScreenCut))

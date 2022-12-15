@@ -5,7 +5,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace Rendering.PostProcess
 {
-    public class PostProcess_ColorUpgrade : PostProcessBehaviour<PPCore_ColorUpgrade, PPData_ColorUpgrade>
+    public class PostProcess_ColorUpgrade : PostProcessBehaviour<FColorUpgradeCore, DColorUpgrade>
     {
         public override bool m_OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.ColorUpgrade;
@@ -32,7 +32,7 @@ namespace Rendering.PostProcess
         Redraw,
     }
     [System.Serializable]
-    public struct PPData_ColorUpgrade:IPostProcessParameter
+    public struct DColorUpgrade:IPostProcessParameter
     {
         [MTitle]public bool m_LUT;
         [MFoldout(nameof(m_LUT),true)] public Texture2D m_LUTTex ;
@@ -62,7 +62,7 @@ namespace Rendering.PostProcess
                                   m_ChannelMix  || 
                                   m_Bloom;
         
-        public static readonly PPData_ColorUpgrade kDefault = new PPData_ColorUpgrade()
+        public static readonly DColorUpgrade kDefault = new DColorUpgrade()
         {
             m_LUT = false,
             m_LUTCellCount = ELUTCellCount._16,
@@ -87,7 +87,7 @@ namespace Rendering.PostProcess
                 m_LayerMask = int.MaxValue,
                 m_Threshold = 0.25f,
                 m_Color = Color.white,
-                m_Blur = PPData_Blurs.kDefault,
+                m_Blur = DBlurs.kDefault,
                 m_BloomDebug = false,
             },
             
@@ -103,14 +103,14 @@ namespace Rendering.PostProcess
             [MFoldout(nameof(m_SampleMode),EBloomSample.Luminance)] [Range(0.0f, 3f)] public float m_Threshold;
             [MFoldout(nameof(m_SampleMode),EBloomSample.Redraw)][CullingMask] public int m_LayerMask;
             [ColorUsage(true,true)] public Color m_Color;
-            public PPData_Blurs m_Blur;
+            public DBlurs m_Blur;
             public bool m_BloomDebug;
 
             #region Properties
             static readonly int ID_Threshold = Shader.PropertyToID("_BloomThreshold");
             static readonly int ID_Color = Shader.PropertyToID("_BloomColor");
 
-            public void Apply(Material _material, PPCore_Blurs _blur)
+            public void Apply(Material _material, FBlursCore _blur)
             {
                 _material.SetFloat(ID_Threshold, m_Threshold);
                 _material.SetColor(ID_Color, m_Color);
@@ -120,7 +120,7 @@ namespace Rendering.PostProcess
         }
     }
 
-    public class PPCore_ColorUpgrade : PostProcessCore<PPData_ColorUpgrade>
+    public class FColorUpgradeCore : PostProcessCore<DColorUpgrade>
     {
         #region ShaderProperties
         const string kLUT = "_LUT";
@@ -157,10 +157,10 @@ namespace Rendering.PostProcess
             Process = 0,
             BloomSample = 1,
         }
-        PPCore_Blurs m_CoreBlurs;
-        public PPCore_ColorUpgrade()
+        FBlursCore m_CoreBlurs;
+        public FColorUpgradeCore()
         {
-            m_CoreBlurs = new PPCore_Blurs();
+            m_CoreBlurs = new FBlursCore();
         }
         
         public override void Destroy()
@@ -169,7 +169,7 @@ namespace Rendering.PostProcess
             m_CoreBlurs.Destroy();
         }
         
-        public override void OnValidate(ref PPData_ColorUpgrade _data)
+        public override void OnValidate(ref DColorUpgrade _data)
         {
             base.OnValidate(ref _data);
 
@@ -207,7 +207,7 @@ namespace Rendering.PostProcess
         }
 
 
-        public override void Execute(RenderTextureDescriptor _descriptor, ref PPData_ColorUpgrade _data, CommandBuffer _buffer,
+        public override void Execute(RenderTextureDescriptor _descriptor, ref DColorUpgrade _data, CommandBuffer _buffer,
             RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderer _renderer,
             ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
@@ -248,7 +248,7 @@ namespace Rendering.PostProcess
                 _buffer.Blit(_src, _dst, m_Material, (int)EPassIndex.Process);
         }
 
-        public override void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, ref PPData_ColorUpgrade _data)
+        public override void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, ref DColorUpgrade _data)
         {
             if (!_data.m_Bloom)
                 return;
@@ -260,7 +260,7 @@ namespace Rendering.PostProcess
         }
 
 
-        public override void FrameCleanUp(CommandBuffer _buffer, ref PPData_ColorUpgrade _data)
+        public override void FrameCleanUp(CommandBuffer _buffer, ref DColorUpgrade _data)
         {
             if (!_data.m_Bloom)
                 return;

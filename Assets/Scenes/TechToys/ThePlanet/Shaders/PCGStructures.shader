@@ -51,8 +51,8 @@ Shader "PCG/Structure"
 				INSTANCING_PROP(float4,_EmissionColor)
 				INSTANCING_PROP(float,_Progress)
 			INSTANCING_BUFFER_END
-			#include "Assets/Shaders/Library/BRDF/BRDFInput.hlsl"
-			#include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
 
 			float3 GetPositionWSOverride(float3 _positionOS,float4 _color)
 			{
@@ -75,7 +75,7 @@ Shader "PCG/Structure"
 			#define GET_POSITION_WS(v,o) GetPositionWSOverride(v.positionOS,v.color)
 			#define GET_ALBEDO(i) GetAlbedoOverride(i.uv,i.color);
 			#define GET_EMISSION(i) GetEmissionOverride(i.color.rgb);
-			#include "Assets/Shaders/Library/BRDF/BRDFLighting.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			
             #pragma target 3.5

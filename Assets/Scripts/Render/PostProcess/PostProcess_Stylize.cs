@@ -22,14 +22,14 @@ namespace Rendering.PostProcess
         _PIXEL_CIRCLE,
     }
 
-    public class PostProcess_Stylize : PostProcessBehaviour<PPCore_Stylize, PPData_Stylize>
+    public class PostProcess_Stylize : PostProcessBehaviour<FStylizeCore, DStylize>
     {
         public override bool m_OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.Stylize;
     }
     
     [Serializable]
-    public struct PPData_Stylize:IPostProcessParameter
+    public struct DStylize:IPostProcessParameter
     {
         [MTitle]public EStylize m_Stylize;
         [MFoldout(nameof(m_Stylize),EStylize.Pixel)] [ Range(2,20)] public int m_DownSample;
@@ -45,7 +45,7 @@ namespace Rendering.PostProcess
         [MFoldout(nameof(m_Stylize), EStylize.BilateralFilter)] [Range(0.1f, 5f)] public float m_BilaterailSize;
         [MFoldout(nameof(m_Stylize), EStylize.BilateralFilter)] [Range(0.01f, 1f)] public float m_BilateralFactor;
         public bool Validate() => m_Stylize != EStylize.None;
-        public static readonly PPData_Stylize kDefault = new PPData_Stylize()
+        public static readonly DStylize kDefault = new DStylize()
         {
             m_Stylize = EStylize.Pixel,
             m_DownSample = 7,
@@ -64,7 +64,7 @@ namespace Rendering.PostProcess
 
     }
 
-    public class PPCore_Stylize:PostProcessCore<PPData_Stylize>
+    public class FStylizeCore:PostProcessCore<DStylize>
     {
         #region ShaderProperties
         static readonly int ID_PixelizeDownSample = Shader.PropertyToID("_STYLIZE_PIXEL_DOWNSAMPLE");
@@ -83,7 +83,7 @@ namespace Rendering.PostProcess
         static readonly int ID_BilateralSize = Shader.PropertyToID("_BilateralSize");
         static readonly int ID_BilateralFactor = Shader.PropertyToID("_BilateralFactor");
         #endregion
-        public override void OnValidate(ref PPData_Stylize _ssaoData)
+        public override void OnValidate(ref DStylize _ssaoData)
         {
             base.OnValidate(ref _ssaoData);
             switch (_ssaoData.m_Stylize)
@@ -118,7 +118,7 @@ namespace Rendering.PostProcess
             }
         }
 
-        public override void Execute(RenderTextureDescriptor _descriptor, ref PPData_Stylize _data, CommandBuffer _buffer,
+        public override void Execute(RenderTextureDescriptor _descriptor, ref DStylize _data, CommandBuffer _buffer,
             RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderer _renderer,
             ScriptableRenderContext _context, ref RenderingData _renderingData)
         {

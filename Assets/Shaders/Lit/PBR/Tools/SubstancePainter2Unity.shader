@@ -35,7 +35,7 @@ Shader "Game/Hidden/SubstancePainterPBRtoUnity"
 		HLSLINCLUDE
 			#include "Assets/Shaders/Library/Common.hlsl"
 			#include "Assets/Shaders/Library/Lighting.hlsl"
-			#include "Assets/Shaders/Library/BRDF/BRDFInclude.hlsl"
+			#include "Assets/Shaders/Library/PBR.hlsl"
 			// #pragma multi_compile_instancing
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_EmissionTex);SAMPLER(sampler_EmissionTex);

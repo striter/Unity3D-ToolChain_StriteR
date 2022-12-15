@@ -17,30 +17,30 @@ namespace Rendering.PostProcess
         public bool m_Enabled => m_AliasingData.mode != EAntiAliasing.None;
         public EPostProcess Event => EPostProcess.AntiAliasing;
 
-        private PPData_AntiAliasing m_AliasingData;
-        private PPCore_AntiAliasing m_AntiAliasingCore;
+        private DAntiAliasing m_AliasingData;
+        private DAntiAliasingCore m_AntiAliasingPassCore;
 
-        public PostProcess_AntiAliasing(PPData_AntiAliasing _data,SRP_TAAPass _taaPass)
+        public PostProcess_AntiAliasing(DAntiAliasing _data,SRP_TAAPass _taaPass)
         {
             m_AliasingData = _data;
-            m_AntiAliasingCore = new PPCore_AntiAliasing(_taaPass);
+            m_AntiAliasingPassCore = new DAntiAliasingCore(_taaPass);
         }
 
         public void Dispose()
         {
-            m_AntiAliasingCore.Destroy();
+            m_AntiAliasingPassCore.Destroy();
         }
         
-        public void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor) => m_AntiAliasingCore.Configure(_buffer, _descriptor, ref m_AliasingData);
+        public void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor) => m_AntiAliasingPassCore.Configure(_buffer, _descriptor, ref m_AliasingData);
         public void Execute(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,
             RenderTextureDescriptor _executeData, ScriptableRenderer _renderer, ScriptableRenderContext _context,
-            ref RenderingData _renderingData) => m_AntiAliasingCore.Execute(
+            ref RenderingData _renderingData) => m_AntiAliasingPassCore.Execute(
             _executeData,ref m_AliasingData,_buffer,_src,_dst,
             _renderer,_context,ref _renderingData
             );
 
-        public void FrameCleanUp(CommandBuffer _buffer) => m_AntiAliasingCore.FrameCleanUp(_buffer,ref m_AliasingData);
-        public void ValidateParameters() => m_AntiAliasingCore.OnValidate(ref m_AliasingData);
+        public void FrameCleanUp(CommandBuffer _buffer) => m_AntiAliasingPassCore.FrameCleanUp(_buffer,ref m_AliasingData);
+        public void ValidateParameters() => m_AntiAliasingPassCore.OnValidate(ref m_AliasingData);
 
     }
 
@@ -61,7 +61,7 @@ namespace Rendering.PostProcess
 
     
     [Serializable]
-    public struct PPData_AntiAliasing:IPostProcessParameter
+    public struct DAntiAliasing:IPostProcessParameter
     {
         public EAntiAliasing mode;
         [MFoldout(nameof(mode),EAntiAliasing.FXAA)] public EFXAA fxaa;
@@ -73,7 +73,7 @@ namespace Rendering.PostProcess
         
         [MFoldout(nameof(mode),EAntiAliasing.TAA)] [Range(0,1)] public float blend;
         public bool Validate() =>mode != EAntiAliasing.None;
-        public static PPData_AntiAliasing kDefault = new PPData_AntiAliasing()
+        public static DAntiAliasing kDefault = new DAntiAliasing()
         {
             mode = EAntiAliasing.FXAA,
             fxaa = EFXAA.Both,
@@ -173,7 +173,7 @@ namespace Rendering.PostProcess
         }
 
         public void ExecuteBuffer(CommandBuffer _cmd, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _descriptor,
-            ref PPData_AntiAliasing _data,Material _material,ref RenderingData _renderingData)
+            ref DAntiAliasing _data,Material _material,ref RenderingData _renderingData)
         {
             if (m_FirstBuffer)
             {
@@ -189,7 +189,7 @@ namespace Rendering.PostProcess
         }
     }
     
-    public class PPCore_AntiAliasing : PostProcessCore<PPData_AntiAliasing>
+    public class DAntiAliasingCore : PostProcessCore<DAntiAliasing>
     {
         const string kFXAA_AdditionalSample = "_FXAA_ADDITIONAL_SAMPLE";
         const string kFXAA_Depth = "_FXAA_DEPTH";
@@ -200,12 +200,12 @@ namespace Rendering.PostProcess
         readonly int kBlendStrength = Shader.PropertyToID("_FXAABlendStrength");
 
         private SRP_TAAPass m_TAAPass;
-        public PPCore_AntiAliasing(SRP_TAAPass _taaPass)
+        public DAntiAliasingCore(SRP_TAAPass _taaPass)
         {
             m_TAAPass = _taaPass;
         }
 
-        public override void OnValidate(ref PPData_AntiAliasing _data)
+        public override void OnValidate(ref DAntiAliasing _data)
         {
             base.OnValidate(ref _data);
             if (_data.mode == EAntiAliasing.FXAA)
@@ -223,7 +223,7 @@ namespace Rendering.PostProcess
             }
         }
 
-        public override void Execute(RenderTextureDescriptor _descriptor, ref PPData_AntiAliasing _data, CommandBuffer _buffer,
+        public override void Execute(RenderTextureDescriptor _descriptor, ref DAntiAliasing _data, CommandBuffer _buffer,
             RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderer _renderer,
             ScriptableRenderContext _context, ref RenderingData _renderingData)
         {

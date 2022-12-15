@@ -26,9 +26,9 @@ half4 RecordBlurTex(float3 _color)
     return EncodeToRGBM(_color.rgb);
 }
     
-half3 SampleMainBlur(float2 uv,float2 offset)
+half3 SampleMainBlur(float2 _uv,float2 _offset)
 {
-    return SampleBlurTex(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),uv,offset);
+    return SampleBlurTex(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),_uv,_offset);
 }
 
 half3 DualFilteringDownFilter(TEXTURE2D_PARAM(_tex,_sampler),float2 _uv,float4 _texelSize,half _blurSize)

@@ -188,7 +188,7 @@
 			#pragma shader_feature_local_fragment _NDF_BLINNPHONG _NDF_COOKTORRANCE _NDF_BECKMANN _NDF_GAUSSIAN _NDF_GGX _NDF_TROWBRIDGEREITZ _NDF_ANISOTROPIC_TROWBRIDGEREITZ _NDF_ANISOTROPIC_WARD _NDF_ANISOTROPIC_BECKMANN _NDF_ANISOTROPIC_GGX
 			#pragma shader_feature_local_fragment _VF_BLINNPHONG _VF_GGX
 
-			#include "Assets/Shaders/Library/BRDF/BRDFInclude.hlsl"
+			#include "Assets/Shaders/Library/PBR.hlsl"
 			float GetGeometryShadow(BRDFSurface surface,BRDFLightInput lightSurface)
 			{
 				return max(0., lightSurface.NDL);

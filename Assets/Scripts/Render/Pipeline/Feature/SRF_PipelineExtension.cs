@@ -16,7 +16,7 @@ namespace Rendering.Pipeline
         public bool m_MotionVector;
         public bool m_Reflection;
         [MFoldout(nameof(m_Reflection), true)] public SRD_ReflectionData m_PlanarReflection;
-        public PPData_AntiAliasing m_AntiAliasing;
+        public DAntiAliasing m_AntiAliasing;
 
         public static FPipelineExtensionParameters kDefault = new FPipelineExtensionParameters()
         {
@@ -26,7 +26,7 @@ namespace Rendering.Pipeline
             m_MotionVector = false,
             m_Reflection = false,
             m_PlanarReflection = SRD_ReflectionData.kDefault,
-            m_AntiAliasing = PPData_AntiAliasing.kDefault,
+            m_AntiAliasing = DAntiAliasing.kDefault,
         };
     }
     

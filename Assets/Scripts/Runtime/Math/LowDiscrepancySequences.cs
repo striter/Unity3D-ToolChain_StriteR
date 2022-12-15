@@ -1,6 +1,6 @@
 using Unity.Mathematics;
 using static UBitwise;
-public static partial class ULowDiscrepancySequences
+public static class ULowDiscrepancySequences
 {
     static float RadicalInverseOptimized(uint _n,uint _dimension) =>_dimension == 0 ? RadicalInverse2(_n) : RadicalInverse(_n, KMath.kPrimes128[_dimension]);
     
@@ -51,7 +51,6 @@ public static partial class ULowDiscrepancySequences
             sequence[i] = new float2(Hammersley(i,0,_size),Hammersley(i,1,_size)) - .5f;
         return sequence;
     }
-    
     
     
     struct SobelMatrix

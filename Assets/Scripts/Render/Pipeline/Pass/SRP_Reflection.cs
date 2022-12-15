@@ -19,7 +19,7 @@ namespace Rendering.Pipeline
         
         [Header("Blur")]
         [Range(1,4)] public int m_DownSample;
-        public PPData_Blurs m_BlurParam;
+        public DBlurs m_BlurParam;
 
         public static readonly SRD_ReflectionData kDefault = new SRD_ReflectionData
         {
@@ -29,13 +29,13 @@ namespace Rendering.Pipeline
             m_DownSample=2,
             m_AdditionalLightcount=8,
             m_Sample = 1,
-            m_BlurParam = UPipeline.GetDefaultPostProcessData<PPData_Blurs>(),
+            m_BlurParam = UPipeline.GetDefaultPostProcessData<DBlurs>(),
         };
     }
     
     public  class SRP_Reflection: ISRPBase
     {
-        private readonly PPCore_Blurs m_Blurs;
+        private readonly FBlursCore m_Blurs;
         private readonly IReflectionManager m_Manager;
         private readonly SRD_ReflectionData m_Data;
         private readonly RenderPassEvent m_Event;
@@ -43,7 +43,7 @@ namespace Rendering.Pipeline
         {
             m_Event = _event;
             m_Data = _data;
-            m_Blurs = new PPCore_Blurs();
+            m_Blurs = new FBlursCore();
             m_Blurs.OnValidate(ref _data.m_BlurParam);
 
             switch (_data.m_Type)
@@ -81,12 +81,12 @@ namespace Rendering.Pipeline
     {
         private SRD_ReflectionData m_Data;
         private readonly PassiveInstance<Shader> m_ReflectionBlit=new PassiveInstance<Shader>(()=>RenderResources.FindInclude("Hidden/ScreenSpaceReflection"));
-        private readonly PPCore_Blurs m_Blur;
+        private readonly FBlursCore m_Blur;
         private readonly Material m_Material;
         static readonly int kSSRTex = Shader.PropertyToID("_ScreenSpaceReflectionTexture");
         static readonly RenderTargetIdentifier kSSRTexID = new RenderTargetIdentifier(kSSRTex);
 
-        public SRP_ScreenSpaceReflection(PPCore_Blurs _blurs)
+        public SRP_ScreenSpaceReflection(FBlursCore _blurs)
         {
             m_Material = new Material(m_ReflectionBlit){hideFlags = HideFlags.HideAndDontSave};
             m_Blur = _blurs;
@@ -139,8 +139,8 @@ namespace Rendering.Pipeline
         const int kMaxReflectionTextures = 4;
         private SRD_ReflectionData m_Data;
 
-        private readonly PPCore_Blurs m_Blur;
-        public SRP_PlanarReflectionBase(PPCore_Blurs _blurs)
+        private readonly FBlursCore m_Blur;
+        public SRP_PlanarReflectionBase(FBlursCore _blurs)
         {
             m_Blur = _blurs;
         }
@@ -193,7 +193,7 @@ namespace Rendering.Pipeline
         #endregion
 
          protected SRD_ReflectionData m_Data;
-         protected PPCore_Blurs m_Blur;
+         protected FBlursCore m_Blur;
          protected  int m_Index { get; private set; }
          private SRC_ReflectionConfig m_Plane;
          private RenderTextureDescriptor m_ColorDescriptor;
@@ -204,7 +204,7 @@ namespace Rendering.Pipeline
          private int m_ReflectionBlurTexture;
          private RenderTargetIdentifier m_ReflectionBlurTextureID;
          
-         public virtual AReflectionBase Setup(SRD_ReflectionData _data,PPCore_Blurs _blur,SRC_ReflectionConfig _component,ScriptableRenderer _renderer,int _index,RenderPassEvent _event)
+         public virtual AReflectionBase Setup(SRD_ReflectionData _data,FBlursCore _blur,SRC_ReflectionConfig _component,ScriptableRenderer _renderer,int _index,RenderPassEvent _event)
          {
              renderPassEvent = _event;
              m_Index = _index;
@@ -350,7 +350,7 @@ namespace Rendering.Pipeline
          int m_ReflectionDepth;
          RenderTargetIdentifier m_ReflectionDepthID;
 
-         public override AReflectionBase Setup(SRD_ReflectionData _data, PPCore_Blurs _blur, SRC_ReflectionConfig _planeData, ScriptableRenderer _renderer,
+         public override AReflectionBase Setup(SRD_ReflectionData _data, FBlursCore _blur, SRC_ReflectionConfig _planeData, ScriptableRenderer _renderer,
              int _index,RenderPassEvent _event)
          {
              m_ReflectionDepth = Shader.PropertyToID(kReflectionDepth + _index);

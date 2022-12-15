@@ -7,8 +7,8 @@ namespace Rendering.PostProcess
     public enum EPostProcess
     {
         Opaque=0,
-        AntiAliasing,
         Volumetric,
+        AntiAliasing,
         DepthOfField,
         ColorUpgrade,
         ColorDegrade,

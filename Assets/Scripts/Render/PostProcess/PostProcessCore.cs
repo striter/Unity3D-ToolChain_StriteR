@@ -13,7 +13,8 @@ namespace Rendering.PostProcess
         protected Material m_Material { get; private set; }
         public PostProcessCore()
         {
-            string lastname = GetType().Name.Split('_')[1];
+            var srcName = GetType().Name;       //F***Pass -> name
+            string lastname = srcName.Substring(1,srcName.Length-5);
             string name ="Hidden/PostProcess/"+lastname;
             Shader shader = RenderResources.FindPostProcess(name);
 

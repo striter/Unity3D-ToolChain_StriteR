@@ -9,7 +9,7 @@ using Random = System.Random;
 
 namespace Rendering.PostProcess
 {
-    public class PostProcess_Opaque:PostProcessBehaviour<PPCore_Opaque, PPData_Opaque>
+    public class PostProcess_Opaque:PostProcessBehaviour<FOpaqueCore, DOpaque>
     {
         public bool m_Opaque = true;
         public override bool m_OpaqueProcess => m_Opaque;
@@ -67,7 +67,7 @@ namespace Rendering.PostProcess
         }
 #endif
     }
-    public class PPCore_Opaque:PostProcessCore<PPData_Opaque>
+    public class FOpaqueCore:PostProcessCore<DOpaque>
     {
         private const string kScanKW = "_SCAN";
         private const string kAreaKW = "_AREA";
@@ -82,7 +82,7 @@ namespace Rendering.PostProcess
         private static readonly int kSampleID = Shader.PropertyToID("_Opaque_Sample");
         
         private RenderTextureDescriptor m_HighlightDescriptor;
-        private readonly PPCore_Blurs m_HighlightBlur;
+        private readonly FBlursCore m_HighlightBlur;
 
         private RenderTextureDescriptor m_VolumetricCloudDescriptor;
         private readonly Material m_RenderFrontDepth;
@@ -95,9 +95,9 @@ namespace Rendering.PostProcess
             Combine=0,
             Sample=1,
         }
-        public PPCore_Opaque()
+        public FOpaqueCore()
         {
-            m_HighlightBlur = new PPCore_Blurs();
+            m_HighlightBlur = new FBlursCore();
             m_RenderBackDepth = new Material(RenderResources.FindInclude("Game/Additive/DepthOnly")){hideFlags = HideFlags.HideAndDontSave};
             m_RenderBackDepth.SetInt(KShaderProperties.kColorMask,(int)ColorWriteMask.Red);
             m_RenderBackDepth.SetInt(KShaderProperties.kZTest,(int)CompareFunction.Greater);
@@ -108,7 +108,7 @@ namespace Rendering.PostProcess
             m_RenderFrontDepth.SetInt(KShaderProperties.kCull,(int)CullMode.Back);
         }
         
-        public override void OnValidate(ref PPData_Opaque _data)
+        public override void OnValidate(ref DOpaque _data)
         {
             base.OnValidate(ref _data);
             if(m_Material.EnableKeyword(kScanKW,_data.m_Scan))
@@ -125,7 +125,7 @@ namespace Rendering.PostProcess
                 _data.m_VolumetricCloudData.Apply(m_Material);
         }
 
-        public override  void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor,ref PPData_Opaque _data)
+        public override  void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor,ref DOpaque _data)
         {
             if (_data.m_MaskedHighlight)
             {
@@ -140,7 +140,7 @@ namespace Rendering.PostProcess
             }
         }
 
-        public override void Execute(RenderTextureDescriptor _descriptor, ref PPData_Opaque _data, CommandBuffer _buffer,
+        public override void Execute(RenderTextureDescriptor _descriptor, ref DOpaque _data, CommandBuffer _buffer,
             RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderer _renderer,
             ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
@@ -195,7 +195,7 @@ namespace Rendering.PostProcess
             _buffer.ReleaseTemporaryRT(kSampleID);
         }
 
-        public override void FrameCleanUp(CommandBuffer _buffer,ref PPData_Opaque _data)
+        public override void FrameCleanUp(CommandBuffer _buffer,ref DOpaque _data)
         {
             if (_data.m_MaskedHighlight)
             {
@@ -208,28 +208,28 @@ namespace Rendering.PostProcess
     }
 
     [Serializable]
-    public struct PPData_Opaque:IPostProcessParameter
+    public struct DOpaque:IPostProcessParameter
     {
         [MTitle] public bool m_Scan;
-        [MFoldout(nameof(m_Scan), true)] public Data_Scan m_ScanData;
+        [MFoldout(nameof(m_Scan), true)] public DScan m_ScanData;
         [MTitle] public bool m_Area;
-        [MFoldout(nameof(m_Area), true)] public Data_Area m_AreaData;
+        [MFoldout(nameof(m_Area), true)] public DArea m_AreaData;
         [MTitle] public bool m_Outline;
-        [MFoldout(nameof(m_Outline),true)] public Data_Outline m_OutlineData;
+        [MFoldout(nameof(m_Outline),true)] public DOutline m_OutlineData;
         [MTitle] public bool m_MaskedHighlight;
-        [MFoldout(nameof(m_MaskedHighlight), true)] public Data_Highlight m_HighlightData;
+        [MFoldout(nameof(m_MaskedHighlight), true)] public DHighlight m_HighlightData;
         
         [Header("Multi Sample")]
         [Range(1, 4)] public int m_DownSample;
         [MTitle] public bool m_SSAO;
-        [MFoldout(nameof(m_SSAO), true)] public Data_SSAO m_SSAOData;
+        [MFoldout(nameof(m_SSAO), true)] public DSSAO m_SSAOData;
         [MTitle] public bool m_VolumetricCloud;
-        [MFoldout(nameof(m_VolumetricCloud), true)] public Data_VolumetricCloud m_VolumetricCloudData;
+        [MFoldout(nameof(m_VolumetricCloud), true)] public DVolumetricCloud m_VolumetricCloudData;
         public bool Validate() => m_Scan || m_Area || m_Outline || m_MaskedHighlight || m_SSAO || m_VolumetricCloud;
-        public static readonly PPData_Opaque kDefault = new PPData_Opaque()
+        public static readonly DOpaque kDefault = new DOpaque()
         {
             m_Scan = true,
-            m_ScanData = new Data_Scan()
+            m_ScanData = new DScan()
             {
                 m_Origin = Vector3.zero,
                 m_Color = Color.green,
@@ -239,7 +239,7 @@ namespace Rendering.PostProcess
                 m_MaskTextureScale = 1f,
             },
             m_Area = true,
-            m_AreaData =new Data_Area()
+            m_AreaData =new DArea()
             {
                 m_Origin = Vector3.zero,
                 m_Radius = 5f,
@@ -250,7 +250,7 @@ namespace Rendering.PostProcess
                 m_FillTextureScale=1f,
             },
             m_Outline = true,
-            m_OutlineData= new Data_Outline()
+            m_OutlineData= new DOutline()
             {
                 m_Color = Color.white,
                 m_Width = 1,
@@ -260,15 +260,15 @@ namespace Rendering.PostProcess
                 m_Bias = .5f,
             },
             m_MaskedHighlight = true,
-            m_HighlightData=new Data_Highlight()
+            m_HighlightData=new DHighlight()
             {
                 m_Color=Color.blue,
-                m_Blur = PPData_Blurs.kDefault,
+                m_Blur = DBlurs.kDefault,
             },
                 
             m_DownSample = 1,
             m_SSAO = true,
-            m_SSAOData = new Data_SSAO()
+            m_SSAOData = new DSSAO()
             {
                 m_Color = Color.grey,
                 m_Intensity = 1f,
@@ -278,7 +278,7 @@ namespace Rendering.PostProcess
                 m_RandomVectorKeywords=DateTime.Now.ToShortTimeString(),
             },
             m_VolumetricCloud = true,
-            m_VolumetricCloudData  = new Data_VolumetricCloud()
+            m_VolumetricCloudData  = new DVolumetricCloud()
             {
                 m_VerticalStart = 20f,
                 m_VerticalLength = 100f,
@@ -299,7 +299,7 @@ namespace Rendering.PostProcess
         };
         
         [Serializable]
-        public struct Data_SSAO
+        public struct DSSAO
         {
             [ColorUsage(false)]public Color m_Color;
             [Range(0.01f,5f)]public float m_Intensity;
@@ -336,7 +336,7 @@ namespace Rendering.PostProcess
         }
         
         [Serializable]
-        public struct Data_Scan
+        public struct DScan
         {
             [Position] public Vector3 m_Origin;
             [ColorUsage(true,true)]public Color m_Color;
@@ -376,7 +376,7 @@ namespace Rendering.PostProcess
         }
         
         [Serializable]
-        public struct Data_Area
+        public struct DArea
         {
             [Position] public Vector3 m_Origin;
             public float m_Radius;
@@ -413,7 +413,7 @@ namespace Rendering.PostProcess
         }
         
         [Serializable]
-        public struct Data_Outline
+        public struct DOutline
         {
             // public enum EConvolution
             // {
@@ -456,14 +456,14 @@ namespace Rendering.PostProcess
         }
 
         [Serializable]
-        public struct Data_Highlight
+        public struct DHighlight
         {
             [ColorUsage(true,true)]public Color m_Color;
-            public PPData_Blurs m_Blur;
+            public DBlurs m_Blur;
             
             #region Properties
             static readonly int ID_EdgeColor = Shader.PropertyToID("_HighlightColor");
-            public void Apply(Material _material,PPCore_Blurs _blur)
+            public void Apply(Material _material,FBlursCore _blur)
             {
                 _material.SetColor(ID_EdgeColor,m_Color);
                 _blur.OnValidate(ref m_Blur);
@@ -472,7 +472,7 @@ namespace Rendering.PostProcess
         }
         
         [Serializable]
-        public struct Data_VolumetricCloud
+        public struct DVolumetricCloud
         {
             [MTitle]public bool m_Shape;
             [MFoldout(nameof(m_Shape),true)] [CullingMask] public int m_CullingMask;

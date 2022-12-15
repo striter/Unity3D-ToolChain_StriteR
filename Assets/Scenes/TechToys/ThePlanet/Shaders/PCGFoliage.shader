@@ -55,8 +55,8 @@ Shader "PCG/Foliage"
 			    INSTANCING_PROP(float,_WiggleDensity)
 			    INSTANCING_PROP(float,_BendStrength)
 			INSTANCING_BUFFER_END
-			#include "Assets/Shaders/Library/BRDF/BRDFInput.hlsl"
-			#include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
 
             float3 Wind(float3 positionWS,float windEffect,float _bendStrength,float3 normal,float3 tangent)
             {
@@ -109,7 +109,7 @@ Shader "PCG/Foliage"
 			NAME "FORWARD"
 			Tags{"LightMode" = "UniversalForward"}
 			HLSLPROGRAM
-			#include "Assets/Shaders/Library/BRDF/BRDFLighting.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			
             #pragma target 3.5

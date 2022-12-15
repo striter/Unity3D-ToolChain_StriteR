@@ -7,13 +7,13 @@ using UnityEngine.Rendering.Universal;
 
 namespace Rendering.PostProcess
 {
-    public class PostProcess_Blurs : PostProcessBehaviour<PPCore_Blurs, PPData_Blurs>
+    public class PostProcess_Blurs : PostProcessBehaviour<FBlursCore, DBlurs>
     {
         public override bool m_OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.DepthOfField;
 
         public enum_Focal m_Focal;
-        [MFoldout(nameof(m_Focal),enum_Focal._DOF)]public PPData_DepthOfField m_FocalData;
+        [MFoldout(nameof(m_Focal),enum_Focal._DOF)]public DDepthOfField m_FocalData;
 
         protected override void ApplyParameters()
         {
@@ -70,12 +70,12 @@ namespace Rendering.PostProcess
         _DOF_MASK,
     }
     [Serializable]
-    public struct PPData_Blurs:IPostProcessParameter
+    public struct DBlurs:IPostProcessParameter
     {
         [MTitle] public EBlurType m_BlurType;
         [MFold(nameof(m_BlurType), EBlurType.None)] [Range(0.05f, 2f)] public float m_BlurSize;
         [MFold(nameof(m_BlurType),  EBlurType.None,EBlurType.Grainy)]
-        [Range(1, PPCore_Blurs.kMaxIteration)] public int m_Iteration;
+        [Range(1, FBlursCore.kMaxIteration)] public int m_Iteration;
         [MFoldout(nameof(m_BlurType), EBlurType.Kawase, EBlurType.GaussianVHSeperated, EBlurType.AverageVHSeperated, EBlurType.Hexagon, EBlurType.DualFiltering,EBlurType.NextGen,EBlurType.LightStreak)]
         [Range(1, 4)] public int m_DownSample;
         [MFoldout(nameof(m_BlurType), EBlurType.Hexagon, EBlurType.Bokeh)]
@@ -85,7 +85,7 @@ namespace Rendering.PostProcess
         [MFoldout(nameof(m_BlurType), EBlurType.LightStreak)]
         [Range(.9f, .95f)] public float m_Attenuation;
         public bool Validate() => m_BlurType != EBlurType.None;
-        public static readonly PPData_Blurs kDefault = new PPData_Blurs()
+        public static readonly DBlurs kDefault = new DBlurs()
         {
             m_BlurSize = 1.3f,
             m_DownSample = 2,
@@ -98,19 +98,19 @@ namespace Rendering.PostProcess
     }
 
     [Serializable]
-    public struct PPData_DepthOfField
+    public struct DDepthOfField
     {
         [Clamp(0)]public float m_Begin;
         [Clamp(0)]public float m_Width;
 
-        public static readonly PPData_DepthOfField kDefault = new PPData_DepthOfField()
+        public static readonly DDepthOfField kDefault = new DDepthOfField()
         {
             m_Begin = 10,
             m_Width = 5,
         };
     }
 
-    public class PPCore_Blurs : PostProcessCore<PPData_Blurs>
+    public class FBlursCore : PostProcessCore<DBlurs>
     {
         #region ShaderProperties
 
@@ -127,7 +127,7 @@ namespace Rendering.PostProcess
         private static readonly string kKWFinalBlur = "_FINALBLUR";
         private static readonly string kKWEncoding = "_ENCODE";
 
-        public bool SetFocal(enum_Focal _focal, ref PPData_DepthOfField focalData)
+        public bool SetFocal(enum_Focal _focal, ref DDepthOfField focalData)
         {
             if (m_Material.EnableKeywords(_focal))
             {
@@ -180,7 +180,7 @@ namespace Rendering.PostProcess
         static readonly int kHexagonDiagonalID = Shader.PropertyToID("_Hexagon_Diagonal");
         static readonly RenderTargetIdentifier kDiagonalRT = new RenderTargetIdentifier(kHexagonDiagonalID);
 
-        public override void Execute(RenderTextureDescriptor _descriptor, ref PPData_Blurs _data, CommandBuffer _buffer,
+        public override void Execute(RenderTextureDescriptor _descriptor, ref DBlurs _data, CommandBuffer _buffer,
             RenderTargetIdentifier _src, RenderTargetIdentifier _dst, 
             ScriptableRenderer _renderer,ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
