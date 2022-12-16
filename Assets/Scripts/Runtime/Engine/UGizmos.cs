@@ -53,7 +53,21 @@ public static class Gizmos_Extend
         for(int i=0;i<count-1;i++)
             Gizmos.DrawLine(_points[i],_points[i+1]);
     }
+    public static void DrawLines(IEnumerable<Vector3> _points)
+    {
+        Vector3 tempPoint=default;
+        foreach (var (index,point) in _points.LoopIndex())
+        {
+            if (index == 0)
+            {
+                tempPoint = point;
+                continue;
+            }
 
+            Gizmos.DrawLine(tempPoint,point);
+            tempPoint = point;
+        }
+    }
     public static void DrawLines<T>(IEnumerable<T> _points,Func<T,Vector3> _convert)
     {
         Vector3 tempPoint=default;

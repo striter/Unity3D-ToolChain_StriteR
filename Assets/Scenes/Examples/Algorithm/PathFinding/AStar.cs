@@ -1,8 +1,8 @@
 using UnityEngine;
 using Unity.Mathematics;
 using System.Collections.Generic;
+using System.Linq;
 using Geometry;
-using Procedural;
 using UnityEditor;
 
 namespace ExampleScenes.Algorithm.PathFinding
@@ -21,9 +21,12 @@ namespace ExampleScenes.Algorithm.PathFinding
     }
     
     [ExecuteInEditMode]
-    public class AStar : MonoBehaviour
+    public class AStar : MonoBehaviour,IGraph<int2>
     {
         private Dictionary<int2, Node> m_Nodes = new Dictionary<int2, Node>();
+
+        private Vector3 m_Agent,m_Destination;
+        private Queue<Vector3> m_Paths = new Queue<Vector3>();
 
         private void OnEnable() => SceneView.duringSceneGui += OnSceneGUI;
         private void OnDisable() => SceneView.duringSceneGui -= OnSceneGUI;
@@ -38,12 +41,10 @@ namespace ExampleScenes.Algorithm.PathFinding
                 m_Nodes.Add(id,new Node(id));
             }
 
-            foreach (var node in m_Nodes.Values)
-                node.UpdateAdjacency(m_Nodes);
-            RecreateObstacles();
+            Randomize();
         }
 
-        void RecreateObstacles()
+        void Randomize()
         {
             foreach (var node in m_Nodes.Values)
                 node.SetAvailable(true);
@@ -57,6 +58,10 @@ namespace ExampleScenes.Algorithm.PathFinding
                 var node =  m_Nodes[id];
                 node.SetAvailable(false);
             }
+            
+            m_Agent = m_Nodes.Values.ToArray().RandomLoop().First(p => p.m_Available).m_Position;
+            m_Destination = m_Nodes.Values.ToArray().RandomLoop().First(p => p.m_Available).m_Position;
+            PathFind();
         }
         
         private void OnSceneGUI(SceneView _sceneView)
@@ -71,15 +76,20 @@ namespace ExampleScenes.Algorithm.PathFinding
                     {
                         var node = Validate(hitPoint);
                         node?.SetAvailable(!node.m_Available);
-                    }
-                        break;
+                        PathFind();
+                    } break;
+                    case 1:
+                    {
+                        m_Destination = hitPoint;
+                        PathFind();
+                    } break;
                 }
 
             if (Event.current.type == EventType.KeyDown)
             {
                 switch (Event.current.keyCode)
                 {
-                    case KeyCode.R:RecreateObstacles();  break;
+                    case KeyCode.R:Randomize();  break;
                 }
             }
         }
@@ -94,9 +104,31 @@ namespace ExampleScenes.Algorithm.PathFinding
             }
             return null;
         }
+
+        void PathFind()
+        {
+            m_Paths.Clear();
+            var src = Validate(m_Agent);
+            var node = Validate(m_Destination);
+            if (node!=null)
+            {
+                Stack<int2> outputs = new Stack<int2>();
+                UAStar<int2>.PathFind(this,src,node,ref outputs);
+                m_Paths.EnqueueRange(outputs.Select(p=>m_Nodes[p].m_Position));
+                            
+            }
+        }
         
         private void OnDrawGizmos()
         {
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(m_Agent,.2f);
+            Gizmos_Extend.DrawLines(m_Paths);
+            foreach (var path in m_Paths)
+            {
+                Gizmos.DrawWireSphere(path,.1f);
+            }
+            
             foreach (var node in m_Nodes.Values)
             {
                 if (!node.m_Available)
@@ -111,30 +143,37 @@ namespace ExampleScenes.Algorithm.PathFinding
                 }
             }
         }
+
+        public INode<int2> GetNode(int2 _src) => m_Nodes[_src];
+
+        public IEnumerable<(int2, float)> GetAdjacentNodes(int2 _src)
+        {
+            Node adjacency = default;
+            if(m_Nodes.TryGetValue(_src+new int2(-1,0),out adjacency)) yield return (adjacency.identity,adjacency.m_Available?1:int.MaxValue);
+            if(m_Nodes.TryGetValue(_src+new int2(1,0),out adjacency)) yield return (adjacency.identity,adjacency.m_Available?1:int.MaxValue);
+            if(m_Nodes.TryGetValue(_src+new int2(0,-1),out adjacency)) yield return (adjacency.identity,adjacency.m_Available?1:int.MaxValue);
+            if(m_Nodes.TryGetValue(_src+new int2(0,1),out adjacency)) yield return (adjacency.identity,adjacency.m_Available?1:int.MaxValue);
+        }
+        
+        public float Heuristic(int2 _a, int2 _b)
+        {
+            return math.abs(_a.x - _b.x) + math.abs(_a.y - _b.y);
+        }
+
     }
 
-    class Node
+    public class Node:INode<int2>
     {
-        public int2 m_Identity { get; private set; }
+        public int2 identity { get; private set; }
         public Vector3 m_Position { get; private set; }
-        private List<Node> m_AdjacentNodes = new List<Node>();
         public bool m_Available { get; private set; }
         public Bounds m_Bounds { get; private set; }
         public Node(int2 _identity)
         {
-            m_Identity = _identity;
+            identity = _identity;
+            
             m_Position = GetCellPosition(_identity);
             m_Bounds = new Bounds(m_Position + kCubeOffset, kCube);
-        }
-
-        public void UpdateAdjacency(Dictionary<int2, Node> _nodes)
-        {
-            m_AdjacentNodes.Clear();
-            Node adjacency = default;
-            if(_nodes.TryGetValue(m_Identity-new int2(-1,0),out adjacency)) m_AdjacentNodes.Add(adjacency);
-            if(_nodes.TryGetValue(m_Identity-new int2(1,0),out adjacency)) m_AdjacentNodes.Add(adjacency);
-            if(_nodes.TryGetValue(m_Identity-new int2(0,-1),out adjacency)) m_AdjacentNodes.Add(adjacency);
-            if(_nodes.TryGetValue(m_Identity-new int2(0,1),out adjacency)) m_AdjacentNodes.Add(adjacency);
         }
 
         public void SetAvailable(bool _available)
@@ -143,5 +182,68 @@ namespace ExampleScenes.Algorithm.PathFinding
         }
     }
 
+    public interface INode<T> where T:struct
+    {
+        public T identity { get; }
+    }
+
+    public interface IGraph<T> where T:struct
+    {
+        INode<T> GetNode(T _src);
+        IEnumerable<(T, float)> GetAdjacentNodes(T _src);
+        float Heuristic(T _src, T _dst);
+    }
+
+    public static class UAStar<T> where T:struct
+    {
+        private static PriorityQueue<T, float> frontier = new PriorityQueue<T, float>();
+        private static Dictionary<T, T> previousLink = new Dictionary<T, T>();
+        private static Dictionary<T, float> pathCosts = new Dictionary<T, float>();
+        public static void PathFind(IGraph<T> _graph, INode<T> _src, INode<T> _tar,ref Stack<T> _outputPaths)
+        {
+            frontier.Clear();
+            pathCosts.Clear();
+            previousLink.Clear();
+
+            var start = _src.identity;
+            frontier.Enqueue(start,0);
+            pathCosts.Add(start,0);
+            
+            while (frontier.Count > 0)
+            {
+                var current = frontier.Dequeue();
+                if (current.Equals(_tar.identity))
+                    break;
+
+                var curCost = pathCosts[current];
+                foreach (var (next, cost) in _graph.GetAdjacentNodes(current))
+                {
+                    var newCost = curCost + cost;
+                    bool contains = pathCosts.ContainsKey(next);
+                    if (!contains)
+                    {
+                        pathCosts.Add(next,newCost);
+                        previousLink.Add(next,current);
+                    }
+                    
+                    if (!contains || newCost < pathCosts[next])
+                    {
+                        pathCosts[next] = newCost;
+                        frontier.Enqueue(next,curCost+cost + _graph.Heuristic(next,_tar.identity));
+                        previousLink[next] = current;
+                    }
+                }
+            }
+
+            var goal = _tar.identity;
+            _outputPaths.Clear();
+            while (previousLink.ContainsKey(goal))
+            {
+                _outputPaths.Push(goal);
+                goal = previousLink[goal];
+            }
+            _outputPaths.Push(start);
+        }
+    }
     
 }
