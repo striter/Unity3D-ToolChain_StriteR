@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public static class UBounds
+public static class UBoundsIncrement
 {
     static Vector3 m_BoundsMin;
     static Vector3 m_BoundsMax;

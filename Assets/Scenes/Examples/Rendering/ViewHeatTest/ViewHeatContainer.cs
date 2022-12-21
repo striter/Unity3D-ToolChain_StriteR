@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace  ExampleScenes.Rendering.ViewHeat
+namespace  Examples.Rendering.ViewHeat
 {
     
     public class ViewHeatContainer : MonoBehaviour

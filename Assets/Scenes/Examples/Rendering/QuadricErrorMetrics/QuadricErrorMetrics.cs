@@ -2,7 +2,7 @@ using QuadricErrorsMetric;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace ExampleScenes.Rendering.QuadricErrorMetrics
+namespace Examples.Rendering.QuadricErrorMetrics
 {
     [RequireComponent(typeof(MeshFilter),typeof(MeshRenderer))]
     public class QuadricErrorMetrics : MonoBehaviour

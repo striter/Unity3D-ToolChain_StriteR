@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TTouchTracker;
 using UnityEngine;
 
-namespace ExampleScenes.PhysicsScenes
+namespace Examples.PhysicsScenes
 {
     public class GravityGunCharacter : PhysicsCharacterBase
     {

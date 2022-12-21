@@ -35,8 +35,8 @@ public static class UVector
     
     public static Vector3 Cross(Vector3 _src, Vector3 _dst) => new Vector3(_src.y * _dst.z - _src.z * _dst.y, _src.z * _dst.x - _src.x * _dst.z, _src.x * _dst.y - _src.y * _dst.x);
     
-    public static float Dot2(Vector2 _src, Vector2 _dst) => _src.x * _dst.x + _src.y * _dst.y;
-    public static float Cross2(Vector2 _src, Vector2 _dst) => _src.x * _dst.y - _src.y * _dst.x;
+    public static float Dot2(float2 _src, float2 _dst) => _src.x * _dst.x + _src.y * _dst.y;
+    public static float Cross2(float2 _src, float2 _dst) => _src.x * _dst.y - _src.y * _dst.x;
     
     public static IEnumerable<bool> Greater(this Vector3 _vector, float _comparer)
     {
@@ -45,6 +45,7 @@ public static class UVector
         yield return _vector.z > _comparer;
     }
 #endregion   
+
 
 #region Convertions
     public static Vector2 SetX(this Vector2 _vector, float _x) => new Vector2(_x, _vector.y);
@@ -113,7 +114,6 @@ public static class UVector
     public static Vector3 div(this Vector3 _src, float _tar) => new Vector3(_src.x / _tar, _src.y / _tar, _src.z / _tar);
     public static Vector4 div(this Vector4 _src, Vector4 _tar) => new Vector4(_src.x / _tar.x, _src.y / _tar.y, _src.z / _tar.z, _src.w / _tar.w);
 #endregion
-
 }
 
 public static class KVector

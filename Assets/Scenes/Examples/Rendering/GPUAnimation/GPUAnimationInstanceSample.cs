@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Rendering.Optimize;
 
-namespace ExampleScenes.Rendering.GPUAnimationInstance
+namespace Examples.Rendering.GPUAnimationInstance
 {
     public class GPUAnimationInstanceSample : MonoBehaviour
     {

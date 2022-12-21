@@ -1,10 +1,11 @@
 using System;
 using Geometry;
+using Unity.Mathematics;
 using UnityEngine;
 
-namespace ExampleScenes.Algorithm.Geometry
+namespace Examples.Algorithm.Geometry
 {
-    public class GeometryVisualize_Frustum : MonoBehaviour
+    public class GeometryInsersectFrustum : MonoBehaviour
     {
         public GFrustum m_Frustum;
         public bool m_DrawPlanes;
@@ -13,8 +14,11 @@ namespace ExampleScenes.Algorithm.Geometry
 
         public GBox[] m_IntersectionAABBs;
 #if UNITY_EDITOR
+        private float time;
         private void OnDrawGizmos()
         {
+            time += UTime.deltaTime;
+            
             var frustumPlanes = m_Frustum.GetFrustumPlanes();
             var frustumRays = m_Frustum.GetFrustumRays();
             var frustumPoints = frustumRays.GetFrustumPoints();
@@ -44,10 +48,13 @@ namespace ExampleScenes.Algorithm.Geometry
             }
             Gizmos.color = Color.white;
             frustumPoints.DrawGizmos();
+            int index = 0;
             foreach (var aabb in m_IntersectionAABBs)
             {
-                Gizmos.color = frustumPlanes.FrustumPlaneAABBIntersection(aabb,frustumPoints) ? Color.green : Color.red;
-                aabb.DrawGizmos();
+                var deltaPosition = math.cos(time * 2 * math.PI * UNoise.Value.Unit1f1((float)index++/m_IntersectionAABBs.Length)) * .5f;
+                var deltaAABB= aabb.Move(deltaPosition) ;
+                Gizmos.color = frustumPlanes.FrustumPlaneAABBIntersection(deltaAABB,frustumPoints) ? Color.green : Color.red;
+                deltaAABB.DrawGizmos();
             }
             if (m_DrawBounding)
             {

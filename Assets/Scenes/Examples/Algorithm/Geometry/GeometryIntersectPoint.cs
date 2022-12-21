@@ -1,8 +1,8 @@
 using Geometry;
 using UnityEngine;
-namespace ExampleScenes.Algorithm.Geometry
+namespace Examples.Algorithm.Geometry
 {
-    public class GeometryVisualize_Point : MonoBehaviour
+    public class GeometryIntersectPoint : MonoBehaviour
     {
         [Header("Ray & Point")]
         public GRay m_Ray;

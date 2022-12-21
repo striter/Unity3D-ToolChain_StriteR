@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace ExampleScenes.Rendering.ComputeShaders.GameOfLife
+namespace Examples.Rendering.ComputeShaders.GameOfLife
 {
     //&https://iquilezles.org/articles/gameoflife/
     public class GameOfLife : MonoBehaviour

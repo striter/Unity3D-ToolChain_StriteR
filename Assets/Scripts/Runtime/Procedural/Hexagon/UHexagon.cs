@@ -6,7 +6,7 @@ using UnityEngine.PlayerLoop;
 
 namespace Procedural.Hexagon
 {
-    using static KMath;
+    using static kmath;
     #region Flat&Pointy
     public static class KHexagon
     {

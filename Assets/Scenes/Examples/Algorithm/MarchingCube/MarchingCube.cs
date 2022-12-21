@@ -7,7 +7,7 @@ using TTouchTracker;
 using UnityEngine;
 using TDataPersistent;
 
-namespace ExampleScenes.Algorithm.MarchingCube
+namespace Examples.Algorithm.MarchingCube
 {
     public class MarchingCube : SingletonMono<MarchingCube>
     {

@@ -2,7 +2,7 @@ using Unity.Mathematics;
 using static UBitwise;
 public static class ULowDiscrepancySequences
 {
-    static float RadicalInverseOptimized(uint _n,uint _dimension) =>_dimension == 0 ? RadicalInverse2(_n) : RadicalInverse(_n, KMath.kPrimes128[_dimension]);
+    static float RadicalInverseOptimized(uint _n,uint _dimension) =>_dimension == 0 ? RadicalInverse2(_n) : RadicalInverse(_n, kmath.kPrimes128[_dimension]);
     
     static float Halton(uint _index, uint _dimension) => RadicalInverseOptimized(_index,_dimension);
     
@@ -20,35 +20,34 @@ public static class ULowDiscrepancySequences
         return grid;
     }
 
-    public static float2[] Stratified2D(int _width, int _height, bool _jitter = false, System.Random _random = null)
+    public static float2[] Stratified2D(int _width, int _height, bool _jitter = false,float _offset = -.5f, System.Random _random = null)
     {
         float2 uvOffset = 1f / new float2(_width,_height);
         float2[] grid = new float2[_width*_height];
-        float2 start = -.5f;
         for(int x = 0; x < _width; x++)
         for(int y = 0; y < _height; y++)
         {
             var jx = _jitter ? URandom.Random01(_random) : .5f;
             var jy = _jitter ? URandom.Random01(_random) : .5f;
-            grid[y * _width + x] = start + new float2(x+jx,y+jy)*uvOffset;
-        }
-        URandom.LatinHypercube(grid,(uint)grid.Length,(uint)_width,_random);
+            grid[y * _width + x] = new float2(x+jx,y+jy)*uvOffset + _offset;
+        } 
+        URandom.LatinHypercube(grid,grid.Length,_width,_random);
         return grid;
     }
         
-    public static float2[] Halton2D(uint _size)
+    public static float2[] Halton2D(uint _size,float _offset = -.5f)
     {
         float2[] sequence = new float2[_size];
         for (uint i = 0; i < _size; i++)
-            sequence[i] = new float2( Halton(i,0),Halton(i,KMath.kPrimes128[1])) - .5f;
+            sequence[i] = new float2( Halton(i,0),Halton(i,kmath.kPrimes128[1])) + _offset;
         return sequence;
     }
 
-    public static float2[] Hammersley2D(uint _size)
+    public static float2[] Hammersley2D(uint _size,float _offset = -.5f)
     {
         float2[] sequence = new float2[_size];
         for (uint i = 0; i < _size; i++)
-            sequence[i] = new float2(Hammersley(i,0,_size),Hammersley(i,1,_size)) - .5f;
+            sequence[i] = new float2(Hammersley(i,0,_size),Hammersley(i,1,_size)) + _offset;
         return sequence;
     }
     
@@ -73,7 +72,7 @@ public static class ULowDiscrepancySequences
     };
 
     private static readonly float kSobolMaxValue = math.pow(2, 32);
-    public static float2[] Sobol2D(uint _size)
+    public static float2[] Sobol2D(uint _size,float _offset = -.5f)
     {
         var N = _size;
         float2[] points = new float2[N];
@@ -98,7 +97,7 @@ public static class ULowDiscrepancySequences
         for (uint i = 1u; i < N; i++)
         {
             X[i] = X[i - 1] ^ V[C[i - 1]];
-            points[i].x = X[i] / kSobolMaxValue - .5f;
+            points[i].x = X[i] / kSobolMaxValue + _offset;
         }
 
         var matrix = kSobelMatrices[1];
@@ -121,7 +120,7 @@ public static class ULowDiscrepancySequences
         for (uint i = 1; i < N; i++)
         {
             X[i] = X[i-1] ^ V[C[i-1]];
-            points[i].y = X[i] /kSobolMaxValue - .5f;
+            points[i].y = X[i] /kSobolMaxValue + _offset;
         }
         
         return points;

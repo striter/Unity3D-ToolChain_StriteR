@@ -1,7 +1,7 @@
 using Rendering.GI.SphericalHarmonics;
 using UnityEngine;
 
-namespace ExampleScenes.Rendering.SH
+namespace Examples.Rendering.SH
 {
     public enum ESphericalHarmonicsExport
     {

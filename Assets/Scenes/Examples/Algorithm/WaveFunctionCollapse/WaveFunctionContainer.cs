@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Procedural.Tile;
 
-namespace ExampleScenes.Algorithm.WaveFunctionCollapse
+namespace Examples.Algorithm.WaveFunctionCollapse
 {
     [Serializable]
     public struct WaveFunctionData:IWFCCompare<ETileDirection,WaveFunctionData>

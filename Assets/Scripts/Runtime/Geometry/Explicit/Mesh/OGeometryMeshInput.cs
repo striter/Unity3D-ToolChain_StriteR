@@ -1,6 +1,7 @@
 using System;
 using Geometry.Explicit.Mesh.Cube;
 using Geometry.Explicit.Mesh.Sphere;
+using Geometry.PointSet;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
@@ -113,7 +114,7 @@ namespace Geometry.Explicit.Mesh
             }
 
             meshData.subMeshCount = 1;
-            meshData.SetSubMesh(0,new SubMeshDescriptor(0,indexCount){vertexCount = generator.vertexCount,bounds =UBounds.MinMax(min, max)});
+            meshData.SetSubMesh(0,new SubMeshDescriptor(0,indexCount){vertexCount = generator.vertexCount,bounds = UBoundsIncrement.MinMax(min, max)});
         }
     }
 }

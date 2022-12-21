@@ -1,8 +1,8 @@
 using Geometry;
 using UnityEngine;
-namespace ExampleScenes.Algorithm.Geometry
+namespace Examples.Algorithm.Geometry
 {
-    public class GeometryVisualize_Cone : MonoBehaviour
+    public class GeometryIntersectCone : MonoBehaviour
     {
         public GHeightCone m_Data;
         public GRay m_Ray;

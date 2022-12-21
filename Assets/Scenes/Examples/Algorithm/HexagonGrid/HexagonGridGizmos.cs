@@ -8,7 +8,7 @@ using Procedural;
 using Procedural.Hexagon;
 using Procedural.Hexagon.Area;
 
-namespace ExampleScenes.Algorithm.HexagonGrid
+namespace Examples.Algorithm.HexagonGrid
 {
     [ExecuteInEditMode]
     public class HexagonGridGizmos : MonoBehaviour

@@ -13,7 +13,7 @@ namespace UnityEditor.Extensions
             PTriangle[] polygons = UPolygon.GetPolygons(_indices);
             foreach(var polygon in polygons)
             {
-                GTriangle triangle = new GTriangle(polygon.GetVertices(_verticies));
+                GTriangle triangle = (GTriangle)polygon.Convert(_verticies);
                 Vector3 normal = _weightedNormals ? triangle.GetNormalUnnormalized() : triangle.normal;
                 foreach (var index in polygon)
                     normals[index] += normal;

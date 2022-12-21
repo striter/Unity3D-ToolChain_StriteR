@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using static UMath;
-using static KMath;
+using static kmath;
 using static UDamper;
 
 public enum EDamperMode

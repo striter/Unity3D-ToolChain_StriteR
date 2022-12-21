@@ -401,7 +401,7 @@ namespace TheVoxel
             meshData.subMeshCount = 1;
             meshData.SetSubMesh(0,new SubMeshDescriptor(0,m_SideCount*6){vertexCount = m_SideCount*4});
 
-            m_Mesh.bounds = UBounds.MinMax(Vector3.zero, new float3(DVoxel.kVoxelSize * DVoxel.kChunkSize));
+            m_Mesh.bounds = UBoundsIncrement.MinMax(Vector3.zero, new float3(DVoxel.kVoxelSize * DVoxel.kChunkSize));
             Mesh.ApplyAndDisposeWritableMeshData(meshDataArray,m_Mesh, MeshUpdateFlags.DontRecalculateBounds);
         }
 

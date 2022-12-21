@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
+using Geometry.PointSet;
 using UnityEngine;
 
 namespace UnityEditor.Extensions
@@ -236,7 +237,7 @@ namespace UnityEditor.Extensions
             float minDistance = float.MaxValue;
             int index = _polygons.LastIndex(p =>
             {
-                GTriangle triangle = new GTriangle(p.GetVertices(_vertices));
+                GTriangle triangle = (GTriangle)p.Convert(_vertices);
                 bool intersect = UGeometryIntersect.RayDirectedTriangleIntersect(triangle, _ray, true, true, out float distance);
                 if (intersect && minDistance > distance)
                 {
@@ -311,8 +312,8 @@ namespace UnityEditor.Extensions
             m_SubPolygons.Clear();
             if (_index < 0)
                 return;
-            PTriangle _mainTriangle = m_Polygons[m_SelectedPolygon];
-            GTriangle mainTriangle = new GTriangle( _mainTriangle.GetVertices(m_Verticies));
+            PTriangle polygon = m_Polygons[m_SelectedPolygon];
+            GTriangle mainTriangle = (GTriangle)polygon.Convert(m_Verticies);
             m_SubPolygons=m_Polygons.CollectIndex((index, triangle) => index != m_SelectedPolygon && triangle.GetEnumerator(m_Verticies).Any(subVertex => mainTriangle.IterateAny(mainVertex => mainVertex == subVertex))).ToList();
         }
         void SelectVertex(int _index)
@@ -326,7 +327,7 @@ namespace UnityEditor.Extensions
         }
         void RecalculateBounds()
         {
-            m_ModifingMesh.bounds = UBounds.GetBounds(m_Verticies);
+            m_ModifingMesh.bounds = UBoundsIncrement.GetBounds(m_Verticies);
         }
         void SelectVectorData(EVertexData _data)
         {
@@ -370,7 +371,7 @@ namespace UnityEditor.Extensions
 
             foreach (var subPolygon in m_SubPolygons)
             {
-                GTriangle directedTriangle = new GTriangle( m_Polygons[subPolygon].GetVertices(m_Verticies));
+                GTriangle directedTriangle = (GTriangle) m_Polygons[subPolygon].Convert(m_Verticies);
                 if (Vector3.Dot(directedTriangle.normal, _sceneView.camera.transform.forward) > 0)
                     continue;
                 Handles.color = Color.yellow.SetAlpha(.1f);
@@ -378,7 +379,7 @@ namespace UnityEditor.Extensions
                 Handles.color = Color.yellow;
                 Handles_Extend.DrawLines_Concat(directedTriangle.Iterate());
             }
-            GTriangle mainTriangle = new GTriangle( _mainTriangle.GetVertices(m_Verticies));
+            GTriangle mainTriangle = (GTriangle) _mainTriangle.Convert(m_Verticies);
             Handles.color = Color.green.SetAlpha(.3f);
             Handles.DrawAAConvexPolygon(mainTriangle.Iterate());
             Handles.color = Color.green;

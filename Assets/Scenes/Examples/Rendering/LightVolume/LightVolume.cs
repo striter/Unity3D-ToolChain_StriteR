@@ -3,16 +3,16 @@ using UnityEngine;
 
 //This stuff is inspired by deferred rendering
 //*its requiring depth prepass to work properly
-namespace ExampleScenes.Rendering.LightVolume
+namespace Examples.Rendering.LightVolume
 {
     class VolumeTransforming
     {
-        private FBezierCurveQuadratic m_MovingCurve;
+        private GBezierCurveQuadratic m_MovingCurve;
         private Counter m_Counter;
         private bool m_Forward;
         public VolumeTransforming(Vector3 _src,Vector3 _dst,Vector3 _control,float _time)
         {
-            m_MovingCurve = new FBezierCurveQuadratic(_src,_dst,_control);
+            m_MovingCurve = new GBezierCurveQuadratic(_src,_dst,_control);
             m_Counter = new Counter(_time);
             m_Forward = true;
         }

@@ -108,13 +108,13 @@ public static class URandom
         return default;
     }
 
-    public static void Shuffle<T>(T[] _array,uint _count,uint _dimension, System.Random _random=null)
+    public static void Shuffle<T>(IList<T> _array,int _count,int _dimension, System.Random _random=null)
     {
-        uint shuffleTimes = _count / _dimension;
+        var shuffleTimes = _count / _dimension;
         
-        for (uint i = 0; i < shuffleTimes; i++)
+        for (var i = 0; i < shuffleTimes; i++)
         {
-            uint other = i + (uint)(Random01(_random) * (shuffleTimes - i));
+            var other = i + (int)(Random01(_random) * (shuffleTimes - i));
             other *= _dimension;
             var src = i * _dimension;
             for (int j = 0; j < _dimension; j++)
@@ -126,15 +126,15 @@ public static class URandom
         }
     }
 
-    public static void LatinHypercube<T>(T[] _array,uint _count, uint _dimension, System.Random _random = null)
+    public static void LatinHypercube<T>(IList<T> _array,int _count, int _dimension, System.Random _random = null)
     {
-        uint shuffleTimes = _count / _dimension;
-        for (uint i = 0; i < shuffleTimes; i++)
+        var shuffleTimes = _count / _dimension;
+        for (var i = 0; i < shuffleTimes; i++)
         {
-            uint other = i + (uint)(Random01(_random) * (shuffleTimes - i));
+            var other = i + (int)(Random01(_random) * (shuffleTimes - i));
             other *= _dimension;
-            uint src = i * _dimension;
-            uint replace = (uint) (Random01(_random) * _dimension);
+            var src = i * _dimension;
+            var replace = (int) (Random01(_random) * _dimension);
 
             other += replace;
             src += replace;

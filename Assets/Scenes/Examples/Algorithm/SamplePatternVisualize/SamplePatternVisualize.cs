@@ -3,7 +3,7 @@ using UnityEngine;
 using Unity.Mathematics;
 using Rendering.Pipeline;
 
-namespace ExampleScenes.Algorithm.SamplePatternVisualize
+namespace Examples.Algorithm.SamplePatternVisualize
 {
     public enum ESamplePattern
     {

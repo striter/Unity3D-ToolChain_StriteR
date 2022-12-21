@@ -23,7 +23,7 @@ public class RopeRenderer : MonoBehaviour
     [MFoldout(nameof(m_RopePosition), ERopePosition.Constant)] public Vector3 m_EndBiTangent;
 
     public Damper m_ControlDamper;
-    private FBezierCurveQuadratic m_Curve;
+    private GBezierCurveQuadratic m_Curve;
     private Mesh m_Mesh;
     private void Awake()
     {
@@ -72,7 +72,7 @@ public class RopeRenderer : MonoBehaviour
     {
         CalculatePositions(out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
         control = m_ControlDamper.Tick(UTime.deltaTime, control);
-        m_Curve = new FBezierCurveQuadratic(srcPosition, dstPosition, control);
+        m_Curve = new GBezierCurveQuadratic(srcPosition, dstPosition, control);
         Matrix4x4 worldToLocal = transform.worldToLocalMatrix;
 
         TSPoolList<Vector3>.Spawn(out var ropePositions);

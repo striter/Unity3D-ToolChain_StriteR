@@ -5,7 +5,7 @@ using System.Linq;
 using Geometry;
 using UnityEditor;
 
-namespace ExampleScenes.Algorithm.PathFinding
+namespace Examples.Algorithm.PathFinding
 {
     using static DAStar;
     static class DAStar
@@ -21,7 +21,7 @@ namespace ExampleScenes.Algorithm.PathFinding
     }
     
     [ExecuteInEditMode]
-    public class AStar : MonoBehaviour,IGraph<int2>
+    public class AStar : MonoBehaviour,IGraph<int2>,IGraphPathFinding<int2>
     {
         private Dictionary<int2, Node> m_Nodes = new Dictionary<int2, Node>();
 
@@ -144,21 +144,16 @@ namespace ExampleScenes.Algorithm.PathFinding
             }
         }
 
-        public INode<int2> GetNode(int2 _src) => m_Nodes[_src];
+        public IEnumerable<int2> GetAdjacentNodes(int2 _src)
+        {
+            if(m_Nodes.TryGetValue(_src+new int2(-1,0),out var adjacentNode)&&adjacentNode.m_Available) yield return adjacentNode.identity;
+            if(m_Nodes.TryGetValue(_src+new int2(1,0),out adjacentNode)&&adjacentNode.m_Available) yield return adjacentNode.identity;
+            if(m_Nodes.TryGetValue(_src+new int2(0,-1),out adjacentNode)&&adjacentNode.m_Available) yield return adjacentNode.identity;
+            if(m_Nodes.TryGetValue(_src+new int2(0,1),out adjacentNode)&&adjacentNode.m_Available) yield return adjacentNode.identity;
+        }
 
-        public IEnumerable<(int2, float)> GetAdjacentNodes(int2 _src)
-        {
-            Node adjacency = default;
-            if(m_Nodes.TryGetValue(_src+new int2(-1,0),out adjacency)) yield return (adjacency.identity,adjacency.m_Available?1:int.MaxValue);
-            if(m_Nodes.TryGetValue(_src+new int2(1,0),out adjacency)) yield return (adjacency.identity,adjacency.m_Available?1:int.MaxValue);
-            if(m_Nodes.TryGetValue(_src+new int2(0,-1),out adjacency)) yield return (adjacency.identity,adjacency.m_Available?1:int.MaxValue);
-            if(m_Nodes.TryGetValue(_src+new int2(0,1),out adjacency)) yield return (adjacency.identity,adjacency.m_Available?1:int.MaxValue);
-        }
-        
-        public float Heuristic(int2 _a, int2 _b)
-        {
-            return math.abs(_a.x - _b.x) + math.abs(_a.y - _b.y);
-        }
+        public float Cost(int2 _a, int2 _b) => math.length(_a - _b);
+        public float Heuristic(int2 _a, int2 _b) => math.length(_a - _b);
 
     }
 

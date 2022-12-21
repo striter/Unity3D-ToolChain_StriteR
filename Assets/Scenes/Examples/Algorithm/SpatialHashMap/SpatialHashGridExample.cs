@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TPool;
 using UnityEngine;
 
-namespace ExampleScenes.Algorithm.SpatialHashGrid
+namespace Examples.Algorithm.SpatialHashGrid
 {
     using static SpatialHashGridExample;
     public class SpatialHashGridExample : MonoBehaviour
@@ -19,15 +19,15 @@ namespace ExampleScenes.Algorithm.SpatialHashGrid
         public float m_Separation;
         
         private TObjectPoolClass<int, Actor> m_Actors;
-        private TileGrid m_Grid;
-        private SpatialHashMap<Int2, TileGrid, Actor> m_SpatialHashMap;
+        private TileGraph m_Graph;
+        private SpatialHashMap<Int2, TileGraph, Actor> m_SpatialHashMap;
         
         private void Awake()
         {
             Instance = this;
             m_Actors = new TObjectPoolClass<int, Actor>(transform.Find("Actor"));
-            m_Grid = new TileGrid(m_SenseRadius.end );
-            m_SpatialHashMap = new SpatialHashMap<Int2, TileGrid, Actor>(m_Grid);
+            m_Graph = new TileGraph(m_SenseRadius.end);
+            m_SpatialHashMap = new SpatialHashMap<Int2, TileGraph, Actor>(m_Graph);
             Spawn();
         }
 
@@ -82,13 +82,11 @@ namespace ExampleScenes.Algorithm.SpatialHashGrid
             
             Gizmos.DrawWireSphere(m_Actors[0].position,m_SenseRadius.end);
 
-            var srcNode = m_Grid.ToHashNode(m_Actors[0].position);
-            var nodes = m_Grid.GetNearbyNode(srcNode);
-            for (int i = 0; i < nodes.Length; i++)
+            var srcNode = m_Graph.GetNode(m_Actors[0].position);
+            foreach (var node in m_Graph.GetAdjacentNodes(srcNode).Extend(srcNode))
             {
-                var node = nodes[i];
                 Gizmos.color = node == srcNode ? Color.red : Color.green.SetAlpha(.3f);
-                m_Grid.DrawGizmos(node);
+                m_Graph.DrawGizmos(node);
             }
             
         }
@@ -152,38 +150,6 @@ namespace ExampleScenes.Algorithm.SpatialHashGrid
         {
             m_Block.SetColor(KShaderProperties.kColor,_color);
             m_Renderer.SetPropertyBlock(m_Block);
-        }
-    }
-
-    public class TileGrid:IGridQuery<Int2>
-    {
-        public float m_Size;
-
-        public TileGrid(float _size)
-        {
-            m_Size = _size;
-        }
-
-        public Int2 ToHashNode(Vector3 _srcPosition) => new Int2(Mathf.FloorToInt(_srcPosition.x/m_Size), Mathf.FloorToInt(_srcPosition.z/m_Size));
-        private Int2[] kNearbyNodes = new Int2[9];
-        public Int2[] GetNearbyNode(Int2 _src)
-        {
-            kNearbyNodes[0] =  _src;
-            kNearbyNodes[1] = new Int2(_src.x - 1, _src.y);
-            kNearbyNodes[2] = new Int2(_src.x, _src.y - 1);
-            kNearbyNodes[3] = new Int2(_src.x + 1, _src.y);
-            kNearbyNodes[4] = new Int2(_src.x, _src.y + 1);
-            kNearbyNodes[5] = new Int2(_src.x + 1, _src.y - 1);
-            kNearbyNodes[6] = new Int2(_src.x + 1, _src.y + 1);
-            kNearbyNodes[7] = new Int2(_src.x - 1, _src.y + 1);
-            kNearbyNodes[8] = new Int2(_src.x - 1, _src.y - 1);
-            return kNearbyNodes;
-        }
-
-        public void DrawGizmos(Int2 _node)
-        {
-            var bounds = UBounds.MinMax(new Vector3(_node.x,0f,_node.y)*m_Size,new Vector3(_node.x+1,0f,_node.y+1)*m_Size);
-            Gizmos.DrawWireCube(bounds.center,bounds.size);
         }
     }
 }

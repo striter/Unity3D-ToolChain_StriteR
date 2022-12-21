@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Geometry
@@ -7,10 +8,10 @@ namespace Geometry
     [Serializable]
     public struct GPlane:IEquatable<GPlane>,IEqualityComparer<GPlane>,ISerializationCallbackReceiver
     {
-        public Vector3 normal;
+        public float3 normal;
         public float distance;
-        [HideInInspector]public Vector3 position;
-        public GPlane(Vector3 _normal, float _distance) 
+        [HideInInspector]public float3 position;
+        public GPlane(float3 _normal, float _distance) 
         { 
             this = default;
             normal = _normal;
@@ -18,7 +19,7 @@ namespace Geometry
             GPlane_Ctor(true);
         }
 
-        public GPlane(Vector3 _normal, Vector3 _position)
+        public GPlane(float3 _normal, float3 _position)
         {
             this = default;
             normal = _normal;
@@ -31,19 +32,19 @@ namespace Geometry
             if (_position)
                 position = normal * distance;
             else
-                distance = -Vector3.Dot(normal, position);// UGeometryIntersect.PointPlaneDistance(_position, new GPlane(_normal, 0));
+                distance = -math.dot(normal, position);// UGeometryIntersect.PointPlaneDistance(_position, new GPlane(_normal, 0));
         }
 
         public void OnBeforeSerialize() { }
 
         public void OnAfterDeserialize()
         {
-            normal = normal.normalized;
+            normal = math.normalize(normal);
             GPlane_Ctor(true);
         }
-        public static implicit operator Vector4(GPlane _plane)=>_plane.normal.ToVector4(_plane.distance);
+        public static implicit operator Vector4(GPlane _plane)=>_plane.normal.to4(_plane.distance);
 
-        public static bool operator ==(GPlane _src, GPlane _dst) =>  _src.normal == _dst.normal && Math.Abs(_src.distance - _dst.distance) < float.Epsilon;
+        public static bool operator ==(GPlane _src, GPlane _dst) =>  _src.normal.Equals( _dst.normal) && math.abs(_src.distance - _dst.distance) < float.Epsilon;
         public static bool operator !=(GPlane _src, GPlane _dst) => !(_src == _dst);
         public bool Equals(GPlane _dst) => this == _dst;
         public bool Equals(GPlane _src, GPlane _dst) => _src == _dst;

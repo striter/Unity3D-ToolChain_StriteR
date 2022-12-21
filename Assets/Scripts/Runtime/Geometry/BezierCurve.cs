@@ -1,20 +1,23 @@
 using System;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Geometry.Bezier
 {
+    using static math;
+    using static UMath;
     [Serializable]
-    public struct FBezierCurveQuadratic:ISerializationCallbackReceiver
+    public struct GBezierCurveQuadratic:ISerializationCallbackReceiver
     {
-        public Vector3 source;
-        public Vector3 control;
-        public Vector3 destination;
+        public float3 source;
+        public float3 control;
+        public float3 destination;
         
-        [HideInInspector] public Vector3 tangentSource;
-        [HideInInspector] public Vector3 tangentDestination;
+        [HideInInspector] public float3 tangentSource;
+        [HideInInspector] public float3 tangentDestination;
         
-        public FBezierCurveQuadratic(Vector3 _src, Vector3 _dst, Vector3 _control)
+        public GBezierCurveQuadratic(float3 _src, float3 _dst, float3 _control)
         {
             source = _src;
             destination = _dst;
@@ -26,37 +29,120 @@ namespace Geometry.Bezier
 
         void Ctor()
         {
-            tangentSource = Vector3.Normalize(control - source);
-            tangentDestination = Vector3.Normalize(destination - control);
+            tangentSource = normalize(control - source);
+            tangentDestination = normalize(destination - control);
         }
 
         public Vector3 Evaluate(float _value)
         {
             float value = _value;
             float oneMinusValue = 1 - value;
-            return UMath.Pow2(oneMinusValue) * source + 2 * (oneMinusValue) * value * control + UMath.Pow2(value) * destination;
+            return Square(oneMinusValue) * source + 2 * (oneMinusValue) * value * control + Pow2(value) * destination;
         }
 
-        public Vector3 GetTangent(float _value) => Vector3.Lerp(tangentSource,tangentDestination,_value).normalized;
+        public float3 GetTangent(float _value) => normalize(lerp(tangentSource,tangentDestination,_value));
 
-        public GBox GetBoundingBox()
+    #region Implements
+        public void OnBeforeSerialize() { }
+        public void OnAfterDeserialize()=> Ctor();
+    #endregion
+    }
+
+    [Serializable]
+    public struct GBezierCurveCubic
+    {
+        public float3 source;
+        public float3 controlSource;
+        public float3 destination;
+        public float3 controlDestination;
+
+        public float3 Evaluate(float _value)
         {
-            Vector3 min = Vector3.Min(source,destination);
-            Vector3 max = Vector3.Max(source,destination);
-            GBox box = GBox.Create(min, max);
-            if (!box.IsPointInside(control))
+            float value = _value;
+            float oneMinusValue = 1 - value;
+            return Pow3(oneMinusValue) * source +  3 * Pow2(oneMinusValue) * value * controlSource +  3 * oneMinusValue * Pow2(value) * controlDestination + Pow3(value) * destination;
+        }
+    }
+
+    public static class UBezierCurve
+    {
+        public static GBox GetBoundingBox(this GBezierCurveQuadratic _curve)
+        {
+            var source = _curve.source;
+            var destination = _curve.destination;
+            var control = _curve.control;
+            
+            var min = math.min(source,destination);
+            var max = math.max(source,destination);
+            GBox box = GBox.Minmax(min, max);
+            if (!box.Contains(control))
             {
-                Vector3 t =  (source - control).div(source - 2 * control + destination).clamp(RangeFloat.k01);
-                Vector3 s = Vector3.one - t;
-                Vector3 q = s.mul(s).mul(source) + 2*s.mul(t).mul(control)+ t.mul(t).mul(destination);
-                box = GBox.Create(Vector3.Min(min,q),Vector3.Max(max,q));
+                float3 t =  ((source - control)/(source - 2 * control + destination)).saturate();
+                float3 s = 1f - t;
+                float3 q = s*s*source + 2*s*t*control+ t*t*destination;
+                box = GBox.Minmax(math.min(min,q),Vector3.Max(max,q));
             }
             return box;
         }
         
-    #if UNITY_EDITOR
-        public void DrawGizmos(bool _tangents = false,int _density=64)
+        public static GBox GetBoundingBox(this GBezierCurveCubic _curve)
         {
+            var source = _curve.source;
+            var destination = _curve.destination;
+            var controlSource = _curve.controlSource;
+            var controlDestination = _curve.controlDestination;
+            
+            var min = math.min(source, destination);
+            var max = math.max(source, destination);
+            var c = -source + controlSource;
+            var b = source - 2 * controlSource + controlDestination;
+            var a = -source + 3 * controlSource - 3 * controlDestination + destination;
+        
+            var h = b*b - a*c;
+            if (b.anyGreater(0f))
+            {
+                var g = sqrt(abs(h));
+                var t1 = ((-b - g)/a).saturate();
+                var s1 = 1f - t1;
+                var t2 = ((-b + g)/a).saturate();
+                var s2 = 1f - t2;
+                var q1 = s1*s1*s1*source +
+                         3.0f * s1*s1*t1*controlSource +
+                         3.0f * s1*t1*t1*controlDestination +
+                         t1*t1*t1*destination;
+                var q2 = s2*s2*s2*source +
+                         3.0f * s2*s2*t2*controlSource +
+                         3.0f * s2*t2*t2*controlDestination +
+                         t2*t2*t2*destination;
+                
+                if (h.x >= 0)
+                {
+                    min.x = Mathf.Min(min.x,q1.x, q2.x);
+                    max.x = Mathf.Max(max.x, q1.x, q2.x);
+                }
+                if (h.y >= 0)
+                {
+                    min.y = Mathf.Min(min.y, q1.y, q2.y);
+                    max.y = Mathf.Max(max.y, q1.y, q2.y);
+                }
+                if (h.z >= 0)
+                {
+                    min.z = Mathf.Min(min.z, q1.z, q2.z);
+                    max.z = Mathf.Max(max.z, q1.z, q2.z);
+                }
+            }
+
+            return GBox.Minmax(min, max);
+        }
+
+#if UNITY_EDITOR
+        
+        public static void DrawGizmos(this GBezierCurveQuadratic _curve, bool _tangents = false,int _density=64)
+        {
+            var source = _curve.source;
+            var destination = _curve.destination;
+            var control = _curve.control;
+            
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(source,.05f);
             Gizmos.DrawLine(source,control);
@@ -70,7 +156,7 @@ namespace Geometry.Bezier
             for (int i = 0; i < _density + 1; i++)
             {
                 var value = i / (float) _density;
-                points[i] =  Evaluate(value);
+                points[i] = _curve.Evaluate(value);
             }
             Gizmos_Extend.DrawLines(points);
 
@@ -80,80 +166,17 @@ namespace Geometry.Bezier
             for (int i = 0; i < _density + 1; i++)
             {
                 var value = i / (float) _density;
-                Gizmos.DrawLine(points[i],points[i]+GetTangent(value)*.1f);
+                Gizmos.DrawLine(points[i],points[i]+ (Vector3)_curve.GetTangent(value)*.1f);
             }
         }
-    #endif
         
-    #region Implements
-        public void OnBeforeSerialize() { }
-        public void OnAfterDeserialize()=> Ctor();
-    #endregion
-    }
-
-    [Serializable]
-    public struct FBezierCurveCubic
-    {
-        public Vector3 source;
-        public Vector3 controlSource;
-        public Vector3 destination;
-        public Vector3 controlDestination;
-
-        public Vector3 Evaluate(float _value)
+        public static void DrawGizmos(this GBezierCurveCubic _curve,int _density=64)
         {
-            float value = _value;
-            float oneMinusValue = 1 - value;
-            return UMath.Pow3(oneMinusValue) * source +  3 * UMath.Pow2(oneMinusValue) * value * controlSource +  3 * oneMinusValue * UMath.Pow2(value) * controlDestination + UMath.Pow3(value) * destination;
-        }
+            var source = _curve.source;
+            var destination = _curve.destination;
+            var controlSource = _curve.controlSource;
+            var controlDestination = _curve.controlDestination;
 
-        public GBox GetBoundingBox()
-        {
-            Vector3 min = Vector3.Min(source, destination);
-            Vector3 max = Vector3.Max(source, destination);
-            Vector3 c = -source + controlSource;
-            Vector3 b = source - 2 * controlSource + controlDestination;
-            Vector3 a = -source + 3 * controlSource - 3 * controlDestination + destination;
-        
-            Vector3 h = b.mul(b) - a.mul(c);
-            if (b.Greater(0f).Any())
-            {
-                Vector3 g = new Vector3(Mathf.Sqrt(Mathf.Abs(h.x)),Mathf.Sqrt(Mathf.Abs(h.y)),Mathf.Sqrt(Mathf.Abs(h.z)));
-                Vector3 t1 = (-b - g).div(a).clamp(RangeFloat.k01);
-                Vector3 s1 = Vector3.one - t1;
-                Vector3 t2 = (-b + g).div(a).clamp(RangeFloat.k01);
-                Vector3 s2 = Vector3.one - t2;
-                Vector3 q1 = s1.mul(s1).mul(s1).mul(source) +
-                             3.0f * s1.mul(s1).mul(t1).mul(controlSource) +
-                             3.0f * s1.mul(t1).mul(t1).mul(controlDestination) +
-                             t1.mul(t1).mul(t1).mul(destination);
-                Vector3 q2 = s2.mul(s2).mul(s2).mul(source) +
-                             3.0f * s2.mul(s2).mul(t2).mul(controlSource) +
-                             3.0f * s2.mul(t2).mul(t2).mul(controlDestination) +
-                             t2.mul(t2).mul(t2).mul(destination);
-                
-                if (h.x >= 0)
-                {
-                    min.x = Mathf.Min(min.x, Mathf.Min(q1.x, q2.x));
-                    max.x = Mathf.Max(max.x, Mathf.Max(q1.x, q2.x));
-                }
-                if (h.y >= 0)
-                {
-                    min.y = Mathf.Min(min.y, Mathf.Min(q1.y, q2.y));
-                    max.y = Mathf.Max(max.y, Mathf.Max(q1.y, q2.y));
-                }
-                if (h.z >= 0)
-                {
-                    min.z = Mathf.Min(min.z, Mathf.Min(q1.z, q2.z));
-                    max.z = Mathf.Max(max.z, Mathf.Max(q1.z, q2.z));
-                }
-            }
-
-            return GBox.Create(min, max);
-        }
-        
-#if UNITY_EDITOR
-        public void DrawGizmos(int _density=64)
-        {
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(source,.05f);
             Gizmos.DrawLine(source,controlSource);
@@ -167,7 +190,7 @@ namespace Geometry.Bezier
             
             Vector3[] points = new Vector3[_density + 1];
             for (int i = 0; i < _density+1; i++)
-                points[i] = Evaluate(i / (float)_density);
+                points[i] = _curve.Evaluate(i / (float)_density);
             Gizmos_Extend.DrawLines(points);
         }
 #endif

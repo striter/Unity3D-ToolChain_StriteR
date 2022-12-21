@@ -5,7 +5,7 @@ using TPool;
 using TTouchTracker;
 using UnityEngine;
 
-namespace ExampleScenes.Algorithm.MarchingSquare
+namespace Examples.Algorithm.MarchingSquare
 {
     public class MarchingSquare : MonoBehaviour
     {

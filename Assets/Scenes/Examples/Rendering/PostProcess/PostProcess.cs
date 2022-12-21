@@ -4,7 +4,7 @@ using UnityEngine;
 using TTouchTracker;
 using UnityEngine.UIElements;
 
-namespace ExampleScenes.Rendering.PostProcess
+namespace Examples.Rendering.PostProcess
 {
     public class PostProcess : MonoBehaviour
     {

@@ -168,6 +168,8 @@ public static class Gizmos_Extend
     }
     
     public static void DrawGizmos(this GBox _box)=>Gizmos.DrawWireCube(_box.center,_box.size);
+    public static void DrawGizmos(this GCircle _circle) => Handles.DrawWireDisc(_circle.center.to3xz(),Vector3.up,_circle.radius);
+    public static void DrawGizmos(this GSphere _sphere) => Gizmos.DrawWireSphere(_sphere.center, _sphere.radius);
     public static void DrawGizmos(this GFrustumPoints _frustumPoints)
     {
         DrawLinesConcat(_frustumPoints.nearBottomLeft,_frustumPoints.nearBottomRight,_frustumPoints.nearTopRight,_frustumPoints.nearTopLeft);

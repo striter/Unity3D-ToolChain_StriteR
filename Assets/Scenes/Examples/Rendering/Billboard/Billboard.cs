@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TPool;
 
-namespace ExampleScenes.Rendering.Billboard
+namespace Examples.Rendering.Billboard
 {
     public class Billboard : MonoBehaviour
     {

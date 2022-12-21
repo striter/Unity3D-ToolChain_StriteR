@@ -8,6 +8,8 @@ namespace Geometry
     
     public static class UTriangle
     {
+        
+        
         public static (Y m01, Y m12, Y m20, Y m012) GetMiddleVertices_Dynamic<T,Y>(this T _triangle) where T:struct,ITriangle<Y> where Y:struct
         {
             dynamic v0 = _triangle.V0;

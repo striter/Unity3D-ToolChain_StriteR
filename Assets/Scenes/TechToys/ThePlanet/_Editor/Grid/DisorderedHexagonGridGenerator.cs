@@ -47,7 +47,7 @@ namespace PCG.Grid
 
         public void Setup()
         {
-            UProcedural.InitMatrix(transform.localToWorldMatrix, transform.worldToLocalMatrix, 1f / 6f * KMath.kSQRT2);
+            UProcedural.InitMatrix(transform.localToWorldMatrix, transform.worldToLocalMatrix, 1f / 6f * kmath.kSQRT2);
             UHexagon.flat = m_Flat;
             UHexagonArea.Init(m_AreaRadius, 6, true);
         }
@@ -84,7 +84,7 @@ namespace PCG.Grid
         {
             GRay ray = _sceneView.camera.ScreenPointToRay(_sceneView.GetScreenPoint());
             GPlane plane = new GPlane(Vector3.up, transform.position);
-            var hitPos = ray.GetPoint(UGeometryIntersect.RayPlaneDistance(plane, ray));
+            var hitPos = (Vector3)ray.GetPoint(UGeometryIntersect.RayPlaneDistance(plane, ray));
             var hitCoord = hitPos.ToCoord();
             var hitHex = hitCoord.ToCube();
             var hitArea = UHexagonArea.GetBelongAreaCoord(hitHex);
@@ -410,7 +410,7 @@ namespace PCG.Grid
                     directions[2] = KRotation.kRotateCW180.Multiply(offsets[2]);
                     directions[3] = KRotation.kRotateCW90.Multiply(offsets[3]);
                     
-                    var average = Coord.Normalize( directions.Sum((a,b)=>a+b))*KMath.kSQRT2*3;
+                    var average = Coord.Normalize( directions.Sum((a,b)=>a+b))*kmath.kSQRT2*3;
                     
                     //Rotate back
                     directions[0] = average - offsets[0];

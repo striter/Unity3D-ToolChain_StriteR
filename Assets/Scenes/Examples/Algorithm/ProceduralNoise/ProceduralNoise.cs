@@ -7,7 +7,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using Geometry.Explicit.Shape;
 
-namespace ExampleScenes.Algorithm.Procedural
+namespace Examples.Algorithm.Procedural
 {
     public enum EShape
     {

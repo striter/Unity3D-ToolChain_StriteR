@@ -2,7 +2,7 @@ using System;
 using Rendering;
 using UnityEngine;
 
-namespace ExampleScenes.Rendering.GI
+namespace Examples.Rendering.GI
 {
     public class GIImport : MonoBehaviour
     {

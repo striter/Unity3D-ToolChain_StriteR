@@ -1,23 +1,11 @@
 using System.Collections.Generic;
 
-public interface INode<T> where T:struct
-{
-    public T identity { get; }
-}
-
-public interface IGraph<T> where T:struct
-{
-    INode<T> GetNode(T _src);
-    IEnumerable<(T, float)> GetAdjacentNodes(T _src);
-    float Heuristic(T _src, T _dst);
-}
-
 public static class UAStar<T> where T:struct
 {
     private static PriorityQueue<T, float> frontier = new PriorityQueue<T, float>();
     private static Dictionary<T, T> previousLink = new Dictionary<T, T>();
     private static Dictionary<T, float> pathCosts = new Dictionary<T, float>();
-    public static void PathFind(IGraph<T> _graph, INode<T> _src, INode<T> _tar,ref Stack<T> _outputPaths)
+    public static void PathFind<Graph>(Graph _graph, INode<T> _src, INode<T> _tar,ref Stack<T> _outputPaths) where Graph:IGraph<T>,IGraphPathFinding<T>
     {
         frontier.Clear();
         pathCosts.Clear();
@@ -34,8 +22,9 @@ public static class UAStar<T> where T:struct
                 break;
 
             var curCost = pathCosts[current];
-            foreach (var (next, cost) in _graph.GetAdjacentNodes(current))
+            foreach (var next in _graph.GetAdjacentNodes(current))
             {
+                var cost = _graph.Cost(current,next);
                 var newCost = curCost + cost;
                 bool contains = pathCosts.ContainsKey(next);
                 if (!contains)

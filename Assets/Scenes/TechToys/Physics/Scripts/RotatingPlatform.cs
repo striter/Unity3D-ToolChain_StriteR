@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ExampleScenes.PhysicsScenes
+namespace Examples.PhysicsScenes
 {
     public class RotatingPlatform : MonoBehaviour
     {

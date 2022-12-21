@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ExampleScenes.Algorithm
+namespace Examples.Algorithm
 {
     public class RotationVisualize : MonoBehaviour
     {

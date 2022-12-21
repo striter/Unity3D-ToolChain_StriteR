@@ -6,7 +6,7 @@ using UnityEngine;
 using TPool;
 using Procedural.Tile;
 
-namespace ExampleScenes.Algorithm.WaveFunctionCollapse
+namespace Examples.Algorithm.WaveFunctionCollapse
 {
     public class WaveFunctionCollapse : MonoBehaviour
     {

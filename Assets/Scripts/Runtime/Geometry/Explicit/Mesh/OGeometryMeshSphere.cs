@@ -10,7 +10,7 @@ using UnityEngine;
 namespace Geometry.Explicit.Mesh.Sphere
 {
     using static UMath;
-    using static KMath;
+    using static kmath;
     using static KGeometryMesh;
 
     [Serializable]

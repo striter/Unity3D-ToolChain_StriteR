@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Geometry;
+using Unity.Mathematics;
 using UnityEngine;
-namespace ExampleScenes.Algorithm.Geometry
+namespace Examples.Algorithm.Geometry
 {
-    public class GeometryVisualize_AABB : MonoBehaviour
+    public class GeometryIntersectAABB : MonoBehaviour
     {
         public GBox m_Box;
         public GRay m_Ray;
@@ -12,8 +13,11 @@ namespace ExampleScenes.Algorithm.Geometry
         public GBox m_CollisionBox1;
         public GBox m_CollisionBox2;
 #if UNITY_EDITOR
+        private float totalTime = 0;
         private void OnDrawGizmos()
         {
+            totalTime += UTime.deltaTime;
+            
             Gizmos.matrix = transform.localToWorldMatrix;
             bool intersect = UGeometryIntersect.RayAABBIntersect(m_Box,m_Ray);
             Gizmos.color = intersect ? Color.green : Color.grey;
@@ -31,10 +35,14 @@ namespace ExampleScenes.Algorithm.Geometry
                 }
             }
 
-            Gizmos.color = m_Box.AABBIntersection(m_CollisionBox1) ? Color.green:Color.red;
-            m_CollisionBox1.DrawGizmos();
-            Gizmos.color = m_Box.AABBIntersection(m_CollisionBox2) ? Color.green:Color.red;
-            m_CollisionBox2.DrawGizmos();
+            float delta = math.sin(totalTime * kmath.kPI * 2f / 4);
+            var collisionBox1 = m_CollisionBox1.Move(delta*.5f);
+            var collisionBox2 = m_CollisionBox2.Move(-delta*.5f);
+            
+            Gizmos.color = m_Box.AABBIntersection(collisionBox1) ? Color.green:Color.red;
+            collisionBox1.DrawGizmos();
+            Gizmos.color = m_Box.AABBIntersection(collisionBox2) ? Color.green:Color.red;
+            collisionBox2.DrawGizmos();
 
             Gizmos.color = intersect ? Color.white:Color.grey;
             m_Ray.ToLine(distances.x + distances.y).DrawGizmos(); 

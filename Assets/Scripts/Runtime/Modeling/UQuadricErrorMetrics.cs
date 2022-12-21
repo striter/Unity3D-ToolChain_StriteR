@@ -61,7 +61,7 @@ namespace QuadricErrorsMetric
             // _mesh.SetUVs(0,uvs);
             _srcMesh.SetTriangles(indexes,0);
             
-            var triangles = polygons.Select(p => new GTriangle(p.GetVertices(vertices))).ToArray();
+            var triangles = polygons.Select(p => (GTriangle)p.Convert(vertices)).ToArray();
 
             var vertexLength = vertices.Count;
             var triangleLength = polygons.Count;

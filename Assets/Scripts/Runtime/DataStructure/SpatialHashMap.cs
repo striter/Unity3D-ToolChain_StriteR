@@ -1,25 +1,21 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-public interface IGridQuery<T>
-{
-    T ToHashNode(Vector3 _srcPosition);
-    T[] GetNearbyNode(T _src);
-}
-
-public class SpatialHashMap<T,Y,U> where T:struct where Y:class,IGridQuery<T> where U:ITransform
+public class SpatialHashMap<T,Y,U> where T:struct where Y:class,IGraph<T>,IGraphDiscrete<T> where U:ITransform
 {
     private Y m_Query;
     private List<U> m_Elements = new List<U>();
     private Dictionary<T,  List<U>> m_Grids = new Dictionary<T, List<U>>();
 
+#region Lifecycle
     public SpatialHashMap(Y _query)
     {
         m_Query = _query;
     }
 
+    public void Register(U _element)=>m_Elements.Add(_element);
+    public void SignOut(U _element)=> m_Elements.Remove(_element);
+    
     public void Reset()
     {
         m_Elements.Clear();
@@ -32,20 +28,12 @@ public class SpatialHashMap<T,Y,U> where T:struct where Y:class,IGridQuery<T> wh
         m_Elements = null;
         m_Grids = null;
     }
-
-    public void Register(U _element)
-    {
-        m_Elements.Add(_element);
-    }
-
-    public void SignOut(U _element)
-    {
-        m_Elements.Remove(_element);
-    }
+#endregion
+    
     public IEnumerable<U> Query(Vector3 _position,float _radius)
     {
         var sqrRadius = _radius * _radius;
-        var srcNode = m_Query.ToHashNode(_position);
+        var srcNode = m_Query.GetNode(_position);
         if (!m_Grids.ContainsKey(srcNode))
             yield break;
         var elements = m_Grids[srcNode];
@@ -60,11 +48,9 @@ public class SpatialHashMap<T,Y,U> where T:struct where Y:class,IGridQuery<T> wh
     public IEnumerable<U> QueryRange(Vector3 _position,float _radius)
     {
         var sqrRadius = _radius * _radius;
-        var srcNode = m_Query.ToHashNode(_position);
-        var nearbyNodes = m_Query.GetNearbyNode(srcNode);
-        for(int i=0;i<nearbyNodes.Length;i++)
+        var srcNode = m_Query.GetNode(_position);
+        foreach (var node in m_Query.GetAdjacentNodes(srcNode).Extend(srcNode))
         {
-            var node = nearbyNodes[i];
             if (!m_Grids.ContainsKey(node))
                 continue;
             var elements = m_Grids[node];
@@ -83,7 +69,7 @@ public class SpatialHashMap<T,Y,U> where T:struct where Y:class,IGridQuery<T> wh
         m_Grids.Clear();
         foreach (var element in m_Elements)
         {
-            var node = m_Query.ToHashNode(element.position);
+            var node = m_Query.GetNode(element.position);
             if (!m_Grids.ContainsKey(node))
                 m_Grids.Add(node,new List<U>());
             m_Grids[node].Add(element);

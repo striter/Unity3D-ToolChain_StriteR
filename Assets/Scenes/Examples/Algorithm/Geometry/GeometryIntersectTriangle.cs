@@ -1,9 +1,9 @@
 ﻿using Geometry;
 using UnityEngine;
 
-namespace ExampleScenes.Algorithm.Geometry
+namespace Examples.Algorithm.Geometry
 {
-    public class GeometryVisualize_Triangle : MonoBehaviour
+    public class GeometryIntersectTriangle : MonoBehaviour
     {
         public GTriangle Triangle=new GTriangle( new Vector3(0, 0, 1), new Vector3(1, 0, -1), new Vector3(-1, 0, -1) );
         public GRay m_Ray = new GRay(new Vector3(0, 2, 0), new Vector3(-.1f, -1, .1f));
@@ -18,7 +18,7 @@ namespace ExampleScenes.Algorithm.Geometry
             Gizmos.DrawLine(Triangle[1], Triangle[2]);
             Gizmos.DrawLine(Triangle[2], Triangle[0]);
             if(m_PlaneDirectionCheck)
-                Gizmos_Extend.DrawArrow(Triangle.GetUVPoint(.25f,.25f), Quaternion.LookRotation(Triangle.normal), .5f, .1f);
+                Gizmos_Extend.DrawArrow(Triangle.GetPoint(.25f,.25f), Quaternion.LookRotation(Triangle.normal), .5f, .1f);
 
             float distance = 2f;
             if( UGeometryIntersect.RayDirectedTriangleIntersect(Triangle,m_Ray, m_RayDirectionCheck,m_PlaneDirectionCheck,out float rayDistance))

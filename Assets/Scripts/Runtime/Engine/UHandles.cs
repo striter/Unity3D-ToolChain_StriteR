@@ -28,8 +28,8 @@ public static class Handles_Extend
     public static void DrawLine(GLine _line)
     {
         Quaternion rotation = Quaternion.LookRotation(_line.direction);
-        DrawArrow(_line.origin, rotation, .5f,.05f);
-        using(new Handles.DrawingScope(Handles.color,Handles.matrix*Matrix4x4.TRS(_line.origin,rotation,Vector3.one)))
+        DrawArrow(_line.start, rotation, .5f,.05f);
+        using(new Handles.DrawingScope(Handles.color,Handles.matrix*Matrix4x4.TRS(_line.start,rotation,Vector3.one)))
         {
             Handles.DrawLine(Vector3.zero,Vector3.forward*_line.length);
         }

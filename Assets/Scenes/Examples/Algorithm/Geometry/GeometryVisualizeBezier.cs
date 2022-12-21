@@ -4,15 +4,15 @@ using System.Collections.Generic;
 using Geometry.Bezier;
 using UnityEngine;
 
-namespace ExampleScenes.Algorithm.Geometry
+namespace Examples.Algorithm.Geometry
 {
-    public class GeometryVisualize_Bezier : MonoBehaviour
+    public class GeometryVisualizeBezier : MonoBehaviour
     {
         [Header("Quadratic")] 
-        public FBezierCurveQuadratic m_QuadraticCurve;
+        public GBezierCurveQuadratic m_QuadraticCurve;
         public bool quadraticTangents = false;
         [Header("Cubic")] 
-        public FBezierCurveCubic m_CubicCurve;
+        public GBezierCurveCubic m_CubicCurve;
         #if UNITY_EDITOR
         private void OnDrawGizmos()
         {

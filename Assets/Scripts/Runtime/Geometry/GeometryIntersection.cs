@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Geometry
@@ -29,16 +30,16 @@ namespace Geometry
 
         #region Point
 
-        public static float PointRayProjection(Vector3 _point, GRay _ray)
+        public static float PointRayProjection(float3 _point, GRay _ray)
         {
-            return Vector3.Dot(_point - _ray.origin, _ray.direction);
+            return math.dot(_point - _ray.origin, _ray.direction);
         }
 
         public static float PointPlaneDistance(Vector3 _point, GPlane _plane)
         {
             float nr = _point.x * _plane.normal.x + _point.y * _plane.normal.y + _point.z * _plane.normal.z +
                        _plane.distance;
-            return nr / _plane.normal.magnitude;
+            return nr / math.length(_plane.normal);
         }
 
         #endregion
@@ -203,9 +204,9 @@ namespace Geometry
         
         static void RayAABBCalculate(GBox _box, GRay _ray, out Vector3 _tmin, out Vector3 _tmax)
         {
-            Vector3 invRayDir = Vector3.one.div(_ray.direction);
-            Vector3 t0 = (_box.min - _ray.origin).mul(invRayDir);
-            Vector3 t1 = (_box.max - _ray.origin).mul(invRayDir);
+            var invRayDir = 1f/(_ray.direction);
+            var t0 = (_box.min - _ray.origin)*(invRayDir);
+            var t1 = (_box.max - _ray.origin)*(invRayDir);
             _tmin = Vector3.Min(t0, t1);
             _tmax = Vector3.Max(t0, t1);
         }
@@ -236,14 +237,14 @@ namespace Geometry
             return distances;
         }
 
-        public static Vector2 RayConeDistance(GHeightCone _cone, GRay _ray)
+        public static float2 RayConeDistance(GHeightCone _cone, GRay _ray)
         {
-            Vector2 distances = RayConeCalculate(_cone, _ray);
+            var distances = RayConeCalculate(_cone, _ray);
             GPlane bottomPlane = new GPlane(_cone.normal, _cone.origin + _cone.normal * _cone.height);
             float rayPlaneDistance = RayPlaneDistance(bottomPlane, _ray);
             float sqrRadius = _cone.Radius;
             sqrRadius *= sqrRadius;
-            if ((_cone.Bottom - _ray.GetPoint(rayPlaneDistance)).sqrMagnitude > sqrRadius)
+            if (math.lengthsq(_cone.Bottom - _ray.GetPoint(rayPlaneDistance)) > sqrRadius)
                 rayPlaneDistance = -1;
 
             float surfaceDst = Vector3.Dot(_cone.normal, _ray.GetPoint(distances.x) - _cone.origin);
@@ -256,23 +257,23 @@ namespace Geometry
             return distances;
         }
 
-        static Vector2 RayConeCalculate(GCone _cone, GRay _ray)
+        static float2 RayConeCalculate(GCone _cone, GRay _ray)
         {
-            Vector2 distances = Vector2.one * -1;
-            Vector3 offset = _ray.origin - _cone.origin;
+            float2 distances = -1f;
+            float3 offset = _ray.origin - _cone.origin;
 
-            float RDV = Vector3.Dot(_ray.direction, _cone.normal);
-            float ODN = Vector3.Dot(offset, _cone.normal);
-            float cosA = Mathf.Cos(KMath.kDeg2Rad * _cone.angle);
+            float RDV = math.dot(_ray.direction, _cone.normal);
+            float ODN = math.dot(offset, _cone.normal);
+            float cosA = math.cos(kmath.kDeg2Rad * _cone.angle);
             float sqrCosA = cosA * cosA;
 
             float a = RDV * RDV - sqrCosA;
-            float b = 2f * (RDV * ODN - Vector3.Dot(_ray.direction, offset) * sqrCosA);
-            float c = ODN * ODN - Vector3.Dot(offset, offset) * sqrCosA;
+            float b = 2f * (RDV * ODN - math.dot(_ray.direction, offset) * sqrCosA);
+            float c = ODN * ODN - math.dot(offset, offset) * sqrCosA;
             float determination = b * b - 4f * a * c;
             if (determination < 0)
                 return distances;
-            determination = Mathf.Sqrt(determination);
+            determination = math.sqrt(determination);
             distances.x = (-b + determination) / (2f * a);
             distances.y = (-b - determination) / (2f * a);
             return distances;
@@ -285,13 +286,13 @@ namespace Geometry
         public static float PlanePointProjection(this GPlane _plane, Vector3 _point)=>Vector4.Dot(_plane, _point.ToVector4(1f));
         public static bool PlaneAABBIntersection(this GPlane _plane, GBox _box)
         {
-            Vector3 c = _box.center;
-            Vector3 e = _box.extend.abs();
+            var c = _box.center;
+            var e = math.abs(_box.extend);
 
-            Vector3 n = _plane.normal;
+            var n = _plane.normal;
             float d = _plane.distance;
-            float r = Vector3.Dot(e,n.abs());
-            float s = Vector3.Dot(n, c) - d;
+            float r = math.dot(e,math.abs(n));
+            float s = math.dot(n, c) - d;
             return s <= r;
         }
 

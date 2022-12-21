@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace ExampleScenes.Rendering.ComputeShaders.FogOfWar2D
+namespace Examples.Rendering.ComputeShaders.FogOfWar2D
 {
     public class FogOfWar2D : MonoBehaviour
     {

@@ -1,31 +1,30 @@
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
-using UnityEngine;
 
 namespace Swizzling
 {
-    public sealed class float2 : FloatSwizzling<float>
-    {
-        public Vector4 m_Value { get; private set; }
-        public float2(float x, float y) : base(new float[] { x, y }) { }
-        protected override void OnValueChanged(float[] value) { m_Value = new Vector2(value[0], value[1]); }
-        public static explicit operator Vector2(float2 src) { return src.m_Value; }
-    }
-    public sealed class float3 : FloatSwizzling<float>
-    {
-        public Vector3 m_Value { get; private set; }
-        public float3(float x, float y, float z) : base(new float[] { x, y, z }) { }
-        protected override void OnValueChanged(float[] _value) => m_Value = new Vector3(_value[0], _value[1], _value[2]);
-        public static explicit operator Vector3(float3 src) { return src.m_Value; }
-    }
-    public sealed class float4 : FloatSwizzling<float>
-    {
-        public Vector4 m_Value { get; private set; }
-        public float4(float x, float y, float z, float w) : base(new float[] { x, y, z, w }) { }
-        protected override void OnValueChanged(float[] _value) => m_Value = new Vector4(_value[0], _value[1], _value[2], _value[3]);
-        public static explicit operator Vector4(float4 src) { return src.m_Value; }
-    }
+    // public sealed class float2 : FloatSwizzling<float>
+    // {
+    //     public Vector4 m_Value { get; private set; }
+    //     public float2(float x, float y) : base(new float[] { x, y }) { }
+    //     protected override void OnValueChanged(float[] value) { m_Value = new Vector2(value[0], value[1]); }
+    //     public static explicit operator Vector2(float2 src) { return src.m_Value; }
+    // }
+    // public sealed class float3 : FloatSwizzling<float>
+    // {
+    //     public Vector3 m_Value { get; private set; }
+    //     public float3(float x, float y, float z) : base(new float[] { x, y, z }) { }
+    //     protected override void OnValueChanged(float[] _value) => m_Value = new Vector3(_value[0], _value[1], _value[2]);
+    //     public static explicit operator Vector3(float3 src) { return src.m_Value; }
+    // }
+    // public sealed class float4 : FloatSwizzling<float>
+    // {
+    //     public Vector4 m_Value { get; private set; }
+    //     public float4(float x, float y, float z, float w) : base(new float[] { x, y, z, w }) { }
+    //     protected override void OnValueChanged(float[] _value) => m_Value = new Vector4(_value[0], _value[1], _value[2], _value[3]);
+    //     public static explicit operator Vector4(float4 src) { return src.m_Value; }
+    // }
     
     public class FloatSwizzling<T> : DynamicObject
     {

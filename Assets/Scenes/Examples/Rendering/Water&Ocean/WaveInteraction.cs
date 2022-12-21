@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace  ExampleScenes.Rendering.WaveInteraction
+namespace  Examples.Rendering.WaveInteraction
 {
     public class WaveInteraction : MonoBehaviour
     {

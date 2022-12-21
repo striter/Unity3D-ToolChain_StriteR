@@ -1,16 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Geometry;
+using Unity.Mathematics;
 using UnityEngine;
 
-namespace ExampleScenes.Algorithm.Geometry
+namespace Examples.Algorithm.Geometry
 {
-    public class GeometryVisualize_Plane : MonoBehaviour
+    public class GeometryIntersectPlane : MonoBehaviour
     {
         public GPlane m_Plane;
         public GRay m_Ray;
 
-        public Vector3 m_Point;
+        public float3 m_Point;
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {

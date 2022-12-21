@@ -4,7 +4,7 @@ using OPhysics;
 using TTouchTracker;
 using UnityEngine;
 
-namespace ExampleScenes.PhysicsScenes
+namespace Examples.PhysicsScenes
 {
     public class ActiveRagdollCharacter_Human_StaticAnimator : ActiveRagdollCharacter_HumanBase
     {

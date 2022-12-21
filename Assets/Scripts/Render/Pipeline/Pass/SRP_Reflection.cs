@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Geometry;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -327,14 +328,14 @@ namespace Rendering.Pipeline
             if (_config.m_Geometry == EReflectionGeometry._SPHERE)
             {
                 var sphere = _config.m_SphereData;
-                _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kSpherePosition, sphere.center);
+                _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kSpherePosition, sphere.center.to4());
                 _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kSphereRadius,new Vector4(sphere.radius,sphere.radius*sphere.radius));
             }
             else if (_config.m_Geometry == EReflectionGeometry._PLANE)
             {
                 var _plane = _config.m_PlaneData;
-                _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kPlaneNormal, _plane.normal.normalized);
-                _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kPlanePosition, _plane.position);
+                _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kPlaneNormal, math.normalize(_plane.normal).to4());
+                _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kPlanePosition, _plane.position.to4());
             }
             
             _cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels, kKernelInput, _renderer.cameraColorTarget);

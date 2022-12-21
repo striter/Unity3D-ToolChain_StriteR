@@ -158,8 +158,14 @@ MonoBehaviour:
       v1: {x: 1, y: 0, z: -1}
       v2: {x: -1, y: 0, z: -1}
   m_Ray:
-    origin: {x: 0, y: 2, z: 0}
-    direction: {x: -0.119525, y: -0.98790395, z: 0.09879038}
+    origin:
+      x: 0
+      y: 2
+      z: 0
+    direction:
+      x: -0.119525
+      y: -0.98790395
+      z: 0.09879038
   m_RayDirectionCheck: 1
   m_PlaneDirectionCheck: 1
 --- !u!4 &235485687
@@ -175,7 +181,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 603151350}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &314156684
 GameObject:
@@ -207,13 +213,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Plane:
-    normal: {x: 0, y: 1, z: 0}
+    normal:
+      x: 0
+      y: 1
+      z: 0
     distance: 0
-    position: {x: 0, y: 0, z: 0}
+    position:
+      x: 0
+      y: 0
+      z: 0
   m_Ray:
-    origin: {x: -0.58448786, y: 0.72717476, z: -0.8852818}
-    direction: {x: 0.047317713, y: -0.47419655, z: 0.8791466}
-  m_Point: {x: 0.33, y: 0.52, z: 0}
+    origin:
+      x: -0.58448786
+      y: 0.72717476
+      z: -0.8852818
+    direction:
+      x: 0.047317713
+      y: -0.47419655
+      z: 0.8791466
+  m_Point:
+    x: 0.33
+    y: 0.52
+    z: 0
 --- !u!4 &314156686
 Transform:
   m_ObjectHideFlags: 0
@@ -259,23 +280,56 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Ray:
-    origin: {x: 2, y: 0, z: 0}
-    direction: {x: 0.59580684, y: 0.39630252, z: -0.6985403}
+    origin:
+      x: 2
+      y: 0
+      z: 0
+    direction:
+      x: 0.59580684
+      y: 0.39630252
+      z: -0.6985403
   m_Point: {x: 3, y: 0, z: 0}
   m_Ray1:
-    origin: {x: -0.53, y: 0, z: 2.272674}
-    direction: {x: 0, y: 0, z: 1}
+    origin:
+      x: -0.53
+      y: 0
+      z: 2.272674
+    direction:
+      x: 0
+      y: 0
+      z: 1
   m_Line1:
-    origin: {x: -1.48, y: -0.19751443, z: 1.617626}
-    direction: {x: -0.2823822, y: 0.035172924, z: -0.95865697}
-    length: 0.72
-    end: {x: -1.6833152, y: -0.17218992, z: 0.9273929}
+    start:
+      x: 0
+      y: 0
+      z: 0
+    end:
+      x: -1.6833152
+      y: -0.17218992
+      z: 0.9273929
+    direction:
+      x: -0.87237644
+      y: -0.08923726
+      z: 0.48062047
+    length: 1.9295743
   m_Ray20:
-    origin: {x: 3.145211, y: 0, z: 1.296871}
-    direction: {x: 0, y: -0.056490414, z: 0.99840313}
+    origin:
+      x: 3.145211
+      y: 0
+      z: 1.296871
+    direction:
+      x: 0
+      y: -0.056490414
+      z: 0.99840313
   m_Ray21:
-    origin: {x: 2.817008, y: 0, z: 1.783569}
-    direction: {x: 0.59136575, y: -0.57208973, z: -0.5683308}
+    origin:
+      x: 2.817008
+      y: 0
+      z: 1.783569
+    direction:
+      x: 0.59136575
+      y: -0.57208973
+      z: -0.5683308
 --- !u!4 &359821878
 Transform:
   m_ObjectHideFlags: 0
@@ -321,7 +375,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 603151350}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &548546588
 MonoBehaviour:
@@ -336,13 +390,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Data:
-    origin: {x: -3.0196464, y: 0, z: -1.0799096}
-    normal: {x: 0.060358997, y: -0.4111448, z: 0.90956956}
+    origin:
+      x: -3.0196464
+      y: 0
+      z: -1.0799096
+    normal:
+      x: 0.060358997
+      y: -0.4111448
+      z: 0.90956956
     angle: 51
     height: 0.89
   m_Ray:
-    origin: {x: -3.633919, y: -0.13, z: -0.88403606}
-    direction: {x: 0.7158208, y: -0.027901703, z: 0.69772637}
+    origin:
+      x: -3.633919
+      y: -0.13
+      z: -0.88403606
+    direction:
+      x: 0.7158208
+      y: -0.027901703
+      z: 0.69772637
 --- !u!1 &586433002
 GameObject:
   m_ObjectHideFlags: 0
@@ -373,17 +439,44 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_QuadraticCurve:
-    source: {x: 2, y: 0, z: 0}
-    control: {x: 2, y: 0.55, z: 0.5}
-    destination: {x: 2.5, y: 0, z: 0.5}
-    tangentSource: {x: 0, y: 0.7399401, z: 0.6726728}
-    tangentDestination: {x: 0.6726728, y: -0.7399401, z: 0}
+    source:
+      x: 2
+      y: 0
+      z: 0
+    control:
+      x: 2
+      y: 0.55
+      z: 0.5
+    destination:
+      x: 2.5
+      y: 0
+      z: 0.5
+    tangentSource:
+      x: 0
+      y: 0.7399401
+      z: 0.6726728
+    tangentDestination:
+      x: 0.6726728
+      y: -0.7399401
+      z: 0
   quadraticTangents: 1
   m_CubicCurve:
-    source: {x: 0, y: 0.001, z: 0}
-    controlSource: {x: -0.5, y: 0.5, z: 0}
-    destination: {x: 0, y: 0, z: 1}
-    controlDestination: {x: 1, y: 0.5, z: 1}
+    source:
+      x: 0
+      y: 0.001
+      z: 0
+    controlSource:
+      x: -0.5
+      y: 0.5
+      z: 0
+    destination:
+      x: 0
+      y: 0
+      z: 1
+    controlDestination:
+      x: 1
+      y: 0.5
+      z: 1
 --- !u!4 &586433004
 Transform:
   m_ObjectHideFlags: 0
@@ -397,7 +490,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 603151350}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &603151349
 GameObject:
@@ -409,7 +502,7 @@ GameObject:
   m_Component:
   - component: {fileID: 603151350}
   m_Layer: 0
-  m_Name: Gizmos
+  m_Name: Intersections
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -432,14 +525,44 @@ Transform:
   - {fileID: 1203903735}
   - {fileID: 1899185938}
   - {fileID: 314156686}
-  - {fileID: 1365951603}
   - {fileID: 999107286}
   - {fileID: 235485687}
   - {fileID: 1824406050}
   - {fileID: 548546587}
   - {fileID: 586433004}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &827283844
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 827283845}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &827283845
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 827283844}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -17, y: -11.462513, z: 10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &999107284
 GameObject:
@@ -476,8 +599,14 @@ MonoBehaviour:
       v1: {x: 1, y: 0, z: -1}
       v2: {x: -1, y: 0, z: -1}
   m_Ray:
-    origin: {x: 0, y: -0.17, z: 0}
-    direction: {x: -0.11952503, y: -0.98790395, z: 0.0987903}
+    origin:
+      x: 0
+      y: -0.17
+      z: 0
+    direction:
+      x: -0.11952503
+      y: -0.98790395
+      z: 0.0987903
   m_RayDirectionCheck: 1
   m_PlaneDirectionCheck: 1
 --- !u!4 &999107286
@@ -493,7 +622,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 603151350}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1203903734
 GameObject:
@@ -520,7 +649,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1203903734}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.37, y: 0, z: 7.49}
+  m_LocalPosition: {x: -9, y: 0, z: 8}
   m_LocalScale: {x: 1.0000004, y: 1, z: 1.0000004}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -540,17 +669,54 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Sphere:
-    center: {x: 4, y: 0, z: 0}
+    center:
+      x: 4
+      y: 0
+      z: 0
     radius: 1
   m_SRay:
-    origin: {x: 4.8143606, y: -0.09847446, z: -2.319504}
-    direction: {x: -0.4262953, y: 0.02491019, z: 0.904241}
+    origin:
+      x: 4.8143606
+      y: -0.09847446
+      z: -2.319504
+    direction:
+      x: -0.4262953
+      y: 0.02491019
+      z: 0.904241
   m_Ellipsoid:
-    center: {x: 0, y: 0, z: 0}
-    radius: {x: 2, y: 1, z: 2}
+    center:
+      x: 0
+      y: 0
+      z: 0
+    radius:
+      x: 2
+      y: 1
+      z: 2
   m_ERay:
-    origin: {x: -1.3242302, y: 0, z: 4.300792}
-    direction: {x: 0.12531675, y: -0.15495342, z: -0.97993934}
+    origin:
+      x: -1.3242302
+      y: 0
+      z: 4.300792
+    direction:
+      x: 0.12531675
+      y: -0.15495342
+      z: -0.97993934
+  m_Circle:
+    center:
+      x: 7.63
+      y: 0
+    radius: 0.98
+  m_CirclePoint:
+  - x: 1
+    y: 0
+  - x: 0
+    y: 0
+  - x: 0
+    y: 0.38
+  - x: 0
+    y: -0.45
+  - x: -0.98
+    y: 0.09
 --- !u!1 &1344025775
 GameObject:
   m_ObjectHideFlags: 0
@@ -694,12 +860,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1365951602}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.048584, y: 0, z: 1.8619347}
+  m_LocalPosition: {x: -9, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 603151350}
-  m_RootOrder: 5
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1365951604
 MonoBehaviour:
@@ -713,7 +879,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aca092f3c34711f498ec1e57917cfcfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Position: {x: 0.26, y: 1, z: 0}
+  m_Position: {x: 0.26, y: -1.32, z: -1.24}
 --- !u!1 &1630316435
 GameObject:
   m_ObjectHideFlags: 0
@@ -884,16 +1050,46 @@ MonoBehaviour:
   m_DrawRays: 1
   m_DrawBounding: 1
   m_IntersectionAABBs:
-  - center: {x: -1.72, y: -0.65, z: 0.69}
-    extend: {x: 0.7, y: 1.57, z: 0.29}
-  - center: {x: 4.98, y: -0.02, z: 3.64}
-    extend: {x: 1.68, y: 1.36, z: 0.41}
-  - center: {x: 1.99, y: 0.37, z: 0.42}
-    extend: {x: 0.7, y: 0.95, z: 1.03}
-  - center: {x: -1.97, y: 1.66, z: 1.52}
-    extend: {x: 0.48, y: 0.2, z: 0.95}
-  - center: {x: 0.08, y: 0.02, z: 2.2}
-    extend: {x: 0.48, y: 0.29, z: 0.48}
+  - center:
+      x: -1.72
+      y: -0.65
+      z: 0.69
+    extend:
+      x: 0.7
+      y: 1.57
+      z: 0.29
+  - center:
+      x: 4.98
+      y: -0.02
+      z: 3.64
+    extend:
+      x: 1.68
+      y: 1.36
+      z: 0.41
+  - center:
+      x: 1.99
+      y: 0.37
+      z: 0.42
+    extend:
+      x: 0.7
+      y: 0.95
+      z: 1.03
+  - center:
+      x: -1.97
+      y: 1.66
+      z: 1.52
+    extend:
+      x: 0.48
+      y: 0.2
+      z: 0.95
+  - center:
+      x: 0.08
+      y: 0.02
+      z: 2.2
+    extend:
+      x: 0.48
+      y: 0.29
+      z: 0.48
 --- !u!1 &1824406048
 GameObject:
   m_ObjectHideFlags: 0
@@ -929,8 +1125,14 @@ MonoBehaviour:
       v1: {x: 1, y: 0, z: -1}
       v2: {x: -1, y: 0, z: -1}
   m_Ray:
-    origin: {x: 0.21, y: -0.31, z: 0}
-    direction: {x: -0.37560293, y: 0.54810876, z: 0.74732804}
+    origin:
+      x: 0.21
+      y: -0.31
+      z: 0
+    direction:
+      x: -0.37560293
+      y: 0.54810876
+      z: 0.74732804
   m_RayDirectionCheck: 1
   m_PlaneDirectionCheck: 1
 --- !u!4 &1824406050
@@ -946,8 +1148,111 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 603151350}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1893716492
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1893716493}
+  - component: {fileID: 1893716494}
+  m_Layer: 0
+  m_Name: Bounds
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1893716493
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1893716492}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -12, y: 0, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1893716494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1893716492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 240a09b0e78360245a9338c971f3084c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boundingBoxRandomPoints:
+  - x: -0.3279935
+    y: -0.5001507
+    z: -0.15268868
+  - x: 0.2243944
+    y: 0.43433154
+    z: 0.11577502
+  - x: 0.37316325
+    y: 0.14401495
+    z: 0.26808718
+  - x: 0.5370546
+    y: -0.026029797
+    z: -0.12663585
+  - x: 0.057999168
+    y: 0.010530929
+    z: 0.022880567
+  - x: -0.6161881
+    y: -0.6443302
+    z: -0.18864934
+  - x: 0.009374873
+    y: -0.05021899
+    z: -0.12884851
+  - x: 0.006286963
+    y: -0.13216415
+    z: -0.043019764
+  boudingBox:
+    center:
+      x: -0.039566755
+      y: -0.10499936
+      z: 0.03971891
+    extend:
+      x: 0.57662135
+      y: 0.53933084
+      z: 0.22836825
+  boundingSpherePoints:
+  - x: -0.017138334
+    y: -0.00475872
+    z: -0.38375288
+  - x: -0.5972931
+    y: 0.35365182
+    z: 0.19807693
+  - x: 0.72482157
+    y: 0.37862578
+    z: -0.06598908
+  - x: 0.28489926
+    y: 0.5984351
+    z: 0.10781921
+  - x: -0.46968213
+    y: -0.68359643
+    z: -0.5326694
+  - x: 0.79757226
+    y: 0.030738521
+    z: 0.15807262
+  boundingSphere:
+    center:
+      x: 0.02438891
+      y: -0.09135693
+      z: -0.17436603
+    radius: 0.8504324
 --- !u!1 &1899185937
 GameObject:
   m_ObjectHideFlags: 0
@@ -993,14 +1298,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Box:
-    center: {x: 0, y: 0, z: 0}
-    extend: {x: 0.5, y: 0.5, z: 0.5}
+    center:
+      x: 0
+      y: 0
+      z: 0
+    extend:
+      x: 0.5
+      y: 0.5
+      z: 0.5
   m_Ray:
-    origin: {x: 0.71147275, y: -0.081962764, z: -1.448267}
-    direction: {x: -0.33242807, y: 0.23028132, z: 0.914583}
+    origin:
+      x: 0.71147275
+      y: -0.081962764
+      z: -1.448267
+    direction:
+      x: -0.33242807
+      y: 0.23028132
+      z: 0.914583
   m_CollisionBox1:
-    center: {x: -0.69, y: 0, z: 0}
-    extend: {x: 0.2, y: 0.2, z: 0.2}
+    center:
+      x: -0.65
+      y: 0.05
+      z: 0
+    extend:
+      x: 0.2
+      y: 0.2
+      z: 0.2
   m_CollisionBox2:
-    center: {x: -0.91, y: 0, z: 0}
-    extend: {x: 0.2, y: 0.2, z: 0.2}
+    center:
+      x: 0.7
+      y: 0
+      z: -0.53
+    extend:
+      x: 0.2
+      y: 0.2
+      z: 0.2

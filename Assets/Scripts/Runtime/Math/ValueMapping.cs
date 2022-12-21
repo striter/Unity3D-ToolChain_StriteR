@@ -95,7 +95,7 @@ public static class UValueMapping
     
     public static float Sinc(float _x, float _k)
     {
-        float a = KMath.kPI * ((_k * _x - 1));
+        float a = kmath.kPI * ((_k * _x - 1));
         return Sin(a) / a;
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Geometry.PointSet;
 
 namespace Geometry
 {
@@ -26,7 +27,7 @@ namespace Geometry
         }
         public GFrustumPlanes GetFrustumPlanes()
         {
-            float an = fov * .5f  * KMath.kDeg2Rad;
+            float an = fov * .5f  * kmath.kDeg2Rad;
             float s = Mathf.Sin(an);
             float c = Mathf.Cos(an);
             float aspectC = c / aspect;
@@ -144,7 +145,7 @@ namespace Geometry
                 farBottomRight = farBottomRight,
                 farTopRight = farTopRight,
                 farTopLeft = farTopLeft,
-                bounding = GBox.Create(bottomLeft.origin,bottomRight.origin,topRight.origin,topLeft.origin,farBottomLeft,farBottomRight,farTopRight,farTopLeft),
+                bounding = PointSet.UBounds.GetBoundingBox(bottomLeft.origin,bottomRight.origin,topRight.origin,topLeft.origin,farBottomLeft,farBottomRight,farTopRight,farTopLeft),
             };
         }
     }

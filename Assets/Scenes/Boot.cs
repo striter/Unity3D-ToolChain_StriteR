@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace  ExampleScenes
+namespace  Examples
 {
     public class Boot : MonoBehaviour
     {

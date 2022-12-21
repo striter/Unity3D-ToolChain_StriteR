@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ExampleScenes.Rendering.Effects
+namespace Examples.Rendering.Effects
 {
     public class Effects : MonoBehaviour
     {

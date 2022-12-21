@@ -42,10 +42,10 @@ namespace Rendering.Pipeline
                 else
                 {
                     var rays = new GFrustum(camera).GetFrustumRays();
-                    Shader.SetGlobalVector(kFrustumCornersRayBL, rays.bottomLeft.direction);
-                    Shader.SetGlobalVector(kFrustumCornersRayBR, rays.bottomRight.direction);
-                    Shader.SetGlobalVector(kFrustumCornersRayTL, rays.topLeft.direction);
-                    Shader.SetGlobalVector(kFrustumCornersRayTR, rays.topRight.direction);
+                    Shader.SetGlobalVector(kFrustumCornersRayBL, rays.bottomLeft.direction.to4());
+                    Shader.SetGlobalVector(kFrustumCornersRayBR, rays.bottomRight.direction.to4());
+                    Shader.SetGlobalVector(kFrustumCornersRayTL, rays.topLeft.direction.to4());
+                    Shader.SetGlobalVector(kFrustumCornersRayTR, rays.topRight.direction.to4());
                 }
             
                 Matrix4x4 projection = GL.GetGPUProjectionMatrix(_renderingData.cameraData.GetProjectionMatrix(),_renderingData.cameraData.IsCameraProjectionMatrixFlipped());

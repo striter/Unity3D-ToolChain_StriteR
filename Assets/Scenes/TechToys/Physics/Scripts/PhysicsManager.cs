@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TTouchTracker;
-namespace ExampleScenes.PhysicsScenes
+namespace Examples.PhysicsScenes
 {
     public class PhysicsManager : MonoBehaviour
     {
