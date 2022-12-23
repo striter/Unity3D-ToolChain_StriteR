@@ -91,8 +91,8 @@
 			#pragma vertex ForwardVertex
 			#pragma fragment ForwardFragment
 			
-			#include "Assets/Shaders/Library/BRDF/BRDFInput.hlsl"
-			#include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
 			float GetNormalDistribution(BRDFSurface surface,BRDFLightInput lightSurface)
 			{
 				half sqrRoughness=surface.roughness2;
@@ -139,7 +139,7 @@
 			#define GET_PBRPARAM(glossiness,metallic,ao) ao=saturate(ao-(1-INSTANCE(_ShellDelta))*INSTANCE(_FurShadow));
 	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
 			#define GET_EMISSION(i) 0
-			#include "Assets/Shaders/Library/BRDF/BRDFLighting.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			
 			ENDHLSL

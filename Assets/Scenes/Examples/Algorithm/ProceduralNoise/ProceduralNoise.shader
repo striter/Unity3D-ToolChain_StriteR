@@ -55,11 +55,11 @@ Shader "Hidden/ProceduralNoise"
             #pragma multi_compile _ _ADDITIONAL_LIGHTS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
 
-			#include "Assets/Shaders/Library/BRDF/BRDFInput.hlsl"
-			#include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
 					
 			#define GET_ALBEDO(i) OverrideAlbedo()
-			#include "Assets/Shaders/Library/BRDF/BRDFLighting.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			
             #pragma target 3.5

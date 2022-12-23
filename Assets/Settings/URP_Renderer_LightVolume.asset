@@ -42,6 +42,7 @@ MonoBehaviour:
     samplingPS: {fileID: 4800000, guid: 04c410c9937594faa893a11dceb85f7e, type: 3}
     stencilDeferredPS: {fileID: 4800000, guid: e9155b26e1bc55942a41e518703fe304, type: 3}
     fallbackErrorPS: {fileID: 4800000, guid: e6e9a19c3678ded42a3bc431ebef7dbd, type: 3}
+    fallbackLoadingPS: {fileID: 4800000, guid: 7f888aff2ac86494babad1c2c5daeee2, type: 3}
     materialErrorPS: {fileID: 4800000, guid: 5fd9a8feb75a4b5894c241777f519d4e, type: 3}
     coreBlitPS: {fileID: 4800000, guid: 93446b5c5339d4f00b85c159e1159b7c, type: 3}
     coreBlitColorAndDepthPS: {fileID: 4800000, guid: d104b2fc1ca6445babb8e90b0758136b,
@@ -50,7 +51,7 @@ MonoBehaviour:
       type: 3}
     objectMotionVector: {fileID: 4800000, guid: 7b3ede40266cd49a395def176e1bc486,
       type: 3}
-  m_AssetVersion: 1
+  m_AssetVersion: 2
   m_OpaqueLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -67,9 +68,8 @@ MonoBehaviour:
   m_ShadowTransparentReceive: 1
   m_RenderingMode: 0
   m_DepthPrimingMode: 2
+  m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
-  m_ClusteredRendering: 0
-  m_TileSize: 32
   m_IntermediateTextureMode: 1
 --- !u!114 &2293182620490409217
 MonoBehaviour:
@@ -85,25 +85,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
-  m_NormalTexture: 0
-  m_Mask: 0
-  m_MaskData:
-    renderMask: 2147483647
-    color: {r: 1, g: 1, b: 1, a: 1}
-    extendWidth: 0.1
-    outlineVertex: 0
-  m_CameraReflectionTexture: 0
-  m_PlanarReflectionData:
-    m_Type: 1
-    m_Sample: 4
-    m_Recull: 1
-    m_AdditionalLightcount: 0
-    m_IncludeTransparent: 0
-    m_DownSample: 2
-    m_BlurParam:
-      m_BlurType: 2
-      m_BlurSize: 0.05
-      m_Iteration: 2
-      m_DownSample: 1
-      m_Angle: 0
-      m_Vector: {x: 0, y: 0}
+  m_Data:
+    m_Normal: 0
+    m_Mask: 0
+    m_MaskData:
+      renderMask: 2147483647
+      color: {r: 1, g: 1, b: 1, a: 1}
+      m_Outline: 0
+      extendWidth: 0.1
+      outlineVertex: 0
+    m_MotionVector: 0
+    m_Reflection: 0
+    m_PlanarReflection:
+      m_Type: 1
+      m_Sample: 1
+      m_Recull: 0
+      m_AdditionalLightcount: 8
+      m_IncludeTransparent: 0
+      m_DownSample: 2
+      m_BlurParam:
+        m_BlurType: 3
+        m_BlurSize: 1.3
+        m_Iteration: 7
+        m_DownSample: 2
+        m_Angle: 0
+        m_Vector: {x: 0.5, y: 0.5}
+        m_Attenuation: 0.9
+    m_AntiAliasing:
+      mode: 1
+      fxaa: 2
+      m_AdditionalSample: 1
+      m_UseDepth: 0
+      m_ContrastSkip: 0.1
+      m_RelativeSkip: 0.2
+      m_SubPixelBlend: 1
+      blend: 0

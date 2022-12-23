@@ -54,8 +54,8 @@ Shader "Game/Lit/ToonPBR"
 				INSTANCING_PROP(float,_GeometryShadowEnd)
 				INSTANCING_PROP(float,_IndirectSpecularOffset)
 			INSTANCING_BUFFER_END
-			#include "Assets/Shaders/Library/BRDF/BRDFInput.hlsl"
-			#include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
 			
 			float GetGeometryShadow(BRDFSurface surface,BRDFLightInput lightSurface)
 			{
@@ -81,7 +81,7 @@ Shader "Game/Lit/ToonPBR"
 			#define GET_GEOMETRYSHADOW(surface,lightSurface) GetGeometryShadow(surface,lightSurface)
 	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
 			#define GET_INDIRECTSPECULAR(surface) IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
-			#include "Assets/Shaders/Library/BRDF/BRDFLighting.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			
             #pragma target 3.5

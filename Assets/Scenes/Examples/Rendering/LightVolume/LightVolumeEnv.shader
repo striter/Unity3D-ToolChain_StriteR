@@ -56,8 +56,8 @@ Shader "Hidden/LightVolumeEnv"
 				INSTANCING_PROP(float,_IndirectSpecularOffset)
 			INSTANCING_BUFFER_END
 
-			#include "Assets/Shaders/Library/BRDF/BRDFInput.hlsl"
-			#include "Assets/Shaders/Library/BRDF/BRDFMethods.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
 
 			TEXTURE2D(_CameraLightMaskTexture);SAMPLER(sampler_CameraLightMaskTexture);
 			Light GetMainLight(float4 positionHCS,float3 positionWS)
@@ -71,7 +71,7 @@ Shader "Hidden/LightVolumeEnv"
 				return mainLight;
 			}
 			#define  GET_MAINLIGHT(i) GetMainLight(i.positionHCS,i.positionWS);
-			#include "Assets/Shaders/Library/BRDF/BRDFLighting.hlsl"
+			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			
             #pragma target 3.5

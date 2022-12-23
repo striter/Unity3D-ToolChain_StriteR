@@ -1,12 +1,10 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Geometry;
 using Geometry.PointSet;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Examples.Algorithm.Delaunay
+namespace Examples.Algorithm.DelaunayTrianglulation
 {
     using static DDelaunay;
     public static class DDelaunay
@@ -42,11 +40,11 @@ namespace Examples.Algorithm.Delaunay
             Gizmos.color = Color.white.SetAlpha(.1f);
             Gizmos.matrix = Matrix4x4.TRS(Vector3.zero,Quaternion.identity,Vector3.one.SetY(0f));
             Gizmos.color = Color.white.SetAlpha(.3f);
-            Gizmos.matrix=Matrix4x4.identity;;
+            Gizmos.matrix = Matrix4x4.identity;;
             foreach (var point in vertices)
                 Gizmos.DrawWireSphere(point.to3xz(),.1f);
             foreach (var triangle in triangles)
-                Gizmos_Extend.DrawLinesConcat(triangle,p=>vertices[p].to3xz());
+                Gizmos_Extend.DrawLinesConcat(triangle,_p=>vertices[_p].to3xz());
         }
 
     }

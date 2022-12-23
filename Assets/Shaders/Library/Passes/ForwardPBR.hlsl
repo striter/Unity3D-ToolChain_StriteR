@@ -21,8 +21,10 @@ struct v2ff
 	float2 uv:TEXCOORD0;
 	float3 positionWS:TEXCOORD1;
 	float4 positionHCS:TEXCOORD2;
-	half3 tangentWS:TEXCOORD3;
-	half3 biTangentWS:TEXCOORD4;
+	#if !defined (_NORMALOFF)
+		half3 tangentWS:TEXCOORD3;
+		half3 biTangentWS:TEXCOORD4;
+	#endif
 	half3 viewDirWS:TEXCOORD5;
 	V2F_FOG(6)
 	V2F_LIGHTMAP(7)
@@ -67,13 +69,14 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 
 	float3 positionWS=i.positionWS;
 	float3 normalWS=normalize(i.normalWS);
-	half3 tangentWS=normalize(i.tangentWS);
 	float3 viewDirWS=normalize(i.viewDirWS);
-	half3 biTangentWS=normalize(i.biTangentWS);
 	half3 normalTS=half3(0,0,1);
 	float2 baseUV=i.uv.xy;
-
+	half3 tangentWS = 0;
+	half3 biTangentWS = 0;
 	#if !defined (_NORMALOFF)
+		tangentWS=normalize(i.tangentWS);
+		biTangentWS=normalize(i.biTangentWS);
 		#if defined(GET_NORMAL)
 			normalTS = GET_NORMAL(i);
 		#else

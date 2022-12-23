@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Geometry.PointSet;
 using UnityEngine;
 
 public class TileGraph:IGraph<Int2>,IGraphDiscrete<Int2>

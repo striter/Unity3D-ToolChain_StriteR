@@ -1,7 +1,6 @@
 using System;
 using Geometry.Explicit.Mesh.Cube;
 using Geometry.Explicit.Mesh.Sphere;
-using Geometry.PointSet;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;

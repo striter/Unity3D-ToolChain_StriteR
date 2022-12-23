@@ -103,3 +103,15 @@ Update Mode: updateDependencies
 The following packages were updated:
   com.unity.ide.rider from version 3.0.12 to 3.0.14
   com.unity.render-pipelines.universal from version 12.1.5 to 12.1.7
+
+=== Fri Dec 23 13:33:59 2022
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were added:
+  com.unity.ai.navigation@1.1.1
+The following packages were updated:
+  com.unity.ide.rider from version 3.0.14 to 3.0.16
+  com.unity.recorder from version 3.0.3 to 4.0.0
+  com.unity.render-pipelines.universal from version 12.1.7 to 14.0.4
