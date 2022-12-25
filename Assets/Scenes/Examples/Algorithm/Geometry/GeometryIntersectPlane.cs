@@ -40,7 +40,7 @@ namespace Examples.Algorithm.Geometry
 
             Gizmos.color = Color.white;
             Gizmos.matrix = transform.localToWorldMatrix;
-            float projection = UGeometryValidation.Point.PlaneProjection(m_Point,m_Plane);
+            float projection = UGeometryValidation.Point.Distance(m_Point,m_Plane);
             Gizmos.DrawLine(m_Point,m_Point-projection*m_Plane.normal);
         }
 #endif

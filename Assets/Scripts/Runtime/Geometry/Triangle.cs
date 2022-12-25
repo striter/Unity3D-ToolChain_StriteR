@@ -57,32 +57,33 @@ namespace Geometry
     
     public partial struct GTriangle
     {
-        public Triangle<Vector3> triangle;
-        [NonSerialized] public Vector3 normal;
-        [NonSerialized] public Vector3 uOffset;
-        [NonSerialized] public Vector3 vOffset;
-        public Vector3 V0 => triangle.v0;
-        public Vector3 V1 => triangle.v1;
-        public Vector3 V2 => triangle.v2;
-        public GTriangle((Vector3 v0,Vector3 v1,Vector3 v2) _tuple) : this(_tuple.v0,_tuple.v1,_tuple.v2) { }
+        public Triangle<float3> triangle;
+        [NonSerialized] public float3 normal;
+        [NonSerialized] public float3 uOffset;
+        [NonSerialized] public float3 vOffset;
+        [NonSerialized] public float3 wOffset;
+        public float3 V0 => triangle.v0;
+        public float3 V1 => triangle.v1;
+        public float3 V2 => triangle.v2;
+        public GTriangle((float3 v0,float3 v1,float3 v2) _tuple) : this(_tuple.v0,_tuple.v1,_tuple.v2) { }
 
-        public GTriangle(Vector3 _vertex0, Vector3 _vertex1, Vector3 _vertex2)
+        public GTriangle(float3 _vertex0, float3 _vertex1, float3 _vertex2)
         {
             this = default;
-            triangle = new Triangle<Vector3>(_vertex0, _vertex1, _vertex2);
+            triangle = new Triangle<float3>(_vertex0, _vertex1, _vertex2);
             Ctor();
         }
 
         void Ctor()
         {
-            uOffset = V1-V0;
-            vOffset = V2-V0;
-            normal = Vector3.Cross(uOffset.normalized,vOffset.normalized).normalized;
+            uOffset = V1 - V0;
+            vOffset = V2 - V0;
+            wOffset = V0 - V2;
+            normal = math.cross(uOffset.normalized(),vOffset.normalized()).normalized();
         }
         
-        public Vector3 GetNormalUnnormalized() => Vector3.Cross(uOffset, vOffset);
-        public Vector3 GetPoint(float _u,float _v)=>(1f - _u - _v) * this[0] + _u * uOffset + _v * vOffset;
-
+        public float3 GetNormalUnnormalized() => math.cross(uOffset, vOffset);
+        public float3 GetPoint(float _u,float _v)=>(1f - _u - _v) * this[0] + _u * uOffset + _v * vOffset;
         public GPlane GetPlane() => new GPlane(normal,V0);
     }
 
@@ -195,15 +196,15 @@ namespace Geometry
     
     
     [Serializable]
-    public partial struct GTriangle :ITriangle<Vector3>, IIterate<Vector3>,ISerializationCallbackReceiver
+    public partial struct GTriangle :ITriangle<float3>, IIterate<float3>,ISerializationCallbackReceiver
     {
-        public static explicit operator GTriangle(Triangle<Vector3> _src) => new GTriangle(_src.v0,_src.v1,_src.v2);
-        public static GTriangle operator +(GTriangle _src, Vector3 _dst)=> new GTriangle(_src.V0 + _dst, _src.V1 + _dst, _src.V2 + _dst);
-        public static GTriangle operator -(GTriangle _src, Vector3 _dst)=> new GTriangle(_src.V0 - _dst, _src.V1 - _dst, _src.V2 - _dst);
+        public static explicit operator GTriangle(Triangle<float3> _src) => new GTriangle(_src.v0,_src.v1,_src.v2);
+        public static GTriangle operator +(GTriangle _src, float3 _dst)=> new GTriangle(_src.V0 + _dst, _src.V1 + _dst, _src.V2 + _dst);
+        public static GTriangle operator -(GTriangle _src, float3 _dst)=> new GTriangle(_src.V0 - _dst, _src.V1 - _dst, _src.V2 - _dst);
         public void OnBeforeSerialize() { }
         public void OnAfterDeserialize()=>Ctor();
         public int Length => 3;
-        public Vector3 this[int index] => triangle[index];
+        public float3 this[int index] => triangle[index];
     }
     #endregion
 }

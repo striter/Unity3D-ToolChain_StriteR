@@ -44,7 +44,7 @@ namespace Geometry.PointSet
 
             public bool Equals(DEdge other)
             {
-                return polygon.NonVectorEquals(other.polygon);
+                return polygon.EqualsNonVector(other.polygon);
             }
 
             public override bool Equals(object obj)

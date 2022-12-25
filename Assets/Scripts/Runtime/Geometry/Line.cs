@@ -71,7 +71,7 @@ namespace Geometry
         
         #region Implements
         public bool Equals(PLine other) => start == other.start && end == other.end;
-        public bool NonVectorEquals(PLine other) => (start == other.start && end == other.end) 
+        public bool EqualsNonVector(PLine other) => (start == other.start && end == other.end) 
                                                     || (end == other.start && start == other.end);
         public override bool Equals(object obj) => obj is PLine other && Equals(other);
         public override int GetHashCode()=> HashCode.Combine(start, end);
