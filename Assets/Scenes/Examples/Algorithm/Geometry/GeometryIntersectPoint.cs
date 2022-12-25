@@ -1,4 +1,6 @@
 using Geometry;
+using Geometry.Validation;
+using Unity.Mathematics;
 using UnityEngine;
 namespace Examples.Algorithm.Geometry
 {
@@ -20,13 +22,13 @@ namespace Examples.Algorithm.Geometry
             
             Gizmos.color = Color.white;
             Gizmos.DrawSphere(m_Point, .1f);
-            float distances= UGeometryIntersect.PointRayProjection(m_Point, m_Ray);
+            float distances= UGeometryValidation.Ray.Projection(m_Ray, m_Point);
             Gizmos_Extend.DrawGizmos(m_Ray.ToLine(distances));
             Gizmos.color = Color.blue;
             Gizmos.DrawSphere(m_Ray.GetPoint(distances),.1f);
 
             Gizmos.color = Color.white;
-            Vector2 lineRayDistances = UGeometryIntersect.LineRayProjection(m_Line1, m_Ray1);
+            var lineRayDistances = UGeometryValidation.Ray.Projection(m_Ray1,m_Line1);
             Gizmos_Extend.DrawGizmos(m_Line1);
             Gizmos_Extend.DrawGizmos(m_Ray1.ToLine(lineRayDistances.y));
             Gizmos.color = Color.blue;
@@ -35,7 +37,7 @@ namespace Examples.Algorithm.Geometry
             Gizmos.DrawSphere(m_Ray1.GetPoint(lineRayDistances.y), .1f);
 
             Gizmos.color = Color.white;
-            Vector2 rayrayDistances = UGeometryIntersect.RayRayProjection(m_Ray20, m_Ray21);
+            var rayrayDistances = UGeometryValidation.Ray.Projection(m_Ray20, m_Ray21);
             Gizmos_Extend.DrawGizmos(m_Ray20.ToLine(rayrayDistances.x));
             Gizmos_Extend.DrawGizmos(m_Ray21.ToLine(rayrayDistances.y));
             Gizmos.color = Color.blue;

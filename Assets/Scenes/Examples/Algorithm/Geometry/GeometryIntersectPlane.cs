@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Geometry;
+using Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -15,7 +16,7 @@ namespace Examples.Algorithm.Geometry
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            float distance = UGeometryIntersect.RayPlaneDistance(m_Plane,m_Ray);
+            float distance = UGeometryValidation.Ray.Distances(m_Ray,m_Plane);
 
             Gizmos.matrix = transform.localToWorldMatrix;
             Vector3 planeSize = new Vector3(1,0,1);
@@ -39,7 +40,7 @@ namespace Examples.Algorithm.Geometry
 
             Gizmos.color = Color.white;
             Gizmos.matrix = transform.localToWorldMatrix;
-            float projection = m_Plane.PlanePointProjection(m_Point);
+            float projection = UGeometryValidation.Point.PlaneProjection(m_Point,m_Plane);
             Gizmos.DrawLine(m_Point,m_Point-projection*m_Plane.normal);
         }
 #endif

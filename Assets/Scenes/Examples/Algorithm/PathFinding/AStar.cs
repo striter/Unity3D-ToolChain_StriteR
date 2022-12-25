@@ -3,6 +3,7 @@ using Unity.Mathematics;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
+using Geometry.Validation;
 using UnityEditor;
 
 namespace Examples.Algorithm.PathFinding
@@ -68,7 +69,7 @@ namespace Examples.Algorithm.PathFinding
         {
             GRay ray = _sceneView.camera.ScreenPointToRay(UnityEditor.Extensions.UECommon.GetScreenPoint(_sceneView));
             GPlane plane = new GPlane(Vector3.up, transform.position);
-            var hitPoint = ray.GetPoint(UGeometryIntersect.RayPlaneDistance(plane, ray));
+            UGeometryValidation.Ray.Projection(ray,plane,out var hitPoint);
             if (Event.current.type == EventType.MouseDown)
                 switch (Event.current.button)
                 {

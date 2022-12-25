@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Geometry;
+using Geometry.Validation;
 using TPool;
 using TTouchTracker;
 using UnityEngine;
@@ -66,7 +67,7 @@ namespace Examples.Algorithm.MarchingSquare
             foreach (var click in trackData.ResolveClicks(.1f))
             {
                 var ray = Camera.main.ScreenPointToRay(click);
-                if (!UGeometryIntersect.RayPlaneDistance(GPlane.kZeroPlane,ray,out Vector3 point))
+                if (!UGeometryValidation.Ray.Projection(ray,GPlane.kZeroPlane,out var point))
                     continue;
                 var switchNode=m_Nodes.Last(p=>p.Transform.position,point,true);
                 SwitchNode(switchNode.m_Identity);

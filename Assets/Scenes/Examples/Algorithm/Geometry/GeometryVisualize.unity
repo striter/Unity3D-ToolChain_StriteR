@@ -104,7 +104,7 @@ NavMeshSettings:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_BuildSettings:
-    serializedVersion: 2
+    serializedVersion: 3
     agentTypeID: 0
     agentRadius: 0.5
     agentHeight: 2
@@ -117,72 +117,12 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualTileSize: 0
     tileSize: 256
-    accuratePlacement: 0
+    buildHeightMesh: 0
     maxJobWorkers: 0
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &235485685
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 235485687}
-  - component: {fileID: 235485686}
-  m_Layer: 0
-  m_Name: RayTriangleCollision (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &235485686
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 235485685}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c453324bbf16cb545b29b5e05be58392, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Triangle:
-    triangle:
-      v0: {x: 0, y: 0, z: 1}
-      v1: {x: 1, y: 0, z: -1}
-      v2: {x: -1, y: 0, z: -1}
-  m_Ray:
-    origin:
-      x: 0
-      y: 2
-      z: 0
-    direction:
-      x: -0.119525
-      y: -0.98790395
-      z: 0.09879038
-  m_RayDirectionCheck: 1
-  m_PlaneDirectionCheck: 1
---- !u!4 &235485687
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 235485685}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.75, y: 0, z: -3.7700005}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 603151350}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &314156684
 GameObject:
   m_ObjectHideFlags: 0
@@ -526,8 +466,6 @@ Transform:
   - {fileID: 1899185938}
   - {fileID: 314156686}
   - {fileID: 999107286}
-  - {fileID: 235485687}
-  - {fileID: 1824406050}
   - {fileID: 548546587}
   - {fileID: 586433004}
   m_Father: {fileID: 0}
@@ -593,22 +531,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c453324bbf16cb545b29b5e05be58392, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Triangle:
-    triangle:
-      v0: {x: 0, y: 0, z: 1}
-      v1: {x: 1, y: 0, z: -1}
-      v2: {x: -1, y: 0, z: -1}
-  m_Ray:
-    origin:
-      x: 0
-      y: -0.17
-      z: 0
-    direction:
-      x: -0.11952503
-      y: -0.98790395
-      z: 0.0987903
-  m_RayDirectionCheck: 1
-  m_PlaneDirectionCheck: 1
+  visualizations:
+  - triangle:
+      triangle:
+        v0: {x: -0.47, y: 0, z: 0}
+        v1: {x: 0.5, y: 0, z: 0.5}
+        v2: {x: 0, y: 0, z: -0.5}
+    ray:
+      origin:
+        x: 0
+        y: 1
+        z: 0
+      direction:
+        x: 0.13
+        y: -1
+        z: 0
+    rayDirectionCheck: 0
+    planeDirectionCheck: 0
+  - triangle:
+      triangle:
+        v0: {x: -0.47, y: 0, z: 0}
+        v1: {x: 0.5, y: 0, z: 0.5}
+        v2: {x: 0, y: 0, z: -0.5}
+    ray:
+      origin:
+        x: 0
+        y: -1
+        z: 0
+      direction:
+        x: -0.18
+        y: 1
+        z: 0
+    rayDirectionCheck: 1
+    planeDirectionCheck: 0
+  - triangle:
+      triangle:
+        v0: {x: -0.47, y: 0, z: 0}
+        v1: {x: 0.5, y: 0, z: 0.5}
+        v2: {x: 0, y: 0, z: -0.5}
+    ray:
+      origin:
+        x: 0
+        y: -1
+        z: 0
+      direction:
+        x: -0.18
+        y: 1
+        z: 0
+    rayDirectionCheck: 1
+    planeDirectionCheck: 1
 --- !u!4 &999107286
 Transform:
   m_ObjectHideFlags: 0
@@ -617,7 +588,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 999107284}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.4899979, y: 0, z: -3.880001}
+  m_LocalPosition: {x: -1, y: 0, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -758,9 +729,17 @@ Camera:
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -832,6 +811,9 @@ MonoBehaviour:
   m_Dithering: 0
   m_ClearDepth: 1
   m_AllowXRRendering: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
@@ -987,14 +969,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Version: 1
+  m_Version: 2
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
   m_LightLayerMask: 1
+  m_RenderingLayers: 1
   m_CustomShadowLayers: 0
   m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 1
 --- !u!1 &1763637943
 GameObject:
   m_ObjectHideFlags: 0
@@ -1090,66 +1075,6 @@ MonoBehaviour:
       x: 0.48
       y: 0.29
       z: 0.48
---- !u!1 &1824406048
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1824406050}
-  - component: {fileID: 1824406049}
-  m_Layer: 0
-  m_Name: RayTriangleCollision (2)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1824406049
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1824406048}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c453324bbf16cb545b29b5e05be58392, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Triangle:
-    triangle:
-      v0: {x: 0, y: 0, z: 1}
-      v1: {x: 1, y: 0, z: -1}
-      v2: {x: -1, y: 0, z: -1}
-  m_Ray:
-    origin:
-      x: 0.21
-      y: -0.31
-      z: 0
-    direction:
-      x: -0.37560293
-      y: 0.54810876
-      z: 0.74732804
-  m_RayDirectionCheck: 1
-  m_PlaneDirectionCheck: 1
---- !u!4 &1824406050
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1824406048}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.540001, y: 0, z: -3.7700005}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 603151350}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1893716492
 GameObject:
   m_ObjectHideFlags: 0
@@ -1195,64 +1120,64 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boundingBoxRandomPoints:
-  - x: -0.3279935
-    y: -0.5001507
-    z: -0.15268868
-  - x: 0.2243944
-    y: 0.43433154
-    z: 0.11577502
-  - x: 0.37316325
-    y: 0.14401495
-    z: 0.26808718
-  - x: 0.5370546
-    y: -0.026029797
-    z: -0.12663585
-  - x: 0.057999168
-    y: 0.010530929
-    z: 0.022880567
-  - x: -0.6161881
-    y: -0.6443302
-    z: -0.18864934
-  - x: 0.009374873
-    y: -0.05021899
-    z: -0.12884851
-  - x: 0.006286963
-    y: -0.13216415
-    z: -0.043019764
+  - x: -0.04375974
+    y: -0.049143042
+    z: 0.059995413
+  - x: 0.012180137
+    y: -0.01154929
+    z: -0.015018002
+  - x: 0.014011783
+    y: 0.01331354
+    z: 0.022172514
+  - x: -0.02613241
+    y: -0.41704452
+    z: 0.46656358
+  - x: -0.18818879
+    y: -0.16890328
+    z: 0.12720792
+  - x: -0.11431337
+    y: 0.018470258
+    z: -0.41715375
+  - x: 0.06733205
+    y: 0.099239714
+    z: -0.19257882
+  - x: -0.4521038
+    y: -0.49276042
+    z: 0.29982093
   boudingBox:
     center:
-      x: -0.039566755
-      y: -0.10499936
-      z: 0.03971891
+      x: -0.19238588
+      y: -0.19676036
+      z: 0.024704903
     extend:
-      x: 0.57662135
-      y: 0.53933084
-      z: 0.22836825
+      x: 0.2597179
+      y: 0.29600006
+      z: 0.44185865
   boundingSpherePoints:
-  - x: -0.017138334
-    y: -0.00475872
-    z: -0.38375288
-  - x: -0.5972931
-    y: 0.35365182
-    z: 0.19807693
-  - x: 0.72482157
-    y: 0.37862578
-    z: -0.06598908
-  - x: 0.28489926
-    y: 0.5984351
-    z: 0.10781921
-  - x: -0.46968213
-    y: -0.68359643
-    z: -0.5326694
-  - x: 0.79757226
-    y: 0.030738521
-    z: 0.15807262
+  - x: -0.6683554
+    y: -0.31079873
+    z: -0.2042557
+  - x: -0.058951307
+    y: -0.11866445
+    z: -0.23510903
+  - x: -0.0006833537
+    y: -0.0031159504
+    z: 0.0058410075
+  - x: 0.27003908
+    y: -0.23536834
+    z: -0.25595912
+  - x: 0.28593692
+    y: -0.44127738
+    z: -0.6561621
+  - x: 0.3616072
+    y: -0.113142505
+    z: -0.35126078
   boundingSphere:
     center:
-      x: 0.02438891
-      y: -0.09135693
-      z: -0.17436603
-    radius: 0.8504324
+      x: -0.14945436
+      y: -0.29714292
+      z: -0.3648144
+    radius: 0.543345
 --- !u!1 &1899185937
 GameObject:
   m_ObjectHideFlags: 0

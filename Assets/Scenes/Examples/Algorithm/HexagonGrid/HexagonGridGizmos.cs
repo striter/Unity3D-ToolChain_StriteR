@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEditor;
 using Geometry;
+using Geometry.Validation;
 using Procedural;
 using Procedural.Hexagon;
 using Procedural.Hexagon.Area;
@@ -104,7 +105,7 @@ namespace Examples.Algorithm.HexagonGrid
         {
             GRay ray = sceneView.camera.ScreenPointToRay(UnityEditor.Extensions.UECommon.GetScreenPoint(sceneView));
             GPlane plane = new GPlane(Vector3.up, transform.position);
-            var hitPoint = ray.GetPoint(UGeometryIntersect.RayPlaneDistance(plane, ray));
+            UGeometryValidation.Ray.Projection(ray,plane,out var hitPoint);
             m_HitPointCS = (transform.InverseTransformPoint(hitPoint) / m_CellRadius).ToCoord();
             m_HitAxialCS = m_HitPointCS.ToCube();
             if (Event.current.type == EventType.MouseDown)

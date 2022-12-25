@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Examples.Algorithm.Geometry
 {
-    public class GeometryInsersectFrustum : MonoBehaviour
+    public class GeometryIntersectFrustum : MonoBehaviour
     {
         public GFrustum m_Frustum;
         public bool m_DrawPlanes;
@@ -53,7 +53,7 @@ namespace Examples.Algorithm.Geometry
             {
                 var deltaPosition = math.cos(time * 2 * math.PI * UNoise.Value.Unit1f1((float)index++/m_IntersectionAABBs.Length)) * .5f;
                 var deltaAABB= aabb.Move(deltaPosition) ;
-                Gizmos.color = frustumPlanes.FrustumPlaneAABBIntersection(deltaAABB,frustumPoints) ? Color.green : Color.red;
+                Gizmos.color = frustumPlanes.AABBIntersection(deltaAABB,frustumPoints) ? Color.green : Color.red;
                 deltaAABB.DrawGizmos();
             }
             if (m_DrawBounding)

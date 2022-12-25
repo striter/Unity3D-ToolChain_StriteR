@@ -42,7 +42,7 @@ namespace Geometry
             normal = math.normalize(normal);
             GPlane_Ctor(true);
         }
-        public static implicit operator Vector4(GPlane _plane)=>_plane.normal.to4(_plane.distance);
+        public static implicit operator float4(GPlane _plane)=>_plane.normal.to4(_plane.distance);
 
         public static bool operator ==(GPlane _src, GPlane _dst) =>  _src.normal.Equals( _dst.normal) && math.abs(_src.distance - _dst.distance) < float.Epsilon;
         public static bool operator !=(GPlane _src, GPlane _dst) => !(_src == _dst);

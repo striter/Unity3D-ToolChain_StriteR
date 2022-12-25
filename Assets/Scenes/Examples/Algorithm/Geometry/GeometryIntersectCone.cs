@@ -1,4 +1,5 @@
 using Geometry;
+using Geometry.Validation;
 using UnityEngine;
 namespace Examples.Algorithm.Geometry
 {
@@ -12,7 +13,7 @@ namespace Examples.Algorithm.Geometry
             Gizmos.color = Color.grey;
             Gizmos.matrix = transform.localToWorldMatrix;
             float rayDistance = 1f;
-            Vector2 distances= UGeometryIntersect.RayConeDistance(m_Data,m_Ray);
+            Vector2 distances= UGeometryValidation.Ray.Distances(m_Ray,m_Data);
             if (distances.x>=0)
             {
                 Gizmos.color = Color.blue;

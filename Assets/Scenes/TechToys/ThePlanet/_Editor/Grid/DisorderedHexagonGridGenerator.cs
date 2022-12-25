@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
+using Geometry.Validation;
 using Procedural;
 using Procedural.Hexagon;
 using Procedural.Hexagon.Area;
@@ -84,8 +85,8 @@ namespace PCG.Grid
         {
             GRay ray = _sceneView.camera.ScreenPointToRay(_sceneView.GetScreenPoint());
             GPlane plane = new GPlane(Vector3.up, transform.position);
-            var hitPos = (Vector3)ray.GetPoint(UGeometryIntersect.RayPlaneDistance(plane, ray));
-            var hitCoord = hitPos.ToCoord();
+            UGeometryValidation.Ray.Projection(ray,plane,out var hitPos);
+            var hitCoord = ((Vector3)hitPos).ToCoord();
             var hitHex = hitCoord.ToCube();
             var hitArea = UHexagonArea.GetBelongAreaCoord(hitHex);
             if (Event.current.type == EventType.MouseDown)

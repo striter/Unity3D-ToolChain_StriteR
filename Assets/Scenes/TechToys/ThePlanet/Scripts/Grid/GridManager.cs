@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Geometry;
+using Geometry.Validation;
 using Procedural;
 using Procedural.Hexagon;
 using Procedural.Hexagon.Area;
@@ -79,7 +80,7 @@ namespace PCG
         public bool ValidateGridSelection(Ray _ray, out GridID _vertexID)
         {
             _vertexID = default;
-            var distance = UGeometryIntersect.RayBSDistance(new GSphere(Vector3.zero, DPCG.kGridSize), _ray).x;
+            var distance = UGeometryValidation.Ray.Distances(_ray,new GSphere(Vector3.zero, DPCG.kGridSize)).x;
             if (distance < 0)
                 return false;
             var hitPos = _ray.GetPoint(distance);
