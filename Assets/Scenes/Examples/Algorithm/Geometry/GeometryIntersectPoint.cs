@@ -16,9 +16,6 @@ namespace Examples.Algorithm.Geometry
         public GRay m_Ray20;
         public GRay m_Ray21;
 
-        [Header("Point & Triangle")] 
-        public float3 m_Point3;
-        public GTriangle m_Triangle;
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
@@ -48,8 +45,6 @@ namespace Examples.Algorithm.Geometry
             Gizmos.DrawSphere(m_Ray20.GetPoint(rayrayDistances.x), .1f);
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(m_Ray21.GetPoint(rayrayDistances.y), .1f);
-            
-            var distances 
         }
 #endif
     }

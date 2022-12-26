@@ -469,37 +469,6 @@ Transform:
   - {fileID: 548546587}
   - {fileID: 586433004}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &827283844
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 827283845}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &827283845
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 827283844}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -17, y: -11.462513, z: 10}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &999107284
@@ -534,9 +503,18 @@ MonoBehaviour:
   visualizations:
   - triangle:
       triangle:
-        v0: {x: -0.47, y: 0, z: 0}
-        v1: {x: 0.5, y: 0, z: 0.5}
-        v2: {x: 0, y: 0, z: -0.5}
+        v0:
+          x: -0.47
+          y: 0
+          z: 0
+        v1:
+          x: 0.5
+          y: 0
+          z: 0.5
+        v2:
+          x: 0
+          y: 0
+          z: -0.5
     ray:
       origin:
         x: 0
@@ -550,9 +528,18 @@ MonoBehaviour:
     planeDirectionCheck: 0
   - triangle:
       triangle:
-        v0: {x: -0.47, y: 0, z: 0}
-        v1: {x: 0.5, y: 0, z: 0.5}
-        v2: {x: 0, y: 0, z: -0.5}
+        v0:
+          x: -0.47
+          y: 0
+          z: 0
+        v1:
+          x: 0.5
+          y: 0
+          z: 0.5
+        v2:
+          x: 0
+          y: 0
+          z: -0.5
     ray:
       origin:
         x: 0
@@ -566,9 +553,18 @@ MonoBehaviour:
     planeDirectionCheck: 0
   - triangle:
       triangle:
-        v0: {x: -0.47, y: 0, z: 0}
-        v1: {x: 0.5, y: 0, z: 0.5}
-        v2: {x: 0, y: 0, z: -0.5}
+        v0:
+          x: -0.47
+          y: 0
+          z: 0
+        v1:
+          x: 0.5
+          y: 0
+          z: 0.5
+        v2:
+          x: 0
+          y: 0
+          z: -0.5
     ray:
       origin:
         x: 0
@@ -1120,64 +1116,64 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boundingBoxRandomPoints:
-  - x: 0.13789375
-    y: -0.017123291
-    z: -0.08872025
-  - x: -0.30990452
-    y: 0.37025928
-    z: -0.07940213
-  - x: 0.42203975
-    y: -0.35561413
-    z: -0.4361925
-  - x: -0.6479161
-    y: 0.5979753
-    z: -0.21300669
-  - x: -0.09737333
-    y: -0.2364987
-    z: 0.12175494
-  - x: -0.074199416
-    y: 0.07536998
-    z: -0.06297663
-  - x: -0.4015972
-    y: -0.4382756
-    z: 0.16158845
-  - x: -0.36806086
-    y: -0.6604603
-    z: 0.045157336
+  - x: 0.012097309
+    y: -0.13145153
+    z: -0.076378085
+  - x: 0.60175204
+    y: 0.040199477
+    z: -0.5300231
+  - x: -0.21096966
+    y: -0.327312
+    z: 0.008249523
+  - x: -0.34162143
+    y: 0.25542274
+    z: -0.0980658
+  - x: 0.08371759
+    y: 0.27925292
+    z: 0.18849912
+  - x: -0.14987186
+    y: 0.8492118
+    z: -0.24573794
+  - x: 0.24369672
+    y: 0.05708205
+    z: 0.86041415
+  - x: -0.23501258
+    y: 0.028587881
+    z: -0.09656166
   boudingBox:
     center:
-      x: -0.112938166
-      y: -0.03124249
-      z: -0.13730204
+      x: 0.13006529
+      y: 0.2609499
+      z: 0.16519552
     extend:
-      x: 0.5349779
-      y: 0.6292178
-      z: 0.29889047
+      x: 0.47168672
+      y: 0.5882619
+      z: 0.6952186
   boundingSpherePoints:
-  - x: 0.021689698
-    y: 0.003528212
-    z: -0.1481818
-  - x: 0.15883943
-    y: -0.05256282
-    z: -0.71853817
-  - x: -0.31681836
-    y: -0.22307846
-    z: -0.5811133
-  - x: -0.18244247
-    y: 0.88141423
-    z: -0.0074001527
-  - x: 0.07912124
-    y: 0.8992279
-    z: 0.32842436
-  - x: 0.023103645
-    y: 0.27081835
-    z: -0.91406703
+  - x: 0.5110198
+    y: 0.18637852
+    z: 0.16747561
+  - x: -0.060402475
+    y: 0.2787791
+    z: 0.49877417
+  - x: -0.014435394
+    y: -0.2772794
+    z: 0.10063046
+  - x: -0.021364568
+    y: 0.09467075
+    z: -0.03131536
+  - x: 0.7475957
+    y: -0.3634622
+    z: -0.2506869
+  - x: -0.0028153192
+    y: -0.0007507552
+    z: -0.007609045
   boundingSphere:
     center:
-      x: -0.09049209
-      y: 0.36945558
-      z: -0.17741045
-    radius: 0.7518619
+      x: 0.34359664
+      y: -0.04234156
+      z: 0.12404363
+    radius: 0.6377748
 --- !u!1 &1899185937
 GameObject:
   m_ObjectHideFlags: 0

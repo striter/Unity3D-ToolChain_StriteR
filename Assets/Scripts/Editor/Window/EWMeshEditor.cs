@@ -219,7 +219,7 @@ namespace UnityEditor.Extensions
             Handles.DrawLine(mouseRay.origin, mouseRay.direction * 10f + mouseRay.origin);
             Handles.matrix = _meshObject.transform.localToWorldMatrix;
             Handles.SphereHandleCap(0, collisionPoint, Quaternion.identity, .05f, EventType.Repaint);
-            Handles_Extend.DrawLines_Concat(collisionTriangle.Iterate());
+            Handles_Extend.DrawLines_Concat(collisionTriangle.ToVector3().Iterate());
         }
 
         protected static Ray ObjLocalSpaceRay(SceneView _sceneView, GameObject _meshObj)
@@ -314,7 +314,7 @@ namespace UnityEditor.Extensions
                 return;
             PTriangle polygon = m_Polygons[m_SelectedPolygon];
             GTriangle mainTriangle = (GTriangle)polygon.Convert(m_Verticies);
-            m_SubPolygons=m_Polygons.CollectIndex((index, triangle) => index != m_SelectedPolygon && triangle.GetEnumerator(m_Verticies).Any(subVertex => mainTriangle.IterateAny(mainVertex => mainVertex == subVertex))).ToList();
+            m_SubPolygons=m_Polygons.CollectIndex((index, triangle) => index != m_SelectedPolygon && triangle.GetEnumerator(m_Verticies).Any(subVertex => mainTriangle.IterateAny(mainVertex => (Vector3)mainVertex == subVertex))).ToList();
         }
         void SelectVertex(int _index)
         {
@@ -375,15 +375,15 @@ namespace UnityEditor.Extensions
                 if (Vector3.Dot(directedTriangle.normal, _sceneView.camera.transform.forward) > 0)
                     continue;
                 Handles.color = Color.yellow.SetAlpha(.1f);
-                Handles.DrawAAConvexPolygon(directedTriangle.Iterate());
+                Handles.DrawAAConvexPolygon(directedTriangle.ToVector3().Iterate());
                 Handles.color = Color.yellow;
-                Handles_Extend.DrawLines_Concat(directedTriangle.Iterate());
+                Handles_Extend.DrawLines_Concat(directedTriangle.ToVector3().Iterate());
             }
             GTriangle mainTriangle = (GTriangle) _mainTriangle.Convert(m_Verticies);
             Handles.color = Color.green.SetAlpha(.3f);
-            Handles.DrawAAConvexPolygon(mainTriangle.Iterate());
+            Handles.DrawAAConvexPolygon(mainTriangle.ToVector3().Iterate());
             Handles.color = Color.green;
-            Handles_Extend.DrawLines_Concat(mainTriangle.Iterate());
+            Handles_Extend.DrawLines_Concat(mainTriangle.ToVector3().Iterate());
 
             if (!m_EditingVectors)
                 return;
