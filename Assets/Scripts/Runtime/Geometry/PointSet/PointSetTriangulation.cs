@@ -61,7 +61,7 @@ namespace Geometry.PointSet
         private static List<DTriangle> kTriangles = new List<DTriangle>();
         private static List<DEdge> kEdges = new List<DEdge>();
         private static PTriangle kSuperPolygon = new PTriangle(-1, -2, -3);
-        public static void BowyerWatson(float2[] _vertices, ref List<PTriangle> _triangles)
+        public static void BowyerWatson(IList<float2> _vertices, ref List<PTriangle> _triangles)
         {
             kTriangles.Clear();
             kEdges.Clear();

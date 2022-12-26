@@ -84,7 +84,7 @@ namespace Geometry.PointSet
         private static readonly List<float2> kBoundaryCirclePoints = new List<float2>(4);
         private static readonly List<float2> kContainedCirclePoints = new List<float2>();
         
-        public static GCircle GetBoundingCircle(params float2[] _positions)
+        public static GCircle GetBoundingCircle(IList<float2> _positions)
         {
             kBoundaryCirclePoints.Clear();
             kContainedCirclePoints.Clear();

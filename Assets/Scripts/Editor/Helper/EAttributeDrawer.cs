@@ -65,7 +65,6 @@ namespace UnityEditor.Extensions
         public bool OnGUIAttributePropertyCheck(Rect _position, SerializedProperty _property, out T _targetAttribute, params SerializedPropertyType[] _checkTypes)
         {
             _targetAttribute = null;
-            
             if (_checkTypes.Length!=0&&_checkTypes.All(p => _property.propertyType != p))
             {
                 EditorGUI.LabelField(_position,
@@ -224,7 +223,7 @@ namespace UnityEditor.Extensions
     }
     
     [CustomPropertyDrawer(typeof(ExtendButtonAttribute))]
-    public class ButtonPropertyDrawer : SubAttributePropertyDrawer<ExtendButtonAttribute>
+    public class ExtendButtonPropertyDrawer : SubAttributePropertyDrawer<ExtendButtonAttribute>
     {
         bool GetMethod(SerializedProperty _property, string _methodName, out MethodInfo _info)
         {
@@ -241,29 +240,40 @@ namespace UnityEditor.Extensions
                 Debug.LogWarning($"No Method Found:{_methodName}|{_property.serializedObject.targetObject.GetType()}");
             return _info!=null;
         }
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        public override float GetPropertyHeight(SerializedProperty _property, GUIContent label)
         {
+            var baseHeight = EditorGUI.GetPropertyHeight(_property, label);
+            if (_property.propertyType == SerializedPropertyType.Generic)
+                return baseHeight;
+            
             var buttonAttribute = attribute as ExtendButtonAttribute;
-            return EditorGUI.GetPropertyHeight(property,label) + buttonAttribute.m_Buttons.Length*20f;
+            return baseHeight + buttonAttribute.m_Buttons.Length*20f;
         }
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        public override void OnGUI(Rect _position, SerializedProperty _property, GUIContent _label)
         {
-            if (!OnGUIAttributePropertyCheck(position, property, out var buttonAttribute))
+            if (_property.propertyType == SerializedPropertyType.Generic)
+            {
+                Debug.LogWarning("Extend Button Attribute is currently not support Generic types");
+                EditorGUI.PropertyField(_position, _property, _label,true);
+                return;
+            }
+
+            if (!OnGUIAttributePropertyCheck(_position, _property, out var buttonAttribute))
                 return;
             
-            EditorGUI.PropertyField(position.Resize(position.size-new Vector2(0,20*buttonAttribute.m_Buttons.Length)), property, label,true);
-            position = position.Reposition(position.x, position.y + EditorGUI.GetPropertyHeight(property, label,true) + 2);
+            EditorGUI.PropertyField(_position.Resize(_position.size-new Vector2(0,20*buttonAttribute.m_Buttons.Length)), _property, _label,true);
+            _position = _position.Reposition(_position.x, _position.y + EditorGUI.GetPropertyHeight(_property, _label,true) + 2);
             foreach (var (title,method,parameters) in buttonAttribute.m_Buttons)
             {
-                position = position.Resize(new Vector2(position.size.x, 18));
-                if (GUI.Button(position, title))
+                _position = _position.Resize(new Vector2(_position.size.x, 18));
+                if (GUI.Button(_position, title))
                 {
-                    if (!GetMethod(property, method, out var info))
+                    if (!GetMethod(_property, method, out var info))
                         continue;
-                    info?.Invoke(property.serializedObject.targetObject,parameters);
+                    info?.Invoke(_property.serializedObject.targetObject,parameters);
                 }
                 
-                position = position.Reposition(position.x, position.y +  20);
+                _position = _position.Reposition(_position.x, _position.y +  20);
             }
         }
     }
