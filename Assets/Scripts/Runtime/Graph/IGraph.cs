@@ -15,6 +15,7 @@ public interface IGraph<T> where T:struct
 public interface IGraphDiscrete<T> where T : struct
 {
     T GetNode(Vector3 _srcPosition);
+    Vector3 ToNodePosition(T _node);
 }
 
 public interface IGraphPathFinding<T> where T:struct

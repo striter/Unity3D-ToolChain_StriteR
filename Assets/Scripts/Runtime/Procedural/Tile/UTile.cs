@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Procedural.Tile
@@ -68,18 +69,25 @@ namespace Procedural.Tile
             return axisList;
         }
 
-        public static List<Int2> GetAxisRange(Int2 centerAxis, int radius)
+        public static IEnumerable<Int2> GetAxisRange(Int2 centerAxis, int radius,float _radiusDelta = .5f)
         {
+            float sqrRadius = UMath.Square(_radiusDelta + radius);
+            int top    =  (int)math.ceil( radius),
+                bottom = -(int)math.floor(radius),
+                left   =  -(int)math.ceil(radius),
+                right  =(int)math.floor(radius);
+
             List<Int2> axisList = new List<Int2>();
-            int sqrRadius = radius * radius;
-            for (int i = -radius; i <= radius; i++)
-                for (int j = -radius; j <= radius; j++)
+            for (int y = bottom; y <= top; y++) {
+                for (int x = left; x <= right; x++)
                 {
-                    if ((new Int2(i, j)).sqrMagnitude > sqrRadius)
+                    var offset = new Int2(x, y);
+                    if (offset.sqrMagnitude > sqrRadius)
                         continue;
-                    axisList.Add(centerAxis - new Int2(i, j));
+                    yield return centerAxis + offset;
                 }
-            return axisList;
+            }
+            
         }
 
         public static List<Int2> GetDirectionAxies(int width, int height, Int2 centerAxis, List<ETileDirection> directions)
@@ -111,7 +119,7 @@ namespace Procedural.Tile
 
         public static bool CheckIsEdge<T>(this T[,] tileArray, Int2 axis) where T : class, ITile => axis.x == 0 || axis.x == tileArray.GetLength(0) - 1 || axis.y == 0 || axis.y == tileArray.GetLength(1) - 1;
 
-        public static Int2 GetDirectionedSize(Int2 size, ETileDirection direction) => (int)direction % 2 == 0 ? size : size.Inverse();
+        public static Int2 GetDirectionTiles(Int2 size, ETileDirection direction) => (int)direction % 2 == 0 ? size : size.Inverse();
         public static Vector3 GetUnitScaleBySizeAxis(Int2 directionedSize, int tileSize) => new Vector3(directionedSize.x, 1, directionedSize.y) * tileSize;
         public static Vector3 GetLocalPosBySizeAxis(Int2 directionedSize) => new Vector3(directionedSize.x, 0, directionedSize.y);
         public static Quaternion ToRotation(this ETileDirection direction) => Quaternion.Euler(0, (int)direction * 90, 0);

@@ -88,22 +88,22 @@ namespace Examples.Algorithm.HexagonGrid
 
         private static class GUIHelper
         {
-            public static readonly Color C_AxialColumn = Color.green;
-            public static readonly Color C_AxialRow = Color.blue;
-            public static readonly Color C_CubeX = Color.red;
-            public static readonly Color C_CubeY = Color.green;
-            public static readonly Color C_CubeZ = Color.blue;
+            public static readonly Color kAxialColumn = Color.green;
+            public static readonly Color kAxialRow = Color.blue;
+            public static readonly Color kCubeX = Color.red;
+            public static readonly Color kCubeY = Color.green;
+            public static readonly Color kCubeZ = Color.blue;
 
-            public static readonly GUIStyle m_AreaStyle = new GUIStyle
+            public static readonly GUIStyle kAreaStyle = new GUIStyle
                 {alignment = TextAnchor.MiddleCenter, fontSize = 14, fontStyle = FontStyle.Normal,normal=new GUIStyleState(){textColor = Color.yellow}};
 
-            public static readonly GUIStyle m_HitStyle = new GUIStyle
+            public static readonly GUIStyle kHitStyle = new GUIStyle
                 {alignment = TextAnchor.MiddleCenter, fontSize = 12, fontStyle = FontStyle.Normal,normal=new GUIStyleState(){textColor = Color.yellow}};
         }
 
-        private void OnSceneGUI(SceneView sceneView)
+        private void OnSceneGUI(SceneView _sceneView)
         {
-            GRay ray = sceneView.camera.ScreenPointToRay(UnityEditor.Extensions.UECommon.GetScreenPoint(sceneView));
+            GRay ray = _sceneView.camera.ScreenPointToRay(UnityEditor.Extensions.UECommon.GetScreenPoint(_sceneView));
             GPlane plane = new GPlane(Vector3.up, transform.position);
             UGeometryValidation.Ray.Projection(ray,plane,out var hitPoint);
             m_HitPointCS = (transform.InverseTransformPoint(hitPoint) / m_CellRadius).ToCoord();
@@ -143,11 +143,11 @@ namespace Examples.Algorithm.HexagonGrid
             Handles.matrix = transform.localToWorldMatrix * Matrix4x4.Scale(Vector3.one * m_CellRadius);
             foreach (var hex in m_Areas.Values)
                 Handles.Label(hex.centerCS.ToCoord().ToPosition(), $"A:{hex.coord}\nC:{hex.centerCS}",
-                    GUIHelper.m_AreaStyle);
+                    GUIHelper.kAreaStyle);
             var area = UHexagonArea.GetBelongingArea(m_HitAxialCS);
             Handles.Label(m_HitPointCS.ToPosition(),
                 $"Cell:{m_HitAxialCS}\nArea:{area.coord}\nAPos{area.TransformCSToAS(m_HitAxialCS)}",
-                GUIHelper.m_HitStyle);
+                GUIHelper.kHitStyle);
         }
 
         void DrawAreas()
@@ -178,19 +178,19 @@ namespace Examples.Algorithm.HexagonGrid
                 default: return;
                 case EAxisVisualize.Axial:
                 {
-                    Gizmos.color = GUIHelper.C_AxialColumn;
+                    Gizmos.color = GUIHelper.kAxialColumn;
                     Gizmos.DrawRay(Vector3.zero, new HexCoord(1, 0).ToCoord().ToPosition());
-                    Gizmos.color = GUIHelper.C_AxialRow;
+                    Gizmos.color = GUIHelper.kAxialRow;
                     Gizmos.DrawRay(Vector3.zero, new HexCoord(0, 1).ToCoord().ToPosition());
                 }
                     break;
                 case EAxisVisualize.Cube:
                 {
-                    Gizmos.color = GUIHelper.C_CubeX;
+                    Gizmos.color = GUIHelper.kCubeX;
                     Gizmos.DrawRay(Vector3.zero, new HexCoord(1, 0).ToCoord().ToPosition());
-                    Gizmos.color = GUIHelper.C_CubeY;
+                    Gizmos.color = GUIHelper.kCubeY;
                     Gizmos.DrawRay(Vector3.zero, new HexCoord(1, -1).ToCoord().ToPosition());
-                    Gizmos.color = GUIHelper.C_CubeZ;
+                    Gizmos.color = GUIHelper.kCubeZ;
                     Gizmos.DrawRay(Vector3.zero, new HexCoord(0, 1).ToCoord().ToPosition());
                 }
                     break;
@@ -245,12 +245,12 @@ namespace Examples.Algorithm.HexagonGrid
                     var colAxis = colPixel.ToCube();
                     var rowPixel = hitPixel.SetRow(0);
                     var rowAxis = rowPixel.ToCube();
-                    Gizmos.color = GUIHelper.C_AxialColumn;
+                    Gizmos.color = GUIHelper.kAxialColumn;
                     Gizmos.DrawRay(colPixel.ToPosition(), Vector3.up);
                     Gizmos.DrawLine(Vector3.zero, colPixel.ToPosition());
                     Gizmos.DrawLine(colPixel.ToPosition(), hitPixel.ToPosition());
                     colAxis.DrawHexagon();
-                    Gizmos.color = GUIHelper.C_AxialRow;
+                    Gizmos.color = GUIHelper.kAxialRow;
                     Gizmos.DrawRay(rowPixel.ToPosition(), Vector3.up);
                     Gizmos.DrawLine(Vector3.zero, rowPixel.ToPosition());
                     rowAxis.DrawHexagon();
