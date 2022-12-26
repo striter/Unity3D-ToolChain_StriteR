@@ -8,7 +8,7 @@ namespace Geometry.Bezier
     using static math;
     using static UMath;
     [Serializable]
-    public struct GBezierCurveQuadratic:ISerializationCallbackReceiver
+    public partial struct GBezierCurveQuadratic:ISerializationCallbackReceiver
     {
         public float3 source;
         public float3 control;
