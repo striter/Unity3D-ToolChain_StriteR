@@ -268,6 +268,11 @@ public static class UCollection
             }
             return -1;
         }
+        public static bool FindIndex<T>(this IEnumerable<T> _collection, Predicate<T> _OnEachElement,out int _index)
+        {
+            _index = FindIndex(_collection,_OnEachElement);
+            return _index != -1;
+        }
 
         public static string ToString<T>(this IEnumerable<T> _collections, char breakAppend, Func<T, string> OnEachAppend=null)
         {

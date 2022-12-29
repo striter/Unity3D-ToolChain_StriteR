@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Geometry;
 using Geometry.PointSet;
 using Unity.Mathematics;
@@ -7,14 +8,14 @@ using UnityEngine.Serialization;
 
 namespace Examples.Algorithm.DelaunayTrianglulation
 {
-    using static DDelaunay;
-    public static class DDelaunay
-    {
-        public const float kRandomRadius = 10f;
-    }
+    using static DelaunayTriangulation.Constants;
     [ExecuteInEditMode]
     public class DelaunayTriangulation : MonoBehaviour
     {
+        public static class Constants
+        {
+            public const float kRandomRadius = 10f;
+        }
         [FormerlySerializedAs("randomCount")]
         [ExtendButton("Randomize",nameof(Randomize),null,
             "Sequence",nameof(Sequence),null)]
@@ -36,15 +37,10 @@ namespace Examples.Algorithm.DelaunayTrianglulation
 
         void Sequence()
         {
-            m_Vertices.Clear();
-            var ldsPoints = ULowDiscrepancySequences.Hammersley2D(m_RandomCount,0f);
-            for (int i = 0; i < m_RandomCount; i++)
-            {
-                // points[i] = new float3(ldsPoints[i].x,0,ldsPoints[i].y)*kRandomRadius;
-                var point = ldsPoints[i];
-                math.sincos(point.x*math.PI*2,out var s,out var c);
-                m_Vertices.Add(new float2(s,c)*point.y*kRandomRadius);
-            }
+            ULowDiscrepancySequences.Hammersley2D(m_RandomCount,0f).Select(p => {
+                math.sincos(p.x*math.PI*2,out var s,out var c);
+                return new float2(s,c)*p.y*kRandomRadius;
+            }).FillList(m_Vertices);
             OnValidate();
         }
         

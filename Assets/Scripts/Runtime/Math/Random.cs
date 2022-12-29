@@ -108,6 +108,8 @@ public static class URandom
         return default;
     }
 
+    
+#region Shuffle
     public static void Shuffle<T>(IList<T> _array,int _count,int _dimension, System.Random _random=null)
     {
         var shuffleTimes = _count / _dimension;
@@ -140,6 +142,6 @@ public static class URandom
             src += replace;
             (_array[src], _array[other]) = (_array[other], _array[src]);
         }
-
     }
+#endregion
 }
