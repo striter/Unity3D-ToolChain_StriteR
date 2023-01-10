@@ -8,6 +8,9 @@ using UnityEngine;
 
 namespace PCG.Grid
 {
+    using static UCubeExplicit;
+    using static USphereExplicit;
+    using static USphereExplicit.Cube;
     [Serializable]
     public class SphericalGridGenerator : IGridGenerator
     {
@@ -34,21 +37,16 @@ namespace PCG.Grid
         {
             float r = resolution;
 
-            for (int k = 0; k < KGeometryMesh.kCubeFacingAxisCount; k++)
+            for (int k = 0; k < kCubeFacingAxisCount; k++)
             {
-                var _axis = KGeometryMesh.GetCubeFacingAxis(k);
+                var _axis = GetFacingAxis(k);
                 for (int j = 0; j < resolution; j++)
                 for (int i = 0; i < resolution; i++)
                 {
-                    var iTR = USphereExplicit.GetCubeSphereIndex(i + 1, j + 1, resolution, _axis.index);
-                    var iTL = USphereExplicit.GetCubeSphereIndex(i, j + 1, resolution, _axis.index);
-                    var iBR = USphereExplicit.GetCubeSphereIndex(i + 1, j, resolution, _axis.index);
-                    var iBL = USphereExplicit.GetCubeSphereIndex(i, j, resolution, _axis.index);
-                    
-                    var vTR =  UGeometryMesh.CubeToSphere(_axis.origin + (i + 1)/r * _axis.uDir + (j+1)/r * _axis.vDir);
-                    var vTL =  UGeometryMesh.CubeToSphere(_axis.origin + i/r * _axis.uDir + (j+1)/r * _axis.vDir);
-                    var vBR =  UGeometryMesh.CubeToSphere(_axis.origin + (i + 1)/r * _axis.uDir + j/r * _axis.vDir);
-                    var vBL =  UGeometryMesh.CubeToSphere(_axis.origin + i/r * _axis.uDir + j/r * _axis.vDir);
+                    var vTR =  CubeToSpherePosition(_axis.origin + (i + 1)/r * _axis.uDir + (j+1)/r * _axis.vDir);
+                    var vTL =  CubeToSpherePosition(_axis.origin + i/r * _axis.uDir + (j+1)/r * _axis.vDir);
+                    var vBR =  CubeToSpherePosition(_axis.origin + (i + 1)/r * _axis.uDir + j/r * _axis.vDir);
+                    var vBL =  CubeToSpherePosition(_axis.origin + i/r * _axis.uDir + j/r * _axis.vDir);
                     
                     Gizmos.DrawWireSphere(vTR,.1f);
                     Gizmos.DrawWireSphere(vTL,.1f);
@@ -62,24 +60,24 @@ namespace PCG.Grid
         public void Output(GridCollection _collection)
         {         
             float r = resolution;
-            _collection.vertices = new GridVertexData[USphereExplicit.GetCubeSphereVertexCount(resolution)];
-            _collection.chunks = new GridChunkData[] {new GridChunkData(){ quads =new GridQuadData[USphereExplicit.GetCubeSphereQuadCount(resolution)]}};
+            _collection.vertices = new GridVertexData[Cube.GetVertexCount(resolution)];
+            _collection.chunks = new GridChunkData[] {new GridChunkData(){ quads =new GridQuadData[USphereExplicit.Cube.GetQuadCount(resolution)]}};
             int quadIndex = 0;
-            for (int k = 0; k < KGeometryMesh.kCubeFacingAxisCount; k++)
+            for (int k = 0; k < kCubeFacingAxisCount; k++)
             {
-                var _axis = KGeometryMesh.GetCubeFacingAxis(k);
+                var _axis = GetFacingAxis(k);
                 for (int j = 0; j < resolution; j++)
                 for (int i = 0; i < resolution; i++)
                 {
-                    var iTR = USphereExplicit.GetCubeSphereIndex(i + 1, j + 1, resolution, _axis.index);
-                    var iTL = USphereExplicit.GetCubeSphereIndex(i, j + 1, resolution, _axis.index);
-                    var iBR = USphereExplicit.GetCubeSphereIndex(i + 1, j, resolution, _axis.index);
-                    var iBL = USphereExplicit.GetCubeSphereIndex(i, j, resolution, _axis.index);
+                    var iTR = GetVertexIndex(i + 1, j + 1, resolution, _axis.index);
+                    var iTL = GetVertexIndex(i, j + 1, resolution, _axis.index);
+                    var iBR = GetVertexIndex(i + 1, j, resolution, _axis.index);
+                    var iBL = GetVertexIndex(i, j, resolution, _axis.index);
                     
-                    var vTR =  UGeometryMesh.CubeToSphere(_axis.origin + (i + 1)/r * _axis.uDir + (j+1)/r * _axis.vDir);
-                    var vTL =  UGeometryMesh.CubeToSphere(_axis.origin + i/r * _axis.uDir + (j+1)/r * _axis.vDir);
-                    var vBR =  UGeometryMesh.CubeToSphere(_axis.origin + (i + 1)/r * _axis.uDir + j/r * _axis.vDir);
-                    var vBL =  UGeometryMesh.CubeToSphere(_axis.origin + i/r * _axis.uDir + j/r * _axis.vDir);
+                    var vTR =  CubeToSpherePosition(_axis.origin + (i + 1)/r * _axis.uDir + (j+1)/r * _axis.vDir);
+                    var vTL =  CubeToSpherePosition(_axis.origin + i/r * _axis.uDir + (j+1)/r * _axis.vDir);
+                    var vBR =  CubeToSpherePosition(_axis.origin + (i + 1)/r * _axis.uDir + j/r * _axis.vDir);
+                    var vBL =  CubeToSpherePosition(_axis.origin + i/r * _axis.uDir + j/r * _axis.vDir);
 
                     _collection.vertices[iTR] = new GridVertexData() {position = vTR,normal = math.normalize(vTR) , invalid = true};
                     _collection.vertices[iTL] = new GridVertexData() {position = vTL,normal = math.normalize(vTL) , invalid = true};

@@ -12,7 +12,7 @@ namespace Geometry.Explicit.Mesh.Cube
         [Clamp(1, 500)] public int resolution;
         public static CubeGenerator kDefault = new CubeGenerator() {size = new Vector3(1f,1f,1f),resolution = 20};
         public int vertexCount => triangleCount * 2;
-        public int triangleCount => KGeometryMesh.kCubeFacingAxisCount*resolution * resolution * 2;
+        public int triangleCount => UCubeExplicit.kCubeFacingAxisCount * resolution * resolution * 2;
 
         private int curIndex;
         private Point GetPoint(int _i, int _j, Axis _axis)
@@ -34,9 +34,9 @@ namespace Geometry.Explicit.Mesh.Cube
             var vertex = new Vertex();
             vertex.tangent.w = new half(-1);
 
-            for (int k = 0; k < KGeometryMesh.kCubeFacingAxisCount; k++)
+            for (int k = 0; k < UCubeExplicit.kCubeFacingAxisCount; k++)
             {
-                var side = KGeometryMesh.GetCubeFacingAxis(k);
+                var side = UCubeExplicit.GetFacingAxis(k);
                 for (int j = 0; j < resolution; j++)
                 for (int i = 0; i < resolution; i++)
                 {

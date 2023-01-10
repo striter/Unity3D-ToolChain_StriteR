@@ -2,12 +2,12 @@ using System;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Explicit.Mesh
+namespace Geometry.Explicit
 {
-    public static class KGeometryMesh
+    public static class UCubeExplicit
     {
         public const int kCubeFacingAxisCount = 6;
-        public static Axis GetCubeFacingAxis(int _index) => _index switch
+        public static Axis GetFacingAxis(int _index) => _index switch
         {
             0 => new Axis()
             {

@@ -1,11 +1,8 @@
+using System.Runtime.InteropServices;
 using Unity.Mathematics;
 namespace Geometry.Explicit.Shape
 {
     using static math;
-    public struct Point4
-    {
-        public float4x3 positions, normals;
-    }
     
     public interface IShape
     {
@@ -39,7 +36,7 @@ namespace Geometry.Explicit.Shape
             float4x3 p;
             p.c0 = uv.c0 - 0.5f;
             p.c1 = uv.c1 - 0.5f;
-            p.c2 = 0.5f - abs(p.c0) - math.abs(p.c1);
+            p.c2 = 0.5f - abs(p.c0) - abs(p.c1);
             float4 offset = max(-p.c2, 0f);
             p.c0 += select(-offset,offset,p.c0<0f);
             p.c1 += select(-offset,offset,p.c1<0f);
