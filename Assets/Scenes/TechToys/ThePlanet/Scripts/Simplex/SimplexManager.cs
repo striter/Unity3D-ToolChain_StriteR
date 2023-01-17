@@ -170,7 +170,6 @@ namespace PCG.Simplex
         {
             if (!Application.isPlaying)
                 return;
-            
             if(m_DrawCorners)
                 foreach (var corner in m_Corners.Values)
                 {

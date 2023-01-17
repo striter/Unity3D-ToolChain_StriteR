@@ -40,9 +40,21 @@ namespace Geometry.Validation
                 if (!FrustumPlaneIntersection(_frustumPlanes, _bounding))
                     return false;
             
-                if (!AABBIntersection(_frustumPoints.bounding,_bounding))
+                if (!AABBIntersection(_frustumPoints.bounding,_bounding))       // if (!FrustumPointsAABBIntersection(_frustumPoints,_bounding)) //More expensive
                     return false;
             
+                return true;
+            }
+            
+            public static bool FrustumPointsAABBIntersection(GFrustumPoints _frustumPoints, GBox _box)
+            {
+                bool outside;
+                outside = true; for (int i = 0; i < 8; i++) outside &= _frustumPoints[i].x > _box.max.x; if(outside) return false;
+                outside = true; for (int i = 0; i < 8; i++) outside &= _frustumPoints[i].x < _box.min.x; if(outside) return false;
+                outside = true; for (int i = 0; i < 8; i++) outside &= _frustumPoints[i].y > _box.max.y; if(outside) return false;
+                outside = true; for (int i = 0; i < 8; i++) outside &= _frustumPoints[i].y < _box.min.y; if(outside) return false;
+                outside = true; for (int i = 0; i < 8; i++) outside &= _frustumPoints[i].z > _box.max.z; if(outside) return false;
+                outside = true; for (int i = 0; i < 8; i++) outside &= _frustumPoints[i].z < _box.min.z; if(outside) return false;
                 return true;
             }
         }

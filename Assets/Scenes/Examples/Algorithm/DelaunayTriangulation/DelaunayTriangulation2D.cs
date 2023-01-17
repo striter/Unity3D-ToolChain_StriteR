@@ -6,21 +6,20 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Examples.Algorithm.DelaunayTrianglulation
+namespace Examples.Algorithm.DelaunayTriangulation
 {
-    using static DelaunayTriangulation.Constants;
+    using static DelaunayTriangulation2D.Constants;
     [ExecuteInEditMode]
-    public class DelaunayTriangulation : MonoBehaviour
+    public class DelaunayTriangulation2D : MonoBehaviour
     {
         public static class Constants
         {
             public const float kRandomRadius = 10f;
         }
-        [FormerlySerializedAs("randomCount")]
         [ExtendButton("Randomize",nameof(Randomize),null,
             "Sequence",nameof(Sequence),null)]
         public uint m_RandomCount = 128;
-        [FormerlySerializedAs("vertices")] public List<float2> m_Vertices = new List<float2>();
+        public List<float2> m_Vertices = new List<float2>();
         private List<PTriangle> triangles = new List<PTriangle>();
 
         void Randomize()
@@ -53,11 +52,9 @@ namespace Examples.Algorithm.DelaunayTrianglulation
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.white.SetAlpha(.1f);
-            Gizmos.matrix = Matrix4x4.TRS(Vector3.zero,Quaternion.identity,Vector3.one.SetY(0f));
-            Gizmos.color = Color.white.SetAlpha(.3f);
-            Gizmos.matrix = Matrix4x4.identity;;
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Scale(Vector3.one);
             foreach (var point in m_Vertices)
-                Gizmos.DrawWireSphere(point.to3xz(),.1f);
+                Gizmos.DrawWireSphere(point.to3xz(),.3f);
             foreach (var triangle in triangles)
                 Gizmos_Extend.DrawLinesConcat(triangle,_p=>m_Vertices[_p].to3xz());
         }

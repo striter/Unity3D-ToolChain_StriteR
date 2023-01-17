@@ -161,10 +161,10 @@ public static class Gizmos_Extend
     }
     
     public static GUIStyle kLabelStyle => new GUIStyle(GUI.skin.label) { alignment = TextAnchor.LowerCenter,fontSize=12, fontStyle = FontStyle.Normal};
-    public static void DrawString(Vector3 _positionLS,string _text,float _offset=1f)
+    public static void DrawString(Vector3 _position,string _text,float _offset=.1f)
     {
         Handles.matrix = Gizmos.matrix;
-        Handles.Label(_positionLS+_offset*Vector3.up,_text,kLabelStyle);
+        Handles.Label(_position+_offset*Vector3.up,_text,kLabelStyle);
     }
     
     public static void DrawGizmos(this GBox _box)=>Gizmos.DrawWireCube(_box.center,_box.size);

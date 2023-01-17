@@ -19,8 +19,6 @@ namespace Geometry
         public T v0,v1,v2;
         public Triangle(T _v0, T _v1, T _v2) { v0 = _v0; v1 = _v1; v2 = _v2; }
         public Triangle((T v0,T v1,T v2) _tuple) : this(_tuple.v0,_tuple.v1,_tuple.v2) { }
-        
-        public Triangle<Y> Convert<T,Y>(Triangle<T> _vertices, Func<T, Y> _convert) where T:struct  where Y:struct=> new Triangle<Y>( _convert( _vertices[0]), _convert(_vertices[1]),_convert( _vertices[2]));
     }
 
     public partial struct PTriangle

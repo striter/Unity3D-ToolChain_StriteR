@@ -32,7 +32,7 @@ namespace Geometry.Validation
                 
             public static bool Projection(GRay _ray, GPlane _plane, out float3 _hitPoint)
             {
-                float distance = Distances(_ray,_plane);
+                float distance = Distance(_ray,_plane);
                 _hitPoint = _ray.GetPoint(distance);
                 return distance != 0;
             }
@@ -96,7 +96,7 @@ namespace Geometry.Validation
                 return intersect;
             }
 
-            public static float Distances( GRay _ray,GPlane _plane)
+            public static float Distance( GRay _ray,GPlane _plane)
             {
                 float nrO = math.dot(_plane.normal, _ray.origin);
                 float nrD = math.dot(_plane.normal, _ray.direction);
@@ -230,7 +230,7 @@ namespace Geometry.Validation
             {
                 var distances = ConeCalculate(_ray,_cone);
                 GPlane bottomPlane = new GPlane(_cone.normal, _cone.origin + _cone.normal * _cone.height);
-                float rayPlaneDistance = Distances(_ray,bottomPlane);
+                float rayPlaneDistance = Distance(_ray,bottomPlane);
                 float sqrRadius = _cone.Radius;
                 sqrRadius *= sqrRadius;
                 if (math.lengthsq(_cone.Bottom - _ray.GetPoint(rayPlaneDistance)) > sqrRadius)
