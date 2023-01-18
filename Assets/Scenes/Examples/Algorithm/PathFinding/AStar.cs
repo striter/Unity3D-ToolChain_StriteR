@@ -108,13 +108,13 @@ namespace Examples.Algorithm.PathFinding
 
         void PathFind()
         {
-            m_Paths.Clear();
             var src = Validate(m_Agent);
             var node = Validate(m_Destination);
             if (node!=null)
             {
                 Stack<int2> outputs = new Stack<int2>();
                 UAStar<int2>.PathFind(this,src,node,ref outputs);
+                m_Paths.Clear();
                 m_Paths.EnqueueRange(outputs.Select(p=>m_Nodes[p].m_Position));
                             
             }
