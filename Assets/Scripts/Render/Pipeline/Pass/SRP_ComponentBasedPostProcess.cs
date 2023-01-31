@@ -30,7 +30,7 @@ namespace Rendering.Pipeline
             base.Configure(cmd, cameraTextureDescriptor);
             foreach (var effect in m_Effects)
                 effect.Configure(cmd, cameraTextureDescriptor);
-            ConfigureTarget(colorAttachment,depthAttachment);
+            ConfigureTarget(colorAttachmentHandle,depthAttachmentHandle);
         }
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {            
@@ -48,9 +48,9 @@ namespace Rendering.Pipeline
                 RenderTargetIdentifier src = blitSwap ? m_BlitTemp1 : m_BlitTemp2;
                 RenderTargetIdentifier dst = blitSwap ? m_BlitTemp2 : m_BlitTemp1;
                 if (blitIndex == 0)
-                    src = renderer.cameraColorTarget;
+                    src = renderer.cameraColorTargetHandle;
                 else if (blitIndex == lastIndex)
-                    dst = renderer.cameraColorTarget;
+                    dst = renderer.cameraColorTargetHandle;
                 blitSwap = !blitSwap;
 
                 string name = effect.m_Name;
@@ -61,7 +61,7 @@ namespace Rendering.Pipeline
                 blitIndex++;
             }
             if (lastIndex == 0)
-                cmd.Blit(m_BlitTemp2, renderer.cameraColorTarget);
+                cmd.Blit(m_BlitTemp2, renderer.cameraColorTargetHandle);
             
             cmd.ReleaseTemporaryRT(ID_Blit_Temp1);
             cmd.ReleaseTemporaryRT(ID_Blit_Temp2);

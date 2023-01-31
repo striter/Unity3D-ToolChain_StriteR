@@ -12,19 +12,19 @@ namespace Rendering.Pipeline
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
             cmd.GetTemporaryRT(kCameraNormalTex, cameraTextureDescriptor.width, cameraTextureDescriptor.height, 0, FilterMode.Point, RenderTextureFormat.ARGB32);
-            ConfigureTarget(kRTCameraNormalTex);
+            ConfigureTarget(RTHandles.Alloc(kRTCameraNormalTex));
             base.Configure(cmd, cameraTextureDescriptor);
         }
-        public override void FrameCleanup(CommandBuffer cmd)
+        public override void FrameCleanup(CommandBuffer _cmd)
         {
-            base.FrameCleanup(cmd);
-            cmd.ReleaseTemporaryRT(kCameraNormalTex);
+            base.FrameCleanup(_cmd);
+            _cmd.ReleaseTemporaryRT(kCameraNormalTex);
         }
-        public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
+        public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get("Generate Normal Texture");
             cmd.Blit(null, kRTCameraNormalTex, m_NormalMaterial);
-            context.ExecuteCommandBuffer(cmd);
+            _context.ExecuteCommandBuffer(cmd);
             cmd.Clear();
             CommandBufferPool.Release(cmd);
         }

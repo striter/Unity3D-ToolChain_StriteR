@@ -9,8 +9,10 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Decal
   m_Shader: {fileID: 4800000, guid: 0d4c1140ffa3ff849a5b3af90220d53d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _DECALCLIP_BOX
+  - _DECALCLIP_SPHERE
   m_InvalidKeywords:
   - _CULLBACK
   - _DECALTYPE__SPHERE
@@ -20,6 +22,7 @@ Material:
   m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -63,7 +66,7 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
-    - _DECALCLIP: 1
+    - _DECALCLIP: 2
     - _DECALTYPE: 1
     - _DecalType: 0
     - _DetailNormalMapScale: 1

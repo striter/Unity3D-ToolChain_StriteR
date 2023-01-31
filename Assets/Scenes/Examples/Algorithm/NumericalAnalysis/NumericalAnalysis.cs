@@ -15,8 +15,8 @@ namespace Examples.Algorithm.NumericalAnalysis
         private readonly Func<float, float> kPolynomial = x => math.pow(x,5) + math.pow(x,2) - x - .2f;
         private readonly Func<float, float> kDerivative = x => 5 * math.pow(x, 4) + 2 * x - 1;
 
-        private readonly Func<float2, float2> kFractalPolynomial = x => umath.complexPow(x,5) + umath.complexPow(x,2) - x + new float2(1f,0f);
-        private readonly Func<float2, float2> kFractalDerivative = x => 5 * umath.complexPow(x, 4) + 2 * x - new float2(1,0f);
+        private readonly Func<float2, float2> kFractalPolynomial = x => ucomplex.pow(x,5) + ucomplex.pow(x,2) - x + new float2(1f,0f);
+        private readonly Func<float2, float2> kFractalDerivative = x => 5 * ucomplex.pow(x, 4) + 2 * x - new float2(1,0f);
 
         private const float kSphereSize = 1f / kGraphResolution;
         private void OnDrawGizmos()

@@ -16,7 +16,7 @@ namespace Rendering.Pipeline
         public override void Configure(CommandBuffer _cmd, RenderTextureDescriptor _cameraTextureDescriptor)
         {
             _cmd.GetTemporaryRT(KRenderTextures.kCameraMotionVector, _cameraTextureDescriptor.width, _cameraTextureDescriptor.height,16, FilterMode.Point, RenderTextureFormat.RGFloat);
-            ConfigureTarget(KRenderTextures.kCameraMotionVectorRT);
+            ConfigureTarget(RTHandles.Alloc(KRenderTextures.kCameraMotionVectorRT));
             ConfigureClear(ClearFlag.All,Color.black);
         }
         
@@ -52,7 +52,7 @@ namespace Rendering.Pipeline
             _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
             
             cmd.Clear();
-            cmd.SetRenderTarget(_renderingData.cameraData.renderer.cameraColorTarget);
+            cmd.SetRenderTarget(_renderingData.cameraData.renderer.cameraColorTargetHandle);
             _context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }

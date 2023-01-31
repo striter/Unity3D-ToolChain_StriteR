@@ -170,7 +170,7 @@ namespace Rendering.PostProcess
                 }
 
                 buffer.Clear();
-                buffer.SetRenderTarget(_renderer.cameraColorTarget);
+                buffer.SetRenderTarget(_renderer.cameraColorTargetHandle);
                 _context.ExecuteCommandBuffer(buffer);
                 CommandBufferPool.Release(buffer);
             }

@@ -85,7 +85,7 @@ namespace Rendering
                     {index = p.lightmapIndex, scaleOffset = p.lightmapScaleOffset}).ToArray(),
                 lightmapColors = LightmapSettings.lightmaps.Select(p => p.lightmapColor).ToArray(),
 
-                reflectionTexture = RenderSettings.customReflection,
+                reflectionTexture = RenderSettings.customReflectionTexture,
                 reflectionIntensity =  1,
             };
         }

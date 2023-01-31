@@ -105,9 +105,11 @@ public static class umath
     public static float maxElement(this float2 _src) => Mathf.Max(_src.x, _src.y);
     public static float maxElement(this float3 _src) => Mathf.Max(_src.x, _src.y, _src.z);
     public static float maxElement(this float4 _src) => Mathf.Max(_src.x, _src.y, _src.z, _src.w);
+}
 
-    
-    public static float2 complexDivide(float2 _complex1, float2 _complex2)
+public static class ucomplex
+{
+    public static float2 divide(float2 _complex1, float2 _complex2)
     {
         var real1 = _complex1.x;
         var imaginary1 = _complex1.y;
@@ -122,23 +124,22 @@ public static class umath
         return new float2((imaginary1 + real1 * num1) / (imaginary2 + real2 * num1), (-real1 + imaginary1 * num1) / (imaginary2 + real2 * num1));
     }
 
-    public static float2 complexPow(float2 value, float power)
+    public static float2 pow(float2 _value, float _power)
     {
-        if (power == 0f)
+        if (_power == 0f)
             return 0f;
-        if (value.sum() == 0f)
+        if (_value.sum() == 0f)
             return 0f;
-        var real1 = value.x;
-        var imaginary1 = value.y;
-        var real2 = power;
-        var num1 = complexAbs(value);
+        var real1 = _value.x;
+        var imaginary1 = _value.y;
+        var num1 = abs(_value);
         var num2 = math.atan2(imaginary1, real1);
-        var num3 = real2 * num2 ;
-        var num4 = math.pow(num1, real2) ;
+        var num3 = _power * num2;
+        var num4 = math.pow(num1, _power) ;
         return new float2(num4 * math.cos(num3), num4 * math.sin(num3));
     }
 
-    public static float complexAbs(float2 _value)
+    public static float abs(float2 _value)
     {
         if (float.IsInfinity(_value.x) || float.IsInfinity(_value.y))
             return float.PositiveInfinity;
@@ -154,5 +155,4 @@ public static class umath
         var num4 = num1 / num2;
         return num2 * math.sqrt(1.0f + num4 * num4);
     }
-
 }

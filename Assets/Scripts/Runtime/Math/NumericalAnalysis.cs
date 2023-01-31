@@ -24,7 +24,7 @@ public static class UNumericalAnalysis
         short iteration = 0;
         while (value.sqrmagnitude() > _sqrApproximation && iteration++<_maxIteration)
         {
-            guess -= umath.complexDivide(value ,_derivative(guess));
+            guess -= ucomplex.divide(value ,_derivative(guess));
             value = _polynomial(guess);
         }
         return guess;

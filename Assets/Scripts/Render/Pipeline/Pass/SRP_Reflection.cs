@@ -111,7 +111,7 @@ namespace Rendering.Pipeline
         public override void Configure(CommandBuffer _cmd, RenderTextureDescriptor _cameraTextureDescriptor)
         {
             _cmd.GetTemporaryRT(kSSRTex, _cameraTextureDescriptor.width, _cameraTextureDescriptor.height, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
-            ConfigureTarget(kSSRTexID);
+            ConfigureTarget(RTHandles.Alloc(kSSRTexID));
             base.Configure(_cmd, _cameraTextureDescriptor);
         }
 
@@ -124,7 +124,7 @@ namespace Rendering.Pipeline
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get("Planar Reflection Pass");
-            cmd.Blit(_renderingData.cameraData.renderer.cameraColorTarget,kSSRTexID,m_Material);
+            cmd.Blit(_renderingData.cameraData.renderer.cameraColorTargetHandle,kSSRTexID,m_Material);
             
             _context.ExecuteCommandBuffer(cmd);
             cmd.Clear();
@@ -198,7 +198,7 @@ namespace Rendering.Pipeline
          protected  int m_Index { get; private set; }
          private SRC_ReflectionConfig m_Plane;
          private RenderTextureDescriptor m_ColorDescriptor;
-         private RenderTargetIdentifier m_ColorTarget;
+         private RTHandle m_ColorTarget;
          private ScriptableRenderer m_Renderer;
          int m_ReflectionTexture;
          RenderTargetIdentifier m_ReflectionTextureID;
@@ -228,11 +228,11 @@ namespace Rendering.Pipeline
 
              _cmd.GetTemporaryRT(m_ReflectionTexture, m_ColorDescriptor,FilterMode.Bilinear);
             
-             m_ColorTarget = m_ReflectionTextureID;
+             m_ColorTarget = RTHandles.Alloc(m_ReflectionTextureID);
              if (m_Data.m_BlurParam.m_BlurType!=EBlurType.None)
              {
                  _cmd.GetTemporaryRT(m_ReflectionBlurTexture, m_ColorDescriptor, FilterMode.Bilinear);
-                 m_ColorTarget = m_ReflectionBlurTextureID;
+                 m_ColorTarget = RTHandles.Alloc(m_ReflectionBlurTextureID);
              }
              DoConfigure(_cmd,m_ColorDescriptor,m_ColorTarget);
          }
@@ -243,7 +243,7 @@ namespace Rendering.Pipeline
              _descriptor.width /= downSample;
              _descriptor.height /= downSample;
          }
-         protected virtual void DoConfigure(CommandBuffer _cmd, RenderTextureDescriptor _descriptor,  RenderTargetIdentifier _colorTarget)
+         protected virtual void DoConfigure(CommandBuffer _cmd, RenderTextureDescriptor _descriptor,  RTHandle _colorTarget)
          {
              
          }
@@ -272,7 +272,7 @@ namespace Rendering.Pipeline
          protected abstract void Execute(ref SRD_ReflectionData _data,
              ScriptableRenderContext _context, ref RenderingData _renderingData, CommandBuffer _cmd,
              ref SRC_ReflectionConfig _config, ref RenderTextureDescriptor _descriptor, 
-             ref RenderTargetIdentifier _target,ref ScriptableRenderer _renderer);
+             ref RTHandle _target,ref ScriptableRenderer _renderer);
     }
     
     public enum EReflectionGeometry
@@ -310,7 +310,7 @@ namespace Rendering.Pipeline
             m_ThreadGroups = new Int2(_descriptor.width / 8, _descriptor.height / 8);
         }
 
-        protected override void DoConfigure(CommandBuffer _cmd, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _colorTarget)
+        protected override void DoConfigure(CommandBuffer _cmd, RenderTextureDescriptor _descriptor, RTHandle _colorTarget)
         {
             base.DoConfigure(_cmd, _descriptor, _colorTarget);
             ConfigureTarget(_colorTarget);
@@ -319,7 +319,7 @@ namespace Rendering.Pipeline
 
         protected override void Execute(ref SRD_ReflectionData _data, ScriptableRenderContext _context,
             ref RenderingData _renderingData, CommandBuffer _cmd, ref SRC_ReflectionConfig _config,  ref RenderTextureDescriptor _descriptor,
-            ref RenderTargetIdentifier _target,ref ScriptableRenderer _renderer)
+            ref RTHandle _target,ref ScriptableRenderer _renderer)
         {
             _cmd.SetComputeIntParam(m_ReflectionComputeShader, kSampleCount, _data.m_Sample);
             _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kResultTexelSize, _descriptor.GetTexelSize());
@@ -338,7 +338,7 @@ namespace Rendering.Pipeline
                 _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kPlanePosition, _plane.position.to4());
             }
             
-            _cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels, kKernelInput, _renderer.cameraColorTarget);
+            _cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels, kKernelInput, _renderer.cameraColorTargetHandle);
             _cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels, kKernelResult, _target);
             _cmd.DispatchCompute(m_ReflectionComputeShader, m_Kernels, m_ThreadGroups.x,m_ThreadGroups.y, 1);
         }
@@ -365,7 +365,7 @@ namespace Rendering.Pipeline
              _descriptor.colorFormat = RenderTextureFormat.ARGB32;
          }
 
-         protected override void DoConfigure(CommandBuffer _cmd, RenderTextureDescriptor _descriptor, RenderTargetIdentifier _colorTarget)
+         protected override void DoConfigure(CommandBuffer _cmd, RenderTextureDescriptor _descriptor, RTHandle _colorTarget)
          {
              base.DoConfigure(_cmd, _descriptor, _colorTarget);
              var depthDescriptor = _descriptor;
@@ -373,7 +373,7 @@ namespace Rendering.Pipeline
              depthDescriptor.depthBufferBits = 32;
              depthDescriptor.enableRandomWrite = false;
              _cmd.GetTemporaryRT(m_ReflectionDepth, depthDescriptor, FilterMode.Point);
-             ConfigureTarget(_colorTarget,m_ReflectionDepth);
+             ConfigureTarget(_colorTarget,RTHandles.Alloc(m_ReflectionDepthID));
              ConfigureClear(ClearFlag.All,Color.clear);
          }
 
@@ -385,7 +385,7 @@ namespace Rendering.Pipeline
          }
 
          protected override void Execute(ref SRD_ReflectionData _data, ScriptableRenderContext _context, ref RenderingData _renderingData,
-             CommandBuffer _cmd, ref SRC_ReflectionConfig _config,  ref RenderTextureDescriptor _descriptor, ref RenderTargetIdentifier _target,
+             CommandBuffer _cmd, ref SRC_ReflectionConfig _config,  ref RenderTextureDescriptor _descriptor, ref RTHandle _target,
              ref ScriptableRenderer _renderer)
          {
              ref var cameraData = ref _renderingData.cameraData;

@@ -233,7 +233,7 @@ namespace Rendering.PostProcess
                 _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
 
                 buffer.Clear();
-                buffer.SetRenderTarget(_renderer.cameraColorTarget);
+                buffer.SetRenderTarget(_renderer.cameraColorTargetHandle);
                 _context.ExecuteCommandBuffer(buffer);
                 CommandBufferPool.Release(buffer);
             }
