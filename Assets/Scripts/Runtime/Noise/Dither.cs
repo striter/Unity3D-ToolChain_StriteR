@@ -4,12 +4,23 @@ namespace Noise
 {
     public static class Dither
     {
+        public static float2x2 kDither2x2 = new float2x2(
+            1,3,
+            4,2
+        ) / 5f;
+
+        public static float3x3 kDither3x3 = new float3x3(
+            1,8,4,
+            7,6,4, 
+            5,2,9
+        )/10f;
+        
         public static float4x4 kDither4x4 = new float4x4(
-                0,8,2,10,
-                12,4,14,6,
-                3,11,1,9,
-                15,7,13,5
-            ) / 16f;
+            1,9,3,11,
+            13,5,15,7,
+            4,12,2,10,
+            16,8,14,6
+        ) / 17f;
 
         public static float[] kDither8x8 = new float[]
         {
@@ -21,7 +32,7 @@ namespace Noise
             35, 19, 47, 31, 34, 18, 46, 30,
             11, 59, 7, 55, 10, 58, 6, 53,
             43, 27, 39, 23, 42, 26, 38, 22
-        }.Remake((index,p)=>p/16f);
+        }.Remake((index,p)=>p/65f);
     }
     
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Geometry.Bezier;
+using Geometry;
 using UnityEngine;
 
 namespace Examples.Algorithm.Geometry

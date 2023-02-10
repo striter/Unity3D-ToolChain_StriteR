@@ -3,7 +3,7 @@ using System.Linq;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Bezier
+namespace Geometry
 {
     using static math;
     using static UMath;

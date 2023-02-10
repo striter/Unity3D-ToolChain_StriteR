@@ -3,13 +3,13 @@ using UnityEngine;
 public static class UTime
 {
 #if UNITY_EDITOR
-    static UTime() => UnityEditor.EditorApplication.update += Tick;
+    static UTime() => UnityEditor.EditorApplication.update += EditorTick;
     public static float editorDeltaTime { get; private set; } = 0f;
-    public static double editorTime { get; private set; } = 0f;
-    static void Tick()
+    public static float editorTime { get; private set; } = 0f;
+    static void EditorTick()
     {
         var last = editorTime;
-        editorTime = UnityEditor.EditorApplication.timeSinceStartup;
+        editorTime = (float)UnityEditor.EditorApplication.timeSinceStartup;
         editorDeltaTime = Mathf.Max(0, (float)(editorTime-last));
     }
 #endif
@@ -23,7 +23,16 @@ public static class UTime
         #endif
         return Time.deltaTime;
     }
-    
+
+    public static float time => GetTime();
+    static float GetTime()
+    {
+#if UNITY_EDITOR
+        if(!Application.isPlaying)    
+            return editorTime;
+#endif
+        return Time.time;
+    }
     public const int kStampADay = 86400;
     public const int kStampAnHour = 3600;
     public static readonly DateTime kStampBegin = new DateTime(1970, 1, 1, 8, 0, 0);

@@ -1,4 +1,4 @@
-using Geometry.Bezier;
+using Geometry;
 using UnityEngine;
 
 //This stuff is inspired by deferred rendering

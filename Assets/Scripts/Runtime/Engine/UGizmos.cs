@@ -53,6 +53,7 @@ public static class Gizmos_Extend
         for(int i=0;i<count-1;i++)
             Gizmos.DrawLine(_points[i],_points[i+1]);
     }
+    
     public static void DrawLines(IEnumerable<Vector3> _points)
     {
         Vector3 tempPoint=default;
@@ -68,6 +69,7 @@ public static class Gizmos_Extend
             tempPoint = point;
         }
     }
+    
     public static void DrawLines<T>(IEnumerable<T> _points,Func<T,Vector3> _convert)
     {
         Vector3 tempPoint=default;
@@ -118,12 +120,14 @@ public static class Gizmos_Extend
         }
         Gizmos.DrawLine(tempPoint,firstPoint);
     }
+    
     public static void DrawGizmos(this GHeightCone _cone)
     {
         Handles.color = Gizmos.color;
         Handles.matrix = Gizmos.matrix;
         Handles_Extend.DrawCone(_cone);
     }
+    
     public static void DrawGizmos(this GLine _line)
     {
         Handles.color = Gizmos.color;
