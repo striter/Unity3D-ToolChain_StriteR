@@ -9,7 +9,6 @@ namespace Geometry
     static class KSpline
     {
         public const int kMinDegree = 2;
-        public const int kMaxDegree = 12;
     }
 
     public interface ISpline
@@ -30,7 +29,7 @@ namespace Geometry
     public struct GSpline:ISpline,ISerializationCallbackReceiver
     {
         public float3[] coordinates;
-        [Clamp(kMinDegree,kMaxDegree)] public int k;
+        [Clamp(kMinDegree)] public int k;
 
         public EBSplineMode mode;
         public float[] knotVectors;
@@ -80,7 +79,10 @@ namespace Geometry
 
         public GSpline Ctor()
         {
+            var n = coordinates.Length - 1;
+            k = math.min(n + 1, k);
             int knotVectorLength = coordinates.Length + k + 1;
+            
             switch (mode)
             {
                 default:
@@ -99,7 +101,6 @@ namespace Geometry
                 case EBSplineMode.OpenUniform:
                 {
                     float constant = 0;
-                    int n = coordinates.Length - 1;
                     knotVectors = new float[knotVectorLength];
                     
                     for (int i = 1; i <= knotVectors.Length; i++)
@@ -118,7 +119,6 @@ namespace Geometry
                 case EBSplineMode.OpenUniformClamped:
                 {
                     float constant = 0;
-                    int n = coordinates.Length - 1;
                     knotVectors = new float[knotVectorLength];
                     
                     for (int i = 1; i <= knotVectors.Length; i++)
@@ -149,7 +149,7 @@ namespace Geometry
     public struct GBezierSplineUniform:ISpline
     {
         public float3[] coordinates;
-        [Clamp(kMinDegree,kMaxDegree)]public int k;
+        [Clamp(kMinDegree)]public int k;
         
         public static readonly GBezierSplineUniform kDefault = new GBezierSplineUniform() {
             coordinates = new float3[]{new float3(-1,0,-1),new float3(0,0,1),new float3(1,0,-1)},
