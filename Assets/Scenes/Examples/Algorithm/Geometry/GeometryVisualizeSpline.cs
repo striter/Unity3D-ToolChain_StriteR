@@ -6,15 +6,16 @@ namespace Examples.Algorithm.Geometry
 {
     public class GeometryVisualizeSpline : MonoBehaviour
     {
-        public GBezierSpline m_Spline = GBezierSpline.kDefault;
+        public GSpline m_Spline = GSpline.kDefault;
+        public GBezierSplineUniform m_SplineUniform = GBezierSplineUniform.kDefault;
         
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
-            foreach (var coord in m_Spline.coordinates)
-                Gizmos.DrawSphere(coord,.1f);
+            m_Spline.DrawGizmos(true);
             
-            m_Spline.DrawGizmos();
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(new Vector3(0f,0f,-5f));
+            m_SplineUniform.DrawGizmos(true);
         }
     }
 
