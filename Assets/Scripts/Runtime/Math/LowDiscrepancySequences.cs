@@ -4,9 +4,9 @@ public static class ULowDiscrepancySequences
 {
     static float RadicalInverseOptimized(uint _n,uint _dimension) =>_dimension == 0 ? RadicalInverse2(_n) : RadicalInverse(_n, kmath.kPrimes128[_dimension]);
     
-    static float Halton(uint _index, uint _dimension) => RadicalInverseOptimized(_index,_dimension);
+    public static float Halton(uint _index, uint _dimension) => RadicalInverseOptimized(_index,_dimension);
     
-    static float Hammersley(uint _index,uint _dimension,uint _numSamples)=>_dimension==0?(_index/(float)_numSamples):RadicalInverseOptimized(_index,_dimension-1);
+    public static float Hammersley(uint _index,uint _dimension,uint _numSamples)=>_dimension==0?(_index/(float)_numSamples):RadicalInverseOptimized(_index,_dimension-1);
 
     public static float2[] Grid2D(int _width,int _height)
     {

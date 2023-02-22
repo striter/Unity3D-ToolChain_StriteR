@@ -1,4 +1,5 @@
 using Geometry;
+using Geometry.Curves;
 using UnityEngine;
 
 //This stuff is inspired by deferred rendering

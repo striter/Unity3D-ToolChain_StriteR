@@ -349,89 +349,6 @@ MonoBehaviour:
       x: 0.7158208
       y: -0.027901703
       z: 0.44
---- !u!1 &586433002
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 586433004}
-  - component: {fileID: 586433003}
-  m_Layer: 0
-  m_Name: Bezier
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &586433003
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 586433002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c03458a3b390664c8b5d3171fadb85b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_QuadraticCurve:
-    source:
-      x: 2
-      y: 0
-      z: 0
-    control:
-      x: 2
-      y: 0.55
-      z: 0.5
-    destination:
-      x: 2.5
-      y: 0
-      z: 0.5
-    tangentSource:
-      x: 0
-      y: 0.7399401
-      z: 0.6726728
-    tangentDestination:
-      x: 0.6726728
-      y: -0.7399401
-      z: 0
-  quadraticTangents: 1
-  m_CubicCurve:
-    source:
-      x: 0
-      y: 0.001
-      z: 0
-    controlSource:
-      x: -0.5
-      y: 0.5
-      z: 0
-    destination:
-      x: 0
-      y: 0
-      z: 1
-    controlDestination:
-      x: 1
-      y: 0.5
-      z: 1
---- !u!4 &586433004
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 586433002}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.421267, y: 8.131306, z: -10.025048}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1061793234}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &603151349
 GameObject:
   m_ObjectHideFlags: 0
@@ -470,111 +387,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &998802554
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 998802555}
-  - component: {fileID: 998802556}
-  m_Layer: 0
-  m_Name: Spline
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &998802555
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 998802554}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 14.2, y: 8.131306, z: -10.27}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1061793234}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &998802556
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 998802554}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 440331998da184b4dab56603c79c8e67, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Spline:
-    coordinates:
-    - x: -0.81
-      y: 0
-      z: -2.04
-    - x: 0.4
-      y: 0.63
-      z: -0.74
-    - x: 2.39
-      y: -0.13
-      z: -1.71
-    - x: 2.39
-      y: -0.13
-      z: 0.59
-    - x: 3.53
-      y: -0.13
-      z: 1.22
-    - x: 4.69
-      y: -0.13
-      z: -0.86
-    - x: 0.04
-      y: -0.13
-      z: 1.05
-    - x: 1.95
-      y: -0.13
-      z: 1.05
-    k: 5
-    mode: 0
-    knotVectors:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 1
-    - 2
-    - 3
-    - 4
-    - 4
-    - 4
-    - 4
-    - 5
-    - 6
-  m_SplineUniform:
-    coordinates:
-    - x: -1
-      y: 0
-      z: -1
-    - x: 0
-      y: 0
-      z: 1
-    - x: 1
-      y: 0
-      z: -1
-    - x: 1.35
-      y: 0.5
-      z: -1.01
-    - x: 0.97
-      y: 0.5
-      z: 0.62
-    k: 3
 --- !u!1 &999107284
 GameObject:
   m_ObjectHideFlags: 0
@@ -693,40 +505,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 603151350}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1061793233
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1061793234}
-  m_Layer: 0
-  m_Name: Curves
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1061793234
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1061793233}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.014266888, y: -8.131306, z: 5.361048}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 586433004}
-  - {fileID: 998802555}
-  - {fileID: 2053047239}
-  m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1203903734
@@ -1254,64 +1032,64 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boundingBoxRandomPoints:
-  - x: -0.40347338
-    y: -0.45597845
-    z: -0.476193
-  - x: -0.1676144
-    y: -0.028928004
-    z: 0.19606344
-  - x: -0.0069207465
-    y: 0.006499426
-    z: 0.006350951
-  - x: 0.49632025
-    y: -0.61200833
-    z: -0.33260176
-  - x: 0.6623619
-    y: -0.087455474
-    z: -0.2697243
-  - x: 0.43771386
-    y: 0.51599425
-    z: -0.544034
-  - x: -0.07083148
-    y: 0.14787526
-    z: -0.0021408102
-  - x: 0.0002725875
-    y: 0.07147105
-    z: -0.002691616
+  - x: 0.21565236
+    y: 0.49277133
+    z: -0.7596837
+  - x: 0.01873593
+    y: -0.07165223
+    z: 0.032070465
+  - x: -0.05093803
+    y: 0.07950159
+    z: -0.2991175
+  - x: 0.10923016
+    y: -0.42018136
+    z: -0.2663784
+  - x: 0.049150024
+    y: 0.004174252
+    z: 0.026855081
+  - x: 0.5431035
+    y: 0.5517777
+    z: 0.1883242
+  - x: 0.45392013
+    y: 0.33165622
+    z: 0.50234294
+  - x: 0.25941244
+    y: 0.84153044
+    z: 0.14920717
   boudingBox:
     center:
-      x: 0.12944424
-      y: -0.04800701
-      z: -0.17398527
+      x: 0.24608274
+      y: 0.21067455
+      z: -0.1286704
     extend:
-      x: 0.5329176
-      y: 0.5640013
-      z: 0.37004873
+      x: 0.29702076
+      y: 0.6308559
+      z: 0.63101333
   boundingSpherePoints:
-  - x: -0.18994842
-    y: -0.6532123
-    z: 0.6688373
-  - x: 0.0039982116
-    y: -0.9219112
-    z: 0.09205539
-  - x: -0.11136829
-    y: -0.39432564
-    z: -0.23786858
-  - x: -0.14326935
-    y: 0.39954695
-    z: 0.10784594
-  - x: 0.043213814
-    y: -0.050742872
-    z: -0.099020556
-  - x: -0.5515323
-    y: -0.37396875
-    z: 0.19217658
+  - x: 0.0025483728
+    y: -0.0024355294
+    z: 0.0034438756
+  - x: 0.7277383
+    y: -0.49396202
+    z: -0.4170521
+  - x: 0.24066491
+    y: -0.30241397
+    z: 0.12672135
+  - x: -0.33482298
+    y: 0.58057815
+    z: 0.4136889
+  - x: -0.1010412
+    y: -0.5073651
+    z: -0.74121183
+  - x: -0.29879656
+    y: 0.1450537
+    z: -0.5226517
   boundingSphere:
     center:
-      x: -0.080924764
-      y: -0.26291987
-      z: 0.1400894
-    radius: 0.6661747
+      x: 0.10710621
+      y: 0.01004985
+      z: -0.07294834
+    radius: 0.8704134
 --- !u!1 &1899185937
 GameObject:
   m_ObjectHideFlags: 0
@@ -1403,7 +1181,7 @@ GameObject:
   - component: {fileID: 2053047239}
   - component: {fileID: 2053047240}
   m_Layer: 0
-  m_Name: Chaikin
+  m_Name: Curves
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1417,12 +1195,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2053047238}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 9.014267, y: 8.131306, z: -9.361048}
+  m_LocalPosition: {x: 8.895733, y: 0, z: -5.238952}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1061793234}
-  m_RootOrder: -1
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2053047240
 MonoBehaviour:
@@ -1436,9 +1214,92 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef2caf22710291e47abd12f8fe84fc5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_QuadraticCurve:
+    source:
+      x: 0.62
+      y: 0
+      z: 0
+    control:
+      x: 1.35
+      y: 0.92
+      z: 0
+    destination:
+      x: 0
+      y: 0
+      z: 1.17
+    tangentSource:
+      x: 0.62157494
+      y: 0.7833547
+      z: 0
+    tangentDestination:
+      x: -0.67183304
+      y: -0.45784178
+      z: 0.5822553
+  quadraticTangents: 1
+  m_CubicCurve:
+    source:
+      x: -0.22
+      y: 0
+      z: 0
+    controlSource:
+      x: 0.42
+      y: 0.75
+      z: 0
+    destination:
+      x: 0.43
+      y: 0.38
+      z: 1.14
+    controlDestination:
+      x: -1.35
+      y: 1.06
+      z: 1.25
+  m_BSpline:
+    coordinates:
+    - x: -1
+      y: 0
+      z: -1
+    - x: 0
+      y: 0
+      z: 1
+    - x: 1
+      y: 0
+      z: -1
+    - x: -0.38
+      y: 0.58
+      z: -0.13
+    - x: 0.27
+      y: -1.01
+      z: -0.13
+    k: 3
+    mode: 0
+    knotVectors:
+    - 0
+    - 0
+    - 0
+    - 1
+    - 2
+    - 3
+    - 3
+    - 4
+    - 5
+  m_BSplineUniform:
+    coordinates:
+    - x: -1
+      y: 0
+      z: -1
+    - x: 0
+      y: 0
+      z: 1
+    - x: 1
+      y: 0
+      z: -1
+    - x: 2.28
+      y: 0
+      z: 0.24
+    k: 3
   m_ChaikinCurve:
     vertices:
-    - x: 2.37
+    - x: 2.32
       y: -0.6
       z: 0.1
     - x: 0.58534575
@@ -1456,3 +1317,22 @@ MonoBehaviour:
     iteration: 3
     ratio: 0.25
     closed: 1
+  m_DivisionCurve:
+    begin:
+      x: -1
+      y: 0
+      z: 0
+    end:
+      x: 1
+      y: 0
+      z: 0
+    control1:
+      x: 0
+      y: 0
+      z: 1
+    control2:
+      x: 0
+      y: 0
+      z: -1
+    level: 2
+    amplitude: 0.877

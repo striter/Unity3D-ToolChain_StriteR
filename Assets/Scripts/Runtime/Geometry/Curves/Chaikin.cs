@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry
+namespace Geometry.Curves
 {
     [Serializable]
     public struct GChaikinCurve 
@@ -67,21 +67,23 @@ namespace Geometry
 
     public static class UChaikinCurve
     {
-        public static void DrawGizmos(this GChaikinCurve _curve)
+        public static void DrawGizmos(this GChaikinCurve _curve,bool _indicator = true)
         {
             var outputs = _curve.Output();
-
-            Gizmos.color = Color.white;
-            if (_curve.closed)
-                Gizmos_Extend.DrawLinesConcat(_curve.vertices, p => p);
-            else
-                Gizmos_Extend.DrawLines(_curve.vertices, p => p);
 
             Gizmos.color = Color.green;
             if (_curve.closed)
                 Gizmos_Extend.DrawLinesConcat(outputs, p => p);
             else
                 Gizmos_Extend.DrawLines(outputs, p => p);
+
+            if (!_indicator)
+                return;
+            Gizmos.color = Color.white;
+            if (_curve.closed)
+                Gizmos_Extend.DrawLinesConcat(_curve.vertices, p => p);
+            else
+                Gizmos_Extend.DrawLines(_curve.vertices, p => p);
         }
     }
 }

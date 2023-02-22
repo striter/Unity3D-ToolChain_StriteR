@@ -103,6 +103,4 @@ namespace Geometry
         public void OnAfterDeserialize()=>Ctor();
         public Bounds ToBounds()=> new Bounds(center, size);
     }
-    
-    
 }

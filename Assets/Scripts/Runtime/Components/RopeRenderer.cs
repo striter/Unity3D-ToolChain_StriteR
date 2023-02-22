@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using Geometry;
+using Geometry.Curves;
 using TPoolStatic;
 using UnityEngine;
 
