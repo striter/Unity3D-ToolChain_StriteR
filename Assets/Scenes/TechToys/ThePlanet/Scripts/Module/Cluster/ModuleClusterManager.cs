@@ -7,15 +7,15 @@ namespace PCG.Module.Cluster
     public class ModuleClusterManager : MonoBehaviour, IModuleControl,IModuleCornerCallback,IModuleVoxelCallback,IModuleCollapse,IModuleStructure
     {
         public GridManager m_Grid { get; set; }
-        private TObjectPoolMono<PCGID, ModuleClusterCorner> m_ClusterCorners;
-        private TObjectPoolMono<PCGID, ModuleClusterContainer> m_ClusterContainers;
+        private ObjectPoolMono<PCGID, ModuleClusterCorner> m_ClusterCorners;
+        private ObjectPoolMono<PCGID, ModuleClusterContainer> m_ClusterContainers;
         public IModuleStructureElement CollectStructure(PCGID _voxelID)=>m_ClusterContainers[_voxelID];
 
         private readonly List<IEnumerator> m_ClusterIterators = new List<IEnumerator>();
         public void Init()
         {
-            m_ClusterContainers = new TObjectPoolMono<PCGID, ModuleClusterContainer>(transform.Find("Voxel/Item"));
-            m_ClusterCorners = new TObjectPoolMono<PCGID, ModuleClusterCorner>(transform.Find("Corner/Item"));
+            m_ClusterContainers = new ObjectPoolMono<PCGID, ModuleClusterContainer>(transform.Find("Voxel/Item"));
+            m_ClusterCorners = new ObjectPoolMono<PCGID, ModuleClusterCorner>(transform.Find("Corner/Item"));
         }
 
         public void Setup()

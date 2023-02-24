@@ -18,14 +18,14 @@ namespace Examples.Algorithm.SpatialHashGrid
         public float m_Alignment;
         public float m_Separation;
         
-        private TObjectPoolClass<int, Actor> m_Actors;
+        private ObjectPoolClass<int, Actor> m_Actors;
         private TileGraph m_Graph;
         private SpatialHashMap<Int2, TileGraph, Actor> m_SpatialHashMap;
         
         private void Awake()
         {
             Instance = this;
-            m_Actors = new TObjectPoolClass<int, Actor>(transform.Find("Actor"));
+            m_Actors = new ObjectPoolClass<int, Actor>(transform.Find("Actor"));
             m_Graph = new TileGraph(m_SenseRadius.end);
             m_SpatialHashMap = new SpatialHashMap<Int2, TileGraph, Actor>(m_Graph);
             Spawn();

@@ -12,10 +12,10 @@ namespace PCG.Module
         [Range(0,1)]public float m_Density;
         [Clamp(0f,float.MaxValue)]public float m_Scale;
         public GridManager m_Grid { get; set; }
-        public TObjectPoolClass<GridID, FoliageElement> m_Foliage;
+        public ObjectPoolClass<GridID, FoliageElement> m_Foliage;
         public void Init()
         {
-            m_Foliage = new TObjectPoolClass<GridID, FoliageElement>(transform.Find("Item"));
+            m_Foliage = new ObjectPoolClass<GridID, FoliageElement>(transform.Find("Item"));
         }
 
         public void Setup()

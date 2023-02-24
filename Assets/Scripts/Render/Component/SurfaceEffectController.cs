@@ -17,7 +17,7 @@ public class SurfaceEffectController : MonoBehaviour
     private Material[][] m_BaseMaterials;
     // private Light m_Light;
     private SurfaceEffectCollection _animCollection;
-    private TObjectPoolClass<int,FadeElement> m_FadeOut;
+    private ObjectPoolClass<int,FadeElement> m_FadeOut;
     private void Update()
     {
         Tick(Time.deltaTime);
@@ -44,7 +44,7 @@ public class SurfaceEffectController : MonoBehaviour
         fadeRoot.transform.SetParentAndSyncPositionRotation(transform);
         var fadeOutEntity = new GameObject("Item");
         fadeOutEntity.transform.SetParentAndSyncPositionRotation(fadeRoot.transform);
-        m_FadeOut = new TObjectPoolClass<int, FadeElement>(fadeOutEntity.transform, () => new object[]{ m_Renderers,m_MeshFilters});
+        m_FadeOut = new ObjectPoolClass<int, FadeElement>(fadeOutEntity.transform, () => new object[]{ m_Renderers,m_MeshFilters});
     }
 
     public void Clear()

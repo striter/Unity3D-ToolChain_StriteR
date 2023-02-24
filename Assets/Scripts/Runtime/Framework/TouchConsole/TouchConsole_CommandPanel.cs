@@ -201,10 +201,10 @@ public partial class TouchConsole
     Counter m_FastKeyCooldownTimer = new Counter(.5f);
     public bool m_ConsoleOpening { get; private set; } = false;
     ScrollRect m_ConsoleCommandScrollRect;
-    TObjectPoolClass<int,CommandContainer> m_CommandContainers;
+    ObjectPoolClass<int,CommandContainer> m_CommandContainers;
     int m_CurrentPage;
-    TObjectPoolClass<int,ButtonSelect> m_PageSelection;
-    Dictionary<Type, TObjectPoolClass<int,CommandElementBase>> m_CommandItems = new Dictionary<Type, TObjectPoolClass<int,CommandElementBase>>();
+    ObjectPoolClass<int,ButtonSelect> m_PageSelection;
+    Dictionary<Type, ObjectPoolClass<int,CommandElementBase>> m_CommandItems = new Dictionary<Type, ObjectPoolClass<int,CommandElementBase>>();
 
     Action<bool> OnConsoleShow;
     public void SetOnConsoleShow(Action<bool> _OnConsoleShow)
@@ -215,14 +215,14 @@ public partial class TouchConsole
     void InitConsole()
     {
         m_ConsoleCommandScrollRect = transform.Find("Command").GetComponent<ScrollRect>();
-        m_CommandContainers = new TObjectPoolClass<int,CommandContainer>(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content/GridItem"));
+        m_CommandContainers = new ObjectPoolClass<int,CommandContainer>(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content/GridItem"));
         Transform containerItemPool = m_ConsoleCommandScrollRect.transform.Find("Viewport/CommandItemPool");
-        UReflection.TraversalAllInheritedClasses<CommandElementBase>(type => m_CommandItems.Add(type, new TObjectPoolClass<int,CommandElementBase>(containerItemPool.Find(type.Name), type)));
+        UReflection.TraversalAllInheritedClasses<CommandElementBase>(type => m_CommandItems.Add(type, new ObjectPoolClass<int,CommandElementBase>(containerItemPool.Find(type.Name), type)));
 
         m_ConsoleOpening = false;
         m_ConsoleCommandScrollRect.SetActive(m_ConsoleOpening);
 
-        m_PageSelection = new TObjectPoolClass<int,ButtonSelect>(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content/PageSelect/GridItem"));
+        m_PageSelection = new ObjectPoolClass<int,ButtonSelect>(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content/PageSelect/GridItem"));
     }
     [PartialMethod(EPartialMethods.Reset,EPartialSorting.CommandConsole)]
     void ResetConsole()
@@ -387,10 +387,10 @@ public partial class TouchConsole
     }
     public class CommandElementButtonSelection : CommandElementBase
     {
-        public TObjectPoolClass<int,ButtonSelect> m_ButtonGrid { get; private set; }
+        public ObjectPoolClass<int,ButtonSelect> m_ButtonGrid { get; private set; }
         public CommandElementButtonSelection(Transform _transform) : base(_transform)
         {
-            m_ButtonGrid = new TObjectPoolClass<int,ButtonSelect>(_transform.Find("GridItem"));
+            m_ButtonGrid = new ObjectPoolClass<int,ButtonSelect>(_transform.Find("GridItem"));
         }
         public CommandElementButtonSelection Play(List<string> values, Action<int> _OnClick)
         {

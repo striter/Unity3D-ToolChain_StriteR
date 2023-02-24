@@ -14,15 +14,15 @@ namespace PCG.Module
         
         private readonly Stack<ModuleCollapsePropagandaChain> m_PropagandaChains = new Stack<ModuleCollapsePropagandaChain>(12);
         //Local actors
-        private TObjectPoolMono<GridID, ModuleVertex> m_GridVertices;
-        private TObjectPoolMono<GridID,ModuleQuad> m_GridQuads;
+        private ObjectPoolMono<GridID, ModuleVertex> m_GridVertices;
+        private ObjectPoolMono<GridID,ModuleQuad> m_GridQuads;
         private PilePool<ModuleCorner> m_Corners;
         private PilePool<ModuleVoxel> m_Voxels;
 
         public void Init()
         {
-            m_GridVertices = new TObjectPoolMono<GridID, ModuleVertex>(transform.Find("Vertex/Item"));
-            m_GridQuads = new TObjectPoolMono<GridID,ModuleQuad>(transform.Find("Quad/Item"));
+            m_GridVertices = new ObjectPoolMono<GridID, ModuleVertex>(transform.Find("Vertex/Item"));
+            m_GridQuads = new ObjectPoolMono<GridID,ModuleQuad>(transform.Find("Quad/Item"));
             m_Corners = new PilePool<ModuleCorner>(transform.Find("Corner/Item"));
             m_Voxels = new PilePool<ModuleVoxel>(transform.Find("Voxel/Item"));
         }

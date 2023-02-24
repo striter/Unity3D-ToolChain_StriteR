@@ -60,12 +60,12 @@ Shader "Hidden/PostProcess/Stylize"
                 float3 sum=0;
                 float3 squareSum=0;
                 int samples=(upperRight.x-lowerLeft.x+1)*(upperRight.y-lowerLeft.y+1);
-                float random=(1+random01(uv)*.2);
+                float randomValue=(1+random01(uv)*.2);
                 for(int i=lowerLeft.x;i<=upperRight.x;i++)
                 {
                     for(int j=lowerLeft.y;j<=upperRight.y;j++)
                     {
-                        float2 offset=float2(i,j)*_MainTex_TexelSize.xy*_OilPaintSize*random;
+                        float2 offset=float2(i,j)*_MainTex_TexelSize.xy*_OilPaintSize*randomValue;
                         float3 col=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv+offset).xyz;
                         sum+=col;
                         squareSum+=col*col;

@@ -11,14 +11,14 @@ namespace Examples.Algorithm.WaveFunctionCollapse
     public class WaveFunctionCollapse : MonoBehaviour
     {
         public int m_ResolvePerFrame = 1;
-        private TObjectPoolMono<int,WaveFunctionContainer>[] m_PossibilitiesPool;
-        private TObjectPoolClass<int,WFCTileContainer> m_ObjectPool;
+        private ObjectPoolMono<int,WaveFunctionContainer>[] m_PossibilitiesPool;
+        private ObjectPoolClass<int,WFCTileContainer> m_ObjectPool;
         private readonly Dictionary<Int2, WFCTileContainer> m_Axis=new();
         private readonly List<Int2> m_NoneFinalized=new();
         private void Awake()
         {
-            m_ObjectPool = new TObjectPoolClass<int,WFCTileContainer>(transform.Find("Grids/Container"));
-            m_PossibilitiesPool = transform.Find("Possibilities").GetComponentsInChildren<WaveFunctionContainer>().Select(p => new TObjectPoolMono<int,WaveFunctionContainer>(p.transform)).ToArray();
+            m_ObjectPool = new ObjectPoolClass<int,WFCTileContainer>(transform.Find("Grids/Container"));
+            m_PossibilitiesPool = transform.Find("Possibilities").GetComponentsInChildren<WaveFunctionContainer>().Select(p => new ObjectPoolMono<int,WaveFunctionContainer>(p.transform)).ToArray();
             Begin();
         }
 

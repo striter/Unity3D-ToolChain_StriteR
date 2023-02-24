@@ -260,11 +260,11 @@ namespace PCG
     public class PilePool<Y> : IEnumerable<Y> where Y : PoolBehaviour<PCGID>
     {
         private readonly Dictionary<GridID, List<byte>> m_Piles = new Dictionary<GridID, List<byte>>();
-        readonly TObjectPoolMono<PCGID, Y> m_Pool;
+        readonly ObjectPoolMono<PCGID, Y> m_Pool;
 
         public PilePool(Transform _transform)
         {
-            m_Pool = new TObjectPoolMono<PCGID, Y>(_transform);
+            m_Pool = new ObjectPoolMono<PCGID, Y>(_transform);
         }
         public bool Contains(PCGID _pcgid)
         {

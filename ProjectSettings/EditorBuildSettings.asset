@@ -30,9 +30,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Examples/Rendering/PostProcess/PostProcess.unity
     guid: c1695ceef3934ec44b866eb60161d834
   - enabled: 0
-    path: Assets/Scenes/Examples/Rendering/ComputeShaders/FogOfWar2D.unity
-    guid: 414a5d9f6dee25d409efdb48a0110b72
-  - enabled: 0
     path: Assets/Scenes/Examples/Rendering/Billboard/Billboard.unity
     guid: 41aeac364d33ad845b396b5e5970ab3e
   - enabled: 0

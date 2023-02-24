@@ -10,11 +10,11 @@ namespace PCG.Module.BOIDS
     {
         public Transform Transform { get; private set; }
         public BoidsActor this[int _index] => m_Actors[_index];
-        private readonly TObjectPoolClass<int, BoidsActor> m_Actors;
+        private readonly ObjectPoolClass<int, BoidsActor> m_Actors;
         public BoidsFlock(Transform _transform)
         {
             Transform = _transform;
-            m_Actors = new TObjectPoolClass<int, BoidsActor>(_transform.Find("Actor"),GetParameters);
+            m_Actors = new ObjectPoolClass<int, BoidsActor>(_transform.Find("Actor"),GetParameters);
         }
 
         protected abstract TBoidsTarget GetTarget();

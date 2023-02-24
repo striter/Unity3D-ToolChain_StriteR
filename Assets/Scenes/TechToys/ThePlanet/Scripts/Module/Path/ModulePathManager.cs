@@ -11,7 +11,7 @@ namespace PCG.Module.Path
     {
         public GridManager m_Grid { get; set; }
 
-        private TObjectPoolMono<PCGID, ModulePath> m_Paths;
+        private ObjectPoolMono<PCGID, ModulePath> m_Paths;
         public IModuleStructureElement CollectStructure(PCGID _voxelID)=> m_Paths[_voxelID];
         
         private readonly List<PCGID> m_VoxelPathPropaganda = new List<PCGID>();
@@ -20,7 +20,7 @@ namespace PCG.Module.Path
 
         public void Init()
         {
-            m_Paths = new TObjectPoolMono<PCGID, ModulePath>(transform.Find("Item"));
+            m_Paths = new ObjectPoolMono<PCGID, ModulePath>(transform.Find("Item"));
         }
 
         public void Setup()

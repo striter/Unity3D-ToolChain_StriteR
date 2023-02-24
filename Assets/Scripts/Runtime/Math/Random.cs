@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 public static class URandom 
 {
@@ -29,6 +30,7 @@ public static class URandom
         return new Vector3(sinPhi*cosTheta,sinPhi*sinTheta,cosPhi);
     }
 
+    public static float2 Random2DQuad(System.Random _seed = null)=>new float2( Random01(_seed), Random01(_seed));
     public static Vector2 Random2DSphere(System.Random _seed = null) =>Random01(_seed)* Random2DDirection(_seed) ;
     public static Vector2 Random2DDirection(System.Random _seed = null)
     {
@@ -36,6 +38,7 @@ public static class URandom
         Vector2 randomCirlce = new Vector2(Mathf.Sin(radin), Mathf.Cos(radin));
         return new Vector2(randomCirlce.x, randomCirlce.y);
     }
+
     
     public static int Random(this RangeInt ir, System.Random seed = null) => ir.start + RandomInt(ir.length + 1, seed);
     public static float Random(this RangeFloat ir, System.Random seed = null) => seed?.Next((int)(ir.start * 1000), (int)(ir.end * 1000)) / 1000f ?? UnityEngine.Random.Range(ir.start, ir.end);

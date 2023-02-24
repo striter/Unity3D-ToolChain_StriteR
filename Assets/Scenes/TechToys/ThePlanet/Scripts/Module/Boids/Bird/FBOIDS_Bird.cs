@@ -10,12 +10,12 @@ namespace PCG.Module.BOIDS.Bird
         private readonly FBirdConfig m_BirdConfig;
         public readonly Dictionary<int, FBirdPerchingRoot> m_PerchingRoots = new Dictionary<int, FBirdPerchingRoot>();
         public readonly Dictionary<int, FBirdFlock> m_Flocks = new Dictionary<int, FBirdFlock>();
-        private readonly TObjectPoolClass<int, FBirdPoop> m_Poops;
+        private readonly ObjectPoolClass<int, FBirdPoop> m_Poops;
 
         public FBOIDS_Bird(FBirdConfig _birdConfig, Transform _transform) : base(_transform)
         {
             m_BirdConfig = _birdConfig;
-            m_Poops = new TObjectPoolClass<int, FBirdPoop>(_transform.Find("Poop"));
+            m_Poops = new ObjectPoolClass<int, FBirdPoop>(_transform.Find("Poop"));
         }
 
         public void Clear()

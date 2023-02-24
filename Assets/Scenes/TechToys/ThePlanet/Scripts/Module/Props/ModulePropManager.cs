@@ -12,8 +12,8 @@ namespace PCG.Module.Prop
     public class ModulePropManager : MonoBehaviour,IModuleControl,IModuleVoxelCallback,IModuleCollapse,IModuleStructure
     {
         public GridManager m_Grid { get; set; }
-        private TObjectPoolMono<PCGID, ModulePropContainer> m_PropContainers;
-        private TObjectPoolClass<int, ModulePropElement> m_PropElements;
+        private ObjectPoolMono<PCGID, ModulePropContainer> m_PropContainers;
+        private ObjectPoolClass<int, ModulePropElement> m_PropElements;
         public IModuleStructureElement CollectStructure(PCGID _voxels)=>m_PropContainers[_voxels];
 
         private readonly List<PCGID> m_PropPropaganda = new List<PCGID>();
@@ -24,8 +24,8 @@ namespace PCG.Module.Prop
         public void OnVoxelDeconstruct(PCGID _voxelID)=>m_PropContainers.Recycle(_voxelID);
         public void Init()
         {
-            m_PropContainers = new TObjectPoolMono<PCGID, ModulePropContainer>(transform.Find("Container/Item"));
-            m_PropElements = new TObjectPoolClass<int, ModulePropElement>(transform.Find("Element/Item"));
+            m_PropContainers = new ObjectPoolMono<PCGID, ModulePropContainer>(transform.Find("Container/Item"));
+            m_PropElements = new ObjectPoolClass<int, ModulePropElement>(transform.Find("Element/Item"));
         }
 
         public void Setup()

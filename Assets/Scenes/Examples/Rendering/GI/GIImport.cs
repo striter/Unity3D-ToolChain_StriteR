@@ -12,13 +12,20 @@ namespace Examples.Rendering.GI
         private bool m_Switch;
         private Counter kSwitchTimer = new Counter(.5f);
         private MeshRenderer[] m_Renderers;
+
+        private void OnValidate()
+        {
+            m_Renderers = GetComponentsInChildren<MeshRenderer>();
+            m_Src.m_Data.Apply(m_Renderers);
+        }
+
         private void Awake()
         {
             m_Renderers = GetComponentsInChildren<MeshRenderer>();
             TouchConsole.InitDefaultCommands();
             TouchConsole.Command("Switch",KeyCode.Space).Button(Switch);
             m_Switch = false;
-            m_Src.m_Data.Apply(m_Renderers);
+            OnValidate();
         }
 
         void Switch()

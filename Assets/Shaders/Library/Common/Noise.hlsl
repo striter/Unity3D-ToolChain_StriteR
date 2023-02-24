@@ -23,6 +23,23 @@ float random01(float3 value)
     return frac(sin(dot(value, float3(12.9898, 78.233, 53.539))) * 43758.543123);
 }
 
+float random(float value,float seed = 0.546)
+{
+    return frac(sin(value + seed) * 143758.5453);
+}
+
+float3 random3(float value)
+{
+    return float3(random(value,3.9812),
+                  random(value,7.1536),
+                  random(value,5.7241));
+}
+
+float3 randomVector(float value)
+{
+    return normalize(random3(value) - .5);
+}
+
 float randomUnit(float value)
 {
     return random01(value) * 2 - 1;

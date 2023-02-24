@@ -365,13 +365,13 @@ namespace TPool
     }
     
 
-    public class TObjectPoolClass<T,Y> : AObjectPool<T,Y> where Y :ITransformHandle
+    public class ObjectPoolClass<T,Y> : AObjectPool<T,Y> where Y :ITransformHandle
     {
         private readonly Type m_Type;
         private readonly Func<object[]> CostructParameters;
-        public TObjectPoolClass(Transform _pooledElement, Type type) : base(_pooledElement.gameObject,_pooledElement.parent) { m_Type = type; }
+        public ObjectPoolClass(Transform _pooledElement, Type type) : base(_pooledElement.gameObject,_pooledElement.parent) { m_Type = type; }
 
-        public TObjectPoolClass(Transform _pooledElement, Func<object[]> _constructParameters = null) : this(_pooledElement,
+        public ObjectPoolClass(Transform _pooledElement, Func<object[]> _constructParameters = null) : this(_pooledElement,
             typeof(Y))
         {
             CostructParameters = _constructParameters;
@@ -419,9 +419,9 @@ namespace TPool
 
         public void Recycle()=>DoRecycle(m_PoolID);
     }
-    public class TObjectPoolMono<T,Y> : AObjectPool<T,Y> where Y : PoolBehaviour<T>
+    public class ObjectPoolMono<T,Y> : AObjectPool<T,Y> where Y : PoolBehaviour<T>
     {
-        public TObjectPoolMono(Transform _poolTrans) : base(_poolTrans.gameObject,_poolTrans.parent) {  }
+        public ObjectPoolMono(Transform _poolTrans) : base(_poolTrans.gameObject,_poolTrans.parent) {  }
         protected override Y CreateNewItem(Transform _instantiateTrans)=>_instantiateTrans.GetComponent<Y>();
         protected override Transform GetItemTransform(Y _targetItem) => _targetItem.transform;
     }

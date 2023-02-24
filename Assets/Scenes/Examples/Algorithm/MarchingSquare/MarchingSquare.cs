@@ -11,12 +11,12 @@ namespace Examples.Algorithm.MarchingSquare
     public class MarchingSquare : MonoBehaviour
     {
         public Int2 m_Size=Int2.kOne;
-        private TObjectPoolClass<Int2, Node> m_Nodes;
-        private TObjectPoolClass<Int2, Square> m_Squares;
+        private ObjectPoolClass<Int2, Node> m_Nodes;
+        private ObjectPoolClass<Int2, Square> m_Squares;
         private void Awake()
         {
-            m_Nodes = new TObjectPoolClass<Int2, Node>(transform.Find("Nodes/Node"));
-            m_Squares = new TObjectPoolClass<Int2, Square>(transform.Find("Squares/Square"));
+            m_Nodes = new ObjectPoolClass<Int2, Node>(transform.Find("Nodes/Node"));
+            m_Squares = new ObjectPoolClass<Int2, Square>(transform.Find("Squares/Square"));
             TouchConsole.Command("Clear",KeyCode.R).Button(()=>Initialize(m_Size));
             TouchConsole.Command("Random",KeyCode.T).Button(Random);
             

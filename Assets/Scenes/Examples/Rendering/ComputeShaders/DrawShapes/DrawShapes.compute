@@ -1,0 +1,71 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel Clear
+#pragma kernel Draw
+#include "Assets/Shaders/Library/Common.hlsl"
+
+float2 _Resolution;
+float4 _ClearColor;
+float4 _CircleColor;
+float _Count;
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture2D<float4> Result;
+
+struct CircleData
+{
+    float2 origin;
+    float2 velocity;
+    float radius;
+};
+StructuredBuffer<CircleData> _Circles;
+RWStructuredBuffer<float2> _CircleResults; 
+
+[numthreads(8,8,1)]
+void Clear (uint3 id : SV_DispatchThreadID){
+    Result[id.xy] = _ClearColor;
+}
+
+void plot1(uint x,uint y,uint2 _centre){
+    Result[_centre + uint2(x,y)] = _CircleColor;
+}
+
+void plot8(int x,int y,uint2 _centre){
+    plot1(x,y,_centre);plot1(y,x,_centre);
+    plot1(x,-y,_centre);plot1(y,-x,_centre);
+    plot1(-x,-y,_centre);plot1(-y,-x,_centre);
+    plot1(-x,y,_centre);plot1(-y,x,_centre);
+}
+
+void DrawCircle(int2 _centre,int _radius)
+{
+    int x = 0;
+    int y = _radius;
+    int d = 1 - _radius;
+    while(x < y)
+    {
+        if(d < 0)
+        {
+            d += 2 * x + 3;
+        }
+        else
+        {
+            d += 2 * (x-y) + 5;
+            y--;
+        }
+        plot8(x,y,_centre);
+        x++;
+    }
+}
+
+[numthreads(4,1,1)]
+void Draw(uint3 id : SV_DispatchThreadID)
+{
+    CircleData circle = _Circles[id.x];
+    int2 centre = circle.origin;
+    centre = (centre + circle.velocity * _Time.y)% _Resolution;
+    
+    _CircleResults[id.x] = centre / _Resolution;
+    int radius = circle.radius;
+    
+    DrawCircle(centre,radius);
+}

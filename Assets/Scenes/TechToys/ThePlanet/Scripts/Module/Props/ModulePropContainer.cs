@@ -38,7 +38,7 @@ namespace PCG.Module.Prop
             m_Props.Clear();
         }
 
-        public void BeginCollapse(TObjectPoolClass<int,ModulePropElement> _propPool)
+        public void BeginCollapse(ObjectPoolClass<int,ModulePropElement> _propPool)
         {
             TSPoolList<int>.Spawn(out var emptyTypes);
             foreach (var type in m_PropIndexes.Keys)
@@ -57,7 +57,7 @@ namespace PCG.Module.Prop
             TSPoolList<int>.Recycle(emptyTypes);
         }
         
-        public void Finalize(int _type,ModulePropCollapseData _propCollapse,TObjectPoolClass<int,ModulePropElement> _elementPool)
+        public void Finalize(int _type,ModulePropCollapseData _propCollapse,ObjectPoolClass<int,ModulePropElement> _elementPool)
         {
             if(!m_PropIndexes.ContainsKey(_type))
                 m_PropIndexes.Add(_type,ModulePropCollapseData.Invalid);
@@ -68,7 +68,7 @@ namespace PCG.Module.Prop
             RefreshProps(_elementPool);
         }
 
-        void RefreshProps(TObjectPoolClass<int,ModulePropElement> _propPool)
+        void RefreshProps(ObjectPoolClass<int,ModulePropElement> _propPool)
         {
             foreach (var prop in m_Props)
                 prop.TryRecycle();
