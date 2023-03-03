@@ -83,6 +83,8 @@ namespace Geometry
         public float3 GetNormalUnnormalized() => math.cross(uOffset, vOffset);
         public float3 GetPoint(float _u,float _v)=>(1f - _u - _v) * this[0] + _u * uOffset + _v * vOffset;
         public GPlane GetPlane() => new GPlane(normal,V0);
+
+        public static readonly GTriangle kDefault = new GTriangle(new float3(0,0,1),new float3(-.5f,0,-1),new float3(.5f,0,-1));
     }
 
     #region Implements
@@ -204,7 +206,21 @@ namespace Geometry
         public void OnBeforeSerialize() { }
         public void OnAfterDeserialize()=>Ctor();
         public int Length => 3;
-        public float3 this[int index] => triangle[index];
+
+        public float3 this[int index]
+        {
+            get =>triangle[index];
+            set 
+            {
+                switch (index)
+                {
+                    default: throw new IndexOutOfRangeException();
+                    case 0: triangle.v0 = value; break;
+                    case 1: triangle.v1 = value; break;
+                    case 2: triangle.v2 = value; break;
+                }
+            }
+        }
     }
     #endregion
 }

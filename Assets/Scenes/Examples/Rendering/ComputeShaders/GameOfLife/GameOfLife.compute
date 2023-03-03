@@ -10,7 +10,7 @@ float _Threshold;
 [numthreads(8,8,1)]
 void Reset(uint3 id : SV_DispatchThreadID)
 {
-    _Result[id.xy] = step(random01(id.xy/float2(1920,1080)),_Threshold);
+    _Result[id.xy] = step(random(id.xy/float2(1920,1080)),_Threshold);
 }
 
 float updateCell( int i, int j )

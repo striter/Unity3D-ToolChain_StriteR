@@ -2,20 +2,24 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Ocean
   m_Shader: {fileID: 4800000, guid: 1a351d870ccb7ac448e60fc622f7d649, type: 3}
-  m_ShaderKeywords: 
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -43,7 +47,15 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DiffuseTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FoamDistortTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -109,6 +121,7 @@ Material:
     - _EnvironmentReflections: 1
     - _FlowStrength: 0.18
     - _FoamDistort: 1
+    - _FoamDistortStrength: 1
     - _FoamRange: 0.55221176
     - _FoamRangeEnd: 0.64801437
     - _FresnelRange: 0.5772746
@@ -128,22 +141,33 @@ Material:
     - _ReflectionOffset: -7
     - _RisingTideRange: 0.49704933
     - _RisingTideRangeEnd: 0.6050001
+    - _Rotation: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
+    - _Wave: 0
+    - _WaveAmplitude1: 1
+    - _WaveAmplitude2: 1
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DepthColor: {r: 0.5176471, g: 0.972549, b: 0.9296591, a: 1}
+    - _DiffuseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Diffuse_ST1: {r: 1, g: 1, b: 0, a: 0}
+    - _Diffuse_ST2: {r: 1, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
     - _NoiseColor: {r: 1, g: 1, b: 1, a: 1}
     - _RisingTideColor: {r: 0.78039217, g: 0.93762994, b: 1, a: 0.07058824}
+    - _RotationMatrix: {r: 0, g: 0, b: 0, a: 0}
+    - _ShadowColor: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _WaveST1: {r: 1, g: 1, b: 1, a: 1}
+    - _WaveST2: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &172137931310914702
 MonoBehaviour:

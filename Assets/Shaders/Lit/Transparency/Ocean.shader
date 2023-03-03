@@ -69,7 +69,7 @@
         Tags { "Queue"="Transparent-1"}
 		Blend Off
     	ZTest Less
-    	ZWrite On
+    	ZWrite Off
         Pass
         {
 			Tags {"LightMode"="UniversalForward"}
@@ -177,7 +177,7 @@
 				float cosFlow;
 				sincos(spherical,sinFlow,cosFlow);
 				float spike=spikeAmplitude*cosFlow;
-				return normal*sinFlow+amplitude + biTangent*spike*waveST.x + tangent * spike*waveST.y;
+				return normal*sinFlow*amplitude + biTangent*spike*waveST.x + tangent * spike*waveST.y;
 			}
             
             v2f vert (a2v v)

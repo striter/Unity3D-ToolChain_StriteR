@@ -99,7 +99,7 @@
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v,o);
 				#if _VERTEXRANDOMDISTORT
-				v.positionOS*=lerp(1-INSTANCE(_DistortStrength),1+INSTANCE(_DistortStrength),random01(v.positionOS+floor(_Time.y*INSTANCE(_DistortFrequency)%INSTANCE(_DistortFrequency))));
+				v.positionOS*=lerp(1-INSTANCE(_DistortStrength),1+INSTANCE(_DistortStrength),random(v.positionOS+floor(_Time.y*INSTANCE(_DistortFrequency)%INSTANCE(_DistortFrequency))));
 				#endif
 				o.positionOS=v.positionOS;
 				o.positionCS = TransformObjectToHClip(v.positionOS);

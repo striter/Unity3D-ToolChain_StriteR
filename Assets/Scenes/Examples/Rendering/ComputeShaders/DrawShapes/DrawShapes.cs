@@ -43,18 +43,29 @@ public class DrawShapes : MonoBehaviour
         m_Texture.enableRandomWrite = true;
         m_RawImage.texture = m_Texture;
         m_Images = new ObjectPoolComponent<Image>(transform.Find("Image"));
+        
         OnValidate();
-
     }
 
     private void OnDestroy()
     {
         if (!Available)
             return;
-        
         RenderTexture.ReleaseTemporary(m_Texture);
-        m_CircleBuffer.Dispose();
         m_RawImage.texture = null;
+        m_Texture = null;
+        OnDispose();
+    }
+
+    void OnDispose()
+    {
+        if(m_CircleBuffer!=null)
+            m_CircleBuffer.Dispose();
+        if(m_CircleResults!=null)
+            m_CircleResults.Dispose();
+
+        m_CircleBuffer = null;
+        m_CircleResults = null;
     }
 
     private void OnValidate()
@@ -62,10 +73,10 @@ public class DrawShapes : MonoBehaviour
         if (!Available)
             return;
         
+        OnDispose();
         m_ClearKernel = m_Shader.FindKernel("Clear");
         m_DrawKernel = m_Shader.FindKernel("Draw");
         
-        m_Shader.SetVector("_Resolution",new Vector4(Screen.width,Screen.height));
         m_Shader.SetVector("_ClearColor",m_ClearColor);
         m_Shader.SetVector("_CircleColor",m_CircleColor);
         m_Shader.SetFloat("_Count",m_ThreadCount);
@@ -81,8 +92,7 @@ public class DrawShapes : MonoBehaviour
             data.radius = 10f + URandom.Random01() * 30f;
             m_Circles[i] = data;
         }
-        if(m_CircleBuffer!=null)
-            m_CircleBuffer.Dispose();
+
         m_CircleBuffer = new ComputeBuffer(m_Circles.Length, CircleData.kStride);
         m_CircleBuffer.SetData(m_Circles);
 
@@ -99,6 +109,7 @@ public class DrawShapes : MonoBehaviour
         if (!Available)
             return;
         
+        m_Shader.SetVector("_Resolution",new Vector4(Screen.width,Screen.height));
         m_Shader.SetTexture(m_ClearKernel,"Result",m_Texture);
         m_Shader.Dispatch(m_ClearKernel,Screen.width/8,Screen.height/8,1);
         m_Shader.SetTexture(m_DrawKernel,"Result",m_Texture);

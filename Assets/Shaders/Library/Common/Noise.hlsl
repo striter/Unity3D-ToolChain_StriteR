@@ -10,22 +10,19 @@
     return thresholdMatrix[value.x][value.y];
 }
 
-float random01(float value)
-{
-    return frac(sin(value * 12.9898) * 43758.543123);
-}
-float random01(float2 value)
-{
-    return frac(sin(dot(value, float2(12.9898, 78.233))) * 43758.543123);
-}
-float random01(float3 value)
-{
-    return frac(sin(dot(value, float3(12.9898, 78.233, 53.539))) * 43758.543123);
-}
-
 float random(float value,float seed = 0.546)
 {
-    return frac(sin(value + seed) * 143758.5453);
+    return frac(sin(value * 12.9898 + seed) * 43758.5453);
+}
+
+float random(float2 value,float seed = 0.546)
+{
+    return frac(sin(dot(value, float2(12.9898, 78.233) + seed)) * 43758.543123);
+}
+
+float random(float3 value,float seed = 0.546)
+{
+    return frac(sin(dot(value, float3(12.9898, 78.233, 53.539) + seed)) * 43758.543123);
 }
 
 float3 random3(float value)
@@ -42,15 +39,15 @@ float3 randomVector(float value)
 
 float randomUnit(float value)
 {
-    return random01(value) * 2 - 1;
+    return random(value) * 2 - 1;
 }
 float randomUnit(float2 value)
 {
-    return random01(value) * 2 - 1;
+    return random(value) * 2 - 1;
 }
 float randomUnit(float3 value)
 {
-    return random01(value) * 2 - 1;
+    return random(value) * 2 - 1;
 }
 float2 randomUnitQuad(float2 value)
 {
@@ -58,7 +55,7 @@ float2 randomUnitQuad(float2 value)
 }
 float2 randomUnitCircle(float2 value)
 {
-    float theta = 2 * PI * random01(value);
+    float theta = 2 * PI * random(value);
     return float2(cos(theta), sin(theta));
 }
 

@@ -191,7 +191,7 @@
 				for(uint index=0u;index<crackParallexTimes;index++)
 				{
 					float distance=crackDistance*totalParallex;
-					distance+=random01(frac(i.uv))*offsetDistance;
+					distance+=random(frac(i.uv))*offsetDistance;
 					float2 parallaxUV=i.uv+thickOffset*distance;
 					crackAmount+=SAMPLE_TEXTURE2D_LOD(_CrackTex,sampler_CrackTex,parallaxUV,0).r*pow(saturate(1-totalParallex),crackPow);
 					totalParallex+=parallexParam;

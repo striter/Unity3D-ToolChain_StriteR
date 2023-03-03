@@ -9,6 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Ocean
   m_Shader: {fileID: 4800000, guid: c00ba7d88da4fe44db070d1bfd1cdb1b, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _CAUSTIC
   - _DEPTH
@@ -16,6 +18,7 @@ Material:
   - _FOAM
   - _FRESNEL
   - _NORMALTEX
+  - _WAVE
   m_InvalidKeywords:
   - EFFECT_HUE_VARIATION
   - GEOM_TYPE_LEAF
@@ -26,6 +29,7 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -240,8 +244,8 @@ Material:
     - _Surface: 0
     - _Thickness: 0.1
     - _VF: 1
-    - _Wave: 0
-    - _WaveAmplitude1: -0.09
+    - _Wave: 1
+    - _WaveAmplitude1: 0.41
     - _WaveAmplitude2: 0.1
     - _WaveSpikeAmplitude1: 0.51
     - _WaveSpikeAmplitude2: 0.28
@@ -252,7 +256,7 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _CausticFlowST1: {r: 0.25, g: 0.25, b: -0.03, a: 0.03}
     - _CausticFlowST2: {r: 0.15, g: 0.15, b: 0, a: -0.02}
-    - _Color: {r: 0.2704401, g: 1, b: 0.9613113, a: 1}
+    - _Color: {r: 0.27044007, g: 1, b: 0.9613113, a: 0.5294118}
     - _CrackColor: {r: 1, g: 1, b: 1, a: 1}
     - _DepthColor: {r: 0.4409338, g: 0.62285984, b: 0.8396226, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
@@ -265,8 +269,8 @@ Material:
     - _ReflectionColor: {r: 0.56651235, g: 0.67311424, b: 0.7264151, a: 1}
     - _RotationMatrix: {r: 0.70710677, g: 0.70710677, b: -0.70710677, a: 0.70710677}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
-    - _WaveST1: {r: 0.3, g: 0.3, b: 0.01, a: 0}
-    - _WaveST2: {r: 0.7, g: 0.3, b: 1, a: 0}
+    - _WaveST1: {r: 0.3, g: 0.3, b: 5, a: 0}
+    - _WaveST2: {r: 0.7, g: 0.3, b: 2, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &1842042723372290674
 MonoBehaviour:

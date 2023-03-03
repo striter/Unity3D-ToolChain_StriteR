@@ -30,7 +30,7 @@ namespace Geometry.Validation
                 return projections;
             }
                 
-            public static bool Projection(GRay _ray, GPlane _plane, out float3 _hitPoint)
+            public static bool Intersect(GRay _ray, GPlane _plane, out float3 _hitPoint)
             {
                 float distance = Distance(_ray,_plane);
                 _hitPoint = _ray.GetPoint(distance);

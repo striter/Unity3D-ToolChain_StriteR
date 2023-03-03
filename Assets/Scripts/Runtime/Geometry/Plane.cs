@@ -32,7 +32,7 @@ namespace Geometry
             if (_position)
                 position = normal * distance;
             else
-                distance = -math.dot(normal, position);// UGeometryIntersect.PointPlaneDistance(_position, new GPlane(_normal, 0));
+                distance = math.dot(normal, position);// UGeometryIntersect.PointPlaneDistance(_position, new GPlane(_normal, 0));
         }
 
         public void OnBeforeSerialize() { }

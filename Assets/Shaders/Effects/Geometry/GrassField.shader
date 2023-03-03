@@ -116,22 +116,22 @@
 
                 float3x3 tangentToLocal = float3x3(tangent.x,biNormal.x,normal.x,tangent.y,biNormal.y,normal.y,tangent.z,biNormal.z,normal.z);
 
-                float3x3 facingRotation = Rotate3x3(random01(pos) * PI*2,float3(0,0,1));
+                float3x3 facingRotation = Rotate3x3(random(pos) * PI*2,float3(0,0,1));
 
                 float2 windUV = TRANSFORM_TEX(pos.xz,_WindFlowTex) + _Time.yy * _WindSpeed;
                 float2 windSample = tex2Dlod(_WindFlowTex,float4(windUV,0,0)).xy * 2 - 1;
                 windSample *= _WindStrength;
 
-                float blend = random01(pos.zzx) * _BendRotate + windSample.x;
+                float blend = random(pos.zzx) * _BendRotate + windSample.x;
                 blend = clamp(blend,-1,1);
                 float3x3 bendingRotation = Rotate3x3(blend * PI,float3(1,0,0));
                 float3x3 windRotation = Rotate3x3(PI * windSample.x+windSample.y*PI,float3(windSample,0));
 
                 float3x3 vertexTransform = mul(mul(tangentToLocal,facingRotation),bendingRotation);
 
-                float randWidth = random01(pos.xzx) * _Width * _RandomClip + _Width * (1 - _RandomClip);
-                float randHeight = random01(pos.zyx) * _Height * _RandomClip + _Height * (1 - _RandomClip);
-                float randForward = random01(pos.zzx) * _RandomClip * _BendForward + _BendForward * (1 - _RandomClip);
+                float randWidth = random(pos.xzx) * _Width * _RandomClip + _Width * (1 - _RandomClip);
+                float randHeight = random(pos.zyx) * _Height * _RandomClip + _Height * (1 - _RandomClip);
+                float randForward = random(pos.zzx) * _RandomClip * _BendForward + _BendForward * (1 - _RandomClip);
 
                 v2g vertexDatas[_SEGMENTCOUNT * 2];
 

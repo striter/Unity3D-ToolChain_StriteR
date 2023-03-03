@@ -60,7 +60,7 @@ Shader "Hidden/PostProcess/Stylize"
                 float3 sum=0;
                 float3 squareSum=0;
                 int samples=(upperRight.x-lowerLeft.x+1)*(upperRight.y-lowerLeft.y+1);
-                float randomValue=(1+random01(uv)*.2);
+                float randomValue=(1+random(uv)*.2);
                 for(int i=lowerLeft.x;i<=upperRight.x;i++)
                 {
                     for(int j=lowerLeft.y;j<=upperRight.y;j++)
@@ -124,7 +124,7 @@ Shader "Hidden/PostProcess/Stylize"
                 i.uv*=_MainTex_TexelSize.zw*_ObraDitherScale;
                 i.uv=floor(i.uv)*.1;
 
-                lum=1-step( lum,random01(i.uv)*_ObraDitherStrength);
+                lum=1-step( lum,random(i.uv)*_ObraDitherStrength);
 
 				
                 return float4(lerp(_ObraDitherColor,lerp(color,1,_ObraDitherStep),lum),1);

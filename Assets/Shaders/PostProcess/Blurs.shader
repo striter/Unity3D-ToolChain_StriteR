@@ -100,7 +100,7 @@
 	half4 fragGrainy(v2f_img i):SV_TARGET
 	{
 		float2 delta=_MainTex_TexelSize.xy*_BlurSize;
-		float2 randomUV=randomUnitCircle(i.uv)*random01(i.uv)*delta;
+		float2 randomUV=randomUnitCircle(i.uv)*random(i.uv)*delta;
 		return float4(SampleBlurTex(TEXTURE2D_ARGS(_MainTex,sampler_MainTex), i.uv,randomUV),1);
 	}
 

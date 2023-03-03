@@ -22,7 +22,17 @@ RWStructuredBuffer<float2> _CircleResults;
 
 [numthreads(8,8,1)]
 void Clear (uint3 id : SV_DispatchThreadID){
-    Result[id.xy] = _ClearColor;
+    float3 color;
+    float2 pos = id.xy / _Resolution;
+    float scale = 3;
+    pos *= scale;
+    float d = random01Perlin(pos + _Time.x) * scale;
+    float2 uv = pos + d;
+    d = random01Perlin(uv) * scale;
+    float noise = random01Perlin(pos + d) ;
+    color = noise;// float3((2*noise - float3(noise*1,noise*1 - sin(uv.x/30)*.5,noise*3 + sin(uv.y/40)*5)));
+    
+    Result[id.xy] = float4(color,1);
 }
 
 void plot1(uint x,uint y,uint2 _centre){

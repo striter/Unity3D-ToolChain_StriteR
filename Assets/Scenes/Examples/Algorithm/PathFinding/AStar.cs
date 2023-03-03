@@ -69,7 +69,7 @@ namespace Examples.Algorithm.PathFinding
         {
             GRay ray = _sceneView.camera.ScreenPointToRay(UnityEditor.Extensions.UECommon.GetScreenPoint(_sceneView));
             GPlane plane = new GPlane(Vector3.up, transform.position);
-            UGeometryValidation.Ray.Projection(ray,plane,out var hitPoint);
+            UGeometryValidation.Ray.Intersect(ray,plane,out var hitPoint);
             if (Event.current.type == EventType.MouseDown)
                 switch (Event.current.button)
                 {

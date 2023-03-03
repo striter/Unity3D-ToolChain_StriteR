@@ -67,7 +67,7 @@ namespace Examples.Algorithm.MarchingSquare
             foreach (var click in trackData.ResolveClicks(.1f))
             {
                 var ray = Camera.main.ScreenPointToRay(click);
-                if (!UGeometryValidation.Ray.Projection(ray,GPlane.kZeroPlane,out var point))
+                if (!UGeometryValidation.Ray.Intersect(ray,GPlane.kZeroPlane,out var point))
                     continue;
                 var switchNode=m_Nodes.Last(p=>p.Transform.position,point,true);
                 SwitchNode(switchNode.m_Identity);
