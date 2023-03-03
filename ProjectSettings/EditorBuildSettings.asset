@@ -33,7 +33,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Examples/Rendering/Billboard/Billboard.unity
     guid: 41aeac364d33ad845b396b5e5970ab3e
   - enabled: 0
-    path: Assets/Scenes/Examples/Rendering/Water&Ocean/Water&Ocean.unity
+    path: Assets/Scenes/TechToys/WaveInteraction/WaveInteraction.unity
     guid: cc226ce06d2088f48a0a5ae04254f2cc
   - enabled: 1
     path: Assets/Scenes/Examples/UGUIExtensions/UnityGUIExtensions.unity
