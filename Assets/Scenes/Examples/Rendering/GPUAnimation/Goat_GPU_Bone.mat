@@ -40,7 +40,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AnimFrameBegin: 0
+    - _AnimFrameBegin: 19.51
     - _AnimFrameEnd: 0
     - _AnimFrameInterpolate: 0
     m_Colors: []

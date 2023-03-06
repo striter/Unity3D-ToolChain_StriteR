@@ -474,7 +474,7 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
---- !u!1001 &1905263038
+--- !u!1001 &1049310069
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -485,7 +485,7 @@ PrefabInstance:
     - target: {fileID: 4887277092385224129, guid: 59beb6616dac47b4f914115c2e1cb749,
         type: 3}
       propertyPath: m_Name
-      value: Goat_GPU_Bone
+      value: Goat_GPU_Bone_01
       objectReference: {fileID: 0}
     - target: {fileID: 5121394196700174776, guid: 59beb6616dac47b4f914115c2e1cb749,
         type: 3}
@@ -510,27 +510,27 @@ PrefabInstance:
     - target: {fileID: 5121394196700174776, guid: 59beb6616dac47b4f914115c2e1cb749,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7766867
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5121394196700174776, guid: 59beb6616dac47b4f914115c2e1cb749,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.62988716
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5121394196700174776, guid: 59beb6616dac47b4f914115c2e1cb749,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5121394196700174776, guid: 59beb6616dac47b4f914115c2e1cb749,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5121394196700174776, guid: 59beb6616dac47b4f914115c2e1cb749,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -78.084
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5121394196700174776, guid: 59beb6616dac47b4f914115c2e1cb749,
         type: 3}
