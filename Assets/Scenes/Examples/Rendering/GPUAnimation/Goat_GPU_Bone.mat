@@ -2,25 +2,35 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Goat_GPU_Bone
   m_Shader: {fileID: 4800000, guid: e79474b8018424a458f64c7a68eaf79a, type: 3}
-  m_ShaderKeywords: HITTED_POINT0 HITTED_POINT1 _ANIM_BONE _EMISSION _GPU_BONE _OPTIMIZE_1BONE
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - HITTED_POINT0
+  - HITTED_POINT1
+  - _ANIM_BONE
+  - _EMISSION
+  - _GPU_BONE
+  - _OPTIMIZE_1BONE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2000
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
     - _AnimTex:
-        m_Texture: {fileID: 5077265981904753094, guid: 800cf71833f33334689c9707a3c559b0,
+        m_Texture: {fileID: -6367711479756853654, guid: f20e288d4d0b44149bd2ee7f1e2aa702,
           type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -31,7 +41,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AnimFrameBegin: 0
-    - _AnimFrameEnd: 131.35
-    - _AnimFrameInterpolate: 1
+    - _AnimFrameEnd: 0
+    - _AnimFrameInterpolate: 0
     m_Colors: []
   m_BuildTextureStacks: []

@@ -33,7 +33,7 @@ float4x4 SampleTransformMatrix(uint sampleFrame,uint4 transformIndex,float4 tran
 void SampleTransform(uint4 transformIndexes,float4 transformWeights,inout float3 positionOS,inout float3 normalOS)
 {
     float4x4 sampleMatrix = lerp(SampleTransformMatrix(_FrameBegin, transformIndexes, transformWeights), SampleTransformMatrix(_FrameEnd, transformIndexes, transformWeights), _FrameInterpolate);
-    normalOS=mul((float3x3)sampleMatrix,normalOS);
+    normalOS = mul((float3x3)sampleMatrix,normalOS);
     positionOS=mul(sampleMatrix,float4(positionOS,1)).xyz;
 }
 

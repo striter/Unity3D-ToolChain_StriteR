@@ -56,8 +56,8 @@
                 uv += .5;
 
                 #if _PIXELDISTORT
-                half2 pixelDistort=floor(uv*_PixelDistortScale*_MainTex_TexelSize.zw)*(_PixelDistortScale*_MainTex_TexelSize.xy)+random01(floor(_Time.y*_PixelDistortFrequency)/_PixelDistortFrequency);
-                half pixelDistortRandom=random01(pixelDistort);
+                half2 pixelDistort=floor(uv*_PixelDistortScale*_MainTex_TexelSize.zw)*(_PixelDistortScale*_MainTex_TexelSize.xy)+random(floor(_Time.y*_PixelDistortFrequency)/_PixelDistortFrequency);
+                half pixelDistortRandom=random(pixelDistort);
                 uv += step(_PixelDistortClip,pixelDistortRandom)*lerp(-1,1,pixelDistort)*_PixelDistortStrength;
                 #endif
 
@@ -113,7 +113,7 @@
                 
                 #if _GRAIN
                 half2 grainUV=uv*_MainTex_TexelSize.zw*_GrainScale;
-                half rand= random01(floor(grainUV)+random01(floor(_Time.y*_GrainFrequency)/_GrainFrequency));
+                half rand= random(floor(grainUV)+random(floor(_Time.y*_GrainFrequency)/_GrainFrequency));
                 half grain=step(_GrainClip,rand)*rand*_GrainColor.a;
                 #if _GRAIN_CIRCLE
                 float2 circleUV=grainUV%1-.5;

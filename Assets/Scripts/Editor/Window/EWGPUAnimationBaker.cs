@@ -179,7 +179,7 @@ namespace UnityEditor.Extensions
             #endregion
             DestroyImmediate(instantiatedObj);
 
-            GPUAnimationData data = ScriptableObject.CreateInstance<GPUAnimationData>();
+            GPUAnimationData data = CreateInstance<GPUAnimationData>();
             data.m_Mode = EGPUAnimationMode._ANIM_VERTEX;
             data.m_AnimationClips = instanceParams;
 

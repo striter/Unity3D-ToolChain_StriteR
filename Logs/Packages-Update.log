@@ -115,3 +115,11 @@ The following packages were updated:
   com.unity.ide.rider from version 3.0.14 to 3.0.16
   com.unity.recorder from version 3.0.3 to 4.0.0
   com.unity.render-pipelines.universal from version 12.1.7 to 14.0.4
+
+=== Mon Mar  6 15:56:17 2023
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.render-pipelines.universal from version 14.0.4 to 14.0.6

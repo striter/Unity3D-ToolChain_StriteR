@@ -31,13 +31,12 @@
                 float3 positionOS : POSITION;
                 float3 normalOS:NORMAL;
                 float2 uv : TEXCOORD0;
-				#if _ANIM_VERTEX
+			#if defined(_ANIM_VERTEX)
                 uint vertexID:SV_VertexID;
-            	#endif
-            	#if _ANIM_TRANSFORM
+            #elif defined(_ANIM_TRANSFORM)
                 float4 transformIndexes:TEXCOORD1;
                 float4 transformWeights:TEXCOORD2;
-            	#endif
+            #endif
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -54,9 +53,9 @@
             {
                 v2f o;
                 UNITY_SETUP_INSTANCE_ID(v);
-            	#if _ANIM_TRANSFORM
+            	#if defined(_ANIM_TRANSFORM)
                 SampleTransform(v.transformIndexes,v.transformWeights, v.positionOS, v.normalOS);
-				#elif _ANIM_VERTEX
+				#elif defined(_ANIM_VERTEX)
             	SampleVertex(v.vertexID,v.positionOS,v.normalOS);
             	#endif
                 o.diffuse=saturate(dot(v.normalOS,normalize( TransformWorldToObjectNormal(_MainLightPosition.xyz))));
@@ -84,13 +83,12 @@
             struct a2fs
             {
                 A2V_SHADOW_CASTER;
-				#if _ANIM_VERTEX
+			#if defined(_ANIM_VERTEX)
                 uint vertexID:SV_VertexID;
-            	#endif
-            	#if _ANIM_TRANSFORM
+            #elif defined(_ANIM_TRANSFORM)
                 float4 transformIndexes:TEXCOORD1;
                 float4 transformWeights:TEXCOORD2;
-            	#endif
+            #endif
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 				
@@ -103,9 +101,9 @@
 			{
 				UNITY_SETUP_INSTANCE_ID(v);
 				v2fs o;
-            	#if _ANIM_TRANSFORM
+            	#if defined(_ANIM_TRANSFORM)
                 SampleTransform(v.transformIndexes,v.transformWeights, v.positionOS, v.normalOS);
-				#elif _ANIM_VERTEX
+				#elif defined(_ANIM_VERTEX)
             	SampleVertex(v.vertexID,v.positionOS,v.normalOS);
             	#endif
                 SHADOW_CASTER_VERTEX(v,TransformObjectToWorld(v.positionOS));

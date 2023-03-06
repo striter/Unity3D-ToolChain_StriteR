@@ -27,8 +27,8 @@ namespace Rendering.Pipeline
         public Color color;
 
         public bool m_Outline;
-        [MFoldout(nameof(m_Outline),false)] [Range(0,1)]public float extendWidth;
-        [MFoldout(nameof(m_Outline),false)] public EOutlineVertex outlineVertex;
+        [MFoldout(nameof(m_Outline),true)] [Range(0,1)]public float extendWidth;
+        [MFoldout(nameof(m_Outline),true)] public EOutlineVertex outlineVertex;
         public static readonly SRD_MaskData kDefault = new SRD_MaskData()
         {
             renderMask=int.MaxValue,
