@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 public static class UColor
 {
     #region ColorTransform
@@ -141,11 +142,7 @@ public static class UColor
 
     public static Color Cos(Color _value)
     {
-        return new Color(Mathf.Cos(_value.r), Mathf.Cos(_value.g), Mathf.Cos(_value.b), Mathf.Cos(_value.a));
-    }
-    public static Color Palette(Color _a, Color _b, Color _c, Color _d, float _value)
-    {
-        return _a + _b * Cos(kmath.kPI2*(_c*_value+_d));
+        return new Color(Mathf.Cos(_value.r), Mathf.Cos(_value.g), Mathf.Cos(_value.b), _value.a);//Mathf.Cos(_value.a));
     }
     public static Color IndexToColor(int _index)
     {
@@ -160,4 +157,15 @@ public static class UColor
             case 5: return Color.white;
         }
     }
+}
+
+[Serializable]
+public struct ColorPalette
+{
+    public Color a,b,c,d;
+
+    public static ColorPalette kDefault = new ColorPalette()
+        {a = new Color(.5f,.5f,.5f,1f), b = new Color(.5f,.5f,.5f,1f), c = new Color(1f,1f,1f,1f), d = new Color(0,0.1f,0.2f,1f)};
+    
+    public Color Evaluate(float _value) => a + b * UColor.Cos(kmath.kPI2*(c*_value+d));
 }
