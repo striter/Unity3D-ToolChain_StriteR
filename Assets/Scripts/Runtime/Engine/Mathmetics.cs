@@ -57,7 +57,7 @@ public static class kmath
     };
 }
 
-public static class umath
+public static partial class umath
 {
     public static float3 to3xy(this float2 _value, float _z = 0) => new float3(_value, _z);
     public static float3 to3xz(this float2 _value, float _y = 0) => new float3(_value.x, _y,_value.y);

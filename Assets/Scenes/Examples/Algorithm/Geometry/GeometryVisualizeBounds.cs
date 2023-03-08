@@ -7,6 +7,8 @@ namespace Examples.Algorithm.Geometry
 {
     public class GeometryVisualizeBounds : MonoBehaviour
     {
+        public float m_SinValue;
+        
         [Header("Box")]
         public float3[] boundingBoxRandomPoints;
         public GBox boudingBox = default;

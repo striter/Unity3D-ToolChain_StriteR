@@ -137,7 +137,7 @@ public static class URuntime
     
     #region Range
     public static bool Contains(this RangeFloat _value, float _check) => _value.start <= _check && _check <= _value.end;
-    public static float NormalizedAmount(this RangeFloat _range, float _check) => UMath.InvLerp(_range.start, _range.end, _check);
+    public static float NormalizedAmount(this RangeFloat _range, float _check) => umath.invLerp(_range.start, _range.end, _check);
     #endregion
     
     #region Camera Helper

@@ -37,8 +37,8 @@ namespace Procedural
         public static Coord GetPoint(this Quad<Coord> _quad, float _u,float _v)
         {
             return new Coord(
-                UMath.BilinearLerp(_quad.B.x, _quad.L.x, _quad.F.x, _quad.R.x, _u, _v),
-                UMath.BilinearLerp(_quad.B.y, _quad.L.y, _quad.F.y, _quad.R.y, _u, _v)
+                umath.bilinearLerp(_quad.B.x, _quad.L.x, _quad.F.x, _quad.R.x, _u, _v),
+                umath.bilinearLerp(_quad.B.y, _quad.L.y, _quad.F.y, _quad.R.y, _u, _v)
             );
         }
         

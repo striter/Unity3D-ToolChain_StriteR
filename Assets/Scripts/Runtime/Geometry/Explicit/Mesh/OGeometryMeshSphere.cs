@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Geometry.Explicit.Mesh.Sphere
 {
-    using static UMath;
+    using static umath;
     using static kmath;
     using static UCubeExplicit;
 
@@ -63,14 +63,14 @@ namespace Geometry.Explicit.Mesh.Sphere
         [Rename("Tight As fuck")]public bool tight;
         public static CubeSphereGenerator kDefault = new CubeSphereGenerator() {radius = .5f,resolution = 10,tight = false};
 
-        public int vertexCount => !tight ? kCubeFacingAxisCount * Pow2(resolution + 1) : USphereExplicit.Cube.GetVertexCount(resolution);
+        public int vertexCount => !tight ? kCubeFacingAxisCount * sqr(resolution + 1) : USphereExplicit.Cube.GetVertexCount(resolution);
 
         public int triangleCount => kCubeFacingAxisCount * resolution * resolution * 2;
 
         private int GetIndex(int _i, int _j, int _sideIndex)
         {
             if (!tight)
-                return _sideIndex * Pow2(resolution + 1) + new Int2(_i, _j).ToIndex(resolution + 1);
+                return _sideIndex * sqr(resolution + 1) + new Int2(_i, _j).ToIndex(resolution + 1);
             
             return USphereExplicit.Cube.GetVertexIndex(_i,_j,resolution,_sideIndex);
         }
@@ -150,7 +150,7 @@ namespace Geometry.Explicit.Mesh.Sphere
 
         private int GetIndex(int _i, int _j, int _sideIndex)
         {
-            return _sideIndex * Pow2(resolution + 1) + new Int2(_i, _j).ToIndex(resolution + 1);
+            return _sideIndex * sqr(resolution + 1) + new Int2(_i, _j).ToIndex(resolution + 1);
         }
 
         private Point GetPoint(int _i, int _j, Axis _axis)

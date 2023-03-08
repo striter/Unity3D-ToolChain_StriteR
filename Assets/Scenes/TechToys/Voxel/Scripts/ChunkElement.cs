@@ -185,7 +185,7 @@ namespace TheVoxel
                     {
                         case ETerrainForm.Mountains:
                         {
-                            float mountainFormStrength = UMath.InvLerp(terrainData.mountainValidation,1f,formRandom);
+                            float mountainFormStrength = umath.invLerp(terrainData.mountainValidation,1f,formRandom);
                             float terrainRandom = UNoise.Perlin.Unit1f2(p2D * terrainData.planeScale);
                             float mountainRandom = UNoise.Perlin.Unit1f2(p2D * terrainData.mountainScale) *.5f + .5f;
 

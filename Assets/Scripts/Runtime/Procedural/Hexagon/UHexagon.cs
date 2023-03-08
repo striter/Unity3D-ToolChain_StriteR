@@ -134,7 +134,7 @@ namespace Procedural.Hexagon
 
         public static IEnumerable<HexCoord> GetCoordsInRadius(this HexCoord _axial, int _radius,bool _rounded =false)
         {
-            int sqrRadius = UMath.Pow2(_radius+1);
+            int sqrRadius = umath.sqr(_radius+1);
             for (int i = -_radius; i <= _radius; i++)
             for (int j = -_radius; j <= _radius; j++)
             {

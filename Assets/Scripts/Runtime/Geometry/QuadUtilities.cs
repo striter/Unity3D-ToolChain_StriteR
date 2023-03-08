@@ -53,11 +53,11 @@ namespace Geometry
 
         public static Vector2 GetUV(this Quad<Vector2>  _quad, Vector2 _position)
         {
-            return UMath.InvBilinearLerp(_quad.vB,_quad.vL,_quad.vF,_quad.vR,_position);
+            return umath.invBilinearLerp(_quad.vB,_quad.vL,_quad.vF,_quad.vR,_position);
         }
 
-        public static Vector2 GetPoint(this Quad<Vector2> _quad, float _u,float _v)=>UMath.BilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _u,_v);
-        public static float GetPoint(this Quad<float> _quad, float _u,float _v)=>UMath.BilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _u,_v);
+        public static Vector2 GetPoint(this Quad<Vector2> _quad, float _u,float _v)=>umath.bilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _u,_v);
+        public static float GetPoint(this Quad<float> _quad, float _u,float _v)=>umath.bilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _u,_v);
         
         public static Quad<Vector3> Resize(this Quad<Vector3> _quad, float _shrinkScale) 
         {
@@ -182,8 +182,8 @@ namespace Geometry
             dynamic R = _quad.R;
 
             return new Vector2(
-                UMath.BilinearLerp(B.x, L.x, F.x, R.x, _u, _v),
-                UMath.BilinearLerp(B.y, L.y, F.y, R.y, _u, _v)
+                umath.bilinearLerp( B.x,  L.x, F.x,  R.x, _u, _v),
+                umath.bilinearLerp(  B.y, L.y, F.y, R.y, _u, _v)
             );
         }
 

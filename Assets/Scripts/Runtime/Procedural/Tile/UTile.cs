@@ -10,12 +10,12 @@ namespace Procedural.Tile
     {
         public static IEnumerable<Int2> GetCoordsInRadius(this Int2 _center,int _radius)
         {
-            int sqrRadius = UMath.Pow2(_radius+1);
+            int sqrRadius = umath.sqr(_radius+1);
             for(int i=-_radius;i<=_radius;i++)
                 for(int j=-_radius;j<=_radius;j++)
                 {
                     var coord = new Int2(i, j);
-                    if (!(UMath.Pow2(Mathf.Abs(coord.x)) + UMath.Pow2(Mathf.Abs(coord.y)) <= sqrRadius))
+                    if (!(umath.sqr(Mathf.Abs(coord.x)) + umath.sqr(Mathf.Abs(coord.y)) <= sqrRadius))
                         continue;
                     yield return _center + coord;
                 }
@@ -71,7 +71,7 @@ namespace Procedural.Tile
 
         public static IEnumerable<Int2> GetAxisRange(Int2 centerAxis, int radius,float _radiusDelta = .5f)
         {
-            float sqrRadius = UMath.Square(_radiusDelta + radius);
+            float sqrRadius = umath.sqr(_radiusDelta + radius);
             int top    =  (int)math.ceil( radius),
                 bottom = -(int)math.floor(radius),
                 left   =  -(int)math.ceil(radius),

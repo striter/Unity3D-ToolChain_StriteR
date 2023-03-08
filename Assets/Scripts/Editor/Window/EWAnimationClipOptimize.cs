@@ -64,7 +64,7 @@ namespace UnityEditor.Extensions
         }
         static float OptimizeFloat(float _srcFloat, int _optimize)
         {
-            float optimize = UMath.Pow(10, _optimize);
+            float optimize = umath.pow(10, _optimize);
             return Mathf.Floor(_srcFloat *optimize)/optimize ;
         }
     }

@@ -28,7 +28,7 @@ public static class UBitwise
         var numDigits = (uint) (Mathf.Log(_i + 1) / Mathf.Log(_base)) + 1;
         for (uint j = 0; j < numDigits; j++)
         {
-            var digit = (_i / UMath.Pow(_base, j)) % _base;
+            var digit = (_i / umath.pow(_base, j)) % _base;
             element += digit * powB;
             powB *= invB;
         }

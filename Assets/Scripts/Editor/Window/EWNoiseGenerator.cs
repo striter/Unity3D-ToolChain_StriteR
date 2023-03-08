@@ -38,7 +38,7 @@ namespace UnityEditor.Extensions
 
         public Texture2D Output(Texture2D _texture)
         {
-            int size = UMath.Pow(2, sizePower);
+            int size = umath.pow(2, sizePower);
 
             if (_texture != null && _texture.width != size)
             {

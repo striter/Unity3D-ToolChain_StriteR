@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using static UMath;
+using static umath;
 using static kmath;
 using static UDamper;
 
@@ -47,7 +47,7 @@ public class Damper : ISerializationCallbackReceiver
         _w = 2 * kPI * f;
         _d = _w * Mathf.Sqrt(Mathf.Abs(z*z-1));
         _k1 = z / (kPI * f);
-        _k2 = 1 / Square(_w);
+        _k2 = 1 / sqr(_w);
         _k3 = r * z / (_w);
     }
 
@@ -70,7 +70,7 @@ public class Damper : ISerializationCallbackReceiver
                 x = xd;
             } break;
             case EDamperMode.Lerp: {
-                x = Vector3.Lerp(x,xd, 1.0f - NegExp_Fast( dt*0.69314718056f /(halfLife+float.Epsilon)));
+                x = Vector3.Lerp(x,xd, 1.0f - negExp_Fast( dt*0.69314718056f /(halfLife+float.Epsilon)));
             } break;
             case EDamperMode.SpringSimple:
             {
@@ -85,7 +85,7 @@ public class Damper : ISerializationCallbackReceiver
                 
                 var j0 = x - c;
                 var j1 = v + j0 * y;
-                var eydt = NegExp_Fast(y * dt);
+                var eydt = negExp_Fast(y * dt);
                 x = eydt * (j0 + j1 * dt) + c;
                 v = eydt * (v - j1 * y * dt);
             } break;
@@ -98,7 +98,7 @@ public class Damper : ISerializationCallbackReceiver
                 {
                     var j0 = x - c;
                     var j1 = v + j0 * y;
-                    float eydt = NegExp_Fast(y * dt);
+                    float eydt = negExp_Fast(y * dt);
                     x = eydt * (j0 + j1 * dt) + c;
                     v = eydt * (-y*j0 - y * j1 * dt+ j1);
                 }
@@ -106,15 +106,15 @@ public class Damper : ISerializationCallbackReceiver
                 {
                     var w = Mathf.Sqrt(determination);
                     var j = ((v + y*(x - c)).square() / (w*w + eps) + (x - c).square()).sqrt();
-                    var p = (v + (x - c) * y).div(-(x - c) * w + eps3).Convert(Atan_Fast);
+                    var p = (v + (x - c) * y).div(-(x - c) * w + eps3).Convert(atan_Fast);
                     
                     j = j.Convert((index,value)=>(x[index]-c[index])>0?value:-value);
                     
-                    var jeydt = j*NegExp_Fast(y * dt );
+                    var jeydt = j*negExp_Fast(y * dt );
                     
                     var param = (w * dt).ToVector3() + p;
-                    var cosParam = param.Convert(Cos);
-                    var sinParam = param.Convert(Sin);
+                    var cosParam = param.Convert(cos);
+                    var sinParam = param.Convert(sin);
                     
                     x = jeydt.mul(cosParam) + c;
                     v = -y * jeydt.mul(cosParam) - w * jeydt.mul(sinParam);
@@ -126,8 +126,8 @@ public class Damper : ISerializationCallbackReceiver
                     var y1 = (d - param) / 2.0f;
                     var j1 = (c * y0 - x * y0 - v) / (y1 - y0);
                     var j0 = x - j1 - c;
-                    var ey0dt = NegExp_Fast(y0 * dt);
-                    var ey1dt = NegExp_Fast(y1 * dt);
+                    var ey0dt = negExp_Fast(y0 * dt);
+                    var ey1dt = negExp_Fast(y1 * dt);
 
                     x = j0 * ey0dt + j1 * ey1dt + c;
                     v = -y0 * j0 * ey0dt - y1 * j1 * ey1dt;
@@ -150,8 +150,8 @@ public class Damper : ISerializationCallbackReceiver
                 else
                 {
                     float t1 = Mathf.Exp(-z * _w * dt);
-                    float alpha = 2 * t1 * (z <= 1 ? Mathf.Cos(dt * this._d) : UMath.CosH(dt * this._d));
-                    float beta = Square(t1);
+                    float alpha = 2 * t1 * (z <= 1 ? Mathf.Cos(dt * this._d) : cosH(dt * this._d));
+                    float beta = sqr(t1);
                     float t2 = dt / (1 + beta - alpha);
                     k1Stable = (1 - beta) * t2;
                     k2Stable = dt * t2;
@@ -176,6 +176,6 @@ public static class UDamper
     public static float HalfLife2Damping(float _halfLife)=> (4.0f * 0.69314718056f) / (_halfLife + eps);
     public static float Damping2HalfLife(float _damping) => (4.0f * 0.69314718056f) / (_damping + eps);
 
-    public static float Frequency2Stiffness(float _frequency) => Square(kPI2*_frequency);
+    public static float Frequency2Stiffness(float _frequency) => sqr(kPI2*_frequency);
     public static float Stiffness2Frequency(float _stiffness) => Mathf.Sqrt(_stiffness) / kPI2;
 }

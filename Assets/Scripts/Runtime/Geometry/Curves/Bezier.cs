@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Geometry.Curves
 {
     using static math;
-    using static UMath;
+    using static umath;
     [Serializable]
     public partial struct GBezierCurveQuadratic:ISerializationCallbackReceiver
     {
@@ -37,7 +37,7 @@ namespace Geometry.Curves
         {
             float value = _value;
             float oneMinusValue = 1 - value;
-            return Square(oneMinusValue) * source + 2 * (oneMinusValue) * value * control + Pow2(value) * destination;
+            return sqr(oneMinusValue) * source + 2 * (oneMinusValue) * value * control + sqr(value) * destination;
         }
 
         public float3 GetTangent(float _value) => normalize(lerp(tangentSource,tangentDestination,_value));
@@ -60,7 +60,7 @@ namespace Geometry.Curves
         {
             float value = _value;
             float oneMinusValue = 1 - value;
-            return Pow3(oneMinusValue) * source +  3 * Pow2(oneMinusValue) * value * controlSource +  3 * oneMinusValue * Pow2(value) * controlDestination + Pow3(value) * destination;
+            return pow3(oneMinusValue) * source +  3 * sqr(oneMinusValue) * value * controlSource +  3 * oneMinusValue * sqr(value) * controlDestination + pow3(value) * destination;
         }
     }
 

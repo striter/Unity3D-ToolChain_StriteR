@@ -14,9 +14,9 @@ public static class TDataInterpolate
     private static readonly Dictionary<Type, Func<object, object, float, object>> kBasicInterpolations =
         new Dictionary<Type, Func<object, object, float, object>>
         {
-            {typeof(int), (_value1,_value2,_interpolate)=>UMath.IntLerp((int)_value1,(int)_value2,_interpolate)},
-            {typeof(bool), (_value1,_value2,_interpolate)=>UMath.BoolLerp((bool)_value1,(bool)_value2,_interpolate)},
-            {typeof(float), (_value1,_value2,_interpolate)=>Mathf.Lerp((float)_value1,(float)_value2,_interpolate)},
+            {typeof(int), (_value1,_value2,_interpolate)=>umath.lerp((int)_value1,(int)_value2,_interpolate)},
+            {typeof(bool), (_value1,_value2,_interpolate)=>umath.lerp((bool)_value1,(bool)_value2,_interpolate)},
+            {typeof(float), (_value1,_value2,_interpolate)=>umath.lerp((float)_value1,(float)_value2,_interpolate)},
             {typeof(Vector2), (_value1,_value2,_interpolate)=>Vector2.Lerp((Vector2)_value1,(Vector2)_value2,_interpolate)},
             {typeof(Vector3), (_value1,_value2,_interpolate)=>Vector3.Lerp((Vector3)_value1,(Vector3)_value2,_interpolate)},
             {typeof(Vector4), (_value1,_value2,_interpolate)=>Vector4.Lerp((Vector4)_value1,(Vector4)_value2,_interpolate)},

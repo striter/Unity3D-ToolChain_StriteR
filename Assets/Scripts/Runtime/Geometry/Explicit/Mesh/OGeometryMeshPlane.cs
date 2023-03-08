@@ -43,7 +43,7 @@ namespace Geometry.Explicit.Mesh.Sphere
             boundsMax = Vector3.zero;
             int index = 0;
 
-            int sqrRadius = UMath.Pow2(radius+1);
+            int sqrRadius = umath.sqr(radius+1);
             var unitPoints = KHexagon.kFlatUnitPoints;
 
             // foreach (var coord in  UHexagon.GetCoordsInRadius(HexCoord.zero, radius,rounded))
@@ -193,12 +193,12 @@ namespace Geometry.Explicit.Mesh.Sphere
             float3 offset = -new float3(tileSize/2f, 0, tileSize/2f);
             int tileIndex = 0;
             // foreach (var coord in UTile.GetCoordsInRadius(TileCoord.kZero, radius)) {
-            int sqrRadius = UMath.Pow2(radius+1);
+            int sqrRadius = umath.sqr(radius+1);
             for(int i=-radius;i<=radius;i++)
             for(int j=-radius;j<=radius;j++)
             {
                 var coord = new Int2(i, j);
-                if (!(UMath.Pow2(Mathf.Abs(coord.x)) + UMath.Pow2(Mathf.Abs(coord.y)) <= sqrRadius))
+                if (!(umath.sqr(Mathf.Abs(coord.x)) + umath.sqr(Mathf.Abs(coord.y)) <= sqrRadius))
                     continue;
                 var center = coord.ToCoord();
                 var startPos = new float3(center.x*tileSize,0f,center.y*tileSize) + offset;

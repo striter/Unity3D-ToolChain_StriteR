@@ -331,7 +331,7 @@ namespace Rendering.PostProcess
                         (_iteration, _direction, _blurSize, _downSample, _attenuation, _RTid) =>
                         {
                             Vector2 radialDirection = _direction;
-                            m_Material.SetVector(kIDAttenuation, new Vector4(1, _attenuation, UMath.Pow2(_attenuation), UMath.Pow3(_attenuation)));
+                            m_Material.SetVector(kIDAttenuation, new Vector4(1, _attenuation, umath.sqr(_attenuation), umath.pow3(_attenuation)));
                             for (int i = 0; i < _iteration; i++)
                             {
                                 RenderTargetIdentifier blitSrc =  i == 0 ? _src : (i % 2 == 0 ? kBlurTempRT1 : kBlurTempRT2);
@@ -367,10 +367,10 @@ namespace Rendering.PostProcess
 
                         for (int i = 0; i < iteration; i++)
                         {
-                            int downSample = UMath.Pow( 2,i + 1 );
+                            int downSample = umath.pow( 2,i + 1 );
                             _buffer.GetTemporaryRT(kNextGenDownIDs[i], startWidth /  downSample, startHeight / downSample, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
 
-                            int upSample = UMath.Pow(2, iteration - i - 1);
+                            int upSample = umath.pow(2, iteration - i - 1);
                             if(i<iteration-1)
                                 _buffer.GetTemporaryRT(kNextGenUpIDs[i], startWidth / upSample, startHeight / upSample, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
                         }

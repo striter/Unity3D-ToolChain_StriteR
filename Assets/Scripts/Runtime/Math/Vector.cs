@@ -75,12 +75,12 @@ public static class UVector
 #endregion
     
 #region Swizzling
-    public static Vector2 mod(Vector2 _src,float _value) => new Vector2(UMath.Mod(_src.x,_value), UMath.Mod(_src.y, _value));
-    public static Vector3 mod(Vector3 _src,float _value) => new Vector3(UMath.Mod(_src.x, _value), UMath.Mod(_src.y, _value), UMath.Mod(_src.z, _value));
-    public static Vector4 mod(Vector4 _src,float _value) => new Vector4(UMath.Mod(_src.x, _value), UMath.Mod(_src.y, _value), UMath.Mod(_src.z, _value), UMath.Mod(_src.w, _value));
-    public static Vector2 frac(Vector2 _src) => new Vector2(UMath.Frac(_src.x), UMath.Frac(_src.y));
-    public static Vector3 frac(Vector3 _src) => new Vector3(UMath.Frac(_src.x), UMath.Frac(_src.y), UMath.Frac(_src.z));
-    public static Vector4 frac(Vector4 _src) => new Vector4(UMath.Frac(_src.x), UMath.Frac(_src.y), UMath.Frac(_src.z), UMath.Frac(_src.w));
+    public static Vector2 mod(Vector2 _src,float _value) => new Vector2(umath.mod(_src.x,_value), umath.mod(_src.y, _value));
+    public static Vector3 mod(Vector3 _src,float _value) => new Vector3(umath.mod(_src.x, _value), umath.mod(_src.y, _value), umath.mod(_src.z, _value));
+    public static Vector4 mod(Vector4 _src,float _value) => new Vector4(umath.mod(_src.x, _value), umath.mod(_src.y, _value), umath.mod(_src.z, _value), umath.mod(_src.w, _value));
+    public static Vector2 frac(Vector2 _src) => new Vector2(umath.frac(_src.x), umath.frac(_src.y));
+    public static Vector3 frac(Vector3 _src) => new Vector3(umath.frac(_src.x), umath.frac(_src.y), umath.frac(_src.z));
+    public static Vector4 frac(Vector4 _src) => new Vector4(umath.frac(_src.x), umath.frac(_src.y), umath.frac(_src.z), umath.frac(_src.w));
     public static float dot(Vector2 _vec, float _value) => Vector2.Dot(_vec, _value.ToVector2());
     public static float dot(Vector3 _vec, float _value) => Vector3.Dot(_vec, _value.ToVector3());
     public static float dot(Vector4 _vec, float _value) => Vector4.Dot(_vec, _value.ToVector4());
@@ -102,7 +102,7 @@ public static class UVector
     public static Vector4 floor(Vector4 _src) => new Vector4(Mathf.Floor(_src.x), Mathf.Floor(_src.y), Mathf.Floor(_src.z), Mathf.Floor(_src.w));
     
     public static Vector3 sqrt(this Vector3 _src) => new Vector3(Mathf.Sqrt(_src.x),Mathf.Sqrt(_src.y),Mathf.Sqrt(_src.z));
-    public static Vector3 square(this Vector3 _src) => new Vector3(UMath.Square(_src.x),UMath.Square(_src.y),UMath.Square(_src.z));
+    public static Vector3 square(this Vector3 _src) => new Vector3(umath.sqr(_src.x),umath.sqr(_src.y),umath.sqr(_src.z));
 
     public static Vector2 mul(this Vector2 _src, Vector2 _tar) => new Vector2(_src.x * _tar.x, _src.y * _tar.y);
     public static Vector3 mul(this Vector3 _src, Vector3 _tar) => new Vector3(_src.x * _tar.x, _src.y * _tar.y, _src.z * _tar.z);
