@@ -11,38 +11,33 @@ namespace Geometry.Curves
     public struct G2FourierCurve : ICurve<float2> ,ISerializationCallbackReceiver
     {
         public float2[] paths;
-        [Clamp(1)] public int coefficients;
-        [HideInInspector] public float2[] fourierCoefficientsX,fourierCoefficientsY;
+        [Clamp(2)] public int coefficients;
+        [HideInInspector] public float2x2[] fourierCoefficients;
 
         public G2FourierCurve(float2[] _paths,int _coefficients = 5)
         {
             paths = _paths;
             coefficients = _coefficients;
-            fourierCoefficientsX = null;
-            fourierCoefficientsY = null;
-
+            fourierCoefficients = null;
             Ctor();
         }
         
         void Ctor()
         {
             int length = paths.Length;
-            fourierCoefficientsX = new float2[coefficients];
-            fourierCoefficientsY = new float2[coefficients];
+            fourierCoefficients = new float2x2[coefficients];
             for (int c = 0; c < coefficients; c++)
             {
-                float2 fcX = 0;
-                float2 fcY = 0;
+                float2x2 fc = 0;
                 for (int i = 0; i < paths.Length; i++)
                 {
                     float an = (-kmath.kPI2 * c * i) / length ;
                     math.sincos(an,out var san,out var can);
                     float2 ex = new float2(can, san);
-                    fcX += paths[i].x * ex;
-                    fcY += paths[i].y * ex;
+                    fc.c0 += paths[i].x * ex;
+                    fc.c1 += paths[i].y * ex;
                 }
-                fourierCoefficientsX[c] = fcX;
-                fourierCoefficientsY[c] = fcY;
+                fourierCoefficients[c] = fc;
             }
         }
 
@@ -57,8 +52,10 @@ namespace Geometry.Curves
                 float an = -kmath.kPI2 * i * _value;
                 math.sincos(an,out var san,out var can);
                 float2 ex = new float2(can, san);
-                result.x += w * math.dot(fourierCoefficientsX[i],ex);
-                result.y += w * math.dot(fourierCoefficientsY[i],ex);
+                ref float2x2 fc = ref fourierCoefficients[i];
+                
+                result.x += w * math.dot(fc.c0,ex);
+                result.y += w * math.dot(fc.c1,ex);
             }
             return result / paths.Length ;
         }
@@ -83,42 +80,34 @@ namespace Geometry.Curves
     public struct GFourierCurve : ICurve<float3> ,ISerializationCallbackReceiver
     {
         public float3[] paths;
-        [Clamp(1)] public int coefficients;
-        [HideInInspector] public float2[] fourierCoefficientsX,fourierCoefficientsY,fourierCoefficientsZ;
+        [Clamp(2)] public int coefficients;
+        [HideInInspector] public float2x3[] fourierCoefficients;
 
         public GFourierCurve(float3[] _paths,int _coefficients = 5)
         {
             paths = _paths;
             coefficients = _coefficients;
-            fourierCoefficientsX = null;
-            fourierCoefficientsY = null;
-            fourierCoefficientsZ = null;
+            fourierCoefficients = null;
             Ctor();
         }
         
         void Ctor()
         {
             int length = paths.Length;
-            fourierCoefficientsX = new float2[coefficients];
-            fourierCoefficientsY = new float2[coefficients];
-            fourierCoefficientsZ = new float2[coefficients];
+            fourierCoefficients = new float2x3[coefficients];
             for (int c = 0; c < coefficients; c++)
             {
-                float2 fcX = 0;
-                float2 fcY = 0;
-                float2 fcZ = 0;
+                float2x3 fc = 0;
                 for (int i = 0; i < paths.Length; i++)
                 {
                     float an = (-kmath.kPI2 * c * i) / length ;
                     math.sincos(an,out var san,out var can);
                     float2 ex = new float2(can, san);
-                    fcX += paths[i].x * ex;
-                    fcY += paths[i].y * ex;
-                    fcZ += paths[i].z * ex;
+                    fc.c0 += paths[i].x * ex;
+                    fc.c1 += paths[i].y * ex;
+                    fc.c2 += paths[i].z * ex;
                 }
-                fourierCoefficientsX[c] = fcX;
-                fourierCoefficientsY[c] = fcY;
-                fourierCoefficientsZ[c] = fcZ;
+                fourierCoefficients[c] = fc;
             }
         }
 
@@ -133,9 +122,9 @@ namespace Geometry.Curves
                 float an = -kmath.kPI2 * i * _value;
                 math.sincos(an,out var san,out var can);
                 float2 ex = new float2(can, san);
-                result.x += w * math.dot(fourierCoefficientsX[i],ex);
-                result.y += w * math.dot(fourierCoefficientsY[i],ex);
-                result.z += w * math.dot(fourierCoefficientsZ[i],ex);
+                result.x += w * math.dot(fourierCoefficients[i].c0,ex);
+                result.y += w * math.dot(fourierCoefficients[i].c1,ex);
+                result.z += w * math.dot(fourierCoefficients[i].c2,ex);
             }
             return result / paths.Length ;
         }
@@ -146,5 +135,4 @@ namespace Geometry.Curves
         public void OnBeforeSerialize() {}
         public void OnAfterDeserialize() =>  Ctor();
     }
-
 }
