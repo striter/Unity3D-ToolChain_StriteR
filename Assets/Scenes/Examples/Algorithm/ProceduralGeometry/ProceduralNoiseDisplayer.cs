@@ -17,7 +17,7 @@ namespace Examples.Algorithm.Procedural
     }
     
     [ExecuteInEditMode]
-    public class ProceduralNoise : MonoBehaviour
+    public class ProceduralNoiseDisplayer : MonoBehaviour
     {
         public EShape m_Shape = EShape.Torus;
         private static int kHashID = Shader.PropertyToID("_Hashes"),

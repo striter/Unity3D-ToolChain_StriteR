@@ -12,5 +12,6 @@ namespace Geometry.Validation
             var ray = new GRay(_origin, _srcPoint - _origin);
             return ray.GetPoint(Ray.Distance(ray, _projectionPlane));
         }
+
     }
 }

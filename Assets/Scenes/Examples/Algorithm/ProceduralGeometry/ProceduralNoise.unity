@@ -168,7 +168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecf936f0b786ea54b810ef643a863d85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Shape: 1
+  m_Shape: 2
   m_HashTransform:
     position:
       x: 0
@@ -182,12 +182,12 @@ MonoBehaviour:
       x: 8
       y: 8
       z: 8
-  elementSize: 0.88
+  elementSize: 0.36
   displacement: 0.03
-  seed: -1154
+  seed: -1156
   m_InstanceMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   m_InstanceMaterial: {fileID: 2100000, guid: ef4b4b77a08b71d459469a3731c60241, type: 2}
-  m_Resolution: 16
+  m_Resolution: 55
 --- !u!1 &2100387207
 GameObject:
   m_ObjectHideFlags: 0
@@ -295,7 +295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Version: 2
+  m_Version: 3
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
   m_LightLayerMask: 1
@@ -305,7 +305,7 @@ MonoBehaviour:
   m_ShadowRenderingLayers: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 1
+  m_SoftShadowQuality: 2
 --- !u!1 &2117311833
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,3 +435,10 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+  m_TaaSettings:
+    quality: 3
+    frameInfluence: 0.1
+    jitterScale: 1
+    mipBias: 0
+    varianceClampScale: 0.9
+    contrastAdaptiveSharpening: 0
