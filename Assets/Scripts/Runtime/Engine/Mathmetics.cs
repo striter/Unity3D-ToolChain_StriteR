@@ -109,6 +109,11 @@ public static partial class umath
 
 public static class ucomplex
 {
+    public static float2 mul(float2 _c1, float2 _c2)
+    {
+        return new float2(_c1.x * _c2.x - _c1.y * _c2.y, _c1.x * _c2.y + _c1.y * _c2.x );
+    }
+    
     public static float2 divide(float2 _complex1, float2 _complex2)
     {
         var real1 = _complex1.x;
@@ -155,4 +160,23 @@ public static class ucomplex
         var num4 = num1 / num2;
         return num2 * math.sqrt(1.0f + num4 * num4);
     }
+}
+
+public static class kfloat3
+{
+    public static readonly float3 one = 1f;
+    public static readonly float3 up = new float3(0, 1, 0);
+    public static readonly float3 down = new float3(0, -1, 0);
+    public static readonly float3 left = new float3(-1, 0, 0);
+    public static readonly float3 right = new float3(1, 0, 0);
+    public static readonly float3 forward = new float3(0, 0, 1);
+    public static readonly float3 back = new float3(0, 0, -1);
+}
+
+public static class kfloat2
+{
+    public static readonly float2 up = new float2(0, 1);
+    public static readonly float2 down = new float2(0, -1);
+    public static readonly float2 left = new float2(-1, 0);
+    public static readonly float2 right = new float2(1, 0);
 }

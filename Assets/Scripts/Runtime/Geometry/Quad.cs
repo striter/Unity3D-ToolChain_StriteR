@@ -214,10 +214,13 @@ namespace Geometry
     {
         public Quad<Vector3> quad;
         public Vector3 normal;
+        public float area;
         public GQuad(Quad<Vector3> _quad)
         {
             quad = _quad;
-            normal = Vector3.Cross(_quad.L - _quad.B, _quad.R - _quad.B).normalized;
+            Vector3 srcNormal = Vector3.Cross(_quad.L - _quad.B, _quad.R - _quad.B);
+            normal = srcNormal.normalized;
+            area = normal.magnitude / 2;
         }
         public GQuad(Vector3 _vb, Vector3 _vl, Vector3 _vf, Vector3 _vr):this(new Quad<Vector3>(_vb,_vl,_vf,_vr)){}
         public GQuad((Vector3 _vb, Vector3 _vl, Vector3 _vf, Vector3 _vr) _tuple) : this(_tuple._vb, _tuple._vl, _tuple._vf, _tuple._vr) { }

@@ -8,7 +8,7 @@ namespace Geometry.Curves
     using static math;
     using static umath;
     [Serializable]
-    public partial struct GBezierCurveQuadratic:ISerializationCallbackReceiver
+    public struct GBezierCurveQuadratic:ISerializationCallbackReceiver
     {
         public float3 source;
         public float3 control;

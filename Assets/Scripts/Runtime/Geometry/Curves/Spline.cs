@@ -11,12 +11,6 @@ namespace Geometry.Curves
         public const int kMinDegree = 2;
     }
 
-    public interface ISpline
-    {
-        float3[] Coordinates { get; }
-        float3 Evaluate(float _value);
-    }
-
     public enum EBSplineMode
     {
         OpenUniformClamped,
@@ -26,7 +20,7 @@ namespace Geometry.Curves
     }
     
     [Serializable]
-    public struct GSpline:ISpline,ISerializationCallbackReceiver
+    public struct GSpline:ICurve<float3>,ISerializationCallbackReceiver
     {
         public float3[] coordinates;
         [Clamp(kMinDegree)] public int k;
@@ -146,7 +140,7 @@ namespace Geometry.Curves
     }
 
     [Serializable]
-    public struct GBezierSplineUniform:ISpline
+    public struct GBezierSplineUniform:ICurve<float3>
     {
         public float3[] coordinates;
         [Clamp(kMinDegree)]public int k;
@@ -184,32 +178,5 @@ namespace Geometry.Curves
         }
     }
 
-    public static class USpline
-    {
-        public static float3[] Output(this ISpline _spline,int _amount)
-        {
-            float3[] outputs = new float3[_amount+1];
-            var amount = (float)_amount;
-            for (int i = 0; i <= _amount; i++)
-                outputs[i] = _spline.Evaluate(i/amount);
-            
-            return outputs;
-        }
-        
-        public static void DrawGizmos(this ISpline _curve,bool _original = true,int _amount = 64)
-        {
-            Gizmos.color = Color.white.SetAlpha(.5f);
-            if (_original)
-            {
-                foreach (var coord in _curve.Coordinates)
-                    Gizmos.DrawSphere(coord,.1f);
-                Gizmos_Extend.DrawLines(_curve.Coordinates,p=>p);
-            }
-            var outputs = _curve.Output(_amount);
-            Gizmos.color = Color.green;
-            Gizmos_Extend.DrawLines(outputs, p => p);
-        }
-        
-    }
 
 }
