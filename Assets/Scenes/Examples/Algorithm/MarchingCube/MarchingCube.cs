@@ -97,7 +97,6 @@ namespace Examples.Algorithm.MarchingCube
             m_Actor.Tick(deltaTime);
         }
 
-        private readonly Vector3 kMirrorMultiplier = new Vector3(-1, 1, -1);
         void Refresh()
         {
             m_Mesh.Clear();
