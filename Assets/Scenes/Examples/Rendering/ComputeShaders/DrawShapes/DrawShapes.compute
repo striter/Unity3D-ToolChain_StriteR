@@ -24,13 +24,8 @@ RWStructuredBuffer<float2> _CircleResults;
 void Clear (uint3 id : SV_DispatchThreadID){
     float3 color;
     float2 pos = id.xy / _Resolution;
-    float scale = 3;
-    pos *= scale;
-    float d = random01Perlin(pos + _Time.x) * scale;
-    float2 uv = pos + d;
-    d = random01Perlin(uv) * scale;
-    float noise = random01Perlin(pos + d) ;
-    color = noise;// float3((2*noise - float3(noise*1,noise*1 - sin(uv.x/30)*.5,noise*3 + sin(uv.y/40)*5)));
+    float noise = 1 - smoothstep(0,0.05,voronoiDistances(pos * 12, _Time.y));
+    color = noise;
     
     Result[id.xy] = float4(color,1);
 }

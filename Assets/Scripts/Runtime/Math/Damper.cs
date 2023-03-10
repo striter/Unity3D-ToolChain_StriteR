@@ -100,7 +100,7 @@ public class Damper : ISerializationCallbackReceiver
                 {
                     var j0 = x - c;
                     var j1 = v + j0 * y;
-                    float eydt = negExp_Fast(y * dt);
+                    var eydt = negExp_Fast(y * dt);
                     x = eydt * (j0 + j1 * dt) + c;
                     v = eydt * (-y*j0 - y * j1 * dt+ j1);
                 }
