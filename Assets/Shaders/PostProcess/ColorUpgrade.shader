@@ -73,7 +73,7 @@
 			half3 MotionBlur(float2 uv)
             {
 				#if _MOTIONBLUR
-            		float randomValue = random01(uv);
+            		float randomValue = random(uv);
 		            float2 velocity = SampleMotionVector(uv) * _Intensity;
 					float invSampleCount = rcp(_Iteration*2);
 

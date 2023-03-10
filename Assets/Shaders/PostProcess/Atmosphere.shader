@@ -77,7 +77,7 @@ Shader "Hidden/PostProcess/Atmosphere"
                     {
                         float3 samplePos=positionWS;
                         #if _DITHER
-                        samplePos+=posDelta*random01(samplePos);
+                        samplePos+=posDelta*random(samplePos);
                         #endif
                         float shadowAttenuation=SampleHardShadow(TEXTURE2D_ARGS(_MainLightShadowmapTexture, sampler_MainLightShadowmapTexture),TransformWorldToShadowCoord(samplePos).xyz,shadowStrength);
                         // shadowAttenuation*=CloudShadowAttenuation(samplePos,lightDirWS);
