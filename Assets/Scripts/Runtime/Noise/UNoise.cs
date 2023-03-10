@@ -1,22 +1,24 @@
 using System;
 using Unity.Mathematics;
-using UnityEngine;
+using static Unity.Mathematics.math;
+using static umath;
+using static kmath;
 
 public static class UNoise
 {
     public static class Value
     {
         static readonly float kRandomValue = 143758.5453f;
-        public static float Unit1f1(float _unitValue) => umath.frac(Mathf.Sin(_unitValue) * kRandomValue);
+        public static float Unit1f1(float _unitValue) => frac(sin(_unitValue) * kRandomValue);
     
-        static readonly Vector3 kRandomVec = new Vector3(12.0909f,89.233f,37.719f);
-        public static float Unit1f2(float2 _randomUnit) => Unit1f1(Vector2.Dot(_randomUnit, kRandomVec));
-        public static float Unit1f2(float _x, float _y) => Unit1f2(new Vector2(_x, _y));
+        static readonly float3 kRandomVec = new float3(12.0909f,89.233f,37.719f);
+        public static float Unit1f2(float2 _randomUnit) => Unit1f1(dot(_randomUnit, kRandomVec.to2xy()));
+        public static float Unit1f2(float _x, float _y) => Unit1f2(new float2(_x, _y));
         
-        public static float Unit1f3(float3 _random) => Unit1f1(Vector3.Dot(_random, kRandomVec));
-        public static float Unit1f3(float _x, float _y,float _z) => Unit1f3(new Vector3(_x, _y,_z));
+        public static float Unit1f3(float3 _random) => Unit1f1(dot(_random, kRandomVec));
+        public static float Unit1f3(float _x, float _y,float _z) => Unit1f3(new float3(_x, _y,_z));
         
-        public static Vector2 Unit2f2(float2 _random) => new Vector2(Unit1f2(_random),Unit1f2(new Vector2(_random.y, _random.x)) );
+        public static float2 Unit2f2(float2 _random) => new float2(Unit1f2(_random),Unit1f2(new float2(_random.y, _random.x)) );
     }
     
     
@@ -85,64 +87,65 @@ public static class UNoise
             return Lerp(y1, y2, w);
         }
     }
+    
     public static class Simplex
     {
-         const float c_Mod289 = 1.0f / 290f;
-        static readonly float s_Sqrt3 = Mathf.Sqrt(3f);
-        static readonly Vector4 s_Simplex_C = new Vector4((3f - s_Sqrt3) / 6f, (s_Sqrt3 - 1f) * .5f, -1f + 2f * ((3f - s_Sqrt3) / 6f), 1f / 41f);
-        static readonly Vector3 s_Simplex_M1 = 1.79284291400159f.ToVector3();
+        const float c_Mod289 = 1.0f / 290f;
+        static readonly float4 s_Simplex_C = new float4((3f - kSQRT3) / 6f, (kSQRT3 - 1f) * .5f, -1f + 2f * ((3f - kSQRT3) / 6f), 1f / 41f);
+        static readonly float3 s_Simplex_M1 = 1.79284291400159f;
         static readonly float s_Simplex_M2 = 0.85373472095314f;
-        static float Mod289(float _x) { return _x - Mathf.Floor(_x * c_Mod289) * 289f; }
-        static Vector2 Mod289(Vector2 _vec) => new Vector2(Mod289(_vec.x),Mod289(_vec.y));
-        static Vector3 Mod289(Vector3 _vec) => new Vector3(Mod289(_vec.x), Mod289(_vec.y), Mod289(_vec.z));
-        static Vector3 Permute(Vector3 vec) { return Mod289((vec * 34f + 1f.ToVector3()).mul(vec)); }
-        public static float Unit1f2(float _x, float _y) => Unit1f2(new Vector2(_x,_y));
-        public static float Unit1f2(Vector2 _v)
+        static float Mod289(float _x) { return _x - floor(_x * c_Mod289) * 289f; }
+        static float2 Mod289(float2 _vec) => new float2(Mod289(_vec.x),Mod289(_vec.y));
+        static float3 Mod289(float3 _vec) => new float3(Mod289(_vec.x), Mod289(_vec.y), Mod289(_vec.z));
+        static float3 Permute(float3 vec) { return Mod289((vec * 34f + 1f)*vec); }
+        public static float Unit1f2(float _x, float _y) => Unit1f2(new float2(_x,_y));
+        public static float Unit1f2(float2 _v)
         {
-            Vector2 i = UVector.floor(_v + Vector2.Dot(_v, s_Simplex_C.y.ToVector2()).ToVector2());
-            Vector2 x0 = _v - i + Vector2.Dot(i, s_Simplex_C.x.ToVector2()).ToVector2();
-            Vector2 i1 = x0.x > x0.y ? new Vector2(1, 0) : new Vector2(0, 1);
-            Vector4 x12 = new Vector4(x0.x, x0.y, x0.x, x0.y) + new Vector4(s_Simplex_C.x, s_Simplex_C.x, s_Simplex_C.z, s_Simplex_C.z);
-            x12-=i1.ToVector4();
+            float2 i = floor(_v + dot(_v, s_Simplex_C.y));
+            float2 x0 = _v - i + dot(i, s_Simplex_C.x);
+            float2 i1 = x0.x > x0.y ? new float2(1, 0) : new float2(0, 1);
+            float4 x12 = new float4(x0.x, x0.y, x0.x, x0.y) + new float4(s_Simplex_C.x, s_Simplex_C.x, s_Simplex_C.z, s_Simplex_C.z);
+            x12-=i1.to4();
             i = Mod289(i);
-            Vector3 p = Permute(Permute(new Vector3(i.y,i.y+i1.y,i.y+1))+new Vector3(i.x,i.x+i1.x,i.x+1));
-            Vector2 x12xy = new Vector2(x12.x, x12.y);
-            Vector2 x12zw = new Vector2(x12.z, x12.w);
-            Vector3 m = Vector3.Max(0.5f.ToVector3()-new Vector3(Vector2.Dot(x0,x0),Vector2.Dot(x12xy,x12xy),Vector2.Dot(x12zw,x12zw)) ,Vector3.zero);
-            m=m.mul(m);
-            m = m.mul(m);
-            Vector3 x = 2.0f * UVector.frac(p*s_Simplex_C.w)-1.0f.ToVector3();
-            Vector3 h = UVector.abs(x)-0.5f.ToVector3();
-            Vector3 ox = UVector.floor(x + 0.5f.ToVector3());
-            Vector3 a0 = x - ox;
-            m = m.mul(s_Simplex_M1 - s_Simplex_M2 * (a0.mul(a0) + h.mul(h)));
+            float3 p = Permute(Permute(new float3(i.y,i.y+i1.y,i.y+1))+new float3(i.x,i.x+i1.x,i.x+1));
+            float2 x12xy = new float2(x12.x, x12.y);
+            float2 x12zw = new float2(x12.z, x12.w);
+            float3 m = max(0.5f-new float3(dot(x0,x0),dot(x12xy,x12xy),dot(x12zw,x12zw)) ,0);
+            m *= m;
+            m *= m;
+            float3 x = 2.0f * frac(p*s_Simplex_C.w)-1.0f;
+            float3 h = abs(x)-0.5f;
+            float3 ox = floor(x + 0.5f);
+            float3 a0 = x - ox;
+            m = (s_Simplex_M1 - s_Simplex_M2 * (a0*a0 + h*h))*m;
             float gx = a0.x*x0.x+h.x*x0.y;
-            Vector2 gyz = new Vector2(a0.y,a0.z)*new Vector2(x12.x,x12.z)+new Vector2(h.y,h.z)*new Vector2(x12.y,x12.w);
-            return 130f * Vector3.Dot(m,new Vector3(gx,gyz.x,gyz.y));
+            float2 gyz = new float2(a0.y,a0.z)*new float2(x12.x,x12.z)+new float2(h.y,h.z)*new float2(x12.y,x12.w);
+            return 130f * dot(m,new float3(gx,gyz.x,gyz.y));
         }
     }
+    
     public static class Voronoi
     {  
-        public static Vector2 Unit2f2(float _x, float _y) => Unit2f2(new Vector2( _x, _y));
-        public  static Vector2 Unit2f2(Vector2 _v)
+        public static float2 Unit2f2(float _x, float _y) => Unit2f2(new float2( _x, _y));
+        public  static float2 Unit2f2(float2 _v)
         {
             float sqrDstToCell = float.MaxValue;
-            Vector2 baseCell = UVector.floor(_v);
-            Vector2 closetCell = baseCell;
+            float2 baseCell = floor(_v);
+            float2 closetCell = baseCell;
             for (int i=-1;i<=1;i++)
-            for(int j=-1;j<=1;j++)
-            {
-                Vector2 cell = baseCell+new Vector2(i,j);
-                Vector2 cellPos = cell + Value.Unit2f2(cell);
-                Vector2 toCell = cellPos - _v;
-                float sqrDistance = toCell.sqrMagnitude;
-                if (sqrDstToCell < sqrDistance)
-                    continue;
+                for(int j=-1;j<=1;j++)
+                {
+                    float2 cell = baseCell+new float2(i,j);
+                    float2 cellPos = cell + Value.Unit2f2(cell);
+                    float2 toCell = cellPos - _v;
+                    float sqrDistance = toCell.sqrmagnitude();
+                    if (sqrDstToCell < sqrDistance)
+                        continue;
 
-                sqrDstToCell = sqrDistance;
-                closetCell = cell;
-            }
-            return new Vector2(sqrDstToCell,  Value.Unit1f2(closetCell) );
+                    sqrDstToCell = sqrDistance;
+                    closetCell = cell;
+                }
+            return new float2(sqrDstToCell,  Value.Unit1f2(closetCell) );
         }
     }
 }

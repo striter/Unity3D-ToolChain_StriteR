@@ -105,6 +105,12 @@ public static partial class umath
     public static float maxElement(this float2 _src) => Mathf.Max(_src.x, _src.y);
     public static float maxElement(this float3 _src) => Mathf.Max(_src.x, _src.y, _src.z);
     public static float maxElement(this float4 _src) => Mathf.Max(_src.x, _src.y, _src.z, _src.w);
+
+    public static float convert(this float _src, Func<float, float> _func) => _func(_src);
+    public static float2 convert(this float2 _src, Func<float, float> _func) => new float2(_func(_src.x),_func(_src.y));
+    public static float3 convert(this float3 _src, Func<float, float> _func) => new float3(_func(_src.x),_func(_src.y),_func(_src.z));
+    public static float3 convert(this float3 _src, Func<int,float, float> _func) => new float3(_func(0,_src.x),_func(1,_src.y),_func(2,_src.z));
+
 }
 
 public static class ucomplex

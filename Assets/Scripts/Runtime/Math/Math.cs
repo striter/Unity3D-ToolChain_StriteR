@@ -1,8 +1,8 @@
 ﻿using System;
-using Newtonsoft.Json;
 using Unity.Mathematics;
 using UnityEngine;
 using static kmath;
+using static Unity.Mathematics.math;
 public static partial class umath
 {
     public static bool IsPrime(ushort _value)
@@ -60,18 +60,20 @@ public static partial class umath
 
     public static int sqr(int _src) => _src * _src;
     public static float sqr(float _src) => _src * _src;
+    public static float2 sqr(float2 _src) => _src * _src;
+    public static float3 sqr(float3 _src) => _src * _src;
+    
     public static float pow3(float _src) => _src * _src* _src;
     public static float pow4(float _src) => _src * _src* _src* _src;
-    public static float frac(float _src) => _src - Mathf.Floor(_src);
     public static float mod(float _src, float _dst) => _src - _dst * Mathf.Floor(_src/_dst);
 
     public static float lerp(float _a, float _b, float _value) => Mathf.Lerp(_a, _b, _value);
     
     public static float invLerp(float _a, float _b, float _value)=> (_value - _a) / (_b - _a);
-    public static Vector3 bilinearLerp(Vector3 tl, Vector3 tr, Vector3 br, Vector3 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
-    public static Vector2 bilinearLerp(Vector2 tl, Vector2 tr, Vector2 br, Vector2 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
+    public static float3 bilinearLerp(float3 tl, float3 tr, float3 br, float3 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
+    public static float2 bilinearLerp(float2 tl, float2 tr, float2 br, float2 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
     public static float bilinearLerp(float tl, float tr, float br, float bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
-    public static Vector2 invBilinearLerp(Vector2 tl, Vector2 tr, Vector2 br, Vector2 bl, Vector2 p)
+    public static float2 invBilinearLerp(float2 tl, float2 tr, float2 br, float2 bl, float2 p)
     {
         var e = tr - tl;
         var f = bl - tl;
@@ -113,7 +115,7 @@ public static partial class umath
         return dst;
     }
     
-    public static int lerp(int _src, int _dst, float _interpolate)=> (int)Mathf.Lerp(_src, _dst, _interpolate);
+    public static int lerp(int _src, int _dst, float _interpolate)=> (int)math.lerp(_src, _dst, _interpolate);
     public static bool lerp(bool _src, bool _dst, float _interpolate)
     {
         if (Math.Abs(_interpolate - 1) < float.Epsilon)
@@ -123,8 +125,6 @@ public static partial class umath
         return _src || _dst;
     }
 
-    public static float cos(float _src) => Mathf.Cos(_src);
-    public static float sin(float _src) => Mathf.Sin(_src);
     public static float cosH(float _src) => (Mathf.Exp(_src) + Mathf.Exp(_src)) / 2;
     public static float copySign(float _a, float _b)
     {
@@ -157,10 +157,10 @@ public static partial class umath
         return _x;
     }
 
-    public static float sin_basic_approximation(float x)
+    public static float sin_basic_approximation(float _x)
     {
-        int k = (int)math.floor(x / kPID2);
-        float y = x - k * kPID2;
+        int k = (int)math.floor(_x / kPID2);
+        float y = _x - k * kPID2;
         switch (( k % 4+4) % 4)
         {
             default: throw new ArgumentNullException();

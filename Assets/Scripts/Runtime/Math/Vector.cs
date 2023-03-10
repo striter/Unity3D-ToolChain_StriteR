@@ -78,9 +78,9 @@ public static class UVector
     public static Vector2 mod(Vector2 _src,float _value) => new Vector2(umath.mod(_src.x,_value), umath.mod(_src.y, _value));
     public static Vector3 mod(Vector3 _src,float _value) => new Vector3(umath.mod(_src.x, _value), umath.mod(_src.y, _value), umath.mod(_src.z, _value));
     public static Vector4 mod(Vector4 _src,float _value) => new Vector4(umath.mod(_src.x, _value), umath.mod(_src.y, _value), umath.mod(_src.z, _value), umath.mod(_src.w, _value));
-    public static Vector2 frac(Vector2 _src) => new Vector2(umath.frac(_src.x), umath.frac(_src.y));
-    public static Vector3 frac(Vector3 _src) => new Vector3(umath.frac(_src.x), umath.frac(_src.y), umath.frac(_src.z));
-    public static Vector4 frac(Vector4 _src) => new Vector4(umath.frac(_src.x), umath.frac(_src.y), umath.frac(_src.z), umath.frac(_src.w));
+    public static Vector2 frac(Vector2 _src) => new Vector2(math.frac(_src.x), math.frac(_src.y));
+    public static Vector3 frac(Vector3 _src) => new Vector3(math.frac(_src.x), math.frac(_src.y), math.frac(_src.z));
+    public static Vector4 frac(Vector4 _src) => new Vector4(math.frac(_src.x), math.frac(_src.y), math.frac(_src.z), math.frac(_src.w));
     public static float dot(Vector2 _vec, float _value) => Vector2.Dot(_vec, _value.ToVector2());
     public static float dot(Vector3 _vec, float _value) => Vector3.Dot(_vec, _value.ToVector3());
     public static float dot(Vector4 _vec, float _value) => Vector4.Dot(_vec, _value.ToVector4());
