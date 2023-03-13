@@ -24,7 +24,7 @@ RWStructuredBuffer<float2> _CircleResults;
 void Clear (uint3 id : SV_DispatchThreadID){
     float3 color;
     float2 pos = id.xy / _Resolution;
-    float noise = 1 - smoothstep(0,0.05,voronoiDistances(pos * 12, _Time.y));
+    float noise = 1 - smoothstep(0,0.05,voronoiDistances(pos * 12, _Time.y)).x;
     color = noise;
     
     Result[id.xy] = float4(color,1);

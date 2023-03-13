@@ -1,0 +1,53 @@
+#include "Assets/Shaders/Library/Common.hlsl"
+#include "CSParticles.hlsl"
+float _DeltaTime;
+float2 _MousePosition;
+RWStructuredBuffer<FParticle> _ParticleBuffer;
+
+uint rng_State;
+uint randomXORshift()
+{
+    rng_State ^= (rng_State << 13);
+    rng_State ^= (rng_State >> 17);
+    rng_State ^= (rng_State << 5);
+    return rng_State;
+}
+FParticle Respawn(uint id)
+{
+    rng_State = id;
+    float tmp = (1/4294967296.0);
+    float f0 = float(randomXORshift()) * tmp - 0.5;
+    float f1 = float(randomXORshift()) * tmp - 0.5;
+    float f2 = float(randomXORshift()) * tmp - 0.5;
+    float3 normalF3 = normalize(float3(f0,f1,f2))*.8f;
+    normalF3 *= float(randomXORshift()) * tmp;
+    FParticle particle ;
+    particle.position = normalF3 +  float3(_MousePosition,3);
+    particle.life = 4;
+    particle.velocity = 0;
+    return particle;
+}
+
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSParticle
+
+[numthreads(256,1,1)]
+void CSParticle (uint3 id : SV_DispatchThreadID)
+{
+    FParticle particle = _ParticleBuffer[id.x];
+    if(particle.life < 0)
+    {
+        _ParticleBuffer[id.x] =  Respawn(id.x);
+    }
+    else
+    {
+        particle.life -= _DeltaTime;
+
+        float3 delta = float3(_MousePosition.xy,3) - particle.position;
+        float3 dir = normalize(delta);
+
+        particle.velocity += dir;
+        particle.position += particle.velocity * _DeltaTime;
+        _ParticleBuffer[id.x] =  particle;
+    }
+}
