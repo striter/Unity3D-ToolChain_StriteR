@@ -1,7 +1,7 @@
 ﻿#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 //Common 
 #include "Assets/Shaders/Library/Common/Rotation.hlsl"
-#include "Assets/Shaders/Library/Common/Noise.hlsl"
+#include "Assets/Shaders/Library/Common/Noises/Index.hlsl"
 //Mapping
 #include "Assets/Shaders/Library/Common/ValueMapping.hlsl"
 #include "Assets/Shaders/Library/Common/UVMapping.hlsl"
