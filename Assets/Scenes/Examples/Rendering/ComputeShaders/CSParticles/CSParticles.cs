@@ -14,14 +14,12 @@ namespace Examples.Rendering.ComputeShaders
             public float3 position;
             public float3 velocity;
             public float life;
-
             public const int kSize = 7 * sizeof(float);
         }
 
         public int m_ParticleCount = 1000000;
         public Material m_Material;
         public ComputeShader m_Shader;
-        [Range(1, 10)] public int m_PointSize = 2;
 
         private float2 m_CursorPos;
         
@@ -45,7 +43,6 @@ namespace Examples.Rendering.ComputeShaders
             m_GroupSizeX = Mathf.CeilToInt((float) m_ParticleCount / threadsX);
             m_Shader.SetBuffer(kKernelID,"_ParticleBuffer",m_ParticleBuffer);
             m_Material.SetBuffer("_ParticleBuffer",m_ParticleBuffer);
-            m_Material.SetInt("_PointSize",m_PointSize);
         }
 
         void Release()
@@ -84,7 +81,7 @@ namespace Examples.Rendering.ComputeShaders
         private void OnRenderObject()
         {
             m_Material.SetPass(0);
-            Graphics.DrawProceduralNow(MeshTopology.Points,1,m_ParticleCount);
+            Graphics.DrawProceduralNow(MeshTopology.Triangles, 6,m_ParticleCount );
         }
 
         private void OnDrawGizmos()
