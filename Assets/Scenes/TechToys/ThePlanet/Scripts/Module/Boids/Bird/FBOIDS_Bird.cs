@@ -3,7 +3,7 @@ using TPool;
 using TPoolStatic;
 using UnityEngine;
 
-namespace PCG.Module.BOIDS.Bird
+namespace TechToys.ThePlanet.Module.BOIDS.Bird
 {
     public class FBOIDS_Bird : BoidsFlock<FBirdBehaviour, FBirdTarget>
     {

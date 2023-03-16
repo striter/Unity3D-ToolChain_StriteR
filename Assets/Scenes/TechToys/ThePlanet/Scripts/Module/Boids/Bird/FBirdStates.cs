@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using PCG.Module.BOIDS.Bird;
+using TechToys.ThePlanet.Module.BOIDS.Bird;
 using UnityEngine;
 
-namespace PCG.Module.BOIDS.States.Bird
+namespace TechToys.ThePlanet.Module.BOIDS.States.Bird
 {
     public class Startle<T> : States.Startle<T> where T:Enum
     {

@@ -4,7 +4,7 @@ using Procedural;
 using TPoolStatic;
 using UnityEngine;
 
-namespace PCG.Module
+namespace TechToys.ThePlanet.Module
 {
     public enum EModuleCollapseStatus
     {

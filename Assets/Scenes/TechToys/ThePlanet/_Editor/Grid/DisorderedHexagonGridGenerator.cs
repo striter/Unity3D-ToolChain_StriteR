@@ -13,7 +13,7 @@ using UnityEditor.Extensions;
 using UnityEngine;
 using Random = System.Random;
 
-namespace PCG.Grid
+namespace TechToys.ThePlanet.Grid
 {
     public enum EConvexIterate
     {

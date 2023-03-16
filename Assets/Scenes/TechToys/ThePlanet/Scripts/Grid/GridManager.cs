@@ -9,9 +9,9 @@ using TTouchTracker;
 using UnityEngine;
 using TPoolStatic;
 
-namespace PCG
+namespace TechToys.ThePlanet
 {
-    public class GridManager : MonoBehaviour,IPolyGridControl
+    public class GridManager : MonoBehaviour,IPCGControl
     {
         public Dictionary<GridID, PCGChunk> m_Chunks { get; } = new Dictionary<GridID, PCGChunk>();
         public Dictionary<GridID, PCGVertex> m_Vertices { get; } = new Dictionary<GridID, PCGVertex>();

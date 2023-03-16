@@ -2,9 +2,9 @@ using System;
 using Geometry;
 using UnityEngine;
 
-namespace PCG
+namespace TechToys.ThePlanet
 {
-    public class PCGCamera:MonoBehaviour,IPolyGridControl
+    public class PCGCamera:MonoBehaviour,IPCGControl
     {
         private Transform m_CameraRoot;
         public Camera m_Camera { get; private set; }
@@ -66,7 +66,7 @@ namespace PCG
             m_SphericalPitch += _pitch;
         }
 
-        public void Pinch(float _delta)
+        public float Pinch(float _delta)
         {
             m_Zoom = Mathf.Clamp(m_Zoom + _delta, m_ZoomRange.start, m_ZoomRange.end);
 
@@ -76,6 +76,7 @@ namespace PCG
             m_PitchZoom = pitchNormalized * m_PitchZoomDelta;
             m_FovZoom = pitchNormalized * m_FOVZoomDelta;
             m_OffsetZoom = pitchNormalized * m_ZoomOffsetDelta;
+            return pitchNormalized;
         }
 
         public void OnDrawGizmos()

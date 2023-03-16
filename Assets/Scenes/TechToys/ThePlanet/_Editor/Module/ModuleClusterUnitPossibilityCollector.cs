@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using Geometry;
 using MeshFragment;
-using PCG.Module;
-using PCG.Module.Cluster;
+using TechToys.ThePlanet.Module;
+using TechToys.ThePlanet.Module.Cluster;
 
 #if UNITY_EDITOR
-namespace PCG.Baking
+namespace TechToys.ThePlanet.Baking
 {
     using Geometry;
     using UnityEngine;

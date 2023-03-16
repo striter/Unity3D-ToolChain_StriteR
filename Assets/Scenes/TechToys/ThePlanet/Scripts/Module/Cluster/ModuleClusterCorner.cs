@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using TPool;
 
-namespace PCG.Module.Cluster
+namespace TechToys.ThePlanet.Module.Cluster
 {
     public class ModuleClusterCorner : PoolBehaviour<PCGID>
     {

@@ -1,16 +1,16 @@
 using System;
 using System.Collections;
 using System.Linq;
-using PCG.Module;
-using PCG.Simplex;
 using TTouchTracker;
 using UnityEngine;
 using TDataPersistent;
+using TechToys.ThePlanet.Module;
+using TechToys.ThePlanet.Simplex;
 using UnityEngine.UI;
 
-namespace PCG
+namespace TechToys.ThePlanet
 {
-    interface IPolyGridControl
+    interface IPCGControl
     {
         void Init();
         void Tick(float _deltaTime);
@@ -29,7 +29,8 @@ namespace PCG
         private SimplexManager m_Simplex;
         private PCGCamera m_Camera;
         private PCGEnvironment m_Environment;
-        private IPolyGridControl[] m_Controls;
+        private PCGAudios m_Audio;
+        private IPCGControl[] m_Controls;
 
         //Executions
         private Text m_Spawning;
@@ -52,7 +53,8 @@ namespace PCG
             m_Simplex = transform.Find("Simplex").GetComponent<SimplexManager>();
             m_Camera = transform.Find("Camera").GetComponent<PCGCamera>();
             m_Environment = transform.Find("Environment").GetComponent<PCGEnvironment>();
-            m_Controls = new IPolyGridControl[]{ m_Grid,m_Module,m_Simplex,m_Camera,m_Environment };
+            m_Audio = transform.Find("Audios").GetComponent<PCGAudios>();
+            m_Controls = new IPCGControl[]{ m_Grid,m_Module,m_Simplex,m_Camera,m_Environment,m_Audio };
             m_Controls.Traversal(p=>p.Init());
 
             m_Grid.Setup(m_GridData);
@@ -130,7 +132,9 @@ namespace PCG
             if (touch.Count > 1)
                 m_Environment.Rotate(drag.y, drag.x);
             var pinch = touch.CombinedPinch() * _deltaTime * 5f;
-            m_Camera.Pinch(pinch);
+            float normalizedPitch = m_Camera.Pinch(pinch);
+
+            PCGAudios.SetBGVolume(normalizedPitch);
         }
 
         private void OnDestroy()

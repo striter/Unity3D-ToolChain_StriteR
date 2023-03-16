@@ -1,8 +1,8 @@
 using Geometry;
-using PCG.Module;
+using TechToys.ThePlanet.Module;
 using UnityEngine;
 
-namespace PCG.Baking
+namespace TechToys.ThePlanet.Baking
 {
     public class ModuleByteVisualizer : MonoBehaviour
     {

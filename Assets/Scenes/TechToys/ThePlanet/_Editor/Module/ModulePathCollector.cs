@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Geometry;
 using MeshFragment;
-using PCG.Module.Prop;
-using PCG.Module;
+using TechToys.ThePlanet.Module;
+using TechToys.ThePlanet.Module.Prop;
 using UnityEngine;
 
-namespace PCG.Baking
+namespace TechToys.ThePlanet.Baking
 {
 #if UNITY_EDITOR
     public class ModulePathCollector : MonoBehaviour

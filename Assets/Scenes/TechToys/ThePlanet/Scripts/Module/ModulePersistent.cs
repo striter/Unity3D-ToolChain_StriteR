@@ -1,10 +1,10 @@
 
 using System;
 using System.Collections.Generic;
-using PCG.Module;
+using TechToys.ThePlanet.Module;
 using TDataPersistent;
 
-namespace PCG
+namespace TechToys.ThePlanet
 {
     [Serializable]
     public struct ModuleInput

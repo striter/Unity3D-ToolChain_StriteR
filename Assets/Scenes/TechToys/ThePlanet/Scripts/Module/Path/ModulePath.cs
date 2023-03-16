@@ -5,7 +5,7 @@ using TPoolStatic;
 using UnityEditor;
 using UnityEngine;
 
-namespace PCG.Module.Prop
+namespace TechToys.ThePlanet.Module.Prop
 {
     public class ModulePath : PoolBehaviour<PCGID>,IModuleStructureElement
     {

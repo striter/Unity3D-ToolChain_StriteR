@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using MeshFragment;
-using PCG.Module.Cluster;
+using TechToys.ThePlanet.Module.Cluster;
 using TPoolStatic;
 using UnityEngine;
 
-namespace PCG.Module.Prop
+namespace TechToys.ThePlanet.Module.Prop
 {
     public static class UModulePropByte
     {

@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Geometry;
 using MeshFragment;
-using PCG.Module.Prop;
-using PCG.Module.Cluster;
+using TechToys.ThePlanet.Module.Cluster;
+using TechToys.ThePlanet.Module.Prop;
 using UnityEngine;
 
-namespace  PCG.Module
+namespace  TechToys.ThePlanet.Module
 {
     [Serializable]
     public class ModuleData : ScriptableObject

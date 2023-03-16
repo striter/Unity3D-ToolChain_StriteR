@@ -1,7 +1,7 @@
 using System.Linq;
 
 #if UNITY_EDITOR
-namespace PCG.Baking
+namespace TechToys.ThePlanet.Baking
 {
     using Module;
     using Module.Cluster;

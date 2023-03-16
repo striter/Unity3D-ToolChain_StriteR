@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace PCG.Module.BOIDS.Fish
+namespace TechToys.ThePlanet.Module.BOIDS.Fish
 {
     [Serializable]
     public struct FFishConfig

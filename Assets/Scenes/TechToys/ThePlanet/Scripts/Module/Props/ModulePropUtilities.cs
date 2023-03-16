@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Geometry;
 using TPoolStatic;
 
-namespace PCG.Module.Prop
+namespace TechToys.ThePlanet.Module.Prop
 {
     public static class UModuleProp
     {

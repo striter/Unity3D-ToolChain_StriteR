@@ -2,7 +2,7 @@ using System;
 using MeshFragment;
 using UnityEngine;
 
-namespace PCG.Simplex
+namespace TechToys.ThePlanet.Simplex
 {
     public class SimplexCollection : ScriptableObject
     {

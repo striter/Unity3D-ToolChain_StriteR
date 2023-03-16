@@ -8,7 +8,7 @@ using TPool;
 using TPoolStatic;
 using UnityEngine;
 
-namespace PCG
+namespace TechToys.ThePlanet
 {
     #region Runtime
     [Serializable]

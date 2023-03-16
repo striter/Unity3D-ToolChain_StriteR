@@ -1,8 +1,8 @@
 using System;
 using System.ComponentModel;
-using PCG.Module.BOIDS.States.Bird;
+using TechToys.ThePlanet.Module.BOIDS.States.Bird;
 using TPoolStatic;
-namespace PCG.Module.BOIDS.Bird
+namespace TechToys.ThePlanet.Module.BOIDS.Bird
 {
     public class FBirdBehaviour : BoidsBehaviour<EBirdBehaviour>
     {

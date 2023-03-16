@@ -1,5 +1,5 @@
 using UnityEngine;
-namespace PCG.Module.BOIDS.Bird
+namespace TechToys.ThePlanet.Module.BOIDS.Bird
 {
 
     [CreateAssetMenu(fileName = "Bird Config",menuName = "Config/Boids/Bird")]

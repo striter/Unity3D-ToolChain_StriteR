@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using PCG;
+using TechToys.ThePlanet;
 using TPool;
 using UnityEngine;
 
-namespace PCG.Module.BOIDS
+namespace TechToys.ThePlanet.Module.BOIDS
 {
     public abstract class BoidsFlock<TBoidsBehaviour,TBoidsTarget>:ITransformHandle where TBoidsBehaviour:ABoidsBehaviour where TBoidsTarget:ABoidsTarget
     {

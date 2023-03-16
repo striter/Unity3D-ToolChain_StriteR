@@ -7,7 +7,7 @@ using TPoolStatic;
 using UnityEditor;
 using UnityEngine;
 
-namespace PCG.Module.Prop
+namespace TechToys.ThePlanet.Module.Prop
 {
     public class ModulePropManager : MonoBehaviour,IModuleControl,IModuleVoxelCallback,IModuleCollapse,IModuleStructure
     {

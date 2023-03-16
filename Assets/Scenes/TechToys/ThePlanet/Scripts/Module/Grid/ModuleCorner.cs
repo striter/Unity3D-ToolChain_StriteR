@@ -4,7 +4,7 @@ using System.Linq;
 using TPool;
 using UnityEngine;
 
-namespace PCG.Module
+namespace TechToys.ThePlanet.Module
 {
     [RequireComponent(typeof(MeshCollider))]
     public class ModuleCorner : PoolBehaviour<PCGID>,ICorner

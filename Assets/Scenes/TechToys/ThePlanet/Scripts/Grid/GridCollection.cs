@@ -2,7 +2,7 @@ using System;
 using Geometry;
 using UnityEngine;
 
-namespace PCG
+namespace TechToys.ThePlanet
 {
     [Serializable]
     public struct GridVertexData

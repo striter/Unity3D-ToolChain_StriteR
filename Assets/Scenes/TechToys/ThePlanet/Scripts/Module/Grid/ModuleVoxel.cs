@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using Geometry;
 using MeshFragment;
-using PCG.Module.BOIDS;
-using PCG.Module.Cluster;
+using TechToys.ThePlanet.Module.BOIDS;
+using TechToys.ThePlanet.Module.Cluster;
 using TPool;
 using UnityEngine;
 
-namespace PCG.Module
+namespace TechToys.ThePlanet.Module
 {
     public class ModuleVoxel : PoolBehaviour<PCGID>,IVoxel
     {

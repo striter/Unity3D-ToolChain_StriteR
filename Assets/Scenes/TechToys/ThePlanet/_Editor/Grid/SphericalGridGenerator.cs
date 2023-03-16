@@ -6,7 +6,7 @@ using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 
-namespace PCG.Grid
+namespace TechToys.ThePlanet.Grid
 {
     using static UCubeExplicit;
     using static USphereExplicit;

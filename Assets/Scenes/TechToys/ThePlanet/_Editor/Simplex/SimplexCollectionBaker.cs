@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Geometry;
 using MeshFragment;
-using PCG.Simplex;
-using PCG.Module.Cluster;
+using TechToys.ThePlanet.Module.Cluster;
+using TechToys.ThePlanet.Simplex;
 using UnityEditor;
 using UnityEditor.Extensions;
 using UnityEngine;
 
-namespace PCG.Baking
+namespace TechToys.ThePlanet.Baking
 {
     public class SimplexCollectionBaker : MonoBehaviour
     {

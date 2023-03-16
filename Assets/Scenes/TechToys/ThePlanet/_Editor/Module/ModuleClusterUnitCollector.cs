@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using PCG.Module;
+using TechToys.ThePlanet.Module;
 
 #if UNITY_EDITOR
-namespace PCG.Baking
+namespace TechToys.ThePlanet.Baking
 {
     using Geometry;
     using UnityEngine;

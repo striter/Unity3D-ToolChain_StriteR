@@ -5,28 +5,39 @@ using TPool;
 using TPoolStatic;
 using UnityEngine;
 
-namespace PCG.Module
+namespace TechToys.ThePlanet.Module
 {
-    public class ModuleFoliage : MonoBehaviour , IModuleControl , IModuleQuadCallback
+    public class ModuleStatic : MonoBehaviour , IModuleControl , IModuleQuadCallback
     {
+        [Header("Foliage")]
         [Range(0,1)]public float m_Density;
         [Clamp(0f,float.MaxValue)]public float m_Scale;
+        [Header("Boat")] [Range(0, 1)] 
+        public float m_BoatDensity = 0.99f;
+        
         public GridManager m_Grid { get; set; }
-        public ObjectPoolClass<GridID, FoliageElement> m_Foliage;
+        private ObjectPoolClass<GridID, StaticElement> m_Foliage,m_Boat;
+        
         public void Init()
         {
-            m_Foliage = new ObjectPoolClass<GridID, FoliageElement>(transform.Find("Item"));
+            m_Foliage = new ObjectPoolClass<GridID, StaticElement>(transform.Find("Foliage/Item"));
+            m_Boat = new ObjectPoolClass<GridID, StaticElement>(transform.Find("Boat/Item"));
         }
 
         public void Setup()
         {
             m_Foliage.Clear();
+            m_Boat.Clear();
             foreach (var quad in m_Grid.m_Quads)
             {
-                Vector3 position = (quad.Value.position/DPCG.kGridSize + Vector3.one)*m_Scale;
-                var random = UNoise.Perlin.Unit1f3(position.x, position.y, position.z) / 2 + .5f; 
-                if(m_Density>random)
+                var position = (quad.Value.position/DPCG.kGridSize + Vector3.one)*m_Scale;
+                var randomFoliage = UNoise.Perlin.Unit1f3(position) / 2 + .5f;
+                if (m_Density > randomFoliage)
                     m_Foliage.Spawn(quad.Key).Init(quad.Value);
+                
+                var randomBoat = UNoise.Perlin.Unit1f3(position) / 2 + .5f;
+                if (UNoise.Perlin.Unit1f3(position) > m_BoatDensity)
+                    m_Boat.Spawn(quad.Key).Init(quad.Value);
             }
         }
 
@@ -38,22 +49,6 @@ namespace PCG.Module
             dirty = true;
         }
 
-        public void OnPopulateQuad(IQuad _quad)
-        {
-            if(m_Foliage.TryGet(_quad.Identity,out var foliage))
-                foliage.Disable();
-        }
-
-        public void OnDeconstructQuad(GridID _quadID)
-        {
-            if(m_Foliage.TryGet(_quadID,out var foliage))
-                foliage.Enable();
-        }
-        
-        public void Clear()
-        {
-        }
-
         public void Tick(float _deltaTime)
         {
             if (dirty)
@@ -63,19 +58,39 @@ namespace PCG.Module
             }
         }
 
+        public void OnPopulateQuad(IQuad _quad)
+        {
+            if(m_Foliage.TryGet(_quad.Identity,out var foliage))
+                foliage.Disable();
+            if(m_Boat.TryGet(_quad.Identity,out var boat))
+                boat.Disable();
+        }
+
+        public void OnDeconstructQuad(GridID _quadID)
+        {
+            if(m_Foliage.TryGet(_quadID,out var foliage))
+                foliage.Enable();
+            if(m_Boat.TryGet(_quadID,out var boat))
+                boat.Enable();
+        }
+        
+        public void Clear()
+        {
+        }
+
         public void Dispose()
         {
         }
 
-        public class FoliageElement: APoolTransform<int>
+        public class StaticElement: APoolTransform<int>
         {
             private GameObject m_Model;
-            public FoliageElement(Transform _transform) : base(_transform)
+            public StaticElement(Transform _transform) : base(_transform)
             {
                 m_Model = _transform.Find("Model").gameObject;
             }
 
-            public FoliageElement Init(PCGQuad _quad)
+            public StaticElement Init(PCGQuad _quad)
             {
                 Vector2 randomPos = URandom.Random2DSphere();
                 Transform.SetPositionAndRotation(_quad.m_ShapeWS.GetPoint(randomPos.x,randomPos.y),_quad.rotation);

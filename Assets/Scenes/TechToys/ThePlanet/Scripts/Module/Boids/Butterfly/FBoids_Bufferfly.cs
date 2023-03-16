@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using PCG.Module.BOIDS.Bird;
-using PCG;
+using TechToys.ThePlanet.Module.BOIDS.Bird;
+using TechToys.ThePlanet;
 using TPoolStatic;
 using UnityEngine;
 
-namespace PCG.Module.BOIDS.Butterfly
+namespace TechToys.ThePlanet.Module.BOIDS.Butterfly
 {
     public interface IButterflyAttractions : IBoidsPerching
     {

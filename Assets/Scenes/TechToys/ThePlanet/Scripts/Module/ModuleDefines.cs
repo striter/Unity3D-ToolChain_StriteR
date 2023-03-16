@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using Geometry;
 using UnityEngine;
-using PCG.Module.Cluster;
+using TechToys.ThePlanet.Module.Cluster;
 
-namespace PCG.Module
+namespace TechToys.ThePlanet.Module
 {
     public static class DModule
     {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace PCG.Module.BOIDS
+namespace TechToys.ThePlanet.Module.BOIDS
 {
     public interface IBoidsVertex
     {

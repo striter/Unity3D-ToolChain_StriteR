@@ -5,7 +5,7 @@ using Procedural;
 using TPoolStatic;
 using UnityEngine;
 
-namespace PCG.Module.Prop
+namespace TechToys.ThePlanet.Module.Prop
 {
     public enum EModulePropType
     {

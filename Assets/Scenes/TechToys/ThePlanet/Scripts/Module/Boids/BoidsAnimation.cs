@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace PCG.Module.BOIDS
+namespace TechToys.ThePlanet.Module.BOIDS
 {
     public interface IBoidsAnimation
     {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace PCG.Module.BOIDS.Butterfly
+namespace TechToys.ThePlanet.Module.BOIDS.Butterfly
 {
     public enum EButterFlyBehaviour
     {

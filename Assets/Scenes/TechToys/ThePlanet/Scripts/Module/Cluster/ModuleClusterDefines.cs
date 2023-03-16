@@ -5,7 +5,7 @@ using Geometry;
 using Procedural;
 using UnityEngine;
 
-namespace PCG.Module.Cluster
+namespace TechToys.ThePlanet.Module.Cluster
 {
     public enum EClusterType
     {

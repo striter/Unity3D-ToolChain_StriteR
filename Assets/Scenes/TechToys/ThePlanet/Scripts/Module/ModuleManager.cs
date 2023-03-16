@@ -2,15 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using PCG.Module.BOIDS;
-using PCG.Module.Cluster;
-using PCG.Module.Path;
-using PCG.Module.Prop;
+using TechToys.ThePlanet.Module.BOIDS;
+using TechToys.ThePlanet.Module.Cluster;
+using TechToys.ThePlanet.Module.Path;
+using TechToys.ThePlanet.Module.Prop;
 using UnityEngine;
 
-namespace PCG.Module
+namespace TechToys.ThePlanet.Module
 {
-    public class ModuleManager : MonoBehaviour,IPolyGridControl
+    public class ModuleManager : MonoBehaviour,IPCGControl
     {
         [ColorUsage(false,true)]public Color[] m_EmissionColors;
         [Header("Wave Function Collapse")]
@@ -47,7 +47,7 @@ namespace PCG.Module
             m_PathManager = transform.Find("Path").GetComponent<ModulePathManager>();
             m_BoidsManager = transform.Find("Boids").GetComponent<ModuleBoidsManager>();
             
-            m_Controls = new IModuleControl[] { m_GridManager , m_ClusterManger, m_PropManager , m_PathManager,m_BoidsManager,transform.Find("Foliage").GetComponent<ModuleFoliage>()  };
+            m_Controls = new IModuleControl[] { m_GridManager , m_ClusterManger, m_PropManager , m_PathManager,m_BoidsManager,transform.Find("Static").GetComponent<ModuleStatic>()  };
             m_VertexCallbacks = m_Controls.CollectAs<IModuleControl, IModuleVertexCallback>().ToArray();
             m_QuadCallbacks = m_Controls.CollectAs<IModuleControl, IModuleQuadCallback>().ToArray();
             m_CornerCallbacks = m_Controls.CollectAs<IModuleControl, IModuleCornerCallback>().ToArray();
@@ -99,13 +99,18 @@ namespace PCG.Module
             PCGID selection;
             if (_construct)
             {
-                if(m_GridManager.ConstructRaycast(_ray,out selection))
+                if (m_GridManager.ConstructRaycast(_ray, out selection))
+                {
                     Construct(moduleType,selection);
+                    PCGAudios.Play(KPCGAudios.kClick);
+                }
                 return;
             }
 
-            if(m_GridManager.DeconstructRaycast(_ray, out selection))
-                Deconstruct(selection);
+            if (!m_GridManager.DeconstructRaycast(_ray, out selection))
+                return;
+            Deconstruct(selection);
+            PCGAudios.Play(KPCGAudios.kClick2);
         }
 
         public void Construct(int _type, PCGID _corner)

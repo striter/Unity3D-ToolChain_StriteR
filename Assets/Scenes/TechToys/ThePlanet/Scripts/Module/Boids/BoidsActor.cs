@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using TPool;
 using UnityEngine;
 
-namespace PCG.Module.BOIDS
+namespace TechToys.ThePlanet.Module.BOIDS
 {
     public class BoidsActor : APoolTransform<int>,IBoidsVertex
     {

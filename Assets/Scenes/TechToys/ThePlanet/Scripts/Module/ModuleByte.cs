@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Geometry;
 using TPoolStatic;
 
-namespace PCG.Module
+namespace TechToys.ThePlanet.Module
 {
     public struct OrientedModuleIndexer
     {

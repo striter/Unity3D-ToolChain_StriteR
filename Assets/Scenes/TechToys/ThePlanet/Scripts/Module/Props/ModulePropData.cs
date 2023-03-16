@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-namespace PCG.Module.Prop
+namespace TechToys.ThePlanet.Module.Prop
 {
     [Serializable]
     public struct ModuleDecorationCollection

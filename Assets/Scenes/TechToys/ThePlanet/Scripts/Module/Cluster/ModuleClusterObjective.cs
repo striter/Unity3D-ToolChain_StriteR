@@ -5,7 +5,7 @@ using Geometry;
 using MeshFragment;
 using UnityEngine;
 
-namespace PCG.Module.Cluster
+namespace TechToys.ThePlanet.Module.Cluster
 {
     [Serializable]
     public struct ModuleClusterInputData:IEquatable<ModuleClusterInputData>,IEqualityComparer<ModuleClusterInputData>

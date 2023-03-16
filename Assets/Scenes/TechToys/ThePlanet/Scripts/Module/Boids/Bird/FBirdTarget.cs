@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PCG.Module.BOIDS.Bird
+namespace TechToys.ThePlanet.Module.BOIDS.Bird
 {
     public class FBirdTarget : ABoidsTarget
     {

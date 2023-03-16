@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PCG.Module.BOIDS;
-using PCG.Module.BOIDS.Butterfly;
+using TechToys.ThePlanet.Module.BOIDS;
+using TechToys.ThePlanet.Module.BOIDS.Butterfly;
 using TPool;
 using TPoolStatic;
 using UnityEngine;
 
-namespace PCG.Module.Prop
+namespace TechToys.ThePlanet.Module.Prop
 {
     public class ModulePropContainer : PoolBehaviour<PCGID>,IModuleStructureElement,IButterflyAttractions
     {

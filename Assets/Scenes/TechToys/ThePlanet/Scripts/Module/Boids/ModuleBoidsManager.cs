@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using PCG.Module.BOIDS.Bird;
-using PCG.Module.BOIDS.Butterfly;
+using TechToys.ThePlanet.Module.BOIDS.Bird;
+using TechToys.ThePlanet.Module.BOIDS.Butterfly;
 // using PolyGrid.Module.BOIDS.Fish;
 using UnityEngine;
 
-namespace PCG.Module.BOIDS
+namespace TechToys.ThePlanet.Module.BOIDS
 {
     public interface IBoidsPerching
     {

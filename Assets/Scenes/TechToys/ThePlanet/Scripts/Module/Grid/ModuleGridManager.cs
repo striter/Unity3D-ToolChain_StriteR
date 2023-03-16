@@ -6,7 +6,7 @@ using TPool;
 using TPoolStatic;
 using UnityEngine;
 
-namespace PCG.Module
+namespace TechToys.ThePlanet.Module
 {
     public class ModuleGridManager : MonoBehaviour,IModuleControl
     {

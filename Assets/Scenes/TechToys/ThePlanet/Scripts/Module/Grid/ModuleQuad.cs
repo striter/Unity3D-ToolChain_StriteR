@@ -5,7 +5,7 @@ using Procedural;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
 
-namespace PCG.Module
+namespace TechToys.ThePlanet.Module
 {
     public class ModuleQuad : PoolBehaviour<GridID>,IQuad
     {

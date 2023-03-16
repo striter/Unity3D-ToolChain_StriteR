@@ -84,6 +84,7 @@ public static partial class umath
     public static float3 normalized(this float3 _value) => math.normalize(_value);
     public static float4 normalized(this float4 _value) => math.normalize(_value);
     
+    public static float saturate(this float _value)=> math.min(math.max(_value,0f) ,1f);
     public static float2 saturate(this float2 _value)=> math.min(math.max(_value,0f) ,1f);
     public static float3 saturate(this float3 _value)=> math.min(math.max(_value,0f) ,1f);
     public static float4 saturate(this float4 _value) => math.min(math.max(_value,0f) ,1f);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 
-namespace PCG.Module.BOIDS.States
+namespace TechToys.ThePlanet.Module.BOIDS.States
 {
     public class Startle<T>:IBoidsState,IStateTransformVelocity,IStateSwitch<T> where T:Enum
     {

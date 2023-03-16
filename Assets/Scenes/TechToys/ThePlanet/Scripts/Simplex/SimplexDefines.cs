@@ -1,6 +1,6 @@
-using PCG.Module;
+using TechToys.ThePlanet.Module;
 
-namespace PCG.Simplex
+namespace TechToys.ThePlanet.Simplex
 {
     public static class DSimplex
     {

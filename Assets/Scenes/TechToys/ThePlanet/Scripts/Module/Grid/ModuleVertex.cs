@@ -6,7 +6,7 @@ using Procedural.Hexagon;
 using TPoolStatic;
 using UnityEngine;
 
-namespace PCG.Module
+namespace TechToys.ThePlanet.Module
 {
     public class ModuleVertex : PoolBehaviour<GridID>,IVertex
     {

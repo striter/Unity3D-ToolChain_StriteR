@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using Geometry;
-using PCG.Module;
-using PCG.Module.Prop;
+using TechToys.ThePlanet.Module;
+using TechToys.ThePlanet.Module.Prop;
 using Unity.Mathematics;
 using UnityEngine;
 
 #if UNITY_EDITOR
 
-namespace PCG.Baking
+namespace TechToys.ThePlanet.Baking
 {
     public class ModulePropPossibilitySetBaker : MonoBehaviour
     {

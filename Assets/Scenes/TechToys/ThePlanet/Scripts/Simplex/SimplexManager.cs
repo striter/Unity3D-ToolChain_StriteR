@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using Geometry;
 using MeshFragment;
-using PCG.Module;
-using PCG.Module.Cluster;
+using TechToys.ThePlanet.Module;
+using TechToys.ThePlanet.Module.Cluster;
 using TPoolStatic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace PCG.Simplex
+namespace TechToys.ThePlanet.Simplex
 {
     [RequireComponent(typeof(MeshFilter),typeof(MeshRenderer))]
-    public class SimplexManager : MonoBehaviour,IPolyGridControl
+    public class SimplexManager : MonoBehaviour,IPCGControl
     {
         private SimplexCollection m_Collection;
         private MeshFilter m_Filter;

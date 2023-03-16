@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Geometry;
 using UnityEngine;
 
-namespace PCG
+namespace TechToys.ThePlanet
 {
     public static class UGrid
     {

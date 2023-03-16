@@ -7,7 +7,7 @@ using Procedural;
 using Procedural.Hexagon;
 using UnityEngine;
 
-namespace PCG
+namespace TechToys.ThePlanet
 {
     public enum EQuadGeometry
     {

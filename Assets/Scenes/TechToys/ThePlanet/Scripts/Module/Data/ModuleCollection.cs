@@ -2,7 +2,7 @@ using System;
 using MeshFragment;
 using UnityEngine;
 
-namespace PCG.Module
+namespace TechToys.ThePlanet.Module
 {
     public class ModuleCollection : ScriptableObject
     {

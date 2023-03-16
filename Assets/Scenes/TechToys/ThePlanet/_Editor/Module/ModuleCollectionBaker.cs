@@ -1,8 +1,7 @@
-
-using PCG.Module.Cluster;
+using TechToys.ThePlanet.Module.Cluster;
 
 #if UNITY_EDITOR
-namespace PCG.Baking
+namespace TechToys.ThePlanet.Baking
 {
     using UnityEditor.Extensions;
     using UnityEditor;

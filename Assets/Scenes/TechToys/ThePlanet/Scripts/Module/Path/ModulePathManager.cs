@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using PCG.Module.Prop;
+using TechToys.ThePlanet.Module.Prop;
 using TPool;
 using TPoolStatic;
 using UnityEngine;
 
-namespace PCG.Module.Path
+namespace TechToys.ThePlanet.Module.Path
 {
     public class ModulePathManager : MonoBehaviour, IModuleControl, IModuleVoxelCallback, IModuleCollapse , IModuleStructure
     {

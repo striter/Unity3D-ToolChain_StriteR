@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-namespace PCG
+namespace TechToys.ThePlanet
 {
     public interface IGridGenerator
     {

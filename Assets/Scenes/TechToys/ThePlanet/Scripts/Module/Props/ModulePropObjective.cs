@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
-using PCG.Module.Cluster;
+using TechToys.ThePlanet.Module.Cluster;
 using TPool;
 using TPoolStatic;
 using UnityEngine;
 
-namespace PCG.Module.Prop
+namespace TechToys.ThePlanet.Module.Prop
 {
     public class ModulePathCollapse
     {

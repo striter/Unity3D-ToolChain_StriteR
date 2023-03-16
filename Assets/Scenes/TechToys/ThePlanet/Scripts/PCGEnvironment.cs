@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace PCG
+namespace TechToys.ThePlanet
 {
-    public class PCGEnvironment : MonoBehaviour,IPolyGridControl
+    public class PCGEnvironment : MonoBehaviour,IPCGControl
     {
         public Damper m_RotationDamper ;
         private Light m_Light;

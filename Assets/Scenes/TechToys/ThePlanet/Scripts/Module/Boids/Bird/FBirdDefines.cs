@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace PCG.Module.BOIDS.Bird
+namespace TechToys.ThePlanet.Module.BOIDS.Bird
 {
 
     public enum EBirdBehaviour

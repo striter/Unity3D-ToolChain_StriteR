@@ -1,8 +1,8 @@
 using System.ComponentModel;
-using PCG.Module.BOIDS.States;
+using TechToys.ThePlanet.Module.BOIDS.States;
 using UnityEngine;
 
-namespace PCG.Module.BOIDS.Fish
+namespace TechToys.ThePlanet.Module.BOIDS.Fish
 {
     public class FFishFlock : BoidsFlock<FFishBehaviour, FBoidsTargetEmpty>
     {
