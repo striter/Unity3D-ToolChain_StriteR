@@ -148,14 +148,6 @@
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            float2 SpherePositionToUV(float3 _point)
-	        {
-				 float2 texCoord= float2(atan2(_point.x, -_point.z) / -TWO_PI, asin(_point.y) / PI)+.5f;
-	            if (texCoord.x<1e-6f)
-	                texCoord.x = 1.0f;
-	            return texCoord;
-	        }
-        
 			float3 GerstnerWave(float2 uv,float4 waveST,float amplitude,float3 normal)
 			{
 				float2 flowUV=uv+_Time.y*waveST.xy*waveST.zw;
@@ -173,9 +165,8 @@
             	float3 positionWS= positionWSNormalized * INSTANCE(_Radius);
 				float3 normalWS= positionWSNormalized;
 				float3 tangentWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.tangentOS.xyz));
-	          	float2 uv = SpherePositionToUV(positionWSNormalized);
-				positionWS += GerstnerWave(uv,INSTANCE(_WaveST1),INSTANCE(_WaveAmplitude1),normalWS);
-				positionWS += GerstnerWave(uv,INSTANCE(_WaveST2),INSTANCE(_WaveAmplitude2),normalWS);
+				positionWS += GerstnerWave(v.uv,INSTANCE(_WaveST1),INSTANCE(_WaveAmplitude1),normalWS);
+				positionWS += GerstnerWave(v.uv,INSTANCE(_WaveST2),INSTANCE(_WaveAmplitude2),normalWS);
             	o.positionWS=positionWS;
             	o.positionCS=TransformWorldToHClip(o.positionWS);
             	o.positionHCS=o.positionCS;
