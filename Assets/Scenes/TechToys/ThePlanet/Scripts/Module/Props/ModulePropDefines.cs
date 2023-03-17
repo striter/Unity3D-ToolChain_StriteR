@@ -88,7 +88,7 @@ namespace TechToys.ThePlanet.Module.Prop
             uv -= Vector2.one * .5f;
             uv = KRotation.kRotate2DCW[(4-_orientation)%4].MultiplyVector(uv);     //Inverted Cause CC Bilinear Lerp Below
             uv += Vector2.one * .5f;
-            return _qubeShape.GetPoint(uv.x, uv.y,_orientedVertex.y*DPCG.kUnitSize*2);
+            return _qubeShape.GetPoint(uv.x, uv.y,_orientedVertex.y*KPCG.kUnitSize*2);
         }
 
         static float InterpolateYaw(float _src, float _dst, float _value)

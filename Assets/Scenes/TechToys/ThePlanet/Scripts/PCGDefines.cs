@@ -1,10 +1,7 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using Geometry;
-using Procedural;
-using Procedural.Hexagon;
+using Geometry.Explicit;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace TechToys.ThePlanet
@@ -15,8 +12,34 @@ namespace TechToys.ThePlanet
         Half,
     }
 
-    public static class DPCG
+    public static class KPCG
     {
+        public static class Ocean
+        {
+            public static float kOceanRadius ;
+            public static float4 kOceanST1, kOceanST2;
+            public static float kOceanAmplitude1,kOceanAmplitude2;
+
+            public static float3 OutputOceanCoordinates(float3 _positionWSNormalized,float _time)
+            {
+                float2 uv = USphereExplicit.SpherePositionToUV(_positionWSNormalized);
+                float3 positionWS = _positionWSNormalized * kOceanRadius;
+                positionWS+=GerstnerWave(uv,kOceanST1,kOceanAmplitude1,_positionWSNormalized,_time);
+                positionWS+=GerstnerWave(uv,kOceanST2,kOceanAmplitude2,_positionWSNormalized,_time);
+                return positionWS;
+            }
+            
+            public static float3 GerstnerWave(float2 _uv,float4 _waveST,float _amplitude,float3 _normal,float _time)
+            {
+                float2 flowUV=_uv+_time*_waveST.xy*_waveST.zw;
+                float flowSin=flowUV.x*_waveST.x+flowUV.y*_waveST.y;
+                float spherical=flowSin*math.PI;
+                float sinFlow = math.sin(spherical);
+                return _normal*sinFlow*_amplitude;
+            }
+        }
+        
+        
         public const float kGridSize = 50f;
         public const float kUnitSize = 1.5f;
         

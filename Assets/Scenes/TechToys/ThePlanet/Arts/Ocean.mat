@@ -221,6 +221,7 @@ Material:
     - _ParallexOffset: 1
     - _ParallexScale: 0.017
     - _QueueOffset: 0
+    - _Radius: 51.8
     - _ReceiveShadow: 1
     - _ReceiveShadows: 1
     - _ReflectionAmount: 0.51
@@ -244,8 +245,8 @@ Material:
     - _Thickness: 0.1
     - _VF: 1
     - _Wave: 1
-    - _WaveAmplitude1: 0.2
-    - _WaveAmplitude2: 0.05
+    - _WaveAmplitude1: -0.1
+    - _WaveAmplitude2: -0.05
     - _WaveSpikeAmplitude1: 0
     - _WaveSpikeAmplitude2: 0
     - _WorkflowMode: 1
@@ -268,8 +269,8 @@ Material:
     - _ReflectionColor: {r: 0.7704402, g: 0.908886, b: 1, a: 1}
     - _RotationMatrix: {r: 0.70710677, g: 0.70710677, b: -0.70710677, a: 0.70710677}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
-    - _WaveST1: {r: 1, g: 3, b: 0.01, a: -0.01}
-    - _WaveST2: {r: 5, g: 5, b: 0.002, a: 0.002}
+    - _WaveST1: {r: 12.39, g: 12, b: 0.004, a: 0}
+    - _WaveST2: {r: 3, g: 3, b: 0.002, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &1842042723372290674
 MonoBehaviour:

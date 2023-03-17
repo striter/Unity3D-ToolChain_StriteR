@@ -47,7 +47,7 @@ namespace TechToys.ThePlanet
             {
                 m_Vertices.Add(vertexIndex, new PCGVertex() {
                     m_Identity = vertexIndex,
-                    m_Position = vertex.position * DPCG.kGridSize,
+                    m_Position = vertex.position * KPCG.kGridSize,
                     m_Normal = vertex.normal,
                     m_Invalid = vertex.invalid
                 });
@@ -80,7 +80,7 @@ namespace TechToys.ThePlanet
         public bool ValidateGridSelection(Ray _ray, out GridID _vertexID)
         {
             _vertexID = default;
-            var distance = UGeometryValidation.Ray.Distances(_ray,new GSphere(Vector3.zero, DPCG.kGridSize)).x;
+            var distance = UGeometryValidation.Ray.Distances(_ray,new GSphere(Vector3.zero, KPCG.kGridSize)).x;
             if (distance < 0)
                 return false;
             var hitPos = _ray.GetPoint(distance);

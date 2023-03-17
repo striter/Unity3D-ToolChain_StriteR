@@ -245,8 +245,8 @@ Material:
     - _Thickness: 0.1
     - _VF: 1
     - _Wave: 1
-    - _WaveAmplitude1: 0.41
-    - _WaveAmplitude2: 0.1
+    - _WaveAmplitude1: 0.3
+    - _WaveAmplitude2: 0.05
     - _WaveSpikeAmplitude1: 0.51
     - _WaveSpikeAmplitude2: 0.28
     - _WorkflowMode: 1
@@ -269,8 +269,8 @@ Material:
     - _ReflectionColor: {r: 0.56651235, g: 0.67311424, b: 0.7264151, a: 1}
     - _RotationMatrix: {r: 0.70710677, g: 0.70710677, b: -0.70710677, a: 0.70710677}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
-    - _WaveST1: {r: 0.3, g: 0.3, b: 5, a: 0}
-    - _WaveST2: {r: 0.7, g: 0.3, b: 2, a: 0}
+    - _WaveST1: {r: -0.3, g: -0.3, b: 2, a: 2}
+    - _WaveST2: {r: 0.73, g: 0.3, b: 2, a: 2}
   m_BuildTextureStacks: []
 --- !u!114 &1842042723372290674
 MonoBehaviour:

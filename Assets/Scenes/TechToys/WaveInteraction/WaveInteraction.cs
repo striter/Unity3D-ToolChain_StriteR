@@ -12,9 +12,8 @@ namespace Examples.Rendering.WaveInteraction
         float3 GerstnerWave(float2 _uv,float4 _waveST,float _amplitude,float _spikeAmplitude,float3 _biTangent,float3 _normal,float3 _tangent,float _time)
         {
             float2 flowUV=_uv+_time*_waveST.xy*_waveST.zw;
-            float2 flowSin=flowUV.x*_waveST.x+flowUV.y*_waveST.y;
-            float spherical=(flowSin.x*_waveST.x+flowSin.y*_waveST.y)*math.PI;
-            math.sincos(spherical,out var sinFlow,out var cosFlow);
+            float flowSin=flowUV.x*_waveST.x+flowUV.y*_waveST.y;
+            math.sincos(flowSin*math.PI,out var sinFlow,out var cosFlow);
             float spike=_spikeAmplitude*cosFlow;
             return _normal*sinFlow*_amplitude + _biTangent*spike*_waveST.x + _tangent * spike*_waveST.y;
         }
@@ -86,15 +85,13 @@ namespace Examples.Rendering.WaveInteraction
                 wavePositions[i] = position + localWave;
             }
 
+            GTriangle waveTriangle = new GTriangle(wavePositions[0], wavePositions[1], wavePositions[2]);
+            m_WaveObj.transform.rotation = waveTriangle.GetRotation();
+
             float3 waveAffection = 0;
             foreach (var affection in waveAffections)
                 waveAffection += affection;
             waveAffection /= waveAffections.Length;
-
-            GTriangle waveNormal = new GTriangle(wavePositions[0], wavePositions[1], wavePositions[2]);
-            var forward = wavePositions[0] - (wavePositions[1] + wavePositions[2]) / 2;
-            
-            m_WaveObj.transform.rotation = Quaternion.LookRotation(forward.normalized(),waveNormal.normal);
 
             waveAffection.xz = 0;
             m_WaveObj.transform.position = m_Position + waveAffection;

@@ -33,7 +33,7 @@ namespace Examples.Algorithm.Geometry
                 Gizmos.DrawLine(triangle[2], triangle[0]);
                 
                 if(visualization.planeDirectionCheck)
-                    Gizmos_Extend.DrawArrow(triangle.GetPoint(.25f,.25f), Quaternion.LookRotation(triangle.normal), .5f, .1f);
+                    Gizmos_Extend.DrawArrow(triangle.GetBarycenter(), Quaternion.LookRotation(triangle.normal), .5f, .1f);
 
                 float distance = 2f;
                 if(UGeometryValidation.Ray.Intersect(triangle,ray, visualization.rayDirectionCheck,visualization.planeDirectionCheck,out float rayDistance))

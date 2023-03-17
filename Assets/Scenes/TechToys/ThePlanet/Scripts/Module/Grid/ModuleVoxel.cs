@@ -52,8 +52,8 @@ namespace TechToys.ThePlanet.Module
             m_CubeSides = new CubeSides<PCGID>(new PCGID(m_Quad.m_NearbyQuadCW[0], Height),new PCGID(m_Quad.m_NearbyQuadCW[1], Height),new PCGID(m_Quad.m_NearbyQuadCW[2], Height),
                 new PCGID(m_Quad.m_NearbyQuadCW[3], Height), new PCGID(m_Quad.Identity,UByte.ForwardOne( Height)), new PCGID(m_Quad.Identity, UByte.BackOne(Height))) ;
             m_CubeSidesExists = 0;
-            m_ShapeOS = m_Quad.m_ShapeOS.Expand(m_PoolID.height*DPCG.kUnitSize*2);
-            m_Quad.m_ShapeOS.SplitToQuads(false,m_PoolID.height*DPCG.kUnitSize*2).FillArray(m_ClusterQuads);
+            m_ShapeOS = m_Quad.m_ShapeOS.Expand(m_PoolID.height*KPCG.kUnitSize*2);
+            m_Quad.m_ShapeOS.SplitToQuads(false,m_PoolID.height*KPCG.kUnitSize*2).FillArray(m_ClusterQuads);
             for (int i = 0; i < UEnum.GetEnums<ECubeFacing>().Length; i++)
             {
                 var facing = UEnum.GetEnums<ECubeFacing>()[i];

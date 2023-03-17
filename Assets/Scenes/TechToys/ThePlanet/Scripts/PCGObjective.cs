@@ -243,7 +243,7 @@ namespace TechToys.ThePlanet
             for(int i=0;i<4;i++)
                 positions[i] = _positions[i]+_normals[i]*_normalOffset-_baseOffset;
         }
-
+        
         public Vector3 GetPoint(float _u,float _v) => umath.bilinearLerp(positions.B,positions.L,positions.F,positions.R,_u,_v);
         public Vector3 GetNormal(float _u, float _v)=> umath.bilinearLerp(normals.B,normals.L,normals.F,normals.R,_u,_v).normalized();
         public Vector3 GetPoint(float _u, float _v, float _w) => GetPoint(_u, _v) + GetNormal(_u,_v)*_w;

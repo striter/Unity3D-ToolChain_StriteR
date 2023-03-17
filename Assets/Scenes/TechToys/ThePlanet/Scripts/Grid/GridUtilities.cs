@@ -35,8 +35,8 @@ namespace TechToys.ThePlanet
         
         public static IEnumerable<Vector3> ExpandToQube(this TrapezoidQuad _quad,Vector3 _center,int _unitHeight,float _baryCenter = .5f)
         {
-            float expand = (_unitHeight + 1f - _baryCenter) * DPCG.kUnitSize*2;
-            float shrink = (_unitHeight - _baryCenter) * DPCG.kUnitSize*2;
+            float expand = (_unitHeight + 1f - _baryCenter) * KPCG.kUnitSize*2;
+            float shrink = (_unitHeight - _baryCenter) * KPCG.kUnitSize*2;
 
             yield return _quad.positions.vB + shrink * _quad.normals.vB -_center;
             yield return _quad.positions.vL + shrink * _quad.normals.vL -_center;

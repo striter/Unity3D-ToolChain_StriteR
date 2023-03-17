@@ -241,7 +241,7 @@ namespace TechToys.ThePlanet.Module.Prop
             if (!m_AnimationCounter.m_Playing)
                 return false;
             m_AnimationCounter.Tick(_deltaTime);
-            Transform.localScale = (m_Show?m_AnimationCounter.m_TimeElapsedScale:m_AnimationCounter.m_TimeLeftScale)*m_Scale*DPCG.kUnitSize*2;
+            Transform.localScale = (m_Show?m_AnimationCounter.m_TimeElapsedScale:m_AnimationCounter.m_TimeLeftScale)*m_Scale*KPCG.kUnitSize*2;
             if (!m_AnimationCounter.m_Playing&&!m_Show)
                 return true;
             return false;

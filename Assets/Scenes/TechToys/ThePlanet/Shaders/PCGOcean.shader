@@ -3,6 +3,7 @@
     Properties
     {
     	_Color("Color",Color)=(1,1,1,1)
+    	_Radius("Radius",Range(0,100)) = 51.8
 		[ToggleTex(_NORMALTEX)][NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
     	_NormalStrength("Normal Strength",Range(0,1))=1
     	
@@ -14,7 +15,6 @@
     	[Header(Wave 1)]
     	[Foldout(_WAVE)]_WaveST1("Wave ST 1",Vector)=(1,1,1,1)
     	[Foldout(_WAVE)]_WaveAmplitude1("Flow Amplitidue 1",float)=1
-    	[Header(Wave 2)]
     	[Foldout(_WAVE)]_WaveST2("Wave ST 2",Vector)=(1,1,1,1)
     	[Foldout(_WAVE)]_WaveAmplitude2("Amplitidue 2",float)=1
     	
@@ -88,6 +88,7 @@
             TEXTURE2D(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
 			INSTANCING_BUFFER_START
 				INSTANCING_PROP(float4,_Color)
+				INSTANCING_PROP(float,_Radius)
 				INSTANCING_PROP(float,_NormalStrength)
 				INSTANCING_PROP(float4,_FlowST1)
 				INSTANCING_PROP(float4,_FlowST2)
@@ -147,12 +148,19 @@
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
+            float2 SpherePositionToUV(float3 _point)
+	        {
+				 float2 texCoord= float2(atan2(_point.x, -_point.z) / -TWO_PI, asin(_point.y) / PI)+.5f;
+	            if (texCoord.x<1e-6f)
+	                texCoord.x = 1.0f;
+	            return texCoord;
+	        }
+        
 			float3 GerstnerWave(float2 uv,float4 waveST,float amplitude,float3 normal)
 			{
 				float2 flowUV=uv+_Time.y*waveST.xy*waveST.zw;
-				float2 flowSin=flowUV.x*waveST.x+flowUV.y*waveST.y;
-				float spherical=(flowSin.x*waveST.x+flowSin.y*waveST.y)*PI;
-				float sinFlow = sin(spherical);
+				float flowSin=flowUV.x*waveST.x+flowUV.y*waveST.y;
+				float sinFlow = sin(flowSin*PI);
 				return normal*sinFlow*amplitude;
 			}
             
@@ -161,11 +169,13 @@
                 v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v,o);
-            	float3 positionWS=TransformObjectToWorld(v.positionOS);
-				float3 normalWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.normalOS));
+	          	float3 positionWSNormalized = normalize(TransformObjectToWorld(v.positionOS));
+            	float3 positionWS= positionWSNormalized * INSTANCE(_Radius);
+				float3 normalWS= positionWSNormalized;
 				float3 tangentWS=normalize(mul((float3x3)UNITY_MATRIX_M,v.tangentOS.xyz));
-				positionWS+=GerstnerWave(v.uv,INSTANCE(_WaveST1),INSTANCE(_WaveAmplitude1),normalWS);
-				positionWS+=GerstnerWave(v.uv,INSTANCE(_WaveST2),INSTANCE(_WaveAmplitude2),normalWS);
+	          	float2 uv = SpherePositionToUV(positionWSNormalized);
+				positionWS += GerstnerWave(uv,INSTANCE(_WaveST1),INSTANCE(_WaveAmplitude1),normalWS);
+				positionWS += GerstnerWave(uv,INSTANCE(_WaveST2),INSTANCE(_WaveAmplitude2),normalWS);
             	o.positionWS=positionWS;
             	o.positionCS=TransformWorldToHClip(o.positionWS);
             	o.positionHCS=o.positionCS;

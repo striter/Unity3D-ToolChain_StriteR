@@ -48,7 +48,7 @@ namespace TechToys.ThePlanet.Module.Cluster
 
             u += 0.5f;
             v += 0.5f;
-            return _quads.GetPoint(u, v, (_positionUS.y+_offset) * DPCG.kUnitSize);
+            return _quads.GetPoint(u, v, (_positionUS.y+_offset) * KPCG.kUnitSize);
         }
 
         public static byte CreateVoxelClusterByte(this Qube<ICorner> _corners,int _clusterIndex,EClusterType _clusterType)

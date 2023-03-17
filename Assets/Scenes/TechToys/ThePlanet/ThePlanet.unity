@@ -11561,7 +11561,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 8a6e2edcc7727de4d9c2b0fbdcfd3a5d,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.5
+      value: -0.25
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8a6e2edcc7727de4d9c2b0fbdcfd3a5d,
         type: 3}
@@ -65376,7 +65376,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Density: 0.33
   m_Scale: 2
-  m_BoatDensity: 0.99
+  m_BoatDensity: 0.79
+  m_BoatLeverage:
+    triangle:
+      v0:
+        x: 0
+        y: 0
+        z: 1
+      v1:
+        x: 0.1
+        y: 0
+        z: -1
+      v2:
+        x: -0.1
+        y: 0
+        z: -1
 --- !u!1 &1903710389
 GameObject:
   m_ObjectHideFlags: 0
@@ -72829,8 +72843,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2138323331}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 50, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 324039274}

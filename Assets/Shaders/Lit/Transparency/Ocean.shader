@@ -171,11 +171,10 @@
 			float3 GerstnerWave(float2 uv,float4 waveST,float amplitude,float spikeAmplitude,float3 biTangent,float3 normal,float3 tangent)
 			{
 				float2 flowUV=uv+_Time.y*waveST.xy*waveST.zw;
-				float2 flowSin=flowUV.x*waveST.x+flowUV.y*waveST.y;
-				float spherical=(flowSin.x*waveST.x+flowSin.y*waveST.y)*PI;
+				float flowSin=flowUV.x*waveST.x+flowUV.y*waveST.y;
 				float sinFlow;
 				float cosFlow;
-				sincos(spherical,sinFlow,cosFlow);
+				sincos(flowSin*PI,sinFlow,cosFlow);
 				float spike=spikeAmplitude*cosFlow;
 				return normal*sinFlow*amplitude + biTangent*spike*waveST.x + tangent * spike*waveST.y;
 			}

@@ -59,7 +59,7 @@ namespace Geometry
         [NonSerialized] public float3 normal;
         [NonSerialized] public float3 uOffset;
         [NonSerialized] public float3 vOffset;
-        [NonSerialized] public float3 wOffset;
+        // [NonSerialized] public float3 wOffset;
         public float3 V0 => triangle.v0;
         public float3 V1 => triangle.v1;
         public float3 V2 => triangle.v2;
@@ -76,13 +76,17 @@ namespace Geometry
         {
             uOffset = V1 - V0;
             vOffset = V2 - V0;
-            wOffset = V0 - V2;
+            // wOffset = V0 - V2;
             normal = math.cross(uOffset.normalized(),vOffset.normalized()).normalized();
         }
         
         public float3 GetNormalUnnormalized() => math.cross(uOffset, vOffset);
-        public float3 GetPoint(float _u,float _v)=>(1f - _u - _v) * this[0] + _u * uOffset + _v * vOffset;
+        public float3 GetBarycenter() => GetPoint(.25f);
+        public float3 GetPoint(float2 _uv) => GetPoint(_uv.x, _uv.y);
+        public float3 GetPoint(float _u,float _v) => V0 + _u * uOffset + _v * vOffset;
         public GPlane GetPlane() => new GPlane(normal,V0);
+        public float3 GetForward()=> (V0 - (V1 + V2) / 2).normalized();
+        public quaternion GetRotation() => quaternion.LookRotation(GetForward(),normal);
 
         public static readonly GTriangle kDefault = new GTriangle(new float3(0,0,1),new float3(-.5f,0,-1),new float3(.5f,0,-1));
     }
@@ -221,6 +225,11 @@ namespace Geometry
                 }
             }
         }
+        
+        public static GTriangle operator*(Matrix4x4 _matrix,GTriangle _triangle) => new GTriangle(
+            _matrix.MultiplyPoint(_triangle.V0),
+                _matrix.MultiplyPoint(_triangle.V1),
+                _matrix.MultiplyPoint(_triangle.V2));
     }
     #endregion
 }
