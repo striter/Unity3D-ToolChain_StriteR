@@ -9,7 +9,7 @@ namespace Geometry.Validation
             public static bool PlaneIntersection(GPlane _plane, GBox _box)
             {
                 var c = _box.center;
-                var e = math.abs(_box.extend);
+                var e = math.abs(_box.extent);
 
                 var n = _plane.normal;
                 float d = _plane.distance;

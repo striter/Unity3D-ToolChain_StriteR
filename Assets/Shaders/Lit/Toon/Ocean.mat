@@ -131,7 +131,7 @@ Material:
     - _GlossyReflections: 0
     - _Metallic: 0
     - _NoiseFlowStrength: 0.23
-    - _NoiseRange: 0.74175656
+    - _NoiseRange: 0.56192577
     - _NoiseRangeEnd: 0.754573
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -164,7 +164,7 @@ Material:
     - _NoiseColor: {r: 1, g: 1, b: 1, a: 1}
     - _RisingTideColor: {r: 0.78039217, g: 0.93762994, b: 1, a: 0.07058824}
     - _RotationMatrix: {r: 0, g: 0, b: 0, a: 0}
-    - _ShadowColor: {r: 0, g: 0, b: 0, a: 0}
+    - _ShadowColor: {r: 0.019668894, g: 0.35692436, b: 0.453, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _WaveST1: {r: 1, g: 1, b: 1, a: 1}
     - _WaveST2: {r: 1, g: 1, b: 1, a: 1}

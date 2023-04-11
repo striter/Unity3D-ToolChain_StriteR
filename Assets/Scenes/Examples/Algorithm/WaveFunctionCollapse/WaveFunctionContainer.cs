@@ -22,7 +22,6 @@ namespace Examples.Algorithm.WaveFunctionCollapse
                 case ETileDirection.Right:return m_Right == _dst.m_Left;
             }
         }
-
     }
     public class WaveFunctionContainer :  AWFCContainer<ETileDirection,WaveFunctionData>
     {

@@ -169,6 +169,11 @@ public static class ucomplex
     }
 }
 
+public static class kint2
+{
+    public static readonly int2 one = new int2(1, 1);
+}
+
 public static class kfloat3
 {
     public static readonly float3 one = 1f;
@@ -182,6 +187,7 @@ public static class kfloat3
 
 public static class kfloat2
 {
+    public static readonly float2 one = new float2(1, 1);
     public static readonly float2 up = new float2(0, 1);
     public static readonly float2 down = new float2(0, -1);
     public static readonly float2 left = new float2(-1, 0);

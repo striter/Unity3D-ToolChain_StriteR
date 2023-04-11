@@ -9,6 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: ProceduralMesh
   m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _NDF_COOKTORRANCE
   - _NORMALMAP
@@ -22,6 +24,7 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -113,6 +116,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaClipRange: 0.01
+    - _AlphaCutoff: 0.01
     - _AnisoTropicValue: 1
     - _Blend: 0
     - _BumpScale: 1

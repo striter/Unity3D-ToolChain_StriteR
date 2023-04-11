@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Geometry
@@ -184,6 +185,8 @@ namespace Geometry
         public PQuad(int _index0, int _index1, int _index2, int _index3):this(new Quad<int>(_index0,_index1,_index2,_index3)){}
         public static explicit operator PQuad(Quad<int> _src) => new PQuad(_src);
         
+        public static PQuad operator +(PQuad _src,int _add) => new PQuad(_src.B+_add,_src.L + _add,_src.F + _add,_src.R + _add);
+        public static PQuad operator -(PQuad _src,int _min) => new PQuad(_src.B+_min,_src.L + _min,_src.F + _min,_src.R + _min);
         public (T v0, T v1, T v2, T v3) GetVertices<T>(IList<T> _vertices) => (_vertices[B], _vertices[L],_vertices[F],_vertices[R]);
         public (Y v0, Y v1, Y v2, Y v3) GetVertices<T,Y>(IList<T> _vertices, Func<T, Y> _getVertex) => ( _getVertex( _vertices[B]), _getVertex(_vertices[L]),_getVertex(_vertices[F]),_getVertex(_vertices[R]));
         
@@ -207,7 +210,28 @@ namespace Geometry
         public int F => quad.F;
         public int R => quad.R;
     }
+    [Serializable]
+    public struct G2Quad:IQuad<float2>, IEnumerable<float2>,IIterate<float2>
+    {
+        public Quad<float2> quad;
+        public G2Quad(Quad<float2> _quad) { quad = _quad;  }
+        public G2Quad(float2 _index0, float2 _index1, float2 _index2, float2 _index3):this(new Quad<float2>(_index0,_index1,_index2,_index3)){}
+        public static implicit operator G2Quad(Quad<float2> _src) => new G2Quad(_src);
+        
+        public int Length => 4;
+        
+        public IEnumerator<float2> GetEnumerator() => quad.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator()=>GetEnumerator();
 
+        public float2 this[int _index] => quad[_index];
+        public float2 this[EQuadCorner _corner] => quad[_corner];
+
+        public float2 B => quad.B;
+        public float2 L => quad.L;
+        public float2 F => quad.F;
+        public float2 R => quad.R;
+        
+    }
     
     [Serializable]
     public struct GQuad : IQuad<Vector3>,IIterate<Vector3>

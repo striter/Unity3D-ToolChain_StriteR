@@ -24,30 +24,30 @@ namespace Rendering.PostProcess
             _128=128,
         }
 
-        [MTitle]public bool m_VolumetricLight;
-        [MFoldout(nameof(m_VolumetricLight),true)] public DVolumetricLight m_VolumetricLightData;
-        [Header("Optimize")]
-        [Range(1, 4)] public int m_VolumetricDownSample;
-        [MTitle] public bool m_EnableVolumetricBlur;
-        [MFoldout(nameof(m_EnableVolumetricBlur), true)] public DBlurs m_VolumetricBlur;
+        // [MTitle]public bool m_VolumetricLight;
+        // [MFoldout(nameof(m_VolumetricLight),true)] public DVolumetricLight m_VolumetricLightData;
+        // [Header("Optimize")]
+        // [Range(1, 4)] public int m_VolumetricDownSample;
+        // [MTitle] public bool m_EnableVolumetricBlur;
+        // [MFoldout(nameof(m_EnableVolumetricBlur), true)] public DBlurs m_VolumetricBlur;
         [MTitle] public bool m_MultiScattering;
         [MFoldout(nameof(m_MultiScattering), true)] public DMultiScattering m_MultiScatteringData;
-        public bool Validate() => m_VolumetricLight;
+        public bool Validate() => m_MultiScattering;// || m_VolumetricLight;
         public static readonly DAtmosphere kDefault = new DAtmosphere()
         {
-            m_VolumetricLight = true,
-            m_VolumetricLightData = new DVolumetricLight()
-            {
-                m_Strength = 1f,
-                m_Pow = 2,
-                m_MarchStrength = .3f,
-                m_Distance = 20f,
-                m_MarchTimes = EMarchTimes._64,
-                m_Dither=false,
-            },
-            m_VolumetricDownSample = 1,
-            m_EnableVolumetricBlur = false,
-            m_VolumetricBlur = DBlurs.kDefault,
+            // m_VolumetricLight = true,
+            // m_VolumetricLightData = new DVolumetricLight()
+            // {
+            //     m_Strength = 1f,
+            //     m_Pow = 2,
+            //     m_MarchStrength = .3f,
+            //     m_Distance = 20f,
+            //     m_MarchTimes = EMarchTimes._64,
+            //     m_Dither=false,
+            // },
+            // m_VolumetricDownSample = 1,
+            // m_EnableVolumetricBlur = false,
+            // m_VolumetricBlur = DBlurs.kDefault,
             m_MultiScattering = false,
             m_MultiScatteringData = DMultiScattering.kDefault,
         };
@@ -152,24 +152,24 @@ namespace Rendering.PostProcess
         private RenderTargetIdentifier kParticleDensityLUTRT = new RenderTargetIdentifier(kParticleDensityLUT);
     #endregion
         
-        readonly FBlursCore m_VolumetricBlur;
+        // readonly FBlursCore m_VolumetricBlur;
         public FAtmosphereCore()
         {
-            m_VolumetricBlur = new FBlursCore();
+            // m_VolumetricBlur = new FBlursCore();
         }
         
         public override void Destroy()
         {
             base.Destroy();
-            m_VolumetricBlur.Destroy();
+            // m_VolumetricBlur.Destroy();
         }
 
         public override void OnValidate(ref DAtmosphere _data)
         {
             base.OnValidate(ref _data);
-            if(m_Material.EnableKeyword(kVolumetricLight, _data.m_VolumetricLight))
-                _data.m_VolumetricLightData.Apply(m_Material);
-            m_VolumetricBlur.OnValidate(ref _data.m_VolumetricBlur);
+            // if(m_Material.EnableKeyword(kVolumetricLight, _data.m_VolumetricLight))
+            //     _data.m_VolumetricLightData.Apply(m_Material);
+            // m_VolumetricBlur.OnValidate(ref _data.m_VolumetricBlur);
             
             if(_data.m_MultiScattering)
                 _data.m_MultiScatteringData.Apply(m_Material);
@@ -188,33 +188,33 @@ namespace Rendering.PostProcess
                 return;
             }
             
-            if (!_data.m_VolumetricLight)
-            {
-                _buffer.Blit(_src,_dst);
-                return;
-            }
-            var sampleDescriptor = _descriptor;
-            sampleDescriptor.width /= _data.m_VolumetricDownSample;
-            sampleDescriptor.height /= _data.m_VolumetricDownSample;
-            sampleDescriptor.colorFormat = RenderTextureFormat.ARGB32;
-            sampleDescriptor.depthBufferBits = 0;
-        
-            _buffer.GetTemporaryRT(kVolumetricID, sampleDescriptor,FilterMode.Bilinear);
-
-            if (!_data.m_EnableVolumetricBlur)
-            {
-                _buffer.Blit(_src, kVolumetricID, m_Material, (int)EPassIndex.Sample);
-            }
-            else
-            {
-                _buffer.GetTemporaryRT(kBlurID, sampleDescriptor, FilterMode.Bilinear);
-                _buffer.Blit(_src, kBlurID, m_Material,  (int)EPassIndex.Sample);
-                m_VolumetricBlur.Execute(sampleDescriptor,ref _data.m_VolumetricBlur,_buffer, kBlurID, kVolumetricID,_renderer,_context,ref _renderingData ); 
-                _buffer.ReleaseTemporaryRT(kBlurID);
-            }
-            
-            _buffer.Blit(_src, _dst, m_Material,  (int)EPassIndex.Combine);
-            _buffer.ReleaseTemporaryRT(kVolumetricID);
+            // if (!_data.m_VolumetricLight)
+            // {
+            //     _buffer.Blit(_src,_dst);
+            //     return;
+            // }
+            // var sampleDescriptor = _descriptor;
+            // sampleDescriptor.width /= _data.m_VolumetricDownSample;
+            // sampleDescriptor.height /= _data.m_VolumetricDownSample;
+            // sampleDescriptor.colorFormat = RenderTextureFormat.ARGB32;
+            // sampleDescriptor.depthBufferBits = 0;
+            //
+            // _buffer.GetTemporaryRT(kVolumetricID, sampleDescriptor,FilterMode.Bilinear);
+            //
+            // if (!_data.m_EnableVolumetricBlur)
+            // {
+            //     _buffer.Blit(_src, kVolumetricID, m_Material, (int)EPassIndex.Sample);
+            // }
+            // else
+            // {
+            //     _buffer.GetTemporaryRT(kBlurID, sampleDescriptor, FilterMode.Bilinear);
+            //     _buffer.Blit(_src, kBlurID, m_Material,  (int)EPassIndex.Sample);
+            //     m_VolumetricBlur.Execute(sampleDescriptor,ref _data.m_VolumetricBlur,_buffer, kBlurID, kVolumetricID,_renderer,_context,ref _renderingData ); 
+            //     _buffer.ReleaseTemporaryRT(kBlurID);
+            // }
+            //
+            // _buffer.Blit(_src, _dst, m_Material,  (int)EPassIndex.Combine);
+            // _buffer.ReleaseTemporaryRT(kVolumetricID);
         }
     }
 }

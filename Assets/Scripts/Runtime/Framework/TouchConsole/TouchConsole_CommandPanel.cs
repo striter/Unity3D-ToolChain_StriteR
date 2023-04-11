@@ -252,6 +252,14 @@ public partial class TouchConsole
             UpdateCommandData();
         }
     }
+
+    [PartialMethod(EPartialMethods.SwitchVisible, EPartialSorting.CommandConsole)]
+    internal void SwitchConsole(bool _visible)
+    {
+        m_CommandContainers.transform.SetActive(_visible);
+    }
+    
+    
     void AddNewPage(string _page) => m_PageSelection.Spawn(m_PageSelection.Count).Init(_page, SelectPage);
 
     void UpdateCommandData()

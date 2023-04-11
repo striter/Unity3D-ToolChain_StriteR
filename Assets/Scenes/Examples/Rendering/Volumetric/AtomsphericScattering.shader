@@ -93,7 +93,7 @@ Shader "Game/Skybox/AtomsphericScattering"
 
                 float3 lightPos = _MainLightPosition.xyz*1000;
                 float2 screenUV = TransformHClipToNDC(i.positionHCS);
-                float rawDepth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV);
+                float rawDepth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).r;
                 float depthDistance = RawToDistance(rawDepth,screenUV);
                 GSphere atmoSphere = GSphere_Ctor(float3(0,0,0),_RadiusEnd);
                 float2 travelDistance = SphereRayDistance(atmoSphere,GRay_Ctor(_WorldSpaceCameraPos,scatterDirection));

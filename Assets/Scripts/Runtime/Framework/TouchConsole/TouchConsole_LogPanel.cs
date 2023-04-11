@@ -44,6 +44,12 @@ public partial class TouchConsole
         Application.logMessageReceived -= OnLogReceived;
     }
     
+    [PartialMethod(EPartialMethods.SwitchVisible, EPartialSorting.LogPanel)]
+    void LogFrameSwitch(bool _visible)
+    {
+        m_LogPanelRect.transform.SetActive(_visible);
+    }
+    
     // [PartialMethod(EPartialMethods.Reset, EPartialSorting.LogPanel)]
     // void LogFrameReset()
     // {
@@ -51,6 +57,7 @@ public partial class TouchConsole
     //     ClearConsoleLog();
     // }
     
+
     public void ClearConsoleLog()
     {
         m_LogDataQueue.Clear();

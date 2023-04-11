@@ -98,7 +98,7 @@ MonoBehaviour:
         m_Vector: {x: 0, y: 0}
         m_Attenuation: 0
     m_AntiAliasing:
-      mode: 2
+      mode: 1
       fxaa: 2
       m_AdditionalSample: 1
       m_UseDepth: 1

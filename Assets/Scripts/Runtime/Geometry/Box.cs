@@ -3,32 +3,33 @@ using System.ComponentModel;
 using Procedural;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Geometry
 {
     public partial struct G2Box
     {
         public float2 center;
-        public float2 extend;
+        public float2 extent;
         [NonSerialized] public float2 size;
         [NonSerialized] public float2 min;
         [NonSerialized] public float2 max;
-        public G2Box(float2 _center, float2 _extend)
+        public G2Box(float2 _center, float2 _extent)
         {
             this = default;
             center = _center;
-            extend = _extend;
+            extent = _extent;
             Ctor();
         }
         
         void Ctor()
         {
-            size = extend * 2f;
-            min = center - extend;
-            max = center + extend;
+            size = extent * 2f;
+            min = center - extent;
+            max = center + extent;
         }
 
-        public G2Box Move(float2 _deltaPosition)=> new G2Box(center + _deltaPosition, extend);
+        public G2Box Move(float2 _deltaPosition)=> new G2Box(center + _deltaPosition, extent);
         
         public static G2Box Minmax(float2 _min, float2 _max)
         {
@@ -40,33 +41,35 @@ namespace Geometry
         public bool Contains(float2 _point,float _bias = float.Epsilon)
         {
             var absOffset = math.abs(center-_point) + _bias;
-            return absOffset.x < extend.x && absOffset.y < extend.y;
+            return absOffset.x < extent.x && absOffset.y < extent.y;
         }
+
+        public float2 GetPoint(float2 _uv) => min + _uv * size;
     }
     
     public partial struct GBox
     {
         public float3 center;
-        public float3 extend;
+        public float3 extent;
         [NonSerialized] public float3 size;
         [NonSerialized] public float3 min;
         [NonSerialized] public float3 max;
-        public GBox(float3 _center, float3 _extend)
+        public GBox(float3 _center, float3 _extent)
         {
             this = default;
             center = _center;
-            extend = _extend;
+            extent = _extent;
             Ctor();
         }
         
         void Ctor()
         {
-            size = extend * 2f;
-            min = center - extend;
-            max = center + extend;
+            size = extent * 2f;
+            min = center - extent;
+            max = center + extent;
         }
 
-        public GBox Move(float3 _deltaPosition)=> new GBox(center + _deltaPosition, extend);
+        public GBox Move(float3 _deltaPosition)=> new GBox(center + _deltaPosition, extent);
         
         public static GBox Minmax(float3 _min, float3 _max)
         {
@@ -85,7 +88,7 @@ namespace Geometry
         public bool Contains(float3 _point,float _bias = float.Epsilon)
         {
             float3 absOffset = math.abs(center-_point) + _bias;
-            return absOffset.x < extend.x && absOffset.y < extend.y && absOffset.z < extend.z;
+            return absOffset.x < extent.x && absOffset.y < extent.y && absOffset.z < extent.z;
         }
     }
 

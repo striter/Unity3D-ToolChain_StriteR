@@ -81,6 +81,14 @@ public partial class TouchConsole
         }
     }
     
+    [PartialMethod(EPartialMethods.SwitchVisible, EPartialSorting.CommandConsole)]
+    internal void SwitchMisc(bool _visible)
+    {
+        m_FrameRate.transform.SetActive(_visible);
+        m_Joystick.transform.SetActive(_visible);
+    }
+    
+    
     public static void DoSetJoystick(Vector2 _position, bool _active) => Instance.SetJoystick(_position,_active);
     public static void DoTrackJoystick(Vector2 _normalizedPosition) => Instance.TrackJoystick(_normalizedPosition);
     private void SetJoystick(Vector2 _position, bool _active)

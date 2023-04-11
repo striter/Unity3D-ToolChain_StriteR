@@ -66,6 +66,7 @@ namespace TechToys.ThePlanet
             TouchConsole.Command("Reset",KeyCode.R).Button(Clear);
             TouchConsole.Command("Next Module", KeyCode.Alpha1).Button(NextModule);
             TouchConsole.Command("Marker",KeyCode.Alpha2).Button( SwitchGrid);
+            TouchConsole.SwitchVisible();
             NextModule();
             ReadPersistent();
             SwitchGrid();

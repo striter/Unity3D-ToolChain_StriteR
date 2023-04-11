@@ -15,6 +15,7 @@ public partial class TouchConsole :MonoBehaviour, IPartialMethods<EPartialMethod
         Reset,
         OnEnable,
         OnDisable,
+        SwitchVisible,
     }
     public enum EPartialSorting
     {
@@ -83,6 +84,15 @@ public partial class TouchConsole :MonoBehaviour, IPartialMethods<EPartialMethod
     void OnDisable()
     {
         this.InvokeMethods(EPartialMethods.OnDisable);
+    }
+
+    public static void SwitchVisible() => Instance.DoSwitchVisible();
+
+    bool visible = true;
+    void DoSwitchVisible()
+    {
+        visible = !visible;
+        this.InvokeMethods(EPartialMethods.SwitchVisible,visible);
     }
 
     public static TouchConsole InitDefaultCommands()=>Instance.DefaultCommands();

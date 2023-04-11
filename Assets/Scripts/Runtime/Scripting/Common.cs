@@ -433,12 +433,46 @@ public struct Matrix3x3
 }
 
 [Serializable]
-public struct HomogeneousCoordinateTransformMatrix  //float3x4
+public struct HomogeneousMatrix2x3
+{
+    public float2 c0, c1, c2; 
+    //r2 [0 , 0 , 1]
+    private HomogeneousMatrix2x3(float2 _c0,float2 _c1,float2 _c2) { c0 = _c0;  c1 = _c1; c2 = _c2;  }
+    private HomogeneousMatrix2x3(float _00, float _01, float _02,
+                                 float _10, float _11, float _12 ): this(
+                                 new float2(_00, _10),
+                                 new float2(_01, _11),
+                                 new float2(_02, _12) ) { }
+
+    public static HomogeneousMatrix2x3 TRS(float2 _translate, float _angle, float2 _scale)
+    {
+        var r = float2x2.Rotate(_angle);
+        return new HomogeneousMatrix2x3(
+            r.c0.x*_scale.x, r.c0.y*_scale.x ,_translate.x,
+            r.c1.x*_scale.y, r.c1.y*_scale.y ,_translate.y
+        );
+    }
+
+    public float2 mulDirection(float2 _srcVector) => c0*_srcVector.x + c1*_srcVector.y;
+    public float2 mulPosition(float2 _position) =>  c0*_position.x + c1*_position.y + c2;
+    
+    public static implicit operator float2x3(HomogeneousMatrix2x3 _matrix) => new float2x3(_matrix.c0,_matrix.c1,_matrix.c2);
+    public static implicit operator HomogeneousMatrix2x3(float3x3 _srcMatrix)=>new HomogeneousMatrix2x3(_srcMatrix.c0.xy,_srcMatrix.c1.xy,_srcMatrix.c2.xy);
+    public float4x4 ToMatrix4x4XZ() => new float4x4(
+            c0.x,0,c0.y,c2.x,
+            0,1,0,0,
+            c1.x,0,c1.y,c2.y,
+            0,0,0,1 );
+}
+
+[Serializable]
+public struct HomogeneousMatrix3x4  //float3x4
 {
     public float3 c0, c1, c2, c3;
+    //r3 [0 , 0 , 0 , 1]
     
-    private HomogeneousCoordinateTransformMatrix(float3 _c0,float3 _c1,float3 _c2,float3 _c3) { c0 = _c0;  c1 = _c1; c2 = _c2; c3 = _c3; }
-    private HomogeneousCoordinateTransformMatrix( 
+    private HomogeneousMatrix3x4(float3 _c0,float3 _c1,float3 _c2,float3 _c3) { c0 = _c0;  c1 = _c1; c2 = _c2; c3 = _c3; }
+    private HomogeneousMatrix3x4( 
         float _00, float _01, float _02,float _03,
         float _10, float _11, float _12,float _13,
         float _20, float _21, float _22,float _23): this(
@@ -447,16 +481,16 @@ public struct HomogeneousCoordinateTransformMatrix  //float3x4
             new float3(_02, _12, _22), 
             new float3(_03, _13, _23)) { }
 
-    public static HomogeneousCoordinateTransformMatrix TS(float3 _t, float3 _s) => new HomogeneousCoordinateTransformMatrix(
+    public static HomogeneousMatrix3x4 TS(float3 _t, float3 _s) => new HomogeneousMatrix3x4(
         _s.x,0f,0f,_t.x,
         0f,_s.y,0f,_t.y,
         0f,0f,_s.z,_t.z
     );
 
-    public static HomogeneousCoordinateTransformMatrix TRS(float3 _t, quaternion _q, float3 _s)
+    public static HomogeneousMatrix3x4 TRS(float3 _t, quaternion _q, float3 _s)
     {
         var r = new float3x3(_q);
-        return new HomogeneousCoordinateTransformMatrix(
+        return new HomogeneousMatrix3x4(
             r.c0.x*_s.x, r.c0.y*_s.x ,r.c0.z*_s.x,_t.x,
             r.c1.x*_s.y, r.c1.y*_s.y ,r.c1.z*_s.y,_t.y,
             r.c2.x*_s.z, r.c2.y*_s.z ,r.c2.z*_s.z,_t.z
@@ -465,6 +499,7 @@ public struct HomogeneousCoordinateTransformMatrix  //float3x4
 
     public float3 mulDirection(float3 _srcVector) => c0*_srcVector.x + c1*_srcVector.y + c2*_srcVector.z;
     public float3 mulPosition(float3 _position) =>  c0*_position.x + c1*_position.y + c2*_position.z + c3;
-    public static implicit operator float3x4(HomogeneousCoordinateTransformMatrix _matrix) => new float3x4(_matrix.c0,_matrix.c1,_matrix.c2,_matrix.c3);
-    public static implicit operator HomogeneousCoordinateTransformMatrix(float4x4 _srcMatrix)=>new HomogeneousCoordinateTransformMatrix(_srcMatrix.c0.xyz,_srcMatrix.c1.xyz,_srcMatrix.c2.xyz,_srcMatrix.c3.xyz);
+    
+    public static implicit operator float3x4(HomogeneousMatrix3x4 _matrix) => new float3x4(_matrix.c0,_matrix.c1,_matrix.c2,_matrix.c3);
+    public static implicit operator HomogeneousMatrix3x4(float4x4 _srcMatrix)=>new HomogeneousMatrix3x4(_srcMatrix.c0.xyz,_srcMatrix.c1.xyz,_srcMatrix.c2.xyz,_srcMatrix.c3.xyz);
 }
