@@ -46,10 +46,10 @@ namespace UnityEditor.Extensions
                 {
                     Vector3 tangent = tangents[i].XYZ().normalized;
                     Vector3 normal = normals[i].normalized;
-                    Vector3 biNormal = Vector3.Cross(normal, tangent).normalized * tangents[i].w;
+                    Vector3 biTangent = Vector3.Cross(normal, tangent).normalized * tangents[i].w;
                     Matrix3x3 tbnMatrix = Matrix3x3.kIdentity;
                     tbnMatrix.SetRow(0, tangent);
-                    tbnMatrix.SetRow(1, biNormal);
+                    tbnMatrix.SetRow(1, biTangent);
                     tbnMatrix.SetRow(2, normal);
                     smoothNormals[i] = tbnMatrix * smoothNormals[i].normalized;
                 }

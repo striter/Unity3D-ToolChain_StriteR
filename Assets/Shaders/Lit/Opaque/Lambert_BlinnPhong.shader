@@ -7,6 +7,11 @@ Shader "Game/Unfinished/Lambert_BlinnPhong"
         _Lambert("Lambert",Range(0,1))=.5
         _SpecularAmount("Specular Amount",float)=1
         _SpecularPower("Specular Power",float)=64
+        
+		[Header(Render Options)]
+        [HideInInspector]_ZWrite("Z Write",int)=1
+        [HideInInspector]_ZTest("Z Test",int)=2
+        [HideInInspector]_Cull("Cull",int)=2
     }
     SubShader
     {

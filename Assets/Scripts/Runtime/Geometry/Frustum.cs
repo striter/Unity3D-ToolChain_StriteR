@@ -48,7 +48,7 @@ namespace Geometry
             float halfHeight = zNear * Mathf.Tan(fov * .5f * Mathf.Deg2Rad);
             Vector3 forward = rotation*Vector3.forward;
             Vector3 toRight = rotation*Vector3.right * halfHeight * aspect;
-            Vector3 toTop = rotation*Vector3.up * halfHeight;
+            Vector3 toTop = rotation*Vector3.up * halfHeight ;
 
             Vector3 tl = forward * zNear + toTop - toRight;
             float scale = tl.magnitude / zNear;

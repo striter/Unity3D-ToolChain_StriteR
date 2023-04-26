@@ -80,7 +80,7 @@ namespace TechToys.ThePlanet
         public bool ValidateGridSelection(Ray _ray, out GridID _vertexID)
         {
             _vertexID = default;
-            var distance = UGeometryValidation.Ray.Distances(_ray,new GSphere(Vector3.zero, KPCG.kGridSize)).x;
+            var distance = UGeometry.Distance.Eval(_ray,new GSphere(Vector3.zero, KPCG.kGridSize)).x;
             if (distance < 0)
                 return false;
             var hitPos = _ray.GetPoint(distance);

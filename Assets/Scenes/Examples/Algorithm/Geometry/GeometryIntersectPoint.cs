@@ -23,28 +23,28 @@ namespace Examples.Algorithm.Geometry
             
             Gizmos.color = Color.white;
             Gizmos.DrawSphere(m_Point, .1f);
-            float distances= UGeometryValidation.Ray.Projection(m_Ray, m_Point);
-            Gizmos_Extend.DrawGizmos(m_Ray.ToLine(distances));
+            float rayPointProjection= UGeometry.Projection.Eval(m_Ray, m_Point);
+            m_Ray.ToLine(rayPointProjection).DrawGizmos();
             Gizmos.color = Color.blue;
-            Gizmos.DrawSphere(m_Ray.GetPoint(distances),.1f);
+            Gizmos.DrawSphere(m_Ray.GetPoint(rayPointProjection),.1f);
 
             Gizmos.color = Color.white;
-            var lineRayDistances = UGeometryValidation.Ray.Projection(m_Ray1,m_Line1);
-            Gizmos_Extend.DrawGizmos(m_Line1);
-            Gizmos_Extend.DrawGizmos(m_Ray1.ToLine(lineRayDistances.y));
+            var lineRayProjections = UGeometry.Projection.Eval(m_Ray1,m_Line1);
+            m_Line1.DrawGizmos();
+            m_Ray1.ToLine(lineRayProjections.y).DrawGizmos();
             Gizmos.color = Color.blue;
-            Gizmos.DrawSphere(m_Line1.GetPoint(lineRayDistances.x), .1f);
+            Gizmos.DrawSphere(m_Line1.GetPoint(lineRayProjections.x), .1f);
             Gizmos.color = Color.red;
-            Gizmos.DrawSphere(m_Ray1.GetPoint(lineRayDistances.y), .1f);
+            Gizmos.DrawSphere(m_Ray1.GetPoint(lineRayProjections.y), .1f);
 
             Gizmos.color = Color.white;
-            var rayrayDistances = UGeometryValidation.Ray.Projection(m_Ray20, m_Ray21);
-            Gizmos_Extend.DrawGizmos(m_Ray20.ToLine(rayrayDistances.x));
-            Gizmos_Extend.DrawGizmos(m_Ray21.ToLine(rayrayDistances.y));
+            var rayrayProjections = UGeometry.Projection.Eval(m_Ray20, m_Ray21);
+            m_Ray20.ToLine(rayrayProjections.x).DrawGizmos();
+            m_Ray21.ToLine(rayrayProjections.y).DrawGizmos();
             Gizmos.color = Color.blue;
-            Gizmos.DrawSphere(m_Ray20.GetPoint(rayrayDistances.x), .1f);
+            Gizmos.DrawSphere(m_Ray20.GetPoint(rayrayProjections.x), .1f);
             Gizmos.color = Color.red;
-            Gizmos.DrawSphere(m_Ray21.GetPoint(rayrayDistances.y), .1f);
+            Gizmos.DrawSphere(m_Ray21.GetPoint(rayrayProjections.y), .1f);
         }
 #endif
     }

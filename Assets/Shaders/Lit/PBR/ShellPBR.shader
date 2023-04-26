@@ -145,5 +145,6 @@
 			ENDHLSL
 		}
 		USEPASS "Game/Additive/ShadowCaster/MAIN"
+		USEPASS "Game/Additive/DepthOnly/MAIN"
 	}
 }

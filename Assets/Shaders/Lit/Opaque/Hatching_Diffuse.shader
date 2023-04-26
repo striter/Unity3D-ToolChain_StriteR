@@ -10,6 +10,11 @@
 		[NoScaleOffset]_Hatch3("Hatch 3",2D) = "white"{}
 		[NoScaleOffset]_Hatch4("Hatch 4",2D) = "white"{}
 		[NoScaleOffset]_Hatch5("Hatch 5",2D) = "white"{}
+		
+		[Header(Render Options)]
+        [HideInInspector]_ZWrite("Z Write",int)=1
+        [HideInInspector]_ZTest("Z Test",int)=2
+        [HideInInspector]_Cull("Cull",int)=2
 	}
 	SubShader
 	{

@@ -16,7 +16,7 @@ namespace Examples.Algorithm.Geometry
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            float distance = UGeometryValidation.Ray.Distance(m_Ray,m_Plane);
+            float distance = UGeometry.Distance.Eval(m_Ray,m_Plane);
 
             Gizmos.matrix = transform.localToWorldMatrix;
             Vector3 planeSize = new Vector3(1,0,1);
@@ -40,7 +40,7 @@ namespace Examples.Algorithm.Geometry
 
             Gizmos.color = Color.white;
             Gizmos.matrix = transform.localToWorldMatrix;
-            float projection = UGeometryValidation.Point.Distance(m_Point,m_Plane);
+            float projection = UGeometry.Distance.Eval(m_Point,m_Plane);
             Gizmos.DrawLine(m_Point,m_Point-projection*m_Plane.normal);
         }
 #endif

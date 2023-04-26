@@ -345,7 +345,8 @@
 			
 			Blend Off
 			ZWrite On
-			ZTest LEqual
+			ZTest [_ZTest]
+			Cull [_Cull]
 			
 			HLSLPROGRAM
 			#pragma vertex vert

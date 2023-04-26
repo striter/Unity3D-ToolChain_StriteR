@@ -13,7 +13,7 @@ namespace Examples.Algorithm.Geometry
             Gizmos.color = Color.grey;
             Gizmos.matrix = transform.localToWorldMatrix;
             float rayDistance = 1f;
-            Vector2 distances= UGeometryValidation.Ray.Distances(m_Ray,m_Data);
+            Vector2 distances= UGeometry.Distance.Eval(m_Ray,m_Data);
             if (distances.x>=0)
             {
                 Gizmos.color = Color.blue;

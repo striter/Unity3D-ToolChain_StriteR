@@ -14,6 +14,11 @@
 		[Header(Rim Setting)]
 		[KeywordEnum(None,Hard,Smooth)]_Rim("Rim Type",float)=1
 		_RimRange("Rim Range",Range(0,1))=0.5
+		
+		[Header(Render Options)]
+        [HideInInspector]_ZWrite("Z Write",int)=1
+        [HideInInspector]_ZTest("Z Test",int)=2
+        [HideInInspector]_Cull("Cull",int)=2
 	}
 	SubShader
 	{

@@ -491,9 +491,9 @@ public struct HomogeneousMatrix3x4  //float3x4
     {
         var r = new float3x3(_q);
         return new HomogeneousMatrix3x4(
-            r.c0.x*_s.x, r.c0.y*_s.x ,r.c0.z*_s.x,_t.x,
-            r.c1.x*_s.y, r.c1.y*_s.y ,r.c1.z*_s.y,_t.y,
-            r.c2.x*_s.z, r.c2.y*_s.z ,r.c2.z*_s.z,_t.z
+                r.c0.x*_s.x, r.c0.y*_s.x ,r.c0.z*_s.x,_t.x,
+                r.c1.x*_s.y, r.c1.y*_s.y ,r.c1.z*_s.y,_t.y,
+                r.c2.x*_s.z, r.c2.y*_s.z ,r.c2.z*_s.z,_t.z
             );
     }
 

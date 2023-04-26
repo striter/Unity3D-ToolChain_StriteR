@@ -22,10 +22,10 @@ namespace Examples.Algorithm.Geometry
             Gizmos.matrix = transform.localToWorldMatrix;
 
             //Sphere
-            var intersect = UGeometryValidation.Ray.Intersect(m_SRay,m_Sphere);
+            var intersect = UGeometry.Intersect.Eval(m_SRay,m_Sphere);
             Gizmos.color = intersect ? Color.green : Color.grey;
             Gizmos.DrawWireSphere(m_Sphere.center,m_Sphere.radius);
-            var distances = UGeometryValidation.Ray.Distances(m_SRay,m_Sphere);
+            var distances = UGeometry.Distance.Eval(m_SRay,m_Sphere);
 
             float rayDistance = 2f;
             if (distances.x >= 0)
@@ -45,10 +45,10 @@ namespace Examples.Algorithm.Geometry
 
             //Ellipsoid
             rayDistance = 2f;
-            intersect = UGeometryValidation.Ray.Intersect(m_ERay,m_Ellipsoid);
+            intersect = UGeometry.Intersect.Eval(m_ERay,m_Ellipsoid);
             Gizmos.color = intersect ? Color.green : Color.grey;
             m_Ellipsoid.DrawGizmos();
-            distances = UGeometryValidation.Ray.Distances(m_ERay,m_Ellipsoid);
+            distances = UGeometry.Distance.Eval(m_ERay,m_Ellipsoid);
             if (distances.x >= 0)
             {
                 Gizmos.color = Color.blue;

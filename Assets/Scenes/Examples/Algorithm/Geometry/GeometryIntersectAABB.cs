@@ -20,11 +20,11 @@ namespace Examples.Algorithm.Geometry
             totalTime += UTime.deltaTime;
             
             Gizmos.matrix = transform.localToWorldMatrix;
-            bool intersect = UGeometryValidation.Ray.Intersect(m_Ray,m_Box);
+            bool intersect = UGeometry.Intersect.Eval(m_Ray,m_Box);
             Gizmos.color = intersect ? Color.green : Color.grey;
             m_Box.DrawGizmos();
             
-            Vector2 distances = UGeometryValidation.Ray.Distances(m_Ray,m_Box);
+            Vector2 distances = UGeometry.Distance.Eval(m_Ray,m_Box);
             if (distances.y > 0)
             {
                 Gizmos.color = Color.red;
@@ -40,9 +40,9 @@ namespace Examples.Algorithm.Geometry
             var collisionBox1 = m_CollisionBox1.Move(delta*.5f);
             var collisionBox2 = m_CollisionBox2.Move(-delta*.5f);
             
-            Gizmos.color = UGeometryValidation.AABB.AABBIntersection(m_Box,collisionBox1) ? Color.green:Color.red;
+            Gizmos.color = UGeometry.Intersect.Eval(m_Box,collisionBox1) ? Color.green:Color.red;
             collisionBox1.DrawGizmos();
-            Gizmos.color = UGeometryValidation.AABB.AABBIntersection(m_Box,collisionBox2) ? Color.green:Color.red;
+            Gizmos.color = UGeometry.Intersect.Eval(m_Box,collisionBox2) ? Color.green:Color.red;
             collisionBox2.DrawGizmos();
 
             Gizmos.color = intersect ? Color.white:Color.grey;

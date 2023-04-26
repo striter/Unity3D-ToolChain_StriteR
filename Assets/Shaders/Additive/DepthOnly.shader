@@ -48,7 +48,7 @@
 			Cull [_Cull]
 			
 			NAME "MAIN"
-			Tags{"LightMode" = "DepthOnly"}
+			Tags{ "LightMode" = "DepthOnly" }
 			HLSLPROGRAM
 			#pragma vertex DepthVertex
 			#pragma fragment DepthFragment

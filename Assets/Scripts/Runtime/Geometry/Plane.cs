@@ -56,7 +56,6 @@ namespace Geometry
         public static readonly GPlane kZeroPlane = new GPlane(Vector3.up, 0f);
         public override string ToString() => $"{normal},{distance}";
         
-        
         public Matrix4x4 GetMirrorMatrix()
         {
             Matrix4x4 mirrorMatrix = Matrix4x4.identity;

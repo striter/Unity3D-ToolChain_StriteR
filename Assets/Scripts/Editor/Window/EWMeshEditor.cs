@@ -238,7 +238,7 @@ namespace UnityEditor.Extensions
             int index = _polygons.LastIndex(p =>
             {
                 GTriangle triangle = (GTriangle)p.Convert(_vertices);
-                bool intersect = UGeometryValidation.Ray.Intersect(triangle, _ray, true, true, out float distance);
+                bool intersect = UGeometry.Intersect.Eval(triangle, _ray, true, true, out float distance);
                 if (intersect && minDistance > distance)
                 {
                     collisionTriangle = triangle;
@@ -460,7 +460,7 @@ namespace UnityEditor.Extensions
 
             foreach (var index in m_Polygons[m_SelectedPolygon])
             {
-                if (!UGeometryValidation.Ray.Intersect(_ray,new GSphere( m_Verticies[index], C_VertexSphereRadius * m_GUISize)))
+                if (!UGeometry.Intersect.Eval(_ray,new GSphere( m_Verticies[index], C_VertexSphereRadius * m_GUISize)))
                     continue;
                 SelectVertex(index);
                 return true;

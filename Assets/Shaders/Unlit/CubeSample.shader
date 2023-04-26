@@ -5,6 +5,11 @@ Shader "Game/Unlit/CubeSample"
         _CubeMap("Cube Map",CUBE)=""{}
         _Offset("Offset",Range(0,.5))=1
         [Toggle(_SPHERICAL)]_Spherical("Spherical",int)=0
+        
+		[Header(Render Options)]
+        [HideInInspector]_ZWrite("Z Write",int)=1
+        [HideInInspector]_ZTest("Z Test",int)=2
+        [HideInInspector]_Cull("Cull",int)=2
     }
     SubShader
     {
@@ -75,9 +80,15 @@ Shader "Game/Unlit/CubeSample"
         Pass
         {
 			Tags{"LightMode" = "DepthOnly"}    
+			ZWrite On
+			Blend Off
+			ZTest [_ZTest]
+			Cull [_Cull]
+            
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            
             float4 frag (v2f i,out float depth:SV_DEPTH) : SV_Target
             {
                 SDFFragment(i,depth);

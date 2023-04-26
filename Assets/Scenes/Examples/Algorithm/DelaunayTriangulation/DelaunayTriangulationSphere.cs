@@ -48,7 +48,7 @@ namespace Examples.Algorithm.DelaunayTriangulation
             
             m_ProjectedVertices.Clear();
             for (int i = 0; i < m_RandomCount; i++)
-                m_ProjectedVertices.Add(UGeometryValidation.StereographicProjection(m_Vertices[i],_poleOrigin,_projectionPlane).to2xz());
+                m_ProjectedVertices.Add(UGeometry.StereographicProjection(m_Vertices[i],_poleOrigin,_projectionPlane).to2xz());
             
             UTriangulation.BowyerWatson(m_ProjectedVertices,ref curTriangles);
             _triangles.AddRange(curTriangles);
