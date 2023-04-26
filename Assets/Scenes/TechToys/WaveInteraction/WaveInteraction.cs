@@ -56,7 +56,7 @@ namespace Examples.Rendering.WaveInteraction
                 var localWave = GerstnerWave(position.xz, waveST1, amp1, spikeAmp1, Vector3.forward, Vector3.up, Vector3.forward, time);
                 localWave += GerstnerWave(position.xz, waveST2, amp2, spikeAmp2, Vector3.forward, Vector3.up, Vector3.forward, time);
                 m_WaveElements[i].transform.position = position + localWave;
-                m_WaveElements[i].transform.rotation = Quaternion.LookRotation(localWave.normalized(),Vector3.up);
+                m_WaveElements[i].transform.rotation = Quaternion.LookRotation(localWave.normalize(),Vector3.up);
             }
             
             
@@ -66,7 +66,7 @@ namespace Examples.Rendering.WaveInteraction
             {
                 m_Destination = hitPoint;
                 if((m_Destination - m_Position).sqrmagnitude() > 0)
-                    m_Forward = (m_Destination - m_Position).normalized();
+                    m_Forward = (m_Destination - m_Position).normalize();
             }
                 
             m_Position = m_MoveDamper.Tick(deltaTime,m_Destination);

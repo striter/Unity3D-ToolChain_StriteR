@@ -45,7 +45,7 @@ namespace Geometry
         void Ctor()
         {
             var offset = end - start;
-            direction = offset.normalized();
+            direction = offset.normalize();
             length = offset.magnitude();
         }
         

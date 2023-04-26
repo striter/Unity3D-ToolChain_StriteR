@@ -8,7 +8,6 @@ Shader "Game/Lit/UberPhong"
         _SpecularTex("Specular",2D)="white"{}
         _EmissionTex("Emission",2D)="black"{}
     	
-		[Header(Render Options)]
         [HideInInspector]_ZWrite("Z Write",int)=1
         [HideInInspector]_ZTest("Z Test",int)=2
         [HideInInspector]_Cull("Cull",int)=2

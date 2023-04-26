@@ -178,9 +178,9 @@ namespace OPhysics
         public void Play(Vector3 _startPos, Vector3 _endPos, float _angle, float _horiSpeed)
         {
             base.Play(_startPos, Vector3.zero);
-            Vector3 horiDirection = UVector.GetXZLookDirection(_startPos, _endPos);
-            Vector3 horiRight = horiDirection.RotateDirectionClockwise(Vector3.up, 90);
-            m_Direction = horiDirection.RotateDirectionClockwise(horiRight, -_angle);
+            var horiDirection = umath.GetXZLookDirection(_startPos, _endPos);
+            var horiRight = horiDirection.rotateCW(kfloat3.up, 90);
+            m_Direction = horiDirection.rotateCW(horiRight, -_angle);
             m_HorizontalSpeed = _horiSpeed / Mathf.Cos(_angle * Mathf.Deg2Rad);
             m_SpeedMultiplier = 1f;
             float horiDistance = Vector3.Distance(_startPos, _endPos);

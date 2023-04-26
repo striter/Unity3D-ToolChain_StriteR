@@ -1,49 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
-public static class UVector
+public static partial class umath
 {
-
 #region Common Methods
-    public static float GetAngle(Vector3 first, Vector3 second, Vector3 up)
+    public static float closestAngle(float3 _first, float3 _second, float3 _up)
     {
-        float angle = Vector3.Angle(first, second);
-        angle *= Mathf.Sign(Vector3.Dot(up, Vector3.Cross(first, second)));
-        return angle;
+        var nonCloseAngle = Vector3.Angle(_first, _second);
+        nonCloseAngle *= math.sign(dot(_up, cross(_first, _second)));
+        return nonCloseAngle;
     }
-    public static float GetAngleY(Vector3 first, Vector3 second, Vector3 up)
+    public static float closestAngleY(float3 _first, float3 _second, float3 _up)
     {
-        Vector3 newFirst = new Vector3(first.x, 0, first.z);
-        Vector3 newSecond = new Vector3(second.x, 0, second.z);
-        return GetAngle(newFirst, newSecond, up);
+        var newFirst = new float3(_first.x, 0, _first.z);
+        var newSecond = new float3(_second.x, 0, _second.z);
+        return closestAngle(newFirst, newSecond, _up);
     }
-    public static float GetXZDistance(Vector3 start, Vector3 end) => new Vector2(start.x - end.x, start.z - end.z).magnitude;
-    public static float GetXZSqrDistance(Vector3 start, Vector3 end) => new Vector2(start.x - end.x, start.z - end.z).sqrMagnitude;
-    public static Vector3 GetXZLookDirection(Vector3 startPoint, Vector3 endPoint)
+    public static float distanceXZ(float3 _start, Vector3 _end) => new float2(_start.x - _end.x, _start.z - _end.z).magnitude();
+    public static float distanceXZSqr(float3 _start, float3 _end) => new float2(_start.x - _end.x, _start.z - _end.z).sqrmagnitude();
+    public static float3 GetXZLookDirection(float3 _startPoint, float3 _endPoint)
     {
-        Vector3 lookDirection = endPoint - startPoint;
+        float3 lookDirection = _endPoint - _startPoint;
         lookDirection.y = 0;
-        lookDirection.Normalize();
+        lookDirection.normalize();
         return lookDirection;
     }
-    public static Vector3 RotateDirectionClockwise(this Vector3 _src, Vector3 axis, float angle) => (Quaternion.AngleAxis(angle, axis) * _src).normalized;
+    public static float3 rotateCW(this float3 _src, float3 axis, float angle) => (Quaternion.AngleAxis(angle, axis) * _src).normalized;
     
-    public static float SqrMagnitude(Vector3 _src) => _src.x * _src.x + _src.y * _src.y + _src.z * _src.z;
-    public static float Dot(Vector3 _src, Vector3 _dst) => _src.x * _dst.x + _src.y * _dst.y + _src.z * _dst.z;
-    public static Vector3 Project(Vector3 _src, Vector3 _dst) => (Dot(_src, _dst) / SqrMagnitude(_dst)) * _dst;
+    public static float dot(Vector3 _src, Vector3 _dst) => _src.x * _dst.x + _src.y * _dst.y + _src.z * _dst.z;
     
-    public static Vector3 Cross(Vector3 _src, Vector3 _dst) => new Vector3(_src.y * _dst.z - _src.z * _dst.y, _src.z * _dst.x - _src.x * _dst.z, _src.x * _dst.y - _src.y * _dst.x);
+    public static float3 cross(float3 _src, float3 _dst) => new Vector3(_src.y * _dst.z - _src.z * _dst.y, _src.z * _dst.x - _src.x * _dst.z, _src.x * _dst.y - _src.y * _dst.x);
     
-    public static float Dot2(float2 _src, float2 _dst) => _src.x * _dst.x + _src.y * _dst.y;
-    public static float Cross2(float2 _src, float2 _dst) => _src.x * _dst.y - _src.y * _dst.x;
-    
-    public static IEnumerable<bool> Greater(this Vector3 _vector, float _comparer)
-    {
-        yield return _vector.x > _comparer;
-        yield return _vector.y > _comparer;
-        yield return _vector.z > _comparer;
-    }
+    // public static float dot(float2 _src, float2 _dst) => _src.x * _dst.x + _src.y * _dst.y;
+    public static float cross(float2 _src, float2 _dst) => _src.x * _dst.y - _src.y * _dst.x;
 #endregion   
 
 
@@ -81,7 +70,7 @@ public static class UVector
     public static Vector2 frac(Vector2 _src) => new Vector2(math.frac(_src.x), math.frac(_src.y));
     public static Vector3 frac(Vector3 _src) => new Vector3(math.frac(_src.x), math.frac(_src.y), math.frac(_src.z));
     public static Vector4 frac(Vector4 _src) => new Vector4(math.frac(_src.x), math.frac(_src.y), math.frac(_src.z), math.frac(_src.w));
-    public static float dot(Vector2 _vec, float _value) => Vector2.Dot(_vec, _value.ToVector2());
+    // public static float dot(Vector2 _vec, float _value) => Vector2.Dot(_vec, _value.ToVector2());
     public static float dot(Vector3 _vec, float _value) => Vector3.Dot(_vec, _value.ToVector3());
     public static float dot(Vector4 _vec, float _value) => Vector4.Dot(_vec, _value.ToVector4());
     

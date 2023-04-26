@@ -57,7 +57,7 @@ public static class kmath
     };
 }
 
-public static partial class umath
+public static partial class umath       //Swizzling
 {
     public static float3 to3xy(this float2 _value, float _z = 0) => new float3(_value, _z);
     public static float3 to3xz(this float2 _value, float _y = 0) => new float3(_value.x, _y,_value.y);
@@ -80,9 +80,9 @@ public static partial class umath
     public static float sum(this float3 _value) => _value.x + _value.y + _value.z;
     public static float sum(this float4 _value) => _value.x + _value.y + _value.z + _value.w;
 
-    public static float2 normalized(this float2 _value) => math.normalize(_value);
-    public static float3 normalized(this float3 _value) => math.normalize(_value);
-    public static float4 normalized(this float4 _value) => math.normalize(_value);
+    public static float2 normalize(this float2 _value) => math.normalize(_value);
+    public static float3 normalize(this float3 _value) => math.normalize(_value);
+    public static float4 normalize(this float4 _value) => math.normalize(_value);
     
     public static float saturate(this float _value)=> math.min(math.max(_value,0f) ,1f);
     public static float2 saturate(this float2 _value)=> math.min(math.max(_value,0f) ,1f);

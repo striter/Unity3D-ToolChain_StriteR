@@ -145,11 +145,11 @@ namespace Examples.PhysicsScenes
                 return;
 
             Gizmos.color = Color.green;
-            Gizmos.DrawLine(m_Hips.transform.position, m_Hips.transform.position + m_Up * 1f);
+            Gizmos.DrawLine(m_Hips.transform.position, m_Hips.transform.position + (Vector3)m_Up * 1f);
             Gizmos.color = Color.blue;
-            Gizmos.DrawLine(m_Hips.transform.position, m_Hips.transform.position + m_Forward * 1f);
+            Gizmos.DrawLine(m_Hips.transform.position, m_Hips.transform.position + (Vector3)m_Forward * 1f);
             Gizmos.color = Color.red;
-            Gizmos.DrawLine(m_Hips.transform.position, m_Hips.transform.position + m_Right * 1f);
+            Gizmos.DrawLine(m_Hips.transform.position, m_Hips.transform.position + (Vector3)m_Right * 1f);
 
             Gizmos.color = Color.yellow;
             Gizmos.DrawSphere(m_BodyString.transform.position, .1f);

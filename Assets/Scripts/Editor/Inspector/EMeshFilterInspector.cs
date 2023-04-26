@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace UnityEditor.Extensions
@@ -51,7 +52,7 @@ namespace UnityEditor.Extensions
             {
                 m_vertices = m_SharedMesh.vertices;
                 m_Normals = m_SharedMesh.normals;
-                m_Tangents = m_SharedMesh.tangents;
+                m_Tangents = m_SharedMesh.tangents; //UModeling.RegenerateTangents(m_SharedMesh.GetPolygons(out var indices),m_Normals,m_vertices,m_SharedMesh.uv).Select(p=>(Vector4)p).ToArray();
                 m_Colors = m_SharedMesh.colors;
             }
         }

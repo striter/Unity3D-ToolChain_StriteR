@@ -12,7 +12,7 @@ public static class UNoise
         public static float Unit1f1(float _unitValue) => frac(sin(_unitValue) * kRandomValue);
     
         static readonly float3 kRandomVec = new float3(12.0909f,89.233f,37.719f);
-        public static float Unit1f2(float2 _randomUnit) => Unit1f1(dot(_randomUnit, kRandomVec.to2xy()));
+        public static float Unit1f2(float2 _randomUnit) => Unit1f1(math.dot(_randomUnit, kRandomVec.to2xy()));
         public static float Unit1f2(float _x, float _y) => Unit1f2(new float2(_x, _y));
         
         public static float Unit1f3(float3 _random) => Unit1f1(dot(_random, kRandomVec));
@@ -110,7 +110,7 @@ public static class UNoise
             float3 p = Permute(Permute(new float3(i.y,i.y+i1.y,i.y+1))+new float3(i.x,i.x+i1.x,i.x+1));
             float2 x12xy = new float2(x12.x, x12.y);
             float2 x12zw = new float2(x12.z, x12.w);
-            float3 m = max(0.5f-new float3(dot(x0,x0),dot(x12xy,x12xy),dot(x12zw,x12zw)) ,0);
+            float3 m = max(0.5f-new float3(math.dot(x0,x0),math.dot(x12xy,x12xy),math.dot(x12zw,x12zw)) ,0);
             m *= m;
             m *= m;
             float3 x = 2.0f * frac(p*s_Simplex_C.w)-1.0f;

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UnityEditor.Extensions
 {
-    using static UERender;
+    using static UModeling;
     public class SmoothNormalGenerator : EditorWindow
     {
         GameObject m_ModelPrefab;

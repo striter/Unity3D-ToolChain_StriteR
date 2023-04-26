@@ -77,7 +77,7 @@ namespace Geometry
             uOffset = V1 - V0;
             vOffset = V2 - V0;
             // wOffset = V0 - V2;
-            normal = math.cross(uOffset.normalized(),vOffset.normalized()).normalized();
+            normal = math.cross(uOffset.normalize(),vOffset.normalize()).normalize();
         }
         
         public float3 GetNormalUnnormalized() => math.cross(uOffset, vOffset);
@@ -85,7 +85,7 @@ namespace Geometry
         public float3 GetPoint(float2 _uv) => GetPoint(_uv.x, _uv.y);
         public float3 GetPoint(float _u,float _v) => V0 + _u * uOffset + _v * vOffset;
         public GPlane GetPlane() => new GPlane(normal,V0);
-        public float3 GetForward()=> (V0 - (V1 + V2) / 2).normalized();
+        public float3 GetForward()=> (V0 - (V1 + V2) / 2).normalize();
         public quaternion GetRotation() => quaternion.LookRotation(GetForward(),normal);
 
         public static readonly GTriangle kDefault = new GTriangle(new float3(0,0,1),new float3(-.5f,0,-1),new float3(.5f,0,-1));

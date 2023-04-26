@@ -160,7 +160,7 @@ namespace TechToys.ThePlanet.Module
 
                 var positions = objectToWorld * kBoatLeverage;
 
-                GTriangle rotatedTriangle = (GTriangle)positions.Convert(p=>OutputOceanCoordinates(p.normalized(),time));
+                GTriangle rotatedTriangle = (GTriangle)positions.Convert(p=>OutputOceanCoordinates(p.normalize(),time));
                 m_Model.transform.SetPositionAndRotation(rotatedTriangle.GetPoint(.25f),rotatedTriangle.GetRotation());
             }
         }

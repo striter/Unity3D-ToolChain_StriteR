@@ -70,6 +70,7 @@ public static partial class umath
     public static float lerp(float _a, float _b, float _value) => Mathf.Lerp(_a, _b, _value);
     
     public static float invLerp(float _a, float _b, float _value)=> (_value - _a) / (_b - _a);
+    
     public static float3 bilinearLerp(float3 tl, float3 tr, float3 br, float3 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
     public static float2 bilinearLerp(float2 tl, float2 tr, float2 br, float2 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
     public static float bilinearLerp(float tl, float tr, float br, float bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
@@ -79,9 +80,9 @@ public static partial class umath
         var f = bl - tl;
         var g = tl - tr + br - bl;
         var h = p - tl;
-        var k2 = UVector.Cross2(g,f);
-        var k1 = UVector.Cross2(e, f);
-        var k0 = UVector.Cross2(h, e);
+        var k2 = umath.cross(g,f);
+        var k1 = umath.cross(e, f);
+        var k0 = umath.cross(h, e);
         if (Mathf.Abs(k2) > float.Epsilon)
         {
             float w = k1 * k1 - 4f * k0 * k2;
@@ -125,6 +126,7 @@ public static partial class umath
         return _src || _dst;
     }
 
+    
     public static float cosH(float _src) => (Mathf.Exp(_src) + Mathf.Exp(_src)) / 2;
     public static float copySign(float _a, float _b)
     {
@@ -132,6 +134,7 @@ public static partial class umath
         var signB = Mathf.Sign(_b);
         return Math.Abs(signA - signB) < float.Epsilon ? _a : _a * signB;
     }
+    
 
     //Shortcuts
     public static float negExp_Fast(float _x)
@@ -146,7 +149,6 @@ public static partial class umath
         float y = (kPI / 4.0f) * w - w * (w - 1) * (0.2447f + 0.0663f * w);
         return copySign(z > 1 ? kPID2 - y : y,_x);
     }
-
 
     static float sin_kinda(float _x)
     {

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TTouchTracker;
+using Unity.Mathematics;
+
 namespace Examples.PhysicsScenes
 {
     public class PhysicsManager : MonoBehaviour
@@ -98,11 +100,9 @@ namespace Examples.PhysicsScenes
         public abstract void FixedTick(float _deltaTime);
         protected Vector2 m_MoveDelta { get; private set; }
         protected float m_Pitch, m_Yaw;
-        protected Vector3 m_Forward { get; private set; }
-        protected Vector3 m_Up { get; private set; }
-        protected Vector3 m_Right { get; private set; }
-        
-        
+        protected float3 m_Forward { get; private set; }
+        protected float3 m_Up { get; private set; }
+        protected float3 m_Right { get; private set; }
         
         public void Tick(float _deltaTime)
         {
@@ -125,12 +125,12 @@ namespace Examples.PhysicsScenes
         protected abstract void Tick(float _deltaTime, ref List<TrackData> _data);
         protected Quaternion TickRotation()
         {
-            m_Forward = Vector3.forward.RotateDirectionClockwise(Vector3.up, m_Yaw);
-            m_Right = Vector3.right.RotateDirectionClockwise(Vector3.up, m_Yaw);
-            m_Up = Vector3.up.RotateDirectionClockwise(Vector3.forward, m_Pitch);
+            m_Forward = kfloat3.forward.rotateCW(Vector3.up, m_Yaw);
+            m_Right = kfloat3.right.rotateCW(Vector3.up, m_Yaw);
+            m_Up = kfloat3.up.rotateCW(Vector3.forward, m_Pitch);
             return Quaternion.Euler(m_Pitch, m_Yaw, 0);
         }
-        protected Vector3 TickMovement()=> Vector3.down*9.8f+(m_Forward * m_MoveDelta.y + m_Right * m_MoveDelta.x).normalized * m_MoveSpeed;
+        protected Vector3 TickMovement()=> kfloat3.down*9.8f+(m_Forward * m_MoveDelta.y + m_Right * m_MoveDelta.x).normalize() * m_MoveSpeed;
     }
 
     public static class PhysicsLayer
