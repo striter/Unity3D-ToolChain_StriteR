@@ -35,17 +35,38 @@ namespace UnityEditor.Extensions
     }
     public static class UEGUI
     {
+        
         public static FieldInfo GetFieldInfo(this SerializedProperty _property,out object _parentObject)
         {
             _parentObject = _property.serializedObject.targetObject;
             string[] paths = _property.propertyPath.Split('.');
             object targetObject = _property.serializedObject.targetObject;
             FieldInfo fieldInfo = null;
+            bool array = false;
             foreach (var fieldName in paths)
             {
-                fieldInfo = targetObject.GetType().GetField(fieldName);
-                _parentObject = targetObject;
-                targetObject = fieldInfo.GetValue(targetObject);
+
+                var type = targetObject.GetType();
+                if (type.IsArray)
+                {
+                    array = true;
+                    continue;
+                }
+
+                if (array)
+                {
+                    var start = fieldName.IndexOf('[') + 1;
+                    var index = int.Parse(fieldName.Substring(start, fieldName.Length - start - 1));
+                    fieldInfo = type.GetElementType().GetField("Data");
+                    targetObject = ((Array) targetObject).GetValue(index);
+                }
+                
+                else
+                {
+                    fieldInfo = targetObject.GetType().GetField(fieldName);
+                    _parentObject = targetObject;
+                    targetObject = fieldInfo.GetValue(targetObject);
+                }
             }
             return fieldInfo;
         }
@@ -68,11 +89,24 @@ namespace UnityEditor.Extensions
             for(int i=0;i< paths.Length; i++)
             {
                 yield return (targetType, targetObject);
-                if (i==paths.Length-1||paths[i] == "Array")
+                if (i==paths.Length-1)
                     break;
-                FieldInfo targetField = targetType.GetField(paths[i], BindingFlags.Instance |  BindingFlags.Public | BindingFlags.NonPublic);
-                targetType = targetField.FieldType;
-                targetObject = targetField.GetValue(targetObject);
+                var pathName = paths[i];
+                if (targetType.IsArray)
+                {
+                    i++;
+                    var indexString = paths[i];
+                    var start = indexString.IndexOf('[') + 1;
+                    var index = int.Parse(indexString.Substring(start, indexString.Length - start - 1));
+                    targetType = targetType.GetElementType();
+                    targetObject = ((Array)targetObject).GetValue(index);
+                }
+                else
+                {
+                    FieldInfo targetField = targetType.GetField(pathName, BindingFlags.Instance |  BindingFlags.Public | BindingFlags.NonPublic);
+                    targetType = targetField.FieldType;
+                    targetObject = targetField.GetValue(targetObject);
+                }
             }
         }
         public static bool EditorApplicationPlayingCheck()
