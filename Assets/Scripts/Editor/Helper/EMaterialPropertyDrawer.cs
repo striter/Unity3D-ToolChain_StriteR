@@ -180,7 +180,7 @@ namespace UnityEditor.Extensions
 
     public class SHGradientDrawer : MaterialPropertyDrawerBase
     {   //Dude
-        public override bool PropertyTypeCheck(MaterialProperty.PropType type) => type == MaterialProperty.PropType.Color;
+        public override bool PropertyTypeCheck(MaterialProperty.PropType _type) => _type == MaterialProperty.PropType.Color;
 
         private string keyword;
         public SHGradientDrawer(string _keyword)
@@ -188,26 +188,26 @@ namespace UnityEditor.Extensions
             keyword = _keyword;
         }
 
-        public override void OnPropertyGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
+        public override void OnPropertyGUI(Rect _position, MaterialProperty _prop, string _label, MaterialEditor _editor)
         {
             EditorGUI.BeginChangeCheck();
-            prop.colorValue = EditorGUI.ColorField(position,new GUIContent(label),prop.colorValue,true,false,true);
+            _prop.colorValue = EditorGUI.ColorField(_position,new GUIContent(_label),_prop.colorValue,true,false,true);
 
             if (EditorGUI.EndChangeCheck())
             {
-                var sky = MaterialEditor.GetMaterialProperty(editor.targets, keyword+"Sky");
-                var equator =  MaterialEditor.GetMaterialProperty(editor.targets, keyword + "Equator");
-                var ground =  MaterialEditor.GetMaterialProperty(editor.targets, keyword + "Ground");
+                var sky = MaterialEditor.GetMaterialProperty(_editor.targets, keyword+"Sky");
+                var equator =  MaterialEditor.GetMaterialProperty(_editor.targets, keyword + "Equator");
+                var ground =  MaterialEditor.GetMaterialProperty(_editor.targets, keyword + "Ground");
                 var shData = SphericalHarmonicsExport.ExportL2Gradient(4096, sky.colorValue, equator.colorValue, ground.colorValue);
-                shData.OutputSH(out var _SHAr,out var _SHAg,out var _SHAb,out var _SHBr,out var _SHBg,out var _SHBb,out var _SHC);
+                var output = shData.Output();
                 
-                MaterialEditor.GetMaterialProperty(editor.targets, keyword+"SHAr").vectorValue = _SHAr;
-                MaterialEditor.GetMaterialProperty(editor.targets, keyword+"SHAg").vectorValue = _SHAg;
-                MaterialEditor.GetMaterialProperty(editor.targets, keyword+"SHAb").vectorValue = _SHAb;
-                MaterialEditor.GetMaterialProperty(editor.targets, keyword+"SHBr").vectorValue = _SHBr;
-                MaterialEditor.GetMaterialProperty(editor.targets, keyword+"SHBg").vectorValue = _SHBg;
-                MaterialEditor.GetMaterialProperty(editor.targets, keyword+"SHBb").vectorValue = _SHBb;
-                MaterialEditor.GetMaterialProperty(editor.targets, keyword+"SHC").vectorValue = _SHC;
+                MaterialEditor.GetMaterialProperty(_editor.targets, keyword+"SHAr").vectorValue = output.shAr;
+                MaterialEditor.GetMaterialProperty(_editor.targets, keyword+"SHAg").vectorValue = output.shAg;
+                MaterialEditor.GetMaterialProperty(_editor.targets, keyword+"SHAb").vectorValue = output.shAb;
+                MaterialEditor.GetMaterialProperty(_editor.targets, keyword+"SHBr").vectorValue = output.shBr;
+                MaterialEditor.GetMaterialProperty(_editor.targets, keyword+"SHBg").vectorValue = output.shBg;
+                MaterialEditor.GetMaterialProperty(_editor.targets, keyword+"SHBb").vectorValue = output.shBb;
+                MaterialEditor.GetMaterialProperty(_editor.targets, keyword+"SHC").vectorValue = output.shC.to4();
             }
         }
     }

@@ -11,9 +11,9 @@ namespace Rendering
     [Serializable]
     public struct SHGradient
     {
-        [ColorUsage(true,true)]public Color gradientSky;
-        [ColorUsage(true,true)]public Color gradientEquator;
-        [ColorUsage(true,true)]public Color gradientGround;
+        [ColorUsage(false,true)]public Color gradientSky;
+        [ColorUsage(false,true)]public Color gradientEquator;
+        [ColorUsage(false,true)]public Color gradientGround;
         [HideInInspector] public SHL2Data shData;
 
         public SHGradient Ctor()
@@ -92,10 +92,6 @@ namespace Rendering
 
         private static readonly string kInterpolateKeyword = "_INTERPOLATE";
         private static readonly int kInterpolation = Shader.PropertyToID("_Interpolation");
-        
-        private static readonly int kSHAr = Shader.PropertyToID("_SHAr"); private static readonly int kSHAg = Shader.PropertyToID("_SHAg"); private static readonly int kSHAb = Shader.PropertyToID("_SHAb");  
-        private static readonly int kSHBr = Shader.PropertyToID("_SHBr"); private static readonly int kSHBg = Shader.PropertyToID("_SHBg");  private static readonly int kSHBb = Shader.PropertyToID("_SHBb");
-        private static readonly int kSHC = Shader.PropertyToID("_SHC");
 
         private static readonly int kSpecCube0ID = Shader.PropertyToID("_SpecCube"); private static readonly int kSpecCube0InterpolateID = Shader.PropertyToID("_SpecCube_Interpolate");
         private static readonly int kSpecCube0IntensityID = Shader.PropertyToID("_SpecCube_Intensity");  private static readonly int kSpecCube0IntensityInterpolateID = Shader.PropertyToID("_SpecCube_Intensity_Interpolate");
@@ -145,15 +141,8 @@ namespace Rendering
             ref SHGradient gradient = ref _collection1.gradient;
             if(interpolate)
                 gradient=SHGradient.Interpolate(_collection1.gradient,_collection2.gradient,_interpolation);
-            gradient.shData.OutputSH(out var SHAr,out var SHAg,out var SHAb,out var SHBr,out var SHBg,out var SHBb,out var SHC);
-            Shader.SetGlobalVector(kSHAr,SHAr);
-            Shader.SetGlobalVector(kSHAg,SHAg);
-            Shader.SetGlobalVector(kSHAb,SHAb);
-            Shader.SetGlobalVector(kSHBr,SHBr);
-            Shader.SetGlobalVector(kSHBg,SHBg);
-            Shader.SetGlobalVector(kSHBb,SHBb);
-            Shader.SetGlobalVector(kSHC,SHC);
-                
+            gradient.shData.Output().ApplyGlobal(SHShaderProperties.kDefault);
+
             for (int i = 0; i < _renderers.Length; i++)
             {
                 var renderer = _renderers[i];

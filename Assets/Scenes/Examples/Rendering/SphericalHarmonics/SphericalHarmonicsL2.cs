@@ -46,15 +46,7 @@ namespace Examples.Rendering.SH
             block.SetVector("_L23", m_Data.l23);
             block.SetVector("_L24", m_Data.l24);
 
-            m_Data.OutputSH(out var shAr, out var shAg, out var shAb, out var shBr, out var shBg, out var shBb,
-                out var shc);
-            block.SetVector("_SHAr", shAr);
-            block.SetVector("_SHAg", shAg);
-            block.SetVector("_SHAb", shAb);
-            block.SetVector("_SHBr", shBr);
-            block.SetVector("_SHBg", shBg);
-            block.SetVector("_SHBb", shBb);
-            block.SetVector("_SHC", shc);
+            m_Data.Output().Apply(block,SHShaderProperties.kDefault);
             GetComponent<MeshRenderer>().SetPropertyBlock(block);
         }
     }

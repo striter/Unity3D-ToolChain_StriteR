@@ -37,7 +37,7 @@ namespace Examples.Algorithm.Procedural
         private NativeArray<float3x4> m_Normals;
         private ComputeBuffer m_HashBuffer,m_PositionBuffer,m_NormalBuffer;
         private MaterialPropertyBlock m_MaterialPropertyBlock;
-
+        
         private void OnEnable()
         {
             m_MaterialPropertyBlock ??= new MaterialPropertyBlock();
@@ -101,14 +101,7 @@ namespace Examples.Algorithm.Procedural
             m_MaterialPropertyBlock.SetBuffer(kNormals,m_NormalBuffer);
             m_MaterialPropertyBlock.SetVector(kConfigID,new Vector4(m_Resolution,elementSize/m_Resolution,displacement));
             SHL2Data l2 = SphericalHarmonicsExport.ExportL2Gradient(512,RenderSettings.ambientSkyColor,RenderSettings.ambientEquatorColor,RenderSettings.ambientGroundColor);
-            l2.OutputSH(out var shAr,out var shAg,out var shAb,out var shBr,out var shBg,out var shBb,out var shc);
-            m_MaterialPropertyBlock.SetVector("unity_SHAr",shAr);
-            m_MaterialPropertyBlock.SetVector("unity_SHAg",shAg);
-            m_MaterialPropertyBlock.SetVector("unity_SHAb",shAb);
-            m_MaterialPropertyBlock.SetVector("unity_SHBr",shBr);
-            m_MaterialPropertyBlock.SetVector("unity_SHBg",shBg);
-            m_MaterialPropertyBlock.SetVector("unity_SHBb",shBb);
-            m_MaterialPropertyBlock.SetVector("unity_SHC",shc);
+            l2.Output().Apply(m_MaterialPropertyBlock,SHShaderProperties.kUnity);
         }
 
         private void OnDisable()

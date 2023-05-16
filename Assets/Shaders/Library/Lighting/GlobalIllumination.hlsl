@@ -9,9 +9,12 @@ half3 SampleSHL2(half3 _normalWS,half4 _SHAr,half4 _SHAg,half4 _SHAb,half4 _SHBr
     return res;
 }
 
+#define SHL2Input(_prefix) float4 _##_prefix##SHAr;float4 _##_prefix##SHAg;float4 _##_prefix##SHAb;float4 _##_prefix##SHBr;float4 _##_prefix##SHBg;float4 _##_prefix##SHBb;float4 _##_prefix##SHC;
+#define SHL2Sample(_normalWS,_prefix) SampleSHL2(_normalWS,##_prefix##_SHAr,##_prefix##_SHAg,##_prefix##_SHAb,##_prefix##_SHBr,##_prefix##_SHBg,##_prefix##_SHBb,##_prefix##_SHC)
+
 half3 IndirectDiffuse_SH(half3 _normalWS)
 {
-    return SampleSHL2(_normalWS,unity_SHAr,unity_SHAg,unity_SHAb,unity_SHBr,unity_SHBg,unity_SHBb,unity_SHC);
+    return SHL2Sample(_normalWS,unity);
 }
 
 half3 SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_PARAM(lightmapTex,lightmapSampler),float2 lightmapUV)

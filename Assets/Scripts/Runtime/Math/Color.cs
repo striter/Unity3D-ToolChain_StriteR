@@ -1,61 +1,64 @@
 ﻿using System;
+using Unity.Mathematics;
 using UnityEngine;
 public static class UColor
 {
     #region ColorTransform
-    public static Color SetAlpha(this Color color, float alpha) => new Color(color.r, color.g, color.b, alpha);
+    public static Color SetAlpha(this Color _color, float _alpha) => new Color(_color.r, _color.g, _color.b, _alpha);
     //Vector
-    public static Color VectorToColor(Vector3 colorVector) => new Color(colorVector.x, colorVector.y, colorVector.z);
-    public static Color VectorToColor(Vector4 colorVector) => new Color(colorVector.x, colorVector.y, colorVector.z, colorVector.w);
-    public static Vector4 ToVector(this Color color) => new Vector4(color.r, color.g, color.b, color.a);
-    public static Color ToColor(this Vector4 vector)=>new Color(vector.x,vector.y,vector.z,vector.w);
+    public static Color VectorToColor(Vector3 _colorVector) => new Color(_colorVector.x, _colorVector.y, _colorVector.z);
+    public static Color VectorToColor(Vector4 _colorVector) => new Color(_colorVector.x, _colorVector.y, _colorVector.z, _colorVector.w);
+    public static float4 ToFloat4(this Color _color) => new float4(_color.r,_color.g,_color.b,_color.a);
+    public static float3 ToFloat3(this Color _color) => new float3(_color.r,_color.g,_color.b);
+    public static Vector4 ToVector(this Color _color) => new Vector4(_color.r, _color.g, _color.b, _color.a);
+    public static Color ToColor(this Vector4 _vector)=>new Color(_vector.x,_vector.y,_vector.z,_vector.w);
     //RGBA32
-    public static readonly Vector4 m_RGBA32_MaxValue = Vector4.one * 255f;
-    public static Vector4 ToRGBA32(this Color color) => color.ToVector().mul(m_RGBA32_MaxValue);
-    public static Color RGB32toColor(Vector3 rgb) => RGBA32toColor(rgb.x, rgb.y, rgb.z);
-    public static Color RGBA32toColor(float r, float g, float b, float a = 255f) => RGBA32toColor(new Vector4(r, g, b, a));
-    public static Color RGBA32toColor(Vector4 rgba) => rgba.div(m_RGBA32_MaxValue);
+    public static readonly Vector4 kRGBA32Max = Vector4.one * 255f;
+    public static Vector4 ToRGBA32(this Color _color) => _color.ToVector().mul(kRGBA32Max);
+    public static Color RGB32toColor(Vector3 _rgb) => RGBA32toColor(_rgb.x, _rgb.y, _rgb.z);
+    public static Color RGBA32toColor(float _r, float g, float b, float a = 255f) => RGBA32toColor(new Vector4(_r, g, b, a));
+    public static Color RGBA32toColor(Vector4 _rgba) => _rgba.div(kRGBA32Max);
 
     //Hexademic
-    public static readonly string m_HEX_MaxValue = @"#FFFFFFFF";
-    public static string ToHex(this Color color)
+    public static readonly string kHEXMax = @"#FFFFFFFF";
+    public static string ToHex(this Color _color)
     {
-        Vector4 rgba = color.ToRGBA32();
-        return string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", (short)rgba.x, (short)rgba.y, (short)rgba.z, (short)rgba.w);
+        Vector4 rgba = _color.ToRGBA32();
+        return $"#{(short) rgba.x:X2}{(short) rgba.y:X2}{(short) rgba.z:X2}{(short) rgba.w:X2}";
     }
-    public static Color HEXtoColor(string hex)
+    public static Color HEXtoColor(string _hex)
     {
         try
         {
-            int offset = hex[0] == '#' ? 1 : 0;
-            if (hex.Length == offset + 6)
+            int offset = _hex[0] == '#' ? 1 : 0;
+            if (_hex.Length == offset + 6)
             {
-                float br = byte.Parse(hex.Substring(offset + 0, 2), System.Globalization.NumberStyles.HexNumber);
-                float bg = byte.Parse(hex.Substring(offset + 2, 2), System.Globalization.NumberStyles.HexNumber);
-                float bb = byte.Parse(hex.Substring(offset + 4, 2), System.Globalization.NumberStyles.HexNumber);
+                float br = byte.Parse(_hex.Substring(offset + 0, 2), System.Globalization.NumberStyles.HexNumber);
+                float bg = byte.Parse(_hex.Substring(offset + 2, 2), System.Globalization.NumberStyles.HexNumber);
+                float bb = byte.Parse(_hex.Substring(offset + 4, 2), System.Globalization.NumberStyles.HexNumber);
                 return RGBA32toColor(br, bg, bb);
             }
-            else if (hex.Length == offset + 8)
+            else if (_hex.Length == offset + 8)
             {
-                float br = byte.Parse(hex.Substring(offset + 0, 2), System.Globalization.NumberStyles.HexNumber);
-                float bg = byte.Parse(hex.Substring(offset + 2, 2), System.Globalization.NumberStyles.HexNumber);
-                float bb = byte.Parse(hex.Substring(offset + 4, 2), System.Globalization.NumberStyles.HexNumber);
-                float ba = byte.Parse(hex.Substring(offset + 6, 2), System.Globalization.NumberStyles.HexNumber);
+                float br = byte.Parse(_hex.Substring(offset + 0, 2), System.Globalization.NumberStyles.HexNumber);
+                float bg = byte.Parse(_hex.Substring(offset + 2, 2), System.Globalization.NumberStyles.HexNumber);
+                float bb = byte.Parse(_hex.Substring(offset + 4, 2), System.Globalization.NumberStyles.HexNumber);
+                float ba = byte.Parse(_hex.Substring(offset + 6, 2), System.Globalization.NumberStyles.HexNumber);
                 return RGBA32toColor(br, bg, bb, ba);
             }
             throw new System.Exception();
         }
         catch
         {
-            Debug.Log("Invalid Hex Color:" + hex);
+            Debug.Log("Invalid Hex Color:" + _hex);
             return Color.magenta;
         }
     }
 
     //HSVA
-    public static readonly Vector4 m_HSV_MaxValue = new Vector4(360f, 100f, 100f, 255f);
-    const float m_Hue_CellSize = 1f / 6f;
-    public static Vector4 ToHSVA(this Color color) => ToHSVA_Normalized(color).mul(m_HSV_MaxValue);
+    public static readonly Vector4 kHSVMax = new Vector4(360f, 100f, 100f, 255f);
+    const float kHueCellSize = 1f / 6f;
+    public static Vector4 ToHSVA(this Color color) => ToHSVA_Normalized(color).mul(kHSVMax);
     public static Vector4 ToHSVA_Normalized(this Color color)
     {
         float cmax = Mathf.Max(color.r, Mathf.Max(color.g, color.b));
@@ -68,29 +71,29 @@ public static class UColor
         }
         else
         {
-            if (cmax == color.r)
-                h = m_Hue_CellSize * ((color.g>=color.b?0f:6f) + (color.g - color.b) / offset);
-            else if (cmax == color.g)
-                h = m_Hue_CellSize * (2f + (color.b - color.r) / offset);
+            if (Math.Abs(cmax - color.r) < float.Epsilon)
+                h = kHueCellSize * ((color.g>=color.b?0f:6f) + (color.g - color.b) / offset);
+            else if (Math.Abs(cmax - color.g) < float.Epsilon)
+                h = kHueCellSize * (2f + (color.b - color.r) / offset);
             else
-                h = m_Hue_CellSize * (4f + (color.r - color.g) / offset);
+                h = kHueCellSize * (4f + (color.r - color.g) / offset);
         }
         float s = cmax == 0 ? 0f : offset / cmax;
         float v = cmax;
         return new Vector4(h, s, v, color.a);
     }
-    public static Color HSVAtoColor(Vector3 hsv) => HSVAtoColor(hsv.x, hsv.y, hsv.z);
-    public static Color HSVAtoColor(float h, float s, float v, float a = 255f) => HSVAtoColor(new Vector4(h, s, v, a));
-    public static Color HSVAtoColor(Vector4 hsva)
+    public static Color HSVAtoColor(Vector3 _hsv) => HSVAtoColor(_hsv.x, _hsv.y, _hsv.z);
+    public static Color HSVAtoColor(float _h, float _s, float _v, float _a = 255f) => HSVAtoColor(new Vector4(_h, _s, _v, _a));
+    public static Color HSVAtoColor(Vector4 _hsva)
     {
-        Vector4 nhsva = hsva.div(m_HSV_MaxValue);
+        Vector4 hsvaNormalized  = _hsva.div(kHSVMax);
 
-        float h = nhsva.x;
-        float s = nhsva.y;
-        float v = nhsva.z;
-        float a = nhsva.w;
+        float h = hsvaNormalized.x;
+        float s = hsvaNormalized.y;
+        float v = hsvaNormalized.z;
+        float a = hsvaNormalized.w;
 
-        h /= m_Hue_CellSize;
+        h /= kHueCellSize;
         float hIndex = Mathf.FloorToInt(h);
         float color =  h - hIndex;
         float p = v * (1f - s);
@@ -105,7 +108,7 @@ public static class UColor
             case 4: return new Color(t, p, v, a);
             case 5: return new Color(v, p, q, a);
         }
-        Debug.LogError("Invalid HSV Color:" + hsva);
+        Debug.LogError("Invalid HSV Color:" + _hsva);
         return Color.magenta;
     }
 
@@ -163,8 +166,7 @@ public static class UColor
 public struct ColorPalette
 {
     public Color a,b,c,d;
-
-    public static ColorPalette kDefault = new ColorPalette()
+    public static readonly ColorPalette kDefault = new ColorPalette()
         {a = new Color(.5f,.5f,.5f,1f), b = new Color(.5f,.5f,.5f,1f), c = new Color(1f,1f,1f,1f), d = new Color(0,0.1f,0.2f,1f)};
     
     public Color Evaluate(float _value) => a + b * UColor.Cos(kmath.kPI2*(c*_value+d));

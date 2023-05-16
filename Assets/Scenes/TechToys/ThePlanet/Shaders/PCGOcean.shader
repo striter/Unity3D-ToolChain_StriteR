@@ -226,7 +226,7 @@
 
             	float2 deepSurfaceUV=screenUV;
 				#if _DEPTHREFRACTION
-					float refraction=saturate(invlerp(0,INSTANCE(_RefractionDistance),eyeDepthOffset+wave.x))*INSTANCE(_RefractionAmount);
+					float refraction=saturate(invlerp(0,INSTANCE(_RefractionDistance),eyeDepthOffset))*INSTANCE(_RefractionAmount);
             		deepSurfaceUV+=normalTS.xy*refraction*rcp(eyeDepthUnder);
             	#endif
             	

@@ -1,8 +1,66 @@
 using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Rendering.GI.SphericalHarmonics
 {
+    public class SHShaderProperties
+    {
+        public readonly int kSHAr;
+        public readonly int kSHAg;
+        public readonly int kSHAb;
+        public readonly int kSHBr;
+        public readonly int kSHBg;
+        public readonly int kSHBb;
+        public readonly int kSHC;
+        public SHShaderProperties(string _prefix = "")
+        {
+            kSHAr = Shader.PropertyToID(_prefix+"_SHAr");
+            kSHAg = Shader.PropertyToID(_prefix+"_SHAg");
+            kSHAb = Shader.PropertyToID(_prefix+"_SHAb");
+            kSHBr = Shader.PropertyToID(_prefix+"_SHBr");
+            kSHBg = Shader.PropertyToID(_prefix+"_SHBg");
+            kSHBb = Shader.PropertyToID(_prefix+"_SHBb");
+            kSHC = Shader.PropertyToID(_prefix+"_SHC");
+        }
+        
+        public static SHShaderProperties kDefault = new SHShaderProperties();
+        public static SHShaderProperties kUnity = new SHShaderProperties("unity");
+    }
+    
+    public struct SHL2Output
+    {
+        public float4 shAr;
+        public float4 shAg;
+        public float4 shAb;
+        public float4 shBr;
+        public float4 shBg;
+        public float4 shBb;
+        public float3 shC;
+        
+        public void Apply(MaterialPropertyBlock _block,SHShaderProperties _properties)
+        {
+            _block.SetVector(_properties.kSHAr, shAr);
+            _block.SetVector(_properties.kSHAg, shAg);
+            _block.SetVector(_properties.kSHAb, shAb);
+            _block.SetVector(_properties.kSHBr, shBr);
+            _block.SetVector(_properties.kSHBg, shBg);
+            _block.SetVector(_properties.kSHBb, shBb);
+            _block.SetVector(_properties.kSHC, shC.to4());
+        }
+
+        public void ApplyGlobal(SHShaderProperties _properties)
+        {
+            Shader.SetGlobalVector(_properties.kSHAr, shAr);
+            Shader.SetGlobalVector(_properties.kSHAg, shAg);
+            Shader.SetGlobalVector(_properties.kSHAb, shAb);
+            Shader.SetGlobalVector(_properties.kSHBr, shBr);
+            Shader.SetGlobalVector(_properties.kSHBg, shBg);
+            Shader.SetGlobalVector(_properties.kSHBb, shBb);
+            Shader.SetGlobalVector(_properties.kSHC, shC.to4());
+        }
+    }
+    
     [Serializable]
     public struct SHL2Data
     {
@@ -16,19 +74,20 @@ namespace Rendering.GI.SphericalHarmonics
         public Vector3 l23;
         public Vector3 l24;
 
-        public void OutputSH(out Vector4 _SHAr, out Vector4 _SHAg, out Vector4 _SHAb,
-            out Vector4 _SHBr, out Vector4 _SHBg, out Vector4 _SHBb, out Vector3 _SHC)
+        public SHL2Output Output()
         {
-            _SHAr = new Vector4(SHBasis.kL10 * l10.x, SHBasis.kL11 * l11.x, SHBasis.kL12 * l12.x, SHBasis.kL00 * l00.x);
-            _SHAg = new Vector4(SHBasis.kL10 * l10.y, SHBasis.kL11 * l11.y, SHBasis.kL12 * l12.y, SHBasis.kL00 * l00.y);
-            _SHAb = new Vector4(SHBasis.kL10 * l10.z, SHBasis.kL11 * l11.z, SHBasis.kL12 * l12.z, SHBasis.kL00 * l00.z);
-
-            _SHBr = new Vector4(SHBasis.kL20 * l20.x, SHBasis.kL21 * l21.x, SHBasis.kL22 * l22.x, SHBasis.kL23 * l23.x);
-            _SHBg = new Vector4(SHBasis.kL20 * l20.y, SHBasis.kL21 * l21.y, SHBasis.kL22 * l22.y, SHBasis.kL23 * l23.y);
-            _SHBb = new Vector4(SHBasis.kL20 * l20.z, SHBasis.kL21 * l21.z, SHBasis.kL22 * l22.z, SHBasis.kL23 * l23.z);
-            _SHC = l24 * SHBasis.kL24;
+            return new SHL2Output()
+            {
+                shAr = new Vector4(SHBasis.kL10 * l10.x, SHBasis.kL11 * l11.x, SHBasis.kL12 * l12.x, SHBasis.kL00 * l00.x),
+                shAg = new Vector4(SHBasis.kL10 * l10.y, SHBasis.kL11 * l11.y, SHBasis.kL12 * l12.y, SHBasis.kL00 * l00.y),
+                shAb = new Vector4(SHBasis.kL10 * l10.z, SHBasis.kL11 * l11.z, SHBasis.kL12 * l12.z, SHBasis.kL00 * l00.z),
+                shBr = new Vector4(SHBasis.kL20 * l20.x, SHBasis.kL21 * l21.x, SHBasis.kL22 * l22.x, SHBasis.kL23 * l23.x),
+                shBg = new Vector4(SHBasis.kL20 * l20.y, SHBasis.kL21 * l21.y, SHBasis.kL22 * l22.y, SHBasis.kL23 * l23.y),
+                shBb = new Vector4(SHBasis.kL20 * l20.z, SHBasis.kL21 * l21.z, SHBasis.kL22 * l22.z, SHBasis.kL23 * l23.z),
+                shC = l24 * SHBasis.kL24,
+            };
         }
-
+        
         public static SHL2Data Interpolate(SHL2Data _a, SHL2Data _b, float _interpolate)
         {
             return new SHL2Data()
