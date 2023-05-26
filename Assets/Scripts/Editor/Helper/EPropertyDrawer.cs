@@ -172,7 +172,6 @@ namespace UnityEditor.Extensions
             for (int i = 0; i < rootCount; i++)
             {
                 var rootValue = roots[i]/kXRange;
-                Debug.Log(rootValue);
                 rootValue += .5f;
                 _helper.Circle(new int2((int)(rootValue * _helper.sizeX),_helper.sizeY/2) ,10,Color.yellow);
             }

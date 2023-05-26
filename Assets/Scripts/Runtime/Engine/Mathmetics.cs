@@ -5,6 +5,11 @@ using Unity.Mathematics;
 
 public static class kmath
 {
+    public static readonly float kInv2 = 1f / 2;
+    public static readonly float kInv3 = 1f / 3;
+    public static readonly float kInv6 = 1f / 6;
+    public static readonly float kInv9 = 1f / 9;
+    
     public const float kSQRT3 = 1.7320508075689f;
     public static readonly float kSQRT3Half = kSQRT3 / 2f;
     public static readonly float kInvSQRT3 = 1f / kSQRT3;
