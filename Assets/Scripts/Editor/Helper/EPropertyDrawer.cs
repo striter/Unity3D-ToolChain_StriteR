@@ -1,23 +1,114 @@
 ﻿using UnityEngine;
 using System;
 using Geometry;
+using Unity.Mathematics;
 
 namespace UnityEditor.Extensions
 {
-    [CustomPropertyDrawer(typeof(Damper))]
-    public class DamperDrawer : PropertyDrawer
+    public class FunctionDrawerColors
+    {
+        public Color[] colors;
+        public int sizeX, sizeY, totalSize;
+        public FunctionDrawerColors(int _x,int _y,Color _initial)
+        {
+            sizeX = _x;
+            sizeY = _y;
+            totalSize = sizeX * sizeY;
+            colors = new Color[sizeX*sizeY];
+            colors.FillDefault(_initial);
+        }
+
+        public void Pixel(int _x,int _y,Color _color)
+        {
+            var dst = (_x + _y * sizeX);
+            if (dst < 0 || dst >= totalSize)
+                return;
+            colors[dst] = _color;
+        }
+
+        private int preX = 0;
+        private int preY = 0;
+        public void PixelContinuousStart(int _x, int _y)
+        {
+            preX = _x;
+            preY = _y;
+        }
+        
+        public void PixelContinuous(int _x,int _y,Color _color)
+        {
+            var transparent = _color.SetAlpha(.5f);
+            Pixel(_x , _y , _color);
+            Pixel(_x + 1 , _y , transparent);
+            Pixel(_x - 1 , _y , transparent);
+            Pixel(_x , _y + 1 , transparent);
+            Pixel(_x , _y - 1 , transparent);
+            int xStart = Mathf.Min(_x, preX);
+            int xEnd = Mathf.Max(_x, preX);
+            int yStart = Mathf.Min(_y, preY)+1;
+            int yEnd = Mathf.Max(_y, preY)-1;
+            for(int i = xStart;i < xEnd;i++)
+            for (int j = yStart; j < yEnd; j++)
+            {
+                Pixel(i , j , _color);
+                Pixel(i + 1 , j , transparent);
+                Pixel(i - 1 , j , transparent);
+                Pixel(i , j + 1 , transparent);
+                Pixel(i , j - 1 , transparent);
+            }
+
+            preX = _x;
+            preY = _y;
+        }
+        
+        
+        void plot1(int x,int y,int2 _centre,Color _color)
+        {
+            Pixel(_centre.x + x, _centre.y + y, _color);
+        }
+        void plot8(int x,int y,int2 _centre,Color _color){
+            plot1(x,y,_centre,_color);plot1(y,x,_centre,_color);
+            plot1(x,-y,_centre,_color);plot1(y,-x,_centre,_color);
+            plot1(-x,-y,_centre,_color);plot1(-y,-x,_centre,_color);
+            plot1(-x,y,_centre,_color);plot1(-y,x,_centre,_color);
+        }
+
+        public void Circle(int2 _centre,int _radius,Color _color)
+        {
+            int x = 0;
+            int y = _radius;
+            int d = 1 - _radius;
+            while(x < y)
+            {
+                if(d < 0)
+                {
+                    d += 2 * x + 3;
+                }
+                else
+                {
+                    d += 2 * (x-y) + 5;
+                    y--;
+                }
+                plot8(x,y, _centre,_color);
+                x++;
+            }
+        }
+    }
+    
+    public abstract class FunctionDrawer : PropertyDrawer
     {
         private const int kSize = 120;
         private const int kAxisPadding = 3;
         private const int kAxisWidth = 2;
-        private const float kDeltaTime = .05f;
-        private const float kEstimateSizeX = 600;
         private const float kButtonSize = 50f;
         private bool m_Visualize = false;
         private float AdditionalSize => (m_Visualize ? kSize : 0f);
-        public override float GetPropertyHeight(SerializedProperty _property, GUIContent _label) => EditorGUI.GetPropertyHeight(_property, _label,true) + AdditionalSize;
+        public sealed override float GetPropertyHeight(SerializedProperty _property, GUIContent _label) => EditorGUI.GetPropertyHeight(_property, _label,true) + AdditionalSize;
 
-        public override void OnGUI(Rect _position, SerializedProperty _property, GUIContent _label)
+        protected abstract void OnFunctionDraw(SerializedProperty _property, FunctionDrawerColors _helper);
+
+        public virtual float2 GetOrigin() => new float2(0,1);
+        
+        public sealed override void OnGUI(Rect _position, SerializedProperty _property, GUIContent _label)
         {
             if (_position.size.sqrMagnitude < 10f)
                 return;
@@ -37,82 +128,93 @@ namespace UnityEditor.Extensions
             int sizeX = (int) textureField.width*4; int sizeY = (int) textureField.height*2;
 
             Texture2D previewTexture = new Texture2D(sizeX,sizeY,TextureFormat.ARGB32,false,true);
-            Damper damper = new Damper();
-            var fieldInfo = _property.GetFieldInfo(out var parentObject);
-            UReflection.CopyFields(fieldInfo.GetValue(parentObject),damper);
-            damper.Initialize(Vector3.zero);
-            int totalSize = sizeX * sizeY;
-            Color[] colors = new Color[sizeX*sizeY];
-            colors.FillDefault(Color.black.SetAlpha(.5f));
-            
-            Action<int, int, Color> SetPixel = (_x, _y, _color) =>
-            {
-                var dst = (_x + _y * sizeX);
-                if (dst < 0 || dst >= totalSize)
-                    return;
-                colors[dst] = _color;
-            };
-            Action<int, int,int,int, Color> DrawPixel = (_x, _y,_preX,_preY, _color) =>
-            {
-                var transparent = _color.SetAlpha(.5f);
-                SetPixel(_x , _y , _color);
-                SetPixel(_x + 1 , _y , transparent);
-                SetPixel(_x - 1 , _y , transparent);
-                SetPixel(_x , _y + 1 , transparent);
-                SetPixel(_x , _y - 1 , transparent);
-                int xStart = Mathf.Min(_x, _preX);
-                int xEnd = Mathf.Max(_x, _preX);
-                int yStart = Mathf.Min(_y, _preY)+1;
-                int yEnd = Mathf.Max(_y, _preY)-1;
-                for(int i = xStart;i < xEnd;i++)
-                    for (int j = yStart; j < yEnd; j++)
-                    {
-                        SetPixel(i , j , _color);
-                        SetPixel(i + 1 , j , transparent);
-                        SetPixel(i - 1 , j , transparent);
-                        SetPixel(i , j + 1 , transparent);
-                        SetPixel(i , j - 1 , transparent);
-                    }
-            };
-            
-            float sizeAspect =  sizeX / kEstimateSizeX;
-            float deltaTime = kDeltaTime / sizeAspect;
-            int division1 =(int)( 10f/kDeltaTime * sizeAspect);
-            int division2 = (int)( 20f/kDeltaTime * sizeAspect);
-            int preX = 0,preY = 0;
-            for (int i = 0; i < sizeX; i++)
-            {
-                Vector3 point = i>=division1? i>=division2?Vector3.one*.8f:Vector3.one*.2f:Vector3.one * .5f;
-                var value = damper.Tick(deltaTime,point);
-                int x = i;
-                int y = (int) (value.x * sizeY);
-                DrawPixel(x,y,preX,preY,Color.cyan);
-                preX = x;
-                preY = y;
-                SetPixel(x , (int)(point.x*sizeY) , Color.red);
-            }
-            
-            for (int i = 0; i < 60; i++)
-            {
-                var xDelta =(int) (i / deltaTime);
-                if (xDelta > sizeX)
-                    break;
-                
-                for(int j=0;j<sizeY;j++)
-                    SetPixel(xDelta , j , Color.green.SetAlpha(.3f));
-            }
-            
-            previewTexture.SetPixels(colors);
+
+            var colorHelper = new FunctionDrawerColors(sizeX, sizeY, Color.black.SetAlpha(.5f));
+            OnFunctionDraw(_property, colorHelper);
+            previewTexture.SetPixels(colorHelper.colors);
             previewTexture.Apply();
             
             EditorGUI.DrawTextureTransparent(textureField,previewTexture);
             
             GameObject.DestroyImmediate(previewTexture);
+
+            var origin = GetOrigin();
             
-            Rect axisX = imageField.Move(kAxisPadding,imageField.size.y-kAxisPadding).Resize(imageField.size.x-kAxisPadding*2,kAxisWidth);
-            EditorGUI.DrawRect(axisX,Color.green);
-            Rect axisY = imageField.Move(kAxisPadding,kAxisPadding).Resize(kAxisWidth,imageField.size.y-kAxisPadding*2);
-            EditorGUI.DrawRect(axisY,Color.blue);
+            Rect axisX = imageField.Move(kAxisPadding, kAxisPadding + (imageField.size.y-kAxisPadding*2)*origin.y).Resize(imageField.size.x-kAxisPadding*2,kAxisWidth);
+            EditorGUI.DrawRect(axisX,Color.red.SetAlpha(.7f));
+            Rect axisY = imageField.Move(kAxisPadding + (imageField.size.x-kAxisPadding*2)*origin.x,kAxisPadding).Resize(kAxisWidth,imageField.size.y-kAxisPadding*2);
+            EditorGUI.DrawRect(axisY,Color.green.SetAlpha(.7f));
+        }
+    }
+    
+    [CustomPropertyDrawer(typeof(IPolynomial),true)]
+    public class PolynomialDrawer : FunctionDrawer
+    {
+        private const float kXRange = 20f;
+        public override float2 GetOrigin() => kfloat2.one * .5f;
+
+        protected override void OnFunctionDraw(SerializedProperty _property, FunctionDrawerColors _helper)
+        {
+            var info = _property.GetFieldInfo(out var parentObject);
+            var polynomial = (IPolynomial) info.GetValue(parentObject);
+            
+            // _helper.DrawPixelContinuousStart(_helper.sizeX/2,_helper.sizeY/2);
+            for (int i = 0; i < _helper.sizeX; i++)
+            {
+                var value = polynomial.Evaluate( ((float)i / _helper.sizeX -.5f)*kXRange) + .5f;
+                int x = i;
+                int y = (int) (value * _helper.sizeY);
+                _helper.PixelContinuous(x,y,Color.cyan);
+            }
+
+
+            var rootCount = polynomial.GetRoots(out var roots);
+            for (int i = 0; i < rootCount; i++)
+            {
+                var rootValue = roots[i]/kXRange;
+                Debug.Log(rootValue);
+                rootValue += .5f;
+                _helper.Circle(new int2((int)(rootValue * _helper.sizeX),_helper.sizeY/2) ,10,Color.yellow);
+            }
+        }
+    }
+    
+    [CustomPropertyDrawer(typeof(Damper))]
+    public class DamperDrawer : FunctionDrawer
+    {
+        private const float kDeltaTime = .05f;
+        private const float kEstimateSizeX = 600;
+        protected override void OnFunctionDraw(SerializedProperty _property, FunctionDrawerColors _helper)
+        {
+            float sizeAspect =  _helper.sizeX / kEstimateSizeX;
+            float deltaTime = kDeltaTime / sizeAspect;
+            int division1 =(int)( 10f/kDeltaTime * sizeAspect);
+            int division2 = (int)( 20f/kDeltaTime * sizeAspect);
+            
+            Damper damper = new Damper();
+            var info = _property.GetFieldInfo(out var parentObject);
+            UReflection.CopyFields(info.GetValue(parentObject),damper);
+            damper.Initialize(Vector3.zero);
+            
+            for (int i = 0; i < _helper.sizeX; i++)
+            {
+                Vector3 point = i>=division1? i>=division2?Vector3.one*.8f:Vector3.one*.2f:Vector3.one * .5f;
+                var value = damper.Tick(deltaTime,point);
+                int x = i;
+                int y = (int) (value.x * _helper.sizeY);
+                _helper.PixelContinuous(x,y,Color.cyan);
+                _helper.Pixel(x , (int)(point.x*_helper.sizeY) , Color.red);
+            }
+            
+            for (int i = 0; i < 60; i++)
+            {
+                var xDelta =(int) (i / deltaTime);
+                if (xDelta > _helper.sizeX)
+                    break;
+                
+                for(int j=0;j<_helper.sizeY;j++)
+                    _helper.Pixel(xDelta , j , Color.green.SetAlpha(.3f));
+            }
         }
     }
 
@@ -176,7 +278,6 @@ namespace UnityEditor.Extensions
             previewTexture.Apply();
             
             EditorGUI.DrawTextureTransparent(textureField,previewTexture);
-            
             GameObject.DestroyImmediate(previewTexture);
         }
     }

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -33,5 +34,13 @@ public static class UString
         _replaced = _src.Remove(index, _match.Length);
         _replaced = _replaced.Insert(index,_replace);
         return true;
+    }
+
+    public static string ToStringSigned(this float _number)
+    {
+        if (_number > 0)
+            return string.Format($"+{_number}");
+        else
+            return _number.ToString(CultureInfo.InvariantCulture);
     }
 }

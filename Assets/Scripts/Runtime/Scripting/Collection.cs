@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TPoolStatic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public static class UCollection
@@ -376,6 +377,8 @@ public static class UCollection
             var tuple = _collection.Sum(_OnEachElement);
             return tuple.value / Mathf.Max(tuple.count,1);
         }
+        
+        //Vector3 
         public static Vector3 Average(this IEnumerable<Vector3> _collection)      //To Be Continued With Demical
         {
             Vector3 sum = Vector3.zero;
@@ -404,6 +407,7 @@ public static class UCollection
             }
             return target;
         }
+        
     #endregion
     #region Array
     public static IEnumerable<object> GetEnumerable(this Array _array)
@@ -794,6 +798,37 @@ public static class UCollection
     {
         foreach (var element in _collection)
             _hashSet.Remove(element);
+    }
+    #endregion
+    
+    
+    #region Decimal
+    public static (float3 value,int count) Sum(this IEnumerable<float3> _collection)      //To Be Continued With Demical
+    {
+        var sum = float3.zero;
+        int count = 0;
+        foreach (var element in _collection)
+        {
+            sum += element;
+            count += 1;
+        }
+        return (sum,count);
+    }
+    public static float3 Average(this IEnumerable<float3> _collection)      //To Be Continued With Demical
+    {
+        var tuple = _collection.Sum();
+        return tuple.value / Mathf.Max(tuple.count,1);
+    }
+    public static float Average(this IEnumerable<float3> _collection,Func<float3,float> _select)      //To Be Continued With Demical
+    {
+        var sum = 0f;
+        var count = 0;
+        foreach (var element in _collection)
+        {
+            sum += _select(element);
+            count += 1;
+        }
+        return sum / Mathf.Max(count,1);
     }
     #endregion
 }
