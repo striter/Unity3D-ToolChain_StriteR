@@ -175,10 +175,10 @@ MonoBehaviour:
     linear: 0.08
     constant: -0.26
   m_CubicPolynomial:
-    cubic: 0.01
-    quadratic: -0.06
-    linear: -0.07
-    constant: 0.24
+    cubic: 1
+    quadratic: 1
+    linear: -1.55
+    constant: -1.65
   m_Damper:
     mode: 1
     halfLife: 0.5
