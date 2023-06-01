@@ -136,8 +136,7 @@ public static partial class umath
         return Math.Abs(signA - signB) < float.Epsilon ? _a : _a * signB;
     }
     
-
-    //Shortcuts
+    //Fast
     public static float negExp_Fast(float _x)
     {
         return 1.0f / (1.0f + _x + 0.48f * _x * _x + 0.235f * _x * _x * _x);

@@ -40,6 +40,7 @@ namespace Examples.Algorithm.Geometry
         {
             for (int i = 0; i < randomPoints.Length; i++)
                 randomPoints[i] = URandom.RandomSphere();
+            OnValidate();
         }
     }
 }
