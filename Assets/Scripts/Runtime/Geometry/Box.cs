@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Procedural;
 using Unity.Mathematics;
@@ -81,7 +82,7 @@ namespace Geometry
         public GBox Split(float3 _anchor, float3 _sizeRatio)
         {
             var min = this.min + size * _anchor;
-            return GBox.Minmax(min, min + size * _sizeRatio);
+            return Minmax(min, min + size * _sizeRatio);
         }
         
         
@@ -90,6 +91,7 @@ namespace Geometry
             float3 absOffset = math.abs(center-_point) + _bias;
             return absOffset.x < extent.x && absOffset.y < extent.y && absOffset.z < extent.z;
         }
+        
     }
 
     [Serializable]

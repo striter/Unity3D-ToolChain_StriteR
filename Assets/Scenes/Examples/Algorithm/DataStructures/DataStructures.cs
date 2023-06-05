@@ -20,12 +20,13 @@ namespace Examples.Algorithm.DataStructures
         public int m_NodeCapacity = 4;
         public int m_Iteration = 4;
         public float2[] m_RandomPoints;
-        [ExtendButton("Random",nameof(Randomize))]
         public int m_RandomCount = 128;
         
         private KDTree m_KDTree = new KDTree();
-        private QuadTree m_Tree = new QuadTree();
+        private QuadTree m_QuadTree = new QuadTree();
+        private BSPTree m_BSPTree = new BSPTree();
 
+        [Button]
         void Randomize()
         {
             m_RandomPoints = new float2[m_RandomCount];
@@ -44,14 +45,18 @@ namespace Examples.Algorithm.DataStructures
                 return;
 
             Gizmos.matrix = Matrix4x4.identity;            
-            m_Tree.Construct(m_Boundary,m_NodeCapacity,m_Iteration,m_QuadDivision);
-            m_Tree.Insert(m_RandomPoints);
-            m_Tree.DrawGizmos();
+            m_QuadTree.Construct(m_Boundary,m_NodeCapacity,m_Iteration,m_QuadDivision);
+            m_QuadTree.Insert(m_RandomPoints);
+            m_QuadTree.DrawGizmos();
 
             Gizmos.matrix = Matrix4x4.Translate(Vector3.right * 50f);
             m_KDTree.Construct(m_Boundary,m_NodeCapacity,m_Iteration);
             m_KDTree.Insert(m_RandomPoints);
             m_KDTree.DrawGizmos();
+
+            Gizmos.matrix = Matrix4x4.Translate(Vector3.right * 100f);
+            m_BSPTree.Construct(m_RandomPoints,m_Iteration,m_NodeCapacity);
+            m_BSPTree.DrawGizmos();
         }
     }
 

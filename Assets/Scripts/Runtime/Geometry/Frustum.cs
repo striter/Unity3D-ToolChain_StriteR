@@ -145,7 +145,7 @@ namespace Geometry
                 farBottomRight = farBottomRight,
                 farTopRight = farTopRight,
                 farTopLeft = farTopLeft,
-                bounding = PointSet.UBounds.GetBoundingBox(bottomLeft.origin,bottomRight.origin,topRight.origin,topLeft.origin,farBottomLeft,farBottomRight,farTopRight,farTopLeft),
+                bounding = PointSet.UBounds.GetBoundingBox(new []{bottomLeft.origin,bottomRight.origin,topRight.origin,topLeft.origin,farBottomLeft,farBottomRight,farTopRight,farTopLeft}),
             };
         }
     }

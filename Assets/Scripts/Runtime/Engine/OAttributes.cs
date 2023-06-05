@@ -34,6 +34,7 @@ public class ExtendButtonAttribute : PropertyAttribute
         m_Buttons = new (string title, string method, object[] parameters)[]{(_title1,_method1,_parameters1),(_title2,_method2,_parameters2)};
     }
 }
+
 [AttributeUsage(AttributeTargets.Method)]
 public class ButtonAttribute : PropertyAttribute { }
 

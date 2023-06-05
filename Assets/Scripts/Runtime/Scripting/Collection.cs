@@ -803,7 +803,7 @@ public static class UCollection
     
     
     #region Decimal
-    public static (float3 value,int count) Sum(this IEnumerable<float3> _collection)      //To Be Continued With Demical
+    public static (float3 value,int count) Sum(this IEnumerable<float3> _collection)   
     {
         var sum = float3.zero;
         int count = 0;
@@ -814,12 +814,33 @@ public static class UCollection
         }
         return (sum,count);
     }
-    public static float3 Average(this IEnumerable<float3> _collection)      //To Be Continued With Demical
+    public static float3 Average(this IEnumerable<float3> _collection) 
+    {
+        var tuple = _collection.Sum();
+        return tuple.value / Mathf.Max(tuple.count,1);
+    }    
+    
+    
+    
+    public static (float2 value,int count) Sum(this IEnumerable<float2> _collection) 
+    {
+        var sum = float2.zero;
+        int count = 0;
+        foreach (var element in _collection)
+        {
+            sum += element;
+            count += 1;
+        }
+        return (sum,count);
+    }
+    
+    public static float2 Average(this IEnumerable<float2> _collection)   
     {
         var tuple = _collection.Sum();
         return tuple.value / Mathf.Max(tuple.count,1);
     }
-    public static float Average(this IEnumerable<float3> _collection,Func<float3,float> _select)      //To Be Continued With Demical
+    
+    public static float Average<T>(this IEnumerable<T> _collection,Func<T,float> _select) 
     {
         var sum = 0f;
         var count = 0;

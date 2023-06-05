@@ -43,6 +43,7 @@ namespace Geometry
             GPlane_Ctor(true);
         }
         public static implicit operator float4(GPlane _plane)=>_plane.normal.to4(_plane.distance);
+        public bool IsFront(float3 _point) => math.dot(this,_point.to4(-1)) > 0;
 
         public static bool operator ==(GPlane _src, GPlane _dst) =>  _src.normal.Equals( _dst.normal) && math.abs(_src.distance - _dst.distance) < float.Epsilon;
         public static bool operator !=(GPlane _src, GPlane _dst) => !(_src == _dst);
@@ -79,6 +80,37 @@ namespace Geometry
         }
 
     }
-    
-    
+
+    [Serializable]
+    public struct G2Plane:ISerializationCallbackReceiver
+    {
+        public float2 normal;
+        public float distance;
+        [HideInInspector] public float2 position;
+        public G2Plane(float2 _normal,float _distance)
+        {
+            normal = _normal;
+            distance = _distance;
+            position = default;
+            Ctor();
+        }
+
+        public G2Plane(float2 _normal, float2 _position)
+        {
+            normal = _normal;
+            position = _position;
+            distance = math.dot(_normal, _position);
+        }
+
+        void Ctor()
+        {
+            position = normal * distance;
+        }
+        
+        public static implicit operator float3(G2Plane _plane)=>_plane.normal.to3xy(_plane.distance);
+        public bool IsPointFront(float2 _point) => math.dot(_point.to3xy(-1),this)>0;
+        public void OnBeforeSerialize() { }
+        public void OnAfterDeserialize() => Ctor();
+        public static readonly G2Plane kDefault = new(new float2(0,1),0f);
+    }
 }

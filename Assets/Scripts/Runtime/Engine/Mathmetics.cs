@@ -117,6 +117,8 @@ public static partial class umath       //Swizzling
     public static float3 convert(this float3 _src, Func<float, float> _func) => new float3(_func(_src.x),_func(_src.y),_func(_src.z));
     public static float3 convert(this float3 _src, Func<int,float, float> _func) => new float3(_func(0,_src.x),_func(1,_src.y),_func(2,_src.z));
 
+
+    public static float2 cross(this float2 _src) => new float2(_src.y,-_src.x);
 }
 
 public static class ucomplex
@@ -172,6 +174,120 @@ public static class ucomplex
         var num4 = num1 / num2;
         return num2 * math.sqrt(1.0f + num4 * num4);
     }
+}
+
+public static class umatrix
+{
+    
+    public static float3 GetEigenValues(this float3x3 _C)
+    {
+        var c0 = _C.c0; var c00 = c0.x; var c01 = c0.y; var c02 = c0.z;
+        var c1 = _C.c1; var c10 = c1.x; var c11 = c1.y; var c12 = c1.z;
+        var c2 = _C.c2; var c20 = c2.x; var c21 = c2.y; var c22 = c2.z;
+            
+        var polynomial = new CubicPolynomial(-1,
+            c00 + c11 + c22,
+            -c00*c11 -c00*c22 + c12*c21 -c11*c22 +c10*c01 +c20*c02,
+            -c00*c12*c21 + c00*c11*c22-c10*c01*c22 +c10*c02*c21+c20*c01*c12-c20*c02*c11);
+        polynomial.GetRoots(out var _roots);
+        Array.Sort(_roots,(a,b)=>a<b?1:-1);
+        return new float3(_roots[0], _roots[1], _roots[2]);
+    }
+    
+    public static void GetEigenVectors(this float3x3 _C,out float3 _R,out float3 _S,out float3 _T)
+    {
+        var eigenValues = _C.GetEigenValues();
+        _R = _C.GetEigenVector( eigenValues.x);
+        _S = _C.GetEigenVector( eigenValues.y);
+        _T = _C.GetEigenVector( eigenValues.z);
+    }
+    
+    public static float3 GetEigenVector(this float3x3 _matrix,float _eigenValue)
+    {
+        _matrix -= _eigenValue * float3x3.identity;
+        float3 equation0 = new float3(_matrix.c0.x, _matrix.c1.x, _matrix.c2.x);
+        float3 equation1 = new float3(_matrix.c0.y, _matrix.c1.y, _matrix.c2.y);
+        var yzEquation= equation1.x!=0? (equation1 - equation0 * (equation1.x/equation0.x)):equation1;
+        var xzEquation = equation1.y!=0? (equation1 - equation0 * (equation1.y/equation0.y)):equation1;
+        return new float3(xzEquation.z/xzEquation.x, yzEquation.z/yzEquation.y, -1).normalize();
+    }
+
+    public static float2 GetEigenValues(this float2x2 _C)
+    {
+        var c00 = _C.c0.x; var c01 = _C.c0.y;
+        var c10 = _C.c1.x; var c11 = _C.c1.y;
+        var polynomial = new QuadraticPolynomial(1, - c00 - c11 , c00*c11 - c10*c01);
+        polynomial.GetRoots(out var roots);
+        Array.Sort(roots,(_a,_b)=>_a<_b?1:-1);
+        return new float2(roots[0], roots[1]);
+    }
+
+    public static float2 GetEigenVector(this float2x2 _matrix, float _eigenValue)
+    {
+        _matrix -= _eigenValue * float2x2.identity;
+        var equation0 = new float2(_matrix.c0.x, _matrix.c1.x);
+        var equation1 = new float2(_matrix.c0.y, _matrix.c1.y);
+        var yzEquation= equation1.x!=0? (equation1 - equation0 * (equation1.x/equation0.x)):equation1;
+        if (yzEquation.sqrmagnitude() <= 0.01f)
+            yzEquation = equation0;
+        
+        return new float2(yzEquation.x, yzEquation.y).normalize();
+    }
+
+    public static void GetEigenVectors(this float2x2 _C,out float2 _R,out float2 _S)
+    {
+        var eigenValues = _C.GetEigenValues();
+        _R = _C.GetEigenVector( eigenValues.x);
+        _S = _C.GetEigenVector( eigenValues.y);
+    }
+    #region Notes
+    // internal static class Notes
+    // {
+    //     public static float OutputPolynomial(float3x3 C,float λ)       //Jezz
+    //     {         
+    //         var c0 = C.c0; var c00 = c0.x; var c01 = c0.y; var c02 = c0.z;
+    //         var c1 = C.c1; var c10 = c1.x; var c11 = c1.y; var c12 = c1.z;
+    //         var c2 = C.c2; var c20 = c2.x; var c21 = c2.y; var c22 = c2.z;
+    //         
+    //         //Resolve determination parts
+    //     var part1 = c00 * (c11 * c22 - c12 * c21);      //   c0.x * (c1.y * c2.z - c1.z * c2.y) 
+    //         part1 = (c00 - λ) * ((c11-λ) * (c22-λ) - c12*c21);
+    //         part1 = (c00 - λ) * (+c11*c22 -c11*λ - c22*λ     + λ*λ -c12*c21 );
+    //         part1 = (c00 - λ) * (λ*λ      -c11*λ - c22*λ     -c12*c21 +c11*c22);
+    //         part1 =        c00* (λ*λ      -c11*λ - c22*λ     -c12*c21 +c11*c22)
+    //                        - λ* (λ*λ      -c11*λ - c22*λ     -c12*c21 +c11*c22);
+    //         part1 =        c00*λ*λ   -c00*c11*λ - c00*c22*λ  -c00*c12*c21 + c00*c11*c22 
+    //                         - λ*λ*λ      +c11*λ*λ + c22*λ*λ   +c12*c21*λ -c11*c22*λ;
+    //         part1 = -λ*λ*λ 
+    //             + c00*λ*λ +c11*λ*λ + c22*λ*λ
+    //             -c00*c11*λ - c00*c22*λ +c12*c21*λ -c11*c22*λ
+    //             -c00*c12*c21 + c00*c11*c22  ;
+    //         part1 = -1*λ*λ*λ 
+    //             + (c00 + c11 +c22)*λ*λ
+    //             -c00*c11*λ -c00*c22*λ + c12*c21*λ -c11*c22*λ
+    //             -c00*c12*c21 + c00*c11*c22;
+    //         
+    //     var part2 = -c10 * (c01 * c22 - c02 * c21);      // - c1.x * (c0.y * c2.z - c0.z * c2.y) 
+    //         part2 = -c10 * (c01 * (c22-λ) - c02 * c21); 
+    //         part2 = -c10 * (c01*c22  -c01*λ      -c02*c21); 
+    //         part2 = -c10*c01*c22  +c10*c01*λ   +c10*c02*c21; 
+    //         part2 = +c10*c01*λ    -c10*c01*c22 +c10*c02*c21; 
+    //         
+    //     var part3 =  + c20 * (c01 * c12 - c02 * c11);   // + c2.x * (c0.y * c1.z - c0.z * c1.y);
+    //         part3 = c20 * (c01*c12 - c02 * (c11-λ));
+    //         part3 = c20 * (c01*c12 - c02*c11   +c02*λ);
+    //         part3 = +c20*c01*c12 -c20*c02*c11  +c20*c02*λ;
+    //         part3 = +c20*c02*λ   +c20*c01*c12 -c20*c02*c11;
+    //
+    //         var cubic = -1;
+    //         var quadratic = c00 + c11 + c22;
+    //         var linear = -c00*c11 -c00*c22 + c12*c21 -c11*c22 +c10*c01 +c20*c02;
+    //         var constant = -c00*c12*c21 + c00*c11*c22-c10*c01*c22 +c10*c02*c21+c20*c01*c12-c20*c02*c11;
+    //         
+    //         return part1 + part2 + part3;
+    //     }
+    // }
+    #endregion
 }
 
 public static class kint2

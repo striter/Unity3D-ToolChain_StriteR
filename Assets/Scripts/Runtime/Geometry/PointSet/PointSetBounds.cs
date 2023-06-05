@@ -1,5 +1,6 @@
 using Unity.Mathematics;
 using System.Collections.Generic;
+using TPoolStatic;
 using UnityEngine;
 
 namespace Geometry.PointSet
@@ -7,7 +8,7 @@ namespace Geometry.PointSet
     public static class UBounds
     {
         #region 2D
-        static void Minmax(float3[] _positions,out float3 _min,out float3 _max)
+        static void Minmax(IEnumerable<float3> _positions,out float3 _min,out float3 _max)
         {
             _min = float.MaxValue;
             _max = float.MinValue;
@@ -18,16 +19,31 @@ namespace Geometry.PointSet
             }
         }
         
-        public static GBox GetBoundingBox(params float3[] _positions)
+        public static GBox GetBoundingBox(IEnumerable<float3> _positions)
         {
             Minmax(_positions,out var min,out var max);
             return GBox.Minmax(min,max);
+        }
+
+        
+        public static GBox GetBoundingBoxOriented(float3 _right,float3 _up,float3 _forward,IEnumerable<float3> _points)
+        {
+            float3 min = float.MaxValue;
+            float3 max = float.MinValue;
+            foreach (var point in _points)
+            {
+                var cur = new float3(math.dot(point,_right),math.dot(point,_up),math.dot(point,_forward));
+                min = math.min(cur, min);
+                max = math.max(cur, max);
+            }
+
+            return GBox.Minmax(min, max);
         }
         
         private static readonly List<float3> kBoundaryPoints = new List<float3>(4);
         private static readonly List<float3> kContainedPoints = new List<float3>();
         
-        public static GSphere GetBoundingSphere(params float3[] _positions)
+        public static GSphere GetBoundingSphere(IList<float3> _positions)
         {
             kBoundaryPoints.Clear();
             kContainedPoints.Clear();
@@ -55,6 +71,22 @@ namespace Geometry.PointSet
             
             _positions.Add(removed);
             return sphere;
+        }
+
+        public static GEllipsoid GetBoundingEllipsoid(IList<float3> _positions)
+        {
+            var box = GetBoundingBox(_positions);
+            var m = math.mul(float3x3.identity,box.size);
+
+            TSPoolList<float3>.Spawn(out var transformedPositions);
+            foreach (var point in _positions)
+            {
+                var ePoint = m * point;
+                transformedPositions.Add(ePoint);
+            }
+            var sphere = GetBoundingSphere(transformedPositions);
+            TSPoolList<float3>.Recycle(transformedPositions);
+            return new GEllipsoid(sphere.center,sphere.radius*2*box.size);
         }
         #endregion
         
