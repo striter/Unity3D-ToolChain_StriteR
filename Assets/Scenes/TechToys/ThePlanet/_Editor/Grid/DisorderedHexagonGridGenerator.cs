@@ -8,6 +8,7 @@ using Procedural;
 using Procedural.Hexagon;
 using Procedural.Hexagon.Area;
 using Procedural.Hexagon.Geometry;
+using Unity.Mathematics;
 using UnityEditor;
 using UnityEditor.Extensions;
 using UnityEngine;
@@ -488,7 +489,7 @@ namespace TechToys.ThePlanet.Grid
 
     public static class Extension
     {
-        public static Vector3 ToPosition(this HexCoord _hexCube)
+        public static float3 ToPosition(this HexCoord _hexCube)
         {
             return _hexCube.ToCoord().ToPosition();
         }

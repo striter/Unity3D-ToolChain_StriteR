@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Geometry;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Procedural
@@ -17,9 +18,9 @@ namespace Procedural
             InvTransformMatrix = Matrix4x4.Scale(Vector3.one / _scale)*_invTransformMatrix ;
         }
         
-        public static Vector3 ToPosition(this Coord _pixel)
+        public static float3 ToPosition(this Coord _pixel)
         {
-            return TransformMatrix * new Vector3(_pixel.x, 0, _pixel.y);
+            return TransformMatrix.MultiplyPoint(new float3(_pixel.x, 0, _pixel.y));
         }
 
         public static Coord ToCoord(this Vector3 _world)

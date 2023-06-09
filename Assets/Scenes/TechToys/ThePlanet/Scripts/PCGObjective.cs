@@ -6,6 +6,7 @@ using System.Runtime.Remoting.Messaging;
 using Geometry;
 using TPool;
 using TPoolStatic;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace TechToys.ThePlanet
@@ -250,7 +251,7 @@ namespace TechToys.ThePlanet
 
         public void DrawGizmos()
         {
-            Gizmos_Extend.DrawLinesConcat(positions.Iterate());
+            Gizmos_Extend.DrawLinesConcat(positions.Iterate(p=>(float3)p));
             for (int i = 0; i < 4; i++)
                 Gizmos.DrawLine(positions[i],positions[i]+normals[i]);
         }

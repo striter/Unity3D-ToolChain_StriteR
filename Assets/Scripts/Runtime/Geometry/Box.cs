@@ -48,7 +48,7 @@ namespace Geometry
         public float2 GetPoint(float2 _uv) => min + _uv * size;
     }
     
-    public partial struct GBox
+    public partial struct GBox:IShape
     {
         public float3 center;
         public float3 extent;
@@ -85,13 +85,15 @@ namespace Geometry
             return Minmax(min, min + size * _sizeRatio);
         }
         
-        
         public bool Contains(float3 _point,float _bias = float.Epsilon)
         {
             float3 absOffset = math.abs(center-_point) + _bias;
             return absOffset.x < extent.x && absOffset.y < extent.y && absOffset.z < extent.z;
         }
-        
+
+        public static readonly GBox kDefault = new GBox(0f,.5f);
+        public float3 GetSupportPoint(float3 _direction) => _direction*Validation.UGeometry.Distance.Eval(new GRay(0,_direction), this).sum();
+        public float3 Center => center;
     }
 
     [Serializable]
@@ -100,7 +102,7 @@ namespace Geometry
         public void OnBeforeSerialize(){  }
         public void OnAfterDeserialize()=>Ctor();
     }
-    
+
     [Serializable]
     public partial struct GBox : ISerializationCallbackReceiver
     {

@@ -8,6 +8,7 @@ using Geometry.Validation;
 using Procedural;
 using Procedural.Hexagon;
 using Procedural.Hexagon.Area;
+using Unity.Mathematics;
 
 namespace Examples.Algorithm.HexagonGrid
 {
@@ -335,14 +336,14 @@ namespace Examples.Algorithm.HexagonGrid
     
     public static class GridHelper
     {
-        public static Vector3 ToWorld(this HexCoord _hexCube)
+        public static float3 ToWorld(this HexCoord _hexCube)
         {
             return _hexCube.ToCoord().ToPosition();
         }
 #if UNITY_EDITOR
         public static void DrawHexagon(this HexCoord _coord)
         {
-            Vector3[] hexagonList = UHexagon.kUnitPoints.Select(p=>p.ToPosition() + _coord.ToWorld()).ToArray();
+            var hexagonList = UHexagon.kUnitPoints.Select(p=>p.ToPosition() + _coord.ToWorld()).ToArray();
             Gizmos_Extend.DrawLinesConcat(hexagonList);
         }
 #endif

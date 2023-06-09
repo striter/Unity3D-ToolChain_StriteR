@@ -4,6 +4,7 @@ using System.Linq;
 using Geometry;
 using TPool;
 using TPoolStatic;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace TechToys.ThePlanet.Module
@@ -466,7 +467,7 @@ namespace TechToys.ThePlanet.Module
                     Gizmos.color = Color.white;
                     Gizmos.matrix = quad.transform.localToWorldMatrix;
                     
-                    Gizmos_Extend.DrawLinesConcat(quad.m_ShapeOS.positions.Iterate());
+                    Gizmos_Extend.DrawLinesConcat(quad.m_ShapeOS.positions.Iterate(p=>(float3)p));
                     // Gizmos.DrawLine(Vector3.up,Vector3.up+Vector3.forward);
 
                     if (m_RelativeQuadGizmos)

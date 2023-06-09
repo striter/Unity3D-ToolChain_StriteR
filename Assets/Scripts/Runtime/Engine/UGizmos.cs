@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
+using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 
@@ -87,24 +88,24 @@ public static class Gizmos_Extend
         }
     }
 
-    public static void DrawLinesConcat(params Vector3[] _lines) => DrawLinesConcat(_lines.ToList());
-    public static void DrawLinesConcat(IList<Vector3> _points)
+    public static void DrawLinesConcat(params float3[] _lines) => DrawLinesConcat(_lines.ToList());
+    public static void DrawLinesConcat(IList<float3> _points)
     {
         int count = _points.Count;
         for(int i=0;i<count;i++)
             Gizmos.DrawLine(_points[i],_points[(i+1)%count]);
     }
-    public static void DrawLinesConcat<T>(IList<T> _points,Func<T,Vector3> _convert)
+    public static void DrawLinesConcat<T>(IList<T> _points,Func<T,float3> _convert)
     {
         int count = _points.Count;
         for(int i=0;i<count;i++)
             Gizmos.DrawLine(_convert(_points[i]),_convert(_points[(i+1)%count]));
     }
     
-    public static void DrawLinesConcat<T>(IEnumerable<T> _points,Func<T,Vector3> _convert)
+    public static void DrawLinesConcat<T>(IEnumerable<T> _points,Func<T,float3> _convert)
     {
-        Vector3 tempPoint=default;
-        Vector3 firstPoint = default;
+        float3 tempPoint=default;
+        float3 firstPoint = default;
         foreach (var (index,value) in _points.LoopIndex())
         {
             var point = _convert(value);
@@ -183,6 +184,8 @@ public static class Gizmos_Extend
         DrawLine(_frustumPoints.farTopRight,_frustumPoints.nearTopRight);
         DrawLinesConcat(_frustumPoints.farBottomLeft,_frustumPoints.farBottomRight,_frustumPoints.farTopRight,_frustumPoints.farTopLeft);
     }
+
+    public static void DrawGizmos(this GPolygon _polygon) => DrawLinesConcat(_polygon.positions);
 }
 
 #endif

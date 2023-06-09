@@ -8,6 +8,7 @@ using Procedural.Hexagon.Area;
 using TTouchTracker;
 using UnityEngine;
 using TPoolStatic;
+using Unity.Mathematics;
 
 namespace TechToys.ThePlanet
 {
@@ -84,7 +85,7 @@ namespace TechToys.ThePlanet
             if (distance < 0)
                 return false;
             var hitPos = _ray.GetPoint(distance);
-            var nearestVertex = m_Vertices.Values.Min(p => (hitPos - p.m_Position).sqrMagnitude);
+            var nearestVertex = m_Vertices.Values.MinElement(p => (hitPos - p.m_Position).sqrMagnitude);
             _vertexID = nearestVertex?.m_Identity ?? -1;
             return nearestVertex!=null;
         }
@@ -167,7 +168,7 @@ namespace TechToys.ThePlanet
                 foreach (var quad in m_Quads.Values)
                 {
                     Gizmos.color = Color.white.SetAlpha(.3f);
-                    Gizmos_Extend.DrawLinesConcat(quad.m_Indexes.Iterate(p => m_Vertices[p].m_Position));
+                    Gizmos_Extend.DrawLinesConcat(quad.m_Indexes.Iterate(p => (float3)m_Vertices[p].m_Position));
                     quad.m_ShapeWS.DrawGizmos();
                     
                     

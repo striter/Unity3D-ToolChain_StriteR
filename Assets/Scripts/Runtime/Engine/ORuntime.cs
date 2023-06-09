@@ -11,7 +11,7 @@ public static class TimeScaleController<T> where T : struct
     static float GetLowestScale()
     {
         float scale = 1f;
-        scale= m_TimeScales.Values.Min(p=>p);
+        scale= m_TimeScales.Values.MinElement(p=>p);
         return scale;
     }
 

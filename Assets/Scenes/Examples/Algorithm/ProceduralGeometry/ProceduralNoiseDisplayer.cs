@@ -140,7 +140,7 @@ namespace Examples.Algorithm.Procedural
     }
 
     [BurstCompile(FloatPrecision.Standard, FloatMode.Fast, CompileSynchronously = true)]
-    struct ShapeJob<T> : IJobFor where T:struct,IShape
+    struct ShapeJob<T> : IJobFor where T:struct,IShapeExplicit
     {
         [WriteOnly] public NativeArray<float3x4> positions;
         [WriteOnly] public NativeArray<float3x4> normals;

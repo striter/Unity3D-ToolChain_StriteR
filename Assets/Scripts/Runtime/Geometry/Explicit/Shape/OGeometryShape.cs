@@ -4,7 +4,7 @@ namespace Geometry.Explicit.Shape
 {
     using static math;
     
-    public interface IShape
+    public interface IShapeExplicit
     {
         Point4 GetPoint(int _i, float _resolution, float _invResolution);
 
@@ -19,20 +19,20 @@ namespace Geometry.Explicit.Shape
         }
     }
 
-    public struct SPlane :IShape
+    public struct SPlane :IShapeExplicit
     {
         public Point4 GetPoint(int _i, float _resolution, float _invResolution)
         {
-            float4x2 uv = IShape.IndexTo4UV(_i,_resolution,_invResolution);
+            float4x2 uv = IShapeExplicit.IndexTo4UV(_i,_resolution,_invResolution);
             return new Point4() {positions = new float4x3(uv.c0-.5f, 0, uv.c1-.5f),normals = new float4x3(0,1,0)};
         }
     }
 
-    public struct SSphere : IShape
+    public struct SSphere : IShapeExplicit
     {
         public Point4 GetPoint(int _i, float _resolution, float _invResolution)
         {
-            float4x2 uv = IShape.IndexTo4UV(_i,_resolution,_invResolution);
+            float4x2 uv = IShapeExplicit.IndexTo4UV(_i,_resolution,_invResolution);
             float4x3 p;
             p.c0 = uv.c0 - 0.5f;
             p.c1 = uv.c1 - 0.5f;
@@ -48,11 +48,11 @@ namespace Geometry.Explicit.Shape
         }
     }
 
-    public struct STorus : IShape
+    public struct STorus : IShapeExplicit
     {
         public Point4 GetPoint(int _i, float _resolution, float _invResolution)
         {            
-            float4x2 uv = IShape.IndexTo4UV(_i,_resolution,_invResolution);
+            float4x2 uv = IShapeExplicit.IndexTo4UV(_i,_resolution,_invResolution);
             float r1 = 0.375f;
             float r2 = 0.125f;
             float4 s = r1 + r2 * cos(kmath.kPI2 * uv.c1);

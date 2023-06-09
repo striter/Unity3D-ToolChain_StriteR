@@ -13,7 +13,7 @@ namespace Geometry.PointSet
         {
             public PTriangle polygon;
             public G2Triangle positions;
-            public GCircle circummCircle;
+            public GCircle circumscribedCircle;
 
             public bool Equals(DTriangle other)
             {
@@ -71,7 +71,7 @@ namespace Geometry.PointSet
             {
                 polygon = kSuperPolygon,
                 positions = superTriangle,
-                circummCircle = GCircle.TriangleCircumscribed(superTriangle.V0,superTriangle.V1,superTriangle.V2)
+                circumscribedCircle = GCircle.TriangleCircumscribed(superTriangle.V0,superTriangle.V1,superTriangle.V2)
             });
             
             int vertexIndex = 0;
@@ -82,7 +82,7 @@ namespace Geometry.PointSet
                 for(int i=0;i<kTriangles.Count;i++)
                 {
                     var triangle = kTriangles[i];
-                    if (!triangle.circummCircle.Contains(vertex))
+                    if (!triangle.circumscribedCircle.Contains(vertex))
                         continue;
                     var polygon = triangle.polygon;
                     var positions = triangle.positions;
@@ -100,7 +100,7 @@ namespace Geometry.PointSet
                     
                     var polygon = new PTriangle(edge.polygon.start,edge.polygon.end,vertexIndex);
                     var positions = new G2Triangle(edge.positions.start,edge.positions.end,vertex);
-                    kTriangles.Insert(0,new DTriangle(){polygon = polygon,positions = positions,circummCircle = GCircle.TriangleCircumscribed(positions)});
+                    kTriangles.Insert(0,new DTriangle(){polygon = polygon,positions = positions,circumscribedCircle = GCircle.TriangleCircumscribed(positions)});
                 }
 
                 vertexIndex++;
