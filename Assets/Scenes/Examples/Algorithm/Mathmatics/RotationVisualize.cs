@@ -19,7 +19,7 @@ namespace Examples.Mathmatics
         void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
-            Gizmos_Extend.DrawArrow(Vector3.zero, m_Axis,1f,.1f);
+            UGizmos.DrawArrow(Vector3.zero, m_Axis,1f,.1f);
 
             Gizmos.DrawLine(Vector3.zero, m_SrcVector);
             Gizmos.color = Color.blue;

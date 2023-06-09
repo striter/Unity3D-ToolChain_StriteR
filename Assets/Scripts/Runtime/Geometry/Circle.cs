@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Geometry
 {
     [Serializable]
-    public class GCircle
+    public class GCircle:IShape2D
     {
         public float2 center;
         public float radius;
@@ -54,6 +54,9 @@ namespace Geometry
         
         public bool Contains(float2 _p, float _bias = float.Epsilon) =>math.lengthsq(_p - center) < radius * radius + _bias;
         public static readonly GCircle kZero = new GCircle(float2.zero, 0f);
+        public static readonly GCircle kOne = new GCircle(float2.zero, 1f);
+        public float2 GetSupportPoint(float2 _direction) => center + _direction.normalize() * radius;
+        public float2 Center => center;
     }
     
     public static class UCircle

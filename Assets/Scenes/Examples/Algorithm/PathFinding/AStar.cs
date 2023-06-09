@@ -124,7 +124,7 @@ namespace Examples.Algorithm.PathFinding
         {
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(m_Agent,.2f);
-            Gizmos_Extend.DrawLines(m_Paths);
+            UGizmos.DrawLines(m_Paths);
             foreach (var path in m_Paths)
             {
                 Gizmos.DrawWireSphere(path,.1f);

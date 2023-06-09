@@ -172,4 +172,7 @@ public static partial class umath
             case 3: return -sin_kinda(kPID2 - y);
         }
     }
+
+    public static float2 tripleProduct(float2 _a, float2 _b, float2 _c)=>math.dot(_a, cross(_b, _c));
+    public static float3 tripleProduct(float3 _a, float3 _b, float3 _c)=>math.dot(_a, math.cross(_b, _c));
 }

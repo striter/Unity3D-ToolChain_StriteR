@@ -240,7 +240,7 @@ public class BSPTree
             {
                 Gizmos.matrix = matrix * Matrix4x4.TRS(node.m_Plane.position.to3xz(),Quaternion.LookRotation(node.m_Plane.normal.to3xz()),Vector3.one );
                 Gizmos.DrawWireCube(Vector3.zero,(Vector3.right + Vector3.up)*5f);
-                Gizmos_Extend.DrawString(Vector3.zero, node.m_Iteration.ToString());
+                UGizmos.DrawString(Vector3.zero, node.m_Iteration.ToString());
             }
         }
 

@@ -61,7 +61,7 @@ namespace Geometry
         }
         
         public bool Contains(float3 _p, float _bias = float.Epsilon) =>math.lengthsq(_p - center) < radius * radius + _bias;
-        public float3 GetSupportPoint(float3 _direction) => center + _direction * radius;
+        public float3 GetSupportPoint(float3 _direction) => center + _direction.normalize() * radius;
         public float3 Center => center;
     }
 

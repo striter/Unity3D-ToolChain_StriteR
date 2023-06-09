@@ -172,7 +172,7 @@ namespace TechToys.ThePlanet.Module.Path
                 Gizmos.matrix = Matrix4x4.identity;
                 var collapse = m_VoxelPathCollapsing[voxelID];
                 if (collapse.m_Possibilities.Count > 0)
-                    Gizmos_Extend.DrawString(voxel.transform.position, collapse.m_Possibilities.Count.ToString());
+                    UGizmos.DrawString(voxel.transform.position, collapse.m_Possibilities.Count.ToString());
 
                 for (int i = 0; i < 4; i++)
                 {
@@ -180,7 +180,7 @@ namespace TechToys.ThePlanet.Module.Path
                         continue;
 
                     Gizmos.color = UColor.IndexToColor(i);
-                    Gizmos_Extend.DrawLine(collapse.m_Voxel.Transform.position, m_Paths[collapse.m_Voxel.m_CubeSides[i]].transform.position, .4f);
+                    UGizmos.DrawLine(collapse.m_Voxel.Transform.position, m_Paths[collapse.m_Voxel.m_CubeSides[i]].transform.position, .4f);
                 }
 
                 index++;

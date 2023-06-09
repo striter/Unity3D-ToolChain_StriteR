@@ -133,7 +133,7 @@ namespace TechToys.ThePlanet.Module.BOIDS
         {
             Gizmos.color = Color.black;
             Gizmos.matrix = Matrix4x4.TRS(m_DesiredPosition, m_DesiredRotation, Vector3.one);
-            Gizmos_Extend.DrawString(Vector3.up * .1f, m_CurrentState.ToString());
+            UGizmos.DrawString(Vector3.up * .1f, m_CurrentState.ToString());
             m_States.DrawGizmosSelected(m_Actor);
         }
 #endif

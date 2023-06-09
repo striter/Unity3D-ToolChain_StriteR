@@ -217,7 +217,7 @@ namespace TechToys.ThePlanet.Module.Prop
                 Gizmos.color = UColor.IndexToColor(type);
                 var propByte = selectedContainer.m_PropIndexes[type].propByte;
                 var propIndexer = UModulePropByte.GetOrientedPropIndex(DModule.Collection.m_ModuleLibrary[type].m_ClusterType,propByte);
-                Gizmos_Extend.DrawString(Vector3.up*.1f*(4+index++),$"{type},{propByte}|{propIndexer.srcByte},{propIndexer.orientation}");
+                UGizmos.DrawString(Vector3.up*.1f*(4+index++),$"{type},{propByte}|{propIndexer.srcByte},{propIndexer.orientation}");
             }
                 
             Gizmos.matrix = transform.worldToLocalMatrix;
@@ -244,7 +244,7 @@ namespace TechToys.ThePlanet.Module.Prop
                 var collapse = m_PropCollapsing[voxelID];
                 var finalByte = collapse.VoxelByte;
                 var index = UModulePropByte.GetOrientedPropIndex( DModule.Collection.m_ModuleLibrary[collapse.m_Type].m_ClusterType,finalByte);
-                Gizmos_Extend.DrawString(Vector3.up*.2f,$"B:{collapse.m_BaseByte}|M:{collapse.m_MaskByte} \nF:{finalByte}|I:{index.srcByte},{index.orientation}");
+                UGizmos.DrawString(Vector3.up*.2f,$"B:{collapse.m_BaseByte}|M:{collapse.m_MaskByte} \nF:{finalByte}|I:{index.srcByte},{index.orientation}");
             }
         }
         #endregion

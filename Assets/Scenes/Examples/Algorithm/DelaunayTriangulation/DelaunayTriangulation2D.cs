@@ -56,7 +56,7 @@ namespace Examples.Algorithm.DelaunayTriangulation
             foreach (var point in m_Vertices)
                 Gizmos.DrawWireSphere(point.to3xz(),.3f);
             foreach (var triangle in triangles)
-                Gizmos_Extend.DrawLinesConcat(triangle,_p=>m_Vertices[_p].to3xz());
+                UGizmos.DrawLinesConcat(triangle,_p=>m_Vertices[_p].to3xz());
         }
 
     }

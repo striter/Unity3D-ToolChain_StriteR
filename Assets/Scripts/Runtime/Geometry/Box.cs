@@ -8,7 +8,7 @@ using UnityEngine.Serialization;
 
 namespace Geometry
 {
-    public partial struct G2Box
+    public partial struct G2Box:IShape2D
     {
         public float2 center;
         public float2 extent;
@@ -46,6 +46,13 @@ namespace Geometry
         }
 
         public float2 GetPoint(float2 _uv) => min + _uv * size;
+        public static readonly G2Box kDefault = new G2Box(0f,.5f);
+        public float2 GetSupportPoint(float2 _direction)
+        {
+            var ray = new G2Ray(center, _direction.normalize());
+            return ray.GetPoint(Validation.UGeometry.Distance.Eval(ray, this).sum());
+        }
+        public float2 Center => center;
     }
     
     public partial struct GBox:IShape
@@ -92,7 +99,12 @@ namespace Geometry
         }
 
         public static readonly GBox kDefault = new GBox(0f,.5f);
-        public float3 GetSupportPoint(float3 _direction) => _direction*Validation.UGeometry.Distance.Eval(new GRay(0,_direction), this).sum();
+
+        public float3 GetSupportPoint(float3 _direction)
+        {
+            var ray = new GRay(center, _direction.normalize());
+            return ray.GetPoint(Validation.UGeometry.Distance.Eval(ray, this).sum());
+        }
         public float3 Center => center;
     }
 

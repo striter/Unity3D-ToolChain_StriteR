@@ -20,7 +20,7 @@ namespace Examples.Algorithm.Geometry
             Gizmos.DrawLine(Vector3.zero,m_Position);
 
             var rad = umath.GetRadClockWise(Vector2.up,new Vector2(m_Position.x,m_Position.z));
-            Gizmos_Extend.DrawString( Vector3.zero,(kmath.kRad2Deg*rad).ToString());
+            UGizmos.DrawString( Vector3.zero,(kmath.kRad2Deg*rad).ToString());
         }
     }
     #endif

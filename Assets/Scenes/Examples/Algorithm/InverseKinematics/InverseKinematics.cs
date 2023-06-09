@@ -55,7 +55,7 @@ namespace Examples.Algorithm.InverseKinematics
             
             Gizmos.DrawLine(Vector3.zero,point);
             Gizmos.DrawLine(point,control);
-            Gizmos_Extend.DrawArrow(Vector3.zero,m_Direction,.5f,.1f);
+            UGizmos.DrawArrow(Vector3.zero,m_Direction,.5f,.1f);
             
             new GSphere(0,m_Radius1).DrawGizmos();
             new GSphere(control,m_Radius2).DrawGizmos();

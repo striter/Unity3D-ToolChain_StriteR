@@ -48,6 +48,16 @@ namespace Geometry.Validation
                 return new float2(dstToBox, dstInsideBox);
             }
 
+            public static float2 Eval(G2Ray _ray,G2Box _box)
+            {
+                Ray.AABBCalculate(_ray,_box, out float2 tmin, out float2 tmax);
+                float dstA =math.max(tmin.x, tmin.y);
+                float dstB = math.min(tmax.x, tmax.y);
+                float dstToBox = math.max(0, dstA);
+                float dstInsideBox = math.max(0, dstB - dstToBox);
+                return new float2(dstToBox, dstInsideBox);
+            }
+            
             public static float2 Eval(GRay _ray,GCone _cone)
             {
                 float2 distances = Ray.ConeCalculate(_ray,_cone);

@@ -37,7 +37,7 @@ namespace Examples.Algorithm.NumericalAnalysis
             }
 
             Gizmos.color = Color.green;
-            Gizmos_Extend.DrawLines(lines);
+            UGizmos.DrawLines(lines);
 
             Gizmos.color = KColor.kOrange;
             Gizmos.DrawSphere(new Vector3(m_Guess,0,0)/kNumericRange,0.01f);

@@ -58,11 +58,11 @@ namespace Examples.Algorithm.Geometry
             Gizmos.matrix = transform.localToWorldMatrix*Matrix4x4.Translate(centre);
             Gizmos.DrawCube(Vector3.zero,.1f*Vector3.one);
             Gizmos.color = Color.red;
-            Gizmos_Extend.DrawArrow(Vector3.zero,right,1f,.05f);
+            UGizmos.DrawArrow(Vector3.zero,right,1f,.05f);
             Gizmos.color = Color.green;
-            Gizmos_Extend.DrawArrow(Vector3.zero,up,1f,.05f);
+            UGizmos.DrawArrow(Vector3.zero,up,1f,.05f);
             Gizmos.color = Color.blue;
-            Gizmos_Extend.DrawArrow(Vector3.zero,forward,1f,.05f);
+            UGizmos.DrawArrow(Vector3.zero,forward,1f,.05f);
 
             Gizmos.color = Color.white;
             switch (shape)
@@ -98,9 +98,9 @@ namespace Examples.Algorithm.Geometry
                 Gizmos.DrawSphere(point.to3xz(),.01f);
             Gizmos.DrawCube(Vector3.zero,.1f*Vector3.one);
             Gizmos.color = Color.red;
-            Gizmos_Extend.DrawArrow(Vector3.zero,right2D.to3xz(),1f,.05f);
+            UGizmos.DrawArrow(Vector3.zero,right2D.to3xz(),1f,.05f);
             Gizmos.color = Color.green;
-            Gizmos_Extend.DrawArrow(Vector3.zero,up2D.to3xz(),1f,.05f);
+            UGizmos.DrawArrow(Vector3.zero,up2D.to3xz(),1f,.05f);
         }
         
 

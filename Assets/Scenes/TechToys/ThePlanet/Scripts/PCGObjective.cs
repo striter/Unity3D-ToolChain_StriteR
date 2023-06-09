@@ -251,7 +251,7 @@ namespace TechToys.ThePlanet
 
         public void DrawGizmos()
         {
-            Gizmos_Extend.DrawLinesConcat(positions.Iterate(p=>(float3)p));
+            UGizmos.DrawLinesConcat(positions.Iterate(p=>(float3)p));
             for (int i = 0; i < 4; i++)
                 Gizmos.DrawLine(positions[i],positions[i]+normals[i]);
         }

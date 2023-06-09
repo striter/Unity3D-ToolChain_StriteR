@@ -189,7 +189,7 @@ namespace TechToys.ThePlanet.Simplex
                         var indexer = DSimplex.kIndexes[outputBytes[index]];
                         output += $"B:{indexer.srcByte}\nO:{indexer.orientation}\n";
                     }
-                    Gizmos_Extend.DrawString(voxel.position,output,0f);
+                    UGizmos.DrawString(voxel.position,output,0f);
                 }
         }
     #endif

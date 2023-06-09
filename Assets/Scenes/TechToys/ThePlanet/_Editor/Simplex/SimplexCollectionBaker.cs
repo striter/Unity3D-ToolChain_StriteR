@@ -29,7 +29,7 @@ namespace TechToys.ThePlanet.Baking
                     Gizmos.matrix = simplexElementRoot.localToWorldMatrix;
                     Gizmos.color = Color.white;
                     Gizmos.DrawWireCube(Vector3.up*.5f,Vector3.one);
-                    Gizmos_Extend.DrawString(Vector3.zero, indexer.srcByte.ToString(),.5f);
+                    UGizmos.DrawString(Vector3.zero, indexer.srcByte.ToString(),.5f);
                     for (int i = 0; i < 8; i++)
                     {
                         Gizmos.color = (UByte.PosValid(indexer.srcByte, i) ? Color.green : Color.red).SetAlpha(.5f);

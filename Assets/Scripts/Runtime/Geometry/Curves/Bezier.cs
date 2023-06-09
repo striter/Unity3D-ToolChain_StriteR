@@ -158,7 +158,7 @@ namespace Geometry.Curves
                 var value = i / (float) _density;
                 points[i] = _curve.Evaluate(value);
             }
-            Gizmos_Extend.DrawLines(points);
+            UGizmos.DrawLines(points);
 
             if (!_tangents)
                 return;
@@ -191,7 +191,7 @@ namespace Geometry.Curves
             Vector3[] points = new Vector3[_density + 1];
             for (int i = 0; i < _density+1; i++)
                 points[i] = _curve.Evaluate(i / (float)_density);
-            Gizmos_Extend.DrawLines(points);
+            UGizmos.DrawLines(points);
         }
 #endif
     }

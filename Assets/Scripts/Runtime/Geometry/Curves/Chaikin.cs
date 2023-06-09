@@ -73,17 +73,17 @@ namespace Geometry.Curves
 
             Gizmos.color = Color.green;
             if (_curve.closed)
-                Gizmos_Extend.DrawLinesConcat(outputs, p => p);
+                UGizmos.DrawLinesConcat(outputs, p => p);
             else
-                Gizmos_Extend.DrawLines(outputs, p => p);
+                UGizmos.DrawLines(outputs, p => p);
 
             if (!_indicator)
                 return;
             Gizmos.color = Color.white;
             if (_curve.closed)
-                Gizmos_Extend.DrawLinesConcat(_curve.vertices, p => p);
+                UGizmos.DrawLinesConcat(_curve.vertices, p => p);
             else
-                Gizmos_Extend.DrawLines(_curve.vertices, p => p);
+                UGizmos.DrawLines(_curve.vertices, p => p);
         }
     }
 }

@@ -467,7 +467,7 @@ namespace TechToys.ThePlanet.Module
                     Gizmos.color = Color.white;
                     Gizmos.matrix = quad.transform.localToWorldMatrix;
                     
-                    Gizmos_Extend.DrawLinesConcat(quad.m_ShapeOS.positions.Iterate(p=>(float3)p));
+                    UGizmos.DrawLinesConcat(quad.m_ShapeOS.positions.Iterate(p=>(float3)p));
                     // Gizmos.DrawLine(Vector3.up,Vector3.up+Vector3.forward);
 
                     if (m_RelativeQuadGizmos)
@@ -477,7 +477,7 @@ namespace TechToys.ThePlanet.Module
                         {
                             Gizmos.color = UColor.IndexToColor(i);
                             if(m_GridQuads.Contains(quad.m_NearbyQuadCW[i]))
-                                Gizmos_Extend.DrawLine(quad.transform.position,m_GridQuads[quad.m_NearbyQuadCW[i]].Quad.position,.4f);
+                                UGizmos.DrawLine(quad.transform.position,m_GridQuads[quad.m_NearbyQuadCW[i]].Quad.position,.4f);
                         }
                     }
                 }
@@ -496,7 +496,7 @@ namespace TechToys.ThePlanet.Module
                         Gizmos.matrix = Matrix4x4.identity;
                         Gizmos.color = Color.green;
                         foreach (var cornerID in corner.m_AdjacentConnectedCorners)
-                            Gizmos_Extend.DrawLine(corner.transform.position, m_Corners[cornerID].transform.position , .4f);
+                            UGizmos.DrawLine(corner.transform.position, m_Corners[cornerID].transform.position , .4f);
                     }
                     
                     if (m_CornerIntervalRelations)
@@ -504,7 +504,7 @@ namespace TechToys.ThePlanet.Module
                         Gizmos.matrix = Matrix4x4.identity;
                         Gizmos.color = Color.blue;
                         foreach (var cornerID in corner.m_IntervalConnectedCorners)
-                            Gizmos_Extend.DrawLine(corner.transform.position, m_Corners[cornerID].transform.position , .4f);
+                            UGizmos.DrawLine(corner.transform.position, m_Corners[cornerID].transform.position , .4f);
                     }
                     
                     if(m_CornerVoxelRelations)
@@ -512,7 +512,7 @@ namespace TechToys.ThePlanet.Module
                         Gizmos.matrix = Matrix4x4.identity;
                         Gizmos.color = Color.yellow;
                         foreach (var voxel in corner.m_RelativeVoxels)
-                            Gizmos_Extend.DrawLine(corner.transform.position,m_Voxels[voxel].transform.position,.8f);
+                            UGizmos.DrawLine(corner.transform.position,m_Voxels[voxel].transform.position,.8f);
                     }
                 }
             }
@@ -533,7 +533,7 @@ namespace TechToys.ThePlanet.Module
                         {
                             Gizmos.color = UColor.IndexToColor(i%4);
                             if (voxel.m_Corners[i]!=null)
-                                Gizmos_Extend.DrawLine(voxel.transform.position,voxel.m_Corners[i].Transform.position,.8f);
+                                UGizmos.DrawLine(voxel.transform.position,voxel.m_Corners[i].Transform.position,.8f);
                         }
                     }
 
@@ -543,7 +543,7 @@ namespace TechToys.ThePlanet.Module
                         {
                             Gizmos.color = UColor.IndexToColor(i%4);
                             if(voxel.m_CubeSidesExists.IsFlagEnable(UEnum.IndexToEnum<ECubeFacing>(i)))
-                                Gizmos_Extend.DrawLine(voxel.transform.position,m_Voxels[voxel.m_CubeSides[i]].transform.position,.8f);
+                                UGizmos.DrawLine(voxel.transform.position,m_Voxels[voxel.m_CubeSides[i]].transform.position,.8f);
                         }
                     }
                 }
@@ -563,7 +563,7 @@ namespace TechToys.ThePlanet.Module
                             Gizmos.DrawWireCube(Vector3.zero,Vector3.one*.25f);
                             Gizmos.matrix = Matrix4x4.identity;
                         }
-                        Gizmos_Extend.DrawLines(chain.voxels,_p=>m_Voxels[_p].transform.position);
+                        UGizmos.DrawLines(chain.voxels,_p=>m_Voxels[_p].transform.position);
                     }
                     else
                     {
@@ -573,7 +573,7 @@ namespace TechToys.ThePlanet.Module
                             Gizmos.DrawWireSphere(Vector3.zero,.5f);
                             Gizmos.matrix = Matrix4x4.identity;
                         }
-                        Gizmos_Extend.DrawLines(chain.corners,_p=>m_Corners[_p].transform.position);
+                        UGizmos.DrawLines(chain.corners,_p=>m_Corners[_p].transform.position);
                     }
                 }
             }

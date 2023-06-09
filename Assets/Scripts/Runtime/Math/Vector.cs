@@ -33,8 +33,7 @@ public static partial class umath
     
     // public static float dot(float2 _src, float2 _dst) => _src.x * _dst.x + _src.y * _dst.y;
     public static float cross(float2 _src, float2 _dst) => _src.x * _dst.y - _src.y * _dst.x;
-#endregion   
-
+#endregion
 
 #region Convertions
     public static Vector2 SetX(this Vector2 _vector, float _x) => new Vector2(_x, _vector.y);

@@ -58,10 +58,10 @@ public class CameraController : MonoBehaviour
 
         Gizmos.color = Color.blue;
         Gizmos.DrawSphere(Vector3.zero,.2f);
-        Gizmos_Extend.DrawArrow(m_Camera.transform.position, m_Camera.transform.rotation,.8f,.2f);
+        UGizmos.DrawArrow(m_Camera.transform.position, m_Camera.transform.rotation,.8f,.2f);
 
         Gizmos.color = Color.green;
-        Gizmos_Extend.DrawCylinder(m_BindRoot.position, Quaternion.LookRotation(Vector3.up), .2f, 2f);
+        UGizmos.DrawCylinder(m_BindRoot.position, Quaternion.LookRotation(Vector3.up), .2f, 2f);
 
         Gizmos.matrix = GetBindRootMatrix();
         Gizmos.DrawWireSphere(m_BindPosOffset, .5f);

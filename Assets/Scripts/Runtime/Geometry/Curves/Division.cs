@@ -89,7 +89,7 @@ namespace Geometry.Curves
         {
             var outputs = _curve.Output(out var divisions);
             Gizmos.color = Color.green;
-            Gizmos_Extend.DrawLines(outputs,p=>p);
+            UGizmos.DrawLines(outputs,p=>p);
 
             if (!_indicator)
                 return;
@@ -111,8 +111,8 @@ namespace Geometry.Curves
             Gizmos.color = Color.white.SetAlpha(.5f);
             for (int i = 0; i < divisions.Count; i++)
             {
-                Gizmos_Extend.DrawLinesConcat(divisions[i].quad.Iterate(),p=>p);
-                Gizmos_Extend.DrawString(divisions[i].quad.GetBaryCenter_Dynamic(),divisions[i].quadIndex.ToString());
+                UGizmos.DrawLinesConcat(divisions[i].quad.Iterate(),p=>p);
+                UGizmos.DrawString(divisions[i].quad.GetBaryCenter_Dynamic(),divisions[i].quadIndex.ToString());
             }
         }
     }

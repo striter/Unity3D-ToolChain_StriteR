@@ -115,13 +115,13 @@ namespace Examples.Rendering.Lighting
                 switch (light.type)
                 {
                     case ELightType.Directional:
-                        Gizmos_Extend.DrawArrow(Vector3.zero,rotation*Vector3.forward,1f,.1f);
+                        UGizmos.DrawArrow(Vector3.zero,rotation*Vector3.forward,1f,.1f);
                         break;
                     case ELightType.Point:
                         Gizmos.DrawWireSphere(position,.1f);
                         break;
                     case ELightType.Spot:
-                        Gizmos_Extend.DrawArrow(position,rotation*Vector3.forward,1f,.1f);
+                        UGizmos.DrawArrow(position,rotation*Vector3.forward,1f,.1f);
                         break;
                 }
             }

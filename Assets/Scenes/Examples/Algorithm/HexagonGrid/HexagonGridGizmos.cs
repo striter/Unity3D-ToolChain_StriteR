@@ -344,7 +344,7 @@ namespace Examples.Algorithm.HexagonGrid
         public static void DrawHexagon(this HexCoord _coord)
         {
             var hexagonList = UHexagon.kUnitPoints.Select(p=>p.ToPosition() + _coord.ToWorld()).ToArray();
-            Gizmos_Extend.DrawLinesConcat(hexagonList);
+            UGizmos.DrawLinesConcat(hexagonList);
         }
 #endif
     }

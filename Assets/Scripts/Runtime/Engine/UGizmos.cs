@@ -7,7 +7,7 @@ using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 
-public static class Gizmos_Extend
+public static class UGizmos
 {
     public static void DrawWireCapsule(Vector3 _pos, Quaternion _rot, Vector3 _scale, float _radius, float _height)
     {
@@ -88,12 +88,26 @@ public static class Gizmos_Extend
         }
     }
 
-    public static void DrawLinesConcat(params float3[] _lines) => DrawLinesConcat(_lines.ToList());
-    public static void DrawLinesConcat(IList<float3> _points)
+    public static void DrawLinesConcat(params float3[] _lines) => DrawLinesConcat(_lines.AsEnumerable());
+    public static void DrawLinesConcat(IEnumerable<float3> _points)
     {
-        int count = _points.Count;
-        for(int i=0;i<count;i++)
-            Gizmos.DrawLine(_points[i],_points[(i+1)%count]);
+        int count = _points.Count();
+        float3 tempPoint = default;
+        float3 startPoint = default;
+        float3 pre = default;
+        foreach (var (index,point) in _points.LoopIndex())
+        {
+            if (index == 0)
+            {
+                tempPoint = point;
+                startPoint = point;
+                continue;
+            }
+
+            Gizmos.DrawLine(tempPoint,point);
+            tempPoint = point;
+        }
+        Gizmos.DrawLine(tempPoint,startPoint);
     }
     public static void DrawLinesConcat<T>(IList<T> _points,Func<T,float3> _convert)
     {
@@ -173,7 +187,6 @@ public static class Gizmos_Extend
     }
     
     public static void DrawGizmos(this GBox _box)=>Gizmos.DrawWireCube(_box.center,_box.size);
-    public static void DrawGizmos(this GCircle _circle) => Handles.DrawWireDisc(_circle.center.to3xz(),Vector3.up,_circle.radius);
     public static void DrawGizmos(this GSphere _sphere) => Gizmos.DrawWireSphere(_sphere.center, _sphere.radius);
     public static void DrawGizmos(this GFrustumPoints _frustumPoints)
     {
@@ -186,6 +199,18 @@ public static class Gizmos_Extend
     }
 
     public static void DrawGizmos(this GPolygon _polygon) => DrawLinesConcat(_polygon.positions);
+    
+    #region 2D
+    public static void DrawGizmos(this G2Box _cube) => Gizmos.DrawWireCube(_cube.center.to3xz(),_cube.size.to3xz());
+    public static void DrawGizmos(this G2Polygon _polygon) => DrawLinesConcat(_polygon.positions.Select(p=>p.to3xz()));
+    public static void DrawGizmos(this GCircle _circle)
+    {
+        Handles.matrix = Gizmos.matrix;
+        Handles.color = Gizmos.color;
+        Handles.DrawWireDisc(_circle.center.to3xz(), Vector3.up, _circle.radius);
+    }
+
+    #endregion
 }
 
 #endif

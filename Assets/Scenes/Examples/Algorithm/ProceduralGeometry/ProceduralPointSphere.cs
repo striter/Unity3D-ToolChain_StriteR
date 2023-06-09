@@ -19,7 +19,7 @@ namespace Examples.Algorithm.Procedural
             for (int i = 0; i <= kUVSphereResolution ; i ++)
                 for(int j = 0 ; j <= kUVSphereResolution*2 ; j++)
                     Gizmos.DrawSphere(USphereExplicit.UV.GetPoint( new float2( i / r , j/r*2)),.02f);
-            Gizmos_Extend.DrawString(Vector3.zero,"UV Sphere");
+            UGizmos.DrawString(Vector3.zero,"UV Sphere");
             
             r = kAxixResolution;
             Gizmos.matrix = Matrix4x4.Translate(Vector3.right*3f);
@@ -31,7 +31,7 @@ namespace Examples.Algorithm.Procedural
                 for(int j = 0 ; j <= kAxixResolution ; j++)
                     Gizmos.DrawSphere(USphereExplicit.CubeToSpherePosition(axis.GetPoint(new float2( i / r , j/ r))),.02f);
             }
-            Gizmos_Extend.DrawString(Vector3.zero,"Cube Sphere");
+            UGizmos.DrawString(Vector3.zero,"Cube Sphere");
             
             Gizmos.matrix = Matrix4x4.Translate(Vector3.right*6f);
             for (int k = 0; k < kPolygonRhombusCount; k++)
@@ -41,7 +41,7 @@ namespace Examples.Algorithm.Procedural
                 for(int j = 0 ; j <= kAxixResolution ; j++)
                     Gizmos.DrawSphere(USphereExplicit.Polygon.GetPoint(new float2( i / r , j/ r),axis,false),.02f);
             }
-            Gizmos_Extend.DrawString(Vector3.zero,"Poly Sphere");
+            UGizmos.DrawString(Vector3.zero,"Poly Sphere");
             
             Gizmos.matrix = Matrix4x4.Translate(Vector3.right*9f);
             for (int k = 0; k < kPolygonRhombusCount; k++)
@@ -51,7 +51,7 @@ namespace Examples.Algorithm.Procedural
                 for(int j = 0 ; j <= kAxixResolution ; j++)
                     Gizmos.DrawSphere(USphereExplicit.Polygon.GetPoint(new float2( i / r , j/ r),axis,true),.02f);
             }
-            Gizmos_Extend.DrawString(Vector3.zero,"Poly Sphere Geodesic");
+            UGizmos.DrawString(Vector3.zero,"Poly Sphere Geodesic");
             
             Gizmos.matrix = Matrix4x4.Translate(Vector3.right*12f);
             for (int i = 0; i < kFibonacciResolution; i++)
@@ -60,7 +60,7 @@ namespace Examples.Algorithm.Procedural
                 Gizmos.DrawSphere(USphereExplicit.Fibonacci.GetPoint(i,kFibonacciResolution),.02f);
             }
             
-            Gizmos_Extend.DrawString(Vector3.zero,"Fibonacci Sphere");
+            UGizmos.DrawString(Vector3.zero,"Fibonacci Sphere");
         }
     }
 

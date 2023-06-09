@@ -33,7 +33,7 @@ namespace Examples.Algorithm.Geometry
                 Gizmos.DrawLine(triangle[2], triangle[0]);
                 
                 if(visualization.planeDirectionCheck)
-                    Gizmos_Extend.DrawArrow(triangle.GetBarycenter(), Quaternion.LookRotation(triangle.normal), .5f, .1f);
+                    UGizmos.DrawArrow(triangle.GetBarycenter(), Quaternion.LookRotation(triangle.normal), .5f, .1f);
 
                 float distance = 2f;
                 if(UGeometry.Intersect.Eval(triangle,ray, visualization.rayDirectionCheck,visualization.planeDirectionCheck,out float rayDistance))
@@ -44,7 +44,7 @@ namespace Examples.Algorithm.Geometry
                 }
                 Gizmos.color = Color.white;
                 if (visualization.rayDirectionCheck)
-                    Gizmos_Extend.DrawArrow(ray.origin,Quaternion.LookRotation(ray.direction),.5f,.1f);
+                    UGizmos.DrawArrow(ray.origin,Quaternion.LookRotation(ray.direction),.5f,.1f);
                 Gizmos.DrawLine(ray.origin, ray.GetPoint(distance));
             }
         }

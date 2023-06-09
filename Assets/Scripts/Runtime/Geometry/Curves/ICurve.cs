@@ -28,11 +28,11 @@ namespace Geometry.Curves
             {
                 foreach (var coord in _curve.Coordinates)
                     Gizmos.DrawSphere(coord,_sphereSize);
-                Gizmos_Extend.DrawLines(_curve.Coordinates,p=>p);
+                UGizmos.DrawLines(_curve.Coordinates,p=>p);
             }
             var outputs = _curve.Output(_amount);
             Gizmos.color = Color.green;
-            Gizmos_Extend.DrawLines(outputs, p => p);
+            UGizmos.DrawLines(outputs, p => p);
         }
         
     }

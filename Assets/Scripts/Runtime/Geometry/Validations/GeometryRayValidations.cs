@@ -81,6 +81,14 @@ namespace Geometry.Validation
                 _tmin = math.min(t0, t1);
                 _tmax = math.max(t0, t1);
             }
+            public static void AABBCalculate(G2Ray _ray,G2Box _box, out float2 _tmin, out float2 _tmax)
+            {
+                var invRayDir = 1f/(_ray.direction);
+                var t0 = (_box.min - _ray.origin)*(invRayDir);
+                var t1 = (_box.max - _ray.origin)*(invRayDir);
+                _tmin = math.min(t0, t1);
+                _tmax = math.max(t0, t1);
+            }
             public static float2 ConeCalculate(GRay _ray,GCone _cone)
             {
                 float2 distances = -1f;

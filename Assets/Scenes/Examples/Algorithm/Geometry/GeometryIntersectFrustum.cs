@@ -43,7 +43,7 @@ namespace Examples.Algorithm.Geometry
                 foreach (var tuple in frustumRays.LoopIndex())
                 {
                     Gizmos.color = UColor.IndexToColor(tuple.index);
-                    Gizmos_Extend.DrawArrow(tuple.value.origin,tuple.value.direction,1f,.05f);
+                    UGizmos.DrawArrow(tuple.value.origin,tuple.value.direction,1f,.05f);
                 }
             }
             Gizmos.color = Color.white;

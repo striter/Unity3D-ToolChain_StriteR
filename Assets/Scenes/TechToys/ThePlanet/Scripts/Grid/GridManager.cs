@@ -142,7 +142,7 @@ namespace TechToys.ThePlanet
                         foreach (var (index, adjacentVertex) in vertex.IterateNearbyVertices().LoopIndex())
                         {
                             Gizmos.color = UColor.IndexToColor(index);
-                            Gizmos_Extend.DrawLine(vertex.m_Position, adjacentVertex.m_Position, .4f);
+                            UGizmos.DrawLine(vertex.m_Position, adjacentVertex.m_Position, .4f);
                         }
                     }
                     else if (m_VertexIntervalRelation)
@@ -150,15 +150,15 @@ namespace TechToys.ThePlanet
                         foreach (var (index, intervalVertex) in vertex.IterateIntervalVertices().LoopIndex())
                         {
                             Gizmos.color = UColor.IndexToColor(index);
-                            Gizmos_Extend.DrawLine(vertex.m_Position, intervalVertex.m_Position, .4f);
+                            UGizmos.DrawLine(vertex.m_Position, intervalVertex.m_Position, .4f);
                         }
                     }
                     else
                     {
                         Gizmos.color = Color.red;
-                        Gizmos_Extend.DrawLine(vertex.m_Position, m_Vertices[vertex.m_RightVertex].m_Position, .4f);
+                        UGizmos.DrawLine(vertex.m_Position, m_Vertices[vertex.m_RightVertex].m_Position, .4f);
                         Gizmos.color = Color.blue;
-                        Gizmos_Extend.DrawLine(vertex.m_Position, m_Vertices[vertex.m_ForwardVertex].m_Position, .4f);
+                        UGizmos.DrawLine(vertex.m_Position, m_Vertices[vertex.m_ForwardVertex].m_Position, .4f);
                     }
                 }
             }
@@ -168,7 +168,7 @@ namespace TechToys.ThePlanet
                 foreach (var quad in m_Quads.Values)
                 {
                     Gizmos.color = Color.white.SetAlpha(.3f);
-                    Gizmos_Extend.DrawLinesConcat(quad.m_Indexes.Iterate(p => (float3)m_Vertices[p].m_Position));
+                    UGizmos.DrawLinesConcat(quad.m_Indexes.Iterate(p => (float3)m_Vertices[p].m_Position));
                     quad.m_ShapeWS.DrawGizmos();
                     
                     
@@ -176,7 +176,7 @@ namespace TechToys.ThePlanet
                         for (int i = 0; i < quad.m_Indexes.Length; i++)
                         {
                             Gizmos.color = UColor.IndexToColor(i);
-                            Gizmos_Extend.DrawLine(quad.position, m_Vertices[quad.m_Indexes[i]].m_Position, .8f);
+                            UGizmos.DrawLine(quad.position, m_Vertices[quad.m_Indexes[i]].m_Position, .8f);
                         }
                 }
             }

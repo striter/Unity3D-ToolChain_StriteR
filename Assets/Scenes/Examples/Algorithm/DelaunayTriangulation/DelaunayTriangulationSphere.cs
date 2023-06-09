@@ -79,7 +79,7 @@ namespace Examples.Algorithm.DelaunayTriangulation
             foreach (var point in m_Vertices)
                 Gizmos.DrawWireSphere(point,.3f);
             foreach (var triangle in triangles)
-                Gizmos_Extend.DrawLinesConcat(triangle,_p=>m_Vertices[_p]);
+                UGizmos.DrawLinesConcat(triangle,_p=>m_Vertices[_p]);
             
             Gizmos.color = KColor.kOrange.SetAlpha(.3f);
             foreach (var point in m_ProjectedVertices)

@@ -6,20 +6,23 @@ namespace Examples.Algorithm.Geometry
 {
     public class GeometryVisualizeSupportPoints : MonoBehaviour
     {
-        public GPolygon polygon = GPolygon.kDefault;
-        public GSphere sphere = GSphere.kOne;
-        public GBox box = GBox.kDefault;
-        [PostNormalize] public float3 supportPointDirection = kfloat3.forward;
+        public G2Box box = G2Box.kDefault;
+        public G2Polygon polygon = G2Polygon.kDefault;
+        public GCircle sphere = GCircle.kOne;
+        [PostNormalize] public float2 supportPointDirection = kfloat2.up;
 
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
-            foreach (var shape in new IShape[] {polygon, sphere, box})
+            int index = 0;
+            foreach (var shape in new IShape2D[] {box, sphere,polygon})
             {
+                Gizmos.color = index++ != 0 && UShape.Intersect(box, shape) ? Color.yellow : Color.white;
                 shape.DrawGizmos();
-                Gizmos_Extend.DrawArrow(shape.Center, supportPointDirection, .5f, .1f);
-                Gizmos.DrawWireSphere(shape.GetSupportPoint(supportPointDirection), .1f);
+                UGizmos.DrawArrow(shape.Center.to3xz(), supportPointDirection.to3xz(), .5f, .1f);
+                Gizmos.DrawWireSphere(shape.GetSupportPoint(supportPointDirection).to3xz(), .1f);
             }
+            
         }
     }
 }

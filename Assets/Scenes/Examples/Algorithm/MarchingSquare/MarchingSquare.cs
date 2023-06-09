@@ -88,7 +88,7 @@ namespace Examples.Algorithm.MarchingSquare
             if (m_Squares == null)
                 return;
             foreach (var squares in m_Squares)
-                Gizmos_Extend.DrawString(squares.m_Position,squares.m_Byte.ToString());
+                UGizmos.DrawString(squares.m_Position,squares.m_Byte.ToString());
         }
         private void OnGUI()
         {
