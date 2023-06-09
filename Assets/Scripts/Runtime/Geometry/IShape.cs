@@ -10,7 +10,7 @@ namespace Geometry
         float3 Center { get; }
     }
 
-    public interface IShape2D
+    public interface I2Shape
     {
         float2 GetSupportPoint(float2 _direction);
         float2 Center { get; }
@@ -18,7 +18,7 @@ namespace Geometry
 
     public static class UShape
     {
-        public static void DrawGizmos(this IShape2D _shape)
+        public static void DrawGizmos(this I2Shape _shape)
         { 
             var method = typeof(UGizmos).GetMethod("DrawGizmos", new[] {_shape.GetType()});
             if (method == null)
@@ -70,9 +70,9 @@ namespace Geometry
             return TriangleCase(_simplex, ref _direction);
         }
         
-        static float2 Support(IShape2D _a, IShape2D _b, float2 _direction)=> _a.GetSupportPoint(_direction) - _b.GetSupportPoint(-_direction);
+        static float2 Support(I2Shape _a, I2Shape _b, float2 _direction)=> _a.GetSupportPoint(_direction) - _b.GetSupportPoint(-_direction);
         
-        public static bool Intersect(IShape2D _a,IShape2D _b) 
+        public static bool Intersect(I2Shape _a,I2Shape _b) 
         {
             var d = (_a.Center - _b.Center).normalize();
             var simplex = new List<float2> {Support(_a,_b,d)};

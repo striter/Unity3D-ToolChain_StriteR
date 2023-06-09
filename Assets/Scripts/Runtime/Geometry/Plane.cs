@@ -84,7 +84,7 @@ namespace Geometry
     [Serializable]
     public struct G2Plane:ISerializationCallbackReceiver
     {
-        public float2 normal;
+        [PostNormalize]public float2 normal;
         public float distance;
         [HideInInspector] public float2 position;
         public G2Plane(float2 _normal,float _distance)
@@ -108,7 +108,7 @@ namespace Geometry
         }
         
         public static implicit operator float3(G2Plane _plane)=>_plane.normal.to3xy(_plane.distance);
-        public bool IsPointFront(float2 _point) => math.dot(_point.to3xy(-1),this)>0;
+        public bool IsPointFront(float2 _point) =>  math.dot(_point.to3xy(-1),this)>0;
         public void OnBeforeSerialize() { }
         public void OnAfterDeserialize() => Ctor();
         public static readonly G2Plane kDefault = new(new float2(0,1),0f);

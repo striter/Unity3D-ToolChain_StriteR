@@ -123,6 +123,72 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &1616912
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1616913}
+  - component: {fileID: 1616914}
+  m_Layer: 0
+  m_Name: DoorClip
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1616913
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1616912}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3, y: 0, z: -22}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1616914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1616912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb90e894de15c5f448daf7897828cbfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  door:
+    positions:
+    - x: -0.54
+      y: 1.02
+    - x: -1.59
+      y: 0.53
+    - x: -1.47
+      y: -0.09
+    - x: -0.66
+      y: -0.7
+    - x: 0.84
+      y: -0.7
+    - x: 1.33
+      y: 0.55
+  plane:
+    normal:
+      x: -0.99982053
+      y: -0.01894397
+    distance: -0.34
+    position:
+      x: 0.339939
+      y: 0.0064409496
 --- !u!1 &314156684
 GameObject:
   m_ObjectHideFlags: 0
@@ -1005,7 +1071,7 @@ GameObject:
   - component: {fileID: 1778609383}
   - component: {fileID: 1778609384}
   m_Layer: 0
-  m_Name: SupportPoints
+  m_Name: SupportPoints&GJK
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1040,25 +1106,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   box:
     center:
-      x: -0.81
-      y: 0
+      x: 0.88
+      y: 0.96
     extent:
       x: 0.5
       y: 0.5
   polygon:
     positions:
-    - x: 0.09
-      y: 0.97
-    - x: -0.55
+    - x: 0
+      y: 1
+    - x: -1
       y: 0
     - x: 0
-      y: -0.97
-    - x: 0.67
+      y: -1
+    - x: 1
       y: 0
   sphere:
     center:
-      x: -1.89
-      y: 0
+      x: 2
+      y: 1.35
     radius: 0.68
   supportPointDirection:
     x: 0.5018095
@@ -1237,64 +1303,64 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SinValue: 0
   boundingBoxRandomPoints:
-  - x: -0.5418254
-    y: 0.09593374
-    z: -0.11762319
-  - x: -0.18692522
-    y: 0.33180228
-    z: -0.7497545
-  - x: -0.16654411
-    y: 0.32344124
-    z: -0.8292307
-  - x: -0.023479046
-    y: 0.08742478
-    z: -0.23138864
-  - x: 0.07023826
-    y: 0.2739274
-    z: 0.16572727
-  - x: -0.3140337
-    y: 0.1013117
-    z: 0.26854488
-  - x: -0.3235333
-    y: 0.49243164
-    z: -0.7709681
-  - x: -0.0027413087
-    y: 0.21989991
-    z: -0.17789215
+  - x: -0.023986615
+    y: 0.84615636
+    z: -0.10164249
+  - x: 0.029542625
+    y: -0.73605525
+    z: 0.15340135
+  - x: 0.52412695
+    y: 0.015063849
+    z: -0.148926
+  - x: 0.16441862
+    y: -0.19009602
+    z: 0.35950828
+  - x: -0.004836919
+    y: -0.2284804
+    z: -0.48856577
+  - x: 0.059107292
+    y: -0.051826414
+    z: -0.08384135
+  - x: -0.5232551
+    y: 0.29072705
+    z: -0.24824195
+  - x: 0.034497354
+    y: -0.04930176
+    z: 0.4279618
   boudingBox:
     center:
-      x: -0.23579359
-      y: 0.2899282
-      z: -0.28034294
+      x: 0.00043594837
+      y: 0.055050552
+      z: -0.030301988
     extent:
-      x: 0.30603182
-      y: 0.20250343
-      z: 0.5488878
+      x: 0.52369106
+      y: 0.7911058
+      z: 0.45826378
   boundingSpherePoints:
-  - x: 0.020433819
-    y: 0.018853007
-    z: 0.008058837
-  - x: 0.26879826
-    y: 0.45169994
-    z: 0.3500832
-  - x: -0.24042676
-    y: 0.056441568
-    z: -0.3120754
-  - x: 0.1634697
-    y: 0.14567883
-    z: 0.13471287
-  - x: 0.40617436
-    y: -0.12639971
-    z: 0.2953634
-  - x: 0.29338762
-    y: -0.21810336
-    z: -0.24108398
+  - x: -0.23890433
+    y: -0.08511749
+    z: -0.04652488
+  - x: -0.10075801
+    y: 0.04783846
+    z: 0.36784917
+  - x: -0.07085024
+    y: 0.11968522
+    z: 0.07402815
+  - x: 0.35548463
+    y: 0.4149256
+    z: 0.24568535
+  - x: -0.22487964
+    y: 0.19022192
+    z: -0.6015802
+  - x: -0.28517562
+    y: 0.13933823
+    z: 0.03729343
   boundingSphere:
     center:
-      x: 0.09597564
-      y: 0.13312767
-      z: 0.028298229
-    radius: 0.48466638
+      x: 0.0037364736
+      y: 0.24301615
+      z: -0.119980305
+    radius: 0.53571546
 --- !u!1 &1899185937
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,7 +8,7 @@ using UnityEngine.Serialization;
 
 namespace Geometry
 {
-    public partial struct G2Box:IShape2D
+    public partial struct G2Box:I2Shape
     {
         public float2 center;
         public float2 extent;

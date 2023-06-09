@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Geometry
 {
     [Serializable]
-    public class GCircle:IShape2D
+    public class GCircle:I2Shape
     {
         public float2 center;
         public float radius;

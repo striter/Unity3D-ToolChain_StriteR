@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Geometry;
+using Unity.Mathematics;
 using UnityEngine;
 
 public static class UPolygon
@@ -48,5 +49,31 @@ public static class UPolygon
     {
         _indices = _srcMesh.triangles;
         return GetPolygons(_indices);
+    }
+
+
+    public static G2Polygon Clip(this G2Polygon _polygon,G2Plane _plane)    //Convex and Counter Clockwise is needed
+    {
+        List<float2> clippedPolygon = new List<float2>(_polygon);
+        for (int i = _polygon.Count - 1; i >=0; i--)
+        {
+            var curPoint = _polygon[i];
+            var nextPoint = _polygon[(i + 1) % _polygon.Count];
+            var curDot = _plane.dot(curPoint);
+            var nextDot = _plane.dot(nextPoint);
+            var curForward = curDot > 0;
+            var nextForward = nextDot > 0;
+
+            if (curForward && !nextForward)
+            {
+                var t = curDot / math.dot(_plane.normal,(curPoint-nextPoint));
+                var insertPoint = math.lerp(curPoint, nextPoint, t);
+                clippedPolygon.Insert(i + 1, insertPoint);//;
+            }
+            else if (!curForward&&!nextForward)
+                clippedPolygon.RemoveAt(i);
+        }
+        
+        return new G2Polygon(clippedPolygon);
     }
 }

@@ -15,7 +15,7 @@ namespace Examples.Algorithm.Geometry
         {
             Gizmos.matrix = transform.localToWorldMatrix;
             int index = 0;
-            foreach (var shape in new IShape2D[] {box, sphere,polygon})
+            foreach (var shape in new I2Shape[] {box, sphere,polygon})
             {
                 Gizmos.color = index++ != 0 && UShape.Intersect(box, shape) ? Color.yellow : Color.white;
                 shape.DrawGizmos();

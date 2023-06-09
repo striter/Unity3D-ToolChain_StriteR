@@ -91,10 +91,8 @@ public static class UGizmos
     public static void DrawLinesConcat(params float3[] _lines) => DrawLinesConcat(_lines.AsEnumerable());
     public static void DrawLinesConcat(IEnumerable<float3> _points)
     {
-        int count = _points.Count();
         float3 tempPoint = default;
         float3 startPoint = default;
-        float3 pre = default;
         foreach (var (index,point) in _points.LoopIndex())
         {
             if (index == 0)
@@ -208,6 +206,13 @@ public static class UGizmos
         Handles.matrix = Gizmos.matrix;
         Handles.color = Gizmos.color;
         Handles.DrawWireDisc(_circle.center.to3xz(), Vector3.up, _circle.radius);
+    }
+
+    public static void DrawGizmos(this G2Plane _plane,float _length = 5f)
+    {
+        var direction = umath.cross(_plane.normal);
+        Gizmos.DrawLine((_plane.position + direction * _length).to3xz(),( _plane.position - direction*_length).to3xz() );
+        UGizmos.DrawArrow(_plane.position.to3xz(),_plane.normal.to3xz(),1f,.1f);
     }
 
     #endregion
