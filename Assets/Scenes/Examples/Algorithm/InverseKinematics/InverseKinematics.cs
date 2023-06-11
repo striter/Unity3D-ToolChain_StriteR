@@ -31,8 +31,8 @@ namespace Examples.Algorithm.InverseKinematics
             Gizmos.DrawLine(Vector3.zero,p.to3xz());
             Gizmos.DrawLine(p.to3xz(),control.to3xz());
             
-            new GCircle(0,m_Radius1).DrawGizmos();
-            new GCircle(control,m_Radius2).DrawGizmos();
+            new G2Circle(0,m_Radius1).DrawGizmos();
+            new G2Circle(control,m_Radius2).DrawGizmos();
         }
         
         [Header("3D")] 

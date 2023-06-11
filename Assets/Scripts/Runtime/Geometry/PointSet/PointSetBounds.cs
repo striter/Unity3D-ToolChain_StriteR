@@ -116,7 +116,7 @@ namespace Geometry.PointSet
         private static readonly List<float2> kBoundaryCirclePoints = new List<float2>(4);
         private static readonly List<float2> kContainedCirclePoints = new List<float2>();
         
-        public static GCircle GetBoundingCircle(IList<float2> _positions)
+        public static G2Circle GetBoundingCircle(IList<float2> _positions)
         {
             kBoundaryCirclePoints.Clear();
             kContainedCirclePoints.Clear();
@@ -125,10 +125,10 @@ namespace Geometry.PointSet
             return GetBoundingCircleWelzl(kContainedCirclePoints);
         }
         
-        static GCircle GetBoundingCircleWelzl(IList<float2> _positions)            //Welzl Algorithm
+        static G2Circle GetBoundingCircleWelzl(IList<float2> _positions)            //Welzl Algorithm
         {
-            if (_positions.Count == 0 || kBoundaryCirclePoints.Count == GCircle.kMaxBoundsCount)
-                return GCircle.Create(kBoundaryCirclePoints);
+            if (_positions.Count == 0 || kBoundaryCirclePoints.Count == G2Circle.kMaxBoundsCount)
+                return G2Circle.Create(kBoundaryCirclePoints);
 
             var lastIndex = _positions.Count - 1;
             var removed = _positions[lastIndex];

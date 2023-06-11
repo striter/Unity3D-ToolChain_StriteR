@@ -13,7 +13,7 @@ namespace Geometry.PointSet
         {
             public PTriangle polygon;
             public G2Triangle positions;
-            public GCircle circumscribedCircle;
+            public G2Circle circumscribedCircle;
 
             public bool Equals(DTriangle other)
             {
@@ -71,7 +71,7 @@ namespace Geometry.PointSet
             {
                 polygon = kSuperPolygon,
                 positions = superTriangle,
-                circumscribedCircle = GCircle.TriangleCircumscribed(superTriangle.V0,superTriangle.V1,superTriangle.V2)
+                circumscribedCircle = G2Circle.TriangleCircumscribed(superTriangle.V0,superTriangle.V1,superTriangle.V2)
             });
             
             int vertexIndex = 0;
@@ -100,7 +100,7 @@ namespace Geometry.PointSet
                     
                     var polygon = new PTriangle(edge.polygon.start,edge.polygon.end,vertexIndex);
                     var positions = new G2Triangle(edge.positions.start,edge.positions.end,vertex);
-                    kTriangles.Insert(0,new DTriangle(){polygon = polygon,positions = positions,circumscribedCircle = GCircle.TriangleCircumscribed(positions)});
+                    kTriangles.Insert(0,new DTriangle(){polygon = polygon,positions = positions,circumscribedCircle = G2Circle.TriangleCircumscribed(positions)});
                 }
 
                 vertexIndex++;

@@ -12,7 +12,7 @@ namespace Examples.Algorithm.Geometry
         public GEllipsoid m_Ellipsoid;
         public GRay m_ERay;
         
-        public GCircle m_Circle;
+        public G2Circle m_Circle;
         public float2[] m_CirclePoint;
 #if UNITY_EDITOR
         private float time;

@@ -8,7 +8,7 @@ namespace Examples.Algorithm.Geometry
     {
         public G2Box box = G2Box.kDefault;
         public G2Polygon polygon = G2Polygon.kDefault;
-        public GCircle sphere = GCircle.kOne;
+        public G2Circle sphere = G2Circle.kOne;
         [PostNormalize] public float2 supportPointDirection = kfloat2.up;
 
         private void OnDrawGizmos()

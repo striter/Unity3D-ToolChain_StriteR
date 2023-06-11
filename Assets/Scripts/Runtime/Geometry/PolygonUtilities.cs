@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Geometry;
+using TPoolStatic;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -51,10 +52,11 @@ public static class UPolygon
         return GetPolygons(_indices);
     }
 
-
-    public static G2Polygon Clip(this G2Polygon _polygon,G2Plane _plane)    //Convex and Counter Clockwise is needed
+    public static bool DoorClip(this G2Polygon _polygon,G2Plane _plane,out G2Polygon _clippedPolygon)    //Convex and Counter Clockwise is needed
     {
-        List<float2> clippedPolygon = new List<float2>(_polygon);
+        bool cliped = false;
+        TSPoolList<float2>.Spawn(out var clippedPolygon);
+        clippedPolygon.AddRange(_polygon);
         for (int i = _polygon.Count - 1; i >=0; i--)
         {
             var curPoint = _polygon[i];
@@ -68,12 +70,63 @@ public static class UPolygon
             {
                 var t = curDot / math.dot(_plane.normal,(curPoint-nextPoint));
                 var insertPoint = math.lerp(curPoint, nextPoint, t);
-                clippedPolygon.Insert(i + 1, insertPoint);//;
+                clippedPolygon.Insert(i + 1, insertPoint);
+                cliped = true;
             }
-            else if (!curForward&&!nextForward)
+            else if (!curForward && !nextForward)
+            {
                 clippedPolygon.RemoveAt(i);
+                cliped = true;
+            }
         }
-        
-        return new G2Polygon(clippedPolygon);
+        _clippedPolygon = new G2Polygon(clippedPolygon);
+        TSPoolList<float2>.Recycle(clippedPolygon);
+        return cliped;
+    }
+
+    public static bool Clip(this G2Triangle _triangle,G2Plane _plane, out I2Shape _clippedShape)
+    {
+        _clippedShape = null;
+        for (int i = 0; i < 3; i++)
+        {
+            var curPoint = _triangle[(i + 1) % 3];
+            
+            var curDot = _plane.dot(curPoint);
+            if (curDot > 0)
+                continue;
+            
+            var prePoint = _triangle[i];
+            var preDot = _plane.dot(prePoint);
+            var nextPoint = _triangle[(i + 2) % 3];
+            var nextDot = _plane.dot(nextPoint);
+
+            if (preDot < 0 && nextDot < 0)     //No intersections
+                break;
+            
+            if (nextDot < 0)
+            {
+                _clippedShape = new G2Triangle(
+                    prePoint,
+                    math.lerp(curPoint, prePoint, curDot / math.dot(_plane.normal,curPoint-prePoint)),
+                    math.lerp(nextPoint, prePoint, nextDot / math.dot(_plane.normal,nextPoint-prePoint)));
+            }
+            else if (preDot < 0)
+            {
+                _clippedShape = new G2Triangle(
+                    math.lerp(prePoint, nextPoint, preDot / math.dot(_plane.normal,prePoint - nextPoint)),
+                    math.lerp(curPoint, nextPoint, curDot / math.dot(_plane.normal,curPoint - nextPoint)),
+                    nextPoint);
+            }
+            else
+            {
+                _clippedShape = new G2Quad(prePoint
+                    , math.lerp(curPoint, prePoint, curDot / math.dot(_plane.normal,curPoint-prePoint))
+                    , math.lerp(curPoint, nextPoint, curDot / math.dot(_plane.normal,curPoint-nextPoint))
+                    , nextPoint );
+            }
+            break;
+        }
+
+        return _clippedShape != null; 
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -211,13 +212,22 @@ namespace Geometry
         public int R => quad.R;
     }
     [Serializable]
-    public struct G2Quad:IQuad<float2>, IEnumerable<float2>,IIterate<float2>
+    public struct G2Quad:IQuad<float2>, IEnumerable<float2>,IIterate<float2>,I2Shape , ISerializationCallbackReceiver
     {
         public Quad<float2> quad;
-        public G2Quad(Quad<float2> _quad) { quad = _quad;  }
+        [NonSerialized] public float2 center;
+        public G2Quad(Quad<float2> _quad) { 
+            quad = _quad;
+            center = default;
+            Ctor();
+        }
         public G2Quad(float2 _index0, float2 _index1, float2 _index2, float2 _index3):this(new Quad<float2>(_index0,_index1,_index2,_index3)){}
         public static implicit operator G2Quad(Quad<float2> _src) => new G2Quad(_src);
         
+        void Ctor()
+        {
+            center = quad.Average();
+        }
         public int Length => 4;
         
         public IEnumerator<float2> GetEnumerator() => quad.GetEnumerator();
@@ -230,7 +240,11 @@ namespace Geometry
         public float2 L => quad.L;
         public float2 F => quad.F;
         public float2 R => quad.R;
-        
+
+        public float2 GetSupportPoint(float2 _direction) => quad.Max(p => math.dot(_direction, p));
+        public float2 Center => center;
+        public void OnBeforeSerialize(){}
+        public void OnAfterDeserialize() => Ctor();
     }
     
     [Serializable]

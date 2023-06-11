@@ -201,7 +201,8 @@ public static class UGizmos
     #region 2D
     public static void DrawGizmos(this G2Box _cube) => Gizmos.DrawWireCube(_cube.center.to3xz(),_cube.size.to3xz());
     public static void DrawGizmos(this G2Polygon _polygon) => DrawLinesConcat(_polygon.positions.Select(p=>p.to3xz()));
-    public static void DrawGizmos(this GCircle _circle)
+    public static void DrawGizmos(this G2Quad _quad) => DrawLinesConcat(_quad.Select(p=>p.to3xz()));
+    public static void DrawGizmos(this G2Circle _circle)
     {
         Handles.matrix = Gizmos.matrix;
         Handles.color = Gizmos.color;
@@ -212,9 +213,11 @@ public static class UGizmos
     {
         var direction = umath.cross(_plane.normal);
         Gizmos.DrawLine((_plane.position + direction * _length).to3xz(),( _plane.position - direction*_length).to3xz() );
-        UGizmos.DrawArrow(_plane.position.to3xz(),_plane.normal.to3xz(),1f,.1f);
+        DrawArrow(_plane.position.to3xz(),_plane.normal.to3xz(),1f,.1f);
     }
 
+    public static void DrawGizmos(this G2Triangle _triangle)=>DrawLinesConcat(_triangle.Select(p=>p.to3xz()));
+    
     #endregion
 }
 
