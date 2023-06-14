@@ -25,19 +25,6 @@ namespace Geometry
         RB=8,
     }
     
-    public partial class KQuad
-    {
-        public static readonly Quad<bool> kFalse = new Quad<bool>(false, false, false, false);
-        public static readonly Quad<bool> kTrue = new Quad<bool>(true, true, true, true);
-        
-        public static readonly Quad<Vector3> k3SquareCentered = new Quad<Vector3>( Vector3.right+Vector3.back,Vector3.back+Vector3.left, Vector3.left+Vector3.forward ,Vector3.forward+Vector3.right).Resize(.5f);
-        public static readonly Quad<Vector3> k3SquareBottomLeft = new Quad<Vector3>(Vector3.zero,Vector3.forward,Vector3.forward+Vector3.right,Vector3.right);
-        public static readonly Quad<Vector3> k3SquareCentered45Deg = new Quad<Vector3>(Vector3.back,Vector3.left,Vector3.forward,Vector3.right);
-        
-        public static readonly Quad<Vector2> k2SquareCentered = k3SquareCentered.Convert(p=>new Vector2(p.x,p.z));
-        
-    }
-
     public interface IQuad<T>
     {
         T this[int _index] { get; }
@@ -48,8 +35,7 @@ namespace Geometry
         T R { get; }
     }
 
-    [Serializable]
-    public struct Quad<T> : IQuad<T>,IEquatable<Quad<T>>,IEqualityComparer<Quad<T>>,IIterate<T>,IEnumerable<T>
+    public partial struct Quad<T> 
     {
         public T vB;
         public T vL;
@@ -62,6 +48,53 @@ namespace Geometry
             vF = _vF;
             vR = _vR;
         }
+    }
+    
+    public partial struct PQuad
+    {
+        public Quad<int> quad;
+        public PQuad(Quad<int> _quad) { quad = _quad;  }
+        public PQuad(int _index0, int _index1, int _index2, int _index3):this(new Quad<int>(_index0,_index1,_index2,_index3)){}
+    }
+
+
+    public partial struct G2Quad
+    {
+        public Quad<float2> quad;
+        [NonSerialized] public float2 center;
+        public G2Quad(Quad<float2> _quad) { 
+            quad = _quad;
+            center = default;
+            Ctor();
+        }
+        void Ctor()
+        {
+            center = quad.Average();
+        }
+        public G2Quad(float2 _index0, float2 _index1, float2 _index2, float2 _index3):this(new Quad<float2>(_index0,_index1,_index2,_index3)){}
+      
+    }
+    
+    public partial struct GQuad
+    {
+        public Quad<float3> quad;
+        public Vector3 normal;
+        public float area;
+        public GQuad(Quad<float3> _quad)
+        {
+            quad = _quad;
+            Vector3 srcNormal = Vector3.Cross(_quad.L - _quad.B, _quad.R - _quad.B);
+            normal = srcNormal.normalized;
+            area = normal.magnitude / 2;
+        }
+    }
+
+    #region Implements
+    [Serializable]
+    public partial struct Quad<T> : IQuad<T>, IEquatable<Quad<T>>, IEqualityComparer<Quad<T>>, IIterate<T>,
+        IEnumerable<T>
+    {
+        
         public int Length => 4;
         public T B => vB;
         public T L => vL;
@@ -122,7 +155,6 @@ namespace Geometry
         public static Quad<T> Convert<Y>(Quad<Y> _srcQuad, Func<Y, T> _convert) => new Quad<T>(_convert(_srcQuad.vB), _convert(_srcQuad.vL), _convert(_srcQuad.vF), _convert(_srcQuad.vR));
         public static Quad<T> Convert<Y>(Quad<Y> _srcQuad, Func<int,Y, T> _convert) => new Quad<T>(_convert(0, _srcQuad.vB), _convert(1, _srcQuad.vL), _convert(2, _srcQuad.vF),_convert(3, _srcQuad.vR));
         
-        #region Implements
         public IEnumerator<T> GetEnumerator()
         {
             yield return vB;
@@ -174,18 +206,13 @@ namespace Geometry
                 return hashCode;
             }
         }
-        #endregion
     }
-
+    
     
     [Serializable]
-    public struct PQuad:IQuad<int>, IEnumerable<int>,IIterate<int>
+    public partial struct PQuad : IQuad<int>, IEnumerable<int>, IIterate<int>
     {
-        public Quad<int> quad;
-        public PQuad(Quad<int> _quad) { quad = _quad;  }
-        public PQuad(int _index0, int _index1, int _index2, int _index3):this(new Quad<int>(_index0,_index1,_index2,_index3)){}
         public static explicit operator PQuad(Quad<int> _src) => new PQuad(_src);
-        
         public static PQuad operator +(PQuad _src,int _add) => new PQuad(_src.B+_add,_src.L + _add,_src.F + _add,_src.R + _add);
         public static PQuad operator -(PQuad _src,int _min) => new PQuad(_src.B+_min,_src.L + _min,_src.F + _min,_src.R + _min);
         public (T v0, T v1, T v2, T v3) GetVertices<T>(IList<T> _vertices) => (_vertices[B], _vertices[L],_vertices[F],_vertices[R]);
@@ -211,23 +238,53 @@ namespace Geometry
         public int F => quad.F;
         public int R => quad.R;
     }
+    
     [Serializable]
-    public struct G2Quad:IQuad<float2>, IEnumerable<float2>,IIterate<float2>,I2Shape , ISerializationCallbackReceiver
+    public partial struct GQuad : IQuad<float3>,IEnumerable<float3>,IIterate<float3>,IShape
     {
-        public Quad<float2> quad;
-        [NonSerialized] public float2 center;
-        public G2Quad(Quad<float2> _quad) { 
-            quad = _quad;
-            center = default;
-            Ctor();
+        public GQuad(float3 _vb, float3 _vl, float3 _vf, float3 _vr):this(new Quad<float3>(_vb,_vl,_vf,_vr)){}
+        public GQuad((float3 _vb, float3 _vl, float3 _vf, float3 _vr) _tuple) : this(_tuple._vb, _tuple._vl, _tuple._vf, _tuple._vr) { }
+        public static explicit operator GQuad(Quad<float3> _src) => new GQuad(_src);
+        
+        public float3 this[int _index] => quad[_index];
+        public float3 this[EQuadCorner _corner] => quad[_corner];
+        public float3 B => quad.B;
+        public float3 L => quad.L;
+        public float3 F => quad.F;
+        public float3 R => quad.R;
+        public int Length => quad.Length;
+
+        public static GQuad operator +(GQuad _src, float3 _dst)=> new GQuad(_src.B + _dst, _src.L + _dst, _src.F + _dst,_src.R+_dst);
+        public static GQuad operator -(GQuad _src, float3 _dst)=> new GQuad(_src.B - _dst, _src.L - _dst, _src.F - _dst,_src.R-_dst);
+
+        public float3 GetSupportPoint(float3 _direction) => quad.Max(p => math.dot(p, _direction));
+        public float3 Center => quad.Average();
+
+        public IEnumerator<float3> GetEnumerator()
+        {
+            yield return quad.B;
+            yield return quad.L;
+            yield return quad.F;
+            yield return quad.R;
         }
-        public G2Quad(float2 _index0, float2 _index1, float2 _index2, float2 _index3):this(new Quad<float2>(_index0,_index1,_index2,_index3)){}
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public void GetTriangles(out GTriangle _triangle1, out GTriangle _triangle2)
+        {
+            _triangle1 = new GTriangle(B, L, F);
+            _triangle2 = new GTriangle(B, F, R);
+        }
+    }
+
+    [Serializable]
+    public partial struct G2Quad : IQuad<float2>, IEnumerable<float2>, IIterate<float2>, I2Shape, ISerializationCallbackReceiver
+    {
         public static implicit operator G2Quad(Quad<float2> _src) => new G2Quad(_src);
         
-        void Ctor()
-        {
-            center = quad.Average();
-        }
         public int Length => 4;
         
         public IEnumerator<float2> GetEnumerator() => quad.GetEnumerator();
@@ -246,33 +303,5 @@ namespace Geometry
         public void OnBeforeSerialize(){}
         public void OnAfterDeserialize() => Ctor();
     }
-    
-    [Serializable]
-    public struct GQuad : IQuad<Vector3>,IIterate<Vector3>
-    {
-        public Quad<Vector3> quad;
-        public Vector3 normal;
-        public float area;
-        public GQuad(Quad<Vector3> _quad)
-        {
-            quad = _quad;
-            Vector3 srcNormal = Vector3.Cross(_quad.L - _quad.B, _quad.R - _quad.B);
-            normal = srcNormal.normalized;
-            area = normal.magnitude / 2;
-        }
-        public GQuad(Vector3 _vb, Vector3 _vl, Vector3 _vf, Vector3 _vr):this(new Quad<Vector3>(_vb,_vl,_vf,_vr)){}
-        public GQuad((Vector3 _vb, Vector3 _vl, Vector3 _vf, Vector3 _vr) _tuple) : this(_tuple._vb, _tuple._vl, _tuple._vf, _tuple._vr) { }
-        public static explicit operator GQuad(Quad<Vector3> _src) => new GQuad(_src);
-        
-        public Vector3 this[int _index] => quad[_index];
-        public Vector3 this[EQuadCorner _corner] => quad[_corner];
-        public Vector3 B => quad.B;
-        public Vector3 L => quad.L;
-        public Vector3 F => quad.F;
-        public Vector3 R => quad.R;
-        public int Length => quad.Length;
-
-        public static GQuad operator +(GQuad _src, Vector3 _dst)=> new GQuad(_src.B + _dst, _src.L + _dst, _src.F + _dst,_src.R+_dst);
-        public static GQuad operator -(GQuad _src, Vector3 _dst)=> new GQuad(_src.B - _dst, _src.L - _dst, _src.F - _dst,_src.R-_dst);
-    }
+    #endregion
 }

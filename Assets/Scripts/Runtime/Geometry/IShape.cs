@@ -4,13 +4,18 @@ using Unity.Mathematics;
 
 namespace Geometry
 {
-    public interface IShape
+    public interface IShapeGizmos
+    {
+        
+    }
+    
+    public interface IShape : IShapeGizmos
     {
         float3 GetSupportPoint(float3 _direction);
         float3 Center { get; }
     }
 
-    public interface I2Shape
+    public interface I2Shape : IShapeGizmos
     {
         float2 GetSupportPoint(float2 _direction);
         float2 Center { get; }
@@ -18,7 +23,7 @@ namespace Geometry
 
     public static class UShape
     {
-        public static void DrawGizmos(this I2Shape _shape)
+        public static void DrawGizmos(this IShapeGizmos _shape)
         { 
             var method = typeof(UGizmos).GetMethod("DrawGizmos", new[] {_shape.GetType()});
             if (method == null)

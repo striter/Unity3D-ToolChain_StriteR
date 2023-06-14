@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TPoolStatic;
+using Unity.Mathematics;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -10,7 +11,7 @@ namespace MeshFragment
     using UnityEditor;
     public static class UMeshFragmentEditor
     {
-        static void AppendFragment(MeshFragmentHarvester _harvester,Matrix4x4 localToWorldMatrix,Matrix4x4 worldToLocalMatrix,Mesh mesh,int _subMeshIndex,Func<Vector3,Vector3> _objectToOrientedVertex)
+        static void AppendFragment(MeshFragmentHarvester _harvester,Matrix4x4 localToWorldMatrix,Matrix4x4 worldToLocalMatrix,Mesh mesh,int _subMeshIndex,Func<float3,float3> _objectToOrientedVertex)
         {
             var subMesh = mesh.GetSubMesh(_subMeshIndex);
             var vertexBegin = _harvester.vertices.Count;
@@ -66,7 +67,7 @@ namespace MeshFragment
             TSPoolList<Vector2>.Recycle(curUVs);
         }
         
-        public static FMeshFragmentCluster BakeMeshFragment(Transform _transform, ref List<Material> _materialLibrary,Func<Vector3,Vector3> _objectToOrientedVertex)
+        public static FMeshFragmentCluster BakeMeshFragment(Transform _transform, ref List<Material> _materialLibrary,Func<float3,float3> _objectToOrientedVertex)
         {
            TSPoolList<MeshFragmentHarvester>.Spawn(out var collectList); 
             

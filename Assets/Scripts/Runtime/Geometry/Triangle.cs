@@ -206,7 +206,7 @@ namespace Geometry
     
     
     [Serializable]
-    public partial struct GTriangle :ITriangle<float3>, IIterate<float3>,ISerializationCallbackReceiver
+    public partial struct GTriangle :ITriangle<float3>, IIterate<float3>,ISerializationCallbackReceiver, IShape
     {
         public static explicit operator GTriangle(Triangle<float3> _src) => new GTriangle(_src.v0,_src.v1,_src.v2);
         public static explicit operator GTriangle(Triangle<Vector3> _src) => new GTriangle(_src.v0,_src.v1,_src.v2);
@@ -236,6 +236,9 @@ namespace Geometry
             _matrix.MultiplyPoint(_triangle.V0),
                 _matrix.MultiplyPoint(_triangle.V1),
                 _matrix.MultiplyPoint(_triangle.V2));
+
+        public float3 GetSupportPoint(float3 _direction) => triangle.Max(_p => math.dot(_p, _direction));
+        public float3 Center => (V0 + V1 + V2) / 3;
     }
     #endregion
 }

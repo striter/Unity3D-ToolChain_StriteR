@@ -8,7 +8,7 @@ using UnityEngine.Serialization;
 
 namespace Geometry
 {
-    public partial struct G2Box:I2Shape
+    public partial struct G2Box
     {
         public float2 center;
         public float2 extent;
@@ -29,6 +29,36 @@ namespace Geometry
             min = center - extent;
             max = center + extent;
         }
+    }
+    
+    public partial struct GBox
+    {
+        public float3 center;
+        public float3 extent;
+        [NonSerialized] public float3 size;
+        [NonSerialized] public float3 min;
+        [NonSerialized] public float3 max;
+        public GBox(float3 _center, float3 _extent)
+        {
+            this = default;
+            center = _center;
+            extent = _extent;
+            Ctor();
+        }
+        
+        void Ctor()
+        {
+            size = extent * 2f;
+            min = center - extent;
+            max = center + extent;
+        }
+    }
+
+    [Serializable]
+    public partial struct G2Box : ISerializationCallbackReceiver,I2Shape
+    {
+        public void OnBeforeSerialize(){  }
+        public void OnAfterDeserialize()=>Ctor();
 
         public G2Box Move(float2 _deltaPosition)=> new G2Box(center + _deltaPosition, extent);
         
@@ -54,30 +84,24 @@ namespace Geometry
         }
         public float2 Center => center;
     }
-    
-    public partial struct GBox:IShape
+
+    [Serializable]
+    public partial struct GBox : ISerializationCallbackReceiver,IShape
     {
-        public float3 center;
-        public float3 extent;
-        [NonSerialized] public float3 size;
-        [NonSerialized] public float3 min;
-        [NonSerialized] public float3 max;
-        public GBox(float3 _center, float3 _extent)
+        public void OnBeforeSerialize(){  }
+        public void OnAfterDeserialize()=>Ctor();
+        public Bounds ToBounds()=> new Bounds(center, size);
+        public float3 GetSupportPoint(float3 _direction)
         {
-            this = default;
-            center = _center;
-            extent = _extent;
-            Ctor();
+            var ray = new GRay(center, _direction.normalize());
+            return ray.GetPoint(Validation.UGeometry.Distance.Eval(ray, this).sum());
         }
-        
-        void Ctor()
-        {
-            size = extent * 2f;
-            min = center - extent;
-            max = center + extent;
-        }
+        public float3 Center => center;
+
+        public float2 this[int _index] => throw new NotImplementedException();
 
         public GBox Move(float3 _deltaPosition)=> new GBox(center + _deltaPosition, extent);
+        public float3 GetPoint(float3 _uvw) => center + _uvw * size;
         
         public static GBox Minmax(float3 _min, float3 _max)
         {
@@ -98,28 +122,29 @@ namespace Geometry
             return absOffset.x < extent.x && absOffset.y < extent.y && absOffset.z < extent.z;
         }
 
-        public static readonly GBox kDefault = new GBox(0f,.5f);
-
-        public float3 GetSupportPoint(float3 _direction)
+        public IEnumerable<GPlane> GetPlanes(bool _x,bool _y,bool _z)
         {
-            var ray = new GRay(center, _direction.normalize());
-            return ray.GetPoint(Validation.UGeometry.Distance.Eval(ray, this).sum());
+            if (_x)
+            {
+                yield return new GPlane(kfloat3.left,GetPoint(kfloat3.right*.5f));
+                yield return new GPlane(kfloat3.right,GetPoint(kfloat3.left*.5f));
+            }
+
+            if (_y)
+            {
+                yield return new GPlane(kfloat3.down,GetPoint(kfloat3.up*.5f));
+                yield return new GPlane(kfloat3.up,GetPoint(kfloat3.down*.5f));
+            }
+
+            if (_z)
+            {
+                yield return new GPlane(kfloat3.forward,GetPoint(kfloat3.back*.5f));
+                yield return new GPlane(kfloat3.back,GetPoint(kfloat3.forward*.5f));
+            }
         }
-        public float3 Center => center;
-    }
-
-    [Serializable]
-    public partial struct G2Box : ISerializationCallbackReceiver
-    {
-        public void OnBeforeSerialize(){  }
-        public void OnAfterDeserialize()=>Ctor();
-    }
-
-    [Serializable]
-    public partial struct GBox : ISerializationCallbackReceiver
-    {
-        public void OnBeforeSerialize(){  }
-        public void OnAfterDeserialize()=>Ctor();
-        public Bounds ToBounds()=> new Bounds(center, size);
+        
+        public static implicit operator GBox(Bounds _bounds) => new GBox(_bounds.center,_bounds.extents);
+        
+        public static readonly GBox kDefault = new GBox(0f,.5f);
     }
 }

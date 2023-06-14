@@ -8,7 +8,7 @@ namespace Examples.Algorithm.Geometry
     public class GeometryIntersectTriangle : MonoBehaviour
     {
         [Serializable]
-        public struct Visualization
+        public struct TriangleRayIntersection
         {
             public GTriangle triangle;
             public GRay ray;
@@ -16,7 +16,8 @@ namespace Examples.Algorithm.Geometry
             public bool planeDirectionCheck;
         }
 
-        public Visualization[] visualizations;
+        public TriangleRayIntersection[] visualizations;
+        
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {

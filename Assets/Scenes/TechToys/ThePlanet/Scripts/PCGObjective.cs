@@ -57,8 +57,8 @@ namespace TechToys.ThePlanet
     public class PCGVertex
     {
         public GridID m_Identity;
-        public Vector3 m_Position;
-        public Vector3 m_Normal;
+        public float3 m_Position;
+        public float3 m_Normal;
         public bool m_Invalid;
 
         public readonly List<PCGQuad> m_NearbyQuads = new List<PCGQuad>();
@@ -148,9 +148,9 @@ namespace TechToys.ThePlanet
 
         public Quad<PCGVertex> m_Vertices { get; }
         public Quad<GridID> m_Indexes { get; }
-        public Vector3 position { get; }
-        public Quaternion rotation { get; private set; }
-        public Vector3 forward { get; }
+        public float3 position { get; }
+        public quaternion rotation { get; private set; }
+        public float3 forward { get; }
         
         public TrapezoidQuad m_ShapeOS { get; private set; }
         public TrapezoidQuad m_ShapeWS { get; private set; }
@@ -166,10 +166,10 @@ namespace TechToys.ThePlanet
             var shapeWS = new GQuad( m_Vertices.Convert(p => p.m_Position));
             position = shapeWS.GetBaryCenter();
             forward = m_Vertices.R.m_Position - m_Vertices.B.m_Position;
-            rotation = Quaternion.LookRotation(forward,m_ShapeWS.normal);
+            rotation =  quaternion.LookRotation(forward,m_ShapeWS.normal);
             
-            var invRotation = Quaternion.Inverse(rotation);
-            m_ShapeOS = new TrapezoidQuad(m_Vertices.Convert(p=>invRotation*(p.m_Position-position)),m_Vertices.Convert(p=>invRotation*p.m_Normal));
+            var invRotation = (quaternion)Quaternion.Inverse(rotation);
+            m_ShapeOS = new TrapezoidQuad(m_Vertices.Convert(_p=> math.mul(invRotation,_p.m_Position-position)),m_Vertices.Convert(p=>math.mul(invRotation,p.m_Normal)));
         }
 
         public Qube<PCGID> Corners(byte _srcHeight)
@@ -233,13 +233,13 @@ namespace TechToys.ThePlanet
 
     public struct TrapezoidQuad
     {
-        public Quad<Vector3> positions;
-        public Quad<Vector3> normals;
-        public Vector3 normal;
-        public TrapezoidQuad(Quad<Vector3> _positions,Quad<Vector3> _normals,float _normalOffset = 0f,Vector3 _baseOffset = default)
+        public Quad<float3> positions;
+        public Quad<float3> normals;
+        public float3 normal;
+        public TrapezoidQuad(Quad<float3> _positions,Quad<float3> _normals,float _normalOffset = 0f,float3 _baseOffset = default)
         {
             normals = _normals;
-            normal = _normals.Average().normalized;
+            normal = _normals.Average().normalize();
             positions = default;
             for(int i=0;i<4;i++)
                 positions[i] = _positions[i]+_normals[i]*_normalOffset-_baseOffset;

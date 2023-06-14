@@ -2,10 +2,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Geometry
 {
+    public partial class KQuad
+    {
+        public static readonly Quad<bool> kFalse = new Quad<bool>(false, false, false, false);
+        public static readonly Quad<bool> kTrue = new Quad<bool>(true, true, true, true);
+        
+        public static readonly Quad<float3> k3SquareCentered = new Quad<float3>( Vector3.right+Vector3.back,Vector3.back+Vector3.left, Vector3.left+Vector3.forward ,Vector3.forward+Vector3.right).Resize(.5f);
+        public static readonly Quad<float3> k3SquareBottomLeft = new Quad<float3>(Vector3.zero,Vector3.forward,Vector3.forward+Vector3.right,Vector3.right);
+        public static readonly Quad<float3> k3SquareCentered45Deg = new Quad<float3>(Vector3.back,Vector3.left,Vector3.forward,Vector3.right);
+        
+        public static readonly Quad<float2> k2SquareCentered = k3SquareCentered.Convert(p=>p.to2xz());
+    }
+
     
     public static partial class UQuad
     {
@@ -51,7 +64,7 @@ namespace Geometry
             return (_quad[patch.i0], _quad[patch.i1]);
         }
 
-        public static Vector2 GetUV(this Quad<Vector2>  _quad, Vector2 _position)
+        public static float2 GetUV(this Quad<float2>  _quad, float2 _position)
         {
             return umath.invBilinearLerp(_quad.vB,_quad.vL,_quad.vF,_quad.vR,_position);
         }
@@ -59,7 +72,7 @@ namespace Geometry
         public static Vector2 GetPoint(this Quad<Vector2> _quad, float _u,float _v)=>umath.bilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _u,_v);
         public static float GetPoint(this Quad<float> _quad, float _u,float _v)=>umath.bilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _u,_v);
         
-        public static Quad<Vector3> Resize(this Quad<Vector3> _quad, float _shrinkScale) 
+        public static Quad<float3> Resize(this Quad<float3> _quad, float _shrinkScale) 
         {
             var vertex0 = _quad.vB;
             var vertex1 = _quad.vL;
@@ -72,7 +85,7 @@ namespace Geometry
             return _quad;
         }
         
-        public static Qube<Vector3> Resize(this Qube<Vector3> _qube, float _shrinkScale)
+        public static Qube<float3> Resize(this Qube<float3> _qube, float _shrinkScale)
         {
             var db = _qube.vDB;
             var dl = _qube.vDL;
@@ -93,7 +106,7 @@ namespace Geometry
             return _qube;
         }
         
-        public static (Vector3 vBL, Vector3 vLF, Vector3 vFR, Vector3 vRB, Vector3 vC) GetQuadMidVertices(this IQuad<Vector3> _quad)
+        public static (float3 vBL, float3 vLF, float3 vFR, float3 vRB, float3 vC) GetQuadMidVertices(this IQuad<float3> _quad)
         {
             var vB = _quad.B;
             var vL = _quad.L;
@@ -102,7 +115,7 @@ namespace Geometry
             return ((vB + vL) / 2, (vL + vF) / 2, (vF + vR)/2,(vR+vB)/2,(vB+vL+vF+vR)/4);
         }
 
-        public static IEnumerable<Quad<Vector3>> SplitToQuads(this IQuad<Vector3> _quad,bool _insideOut)
+        public static IEnumerable<Quad<float3>> SplitToQuads(this IQuad<float3> _quad,bool _insideOut)
         {
             var vB = _quad.B;
             var vL = _quad.L;
@@ -118,21 +131,21 @@ namespace Geometry
 
             if (_insideOut) 
             {
-                yield return new Quad<Vector3>(vC, vRB, vB, vBL);    //B
-                yield return new Quad<Vector3>(vC, vBL, vL, vLF);    //L
-                yield return new Quad<Vector3>(vC, vLF, vF, vFR);    //F
-                yield return new Quad<Vector3>(vC, vFR, vR, vRB);    //R
+                yield return new Quad<float3>(vC, vRB, vB, vBL);    //B
+                yield return new Quad<float3>(vC, vBL, vL, vLF);    //L
+                yield return new Quad<float3>(vC, vLF, vF, vFR);    //F
+                yield return new Quad<float3>(vC, vFR, vR, vRB);    //R
             }
             else   //Forwarded 
             {
-                yield return new Quad<Vector3>(vB,vBL,vC,vRB);   //B
-                yield return new Quad<Vector3>(vBL,vL,vLF,vC);   //L
-                yield return new Quad<Vector3>(vC,vLF,vF,vFR);   //F
-                yield return new Quad<Vector3>(vRB,vC,vFR,vR);   //R
+                yield return new Quad<float3>(vB,vBL,vC,vRB);   //B
+                yield return new Quad<float3>(vBL,vL,vLF,vC);   //L
+                yield return new Quad<float3>(vC,vLF,vF,vFR);   //F
+                yield return new Quad<float3>(vRB,vC,vFR,vR);   //R
             }
         }
         
-        public static IEnumerable<Quad<Vector3>> SplitTopDownQuads(this GQuad _quad)
+        public static IEnumerable<Quad<float3>> SplitTopDownQuads(this GQuad _quad)
         {
             var vB = _quad.B;
             var vL = _quad.L;
@@ -143,29 +156,29 @@ namespace Geometry
             var vLF = midTuple.vLF;
             var vRB = midTuple.vRB;
             
-            yield return new Quad<Vector3>(vB,vL,vLF,vRB);
-            yield return new Quad<Vector3>(vRB,vLF,vF,vR);
+            yield return new Quad<float3>(vB,vL,vLF,vRB);
+            yield return new Quad<float3>(vRB,vLF,vF,vR);
         }
 
-        public static Qube<Vector3> ExpandToQube<T>(this T _quad, Vector3 _expand, float _baryCenter = 0) where T : IQuad<Vector3>
+        public static Qube<float3> ExpandToQube<T>(this T _quad, float3 _expand, float _baryCenter = 0) where T : IQuad<float3>
         {
             var expand = _expand * (1 - _baryCenter);
             var shrink = _expand * _baryCenter;
 
-            return new Qube<Vector3>(_quad.B - shrink, _quad.L - shrink, _quad.F - shrink, _quad.R - shrink,
+            return new Qube<float3>(_quad.B - shrink, _quad.L - shrink, _quad.F - shrink, _quad.R - shrink,
                              _quad.B + expand, _quad.L + expand, _quad.F + expand, _quad.R + expand);
         }
         
-        public static IEnumerable<Qube<Vector3>> SplitToQubes(this Quad<Vector3> _quad, Vector3 _halfSize, bool insideOut)
+        public static IEnumerable<Qube<float3>> SplitToQubes(this Quad<float3> _quad, Vector3 _halfSize, bool insideOut)
         {
             var quads = _quad.SplitToQuads(insideOut).ToArray();
             foreach (var quad in quads)
-                yield return new Quad<Vector3>(quad.vB, quad.vL, quad.vF, quad.vR).ExpandToQube(_halfSize, 1f);
+                yield return new Quad<float3>(quad.vB, quad.vL, quad.vF, quad.vR).ExpandToQube(_halfSize, 1f);
             foreach (var quad in quads)
-                yield return new Quad<Vector3>(quad.vB, quad.vL, quad.vF, quad.vR).ExpandToQube(_halfSize, 0f);
+                yield return new Quad<float3>(quad.vB, quad.vL, quad.vF, quad.vR).ExpandToQube(_halfSize, 0f);
         }
 
-        public static Vector3 GetBaryCenter(this GQuad _quad)
+        public static float3 GetBaryCenter(this GQuad _quad)
         {
             var vertex0 = _quad.B;
             var vertex1 = _quad.L;
@@ -263,23 +276,6 @@ namespace Geometry
             
             yield return new Quad<Y>(vB,vL,vLF,vRB);
             yield return new Quad<Y>(vRB,vLF,vF,vR);
-        }
-        
-
-        public static IEnumerable<Triangle<T>> SplitToTriangle<T>(this IQuad<T> splitQuad, T v0, T v1)  where T:struct
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                if (splitQuad[i].Equals(v0))
-                {
-                    yield return new Triangle<T>(splitQuad[i], splitQuad[(i + 1) % 4], splitQuad[(i + 2) % 4]);
-                }
-
-                if (splitQuad[i].Equals(v1))
-                {
-                    yield return new Triangle<T>(splitQuad[i], splitQuad[(i + 1) % 4], splitQuad[(i + 2) % 4]);
-                }
-            }
         }
 
         public static Quad<Y> Convert<T,Y>(this IQuad<T> _srcQuad, Func<T, Y> _convert)

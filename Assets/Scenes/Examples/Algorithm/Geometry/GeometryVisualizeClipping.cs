@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Geometry;
 using Geometry.PointSet;
 using Unity.Mathematics;
@@ -11,6 +8,10 @@ namespace Examples.Algorithm.Geometry
     
     public class GeometryVisualizeClipping : MonoBehaviour
     {
+        public GTriangle gTriangle = GTriangle.kDefault;
+        public bool gDirected = false;
+        public GPlane gPlane = GPlane.kDefault;
+        
         [Header("2D Clipping")]
         public G2Polygon door = G2Polygon.kDefault;
         public G2Plane plane = G2Plane.kDefault;
@@ -35,12 +36,24 @@ namespace Examples.Algorithm.Geometry
             Gizmos.color = Color.white.SetAlpha(.5f);
             movedPlane.DrawGizmos(UBounds.GetBoundingCircle(triangle.triangle.Iterate()).radius);
             triangle.DrawGizmos();
-            if (triangle.Clip(movedPlane, out var clippedQuad))
+            if (triangle.Clip(movedPlane, out var clippedG2Shape))
             {
                 Gizmos.color = Color.yellow;
-                clippedQuad.DrawGizmos();
+                clippedG2Shape.DrawGizmos();
             }
 
+            
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.back*5f);
+            Gizmos.color = Color.white.SetAlpha(.5f);
+            var movedGPlane  = new GPlane(gPlane.normal,gPlane.distance * math.sin(UTime.time)*2);
+                
+            movedGPlane.DrawGizmos(UBounds.GetBoundingCircle(triangle.triangle.Iterate()).radius);
+            gTriangle.DrawGizmos();
+            if (gTriangle.Clip(movedGPlane, out var clippedGShape,gDirected))
+            {
+                Gizmos.color = Color.yellow;
+                clippedGShape.DrawGizmos();
+            }
         }
     }
 }

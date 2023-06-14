@@ -139,7 +139,7 @@ public class Damper : ISerializationCallbackReceiver
             } break;
             case EDamperMode.SecondOrderDynamics:
             {
-                if (vd.sqrmagnitude() < float.Epsilon)
+                if (vd.sqrMagnitude() < float.Epsilon)
                 {
                     vd = (xd - _xp) / dt;
                     _xp = xd;

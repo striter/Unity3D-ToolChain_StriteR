@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Geometry;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace TechToys.ThePlanet
@@ -23,17 +24,17 @@ namespace TechToys.ThePlanet
                 var v01 = (v0 + v1) / 2;
                 var vC =  (v0+v1+v2+v3)/4;
                 var v30 = (v3 + v0) / 2;
-                
-                var n01 = ((n0 + n1) / 2).normalized;
-                var nC =  ((n0 + n1 + n2 + n3)/4).normalized;
-                var n30 = ((n3 + n0) / 2).normalized;
 
-                return new TrapezoidQuad(new Quad<Vector3>(v0, v01, vC, v30),new Quad<Vector3>(n0,n01,nC,n30));
+                var n01 = ((n0 + n1) / 2).normalize();
+                var nC =  ((n0 + n1 + n2 + n3)/4).normalize();
+                var n30 = ((n3 + n0) / 2).normalize();
+
+                return new TrapezoidQuad(new Quad<float3>(v0, v01, vC, v30),new Quad<float3>(n0,n01,nC,n30));
             }
-            return new TrapezoidQuad(new Quad<Vector3>(v0, v1, v2, v3),new Quad<Vector3>(n0,n1,n2,n3));
+            return new TrapezoidQuad(new Quad<float3>(v0, v1, v2, v3),new Quad<float3>(n0,n1,n2,n3));
         }
         
-        public static IEnumerable<Vector3> ExpandToQube(this TrapezoidQuad _quad,Vector3 _center,int _unitHeight,float _baryCenter = .5f)
+        public static IEnumerable<Vector3> ExpandToQube(this TrapezoidQuad _quad,float3 _center,int _unitHeight,float _baryCenter = .5f)
         {
             float expand = (_unitHeight + 1f - _baryCenter) * KPCG.kUnitSize*2;
             float shrink = (_unitHeight - _baryCenter) * KPCG.kUnitSize*2;
@@ -72,26 +73,26 @@ namespace TechToys.ThePlanet
             var nF = _quad.normals.F;
             var nR = _quad.normals.R;
             var midNormals = _quad.normals.GetQuadMidVertices();
-            var nBL = midNormals.vBL.normalized;
-            var nLF = midNormals.vLF.normalized;
-            var nFR = midNormals.vFR.normalized;
-            var nRB = midNormals.vRB.normalized;
-            var nC = midNormals.vC.normalized;
+            var nBL = midNormals.vBL.normalize();
+            var nLF = midNormals.vLF.normalize();
+            var nFR = midNormals.vFR.normalize();
+            var nRB = midNormals.vRB.normalize();
+            var nC = midNormals.vC.normalize();
 
             var offset = _quad.normal * _height;
             if (_insideOut) 
             {
-                yield return new TrapezoidQuad(new Quad<Vector3>(vC, vRB, vB, vBL),new Quad<Vector3>(nC, nRB, nB, nBL),_height,offset);    //B
-                yield return new TrapezoidQuad(new Quad<Vector3>(vC, vBL, vL, vLF),new Quad<Vector3>(nC, nBL, nL, nLF),_height,offset);    //L
-                yield return new TrapezoidQuad(new Quad<Vector3>(vC, vLF, vF, vFR),new Quad<Vector3>(nC, vLF, nF, nFR),_height,offset);    //F
-                yield return new TrapezoidQuad(new Quad<Vector3>(vC, vFR, vR, vRB),new Quad<Vector3>(nC, nFR, nR, nRB),_height,offset);    //R
+                yield return new TrapezoidQuad(new Quad<float3>(vC, vRB, vB, vBL),new Quad<float3>(nC, nRB, nB, nBL),_height,offset);    //B
+                yield return new TrapezoidQuad(new Quad<float3>(vC, vBL, vL, vLF),new Quad<float3>(nC, nBL, nL, nLF),_height,offset);    //L
+                yield return new TrapezoidQuad(new Quad<float3>(vC, vLF, vF, vFR),new Quad<float3>(nC, vLF, nF, nFR),_height,offset);    //F
+                yield return new TrapezoidQuad(new Quad<float3>(vC, vFR, vR, vRB),new Quad<float3>(nC, nFR, nR, nRB),_height,offset);    //R
             }
             else   //Forwarded 
             {
-                yield return new TrapezoidQuad(new Quad<Vector3>(vB,vBL,vC,vRB),new Quad<Vector3>(nB,nBL,nC,nRB),_height,offset);   //B
-                yield return new TrapezoidQuad(new Quad<Vector3>(vBL,vL,vLF,vC),new Quad<Vector3>(nBL,nL,nLF,nC),_height,offset);   //L
-                yield return new TrapezoidQuad(new Quad<Vector3>(vC,vLF,vF,vFR),new Quad<Vector3>(nC,nLF,nF,nFR),_height,offset);   //F
-                yield return new TrapezoidQuad(new Quad<Vector3>(vRB,vC,vFR,vR),new Quad<Vector3>(nRB,nC,nFR,nR),_height,offset);   //R
+                yield return new TrapezoidQuad(new Quad<float3>(vB,vBL,vC,vRB),new Quad<float3>(nB,nBL,nC,nRB),_height,offset);   //B
+                yield return new TrapezoidQuad(new Quad<float3>(vBL,vL,vLF,vC),new Quad<float3>(nBL,nL,nLF,nC),_height,offset);   //L
+                yield return new TrapezoidQuad(new Quad<float3>(vC,vLF,vF,vFR),new Quad<float3>(nC,nLF,nF,nFR),_height,offset);   //F
+                yield return new TrapezoidQuad(new Quad<float3>(vRB,vC,vFR,vR),new Quad<float3>(nRB,nC,nFR,nR),_height,offset);   //R
             }
         }
     }

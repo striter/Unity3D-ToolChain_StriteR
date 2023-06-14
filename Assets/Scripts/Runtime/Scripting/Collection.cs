@@ -698,6 +698,20 @@ public static class UCollection
                 _list.Add(element);
         }
     }
+    
+    
+    public static void AddRange<T>(this IList<T> _src, IList<T> _dst)
+    {
+        int count = _dst.Count;
+        for (int i = 0; i < count; i++)
+            _src.Add(_dst[i]);
+    }
+    
+    public static void AddRange<T>(this IList<T> _src, IEnumerable<T> _collection)
+    {
+        foreach (var element in _collection)
+            _src.Add(element);
+    }
     #endregion
     #region Dictionary
 

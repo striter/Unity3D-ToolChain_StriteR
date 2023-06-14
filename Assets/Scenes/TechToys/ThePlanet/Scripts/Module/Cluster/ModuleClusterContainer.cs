@@ -248,7 +248,7 @@ namespace TechToys.ThePlanet.Module.Cluster
                 UGizmos.DrawString(qubeCenterLS,$"Qube Ind:{i}\nType:{input.type},{input.status}\nAnchor:{outputByte._byte},Ort:{outputByte._orientation}",0f);
                 var localQube = new Qube<Vector3>();
                 for (int j = 0; j < 8; j++)
-                    localQube[j]=qubeCenterLS+(localQuad.positions[j%4]-qubeCenterLS).SetY(0f)*.25f+(-.5f+j/4)*Vector3.up*.5f;   //Da fk
+                    localQube[j]=qubeCenterLS+(localQuad.positions[j%4] - qubeCenterLS).setY(0f)*.25f + (-.5f+j/4)*kfloat3.up*.5f;   //Da fk
                 Gizmos.color = Color.white;
                 localQube.DrawGizmos();
                 for (int j = 0; j < 8; j++)

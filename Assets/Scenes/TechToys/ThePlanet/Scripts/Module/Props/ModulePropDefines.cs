@@ -3,6 +3,7 @@ using System.Linq;
 using Geometry;
 using Procedural;
 using TPoolStatic;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace TechToys.ThePlanet.Module.Prop
@@ -76,13 +77,13 @@ namespace TechToys.ThePlanet.Module.Prop
             return _possibilities[index];
         }
 
-        public static Vector3 ObjectToOrientedVertex(Vector3 _vertexOS)
+        public static float3 ObjectToOrientedVertex(float3 _vertexOS)
         {
             var uv=KQuad.k2SquareCentered.GetUV(new Vector2(_vertexOS.x,_vertexOS.z));
-            return new Vector3(uv.x, _vertexOS.y,uv.y);
+            return new float3(uv.x, _vertexOS.y,uv.y);
         }
 
-        public static Vector3 OrientedToObjectVertex(TrapezoidQuad _qubeShape , Vector3 _orientedVertex,int _orientation)
+        public static float3 OrientedToObjectVertex(TrapezoidQuad _qubeShape , float3 _orientedVertex,int _orientation)
         {
             var uv = new Vector2(_orientedVertex.x, _orientedVertex.z);
             uv -= Vector2.one * .5f;

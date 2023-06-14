@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Geometry;
 using TPoolStatic;
 using Unity.Mathematics;
@@ -50,6 +51,14 @@ public static class UPolygon
     {
         _indices = _srcMesh.triangles;
         return GetPolygons(_indices);
+    }
+
+    public static GTriangle[] GetPolygonVertices(this Mesh _srcMesh, out int[] _indices,out Vector3[] _vertices)
+    {
+        var vertices = _srcMesh.vertices;
+        var polygons = GetPolygons(_srcMesh, out _indices);
+        _vertices = vertices;
+        return polygons.Select(p => (GTriangle)p.Convert(vertices)).ToArray();
     }
 
     public static bool DoorClip(this G2Polygon _polygon,G2Plane _plane,out G2Polygon _clippedPolygon)    //Convex and Counter Clockwise is needed
@@ -128,5 +137,61 @@ public static class UPolygon
         }
 
         return _clippedShape != null; 
+    }
+    
+    public static bool Clip(this GTriangle _triangle,GPlane _plane, out IShape _outputShape,bool _directed = true)
+    {
+        _outputShape = null;
+        if (_directed && math.dot(_triangle.normal, _plane.normal) < 0)
+            return false;
+
+        int forwardCount = 0;
+        for (int i = 0; i < 3; i++)
+        {
+            var curPoint = _triangle[(i + 1) % 3];
+            
+            var curDot = _plane.dot(curPoint);
+            if (curDot > 0)
+            {
+                forwardCount++;
+                continue;
+            }
+            
+            var prePoint = _triangle[i];
+            var preDot = _plane.dot(prePoint);
+            var nextPoint = _triangle[(i + 2) % 3];
+            var nextDot = _plane.dot(nextPoint);
+
+            if (preDot < 0 && nextDot < 0)     //No intersections
+                break;
+            
+            if (nextDot < 0)
+            {
+                _outputShape = new GTriangle(
+                    math.lerp(nextPoint, prePoint, nextDot / math.dot(_plane.normal,nextPoint-prePoint)),
+                    prePoint,
+                    math.lerp(curPoint, prePoint, curDot / math.dot(_plane.normal,curPoint-prePoint)));
+            }
+            else if (preDot < 0)
+            {
+                _outputShape = new GTriangle(
+                    math.lerp(prePoint, nextPoint, preDot / math.dot(_plane.normal,prePoint - nextPoint)),
+                    math.lerp(curPoint, nextPoint, curDot / math.dot(_plane.normal,curPoint - nextPoint)),
+                    nextPoint);
+            }
+            else
+            {
+                _outputShape = new GQuad(prePoint
+                    , math.lerp(curPoint, prePoint, curDot / math.dot(_plane.normal,curPoint-prePoint))
+                    , math.lerp(curPoint, nextPoint, curDot / math.dot(_plane.normal,curPoint-nextPoint))
+                    , nextPoint );
+            }
+            break;
+        }
+
+        if (forwardCount == 3)
+            _outputShape = _triangle;
+        
+        return _outputShape != null; 
     }
 }

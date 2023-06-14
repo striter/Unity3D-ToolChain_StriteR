@@ -34,11 +34,11 @@ namespace Geometry
     
     public partial class KQube
     {
-        public static readonly Qube<Vector3> kUnitQubeBottomed = KQuad.k3SquareCentered.ExpandToQube(Vector3.up,0f);
-        public static readonly Qube<Vector3> kHalfUnitQubeBottomed = kUnitQubeBottomed.Resize(.5f);
+        public static readonly Qube<float3> kUnitQubeBottomed = KQuad.k3SquareCentered.ExpandToQube(kfloat3.up,0f);
+        public static readonly Qube<float3> kHalfUnitQubeBottomed = kUnitQubeBottomed.Resize(.5f);
         
-        public static readonly Qube<Vector3> kUnitQubeCentered = KQuad.k3SquareCentered.ExpandToQube(Vector3.up,.5f);
-        public static readonly Qube<Vector3> kHalfUnitQubeCentered = kUnitQubeCentered.Resize(.5f);
+        public static readonly Qube<float3> kUnitQubeCentered = KQuad.k3SquareCentered.ExpandToQube(kfloat3.up,.5f);
+        public static readonly Qube<float3> kHalfUnitQubeCentered = kUnitQubeCentered.Resize(.5f);
         
         public static readonly Qube<int> kZero = new Qube<int>(0);
         public static readonly Qube<int> kNegOne = new Qube<int>(-1);

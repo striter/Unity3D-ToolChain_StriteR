@@ -1,5 +1,6 @@
 using Geometry;
 using TechToys.ThePlanet.Module;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace TechToys.ThePlanet.Baking
@@ -7,8 +8,8 @@ namespace TechToys.ThePlanet.Baking
     public class ModuleByteVisualizer : MonoBehaviour
     {
         public bool m_DrawCluster;
-        private static readonly Qube<Vector3> kUnitQube = KQuad.k3SquareCentered.ExpandToQube(Vector3.up, .5f);
-        private static readonly Qube<Vector3> kHalfUnitQube = kUnitQube.Resize(.5f);
+        private static readonly Qube<float3> kUnitQube = KQuad.k3SquareCentered.ExpandToQube(kfloat3.up, .5f);
+        private static readonly Qube<float3> kHalfUnitQube = kUnitQube.Resize(.5f);
         private static readonly Vector3 kHalfSize = Vector3.one * .45f;
         private void OnDrawGizmos()
         {
@@ -17,7 +18,7 @@ namespace TechToys.ThePlanet.Baking
             int vertical = 0;
             for (int i = 1; i < 255; i++)
             {
-                var translate = new Vector3(horizonztal * 2f, 0f, vertical * 2f);
+                var translate = new float3(horizonztal * 2f, 0f, vertical * 2f);
                 var qubeByte = (byte)i;
 
                 var tuple = UModuleByte.kByteOrientation[qubeByte];

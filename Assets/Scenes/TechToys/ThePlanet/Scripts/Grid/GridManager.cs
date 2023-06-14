@@ -78,19 +78,19 @@ namespace TechToys.ThePlanet
             return this;
         }
 
-        public bool ValidateGridSelection(Ray _ray, out GridID _vertexID)
+        public bool ValidateGridSelection(GRay _ray, out GridID _vertexID)
         {
             _vertexID = default;
-            var distance = UGeometry.Distance.Eval(_ray,new GSphere(Vector3.zero, KPCG.kGridSize)).x;
+            var distance = UGeometry.Distance.Eval(_ray,new GSphere(0, KPCG.kGridSize)).x;
             if (distance < 0)
                 return false;
             var hitPos = _ray.GetPoint(distance);
-            var nearestVertex = m_Vertices.Values.MinElement(p => (hitPos - p.m_Position).sqrMagnitude);
+            var nearestVertex = m_Vertices.Values.MinElement(p => (hitPos - p.m_Position).sqrMagnitude());
             _vertexID = nearestVertex?.m_Identity ?? -1;
             return nearestVertex!=null;
         }
 
-        public bool ValidateSideVertex(GridID _vertID, Vector3 _hitPoint, out GridID _sideVertex)
+        public bool ValidateSideVertex(GridID _vertID, float3 _hitPoint, out GridID _sideVertex)
         {
             _sideVertex = default;
             if (!m_Vertices.ContainsKey(_vertID))

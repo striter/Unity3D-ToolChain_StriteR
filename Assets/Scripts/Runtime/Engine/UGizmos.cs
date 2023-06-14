@@ -197,10 +197,22 @@ public static class UGizmos
     }
 
     public static void DrawGizmos(this GPolygon _polygon) => DrawLinesConcat(_polygon.positions);
+    public static void DrawGizmos(this GQuad _quad) => DrawLinesConcat(_quad.quad);
+    
+    public static void DrawGizmos(this GPlane _plane,float _radius = 5f)
+    {
+        var direction = umath.cross(_plane.normal,kfloat3.one);
+        Handles.matrix = Gizmos.matrix;
+        Handles.color = Gizmos.color;
+        Handles.DrawWireDisc(_plane.position, _plane.normal, _radius);
+        DrawArrow(_plane.position,_plane.normal,.5f,.1f);
+    }
+    public static void DrawGizmos(this GTriangle _triangle)=>DrawLinesConcat(_triangle.triangle);
     
     #region 2D
     public static void DrawGizmos(this G2Box _cube) => Gizmos.DrawWireCube(_cube.center.to3xz(),_cube.size.to3xz());
     public static void DrawGizmos(this G2Polygon _polygon) => DrawLinesConcat(_polygon.positions.Select(p=>p.to3xz()));
+    public static void DrawGizmos(this G2Triangle _triangle)=>DrawLinesConcat(_triangle.Select(p=>p.to3xz()));
     public static void DrawGizmos(this G2Quad _quad) => DrawLinesConcat(_quad.Select(p=>p.to3xz()));
     public static void DrawGizmos(this G2Circle _circle)
     {
@@ -209,14 +221,13 @@ public static class UGizmos
         Handles.DrawWireDisc(_circle.center.to3xz(), Vector3.up, _circle.radius);
     }
 
-    public static void DrawGizmos(this G2Plane _plane,float _length = 5f)
+    public static void DrawGizmos(this G2Plane _plane,float _radius = 5f)
     {
         var direction = umath.cross(_plane.normal);
-        Gizmos.DrawLine((_plane.position + direction * _length).to3xz(),( _plane.position - direction*_length).to3xz() );
+        Gizmos.DrawLine((_plane.position + direction * _radius).to3xz(),( _plane.position - direction*_radius).to3xz() );
         DrawArrow(_plane.position.to3xz(),_plane.normal.to3xz(),1f,.1f);
     }
 
-    public static void DrawGizmos(this G2Triangle _triangle)=>DrawLinesConcat(_triangle.Select(p=>p.to3xz()));
     
     #endregion
 }

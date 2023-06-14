@@ -31,7 +31,7 @@ namespace TechToys.ThePlanet.Baking
                     var subCube = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;
                     subCube.SetParent(transform);
                     subCube.localScale = Vector3.one * .5f;
-                    subCube.localPosition = Vector3.up*.25f+ KQuad.k3SquareCentered45Deg[j]*.25f;
+                    subCube.localPosition = kfloat3.up*.25f + KQuad.k3SquareCentered45Deg[j]*.25f;
                 }
                 return;
             }

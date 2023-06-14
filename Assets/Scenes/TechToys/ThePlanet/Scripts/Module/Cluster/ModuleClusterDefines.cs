@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Geometry;
 using Procedural;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace TechToys.ThePlanet.Module.Cluster
@@ -30,13 +31,13 @@ namespace TechToys.ThePlanet.Module.Cluster
 
     public static class DModuleCluster
     {
-        public static Vector3 ObjectToOrientedVertex(Vector3 _vertexOS)
+        public static float3 ObjectToOrientedVertex(float3 _vertexOS)
         { 
-            var uv=KQuad.k2SquareCentered.GetUV(new Vector2(_vertexOS.x,_vertexOS.z));
+            var uv=KQuad.k2SquareCentered.GetUV(new float2(_vertexOS.x,_vertexOS.z));
             return new Vector3(uv.x, _vertexOS.y,uv.y);
         }
 
-        public static Vector3 ModuleToObjectVertex(TrapezoidQuad _quads,int _orientation,Vector3 _positionUS,int _offset=0)
+        public static float3 ModuleToObjectVertex(TrapezoidQuad _quads,int _orientation,float3 _positionUS,int _offset=0)
         {
             float u = _positionUS.x, v = _positionUS.z;
 

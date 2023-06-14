@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 1616913}
   - component: {fileID: 1616914}
   m_Layer: 0
-  m_Name: DoorClip
+  m_Name: Clipping
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -147,13 +147,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1616912}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3, y: 0, z: -29}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -6, y: 0, z: -6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_Father: {fileID: 603151350}
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1616914
 MonoBehaviour:
@@ -167,6 +167,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb90e894de15c5f448daf7897828cbfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gTriangle:
+    triangle:
+      v0:
+        x: 0
+        y: 0
+        z: 1
+      v1:
+        x: 0.5
+        y: 0
+        z: -1
+      v2:
+        x: -0.5
+        y: 0
+        z: -1
+  gDirected: 0
+  gPlane:
+    normal:
+      x: 0.4435461
+      y: -0.0052404157
+      z: -0.8962363
+    distance: 1
+    position:
+      x: 0.4435461
+      y: -0.0052404157
+      z: -0.8962363
   door:
     positions:
     - x: -0.54
@@ -183,12 +208,12 @@ MonoBehaviour:
       y: 0.55
   plane:
     normal:
-      x: 0.70710677
-      y: 0.70710677
-    distance: 1
+      x: 0.7071068
+      y: 0.7071068
+    distance: -2.68
     position:
-      x: 0.70710677
-      y: 0.70710677
+      x: -1.8950464
+      y: -1.8950464
   triangle:
     triangle:
       v0:
@@ -461,6 +486,7 @@ Transform:
   - {fileID: 314156686}
   - {fileID: 999107286}
   - {fileID: 548546587}
+  - {fileID: 1616913}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -475,7 +501,7 @@ GameObject:
   - component: {fileID: 999107286}
   - component: {fileID: 999107285}
   m_Layer: 0
-  m_Name: RayTriangleCollision
+  m_Name: Triangle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1096,7 +1122,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1778609382}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8, y: 0, z: -23}
+  m_LocalPosition: {x: 9, y: 0, z: -27}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1314,64 +1340,64 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SinValue: 0
   boundingBoxRandomPoints:
-  - x: -0.2305655
-    y: -0.58263963
-    z: 0.2978586
-  - x: 0.105264
-    y: 0.27586213
-    z: -0.046075918
-  - x: -0.74424815
-    y: -0.48962262
-    z: -0.11061139
-  - x: -0.5554172
-    y: 0.12345307
-    z: 0.5936769
-  - x: -0.14847046
-    y: 0.028924583
-    z: -0.09208309
-  - x: 0.81066006
-    y: -0.3209809
-    z: -0.120441355
-  - x: 0.79693
-    y: 0.13425823
-    z: -0.22520122
-  - x: 0.20089462
-    y: -0.12669313
-    z: 0.017379647
+  - x: -0.008104055
+    y: 0.012001078
+    z: -0.011502766
+  - x: -0.07936835
+    y: 0.23496456
+    z: -0.10587497
+  - x: -0.028432678
+    y: -0.72862834
+    z: -0.059509743
+  - x: -0.08499196
+    y: 0.61461323
+    z: 0.099498756
+  - x: 0.047484446
+    y: -0.52779806
+    z: -0.030876111
+  - x: 0.1646803
+    y: 0.21915689
+    z: -0.17139757
+  - x: -0.084773295
+    y: -0.019071132
+    z: 0.2244617
+  - x: 0.30235443
+    y: 0.30556053
+    z: -0.0790425
   boudingBox:
     center:
-      x: 0.033205986
-      y: -0.15338874
-      z: 0.18423787
+      x: 0.10868123
+      y: -0.05700755
+      z: 0.026532069
     extent:
-      x: 0.77745414
-      y: 0.4292509
-      z: 0.4094391
+      x: 0.1936732
+      y: 0.6716208
+      z: 0.19792964
   boundingSpherePoints:
-  - x: -0.28415266
-    y: -0.21887963
-    z: 0.47603875
-  - x: 0.14234482
-    y: 0.1359451
-    z: -0.82539713
-  - x: 0.14762215
-    y: -0.3801086
-    z: 0.5507867
-  - x: 0.057570264
-    y: -0.08075779
-    z: -0.12104846
-  - x: 0.6570431
-    y: -0.06923553
-    z: 0.27982992
-  - x: -0.23397347
-    y: -0.06818759
-    z: -0.50736856
+  - x: -0.2126891
+    y: 0.1875377
+    z: 0.77518654
+  - x: -0.64510584
+    y: -0.08814569
+    z: -0.61844945
+  - x: 0.0007078048
+    y: -0.035790965
+    z: 0.052831035
+  - x: -0.02864991
+    y: 0.008158094
+    z: 0.25125226
+  - x: 0.02102138
+    y: -0.19651525
+    z: 0.020295555
+  - x: -0.089944065
+    y: -0.22928528
+    z: 0.26511177
   boundingSphere:
     center:
-      x: 0.11324994
-      y: -0.113529876
-      z: -0.1339767
-    radius: 0.73562664
+      x: -0.42889747
+      y: 0.049696006
+      z: 0.078368545
+    radius: 0.74249697
 --- !u!1 &1899185937
 GameObject:
   m_ObjectHideFlags: 0

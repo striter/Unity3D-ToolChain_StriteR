@@ -29,7 +29,8 @@ namespace MeshFragment
         public Vector4[] tangents;
         public Color[] colors;
         public int[] indexes;
-
+    
+        
         int IMeshFragment.embedMaterial => embedMaterial;
         IList<Vector3> IMeshFragment.vertices => vertices;
         IList<Vector2> IMeshFragment.uvs => uvs;
