@@ -1,9 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [ExecuteInEditMode, RequireComponent(typeof(MeshRenderer),typeof(MeshFilter))]
 public class DecalRenderer : MonoBehaviour
@@ -12,7 +12,7 @@ public class DecalRenderer : MonoBehaviour
     public float m_Width = 1;
     public float m_Height = 1;
     public float m_Distance = 1;
-    [Range(0,0.9999f)]public float m_Alpha = 0.5f;
+    [Range(0,0.9999f)]public float m_Falloff = 0.5f;
 
     private MeshFilter m_Filter;
     private Mesh m_DecalMesh;
@@ -129,7 +129,7 @@ public class DecalRenderer : MonoBehaviour
             var vertex = curVertices[i];
             var normal = curNormals[i].normalized;
             curNormals[i] = curNormals[i].normalized;
-            var alpha =math.clamp( (math.dot(up, normal) / up.magnitude() - m_Alpha)/(1-m_Alpha),0,1);
+            var alpha =math.clamp( (math.dot(up, normal) / up.magnitude() - m_Falloff)/(1-m_Falloff),0,1);
             curColors.Add(Color.white.SetA(alpha));
             curUVs.Add(new Vector2(
                 math.dot(tangent,vertex)/m_Width + .5f,
@@ -142,8 +142,7 @@ public class DecalRenderer : MonoBehaviour
         m_DecalMesh.SetNormals(curNormals);
         m_DecalMesh.SetColors(curColors);
         m_DecalMesh.SetUVs(0,curUVs);
-        m_DecalMesh.SetIndices(curIndexes,MeshTopology.Triangles,0,false);
-        m_DecalMesh.bounds = curBounds;
+        m_DecalMesh.SetIndices(curIndexes,MeshTopology.Triangles,0,true);
         
         m_Filter.sharedMesh = m_DecalMesh;
     }
