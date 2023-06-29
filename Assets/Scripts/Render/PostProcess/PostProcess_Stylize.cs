@@ -51,7 +51,7 @@ namespace Rendering.PostProcess
             m_DownSample = 7,
             m_PixelGrid = EPixelBound.None,
             m_GridWidth = .1f,
-            m_PixelGridColor = Color.white.SetAlpha(.5f),
+            m_PixelGridColor = Color.white.SetA(.5f),
             m_OilPaintKernel = 10,
             m_OilPaintSize = 2f,
             m_ObraDitherColor = Color.yellow * .3f,

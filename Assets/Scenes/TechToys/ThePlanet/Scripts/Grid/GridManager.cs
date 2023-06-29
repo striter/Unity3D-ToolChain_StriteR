@@ -167,7 +167,7 @@ namespace TechToys.ThePlanet
             {
                 foreach (var quad in m_Quads.Values)
                 {
-                    Gizmos.color = Color.white.SetAlpha(.3f);
+                    Gizmos.color = Color.white.SetA(.3f);
                     UGizmos.DrawLinesConcat(quad.m_Indexes.Iterate(p => (float3)m_Vertices[p].m_Position));
                     quad.m_ShapeWS.DrawGizmos();
                     

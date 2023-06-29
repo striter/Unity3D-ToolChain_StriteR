@@ -85,7 +85,7 @@ namespace Examples.Algorithm.SpatialHashGrid
             var srcNode = m_Graph.GetNode(m_Actors[0].position);
             foreach (var node in m_Graph.GetAdjacentNodes(srcNode).Extend(srcNode))
             {
-                Gizmos.color = node == srcNode ? Color.red : Color.green.SetAlpha(.3f);
+                Gizmos.color = node == srcNode ? Color.red : Color.green.SetA(.3f);
                 m_Graph.DrawGizmos(node);
             }
             

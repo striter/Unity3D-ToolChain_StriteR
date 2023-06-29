@@ -361,7 +361,7 @@ namespace UnityEditor.Extensions
         }
         void OnDrawSceneHandles(SceneView _sceneView)
         {
-            Handles.color = Color.white.SetAlpha(.5f);
+            Handles.color = Color.white.SetA(.5f);
             Handles.DrawWireCube(m_ModifingMesh.bounds.center, m_ModifingMesh.bounds.size * 1.2f);
 
             if (!m_SelectingPolygon)
@@ -374,13 +374,13 @@ namespace UnityEditor.Extensions
                 GTriangle directedTriangle = (GTriangle) m_Polygons[subPolygon].Convert(m_Verticies);
                 if (Vector3.Dot(directedTriangle.normal, _sceneView.camera.transform.forward) > 0)
                     continue;
-                Handles.color = Color.yellow.SetAlpha(.1f);
+                Handles.color = Color.yellow.SetA(.1f);
                 Handles.DrawAAConvexPolygon(directedTriangle.ToVector3().Iterate());
                 Handles.color = Color.yellow;
                 Handles_Extend.DrawLines_Concat(directedTriangle.ToVector3().Iterate());
             }
             GTriangle mainTriangle = (GTriangle) _mainTriangle.Convert(m_Verticies);
-            Handles.color = Color.green.SetAlpha(.3f);
+            Handles.color = Color.green.SetA(.3f);
             Handles.DrawAAConvexPolygon(mainTriangle.ToVector3().Iterate());
             Handles.color = Color.green;
             Handles_Extend.DrawLines_Concat(mainTriangle.ToVector3().Iterate());

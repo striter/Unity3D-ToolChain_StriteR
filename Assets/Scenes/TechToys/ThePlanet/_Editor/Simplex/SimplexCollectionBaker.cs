@@ -32,7 +32,7 @@ namespace TechToys.ThePlanet.Baking
                     UGizmos.DrawString(Vector3.zero, indexer.srcByte.ToString(),.5f);
                     for (int i = 0; i < 8; i++)
                     {
-                        Gizmos.color = (UByte.PosValid(indexer.srcByte, i) ? Color.green : Color.red).SetAlpha(.5f);
+                        Gizmos.color = (UByte.PosValid(indexer.srcByte, i) ? Color.green : Color.red).SetA(.5f);
                         Gizmos.DrawWireSphere(KQube.kUnitQubeBottomed[i],.05f);
                     }
                 }

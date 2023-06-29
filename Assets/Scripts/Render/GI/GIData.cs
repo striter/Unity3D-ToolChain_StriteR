@@ -26,7 +26,7 @@ namespace Rendering
         {
             gradientSky = Color.cyan,
             gradientGround = Color.black,
-            gradientEquator = Color.white.SetAlpha(.5f),
+            gradientEquator = Color.white.SetA(.5f),
         }.Ctor();
         
         public static SHGradient Interpolate(SHGradient _a, SHGradient _b,

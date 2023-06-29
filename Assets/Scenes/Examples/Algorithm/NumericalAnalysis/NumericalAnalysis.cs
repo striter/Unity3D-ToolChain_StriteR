@@ -23,9 +23,9 @@ namespace Examples.Algorithm.NumericalAnalysis
         {
             //Newton's method
             Gizmos.matrix = Matrix4x4.Scale(Vector3.one*kGraphSize);
-            Gizmos.color = Color.red.SetAlpha(.5f);
+            Gizmos.color = Color.red.SetA(.5f);
             Gizmos.DrawLine(Vector3.left,Vector3.right);
-            Gizmos.color = Color.blue.SetAlpha(.5f);
+            Gizmos.color = Color.blue.SetA(.5f);
             Gizmos.DrawLine(Vector3.back,Vector3.forward);
 
             Vector3[] lines = new Vector3[kGraphResolution];

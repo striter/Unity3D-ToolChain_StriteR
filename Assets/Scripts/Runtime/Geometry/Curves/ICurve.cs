@@ -23,7 +23,7 @@ namespace Geometry.Curves
         
         public static void DrawGizmos(this ICurve<float3> _curve,bool _original = true,float _sphereSize = 0.1f,int _amount = 64)
         {
-            Gizmos.color = Color.white.SetAlpha(.5f);
+            Gizmos.color = Color.white.SetA(.5f);
             if (_original)
             {
                 foreach (var coord in _curve.Coordinates)

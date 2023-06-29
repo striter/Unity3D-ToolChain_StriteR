@@ -13,7 +13,7 @@ namespace Rendering
         public static readonly GOutlineData kDefault = new GOutlineData()
         {
             width = 0.01f,
-            color =  Color.black.SetAlpha(.5f),
+            color =  Color.black.SetA(.5f),
             distanceFade = 20f,
             distanceFadeEnd = 25f,
         };

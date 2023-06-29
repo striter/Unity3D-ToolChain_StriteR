@@ -554,7 +554,7 @@ namespace TechToys.ThePlanet.Module
                 
                 foreach (var (index,chain) in m_PropagandaChains.LoopIndex())
                 {
-                    Gizmos.color = UColor.IndexToColor(index).SetAlpha(.5f);
+                    Gizmos.color = UColor.IndexToColor(index).SetA(.5f);
                     if (m_PropagandaVoxels)
                     {
                         foreach (var voxel in chain.voxels)

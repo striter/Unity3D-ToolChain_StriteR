@@ -163,7 +163,7 @@ namespace TechToys.ThePlanet.Module.Cluster
                             }
                         }
 
-                        fragmentOutput.colors.Add(containsColor?fragmentInput.colors[k].SetAlpha(colorAlpha):new Color(1,1,1,colorAlpha));
+                        fragmentOutput.colors.Add(containsColor?fragmentInput.colors[k].SetA(colorAlpha):new Color(1,1,1,colorAlpha));
                         fragmentOutput.uvs.Add(fragmentInput.uvs[k]);
                     }
 
@@ -265,7 +265,7 @@ namespace TechToys.ThePlanet.Module.Cluster
                         Gizmos.DrawSphere(localQube[j],.03f);
                     }
 
-                    Gizmos.color = maskByte[j]?KColor.kOrange:Color.red.SetAlpha(.3f);
+                    Gizmos.color = maskByte[j]?KColor.kOrange:Color.red.SetA(.3f);
                     Gizmos.DrawWireSphere(localQube[j] ,.05f);
                 }
             }

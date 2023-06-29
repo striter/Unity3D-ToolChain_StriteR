@@ -108,7 +108,7 @@ namespace Geometry.Curves
             Gizmos.DrawLine(_curve.end,_curve.control1);
             Gizmos.DrawLine(_curve.end,_curve.control2);
             
-            Gizmos.color = Color.white.SetAlpha(.5f);
+            Gizmos.color = Color.white.SetA(.5f);
             for (int i = 0; i < divisions.Count; i++)
             {
                 UGizmos.DrawLinesConcat(divisions[i].quad.Iterate(),p=>p);

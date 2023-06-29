@@ -37,7 +37,7 @@ namespace TechToys.ThePlanet.Baking
                     qube.SetByteElement(qubeByte);
                     for (int j = 0; j < 8; j++)
                     {
-                        Gizmos.color = (qube[j] ? Color.green : Color.red).SetAlpha(.5f);
+                        Gizmos.color = (qube[j] ? Color.green : Color.red).SetA(.5f);
                         Gizmos.DrawWireSphere(kUnitQube[j], .1f);
                     }
                 }

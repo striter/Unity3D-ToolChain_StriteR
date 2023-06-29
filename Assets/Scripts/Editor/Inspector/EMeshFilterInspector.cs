@@ -64,7 +64,7 @@ namespace UnityEditor.Extensions
 
             if (m_Mode == EMeshInspectMode.Vertices)
             {
-                Handles.color = Color.white.SetAlpha(.3f);
+                Handles.color = Color.white.SetA(.3f);
                 foreach (var vertex in m_vertices)
                     Handles_Extend.DrawWireSphere(vertex,Quaternion.identity, .05f);
             }
@@ -72,7 +72,7 @@ namespace UnityEditor.Extensions
             {
                 for (int i = 0; i < m_vertices.Length; i++)
                 {
-                    Handles.color = Color.green.SetAlpha(.5f);
+                    Handles.color = Color.green.SetA(.5f);
                     Handles.DrawLine(m_vertices[i], m_vertices[i] + m_Normals[i] * .1f);
                 }
             }
@@ -80,7 +80,7 @@ namespace UnityEditor.Extensions
             {
                 for (int i = 0; i < m_vertices.Length; i++)
                 {
-                    Handles.color = Color.cyan.SetAlpha(.5f);
+                    Handles.color = Color.cyan.SetA(.5f);
                     Handles.DrawLine(m_vertices[i], m_vertices[i] + (Vector3)m_Tangents[i] * .1f);
                 }
             }
@@ -88,7 +88,7 @@ namespace UnityEditor.Extensions
             {
                 for (int i = 0; i < m_vertices.Length; i++)
                 {
-                    Handles.color = Color.yellow.SetAlpha(.5f);
+                    Handles.color = Color.yellow.SetA(.5f);
                     Handles.DrawLine(m_vertices[i], m_vertices[i] + Vector3.Cross(m_Tangents[i],m_Normals[i]).normalized * .1f);
                 }
             }

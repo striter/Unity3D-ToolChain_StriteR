@@ -74,14 +74,14 @@ namespace Examples.Algorithm.DelaunayTriangulation
 
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.white.SetAlpha(.3f);
+            Gizmos.color = Color.white.SetA(.3f);
             Gizmos.matrix = transform.localToWorldMatrix;
             foreach (var point in m_Vertices)
                 Gizmos.DrawWireSphere(point,.3f);
             foreach (var triangle in triangles)
                 UGizmos.DrawLinesConcat(triangle,_p=>m_Vertices[_p]);
             
-            Gizmos.color = KColor.kOrange.SetAlpha(.3f);
+            Gizmos.color = KColor.kOrange.SetA(.3f);
             foreach (var point in m_ProjectedVertices)
                 Gizmos.DrawWireSphere(point.to3xz(-kSphereRadius),.3f);
         }

@@ -139,7 +139,7 @@ namespace Examples.Algorithm.PathFinding
                 }
                 else
                 {
-                    Gizmos.color = Color.white.SetAlpha(.1f);
+                    Gizmos.color = Color.white.SetA(.1f);
                     Gizmos.DrawWireCube(node.m_Position,kFlatCube);
                 }
             }

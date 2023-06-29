@@ -42,7 +42,7 @@ namespace TechToys.ThePlanet.Baking
             
             for (int i = 0; i < 8; i++)
             {
-                Gizmos.color = m_Relation[i] ? Color.green : mixableRelation[i]?Color.yellow: Color.red.SetAlpha(.5f);
+                Gizmos.color = m_Relation[i] ? Color.green : mixableRelation[i]?Color.yellow: Color.red.SetA(.5f);
                 Gizmos.DrawWireSphere(KQube.kUnitQubeBottomed[i],.1f);
             }
         }
@@ -52,7 +52,7 @@ namespace TechToys.ThePlanet.Baking
             int childCount = transform.childCount;
             if (childCount == 0)
             {
-                DrawQubeGizmos(transform,Color.red.SetAlpha(.5f));
+                DrawQubeGizmos(transform,Color.red.SetA(.5f));
                 return;
             }
             UGizmos.DrawString(transform.position+Vector3.up*.5f,m_Relation.ToByte().ToString(),0f);
@@ -62,7 +62,7 @@ namespace TechToys.ThePlanet.Baking
                 setTransform.localPosition = Vector3.up * (childCount-i-1)*1.5f;
                 setTransform.localRotation = Quaternion.identity;
                 setTransform.localScale = Vector3.one;
-                DrawQubeGizmos(setTransform,Color.white.SetAlpha(.5f));
+                DrawQubeGizmos(setTransform,Color.white.SetA(.5f));
             }
         }
     }

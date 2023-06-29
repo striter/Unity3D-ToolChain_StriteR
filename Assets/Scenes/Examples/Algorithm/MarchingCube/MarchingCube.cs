@@ -174,7 +174,7 @@ namespace Examples.Algorithm.MarchingCube
                 Gizmos.DrawWireSphere(grid.position,.1f);
             }
 
-            Gizmos.color = Color.white.SetAlpha(.5f);
+            Gizmos.color = Color.white.SetA(.5f);
             foreach (var cube in m_CubePool.Values)
             {
                 var cubeByte = cube.m_GridAvailable.ToByte();

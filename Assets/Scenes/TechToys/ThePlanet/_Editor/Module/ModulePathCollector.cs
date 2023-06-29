@@ -52,7 +52,7 @@ namespace TechToys.ThePlanet.Baking
             Gizmos.DrawWireCube(Vector3.up*.5f,Vector3.one);
             for (int i = 0; i < 4; i++)
             {
-                Gizmos.color = m_Relation[i] ? Color.green:Color.red.SetAlpha(.5f) ;
+                Gizmos.color = m_Relation[i] ? Color.green:Color.red.SetA(.5f) ;
                 Gizmos.DrawWireSphere(KQuad.k3SquareCentered45Deg[i]*.5f,.1f);
             }
         }

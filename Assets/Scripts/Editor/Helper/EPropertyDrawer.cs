@@ -36,7 +36,7 @@ namespace UnityEditor.Extensions
         
         public void PixelContinuous(int _x,int _y,Color _color)
         {
-            var transparent = _color.SetAlpha(.5f);
+            var transparent = _color.SetA(.5f);
             Pixel(_x , _y , _color);
             Pixel(_x + 1 , _y , transparent);
             Pixel(_x - 1 , _y , transparent);
@@ -129,7 +129,7 @@ namespace UnityEditor.Extensions
 
             Texture2D previewTexture = new Texture2D(sizeX,sizeY,TextureFormat.ARGB32,false,true);
 
-            var colorHelper = new FunctionDrawerColors(sizeX, sizeY, Color.black.SetAlpha(.5f));
+            var colorHelper = new FunctionDrawerColors(sizeX, sizeY, Color.black.SetA(.5f));
             OnFunctionDraw(_property, colorHelper);
             previewTexture.SetPixels(colorHelper.colors);
             previewTexture.Apply();
@@ -141,9 +141,9 @@ namespace UnityEditor.Extensions
             var origin = GetOrigin();
             
             Rect axisX = imageField.Move(kAxisPadding, kAxisPadding + (imageField.size.y-kAxisPadding*2)*origin.y).Resize(imageField.size.x-kAxisPadding*2,kAxisWidth);
-            EditorGUI.DrawRect(axisX,Color.red.SetAlpha(.7f));
+            EditorGUI.DrawRect(axisX,Color.red.SetA(.7f));
             Rect axisY = imageField.Move(kAxisPadding + (imageField.size.x-kAxisPadding*2)*origin.x,kAxisPadding).Resize(kAxisWidth,imageField.size.y-kAxisPadding*2);
-            EditorGUI.DrawRect(axisY,Color.green.SetAlpha(.7f));
+            EditorGUI.DrawRect(axisY,Color.green.SetA(.7f));
         }
     }
     
@@ -212,7 +212,7 @@ namespace UnityEditor.Extensions
                     break;
                 
                 for(int j=0;j<_helper.sizeY;j++)
-                    _helper.Pixel(xDelta , j , Color.green.SetAlpha(.3f));
+                    _helper.Pixel(xDelta , j , Color.green.SetA(.3f));
             }
         }
     }

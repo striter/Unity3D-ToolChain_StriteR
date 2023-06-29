@@ -58,7 +58,7 @@ namespace Examples.Algorithm.Geometry
             }
             if (m_DrawBounding)
             {
-                Gizmos.color = Color.white.SetAlpha(.5f);
+                Gizmos.color = Color.white.SetA(.5f);
                 frustumPoints.bounding.DrawGizmos();
             }
         }

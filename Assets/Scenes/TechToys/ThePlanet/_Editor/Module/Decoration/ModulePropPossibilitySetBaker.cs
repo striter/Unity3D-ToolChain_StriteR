@@ -106,7 +106,7 @@ namespace TechToys.ThePlanet.Baking
             int childCount = transform.childCount;
             if (childCount == 0)
             {
-                DrawQubeCorners(transform,Color.red.SetAlpha(.5f));
+                DrawQubeCorners(transform,Color.red.SetA(.5f));
                 return;
             }
             for (int i = 0; i < childCount; i++)
@@ -115,7 +115,7 @@ namespace TechToys.ThePlanet.Baking
                 setTransform.localPosition = Vector3.up * i;
                 setTransform.localRotation = Quaternion.identity;
                 setTransform.localScale = Vector3.one;
-                DrawQubeCorners(setTransform,Color.green.SetAlpha(.5f));
+                DrawQubeCorners(setTransform,Color.green.SetA(.5f));
             }
         }
 

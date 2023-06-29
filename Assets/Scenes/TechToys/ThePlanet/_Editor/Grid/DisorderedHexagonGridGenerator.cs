@@ -463,10 +463,10 @@ namespace TechToys.ThePlanet.Grid
         #if UNITY_EDITOR
         public void DrawGizmos()
         {
-            Gizmos.color = Color.white.SetAlpha(.5f);
+            Gizmos.color = Color.white.SetA(.5f);
             foreach (var vertex in m_ProceduralVertices)
                 Gizmos.DrawSphere(vertex.ToPosition(),.3f);
-            Gizmos.color = Color.white.SetAlpha(.2f);
+            Gizmos.color = Color.white.SetA(.2f);
             foreach (var triangle in m_ProceduralTriangles)
                 UGizmos.DrawLinesConcat(triangle.Iterate(p=>p.ToPosition()));
             foreach (var quad in m_ProceduralQuads)

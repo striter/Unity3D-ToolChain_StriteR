@@ -4,7 +4,7 @@ using UnityEngine;
 public static class UColor
 {
     #region ColorTransform
-    public static Color SetAlpha(this Color _color, float _alpha) => new Color(_color.r, _color.g, _color.b, _alpha);
+    public static Color SetA(this Color _color, float _alpha) => new Color(_color.r, _color.g, _color.b, _alpha);
     //Vector
     public static Color VectorToColor(Vector3 _colorVector) => new Color(_colorVector.x, _colorVector.y, _colorVector.z);
     public static Color VectorToColor(Vector4 _colorVector) => new Color(_colorVector.x, _colorVector.y, _colorVector.z, _colorVector.w);
@@ -119,7 +119,7 @@ public static class UColor
             default:throw new System.Exception("Invalid Visualize Color Type:"+_visualize);
             case EColorVisualize.None: return Color.clear;
             case EColorVisualize.RGBA: return _color; 
-            case EColorVisualize.RGB: return _color.SetAlpha(1);
+            case EColorVisualize.RGB: return _color.SetA(1);
             case EColorVisualize.R: return Color.red * _color.r;
             case EColorVisualize.G: return Color.green * _color.g; 
             case EColorVisualize.B: return Color.blue * _color.b;
@@ -133,7 +133,7 @@ public static class UColor
             default: throw new System.Exception("Invalid Visualize Color Type:" + _visualize);
             case EColorVisualize.None:return Color.clear;
             case EColorVisualize.RGBA: return _color;
-            case EColorVisualize.RGB: return _color.SetAlpha(1);
+            case EColorVisualize.RGB: return _color.SetA(1);
             case EColorVisualize.R: return Color.white * _color.r;
             case EColorVisualize.G: return Color.white * _color.g;
             case EColorVisualize.B: return Color.white * _color.b;

@@ -162,7 +162,7 @@ namespace Geometry.Curves
 
             if (!_tangents)
                 return;
-            Gizmos.color = KColor.kOrange.SetAlpha(.1f);
+            Gizmos.color = KColor.kOrange.SetA(.1f);
             for (int i = 0; i < _density + 1; i++)
             {
                 var value = i / (float) _density;
