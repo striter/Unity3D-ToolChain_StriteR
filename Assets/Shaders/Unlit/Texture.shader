@@ -21,7 +21,7 @@
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma shader_feature_local _HSB
+            #pragma shader_feature_local _HSL
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "Assets/Shaders/Library/Additional/Algorithms/HSL.hlsl"
             TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);

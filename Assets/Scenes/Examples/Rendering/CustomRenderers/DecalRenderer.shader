@@ -22,6 +22,7 @@ Shader "Game/Unfinished/Decals"
             {
                 float3 positionOS : POSITION;
                 float4 color : COLOR;
+                float3 normal :NORMAL;
                 float2 uv : TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
@@ -45,9 +46,7 @@ Shader "Game/Unfinished/Decals"
                 v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-                float3 positionVS = TransformObjectToView(v.positionOS);
-                positionVS.z = positionVS.z + 0.01;
-                o.positionCS = TransformWViewToHClip(positionVS);
+                o.positionCS = TransformObjectToHClip(v.positionOS + v.normal * 0.0001);
                 o.uv = TRANSFORM_TEX_INSTANCE(v.uv, _MainTex);
                 o.color = v.color;
                 return o;

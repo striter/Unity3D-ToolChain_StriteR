@@ -55,6 +55,7 @@ namespace Geometry
         public Quad<int> quad;
         public PQuad(Quad<int> _quad) { quad = _quad;  }
         public PQuad(int _index0, int _index1, int _index2, int _index3):this(new Quad<int>(_index0,_index1,_index2,_index3)){}
+        public static readonly PQuad kDefault = new PQuad(0, 1, 2, 3);
     }
 
 
@@ -72,7 +73,7 @@ namespace Geometry
             center = quad.Average();
         }
         public G2Quad(float2 _index0, float2 _index1, float2 _index2, float2 _index3):this(new Quad<float2>(_index0,_index1,_index2,_index3)){}
-      
+        public static readonly G2Quad kDefaultUV = new G2Quad(new float2(0,0),new float2(0,1),new float2(1,1),new float2(1,0));
     }
     
     public partial struct GQuad
@@ -217,6 +218,18 @@ namespace Geometry
         public static PQuad operator -(PQuad _src,int _min) => new PQuad(_src.B+_min,_src.L + _min,_src.F + _min,_src.R + _min);
         public (T v0, T v1, T v2, T v3) GetVertices<T>(IList<T> _vertices) => (_vertices[B], _vertices[L],_vertices[F],_vertices[R]);
         public (Y v0, Y v1, Y v2, Y v3) GetVertices<T,Y>(IList<T> _vertices, Func<T, Y> _getVertex) => ( _getVertex( _vertices[B]), _getVertex(_vertices[L]),_getVertex(_vertices[F]),_getVertex(_vertices[R]));
+        
+        public readonly IEnumerable<int> GetTriangleIndexes()
+        {
+            yield return quad.B;
+            yield return quad.L;
+            yield return quad.F;
+            
+            yield return quad.B;
+            yield return quad.F;
+            yield return quad.R;
+        }
+
         
         public int Length => 4;
         public IEnumerable<T> GetEnumerator<T>(IList<T> _vertices)

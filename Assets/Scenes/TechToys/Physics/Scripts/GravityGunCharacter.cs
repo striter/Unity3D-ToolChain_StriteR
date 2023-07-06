@@ -16,7 +16,7 @@ namespace Examples.PhysicsScenes
 
         bool m_AltFiring;
         Rigidbody m_TargetObject;
-        LineRenderer m_GravityLine;
+        LineRenderer gravityALine;
         readonly Counter m_GravityGunCounter = new Counter(.35f);
         public override void OnTakeControl(TPSCameraController _controller)
         {
@@ -25,7 +25,7 @@ namespace Examples.PhysicsScenes
             _controller.m_BindPosOffset = Vector3.zero;
             _controller.m_MoveDamping = 0f;
             _controller.m_RotateDamping = 0f;
-            m_GravityLine = m_GravityPoint.GetComponent<LineRenderer>();
+            gravityALine = m_GravityPoint.GetComponent<LineRenderer>();
             TouchConsole.InitButton(ETouchConsoleButton.Main).onClick = OnMainFire;
             TouchConsole.InitButton(ETouchConsoleButton.Alt).onPress = OnAltFire;
         }
@@ -35,11 +35,11 @@ namespace Examples.PhysicsScenes
         }
         private void Update()
         {
-            m_GravityLine.enabled = m_TargetObject;
+            gravityALine.enabled = m_TargetObject;
             if (!m_TargetObject)
                 return;
-            m_GravityLine.SetPosition(0, m_GravityPoint.position);
-            m_GravityLine.SetPosition(1, m_TargetObject.position);
+            gravityALine.SetPosition(0, m_GravityPoint.position);
+            gravityALine.SetPosition(1, m_TargetObject.position);
         }
 
         protected override void Tick(float _deltaTime, ref List<TrackData> _data)
