@@ -69,7 +69,7 @@ namespace Runtime
             {
                 var evaluate = (float)i/63;
                 _vertices.Add(m_Curve.Evaluate(evaluate));
-                var tangent = m_Curve.GetTangent(evaluate);
+                var tangent = m_Curve.EvaluateTangent(evaluate);
                 var biTangent = Vector3.Lerp(srcBiTangent,dstBiTangent,evaluate);
                 _normals.Add(Vector3.Cross(tangent,biTangent));
             }

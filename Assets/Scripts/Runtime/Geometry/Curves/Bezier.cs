@@ -8,7 +8,7 @@ namespace Geometry.Curves
     using static math;
     using static umath;
     [Serializable]
-    public struct GBezierCurveQuadratic:ISerializationCallbackReceiver
+    public struct GBezierCurveQuadratic:ICurveTangents<float3>,ISerializationCallbackReceiver
     {
         public float3 source;
         public float3 control;
@@ -33,29 +33,38 @@ namespace Geometry.Curves
             tangentDestination = normalize(destination - control);
         }
 
-        public Vector3 Evaluate(float _value)
+        public float3 Evaluate(float _value)
         {
             float value = _value;
             float oneMinusValue = 1 - value;
             return sqr(oneMinusValue) * source + 2 * (oneMinusValue) * value * control + sqr(value) * destination;
         }
 
-        public float3 GetTangent(float _value) => normalize(lerp(tangentSource,tangentDestination,_value));
+        public float3 EvaluateTangent(float _value) => normalize(lerp(tangentSource,tangentDestination,_value));
 
     #region Implements
         public void OnBeforeSerialize() { }
         public void OnAfterDeserialize()=> Ctor();
     #endregion
+
     }
 
     [Serializable]
-    public struct GBezierCurveCubic
+    public struct GBezierCurveCubic:ICurve<float3>
     {
         public float3 source;
         public float3 controlSource;
         public float3 destination;
         public float3 controlDestination;
 
+        public GBezierCurveCubic(float3 _src, float3 _dst, float3 _srcCtr, float3 _dstCtr)
+        {
+            source = _src;
+            destination = _dst;
+            controlSource = _srcCtr;
+            controlDestination = _dstCtr;
+        }
+        
         public float3 Evaluate(float _value)
         {
             float value = _value;
@@ -66,6 +75,28 @@ namespace Geometry.Curves
 
     public static class UBezierCurve
     {
+        public static void Split(this GBezierCurveCubic _src, float _value, out GBezierCurveCubic _Q,out GBezierCurveCubic _R)       //de Casteljau
+        {
+            var P0 = _src.source;
+            var P1 = _src.controlSource;
+            var P2 = _src.controlDestination;
+            var P3 = _src.destination;
+
+            var s = _value;
+            var BS = _src.Evaluate(_value);
+
+            var P11 = lerp(P1,P2,s);
+            
+            var Q1 = lerp(P0,P1,s);
+            var Q2 = lerp(Q1, P11, s);
+
+            var R2 = lerp(P2,P3,s);
+            var R1 = lerp(P11, R2, s);
+            
+            _Q = new GBezierCurveCubic(P0, BS, Q1,Q2);
+            _R = new GBezierCurveCubic(BS, P3,R1,R2);
+        }
+        
         public static GBox GetBoundingBox(this GBezierCurveQuadratic _curve)
         {
             var source = _curve.source;
@@ -152,22 +183,9 @@ namespace Geometry.Curves
             Gizmos.DrawWireSphere(control,.05f);
             Gizmos.color = Color.white;
             
-            Vector3[] points = new Vector3[_density + 1];
-            for (int i = 0; i < _density + 1; i++)
-            {
-                var value = i / (float) _density;
-                points[i] = _curve.Evaluate(value);
-            }
-            UGizmos.DrawLines(points);
-
-            if (!_tangents)
-                return;
-            Gizmos.color = KColor.kOrange.SetA(.1f);
-            for (int i = 0; i < _density + 1; i++)
-            {
-                var value = i / (float) _density;
-                Gizmos.DrawLine(points[i],points[i]+ (Vector3)_curve.GetTangent(value)*.1f);
-            }
+            _curve.DrawGizmos(_density);
+            if(_tangents)
+                _curve.DrawGizmos_Tangents(_density);
         }
         
         public static void DrawGizmos(this GBezierCurveCubic _curve,int _density=64)
@@ -188,10 +206,7 @@ namespace Geometry.Curves
             Gizmos.DrawWireSphere(controlDestination,.05f);
             Gizmos.color = Color.white;
             
-            Vector3[] points = new Vector3[_density + 1];
-            for (int i = 0; i < _density+1; i++)
-                points[i] = _curve.Evaluate(i / (float)_density);
-            UGizmos.DrawLines(points);
+            UCurve.DrawGizmos(_curve);
         }
 #endif
     }

@@ -1340,64 +1340,64 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SinValue: 0
   boundingBoxRandomPoints:
-  - x: -0.008104055
-    y: 0.012001078
-    z: -0.011502766
-  - x: -0.07936835
-    y: 0.23496456
-    z: -0.10587497
-  - x: -0.028432678
-    y: -0.72862834
-    z: -0.059509743
-  - x: -0.08499196
-    y: 0.61461323
-    z: 0.099498756
-  - x: 0.047484446
-    y: -0.52779806
-    z: -0.030876111
-  - x: 0.1646803
-    y: 0.21915689
-    z: -0.17139757
-  - x: -0.084773295
-    y: -0.019071132
-    z: 0.2244617
-  - x: 0.30235443
-    y: 0.30556053
-    z: -0.0790425
+  - x: 0.32977453
+    y: 0.14857817
+    z: -0.5087017
+  - x: -0.18760912
+    y: -0.070852324
+    z: -0.44608197
+  - x: 0.044228528
+    y: -0.07693716
+    z: -0.2470823
+  - x: -0.6385635
+    y: -0.096193634
+    z: -0.14783882
+  - x: 0.14286974
+    y: -0.08445045
+    z: 0.35879952
+  - x: -0.49521285
+    y: 0.44293675
+    z: 0.5496988
+  - x: 0.074577995
+    y: -0.06159136
+    z: -0.16213362
+  - x: 0.46292406
+    y: -0.26547182
+    z: 0.13343634
   boudingBox:
     center:
-      x: 0.10868123
-      y: -0.05700755
-      z: 0.026532069
+      x: -0.087819695
+      y: 0.08873248
+      z: 0.020498574
     extent:
-      x: 0.1936732
-      y: 0.6716208
-      z: 0.19792964
+      x: 0.5507438
+      y: 0.3542043
+      z: 0.52920026
   boundingSpherePoints:
-  - x: -0.2126891
-    y: 0.1875377
-    z: 0.77518654
-  - x: -0.64510584
-    y: -0.08814569
-    z: -0.61844945
-  - x: 0.0007078048
-    y: -0.035790965
-    z: 0.052831035
-  - x: -0.02864991
-    y: 0.008158094
-    z: 0.25125226
-  - x: 0.02102138
-    y: -0.19651525
-    z: 0.020295555
-  - x: -0.089944065
-    y: -0.22928528
-    z: 0.26511177
+  - x: -0.17259066
+    y: 0.07876512
+    z: -0.19419459
+  - x: 0.499548
+    y: -0.39065182
+    z: -0.7085381
+  - x: -0.5994293
+    y: -0.1973405
+    z: -0.6445662
+  - x: 0.32238135
+    y: 0.36091828
+    z: 0.7546538
+  - x: -0.53526586
+    y: 0.1586243
+    z: -0.57319593
+  - x: 0.12019779
+    y: 0.6080445
+    z: -0.40544337
   boundingSphere:
     center:
-      x: -0.42889747
-      y: 0.049696006
-      z: 0.078368545
-    radius: 0.74249697
+      x: 0.04102081
+      y: 0.010784805
+      z: -0.03491175
+    radius: 0.9083892
 --- !u!1 &1899185937
 GameObject:
   m_ObjectHideFlags: 0
@@ -1503,7 +1503,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2053047238}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.26, y: 0, z: -8.32}
+  m_LocalPosition: {x: 22.22, y: 0, z: -11.76}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1561,90 +1561,42 @@ MonoBehaviour:
       x: -1.35
       y: 1.06
       z: 1.25
-  m_BSpline:
-    coordinates:
-    - x: -1
+  m_PolynomialCurve:
+    constant:
+      x: 0
       y: 0
-      z: -1
-    - x: 0
+      z: 0
+    linear:
+      x: 0
+      y: 0.5
+      z: 0
+    quadratic:
+      x: 3.76
       y: 0
-      z: 1
-    - x: 1
+      z: 0
+    cubic:
+      x: -4.14
       y: 0
-      z: -1
-    - x: -0.38
-      y: 0.58
-      z: -0.13
-    - x: 0.27
-      y: -1.01
-      z: -0.13
-    k: 3
-    mode: 0
-    knotVectors:
-    - 0
-    - 0
-    - 0
-    - 1
-    - 2
-    - 3
-    - 3
-    - 4
-    - 5
-  m_BSplineUniform:
-    coordinates:
-    - x: -1
-      y: 0
-      z: -1
-    - x: 0
-      y: 0
-      z: 1
-    - x: 1
-      y: 0
-      z: -1
-    - x: 2.28
-      y: 0
-      z: 0.24
-    k: 3
-  m_ChaikinCurve:
-    vertices:
-    - x: 2.32
-      y: -0.6
-      z: 0.1
-    - x: 0.58534575
-      y: -0.26
-      z: -1.12
-    - x: 0.58224833
-      y: -0.57
-      z: 0.23
-    - x: 2.02
-      y: -0.57
-      z: -1.36
-    - x: 0.58224833
-      y: -0.57
-      z: -1.3
-    iteration: 3
-    ratio: 0.25
-    closed: 1
-  m_DivisionCurve:
-    begin:
+      z: 3
+  m_BezeirSplit: 0
+  m_HermiteCurve:
+    srcPosition:
       x: -1
       y: 0
       z: 0
-    end:
-      x: 1
-      y: 0
-      z: 0
-    control1:
+    srcTangent:
       x: 0
       y: 0
       z: 1
-    control2:
+    dstPosition:
+      x: 1
+      y: 0
+      z: 0
+    dstTangent:
       x: 0
       y: 0
       z: -1
-    level: 3
-    amplitude: 1
-  m_FourierCurve:
+  m_FourierSpline:
     paths:
     - x: 0.098
       y: 0
@@ -1942,3 +1894,100 @@ MonoBehaviour:
       c2:
         x: 0.025000013
         y: -0.00000018370082
+  m_CatmullRomSpline:
+    positions:
+    - x: -1
+      y: 0
+      z: 0
+    - x: -1
+      y: 0
+      z: 0
+    - x: -1
+      y: 0
+      z: 0
+    - x: 0
+      y: 0
+      z: -1
+  m_BSpline:
+    coordinates:
+    - x: -1
+      y: 0
+      z: -1
+    - x: 0
+      y: 0
+      z: 1
+    - x: 1
+      y: 0
+      z: -1
+    - x: -0.38
+      y: 0.58
+      z: -0.13
+    - x: 0.27
+      y: -1.01
+      z: -0.13
+    k: 3
+    mode: 0
+    knotVectors:
+    - 0
+    - 0
+    - 0
+    - 1
+    - 2
+    - 3
+    - 3
+    - 4
+    - 5
+  m_BSplineUniform:
+    coordinates:
+    - x: -1
+      y: 0
+      z: -1
+    - x: 0
+      y: 0
+      z: 1
+    - x: 1
+      y: 0
+      z: -1
+    - x: 2.28
+      y: 0
+      z: 0.24
+    k: 3
+  m_DivisionCurve:
+    begin:
+      x: -1
+      y: 0
+      z: 0
+    end:
+      x: 1
+      y: 0
+      z: 0
+    control1:
+      x: 0
+      y: 0
+      z: 1
+    control2:
+      x: 0
+      y: 0
+      z: -1
+    level: 3
+    amplitude: 1
+  m_ChaikinCurve:
+    vertices:
+    - x: 2.32
+      y: -0.6
+      z: 0.1
+    - x: 0.58534575
+      y: -0.26
+      z: -1.12
+    - x: 0.58224833
+      y: -0.57
+      z: 0.23
+    - x: 2.02
+      y: -0.57
+      z: -1.36
+    - x: 0.58224833
+      y: -0.57
+      z: -1.3
+    iteration: 3
+    ratio: 0.25
+    closed: 1

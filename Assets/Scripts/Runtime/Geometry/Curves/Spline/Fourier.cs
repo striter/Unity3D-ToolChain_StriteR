@@ -1,20 +1,20 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace Geometry.Curves
+namespace Geometry.Curves.Spline
 {
     //& https://iquilezles.org/articles/fourier
     [Serializable]
-    public struct G2FourierCurve : ICurve<float2> ,ISerializationCallbackReceiver
+    public struct G2FourierSpline : ISpline<float2> ,ISerializationCallbackReceiver
     {
         public float2[] paths;
         [Clamp(2)] public int coefficients;
         [HideInInspector] public float2x2[] fourierCoefficients;
 
-        public G2FourierCurve(float2[] _paths,int _coefficients = 5)
+        public G2FourierSpline(float2[] _paths,int _coefficients = 5)
         {
             paths = _paths;
             coefficients = _coefficients;
@@ -41,8 +41,6 @@ namespace Geometry.Curves
             }
         }
 
-        public float2[] Coordinates => paths;
-
         public float2 Evaluate(float _value)
         {
             float2 result = 0;
@@ -60,8 +58,8 @@ namespace Geometry.Curves
             return result / paths.Length ;
         }
 
-        public static G2FourierCurve kDefault = new G2FourierCurve(new float2[]{kfloat2.left,kfloat2.up,kfloat2.right,kfloat2.down});
-        public static G2FourierCurve kBunny = new G2FourierCurve(new float2[]{
+        public static G2FourierSpline kDefault = new G2FourierSpline(new float2[]{kfloat2.left,kfloat2.up,kfloat2.right,kfloat2.down});
+        public static G2FourierSpline kBunny = new G2FourierSpline(new float2[]{
                 new float2( 0.098f, 0.062f ), new float2( 0.352f, 0.073f ), new float2( 0.422f, 0.136f ), new float2( 0.371f, 0.085f ), new float2( 0.449f, 0.140f ),
                 new float2( 0.352f, 0.187f ), new float2( 0.379f, 0.202f ), new float2( 0.398f, 0.202f ), new float2( 0.266f, 0.198f ), new float2( 0.318f, 0.345f ),
                 new float2( 0.402f, 0.359f ), new float2( 0.361f, 0.425f ), new float2( 0.371f, 0.521f ), new float2( 0.410f, 0.491f ), new float2( 0.410f, 0.357f ),
@@ -74,16 +72,17 @@ namespace Geometry.Curves
         public void OnBeforeSerialize() {}
 
         public void OnAfterDeserialize() =>  Ctor();
+        public IEnumerable<float2> Coordinates => paths;
     }
     
     [Serializable]
-    public struct GFourierCurve : ICurve<float3> ,ISerializationCallbackReceiver
+    public struct GFourierSpline : ISpline<float3> ,ISerializationCallbackReceiver
     {
         public float3[] paths;
         [Clamp(2)] public int coefficients;
         [HideInInspector] public float2x3[] fourierCoefficients;
 
-        public GFourierCurve(float3[] _paths,int _coefficients = 5)
+        public GFourierSpline(float3[] _paths,int _coefficients = 5)
         {
             paths = _paths;
             coefficients = _coefficients;
@@ -111,7 +110,7 @@ namespace Geometry.Curves
             }
         }
 
-        public float3[] Coordinates => paths;
+        public IEnumerable<float3> Coordinates => paths;
 
         public float3 Evaluate(float _value)
         {
@@ -129,8 +128,8 @@ namespace Geometry.Curves
             return result / paths.Length ;
         }
 
-        public static GFourierCurve kDefault = new GFourierCurve(G2FourierCurve.kDefault.Coordinates.Select(p=>p.to3xz()).ToArray() );
-        public static GFourierCurve kBunny = new GFourierCurve(G2FourierCurve.kBunny.Coordinates.Select(p=>p.to3xz()).ToArray(), G2FourierCurve.kBunny.coefficients);
+        public static GFourierSpline kDefault = new GFourierSpline(G2FourierSpline.kDefault.paths.Select(p=>p.to3xz()).ToArray() );
+        public static GFourierSpline kBunny = new GFourierSpline(G2FourierSpline.kBunny.paths.Select(p=>p.to3xz()).ToArray(), G2FourierSpline.kBunny.coefficients);
 
         public void OnBeforeSerialize() {}
         public void OnAfterDeserialize() =>  Ctor();

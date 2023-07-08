@@ -1,25 +1,35 @@
-using Geometry;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Geometry.Curves;
+using Geometry.Curves.Spline;
+using Geometry.Curves.LineSegments;
+using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Examples.Algorithm.Geometry
 {
     public class GeometryVisualizeCurves : MonoBehaviour
     {
-        [Header("Bezeir")]
+        [Header("Curves")]
         public GBezierCurveQuadratic m_QuadraticCurve;
         public bool m_QuadraticTangents = false;
         public GBezierCurveCubic m_CubicCurve;
+        public GPolynomialCurve m_PolynomialCurve;
+        [Range(0,1)]public float m_BezeirSplit = 0;
+        public GHermiteCurve m_HermiteCurve = GHermiteCurve.kDefault;
+        
         [Header("Spline")]
+        public GFourierSpline m_FourierSpline = GFourierSpline.kBunny;
+        public GHermiteSpline m_HermineSpline = GHermiteSpline.kDefault;
+        public GCatmullRomSpline m_CatmullRomSpline = GCatmullRomSpline.kDefault;
         public GSpline m_BSpline = GSpline.kDefault;
         public GBezierSplineUniform m_BSplineUniform = GBezierSplineUniform.kDefault;
         
-        [Header("Curves")]
-        public GChaikinCurve m_ChaikinCurve = GChaikinCurve.kDefault;
+        [Header("Line Segments")]
         public GDivisionCurve m_DivisionCurve = GDivisionCurve.kDefault;
-        public GFourierCurve m_FourierCurve = GFourierCurve.kBunny;
-
+        public GChaikinCurve m_ChaikinCurve = GChaikinCurve.kDefault;
+        
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
@@ -31,26 +41,47 @@ namespace Examples.Algorithm.Geometry
             m_QuadraticCurve.GetBoundingBox().DrawGizmos();
             
             Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(5f,0f,0f));
-            m_CubicCurve.DrawGizmos();
-            Gizmos.color = Color.grey;
-            m_CubicCurve.GetBoundingBox().DrawGizmos();
+            if (m_BezeirSplit > 0)
+            {
+                m_CubicCurve.Split(m_BezeirSplit,out var L,out var R);
+                L.DrawGizmos();
+                R.DrawGizmos();
+            }
+            else
+            {
+                m_CubicCurve.DrawGizmos();
+                Gizmos.color = Color.grey;
+                m_CubicCurve.GetBoundingBox().DrawGizmos();
+            }
             
-            //BSpline
+            Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(10f,0f,0f));
+            m_PolynomialCurve.DrawGizmos();
+            
+            Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(15f,0f,0f));
+            m_HermiteCurve.DrawGizmos();
+            
+            //Splines
             Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(0f,0f,-3f));
-            m_BSpline.DrawGizmos(true);
+            m_FourierSpline.DrawGizmos();
             
             Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(5f,0f,-3f));
-            m_BSplineUniform.DrawGizmos(true);
+            m_HermineSpline.DrawGizmos();
             
-            //Curves
+            Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(10f,0f,-3f));
+            m_CatmullRomSpline.DrawGizmos();
+            
+            //BSpline
             Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(0f,0f,-6f));
-            m_ChaikinCurve.DrawGizmos();
+            m_BSpline.DrawGizmos();
             
             Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(5f,0f,-6f));
-            m_DivisionCurve.DrawGizmos();
+            m_BSplineUniform.DrawGizmos();
             
+            //Line segments
             Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(0f,0f,-9f));
-            m_FourierCurve.DrawGizmos(true,0.01f,256);
+            m_DivisionCurve.DrawGizmos();
+            Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(5f,0f,-9f));
+            m_ChaikinCurve.DrawGizmos();
         }
 #endif
     }

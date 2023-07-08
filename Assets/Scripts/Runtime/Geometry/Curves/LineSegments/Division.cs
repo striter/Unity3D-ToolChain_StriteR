@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using Random = System.Random;
 
-namespace Geometry.Curves
+namespace Geometry.Curves.LineSegments
 {
     //https://www.redblobgames.com/maps/noisy-edges/
     [Serializable]
@@ -81,6 +81,7 @@ namespace Geometry.Curves
             
             return vertices;
         }
+
     }
     
     public static class UDivision

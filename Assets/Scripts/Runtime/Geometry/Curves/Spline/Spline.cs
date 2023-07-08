@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Curves
+namespace Geometry.Curves.Spline
 {
     using static KSpline;
     static class KSpline
@@ -20,7 +21,7 @@ namespace Geometry.Curves
     }
     
     [Serializable]
-    public struct GSpline:ICurve<float3>,ISerializationCallbackReceiver
+    public struct GSpline:ISpline<float3>,ISerializationCallbackReceiver
     {
         public float3[] coordinates;
         [Clamp(kMinDegree)] public int k;
@@ -34,7 +35,7 @@ namespace Geometry.Curves
             mode = EBSplineMode.OpenUniformClamped,
         }.Ctor();
 
-        public float3[] Coordinates => coordinates;
+        public IEnumerable<float3> Coordinates => coordinates;
         public float3 Evaluate(float _value)
         {
             var n = coordinates.Length -1;
@@ -140,7 +141,7 @@ namespace Geometry.Curves
     }
 
     [Serializable]
-    public struct GBezierSplineUniform:ICurve<float3>
+    public struct GBezierSplineUniform:ISpline<float3>
     {
         public float3[] coordinates;
         [Clamp(kMinDegree)]public int k;
@@ -150,7 +151,7 @@ namespace Geometry.Curves
             k = 3,
         };
 
-        public float3[] Coordinates => coordinates;
+        public IEnumerable<float3> Coordinates => coordinates;
         public float3 Evaluate(float _value)
         {
             var n = coordinates.Length -1;
