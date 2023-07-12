@@ -3,6 +3,14 @@ using Unity.Mathematics;
 using UnityEngine;
 using static kmath;
 using static Unity.Mathematics.math;
+
+public enum EAxis
+{
+    X,
+    Y,
+    Z,
+}
+
 public static partial class umath
 {
     public static bool IsPrime(ushort _value)
@@ -71,6 +79,13 @@ public static partial class umath
     public static float lerp(float _a, float _b, float _value) => Mathf.Lerp(_a, _b, _value);
     
     public static float invLerp(float _a, float _b, float _value)=> (_value - _a) / (_b - _a);
+
+    public static EAxis maxAxis(this float2 _value)
+    {
+        if (_value.x > _value.y)
+            return EAxis.X;
+        return EAxis.Y;
+    }
     
     public static float3 bilinearLerp(float3 tl, float3 tr, float3 br, float3 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
     public static float2 bilinearLerp(float2 tl, float2 tr, float2 br, float2 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);

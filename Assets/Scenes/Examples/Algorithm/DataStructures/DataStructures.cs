@@ -3,6 +3,7 @@ using System.Linq;
 using Geometry;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Examples.Algorithm.DataStructures
 {
@@ -26,6 +27,10 @@ namespace Examples.Algorithm.DataStructures
         private QuadTree m_QuadTree = new QuadTree();
         private BSPTree m_BSPTree = new BSPTree();
 
+
+        [FormerlySerializedAs("m_Triangles")] public G2Triangle[] m_RandomTriangles;
+        private BVH m_BVH = new BVH();
+
         [Button]
         void Randomize()
         {
@@ -35,6 +40,15 @@ namespace Examples.Algorithm.DataStructures
                 // points[i] = new float3(ldsPoints[i].x,0,ldsPoints[i].y)*kRandomRadius;
                 var point = URandom.Random2DSphere() * kRandomRadius;
                 m_RandomPoints[i] = point;
+            }
+
+            m_RandomTriangles = new G2Triangle[m_RandomCount];
+            for (int i = 0; i < m_RandomCount; i++)
+            {
+                var point1 = URandom.Random2DSphere() * kRandomRadius;
+                var point2 = point1 + URandom.Random2DSphere() * 2f;
+                var point3 = point2 + URandom.Random2DSphere() * 2f;
+                m_RandomTriangles[i] = new G2Triangle(point1, point2, point3);
             }
         }
 
@@ -57,6 +71,10 @@ namespace Examples.Algorithm.DataStructures
             Gizmos.matrix = Matrix4x4.Translate(Vector3.right * 100f);
             m_BSPTree.Construct(m_RandomPoints,m_Iteration,m_NodeCapacity);
             m_BSPTree.DrawGizmos();
+
+            Gizmos.matrix = Matrix4x4.Translate(Vector3.back * 50f);
+            m_BVH.Construct(m_RandomTriangles, m_Iteration, m_NodeCapacity);
+            m_BVH.DrawGizmos();
         }
     }
 

@@ -7,7 +7,7 @@ namespace Geometry.PointSet
 {
     public static class UBounds
     {
-        #region 2D
+        #region 3D
         static void Minmax(IEnumerable<float3> _positions,out float3 _min,out float3 _max)
         {
             _min = float.MaxValue;
@@ -91,6 +91,24 @@ namespace Geometry.PointSet
         #endregion
         
         #region 2D
+        static void Minmax(IEnumerable<float2> _positions,out float2 _min,out float2 _max)
+        {
+            _min = float.MaxValue;
+            _max = float.MinValue;
+            foreach (var position in _positions)
+            {
+                _min = math.min(position, _min);
+                _max = math.max(position, _max);
+            }
+        }
+        
+        public static G2Box GetBoundingBox(IEnumerable<float2> _positions)
+        {
+            Minmax(_positions,out var min,out var max);
+            return G2Box.Minmax(min,max);
+        }
+        
+        
         static void Minmax2(float2[] _positions,out float2 _min,out float2 _max)
         {
             _min = float.MaxValue;

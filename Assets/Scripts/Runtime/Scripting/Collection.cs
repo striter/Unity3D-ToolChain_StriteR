@@ -27,7 +27,7 @@ public static class UCollection
                 }
             }
         }
-
+        
         public static IEnumerable<(int index,T value)> LoopIndex<T>(this IEnumerable<T> _collection)
         {
             int index = 0;
@@ -287,7 +287,7 @@ public static class UCollection
             _index = FindIndex(_collection,_OnEachElement);
             return _index != -1;
         }
-
+        
         public static string ToString<T>(this IEnumerable<T> _collections, char breakAppend, Func<T, string> OnEachAppend=null)
         {
             StringBuilder builder = new StringBuilder();
@@ -301,6 +301,12 @@ public static class UCollection
                 curIndex++;
             }
             return builder.ToString();
+        }
+
+        public static IEnumerable<T> Iterate<T>(this IList<T> _collection, int _startIndex,int _endIndex)
+        {
+            for (int i = _startIndex; i < _endIndex; i++)
+                yield return _collection[i];
         }
 
         public static void FillDefault<T>(this IList<T> _src, T _dst = default)
@@ -827,7 +833,6 @@ public static class UCollection
             _hashSet.Remove(element);
     }
     #endregion
-    
     
     #region Decimal
     public static (float3 value,int count) Sum(this IEnumerable<float3> _collection)   
