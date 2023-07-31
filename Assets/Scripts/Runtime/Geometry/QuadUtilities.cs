@@ -9,6 +9,12 @@ namespace Geometry
 {
     public partial class KQuad
     {
+        public static readonly Quad<half2> kUV = new Quad<half2>(
+             (half2)(new float2(0,0)),
+             (half2)(new float2(0,1)),
+             (half2)(new float2(1,1)),
+             (half2)(new float2(1,0))
+            );
         public static readonly Quad<bool> kFalse = new Quad<bool>(false, false, false, false);
         public static readonly Quad<bool> kTrue = new Quad<bool>(true, true, true, true);
         
@@ -18,7 +24,6 @@ namespace Geometry
         
         public static readonly Quad<float2> k2SquareCentered = k3SquareCentered.Convert(p=>p.to2xz());
     }
-
     
     public static partial class UQuad
     {
@@ -361,6 +366,17 @@ namespace Geometry
         }
 
         public static Quad<T> MirrorLR<T>(this Quad<T> _quad) => new Quad<T>(_quad.vB,_quad.vR,_quad.vF,_quad.vL);
+
+        public static GQuad Shrink(this GQuad _quad, float _scale)
+        {
+            var center = _quad.Center;
+            return new GQuad(
+                center + (_quad.B - center)*_scale,
+                center + (_quad.L - center)*_scale,
+                center + (_quad.F - center)*_scale,
+                center + (_quad.R - center)*_scale 
+                );
+        }
         
         public static void SetByteElement(ref this Quad<bool> _qube, byte _byte)
         {

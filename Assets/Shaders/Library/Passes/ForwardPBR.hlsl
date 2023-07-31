@@ -1,38 +1,4 @@
-﻿struct a2vf
-{
-	UNITY_VERTEX_INPUT_INSTANCE_ID
-	float3 positionOS : POSITION;
-	float3 normalOS:NORMAL;
-	float4 tangentOS:TANGENT;
-	float4 color:COLOR;
-	float2 uv:TEXCOORD0;
-	A2V_LIGHTMAP
-	#if defined(A2V_ADDITIONAL)
-		A2V_ADDITIONAL
-	#endif
-};
-
-struct v2ff
-{
-	UNITY_VERTEX_INPUT_INSTANCE_ID
-	float4 positionCS : SV_POSITION;
-	float4 color:COLOR;
-	float3 normalWS:NORMAL;
-	float2 uv:TEXCOORD0;
-	float3 positionWS:TEXCOORD1;
-	float4 positionHCS:TEXCOORD2;
-	#if !defined (_NORMALOFF)
-		half3 tangentWS:TEXCOORD3;
-		half3 biTangentWS:TEXCOORD4;
-	#endif
-	half3 viewDirWS:TEXCOORD5;
-	V2F_FOG(6)
-	V2F_LIGHTMAP(7)
-	#if defined(V2F_ADDITIONAL)
-		V2F_ADDITIONAL
-	#endif
-};
-
+﻿
 v2ff ForwardVertex(a2vf v)
 {
 	v2ff o;
@@ -117,6 +83,10 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 	
 	BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,glossiness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,1);
 
+	#if defined(BRDFSURFACE_OVERRIDE)
+		BRDFSURFACE_OVERRIDE(i,surface);
+	#endif
+	
 	half3 finalCol=0;
 
 	Light mainLight =

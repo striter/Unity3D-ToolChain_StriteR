@@ -11,7 +11,6 @@ RWTexture2D<float4> _Result;
 Texture2D<float> _CameraDepthTexture;
 SamplerState sampler_PointClamp;
 
-
 float3 _PlaneNormal;
 float3 _PlanePosition;
 

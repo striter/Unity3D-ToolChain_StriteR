@@ -20,6 +20,8 @@ namespace Runtime
 
         protected void PopulateMesh()
         {
+            if (!m_Mesh) return;
+            
             m_Mesh.Clear();
             PopulateMesh(m_Mesh);
         }

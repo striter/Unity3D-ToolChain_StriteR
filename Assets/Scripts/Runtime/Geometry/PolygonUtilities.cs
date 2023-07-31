@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Geometry;
 using TPoolStatic;
+using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -17,6 +18,24 @@ public static class UPolygon
         _indices.Add(_quad2);
         _indices.Add(_quad3);
         _indices.Add(_quad0);
+    }
+
+    public static void ApplyQuadIndexes(NativeArray<int3> _indices, int _start,
+        int _quad0, int _quad1, int _quad2, int _quad3)
+    {
+        _indices[_start] = new int3(_quad0,_quad1,_quad2);
+        _indices[_start + 1] = new int3(_quad2,_quad3,_quad0);
+    }
+    
+    public static void ApplyQuadIndexes(NativeArray<ushort> _indices, ushort _start,
+        ushort _quad0, ushort _quad1, ushort _quad2, ushort _quad3)
+    {
+        _indices[_start + 0] = _quad0;
+        _indices[_start + 1] = _quad1;
+        _indices[_start + 2] = _quad2;
+        _indices[_start + 3] = _quad2;
+        _indices[_start + 4] = _quad3;
+        _indices[_start + 5] = _quad0;
     }
     
     public static void FillQuadTriangle(this GQuad _quad, List<Vector3> _vertices, List<int> _indices,

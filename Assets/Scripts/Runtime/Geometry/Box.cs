@@ -90,7 +90,6 @@ namespace Geometry
     {
         public void OnBeforeSerialize(){  }
         public void OnAfterDeserialize()=>Ctor();
-        public Bounds ToBounds()=> new Bounds(center, size);
         public float3 GetSupportPoint(float3 _direction)
         {
             var ray = new GRay(center, _direction.normalize());
@@ -143,6 +142,7 @@ namespace Geometry
             }
         }
         
+        public static implicit operator Bounds(GBox _box)=> new Bounds(_box.center, _box.size);
         public static implicit operator GBox(Bounds _bounds) => new GBox(_bounds.center,_bounds.extents);
         
         public static readonly GBox kDefault = new GBox(0f,.5f);

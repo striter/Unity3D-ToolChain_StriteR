@@ -47,6 +47,10 @@ public static class UReflection
         }
         return inheritStack;
     }
+
+    public static IEnumerable<Type> GetChildTypes(this Type _baseType)=>
+        Assembly.GetCallingAssembly().GetTypes().Where(_type => _type.IsSubclassOf(_baseType) );
+    
     public static object GetValue(this Stack<FieldInfo> _fieldStacks, object _targetObject)
     {
         object dstObject = _targetObject;

@@ -36,7 +36,7 @@
       "url": "https://packages.unity.cn"
     },
     "com.unity.ide.rider": {
-      "version": "3.0.22",
+      "version": "3.0.24",
       "depth": 0,
       "source": "registry",
       "dependencies": {
