@@ -77,4 +77,13 @@ public static class UEnum
             value += GetValue(_enums[i]);
         return (T)Enum.ToObject(typeof(T),value);
     }
+
+    public static T SetFlag<T>(this T _enum, T _flag, bool _valid) where T:Enum
+    {
+        var sourceValid = IsFlagEnable(_enum, _flag);
+        if (sourceValid == _valid) return _enum;
+        if (_valid)
+            return (T)Enum.ToObject(typeof(T), Convert.ToInt32(_enum) + Convert.ToInt32(_flag));
+        return (T)Enum.ToObject(typeof(T), Convert.ToInt32(_enum) - Convert.ToInt32(_flag));
+    }
 }

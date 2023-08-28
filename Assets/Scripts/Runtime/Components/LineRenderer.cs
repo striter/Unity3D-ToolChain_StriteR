@@ -1,20 +1,19 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Runtime
 {
-    public class LineRenderer : ALineRendererBase
+    [Serializable]
+    public class FLineRenderer : ALineRendererBase
     {
         public Vector3[] m_LinePositions;
         
         private static int kInstanceID = 0;
         protected override string GetInstanceName() => $"Line - ({kInstanceID++})";
-    
-        //I should put all these stuffs into shaders ?
 
-        protected override void PopulatePositions(List<Vector3> _vertices, List<Vector3> _normals)
+        //I should put all these stuffs into shaders ?
+        protected override void PopulatePositions(Transform _transform, List<Vector3> _vertices, List<Vector3> _normals)
         {
             if (m_LinePositions == null) return;
             
@@ -24,6 +23,11 @@ namespace Runtime
                 _normals.Add(Vector3.right);
             }
         }
+    }
+
+    public class LineRenderer : ARuntimeRendererMonoBehaviour<FLineRenderer>
+    {
+
     }
 
 }

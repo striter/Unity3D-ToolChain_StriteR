@@ -110,7 +110,7 @@ namespace UnityEditor.Extensions
         
         public sealed override void OnGUI(Rect _position, SerializedProperty _property, GUIContent _label)
         {
-            if (_position.size.sqrMagnitude < 10f)
+            if (_position.size.x < 10f)
                 return;
             
             Rect propertyField = _position.ResizeY(_position.size.y- AdditionalSize);

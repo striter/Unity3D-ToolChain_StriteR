@@ -69,7 +69,7 @@ public partial class TouchConsole :MonoBehaviour, IPartialMethods<EPartialMethod
         this.InitMethods();
         this.InvokeMethods(EPartialMethods.Init);
         this.InvokeMethods(EPartialMethods.Reset);
-        SetLogFramePanel(m_Data.m_FilterSetting.m_RefValue);
+        SetLogFramePanel(m_Data.m_FilterSetting.value);
     }
     void OnDestroy()
     {

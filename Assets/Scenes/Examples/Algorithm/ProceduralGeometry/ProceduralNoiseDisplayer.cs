@@ -25,7 +25,7 @@ namespace Examples.Algorithm.Procedural
                             kNormals = Shader.PropertyToID("_Normals"),
                             kConfigID = Shader.PropertyToID("_Config");
 
-        public TransformData m_HashTransform = TransformData.kDefault;
+        public TRS m_HashTransform = TRS.kDefault;
         public float elementSize = 1f;
         [Range(-2f,2f)]public float displacement;
         public int seed;

@@ -91,6 +91,9 @@
 			#pragma vertex ForwardVertex
 			#pragma fragment ForwardFragment
 			
+			#define V2F_ADDITIONAL float2 furUV:TEXCOORD8;
+			#define V2F_ADDITIONAL_TRANSFER(v,o) o.furUV = TRANSFORM_TEX(v.uv,_FurTex)+float2(0,pow2(INSTANCE(_ShellDelta))*INSTANCE(_FURUVDelta));
+			
 			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
 			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
 			float GetNormalDistribution(BRDFSurface surface,BRDFLightInput lightSurface)
@@ -131,9 +134,6 @@
 				return albedo;
 			}
 
-			#define V2F_ADDITIONAL float2 furUV:TEXCOORD8;
-			#define V2F_ADDITIONAL_TRANSFER(v,o) o.furUV = TRANSFORM_TEX(v.uv,_FurTex)+float2(0,pow2(INSTANCE(_ShellDelta))*INSTANCE(_FURUVDelta));
-			
 			#define GET_POSITION_WS(v,o) GetPositionWS(v.positionOS,o.normalWS)
 			#define GET_ALBEDO(i)  GetAlbedo(i.uv,i.furUV)
 			#define GET_PBRPARAM(glossiness,metallic,ao) ao=saturate(ao-(1-INSTANCE(_ShellDelta))*INSTANCE(_FurShadow));

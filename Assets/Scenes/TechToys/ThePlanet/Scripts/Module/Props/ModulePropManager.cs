@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Geometry;
 using TPool;
-using TPoolStatic;
+using TObjectPool;
 using UnityEditor;
 using UnityEngine;
 
@@ -34,7 +34,7 @@ namespace TechToys.ThePlanet.Module.Prop
 
         public void Dispose()
         {
-            TSPool<VoxelPropCollapse>.Clear();
+            ObjectPool<VoxelPropCollapse>.Clear();
         }
 
         public void Clear()
@@ -103,7 +103,7 @@ namespace TechToys.ThePlanet.Module.Prop
         {
             m_PropPropaganda.Clear();
             foreach (var decorationCollapse in m_PropCollapsing.Values)
-                TSPool<VoxelPropCollapse>.Recycle(decorationCollapse);
+                ObjectPool<VoxelPropCollapse>.Recycle(decorationCollapse);
             m_PropCollapsing.Clear();
         }
         
@@ -125,7 +125,7 @@ namespace TechToys.ThePlanet.Module.Prop
                 if (!m_PropContainers.Contains(voxelID))
                     continue;
                 m_PropPropaganda.Add(voxelID);
-                m_PropCollapsing.Add(voxelID,TSPool<VoxelPropCollapse>.Spawn().Init(chainType,m_PropContainers[voxelID].m_Voxel));
+                m_PropCollapsing.Add(voxelID,ObjectPool<VoxelPropCollapse>.Spawn().Init(chainType,m_PropContainers[voxelID].m_Voxel));
             }
             m_PropPropaganda.Sort((_a,_b)=>m_PropCollapsing[_a].m_Priority>m_PropCollapsing[_b].m_Priority?1:-1);
 

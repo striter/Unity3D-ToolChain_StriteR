@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Geometry;
 using Procedural;
-using TPoolStatic;
+using TObjectPool;
 using UnityEngine;
 
 namespace TechToys.ThePlanet.Module
@@ -13,7 +13,7 @@ namespace TechToys.ThePlanet.Module
         Finalizing,
     }
 
-    public class ModuleCollapsePropagandaChain: IPoolClass
+    public class ModuleCollapsePropagandaChain: IObjectPool
     {
         public int chainType=-1;
         public HashSet<PCGID> corners=new HashSet<PCGID>();

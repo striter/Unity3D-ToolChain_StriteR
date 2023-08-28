@@ -30,7 +30,7 @@ namespace Rendering.Pipeline
             m_DownSample=2,
             m_AdditionalLightcount=8,
             m_Sample = 1,
-            m_BlurParam = UPipeline.GetDefaultPostProcessData<DBlurs>(),
+            m_BlurParam = UReflection.GetDefaultData<DBlurs>(),
         };
     }
     

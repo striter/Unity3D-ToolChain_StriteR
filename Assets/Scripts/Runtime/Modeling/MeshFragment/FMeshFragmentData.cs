@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using TPoolStatic;
+using TObjectPool;
 using UnityEngine;
 
 namespace MeshFragment
@@ -40,7 +40,7 @@ namespace MeshFragment
         IList<int> IMeshFragment.indexes => indexes;
     }
 
-    public class FMeshFragmentObject:IMeshFragment,IPoolClass     //Non Serializable Version, For object pool
+    public class FMeshFragmentObject:IMeshFragment,IObjectPool     //Non Serializable Version, For object pool
     {
         public int m_EmbedMaterial;
         private readonly List<Vector3> m_Vertices = new List<Vector3>();

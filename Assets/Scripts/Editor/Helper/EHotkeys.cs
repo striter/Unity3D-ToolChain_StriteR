@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Geometry.PointSet;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -24,7 +25,7 @@ namespace UnityEditor.Extensions
         static GameObject m_ObjectSyncToSceneView;
         static void BeginSync(GameObject _object)
         {
-            m_ObjectSyncToSceneView = Selection.activeGameObject;
+            m_ObjectSyncToSceneView = _object;
             EditorApplication.update += SyncObjectPositionToSceneView;
             Undo.undoRedoPerformed += SyncUndo;
             Undo.RecordObject(m_ObjectSyncToSceneView.transform, "Camera Position Sync");
@@ -68,5 +69,28 @@ namespace UnityEditor.Extensions
         
         public static void OutputActiveWindowDirectory()=> Debug.Log(  UEAsset.GetCurrentProjectWindowDirectory());
         public static void OutputAssetDirectory()=> Debug.Log(  AssetDatabase.GetAssetPath(Selection.activeObject));
+
+        
+        public static void SortTransformBySize()
+        {
+            if (!Selection.activeGameObject)
+                return;
+
+            var selectObject = (GameObject) Selection.activeObject;
+            var childCount = selectObject.transform.childCount;
+            var position = Vector3.zero;
+            for (int i = 0; i < selectObject.transform.childCount; i++)
+            {
+                var child = selectObject.transform.GetChild(i);
+                UBoundsIncrement.Begin();
+                foreach (var filter in child.GetComponentsInChildren<MeshFilter>())
+                    UBoundsIncrement.CheckBounds(filter.sharedMesh.bounds);
+                var bounds = UBoundsIncrement.CalculateBounds();
+                
+                child.transform.localPosition = position;
+                position += (bounds.size.x + 1f) * Vector3.right;
+            }
+            
+        }
     }
 }

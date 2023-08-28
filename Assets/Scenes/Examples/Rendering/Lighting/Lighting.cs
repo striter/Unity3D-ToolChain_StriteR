@@ -41,7 +41,7 @@ namespace Examples.Rendering.Lighting
         {
             type = (uint)type,
             position = position,
-            direction = URotation.EulerToQuaternion(euler)*kfloat3.forward,
+            direction = umath.EulerToQuaternion(euler).mul(kfloat3.forward),
             color = color.ToFloat3() * intensity,
             lightParameters = new float4( constant, linear, quadric,spotPower),
         };
@@ -111,17 +111,17 @@ namespace Examples.Rendering.Lighting
             {
                 Gizmos.color = light.color;
                 float3 position = light.position;
-                Quaternion rotation = URotation.EulerToQuaternion(light.euler);
+                var rotation = umath.EulerToQuaternion(light.euler);
                 switch (light.type)
                 {
                     case ELightType.Directional:
-                        UGizmos.DrawArrow(Vector3.zero,rotation*Vector3.forward,1f,.1f);
+                        UGizmos.DrawArrow(Vector3.zero,rotation.mul(kfloat3.forward),1f,.1f);
                         break;
                     case ELightType.Point:
                         Gizmos.DrawWireSphere(position,.1f);
                         break;
                     case ELightType.Spot:
-                        UGizmos.DrawArrow(position,rotation*Vector3.forward,1f,.1f);
+                        UGizmos.DrawArrow(position,rotation.mul(kfloat3.forward),1f,.1f);
                         break;
                 }
             }

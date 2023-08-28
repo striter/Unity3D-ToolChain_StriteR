@@ -110,7 +110,7 @@ Shader "Game/Unfinished/Lighting"
                 float3 positionWS = i.positionWS;
                 float3 normalWS = normalize(i.normalWS);
                 float3 viewDirWS = normalize(i.viewDirWS);
-                float3 indirectDiffuse = SHL2Sample(normalWS,);
+                float3 indirectDiffuse = SHL2Sample(normalWS,unity);
                 
                 float3 albedo=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb * INSTANCE(_Color).rgb;
             

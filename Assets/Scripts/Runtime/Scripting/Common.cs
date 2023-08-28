@@ -2,25 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Mathematics;
+using UnityEngine.Serialization;
 
 [Serializable]
 public class Ref<T> where T:struct
 {
-    public T m_RefValue = default;
+    [FormerlySerializedAs("m_RefValue")] public T value = default;
     public Ref() { }
-    public Ref(T _refValue) { m_RefValue = _refValue; }
+    public Ref(T _refValue) { value = _refValue; }
     public override bool Equals(object obj) => this == (Ref<T>)obj;
-    public override int GetHashCode() => m_RefValue.GetHashCode();
+    public override int GetHashCode() => value.GetHashCode();
     public static bool operator !=(Ref<T> _src, Ref<T> _tar) => !(_src == _tar);
     public static bool operator ==(Ref<T> _src,Ref<T> _tar)
     {
         if (_src!=null && _tar!=null)
-            return _src.m_RefValue.Equals(_tar.m_RefValue);
+            return _src.value.Equals(_tar.value);
         return _src==null && _tar==null;
     }
     public static implicit operator Ref<T>(T _value)=>new Ref<T>(_value) ;
-    public static implicit operator T(Ref<T> _refValue) => _refValue.m_RefValue;
-    public void SetValue(T _value) => m_RefValue = _value;
+    public static implicit operator T(Ref<T> _refValue) => _refValue.value;
+    public void SetValue(T _value) => value = _value;
 }
 
 public class PassiveInstance<T>
@@ -91,6 +92,7 @@ public struct RangeFloat
     }
 
     public static readonly RangeFloat k01 = new RangeFloat(0f,1f);
+    public float Clamp(float _value)=>math.clamp(_value,start,end);
 }
 
 [Serializable]

@@ -23,9 +23,9 @@ namespace Examples.Mathmatics
 
             Gizmos.DrawLine(Vector3.zero, m_SrcVector);
             Gizmos.color = Color.blue;
-            Gizmos.DrawLine(Vector3.zero, URotation.AngleAxis3x3(m_RotateAngle, m_Axis)*m_SrcVector);
+            Gizmos.DrawLine(Vector3.zero, umath.AngleAxis3x3(m_RotateAngle, m_Axis)*m_SrcVector);
             Gizmos.color = Color.green;
-            Gizmos.DrawLine(Vector3.zero, URotation.AngleAxisToQuaternion(m_RotateAngle, m_Axis)* m_SrcVector*.5f);
+            Gizmos.DrawLine(Vector3.zero, umath.AngleAxisToQuaternion(m_RotateAngle, m_Axis).mul( m_SrcVector)*.5f);
             //Debug.Log(TVector.SqrMagnitude(m_SrcVector) + " " +  m_SrcVector.sqrMagnitude);
             //Debug.Log(TVector.Dot(m_SrcVector, m_DstVector) + " " + Vector3.Dot(m_SrcVector, m_DstVector));
             //Debug.Log(TVector.Project(m_SrcVector, m_DstVector) + " " + Vector3.Project(m_SrcVector, m_DstVector));
@@ -43,9 +43,9 @@ namespace Examples.Mathmatics
             Gizmos.color = Color.white;
             Gizmos.DrawLine(Vector3.zero,m_FromToRotateVector);
             Gizmos.color = Color.blue;
-            Gizmos.DrawLine(Vector3.zero,URotation.FromToQuaternion(from,to)*m_FromToRotateVector);
+            Gizmos.DrawLine(Vector3.zero,umath.FromToQuaternion(from,to).mul(m_FromToRotateVector));
             Gizmos.color = Color.green;
-            Gizmos.DrawLine(Vector3.zero,URotation.FromTo3x3(from,to)*m_FromToRotateVector*.5f);
+            Gizmos.DrawLine(Vector3.zero,umath.FromTo3x3(from,to)*m_FromToRotateVector*.5f);
 
         }
 #endif

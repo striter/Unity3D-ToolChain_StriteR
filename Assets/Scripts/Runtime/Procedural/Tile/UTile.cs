@@ -289,7 +289,7 @@ namespace Procedural.Tile
             T targetTile = null;
             for (int i = 0; i < predicateTryCount; i++)
             {
-                ETileDirection randomDirection = edgesRandom.RandomItem(randomSeed);
+                ETileDirection randomDirection = edgesRandom.RandomElement(randomSeed);
                 switch (randomDirection)
                 {
                     case ETileDirection.Back:

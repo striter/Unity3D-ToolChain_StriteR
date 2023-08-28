@@ -1,11 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
-
-public interface INode<T>
-{
-    public T identity { get; }
-}
 
 public interface IGraph<T> 
 {
@@ -14,7 +9,7 @@ public interface IGraph<T>
 
 public interface IGraphDiscrete<T>
 {
-    T GetNode(Vector3 _srcPosition);
+    T GetNode(float3 _srcPosition);
     Vector3 ToNodePosition(T _node);
 }
 

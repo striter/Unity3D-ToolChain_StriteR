@@ -5,7 +5,7 @@ using MeshFragment;
 using TechToys.ThePlanet.Module.BOIDS;
 using TechToys.ThePlanet.Module.BOIDS.Bird;
 using TPool;
-using TPoolStatic;
+using TObjectPool;
 using UnityEditor;
 using UnityEngine;
 
@@ -137,7 +137,7 @@ namespace TechToys.ThePlanet.Module.Cluster
                     var indexCount = fragmentInput.indexes.Length;
                     bool containsColor = fragmentInput.colors.Length>0;
                     
-                    var fragmentOutput = TSPool<FMeshFragmentObject>.Spawn().Initialize(fragmentInput.embedMaterial);
+                    var fragmentOutput = ObjectPool<FMeshFragmentObject>.Spawn().Initialize(fragmentInput.embedMaterial);
                     for (int k = 0; k < vertexCount; k++)
                     {
                         Vector3 positionMS = fragmentInput.vertices[k];

@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using Geometry.Curves;
-
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 namespace Runtime
 {
@@ -12,32 +14,31 @@ namespace Runtime
         Transform,
     }
 
-    public class RopeRendererBase : ALineRendererBase
-    {
+    [Serializable]
+    public class FRopeRenderer : ALineRendererBase
+    { 
         [Clamp(0)] public float m_Extend = 3;
         public ERopePosition m_RopePosition = ERopePosition.Constant;
 
         [MFoldout(nameof(m_RopePosition), ERopePosition.Transform)] public Transform m_EndTransform;
-        
         [MFoldout(nameof(m_RopePosition), ERopePosition.Constant)] public Vector3 m_EndPosition;
         [MFoldout(nameof(m_RopePosition), ERopePosition.Constant,nameof(m_Billboard),false)] public Vector3 m_EndBiTangent;
-
         public Damper m_ControlDamper;
+        
         private GBezierCurveQuadratic m_Curve;
         private int kRopeInstanceID = 0;
         protected override string GetInstanceName() => $"Rope - {kRopeInstanceID++}";
 
-        protected override void Awake()
+        public override Mesh Initialize(Transform _transform)
         {
-            CalculatePositions(out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
-            m_ControlDamper.Initialize(control);
-            base.Awake();
+            Reset(_transform);
+            return base.Initialize(_transform);
         }
-        
-        void CalculatePositions(out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control)
+
+        void CalculatePositions(Transform _transform,out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control)
         {
-            srcPosition = transform.position;
-            srcBiTangent = transform.up;
+            srcPosition = _transform.position;
+            srcBiTangent = _transform.up;
             dstPosition = default;
             dstBiTangent = default; 
             
@@ -58,10 +59,15 @@ namespace Runtime
             control = (dstPosition + srcPosition) / 2 + Vector3.down * m_Extend;
         }
 
-
-        protected override void PopulatePositions(List<Vector3> _vertices, List<Vector3> _normals)
+        public void Reset(Transform _transform)
         {
-            CalculatePositions(out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
+            CalculatePositions(_transform,out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
+            m_ControlDamper.Initialize(control);
+        }
+
+        protected override void PopulatePositions(Transform _transform, List<Vector3> _vertices, List<Vector3> _normals)
+        {
+            CalculatePositions(_transform,out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
             control = m_ControlDamper.Tick(UTime.deltaTime, control);
             m_Curve = new GBezierCurveQuadratic(srcPosition, dstPosition, control);
 
@@ -75,21 +81,28 @@ namespace Runtime
             }
         }
 
-    #if UNITY_EDITOR
-        public bool m_DrawGizmos;
-        private void OnDrawGizmos()
+#if UNITY_EDITOR
+        public override void DrawGizmos(Transform _transform)
         {
-            if (!m_DrawGizmos)
-                return;
-            
-            CalculatePositions(out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
+            base.DrawGizmos(_transform);
+            CalculatePositions(_transform,out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(m_ControlDamper.x,.2f);
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(control,.2f);
             m_Curve.DrawGizmos();
         }
-
-    #endif
+#endif
     }
+    
+    public class RopeRenderer : ARuntimeRendererMonoBehaviour<FRopeRenderer>
+    {
+        protected override void Update()
+        {
+            PopulateMesh();
+        }
+
+        public void Initialize() => meshConstructor.Reset(transform);
+    }
+    
 }

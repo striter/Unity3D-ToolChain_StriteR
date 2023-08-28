@@ -1,6 +1,6 @@
 using Unity.Mathematics;
 using System.Collections.Generic;
-using TPoolStatic;
+using TObjectPool;
 using UnityEngine;
 
 namespace Geometry.PointSet

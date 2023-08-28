@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace TTouchTracker
@@ -228,7 +229,7 @@ namespace TTouchTracker
         #region Single Drag
         private static int m_DragID=-1;
         private static Vector2 m_LastDrag = Vector2.zero;
-        public static void Input_SingleDrag(this List<TrackData> _tracks,Action<Vector2,bool> _onDragStatus,Action<Vector2> _onDrag,float _senseTime=.1f,bool _removeTacker=true)
+        public static void Input_SingleDrag(this List<TrackData> _tracks,Action<float2,bool> _onDragStatus,Action<float2> _onDrag,float _senseTime=.1f,bool _removeTacker=true)
         {
             if (m_DragID == -1)
             {

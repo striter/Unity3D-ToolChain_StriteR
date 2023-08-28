@@ -25,14 +25,14 @@ public static class TouchConsole_Extend
     public static void Toggle(this CommandContainer _container, Ref<bool> _refValue, Action<bool> OnToggleChange)
     {
         CommandElementToggle toggle = _container.Insert<CommandElementToggle>();
-        toggle.SetDataUpdate(() => toggle.m_Toggle.isOn = _refValue.m_RefValue);
+        toggle.SetDataUpdate(() => toggle.m_Toggle.isOn = _refValue.value);
         toggle.m_Toggle.onValueChanged.AddListener(value => {
             _refValue.SetValue(value);
             OnToggleChange(value);
         });
         toggle.m_ToggleTitle.text = _container.m_KeyCode.GetKeyCodeString();
     }
-    public static void Slider(this CommandContainer _container, int _minValue, int _maxValue, Ref<int> _refValue, Action<int> _SetValue, string _format = "{0}") => Slider(_container, _minValue, _maxValue, _refValue.m_RefValue, value => { _refValue.SetValue((int)value); _SetValue(_refValue.m_RefValue); }, _format, true);
+    public static void Slider(this CommandContainer _container, int _minValue, int _maxValue, Ref<int> _refValue, Action<int> _SetValue, string _format = "{0}") => Slider(_container, _minValue, _maxValue, _refValue.value, value => { _refValue.SetValue((int)value); _SetValue(_refValue.value); }, _format, true);
     public static void Slider(this CommandContainer _container, float _minValue, float _maxValue, Ref<float> _refValue, Action<float> _SetValue, string _format = "{0:0.0}", bool _wholeNumbers = false)
     {
         CommandElementSlider slider = _container.Insert<CommandElementSlider>();
@@ -40,7 +40,7 @@ public static class TouchConsole_Extend
         slider.m_Slider.minValue = _minValue;
         slider.m_Slider.maxValue = _maxValue;
         slider.SetDataUpdate(() => {
-            float finalValue = _refValue.m_RefValue;
+            float finalValue = _refValue.value;
             slider.m_Slider.value = finalValue;
             slider.m_Value.text = string.Format(_format, finalValue);
         });
@@ -61,7 +61,7 @@ public static class TouchConsole_Extend
         item.Transform.SetActive(false);
         return item;
     }
-    public static void EnumSelection<T>(this CommandContainer _container, Ref<T> _valueRef, Action<T> OnClick, bool foldOut = true) where T : struct, Enum => EnumSelection(_container, _valueRef.m_RefValue, enumObj => { _valueRef.SetValue((T)enumObj); OnClick?.Invoke(_valueRef.m_RefValue); }, foldOut);
+    public static void EnumSelection<T>(this CommandContainer _container, Ref<T> _valueRef, Action<T> OnClick, bool foldOut = true) where T : struct, Enum => EnumSelection(_container, _valueRef.value, enumObj => { _valueRef.SetValue((T)enumObj); OnClick?.Invoke(_valueRef.value); }, foldOut);
     public static void EnumSelection(this CommandContainer _container, object _value, Action<object> OnClick, bool foldOut = true)
     {
         Type type = _value.GetType();
@@ -74,9 +74,9 @@ public static class TouchConsole_Extend
     {
         CommandElementButtonSelection selection = _container.ButtonFoldOutItem<CommandElementButtonSelection>(foldOut, out CommandElementButton foldOutButton);
         selection.SetDataUpdate(() => {
-            selection.Highlight(_refEnum.m_RefValue);
+            selection.Highlight(_refEnum.value);
             if (foldOutButton != null)
-                foldOutButton.m_Title.text = _values[_refEnum.m_RefValue];
+                foldOutButton.m_Title.text = _values[_refEnum.value];
         });
         selection.Play(_values, (int value) => {
             OnClick(value);
@@ -84,19 +84,19 @@ public static class TouchConsole_Extend
                 button.Highlight(button.m_Identity == value);
             if (foldOutButton != null)
                 foldOutButton.m_Title.text = _values[value];
-        }).Highlight(_refEnum.m_RefValue);
+        }).Highlight(_refEnum.value);
     }
     public static void FlagsSelection<T>(this CommandContainer _container, Ref<T> _refFlags, Action<T> _logFilter, bool foldOut = true) where T : struct, Enum
     {
         CommandElementFlagsSelection selection = _container.ButtonFoldOutItem<CommandElementFlagsSelection>(foldOut, out CommandElementButton foldOutButton);
-        selection.SetDataUpdate(() => selection.Play(_refFlags.m_RefValue, flags => {
+        selection.SetDataUpdate(() => selection.Play(_refFlags.value, flags => {
             _refFlags.SetValue(flags);
             if (foldOutButton != null)
                 foldOutButton.m_Title.text = flags.GetNumerable().ToString('|', value => value ? "√" : "×");
             _logFilter(flags);
         }));
         if (foldOutButton != null)
-            foldOutButton.m_Title.text = _refFlags.m_RefValue.GetNumerable().ToString('|', value => value ? "√" : "×");
+            foldOutButton.m_Title.text = _refFlags.value.GetNumerable().ToString('|', value => value ? "√" : "×");
     }
     public static void InputField(this CommandContainer _container, string _refText, Action<string> OnValueClick)
     {
@@ -247,7 +247,7 @@ public partial class TouchConsole
             m_ConsoleCommandScrollRect.SetActive(m_ConsoleOpening);
             OnConsoleShow?.Invoke(m_ConsoleOpening);
 
-            Time.timeScale = m_ConsoleOpening ? m_Data.m_ConsoleTimeScale.m_RefValue : 1f;
+            Time.timeScale = m_ConsoleOpening ? m_Data.m_ConsoleTimeScale.value : 1f;
             UpdateLogs();
             UpdateCommandData();
         }

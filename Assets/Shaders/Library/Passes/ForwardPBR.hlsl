@@ -37,7 +37,13 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 	float3 normalWS=normalize(i.normalWS);
 	float3 viewDirWS=normalize(i.viewDirWS);
 	half3 normalTS=half3(0,0,1);
+	#if defined(GET_ALBEDO)
+		half3 albedo = GET_ALBEDO(i);
+	#else
+		half3 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*INSTANCE(_Color).rgb;
+	#endif
 	float2 baseUV=i.uv.xy;
+
 	half3 tangentWS = 0;
 	half3 biTangentWS = 0;
 	#if !defined (_NORMALOFF)
@@ -52,12 +58,6 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 		normalWS=normalize(mul(transpose(TBNWS), normalTS));
 	#endif
 	
-	#if defined(GET_ALBEDO)
-		half3 albedo = GET_ALBEDO(i);
-	#else
-		half3 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*INSTANCE(_Color).rgb;
-	#endif
-
 	half3 emission =0;
 	#if !defined(_EMISSIONOFF)
 		#if defined(GET_EMISSION)

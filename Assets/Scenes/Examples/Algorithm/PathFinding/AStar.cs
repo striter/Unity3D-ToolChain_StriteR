@@ -75,8 +75,8 @@ namespace Examples.Algorithm.PathFinding
                 {
                     case 0:
                     {
-                        var node = Validate(hitPoint);
-                        node?.SetAvailable(!node.m_Available);
+                        if( Validate(hitPoint,out var node))
+                            node?.SetAvailable(!node.m_Available);
                         PathFind();
                     } break;
                     case 1:
@@ -95,25 +95,25 @@ namespace Examples.Algorithm.PathFinding
             }
         }
 
-        Node Validate(Vector3 _hitPoint)
+        bool Validate(float3 _hitPoint,out Node targetNode)
         {
+            targetNode = default;
             foreach (var node in m_Nodes.Values)
             {
                 if(!node.m_Bounds.Contains(_hitPoint))
                     continue;
-                return node;
+                targetNode = node;
+                return true;
             }
-            return null;
+            return false;
         }
 
         void PathFind()
         {
-            var src = Validate(m_Agent);
-            var node = Validate(m_Destination);
-            if (node!=null)
+            if (Validate(m_Agent,out var startNode) && Validate(m_Destination,out var endNode))
             {
                 Stack<int2> outputs = new Stack<int2>();
-                UAStar<int2>.PathFind(this,src,node,ref outputs);
+                this.PathFind(startNode.identity,endNode.identity, outputs);
                 m_Paths.Clear();
                 m_Paths.EnqueueRange(outputs.Select(p=>m_Nodes[p].m_Position));
                             
@@ -158,7 +158,7 @@ namespace Examples.Algorithm.PathFinding
 
     }
 
-    public class Node:INode<int2>
+    public class Node
     {
         public int2 identity { get; private set; }
         public Vector3 m_Position { get; private set; }

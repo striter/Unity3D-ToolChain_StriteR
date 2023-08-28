@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using TPool;
-using TPoolStatic;
+using TObjectPool;
 using UnityEngine;
 
 namespace TechToys.ThePlanet.Module.BOIDS.Bird

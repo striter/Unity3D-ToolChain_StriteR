@@ -6,6 +6,13 @@ namespace Geometry.Validation
     {
         public static class Projection
         {
+            public static float Eval(float3 _point, GPlane _plane)
+            {
+                return math.dot(_plane, _point.to4(1f));
+                // float nr = _point.x * _plane.normal.x + _point.y * _plane.normal.y + _point.z * _plane.normal.z +
+                //            _plane.distance;
+                // return nr / math.length(_plane.normal);
+            }
             public static float Eval(GRay _ray, float3 _point)
             {
                 return math.dot(_point - _ray.origin, _ray.direction);

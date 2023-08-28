@@ -10,12 +10,19 @@ public static partial class umath
         nonCloseAngle *= math.sign(dot(_up, cross(_first, _second)));
         return nonCloseAngle;
     }
-    public static float closestAngleY(float3 _first, float3 _second, float3 _up)
+
+    public static float closestYaw(float3 _direction) => closestAngle(kfloat3.forward,_direction.setY(0).normalize(),kfloat3.up);
+    public static float2 closestPitchYaw(float3 _direction)
     {
-        var newFirst = new float3(_first.x, 0, _first.z);
-        var newSecond = new float3(_second.x, 0, _second.z);
-        return closestAngle(newFirst, newSecond, _up);
+        var xzDirection = _direction.setY(0).normalize();
+        
+        var desiredPitch = closestAngle(_direction,xzDirection, math.cross(xzDirection,_direction));
+        var desiredYaw = closestAngle(kfloat3.forward,xzDirection,kfloat3.up);
+        return new float2(desiredPitch, desiredYaw);
     }
+
+    public static float2 closestPitchYaw(quaternion _quaternion) => closestPitchYaw(math.mul(_quaternion,kfloat3.forward));
+    
     public static float distanceXZ(float3 _start, Vector3 _end) => new float2(_start.x - _end.x, _start.z - _end.z).magnitude();
     public static float distanceXZSqr(float3 _start, float3 _end) => new float2(_start.x - _end.x, _start.z - _end.z).sqrmagnitude();
     public static float3 GetXZLookDirection(float3 _startPoint, float3 _endPoint)
@@ -25,7 +32,7 @@ public static partial class umath
         lookDirection.normalize();
         return lookDirection;
     }
-    public static float3 rotateCW(this float3 _src, float3 axis, float angle) => (Quaternion.AngleAxis(angle, axis) * _src).normalized;
+    public static float3 rotateCW(this float3 _src, float3 _axis, float _angle) => (Quaternion.AngleAxis(_angle, _axis) * _src).normalized;
     
     public static float dot(Vector3 _src, Vector3 _dst) => _src.x * _dst.x + _src.y * _dst.y + _src.z * _dst.z;
     
@@ -62,36 +69,34 @@ public static partial class umath
     public static Vector3 Convert(this Vector3 _vec, Func<int,float, float> _conversion) => new Vector3(_conversion(0,_vec.x),_conversion(1,_vec.y),_conversion(2,_vec.z));
 #endregion
     
-#region Swizzling
-    public static Vector2 mod(Vector2 _src,float _value) => new Vector2(umath.mod(_src.x,_value), umath.mod(_src.y, _value));
-    public static Vector3 mod(Vector3 _src,float _value) => new Vector3(umath.mod(_src.x, _value), umath.mod(_src.y, _value), umath.mod(_src.z, _value));
-    public static Vector4 mod(Vector4 _src,float _value) => new Vector4(umath.mod(_src.x, _value), umath.mod(_src.y, _value), umath.mod(_src.z, _value), umath.mod(_src.w, _value));
-    public static Vector2 frac(Vector2 _src) => new Vector2(math.frac(_src.x), math.frac(_src.y));
-    public static Vector3 frac(Vector3 _src) => new Vector3(math.frac(_src.x), math.frac(_src.y), math.frac(_src.z));
-    public static Vector4 frac(Vector4 _src) => new Vector4(math.frac(_src.x), math.frac(_src.y), math.frac(_src.z), math.frac(_src.w));
-    // public static float dot(Vector2 _vec, float _value) => Vector2.Dot(_vec, _value.ToVector2());
-    public static float dot(Vector3 _vec, float _value) => Vector3.Dot(_vec, _value.ToVector3());
-    public static float dot(Vector4 _vec, float _value) => Vector4.Dot(_vec, _value.ToVector4());
-    
-    public static Vector3 clamp(this Vector3 _value,RangeFloat _range)=> Vector3.Min(Vector3.Max(_value,_range.start.ToVector3()) ,_range.end.ToVector3());
-    public static Vector3 clamp(this Vector3 _value,Vector3 _min,Vector3 _max)=> Vector3.Min(Vector3.Max(_value,_min) ,_max);
-    
-    public static float max(this Vector3 _src) => Mathf.Max(_src.x, _src.y, _src.z);
-    public static float min(this Vector3 _src) => Mathf.Min(_src.x, _src.y, _src.z);
-    public static float max(this Vector4 _src) => Mathf.Max(_src.x, _src.y, _src.z, _src.w);
-    public static float min(this Vector4 _src) => Mathf.Min(_src.x, _src.y, _src.z, _src.w);
-    
-    public static Vector2 abs(this Vector2 _src) => new Vector2(Mathf.Abs(_src.x), Mathf.Abs(_src.y));
-    public static Vector3 abs(this Vector3 _src)=>new Vector3(Mathf.Abs(_src.x),Mathf.Abs(_src.y),Mathf.Abs(_src.z));
-    public static Vector4 abs(this Vector4 _src) => new Vector4(Mathf.Abs(_src.x), Mathf.Abs(_src.y), Mathf.Abs(_src.z), Mathf.Abs(_src.w));
-    
-    public static Vector2 floor(Vector2 _src) => new Vector2(Mathf.Floor( _src.x),Mathf.Floor(_src.y));
-    public static Vector3 floor(Vector3 _src) => new Vector3(Mathf.Floor(_src.x), Mathf.Floor(_src.y), Mathf.Floor(_src.z));
-    public static Vector4 floor(Vector4 _src) => new Vector4(Mathf.Floor(_src.x), Mathf.Floor(_src.y), Mathf.Floor(_src.z), Mathf.Floor(_src.w));
-    
-    public static Vector3 sqrt(this Vector3 _src) => new Vector3(Mathf.Sqrt(_src.x),Mathf.Sqrt(_src.y),Mathf.Sqrt(_src.z));
-    public static Vector3 square(this Vector3 _src) => new Vector3(umath.sqr(_src.x),umath.sqr(_src.y),umath.sqr(_src.z));
-
+#region Swizzling  (Deprecating)
+    //
+    // public static Vector2 mod(Vector2 _src,float _value) => new Vector2(umath.mod(_src.x,_value), umath.mod(_src.y, _value));
+    // public static Vector3 mod(Vector3 _src,float _value) => new Vector3(umath.mod(_src.x, _value), umath.mod(_src.y, _value), umath.mod(_src.z, _value));
+    // public static Vector4 mod(Vector4 _src,float _value) => new Vector4(umath.mod(_src.x, _value), umath.mod(_src.y, _value), umath.mod(_src.z, _value), umath.mod(_src.w, _value));
+    // public static Vector2 frac(Vector2 _src) => new Vector2(math.frac(_src.x), math.frac(_src.y));
+    // public static Vector3 frac(Vector3 _src) => new Vector3(math.frac(_src.x), math.frac(_src.y), math.frac(_src.z));
+    // public static Vector4 frac(Vector4 _src) => new Vector4(math.frac(_src.x), math.frac(_src.y), math.frac(_src.z), math.frac(_src.w));
+    // // public static float dot(Vector2 _vec, float _value) => Vector2.Dot(_vec, _value.ToVector2());
+    // public static float dot(Vector3 _vec, float _value) => Vector3.Dot(_vec, _value.ToVector3());
+    // public static float dot(Vector4 _vec, float _value) => Vector4.Dot(_vec, _value.ToVector4());
+    //
+    // public static Vector3 clamp(this Vector3 _value,RangeFloat _range)=> Vector3.Min(Vector3.Max(_value,_range.start.ToVector3()) ,_range.end.ToVector3());
+    // public static Vector3 clamp(this Vector3 _value,Vector3 _min,Vector3 _max)=> Vector3.Min(Vector3.Max(_value,_min) ,_max);
+    //
+    // public static float max(this Vector3 _src) => Mathf.Max(_src.x, _src.y, _src.z);
+    // public static float min(this Vector3 _src) => Mathf.Min(_src.x, _src.y, _src.z);
+    // public static float max(this Vector4 _src) => Mathf.Max(_src.x, _src.y, _src.z, _src.w);
+    // public static float min(this Vector4 _src) => Mathf.Min(_src.x, _src.y, _src.z, _src.w);
+    //
+    // public static Vector2 abs(this Vector2 _src) => new Vector2(Mathf.Abs(_src.x), Mathf.Abs(_src.y));
+    // public static Vector3 abs(this Vector3 _src)=>new Vector3(Mathf.Abs(_src.x),Mathf.Abs(_src.y),Mathf.Abs(_src.z));
+    // public static Vector4 abs(this Vector4 _src) => new Vector4(Mathf.Abs(_src.x), Mathf.Abs(_src.y), Mathf.Abs(_src.z), Mathf.Abs(_src.w));
+    //
+    // public static Vector2 floor(Vector2 _src) => new Vector2(Mathf.Floor( _src.x),Mathf.Floor(_src.y));
+    // public static Vector3 floor(Vector3 _src) => new Vector3(Mathf.Floor(_src.x), Mathf.Floor(_src.y), Mathf.Floor(_src.z));
+    // public static Vector4 floor(Vector4 _src) => new Vector4(Mathf.Floor(_src.x), Mathf.Floor(_src.y), Mathf.Floor(_src.z), Mathf.Floor(_src.w));
+    //
     public static Vector2 mul(this Vector2 _src, Vector2 _tar) => new Vector2(_src.x * _tar.x, _src.y * _tar.y);
     public static Vector3 mul(this Vector3 _src, Vector3 _tar) => new Vector3(_src.x * _tar.x, _src.y * _tar.y, _src.z * _tar.z);
     public static Vector4 mul(this Vector4 _src, Vector4 _tar) => new Vector4(_src.x * _tar.x, _src.y * _tar.y, _src.z * _tar.z, _src.w * _tar.w);

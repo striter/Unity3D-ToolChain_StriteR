@@ -57,7 +57,7 @@ public partial class TouchConsole
     [PartialMethod(EPartialMethods.Tick, EPartialSorting.Misc)]
     internal void TickMisc(float _deltaTime)
     {
-        if (!m_Data.m_FilterSetting.m_RefValue.IsFlagEnable(EConsoleSetting.FPS))
+        if (!m_Data.m_FilterSetting.value.IsFlagEnable(EConsoleSetting.FPS))
             return;
         m_FrameRateQueue.Enqueue(Mathf.CeilToInt(1f / _deltaTime));
         if (m_FrameRateQueue.Count > 30)

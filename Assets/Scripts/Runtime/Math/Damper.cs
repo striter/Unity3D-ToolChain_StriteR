@@ -21,14 +21,14 @@ public class Damper : ISerializationCallbackReceiver
 {
     public EDamperMode mode = EDamperMode.SpringSimple;
     [MFoldout(nameof(mode),EDamperMode.Lerp,EDamperMode.SpringCritical)][Clamp(0.01f)] public float halfLife = .5f;
-    [MFoldout(nameof(mode),EDamperMode.SpringSimple,EDamperMode.SpringImplicit)][Range(0,100)] public float stiffness = 20f;
+    [MFoldout(nameof(mode),EDamperMode.SpringSimple,EDamperMode.SpringImplicit)][Range(0,200)] public float stiffness = 20f;
     [MFoldout(nameof(mode),EDamperMode.SpringSimple,EDamperMode.SpringImplicit)][Range(0,30)] public float damping = 4f;
     
     [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] [Range(0.01f, 20)] public float f = 5;
     [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] [Range(0, 1.5f)] public float z = 0.35f;
     [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] [Range(-5, 5)] public float r = -.5f;
     [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] public bool poleMatching;
-    
+
     public float3 x { get; private set; }
     private float3 v;
     
@@ -53,13 +53,15 @@ public class Damper : ISerializationCallbackReceiver
         _k3 = r * z / (_w);
     }
 
-    public float3 Tick(float _deltaTime,float3 _desirePosition,float3 _desireVelocity = default)
+    public float3 Tick(float _deltaTime,float3 _desirePosition,float3 _desireVelocity = default,bool _angle = false)
     {
         if (_deltaTime == 0)
             return x;
         
         var xd = _desirePosition;
         var vd = _desireVelocity;
+
+        if (_angle) xd = x + deltaAngle(x,xd);
         
         var d = damping;
         var s = stiffness;

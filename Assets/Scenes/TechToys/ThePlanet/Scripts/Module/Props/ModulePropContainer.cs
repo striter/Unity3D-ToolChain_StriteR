@@ -4,7 +4,7 @@ using System.Linq;
 using TechToys.ThePlanet.Module.BOIDS;
 using TechToys.ThePlanet.Module.BOIDS.Butterfly;
 using TPool;
-using TPoolStatic;
+using TObjectPool;
 using UnityEngine;
 
 namespace TechToys.ThePlanet.Module.Prop
@@ -87,7 +87,7 @@ namespace TechToys.ThePlanet.Module.Prop
                 var propSet = decorationData.possibilities[(int)(m_Random*decorationData.possibilities.Length)];
                 foreach (var prop in propSet.props)
                 {
-                    var propElement= _propPool.Spawn().Init(m_Voxel,prop,orientation,DModule.Collection.m_MeshLibrary,DModule.Collection.m_MaterialLibrary,DModule.EmissionColors.RandomItem());
+                    var propElement= _propPool.Spawn().Init(m_Voxel,prop,orientation,DModule.Collection.m_MeshLibrary,DModule.Collection.m_MaterialLibrary,DModule.EmissionColors.RandomElement());
                     propElement.Transform.SetParent(transform);
                     m_Props.Add(propElement);
                 }

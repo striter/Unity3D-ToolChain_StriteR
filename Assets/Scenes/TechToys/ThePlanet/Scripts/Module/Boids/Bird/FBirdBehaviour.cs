@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel;
 using TechToys.ThePlanet.Module.BOIDS.States.Bird;
-using TPoolStatic;
+using TObjectPool;
 namespace TechToys.ThePlanet.Module.BOIDS.Bird
 {
     public class FBirdBehaviour : BoidsBehaviour<EBirdBehaviour>

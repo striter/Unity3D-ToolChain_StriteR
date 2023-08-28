@@ -114,7 +114,7 @@ public partial class TouchConsole
         m_FilterError.Set(errorCount);
 
         m_Logs.Clear();
-        if (!(m_ConsoleOpening && m_Data.m_FilterSetting.m_RefValue.IsFlagEnable(EConsoleSetting.LogTrack)))
+        if (!(m_ConsoleOpening && m_Data.m_FilterSetting.value.IsFlagEnable(EConsoleSetting.LogTrack)))
             return;
         if (!m_Data.m_Collapse)
         {

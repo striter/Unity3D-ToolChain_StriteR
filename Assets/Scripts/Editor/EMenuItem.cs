@@ -7,19 +7,23 @@ namespace UnityEditor.Extensions
     {
     #region Hotkeys
         [MenuItem("Work Flow/Hotkeys/Selected Object Sync Scene View &F", false, 101)]
-        public static void SyncObjectToSceneView() => Hotkeys.SyncSelectedToSceneViewCamera();
+        public static void Hotkey101() => Hotkeys.SyncSelectedToSceneViewCamera();
         
         [MenuItem("Work Flow/Hotkeys/Take Screen Shot _F12", false, 103)]
-        static void TakeScreenShot() => Hotkeys.TakeScreenShot();
+        static void Hotkey103() => Hotkeys.TakeScreenShot();
         
         [MenuItem("Work Flow/Hotkeys/Fast Pause _HOME", false, 104)]
-        static void FastPause() => Hotkeys.SwitchPause();
+        static void Hotkey104() => Hotkeys.SwitchPause();
         
         [MenuItem("Work Flow/Hotkeys/Output Window Asset Path _&-", false, 110)]
-        static void OutputWindowAssetPath() => Hotkeys.OutputActiveWindowDirectory();
+        static void Hotkey110() => Hotkeys.OutputActiveWindowDirectory();
         
         [MenuItem("Work Flow/Hotkeys/Output Select Asset Path _&=", false, 111)]
-        static void OutputSelectAssetPath() => Hotkeys.OutputAssetDirectory();
+        static void Hotkey111() => Hotkeys.OutputAssetDirectory();
+        
+        
+        [MenuItem("Work Flow/Hotkeys/SyncSelectedTransform", false, 121)]
+        static void Hotkey121() => Hotkeys.SortTransformBySize();
     #endregion
 
     #region Helpers

@@ -45,7 +45,7 @@ namespace Examples.Algorithm.WaveFunctionCollapse
             if (m_NoneFinalized.Count <= 0)
                 return;
             
-            m_Axis[m_NoneFinalized .RandomItem()].SelectRandomPossibility();
+            m_Axis[m_NoneFinalized .RandomElement()].SelectRandomPossibility();
         }
 
         void Begin()

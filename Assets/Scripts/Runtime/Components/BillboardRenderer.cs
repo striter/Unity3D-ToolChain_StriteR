@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
@@ -6,47 +7,33 @@ using UnityEngine;
 
 namespace Runtime
 {
-    
-    [ExecuteInEditMode,RequireComponent(typeof(MeshRenderer),typeof(MeshFilter))]
-    public class BillboardRenderer : ARuntimeRendererBase
+    [Serializable]
+    public class FBillboardRendererCore : ARuntimeRendererBase
     {
         public float m_Width = 1;
         public float m_Height = 1;
         [Range(0,360f)] public float m_Rotate = 0;
         public EBillboardType m_PositionMatching = EBillboardType.Position;
-        private ValueChecker<Matrix4x4> m_CameraTRChecker = new ValueChecker<Matrix4x4>();
-
-        private void OnValidate() => m_CameraTRChecker.Set(Matrix4x4.identity);
-        private void Update()
-        {
-            if (!Camera.current) return;
-            var currentTransform = Camera.current.transform.localToWorldMatrix;
-            if(m_CameraTRChecker.Check(currentTransform))
-                PopulateMesh();
-        }
 
         private static int kInstanceID = 0;
         protected override string GetInstanceName() => $"Billboard - {kInstanceID++}";
 
-        protected override void PopulateMesh(Mesh _mesh)
+        protected override void PopulateMesh(Mesh _mesh,Transform _transform,Transform _viewTransform)
         {
-            if (!Camera.current) return;
-            var trackingTransform = Camera.current.transform;
-            m_CameraTRChecker.Set(trackingTransform.localToWorldMatrix);
-            var U = trackingTransform.up;
-            var R = trackingTransform.right;
+            var U = _viewTransform.up;
+            var R = _viewTransform.right;
             switch (m_PositionMatching)
             {
                 case EBillboardType.Position:
                 {
-                    var Z = (trackingTransform.position - transform.position).normalized;
+                    var Z = (_viewTransform.position - _transform.position).normalized;
                     U = math.cross(R,Z);
                     R = math.cross(Z,U);
                 }
                     break;
                 case EBillboardType.YConstrained:
                 {
-                    var Z = (trackingTransform.position - transform.position).normalized;
+                    var Z = (_viewTransform.position - _transform.position).normalized;
                     U = Vector3.up;
                     R = math.cross(Z,U).normalize();
                 }
@@ -67,8 +54,13 @@ namespace Runtime
             _mesh.SetIndices(indices,MeshTopology.Triangles,0);
             _mesh.SetUVs(0,uvs);
         }
-    }
 
+        public override bool isBillboard() => true;
+    }
+    
+    public class BillboardRenderer : ARuntimeRendererMonoBehaviour<FBillboardRendererCore>
+    {
+    }
 }
 public enum EBillboardType
 {

@@ -14,7 +14,8 @@ half3 SampleSHL2(half3 _normalWS,half4 _SHAr,half4 _SHAg,half4 _SHAb,half4 _SHBr
 
 half3 IndirectDiffuse_SH(half3 _normalWS)
 {
-    return SHL2Sample(_normalWS,unity);
+    return SampleSHL2(_normalWS, unity_SHAr, unity_SHAg, unity_SHAb,unity_SHBr,unity_SHBg, unity_SHBb,unity_SHC);
+    // return SHL2Sample(_normalWS , unity);
 }
 
 half3 SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_PARAM(lightmapTex,lightmapSampler),float2 lightmapUV)

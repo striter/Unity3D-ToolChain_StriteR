@@ -9,11 +9,11 @@ namespace Geometry
 {
     public partial class KQuad
     {
-        public static readonly Quad<half2> kUV = new Quad<half2>(
-             (half2)(new float2(0,0)),
-             (half2)(new float2(0,1)),
-             (half2)(new float2(1,1)),
-             (half2)(new float2(1,0))
+        public static readonly Quad<float2> kUV = new Quad<float2>(
+             new float2(0,0),
+             new float2(0,1),
+             new float2(1,1),
+             new float2(1,0)
             );
         public static readonly Quad<bool> kFalse = new Quad<bool>(false, false, false, false);
         public static readonly Quad<bool> kTrue = new Quad<bool>(true, true, true, true);
@@ -219,6 +219,20 @@ namespace Geometry
             return _quad;
         }
 
+        public static Quad<T> Shrink_Dynamic<T>(this Quad<T> _quad, float _shrinkScale,T _center)
+        {
+            dynamic center = _center;
+            dynamic vertex0 = _quad.vB - center;
+            dynamic vertex1 = _quad.vL - center;
+            dynamic vertex2 = _quad.vF - center;
+            dynamic vertex3 = _quad.vR - center;
+            _quad.vB = _center + vertex0 * _shrinkScale;
+            _quad.vL = _center + vertex1 * _shrinkScale;
+            _quad.vF = _center + vertex2 * _shrinkScale;
+            _quad.vR = _center + vertex3 * _shrinkScale;
+            return _quad;
+        }
+        
         public static T GetBaryCenter_Dynamic<T>(this Quad<T> _quad)
         {
             dynamic vertex0 = _quad.vB;

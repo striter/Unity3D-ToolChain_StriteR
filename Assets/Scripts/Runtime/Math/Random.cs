@@ -44,9 +44,9 @@ public static class URandom
     public static float Random(this RangeFloat ir, System.Random seed = null) => seed?.Next((int)(ir.start * 1000), (int)(ir.end * 1000)) / 1000f ?? UnityEngine.Random.Range(ir.start, ir.end);
     public static int RandomIndex<T>(this List<T> randomList, System.Random seed = null) => RandomInt(randomList.Count, seed);
     public static int RandomIndex<T>(this T[] randomArray, System.Random randomSeed = null) => RandomInt(randomArray.Length, randomSeed);
-    public static T RandomItem<T>(this List<T> randomList, System.Random randomSeed = null) => randomList[randomSeed?.Next(randomList.Count) ?? UnityEngine.Random.Range(0, randomList.Count)];
-    public static T RandomItem<T>(this T[] array, System.Random randomSeed = null) => randomSeed != null ? array[randomSeed.Next(array.Length)] : array[UnityEngine.Random.Range(0, array.Length)];
-    public static T RandomItem<T>(this T[,] array, System.Random randomSeed = null) => randomSeed != null ? array[randomSeed.Next(array.GetLength(0)), randomSeed.Next(array.GetLength(1))] : array[UnityEngine.Random.Range(0, array.GetLength(0)), UnityEngine.Random.Range(0, array.GetLength(1))];
+    public static T RandomElement<T>(this List<T> randomList, System.Random randomSeed = null) => randomList[randomSeed?.Next(randomList.Count) ?? UnityEngine.Random.Range(0, randomList.Count)];
+    public static T RandomElement<T>(this T[] array, System.Random randomSeed = null) => randomSeed != null ? array[randomSeed.Next(array.Length)] : array[UnityEngine.Random.Range(0, array.Length)];
+    public static T RandomElement<T>(this T[,] array, System.Random randomSeed = null) => randomSeed != null ? array[randomSeed.Next(array.GetLength(0)), randomSeed.Next(array.GetLength(1))] : array[UnityEngine.Random.Range(0, array.GetLength(0)), UnityEngine.Random.Range(0, array.GetLength(1))];
     public static T RandomKey<T, Y>(this Dictionary<T, Y> dic, System.Random randomSeed = null) => dic.ElementAt(RandomInt(dic.Count, randomSeed)).Key;
     public static Y RandomValue<T, Y>(this Dictionary<T, Y> dic, System.Random randomSeed = null) => dic.ElementAt(RandomInt(dic.Count, randomSeed)).Value;
     public static bool RandomBool(System.Random seed = null) => seed != null ? seed.Next(0, 2) > 0 : UnityEngine.Random.Range(0, 2) > 0;

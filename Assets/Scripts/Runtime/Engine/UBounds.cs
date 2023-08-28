@@ -15,6 +15,12 @@ public static class UBoundsIncrement
         m_BoundsMin = Vector3.Min(m_BoundsMin, vertex);
         m_BoundsMax = Vector3.Max(m_BoundsMax, vertex);
     }
+    public static void CheckBounds(Bounds bounds)
+    {
+        m_BoundsMin = Vector3.Min(m_BoundsMin, bounds.min);
+        m_BoundsMax = Vector3.Max(m_BoundsMax, bounds.max);
+    }
+
 
     public static Bounds CalculateBounds() => MinMax(m_BoundsMin, m_BoundsMax);
     

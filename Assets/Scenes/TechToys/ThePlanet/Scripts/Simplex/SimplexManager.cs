@@ -4,7 +4,7 @@ using Geometry;
 using MeshFragment;
 using TechToys.ThePlanet.Module;
 using TechToys.ThePlanet.Module.Cluster;
-using TPoolStatic;
+using TObjectPool;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -117,7 +117,7 @@ namespace TechToys.ThePlanet.Simplex
                     for (int i = 0; i < fragmentInputs.m_MeshFragments.Length; i++)
                     {
                         var fragmentInput = fragmentInputs.m_MeshFragments[i];
-                        var fragmentOutput = TSPool<FMeshFragmentObject>.Spawn().Initialize(fragmentInput.embedMaterial);
+                        var fragmentOutput = TObjectPool.ObjectPool<FMeshFragmentObject>.Spawn().Initialize(fragmentInput.embedMaterial);
                 
                         var verticesOS = fragmentInput.vertices;
                         var vertexCount = verticesOS.Length;
@@ -136,7 +136,7 @@ namespace TechToys.ThePlanet.Simplex
             
             UMeshFragment.Combine(orientedFragments,m_Mesh,m_Collection.m_MaterialLibrary,out var materials,kOutputVertexData,IndexFormat.UInt32 );
             for(int i=0;i<orientedFragments.Count;i++)
-                TSPool<FMeshFragmentObject>.Recycle(orientedFragments[i] as FMeshFragmentObject);
+                TObjectPool.ObjectPool<FMeshFragmentObject>.Recycle(orientedFragments[i] as FMeshFragmentObject);
             TSPoolList<IMeshFragment>.Recycle(orientedFragments);
             
             m_Renderer.materials = materials;

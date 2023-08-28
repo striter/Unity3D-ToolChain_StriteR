@@ -9,13 +9,6 @@ namespace Geometry.Validation
     {
         public static class Distance
         {
-            public static float Eval(float3 _point, GPlane _plane)
-            {
-                return math.dot(_plane, _point.to4(1f));
-                // float nr = _point.x * _plane.normal.x + _point.y * _plane.normal.y + _point.z * _plane.normal.z +
-                //            _plane.distance;
-                // return nr / math.length(_plane.normal);
-            }
             #region Ray
             
             public static float Eval(GRay _ray,GPlane _plane)

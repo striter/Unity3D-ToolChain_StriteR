@@ -6,21 +6,35 @@ using UnityEngine;
 
 public static class UReflection
 {
+    public static bool IsStatic(this Type _type) => _type.IsAbstract && _type.IsSealed;
+    
+    public static T DeepCopy<T>(this T _dst, T _src) where T:class
+    {
+        foreach (var fieldInfo in _src.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public))
+            fieldInfo.SetValue(_dst,fieldInfo.GetValue(_src));
+        return _dst;
+    }
+
+    public static T GetDefaultData<T>(string _srFieldName = "kDefault") where T:struct
+    {
+        return (T)typeof(T).GetField(_srFieldName, BindingFlags.Static | BindingFlags.Public)?.GetValue(null);
+    }
+    
     public static void CopyFields<T>(T _src, T _dst) where T : class
     {
         foreach (var fieldInfo in _src.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public))
             fieldInfo.SetValue(_dst,fieldInfo.GetValue(_src));
     }
     
-    public static T CreateInstance<T>(Type t,params object[] constructorArgs) => (T)Activator.CreateInstance(t, constructorArgs);
-    public static void TraversalAllInheritedClasses<T>(Action<Type> OnEachClass)
+    public static T CreateInstance<T>(Type _type,params object[] _args) => (T)Activator.CreateInstance(_type, _args);
+    public static void TraversalAllInheritedClasses<T>(Action<Type> _onEachClass)
     {
         Type[] allTypes = Assembly.GetExecutingAssembly().GetTypes();
         Type parentType = typeof(T);
         for (int i = 0; i < allTypes.Length; i++)
         {
             if (allTypes[i].IsClass && !allTypes[i].IsAbstract && allTypes[i].IsSubclassOf(parentType))
-                OnEachClass(allTypes[i]);
+                _onEachClass(allTypes[i]);
         }
     }
     public static void TraversalAllInheritedClasses<T>(Action<Type, T> OnInstanceCreated, params object[] constructorArgs) => TraversalAllInheritedClasses<T>(type=> OnInstanceCreated(type, CreateInstance<T>(type, constructorArgs)));

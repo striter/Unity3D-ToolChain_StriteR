@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
@@ -6,8 +7,8 @@ using UnityEngine;
 
 namespace Runtime
 {
-    [ExecuteInEditMode, RequireComponent(typeof(MeshRenderer),typeof(MeshFilter))]
-    public class DecalRenderer : ARuntimeRendererBase
+    [Serializable]
+    public class FDecalRenderer: ARuntimeRendererBase
     {
         [CullingMask] public int m_Layer = int.MaxValue;
         public float m_Width = 1;
@@ -15,32 +16,16 @@ namespace Runtime
         public float m_Distance = 1;
         [Range(0,0.9999f)]public float m_Falloff = 0.5f;
 
-        private ValueChecker<Matrix4x4> m_MatrixValidator = new ValueChecker<Matrix4x4>();
-        private void OnValidate() => m_MatrixValidator.Set(Matrix4x4.identity);      //how mysterious
-
         private static int kInstanceID = 0;
         protected override string GetInstanceName() => $"Decal - ({kInstanceID++})";
-
-        private void Update()
-        {
-            if(m_MatrixValidator.Check(transform.localToWorldMatrix))
-                PopulateMesh();
-        }
         
-        private void OnDrawGizmos()
+        protected override void PopulateMesh(Mesh _mesh,Transform _transform,Transform _viewTransform)
         {
-            Gizmos.matrix = transform.localToWorldMatrix;
-            Gizmos.DrawWireCube(Vector3.zero,new Vector3(m_Width,m_Height,m_Distance));
-        }
-
-        protected override void PopulateMesh(Mesh _mesh)
-        {
-            m_MatrixValidator.Set(transform.localToWorldMatrix);
-            var curBounds = new Bounds(transform.position,new Vector3(m_Width,m_Height,m_Distance));
+            var curBounds = new Bounds(_transform.position,new Vector3(m_Width,m_Height,m_Distance));
             var intersectBox = (GBox) curBounds;
             
             //Filter available meshes
-            var meshRenderers = FindObjectsByType<MeshRenderer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None)
+            var meshRenderers = GameObject.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None)
                 .Collect(p => p.bounds.Intersects(curBounds));
 
             List<GTriangle> triangles = new List<GTriangle>();
@@ -56,7 +41,7 @@ namespace Runtime
                 var intersectMesh = meshFilter.sharedMesh;
                 var trianglesOS = intersectMesh.GetPolygonVertices(out var meshVertices,out var meshIndexes);
 
-                var localToObject =  transform.worldToLocalMatrix * meshFilter.transform.localToWorldMatrix;
+                var localToObject =  _transform.worldToLocalMatrix * meshFilter.transform.localToWorldMatrix;
                 triangles.AddRange(trianglesOS.Select(p=>(localToObject*p)));
             }
             
@@ -138,6 +123,29 @@ namespace Runtime
             _mesh.SetIndices(curIndexes,MeshTopology.Triangles,0,true);
         }
 
-        
+        public override void DrawGizmos(Transform _transform)
+        {
+            base.DrawGizmos(_transform);
+            Gizmos.matrix = _transform.localToWorldMatrix;
+            Gizmos.DrawWireCube(Vector3.zero,new Vector3(m_Width,m_Height,m_Distance));
+        }
+    }
+    
+    public class DecalRenderer : ARuntimeRendererMonoBehaviour<FDecalRenderer>
+    {
+        private ValueChecker<Matrix4x4> m_MatrixValidator = new ValueChecker<Matrix4x4>();
+        private void OnValidate() => m_MatrixValidator.Set(Matrix4x4.identity);      //how mysterious
+
+        protected override void Awake()
+        {
+            base.Awake();
+            m_MatrixValidator.Set(transform.localToWorldMatrix);
+        }
+
+        private new void Update()
+        {
+            if(m_MatrixValidator.Check(transform.localToWorldMatrix))
+                PopulateMesh();
+        }
     }
 }

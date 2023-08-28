@@ -83,6 +83,10 @@ namespace Geometry
             return ray.GetPoint(Validation.UGeometry.Distance.Eval(ray, this).sum());
         }
         public float2 Center => center;
+        public static G2Box operator /(G2Box _bounds,float2 _div) => new G2Box(_bounds.center/_div,_bounds.extent/_div);
+
+        public GBox To3XZ() => new GBox(center.to3xz(),extent.to3xz());
+        public override string ToString() => $"G2Box {center} {extent}";
     }
 
     [Serializable]
@@ -142,6 +146,7 @@ namespace Geometry
             }
         }
         
+        public static GBox operator +(GBox _src, float3 _dst) => new GBox(_src.center+_dst,_src.extent);
         public static implicit operator Bounds(GBox _box)=> new Bounds(_box.center, _box.size);
         public static implicit operator GBox(Bounds _bounds) => new GBox(_bounds.center,_bounds.extents);
         

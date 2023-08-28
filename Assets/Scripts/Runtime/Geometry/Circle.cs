@@ -7,7 +7,23 @@ using UnityEngine;
 namespace Geometry
 {
     [Serializable]
-    public class G2Circle:I2Shape
+    public struct GCircle : IShape
+    {
+        public float3 center;
+        public float radius;
+
+        public GCircle(float3 _center,float _radius)
+        {
+            center = _center;
+            radius = _radius;
+        }
+
+        public float3 GetSupportPoint(float3 _direction) => center + _direction.normalize() * radius;
+        public float3 Center => center;
+    }
+    
+    [Serializable]
+    public struct G2Circle:I2Shape
     {
         public float2 center;
         public float radius;

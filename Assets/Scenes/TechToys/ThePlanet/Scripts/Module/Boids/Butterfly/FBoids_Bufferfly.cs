@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using TechToys.ThePlanet.Module.BOIDS.Bird;
 using TechToys.ThePlanet;
-using TPoolStatic;
+using TObjectPool;
 using UnityEngine;
 
 namespace TechToys.ThePlanet.Module.BOIDS.Butterfly
@@ -25,7 +25,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.Butterfly
         public FBoidsVertex AssignSpot(int _index)
         {
             m_Butterflies.Add(_index);
-            return m_Attractions.m_ButterflyPositions.RandomItem();
+            return m_Attractions.m_ButterflyPositions.RandomElement();
         }
         public IEnumerable<int> DesignActors()
         {

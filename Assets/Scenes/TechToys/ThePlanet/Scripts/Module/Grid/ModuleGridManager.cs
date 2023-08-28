@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Geometry;
 using TPool;
-using TPoolStatic;
+using TObjectPool;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -34,7 +34,7 @@ namespace TechToys.ThePlanet.Module
 
         public void Dispose()
         {
-            TSPool<ModuleCollapsePropagandaChain>.Clear();
+            ObjectPool<ModuleCollapsePropagandaChain>.Clear();
         }
 
         public void Tick(float _deltaTime)
@@ -48,7 +48,7 @@ namespace TechToys.ThePlanet.Module
             m_Corners.Clear();
             m_Voxels.Clear();
             m_PropagandaChains.Clear();
-            TSPool<ModuleCollapsePropagandaChain>.Clear();
+            ObjectPool<ModuleCollapsePropagandaChain>.Clear();
         }
         
     #region LifeCycle
@@ -271,12 +271,12 @@ namespace TechToys.ThePlanet.Module
             }
 
             m_PropagandaChains.Clear();
-            TSPool<ModuleCollapsePropagandaChain>.Clear();
+            ObjectPool<ModuleCollapsePropagandaChain>.Clear();
             
             //Pass Deconstruction Corners First
             if (deconstructionCorners.Count > 0)
             {
-                var deconstructChain = TSPool<ModuleCollapsePropagandaChain>.Spawn();
+                var deconstructChain = ObjectPool<ModuleCollapsePropagandaChain>.Spawn();
                 deconstructChain.chainType = -1;        //Mark As Deconstruction Chains
                 foreach (var cornerID in deconstructionCorners)
                     deconstructChain.voxels.TryAddRange(m_Grid.m_Vertices[cornerID.location].IterateRelativeVoxels(cornerID.height).Collect(m_Voxels.Contains));
@@ -296,7 +296,7 @@ namespace TechToys.ThePlanet.Module
                     continue;
                 
                 propagandaStack.Clear();
-                var modifyChain = TSPool<ModuleCollapsePropagandaChain>.Spawn();
+                var modifyChain = ObjectPool<ModuleCollapsePropagandaChain>.Spawn();
                 void TryPushIntoChain(PCGID corner)
                 {
                     if(modifyChain.corners.Contains(corner))

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TPoolStatic;
+using TObjectPool;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -67,7 +67,12 @@ public static class UCollection
                 yield return element1;
             }
         }
-
+        public static  IEnumerable<Y> CollectAs<T,Y>(this IEnumerable<T> _collection,Func<T,Y> _collect) where T:class where Y:class
+        {
+            foreach (T element in _collection)
+                yield return _collect(element);
+        }
+        
         public static IEnumerable<T> Collect<T>(this IEnumerable<T> _collections, Func<int,T,bool> _Predicate)
         {
             foreach (var (index,value) in _collections.LoopIndex())

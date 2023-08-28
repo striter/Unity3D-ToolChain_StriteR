@@ -38,7 +38,7 @@ public static partial class umath
         return primes;
     }
     
-    public static float GetRadClockWise(Vector2 _axis,Vector2 _vector)
+    public static float GetRadClockWise(float2 _axis,float2 _vector)
     {
         float sin = _vector.x * _axis.y - _axis.x * _vector.y;
         float cos = _vector.x * _axis.x + _vector.y * _axis.y;
@@ -190,4 +190,25 @@ public static partial class umath
 
     public static float2 tripleProduct(float2 _a, float2 _b, float2 _c)=>math.dot(_a, cross(_b, _c));
     public static float3 tripleProduct(float3 _a, float3 _b, float3 _c)=>math.dot(_a, math.cross(_b, _c));
+
+    public static float repeat(float _t,float _length) => math.clamp(_t - math.floor(_t / _length) * _length, 0.0f, _length);
+    public static float2 repeat(float2 _t,float2 _length) => math.clamp(_t - math.floor(_t / _length) * _length, 0.0f, _length);
+    
+    public static float deltaAngle(float _x,float _xd)
+    {
+        float num = repeat(_xd - _x, 360f);
+        if (num > 180.0)
+            num -= 360f;
+        return num;
+    }
+
+    public static float3 deltaAngle(float3 _x, float3 _xd)
+    {
+        return new float3(
+            deltaAngle(_x.x, _xd.x),
+            deltaAngle(_x.y, _xd.y),
+            deltaAngle(_x.z, _xd.z)
+        );
+    }
+
 }

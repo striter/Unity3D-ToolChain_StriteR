@@ -1,7 +1,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using TPoolStatic;
+using TObjectPool;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -99,7 +99,7 @@ namespace MeshFragment
                 var fragment = _fragments[i];
                 if (!kMeshFragmentHelper.ContainsKey(fragment.embedMaterial))
                 {
-                    TSPool<MeshFragmentCombiner>.Spawn(out var fragmentCollectorInstance);
+                    ObjectPool<MeshFragmentCombiner>.Spawn(out var fragmentCollectorInstance);
                     subMeshCombiners.Add(fragmentCollectorInstance);
                     kMeshFragmentHelper.Add(fragment.embedMaterial, fragmentCollectorInstance.Initialize(fragment.embedMaterial));
                 }
@@ -189,7 +189,7 @@ namespace MeshFragment
             }
 
             for (int i = 0; i < subMeshCombiners.Count; i++)
-                TSPool<MeshFragmentCombiner>.Recycle(subMeshCombiners[i]);
+                ObjectPool<MeshFragmentCombiner>.Recycle(subMeshCombiners[i]);
             TSPoolList<MeshFragmentCombiner>.Recycle(subMeshCombiners);
         }
     }

@@ -1,5 +1,6 @@
-
-using UnityEngine;using System.Collections.Generic;
+using System.Collections.Generic;
+using UnityEngine;
+using Unity.Mathematics;
 
 public class TileGraph:IGraph<Int2>,IGraphDiscrete<Int2>
 {
@@ -10,7 +11,7 @@ public class TileGraph:IGraph<Int2>,IGraphDiscrete<Int2>
         m_Size = _size;
     }
 
-    public Int2 GetNode(Vector3 _srcPosition) => new Int2(Mathf.RoundToInt(_srcPosition.x/m_Size), Mathf.RoundToInt(_srcPosition.z/m_Size));
+    public Int2 GetNode(float3 _srcPosition) => new Int2(Mathf.RoundToInt(_srcPosition.x/m_Size), Mathf.RoundToInt(_srcPosition.z/m_Size));
     public Vector3 ToNodePosition(Int2 _node) => new Vector3(_node.x * m_Size,0,_node.y * m_Size);
 
     public IEnumerable<Int2> GetAdjacentNodes(Int2 _src)

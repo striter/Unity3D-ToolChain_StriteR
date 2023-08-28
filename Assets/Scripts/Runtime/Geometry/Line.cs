@@ -51,7 +51,6 @@ namespace Geometry
         
         public static implicit operator GRay(GLine _line)=>new GRay(_line.start,_line.direction);
         
-        
         public void OnBeforeSerialize() { }
         public void OnAfterDeserialize() { Ctor(); }
     }
@@ -85,11 +84,12 @@ namespace Geometry
         public float3 direction;
         public GRay(float3 _position, float3 _direction) { origin = _position; direction = _direction; }
         public float3 GetPoint(float _distance) => origin + direction * _distance;
-        
+
         #region Implements
         public GLine ToLine(float _length)=>new GLine(origin,direction,_length);
         public static implicit operator Ray(GRay _ray)=>new Ray(_ray.origin,_ray.direction);
         public static implicit operator GRay(Ray _ray) => new GRay(_ray.origin, _ray.direction);
+        public static GRay operator *(float4x4 _src, GRay _dst) => new GRay(math.mul(_src,_dst.origin.to4(1)).xyz, math.mul(_src,_dst.direction.to4(0)).xyz);
         #endregion
     }
 

@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace UnityEditor.Extensions
 {
@@ -172,54 +174,86 @@ namespace UnityEditor.Extensions
     [CustomPropertyDrawer(typeof(ScriptableObjectEditAttribute))]
     public class ScriptableObjectEditPropertyDrawer : SubAttributePropertyDrawer<ScriptableObjectEditAttribute>
     {
-        private SerializedObject serializedObject;
-        private readonly List<SerializedProperty> m_Properties = new List<SerializedProperty>();
+        private bool m_Foldout;
+        private SerializedObject m_SerializedObject;
+        private readonly List<object> m_ChildProperties = new List<object>();
         private readonly List<float> m_Heights = new List<float>();
-        
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+
+        void CacheProperties(SerializedProperty _property)
         {
+            if (_property.objectReferenceValue == null) return;
+            m_SerializedObject = new SerializedObject(_property.objectReferenceValue);
+
+            m_ChildProperties.Clear();
             m_Heights.Clear();
-            m_Properties.Clear();
-            m_Heights.Add( base.GetPropertyHeight(property, label));
-            m_Properties.Add(property);
-            if (!property.objectReferenceValue)
-                return m_Heights.Sum();
-            
-            serializedObject = new SerializedObject(property.objectReferenceValue);
-            if (serializedObject == null)
-                return EditorGUI.GetPropertyHeight(property,label);
-            foreach (var field in property.objectReferenceValue.GetType().GetFields())
+            m_ChildProperties.Add(_property);
+            m_Heights.Add(EditorGUI.GetPropertyHeight(_property)); 
+            foreach (var field in _property.objectReferenceValue.GetType().GetFields())
             {
-                var scriptableObjectProperty = serializedObject.FindProperty(field.Name);
-                if(scriptableObjectProperty==null)
+                var childProperty = m_SerializedObject.FindProperty(field.Name);
+                if(childProperty==null)
                     continue;
-                m_Properties.Add(scriptableObjectProperty);
-                m_Heights.Add(EditorGUI.GetPropertyHeight(scriptableObjectProperty,true));
+            
+                if (!childProperty.isArray)
+                {
+                    m_ChildProperties.Add(childProperty);
+                    m_Heights.Add(EditorGUI.GetPropertyHeight(childProperty)); 
+                }
+                else  //Vanilla(or easy one) EditorGUI.DrawPropertyField aint work, so I replaced(re-functionaled) it as much as i could.
+                {
+                    var list = new ReorderableList(childProperty.serializedObject, childProperty, true, true, true, true){
+                        drawElementCallback = (_rect, _index, _, _) =>
+                        {
+                            var element = childProperty.GetArrayElementAtIndex(_index);
+                            EditorGUI.PropertyField(_rect, element, new GUIContent($"Element {_index}"));
+                        },
+                        drawHeaderCallback = rect => GUI.Label(rect, childProperty.name)
+                    };
+                    m_ChildProperties.Add(list);
+                    m_Heights.Add(list.GetHeight() + 2);
+                }
             }
-            return m_Heights.Sum();
+        }
+        
+        public override float GetPropertyHeight(SerializedProperty _property, GUIContent _label)
+        {
+            CacheProperties(_property);
+            if (!m_Foldout || m_SerializedObject == null)
+                return base.GetPropertyHeight(_property, _label);
+            return m_Heights.Sum() + 2;
         }
 
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        public override void OnGUI(Rect _position, SerializedProperty _property, GUIContent _label)
         {
-            if (serializedObject == null)
+            CacheProperties(_property);
+            m_Foldout = EditorGUI.Foldout(_position.Resize(20,20), m_Foldout,"");
+            if (!m_Foldout || m_SerializedObject == null)
             {
-                EditorGUI.PropertyField(position, property, label);
+                EditorGUI.PropertyField(_position, _property, _label,true);
                 return;
             }
             
-            Rect rect = position.Resize(position.size.x, 0f);
+            EditorGUI.DrawRect(_position,Color.black.SetA(.1f));
+            Rect rect = _position.Resize(_position.size.x, 0f);
+            rect = rect.Resize(_position.size.x - 24f,_position.size.y);
+            rect = rect.Move(20f, 0f);
             EditorGUI.BeginChangeCheck();
-            foreach (var (index,scriptableObjectProperties) in m_Properties.LoopIndex())
+            foreach (var (index,child) in m_ChildProperties.LoopIndex())
             {
                 float height = m_Heights[index];
-                EditorGUI.PropertyField(rect.ResizeY(height),scriptableObjectProperties,true);
+                var childRect = rect.ResizeY(height);
+                if (child is SerializedProperty childProperty)
+                    EditorGUI.PropertyField(childRect,childProperty,true);
+                else if (child is ReorderableList list)
+                    list.DoList(childRect);
+                
                 rect = rect.MoveY(height);
             }
 
             if (EditorGUI.EndChangeCheck())
             {
-                serializedObject.ApplyModifiedProperties();
-                (property.serializedObject.targetObject).GetType().GetMethod("OnValidate",BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)?.Invoke(property.serializedObject.targetObject,null);
+                m_SerializedObject.ApplyModifiedProperties();
+                _property.serializedObject.targetObject.GetType().GetMethod("OnValidate",BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)?.Invoke(_property.serializedObject.targetObject,null);
             }
         }
     }

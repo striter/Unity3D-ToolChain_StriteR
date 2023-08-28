@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Geometry;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.U2D;
@@ -104,6 +105,24 @@ public static class UUserInterface
         rect.localPosition = Vector3.zero;
     }
 
+    public static G2Box GetLocalBounds(this RectTransform _rectTrans)
+    {
+        var root = (_rectTrans.parent as RectTransform);
+        Vector2 min =_rectTrans.anchorMin * root.rect.size;
+        min += _rectTrans.offsetMin;
+
+        Vector2 max = _rectTrans.anchorMax * root.rect.size;
+        max += _rectTrans.offsetMax;
+
+        return G2Box.Minmax(min, max);
+    }
+
+    public static G2Box GetLocalBoundsNormalized(this RectTransform _rectTrans)
+    {
+        var root = (_rectTrans.parent as RectTransform);
+        return GetLocalBounds(_rectTrans) / root.rect.size;
+    }
+    
     public static void RaycastAll(Vector2 castPos)      //Bind UIT_EventTriggerListener To Items Need To Raycast By EventSystem
     {
         PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);

@@ -24,7 +24,7 @@ namespace Rendering.PostProcess
 
         void Reset()
         {
-            m_Data = UPipeline.GetDefaultPostProcessData<Y>();
+            m_Data = UReflection.GetDefaultData<Y>();
             ValidateParameters();
         }
         void OnValidate()

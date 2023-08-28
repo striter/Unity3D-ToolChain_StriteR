@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
-using TPoolStatic;
+using TObjectPool;
 using TTouchTracker;
 using UnityEngine;
 using TDataPersistent;
+using Unity.Mathematics;
 
 namespace Examples.Algorithm.MarchingCube
 {
@@ -55,10 +56,10 @@ namespace Examples.Algorithm.MarchingCube
             var _size = m_Size;
             
             foreach (var grid in m_GridPool.Values)
-                TSPool<Grid>.Recycle(grid);
+                ObjectPool<Grid>.Recycle(grid);
             m_GridPool.Clear();
             foreach (var cube in m_CubePool.Values)
-                TSPool<Cube>.Recycle(cube);
+                ObjectPool<Cube>.Recycle(cube);
             m_CubePool.Clear();
             
             for(int i=0;i<=_size.x;i++)
@@ -70,7 +71,7 @@ namespace Examples.Algorithm.MarchingCube
                                   id.y != 0 && id.y != _size.y &&
                                   id.z != 0 && id.z != _size.z;
 
-                    m_GridPool.Add(id,TSPool<Grid>.Spawn().Spawn(id,active));
+                    m_GridPool.Add(id,ObjectPool<Grid>.Spawn().Spawn(id,active));
                 }
                 
             for(int i=0;i<_size.x;i++)
@@ -78,7 +79,7 @@ namespace Examples.Algorithm.MarchingCube
                 for (int k = 0; k < _size.z; k++)
                 {
                     Int3 id = new Int3(i, j, k);
-                    m_CubePool.Add(id,TSPool<Cube>.Spawn().Spawn(id));
+                    m_CubePool.Add(id,ObjectPool<Cube>.Spawn().Spawn(id));
                 }
 
             m_Persistent.ReadPersistentData();
@@ -124,8 +125,8 @@ namespace Examples.Algorithm.MarchingCube
                 var position = cube.position;
                 
                 int indexStart = vertices.Count;
-                vertices.AddRange(mesh.vertices.Select(p=>   position + rotation * p * MarchingCubeDefines.kGridSize));
-                normals.AddRange(mesh.normals.Select(p=>rotation*p));
+                vertices.AddRange(mesh.vertices.Select(p=>   position + (Vector3)math.mul(rotation , p) * MarchingCubeDefines.kGridSize));
+                normals.AddRange(mesh.normals.Select(p=> (Vector3)math.mul(rotation,p)));
                 indices.AddRange(mesh.indices.Select(p=>p+indexStart));
                 uvs.AddRange(mesh.uvs);
             }

@@ -5,29 +5,50 @@ using static Unity.Mathematics.math;
 
 public static class KRotation
 {
-    public static readonly Matrix2x2 kRotateCW90 = URotation.Rotate2D(90 * kDeg2Rad, true);
-    public static readonly Matrix2x2 kRotateCW180 = URotation.Rotate2D(180 * kDeg2Rad, true);
-    public static readonly Matrix2x2 kRotateCW270 = URotation.Rotate2D(270 * kDeg2Rad, true);
+    public static readonly Matrix2x2 kRotateCW90 = umath.Rotate2D(90 * kDeg2Rad, true);
+    public static readonly Matrix2x2 kRotateCW180 = umath.Rotate2D(180 * kDeg2Rad, true);
+    public static readonly Matrix2x2 kRotateCW270 = umath.Rotate2D(270 * kDeg2Rad, true);
     public static readonly Matrix2x2[] kRotate2DCW = {Matrix2x2.Identity, kRotateCW90, kRotateCW180, kRotateCW270};
 
-    public static readonly Quaternion[] kRotate3DCW =
+    public static readonly quaternion[] kRotate3DCW =
     {
-        URotation.EulerToQuaternion(0f, 0f, 0f),
-        URotation.EulerToQuaternion(0f, 90f, 0f),
-        URotation.EulerToQuaternion(0f, 180f, 0f),
-        URotation.EulerToQuaternion(0f, 270f, 0f)
+        umath.EulerToQuaternion(0f, 0f, 0f),
+        umath.EulerToQuaternion(0f, 90f, 0f),
+        umath.EulerToQuaternion(0f, 180f, 0f),
+        umath.EulerToQuaternion(0f, 270f, 0f)
     };
 }
 
 
-public static class URotation
+public static partial class umath
 {
-    public static Quaternion EulerToQuaternion(Vector3 euler)
+    public static float3 mul(this quaternion _q, float3 _direction) => math.mul(_q, _direction);
+    
+    public static float3 toEuler(this quaternion _q)
     {
-        return EulerToQuaternion(euler.x, euler.y, euler.z);
+        var q = _q.value;
+        
+        var siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+        var cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+        var pitch = atan2(siny_cosp, cosy_cosp);
+
+        var sinp = sqrt(1 + 2 * (q.w * q.y - q.x * q.z));
+        var cosp = sqrt(1 - 2 * (q.w * q.y - q.x * q.z));
+        var yaw = 2 * atan2(sinp, cosp) - kPIHalf;
+
+        var sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
+        var cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+        var roll = atan2(sinr_cosp, cosr_cosp);
+
+        return new float3(pitch,yaw,roll) * kRad2Deg;
+    }
+    
+    public static quaternion EulerToQuaternion(float3 _euler)
+    {
+        return EulerToQuaternion(_euler.x, _euler.y, _euler.z);
     }
 
-    public static Quaternion EulerToQuaternion(float _angleX, float _angleY, float _angleZ) //Euler Axis XYZ
+    public static quaternion EulerToQuaternion(float _angleX, float _angleY, float _angleZ) //Euler Axis XYZ
     {
         var radinHX = kDeg2Rad * _angleX / 2f;
         var radinHY = kDeg2Rad * _angleY / 2f;
@@ -45,12 +66,12 @@ public static class URotation
         return new Quaternion(qX, qY, qZ, qW);
     }
 
-    public static Quaternion AngleAxisToQuaternion(float _radin, Vector3 _axis)
+    public static quaternion AngleAxisToQuaternion(float _radin, float3 _axis)
     {
         var radinH = _radin / 2;
         var sinH = Mathf.Sin(radinH);
         var cosH = Mathf.Cos(radinH);
-        return new Quaternion(_axis.x * sinH, _axis.y * sinH, _axis.z * sinH, cosH);
+        return new quaternion(_axis.x * sinH, _axis.y * sinH, _axis.z * sinH, cosH);
     }
 
     public static Matrix2x2 Rotate2D(float _rad, bool _clockWise = false)
@@ -62,7 +83,7 @@ public static class URotation
         return new Matrix2x2(cosA, -sinA, sinA, cosA);
     }
 
-    public static Matrix3x3 AngleAxis3x3(float _radin, Vector3 _axis)
+    public static Matrix3x3 AngleAxis3x3(float _radin, float3 _axis)
     {
         var s = Mathf.Sin(_radin);
         var c = Mathf.Cos(_radin);
@@ -92,7 +113,7 @@ public static class URotation
 
     public static float GetAngle(quaternion _q1, quaternion _q2)
     {
-        float dt = dot(_q1, _q2);
+        float dt = math.dot(_q1, _q2);
         if (dt < 0.0f)
             dt = -dt;
         return acos(dt);
@@ -100,7 +121,7 @@ public static class URotation
 
     public static quaternion Slerp(quaternion _q1, quaternion _q2,float _t)
     {
-        float dt = dot(_q1, _q2);
+        float dt = math.dot(_q1.value, _q2.value);
         if (dt < 0.0f)
             dt = -dt;
 
@@ -113,20 +134,20 @@ public static class URotation
             return quaternion(_q1.value * w1 + _q2.value * w2);
         }
 
-        return normalize(quaternion(_q1.value * (1.0f - _t) + _q2.value * _t));
+        return normalize(quaternion(_q1.value * (1.0f - _t) + _q2.value * _t).value);
     }
     
-    public static Quaternion FromToQuaternion(Vector3 _from, Vector3 _to)
+    public static quaternion FromToQuaternion(float3 _from, float3 _to)
     {
-        var e = Vector3.Dot(_from, _to);
-        var v = Vector3.Cross(_from, _to);
-        var sqrt1Pe = Mathf.Sqrt(2 * (1 + e));
+        var e = dot(_from, _to);
+        var v = cross(_from, _to);
+        var sqrt1Pe = sqrt(2 * (1 + e));
         var Qv = v * (1f / sqrt1Pe);
         var Qw = sqrt1Pe / 2f;
-        return new Quaternion(Qv.x, Qv.y, Qv.z, Qw);
+        return new quaternion(Qv.x, Qv.y, Qv.z, Qw);
     }
 
-    public static Matrix3x3 FromTo3x3(Vector3 _from, Vector3 _to)
+    public static Matrix3x3 FromTo3x3(float3 _from, float3 _to)
     {
         var v = Vector3.Cross(_from, _to);
         var e = Vector3.Dot(_from, _to);

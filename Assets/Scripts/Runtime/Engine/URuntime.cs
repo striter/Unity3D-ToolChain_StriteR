@@ -53,12 +53,26 @@ public static class URuntime
         foreach (Transform temp in trans.gameObject.GetComponentsInChildren<Transform>(true))
             temp.gameObject.layer = layer;
     }
-    public static Transform FindInAllChild(this Transform trans, string name)
+    
+    public static Transform FindInAllChild(this Transform _trans, Predicate<Transform> _predicate,bool _includeInactive = true)
     {
-        foreach (Transform temp in trans.gameObject.GetComponentsInChildren<Transform>(true))
-            if (temp.name == name) return temp;
-        Debug.LogWarning("Null Child Name:" + name + ",Find Of Parent:" + trans.name);
+        foreach (Transform childTransform in _trans.gameObject.GetComponentsInChildren<Transform>(_includeInactive))
+            if (_predicate(childTransform)) return childTransform;
         return null;
+    }
+    
+    public static Transform FindInAllChild(this Transform _trans, string _name,bool _includeInactive = true)
+    {
+        var transform = FindInAllChild(_trans, _p => _p.name == _name,_includeInactive);
+        Debug.Assert(transform, $"Null Child Name:{_name},Find Of Parent:{_trans.name}");
+        return transform;
+    }
+
+    public static IEnumerable<Transform> IterateInAllChild(this Transform _trans, Predicate<Transform> _predicate,
+        bool _includeInactive = true)
+    {
+        foreach (Transform childTransform in _trans.gameObject.GetComponentsInChildren<Transform>(_includeInactive))
+            if (_predicate(childTransform)) yield return childTransform;
     }
 
     public static T Find<T>(this T[,] array, Predicate<T> predicate)

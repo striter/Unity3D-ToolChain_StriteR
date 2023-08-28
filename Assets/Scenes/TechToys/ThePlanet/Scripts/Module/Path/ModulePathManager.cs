@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TechToys.ThePlanet.Module.Prop;
 using TPool;
-using TPoolStatic;
+using TObjectPool;
 using UnityEngine;
 
 namespace TechToys.ThePlanet.Module.Path
@@ -29,7 +29,7 @@ namespace TechToys.ThePlanet.Module.Path
 
         public void Dispose()
         {
-            TSPool<ModulePathCollapse>.Clear();
+            ObjectPool<ModulePathCollapse>.Clear();
         }
 
         public void Clear()
@@ -52,7 +52,7 @@ namespace TechToys.ThePlanet.Module.Path
         {
             m_VoxelPathPropaganda.Clear();
             foreach (var voxel in m_VoxelPathCollapsing.Values)
-                TSPool<ModulePathCollapse>.Recycle(voxel);
+                ObjectPool<ModulePathCollapse>.Recycle(voxel);
             m_VoxelPathCollapsing.Clear();
         }
 
@@ -84,7 +84,7 @@ namespace TechToys.ThePlanet.Module.Path
                     voxel.Clear();
                     continue;
                 }
-                m_VoxelPathCollapsing.Add(voxelID, TSPool<ModulePathCollapse>.Spawn().Init(voxel.m_Voxel));
+                m_VoxelPathCollapsing.Add(voxelID, ObjectPool<ModulePathCollapse>.Spawn().Init(voxel.m_Voxel));
                 m_VoxelPathPropaganda.Add(voxelID);
             }
 

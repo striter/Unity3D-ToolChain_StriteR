@@ -25,6 +25,7 @@ public static class kmath
     public const float kPID4 = 0.7853981633974483f;
     public const float kDeg2Rad = 0.017453292519943f;//PI / 180
     public const float kRad2Deg = 57.295779513082f ;//180f / PI;
+    public const float kPIHalf = 1.57079632679f;
 
     public const float kOneMinusEpsilon = 1f - float.Epsilon;
 
