@@ -30,10 +30,10 @@ namespace Examples.Algorithm.WaveFunctionCollapse
         private int m_Index;
         private Action<int> OnSelect;
         private Action<int> OnRecycle;
-        private int m_PoolIdentity;
-        public override void OnPoolCreate(Action<int> _DoRecycle)
+        private int identityentity;
+        public override void OnPoolCreate()
         {
-            base.OnPoolCreate(_DoRecycle);
+            base.OnPoolCreate();
             m_RectTransform=transform as RectTransform;;
             m_Listener = GetComponent<UIEventTriggerListenerExtension>();
             m_Listener.onClickWorld = OnWorldClick;

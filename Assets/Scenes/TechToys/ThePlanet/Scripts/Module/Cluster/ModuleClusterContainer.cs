@@ -21,8 +21,7 @@ namespace TechToys.ThePlanet.Module.Cluster
         private Mesh m_ClusterMesh;
         private MeshRenderer m_Renderer;
 
-        public Transform Transform => transform;
-        public int Identity => m_PoolID.GetIdentity(DModule.kIDCluster);
+        public int Identity => identity.GetIdentity(DModule.kIDCluster);
         public Action<int> SetDirty { get; set; }
         public Vector3 CenterWS => transform.position;
         public List<FBoidsVertex> m_BirdLandings { get; } = new List<FBoidsVertex>();
@@ -31,9 +30,9 @@ namespace TechToys.ThePlanet.Module.Cluster
         private MaterialPropertyBlock m_PropertyBlock ;
         private static readonly int kProgressID = Shader.PropertyToID("_Progress");
 
-        public override void OnPoolCreate(Action<PCGID> _doRecycle)
+        public override void OnPoolCreate()
         {
-            base.OnPoolCreate(_doRecycle);
+            base.OnPoolCreate();
             m_PropertyBlock = new MaterialPropertyBlock();
             m_ClusterMesh = new Mesh();
             m_ClusterMesh.MarkDynamic();
@@ -44,7 +43,7 @@ namespace TechToys.ThePlanet.Module.Cluster
         public ModuleClusterContainer Init(IVoxel _voxel)
         {
             m_Voxel = _voxel;
-            transform.SyncPositionRotation(_voxel.Transform);
+            transform.SyncPositionRotation(_voxel.transform);
             m_Input = new Qube<ModuleClusterInputData>(ModuleClusterInputData.kInvalid);
             m_Data = new Qube<ModuleClusterCornerData>(ModuleClusterCornerData.kInvalid);
             m_ClusterMesh.name = _voxel.Identity.ToString();
@@ -127,7 +126,7 @@ namespace TechToys.ThePlanet.Module.Cluster
 
                 bool birdLandingAvailable = input.status == EClusterStatus.Rooftop;
                 var animAvailable = m_Modified[i];
-                var corner = m_Voxel.Transform.position;
+                var corner = m_Voxel.transform.position;
                 int colorAlpha = (animAvailable?1:0);
                 
                 for(int j=0;j<moduleMesh.m_MeshFragments.Length;j++)

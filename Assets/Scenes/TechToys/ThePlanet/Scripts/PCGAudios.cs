@@ -40,7 +40,7 @@ namespace TechToys.ThePlanet
         {
             m_Time += _deltaTime;
             TSPoolList<int>.Spawn(out var recycleList);
-            recycleList.AddRange(m_Pool.Collect(p=>p.m_EndTime < m_Time).Select(p=>p.m_Identity));
+            recycleList.AddRange(m_Pool.Collect(p=>p.m_EndTime < m_Time).Select(p=>p.identity));
             recycleList.Traversal(p=>m_Pool.Recycle(p));
             TSPoolList<int>.Recycle(recycleList);
 

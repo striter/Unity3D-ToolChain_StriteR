@@ -149,7 +149,7 @@ namespace TechToys.ThePlanet.Module.BOIDS
             int localBehaviourCount = 0;
             foreach (var flockActor in _members)
             {
-                if (flockActor.m_Identity == _actor.m_Identity)
+                if (flockActor.identity == _actor.identity)
                     continue;
                 if (_config.sqrVisualizeRange > 0 && (flockActor.Position - _actor.Position).sqrMagnitude > _config.sqrVisualizeRange)
                     continue;

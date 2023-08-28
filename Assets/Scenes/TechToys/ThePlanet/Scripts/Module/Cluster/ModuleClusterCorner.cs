@@ -11,7 +11,7 @@ namespace TechToys.ThePlanet.Module.Cluster
         public ModuleClusterCorner Init(ICorner _corner)
         {
             m_Corner = _corner;
-            transform.SyncPositionRotation(_corner.Transform);
+            transform.SyncPositionRotation(_corner.transform);
             return this;
         }
 

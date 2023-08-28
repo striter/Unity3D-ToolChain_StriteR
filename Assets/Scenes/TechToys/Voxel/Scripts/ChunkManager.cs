@@ -34,12 +34,12 @@ namespace TheVoxel
         public static TerrainData Instance;
         public TerrainData m_TerrainData;
         
-        private ObjectPoolMono<Int2, ChunkElement> m_Chunks;
+        private ObjectPoolBehaviour<Int2, ChunkElement> m_Chunks;
 
         public void Init()
         {
             Instance = m_TerrainData;
-            m_Chunks = new ObjectPoolMono<Int2, ChunkElement>(transform.Find("Element"));
+            m_Chunks = new ObjectPoolBehaviour<Int2, ChunkElement>(transform.Find("Element"));
         }
 
         private void OnValidate()

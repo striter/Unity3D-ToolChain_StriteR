@@ -87,7 +87,7 @@ namespace Runtime
             base.DrawGizmos(_transform);
             CalculatePositions(_transform,out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
             Gizmos.color = Color.green;
-            Gizmos.DrawSphere(m_ControlDamper.x,.2f);
+            Gizmos.DrawSphere(m_ControlDamper.value.xyz,.2f);
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(control,.2f);
             m_Curve.DrawGizmos();

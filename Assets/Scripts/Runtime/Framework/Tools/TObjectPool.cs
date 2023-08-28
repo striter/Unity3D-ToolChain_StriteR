@@ -190,8 +190,10 @@ namespace TPool
     }
     public interface IPoolCallback<T>
     {
-        void OnPoolCreate(Action<T> _doRecycle);
-        void OnPoolSpawn(T _identity);
+        Action<T> DoRecycle { get; set; }
+        T identity { get; set; }
+        void OnPoolCreate();
+        void OnPoolSpawn();
         void OnPoolRecycle();
         void OnPoolDispose();
     }
@@ -204,6 +206,7 @@ namespace TPool
         private readonly GameObject m_PoolItem;
         public int Count => m_Dic.Count;
         public int m_SpawnTimes { get; private set; } = 0;
+        public Action<Y> createCallback = null;
 
         protected AObjectPool(GameObject _pooledItem,Transform _transform)
         {
@@ -223,8 +226,12 @@ namespace TPool
             else
             {
                 targetItem = NewElement(UnityEngine.Object.Instantiate(m_PoolItem, transform).transform);
-                if(targetItem is IPoolCallback<T> iPoolInit)
-                    iPoolInit.OnPoolCreate(DoRecycle);
+                createCallback?.Invoke(targetItem);
+                if (targetItem is IPoolCallback<T> iPoolInit)
+                {
+                    iPoolInit.DoRecycle = DoRecycle;
+                    iPoolInit.OnPoolCreate();
+                }
             }
             if (m_Dic.ContainsKey(_identity)){
                 Debug.LogError(_identity + "Already Exists In Grid Dic");
@@ -235,9 +242,12 @@ namespace TPool
             trans.SetAsLastSibling();
             trans.name = _identity.ToString();
             trans.SetActive(true);
-            
-            if(targetItem is IPoolCallback<T> iPoolSpawn)
-                iPoolSpawn.OnPoolSpawn(_identity);
+
+            if (targetItem is IPoolCallback<T> iPoolSpawn)
+            {
+                iPoolSpawn.identity = _identity;
+                iPoolSpawn.OnPoolSpawn();
+            }
             m_SpawnTimes++;
             return targetItem;
         }
@@ -360,19 +370,19 @@ namespace TPool
     #region Implement
     public abstract class APoolTransform<T>:ITransformHandle,IPoolCallback<T>
     {
-        public Transform Transform { get; }
-        private Action<T> DoRecycle { get; set; }
-        public T m_Identity { get; private set; }
+        public Transform transform { get; }
+        public Action<T> DoRecycle { get; set; }
+        public T identity { get; set; }
         public APoolTransform(Transform _transform)
         {
-            Transform = _transform;
+            transform = _transform;
         }
-        public virtual void OnPoolCreate(Action<T> _doRecycle)=>this.DoRecycle = _doRecycle;
-        public virtual void OnPoolSpawn(T _identity)=> m_Identity = _identity;
-        public virtual void OnPoolRecycle()=>m_Identity = default;
+        public virtual void OnPoolCreate() { }
+        public virtual void OnPoolSpawn() { }
+        public virtual void OnPoolRecycle() { }
         public virtual void OnPoolDispose() {}
 
-        public void Recycle()=>DoRecycle(m_Identity);
+        public void Recycle() => DoRecycle(identity);
     }
     
 
@@ -394,25 +404,24 @@ namespace TPool
             return UReflection.CreateInstance<Y>(m_Type, _instantiateTrans);
         }
 
-        protected override Transform GetTransform(Y _targetItem) => _targetItem.Transform;
+        protected override Transform GetTransform(Y _targetItem) => _targetItem.transform;
     }
     
     
     public abstract class PoolBehaviour<T> : MonoBehaviour,IPoolCallback<T>
     {
         protected bool m_Recycled { get; private set; }
-        protected T m_PoolID { get; private set; }
-        private Action<T> DoRecycle { get; set; }
 
-        public virtual void OnPoolCreate(Action<T> _doRecycle)
+        public Action<T> DoRecycle { get; set; }
+        public T identity { get; set; }
+
+        public virtual void OnPoolCreate()
         {
-            this.DoRecycle = _doRecycle;
             m_Recycled = true;
         }
 
-        public virtual void OnPoolSpawn(T _identity)
+        public virtual void OnPoolSpawn()
         {
-            m_PoolID = _identity;
             m_Recycled = false;
         }
 
@@ -424,15 +433,15 @@ namespace TPool
         public virtual void OnPoolDispose()
         {
             m_Recycled = true;
-            m_PoolID = default;
+            identity = default;
             DoRecycle = null;
         }
 
-        public void Recycle()=>DoRecycle(m_PoolID);
+        public void Recycle()=>DoRecycle(identity);
     }
-    public class ObjectPoolMono<T,Y> : AObjectPool<T,Y> where Y : PoolBehaviour<T>
+    public class ObjectPoolBehaviour<T,Y> : AObjectPool<T,Y> where Y : PoolBehaviour<T>
     {
-        public ObjectPoolMono(Transform _poolTrans) : base(_poolTrans.gameObject,_poolTrans.parent) {  }
+        public ObjectPoolBehaviour(Transform _poolTrans) : base(_poolTrans.gameObject,_poolTrans.parent) {  }
         protected override Y NewElement(Transform _instantiateTrans)=>_instantiateTrans.GetComponent<Y>();
         protected override Transform GetTransform(Y _targetItem) => _targetItem.transform;
     }

@@ -1,10 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.U2D;
+using UnityEngine.UI;
 
 
 public class AtlasLoader
@@ -105,24 +108,54 @@ public static class UUserInterface
         rect.localPosition = Vector3.zero;
     }
 
-    public static G2Box GetLocalBounds(this RectTransform _rectTrans)
+    public static G2Box GetLocalBounds(this RectTransform _rectTrans,RectTransform _rootTransform)
     {
-        var root = (_rectTrans.parent as RectTransform);
-        Vector2 min =_rectTrans.anchorMin * root.rect.size;
+        var min = _rectTrans.anchorMin * _rootTransform.rect.size;
         min += _rectTrans.offsetMin;
-
-        Vector2 max = _rectTrans.anchorMax * root.rect.size;
+        var max = _rectTrans.anchorMax * _rootTransform.rect.size;
         max += _rectTrans.offsetMax;
+        
+        int iteration = 0;
+        var parent = _rectTrans;
+        while (true)
+        {
+            if (iteration++ > 1024)
+                throw new IndexOutOfRangeException();
+            
+            parent = (parent.parent as RectTransform);
+            if (parent == _rootTransform)
+                break;
 
+            min += parent.anchoredPosition;
+            max += parent.anchoredPosition;
+        }
         return G2Box.Minmax(min, max);
     }
-
-    public static G2Box GetLocalBoundsNormalized(this RectTransform _rectTrans)
+ 
+    public static G2Box GetLocalBoundsNormalized(this RectTransform _rectTrans,RectTransform _rootTransform)
     {
-        var root = (_rectTrans.parent as RectTransform);
-        return GetLocalBounds(_rectTrans) / root.rect.size;
+        // var root = (_rectTrans.parent as RectTransform);
+        return GetLocalBounds(_rectTrans,_rootTransform) / _rootTransform.rect.size;
     }
-    
+
+    public static bool GetPointInsideImage(this Image _image, float2 _positionNormalized, RectTransform _root)
+    {
+        var bound = _image.rectTransform.GetLocalBoundsNormalized(_root);
+        if (!bound.Contains(_positionNormalized))
+            return false;
+
+        // return true;
+        var texture = _image.sprite.texture;
+        if(!texture.isReadable) return true;
+            
+        var uv = (_positionNormalized - bound.min) / bound.size;
+        var x = (int)math.floor( uv.x * texture.width);
+        var y = (int)math.floor( uv.y * texture.height);
+        var pixel = texture.GetPixel(x,y);
+            
+        return pixel.a > 0;
+    }
+
     public static void RaycastAll(Vector2 castPos)      //Bind UIT_EventTriggerListener To Items Need To Raycast By EventSystem
     {
         PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);

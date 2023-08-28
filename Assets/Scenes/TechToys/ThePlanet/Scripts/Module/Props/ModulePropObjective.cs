@@ -210,14 +210,14 @@ namespace TechToys.ThePlanet.Module.Prop
         {
             m_Type = _propData.type;
             m_Scale = _propData.scale;
-            Transform.gameObject.name = _voxel.Identity.ToString();
+            transform.gameObject.name = _voxel.Identity.ToString();
             m_MeshFilter.sharedMesh = _meshLibrary[_propData.meshIndex];
             m_MeshRenderer.sharedMaterials = _propData.embedMaterialIndex.Select(p=>_materialLibrary[p]).ToArray();
 
             DModuleProp.OrientedToObjectVertex(_orientation,_propData.position,_voxel.m_ShapeOS,out var objectPosition,  _propData.rotation, out var objectRotation);
-            Transform.position = _voxel.Transform.localToWorldMatrix.MultiplyPoint(objectPosition);
-            Transform.rotation = _voxel.Transform.rotation * objectRotation;
-            Transform.localScale = Vector3.zero;
+            transform.position = _voxel.transform.localToWorldMatrix.MultiplyPoint(objectPosition);
+            transform.rotation = _voxel.transform.rotation * objectRotation;
+            transform.localScale = Vector3.zero;
             
             m_Show = true;
             m_AnimationCounter.Replay();
@@ -241,7 +241,7 @@ namespace TechToys.ThePlanet.Module.Prop
             if (!m_AnimationCounter.m_Playing)
                 return false;
             m_AnimationCounter.Tick(_deltaTime);
-            Transform.localScale = (m_Show?m_AnimationCounter.m_TimeElapsedScale:m_AnimationCounter.m_TimeLeftScale)*m_Scale*KPCG.kUnitSize*2;
+            transform.localScale = (m_Show?m_AnimationCounter.m_TimeElapsedScale:m_AnimationCounter.m_TimeLeftScale)*m_Scale*KPCG.kUnitSize*2;
             if (!m_AnimationCounter.m_Playing&&!m_Show)
                 return true;
             return false;

@@ -29,17 +29,20 @@ public class Damper : ISerializationCallbackReceiver
     [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] [Range(-5, 5)] public float r = -.5f;
     [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] public bool poleMatching;
 
-    public float3 x { get; private set; }
-    private float3 v;
+    public float4 value { get; private set; }
+    private float4 v;
     
     //Used by second order dynamics
-    private float3 _xp;
+    private float4 _xp;
     private float _w,_d,_k1, _k2, _k3;
-    
-    public void Initialize(float3 _begin)
+
+    public void Initialize(quaternion _begin) => Initialize(_begin.value);
+    public void Initialize(float _begin) => Initialize((float4)_begin);
+    public void Initialize(float3 _begin) => Initialize(_begin.to4());
+    public void Initialize(float4 _begin)
     {
         _xp = _begin;
-        x = _begin;
+        value = _begin;
         v = 0;
         Ctor();
     }
@@ -53,16 +56,30 @@ public class Damper : ISerializationCallbackReceiver
         _k3 = r * z / (_w);
     }
 
-    public float3 Tick(float _deltaTime,float3 _desirePosition,float3 _desireVelocity = default,bool _angle = false)
+
+    public float TickAngle(float _deltaTime, float _desire)
     {
-        if (_deltaTime == 0)
-            return x;
+        _desire = value.x + deltaAngle(value.x,_desire);
+        return Tick(_deltaTime,(float4)_desire).x;
+    }
+
+    public quaternion Tick(float _deltaTime, quaternion _target)
+    {
+        var dot = math.dot(value, _target.value);
+        var tq = dot < 0 ? -_target.value: _target.value;
+        return new quaternion(Tick(_deltaTime, tq));
+    }
+    public float2 Tick(float _deltaTime, float _desire, float _desireVelocity = default) => Tick(_deltaTime,(float4)_desire,(_desireVelocity)).x;
+    public float2 Tick(float _deltaTime, float2 _desire, float2 _desireVelocity = default) => Tick(_deltaTime, _desire.to4(),_desireVelocity.to4()).xy;
+    public float3 Tick(float _deltaTime, float3 _desire, float3 _desireVelocity = default) => Tick(_deltaTime, _desire.to4(),_desireVelocity.to4()).xyz;
+
+    public float4 Tick(float _deltaTime,float4 _desire,float4 _desireVelocity = default)
+    {
+        if (_deltaTime == 0) return value;
         
-        var xd = _desirePosition;
+        var xd = _desire;
         var vd = _desireVelocity;
 
-        if (_angle) xd = x + deltaAngle(x,xd);
-        
         var d = damping;
         var s = stiffness;
         var dt = _deltaTime;
@@ -71,15 +88,15 @@ public class Damper : ISerializationCallbackReceiver
         {
             case EDamperMode.None:
             {
-                x = xd;
+                value = xd;
             } break;
             case EDamperMode.Lerp: {
-                x = lerp(x,xd, 1.0f - negExp_Fast( dt*0.69314718056f /(halfLife+float.Epsilon)));
+                value = lerp(value,xd, 1.0f - negExp_Fast( dt*0.69314718056f /(halfLife+float.Epsilon)));
             } break;
             case EDamperMode.SpringSimple:
             {
-                v += _deltaTime * s * ( xd - x) + _deltaTime * d * ( vd - v);
-                x += _deltaTime * v;
+                v += _deltaTime * s * ( xd - value) + _deltaTime * d * ( vd - v);
+                value += _deltaTime * v;
             } break;
             case EDamperMode.SpringCritical:
             {
@@ -87,10 +104,10 @@ public class Damper : ISerializationCallbackReceiver
                 var c = xd + (d * vd) / (d*d/4.0f);
                 var y = d / 2.0f;
                 
-                var j0 = x - c;
+                var j0 = value - c;
                 var j1 = v + j0 * y;
                 var eydt = negExp_Fast(y * dt);
-                x = eydt * (j0 + j1 * dt) + c;
+                value = eydt * (j0 + j1 * dt) + c;
                 v = eydt * (v - j1 * y * dt);
             } break;
             case EDamperMode.SpringImplicit:
@@ -100,21 +117,21 @@ public class Damper : ISerializationCallbackReceiver
                 var y = d * .5f;
                 if (abs(determination) < eps)     //Critical Damped
                 {
-                    var j0 = x - c;
+                    var j0 = value - c;
                     var j1 = v + j0 * y;
                     var eydt = negExp_Fast(y * dt);
-                    x = eydt * (j0 + j1 * dt) + c;
+                    value = eydt * (j0 + j1 * dt) + c;
                     v = eydt * (-y*j0 - y * j1 * dt+ j1);
                 }
                 else if (determination > 0)     //Under Damped
                 {
                     var w = sqrt(determination);
-                    var j = sqr(v + y*(x - c)) / (w*w + eps) + sqr(x - c);
+                    var j = sqr(v + y*(value - c)) / (w*w + eps) + sqr(value - c);
                     j = sqrt(j);
                     
-                    var p = ((v + (x - c) * y)/(-(x - c) * w + eps3)).convert(atan_Fast);
+                    var p = ((v + (value - c) * y)/(-(value - c) * w + eps4)).convert(atan_Fast);
                     
-                    j = j.convert((_i,_value)=>(x[_i]-c[_i])>0?_value:-_value);
+                    j = j.convert((_i,_value)=>(value[_i]-c[_i])>0?_value:-_value);
                     
                     var jeydt = j*negExp_Fast(y * dt );
                     
@@ -122,7 +139,7 @@ public class Damper : ISerializationCallbackReceiver
                     var cosParam = cos(param);
                     var sinParam = sin(param);
                     
-                    x = jeydt*(cosParam) + c;
+                    value = jeydt*(cosParam) + c;
                     v = -y * jeydt*cosParam - w * jeydt*sinParam;
                 }
                 else    //Over Damped
@@ -130,18 +147,18 @@ public class Damper : ISerializationCallbackReceiver
                     var param = sqrt(d * d - 4 * s);
                     var y0 = (d + param) / 2.0f;
                     var y1 = (d - param) / 2.0f;
-                    var j1 = (c * y0 - x * y0 - v) / (y1 - y0);
-                    var j0 = x - j1 - c;
+                    var j1 = (c * y0 - value * y0 - v) / (y1 - y0);
+                    var j0 = value - j1 - c;
                     var ey0dt = negExp_Fast(y0 * dt);
                     var ey1dt = negExp_Fast(y1 * dt);
 
-                    x = j0 * ey0dt + j1 * ey1dt + c;
+                    value = j0 * ey0dt + j1 * ey1dt + c;
                     v = -y0 * j0 * ey0dt - y1 * j1 * ey1dt;
                 }
             } break;
             case EDamperMode.SecondOrderDynamics:
             {
-                if (vd.sqrMagnitude() < float.Epsilon)
+                if (vd.sqrmagnitude() < float.Epsilon)
                 {
                     vd = (xd - _xp) / dt;
                     _xp = xd;
@@ -163,12 +180,11 @@ public class Damper : ISerializationCallbackReceiver
                     k2Stable = dt * t2;
                 }
                 
-                x += v * dt;
-                v += dt * (xd + _k3 * vd - x - k1Stable * v) / k2Stable;
+                value += v * dt;
+                v += dt * (xd + _k3 * vd - value - k1Stable * v) / k2Stable;
             } break;
         }
-
-        return x;
+        return value;
     }
 
     public void OnBeforeSerialize(){}
@@ -178,7 +194,7 @@ public class Damper : ISerializationCallbackReceiver
 public static class UDamper
 {
     public static readonly float eps = 1e-5f;
-    public static readonly float3 eps3 = eps;
+    public static readonly float4 eps4 = eps;
     public static float HalfLife2Damping(float _halfLife)=> (4.0f * 0.69314718056f) / (_halfLife + eps);
     public static float Damping2HalfLife(float _damping) => (4.0f * 0.69314718056f) / (_damping + eps);
 

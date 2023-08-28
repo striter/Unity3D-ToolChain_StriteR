@@ -7,15 +7,15 @@ namespace TechToys.ThePlanet.Module.Cluster
     public class ModuleClusterManager : MonoBehaviour, IModuleControl,IModuleCornerCallback,IModuleVoxelCallback,IModuleCollapse,IModuleStructure
     {
         public GridManager m_Grid { get; set; }
-        private ObjectPoolMono<PCGID, ModuleClusterCorner> m_ClusterCorners;
-        private ObjectPoolMono<PCGID, ModuleClusterContainer> m_ClusterContainers;
+        private ObjectPoolBehaviour<PCGID, ModuleClusterCorner> m_ClusterCorners;
+        private ObjectPoolBehaviour<PCGID, ModuleClusterContainer> m_ClusterContainers;
         public IModuleStructureElement CollectStructure(PCGID _voxelID)=>m_ClusterContainers[_voxelID];
 
         private readonly List<IEnumerator> m_ClusterIterators = new List<IEnumerator>();
         public void Init()
         {
-            m_ClusterContainers = new ObjectPoolMono<PCGID, ModuleClusterContainer>(transform.Find("Voxel/Item"));
-            m_ClusterCorners = new ObjectPoolMono<PCGID, ModuleClusterCorner>(transform.Find("Corner/Item"));
+            m_ClusterContainers = new ObjectPoolBehaviour<PCGID, ModuleClusterContainer>(transform.Find("Voxel/Item"));
+            m_ClusterCorners = new ObjectPoolBehaviour<PCGID, ModuleClusterCorner>(transform.Find("Corner/Item"));
         }
 
         public void Setup()

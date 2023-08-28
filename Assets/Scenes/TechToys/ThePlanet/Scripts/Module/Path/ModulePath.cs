@@ -14,7 +14,7 @@ namespace TechToys.ThePlanet.Module.Prop
         private byte m_PathByte;
         private Mesh m_Mesh;
         private MeshRenderer m_Renderer;
-        public int Identity => m_PoolID.GetIdentity(DModule.kIDPath);
+        public int Identity => identity.GetIdentity(DModule.kIDPath);
         
         public void Init(IVoxel _voxel)
         {
@@ -23,7 +23,7 @@ namespace TechToys.ThePlanet.Module.Prop
             GetComponent<MeshFilter>().sharedMesh = m_Mesh;
             m_Mesh.MarkDynamic();
             m_Renderer = GetComponent<MeshRenderer>();
-            transform.SyncPositionRotation(_voxel.Transform);
+            transform.SyncPositionRotation(_voxel.transform);
         }
 
         public void Clear()

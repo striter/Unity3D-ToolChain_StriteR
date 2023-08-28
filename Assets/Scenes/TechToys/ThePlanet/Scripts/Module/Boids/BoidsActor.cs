@@ -9,9 +9,9 @@ namespace TechToys.ThePlanet.Module.BOIDS
         public readonly IBoidsAnimation m_Animation;
         public readonly ABoidsTarget m_Target;
         public readonly ABoidsBehaviour m_Behaviour;
-        public Vector3 Position => Transform.position;
-        public Quaternion Rotation => Transform.rotation;
-        public Vector3 Up => Transform.up;
+        public Vector3 Position => transform.position;
+        public Quaternion Rotation => transform.rotation;
+        public Vector3 Up => transform.up;
         public Vector3 Forward => m_Behaviour.m_Direction;
         public BoidsActor(Transform _transform,ABoidsBehaviour _behaviour,ABoidsTarget _target,IBoidsAnimation _animation) : base(_transform)
         {
@@ -37,8 +37,8 @@ namespace TechToys.ThePlanet.Module.BOIDS
             m_Animation.Tick(_deltaTime);
             m_Behaviour.Tick(_deltaTime,m_Target.FilterMembers(_actors),out var position,out var rotation);
             
-            Transform.position = position;
-            Transform.rotation = rotation;
+            transform.position = position;
+            transform.rotation = rotation;
         }
 #if UNITY_EDITOR
         public void DrawGizmosSelected()

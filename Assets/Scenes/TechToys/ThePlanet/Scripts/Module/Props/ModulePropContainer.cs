@@ -15,16 +15,15 @@ namespace TechToys.ThePlanet.Module.Prop
         public float m_Random { get; private set;}
         public readonly Dictionary<int, ModulePropCollapseData> m_PropIndexes = new Dictionary<int, ModulePropCollapseData>();
         public readonly List<ModulePropElement> m_Props = new List<ModulePropElement>();
-        public Transform Transform => transform;
         
-        public int Identity => m_PoolID.GetIdentity(DModule.kIDProp);
+        public int Identity => identity.GetIdentity(DModule.kIDProp);
         public Action<int> SetDirty { get; set; }
         public List<FBoidsVertex> m_ButterflyPositions { get; } = new List<FBoidsVertex>();
         
         public void Init(IVoxel _voxel)
         {
             m_Voxel = _voxel;
-            transform.SyncPositionRotation(_voxel.Transform);
+            transform.SyncPositionRotation(_voxel.transform);
             m_Random = UNoise.Value.Unit1f1(m_Voxel.Identity.GetHashCode());//float)m_Voxel.Identity.location.x/ int.MaxValue,(float)m_Voxel.Identity.location.y/int.MaxValue,(float)m_Voxel.Identity.height/byte.MaxValue);
             
         }
@@ -88,14 +87,14 @@ namespace TechToys.ThePlanet.Module.Prop
                 foreach (var prop in propSet.props)
                 {
                     var propElement= _propPool.Spawn().Init(m_Voxel,prop,orientation,DModule.Collection.m_MeshLibrary,DModule.Collection.m_MaterialLibrary,DModule.EmissionColors.RandomElement());
-                    propElement.Transform.SetParent(transform);
+                    propElement.transform.SetParent(transform);
                     m_Props.Add(propElement);
                 }
             }
             
             m_Props.Collect(p => p.m_Type == EModulePropType.Flower).Select(
                 p =>new FBoidsVertex() {
-                    position = p.Transform.position,rotation = p.Transform.rotation
+                    position = p.transform.position,rotation = p.transform.rotation
                 }).FillList(m_ButterflyPositions);
             SetDirty(Identity);
         }

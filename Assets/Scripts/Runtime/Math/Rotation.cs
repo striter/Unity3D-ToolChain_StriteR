@@ -157,4 +157,5 @@ public static partial class umath
             h * v.x * v.z - v.y, h * v.y * v.z + v.x, e * h * v.z * v.z
         );
     }
+
 }

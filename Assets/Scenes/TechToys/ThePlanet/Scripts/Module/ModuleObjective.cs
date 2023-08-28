@@ -38,7 +38,7 @@ namespace TechToys.ThePlanet.Module
     public interface IVertex
     {
         GridID Identity { get; }
-        Transform Transform { get; }
+        Transform transform { get; }
         PCGVertex Vertex { get; }
         List<Vector3> NearbyVertexPositionLS { get; }
         List<Vector3> NearbyVertexSurfaceDirectionLS { get; }
@@ -47,7 +47,7 @@ namespace TechToys.ThePlanet.Module
     public interface IQuad
     {
         GridID Identity { get; }
-        Transform Transform { get; }
+        Transform transform { get; }
         PCGQuad Quad { get; }
         TrapezoidQuad m_ShapeOS { get; }
         Quad<GridID> m_NearbyQuadCW { get;}
@@ -56,7 +56,7 @@ namespace TechToys.ThePlanet.Module
     public interface IVoxel
     { 
         PCGID Identity { get; }
-        Transform Transform { get; }
+        Transform transform { get; }
         IQuad m_Quad { get; }
         Qube<ICorner> m_Corners { get; }
         Dictionary<int,byte> m_TypedCluster { get; }
@@ -72,7 +72,7 @@ namespace TechToys.ThePlanet.Module
     {
         PCGID Identity { get; }
         int m_Type { get; }
-        Transform Transform { get; }
+        Transform transform { get; }
         IVertex m_Vertex { get; }
         List<PCGID> m_AdjacentConnectedCorners { get; }
         // List<PolyID> m_IntervalConnectedCorners { get; }

@@ -12,7 +12,7 @@ public static class UNoise
         public static float Unit1f1(float _unitValue) => frac(sin(_unitValue) * kRandomValue);
     
         static readonly float3 kRandomVec = new float3(12.0909f,89.233f,37.719f);
-        public static float Unit1f2(float2 _randomUnit) => Unit1f1(math.dot(_randomUnit, kRandomVec.to2xy()));
+        public static float Unit1f2(float2 _randomUnit) => Unit1f1(math.dot(_randomUnit, kRandomVec.xy));
         public static float Unit1f2(float _x, float _y) => Unit1f2(new float2(_x, _y));
         
         public static float Unit1f3(float3 _random) => Unit1f1(dot(_random, kRandomVec));

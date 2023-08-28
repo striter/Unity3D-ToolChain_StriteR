@@ -361,7 +361,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.States.Bird
                     var actionPossibility = URandom.Random01();
                     if (m_Config.alertMovePossibility > actionPossibility)
                     {
-                        DoPoop(_actor.m_Identity);
+                        DoPoop(_actor.identity);
                         SetState(_actor,EPerchingState.Move);
                         return false;
                     }

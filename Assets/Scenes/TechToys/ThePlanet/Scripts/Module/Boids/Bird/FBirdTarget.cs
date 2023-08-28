@@ -9,7 +9,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.Bird
         private FBirdFlock m_Flocking;
         public FBirdPerchingRoot m_Perching { get; private set; }
         public BoidsActor m_Leader => m_Flock[m_Flocking.leader];
-        public bool m_IsLeader => m_Actor.m_Identity == m_Flocking.leader;
+        public bool m_IsLeader => m_Actor.identity == m_Flocking.leader;
         
         public FBirdTarget(FBOIDS_Bird _flock)
         {
@@ -50,7 +50,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.Bird
 
             if (m_Perching != null)
             {
-                SetTarget( m_Perching.SwitchRandomSpot(m_Actor.m_Identity));
+                SetTarget( m_Perching.SwitchRandomSpot(m_Actor.identity));
                 return true;
             }
             
@@ -61,7 +61,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.Bird
         {
             if (m_Perching == null)
                 return false;
-            SetTarget(m_Perching.SwitchRandomSpot(m_Actor.m_Identity));
+            SetTarget(m_Perching.SwitchRandomSpot(m_Actor.identity));
             return true;
         }
     }

@@ -22,7 +22,7 @@ namespace Geometry
         public static readonly Quad<float3> k3SquareBottomLeft = new Quad<float3>(Vector3.zero,Vector3.forward,Vector3.forward+Vector3.right,Vector3.right);
         public static readonly Quad<float3> k3SquareCentered45Deg = new Quad<float3>(Vector3.back,Vector3.left,Vector3.forward,Vector3.right);
         
-        public static readonly Quad<float2> k2SquareCentered = k3SquareCentered.Convert(p=>p.to2xz());
+        public static readonly Quad<float2> k2SquareCentered = k3SquareCentered.Convert(p=>p.xz);
     }
     
     public static partial class UQuad
@@ -69,13 +69,10 @@ namespace Geometry
             return (_quad[patch.i0], _quad[patch.i1]);
         }
 
-        public static float2 GetUV(this Quad<float2>  _quad, float2 _position)
-        {
-            return umath.invBilinearLerp(_quad.vB,_quad.vL,_quad.vF,_quad.vR,_position);
-        }
-
-        public static Vector2 GetPoint(this Quad<Vector2> _quad, float _u,float _v)=>umath.bilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _u,_v);
+        public static float2 GetUV(this Quad<float2>  _quad, float2 _position) => umath.invBilinearLerp(_quad.vB,_quad.vL,_quad.vF,_quad.vR,_position);
+        public static float2 GetPoint(this Quad<float2> _quad, float _u,float _v)=>umath.bilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _u,_v);
         public static float GetPoint(this Quad<float> _quad, float _u,float _v)=>umath.bilinearLerp(_quad.vB, _quad.vL, _quad.vF, _quad.vR, _u,_v);
+        
         
         public static Quad<float3> Resize(this Quad<float3> _quad, float _shrinkScale) 
         {

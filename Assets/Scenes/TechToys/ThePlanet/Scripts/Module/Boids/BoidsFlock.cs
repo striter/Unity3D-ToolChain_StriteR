@@ -8,12 +8,12 @@ namespace TechToys.ThePlanet.Module.BOIDS
 {
     public abstract class BoidsFlock<TBoidsBehaviour,TBoidsTarget>:ITransformHandle where TBoidsBehaviour:ABoidsBehaviour where TBoidsTarget:ABoidsTarget
     {
-        public Transform Transform { get; private set; }
+        public Transform transform { get; }
         public BoidsActor this[int _index] => m_Actors[_index];
         private readonly ObjectPoolClass<int, BoidsActor> m_Actors;
         public BoidsFlock(Transform _transform)
         {
-            Transform = _transform;
+            transform = _transform;
             m_Actors = new ObjectPoolClass<int, BoidsActor>(_transform.Find("Actor"),GetParameters);
         }
 
@@ -51,7 +51,7 @@ namespace TechToys.ThePlanet.Module.BOIDS
         {
             Gizmos.matrix = Matrix4x4.identity;
             Gizmos.color = Color.white;
-            m_Actors?.Collect(p=>UnityEditor.Selection.activeObject==p.Transform.gameObject).Traversal(p=>p.DrawGizmosSelected());
+            m_Actors?.Collect(p=>UnityEditor.Selection.activeObject==p.transform.gameObject).Traversal(p=>p.DrawGizmosSelected());
         }
 #endif
     }

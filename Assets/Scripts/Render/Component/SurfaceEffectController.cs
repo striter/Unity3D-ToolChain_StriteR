@@ -231,24 +231,26 @@ public class FadeElement:ITransformHandle,IPoolCallback<int>
     }
     FadeMesh[] m_Renderers;
     GameObject[] m_AnimateObjects;
-    public Transform Transform { get; }
+    public Transform transform { get; }
     public EntityEffectAnimation m_Animation;
     public Vector3 m_Position { get; private set; }
     public Quaternion m_Rotation { get; private set; }
     public Vector3 m_Velocity { get; private set; }
 
-    public void OnPoolCreate(Action<int> _doRecycle)
+    public Action<int> DoRecycle { get; set; }
+    public int identity { get; set; }
+
+    public void OnPoolCreate()
     {
     }
 
-    public void OnPoolSpawn(int _identity)
+    public void OnPoolSpawn()
     {
     }
-
-    
+        
     public FadeElement(Transform _transform, Renderer[] _renderers, MeshFilter[] _filters)
     {
-        Transform = _transform;
+        transform = _transform;
         m_Renderers = new FadeMesh[_renderers.Length];
         m_AnimateObjects = new GameObject[_renderers.Length];
         for (int i = 0; i < _renderers.Length; i++)
@@ -286,8 +288,8 @@ public class FadeElement:ITransformHandle,IPoolCallback<int>
 
     public void Play(EntityEffectAnimation _animation, Vector3 _velocity, Renderer[] _renderers)
     {
-        m_Position = Transform.position;
-        m_Rotation = Transform.rotation;
+        m_Position = transform.position;
+        m_Rotation = transform.rotation;
         m_Velocity = _velocity;
         m_Animation = _animation;
         for (int i = 0; i < _renderers.Length; i++)
@@ -304,10 +306,11 @@ public class FadeElement:ITransformHandle,IPoolCallback<int>
     public bool Tick(float _deltaTime)
     {
         m_Animation.Tick(_deltaTime,m_AnimateObjects,out var recycle);
-        Transform.position = m_Position + m_Velocity * m_Animation.timeElapsed;
-        Transform.rotation = m_Rotation;
+        transform.position = m_Position + m_Velocity * m_Animation.timeElapsed;
+        transform.rotation = m_Rotation;
         return recycle;   
     }
+
 
     public void OnPoolRecycle()
     {

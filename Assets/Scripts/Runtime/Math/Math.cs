@@ -70,6 +70,7 @@ public static partial class umath
     public static float sqr(float _src) => _src * _src;
     public static float2 sqr(float2 _src) => _src * _src;
     public static float3 sqr(float3 _src) => _src * _src;
+    public static float4 sqr(float4 _src) => _src * _src;
     
     public static float pow2(float _src) => _src * _src;
     public static float pow3(float _src) => _src * _src* _src;
@@ -87,6 +88,9 @@ public static partial class umath
         return EAxis.Y;
     }
     
+    public static float2 bilinearLerp(float2 tl, float2 tr, float2 br, float2 bl,float2 p)=> tl + (tr - tl) * p.x + (bl - tl) * p.y + (tl - tr + br - bl) * (p.x * p.y);
+    public static float3 bilinearLerp(float3 tl, float3 tr, float3 br, float3 bl,float2 p)=> tl + (tr - tl) * p.x + (bl - tl) * p.y + (tl - tr + br - bl) * (p.x * p.y);
+
     public static float3 bilinearLerp(float3 tl, float3 tr, float3 br, float3 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
     public static float2 bilinearLerp(float2 tl, float2 tr, float2 br, float2 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
     public static float bilinearLerp(float tl, float tr, float br, float bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
@@ -96,9 +100,9 @@ public static partial class umath
         var f = bl - tl;
         var g = tl - tr + br - bl;
         var h = p - tl;
-        var k2 = umath.cross(g,f);
-        var k1 = umath.cross(e, f);
-        var k0 = umath.cross(h, e);
+        var k2 = cross(g,f);
+        var k1 = cross(e, f);
+        var k0 = cross(h, e);
         if (Mathf.Abs(k2) > float.Epsilon)
         {
             float w = k1 * k1 - 4f * k0 * k2;
@@ -122,8 +126,7 @@ public static partial class umath
             return new Vector2(u,v);
         }
     }
-
-
+    
     public static Matrix4x4 add(this Matrix4x4 _src, Matrix4x4 _dst)
     {
         Matrix4x4 dst = Matrix4x4.identity;
@@ -202,12 +205,13 @@ public static partial class umath
         return num;
     }
 
-    public static float3 deltaAngle(float3 _x, float3 _xd)
+    public static float4 deltaAngle(float4 _x, float4 _xd)
     {
-        return new float3(
+        return new float4(
             deltaAngle(_x.x, _xd.x),
             deltaAngle(_x.y, _xd.y),
-            deltaAngle(_x.z, _xd.z)
+            deltaAngle(_x.z, _xd.z),
+            deltaAngle(_x.w, _xd.w)
         );
     }
 

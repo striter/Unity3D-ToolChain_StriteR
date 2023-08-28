@@ -9,8 +9,7 @@ namespace TechToys.ThePlanet.Module
 {
     public class ModuleQuad : PoolBehaviour<GridID>,IQuad
     {
-        public GridID Identity => m_PoolID;
-        public Transform Transform => transform;
+        public GridID Identity => identity;
         public Quad<GridID> m_NearbyQuadCW { get; private set; }
         public TrapezoidQuad m_ShapeOS { get; private set; }
         public PCGQuad Quad { get; private set; }

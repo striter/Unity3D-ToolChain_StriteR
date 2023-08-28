@@ -67,15 +67,10 @@ public static partial class umath       //Swizzling
 {
     public static float3 to3xy(this float2 _value, float _z = 0) => new float3(_value, _z);
     public static float3 to3xz(this float2 _value, float _y = 0) => new float3(_value.x, _y,_value.y);
-
-    public static float2 to2xy(this float3 _value) => new float2(_value.x, _value.y);
-    public static float2 to2xz(this float3 _value) => new float2(_value.x, _value.z);
     
     public static float4 to4(this float2 _value, float _z=0,float _w=0) => new float4(_value, _z,_w);
     public static float4 to4(this float3 _value, float _w=0) => new float4(_value, _w);
 
-    public static float3 to3xyz(this float4 _value) => new float3(_value.x,_value.y,_value.z);
-    
     public static float3 setY(this float3 _value, float _y) => new float3(_value.x, _y, _value.z);
     
     public static float magnitude(this float2 _value) => math.length(_value);
@@ -83,7 +78,7 @@ public static partial class umath       //Swizzling
     public static float magnitude(this float4 _value) => math.length(_value);
     
     public static float sqrmagnitude(this float2 _value) => math.lengthsq(_value);
-    public static float sqrMagnitude(this float3 _value) => math.lengthsq(_value);
+    public static float sqrmagnitude(this float3 _value) => math.lengthsq(_value);
     public static float sqrmagnitude(this float4 _value) => math.lengthsq(_value);
 
     public static float sum(this float2 _value) => _value.x + _value.y;
@@ -120,7 +115,10 @@ public static partial class umath       //Swizzling
     public static float convert(this float _src, Func<float, float> _func) => _func(_src);
     public static float2 convert(this float2 _src, Func<float, float> _func) => new float2(_func(_src.x),_func(_src.y));
     public static float3 convert(this float3 _src, Func<float, float> _func) => new float3(_func(_src.x),_func(_src.y),_func(_src.z));
+    public static float4 convert(this float4 _src, Func<float, float> _func) => new float4(_func(_src.x),_func(_src.y),_func(_src.z),_func(_src.w));
+    
     public static float3 convert(this float3 _src, Func<int,float, float> _func) => new float3(_func(0,_src.x),_func(1,_src.y),_func(2,_src.z));
+    public static float4 convert(this float4 _src, Func<int,float, float> _func) => new float4(_func(0,_src.x),_func(1,_src.y),_func(2,_src.z),_func(3,_src.z));
 
 
     public static float2 cross(this float2 _src) => new float2(_src.y,-_src.x);

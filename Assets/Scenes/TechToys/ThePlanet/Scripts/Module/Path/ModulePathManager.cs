@@ -11,7 +11,7 @@ namespace TechToys.ThePlanet.Module.Path
     {
         public GridManager m_Grid { get; set; }
 
-        private ObjectPoolMono<PCGID, ModulePath> m_Paths;
+        private ObjectPoolBehaviour<PCGID, ModulePath> m_Paths;
         public IModuleStructureElement CollectStructure(PCGID _voxelID)=> m_Paths[_voxelID];
         
         private readonly List<PCGID> m_VoxelPathPropaganda = new List<PCGID>();
@@ -20,7 +20,7 @@ namespace TechToys.ThePlanet.Module.Path
 
         public void Init()
         {
-            m_Paths = new ObjectPoolMono<PCGID, ModulePath>(transform.Find("Item"));
+            m_Paths = new ObjectPoolBehaviour<PCGID, ModulePath>(transform.Find("Item"));
         }
 
         public void Setup()
@@ -180,7 +180,7 @@ namespace TechToys.ThePlanet.Module.Path
                         continue;
 
                     Gizmos.color = UColor.IndexToColor(i);
-                    UGizmos.DrawLine(collapse.m_Voxel.Transform.position, m_Paths[collapse.m_Voxel.m_CubeSides[i]].transform.position, .4f);
+                    UGizmos.DrawLine(collapse.m_Voxel.transform.position, m_Paths[collapse.m_Voxel.m_CubeSides[i]].transform.position, .4f);
                 }
 
                 index++;

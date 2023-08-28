@@ -83,7 +83,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.Butterfly
                 for (int i = 0; i < random; i++)
                 {
                     var actor = SpawnActor();
-                    var spot = attraction.AssignSpot(actor.m_Identity);
+                    var spot = attraction.AssignSpot(actor.identity);
                     actor.Initialize(spot);
                 }
                 break;

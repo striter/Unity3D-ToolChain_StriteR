@@ -12,7 +12,7 @@ namespace TechToys.ThePlanet.Module.Prop
     public class ModulePropManager : MonoBehaviour,IModuleControl,IModuleVoxelCallback,IModuleCollapse,IModuleStructure
     {
         public GridManager m_Grid { get; set; }
-        private ObjectPoolMono<PCGID, ModulePropContainer> m_PropContainers;
+        private ObjectPoolBehaviour<PCGID, ModulePropContainer> m_PropContainers;
         private ObjectPoolClass<int, ModulePropElement> m_PropElements;
         public IModuleStructureElement CollectStructure(PCGID _voxels)=>m_PropContainers[_voxels];
 
@@ -24,7 +24,7 @@ namespace TechToys.ThePlanet.Module.Prop
         public void OnVoxelDeconstruct(PCGID _voxelID)=>m_PropContainers.Recycle(_voxelID);
         public void Init()
         {
-            m_PropContainers = new ObjectPoolMono<PCGID, ModulePropContainer>(transform.Find("Container/Item"));
+            m_PropContainers = new ObjectPoolBehaviour<PCGID, ModulePropContainer>(transform.Find("Container/Item"));
             m_PropElements = new ObjectPoolClass<int, ModulePropElement>(transform.Find("Element/Item"));
         }
 
@@ -52,7 +52,7 @@ namespace TechToys.ThePlanet.Module.Prop
             foreach (var element in m_PropElements)
             {
                 if(element.TickRecycle(_deltaTime))
-                    recycleList.Add(element.m_Identity);
+                    recycleList.Add(element.identity);
             }
 
             foreach (var recycleElement in recycleList)
@@ -201,7 +201,7 @@ namespace TechToys.ThePlanet.Module.Prop
         
         void DrawSelectedProps()
         {
-            ModulePropContainer selectedContainer = m_PropContainers.Find(p=>p.m_Props.Any(p=>p.Transform.gameObject == Selection.activeObject));
+            ModulePropContainer selectedContainer = m_PropContainers.Find(p=>p.m_Props.Any(p=>p.transform.gameObject == Selection.activeObject));
             if (selectedContainer == null)
                 return;
 
@@ -224,7 +224,7 @@ namespace TechToys.ThePlanet.Module.Prop
             Gizmos.color = Color.white;
             foreach (var prop in selectedContainer.m_Props)
             {
-                var position = prop.Transform.position;
+                var position = prop.transform.position;
                 Gizmos.DrawWireSphere(position,.1f);
                 Gizmos.DrawLine(selectedContainer.transform.position,position);
             }

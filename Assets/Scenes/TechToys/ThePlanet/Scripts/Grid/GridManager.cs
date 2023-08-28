@@ -85,7 +85,7 @@ namespace TechToys.ThePlanet
             if (distance < 0)
                 return false;
             var hitPos = _ray.GetPoint(distance);
-            var nearestVertex = m_Vertices.Values.MinElement(p => (hitPos - p.m_Position).sqrMagnitude());
+            var nearestVertex = m_Vertices.Values.MinElement(p => (hitPos - p.m_Position).sqrmagnitude());
             _vertexID = nearestVertex?.m_Identity ?? -1;
             return nearestVertex!=null;
         }

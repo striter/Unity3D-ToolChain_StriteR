@@ -261,11 +261,11 @@ namespace TechToys.ThePlanet
     public class PilePool<Y> : IEnumerable<Y> where Y : PoolBehaviour<PCGID>
     {
         private readonly Dictionary<GridID, List<byte>> m_Piles = new Dictionary<GridID, List<byte>>();
-        readonly ObjectPoolMono<PCGID, Y> m_Pool;
+        readonly ObjectPoolBehaviour<PCGID, Y> m_Pool;
 
         public PilePool(Transform _transform)
         {
-            m_Pool = new ObjectPoolMono<PCGID, Y>(_transform);
+            m_Pool = new ObjectPoolBehaviour<PCGID, Y>(_transform);
         }
         public bool Contains(PCGID _pcgid)
         {

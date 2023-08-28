@@ -84,8 +84,10 @@ namespace Geometry
         }
         public float2 Center => center;
         public static G2Box operator /(G2Box _bounds,float2 _div) => new G2Box(_bounds.center/_div,_bounds.extent/_div);
+        public static G2Box operator -(G2Box _bounds,float2 _minus) => new G2Box(_bounds.center - _minus,_bounds.extent);
 
         public GBox To3XZ() => new GBox(center.to3xz(),extent.to3xz());
+        public GBox To3XY() => new GBox(center.to3xy(),extent.to3xy());
         public override string ToString() => $"G2Box {center} {extent}";
     }
 

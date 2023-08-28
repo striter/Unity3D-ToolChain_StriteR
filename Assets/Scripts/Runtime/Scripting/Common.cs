@@ -93,6 +93,7 @@ public struct RangeFloat
 
     public static readonly RangeFloat k01 = new RangeFloat(0f,1f);
     public float Clamp(float _value)=>math.clamp(_value,start,end);
+    public float GetValue(float _normalized) => (start + length * _normalized);
 }
 
 [Serializable]

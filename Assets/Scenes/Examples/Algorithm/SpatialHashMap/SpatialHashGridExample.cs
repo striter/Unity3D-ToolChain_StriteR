@@ -94,10 +94,10 @@ namespace Examples.Algorithm.SpatialHashGrid
 
     public class Actor:ITransformHandle,ITransform
     {
-        public Transform Transform { get; }
+        public Transform transform { get; }
         public Vector3 position { get; private set; }
         public Vector3 direciton { get; private set; }
-        public Actor(Transform _transform){Transform = _transform;}
+        public Actor(Transform _transform){transform = _transform;}
         private MeshRenderer m_Renderer;
         private MaterialPropertyBlock m_Block;
         public Actor Init(Vector3 _position,Vector3 _direction)
@@ -105,7 +105,7 @@ namespace Examples.Algorithm.SpatialHashGrid
             m_Block = new MaterialPropertyBlock();
             position = _position;
             direciton = _direction;
-            m_Renderer = Transform.GetComponent<MeshRenderer>();
+            m_Renderer = transform.GetComponent<MeshRenderer>();
             return this;
         }
         
@@ -113,7 +113,7 @@ namespace Examples.Algorithm.SpatialHashGrid
         {
             Quaternion rotation = Quaternion.LookRotation(direciton,Vector3.up);
             position += direciton * Instance.m_Velocity * _deltaTime;
-            Transform.SetPositionAndRotation(position,rotation);
+            transform.SetPositionAndRotation(position,rotation);
 
             Vector3 separation = Vector3.zero;
             Vector3 com = Vector3.zero;
@@ -151,5 +151,6 @@ namespace Examples.Algorithm.SpatialHashGrid
             m_Block.SetColor(KShaderProperties.kColor,_color);
             m_Renderer.SetPropertyBlock(m_Block);
         }
+
     }
 }

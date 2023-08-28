@@ -103,8 +103,16 @@ public static class UCollection
             }
         }
 
-        public static void Traversal<T>(this IEnumerable<T> _collection, Action<T> _onEach)
+        public static void Traversal<T>(this IEnumerable<T> _collection, Action<T> _onEach, bool _copy = false)
         {
+            List<T> tempList = null;
+            if (_copy)
+            {
+                tempList = TSPoolList<T>.Spawn();
+                tempList.AddRange(_collection);
+                _collection = tempList;
+            }
+
             if (_collection is IList<T> list)
             {
                 int count = list.Count;
@@ -116,6 +124,9 @@ public static class UCollection
                 foreach (T element in _collection)
                     _onEach(element);
             }
+            
+            if(tempList != null)
+                TSPoolList<T>.Recycle(tempList);
         }
         public static void Traversal<T>(this IEnumerable<T> _collection, Action<int,T> _onEach)
         {

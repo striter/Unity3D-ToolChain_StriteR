@@ -169,9 +169,9 @@ public partial class TouchConsole
         Text m_Info;
         public LogTransformHandle(Transform _transform) : base(_transform)
         {
-            m_Type = Transform.Find("Type").GetComponent<Image>();
-            m_Info = Transform.Find("Message").GetComponent<Text>();
-            m_Stack = Transform.GetComponent<Button>();
+            m_Type = transform.Find("Type").GetComponent<Image>();
+            m_Info = transform.Find("Message").GetComponent<Text>();
+            m_Stack = transform.GetComponent<Button>();
         }
 
         public LogTransformHandle Init(LogData _data, Action<LogData> OnStackClick)

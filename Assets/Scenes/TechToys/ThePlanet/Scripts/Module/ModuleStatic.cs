@@ -132,8 +132,8 @@ namespace TechToys.ThePlanet.Module
             public override StaticElement Init(PCGQuad _quad)
             {
                 Vector2 randomPos = URandom.Random2DSphere();
-                Transform.SetPositionAndRotation(_quad.m_ShapeWS.GetPoint(randomPos.x,randomPos.y),_quad.rotation);
-                Transform.localScale = Vector3.one * (RangeFloat.k01.Random() * .2f + .8f);
+                transform.SetPositionAndRotation(_quad.m_ShapeWS.GetPoint(randomPos.x,randomPos.y),_quad.rotation);
+                transform.localScale = Vector3.one * (RangeFloat.k01.Random() * .2f + .8f);
                 return base.Init(_quad);
             }
         }

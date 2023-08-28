@@ -46,9 +46,9 @@ namespace TheVoxel
         private EDirtyVoxels m_DirtyVoxels;
         private int m_SideCount;
 
-        public override void OnPoolCreate(Action<Int2> _doRecycle)
+        public override void OnPoolCreate()
         {
-            base.OnPoolCreate(_doRecycle);
+            base.OnPoolCreate();
             m_Filter = GetComponent<MeshFilter>();
             m_Mesh = new Mesh(){name = "Chunk Mesh",hideFlags = HideFlags.HideAndDontSave};
             m_Mesh.MarkDynamic();
@@ -67,10 +67,10 @@ namespace TheVoxel
             m_Values.Dispose();
         }
         
-        public override void OnPoolSpawn(Int2 _identity)
+        public override void OnPoolSpawn()
         {
-            base.OnPoolSpawn(_identity);
-            transform.position = DVoxel.GetChunkPositionWS(m_PoolID);
+            base.OnPoolSpawn();
+            transform.position = DVoxel.GetChunkPositionWS(identity);
             m_Status = EChunkDirty.Generation;
             m_DirtyVoxels = EDirtyVoxels.Nothing;
         }
@@ -88,10 +88,10 @@ namespace TheVoxel
                 m_Status &= int.MaxValue - EChunkDirty.Generation;
                 PopulateImplicit();
                 SetDirty(EDirtyVoxels.Everything);
-                _chunks.GetValueOrDefault(m_PoolID + Int2.kForward)?.SetDirty(EDirtyVoxels.Back);
-                _chunks.GetValueOrDefault(m_PoolID + Int2.kBack)?.SetDirty(EDirtyVoxels.Forward);
-                _chunks.GetValueOrDefault(m_PoolID + Int2.kLeft)?.SetDirty(EDirtyVoxels.Right);
-                _chunks.GetValueOrDefault(m_PoolID + Int2.kRight)?.SetDirty(EDirtyVoxels.Left);
+                _chunks.GetValueOrDefault(identity + Int2.kForward)?.SetDirty(EDirtyVoxels.Back);
+                _chunks.GetValueOrDefault(identity + Int2.kBack)?.SetDirty(EDirtyVoxels.Forward);
+                _chunks.GetValueOrDefault(identity + Int2.kLeft)?.SetDirty(EDirtyVoxels.Right);
+                _chunks.GetValueOrDefault(identity + Int2.kRight)?.SetDirty(EDirtyVoxels.Left);
                 return;
             }
 
@@ -126,7 +126,7 @@ namespace TheVoxel
         
         void PopulateImplicit()
         {
-            new ImplicitJob(m_PoolID,m_Indexes,m_Keys,m_Values).ScheduleParallel(1,1,default).Complete();
+            new ImplicitJob(identity,m_Indexes,m_Keys,m_Values).ScheduleParallel(1,1,default).Complete();
         }
 
         [BurstCompile(FloatPrecision.Standard, FloatMode.Fast, CompileSynchronously = true)]
@@ -240,10 +240,10 @@ namespace TheVoxel
 
         void PopulateRelation(Dictionary<Int2,ChunkElement> _chunks)
         {
-            var back = _chunks.TryGetValue(m_PoolID + Int2.kBack, out var backChunk);
-            var left = _chunks.TryGetValue(m_PoolID + Int2.kLeft, out var leftChunk);
-            var forward = _chunks.TryGetValue(m_PoolID + Int2.kForward, out var forwardChunk);
-            var right = _chunks.TryGetValue(m_PoolID + Int2.kRight, out var rightChunk);
+            var back = _chunks.TryGetValue(identity + Int2.kBack, out var backChunk);
+            var left = _chunks.TryGetValue(identity + Int2.kLeft, out var leftChunk);
+            var forward = _chunks.TryGetValue(identity + Int2.kForward, out var forwardChunk);
+            var right = _chunks.TryGetValue(identity + Int2.kRight, out var rightChunk);
             
             var emptyIndexes = new NativeHashMap<Int3, int>(0,Allocator.Persistent);
             var emptyValues = new NativeList<ChunkVoxel>(0, Allocator.Persistent);

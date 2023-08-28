@@ -34,6 +34,8 @@ namespace Geometry.Validation
             public static float2 Eval(GRay _ray,GBox _box)
             {
                 Ray.AABBCalculate(_ray,_box, out float3 tmin, out float3 tmax);
+                if (tmin.maxElement() > tmax.minElement())
+                    return -1;
                 float dstA = math.max(math.max(tmin.x, tmin.y), tmin.z);
                 float dstB = math.min(tmax.x, math.min(tmax.y, tmax.z));
                 float dstToBox = math.max(0, dstA);

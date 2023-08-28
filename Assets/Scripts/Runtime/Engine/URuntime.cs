@@ -73,6 +73,7 @@ public static class URuntime
     {
         foreach (Transform childTransform in _trans.gameObject.GetComponentsInChildren<Transform>(_includeInactive))
             if (_predicate(childTransform)) yield return childTransform;
+        yield return null;
     }
 
     public static T Find<T>(this T[,] array, Predicate<T> predicate)

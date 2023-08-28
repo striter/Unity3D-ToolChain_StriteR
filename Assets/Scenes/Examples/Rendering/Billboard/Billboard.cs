@@ -10,7 +10,6 @@ namespace Examples.Rendering.Billboard
     {
         private Transform m_CameraRoot;
         private ObjectPoolTransform m_TerrainPool;
-
         private float m_Forward;
         private int m_Index;
         private void Awake()

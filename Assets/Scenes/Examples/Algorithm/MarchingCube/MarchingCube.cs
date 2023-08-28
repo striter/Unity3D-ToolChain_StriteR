@@ -189,7 +189,7 @@ namespace Examples.Algorithm.MarchingCube
     public class MarchingCubeActor:ITransformHandle
     {
         private readonly Transform m_CameraAttacher;
-        public Transform Transform { get; }
+        public Transform transform { get; }
 
         private Vector3 position;
         private Vector2 pitchYaw;
@@ -197,7 +197,7 @@ namespace Examples.Algorithm.MarchingCube
         private Vector2 m_MoveDelta;
         public MarchingCubeActor(Transform _transform)
         {
-            Transform = _transform;
+            transform = _transform;
             position = Vector3.zero;
             pitchYaw = Vector2.zero;
             m_CameraAttacher = _transform.Find("CameraAttacher");
@@ -239,8 +239,9 @@ namespace Examples.Algorithm.MarchingCube
             position +=  (forward * m_MoveDelta.y+right*m_MoveDelta.x) * _deltaTime * 3f;
             
             m_CameraAttacher.rotation=rotation;
-            Transform.SetPositionAndRotation(position,rotation);
+            transform.SetPositionAndRotation(position,rotation);
         }
+
     }
 
     public class Grid

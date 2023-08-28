@@ -6,11 +6,12 @@ using UnityEngine;
 
 public class FBirdPoop : ITransformHandle , IPoolCallback<int>
 {
-    public Transform Transform { get; }
+    public Transform transform { get; }
 
     private Counter m_PoopRecycler = new Counter(15f);
-    private Action<int> DoRecycle;
-    private int m_Identity;
+    public Action<int> DoRecycle { get; set; }
+    public int identity { get; set; }
+
     private MeshRenderer m_Mesh;
     private MaterialPropertyBlock m_Block = new MaterialPropertyBlock();
     private Color m_BaseColor;
@@ -21,25 +22,24 @@ public class FBirdPoop : ITransformHandle , IPoolCallback<int>
     
     public FBirdPoop(Transform _transform)
     {
-        Transform = _transform;
+        transform = _transform;
         m_Mesh = _transform.GetComponentInChildren<MeshRenderer>();
         m_BaseColor = m_Mesh.sharedMaterial.GetColor(KShaderProperties.kColor);
     }
-    public void OnPoolCreate(Action<int> _doRecycle)
+
+    public void OnPoolCreate()
     {
-        DoRecycle = _doRecycle;
     }
 
-    public void OnPoolSpawn(int _identity)
+    public void OnPoolSpawn()
     {
-        m_Identity = _identity;
         m_PoopRecycler.Replay();
     }
 
     public FBirdPoop Initialize(Vector3 _positionWS,Quaternion _rotationWS,Transform _stickOnTo)
     {
-        Transform.position = _positionWS;
-        Transform.rotation = _rotationWS;
+        transform.position = _positionWS;
+        transform.rotation = _rotationWS;
         m_Sticking = _stickOnTo;
         if (!m_Sticking)
             return this;
@@ -52,14 +52,14 @@ public class FBirdPoop : ITransformHandle , IPoolCallback<int>
     public void Tick(float _deltaTime)
     {
         if (m_PoopRecycler.TickTrigger(_deltaTime))
-            DoRecycle(m_Identity);
+            DoRecycle(identity);
         m_Block.SetColor(KShaderProperties.kColor,m_BaseColor.SetA(m_PoopRecycler.m_TimeLeftScale));
         m_Mesh.SetPropertyBlock(m_Block);
 
         if (m_Sticking == null)
             return;
         var localToWorldMatrix = m_Sticking.localToWorldMatrix;
-        Transform.SetPositionAndRotation(localToWorldMatrix.MultiplyPoint(m_LocalPosition),localToWorldMatrix.rotation*m_LocalRotation);
+        transform.SetPositionAndRotation(localToWorldMatrix.MultiplyPoint(m_LocalPosition),localToWorldMatrix.rotation*m_LocalRotation);
     }
 
     public void OnPoolRecycle()

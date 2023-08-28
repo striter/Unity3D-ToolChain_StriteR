@@ -36,7 +36,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.Bird
         {
             int[] actors = new int[_flockSize];
             for (int i = 0; i < _flockSize; i++)
-                actors[i] = SpawnActor().m_Identity;
+                actors[i] = SpawnActor().identity;
 
             var flocks = new FBirdFlock(actors, _elapseTime);
             m_Flocks.Add(flocks.leader, flocks);
@@ -62,7 +62,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.Bird
                     if (!perching.LandingAvailable)
                         continue;
 
-                    var vertex = perching.SwitchRandomSpot(actor.m_Identity);
+                    var vertex = perching.SwitchRandomSpot(actor.identity);
                     actor.Initialize(vertex);
                     (actor.m_Behaviour as FBirdBehaviour).Initialize(EBirdBehaviour.Perching);
                     (actor.m_Target as FBirdTarget).Initialize(flock, perching);
@@ -115,7 +115,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.Bird
             var target = poopActor.m_Target as FBirdTarget;
             Transform perchingRoot = null;
             if (target.m_Perching != null)
-                perchingRoot = target.m_Perching?.m_Root.Transform;
+                perchingRoot = target.m_Perching?.m_Root.transform;
             m_Poops.Spawn().Initialize(poopActor.Position, poopActor.Rotation, perchingRoot);
         }
         protected override FBirdBehaviour GetController() => new FBirdBehaviour(m_BirdConfig, Poop);
@@ -158,7 +158,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.Bird
             TSPoolHashset<int>.Spawn(out var iteratedSet);
             foreach (var actor in m_PerchingRoots[_root].ActiveActors())
             {
-                var flock = (this[actor].m_Target as FBirdTarget).m_Leader.m_Identity;
+                var flock = (this[actor].m_Target as FBirdTarget).m_Leader.identity;
                 if (iteratedSet.Contains(flock))
                     continue;
                 yield return flock;

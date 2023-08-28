@@ -65,7 +65,7 @@ namespace Examples.Rendering.WaveInteraction
                     new GPlane(Vector3.up, m_WaterMesh.transform.position), out var hitPoint))
             {
                 m_Destination = hitPoint;
-                if((m_Destination - m_Position).sqrMagnitude() > 0)
+                if((m_Destination - m_Position).sqrmagnitude() > 0)
                     m_Forward = (m_Destination - m_Position).normalize();
             }
                 

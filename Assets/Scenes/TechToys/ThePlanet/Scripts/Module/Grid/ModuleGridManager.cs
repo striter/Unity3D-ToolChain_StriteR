@@ -15,15 +15,15 @@ namespace TechToys.ThePlanet.Module
         
         private readonly Stack<ModuleCollapsePropagandaChain> m_PropagandaChains = new Stack<ModuleCollapsePropagandaChain>(12);
         //Local actors
-        private ObjectPoolMono<GridID, ModuleVertex> m_GridVertices;
-        private ObjectPoolMono<GridID,ModuleQuad> m_GridQuads;
+        private ObjectPoolBehaviour<GridID, ModuleVertex> m_GridVertices;
+        private ObjectPoolBehaviour<GridID,ModuleQuad> m_GridQuads;
         private PilePool<ModuleCorner> m_Corners;
         private PilePool<ModuleVoxel> m_Voxels;
 
         public void Init()
         {
-            m_GridVertices = new ObjectPoolMono<GridID, ModuleVertex>(transform.Find("Vertex/Item"));
-            m_GridQuads = new ObjectPoolMono<GridID,ModuleQuad>(transform.Find("Quad/Item"));
+            m_GridVertices = new ObjectPoolBehaviour<GridID, ModuleVertex>(transform.Find("Vertex/Item"));
+            m_GridQuads = new ObjectPoolBehaviour<GridID,ModuleQuad>(transform.Find("Quad/Item"));
             m_Corners = new PilePool<ModuleCorner>(transform.Find("Corner/Item"));
             m_Voxels = new PilePool<ModuleVoxel>(transform.Find("Voxel/Item"));
         }
@@ -533,7 +533,7 @@ namespace TechToys.ThePlanet.Module
                         {
                             Gizmos.color = UColor.IndexToColor(i%4);
                             if (voxel.m_Corners[i]!=null)
-                                UGizmos.DrawLine(voxel.transform.position,voxel.m_Corners[i].Transform.position,.8f);
+                                UGizmos.DrawLine(voxel.transform.position,voxel.m_Corners[i].transform.position,.8f);
                         }
                     }
 

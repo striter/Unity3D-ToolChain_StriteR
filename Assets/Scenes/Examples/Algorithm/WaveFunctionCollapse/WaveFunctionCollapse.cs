@@ -11,14 +11,14 @@ namespace Examples.Algorithm.WaveFunctionCollapse
     public class WaveFunctionCollapse : MonoBehaviour
     {
         public int m_ResolvePerFrame = 1;
-        private ObjectPoolMono<int,WaveFunctionContainer>[] m_PossibilitiesPool;
+        private ObjectPoolBehaviour<int,WaveFunctionContainer>[] m_PossibilitiesPool;
         private ObjectPoolClass<int,WFCTileContainer> m_ObjectPool;
         private readonly Dictionary<Int2, WFCTileContainer> m_Axis=new();
         private readonly List<Int2> m_NoneFinalized=new();
         private void Awake()
         {
             m_ObjectPool = new ObjectPoolClass<int,WFCTileContainer>(transform.Find("Grids/Container"));
-            m_PossibilitiesPool = transform.Find("Possibilities").GetComponentsInChildren<WaveFunctionContainer>().Select(p => new ObjectPoolMono<int,WaveFunctionContainer>(p.transform)).ToArray();
+            m_PossibilitiesPool = transform.Find("Possibilities").GetComponentsInChildren<WaveFunctionContainer>().Select(p => new ObjectPoolBehaviour<int,WaveFunctionContainer>(p.transform)).ToArray();
             Begin();
         }
 
@@ -120,15 +120,18 @@ namespace Examples.Algorithm.WaveFunctionCollapse
         
         class WFCTileContainer:AWFCTile<ETileDirection,WaveFunctionData>,ITransformHandle,IPoolCallback<int>
         {
-            public Transform Transform { get; }
+            public Transform transform { get; }
+            public Action<int> DoRecycle { get; set; }
+            public int identity { get; set; }
+
             public Int2 _TileID;
             public readonly RectTransform m_RectTransform;
             
             private Action<Int2> OnTileSelect;
             public WFCTileContainer(Transform _transform) :base()
             {
-                Transform = _transform;
-                m_RectTransform = Transform as RectTransform;
+                transform = _transform;
+                m_RectTransform = transform as RectTransform;
             }
 
             public WFCTileContainer Warmup(Int2 _tileID, List<WaveFunctionContainer> _allPossibilities,Action<Int2> _OnTileSelect)
@@ -140,12 +143,11 @@ namespace Examples.Algorithm.WaveFunctionCollapse
                 {
                     var index = tuple.index;
                     var possibility = tuple.value;
-                    Transform transform1;
-                    (transform1 = possibility.transform).SetParent(Transform);
+                    transform.SetParent(transform);
                     int i = index % 4;
                     int j = index / 4;
                     possibility.m_RectTransform.anchoredPosition = new Vector2(100f/4f*i,100/4f*j);
-                    transform1.localScale = Vector3.one * .5f;
+                    transform.localScale = Vector3.one * .5f;
                     m_Possibilities.Add(index,possibility.Setup(index,SelectPossibility));
                 }
                 return this;
@@ -198,11 +200,11 @@ namespace Examples.Algorithm.WaveFunctionCollapse
                 return removeList.Count > 0;
             }
 
-            public void OnPoolCreate(Action<int> _DoRecycle)
+            public void OnPoolCreate()
             {
             }
 
-            public void OnPoolSpawn(int _identity)
+            public void OnPoolSpawn()
             {
             }
 

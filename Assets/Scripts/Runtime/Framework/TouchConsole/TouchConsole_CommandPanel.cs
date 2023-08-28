@@ -57,8 +57,8 @@ public static class TouchConsole_Extend
             return _container.Insert<T>();
         _button = _container.Insert<CommandElementButton>();
         T item = _container.Insert<T>();
-        _button.m_Button.onClick.AddListener(() => item.Transform.SetActive(!item.Transform.gameObject.activeSelf));
-        item.Transform.SetActive(false);
+        _button.m_Button.onClick.AddListener(() => item.transform.SetActive(!item.transform.gameObject.activeSelf));
+        item.transform.SetActive(false);
         return item;
     }
     public static void EnumSelection<T>(this CommandContainer _container, Ref<T> _valueRef, Action<T> OnClick, bool foldOut = true) where T : struct, Enum => EnumSelection(_container, _valueRef.value, enumObj => { _valueRef.SetValue((T)enumObj); OnClick?.Invoke(_valueRef.value); }, foldOut);
@@ -81,7 +81,7 @@ public static class TouchConsole_Extend
         selection.Play(_values, (int value) => {
             OnClick(value);
             foreach (var button in selection.m_ButtonGrid)
-                button.Highlight(button.m_Identity == value);
+                button.Highlight(button.identity == value);
             if (foldOutButton != null)
                 foldOutButton.m_Title.text = _values[value];
         }).Highlight(_refEnum.value);
@@ -270,14 +270,14 @@ public partial class TouchConsole
 
     CommandContainer AddCommandLine(KeyCode _keyCode = KeyCode.None) => m_CommandContainers.Spawn(m_CommandContainers.Count).Init(m_PageSelection.Count - 1, _keyCode, CommandItemCreate, CommandItemRecycle);
     CommandElementBase CommandItemCreate(Type type) => m_CommandItems[type].Spawn(m_CommandItems[type].Count);
-    void CommandItemRecycle(CommandElementBase _element) => m_CommandItems[_element.GetType()].Recycle(_element.m_Identity);
+    void CommandItemRecycle(CommandElementBase _element) => m_CommandItems[_element.GetType()].Recycle(_element.identity);
     void SelectPage(int _page)
     {
         m_CurrentPage = _page;
         foreach (var page in m_PageSelection)
-            page.Highlight(page.m_Identity == m_CurrentPage);
+            page.Highlight(page.identity == m_CurrentPage);
         foreach (var command in m_CommandContainers)
-            command.Transform.SetActive(command.m_PageIndex == m_CurrentPage);
+            command.transform.SetActive(command.m_PageIndex == m_CurrentPage);
         LayoutRebuilder.ForceRebuildLayoutImmediate(m_LogPanelRect.transform as RectTransform);
     }
     void SetConsoleTimeScale(float _timeScale)
@@ -293,9 +293,9 @@ public partial class TouchConsole
         Action<int> OnClick;
         public ButtonSelect(Transform _transform) : base(_transform)
         {
-            Transform.GetComponentInChildren<Button>().onClick.AddListener(() => OnClick?.Invoke(m_Identity));
-            m_Title = Transform.GetComponentInChildren<Text>();
-            m_Highlight = Transform.Find("Highlight");
+            transform.GetComponentInChildren<Button>().onClick.AddListener(() => OnClick?.Invoke(identity));
+            m_Title = transform.GetComponentInChildren<Text>();
+            m_Highlight = transform.Find("Highlight");
         }
         public void Init(string _title, Action<int> _OnClick)
         {
@@ -344,7 +344,7 @@ public partial class TouchConsole
         public T Insert<T>() where T : CommandElementBase
         {
             T item = CreateItem(typeof(T)) as T;
-            item.Transform.SetParent(Transform);
+            item.transform.SetParent(transform);
             m_Items.Add(item);
             return item;
         }
@@ -414,7 +414,7 @@ public partial class TouchConsole
         public void Highlight(int _value)
         {
             foreach (var item in m_ButtonGrid)
-                item.Highlight(item.m_Identity == _value);
+                item.Highlight(item.identity == _value);
         }
     }
     public class CommandElementHeader : CommandElementBase
@@ -439,12 +439,12 @@ public partial class TouchConsole
         public Text m_ToggleTitle { get; private set; }
         public CommandElementToggle(Transform _transform) : base(_transform)
         {
-            m_Toggle = Transform.GetComponent<Toggle>();
+            m_Toggle = transform.GetComponent<Toggle>();
             m_ToggleTitle = _transform.Find("Title").GetComponent<Text>();
         }
-        public override void OnPoolSpawn(int _identity)
+        public override void OnPoolSpawn()
         {
-            base.OnPoolSpawn(_identity);
+            base.OnPoolSpawn();
             m_Toggle.onValueChanged.RemoveAllListeners();
         }
         public override void OnPoolRecycle()
@@ -465,12 +465,12 @@ public partial class TouchConsole
         public Text m_Value { get; private set; }
         public CommandElementSlider(Transform _transform) : base(_transform)
         {
-            m_Slider = Transform.Find("Slider").GetComponent<Slider>();
-            m_Value = Transform.Find("Value").GetComponent<Text>();
+            m_Slider = transform.Find("Slider").GetComponent<Slider>();
+            m_Value = transform.Find("Value").GetComponent<Text>();
         }
-        public override void OnPoolSpawn(int _identity)
+        public override void OnPoolSpawn()
         {
-            base.OnPoolSpawn(_identity);
+            base.OnPoolSpawn();
             m_Slider.onValueChanged.RemoveAllListeners();
         }
         public override void OnPoolRecycle()
@@ -488,9 +488,9 @@ public partial class TouchConsole
             m_Button = _transform.GetComponent<Button>();
             m_Title = _transform.Find("Title").GetComponent<Text>();
         }
-        public override void OnPoolSpawn(int _identity)
+        public override void OnPoolSpawn()
         {
-            base.OnPoolSpawn(_identity);
+            base.OnPoolSpawn();
             m_Button.onClick.RemoveAllListeners();
             m_Title.text = "";
         }
@@ -528,9 +528,9 @@ public partial class TouchConsole
         {
             m_InputField = _transform.GetComponent<InputField>();
         }
-        public override void OnPoolCreate(Action<int> _doRecycle)
+        public override void OnPoolCreate()
         {
-            base.OnPoolCreate(_doRecycle);
+            base.OnPoolCreate();
             m_InputField.onValueChanged.RemoveAllListeners();
         }
 

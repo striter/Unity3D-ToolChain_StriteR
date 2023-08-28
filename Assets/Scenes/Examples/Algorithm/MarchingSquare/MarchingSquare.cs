@@ -69,8 +69,8 @@ namespace Examples.Algorithm.MarchingSquare
                 var ray = Camera.main.ScreenPointToRay(click);
                 if (!UGeometry.Intersect.Eval(ray,GPlane.kUp,out var point))
                     continue;
-                var switchNode=m_Nodes.Last(p=>p.Transform.position,point,true);
-                SwitchNode(switchNode.m_Identity);
+                var switchNode=m_Nodes.Last(p=>p.transform.position,point,true);
+                SwitchNode(switchNode.identity);
             }
         }
 
@@ -78,7 +78,7 @@ namespace Examples.Algorithm.MarchingSquare
         {
             var switchNode = m_Nodes[_index];
             switchNode.Switch();
-            foreach (var square in m_Squares.Collect(p=>p.m_Nodes.IterateContains(switchNode.m_Identity)))
+            foreach (var square in m_Squares.Collect(p=>p.m_Nodes.IterateContains(switchNode.identity)))
                 square.Refresh(m_Nodes.m_Dic);
         }
 
@@ -99,8 +99,9 @@ namespace Examples.Algorithm.MarchingSquare
 
     public class Node : ITransformHandle,IPoolCallback<Int2>
     {
-        public Int2 m_Identity { get; private set; }
-        public Transform Transform { get; }
+        public Action<Int2> DoRecycle { get; set; }
+        public Transform transform { get; }
+        public Int2 identity { get; set; }
         public bool m_Available { get; private set; }
         private MeshRenderer m_Renderer;
         private MaterialPropertyBlock m_Properties;
@@ -108,19 +109,18 @@ namespace Examples.Algorithm.MarchingSquare
 
         public Node(Transform _transform)
         {
-            Transform = _transform;
+            transform = _transform;
             m_Properties = new MaterialPropertyBlock();
             m_Renderer = _transform.GetComponent<MeshRenderer>();
         }
 
-        public void OnPoolCreate(Action<Int2> _DoRecycle)
+        public void OnPoolCreate()
         {
         }
 
-        public void OnPoolSpawn(Int2 _identity)
+        public void OnPoolSpawn()
         {
-            m_Identity = _identity;
-            Transform.localPosition = new Vector3(_identity.x, 0f, _identity.y);
+            transform.localPosition = new Vector3(identity.x, 0f, identity.y);
             Set(false);
         }
 
@@ -140,11 +140,11 @@ namespace Examples.Algorithm.MarchingSquare
             m_Properties.SetColor(ID_Color, m_Available ? Color.green : Color.red);
             m_Renderer.SetPropertyBlock(m_Properties);
         }
+
     }
     public class Square:ITransformHandle
     {
-        public Transform Transform { get; }
-
+        public Transform transform { get; }
         
         public Vector3 m_Position;
         public Quad<Int2> m_Nodes;
@@ -154,7 +154,7 @@ namespace Examples.Algorithm.MarchingSquare
         private readonly Mesh m_Mesh;
         public Square(Transform _transform)
         {
-            Transform = _transform;
+            transform = _transform;
             m_Renderer = _transform.GetComponent<MeshRenderer>();
             m_Filter = _transform.GetComponent<MeshFilter>();
             m_Mesh = new Mesh(){hideFlags = HideFlags.HideAndDontSave,name = "Marching Shape"};
@@ -165,7 +165,7 @@ namespace Examples.Algorithm.MarchingSquare
         {
             m_Nodes = _nodes;
             m_Byte = byte.MinValue;
-            Transform.position = new Vector3(_identity.x + .5f, 0f, _identity.y + .5f);
+            transform.position = new Vector3(_identity.x + .5f, 0f, _identity.y + .5f);
         }
 
         public void Refresh(Dictionary<Int2,Node> _nodes)

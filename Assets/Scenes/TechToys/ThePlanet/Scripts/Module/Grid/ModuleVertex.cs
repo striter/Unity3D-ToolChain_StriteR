@@ -48,8 +48,7 @@ namespace TechToys.ThePlanet.Module
             m_Vertex = null;
         }
 
-        public GridID Identity => m_PoolID;
-        public Transform Transform => transform;
+        public GridID Identity => identity;
         public PCGVertex Vertex => m_Vertex;
         public List<Vector3> NearbyVertexPositionLS => m_NearbyVertexPositionsLS;
         public List<Vector3> NearbyVertexSurfaceDirectionLS => m_NearbyVertexSurfaceDirectionLS;

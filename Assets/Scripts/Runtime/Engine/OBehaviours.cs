@@ -43,7 +43,7 @@ public interface ITransform
 
 public interface ITransformHandle
 {
-    Transform Transform { get; }
+    Transform transform { get; }
 }
 
 public class SingletonMono<T> : MonoBehaviour where T : MonoBehaviour
