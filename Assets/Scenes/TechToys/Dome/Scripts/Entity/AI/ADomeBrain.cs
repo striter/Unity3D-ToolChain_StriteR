@@ -1,0 +1,44 @@
+﻿namespace Dome.Entity.AI
+{
+    public abstract class ADomeBrain
+    {
+        public static FDomeGrid kGrid;
+        
+        public static bool GetBrain(ADomeEntity _entity,out ADomeBrain _brain)
+        {
+            _brain = null;
+            if (_entity is ADomeARC arc)
+            {
+                _brain= new FARCBrain(arc);
+                return true;
+            }
+
+            if (_entity is FDomeTurret turret)
+            {
+                _brain = new FTurretBrain(turret);
+                return true;
+            }
+            
+            if (_entity is FDomeCommander commander)
+            {
+                _brain = new FCommanderBrain(commander);
+                return true;
+            }
+
+            return false;
+        }
+        
+        public abstract void Tick(bool _working,float _deltaTime);
+        public virtual void DrawGizmos(){}
+    }
+
+    public abstract class ADomeBrain<T>:ADomeBrain where T : ADomeEntity
+    {
+        protected T m_Entity { get; set; }
+        public ADomeBrain(T _entity)
+        {
+            m_Entity = _entity;
+        }
+
+    }
+}

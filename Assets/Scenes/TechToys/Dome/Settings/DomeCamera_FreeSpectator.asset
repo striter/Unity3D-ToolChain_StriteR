@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72b189db30e44ead9c7a5d1c715cd89c, type: 3}
+  m_Name: DomeCamera_FreeSpectator
+  m_EditorClassIdentifier: 
+  m_PositionDamper:
+    mode: 2
+    halfLife: 0.2
+    stiffness: 20
+    damping: 4
+    f: 5
+    z: 0.35
+    r: -0.5
+    poleMatching: 0
+  m_RotationDamper:
+    mode: 2
+    halfLife: 0.2
+    stiffness: 20
+    damping: 4
+    f: 5
+    z: 0.35
+    r: -0.5
+    poleMatching: 0
+  rotationSensitive: 5
+  movementSensitive: 5
