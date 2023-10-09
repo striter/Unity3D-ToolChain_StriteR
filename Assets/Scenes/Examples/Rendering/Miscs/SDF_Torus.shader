@@ -20,7 +20,7 @@ Shader "Hidden/SDF_Torus"
     }
     SubShader
     {
-        Tags { "RenderType"="UniversalForward" "RenderQueue"="Transparent"}
+        Tags { "RenderType"="UniversalForward" "Queue"="Transparent"}
         Blend SrcAlpha OneMinusSrcAlpha
         Cull Off
         Pass
@@ -56,7 +56,8 @@ Shader "Hidden/SDF_Torus"
                 SDFOutput distB=GTorusCapped_SDF(torusCapped,SDFInput_Ctor( samplePos,_TorusCappedColor));
                 SDFOutput distC=GTorusLink_SDF(torusLink,SDFInput_Ctor(RotateAround(position,origin,_Time.y,float3(0,1,0) ) ,_TorusLinkColor));
 
-                return SDFUnion(distA, distB,distC);
+                SDFOutput distAB = SDFUnionSmin(distA,distB,.2,5);
+                return SDFUnion(distAB,distC);
             }
             #include "Assets/Shaders/Library/Geometry/GeometrySDFPass.hlsl"
             ENDHLSL

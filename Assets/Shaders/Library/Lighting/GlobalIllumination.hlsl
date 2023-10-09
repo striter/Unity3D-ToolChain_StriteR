@@ -61,7 +61,7 @@ half3 SampleCubeSpecular(TEXTURECUBE_PARAM(cube,cubeSampler),half4 _decodeInstru
 half3 IndirectCubeSpecular(half3 reflectDir, float perceptualRoughness,int offset = 0)
 {
     #if defined(_ENVIRONMENTREFLECTIONS_OFF)
-    return _GlossyEnvironmentColor.rgb;
+        return _GlossyEnvironmentColor.rgb;
     #endif
     
     return SampleCubeSpecular(TEXTURECUBE_ARGS(unity_SpecCube0,samplerunity_SpecCube0),unity_SpecCube0_HDR,reflectDir,perceptualRoughness,offset);

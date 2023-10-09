@@ -15,6 +15,11 @@ SDFOutput GRoundBox_SDF(GBoxRound _roundBox,SDFInput _input)
     return SDFOutput_Ctor(_input, GBox_SDF(_roundBox.box,_input).distance-_roundBox.roundness);
 }
 
+SDFOutput GPlane_SDF(GPlane _plane,SDFInput _input)
+{
+    return SDFOutput_Ctor(_input,dot(_input.position,_plane.normal) + _plane.distance);
+}
+
 SDFOutput GFrameBox_SDF(GBoxFrame _frameBox,SDFInput _input)
 {
     float3 p=abs(_input.position-_frameBox.box.center)-_frameBox.box.extend;

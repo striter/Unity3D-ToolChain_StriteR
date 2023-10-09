@@ -79,7 +79,7 @@ namespace Geometry
     
     
     [Serializable]
-    public partial struct GPlane:IEquatable<GPlane>,IEqualityComparer<GPlane>,ISerializationCallbackReceiver
+    public partial struct GPlane:IEquatable<GPlane>,IEqualityComparer<GPlane>,ISerializationCallbackReceiver,IShapeGizmos
     {
         public static readonly GPlane kComparer = new GPlane();
         public static readonly GPlane kDefault = new GPlane(Vector3.up, 0f);
@@ -109,7 +109,6 @@ namespace Geometry
             normal = math.normalize(normal);
             Ctor(true);
         }
-        
     }
 
     public static class UPlane

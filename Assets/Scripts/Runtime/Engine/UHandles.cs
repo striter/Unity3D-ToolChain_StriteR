@@ -25,6 +25,7 @@ public static class Handles_Extend
             Handles.DrawLine(Vector3.zero, bottomLeft);
         }
     }
+    
     public static void DrawLine(GLine _line)
     {
         Quaternion rotation = Quaternion.LookRotation(_line.direction);
@@ -40,34 +41,30 @@ public static class Handles_Extend
         for (int i = 0; i < length; i++)
             Handles.DrawLine(_lines[i],_lines[(i+1)%length]);
     }
-    
+
+    public static void DrawWireCapsule(GCapsule _capsule) => DrawWireCapsule(_capsule.origin,Quaternion.LookRotation(_capsule.normal),Vector3.one,_capsule.radius,_capsule.height);
     public static void DrawWireCapsule(Vector3 _pos, Quaternion _rot, Vector3 _scale, float _radius, float _height)
     {
         using (new Handles.DrawingScope(Handles.color, Handles.matrix * Matrix4x4.TRS(_pos, _rot, _scale)))
         {
-            if (_height > _radius * 2)
-            {
-                Vector3 offsetPoint = Vector3.up * (_height - (_radius * 2)) / 2;
+            var forward = Vector3.forward;
+            var up = Vector3.up;
+            var right = Vector3.right;
+            var left = -right;
+            Vector3 offsetPoint = forward * _height / 2;
 
-                Handles.DrawWireArc(offsetPoint, Vector3.forward, Vector3.right, 180, _radius);
-                Handles.DrawWireArc(offsetPoint, Vector3.right, Vector3.forward, -180, _radius);
-                Handles.DrawWireArc(-offsetPoint, Vector3.forward, Vector3.right, -180, _radius);
-                Handles.DrawWireArc(-offsetPoint, Vector3.right, Vector3.forward, 180, _radius);
+            Handles.DrawWireArc(offsetPoint, -up, right, 180, _radius);
+            Handles.DrawWireArc(offsetPoint, right, -up, -180, _radius);
+            Handles.DrawWireArc(-offsetPoint, -up, right, -180, _radius);
+            Handles.DrawWireArc(-offsetPoint, right,- up, 180, _radius);
 
-                Handles.DrawWireDisc(offsetPoint, Vector3.up, _radius);
-                Handles.DrawWireDisc(-offsetPoint, Vector3.up, _radius);
+            Handles.DrawWireDisc(offsetPoint, forward, _radius);
+            Handles.DrawWireDisc(-offsetPoint, forward, _radius);
 
-                Handles.DrawLine(offsetPoint + Vector3.left * _radius, -offsetPoint + Vector3.left * _radius);
-                Handles.DrawLine(offsetPoint - Vector3.left * _radius, -offsetPoint - Vector3.left * _radius);
-                Handles.DrawLine(offsetPoint + Vector3.forward * _radius, -offsetPoint + Vector3.forward * _radius);
-                Handles.DrawLine(offsetPoint - Vector3.forward * _radius, -offsetPoint - Vector3.forward * _radius);
-            }
-            else
-            {
-                Handles.DrawWireDisc(Vector3.zero, Vector3.up, _radius);
-                Handles.DrawWireDisc(Vector3.zero, Vector3.right, _radius);
-                Handles.DrawWireDisc(Vector3.zero, Vector3.forward, _radius);
-            }
+            Handles.DrawLine(offsetPoint + left * _radius, -offsetPoint + left * _radius);
+            Handles.DrawLine(offsetPoint - left * _radius, -offsetPoint - left * _radius);
+            Handles.DrawLine(offsetPoint + up * _radius, -offsetPoint + up * _radius);
+            Handles.DrawLine(offsetPoint - up * _radius, -offsetPoint - up * _radius);
         }
     }
     public static void DrawWireSphere(Vector3 _pos, Vector3 _dir, float _radius) => DrawWireSphere(_pos,Quaternion.LookRotation(_dir),_radius);

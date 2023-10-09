@@ -38,13 +38,6 @@ float PlaneRayDistance(GPlane _plane, GRay _ray)
     float nrD = dot(_plane.normal, _ray.direction);
     return (_plane.distance - nrO) / nrD;
 }
-float PlaneRayDistance(GPlanePos _plane, GRay _ray)
-{
-    float s = dot(_plane.position, _plane.normal);
-    float nrO = dot(_plane.normal, _ray.origin);
-    float nrD = dot(_plane.normal, _ray.direction);
-    return (s - nrO) / nrD;
-}
 
 //Axis Aligned Bounding Box
 bool AABBPositionInside(GBox _box, float3 _pos)

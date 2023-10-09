@@ -9,13 +9,6 @@ using UnityEngine;
 
 public static class UGizmos
 {
-    public static void DrawWireCapsule(Vector3 _pos, Quaternion _rot, Vector3 _scale, float _radius, float _height)
-    {
-        Handles.color = Gizmos.color;
-        Handles.matrix = Gizmos.matrix;
-        Handles_Extend.DrawWireCapsule(_pos, _rot, _scale, _radius, _height);
-    }
-
     public static void DrawWireCube(Vector3 _pos, Quaternion _rot, Vector3 _cubeSize)
     {
         Handles.color = Gizmos.color;
@@ -141,6 +134,13 @@ public static class UGizmos
         Handles_Extend.DrawCone(_cone);
     }
     
+    public static void DrawGizmos(this GCapsule _capsule)
+    {
+        Handles.color = Gizmos.color;
+        Handles.matrix = Gizmos.matrix;
+        Handles_Extend.DrawWireCapsule(_capsule);
+    }
+
     public static void DrawGizmos(this GLine _line)
     {
         Handles.color = Gizmos.color;

@@ -19,7 +19,7 @@ Shader "Hidden/SDF_SphereBox"
     }
     SubShader
     {
-        Tags { "RenderType"="UniversalForward" "RenderQueue"="Transparent"}
+        Tags { "RenderType"="UniversalForward" "Queue"="Transparent"}
         Blend SrcAlpha OneMinusSrcAlpha
         Cull Off
 

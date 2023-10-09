@@ -48,19 +48,15 @@ GPlane GPlane_Ctor(float3 _normal, float _distance)
     GPlane plane;
     plane.normal = _normal;
     plane.distance = _distance;
-    plane.position=plane.normal*plane.distance;
+    plane.position = plane.normal*plane.distance;
     return plane;
 }
-struct GPlanePos
+GPlane GPlane_Ctor(float3 _normal, float3 _position)
 {
-    float3 normal;
-    float3 position;
-};
-GPlanePos GPlanePos_Ctor(float3 _normal, float3 _position)
-{
-    GPlanePos plane;
+    GPlane plane;
     plane.normal = _normal;
     plane.position = _position;
+    plane.distance = dot(_position, _normal);
     return plane;
 }
 //Sphere
@@ -91,6 +87,16 @@ GBox GBox_Ctor(float3 _center, float3 _size)
     box.center=_center;
     box.size=_size;
     box.extend=_size*.5;
+    box.boxMin = _center-box.extend;
+    box.boxMax = _center+box.extend;
+    return box;
+}
+GBox GBox_Ctor_Extent(float3 _center, float3 _extent)
+{
+    GBox box;
+    box.center=_center;
+    box.size= _extent * 2;
+    box.extend= _extent ;
     box.boxMin = _center-box.extend;
     box.boxMax = _center+box.extend;
     return box;
@@ -246,7 +252,7 @@ struct GHeightCone
     float height;
     float3 bottom;
     float bottomRadius;
-    GPlanePos bottomPlane;
+    GPlane bottomPlane;
     float GetRadius(float _height)
     {
         return _height * tanA;
@@ -264,6 +270,6 @@ GHeightCone GHeightCone_Ctor(float3 _origin, float3 _normal, float _angle, float
     cone.tanA = tan(radianA);
     cone.bottom = _origin + _normal * _height;
     cone.bottomRadius = _height *cone. tanA;
-    cone.bottomPlane = GPlanePos_Ctor(_normal, cone.bottom);
+    cone.bottomPlane = GPlane_Ctor(_normal, cone.bottom);
     return cone;
 }
