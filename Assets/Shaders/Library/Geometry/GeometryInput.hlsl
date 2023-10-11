@@ -204,20 +204,20 @@ GCylinderRound GCylinderRound_Ctor(float3 _center,float _radius,float _height,fl
     cylinderRound.roundRadius=_roundRadius;
     return cylinderRound;
 }
-struct GCylinderCapsule
+struct GCapsule
 {
-    GCylinder cylinder;
     float3 direction;
     float height;
+    float radius;
     float3 top;
     float3 bottom;
 };
-GCylinderCapsule GCylinderCapsule_Ctor(float3 _center,float _radius,float3 _direction,float _height)
+GCapsule GCapsule_Ctor(float3 _center,float _radius,float3 _direction,float _height)
 {
-    GCylinderCapsule capsule;
-    capsule.cylinder=GCylinder_Ctor(_center,_radius);
+    GCapsule capsule;
     capsule.direction=_direction;
     capsule.height=_height;
+    capsule.radius = _radius;
     float3 offset=_direction*capsule.height*.5;
     capsule.top=_center+offset;
     capsule.bottom=_center-offset;

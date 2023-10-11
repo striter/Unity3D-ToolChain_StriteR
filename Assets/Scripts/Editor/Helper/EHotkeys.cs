@@ -84,8 +84,8 @@ namespace UnityEditor.Extensions
                 var child = selectObject.transform.GetChild(i);
                 UBoundsIncrement.Begin();
                 foreach (var filter in child.GetComponentsInChildren<MeshFilter>())
-                    UBoundsIncrement.CheckBounds(filter.sharedMesh.bounds);
-                var bounds = UBoundsIncrement.CalculateBounds();
+                    UBoundsIncrement.Iterate(filter.sharedMesh.bounds);
+                var bounds = UBoundsIncrement.End();
                 
                 child.transform.localPosition = position;
                 position += (bounds.size.x + 1f) * Vector3.right;

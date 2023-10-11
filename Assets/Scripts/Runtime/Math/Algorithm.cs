@@ -19,7 +19,7 @@ namespace AlgorithmExtension
         {
             (list[index1], list[index2]) = (list[index2], list[index1]);
         }
-        public static void Sort<T>(this List<T> _sortTarget, ESortType _sortType, Comparison<T> _comparison) 
+        public static void Sort<T>(this IList<T> _sortTarget, ESortType _sortType, Comparison<T> _comparison) 
         {
             int count = _sortTarget.Count;
             if (count <= 1)

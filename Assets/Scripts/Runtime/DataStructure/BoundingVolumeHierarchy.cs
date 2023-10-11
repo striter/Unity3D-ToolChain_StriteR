@@ -1,75 +1,65 @@
-﻿
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using AlgorithmExtension;
+﻿using System.Collections.Generic;
 using Geometry;
-using Geometry.PointSet;
-using Unity.Mathematics;
 using UnityEngine;
 
-public struct BVHVolume
+public interface IBVHVolume<Bounds,Element,Dimension> where Bounds:struct where Element:struct,IShapeDimension<Dimension> where Dimension:struct
 {
-    public int iteration;
-    public List<G2Triangle> triangles;
-    public G2Box bounds;
-
-    public BVHVolume(int _iteration, List<G2Triangle> _triangles)
-    {
-        iteration = _iteration;
-        triangles = _triangles;
-        var numerable = _triangles.Select(p => (IEnumerable<float2>)p);  //wut?
-        bounds = UBounds.GetBoundingBox(numerable.Resolve());
-    }
+    public IList<Element> elements { get; set; }
+    public Bounds bounds { get; set; }
+    public int iteration { get; set; }
+    public void SortElements(int _median,IList<Element> _elements);
+    public Bounds OutputBounds(IList<Element> _elements);
 }
 
-public class BVH    //Bounding volume hierarchy
+public class BVH<Volume,Bounds,Element,Dimension>   //Bounding volume hierarchy
+    where Volume:struct,IBVHVolume<Bounds,Element,Dimension> 
+    where Bounds:struct
+    where Element:struct,IShapeDimension<Dimension>
+    where Dimension:struct
 {
-    
-    public List<BVHVolume> m_Volumes = new List<BVHVolume>();
+    private Volume kHelper = default;
+    public List<Volume> m_Volumes { get; private set; } = new List<Volume>();
 
-    void Divide(BVHVolume _volume,out BVHVolume _node1,out BVHVolume _node2)
+    void Divide(Volume _volume,out Volume _node1,out Volume _node2)
     {
-        var last = _volume.triangles.Count;
-        var median = _volume.triangles.Count / 2;
-        _volume.triangles
-            .Divide(median,
-        // .Sort(
-        // ESortType.Bubble,
-        (_a, _b) =>
-        {
-            var axis = _volume.bounds.size.maxAxis();
-            switch (axis)
-            {
-                default: throw new InvalidEnumArgumentException();
-                case EAxis.X:return _a.baryCentre.x >= _b.baryCentre.x ? 1: -1;
-                case EAxis.Y: return _a.baryCentre.y >= _b.baryCentre.y ? 1:-1;
-            }
-        });
+        var last = _volume.elements.Count;
+        var median = _volume.elements.Count / 2;
+        _volume.SortElements(median,_volume.elements);
 
         var nextIteration = _volume.iteration + 1;
-        _node1 = new BVHVolume(nextIteration,new List<G2Triangle>(_volume.triangles.Iterate(0,median)));
-        _node2 = new BVHVolume(nextIteration, new List<G2Triangle>(_volume.triangles.Iterate(median,last)));
+        _node1 = default;
+        _node1.iteration = nextIteration;
+        _node1.elements = new List<Element>(_volume.elements.Iterate(0,median));
+        _node1.bounds = kHelper.OutputBounds(_node1.elements);
+
+        _node2 = default;
+        _node2.iteration = nextIteration;
+        _node2.elements = new List<Element>(_volume.elements.Iterate(median,last));
+        _node2.bounds = kHelper.OutputBounds(_node2.elements);
     }
     
-    public void Construct(IList<G2Triangle> _triangles, int _maxIteration, int _volumeCapacity)
-    {
+    public void Construct(IList<Element> _elements, int _maxIteration, int _volumeCapacity)
+    { 
         m_Volumes.Clear();
-        m_Volumes.Add(new BVHVolume(0,new List<G2Triangle>( _triangles)));
+        
+        Volume initial = default;
+        initial.iteration = 0;
+        initial.bounds = kHelper.OutputBounds(_elements);
+        initial.elements = _elements;
+        
+        m_Volumes.Add( initial);
         
         bool doBreak = true;
         while (doBreak)
         {
-            bool splited = false;
+            bool split = false;
             for (int i = 0; i < m_Volumes.Count; i++)
             {
                 var node = m_Volumes[i];
                 if (node.iteration >= _maxIteration)
                     continue;
                 
-                if (node.triangles.Count < _volumeCapacity)
+                if (node.elements.Count <= _volumeCapacity)
                     continue;
 
                 Divide(node,out var node1,out var node2);
@@ -77,11 +67,11 @@ public class BVH    //Bounding volume hierarchy
                 m_Volumes.Add(node2);
                 
                 m_Volumes.RemoveAt(i);
-                splited = true;
+                split = true;
                 break;
             }
             
-            doBreak = splited;
+            doBreak = split;
         }
     }
 
@@ -93,9 +83,11 @@ public class BVH    //Bounding volume hierarchy
         {
             Gizmos.color = UColor.IndexToColor(index++ % 6);
             Gizmos.matrix = matrix;
-            node.bounds.DrawGizmos();
-            foreach (var triangle in node.triangles)
-                triangle.DrawGizmos();
+            if (node.bounds is IShapeGizmos boundsShape)
+                boundsShape.DrawGizmos();
+            foreach (var element in node.elements)
+                if(element is IShapeGizmos gizmos)
+                    gizmos.DrawGizmos();
         }
 
         Gizmos.matrix = matrix;

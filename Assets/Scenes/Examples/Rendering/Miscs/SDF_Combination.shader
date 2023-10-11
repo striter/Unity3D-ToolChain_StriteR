@@ -37,7 +37,7 @@ Shader "Game/Unfinished/SDF_Combination"
                             output.color = 0;
                         }
                     break;
-                    case 0: output = GCylinderCapsule_SDF(GCylinderCapsule_Ctor(origin,parameter2.x,float3(0,1,0),parameter2.y),input);break;
+                    case 0: output = GCapsule_SDF(GCapsule_Ctor(origin,parameter2.x,float3(0,1,0),parameter2.y),input);break;
                     case 1: output = GSphere_SDF(GSphere_Ctor(origin,parameter2.x),input);break;
                     case 2: output = GBox_SDF(GBox_Ctor_Extent(origin,parameter2.xyz),input);break;
                     case 3: output = GPlane_SDF(GPlane_Ctor(parameter2.xyz,origin),input);break;
@@ -90,7 +90,7 @@ Shader "Game/Unfinished/SDF_Combination"
                 viewDirWS=-viewDirWS;
                 float3 positionWS=viewRay.GetPoint(distance);
                 float3 lightPosition =_MainLightPosition.xyz * 100;
-                float shadow = RaymarchSDFSoftShadow(positionWS,lightPosition,0.1,32); //or RaymarchSDFShadow
+                float shadow = RaymarchSDFSoftShadow(positionWS,lightPosition,0.05);
                 
                 float3 lightDirWS=normalize(lightPosition);
                 

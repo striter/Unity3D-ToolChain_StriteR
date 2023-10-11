@@ -1,6 +1,9 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using AlgorithmExtension;
 using Geometry;
+using Geometry.PointSet;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -29,7 +32,36 @@ namespace Examples.Algorithm.DataStructures
 
 
         [FormerlySerializedAs("m_Triangles")] public G2Triangle[] m_RandomTriangles;
-        private BVH m_BVH = new BVH();
+        private BVH<BVHVolume_Box_Triangles_2, G2Box, G2Triangle, float2> m_BVH = new();
+        private struct BVHVolume_Box_Triangles_2 : IBVHVolume<G2Box, G2Triangle, float2>
+        {
+            public int iteration { get; set; }
+            public IList<G2Triangle> elements { get; set; }
+            public G2Box bounds { get; set; }
+            public void SortElements(int _median, IList<G2Triangle> _elements)
+            {
+                var axis = bounds.size.maxAxis();
+                elements.Divide(_median,
+                    // .Sort(
+                    // ESortType.Bubble,
+                    (_a, _b) =>
+                    {
+                        switch (axis)
+                        {
+                            default: throw new InvalidEnumArgumentException();
+                            case EAxis.X: return _a.baryCentre.x >= _b.baryCentre.x ? 1 : -1;
+                            case EAxis.Y: return _a.baryCentre.y >= _b.baryCentre.y ? 1 : -1;
+                        }
+                    });
+            }
+
+            public G2Box OutputBounds(IList<G2Triangle> _elements)
+            {
+                var numerable = _elements.Select(p => (IEnumerable<float2>)p);  //wut?
+                return UBounds.GetBoundingBox(numerable.Resolve());;
+            }
+
+        }
 
         [Button]
         void Randomize()

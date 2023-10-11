@@ -10,26 +10,26 @@ public static class UBoundsIncrement
         m_BoundsMin = Vector3.zero;
         m_BoundsMax = Vector3.zero;
     }
-    public static void CheckBounds(Vector3 vertex)
+    public static void Iterate(Vector3 vertex)
     {
         m_BoundsMin = Vector3.Min(m_BoundsMin, vertex);
         m_BoundsMax = Vector3.Max(m_BoundsMax, vertex);
     }
-    public static void CheckBounds(Bounds bounds)
+    public static void Iterate(Bounds bounds)
     {
         m_BoundsMin = Vector3.Min(m_BoundsMin, bounds.min);
         m_BoundsMax = Vector3.Max(m_BoundsMax, bounds.max);
     }
-
-
-    public static Bounds CalculateBounds() => MinMax(m_BoundsMin, m_BoundsMax);
+    
+    public static Bounds End() => MinMax(m_BoundsMin, m_BoundsMax);
     
     public static Bounds MinMax(Vector3 _min,Vector3 _max)=>new Bounds((_min + _max) / 2, _max - _min);
-    public static Bounds GetBounds(IEnumerable<Vector3> _vertices)
+    
+    public static Bounds Process(IEnumerable<Vector3> _vertices)
     {
         Begin();
         foreach (var vertex in _vertices)
-            CheckBounds(vertex);
-        return CalculateBounds();
+            Iterate(vertex);
+        return End();
     }
 }

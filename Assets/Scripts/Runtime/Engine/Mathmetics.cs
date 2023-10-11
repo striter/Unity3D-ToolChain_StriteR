@@ -307,6 +307,11 @@ public static class kfloat3
     public static readonly float3 right = new float3(1, 0, 0);
     public static readonly float3 forward = new float3(0, 0, 1);
     public static readonly float3 back = new float3(0, 0, -1);
+    
+    public static readonly float3 leftDownBack = new float3(-1, -1, -1);
+    public static readonly float3 rightUpForward = new float3(1, 1, 1);
+    public static readonly float3 min = (float3)float.MinValue ;
+    public static readonly float3 max = (float3)float.MaxValue ;
 }
 
 public static class kfloat2

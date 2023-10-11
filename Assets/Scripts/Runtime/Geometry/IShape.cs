@@ -8,14 +8,19 @@ namespace Geometry
     {
         
     }
-    
-    public interface IShape : IShapeGizmos
+
+    public interface IShapeDimension<T> where T:struct
     {
-        float3 GetSupportPoint(float3 _direction);
-        float3 Center { get; }
+        T Center { get; }
     }
 
-    public interface I2Shape : IShapeGizmos
+
+    public interface IShape : IShapeDimension<float3>, IShapeGizmos
+    {
+        float3 GetSupportPoint(float3 _direction);
+    }
+
+    public interface I2Shape : IShapeDimension<float2>, IShapeGizmos
     {
         float2 GetSupportPoint(float2 _direction);
         float2 Center { get; }

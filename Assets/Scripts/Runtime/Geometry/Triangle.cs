@@ -61,7 +61,7 @@ namespace Geometry
         public static readonly G2Triangle kDefault = new G2Triangle(new float2(0,1),new float2(-.5f,-1),new float2(.5f,-1));
     }
     
-    public partial struct GTriangle
+    public partial struct GTriangle:IShape
     {
         public Triangle<float3> triangle;
         [NonSerialized] public float3 normal;

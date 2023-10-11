@@ -70,10 +70,10 @@ SDFOutput GCylinderRound_SDF(GCylinderRound _cylinderRound,SDFInput _input)
     float2 d= float2(length(p.xz)-2.0*_cylinderRound.cylinder.radius+_cylinderRound.roundRadius,abs(p.y)-_cylinderRound.height);
     return SDFOutput_Ctor( _input,min(max(d),0)+length(max(d,0))-_cylinderRound.roundRadius);
 }
-SDFOutput GCylinderCapsule_SDF(GCylinderCapsule _cylinderCapsule,SDFInput _input)
+SDFOutput GCapsule_SDF(GCapsule _capsule,SDFInput _input)
 {
-    float3 pa=_input.position-_cylinderCapsule.top;
-    float3 ba=_cylinderCapsule.bottom-_cylinderCapsule.top;
+    float3 pa=_input.position-_capsule.top;
+    float3 ba=_capsule.bottom-_capsule.top;
     float h=saturate(dot(pa,ba)/dot(ba,ba));
-    return SDFOutput_Ctor(_input, length(pa-ba*h)-_cylinderCapsule.cylinder.radius);
+    return SDFOutput_Ctor(_input, length(pa-ba*h)-_capsule.radius);
 }

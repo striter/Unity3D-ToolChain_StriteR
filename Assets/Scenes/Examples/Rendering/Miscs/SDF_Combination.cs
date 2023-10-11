@@ -17,17 +17,11 @@ namespace Examples.Rendering.Misc
         Plane = 3,
     }
 
-    public enum ESDFMode
-    {
-        Union,
-        SMin,
-    }
 
     [Serializable]
     public struct SDFElement
     {
         public ESDFShape shape;
-        public ESDFMode mode;
         public float3 position;
         [ColorUsage(false)]public Color albedo;
 

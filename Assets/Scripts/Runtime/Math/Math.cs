@@ -6,9 +6,9 @@ using static Unity.Mathematics.math;
 
 public enum EAxis
 {
-    X,
-    Y,
-    Z,
+    X = 0,
+    Y = 1,
+    Z = 2,
 }
 
 public static partial class umath

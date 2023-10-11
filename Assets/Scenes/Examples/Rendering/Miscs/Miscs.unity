@@ -766,12 +766,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1007928254}
   m_LocalRotation: {x: -0.27835307, y: -0, z: -0, w: 0.96047884}
-  m_LocalPosition: {x: 12.39, y: 0.07, z: 4.57}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalPosition: {x: 7.336505, y: 7.081433, z: -19.353397}
+  m_LocalScale: {x: 15, y: 15, z: 15}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_Father: {fileID: 1974732838}
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -32.324, y: 0, z: 0}
 --- !u!114 &1007928258
 MonoBehaviour:
@@ -787,7 +787,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Elements:
   - shape: 2
-    mode: 0
     position:
       x: 0.2
       y: 0.7
@@ -806,7 +805,6 @@ MonoBehaviour:
       y: 0
       z: 0
   - shape: 1
-    mode: 0
     position:
       x: -3.51
       y: -2.48
@@ -825,7 +823,6 @@ MonoBehaviour:
       y: 0
       z: 0
   - shape: 2
-    mode: 0
     position:
       x: -2.65
       y: 0.73
@@ -844,7 +841,6 @@ MonoBehaviour:
       y: 0
       z: 0
   - shape: 0
-    mode: 0
     position:
       x: 2.65
       y: -1.41
@@ -863,7 +859,6 @@ MonoBehaviour:
       y: 0
       z: 0
   - shape: 3
-    mode: 0
     position:
       x: 0
       y: 3.67
@@ -882,12 +877,29 @@ MonoBehaviour:
       y: 0.555
       z: 0
   - shape: 2
-    mode: 0
     position:
       x: 1.97
       y: -1.09
       z: 2.93
     albedo: {r: 1, g: 1, b: 1, a: 0}
+    capsuleShape:
+      x: 1.26
+      y: 3.99
+    radius: 3.59
+    extents:
+      x: 4
+      y: 2
+      z: 0.2
+    normal:
+      x: 0
+      y: 0.555
+      z: 0
+  - shape: 1
+    position:
+      x: 2.32
+      y: -1.09
+      z: 5.78
+    albedo: {r: 0.53549767, g: 0, b: 1, a: 0}
     capsuleShape:
       x: 1.26
       y: 3.99
@@ -1439,7 +1451,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1974732838}
   m_Layer: 0
-  m_Name: SDF
+  m_Name: PerObjectSDFs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1460,6 +1472,7 @@ Transform:
   - {fileID: 172473482}
   - {fileID: 339790035}
   - {fileID: 834552116}
+  - {fileID: 1007928257}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

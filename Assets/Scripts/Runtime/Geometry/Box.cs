@@ -114,7 +114,7 @@ namespace Geometry
             float3 extend = size / 2;
             return new GBox(_min+extend,extend);
         }
-
+        
         public GBox Split(float3 _anchor, float3 _sizeRatio)
         {
             var min = this.min + size * _anchor;
@@ -127,6 +127,8 @@ namespace Geometry
             return absOffset.x < extent.x && absOffset.y < extent.y && absOffset.z < extent.z;
         }
 
+        public GBox Encapsule(GBox _other) => Minmax(math.min(min, _other.min), math.max(max, _other.max));
+        
         public IEnumerable<GPlane> GetPlanes(bool _x,bool _y,bool _z)
         {
             if (_x)

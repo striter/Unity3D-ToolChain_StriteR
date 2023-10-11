@@ -17,6 +17,10 @@ namespace Examples.Algorithm.Geometry
         public float3[] boundingSpherePoints;
         public GSphere boundingSphere;
 
+        public GSphere boundingSphere1;
+        public GSphere boundingSphere2;
+        
+        
         private void OnValidate()
         {
             if (boundingBoxRandomPoints != null && boundingBoxRandomPoints.Length > 0)
@@ -36,6 +40,7 @@ namespace Examples.Algorithm.Geometry
 
         private void OnDrawGizmos()
         {
+            Gizmos.color = Color.white;
             Gizmos.matrix = transform.localToWorldMatrix;
             boudingBox.DrawGizmos();
             if(boundingBoxRandomPoints!=null)
@@ -49,6 +54,14 @@ namespace Examples.Algorithm.Geometry
                 foreach (var points in boundingSpherePoints)
                     Gizmos.DrawWireSphere(points,.02f);
             }
+
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(-Vector3.right * 3f);
+            Gizmos.color = Color.red;
+            boundingSphere1.DrawGizmos();
+            Gizmos.color = Color.blue;
+            boundingSphere2.DrawGizmos();
+            Gizmos.color = Color.white;
+            GSphere.Minmax(boundingSphere1,boundingSphere2).DrawGizmos();
         }
     }
 }

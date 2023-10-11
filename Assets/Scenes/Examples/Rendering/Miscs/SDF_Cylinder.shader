@@ -49,12 +49,12 @@ Shader "Hidden/SDF_SphereBox"
             {
                 float3 origin=TransformObjectToWorld(0);
                 GCylinder cylinder=GCylinder_Ctor(origin,_CylinderRadius);
-                GCylinderCapsule capsule=GCylinderCapsule_Ctor(origin,_CapsuleRadius,float3(0,1,0),_CapsuleHeight);
+                GCapsule capsule=GCapsule_Ctor(origin,_CapsuleRadius,float3(0,1,0),_CapsuleHeight);
                 GCylinderCapped cylinderCapped=GCylinderCapped_Ctor(origin,_CylinderCappedRadius,_CylinderCappedHeight);
                 GCylinderRound cylinderRound=GCylinderRound_Ctor(origin,_CylinderRoundRadius,_CylinderRoundHeight,_CylinderRoundRoundness);
                 float3 samplePosition=RotateAround(position,origin,_Time.y,float3(1,0,0) );
                 SDFOutput distA=GCylinder_SDF(cylinder,SDFInput_Ctor(samplePosition ,_CylinderColor));
-                SDFOutput distB=GCylinderCapsule_SDF(capsule,SDFInput_Ctor(samplePosition,_CapsuleColor));
+                SDFOutput distB=GCapsule_SDF(capsule,SDFInput_Ctor(samplePosition,_CapsuleColor));
 
                 samplePosition=RotateAround(position,origin,_Time.y,float3(0,0,1));
                 SDFOutput distC=GCylinderCapped_SDF(cylinderCapped,SDFInput_Ctor(samplePosition,_CylinderCappedColor));

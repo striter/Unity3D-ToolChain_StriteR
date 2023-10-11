@@ -92,7 +92,7 @@ namespace UnityEditor.Extensions
                 if (i==paths.Length-1)
                     break;
                 var pathName = paths[i];
-                if (targetType.IsArray)
+                if (targetType.IsArray || targetType.IsGenericType)
                 {
                     i++;
                     var indexString = paths[i];
