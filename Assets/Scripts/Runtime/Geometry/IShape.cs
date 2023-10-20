@@ -23,7 +23,6 @@ namespace Geometry
     public interface I2Shape : IShapeDimension<float2>, IShapeGizmos
     {
         float2 GetSupportPoint(float2 _direction);
-        float2 Center { get; }
     }
 
     public static class UShape

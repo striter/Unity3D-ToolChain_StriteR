@@ -8,8 +8,6 @@ namespace Examples.Rendering.QuadricErrorMetrics
     public class QuadricErrorMetrics : MonoBehaviour
     {
         public Mesh m_SharedMesh;
-        [ExtendButton("Initialize",nameof(Init),null,
-            "Optimize",nameof(Optimize),null )]
         public ContractConfigure m_Data;
 
         private MeshFilter m_Filter;
@@ -17,23 +15,25 @@ namespace Examples.Rendering.QuadricErrorMetrics
 
         private Mesh m_QEMMesh;
 
+        [Button]
         void Init()
         {
             m_Filter = GetComponent<MeshFilter>();
             if (!m_Filter||m_SharedMesh == null)
                 return;
 
+            if(m_QEMMesh) Object.DestroyImmediate(m_QEMMesh);
+            
             m_Constructor = new QEMConstructor(m_SharedMesh);
-            if(m_QEMMesh)
-                Object.DestroyImmediate(m_QEMMesh);
+            m_QEMMesh = new Mesh(){name = "Test", hideFlags = HideFlags.HideAndDontSave};
+            m_Filter.sharedMesh = m_QEMMesh;
         }
+        
+        [Button]
         private void Optimize()
         {
             if (m_Constructor == null)
                 return;
-            
-            m_QEMMesh = new Mesh(){name = "Test", hideFlags = HideFlags.HideAndDontSave};
-            m_Filter.sharedMesh = m_QEMMesh;
             
             m_Constructor.DoContract(m_QEMMesh,m_Data);
         }

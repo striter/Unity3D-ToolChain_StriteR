@@ -91,7 +91,7 @@ namespace Geometry
         public float3 GetNormalUnnormalized() => math.cross(uOffset, vOffset);
         public float3 GetBarycenter() => GetPoint(.25f);
         public float3 GetPoint(float2 _uv) => GetPoint(_uv.x, _uv.y);
-        public float3 GetPoint(float _u,float _v) => V0 + _u * uOffset + _v * vOffset;
+        public float3 GetPoint(float _u,float _v) => V0 + _u * +uOffset + _v * vOffset;
         public GPlane GetPlane() => new GPlane(normal,V0);
         public float3 GetForward()=> (V0 - (V1 + V2) / 2).normalize();
         public quaternion GetRotation() => quaternion.LookRotation(GetForward(),normal);
@@ -114,6 +114,16 @@ namespace Geometry
                     case 0: return v0;
                     case 1: return v1;
                     case 2: return v2;
+                }
+            }
+            set
+            {
+                switch (_index)
+                {
+                    default: Debug.LogError("Invalid Index:" + _index); v0 = value; break;
+                    case 0: v0 = value; break;
+                    case 1: v1 = value; break;
+                    case 2: v2 = value; break;
                 }
             }
         }
@@ -181,7 +191,11 @@ namespace Geometry
         IEnumerator IEnumerable.GetEnumerator()=>GetEnumerator();
 
         public int Length => 3;
-        public int this[int _index] => triangle[_index];
+        public int this[int _index]
+        {
+            get => triangle[_index];
+            set => triangle[_index] = value;
+        }
 
         public int V0 => triangle.v0;
         public int V1 => triangle.v1;

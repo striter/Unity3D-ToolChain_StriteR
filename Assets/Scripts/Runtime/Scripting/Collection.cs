@@ -286,6 +286,17 @@ public static class UCollection
             index = -1;
             return default;
         }
+        public static int FindIndex<T>(this IEnumerable<T> _collection, T _equaler)
+        {
+            int index = -1;
+            foreach (T items in _collection)
+            {
+                index++;
+                if (_equaler.Equals(items))
+                    return index;
+            }
+            return -1;
+        }
         
         public static int FindIndex<T>(this IEnumerable<T> _collection, Predicate<T> _OnEachElement)
         {

@@ -51,10 +51,11 @@ namespace Examples.Algorithm.DelaunayTriangulation
 
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.white.SetA(.1f);
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Scale(Vector3.one);
+            Gizmos.color = Color.white;
             foreach (var point in m_Vertices)
-                Gizmos.DrawWireSphere(point.to3xz(),.3f);
+                Gizmos.DrawWireSphere(point.to3xz(),.1f);
+            Gizmos.color = Color.white.SetA(.1f);
             foreach (var triangle in triangles)
                 UGizmos.DrawLinesConcat(triangle,_p=>m_Vertices[_p].to3xz());
         }

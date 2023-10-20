@@ -58,6 +58,21 @@ public static class UIterate
         }
         return default;
     }
+
+    public static bool IterateFindIndex<T>(this IIterate<T> _src, T _predicate, out int _index)
+    {
+        _index = IterateFindIndex(_src, _predicate);
+        return _index != -1;
+    }
+    
+    public static int IterateFindIndex<T>(this IIterate<T> _src,T _predicate)
+    {
+        int length = _src.Length;
+        for(int i=0;i<length;i++)
+            if (_predicate.Equals(_src[i]))
+                return i;
+        return -1;
+    }
     
     public static int IterateFindIndex<T>(this IIterate<T> _src,Predicate<T> _predicate)
     {
@@ -76,6 +91,8 @@ public static class UIterate
                 return true;
         return false;
     }
+    
+    
     public static bool IterateAny<T>(this IIterate<T> _src, Predicate<T> _validate)
     {
         int length = _src.Length;

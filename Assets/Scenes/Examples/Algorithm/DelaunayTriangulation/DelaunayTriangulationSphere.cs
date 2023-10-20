@@ -77,7 +77,7 @@ namespace Examples.Algorithm.DelaunayTriangulation
             Gizmos.color = Color.white.SetA(.3f);
             Gizmos.matrix = transform.localToWorldMatrix;
             foreach (var point in m_Vertices)
-                Gizmos.DrawWireSphere(point,.3f);
+                Gizmos.DrawSphere(point,.1f);
             foreach (var triangle in triangles)
                 UGizmos.DrawLinesConcat(triangle,_p=>m_Vertices[_p]);
             
