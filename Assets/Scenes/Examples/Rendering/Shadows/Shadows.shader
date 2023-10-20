@@ -106,11 +106,33 @@ Shader "Hidden/Unfinished/Shadows"
 			    res = max(res,-1.0);
 			    return 0.25*(1.0+res)*(1.0+res)*(2.0-res);
 			}
-						
+
+			float4x4 _WorldToShadow;
+			float4 _ShadowParams;
+			TEXTURE2D(_ShadowmapTexture);
 			Light GetMainLight(v2ff i)
 			{
 			    Light light = GetMainLight();
-			    light.shadowAttenuation = RaymarchSDFSoftShadow(i.positionWS,light.direction * 1000,0.01,0.1,64);
+
+				float3 positionWS = i.positionWS;
+				float4 shadowCoord = mul(_WorldToShadow, float4(positionWS, 1.0));
+		        ShadowSamplingData shadowSamplingData = GetMainLightShadowSamplingData();
+		        half4 shadowParams = GetMainLightShadowParams();
+
+				float shadowMap = SampleShadowmap(TEXTURE2D_ARGS(_ShadowmapTexture, sampler_LinearClampCompare), shadowCoord, shadowSamplingData, shadowParams, false);
+			    float3 camToPixel = positionWS - _WorldSpaceCameraPos;
+			    float distanceCamToPixel2 = dot(camToPixel, camToPixel);
+
+				float fade = saturate(distanceCamToPixel2 * float(_ShadowParams.z) + float(_ShadowParams.w));
+				if(fade > 0)
+				{
+					float sdf = RaymarchSDFSoftShadow(i.positionWS,light.direction * 1000,0.005,0.1,128);
+					light.shadowAttenuation = lerp(sdf,shadowMap,fade);
+				}
+				else
+				{
+					light.shadowAttenuation = shadowMap;
+				}
 				return light;
 			}
 			

@@ -72,6 +72,38 @@ public static class UReflection
             dstObject = field.GetValue(dstObject);
         return dstObject;
     }
+
+    public static T GetFieldValue<T>(object _targetObject, string _fieldName,BindingFlags _flags =  BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+    {
+        if (_targetObject == null)
+            return default;
+        
+        var objectType = _targetObject.GetType();
+        var targetType = typeof(T);
+        var field = objectType.GetField(_fieldName, _flags);
+        if (field.FieldType != targetType)
+        {
+            Debug.LogError($"Invalid Field {targetType.Name} From:{targetType.Name} ");
+            return default;
+        }
+        return (T)field.GetValue(_targetObject);
+    }
+    public static void SetFieldValue<T>(object _targetObject, string _fieldName,T _value,BindingFlags _flags =  BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+    {
+        if (_targetObject == null)
+            return;
+        
+        var objectType = _targetObject.GetType();
+        var targetType = typeof(T);
+        var field = objectType.GetField(_fieldName, _flags);
+        if (field.FieldType != targetType)
+        {
+            Debug.LogError($"Invalid Field {field.FieldType} From:{targetType.Name} ");
+            return;
+        }
+        field.SetValue(_targetObject,_value);
+    }
+
     public static void SetValue(this Stack<FieldInfo> _fieldStacks, object _targetObject, object _value)
     {
         Stack<object> dstObjects = new Stack<object>();
