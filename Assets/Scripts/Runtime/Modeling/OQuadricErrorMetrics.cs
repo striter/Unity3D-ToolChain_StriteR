@@ -9,6 +9,7 @@ namespace QuadricErrorsMetric
 {
     public enum EContractMode
     {
+        MinError,
         VertexCount,
         Percentage,
         DecreaseAmount,
@@ -20,6 +21,7 @@ namespace QuadricErrorsMetric
         public EContractMode mode;
         [MFoldout(nameof(mode),EContractMode.Percentage)][Range(1f,100f)] public float percent;
         [MFoldout(nameof(mode),EContractMode.VertexCount , EContractMode.DecreaseAmount)]public int count;
+        [MFoldout(nameof(mode), EContractMode.MinError)] [Min(0)] public float minError;
     }
 
 
@@ -31,7 +33,6 @@ namespace QuadricErrorsMetric2
     internal class FatVertex
     {
         public float3 m_Position;
-        public int m_FinalIndex;
         public bool m_Collapsed;
         public bool m_Checked;
 
@@ -44,17 +45,16 @@ namespace QuadricErrorsMetric2
         public PTriangle m_Indexes;
         public GPlane m_Plane;
         public int m_FinalIndex;
-        public bool m_Collapsed;
 
-        public FatTriangle(PTriangle _triangle,FatVertex[] _vertices)
+        public FatTriangle(PTriangle _triangle,IList<Vector3> _vertices)
         {
             m_Indexes = _triangle;
-            m_Plane = GPlane.FromPositions(_vertices[m_Indexes[0]].m_Position,
-                _vertices[m_Indexes[1]].m_Position,
-                _vertices[m_Indexes[2]].m_Position);
+            m_Plane = GPlane.FromPositions(_vertices[m_Indexes[0]],
+                _vertices[m_Indexes[1]],
+                _vertices[m_Indexes[2]]);
         }
         
-        public bool ReplaceVertex(int _src,int _end,FatVertex[] _vertices)
+        public bool ReplaceVertex(int _src,int _end,IList<FatVertex> _vertices)
         {
             if (!m_Indexes.IterateFindIndex(_src, out var index))
                 return false;

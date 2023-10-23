@@ -68,6 +68,7 @@ public static partial class umath       //Swizzling
     public static float3 to3xy(this float2 _value, float _z = 0) => new float3(_value, _z);
     public static float3 to3xz(this float2 _value, float _y = 0) => new float3(_value.x, _y,_value.y);
     
+    public static float3 to3xyz(this float4 _value) => new float3(_value.x, _value.y,_value.z);
     public static float4 to4(this float2 _value, float _z=0,float _w=0) => new float4(_value, _z,_w);
     public static float4 to4(this float3 _value, float _w=0) => new float4(_value, _w);
 

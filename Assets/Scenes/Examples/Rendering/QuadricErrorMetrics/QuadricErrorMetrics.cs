@@ -27,6 +27,7 @@ namespace Examples.Rendering.QuadricErrorMetrics
             m_Constructor = new QEMConstructor(m_SharedMesh);
             m_QEMMesh = new Mesh(){name = "Test", hideFlags = HideFlags.HideAndDontSave};
             m_Filter.sharedMesh = m_QEMMesh;
+            m_Constructor.PopulateMesh(m_QEMMesh);
         }
         
         [Button]
@@ -35,23 +36,9 @@ namespace Examples.Rendering.QuadricErrorMetrics
             if (m_Constructor == null)
                 return;
             
-            m_Constructor.DoContract(m_QEMMesh,m_Data);
+            m_Constructor.Collapse(m_Data);
+            m_Constructor.PopulateMesh(m_QEMMesh);
         }
 
-        private void OnDrawGizmos()
-        {
-            if (m_Constructor == null)
-                return;
-
-            Gizmos.matrix = transform.localToWorldMatrix;
-            
-            int count = m_Constructor.vertices.Count;
-            for (int i = 0; i < count; i++)
-            {
-                var vertex = m_Constructor.vertices[i];
-                var qemVertex = m_Constructor.qemVertices[i];
-                Gizmos.DrawSphere(vertex,.01f / Gizmos.matrix.lossyScale.x);
-            }
-        }
     }
 }

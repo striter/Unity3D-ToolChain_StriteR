@@ -200,6 +200,22 @@ public static class UCollection
             }
             return minElement;
         }
+        public static T MinElement<T>(this IEnumerable<T> _collection, Func<T, float> _getValue,out int _minIndex)
+        {
+            T minElement = default;
+            _minIndex = default;
+            float minValue = float.MaxValue;
+            foreach (var (index,element) in _collection.LoopIndex())
+            {
+                var value = _getValue(element);
+                if(minValue<value)
+                    continue;
+                minValue = value;
+                minElement = element;
+                _minIndex = index;
+            }
+            return minElement;
+        }
         public static T MaxElement<T>(this IEnumerable<T> _collection, Func<T, float> _getValue)
         {
             T minElement = default;
