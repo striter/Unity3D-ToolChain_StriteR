@@ -99,7 +99,8 @@ public static partial class umath       //Swizzling
     public static float3 clamp(this float3 _value,float3 _min,float3 _max)=> math.min(math.max(_value,_min) ,_max);
     public static float4 clamp(this float4 _value,float4 _min,float4 _max)=> math.min(math.max(_value,_min) ,_max);
 
-    public static float dot(this float3 _value) => math.dot(_value, _value);
+    public static float dot(this float3 _src) => math.dot(_src, _src);
+    public static float dot(this float3 _src,float3 _dst) => math.dot(_src, _dst);
     
     public static bool anyGreater(this float2 _value, float _comparer) => _value.x > _comparer || _value.y > _comparer;
     public static bool anyGreater(this float3 _value, float _comparer) => _value.x > _comparer || _value.y > _comparer || _value.z > _comparer;
@@ -296,7 +297,11 @@ public static class umatrix
 
 public static class kint2
 {
-    public static readonly int2 one = new int2(1, 1);
+    public static readonly int2 one = new(1, 1);
+    public static readonly int2 k00 = new(0, 0); public static readonly int2 k01 = new(0, 1); public static readonly int2 k02 = new(0, 2); public static readonly int2 k03 = new(0, 3);
+    public static readonly int2 k10 = new(1, 0); public static readonly int2 k11 = new(1, 1); public static readonly int2 k12 = new(1, 2); public static readonly int2 k13 = new(1, 3);
+    public static readonly int2 k20 = new(2, 0); public static readonly int2 k21 = new(2, 1); public static readonly int2 k22 = new(2, 2); public static readonly int2 k23 = new(2, 3);
+    public static readonly int2 k30 = new(3, 0); public static readonly int2 k31 = new(3, 1); public static readonly int2 k32 = new(3, 2); public static readonly int2 k33 = new(3, 3);
 }
 
 public static class kfloat3

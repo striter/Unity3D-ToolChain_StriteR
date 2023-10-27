@@ -218,7 +218,7 @@ public static class UCollection
         }
         public static T MaxElement<T>(this IEnumerable<T> _collection, Func<T, float> _getValue)
         {
-            T minElement = default;
+            T maxElement = default;
             float maxValue = float.MinValue;
             foreach (var (_,element) in _collection.LoopIndex())
             {
@@ -226,9 +226,9 @@ public static class UCollection
                 if(maxValue>value)
                     continue;
                 maxValue = value;
-                minElement = element;
+                maxElement = element;
             }
-            return minElement;
+            return maxElement;
         }
         public static int MaxIndex<T>(this IEnumerable<T> _collection, Func<T, int> _sorting)
         {
@@ -760,6 +760,15 @@ public static class UCollection
     {
         foreach (var element in _collection)
             _src.Add(element);
+    }
+
+    public static void Resize<T>(this List<T> _src,int _newSize)
+    {
+        for(int i=_src.Count;i<_newSize;i++)
+            _src.Add(default);
+        
+        for(int i=_newSize;i<_src.Count;i++)
+            _src.RemoveAt(i);
     }
     #endregion
     #region Dictionary

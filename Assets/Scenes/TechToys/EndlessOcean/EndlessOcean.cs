@@ -21,7 +21,7 @@ namespace TechToys.EndlessOcean
         private MeshFilter m_Filter;
         private QuadTree m_QuadTree = new QuadTree();
 
-        private HomogeneousMatrix2x3 kQuadTreeMatrix;
+        private float2x3_homogeneous kQuadTreeMatrix;
 
         private void Awake()
         {
@@ -41,10 +41,10 @@ namespace TechToys.EndlessOcean
             GetComponentInChildren<MeshFilter>().sharedMesh = null;
         }
 
-        public G2Box GetCurrentBoundary(float3 _cameraPos,out HomogeneousMatrix2x3 quadMatrix)
+        public G2Box GetCurrentBoundary(float3 _cameraPos,out float2x3_homogeneous quadMatrix)
         {
             var center = math.round(_cameraPos.xz / range);
-            quadMatrix = HomogeneousMatrix2x3.TRS(center * range,45 * kmath.kDeg2Rad,1 );
+            quadMatrix = float2x3_homogeneous.TRS(center * range,45 * kmath.kDeg2Rad,1 );
             return new G2Box(0,range * math.pow(3,size));
         }
         
