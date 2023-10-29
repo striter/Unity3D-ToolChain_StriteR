@@ -767,7 +767,7 @@ public static class UCollection
         for(int i=_src.Count;i<_newSize;i++)
             _src.Add(default);
         
-        for(int i=_newSize;i<_src.Count;i++)
+        for(int i=_src.Count-1;i>=_newSize;i--)
             _src.RemoveAt(i);
     }
     #endregion

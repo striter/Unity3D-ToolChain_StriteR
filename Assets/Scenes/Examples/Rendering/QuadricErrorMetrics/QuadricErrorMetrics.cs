@@ -30,9 +30,10 @@ namespace Examples.Rendering.QuadricErrorMetrics
             m_QEMMesh = new Mesh(){name = "Test", hideFlags = HideFlags.HideAndDontSave};
             m_Filter.sharedMesh = m_QEMMesh;
             m_Constructor.Init(m_SharedMesh);
-            m_Constructor.PopulateMesh(m_QEMMesh);
+            // m_Constructor.PopulateMesh(m_QEMMesh);
         }
-        
+
+        public int targetcount;
         [Button]
         private void Optimize()
         {
@@ -45,7 +46,8 @@ namespace Examples.Rendering.QuadricErrorMetrics
         {
             if (m_Constructor == null)
                 return;
-            
+
+            Gizmos.matrix = transform.localToWorldMatrix;
             vertexCount = m_Constructor.vertices.Count;
             trianglesCount = m_Constructor.indexes.Count/3;
             if(m_DrawGizmos)

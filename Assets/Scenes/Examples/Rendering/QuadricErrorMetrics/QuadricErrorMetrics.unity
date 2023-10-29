@@ -329,7 +329,6 @@ MonoBehaviour:
   m_Dithering: 0
   m_ClearDepth: 1
   m_AllowXRRendering: 1
-  m_AllowHDROutput: 1
   m_UseScreenCoordOverride: 0
   m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
   m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
@@ -374,16 +373,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d73f3dc64564faa4da5552ed1ad73bca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SharedMesh: {fileID: -2432090755550338912, guid: 3d55c8f06cdfe8c46859f11210da472b,
-    type: 3}
-  vertexCount: 155
-  trianglesCount: 301
-  m_Data:
-    mode: 2
-    percent: 43
-    count: 5
-    minError: 0
-  m_DrawGizmos: 0
+  m_SharedMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  vertexCount: 515
+  trianglesCount: 768
+  targetcount: 500
+  m_DrawGizmos: 1
 --- !u!4 &561692268
 Transform:
   m_ObjectHideFlags: 0

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Geometry;
 using Unity.Mathematics;
 using UnityEngine;
 using static Unity.Mathematics.math;
@@ -6,9 +8,9 @@ using static Unity.Mathematics.math;
 namespace QuadricErrorsMetric
 {
 	//&https://github.com/sp4cerat/Fast-Quadric-Mesh-Simplification/blob/master/src.cmd/Simplify.h#L768
-    public class UQuadricErrorMetrices2
+    public class UQuadricErrorMetrics2
     {
-		class Triangle { 
+	    public class Triangle { 
 			public int[] v = new int[3];
 			public float[] err = new float[4];
 			public bool deleted,dirty,attr;
@@ -16,7 +18,7 @@ namespace QuadricErrorsMetric
 			public float3[] uvs=new float3[3];
 		};
 
-		class Vertex
+	    public class Vertex
 		{
 			public float3 p;
 			public int tstart,tcount;
@@ -28,12 +30,38 @@ namespace QuadricErrorsMetric
 		{
 			public int tid,tvertex;
 		};
-		
-		List<Triangle> triangles = new();
-		List<Vertex> vertices = new();
+
+		public List<Triangle> triangles { get; private set; } = new();
+		public List<Vertex> vertices { get; private set; } = new();
 		List<Ref> refs = new ();
 
-		void simplify_mesh(int target_count, double agressiveness=7, bool verbose=false)
+		public void Init(Mesh _sharedMesh)//, bool process_uv=false)
+        {
+			vertices.Clear();
+			triangles.Clear();
+
+			vertices.AddRange(_sharedMesh.vertices.Select(p=> new Vertex() {
+				p = p,
+			}));
+
+			
+			foreach (var p in _sharedMesh.GetPolygons(out var indexes))
+			{
+				triangles.Add(new Triangle() {
+					v = new int[]{p.V0,p.V1,p.V2},
+					n = GPlane.FromPositions(vertices[p.V0].p,vertices[p.V1].p,vertices[p.V2].p).normal,
+				});
+			}
+			update_mesh(0);
+		} // load_obj()
+
+		public void DrawGizmos()
+		{
+			foreach (var triangle in triangles)
+				UGizmos.DrawLinesConcat(triangle.v.Select(p=>vertices[p].p));
+		}
+		
+		public void simplify_mesh(int target_count, float agressiveness=7, bool verbose=false)
 		{
 			// init
 			for(var i =0;i < triangles.Count;i++)
@@ -41,13 +69,14 @@ namespace QuadricErrorsMetric
 
 			// main iteration loop
 			int deleted_triangles=0;
-			List<int> deleted0 = new (),deleted1 = new ();
-			int triangle_count=triangles.Count();
+			List<bool> deleted0 = new (),deleted1 = new ();
+			int triangle_count=triangles.Count;
 			//int iteration = 0;
 			//loop(iteration,0,100)
 			for (int iteration = 0; iteration < 100; iteration ++)
 			{
-				if(triangle_count-deleted_triangles<=target_count)break;
+				if(triangle_count-deleted_triangles<=target_count)
+					break;
 
 				// update mesh once in a while
 				if(iteration%5==0)
@@ -93,26 +122,27 @@ namespace QuadricErrorsMetric
 
 						if( flipped(p,i1,i0,v1,v0,deleted1) ) continue;
 
-						if ( (t.attr & TEXCOORD) == TEXCOORD  )
-						{
-							update_uvs(i0,v0,p,deleted0);
-							update_uvs(i0,v1,p,deleted1);
-						}
+						// if ( (t.attr & TEXCOORD) == TEXCOORD  )
+						// {
+						// 	update_uvs(i0,v0,p,deleted0);
+						// 	update_uvs(i0,v1,p,deleted1);
+						// }
 
 						// not flipped, so remove edge
 						v0.p=p;
 						v0.q=v1.q+v0.q;
-						int tstart=refs.size();
+						int tstart=refs.Count;
 
-						update_triangles(i0,v0,deleted0,deleted_triangles);
-						update_triangles(i0,v1,deleted1,deleted_triangles);
+						update_triangles(i0,v0,deleted0,ref deleted_triangles);
+						update_triangles(i0,v1,deleted1,ref deleted_triangles);
 
-						int tcount=refs.size()-tstart;
+						int tcount=refs.Count-tstart;
 
 						if(tcount<=v0.tcount)
 						{
 							// save ram
-							if(tcount)memcpy(&refs[v0.tstart],&refs[tstart],tcount*sizeof(Ref));
+							for (int k = 0; k < tcount; k++)
+								refs[v0.tstart + k] = refs[tstart + k];
 						}
 						else
 							// append
@@ -122,108 +152,111 @@ namespace QuadricErrorsMetric
 						break;
 					}
 					// done?
-					if(triangle_count-deleted_triangles<=target_count)break;
+					if(triangle_count-deleted_triangles<=target_count)
+						break;
 				}
 			}
 			// clean up mesh
 			compact_mesh();
 		} //simplify_mesh()
 
-		void simplify_mesh_lossless(bool verbose=false)
-		{
-			// init
-			loopi(0,triangles.size()) triangles[i].deleted=0;
-
-			// main iteration loop
-			int deleted_triangles=0;
-			std::vector<int> deleted0,deleted1;
-			int triangle_count=triangles.size();
-			//int iteration = 0;
-			//loop(iteration,0,100)
-			for (int iteration = 0; iteration < 9999; iteration ++)
-			{
-				// update mesh constantly
-				update_mesh(iteration);
-				// clear dirty flag
-				loopi(0,triangles.size()) triangles[i].dirty=0;
-				//
-				// All triangles with edges below the threshold will be removed
-				//
-				// The following numbers works well for most models.
-				// If it does not, try to adjust the 3 parameters
-				//
-				double threshold = DBL_EPSILON; //1.0E-3 EPS;
-				if (verbose) {
-					printf("lossless iteration %d\n", iteration);
-				}
-
-				// remove vertices & mark deleted triangles
-				loopi(0,triangles.size())
-				{
-					Triangle &t=triangles[i];
-					if(t.err[3]>threshold) continue;
-					if(t.deleted) continue;
-					if(t.dirty) continue;
-
-					loopj(0,3)if(t.err[j]<threshold)
-					{
-						int i0=t.v[ j     ]; Vertex &v0 = vertices[i0];
-						int i1=t.v[(j+1)%3]; Vertex &v1 = vertices[i1];
-
-						// Border check
-						if(v0.border != v1.border)  continue;
-
-						// Compute vertex to collapse to
-						vec3f p;
-						calculate_error(i0,i1,p);
-
-						deleted0.resize(v0.tcount); // normals temporarily
-						deleted1.resize(v1.tcount); // normals temporarily
-
-						// don't remove if flipped
-						if( flipped(p,i0,i1,v0,v1,deleted0) ) continue;
-						if( flipped(p,i1,i0,v1,v0,deleted1) ) continue;
-
-						if ( (t.attr & TEXCOORD) == TEXCOORD )
-						{
-							update_uvs(i0,v0,p,deleted0);
-							update_uvs(i0,v1,p,deleted1);
-						}
-
-						// not flipped, so remove edge
-						v0.p=p;
-						v0.q=v1.q+v0.q;
-						int tstart=refs.size();
-
-						update_triangles(i0,v0,deleted0,deleted_triangles);
-						update_triangles(i0,v1,deleted1,deleted_triangles);
-
-						int tcount=refs.size()-tstart;
-
-						if(tcount<=v0.tcount)
-						{
-							// save ram
-							if(tcount)memcpy(&refs[v0.tstart],&refs[tstart],tcount*sizeof(Ref));
-						}
-						else
-							// append
-							v0.tstart=tstart;
-
-						v0.tcount=tcount;
-						break;
-					}
-				}
-				if(deleted_triangles<=0)break;
-				deleted_triangles=0;
-			} //for each iteration
-			// clean up mesh
-			compact_mesh();
-		} //simplify_mesh_lossless()
-
+		// void simplify_mesh_lossless(bool verbose=false)
+		// {
+		// 	// init
+		// 	for(int i=0;i<triangles.Count;i++)
+		// 		triangles[i].deleted=false;
+		//
+		// 	// main iteration loop
+		// 	int deleted_triangles=0;
+		// 	List<bool> deleted0= new (),deleted1= new ();
+		// 	int triangle_count=triangles.Count;
+		// 	//int iteration = 0;
+		// 	//loop(iteration,0,100)
+		// 	for (int iteration = 0; iteration < 9999; iteration ++)
+		// 	{
+		// 		// update mesh constantly
+		// 		update_mesh(iteration);
+		// 		// clear dirty flag
+		// 		for(int i=0;i<triangles.Count;i++)
+		// 			triangles[i].dirty=false;
+		// 		//
+		// 		// All triangles with edges below the threshold will be removed
+		// 		//
+		// 		// The following numbers works well for most models.
+		// 		// If it does not, try to adjust the 3 parameters
+		// 		//
+		// 		double threshold = float.Epsilon; //1.0E-3 EPS;
+		// 		if (verbose)
+		// 			Debug.Log($"lossless iteration {iteration}");
+		//
+		// 		// remove vertices & mark deleted triangles
+		// 		for(int i=0;i<triangles.Count;i++)
+		// 		{
+		// 			var t=triangles[i];
+		// 			if(t.err[3]>threshold) continue;
+		// 			if(t.deleted) continue;
+		// 			if(t.dirty) continue;
+		//
+		// 			for(int j=0;j<3;j++)
+		// 				if(t.err[j]<threshold)
+		// 				{
+		// 					int i0=t.v[ j     ]; var v0 = vertices[i0];
+		// 					int i1=t.v[(j+1)%3]; var v1 = vertices[i1];
+		//
+		// 					// Border check
+		// 					if(v0.border != v1.border)  continue;
+		//
+		// 					// Compute vertex to collapse to
+		// 					calculate_error(i0,i1,out var p);
+		//
+		// 					deleted0.Resize(v0.tcount); // normals temporarily
+		// 					deleted1.Resize(v1.tcount); // normals temporarily
+		//
+		// 					// don't remove if flipped
+		// 					if( flipped(p,i0,i1,v0,v1,deleted0) ) continue;
+		// 					if( flipped(p,i1,i0,v1,v0,deleted1) ) continue;
+		// 					//
+		// 					// if ( (t.attr & TEXCOORD) == TEXCOORD )
+		// 					// {
+		// 					// 	update_uvs(i0,v0,p,deleted0);
+		// 					// 	update_uvs(i0,v1,p,deleted1);
+		// 					// }
+		//
+		// 					// not flipped, so remove edge
+		// 					v0.p=p;
+		// 					v0.q=v1.q+v0.q;
+		// 					int tstart=refs.Count;
+		//
+		// 					update_triangles(i0,v0,deleted0,ref deleted_triangles);
+		// 					update_triangles(i0,v1,deleted1,ref deleted_triangles);
+		//
+		// 					int tcount=refs.Count-tstart;
+		//
+		// 					if(tcount<=v0.tcount)
+		// 					{
+		// 						// save ram
+		// 						for (int k = 0; k < tcount; k++)
+		// 							refs[v0.tstart + k] = refs[tstart + k];
+		// 					}
+		// 					else
+		// 						// append
+		// 						v0.tstart=tstart;
+		//
+		// 					v0.tcount=tcount;
+		// 					break;
+		// 				}
+		// 		}
+		// 		if(deleted_triangles<=0)break;
+		// 		deleted_triangles=0;
+		// 	} //for each iteration
+		// 	// clean up mesh
+		// 	compact_mesh();
+		// } //simplify_mesh_lossless()
+		//
 
 		// Check if a triangle flips when this edge is removed
 
-		bool flipped(float3 p,int i0,int i1,Vertex v0,Vertex v1,List<int> deleted)
+		bool flipped(float3 p,int i0,int i1,Vertex v0,Vertex v1,List<bool> deleted)
 		{
 
 			for (int k = 0;k<v0.tcount;k++)
@@ -238,7 +271,7 @@ namespace QuadricErrorsMetric
 				if(id1==i1 || id2==i1) // delete ?
 				{
 
-					deleted[k]=1;
+					deleted[k]=true;
 					continue;
 				}
 				var d1 = vertices[id1].p-p;d1 = d1.normalize();
@@ -246,7 +279,7 @@ namespace QuadricErrorsMetric
 				if(abs(d1.dot(d2))>0.999) return true;
 				var n = cross(d1,d2);
 				n = n.normalize();
-				deleted[k]=0;
+				deleted[k]=false;
 				if(n.dot(t.n)<0.2) return true;
 			}
 			return false;
@@ -388,29 +421,29 @@ namespace QuadricErrorsMetric
 								vcount[ofs]++;
 						}
 					}
-					loopj(0,vcount.size()) if(vcount[j]==1)
-						vertices[vids[j]].border=1;
+					for(int j=0;j<vcount.Count;j++)
+						 if(vcount[j]==1)
+							vertices[vids[j]].border=true;
 				}
 				//initialize errors
-				loopi(0,vertices.size())
-					vertices[i].q=SymetricMatrix(0.0);
+				for(int i=0;i<vertices.Count;i++)
+					vertices[i].q= float4x4_symmetric.zero;
 
-				loopi(0,triangles.size())
+				for(int i=0;i<vertices.Count;i++)
 				{
-					Triangle &t=triangles[i];
-					vec3f n,p[3];
-					loopj(0,3) p[j]=vertices[t.v[j]].p;
-					n.cross(p[1]-p[0],p[2]-p[0]);
-					n.normalize();
-					t.n=n;
-					loopj(0,3) vertices[t.v[j]].q =
-						vertices[t.v[j]].q+SymetricMatrix(n.x,n.y,n.z,-n.dot(p[0]));
+					var t=triangles[i];
+					var plane = GPlane.FromPositions(vertices[t.v[0]].p,
+					vertices[t.v[1]].p,
+					vertices[t.v[2]].p);
+					for (var j = 0; j < 3; j++)
+						vertices[t.v[j]].q += CalculateErrorMatrix(plane);
 				}
-				loopi(0,triangles.size())
+				for(int i=0;i<triangles.Count;i++)
 				{
 					// Calc Edge Error
-					Triangle &t=triangles[i];vec3f p;
-					loopj(0,3) t.err[j]=calculate_error(t.v[j],t.v[(j+1)%3],p);
+					var t=triangles[i];
+					for(var j =0;j<3;j++)
+					    t.err[j]=calculate_error(t.v[j],t.v[(j+1)%3],out var p);
 					t.err[3]=min(t.err[0],min(t.err[1],t.err[2]));
 				}
 			}
@@ -421,32 +454,32 @@ namespace QuadricErrorsMetric
 		void compact_mesh()
 		{
 			int dst=0;
-			loopi(0,vertices.size())
-			{
+			for(int i=0;i<vertices.Count;i++)
 				vertices[i].tcount=0;
-			}
-			loopi(0,triangles.size())
-			if(!triangles[i].deleted)
-			{
-				Triangle &t=triangles[i];
-				triangles[dst++]=t;
-				loopj(0,3)vertices[t.v[j]].tcount=1;
-			}
-			triangles.resize(dst);
+			for(int i=0;i<triangles.Count;i++)
+				if(!triangles[i].deleted)
+				{
+					var t=triangles[i];
+					triangles[dst++]=t;
+					for(var j =0;j<3;j++)
+					    vertices[t.v[j]].tcount=1;
+				}
+			triangles.Resize(dst);
 			dst=0;
-			loopi(0,vertices.size())
-			if(vertices[i].tcount)
+			for(int i=0;i<vertices.Count;i++)
+				if(vertices[i].tcount > 0)
+				{
+					vertices[i].tstart=dst;
+					vertices[dst].p=vertices[i].p;
+					dst++;
+				}
+			for(int i=0;i<triangles.Count;i++)
 			{
-				vertices[i].tstart=dst;
-				vertices[dst].p=vertices[i].p;
-				dst++;
+				var t=triangles[i];
+				for(var j =0;j<3;j++)
+					t.v[j]=vertices[t.v[j]].tstart;
 			}
-			loopi(0,triangles.size())
-			{
-				Triangle &t=triangles[i];
-				loopj(0,3)t.v[j]=vertices[t.v[j]].tstart;
-			}
-			vertices.resize(dst);
+			vertices.Resize(dst);
 		}
 
 		// Error between vertex and Quadric
@@ -461,6 +494,7 @@ namespace QuadricErrorsMetric
 
 		float calculate_error(int id_v1, int id_v2, out float3 p_result)
 		{
+			p_result = default;
 			// compute interpolated vertex
 			var q = vertices[id_v1].q + vertices[id_v2].q;
 			var   border = vertices[id_v1].border && vertices[id_v2].border;
@@ -494,157 +528,21 @@ namespace QuadricErrorsMetric
 		}
 
 
-		//Option : Load OBJ
-		void load_obj(const char* filename, bool process_uv=false){
-			vertices.clear();
-			triangles.clear();
-			//printf ( "Loading Objects %s ... \n",filename);
-			FILE* fn;
-			if(filename==NULL)		return ;
-			if((char)filename[0]==0)	return ;
-			if ((fn = fopen(filename, "rb")) == NULL)
-			{
-				printf ( "File %s not found!\n" ,filename );
-				return;
-			}
-			char line[1000];
-			memset ( line,0,1000 );
-			int vertex_cnt = 0;
-			int material = -1;
-			std::map<std::string, int> material_map;
-			std::vector<vec3f> uvs;
-			std::vector<std::vector<int> > uvMap;
+		public float4x4_symmetric CalculateErrorMatrix(GPlane _plane)
+		{
+			var a = _plane.position.x;
+			var b = _plane.position.y;
+			var c = _plane.position.z;
+			var d = -_plane.distance;
 
-			while(fgets( line, 1000, fn ) != NULL)
-			{
-				Vertex v;
-				vec3f uv;
-
-				if (strncmp(line, "mtllib", 6) == 0)
-				{
-					mtllib = trimwhitespace(&line[7]);
-				}
-				if (strncmp(line, "usemtl", 6) == 0)
-				{
-					std::string usemtl = trimwhitespace(&line[7]);
-					if (material_map.find(usemtl) == material_map.end())
-					{
-						material_map[usemtl] = materials.size();
-						materials.push_back(usemtl);
-					}
-					material = material_map[usemtl];
-				}
-
-				if ( line[0] == 'v' && line[1] == 't' )
-				{
-					if ( line[2] == ' ' )
-					if(sscanf(line,"vt %lf %lf",
-						&uv.x,&uv.y)==2)
-					{
-						uv.z = 0;
-						uvs.push_back(uv);
-					} else
-					if(sscanf(line,"vt %lf %lf %lf",
-						&uv.x,&uv.y,&uv.z)==3)
-					{
-						uvs.push_back(uv);
-					}
-				}
-				else if ( line[0] == 'v' )
-				{
-					if ( line[1] == ' ' )
-					if(sscanf(line,"v %lf %lf %lf",
-						&v.p.x,	&v.p.y,	&v.p.z)==3)
-					{
-						vertices.push_back(v);
-					}
-				}
-				int integers[9];
-				if ( line[0] == 'f' )
-				{
-					Triangle t;
-					bool tri_ok = false;
-	                bool has_uv = false;
-
-					if(sscanf(line,"f %d %d %d",
-						&integers[0],&integers[1],&integers[2])==3)
-					{
-						tri_ok = true;
-					}else
-					if(sscanf(line,"f %d// %d// %d//",
-						&integers[0],&integers[1],&integers[2])==3)
-					{
-						tri_ok = true;
-					}else
-					if(sscanf(line,"f %d//%d %d//%d %d//%d",
-						&integers[0],&integers[3],
-						&integers[1],&integers[4],
-						&integers[2],&integers[5])==6)
-					{
-						tri_ok = true;
-					}else
-					if(sscanf(line,"f %d/%d/%d %d/%d/%d %d/%d/%d",
-						&integers[0],&integers[6],&integers[3],
-						&integers[1],&integers[7],&integers[4],
-						&integers[2],&integers[8],&integers[5])==9)
-					{
-						tri_ok = true;
-						has_uv = true;
-					}else // Add Support for v/vt only meshes
-					if (sscanf(line, "f %d/%d %d/%d %d/%d",
-						&integers[0], &integers[6],
-						&integers[1], &integers[7],
-						&integers[2], &integers[8]) == 6)
-					{
-						tri_ok = true;
-						has_uv = true;
-					}
-					else
-					{
-						printf("unrecognized sequence\n");
-						printf("%s\n",line);
-						while(1);
-					}
-					if ( tri_ok )
-					{
-						t.v[0] = integers[0]-1-vertex_cnt;
-						t.v[1] = integers[1]-1-vertex_cnt;
-						t.v[2] = integers[2]-1-vertex_cnt;
-						t.attr = 0;
-
-						if ( process_uv && has_uv )
-						{
-							std::vector<int> indices;
-							indices.push_back(integers[6]-1-vertex_cnt);
-							indices.push_back(integers[7]-1-vertex_cnt);
-							indices.push_back(integers[8]-1-vertex_cnt);
-							uvMap.push_back(indices);
-							t.attr |= TEXCOORD;
-						}
-
-						t.material = material;
-						//geo.triangles.push_back ( tri );
-						triangles.push_back(t);
-						//state_before = state;
-						//state ='f';
-					}
-				}
-			}
-
-			if ( process_uv && uvs.size() )
-			{
-				loopi(0,triangles.size())
-				{
-					loopj(0,3)
-					triangles[i].uvs[j] = uvs[uvMap[i][j]];
-				}
-			}
-
-			fclose(fn);
-
-			//printf("load_obj: vertices = %lu, triangles = %lu, uvs = %lu\n", vertices.size(), triangles.size(), uvs.size() );
-		} // load_obj()
-
+			
+			return new float4x4_symmetric(
+				a*a,a*b, a*c, a*d,
+				b*b, b*c, b*d,
+				c*c, c*d,
+				d*d
+			);
+		}
 
     }
 }
