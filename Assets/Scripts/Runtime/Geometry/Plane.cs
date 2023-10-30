@@ -87,6 +87,13 @@ namespace Geometry
         
         public bool IsFront(float3 _point) => this.dot(_point) > 0;
 
+        
+        static float3[] kTempArray = new float3[3];
+        public static GPlane FromPositions(IEnumerable<float3> _ienumerable)
+        {
+            _ienumerable.FillArray(kTempArray);
+            return FromPositions(kTempArray[0],kTempArray[1],kTempArray[2]);
+        }
         public static GPlane FromPositions(float3 _V0, float3 _V1, float3 _V2) => new GPlane(math.cross((_V1 - _V0).normalize(),(_V2 - _V0).normalize()).normalize(),_V0);
         public static GPlane operator *(Matrix4x4 _matrix, GPlane _plane) => new GPlane(_matrix.MultiplyVector(_plane.normal),_matrix.MultiplyPoint(_plane.position));
         public static GPlane operator *(float4x4 _matrix, GPlane _plane) => new GPlane(math.mul(_matrix,_plane.normal.to4(0)).xyz,math.mul(_matrix,_plane.position.to4(1)).xyz);

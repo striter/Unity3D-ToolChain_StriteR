@@ -329,6 +329,7 @@ MonoBehaviour:
   m_Dithering: 0
   m_ClearDepth: 1
   m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
   m_UseScreenCoordOverride: 0
   m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
   m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
@@ -374,9 +375,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SharedMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
-  vertexCount: 515
-  trianglesCount: 768
-  targetcount: 500
+  vertexCount: 0
+  trianglesCount: 0
+  m_Data:
+    mode: 0
+    percent: 0
+    count: 5
+    minError: -1000
   m_DrawGizmos: 1
 --- !u!4 &561692268
 Transform:
@@ -400,7 +405,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 561692266}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

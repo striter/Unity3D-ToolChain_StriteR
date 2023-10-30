@@ -39,7 +39,11 @@ namespace QuadricErrorsMetric
         public float error;
         public float3 vBest;
     }
-    
+
+    public class QEMTriangle
+    {
+        public PTriangle polygons;
+    }
     public class QEMVertex
     {
         public float3 position = 0f;
@@ -78,13 +82,13 @@ namespace QuadricErrorsMetric
                     goto result;
                 }
 
-                var errors = new float[] {
+                var errors = new[] {
                     KQEM.CalculateError(q, srcPosition),
                     KQEM.CalculateError(q, edgePosition),
                     KQEM.CalculateError(q, midPosition),
                 };
 
-                var positions = new float3[] {
+                var positions = new[] {
                     srcPosition,
                     edgePosition,
                     midPosition,
@@ -106,8 +110,8 @@ namespace QuadricErrorsMetric
 
     public class QEMConstructor
     {
-        public List<QEMVertex> vertices { get; private set; } = new List<QEMVertex>();
-        public List<int> indexes { get; private set; } = new List<int>();
+        public List<QEMVertex> vertices { get; private set; } = new();
+        public List<QEMTriangle> indexes { get; private set; } = new ();
 
         public void Init(Mesh _srcMesh)
         {
@@ -117,22 +121,25 @@ namespace QuadricErrorsMetric
             var srcVertices  = new List<Vector3>();
             _srcMesh.GetVertices(srcVertices);
             var polygons = _srcMesh.GetPolygons(out var indexesArray).ToList();
-            indexesArray.FillList(indexes);
-
-            var triangles = polygons.Select(p => (GTriangle)p.Convert(srcVertices)).ToArray();
-
+            
             var vertexLength = srcVertices.Count;
             var triangleLength = polygons.Count;
 
             for (var i = 0; i < vertexLength; i++)
                 vertices.Add(new QEMVertex(){position = srcVertices[i]});
-
+            
+            for(int i=0;i<triangleLength;i++)
+                indexes.Add(new QEMTriangle
+                {
+                    polygons =  polygons[i],
+                } );
+            
             //Initialize
             for (var i = 0; i < triangleLength; i++)
             {
                 var polygon = polygons[i];
-                var triangle = triangles[i];
-                var errorMatrix = KQEM.GetErrorMatrix(triangle.GetPlane());
+                var plane = GPlane.FromPositions(polygon.Select(p=>vertices[p].position));
+                var errorMatrix = KQEM.GetErrorMatrix(plane);
 
                 for (var j = 0; j < 3; j++)
                     vertices[polygon[j]].errorMatrix += errorMatrix;
@@ -180,7 +187,7 @@ namespace QuadricErrorsMetric
         {
             _mesh.Clear();
             _mesh.SetVertices(vertices.Select(p => (Vector3)p.position).ToList());
-            _mesh.SetTriangles(indexes, 0);
+            _mesh.SetTriangles(indexes.Select(p=>(IEnumerable<int>)p.polygons).Resolve().ToArray(), 0);
         }
         
         QEMEdge GetMinEdge(out int _vertexIndex)
@@ -195,12 +202,10 @@ namespace QuadricErrorsMetric
                     continue;
 
                 var min = qemVertex.edges.MinElement(p => p.error);
-                if (minError > min.error)
-                {
-                    _vertexIndex = i;
-                    minError = min.error;
-                    minEdge = min;
-                }
+                if (minError < min.error) continue;
+                _vertexIndex = i;
+                minError = min.error;
+                minEdge = min;
             }
 
             return minEdge;
@@ -225,12 +230,11 @@ namespace QuadricErrorsMetric
                     .Distinct()
                 ,vertices);
             vertices.Add(contractVertex);
-
             
-            int concatVertex = vertices.Count - 1;
-            for (int i = 0; i < indexes.Count; i += 3)
+            int contractVertexIndex = vertices.Count - 1;
+            for (int i = 0; i < indexes.Count; i ++)
             {
-                var polygon = new PTriangle(indexes[i], indexes[i + 1], indexes[i + 2]);
+                ref var polygon = ref indexes[i].polygons;
 
                 int matchCount = 0;
                 int matchIndex = -1;
@@ -247,18 +251,28 @@ namespace QuadricErrorsMetric
                 if (matchCount == 1)
                 {
                     //Change indexes
-                    indexes[i + matchIndex] = concatVertex;
                     foreach (var index in polygon)
                         foreach (var edge in vertices[index].edges)
+                        {
                             if (edge.end == index0 || edge.end == index1)
-                                edge.end = concatVertex;
+                                edge.end = contractVertexIndex;
+                        }
+                    polygon[matchIndex] = contractVertexIndex;
                     continue;
                 }
 
-                indexes.RemoveAt(i);
-                indexes.RemoveAt(i);
                 indexes.RemoveAt(i); //....
-                i -= 3;
+                i -= 1;
+            }
+            
+            int ConvertIndex(int _srcIndex)
+            {
+                var offset = 0;
+                if (_srcIndex > index0)
+                    offset += 1;
+                if (_srcIndex > index1)
+                    offset += 1;
+                return _srcIndex - offset; 
             }
 
             foreach (var qemVertex in vertices)
@@ -272,27 +286,13 @@ namespace QuadricErrorsMetric
                         continue;
                     }
                     
-                    var offset = 0;
-                    var index = qemVertex.edges[i].end;
-                    if (index > index0)
-                        offset += 1;
-                    if (index > index1)
-                        offset += 1;
-
-                    qemVertex.edges[i].end -= offset;
+                    qemVertex.edges[i].end = ConvertIndex(qemVertex.edges[i].end);
                 }
             }
 
             for (int i = 0; i < indexes.Count; i++)
-            {
-                int offset = 0;
-                if (indexes[i] > index0)
-                    offset += 1;
-
-                if (indexes[i] > index1)
-                    offset += 1;
-                indexes[i] -= offset;
-            }
+                for(int j=0;j<3;j++)
+                    indexes[i].polygons[j] = ConvertIndex(indexes[i].polygons[j]);
             
             vertices.RemoveAt(index1);
             vertices.RemoveAt(index0);
@@ -302,9 +302,7 @@ namespace QuadricErrorsMetric
         {
             Gizmos.color = Color.white.SetA(.3f);
             foreach (var vertex in vertices)
-            {
                 Gizmos.DrawWireSphere(vertex.position,.025f);
-            }
         }
     }
 }

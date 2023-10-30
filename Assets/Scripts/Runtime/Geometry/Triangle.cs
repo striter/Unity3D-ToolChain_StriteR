@@ -27,6 +27,7 @@ namespace Geometry
         public Triangle<int> triangle;
         public PTriangle(Triangle<int> _triangle) { triangle = _triangle;  }
         public PTriangle(int _index0, int _index1, int _index2):this(new Triangle<int>(_index0,_index1,_index2)){}
+        public PTriangle(int[] _indexes):this(new Triangle<int>(_indexes[0],_indexes[1],_indexes[2])){}
         
         public Triangle<T> Convert<T>(IList<T> _vertices) where T:struct => new Triangle<T>(_vertices[V0], _vertices[V1],_vertices[V2]);
         

@@ -30,10 +30,9 @@ namespace Examples.Rendering.QuadricErrorMetrics
             m_QEMMesh = new Mesh(){name = "Test", hideFlags = HideFlags.HideAndDontSave};
             m_Filter.sharedMesh = m_QEMMesh;
             m_Constructor.Init(m_SharedMesh);
-            // m_Constructor.PopulateMesh(m_QEMMesh);
+            m_Constructor.PopulateMesh(m_QEMMesh);
         }
 
-        public int targetcount;
         [Button]
         private void Optimize()
         {
