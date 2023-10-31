@@ -265,10 +265,13 @@ namespace Rendering.GI.SphericalHarmonics
         
         public static SHL2Data ExportL2Gradient(Color _top,Color _equator,Color _bottom)
         {
+            var topColor = _top.ToFloat3();
+            var equatorColor = _equator.ToFloat3();
+            var bottomColor = _bottom.ToFloat3();
             //Closest take cause i can't get the source code
-            var top = ((_top + _equator) * .5f).ToFloat3();
-            var bottom = ((_equator + _bottom) * .5f).ToFloat3();
-            var center = (_equator * .9f + (_top + _bottom) * .1f).ToFloat3();
+            var top = math.lerp(topColor, equatorColor, .5f);
+            var bottom = math.lerp( bottomColor,equatorColor, .5f);
+            var center = equatorColor * .9f + (bottomColor + equatorColor) * .1f;
 
             const int sampleCount = 32;
             SHL2Data data = default;
@@ -276,8 +279,8 @@ namespace Rendering.GI.SphericalHarmonics
             {
                 var randomPos = USphereExplicit.Fibonacci.GetPoint(i, sampleCount);
                 float value = randomPos.y;
-                var tb = math.lerp(center, top, math.smoothstep(0, 1, value));
-                var color =  math.lerp(tb, bottom, math.smoothstep(0, 1, -value));
+                var tb = math.lerp(center, top,  math.smoothstep(0, 1, value));
+                var color =  math.lerp(tb, bottom,  math.smoothstep(0, 1, -value));
                 data += CalculateSHL2Contribution(color, randomPos);
             }
 
