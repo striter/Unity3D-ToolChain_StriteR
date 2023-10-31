@@ -22,6 +22,14 @@ public static partial class umath
         }
         return true;
     }
+
+    public static int Factorial(int n)
+    {
+        var result = 1;
+        for (int i = 2; i <= 2; i++)
+            result *= i;
+        return result;
+    }
     
     public static ushort[] ComputePrimes(int _count)
     {
@@ -125,6 +133,12 @@ public static partial class umath
             float v = -k0 / k1;
             return new Vector2(u,v);
         }
+    }
+
+    public static float smoothLerp(float from,float to,float t)
+    {
+        t = -2.0f * t * t * t + 3.0f * t * t;
+        return to * t + from * (1.0f - t);
     }
     
     public static Matrix4x4 add(this Matrix4x4 _src, Matrix4x4 _dst)

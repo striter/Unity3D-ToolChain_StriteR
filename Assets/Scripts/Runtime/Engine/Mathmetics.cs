@@ -19,8 +19,9 @@ public static class kmath
     public const float kTan0d = 0, kTan30d = kSQRT3/3, kTan45d = 1,       kTan60d = kSQRT3,    kTan90d = float.MaxValue, kTan120d =-kSQRT3;
     
     public const float kSQRT2 = 1.4142135623731f;
-    public const float kPI = 3.141593f;
-    public const float kPI2 = kPI * 2;
+    public const float kPI = 3.14159265359f;
+    public const float kPI2 = 6.28318530718f;
+    public const float kPI4 = 12.5663706144f;
     public const float kPID2 = 1.5707963267948966f;
     public const float kPID4 = 0.7853981633974483f;
     public const float kDeg2Rad = 0.017453292519943f;//PI / 180

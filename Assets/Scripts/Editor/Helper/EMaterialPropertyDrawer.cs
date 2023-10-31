@@ -198,7 +198,7 @@ namespace UnityEditor.Extensions
                 var sky = MaterialEditor.GetMaterialProperty(_editor.targets, keyword+"Sky");
                 var equator =  MaterialEditor.GetMaterialProperty(_editor.targets, keyword + "Equator");
                 var ground =  MaterialEditor.GetMaterialProperty(_editor.targets, keyword + "Ground");
-                var shData = SphericalHarmonicsExport.ExportL2Gradient(4096, sky.colorValue, equator.colorValue, ground.colorValue);
+                var shData = SphericalHarmonicsExport.ExportL2Gradient(sky.colorValue, equator.colorValue, ground.colorValue);
                 var output = shData.Output();
                 
                 MaterialEditor.GetMaterialProperty(_editor.targets, keyword+"SHAr").vectorValue = output.shAr;

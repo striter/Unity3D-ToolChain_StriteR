@@ -21,7 +21,7 @@ RenderSettings:
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 1, g: 0, b: 0, a: 1}
-  m_AmbientEquatorColor: {r: 0, g: 1.1486983, b: 0, a: 1}
+  m_AmbientEquatorColor: {r: 0, g: 1.5336025, b: 0, a: 1}
   m_AmbientGroundColor: {r: 0, g: 0, b: 1, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 1
@@ -104,7 +104,7 @@ NavMeshSettings:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_BuildSettings:
-    serializedVersion: 2
+    serializedVersion: 3
     agentTypeID: 0
     agentRadius: 0.5
     agentHeight: 2
@@ -117,7 +117,7 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualTileSize: 0
     tileSize: 256
-    accuratePlacement: 0
+    buildHeightMesh: 0
     maxJobWorkers: 0
     preserveTilesOutsideBounds: 0
     debug:
@@ -220,17 +220,44 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Data:
-    l00: {x: 0.62341917, y: 2.4887135, z: 0.6118418}
-    l10: {x: -0.008138471, y: -0.040842757, z: -0.002806124}
-    l11: {x: 0.538593, y: 0.0106183095, z: -0.5213381}
-    l12: {x: -0.00024286755, y: 0.0005793581, z: 0.0048106913}
-    l20: {x: -0.0015292846, y: -0.009603168, z: -0.007139081}
-    l21: {x: -0.0050525577, y: -0.024709396, z: -0.0044877264}
-    l22: {x: -0.08827262, y: 0.23208377, z: -0.080766775}
-    l23: {x: 0.00500769, y: -0.0019391627, z: -0.0026903518}
-    l24: {x: -0.15564317, y: 0.45321375, z: -0.13821709}
-  m_SampleCount: 6059
+    l00:
+      x: 0.28209478
+      y: 0.4835911
+      z: 0.28209478
+    l10:
+      x: 0
+      y: 0
+      z: 0
+    l11:
+      x: 0.34900182
+      y: 0
+      z: -0.34900182
+    l12:
+      x: 0
+      y: 0
+      z: 0
+    l20:
+      x: 0
+      y: 0
+      z: 0
+    l21:
+      x: 0
+      y: 0
+      z: 0
+    l22:
+      x: -0.11263985
+      y: 0.13516784
+      z: -0.11263985
+    l23:
+      x: 0
+      y: 0
+      z: 0
+    l24:
+      x: -0.19509792
+      y: 0.23411752
+      z: -0.19509792
   m_SHMode: 0
+  m_SampleCount: 6059
   m_Cubemap: {fileID: 8900000, guid: 1135303bf34e08e49a54f2cef9219111, type: 2}
   m_Intensity: 1
   m_GradientTop: {r: 1, g: 0, b: 0, a: 1}
@@ -263,9 +290,17 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1345503065}
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
   m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
+  serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1345503067
@@ -374,9 +409,17 @@ Camera:
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -448,6 +491,17 @@ MonoBehaviour:
   m_Dithering: 0
   m_ClearDepth: 1
   m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+  m_TaaSettings:
+    quality: 3
+    frameInfluence: 0.1
+    jitterScale: 1
+    mipBias: 0
+    varianceClampScale: 0.9
+    contrastAdaptiveSharpening: 0

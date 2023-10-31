@@ -18,7 +18,7 @@ namespace Rendering
 
         public SHGradient Ctor()
         {
-            shData = SphericalHarmonicsExport.ExportL2Gradient(4096, gradientSky, gradientEquator,gradientGround,"Test");
+            shData = SphericalHarmonicsExport.ExportL2Gradient(gradientSky, gradientEquator,gradientGround);
             return this;
         }
 

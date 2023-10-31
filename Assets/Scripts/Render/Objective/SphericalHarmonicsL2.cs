@@ -1,4 +1,5 @@
 using System;
+using Geometry.Explicit;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -38,6 +39,22 @@ namespace Rendering.GI.SphericalHarmonics
         public float4 shBb;
         public float3 shC;
         
+        public SHL2Data PackUp()
+        {
+            return new SHL2Data()
+            {
+                l00 = new float3(shAr.w / SHBasis.kL00, shAg.w / SHBasis.kL00, shAb.w / SHBasis.kL00),
+                l10 = new float3(shAr.x / SHBasis.kL10, shAg.x / SHBasis.kL10, shAb.x / SHBasis.kL10),
+                l11 = new float3(shAr.y / SHBasis.kL11, shAg.y / SHBasis.kL11, shAb.y / SHBasis.kL11),
+                l12 = new float3(shAr.z / SHBasis.kL12, shAg.z / SHBasis.kL12, shAb.z / SHBasis.kL12),
+                l20 = new float3(shBr.x / SHBasis.kL20, shBg.x / SHBasis.kL20, shBb.x / SHBasis.kL20),
+                l21 = new float3(shBr.y / SHBasis.kL21, shBg.y / SHBasis.kL21, shBb.y / SHBasis.kL21),
+                l22 = new float3(shBr.z / SHBasis.kL22, shBg.z / SHBasis.kL22, shBb.z / SHBasis.kL22),
+                l23 = new float3(shBr.w / SHBasis.kL23, shBg.w / SHBasis.kL23, shBb.w / SHBasis.kL23),
+                l24 = new float3(shC.x, shC.y, shC.z) / SHBasis.kL24,
+            };
+        }
+
         public void Apply(MaterialPropertyBlock _block,SHShaderProperties _properties)
         {
             _block.SetVector(_properties.kSHAr, shAr);
@@ -64,30 +81,30 @@ namespace Rendering.GI.SphericalHarmonics
     [Serializable]
     public struct SHL2Data
     {
-        public Vector3 l00;
-        public Vector3 l10;
-        public Vector3 l11;
-        public Vector3 l12;
-        public Vector3 l20;
-        public Vector3 l21;
-        public Vector3 l22;
-        public Vector3 l23;
-        public Vector3 l24;
+        public float3 l00;
+        public float3 l10;
+        public float3 l11;
+        public float3 l12;
+        public float3 l20;
+        public float3 l21;
+        public float3 l22;
+        public float3 l23;
+        public float3 l24;
 
         public SHL2Output Output()
         {
             return new SHL2Output()
             {
-                shAr = new Vector4(SHBasis.kL10 * l10.x, SHBasis.kL11 * l11.x, SHBasis.kL12 * l12.x, SHBasis.kL00 * l00.x),
-                shAg = new Vector4(SHBasis.kL10 * l10.y, SHBasis.kL11 * l11.y, SHBasis.kL12 * l12.y, SHBasis.kL00 * l00.y),
-                shAb = new Vector4(SHBasis.kL10 * l10.z, SHBasis.kL11 * l11.z, SHBasis.kL12 * l12.z, SHBasis.kL00 * l00.z),
-                shBr = new Vector4(SHBasis.kL20 * l20.x, SHBasis.kL21 * l21.x, SHBasis.kL22 * l22.x, SHBasis.kL23 * l23.x),
-                shBg = new Vector4(SHBasis.kL20 * l20.y, SHBasis.kL21 * l21.y, SHBasis.kL22 * l22.y, SHBasis.kL23 * l23.y),
-                shBb = new Vector4(SHBasis.kL20 * l20.z, SHBasis.kL21 * l21.z, SHBasis.kL22 * l22.z, SHBasis.kL23 * l23.z),
+                shAr = new float4(SHBasis.kL10 * l10.x, SHBasis.kL11 * l11.x, SHBasis.kL12 * l12.x, SHBasis.kL00 * l00.x),
+                shAg = new float4(SHBasis.kL10 * l10.y, SHBasis.kL11 * l11.y, SHBasis.kL12 * l12.y, SHBasis.kL00 * l00.y),
+                shAb = new float4(SHBasis.kL10 * l10.z, SHBasis.kL11 * l11.z, SHBasis.kL12 * l12.z, SHBasis.kL00 * l00.z),
+                shBr = new float4(SHBasis.kL20 * l20.x, SHBasis.kL21 * l21.x, SHBasis.kL22 * l22.x, SHBasis.kL23 * l23.x),
+                shBg = new float4(SHBasis.kL20 * l20.y, SHBasis.kL21 * l21.y, SHBasis.kL22 * l22.y, SHBasis.kL23 * l23.y),
+                shBb = new float4(SHBasis.kL20 * l20.z, SHBasis.kL21 * l21.z, SHBasis.kL22 * l22.z, SHBasis.kL23 * l23.z),
                 shC = l24 * SHBasis.kL24,
             };
         }
-        
+
         public static SHL2Data Interpolate(SHL2Data _a, SHL2Data _b, float _interpolate)
         {
             return new SHL2Data()
@@ -103,6 +120,46 @@ namespace Rendering.GI.SphericalHarmonics
                 l24 = Vector3.Lerp(_a.l24, _b.l24, _interpolate),
             };
         }
+
+        public static SHL2Data operator +(SHL2Data _a, SHL2Data _b) => new SHL2Data()
+        {
+            l00 = _a.l00 + _b.l00,
+            l10 = _a.l10 + _b.l10,
+            l11 = _a.l11 + _b.l11,
+            l12 = _a.l12 + _b.l12,
+            l20 = _a.l20 + _b.l20,
+            l21 = _a.l21 + _b.l21,
+            l22 = _a.l22 + _b.l22,
+            l23 = _a.l23 + _b.l23,
+            l24 = _a.l24 + _b.l24,
+        };
+
+        public static SHL2Data operator *(SHL2Data _a, float _b) => new SHL2Data()
+        {
+            l00 = _a.l00 * _b,
+            l10 = _a.l10 * _b,
+            l11 = _a.l11 * _b,
+            l12 = _a.l12 * _b,
+            l20 = _a.l20 * _b,
+            l21 = _a.l21 * _b,
+            l22 = _a.l22 * _b,
+            l23 = _a.l23 * _b,
+            l24 = _a.l24 * _b,
+        };
+        public static SHL2Data operator /(SHL2Data _a, float _b) => new SHL2Data()
+        {
+            l00 = _a.l00 / _b,
+            l10 = _a.l10 / _b,
+            l11 = _a.l11 / _b,
+            l12 = _a.l12 / _b,
+            l20 = _a.l20 / _b,
+            l21 = _a.l21 / _b,
+            l22 = _a.l22 / _b,
+            l23 = _a.l23 / _b,
+            l24 = _a.l24 / _b,
+        };
+
+        public static readonly SHL2Data kZero = new SHL2Data();
     }
 
     public static class SHBasis
@@ -122,63 +179,48 @@ namespace Rendering.GI.SphericalHarmonics
         public static readonly float kL22 = 0.25f * Mathf.Sqrt(5f / Mathf.PI); //*z * z
         public static readonly float kL23 = 0.5f * kL2P; //* z * x
         public static readonly float kL24 = 0.25f * kL2P; //*(x*x - z*z)
+        
+        public static float SHNormalizationConstant(int band,int order)=>Mathf.Sqrt((2.0f * band + 1.0f) * umath.Factorial(band - order) / (4.0f * Mathf.PI * umath.Factorial(band + order)));
     }
 
     public static class SphericalHarmonicsExport
     {
-        static SHL2Data ExportData(int _sampleCount,Func<Vector3, Color> _sampleColor,string _randomSeed)
+        public static SHL2Data CalculateSHL2Contribution(float3 color, float3 direction)
+        {
+            float x = direction.x;
+            float y = direction.y;
+            float z = direction.z;
+            SHL2Data data = new SHL2Data()
+            {
+                l00 = color * SHBasis.kL00,
+                l10 = color * SHBasis.kL10 * z,
+                l11 = color * SHBasis.kL11 * y,
+                l12 = color * SHBasis.kL12 * x,
+
+                l20 = color * SHBasis.kL20 * x * y,
+                l21 = color * SHBasis.kL21 * y * z,
+                l22 = color * SHBasis.kL22 * (-x * x - y * y + 2 * z * z),
+                l23 = color * SHBasis.kL23 * z * x,
+                l24 = color * SHBasis.kL24 * (x * x - y * y),
+            };
+            return data;
+        }
+        
+        static SHL2Data SampleData(int _sampleCount,Func<float3, float3> _sampleColor,string _randomSeed)
         {
             SHL2Data data = default;
             var random = _randomSeed == null ? null : new System.Random(_randomSeed.GetHashCode());
             for (int i = 0; i < _sampleCount; i++)
             {
-                Vector3 randomPos = URandom.RandomDirection(random);
-                Vector3 color = _sampleColor(randomPos).ToVector();
-                
-                float x = randomPos.x;
-                float y = randomPos.y;
-                float z = randomPos.z;
-                data.l00 += color * SHBasis.kL00;
-
-                data.l10 += color * SHBasis.kL10 * z;
-                data.l11 += color * SHBasis.kL11 * y;
-                data.l12 += color * SHBasis.kL12 * x;
-
-                data.l20 += color * SHBasis.kL20 * x * y;
-                data.l21 += color * SHBasis.kL21 * y * z;
-                data.l22 += color * SHBasis.kL22 * (-x*x - y*y + 2 * z * z);
-                data.l23 += color * SHBasis.kL23 * z * x;
-                data.l24 += color * SHBasis.kL24 * (x * x - y * y);
+                var randomPos = URandom.RandomDirection(random);
+                var color = _sampleColor(randomPos);
+                data += CalculateSHL2Contribution(color, randomPos);
             }
 
-            float pi4d = 4f * kmath.kPI/_sampleCount;
-            data.l00 = pi4d * data.l00;
-            data.l10 = pi4d * data.l10;
-            data.l11 = pi4d * data.l11;
-            data.l12 = pi4d * data.l12;
-            data.l20 = pi4d * data.l20;
-            data.l21 = pi4d * data.l21;
-            data.l22 = pi4d * data.l22;
-            data.l23 = pi4d * data.l23;
-            data.l24 = pi4d * data.l24;
+            data /= _sampleCount / kmath.kPI4;
             return data;
         }
         
-        public static SHL2Data ExportL2Gradient(int _sampleCount,Color _top,Color _equator,Color _bottom,string _randomSeed=null)
-        {
-            //Closest take cause i can't get the source code
-            var top = (_top + _equator) * .5f;
-            var bottom = (_equator + _bottom) * .5f;
-            var center = _equator * .9f + (_top + _bottom) * .1f;
-
-            return ExportData(_sampleCount, _p =>
-            {
-                float value = _p.y;
-                Color tb = Color.Lerp(center, top, Mathf.SmoothStep(0, 1, value));
-                return Color.Lerp(tb, bottom, Mathf.SmoothStep(0, 1, -value));
-            },_randomSeed);
-        }
-
         public static SHL2Data ExportL2Cubemap(int _sampleCount, Cubemap _cubemap,float _intensity, string _randomSeed)
         {
             
@@ -187,12 +229,12 @@ namespace Rendering.GI.SphericalHarmonics
                 Debug.LogError($"{_cubemap.name} is Not Readable",_cubemap);
                 return default;
             }
-            return ExportData(_sampleCount, _p =>
+            return SampleData(_sampleCount, _p =>
             {
                 float xAbs = Mathf.Abs(_p.x);
                 float yAbs = Mathf.Abs(_p.y);
                 float zAbs = Mathf.Abs(_p.z);
-                int index = -1;
+                int index;
                 Vector2 uv = new Vector2();
                 if (xAbs >= yAbs && xAbs >= zAbs)
                 {
@@ -217,8 +259,31 @@ namespace Rendering.GI.SphericalHarmonics
                 int width = _cubemap.width - 1;
                 int x = (int) (width * uv.x);
                 int y = (int) (width * uv.y);
-                return _cubemap.GetPixel((CubemapFace) index, x, y)*_intensity;
+                return _cubemap.GetPixel((CubemapFace) index, x, y).ToFloat3()*_intensity;
             },_randomSeed);
         }
+        
+        public static SHL2Data ExportL2Gradient(Color _top,Color _equator,Color _bottom)
+        {
+            //Closest take cause i can't get the source code
+            var top = ((_top + _equator) * .5f).ToFloat3();
+            var bottom = ((_equator + _bottom) * .5f).ToFloat3();
+            var center = (_equator * .9f + (_top + _bottom) * .1f).ToFloat3();
+
+            const int sampleCount = 32;
+            SHL2Data data = default;
+            for (int i = 0; i < sampleCount; i++)
+            {
+                var randomPos = USphereExplicit.Fibonacci.GetPoint(i, sampleCount);
+                float value = randomPos.y;
+                var tb = math.lerp(center, top, math.smoothstep(0, 1, value));
+                var color =  math.lerp(tb, bottom, math.smoothstep(0, 1, -value));
+                data += CalculateSHL2Contribution(color, randomPos);
+            }
+
+            data /= sampleCount / kmath.kPI4;
+            return data;
+        }
     }
+    
 }

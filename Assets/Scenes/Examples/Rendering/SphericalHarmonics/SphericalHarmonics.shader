@@ -9,6 +9,7 @@ Shader "Game/Unfinished/SphericalHarmonicsL2"
             #pragma fragment frag
 
             #include "Assets/Shaders/Library/Common.hlsl"
+            #include "Assets/Shaders/Library/Lighting.hlsl"
 
             float3 _L00;
             float3 _L10;
@@ -68,6 +69,16 @@ Shader "Game/Unfinished/SphericalHarmonicsL2"
             {
 				UNITY_SETUP_INSTANCE_ID(i);
                 float3 v = normalize(i.normalWS);
+                //
+                // float3 sh = SampleSHL2(v,
+                //     unity_SHAr,unity_SHAg,unity_SHAb,
+                //     unity_SHBr,unity_SHBg,unity_SHBb,
+                //     unity_SHC
+                // );
+                //
+                // return float4(sh,1);
+
+                
                 float3 sh = V00(v) + V10(v) + V11(v) + V12(v) + V20(v) + V21(v) + V22(v) + V23(v) + V24(v);
                 return float4(sh,1);
                 
