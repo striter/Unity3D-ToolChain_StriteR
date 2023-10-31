@@ -229,6 +229,12 @@ public static class URender
     //Material
     public static bool EnableKeyword(this Material _material, string _keyword, bool _enable)
     {
+        if (_material == null)
+        {
+            Debug.LogWarning("Mull Material Found.");
+            return false;
+        }
+        
         if (_enable)
             _material.EnableKeyword(_keyword);
         else

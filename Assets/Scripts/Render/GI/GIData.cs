@@ -105,10 +105,13 @@ namespace Rendering
 
         private static Material ValidateMaterial(Material _src)
         {
-            if (kLightmappedMaterials.ContainsKey(_src))
-                return kLightmappedMaterials[_src];
+            if (!_src) return null;
+            
+            if (kLightmappedMaterials.TryGetValue(_src, out var material))
+                return material;
             
             var dst = new Material(_src){hideFlags = HideFlags.HideAndDontSave};
+            dst.name = $"{dst.name} (Clone)";
             dst.EnableKeyword("LIGHTMAP_ON");
             kLightmappedMaterials.Add(_src,dst);
             return dst;

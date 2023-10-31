@@ -14,7 +14,7 @@ namespace Examples.Rendering.QuadricErrorMetrics
         public ContractConfigure m_Data;
 
         private MeshFilter m_Filter;
-        private QEMConstructor m_Constructor = new QEMConstructor();
+        private UQuadricErrorMetrics2 m_Constructor = new UQuadricErrorMetrics2();
 
         private Mesh m_QEMMesh;
 
@@ -36,7 +36,7 @@ namespace Examples.Rendering.QuadricErrorMetrics
         [Button]
         private void Optimize()
         {
-            m_Constructor.Collapse(m_Data);
+            m_Constructor.simplify_mesh(500); // m_Constructor.Collapse(m_Data);
             m_Constructor.PopulateMesh(m_QEMMesh);
         }
 
@@ -48,7 +48,7 @@ namespace Examples.Rendering.QuadricErrorMetrics
 
             Gizmos.matrix = transform.localToWorldMatrix;
             vertexCount = m_Constructor.vertices.Count;
-            trianglesCount = m_Constructor.indexes.Count/3;
+            trianglesCount = m_Constructor.triangles.Count;
             if(m_DrawGizmos)
                 m_Constructor.DrawGizmos();
         }

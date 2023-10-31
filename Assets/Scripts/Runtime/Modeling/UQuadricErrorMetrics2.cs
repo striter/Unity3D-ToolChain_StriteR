@@ -55,6 +55,14 @@ namespace QuadricErrorsMetric
 			update_mesh(0);
 		} // load_obj()
 
+			
+		public void PopulateMesh(Mesh _mesh)
+		{
+			_mesh.Clear();
+			_mesh.SetVertices(vertices.Select(p => (Vector3)p.p).ToList());
+			_mesh.SetTriangles(triangles.Select(p=>(IEnumerable<int>)p.v).Resolve().ToArray(), 0);
+		}
+
 		public void DrawGizmos()
 		{
 			foreach (var triangle in triangles)
