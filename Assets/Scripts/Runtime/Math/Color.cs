@@ -1,6 +1,7 @@
 ﻿using System;
 using Unity.Mathematics;
 using UnityEngine;
+using static Unity.Mathematics.math;
 public static class UColor
 {
     #region ColorTransform
@@ -160,6 +161,12 @@ public static class UColor
             case 5: return Color.white;
         }
     }
+
+    private static readonly float3 kLuminanceMultiplier = new float3(0.2126729f, 0.7151522f, 0.0721750f);
+    public static float RGBtoLuminance(float3 color) => math.dot(color,kLuminanceMultiplier);
+    public static float RoughnessToPerceptualSmoothness(float roughness) => 1.0f - sqrt(roughness);
+    public static float PerceptualSmoothnessToRoughness(float perceptualSmoothness) => (1.0f - perceptualSmoothness) * (1.0f - perceptualSmoothness);
+    public static float PerceptualSmoothnessToPerceptualRoughness(float perceptualSmoothness) => 1.0f - perceptualSmoothness;
 }
 
 [Serializable]

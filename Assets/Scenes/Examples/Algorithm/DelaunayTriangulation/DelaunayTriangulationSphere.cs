@@ -38,7 +38,7 @@ namespace Examples.Algorithm.DelaunayTriangulation
         {
             m_Vertices.Clear();
             for (int i = 0; i < m_RandomCount; i++)
-                m_Vertices.Add(USphereExplicit.Fibonacci.GetPoint(i,m_RandomCount)*kSphereRadius);
+                m_Vertices.Add(ULowDiscrepancySequences.FibonacciSphere(i,m_RandomCount)*kSphereRadius);
             OnValidate();
         }
 

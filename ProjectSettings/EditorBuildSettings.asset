@@ -5,11 +5,11 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Boot.unity
     guid: 0600e4da9bdccee4ab819bf25ea95bdf
   - enabled: 0
-    path: Assets/Scenes/Examples/Rendering/GI/GIInterpolate.unity
+    path: Assets/Scenes/Examples/Rendering/GI/InterpolationGI/GIInterpolate.unity
     guid: 8f4db0d9de6e4ee41a5926b446f218bd
   - enabled: 0
     path: Assets/Scenes/TechToys/Physics/Physics.unity

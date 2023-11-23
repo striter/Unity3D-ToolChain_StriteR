@@ -8,11 +8,12 @@ public static class UReflection
 {
     public static bool IsStatic(this Type _type) => _type.IsAbstract && _type.IsSealed;
     
-    public static T DeepCopy<T>(this T _dst, T _src) where T:class
+    public static T DeepCopy<T>(this T _src) where T:class
     {
+        T dst = default;
         foreach (var fieldInfo in _src.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public))
-            fieldInfo.SetValue(_dst,fieldInfo.GetValue(_src));
-        return _dst;
+            fieldInfo.SetValue(dst,fieldInfo.GetValue(_src));
+        return dst;
     }
 
     public static T GetDefaultData<T>(string _srFieldName = "kDefault") where T:struct

@@ -29,6 +29,28 @@ v2ff ForwardVertex(a2vf v)
 	return o;
 }
 
+half3 CustomGlobalIllumination(BRDFSurface surface,
+	half3 bakedGI, half occlusion, float3 positionWS,
+	half3 normalWS, half3 viewDirectionWS, float2 normalizedScreenSpaceUV)
+{
+	half3 reflectVector = reflect(-viewDirectionWS, normalWS);
+	half NoV = saturate(dot(normalWS, viewDirectionWS));
+	half fresnelTerm = Pow4(1.0 - NoV);
+
+	half3 indirectDiffuse = bakedGI;
+	half3 indirectSpecular = GlossyEnvironmentReflection(reflectVector, positionWS, surface.perceptualRoughness, 1.0h, normalizedScreenSpaceUV);
+
+	half3 color =  indirectDiffuse * surface.diffuse;
+	float surfaceReduction = 1.0 / (surface.roughness2 + 1.0);
+	half3 brdfSpecular = half3(surfaceReduction * lerp(surface.specular, surface.grazingTerm, fresnelTerm));
+	color += indirectSpecular *brdfSpecular;
+
+	if (IsOnlyAOLightingFeatureEnabled())
+		color = half3(1,1,1); // "Base white" for AO debug lighting mode
+
+	return color * occlusion;
+}
+
 float4 ForwardFragment(v2ff i):SV_TARGET
 {
 	UNITY_SETUP_INSTANCE_ID(i);
@@ -96,20 +118,17 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 		GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
 	#endif
 
-	half3 indirectDiffuse= 
-	#if defined GET_INDIRECTDIFFUSE
-		GET_INDIRECTDIFFUSE(surface);
+	half3 indirectDiffuse;
+	half3 indirectSpecular;
+	#if defined GET_GI
+		GET_GI(indirectDiffuse,indirectSpecular,i,surface,mainLight)
 	#else
-		IndirectDiffuse(mainLight,i,normalWS);
+		indirectDiffuse = IndirectDiffuse(mainLight,i,normalWS);
+		indirectSpecular = IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,0);
 	#endif
-
-	half3 indirectSpecular=
-	#if defined GET_INDIRECTSPECULAR
-		GET_INDIRECTSPECULAR(surface);
-	#else
-		IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,0);
-	#endif
+	
 	finalCol+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
+
 	#if defined BRDF_MAINLIGHTING
 		BRDF_MAINLIGHTING(mainLight,surface);
 	#endif
@@ -123,9 +142,6 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 	FOG_MIX(i,finalCol);
 	finalCol+=surface.emission;
 
-	#if defined(GET_FINALCOL)
-		finalCol = GET_FINALCOL(finalCol,i,surface);
-	#endif
 	half alpha = 1.h;
 	#if defined(GET_ALPHA)
 		alpha = GET_ALPHA(i,surface);

@@ -63,7 +63,7 @@ namespace UnityEditor.Extensions
                 
                 else
                 {
-                    fieldInfo = targetObject.GetType().GetField(fieldName);
+                    fieldInfo = targetObject.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                     _parentObject = targetObject;
                     targetObject = fieldInfo.GetValue(targetObject);
                 }

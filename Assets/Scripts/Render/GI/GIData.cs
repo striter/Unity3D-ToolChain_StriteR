@@ -144,7 +144,7 @@ namespace Rendering
             ref SHGradient gradient = ref _collection1.gradient;
             if(interpolate)
                 gradient=SHGradient.Interpolate(_collection1.gradient,_collection2.gradient,_interpolation);
-            gradient.shData.Output().ApplyGlobal(SHShaderProperties.kDefault);
+            SHL2ShaderProperties.kDefault.ApplyGlobal(gradient.shData.Output());
 
             for (int i = 0; i < _renderers.Length; i++)
             {

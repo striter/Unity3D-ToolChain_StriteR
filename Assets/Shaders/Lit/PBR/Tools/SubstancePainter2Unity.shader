@@ -60,7 +60,7 @@ Shader "Game/Hidden/SubstancePainterPBRtoUnity"
 			Tags{"LightMode" = "UniversalForward"}
 			HLSLPROGRAM
 			
-			float3 OverrideIndirectDiffuse(BRDFSurface surface)
+			float3 OverrideIndirectDiffuse(Light mainLight,v2ff i,float3 normalWS,BRDFSurface surface)
 			{
 			    return SampleSHL2(surface.normal,
 			    	half4(0.0109134,0.1585592,0.0129353,0.7254902),
@@ -88,7 +88,7 @@ Shader "Game/Hidden/SubstancePainterPBRtoUnity"
 				return mainLight;
 			}
 
-			#define GET_INDIRECTDIFFUSE(surface) OverrideIndirectDiffuse(surface);
+			#define GET_INDIRECTDIFFUSE(mainLight,i,normalWS,surface) OverrideIndirectDiffuse(mainLight,i,normalWS,surface);
 			#define GET_INDIRECTSPECULAR(surface) OverrideIndirectSpecular(surface);
 			#define GET_MAINLIGHT(i) OverrideLighting();
 			#define GET_PBRPARAM(glossiness,metallic,ao) 

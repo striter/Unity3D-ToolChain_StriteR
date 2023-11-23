@@ -102,7 +102,7 @@ namespace Examples.Rendering.Lighting
             m_LightBuffer.SetData(lightBuffers);
             Shader.SetGlobalBuffer(ShaderProperties.kLights,m_LightBuffer);
             Shader.SetGlobalInt(ShaderProperties.kLightCount,m_Lights.Length);
-            m_SH.Ctor().shData.Output().ApplyGlobal(SHShaderProperties.kDefault);
+            SHL2ShaderProperties.kDefault.ApplyGlobal(m_SH.Ctor().shData.Output());
         }
 
         private void OnDrawGizmos()

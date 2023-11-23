@@ -26,7 +26,7 @@ public static partial class umath
     public static int Factorial(int n)
     {
         var result = 1;
-        for (int i = 2; i <= 2; i++)
+        for (int i = 2; i <= n; i++)
             result *= i;
         return result;
     }

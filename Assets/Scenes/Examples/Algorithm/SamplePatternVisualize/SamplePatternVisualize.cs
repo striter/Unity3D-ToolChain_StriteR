@@ -12,6 +12,7 @@ namespace Examples.Algorithm.SamplePatternVisualize
         Halton,
         HammersLey,
         Sobol,
+        Fibonacci,
     }
     
     public class SamplePatternVisualize : MonoBehaviour
@@ -19,7 +20,7 @@ namespace Examples.Algorithm.SamplePatternVisualize
         public ESamplePattern patternType = ESamplePattern.Grid;
         public int patternWidth=4,patternHeight=4;
 
-        float2[] patterns;
+        [Readonly] public float2[] patterns;
 
         private void OnValidate()
         {

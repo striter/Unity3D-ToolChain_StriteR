@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50fba0af77aba344fa10998431436e92, type: 3}
+  m_Name: GI_Day
+  m_EditorClassIdentifier: 
+  m_Data:
+    gradient:
+      gradientSky: {r: 0.3679245, g: 0.36511967, b: 0.3216447, a: 1}
+      gradientEquator: {r: 0.17013763, g: 0.24352673, b: 0.2924528, a: 1}
+      gradientGround: {r: 0.047, g: 0.043, b: 0.035, a: 1}
+      shData:
+        l00: {x: 0.6816759, y: 0.86002475, z: 0.9496814}
+        l10: {x: -0.01101019, y: -0.0148962615, z: -0.017273968}
+        l11: {x: 0.177888, y: 0.17974743, z: 0.16121589}
+        l12: {x: -0.008994909, y: -0.011345066, z: -0.012525196}
+        l20: {x: -0.0026736632, y: -0.0023133475, z: -0.0016741554}
+        l21: {x: 0.002996843, y: 0.003329236, z: 0.003308511}
+        l22: {x: 0.00090691255, y: 0.01773512, z: 0.033110555}
+        l23: {x: 0.0011742418, y: 0.0013932331, z: 0.0014617763}
+        l24: {x: 0.009749924, y: 0.043555703, z: 0.07358119}
+    lightmapColors:
+    - {fileID: 2800000, guid: 4163505c2d47c2643b11b0e9845270a0, type: 3}
+    lightmapParameters:
+    - index: -1
+      scaleOffset: {x: 1, y: 1, z: 0, w: 0}
+    - index: 0
+      scaleOffset: {x: 0.12986696, y: 0.12986696, z: 0.43306705, w: 0.34055293}
+    - index: 0
+      scaleOffset: {x: 0.16922058, y: 0.16922058, z: 0.43290743, w: -0.00068631914}
+    - index: 0
+      scaleOffset: {x: 0.16922058, y: 0.16922058, z: 0.43290743, w: 0.2267001}
+    - index: 0
+      scaleOffset: {x: 0.16922058, y: 0.16922058, z: 0.43290743, w: 0.11300689}
+    - index: 0
+      scaleOffset: {x: 0.4296875, y: 0.4296875, z: 0, w: 0}
+    - index: 0
+      scaleOffset: {x: 0.1192307, y: 0.1192307, z: 0.60546875, w: 0}
+    reflectionTexture: {fileID: 8900000, guid: dd4d01067375bb84f865364b558a1a01, type: 3}
+    reflectionIntensity: 1

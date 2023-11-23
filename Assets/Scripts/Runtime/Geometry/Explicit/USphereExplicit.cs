@@ -136,19 +136,5 @@ namespace Geometry.Explicit
             }
         }
 
-        public static class Fibonacci
-        {
-            public static float kGoldenRatio = (1f + sqrt(0.5f)) / 2f;
-
-            public static float3 GetPoint(int _index,int _count)         //value [0,1)
-            {
-                float j = _index + .5f;
-                float phi = acos(1f - 2f * j / _count);
-                float theta = kPI2 * j / kGoldenRatio;
-                sincos(theta,out var sinT,out var cosT);
-                sincos(phi,out var sinP,out var cosP);
-                return new float3(cosT  * sinP, sinT * sinP ,cosP);
-            }
-        }
     }
 }

@@ -27,7 +27,10 @@ namespace UnityEditor.Extensions
             foreach (var method in clickMethods)
             {
                 if (GUILayout.Button(method.Name))
+                {
                     method.Invoke(target,null);
+                    Undo.RegisterCompleteObjectUndo(target,"Button Click");
+                }
             }
             EditorGUILayout.EndVertical();
         }

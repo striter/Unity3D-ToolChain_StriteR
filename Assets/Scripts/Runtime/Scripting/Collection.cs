@@ -700,6 +700,20 @@ public static class UCollection
         return index;
     }
     
+    
+    public static (T start, T end, float _value) Gradient<T>(this IList<T> _collection,float _value)
+    {
+        Debug.Assert(_collection!=null, "collection can't be null");
+        Debug.Assert(_collection.Count!=0, "collection can't be 0");
+        Debug.Assert(_value>=0, "value must be non-negative");
+            
+        
+        var count = _collection.Count;
+        var start = (int)_value % count;
+        var end = (start + 1) % count;
+        return (_collection[start], _collection[end], _value%1);
+    }
+    
     public static bool Contains<T>(this IList<T> _collection1, IList<T> _collection2) where T:IEquatable<T>
     {
         foreach (T element1 in _collection1)

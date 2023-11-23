@@ -57,7 +57,7 @@ namespace Examples.Algorithm.Procedural
             for (int i = 0; i < kFibonacciResolution; i++)
             {
                 Gizmos.color = Color.Lerp(Color.white,KColor.kOrange,(float)i/kFibonacciResolution);
-                Gizmos.DrawSphere(USphereExplicit.Fibonacci.GetPoint(i,kFibonacciResolution),.02f);
+                Gizmos.DrawSphere(ULowDiscrepancySequences.FibonacciSphere(i,kFibonacciResolution),.02f);
             }
             
             UGizmos.DrawString(Vector3.zero,"Fibonacci Sphere");

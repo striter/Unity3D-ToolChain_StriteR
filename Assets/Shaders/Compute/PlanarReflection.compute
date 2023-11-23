@@ -1,4 +1,4 @@
-
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Assets/Shaders/Library/Common.hlsl"
 #pragma multi_compile_local _ _PLANE _SPHERE
 #pragma kernel Generate

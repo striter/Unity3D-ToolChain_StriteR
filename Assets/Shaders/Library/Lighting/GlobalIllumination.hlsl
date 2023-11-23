@@ -29,17 +29,18 @@ half3 SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_PARAM(lightmapTex,lightmapSam
 
 half3 SampleLightmapDirectional(TEXTURE2D_LIGHTMAP_PARAM(lightmapTex,lightmapSampler),TEXTURE2D_LIGHTMAP_PARAM(lightmapDirTex,lightmapDirSampler),float2 lightmapUV,half3 normalWS)
 {
+    // return SampleLightmap(lightmapUV,normalWS);
     half3 illuminance = SampleLightmapSubtractive(lightmapTex,lightmapSampler,lightmapUV);
     float4 directionSample = SAMPLE_TEXTURE2D_LIGHTMAP(lightmapDirTex,lightmapDirSampler,lightmapUV);
     
-    half3 direction = directionSample.xyz - 0.5;
-    half directionParam = dot(normalWS,direction) / max(1e-4,directionSample.w);
+    half halfLambert = dot(normalWS, directionSample.xyz - 0.5) + 0.5;
+    half directionParam = halfLambert / max(1e-4,directionSample.w);
     return illuminance * directionParam;
 }
 
 half3 IndirectDiffuse_Lightmap(inout Light mainLight,float2 lightmapUV,half3 normalWS)
 {
-    half3 illuminance=
+    half3 illuminance= 
     #if defined(DIRLIGHTMAP_COMBINED)
         SampleLightmapDirectional(TEXTURE2D_LIGHTMAP_ARGS(unity_Lightmap,samplerunity_Lightmap),TEXTURE2D_LIGHTMAP_ARGS(unity_LightmapInd,samplerunity_Lightmap),lightmapUV,normalWS);
     #else

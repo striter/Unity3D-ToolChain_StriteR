@@ -11,13 +11,6 @@ namespace Rendering.PostProcess
         public override EPostProcess Event => EPostProcess.ColorUpgrade;
     }
 
-    public enum EMixChannel
-    {
-        None = 0,
-        Red = 1,
-        Green = 2,
-        Blue = 3,
-    }
     public enum ELUTCellCount
     {
         _16 = 16,

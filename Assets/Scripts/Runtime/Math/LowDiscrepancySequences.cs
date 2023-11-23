@@ -1,11 +1,12 @@
 using Unity.Mathematics;
 using static UBitwise;
+using static kmath;
+using static Unity.Mathematics.math;
+
 public static class ULowDiscrepancySequences
 {
-    static float RadicalInverseOptimized(uint _n,uint _dimension) =>_dimension == 0 ? RadicalInverse2(_n) : RadicalInverse(_n, kmath.kPrimes128[_dimension]);
-    
+    static float RadicalInverseOptimized(uint _n,uint _dimension) =>_dimension == 0 ? RadicalInverse2(_n) : RadicalInverse(_n, kPrimes128[_dimension]);
     public static float Halton(uint _index, uint _dimension) => RadicalInverseOptimized(_index,_dimension);
-    
     public static float Hammersley(uint _index,uint _dimension,uint _numSamples)=>_dimension==0?(_index/(float)_numSamples):RadicalInverseOptimized(_index,_dimension-1);
 
     public static float2[] Grid2D(int _width,int _height)
@@ -39,7 +40,7 @@ public static class ULowDiscrepancySequences
     {
         float2[] sequence = new float2[_size];
         for (uint i = 0; i < _size; i++)
-            sequence[i] = new float2( Halton(i,0),Halton(i,kmath.kPrimes128[1])) + _offset;
+            sequence[i] = new float2( Halton(i,0),Halton(i,kPrimes128[1])) + _offset;
         return sequence;
     }
 
@@ -126,4 +127,16 @@ public static class ULowDiscrepancySequences
         return points;
     }
 
+    private static float kGoldenRatio = (1f + sqrt(5f)) / 2f;
+    public static float3 FibonacciSphere(int _index,int _count) 
+    {
+        float j = _index + .5f;
+        float phi = acos(1f - 2f * j / _count);
+        float theta = kPI2 * j / kGoldenRatio;
+        sincos(theta,out var sinT,out var cosT);
+        sincos(phi,out var sinP,out var cosP);
+        return new float3(cosT  * sinP, sinT * sinP ,cosP);
+    }
+   
+    
 }

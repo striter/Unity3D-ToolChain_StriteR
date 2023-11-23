@@ -1,6 +1,7 @@
 using Rendering.GI.SphericalHarmonics;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Examples.Rendering.SH
 {
@@ -8,22 +9,12 @@ namespace Examples.Rendering.SH
     {
         Gradient,
         Cubemap,
+        DirectionalLight,
     }
 
     public class SphericalHarmonicsL2 : MonoBehaviour
     {
         public SHL2Data m_Data;
-
-        // public SHL2Data m_Comparer = new SHL2Output()
-        // {
-        //     shAr = new float4(0,0.2721655f,0,0.1927083f),
-        //     shAg = new float4(0,0,0,0),
-        //     shAb = new float4(0,-0.2721655f,0,0.1927083f),
-        //     shBr = new float4(0,0,-0.0781250f,0),
-        //     shBg = new float4(0,0,-0,0),
-        //     shBb = new float4(0,0,-0.0781250f,0),
-        //     shC = new float3(-0.0781250f,0,-0.0781250f),
-        // }.PackUp();
         
         [Header("Bake")]
         public ESphericalHarmonicsExport m_SHMode = ESphericalHarmonicsExport.Gradient;
@@ -34,6 +25,8 @@ namespace Examples.Rendering.SH
         [MFoldout(nameof(m_SHMode),ESphericalHarmonicsExport.Gradient)][ColorUsage(false, true)] public Color m_GradientTop = Color.red;
         [MFoldout(nameof(m_SHMode),ESphericalHarmonicsExport.Gradient)][ColorUsage(false, true)] public Color m_GradientEquator = Color.green;
         [MFoldout(nameof(m_SHMode),ESphericalHarmonicsExport.Gradient)][ColorUsage(false, true)] public Color m_GradientBottom = Color.blue;
+
+        [MFoldout(nameof(m_SHMode),ESphericalHarmonicsExport.DirectionalLight)][ColorUsage(false, true)] public Color m_LightColor = Color.white;
         private void OnValidate()
         {
             switch (m_SHMode)
@@ -42,10 +35,24 @@ namespace Examples.Rendering.SH
                     m_Data = SphericalHarmonicsExport.ExportL2Gradient( m_GradientTop, m_GradientEquator, m_GradientBottom);
                     break;
                 case ESphericalHarmonicsExport.Cubemap:
-                    m_Data = SphericalHarmonicsExport.ExportL2Cubemap(m_SampleCount, m_Cubemap,m_Intensity, "test");
+                    m_Data = SphericalHarmonicsExport.ExportL2Cubemap(m_SampleCount, m_Cubemap,m_Intensity,ESHSampleMode.Fibonacci);
+                    break;
+                case ESphericalHarmonicsExport.DirectionalLight:
+                    m_Data = SphericalHarmonicsExport.ExportDirectionalLight(transform.forward, m_LightColor.ToFloat3(),false);
                     break;
             }
+            Ctor();
+        }
 
+        [Button]
+        void SyncWithUnity()
+        {
+            m_Data = SHL2ShaderProperties.kUnity.FetchGlobal().PackUp();
+            Ctor();
+        }
+
+        void Ctor()
+        {
             MaterialPropertyBlock block = new MaterialPropertyBlock();
             block.SetVector("_L00", m_Data.l00.to4());
             block.SetVector("_L10", m_Data.l10.to4());
@@ -57,7 +64,7 @@ namespace Examples.Rendering.SH
             block.SetVector("_L23", m_Data.l23.to4());
             block.SetVector("_L24", m_Data.l24.to4());
             // output.Apply(block,SHShaderProperties.kDefault);
-            m_Data.Output().Apply(block,SHShaderProperties.kDefault);
+            SHL2ShaderProperties.kDefault.Apply(block,m_Data.Output());
             GetComponent<MeshRenderer>().SetPropertyBlock(block);
         }
     }
