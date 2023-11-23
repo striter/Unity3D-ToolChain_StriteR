@@ -50,8 +50,6 @@ namespace UnityEditor.Extensions
         static void ShowMeshEditor() => EditorWindow.GetWindow(typeof(MeshEditor)).titleContent = new GUIContent("Mesh Editor",EditorGUIUtility.IconContent("AvatarPivot").image);
         [MenuItem("Work Flow/Art/Noise Texture Generator", false, 304)]
         static void ShowNoiseGenerator() => EditorWindow.GetWindow(typeof(EWNoiseTextureGenerator)).titleContent = new GUIContent("Noise Texture Generator", EditorGUIUtility.IconContent("CustomTool").image);
-        [MenuItem("Work Flow/Art/Texture Modifier", false, 305)]
-        static void ShowTextureModifier() => EditorWindow.GetWindow(typeof(TextureEditor.ETextureEditor)).titleContent = new GUIContent("Texture Editor", EditorGUIUtility.IconContent("d_PreTextureMipMapHigh").image);
         [MenuItem("Work Flow/Art/(Optimize)GPU Animation Baker", false, 400)]
         static void ShowOptimizeWindow() => EditorWindow.GetWindow(typeof(GPUAnimationBaker)).titleContent = new GUIContent("GPU Animation Instance Baker", EditorGUIUtility.IconContent("AvatarSelector").image);
         [MenuItem("Work Flow/Art/(Optimize)Animation Clip Optimize", false, 401)]
