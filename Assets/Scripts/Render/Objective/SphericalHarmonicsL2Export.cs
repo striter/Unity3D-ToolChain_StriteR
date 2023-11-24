@@ -5,6 +5,40 @@ using UnityEngine;
 
 namespace Rendering.GI.SphericalHarmonics
 {
+    [Serializable]
+    public struct SHGradient
+    {
+        [ColorUsage(false,true)]public Color gradientSky;
+        [ColorUsage(false,true)]public Color gradientEquator;
+        [ColorUsage(false,true)]public Color gradientGround;
+        [HideInInspector] public SHL2Data shData;
+
+        public SHGradient Ctor()
+        {
+            shData = SphericalHarmonicsExport.ExportL2Gradient(gradientSky, gradientEquator,gradientGround);
+            return this;
+        }
+
+        public static readonly SHGradient kDefault = new SHGradient()
+        {
+            gradientSky = Color.cyan,
+            gradientGround = Color.black,
+            gradientEquator = Color.white.SetA(.5f),
+        }.Ctor();
+        
+        public static SHGradient Interpolate(SHGradient _a, SHGradient _b,
+            float _interpolate)
+        {
+            return new SHGradient()
+            {
+                gradientSky = Color.Lerp(_a.gradientSky,_b.gradientSky,_interpolate),
+                gradientEquator = Color.Lerp(_a.gradientEquator,_b.gradientEquator,_interpolate),
+                gradientGround = Color.Lerp(_a.gradientGround,_b.gradientGround,_interpolate),
+                shData = SHL2Data.Interpolate(_a.shData,_b.shData,_interpolate),
+            };
+        }
+    }
+    
     public enum ESHSampleMode
     {
         Random,

@@ -24,8 +24,11 @@ Shader "Game/Lit/CustomGI"
     SubShader
     {
     	HLSLINCLUDE
+
 			#include "Assets/Shaders/Library/Common.hlsl"
 			#include "Assets/Shaders/Library/Lighting.hlsl"
+
+			
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_EmissionTex);SAMPLER(sampler_EmissionTex);
 			INSTANCING_BUFFER_START
@@ -45,7 +48,8 @@ Shader "Game/Lit/CustomGI"
 			#pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
             #pragma multi_compile _ SHADOWS_SHADOWMASK
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
-            #pragma multi_compile _ LIGHTMAP_ON	
+            #pragma multi_compile _ LIGHTMAP_ON
+			#pragma shader_feature_local LIGHTMAP_LOCAL
 
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile _ _ADDITIONAL_LIGHTS
@@ -59,31 +63,51 @@ Shader "Game/Lit/CustomGI"
 
 			SHL2Input()
 			
+			half3 FogInterpolateCustom(half3 srcColor,half fogFactor,half3 positionWS)
+			{
+				half3 sh = SHL2Sample(GetCameraRealDirectionWS(positionWS),);
+			    half density=FogDesnity(fogFactor);
+			    return lerp(srcColor,sh,density);
+			}
+	        #define V2F_FOG(index) half fogFactor:TEXCOORDindex;
+	        #define FOG_TRANSFER(o) o.fogFactor=FogFactor(o.positionCS.z);
+	        #define FOG_MIX(i,col) col=FogInterpolateCustom(col,i.fogFactor,i.positionWS);
+			#define NFOG
+
+			#if LIGHTMAP_LOCAL
+				float4 _LightmapST;
+				TEXTURE2D(_Lightmap);         SAMPLER(sampler_Lightmap);
+				TEXTURE2D(_LightmapInd);
+				#define LIGHTMAP_ST _LightmapST
+			#endif
+			
 			void OverrideGlobalIllumination(out half3 indirectDiffuse,out half3 indirectSpecular,v2ff i,BRDFSurface surface,Light mainLight)
 			{
 				half3 normal = normalize(surface.normal);
 				indirectDiffuse = SHL2Sample(normal,);
 				indirectSpecular = indirectDiffuse;//IndirectSpecular(surface.reflectDir,surface.perceptualRoughness,1000);
-				#if LIGHTMAP_ON
 
-					// half3 lightmap = IndirectDiffuse(mainLight,i,surface.normal);
+			#if LIGHTMAP_ON
+				#if LIGHTMAP_LOCAL
+					half3 lightmap = SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap,sampler_Lightmap), i.lightmapUV);
+					float4 directionSample = SAMPLE_TEXTURE2D_LIGHTMAP(_LightmapInd,sampler_Lightmap,i.lightmapUV);
+				#else
 					half3 lightmap = SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(unity_Lightmap,samplerunity_Lightmap), i.lightmapUV);
-				
 					float4 directionSample = SAMPLE_TEXTURE2D_LIGHTMAP(unity_LightmapInd,samplerunity_Lightmap,i.lightmapUV);
-
-					half3 direction = (directionSample.xyz - 0.5) * 2;
-					indirectDiffuse = SHL2Sample(direction,);
-
-					half halfLambert = dot(surface.normal, direction.xyz - 0.5) + 0.5;
-					half directionParam = halfLambert / max(1e-4,directionSample.w);
-
-					surface.ao = directionSample.a;
-					indirectDiffuse *= directionParam;
-
-					indirectDiffuse *= lightmap;
-					indirectSpecular *= lightmap;
-
 				#endif
+				
+				half3 direction = (directionSample.xyz - 0.5) * 2;
+				indirectDiffuse = SHL2Sample(direction,);
+
+				half halfLambert = dot(surface.normal, direction.xyz - 0.5) + 0.5;
+				half directionParam = halfLambert / max(1e-4, directionSample.w);
+
+				surface.ao = directionSample.a;
+				indirectDiffuse *= directionParam;
+
+				indirectDiffuse *= lightmap;
+				indirectSpecular *= lightmap;
+			#endif
 			}
 			
 			void Transfer(a2vf v,inout v2ff i)
@@ -96,6 +120,7 @@ Shader "Game/Lit/CustomGI"
 			#define GET_GI(indirectDiffuse,indirectSpecular,i,surface,mainLight) OverrideGlobalIllumination(indirectDiffuse,indirectSpecular,i,surface,mainLight);
 			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
+			
 			
             #pragma target 3.5
 			#pragma vertex ForwardVertex

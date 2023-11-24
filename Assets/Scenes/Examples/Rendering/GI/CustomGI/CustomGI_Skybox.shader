@@ -29,7 +29,7 @@ Shader "Game/Lit/CustomGI"
                 v2f o;
                 o.positionCS = TransformObjectToHClip(v.positionOS);
                 o.uv = v.uv;
-            	o.normalWS = TransformObjectToWorldNormal(v.normalOS);
+            	o.normalWS = TransformObjectToWorldNormal(v.positionOS);
                 return o;
             }
 

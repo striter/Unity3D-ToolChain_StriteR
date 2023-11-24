@@ -44,13 +44,13 @@ half3 FogInterpolate(half3 srcColor,half fogFactor)
     return lerp(srcColor,unity_FogColor.rgb,density*unity_FogColor.a);
 }
 #if !defined(NFOG)
-#if !defined(IFOG)||defined(NFOG)
-    #define V2F_FOG(index)  
-    #define FOG_TRANSFER(o)  
-    #define FOG_MIX(i,col) 
-#else
-    #define V2F_FOG(index) half fogFactor:TEXCOORDindex;
-    #define FOG_TRANSFER(o) o.fogFactor=FogFactor(o.positionCS.z);
-    #define FOG_MIX(i,col) col=FogInterpolate(col,i.fogFactor);
-#endif
+    #if !defined(IFOG)||defined(NFOG)
+        #define V2F_FOG(index)  
+        #define FOG_TRANSFER(o)  
+        #define FOG_MIX(i,col) 
+    #else
+        #define V2F_FOG(index) half fogFactor:TEXCOORDindex;
+        #define FOG_TRANSFER(o) o.fogFactor=FogFactor(o.positionCS.z);
+        #define FOG_MIX(i,col) col=FogInterpolate(col,i.fogFactor);
+    #endif
 #endif

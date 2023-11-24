@@ -1,7 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Rendering.GI.SphericalHarmonics;
+using Rendering.Lightmap;
 using UnityEngine;
 
 namespace Examples.Rendering.GI.CustomGI
@@ -17,14 +16,13 @@ namespace Examples.Rendering.GI.CustomGI
     [ExecuteInEditMode]
     public class CustomGI : MonoBehaviour
     {
-        public Texture2DArray kSkyIrradiance;
         public GIData[] kGiData;
-        public bool m_AddDirecitonalLight;
 
-        public SHL2ShaderProperties kSHProperties = new SHL2ShaderProperties();
         public float div = 5f;
 
         private bool isDirty;
+        public SHL2ShaderProperties kSHProperties = new SHL2ShaderProperties();
+        public GlobalIllumination_LightmapDiffuse m_Diffuse;
         private void OnValidate()
         {
             isDirty = true;
@@ -49,11 +47,22 @@ namespace Examples.Rendering.GI.CustomGI
             }
             
             var (start,end,interp) = kGiData.Gradient(UTime.time / div);
-            var light = GetComponent<Light>();
             var sh = SHL2Data.Interpolate(start.shData, end.shData, interp);
-            if(m_AddDirecitonalLight)
-                sh = SphericalHarmonicsExport.ExportDirectionalLight(light.transform.forward, light.color.ToFloat3() * light.intensity,true);
             kSHProperties.ApplyGlobal(sh.Output());
+        }
+
+        [Button]
+        public void Output()
+        {
+#if UNITY_EDITOR
+            m_Diffuse = GlobalIllumination_LightmapDiffuse.Export(transform);
+#endif
+        }
+
+        [Button]
+        public void Apply()
+        {
+            m_Diffuse?.Apply(transform);
         }
     }
 }

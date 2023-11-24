@@ -72,16 +72,16 @@ namespace UnityEditor.Extensions
         }
 
         public static IEnumerable<MethodInfo> AllMethods(this SerializedProperty _property)=>_property.serializedObject.targetObject.GetType().GetMethods(BindingFlags.Instance |  BindingFlags.Public | BindingFlags.NonPublic);
-        public static IEnumerable<(FieldInfo, object)> AllRelativeFields(this SerializedProperty _property)
+        public static IEnumerable<(FieldInfo, object)> AllRelativeFields(this SerializedProperty _property,BindingFlags _flags = BindingFlags.Instance |  BindingFlags.Public | BindingFlags.NonPublic)
         {
-            foreach (var fieldInfos in _property.FieldsSearch())
+            foreach (var fieldInfos in _property.FieldsSearch(_flags))
             {
-                foreach (var subfield in fieldInfos.Item1.GetFields())
+                foreach (var subfield in fieldInfos.Item1.GetFields(_flags))
                     yield return (subfield, subfield.GetValue(fieldInfos.Item2));
             }
         }
         
-        public static IEnumerable<(Type,object)> FieldsSearch(this SerializedProperty _property)
+        public static IEnumerable<(Type,object)> FieldsSearch(this SerializedProperty _property,BindingFlags _flags = BindingFlags.Instance |  BindingFlags.Public | BindingFlags.NonPublic)
         {
             string[] paths = _property.propertyPath.Split('.');
             object targetObject = _property.serializedObject.targetObject;
@@ -103,7 +103,7 @@ namespace UnityEditor.Extensions
                 }
                 else
                 {
-                    FieldInfo targetField = targetType.GetField(pathName, BindingFlags.Instance |  BindingFlags.Public | BindingFlags.NonPublic);
+                    FieldInfo targetField = targetType.GetField(pathName, _flags);
                     targetType = targetField.FieldType;
                     targetObject = targetField.GetValue(targetObject);
                 }

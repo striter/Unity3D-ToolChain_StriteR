@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Rendering;
+using Rendering.Lightmap;
 using UnityEditor;
 using UnityEngine;
 
@@ -23,7 +24,9 @@ namespace UnityEditor.Extensions
                 return;
             
             GIPersistent collection = Editor.CreateInstance<GIPersistent>();
-            collection.m_Data = GlobalIlluminationOverrideData.Export(Selection.activeTransform.GetComponentsInChildren<MeshRenderer>(true));
+            collection.m_Specular =  GlobalIllumination_CubemapSpecular.Export();
+            collection.m_Lightmap = GlobalIllumination_LightmapDiffuse.Export(Selection.activeTransform);
+            collection.m_SHL2 = RenderSettings.ambientProbe;
             UEAsset.CreateOrReplaceMainAsset(collection,UEPath.FileToAssetPath(filePath));
         }
         

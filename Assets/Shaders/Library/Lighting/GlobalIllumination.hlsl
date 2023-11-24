@@ -120,12 +120,15 @@ half3 IndirectSpecularWithSSR(float3 reflectDir, float perceptualRoughness, half
     return specular;
 }
 
+#if !defined(LIGHTMAP_ST)
+    #define LIGHTMAP_ST unity_LightmapST
+#endif
+
 #if defined(LIGHTMAP_ON)
     #define A2V_LIGHTMAP float2 lightmapUV:TEXCOORD1;
     #define V2F_LIGHTMAP(index) float2 lightmapUV:TEXCOORD##index;
-    #define LIGHTMAP_TRANSFER(v,o) o.lightmapUV=v.lightmapUV*unity_LightmapST.xy+unity_LightmapST.zw;
+    #define LIGHTMAP_TRANSFER(v,o) o.lightmapUV=v.lightmapUV*LIGHTMAP_ST.xy+LIGHTMAP_ST.zw; 
     #define IndirectDiffuse(mainLight,i,normalWS) IndirectDiffuse_Lightmap(mainLight,i.lightmapUV,normalWS)
-// #endif
 #else
     #define A2V_LIGHTMAP
     #define V2F_LIGHTMAP(index)

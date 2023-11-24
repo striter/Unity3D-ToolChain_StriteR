@@ -60,7 +60,6 @@ namespace Examples.Rendering.Lighting
     [ExecuteInEditMode]
     public class Lighting : MonoBehaviour
     {
-        
         public SHGradient m_SH;
         public Light[] m_Lights = new Light[]{Light.kDefaultPoint,};
         
