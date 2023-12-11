@@ -52,9 +52,7 @@ namespace Rendering.Lightmap
         
         private static readonly int kLightmapSTID = Shader.PropertyToID("_LightmapST"); 
         public static readonly GIShaderProperties kDefault = new GIShaderProperties("");
-        
         private static readonly Dictionary<Material, Material> kLightmappedMaterials = new Dictionary<Material, Material>();
-
         public static GlobalIllumination_LightmapDiffuse Export(Transform _root)
         {
             var _renderers = _root.GetComponentsInChildren<MeshRenderer>(true);

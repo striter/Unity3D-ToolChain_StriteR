@@ -54,6 +54,9 @@ half3 CustomGlobalIllumination(BRDFSurface surface,
 float4 ForwardFragment(v2ff i):SV_TARGET
 {
 	UNITY_SETUP_INSTANCE_ID(i);
+	#if defined(FRAGMENT_SETUP)
+		FRAGMENT_SETUP(i)
+	#endif
 
 	float3 positionWS=i.positionWS;
 	float3 normalWS=normalize(i.normalWS);

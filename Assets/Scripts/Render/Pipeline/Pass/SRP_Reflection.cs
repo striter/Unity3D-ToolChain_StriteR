@@ -306,7 +306,7 @@ namespace Rendering.Pipeline
             _descriptor.msaaSamples = 1;
             var shader = ((ComputeShader) m_ReflectionComputeShader);
             m_Kernels = ((ComputeShader)m_ReflectionComputeShader).FindKernel("Generate");
-            kKeywords = m_ReflectionComputeShader.m_Value.GetLocalKeywords<EReflectionGeometry>();
+            kKeywords = m_ReflectionComputeShader.Value.GetLocalKeywords<EReflectionGeometry>();
             m_ThreadGroups = new Int2(_descriptor.width / 8, _descriptor.height / 8);
         }
 
@@ -324,7 +324,7 @@ namespace Rendering.Pipeline
             _cmd.SetComputeIntParam(m_ReflectionComputeShader, kSampleCount, _data.m_Sample);
             _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kResultTexelSize, _descriptor.GetTexelSize());
             
-            _cmd.EnableLocalKeywords(m_ReflectionComputeShader.m_Value,kKeywords,_config.m_Geometry);
+            _cmd.EnableLocalKeywords(m_ReflectionComputeShader.Value,kKeywords,_config.m_Geometry);
             if (_config.m_Geometry == EReflectionGeometry._SPHERE)
             {
                 var sphere = _config.m_SphereData;

@@ -52,17 +52,17 @@ namespace Rendering.Pipeline
             var renderer = _data.m_Outline ? m_OutlineRenderer : m_NormalRenderer;
             if (_data.m_Outline)
             {
-                renderer.m_Value.SetColor("_OutlineColor",m_Data.color);
-                renderer.m_Value.SetFloat("_OutlineWidth",m_Data.extendWidth);
+                renderer.Value.SetColor("_OutlineColor",m_Data.color);
+                renderer.Value.SetFloat("_OutlineWidth",m_Data.extendWidth);
             }
             else
             {
-                renderer.m_Value.SetColor(KShaderProperties.kColor,m_Data.color);
+                renderer.Value.SetColor(KShaderProperties.kColor,m_Data.color);
             }
-            renderer.m_Value.EnableKeywords(m_Data.outlineVertex);
-            renderer.m_Value.SetInt(KShaderProperties.kCull,(int)CullMode.Off);
-            renderer.m_Value.SetInt(KShaderProperties.kColorMask,(int)ColorWriteMask.All);
-            renderer.m_Value.SetInt(KShaderProperties.kZWrite,1);
+            renderer.Value.EnableKeywords(m_Data.outlineVertex);
+            renderer.Value.SetInt(KShaderProperties.kCull,(int)CullMode.Off);
+            renderer.Value.SetInt(KShaderProperties.kColorMask,(int)ColorWriteMask.All);
+            renderer.Value.SetInt(KShaderProperties.kZWrite,1);
             return this;
         }
 

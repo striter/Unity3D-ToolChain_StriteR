@@ -179,7 +179,7 @@ public static partial class umath
         float z = Mathf.Abs(_x);
         float w = z > 1f ? 1f / z : z;
         float y = (kPI / 4.0f) * w - w * (w - 1) * (0.2447f + 0.0663f * w);
-        return copySign(z > 1 ? kPID2 - y : y,_x);
+        return copySign(z > 1 ? kPIDiv2 - y : y,_x);
     }
 
     static float sin_kinda(float _x)
@@ -193,15 +193,15 @@ public static partial class umath
 
     public static float sin_basic_approximation(float _x)
     {
-        int k = (int)math.floor(_x / kPID2);
-        float y = _x - k * kPID2;
+        int k = (int)math.floor(_x / kPIDiv2);
+        float y = _x - k * kPIDiv2;
         switch (( k % 4+4) % 4)
         {
             default: throw new ArgumentNullException();
             case 0: return sin_kinda(y);
-            case 1: return sin_kinda(kPID2 - y);
+            case 1: return sin_kinda(kPIDiv2 - y);
             case 2: return -sin_kinda(y);
-            case 3: return -sin_kinda(kPID2 - y);
+            case 3: return -sin_kinda(kPIDiv2 - y);
         }
     }
 

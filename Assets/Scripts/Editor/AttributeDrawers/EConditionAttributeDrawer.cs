@@ -11,7 +11,6 @@ namespace UnityEditor.Extensions
     [CustomPropertyDrawer(typeof(ConditionAttribute),true)]
     public class ConditionAttributeDrawer:MainAttributePropertyDrawer<ConditionAttribute> 
     {
-        
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             if (!(attribute as ConditionAttribute).IsPropertyVisible( property))

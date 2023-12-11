@@ -6,6 +6,7 @@ namespace Runtime
     public abstract class ARuntimeRendererBase
     {
         private Mesh m_Mesh;
+        public Mesh Mesh => m_Mesh;
         public virtual Mesh Initialize(Transform _transform)
         {
             m_Mesh = new Mesh {name = GetInstanceName(),hideFlags = HideFlags.HideAndDontSave};
@@ -34,9 +35,9 @@ namespace Runtime
     }
     
     [ExecuteInEditMode,RequireComponent(typeof(MeshFilter),typeof(MeshRenderer))]
-    public abstract class ARuntimeRendererMonoBehaviour<T> : MonoBehaviour where T:ARuntimeRendererBase
+    public abstract class ARuntimeRendererMonoBehaviour<T> : MonoBehaviour where T:ARuntimeRendererBase,new()
     {
-        public T meshConstructor;
+        public T meshConstructor = new T();
         public bool m_DrawGizmos;
         
         protected virtual void Awake()

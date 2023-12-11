@@ -23,7 +23,7 @@ namespace Runtime
         [MFoldout(nameof(m_RopePosition), ERopePosition.Transform)] public Transform m_EndTransform;
         [MFoldout(nameof(m_RopePosition), ERopePosition.Constant)] public Vector3 m_EndPosition;
         [MFoldout(nameof(m_RopePosition), ERopePosition.Constant,nameof(m_Billboard),false)] public Vector3 m_EndBiTangent;
-        public Damper m_ControlDamper;
+        public Damper m_ControlDamper = new Damper();
         
         private GBezierCurveQuadratic m_Curve;
         private int kRopeInstanceID = 0;
@@ -65,7 +65,7 @@ namespace Runtime
             m_ControlDamper.Initialize(control);
         }
 
-        protected override void PopulatePositions(Transform _transform, List<Vector3> _vertices, List<Vector3> _normals)
+        protected override void PopulatePositions(Transform _transform, List<Vector3> _vertices, List<Vector3> _tangents)
         {
             CalculatePositions(_transform,out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
             control = m_ControlDamper.Tick(UTime.deltaTime, control);
@@ -77,7 +77,7 @@ namespace Runtime
                 _vertices.Add(m_Curve.Evaluate(evaluate));
                 var tangent = m_Curve.EvaluateTangent(evaluate);
                 var biTangent = Vector3.Lerp(srcBiTangent,dstBiTangent,evaluate);
-                _normals.Add(Vector3.Cross(tangent,biTangent));
+                _tangents.Add(Vector3.Cross(tangent,biTangent));
             }
         }
 

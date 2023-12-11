@@ -5,20 +5,65 @@ using System.Reflection;
 using UnityEngine;
 
 namespace UnityEditor.Extensions
-{ 
+{
     [CustomEditor(typeof(MonoBehaviour), true)]
     public class EInspectorExtension : Editor
     {
-        private readonly Type kButtonMethodType = typeof(ButtonAttribute);
-        private List<KeyValuePair<MethodInfo,ButtonAttribute>> clickMethods = new List<KeyValuePair<MethodInfo, ButtonAttribute>>();
+        public enum EButtonParameters
+        {
+            NotSupported,
+            String,
+            Float,
+            Integer,
+        }
+
+        private Dictionary<Type, EButtonParameters> kTypeLookupTable = new Dictionary<Type, EButtonParameters>()
+        {
+            {typeof(string),EButtonParameters.String},
+            {typeof(float),EButtonParameters.Float},
+            {typeof(int),EButtonParameters.Integer},
+        };
+
+        public class ParameterData
+        {
+            public EButtonParameters type;
+            public string name;
+            public object value;
+        }
+        public struct ButtonAttributeData
+        {
+            public Attribute attribute;
+            public MethodInfo method;
+            public ParameterData[] parameters;
+        }
+
+        private List<ButtonAttributeData> clickMethods = new List<ButtonAttributeData>();
         private void OnEnable()
         {
-            foreach (var (method,attribute) in target.GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance).Select(p=>(p,p.GetCustomAttribute(kButtonMethodType))))
+            foreach (var (method,attribute) in target.GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance).Select(p=>(p,p.GetCustomAttribute<ButtonAttribute>(true))))
             {
                 if (attribute == null)
                     continue;
-                
-                clickMethods.Add(new KeyValuePair<MethodInfo, ButtonAttribute>(method,attribute as ButtonAttribute));
+
+                var parameters = method.GetParameters();
+                var buttonData = new ButtonAttributeData()
+                {
+                    attribute = attribute,
+                    parameters = new ParameterData[parameters.Length],
+                    method = method,
+                };
+
+                for (int i = 0; i < parameters.Length; i++)
+                {
+                    var parameter = parameters[i];
+                    buttonData.parameters[i] = new ParameterData()
+                    {
+                        type = kTypeLookupTable[parameter.ParameterType],
+                        name = parameter.Name,
+                        value = parameter.HasDefaultValue ? parameter.DefaultValue : Activator.CreateInstance(parameter.ParameterType),
+                    };
+                }
+                clickMethods.Add(buttonData); 
             }
         }
 
@@ -34,18 +79,32 @@ namespace UnityEditor.Extensions
                 return;
             
             EditorGUILayout.BeginVertical();
-            GUILayout.Label("Buttons",UEGUIStyle_Window.m_TitleLabel);
-            foreach (var pair in clickMethods)
+            foreach (var data in clickMethods)
             {
-                var method = pair.Key;
-                if (pair.Value.IsElementVisible(target))
+                if(data.attribute is FoldoutButtonAttribute foldOutButton && !foldOutButton.IsElementVisible(target))
+                    continue;
+                
+                EditorGUILayout.BeginHorizontal();
+
+                foreach (var parameter in data.parameters)
                 {
-                    if (GUILayout.Button(method.Name))
+                    var key = parameter.type;
+                    switch (key)
                     {
-                        method.Invoke(target,null);
-                        Undo.RegisterCompleteObjectUndo(target,"Button Click");
+                        case EButtonParameters.Float: parameter.value = EditorGUILayout.FloatField(parameter.name,(float)parameter.value); break;
+                        case EButtonParameters.Integer: parameter.value = EditorGUILayout.IntField(parameter.name,(int)parameter.value); break;
+                        case EButtonParameters.String: parameter.value = EditorGUILayout.TextField(parameter.name,(string)parameter.value); break;
+                        case EButtonParameters.NotSupported:EditorGUILayout.LabelField("Not Supported Type");break;
                     }
                 }
+                
+                if (GUILayout.Button(data.method.Name))
+                {
+                    data.method.Invoke(target,data.parameters.Select(p=>p.value).ToArray());
+                    Undo.RegisterCompleteObjectUndo(target,"Button Click");
+                }
+                
+                EditorGUILayout.EndHorizontal();
             }
             EditorGUILayout.EndVertical();
         }

@@ -149,11 +149,6 @@ public static class URuntime
     }
     #endregion
     
-    #region Range
-    public static bool Contains(this RangeFloat _value, float _check) => _value.start <= _check && _check <= _value.end;
-    public static float NormalizedAmount(this RangeFloat _range, float _check) => umath.invLerp(_range.start, _range.end, _check);
-    #endregion
-    
     #region Camera Helper
     public static bool InputRayCheck(this Camera _camera, Vector2 _inputPos, out RaycastHit _hit, int _layerMask = -1)
     {

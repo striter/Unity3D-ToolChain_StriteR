@@ -29,7 +29,7 @@ float2 LineRayProjection(GLine _line, GRay _ray)
 //Plane
 float PlanePointDistance(GPlane _plane, float3 _point)
 {
-    float nr = _point.x * _plane.normal.x + _point.y * _plane.normal.y + _point.z * _plane.normal.z + _plane.distance;
+    float nr = _point.x * _plane.normal.x + _point.y * _plane.normal.y + _point.z * _plane.normal.z - _plane.distance;
     return nr / length(_plane.normal);
 }
 float PlaneRayDistance(GPlane _plane, GRay _ray)

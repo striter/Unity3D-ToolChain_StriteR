@@ -4,9 +4,17 @@ using UnityEngine;
 public static partial class umath
 {
 #region Common Methods
+
+    public static float radBetween(float3 _from,float3 _to)      //Radin
+    {
+        var num =  math.sqrt( _from.sqrmagnitude() *  _to.sqrmagnitude());
+        return num < 1.0000000036274937E-15f ? 0.0f
+            : math.acos(math.clamp(math.dot(_from, _to) / num, -1f, 1f));
+    }
+
     public static float closestAngle(float3 _first, float3 _second, float3 _up)
     {
-        var nonCloseAngle = Vector3.Angle(_first, _second);
+        var nonCloseAngle = radBetween(_first, _second) * kmath.kRad2Deg;
         nonCloseAngle *= math.sign(dot(_up, cross(_first, _second)));
         return nonCloseAngle;
     }

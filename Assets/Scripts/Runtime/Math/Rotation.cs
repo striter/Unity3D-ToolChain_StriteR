@@ -34,7 +34,7 @@ public static partial class umath
 
         var sinp = sqrt(1 + 2 * (q.w * q.y - q.x * q.z));
         var cosp = sqrt(1 - 2 * (q.w * q.y - q.x * q.z));
-        var yaw = 2 * atan2(sinp, cosp) - kPIHalf;
+        var yaw = 2 * atan2(sinp, cosp) - kPIMulHalf;
 
         var sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
         var cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);

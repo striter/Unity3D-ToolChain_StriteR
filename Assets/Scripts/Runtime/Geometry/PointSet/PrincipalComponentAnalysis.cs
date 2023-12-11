@@ -34,7 +34,9 @@ namespace Geometry.PointSet
                 a02mirror += (p.x - m.x)*(p.z-m.z);
                 a12mirror += (p.y - m.y)*(p.z-m.z);
             }
-            var matrix =  new float3x3(a00,a01mirror,a02mirror,a01mirror,a11,a12mirror,a02mirror,a12mirror,a22)/count;
+            var matrix =  new float3x3(a00,a01mirror,a02mirror,
+                                                a01mirror,a11,a12mirror,
+                                                    a02mirror,a12mirror,a22)/count;
             _centre = m;
             matrix.GetEigenVectors(out _right,out _up,out _forward);
         }

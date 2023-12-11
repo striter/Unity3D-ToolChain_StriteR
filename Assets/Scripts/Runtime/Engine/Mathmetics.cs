@@ -24,12 +24,14 @@ public static class kmath
     
     //PI
     public const float kPI = 3.14159265359f;
-    public const float kPI2 = 6.28318530718f;
-    public const float kPI4 = 12.5663706144f;
-    public const float kPIHalf = 1.57079632679f;
+    public const float kPIMulHalf = 1.57079632679f;
+    public const float kPIMul2 = 6.28318530718f;
+    public const float kPIMul4 = 12.5663706144f;
     //Division
-    public const float kPID2 = 1.5707963267948966f;
-    public const float kPID4 = 0.7853981633974483f;
+    public const float kPIDiv2 = 1.5707963267948966f;
+    public const float kPIDiv4 = 0.7853981633974483f;
+    public const float kPIDiv8 = 0.3926990817f;
+    public const float kPIDiv16 = 0.19634954085f;
     //Invert
     public const float kInvPI = 0.31830988618f;
 
@@ -200,7 +202,8 @@ public static class umatrix
             c00 + c11 + c22,
             -c00*c11 -c00*c22 + c12*c21 -c11*c22 +c10*c01 +c20*c02,
             -c00*c12*c21 + c00*c11*c22-c10*c01*c22 +c10*c02*c21+c20*c01*c12-c20*c02*c11);
-        polynomial.GetRoots(out var _roots);
+        var root = polynomial.GetRoots(out var _roots);
+        Debug.Assert(root == 3 , $"Invalid Root Length Find:{root}");
         Array.Sort(_roots,(a,b)=>a<b?1:-1);
         return new float3(_roots[0], _roots[1], _roots[2]);
     }

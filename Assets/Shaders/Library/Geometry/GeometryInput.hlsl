@@ -48,7 +48,7 @@ GPlane GPlane_Ctor(float3 _normal, float _distance)
     GPlane plane;
     plane.normal = _normal;
     plane.distance = _distance;
-    plane.position = plane.normal*plane.distance;
+    plane.position = plane.normal * plane.distance;
     return plane;
 }
 GPlane GPlane_Ctor(float3 _normal, float3 _position)

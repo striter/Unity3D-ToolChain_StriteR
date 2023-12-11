@@ -42,7 +42,7 @@ namespace Examples.Rendering.Lighting
             type = (uint)type,
             position = position,
             direction = umath.EulerToQuaternion(euler).mul(kfloat3.forward),
-            color = color.ToFloat3() * intensity,
+            color = color.to3() * intensity,
             lightParameters = new float4( constant, linear, quadric,spotPower),
         };
     }

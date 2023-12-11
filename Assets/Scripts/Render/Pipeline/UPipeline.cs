@@ -29,8 +29,8 @@ namespace Rendering
             };
             if (_fillDefault)
             {
-                for (int i = 0; i < kDefaultShaderTags.m_Value.Count; i++)
-                    settings.SetShaderPassName(i, kDefaultShaderTags.m_Value[i]);
+                for (int i = 0; i < kDefaultShaderTags.Value.Count; i++)
+                    settings.SetShaderPassName(i, kDefaultShaderTags.Value[i]);
             }
             return settings;
         }

@@ -92,3 +92,17 @@ public class PreloadAssetsAttribute : PropertyAttribute
 
 [AttributeUsage(AttributeTargets.Field)]
 public class CullingMaskAttribute : PropertyAttribute { }
+
+[AttributeUsage(AttributeTargets.Field)]        //Should be deprecated tbh
+public class ExtendButtonAttribute : PropertyAttribute
+{
+    public readonly (string title, string method, object[] parameters)[] m_Buttons;
+    public ExtendButtonAttribute(string _title, string _method, params object[] _parameters)
+    {
+        m_Buttons = new (string title, string method, object[] parameters)[]{(_title,_method,_parameters)};
+    }
+    public ExtendButtonAttribute(string _title1, string _method1, object[] _parameters1,string _title2, string _method2, object[] _parameters2)
+    {
+        m_Buttons = new (string title, string method, object[] parameters)[]{(_title1,_method1,_parameters1),(_title2,_method2,_parameters2)};
+    }
+}

@@ -38,7 +38,7 @@ namespace Examples.Rendering.SH
                     m_Data = SphericalHarmonicsExport.ExportL2Cubemap(m_SampleCount, m_Cubemap,m_Intensity,ESHSampleMode.Fibonacci);
                     break;
                 case ESphericalHarmonicsExport.DirectionalLight:
-                    m_Data = SphericalHarmonicsExport.ExportDirectionalLight(transform.forward, m_LightColor.ToFloat3(),false);
+                    m_Data = SphericalHarmonicsExport.ExportDirectionalLight(transform.forward, m_LightColor.to3(),false);
                     break;
             }
             Ctor();

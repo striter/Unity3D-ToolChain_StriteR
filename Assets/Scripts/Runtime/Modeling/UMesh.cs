@@ -8,11 +8,11 @@ public static class UModeling
 {
     public static Vector3[] RegenerateNormals(PTriangle[] _polygons, Vector3[] _vertices, bool _weightedNormals =false)
     {
-        Vector3[] normals = new Vector3[_vertices.Length];
+        var normals = new Vector3[_vertices.Length];
         foreach(var polygon in _polygons)
         {
-            GTriangle triangle = (GTriangle)polygon.Convert(_vertices);
-            Vector3 normal = _weightedNormals ? triangle.GetNormalUnnormalized() : triangle.normal;
+            var triangle = (GTriangle)polygon.Convert(_vertices);
+            var normal = (Vector3)( _weightedNormals ? triangle.GetNormalUnnormalized() : triangle.normal);
             foreach (var index in polygon)
                 normals[index] += normal;
         }
@@ -22,8 +22,8 @@ public static class UModeling
 
     public static float4[] RegenerateTangents(PTriangle[] _polygons,Vector3[] _normals, Vector3[] _vertices,Vector2[] _uvs)
     {
-        float3[] tangentsS = new float3[_vertices.Length];
-        float3[] tangentsH = new float3[_vertices.Length];
+        var tangentsS = new float3[_vertices.Length];
+        var tangentsH = new float3[_vertices.Length];
         foreach (var polygon in _polygons)
         {
             var i0 = polygon[0];
@@ -62,9 +62,9 @@ public static class UModeling
         }
         
         
-        float4[] tangents = new float4[_vertices.Length];
+        var tangents = new float4[_vertices.Length];
 
-        for (int i = 0; i < tangents.Length; i++)
+        for (var i = 0; i < tangents.Length; i++)
         {
             var n = (float3)_normals[i];
             var t = tangentsS[i];
@@ -75,37 +75,36 @@ public static class UModeling
         return tangents;
     }
 
-    public static Vector3[] GenerateSmoothNormals(Mesh _srcMesh, bool _convertToTangentSpace, bool _weightedNormals =false)
+    public static Vector3[] GenerateSmoothNormals(Mesh _srcMesh, bool _convertToTangentSpace)
     {
-        Vector3[] verticies = _srcMesh.vertices;
-        var groups = verticies.Select((_vertex, _index) => new KeyValuePair<Vector3, int>(_vertex, _index)).GroupBy(pair => pair.Key);
-        Vector3[] normals = RegenerateNormals(UPolygon.GetPolygons(_srcMesh.triangles),verticies, _weightedNormals);
-        Vector3[] smoothNormals = normals.DeepCopy();
+        var vertices = _srcMesh.vertices;
+        var groups = vertices.Select((vertex, index) => new KeyValuePair<Vector3, int>(vertex, index)).GroupBy(pair => pair.Key);
+        var normals = _srcMesh.normals; 
+        var smoothNormals = normals.DeepCopy();
         foreach (var group in groups)
         {
             if (group.Count() == 1)
                 continue;
-            Vector3 smoothNormal = Vector3.zero;
-            foreach (var index in group)
-                smoothNormal += normals[index.Value];
+            var smoothNormal = group.Aggregate(Vector3.zero, (current, index) => current + normals[index.Value]);
             smoothNormal = smoothNormal.normalized;
             foreach (var index in group)
                 smoothNormals[index.Value] = smoothNormal;
         }
-        if (_convertToTangentSpace && _srcMesh.HasVertexAttribute(UnityEngine.Rendering.VertexAttribute.Tangent))
+
+        if (!_convertToTangentSpace || !_srcMesh.HasVertexAttribute(UnityEngine.Rendering.VertexAttribute.Tangent))
+            return smoothNormals;
+        
+        var tangents = _srcMesh.tangents;
+        for (var i = 0; i < smoothNormals.Length; i++)
         {
-            Vector4[] tangents = _srcMesh.tangents;
-            for (int i = 0; i < smoothNormals.Length; i++)
-            {
-                Vector3 tangent = tangents[i].XYZ().normalized;
-                Vector3 normal = normals[i].normalized;
-                Vector3 biTangent = Vector3.Cross(normal, tangent).normalized * tangents[i].w;
-                Matrix3x3 tbnMatrix = Matrix3x3.kIdentity;
-                tbnMatrix.SetRow(0, tangent);
-                tbnMatrix.SetRow(1, biTangent);
-                tbnMatrix.SetRow(2, normal);
-                smoothNormals[i] = tbnMatrix * smoothNormals[i].normalized;
-            }
+            var tangent = tangents[i].XYZ().normalized;
+            var normal = normals[i].normalized;
+            var biTangent = Vector3.Cross(normal, tangent).normalized * tangents[i].w;
+            var tbnMatrix = Matrix3x3.kIdentity;
+            tbnMatrix.SetRow(0, tangent);
+            tbnMatrix.SetRow(1, biTangent);
+            tbnMatrix.SetRow(2, normal);
+            smoothNormals[i] = tbnMatrix * smoothNormals[i].normalized;
         }
         return smoothNormals;
     }

@@ -18,7 +18,7 @@ namespace Examples.Algorithm.InverseKinematics
 
         private void DrawGizmos2D()
         {
-            float2 control = m_Control + (float2) umath.Rotate2D(math.sin(UTime.time) * kmath.kPI2).MultiplyVector( new Vector2(0,1));
+            float2 control = m_Control + (float2) umath.Rotate2D(math.sin(UTime.time) * kmath.kPIMul2).MultiplyVector( new Vector2(0,1));
             float2 p = Solve(control  , m_Radius1, m_Radius2);
             
             Gizmos.color = Color.white;

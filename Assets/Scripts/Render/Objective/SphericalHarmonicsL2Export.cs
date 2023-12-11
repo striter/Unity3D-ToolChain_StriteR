@@ -153,7 +153,7 @@ namespace Rendering.GI.SphericalHarmonics
                 }
             }
 
-            data /= _sampleCount / kmath.kPI4;
+            data /= _sampleCount / kmath.kPIMul4;
             return data;
         }
         
@@ -195,15 +195,15 @@ namespace Rendering.GI.SphericalHarmonics
                 int width = _cubemap.width - 1;
                 int x = (int) (width * uv.x);
                 int y = (int) (width * uv.y);
-                return _cubemap.GetPixel((CubemapFace) index, x, y).ToFloat3()*_intensity;
+                return _cubemap.GetPixel((CubemapFace) index, x, y).to3()*_intensity;
             },_randomSeed);
         }
         
         public static SHL2Data ExportL2Gradient(Color _top,Color _equator,Color _bottom)
         {
-            var topColor = _top.ToFloat3();
-            var equatorColor = _equator.ToFloat3();
-            var bottomColor = _bottom.ToFloat3();
+            var topColor = _top.to3();
+            var equatorColor = _equator.to3();
+            var bottomColor = _bottom.to3();
             //Closest take cause i can't get the source code
             var top = math.lerp(topColor, equatorColor, .5f);
             var bottom = math.lerp( bottomColor,equatorColor, .5f);

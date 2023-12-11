@@ -37,7 +37,7 @@ public class PassiveInstance<T>
         DisposeInstance = _DisposeInstance;
     }
 
-    public T m_Value
+    public T Value
     {
         get
         {
@@ -53,7 +53,7 @@ public class PassiveInstance<T>
             DisposeInstance?.Invoke(m_Instance);
     }
 
-    public static implicit operator T(PassiveInstance<T> _passiveInstance) => _passiveInstance.m_Value;
+    public static implicit operator T(PassiveInstance<T> _passiveInstance) => _passiveInstance.Value;
 }
 
 public class ByteArray<T>
@@ -93,7 +93,8 @@ public struct RangeFloat
 
     public static readonly RangeFloat k01 = new RangeFloat(0f,1f);
     public float Clamp(float _value)=>math.clamp(_value,start,end);
-    public float GetValue(float _normalized) => (start + length * _normalized);
+    public bool Contains(float _check) => start <= _check && _check <= end;
+    public float NormalizedAmount(float _check) => umath.invLerp(start, end, _check);
 }
 
 [Serializable]

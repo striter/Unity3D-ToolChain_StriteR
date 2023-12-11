@@ -59,36 +59,17 @@ public class MFoldAttribute : ConditionAttribute
     public MFoldAttribute(params KeyValuePair<string, object[]>[] _pairs) : base(_pairs) { }
 }
 
-
 [AttributeUsage(AttributeTargets.Method)]
 public class ButtonAttribute : ConditionAttribute
 {
-    protected EConditionAction m_Condition = EConditionAction.AlwaysVisible;
-    public override EConditionAction Condition => m_Condition;
-    public ButtonAttribute()
-    {
-        
-    }
-
-    public ButtonAttribute(EConditionAction _conditionAction, string _conditions,params object[] _refValues):base(new ConditionFieldParameters(_conditions,_refValues))
-    {
-        m_Condition = _conditionAction;
-    }
-    
+    public override EConditionAction Condition => EConditionAction.AlwaysVisible;
+    public ButtonAttribute() {}
+    protected ButtonAttribute(params KeyValuePair<string, object[]>[] _pairs) : base(_pairs) { }
 }
 
-
-[AttributeUsage(AttributeTargets.Field)]        //Should be deprecated tbh
-public class ExtendButtonAttribute : PropertyAttribute
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+public class FoldoutButtonAttribute : ButtonAttribute
 {
-    public readonly (string title, string method, object[] parameters)[] m_Buttons;
-    public ExtendButtonAttribute(string _title, string _method, params object[] _parameters)
-    {
-        m_Buttons = new (string title, string method, object[] parameters)[]{(_title,_method,_parameters)};
-    }
-    public ExtendButtonAttribute(string _title1, string _method1, object[] _parameters1,string _title2, string _method2, object[] _parameters2)
-    {
-        m_Buttons = new (string title, string method, object[] parameters)[]{(_title1,_method1,_parameters1),(_title2,_method2,_parameters2)};
-    }
+    public override EConditionAction Condition => EConditionAction.AnyEquals;
+    public FoldoutButtonAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
 }
-

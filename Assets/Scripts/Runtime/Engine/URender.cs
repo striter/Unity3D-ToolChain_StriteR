@@ -46,7 +46,7 @@ public static class URender
                 List<Color> colors = new List<Color>();
                 _srcMesh.GetColors(colors);
                 foreach (var color in colors)
-                    _data.Add(color.ToVector());
+                    _data.Add(color.toV4());
                 break;
             case EVertexData.Tangent:
                 _srcMesh.GetTangents(_data);
@@ -160,7 +160,7 @@ public static class URender
                 List<Color> colors = new List<Color>();
                 _srcMesh.GetColors(colors);
                 foreach (var color in colors)
-                    _data.Add(color.ToVector());
+                    _data.Add(color.toV4());
                 break;
             case EVertexData.Tangent:
                 List<Vector4> tangents = new List<Vector4>();

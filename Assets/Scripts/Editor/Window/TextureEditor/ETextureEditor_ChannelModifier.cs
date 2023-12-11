@@ -18,25 +18,33 @@ namespace UnityEditor.Extensions.TextureEditor
             m_ModifyTexture = null;
         }
 
-        public bool IsValidTexture() => m_TargetTexture != null;
+        public bool IsValidTexture(out int width, out int height,out TextureFormat format)
+        {
+            width = 2;
+            height = 2;
+            format = TextureFormat.RGBA32;
+            if (m_TargetTexture != null)
+            {
+                width = m_TargetTexture.width;
+                height = m_TargetTexture.height;
+                format = m_TargetTexture.format;
+                return true;
+            }
+            return false;
+        }
 
         public Texture2D GetTextureOutput() => m_TargetTexture;
 
         public void OnGUI()
         {
+            HorizontalScope.NextLine(2,20);
             EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Texture:");
             EditorGUI.BeginChangeCheck();
             m_ModifyTexture = (Texture2D)EditorGUI.ObjectField(HorizontalScope.NextRect(5, 65), m_ModifyTexture, typeof(Texture2D), false);
 
             if (m_ModifyTexture == null || !m_ModifyTexture.isReadable)
-            {
-                HorizontalScope.NextLine(2, 20);
-                EditorGUI.LabelField(HorizontalScope.NextRect(0, 240), "Select Readable Texture To Begin", UEGUIStyle_Window.m_ErrorLabel);
-                if(m_TargetTexture !=null)
-                    GameObject.DestroyImmediate(m_TargetTexture);
-                m_TargetTexture = null;
                 return;
-            }
+            
             if (EditorGUI.EndChangeCheck())
             {
                 m_TargetTexture = new Texture2D(m_ModifyTexture.width, m_ModifyTexture.height, TextureFormat.RGBA32, true);

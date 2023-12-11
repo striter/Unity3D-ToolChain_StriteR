@@ -198,6 +198,6 @@ public static class UDamper
     public static float HalfLife2Damping(float _halfLife)=> (4.0f * 0.69314718056f) / (_halfLife + eps);
     public static float Damping2HalfLife(float _damping) => (4.0f * 0.69314718056f) / (_damping + eps);
 
-    public static float Frequency2Stiffness(float _frequency) => sqr(kPI2*_frequency);
-    public static float Stiffness2Frequency(float _stiffness) => sqrt(_stiffness) / kPI2;
+    public static float Frequency2Stiffness(float _frequency) => sqr(kPIMul2*_frequency);
+    public static float Stiffness2Frequency(float _stiffness) => sqrt(_stiffness) / kPIMul2;
 }

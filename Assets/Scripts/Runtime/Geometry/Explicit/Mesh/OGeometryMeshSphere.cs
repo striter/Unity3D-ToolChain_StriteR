@@ -36,7 +36,7 @@ namespace Geometry.Explicit.Mesh.Sphere
                 vertex.position = USphereExplicit.UV.GetPoint(uv);
                 uv.x = (i - .5f) / resolutionU;
                 vertex.texCoord0.xy = (half2) uv;
-                math.sincos(kPI2 * uv.x, out var tangentZ, out var tangentX);
+                math.sincos(kPIMul2 * uv.x, out var tangentZ, out var tangentX);
                 vertex.tangent.xz = new half2(new float2(tangentX, tangentZ));
                 vertex.normal = vertex.position.xyz;
                 vertex.position *= radius;

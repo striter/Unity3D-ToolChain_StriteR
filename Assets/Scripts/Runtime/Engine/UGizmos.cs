@@ -43,7 +43,7 @@ public static class UGizmos
 
     public static void DrawLines(IList<Vector3> _points)
     {
-        int count = _points.Count;
+        var count = _points.Count;
         for(int i=0;i<count-1;i++)
             Gizmos.DrawLine(_points[i],_points[i+1]);
     }

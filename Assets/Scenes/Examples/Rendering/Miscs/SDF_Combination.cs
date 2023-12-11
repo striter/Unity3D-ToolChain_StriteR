@@ -55,7 +55,7 @@ namespace Examples.Rendering.Misc
                 case ESDFShape.Plane: _parameter2 = normal.to4(); break;
             }
             _parameter1 += origin.ToVector4();
-            _color = albedo.ToVector();
+            _color = albedo.toV4();
         }
     }
     

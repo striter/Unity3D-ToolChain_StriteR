@@ -27,7 +27,6 @@ Shader "Game/Lit/CustomGI"
 
 			#include "Assets/Shaders/Library/Common.hlsl"
 			#include "Assets/Shaders/Library/Lighting.hlsl"
-
 			
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_EmissionTex);SAMPLER(sampler_EmissionTex);
@@ -50,6 +49,7 @@ Shader "Game/Lit/CustomGI"
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
             #pragma multi_compile _ LIGHTMAP_ON
 			#pragma shader_feature_local LIGHTMAP_LOCAL
+			#pragma multi_compile _ _LIGHTMAP_MAIN_INDIRECT
 
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile _ _ADDITIONAL_LIGHTS
@@ -75,11 +75,14 @@ Shader "Game/Lit/CustomGI"
 			#define NFOG
 
 			#if LIGHTMAP_LOCAL
+				#define LIGHTMAP_ST _LightmapST
 				float4 _LightmapST;
 				TEXTURE2D(_Lightmap);         SAMPLER(sampler_Lightmap);
 				TEXTURE2D(_LightmapInd);
-				#define LIGHTMAP_ST _LightmapST
+				TEXTURE2D(_ShadowMask);
 			#endif
+
+			float2 _MainIrradianceValue;
 			
 			void OverrideGlobalIllumination(out half3 indirectDiffuse,out half3 indirectSpecular,v2ff i,BRDFSurface surface,Light mainLight)
 			{
@@ -89,7 +92,9 @@ Shader "Game/Lit/CustomGI"
 
 			#if LIGHTMAP_ON
 				#if LIGHTMAP_LOCAL
+					
 					half3 lightmap = SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap,sampler_Lightmap), i.lightmapUV);
+				
 					float4 directionSample = SAMPLE_TEXTURE2D_LIGHTMAP(_LightmapInd,sampler_Lightmap,i.lightmapUV);
 				#else
 					half3 lightmap = SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(unity_Lightmap,samplerunity_Lightmap), i.lightmapUV);
@@ -107,6 +112,19 @@ Shader "Game/Lit/CustomGI"
 
 				indirectDiffuse *= lightmap;
 				indirectSpecular *= lightmap;
+
+				#if LIGHTMAP_LOCAL &&_LIGHTMAP_MAIN_INDIRECT
+					float mainLightIrradianceState = _MainIrradianceValue.x;
+					float mainLightIrradianceIntensity = _MainIrradianceValue.y;
+					float4 shadowMaskSample = SAMPLE_TEXTURE2D_LIGHTMAP(_ShadowMask,sampler_Lightmap,i.lightmapUV);
+					int irradianceStart = floor(mainLightIrradianceState);
+					int irradianceEnd = (irradianceStart + 1) ;
+					float irradianceInterpolation = mainLightIrradianceState - irradianceStart;
+					float mainLightIndirectIntensity = lerp( shadowMaskSample[irradianceStart%4],shadowMaskSample[irradianceEnd%4],irradianceInterpolation) * mainLightIrradianceIntensity;
+			
+					indirectDiffuse += mainLightIndirectIntensity * _MainLightColor.rgb;
+				#endif
+				
 			#endif
 			}
 			

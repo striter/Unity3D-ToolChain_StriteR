@@ -31,7 +31,7 @@ namespace Geometry.Curves.Spline
                 float2x2 fc = 0;
                 for (int i = 0; i < paths.Length; i++)
                 {
-                    float an = (-kmath.kPI2 * c * i) / length ;
+                    float an = (-kmath.kPIMul2 * c * i) / length ;
                     math.sincos(an,out var san,out var can);
                     float2 ex = new float2(can, san);
                     fc.c0 += paths[i].x * ex;
@@ -47,7 +47,7 @@ namespace Geometry.Curves.Spline
             for (int i = 0; i < coefficients; i++)
             {
                 float w = (i == 0 || i == coefficients - 1) ? 1.0f : 2;
-                float an = -kmath.kPI2 * i * _value;
+                float an = -kmath.kPIMul2 * i * _value;
                 math.sincos(an,out var san,out var can);
                 float2 ex = new float2(can, san);
                 ref float2x2 fc = ref fourierCoefficients[i];
@@ -99,7 +99,7 @@ namespace Geometry.Curves.Spline
                 float2x3 fc = 0;
                 for (int i = 0; i < paths.Length; i++)
                 {
-                    float an = (-kmath.kPI2 * c * i) / length ;
+                    float an = (-kmath.kPIMul2 * c * i) / length ;
                     math.sincos(an,out var san,out var can);
                     float2 ex = new float2(can, san);
                     fc.c0 += paths[i].x * ex;
@@ -118,7 +118,7 @@ namespace Geometry.Curves.Spline
             for (int i = 0; i < coefficients; i++)
             {
                 float w = (i == 0 || i == coefficients - 1) ? 1.0f : 2;
-                float an = -kmath.kPI2 * i * _value;
+                float an = -kmath.kPIMul2 * i * _value;
                 math.sincos(an,out var san,out var can);
                 float2 ex = new float2(can, san);
                 result.x += w * math.dot(fourierCoefficients[i].c0,ex);

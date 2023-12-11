@@ -7,15 +7,20 @@ public static class UColor
     #region ColorTransform
     public static Color SetA(this Color _color, float _alpha) => new Color(_color.r, _color.g, _color.b, _alpha);
     //Vector
-    public static Color VectorToColor(Vector3 _colorVector) => new Color(_colorVector.x, _colorVector.y, _colorVector.z);
-    public static Color VectorToColor(Vector4 _colorVector) => new Color(_colorVector.x, _colorVector.y, _colorVector.z, _colorVector.w);
-    public static float4 ToFloat4(this Color _color) => new float4(_color.r,_color.g,_color.b,_color.a);
-    public static float3 ToFloat3(this Color _color) => new float3(_color.r,_color.g,_color.b);
-    public static Vector4 ToVector(this Color _color) => new Vector4(_color.r, _color.g, _color.b, _color.a);
-    public static Color ToColor(this Vector4 _vector)=>new Color(_vector.x,_vector.y,_vector.z,_vector.w);
+    public static Color toColor(Vector3 _colorVector) => new Color(_colorVector.x, _colorVector.y, _colorVector.z);
+    public static float4 to4(this Color _color) => new float4(_color.r,_color.g,_color.b,_color.a);
+    public static float3 to3(this Color _color) => new float3(_color.r,_color.g,_color.b);
+    public static Vector4 toV4(this Color _color) => new Vector4(_color.r, _color.g, _color.b, _color.a);
+    public static Color toColor(this Vector4 _vector)=>new Color(_vector.x,_vector.y,_vector.z,_vector.w);
+    public static Color toColor(this float3 _color, float _a = 1) => new Color(_color.x, _color.y, _color.z, _a);
+    public static Color toColor(this float4 _color)=> new Color(_color.x, _color.y, _color.z, _color.w);
+    
+    #endregion
+    
+    
     //RGBA32
     public static readonly Vector4 kRGBA32Max = Vector4.one * 255f;
-    public static Vector4 ToRGBA32(this Color _color) => _color.ToVector().mul(kRGBA32Max);
+    public static Vector4 ToRGBA32(this Color _color) => _color.toV4().mul(kRGBA32Max);
     public static Color RGB32toColor(Vector3 _rgb) => RGBA32toColor(_rgb.x, _rgb.y, _rgb.z);
     public static Color RGBA32toColor(float _r, float g, float b, float a = 255f) => RGBA32toColor(new Vector4(_r, g, b, a));
     public static Color RGBA32toColor(Vector4 _rgba) => _rgba.div(kRGBA32Max);
@@ -141,7 +146,6 @@ public static class UColor
             case EColorVisualize.A: return Color.white * _color.a;
         }
     }
-    #endregion
 
 
     public static Color Cos(Color _value)
@@ -161,12 +165,6 @@ public static class UColor
             case 5: return Color.white;
         }
     }
-
-    private static readonly float3 kLuminanceMultiplier = new float3(0.2126729f, 0.7151522f, 0.0721750f);
-    public static float RGBtoLuminance(float3 color) => math.dot(color,kLuminanceMultiplier);
-    public static float RoughnessToPerceptualSmoothness(float roughness) => 1.0f - sqrt(roughness);
-    public static float PerceptualSmoothnessToRoughness(float perceptualSmoothness) => (1.0f - perceptualSmoothness) * (1.0f - perceptualSmoothness);
-    public static float PerceptualSmoothnessToPerceptualRoughness(float perceptualSmoothness) => 1.0f - perceptualSmoothness;
 }
 
 [Serializable]
@@ -176,5 +174,5 @@ public struct ColorPalette
     public static readonly ColorPalette kDefault = new ColorPalette()
         {a = new Color(.5f,.5f,.5f,1f), b = new Color(.5f,.5f,.5f,1f), c = new Color(1f,1f,1f,1f), d = new Color(0,0.1f,0.2f,1f)};
     
-    public Color Evaluate(float _value) => a + b * UColor.Cos(kmath.kPI2*(c*_value+d));
+    public Color Evaluate(float _value) => a + b * UColor.Cos(kmath.kPIMul2*(c*_value+d));
 }

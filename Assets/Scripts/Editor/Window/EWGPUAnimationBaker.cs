@@ -159,9 +159,9 @@ namespace UnityEditor.Extensions
                         UBoundsIncrement.Iterate(vertices[k]);
                         var frame = startFrame + j;
                         var pixel = UGPUAnimation.GetVertexPositionPixel(k,frame);
-                        atlasTexture.SetPixel(pixel.x,pixel.y, UColor.VectorToColor(vertices[k]));
+                        atlasTexture.SetPixel(pixel.x,pixel.y, UColor.toColor(vertices[k]));
                         pixel = UGPUAnimation.GetVertexNormalPixel(k,frame);
-                        atlasTexture.SetPixel(pixel.x,pixel.y, UColor.VectorToColor(normals[k]));
+                        atlasTexture.SetPixel(pixel.x,pixel.y, UColor.toColor(normals[k]));
                     }
                 }
                 vertexBakeMesh.Clear();
@@ -274,11 +274,11 @@ namespace UnityEditor.Extensions
                             Matrix4x4 curFrameTransformMatrix = bones[k].localToWorldMatrix * bindPoses[k];
                             var frame = startFrame + j;
                             var pixel = UGPUAnimation.GetTransformPixel(k,0,frame);
-                            atlasTexture.SetPixel(pixel.x,pixel.y, UColor.VectorToColor(curFrameTransformMatrix.GetRow(0)));
+                            atlasTexture.SetPixel(pixel.x,pixel.y, UColor.toColor(curFrameTransformMatrix.GetRow(0)));
                             pixel = UGPUAnimation.GetTransformPixel(k,1,frame);
-                            atlasTexture.SetPixel(pixel.x, pixel.y, UColor.VectorToColor(curFrameTransformMatrix.GetRow(1)));
+                            atlasTexture.SetPixel(pixel.x, pixel.y, UColor.toColor(curFrameTransformMatrix.GetRow(1)));
                             pixel = UGPUAnimation.GetTransformPixel(k,2,frame);
-                            atlasTexture.SetPixel(pixel.x, pixel.y, UColor.VectorToColor( curFrameTransformMatrix.GetRow(2)));
+                            atlasTexture.SetPixel(pixel.x, pixel.y, UColor.toColor( curFrameTransformMatrix.GetRow(2)));
                         }
 
                         Mesh boundsCheckMesh = new Mesh();
