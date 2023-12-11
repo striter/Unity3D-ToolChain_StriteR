@@ -359,7 +359,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 466596661}
   m_LocalRotation: {x: -0.4039711, y: -0.11209298, z: 0.26592332, w: 0.8680595}
-  m_LocalPosition: {x: -1.77, y: 4.64, z: 0.79}
+  m_LocalPosition: {x: -3.57, y: 4.64, z: 0.79}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -381,6 +381,10 @@ MonoBehaviour:
   meshConstructor:
     m_Width: 0.1
     m_Billboard: 1
+    m_JointSubdivision: 0
+    m_TolerangeInAngles: 10
+    m_DistanceDamper: 0.1
+    m_ExtraDivision: 0
     m_Extend: 3
     m_RopePosition: 0
     m_EndTransform: {fileID: 0}
@@ -473,7 +477,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 899020572}
   m_LocalRotation: {x: 0.4340322, y: 0.2432387, z: -0.08803629, w: 0.8629604}
-  m_LocalPosition: {x: -3.35, y: 0.49, z: 0.62}
+  m_LocalPosition: {x: -2.64, y: 0.49, z: -0.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -955,10 +959,35 @@ MonoBehaviour:
   meshConstructor:
     m_Width: 0.44
     m_Billboard: 1
+    m_JointSubdivision: 0
+    m_TolerangeInAngles: 10
+    m_DistanceDamper: 0.1
+    m_ExtraDivision: 0
     m_LinePositions:
-    - {x: -3.1, y: 2.63, z: 0}
-    - {x: -1.52, y: 2.11, z: 0}
-    - {x: 0, y: 0, z: 0}
+    - x: -3.1
+      y: 2.63
+      z: 0
+    - x: -1.52
+      y: 2.11
+      z: 0
+    - x: 0
+      y: 0
+      z: 0
+    m_ManualInput: 0
+    m_Normal:
+      x: 0
+      y: 1
+      z: 0
+    m_Normals:
+    - x: 0
+      y: -0.99999994
+      z: -0
+    - x: 0
+      y: -0.99999994
+      z: -0
+    - x: 0
+      y: -0.99999994
+      z: -0
   m_DrawGizmos: 0
 --- !u!23 &1479387145
 MeshRenderer:

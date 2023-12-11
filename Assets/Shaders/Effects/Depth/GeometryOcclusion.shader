@@ -51,17 +51,24 @@ Shader "Game/Unfinished/GeometryOcclusion"
             float SphereOcclusion(float3 _position,float3 _normal,GSphere _sphere)
             {
                 float3 distance=_sphere.center-_position;
-                float l=length(distance);
-                float ndl=dot(_normal,distance/l);
-                float h = l/_sphere.radius;
+                float l  = length(distance);
+                float nl = dot(_normal,distance/l);
+                float h  = l/_sphere.radius;
                 float h2 = h*h;
-                float k2 = 1.0-h2*ndl*ndl;
-                float res=max(0,ndl)/h2;
-                if(k2>0)
+                float k2 = 1.0 - h2*nl*nl;
+                float res = max(0.0,nl)/h2;
+                if( k2 > 0.001 ) 
                 {
-                        res=ndl*acos(-ndl*sqrt((h2-1.0)/(1.0-ndl*ndl)))-sqrt(k2*(h2-1.0));
-                        res = res/h2 + atan(sqrt(k2/(h2-1.0)));
-                        res /= PI;
+                    #if 1
+                        // EXACT : Lagarde/de Rousiers - https://seblagarde.files.wordpress.com/2015/07/course_notes_moving_frostbite_to_pbr_v32.pdf
+                        res = nl*acos(-nl*sqrt( (h2-1.0)/(1.0-nl*nl) )) - sqrt(k2*(h2-1.0));
+                        res = res/h2 + atan( sqrt(k2/(h2-1.0)));
+                        res /= 3.141593;
+                    #else
+                        // APPROXIMATED : Quilez - https://iquilezles.org/articles/sphereao
+                        res = (nl*h+1.0)/h2;
+                        res = 0.33*res*res;
+                    #endif
                 }
                 return saturate(invlerp(0.1,1,res));
             }

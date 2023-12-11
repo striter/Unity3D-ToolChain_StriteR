@@ -54,5 +54,7 @@ float4 DepthFragment(v2fd i) :SV_TARGET
 	#if defined(_ALPHACLIP)
 		clip(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).a*INSTANCE(_Color.a)-INSTANCE(_AlphaCutoff));
 	#endif
+
+
 	return i.positionCS.z;
 }

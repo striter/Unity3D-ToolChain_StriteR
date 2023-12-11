@@ -74,7 +74,7 @@ MonoBehaviour:
   m_Active: 1
   m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
   m_Data:
-    m_Normal: 0
+    m_Normal: 1
     m_Mask: 1
     m_MaskData:
       renderMask: 64
