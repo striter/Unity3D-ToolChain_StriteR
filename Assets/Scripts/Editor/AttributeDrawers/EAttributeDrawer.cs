@@ -365,24 +365,6 @@ namespace UnityEditor.Extensions
         }
     }
     
-    //To Be Continued(Unitys Property Array)
-    // [CustomPropertyDrawer(typeof(PreloadAssetsAttribute))]
-    // public class PreloadAssetsPropertyDrawer : SubAttributePropertyDrawer<PreloadAssetsAttribute>
-    // {
-    //     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-    //     {
-    //         return EditorGUI.GetPropertyHeight(property,label);
-    //     }
-    //
-    //     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-    //     {
-    //         if (!OnGUIAttributePropertyCheck(position, property, out PreloadAssetsAttribute attribute, SerializedPropertyType.ObjectReference))
-    //             return;
-    //
-    //         EditorGUI.PropertyField(position, property, label);
-    //     }
-    // }
-    //
     #endregion
     
 }

@@ -11,9 +11,9 @@ namespace Rendering.Pipeline
     [Serializable,CreateAssetMenu(fileName = "Render Resources",menuName = "Rendering/Render Resources",order = 0)]
     public class RenderResources : ScriptableObject
     {
-        [SerializeField][PreloadAssets("Shaders/PostProcess")] private Shader[] m_PostProcesses;
-        [SerializeField][PreloadAssets("Shaders/Hidden")] private Shader[] m_IncludeShaders;
-        [SerializeField][PreloadAssets("Shaders/Compute")] private ComputeShader[] m_ComputeShaders;
+        [SerializeField] private Shader[] m_PostProcesses;
+        [SerializeField] private Shader[] m_IncludeShaders;
+        [SerializeField] private ComputeShader[] m_ComputeShaders;
         
         private static RenderResources Instance;
         

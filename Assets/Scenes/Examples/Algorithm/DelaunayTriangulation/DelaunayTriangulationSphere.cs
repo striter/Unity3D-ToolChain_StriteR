@@ -19,13 +19,12 @@ namespace Examples.Algorithm.DelaunayTriangulation
         {
             public const float kSphereRadius = 10f;
         }
-        [ExtendButton("Randomize",nameof(Randomize),null,
-            "Fibonacci",nameof(Fibonacci),null)]
         public int m_RandomCount = 128;
         public List<float3> m_Vertices = new List<float3>();
         private List<float2> m_ProjectedVertices = new List<float2>();
         private List<PTriangle> triangles = new List<PTriangle>();
 
+        [Button]
         void Randomize()
         {
             m_Vertices.Clear();
@@ -34,6 +33,7 @@ namespace Examples.Algorithm.DelaunayTriangulation
             OnValidate();
         }
 
+        [Button]
         void Fibonacci()
         {
             m_Vertices.Clear();

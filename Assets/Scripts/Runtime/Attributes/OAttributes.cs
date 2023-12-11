@@ -81,16 +81,6 @@ public class ClampAttribute:PropertyAttribute
 
 
 [AttributeUsage(AttributeTargets.Field)]
-public class PreloadAssetsAttribute : PropertyAttribute
-{
-    public readonly string m_Path;
-    public PreloadAssetsAttribute(string _path)
-    {
-        m_Path = _path;
-    }
-}
-
-[AttributeUsage(AttributeTargets.Field)]
 public class CullingMaskAttribute : PropertyAttribute { }
 
 [AttributeUsage(AttributeTargets.Field)]        //Should be deprecated tbh

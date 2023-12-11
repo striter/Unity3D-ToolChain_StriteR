@@ -12,6 +12,7 @@ namespace Examples.Algorithm.NumericalAnalysis
         private const float kGraphSize = 20f;
         private const float kNumericRange = 2f;
         private const int kGraphResolution = 50;
+
         private readonly Func<float, float> kPolynomial = x => math.pow(x,5) + math.pow(x,2) - x - .2f;
         private readonly Func<float, float> kDerivative = x => 5 * math.pow(x, 4) + 2 * x - 1;
 

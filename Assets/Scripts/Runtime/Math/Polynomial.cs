@@ -72,6 +72,7 @@ public struct QuadraticPolynomial :IPolynomial
     }
     
     public override string ToString() => $"{quadratic}x² {linear.ToStringSigned()}x {constant.ToStringSigned()}";
+    public static readonly QuadraticPolynomial kDefault = new QuadraticPolynomial(3, 2, 1);
 }
 
 [Serializable]

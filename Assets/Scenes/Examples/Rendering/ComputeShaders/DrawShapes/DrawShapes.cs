@@ -2,6 +2,7 @@ using System;
 using TPool;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class DrawShapes : MonoBehaviour
@@ -39,8 +40,16 @@ public class DrawShapes : MonoBehaviour
             return;
         
         m_RawImage = transform.GetComponentInChildren<RawImage>();
-        m_Texture = RenderTexture.GetTemporary(Screen.width,Screen.height,0,RenderTextureFormat.ARGB32);
-        m_Texture.enableRandomWrite = true;
+        m_Texture = RenderTexture.GetTemporary(new RenderTextureDescriptor()
+        {
+            width = Screen.width,
+            height = Screen.height,
+            volumeDepth = 1,
+            dimension = TextureDimension.Tex2D,
+            colorFormat = RenderTextureFormat.ARGB32,
+            enableRandomWrite = true,
+            msaaSamples = 1,
+        });
         m_RawImage.texture = m_Texture;
         m_Images = new ObjectPoolComponent<Image>(transform.Find("Image"));
         
@@ -71,6 +80,9 @@ public class DrawShapes : MonoBehaviour
     private void OnValidate()
     {
         if (!Available)
+            return;
+
+        if (m_Images == null)
             return;
         
         OnDispose();
