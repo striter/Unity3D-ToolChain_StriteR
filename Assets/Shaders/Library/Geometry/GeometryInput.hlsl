@@ -56,7 +56,7 @@ GPlane GPlane_Ctor(float3 _normal, float3 _position)
     GPlane plane;
     plane.normal = _normal;
     plane.position = _position;
-    plane.distance = dot(_position, _normal);
+    plane.distance = dot(_position, -_normal);
     return plane;
 }
 //Sphere

@@ -766,7 +766,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1007928254}
   m_LocalRotation: {x: -0.27835307, y: -0, z: -0, w: 0.96047884}
-  m_LocalPosition: {x: 7.336505, y: 7.081433, z: -19.353397}
+  m_LocalPosition: {x: 5.47, y: 5.09, z: -17.56}
   m_LocalScale: {x: 15, y: 15, z: 15}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -858,30 +858,30 @@ MonoBehaviour:
       x: 0
       y: 0
       z: 0
-  - shape: 3
+  - shape: 2
     position:
       x: 0
-      y: 3.67
+      y: -2.44
       z: 0
-    albedo: {r: 0, g: 0.11449838, b: 1, a: 0}
+    albedo: {r: 1, g: 1, b: 1, a: 0}
     capsuleShape:
       x: 1.26
       y: 3.99
-    radius: 3.59
+    radius: 2.24
     extents:
-      x: 2.04
-      y: 5.92
-      z: 2
+      x: 4.67
+      y: 0.22
+      z: 4.6
     normal:
       x: 0
       y: 0.555
       z: 0
   - shape: 2
     position:
-      x: 1.97
-      y: -1.09
+      x: 0.15
+      y: 0.54
       z: 2.93
-    albedo: {r: 1, g: 1, b: 1, a: 0}
+    albedo: {r: 0.6571403, g: 1, b: 0.4575472, a: 0}
     capsuleShape:
       x: 1.26
       y: 3.99
@@ -898,12 +898,12 @@ MonoBehaviour:
     position:
       x: 2.32
       y: -1.09
-      z: 5.78
-    albedo: {r: 0.53549767, g: 0, b: 1, a: 0}
+      z: -3.17
+    albedo: {r: 0.9793824, g: 1, b: 0, a: 0}
     capsuleShape:
       x: 1.26
       y: 3.99
-    radius: 3.59
+    radius: 0.3
     extents:
       x: 4
       y: 2
@@ -912,7 +912,7 @@ MonoBehaviour:
       x: 0
       y: 0.555
       z: 0
-  m_DrawGizmos: 0
+  m_DrawGizmos: 1
 --- !u!1 &1096309942
 GameObject:
   m_ObjectHideFlags: 0

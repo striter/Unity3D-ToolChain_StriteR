@@ -59,7 +59,7 @@ namespace Examples.Rendering.Misc
         }
     }
     
-    [RequireComponent(typeof(MeshRenderer))]
+    [RequireComponent(typeof(MeshRenderer)),ExecuteInEditMode]
     public class SDF_Combination : MonoBehaviour
     {
         public SDFElement[] m_Elements;
@@ -67,6 +67,7 @@ namespace Examples.Rendering.Misc
         private List<Vector4> parameters1 = new List<Vector4>();
         private List<Vector4> parameters2 = new List<Vector4>();
         private List<Vector4> colors = new List<Vector4>();
+        private ValueChecker<float3> m_PositionChecker = new ValueChecker<float3>();
         private void OnValidate()
         {
             MaterialPropertyBlock kBlock = new MaterialPropertyBlock();
@@ -87,6 +88,14 @@ namespace Examples.Rendering.Misc
             kBlock.SetVectorArray("_Parameters2",parameters2);
             kBlock.SetVectorArray("_Colors",colors);
             GetComponent<MeshRenderer>().SetPropertyBlock(kBlock);
+
+            m_PositionChecker.Set(transform.position);
+        }
+
+        private void Update()
+        {
+            if (m_PositionChecker.Check(transform.position))
+                OnValidate();
         }
 
         public bool m_DrawGizmos;

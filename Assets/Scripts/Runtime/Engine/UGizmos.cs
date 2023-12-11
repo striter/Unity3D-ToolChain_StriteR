@@ -201,7 +201,6 @@ public static class UGizmos
     
     public static void DrawGizmos(this GPlane _plane,float _radius = 5f)
     {
-        var direction = umath.cross(_plane.normal,kfloat3.one);
         Handles.matrix = Gizmos.matrix;
         Handles.color = Gizmos.color;
         Handles.DrawWireDisc(_plane.position, _plane.normal, _radius);
@@ -209,6 +208,8 @@ public static class UGizmos
     }
     public static void DrawGizmos(this GTriangle _triangle)=>DrawLinesConcat(_triangle.triangle);
     
+    public static void DrawGizmos(this GPlane _plane)=>_plane.DrawGizmos(5f);
+
     #region 2D
     public static void DrawGizmos(this G2Box _cube) => Gizmos.DrawWireCube(_cube.center.to3xz(),_cube.size.to3xz());
     public static void DrawGizmos(this G2Polygon _polygon) => DrawLinesConcat(_polygon.positions.Select(p=>p.to3xz()));
