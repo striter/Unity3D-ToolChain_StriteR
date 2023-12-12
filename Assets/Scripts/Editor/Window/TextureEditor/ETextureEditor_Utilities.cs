@@ -23,27 +23,27 @@ namespace UnityEditor.Extensions.TextureEditor
 
         public bool Valid => operation == EChannelOperation.Constant || (texture != null && texture.isReadable);
         
-        private Color[] pixels;
+        private Color32[] pixels;
         public void Prepare()
         {
             if (operation == EChannelOperation.Constant)
                 return;
-            pixels = texture.GetPixels();
+            pixels = texture.GetPixels32();
         }
         
-        public float Collect(int _index)
+        public byte Collect(int _index)
         {
             if (operation == EChannelOperation.Constant)
-                return constantValue;
+                return UColor.toColor32(constantValue);
 
             var color = pixels[_index];
             return operation switch
             {
-                EChannelOperation.R => color.r, EChannelOperation.ROneMinus => 1 - color.r,
-                EChannelOperation.G => color.g, EChannelOperation.GOneMinus => 1 - color.g,
-                EChannelOperation.B => color.b, EChannelOperation.BOneMinus => 1 - color.b,
-                EChannelOperation.A => color.a, EChannelOperation.AOneMinus => 1 - color.a,
-                EChannelOperation.LightmapToLuminance => UColorTransform.RGBtoLuminance(color.to3()),
+                EChannelOperation.R => color.r, EChannelOperation.ROneMinus => UColor.toColor32(1f - UColor.toColor(color.r)),
+                EChannelOperation.G => color.g, EChannelOperation.GOneMinus => UColor.toColor32(1f - UColor.toColor(color.g)),
+                EChannelOperation.B => color.b, EChannelOperation.BOneMinus => UColor.toColor32(1f - UColor.toColor(color.b)),
+                EChannelOperation.A => color.a, EChannelOperation.AOneMinus => UColor.toColor32(1f - UColor.toColor(color.a)),
+                EChannelOperation.LightmapToLuminance => UColor.toColor32(UColorTransform.RGBtoLuminance(color.toColor().to3())),
                 _ => throw new InvalidEnumArgumentException()
             };
         }

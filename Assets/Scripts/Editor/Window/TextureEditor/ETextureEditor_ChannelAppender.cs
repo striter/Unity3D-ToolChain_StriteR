@@ -63,21 +63,21 @@ namespace UnityEditor.Extensions.TextureEditor
             
             m_AppendCollector.Prepare();
             var totalSize = width * height;
-            Color[] mix = m_TargetTexture.GetPixels();
+            Color32[] mix = m_TargetTexture.GetPixels32();
             for (int i = 0; i < totalSize; i++)
             {
                 switch (m_ChannelModify)
                 {
-                    case EColorChannel.Red:mix[i].r = m_AppendCollector.Collect(i);break;
-                    case EColorChannel.Green:mix[i].g = m_AppendCollector.Collect(i);break;
-                    case EColorChannel.Blue:mix[i].b = m_AppendCollector.Collect(i);break;
-                    case EColorChannel.Alpha:mix[i].a = m_AppendCollector.Collect(i);break;
+                    case EColorChannel.Red:mix[i].r = UColor.toColor32(m_AppendCollector.Collect(i));break;
+                    case EColorChannel.Green:mix[i].g = UColor.toColor32(m_AppendCollector.Collect(i));break;
+                    case EColorChannel.Blue:mix[i].b = UColor.toColor32(m_AppendCollector.Collect(i));break;
+                    case EColorChannel.Alpha:mix[i].a = UColor.toColor32(m_AppendCollector.Collect(i));break;
                 }
             }
             m_AppendCollector.End(); 
             
             var targetTexture = new Texture2D(width, height, format, true);
-            targetTexture.SetPixels(mix);
+            targetTexture.SetPixels32(mix);
             targetTexture.Apply();
             return targetTexture;
         }

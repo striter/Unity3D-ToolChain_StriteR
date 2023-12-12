@@ -21,7 +21,7 @@ Shader "Game/Lit/Vegetation"
         [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
         [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
         [Toggle(_ALPHACLIP)]_AlphaClip("Alpha Clip",float)=0
-        [Foldout(_ALPHACLIP)]_AlphaClipRange("Range",Range(0.01,1))=0.01
+        [Foldout(_ALPHACLIP)]_AlphaCutoff("Range",Range(0.01,1))=0.01
     }
     SubShader
     {
@@ -46,7 +46,7 @@ Shader "Game/Lit/Vegetation"
             INSTANCING_BUFFER_START
 				INSTANCING_PROP(float4,_ColorTint)
                 INSTANCING_PROP(float4,_MainTex_ST)
-			    INSTANCING_PROP(float,_AlphaClipRange)
+			    INSTANCING_PROP(float,_AlphaCutoff)
 
                 INSTANCING_PROP(float4,_WindFlowTex_ST)
 			    INSTANCING_PROP(float,_WiggleStrength)

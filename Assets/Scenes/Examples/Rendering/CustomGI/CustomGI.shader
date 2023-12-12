@@ -152,20 +152,11 @@ Shader "Game/Lit/CustomGI"
 		{
             Name "META"
             Tags{"LightMode" = "Meta"}
-            Cull Back
-			Blend Off
-			ZWrite On
-			ZTest LEqual
+            Cull Off
 
             HLSLPROGRAM
             #pragma vertex VertexMeta
             #pragma fragment FragmentMeta
-
-			// float3 OverrideMetaAlbedo()
-			// {
-			// 	return 1;
-			// }
-   //          #define GET_ALBEDO(i) OverrideMetaAlbedo();
             #include "Assets/Shaders/Library/Passes/Meta.hlsl"
             ENDHLSL
 		}

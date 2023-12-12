@@ -96,6 +96,7 @@ BRDFLightInput BRDFLightInput_Ctor(BRDFSurface surface,Light light)
     return BRDFLightInput_Ctor(surface,light.direction,light.color,light.shadowAttenuation,light.distanceAttenuation);
 }
 
+
 struct a2vf
 {
     UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -128,5 +129,13 @@ struct v2ff
     V2F_LIGHTMAP(7)
     #if defined(V2F_ADDITIONAL)
         V2F_ADDITIONAL
+    #endif
+};
+
+struct f2of
+{
+    float4 result:SV_TARGET;
+    #if defined(F2O_ADDITIONAL)
+        F2O_ADDITIONAL
     #endif
 };

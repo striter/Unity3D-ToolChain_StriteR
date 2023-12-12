@@ -91,7 +91,7 @@ Shader "Game/Hidden/SubstancePainterPBRtoUnity"
 			#define GET_INDIRECTDIFFUSE(mainLight,i,normalWS,surface) OverrideIndirectDiffuse(mainLight,i,normalWS,surface);
 			#define GET_INDIRECTSPECULAR(surface) OverrideIndirectSpecular(surface);
 			#define GET_MAINLIGHT(i) OverrideLighting();
-			#define GET_PBRPARAM(glossiness,metallic,ao) 
+			#define GET_PBRPARAM(i,smoothness,metallic,ao) 
 			
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			

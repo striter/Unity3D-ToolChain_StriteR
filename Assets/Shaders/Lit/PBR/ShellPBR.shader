@@ -21,7 +21,7 @@
 		_FurGravity("Gravity",Range(0,1))=.1
 		
 		[Header(PBR)]
-		[ToggleTex(_PBRMAP)] [NoScaleOffset]_PBRTex("PBR Tex(Roughness.Metallic.AO)",2D)="white"{}
+		[ToggleTex(_PBRMAP)] [NoScaleOffset]_PBRTex("PBR Tex(Smoothness.Metallic.AO)",2D)="white"{}
 		_Glossiness("Glossiness",Range(0,1))=1
         _Metallic("Metalness",Range(0,1))=0
 	
@@ -29,7 +29,7 @@
         [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
         [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
         [Toggle(_ALPHACLIP)]_AlphaClip("Alpha Clip",float)=0
-        [Foldout(_ALPHACLIP)]_AlphaClipRange("Range",Range(0.01,1))=0.01
+        [Foldout(_ALPHACLIP)]_AlphaCutoff("Range",Range(0.01,1))=0.01
 	}
 	SubShader
 	{
@@ -136,7 +136,7 @@
 
 			#define GET_POSITION_WS(v,o) GetPositionWS(v.positionOS,o.normalWS)
 			#define GET_ALBEDO(i)  GetAlbedo(i.uv,i.furUV)
-			#define GET_PBRPARAM(glossiness,metallic,ao) ao=saturate(ao-(1-INSTANCE(_ShellDelta))*INSTANCE(_FurShadow));
+			#define GET_PBRPARAM(i,smoothness,metallic,ao) ao=saturate(ao-(1-INSTANCE(_ShellDelta))*INSTANCE(_FurShadow));
 	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
 			#define GET_EMISSION(i) 0
 			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"

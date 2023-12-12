@@ -58,6 +58,14 @@ Shader "Game/Unfinished/Lighting"
                                 radiance *= max(dot(N,L),0);
                             }
                             break;
+                    case 3u:{           //Area
+                                float attenuation =  pow(max(-dot(R,L),0),lightParameters.w);
+                                    attenuation /= (lightParameters.x + d*lightParameters.y + d*d*lightParameters.z);
+                                radiance = color * attenuation;
+                                radiance *= max(dot(N,L),0);
+                                
+                            }
+                            break;
                     }
                     return radiance ;
                 }

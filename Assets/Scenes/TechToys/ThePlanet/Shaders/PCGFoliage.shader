@@ -101,7 +101,7 @@ Shader "PCG/Foliage"
 			#define _NORMALOFF
     		#define _ALPHACLIP
 			void GetPBRParameters(inout float g,inout float m,inout float a) { g = 0.5; m = 0; a = 1; }
-			#define GET_PBRPARAM(glossiness,metallic,ao) GetPBRParameters(glossiness,metallic,ao)
+			#define GET_PBRPARAM(i,smoothness,metallic,ao) GetPBRParameters(smoothness,metallic,ao)
     	ENDHLSL
     	
         Pass

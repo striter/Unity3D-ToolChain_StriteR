@@ -1,11 +1,8 @@
 using System;
 using System.Linq;
-using Geometry;
-using Rendering;
 using Rendering.GI.SphericalHarmonics;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Examples.Rendering.Lighting
 {
@@ -14,6 +11,7 @@ namespace Examples.Rendering.Lighting
         Directional = 0,
         Point = 1,
         Spot = 2,
+        Line = 3,
     }
     
     [Serializable]

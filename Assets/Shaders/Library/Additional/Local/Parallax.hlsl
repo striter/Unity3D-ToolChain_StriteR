@@ -44,27 +44,27 @@ float ParallaxMappingPOM(TEXTURE2D_PARAM(_texture,_sampler), float depthOffset,f
 void ParallaxUVMapping(inout float2 uv,inout float depth,inout float3 positionWS,half3x3 TBNWS,half3 viewDirWS)
 {
     #if _DEPTHMAP
-    half3 viewDirTS=mul(TBNWS, viewDirWS);
-    half3 viewDir=normalize(viewDirTS);
-    float2 uvOffset=viewDir.xy/viewDir.z*INSTANCE(_DepthScale);
-    float marchDelta=saturate(dot(half3(0.,0.,1.),viewDirTS));
-    float parallax=0.;
-    float depthOffset=INSTANCE(_DepthOffset);
-    
-    #if _PARALLAX
-        uint parallaxCount=INSTANCE(_ParallaxCount);
-        parallaxCount=min(lerp(parallaxCount/2u,parallaxCount,marchDelta),128u);
-        parallax=ParallaxMappingPOM(_DepthTex,sampler_DepthTex,depthOffset, uv,uvOffset,parallaxCount);
-    #else
-        parallax= SAMPLE_TEXTURE2D_LOD(_DepthTex,sampler_DepthTex,uv,0).r-depthOffset;
-    #endif
-    
-    #if _DEPTHBUFFER
-        float projectionDistance=parallax*INSTANCE(_DepthScale)*step(0.01h,marchDelta)* rcp(marchDelta);
-        positionWS = positionWS - viewDirWS*projectionDistance*INSTANCE(_DepthBufferScale);
-        depth=EyeToRawDepth(TransformWorldToEyeDepth(positionWS,UNITY_MATRIX_V));
-    #endif
-    
-    uv-=uvOffset*parallax;
+        half3 viewDirTS=mul(TBNWS, viewDirWS);
+        half3 viewDir=normalize(viewDirTS);
+        float2 uvOffset=viewDir.xy/viewDir.z*INSTANCE(_DepthScale);
+        float marchDelta=saturate(dot(half3(0.,0.,1.),viewDirTS));
+        float parallax=0.;
+        float depthOffset=INSTANCE(_DepthOffset);
+        
+        #if _PARALLAX
+            uint parallaxCount=INSTANCE(_ParallaxCount);
+            parallaxCount=min(lerp(parallaxCount/2u,parallaxCount,marchDelta),128u);
+            parallax=ParallaxMappingPOM(_DepthTex,sampler_DepthTex,depthOffset, uv,uvOffset,parallaxCount);
+        #else
+            parallax= SAMPLE_TEXTURE2D_LOD(_DepthTex,sampler_DepthTex,uv,0).r-depthOffset;
+        #endif
+        
+        #if _DEPTHBUFFER
+            float projectionDistance=parallax*INSTANCE(_DepthScale)*step(0.01h,marchDelta)* rcp(marchDelta);
+            positionWS = positionWS - viewDirWS*projectionDistance*INSTANCE(_DepthBufferScale);
+            depth=EyeToRawDepth(TransformWorldToEyeDepth(positionWS,UNITY_MATRIX_V));
+        #endif
+        
+        uv-=uvOffset*parallax;
     #endif
 }

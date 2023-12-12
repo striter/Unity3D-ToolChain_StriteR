@@ -13,7 +13,7 @@ Shader "Hidden/BillboardUber"
     	[Foldout(_ATLAS)]_AtlasHeight("Height",int)=0
     	[Foldout(_ATLAS)]_AtlasIndex("Index",int)=0
         [Toggle(_ALPHACLIP)]_AlphaClip("Alpha Clip",float)=0
-        [Foldout(_ALPHACLIP)]_AlphaClipRange("Range",Range(0.01,1))=0.01
+        [Foldout(_ALPHACLIP)]_AlphaCutoff("Range",Range(0.01,1))=0.01
         
     	[Header(Lighting)]
     	[Toggle(_LIGHTING)]_Lighting("Enable",float)=1
@@ -72,7 +72,7 @@ Shader "Hidden/BillboardUber"
 			TEXTURE2D(_BackRimTex);SAMPLER(sampler_BackRimTex);
 			TEXTURE2D(_DepthTex);SAMPLER(sampler_DepthTex);
 			UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
-				INSTANCING_PROP(float,_AlphaClipRange)
+				INSTANCING_PROP(float,_AlphaCutoff)
 				INSTANCING_PROP(float,_Diffuse)
 				INSTANCING_PROP(float3,_WaveDirection)
 				INSTANCING_PROP(float,_WaveFrequency)

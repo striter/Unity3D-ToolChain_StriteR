@@ -9,6 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Ice
   m_Shader: {fileID: 4800000, guid: 995fb0a8256378d4baff5b307f063cc4, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _CRACK
   - _CRACKPARALLEX
@@ -28,6 +30,7 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -103,7 +106,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _Lambert: 1
+    - _Lambert: 0.5
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -112,11 +115,11 @@ Material:
     - _SpecularHighlights: 1
     - _SpecularRange: 0.9
     - _SrcBlend: 1
-    - _Thickness: 0.01
+    - _Thickness: 0.069
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.31980535, g: 0.6669293, b: 0.7264151, a: 1}
-    - _CrackColor: {r: 1.4309018, g: 1.4309018, b: 1.4309018, a: 0.15686275}
+    - _Color: {r: 0.2735849, g: 0.2735849, b: 0.2735849, a: 0.77254903}
+    - _CrackColor: {r: 1.4309018, g: 1.4309018, b: 1.4309018, a: 0.44705883}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

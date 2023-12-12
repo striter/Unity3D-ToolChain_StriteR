@@ -80,11 +80,15 @@ Shader "Hidden/PBRSlicing"
 			float3 OverrideAlbedo(v2ff i)
 			{
 				float3 positionWS = i.positionWS;
-				GPlane plane = GPlane_Ctor(_SlicePlane.xyz,_SlicePlane.w);
+				GPlane plane = GPlane_Ctor(_SlicePlane.xyz, _SlicePlane.w);
 				clip(- PlanePointDistance(plane,positionWS));
 				return SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*INSTANCE(_Color).rgb;
 			}
 
+			#define GET_ALBEDO(i) OverrideAlbedo(i)
+			#define GET_GEOMETRYSHADOW(surface,lightSurface) GetGeometryShadow(surface,lightSurface)
+	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
+			#define GET_INDIRECTSPECULAR(surface) IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
     	ENDHLSL
     	
 		Pass
@@ -94,11 +98,6 @@ Shader "Hidden/PBRSlicing"
 			Tags{"LightMode" = "UniversalForward"}
 			HLSLPROGRAM
 			
-			
-			#define GET_ALBEDO(i) OverrideAlbedo(i)
-			#define GET_GEOMETRYSHADOW(surface,lightSurface) GetGeometryShadow(surface,lightSurface)
-	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
-			#define GET_INDIRECTSPECULAR(surface) IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
 			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			
@@ -117,17 +116,13 @@ Shader "Hidden/PBRSlicing"
 			{
 				float3 positionWS = i.positionWS;
 				GRay cameraRay = GRay_Ctor(GetCameraRealPositionWS(positionWS),GetCameraRealDirectionWS(positionWS));
-				GPlane plane = GPlane_Ctor(_SlicePlane.xyz,_SlicePlane.w);
+				GPlane plane = GPlane_Ctor(_SlicePlane.xyz , _SlicePlane.xyz * _SlicePlane.w + TransformObjectToWorld(0));
 				i.normalWS = _SlicePlane.xyz;
 				float distance = PlaneRayDistance(plane,cameraRay);
 				positionWS = cameraRay.GetPoint(distance);
 				i.uv = positionWS.xz;
 			}
 			#define FRAGMENT_SETUP(i) FragmentSetup(i);
-			#define GET_ALBEDO(i) OverrideAlbedo(i)
-			#define GET_GEOMETRYSHADOW(surface,lightSurface) GetGeometryShadow(surface,lightSurface)
-	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
-			#define GET_INDIRECTSPECULAR(surface) IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
 			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
             #pragma target 3.5

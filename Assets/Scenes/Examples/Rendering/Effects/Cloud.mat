@@ -170,7 +170,7 @@ Material:
     - _ParallexScale: 0.017
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Scale: 1000
+    - _Scale: 306
     - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -185,10 +185,10 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _BeginColor: {r: 0.5235849, g: 0.84631765, b: 1, a: 0}
+    - _BeginColor: {r: 0.9009434, g: 0.9680727, b: 1, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _EndColor: {r: 1, g: 1, b: 1, a: 0}
+    - _EndColor: {r: 0, g: 0.58708143, b: 1, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &1842042723372290674

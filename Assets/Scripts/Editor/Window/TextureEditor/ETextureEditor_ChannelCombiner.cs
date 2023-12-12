@@ -53,7 +53,7 @@ namespace UnityEditor.Extensions.TextureEditor
             }
             var firstValidTexture = AllTextures().Find(p => p.operation != EChannelOperation.Constant);
             width = firstValidTexture.texture!=null ? firstValidTexture.texture.width : 2;
-            height = firstValidTexture.texture!=null ? firstValidTexture.texture.width : 2;
+            height = firstValidTexture.texture!=null ? firstValidTexture.texture.height : 2;
             format = TextureFormat.RGBA32;
             if (!valid)
                 return false;
@@ -78,13 +78,13 @@ namespace UnityEditor.Extensions.TextureEditor
             
             m_R.Prepare(); m_G.Prepare(); m_B.Prepare(); m_A.Prepare();
             var totalSize = width * height;
-            Color[] mix = new Color[totalSize];
+            Color32[] mix = new Color32[totalSize];
             for (int i = 0; i < totalSize; i++)
-                mix[i] = new Color(m_R.Collect(i), m_G.Collect(i), m_B.Collect(i), m_A.Collect(i));
+                mix[i] = new Color32(m_R.Collect(i), m_G.Collect(i), m_B.Collect(i), m_A.Collect(i));
             m_R.End(); m_G.End(); m_B.End(); m_A.End();
             
             var targetTexture = new Texture2D(width, height, TextureFormat.RGBA32, true);
-            targetTexture.SetPixels(mix);
+            targetTexture.SetPixels32(mix);
             targetTexture.Apply();
             return targetTexture;
         }

@@ -68,7 +68,7 @@ Shader "Game/Lit/Transparency/Liquid"
             float4 frag (v2f i,float facing:VFACE) : SV_Target
             {
 				UNITY_SETUP_INSTANCE_ID(i);
-                float clipping=-i.positionWS.y;
+                float clipping=-i.positionWS.y + TransformObjectToWorld(0).y;
                 float3 liquidCol= INSTANCE(_LiquidColor).rgb;
                 clip(clipping);
 

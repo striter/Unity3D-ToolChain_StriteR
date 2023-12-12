@@ -5,6 +5,10 @@ using static Unity.Mathematics.math;
 public static class UColor
 {
     #region ColorTransform
+
+    public static byte toColor32(float _src) => (byte)(_src * 255);
+    public static float toColor(byte _color32) => _color32 / 255f;
+    public static Color toColor(this Color32 _color32)=> new Color(_color32.r / 255f, _color32.g / 255f, _color32.b / 255f, _color32.a / 255f); 
     public static Color SetA(this Color _color, float _alpha) => new Color(_color.r, _color.g, _color.b, _alpha);
     //Vector
     public static Color toColor(Vector3 _colorVector) => new Color(_colorVector.x, _colorVector.y, _colorVector.z);

@@ -51,8 +51,10 @@ half3 CustomGlobalIllumination(BRDFSurface surface,
 	return color * occlusion;
 }
 
-float4 ForwardFragment(v2ff i):SV_TARGET
+f2of ForwardFragment(v2ff i):SV_TARGET
 {
+	f2of o;
+	
 	UNITY_SETUP_INSTANCE_ID(i);
 	#if defined(FRAGMENT_SETUP)
 		FRAGMENT_SETUP(i)
@@ -93,20 +95,20 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 	#endif
 
 
-	half glossiness=0.5,metallic=0,ao =1;
+	half smoothness=0.5,metallic=0,ao =1;
 
 	#if !defined(_PBROFF)
 		#if defined(GET_PBRPARAM)
-			GET_PBRPARAM(glossiness,metallic,ao);
+			GET_PBRPARAM(i,smoothness,metallic,ao);
 		#else
 			half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
-			glossiness=mix.r;
+			smoothness=mix.r;
 			metallic=mix.g;
 			ao=mix.b;
 		#endif
 	#endif
 	
-	BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,glossiness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,1);
+	BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,smoothness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,1);
 
 	#if defined(BRDFSURFACE_OVERRIDE)
 		BRDFSURFACE_OVERRIDE(i,surface);
@@ -149,5 +151,10 @@ float4 ForwardFragment(v2ff i):SV_TARGET
 	#if defined(GET_ALPHA)
 		alpha = GET_ALPHA(i,surface);
 	#endif
-	return half4(finalCol,alpha);
+
+	o.result = float4(finalCol,alpha);
+	#if defined(F2O_TRANSFER)
+		F2O_TRANSFER(o)
+	#endif
+	return o;
 }

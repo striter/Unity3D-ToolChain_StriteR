@@ -8,7 +8,7 @@
 		_RootColor("Root Color",Color)=(0,0,0,0)
 		_EdgeColor("Edge Color",Color)=(1,1,1,1)
 		[NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
-		[NoScaleOffset]_PBRTex("PBR Tex(Roughness.Metallic.AO)",2D)="white"{}
+		[NoScaleOffset]_PBRTex("PBR Tex(Smoothness.Metallic.AO)",2D)="white"{}
 		
 		[Toggle(_ANISOTROPIC)]_Anisotropic("Anisotropic",int)=0
 		[Foldout(_ANISOTROPIC)]_AnisoTropicValue("Anisotropic Value:",Range(0,1))=1
@@ -32,7 +32,7 @@
         [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
         [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
         [Toggle(_ALPHACLIP)]_AlphaClip("Alpha Clip",float)=0
-        [Foldout(_ALPHACLIP)]_AlphaClipRange("Range",Range(0.01,1))=0.01
+        [Foldout(_ALPHACLIP)]_AlphaCutoff("Range",Range(0.01,1))=0.01
 	}
 	SubShader
 	{
@@ -149,7 +149,7 @@
 
 			#define GET_POSITION_WS(v,o) GetPositionWS(v.positionOS,o.normalWS)
 			#define GET_ALBEDO(i)  GetAlbedo(i.furUV)
-			#define GET_PBRPARAM(glossiness,metallic,ao) ao=saturate(ao-(1-INSTANCE(_ShellDelta))*INSTANCE(_FurShadow));
+			#define GET_PBRPARAM(i,smoothness,metallic,ao) ao=saturate(ao-(1-INSTANCE(_ShellDelta))*INSTANCE(_FurShadow));
 	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
 			#define GET_EMISSION(i) 0
 			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"

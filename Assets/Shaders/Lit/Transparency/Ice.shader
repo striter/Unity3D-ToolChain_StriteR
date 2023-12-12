@@ -70,9 +70,6 @@
 			#pragma shader_feature_local _DEPTH
 			#pragma shader_feature_local _FRESNEL
 			#pragma shader_feature_local _SPECULAR
-
-            #include "Assets/Shaders/Library/Additional/HorizonBend.hlsl"
-            #pragma multi_compile _ _HORIZONBEND
             
 			TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
 			TEXTURE2D(_CrackTex);SAMPLER(sampler_CrackTex);
@@ -118,10 +115,11 @@
 				float3 cameraPosTS:TEXCOORD3;
 				float3 lightDirTS:TEXCOORD4;
 				float4 shadowCoordWS:TEXCOORD5;
+            	float3 normalWS:TEXCOORD6;
 				#if _OPACITY
-				float4 screenPos:TEXCOORD6;
+				float4 screenPos:TEXCOORD7;
 				#endif
-            	V2F_FOG(7)
+            	V2F_FOG(8)
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 			
@@ -132,9 +130,9 @@
 				UNITY_TRANSFER_INSTANCE_ID(v,o);
 			    o.uv = TRANSFORM_TEX_INSTANCE( v.uv,_MainTex);
 				float3 positionWS=TransformObjectToWorld(v.positionOS);
-            	positionWS=HorizonBend(positionWS);
 			    o.positionCS = TransformWorldToHClip(positionWS);
 			    o.shadowCoordWS=TransformWorldToShadowCoord(positionWS);
+            	o.normalWS =TransformObjectToWorld(v.normalOS);
 
 				float3x3 TBN=float3x3(v.tangentOS.xyz,cross(v.normalOS,v.tangentOS.xyz)*v.tangentOS.w,v.normalOS);
 				o.positionTS=mul(TBN,v.positionOS);
@@ -143,7 +141,7 @@
 				o.normalTS=mul(TBN,v.normalOS);
 
 				#if _OPACITY
-				o.screenPos=ComputeScreenPos(o.positionCS);
+					o.screenPos=ComputeScreenPos(o.positionCS);
 				#endif
             	FOG_TRANSFER(o)
                 return o;
@@ -167,11 +165,11 @@
 				
 				float3 albedo=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv).rgb*_Color.rgb;
 				float3 lightCol=_MainLightColor.rgb;
-				float3 ambient=_GlossyEnvironmentColor.xyz;
+				float3 ambient=SampleSH(i.normalWS);
 				float atten=MainLightRealtimeShadow(i.shadowCoordWS);
-				
-				float diffuse=saturate( GetDiffuse(normalTS,lightDirTS,INSTANCE(_Lambert),atten));
-				float3 finalCol=lightCol*diffuse*(albedo+ambient);
+
+				float diffuse = saturate( GetDiffuse(normalTS,lightDirTS,INSTANCE(_Lambert),atten));
+				float3 finalCol=lightCol*diffuse*albedo*ambient;
 
 				#if _CRACK
 				float crackAmount=0;
