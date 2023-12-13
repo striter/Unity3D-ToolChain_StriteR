@@ -23,15 +23,15 @@ namespace UnityEditor.Extensions.TextureEditor
 
         public bool Valid => operation == EChannelOperation.Constant || (texture != null && texture.isReadable);
         
-        private Color32[] pixels;
+        private Color[] pixels;
         public void Prepare()
         {
             if (operation == EChannelOperation.Constant)
                 return;
-            pixels = texture.GetPixels32();
+            pixels = texture.GetPixels();
         }
         
-        public byte Collect(int _index)
+        public float Collect(int _index)
         {
             if (operation == EChannelOperation.Constant)
                 return UColor.toColor32(constantValue);
@@ -39,11 +39,11 @@ namespace UnityEditor.Extensions.TextureEditor
             var color = pixels[_index];
             return operation switch
             {
-                EChannelOperation.R => color.r, EChannelOperation.ROneMinus => UColor.toColor32(1f - UColor.toColor(color.r)),
-                EChannelOperation.G => color.g, EChannelOperation.GOneMinus => UColor.toColor32(1f - UColor.toColor(color.g)),
-                EChannelOperation.B => color.b, EChannelOperation.BOneMinus => UColor.toColor32(1f - UColor.toColor(color.b)),
-                EChannelOperation.A => color.a, EChannelOperation.AOneMinus => UColor.toColor32(1f - UColor.toColor(color.a)),
-                EChannelOperation.LightmapToLuminance => UColor.toColor32(UColorTransform.RGBtoLuminance(color.toColor().to3())),
+                EChannelOperation.R => color.r, EChannelOperation.ROneMinus => 1f - color.r,
+                EChannelOperation.G => color.g, EChannelOperation.GOneMinus => 1f - color.g,
+                EChannelOperation.B => color.b, EChannelOperation.BOneMinus => 1f - color.b,
+                EChannelOperation.A => color.a, EChannelOperation.AOneMinus => 1f - color.a,
+                EChannelOperation.LightmapToLuminance => color.to3().sum()/3f,
                 _ => throw new InvalidEnumArgumentException()
             };
         }

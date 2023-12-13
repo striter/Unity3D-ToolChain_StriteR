@@ -3,6 +3,13 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="\Assets\Plugins\Bakery\Editor\x64\Bakery\scripts\xatlas\xatlas-license.txt">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Assets\Plugins\TextMesh Pro\Fonts\LiberationSans - OFL.txt">
           <value>
             <Attribute>

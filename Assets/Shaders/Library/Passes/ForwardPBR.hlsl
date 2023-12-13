@@ -51,7 +51,7 @@ half3 CustomGlobalIllumination(BRDFSurface surface,
 	return color * occlusion;
 }
 
-f2of ForwardFragment(v2ff i):SV_TARGET
+f2of ForwardFragment(v2ff i)
 {
 	f2of o;
 	
@@ -145,14 +145,15 @@ f2of ForwardFragment(v2ff i):SV_TARGET
 		finalCol+=BRDFLighting(surface, GetAdditionalLight(lightIndex,i.positionWS));
 	#endif
 	FOG_MIX(i,finalCol);
-	finalCol+=surface.emission;
+	// finalCol+=surface.emission;
 
 	half alpha = 1.h;
 	#if defined(GET_ALPHA)
 		alpha = GET_ALPHA(i,surface);
 	#endif
 
-	o.result = float4(finalCol,alpha);
+	o.result = float4(finalCol,1);
+	// o.result = 1;
 	#if defined(F2O_TRANSFER)
 		F2O_TRANSFER(o)
 	#endif

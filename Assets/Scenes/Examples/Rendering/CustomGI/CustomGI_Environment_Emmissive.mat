@@ -26,6 +26,7 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - DIRLIGHTMAP_COMBINED
+  - _WORLDUV
   m_InvalidKeywords:
   - _EMISSION
   m_LightmapFlags: 2
@@ -169,6 +170,7 @@ Material:
     - _Surface: 0
     - _VF: 1
     - _WorkflowMode: 1
+    - _WorldUV: 1
     - _ZTest: 2
     - _ZWrite: 1
     m_Colors:

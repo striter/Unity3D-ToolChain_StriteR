@@ -846,10 +846,11 @@ public static class UCollection
     }
     #endregion
     #region Stack
-    public static void PushRange<T>(this Stack<T> _stack,IEnumerable<T> _collection)
+    public static Stack<T> PushRange<T>(this Stack<T> _stack,IEnumerable<T> _collection)
     {
         foreach (var element in _collection)
             _stack.Push(element);
+        return _stack;
     }
 
     public static bool TryPush<T>(this Stack<T> _stack, T _item)

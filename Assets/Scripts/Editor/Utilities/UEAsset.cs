@@ -13,7 +13,7 @@ namespace UnityEditor.Extensions
     public static class UEAsset
     {
         #region Assets
-        public static T CreateOrReplaceMainAsset<T>(T asset, string path) where T : UnityEngine.Object
+        public static T CreateOrReplaceMainAsset<T>(T asset, string path,bool ping = true) where T : UnityEngine.Object
         {
             asset.name = UEPath.RemoveExtension(UEPath.GetFileName(path));
             UnityEngine.Object previousAsset = AssetDatabase.LoadMainAssetAtPath(path);
@@ -33,7 +33,8 @@ namespace UnityEditor.Extensions
                 AssetDatabase.CreateAsset(asset, path);
                 replacedAsset = AssetDatabase.LoadMainAssetAtPath(path) as T;
             }
-            EditorGUIUtility.PingObject(replacedAsset);
+            if(ping)
+                EditorGUIUtility.PingObject(replacedAsset);
             return replacedAsset;
         }
         public static void CreateOrReplaceSubAsset(string _mainAssetPath, IEnumerable<UnityEngine.Object> _subValues)

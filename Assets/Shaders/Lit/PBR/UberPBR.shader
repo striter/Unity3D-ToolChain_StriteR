@@ -375,6 +375,7 @@
 			Blend Off
 			ZWrite On
 			ZTest LEqual
+			Cull Off
 			
 			HLSLPROGRAM
 			

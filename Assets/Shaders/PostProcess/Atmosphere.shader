@@ -47,6 +47,7 @@ Shader "Hidden/PostProcess/Atmosphere"
             HLSLPROGRAM
             #pragma vertex vert_img
             #pragma fragment frag
+            #pragma multi_compile_local_fragment _ _VOLUMETRICLIGHT
 
             #if _VOLUMETRICLIGHT
             #pragma multi_compile_local _ _DITHER

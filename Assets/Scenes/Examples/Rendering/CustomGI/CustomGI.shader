@@ -1,4 +1,4 @@
-Shader "Game/Lit/CustomGI"
+Shader "Hidden/CustomGI"
 {
     Properties
 	{
@@ -6,6 +6,7 @@ Shader "Game/Lit/CustomGI"
 		_MainTex("Main Tex",2D) = "white"{}
 		_Color("Color Tint",Color) = (1,1,1,1)
 		[NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
+		[Toggle(_WORLDUV)]_WorldUV("World UV",float) = 1
 		
 		[Header(PBR)]
 		[NoScaleOffset]_PBRTex("PBR Tex(Glossiness.Metallic.AO)",2D)="black"{}
@@ -49,15 +50,22 @@ Shader "Game/Lit/CustomGI"
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
             #pragma multi_compile _ LIGHTMAP_ON
 			#pragma shader_feature_local LIGHTMAP_LOCAL
-			#pragma multi_compile _ _LIGHTMAP_MAIN_INDIRECT
+			#pragma multi_compile_fragment _ _LIGHTMAP_MAIN_INDIRECT
 
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile _ _ADDITIONAL_LIGHTS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
+			#pragma multi_compile_vertex _ _WORLDUV
             #pragma multi_compile_fog
 
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
 			TEXTURE2D(_PBRTex);SAMPLER(sampler_PBRTex);
+			
+			#define NFOG
+			#define V2F_FOG(index) half fogFactor:TEXCOORDindex;
+	        #define FOG_TRANSFER(o) o.fogFactor=FogFactor(o.positionCS.z);
+	        #define FOG_MIX(i,col) col=FogInterpolateCustom(col,i.fogFactor,i.positionWS);
+			
 			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
 			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
 
@@ -69,11 +77,7 @@ Shader "Game/Lit/CustomGI"
 			    half density=FogDesnity(fogFactor);
 			    return lerp(srcColor,sh,density);
 			}
-	        #define V2F_FOG(index) half fogFactor:TEXCOORDindex;
-	        #define FOG_TRANSFER(o) o.fogFactor=FogFactor(o.positionCS.z);
-	        #define FOG_MIX(i,col) col=FogInterpolateCustom(col,i.fogFactor,i.positionWS);
-			#define NFOG
-
+			
 			#if LIGHTMAP_LOCAL
 				#define LIGHTMAP_ST _LightmapST
 				float4 _LightmapST;
@@ -89,56 +93,59 @@ Shader "Game/Lit/CustomGI"
 				half3 normal = normalize(surface.normal);
 				indirectDiffuse = SHL2Sample(normal,);
 				indirectSpecular = indirectDiffuse;//IndirectSpecular(surface.reflectDir,surface.perceptualRoughness,1000);
-
 			#if LIGHTMAP_ON
 				#if LIGHTMAP_LOCAL
-					
 					half3 lightmap = SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap,sampler_Lightmap), i.lightmapUV);
-				
 					float4 directionSample = SAMPLE_TEXTURE2D_LIGHTMAP(_LightmapInd,sampler_Lightmap,i.lightmapUV);
+					half3 direction = (directionSample.xyz - 0.5) * 2;
 				#else
 					half3 lightmap = SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(unity_Lightmap,samplerunity_Lightmap), i.lightmapUV);
 					float4 directionSample = SAMPLE_TEXTURE2D_LIGHTMAP(unity_LightmapInd,samplerunity_Lightmap,i.lightmapUV);
-				#endif
+					half3 direction = (directionSample.xyz - 0.5) * 2;
 				
-				half3 direction = (directionSample.xyz - 0.5) * 2;
+				#endif
+
+				
 				indirectDiffuse = SHL2Sample(direction,);
+				indirectDiffuse *= lightmap;
+				indirectSpecular *= lightmap;
 
 				half halfLambert = dot(surface.normal, direction.xyz - 0.5) + 0.5;
 				half directionParam = halfLambert / max(1e-4, directionSample.w);
 
 				surface.ao = directionSample.a;
 				indirectDiffuse *= directionParam;
-
-				indirectDiffuse *= lightmap;
-				indirectSpecular *= lightmap;
-
-				#if LIGHTMAP_LOCAL &&_LIGHTMAP_MAIN_INDIRECT
-					float mainLightIrradianceState = _MainIrradianceValue.x;
-					float mainLightIrradianceIntensity = _MainIrradianceValue.y;
-					float4 shadowMaskSample = SAMPLE_TEXTURE2D_LIGHTMAP(_ShadowMask,sampler_Lightmap,i.lightmapUV);
-					int irradianceStart = floor(mainLightIrradianceState);
-					int irradianceEnd = (irradianceStart + 1) ;
-					float irradianceInterpolation = mainLightIrradianceState - irradianceStart;
-					float mainLightIndirectIntensity = lerp( shadowMaskSample[irradianceStart%4],shadowMaskSample[irradianceEnd%4],irradianceInterpolation) * mainLightIrradianceIntensity;
-			
-					indirectDiffuse += mainLightIndirectIntensity * _MainLightColor.rgb;
+				#if LIGHTMAP_LOCAL
+				
+					#if _LIGHTMAP_MAIN_INDIRECT
+						float mainLightIrradianceState = _MainIrradianceValue.x;
+						float mainLightIrradianceIntensity = _MainIrradianceValue.y;
+						float4 shadowMaskSample = SAMPLE_TEXTURE2D_LIGHTMAP(_ShadowMask,sampler_Lightmap,i.lightmapUV);
+						int irradianceStart = floor(mainLightIrradianceState);
+						int irradianceEnd = (irradianceStart + 1) ;
+						float irradianceInterpolation = mainLightIrradianceState - irradianceStart;
+						float mainLightIndirectIntensity = lerp( shadowMaskSample[irradianceStart%4],shadowMaskSample[irradianceEnd%4],irradianceInterpolation) * mainLightIrradianceIntensity;
+				
+						indirectDiffuse += mainLightIndirectIntensity * _MainLightColor.rgb ;
+					#endif
 				#endif
 				
 			#endif
 			}
+
+				void Transfer(a2vf v,inout v2ff i)
+				{
+			#if _WORLDUV
+					i.uv = i.positionWS.xz + i.positionWS.yz + i.positionWS.xy;
+					i.uv /= 3;
+			#endif
+				}
+				
+				#define V2F_ADDITIONAL_TRANSFER(v,o) Transfer(v,o);
 			
-			void Transfer(a2vf v,inout v2ff i)
-			{
-				i.uv = i.positionWS.xz + i.positionWS.yz + i.positionWS.xy;
-				i.uv /= 3;
-			}
-			
-			#define V2F_ADDITIONAL_TRANSFER(v,o) Transfer(v,o);
 			#define GET_GI(indirectDiffuse,indirectSpecular,i,surface,mainLight) OverrideGlobalIllumination(indirectDiffuse,indirectSpecular,i,surface,mainLight);
 			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
-			
 			
             #pragma target 3.5
 			#pragma vertex ForwardVertex

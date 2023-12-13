@@ -7,6 +7,7 @@
 			Blend Off
 			ZWrite On
 			ZTest LEqual
+            Cull Off
 			
 			NAME "MAIN"
 			Tags{"LightMode" = "ShadowCaster"}

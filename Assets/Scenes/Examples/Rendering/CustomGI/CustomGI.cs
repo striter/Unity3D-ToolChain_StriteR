@@ -18,7 +18,7 @@ namespace Examples.Rendering.GI.CustomGI
     public class MainLightData
     {
         public quaternion rotation;
-        public float3 color;
+        [ColorUsage(false,true)]public Color color;
         public float intensity;
     }
     
@@ -33,11 +33,12 @@ namespace Examples.Rendering.GI.CustomGI
         private bool isDirty;
         public SHL2ShaderProperties kSHProperties = new SHL2ShaderProperties();
         public GlobalIllumination_LightmapDiffuse m_Diffuse;
-        private readonly PassiveInstance<Light> m_MainLight = new PassiveInstance<Light>(GameObject.FindObjectOfType<Light>);
+        private readonly PassiveInstance<Light> m_MainLight = new PassiveInstance<Light>(()=>GameObject.FindObjectOfType<Light>(true));
         public float m_CurrentLightIndex;
 
         public bool m_EnableIndirect = true;
         [Range(1, 10)] public float m_MainLightIndirectIntensity;
+        public float m_CurLightmapIndex;
         
         private void OnValidate()
         {
@@ -59,7 +60,7 @@ namespace Examples.Rendering.GI.CustomGI
                 m_EnableIndirect = !m_EnableIndirect;
             });
 
-                ApplyGlobalIllumination();
+            ApplyGlobalIllumination();
         }
 
         private void Update()
@@ -69,27 +70,29 @@ namespace Examples.Rendering.GI.CustomGI
             {
                 isDirty = false;
                 ValidateSH();
-                
-                if(Application.isPlaying)
-                    UpdateMainLightIndirectContribution();
+
             }
             
             var (start,end,interp) = kGiData.Gradient(UTime.time / div);
             var sh = SHL2Data.Interpolate(start.shData, end.shData, interp);
             kSHProperties.ApplyGlobal(sh.Output());
 
+            if (Application.isPlaying)
+            {
+                m_CurLightmapIndex = math.lerp(m_CurLightmapIndex,m_CurrentLightIndex,Time.deltaTime);
+                UpdateMainLightIndirectContribution(m_CurLightmapIndex);
+            }
         }
 
-        void UpdateMainLightIndirectContribution()
+        void UpdateMainLightIndirectContribution(float _value)
         {
             URender.EnableGlobalKeyword("_LIGHTMAP_MAIN_INDIRECT", m_EnableIndirect);
-            var(lightStart,lightEnd,lightInterp) = kMainLightData.Gradient(m_CurrentLightIndex);
+            var(lightStart,lightEnd,lightInterp) = kMainLightData.Gradient(_value);
             m_MainLight.Value.transform.rotation = math.slerp(lightStart.rotation, lightEnd.rotation, lightInterp);
-            m_MainLight.Value.color = math.lerp(lightStart.color, lightEnd.color, lightInterp).toColor();
+            m_MainLight.Value.color = Color.Lerp(lightStart.color, lightEnd.color, lightInterp);
             m_MainLight.Value.intensity = math.lerp(lightStart.intensity, lightEnd.intensity, lightInterp);
-            Shader.SetGlobalVector("_MainIrradianceValue",new Vector4(m_CurrentLightIndex,m_MainLightIndirectIntensity));
+            Shader.SetGlobalVector("_MainIrradianceValue",new Vector4(_value,m_MainLightIndirectIntensity));
         }
-        
         
         void ValidateSH()
         {
@@ -108,7 +111,7 @@ namespace Examples.Rendering.GI.CustomGI
         {
             kMainLightData[^1] = new MainLightData()
             {
-                color = m_MainLight.Value.color.to3(),
+                color = m_MainLight.Value.color,
                 rotation = m_MainLight.Value.transform.rotation,
                 intensity = m_MainLight.Value.intensity,
             };
@@ -119,8 +122,8 @@ namespace Examples.Rendering.GI.CustomGI
         {
             var lightData = kMainLightData[_index];
             m_MainLight.Value.transform.rotation = lightData.rotation;
-            m_MainLight.Value.intensity = lightData.intensity;
-            m_MainLight.Value.color = lightData.color.toColor();
+            m_MainLight.Value.intensity = 1f;
+            m_MainLight.Value.color = Color.white;
         }
         
         [FoldoutButton(nameof(developerMode),true)]
@@ -137,6 +140,6 @@ namespace Examples.Rendering.GI.CustomGI
             m_Diffuse = GlobalIllumination_LightmapDiffuse.Export(transform);
 #endif
         }
-
+        
     }
 }

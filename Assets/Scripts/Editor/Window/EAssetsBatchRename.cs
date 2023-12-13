@@ -11,14 +11,13 @@ namespace UnityEditor.Extensions
 {
     public class EAssetsBatchRename : EditorWindow
     {
-        private string m_FolderPath;
         private string m_Source;
         private string m_Replace;
         private void OnGUI()
         {
             EditorGUILayout.BeginHorizontal();
+            var m_FolderPath = UEAsset.GetCurrentProjectWindowDirectory();
             EditorGUILayout.LabelField("Current Folder:"+m_FolderPath);
-            m_FolderPath = UEAsset.GetCurrentProjectWindowDirectory();
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginVertical();
@@ -27,21 +26,9 @@ namespace UnityEditor.Extensions
             m_Replace = EditorGUILayout.TextField("Replace", m_Replace);
         
             if (GUILayout.Button("Rename"))
-                RenameAssets();
+                EditorUtilities.RenameAssets(m_FolderPath,m_Source,m_Replace);
             EditorGUILayout.EndVertical();
         }
 
-        void RenameAssets()
-        {
-            int count = 0;
-            foreach (var assetPath in System.IO.Directory.GetFiles(UEPath.AssetToFilePath(m_FolderPath)))
-            {
-                count++;
-                string assetName = Path.GetFileName(assetPath);
-                System.IO.File.Move(assetPath,assetPath.Replace(assetName,assetName.Replace(m_Source,m_Replace)));
-            }
-            AssetDatabase.Refresh();
-            Debug.Log($"{count} Assets Renamed");
-        }
     }
 }
