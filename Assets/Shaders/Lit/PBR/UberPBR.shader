@@ -9,7 +9,6 @@
 		
 		[Header(PBR)]
 		[ToggleTex(_PBRMAP)] [NoScaleOffset]_PBRTex("PBR Tex(Smoothness.Metallic.AO)",2D)="white"{}
-		
 		[Fold(_PBRMAP)]_Smoothness("Smoothness",Range(0,1))=.5
 		[Fold(_PBRMAP)]_Metallic("Metallic",Range(0,1))=0
 		
@@ -148,9 +147,6 @@
 			float3 CalculateAlbedo(float2 uv)
 			{
 				float4 sample = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv)*INSTANCE(_Color);
-				#if defined(_ALPHACLIP)
-					AlphaClip(sample.a);
-				#endif
 				return sample.rgb;
 			}
 			half3 OverrideEmission(float2 uv)
@@ -160,7 +156,6 @@
 
 			#define GET_ALBEDO(i) CalculateAlbedo(i.uv);
 			#define GET_EMISSION(i) OverrideEmission(i.uv.xy);
-			#define GET_PBRPARAM(i) 
 			#include "Assets/Shaders/Library/PBR.hlsl"
 		ENDHLSL
 

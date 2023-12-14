@@ -38,6 +38,7 @@ public class Damper : ISerializationCallbackReceiver
 
     public void Initialize(quaternion _begin) => Initialize(_begin.value);
     public void Initialize(float _begin) => Initialize((float4)_begin);
+    public void Initialize(float2 _begin) => Initialize(_begin.to4());
     public void Initialize(float3 _begin) => Initialize(_begin.to4());
     public void Initialize(float4 _begin)
     {

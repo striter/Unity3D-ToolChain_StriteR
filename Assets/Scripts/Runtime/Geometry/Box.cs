@@ -103,8 +103,6 @@ namespace Geometry
         }
         public float3 Center => center;
 
-        public float2 this[int _index] => throw new NotImplementedException();
-
         public GBox Move(float3 _deltaPosition)=> new GBox(center + _deltaPosition, extent);
         public float3 GetPoint(float3 _uvw) => center + _uvw * size;
         
@@ -127,7 +125,7 @@ namespace Geometry
             return absOffset.x < extent.x && absOffset.y < extent.y && absOffset.z < extent.z;
         }
 
-        public GBox Encapsule(GBox _other) => Minmax(math.min(min, _other.min), math.max(max, _other.max));
+        public GBox Encapsulate(GBox _other) => Minmax(math.min(min, _other.min), math.max(max, _other.max));
         
         public IEnumerable<GPlane> GetPlanes(bool _x,bool _y,bool _z)
         {
@@ -148,6 +146,18 @@ namespace Geometry
                 yield return new GPlane(kfloat3.forward,GetPoint(kfloat3.back*.5f));
                 yield return new GPlane(kfloat3.back,GetPoint(kfloat3.forward*.5f));
             }
+        }
+
+        public IEnumerable<float3> GetPositions()
+        {
+            yield return GetPoint(new float3(-.5f,-.5f,-.5f));
+            yield return GetPoint(new float3(.5f,-.5f,-.5f));
+            yield return GetPoint(new float3(.5f,.5f,-.5f));
+            yield return GetPoint(new float3(-.5f,.5f,-.5f));
+            yield return GetPoint(new float3(-.5f,-.5f,.5f));
+            yield return GetPoint(new float3(.5f,-.5f,.5f));
+            yield return GetPoint(new float3(.5f,.5f,.5f));
+            yield return GetPoint(new float3(-.5f,.5f,.5f));
         }
         
         public static GBox operator +(GBox _src, float3 _dst) => new GBox(_src.center+_dst,_src.extent);

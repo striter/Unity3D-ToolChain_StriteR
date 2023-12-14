@@ -42,7 +42,7 @@ namespace Geometry.PointSet
         
         private static readonly List<float3> kBoundaryPoints = new List<float3>(4);
         private static readonly List<float3> kContainedPoints = new List<float3>();
-        public static GSphere GetBoundingSphere(IList<float3> _positions)
+        public static GSphere GetBoundingSphere(IEnumerable<float3> _positions)
         {
             kBoundaryPoints.Clear();
             kContainedPoints.Clear();

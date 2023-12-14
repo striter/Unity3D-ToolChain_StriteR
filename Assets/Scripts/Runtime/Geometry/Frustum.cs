@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Geometry
@@ -8,8 +9,8 @@ namespace Geometry
     [Serializable]
     public struct GFrustum
     {
-        public Vector3 origin;
-        public Quaternion rotation;
+        public float3 origin;
+        public quaternion rotation;
         [Clamp(0)]public float fov;
         public float aspect;
         [Clamp(0)]public float zNear;
@@ -23,56 +24,38 @@ namespace Geometry
             zNear = _camera.nearClipPlane;
             zFar = _camera.farClipPlane;
         }
+        
+        public GFrustum(float3 _position, quaternion _rotation, float _fov, float _aspect, float _zNear, float _zFar)
+        {
+            origin = _position;
+            rotation = _rotation;
+            fov = _fov;
+            aspect = _aspect;
+            zNear = _zNear;
+            zFar = _zFar;
+        }
         public GFrustumPlanes GetFrustumPlanes()
         {
+            var origin = (Vector3)this.origin;
+            var rotation = (Quaternion)this.rotation;
             float an = fov * .5f  * kmath.kDeg2Rad;
             float s = Mathf.Sin(an);
             float c = Mathf.Cos(an);
             float aspectC = c / aspect;
-
             Vector3 forward = rotation*Vector3.forward;
             
             float centerDistance = zNear + (zFar-zNear)/2f;
             return new GFrustumPlanes
             {
-                left = new GPlane( rotation*new Vector3(-aspectC , 0f,-s  ), origin+rotation*new Vector3(-s,0f,aspectC).normalized*centerDistance),
-                right = new GPlane( rotation*new Vector3(aspectC, 0f, -s ), origin+rotation*new Vector3(s,0f,aspectC).normalized*centerDistance),
+                left = new GPlane( rotation*new Vector3(-aspectC , 0f,-s  ), origin + rotation*new Vector3(-s,0f,aspectC).normalized*centerDistance),
+                right = new GPlane( rotation*new Vector3(aspectC, 0f, -s ), origin + rotation*new Vector3(s,0f,aspectC).normalized*centerDistance),
                 top = new GPlane( rotation*new Vector3(0f, c, -s), origin+rotation*new Vector3(0f,s,c).normalized*centerDistance),
                 bottom = new GPlane( rotation*new Vector3(0f, -c, -s), origin+rotation*new Vector3(0f,-s,c).normalized*centerDistance),
                 near = new GPlane(-forward, -zNear),
                 far = new GPlane(forward, zFar),
             };
         }
-        public GFrustumRays GetFrustumRays()
-        {
-            float halfHeight = zNear * Mathf.Tan(fov * .5f * Mathf.Deg2Rad);
-            Vector3 forward = rotation*Vector3.forward;
-            Vector3 toRight = rotation*Vector3.right * halfHeight * aspect;
-            Vector3 toTop = rotation*Vector3.up * halfHeight ;
-
-            Vector3 tl = forward * zNear + toTop - toRight;
-            float scale = tl.magnitude / zNear;
-            tl.Normalize();
-            tl *= scale;
-            Vector3 tr = forward * zNear + toTop + toRight;
-            tr.Normalize();
-            tr *= scale;
-            Vector3 bl = forward * zNear - toTop - toRight;
-            bl.Normalize();
-            bl *= scale;
-            Vector3 br = forward * zNear - toTop + toRight;
-            br.Normalize();
-            br *= scale;
-
-            return new GFrustumRays()
-            {
-                topLeft = new GRay(origin+tl*zNear,tl),
-                topRight = new GRay(origin+tr*zNear,tr),
-                bottomLeft =  new GRay(origin+bl*zNear,bl) ,
-                bottomRight = new GRay(origin+br*zNear,br),
-                farDistance=zFar-zNear
-            };
-        }
+        public GFrustumRays GetFrustumRays() => new GFrustumRays(origin,rotation ,fov,aspect,zNear,zFar);
     }
     
     public struct GFrustumPlanes:IEnumerable<GPlane>,IIterate<GPlane> 
@@ -120,6 +103,47 @@ namespace Geometry
         public GRay topRight;
         public GRay topLeft;
         public float farDistance;
+
+        public GFrustumRays(Vector3 origin, Quaternion rotation, float fov, float aspect, float zNear, float zFar)
+        {
+            float halfHeight = zNear * Mathf.Tan(fov * .5f * Mathf.Deg2Rad);
+            Vector3 forward = rotation*Vector3.forward;
+            Vector3 toRight = rotation*Vector3.right * halfHeight * aspect;
+            Vector3 toTop = rotation*Vector3.up * halfHeight ;
+
+            Vector3 tl = forward * zNear + toTop - toRight;
+            float scale = tl.magnitude / zNear;
+            tl.Normalize();
+            tl *= scale;
+            Vector3 tr = forward * zNear + toTop + toRight;
+            tr.Normalize();
+            tr *= scale;
+            Vector3 bl = forward * zNear - toTop - toRight;
+            bl.Normalize();
+            bl *= scale;
+            Vector3 br = forward * zNear - toTop + toRight;
+            br.Normalize();
+            br *= scale;
+
+            topLeft = new GRay(origin + tl * zNear, tl);
+            topRight = new GRay(origin + tr * zNear, tr);
+            bottomLeft = new GRay(origin + bl * zNear, bl);
+            bottomRight = new GRay(origin + br * zNear, br);
+            farDistance = zFar - zNear;
+        }
+
+        public GRay GetRay(float2 _viewportPoint)
+        {
+            return new GRay()
+            {
+                origin = umath.bilinearLerp(bottomLeft.origin, bottomRight.origin, topRight.origin, topLeft.origin,
+                    _viewportPoint.x, _viewportPoint.y),
+                direction = umath.bilinearLerp(bottomLeft.direction, bottomRight.direction, topRight.direction,
+                    topLeft.direction, _viewportPoint)
+            };
+
+        }
+        
         public IEnumerator<GRay> GetEnumerator()
         {
             yield return bottomLeft;

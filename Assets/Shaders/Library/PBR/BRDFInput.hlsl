@@ -14,7 +14,8 @@ struct BRDFSurface
     half roughness2;
     half roughnessT;
     half roughnessB;
-    
+
+    half3 position;
     half3 normal;
     half3 tangent;
     half3 biTangent;
@@ -95,7 +96,6 @@ BRDFLightInput BRDFLightInput_Ctor(BRDFSurface surface,Light light)
 {
     return BRDFLightInput_Ctor(surface,light.direction,light.color,light.shadowAttenuation,light.distanceAttenuation);
 }
-
 
 struct a2vf
 {

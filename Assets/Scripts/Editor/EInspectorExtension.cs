@@ -83,28 +83,36 @@ namespace UnityEditor.Extensions
             {
                 if(data.attribute is FoldoutButtonAttribute foldOutButton && !foldOutButton.IsElementVisible(target))
                     continue;
-                
-                EditorGUILayout.BeginHorizontal();
 
-                foreach (var parameter in data.parameters)
+                
+                EditorGUILayout.BeginVertical();
+                GUILayout.Label(data.method.Name);
+                
+                if (data.parameters.Length > 0)
                 {
-                    var key = parameter.type;
-                    switch (key)
+                    
+                    EditorGUILayout.BeginHorizontal();
+
+                    foreach (var parameter in data.parameters)
                     {
-                        case EButtonParameters.Float: parameter.value = EditorGUILayout.FloatField(parameter.name,(float)parameter.value); break;
-                        case EButtonParameters.Integer: parameter.value = EditorGUILayout.IntField(parameter.name,(int)parameter.value); break;
-                        case EButtonParameters.String: parameter.value = EditorGUILayout.TextField(parameter.name,(string)parameter.value); break;
-                        case EButtonParameters.NotSupported:EditorGUILayout.LabelField("Not Supported Type");break;
+                        var key = parameter.type;
+                        switch (key)
+                        {
+                            case EButtonParameters.Float: parameter.value = EditorGUILayout.FloatField(parameter.name,(float)parameter.value); break;
+                            case EButtonParameters.Integer: parameter.value = EditorGUILayout.IntField(parameter.name,(int)parameter.value); break;
+                            case EButtonParameters.String: parameter.value = EditorGUILayout.TextField(parameter.name,(string)parameter.value); break;
+                            case EButtonParameters.NotSupported:EditorGUILayout.LabelField("Not Supported Type");break;
+                        }
                     }
+                    EditorGUILayout.EndHorizontal();
                 }
                 
-                if (GUILayout.Button(data.method.Name))
+                if (GUILayout.Button("Execute"))
                 {
                     data.method.Invoke(target,data.parameters.Select(p=>p.value).ToArray());
                     Undo.RegisterCompleteObjectUndo(target,"Button Click");
                 }
-                
-                EditorGUILayout.EndHorizontal();
+                EditorGUILayout.EndVertical();
             }
             EditorGUILayout.EndVertical();
         }

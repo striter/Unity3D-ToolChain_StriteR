@@ -137,8 +137,8 @@ Material:
     - _Cutoff: 0.5
     - _DepthBuffer: 1
     - _DepthBufferScale: 1
-    - _DepthOffset: 0.11
-    - _DepthScale: 0.078
+    - _DepthOffset: 0.5
+    - _DepthScale: 0.36
     - _DetailAlbedoMapScale: 1
     - _DetailBlendMode: 0
     - _DetailNormalMapScale: 1

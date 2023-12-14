@@ -1237,7 +1237,7 @@ MonoBehaviour:
       scaleOffset: {x: 0.46788743, y: 0.46788716, z: -0.00018135826, w: -0.00018135773}
   m_CurrentLightIndex: 0
   m_EnableIndirect: 1
-  m_MainLightIndirectIntensity: 1
+  m_MainLightIndirectIntensity: 3
   m_CurLightmapIndex: 0
   developerMode: 1
 --- !u!114 &168544695
@@ -1802,8 +1802,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 486120503}
-  m_LocalRotation: {x: 0.13270804, y: -0.84626985, z: 0.26728666, w: 0.4413319}
-  m_LocalPosition: {x: 62.38581, y: 48.809113, z: -149.05457}
+  m_LocalRotation: {x: 0.049614836, y: 0.8924953, z: 0.1156153, w: -0.4331555}
+  m_LocalPosition: {x: 53.69079, y: 18.104248, z: -156.79292}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

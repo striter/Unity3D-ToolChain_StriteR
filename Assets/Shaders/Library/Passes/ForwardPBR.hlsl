@@ -29,90 +29,75 @@ v2ff ForwardVertex(a2vf v)
 	return o;
 }
 
-half3 CustomGlobalIllumination(BRDFSurface surface,
-	half3 bakedGI, half occlusion, float3 positionWS,
-	half3 normalWS, half3 viewDirectionWS, float2 normalizedScreenSpaceUV)
+
+BRDFSurface InitializeFragmentSurface(v2ff i)
 {
-	half3 reflectVector = reflect(-viewDirectionWS, normalWS);
-	half NoV = saturate(dot(normalWS, viewDirectionWS));
-	half fresnelTerm = Pow4(1.0 - NoV);
+#if defined(FRAGMENT_SETUP)
+	FRAGMENT_SETUP(i)
+#endif
 
-	half3 indirectDiffuse = bakedGI;
-	half3 indirectSpecular = GlossyEnvironmentReflection(reflectVector, positionWS, surface.perceptualRoughness, 1.0h, normalizedScreenSpaceUV);
-
-	half3 color =  indirectDiffuse * surface.diffuse;
-	float surfaceReduction = 1.0 / (surface.roughness2 + 1.0);
-	half3 brdfSpecular = half3(surfaceReduction * lerp(surface.specular, surface.grazingTerm, fresnelTerm));
-	color += indirectSpecular *brdfSpecular;
-
-	if (IsOnlyAOLightingFeatureEnabled())
-		color = half3(1,1,1); // "Base white" for AO debug lighting mode
-
-	return color * occlusion;
-}
-
-f2of ForwardFragment(v2ff i)
-{
-	f2of o;
-	
-	UNITY_SETUP_INSTANCE_ID(i);
-	#if defined(FRAGMENT_SETUP)
-		FRAGMENT_SETUP(i)
-	#endif
-
-	float3 positionWS=i.positionWS;
 	float3 normalWS=normalize(i.normalWS);
 	float3 viewDirWS=normalize(i.viewDirWS);
 	half3 normalTS=half3(0,0,1);
-	#if defined(GET_ALBEDO)
-		half3 albedo = GET_ALBEDO(i);
-	#else
-		half3 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*INSTANCE(_Color).rgb;
-	#endif
+#if defined(GET_ALBEDO)
+	half3 albedo = GET_ALBEDO(i);
+#else
+	half3 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*INSTANCE(_Color).rgb;
+#endif
 	float2 baseUV=i.uv.xy;
 
 	half3 tangentWS = 0;
 	half3 biTangentWS = 0;
 	#if !defined (_NORMALOFF)
-		tangentWS=normalize(i.tangentWS);
-		biTangentWS=normalize(i.biTangentWS);
-		#if defined(GET_NORMAL)
-			normalTS = GET_NORMAL(i);
-		#else
-			normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
-		#endif
-		float3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
-		normalWS=normalize(mul(transpose(TBNWS), normalTS));
+	tangentWS=normalize(i.tangentWS);
+	biTangentWS=normalize(i.biTangentWS);
+	#if defined(GET_NORMAL)
+	normalTS = GET_NORMAL(i);
+	#else
+	normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
+	#endif
+	float3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
+	normalWS=normalize(mul(transpose(TBNWS), normalTS));
 	#endif
 	
 	half3 emission =0;
 	#if !defined(_EMISSIONOFF)
-		#if defined(GET_EMISSION)
-			emission = GET_EMISSION(i); 
-		#else
-			emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,i.uv).rgb*INSTANCE(_EmissionColor).rgb;
-		#endif
+	#if defined(GET_EMISSION)
+	emission = GET_EMISSION(i); 
+	#else
+	emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,i.uv).rgb*INSTANCE(_EmissionColor).rgb;
+	#endif
 	#endif
 
 
-	half smoothness=0.5,metallic=0,ao =1;
-
-	#if !defined(_PBROFF)
-		#if defined(GET_PBRPARAM)
-			GET_PBRPARAM(i,smoothness,metallic,ao);
-		#else
-			half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
-			smoothness=mix.r;
-			metallic=mix.g;
-			ao=mix.b;
-		#endif
+half smoothness=0.5,metallic=0,ao =1;
+#if !defined(_PBROFF)
+	#if defined(GET_PBRPARAM)
+		GET_PBRPARAM(i,smoothness,metallic,ao);
+	#else
+		half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
+		smoothness=mix.r;
+		metallic=mix.g;
+		ao=mix.b;
 	#endif
+#endif
 	
 	BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,smoothness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,1);
 
 	#if defined(BRDFSURFACE_OVERRIDE)
 		BRDFSURFACE_OVERRIDE(i,surface);
 	#endif
+	return surface;
+}
+
+f2of ForwardFragment(v2ff i)
+{
+	UNITY_SETUP_INSTANCE_ID(i);
+	f2of o;
+
+	BRDFSurface surface = InitializeFragmentSurface(i);
+	float3 positionWS = i.positionWS;
+	float3 normalWS = surface.normal;
 	
 	half3 finalCol=0;
 

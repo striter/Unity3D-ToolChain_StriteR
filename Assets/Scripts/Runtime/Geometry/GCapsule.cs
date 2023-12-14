@@ -67,7 +67,7 @@ namespace Geometry
         {
             var topBounds = new GSphere(cylinderTop, radius).GetBoundingBox();
             var bottomBounds = new GSphere(cylinderBottom, radius).GetBoundingBox();
-            return bottomBounds.Encapsule(topBounds);
+            return bottomBounds.Encapsulate(topBounds);
         }
 
         public GSphere GetBoundingSphere()
