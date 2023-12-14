@@ -27,6 +27,8 @@ namespace Examples.Rendering.GI.CustomGI
     {
         public GIData[] kGiData;
         public MainLightData[] kMainLightData;
+        [Range(1, 10)] public float m_SkylightIndirectIntensity;
+        [Range(1, 10)] public float m_MainLightIndirectIntensity;
 
         public float div = 5f;
         
@@ -37,7 +39,6 @@ namespace Examples.Rendering.GI.CustomGI
         public float m_CurrentLightIndex;
 
         public bool m_EnableIndirect = true;
-        [Range(1, 10)] public float m_MainLightIndirectIntensity;
         public float m_CurLightmapIndex;
         
         private void OnValidate()
@@ -82,6 +83,7 @@ namespace Examples.Rendering.GI.CustomGI
                 m_CurLightmapIndex = math.lerp(m_CurLightmapIndex,m_CurrentLightIndex,Time.deltaTime);
                 UpdateMainLightIndirectContribution(m_CurLightmapIndex);
             }
+            Shader.SetGlobalVector("_IrradianceParameters",new Vector4(m_SkylightIndirectIntensity,m_CurLightmapIndex,m_MainLightIndirectIntensity));
         }
 
         void UpdateMainLightIndirectContribution(float _value)
@@ -91,7 +93,6 @@ namespace Examples.Rendering.GI.CustomGI
             m_MainLight.Value.transform.rotation = math.slerp(lightStart.rotation, lightEnd.rotation, lightInterp);
             m_MainLight.Value.color = Color.Lerp(lightStart.color, lightEnd.color, lightInterp);
             m_MainLight.Value.intensity = math.lerp(lightStart.intensity, lightEnd.intensity, lightInterp);
-            Shader.SetGlobalVector("_MainIrradianceValue",new Vector4(_value,m_MainLightIndirectIntensity));
         }
         
         void ValidateSH()

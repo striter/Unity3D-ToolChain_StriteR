@@ -86,7 +86,7 @@ Shader "Hidden/CustomGI"
 				TEXTURE2D(_ShadowMask);
 			#endif
 
-			float2 _MainIrradianceValue;
+			float3 _IrradianceParameters;
 			
 			void OverrideGlobalIllumination(out half3 indirectDiffuse,out half3 indirectSpecular,v2ff i,BRDFSurface surface,Light mainLight)
 			{
@@ -107,7 +107,7 @@ Shader "Hidden/CustomGI"
 
 				
 				indirectDiffuse = SHL2Sample(direction,);
-				indirectDiffuse *= lightmap;
+				indirectDiffuse *= lightmap * _IrradianceParameters.x;
 				indirectSpecular *= lightmap;
 
 				half halfLambert = dot(surface.normal, direction.xyz - 0.5) + 0.5;
@@ -118,8 +118,8 @@ Shader "Hidden/CustomGI"
 				#if LIGHTMAP_LOCAL
 				
 					#if _LIGHTMAP_MAIN_INDIRECT
-						float mainLightIrradianceState = _MainIrradianceValue.x;
-						float mainLightIrradianceIntensity = _MainIrradianceValue.y;
+						float mainLightIrradianceState = _IrradianceParameters.y;
+						float mainLightIrradianceIntensity = _IrradianceParameters.z;
 						float4 shadowMaskSample = SAMPLE_TEXTURE2D_LIGHTMAP(_ShadowMask,sampler_Lightmap,i.lightmapUV);
 						int irradianceStart = floor(mainLightIrradianceState);
 						int irradianceEnd = (irradianceStart + 1) ;
