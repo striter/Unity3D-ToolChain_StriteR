@@ -34,33 +34,6 @@ namespace Geometry
         public static explicit operator PTriangle(Triangle<int> _src) => new PTriangle(_src);
     }
 
-    public partial struct G2Triangle 
-    {
-        public Triangle<float2> triangle;
-
-        [NonSerialized] public float2 baryCentre;
-        [NonSerialized] public float2 uOffset;
-        [NonSerialized] public float2 vOffset;
-
-        public G2Triangle(float2 _vertex0, float2 _vertex1, float2 _vertex2)
-        {
-            this = default;
-            triangle = new Triangle<float2>(_vertex0, _vertex1, _vertex2);
-            Ctor();
-        }
-
-        void Ctor()
-        {
-            baryCentre = GetBaryCentre();
-            uOffset = V1 - V0;
-            vOffset = V2 - V0;
-        }
-        public float2 GetBaryCentre() => GetPoint(.25f);
-        public float2 GetPoint(float2 _uv) => GetPoint(_uv.x, _uv.y);
-        public float2 GetPoint(float _u,float _v) => V0 + _u * uOffset + _v * vOffset;
-        public static implicit operator G2Polygon(G2Triangle _triangle) => new G2Polygon(_triangle.V0,_triangle.V1,_triangle.V2);
-        public static readonly G2Triangle kDefault = new G2Triangle(new float2(0,1),new float2(-.5f,-1),new float2(.5f,-1));
-    }
     
     public partial struct GTriangle:IShape
     {
@@ -210,21 +183,6 @@ namespace Geometry
         public override int GetHashCode()=> triangle.GetHashCode();
     }
 
-    [Serializable]
-    public partial struct G2Triangle : ITriangle<float2>, IEnumerable<float2> ,ISerializationCallbackReceiver, I2Shape
-    {
-        public float2 V0 => triangle.v0;
-        public float2 V1 => triangle.v1;
-        public float2 V2 => triangle.v2;
-        public float2 this[int _index] => triangle[_index];
-        public IEnumerator<float2> GetEnumerator() => triangle.GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator()=> GetEnumerator();
-        public float2 GetSupportPoint(float2 _direction) => this.Max(_p => math.dot(_p, _direction));
-        public float2 Center => (V0 + V1 + V2) / 3f;
-        public void OnBeforeSerialize() { }
-        public void OnAfterDeserialize()=>Ctor();
-    }
-    
     
     [Serializable]
     public partial struct GTriangle :ITriangle<float3>, IIterate<float3>,ISerializationCallbackReceiver, IShape

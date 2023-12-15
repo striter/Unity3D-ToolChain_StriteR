@@ -25,36 +25,16 @@ namespace Geometry
             zFar = _camera.farClipPlane;
         }
         
-        public GFrustum(float3 _position, quaternion _rotation, float _fov, float _aspect, float _zNear, float _zFar)
+        public GFrustum(float3 _origin, quaternion _rotation, float _fov, float _aspect, float _zNear, float _zFar)
         {
-            origin = _position;
+            origin = _origin;
             rotation = _rotation;
             fov = _fov;
             aspect = _aspect;
             zNear = _zNear;
             zFar = _zFar;
         }
-        public GFrustumPlanes GetFrustumPlanes()
-        {
-            var origin = (Vector3)this.origin;
-            var rotation = (Quaternion)this.rotation;
-            float an = fov * .5f  * kmath.kDeg2Rad;
-            float s = Mathf.Sin(an);
-            float c = Mathf.Cos(an);
-            float aspectC = c / aspect;
-            Vector3 forward = rotation*Vector3.forward;
-            
-            float centerDistance = zNear + (zFar-zNear)/2f;
-            return new GFrustumPlanes
-            {
-                left = new GPlane( rotation*new Vector3(-aspectC , 0f,-s  ), origin + rotation*new Vector3(-s,0f,aspectC).normalized*centerDistance),
-                right = new GPlane( rotation*new Vector3(aspectC, 0f, -s ), origin + rotation*new Vector3(s,0f,aspectC).normalized*centerDistance),
-                top = new GPlane( rotation*new Vector3(0f, c, -s), origin+rotation*new Vector3(0f,s,c).normalized*centerDistance),
-                bottom = new GPlane( rotation*new Vector3(0f, -c, -s), origin+rotation*new Vector3(0f,-s,c).normalized*centerDistance),
-                near = new GPlane(-forward, -zNear),
-                far = new GPlane(forward, zFar),
-            };
-        }
+        public GFrustumPlanes GetFrustumPlanes() => new GFrustumPlanes(origin,rotation ,fov,aspect,zNear,zFar);
         public GFrustumRays GetFrustumRays() => new GFrustumRays(origin,rotation ,fov,aspect,zNear,zFar);
     }
     
@@ -66,6 +46,26 @@ namespace Geometry
         public GPlane bottom;
         public GPlane near;
         public GPlane far;
+
+        public GFrustumPlanes(float3 _origin, quaternion _rotation, float fov, float aspect, float zNear, float zFar)
+        {
+            var origin = _origin;
+            var rotation = _rotation;
+            var an = fov * .5f  * kmath.kDeg2Rad;
+            var s = math.sin(an);
+            var c = math.cos(an);
+            var aspectC = c / aspect;
+            var forward = math.mul( rotation, kfloat3.forward);
+            
+            var centerDistance = zNear + (zFar-zNear)/2f;
+            left = new GPlane(math.mul(rotation, new float3(-aspectC, 0f, -s)), origin + math.mul(rotation, new Vector3(-s, 0f, aspectC).normalized * centerDistance));
+            right = new GPlane(math.mul(rotation, new float3(aspectC, 0f, -s)), origin + math.mul(rotation, new Vector3(s, 0f, aspectC).normalized * centerDistance));
+            top = new GPlane(math.mul(rotation, new float3(0f, c, -s)), origin + math.mul(rotation, new Vector3(0f, s, c).normalized * centerDistance));
+            bottom = new GPlane(math.mul(rotation, new float3(0f, -c, -s)), origin + math.mul(rotation, new Vector3(0f, -s, c).normalized * centerDistance));
+            near = new GPlane(-forward, -zNear);
+            far = new GPlane(forward, zFar);
+        }
+        
         public IEnumerator<GPlane> GetEnumerator()
         {
             yield return bottom;
@@ -103,26 +103,25 @@ namespace Geometry
         public GRay topRight;
         public GRay topLeft;
         public float farDistance;
-
-        public GFrustumRays(Vector3 origin, Quaternion rotation, float fov, float aspect, float zNear, float zFar)
+        public GFrustumRays(float3 origin, quaternion rotation, float fov, float aspect, float zNear, float zFar)
         {
-            float halfHeight = zNear * Mathf.Tan(fov * .5f * Mathf.Deg2Rad);
-            Vector3 forward = rotation*Vector3.forward;
-            Vector3 toRight = rotation*Vector3.right * halfHeight * aspect;
-            Vector3 toTop = rotation*Vector3.up * halfHeight ;
+            var halfHeight = zNear * Mathf.Tan(fov * .5f * Mathf.Deg2Rad);
+            var forward = math.mul(rotation , kfloat3.forward);
+            var toRight = math.mul(rotation , kfloat3.right * halfHeight * aspect);
+            var toTop = math.mul(rotation , kfloat3.up * halfHeight);
 
-            Vector3 tl = forward * zNear + toTop - toRight;
-            float scale = tl.magnitude / zNear;
-            tl.Normalize();
+            var tl = forward * zNear + toTop - toRight;
+            float scale = tl.magnitude() / zNear;
+            tl = tl.normalize();
             tl *= scale;
-            Vector3 tr = forward * zNear + toTop + toRight;
-            tr.Normalize();
+            var tr = forward * zNear + toTop + toRight;
+            tr = tr.normalize();
             tr *= scale;
-            Vector3 bl = forward * zNear - toTop - toRight;
-            bl.Normalize();
+            var bl = forward * zNear - toTop - toRight;
+            bl = bl.normalize();
             bl *= scale;
-            Vector3 br = forward * zNear - toTop + toRight;
-            br.Normalize();
+            var br = forward * zNear - toTop + toRight;
+            br = br.normalize();
             br *= scale;
 
             topLeft = new GRay(origin + tl * zNear, tl);
@@ -174,21 +173,21 @@ namespace Geometry
         }
     }
     
-    public struct GFrustumPoints : IEnumerable<Vector3>, IIterate<Vector3>
+    public struct GFrustumPoints : IEnumerable<float3>, IIterate<float3>
     {
-        public Vector3 nearBottomLeft;
-        public Vector3 nearBottomRight;
-        public Vector3 nearTopRight;
-        public Vector3 nearTopLeft;
-        public Vector3 farBottomLeft;
-        public Vector3 farBottomRight;
-        public Vector3 farTopRight;
-        public Vector3 farTopLeft;
+        public float3 nearBottomLeft;
+        public float3 nearBottomRight;
+        public float3 nearTopRight;
+        public float3 nearTopLeft;
+        public float3 farBottomLeft;
+        public float3 farBottomRight;
+        public float3 farTopRight;
+        public float3 farTopLeft;
         public GBox bounding;
 
         public int Length => 8;
 
-        public Vector3 this[int _index]
+        public float3 this[int _index]
         {
             get
             {
@@ -207,7 +206,7 @@ namespace Geometry
             }
         }
 
-        public IEnumerator<Vector3> GetEnumerator()
+        public IEnumerator<float3> GetEnumerator()
         {
             yield return nearBottomLeft;
             yield return nearBottomRight;

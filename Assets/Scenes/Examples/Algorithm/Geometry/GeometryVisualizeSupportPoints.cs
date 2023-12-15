@@ -17,7 +17,7 @@ namespace Examples.Algorithm.Geometry
             int index = 0;
             foreach (var shape in new I2Shape[] {box, sphere,polygon})
             {
-                Gizmos.color = index++ != 0 && UShape.Intersect(box, shape) ? Color.yellow : Color.white;
+                Gizmos.color = index++ != 0 && box.Intersect(shape) ? Color.yellow : Color.white;
                 shape.DrawGizmos();
                 UGizmos.DrawArrow(shape.Center.to3xz(), supportPointDirection.to3xz(), .5f, .1f);
                 Gizmos.DrawWireSphere(shape.GetSupportPoint(supportPointDirection).to3xz(), .1f);

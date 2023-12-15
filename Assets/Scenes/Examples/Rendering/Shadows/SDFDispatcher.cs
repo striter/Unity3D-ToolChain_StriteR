@@ -9,13 +9,13 @@ using UnityEngine;
 
 namespace Examples.Rendering.Shadows
 {
-    public struct BVHVolume_Sphere_Capsule : IBVHVolume<GSphere, GCapsule, float3>
+    public struct BVHVolume_Sphere_Capsule : IBVHVolume<GSphere, Capsule, float3>
     {
-        public IList<GCapsule> elements { get; set; }
+        public IList<Capsule> elements { get; set; }
         public GSphere bounds { get; set; }
         public int iteration { get; set; }
         
-        public void SortElements(int _median, IList<GCapsule> _elements)
+        public void SortElements(int _median, IList<Capsule> _elements)
         {
             UPrincipleComponentAnalysis.Evaluate(_elements.Select(p=>p.Center),out var center,out var right,out var up,out var forward);
              _elements.Divide(_median,
@@ -29,7 +29,7 @@ namespace Examples.Rendering.Shadows
                 });
         }
 
-        public GSphere OutputBounds(IList<GCapsule> _elements)
+        public GSphere OutputBounds(IList<Capsule> _elements)
         {
             // List<float3> centers = _elements.Select(p => p.Center).ToList();
             // return UBounds.GetBoundingSphere(centers);
@@ -58,14 +58,14 @@ namespace Examples.Rendering.Shadows
         private int kSDFParameters2 = Shader.PropertyToID("_SDFParameters2");
         public int m_VolumeCapacity = 4;
         public int m_MaxIteration = 4;
-        private BVH<BVHVolume_Sphere_Capsule, GSphere, GCapsule, float3> m_BVH = new();
+        private BVH<BVHVolume_Sphere_Capsule, GSphere, Capsule, float3> m_BVH = new();
         
         public void Update()
         {
             if (SDFRenderer.sRenderers.Count <= 0)
                 return;
 
-            List<GCapsule> capsules = new List<GCapsule>();
+            List<Capsule> capsules = new List<Capsule>();
             foreach (var renderer in SDFRenderer.sRenderers)
             {
                 var localToWorld = renderer.transform.localToWorldMatrix;

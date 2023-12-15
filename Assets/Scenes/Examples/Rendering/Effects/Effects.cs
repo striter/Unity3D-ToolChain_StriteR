@@ -16,6 +16,7 @@ namespace Examples.Rendering.Effects
         private Camera m_Camera;
 
         public Damper m_RotationDamper = new Damper();
+        public Damper m_OriginDistanceDamper = new Damper();
 
         private void Awake()
         {
@@ -29,17 +30,15 @@ namespace Examples.Rendering.Effects
                 return;
 
             var boundingBoxWS = (GBox)m_FocusTarget.bounds;
-            var boundingSphereWS = UBounds.GetBoundingSphere(boundingBoxWS.GetPositions().ToArray());
-            
-            var positionWS = boundingBoxWS.GetPoint(kfloat3.up*m_YAnchor);
-            var rotationWS = quaternion.Euler(m_RotationDamper.Tick(Time.deltaTime, pitchYaw.to3xy() * kmath.kDeg2Rad));
+
+            var deltaTime = Time.deltaTime;
+            var originAndDistance = m_OriginDistanceDamper.Tick(deltaTime, boundingBoxWS.GetPoint(kfloat3.up*m_YAnchor).to4(-boundingBoxWS.size.magnitude()));
+            var rotationWS = m_RotationDamper.Tick(deltaTime, quaternion.Euler(pitchYaw.to3xy() * kmath.kDeg2Rad));
             
             var frustum = new GFrustum(0,rotationWS ,m_Camera.fieldOfView,m_Camera.aspect,m_Camera.nearClipPlane,m_Camera.farClipPlane);
             var viewportRay = frustum.GetFrustumRays().GetRay(m_ViewportPoint);
             
-            positionWS -= viewportRay.GetPoint(boundingSphereWS.radius * 2f);
-
-            m_Camera.transform.SetPositionAndRotation(positionWS,rotationWS);
+            m_Camera.transform.SetPositionAndRotation(originAndDistance.xyz+ viewportRay.GetPoint(originAndDistance.w),rotationWS);
         }
 
         [Button]

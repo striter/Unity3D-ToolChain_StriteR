@@ -5,8 +5,6 @@ using UnityEngine;
 
 namespace Geometry.PointSet
 {
-    
-    
     public static class UPrincipleComponentAnalysis
     {
         public static void Evaluate(IEnumerable<float3> _points,out float3 _centre, out float3 _right, out float3 _up, out float3 _forward)

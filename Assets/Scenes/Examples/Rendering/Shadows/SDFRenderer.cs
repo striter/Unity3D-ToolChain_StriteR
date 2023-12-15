@@ -12,7 +12,7 @@ namespace Examples.Rendering.Shadows
         public static List<SDFRenderer> sRenderers = new List<SDFRenderer>();
         
         public bool m_ReconstructFromCollider;
-        public GCapsule[] m_ShapesOS;
+        public Capsule[] m_ShapesOS;
         private void OnValidate()
         {
             if (!m_ReconstructFromCollider)
@@ -20,11 +20,11 @@ namespace Examples.Rendering.Shadows
 
             var colliders = GetComponentsInChildren<CapsuleCollider>(false);
 
-            m_ShapesOS = new GCapsule[colliders.Length];
+            m_ShapesOS = new Capsule[colliders.Length];
             int index = 0;
             var worldToLocal = transform.worldToLocalMatrix;
             foreach (var collider in colliders)
-                m_ShapesOS[index++] = worldToLocal * new GCapsule(collider);
+                m_ShapesOS[index++] = worldToLocal * new Capsule(collider);
         }
 
         private void OnEnable()

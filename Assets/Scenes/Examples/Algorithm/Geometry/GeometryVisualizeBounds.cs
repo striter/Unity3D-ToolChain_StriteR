@@ -7,8 +7,6 @@ namespace Examples.Algorithm.Geometry
 {
     public class GeometryVisualizeBounds : MonoBehaviour
     {
-        public float m_SinValue;
-        
         [Header("Box")]
         public float3[] boundingBoxRandomPoints;
         public GBox boudingBox = default;
@@ -21,7 +19,8 @@ namespace Examples.Algorithm.Geometry
         public GSphere boundingSphere2;
         
         
-        private void OnValidate()
+        [Button]
+        private void RandomPoints()
         {
             if (boundingBoxRandomPoints != null && boundingBoxRandomPoints.Length > 0)
             {
@@ -38,6 +37,8 @@ namespace Examples.Algorithm.Geometry
             }
         }
 
+        public GBox box;
+        
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.white;

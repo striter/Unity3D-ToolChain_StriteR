@@ -134,7 +134,7 @@ public static class UGizmos
         Handles_Extend.DrawCone(_cone);
     }
     
-    public static void DrawGizmos(this GCapsule _capsule)
+    public static void DrawGizmos(this Capsule _capsule)
     {
         Handles.color = Gizmos.color;
         Handles.matrix = Gizmos.matrix;

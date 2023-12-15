@@ -885,6 +885,180 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Position: {x: 0.26, y: -1.32, z: -1.24}
+--- !u!1 &1408747506
+GameObject:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1408747508}
+  - component: {fileID: 1408747507}
+  m_Layer: 0
+  m_Name: '!ftraceLightmaps'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1408747507
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1408747506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7fa80e7116296f4eb4f49ec1544ee22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  renderSettingsBounces: 5
+  renderSettingsGISamples: 16
+  renderSettingsGIBackFaceWeight: 0
+  renderSettingsTileSize: 512
+  renderSettingsPriority: 2
+  renderSettingsTexelsPerUnit: 20
+  renderSettingsForceRefresh: 1
+  renderSettingsForceRebuildGeometry: 1
+  renderSettingsPerformRendering: 1
+  renderSettingsUserRenderMode: 0
+  renderSettingsDistanceShadowmask: 1
+  renderSettingsSettingsMode: 0
+  renderSettingsFixSeams: 1
+  renderSettingsDenoise: 1
+  renderSettingsDenoise2x: 0
+  renderSettingsEncode: 1
+  renderSettingsEncodeMode: 0
+  renderSettingsOverwriteWarning: 0
+  renderSettingsAutoAtlas: 1
+  renderSettingsUnwrapUVs: 1
+  renderSettingsForceDisableUnwrapUVs: 0
+  renderSettingsMaxAutoResolution: 4096
+  renderSettingsMinAutoResolution: 16
+  renderSettingsUnloadScenes: 1
+  renderSettingsAdjustSamples: 1
+  renderSettingsGILODMode: 2
+  renderSettingsGILODModeEnabled: 0
+  renderSettingsCheckOverlaps: 0
+  renderSettingsSkipOutOfBoundsUVs: 1
+  renderSettingsHackEmissiveBoost: 1
+  renderSettingsHackIndirectBoost: 1
+  renderSettingsTempPath: 
+  renderSettingsOutPath: BakeryLightmaps
+  renderSettingsUseScenePath: 0
+  renderSettingsHackAOIntensity: 0
+  renderSettingsHackAOSamples: 16
+  renderSettingsHackAORadius: 1
+  renderSettingsShowAOSettings: 0
+  renderSettingsShowTasks: 1
+  renderSettingsShowTasks2: 0
+  renderSettingsShowPaths: 1
+  renderSettingsShowNet: 1
+  renderSettingsOcclusionProbes: 0
+  renderSettingsTexelsPerMap: 0
+  renderSettingsTexelsColor: 1
+  renderSettingsTexelsMask: 1
+  renderSettingsTexelsDir: 1
+  renderSettingsShowDirWarning: 1
+  renderSettingsRenderDirMode: 0
+  renderSettingsShowCheckerSettings: 0
+  renderSettingsSamplesWarning: 1
+  renderSettingsSuppressPopups: 0
+  renderSettingsPrefabWarning: 1
+  renderSettingsSplitByScene: 0
+  renderSettingsSplitByTag: 0
+  renderSettingsUVPaddingMax: 0
+  renderSettingsPostPacking: 1
+  renderSettingsHoleFilling: 0
+  renderSettingsBeepOnFinish: 0
+  renderSettingsExportTerrainAsHeightmap: 1
+  renderSettingsRTXMode: 0
+  renderSettingsLightProbeMode: 1
+  renderSettingsClientMode: 0
+  renderSettingsServerAddress: 127.0.0.1
+  renderSettingsUnwrapper: 0
+  renderSettingsDenoiserType: 100
+  renderSettingsExportTerrainTrees: 0
+  renderSettingsShowPerf: 1
+  renderSettingsSampleDiv: 1
+  renderSettingsAtlasPacker: 0
+  renderSettingsBatchPoints: 1
+  renderSettingsCompressVolumes: 0
+  renderSettingsSector: {fileID: 0}
+  renderSettingsRTPVExport: 1
+  renderSettingsRTPVSceneView: 0
+  renderSettingsRTPVHDR: 0
+  renderSettingsRTPVWidth: 640
+  renderSettingsRTPVHeight: 360
+  lastBakeTime: 0
+  enlightenWarningShown: 0
+  enlightenWarningShown2: 0
+  uniqueLights: []
+  lights: []
+  implicitGroups: []
+  implicitGroupedObjects: []
+  bounds: []
+  hasEmissive: 
+  uvBuffOffsets: 
+  uvBuffLengths: 
+  uvSrcBuff: []
+  uvDestBuff: []
+  lmrIndicesOffsets: 
+  lmrIndicesLengths: 
+  lmrIndicesBuff: 
+  lmGroupLODResFlags: 
+  lmGroupMinLOD: 
+  lmGroupLODMatrix: 
+  serverGetFileList: []
+  lightmapHasColor: 
+  lightmapHasMask: 
+  lightmapHasDir: 
+  lightmapHasRNM: 
+  modifiedAssetPathList: []
+  modifiedAssets: []
+  maps: []
+  masks: []
+  dirMaps: []
+  rnmMaps0: []
+  rnmMaps1: []
+  rnmMaps2: []
+  mapsMode: 
+  bakedRenderers: []
+  bakedIDs: 
+  bakedScaleOffset: []
+  bakedVertexOffset: 
+  bakedVertexColorMesh: []
+  nonBakedRenderers: []
+  bakedLights: []
+  bakedLightChannels: 
+  bakedRenderersTerrain: []
+  bakedIDsTerrain: 
+  bakedScaleOffsetTerrain: []
+  assetList: []
+  uvOverlapAssetList: 
+  idremap: 
+  usesRealtimeGI: 0
+  emptyDirectionTex: {fileID: 0}
+  anyVolumes: 0
+  compressedVolumes: 0
+  sectors: []
+--- !u!4 &1408747508
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1408747506}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1630316435
 GameObject:
   m_ObjectHideFlags: 0
@@ -1048,13 +1222,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Frustum:
-    origin: {x: 0, y: 0, z: 0}
-    rotation: {x: 0, y: 0, z: 0, w: 1}
+    origin:
+      x: 0
+      y: 0
+      z: 0
+    rotation:
+      value:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
     fov: 60
     aspect: 1.7
     zNear: 0.3
     zFar: 3.36
-  m_DrawPlanes: 0
+  m_DrawPlanes: 1
   m_DrawRays: 1
   m_DrawBounding: 1
   m_IntersectionAABBs:
@@ -1063,41 +1245,41 @@ MonoBehaviour:
       y: -0.65
       z: 0.69
     extent:
-      x: 0
-      y: 0
-      z: 0
+      x: 1.08
+      y: 0.39
+      z: 0.16
   - center:
       x: 4.98
       y: -0.02
       z: 3.64
     extent:
-      x: 0
-      y: 0
-      z: 0
+      x: 1.41
+      y: 1.34
+      z: 0.7
   - center:
-      x: 1.99
+      x: -2.66
       y: 0.37
       z: 0.42
     extent:
-      x: 0
-      y: 0
-      z: 0
+      x: 1.02
+      y: 0.27
+      z: 0.4
   - center:
       x: -1.97
       y: 1.66
-      z: 1.52
+      z: 4.7
     extent:
-      x: 0
-      y: 0
-      z: 0
+      x: 1.29
+      y: 0.2
+      z: 0.96
   - center:
       x: 0.08
       y: 0.02
       z: 2.2
     extent:
-      x: 0
-      y: 0
-      z: 0
+      x: 2.14
+      y: 0.93
+      z: 0.06
 --- !u!1 &1778609382
 GameObject:
   m_ObjectHideFlags: 0
@@ -1212,89 +1394,89 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   randomPoints:
-  - x: -0.12702876
-    y: -0.30040768
-    z: 0.23084691
-  - x: 0.089552514
-    y: 0.6870726
-    z: 0.5245419
-  - x: -0.29741207
-    y: -0.5320004
-    z: 0.73051995
-  - x: 0.43287855
-    y: 0.8409794
-    z: 0.03010596
-  - x: -0.051056974
-    y: -0.010642923
-    z: -0.0118935
-  - x: -0.14929508
-    y: -0.089279674
-    z: 0.029978575
-  - x: 0.119238675
-    y: 0.1624715
-    z: -0.19041152
-  - x: -0.010891267
-    y: -0.05709415
-    z: 0.04235151
-  - x: -0.4765988
-    y: -0.22923492
-    z: 0.74761677
-  - x: 0.02379254
-    y: 0.0072932164
-    z: 0.01473971
-  - x: -0.03812885
-    y: -0.14751834
-    z: -0.10996443
-  - x: -0.065338075
-    y: -0.08138718
-    z: -0.25189295
-  shape: 2
+  - x: -0.8181056
+    y: 0.51077074
+    z: 0.18940616
+  - x: -0.013685989
+    y: 0.22925378
+    z: -0.070146516
+  - x: -0.00983187
+    y: -0.14639531
+    z: -0.013465915
+  - x: -0.36615252
+    y: 0.3628214
+    z: -0.1576794
+  - x: -0.26140088
+    y: -0.12112162
+    z: -0.048036214
+  - x: -0.33476993
+    y: -0.60912144
+    z: -0.47751147
+  - x: -0.39423558
+    y: 0.20458093
+    z: -0.37629905
+  - x: 0.18295304
+    y: -0.30241862
+    z: 0.19675243
+  - x: -0.4824697
+    y: -0.44993538
+    z: 0.18829113
+  - x: 0.043585006
+    y: 0.027740424
+    z: -0.05721149
+  - x: 0.044492584
+    y: -0.6393746
+    z: -0.5070128
+  - x: -0.23213668
+    y: -0.8819792
+    z: 0.30985287
+  shape: 1
   centre:
-    x: -0.0458573
-    y: 0.020854285
-    z: 0.14887825
+    x: -0.22014652
+    y: -0.15126492
+    z: -0.06858835
   right:
-    x: 0.46473303
-    y: 0.77637607
-    z: -0.42575032
+    x: 0.31872928
+    y: -0.9469684
+    z: -0.040776446
   forward:
-    x: -0.88497627
-    y: 0.3915282
-    z: -0.25203684
+    x: -0.79748714
+    y: -0.24467184
+    z: -0.5514979
   up:
-    x: 0.028981319
-    y: -0.49390915
-    z: -0.8690304
+    x: 0.5122747
+    y: 0.2082922
+    z: -0.83318007
   randomPoints2D:
-  - x: -0.40063682
-    y: 0.13932845
-  - x: -0.2302347
-    y: 0.33112943
-  - x: 0.22325847
-    y: -0.5118666
-  - x: -0.06842541
-    y: -0.09219876
-  - x: -0.37808266
-    y: -0.7244073
-  - x: 0.0053882436
-    y: 0.028186254
-  - x: -0.09885709
-    y: -0.019464456
-  - x: -0.2646546
-    y: 0.4693222
-  - x: -0.10773548
-    y: 0.020130618
-  - x: 0.22552635
-    y: 0.46792537
+  - x: 0.48993325
+    y: 0.36176455
+  - x: -0.28089347
+    y: 0.1177236
+  - x: -0.124751575
+    y: -0.43568373
+  - x: 0.5760028
+    y: -0.016162347
+  - x: 0.018419405
+    y: -0.088606335
+  - x: -0.76668936
+    y: 0.3856876
+  - x: 0.23036483
+    y: -0.11513379
+  - x: -0.21554436
+    y: -0.011913735
+  - x: -0.269818
+    y: -0.29782206
+  - x: 0.10300775
+    y: -0.17242344
   centre2D:
-    x: -0.10944538
-    y: 0.010808518
+    x: -0.023996882
+    y: -0.027256971
   right2D:
-    x: -0.9995825
-    y: 0.028892448
+    x: -0.09199688
+    y: -0.9957593
   up2D:
-    x: 0.028891858
-    y: 0.9995825
+    x: 0.9957594
+    y: -0.09199579
 --- !u!1 &1893716492
 GameObject:
   m_ObjectHideFlags: 0
@@ -1339,66 +1521,65 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 240a09b0e78360245a9338c971f3084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SinValue: 0
   boundingBoxRandomPoints:
-  - x: 0.37519658
-    y: 0.00070566096
-    z: -0.7773311
-  - x: 0.26349184
-    y: 0.29766116
-    z: 0.3061429
-  - x: 0.26828465
-    y: -0.24033065
-    z: -0.083269484
-  - x: 0.008816634
-    y: -0.0027104497
-    z: -0.017569654
-  - x: 0.049550783
-    y: -0.5133604
-    z: -0.48219967
-  - x: -0.10294043
-    y: 0.07431813
-    z: -0.7366871
-  - x: -0.089693286
-    y: -0.90867877
-    z: 0.25546274
-  - x: -0.5061279
-    y: -0.13719518
-    z: 0.6306459
+  - x: 0.3124229
+    y: -0.10565474
+    z: 0.17850634
+  - x: 0.6170275
+    y: 0.6393419
+    z: -0.29586622
+  - x: -0.0052699456
+    y: 0.0035448852
+    z: -0.004195262
+  - x: -0.06088248
+    y: -0.164819
+    z: -0.0136989895
+  - x: -0.20137012
+    y: -0.07187393
+    z: 0.7726653
+  - x: 0.89724636
+    y: 0.04713384
+    z: -0.012972848
+  - x: 0.573456
+    y: 0.73211336
+    z: 0.3028667
+  - x: -0.27765304
+    y: -0.4562454
+    z: 0.66598976
   boudingBox:
     center:
-      x: -0.06546566
-      y: -0.3055088
-      z: -0.07334262
+      x: 0.30979663
+      y: 0.137934
+      z: 0.23839954
     extent:
-      x: 0.44066224
-      y: 0.60317
-      z: 0.7039885
+      x: 0.58744967
+      y: 0.5941794
+      z: 0.53426576
   boundingSpherePoints:
-  - x: 0.0013672506
-    y: -0.006991811
-    z: -0.022264544
-  - x: 0.011015059
-    y: -0.77525353
-    z: 0.21075028
-  - x: -0.14971213
-    y: -0.044723287
-    z: -0.22112599
-  - x: -0.4047831
-    y: -0.32181945
-    z: -0.17884688
-  - x: -0.11681979
-    y: -0.09782682
-    z: -0.15120739
-  - x: -0.33835354
-    y: 0.14767987
-    z: 0.009876741
+  - x: 0.5651502
+    y: 0.104980096
+    z: -0.6237788
+  - x: -0.035247345
+    y: -0.03889473
+    z: 0.009928083
+  - x: -0.22195642
+    y: 0.51620895
+    z: -0.6128646
+  - x: -0.4040023
+    y: 0.08803815
+    z: 0.12078524
+  - x: 0.16031925
+    y: 0.03278212
+    z: 0.17020535
+  - x: -0.47503373
+    y: -0.25737226
+    z: -0.1636386
   boundingSphere:
     center:
-      x: -0.16366924
-      y: -0.31378683
-      z: 0.11031351
-    radius: 0.5035411
+      x: 0.040036336
+      y: 0.05047542
+      z: -0.30530953
+    radius: 0.61655337
   boundingSphere1:
     center:
       x: 0
@@ -1411,6 +1592,15 @@ MonoBehaviour:
       y: 0
       z: 0.47
     radius: 0.12
+  box:
+    center:
+      x: -8.06
+      y: 0
+      z: 0
+    extent:
+      x: 0.5
+      y: 0.5
+      z: 0.5
 --- !u!1 &1899185937
 GameObject:
   m_ObjectHideFlags: 0
@@ -1737,176 +1927,176 @@ MonoBehaviour:
         x: 8.551002
         y: 0
     - c0:
-        x: -1.0341526
+        x: -1.0341547
         y: 2.8462794
       c1:
         x: 0
         y: 0
       c2:
-        x: -2.5004845
-        y: -2.0065646
+        x: -2.500485
+        y: -2.0065658
     - c0:
-        x: 0.78551877
-        y: -0.123380944
+        x: 0.7855173
+        y: -0.12338039
       c1:
         x: 0
         y: 0
       c2:
-        x: -0.37289304
+        x: -0.37289372
         y: 1.1142491
     - c0:
-        x: 0.18101123
-        y: 1.3631786
+        x: 0.18100977
+        y: 1.363179
       c1:
         x: 0
         y: 0
       c2:
-        x: 0.027786609
-        y: 0.008211557
+        x: 0.027786907
+        y: 0.008211676
     - c0:
-        x: -0.8588257
-        y: 0.51664245
+        x: -0.85882926
+        y: 0.51664126
       c1:
         x: 0
         y: 0
       c2:
-        x: -0.03384278
-        y: -0.6287038
+        x: -0.033842556
+        y: -0.6287041
     - c0:
-        x: -0.3954459
-        y: 1.2432972
+        x: -0.39545107
+        y: 1.2432964
       c1:
         x: 0
         y: 0
       c2:
-        x: 0.06810896
-        y: 0.21621898
+        x: 0.06810838
+        y: 0.21621875
     - c0:
-        x: -1.4436125
-        y: 0.52142245
+        x: -1.4436154
+        y: 0.5214189
       c1:
         x: 0
         y: 0
       c2:
-        x: -0.17878607
-        y: 0.34804586
+        x: -0.1787872
+        y: 0.3480451
     - c0:
-        x: -0.72707766
-        y: 0.28757846
+        x: -0.7270753
+        y: 0.28757924
       c1:
         x: 0
         y: 0
       c2:
-        x: 0.08022155
-        y: -0.262959
+        x: 0.08022173
+        y: -0.26295817
     - c0:
-        x: -0.8297529
-        y: -0.2711864
+        x: -0.8297503
+        y: -0.2711873
       c1:
         x: 0
         y: 0
       c2:
-        x: 0.14359194
-        y: -0.11586953
+        x: 0.1435923
+        y: -0.11586866
     - c0:
-        x: -0.9426134
-        y: 0.061214298
+        x: -0.94261545
+        y: 0.06121126
       c1:
         x: 0
         y: 0
       c2:
-        x: -0.14102036
-        y: 0.10944505
+        x: -0.14102152
+        y: 0.10944418
     - c0:
-        x: -0.49877533
-        y: -0.30159718
+        x: -0.498777
+        y: -0.3016082
       c1:
         x: 0
         y: 0
       c2:
-        x: 0.17171131
-        y: -0.17701618
+        x: 0.17171037
+        y: -0.17701772
     - c0:
-        x: -0.2670709
-        y: 0.09616834
+        x: -0.26707238
+        y: 0.09617704
       c1:
         x: 0
         y: 0
       c2:
-        x: -0.6164894
-        y: 0.3161077
+        x: -0.6164912
+        y: 0.31610858
     - c0:
-        x: -0.45630625
-        y: -0.30928457
+        x: -0.4563091
+        y: -0.30928075
       c1:
         x: 0
         y: 0
       c2:
-        x: 0.09494548
-        y: -0.11010153
+        x: 0.09494713
+        y: -0.110101216
     - c0:
-        x: -0.48490974
-        y: -0.58314604
+        x: -0.48491973
+        y: -0.5831456
       c1:
         x: 0
         y: 0
       c2:
-        x: 0.19838995
-        y: -0.16960949
+        x: 0.19838867
+        y: -0.16961014
     - c0:
-        x: -0.4125842
-        y: 0.0024569333
+        x: -0.412587
+        y: 0.0024596155
       c1:
         x: 0
         y: 0
       c2:
-        x: -0.12316955
-        y: 0.12180582
+        x: -0.12316965
+        y: 0.12180643
     - c0:
-        x: -0.1700888
-        y: 0.008325577
+        x: -0.17009646
+        y: 0.008323222
       c1:
         x: 0
         y: 0
       c2:
-        x: 0.14910655
-        y: 0.31325012
+        x: 0.1491033
+        y: 0.31325078
     - c0:
-        x: -0.23941109
-        y: 0.061707467
+        x: -0.23941624
+        y: 0.061704487
       c1:
         x: 0
         y: 0
       c2:
-        x: -0.19109377
-        y: 0.08841631
+        x: -0.19109516
+        y: 0.08841421
     - c0:
-        x: 0.008376777
-        y: -0.058545902
+        x: 0.0083709955
+        y: -0.058547705
       c1:
         x: 0
         y: 0
       c2:
-        x: 0.12839015
-        y: 0.11451049
+        x: 0.12838739
+        y: 0.114509776
     - c0:
-        x: -0.04923588
-        y: 0.041009545
+        x: -0.049257457
+        y: 0.041018717
       c1:
         x: 0
         y: 0
       c2:
-        x: -0.01446607
-        y: -0.1709681
+        x: -0.014472231
+        y: -0.17096676
     - c0:
         x: -0.05000016
-        y: -0.0000020218372
+        y: -0.000000023888617
       c1:
         x: 0
         y: 0
       c2:
         x: 0.025000013
-        y: -0.00000018370082
+        y: -0.00000059592566
   m_HermineSpline:
     positions:
     - position:

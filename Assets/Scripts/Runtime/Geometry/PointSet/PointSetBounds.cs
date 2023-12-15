@@ -1,5 +1,6 @@
 using Unity.Mathematics;
 using System.Collections.Generic;
+using System.Linq;
 using TObjectPool;
 using UnityEngine;
 
@@ -87,6 +88,23 @@ namespace Geometry.PointSet
             TSPoolList<float3>.Recycle(transformedPositions);
             return new GEllipsoid(sphere.center,sphere.radius*2*box.size);
         }
+        private static List<float3> kEnclosingPoints = new List<float3>();
+        
+        public static GSphere MinimumEnclosingSphere(params float3[] _points) => MinimumEnclosingSphere(_points.AsEnumerable());
+        public static GSphere MinimumEnclosingSphere(IEnumerable<float3> _points)
+        {
+            kEnclosingPoints.Clear();
+            kEnclosingPoints.AddRange(_points);
+            URandom.Shuffle(kContainedPoints,kContainedPoints.Count,1);
+            
+            if(kEnclosingPoints.Count==0)
+                return GSphere.kZero;
+
+            var box = GetBoundingBox(kEnclosingPoints);
+            return new GSphere(box.center,box.extent.magnitude());
+        }
+
+
         #endregion
         
         #region 2D

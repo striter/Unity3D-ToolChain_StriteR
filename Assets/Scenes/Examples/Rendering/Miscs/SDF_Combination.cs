@@ -36,7 +36,7 @@ namespace Examples.Rendering.Misc
             {
                 case ESDFShape.Box: return new GBox(origin, extents);
                 case ESDFShape.Sphere: return new GSphere(origin, radius);
-                case ESDFShape.Capsule: return new GCapsule(origin, capsuleShape.x, kfloat3.up, capsuleShape.y);
+                case ESDFShape.Capsule: return new Capsule(origin, capsuleShape.x, kfloat3.up, capsuleShape.y);
                 case ESDFShape.Plane: return new GPlane(normal, origin);
             }
             throw new InvalidEnumArgumentException();
