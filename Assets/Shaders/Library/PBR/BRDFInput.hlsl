@@ -4,6 +4,7 @@ struct BRDFSurface
     half3 diffuse;
     half3 specular;
     half3 emission;
+    half alpha;
     
     half metallic;
     half ao;
@@ -24,13 +25,14 @@ struct BRDFSurface
     half NDV;
 };
 
-BRDFSurface BRDFSurface_Ctor(half3 albedo,half3 emission, half smoothness, half metallic,half ao, half3 normal, half3 tangent,half3 biTangent, half3 viewDir,half anisotropic)
+BRDFSurface BRDFSurface_Ctor(half3 albedo,half alpha,half3 emission, half smoothness, half metallic,half ao, half3 normal, half3 tangent,half3 biTangent, half3 viewDir,half anisotropic)
 {
     BRDFSurface surface;
     
     half oneMinusReflectivity = DIELETRIC_SPEC.a - metallic * DIELETRIC_SPEC.a;
     half reflectivity = 1.0h - oneMinusReflectivity;
 
+    surface.alpha = alpha;
     surface.diffuse = albedo * oneMinusReflectivity;
     surface.emission = emission;
     surface.specular = lerp(DIELETRIC_SPEC.rgb, albedo, metallic);

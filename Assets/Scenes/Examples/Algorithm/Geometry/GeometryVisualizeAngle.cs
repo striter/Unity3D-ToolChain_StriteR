@@ -17,10 +17,10 @@ namespace Examples.Algorithm.Geometry
 
 
             Gizmos.color = Color.green;
-            Gizmos.DrawLine(Vector3.zero,m_Position);
+            Gizmos.DrawLine(Vector3.zero,m_Position.normalized); 
 
-            var rad = umath.GetRadClockWise(Vector2.up,new Vector2(m_Position.x,m_Position.z));
-            UGizmos.DrawString( Vector3.zero,(kmath.kRad2Deg*rad).ToString());
+            var yaw = umath.toPitchYaw(m_Position);
+            UGizmos.DrawString( Vector3.zero,yaw.ToString());
         }
     }
     #endif

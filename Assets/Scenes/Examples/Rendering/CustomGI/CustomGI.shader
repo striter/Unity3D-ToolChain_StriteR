@@ -21,23 +21,31 @@ Shader "Hidden/CustomGI"
         [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
         [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
         [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
+        [Toggle(_ALPHACLIP)]_AlphaClip("Alpha Clip",float)=0
+        [Foldout(_ALPHACLIP)]_AlphaCutoff("Range",Range(0.01,1))=0.01
     }
     SubShader
     {
     	HLSLINCLUDE
 
+			#pragma shader_feature_local_fragment _ALPHACLIP
 			#include "Assets/Shaders/Library/Common.hlsl"
 			#include "Assets/Shaders/Library/Lighting.hlsl"
 			
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_EmissionTex);SAMPLER(sampler_EmissionTex);
+			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
+			TEXTURE2D(_PBRTex);SAMPLER(sampler_PBRTex);
+			
 			INSTANCING_BUFFER_START
 				INSTANCING_PROP(float4,_MainTex_ST)
 				INSTANCING_PROP(float4, _Color)
 				INSTANCING_PROP(float4,_BlendTex_ST)
 				INSTANCING_PROP(float4,_BlendColor)
 				INSTANCING_PROP(float4,_EmissionColor)
+				INSTANCING_PROP(float,_AlphaCutoff)
 			INSTANCING_BUFFER_END
+			
     	ENDHLSL
 		Pass
 		{
@@ -58,9 +66,6 @@ Shader "Hidden/CustomGI"
 			#pragma multi_compile_vertex _ _WORLDUV
             #pragma multi_compile_fog
 
-			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
-			TEXTURE2D(_PBRTex);SAMPLER(sampler_PBRTex);
-			
 			#define NFOG
 			#define V2F_FOG(index) half fogFactor:TEXCOORDindex;
 	        #define FOG_TRANSFER(o) o.fogFactor=FogFactor(o.positionCS.z);
@@ -152,9 +157,40 @@ Shader "Hidden/CustomGI"
 			#pragma fragment ForwardFragment
 			ENDHLSL
 		}
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
-        
+
+		Pass
+		{
+			NAME "DEPTH"
+			Tags{"LightMode" = "DepthOnly"}
+			
+			Blend Off
+			ZWrite On
+			ZTest [_ZTest]
+			Cull [_Cull]
+			
+			HLSLPROGRAM
+            #include "Assets/Shaders/Library/Passes/DepthOnly.hlsl"
+			#pragma vertex DepthVertex
+			#pragma fragment DepthFragment
+			ENDHLSL
+		}
+		Pass
+		{
+			NAME "SHADOWCASTER"
+			Tags{"LightMode" = "ShadowCaster"}
+			
+			Blend Off
+			ZWrite On
+			ZTest LEqual
+			Cull Off
+			
+			HLSLPROGRAM
+			
+            #include "Assets/Shaders/Library/Passes/ShadowCaster.hlsl"
+			#pragma vertex ShadowVertex
+			#pragma fragment ShadowFragment
+			ENDHLSL
+		}
 		Pass
 		{
             Name "META"
@@ -164,7 +200,7 @@ Shader "Hidden/CustomGI"
             HLSLPROGRAM
             #pragma vertex VertexMeta
             #pragma fragment FragmentMeta
-            #include "Assets/Shaders/Library/Passes/Meta.hlsl"
+            #include "Assets/Shaders/Library/Passes/MetaPBR.hlsl"
             ENDHLSL
 		}
     }

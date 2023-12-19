@@ -96,7 +96,6 @@
 			#pragma shader_feature_local_fragment _PARALLAX
 			#pragma shader_feature_local_fragment _DEPTHBUFFER
 			#pragma shader_feature_local_fragment _DEPTHMAP
-			#include "Assets/Shaders/Library/Additional/Local/AlphaClip.hlsl"
 			#pragma shader_feature_local_fragment _ALPHACLIP
 			#pragma shader_feature_local_fragment _SSS
 
@@ -156,7 +155,6 @@
 
 			#define GET_ALBEDO(i) CalculateAlbedo(i.uv);
 			#define GET_EMISSION(i) OverrideEmission(i.uv.xy);
-			#include "Assets/Shaders/Library/PBR.hlsl"
 		ENDHLSL
 
 		Pass
@@ -185,6 +183,8 @@
 			#pragma shader_feature_local_fragment _NDF_BLINNPHONG _NDF_COOKTORRANCE _NDF_BECKMANN _NDF_GAUSSIAN _NDF_GGX _NDF_TROWBRIDGEREITZ _NDF_ANISOTROPIC_TROWBRIDGEREITZ _NDF_ANISOTROPIC_WARD _NDF_ANISOTROPIC_BECKMANN _NDF_ANISOTROPIC_GGX
 			#pragma shader_feature_local_fragment _VF_BLINNPHONG _VF_GGX
 
+			#include "Assets/Shaders/Library/Additional/Local/AlphaClip.hlsl"
+			#include "Assets/Shaders/Library/PBR.hlsl"
 			float GetGeometryShadow(BRDFSurface surface,BRDFLightInput lightSurface)
 			{
 				return max(0., lightSurface.NDL);
@@ -290,7 +290,7 @@
 				half3 emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,i.uv).rgb*INSTANCE(_EmissionColor).rgb;
 			#endif
 
-				BRDFSurface surface = BRDFSurface_Ctor(albedo,emission,smoothness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,anisotropic);
+				BRDFSurface surface = BRDFSurface_Ctor(albedo,color.a,emission,smoothness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,anisotropic);
 
 				half3 finalCol=0;
 				Light mainLight=GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
@@ -346,6 +346,8 @@
 			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment DepthFragment
+			#include "Assets/Shaders/Library/Additional/Local/AlphaClip.hlsl"
+			#include "Assets/Shaders/Library/PBR.hlsl"
 			f2of DepthFragment(v2f i)
 			{
 				f2of o;
@@ -388,7 +390,6 @@
             HLSLPROGRAM
             #pragma vertex VertexMeta
             #pragma fragment FragmentMeta
-			#pragma shader_feature_local_fragment _ALPHACLIP
             #include "Assets/Shaders/Library/Passes/MetaPBR.hlsl"
             ENDHLSL
 		}

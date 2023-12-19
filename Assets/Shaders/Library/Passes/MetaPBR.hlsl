@@ -1,6 +1,7 @@
 ﻿#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
-#include "ForwardPBR.hlsl"
 
+#include "Assets//Shaders/Library/PBR.hlsl"
+#include "ForwardPBR.hlsl"
 
 struct a2vmeta
 {

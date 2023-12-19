@@ -18,6 +18,7 @@ namespace Examples.Algorithm.Geometry
         public GPolynomialCurve m_PolynomialCurve;
         [Range(0,1)]public float m_BezeirSplit = 0;
         public GHermiteCurve m_HermiteCurve = GHermiteCurve.kDefault;
+        public GProjectileCurve m_ProjectileCurve = GProjectileCurve.kDefault;
         
         [Header("Spline")]
         public GFourierSpline m_FourierSpline = GFourierSpline.kBunny;

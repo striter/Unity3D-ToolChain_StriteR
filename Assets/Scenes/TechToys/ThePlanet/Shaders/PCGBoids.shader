@@ -20,6 +20,10 @@ Shader "PCG/Bird"
 
 	        #include "Assets/Shaders/Library/Common.hlsl"
 			#include "Assets/Shaders/Library/Lighting.hlsl"
+			
+			TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
+			TEXTURE2D(_EmissionTex);SAMPLER(sampler_EmissionTex);
+			TEXTURE2D(_PBRTex);SAMPLER(sampler_PBRTex);
 	        INSTANCING_BUFFER_START
 				INSTANCING_PROP(float4,_MainTex_ST)
 				INSTANCING_PROP(float4, _Color)
@@ -59,10 +63,6 @@ Shader "PCG/Bird"
 			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
 			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
 			#include "PCGInclude.hlsl"
-			
-			TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
-			TEXTURE2D(_EmissionTex);SAMPLER(sampler_EmissionTex);
-			TEXTURE2D(_PBRTex);SAMPLER(sampler_PBRTex);
 			#define _NORMALOFF
 			void GetPBRParameters(inout float g,inout float m,inout float a) { g = 0.5; m = 0; a = 1; }
 			#define GET_PBRPARAM(i,smoothness,metallic,ao) GetPBRParameters(smoothness,metallic,ao)

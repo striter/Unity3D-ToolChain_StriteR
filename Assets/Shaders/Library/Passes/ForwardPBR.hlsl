@@ -1,4 +1,4 @@
-﻿
+﻿#include "Assets/Shaders/Library/Additional/Local/AlphaClip.hlsl"
 v2ff ForwardVertex(a2vf v)
 {
 	v2ff o;
@@ -6,10 +6,8 @@ v2ff ForwardVertex(a2vf v)
 	UNITY_TRANSFER_INSTANCE_ID(v, o);
 	o.uv = TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
 	o.normalWS = TransformObjectToWorldNormal(v.normalOS);
-	#if !defined (_NORMALOFF)	//TBN Matrix
-		o.tangentWS = TransformObjectToWorldDir(v.tangentOS.xyz);
-		o.biTangentWS = cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
-	#endif
+	o.tangentWS = TransformObjectToWorldDir(v.tangentOS.xyz);
+	o.biTangentWS = cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
 	//Positions
 	#if defined(GET_POSITION_WS)
 		float3 positionWS = GET_POSITION_WS(v,o);
@@ -36,15 +34,26 @@ BRDFSurface InitializeFragmentSurface(v2ff i)
 	FRAGMENT_SETUP(i)
 #endif
 
+	float2 baseUV=i.uv.xy;
 	float3 normalWS=normalize(i.normalWS);
 	float3 viewDirWS=normalize(i.viewDirWS);
 	half3 normalTS=half3(0,0,1);
+
+	half4 color = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV)*INSTANCE(_Color);
+	
+	half3 albedo = 
 #if defined(GET_ALBEDO)
-	half3 albedo = GET_ALBEDO(i);
+	 GET_ALBEDO(i);
 #else
-	half3 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*INSTANCE(_Color).rgb;
+	 	color.rgb;
 #endif
-	float2 baseUV=i.uv.xy;
+	
+	half alpha =
+#if defined(GET_ALPHA)
+	 GET_ALPHA(i,surface);
+#else
+	color.a;
+#endif
 
 	half3 tangentWS = 0;
 	half3 biTangentWS = 0;
@@ -82,7 +91,7 @@ half smoothness=0.5,metallic=0,ao =1;
 	#endif
 #endif
 	
-	BRDFSurface surface=BRDFSurface_Ctor(albedo,emission,smoothness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,1);
+	BRDFSurface surface=BRDFSurface_Ctor(albedo,alpha,emission,smoothness,metallic,ao,normalWS,tangentWS,biTangentWS,viewDirWS,1);
 
 	#if defined(BRDFSURFACE_OVERRIDE)
 		BRDFSURFACE_OVERRIDE(i,surface);
@@ -132,12 +141,8 @@ f2of ForwardFragment(v2ff i)
 	FOG_MIX(i,finalCol);
 	// finalCol+=surface.emission;
 
-	half alpha = 1.h;
-	#if defined(GET_ALPHA)
-		alpha = GET_ALPHA(i,surface);
-	#endif
-
-	o.result = float4(finalCol,1);
+	AlphaClip(surface.alpha);
+	o.result = float4(finalCol,surface.alpha);
 	// o.result = 1;
 	#if defined(F2O_TRANSFER)
 		F2O_TRANSFER(o)

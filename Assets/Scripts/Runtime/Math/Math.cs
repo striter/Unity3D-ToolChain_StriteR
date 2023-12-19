@@ -46,13 +46,6 @@ public static partial class umath
         return primes;
     }
     
-    public static float GetRadClockWise(float2 _axis,float2 _vector)
-    {
-        float sin = _vector.x * _axis.y - _axis.x * _vector.y;
-        float cos = _vector.x * _axis.x + _vector.y * _axis.y;
-        
-        return Mathf.Atan2(sin,cos);
-    }
 
     public static int pow(int _src, int _pow)
     {
@@ -217,6 +210,13 @@ public static partial class umath
         if (num > 180.0)
             num -= 360f;
         return num;
+    }
+    public static float2 deltaAngle(float2 _x, float2 _xd)
+    {
+        return new float2(
+            deltaAngle(_x.x, _xd.x),
+            deltaAngle(_x.y, _xd.y)
+        );
     }
 
     public static float4 deltaAngle(float4 _x, float4 _xd)

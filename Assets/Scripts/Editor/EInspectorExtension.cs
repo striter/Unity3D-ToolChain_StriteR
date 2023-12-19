@@ -38,6 +38,7 @@ namespace UnityEditor.Extensions
         }
 
         private List<ButtonAttributeData> clickMethods = new List<ButtonAttributeData>();
+        private bool m_Folded;
         private void OnEnable()
         {
             foreach (var (method,attribute) in target.GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance).Select(p=>(p,p.GetCustomAttribute<ButtonAttribute>(true))))
@@ -65,6 +66,8 @@ namespace UnityEditor.Extensions
                 }
                 clickMethods.Add(buttonData); 
             }
+
+            m_Folded = true;
         }
 
         private void OnDisable()
@@ -79,41 +82,51 @@ namespace UnityEditor.Extensions
                 return;
             
             EditorGUILayout.BeginVertical();
-            foreach (var data in clickMethods)
+            m_Folded = EditorGUILayout.Foldout(m_Folded,"Editor Buttons",true,EditorStyles.foldoutHeader);
+            if (!m_Folded)
             {
-                if(data.attribute is FoldoutButtonAttribute foldOutButton && !foldOutButton.IsElementVisible(target))
-                    continue;
-
-                
-                EditorGUILayout.BeginVertical();
-                GUILayout.Label(data.method.Name);
-                
-                if (data.parameters.Length > 0)
+                foreach (var data in clickMethods)
                 {
-                    
-                    EditorGUILayout.BeginHorizontal();
+                    if(data.attribute is FoldoutButtonAttribute foldOutButton && !foldOutButton.IsElementVisible(target))
+                        continue;
 
-                    foreach (var parameter in data.parameters)
+
+                    EditorGUILayout.BeginVertical();
+                    if (data.parameters.Length > 0)
                     {
-                        var key = parameter.type;
-                        switch (key)
+                        EditorGUILayout.BeginHorizontal();
+
+                        foreach (var parameter in data.parameters)
                         {
-                            case EButtonParameters.Float: parameter.value = EditorGUILayout.FloatField(parameter.name,(float)parameter.value); break;
-                            case EButtonParameters.Integer: parameter.value = EditorGUILayout.IntField(parameter.name,(int)parameter.value); break;
-                            case EButtonParameters.String: parameter.value = EditorGUILayout.TextField(parameter.name,(string)parameter.value); break;
-                            case EButtonParameters.NotSupported:EditorGUILayout.LabelField("Not Supported Type");break;
+                            var key = parameter.type;
+                            switch (key)
+                            {
+                                case EButtonParameters.Float: parameter.value = EditorGUILayout.FloatField(parameter.name,(float)parameter.value); break;
+                                case EButtonParameters.Integer: parameter.value = EditorGUILayout.IntField(parameter.name,(int)parameter.value); break;
+                                case EButtonParameters.String: parameter.value = EditorGUILayout.TextField(parameter.name,(string)parameter.value); break;
+                                case EButtonParameters.NotSupported:EditorGUILayout.LabelField("Not Supported Type");break;
+                            }
+                        }
+                        if (GUILayout.Button(data.method.Name))
+                        {
+                            data.method.Invoke(target,data.parameters.Select(p=>p.value).ToArray());
+                            Undo.RegisterCompleteObjectUndo(target,"Button Click");
+                        }
+                        EditorGUILayout.EndHorizontal();
+                    }
+                    else
+                    {
+                        if (GUILayout.Button(data.method.Name))
+                        {
+                            data.method.Invoke(target,null);
+                            Undo.RegisterCompleteObjectUndo(target,"Button Click");
                         }
                     }
-                    EditorGUILayout.EndHorizontal();
-                }
                 
-                if (GUILayout.Button("Execute"))
-                {
-                    data.method.Invoke(target,data.parameters.Select(p=>p.value).ToArray());
-                    Undo.RegisterCompleteObjectUndo(target,"Button Click");
+                    EditorGUILayout.EndVertical();
                 }
-                EditorGUILayout.EndVertical();
             }
+        
             EditorGUILayout.EndVertical();
         }
     }

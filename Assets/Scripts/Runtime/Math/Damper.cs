@@ -63,6 +63,11 @@ public class Damper : ISerializationCallbackReceiver
         _desire = value.x + deltaAngle(value.x,_desire);
         return Tick(_deltaTime,(float4)_desire).x;
     }
+    public float2 TickAngle(float _deltaTime, float2 _desire)
+    {
+        _desire = value.xy + deltaAngle(value.xy,_desire);
+        return Tick(_deltaTime,_desire.to4()).xy;
+    }
 
     public quaternion Tick(float _deltaTime, quaternion _target)
     {

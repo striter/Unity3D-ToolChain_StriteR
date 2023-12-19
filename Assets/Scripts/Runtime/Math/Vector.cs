@@ -19,6 +19,13 @@ public static partial class umath
         return nonCloseAngle;
     }
 
+    public static float angle(float3 _first, float3 _second, float3 _up)
+    {
+        var nonCloseAngle = radBetween(_first, _second) * kmath.kRad2Deg;
+        nonCloseAngle *= math.sign(dot(_up, cross(_first, _second)));
+        return nonCloseAngle;
+    }
+    
     public static float closestYaw(float3 _direction) => closestAngle(kfloat3.forward,_direction.setY(0).normalize(),kfloat3.up);
     public static float2 closestPitchYaw(float3 _direction)
     {
@@ -29,6 +36,20 @@ public static partial class umath
         return new float2(desiredPitch, desiredYaw);
     }
 
+    public static float2 toPitchYaw(float3 _direction)
+    {
+        var pitch = math.atan2(-_direction.y, math.sqrt(_direction.x * _direction.x + _direction.z * _direction.z));
+        var yaw = math.atan2(_direction.x, _direction.z);
+        return new float2(pitch, yaw) * kmath.kRad2Deg;
+    }
+
+    public static float getRadClockwise(float2 _axis,float2 _vector)
+    {
+        float sin = _vector.x * _axis.y - _axis.x * _vector.y;
+        float cos = _vector.x * _axis.x + _vector.y * _axis.y;
+        
+        return Mathf.Atan2(sin,cos);
+    }
     public static float2 closestPitchYaw(quaternion _quaternion) => closestPitchYaw(math.mul(_quaternion,kfloat3.forward));
     
     public static float distanceXZ(float3 _start, Vector3 _end) => new float2(_start.x - _end.x, _start.z - _end.z).magnitude();
