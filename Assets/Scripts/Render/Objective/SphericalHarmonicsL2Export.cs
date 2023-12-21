@@ -195,7 +195,7 @@ namespace Rendering.GI.SphericalHarmonics
                 int width = _cubemap.width - 1;
                 int x = (int) (width * uv.x);
                 int y = (int) (width * uv.y);
-                return _cubemap.GetPixel((CubemapFace) index, x, y).to3()*_intensity;
+                return _cubemap.GetPixel((CubemapFace) index, x, y).linear.to3()*_intensity;
             },_randomSeed);
         }
         

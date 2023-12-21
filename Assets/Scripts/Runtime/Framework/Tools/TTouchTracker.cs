@@ -106,12 +106,15 @@ namespace TTouchTracker
       return Input.touches;
 #endif
         }
+        
+        private static readonly List<int> kTracksIndex = new List<int>();
         private static readonly List<TrackData> kTracks = new List<TrackData>();
         public static List<TrackData> Execute(float _unscaledDeltaTime)
         {
             Vector2 screenSize = new Vector2(Screen.width, Screen.height);
-            foreach (var trackIndex in m_TrackData.Keys.Collect(p => m_TrackData[p].phase == TouchPhase.Ended||m_TrackData[p].phase== TouchPhase.Canceled).ToArray())
+            foreach (var trackIndex in m_TrackData.Keys.Collect(p => m_TrackData[p].phase == TouchPhase.Ended||m_TrackData[p].phase== TouchPhase.Canceled).FillList(kTracksIndex))     //We don't remove touch the frame its cancelled, state will be used across applications
                 m_TrackData.Remove(trackIndex);
+
             
             foreach (Touch touch in GetTouches())
             {

@@ -750,7 +750,7 @@ public static class UCollection
         }
     }
 
-    public static void FillList<T>(this IEnumerable<T> _collection, List<T> _list,bool _sameCheck = false)
+    public static List<T> FillList<T>(this IEnumerable<T> _collection, List<T> _list,bool _sameCheck = false)
     {
         _list.Clear();
         foreach (var element in _collection)
@@ -760,6 +760,8 @@ public static class UCollection
             else
                 _list.Add(element);
         }
+
+        return _list;
     }
     
     

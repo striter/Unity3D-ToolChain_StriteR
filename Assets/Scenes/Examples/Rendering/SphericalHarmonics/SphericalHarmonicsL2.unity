@@ -21,7 +21,7 @@ RenderSettings:
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 1, g: 0, b: 0, a: 1}
-  m_AmbientEquatorColor: {r: 0, g: 1, b: 0, a: 1}
+  m_AmbientEquatorColor: {r: 0, g: 0, b: 0, a: 1}
   m_AmbientGroundColor: {r: 0, g: 0, b: 1, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 1
@@ -221,41 +221,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Data:
     l00:
-      x: 0.43449146
-      y: 2.676932
-      z: 0.6143795
+      x: 0.68313324
+      y: 0
+      z: 0.68313324
     l10:
-      x: 0.01795137
-      y: 0.00004107874
-      z: -0.017984279
+      x: 0
+      y: 0
+      z: 0
     l11:
-      x: 0.5187639
-      y: 0.03316111
-      z: -0.54513955
+      x: 0.5570284
+      y: 0
+      z: -0.5570284
     l12:
-      x: 0.0012350891
-      y: -0.01254519
-      z: 0.008378191
+      x: 0
+      y: 0
+      z: 0
     l20:
-      x: 0.013432848
-      y: -0.04731047
-      z: -0.017157324
+      x: 0
+      y: 0
+      z: 0
     l21:
-      x: 0.006343459
-      y: 0.15919042
-      z: 0.047194183
+      x: 0
+      y: 0
+      z: 0
     l22:
-      x: -0.13099867
-      y: 0.3164195
-      z: -0.13607045
+      x: -0.24770798
+      y: 0
+      z: -0.24770798
     l23:
-      x: 0.012787929
-      y: 0.05268221
-      z: 0.011127921
+      x: 0
+      y: 0
+      z: 0
     l24:
-      x: -0.23491731
-      y: 0.58006006
-      z: -0.17980212
+      x: -0.14301425
+      y: 0
+      z: -0.14301425
   m_SHMode: 0
   m_SampleCount: 512
   m_Cubemap: {fileID: 8900000, guid: 1135303bf34e08e49a54f2cef9219111, type: 2}
