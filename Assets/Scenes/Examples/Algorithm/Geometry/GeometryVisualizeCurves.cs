@@ -61,6 +61,9 @@ namespace Examples.Algorithm.Geometry
             Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(15f,0f,0f));
             m_HermiteCurve.DrawGizmos();
             
+            Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(20f,0f,0f));
+            m_ProjectileCurve.DrawGizmos();
+
             //Splines
             Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(0f,0f,-3f));
             m_FourierSpline.DrawGizmos();

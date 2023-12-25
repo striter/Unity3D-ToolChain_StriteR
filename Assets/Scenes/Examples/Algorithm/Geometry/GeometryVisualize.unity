@@ -1799,6 +1799,20 @@ MonoBehaviour:
       x: 0
       y: 0
       z: -1
+  m_ProjectileCurve:
+    origin:
+      x: 0
+      y: 0
+      z: 0
+    initialSpeed:
+      x: 1
+      y: 1
+      z: 0
+    friction:
+      x: 0
+      y: -1
+      z: 0
+    duration: 2
   m_FourierSpline:
     paths:
     - x: 0.098
@@ -2220,3 +2234,11 @@ MonoBehaviour:
     iteration: 3
     ratio: 0.25
     closed: 1
+  startPosition:
+    x: 0
+    y: 0
+    z: 0
+  endPosition:
+    x: 4.01
+    y: 1.48
+    z: 3.62
