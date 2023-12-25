@@ -47,6 +47,9 @@ namespace Examples.Algorithm.Geometry
                 m_CubicCurve.Split(m_BezeirSplit,out var L,out var R);
                 L.DrawGizmos();
                 R.DrawGizmos();
+                Gizmos.color = Color.grey;
+                L.GetBoundingBox().DrawGizmos();
+                R.GetBoundingBox().DrawGizmos();
             }
             else
             {

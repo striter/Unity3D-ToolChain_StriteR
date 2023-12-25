@@ -1781,7 +1781,7 @@ MonoBehaviour:
       x: -4.14
       y: 0
       z: 3
-  m_BezeirSplit: 0
+  m_BezeirSplit: 0.663
   m_HermiteCurve:
     srcPosition:
       x: -1
@@ -2234,11 +2234,3 @@ MonoBehaviour:
     iteration: 3
     ratio: 0.25
     closed: 1
-  startPosition:
-    x: 0
-    y: 0
-    z: 0
-  endPosition:
-    x: 4.01
-    y: 1.48
-    z: 3.62
