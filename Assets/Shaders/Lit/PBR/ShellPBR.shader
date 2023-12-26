@@ -80,7 +80,6 @@
             #pragma multi_compile_fog
             #pragma target 3.5
 
-
 		ENDHLSL
 		Pass
 		{
@@ -122,6 +121,7 @@
 				return positionWS;
 			}
 
+
 			float3 GetAlbedo(float2 baseUV,float2 furUV)
 			{
 				float delta= INSTANCE(_ShellDelta);
@@ -133,12 +133,13 @@
 				albedo*=lerp(INSTANCE(_RootColor).rgb,INSTANCE(_EdgeColor).rgb,delta);
 				return albedo;
 			}
-
-			#define GET_POSITION_WS(v,o) GetPositionWS(v.positionOS,o.normalWS)
+			
 			#define GET_ALBEDO(i)  GetAlbedo(i.uv,i.furUV)
+			#define GET_POSITION_WS(v,o) GetPositionWS(v.positionOS,o.normalWS)
 			#define GET_PBRPARAM(i,smoothness,metallic,ao) ao=saturate(ao-(1-INSTANCE(_ShellDelta))*INSTANCE(_FurShadow));
 	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
 			#define GET_EMISSION(i) 0
+			
 			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			

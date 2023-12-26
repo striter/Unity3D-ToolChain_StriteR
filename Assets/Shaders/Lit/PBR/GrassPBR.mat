@@ -9,6 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: GrassPBR
   m_Shader: {fileID: 4800000, guid: a3ed444ff715cb6458df4360304125a6, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ANISOTROPIC
   m_InvalidKeywords:
@@ -23,6 +25,7 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -202,6 +205,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaClipRange: 0.01
+    - _AlphaCutoff: 0.01
     - _AnisoTropicValue: 1
     - _Anisotropic: 1
     - _Atlas: 0

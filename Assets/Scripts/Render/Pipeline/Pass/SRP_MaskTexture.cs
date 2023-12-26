@@ -90,7 +90,7 @@ namespace Rendering.Pipeline
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {                
             CommandBuffer buffer = CommandBufferPool.Get("Camera Mask Texture");
-            buffer.SetRenderTarget(KRenderTextures.kCameraMaskTextureRT);
+            buffer.SetRenderTarget(KRenderTextures.kCameraMaskTextureRT,_renderingData.cameraData.renderer.cameraDepthTargetHandle);
             buffer.ClearRenderTarget(false, true, Color.black);
             _context.ExecuteCommandBuffer(buffer);
 

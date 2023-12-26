@@ -39,13 +39,13 @@ BRDFSurface InitializeFragmentSurface(v2ff i)
 	float3 viewDirWS=normalize(i.viewDirWS);
 	half3 normalTS=half3(0,0,1);
 
-	half4 color = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV)*INSTANCE(_Color);
+	half4 color = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV);
 	
 	half3 albedo = 
 #if defined(GET_ALBEDO)
 	 GET_ALBEDO(i);
 #else
-	 	color.rgb;
+	 	color.rgb*INSTANCE(_Color).rgb;
 #endif
 	
 	half alpha =

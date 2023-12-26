@@ -301,16 +301,16 @@ MonoBehaviour:
       m_SampleCount: 8
       m_Dither: 1
       m_RandomVectorKeywords: Default1
-    m_VolumetricCloud: 1
+    m_VolumetricCloud: 0
     m_VolumetricCloudData:
-      m_Shape: 1
+      m_Shape: 0
       m_CullingMask: 16
-      m_VerticalStart: -35.8
-      m_VerticalLength: 45.2
+      m_VerticalStart: 8.8
+      m_VerticalLength: 107.8
       m_MainNoise: {fileID: 11700000, guid: d7cdc3d1f96e777489126e46f6ca72c0, type: 2}
       m_MainNoiseScale: {x: 50, y: 50, z: 50}
       m_MainNoiseFlow: {x: 5, y: 0.1, z: 0.1}
-      m_Density: 2
+      m_Density: 0.7
       m_DensityClip: 0.66
       m_DensitySmooth: 1
       m_Distance: 22.18
@@ -417,12 +417,20 @@ MonoBehaviour:
   m_Dithering: 0
   m_ClearDepth: 1
   m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
   m_UseScreenCoordOverride: 0
   m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
   m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+  m_TaaSettings:
+    quality: 3
+    frameInfluence: 0.1
+    jitterScale: 1
+    mipBias: 0
+    varianceClampScale: 0.9
+    contrastAdaptiveSharpening: 0
 --- !u!1 &374659047
 GameObject:
   m_ObjectHideFlags: 0
@@ -584,7 +592,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c9069de444b74640934c1f52a05e91f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_RotateSpeed: {x: 20, y: 20, z: 20}
+  m_FocusTarget: {fileID: 0}
+  pitchYaw:
+    x: 0
+    y: 0
+  m_ViewportPoint:
+    x: 0
+    y: 0
+  m_YAnchor: 0
+  m_RotationDamper:
+    mode: 1
+    halfLife: 0.5
+    stiffness: 20
+    damping: 4
+    f: 5
+    z: 0.35
+    r: -0.5
+    poleMatching: 0
+  m_OriginDistanceDamper:
+    mode: 1
+    halfLife: 0.5
+    stiffness: 20
+    damping: 4
+    f: 5
+    z: 0.35
+    r: -0.5
+    poleMatching: 0
 --- !u!1 &520397182
 GameObject:
   m_ObjectHideFlags: 0
@@ -651,12 +684,20 @@ MonoBehaviour:
   m_Dithering: 0
   m_ClearDepth: 1
   m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
   m_UseScreenCoordOverride: 0
   m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
   m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+  m_TaaSettings:
+    quality: 3
+    frameInfluence: 0.1
+    jitterScale: 1
+    mipBias: 0
+    varianceClampScale: 0.9
+    contrastAdaptiveSharpening: 0
 --- !u!20 &520397185
 Camera:
   m_ObjectHideFlags: 0
@@ -856,7 +897,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Version: 2
+  m_Version: 3
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
   m_LightLayerMask: 1
@@ -866,7 +907,7 @@ MonoBehaviour:
   m_ShadowRenderingLayers: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 1
+  m_SoftShadowQuality: 2
 --- !u!1 &559505669
 GameObject:
   m_ObjectHideFlags: 0
@@ -1696,12 +1737,20 @@ MonoBehaviour:
   m_Dithering: 0
   m_ClearDepth: 1
   m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
   m_UseScreenCoordOverride: 0
   m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
   m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+  m_TaaSettings:
+    quality: 3
+    frameInfluence: 0.1
+    jitterScale: 1
+    mipBias: 0
+    varianceClampScale: 0.9
+    contrastAdaptiveSharpening: 0
 --- !u!114 &1230212951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1760,7 +1809,7 @@ GameObject:
   - component: {fileID: 1397122145}
   - component: {fileID: 1397122143}
   - component: {fileID: 1397122144}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Cube_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1794,7 +1843,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c9069de444b74640934c1f52a05e91f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_RotateSpeed: {x: 20, y: 20, z: 20}
+  m_FocusTarget: {fileID: 0}
+  pitchYaw:
+    x: 0
+    y: 0
+  m_ViewportPoint:
+    x: 0
+    y: 0
+  m_YAnchor: 0
+  m_RotationDamper:
+    mode: 1
+    halfLife: 0.5
+    stiffness: 20
+    damping: 4
+    f: 5
+    z: 0.35
+    r: -0.5
+    poleMatching: 0
+  m_OriginDistanceDamper:
+    mode: 1
+    halfLife: 0.5
+    stiffness: 20
+    damping: 4
+    f: 5
+    z: 0.35
+    r: -0.5
+    poleMatching: 0
 --- !u!64 &1397122144
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2039,12 +2113,20 @@ MonoBehaviour:
   m_Dithering: 0
   m_ClearDepth: 1
   m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
   m_UseScreenCoordOverride: 0
   m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
   m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+  m_TaaSettings:
+    quality: 3
+    frameInfluence: 0.1
+    jitterScale: 1
+    mipBias: 0
+    varianceClampScale: 0.9
+    contrastAdaptiveSharpening: 0
 --- !u!114 &1941222566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2312,12 +2394,20 @@ MonoBehaviour:
   m_Dithering: 0
   m_ClearDepth: 1
   m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
   m_UseScreenCoordOverride: 0
   m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
   m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+  m_TaaSettings:
+    quality: 3
+    frameInfluence: 0.1
+    jitterScale: 1
+    mipBias: 0
+    varianceClampScale: 0.9
+    contrastAdaptiveSharpening: 0
 --- !u!114 &2086077262
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -77,7 +77,7 @@ MonoBehaviour:
     m_Normal: 1
     m_Mask: 1
     m_MaskData:
-      renderMask: 32
+      renderMask: 64
       color: {r: 1, g: 1, b: 1, a: 1}
       m_Outline: 0
       extendWidth: 0

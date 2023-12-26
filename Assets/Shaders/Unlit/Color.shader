@@ -16,10 +16,10 @@
 	{ 
 		Tags {"Queue" = "Transparent" }
 		
-		ZTest [_ZTest]
+		ZTest LEqual
 		Cull [_Cull]
 		ColorMask [_ColorMask]
-		ZWrite [_ZWrite]
+		ZWrite Off
 		Blend SrcAlpha OneMinusSrcAlpha
 
 		Pass
