@@ -30,10 +30,6 @@ v2ff ForwardVertex(a2vf v)
 
 BRDFSurface InitializeFragmentSurface(v2ff i)
 {
-#if defined(FRAGMENT_SETUP)
-	FRAGMENT_SETUP(i)
-#endif
-
 	float2 baseUV=i.uv.xy;
 	float3 normalWS=normalize(i.normalWS);
 	float3 viewDirWS=normalize(i.viewDirWS);
@@ -103,6 +99,10 @@ f2of ForwardFragment(v2ff i)
 {
 	UNITY_SETUP_INSTANCE_ID(i);
 	f2of o;
+
+#if defined(FRAGMENT_SETUP)
+	FRAGMENT_SETUP(i)
+#endif
 
 	BRDFSurface surface = InitializeFragmentSurface(i);
 	float3 positionWS = i.positionWS;

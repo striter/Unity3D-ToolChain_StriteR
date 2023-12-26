@@ -31,7 +31,7 @@ namespace Runtime
             List<GTriangle> triangles = new List<GTriangle>();
             foreach (var renderer in meshRenderers)
             {
-                if (( m_Layer & 1 >> renderer.gameObject.layer) == 0)
+                if (( m_Layer & (1 << renderer.gameObject.layer)) == 0)
                     continue;
                 
                 var meshFilter = renderer.GetComponent<MeshFilter>();

@@ -78,23 +78,23 @@
 			TEXTURE2D(_CameraOpaqueTexture);SAMPLER(sampler_CameraOpaqueTexture);
 
 			INSTANCING_BUFFER_START
-			INSTANCING_PROP(float4,_MainTex_ST)
-            INSTANCING_PROP(float4,_Color)
-			INSTANCING_PROP(float,_Thickness)
-			INSTANCING_PROP(float,_Lambert)
-			INSTANCING_PROP(float,_SpecularRange)
+				INSTANCING_PROP(float4,_MainTex_ST)
+	            INSTANCING_PROP(float4,_Color)
+				INSTANCING_PROP(float,_Thickness)
+				INSTANCING_PROP(float,_Lambert)
+				INSTANCING_PROP(float,_SpecularRange)
 
-			INSTANCING_PROP(float,_CrackTopStrength)
-			INSTANCING_PROP(float,_CrackDistance)
-			INSTANCING_PROP(float,_CrackPow)
-			INSTANCING_PROP(uint,_CrackParallexTimes)
-			INSTANCING_PROP(float4,_CrackColor)
+				INSTANCING_PROP(float,_CrackTopStrength)
+				INSTANCING_PROP(float,_CrackDistance)
+				INSTANCING_PROP(float,_CrackPow)
+				INSTANCING_PROP(uint,_CrackParallexTimes)
+				INSTANCING_PROP(float4,_CrackColor)
 
-			INSTANCING_PROP(float,_BeginOpacity)
-			INSTANCING_PROP(float,_DistortStrength)
-			INSTANCING_PROP(float,_DepthDistance)
-			INSTANCING_PROP(float,_DepthPow)
-			INSTANCING_PROP(float,_FresnelPow)
+				INSTANCING_PROP(float,_BeginOpacity)
+				INSTANCING_PROP(float,_DistortStrength)
+				INSTANCING_PROP(float,_DepthDistance)
+				INSTANCING_PROP(float,_DepthPow)
+				INSTANCING_PROP(float,_FresnelPow)
 			INSTANCING_BUFFER_END
 
             struct a2v
@@ -163,7 +163,7 @@
 				normalTS= DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,normalUV));
 				#endif
 				
-				float3 albedo=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv).rgb*_Color.rgb;
+				float3 albedo=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv).rgb*INSTANCE(_Color).rgb;
 				float3 lightCol=_MainLightColor.rgb;
 				float3 ambient=SampleSH(i.normalWS);
 				float atten=MainLightRealtimeShadow(i.shadowCoordWS);

@@ -116,7 +116,7 @@ Shader "Hidden/PBRSlicing"
 			{
 				float3 positionWS = i.positionWS;
 				GRay cameraRay = GRay_Ctor(GetCameraRealPositionWS(positionWS),GetCameraRealDirectionWS(positionWS));
-				GPlane plane = GPlane_Ctor(_SlicePlane.xyz , _SlicePlane.xyz * _SlicePlane.w + TransformObjectToWorld(0));
+				GPlane plane = GPlane_Ctor(_SlicePlane.xyz , _SlicePlane.xyz * _SlicePlane.w );
 				i.normalWS = _SlicePlane.xyz;
 				float distance = PlaneRayDistance(plane,cameraRay);
 				positionWS = cameraRay.GetPoint(distance);

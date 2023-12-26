@@ -79,19 +79,18 @@ namespace Runtime
 
             if (m_Billboard)
             {
-                for (int i = 0; i < count - 1; i++)
+                for (int i = 0; i < count; i++)
                 {
+                    if (i == count - 1)
+                    {
+                        _tangents[i] = _tangents[i - 1];
+                        continue;
+                    }
+                    
                     var position = _positions[i];
                     var C = _viewTransform.position;
                     var Z = (C - position).normalized;
-                    var T = Vector3.forward;
-                    if (i == 0)
-                        T = _positions[1] - position;
-                    else if (i == count - 1)
-                        T = position - _positions[count - 2];
-                    else
-                        T = _positions[i + 1] - position;
-                    T = T.normalized;
+                    var T = ( _positions[i + 1] - position).normalized;
                     _tangents[i] = Vector3.Cross(Z,T);
                 }
             }
