@@ -2,6 +2,8 @@
 using Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;
+using Gizmos = UnityEngine.Gizmos;
+
 namespace Examples.Algorithm.Geometry
 {
     public class GeometryIntersectSphere : MonoBehaviour
@@ -22,10 +24,10 @@ namespace Examples.Algorithm.Geometry
             Gizmos.matrix = transform.localToWorldMatrix;
 
             //Sphere
-            var intersect = UGeometry.Intersect.Eval(m_SRay,m_Sphere);
+            var intersect = UGeometry.Intersect(m_SRay,m_Sphere);
             Gizmos.color = intersect ? Color.green : Color.grey;
             Gizmos.DrawWireSphere(m_Sphere.center,m_Sphere.radius);
-            var distances = UGeometry.Distance.Eval(m_SRay,m_Sphere);
+            var distances = UGeometry.Distance(m_SRay,m_Sphere);
 
             float rayDistance = 2f;
             if (distances.x >= 0)
@@ -45,10 +47,10 @@ namespace Examples.Algorithm.Geometry
 
             //Ellipsoid
             rayDistance = 2f;
-            intersect = UGeometry.Intersect.Eval(m_ERay,m_Ellipsoid);
+            intersect = UGeometry.Intersect(m_ERay,m_Ellipsoid);
             Gizmos.color = intersect ? Color.green : Color.grey;
             m_Ellipsoid.DrawGizmos();
-            distances = UGeometry.Distance.Eval(m_ERay,m_Ellipsoid);
+            distances = UGeometry.Distance(m_ERay,m_Ellipsoid);
             if (distances.x >= 0)
             {
                 Gizmos.color = Color.blue;

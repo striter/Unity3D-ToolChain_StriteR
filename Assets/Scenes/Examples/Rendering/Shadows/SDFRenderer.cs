@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Geometry;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Rendering.Shadows
 {
@@ -12,7 +13,7 @@ namespace Examples.Rendering.Shadows
         public static List<SDFRenderer> sRenderers = new List<SDFRenderer>();
         
         public bool m_ReconstructFromCollider;
-        public Capsule[] m_ShapesOS;
+        public GCapsule[] m_ShapesOS;
         private void OnValidate()
         {
             if (!m_ReconstructFromCollider)
@@ -20,11 +21,11 @@ namespace Examples.Rendering.Shadows
 
             var colliders = GetComponentsInChildren<CapsuleCollider>(false);
 
-            m_ShapesOS = new Capsule[colliders.Length];
+            m_ShapesOS = new GCapsule[colliders.Length];
             int index = 0;
             var worldToLocal = transform.worldToLocalMatrix;
             foreach (var collider in colliders)
-                m_ShapesOS[index++] = worldToLocal * new Capsule(collider);
+                m_ShapesOS[index++] = worldToLocal * new GCapsule(collider);
         }
 
         private void OnEnable()

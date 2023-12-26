@@ -6,6 +6,7 @@ using TPool;
 using TObjectPool;
 using Unity.Mathematics;
 using UnityEngine;
+using Gizmos = UnityEngine.Gizmos;
 
 namespace TechToys.ThePlanet.Module
 {
@@ -413,10 +414,10 @@ namespace TechToys.ThePlanet.Module
             { 
                 int indexOffset = vertices.Count;
                 vertices.AddRange(cornerQuad.ExpandToQube(center,_corner.height,0f));
-                UPolygon.QuadToTriangleIndices(indices, indexOffset + 0, indexOffset + 3, indexOffset + 2, indexOffset + 1); //Bottom
-                UPolygon.QuadToTriangleIndices(indices, indexOffset + 4, indexOffset + 5, indexOffset + 6, indexOffset + 7); //Top
-                UPolygon.QuadToTriangleIndices(indices, indexOffset + 1, indexOffset + 2, indexOffset + 6, indexOffset + 5); //Forward Left
-                UPolygon.QuadToTriangleIndices(indices, indexOffset + 2, indexOffset + 3, indexOffset + 7, indexOffset + 6); //Forward Right
+                UMesh.QuadToTriangleIndices(indices, indexOffset + 0, indexOffset + 3, indexOffset + 2, indexOffset + 1); //Bottom
+                UMesh.QuadToTriangleIndices(indices, indexOffset + 4, indexOffset + 5, indexOffset + 6, indexOffset + 7); //Top
+                UMesh.QuadToTriangleIndices(indices, indexOffset + 1, indexOffset + 2, indexOffset + 6, indexOffset + 5); //Forward Left
+                UMesh.QuadToTriangleIndices(indices, indexOffset + 2, indexOffset + 3, indexOffset + 7, indexOffset + 6); //Forward Right
             }
 
             _mesh.Clear();

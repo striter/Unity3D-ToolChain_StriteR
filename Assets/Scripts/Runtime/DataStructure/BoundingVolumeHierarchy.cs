@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Geometry;
 using UnityEngine;
+using Gizmos = UnityEngine.Gizmos;
 
 public interface IBVHVolume<Bounds,Element,Dimension> where Bounds:struct where Element:struct,IShapeDimension<Dimension> where Dimension:struct
 {
@@ -83,10 +84,10 @@ public class BVH<Volume,Bounds,Element,Dimension>   //Bounding volume hierarchy
         {
             Gizmos.color = UColor.IndexToColor(index++ % 6);
             Gizmos.matrix = matrix;
-            if (node.bounds is IShapeGizmos boundsShape)
+            if (node.bounds is IShapeDimension<Dimension> boundsShape)
                 boundsShape.DrawGizmos();
             foreach (var element in node.elements)
-                if(element is IShapeGizmos gizmos)
+                if(element is IShapeDimension<Dimension> gizmos)
                     gizmos.DrawGizmos();
         }
 

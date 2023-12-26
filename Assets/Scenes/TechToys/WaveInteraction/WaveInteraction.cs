@@ -61,7 +61,7 @@ namespace Examples.Rendering.WaveInteraction
             
             
             float deltaTime = Time.deltaTime;
-            if (Input.GetMouseButton(0) && UGeometry.Intersect.Eval( Camera.main.ScreenPointToRay(Input.mousePosition),
+            if (Input.GetMouseButton(0) && UGeometry.Intersect( Camera.main.ScreenPointToRay(Input.mousePosition),
                     new GPlane(Vector3.up, m_WaterMesh.transform.position), out var hitPoint))
             {
                 m_Destination = hitPoint;

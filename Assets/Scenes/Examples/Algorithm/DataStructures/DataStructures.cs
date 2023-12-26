@@ -3,10 +3,11 @@ using System.ComponentModel;
 using System.Linq;
 using AlgorithmExtension;
 using Geometry;
-using Geometry.PointSet;
+using Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Algorithm.DataStructures
 {
@@ -30,8 +31,7 @@ namespace Examples.Algorithm.DataStructures
         private QuadTree m_QuadTree = new QuadTree();
         private BSPTree m_BSPTree = new BSPTree();
 
-
-        [FormerlySerializedAs("m_Triangles")] public G2Triangle[] m_RandomTriangles;
+        public G2Triangle[] m_RandomTriangles;
         private BVH<BVHVolume_Box_Triangles_2, G2Box, G2Triangle, float2> m_BVH = new();
         private struct BVHVolume_Box_Triangles_2 : IBVHVolume<G2Box, G2Triangle, float2>
         {
@@ -60,7 +60,6 @@ namespace Examples.Algorithm.DataStructures
                 var numerable = _elements.Select(p => (IEnumerable<float2>)p);  //wut?
                 return UBounds.GetBoundingBox(numerable.Resolve());;
             }
-
         }
 
         [Button]

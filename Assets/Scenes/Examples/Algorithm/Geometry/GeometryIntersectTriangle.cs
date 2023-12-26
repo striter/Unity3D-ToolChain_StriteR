@@ -2,6 +2,7 @@
 using Geometry;
 using Geometry.Validation;
 using UnityEngine;
+using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Algorithm.Geometry
 {
@@ -37,7 +38,7 @@ namespace Examples.Algorithm.Geometry
                     UGizmos.DrawArrow(triangle.GetBarycenter(), Quaternion.LookRotation(triangle.normal), .5f, .1f);
 
                 float distance = 2f;
-                if(UGeometry.Intersect.Eval(triangle,ray, visualization.rayDirectionCheck,visualization.planeDirectionCheck,out float rayDistance))
+                if(UGeometry.Intersect(triangle,ray, visualization.rayDirectionCheck,visualization.planeDirectionCheck,out float rayDistance))
                 {
                     distance = rayDistance;
                     Gizmos.color = Color.red;

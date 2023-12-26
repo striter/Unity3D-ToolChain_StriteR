@@ -28,7 +28,7 @@ namespace Examples.Algorithm.TileGrid
         {
             GRay ray = _sceneView.camera.ScreenPointToRay(UnityEditor.Extensions.UECommon.GetScreenPoint(_sceneView));
             GPlane plane = new GPlane(Vector3.up, transform.position);
-            UGeometry.Intersect.Eval(ray,plane,out var hitPoint);
+            UGeometry.Intersect(ray,plane,out var hitPoint);
 
             Handles.matrix = transform.localToWorldMatrix * Matrix4x4.Scale(Vector3.one);
 

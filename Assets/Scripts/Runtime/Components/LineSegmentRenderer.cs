@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
-using Geometry.PointSet;
+using Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -54,7 +54,7 @@ namespace Runtime
             meshConstructor.m_Normal = kfloat3.up;
             meshConstructor.m_ManualInput = false;
             if(_positions.Length > 3)
-                UPrincipleComponentAnalysis.Evaluate(_positions,out var _center,out var right,out var forward,out meshConstructor.m_Normal);
+                PrincipleComponentAnalysis.Evaluate(_positions,out var _center,out var right,out var forward,out meshConstructor.m_Normal);
             PopulateMesh();
         }
         public void SetPositions(float3[] _positions,float3[] _normals)

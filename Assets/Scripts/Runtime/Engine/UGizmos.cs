@@ -6,6 +6,7 @@ using Geometry;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
+using Gizmos = UnityEngine.Gizmos;
 
 public static class UGizmos
 {
@@ -127,56 +128,6 @@ public static class UGizmos
         Gizmos.DrawLine(tempPoint,firstPoint);
     }
     
-    public static void DrawGizmos(this GHeightCone _cone)
-    {
-        Handles.color = Gizmos.color;
-        Handles.matrix = Gizmos.matrix;
-        Handles_Extend.DrawCone(_cone);
-    }
-    
-    public static void DrawGizmos(this Capsule _capsule)
-    {
-        Handles.color = Gizmos.color;
-        Handles.matrix = Gizmos.matrix;
-        Handles_Extend.DrawWireCapsule(_capsule);
-    }
-
-    public static void DrawGizmos(this GLine _line)
-    {
-        Handles.color = Gizmos.color;
-        Handles.matrix = Gizmos.matrix;
-        Handles_Extend.DrawLine(_line);
-    }
-
-    public static void DrawGizmos(this Qube<Vector3> _qube)
-    {
-        Handles.color = Gizmos.color;
-        Handles.matrix = Gizmos.matrix;
-        DrawLine(_qube.vDB,_qube.vDL);
-        DrawLine(_qube.vDL,_qube.vDF);
-        DrawLine(_qube.vDF,_qube.vDR);
-        DrawLine(_qube.vDR,_qube.vDB);
-        
-        DrawLine(_qube.vTB,_qube.vTL);
-        DrawLine(_qube.vTL,_qube.vTF);
-        DrawLine(_qube.vTF,_qube.vTR);
-        DrawLine(_qube.vTR,_qube.vTB);
-
-        DrawLine(_qube.vDB,_qube.vTB);
-        DrawLine(_qube.vDL,_qube.vTL);
-        DrawLine(_qube.vDF,_qube.vTF);
-        DrawLine(_qube.vDR,_qube.vTR);
-    }
-
-    public static void DrawGizmos(this GEllipsoid _ellipsoid)
-    {
-        //Dude
-        Matrix4x4 preMatrix = Gizmos.matrix;
-        Gizmos.matrix = preMatrix * Matrix4x4.TRS(_ellipsoid.center,Quaternion.identity, _ellipsoid.radius);
-        Gizmos.DrawWireSphere(Vector3.zero,1f);
-        Gizmos.matrix = preMatrix;
-    }
-    
     public static GUIStyle kLabelStyle => new GUIStyle(GUI.skin.label) { alignment = TextAnchor.LowerCenter,fontSize=12, fontStyle = FontStyle.Normal};
     public static void DrawString(Vector3 _position,string _text,float _offset=.1f)
     {
@@ -195,42 +146,6 @@ public static class UGizmos
         DrawLine(_frustumPoints.farTopRight,_frustumPoints.nearTopRight);
         DrawLinesConcat(_frustumPoints.farBottomLeft,_frustumPoints.farBottomRight,_frustumPoints.farTopRight,_frustumPoints.farTopLeft);
     }
-
-    public static void DrawGizmos(this GPolygon _polygon) => DrawLinesConcat(_polygon.positions);
-    public static void DrawGizmos(this GQuad _quad) => DrawLinesConcat(_quad.quad);
-    
-    public static void DrawGizmos(this GPlane _plane,float _radius = 5f)
-    {
-        Handles.matrix = Gizmos.matrix;
-        Handles.color = Gizmos.color;
-        Handles.DrawWireDisc(_plane.position, _plane.normal, _radius);
-        DrawArrow(_plane.position,_plane.normal,.5f,.1f);
-    }
-    public static void DrawGizmos(this GTriangle _triangle)=>DrawLinesConcat(_triangle.triangle);
-    
-    public static void DrawGizmos(this GPlane _plane)=>_plane.DrawGizmos(5f);
-
-    #region 2D
-    public static void DrawGizmos(this G2Box _cube) => Gizmos.DrawWireCube(_cube.center.to3xz(),_cube.size.to3xz());
-    public static void DrawGizmos(this G2Polygon _polygon) => DrawLinesConcat(_polygon.positions.Select(p=>p.to3xz()));
-    public static void DrawGizmos(this G2Triangle _triangle)=>DrawLinesConcat(_triangle.Select(p=>p.to3xz()));
-    public static void DrawGizmos(this G2Quad _quad) => DrawLinesConcat(_quad.Select(p=>p.to3xz()));
-    public static void DrawGizmos(this G2Circle _circle)
-    {
-        Handles.matrix = Gizmos.matrix;
-        Handles.color = Gizmos.color;
-        Handles.DrawWireDisc(_circle.center.to3xz(), Vector3.up, _circle.radius);
-    }
-
-    public static void DrawGizmos(this G2Plane _plane,float _radius = 5f)
-    {
-        var direction = umath.cross(_plane.normal);
-        Gizmos.DrawLine((_plane.position + direction * _radius).to3xz(),( _plane.position - direction*_radius).to3xz() );
-        DrawArrow(_plane.position.to3xz(),_plane.normal.to3xz(),1f,.1f);
-    }
-
-    
-    #endregion
 }
 
 #endif

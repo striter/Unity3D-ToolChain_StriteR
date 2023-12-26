@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
-using Geometry.PointSet;
+using Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;
+using Gizmos = UnityEngine.Gizmos;
 
 
 public class TreeNode
@@ -162,7 +163,7 @@ public class BSPTree
 
     public void Divide(IList<float2> _points,out G2Plane _plane,out List<float2> _front,out List<float2> _back)
     {
-        UPrincipleComponentAnalysis.Evaluate(_points,out var centre,out var right,out var up);
+        PrincipleComponentAnalysis.Evaluate(_points,out var centre,out var right,out var up);
         _plane = new G2Plane(up,centre);
         _front = new List<float2>();
         _back = new List<float2>();

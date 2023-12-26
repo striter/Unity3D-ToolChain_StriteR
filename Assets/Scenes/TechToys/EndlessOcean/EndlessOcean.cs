@@ -6,6 +6,7 @@ using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Gizmos = UnityEngine.Gizmos;
 
 namespace TechToys.EndlessOcean
 {
@@ -90,7 +91,7 @@ namespace TechToys.EndlessOcean
                             (i + 1) + (j + 1) * vertexCountPerColumn,
                             (i + 1) + j * vertexCountPerColumn
                         ) + quadStartIndex;
-                        indices.AddRange(UPolygon.kQuadToTriangles.Select(p=>quad[p]));
+                        indices.AddRange(UMesh.kQuadToTriangles.Select(p=>quad[p]));
                     }
                 }
 

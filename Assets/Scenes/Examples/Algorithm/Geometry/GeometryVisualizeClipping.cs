@@ -1,7 +1,9 @@
 using Geometry;
-using Geometry.PointSet;
+using Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;
+using Gizmos = UnityEngine.Gizmos;
+using UGeometry = Geometry.Validation.UGeometry;
 
 namespace Examples.Algorithm.Geometry
 {

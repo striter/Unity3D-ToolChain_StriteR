@@ -1,7 +1,8 @@
 using Geometry;
-using Geometry.PointSet;
+using Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;
+using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Algorithm.Geometry
 {
@@ -22,14 +23,14 @@ namespace Examples.Algorithm.Geometry
         [Button]
         private void RandomPoints()
         {
-            if (boundingBoxRandomPoints != null && boundingBoxRandomPoints.Length > 0)
+            if (boundingBoxRandomPoints is { Length: > 0 })
             {
                 for (int i = 0; i < boundingBoxRandomPoints.Length; i++)
                     boundingBoxRandomPoints[i] = URandom.RandomSphere();
                 boudingBox = UBounds.GetBoundingBox(boundingBoxRandomPoints);
             }
 
-            if (boundingSpherePoints != null && boundingSpherePoints.Length > 0)
+            if (boundingSpherePoints is { Length: > 0 })
             {
                 for (int i = 0; i < boundingSpherePoints.Length; i++)
                     boundingSpherePoints[i] = URandom.RandomSphere();

@@ -4,6 +4,7 @@ using TechToys.ThePlanet.Module;
 using TechToys.ThePlanet.Module.Prop;
 using Unity.Mathematics;
 using UnityEngine;
+using Gizmos = UnityEngine.Gizmos;
 
 #if UNITY_EDITOR
 

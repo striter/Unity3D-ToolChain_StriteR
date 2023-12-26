@@ -1,6 +1,8 @@
 using Geometry;
 using Geometry.Validation;
 using UnityEngine;
+using Gizmos = UnityEngine.Gizmos;
+
 namespace Examples.Algorithm.Geometry
 {
     public class GeometryIntersectCone : MonoBehaviour
@@ -13,7 +15,7 @@ namespace Examples.Algorithm.Geometry
             Gizmos.color = Color.grey;
             Gizmos.matrix = transform.localToWorldMatrix;
             float rayDistance = 1f;
-            Vector2 distances= UGeometry.Distance.Eval(m_Ray,m_Data);
+            Vector2 distances= UGeometry.Distance(m_Ray,m_Data);
             if (distances.x>=0)
             {
                 Gizmos.color = Color.blue;
@@ -28,9 +30,9 @@ namespace Examples.Algorithm.Geometry
                 Gizmos.DrawSphere(m_Ray.GetPoint(rayDistance), .1f);
                 Gizmos.color = Color.green;
             }
-            UGizmos.DrawGizmos(m_Data);
+            m_Data.DrawGizmos();
             Gizmos.color = Color.white;
-            UGizmos.DrawGizmos(m_Ray.ToLine(rayDistance));
+            m_Ray.ToLine(rayDistance).DrawGizmos();
         }
 #endif
     }

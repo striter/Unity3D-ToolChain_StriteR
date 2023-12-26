@@ -5,6 +5,7 @@ using System.Linq;
 using Geometry;
 using Geometry.Validation;
 using UnityEditor;
+using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Algorithm.PathFinding
 {
@@ -69,7 +70,7 @@ namespace Examples.Algorithm.PathFinding
         {
             GRay ray = _sceneView.camera.ScreenPointToRay(UnityEditor.Extensions.UECommon.GetScreenPoint(_sceneView));
             GPlane plane = new GPlane(Vector3.up, transform.position);
-            UGeometry.Intersect.Eval(ray,plane,out var hitPoint);
+            UGeometry.Intersect(ray,plane,out var hitPoint);
             if (Event.current.type == EventType.MouseDown)
                 switch (Event.current.button)
                 {

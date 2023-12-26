@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
-using Geometry.PointSet;
+using Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Serialization;
+using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Algorithm.DelaunayTriangulation
 {
@@ -46,7 +46,7 @@ namespace Examples.Algorithm.DelaunayTriangulation
         private void OnValidate()
         {
             triangles.Clear();
-            UTriangulation.BowyerWatson(m_Vertices,ref triangles);
+            Triangulation.BowyerWatson(m_Vertices,ref triangles);
         }
 
         private void OnDrawGizmos()

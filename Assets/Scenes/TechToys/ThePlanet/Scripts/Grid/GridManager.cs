@@ -9,6 +9,7 @@ using TTouchTracker;
 using UnityEngine;
 using TObjectPool;
 using Unity.Mathematics;
+using Gizmos = UnityEngine.Gizmos;
 
 namespace TechToys.ThePlanet
 {
@@ -81,7 +82,7 @@ namespace TechToys.ThePlanet
         public bool ValidateGridSelection(GRay _ray, out GridID _vertexID)
         {
             _vertexID = default;
-            var distance = UGeometry.Distance.Eval(_ray,new GSphere(0, KPCG.kGridSize)).x;
+            var distance = UGeometry.Distance(_ray,new GSphere(0, KPCG.kGridSize)).x;
             if (distance < 0)
                 return false;
             var hitPos = _ray.GetPoint(distance);

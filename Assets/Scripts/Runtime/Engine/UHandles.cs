@@ -42,7 +42,7 @@ public static class Handles_Extend
             Handles.DrawLine(_lines[i],_lines[(i+1)%length]);
     }
 
-    public static void DrawWireCapsule(Capsule _capsule) => DrawWireCapsule(_capsule.origin,Quaternion.LookRotation(_capsule.normal),Vector3.one,_capsule.radius,_capsule.height);
+    public static void DrawWireCapsule(GCapsule _capsule) => DrawWireCapsule(_capsule.origin,Quaternion.LookRotation(_capsule.normal),Vector3.one,_capsule.radius,_capsule.height);
     public static void DrawWireCapsule(Vector3 _pos, Quaternion _rot, Vector3 _scale, float _radius, float _height)
     {
         using (new Handles.DrawingScope(Handles.color, Handles.matrix * Matrix4x4.TRS(_pos, _rot, _scale)))

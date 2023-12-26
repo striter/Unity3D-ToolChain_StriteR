@@ -7,6 +7,7 @@ using TTouchTracker;
 using UnityEngine;
 using TDataPersistent;
 using Unity.Mathematics;
+using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Algorithm.MarchingCube
 {

@@ -9,6 +9,7 @@ using TechToys.ThePlanet.Simplex;
 using UnityEditor;
 using UnityEditor.Extensions;
 using UnityEngine;
+using Gizmos = UnityEngine.Gizmos;
 
 namespace TechToys.ThePlanet.Baking
 {

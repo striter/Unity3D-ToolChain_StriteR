@@ -1,7 +1,5 @@
 using System;
 using System.IO;
-using Geometry.PointSet;
-using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;

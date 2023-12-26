@@ -2,6 +2,7 @@ using Geometry;
 using TechToys.ThePlanet.Module;
 using Unity.Mathematics;
 using UnityEngine;
+using Gizmos = UnityEngine.Gizmos;
 
 namespace TechToys.ThePlanet.Baking
 {

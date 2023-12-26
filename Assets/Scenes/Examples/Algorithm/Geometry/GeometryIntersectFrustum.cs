@@ -2,6 +2,7 @@ using System;
 using Geometry;
 using Unity.Mathematics;
 using UnityEngine;
+using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Algorithm.Geometry
 {

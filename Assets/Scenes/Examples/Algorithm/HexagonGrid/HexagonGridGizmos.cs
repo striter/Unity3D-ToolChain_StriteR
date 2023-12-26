@@ -9,6 +9,7 @@ using Procedural;
 using Procedural.Hexagon;
 using Procedural.Hexagon.Area;
 using Unity.Mathematics;
+using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Algorithm.HexagonGrid
 {
@@ -106,7 +107,7 @@ namespace Examples.Algorithm.HexagonGrid
         {
             GRay ray = _sceneView.camera.ScreenPointToRay(UnityEditor.Extensions.UECommon.GetScreenPoint(_sceneView));
             GPlane plane = new GPlane(Vector3.up, transform.position);
-            UGeometry.Intersect.Eval(ray,plane,out var hitPoint);
+            UGeometry.Intersect(ray,plane,out var hitPoint);
             m_HitPointCS = (transform.InverseTransformPoint(hitPoint) / m_CellRadius).ToCoord();
             m_HitAxialCS = m_HitPointCS.ToCube();
             if (Event.current.type == EventType.MouseDown)

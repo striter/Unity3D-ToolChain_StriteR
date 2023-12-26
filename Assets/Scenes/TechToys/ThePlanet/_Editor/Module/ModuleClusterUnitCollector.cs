@@ -32,9 +32,9 @@ namespace TechToys.ThePlanet.Baking
 
         void DrawQubeGizmos(Transform _transform,Color _color)
         {
-            Gizmos.matrix = _transform.localToWorldMatrix;
-            Gizmos.color = _color;
-            Gizmos.DrawWireCube(Vector3.up*.5f,Vector3.one);
+            UnityEngine.Gizmos.matrix = _transform.localToWorldMatrix;
+            UnityEngine.Gizmos.color = _color;
+            UnityEngine.Gizmos.DrawWireCube(Vector3.up*.5f,Vector3.one);
             Qube<bool> mixableRelation = KQube.kFalse;
             var possibility = _transform.GetComponent<ModuleClusterUnitPossibilityCollector>();
             if (possibility)
@@ -42,8 +42,8 @@ namespace TechToys.ThePlanet.Baking
             
             for (int i = 0; i < 8; i++)
             {
-                Gizmos.color = m_Relation[i] ? Color.green : mixableRelation[i]?Color.yellow: Color.red.SetA(.5f);
-                Gizmos.DrawWireSphere(KQube.kUnitQubeBottomed[i],.1f);
+                UnityEngine.Gizmos.color = m_Relation[i] ? Color.green : mixableRelation[i]?Color.yellow: Color.red.SetA(.5f);
+                UnityEngine.Gizmos.DrawWireSphere(KQube.kUnitQubeBottomed[i],.1f);
             }
         }
         

@@ -4,6 +4,7 @@ using System.Linq;
 using Geometry;
 using Unity.Mathematics;
 using UnityEngine;
+using Gizmos = UnityEngine.Gizmos;
 
 namespace QuadricErrorsMetric
 {

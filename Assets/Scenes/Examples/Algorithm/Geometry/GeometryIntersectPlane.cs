@@ -4,6 +4,7 @@ using Geometry;
 using Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;
+using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Algorithm.Geometry
 {
@@ -16,7 +17,7 @@ namespace Examples.Algorithm.Geometry
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            float distance = UGeometry.Distance.Eval(m_Ray,m_Plane);
+            float distance = UGeometry.Distance(m_Ray,m_Plane);
 
             Gizmos.matrix = transform.localToWorldMatrix;
             Vector3 planeSize = new Vector3(1,0,1);
@@ -32,7 +33,7 @@ namespace Examples.Algorithm.Geometry
             }
 
             Gizmos.color = intersect? Color.white:Color.grey;
-            UGizmos.DrawGizmos(m_Ray.ToLine(rayDistance));
+            m_Ray.ToLine(rayDistance).DrawGizmos();
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.TRS(m_Plane.position, Quaternion.LookRotation(Vector3.forward, m_Plane.normal), Vector3.one);
             Gizmos.color = intersect ? Color.green : Color.grey;
             UGizmos.DrawArrow(Vector3.zero,Quaternion.LookRotation(Vector3.up), .3f, .1f);
@@ -40,7 +41,7 @@ namespace Examples.Algorithm.Geometry
 
             Gizmos.color = Color.white;
             Gizmos.matrix = transform.localToWorldMatrix;
-            float projection = UGeometry.Projection.Eval(m_Point,m_Plane);
+            float projection = UGeometry.Projection(m_Point,m_Plane);
             Gizmos.DrawLine(m_Point,m_Point-projection*m_Plane.normal);
         }
 #endif

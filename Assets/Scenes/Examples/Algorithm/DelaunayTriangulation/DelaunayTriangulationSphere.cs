@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Geometry;
 using Geometry.Explicit;
-using Geometry.PointSet;
+using Geometry.Validation;
 using Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;
+using Gizmos = UnityEngine.Gizmos;
+using UGeometry = Geometry.Validation.UGeometry;
 
 namespace Examples.Algorithm.DelaunayTriangulation
 {
@@ -48,9 +50,9 @@ namespace Examples.Algorithm.DelaunayTriangulation
             
             m_ProjectedVertices.Clear();
             for (int i = 0; i < m_RandomCount; i++)
-                m_ProjectedVertices.Add(UGeometry.StereographicProjection(m_Vertices[i],_poleOrigin,_projectionPlane).xz);
+                m_ProjectedVertices.Add(UGeometry.Projection(_projectionPlane,m_Vertices[i],_poleOrigin).xz);
             
-            UTriangulation.BowyerWatson(m_ProjectedVertices,ref curTriangles);
+            Triangulation.BowyerWatson(m_ProjectedVertices,ref curTriangles);
             _triangles.AddRange(curTriangles);
         }
         

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Geometry;
-using Geometry.PointSet;
+using Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;
 

@@ -5,6 +5,7 @@ using Geometry;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Algorithm.InverseKinematics
 {
