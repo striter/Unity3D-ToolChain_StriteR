@@ -78,5 +78,17 @@ namespace Geometry
 
         public float3 GetSupportPoint(float3 _direction) => triangle.Max(_p => math.dot(_p, _direction));
         public float3 Center => (V0 + V1 + V2) / 3;
+
+        public float GetArea()
+        {
+#if true        //https://iquilezles.org/articles/trianglearea/
+            var A = uOffset.sqrmagnitude();
+            var B = vOffset.sqrmagnitude();
+            var C = (V2 - V1).sqrmagnitude();
+            return (2 * A * B + 2 * B * C + 2 * C * A - A * A - B * B - C * C) / 16f;
+#else
+            return math.length(math.cross(uOffset, vOffset)) / 2;
+#endif
+        }
     }
 }

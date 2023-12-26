@@ -24,17 +24,17 @@ namespace Geometry.Validation
 
         public static float2 Projection(this GRay _ray, GRay _dstRay)
         {
-            float3 diff = _ray.origin - _dstRay.origin;
-            float a01 = -math.dot(_ray.direction, _dstRay.direction);
-            float b0 = math.dot(diff, _ray.direction);
-            float b1 = -math.dot(diff, _dstRay.direction);
-            float det = 1f - a01 * a01;
+            var diff = _ray.origin - _dstRay.origin;
+            var a01 = -math.dot(_ray.direction, _dstRay.direction);
+            var b0 = math.dot(diff, _ray.direction);
+            var b1 = -math.dot(diff, _dstRay.direction);
+            var det = 1f - a01 * a01;
             return new float2((a01 * b1 - b0) / det, (a01 * b0 - b1) / det);
         }
 
         public static float2 Projection(this GRay _ray, GLine _line)
         {
-            float2 projections = Projection(_line, _ray);
+            var projections = Projection(_line, _ray);
             projections.x = math.clamp(projections.x, 0, _line.length);
             projections.y = Projection(_ray, _line.GetPoint(projections.x));
             return projections;

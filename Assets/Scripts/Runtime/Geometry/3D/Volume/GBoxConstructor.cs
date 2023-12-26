@@ -2,7 +2,7 @@
 
 namespace Geometry
 {
-    public static class BoxConstructor
+    public static class GBoxConstructor
     {
         public static GBox GetBoundingBox(this GSphere _sphere)
         {

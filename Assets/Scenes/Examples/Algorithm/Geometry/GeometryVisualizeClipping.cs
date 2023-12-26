@@ -21,6 +21,7 @@ namespace Examples.Algorithm.Geometry
         
         private void OnDrawGizmos()
         {
+            gTriangle.GetArea();
             //Door Clip
             Gizmos.matrix = transform.localToWorldMatrix;
             Gizmos.color = Color.white.SetA(.5f);

@@ -7,7 +7,7 @@ namespace Geometry
     using static UGizmos;
     public static class Gizmos
     {
-        public static void DrawGizmos(this GHeightCone _cone)
+        public static void DrawGizmos(this GCone _cone)
         {
             Handles.color = UnityEngine.Gizmos.color;
             Handles.matrix = UnityEngine.Gizmos.matrix;

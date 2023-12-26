@@ -5,7 +5,7 @@ using Geometry;
 #if UNITY_EDITOR
 public static class Handles_Extend
 {
-    public static void DrawCone(GHeightCone _heightCone)
+    public static void DrawCone(GCone _heightCone)
     {
         using(new Handles.DrawingScope(Handles.color, Handles.matrix*Matrix4x4.TRS(_heightCone.origin, Quaternion.LookRotation(_heightCone.normal),Vector3.one )))
         {

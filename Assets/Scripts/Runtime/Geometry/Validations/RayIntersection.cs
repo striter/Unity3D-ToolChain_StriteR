@@ -87,7 +87,7 @@ namespace Geometry.Validation
             _tmin = math.min(t0, t1);
             _tmax = math.max(t0, t1);
         }
-        public static float2 ConeCalculate(GRay _ray,GCone _cone)
+        public static float2 ConeCalculate(GRay _ray,GConeUnheighted _cone)
         {
             float2 distances = -1f;
             float3 offset = _ray.origin - _cone.origin;

@@ -7,7 +7,7 @@ namespace Examples.Algorithm.Geometry
 {
     public class GeometryIntersectCone : MonoBehaviour
     {
-        public GHeightCone m_Data;
+        public GCone m_Data;
         public GRay m_Ray;
 #if UNITY_EDITOR
         private void OnDrawGizmos()

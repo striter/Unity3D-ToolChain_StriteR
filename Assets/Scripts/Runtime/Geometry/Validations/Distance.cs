@@ -15,7 +15,7 @@ namespace Geometry.Validation
                 return (_plane.distance - nrO) / nrD;
             }
             
-            public static float2 Distance( GRay _ray,GSphere _sphere)
+            public static float2 Distance(GRay _ray,GSphere _sphere)
             {
                 RayIntersection.SphereCalculate(_ray,_sphere, out float dotOffsetDirection, out float discriminant);
                 if (discriminant < 0)
@@ -50,7 +50,7 @@ namespace Geometry.Validation
                 return new float2(dstToBox, dstInsideBox);
             }
             
-            public static float2 Distance(GRay _ray,GCone _cone)
+            public static float2 Distance(GRay _ray,GConeUnheighted _cone)
             {
                 float2 distances = RayIntersection.ConeCalculate(_ray,_cone);
                 if (math.dot(_cone.normal, _ray.GetPoint(distances.x) - _cone.origin) < 0)
@@ -60,7 +60,7 @@ namespace Geometry.Validation
                 return distances;
             }
 
-            public static float2 Distance(GRay _ray,GHeightCone _cone)
+            public static float2 Distance(GRay _ray,GCone _cone)
             {
                 var distances = RayIntersection.ConeCalculate(_ray,_cone);
                 GPlane bottomPlane = new GPlane(_cone.normal, _cone.origin + _cone.normal * _cone.height);
