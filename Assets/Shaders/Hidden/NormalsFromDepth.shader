@@ -15,13 +15,12 @@ Shader "Hidden/NormalsFromDepth"
             #define IDEPTH
             #include "Assets/Shaders/Library/PostProcess.hlsl"
 
-            half3 WorldSpaceNormalFromDepth(float2 uv,inout float3 positionWS,inout float depth)
+            half3 WorldSpaceNormalFromDepth(float2 uv)
             {
-                depth=SampleRawDepth(uv);
-                positionWS=TransformNDCToWorld(uv,depth);
-                float3 position1=TransformNDCToWorld(uv+_CameraDepthTexture_TexelSize.xy*uint2(1,0));
-                float3 position2=TransformNDCToWorld(uv+_CameraDepthTexture_TexelSize.xy*uint2(0,1));
-                return normalize(cross(position2-positionWS,position1-positionWS));
+                float3 position = TransformNDCToWorld(uv);
+                float3 position1=TransformNDCToWorld(uv+_MainTex_TexelSize.xy*uint2(1,0));
+                float3 position2=TransformNDCToWorld(uv+_MainTex_TexelSize.xy*uint2(0,1));
+                return normalize(cross(position2-position,position1-position));
             }
             
             // half3 ClipSpaceNormalFromDepth(float2 uv) 
@@ -37,10 +36,7 @@ Shader "Hidden/NormalsFromDepth"
 
             float4 frag (v2f_img i) : SV_Target
             {
-                //To Be Continued
-                float3 positionWS;
-                float depth;
-                half3 normal=WorldSpaceNormalFromDepth(i.uv,positionWS,depth);
+                half3 normal=WorldSpaceNormalFromDepth(i.uv);
                 normal=normal*.5h+.5;
                 return float4(normal,1);
             }

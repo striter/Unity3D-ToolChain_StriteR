@@ -327,7 +327,7 @@
 				finalCol+=surface.emission;
 				o.result=half4(finalCol,color.a);
 
-				o.result.rgb = indirectSpecular;
+				// o.result.rgb = indirectSpecular;
 				
 				return o;
 			}

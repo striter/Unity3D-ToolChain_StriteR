@@ -36,32 +36,32 @@ Shader "Hidden/ScreenSpaceReflection"
 
             float4 frag (v2f i) : SV_Target
             {
-                float3 normalWS=SampleNormalWS(i.uv);
-                float rawDepth=SampleRawDepth(i.uv);
-                float eyeDepth=RawToEyeDepth(rawDepth);
-                float3 frustumCornersRay=TransformNDCToFrustumCornersRay(i.uv);
-                float3 marchPositionWS=GetCameraPositionWS()+frustumCornersRay*eyeDepth;
-                float3 marchDirWS=normalize(reflect(normalize(frustumCornersRay),normalWS));
-
-                float marchStep=.3;
-                float3 currentMarchPos=marchPositionWS+normalWS*marchStep*.5;
+                float3 normalWS = SampleNormalWS(i.uv);
+                float3 positionWS = TransformNDCToWorld(i.uv);
+                float3 viewDirWS = GetCameraRealDirectionWS(positionWS);
+                float3 marchDirWS = normalize(reflect(viewDirWS,normalWS));
+                
+                float3 marchStep = marchDirWS * .3;
+                float3 currentMarchPos = positionWS+marchStep*.5;
                 float4 finalCol=0;
+                float2 uv;
+                float depth = 0;
                 [unroll(32)]
-                for(int i=0;i<32;i++)
+                for(int index = 0; index < 32;index++)
                 {
-                    currentMarchPos+=marchStep*marchDirWS;
-                    float2 uv;
-                    float depth;
+                    currentMarchPos+=marchStep;
                     TransformHClipToUVDepth(mul(_Matrix_VP,float4( currentMarchPos,1)),uv,depth);
+
                     float sourceDepth=RawToEyeDepth(depth);
                     float compareDepth=RawToEyeDepth(SampleRawDepth(uv));
-                    if(abs(compareDepth-sourceDepth)>marchStep)
-                        continue;
                     
+                    if(sourceDepth < compareDepth)
+                        continue;
+
                     finalCol=float4(SampleMainTex(uv).rgb,1);
                     break;
                 }
-                
+
                 return finalCol;
             }
             ENDHLSL

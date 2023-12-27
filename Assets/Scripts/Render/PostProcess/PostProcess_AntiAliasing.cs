@@ -129,7 +129,6 @@ namespace Rendering.PostProcess
             m_FirstBuffer = true;
         }
 
-
         public void Dispose()
         {
             foreach (var buffer in m_Buffers.Values)

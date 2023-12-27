@@ -22,7 +22,7 @@ namespace Rendering.Pipeline
         }
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
-            CommandBuffer cmd = CommandBufferPool.Get("Generate Normal Texture");
+            CommandBuffer cmd = CommandBufferPool.Get("Normal From Depth");
             cmd.Blit(null, kRTCameraNormalTex, m_NormalMaterial);
             _context.ExecuteCommandBuffer(cmd);
             cmd.Clear();

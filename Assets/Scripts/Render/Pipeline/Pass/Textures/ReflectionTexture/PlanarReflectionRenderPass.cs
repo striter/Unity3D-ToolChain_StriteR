@@ -14,14 +14,11 @@ namespace Rendering.Pipeline
          int m_ReflectionDepth;
          RenderTargetIdentifier m_ReflectionDepthID;
 
-         public override APlanarReflectionBase Setup(PlanarReflectionData _data, FBlursCore _blur, PlanarReflection _planeData, ScriptableRenderer _renderer,
-             int _index,RenderPassEvent _event)
+         public FGeometryReflectionMirrorSpace(PlanarReflectionData _data, FBlursCore _blur, PlanarReflection _component, ScriptableRenderer _renderer, int _index) : base(_data, _blur, _component, _renderer, _index)
          {
              m_ReflectionDepth = Shader.PropertyToID(kReflectionDepth + _index);
              m_ReflectionDepthID = new RenderTargetIdentifier(m_ReflectionDepth);
-             return base.Setup(_data, _blur, _planeData, _renderer, _index,_event);
          }
-
          protected override void ConfigureColorDescriptor(ref RenderTextureDescriptor _descriptor, ref PlanarReflectionData _data)
          {
              base.ConfigureColorDescriptor(ref _descriptor, ref _data);
@@ -89,5 +86,6 @@ namespace Rendering.Pipeline
             RenderingUtils.SetViewAndProjectionMatrices(_cmd, cameraData.GetViewMatrix(), cameraData.GetGPUProjectionMatrix(), false);
             camera.ResetCullingMatrix();
          }
+
     }
 }

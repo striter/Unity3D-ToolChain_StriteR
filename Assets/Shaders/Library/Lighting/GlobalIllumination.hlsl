@@ -92,21 +92,15 @@ half4 IndirectSSRSpecular(float2 screenUV,float eyeDepth, half3 normalTS)
         switch (UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_PlanarReflection, _CameraReflectionTextureIndex))
         {
             default:return 0;
-            case 0:
-                return tex2D(_CameraReflectionTexture0, screenUV);
-            case 1:
-                return tex2D(_CameraReflectionTexture1, screenUV);
-            case 2:
-                return tex2D(_CameraReflectionTexture2, screenUV);
-            case 3:
-                return tex2D(_CameraReflectionTexture3, screenUV);
-            case 4:
-                return tex2D(_ScreenSpaceReflectionTexture,screenUV);
+            case 0:return tex2D(_CameraReflectionTexture0, screenUV);
+            case 1:return tex2D(_CameraReflectionTexture1, screenUV);
+            case 2:return tex2D(_CameraReflectionTexture2, screenUV);
+            case 3:return tex2D(_CameraReflectionTexture3, screenUV);
         }
     }
     else    //Avoid warning
     {
-        return 0;
+        return tex2D(_ScreenSpaceReflectionTexture,screenUV);
     }
 }
 

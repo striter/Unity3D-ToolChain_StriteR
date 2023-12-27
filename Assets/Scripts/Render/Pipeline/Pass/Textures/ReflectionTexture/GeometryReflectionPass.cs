@@ -1,4 +1,5 @@
-﻿using Unity.Mathematics;
+﻿using Rendering.PostProcess;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -23,13 +24,15 @@ namespace Rendering.Pipeline
         
         private readonly PassiveInstance<ComputeShader> m_ReflectionComputeShader=new PassiveInstance<ComputeShader>(()=>RenderResources.FindComputeShader("PlanarReflection"));
         
+        public FGeometryReflectionScreenSpace(PlanarReflectionData _data, FBlursCore _blur, PlanarReflection _component, ScriptableRenderer _renderer, int _index) : base(_data, _blur, _component, _renderer, _index)
+        {
+        }
         protected override void ConfigureColorDescriptor(ref RenderTextureDescriptor _descriptor, ref PlanarReflectionData _data)
         {
             base.ConfigureColorDescriptor(ref _descriptor, ref _data);
             _descriptor.enableRandomWrite = true;
             _descriptor.colorFormat = RenderTextureFormat.ARGB32;
             _descriptor.msaaSamples = 1;
-            var shader = ((ComputeShader) m_ReflectionComputeShader);
             m_Kernels = ((ComputeShader)m_ReflectionComputeShader).FindKernel("Generate");
             kKeywords = m_ReflectionComputeShader.Value.GetLocalKeywords<EPlanarReflectionGeometry>();
             m_ThreadGroups = new Int2(_descriptor.width / 8, _descriptor.height / 8);
@@ -67,5 +70,6 @@ namespace Rendering.Pipeline
             _cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels, kKernelResult, _target);
             _cmd.DispatchCompute(m_ReflectionComputeShader, m_Kernels, m_ThreadGroups.x,m_ThreadGroups.y, 1);
         }
+
     }
 }

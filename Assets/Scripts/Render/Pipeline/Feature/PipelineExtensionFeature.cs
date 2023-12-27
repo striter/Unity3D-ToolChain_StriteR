@@ -52,14 +52,14 @@ namespace Rendering.Pipeline
             if (!m_Resources)
                 return;
 
-            m_GlobalParameters = new SRP_GlobalParameters() { renderPassEvent= RenderPassEvent.BeforeRendering };
+            m_GlobalParameters = new SRP_GlobalParameters() { renderPassEvent = RenderPassEvent.BeforeRendering };
             m_TAA = new SRP_TAAPass() { renderPassEvent = RenderPassEvent.BeforeRenderingOpaques - 1 };
             m_MotionVectorTexture = new MotionVectorTexturePass() {renderPassEvent = RenderPassEvent.BeforeRenderingOpaques - 1};
             m_Mask = new MaskTexturePass() { renderPassEvent = RenderPassEvent.BeforeRenderingOpaques };
-            m_Normal = new NormalTexturePass() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox };
-            m_Reflection = new ReflectionTexturePass(m_Data.m_PlanarReflection, RenderPassEvent.AfterRenderingSkybox + 1);
+            m_Normal = new NormalTexturePass() { renderPassEvent = RenderPassEvent.BeforeRenderingSkybox + 1 };
+            m_Reflection = new ReflectionTexturePass(m_Data.m_PlanarReflection, RenderPassEvent.BeforeRenderingSkybox + 2);
             
-            m_OpaquePostProcess=new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 2 };
+            m_OpaquePostProcess=new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 3 };
             m_ScreenPostProcess=new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing + 1 };
             m_AntiAliasingPostProcess = new PostProcess_AntiAliasing(m_Data.m_AntiAliasing,m_TAA);
 

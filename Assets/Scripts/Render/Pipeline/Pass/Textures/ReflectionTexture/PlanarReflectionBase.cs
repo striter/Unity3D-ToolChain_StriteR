@@ -46,15 +46,15 @@ namespace Rendering.Pipeline
     
     abstract class APlanarReflectionBase:ScriptableRenderPass
     {
-        #region ID
-            const string C_ReflectionTex = "_CameraReflectionTexture";
-            const string C_ReflectionTempTexture = "_CameraReflectionBlur";
-        #endregion
+#region ID
+        const string C_ReflectionTex = "_CameraReflectionTexture";
+        const string C_ReflectionTempTexture = "_CameraReflectionBlur";
+#endregion
 
          protected PlanarReflectionData m_Data;
          protected FBlursCore m_Blur;
-         protected  int m_Index { get; private set; }
-         private PlanarReflection m_Plane;
+         private int m_Index;
+         private PlanarReflection m_Compnent;
          private RenderTextureDescriptor m_ColorDescriptor;
          private RTHandle m_ColorTarget;
          private ScriptableRenderer m_Renderer;
@@ -63,19 +63,18 @@ namespace Rendering.Pipeline
          private int m_ReflectionBlurTexture;
          private RenderTargetIdentifier m_ReflectionBlurTextureID;
          
-         public virtual APlanarReflectionBase Setup(PlanarReflectionData _data,FBlursCore _blur,PlanarReflection _component,ScriptableRenderer _renderer,int _index,RenderPassEvent _event)
+         public APlanarReflectionBase(PlanarReflectionData _data,FBlursCore _blur,PlanarReflection _component,ScriptableRenderer _renderer,int _index)
          {
-             renderPassEvent = _event;
              m_Index = _index;
              m_Data = _data;
              m_Blur = _blur;
              m_Renderer = _renderer;
-             m_Plane = _component;
+             m_Compnent = _component;
+             
              m_ReflectionTexture = Shader.PropertyToID( C_ReflectionTex + _index);
              m_ReflectionTextureID = new RenderTargetIdentifier(m_ReflectionTexture);
              m_ReflectionBlurTexture = Shader.PropertyToID(C_ReflectionTempTexture + _index);
              m_ReflectionBlurTextureID = new RenderTargetIdentifier(m_ReflectionBlurTexture);
-             return this;
          }
 
          public sealed override void Configure(CommandBuffer _cmd, RenderTextureDescriptor _cameraTextureDescriptor)
@@ -118,7 +117,7 @@ namespace Rendering.Pipeline
          {
              CommandBuffer cmd = CommandBufferPool.Get($"Planar Reflection Pass ({m_Index})");
              
-             Execute(ref m_Data,_context,ref _renderingData,cmd,ref m_Plane,ref m_ColorDescriptor,ref m_ColorTarget,ref m_Renderer);
+             Execute(ref m_Data,_context,ref _renderingData,cmd,ref m_Compnent,ref m_ColorDescriptor,ref m_ColorTarget,ref m_Renderer);
              if (m_Data.m_BlurParam.m_BlurType!=EBlurType.None)
                  m_Blur.Execute(m_ColorDescriptor ,ref m_Data.m_BlurParam,cmd, m_ColorTarget, m_ReflectionTextureID,m_Renderer,_context,ref _renderingData); 
             
