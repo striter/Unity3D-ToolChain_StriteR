@@ -96,7 +96,7 @@ Shader "Game/Skybox/AtomsphericScattering"
                 float rawDepth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).r;
                 float depthDistance = RawToDistance(rawDepth,screenUV);
                 GSphere atmoSphere = GSphere_Ctor(float3(0,0,0),_RadiusEnd);
-                float2 travelDistance = SphereRayDistance(atmoSphere,GRay_Ctor(_WorldSpaceCameraPos,scatterDirection));
+                float2 travelDistance = Distance(atmoSphere,GRay_Ctor(_WorldSpaceCameraPos,scatterDirection));
 
                 float marchbegin = travelDistance.x;
                 float marchDistance = min(depthDistance,travelDistance.y) - marchbegin;
@@ -109,7 +109,7 @@ Shader "Game/Skybox/AtomsphericScattering"
                 for(int t=0;t<_ScatterTimes;t++)
                 {
                     GRay scatterRay = GRay_Ctor(inScatterPoint,normalize(inScatterPoint+lightPos));
-                    float inScatterRayLength = SphereRayDistance(atmoSphere,scatterRay).y;
+                    float inScatterRayLength = Distance(atmoSphere,scatterRay).y;
                     float sunRayOpticalDepth = CalculateOpticalDepth(scatterRay,atmoSphere,inScatterRayLength);
                     float viewRayOpticalDepth = CalculateOpticalDepth(GRay_Ctor(inScatterPoint,-scatterDirection),atmoSphere,scatterStepSize*(t+0.5f));
                     float3 transmittance = exp(-(sunRayOpticalDepth + viewRayOpticalDepth)*_ScatteringCoefficients);

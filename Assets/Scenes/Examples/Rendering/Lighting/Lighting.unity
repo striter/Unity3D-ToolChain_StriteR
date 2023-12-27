@@ -711,6 +711,10 @@ MonoBehaviour:
       x: 91.2
       y: -152.73
       z: 0
+    endPosition:
+      x: 0
+      y: 0
+      z: 0
   - type: 1
     color: {r: 0.15872678, g: 0.4811321, b: 0.12103948, a: 1}
     intensity: 15
@@ -726,6 +730,10 @@ MonoBehaviour:
       x: 260.3
       y: 0
       z: 221.6
+    endPosition:
+      x: 0
+      y: 0
+      z: 0
   - type: 2
     color: {r: 1, g: 0.13077465, b: 0, a: 1}
     intensity: 50
@@ -740,6 +748,10 @@ MonoBehaviour:
     euler:
       x: 137.5
       y: 41.5
+      z: 0
+    endPosition:
+      x: 0
+      y: 0
       z: 0
   - type: 2
     color: {r: 0.8679245, g: 0.7107822, b: 0.31660137, a: 1}
@@ -756,3 +768,26 @@ MonoBehaviour:
       x: 33.1
       y: 43.2
       z: -738.02
+    endPosition:
+      x: 0
+      y: 0
+      z: 0
+  - type: 3
+    color: {r: 0.5019793, g: 0.48584908, b: 1, a: 1}
+    intensity: 2.76
+    constant: 1
+    linear: 0.21
+    quadric: 0.24
+    spotPower: 11.73
+    position:
+      x: -1.21
+      y: -0.95
+      z: -4.56
+    euler:
+      x: 10.26
+      y: 43.2
+      z: -738.02
+    endPosition:
+      x: 3.88
+      y: -0.95
+      z: -3.97

@@ -66,13 +66,13 @@
                 GRay viewRayOS=GRay_Ctor(TransformWorldToObject(cameraPosWS),directionOS);
                 #if _TYPE_POINT
                     //radius =.5 inv = 2
-                    distances= SphereRayDistance(GSphere_Ctor(origin,.5) ,viewRayOS);
+                    distances= Distance(GSphere_Ctor(origin,.5) ,viewRayOS);
                 #elif _TYPE_CUBE
-                    distances=AABBRayDistance( GBox_Ctor(origin,1.h),viewRayOS);
+                    distances=Distance( GBox_Ctor(origin,1.h),viewRayOS);
                     distances.y+=distances.x;
                 #elif _TYPE_SPOT
                     GHeightCone cone= GHeightCone_Ctor( float3(.0,.5,.0),float3(.0,-1.,.0),55.,1);
-                    distances =ConeRayDistance(cone,viewRayOS);
+                    distances =Distance(cone,viewRayOS);
                 #endif
                 
                 // return TransformWorldToEyeDepth(world,UNITY_MATRIX_V)/10;
@@ -85,7 +85,7 @@
                 density*=travelDst;
 
                 #if _TYPE_POINT
-                    half closestDistance= PointRayProjection(viewRayOS,origin);
+                    half closestDistance= Projection(viewRayOS,origin);
                     closestDistance=min(closestDistance,distances.y);
                     half originDistance= length(origin-viewRayOS.GetPoint(closestDistance));
                     density *= saturate(.5-originDistance);

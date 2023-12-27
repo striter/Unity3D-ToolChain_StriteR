@@ -15,6 +15,7 @@ Shader "Game/Unfinished/Lighting"
 
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "Assets/Shaders/Library/Lighting.hlsl"
+            #include "Assets/Shaders/Library/Geometry.hlsl"
 
             struct FLightBufferElement
             {
@@ -26,11 +27,10 @@ Shader "Game/Unfinished/Lighting"
                 float3 Radiance(float3 _positionWS,float3 _normalWS)
                 {
                     float3 radiance;
-                    float3 lightOffset = position - _positionWS;
-                    float3 lightDirection = normalize(lightOffset);
-                    float d = length(lightOffset);
+                    float3 delta = position - _positionWS;
+                    float d = length(delta);
                     
-                    float3 L = lightDirection;
+                    float3 L = normalize(delta);
                     float3 R = direction;
                     float3 N = _normalWS;
                     switch (type)
@@ -51,19 +51,22 @@ Shader "Game/Unfinished/Lighting"
                             break;
                         case 2u:         //Spot
                             {
-                                
                                 float attenuation =  pow(max(-dot(R,L),0),lightParameters.w);
                                     attenuation /= (lightParameters.x + d*lightParameters.y + d*d*lightParameters.z);
                                 radiance = color * attenuation;
                                 radiance *= max(dot(N,L),0);
                             }
                             break;
-                    case 3u:{           //Area
-                                float attenuation =  pow(max(-dot(R,L),0),lightParameters.w);
-                                    attenuation /= (lightParameters.x + d*lightParameters.y + d*d*lightParameters.z);
+                        case 3u:{           //Line
+                                GLine lineInstance = GLine_Ctor(position,direction);
+                                float3 intensityPosition = lineInstance.GetPoint( Projection(lineInstance,_positionWS));
+                                delta = intensityPosition - _positionWS;
+                                d = length(delta);
+                                L = normalize(delta);
+
+                                float attenuation =  1 / (lightParameters.x + d*lightParameters.y + d*d*lightParameters.z);
                                 radiance = color * attenuation;
                                 radiance *= max(dot(N,L),0);
-                                
                             }
                             break;
                     }

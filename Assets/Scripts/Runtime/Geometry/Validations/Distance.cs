@@ -1,13 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Mathematics;
-using UnityEngine;
 
 namespace Geometry.Validation
 {
+    using static math;
     public static partial class UGeometry
     {
-  #region Ray
             public static float Distance(GRay _ray,GPlane _plane)
             {
                 float nrO = math.dot(_plane.normal, _ray.origin);
@@ -91,8 +88,12 @@ namespace Geometry.Validation
                     t0 = t1;
                 return new float2(t0, t1);
             }
-            #endregion
-
+            public static float Distance(GLine _line, float3 _point)
+            {
+                var lineDirection = normalize(_line.end - _line.start);
+                var pointToStart = _point - _line.start;
+                return  length(cross(lineDirection, pointToStart));
+            }
 
     }
 }

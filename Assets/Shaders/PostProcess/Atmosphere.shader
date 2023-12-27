@@ -121,11 +121,11 @@ Shader "Hidden/PostProcess/Atmosphere"
                 GRay ray = GRay_Ctor(float3(0,startHeight,0),float3(sinAngle,cosAngle,0));
                 
                 int _ParticleStepCount = 250;
-                float2 intersection = SphereRayDistance(GSphere_Ctor(_PlanetCenter,_PlanetRadius),ray);
+                float2 intersection = Distance(GSphere_Ctor(_PlanetCenter,_PlanetRadius),ray);
                 if (intersection.x > 0)
                     return 1e+20;
                 GSphere atmosphere = GSphere_Ctor(_PlanetCenter,_PlanetRadius + _AtmosphereHeight);
-                intersection = SphereRayDistance(atmosphere,ray);
+                intersection = Distance(atmosphere,ray);
 
                 float3 rayEnd = ray.GetPoint(intersection.y);
                 float3 step = (rayEnd - ray.origin)/_ParticleStepCount;
@@ -236,7 +236,7 @@ Shader "Hidden/PostProcess/Atmosphere"
                 float depth01 = RawTo01Depth(rawDepth);
                 GSphere atmoSphere = GSphere_Ctor(_PlanetCenter,_PlanetRadius + _AtmosphereHeight);
                 GRay scatterRay = GRay_Ctor(_WorldSpaceCameraPos,scatterDirection);
-                float2 travelDistance = SphereRayDistance(atmoSphere,scatterRay);
+                float2 travelDistance = Distance(atmoSphere,scatterRay);
                 float3 lightDir = normalize(_MainLightPosition.xyz);
 
                 float marchbegin = travelDistance.x;

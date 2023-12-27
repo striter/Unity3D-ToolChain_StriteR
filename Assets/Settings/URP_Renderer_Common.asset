@@ -85,17 +85,6 @@ MonoBehaviour:
     m_MotionVector: 1
     m_Reflection: 1
     m_PlanarReflection:
-      screenSpaceReflection: 1
-      screenSpaceReflectionData:
-        downSample: 1
-        blurData:
-          m_BlurType: 3
-          m_BlurSize: 1.3
-          m_Iteration: 7
-          m_DownSample: 2
-          m_Angle: 0
-          m_Vector: {x: 0.5, y: 0.5}
-          m_Attenuation: 0.9
       maxPlanarReflectionTexture: 4
     m_AntiAliasing:
       mode: 2

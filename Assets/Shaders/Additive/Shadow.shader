@@ -93,7 +93,7 @@
 					#endif
 				#else
 					GRay ray=GRay_Ctor(positionWS,lightDir);
-					half distance=PlaneRayDistance(plane,ray);
+					half distance=Distance(plane,ray);
 					float3 projectionPositionWS=ray.GetPoint(distance);
 
 					#if _FALLOFF

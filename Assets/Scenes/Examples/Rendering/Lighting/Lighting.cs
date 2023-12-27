@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Linq;
 using Rendering.GI.SphericalHarmonics;
 using Unity.Mathematics;
@@ -23,8 +24,10 @@ namespace Examples.Rendering.Lighting
         [MFold(nameof(type),ELightType.Directional)] [Clamp(0)] public float constant,linear,quadric;
         [MFoldout(nameof(type),ELightType.Spot)] public float spotPower;
         [MFold(nameof(type),ELightType.Directional)] public float3 position;
-        [MFold(nameof(type),ELightType.Point)] public float3 euler;
+        [MFold(nameof(type),ELightType.Point,ELightType.Line)] public float3 euler;
 
+        [MFoldout(nameof(type), ELightType.Line)] public float3 endPosition;
+        
         public static readonly Light kDefaultPoint = new Light()
             {
                 type = ELightType.Point,
@@ -32,6 +35,7 @@ namespace Examples.Rendering.Lighting
                 position = float3.zero,
                 euler = kfloat3.forward,
                 color = Color.white,
+                endPosition = kfloat3.forward,
                 constant = 1f, linear = 0f, quadric = 0f
             };
 
@@ -39,7 +43,7 @@ namespace Examples.Rendering.Lighting
         {
             type = (uint)type,
             position = position,
-            direction = umath.EulerToQuaternion(euler).mul(kfloat3.forward),
+            direction = type== ELightType.Line ? endPosition: umath.EulerToQuaternion(euler).mul(kfloat3.forward),
             color = color.to3() * intensity,
             lightParameters = new float4( constant, linear, quadric,spotPower),
         };
@@ -111,15 +115,11 @@ namespace Examples.Rendering.Lighting
                 var rotation = umath.EulerToQuaternion(light.euler);
                 switch (light.type)
                 {
-                    case ELightType.Directional:
-                        UGizmos.DrawArrow(Vector3.zero,rotation.mul(kfloat3.forward),1f,.1f);
-                        break;
-                    case ELightType.Point:
-                        Gizmos.DrawWireSphere(position,.1f);
-                        break;
-                    case ELightType.Spot:
-                        UGizmos.DrawArrow(position,rotation.mul(kfloat3.forward),1f,.1f);
-                        break;
+                    default:throw new InvalidEnumArgumentException();
+                    case ELightType.Directional: UGizmos.DrawArrow(Vector3.zero,rotation.mul(kfloat3.forward),1f,.1f); break;
+                    case ELightType.Point: Gizmos.DrawWireSphere(position,.1f); break;
+                    case ELightType.Spot: UGizmos.DrawArrow(position,rotation.mul(kfloat3.forward),1f,.1f); break;
+                    case ELightType.Line: Gizmos.DrawLine(position,light.endPosition); break;
                 }
             }
         }

@@ -51,7 +51,7 @@ Shader "Game/Unlit/CubeSample"
                     float distance = max(SphereRayDistance(sphere,viewRay));
                 #else
                     GBox box=GBox_Ctor(float3(0,0,.5),1);
-                    float distance=sum(AABBRayDistance(box,viewRay));
+                    float distance=sum(Distance(box,viewRay));
                 #endif
                 
                 float3 sdfPosOS=viewRay.GetPoint(distance);

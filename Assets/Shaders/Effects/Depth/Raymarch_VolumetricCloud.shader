@@ -84,7 +84,7 @@
             #if _LIGHTMARCH
             float lightMarch(GBox box,GRay ray,float marchDst)
             {
-                float dstInsideBox=AABBRayDistance(box,ray).y;
+                float dstInsideBox=Distance(box,ray).y;
                 float cloudDensity=0;
                 float totalDst=0;
                 for(int i=0;i<_LightMarchTimes;i++)
@@ -115,7 +115,7 @@
                 float3 marchDirWS=GetCameraRealDirectionWS( i.positionWS);
                 GBox boxWS=GBox_Ctor(i.centerWS,i.sizeWS);
                 GRay rayWS=GRay_Ctor(i.positionWS,marchDirWS);
-                float marchDstWS=AABBRayDistance(boxWS,rayWS).y;
+                float marchDstWS=Distance(boxWS,rayWS).y;
                 float depthDstWS=LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture, i.screenPos.xy/i.screenPos.w),_ZBufferParams).r-i.screenPos.w;
                 float marchDistance= min(depthDstWS, marchDstWS);
 

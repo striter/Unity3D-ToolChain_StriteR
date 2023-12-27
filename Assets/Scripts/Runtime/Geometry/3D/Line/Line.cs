@@ -40,6 +40,8 @@ namespace Geometry
         
         public void OnBeforeSerialize() { }
         public void OnAfterDeserialize() { Ctor(); }
+        
+        public GRay ToRay()=>new GRay(start,direction);
     }
     
 }

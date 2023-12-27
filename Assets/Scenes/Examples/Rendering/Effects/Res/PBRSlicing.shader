@@ -81,7 +81,7 @@ Shader "Hidden/PBRSlicing"
 			{
 				float3 positionWS = i.positionWS;
 				GPlane plane = GPlane_Ctor(_SlicePlane.xyz, _SlicePlane.w);
-				clip(- PlanePointDistance(plane,positionWS));
+				clip(- Distance(plane,positionWS));
 				return SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*INSTANCE(_Color).rgb;
 			}
 
@@ -118,7 +118,7 @@ Shader "Hidden/PBRSlicing"
 				GRay cameraRay = GRay_Ctor(GetCameraRealPositionWS(positionWS),GetCameraRealDirectionWS(positionWS));
 				GPlane plane = GPlane_Ctor(_SlicePlane.xyz , _SlicePlane.xyz * _SlicePlane.w );
 				i.normalWS = _SlicePlane.xyz;
-				float distance = PlaneRayDistance(plane,cameraRay);
+				float distance = Distance(plane,cameraRay);
 				positionWS = cameraRay.GetPoint(distance);
 				i.uv = positionWS.xz;
 			}

@@ -14,15 +14,15 @@ GRay GRay_Ctor(float3 _origin, float3 _direction)
 }
 struct GLine
 {
-    float3 origin;
+    float3 start;
+    float3 end;
     float3 direction;
     float length;
-    float3 end;
-    float3 GetPoint(float _distance)  { return origin + direction * _distance;  }
+    float3 GetPoint(float _distance)  { return start + direction * _distance;  }
     GRay ToRay()
     {
         GRay ray;
-        ray.origin = origin;
+        ray.origin = start;
         ray.direction = direction;
         return ray;
     }
@@ -30,10 +30,20 @@ struct GLine
 GLine GLine_Ctor(float3 _origin, float3 _direction, float _length)
 {
     GLine gline;
-    gline.origin = _origin;
+    gline.start = _origin;
     gline.direction = _direction;
     gline.length = _length;
     gline.end = _origin + _direction * _length;
+    return gline;
+}
+GLine GLine_Ctor(float3 _origin, float3 _end)
+{
+    GLine gline;
+    gline.start = _origin;
+    gline.end = _end;
+    float3 delta = _end - _origin;
+    gline.length = length(delta);
+    gline.direction = normalize(delta);
     return gline;
 }
 //Plane

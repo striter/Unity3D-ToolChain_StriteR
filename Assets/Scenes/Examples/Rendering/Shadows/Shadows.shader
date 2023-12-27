@@ -73,7 +73,7 @@ Shader "Hidden/Unfinished/Shadows"
 					int elementStartIndex = elementIndex;
 					elementIndex = elementIndex + _SDFVolumeIndexes[i];
 					// output = SDFUnion(output,GSphere_SDF(sphere,input));
-					if(sum(SphereRayDistance(sphere,_ray)) > 0)
+					if(sum(Distance(sphere,_ray)) > 0)
 					{
 						for(int j=elementStartIndex;j<elementIndex;j++)
 						{
