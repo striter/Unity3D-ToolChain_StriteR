@@ -113,10 +113,8 @@ half4 IndirectSSRSpecular(float2 screenUV,float eyeDepth, half3 normalTS)
 half3 IndirectSpecularWithSSR(float3 reflectDir, float perceptualRoughness, half4 positionHCS, half3 normalTS)
 {
     half3 specular = IndirectCubeSpecular(reflectDir, perceptualRoughness);
-#if _SCREENSPACE_REFLECTION
     half4 indirectSpecular=IndirectSSRSpecular(TransformHClipToNDC(positionHCS),RawToEyeDepth(positionHCS.z / max(FLT_EPS,positionHCS.w)), normalTS);
     specular = lerp(specular,indirectSpecular.rgb,indirectSpecular.a);
-#endif
     return specular;
 }
 

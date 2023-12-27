@@ -4,7 +4,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace Rendering.Pipeline
 {
-    public class SRF_MultiPass : ScriptableRendererFeature
+    public class MultiPass : ScriptableRendererFeature
     {
         public string m_PassName;
         public RenderPassEvent m_Event= RenderPassEvent.AfterRenderingTransparents;

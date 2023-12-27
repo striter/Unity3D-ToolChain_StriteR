@@ -6,7 +6,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace Rendering.Pipeline
 {
-    public class SRP_MotionVectorTexture : ScriptableRenderPass, ISRPBase
+    public class MotionVectorTexturePass : ScriptableRenderPass, ISRPBase
     {
         private readonly PassiveInstance<Material> m_CameraMaterial =  new PassiveInstance<Material>(() => new Material(RenderResources.FindInclude("Hidden/MotionVectorCamera")) { hideFlags = HideFlags.HideAndDontSave },GameObject.DestroyImmediate);
         private readonly PassiveInstance<Material> m_ObjectMaterial = new PassiveInstance<Material>(() => new Material(RenderResources.FindInclude("Hidden/MotionVectorObject")) { hideFlags = HideFlags.HideAndDontSave },GameObject.DestroyImmediate);

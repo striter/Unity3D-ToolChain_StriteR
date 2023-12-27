@@ -1,0 +1,135 @@
+﻿using System;
+using Rendering.PostProcess;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+
+namespace Rendering.Pipeline
+{
+    public enum EPlanarReflectionGeometry
+    {
+        _PLANE = 1,
+        _SPHERE = 2,
+    }
+
+    public enum EPlanarReflectionMode
+    {
+        ScreenSpaceGeometry,
+        Render,
+    }
+
+    [Serializable]
+    public struct PlanarReflectionData
+    {
+        public EPlanarReflectionMode m_Type;
+        [MFoldout(nameof(m_Type), EPlanarReflectionMode.ScreenSpaceGeometry)] [Range(1, 4)] public int m_Sample;
+
+        [MFoldout(nameof(m_Type), EPlanarReflectionMode.Render)] public bool m_Recull;
+        [MFoldout(nameof(m_Type), EPlanarReflectionMode.Render,nameof(m_Recull),true)] [Range(0,8)]public int m_AdditionalLightcount;
+        [MFoldout(nameof(m_Type), EPlanarReflectionMode.Render)] public bool m_IncludeTransparent;
+
+        [Header("Blur")] 
+        [Range(1,4)] public int m_DownSample;
+        public DBlurs m_BlurParam;
+
+        public static readonly PlanarReflectionData kDefault = new PlanarReflectionData
+        {
+            m_Type = EPlanarReflectionMode.ScreenSpaceGeometry,
+            m_IncludeTransparent = true,
+            m_Recull = true,
+            m_AdditionalLightcount=8,
+            m_Sample = 4,
+            m_DownSample = 2,
+            m_BlurParam =  DBlurs.kDefault,
+        };
+    }
+    
+    abstract class APlanarReflectionBase:ScriptableRenderPass
+    {
+        #region ID
+            const string C_ReflectionTex = "_CameraReflectionTexture";
+            const string C_ReflectionTempTexture = "_CameraReflectionBlur";
+        #endregion
+
+         protected PlanarReflectionData m_Data;
+         protected FBlursCore m_Blur;
+         protected  int m_Index { get; private set; }
+         private PlanarReflection m_Plane;
+         private RenderTextureDescriptor m_ColorDescriptor;
+         private RTHandle m_ColorTarget;
+         private ScriptableRenderer m_Renderer;
+         int m_ReflectionTexture;
+         RenderTargetIdentifier m_ReflectionTextureID;
+         private int m_ReflectionBlurTexture;
+         private RenderTargetIdentifier m_ReflectionBlurTextureID;
+         
+         public virtual APlanarReflectionBase Setup(PlanarReflectionData _data,FBlursCore _blur,PlanarReflection _component,ScriptableRenderer _renderer,int _index,RenderPassEvent _event)
+         {
+             renderPassEvent = _event;
+             m_Index = _index;
+             m_Data = _data;
+             m_Blur = _blur;
+             m_Renderer = _renderer;
+             m_Plane = _component;
+             m_ReflectionTexture = Shader.PropertyToID( C_ReflectionTex + _index);
+             m_ReflectionTextureID = new RenderTargetIdentifier(m_ReflectionTexture);
+             m_ReflectionBlurTexture = Shader.PropertyToID(C_ReflectionTempTexture + _index);
+             m_ReflectionBlurTextureID = new RenderTargetIdentifier(m_ReflectionBlurTexture);
+             return this;
+         }
+
+         public sealed override void Configure(CommandBuffer _cmd, RenderTextureDescriptor _cameraTextureDescriptor)
+         {
+             base.Configure(_cmd, _cameraTextureDescriptor);
+             m_ColorDescriptor = _cameraTextureDescriptor;
+             ConfigureColorDescriptor(ref m_ColorDescriptor,ref m_Data);
+
+             _cmd.GetTemporaryRT(m_ReflectionTexture, m_ColorDescriptor,FilterMode.Bilinear);
+            
+             m_ColorTarget = RTHandles.Alloc(m_ReflectionTextureID);
+             if (m_Data.m_BlurParam.m_BlurType!=EBlurType.None)
+             {
+                 _cmd.GetTemporaryRT(m_ReflectionBlurTexture, m_ColorDescriptor, FilterMode.Bilinear);
+                 m_ColorTarget = RTHandles.Alloc(m_ReflectionBlurTextureID);
+             }
+             DoConfigure(_cmd,m_ColorDescriptor,m_ColorTarget);
+         }
+
+         protected virtual void ConfigureColorDescriptor(ref RenderTextureDescriptor _descriptor,ref PlanarReflectionData _data)
+         {
+             int downSample = Mathf.Max(_data.m_DownSample, 1);
+             _descriptor.width /= downSample;
+             _descriptor.height /= downSample;
+         }
+         protected virtual void DoConfigure(CommandBuffer _cmd, RenderTextureDescriptor _descriptor,  RTHandle _colorTarget)
+         {
+             
+         }
+
+         public override void OnCameraCleanup(CommandBuffer _cmd)
+         {
+             base.OnCameraCleanup(_cmd);
+             if (m_Data.m_BlurParam.m_BlurType!=EBlurType.None)
+                 _cmd.ReleaseTemporaryRT(m_ReflectionBlurTexture);
+             _cmd.ReleaseTemporaryRT(m_ReflectionTexture);
+         }
+
+         public sealed override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
+         {
+             CommandBuffer cmd = CommandBufferPool.Get($"Planar Reflection Pass ({m_Index})");
+             
+             Execute(ref m_Data,_context,ref _renderingData,cmd,ref m_Plane,ref m_ColorDescriptor,ref m_ColorTarget,ref m_Renderer);
+             if (m_Data.m_BlurParam.m_BlurType!=EBlurType.None)
+                 m_Blur.Execute(m_ColorDescriptor ,ref m_Data.m_BlurParam,cmd, m_ColorTarget, m_ReflectionTextureID,m_Renderer,_context,ref _renderingData); 
+            
+             _context.ExecuteCommandBuffer(cmd);
+             cmd.Clear();
+             CommandBufferPool.Release(cmd);
+         }
+
+         protected abstract void Execute(ref PlanarReflectionData _data,
+             ScriptableRenderContext _context, ref RenderingData _renderingData, CommandBuffer _cmd,
+             ref PlanarReflection _config, ref RenderTextureDescriptor _descriptor, 
+             ref RTHandle _target,ref ScriptableRenderer _renderer);
+    }
+}

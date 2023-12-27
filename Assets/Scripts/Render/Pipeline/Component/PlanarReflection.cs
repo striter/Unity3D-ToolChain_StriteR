@@ -1,20 +1,22 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Geometry;
+using Rendering.PostProcess;
 using Gizmos = UnityEngine.Gizmos;
 
 namespace Rendering.Pipeline
 {
     [ExecuteInEditMode,RequireComponent(typeof(MeshRenderer),typeof(MeshFilter))]
-    public class SRC_ReflectionConfig : MonoBehaviour
+    public class PlanarReflection : MonoBehaviour
     {
-        public EReflectionGeometry m_Geometry = EReflectionGeometry._PLANE;
+        public EPlanarReflectionGeometry m_Geometry = EPlanarReflectionGeometry._PLANE;
         [Range(0f, 0.2f)] public float m_NormalDistort = .1f;
-        [MFoldout(nameof(m_Geometry),EReflectionGeometry._PLANE)][Range(-5f, 5f)] public float m_PlaneOffset = 0f;
-        [MFoldout(nameof(m_Geometry),EReflectionGeometry._PLANE)]public bool m_Upward = true;
-
-        public static List<SRC_ReflectionConfig> m_Reflections { get; private set; } = new List<SRC_ReflectionConfig>();
-        public bool Available => m_MeshRenderer.enabled;
+        [MFoldout(nameof(m_Geometry),EPlanarReflectionGeometry._PLANE)][Range(-5f, 5f)] public float m_PlaneOffset = 0f;
+        [MFoldout(nameof(m_Geometry),EPlanarReflectionGeometry._PLANE)]public bool m_Upward = true;
+        public PlanarReflectionData m_Data = PlanarReflectionData.kDefault;
+        
+        public static List<PlanarReflection> m_Reflections { get; private set; } = new List<PlanarReflection>();
+        public bool Available => m_MeshRenderer.enabled && enabled;
         
         private MeshRenderer m_MeshRenderer;
         private MeshFilter m_MeshFilter;
@@ -64,10 +66,10 @@ namespace Rendering.Pipeline
             Gizmos.matrix = transform.localToWorldMatrix;
             switch (m_Geometry)
             {
-                case EReflectionGeometry._PLANE:
+                case EPlanarReflectionGeometry._PLANE:
                     Gizmos.DrawWireCube(Vector3.up * m_PlaneOffset, m_MeshFilter.sharedMesh.bounds.size.SetY(0));
                     break;
-                case EReflectionGeometry._SPHERE:
+                case EPlanarReflectionGeometry._SPHERE:
                     Gizmos.DrawWireSphere(m_SphereData.center,m_SphereData.radius);
                     break;
             }

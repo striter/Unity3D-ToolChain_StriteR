@@ -402,6 +402,37 @@ MonoBehaviour:
       m_LightAbsorption: 0.2
   m_Opaque: 1
   m_DrawGizmos: 1
+--- !u!114 &24843028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1215266520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c85af998dd99edf45b824a71f34e3c08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Geometry: 1
+  m_NormalDistort: 0.1
+  m_PlaneOffset: 0
+  m_Upward: 0
+  m_Data:
+    m_Type: 0
+    m_Sample: 4
+    m_Recull: 1
+    m_AdditionalLightcount: 8
+    m_IncludeTransparent: 1
+    m_DownSample: 1
+    m_BlurParam:
+      m_BlurType: -1
+      m_BlurSize: 0.06
+      m_Iteration: 7
+      m_DownSample: 1
+      m_Angle: 0
+      m_Vector: {x: 0.5, y: 0.5}
+      m_Attenuation: 0.9
 --- !u!114 &74777985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16438,5 +16469,9 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5023959184954354481, guid: e0cb2c60ff51c7143abb6bb9eade4ae0,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 24843028}
   m_SourcePrefab: {fileID: 100100000, guid: e0cb2c60ff51c7143abb6bb9eade4ae0, type: 3}

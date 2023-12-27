@@ -15,7 +15,7 @@ namespace Rendering.Pipeline
         [MFoldout(nameof(m_Mask), true)] public SRD_MaskData m_MaskData;
         public bool m_MotionVector;
         public bool m_Reflection;
-        [MFoldout(nameof(m_Reflection), true)] public SRD_ReflectionData m_PlanarReflection;
+        [MFoldout(nameof(m_Reflection), true)] public ReflectionPassData m_PlanarReflection;
         public DAntiAliasing m_AntiAliasing;
 
         public static FPipelineExtensionParameters kDefault = new FPipelineExtensionParameters()
@@ -25,21 +25,21 @@ namespace Rendering.Pipeline
             m_MaskData = SRD_MaskData.kDefault,
             m_MotionVector = false,
             m_Reflection = false,
-            m_PlanarReflection = SRD_ReflectionData.kDefault,
+            m_PlanarReflection = ReflectionPassData.kDefault,
             m_AntiAliasing = DAntiAliasing.kDefault,
         };
     }
     
-    public class SRF_PipelineExtension : ScriptableRendererFeature
+    public class PipelineExtensionFeature : ScriptableRendererFeature
     {
         public RenderResources m_Resources;
         public FPipelineExtensionParameters m_Data = FPipelineExtensionParameters.kDefault;
         
         private SRP_GlobalParameters m_GlobalParameters;
-        private SRP_NormalTexture m_Normal;
-        private SRP_MaskTexture m_Mask;
-        private SRP_MotionVectorTexture m_MotionVectorTexture;
-        private SRP_Reflection m_Reflection;
+        private NormalTexturePass m_Normal;
+        private MaskTexturePass m_Mask;
+        private MotionVectorTexturePass m_MotionVectorTexture;
+        private ReflectionTexturePass m_Reflection;
 
         private SRP_TAAPass m_TAA;
         private SRP_ComponentBasedPostProcess m_OpaquePostProcess;
@@ -54,10 +54,10 @@ namespace Rendering.Pipeline
 
             m_GlobalParameters = new SRP_GlobalParameters() { renderPassEvent= RenderPassEvent.BeforeRendering };
             m_TAA = new SRP_TAAPass() { renderPassEvent = RenderPassEvent.BeforeRenderingOpaques - 1 };
-            m_MotionVectorTexture = new SRP_MotionVectorTexture() {renderPassEvent = RenderPassEvent.BeforeRenderingOpaques - 1};
-            m_Mask = new SRP_MaskTexture() { renderPassEvent = RenderPassEvent.BeforeRenderingOpaques };
-            m_Normal = new SRP_NormalTexture() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox };
-            m_Reflection = new SRP_Reflection(m_Data.m_PlanarReflection, RenderPassEvent.AfterRenderingSkybox + 1);
+            m_MotionVectorTexture = new MotionVectorTexturePass() {renderPassEvent = RenderPassEvent.BeforeRenderingOpaques - 1};
+            m_Mask = new MaskTexturePass() { renderPassEvent = RenderPassEvent.BeforeRenderingOpaques };
+            m_Normal = new NormalTexturePass() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox };
+            m_Reflection = new ReflectionTexturePass(m_Data.m_PlanarReflection, RenderPassEvent.AfterRenderingSkybox + 1);
             
             m_OpaquePostProcess=new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 2 };
             m_ScreenPostProcess=new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing + 1 };
@@ -87,7 +87,7 @@ namespace Rendering.Pipeline
             bool normal = m_Data.m_Normal;
             bool motionVector = m_Data.m_MotionVector;
             bool reflection = _renderingData.cameraData.isSceneViewCamera || m_Data.m_Reflection;
-            if(_renderingData.cameraData.camera.TryGetComponent(out SRC_CameraConfig param))
+            if(_renderingData.cameraData.camera.TryGetComponent(out CameraOverride param))
             {
                 normal = param.m_Normal.IsEnabled(normal);
                 reflection = param.m_Reflection.IsEnabled(reflection);
@@ -110,8 +110,8 @@ namespace Rendering.Pipeline
         private readonly List<IPostProcessBehaviour> m_PostprocessQueue = new List<IPostProcessBehaviour>();
         private readonly List<IPostProcessBehaviour> m_OpaqueProcessing = new List<IPostProcessBehaviour>();
         private readonly List<IPostProcessBehaviour> m_ScreenProcessing = new List<IPostProcessBehaviour>();
-        private SRC_CameraConfig m_PostProcessingPreview;
-        void EnqueuePostProcess(ScriptableRenderer _renderer,ref RenderingData _data,SRC_CameraConfig _override)
+        private CameraOverride m_PostProcessingPreview;
+        void EnqueuePostProcess(ScriptableRenderer _renderer,ref RenderingData _data,CameraOverride _override)
         {
             m_PostprocessQueue.Clear();
             //Enqueue AntiAliasing

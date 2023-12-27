@@ -4550,6 +4550,22 @@ MonoBehaviour:
   m_NormalDistort: 0.2
   m_PlaneOffset: 0
   m_Upward: 1
+  m_Data:
+    m_Type: 0
+    m_Sample: 1
+    m_Recull: 1
+    m_AdditionalLightcount: 8
+    m_IncludeTransparent: 1
+    m_Blur: 0
+    m_DownSample: 2
+    m_BlurParam:
+      m_BlurType: 0
+      m_BlurSize: 0.05
+      m_Iteration: 2
+      m_DownSample: 2
+      m_Angle: 0
+      m_Vector: {x: 0.5, y: 0.5}
+      m_Attenuation: 0.9
 --- !u!1 &814280861
 GameObject:
   m_ObjectHideFlags: 0
@@ -11367,6 +11383,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Data:
+    m_VolumetricLight: 0
+    m_VolumetricLightData:
+      m_Strength: 0
+      m_Distance: 0
+      m_MarchTimes: 0
+      m_MarchStrength: 0
+      m_Pow: 0
+      m_Dither: 0
+    m_VolumetricDownSample: 0
+    m_EnableVolumetricBlur: 0
+    m_VolumetricBlur:
+      m_BlurType: 0
+      m_BlurSize: 0
+      m_Iteration: 0
+      m_DownSample: 0
+      m_Angle: 0
+      m_Vector: {x: 0, y: 0}
+      m_Attenuation: 0
     m_MultiScattering: 0
     m_MultiScatteringData:
       distanceScale: 0
@@ -15189,6 +15223,10 @@ MonoBehaviour:
   meshConstructor:
     m_Width: 0.05
     m_Billboard: 1
+    m_JointSubdivision: 0
+    m_TolerangeInAngles: 10
+    m_DistanceDamper: 0.1
+    m_ExtraDivision: 0
     m_Extend: 3
     m_RopePosition: 1
     m_EndTransform: {fileID: 1352949499}

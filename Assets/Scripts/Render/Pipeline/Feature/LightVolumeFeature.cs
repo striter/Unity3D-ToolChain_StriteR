@@ -7,7 +7,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace Rendering.Pipeline
 {
-    public class SRF_LightVolume : ScriptableRendererFeature
+    public class LightVolumeFeature : ScriptableRendererFeature
     {
         private SRP_LightMask m_LightMaskPass;
         public override void Create()

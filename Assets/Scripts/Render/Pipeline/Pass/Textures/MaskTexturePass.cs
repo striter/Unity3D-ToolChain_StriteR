@@ -39,14 +39,14 @@ namespace Rendering.Pipeline
         };
     }
     
-    public class SRP_MaskTexture : ScriptableRenderPass,ISRPBase
+    public class MaskTexturePass : ScriptableRenderPass,ISRPBase
     {
         private SRD_MaskData m_Data;
 
         private readonly PassiveInstance<Material> m_OutlineRenderer = new PassiveInstance<Material>(() => new Material(RenderResources.FindInclude("Game/Additive/Outline")) { hideFlags = HideFlags.HideAndDontSave },GameObject.DestroyImmediate);
         private readonly PassiveInstance<Material> m_NormalRenderer = new PassiveInstance<Material>(() => new Material(RenderResources.FindInclude("Game/Unlit/Color")) { hideFlags = HideFlags.HideAndDontSave },GameObject.DestroyImmediate);
 
-        public SRP_MaskTexture Setup(SRD_MaskData _data)
+        public MaskTexturePass Setup(SRD_MaskData _data)
         {
             m_Data = _data;
             var renderer = _data.m_Outline ? m_OutlineRenderer : m_NormalRenderer;

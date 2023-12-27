@@ -29,7 +29,6 @@
 		[Foldout(_SSS)]_SSSNormalInfluence("SSS Normal Influence",Range(0,1))=1
 		[Foldout(_SSS)]_SSSIntensity("SSS Intensity",Range(0.1,10))=1
 		
-		
 		[Header(Depth)]
 		[ToggleTex(_DEPTHMAP)][NoScaleOffset]_DepthTex("Texure",2D)="white"{}
 		[Foldout(_DEPTHMAP)]_DepthScale("Scale",Range(0.001,.5))=1
@@ -171,7 +170,7 @@
 			#pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
             #pragma multi_compile _ SHADOWS_SHADOWMASK
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
-            #pragma multi_compile _ LIGHTMAP_ON	
+            #pragma multi_compile _ LIGHTMAP_ON
 
 			#pragma shader_feature_local _PBRMAP
 			#pragma shader_feature_local _NORMALMAP
@@ -294,8 +293,8 @@
 
 				half3 finalCol=0;
 				Light mainLight=GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
-				half3 indirectDiffuse= IndirectDiffuse(mainLight,i,normalWS);
-				half3 indirectSpecular=IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,0);
+				half3 indirectDiffuse = IndirectDiffuse(mainLight,i,normalWS);
+				half3 indirectSpecular = IndirectSpecularWithSSR(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,normalTS);
 				finalCol+=BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 
 			#if _MATCAP
@@ -327,6 +326,9 @@
 				FOG_MIX(i,finalCol);
 				finalCol+=surface.emission;
 				o.result=half4(finalCol,color.a);
+
+				o.result.rgb = indirectSpecular;
+				
 				return o;
 			}
 

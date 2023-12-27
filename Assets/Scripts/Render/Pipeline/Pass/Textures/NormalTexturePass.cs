@@ -5,7 +5,7 @@ namespace Rendering.Pipeline
 {
     using static KRenderTextures;
     
-    public class SRP_NormalTexture : ScriptableRenderPass, ISRPBase
+    public class NormalTexturePass : ScriptableRenderPass, ISRPBase
     {
         PassiveInstance<Material> m_NormalMaterial=new PassiveInstance<Material>(()=>new Material( RenderResources.FindInclude("Hidden/NormalsFromDepth"))  {hideFlags = HideFlags.HideAndDontSave},GameObject.DestroyImmediate);
 

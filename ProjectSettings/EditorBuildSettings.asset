@@ -36,7 +36,7 @@ EditorBuildSettings:
     path: Assets/Scenes/TechToys/WaveInteraction/WaveInteraction.unity
     guid: cc226ce06d2088f48a0a5ae04254f2cc
   - enabled: 1
-    path: Assets/Scenes/Examples/UGUIExtensions/UnityGUIExtensions.unity
+    path: Assets/Scenes/Examples/Engine/UnityGUIExtensions.unity
     guid: 27507fd8c4cf2d44ca00077fb133f302
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 347a74a6abbfda5409b4cb31b51a2451,
