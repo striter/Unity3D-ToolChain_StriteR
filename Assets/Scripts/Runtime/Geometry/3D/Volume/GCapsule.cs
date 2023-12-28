@@ -35,7 +35,7 @@ namespace Geometry
     }
 
     [Serializable]
-    public partial struct GCapsule : IShape3D , ISerializationCallbackReceiver
+    public partial struct GCapsule : IShape3D , IBoundingBox3D , ISerializationCallbackReceiver
     {
         public GCapsule(CapsuleCollider _collider)
         {
@@ -58,7 +58,17 @@ namespace Geometry
 
         public float3 GetSupportPoint(float3 _direction)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
+            // var normal = _direction;
+            // var d = math.dot(normal, normal);
+            // if (d == 0)
+                // return cylinderTop;
+            // var t = math.dot(cylinderTop, normal) / d;
+            // if (t < 0)
+                // return cylinderTop;
+            // if (t > 1)
+                // return cylinderBottom;
+            // return cylinderTop + (cylinderBottom - cylinderTop) * t;
         }
 
         public GBox GetBoundingBox()

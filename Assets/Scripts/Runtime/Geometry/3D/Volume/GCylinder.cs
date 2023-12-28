@@ -6,14 +6,14 @@ using UnityEngine.Serialization;
 
 namespace Geometry
 {
-    public struct GCylinder : IShape3D , IBounds3D
+    public struct GCylinder : IShape3D , IBoundingBox3D
     {
         public float3 origin;
         public float3 normal;
         public float height;
         public float radius;
 
-        public static readonly GCylinder kDefault = new GCylinder() {origin = float3.zero, normal = kfloat3.up, radius = 1f, height = 2f};
+        public static readonly GCylinder kDefault = new GCylinder() {origin = kfloat3.down*.5f, normal = kfloat3.up, radius = .5f, height = 1f};
         public float3 Center => origin;
         public GBox GetBoundingBox()        //https://iquilezles.org/articles/diskbbox/
         {

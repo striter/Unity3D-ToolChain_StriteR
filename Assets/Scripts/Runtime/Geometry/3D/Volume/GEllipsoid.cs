@@ -4,7 +4,7 @@ using Unity.Mathematics;
 namespace Geometry
 {
     [Serializable]
-    public struct GEllipsoid:IShape3D, IBounds3D
+    public struct GEllipsoid:IShape3D, IBoundingBox3D
     {
         public float3 center;
         public float3 radius;

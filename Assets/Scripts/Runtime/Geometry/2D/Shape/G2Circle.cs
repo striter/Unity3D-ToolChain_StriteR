@@ -60,4 +60,16 @@ namespace Geometry
         public float2 GetSupportPoint(float2 _direction) => center + _direction.normalize() * radius;
         public float2 Center => center;
     }
+    
+    public static class G2Circle_Extension
+    {
+        public static G2Triangle GetCircumscribedTriangle(this G2Circle _circle)
+        {
+            var r = _circle.radius;
+            return new G2Triangle(
+                _circle.center + new float2(0f,r/kmath.kSin30d) ,
+                _circle.center + new float2(r * kmath.kTan60d,-r),
+                _circle.center + new float2(-r * kmath.kTan60d,-r));
+        }
+    }
 }

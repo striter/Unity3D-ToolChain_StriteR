@@ -7,6 +7,14 @@ namespace Geometry
     using static UGizmos;
     public static class Gizmos
     {
+        public static void DrawGizmos(this GBox _box)
+        {
+            UnityEngine.Gizmos.DrawWireCube(_box.center,_box.size);
+        }
+        public static void DrawGizmos(this GSphere _sphere)
+        {
+            UnityEngine.Gizmos.DrawWireSphere(_sphere.center,_sphere.radius);
+        }
         public static void DrawGizmos(this GCone _cone)
         {
             Handles.color = UnityEngine.Gizmos.color;
@@ -21,6 +29,13 @@ namespace Geometry
             Handles_Extend.DrawWireCapsule(_capsule);
         }
 
+        public static void DrawGizmos(this GDisk _disk)
+        {
+            Handles.color = UnityEngine.Gizmos.color;
+            Handles.matrix = UnityEngine.Gizmos.matrix;
+            Handles.DrawWireDisc(_disk.Center,_disk.normal,_disk.radius);
+        }
+
         public static void DrawGizmos(this GLine _line)
         {
             Handles.color = UnityEngine.Gizmos.color;
@@ -28,6 +43,13 @@ namespace Geometry
             Handles_Extend.DrawLine(_line);
         }
 
+        public static void DrawGizmos(this GCylinder _cylinder)
+        {
+            Handles.color = UnityEngine.Gizmos.color;
+            Handles.matrix = UnityEngine.Gizmos.matrix;
+            Handles_Extend.DrawCylinder(_cylinder.origin,_cylinder.normal, _cylinder.radius, _cylinder.height);
+        }
+        
         public static void DrawGizmos(this Qube<Vector3> _qube)
         {
             Handles.color = UnityEngine.Gizmos.color;

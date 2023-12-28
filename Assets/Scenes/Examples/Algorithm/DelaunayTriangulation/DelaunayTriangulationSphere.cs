@@ -1,10 +1,5 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Geometry;
-using Geometry.Explicit;
-using Geometry.Validation;
 using Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;

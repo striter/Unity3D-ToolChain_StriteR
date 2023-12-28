@@ -42,6 +42,8 @@ namespace Geometry
         public void OnAfterDeserialize() { Ctor(); }
         
         public GRay ToRay()=>new GRay(start,direction);
+        
+        public static readonly GLine kDefault = new GLine(float3.zero, kfloat3.forward);
     }
     
 }

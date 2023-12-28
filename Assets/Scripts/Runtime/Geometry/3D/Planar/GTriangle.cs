@@ -46,7 +46,7 @@ namespace Geometry
         public float3 GetForward()=> (V0 - (V1 + V2) / 2).normalize();
         public quaternion GetRotation() => quaternion.LookRotation(GetForward(),normal);
 
-        public static readonly GTriangle kDefault = new GTriangle(new float3(0,0,1),new float3(-.5f,0,-1),new float3(.5f,0,-1));
+        public static readonly GTriangle kDefault = new GTriangle(new float3(0,0,.5f),new float3(-.5f,0,-.5f),new float3(.5f,0,-.5f));
         public static explicit operator GTriangle(Triangle<float3> _src) => new GTriangle(_src.v0,_src.v1,_src.v2);
         public static explicit operator GTriangle(Triangle<Vector3> _src) => new GTriangle(_src.v0,_src.v1,_src.v2);
         public Triangle<Vector3> ToVector3() => new Triangle<Vector3>(V0, V1, V2);
@@ -58,7 +58,7 @@ namespace Geometry
 
         public float3 this[int index]
         {
-            get =>triangle[index];
+            get => triangle[index];
             set 
             {
                 switch (index)

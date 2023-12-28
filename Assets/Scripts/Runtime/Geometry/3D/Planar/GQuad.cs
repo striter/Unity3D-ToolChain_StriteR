@@ -19,6 +19,8 @@ namespace Geometry
             normal = srcNormal.normalized;
             area = normal.magnitude / 2;
         }
+
+        public static readonly GQuad kDefault = (GQuad)KQuad.k3SquareCentered;
     }
     
     [Serializable]

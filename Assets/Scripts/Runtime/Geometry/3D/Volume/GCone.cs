@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Geometry
 {
     [Serializable]
-    public struct GCone : IShape3D , IBounds3D
+    public struct GCone : IShape3D , IBoundingBox3D
     {
         public float3 origin;
         public float3 normal;
@@ -34,5 +34,7 @@ namespace Geometry
             return GBox.Minmax( math.min( pa - e*ra, pb - e*rb ),
                                 math.max( pa + e*ra, pb + e*rb ) );     
         }
+        
+        public static readonly GCone kDefault = new GCone(){origin = kfloat3.up*.5f, normal = kfloat3.down, angle = 30f, height = 1f};
     }
 }

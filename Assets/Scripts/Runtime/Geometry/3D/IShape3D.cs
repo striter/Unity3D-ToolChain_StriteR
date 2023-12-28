@@ -7,7 +7,7 @@ namespace Geometry
         // float3 GetSupportPoint(float3 _direction);
     }
 
-    public interface IBounds3D
+    public interface IBoundingBox3D
     {
         public GBox GetBoundingBox();
     }

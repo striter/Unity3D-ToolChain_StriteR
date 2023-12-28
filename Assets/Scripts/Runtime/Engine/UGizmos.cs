@@ -24,11 +24,11 @@ public static class UGizmos
         Handles.matrix = Gizmos.matrix;
         Handles_Extend.DrawArrow(_pos, _rot, _length, _radius);
     }
-    public static void DrawCylinder(Vector3 _pos, Quaternion _rot, float _radius, float _height)
+    public static void DrawCylinder(Vector3 _pos, Vector3 _up, float _radius, float _height)
     {
         Handles.color = Gizmos.color;
         Handles.matrix = Gizmos.matrix;
-        Handles_Extend.DrawCylinder(_pos, _rot, _radius, _height);
+        Handles_Extend.DrawCylinder(_pos, _up, _radius, _height);
     }
 
     public static void DrawTrapezium(Vector3 _pos, Quaternion _rot, Vector4 _trapeziumInfo)

@@ -125,9 +125,9 @@ public static class Handles_Extend
             Handles.DrawLine(capBottom + -Vector3.right * capBottomSize, capTop);
         }
     }
-    public static void DrawCylinder(Vector3 _pos, Quaternion _rot, float _radius, float _height)
+    public static void DrawCylinder(Vector3 _origin,Vector3 _up, float _radius, float _height)
     {
-        using (new Handles.DrawingScope(Handles.color, Handles.matrix * Matrix4x4.TRS(_pos, _rot, Vector3.one)))
+        using (new Handles.DrawingScope(Handles.color, Handles.matrix * Matrix4x4.TRS(_origin, Quaternion.LookRotation(_up), Vector3.one)))
         {
             Vector3 top = Vector3.forward * _height;
 

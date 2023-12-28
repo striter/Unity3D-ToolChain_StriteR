@@ -11,7 +11,7 @@ namespace Geometry
     }
 
     [Serializable]
-    public partial struct GSphere : IShape3D
+    public partial struct GSphere : IShape3D , IBoundingBox3D
     {
         public static readonly GSphere kOne = new GSphere(float3.zero, .5f);
         public static readonly GSphere kZero = new GSphere(0,0);
@@ -23,5 +23,6 @@ namespace Geometry
         public static implicit operator float4(GSphere _src) => new float4(_src.center,_src.radius);
         public bool Contains(float3 _p, float _bias = float.Epsilon) =>math.lengthsq(_p - center) < radius * radius + _bias;
         public bool Contains(GSphere _sphere) =>math.lengthsq(_sphere.center - center) < radius * radius + _sphere.radius;
+        public GBox GetBoundingBox()=> GBox.Minmax(center - radius,center + radius);
     }
 }
