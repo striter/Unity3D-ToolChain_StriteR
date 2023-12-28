@@ -18,8 +18,6 @@ namespace Examples.Algorithm.Geometry
 
         public GSphere boundingSphere1;
         public GSphere boundingSphere2;
-
-        private IShape3D[] drawingShapes = new IShape3D[] { GBox.kDefault, GCapsule.kDefault, };
         
         [Button]
         private void RandomPoints()
@@ -65,9 +63,6 @@ namespace Examples.Algorithm.Geometry
             boundingSphere2.DrawGizmos();
             Gizmos.color = Color.white;
             GSphere.Minmax(boundingSphere1,boundingSphere2).DrawGizmos();
-
-
-            
         }
     }
 }

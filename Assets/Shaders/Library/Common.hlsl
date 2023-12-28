@@ -4,6 +4,7 @@
 #include "Assets/Shaders/Library/Common/Rotation.hlsl"
 #include "Assets/Shaders/Library/Common/Noises/Index.hlsl"
 //Mapping
+#include "Assets/Shaders/Library/Common/Complex.hlsl"
 #include "Assets/Shaders/Library/Common/ValueMapping.hlsl"
 #include "Assets/Shaders/Library/Common/UVMapping.hlsl"
 //Transformations

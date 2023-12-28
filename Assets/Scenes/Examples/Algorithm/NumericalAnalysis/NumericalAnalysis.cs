@@ -61,9 +61,12 @@ namespace Examples.Algorithm.NumericalAnalysis
             
                     var guess = new float2(x, y) * kNumericRange;
                     var root2 = UNumericalAnalysis.NewtonsFractal(kFractalPolynomial,kFractalDerivative,guess,kSqrApproximation);
-                    if (!roots.Any(p => (root2 - p).sqrmagnitude() < kSqrApproximation))
-                        roots.Add(root2);
                     var index = roots.FindIndex(p=>(root2-p).sqrmagnitude()<kSqrApproximation);
+                    if (index == -1)
+                    {
+                        index = roots.Count;
+                        roots.Add(root2);
+                    }
                     Gizmos.color = UColor.IndexToColor(index);
                     
                     Gizmos.DrawWireSphere(new Vector3(x,0,y),kSphereSize);
