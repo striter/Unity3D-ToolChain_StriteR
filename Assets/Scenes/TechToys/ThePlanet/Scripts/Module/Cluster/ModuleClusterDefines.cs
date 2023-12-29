@@ -39,17 +39,11 @@ namespace TechToys.ThePlanet.Module.Cluster
 
         public static float3 ModuleToObjectVertex(TrapezoidQuad _quads,int _orientation,float3 _positionUS,int _offset=0)
         {
-            float u = _positionUS.x, v = _positionUS.z;
-
-            u -= 0.5f;
-            v -= 0.5f;
-            KRotation.kRotate2DCW[_orientation].Multiply(u,v,out var x,out var z);
-            u = x;
-            v = z;
-
-            u += 0.5f;
-            v += 0.5f;
-            return _quads.GetPoint(u, v, (_positionUS.y+_offset) * KPCG.kUnitSize);
+            var uv = _positionUS.xz;
+            uv -= .5f;
+            uv = KRotation.kRotate2DCCW[_orientation].mul(uv);
+            uv += .5f;
+            return _quads.GetPoint(uv.x, uv.y, (_positionUS.y+_offset) * KPCG.kUnitSize);
         }
 
         public static byte CreateVoxelClusterByte(this Qube<ICorner> _corners,int _clusterIndex,EClusterType _clusterType)

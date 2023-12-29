@@ -167,9 +167,8 @@ namespace TechToys.ThePlanet
             var shapeWS = new GQuad( m_Vertices.Convert(p => p.m_Position));
             position = shapeWS.GetBaryCenter();
             forward = m_Vertices.R.m_Position - m_Vertices.B.m_Position;
-            rotation =  quaternion.LookRotation(forward,m_ShapeWS.normal);
-            
-            var invRotation = (quaternion)Quaternion.Inverse(rotation);
+            rotation =  quaternion.LookRotation(forward.normalize(),m_ShapeWS.normal);
+            var invRotation = math.inverse(rotation);
             m_ShapeOS = new TrapezoidQuad(m_Vertices.Convert(_p=> math.mul(invRotation,_p.m_Position-position)),m_Vertices.Convert(p=>math.mul(invRotation,p.m_Normal)));
         }
 

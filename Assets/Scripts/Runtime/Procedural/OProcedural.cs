@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Geometry;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Procedural
@@ -84,8 +85,8 @@ namespace Procedural
         
         public static implicit operator (float x, float y)(Coord _pos) => (_pos.x, _pos.y);
         public static implicit operator Coord( (float x, float y) _pos) => new Coord(_pos.x, _pos.y);
-        public static implicit operator Vector2(Coord _pos) => new Vector2(_pos.x, _pos.y);
-        public static implicit operator Coord(Vector2 _pos) => new Coord(_pos.x, _pos.y);
+        public static implicit operator float2(Coord _pos) => new float2(_pos.x, _pos.y);
+        public static implicit operator Coord(float2 _pos) => new Coord(_pos.x, _pos.y);
         public override string ToString() => $"{x:F1},{y:F1}";
         public static readonly Coord zero = new Coord(0, 0);
         public static readonly Coord one = new Coord(1, 1);

@@ -146,7 +146,7 @@ namespace Examples.Algorithm.Procedural
         [WriteOnly] public NativeArray<float3x4> normals;
         public int resolution;
         public float invResolution;
-        public float3x4_homogeneous transform;
+        public float4x3_homogenous transform;
 
         public void Execute(int _i)
         {
@@ -168,7 +168,7 @@ namespace Examples.Algorithm.Procedural
     {
         public SmallXXHash4 hash;
         [ReadOnly] public NativeArray<float3x4> positions;
-        public float3x4_homogeneous transform;
+        public float4x3_homogenous transform;
         [WriteOnly] public NativeArray<uint4> hashes;
         public void Execute(int _i)
         {

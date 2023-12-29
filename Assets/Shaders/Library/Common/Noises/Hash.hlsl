@@ -1,4 +1,23 @@
-﻿float random(float value,float seed = 0.546)
+﻿int   seed = 1;
+void  srand(int s )
+{
+    seed = s;
+}
+int rand()
+{
+    seed = seed*0x343fd+0x269ec3; return (seed>>16)&32767;
+}
+float frand()
+{
+    return float(rand())/32767.0;
+}
+int hash( int n )
+{
+    n=(n<<13)^n; return n*(n*n*15731+789221)+1376312589;
+}
+
+
+float random(float value,float seed = 0.546)
 {
     return frac(sin(value * 12.9898 + seed) * 43758.5453);
 }

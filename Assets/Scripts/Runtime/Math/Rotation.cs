@@ -1,14 +1,16 @@
-using Unity.Mathematics;
 using UnityEngine;
+using Unity.Mathematics;
 using static kmath;
 using static Unity.Mathematics.math;
+using float2x2 = Unity.Mathematics.float2x2;
 
 public static class KRotation
 {
-    public static readonly Matrix2x2 kRotateCW90 = umath.Rotate2D(90 * kDeg2Rad, true);
-    public static readonly Matrix2x2 kRotateCW180 = umath.Rotate2D(180 * kDeg2Rad, true);
-    public static readonly Matrix2x2 kRotateCW270 = umath.Rotate2D(270 * kDeg2Rad, true);
-    public static readonly Matrix2x2[] kRotate2DCW = {Matrix2x2.Identity, kRotateCW90, kRotateCW180, kRotateCW270};
+    public static readonly float2x2 kRotateCW90 = umath.Rotate2D(90 * kDeg2Rad, true);
+    public static readonly float2x2 kRotateCW180 = umath.Rotate2D(180 * kDeg2Rad, true);
+    public static readonly float2x2 kRotateCW270 = umath.Rotate2D(270 * kDeg2Rad, true);
+    public static readonly float2x2[] kRotate2DCW = { float2x2.identity , kRotateCW90, kRotateCW180, kRotateCW270};
+    public static readonly float2x2[] kRotate2DCCW = { float2x2.identity, kRotateCW270, kRotateCW180, kRotateCW90 };
 
     public static readonly quaternion[] kRotate3DCW =
     {
@@ -74,13 +76,13 @@ public static partial class umath
         return new quaternion(_axis.x * sinH, _axis.y * sinH, _axis.z * sinH, cosH);
     }
 
-    public static Matrix2x2 Rotate2D(float _rad, bool _clockWise = false)
+    public static float2x2 Rotate2D(float _rad, bool _clockWise = false)
     {
         var sinA = Mathf.Sin(_rad);
         var cosA = Mathf.Cos(_rad);
-        if (_clockWise)
-            return new Matrix2x2(cosA, sinA, -sinA, cosA);
-        return new Matrix2x2(cosA, -sinA, sinA, cosA);
+        if(_clockWise)
+            return new float2x2(cosA, sinA, -sinA, cosA);
+        return new float2x2(cosA, -sinA, sinA, cosA);
     }
 
     public static Matrix3x3 AngleAxis3x3(float _radin, float3 _axis)

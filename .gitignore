@@ -38,3 +38,4 @@ Thumbs.db
 /Assets/Plugins/Bakery
 /Assets/Plugins/Bakery.meta
 bakery_times.log
+Assets/Scenes/TechToys/ThePlanet/_Editor/Grid/DisorderedHexagonGridGenerator.cs

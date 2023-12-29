@@ -1,0 +1,75 @@
+#pragma kernel Main
+
+#include "Assets/Shaders/Library/Common.hlsl"
+
+struct IFSInput
+{
+    float3x2 transform;
+    float contraction;
+
+    float3x3 GetMatrix()
+    {
+        return float3x3(transform[0].x,transform[1].x,transform[2].x,
+                    transform[0].y,transform[1].y,transform[2].y,
+                    0,0,1);
+    }
+};
+
+StructuredBuffer<IFSInput> _IFSBuffer;
+int _IFSBufferCount;
+
+float _Threshold;
+RWTexture2D<float4> _Result;
+float4 _Result_ST;
+
+[numthreads(8,8,1)]
+void Main(uint3 id : SV_DispatchThreadID)
+{
+    srand(hash(id.x + id.y * _Result_ST.w));
+    float2 uv = id.xy * _Result_ST.xy;
+    uv = (uv -.5f) *2;
+    float weight = 1.0 / _IFSBufferCount;
+    float3  cola = 0;
+    float3  colb = 0;
+    float colw = 0.0;
+    float cad = 0.0;
+    int count = 1024;
+    float2 z = 0;
+
+    for(int i=0;i<count;i++)
+    {
+        float p = random(uv);
+        IFSInput input = _IFSBuffer[floor(p * _IFSBufferCount)];
+        
+        z = mul( input.GetMatrix() , float3( z,1)).xy;
+
+        // float an = length(z)*0.25;
+        // z = 2.0* mul(Rotate2x2(an),z/dot(z,z));
+        
+        cad *= weight;
+        cad += p;
+
+        if(i>10)
+        {
+            float3  co = 0.5 + 0.5*sin(1.5*cad + float3(0.5,2.0,2.0)+2.0);
+            co.z += co.y*(1.0*sin(cad*3.0+3.0));
+            co = clamp(co,0.0,1.0);
+            
+            float d2 = dot(uv-z,uv-z)*4.0;
+            cola += co*exp2( -8192.0*d2 );
+            colb += co*exp2(  -128.0*d2 );
+            colw += exp2( -256.0*d2 );
+        }
+    }
+    cola/=float(count);
+    colb/=float(count);
+    colw/=float(count);
+    
+    // color
+    cola = 256.0*sqrt(cola);
+    colb =   2.0*sqrt(colb);
+    colw = 64.0*sqrt(colw);
+    float3 col = cola + colb;
+
+    _Result[id.xy] = float4(col,1);
+}

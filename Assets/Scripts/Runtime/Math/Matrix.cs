@@ -37,14 +37,10 @@ public struct Matrix2x2
         return new Vector2(float2.x, float2.y);
     }
 
-    public void Multiply(float _x,float _y,out float x,out float y)
-    {
-        x = _x * m00 + _y * m10;
-        y = _x * m01 + _y * m11;
-    }
-    
     public override string ToString()=>$"{m00} {m01}\n{m10} {m11}";
     public static Matrix2x2 Identity = new Matrix2x2(1f, 0f, 0f, 1f);
+    public static implicit operator Matrix2x2(float2x2 _matrix) => new Matrix2x2(_matrix.c0.x, _matrix.c0.y, 
+                                                                                _matrix.c1.x, _matrix.c1.y);
 }
 
 [Serializable]
@@ -102,21 +98,23 @@ public struct Matrix3x3
 }
 
 [Serializable]
-public struct float2x3_homogeneous
+public struct float3x2_homogenous
 {
-    public float2 c0, c1, c2; 
+    public float2 c0, c1, c2;
+    public float3 Row0 => new float3(c0.x, c1.x, c2.x);
+    public float3 Row1 => new float3(c0.y, c1.y, c2.y);
     //r2 [0 , 0 , 1]
-    private float2x3_homogeneous(float2 _c0,float2 _c1,float2 _c2) { c0 = _c0;  c1 = _c1; c2 = _c2;  }
-    private float2x3_homogeneous(float _00, float _01, float _02,
+    private float3x2_homogenous(float2 _c0,float2 _c1,float2 _c2) { c0 = _c0;  c1 = _c1; c2 = _c2;  }
+    private float3x2_homogenous(float _00, float _01, float _02,
                                  float _10, float _11, float _12 ): this(
                                  new float2(_00, _10),
                                  new float2(_01, _11),
                                  new float2(_02, _12) ) { }
 
-    public static float2x3_homogeneous TRS(float2 _translate, float _angle, float2 _scale)
+    public static float3x2_homogenous TRS(float2 _translate, float _angle, float2 _scale)
     {
-        var r = float2x2.Rotate(_angle);
-        return new float2x3_homogeneous(
+        var r = umath.Rotate2D(_angle);
+        return new float3x2_homogenous(
             r.c0.x*_scale.x, r.c0.y*_scale.x ,_translate.x,
             r.c1.x*_scale.y, r.c1.y*_scale.y ,_translate.y
         );
@@ -125,23 +123,26 @@ public struct float2x3_homogeneous
     public float2 mulDirection(float2 _srcVector) => c0*_srcVector.x + c1*_srcVector.y;
     public float2 mulPosition(float2 _position) =>  c0*_position.x + c1*_position.y + c2;
     
-    public static implicit operator float2x3(float2x3_homogeneous _matrix) => new float2x3(_matrix.c0,_matrix.c1,_matrix.c2);
-    public static implicit operator float2x3_homogeneous(float3x3 _srcMatrix)=>new float2x3_homogeneous(_srcMatrix.c0.xy,_srcMatrix.c1.xy,_srcMatrix.c2.xy);
+    public static implicit operator float2x3(float3x2_homogenous _matrix) => new float2x3(_matrix.c0,_matrix.c1,_matrix.c2);
+    public static implicit operator float3x2_homogenous(float3x3 _srcMatrix)=>new float3x2_homogenous(_srcMatrix.c0.xy,_srcMatrix.c1.xy,_srcMatrix.c2.xy);
+    
     public float4x4 ToMatrix4x4XZ() => new float4x4(
             c0.x,0,c0.y,c2.x,
             0,1,0,0,
             c1.x,0,c1.y,c2.y,
             0,0,0,1 );
+    
+    public static implicit operator float3x2(float3x2_homogenous _homogenous)=> new float3x2(_homogenous.Row0,_homogenous.Row1);
 }
 
 [Serializable]
-public struct float3x4_homogeneous  //float3x4
+public struct float4x3_homogenous  //float3x4
 {
     public float3 c0, c1, c2, c3;
     //r3 [0 , 0 , 0 , 1]
     
-    private float3x4_homogeneous(float3 _c0,float3 _c1,float3 _c2,float3 _c3) { c0 = _c0;  c1 = _c1; c2 = _c2; c3 = _c3; }
-    private float3x4_homogeneous( 
+    private float4x3_homogenous(float3 _c0,float3 _c1,float3 _c2,float3 _c3) { c0 = _c0;  c1 = _c1; c2 = _c2; c3 = _c3; }
+    private float4x3_homogenous( 
         float _00, float _01, float _02,float _03,
         float _10, float _11, float _12,float _13,
         float _20, float _21, float _22,float _23): this(
@@ -150,16 +151,16 @@ public struct float3x4_homogeneous  //float3x4
             new float3(_02, _12, _22), 
             new float3(_03, _13, _23)) { }
 
-    public static float3x4_homogeneous TS(float3 _t, float3 _s) => new float3x4_homogeneous(
+    public static float4x3_homogenous TS(float3 _t, float3 _s) => new float4x3_homogenous(
         _s.x,0f,0f,_t.x,
         0f,_s.y,0f,_t.y,
         0f,0f,_s.z,_t.z
     );
 
-    public static float3x4_homogeneous TRS(float3 _t, quaternion _q, float3 _s)
+    public static float4x3_homogenous TRS(float3 _t, quaternion _q, float3 _s)
     {
         var r = new float3x3(_q);
-        return new float3x4_homogeneous(
+        return new float4x3_homogenous(
                 r.c0.x*_s.x, r.c0.y*_s.x ,r.c0.z*_s.x,_t.x,
                 r.c1.x*_s.y, r.c1.y*_s.y ,r.c1.z*_s.y,_t.y,
                 r.c2.x*_s.z, r.c2.y*_s.z ,r.c2.z*_s.z,_t.z
@@ -169,8 +170,8 @@ public struct float3x4_homogeneous  //float3x4
     public float3 mulDirection(float3 _srcVector) => c0*_srcVector.x + c1*_srcVector.y + c2*_srcVector.z;
     public float3 mulPosition(float3 _position) =>  c0*_position.x + c1*_position.y + c2*_position.z + c3;
     
-    public static implicit operator float3x4(float3x4_homogeneous _matrix) => new float3x4(_matrix.c0,_matrix.c1,_matrix.c2,_matrix.c3);
-    public static implicit operator float3x4_homogeneous(float4x4 _srcMatrix)=>new float3x4_homogeneous(_srcMatrix.c0.xyz,_srcMatrix.c1.xyz,_srcMatrix.c2.xyz,_srcMatrix.c3.xyz);
+    public static implicit operator float3x4(float4x3_homogenous _matrix) => new float3x4(_matrix.c0,_matrix.c1,_matrix.c2,_matrix.c3);
+    public static implicit operator float4x3_homogenous(float4x4 _srcMatrix)=>new float4x3_homogenous(_srcMatrix.c0.xyz,_srcMatrix.c1.xyz,_srcMatrix.c2.xyz,_srcMatrix.c3.xyz);
 }
 
 [Serializable]
@@ -257,4 +258,9 @@ public struct float4x4_symmetric
         _src.GetColumn(3) * _value.w;
 
     public static readonly float4x4_symmetric zero = default;
-}   
+}
+
+public static class matrix_extension
+{
+    public static float2 mul(this float2x2 _matrix, float2 _point) => math.mul(_matrix, _point);
+}

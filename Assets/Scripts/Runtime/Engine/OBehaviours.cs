@@ -33,7 +33,7 @@ public struct TRS
     
     public static TRS kDefault = new TRS(){position = Vector3.zero,rotation = Vector3.zero,scale = Vector3.one};
     
-    public float3x4_homogeneous transformMatrix=>float3x4_homogeneous.TRS(position,quaternion.EulerZXY(rotation),scale);
+    public float4x3_homogenous transformMatrix=>float4x3_homogenous.TRS(position,quaternion.EulerZXY(rotation),scale);
 }
 
 public interface ITransform
