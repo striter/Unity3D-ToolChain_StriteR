@@ -11,6 +11,7 @@ namespace Examples.Rendering.Fractals
         public float2 center;
         public float angle;
         public float2 scale;
+        public float timeScale;
         public static IFSInput kDefaullt = new IFSInput()
         {
             angle = 90f,
@@ -20,7 +21,7 @@ namespace Examples.Rendering.Fractals
         
         public IFSOutput Output()
         {
-            var matirx = float3x2_homogenous.TRS(center,angle,scale);
+            var matirx = float3x2_homogenous.TRS(center,angle + timeScale* UTime.time,scale);
             return new IFSOutput()
             {
                 matrix = matirx,

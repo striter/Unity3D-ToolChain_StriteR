@@ -71,5 +71,8 @@ void Main(uint3 id : SV_DispatchThreadID)
     colw = 64.0*sqrt(colw);
     float3 col = cola + colb;
 
-    _Result[id.xy] = float4(col,1);
+    col *= 3.0/(1.0+col);
+    col = clamp(col,0.0,1.0);
+    colw = clamp(colw,0.0,1.0);
+    _Result[id.xy] = float4(col,colw);
 }
