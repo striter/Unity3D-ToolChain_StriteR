@@ -2,7 +2,7 @@ Shader "Game/Unfinished/NewtonFractal"
 {
     Properties
     {
-        _MainTex_ST("Scale And Tilling",Vector) = (1,1,0,0)
+        _ST("Scale And Tilling",Vector) = (1,1,0,0)
     }
     SubShader
     {
@@ -29,8 +29,7 @@ Shader "Game/Unfinished/NewtonFractal"
             };
 
             INSTANCING_BUFFER_START
-                INSTANCING_PROP(float4,_Color)
-                INSTANCING_PROP(float4,_MainTex_ST)
+                INSTANCING_PROP(float4,_ST)
             INSTANCING_BUFFER_END
 
             float2 Polynomial(float2 x)
@@ -64,14 +63,14 @@ Shader "Game/Unfinished/NewtonFractal"
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
                 o.positionCS = TransformObjectToHClip(v.positionOS);
-                o.uv = TransformTex(v.uv, _MainTex_ST);
+                o.uv = v.uv;
                 return o;
             }
 
             float4 frag (v2f i) : SV_Target
             {
 				UNITY_SETUP_INSTANCE_ID(i);
-                float2 root2 = NewtonsFractal((i.uv-.5f)*2) / 5;
+                float2 root2 = NewtonsFractal( TransformTex((i.uv-.5f)*2, _ST));
                 return saturate(float4(root2.x, root2.y, -root2.y, 1.0));
             }
             ENDHLSL
