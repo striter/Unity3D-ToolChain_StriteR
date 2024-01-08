@@ -45,6 +45,12 @@ float3 random3(float value)
                   random(value,5.7241));
 }
 
+float2 random2(uint2 _value)
+{
+    uint value = hash(_value.x + hash(_value.y));
+    return float2(value / 4294967296.0, value % 4294967296.0);
+}
+
 float3 randomVector(float value)
 {
     return normalize(random3(value) - .5);

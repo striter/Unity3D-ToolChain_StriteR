@@ -101,6 +101,7 @@ public struct Matrix3x3
 public struct float3x2_homogenous
 {
     public float2 c0, c1, c2;
+    // 0,0,1
     public float3 Row0 => new float3(c0.x, c1.x, c2.x);
     public float3 Row1 => new float3(c0.y, c1.y, c2.y);
     //r2 [0 , 0 , 1]
@@ -111,20 +112,43 @@ public struct float3x2_homogenous
                                  new float2(_01, _11),
                                  new float2(_02, _12) ) { }
 
-    public static float3x2_homogenous TRS(float2 _translate, float _angle, float2 _scale)
+
+    public static float3x2_homogenous Translate(float2 _translate)
     {
-        var r = umath.Rotate2D(_angle);
         return new float3x2_homogenous(
-            r.c0.x*_scale.x, r.c0.y*_scale.x ,_translate.x,
-            r.c1.x*_scale.y, r.c1.y*_scale.y ,_translate.y
+           1,0 ,_translate.x,
+           0,1,_translate.y
+        );
+    }
+    
+    public static float3x2_homogenous Scale(float2 _scale)
+    {
+        return new float3x2_homogenous(
+           _scale.x,0 ,0,
+           0,_scale.y,0
         );
     }
 
+    public static float3x2_homogenous Rotate(float _angle)
+    {
+        var r = umath.Rotate2D(_angle);
+        return new float3x2_homogenous(
+            r.c0.x, r.c0.y ,0,
+            r.c1.x, r.c1.y ,0
+        );
+    }
+    
+    public static float3x2_homogenous TRS(float2 _translate, float _angle, float2 _scale)=> Translate(_translate) * Rotate(_angle) * Scale(_scale);
     public float2 mulDirection(float2 _srcVector) => c0*_srcVector.x + c1*_srcVector.y;
     public float2 mulPosition(float2 _position) =>  c0*_position.x + c1*_position.y + c2;
+    public static float3x2_homogenous operator *(float3x2_homogenous a, float3x2_homogenous b) => new(
+        a.c0 * b.c0.x + a.c1 * b.c0.y ,
+        a.c0 * b.c1.x + a.c1 * b.c1.y ,
+        a.c0 * b.c2.x + a.c1 * b.c2.y + a.c2 );
     
     public static implicit operator float2x3(float3x2_homogenous _matrix) => new float2x3(_matrix.c0,_matrix.c1,_matrix.c2);
     public static implicit operator float3x2_homogenous(float3x3 _srcMatrix)=>new float3x2_homogenous(_srcMatrix.c0.xy,_srcMatrix.c1.xy,_srcMatrix.c2.xy);
+    public static implicit operator float3x3(float3x2_homogenous _matrix) => new float3x3(_matrix.c0.to3xy(0),_matrix.c1.to3xy(0),_matrix.c2.to3xy(1));
     
     public float4x4 ToMatrix4x4XZ() => new float4x4(
             c0.x,0,c0.y,c2.x,

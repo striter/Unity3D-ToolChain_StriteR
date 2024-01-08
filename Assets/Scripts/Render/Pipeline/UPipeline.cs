@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Rendering.Pipeline;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -37,6 +38,18 @@ namespace Rendering
 
         public static bool IsEnabled(this CameraOverrideOption _override,bool _default)=>_override == CameraOverrideOption.On || (_override == CameraOverrideOption.UsePipelineSettings && _default);
         public static Vector4 GetTexelSize(this RenderTextureDescriptor _descriptor) => new Vector4(1f/_descriptor.width,1f/_descriptor.height,_descriptor.width,_descriptor.height);
+
+
+        public static void ClearRenderTextureWithComputeShader(RenderTexture _texture,Color _clearColor = default)
+        {
+            var compute = RenderResources.FindComputeShader("Clear");
+
+            var kernel = compute.FindKernel("Clear");
+            compute.SetTexture(kernel,"_MainTex",_texture);
+            compute.SetVector("_MainTex_ST",_texture.GetTexelSizeParameters());
+            compute.SetVector("_ClearColor",_clearColor.to4().sqrmagnitude() >0 ? _clearColor : Color.black);
+            compute.Dispatch(kernel,_texture.width/8,_texture.height/8,1);
+        }
     }
 }
 

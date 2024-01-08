@@ -6,6 +6,7 @@ struct IFSInput
 {
     float3x2 transform;
     float contraction;
+    float4 color;
 
     float3x3 GetMatrix()
     {
@@ -16,63 +17,42 @@ struct IFSInput
 };
 
 StructuredBuffer<IFSInput> _IFSBuffer;
-int _IFSBufferCount;
 
 float _Threshold;
 RWTexture2D<float4> _Result;
 float4 _Result_ST;
 
+float2 Sample(float3x3 _transform, float2 uv)
+{
+    const int count = 32;
+    float2 z = uv;
+    for(int i=0;i<count;i++)
+    {
+        // affine transform
+        z = mul(_transform, float3(z,1)).xy;
+        // non linear transform
+        float an = length(z)*0.25;
+        z = 2.0* mul(Rotate2x2(an),z/dot(z,z));
+        // float an = length(z)*0.25;
+        // z = 2.0* mul(Rotate2x2(an),z/dot(z,z));
+    }
+    return z;
+}
+
 [numthreads(8,8,1)]
 void Main(uint3 id : SV_DispatchThreadID)
 {
-    srand(hash(id.x + id.y * _Result_ST.w));
     float2 uv = id.xy * _Result_ST.xy;
-    uv = (uv -.5f) *2;
-    float weight = 1.0 / _IFSBufferCount;
-    float3  cola = 0;
-    float3  colb = 0;
-    float colw = 0.0;
-    float cad = 0.0;
-    int count = 1024;
-    float2 z = 0;
+    uv = (uv-.5);
 
-    for(int i=0;i<count;i++)
-    {
-        float p = random(uv);
-        IFSInput input = _IFSBuffer[floor(p * _IFSBufferCount)];
-        
-        z = mul( input.GetMatrix() , float3( z,1)).xy;
+    IFSInput input = _IFSBuffer[0];
+    float3x3 transform = input.GetMatrix();
+    uv = Sample(transform,uv);
 
-        // float an = length(z)*0.25;
-        // z = 2.0* mul(Rotate2x2(an),z/dot(z,z));
-        
-        cad *= weight;
-        cad += p;
+    int2 finalValue = floor(uv*_Result_ST.zw);
+    if(finalValue.x<0 || finalValue.x>=_Result_ST.z || finalValue.y<0 || finalValue.y>=_Result_ST.w)
+        return;
 
-        if(i>10)
-        {
-            float3  co = 0.5 + 0.5*sin(1.5*cad + float3(0.5,2.0,2.0)+2.0);
-            co.z += co.y*(1.0*sin(cad*3.0+3.0));
-            co = clamp(co,0.0,1.0);
-            
-            float d2 = dot(uv-z,uv-z)*4.0;
-            cola += co*exp2( -8192.0*d2 );
-            colb += co*exp2(  -128.0*d2 );
-            colw += exp2( -256.0*d2 );
-        }
-    }
-    cola/=float(count);
-    colb/=float(count);
-    colw/=float(count);
-    
-    // color
-    cola = 256.0*sqrt(cola);
-    colb =   2.0*sqrt(colb);
-    colw = 64.0*sqrt(colw);
-    float3 col = cola + colb;
-
-    col *= 3.0/(1.0+col);
-    col = clamp(col,0.0,1.0);
-    colw = clamp(colw,0.0,1.0);
-    _Result[id.xy] = float4(col,colw);
+    float4 col = input.color;
+    _Result[finalValue] += float4(col) * .5f;
 }

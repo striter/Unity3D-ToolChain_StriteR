@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using Rendering;
+using Rendering.Pipeline;
 using UnityEngine;
 using Unity.Mathematics;
 
@@ -12,6 +14,7 @@ namespace Examples.Rendering.Fractals
         public float angle;
         public float2 scale;
         public float timeScale;
+        [ColorUsage(true,true)]public Color color;
         public static IFSInput kDefaullt = new IFSInput()
         {
             angle = 90f,
@@ -21,11 +24,12 @@ namespace Examples.Rendering.Fractals
         
         public IFSOutput Output()
         {
-            var matirx = float3x2_homogenous.TRS(center,angle + timeScale* UTime.time,scale);
+            var matirx = float3x2_homogenous.TRS(center,(angle + timeScale* UTime.time)*kmath.kDeg2Rad,scale);
             return new IFSOutput()
             {
                 matrix = matirx,
                 contraction = math.determinant(new float2x2(matirx.c0,matirx.c1)),
+                color = color.to4(),
             };
         }
     }
@@ -34,8 +38,9 @@ namespace Examples.Rendering.Fractals
     {
         public float3x2 matrix;
         public float contraction;
+        public float4 color;
         
-        public const int kSize = 7 * sizeof(float);
+        public const int kSize = 11 * sizeof(float);
     }
     
     [ExecuteInEditMode]
@@ -79,12 +84,17 @@ namespace Examples.Rendering.Fractals
 
         private void Update()
         {
-            m_Buffer.SetData(inputs.Select(p=>p.Output()).ToArray());
-            m_Shader.SetBuffer(m_MainKernal,"_IFSBuffer",m_Buffer);
-            m_Shader.SetInt("_IFSBufferCount",inputs.Length);
+            UPipeline.ClearRenderTextureWithComputeShader(m_RenderTexture);
+            
             m_Shader.SetTexture(m_MainKernal, "_Result",m_RenderTexture);
             m_Shader.SetVector( "_Result_ST",m_RenderTexture.GetTexelSizeParameters());
-            m_Shader.Dispatch(m_MainKernal,m_RenderTexture.width/8,m_RenderTexture.height/8,1);
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                m_Buffer.SetData(new [] { inputs[i].Output() });
+                m_Shader.SetBuffer(m_MainKernal,"_IFSBuffer",m_Buffer);
+                
+                m_Shader.Dispatch(m_MainKernal,m_RenderTexture.width/8,m_RenderTexture.height/8,1);
+            }
         }
 
         private void OnDestroy() => Dispose();
