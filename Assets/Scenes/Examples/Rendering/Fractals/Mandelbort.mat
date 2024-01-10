@@ -104,7 +104,7 @@ Material:
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
-    - _Param: 11.08
+    - _Param: 4.32
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Saturation: 0

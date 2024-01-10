@@ -30,7 +30,7 @@ namespace Examples.Algorithm.Geometry
         [Header("Line Segments")]
         public GDivisionCurve m_DivisionCurve = GDivisionCurve.kDefault;
         public GChaikinCurve m_ChaikinCurve = GChaikinCurve.kDefault;
-        
+
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {

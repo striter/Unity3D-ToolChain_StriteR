@@ -1,4 +1,5 @@
 ﻿using System;
+using Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine.Serialization;
 
@@ -43,12 +44,11 @@ namespace Geometry.Curves
                 initialSpeed = initialSpeed,
                 duration = duration,
                 friction = friction
-            };; //To be continued
+            };
         }
+
 
         public static GProjectileCurve kDefault =
             GProjectileCurve.StartEndGravity(float3.zero, kfloat3.forward * 10, 2f);
-
-
     }
 }

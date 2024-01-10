@@ -95,5 +95,10 @@ namespace Geometry.Validation
                 return  length(cross(lineDirection, pointToStart));
             }
 
+            public static float Distance(GPlane _plane, float3 _point)
+            {
+                return math.dot(_plane.normal, _point - _plane.position);
+            }
+            
     }
 }

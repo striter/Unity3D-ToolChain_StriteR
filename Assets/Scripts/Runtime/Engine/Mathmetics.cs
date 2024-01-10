@@ -79,6 +79,7 @@ public static partial class umath       //Swizzling
     public static float3 to3xyz(this float4 _value) => new float3(_value.x, _value.y,_value.z);
     public static float4 to4(this float2 _value, float _z=0,float _w=0) => new float4(_value, _z,_w);
     public static float4 to4(this float3 _value, float _w=0) => new float4(_value, _w);
+    public static float4 to4(this float _value) => new float4(_value, _value,_value,_value);
 
     public static float3 setY(this float3 _value, float _y) => new float3(_value.x, _y, _value.z);
     
@@ -94,6 +95,10 @@ public static partial class umath       //Swizzling
     public static float sum(this float3 _value) => _value.x + _value.y + _value.z;
     public static float sum(this float4 _value) => _value.x + _value.y + _value.z + _value.w;
 
+    public static bool isZero(this float2 _value) => _value is { x: 0, y: 0 };
+    public static bool isZero(this float3 _value) => _value is { x: 0, y: 0, z: 0 };
+    public static bool isZero(this float4 _value) => _value is { x: 0, y: 0, z: 0, w: 0 };
+    
     public static float2 normalize(this float2 _value) => math.normalize(_value);
     public static float3 normalize(this float3 _value) => math.normalize(_value);
     public static float4 normalize(this float4 _value) => math.normalize(_value);

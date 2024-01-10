@@ -154,11 +154,16 @@ public class Ticker
     public float m_Elapsed { get; private set; }
     public float m_Tick { get; private set; }
     public float m_TickScale { get; private set; }
-    public Ticker(float _tick)
+    public Ticker(float _tick) {
+        Set(_tick);
+    }
+
+    public void Set(float _tick)
     {
         m_Duration = _tick;
         Reset();
     }
+    
     public void Reset()
     {
         m_Elapsed = 0;

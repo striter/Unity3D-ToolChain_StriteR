@@ -68,13 +68,12 @@ public static partial class umath
     }
 
     public static int sqr(int _src) => _src * _src;
-    public static float sqr(float _src) => _src * _src;
-    public static float2 sqr(float2 _src) => _src * _src;
-    public static float3 sqr(float3 _src) => _src * _src;
-    public static float4 sqr(float4 _src) => _src * _src;
+    public static float sqr(float _src) => _src * _src; public static float2 sqr(float2 _src) => _src * _src; public static float3 sqr(float3 _src) => _src * _src; public static float4 sqr(float4 _src) => _src * _src;
+    public static float pow2(float _src) => _src * _src; public static float2 pow2(float2 _src) => _src * _src; public static float3 pow2(float3 _src) => _src * _src; public static float4 pow2(float4 _src) => _src * _src;
     
-    public static float pow2(float _src) => _src * _src;
-    public static float pow3(float _src) => _src * _src* _src;
+    public static float pow3(float _src) => _src * _src* _src; public static float2 pow3(float2 _src) => _src * _src* _src; public static float3 pow3(float3 _src) => _src * _src* _src; public static float4 pow3(float4 _src) => _src * _src* _src;
+    
+    
     public static float pow4(float _src) => _src * _src* _src* _src;
     public static float mod(float _src, float _dst) => _src - _dst * Mathf.Floor(_src/_dst);
 
