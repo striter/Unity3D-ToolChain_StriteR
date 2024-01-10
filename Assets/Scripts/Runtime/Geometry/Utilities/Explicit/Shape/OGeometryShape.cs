@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 using Unity.Mathematics;
-namespace Geometry.Explicit.Shape
+namespace Runtime.Geometry.Explicit.Shape
 {
     using static math;
     

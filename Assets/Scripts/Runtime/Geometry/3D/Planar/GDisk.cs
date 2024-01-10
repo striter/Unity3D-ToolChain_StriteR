@@ -1,6 +1,6 @@
 ﻿using Unity.Mathematics;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     public struct GDisk : IShape3D, IBoundingBox3D
     {

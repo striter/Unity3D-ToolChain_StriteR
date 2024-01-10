@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using Geometry.Validation;
+using Runtime.Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     public partial struct GSphere
     {

@@ -2,7 +2,7 @@
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Curves
+namespace Runtime.Geometry.Curves
 {
     using static math;
     using static umath;

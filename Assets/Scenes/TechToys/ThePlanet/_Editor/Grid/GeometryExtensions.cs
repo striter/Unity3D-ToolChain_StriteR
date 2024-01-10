@@ -4,7 +4,7 @@ using Procedural.Hexagon;
 using Procedural.Hexagon.Geometry;
 using UnityEngine;
 
-namespace Geometry      //Some copy from original codes
+namespace Runtime.Geometry      //Some copy from original codes
 {
     public static partial class UQuad
     {

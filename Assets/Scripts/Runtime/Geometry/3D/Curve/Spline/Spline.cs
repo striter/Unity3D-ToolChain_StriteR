@@ -4,7 +4,7 @@ using System.Linq;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Curves.Spline
+namespace Runtime.Geometry.Curves.Spline
 {
     using static KSpline;
     static class KSpline

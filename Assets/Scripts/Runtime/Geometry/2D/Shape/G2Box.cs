@@ -2,7 +2,7 @@
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     [Serializable]
     public partial struct G2Box : ISerializationCallbackReceiver,I2Shape

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Curves
+namespace Runtime.Geometry.Curves
 {
     public interface ICurveDimensions<T>
     {

@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     public struct GCylinder : IShape3D , IBoundingBox3D
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Unity.Mathematics;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
 
     public interface I2Shape : IShapeDimension<float2>

@@ -2,7 +2,7 @@ using System;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Explicit
+namespace Runtime.Geometry.Explicit
 {
     public static class UCubeExplicit
     {

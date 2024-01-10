@@ -10,7 +10,7 @@ namespace Examples.Mathmatics
         public LinearPolynomial m_LinearPolynomial;
         public QuadraticPolynomial m_QuadraticPolynomial;
         public CubicPolynomial m_CubicPolynomial;
-        public Damper m_Damper;
+        public SpringDamper m_Damper;
     }
 
 }

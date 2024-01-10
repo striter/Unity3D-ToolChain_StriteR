@@ -1,6 +1,6 @@
 ﻿using System;
-using Geometry;
-using Geometry.Validation;
+using Runtime.Geometry;
+using Runtime.Geometry.Validation;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;
 

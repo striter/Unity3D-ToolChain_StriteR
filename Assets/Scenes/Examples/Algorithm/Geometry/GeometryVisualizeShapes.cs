@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Geometry;
-using Geometry.Curves;
+using Runtime.Geometry;
+using Runtime.Geometry.Curves;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;
 

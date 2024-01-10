@@ -5,7 +5,7 @@ using TechToys.ThePlanet.Module;
 #if UNITY_EDITOR
 namespace TechToys.ThePlanet.Baking
 {
-    using Geometry;
+    using Runtime.Geometry;
     using UnityEngine;
     public class ModuleClusterUnitCollector : MonoBehaviour
     {

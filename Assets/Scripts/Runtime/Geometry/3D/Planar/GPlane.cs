@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     public partial struct GPlane : IShape3D
     {

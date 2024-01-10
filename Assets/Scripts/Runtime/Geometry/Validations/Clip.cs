@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Validation
+namespace Runtime.Geometry.Validation
 {
     public static partial class UGeometry
     {

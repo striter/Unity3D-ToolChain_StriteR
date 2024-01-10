@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     [Serializable]
     public struct PLine:IEquatable<PLine>

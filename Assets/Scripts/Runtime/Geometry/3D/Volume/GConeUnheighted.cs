@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Unity.Mathematics;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     [Serializable]
     public struct GConeUnheighted

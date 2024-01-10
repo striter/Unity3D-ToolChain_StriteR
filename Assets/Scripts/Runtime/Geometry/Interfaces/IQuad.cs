@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     [Flags]
     public enum EQuadCorner

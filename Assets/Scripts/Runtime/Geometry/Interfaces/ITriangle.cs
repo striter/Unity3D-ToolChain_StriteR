@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     
     public interface ITriangle<T> where T : struct

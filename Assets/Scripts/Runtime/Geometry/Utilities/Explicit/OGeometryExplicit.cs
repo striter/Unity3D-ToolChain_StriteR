@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using Unity.Mathematics;
 
-namespace Geometry.Explicit
+namespace Runtime.Geometry.Explicit
 {
     public struct Axis
     {

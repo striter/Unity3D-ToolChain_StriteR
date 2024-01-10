@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Geometry;
-using Geometry.Validation;
+using Runtime.Geometry;
+using Runtime.Geometry.Validation;
 using TPool;
 using TTouchTracker;
 using UnityEngine;

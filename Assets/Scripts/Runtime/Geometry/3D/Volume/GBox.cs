@@ -6,7 +6,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     public partial struct GBox
     {

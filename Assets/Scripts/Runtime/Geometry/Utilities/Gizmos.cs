@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     using static UGizmos;
     public static class Gizmos

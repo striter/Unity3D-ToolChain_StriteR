@@ -1,7 +1,7 @@
 ﻿using System;
 using Unity.Mathematics;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     [Serializable]
     public struct G2Ray

@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
-using Geometry.Validation;
+using Runtime.Geometry.Validation;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     [Serializable]
     public struct GFrustum

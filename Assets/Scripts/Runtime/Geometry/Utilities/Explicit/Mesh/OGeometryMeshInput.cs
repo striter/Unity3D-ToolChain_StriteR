@@ -1,6 +1,6 @@
 using System;
-using Geometry.Explicit.Mesh.Cube;
-using Geometry.Explicit.Mesh.Sphere;
+using Runtime.Geometry.Explicit.Mesh.Cube;
+using Runtime.Geometry.Explicit.Mesh.Sphere;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
@@ -8,7 +8,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Geometry.Explicit.Mesh
+namespace Runtime.Geometry.Explicit.Mesh
 {
     public enum EProceduralMeshType
     {

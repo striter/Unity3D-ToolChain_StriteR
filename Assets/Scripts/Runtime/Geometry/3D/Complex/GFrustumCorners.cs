@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     public struct GFrustumPoints : IEnumerable<float3>, IIterate<float3>
     {

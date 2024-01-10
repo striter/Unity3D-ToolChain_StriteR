@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Geometry;
+using Runtime.Geometry;
 using MeshFragment;
 using TechToys.ThePlanet.Module;
 using TechToys.ThePlanet.Module.Cluster;
@@ -7,7 +7,7 @@ using TechToys.ThePlanet.Module.Cluster;
 #if UNITY_EDITOR
 namespace TechToys.ThePlanet.Baking
 {
-    using Geometry;
+    using Runtime.Geometry;
     using UnityEngine;
 
     public class ModuleClusterUnitPossibilityCollector : MonoBehaviour

@@ -1,6 +1,6 @@
-using Geometry.Validation;
+using Runtime.Geometry.Validation;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     public static class UFrustum
     {

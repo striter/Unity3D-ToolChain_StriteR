@@ -1,9 +1,9 @@
 ﻿using System;
-using Geometry.Validation;
+using Runtime.Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine.Serialization;
 
-namespace Geometry.Curves
+namespace Runtime.Geometry.Curves
 {
     [Serializable]
     public struct GProjectileCurve : ICurveDimensions<float3>

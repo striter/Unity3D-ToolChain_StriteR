@@ -1,6 +1,6 @@
 using System;
-using Geometry;
-using Geometry.Validation;
+using Runtime.Geometry;
+using Runtime.Geometry.Validation;
 using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
@@ -10,10 +10,10 @@ using static umath;
 using float3 = Unity.Mathematics.float3;
 using Gizmos = UnityEngine.Gizmos;
 
-namespace Examples.Rendering.FluidSimulation
+namespace Examples.PhysicsScenes.FluidSimulation
 {
     [Serializable]
-    public struct FluidSystemInput
+    public struct FluidSystemInput : ISerializationCallbackReceiver
     {
         [Header("Constant")] 
         public float c;
@@ -25,6 +25,20 @@ namespace Examples.Rendering.FluidSimulation
         public int height;
         public float size;
 
+        [Header("Constants")] 
+        [Readonly] public float k1;
+        [Readonly] public float k2;
+        [Readonly] public float k3;
+        public FluidSystemInput Ctor()
+        {
+            var f1 = pow2(c) * pow2(t) / pow2(size);
+            var f2 = 1f / (mu * t + 2);
+            k1 = (4f - 8f * f1) * f2;
+            k2 = (mu * t - 2) * f2;
+            k3 = 2f * f1 * f2;
+            return this;
+        }
+        
         public static readonly FluidSystemInput kDefault = new FluidSystemInput()
         {
             c = 1f,
@@ -34,7 +48,13 @@ namespace Examples.Rendering.FluidSimulation
             width = 10,
             height = 10,
             size = 1f,
-        };
+        }.Ctor();
+
+        public void OnBeforeSerialize()
+        {
+        }
+
+        public void OnAfterDeserialize() => Ctor();
     }
     
     public struct FluidVertex
@@ -79,7 +99,6 @@ namespace Examples.Rendering.FluidSimulation
         private NativeArray<float2> uvBuffers;
         private int vertexBufferIndex = 0;
         
-        private float k1, k2, k3;
         private Mesh m_Mesh;
         private Ticker m_Ticker = new Ticker(.5f);
         public void Init(FluidSystemInput _input)
@@ -87,16 +106,6 @@ namespace Examples.Rendering.FluidSimulation
             m_Life = EFluidLife.Initialized;
             m_Data = _input;
 
-            var t = m_Data.t;
-            var d = m_Data.size;
-            var mu = m_Data.mu;
-            var c = m_Data.c;
-            
-            var f1 = pow2(c) * pow2(t) / pow2(d);
-            var f2 = 1f / (mu * t + 2);
-            k1 = (4f - 8f * f1) * f2;
-            k2 = (mu * t - 2) * f2;
-            k3 = 2f * f1 * f2;
             
             m_Ticker.Set(m_Data.t);
             int vertexCount = m_Data.width * m_Data.height;
@@ -202,6 +211,10 @@ namespace Examples.Rendering.FluidSimulation
 
         void Execute()
         {
+            var k1 = m_Data.k1;
+            var k2 = m_Data.k2;
+            var k3 = m_Data.k3;
+            
             var crnt = vertexBuffers[vertexBufferIndex];
             var prev = vertexBuffers[1 - vertexBufferIndex];
             for(int j=1;j<m_Data.height - 1;j++)
@@ -221,8 +234,10 @@ namespace Examples.Rendering.FluidSimulation
             for (int i = 1; i < m_Data.width - 1; i++)
             {
                 var index = Index(i, j);
-                normalBuffers[index] = normalize(new float3(crnt[Index(i+1,j)].y - crnt[Index(i -1,j)].y,d2,crnt[Index(i,j+1)].y - crnt[Index(i,j-1)].y)); 
-                tangentBuffers[index] = normalize(new float3(d2,0,crnt[Index(i,j+1)].y - crnt[Index(i,j-1)].y));
+                var xOffset = crnt[Index(i + 1, j)].y - crnt[Index(i - 1, j)].y;
+                var yOffset = crnt[Index(i,j+1)].y - crnt[Index(i,j-1)].y;
+                normalBuffers[index] = normalize(new float3(xOffset,d2,yOffset)); 
+                tangentBuffers[index] = normalize(new float3(d2,0,yOffset));
                 uvBuffers[index ] = new float2(i / (m_Data.width - 1f),j / (m_Data.height - 1f));
             }
         }

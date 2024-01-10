@@ -5,7 +5,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
 using static umath;
-namespace Geometry.Curves
+namespace Runtime.Geometry.Curves
 {
     [Serializable]
     public struct GHermiteCurve : ICurveDimensions<float3>

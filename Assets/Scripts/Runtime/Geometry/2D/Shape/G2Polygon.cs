@@ -5,7 +5,7 @@ using System.Linq;
 using TObjectPool;
 using Unity.Mathematics;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     [Serializable]
     public struct G2Polygon : I2Shape , IEnumerable<float2>

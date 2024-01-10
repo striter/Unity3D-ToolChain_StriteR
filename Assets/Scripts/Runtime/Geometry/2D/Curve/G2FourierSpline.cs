@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Geometry.Curves.Spline;
+using Runtime.Geometry.Curves.Spline;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Curves.Spline
+namespace Runtime.Geometry.Curves.Spline
 {
     [Serializable]
     public struct G2FourierSpline : ISplineDimensions<float2> ,ISerializationCallbackReceiver

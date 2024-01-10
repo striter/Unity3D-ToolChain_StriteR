@@ -5,7 +5,7 @@ using System.Linq;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Curves.Spline
+namespace Runtime.Geometry.Curves.Spline
 {
     [Serializable]
     public struct GHermitePoint

@@ -3,7 +3,7 @@ using System.Linq;
 using TObjectPool;
 using Unity.Mathematics;
 
-namespace Geometry.Validation
+namespace Runtime.Geometry.Validation
 {
     public static partial class UBounds
     {

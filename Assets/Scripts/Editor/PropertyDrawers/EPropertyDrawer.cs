@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System;
-using Geometry;
+using Runtime.Geometry;
 using Unity.Mathematics;
 
 namespace UnityEditor.Extensions
@@ -178,7 +178,7 @@ namespace UnityEditor.Extensions
         }
     }
     
-    [CustomPropertyDrawer(typeof(Damper))]
+    [CustomPropertyDrawer(typeof(SpringDamper))]
     public class DamperDrawer : FunctionDrawer
     {
         private const float kDeltaTime = .05f;
@@ -190,7 +190,7 @@ namespace UnityEditor.Extensions
             int division1 =(int)( 10f/kDeltaTime * sizeAspect);
             int division2 = (int)( 20f/kDeltaTime * sizeAspect);
             
-            Damper damper = new Damper();
+            SpringDamper damper = new SpringDamper();
             var info = _property.GetFieldInfo(out var parentObject);
             UReflection.CopyFields(info.GetValue(parentObject),damper);
             damper.Initialize(Vector3.zero);

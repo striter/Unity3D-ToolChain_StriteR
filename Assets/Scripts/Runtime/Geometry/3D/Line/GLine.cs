@@ -2,7 +2,7 @@ using System;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     [Serializable]
     public struct GLine:ISerializationCallbackReceiver

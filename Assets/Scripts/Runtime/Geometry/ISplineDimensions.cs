@@ -2,7 +2,7 @@
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Curves.Spline
+namespace Runtime.Geometry.Curves.Spline
 {
     public interface ISplineDimensions<T> : ICurveDimensions<T>
     {

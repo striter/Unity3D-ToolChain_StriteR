@@ -3,7 +3,7 @@ using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Explicit.Mesh.Cube
+namespace Runtime.Geometry.Explicit.Mesh.Cube
 {
     [Serializable]
     public struct CubeGenerator : IProceduralMeshGenerator

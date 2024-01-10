@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Geometry;
-using Geometry.Validation;
+using Runtime.Geometry;
+using Runtime.Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -20,7 +20,7 @@ namespace Examples.Rendering.WaveInteraction
         
         public MeshRenderer m_WaterMesh;
         public GameObject m_WaveObj;
-        public Damper m_MoveDamper = new Damper();
+        public SpringDamper m_MoveDamper = new SpringDamper();
         public GTriangle m_BoatFloatPoint = GTriangle.kDefault;
 
         public GameObject[] m_WaveElements;

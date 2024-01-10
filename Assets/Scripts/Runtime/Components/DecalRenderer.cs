@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Geometry;
-using Geometry.Validation;
+using Runtime.Geometry;
+using Runtime.Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;

@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Geometry.Curves;
-using Unity.Mathematics;
+using Runtime.Geometry.Curves;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 namespace Runtime
 {
@@ -23,7 +21,7 @@ namespace Runtime
         [MFoldout(nameof(m_RopePosition), ERopePosition.Transform)] public Transform m_EndTransform;
         [MFoldout(nameof(m_RopePosition), ERopePosition.Constant)] public Vector3 m_EndPosition;
         [MFoldout(nameof(m_RopePosition), ERopePosition.Constant,nameof(m_Billboard),false)] public Vector3 m_EndBiTangent;
-        public Damper m_ControlDamper = new Damper();
+        public SpringDamper m_ControlDamper = new SpringDamper();
         
         private GBezierCurveQuadratic m_Curve;
         private int kRopeInstanceID = 0;
@@ -87,7 +85,7 @@ namespace Runtime
             base.DrawGizmos(_transform);
             CalculatePositions(_transform,out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
             Gizmos.color = Color.green;
-            Gizmos.DrawSphere(m_ControlDamper.value.xyz,.2f);
+            Gizmos.DrawSphere(m_ControlDamper.Value.xyz,.2f);
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(control,.2f);
             m_Curve.DrawGizmos();

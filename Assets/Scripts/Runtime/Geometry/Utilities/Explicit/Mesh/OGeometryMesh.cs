@@ -5,7 +5,7 @@ using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Explicit.Mesh
+namespace Runtime.Geometry.Explicit.Mesh
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct Vertex

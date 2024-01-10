@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Unity.Mathematics;
-namespace Geometry.Validation
+namespace Runtime.Geometry.Validation
 {
     public static class PrincipleComponentAnalysis
     {

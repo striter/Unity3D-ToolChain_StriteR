@@ -1,9 +1,9 @@
-using Geometry;
-using Geometry.Validation;
+using Runtime.Geometry;
+using Runtime.Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;
-using UGeometry = Geometry.Validation.UGeometry;
+using UGeometry = Runtime.Geometry.Validation.UGeometry;
 
 namespace Examples.Algorithm.Geometry
 {

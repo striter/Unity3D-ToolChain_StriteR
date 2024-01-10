@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using Random = System.Random;
 
-namespace Geometry.Curves.LineSegments
+namespace Runtime.Geometry.Curves.LineSegments
 {
     //https://www.redblobgames.com/maps/noisy-edges/
     [Serializable]

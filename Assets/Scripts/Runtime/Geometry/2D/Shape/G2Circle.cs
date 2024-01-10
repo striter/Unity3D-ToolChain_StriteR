@@ -4,7 +4,7 @@ using System.ComponentModel;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
 
     

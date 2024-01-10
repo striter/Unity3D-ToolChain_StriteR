@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Unity.Mathematics;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     public struct CornerGeometry
     {

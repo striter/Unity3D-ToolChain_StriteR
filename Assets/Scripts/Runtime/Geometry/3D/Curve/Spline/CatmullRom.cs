@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Curves.Spline
+namespace Runtime.Geometry.Curves.Spline
 {
     [Serializable]
     public struct GCatmullRomSpline:ISplineDimensions<float3>

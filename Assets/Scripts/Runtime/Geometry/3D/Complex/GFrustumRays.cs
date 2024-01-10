@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Geometry.Validation;
+using Runtime.Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
 
     public struct GFrustumRays:IEnumerable<GRay>

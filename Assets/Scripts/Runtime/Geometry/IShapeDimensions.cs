@@ -1,6 +1,6 @@
 using System;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     public interface IShapeDimension<T> where T:struct
     {

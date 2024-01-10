@@ -5,7 +5,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
-using Geometry.Explicit.Shape;
+using Runtime.Geometry.Explicit.Shape;
 
 namespace Examples.Algorithm.Procedural
 {

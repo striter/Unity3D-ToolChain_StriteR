@@ -2,7 +2,7 @@ using Procedural.Tile;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Explicit
+namespace Runtime.Geometry.Explicit
 {
     using static math;
     using static kmath;

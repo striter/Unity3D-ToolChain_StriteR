@@ -4,7 +4,7 @@ using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Explicit.Mesh.Sphere
+namespace Runtime.Geometry.Explicit.Mesh.Sphere
 {
     using static umath;
     using static kmath;

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     
     public static class UTriangle

@@ -558,19 +558,41 @@ MonoBehaviour:
     halfLife: 0.5
     stiffness: 20
     damping: 4
-    f: 5
-    z: 0.35
-    r: -0.5
-    poleMatching: 0
+    secondOrderDynamics:
+      f: 5
+      z: 0.35
+      r: -0.5
+      poleMatching: 1
+      _xp:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+      _w: 31.415928
+      _d: 29.428862
+      _k1: 0.022281691
+      _k2: 0.0010132118
+      _k3: -0.005570423
   m_OriginDistanceDamper:
     mode: 1
     halfLife: 0.5
     stiffness: 20
     damping: 4
-    f: 5
-    z: 0.35
-    r: -0.5
-    poleMatching: 0
+    secondOrderDynamics:
+      f: 5
+      z: 0.35
+      r: -0.5
+      poleMatching: 1
+      _xp:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+      _w: 31.415928
+      _d: 29.428862
+      _k1: 0.022281691
+      _k2: 0.0010132118
+      _k3: -0.005570423
 --- !u!108 &95009780
 Light:
   m_ObjectHideFlags: 0
@@ -1611,10 +1633,21 @@ MonoBehaviour:
       halfLife: 0.5
       stiffness: 97
       damping: 2.3
-      f: 5
-      z: 0.35
-      r: -0.5
-      poleMatching: 0
+      secondOrderDynamics:
+        f: 5
+        z: 0.35
+        r: -0.5
+        poleMatching: 1
+        _xp:
+          x: 1.5840001
+          y: 19.39
+          z: 0.45
+          w: 0
+        _w: 31.415928
+        _d: 29.428862
+        _k1: 0.022281691
+        _k2: 0.0010132118
+        _k3: -0.005570423
   m_DrawGizmos: 1
 --- !u!23 &515041061
 MeshRenderer:
@@ -1958,19 +1991,41 @@ MonoBehaviour:
     halfLife: 0.5
     stiffness: 20
     damping: 4
-    f: 5
-    z: 0.35
-    r: -0.5
-    poleMatching: 0
+    secondOrderDynamics:
+      f: 5
+      z: 0.35
+      r: -0.5
+      poleMatching: 1
+      _xp:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+      _w: 31.415928
+      _d: 29.428862
+      _k1: 0.022281691
+      _k2: 0.0010132118
+      _k3: -0.005570423
   m_OriginDistanceDamper:
     mode: 1
     halfLife: 0.5
     stiffness: 20
     damping: 4
-    f: 5
-    z: 0.35
-    r: -0.5
-    poleMatching: 0
+    secondOrderDynamics:
+      f: 5
+      z: 0.35
+      r: -0.5
+      poleMatching: 1
+      _xp:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+      _w: 31.415928
+      _d: 29.428862
+      _k1: 0.022281691
+      _k2: 0.0010132118
+      _k3: -0.005570423
 --- !u!23 &744910360
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4742,19 +4797,41 @@ MonoBehaviour:
     halfLife: 0.5
     stiffness: 20
     damping: 4
-    f: 5
-    z: 0.35
-    r: -0.5
-    poleMatching: 0
+    secondOrderDynamics:
+      f: 5
+      z: 0.35
+      r: -0.5
+      poleMatching: 1
+      _xp:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+      _w: 31.415928
+      _d: 29.428862
+      _k1: 0.022281691
+      _k2: 0.0010132118
+      _k3: -0.005570423
   m_OriginDistanceDamper:
     mode: 1
     halfLife: 0.5
     stiffness: 20
     damping: 4
-    f: 5
-    z: 0.35
-    r: -0.5
-    poleMatching: 0
+    secondOrderDynamics:
+      f: 5
+      z: 0.35
+      r: -0.5
+      poleMatching: 1
+      _xp:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+      _w: 31.415928
+      _d: 29.428862
+      _k1: 0.022281691
+      _k2: 0.0010132118
+      _k3: -0.005570423
 --- !u!23 &1658747372
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5759,19 +5836,41 @@ MonoBehaviour:
     halfLife: 0.5
     stiffness: 150
     damping: 15
-    f: 5
-    z: 0.35
-    r: -0.5
-    poleMatching: 0
+    secondOrderDynamics:
+      f: 5
+      z: 0.35
+      r: -0.5
+      poleMatching: 1
+      _xp:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+      _w: 31.415928
+      _d: 29.428862
+      _k1: 0.022281691
+      _k2: 0.0010132118
+      _k3: -0.005570423
   m_OriginDistanceDamper:
     mode: 3
     halfLife: 0.5
     stiffness: 93
     damping: 9.6
-    f: 5
-    z: 0.35
-    r: -0.5
-    poleMatching: 0
+    secondOrderDynamics:
+      f: 5
+      z: 0.35
+      r: -0.5
+      poleMatching: 1
+      _xp:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+      _w: 31.415928
+      _d: 29.428862
+      _k1: 0.022281691
+      _k2: 0.0010132118
+      _k3: -0.005570423
 --- !u!4 &1907904227
 Transform:
   m_ObjectHideFlags: 0

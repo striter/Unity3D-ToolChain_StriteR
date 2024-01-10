@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Mathematics;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     [Serializable]
     public struct GPolygon:IShape3D

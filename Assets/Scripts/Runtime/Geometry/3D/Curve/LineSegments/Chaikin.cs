@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry.Curves.LineSegments
+namespace Runtime.Geometry.Curves.LineSegments
 {
     [Serializable]
     public struct GChaikinCurve 

@@ -1,6 +1,6 @@
 using Unity.Mathematics;
 
-namespace Geometry.Validation
+namespace Runtime.Geometry.Validation
 {
     using static math;
 

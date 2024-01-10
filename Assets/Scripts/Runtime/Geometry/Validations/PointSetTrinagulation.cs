@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Mathematics;
 
-namespace Geometry.Validation
+namespace Runtime.Geometry.Validation
 {
     public static class Triangulation
     {

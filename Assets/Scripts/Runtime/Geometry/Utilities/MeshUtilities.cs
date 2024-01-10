@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using Geometry;
+using Runtime.Geometry;
 using TObjectPool;
 using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     public static class UMesh
     {

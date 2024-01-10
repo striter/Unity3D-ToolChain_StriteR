@@ -1,6 +1,6 @@
 ﻿using Unity.Mathematics;
 
-namespace Geometry
+namespace Runtime.Geometry
 {
     public interface IShape3D : IShapeDimension<float3> 
     {

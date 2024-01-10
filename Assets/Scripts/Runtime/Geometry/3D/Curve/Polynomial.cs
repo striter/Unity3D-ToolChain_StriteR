@@ -1,7 +1,7 @@
 using System;
 using Unity.Mathematics;
 
-namespace Geometry.Curves       //Leave it
+namespace Runtime.Geometry.Curves       //Leave it
 {
     [Serializable]
     public struct GPolynomialCurve : ICurveDimensions<float3>
