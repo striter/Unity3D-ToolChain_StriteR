@@ -78,6 +78,7 @@ namespace Examples.PhysicsScenes.FluidSimulation
         Invalid,
         Created,
         Initialized,
+        UnInitialized,
         Disposed,
     }
     
@@ -85,6 +86,8 @@ namespace Examples.PhysicsScenes.FluidSimulation
     {
         public EFluidLife m_Life { get; private set; } = EFluidLife.Invalid;
         private static int sInstanceCount = 0;
+        
+        private Mesh m_Mesh;
         public Mesh Create()
         {
             m_Life = EFluidLife.Created;
@@ -98,11 +101,10 @@ namespace Examples.PhysicsScenes.FluidSimulation
         private NativeArray<float3> normalBuffers,tangentBuffers;
         private NativeArray<float2> uvBuffers;
         private int vertexBufferIndex = 0;
-        
-        private Mesh m_Mesh;
         private Ticker m_Ticker = new Ticker(.5f);
         public void Init(FluidSystemInput _input)
         {
+            UnInit();
             m_Life = EFluidLife.Initialized;
             m_Data = _input;
 
@@ -116,41 +118,42 @@ namespace Examples.PhysicsScenes.FluidSimulation
             normalBuffers = new NativeArray<float3>(vertexCount, Allocator.Persistent);
             tangentBuffers = new NativeArray<float3>(vertexCount, Allocator.Persistent);
             uvBuffers = new NativeArray<float2>(vertexCount,Allocator.Persistent);
-            Reset();
+            for(int j=0;j<m_Data.height;j++)
+                for (int i = 0; i < m_Data.width; i++)
+                {
+                    var position = new float3(i * m_Data.size, 0, j * m_Data.size);
+                    var index = Index(i, j);
+                    vertexBuffers[0][index] = position;
+                    vertexBuffers[1][index] = position;
+                    normalBuffers[index] = kfloat3.up;
+                    tangentBuffers[index] = kfloat3.right;
+                }
             WriteMesh();
         }
 
-        public void Dispose()
+        void UnInit()
         {
-            m_Life = EFluidLife.Disposed;
-            GameObject.DestroyImmediate(m_Mesh);
-            m_Mesh = null;
+            m_Life = EFluidLife.UnInitialized;
             if (vertexBuffers != null)
             {
                 vertexBuffers[0].Dispose();
                 vertexBuffers[1].Dispose();
             }
+            vertexBuffers = null;
             normalBuffers.Dispose();
             tangentBuffers.Dispose();
             uvBuffers.Dispose();
-            vertexBuffers = null;
+        }
+
+        public void Dispose()
+        {
+            UnInit();
+            m_Life = EFluidLife.Disposed;
+            GameObject.DestroyImmediate(m_Mesh);
+            m_Mesh = null;
         }
 
         int Index(int i, int j) => j * m_Data.height + i;
-        
-        void Reset()
-        {
-            for(int j=0;j<m_Data.height;j++)
-            for (int i = 0; i < m_Data.width; i++)
-            {
-                var position = new float3(i * m_Data.size, 0, j * m_Data.size);
-                var index = Index(i, j);
-                vertexBuffers[0][index] = position;
-                vertexBuffers[1][index] = position;
-                normalBuffers[index] = kfloat3.up;
-                tangentBuffers[index] = kfloat3.right;
-            }
-        }
 
         void WriteMesh()
         { 
@@ -284,30 +287,19 @@ namespace Examples.PhysicsScenes.FluidSimulation
         public Transform m_Ping;
         public float m_Radius;
         private Camera m_Camera;
-        
         private FluidSystem m_FluidSystem = new FluidSystem();
-
-        void Init()
-        {
-            m_FluidSystem.Init(m_Input);
-        }
-
-        void Dispose()
-        {
-            m_FluidSystem.Dispose();
-        }
         
         public void Awake()
         {
-            GetComponent<MeshFilter>().sharedMesh = m_FluidSystem.Create();
             m_Camera = GetComponentInChildren<Camera>();
-            Init();
+            GetComponent<MeshFilter>().sharedMesh = m_FluidSystem.Create();
+            m_FluidSystem.Init(m_Input);
         }
 
         private void OnValidate()
         {
             if (m_FluidSystem.m_Life != EFluidLife.Initialized) return;
-            Init();
+            m_FluidSystem.Init(m_Input);
         }
 
         private void Update()
@@ -324,7 +316,7 @@ namespace Examples.PhysicsScenes.FluidSimulation
 
         private void OnDestroy()
         {
-            Dispose();
+            m_FluidSystem.Dispose();
         }
 
         private void OnDrawGizmos()

@@ -271,7 +271,7 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _CausticFlowST1: {r: 0.25, g: 0.25, b: -0.03, a: 0.03}
     - _CausticFlowST2: {r: 0.15, g: 0.15, b: 0, a: -0.02}
-    - _Color: {r: 0.759434, g: 0.9182075, b: 1, a: 0.6666667}
+    - _Color: {r: 0.759434, g: 0.9182075, b: 1, a: 1}
     - _CrackColor: {r: 1, g: 1, b: 1, a: 1}
     - _DepthColor: {r: 0.44093376, g: 0.62285984, b: 0.8396226, a: 0.5647059}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
