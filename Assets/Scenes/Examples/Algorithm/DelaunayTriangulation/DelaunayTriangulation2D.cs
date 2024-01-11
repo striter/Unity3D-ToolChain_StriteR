@@ -16,12 +16,11 @@ namespace Examples.Algorithm.DelaunayTriangulation
         {
             public const float kRandomRadius = 10f;
         }
-        [ExtendButton("Randomize",nameof(Randomize),null,
-            "Sequence",nameof(Sequence),null)]
         public uint m_RandomCount = 128;
         public List<float2> m_Vertices = new List<float2>();
         private List<PTriangle> triangles = new List<PTriangle>();
 
+        [Button]
         void Randomize()
         {
             m_Vertices.Clear();
@@ -34,6 +33,7 @@ namespace Examples.Algorithm.DelaunayTriangulation
             OnValidate();
         }
 
+        [Button]
         void Sequence()
         {
             ULowDiscrepancySequences.Hammersley2D(m_RandomCount,0f).Select(p => {
@@ -43,6 +43,13 @@ namespace Examples.Algorithm.DelaunayTriangulation
             OnValidate();
         }
         
+        [Button]
+        void PoissonDisk()
+        {
+            var size = (int)math.sqrt(m_RandomCount);
+            ULowDiscrepancySequences.PoissonDisk2D(size,size).Select(p=>p*kRandomRadius).FillList(m_Vertices);
+            OnValidate();
+        }
         private void OnValidate()
         {
             triangles.Clear();

@@ -279,6 +279,9 @@ public struct Int2:IEquatable<Int2>, IEqualityComparer<Int2>
         }
     }
     #endregion
+    
+    public static implicit operator int2(Int2 _int2)=> new int2(_int2.x,_int2.y);
+    public static implicit operator Int2(int2 _int2)=> new Int2(_int2.x,_int2.y);
 }
 
 [Serializable]

@@ -56,19 +56,6 @@ namespace Procedural.Tile
             return true;
         }
 
-        public static List<Int2> GetAxisRange(int width, int height, Int2 start, Int2 end)
-        {
-            List<Int2> axisList = new List<Int2>();
-            for (int i = start.x; i <= end.x; i++)
-                for (int j = start.y; j <= end.y; j++)
-                {
-                    if (i < 0 || j < 0 || i >= width || j >= height)
-                        continue;
-                    axisList.Add(new Int2(i, j));
-                }
-            return axisList;
-        }
-
         public static IEnumerable<Int2> GetAxisRange(Int2 centerAxis, int radius,float _radiusDelta = .5f)
         {
             float sqrRadius = umath.sqr(_radiusDelta + radius);
@@ -77,7 +64,6 @@ namespace Procedural.Tile
                 left   =  -(int)math.ceil(radius),
                 right  =(int)math.floor(radius);
 
-            List<Int2> axisList = new List<Int2>();
             for (int y = bottom; y <= top; y++) {
                 for (int x = left; x <= right; x++)
                 {
@@ -87,7 +73,6 @@ namespace Procedural.Tile
                     yield return centerAxis + offset;
                 }
             }
-            
         }
 
         public static List<Int2> GetDirectionAxies(int width, int height, Int2 centerAxis, List<ETileDirection> directions)

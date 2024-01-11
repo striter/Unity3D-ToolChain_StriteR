@@ -19,7 +19,7 @@ public enum EDamperMode
 }
 
 [Serializable]
-public class SpringDamper : ISerializationCallbackReceiver
+public class Damper : ISerializationCallbackReceiver
 {
     [Header("Config")]
     public EDamperMode mode = EDamperMode.SpringSimple;
@@ -49,7 +49,6 @@ public class SpringDamper : ISerializationCallbackReceiver
     void Ctor()
     {
     }
-
 
     public float TickAngle(float _deltaTime, float _desire)
     {

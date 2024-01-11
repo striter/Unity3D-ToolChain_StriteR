@@ -15,8 +15,8 @@ namespace Examples.Rendering.Effects
         
         private Camera m_Camera;
 
-        public SpringDamper m_RotationDamper = new SpringDamper();
-        public SpringDamper m_OriginDistanceDamper = new SpringDamper();
+        public Damper m_RotationDamper = new Damper();
+        public Damper m_OriginDistanceDamper = new Damper();
 
         private void Awake()
         {

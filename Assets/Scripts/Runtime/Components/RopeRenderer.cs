@@ -21,7 +21,7 @@ namespace Runtime
         [MFoldout(nameof(m_RopePosition), ERopePosition.Transform)] public Transform m_EndTransform;
         [MFoldout(nameof(m_RopePosition), ERopePosition.Constant)] public Vector3 m_EndPosition;
         [MFoldout(nameof(m_RopePosition), ERopePosition.Constant,nameof(m_Billboard),false)] public Vector3 m_EndBiTangent;
-        public SpringDamper m_ControlDamper = new SpringDamper();
+        public Damper m_ControlDamper = new Damper();
         
         private GBezierCurveQuadratic m_Curve;
         private int kRopeInstanceID = 0;

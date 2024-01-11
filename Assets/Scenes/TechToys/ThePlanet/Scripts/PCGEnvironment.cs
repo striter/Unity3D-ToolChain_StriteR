@@ -8,7 +8,7 @@ namespace TechToys.ThePlanet
     public class PCGEnvironment : MonoBehaviour,IPCGControl
     {
         private Material m_OceanMaterial;
-        public SpringDamper m_RotationDamper ;
+        public Damper m_RotationDamper ;
         private Light m_Light;
         private float pitch,yaw;
         private Transform m_Ocean;

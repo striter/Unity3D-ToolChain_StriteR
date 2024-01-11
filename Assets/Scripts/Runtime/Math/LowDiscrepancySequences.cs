@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
+using Procedural.Tile;
+using Unity.Collections;
 using Unity.Mathematics;
 using static UBitwise;
 using static kmath;
@@ -127,6 +131,54 @@ public static class ULowDiscrepancySequences
         return points;
     }
 
+    public static float2[] PoissonDisk2D(int _width,int _height,int _k = 30,System.Random _seed = null)
+    {
+        float2 gridSize = new float2(_width, _height);
+        var r = 1;
+        var rSQR = r * r;
+        var k = _k;
+
+        var checkList = new List<float2>();
+        var samplePoints = new MultiHashMap<int2,float2>();
+        
+        var initialPoint = new float2(URandom.Random01(_seed) , URandom.Random01(_seed) ) * gridSize;
+        
+        checkList.Add(initialPoint);
+        samplePoints.Add((int2)floor(initialPoint), initialPoint);
+        
+        while (checkList.Count > 0)     //Optimize with spatial hashmap
+        {
+            var activeIndex = URandom.RandomInt(checkList.Count,_seed);
+            var activePoint = checkList[activeIndex];
+
+            var found = false;
+            for (var i = 0; i < k; i++)
+            {
+                var angle = URandom.Random01(_seed)* PI * 2;
+                var direction = new float2(cos(angle), sin(angle));
+                var distance = URandom.Random01(_seed) * (2 * r - r) + r;
+                var newPoint = activePoint + direction * distance;
+
+                if (newPoint.x < 0 || newPoint.x >= gridSize.x || newPoint.y < 0 || newPoint.y >= gridSize.y)
+                    continue;
+
+                var gridPosition = (int2)floor(newPoint);
+                if (samplePoints.GetValues(UTile.GetAxisRange(gridPosition,2).Select(p=>new int2(p.x,p.y))).All(p=>(newPoint - p).sqrmagnitude() > rSQR))
+                {
+                    found = true;
+                    checkList.Add(newPoint);
+                    samplePoints.Add(gridPosition, newPoint);
+                    break;
+                }
+            }
+
+            if (!found)
+                checkList.RemoveAt(activeIndex);
+        }
+        
+        return samplePoints.Values.Select(p=>p/gridSize - .5f).ToArray();
+    }
+    
     private static float kGoldenRatio = (1f + sqrt(5f)) / 2f;
     public static float3 FibonacciSphere(int _index,int _count) 
     {
@@ -137,6 +189,4 @@ public static class ULowDiscrepancySequences
         sincos(phi,out var sinP,out var cosP);
         return new float3(cosT  * sinP, sinT * sinP ,cosP);
     }
-   
-    
 }

@@ -12,7 +12,7 @@ namespace Examples.Algorithm.SamplePatternVisualize
         Halton,
         HammersLey,
         Sobol,
-        Fibonacci,
+        PoissonDisk,
     }
     
     public class SamplePatternVisualize : MonoBehaviour
@@ -40,6 +40,9 @@ namespace Examples.Algorithm.SamplePatternVisualize
                     break;
                 case ESamplePattern.Sobol:
                     patterns = ULowDiscrepancySequences.Sobol2D((uint) (patternWidth * patternHeight));
+                    break;
+                case ESamplePattern.PoissonDisk:
+                    patterns = ULowDiscrepancySequences.PoissonDisk2D(patternWidth , patternHeight);
                     break;
             }
         }

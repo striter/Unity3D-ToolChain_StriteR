@@ -20,7 +20,7 @@ namespace Examples.Rendering.WaveInteraction
         
         public MeshRenderer m_WaterMesh;
         public GameObject m_WaveObj;
-        public SpringDamper m_MoveDamper = new SpringDamper();
+        public Damper m_MoveDamper = new Damper();
         public GTriangle m_BoatFloatPoint = GTriangle.kDefault;
 
         public GameObject[] m_WaveElements;

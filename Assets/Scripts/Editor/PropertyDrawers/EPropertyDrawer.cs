@@ -61,18 +61,18 @@ namespace UnityEditor.Extensions
         }
         
         
-        void plot1(int x,int y,int2 _centre,Color _color)
+        void plot1(int x,int y,Unity.Mathematics.int2 _centre,Color _color)
         {
             Pixel(_centre.x + x, _centre.y + y, _color);
         }
-        void plot8(int x,int y,int2 _centre,Color _color){
+        void plot8(int x,int y,Unity.Mathematics.int2 _centre,Color _color){
             plot1(x,y,_centre,_color);plot1(y,x,_centre,_color);
             plot1(x,-y,_centre,_color);plot1(y,-x,_centre,_color);
             plot1(-x,-y,_centre,_color);plot1(-y,-x,_centre,_color);
             plot1(-x,y,_centre,_color);plot1(-y,x,_centre,_color);
         }
 
-        public void Circle(int2 _centre,int _radius,Color _color)
+        public void Circle(Unity.Mathematics.int2 _centre,int _radius,Color _color)
         {
             int x = 0;
             int y = _radius;
@@ -178,7 +178,7 @@ namespace UnityEditor.Extensions
         }
     }
     
-    [CustomPropertyDrawer(typeof(SpringDamper))]
+    [CustomPropertyDrawer(typeof(Damper))]
     public class DamperDrawer : FunctionDrawer
     {
         private const float kDeltaTime = .05f;
@@ -190,7 +190,7 @@ namespace UnityEditor.Extensions
             int division1 =(int)( 10f/kDeltaTime * sizeAspect);
             int division2 = (int)( 20f/kDeltaTime * sizeAspect);
             
-            SpringDamper damper = new SpringDamper();
+            Damper damper = new Damper();
             var info = _property.GetFieldInfo(out var parentObject);
             UReflection.CopyFields(info.GetValue(parentObject),damper);
             damper.Initialize(Vector3.zero);
