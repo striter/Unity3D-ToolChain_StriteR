@@ -143,11 +143,11 @@ namespace Examples.Algorithm.WaveFunctionCollapse
                 {
                     var index = tuple.index;
                     var possibility = tuple.value;
-                    transform.SetParent(transform);
                     int i = index % 4;
                     int j = index / 4;
+                    possibility.transform.SetParent(transform);
                     possibility.m_RectTransform.anchoredPosition = new Vector2(100f/4f*i,100/4f*j);
-                    transform.localScale = Vector3.one * .5f;
+                    possibility.m_RectTransform.localScale = Vector3.one * .5f;
                     m_Possibilities.Add(index,possibility.Setup(index,SelectPossibility));
                 }
                 return this;
