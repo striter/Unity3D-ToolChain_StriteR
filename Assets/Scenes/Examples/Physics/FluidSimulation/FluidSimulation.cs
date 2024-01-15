@@ -319,6 +319,8 @@ namespace Examples.PhysicsScenes.FluidSimulation
             m_FluidSystem.Dispose();
         }
 
+
+        public float rad;
         private void OnDrawGizmos()
         {
             if(m_Ping!=null)

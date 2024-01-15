@@ -17,14 +17,14 @@ public static class UNumericalAnalysis
         return guess;
     }
 
-    public static float2 NewtonsFractal(Func<float2,float2> _polynomial,Func<float2,float2> _derivative,float2 _startGuess,float _sqrApproximation = float.Epsilon,int _maxIteration = 1024 )
+    public static float2 NewtonsFractal(Func<cfloat2,cfloat2> _polynomial,Func<cfloat2,cfloat2> _derivative,cfloat2 _startGuess,float _sqrApproximation = float.Epsilon,int _maxIteration = 1024 )
     {
         var guess = _startGuess;
         var value = _polynomial(guess);
         short iteration = 0;
         while (value.sqrmagnitude() > _sqrApproximation && iteration++<_maxIteration)
         {
-            guess -= ucomplex.divide(value ,_derivative(guess));
+            guess -= value / _derivative(guess);
             value = _polynomial(guess);
         }
         return guess;

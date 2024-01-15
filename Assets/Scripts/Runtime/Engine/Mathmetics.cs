@@ -32,8 +32,11 @@ public static class kmath
     public const float kPIDiv4 = 0.7853981633974483f;
     public const float kPIDiv8 = 0.3926990817f;
     public const float kPIDiv16 = 0.19634954085f;
+    public const float kPiDiv128 = 0.0245436926f;
+    
     //Invert
     public const float kInvPI = 0.31830988618f;
+    public const float k128InvPi = 40.74366543152f;
 
     public const float kOneMinusEpsilon = 1f - float.Epsilon;
 

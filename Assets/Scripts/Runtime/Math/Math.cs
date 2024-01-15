@@ -196,7 +196,36 @@ public static partial class umath
             case 3: return -sin_kinda(kPIDiv2 - y);
         }
     }
+    
+    private static readonly float2[] kAlphaSinCos = GenerateAlphaCosSin();
+    static float2[] GenerateAlphaCosSin()
+    {
+        var alphaSinCos = new float2[256];
+        for (int i = 0; i < 256; i++)
+        {
+            var angle = i * kPiDiv128;
+            alphaSinCos[i] = new float2( cos(angle),sin(angle));
+        }
+        return alphaSinCos;
+    }
+    
+    public static void sincos(float _f, out float _s, out float _c)
+    {
+        var a = abs(_f) * k128InvPi;
+        var i = (int)floor(a);
+        var b = (a - i) * kPiDiv128;
+        var alphaCosSin = kAlphaSinCos[i&255];
+        var b2 = b * b;
+        var sine_beta = b - b * b2 * (0.1666666667F - b2 * 0.00833333333F);
+        var cosine_beta = 1.0f - b2 * (0.5f - b2 * 0.04166666667F);
 
+        var sine = alphaCosSin.y * cosine_beta + alphaCosSin.x * sine_beta;
+        var cosine = alphaCosSin.x * cosine_beta - alphaCosSin.y * sine_beta;
+
+        _s = _f < 0f ? -sine : sine;
+        _c = cosine;
+    }
+    
     public static float2 tripleProduct(float2 _a, float2 _b, float2 _c)=>math.dot(_a, cross(_b, _c));
     public static float3 tripleProduct(float3 _a, float3 _b, float3 _c)=>math.dot(_a, math.cross(_b, _c));
 
