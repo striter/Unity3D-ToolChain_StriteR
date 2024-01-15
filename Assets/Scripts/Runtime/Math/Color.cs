@@ -5,7 +5,6 @@ using static Unity.Mathematics.math;
 public static class UColor
 {
     #region ColorTransform
-
     public static byte toColor32(float _src) => (byte)(_src * 255);
     public static float toColor(byte _color32) => _color32 / 255f;
     public static Color toColor(this Color32 _color32)=> new Color(_color32.r / 255f, _color32.g / 255f, _color32.b / 255f, _color32.a / 255f); 
@@ -18,9 +17,7 @@ public static class UColor
     public static Color toColor(this Vector4 _vector)=>new Color(_vector.x,_vector.y,_vector.z,_vector.w);
     public static Color toColor(this float3 _color, float _a = 1) => new Color(_color.x, _color.y, _color.z, _a);
     public static Color toColor(this float4 _color)=> new Color(_color.x, _color.y, _color.z, _color.w);
-    
     #endregion
-    
     
     //RGBA32
     public static readonly Vector4 kRGBA32Max = Vector4.one * 255f;
@@ -92,8 +89,11 @@ public static class UColor
         float v = cmax;
         return new Vector4(h, s, v, color.a);
     }
+    
     public static Color HSVAtoColor(Vector3 _hsv) => HSVAtoColor(_hsv.x, _hsv.y, _hsv.z);
+    
     public static Color HSVAtoColor(float _h, float _s, float _v, float _a = 255f) => HSVAtoColor(new Vector4(_h, _s, _v, _a));
+    
     public static Color HSVAtoColor(Vector4 _hsva)
     {
         Vector4 hsvaNormalized  = _hsva.div(kHSVMax);
@@ -136,6 +136,7 @@ public static class UColor
             case EColorVisualize.A: return Color.white * _color.a;
         }
     }
+    
     public static Color FilterGreyScale(this EColorVisualize _visualize, Color _color)
     {
         switch (_visualize)
@@ -151,11 +152,11 @@ public static class UColor
         }
     }
 
-
     public static Color Cos(Color _value)
     {
         return new Color(Mathf.Cos(_value.r), Mathf.Cos(_value.g), Mathf.Cos(_value.b), _value.a);//Mathf.Cos(_value.a));
     }
+    
     public static Color IndexToColor(int _index)
     {
         switch (_index % 6)

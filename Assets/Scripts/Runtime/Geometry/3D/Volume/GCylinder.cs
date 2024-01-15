@@ -12,6 +12,14 @@ namespace Runtime.Geometry
         public float3 normal;
         public float height;
         public float radius;
+        
+        public GCylinder(float3 _origin, float3 _normal, float _height, float _radius)
+        {
+            origin = _origin;
+            normal = _normal;
+            height = _height;
+            radius = _radius;
+        }
 
         public static readonly GCylinder kDefault = new GCylinder() {origin = kfloat3.down*.5f, normal = kfloat3.up, radius = .5f, height = 1f};
         public float3 Center => origin;
