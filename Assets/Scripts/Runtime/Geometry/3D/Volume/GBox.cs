@@ -84,6 +84,48 @@ namespace Runtime.Geometry
             yield return GetPoint(new float3(.5f,-.5f,.5f));
             yield return GetPoint(new float3(.5f,.5f,.5f));
         }
+
+        public IEnumerable<GLine> GetEdges()
+        {
+            var topForwardRight = GetPoint( new float3(.5f, .5f, .5f));
+            var topForwardLeft  =  GetPoint(new float3(-.5f, .5f, .5f));
+            var topBackRight =  GetPoint(new float3(.5f, .5f, -.5f));
+            var topBackLeft =  GetPoint(new float3(-.5f, .5f, -.5f));
+            var bottomForwardRight =  GetPoint(new float3(.5f, -.5f, .5f));
+            var bottomForwardLeft =  GetPoint(new float3(-.5f, -.5f, .5f));
+            var bottomBackRight = GetPoint( new float3(.5f, -.5f, -.5f));
+            var bottomBackLeft =  GetPoint(new float3(-.5f, -.5f, -.5f));
+            yield return new GLine(topForwardRight,  topForwardLeft);
+            yield return new GLine(topForwardLeft,  topBackLeft);
+            yield return new GLine(topBackLeft,  topBackRight);
+            yield return new GLine(topBackRight,  topForwardRight);
+            yield return new GLine(bottomForwardRight,  bottomForwardLeft);
+            yield return new GLine(bottomForwardLeft,  bottomBackLeft);
+            yield return new GLine(bottomBackLeft,  bottomBackRight);
+            yield return new GLine(bottomBackRight,  bottomForwardRight);
+            yield return new GLine(topForwardRight,  bottomForwardRight);
+            yield return new GLine(topForwardLeft,  bottomForwardLeft);
+            yield return new GLine(topBackRight,  bottomBackRight);
+            yield return new GLine(topBackLeft,  bottomBackLeft);
+        }
+
+        public IEnumerable<GQuad> GetFaces()
+        {
+            var topForwardRight = GetPoint( new float3(.5f, .5f, .5f));
+            var topForwardLeft  =  GetPoint(new float3(-.5f, .5f, .5f));
+            var topBackRight =  GetPoint(new float3(.5f, .5f, -.5f));
+            var topBackLeft =  GetPoint(new float3(-.5f, .5f, -.5f));
+            var bottomForwardRight =  GetPoint(new float3(.5f, -.5f, .5f));
+            var bottomForwardLeft =  GetPoint(new float3(-.5f, -.5f, .5f));
+            var bottomBackRight = GetPoint( new float3(.5f, -.5f, -.5f));
+            var bottomBackLeft =  GetPoint(new float3(-.5f, -.5f, -.5f));
+            yield return new GQuad(topForwardRight,  topForwardLeft,  bottomForwardLeft,  bottomForwardRight);
+            yield return new GQuad(topForwardLeft,  topBackLeft,  bottomBackLeft,  bottomForwardLeft);
+            yield return new GQuad(topBackLeft,  topBackRight,  bottomBackRight,  bottomBackLeft);
+            yield return new GQuad(topBackRight,  topForwardRight,  bottomForwardRight,  bottomBackRight);
+            yield return new GQuad(topForwardRight,  bottomForwardRight,  bottomForwardLeft,  topForwardLeft);
+            yield return new GQuad(topForwardLeft,  bottomForwardLeft,  bottomBackLeft,  topBackLeft);
+        }
         
         public static GBox operator +(GBox _src, float3 _dst) => new GBox(_src.center+_dst,_src.extent);
         public static implicit operator Bounds(GBox _box)=> new Bounds(_box.center, _box.size);

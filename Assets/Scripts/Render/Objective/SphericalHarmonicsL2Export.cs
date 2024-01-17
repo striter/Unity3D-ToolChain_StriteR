@@ -153,7 +153,7 @@ namespace Rendering.GI.SphericalHarmonics
                 }
             }
 
-            data /= _sampleCount / kmath.kPIMul4;
+            data /= _sampleCount / kmath.kPI4;
             return data;
         }
         

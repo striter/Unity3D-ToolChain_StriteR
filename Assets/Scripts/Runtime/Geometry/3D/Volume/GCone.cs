@@ -23,6 +23,11 @@ namespace Runtime.Geometry
         public float Radius => ((GConeUnheighted)this).GetRadius(height);
         public float3 Bottom => origin + normal * height;
         public float3 Center => origin + normal * height/2;
+        public float3 GetSupportPoint(float3 _direction)
+        {
+            throw new NotImplementedException();
+        }
+
         public GBox GetBoundingBox()        //https://iquilezles.org/articles/diskbbox/
         {
             var a = normal*height;

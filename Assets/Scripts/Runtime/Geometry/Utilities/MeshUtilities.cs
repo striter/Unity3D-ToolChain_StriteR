@@ -47,7 +47,7 @@ namespace Runtime.Geometry
             {
                 _vertices.Add(_quad[i]);
                 _uvs?.Add(URender.IndexToQuadUV(i));
-                _normals?.Add(_quad.normal);
+                _normals?.AddRange(_quad.GetNormals().Select(p=>(Vector3)p));
                 _colors?.Add(_color);
             }
             QuadToTriangleIndices(_indices, indexOffset + 0, indexOffset + 1, indexOffset + 2,indexOffset+3);

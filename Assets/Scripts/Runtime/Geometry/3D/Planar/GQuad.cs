@@ -10,21 +10,18 @@ namespace Runtime.Geometry
     public partial struct GQuad
     {
         public Quad<float3> quad;
-        public Vector3 normal;
-        public float area;
+        // public Vector3 normal;
+        // public float area;
         public GQuad(Quad<float3> _quad)
         {
             quad = _quad;
-            Vector3 srcNormal = Vector3.Cross(_quad.L - _quad.B, _quad.R - _quad.B);
-            normal = srcNormal.normalized;
-            area = normal.magnitude / 2;
         }
 
         public static readonly GQuad kDefault = (GQuad)KQuad.k3SquareCentered;
     }
     
     [Serializable]
-    public partial struct GQuad : IQuad<float3>,IEnumerable<float3>,IIterate<float3>,IShape3D
+    public partial struct GQuad : IQuad<float3>,IEnumerable<float3>,IIterate<float3>,IShape3D 
     {
         public GQuad(float3 _vb, float3 _vl, float3 _vf, float3 _vr):this(new Quad<float3>(_vb,_vl,_vf,_vr)){}
         public GQuad((float3 _vb, float3 _vl, float3 _vf, float3 _vr) _tuple) : this(_tuple._vb, _tuple._vl, _tuple._vf, _tuple._vr) { }
@@ -61,6 +58,26 @@ namespace Runtime.Geometry
         {
             _triangle1 = new GTriangle(B, L, F);
             _triangle2 = new GTriangle(B, F, R);
+        }
+
+        public IEnumerable<GTriangle> GetTriangles()
+        {
+            yield return new GTriangle(B, L, F);
+            yield return new GTriangle(B, F, R);
+        }
+
+        public IEnumerable<float3> GetNormals()
+        {
+            var triangle1 = new GTriangle(B, L, F);
+            var triangle2 = new GTriangle(B, F, R);
+
+            var initialNormal = triangle1.normal;
+            var midNormal = (triangle1.normal + triangle2.normal)/2;
+            var finalNormal = triangle2.normal;
+            yield return initialNormal;
+            yield return midNormal;
+            yield return finalNormal;
+            yield return midNormal;
         }
     }
 

@@ -439,6 +439,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Data:
+    m_VolumetricLight: 0
+    m_VolumetricLightData:
+      m_Strength: 0
+      m_Distance: 0
+      m_MarchTimes: 0
+      m_MarchStrength: 0
+      m_Pow: 0
+      m_Dither: 0
+    m_VolumetricDownSample: 0
+    m_EnableVolumetricBlur: 0
+    m_VolumetricBlur:
+      m_BlurType: 0
+      m_BlurSize: 0
+      m_Iteration: 0
+      m_DownSample: 0
+      m_Angle: 0
+      m_Vector: {x: 0, y: 0}
+      m_Attenuation: 0
     m_MultiScattering: 0
     m_MultiScatteringData:
       distanceScale: 1
@@ -494,6 +512,7 @@ MonoBehaviour:
   m_Dithering: 0
   m_ClearDepth: 1
   m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
   m_UseScreenCoordOverride: 0
   m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
   m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
@@ -574,7 +593,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1866560763}
   m_LocalRotation: {x: 0.18602185, y: -0.008738483, z: 0.0016544941, w: 0.9825054}
-  m_LocalPosition: {x: 308, y: 258, z: -19}
+  m_LocalPosition: {x: 32, y: 258, z: 201}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

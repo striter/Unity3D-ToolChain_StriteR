@@ -123,8 +123,8 @@ public struct CubicPolynomial : IPolynomial
         var omega = kInv3 * acos(-q / sqrt(-pow3(p)));
         var sqrtNegP = sqrt(-p);
         var x1 = 2 * sqrtNegP * cos(omega);
-        var x2 = 2 * sqrtNegP * cos(omega + kPIMul2 / 3);
-        var x3 = 2 * sqrtNegP * cos(omega - kPIMul2 / 3);
+        var x2 = 2 * sqrtNegP * cos(omega + kPI2 / 3);
+        var x3 = 2 * sqrtNegP * cos(omega - kPI2 / 3);
         _roots = new []{ x1 -cMinus,x2 - cMinus,x3 - cMinus};
         return 3;
     }

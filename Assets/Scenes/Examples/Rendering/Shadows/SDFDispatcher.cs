@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using AlgorithmExtension;
+using Runtime.DataStructure;
 using Runtime.Geometry;
 using Runtime.Geometry.Validation;
 using Unity.Mathematics;
@@ -10,10 +12,10 @@ using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Rendering.Shadows
 {
-    public struct BVHVolume_Sphere_Capsule : IBVHVolume<GSphere, GCapsule, float3>
+    public struct BVHNode_Sphere_Capsule : IBVHNode<GSphere, GCapsule>
     {
         public IList<GCapsule> elements { get; set; }
-        public GSphere bounds { get; set; }
+        public GSphere boundary { get; set; }
         public int iteration { get; set; }
         
         public void SortElements(int _median, IList<GCapsule> _elements)
@@ -30,15 +32,8 @@ namespace Examples.Rendering.Shadows
                 });
         }
 
-        public GSphere OutputBounds(IList<GCapsule> _elements)
-        {
-            // List<float3> centers = _elements.Select(p => p.Center).ToList();
-            // return UBounds.GetBoundingSphere(centers);
-            GSphere result = _elements[0].GetBoundingSphere();// GetEdgeSpheres().top;
-            for(int i=1;i<_elements.Count;i++)
-                result = GSphere.Minmax(result, _elements[i].GetBoundingSphere());
-            return result;
-        }
+        public bool Contains(GSphere _bounds, GCapsule _element) => throw new NotImplementedException();
+        public GSphere CalculateBounds(IEnumerable<GCapsule> _elements) => UBounds.GetBoundingSphere(_elements.Select(p=>p.GetBoundingSphere()));
     }
     
     [ExecuteInEditMode]
@@ -59,7 +54,7 @@ namespace Examples.Rendering.Shadows
         private int kSDFParameters2 = Shader.PropertyToID("_SDFParameters2");
         public int m_VolumeCapacity = 4;
         public int m_MaxIteration = 4;
-        private BVH<BVHVolume_Sphere_Capsule, GSphere, GCapsule, float3> m_BVH = new();
+        private BoundingVolumeHierarchy<BVHNode_Sphere_Capsule, GSphere, GCapsule> m_BVH = new();
         
         public void Update()
         {
@@ -100,7 +95,7 @@ namespace Examples.Rendering.Shadows
                 elementIndex += volume.elements.Count;
                 
                 m_VolumeIndexes.Add(volume.elements.Count);
-                m_VolumeShapes[volumeIndex] = (float4)volume.bounds;
+                m_VolumeShapes[volumeIndex] = (float4)volume.boundary;
                 volumeIndex++;
             }
             
@@ -122,7 +117,7 @@ namespace Examples.Rendering.Shadows
             foreach (var volume in m_BVH.m_Volumes)
             {
                 Gizmos.color = UColor.IndexToColor(index++);
-                volume.bounds.DrawGizmos();
+                volume.boundary.DrawGizmos();
                 foreach (var element in volume.elements)
                     element.DrawGizmos();
             }

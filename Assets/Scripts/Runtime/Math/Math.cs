@@ -225,12 +225,11 @@ public static partial class umath
         _s = _f < 0f ? -sine : sine;
         _c = cosine;
     }
-    
-    public static float2 tripleProduct(float2 _a, float2 _b, float2 _c)=>math.dot(_a, cross(_b, _c));
-    public static float3 tripleProduct(float3 _a, float3 _b, float3 _c)=>math.dot(_a, math.cross(_b, _c));
 
-    public static float repeat(float _t,float _length) => math.clamp(_t - math.floor(_t / _length) * _length, 0.0f, _length);
-    public static float2 repeat(float2 _t,float2 _length) => math.clamp(_t - math.floor(_t / _length) * _length, 0.0f, _length);
+    public static float2 tripleProduct(float2 _a, float2 _b, float2 _c) => _b *math.dot(_a, _c)  - _a * math.dot(_c, _b);
+    public static float3 tripleProduct(float3 _a, float3 _b, float3 _c) => _b *math.dot(_a, _c)  - _a * math.dot(_c, _b);
+    public static float repeat(float _t,float _length) => math.clamp(_t - floor(_t / _length) * _length, 0.0f, _length);
+    public static float2 repeat(float2 _t,float2 _length) => math.clamp(_t - floor(_t / _length) * _length, 0.0f, _length);
     
     public static float deltaAngle(float _x,float _xd)
     {

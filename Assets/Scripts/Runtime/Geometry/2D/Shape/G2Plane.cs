@@ -31,7 +31,7 @@ namespace Runtime.Geometry
     }
 
     [Serializable]
-    public partial struct G2Plane :ISerializationCallbackReceiver
+    public partial struct G2Plane : IShapeDimension<float2>, ISerializationCallbackReceiver
     {
         public static readonly G2Plane kDefault = new(new float2(0,1),0f);
         
@@ -42,8 +42,11 @@ namespace Runtime.Geometry
             normal = math.normalize(normal);
             Ctor();
         }
+        
+        public G2Plane Flip() => new G2Plane(-normal,position);
         public static implicit operator float3(G2Plane _plane)=>_plane.normal.to3xy(_plane.distance);
         public bool IsPointFront(float2 _point) =>  math.dot(_point.to3xy(-1),this)>0;
+        public float2 Center => position;
     }
 
     public static class G2Plane_Extension

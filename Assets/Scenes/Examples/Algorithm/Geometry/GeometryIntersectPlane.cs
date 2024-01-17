@@ -41,8 +41,8 @@ namespace Examples.Algorithm.Geometry
 
             Gizmos.color = Color.white;
             Gizmos.matrix = transform.localToWorldMatrix;
-            float projection = UGeometry.Projection(m_Point,m_Plane);
-            Gizmos.DrawLine(m_Point,m_Point-projection*m_Plane.normal);
+            distance = UGeometry.Distance(m_Plane,m_Point);
+            Gizmos.DrawLine(m_Point,m_Point-distance*m_Plane.normal);
         }
 #endif
     }

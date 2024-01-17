@@ -24,6 +24,8 @@ namespace Runtime.Geometry
         public Vector3 TF => qube.vTF;
         public Vector3 TR => qube.vTR;
         public int Length => qube.Length;
+        
+        public static implicit operator GQube(Qube<Vector3> _qube) => new GQube(){qube = _qube};
     }
 
     

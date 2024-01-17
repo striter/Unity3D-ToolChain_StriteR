@@ -9,7 +9,7 @@ namespace Runtime.Geometry
 
     
     [Serializable]
-    public struct G2Circle:I2Shape
+    public struct G2Circle:IShape2D
     {
         public float2 center;
         public float radius;
@@ -57,7 +57,7 @@ namespace Runtime.Geometry
         public bool Contains(float2 _p, float _bias = float.Epsilon) =>math.lengthsq(_p - center) < radius * radius + _bias;
         public static readonly G2Circle kZero = new G2Circle(float2.zero, 0f);
         public static readonly G2Circle kOne = new G2Circle(float2.zero, 1f);
-        public float2 GetSupportPoint(float2 _direction) => center + _direction.normalize() * radius;
+        public float2 GetSupportPoint(float2 _direction) => center + _direction * radius;
         public float2 Center => center;
     }
     

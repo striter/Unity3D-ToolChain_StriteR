@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Linq;
 using Runtime.Geometry;
 using Runtime.Geometry.Validation;
 using UnityEngine;
-using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Algorithm.Geometry
 {
@@ -19,13 +19,14 @@ namespace Examples.Algorithm.Geometry
 
         public TriangleRayIntersection[] visualizations;
         
+        public GQuad kQQuad = GQuad.kDefault;
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             int index = 0;
-            foreach (var visualization in visualizations)
+            foreach (var visualization in visualizations.Concat(kQQuad.GetTriangles().Select(p=>new TriangleRayIntersection(){triangle = p,ray = visualizations[0].ray,rayDirectionCheck = true,planeDirectionCheck = true})))
             {
-                Gizmos.color = Color.green;
+                Gizmos.color = Color.white;
                 Gizmos.matrix = Matrix4x4.Translate(Vector3.right * index++) * transform.localToWorldMatrix;
 
                 var triangle = visualization.triangle;
@@ -38,13 +39,14 @@ namespace Examples.Algorithm.Geometry
                     UGizmos.DrawArrow(triangle.GetBarycenter(), Quaternion.LookRotation(triangle.normal), .5f, .1f);
 
                 float distance = 2f;
-                if(UGeometry.Intersect(triangle,ray, visualization.rayDirectionCheck,visualization.planeDirectionCheck,out float rayDistance))
+                var intersect = ray.Intersect(triangle, out var rayDistance,visualization.rayDirectionCheck,visualization.planeDirectionCheck);
+                if(intersect)
                 {
                     distance = rayDistance;
                     Gizmos.color = Color.red;
                     Gizmos.DrawSphere(visualization.ray.GetPoint(distance), .05f);
                 }
-                Gizmos.color = Color.white;
+                Gizmos.color =  intersect ? Color.green : Color.white;
                 if (visualization.rayDirectionCheck)
                     UGizmos.DrawArrow(ray.origin,Quaternion.LookRotation(ray.direction),.5f,.1f);
                 Gizmos.DrawLine(ray.origin, ray.GetPoint(distance));

@@ -159,15 +159,25 @@ public static class UColor
     
     public static Color IndexToColor(int _index)
     {
-        switch (_index % 6)
+        switch (_index % 16)
         {
-            default: return Color.magenta;
+            default: return Color.grey;
             case 0: return Color.red;
             case 1: return Color.green;
             case 2: return Color.blue;
             case 3: return Color.yellow;
             case 4: return Color.cyan;
             case 5: return Color.white;
+            case 6: return Color.magenta;
+            case 7: return KColor.kDarkCyan;
+            case 8: return KColor.kPaleGreen;
+            case 9: return KColor.kPaleTurquoise;
+            case 10: return KColor.kChocolate;
+            case 11:return KColor.kCrimson;
+            case 12: return KColor.kLime;
+            case 13: return KColor.kOlive;
+            case 14: return KColor.kTeal;
+            case 15: return KColor.kTomato;
         }
     }
 }
@@ -179,5 +189,5 @@ public struct ColorPalette
     public static readonly ColorPalette kDefault = new ColorPalette()
         {a = new Color(.5f,.5f,.5f,1f), b = new Color(.5f,.5f,.5f,1f), c = new Color(1f,1f,1f,1f), d = new Color(0,0.1f,0.2f,1f)};
     
-    public Color Evaluate(float _value) => a + b * UColor.Cos(kmath.kPIMul2*(c*_value+d));
+    public Color Evaluate(float _value) => a + b * UColor.Cos(kmath.kPI2*(c*_value+d));
 }

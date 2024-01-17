@@ -532,7 +532,7 @@ namespace TechToys.ThePlanet.Module
                     {
                         for (int i = 0; i < 8; i++)
                         {
-                            Gizmos.color = UColor.IndexToColor(i%4);
+                            Gizmos.color = UColor.IndexToColor(i);
                             if (voxel.m_Corners[i]!=null)
                                 UGizmos.DrawLine(voxel.transform.position,voxel.m_Corners[i].transform.position,.8f);
                         }
@@ -542,7 +542,7 @@ namespace TechToys.ThePlanet.Module
                     {
                         for (int i = 0; i < 4; i++)
                         {
-                            Gizmos.color = UColor.IndexToColor(i%4);
+                            Gizmos.color = UColor.IndexToColor(i);
                             if(voxel.m_CubeSidesExists.IsFlagEnable(UEnum.IndexToEnum<ECubeFacing>(i)))
                                 UGizmos.DrawLine(voxel.transform.position,m_Voxels[voxel.m_CubeSides[i]].transform.position,.8f);
                         }

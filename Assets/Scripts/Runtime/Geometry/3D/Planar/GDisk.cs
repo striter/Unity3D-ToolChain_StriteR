@@ -13,6 +13,16 @@ namespace Runtime.Geometry
         public static GDisk kDefault = new GDisk(float3.zero, kfloat3.rightUpForward.normalize(), .5f);
         
         public float3 Center => origin;
+
+        public float3 GetSupportPoint(float3 _direction)
+        {
+            _direction = math.normalize(_direction);
+            var diskCenterToPoint =  _direction - normal * math.dot(_direction, normal);
+            return origin + diskCenterToPoint * radius;
+        }
+        
+        public GPlane GetPlane() => new GPlane(origin, normal);
+
         public GBox GetBoundingBox()
         {
             var cen = origin;

@@ -64,7 +64,7 @@ namespace Runtime.Geometry.Validation
         }
         
         
-        public static bool Clip(this G2Triangle _triangle,G2Plane _plane, out I2Shape _clippedShape)
+        public static bool Clip(this G2Triangle _triangle,G2Plane _plane, out IShape2D _clippedShape)
         {
             _clippedShape = null;
             for (int i = 0; i < 3; i++)

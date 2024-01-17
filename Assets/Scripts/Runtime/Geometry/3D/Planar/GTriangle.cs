@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Runtime.Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -33,7 +34,7 @@ namespace Runtime.Geometry
     }
 
     [Serializable]
-    public partial struct GTriangle :ITriangle<float3>, IIterate<float3>,ISerializationCallbackReceiver, IShape3D
+    public partial struct GTriangle :ITriangle<float3>, IIterate<float3>,ISerializationCallbackReceiver, IShape3D , IEnumerable<float3>
     {
         public float3 V0 => triangle.v0;
         public float3 V1 => triangle.v1;
@@ -76,7 +77,10 @@ namespace Runtime.Geometry
                 _matrix.MultiplyPoint(_triangle.V1),
                 _matrix.MultiplyPoint(_triangle.V2));
 
-        public float3 GetSupportPoint(float3 _direction) => triangle.Max(_p => math.dot(_p, _direction));
+        public float3 GetSupportPoint(float3 _direction)
+        {
+            return this.MaxElement(_p => math.dot(_p, _direction));
+        }
         public float3 Center => (V0 + V1 + V2) / 3;
 
         public float GetArea()
@@ -89,6 +93,25 @@ namespace Runtime.Geometry
 #else
             return math.length(math.cross(uOffset, vOffset)) / 2;
 #endif
+        }
+
+        public IEnumerable<GLine> GetEdges()
+        {
+            yield return new GLine(V0, V1);
+            yield return new GLine(V1, V2);
+            yield return new GLine(V2, V0);
+        }
+        
+        public IEnumerator<float3> GetEnumerator()
+        {
+            yield return V0;
+            yield return V1;
+            yield return V2;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

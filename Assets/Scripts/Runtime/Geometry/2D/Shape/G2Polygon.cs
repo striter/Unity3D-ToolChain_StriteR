@@ -8,7 +8,7 @@ using Unity.Mathematics;
 namespace Runtime.Geometry
 {
     [Serializable]
-    public struct G2Polygon : I2Shape , IEnumerable<float2>
+    public struct G2Polygon : IShape2D , IEnumerable<float2>
     {
         public float2[] positions;
         [NonSerialized] public float2 center;
@@ -20,9 +20,15 @@ namespace Runtime.Geometry
         }
 
 
-        public float2 GetSupportPoint(float2 _direction)=>positions.MaxElement(_p => math.dot(_direction, _p));
+        public float2 GetSupportPoint(float2 _direction)
+        {
+            var center = this.center;
+            return positions.MaxElement(_p => math.dot(_direction, _p - center));
+        }
         public float2 Center => center;
+        public static readonly G2Polygon kZero = new G2Polygon();
         public static readonly G2Polygon kDefault = new G2Polygon(kfloat2.up,kfloat2.right,kfloat2.down,kfloat2.left);
+        public static G2Polygon operator +(G2Polygon _polygon,float2 _offset) => new G2Polygon(_polygon.positions.Select(p=>p + _offset));
         public float2 this[int _value] => positions[_value];
         public int Count => positions.Length;
         public IEnumerator<float2> GetEnumerator()

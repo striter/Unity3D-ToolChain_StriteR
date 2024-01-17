@@ -56,7 +56,7 @@ namespace Runtime.Geometry.Explicit
 
         static float3 GetRhombusCorner(int _index, int _rhombusCount)
         {
-            math.sincos(kmath.kPIMul2 / _rhombusCount * _index,out var sine,out var cosine);
+            math.sincos(kmath.kPI2 / _rhombusCount * _index,out var sine,out var cosine);
             return new float3(sine, 0f, cosine);
         }
         

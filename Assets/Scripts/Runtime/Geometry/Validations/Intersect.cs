@@ -6,44 +6,20 @@ namespace Runtime.Geometry.Validation
 
     public static partial class UGeometry
     {
-        //https://iquilezles.org/articles/hackingintersector/
-        public static bool Intersect(this GRay _ray, GTriangle _triangle, out float3 _hitPoint)
-        {
-            var v1v0 = _triangle.V1 - _triangle.V0;
-            var v2v0 = _triangle.V2 - _triangle.V0;
-            var rov0 = _ray.origin - _triangle.V0;
-            var rd = _ray.direction;
-            var n = cross(v1v0, v2v0);
-            var q = cross(rov0, rd);
-            var d = 1.0f / dot(n, rd);
-            var u = d * dot(-q, v2v0);
-            var v = d * dot(q, v1v0);
-            // var t =   d*dot( -n, rov0 );
-            _hitPoint = _triangle.GetPoint(new float2(u, v));
-            return !(u < 0.0 || v < 0.0 || u + v > 1.0);
-        }
+        public static bool Intersect(this GRay _ray, GTriangle _triangle) =>   RayIntersection.TriangleCalculate(_ray, _triangle, out var u, out var v, out var t) && !(u < 0.0 || v < 0.0 || u + v > 1.0);
 
-        public static bool Intersect(GTriangle _triangle, GRay _ray, bool _rayDirectionCheck, out float _distance)
+        public static bool Intersect(this GRay _ray, GTriangle _triangle, out float _distance,bool _rayDirectionCheck = false,bool _triangleDirectionCheck = false)
         {
-            if (!RayIntersection.TriangleCalculate(_ray.origin, _triangle[0], _triangle[1], _triangle[2],
-                    _ray.direction,
-                    out _distance, out var u, out var v))
+            if (!RayIntersection.TriangleCalculate(_ray, _triangle, out var u, out var v, out _distance))
                 return false;
-            return !_rayDirectionCheck || _distance > 0;
-        }
 
-        public static bool Intersect(GTriangle _triangle, GRay _ray, bool _rayDirectionCheck,
-            bool _triangleDirectionCheck, out float _distance)
-        {
-            if (!RayIntersection.TriangleCalculate(_triangle[0], _triangle[1], _triangle[2], _ray.origin,
-                    _ray.direction,
-                    out _distance, out var u, out var v))
-                return false;
-            var intersect = true;
-            intersect &= !_rayDirectionCheck || _distance > 0;
-            intersect &= !_triangleDirectionCheck || dot(_triangle.normal, _ray.direction) < 0;
+            var intersect = !(u < 0.0 || v < 0.0 || u + v > 1.0);
+            intersect = intersect && (!_rayDirectionCheck || _distance > 0);
+            intersect = intersect && (!_triangleDirectionCheck || dot(_triangle.normal, _ray.direction) < 0);
             return intersect;
         }
+        
+        public static bool Intersect(this GLine _line,GTriangle _triangle, out float _distance,bool _rayDirectionCheck = false,bool _triangleDirectionCheck = false) =>Intersect(_line.ToRay(), _triangle, out _distance,_rayDirectionCheck,_triangleDirectionCheck) && _distance >= 0 && _distance <= _line.length;
 
         public static bool Intersect(GRay _ray, GSphere _sphere)
         {
@@ -56,7 +32,6 @@ namespace Runtime.Geometry.Validation
             RayIntersection.EllipsoidCalculate(_ellipsoid, _ray, out var a, out var b, out var c, out var discriminant);
             return discriminant >= 0;
         }
-
 
         public static bool Intersect(GRay _ray, GBox _box)
         {
@@ -91,7 +66,37 @@ namespace Runtime.Geometry.Validation
                    _src.min.y <= _dst.max.y && _src.max.y >= _dst.min.y &&
                    _src.min.z <= _dst.max.z && _src.max.z >= _dst.min.z;
         }
+        public static bool Intersect(GBox _box, GTriangle _triangle)
+        {
+            foreach (var vertex in _triangle)
+            {
+                if (_box.Contains(vertex))
+                    return true;
+            }
 
+            // Check for edge-face intersections
+            foreach (var edge in _triangle.GetEdges())
+            {
+                foreach (var face in _box.GetFaces())
+                {
+                    if (edge.Intersect(face, out var distance))
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static bool Intersect(this GLine _line,GQuad _quad,out float _distance,bool _directed = false)
+        {
+            _quad.GetTriangles(out var _triangle1,out var _triangle2);
+            var ray = _line.ToRay();
+            if (Intersect(ray, _triangle1,out _distance,_directed))
+                return true;
+
+            return Intersect(ray, _triangle2,out _distance,_directed);
+        }
+        
         public static bool Intersect(GFrustumPlanes _frustumPlanes, GBox _bounding)
         {
             for (var i = 0; i < _frustumPlanes.Length; i++)

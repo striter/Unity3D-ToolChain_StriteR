@@ -250,7 +250,7 @@ namespace TechToys.ThePlanet.Module.Cluster
                 for (int j = 0; j < 8; j++)
                     localQube[j]=qubeCenterLS+(localQuad.positions[j%4] - qubeCenterLS).setY(0f)*.25f + (-.5f+j/4)*kfloat3.up*.5f;   //Da fk
                 Gizmos.color = Color.white;
-                localQube.DrawGizmos();
+                ((GQube)localQube).DrawGizmos();
                 for (int j = 0; j < 8; j++)
                 {
                     // if (availableByte[j])

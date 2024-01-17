@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Runtime.DataStructure;
 
 public static class UAStar<T>
 {

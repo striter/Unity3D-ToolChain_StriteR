@@ -35,7 +35,7 @@ namespace Runtime.Geometry
         public static readonly G2Triangle kDefault = new G2Triangle(new float2(0,1),new float2(-.5f,-1),new float2(.5f,-1));
     }
     [Serializable]
-    public partial struct G2Triangle : ITriangle<float2>, IEnumerable<float2> ,ISerializationCallbackReceiver, I2Shape
+    public partial struct G2Triangle :  ITriangle<float2>, IEnumerable<float2> ,ISerializationCallbackReceiver, IShape2D
     {
         public float2 V0 => triangle.v0;
         public float2 V1 => triangle.v1;
@@ -43,8 +43,21 @@ namespace Runtime.Geometry
         public float2 this[int _index] => triangle[_index];
         public IEnumerator<float2> GetEnumerator() => triangle.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator()=> GetEnumerator();
-        public float2 GetSupportPoint(float2 _direction) => this.Max(_p => math.dot(_p, _direction));
+        public float2 GetSupportPoint(float2 _direction) => this.MaxElement(_p => math.dot(_p, _direction));
         public float2 Center => (V0 + V1 + V2) / 3f;
+
+        public bool Contains(float2 _position)
+        {
+            var AB = V1 - V0;
+            var AC = V2 - V0;
+            var AO = _position -V0;
+            var ABperp = umath.tripleProduct(AC, AB, AB);
+            var ACperp = umath.tripleProduct(AB, AC, AC);
+            return math.dot(ABperp, AO) > 0 || math.dot(ACperp, AO) > 0;
+        }
+
+        public static G2Triangle operator +(G2Triangle _triangle, float2 _offset) => new G2Triangle(_triangle.V0 + _offset, _triangle.V1 + _offset, _triangle.V2 + _offset);
+        
         public void OnBeforeSerialize() { }
         public void OnAfterDeserialize()=>Ctor();
     }

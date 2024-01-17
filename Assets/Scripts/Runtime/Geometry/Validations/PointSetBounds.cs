@@ -38,6 +38,14 @@ namespace Runtime.Geometry.Validation
 
             return GBox.Minmax(min, max);
         }
+
+        public static GSphere GetBoundingSphere(IEnumerable<GSphere> _spheres)
+        {
+            var boundingSphere = _spheres.First();
+            foreach (var sphere in _spheres)
+                boundingSphere = GSphere.Minmax(boundingSphere, sphere);
+            return boundingSphere;
+        }
         
         private static readonly List<float3> kBoundaryPoints = new List<float3>(4);
         private static readonly List<float3> kContainedPoints = new List<float3>();
@@ -177,6 +185,31 @@ namespace Runtime.Geometry.Validation
             
             _positions.Add(removed);
             return sphere;
+        }
+
+
+        private static readonly List<float2> kBoundingPolygonPoints = new List<float2>();
+        public static G2Polygon GetBoundingPolygon(IList<float2> _positions,float _bias = float.Epsilon)
+        {
+            if(_positions.Count<=0)
+                return G2Polygon.kZero;
+            
+            kBoundingPolygonPoints.Clear();
+            var direction = kfloat2.right + kfloat2.up;
+            var initialPoint = _positions.MinElement(p=>p.sum());
+            kBoundingPolygonPoints.Add(initialPoint);
+            
+            while (kBoundingPolygonPoints.Count <= _positions.Count)
+            {
+                var previousPoint = kBoundingPolygonPoints[^1];
+                var nextPoint = _positions.Collect(p=>(p-previousPoint).sqrmagnitude()> 0.001f).MinElement(p =>  umath.getRadClockwise(p-previousPoint,direction));
+                if ((nextPoint - initialPoint).sqrmagnitude() < _bias)
+                    break;
+                direction = nextPoint - previousPoint;
+                kBoundingPolygonPoints.Add(nextPoint);
+            }
+
+            return new G2Polygon(kBoundingPolygonPoints);
         }
         #endregion
     }

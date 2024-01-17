@@ -35,7 +35,7 @@ namespace Runtime.Geometry
     }
 
     [Serializable]
-    public partial struct GCapsule : IShape3D , IBoundingBox3D , ISerializationCallbackReceiver
+    public partial struct GCapsule : IShape3D , IBoundingBox3D,IBoundingSphere3D , ISerializationCallbackReceiver
     {
         public GCapsule(CapsuleCollider _collider)
         {

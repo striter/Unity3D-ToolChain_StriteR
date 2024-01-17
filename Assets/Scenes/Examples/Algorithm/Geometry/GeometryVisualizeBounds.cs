@@ -10,14 +10,14 @@ namespace Examples.Algorithm.Geometry
     {
         [Header("Box")]
         public float3[] boundingBoxRandomPoints;
-        public GBox boudingBox = default;
 
         [Header("Sphere")]
         public float3[] boundingSpherePoints;
-        public GSphere boundingSphere;
 
         public GSphere boundingSphere1;
         public GSphere boundingSphere2;
+
+        [Header("Polygon")] public float2[] boundingPolygonPoints;
         
         [Button]
         private void RandomPoints()
@@ -26,14 +26,18 @@ namespace Examples.Algorithm.Geometry
             {
                 for (int i = 0; i < boundingBoxRandomPoints.Length; i++)
                     boundingBoxRandomPoints[i] = URandom.RandomSphere();
-                boudingBox = UBounds.GetBoundingBox(boundingBoxRandomPoints);
             }
 
             if (boundingSpherePoints is { Length: > 0 })
             {
                 for (int i = 0; i < boundingSpherePoints.Length; i++)
                     boundingSpherePoints[i] = URandom.RandomSphere();
-                boundingSphere = UBounds.GetBoundingSphere(boundingSpherePoints);
+            }
+
+            if (boundingPolygonPoints is { Length: > 0 })
+            {
+                for(int i = 0; i < boundingPolygonPoints.Length; i++)
+                    boundingPolygonPoints[i] = URandom.Random2DSphere();
             }
         }
 
@@ -43,13 +47,13 @@ namespace Examples.Algorithm.Geometry
         {
             Gizmos.color = Color.white;
             Gizmos.matrix = transform.localToWorldMatrix;
-            boudingBox.DrawGizmos();
+            UBounds.GetBoundingBox(boundingBoxRandomPoints).DrawGizmos();
             if(boundingBoxRandomPoints!=null)
                 foreach (var points in boundingBoxRandomPoints)
                     Gizmos.DrawWireSphere(points,.02f);
 
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(-Vector3.right * 1.5f);
-            boundingSphere.DrawGizmos();
+            UBounds.GetBoundingSphere(boundingSpherePoints).DrawGizmos();
             if (boundingSpherePoints != null)
             {
                 foreach (var points in boundingSpherePoints)
@@ -63,6 +67,15 @@ namespace Examples.Algorithm.Geometry
             boundingSphere2.DrawGizmos();
             Gizmos.color = Color.white;
             GSphere.Minmax(boundingSphere1,boundingSphere2).DrawGizmos();
+            
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.back * 5f);
+            UBounds.GetBoundingPolygon(boundingPolygonPoints).DrawGizmos();
+            if (boundingPolygonPoints != null)
+            {
+                foreach (var points in boundingPolygonPoints)
+                    Gizmos.DrawSphere(points.to3xz(),.02f);
+            }
+            
         }
     }
 }

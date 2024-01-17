@@ -16,7 +16,7 @@ namespace Runtime.Geometry.Explicit
 
         public static float2 SpherePositionToUV(float3 _point,bool _poleValidation=false)
         {
-            float2 texCoord=new float2(atan2(_point.x, -_point.z) / -kPIMul2, math.asin(_point.y) / kPI)+.5f;
+            float2 texCoord=new float2(atan2(_point.x, -_point.z) / -kPI2, math.asin(_point.y) / kPI)+.5f;
             if (_poleValidation&&texCoord.x<1e-6f)
                 texCoord.x = 1f;
             return texCoord;
@@ -110,7 +110,7 @@ namespace Runtime.Geometry.Explicit
             {
                 float3 position = 0;
                 float uvRadius = sin(_uv.y * kPI);
-                sincos(kPIMul2 * _uv.x, out position.z, out position.x);
+                sincos(kPI2 * _uv.x, out position.z, out position.x);
                 position.xz *= uvRadius;
                 position.y = -cos(kPI * _uv.y);
                 return position;

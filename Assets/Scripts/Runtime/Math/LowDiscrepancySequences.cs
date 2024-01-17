@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Procedural.Tile;
+using Runtime.DataStructure;
 using Unity.Collections;
 using Unity.Mathematics;
 using static UBitwise;
@@ -184,7 +185,7 @@ public static class ULowDiscrepancySequences
     {
         float j = _index + .5f;
         float phi = acos(1f - 2f * j / _count);
-        float theta = kPIMul2 * j / kGoldenRatio;
+        float theta = kPI2 * j / kGoldenRatio;
         sincos(theta,out var sinT,out var cosT);
         sincos(phi,out var sinP,out var cosP);
         return new float3(cosT  * sinP, sinT * sinP ,cosP);

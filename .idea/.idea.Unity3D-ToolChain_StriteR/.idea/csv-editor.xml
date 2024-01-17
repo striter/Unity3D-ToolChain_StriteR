@@ -24,6 +24,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Library\PackageCache\com.unity.timeline@1.7.4\Editor\StyleSheets\res\Timeline_DarkSkin.txt">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Library\PackageCache\com.unity.timeline@1.7.4\Editor\StyleSheets\res\Timeline_LightSkin.txt">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\ProjectSettings\ProjectVersion.txt">
           <value>
             <Attribute>

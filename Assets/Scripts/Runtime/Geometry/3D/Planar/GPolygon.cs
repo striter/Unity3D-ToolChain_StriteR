@@ -20,6 +20,7 @@ namespace Runtime.Geometry
         public float3 GetSupportPoint(float3 _direction)=>positions.MaxElement(_p => math.dot(_direction, _p));
         public float3 Center => center;
 
+        public static readonly GPolygon kZero = new GPolygon();
         public static readonly GPolygon kDefault = new GPolygon(kfloat3.forward,kfloat3.right,kfloat3.back,kfloat3.left);
     }
 

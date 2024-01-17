@@ -24,9 +24,9 @@ public static class kmath
     
     //PI
     public const float kPI = 3.14159265359f;
-    public const float kPIMulHalf = 1.57079632679f;
-    public const float kPIMul2 = 6.28318530718f;
-    public const float kPIMul4 = 12.5663706144f;
+    public const float kPIHalf = 1.57079632679f;
+    public const float kPI2 = 6.28318530718f;
+    public const float kPI4 = 12.5663706144f;
     //Division
     public const float kPIDiv2 = 1.5707963267948966f;
     public const float kPIDiv4 = 0.7853981633974483f;

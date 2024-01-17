@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
@@ -23,6 +24,11 @@ namespace Runtime.Geometry
 
         public static readonly GCylinder kDefault = new GCylinder() {origin = kfloat3.down*.5f, normal = kfloat3.up, radius = .5f, height = 1f};
         public float3 Center => origin;
+        public float3 GetSupportPoint(float3 _direction)
+        {
+            throw new NotImplementedException();
+        }
+
         public GBox GetBoundingBox()        //https://iquilezles.org/articles/diskbbox/
         {
             var pa = origin;

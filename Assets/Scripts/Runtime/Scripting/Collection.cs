@@ -58,6 +58,16 @@ public static class UCollection
             }
         }
 
+        public static IEnumerable<T> Exclude<T>(this IEnumerable<T> _collection, T _exclude)
+        {
+            foreach (T element in _collection)
+            {
+                if (EqualityComparer<T>.Default.Equals(element, _exclude))
+                    continue;
+                yield return element;
+            }
+        }
+        
         public static  IEnumerable<Y> CollectAs<T,Y>(this IEnumerable<T> _collection) where T:class where Y:class
         {
             foreach (T element in _collection)
@@ -346,8 +356,10 @@ public static class UCollection
             return builder.ToString();
         }
 
-        public static IEnumerable<T> Iterate<T>(this IList<T> _collection, int _startIndex,int _endIndex)
+        public static IEnumerable<T> Iterate<T>(this IList<T> _collection, int _startIndex,int _endIndex = -1)
         {
+            if(_endIndex== -1)
+                _endIndex = _collection.Count;
             for (int i = _startIndex; i < _endIndex; i++)
                 yield return _collection[i];
         }
@@ -613,6 +625,14 @@ public static class UCollection
 
         return _array;
     }
+    
+    public static T[] Remake<T>(this T[] _collection, Func<T, T> _convert)
+    {
+        for (int i = 0; i < _collection.Length; i++)
+            _collection[i] = _convert(_collection[i]);
+        return _collection;
+    }
+
     #endregion
     #region List
     public static List<T> DeepCopy<T>(this List<T> _list)
@@ -699,8 +719,7 @@ public static class UCollection
         }
         return index;
     }
-    
-    
+
     public static (T start, T end, float _value) Gradient<T>(this IList<T> _collection,float _value)
     {
         Debug.Assert(_collection!=null, "collection can't be null");

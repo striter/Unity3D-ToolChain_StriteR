@@ -55,15 +55,15 @@ namespace Runtime.Geometry.Explicit.Shape
             float4x2 uv = IShapeExplicit.IndexTo4UV(_i,_resolution,_invResolution);
             float r1 = 0.375f;
             float r2 = 0.125f;
-            float4 s = r1 + r2 * cos(kmath.kPIMul2 * uv.c1);
+            float4 s = r1 + r2 * cos(kmath.kPI2 * uv.c1);
             float4x3 p;
-            p.c0 = s * sin(kmath.kPIMul2 * uv.c0);
-            p.c1 = r2 * sin(kmath.kPIMul2 * uv.c1);
-            p.c2 = s * cos(kmath.kPIMul2 * uv.c0);
+            p.c0 = s * sin(kmath.kPI2 * uv.c0);
+            p.c1 = r2 * sin(kmath.kPI2 * uv.c1);
+            p.c2 = s * cos(kmath.kPI2 * uv.c0);
 
             float4x3 n = p;
-            n.c0 -= r1 * sin(kmath.kPIMul2 * uv.c0);
-            n.c2 -= r1 * cos(kmath.kPIMul2 * uv.c0);
+            n.c0 -= r1 * sin(kmath.kPI2 * uv.c0);
+            n.c2 -= r1 * cos(kmath.kPI2 * uv.c0);
             return new Point4(){positions = p,normals = n};
         }
     }

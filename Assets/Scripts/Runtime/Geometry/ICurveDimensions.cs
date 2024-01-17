@@ -35,7 +35,7 @@ namespace Runtime.Geometry.Curves
 
         public static void DrawGizmos_Tangents(this ICurveTangents<float3> _curve,int _amount = 64,float _sphereSize = 0.1f)
         {
-            UnityEngine.Gizmos.color = KColor.kOrange.SetA(.1f);
+            UnityEngine.Gizmos.color = KColor.kDarkOrange.SetA(.1f);
             for (int i = 0; i < _amount + 1; i++)
             {
                 var value = i / (float) _amount;

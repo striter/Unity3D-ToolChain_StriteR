@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using Runtime.DataStructure;
 using Runtime.Geometry;
-using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Gizmos = UnityEngine.Gizmos;
 
 namespace TechToys.EndlessOcean
@@ -20,7 +18,7 @@ namespace TechToys.EndlessOcean
         private Camera m_Camera;
         private Mesh m_Mesh;
         private MeshFilter m_Filter;
-        private QuadTree m_QuadTree = new QuadTree();
+        private QuadTree_float2 m_QuadTree = new QuadTree_float2(3);
 
         private float3x2_homogenous kQuadTreeMatrix;
 
@@ -58,9 +56,7 @@ namespace TechToys.EndlessOcean
 
         void RefreshMesh(float3 _position)
         {
-            m_QuadTree.Construct(GetCurrentBoundary(_position,out kQuadTreeMatrix),0,size,3);
-            m_QuadTree.Insert(0);
-
+            m_QuadTree.ConstructGeometry(GetCurrentBoundary(_position,out kQuadTreeMatrix),size);
             m_Mesh.Clear();
             List<int> indices = new List<int>();
             List<Vector3> positions = new List<Vector3>();
@@ -68,13 +64,13 @@ namespace TechToys.EndlessOcean
             List<Vector4> tangents = new List<Vector4>();
 
             int quadStartIndex = 0;
-            foreach (var bounds in m_QuadTree)
+            foreach (var node in m_QuadTree)
             {
                 for (int j = 0; j <= split; j++)
                 {
                     for (int i = 0; i <= split; i++)
                     {
-                        positions.Add(kQuadTreeMatrix.mulPosition(bounds.GetPoint(new float2(i, j) / split)).to3xz());
+                        positions.Add(kQuadTreeMatrix.mulPosition(node.boundary.GetPoint(new float2(i, j) / split)).to3xz());
                         normals.Add(kfloat3.up);
                         tangents.Add(kfloat3.right.to4(1));
                     }
