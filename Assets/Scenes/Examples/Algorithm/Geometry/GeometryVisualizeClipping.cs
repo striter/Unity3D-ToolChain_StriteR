@@ -55,6 +55,7 @@ namespace Examples.Algorithm.Geometry
                 Gizmos.color = Color.yellow;
                 clippedGShape.DrawGizmos();
             }
+            
         }
     }
 }

@@ -3,6 +3,7 @@ using Runtime.Geometry;
 using Runtime.Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Examples.Algorithm.Geometry
 {
@@ -20,14 +21,16 @@ namespace Examples.Algorithm.Geometry
         public G2Polygon sumPolygon = G2Polygon.kDefault;
         public float2 sumPolygonOffset = float2.zero;
         
+        [Header("3D")]
+        public GTriangle triangle3d = GTriangle.kDefault;
+        public GSphere sphere3D = GSphere.kDefault;
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
-            int index = 0;
             var shapes = new IShape2D[] { box, sphere, polygon ,triangle};
             foreach (var shape in shapes)
             {
-                Gizmos.color = index++ != 0 && shapes.Exclude(shape).Any(p=> p.Intersect(shape)) ? Color.yellow : Color.white;
+                Gizmos.color = shapes.Exclude(shape).Any(p=> p.Intersect(shape)) ? Color.yellow : Color.white;
                 shape.DrawGizmos();
                 UGizmos.DrawArrow(shape.Center.to3xz(), supportPointDirection.to3xz(), .5f, .1f);
                 Gizmos.DrawWireSphere(shape.GetSupportPoint(supportPointDirection).to3xz(), .1f);
@@ -42,9 +45,19 @@ namespace Examples.Algorithm.Geometry
             finalPolygon.DrawGizmos();
 
             Gizmos.color = KColor.kChocolate;
-            GJKAlgorithm.Sum(sumCircle,finalPolygon).DrawGizmos();
+            GJKAlgorithm._2D.Sum(sumCircle,finalPolygon).DrawGizmos();
             Gizmos.color = KColor.kHotPink;
-            GJKAlgorithm.Difference(sumCircle,finalPolygon).DrawGizmos();
+            GJKAlgorithm._2D.Difference(sumCircle,finalPolygon).DrawGizmos();
+
+
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.back * 6f);
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(Vector3.zero, .05f);
+            Gizmos.color = GJKAlgorithm.Intersect(triangle3d, sphere3D) ? Color.green : Color.white;
+            triangle3d.DrawGizmos();
+            sphere3D.DrawGizmos();
+            Gizmos.color = KColor.kHotPink;
+            GJKAlgorithm._3D.Difference(triangle3d,sphere3D,256).DrawGizmos();
         }
     }
 }

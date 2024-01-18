@@ -33,10 +33,10 @@ namespace Examples.Algorithm.SamplePatternVisualize
                     patterns= ULowDiscrepancySequences.Stratified2D(patternWidth,patternHeight,true);
                     break;
                 case ESamplePattern.Halton:
-                    patterns = ULowDiscrepancySequences.Halton2D((uint)(patternWidth * patternHeight));
+                    patterns = new float2[patternWidth * patternHeight].Remake((i, p) => ULowDiscrepancySequences.Halton2D((uint)i) - .5f);
                     break;
                 case ESamplePattern.HammersLey:
-                    patterns = ULowDiscrepancySequences.Hammersley2D((uint)(patternWidth * patternHeight));
+                    patterns = new float2[patternWidth * patternHeight].Remake((i, p) => ULowDiscrepancySequences.Hammersley2D((uint)i,(uint)(patternWidth * patternHeight)) - .5f);
                     break;
                 case ESamplePattern.Sobol:
                     patterns = ULowDiscrepancySequences.Sobol2D((uint) (patternWidth * patternHeight));

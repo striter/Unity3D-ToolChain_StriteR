@@ -18,7 +18,7 @@ float Distance(GLine _line,float3 _point)
     return length(cross(lineDirection, pointToStart));
 }
 
-float2 Distance(GBox _box, GRay _ray)    //X: Dst To Box , Y:Dst In Side Box
+float2 Distance(GRay _ray,GBox _box)    //X: Dst To Box , Y:Dst In Side Box
 {
     float3 invRayDir = 1. / _ray.direction;
     float3 t0 = (_box.boxMin - _ray.origin) * invRayDir;
@@ -34,6 +34,10 @@ float2 Distance(GBox _box, GRay _ray)    //X: Dst To Box , Y:Dst In Side Box
     return float2(dstToBox, dstInsideBox);
 }
 
+float2 Distance(GBox _box, GRay _ray)//X: Dst To Box , Y:Dst In Side Box
+{
+    return Distance(_ray,_box);
+}
 
 float2 Distance(GSphere _sphere, GRay _ray)
 {

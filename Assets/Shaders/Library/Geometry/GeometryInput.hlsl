@@ -87,18 +87,19 @@ struct GBox
 {
     float3 center;
     float3 size;
-    float3 extend;
+    float3 extent;
     float3 boxMin;
     float3 boxMax;
+    float3 GetNormalizedPoint(float3 _point) { return(_point - boxMin)/size;}
 };
 GBox GBox_Ctor(float3 _center, float3 _size)
 {
     GBox box;
     box.center=_center;
     box.size=_size;
-    box.extend=_size*.5;
-    box.boxMin = _center-box.extend;
-    box.boxMax = _center+box.extend;
+    box.extent=_size*.5;
+    box.boxMin = _center-box.extent;
+    box.boxMax = _center+box.extent;
     return box;
 }
 GBox GBox_Ctor_Extent(float3 _center, float3 _extent)
@@ -106,9 +107,9 @@ GBox GBox_Ctor_Extent(float3 _center, float3 _extent)
     GBox box;
     box.center=_center;
     box.size= _extent * 2;
-    box.extend= _extent ;
-    box.boxMin = _center-box.extend;
-    box.boxMax = _center+box.extend;
+    box.extent= _extent ;
+    box.boxMin = _center-box.extent;
+    box.boxMax = _center+box.extent;
     return box;
 }
 struct GBoxRound

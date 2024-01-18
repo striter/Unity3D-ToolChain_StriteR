@@ -99,7 +99,7 @@ namespace Runtime.DataStructure
         
         protected abstract IEnumerable<Boundary> Divide(Boundary _src, int _iteration);
 
-        public void DrawGizmos()
+        public void DrawGizmos(bool _boundary = true,bool _elements = true)
         {
             int index = 0;
             var matrix = Gizmos.matrix;
@@ -107,16 +107,22 @@ namespace Runtime.DataStructure
             {
                 Gizmos.color = UColor.IndexToColor(index++);
                 Gizmos.matrix = matrix;
-                if (node.boundary is IShapeGizmos boundsShape)
-                    boundsShape.DrawGizmos();
-                foreach (var element in node.elements)
-                    if (element is IShapeGizmos gizmos)
-                        gizmos.DrawGizmos();
-                    else if (element is float3 _val3)
-                        Gizmos.DrawSphere(_val3, .1f);
-                    else if (element is float2 _val2)
-                        Gizmos.DrawSphere(_val2.to3xz(), .1f);
+                if (_boundary)
+                {
+                    if (node.boundary is IShapeGizmos boundsShape)
+                        boundsShape.DrawGizmos();
+                }
 
+                if (_elements)
+                {
+                    foreach (var element in node.elements)
+                        if (element is IShapeGizmos gizmos)
+                            gizmos.DrawGizmos();
+                        else if (element is float3 _val3)
+                            Gizmos.DrawSphere(_val3, .1f);
+                        else if (element is float2 _val2)
+                            Gizmos.DrawSphere(_val2.to3xz(), .1f);
+                }
             }
 
             Gizmos.matrix = matrix;

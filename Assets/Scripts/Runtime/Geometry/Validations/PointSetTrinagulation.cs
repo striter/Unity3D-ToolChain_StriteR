@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace Runtime.Geometry.Validation
 {
-    public static class Triangulation
+    public static class UTriangulation
     {
         public struct DTriangle : IEquatable<DTriangle>
         {
@@ -61,6 +62,7 @@ namespace Runtime.Geometry.Validation
         private static PTriangle kSuperPolygon = new PTriangle(-1, -2, -3);
         public static void BowyerWatson(IList<float2> _vertices, ref List<PTriangle> _triangles)
         {
+            _triangles.Clear();
             kTriangles.Clear();
             kEdges.Clear();
             var boundsCircle = UBounds.GetBoundingCircle(_vertices);
@@ -109,6 +111,42 @@ namespace Runtime.Geometry.Validation
             for(int i=kTriangles.Count-1;i>=0;i--)
                 if(!kTriangles[i].polygon.Any(p=>p<0))  //Is from super triangle
                     _triangles.Add(kTriangles[i].polygon);
+        }
+
+        
+        private static List<PTriangle> kSphericalTriangles = new List<PTriangle>();
+        public static List<float2> kProjectedVertices = new List<float2>();
+        private static List<PTriangle> kTempTriangles = new List<PTriangle>();
+        static void PoleTriangulation(IList<float3> _vertices, float3 _poleOrigin,GPlane _projectionPlane,ref List<PTriangle> _triangles)
+        {
+            kProjectedVertices.Clear();
+            for (int i = 0; i < _vertices.Count; i++)
+                kProjectedVertices.Add(UGeometry.Projection(_projectionPlane,_vertices[i],_poleOrigin).xz);
+            
+            BowyerWatson(kProjectedVertices,ref kTempTriangles);
+            _triangles.AddRange(kTempTriangles);
+        }
+        
+        public static void BowyerWatson_Spherical(IList<float3> _vertices,out List<PTriangle> _triangles)
+        {
+            _triangles = kSphericalTriangles;
+            
+            _triangles.Clear();
+            var sphere = UBounds.GetBoundingSphere(_vertices);
+            var kSphereRadius = sphere.radius;
+            PoleTriangulation(_vertices, sphere.Center + new float3(0,kSphereRadius,0),new GPlane(kfloat3.up, sphere.Center - kfloat3.up*kSphereRadius ),ref _triangles);      //Project from north pole
+            PoleTriangulation(_vertices, sphere.Center + new float3(0,-kSphereRadius,0),new GPlane(kfloat3.down, sphere.Center - kfloat3.down*kSphereRadius ),ref _triangles);       //Project from south pole
+            for (int i = 0; i < _triangles.Count; i++)       //Exclude abundant triangles
+            {
+                var cur = _triangles[i];
+                for(int j=0;j<_triangles.Count;j++)
+                    if (j != i && cur.MatchVertexCount(_triangles[j]) == 3)
+                    {
+                        _triangles.RemoveAt(i);
+                        break;
+                    }
+            }
+
         }
     }
 

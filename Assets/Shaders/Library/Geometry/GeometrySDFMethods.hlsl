@@ -6,7 +6,7 @@
 
 SDFOutput GBox_SDF(GBox _box,SDFInput _input)
 {
-    float3 q=abs(_input.position-_box.center)-_box.extend;
+    float3 q=abs(_input.position-_box.center)-_box.extent;
     return SDFOutput_Ctor(_input,length(max(q,0.0))+min(max(q),0.0));
 }
 
@@ -22,7 +22,7 @@ SDFOutput GPlane_SDF(GPlane _plane,SDFInput _input)
 
 SDFOutput GFrameBox_SDF(GBoxFrame _frameBox,SDFInput _input)
 {
-    float3 p=abs(_input.position-_frameBox.box.center)-_frameBox.box.extend;
+    float3 p=abs(_input.position-_frameBox.box.center)-_frameBox.box.extent;
     float3 q=abs(p+_frameBox.frameExtend)-_frameBox.frameExtend;
     
     return SDFOutput_Ctor(_input, min(

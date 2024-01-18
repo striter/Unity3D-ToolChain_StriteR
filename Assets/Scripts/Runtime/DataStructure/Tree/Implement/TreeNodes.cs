@@ -40,6 +40,6 @@ namespace Runtime.DataStructure
         public GBox boundary { get; set; }
         public IList<GTriangle> elements { get; set; }
         public GBox CalculateBounds(IEnumerable<GTriangle> _elements) => UBounds.GetBoundingBox(_elements.Select(p => (IEnumerable<float3>)p).Resolve());
-        public bool Contains(GBox _bounds, GTriangle _element) => UGeometry.Intersect(_bounds, _element);
+        public bool Contains(GBox _bounds, GTriangle _element) => GJKAlgorithm.Intersect(_bounds, _element);
     }
 }

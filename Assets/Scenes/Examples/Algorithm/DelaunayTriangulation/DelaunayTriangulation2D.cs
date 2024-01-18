@@ -36,10 +36,13 @@ namespace Examples.Algorithm.DelaunayTriangulation
         [Button]
         void Sequence()
         {
-            ULowDiscrepancySequences.Hammersley2D(m_RandomCount,0f).Select(p => {
+            m_Vertices.Clear();
+            for (uint i = 0; i < m_RandomCount; i++)
+            {
+                var p = ULowDiscrepancySequences.Hammersley2D(i, m_RandomCount)  - .5f;
                 math.sincos(p.x*math.PI*2,out var s,out var c);
-                return new float2(s,c)*p.y*kRandomRadius;
-            }).FillList(m_Vertices);
+                m_Vertices.Add(new float2(s,c)*p.y*kRandomRadius);
+            }
             OnValidate();
         }
         
@@ -53,7 +56,7 @@ namespace Examples.Algorithm.DelaunayTriangulation
         private void OnValidate()
         {
             triangles.Clear();
-            Triangulation.BowyerWatson(m_Vertices,ref triangles);
+            UTriangulation.BowyerWatson(m_Vertices,ref triangles);
         }
 
         private void OnDrawGizmos()

@@ -4,6 +4,7 @@ using Procedural.Tile;
 using Runtime.DataStructure;
 using Unity.Collections;
 using Unity.Mathematics;
+using UnityEngine;
 using static UBitwise;
 using static kmath;
 using static Unity.Mathematics.math;
@@ -13,6 +14,8 @@ public static class ULowDiscrepancySequences
     static float RadicalInverseOptimized(uint _n,uint _dimension) =>_dimension == 0 ? RadicalInverse2(_n) : RadicalInverse(_n, kPrimes128[_dimension]);
     public static float Halton(uint _index, uint _dimension) => RadicalInverseOptimized(_index,_dimension);
     public static float Hammersley(uint _index,uint _dimension,uint _numSamples)=>_dimension==0?(_index/(float)_numSamples):RadicalInverseOptimized(_index,_dimension-1);
+    public static float2 Hammersley2D(uint _index, uint _size)=>new float2(Hammersley(_index,0,_size),Hammersley(_index,1,_size));
+    public static float2 Halton2D(uint _index) => new float2( Halton(_index,0),Halton(_index,kPrimes128[1]));
 
     public static float2[] Grid2D(int _width,int _height)
     {
@@ -40,23 +43,7 @@ public static class ULowDiscrepancySequences
         URandom.LatinHypercube(grid,grid.Length,_width,_random);
         return grid;
     }
-        
-    public static float2[] Halton2D(uint _size,float _offset = -.5f)
-    {
-        float2[] sequence = new float2[_size];
-        for (uint i = 0; i < _size; i++)
-            sequence[i] = new float2( Halton(i,0),Halton(i,kPrimes128[1])) + _offset;
-        return sequence;
-    }
 
-    public static float2[] Hammersley2D(uint _size,float _offset = -.5f)
-    {
-        float2[] sequence = new float2[_size];
-        for (uint i = 0; i < _size; i++)
-            sequence[i] = new float2(Hammersley(i,0,_size),Hammersley(i,1,_size)) + _offset;
-        return sequence;
-    }
-    
     
     struct SobelMatrix
     {
@@ -180,14 +167,30 @@ public static class ULowDiscrepancySequences
         return samplePoints.Values.Select(p=>p/gridSize - .5f).ToArray();
     }
     
-    private static float kGoldenRatio = (1f + sqrt(5f)) / 2f;
+    private static readonly float kGoldenRatio = (1f + sqrt(5f)) / 2f;
     public static float3 FibonacciSphere(int _index,int _count) 
     {
         float j = _index + .5f;
         float phi = acos(1f - 2f * j / _count);
         float theta = kPI2 * j / kGoldenRatio;
+        
         sincos(theta,out var sinT,out var cosT);
         sincos(phi,out var sinP,out var cosP);
         return new float3(cosT  * sinP, sinT * sinP ,cosP);
+    }
+
+    public static float3 HammersleySphere(uint _index, uint _count)
+    {
+        var hammersley2D = Hammersley2D(_index,_count);
+        
+        float phi = 2f * kPI * hammersley2D.x;
+        float cosTheta = 1f - 2f * hammersley2D.y;
+        float sinTheta = sqrt(1f - cosTheta * cosTheta);
+        
+        float x = sinTheta * cos(phi);
+        float y = sinTheta * sin(phi);
+        float z = cosTheta;
+        
+        return new float3(x, y, z);
     }
 }

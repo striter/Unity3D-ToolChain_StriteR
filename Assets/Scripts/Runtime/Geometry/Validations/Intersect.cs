@@ -21,25 +21,25 @@ namespace Runtime.Geometry.Validation
         
         public static bool Intersect(this GLine _line,GTriangle _triangle, out float _distance,bool _rayDirectionCheck = false,bool _triangleDirectionCheck = false) =>Intersect(_line.ToRay(), _triangle, out _distance,_rayDirectionCheck,_triangleDirectionCheck) && _distance >= 0 && _distance <= _line.length;
 
-        public static bool Intersect(GRay _ray, GSphere _sphere)
+        public static bool Intersect(this GRay _ray, GSphere _sphere)
         {
             RayIntersection.SphereCalculate(_ray, _sphere, out var dotOffsetDirection, out var discriminant);
             return discriminant >= 0;
         }
 
-        public static bool Intersect(GRay _ray, GEllipsoid _ellipsoid)
+        public static bool Intersect(this GRay _ray, GEllipsoid _ellipsoid)
         {
             RayIntersection.EllipsoidCalculate(_ellipsoid, _ray, out var a, out var b, out var c, out var discriminant);
             return discriminant >= 0;
         }
 
-        public static bool Intersect(GRay _ray, GBox _box)
+        public static bool Intersect(this GRay _ray, GBox _box)
         {
             RayIntersection.AABBCalculate(_ray, _box, out var tmin, out var tmax);
             return tmin.maxElement() <= tmax.minElement();
         }
 
-        public static bool Intersect(GRay _ray, GPlane _plane, out float3 _hitPoint)
+        public static bool Intersect(this GRay _ray, GPlane _plane, out float3 _hitPoint)
         {
             var distance = Distance(_ray, _plane);
             _hitPoint = _ray.GetPoint(distance);
@@ -65,26 +65,6 @@ namespace Runtime.Geometry.Validation
             return _src.min.x <= _dst.max.x && _src.max.x >= _dst.min.x &&
                    _src.min.y <= _dst.max.y && _src.max.y >= _dst.min.y &&
                    _src.min.z <= _dst.max.z && _src.max.z >= _dst.min.z;
-        }
-        public static bool Intersect(GBox _box, GTriangle _triangle)
-        {
-            foreach (var vertex in _triangle)
-            {
-                if (_box.Contains(vertex))
-                    return true;
-            }
-
-            // Check for edge-face intersections
-            foreach (var edge in _triangle.GetEdges())
-            {
-                foreach (var face in _box.GetFaces())
-                {
-                    if (edge.Intersect(face, out var distance))
-                        return true;
-                }
-            }
-
-            return false;
         }
 
         public static bool Intersect(this GLine _line,GQuad _quad,out float _distance,bool _directed = false)

@@ -1,10 +1,19 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
 namespace Runtime.Geometry
 {
     using static UGizmos;
+
+    [Flags]
+    public enum EDrawMeshFlag
+    {
+        Vertices,
+        Triangles,
+        // Edges,
+    }
     public static class Gizmos_Geometry
     {
         public static void DrawGizmos(this GBox _box)
@@ -94,6 +103,29 @@ namespace Runtime.Geometry
         
         public static void DrawGizmos(this GPlane _plane)=>_plane.DrawGizmos(5f);
 
+        public static void DrawGizmos(this GMesh _mesh,EDrawMeshFlag _flag)
+        {
+            if(_flag.IsFlagEnable(EDrawMeshFlag.Vertices))
+            {
+                foreach (var vertex in _mesh.vertices)
+                    Gizmos.DrawWireSphere(vertex,.01f);
+            }
+            
+            if (_flag.IsFlagEnable(EDrawMeshFlag.Triangles))
+            {
+                for (int i = 0; i < _mesh.triangles.Length; i += 3)
+                    DrawGizmos(new GTriangle(_mesh.vertices[_mesh.triangles[i]],_mesh.vertices[_mesh.triangles[i + 1]],_mesh.vertices[_mesh.triangles[i + 2]]));
+            }
+        }
+
+        public static void DrawGizmos(this GMesh _mesh) => _mesh.DrawGizmos(EDrawMeshFlag.Triangles);
+
+        public static void DrawGizmos(this GPointSets _points)
+        {
+            foreach (var vertex in _points.vertices)
+                Gizmos.DrawSphere(vertex,.01f);
+            // DrawLinesConcat(_points.vertices);
+        }
         
         public static void DrawGizmos(this G2Box _cube) => Gizmos.DrawWireCube(_cube.center.to3xz(),_cube.size.to3xz());
 
@@ -117,6 +149,7 @@ namespace Runtime.Geometry
             Gizmos.DrawLine((_plane.position + direction * _radius).to3xz(),( _plane.position - direction*_radius).to3xz() );
             DrawArrow(_plane.position.to3xz(),_plane.normal.to3xz(),1f,.1f);
         }
+
         
     }
 }

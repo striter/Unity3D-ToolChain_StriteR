@@ -11,6 +11,7 @@ namespace Runtime.Geometry
     {
         public float3[] positions;
         [NonSerialized] public float3 center;
+        public GPolygon(IEnumerable<float3> _positions):this(_positions.ToArray()){}
         public GPolygon(params float3[] _positions)
         {
             positions = _positions;

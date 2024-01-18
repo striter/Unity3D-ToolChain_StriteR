@@ -97,9 +97,9 @@ namespace Examples.Algorithm.DataStructures
             m_KDTree3.Construct(m_RandomPoints3,m_NodeCapacity,m_Iteration);
             m_KDTree3.DrawGizmos();
             
-            Gizmos.matrix = Matrix4x4.Translate(Vector3.back * 100f + Vector3.right*50f);
-            // m_QuadTree_triangle3.Construct(m_RandomTriangles3,m_NodeCapacity,m_Iteration);
-            // m_QuadTree_triangle3.DrawGizmos();
+            Gizmos.matrix = Matrix4x4.Translate(Vector3.back * 100f);
+            m_QuadTree_triangle3.Construct(m_RandomTriangles3,m_NodeCapacity,m_Iteration);
+            m_QuadTree_triangle3.DrawGizmos();
         }
     }
 

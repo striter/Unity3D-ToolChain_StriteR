@@ -13,6 +13,7 @@ namespace Runtime.Geometry
     [Serializable]
     public partial struct GSphere : IShape3D , IBoundingBox3D
     {
+        public static readonly GSphere kDefault = kOne;
         public static readonly GSphere kOne = new GSphere(float3.zero, .5f);
         public static readonly GSphere kZero = new GSphere(0,0);
         public float3 Center => center;

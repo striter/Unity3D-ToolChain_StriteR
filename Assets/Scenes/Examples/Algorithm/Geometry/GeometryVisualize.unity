@@ -1417,7 +1417,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1778609382}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -20.51, y: 0, z: -30.41}
+  m_LocalPosition: {x: -27.97, y: 0, z: -29.71}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1438,8 +1438,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   box:
     center:
-      x: -1.68
-      y: -0.56
+      x: -1.38
+      y: 1.72
     extent:
       x: 0.5
       y: 0.5
@@ -1453,7 +1453,7 @@ MonoBehaviour:
       y: -0.42
     - x: 0.72
       y: 0
-    - x: 0.71
+    - x: 0.69
       y: 0.76
   sphere:
     center:
@@ -1476,24 +1476,44 @@ MonoBehaviour:
     y: -0.037101712
   sumCircle:
     center:
-      x: 1.88
-      y: -0.86
-    radius: 1.06
+      x: -1.15
+      y: 0.59
+    radius: 0.46
   sumPolygon:
     positions:
     - x: 0
-      y: 1
-    - x: 1
+      y: 0.79
+    - x: 0.99
       y: 0
     - x: 0
-      y: -1
+      y: -0.67
     - x: -1
-      y: -3.47
-    - x: -2.34
+      y: -0.49
+    - x: -1.22
       y: 0
   sumPolygonOffset:
     x: 0
     y: 0
+  triangle3d:
+    triangle:
+      v0:
+        x: -0.04
+        y: 0.25
+        z: -0.3
+      v1:
+        x: -0.11
+        y: 0
+        z: -0.5
+      v2:
+        x: 0.53
+        y: 0
+        z: -0.4
+  sphere3D:
+    center:
+      x: -0.44
+      y: 0.25
+      z: -0.76
+    radius: 0.5
 --- !u!1 &1789373933
 GameObject:
   m_ObjectHideFlags: 0

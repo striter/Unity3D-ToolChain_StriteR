@@ -940,8 +940,6 @@ public static class UCollection
         return tuple.value / Mathf.Max(tuple.count,1);
     }    
     
-    
-    
     public static (float2 value,int count) Sum(this IEnumerable<float2> _collection) 
     {
         var sum = float2.zero;
