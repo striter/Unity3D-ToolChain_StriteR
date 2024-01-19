@@ -64,8 +64,8 @@ namespace Examples.Rendering.Voxelizer
                 for (var j = 0; j < resolution; j++)
                 {
                     kIntersectDistances.Clear();
-                    var ray = new GRay(m_Box.GetPoint(new float3(step * (i + .5f), step * (j + .5f), 0) - .5f),
-                        kfloat3.forward);
+                    var ray = new GRay(m_Box.GetPoint(new float3(0, step * (j + .5f),step * (i + .5f)) - .5f),
+                        kfloat3.right);
                     foreach (var node in m_Voxelizer.Collect(p => ray.Intersect(p.boundary)))
                     {
                         foreach (var triangle in node.elements)
