@@ -29,18 +29,18 @@ namespace Runtime.Geometry.Curves
         public static void DrawGizmos(this ICurveDimensions<float3> _curve,int _amount = 64)
         {
             var outputs = _curve.Output(_amount);
-            UnityEngine.Gizmos.color = Color.white;
+            Gizmos.color = Color.white;
             UGizmos.DrawLines(outputs, p => p);
         }
 
         public static void DrawGizmos_Tangents(this ICurveTangents<float3> _curve,int _amount = 64,float _sphereSize = 0.1f)
         {
-            UnityEngine.Gizmos.color = KColor.kDarkOrange.SetA(.1f);
+            Gizmos.color = KColor.kDarkOrange.SetA(.1f);
             for (int i = 0; i < _amount + 1; i++)
             {
                 var value = i / (float) _amount;
                 var point = _curve.Evaluate(value);
-                UnityEngine.Gizmos.DrawLine(point,point + _curve.Evaluate(value)*.1f);
+                Gizmos.DrawLine(point,point + _curve.Evaluate(value)*.1f);
             }
         }
     }

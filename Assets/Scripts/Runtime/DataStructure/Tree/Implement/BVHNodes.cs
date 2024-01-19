@@ -32,6 +32,6 @@ namespace Runtime.DataStructure
         }
         
         public G2Box CalculateBounds(IEnumerable<G2Triangle> _elements) => UBounds.GetBoundingBox(_elements.Select(p => (IEnumerable<float2>)p).Resolve());
-        public bool Contains(G2Box _bounds, G2Triangle _element) => _bounds.Intersect(_element);
+        public bool Contains(G2Box _bounds, G2Triangle _element) => GJK.Intersect(_bounds,_element);
     }
 }

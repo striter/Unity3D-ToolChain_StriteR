@@ -30,7 +30,7 @@ namespace Runtime.Geometry
     }
     
     [Serializable]
-    public partial struct G2Box : ISerializationCallbackReceiver,IShape2D
+    public partial struct G2Box : ISerializationCallbackReceiver,IShape2D,IConvex2D
     {
         public void OnBeforeSerialize(){  }
         public void OnAfterDeserialize()=>Ctor();
@@ -53,15 +53,13 @@ namespace Runtime.Geometry
         public float2 GetPoint(float2 _uv) => min + _uv * size;
         public static readonly G2Box kDefault = new G2Box(0f,.5f);
 
-        public float2 GetSupportPoint(float2 _direction) => GetPoints().MaxElement(_p => math.dot(_direction, _p));
-        
+        public float2 GetSupportPoint(float2 _direction) => this.MaxElement(_p => math.dot(_direction, _p));
         public float2 Center => center;
-        public static G2Box operator /(G2Box _bounds,float2 _div) => new G2Box(_bounds.center/_div,_bounds.extent/_div);
-        public static G2Box operator -(G2Box _bounds,float2 _minus) => new G2Box(_bounds.center - _minus,_bounds.extent);
 
         public GBox To3XZ() => new GBox(center.to3xz(),extent.to3xz());
         public GBox To3XY() => new GBox(center.to3xy(),extent.to3xy());
-        public IEnumerable<float2> GetPoints()
+
+        public IEnumerator<float2> GetEnumerator()
         {
             yield return GetPoint(new float2(0, 0));
             yield return GetPoint(new float2(1, 0));
@@ -69,7 +67,24 @@ namespace Runtime.Geometry
             yield return GetPoint(new float2(0, 1));
         }
 
+        public IEnumerable<G2Line> GetEdges()
+        {
+            yield return new G2Line(GetPoint(new float2(0, 0)), GetPoint(new float2(1, 0)));
+            yield return new G2Line(GetPoint(new float2(1, 0)), GetPoint(new float2(1, 1)));
+            yield return new G2Line(GetPoint(new float2(1, 1)), GetPoint(new float2(0, 1)));
+            yield return new G2Line(GetPoint(new float2(0, 1)), GetPoint(new float2(0, 0)));
+        }
+
+        public static G2Box operator +(G2Box _src, float2 _dst) => new G2Box(_src.center+_dst,_src.extent);
+        public static G2Box operator -(G2Box _src, float2 _dst) => new G2Box(_src.center-_dst,_src.extent);
+        public static G2Box operator /(G2Box _bounds,float2 _div) => new G2Box(_bounds.center/_div,_bounds.extent/_div);
+        public static G2Box operator *(G2Box _bounds,float2 _div) => new G2Box(_bounds.center*_div,_bounds.extent*_div);
+        
         public override string ToString() => $"G2Box {center} {extent}";
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 
     

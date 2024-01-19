@@ -24,20 +24,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\Assets\_Res\Data\Setting\ClientSetting\Ride\ride.txt">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Assets\_Res\Data\Setting\CommonSetting\Avatar\avatar.txt">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\Library\PackageCache\com.unity.timeline@1.7.4\Editor\StyleSheets\res\Timeline_DarkSkin.txt">
           <value>
             <Attribute>

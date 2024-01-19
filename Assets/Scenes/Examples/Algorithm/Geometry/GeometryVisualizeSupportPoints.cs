@@ -37,27 +37,31 @@ namespace Examples.Algorithm.Geometry
             }
 
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.back*3f);
-            var finalPolygon = sumPolygon + sumPolygonOffset;
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(Vector3.zero, .1f);
-            Gizmos.color = GJKAlgorithm.Intersect(sumCircle, finalPolygon) ? Color.green : Color.white;
-            sumCircle.DrawGizmos();
+            var finalCircle = sumCircle + kfloat2.right * math.sin(UTime.time);
+            var finalPolygon = sumPolygon + sumPolygonOffset;
+            Gizmos.color = GJK.Intersect( finalPolygon,finalCircle) ? Color.green : Color.white;
+            finalCircle.DrawGizmos();
             finalPolygon.DrawGizmos();
 
             Gizmos.color = KColor.kChocolate;
-            GJKAlgorithm._2D.Sum(sumCircle,finalPolygon).DrawGizmos();
+            GJK._2D.Sum(finalPolygon,finalCircle).DrawGizmos();
             Gizmos.color = KColor.kHotPink;
-            GJKAlgorithm._2D.Difference(sumCircle,finalPolygon).DrawGizmos();
+            GJK._2D.Difference(finalPolygon,finalCircle).DrawGizmos();
 
 
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.back * 6f);
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(Vector3.zero, .05f);
-            Gizmos.color = GJKAlgorithm.Intersect(triangle3d, sphere3D) ? Color.green : Color.white;
-            triangle3d.DrawGizmos();
-            sphere3D.DrawGizmos();
+            var finalSphere3D = sphere3D + kfloat3.right * math.sin(UTime.time);
+            var finalTriangle = Matrix4x4.Rotate(quaternion.Euler(kfloat3.right * math.sin(UTime.time)  * kmath.kPI2)) * triangle3d;
+            
+            Gizmos.color = GJK.Intersect(finalTriangle, finalSphere3D) ? Color.green : Color.white;
+            finalTriangle.DrawGizmos();
+            finalSphere3D.DrawGizmos();
             Gizmos.color = KColor.kHotPink;
-            GJKAlgorithm._3D.Difference(triangle3d,sphere3D,256).DrawGizmos();
+            GJK._3D.Difference(finalTriangle,finalSphere3D,256).DrawGizmos();
         }
     }
 }

@@ -21,6 +21,8 @@ namespace Runtime.Geometry
         
         
         public static GSphere operator +(GSphere _src, float3 _dst) => new GSphere(_src.center+_dst,_src.radius);
+        public static GSphere operator -(GSphere _src, float3 _dst) => new GSphere(_src.center - _dst, _src.radius);
+        
         public static implicit operator float4(GSphere _src) => new float4(_src.center,_src.radius);
         public bool Contains(float3 _p, float _bias = float.Epsilon) =>math.lengthsq(_p - center) < radius * radius + _bias;
         public bool Contains(GSphere _sphere) =>math.lengthsq(_sphere.center - center) < radius * radius + _sphere.radius;

@@ -21,7 +21,7 @@ namespace Runtime.Geometry
     }
     
     [Serializable]
-    public partial struct GQuad : IQuad<float3>,IEnumerable<float3>,IIterate<float3>,IShape3D 
+    public partial struct GQuad : IQuad<float3>,IIterate<float3>,IShape3D  , IConvex3D
     {
         public GQuad(float3 _vb, float3 _vl, float3 _vf, float3 _vr):this(new Quad<float3>(_vb,_vl,_vf,_vr)){}
         public GQuad((float3 _vb, float3 _vl, float3 _vf, float3 _vr) _tuple) : this(_tuple._vb, _tuple._vl, _tuple._vf, _tuple._vr) { }
@@ -49,6 +49,7 @@ namespace Runtime.Geometry
             yield return quad.R;
         }
 
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
@@ -65,6 +66,16 @@ namespace Runtime.Geometry
             yield return new GTriangle(B, L, F);
             yield return new GTriangle(B, F, R);
         }
+
+        public IEnumerable<GLine> GetEdges()
+        {
+            yield return new GLine(quad.B, quad.L);
+            yield return new GLine(quad.L, quad.F);
+            yield return new GLine(quad.F, quad.R);
+            yield return new GLine(quad.R, quad.B);
+        }
+
+        public IEnumerable<float3> GetAxes() => GetTriangles().Select(p => p.normal);
 
         public IEnumerable<float3> GetNormals()
         {

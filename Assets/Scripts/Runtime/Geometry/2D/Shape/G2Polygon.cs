@@ -8,7 +8,7 @@ using Unity.Mathematics;
 namespace Runtime.Geometry
 {
     [Serializable]
-    public struct G2Polygon : IShape2D , IEnumerable<float2>
+    public struct G2Polygon : IShape2D, IConvex2D
     {
         public float2[] positions;
         [NonSerialized] public float2 center;
@@ -35,6 +35,12 @@ namespace Runtime.Geometry
         {
             foreach (var point in positions)
                 yield return point;
+        }
+
+        public IEnumerable<G2Line> GetEdges()
+        {
+            for (int i = 0; i < positions.Length-1; i++)
+                yield return new G2Line(positions[i], positions[i + 1]);
         }
         IEnumerator IEnumerable.GetEnumerator()=> GetEnumerator();
     }

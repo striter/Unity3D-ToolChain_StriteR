@@ -23,6 +23,13 @@ namespace Runtime.Geometry
 
         public static readonly GPolygon kZero = new GPolygon();
         public static readonly GPolygon kDefault = new GPolygon(kfloat3.forward,kfloat3.right,kfloat3.back,kfloat3.left);
+        public IEnumerator<float3> GetEnumerator() => positions.Cast<float3>().GetEnumerator();
+
+        public IEnumerable<GLine> GetEdges()
+        {
+            for (int i = 0; i < positions.Length - 1; i++)
+                yield return new GLine(positions[i], positions[i + 1]);
+        }
     }
 
 }

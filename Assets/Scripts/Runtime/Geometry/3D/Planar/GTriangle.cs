@@ -34,7 +34,7 @@ namespace Runtime.Geometry
     }
 
     [Serializable]
-    public partial struct GTriangle :ITriangle<float3>, IIterate<float3>,ISerializationCallbackReceiver, IShape3D , IEnumerable<float3>
+    public partial struct GTriangle :ITriangle<float3>, IIterate<float3>,ISerializationCallbackReceiver, IShape3D, IConvex3D
     {
         public float3 V0 => triangle.v0;
         public float3 V1 => triangle.v1;
@@ -101,7 +101,12 @@ namespace Runtime.Geometry
             yield return new GLine(V1, V2);
             yield return new GLine(V2, V0);
         }
-        
+
+        public IEnumerable<float3> GetAxes()
+        {
+            yield return normal;
+        }
+
         public IEnumerator<float3> GetEnumerator()
         {
             yield return V0;

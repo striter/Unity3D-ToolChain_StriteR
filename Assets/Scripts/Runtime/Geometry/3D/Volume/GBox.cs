@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Procedural;
@@ -32,7 +33,7 @@ namespace Runtime.Geometry
     }
 
     [Serializable]
-    public partial struct GBox : ISerializationCallbackReceiver,IShape3D
+    public partial struct GBox : ISerializationCallbackReceiver,IShape3D , IConvex3D
     {
         public void OnBeforeSerialize(){  }
         public void OnAfterDeserialize()=>Ctor();
@@ -73,18 +74,6 @@ namespace Runtime.Geometry
             }
         }
 
-        public IEnumerable<float3> GetPositions()
-        {
-            yield return GetPoint(new float3(-.5f,-.5f,-.5f));
-            yield return GetPoint(new float3(-.5f,.5f,-.5f));
-            yield return GetPoint(new float3(-.5f,-.5f,.5f));
-            yield return GetPoint(new float3(-.5f,.5f,.5f));
-            yield return GetPoint(new float3(.5f,-.5f,-.5f));
-            yield return GetPoint(new float3(.5f,.5f,-.5f));
-            yield return GetPoint(new float3(.5f,-.5f,.5f));
-            yield return GetPoint(new float3(.5f,.5f,.5f));
-        }
-
         public IEnumerable<GLine> GetEdges()
         {
             var topForwardRight = GetPoint( new float3(.5f, .5f, .5f));
@@ -109,28 +98,39 @@ namespace Runtime.Geometry
             yield return new GLine(topBackLeft,  bottomBackLeft);
         }
 
-        public IEnumerable<GQuad> GetFaces()
+        public IEnumerable<float3> GetAxes()
         {
-            var topForwardRight = GetPoint( new float3(.5f, .5f, .5f));
-            var topForwardLeft  =  GetPoint(new float3(-.5f, .5f, .5f));
-            var topBackRight =  GetPoint(new float3(.5f, .5f, -.5f));
-            var topBackLeft =  GetPoint(new float3(-.5f, .5f, -.5f));
-            var bottomForwardRight =  GetPoint(new float3(.5f, -.5f, .5f));
-            var bottomForwardLeft =  GetPoint(new float3(-.5f, -.5f, .5f));
-            var bottomBackRight = GetPoint( new float3(.5f, -.5f, -.5f));
-            var bottomBackLeft =  GetPoint(new float3(-.5f, -.5f, -.5f));
-            yield return new GQuad(topForwardRight,  topForwardLeft,  bottomForwardLeft,  bottomForwardRight);
-            yield return new GQuad(topForwardLeft,  topBackLeft,  bottomBackLeft,  bottomForwardLeft);
-            yield return new GQuad(topBackLeft,  topBackRight,  bottomBackRight,  bottomBackLeft);
-            yield return new GQuad(topBackRight,  topForwardRight,  bottomForwardRight,  bottomBackRight);
-            yield return new GQuad(topForwardRight,  bottomForwardRight,  bottomForwardLeft,  topForwardLeft);
-            yield return new GQuad(topForwardLeft,  bottomForwardLeft,  bottomBackLeft,  topBackLeft);
+            yield return kfloat3.right;
+            yield return kfloat3.up;
+            yield return kfloat3.forward;
+            yield return kfloat3.left;
+            yield return kfloat3.down;
+            yield return kfloat3.down;
         }
+
         
         public static GBox operator +(GBox _src, float3 _dst) => new GBox(_src.center+_dst,_src.extent);
+        public static GBox operator -(GBox _src, float3 _dst) => new GBox(_src.center-_dst,_src.extent);
+        
         public static implicit operator Bounds(GBox _box)=> new Bounds(_box.center, _box.size);
         public static implicit operator GBox(Bounds _bounds) => new GBox(_bounds.center,_bounds.extents);
         
         public static readonly GBox kDefault = new GBox(0f,.5f);
+        public IEnumerator<float3> GetEnumerator()
+        {
+            yield return GetPoint(new float3(-.5f,-.5f,-.5f));
+            yield return GetPoint(new float3(-.5f,.5f,-.5f));
+            yield return GetPoint(new float3(-.5f,-.5f,.5f));
+            yield return GetPoint(new float3(-.5f,.5f,.5f));
+            yield return GetPoint(new float3(.5f,-.5f,-.5f));
+            yield return GetPoint(new float3(.5f,.5f,-.5f));
+            yield return GetPoint(new float3(.5f,-.5f,.5f));
+            yield return GetPoint(new float3(.5f,.5f,.5f));
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 }

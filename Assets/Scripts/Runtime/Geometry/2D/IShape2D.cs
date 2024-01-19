@@ -8,5 +8,10 @@ namespace Runtime.Geometry
     {
         float2 GetSupportPoint(float2 _direction);
     }
+
+    public interface IConvex2D : IShape2D, IEnumerable<float2>
+    {
+        public IEnumerable<G2Line> GetEdges();
+    }
     
 }

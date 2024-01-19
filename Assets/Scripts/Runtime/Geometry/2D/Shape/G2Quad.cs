@@ -26,13 +26,21 @@ namespace Runtime.Geometry
     }
 
     [Serializable]
-    public partial struct G2Quad : IQuad<float2>, IEnumerable<float2>, IIterate<float2>, IShape2D, ISerializationCallbackReceiver
+    public partial struct G2Quad : IQuad<float2>, IIterate<float2>, IShape2D, ISerializationCallbackReceiver,IConvex2D
     {
         public static implicit operator G2Quad(Quad<float2> _src) => new G2Quad(_src);
         
         public int Length => 4;
         
         public IEnumerator<float2> GetEnumerator() => quad.GetEnumerator();
+        public IEnumerable<G2Line> GetEdges()
+        {
+            yield return new G2Line(quad.B, quad.L);
+            yield return new G2Line(quad.L, quad.F);
+            yield return new G2Line(quad.F, quad.R);
+            yield return new G2Line(quad.R, quad.B);
+        }
+
         IEnumerator IEnumerable.GetEnumerator()=>GetEnumerator();
 
         public float2 this[int _index] => quad[_index];

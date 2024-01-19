@@ -35,13 +35,20 @@ namespace Runtime.Geometry
         public static readonly G2Triangle kDefault = new G2Triangle(new float2(0,1),new float2(-.5f,-1),new float2(.5f,-1));
     }
     [Serializable]
-    public partial struct G2Triangle :  ITriangle<float2>, IEnumerable<float2> ,ISerializationCallbackReceiver, IShape2D
+    public partial struct G2Triangle :  ITriangle<float2> ,ISerializationCallbackReceiver, IShape2D,IConvex2D
     {
         public float2 V0 => triangle.v0;
         public float2 V1 => triangle.v1;
         public float2 V2 => triangle.v2;
         public float2 this[int _index] => triangle[_index];
         public IEnumerator<float2> GetEnumerator() => triangle.GetEnumerator();
+        public IEnumerable<G2Line> GetEdges()
+        {
+            yield return new G2Line(V0, V1);
+            yield return new G2Line(V1, V2);
+            yield return new G2Line(V2, V0);
+        }
+
         IEnumerator IEnumerable.GetEnumerator()=> GetEnumerator();
         public float2 GetSupportPoint(float2 _direction) => this.MaxElement(_p => math.dot(_p, _direction));
         public float2 Center => (V0 + V1 + V2) / 3f;

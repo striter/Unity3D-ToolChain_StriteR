@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Unity.Mathematics;
-using UnityEngine;
 
 namespace Runtime.Geometry.Validation
 {
-    public static class GJKAlgorithm
+    public static class GJK
     {
         public static bool Intersect(this IShape2D _shape2D, IShape2D _target)=> _2D.Intersect(_shape2D, _target);
         public static bool Intersect(this IShape3D _shape3D, IShape3D _target)=> _3D.Intersect(_shape3D, _target);
@@ -107,8 +105,6 @@ namespace Runtime.Geometry.Validation
                 return new G2Polygon(kSimplex);
             }
         }
-        
-        
         public static class _3D
         {
             //2D
@@ -175,7 +171,6 @@ namespace Runtime.Geometry.Validation
                         return true;
                 }
             }
-            
             
             public static GPointSets Difference(IShape3D _a, IShape3D _b, int _sampleCount = 64)
             {

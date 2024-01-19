@@ -31,7 +31,7 @@ namespace Runtime.DataStructure
         public G2Box boundary { get; set; }
         public IList<G2Triangle> elements { get; set; }
         public G2Box CalculateBounds(IEnumerable<G2Triangle> _elements)=> UBounds.GetBoundingBox(_elements.Select(p => (IEnumerable<float2>)p).Resolve());
-        public bool Contains(G2Box _bounds, G2Triangle _element) => _bounds.Intersect(_element);
+        public bool Contains(G2Box _bounds, G2Triangle _element) => GJK.Intersect(_bounds,_element);
     }
 
     public struct TreeNode_triangle3 : ITreeNode<GBox, GTriangle>
@@ -40,6 +40,6 @@ namespace Runtime.DataStructure
         public GBox boundary { get; set; }
         public IList<GTriangle> elements { get; set; }
         public GBox CalculateBounds(IEnumerable<GTriangle> _elements) => UBounds.GetBoundingBox(_elements.Select(p => (IEnumerable<float3>)p).Resolve());
-        public bool Contains(GBox _bounds, GTriangle _element) => GJKAlgorithm.Intersect(_bounds, _element);
+        public bool Contains(GBox _bounds, GTriangle _element) => GJK.Intersect(_bounds, _element);
     }
 }
