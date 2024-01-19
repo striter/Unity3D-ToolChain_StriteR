@@ -27,7 +27,7 @@ namespace Examples.Algorithm.Geometry
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
-            var shapes = new IShape2D[] { box, sphere, polygon ,triangle};
+            var shapes = new IShape2D[] { box + kfloat2.up * math.sin(UTime.time), sphere+ kfloat2.up * math.sin(UTime.time * 2), polygon ,triangle};
             foreach (var shape in shapes)
             {
                 Gizmos.color = shapes.Exclude(shape).Any(p=> p.Intersect(shape)) ? Color.yellow : Color.white;

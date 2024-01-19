@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Procedural.Tile;
@@ -119,11 +120,11 @@ public static class ULowDiscrepancySequences
         return points;
     }
 
-    public static float2[] PoissonDisk2D(int _width,int _height,int _k = 30,System.Random _seed = null)
+    public static float2[] PoissonDisk2D(int _width,int _height,int _k = 30,System.Random _seed = null,Func<float2,float> _getRadiusNoramlized = null)
     {
         float2 gridSize = new float2(_width, _height);
         var r = 1;
-        var rSQR = r * r;
+        
         var k = _k;
 
         var checkList = new List<float2>();
@@ -144,14 +145,15 @@ public static class ULowDiscrepancySequences
             {
                 var angle = URandom.Random01(_seed)* PI * 2;
                 var direction = new float2(cos(angle), sin(angle));
-                var distance = URandom.Random01(_seed) * (2 * r - r) + r;
+                var radius = _getRadiusNoramlized !=null ? _getRadiusNoramlized(activePoint/gridSize) : r;
+                var distance = URandom.Random01(_seed) * (2 * radius - radius) + radius;
                 var newPoint = activePoint + direction * distance;
 
                 if (newPoint.x < 0 || newPoint.x >= gridSize.x || newPoint.y < 0 || newPoint.y >= gridSize.y)
                     continue;
 
                 var gridPosition = (int2)floor(newPoint);
-                if (samplePoints.GetValues(UTile.GetAxisRange(gridPosition,2).Select(p=>new int2(p.x,p.y))).All(p=>(newPoint - p).sqrmagnitude() > rSQR))
+                if (samplePoints.GetValues(UTile.GetAxisRange(gridPosition,2).Select(p=>new int2(p.x,p.y))).All(p=>(newPoint - p).sqrmagnitude() > radius*radius))
                 {
                     found = true;
                     checkList.Add(newPoint);
