@@ -325,11 +325,7 @@
             #endif
 				FOG_MIX(i,finalCol);
 				finalCol+=surface.emission;
-				// finalCol = indirectSpecular;
 				o.result=half4(finalCol,color.a);
-				
-				// o.result.rgb = indirectSpecular;
-				
 				return o;
 			}
 
