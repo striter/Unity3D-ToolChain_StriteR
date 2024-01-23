@@ -51,14 +51,13 @@ namespace Rendering.Pipeline
 
         public RenderTextureDescriptor GetDescriptor()
         {
-            int resolution = (int)this.resolution;
-            RenderTextureDescriptor descriptor = new RenderTextureDescriptor(resolution, resolution, GraphicsFormat.None, GraphicsFormat.D16_UNorm);
-            descriptor.shadowSamplingMode =
-                RenderingUtils.SupportsRenderTextureFormat(RenderTextureFormat.Shadowmap) &&
-                (SystemInfo.graphicsDeviceType != GraphicsDeviceType.OpenGLES2)
+            var size = (int)resolution;
+            return new RenderTextureDescriptor(size, size, GraphicsFormat.None, GraphicsFormat.D16_UNorm)
+            {
+                shadowSamplingMode = RenderingUtils.SupportsRenderTextureFormat(RenderTextureFormat.Shadowmap) && (SystemInfo.graphicsDeviceType != GraphicsDeviceType.OpenGLES2)
                     ? ShadowSamplingMode.CompareDepths
-                    : ShadowSamplingMode.None;
-            return descriptor;
+                    : ShadowSamplingMode.None
+            };;
         }
 
         public FilterMode GetFilterMode() => pointSampler ? FilterMode.Point : FilterMode.Bilinear;

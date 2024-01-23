@@ -26,7 +26,7 @@
         Tags{"Queue"="Transparent" }
         Pass
         {
-            Blend Off
+            Blend SrcAlpha OneMinusSrcAlpha
             ZWrite On
             Cull Back
             HLSLPROGRAM
@@ -81,8 +81,7 @@
                 viewDirWS.xz/=viewDirWS.y;
                 viewDirWS*=_DepthScale;
                 float depth= ParallaxMappingPOM(TEXTURE2D_ARGS(_DepthTex,sampler_DepthTex),_DepthOffset,i.uv,viewDirWS.xz,_ParallaxCount);
-                float3 color=lerp(_BeginColor.rgb,_EndColor.rgb,depth);
-                return float4(color,1);
+                return lerp(_BeginColor,_EndColor,depth);
             }
             ENDHLSL
         }

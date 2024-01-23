@@ -16,7 +16,6 @@ struct BRDFSurface
     half roughnessT;
     half roughnessB;
 
-    half3 position;
     half3 normal;
     half3 tangent;
     half3 biTangent;

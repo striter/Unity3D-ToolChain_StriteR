@@ -39,6 +39,7 @@ Shader "Game/Lit/Transparecy/Glass"
 		ZWrite [_ZWrite]
 		ZTest [_ZTest]
     	
+		Tags {"Queue" =  "Transparent"}
         Pass
         {
             HLSLPROGRAM

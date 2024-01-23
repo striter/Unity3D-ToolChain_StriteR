@@ -1,0 +1,168 @@
+fileFormatVersion: 2
+guid: 51c4094b71e538140a7f0e2bd55cebc7
+ModelImporter:
+  serializedVersion: 22200
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Bath.001
+    second: {fileID: 2100000, guid: 921f654c03a1d444d812065c69032559, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Bathtube.001
+    second: {fileID: 2100000, guid: 1f11cee158d7e71449a3f55c3ee93d87, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Candle.001
+    second: {fileID: 2100000, guid: 732dcd078f6954e4b86c1a33fa4358c0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cups.001
+    second: {fileID: 2100000, guid: 2975fa46b5bad7a48884ae1ea0f818d6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Door and windows
+    second: {fileID: 2100000, guid: a7663890eb7b3164ab0ac6df0a119286, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Fabric.001
+    second: {fileID: 2100000, guid: 086b7d59d642bad47af7d8f26a63277f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Floor.001
+    second: {fileID: 2100000, guid: e6264e9447b9daf45a641d4188a9c5a8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Frames.001
+    second: {fileID: 2100000, guid: a93416c8c80754d46b5e05a170621c39, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Glass.001
+    second: {fileID: 2100000, guid: 282c9d8d4b5591c41acbdd5c85fc0c2e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Selling_Bump.001
+    second: {fileID: 2100000, guid: 40064276102619849ae07a3ade3d9af0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Wall_Trim.001
+    second: {fileID: 2100000, guid: 6f6b47486cc11074eba4c26335c64624, type: 2}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties:
+    - '#BAKERY{"meshName":["Bath.001","Candle.001","Candle.002","Candle.003","Candle.004","Candle.005","Cap_Can_1.001","Cup_Can_2.001","Cup_Ceramic_1.001","Cup_Ceramic_2.001","Cup_Ceramic_3.001","Cup_Ceramic_4.001","Cup_Ceramic_5.001","Cup_glass_1.001","Cup_glass_2.001","Cup_sanitazer.001","Curtain_flat.001","Curtain_flat.002","Door.001","Door_Hinges.001","Fabric_
+      Towel_Bath.001","Fabric_Carpet Small.001","Fabric_Carpet.001","Fabric_Sponge.001","Fabric_Towel_folded.001","Fabric_Towel_folded2.001","Floor
+      tile.001","Hook.001","Hook.002","Hook.003","Hook.004","Hook.005","Hook.006","Hook.007","HookTowel.001","Mirror.001","Pic
+      1.001","Pic 2.001","Selling_holder_Big.001","Selling_holder_Big.002","Selling_holder_Small.001","Selling_holder_Small.002","Selling_top.001","Sink.001","Sink.002","Wall_Clear_long.001","Wall_Clear_long.002","Wall_Clear_Short.001","Wall_Clear_Short.002","Wall_Clear_Short.003","Wall_Clear_Short.004","Wall_Corner.001","Wall_Corner.002","Wall_Corner.004","Wall_corner_shelf.001","Wall_Dam1_long.001","Wall_Doorway_Door.001","Wall_Doorway_Door.002","Wall_Window.001","Wall_Window.002","Wall_Window.003"],"padding":[11,97,97,97,97,97,94,101,116,94,107,76,114,101,96,256,16,12,13,176,31,35,15,127,41,44,4,256,256,256,256,256,256,256,37,16,74,42,21,21,14,20,4,11,12,6,6,8,8,8,8,6,6,6,6,5,9,9,7,7,7],"unwrapper":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}'
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 0
+    importBlendShapes: 0
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

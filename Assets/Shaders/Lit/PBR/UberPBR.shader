@@ -320,13 +320,14 @@
 					finalCol+=BRDFLighting(surface, additionalLight);
 				    #if _SSS
 						finalCol += SSSLighting(thickness,sssInfluence,sssIntensity,additionalLight,surface.normal,surface.viewDir)*surface.diffuse;
-					#endif
+			    	#endif
 			    }
             #endif
 				FOG_MIX(i,finalCol);
 				finalCol+=surface.emission;
+				// finalCol = indirectSpecular;
 				o.result=half4(finalCol,color.a);
-
+				
 				// o.result.rgb = indirectSpecular;
 				
 				return o;
