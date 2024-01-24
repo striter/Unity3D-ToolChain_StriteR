@@ -84,7 +84,8 @@ namespace Rendering.PostProcess
         [RangeVector(0, 1)] public Vector2 m_Vector;
         [MFoldout(nameof(m_BlurType), EBlurType.LightStreak)]
         [Range(.9f, .95f)] public float m_Attenuation;
-        public bool Validate() => m_BlurType != EBlurType.None;
+        public bool Validate() => m_BlurType != EBlurType.None && m_DownSample > 0;
+        
         public static readonly DBlurs kDefault = new DBlurs()
         {
             m_BlurSize = 1.3f,

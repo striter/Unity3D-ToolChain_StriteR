@@ -72,25 +72,14 @@ namespace UnityEditor.Extensions
         }
 
         public static IEnumerable<MethodInfo> AllMethods(this SerializedProperty _property)=>_property.serializedObject.targetObject.GetType().GetMethods(BindingFlags.Instance |  BindingFlags.Public | BindingFlags.NonPublic);
-        public static IEnumerable<(FieldInfo, object)> AllRelativeFields(this SerializedProperty _property,BindingFlags _flags = BindingFlags.Instance |  BindingFlags.Public | BindingFlags.NonPublic)
-        {
-            foreach (var fieldInfos in _property.FieldsSearch(_flags))
-            {
-                foreach (var subfield in fieldInfos.Item1.GetFields(_flags))
-                    yield return (subfield, subfield.GetValue(fieldInfos.Item2));
-            }
-        }
-        
-        public static IEnumerable<(Type,object)> FieldsSearch(this SerializedProperty _property,BindingFlags _flags = BindingFlags.Instance |  BindingFlags.Public | BindingFlags.NonPublic)
+
+        public static IEnumerable<(FieldInfo,object)> AllRelativeFields(this SerializedProperty _property,BindingFlags _flags = BindingFlags.Instance |  BindingFlags.Public | BindingFlags.NonPublic)
         {
             string[] paths = _property.propertyPath.Split('.');
             object targetObject = _property.serializedObject.targetObject;
             Type targetType = targetObject.GetType();
-            for(int i=0;i< paths.Length; i++)
+            for(int i=0;i< paths.Length - 1; i++)       //Iterate till it reaches the root
             {
-                yield return (targetType, targetObject);
-                if (i==paths.Length-1)
-                    break;
                 var pathName = paths[i];
                 if (targetType.IsArray || targetType.IsGenericType)
                 {
@@ -107,6 +96,24 @@ namespace UnityEditor.Extensions
                     targetType = targetField.FieldType;
                     targetObject = targetField.GetValue(targetObject);
                 }
+            }
+            
+
+            foreach (var subfield in targetType.GetFields(_flags))
+            {
+                paths[^1] = subfield.Name;
+                var propertyPath =  string.Join(".", paths, 0, paths.Length);
+                if (propertyPath == _property.propertyPath)
+                    continue;
+                
+                var property = _property.serializedObject.FindProperty(propertyPath);
+                if(property==null)
+                    continue;
+                
+                if(property.propertyType == SerializedPropertyType.ObjectReference)
+                    yield return (subfield, property.objectReferenceValue == null ? null : property.objectReferenceValue);
+                
+                yield return (subfield, subfield.GetValue(targetObject));
             }
         }
         public static bool EditorApplicationPlayingCheck()

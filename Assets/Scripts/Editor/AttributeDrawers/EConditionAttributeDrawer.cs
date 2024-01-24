@@ -22,7 +22,7 @@ namespace UnityEditor.Extensions
         {
             if (!(attribute as ConditionAttribute).IsPropertyVisible( property))
                 return;
-                
+            
             base.OnGUI(position, property, label);
         }
     }
@@ -32,7 +32,7 @@ namespace UnityEditor.Extensions
 
         static bool Equals(this ConditionAttribute.ConditionFieldParameters parameter, object _comparer)
         {
-            return parameter.refValue?.Contains(_comparer) ?? _comparer == null;
+            return parameter.refValue?.Contains(_comparer) ??  _comparer == null;
         }
         
 
@@ -45,9 +45,9 @@ namespace UnityEditor.Extensions
                 default: throw new InvalidEnumArgumentException();
                 case ConditionAttribute.EConditionAction.AlwaysVisible: return true;
                 case ConditionAttribute.EConditionAction.AnyEquals: return _attribute.m_Conditions.All(condition => fields.Collect(p => p.Item1.Name == condition.fieldName).Any(p => Equals(condition,p.Item2)));
-                case ConditionAttribute.EConditionAction.AnyNonEquals: return _attribute.m_Conditions.All(condition => fields.Collect(p => p.Item1.Name == condition.fieldName).Any(p => !Equals(condition,p.Item2)));
+                case ConditionAttribute.EConditionAction.NonAnyEquals: return !_attribute.m_Conditions.All(condition => fields.Collect(p => p.Item1.Name == condition.fieldName).Any(p => Equals(condition,p.Item2)));
                 case ConditionAttribute.EConditionAction.AllEquals: return _attribute.m_Conditions.All(condition => fields.Collect(p => p.Item1.Name == condition.fieldName).All(p => Equals(condition,p.Item2)));
-                case ConditionAttribute.EConditionAction.AllNonEquals: return _attribute.m_Conditions.All(condition => fields.Collect(p => p.Item1.Name == condition.fieldName).All(p => !Equals(condition,p.Item2)));
+                case ConditionAttribute.EConditionAction.NonAllEquals: return _attribute.m_Conditions.All(condition => fields.Collect(p => p.Item1.Name == condition.fieldName).All(p => !Equals(condition,p.Item2)));
             }
         }
         public static bool IsPropertyVisible(this ConditionAttribute _attribute,SerializedProperty _property)=>IsVisible(_attribute,()=>_property.AllRelativeFields());

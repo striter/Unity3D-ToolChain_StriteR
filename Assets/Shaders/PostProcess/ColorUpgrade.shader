@@ -25,7 +25,7 @@
 			TEXTURE2D(_LUTTex);SAMPLER(sampler_LUTTex);
 			half _LUTWeight;
 			float4 _LUTTex_TexelSize;
-			uint _LUTCellCount;
+			uint4 _LUTCellCount;
 			half _Saturation;
 			half _Brightness;
 			half _Contrast;

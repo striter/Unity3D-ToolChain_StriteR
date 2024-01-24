@@ -74,7 +74,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTex:
-        m_Texture: {fileID: 2800000, guid: 28a67d0ad1f4870469cf6318f5c2379f, type: 3}
+        m_Texture: {fileID: 2800000, guid: 466cf78ab98da024182881a54a032ed4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -82,7 +82,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PBRTex:
-        m_Texture: {fileID: 2800000, guid: b9af0fb8e68e2a742b5a2d74d7ba9a80, type: 3}
+        m_Texture: {fileID: 2800000, guid: 3032b3b8271c3d24aac06d3b9e830a55, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:

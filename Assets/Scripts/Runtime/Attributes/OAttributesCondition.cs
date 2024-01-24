@@ -11,9 +11,9 @@ public abstract class ConditionAttribute : PropertyAttribute
     {
         AlwaysVisible,
         AllEquals,
-        AllNonEquals,
+        NonAllEquals,
         AnyEquals,
-        AnyNonEquals,
+        NonAnyEquals,
     }
 
     public struct ConditionFieldParameters
@@ -53,7 +53,7 @@ public class MFoldoutAttribute : ConditionAttribute
 [AttributeUsage(AttributeTargets.Field)]
 public class MFoldAttribute : ConditionAttribute
 {
-    public override EConditionAction Condition => EConditionAction.AnyNonEquals;
+    public override EConditionAction Condition => EConditionAction.NonAnyEquals;
     public MFoldAttribute(string _foldoutFieldName) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, null)) { }
     public MFoldAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
     public MFoldAttribute(params KeyValuePair<string, object[]>[] _pairs) : base(_pairs) { }

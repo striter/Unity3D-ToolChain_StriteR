@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -11,27 +12,19 @@ namespace Rendering.PostProcess
         public override EPostProcess Event => EPostProcess.ColorUpgrade;
     }
 
-    public enum ELUTCellCount
-    {
-        _16 = 16,
-        _32 = 32,
-        _64 = 64,
-        _128 = 128,
-    }
-
     public enum EBloomSample
     {
         Luminance,
         Redraw,
     }
-    [System.Serializable]
+
+    [Serializable]
     public struct DColorUpgrade:IPostProcessParameter
     {
-        [MTitle]public bool m_LUT;
-        [MFoldout(nameof(m_LUT),true)] public Texture2D m_LUTTex ;
-        [MFoldout(nameof(m_LUT),true)] public ELUTCellCount m_LUTCellCount ;
-        [MFoldout(nameof(m_LUT),true)] [Range(0,1)] public float m_LUTWeight;
-        [MTitle]public bool m_BSC;
+        [MTitle] public Texture2D m_LUTTex ;
+        [MFold(nameof(m_LUTTex),null)] public bool m_64LUT;
+        [MFold(nameof(m_LUTTex),null)] [Range(0,1)] public float m_LUTWeight;
+        [MTitle] public bool m_BSC;
         [MFoldout(nameof(m_BSC),true)] [Range(0, 2)]public float m_Brightness ;
         [MFoldout(nameof(m_BSC),true)] [Range(0, 2)] public float m_Saturation ;
         [MFoldout(nameof(m_BSC),true)] [Range(0, 2)]public float m_Contrast ;
@@ -50,15 +43,15 @@ namespace Rendering.PostProcess
         [MFoldout(nameof(motionBlur), true)] [Clamp(1,8)]public int iteration;
         [MFoldout(nameof(motionBlur), true)] [Range(-5,5)] public float intensity;
         public bool Validate() => motionBlur ||
-                                  m_LUT  || 
+                                  m_LUTTex!=null  || 
                                   m_BSC  || 
                                   m_ChannelMix  || 
                                   m_Bloom;
         
         public static readonly DColorUpgrade kDefault = new DColorUpgrade()
         {
-            m_LUT = false,
-            m_LUTCellCount = ELUTCellCount._16,
+            m_LUTTex = null,
+            m_64LUT = false,
             m_LUTWeight = 1f,
             
             m_BSC = false,
@@ -161,15 +154,27 @@ namespace Rendering.PostProcess
             base.Destroy();
             m_CoreBlurs.Destroy();
         }
+
+        float4 GetLUTParameters(int _size,int width,int height)
+        {
+            var cellPixelSize = _size;
+            if(cellPixelSize==0)
+                return new float4(0,0,0,0);
+
+            var horizontalCellCount = width / cellPixelSize;
+            if (width == height)
+                return new float4(horizontalCellCount,horizontalCellCount, cellPixelSize,horizontalCellCount * horizontalCellCount);
+            return new float4(horizontalCellCount, 1, cellPixelSize, horizontalCellCount);
+        }
         
         public override void OnValidate(ref DColorUpgrade _data)
         {
             base.OnValidate(ref _data);
 
-            if (m_Material.EnableKeyword(kLUT, _data.m_LUT))
+            if (m_Material.EnableKeyword(kLUT, _data.m_LUTTex!=null))
             {
                 m_Material.SetTexture(kLUTTex, _data.m_LUTTex);
-                m_Material.SetInt(kLUTCellCount, (int) _data.m_LUTCellCount);
+                m_Material.SetVector(kLUTCellCount, GetLUTParameters(_data.m_64LUT ? 64:32,_data.m_LUTTex.width, _data.m_LUTTex.height));
                 m_Material.SetFloat(kLUTWeight,_data.m_LUTWeight);
             }
 
@@ -204,9 +209,7 @@ namespace Rendering.PostProcess
             RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderer _renderer,
             ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
-            
-            
-            if (!_data.m_Bloom)
+            if (!_data.m_Bloom || !_data.m_BloomData.m_Blur.Validate())
             {
                 _buffer.Blit(_src, _dst, m_Material, (int)EPassIndex.Process);
                 return;

@@ -1,14 +1,13 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Runtime.Geometry;
-using Rendering.PostProcess;
-using Gizmos = UnityEngine.Gizmos;
 
 namespace Rendering.Pipeline
 {
     [ExecuteInEditMode,RequireComponent(typeof(MeshRenderer),typeof(MeshFilter))]
     public class PlanarReflection : MonoBehaviour
     {
+        [Header("Shape")]
         public EPlanarReflectionGeometry m_Geometry = EPlanarReflectionGeometry._PLANE;
         [Range(0f, 0.2f)] public float m_NormalDistort = .1f;
         [MFoldout(nameof(m_Geometry),EPlanarReflectionGeometry._PLANE)][Range(-5f, 5f)] public float m_PlaneOffset = 0f;
@@ -63,11 +62,10 @@ namespace Rendering.Pipeline
             if (!gameObject.activeInHierarchy||!enabled||!m_MeshFilter.sharedMesh)
                 return;
             Gizmos.color = IndexToColor(m_Index);
-            Gizmos.matrix = transform.localToWorldMatrix;
             switch (m_Geometry)
             {
                 case EPlanarReflectionGeometry._PLANE:
-                    Gizmos.DrawWireCube(Vector3.up * m_PlaneOffset, m_MeshFilter.sharedMesh.bounds.size.SetY(0));
+                    m_PlaneData.DrawGizmos();
                     break;
                 case EPlanarReflectionGeometry._SPHERE:
                     Gizmos.DrawWireSphere(m_SphereData.center,m_SphereData.radius);

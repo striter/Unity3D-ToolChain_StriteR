@@ -371,7 +371,7 @@
 			Blend Off
 			ZWrite On
 			ZTest LEqual
-			Cull Off
+			Cull [_Cull]
 			
 			HLSLPROGRAM
 			
@@ -384,7 +384,7 @@
 		{
             Name "META"
             Tags{"LightMode" = "Meta"}
-            Cull Off
+			Cull [_Cull]
 
             HLSLPROGRAM
             #pragma vertex VertexMeta
