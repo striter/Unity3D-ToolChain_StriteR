@@ -121,10 +121,10 @@ struct v2ff
     float2 uv:TEXCOORD0;
     float3 positionWS:TEXCOORD1;
     float4 positionHCS:TEXCOORD2;
-    #if !defined (_NORMALOFF)
+#if !defined (_NORMALOFF)
     half3 tangentWS:TEXCOORD3;
     half3 biTangentWS:TEXCOORD4;
-    #endif
+#endif
     half3 viewDirWS:TEXCOORD5;
     V2F_FOG(6)
     V2F_LIGHTMAP(7)

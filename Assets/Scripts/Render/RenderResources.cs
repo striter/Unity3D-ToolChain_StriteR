@@ -1,10 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace Rendering.Pipeline
 {

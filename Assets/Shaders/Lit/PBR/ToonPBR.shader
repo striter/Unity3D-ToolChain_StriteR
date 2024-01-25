@@ -5,7 +5,6 @@ Shader "Game/Lit/ToonPBR"
 		[Header(Base Tex)]
 		_MainTex("Main Tex",2D) = "white"{}
 		_Color("Color Tint",Color) = (1,1,1,1)
-		[NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
 		
 		[Header(PBR)]
 		[NoScaleOffset]_PBRTex("PBR Tex(Glossiness.Metallic.AO)",2D)="black"{}
@@ -28,21 +27,13 @@ Shader "Game/Lit/ToonPBR"
     }
     SubShader
     {
-		Pass
-		{
-			NAME "FORWARD"
-			Tags{"LightMode" = "UniversalForward"}
-			HLSLPROGRAM
+    	HLSLINCLUDE
 			#include "Assets/Shaders/Library/Common.hlsl"
 			#include "Assets/Shaders/Library/Lighting.hlsl"
+			#define _NORMALOFF
 			
-			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
-            #pragma multi_compile _ _ADDITIONAL_LIGHTS
-            #pragma multi_compile_fragment _ _SHADOWS_SOFT
-
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_EmissionTex);SAMPLER(sampler_EmissionTex);
-			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
 			TEXTURE2D(_PBRTex);SAMPLER(sampler_PBRTex);
 			INSTANCING_BUFFER_START
 				INSTANCING_PROP(float4,_MainTex_ST)
@@ -54,6 +45,23 @@ Shader "Game/Lit/ToonPBR"
 				INSTANCING_PROP(float,_GeometryShadowEnd)
 				INSTANCING_PROP(float,_IndirectSpecularOffset)
 			INSTANCING_BUFFER_END
+    	ENDHLSL
+    	
+		Pass
+		{
+			NAME "FORWARD"
+			Tags{"LightMode" = "UniversalForward"}
+			HLSLPROGRAM
+			
+			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+            #pragma multi_compile _ _ADDITIONAL_LIGHTS
+            #pragma multi_compile_fragment _ _SHADOWS_SOFT
+
+			#pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
+            #pragma multi_compile _ SHADOWS_SHADOWMASK
+            #pragma multi_compile _ DIRLIGHTMAP_COMBINED
+            #pragma multi_compile _ LIGHTMAP_ON
+			
 			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
 			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
 			
@@ -77,17 +85,29 @@ Shader "Game/Lit/ToonPBR"
 			    float toonSpecular = round(specular * steps) / steps;
 			    return toonSpecular;
 			}
-					
+
 			#define GET_GEOMETRYSHADOW(surface,lightSurface) GetGeometryShadow(surface,lightSurface)
 	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
 			#define GET_INDIRECTSPECULAR(surface) IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
 			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
-			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
-			
             #pragma target 3.5
 			#pragma vertex ForwardVertex
 			#pragma fragment ForwardFragment
+			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			ENDHLSL
+		}
+        
+		Pass
+		{
+            Name "META"
+            Tags{"LightMode" = "Meta"}
+			Cull Off
+
+            HLSLPROGRAM
+            #pragma vertex VertexMeta
+            #pragma fragment FragmentMeta
+            #include "Assets/Shaders/Library/Passes/MetaPBR.hlsl"
+            ENDHLSL
 		}
         USEPASS "Game/Additive/DepthOnly/MAIN"
         USEPASS "Game/Additive/ShadowCaster/MAIN"

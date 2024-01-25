@@ -26,32 +26,32 @@ public static class URender
             }
         }
     }
-    public static bool GetVertexData(this Mesh _srcMesh, EVertexData _dataType, List<Vector4> _data)
+    public static bool GetVertexData(this Mesh _srcMesh, EVertexAttribute _dataType, List<Vector4> _data)
     {
         _data.Clear();
         switch (_dataType)
         {
             default: throw new Exception("Invalid Vertex Data Type" + _dataType);
-            case EVertexData.UV0:
-            case EVertexData.UV1:
-            case EVertexData.UV2:
-            case EVertexData.UV3:
-            case EVertexData.UV4:
-            case EVertexData.UV5:
-            case EVertexData.UV6:
-            case EVertexData.UV7:
+            case EVertexAttribute.UV0:
+            case EVertexAttribute.UV1:
+            case EVertexAttribute.UV2:
+            case EVertexAttribute.UV3:
+            case EVertexAttribute.UV4:
+            case EVertexAttribute.UV5:
+            case EVertexAttribute.UV6:
+            case EVertexAttribute.UV7:
                 _srcMesh.GetUVs((int)_dataType, _data);
                 break;
-            case EVertexData.Color:
+            case EVertexAttribute.Color:
                 List<Color> colors = new List<Color>();
                 _srcMesh.GetColors(colors);
                 foreach (var color in colors)
                     _data.Add(color.toV4());
                 break;
-            case EVertexData.Tangent:
+            case EVertexAttribute.Tangent:
                 _srcMesh.GetTangents(_data);
                 break;
-            case EVertexData.Normal:
+            case EVertexAttribute.Normal:
                 {
                     List<Vector3> normalList = new List<Vector3>();
                     _srcMesh.GetNormals(normalList);
@@ -62,113 +62,113 @@ public static class URender
         }
         return _data != null;
     }
-    public static void SetVertexData(this Mesh _srcMesh, EVertexData _dataType, List<Vector4> _data)
+    public static void SetVertexData(this Mesh _srcMesh, EVertexAttribute _dataType, List<Vector4> _data)
     {
         switch (_dataType)
         {
             default: throw new Exception("Invalid Vertex Data Type" + _dataType);
-            case EVertexData.UV0:
-            case EVertexData.UV1:
-            case EVertexData.UV2:
-            case EVertexData.UV3:
-            case EVertexData.UV4:
-            case EVertexData.UV5:
-            case EVertexData.UV6:
-            case EVertexData.UV7:
+            case EVertexAttribute.UV0:
+            case EVertexAttribute.UV1:
+            case EVertexAttribute.UV2:
+            case EVertexAttribute.UV3:
+            case EVertexAttribute.UV4:
+            case EVertexAttribute.UV5:
+            case EVertexAttribute.UV6:
+            case EVertexAttribute.UV7:
                 _srcMesh.SetUVs(UEnum.GetIndex(_dataType), _data);
                 break;
-            case EVertexData.Color:
-                _srcMesh.SetColors(_data.Select(p => new Color(p.x, p.y, p.z, p.w)).ToArray());
+            case EVertexAttribute.Color:
+                _srcMesh.SetColors(_data.Select(p => p.toColor()).ToArray());
                 break;
-            case EVertexData.Tangent:
+            case EVertexAttribute.Tangent:
                 _srcMesh.SetTangents(_data);
                 break;
-            case EVertexData.Normal:
+            case EVertexAttribute.Normal:
                 _srcMesh.SetNormals(_data.Select(vec4 => vec4.XYZ()).ToArray());
                 break;
         }
     }
-    public static void SetVertexData(this Mesh _srcMesh, EVertexData _dataType, Vector4[] _data)
+    public static void SetVertexData(this Mesh _srcMesh, EVertexAttribute _dataType, Vector4[] _data)
     {
         switch (_dataType)
         {
             default: throw new Exception("Invalid Vertex Data Type" + _dataType);
-            case EVertexData.UV0:
-            case EVertexData.UV1:
-            case EVertexData.UV2:
-            case EVertexData.UV3:
-            case EVertexData.UV4:
-            case EVertexData.UV5:
-            case EVertexData.UV6:
-            case EVertexData.UV7:
+            case EVertexAttribute.UV0:
+            case EVertexAttribute.UV1:
+            case EVertexAttribute.UV2:
+            case EVertexAttribute.UV3:
+            case EVertexAttribute.UV4:
+            case EVertexAttribute.UV5:
+            case EVertexAttribute.UV6:
+            case EVertexAttribute.UV7:
                 _srcMesh.SetUVs((int)_dataType, _data);
                 break;
-            case EVertexData.Color:
+            case EVertexAttribute.Color:
                 _srcMesh.SetColors(_data.Select(p => new Color(p.x, p.y, p.z, p.w)).ToArray());
                 break;
-            case EVertexData.Tangent:
+            case EVertexAttribute.Tangent:
                 _srcMesh.SetTangents(_data);
                 break;
-            case EVertexData.Normal:
+            case EVertexAttribute.Normal:
                 _srcMesh.SetNormals(_data.Select(vec4 => vec4.XYZ()).ToArray());
                 break;
         }
     }
-    public static void SetVertexData(this Mesh _srcMesh, EVertexData _dataType, Vector3[] _data)
+    public static void SetVertexData(this Mesh _srcMesh, EVertexAttribute _dataType, Vector3[] _data)
     {
         switch (_dataType)
         {
             default: throw new Exception("Invalid Vertex Data Type" + _dataType);
-            case EVertexData.UV0:
-            case EVertexData.UV1:
-            case EVertexData.UV2:
-            case EVertexData.UV3:
-            case EVertexData.UV4:
-            case EVertexData.UV5:
-            case EVertexData.UV6:
-            case EVertexData.UV7:
+            case EVertexAttribute.UV0:
+            case EVertexAttribute.UV1:
+            case EVertexAttribute.UV2:
+            case EVertexAttribute.UV3:
+            case EVertexAttribute.UV4:
+            case EVertexAttribute.UV5:
+            case EVertexAttribute.UV6:
+            case EVertexAttribute.UV7:
                 _srcMesh.SetUVs(UEnum.GetIndex(_dataType), _data);
                 break;
-            case EVertexData.Color:
+            case EVertexAttribute.Color:
                 _srcMesh.SetColors(_data.Select(p => new Color(p.x, p.y, p.z, 1.0f)).ToArray());
                 break;
-            case EVertexData.Tangent:
+            case EVertexAttribute.Tangent:
                 _srcMesh.SetTangents(_data.Select(vec3 => new Vector4(vec3.x, vec3.y, vec3.z, 1.0f)).ToArray());
                 break;
-            case EVertexData.Normal:
+            case EVertexAttribute.Normal:
                 _srcMesh.SetNormals(_data);
                 break;
         }
     }
-    public static bool GetVertexData(this Mesh _srcMesh, EVertexData _dataType, List<Vector3> _data)
+    public static bool GetVertexData(this Mesh _srcMesh, EVertexAttribute _dataType, List<Vector3> _data)
     {
         _data.Clear();
         switch (_dataType)
         {
             default: throw new Exception("Invalid Vertex Data Type" + _dataType);
-            case EVertexData.UV0:
-            case EVertexData.UV1:
-            case EVertexData.UV2:
-            case EVertexData.UV3:
-            case EVertexData.UV4:
-            case EVertexData.UV5:
-            case EVertexData.UV6:
-            case EVertexData.UV7:
+            case EVertexAttribute.UV0:
+            case EVertexAttribute.UV1:
+            case EVertexAttribute.UV2:
+            case EVertexAttribute.UV3:
+            case EVertexAttribute.UV4:
+            case EVertexAttribute.UV5:
+            case EVertexAttribute.UV6:
+            case EVertexAttribute.UV7:
                 _srcMesh.GetUVs((int)_dataType, _data);
                 break;
-            case EVertexData.Color:
+            case EVertexAttribute.Color:
                 List<Color> colors = new List<Color>();
                 _srcMesh.GetColors(colors);
                 foreach (var color in colors)
                     _data.Add(color.toV4());
                 break;
-            case EVertexData.Tangent:
+            case EVertexAttribute.Tangent:
                 List<Vector4> tangents = new List<Vector4>();
                 _srcMesh.GetTangents(tangents);
                 foreach (var tangent in tangents)
                     _data.Add(tangent.XYZ());
                 break;
-            case EVertexData.Normal:
+            case EVertexAttribute.Normal:
                 {
                     List<Vector3> normalList = new List<Vector3>();
                     _srcMesh.GetNormals(normalList);
@@ -179,28 +179,28 @@ public static class URender
         }
         return _data != null;
     }
-    public static void SetVertexData(this Mesh _srcMesh, EVertexData _dataType, List<Vector3> _data)
+    public static void SetVertexData(this Mesh _srcMesh, EVertexAttribute _dataType, List<Vector3> _data)
     {
         switch (_dataType)
         {
             default: throw new Exception("Invalid Vertex Data Type" + _dataType);
-            case EVertexData.UV0:
-            case EVertexData.UV1:
-            case EVertexData.UV2:
-            case EVertexData.UV3:
-            case EVertexData.UV4:
-            case EVertexData.UV5:
-            case EVertexData.UV6:
-            case EVertexData.UV7:
+            case EVertexAttribute.UV0:
+            case EVertexAttribute.UV1:
+            case EVertexAttribute.UV2:
+            case EVertexAttribute.UV3:
+            case EVertexAttribute.UV4:
+            case EVertexAttribute.UV5:
+            case EVertexAttribute.UV6:
+            case EVertexAttribute.UV7:
                 _srcMesh.SetUVs((int)_dataType, _data);
                 break;
-            case EVertexData.Color:
+            case EVertexAttribute.Color:
                 _srcMesh.SetColors(_data.Select(p => new Color(p.x, p.y, p.z,0)).ToArray());
                 break;
-            case EVertexData.Tangent:
+            case EVertexAttribute.Tangent:
                 _srcMesh.SetTangents(_data.Select(p => p.ToVector4()).ToArray());
                 break;
-            case EVertexData.Normal:
+            case EVertexAttribute.Normal:
                 _srcMesh.SetNormals(_data);
                 break;
         }

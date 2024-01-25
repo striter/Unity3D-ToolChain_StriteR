@@ -81,7 +81,7 @@
 				INSTANCING_PROP(float,_DepthBufferScale)
 				INSTANCING_PROP(int ,_ParallaxCount)
 				INSTANCING_PROP(float3,_MatCapColor)
-				INSTANCING_PROP(float,_Glossiness)
+				INSTANCING_PROP(float,_Smoothness)
 				INSTANCING_PROP(float,_Metallic)
 
 				INSTANCING_PROP(float,_SSSIntensity)
@@ -272,7 +272,7 @@
 				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV)*INSTANCE(_Color);
 				AlphaClip(color.a);
 				half3 albedo = color.rgb;
-				half smoothness=INSTANCE(_Glossiness);
+				half smoothness=INSTANCE(_Smoothness);
 				half metallic=INSTANCE(_Metallic);
 				half ao=1.h;
 				half anisotropic=INSTANCE(_AnisoTropicValue);

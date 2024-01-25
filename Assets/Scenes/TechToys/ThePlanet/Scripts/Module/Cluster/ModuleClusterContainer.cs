@@ -88,7 +88,7 @@ namespace TechToys.ThePlanet.Module.Cluster
             m_Input = targetInput;
         }
         
-        static readonly EVertexData kOutputs = EVertexData.Normal | EVertexData.Tangent | EVertexData.UV0 | EVertexData.Color; 
+        static readonly EVertexAttribute kOutputs = EVertexAttribute.Normal | EVertexAttribute.Tangent | EVertexAttribute.UV0 | EVertexAttribute.Color; 
         public void Collapse()
         {
             for (int i = 0; i < 8; i++)

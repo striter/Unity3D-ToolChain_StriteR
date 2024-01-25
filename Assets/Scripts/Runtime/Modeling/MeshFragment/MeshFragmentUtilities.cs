@@ -89,7 +89,7 @@ namespace MeshFragment
     public static class UMeshFragment
     {
         private static readonly Dictionary<int,MeshFragmentCombiner> kMeshFragmentHelper = new Dictionary<int, MeshFragmentCombiner>();
-        public static void Combine(IList<IMeshFragment> _fragments,Mesh _mesh,Material[] _materialLibrary,out Material[] _embedMaterials,EVertexData _inputs = (EVertexData)int.MaxValue,IndexFormat _indexFormat = IndexFormat.UInt16)
+        public static void Combine(IList<IMeshFragment> _fragments,Mesh _mesh,Material[] _materialLibrary,out Material[] _embedMaterials,EVertexAttribute _inputs = (EVertexAttribute)int.MaxValue,IndexFormat _indexFormat = IndexFormat.UInt16)
         {
             TSPoolList<MeshFragmentCombiner>.Spawn(out var subMeshCombiners);
             var totalVertexCount = 0;
@@ -109,10 +109,10 @@ namespace MeshFragment
                 totalVertexCount += fragment.vertices.Count;
             }
 
-            bool normalValid = _inputs.IsFlagEnable(EVertexData.Normal);
-            bool tangentValid = _inputs.IsFlagEnable(EVertexData.Tangent);
-            bool uvValid = _inputs.IsFlagEnable(EVertexData.UV0);
-            bool colorValid = _inputs.IsFlagEnable(EVertexData.Color);
+            bool normalValid = _inputs.IsFlagEnable(EVertexAttribute.Normal);
+            bool tangentValid = _inputs.IsFlagEnable(EVertexAttribute.Tangent);
+            bool uvValid = _inputs.IsFlagEnable(EVertexAttribute.UV0);
+            bool colorValid = _inputs.IsFlagEnable(EVertexAttribute.Color);
             
             NativeArray<Vector3> vertices=new NativeArray<Vector3>(totalVertexCount,Allocator.Temp);
             NativeArray<Vector3> normals=new NativeArray<Vector3>(totalVertexCount,Allocator.Temp);

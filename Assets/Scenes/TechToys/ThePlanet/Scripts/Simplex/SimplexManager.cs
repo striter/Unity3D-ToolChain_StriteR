@@ -68,7 +68,7 @@ namespace TechToys.ThePlanet.Simplex
             m_Indexer = null;
         }
 
-        private static readonly EVertexData kOutputVertexData = UEnum.CreateFlags(EVertexData.UV0,EVertexData.Color);
+        private static readonly EVertexAttribute kOutputVertexData = UEnum.CreateFlags(EVertexAttribute.UV0,EVertexAttribute.Color);
         public void Construct(params (string _res, IList<PCGID> _corners)[] _cornersRes)
         {
             m_Renderer.enabled = true;

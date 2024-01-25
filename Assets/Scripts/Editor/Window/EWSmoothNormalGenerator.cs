@@ -11,7 +11,7 @@ namespace UnityEditor.Extensions
     {
         GameObject m_ModelPrefab;
 
-        EVertexData m_GenerateUV= EVertexData.UV7;
+        EVertexAttribute m_GenerateUV= EVertexAttribute.UV7;
         void OnGUI()
         {
             EditorGUILayout.BeginVertical();
@@ -30,15 +30,15 @@ namespace UnityEditor.Extensions
                 return;
             }
 
-            m_GenerateUV = (EVertexData)EditorGUILayout.EnumPopup("Generate UV:", m_GenerateUV);
-            if (m_GenerateUV != EVertexData.None && GUILayout.Button("Generate"))
+            m_GenerateUV = (EVertexAttribute)EditorGUILayout.EnumPopup("Generate UV:", m_GenerateUV);
+            if (m_GenerateUV != EVertexAttribute.None && GUILayout.Button("Generate"))
                 if (UEAsset.SaveFilePath(out string filePath, "prefab", UEPath.RemoveExtension(UEPath.GetPathName(AssetDatabase.GetAssetPath(m_ModelPrefab))) + "_SN"))
                     GenerateSkinnedTarget(UEPath.FileToAssetPath(filePath), m_ModelPrefab, m_GenerateUV);
 
             EditorGUILayout.EndVertical();
         }
 
-        public static void GenerateSkinnedTarget(string assetPath, GameObject _targetFBX, EVertexData _generateUV)
+        public static void GenerateSkinnedTarget(string assetPath, GameObject _targetFBX, EVertexAttribute _generateUV)
         {
             GameObject prefabSource = Instantiate(_targetFBX);
 
@@ -69,19 +69,19 @@ namespace UnityEditor.Extensions
             GameObject.DestroyImmediate(prefabSource);
         }
 
-        static Mesh GenerateMesh(Mesh _src,EVertexData _generateUV)
+        static Mesh GenerateMesh(Mesh _src,EVertexAttribute _generateUV)
         {
             Mesh target = _src.Copy();
             Vector3[] smoothNormals = GenerateSmoothNormals(target, ConvertToTangentSpace(_generateUV));
             target.SetVertexData(_generateUV,smoothNormals.ToList());
             return target;
         }
-        public static bool ConvertToTangentSpace(EVertexData _target)
+        public static bool ConvertToTangentSpace(EVertexAttribute _target)
         {
             switch(_target)
             {
-                case EVertexData.Normal:
-                case EVertexData.Tangent:
+                case EVertexAttribute.Normal:
+                case EVertexAttribute.Tangent:
                     return false;
             }
             return true;

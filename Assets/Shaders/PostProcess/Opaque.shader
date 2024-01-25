@@ -268,8 +268,8 @@
 	            	#else
 		                GPlane planeStartWS=GPlane_Ctor( float3(0,1,0),_VerticalStart);
 		                GPlane planeEndWS=GPlane_Ctor(float3(0,1,0),_VerticalEnd);
-		                float distance1 = PlaneRayDistance(planeStartWS,viewRayWS);
-						float distance2 = PlaneRayDistance(planeEndWS,viewRayWS);
+		                float distance1 = Distance(viewRayWS,planeStartWS);
+						float distance2 = Distance(viewRayWS,planeEndWS);
 		                distance1=min(actualDepth,distance1);
 		                distance2=min(actualDepth,distance2);
 		                if(_VerticalStart< cameraPositionWS.y && cameraPositionWS.y<_VerticalEnd)

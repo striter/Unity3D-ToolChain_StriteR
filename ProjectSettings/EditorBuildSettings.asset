@@ -24,7 +24,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Examples/Algorithm/WaveFunctionCollapse/WaveFunctionCollapse.unity
     guid: e364703e7fbb4e64b890f25bd14df0c8
   - enabled: 0
-    path: Assets/ArtPreset/Meshes/Scenes/Sponza/Sponza.unity
+    path: Assets/Scenes/ArtScenes/Sponza/Sponza.unity
     guid: 21f0777311e4d6049a9b325c34cbdc37
   - enabled: 0
     path: Assets/Scenes/Examples/Rendering/PostProcess/PostProcess.unity

@@ -6,14 +6,16 @@ v2ff ForwardVertex(a2vf v)
 	UNITY_TRANSFER_INSTANCE_ID(v, o);
 	o.uv = TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
 	o.normalWS = TransformObjectToWorldNormal(v.normalOS);
+#if !defined (_NORMALOFF)
 	o.tangentWS = TransformObjectToWorldDir(v.tangentOS.xyz);
 	o.biTangentWS = cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
-	//Positions
-	#if defined(GET_POSITION_WS)
-		float3 positionWS = GET_POSITION_WS(v,o);
-	#else
-		float3 positionWS=TransformObjectToWorld(v.positionOS);
-	#endif
+#endif
+//Positions
+#if defined(GET_POSITION_WS)
+	float3 positionWS = GET_POSITION_WS(v,o);
+#else
+	float3 positionWS=TransformObjectToWorld(v.positionOS);
+#endif
 	o.positionWS = positionWS;
 	o.positionCS = TransformWorldToHClip(positionWS);
 	o.viewDirWS = GetViewDirectionWS(o.positionWS);

@@ -28,9 +28,9 @@ v2fmeta VertexMeta(a2vmeta input)
     v2fmeta output = (v2fmeta)0;
     output.positionCS = UnityMetaVertexPosition(input.positionOS.xyz, input.uv1, input.uv2);
     output.uv = TRANSFORM_TEX(input.uv0, _MainTex);
-    #ifdef EDITOR_VISUALIZATION
+#ifdef EDITOR_VISUALIZATION
     UnityEditorVizData(input.positionOS.xyz, input.uv0, input.uv1, input.uv2, output.VizUV, output.LightCoord);
-    #endif
+#endif
     return output;
 }
 
@@ -48,19 +48,17 @@ float4 FragmentMeta(v2fmeta i) : SV_Target
     half3 emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,i.uv).rgb*INSTANCE(_EmissionColor).rgb;
 #endif
 
-
     half smoothness=0.5,metallic=0;
 #if !defined(_PBROFF)
-#if defined(GET_PBRPARAM)
-    GET_PBRPARAM(i,smoothness,metallic,ao);
-#else
-    half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,i.uv).rgb;
-    smoothness=mix.r;
-    metallic=mix.g;
+    #if defined(GET_PBRPARAM)
+        GET_PBRPARAM(i,smoothness,metallic,ao);
+    #else
+        half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,i.uv).rgb;
+        smoothness=mix.r;
+        metallic=mix.g;
     #endif
 #endif
-	
-    
+
     float perceptualRoughness = 1.0h - smoothness;
     float roughness = max(HALF_MIN_SQRT, perceptualRoughness * perceptualRoughness);
     
@@ -76,7 +74,5 @@ float4 FragmentMeta(v2fmeta i) : SV_Target
         metaInput.VizUV = fragIn.VizUV;
         metaInput.LightCoord = fragIn.LightCoord;
     #endif
-    
-
     return UnityMetaFragment(metaInput);
 }

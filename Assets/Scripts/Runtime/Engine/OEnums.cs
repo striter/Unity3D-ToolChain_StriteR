@@ -1,7 +1,7 @@
 ﻿using System;
 
 [Flags]
-public enum EVertexData
+public enum EVertexAttribute
 {
     None = -1,
     UV0 = 1 << 0,
