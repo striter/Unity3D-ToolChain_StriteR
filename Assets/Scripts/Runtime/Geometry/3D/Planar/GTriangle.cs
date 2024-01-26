@@ -53,6 +53,10 @@ namespace Runtime.Geometry
         public Triangle<Vector3> ToVector3() => new Triangle<Vector3>(V0, V1, V2);
         public static GTriangle operator +(GTriangle _src, float3 _dst)=> new GTriangle(_src.V0 + _dst, _src.V1 + _dst, _src.V2 + _dst);
         public static GTriangle operator -(GTriangle _src, float3 _dst)=> new GTriangle(_src.V0 - _dst, _src.V1 - _dst, _src.V2 - _dst);
+        public static GTriangle operator*(Matrix4x4 _matrix,GTriangle _triangle) => new GTriangle(
+            _matrix.MultiplyPoint(_triangle.V0),
+            _matrix.MultiplyPoint(_triangle.V1),
+            _matrix.MultiplyPoint(_triangle.V2));
         public void OnBeforeSerialize() { }
         public void OnAfterDeserialize()=>Ctor();
         public int Length => 3;
@@ -72,10 +76,6 @@ namespace Runtime.Geometry
             }
         }
         
-        public static GTriangle operator*(Matrix4x4 _matrix,GTriangle _triangle) => new GTriangle(
-            _matrix.MultiplyPoint(_triangle.V0),
-                _matrix.MultiplyPoint(_triangle.V1),
-                _matrix.MultiplyPoint(_triangle.V2));
 
         public float3 GetSupportPoint(float3 _direction)
         {
@@ -118,5 +118,11 @@ namespace Runtime.Geometry
         {
             return GetEnumerator();
         }
+    }
+
+    public static class GTriangle_Extension
+    {
+        public static GTriangle to3xz(this G2Triangle _triangle2 )=> new GTriangle(_triangle2.V0.to3xz(),_triangle2.V1.to3xz(),_triangle2.V2.to3xz());
+        
     }
 }

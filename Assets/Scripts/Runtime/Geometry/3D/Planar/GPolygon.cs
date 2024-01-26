@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace Runtime.Geometry
 {
@@ -30,6 +31,25 @@ namespace Runtime.Geometry
             for (int i = 0; i < positions.Length - 1; i++)
                 yield return new GLine(positions[i], positions[i + 1]);
         }
+
+        public float3 this[int index] => positions[index];
+
+        public static GPolygon operator +(GPolygon _polygon, float3 _dst)
+        {
+            _polygon.positions.Remake(p=> p + _dst);
+            _polygon.center += _dst;
+            return _polygon;
+        }
+        public static GPolygon operator -(GPolygon _src, float3 _dst) => _src + -_dst;
+
+        public static GPolygon operator *(Matrix4x4 _matrix, GPolygon _polygon)
+        {
+            _polygon.positions.Remake(p=>_matrix.MultiplyPoint(p));
+            _polygon.center = _matrix.MultiplyPoint(_polygon.center);
+            return _polygon;
+        }
+        
+        public int Count => positions.Length;
     }
 
 }

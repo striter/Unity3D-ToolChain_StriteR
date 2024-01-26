@@ -42,6 +42,13 @@ namespace Runtime.Geometry
             for (int i = 0; i < positions.Length-1; i++)
                 yield return new G2Line(positions[i], positions[i + 1]);
         }
+
+        public IEnumerable<G2Triangle> GetTriangles(IEnumerable<PTriangle> _triangleIndexexs)
+        {
+            foreach (var indexes in _triangleIndexexs)
+                yield return new G2Triangle(positions[indexes.V0], positions[indexes.V1], positions[indexes.V2]);
+        }
+        
         IEnumerator IEnumerable.GetEnumerator()=> GetEnumerator();
     }
 
@@ -49,7 +56,7 @@ namespace Runtime.Geometry
     {
         public static bool DoorClip(this G2Polygon _polygon,G2Plane _plane,out G2Polygon _clippedPolygon)    //Convex and Counter Clockwise is needed
         {
-            bool cliped = false;
+            var cliped = false;
             TSPoolList<float2>.Spawn(out var clippedPolygon);
             clippedPolygon.AddRange(_polygon);
             for (int i = _polygon.Count - 1; i >=0; i--)

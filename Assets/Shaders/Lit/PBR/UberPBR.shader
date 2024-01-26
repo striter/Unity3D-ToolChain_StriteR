@@ -384,7 +384,7 @@
 		{
             Name "META"
             Tags{"LightMode" = "Meta"}
-			Cull [_Cull]
+			Cull Off
 
             HLSLPROGRAM
             #pragma vertex VertexMeta

@@ -11,6 +11,12 @@ namespace Runtime.Geometry.Validation
             return ray.GetPoint(Distance(ray, _projectionPlane));
         }
 
+        public static float3 Projection(this GPlane _projectionPlane,float3 _srcPoint)
+        {
+            var ray = new GRay(_srcPoint, _projectionPlane.normal);
+            return ray.GetPoint(Distance(ray, _projectionPlane));
+        }
+        
         public static float3 Projection(this GTriangle _triangle,float3 _direction)
         {
             var normal = _triangle.normal;
