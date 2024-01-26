@@ -202,7 +202,7 @@ Material:
     - _UVSec: 0
     - _VF: 1
     - _Wave: 1
-    - _WaveAmplitude1: 0.1
+    - _WaveAmplitude1: 0.05
     - _WaveAmplitude2: 0
     - _WaveSpikeAmplitude1: 0.1
     - _WaveSpikeAmplitude2: 0
