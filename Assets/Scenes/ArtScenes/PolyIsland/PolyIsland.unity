@@ -333,6 +333,41 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.bakingOutput.Array.data[0].isBaked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.parameters.Array.data[0].scaleOffset.w
+      value: 0.0014648438
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.parameters.Array.data[0].scaleOffset.x
+      value: 0.9975574
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.parameters.Array.data[0].scaleOffset.y
+      value: 0.99755764
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.parameters.Array.data[0].scaleOffset.z
+      value: 0.0014648438
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.bakingOutput.Array.data[0].lightmapBakeType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.bakingOutput.Array.data[0].probeOcclusionLightIndex
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5838221340852727280, guid: 5fc3594c79f5cc34b914d8207786072a,
         type: 3}
       propertyPath: m_RootOrder

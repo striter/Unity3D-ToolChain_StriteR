@@ -240,8 +240,7 @@ ModelImporter:
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
-    extraUserProperties:
-    - '#BAKERY{"meshName":["PolyIsland"],"padding":[1],"unwrapper":[0]}'
+    extraUserProperties: []
     clipAnimations: []
     isReadable: 0
   meshes:
