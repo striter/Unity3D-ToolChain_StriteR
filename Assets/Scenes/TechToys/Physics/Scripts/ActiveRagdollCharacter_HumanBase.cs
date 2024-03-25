@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Extensions;
 using UnityEngine;
 
 namespace Examples.PhysicsScenes
@@ -32,10 +33,6 @@ namespace Examples.PhysicsScenes
                 Transform physicsSync = m_PhysicsHips.FindInAllChild(sourceTransform.name);
                 m_Synchornizes.Add(new TransformSynchronize(sourceTransform, physicsSync));
             }
-        }
-        public override void OnTakeControl(TPSCameraController _controller)
-        {
-            base.OnTakeControl(_controller);
         }
         public override void OnRemoveControl()
         {

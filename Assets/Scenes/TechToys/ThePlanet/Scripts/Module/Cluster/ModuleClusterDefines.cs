@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Runtime.Geometry;
+using System.Linq;
+using System.Linq.Extensions;
 using Procedural;
 using Unity.Mathematics;
 using UnityEngine;

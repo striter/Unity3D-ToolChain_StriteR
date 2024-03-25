@@ -3,16 +3,16 @@
 half3 SampleBlurTex(TEXTURE2D_PARAM(_tex,_sampler),float2 uv,float2 offset)
 {
     #if defined(_DOF)||defined(_DOF_CLIPSKY)
-    float rawDepth=SampleRawDepth(uv+offset);
-    half focal=saturate(invlerp(_FocalStart,_FocalEnd,RawToEyeDepth(rawDepth)));
-    offset*=focal;
+        float rawDepth=SampleRawDepth(uv+offset);
+        half focal=saturate(invlerp(_FocalStart,_FocalEnd,RawToEyeDepth(rawDepth)));
+        offset*=focal;
     #elif _DOF_MASK
-    offset *= (1-max(SAMPLE_TEXTURE2D(_CameraMaskTexture,sampler_CameraMaskTexture,uv+offset).r,SAMPLE_TEXTURE2D(_CameraMaskTexture,sampler_CameraMaskTexture,uv).r));
+        offset *= (1-max(SAMPLE_TEXTURE2D(_CameraMaskTexture,sampler_CameraMaskTexture,uv+offset).r,SAMPLE_TEXTURE2D(_CameraMaskTexture,sampler_CameraMaskTexture,uv).r));
     #endif
 
     float4 color = SAMPLE_TEXTURE2D(_tex,_sampler,uv+offset);
 
-    #if defined(_FIRSTBLUR)||!defined(_ENCODE)
+    #if defined(_FIRSTBLUR) || !defined(_ENCODE)
         return color.rgb;
     #endif
     return DecodeFromRGBM(color);
@@ -20,7 +20,7 @@ half3 SampleBlurTex(TEXTURE2D_PARAM(_tex,_sampler),float2 uv,float2 offset)
 
 half4 RecordBlurTex(float3 _color)
 {
-    #if defined(_FINALBLUR)||!defined(_ENCODE)
+    #if defined(_FINALBLUR) || !defined(_ENCODE)
         return float4(_color,1);
     #endif
     return EncodeToRGBM(_color.rgb);

@@ -18,13 +18,9 @@ namespace Examples.PhysicsScenes
         Rigidbody m_TargetObject;
         LineRenderer gravityALine;
         readonly Counter m_GravityGunCounter = new Counter(.35f);
-        public override void OnTakeControl(TPSCameraController _controller)
+        public override void OnTakeControl()
         {
-            base.OnTakeControl(_controller);
-            _controller.m_BindRoot = m_Head;
-            _controller.m_BindPosOffset = Vector3.zero;
-            _controller.m_MoveDamping = 0f;
-            _controller.m_RotateDamping = 0f;
+            base.OnTakeControl();
             gravityALine = m_GravityPoint.GetComponent<LineRenderer>();
             TouchConsole.InitButton(ETouchConsoleButton.Main).onClick = OnMainFire;
             TouchConsole.InitButton(ETouchConsoleButton.Alt).onPress = OnAltFire;

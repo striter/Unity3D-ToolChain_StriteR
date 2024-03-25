@@ -3,6 +3,7 @@ using Rendering.PostProcess;
 using UnityEngine;
 using TTouchTracker;
 using UnityEngine.UIElements;
+using System.Linq.Extensions;
 
 namespace Examples.Rendering.PostProcess
 {

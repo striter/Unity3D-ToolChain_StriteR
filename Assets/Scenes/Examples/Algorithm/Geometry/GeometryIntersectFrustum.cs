@@ -1,6 +1,7 @@
 using System;
 using Runtime.Geometry;
 using Unity.Mathematics;
+using System.Linq.Extensions;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;
 

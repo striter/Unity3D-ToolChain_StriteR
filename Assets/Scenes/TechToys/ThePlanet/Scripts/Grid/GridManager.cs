@@ -5,6 +5,7 @@ using Runtime.Geometry.Validation;
 using Procedural;
 using Procedural.Hexagon;
 using Procedural.Hexagon.Area;
+using System.Linq.Extensions;
 using TTouchTracker;
 using UnityEngine;
 using TObjectPool;

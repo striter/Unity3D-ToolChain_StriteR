@@ -1,6 +1,7 @@
 using System.Linq;
 using Runtime.Geometry;
 using Runtime.Geometry.Validation;
+using System.Linq.Extensions;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;

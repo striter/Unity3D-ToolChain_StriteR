@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Extensions;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using Rendering.PostProcess;
@@ -13,7 +14,6 @@ namespace Rendering.Pipeline
         public bool m_Normal;
         public bool m_Mask;
         [MFoldout(nameof(m_Mask), true)] public SRD_MaskData m_MaskData;
-        public bool m_MotionVector;
         public bool m_Reflection;
         [MFoldout(nameof(m_Reflection), true)] public ReflectionPassData m_PlanarReflection;
         public DAntiAliasing m_AntiAliasing;
@@ -23,7 +23,6 @@ namespace Rendering.Pipeline
             m_Normal = false,
             m_Mask = false,
             m_MaskData = SRD_MaskData.kDefault,
-            m_MotionVector = false,
             m_Reflection = false,
             m_PlanarReflection = ReflectionPassData.kDefault,
             m_AntiAliasing = DAntiAliasing.kDefault,
@@ -83,21 +82,21 @@ namespace Rendering.Pipeline
             if (_renderingData.cameraData.isPreviewCamera)
                 return;
 
-            bool mask = m_Data.m_Mask;
-            bool normal = m_Data.m_Normal;
-            bool motionVector = m_Data.m_MotionVector;
-            bool reflection = _renderingData.cameraData.isSceneViewCamera || m_Data.m_Reflection;
+            var mask = m_Data.m_Mask;
+            var normal = m_Data.m_Normal;
+            var reflection = _renderingData.cameraData.isSceneViewCamera || m_Data.m_Reflection;
             if(_renderingData.cameraData.camera.TryGetComponent(out CameraOverride param))
             {
                 normal = param.m_Normal.IsEnabled(normal);
                 reflection = param.m_Reflection.IsEnabled(reflection);
-                motionVector = param.m_MotionVector.IsEnabled(motionVector);
             }
             
             if(mask)
                 _renderer.EnqueuePass(m_Mask.Setup(m_Data.m_MaskData));
             if (normal)
                 _renderer.EnqueuePass(m_Normal);
+            
+            var motionVector = m_Data.m_AntiAliasing.mode == EAntiAliasing.TAA;
             if(motionVector)
                 _renderer.EnqueuePass(m_MotionVectorTexture);
             if (reflection)

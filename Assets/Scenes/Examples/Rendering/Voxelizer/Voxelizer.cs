@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Extensions;
 using Runtime.DataStructure;
 using Runtime.Geometry;
 using Runtime.Geometry.Validation;

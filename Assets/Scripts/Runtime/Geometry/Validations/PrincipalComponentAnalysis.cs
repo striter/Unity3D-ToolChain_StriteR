@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Extensions;
 using Unity.Mathematics;
 namespace Runtime.Geometry.Validation
 {

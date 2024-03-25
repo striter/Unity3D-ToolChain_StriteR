@@ -26,6 +26,13 @@ public static partial class umath
 {
     public static float3 mul(this quaternion _q, float3 _direction) => math.mul(_q, _direction);
     
+    public static float2 toPitchYaw(this quaternion _rotation)
+    {
+        var _direction = math.mul(_rotation, kfloat3.forward);
+        var pitch = math.atan2(-_direction.y, math.sqrt(_direction.x * _direction.x + _direction.z * _direction.z));
+        var yaw = math.atan2(_direction.x, _direction.z);
+        return new float2(pitch, yaw) * kRad2Deg;
+    }
     public static float3 toEuler(this quaternion _q)
     {
         var q = _q.value;

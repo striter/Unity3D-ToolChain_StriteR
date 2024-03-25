@@ -89,27 +89,28 @@ namespace Runtime.Geometry.Curves.LineSegments
         public static void DrawGizmos(this GDivisionCurve _curve,bool _indicator = true)
         {
             var outputs = _curve.Output(out var divisions);
-            UnityEngine.Gizmos.color = Color.green;
+            Gizmos.color = Color.green;
             UGizmos.DrawLines(outputs,_p=>_p);
 
             if (!_indicator)
                 return;
             
-            UnityEngine.Gizmos.color = Color.blue;
-            UnityEngine.Gizmos.DrawWireSphere(_curve.begin,.05f);
-            UnityEngine.Gizmos.DrawWireSphere(_curve.end,.05f);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(_curve.begin,.05f);
+            Gizmos.DrawWireSphere(_curve.end,.05f);
 
-            UnityEngine.Gizmos.color = Color.red;
-            UnityEngine.Gizmos.DrawWireSphere(_curve.control1,.05f);
-            UnityEngine.Gizmos.DrawWireSphere(_curve.control2,.05f);
-
-            UnityEngine.Gizmos.color = Color.white;
-            UnityEngine.Gizmos.DrawLine(_curve.begin,_curve.control1);
-            UnityEngine.Gizmos.DrawLine(_curve.begin,_curve.control2);
-            UnityEngine.Gizmos.DrawLine(_curve.end,_curve.control1);
-            UnityEngine.Gizmos.DrawLine(_curve.end,_curve.control2);
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(_curve.control1,.05f);
             
-            UnityEngine.Gizmos.color = Color.white.SetA(.5f);
+            Gizmos.DrawWireSphere(_curve.control2,.05f);
+
+            Gizmos.color = Color.white;
+            Gizmos.DrawLine(_curve.begin,_curve.control1);
+            Gizmos.DrawLine(_curve.begin,_curve.control2);
+            Gizmos.DrawLine(_curve.end,_curve.control1);
+            Gizmos.DrawLine(_curve.end,_curve.control2);
+            
+            Gizmos.color = Color.white.SetA(.5f);
             for (int i = 0; i < divisions.Count; i++)
             {
                 UGizmos.DrawLinesConcat(divisions[i].quad.Iterate(),_p=>_p);

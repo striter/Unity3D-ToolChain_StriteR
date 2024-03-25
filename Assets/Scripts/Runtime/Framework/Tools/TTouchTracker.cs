@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Extensions;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace TTouchTracker
 {
     public struct TrackData
     {
+        public bool valid;
         public int index;
         public Vector2 origin;
         public float lifeTime;
@@ -20,10 +22,11 @@ namespace TTouchTracker
         public Vector2 previousNormalized;
         public Vector2 currentNormalized;
         public Vector2 deltaNormalized;
-        public TrackData(Touch _touch,Vector2 _screenSize)
+        public TrackData(Touch _touch, Vector2 _screenSize, bool _valid)
         {
             index = _touch.fingerId;
             origin = _touch.position;
+            valid = _valid;
             
             current = origin;
             previous = current;
@@ -61,68 +64,64 @@ namespace TTouchTracker
     public static class TouchTracker
     {
         static readonly Dictionary<int,TrackData> m_TrackData=new Dictionary<int, TrackData>();
-        private static Touch[] GetTouches()
+        private static IEnumerable<Touch> GetTouches()
         {
-#if UNITY_EDITOR
-            List<Touch> simulateTouches = new List<Touch>();
-
-            TouchPhase GETPhase(int id, bool pressing, Vector2 position2)
+#if UNITY_STANDALONE || UNITY_EDITOR
+            TouchPhase GetPhase(int id, KeyCode _keyCode, Vector2 position2)
             {
-                if (pressing)
-                    if (m_TrackData.ContainsKey(id))
-                        return m_TrackData[id].current == position2 ? TouchPhase.Stationary : TouchPhase.Moved;
-                    else
-                        return TouchPhase.Began;
+                var pressing = Input.GetKey(_keyCode);
+                if (m_TrackData.TryGetValue(id, out var trackData))
+                {
+                    if(!pressing) return TouchPhase.Ended;
+                    return trackData.current == position2 ? TouchPhase.Stationary : TouchPhase.Moved;
+                }
 
-                if (m_TrackData.ContainsKey(id)) return TouchPhase.Ended;
-
+                if(pressing) return TouchPhase.Began;
+                
                 return TouchPhase.Canceled;
             }
 
-            Vector2 position = Input.mousePosition;
+            var position = (Vector2)Input.mousePosition;
             //LRM Mouse Button 0,1,2
-            for (int index = 0; index < 3; index++)
+            for (var index = 0; index < 3; index++)
             {
-                TouchPhase phase = GETPhase(index, Input.GetMouseButton(index), position);
+                var phase = GetPhase(index, KeyCode.Mouse0 + index, position);
                 if(phase== TouchPhase.Canceled)
                     continue;
-                simulateTouches.Add(new Touch(){fingerId = index,phase=phase,position = position});
+                yield return new Touch(){fingerId = index,phase=phase,position = position};
             }
 
-            //LeftCtrl Touches 3
+            // LeftCtrl Touches 3
             {
-                TouchPhase phase = GETPhase(3, Input.GetKey(KeyCode.LeftControl), position);
-                if (phase != TouchPhase.Canceled)
-                {
-                    simulateTouches.Add(new Touch(){fingerId = 3,phase=phase,position =position});
-                    var center = new Vector2(Screen.width,Screen.height)/2f;
-                    var invertPosition = center + (center - position);
-                    simulateTouches.Add(new Touch(){fingerId = 4,phase=phase,position =invertPosition});
-                }
+                var phase = GetPhase(3, KeyCode.LeftControl, position);
+                if (phase == TouchPhase.Canceled) yield break;
+                 
+                yield return (new Touch(){fingerId = 3,phase=phase,position =position});
+                var center = new Vector2(Screen.width,Screen.height)/2f;
+                var invertPosition = center + (center - position);
+                yield return  (new Touch(){fingerId = 4,phase=phase,position =invertPosition});
             }
-
-            return simulateTouches.ToArray();
 #else
-      return Input.touches;
+            foreach (var touch in Input.touches)
+                yield return touch;
 #endif
         }
         
         private static readonly List<int> kTracksIndex = new List<int>();
         private static readonly List<TrackData> kTracks = new List<TrackData>();
-        public static List<TrackData> Execute(float _unscaledDeltaTime)
+        public static List<TrackData> Execute(float _unscaledDeltaTime,Predicate<Touch> _filter = null)
         {
-            Vector2 screenSize = new Vector2(Screen.width, Screen.height);
+            var screenSize = new Vector2(Screen.width, Screen.height);
             foreach (var trackIndex in m_TrackData.Keys.Collect(p => m_TrackData[p].phase == TouchPhase.Ended||m_TrackData[p].phase== TouchPhase.Canceled).FillList(kTracksIndex))     //We don't remove touch the frame its cancelled, state will be used across applications
                 m_TrackData.Remove(trackIndex);
-
             
-            foreach (Touch touch in GetTouches())
+            foreach (var touch in GetTouches())
             {
                 var id = touch.fingerId;
                 switch (touch.phase)
                 {
                     case TouchPhase.Began:
-                        m_TrackData.Add(id,new TrackData(touch,screenSize));
+                        m_TrackData.Add(touch.fingerId,new TrackData(touch, screenSize,_filter ==null || _filter(touch)));
                         break;
                     case TouchPhase.Stationary:
                     case TouchPhase.Moved:
@@ -132,8 +131,7 @@ namespace TTouchTracker
                         break;
                 }
             }
-            m_TrackData.Values.FillList(kTracks);
-            return kTracks;
+            return m_TrackData.Values.Collect(p=>p.valid).FillList(kTracks);
         }
         
         #if UNITY_EDITOR
@@ -157,23 +155,23 @@ namespace TTouchTracker
         public static IEnumerable<TrackData> ResolvePress(this List<TrackData> _tracks)=>_tracks.Collect(p => p.phase == TouchPhase.Stationary);
         public static IEnumerable<Vector2> ResolveTouch(this List<TrackData> _tracks, float _senseTime=.3f, TouchPhase tp = TouchPhase.Stationary)=>_tracks.Collect(p => p.phase == tp && p.lifeTime > _senseTime).Select(p=>p.origin);
 
-        public static Vector2 CombinedDrag(this List<TrackData> _tracks)=> _tracks.Average(p => p.delta);
+        public static float2 CombinedDrag(this List<TrackData> _tracks)=> _tracks.Average(p => p.delta);
         public static float CombinedPinch(this List<TrackData> _tracks)
         {
-            float pinch = 0;
+            var pinch = 0f;
             
-            #if UNITY_EDITOR
-                pinch += Input.GetAxis("Mouse ScrollWheel")*500f;
+            #if UNITY_STANDALONE || UNITY_EDITOR
+                pinch += Input.GetAxis("Mouse ScrollWheel") * Time.unscaledDeltaTime * -10000f ;      // pixels / sec while scrolling
             #endif
             
             if (_tracks.Count >= 2)
             {
-                Vector2 center = _tracks.Average(p => p.current);
+                var center = _tracks.Average(p => p.current);
                 var beginDelta = _tracks[0].delta;
             
                 pinch += _tracks.Average(p =>
                 {
-                    float sign=Mathf.Sign( Vector2.Dot( p.delta,center-p.previous));
+                    var sign= Mathf.Sign( Vector2.Dot( p.delta,center-p.previous));
                     return (beginDelta-p.delta).magnitude*sign;
                 });
             
@@ -181,16 +179,14 @@ namespace TTouchTracker
             }
             return pinch;
         }
-
-
     }
 
     public static class TouchTracker_Extension_Advanced
     {
         #region Joystick
 
-        public static Vector2 Input_ScreenMove(this List<TrackData> _tracks, RangeFloat _xActive)=> _tracks.Collect(p=>_xActive.Contains( p.originNormalized.x)).Average(p=>p.delta);
-        public static Vector2 Input_ScreenMove_Normalized(this List<TrackData> _tracks,RangeFloat _xActive) => Input_ScreenMove(_tracks,_xActive).div(Screen.width,Screen.height);
+        public static float2 Input_ScreenMove(this List<TrackData> _tracks, RangeFloat _xActive)=> _tracks.Collect(p=>_xActive.Contains( p.originNormalized.x)).Average(p=>p.delta);
+        public static float2 Input_ScreenMove_Normalized(this List<TrackData> _tracks,RangeFloat _xActive) => Input_ScreenMove(_tracks,_xActive) / new float2(Screen.width,Screen.height);
         private static int m_JoystickID = -1;
         private static Vector2 m_JoystickStationaryPos = Vector2.zero;
         public static void Joystick_Stationary(this List<TrackData> _trackData,Action<Vector2,bool> _onJoyStickSet,Action<Vector2> _normalizedTrackDelta,RangeFloat _activeXRange,float _joystickRadius,bool _removeTracker=true)
@@ -220,9 +216,9 @@ namespace TTouchTracker
                 return;
             }
 
-            Vector2 joystickDelta = trackData.current - trackData.origin;
-            Vector2 direction = joystickDelta.normalized;
-            float magnitude=Mathf.Clamp01(joystickDelta.magnitude/_joystickRadius);
+            var joystickDelta = trackData.current - trackData.origin;
+            var direction = joystickDelta.normalized;
+            var magnitude=Mathf.Clamp01(joystickDelta.magnitude/_joystickRadius);
             _normalizedTrackDelta?.Invoke(direction*magnitude);
             if (_removeTracker)
                 _trackData.Remove(trackData);
@@ -265,5 +261,6 @@ namespace TTouchTracker
         }
         #endregion
     }
+
 
 }

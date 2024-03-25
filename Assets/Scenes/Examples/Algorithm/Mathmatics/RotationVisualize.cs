@@ -11,11 +11,14 @@ namespace Examples.Mathmatics
 
         [Header("From To")]
         public Vector3 m_FromVector=Vector3.up;
-
         public Vector3 m_ToVector = Vector3.forward;
-
         public Vector3 m_FromToRotateVector = Vector3.up;
-#if UNITY_EDITOR
+
+        [Header("Slerp")] public Vector3 m_SlerpFrom = kfloat3.left;
+        public Vector3 m_SlerpTo = kfloat3.right;
+        [Range(0, 1)] public float m_SlerpVal;
+        
+// #if UNITY_EDITOR
         void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
@@ -47,8 +50,17 @@ namespace Examples.Mathmatics
             Gizmos.color = Color.green;
             Gizmos.DrawLine(Vector3.zero,umath.FromTo3x3(from,to)*m_FromToRotateVector*.5f);
 
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right * 4f);
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(Vector3.zero,m_SlerpFrom);
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(Vector3.zero,m_SlerpTo);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawLine(Vector3.zero,umath.slerp(m_SlerpFrom, m_SlerpTo, m_SlerpVal,kfloat3.up));
+            UGizmos.DrawString(Vector3.zero, umath.angle(m_SlerpFrom,m_SlerpTo).ToString());
+            
         }
-#endif
+// #endif
     }
 
 }

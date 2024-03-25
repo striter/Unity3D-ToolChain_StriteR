@@ -1,4 +1,4 @@
-Shader "Game/Unfinished/SDF_Combination"
+Shader "Hidden/SDF_Combination"
 {
     SubShader
     {

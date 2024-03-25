@@ -3,7 +3,6 @@ using Unity.Mathematics;
 using UnityEngine;
 using static kmath;
 using static Unity.Mathematics.math;
-
 public enum EAxis
 {
     X = 0,
@@ -81,6 +80,49 @@ public static partial class umath
     
     public static float invLerp(float _a, float _b, float _value)=> (_value - _a) / (_b - _a);
 
+    public static float3 trilerp(float3 _a, float3 _b, float3 _c, float _value)
+    {
+        if (_value < .5f)
+            return math.lerp(_a, _b, _value * 2);
+        return math.lerp(_b, _c, _value * 2 - 1f);
+    }
+    
+    public static float angle(float3 a, float3 b)
+    {
+        var sqMagA = a.sqrmagnitude();
+        var sqMagB = b.sqrmagnitude();
+        if (sqMagB == 0 || sqMagA == 0)
+            return 0;
+            
+        var dot = math.dot(a, b);
+        if (abs(1 - sqMagA) < EPSILON && abs(1 - sqMagB) < EPSILON) {
+            return acos(dot);
+        }
+ 
+        float length = sqrt(sqMagA) * sqrt(sqMagB);
+        return acos(dot / length);
+    }
+    public static float3 slerp(float3 from, float3 to, float t,float3 up)
+    {
+        float theta = angle(from, to);
+        float sin_theta = sin(theta);
+        var dotValue = dot(from.normalize(), to.normalize());
+        Debug.Log(dotValue);
+        if (dotValue > .999f)
+            return to;
+        if(dotValue < -.999f)
+            return trilerp(from, up,to, t);
+
+        float a = sin((1 - t) * theta) / sin_theta;
+        float b = sin(t * theta) / sin_theta;
+        return from * a + to * b;
+    }
+
+    public static float3 nlerp(float3 _from, float3 _to, float t)
+    {
+        return normalize(math.lerp(_from,_to,t));
+    }
+    
     public static EAxis maxAxis(this float2 _value)
     {
         if (_value.x > _value.y)
@@ -204,15 +246,15 @@ public static partial class umath
         for (int i = 0; i < 256; i++)
         {
             var angle = i * kPiDiv128;
-            alphaSinCos[i] = new float2( cos(angle),sin(angle));
+            alphaSinCos[i] = new float2( math.cos(angle),math.sin(angle));
         }
         return alphaSinCos;
     }
     
     public static void sincos(float _f, out float _s, out float _c)
     {
-        var a = abs(_f) * k128InvPi;
-        var i = (int)floor(a);
+        var a =math.abs(_f) * k128InvPi;
+        var i = (int)math.floor(a);
         var b = (a - i) * kPiDiv128;
         var alphaCosSin = kAlphaSinCos[i&255];
         var b2 = b * b;
@@ -228,8 +270,8 @@ public static partial class umath
 
     public static float2 tripleProduct(float2 _a, float2 _b, float2 _c) => _b *math.dot(_a, _c)  - _a * math.dot(_c, _b);
     public static float3 tripleProduct(float3 _a, float3 _b, float3 _c) => _b *math.dot(_a, _c)  - _a * math.dot(_c, _b);
-    public static float repeat(float _t,float _length) => math.clamp(_t - floor(_t / _length) * _length, 0.0f, _length);
-    public static float2 repeat(float2 _t,float2 _length) => math.clamp(_t - floor(_t / _length) * _length, 0.0f, _length);
+    public static float repeat(float _t,float _length) => math.clamp(_t - math.floor(_t / _length) * _length, 0.0f, _length);
+    public static float2 repeat(float2 _t,float2 _length) => math.clamp(_t - math.floor(_t / _length) * _length, 0.0f, _length);
     
     public static float deltaAngle(float _x,float _xd)
     {

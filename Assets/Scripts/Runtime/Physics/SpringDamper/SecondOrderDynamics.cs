@@ -18,6 +18,7 @@ namespace Runtime.Physics
         [Header("Constants")]
         [Readonly] public float4 _xp;
         [Readonly] public float _w,_d,_k1, _k2, _k3;
+        public float duration => 4 / (z * f);
         SecondOrderDynamics Ctor()
         {
             _w = 2 * kPI * f;

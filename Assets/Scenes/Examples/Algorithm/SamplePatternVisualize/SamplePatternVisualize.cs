@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using Unity.Mathematics;
 using Rendering.Pipeline;
+using System.Linq.Extensions;
 
 namespace Examples.Algorithm.SamplePatternVisualize
 {

@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Runtime.Geometry
 {
+
+#if  UNITY_EDITOR
+    
     using static UGizmos;
 
     [Flags]
@@ -152,4 +155,7 @@ namespace Runtime.Geometry
 
         
     }
+    
+
+#endif
 }

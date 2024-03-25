@@ -11,6 +11,7 @@ namespace Runtime.Geometry.Curves.Spline
 
     public static class USpline
     {
+#if UNITY_EDITOR
         public static void DrawGizmos(this ISplineDimensions<float3> _curve,int _amount = 64,float _sphereSize = .05f)
         {
             var outputs = _curve.Output(_amount);
@@ -23,5 +24,6 @@ namespace Runtime.Geometry.Curves.Spline
             Gizmos.color = Color.white.SetA(.5f);
             UGizmos.DrawLines(_curve.Coordinates,p=>p);
         }
+#endif
     }
 }

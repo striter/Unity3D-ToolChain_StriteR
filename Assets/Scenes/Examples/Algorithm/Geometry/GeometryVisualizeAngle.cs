@@ -21,6 +21,10 @@ namespace Examples.Algorithm.Geometry
 
             var yaw = umath.toPitchYaw(m_Position);
             UGizmos.DrawString( Vector3.zero,yaw.ToString());
+
+            var estimatePitch = umath.angle(m_Position.normalized,Vector3.forward,kfloat3.right);
+            var estimateYaw = umath.angle(Vector3.forward,m_Position.normalized,kfloat3.up) ;
+            UGizmos.DrawString( Vector3.down * .1f,estimatePitch + "|" +estimateYaw);
         }
     }
     #endif

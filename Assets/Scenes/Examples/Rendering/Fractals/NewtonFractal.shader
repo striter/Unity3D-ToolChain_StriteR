@@ -1,4 +1,4 @@
-Shader "Game/Unfinished/NewtonFractal"
+Shader "Hidden/NewtonFractal"
 {
     Properties
     {

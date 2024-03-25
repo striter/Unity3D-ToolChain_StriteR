@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Extensions;
 using OPhysics;
 using TTouchTracker;
 using UnityEngine;
@@ -38,9 +39,9 @@ namespace Examples.PhysicsScenes
                     m_StaticAnimatorSynchonize.Add(new StaticAnimatorSynchonize(syncTransform, joint));
             }
         }
-        public override void OnTakeControl(TPSCameraController _controller)
+        public override void OnTakeControl()
         {
-            base.OnTakeControl(_controller);
+            base.OnTakeControl();
             TouchConsole.InitButton(ETouchConsoleButton.Main).onClick=SwitchAnim;
         }
         public override void OnRemoveControl()

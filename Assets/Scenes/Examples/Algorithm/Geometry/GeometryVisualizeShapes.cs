@@ -5,6 +5,7 @@ using Runtime.Geometry;
 using Runtime.Geometry.Curves;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;
+using System.Linq.Extensions;
 
 public class GeometryVisualizeShapes : MonoBehaviour
 {

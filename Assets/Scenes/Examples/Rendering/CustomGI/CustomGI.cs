@@ -3,6 +3,7 @@ using Rendering.GI.SphericalHarmonics;
 using Rendering.Lightmap;
 using Unity.Mathematics;
 using UnityEngine;
+using System.Linq.Extensions;
 
 namespace Examples.Rendering.GI.CustomGI
 {

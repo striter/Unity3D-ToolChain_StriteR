@@ -83,7 +83,7 @@ namespace Rendering.PostProcess
         [MFoldout(nameof(m_BlurType), EBlurType.LightStreak)]
         [RangeVector(0, 1)] public Vector2 m_Vector;
         [MFoldout(nameof(m_BlurType), EBlurType.LightStreak)]
-        [Range(.9f, .95f)] public float m_Attenuation;
+        [Range(.9f, 1f)] public float m_Attenuation;
         public bool Validate() => m_BlurType != EBlurType.None && m_DownSample > 0;
         
         public static readonly DBlurs kDefault = new DBlurs()
@@ -163,6 +163,22 @@ namespace Rendering.PostProcess
             return identifiers;
         }
 
+        static bool EncodingRequired(EBlurType _type)
+        {
+            switch (_type)
+            {
+                case EBlurType.Kawase:
+                case EBlurType.AverageVHSeperated:
+                case EBlurType.GaussianVHSeperated:
+                case EBlurType.DualFiltering:
+                case EBlurType.NextGen:
+                case EBlurType.LightStreak:
+                    return true;
+            }
+
+            return false;
+        }
+
         private static readonly Dictionary<EBlurType, string> kBlurSample = UEnum.GetEnums<EBlurType>().ToDictionary(p=>p,p=>p.ToString());
         static readonly int kBlurTempID1 = Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp1");
         static readonly RenderTargetIdentifier kBlurTempRT1 = new RenderTargetIdentifier(kBlurTempID1);
@@ -194,9 +210,10 @@ namespace Rendering.PostProcess
 
             var sampleName = kBlurSample[_data.m_BlurType];
             _buffer.BeginSample(sampleName);
-            int startWidth = _descriptor.width / _data.m_DownSample;
-            int startHeight = _descriptor.height / _data.m_DownSample;
-            m_Material.EnableKeyword(kKWEncoding,_descriptor.colorFormat!=RenderTextureFormat.ARGB32);
+            var startWidth = _descriptor.width / _data.m_DownSample;
+            var startHeight = _descriptor.height / _data.m_DownSample;
+            m_Material.EnableKeyword(kKWEncoding,EncodingRequired(_data.m_BlurType) && _descriptor.colorFormat!=RenderTextureFormat.ARGB32);
+            
             switch (_data.m_BlurType)
             {
                 case EBlurType.Kawase:
@@ -308,8 +325,8 @@ namespace Rendering.PostProcess
                         m_Material.SetFloat(kIDBlurSize, _data.m_BlurSize * 2);
                         m_Material.SetFloat(kIDIteration, _data.m_Iteration * 2);
                         m_Material.SetFloat(kIDAngle, _data.m_Angle);
-                        _buffer.GetTemporaryRT(kHexagonVerticalID, startWidth, startHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
-                        _buffer.GetTemporaryRT(kHexagonDiagonalID, startWidth, startHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
+                        _buffer.GetTemporaryRT(kHexagonVerticalID, startWidth, startHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
+                        _buffer.GetTemporaryRT(kHexagonDiagonalID, startWidth, startHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
 
                         _buffer.Blit(_src, kVerticalRT, m_Material, verticalPass);
                         _buffer.Blit(_src, kDiagonalRT, m_Material, diagonalPass);
@@ -324,10 +341,11 @@ namespace Rendering.PostProcess
                     int radialPass = (int)EBlurPass.Blinking_Radial;
                     int combinePass = (int) EBlurPass.Blinking_Combine;
                     
+                    
                     _buffer.GetTemporaryRT(kBlurTempID1, startWidth, startHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
-                    _buffer.GetTemporaryRT(kBlurTempID2, startWidth, startHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
-                    _buffer.GetTemporaryRT(kBlinkingVerticalID,startWidth,startHeight,0,FilterMode.Bilinear,RenderTextureFormat.ARGB32);
-                    _buffer.GetTemporaryRT(kBlinkingHorizontalID,startWidth,startHeight,0,FilterMode.Bilinear,RenderTextureFormat.ARGB32);
+                    _buffer.GetTemporaryRT(kBlurTempID2, startWidth, startHeight, 0, FilterMode.Bilinear,  RenderTextureFormat.ARGB32);
+                    _buffer.GetTemporaryRT(kBlinkingVerticalID,startWidth,startHeight,0,FilterMode.Bilinear, RenderTextureFormat.ARGB32);
+                    _buffer.GetTemporaryRT(kBlinkingHorizontalID,startWidth,startHeight,0,FilterMode.Bilinear, RenderTextureFormat.ARGB32);
                     Action<int, Vector2, float, int, float, RenderTargetIdentifier> DoRadialBlur =
                         (_iteration, _direction, _blurSize, _downSample, _attenuation, _RTid) =>
                         {
@@ -346,6 +364,7 @@ namespace Rendering.PostProcess
                     DoRadialBlur(_data.m_Iteration,_data.m_Vector,_data.m_BlurSize,_data.m_DownSample,_data.m_Attenuation,kBlinkingVerticalRT);
                     DoRadialBlur(_data.m_Iteration, KRotation.kRotateCW90.mul(_data.m_Vector),_data.m_BlurSize,_data.m_DownSample,_data.m_Attenuation,kBlinkingHorizontalRT);
                     
+                    _buffer.EnableKeyword(kKWFirstBlur, false);
                     _buffer.EnableKeyword(kKWFinalBlur,true);
                     _buffer.Blit(_src,_dst,m_Material,combinePass);
                     

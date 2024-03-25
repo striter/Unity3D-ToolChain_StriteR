@@ -13,6 +13,7 @@ namespace Runtime.Geometry
     
     public static class IShape_Extension
     {
+#if UNITY_EDITOR
         public static void DrawGizmos(this IShapeGizmos _shape)
         { 
             var method = typeof(Gizmos_Geometry).GetMethod("DrawGizmos", new[] {_shape.GetType()});
@@ -20,5 +21,6 @@ namespace Runtime.Geometry
                 throw new NotImplementedException($"Create a DrawGizmos method in {nameof(Gizmos_Geometry)} for {_shape.GetType()}");
             method.Invoke(null,new object[]{_shape});
         }
+#endif
     }
 }

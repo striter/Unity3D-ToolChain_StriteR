@@ -82,9 +82,9 @@ namespace Examples.PhysicsScenes
         float m_ConciousTimeElapsed;
 
         
-        public override void OnTakeControl(TPSCameraController _controller)
+        public override void OnTakeControl()
         {
-            base.OnTakeControl(_controller);
+            base.OnTakeControl();
             m_LeftThigh.maxAngularVelocity = 90f;
             m_RightThigh.maxAngularVelocity = 90f;
             TouchConsole.InitButton(ETouchConsoleButton.Main).onPress = m_LeftArmCombine.OnAiming;

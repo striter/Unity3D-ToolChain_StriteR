@@ -1,6 +1,7 @@
 using Runtime.Geometry;
 using Runtime.Geometry.Curves;
 using UnityEngine;
+using System.Linq.Extensions;
 
 //This stuff is inspired by deferred rendering
 //*its requiring depth prepass to work properly

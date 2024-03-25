@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Linq.Extensions;
 
 namespace Examples.Rendering.ComputeShaders.FogOfWar2D
 {

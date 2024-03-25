@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using CameraController;
 using TTouchTracker;
 using UnityEngine;
 
@@ -11,14 +12,6 @@ namespace Examples.PhysicsScenes
         protected Transform m_CameraFollow;
         [SerializeField]
         protected Transform m_CameraAttach;
-        public override void OnTakeControl(TPSCameraController _controller)
-        {
-            base.OnTakeControl(_controller);
-            _controller.m_BindRoot = m_CameraAttach;
-            _controller.m_BindPosOffset = new Vector3(0, .5f, -4f);
-            _controller.m_MoveDamping = .2f;
-            _controller.m_RotateDamping = .2f;
-        }
         public override void FixedTick(float _deltaTime)
         {
         }

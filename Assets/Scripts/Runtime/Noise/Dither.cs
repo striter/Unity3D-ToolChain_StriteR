@@ -1,3 +1,4 @@
+using System.Linq.Extensions;
 using Unity.Mathematics;
 
 namespace Noise
@@ -32,7 +33,7 @@ namespace Noise
             35, 19, 47, 31, 34, 18, 46, 30,
             11, 59, 7, 55, 10, 58, 6, 53,
             43, 27, 39, 23, 42, 26, 38, 22
-        }.Remake((index,p)=>p/65f);
+        }.Remake((_,p)=>p/65f);
     }
     
 }

@@ -1,5 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Extensions;
+using CameraController;
+using CameraController.Demo;
 using UnityEngine;
 using TTouchTracker;
 using Unity.Mathematics;
@@ -14,7 +17,9 @@ namespace Examples.PhysicsScenes
         public ActiveRagdollCharacter_Human_StaticAnimator m_Human_StaticAnimator;
         PhysicsCharacterBase m_CharacterBase;
         DynamicItemRepositon[] m_DynamicItems;
-        TPSCameraController m_CameraController;
+
+        public CameraControllerCore m_CameraController = new CameraControllerCore();
+        public FControllerInput m_ControllerInput = new FControllerInput();
         class DynamicItemRepositon
         {
             public Rigidbody m_Rigidbody;
@@ -42,7 +47,7 @@ namespace Examples.PhysicsScenes
         }
         private void Awake()
         {
-            m_CameraController = transform.Find("CameraController").GetComponent<TPSCameraController>();
+            m_ControllerInput.camera = GetComponentInChildren<Camera>();
             Rigidbody[] rigidbodies = transform.Find("Dynamic").GetComponentsInChildren<Rigidbody>();
             m_DynamicItems = new DynamicItemRepositon[rigidbodies.Length];
             for (int i = 0; i < rigidbodies.Length; i++)
@@ -68,7 +73,11 @@ namespace Examples.PhysicsScenes
             m_CharacterBase = _character;
 
             if (m_CharacterBase)
-                m_CharacterBase.OnTakeControl(m_CameraController);
+            {
+                _character.OnTakeControl();
+                m_ControllerInput.anchor = _character.transform;
+                m_CameraController.Switch(_character.m_CameraController,ref m_ControllerInput);
+            }
         }
 
         private void Update()
@@ -77,8 +86,10 @@ namespace Examples.PhysicsScenes
                 return;
             m_CharacterBase.Tick(Time.deltaTime);
         }
+        
         private void LateUpdate()
         {
+            m_CameraController.Tick(Time.unscaledTime,ref m_ControllerInput);
             m_DynamicItems.Traversal(dynamicItem => dynamicItem.FixedUpdate());
             if (!m_CharacterBase)
                 return;
@@ -88,10 +99,13 @@ namespace Examples.PhysicsScenes
 
     public abstract class PhysicsCharacterBase : MonoBehaviour
     {
+        public ACameraController m_CameraController;
         public float m_MoveSpeed = 10f;
         public float m_RotateSpeed = 1f;
-        public virtual void OnTakeControl(TPSCameraController _controller)
+
+        public virtual void OnTakeControl()
         {
+            
         }
         public virtual void OnRemoveControl()
         {

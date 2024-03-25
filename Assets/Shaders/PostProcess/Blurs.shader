@@ -132,7 +132,7 @@
 			half3 hexagonBlur = SampleBlurTex(TEXTURE2D_ARGS(_tex,_samp),uv,direction*float2(i+.5,i+.5));
 			finalCol+=hexagonBlur;
 		}
-		return finalCol/_Iteration;
+		return RecordBlurTex(finalCol/_Iteration);
 	}
 	
 	half4 fragHexagonVertical(v2f_img i):SV_TARGET
@@ -151,7 +151,8 @@
 		half sinA,cosA;
 		sincos(angle,sinA,cosA);
 		float2 dir=float2(cosA,sinA)*_MainTex_TexelSize.xy*_BlurSize;
-		return RecordBlurTex(SampleBlurTex(TEXTURE2D_ARGS(_Hexagon_Vertical,sampler_Hexagon_Vertical), i.uv,0)+HexagonBlurTexture(TEXTURE2D_ARGS( _MainTex,sampler_MainTex),i.uv,dir)/2);
+		float3 combined = (SampleBlurTex(TEXTURE2D_ARGS(_Hexagon_Vertical,sampler_Hexagon_Vertical), i.uv,0)+HexagonBlurTexture(TEXTURE2D_ARGS( _MainTex,sampler_MainTex),i.uv,dir))*.5f;
+		return RecordBlurTex(combined);
 	}
 
 	TEXTURE2D( _Hexagon_Diagonal);SAMPLER(sampler_Hexagon_Diagonal);
@@ -164,7 +165,7 @@
 		sincos(_Angle+PI*0.833333h,sinA,cosA);
 		float2 diagonalBlurDirection=float2(cosA,sinA)*_MainTex_TexelSize.xy*_BlurSize;
 		half3 diagonal=HexagonBlurTexture(TEXTURE2D_ARGS( _Hexagon_Diagonal,sampler_Hexagon_Diagonal),i.uv,diagonalBlurDirection);
-		return RecordBlurTex(vertical+diagonal*2.0h)*0.3333h;
+		return RecordBlurTex((vertical+diagonal*2.0h)*0.3333h);
 	}
 
 	//Radial
@@ -193,7 +194,7 @@
     {
     	half3 vertical = SampleBlurTex(TEXTURE2D_ARGS(_Blinking_Vertical,sampler_Blinking_Vertical),i.uv,0);
     	half3 horizontal = SampleBlurTex(TEXTURE2D_ARGS(_Blinking_Horizontal,sampler_Blinking_Horizontal),i.uv,0);
-    	return RecordBlurTex((vertical+horizontal)*.5);
+    	return float4((vertical+horizontal)/2,1);
     }
     
 	//Dual Filtering
@@ -209,8 +210,9 @@
 	{
 		half3 srcCol = DualFilteringUpFilter(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),i.uv,_MainTex_TexelSize,_BlurSize);
 		half3 mipCol = DualFilteringUpFilter(TEXTURE2D_ARGS(_PreDownSample,sampler_PreDownSample),i.uv,_PreDownSample_TexelSize,_BlurSize);
-		
-		return RecordBlurTex(srcCol+mipCol);
+
+		half3 finalCol = srcCol + mipCol;
+		return RecordBlurTex(finalCol);
 	}
 
     half4 fragNextGenUpSampleFinal(v2f_img i):SV_TARGET

@@ -1,4 +1,5 @@
 using System;
+using System.Linq.Extensions;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
@@ -67,6 +68,7 @@ namespace Runtime.Geometry.Curves.LineSegments
 
     public static class UChaikinCurve
     {
+#if UNITY_EDITOR
         public static void DrawGizmos(this GChaikinCurve _curve,bool _indicator = true)
         {
             var outputs = _curve.Output();
@@ -85,5 +87,6 @@ namespace Runtime.Geometry.Curves.LineSegments
             else
                 UGizmos.DrawLines(_curve.vertices, p => p);
         }
+#endif
     }
 }

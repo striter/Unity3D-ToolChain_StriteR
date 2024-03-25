@@ -53,6 +53,8 @@ MonoBehaviour:
       type: 3}
     objectMotionVector: {fileID: 4800000, guid: 7b3ede40266cd49a395def176e1bc486,
       type: 3}
+    dataDrivenLensFlare: {fileID: 4800000, guid: 6cda457ac28612740adb23da5d39ea92,
+      type: 3}
   m_AssetVersion: 2
   m_OpaqueLayerMask:
     serializedVersion: 2
@@ -99,20 +101,7 @@ MonoBehaviour:
     m_MotionVector: 0
     m_Reflection: 0
     m_PlanarReflection:
-      m_Type: 1
-      m_Sample: 1
-      m_Recull: 0
-      m_AdditionalLightcount: 8
-      m_IncludeTransparent: 0
-      m_DownSample: 2
-      m_BlurParam:
-        m_BlurType: 3
-        m_BlurSize: 1.3
-        m_Iteration: 7
-        m_DownSample: 2
-        m_Angle: 0
-        m_Vector: {x: 0.5, y: 0.5}
-        m_Attenuation: 0.9
+      maxPlanarReflectionTexture: 4
     m_AntiAliasing:
       mode: 1
       fxaa: 2

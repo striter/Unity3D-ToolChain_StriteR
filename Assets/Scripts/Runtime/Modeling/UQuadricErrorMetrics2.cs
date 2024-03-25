@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Extensions;
 using Runtime.Geometry;
 using Unity.Mathematics;
 using UnityEngine;
@@ -63,12 +64,14 @@ namespace QuadricErrorsMetric
 			_mesh.SetTriangles(triangles.Select(p=>(IEnumerable<int>)p.v).Resolve().ToArray(), 0);
 		}
 
+#if UNITY_EDITOR
 		public void DrawGizmos()
 		{
 			foreach (var triangle in triangles)
 				UGizmos.DrawLinesConcat(triangle.v.Select(p=>vertices[p].p));
 		}
-		
+#endif
+	    
 		public void simplify_mesh(int target_count, float agressiveness=7, bool verbose=false)
 		{
 			// init
@@ -481,7 +484,7 @@ namespace QuadricErrorsMetric
 					vertices[dst].p=vertices[i].p;
 					dst++;
 				}
-			for(int i=0;i<triangles.Count;i++)
+			for(var i=0;i<triangles.Count;i++)
 			{
 				var t=triangles[i];
 				for(var j =0;j<3;j++)

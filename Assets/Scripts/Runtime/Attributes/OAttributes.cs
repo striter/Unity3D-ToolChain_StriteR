@@ -48,6 +48,12 @@ public class MinMaxRangeAttribute : PropertyAttribute
     public readonly float m_Max;
     public readonly string m_MaxTarget;
 
+    public MinMaxRangeAttribute(float _min, float _max)
+    {
+        m_Min = _min;
+        m_Max = _max;
+    }
+    
     public MinMaxRangeAttribute(string _maxTarget,float _min,float _max)
     {
         m_Min = _min;

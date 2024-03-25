@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Linq.Extensions;
 
 #if UNITY_EDITOR
 namespace TechToys.ThePlanet.Baking

@@ -95,6 +95,8 @@ public struct RangeFloat
     public float Clamp(float _value)=>math.clamp(_value,start,end);
     public bool Contains(float _check) => start <= _check && _check <= end;
     public float NormalizedAmount(float _check) => umath.invLerp(start, end, _check);
+    public float Evaluate(float _normalized) => start + length * _normalized;
+    public static RangeFloat Minmax(float _min, float _max) => new RangeFloat(_min, _max - _min);
 }
 
 [Serializable]

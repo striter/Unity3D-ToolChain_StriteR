@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Mathematics;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Extensions;
 using Runtime.Geometry;
 using Runtime.Geometry.Validation;
 using UnityEditor;

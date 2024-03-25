@@ -1,8 +1,8 @@
 using System;
+using System.ComponentModel;
 using Runtime.Physics;
 using UnityEngine;
 using Unity.Mathematics;
-using UnityEngine.Serialization;
 using static Unity.Mathematics.math;
 using static umath;
 using static kmath;
@@ -19,21 +19,18 @@ public enum EDamperMode
 }
 
 [Serializable]
-public class Damper : ISerializationCallbackReceiver
+public class Damper
 {
     [Header("Config")]
-    public EDamperMode mode = EDamperMode.SpringSimple;
-    [MFoldout(nameof(mode),EDamperMode.Lerp,EDamperMode.SpringCritical)][Clamp(0.01f)] public float halfLife = .5f;
+    public EDamperMode mode = EDamperMode.SpringCritical;
+    [MFoldout(nameof(mode),EDamperMode.Lerp,EDamperMode.SpringCritical)][Clamp(0.01f)] public float halfLife = .1f;
     [MFoldout(nameof(mode),EDamperMode.SpringSimple,EDamperMode.SpringImplicit)][Range(0,200)] public float stiffness = 20f;
     [MFoldout(nameof(mode),EDamperMode.SpringSimple,EDamperMode.SpringImplicit)][Range(0,30)] public float damping = 4f;
     [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] public SecondOrderDynamics secondOrderDynamics = SecondOrderDynamics.kDefault;
     
-    [Header("Runtime")]
-    [Readonly] public float4 value;
-    [Readonly] public float4 velocity;
-
-    public float4 Value => value;
-    
+    public float lifeTime { get; private set; }
+    public float4 value { get; private set; }
+    public float4 velocity { get; private set; }
     public void Initialize(quaternion _begin) => Initialize(_begin.value);
     public void Initialize(float _begin) => Initialize((float4)_begin);
     public void Initialize(float2 _begin) => Initialize(_begin.to4());
@@ -43,11 +40,7 @@ public class Damper : ISerializationCallbackReceiver
         secondOrderDynamics.Initialize(_begin);
         value = _begin;
         velocity = 0;
-        Ctor();
-    }
-
-    void Ctor()
-    {
+        lifeTime = 0f;
     }
 
     public float TickAngle(float _deltaTime, float _desire)
@@ -67,13 +60,13 @@ public class Damper : ISerializationCallbackReceiver
         var tq = dot < 0 ? -_target.value: _target.value;
         return new quaternion(Tick(_deltaTime, tq));
     }
-    public float2 Tick(float _deltaTime, float _desire, float _desireVelocity = default) => Tick(_deltaTime,(float4)_desire,(_desireVelocity)).x;
+    public float Tick(float _deltaTime, float _desire, float _desireVelocity = default) => Tick(_deltaTime,(float4)_desire,_desireVelocity).x;
     public float2 Tick(float _deltaTime, float2 _desire, float2 _desireVelocity = default) => Tick(_deltaTime, _desire.to4(),_desireVelocity.to4()).xy;
     public float3 Tick(float _deltaTime, float3 _desire, float3 _desireVelocity = default) => Tick(_deltaTime, _desire.to4(),_desireVelocity.to4()).xyz;
-
     public float4 Tick(float _deltaTime,float4 _desire,float4 _desireVelocity = default)
     {
         if (_deltaTime == 0) return value;
+        lifeTime += _deltaTime;
         
         var xd = _desire;
         var vd = _desireVelocity;
@@ -154,16 +147,46 @@ public class Damper : ISerializationCallbackReceiver
                     velocity = -y0 * j0 * ey0dt - y1 * j1 * ey1dt;
                 }
             } break;
-            case EDamperMode.SecondOrderDynamics: {
-                secondOrderDynamics.Evaluate(ref value,ref velocity,_deltaTime,_desire,_desireVelocity);
+            case EDamperMode.SecondOrderDynamics:
+            {
+                var val = value;
+                var vel = velocity;
+                secondOrderDynamics.Evaluate(ref val,ref vel,_deltaTime,_desire,_desireVelocity);
+                value = val;
+                velocity = vel;
             } break;
         }
         return value;
     }
 
-    public void OnBeforeSerialize(){}
-    public void OnAfterDeserialize() => Ctor();
+    public float duration
+    {
+        get
+        {
+            switch (mode)
+            {
+                default:
+                    throw new InvalidEnumArgumentException();
+                case EDamperMode.None:
+                    return 0;
+                case EDamperMode.Lerp:
+                case EDamperMode.SpringCritical:
+                    return halfLife;
+                case EDamperMode.SpringImplicit:
+                case EDamperMode.SpringSimple:
+                    return Damping2HalfLife(damping);
+                case EDamperMode.SecondOrderDynamics:
+                     return secondOrderDynamics.duration;
+            }
+        }
+    }
+
+    public bool Working(float _desire,float _sqrTolerance = float.Epsilon) => pow2(value.x - _desire) < _sqrTolerance && velocity.sqrmagnitude() < _sqrTolerance;
+    public bool Working(float2 _desire,float _sqrTolerance = float.Epsilon) => (value.xy - _desire).sqrmagnitude() < _sqrTolerance && velocity.sqrmagnitude() < _sqrTolerance;
+    public bool Working(float3 _desire,float _sqrTolerance = float.Epsilon) => (value.xyz - _desire).sqrmagnitude() < _sqrTolerance && velocity.sqrmagnitude() < _sqrTolerance;
+    public bool Working(float4 _desire,float _sqrTolerance = float.Epsilon) => (value - _desire).sqrmagnitude() < _sqrTolerance && velocity.sqrmagnitude() < _sqrTolerance;
 }
+
 
 public static class UDamper
 {
@@ -171,7 +194,6 @@ public static class UDamper
     public static readonly float4 eps4 = eps;
     public static float HalfLife2Damping(float _halfLife)=> (4.0f * 0.69314718056f) / (_halfLife + eps);
     public static float Damping2HalfLife(float _damping) => (4.0f * 0.69314718056f) / (_damping + eps);
-
     public static float Frequency2Stiffness(float _frequency) => sqr(kPI2*_frequency);
     public static float Stiffness2Frequency(float _stiffness) => sqrt(_stiffness) / kPI2;
 }

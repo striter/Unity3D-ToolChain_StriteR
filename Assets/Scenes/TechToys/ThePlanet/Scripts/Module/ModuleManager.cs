@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Extensions;
 using TechToys.ThePlanet.Module.BOIDS;
 using TechToys.ThePlanet.Module.Cluster;
 using TechToys.ThePlanet.Module.Path;

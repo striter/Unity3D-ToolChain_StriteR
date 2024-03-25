@@ -2,6 +2,7 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq.Extensions;
 
 namespace TechToys.ThePlanet.Grid
 {

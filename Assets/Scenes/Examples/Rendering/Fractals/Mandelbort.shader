@@ -1,4 +1,4 @@
-Shader "Game/Unfinished/Mandelbort"
+Shader "Hidden/Mandelbort"
 {
     Properties
     {

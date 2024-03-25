@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq.Extensions;
 using UnityEngine;
 
 public class SpatialHashMap<T,Y,U> where T:struct where Y:class,IGraph<T>,IGraphDiscrete<T> where U:ITransform

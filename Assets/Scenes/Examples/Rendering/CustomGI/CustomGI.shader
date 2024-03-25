@@ -107,7 +107,6 @@ Shader "Hidden/CustomGI"
 					half3 lightmap = SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(unity_Lightmap,samplerunity_Lightmap), i.lightmapUV);
 					float4 directionSample = SAMPLE_TEXTURE2D_LIGHTMAP(unity_LightmapInd,samplerunity_Lightmap,i.lightmapUV);
 					half3 direction = (directionSample.xyz - 0.5) * 2;
-				
 				#endif
 
 				
@@ -120,19 +119,16 @@ Shader "Hidden/CustomGI"
 
 				surface.ao = directionSample.a;
 				indirectDiffuse *= directionParam;
-				#if LIGHTMAP_LOCAL
-				
-					#if _LIGHTMAP_MAIN_INDIRECT
-						float mainLightIrradianceState = _IrradianceParameters.y;
-						float mainLightIrradianceIntensity = _IrradianceParameters.z;
-						float4 shadowMaskSample = SAMPLE_TEXTURE2D_LIGHTMAP(_ShadowMask,sampler_Lightmap,i.lightmapUV);
-						int irradianceStart = floor(mainLightIrradianceState);
-						int irradianceEnd = (irradianceStart + 1) ;
-						float irradianceInterpolation = mainLightIrradianceState - irradianceStart;
-						float mainLightIndirectIntensity = lerp( shadowMaskSample[irradianceStart%4],shadowMaskSample[irradianceEnd%4],irradianceInterpolation) * mainLightIrradianceIntensity;
-				
-						indirectDiffuse += mainLightIndirectIntensity * _MainLightColor.rgb ;
-					#endif
+				#if _LIGHTMAP_MAIN_INDIRECT
+					float mainLightIrradianceState = _IrradianceParameters.y;
+					float mainLightIrradianceIntensity = _IrradianceParameters.z;
+					float4 shadowMaskSample = SAMPLE_TEXTURE2D_LIGHTMAP(unity_ShadowMask,samplerunity_Lightmap,i.lightmapUV);
+					int irradianceStart = floor(mainLightIrradianceState);
+					int irradianceEnd = (irradianceStart + 1) ;
+					float irradianceInterpolation = mainLightIrradianceState - irradianceStart;
+					float mainLightIndirectIntensity = lerp( shadowMaskSample[irradianceStart%4],shadowMaskSample[irradianceEnd%4],irradianceInterpolation) * mainLightIrradianceIntensity;
+			
+					indirectDiffuse += mainLightIndirectIntensity * _MainLightColor.rgb ;
 				#endif
 				
 			#endif

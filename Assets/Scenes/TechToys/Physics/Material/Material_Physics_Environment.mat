@@ -104,6 +104,7 @@ Material:
     - _ParallexScale: 0.2
     - _SSSIntensity: 1
     - _SSSNormalInfluence: 1
+    - _Smoothness: 0.5
     - _SpecularRange: 0.98
     - _SrcBlend: 1
     - _SteepCount: 64

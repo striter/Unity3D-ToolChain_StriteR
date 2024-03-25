@@ -2,6 +2,7 @@
 using Rendering.GI.SphericalHarmonics;
 using UnityEngine;
 using UnityEditor;
+using System.Linq.Extensions;
 
 namespace UnityEditor.Extensions
 {

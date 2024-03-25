@@ -1,4 +1,4 @@
-Shader "Game/Unfinished/JuliaSet"
+Shader "Hidden/JuliaSet"
 {
     Properties
     {
