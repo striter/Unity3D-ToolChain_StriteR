@@ -50,6 +50,13 @@ public static class UGizmos
             Gizmos.DrawLine(_points[i],_points[i+1]);
     }
     
+    public static void DrawLines(IList<float3> _points)
+    {
+        var count = _points.Count;
+        for(int i=0;i<count-1;i++)
+            Gizmos.DrawLine(_points[i],_points[i+1]);
+    }
+
     public static void DrawLines(IEnumerable<Vector3> _points)
     {
         Vector3 tempPoint=default;

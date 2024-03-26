@@ -30,6 +30,7 @@ namespace Examples.Algorithm.Geometry
         [Header("Line Segments")]
         public GDivisionCurve m_DivisionCurve = GDivisionCurve.kDefault;
         public GChaikinCurve m_ChaikinCurve = GChaikinCurve.kDefault;
+        public GDragonCurve m_DragonCurve = GDragonCurve.kDefault;
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()
@@ -89,6 +90,8 @@ namespace Examples.Algorithm.Geometry
             m_DivisionCurve.DrawGizmos();
             Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(5f,0f,-9f));
             m_ChaikinCurve.DrawGizmos();
+            Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(10f,0f,-9f)) * Matrix4x4.Scale(Vector3.one*.1f);
+            m_DragonCurve.DrawGizmos();
         }
 #endif
     }

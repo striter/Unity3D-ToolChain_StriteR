@@ -12,6 +12,7 @@ namespace Runtime
     public class FLineSegmentRenderer : ALineRendererBase
     {
         [Header("Input")]
+        public bool m_LocalSpace = false;
         public float3[] m_LinePositions = GTriangle.kDefault.IterateToArray();
         public bool m_ManualInput = false;
         [MFoldout(nameof(m_ManualInput), false)] public float3 m_Normal = kfloat3.up;
@@ -20,6 +21,7 @@ namespace Runtime
         private static int kInstanceID = 0;
         protected override string GetInstanceName() => $"Line - ({kInstanceID++})";
 
+        private List<float3> m_FinalVertices = new List<float3>();
         //I should put all these stuffs into shaders ?
         protected override void PopulatePositions(Transform _transform, List<Vector3> _vertices, List<Vector3> _tangents)
         {
@@ -27,14 +29,17 @@ namespace Runtime
 
             var length = m_LinePositions.Length;
             if (length <= 1) return;
+            
+            m_FinalVertices.Clear();
+            m_FinalVertices.AddRange(m_LocalSpace?m_LinePositions.Select(p=>(float3)_transform.localToWorldMatrix.MultiplyPoint(p)):m_LinePositions);
 
             for (int i = 0; i < length; i++)
             {
-                _vertices.Add(m_LinePositions[i]);
+                _vertices.Add(m_FinalVertices[i]);
                 var normal = m_ManualInput ? m_Normals[i] : m_Normal;
                 var tangent = i == length - 1
                     ? _tangents[^1]
-                    : Vector3.Cross(normal,(m_LinePositions[i + 1] - m_LinePositions[i]).normalize());
+                    : Vector3.Cross(normal,(m_FinalVertices[i + 1] - m_FinalVertices[i]).normalize());
                 _tangents.Add(tangent);
             }
         }
@@ -42,7 +47,7 @@ namespace Runtime
         public override void DrawGizmos(Transform _transform)
         {
             base.DrawGizmos(_transform);
-            UGizmos.DrawLines(m_LinePositions,p=>p);
+            UGizmos.DrawLines(m_FinalVertices,p=>p);
         }
     }
 
