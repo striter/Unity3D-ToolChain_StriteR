@@ -11,7 +11,7 @@ namespace CameraController.Demo
 {
     
     [Serializable]
-    public class FControllerInput : AControllerInput,IFOVOffset,IViewportOffset , IControllerPlayerInput
+    public class FControllerInput : AControllerInput,IFOVOffset,IViewportOffset , IControllerMobileInput
     {
         public Camera camera;
         public Transform anchor;

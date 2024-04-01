@@ -25,7 +25,7 @@ namespace Runtime.Geometry
         public static readonly Quad<float2> k2SquareCentered = k3SquareCentered.Convert(p=>p.xz);
     }
     
-    public static class UQuad
+    public static partial class UQuad
     {
         public static EQuadCorner IndexToCorner(int _index)
         {
@@ -378,7 +378,7 @@ namespace Runtime.Geometry
 
         public static Quad<T> MirrorLR<T>(this Quad<T> _quad) => new Quad<T>(_quad.vB,_quad.vR,_quad.vF,_quad.vL);
 
-        public static Quad<float3> Shrink(this Quad<float3>  _quad, float _scale)
+        public static Quad<float3> Shrink(this IQuad<float3>  _quad, float _scale)
         {
             var center = _quad.GetBaryCenter();
             return new Quad<float3>(

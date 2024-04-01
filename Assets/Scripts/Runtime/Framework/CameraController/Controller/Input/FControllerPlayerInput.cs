@@ -19,7 +19,7 @@ namespace CameraController.Inputs
             };
     }
     
-    public interface IControllerPlayerInput
+    public interface IControllerMobileInput
     {
         public FPlayerInputMultiplier Sensitive { get; set; }
         public float2 PlayerDrag { get; set; }

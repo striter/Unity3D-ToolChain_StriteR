@@ -27,7 +27,6 @@ namespace CameraController
 
         public void DrawGizmos(AControllerInput _input)
         {
-            throw new System.NotImplementedException();
         }
 
         public void OnReset(AControllerInput _input)

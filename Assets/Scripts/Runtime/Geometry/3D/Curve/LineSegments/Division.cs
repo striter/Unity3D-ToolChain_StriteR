@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
-using Random = System.Random;
 
 namespace Runtime.Geometry.Curves.LineSegments
 {
@@ -35,7 +34,7 @@ namespace Runtime.Geometry.Curves.LineSegments
             public int quadIndex;
         }
         
-        public List<float3> Output(out List<DivisionOutput> _divisions,Random _random = null)
+        public List<float3> Output(out List<DivisionOutput> _divisions,System.Random _random = null)
         {
             _divisions = new List<DivisionOutput>();
             _divisions.Add (new DivisionOutput()
@@ -114,7 +113,7 @@ namespace Runtime.Geometry.Curves.LineSegments
             for (int i = 0; i < divisions.Count; i++)
             {
                 UGizmos.DrawLinesConcat(divisions[i].quad.Iterate(),_p=>_p);
-                UGizmos.DrawString(divisions[i].quad.GetBaryCenter_Dynamic(),divisions[i].quadIndex.ToString());
+                UGizmos.DrawString(divisions[i].quad.GetBaryCenter(),divisions[i].quadIndex.ToString());
             }
         }
     }

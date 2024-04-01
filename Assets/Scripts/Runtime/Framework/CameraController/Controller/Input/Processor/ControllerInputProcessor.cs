@@ -82,7 +82,7 @@ namespace CameraController.Inputs
         
         public void OnTick<T>(float _deltaTime,ref T _input) where T : AControllerInput
         {
-            if (_input is not IControllerPlayerInput playerInput)
+            if (_input is not IControllerMobileInput playerInput)
                 return;
             
             var drag = playerInput.PlayerDrag;

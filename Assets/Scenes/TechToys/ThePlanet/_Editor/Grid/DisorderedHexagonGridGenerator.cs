@@ -294,7 +294,7 @@ namespace TechToys.ThePlanet.Grid
             }
             
             //Combine Triangles
-            List<HexTriangle> availableTriangles = m_ProceduralTriangles.DeepCopy();
+            List<HexTriangle> availableTriangles = m_ProceduralTriangles.DeepCopyInstance();
             while (availableTriangles.Count > 0)
             {
                 int validateIndex = availableTriangles.RandomIndex(m_Random);

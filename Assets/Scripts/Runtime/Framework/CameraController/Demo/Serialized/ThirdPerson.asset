@@ -91,7 +91,7 @@ MonoBehaviour:
   collision:
     m_CollisionMin: 0
     m_CollisionForward: 0.1
-    m_CullingMask: -2147483648
+    m_CullingMask: 0
     m_ColliderRadius: 0.1
   m_DistanceDamper:
     mode: 2

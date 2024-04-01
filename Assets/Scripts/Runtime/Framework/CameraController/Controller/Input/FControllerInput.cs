@@ -31,7 +31,7 @@ namespace CameraController.Inputs
         }
         public void ClearOffset()
         {
-            if(this is IControllerPlayerInput playerInput)
+            if(this is IControllerMobileInput playerInput)
                 playerInput.Clear();
             
             if (this is IEulerOffset euler)
