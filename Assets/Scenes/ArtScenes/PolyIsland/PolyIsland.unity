@@ -124,6 +124,419 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &680560892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec0b4dd729a12d046982652f834580a2, type: 3}
+  m_Name: PolyIsland_LM0
+  m_EditorClassIdentifier: 
+  resolution: 512
+  bitmask: 1
+  id: 0
+  sortingID: 0
+  isImplicit: 1
+  area: 718.37445
+  totalVertexCount: 0
+  vertexCounter: 0
+  sceneLodLevel: -1
+  autoResolution: 0
+  sceneName: 
+  tag: -1
+  containsTerrains: 0
+  probes: 0
+  mode: 1
+  renderMode: 1000
+  renderDirMode: 1000
+  atlasPacker: 1000
+  computeSSS: 0
+  sssSamples: 16
+  sssDensity: 10
+  sssColor: {r: 1, g: 1, b: 1, a: 1}
+  sssScale: 1
+  fakeShadowBias: 0
+  transparentSelfShadow: 0
+  flipNormal: 0
+  parentName: 
+  overridePath: 
+  fixPos3D: 0
+  voxelSize: {x: 1, y: 1, z: 1}
+  passedFilter: 0
+--- !u!1 &1218477882
+GameObject:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1218477884}
+  - component: {fileID: 1218477883}
+  m_Layer: 0
+  m_Name: '!ftraceLightmaps'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1218477883
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218477882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7fa80e7116296f4eb4f49ec1544ee22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  renderSettingsBounces: 5
+  renderSettingsGISamples: 16
+  renderSettingsGIBackFaceWeight: 0
+  renderSettingsTileSize: 512
+  renderSettingsPriority: 2
+  renderSettingsTexelsPerUnit: 20
+  renderSettingsForceRefresh: 1
+  renderSettingsForceRebuildGeometry: 1
+  renderSettingsPerformRendering: 1
+  renderSettingsUserRenderMode: 0
+  renderSettingsDistanceShadowmask: 1
+  renderSettingsSettingsMode: 1
+  renderSettingsFixSeams: 1
+  renderSettingsDenoise: 1
+  renderSettingsDenoise2x: 0
+  renderSettingsEncode: 1
+  renderSettingsEncodeMode: 0
+  renderSettingsOverwriteWarning: 0
+  renderSettingsAutoAtlas: 1
+  renderSettingsUnwrapUVs: 1
+  renderSettingsForceDisableUnwrapUVs: 0
+  renderSettingsMaxAutoResolution: 4096
+  renderSettingsMinAutoResolution: 16
+  renderSettingsUnloadScenes: 0
+  renderSettingsAdjustSamples: 1
+  renderSettingsGILODMode: 2
+  renderSettingsGILODModeEnabled: 0
+  renderSettingsCheckOverlaps: 0
+  renderSettingsSkipOutOfBoundsUVs: 1
+  renderSettingsHackEmissiveBoost: 1
+  renderSettingsHackIndirectBoost: 1
+  renderSettingsTempPath: 
+  renderSettingsOutPath: Scenes/ArtScenes/PolyIsland/PolyIsland
+  renderSettingsUseScenePath: 1
+  renderSettingsHackAOIntensity: 0
+  renderSettingsHackAOSamples: 16
+  renderSettingsHackAORadius: 1
+  renderSettingsShowAOSettings: 0
+  renderSettingsShowTasks: 1
+  renderSettingsShowTasks2: 0
+  renderSettingsShowPaths: 1
+  renderSettingsShowNet: 1
+  renderSettingsOcclusionProbes: 0
+  renderSettingsTexelsPerMap: 0
+  renderSettingsTexelsColor: 1
+  renderSettingsTexelsMask: 1
+  renderSettingsTexelsDir: 1
+  renderSettingsShowDirWarning: 1
+  renderSettingsRenderDirMode: 0
+  renderSettingsShowCheckerSettings: 0
+  renderSettingsSamplesWarning: 1
+  renderSettingsSuppressPopups: 0
+  renderSettingsPrefabWarning: 1
+  renderSettingsSplitByScene: 0
+  renderSettingsSplitByTag: 0
+  renderSettingsUVPaddingMax: 0
+  renderSettingsPostPacking: 1
+  renderSettingsHoleFilling: 0
+  renderSettingsBeepOnFinish: 0
+  renderSettingsExportTerrainAsHeightmap: 0
+  renderSettingsRTXMode: 1
+  renderSettingsLightProbeMode: 1
+  renderSettingsClientMode: 0
+  renderSettingsServerAddress: 127.0.0.1
+  renderSettingsUnwrapper: 0
+  renderSettingsDenoiserType: 100
+  renderSettingsExportTerrainTrees: 0
+  renderSettingsShowPerf: 1
+  renderSettingsSampleDiv: 1
+  renderSettingsAtlasPacker: 0
+  renderSettingsBatchPoints: 1
+  renderSettingsCompressVolumes: 0
+  renderSettingsSector: {fileID: 0}
+  renderSettingsRTPVExport: 1
+  renderSettingsRTPVSceneView: 0
+  renderSettingsRTPVHDR: 0
+  renderSettingsRTPVWidth: 640
+  renderSettingsRTPVHeight: 360
+  lastBakeTime: 4
+  enlightenWarningShown: 0
+  enlightenWarningShown2: 0
+  uniqueLights:
+  - {fileID: 4450405387386084426}
+  - {fileID: 4450405387386084425}
+  - {fileID: 4450405387386084424}
+  - {fileID: 4450405387386084423}
+  - {fileID: 4450405387386084422}
+  lights:
+  - tform:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 1
+    range: 0
+    radius: 0
+    samples: 32
+    samples2: 0
+    bitmask: 0
+    bakeToIndirect: 1
+    selfShadow: 0
+    realisticFalloff: 0
+    projMode: 0
+    cookie: {fileID: 0}
+    angle: 30
+    UID: 1
+  - tform:
+      e00: -0.4939412
+      e01: 0.53650975
+      e02: 0.68423635
+      e03: 0
+      e10: 0
+      e11: 0.7869351
+      e12: -0.61703587
+      e13: 0
+      e20: -0.86949533
+      e21: -0.30477944
+      e22: -0.38869965
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+    intensity: 1
+    range: 0
+    radius: 0.01
+    samples: 16
+    samples2: 0
+    bitmask: 0
+    bakeToIndirect: 0
+    selfShadow: 0
+    realisticFalloff: 0
+    projMode: 0
+    cookie: {fileID: 0}
+    angle: 30
+    UID: 2
+  - tform:
+      e00: -0.16902852
+      e01: -0.082682386
+      e02: 0.98213696
+      e03: -1.1126032
+      e10: 0.00006912276
+      e11: 0.9964741
+      e12: 0.08390126
+      e13: 1.4190223
+      e20: -0.9856112
+      e21: 0.014249589
+      e22: -0.16842675
+      e23: -1.5620077
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    color: {r: 1, g: 0.72906315, b: 0.19339621, a: 1}
+    intensity: 3.3
+    range: 1.5
+    radius: 0.05
+    samples: 16
+    samples2: 0
+    bitmask: 0
+    bakeToIndirect: 1
+    selfShadow: 0
+    realisticFalloff: 1
+    projMode: 0
+    cookie: {fileID: 0}
+    angle: 30
+    UID: 3
+  - tform:
+      e00: 0.058681488
+      e01: -0.5336623
+      e02: 0.8436593
+      e03: 1.7399262
+      e10: 0.00024011731
+      e11: 0.8451232
+      e12: 0.5345716
+      e13: 1.3921534
+      e20: -0.9982767
+      e21: -0.031166852
+      e22: 0.04972124
+      e23: -1.1541462
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    color: {r: 1, g: 0.72906315, b: 0.19339621, a: 1}
+    intensity: 3.3
+    range: 1.5
+    radius: 0.05
+    samples: 16
+    samples2: 0
+    bitmask: 0
+    bakeToIndirect: 1
+    selfShadow: 0
+    realisticFalloff: 1
+    projMode: 0
+    cookie: {fileID: 0}
+    angle: 30
+    UID: 4
+  - tform:
+      e00: 0.9544215
+      e01: 0.024001066
+      e02: 0.2974955
+      e03: -2.494
+      e10: 0.0001551602
+      e11: 0.9967214
+      e12: -0.080910355
+      e13: 1.372
+      e20: -0.29846206
+      e21: 0.077268735
+      e22: 0.9512886
+      e23: 1.404
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    color: {r: 1, g: 0.72906315, b: 0.19339621, a: 1}
+    intensity: 3.3
+    range: 1.5
+    radius: 0.05
+    samples: 16
+    samples2: 0
+    bitmask: 0
+    bakeToIndirect: 1
+    selfShadow: 0
+    realisticFalloff: 1
+    projMode: 0
+    cookie: {fileID: 0}
+    angle: 30
+    UID: 5
+  implicitGroups:
+  - {fileID: 680560892}
+  implicitGroupedObjects:
+  - {fileID: 4450405387386084421}
+  bounds:
+  - m_Center: {x: 0, y: 1.9259348, z: 0.0000008082703}
+    m_Extent: {x: 3.391038, y: 1.9071605, z: 3.1371872}
+  hasEmissive: 01
+  uvBuffOffsets: 
+  uvBuffLengths: 
+  uvSrcBuff: []
+  uvDestBuff: []
+  lmrIndicesOffsets: 
+  lmrIndicesLengths: 
+  lmrIndicesBuff: 
+  lmGroupLODResFlags: 
+  lmGroupMinLOD: 
+  lmGroupLODMatrix: 
+  serverGetFileList: []
+  lightmapHasColor: 01
+  lightmapHasMask: 00000000
+  lightmapHasDir: 00
+  lightmapHasRNM: 00
+  modifiedAssetPathList:
+  - Assets/Scenes/ArtScenes/PolyIsland/PolyIsland.fbx
+  modifiedAssets:
+  - meshName:
+    - PolyIsland
+    padding: 07000000
+    unwrapper: 00000000
+  maps:
+  - {fileID: 2800000, guid: 636a327be2970194eab4e1e2923b5b16, type: 3}
+  masks: []
+  dirMaps: []
+  rnmMaps0: []
+  rnmMaps1: []
+  rnmMaps2: []
+  mapsMode: 
+  bakedRenderers:
+  - {fileID: 4450405387386084420}
+  bakedIDs: 00000000
+  bakedScaleOffset:
+  - {x: 0.9899731, y: 0.9899785, z: 0.005859375, w: 0.005859375}
+  bakedVertexOffset: ffffffff
+  bakedVertexColorMesh:
+  - {fileID: 0}
+  nonBakedRenderers: []
+  bakedLights:
+  - {fileID: 4450405387386084419}
+  - {fileID: 4450405387386084418}
+  - {fileID: 4450405387386084417}
+  - {fileID: 4450405387386084416}
+  bakedLightChannels: ffffffffffffffffffffffffffffffff
+  bakedRenderersTerrain: []
+  bakedIDsTerrain: 
+  bakedScaleOffsetTerrain: []
+  assetList: []
+  uvOverlapAssetList: 
+  idremap: 00000000
+  usesRealtimeGI: 0
+  emptyDirectionTex: {fileID: 0}
+  anyVolumes: 0
+  compressedVolumes: 0
+  sectors:
+  - name: $G
+    maps: []
+    masks: []
+    dirMaps: []
+    rnmMaps0: []
+    rnmMaps1: []
+    rnmMaps2: []
+    mapsMode: 
+    bakedRenderers:
+    - {fileID: 4450405387386084420}
+    bakedIDs: 00000000
+    bakedScaleOffset:
+    - {x: 0.9899731, y: 0.9899785, z: 0.005859375, w: 0.005859375}
+    bakedVertexColorMesh:
+    - {fileID: 0}
+    bakedRenderersTerrain: []
+    bakedIDsTerrain: 
+    bakedScaleOffsetTerrain: []
+    nonBakedRenderers: []
+--- !u!4 &1218477884
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218477882}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!850595691 &1785458812
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -433,9 +846,76 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5fc3594c79f5cc34b914d8207786072a, type: 3}
+--- !u!108 &4450405387386084416 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 7275268537698886408, guid: 5fc3594c79f5cc34b914d8207786072a,
+    type: 3}
+  m_PrefabInstance: {fileID: 4450405387386084415}
+  m_PrefabAsset: {fileID: 0}
+--- !u!108 &4450405387386084417 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 4791844995907118707, guid: 5fc3594c79f5cc34b914d8207786072a,
+    type: 3}
+  m_PrefabInstance: {fileID: 4450405387386084415}
+  m_PrefabAsset: {fileID: 0}
+--- !u!108 &4450405387386084418 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 892871824291953546, guid: 5fc3594c79f5cc34b914d8207786072a,
+    type: 3}
+  m_PrefabInstance: {fileID: 4450405387386084415}
+  m_PrefabAsset: {fileID: 0}
+--- !u!108 &4450405387386084419 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 9125595708273951236, guid: 5fc3594c79f5cc34b914d8207786072a,
+    type: 3}
+  m_PrefabInstance: {fileID: 4450405387386084415}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &4450405387386084420 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4519554643609585164, guid: 5fc3594c79f5cc34b914d8207786072a,
+    type: 3}
+  m_PrefabInstance: {fileID: 4450405387386084415}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4450405387386084421 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2718014117867595737, guid: 5fc3594c79f5cc34b914d8207786072a,
+    type: 3}
+  m_PrefabInstance: {fileID: 4450405387386084415}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4450405387386084422 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2058004664328468316, guid: 5fc3594c79f5cc34b914d8207786072a,
+    type: 3}
+  m_PrefabInstance: {fileID: 4450405387386084415}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4450405387386084423 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4365923281352298105, guid: 5fc3594c79f5cc34b914d8207786072a,
+    type: 3}
+  m_PrefabInstance: {fileID: 4450405387386084415}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4450405387386084424 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 921936038253199240, guid: 5fc3594c79f5cc34b914d8207786072a,
+    type: 3}
+  m_PrefabInstance: {fileID: 4450405387386084415}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4450405387386084425 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8791874699972765280, guid: 5fc3594c79f5cc34b914d8207786072a,
+    type: 3}
+  m_PrefabInstance: {fileID: 4450405387386084415}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4450405387386084426 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5984800367357078534, guid: 5fc3594c79f5cc34b914d8207786072a,
+    type: 3}
+  m_PrefabInstance: {fileID: 4450405387386084415}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1902184117}
   - {fileID: 4450405387386084415}
+  - {fileID: 1218477884}

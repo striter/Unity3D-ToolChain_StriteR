@@ -1,11 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Windows;
-using System.IO;
-using Directory = UnityEngine.Windows.Directory;
 
 namespace UnityEditor.Extensions
 {

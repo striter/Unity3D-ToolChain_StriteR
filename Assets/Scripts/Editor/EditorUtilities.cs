@@ -12,7 +12,7 @@ namespace UnityEditor.Extensions
             {
                 count++;
                 string assetName = Path.GetFileName(assetPath);
-                System.IO.File.Move(assetPath,assetPath.Replace(assetName,assetName.Replace(_comparer,_replace)));
+                File.Move(assetPath,assetPath.Replace(assetName,assetName.Replace(_comparer,_replace)));
             }
             AssetDatabase.Refresh();
             Debug.Log($"{count} Assets Renamed");
