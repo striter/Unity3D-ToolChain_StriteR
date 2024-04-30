@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Extensions;
 using UnityEditorInternal;
 using UnityEngine;
@@ -12,24 +13,8 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
     {
         private AScriptableObjectBundle m_Target;
         private List<Type> kInheritTypes = new List<Type>();
+        private bool m_Dirty = false;
         private ReorderableList m_ObjectsList;
-        private void SetBundleDirty()
-        {
-            m_ObjectsList.serializedProperty.serializedObject.ApplyModifiedProperties();
-            m_Target.SetBundleDirty();
-        }
-
-        protected virtual void DrawElement(Rect _rect,int _index,SerializedProperty _property, bool _isActive, bool _isFocused)
-        {
-            _rect.x += 10f;
-            _rect.ResizeX(_rect.size.x - 10f);
-            EditorGUI.PropertyField(_rect, _property);
-        }
-
-        protected virtual float GetElementHeight(SerializedProperty _property)
-        {
-            return EditorGUI.GetPropertyHeight(_property,true);
-        }
         
         protected virtual void OnEnable()
         {
@@ -70,11 +55,52 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
             };
             m_ObjectsList.onReorderCallback = _ => SetBundleDirty();
             m_ObjectsList.drawHeaderCallback = rect => EditorGUI.LabelField(rect, $"Objects | {baseType.Name}");
+            EditorApplication.update += Tick;
+        }
+        private void OnDisable() => EditorApplication.update -= Tick;
+        protected virtual void DrawElement(Rect _rect,int _index,SerializedProperty _property, bool _isActive, bool _isFocused)
+        {
+            _rect.x += 10f;
+            _rect.ResizeX(_rect.size.x - 10f);
+            EditorGUI.PropertyField(_rect, _property);
+        }
+
+        protected virtual float GetElementHeight(SerializedProperty _property)
+        {
+            return EditorGUI.GetPropertyHeight(_property,true);
         }
 
         public override void OnInspectorGUI()
         {
             m_ObjectsList.DoLayoutList();
+        }
+        
+        private void SetBundleDirty()
+        {
+            m_ObjectsList.serializedProperty.serializedObject.ApplyModifiedProperties();
+            m_Dirty = true;
+        }
+
+        private void Tick()
+        {
+            if (!m_Dirty)
+                return;
+            
+            if (m_Target.m_Objects.Any(p => p == null))
+                return;
+            
+            m_Dirty = false;
+            UEAsset.ClearSubAssets(m_Target);
+            foreach (var (index, so) in m_Target.m_Objects.LoopIndex())
+            {
+                var name = so.m_Title;
+                if (string.IsNullOrEmpty(name))
+                    name = so.GetType().Name;
+                so.name = $"{index}_{name}";
+            }
+            
+            UEAsset.CreateOrReplaceSubAsset(m_Target, m_Target.m_Objects);
+            EditorUtility.SetDirty(m_Target);
         }
     }
 }
