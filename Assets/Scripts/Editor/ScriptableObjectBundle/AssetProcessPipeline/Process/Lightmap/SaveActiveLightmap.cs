@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UnityEditor.Extensions.ScriptableObjectBundle.Process.Lightmap
 {
-    public class SaveLightmap : EAssetPipelineProcess
+    public class SaveActiveLightmap : EAssetPipelineProcess
     {
         public ELightmap m_LightmapToSave = ELightmap.Color | ELightmap.Directional | ELightmap.ShadowMask;
         [EditorPath] public string m_DestinationPath;

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq.Extensions;
+using UnityEngine;
 
 namespace UnityEditor.Extensions.ScriptableObjectBundle
 {
@@ -20,15 +22,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
             if(!UEGUI.IsExpanded(_property))return;
 
             if (GUI.Button(_rect.Move(14f,EditorGUI.GetPropertyHeight(_property)).Resize(_rect.size.x - 14f,EditorGUIUtility.singleLineHeight), "Execute"))
-            {
-                if (m_PipelineExecutable.m_Objects[_index] is IAssetPipelineProcessContinuous)
-                {
-                    Debug.LogWarning("IAssetPipelineProcessContinuous Execution Not Supported");
-                    return;
-                }
-                
-                (m_PipelineExecutable.m_Objects[_index] as EAssetPipelineProcess).OnExecute();
-            }
+                m_PipelineExecutable.Execute(UCollection.SingleExecute(m_PipelineExecutable.m_Objects[_index] as EAssetPipelineProcess));
         }
 
         protected override float GetElementHeight(SerializedProperty _property)

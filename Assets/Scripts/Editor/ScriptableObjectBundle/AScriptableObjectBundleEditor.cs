@@ -13,10 +13,10 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
         private AScriptableObjectBundle m_Target;
         private List<Type> kInheritTypes = new List<Type>();
         private ReorderableList m_ObjectsList;
-        private void SetDirty()
+        private void SetBundleDirty()
         {
             m_ObjectsList.serializedProperty.serializedObject.ApplyModifiedProperties();
-            m_Target.SetDirty();
+            m_Target.SetBundleDirty();
         }
 
         protected virtual void DrawElement(Rect _rect,int _index,SerializedProperty _property, bool _isActive, bool _isFocused)
@@ -39,6 +39,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
             m_ObjectsList = new ReorderableList(serializedObject,serializedObject.FindProperty(nameof(m_Target.m_Objects)),true,true,true,true);
             m_ObjectsList.drawElementCallback = (rect, index, isActive, isFocused)=>DrawElement(rect,index,m_ObjectsList.serializedProperty.GetArrayElementAtIndex(index),isActive,isFocused);
             m_ObjectsList.elementHeightCallback = (index) => GetElementHeight(m_ObjectsList.serializedProperty.GetArrayElementAtIndex(index));
+            
             m_ObjectsList.onAddDropdownCallback = (_, _) =>
             {
                 var menu = new GenericMenu();
@@ -56,7 +57,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
                         var instance = ScriptableObject.CreateInstance(type) as AScriptableObjectBundleElement;
                         instance.m_Title = type.Name;
                         m_Target.m_Objects.Add(instance);
-                        SetDirty();
+                        SetBundleDirty();
                     });
                 }
                 menu.ShowAsContext();
@@ -65,9 +66,9 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
             m_ObjectsList.onRemoveCallback = list =>
             {
                 m_Target.m_Objects.RemoveAt(list.index);
-                SetDirty();
+                SetBundleDirty();
             };
-            m_ObjectsList.onReorderCallback = _ => SetDirty();
+            m_ObjectsList.onReorderCallback = _ => SetBundleDirty();
             m_ObjectsList.drawHeaderCallback = rect => EditorGUI.LabelField(rect, $"Objects | {baseType.Name}");
         }
 

@@ -35,7 +35,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
             UEAsset.CreateOrReplaceSubAsset(this, m_Objects);
             EditorUtility.SetDirty(this);
         }
-        public void SetDirty() => m_Dirty = true;
-        private void OnValidate() => SetDirty();
+        public void SetBundleDirty() => m_Dirty = true;
+        private void OnValidate() => SetBundleDirty();
     }
 }

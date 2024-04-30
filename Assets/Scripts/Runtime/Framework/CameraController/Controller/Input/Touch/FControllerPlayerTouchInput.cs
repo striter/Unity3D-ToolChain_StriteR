@@ -25,7 +25,7 @@ namespace CameraController.Inputs.Touch
         public float2 PlayerDrag { get; set; }
         public float PlayerPinch { get; set; }
 
-        public void Clear()
+        public void ClearPlayerInput()
         {
             PlayerDrag = 0;
             PlayerPinch = 0;

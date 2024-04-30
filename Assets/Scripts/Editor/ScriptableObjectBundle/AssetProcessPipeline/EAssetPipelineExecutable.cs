@@ -32,6 +32,12 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
             m_CurrentStep = step as IAssetPipelineProcessContinuous;
         }
 
+        public void Execute(IEnumerable<EAssetPipelineProcess> _steps)
+        {
+            m_ExecutingSteps.Clear();
+            m_ExecutingSteps.PushRange(_steps);
+        }
+        
         public void OnGUI()
         {
             EditorGUILayout.BeginVertical();
@@ -42,10 +48,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
             if (m_ExecutingSteps.Count == 0 && m_CurrentStep ==null)
             {
                 if (GUILayout.Button("Execute"))
-                {
-                    m_ExecutingSteps.Clear();
-                    m_ExecutingSteps.PushRange(m_Objects.Select(p=>p as EAssetPipelineProcess));
-                }
+                    Execute(m_Objects.Select(p=>p as EAssetPipelineProcess));
             }
             else
             {

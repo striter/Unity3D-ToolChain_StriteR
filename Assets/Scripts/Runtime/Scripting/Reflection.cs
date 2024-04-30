@@ -63,8 +63,18 @@ public static class UReflection
         return inheritStack;
     }
 
-    public static IEnumerable<Type> GetChildTypes(this Type _baseType,bool _abstract = false)=>
-        Assembly.GetCallingAssembly().GetTypes().Where(_type => (_abstract || !_type.IsAbstract) && _type.IsSubclassOf(_baseType) );
+    public static IEnumerable<Type> GetChildTypes(this Type _baseType, bool _abstract = false)
+    {
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+        foreach (var assembly in assemblies)
+        {
+            foreach (var type in assembly.GetTypes().Where(_type => (_abstract || !_type.IsAbstract) && _type.IsSubclassOf(_baseType) ))
+            {
+                yield return type;
+            }
+        }
+    }
     
     public static object GetValue(this Stack<FieldInfo> _fieldStacks, object _targetObject)
     {

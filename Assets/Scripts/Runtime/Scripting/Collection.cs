@@ -94,7 +94,11 @@ namespace System.Linq.Extensions
                     yield return value;
                 }
             }
-            
+
+            public static IEnumerable<T> SingleExecute<T>(T _element)
+            {
+                yield return _element;
+            }
             public static IEnumerable<int> CollectIndex<T>(this IEnumerable<T> _collection, Predicate<T> _Predicate)
             {
                 foreach (var (index,value) in _collection.LoopIndex())

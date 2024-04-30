@@ -99,8 +99,9 @@ namespace UnityEditor.Extensions
                         drawElementCallback = (_rect, _index, _, _) =>
                         {
                             var element = childProperty.GetArrayElementAtIndex(_index);
-                            EditorGUI.PropertyField(_rect, element, new GUIContent($"Element {_index}"));
+                            EditorGUI.PropertyField(_rect, element, new GUIContent($"Element {_index}"),true);
                         },
+                        elementHeightCallback = _index => EditorGUI.GetPropertyHeight(childProperty.GetArrayElementAtIndex(_index),true),
                         drawHeaderCallback = rect => GUI.Label(rect, childProperty.name)
                     };
                     m_ChildProperties.Add(list);

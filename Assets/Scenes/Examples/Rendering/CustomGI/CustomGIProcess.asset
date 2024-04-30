@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-160351826511999351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c21daf0d2af48ea8ee8ce8d750c8ccb, type: 3}
+  m_Name: 1_Bake SkyLight Lightmap
+  m_EditorClassIdentifier: 
+  m_Title: Bake SkyLight Lightmap
+  m_RenderMode: 0
+  m_RenderDirMode: 2
+  m_LightProbeMode: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abd628d1de914e3aaab86f90a66586a1, type: 3}
+  m_Name: CustomGIProcess
+  m_EditorClassIdentifier: 
+  m_Objects:
+  - {fileID: 5866942358717799748}
+  - {fileID: -160351826511999351}
+  - {fileID: 6807509396146447473}
+  - {fileID: 3177852845456672145}
+--- !u!114 &3177852845456672145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 108c55fc7f364cd9a2b1dfed922bf32a, type: 3}
+  m_Name: 3_DeleteDirectory
+  m_EditorClassIdentifier: 
+  m_Title: DeleteDirectory
+  m_DeletePaths:
+  - <#activeScenePath>/Temporary_SkyLight
+--- !u!114 &5866942358717799748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42c7d9a7d63a48b4969384aa60a3514c, type: 3}
+  m_Name: 0_Sky Light Preparation
+  m_EditorClassIdentifier: 
+  m_Title: Sky Light Preparation
+  m_Settings: 1
+--- !u!114 &6807509396146447473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43cfc4ea19424404a2e56d49680dbfc7, type: 3}
+  m_Name: 2_Save Lightmap_SkyLight
+  m_EditorClassIdentifier: 
+  m_Title: Save Lightmap_SkyLight
+  m_LightmapToSave: 3
+  m_DestinationPath: <#activeScenePath>/Temporary_SkyLight

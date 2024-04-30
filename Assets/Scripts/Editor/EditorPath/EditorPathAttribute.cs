@@ -40,7 +40,7 @@ namespace UnityEditor.Extensions.EditorPath
             var availablePath = UEPath.IsAvailableProjectWindowDirectory(path);
             if(GUI.Button( availablePath? GUILayout_HorizontalScope.NextRectNormalized(kDepth,.55f): GUILayout_HorizontalScope.FinishLineRect(2), path))
                 EditorUtility.DisplayDialog("Output",UEPath.PathRegex(property.stringValue),"Ok");
-            if(availablePath && GUI.Button(GUILayout_HorizontalScope.FinishLineRect(kDepth), "Direct"))
+            if(availablePath && GUI.Button(GUILayout_HorizontalScope.FinishLineRect(kPadding), "Direct"))
                 UEPath.SetCurrentProjectWindowDirectory(path);
             if(!m_Foldout)
                 return;
@@ -50,12 +50,13 @@ namespace UnityEditor.Extensions.EditorPath
             
             GUILayout_HorizontalScope.NewLine(kPadding, kAppendRegexHeigth);
             EditorGUI.BeginChangeCheck();
-            var popupIndex = EditorGUI.Popup(GUILayout_HorizontalScope.NextRectNormalized(kDepth,.5f),"Regex:",UEPath.kReplacementRegex.Count, UEPath.kReplacementRegex.Select(p=>$"{p.Key} {p.Value()}".Replace('/','\\')).Append("Select Regex To Append").ToArray());
+            var popupIndex = EditorGUI.Popup(GUILayout_HorizontalScope.NextRectNormalized(kDepth,.5f),
+                UEPath.kReplacementRegex.Count, UEPath.kReplacementRegex.Select(p=>$"{p.Key} {p.Value()}".Replace('/','\\')).Append("Select Regex To Append").ToArray());
             if (EditorGUI.EndChangeCheck())
                 property.stringValue += UEPath.kReplacementRegex.ElementAt(popupIndex).Key;
             
             EditorGUI.BeginChangeCheck();
-            popupIndex = EditorGUI.Popup(GUILayout_HorizontalScope.FinishLineRect(kPadding),"Constant:",UEPath.kActivePath.Count, UEPath.kActivePath.Select(p=>$"{p.Key} {p.Value()}".Replace('/','\\')).Append("Select Regex To Append").ToArray());
+            popupIndex = EditorGUI.Popup(GUILayout_HorizontalScope.FinishLineRect(kPadding),UEPath.kActivePath.Count, UEPath.kActivePath.Select(p=>$"{p.Key} {p.Value()}".Replace('/','\\')).Append("Select Regex To Append").ToArray());
             if (EditorGUI.EndChangeCheck())
                 property.stringValue += UEPath.kActivePath.ElementAt(popupIndex).Value();
         }
