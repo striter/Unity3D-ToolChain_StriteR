@@ -459,7 +459,7 @@ Camera:
     height: 1
   near clip plane: 0.59
   far clip plane: 1000
-  field of view: 41
+  field of view: 40
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -486,7 +486,7 @@ Transform:
   m_GameObject: {fileID: 823352712}
   serializedVersion: 2
   m_LocalRotation: {x: 0.043619387, y: -0, z: -0, w: 0.99904823}
-  m_LocalPosition: {x: 0, y: 1.3510896, z: -9.134436}
+  m_LocalPosition: {x: 0, y: 1.3087254, z: -9.138142}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -523,22 +523,6 @@ MonoBehaviour:
   m_ClearDepth: 1
   m_AllowXRRendering: 1
   m_AllowHDROutput: 1
-  m_RequiresTransparentDepthTextureOption: 0
-  m_RequiresTransparentColorTextureOption: 0
-  m_RequiresTransparentColorTextureBeforePostProcessOption: 0
-  m_TransparentDepthTextureLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  m_RequiresTransparentDepthTexture: 0
-  m_RequiresTransparentColorTexture: 0
-  m_RequiresTransparentColorTextureBeforePostProcess: 0
-  m_RTDynamicResolutionType: 0
-  m_TaaQuality: 1
-  m_TaaSharpenStrength: 0.5
-  m_TaaHistorySharpening: 0.35
-  m_TaaAntiFlicker: 0.5
-  m_TaaMotionVectorRejection: 0
-  m_TaaAntiRinging: 0
   m_UseScreenCoordOverride: 0
   m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
   m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
@@ -699,90 +683,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9d3916c0023495eb46bcf32a6cea0a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Constrains:
-    inputMultiplier:
-      kPitchMultiplier: 1
-      kYawMultiplier: 1
-      kPinchMultiplier: 1
-    pitchMode: 1
-    pitchClamp:
-      start: -4.437507
-      length: 9.88163
-    pitchInitializer:
-      setOnEnter: 1
-      setOnReset: 1
-      defaultValue: 0
-    yawMode: 1
-    yawClamp:
-      start: -12.0794115
-      length: 24.158821
-    yawInitializer:
-      setOnEnter: 1
-      setOnReset: 1
-      defaultValue: 0
-    initialYawWithAnchor: 1
-    pinchMode: 1
-    pinchInitializer:
-      setOnEnter: 1
-      setOnReset: 1
-      defaultValue: 0
-  m_Inverse: 0
-  m_AnchorY: 0.5
-  m_Pitch: 5
-  m_Yaw: 0
-  m_Roll: 0
-  m_Distance: 2
-  m_Fov: 40
-  m_PinchDistance: 1
-  m_PinchDistanceRange:
-    start: -0.50330883
-    length: 1
-  m_PinchFOV: 1
-  m_PinchFOVRange:
-    start: 0
-    length: 4.8027773
-  m_PositionDamper:
-    mode: 2
-    halfLife: 0.5
-    stiffness: 20
-    damping: 4
-    secondOrderDynamics:
-      f: 5
-      z: 0.35
-      r: -0.5
-      poleMatching: 1
-  m_RotationDamper:
-    m_RotationMode: 0
-    m_PlayerInputDamper:
-      mode: 2
-      halfLife: 0.1
-      stiffness: 20
-      damping: 4
-      secondOrderDynamics:
-        f: 5
-        z: 0.35
-        r: -0.5
-        poleMatching: 1
-    m_RotationDamper:
-      mode: 2
-      halfLife: 0.1
-      stiffness: 20
-      damping: 4
-      secondOrderDynamics:
-        f: 5
-        z: 0.35
-        r: -0.5
-        poleMatching: 1
-  m_FOVDistanceDamper:
-    mode: 2
-    halfLife: 0.5
-    stiffness: 20
-    damping: 4
-    secondOrderDynamics:
-      f: 5
-      z: 0.35
-      r: -0.5
-      poleMatching: 1
 --- !u!4 &1052094158
 Transform:
   m_ObjectHideFlags: 0
@@ -871,6 +771,23 @@ MonoBehaviour:
   m_ScripedControllerOverride: {fileID: 0}
   m_Interpolate: {fileID: 11400000, guid: 873f1e8e1402719438b442604a0a9eb3, type: 2}
   m_Shake: {fileID: 11400000, guid: 7d53f9d6e3cf85849b7395ae0ba4866a, type: 2}
+  m_Core:
+    m_Output:
+      anchor:
+        x: 0
+        y: 0.2
+        z: 0
+      rotation:
+        value:
+          x: 0.043619387
+          y: 0
+          z: 0
+          w: 0.99904823
+      fov: 40
+      distance: 9.2
+      viewPort:
+        x: 0
+        y: -0.046
   m_DrawGizmos: 1
   m_DrawInputGizmos: 1
 --- !u!111 &1666276435
@@ -880,7 +797,7 @@ Animation:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1666276432}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Animation: {fileID: 7400000, guid: 046829bf4f1c81e498afa7f31144ff7e, type: 2}
   m_Animations:

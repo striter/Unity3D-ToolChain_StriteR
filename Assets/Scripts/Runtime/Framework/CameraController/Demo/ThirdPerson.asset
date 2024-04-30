@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 127312f2077b4718b40bd157489acc0b, type: 3}
+  m_Script: {fileID: 11500000, guid: 075b1a70149843499c162661df1b45c5, type: 3}
   m_Name: ThirdPerson
   m_EditorClassIdentifier: 
   m_InputProcessor: {fileID: 11400000, guid: 8530a87b22501cb49ba23f624743cba6, type: 2}

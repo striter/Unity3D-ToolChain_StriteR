@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: AssetProcessRules
   m_EditorClassIdentifier: 
   m_Objects:
-  - {fileID: 3982182738998453386}
---- !u!114 &3982182738998453386
+  - {fileID: 6316242376038359924}
+--- !u!114 &6316242376038359924
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

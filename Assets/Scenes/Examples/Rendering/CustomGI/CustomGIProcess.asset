@@ -1,6 +1,22 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8867406978791864097
+--- !u!114 &-3671689672056444614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c21daf0d2af48ea8ee8ce8d750c8ccb, type: 3}
+  m_Name: 1_Bake SkyLight Lightmap
+  m_EditorClassIdentifier: 
+  m_Title: Bake SkyLight Lightmap
+  m_RenderMode: 0
+  m_RenderDirMode: 2
+  m_LightProbeMode: 0
+--- !u!114 &-859314239378169361
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -14,22 +30,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Title: Sky Light Preparation
   m_Settings: 1
---- !u!114 &-308871803603413154
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 108c55fc7f364cd9a2b1dfed922bf32a, type: 3}
-  m_Name: 3_DeleteDirectory
-  m_EditorClassIdentifier: 
-  m_Title: DeleteDirectory
-  m_DeletePaths:
-  - <#activeScenePath>/Temporary_SkyLight
---- !u!114 &-243568158785022852
+--- !u!114 &-274911177846377872
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -57,11 +58,11 @@ MonoBehaviour:
   m_Name: CustomGIProcess
   m_EditorClassIdentifier: 
   m_Objects:
-  - {fileID: -8867406978791864097}
-  - {fileID: 8472777028799489501}
-  - {fileID: -243568158785022852}
-  - {fileID: -308871803603413154}
---- !u!114 &8472777028799489501
+  - {fileID: -859314239378169361}
+  - {fileID: -3671689672056444614}
+  - {fileID: -274911177846377872}
+  - {fileID: 4231774579971326425}
+--- !u!114 &4231774579971326425
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -70,10 +71,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c21daf0d2af48ea8ee8ce8d750c8ccb, type: 3}
-  m_Name: 1_Bake SkyLight Lightmap
+  m_Script: {fileID: 11500000, guid: 108c55fc7f364cd9a2b1dfed922bf32a, type: 3}
+  m_Name: 3_DeleteDirectory
   m_EditorClassIdentifier: 
-  m_Title: Bake SkyLight Lightmap
-  m_RenderMode: 0
-  m_RenderDirMode: 2
-  m_LightProbeMode: 0
+  m_Title: DeleteDirectory
+  m_DeletePaths:
+  - <#activeScenePath>/Temporary_SkyLight
