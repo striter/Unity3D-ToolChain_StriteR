@@ -27,5 +27,5 @@ MonoBehaviour:
   m_Name: 0_PolyIslandOutline
   m_EditorClassIdentifier: 
   m_Title: PolyIslandOutline
-  m_Path: Assets/Scenes/ArtScenes/PolyIsland/PolyIsland
+  m_Path: Assets/Scenes/ArtScenes/PolyIsland
   m_OutputAttribute: 512

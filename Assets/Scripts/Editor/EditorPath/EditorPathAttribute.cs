@@ -45,18 +45,17 @@ namespace UnityEditor.Extensions.EditorPath
             if(!m_Foldout)
                 return;
 
-            label.text = "Path Regex";
-            EditorGUI.PropertyField(GUILayout_HorizontalScope.NewLine(kPadding,kOutputHeight,kDepth),property,label,true);
+            EditorGUI.PropertyField(GUILayout_HorizontalScope.NewLine(kPadding,kOutputHeight,kDepth),property,GUIContent.none,true);
             
             GUILayout_HorizontalScope.NewLine(kPadding, kAppendRegexHeigth);
             EditorGUI.BeginChangeCheck();
             var popupIndex = EditorGUI.Popup(GUILayout_HorizontalScope.NextRectNormalized(kDepth,.5f),
-                UEPath.kReplacementRegex.Count, UEPath.kReplacementRegex.Select(p=>$"{p.Key} {p.Value()}".Replace('/','\\')).Append("Select Regex To Append").ToArray());
+                UEPath.kReplacementRegex.Count, UEPath.kReplacementRegex.Select(p=>$"{p.Key} {p.Value()}".Replace('/','\\')).Append("Append Regex").ToArray());
             if (EditorGUI.EndChangeCheck())
                 property.stringValue += UEPath.kReplacementRegex.ElementAt(popupIndex).Key;
             
             EditorGUI.BeginChangeCheck();
-            popupIndex = EditorGUI.Popup(GUILayout_HorizontalScope.FinishLineRect(kPadding),UEPath.kActivePath.Count, UEPath.kActivePath.Select(p=>$"{p.Key} {p.Value()}".Replace('/','\\')).Append("Select Regex To Append").ToArray());
+            popupIndex = EditorGUI.Popup(GUILayout_HorizontalScope.FinishLineRect(kPadding),UEPath.kActivePath.Count, UEPath.kActivePath.Select(p=>$"{p.Key} {p.Value()}".Replace('/','\\')).Append("Append Constant").ToArray());
             if (EditorGUI.EndChangeCheck())
                 property.stringValue += UEPath.kActivePath.ElementAt(popupIndex).Value();
         }
