@@ -36,6 +36,5 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
             EditorUtility.SetDirty(this);
         }
         public void SetBundleDirty() => m_Dirty = true;
-        private void OnValidate() => SetBundleDirty();
     }
 }
