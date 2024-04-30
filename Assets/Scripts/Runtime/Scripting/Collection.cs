@@ -70,7 +70,7 @@ namespace System.Linq.Extensions
                 }
             }
             
-            public static  IEnumerable<Y> CollectAs<T,Y>(this IEnumerable<T> _collection) where T:class where Y:class
+            public static  IEnumerable<Y> CollectAs<T,Y>(this IEnumerable<T> _collection) where T:class
             {
                 foreach (T element in _collection)
                 {
@@ -709,7 +709,7 @@ namespace System.Linq.Extensions
             return index;
         }
 
-        public static (T start, T end, float _value) Gradient<T>(this IList<T> _collection,float _value)
+        public static (T start, T end, float value) Gradient<T>(this IList<T> _collection,float _value)
         {
             Debug.Assert(_collection!=null, "collection can't be null");
             Debug.Assert(_collection.Count!=0, "collection can't be 0");

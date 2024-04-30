@@ -84,7 +84,6 @@ MonoBehaviour:
       m_Outline: 0
       extendWidth: 0
       outlineVertex: 0
-    m_MotionVector: 1
     m_Reflection: 1
     m_PlanarReflection:
       maxPlanarReflectionTexture: 4

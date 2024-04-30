@@ -129,6 +129,12 @@ public static partial class umath
             return EAxis.X;
         return EAxis.Y;
     }
+    public static EAxis maxAxis(this float3 _value)
+    {
+        if (_value.x > _value.y && _value.x > _value.z)
+            return EAxis.X;
+        return _value.y > _value.z ? EAxis.Y : EAxis.Z;
+    }
     
     public static float2 bilinearLerp(float2 tl, float2 tr, float2 br, float2 bl,float2 p)=> tl + (tr - tl) * p.x + (bl - tl) * p.y + (tl - tr + br - bl) * (p.x * p.y);
     public static float3 bilinearLerp(float3 tl, float3 tr, float3 br, float3 bl,float2 p)=> tl + (tr - tl) * p.x + (bl - tl) * p.y + (tl - tr + br - bl) * (p.x * p.y);

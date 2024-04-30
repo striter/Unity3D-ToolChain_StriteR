@@ -154,7 +154,7 @@ namespace UnityEditor.Extensions
             EditorGUI.BeginChangeCheck();
 
             EditorGUILayout.PropertyField(m_InputProperty);
-            HorizontalScope.Begin(5,5,EditorGUI.GetPropertyHeight(m_InputProperty,true));
+            HorizontalScope.Begin(5,5,EditorGUI.GetPropertyHeight(m_InputProperty,true),Screen.width);
             
             if (EditorGUI.EndChangeCheck())
             {

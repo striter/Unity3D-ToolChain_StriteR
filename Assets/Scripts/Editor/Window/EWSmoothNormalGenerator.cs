@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
 using UnityEditor;
+using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 
 namespace UnityEditor.Extensions
@@ -33,8 +34,8 @@ namespace UnityEditor.Extensions
 
             m_GenerateUV = (EVertexAttribute)EditorGUILayout.EnumPopup("Generate UV:", m_GenerateUV);
             if (m_GenerateUV != EVertexAttribute.None && GUILayout.Button("Generate"))
-                if (UEAsset.SaveFilePath(out string filePath, "prefab", UEPath.RemoveExtension(UEPath.GetPathName(AssetDatabase.GetAssetPath(m_ModelPrefab))) + "_SN"))
-                    GenerateSkinnedTarget(UEPath.FileToAssetPath(filePath), m_ModelPrefab, m_GenerateUV);
+                if (UEAsset.SaveFilePath(out string filePath, "prefab", AssetDatabase.GetAssetPath(m_ModelPrefab).GetPathName().RemoveExtension() + "_SN"))
+                    GenerateSkinnedTarget(filePath.FileToAssetPath(), m_ModelPrefab, m_GenerateUV);
 
             EditorGUILayout.EndVertical();
         }

@@ -8,6 +8,7 @@ namespace TechToys.ThePlanet.Grid
 {
     using UnityEditor;
     using UnityEditor.Extensions;
+    using UnityEditor.Extensions.EditorPath;
     
     [ExecuteInEditMode]
     public class GridGenerator : MonoBehaviour

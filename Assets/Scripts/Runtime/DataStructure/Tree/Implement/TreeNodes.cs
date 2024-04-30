@@ -13,7 +13,7 @@ namespace Runtime.DataStructure
         public int iteration { get; set; }
         public G2Box boundary { get; set; }
         public IList<float2> elements { get; set; }
-        public G2Box CalculateBounds(IEnumerable<float2> _elements)=> UBounds.GetBoundingBox(_elements);
+        public G2Box CalculateBounds(IEnumerable<float2> _elements)=> UGeometry.GetBoundingBox(_elements);
         public bool Contains(G2Box _bounds, float2 _element) => _bounds.Contains(_element,0.01f);
     }
 
@@ -22,7 +22,7 @@ namespace Runtime.DataStructure
         public int iteration { get; set; }
         public GBox boundary { get; set; }
         public IList<float3> elements { get; set; }
-        public GBox CalculateBounds(IEnumerable<float3> _elements)=> UBounds.GetBoundingBox(_elements);
+        public GBox CalculateBounds(IEnumerable<float3> _elements)=> UGeometry.GetBoundingBox(_elements);
         public bool Contains(GBox _bounds, float3 _element)=> _bounds.Contains(_element,0.01f);
     }
 
@@ -31,7 +31,7 @@ namespace Runtime.DataStructure
         public int iteration { get; set; }
         public G2Box boundary { get; set; }
         public IList<G2Triangle> elements { get; set; }
-        public G2Box CalculateBounds(IEnumerable<G2Triangle> _elements)=> UBounds.GetBoundingBox(_elements.Select(p => (IEnumerable<float2>)p).Resolve());
+        public G2Box CalculateBounds(IEnumerable<G2Triangle> _elements)=> UGeometry.GetBoundingBox(_elements.Select(p => (IEnumerable<float2>)p).Resolve());
         public bool Contains(G2Box _bounds, G2Triangle _element) => GJK.Intersect(_bounds,_element);
     }
 
@@ -40,7 +40,7 @@ namespace Runtime.DataStructure
         public int iteration { get; set; }
         public GBox boundary { get; set; }
         public IList<GTriangle> elements { get; set; }
-        public GBox CalculateBounds(IEnumerable<GTriangle> _elements) => UBounds.GetBoundingBox(_elements.Select(p => (IEnumerable<float3>)p).Resolve());
+        public GBox CalculateBounds(IEnumerable<GTriangle> _elements) => UGeometry.GetBoundingBox(_elements.Select(p => (IEnumerable<float3>)p).Resolve());
         public bool Contains(GBox _bounds, GTriangle _element) => GJK.Intersect(_bounds, _element);
     }
 }

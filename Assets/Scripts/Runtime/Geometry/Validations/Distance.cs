@@ -103,7 +103,22 @@ namespace Runtime.Geometry.Validation
             
             return dot(_plane.normal, _point - _plane.position);
         }
-        
-        
+
+
+        public static float Distance(GSphere _sphere, GBox _box)
+        {
+            var sphereCenter = _sphere.center;
+            var sphereRadius = _sphere.radius;
+            var boxMin = _box.min;
+            var boxMax = _box.max;
+
+            var closestPoint = new float3(
+                max(boxMin.x, min(sphereCenter.x, boxMax.x)),
+                max(boxMin.y, min(sphereCenter.y, boxMax.y)),
+                max(boxMin.z, min(sphereCenter.z, boxMax.z))
+            );
+
+            return length(closestPoint - sphereCenter) - sphereRadius;
+        }
     }
 }

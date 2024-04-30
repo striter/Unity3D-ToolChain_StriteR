@@ -1,5 +1,6 @@
 using TechToys.ThePlanet.Module.Cluster;
 using System.Linq.Extensions;
+using UnityEditor.Extensions.EditorPath;
 
 #if UNITY_EDITOR
 namespace TechToys.ThePlanet.Baking
@@ -59,7 +60,7 @@ namespace TechToys.ThePlanet.Baking
 
             collectionData.m_MeshLibrary = meshes.ToArray();
             collectionData.m_MaterialLibrary = materials.ToArray();
-            var assetPath = UEPath.FileToAssetPath(filePath);
+            var assetPath = filePath.FileToAssetPath();
             UEAsset.ClearSubAssets(assetPath);
             var savedCollection=UEAsset.CreateAssetCombination(assetPath, collectionData,subData);
             var subAssets = AssetDatabase.LoadAllAssetsAtPath(assetPath);
@@ -71,11 +72,11 @@ namespace TechToys.ThePlanet.Baking
             if (!UEAsset.SelectFilePath(out var filePath, "FBX"))
                 return;
 
-            var assetPath=UEPath.FileToAssetPath(filePath);
+            var assetPath=filePath.FileToAssetPath();
             var importer=AssetImporter.GetAtPath(assetPath) as ModelImporter;
             if (importer == null)
                 return;
-            ImportModule(UEPath.GetPathName(filePath),AssetDatabase.LoadAllAssetsAtPath(assetPath).Collect(p => p is Mesh).Select(p => p as Mesh).ToArray(),_clusterType);
+            ImportModule(filePath.GetPathName(),AssetDatabase.LoadAllAssetsAtPath(assetPath).Collect(p => p is Mesh).Select(p => p as Mesh).ToArray(),_clusterType);
         }
         private void ImportModule(string _name, Mesh[] _importMeshes,EClusterType _clusterType)
         {

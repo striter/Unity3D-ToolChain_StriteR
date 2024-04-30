@@ -65,7 +65,7 @@ namespace Runtime.Geometry.Validation
             _triangles.Clear();
             kTriangles.Clear();
             kEdges.Clear();
-            var boundsCircle = UBounds.GetBoundingCircle(_vertices);
+            var boundsCircle = UGeometry.GetBoundingCircle(_vertices);
             var superTriangle = boundsCircle.GetCircumscribedTriangle();
             kTriangles.Add(new DTriangle()
             {
@@ -132,7 +132,7 @@ namespace Runtime.Geometry.Validation
             _triangles = kSphericalTriangles;
             
             _triangles.Clear();
-            var sphere = UBounds.GetBoundingSphere(_vertices);
+            var sphere = UGeometry.GetBoundingSphere(_vertices);
             var kSphereRadius = sphere.radius;
             PoleTriangulation(_vertices, sphere.Center + new float3(0,kSphereRadius,0),new GPlane(kfloat3.up, sphere.Center - kfloat3.up*kSphereRadius ),ref _triangles);      //Project from north pole
             PoleTriangulation(_vertices, sphere.Center + new float3(0,-kSphereRadius,0),new GPlane(kfloat3.down, sphere.Center - kfloat3.down*kSphereRadius ),ref _triangles);       //Project from south pole

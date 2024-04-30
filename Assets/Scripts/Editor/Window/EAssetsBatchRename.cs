@@ -1,3 +1,4 @@
+using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 
 namespace UnityEditor.Extensions
@@ -9,8 +10,8 @@ namespace UnityEditor.Extensions
         private void OnGUI()
         {
             EditorGUILayout.BeginHorizontal();
-            var m_FolderPath = UEAsset.GetCurrentProjectWindowDirectory();
-            EditorGUILayout.LabelField("Current Folder:"+m_FolderPath);
+            var folderPath = UEPath.GetCurrentProjectWindowDirectory();
+            EditorGUILayout.LabelField("Current Folder:"+folderPath);
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginVertical();
@@ -19,7 +20,7 @@ namespace UnityEditor.Extensions
             m_Replace = EditorGUILayout.TextField("Replace", m_Replace);
         
             if (GUILayout.Button("Rename"))
-                EditorUtilities.RenameAssets(m_FolderPath,m_Source,m_Replace);
+                EditorUtilities.RenameAssets(folderPath,m_Source,m_Replace);
             EditorGUILayout.EndVertical();
         }
 

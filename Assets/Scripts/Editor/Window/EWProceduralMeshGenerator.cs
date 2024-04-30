@@ -1,4 +1,5 @@
 ﻿using Runtime.Geometry.Explicit.Mesh;
+using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 
 namespace UnityEditor.Extensions
@@ -37,7 +38,7 @@ namespace UnityEditor.Extensions
             
             Mesh mesh = new Mesh {name = meshName};
             m_Input.Output(mesh);
-            UEAsset.CreateOrReplaceMainAsset(mesh, UEPath.FileToAssetPath(path));
+            UEAsset.CreateOrReplaceMainAsset(mesh, path.FileToAssetPath());
         }
 
     }

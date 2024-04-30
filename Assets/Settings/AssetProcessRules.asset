@@ -1,5 +1,20 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-2491071263467324393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d356ff776dff4e99a1970f5d3e126aad, type: 3}
+  m_Name: 0_PolyIslandOutline
+  m_EditorClassIdentifier: 
+  m_Title: PolyIslandOutline
+  m_Path: Assets/Scenes/ArtScenes/PolyIsland/PolyIsland
+  m_OutputAttribute: 512
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12,8 +27,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7959997802aa401cb8fb6db28515f1e2, type: 3}
   m_Name: AssetProcessRules
   m_EditorClassIdentifier: 
-  meshRules:
-  - m_Directory: Assets/Scenes/ArtScenes/PolyIsland
-    m_Process: 0
-    m_SmoothNormalProcess:
-      m_OutputAttribute: 512
+  m_Objects:
+  - {fileID: -2491071263467324393}

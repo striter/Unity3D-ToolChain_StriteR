@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Extensions;
 using Runtime.Geometry;
 using Runtime.Geometry.Validation;
+using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 
 namespace UnityEditor.Extensions
@@ -191,7 +192,7 @@ namespace UnityEditor.Extensions
             if (!UEAsset.SaveFilePath(out string filePath, "asset", m_ModifingMesh.name))
                 return;
 
-            UEAsset.CreateOrReplaceMainAsset(m_ModifingMesh, UEPath.FileToAssetPath(filePath));
+            UEAsset.CreateOrReplaceMainAsset(m_ModifingMesh, filePath.FileToAssetPath());
         }
     }
     public class MeshEditorHelperBase

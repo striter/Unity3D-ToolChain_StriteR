@@ -25,7 +25,7 @@ namespace Examples.Algorithm.Geometry
             Gizmos.color = Color.white.SetA(.5f);
             door.DrawGizmos();
             var movedPlane = new G2Plane(plane.normal,plane.distance * math.sin(UTime.time)*2);
-            movedPlane.DrawGizmos(UBounds.GetBoundingCircle(door.positions).radius);
+            movedPlane.DrawGizmos(UGeometry.GetBoundingCircle(door.positions).radius);
 
             if (door.DoorClip(movedPlane, out var clippedPolygon))
             {
@@ -35,7 +35,7 @@ namespace Examples.Algorithm.Geometry
             
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right*5f);
             Gizmos.color = Color.white.SetA(.5f);
-            movedPlane.DrawGizmos(UBounds.GetBoundingCircle(triangle.triangle.Iterate()).radius);
+            movedPlane.DrawGizmos(UGeometry.GetBoundingCircle(triangle.triangle.Iterate()).radius);
             triangle.DrawGizmos();
             if (triangle.Clip(movedPlane, out var clippedG2Shape))
             {
@@ -48,7 +48,7 @@ namespace Examples.Algorithm.Geometry
             Gizmos.color = Color.white.SetA(.5f);
             var movedGPlane  = new GPlane(gPlane.normal,gPlane.distance * math.sin(UTime.time)*2);
                 
-            movedGPlane.DrawGizmos(UBounds.GetBoundingCircle(triangle.triangle.Iterate()).radius);
+            movedGPlane.DrawGizmos(UGeometry.GetBoundingCircle(triangle.triangle.Iterate()).radius);
             gTriangle.DrawGizmos();
             if (gTriangle.Clip(movedGPlane, out var clippedGShape,gDirected))
             {

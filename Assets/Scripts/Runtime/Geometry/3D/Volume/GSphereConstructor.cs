@@ -52,7 +52,7 @@ namespace Runtime.Geometry
             if (determinant == 0)
             {
                 Debug.LogError("Tetrahedron points are coplanar");
-                return UBounds.MinimumEnclosingSphere(_a,_b,_c,_d);
+                return UGeometry.MinimumEnclosingSphere(_a,_b,_c,_d);
             }
             
             float f = .5f / (determinant + float.Epsilon);

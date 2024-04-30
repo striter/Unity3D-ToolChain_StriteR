@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 
 namespace UnityEditor.Extensions
@@ -8,7 +9,7 @@ namespace UnityEditor.Extensions
         public static bool RenameAssets(string _folder,string _comparer,string _replace)
         {
             int count = 0;
-            foreach (var assetPath in System.IO.Directory.GetFiles(UEPath.AssetToFilePath(_folder)))
+            foreach (var assetPath in Directory.GetFiles(_folder.AssetToFilePath()))
             {
                 count++;
                 string assetName = Path.GetFileName(assetPath);

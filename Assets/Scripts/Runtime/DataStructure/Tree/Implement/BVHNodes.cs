@@ -21,18 +21,14 @@ namespace Runtime.DataStructure
             elements.Divide(_median,
                 // .Sort(
                 // ESortType.Bubble,
-                (_a, _b) =>
-                {
-                    switch (axis)
-                    {
-                        default: throw new InvalidEnumArgumentException();
-                        case EAxis.X: return _a.baryCentre.x >= _b.baryCentre.x ? 1 : -1;
-                        case EAxis.Y: return _a.baryCentre.y >= _b.baryCentre.y ? 1 : -1;
-                    }
-                });
+            (_a, _b) => axis switch {
+                        EAxis.X => _a.baryCentre.x >= _b.baryCentre.x ? 1 : -1,
+                        EAxis.Y => _a.baryCentre.y >= _b.baryCentre.y ? 1 : -1,
+                        _ => throw new InvalidEnumArgumentException()
+                    });
         }
         
-        public G2Box CalculateBounds(IEnumerable<G2Triangle> _elements) => UBounds.GetBoundingBox(_elements.Select(p => (IEnumerable<float2>)p).Resolve());
+        public G2Box CalculateBounds(IEnumerable<G2Triangle> _elements) => UGeometry.GetBoundingBox(_elements.Select(p => (IEnumerable<float2>)p).Resolve());
         public bool Contains(G2Box _bounds, G2Triangle _element) => GJK.Intersect(_bounds,_element);
     }
 }

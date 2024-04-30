@@ -1,0 +1,104 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45ed0ff9b39d44d3bba388b8ac92689b, type: 3}
+  m_Name: OverShoulder
+  m_EditorClassIdentifier: 
+  m_InputProcessor: {fileID: 11400000, guid: 649f9e382086d554e93018ea6847d933, type: 2}
+  m_Anchor:
+    m_AnchorMode: 1
+    m_OriginDamper:
+      mode: 2
+      halfLife: 0.1
+      stiffness: 20
+      damping: 4
+      secondOrderDynamics:
+        f: 5
+        z: 0.35
+        r: -0.5
+        poleMatching: 1
+    m_OriginExtraDamper:
+      mode: 2
+      halfLife: 0.1
+      stiffness: 20
+      damping: 4
+      secondOrderDynamics:
+        f: 5
+        z: 0.35
+        r: -0.5
+        poleMatching: 1
+  m_Rotation:
+    m_RotationMode: 0
+    m_PlayerInputDamper:
+      mode: 2
+      halfLife: 0.1
+      stiffness: 20
+      damping: 4
+      secondOrderDynamics:
+        f: 5
+        z: 0.35
+        r: -0.5
+        poleMatching: 1
+    m_RotationDamper:
+      mode: 2
+      halfLife: 0.1
+      stiffness: 20
+      damping: 4
+      secondOrderDynamics:
+        f: 5
+        z: 0.35
+        r: -0.5
+        poleMatching: 1
+  m_Collision:
+    m_CollisionMin: 0
+    m_CollisionForward: 0.1
+    m_CullingMask: 0
+    m_ColliderRadius: 0.1
+    m_SceneMask: 0
+  m_DistanceDamper:
+    mode: 2
+    halfLife: 0.1
+    stiffness: 20
+    damping: 4
+    secondOrderDynamics:
+      f: 5
+      z: 0.35
+      r: -0.5
+      poleMatching: 1
+  m_ViewportDamper:
+    mode: 2
+    halfLife: 0.1
+    stiffness: 20
+    damping: 4
+    secondOrderDynamics:
+      f: 5
+      z: 0.35
+      r: -0.5
+      poleMatching: 1
+  m_ChildAnchorName: Bip001 R Clavicle
+  m_UseTransformPosition: 0
+  m_AnchorY: 0
+  m_AnchorOffset:
+    x: 0
+    y: 0
+    z: 0
+  m_Pitch: 10
+  m_Yaw: 0
+  m_CameraDistance: 1.25
+  m_FOV: 50
+  m_ViewportX: 0
+  m_ViewportY: 0
+  m_PinchDistanceRange:
+    start: 0
+    length: 0
+  m_PinchFovRange:
+    start: 0
+    length: 0

@@ -67,6 +67,8 @@ namespace Runtime.Geometry.Validation
                    _src.min.z <= _dst.max.z && _src.max.z >= _dst.min.z;
         }
 
+        public static bool Intersect(GSphere _sphere, GBox _box) => Distance(_sphere, _box) <= 0;
+        
         public static bool Intersect(this GLine _line,GQuad _quad,out float _distance,bool _directed = false)
         {
             _quad.GetTriangles(out var _triangle1,out var _triangle2);

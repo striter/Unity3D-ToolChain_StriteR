@@ -11,6 +11,7 @@ namespace TechToys.ThePlanet.Baking
     using UnityEngine;
     using UnityEditor;
     using UnityEditor.Extensions;
+    using UnityEditor.Extensions.EditorPath;
     public class ModuleCollector : MonoBehaviour
     {
         public EClusterType m_ClusterType;

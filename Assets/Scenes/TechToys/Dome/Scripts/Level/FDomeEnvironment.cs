@@ -101,7 +101,7 @@ namespace Dome
 
             meshData.subMeshCount = 1;
             meshData.SetSubMesh(0,new SubMeshDescriptor(0,indexCount){vertexCount = vertexCount});
-            m_Mesh.bounds = UBounds.GetBoundingBox(outerQuad.Concat(innerQuad));
+            m_Mesh.bounds = UGeometry.GetBoundingBox(outerQuad.Concat(innerQuad));
             Mesh.ApplyAndDisposeWritableMeshData(meshDataArray,m_Mesh,MeshUpdateFlags.DontRecalculateBounds);
         }
         

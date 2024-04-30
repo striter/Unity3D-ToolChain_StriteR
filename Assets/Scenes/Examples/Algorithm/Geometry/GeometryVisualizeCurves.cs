@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Runtime.Geometry;
 using Runtime.Geometry.Curves;
 using Runtime.Geometry.Curves.Spline;
 using Runtime.Geometry.Curves.LineSegments;

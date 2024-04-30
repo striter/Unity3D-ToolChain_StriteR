@@ -4,7 +4,6 @@ using Runtime.Geometry.Validation;
 using Unity.Mathematics;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;
-using UGeometry = Runtime.Geometry.Validation.UGeometry;
 
 namespace Examples.Algorithm.DelaunayTriangulation
 {

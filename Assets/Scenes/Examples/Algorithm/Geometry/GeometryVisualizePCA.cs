@@ -71,21 +71,21 @@ namespace Examples.Algorithm.Geometry
                 case EBoundsShape.OrientedBox:
                 {
                     var boxright = math.cross(up,forward);
-                    var box = UBounds.GetBoundingBoxOriented( boxright,up,forward,randomPoints);
+                    var box = UGeometry.GetBoundingBoxOriented( boxright,up,forward,randomPoints);
                     Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.TRS(Vector3.zero,Quaternion.LookRotation(forward,up),Vector3.one);
                     box.DrawGizmos();
                 }
                     break;
                 case EBoundsShape.Ellipsoid:
                 {
-                    var ellipsoid = UBounds.GetBoundingEllipsoid(randomPoints);
+                    var ellipsoid = UGeometry.GetBoundingEllipsoid(randomPoints);
                     ellipsoid.DrawGizmos();
                 }
                     break;
                 case EBoundsShape.Sphere:
                 {
                     Gizmos.matrix = transform.localToWorldMatrix;
-                    var sphere = UBounds.GetBoundingSphere(randomPoints);
+                    var sphere = UGeometry.GetBoundingSphere(randomPoints);
                     sphere.DrawGizmos();
                 }
                     break;

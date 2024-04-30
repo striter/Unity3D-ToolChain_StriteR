@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using UnityEditor.Extensions.EditorPath;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -65,7 +66,7 @@ namespace UnityEditor.Extensions
             ScreenCapture.CaptureScreenshot(path);
         }
         
-        public static void OutputActiveWindowDirectory()=> Debug.Log(  UEAsset.GetCurrentProjectWindowDirectory());
+        public static void OutputActiveWindowDirectory()=> Debug.Log(  UEPath.GetCurrentProjectWindowDirectory());
         public static void OutputAssetDirectory()=> Debug.Log(  AssetDatabase.GetAssetPath(Selection.activeObject));
 
         

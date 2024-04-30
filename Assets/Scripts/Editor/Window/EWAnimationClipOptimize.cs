@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 namespace UnityEditor.Extensions
 {
@@ -28,7 +29,7 @@ namespace UnityEditor.Extensions
             m_OptimizePresicion = EditorGUILayout.IntSlider("Float Presicion",m_OptimizePresicion, 2, 8);
             if (GUILayout.Button("Optimize"))
             {
-                if (UEAsset.SaveFilePath(out string filePath, "anim", UEPath.RemoveExtension(UEPath.GetPathName(AssetDatabase.GetAssetPath(m_OptimizeAsset))) + "_O"))
+                if (UEAsset.SaveFilePath(out string filePath, "anim", AssetDatabase.GetAssetPath(m_OptimizeAsset).GetPathName().RemoveExtension() + "_O"))
                 {
                     AnimationClip clip = OptimizeAnimation(m_OptimizeAsset, m_OptimizePresicion, m_OptimizeScale);
                     string assetPath = UEPath.FileToAssetPath(filePath);

@@ -8,23 +8,7 @@ using UnityEngine;
 
 namespace Rendering.Lightmap
 {
-    [Serializable]
-    public struct LightmapParameter
-    {
-        public int index;
-        public Vector4 scaleOffset;
-    }
-    
-    [Serializable]
-    public struct LightmapTextures
-    {
-        public Texture2D color;
-        public Texture2D directional;
-        public Texture2D shadowMask;
-
-        public static implicit operator LightmapData(LightmapTextures _texture) => new LightmapData() {lightmapColor = _texture.color, lightmapDir = _texture.directional, shadowMask = _texture.shadowMask};
-        public static implicit operator LightmapTextures(LightmapData _data) => new LightmapTextures() {color = _data.lightmapColor, directional = _data.lightmapDir, shadowMask = _data.shadowMask};
-    }
+        
 
     [Serializable]
     public struct LightBaking

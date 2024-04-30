@@ -142,18 +142,6 @@ public static class UGizmos
         Handles.matrix = Gizmos.matrix;
         Handles.Label(_position+_offset*Vector3.up,_text,kLabelStyle);
     }
-    
-    public static void DrawGizmos(this GBox _box)=>Gizmos.DrawWireCube(_box.center,_box.size);
-    public static void DrawGizmos(this GSphere _sphere) => Gizmos.DrawWireSphere(_sphere.center, _sphere.radius);
-    public static void DrawGizmos(this GFrustumPoints _frustumPoints)
-    {
-        DrawLinesConcat(_frustumPoints.nearBottomLeft,_frustumPoints.nearBottomRight,_frustumPoints.nearTopRight,_frustumPoints.nearTopLeft);
-        DrawLine(_frustumPoints.farBottomLeft,_frustumPoints.nearBottomLeft);
-        DrawLine(_frustumPoints.farBottomRight,_frustumPoints.nearBottomRight);
-        DrawLine(_frustumPoints.farTopLeft,_frustumPoints.nearTopLeft);
-        DrawLine(_frustumPoints.farTopRight,_frustumPoints.nearTopRight);
-        DrawLinesConcat(_frustumPoints.farBottomLeft,_frustumPoints.farBottomRight,_frustumPoints.farTopRight,_frustumPoints.farTopLeft);
-    }
 }
 
 #endif

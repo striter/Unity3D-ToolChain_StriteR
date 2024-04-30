@@ -77,6 +77,7 @@
             
             half4 frag(v2f i) : SV_Target
             {
+                
                 float3 viewDirWS=GetCameraRealDirectionWS(i.positionWS);
                 viewDirWS.xz/=viewDirWS.y;
                 viewDirWS*=_DepthScale;

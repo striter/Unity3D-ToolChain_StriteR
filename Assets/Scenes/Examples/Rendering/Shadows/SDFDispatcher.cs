@@ -29,11 +29,12 @@ namespace Examples.Rendering.Shadows
                     float aDot = math.dot(_a.Center - center, right);
                     float bDot = math.dot(_b.Center - center, right);
                     return aDot >= bDot ? 1 : -1;
-                });
+                }
+            );
         }
 
         public bool Contains(GSphere _bounds, GCapsule _element) => throw new NotImplementedException();
-        public GSphere CalculateBounds(IEnumerable<GCapsule> _elements) => UBounds.GetBoundingSphere(_elements.Select(p=>p.GetBoundingSphere()));
+        public GSphere CalculateBounds(IEnumerable<GCapsule> _elements) => UGeometry.GetBoundingSphere(_elements.Select(p=>p.GetBoundingSphere()));
     }
     
     [ExecuteInEditMode]

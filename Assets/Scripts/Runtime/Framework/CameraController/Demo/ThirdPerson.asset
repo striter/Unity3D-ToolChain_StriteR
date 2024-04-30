@@ -1,0 +1,174 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 127312f2077b4718b40bd157489acc0b, type: 3}
+  m_Name: ThirdPerson
+  m_EditorClassIdentifier: 
+  m_InputProcessor: {fileID: 11400000, guid: 8530a87b22501cb49ba23f624743cba6, type: 2}
+  m_Anchor:
+    m_AnchorMode: 1
+    m_OriginDamper:
+      mode: 0
+      halfLife: 0.1
+      stiffness: 80
+      damping: 14.2
+      secondOrderDynamics:
+        f: 5
+        z: 0.35
+        r: -0.5
+        poleMatching: 1
+    m_OriginExtraDamper:
+      mode: 2
+      halfLife: 0.3
+      stiffness: 20
+      damping: 4
+      secondOrderDynamics:
+        f: 5
+        z: 0.35
+        r: -0.5
+        poleMatching: 1
+    m_OriginExtraDamper2:
+      mode: 2
+      halfLife: 0.1
+      stiffness: 20
+      damping: 4
+      secondOrderDynamics:
+        f: 5
+        z: 0.35
+        r: -0.5
+        poleMatching: 1
+  m_Rotation:
+    m_RotationMode: 1
+    m_PlayerInputDamper:
+      mode: 2
+      halfLife: 0.02
+      stiffness: 20
+      damping: 4
+      secondOrderDynamics:
+        f: 5
+        z: 0.35
+        r: -0.5
+        poleMatching: 1
+    m_RotationDamper:
+      mode: 2
+      halfLife: 0.05
+      stiffness: 200
+      damping: 30
+      secondOrderDynamics:
+        f: 5
+        z: 0.35
+        r: -0.5
+        poleMatching: 1
+  m_Collision:
+    m_CollisionMin: 0.42
+    m_CollisionForward: 0.189
+    m_CullingMask: -1
+    m_ColliderRadius: 0.1
+    m_SceneMask: 0
+  m_DistanceDamper:
+    mode: 2
+    halfLife: 0.1
+    stiffness: 200
+    damping: 8
+    secondOrderDynamics:
+      f: 5
+      z: 0.35
+      r: -0.5
+      poleMatching: 1
+  m_ViewportDamper:
+    mode: 2
+    halfLife: 0.1
+    stiffness: 88.6
+    damping: 17.3
+    secondOrderDynamics:
+      f: 5
+      z: 0.35
+      r: -0.5
+      poleMatching: 1
+  m_PinchParameters:
+  - useBoundingBox: 1
+    anchorOffset:
+      x: 0
+      y: 0
+      z: 0
+    childName: Slot Face
+    useTransformPosition: 0
+    anchorY: 0
+    viewportX: 0
+    viewportY: -0.046
+    pitch: 5
+    yaw: 0
+    roll: 0
+    fov: 40
+    distanceAABBAdaption: 0
+    distance: 1
+  - useBoundingBox: 0
+    anchorOffset:
+      x: 0
+      y: 0.2
+      z: 0
+    childName: Bip001 Spine
+    useTransformPosition: 0
+    anchorY: -0.5
+    viewportX: 0
+    viewportY: -0.046
+    pitch: 5
+    yaw: 0
+    roll: 0
+    fov: 40
+    distanceAABBAdaption: 0
+    distance: 9.2
+  - useBoundingBox: 1
+    anchorOffset:
+      x: 0
+      y: -0.2
+      z: 0
+    childName: 
+    useTransformPosition: 0
+    anchorY: 0.277
+    viewportX: 0
+    viewportY: -0.046
+    pitch: 5
+    yaw: 0
+    roll: 0
+    fov: 40
+    distanceAABBAdaption: 0
+    distance: 21.8
+  m_HorizontalSpeedFOV:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  m_HorizontalSpeedDistance:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

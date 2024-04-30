@@ -4,6 +4,7 @@ using System.IO;
 using Rendering;
 using Rendering.Lightmap;
 using UnityEditor;
+using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 
 namespace UnityEditor.Extensions
@@ -27,7 +28,7 @@ namespace UnityEditor.Extensions
             collection.m_Specular =  GlobalIllumination_CubemapSpecular.Export();
             collection.m_Lightmap = GlobalIllumination_LightmapDiffuse.Export(Selection.activeTransform);
             collection.m_SHL2 = RenderSettings.ambientProbe;
-            UEAsset.CreateOrReplaceMainAsset(collection,UEPath.FileToAssetPath(filePath));
+            UEAsset.CreateOrReplaceMainAsset(collection,filePath.FileToAssetPath());
         }
         
         public static void CleanPersistentData()

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 342b45acd09645f7aa2c727e71d3d96a, type: 3}
+  m_Name: Anim_Shake
+  m_EditorClassIdentifier: 
+  shake:
+    x: -0.5
+    y: 0
+    z: 0
+  euler:
+    x: 3
+    y: 5
+    z: 1
+  fov: 20
+  damper:
+    mode: 5
+    halfLife: 0.1
+    stiffness: 200
+    damping: 15.5
+    secondOrderDynamics:
+      f: 2.97
+      z: 0.299
+      r: 2.29
+      poleMatching: 1

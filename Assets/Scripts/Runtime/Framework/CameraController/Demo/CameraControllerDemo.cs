@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CameraController.Animation;
 using CameraController.Inputs;
+using CameraController.Inputs.Touch;
 using TTouchTracker;
 using Unity.Mathematics;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace CameraController.Demo
 {
     
     [Serializable]
-    public class FControllerInput : AControllerInput,IFOVOffset,IViewportOffset , IControllerMobileInput
+    public class FControllerInput : AControllerInput,IFOVOffset,IViewportOffset , IAnchorOffset , IControllerPlayerTouchInput
     {
         public Camera camera;
         public Transform anchor;
@@ -28,11 +29,10 @@ namespace CameraController.Demo
         public FPlayerInputMultiplier Sensitive { get; set; } = FPlayerInputMultiplier.kDefaultPixels;
         public override Transform Anchor => anchor;
         public override Transform Target => target;
-        public override float Pitch { get => euler.x; set=> euler.x = value; }
-        public override float Yaw { get => euler.y; set=> euler.y = value; }
-        public override float Pinch { get => pinch; set=> pinch = value; }
-        
-        public override float3 AnchorOffset => anchorOffset;
+        public float Pitch { get => euler.x; set=> euler.x = value; }
+        public float Yaw { get => euler.y; set=> euler.y = value; }
+        public float Pinch { get => pinch; set=> pinch = value; }
+        public float3 OffsetAnchor => anchorOffset;
         public float OffsetFOV { get => fovDelta; set => fovDelta = value; }
         public float OffsetViewPortX { get => viewPort.x; set => viewPort.x = value; }
         public float OffsetViewPortY { get => viewPort.y; set => viewPort.y = value; }
@@ -44,15 +44,15 @@ namespace CameraController.Demo
     {
         public FControllerInput m_Input;
         
-        
         [Header("Controllers")]
         public List<ACameraController> m_Controllers;
+        public MonoBehaviour m_ScripedControllerOverride;
         [Header("Animation")]
         public FControllerInterpolate m_Interpolate;
         public FControllerShake m_Shake;
 
+        public FCameraControllerCore m_Core = new FCameraControllerCore();
         private Transform m_Target;
-        private CameraControllerCore m_Controller = new CameraControllerCore();
         private Transform m_Character;
         private int m_Index;
 
@@ -61,13 +61,17 @@ namespace CameraController.Demo
             // m_Index = 0;
             m_Target = transform.Find("Target");
             m_Input.camera = transform.GetComponentInChildren<Camera>();
-            m_Controller.Switch(m_Controllers[m_Index], ref m_Input);
+
+            var controller = (ICameraController)m_Controllers[m_Index];
+            if (m_ScripedControllerOverride is ICameraController overrideController)
+                controller = overrideController;
+            m_Core.Switch(controller, ref m_Input);
         }
 
         private void Update()
         {
             if(Input.GetKeyDown(KeyCode.R))
-                m_Controller.Reset(ref m_Input);
+                m_Core.Reset(ref m_Input);
             
             if (Input.GetKeyDown(KeyCode.CapsLock))
             {
@@ -76,13 +80,19 @@ namespace CameraController.Demo
             }
 
             if (Input.GetKeyDown(KeyCode.Space))
-                m_Controller.AppendModifier(m_Shake,m_Input);
+                m_Core.AppendModifier(m_Shake);
             
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 m_Index = (m_Index + 1) % m_Controllers.Count;
-                m_Controller.Switch(m_Controllers[m_Index],ref m_Input);
-                m_Controller.AppendModifier(m_Interpolate,m_Input);
+                m_Core.Switch(m_Controllers[m_Index],ref m_Input);
+                m_Core.AppendModifier(m_Interpolate);
+            }
+
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                m_Core.Apply(m_Input, m_Input.Camera.transform.position, m_Input.Camera.transform.rotation, m_Input.Camera.fieldOfView);
+                m_Core.Switch(FEmptyController.kDefault, ref m_Input);
             }
         }
 
@@ -99,7 +109,7 @@ namespace CameraController.Demo
         private void LateUpdate()
         {
             InputTick();
-            m_Controller.Tick(Time.deltaTime,ref m_Input);
+            m_Core.Tick(Time.deltaTime,ref m_Input);
         }
         
         public bool m_DrawGizmos = true;
@@ -107,7 +117,7 @@ namespace CameraController.Demo
         public void OnDrawGizmos()
         {
             if(m_DrawGizmos)
-                m_Controller.DrawGizmos(m_Input);
+                m_Core.DrawGizmos(m_Input);
                 
             if(m_DrawInputGizmos)
                 m_Input.DrawGizmos();

@@ -21,6 +21,7 @@ namespace Runtime.Geometry
         public static GRay operator /(GRay _src, float _dst) => new GRay(_src.origin / _dst,_src.direction / _dst);
         public static GRay Lerp(GRay _src, GRay _dst, float _value) => new GRay(math.lerp(_src.origin,_dst.origin,_value), math.lerp(_src.direction , _dst.direction,_value));
         public GRay Inverse() => new GRay(origin, -direction);
+        public GRay Forward(float _value)=> new GRay(origin + direction*_value, direction);
         #endregion
     }
 

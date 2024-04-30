@@ -5,7 +5,7 @@ using Unity.Mathematics;
 
 namespace Runtime.Geometry
 {
-    public struct GFrustumPoints : IEnumerable<float3>, IIterate<float3>
+    public struct GFrustumPoints : IEnumerable<float3>, IIterate<float3> 
     {
         public float3 nearBottomLeft;
         public float3 nearBottomRight;
@@ -51,5 +51,14 @@ namespace Runtime.Geometry
         }
 
         IEnumerator IEnumerable.GetEnumerator()=> GetEnumerator();
+        public void DrawGizmos()
+        {
+            UGizmos.DrawLinesConcat(nearBottomLeft,nearBottomRight,nearTopRight,nearTopLeft);
+            UGizmos.DrawLine(farBottomLeft,nearBottomLeft);
+            UGizmos.DrawLine(farBottomRight,nearBottomRight);
+            UGizmos.DrawLine(farTopLeft,nearTopLeft);
+            UGizmos.DrawLine(farTopRight,nearTopRight);
+            UGizmos. DrawLinesConcat(farBottomLeft,farBottomRight,farTopRight,farTopLeft);
+        }
     }
 }

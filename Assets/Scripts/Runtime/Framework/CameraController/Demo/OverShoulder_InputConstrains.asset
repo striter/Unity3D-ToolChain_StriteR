@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba0d51cdffcb46608e34dcca5cd8d757, type: 3}
+  m_Name: OverShoulder_InputConstrains
+  m_EditorClassIdentifier: 
+  data:
+    inputMultiplier:
+      kPitchMultiplier: 1
+      kYawMultiplier: 1
+      kPinchMultiplier: 1
+    pitchMode: 1
+    pitchClamp:
+      start: -29.71217
+      length: 74.4963
+    pitchInitializer:
+      setOnEnter: 1
+      setOnReset: 1
+      defaultValue: 0
+    yawMode: 0
+    yawClamp:
+      start: 0
+      length: 0
+    yawInitializer:
+      setOnEnter: 1
+      setOnReset: 1
+      defaultValue: 0
+    initialYawWithAnchor: 1
+    pinchMode: 1
+    pinchInitializer:
+      setOnEnter: 1
+      setOnReset: 1
+      defaultValue: 0

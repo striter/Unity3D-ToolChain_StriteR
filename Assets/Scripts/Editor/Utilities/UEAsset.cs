@@ -1,11 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Extensions;
 using System.Reflection;
-using UnityEditor;
+using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -16,7 +15,7 @@ namespace UnityEditor.Extensions
         #region Assets
         public static T CreateOrReplaceMainAsset<T>(T asset, string path,bool ping = true) where T : UnityEngine.Object
         {
-            asset.name = UEPath.RemoveExtension(UEPath.GetFileName(path));
+            asset.name = path.GetFileName().RemoveExtension();
             UnityEngine.Object previousAsset = AssetDatabase.LoadMainAssetAtPath(path);
             T replacedAsset = null;
 
@@ -38,6 +37,8 @@ namespace UnityEditor.Extensions
                 EditorGUIUtility.PingObject(replacedAsset);
             return replacedAsset;
         }
+        
+        public static void CreateOrReplaceSubAsset(ScriptableObject _object, IEnumerable<UnityEngine.Object> _subValues)=> CreateOrReplaceSubAsset(AssetDatabase.GetAssetPath(_object), _subValues);
         public static void CreateOrReplaceSubAsset(string _mainAssetPath, IEnumerable<UnityEngine.Object> _subValues)
         {
             UnityEngine.Object mainAsset = AssetDatabase.LoadMainAssetAtPath(_mainAssetPath);
@@ -55,6 +56,7 @@ namespace UnityEditor.Extensions
             AssetDatabase.SaveAssets();
         }
 
+        public static void ClearSubAssets(ScriptableObject _object)=> ClearSubAssets(AssetDatabase.GetAssetPath(_object));
         public static void ClearSubAssets(string _mainAssetPath)
         {
             foreach (var asset in AssetDatabase.LoadAllAssetsAtPath(_mainAssetPath))
@@ -72,10 +74,9 @@ namespace UnityEditor.Extensions
             return mainAsset;
         }
 
-        public static string GetCurrentProjectWindowDirectory() => (string)(typeof(ProjectWindowUtil).GetMethod("GetActiveFolderPath", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, null));
         public static bool SelectFilePath(out string filePath, string extension = "", string startDirectory = null)
         {
-            filePath = EditorUtility.OpenFilePanel("Select File To Open", startDirectory ?? GetCurrentProjectWindowDirectory(), extension);
+            filePath = EditorUtility.OpenFilePanel("Select File To Open", startDirectory ?? UEPath.GetCurrentProjectWindowDirectory(), extension);
             if (filePath.Length == 0)
                 return false;
             return true;
@@ -83,7 +84,7 @@ namespace UnityEditor.Extensions
 
         public static bool SaveFilePath(out string filePath, string extension = "", string defaultName = "", string startDirectory = null)
         {
-            filePath = EditorUtility.SaveFilePanel("Select File To Save", startDirectory ?? GetCurrentProjectWindowDirectory(), defaultName, extension);
+            filePath = EditorUtility.SaveFilePanel("Select File To Save", startDirectory ?? UEPath.GetCurrentProjectWindowDirectory(), defaultName, extension);
             if (filePath.Length == 0)
                 return false;
             return true;
@@ -106,7 +107,7 @@ namespace UnityEditor.Extensions
         public static bool SelectDirectory(out string directoryPath)
         {
             directoryPath = "";
-            string folderPath = EditorUtility.OpenFolderPanel("Select Directory",GetCurrentProjectWindowDirectory() , "");
+            string folderPath = EditorUtility.OpenFolderPanel("Select Directory",UEPath.GetCurrentProjectWindowDirectory() , "");
             if (folderPath.Length == 0)
                 return false;
             directoryPath = UEPath.FileToAssetPath(folderPath) + "/";

@@ -18,7 +18,7 @@ namespace Examples.PhysicsScenes
         PhysicsCharacterBase m_CharacterBase;
         DynamicItemRepositon[] m_DynamicItems;
 
-        public CameraControllerCore m_CameraController = new CameraControllerCore();
+        public FCameraControllerCore m_CameraController = new FCameraControllerCore();
         public FControllerInput m_ControllerInput = new FControllerInput();
         class DynamicItemRepositon
         {

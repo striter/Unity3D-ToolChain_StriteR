@@ -8,6 +8,7 @@ using TechToys.ThePlanet.Module.Cluster;
 using TechToys.ThePlanet.Simplex;
 using UnityEditor;
 using UnityEditor.Extensions;
+using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;
 
@@ -95,7 +96,7 @@ namespace TechToys.ThePlanet.Baking
 
             collectionData.m_SimplexData = data.ToArray();
             collectionData.m_MaterialLibrary = materials.ToArray();
-            var assetPath = UEPath.FileToAssetPath(filePath);
+            var assetPath = filePath.FileToAssetPath();
             UEAsset.CreateOrReplaceMainAsset( collectionData,assetPath);
         }
         

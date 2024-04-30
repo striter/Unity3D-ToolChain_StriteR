@@ -88,7 +88,7 @@ namespace UnityEditor.Extensions
                 if(childProperty==null)
                     continue;
             
-                if (!childProperty.isArray)
+                if (!childProperty.isArray || childProperty.propertyType == SerializedPropertyType.String)
                 {
                     m_ChildProperties.Add(childProperty);
                     m_Heights.Add(EditorGUI.GetPropertyHeight(childProperty)); 

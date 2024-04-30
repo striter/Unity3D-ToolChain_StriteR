@@ -79,7 +79,7 @@ namespace Runtime.Geometry
                 farBottomRight = farBottomRight,
                 farTopRight = farTopRight,
                 farTopLeft = farTopLeft,
-                bounding = UBounds.GetBoundingBox(new []{bottomLeft.origin,bottomRight.origin,topRight.origin,topLeft.origin,farBottomLeft,farBottomRight,farTopRight,farTopLeft}),
+                bounding = UGeometry.GetBoundingBox(new []{bottomLeft.origin,bottomRight.origin,topRight.origin,topLeft.origin,farBottomLeft,farBottomRight,farTopRight,farTopLeft}),
             };
         }
     }

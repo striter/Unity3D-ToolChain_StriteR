@@ -2,6 +2,7 @@ using System;
 using CameraController;
 using CameraController.Animation;
 using CameraController.Inputs;
+using CameraController.Inputs.Touch;
 using Dome.Entity;
 using Dome.LocalPlayer;
 using Runtime.Geometry;
@@ -14,11 +15,11 @@ namespace Dome
     public class FDomeCamera : ADomeController
     {
         public FControllerInput m_Input;
-        public FCameraOutput m_Ouput;
+        public FCameraControllerOutput m_Ouput;
         public FControllerInterpolate m_Interpolate;
         public Camera m_Camera => m_Input.camera;
         
-        private CameraControllerCore m_Controller = new CameraControllerCore();
+        private FCameraControllerCore m_Controller = new FCameraControllerCore();
         public override void OnInitialized()
         {
             m_Input.camera = transform.GetComponentInChildren<Camera>();
@@ -39,7 +40,7 @@ namespace Dome
         {
             m_Input.anchor = _controller?.GetAnchor();
             m_Controller.Switch(_controller==null?FEmptyController.kDefault:_controller.m_CameraController,ref m_Input);
-            m_Controller.AppendModifier(m_Interpolate,m_Input);
+            m_Controller.AppendModifier(m_Interpolate);
         }
         
         private void OnDrawGizmos()
@@ -49,7 +50,7 @@ namespace Dome
     }
     
     [Serializable]
-    public class FControllerInput : AControllerInput,IFOVOffset,IViewportOffset
+    public class FControllerInput : AControllerInput,IFOVOffset,IViewportOffset,IAnchorOffset,IPlayerInput
     {
         public Camera camera;
         public Transform anchor;
@@ -63,14 +64,14 @@ namespace Dome
         public override Camera Camera => camera;
         public override Transform Anchor => anchor;
         public override Transform Target => target;
-        public override float Pitch { get => euler.x; set=> euler.x = value; }
-        public override float Yaw { get => euler.y; set=> euler.y = value; }
-        public override float Pinch { get => pinch; set=> pinch = value; }
-        
-        public override float3 AnchorOffset => anchorOffset;
         public float OffsetFOV { get => fovDelta; set => fovDelta = value; }
         public float OffsetViewPortX { get => viewPort.x; set => viewPort.x = value; }
         public float OffsetViewPortY { get => viewPort.y; set => viewPort.y = value; }
+        public float3 OffsetAnchor => anchorOffset;
+        public float Pitch { get=> euler.x; set=> euler.x = value; }
+        public float Yaw { get=> euler.y; set=> euler.y = value; }
+        public float Roll { get=> euler.z; set=> euler.z = value; }
+        public float Pinch { get=> pinch; set=> pinch = value; }
     }
 
 

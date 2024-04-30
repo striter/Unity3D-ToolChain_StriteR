@@ -68,5 +68,4 @@ public partial class KColor
     public static readonly Color kTeal = new Color(0f, 0.5f, 0.5f, 1f); 
     public static readonly Color kTomato = new Color(1f, 0.39f, 0.28f, 1f); 
     public static readonly Color kViolet = new Color(0.93f, 0.51f, 0.93f, 1f);
-
 }
