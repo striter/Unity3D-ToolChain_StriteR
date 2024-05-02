@@ -25,6 +25,16 @@ MonoBehaviour:
         z: 0.35
         r: -0.5
         poleMatching: 1
+        _xp:
+          x: 31.240408
+          y: 0
+          z: -80.426796
+          w: 0
+        _w: 31.415928
+        _d: 29.428862
+        _k1: 0.022281691
+        _k2: 0.0010132118
+        _k3: -0.005570423
     m_OriginExtraDamper:
       mode: 2
       halfLife: 0.3
@@ -35,6 +45,16 @@ MonoBehaviour:
         z: 0.35
         r: -0.5
         poleMatching: 1
+        _xp:
+          x: 0.0012722015
+          y: 2.5586672
+          z: 0.56437683
+          w: 0
+        _w: 31.415928
+        _d: 29.428862
+        _k1: 0.022281691
+        _k2: 0.0010132118
+        _k3: -0.005570423
     m_OriginExtraDamper2:
       mode: 2
       halfLife: 0.1
@@ -45,6 +65,16 @@ MonoBehaviour:
         z: 0.35
         r: -0.5
         poleMatching: 1
+        _xp:
+          x: 0
+          y: 0
+          z: 0
+          w: 0
+        _w: 31.415928
+        _d: 29.428862
+        _k1: 0.022281691
+        _k2: 0.0010132118
+        _k3: -0.005570423
   m_Rotation:
     m_RotationMode: 1
     m_PlayerInputDamper:
@@ -57,6 +87,16 @@ MonoBehaviour:
         z: 0.35
         r: -0.5
         poleMatching: 1
+        _xp:
+          x: 0
+          y: 0
+          z: 0
+          w: 0
+        _w: 31.415928
+        _d: 29.428862
+        _k1: 0.022281691
+        _k2: 0.0010132118
+        _k3: -0.005570423
     m_RotationDamper:
       mode: 2
       halfLife: 0.05
@@ -67,12 +107,21 @@ MonoBehaviour:
         z: 0.35
         r: -0.5
         poleMatching: 1
+        _xp:
+          x: 0.043619387
+          y: 0
+          z: 0
+          w: 0.99904823
+        _w: 31.415928
+        _d: 29.428862
+        _k1: 0.022281691
+        _k2: 0.0010132118
+        _k3: -0.005570423
   m_Collision:
     m_CollisionMin: 0.42
     m_CollisionForward: 0.189
     m_CullingMask: -1
     m_ColliderRadius: 0.1
-    m_SceneMask: 0
   m_DistanceDamper:
     mode: 2
     halfLife: 0.1
@@ -83,6 +132,16 @@ MonoBehaviour:
       z: 0.35
       r: -0.5
       poleMatching: 1
+      _xp:
+        x: 1
+        y: 1
+        z: 1
+        w: 1
+      _w: 31.415928
+      _d: 29.428862
+      _k1: 0.022281691
+      _k2: 0.0010132118
+      _k3: -0.005570423
   m_ViewportDamper:
     mode: 2
     halfLife: 0.1
@@ -93,6 +152,16 @@ MonoBehaviour:
       z: 0.35
       r: -0.5
       poleMatching: 1
+      _xp:
+        x: 0
+        y: -0.046
+        z: 40
+        w: 0
+      _w: 31.415928
+      _d: 29.428862
+      _k1: 0.022281691
+      _k2: 0.0010132118
+      _k3: -0.005570423
   m_PinchParameters:
   - useBoundingBox: 1
     anchorOffset:
@@ -109,7 +178,7 @@ MonoBehaviour:
     roll: 0
     fov: 40
     distanceAABBAdaption: 0
-    distance: 1
+    distance: 20
   - useBoundingBox: 0
     anchorOffset:
       x: 0
@@ -142,33 +211,3 @@ MonoBehaviour:
     fov: 40
     distanceAABBAdaption: 0
     distance: 21.8
-  m_HorizontalSpeedFOV:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  m_HorizontalSpeedDistance:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
