@@ -3,6 +3,7 @@ using Rendering.Pipeline;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.Serialization;
 
 namespace Rendering.Pipeline
 {
@@ -26,15 +27,17 @@ namespace Rendering.Pipeline
         [Header("Misc")]
         public Color color;
 
-        public bool m_Outline;
-        [MFoldout(nameof(m_Outline),true)] [Range(0,1)]public float extendWidth;
-        [MFoldout(nameof(m_Outline),true)] public EOutlineVertex outlineVertex;
+        public bool inheritDepth;
+        public bool outline;
+        [MFoldout(nameof(outline),true)] [Range(0,1)]public float extendWidth;
+        [MFoldout(nameof(outline),true)] public EOutlineVertex outlineVertex;
         public static readonly SRD_MaskData kDefault = new SRD_MaskData()
         {
             renderMask=int.MaxValue,
             color = Color.white,
-            m_Outline = false,
+            outline = false,
             extendWidth = 0.1f,
+            inheritDepth = true,
             outlineVertex  = EOutlineVertex._NORMALSAMPLE_NORMAL,
         };
     }
@@ -49,8 +52,8 @@ namespace Rendering.Pipeline
         public MaskTexturePass Setup(SRD_MaskData _data)
         {
             m_Data = _data;
-            var renderer = _data.m_Outline ? m_OutlineRenderer : m_NormalRenderer;
-            if (_data.m_Outline)
+            var renderer = _data.outline ? m_OutlineRenderer : m_NormalRenderer;
+            if (_data.outline)
             {
                 renderer.Value.SetColor("_OutlineColor",m_Data.color);
                 renderer.Value.SetFloat("_OutlineWidth",m_Data.extendWidth);
@@ -90,12 +93,15 @@ namespace Rendering.Pipeline
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {                
             CommandBuffer buffer = CommandBufferPool.Get("Camera Mask Texture");
-            buffer.SetRenderTarget(KRenderTextures.kCameraMaskTextureRT,_renderingData.cameraData.renderer.cameraDepthTargetHandle);
+            if(m_Data.inheritDepth)
+                buffer.SetRenderTarget(KRenderTextures.kCameraMaskTextureRT,  _renderingData.cameraData.renderer.cameraDepthTargetHandle);
+            else
+                buffer.SetRenderTarget(KRenderTextures.kCameraMaskTextureRT);
             buffer.ClearRenderTarget(false, true, Color.black);
             _context.ExecuteCommandBuffer(buffer);
 
             DrawingSettings drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
-            drawingSettings.overrideMaterial = m_Data.m_Outline ? m_OutlineRenderer : m_NormalRenderer;
+            drawingSettings.overrideMaterial = m_Data.outline ? m_OutlineRenderer : m_NormalRenderer;
             FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = m_Data.renderMask };
             _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
 

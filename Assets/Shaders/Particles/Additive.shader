@@ -17,6 +17,8 @@ Shader "Game/Particles/Additive"
         _StencilWriteMask("Stencil Write Mask", Float) = 255
         _StencilReadMask("Stencil Read Mask", Float) = 255
         _ColorMask("Color Mask", Float) = 15
+        [Toggle(_SMOOTHPARTICLE)]_SmoothParticle("SmoothParticle",int) = 0
+        [Foldout(_SMOOTHPARTICLE)]_SmoothParticleDistance("SmoothParticleDistance",Range(0,10)) = 2
 
     }
     SubShader
@@ -42,8 +44,9 @@ Shader "Game/Particles/Additive"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma shader_feature_local_fragment _SMOOTHPARTICLE
 
-            #include "Assets/Shaders/Library/Common.hlsl"
+            #include "Assets/Shaders/Library/Particle.hlsl"
 
             struct a2v
             {
@@ -58,6 +61,8 @@ Shader "Game/Particles/Additive"
                 float4 positionCS : SV_POSITION;
                 float4 color:COLOR;
                 float4 uv : TEXCOORD0;
+                float3 positionWS:TEXCOORD1;
+                float4 positionHCS:TEXCOORD2;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -77,6 +82,8 @@ Shader "Game/Particles/Additive"
                 o.positionCS = TransformObjectToHClip(v.positionOS);
                 o.uv = float4(TRANSFORM_TEX_FLOW_INSTANCE(v.uv, _MainTex),TRANSFORM_TEX_FLOW_INSTANCE(v.uv,_MaskTex));
                 o.color=v.color;
+                o.positionHCS = o.positionCS;
+                o.positionWS = TransformObjectToWorld(v.positionOS);
                 return o;
             }
 
@@ -88,6 +95,7 @@ Shader "Game/Particles/Additive"
 
                 float mask = SAMPLE_TEXTURE2D(_MaskTex,sampler_MaskTex,i.uv.zw).r;
                 
+                mask*= SmoothParticleLinear(i.positionHCS,i.positionWS);
                 return float4(color.rgb*color.a*mask,1);
             }
             ENDHLSL

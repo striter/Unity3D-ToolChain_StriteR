@@ -8,6 +8,8 @@ Shader "Game/Particles/AlphaBlend"
         
         [Header(Optional)]
         [ToggleTex(_SECONDARY)]_SecondaryTex("Secondary Tex",2D)="white"{}
+        [Toggle(_SMOOTHPARTICLE)]_SmoothParticle("SmoothParticle",int) = 0
+        [Foldout(_SMOOTHPARTICLE)]_SmoothParticleDistance("SmoothParticleDistance",Range(0,10)) = 2
         
     }
     SubShader
@@ -25,8 +27,9 @@ Shader "Game/Particles/AlphaBlend"
             #pragma fragment frag
             #pragma shader_feature_local_fragment _MASK
             #pragma shader_feature_local_fragment _SECONDARY
+            #pragma shader_feature_local_fragment _SMOOTHPARTICLE
 
-            #include "Assets/Shaders/Library/Common.hlsl"
+            #include "Assets/Shaders/Library/Particle.hlsl"
 
             struct a2v
             {
@@ -41,6 +44,8 @@ Shader "Game/Particles/AlphaBlend"
                 float4 positionCS : SV_POSITION;
                 float4 color:COLOR;
                 float4 uv : TEXCOORD0;
+                float3 positionWS:TEXCOORD1;
+                float4 positionHCS:TEXCOORD2;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -60,6 +65,8 @@ Shader "Game/Particles/AlphaBlend"
                 o.positionCS = TransformObjectToHClip(v.positionOS);
                 o.uv = float4(TRANSFORM_TEX_FLOW_INSTANCE(v.uv, _MainTex),TRANSFORM_TEX_FLOW_INSTANCE(v.uv,_SecondaryTex));
                 o.color=v.color;
+                o.positionHCS = o.positionCS;
+                o.positionWS = TransformObjectToWorld(v.positionOS);
                 return o;
             }
 
@@ -86,7 +93,7 @@ Shader "Game/Particles/AlphaBlend"
                 float4 color = i.color*INSTANCE(_Color);
                 albedo*= color.rgb;
                 alpha*=color.a;
-
+                alpha*= SmoothParticleLinear(i.positionHCS,i.positionWS);
                 return float4(albedo,saturate(alpha));
             }
             ENDHLSL
