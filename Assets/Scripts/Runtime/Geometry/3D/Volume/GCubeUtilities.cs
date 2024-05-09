@@ -450,5 +450,18 @@ namespace Runtime.Geometry
                 case ECubeFacing.D: return Int3.kDown;
             }
         }
+
+        public static ECubeFacing GetCubeFacing(float3 _direction)
+        {
+            var xAbs = math.abs(_direction.x);
+            var yAbs = math.abs(_direction.y);
+            var zAbs = math.abs(_direction.z);
+
+            if (xAbs >= yAbs && xAbs >= zAbs)
+                return _direction.x > 0 ? ECubeFacing.R : ECubeFacing.L;
+            if (yAbs >= xAbs && yAbs >= zAbs)
+                return _direction.y > 0 ? ECubeFacing.T : ECubeFacing.B;
+            return _direction.z > 0 ? ECubeFacing.F : ECubeFacing.D;
+        }
     }
     }

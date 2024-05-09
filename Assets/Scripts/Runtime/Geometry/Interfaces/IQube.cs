@@ -31,7 +31,6 @@ namespace Runtime.Geometry
         T=16,
         D=32,
     }
-
     
     public partial class KQube
     {

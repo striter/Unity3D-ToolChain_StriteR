@@ -24,57 +24,18 @@ public static class KRotation
 
 public static partial class umath
 {
+    public static quaternion mul(this quaternion _q, quaternion _q2, quaternion _q3) => math.mul(_q, math.mul(_q2, _q3));
     public static float3 mul(this quaternion _q, float3 _direction) => math.mul(_q, _direction);
     
     public static float2 toPitchYaw(this quaternion _rotation)
     {
-        var _direction = math.mul(_rotation, kfloat3.forward);
-        var pitch = math.atan2(-_direction.y, math.sqrt(_direction.x * _direction.x + _direction.z * _direction.z));
-        var yaw = math.atan2(_direction.x, _direction.z);
+        var direction = math.mul(_rotation, kfloat3.forward);
+        var pitch = atan2(-direction.y, sqrt(direction.x * direction.x + direction.z * direction.z));
+        var yaw = atan2(direction.x, direction.z);
         return new float2(pitch, yaw) * kRad2Deg;
     }
-    public static float3 toEuler(this quaternion _q)
-    {
-        var q = _q.value;
-        
-        var siny_cosp = 2 * (q.w * q.z + q.x * q.y);
-        var cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
-        var pitch = atan2(siny_cosp, cosy_cosp);
-
-        var sinp = sqrt(1 + 2 * (q.w * q.y - q.x * q.z));
-        var cosp = sqrt(1 - 2 * (q.w * q.y - q.x * q.z));
-        var yaw = 2 * atan2(sinp, cosp) - kPIHalf;
-
-        var sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
-        var cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
-        var roll = atan2(sinr_cosp, cosr_cosp);
-
-        return new float3(pitch,yaw,roll) * kRad2Deg;
-    }
     
-    public static quaternion EulerToQuaternion(float3 _euler)
-    {
-        return EulerToQuaternion(_euler.x, _euler.y, _euler.z);
-    }
-
-    public static quaternion EulerToQuaternion(float _angleX, float _angleY, float _angleZ) //Euler Axis XYZ
-    {
-        var radinHX = kDeg2Rad * _angleX / 2f;
-        var radinHY = kDeg2Rad * _angleY / 2f;
-        var radinHZ = kDeg2Rad * _angleZ / 2f;
-        var sinHX = Mathf.Sin(radinHX);
-        var cosHX = Mathf.Cos(radinHX);
-        var sinHY = Mathf.Sin(radinHY);
-        var cosHY = Mathf.Cos(radinHY);
-        var sinHZ = Mathf.Sin(radinHZ);
-        var cosHZ = Mathf.Cos(radinHZ);
-        var qX = cosHX * sinHY * sinHZ + sinHX * cosHY * cosHZ;
-        var qY = cosHX * sinHY * cosHZ + sinHX * cosHY * sinHZ;
-        var qZ = cosHX * cosHY * sinHZ - sinHX * sinHY * cosHZ;
-        var qW = cosHX * cosHY * cosHZ - sinHX * sinHY * sinHZ;
-        return new Quaternion(qX, qY, qZ, qW);
-    }
-
+ 
     public static quaternion AngleAxisToQuaternion(float _radin, float3 _axis)
     {
         var radinH = _radin / 2;

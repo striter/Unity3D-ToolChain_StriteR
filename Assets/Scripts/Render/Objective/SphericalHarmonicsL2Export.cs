@@ -205,12 +205,13 @@ namespace Rendering.GI.SphericalHarmonics
             var equatorColor = _equator.to3();
             var bottomColor = _bottom.to3();
             //Closest take cause i can't get the source code
+  
             var top = math.lerp(topColor, equatorColor, .5f);
             var bottom = math.lerp( bottomColor,equatorColor, .5f);
             var center = equatorColor * .9f + (bottomColor + equatorColor) * .1f;
             return ExportSample(ESHSampleMode.Fibonacci,16, p =>
             {
-                float value = p.y;
+                var value = p.y;
                 var tb = math.lerp(center, top,  math.smoothstep(0, 1, value));
                 var color =  math.lerp(tb, bottom,  math.smoothstep(0, 1, -value));
                 return color;

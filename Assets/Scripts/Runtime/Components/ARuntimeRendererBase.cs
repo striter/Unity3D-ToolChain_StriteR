@@ -27,8 +27,8 @@ namespace Runtime
             m_Mesh.Clear();
             PopulateMesh(m_Mesh,_transform,_viewTransform);
         }
-    
-        protected abstract string GetInstanceName();
+
+        protected virtual string GetInstanceName() => "Runtime Mesh";
         protected abstract void PopulateMesh(Mesh _mesh,Transform _transform,Transform _viewTransform);
         public virtual void DrawGizmos(Transform _transform){}
         public virtual bool isBillboard() => false;

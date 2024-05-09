@@ -111,6 +111,7 @@ public static partial class umath       //Swizzling
     public static float3 saturate(this float3 _value)=> math.min(math.max(_value,0f) ,1f);
     public static float4 saturate(this float4 _value) => math.min(math.max(_value,0f) ,1f);
     
+    public static float clamp(this float _value,float _min,float _max)=> math.min(math.max(_value,_min) ,_max);
     public static float2 clamp(this float2 _value,float2 _min,float2 _max)=> math.min(math.max(_value,_min) ,_max);
     public static float3 clamp(this float3 _value,float3 _min,float3 _max)=> math.min(math.max(_value,_min) ,_max);
     public static float4 clamp(this float4 _value,float4 _min,float4 _max)=> math.min(math.max(_value,_min) ,_max);
