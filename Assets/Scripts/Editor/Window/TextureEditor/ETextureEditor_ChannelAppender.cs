@@ -32,7 +32,7 @@ namespace UnityEditor.Extensions.TextureEditor
 
         public bool IsValidTexture(out int width, out int height, out TextureFormat format)
         {
-            var valid = m_AppendCollector.Valid;
+            var valid = m_AppendCollector.Valid();
             var firstValidTexture = m_AppendCollector.operation != EChannelOperation.Constant ? m_AppendCollector.texture:null;
             width = firstValidTexture!=null ? firstValidTexture.width : 2;
             height = firstValidTexture!=null ? firstValidTexture.width : 2;

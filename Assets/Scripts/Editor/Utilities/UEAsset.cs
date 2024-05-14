@@ -61,7 +61,7 @@ namespace UnityEditor.Extensions
         {
             foreach (var asset in AssetDatabase.LoadAllAssetsAtPath(_mainAssetPath))
             {
-                if(!AssetDatabase.IsSubAsset(asset))
+                if(asset == null || !AssetDatabase.IsSubAsset(asset))
                     continue;
                 AssetDatabase.RemoveObjectFromAsset(asset);
             }
@@ -99,8 +99,8 @@ namespace UnityEditor.Extensions
             string folderPath = EditorUtility.OpenFolderPanel("Select Directory", fbxDirectory, "");
             if (folderPath.Length == 0)
                 return false;
-            directoryPath = UEPath.FileToAssetPath(folderPath) + "/";
-            objName = UEPath.GetPathName(assetPath);
+            directoryPath = folderPath.FileToAssetPath() + "/";
+            objName = assetPath.GetPathName();
             return true;
         }
 
@@ -110,7 +110,7 @@ namespace UnityEditor.Extensions
             string folderPath = EditorUtility.OpenFolderPanel("Select Directory",UEPath.GetCurrentProjectWindowDirectory() , "");
             if (folderPath.Length == 0)
                 return false;
-            directoryPath = UEPath.FileToAssetPath(folderPath) + "/";
+            directoryPath = folderPath.FileToAssetPath() + "/";
             return true;
         }
 
@@ -135,8 +135,8 @@ namespace UnityEditor.Extensions
         }
 
         public static IEnumerable<string> GetAllAssetsPathAtDirectory(string _assetDirectory) => Directory
-            .GetFiles(UEPath.AssetToFilePath(_assetDirectory)).Select(UEPath.FileToAssetPath)
-            .Collect(p => UEPath.GetExtension(p) != ".meta");
+            .GetFiles(_assetDirectory.AssetToFilePath()).Select(UEPath.FileToAssetPath)
+            .Collect(p => p.GetExtension() != ".meta");
 
         
         public static IEnumerable<string> GetDepthPathByExtension(string path, List<string> FileList, string extension = "")
@@ -158,6 +158,21 @@ namespace UnityEditor.Extensions
             }
             return FileList;
         }
+
+        public static IEnumerable<T> LoadAllAssetsAtDirectory<T>(string _directoryPath) where T:UnityEngine.Object
+        {
+            
+            var assetPaths = AssetDatabase.FindAssets("", new[] { _directoryPath });
+            foreach (var assetPath in assetPaths)
+            {
+                var assetFullPath = AssetDatabase.GUIDToAssetPath(assetPath);
+                var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetFullPath);
+
+                if (asset is T template)
+                    yield return template;
+            }
+        }
+        
         #endregion
 
         #region Serialize Helper

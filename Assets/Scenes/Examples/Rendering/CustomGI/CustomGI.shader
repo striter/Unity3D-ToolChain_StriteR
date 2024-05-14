@@ -53,12 +53,8 @@ Shader "Hidden/CustomGI"
 			Tags{"LightMode" = "UniversalForward"}
 			HLSLPROGRAM
 
-			#pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
-            #pragma multi_compile _ SHADOWS_SHADOWMASK
-            #pragma multi_compile _ DIRLIGHTMAP_COMBINED
             #pragma multi_compile _ LIGHTMAP_ON
-			#pragma shader_feature_local LIGHTMAP_LOCAL
-			#pragma multi_compile_fragment _ _LIGHTMAP_MAIN_INDIRECT
+            #pragma multi_compile _ LIGHTMAP_CUSTOM
 
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile _ _ADDITIONAL_LIGHTS
@@ -79,59 +75,45 @@ Shader "Hidden/CustomGI"
 			half3 FogInterpolateCustom(half3 srcColor,half fogFactor,half3 positionWS)
 			{
 				half3 sh = SHL2Sample(GetCameraRealDirectionWS(positionWS),);
-			    half density=FogDesnity(fogFactor);
+			    half density = FogDesnity(fogFactor);
 			    return lerp(srcColor,sh,density);
 			}
 			
-			#if LIGHTMAP_LOCAL
-				#define LIGHTMAP_ST _LightmapST
-				float4 _LightmapST;
-				TEXTURE2D(_Lightmap);         SAMPLER(sampler_Lightmap);
-				TEXTURE2D(_LightmapInd);
-				TEXTURE2D(_ShadowMask);
-			#endif
-
 			float3 _IrradianceParameters;
-			
 			void OverrideGlobalIllumination(out half3 indirectDiffuse,out half3 indirectSpecular,v2ff i,BRDFSurface surface,Light mainLight)
 			{
 				half3 normal = normalize(surface.normal);
+				indirectDiffuse = SHL2Sample(normal,);
+				#ifndef LIGHTMAP_CUSTOM
+					indirectDiffuse *= IndirectDiffuse(mainLight,i,normal) * _IrradianceParameters.y;
+					indirectSpecular = indirectDiffuse;
+					return;
+				#endif
+
+				//Custom Lightmap Goes here
 				indirectDiffuse = SHL2Sample(normal,);
 				indirectSpecular = indirectDiffuse;//IndirectSpecular(surface.reflectDir,surface.perceptualRoughness,1000);
 			#if LIGHTMAP_ON
 				#if LIGHTMAP_LOCAL
 					half3 lightmap = SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap,sampler_Lightmap), i.lightmapUV);
-					float4 directionSample = SAMPLE_TEXTURE2D_LIGHTMAP(_LightmapInd,sampler_Lightmap,i.lightmapUV);
-					half3 direction = (directionSample.xyz - 0.5) * 2;
 				#else
 					half3 lightmap = SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(unity_Lightmap,samplerunity_Lightmap), i.lightmapUV);
-					float4 directionSample = SAMPLE_TEXTURE2D_LIGHTMAP(unity_LightmapInd,samplerunity_Lightmap,i.lightmapUV);
-					half3 direction = (directionSample.xyz - 0.5) * 2;
 				#endif
 
-				
-				indirectDiffuse = SHL2Sample(direction,);
-				indirectDiffuse *= lightmap * _IrradianceParameters.x;
-				indirectSpecular *= lightmap;
-
-				half halfLambert = dot(surface.normal, direction.xyz - 0.5) + 0.5;
-				half directionParam = halfLambert / max(1e-4, directionSample.w);
-
-				surface.ao = directionSample.a;
-				indirectDiffuse *= directionParam;
-				#if _LIGHTMAP_MAIN_INDIRECT
-					float mainLightIrradianceState = _IrradianceParameters.y;
-					float mainLightIrradianceIntensity = _IrradianceParameters.z;
-					float4 shadowMaskSample = SAMPLE_TEXTURE2D_LIGHTMAP(unity_ShadowMask,samplerunity_Lightmap,i.lightmapUV);
-					int irradianceStart = floor(mainLightIrradianceState);
-					int irradianceEnd = (irradianceStart + 1) ;
-					float irradianceInterpolation = mainLightIrradianceState - irradianceStart;
-					float mainLightIndirectIntensity = lerp( shadowMaskSample[irradianceStart%4],shadowMaskSample[irradianceEnd%4],irradianceInterpolation) * mainLightIrradianceIntensity;
-			
-					indirectDiffuse += mainLightIndirectIntensity * _MainLightColor.rgb ;
-				#endif
-				
+				half3 skylightContribution = lightmap * _IrradianceParameters.x;
+				indirectDiffuse *= skylightContribution;
+				indirectSpecular *= skylightContribution;
+				float mainLightIrradianceState = _IrradianceParameters.y;
+				float mainLightIrradianceIntensity = _IrradianceParameters.z;
+				float4 shadowMaskSample = SAMPLE_TEXTURE2D_LIGHTMAP(unity_ShadowMask,samplerunity_Lightmap,i.lightmapUV);
+				int irradianceStart = floor(mainLightIrradianceState);
+				int irradianceEnd = (irradianceStart + 1) ;
+				float irradianceInterpolation = mainLightIrradianceState - irradianceStart;
+				float mainLightIndirectIntensity = lerp( shadowMaskSample[irradianceStart%4],shadowMaskSample[irradianceEnd%4],irradianceInterpolation) * mainLightIrradianceIntensity;
+		
+				indirectDiffuse += mainLightIndirectIntensity * _MainLightColor.rgb ;
 			#endif
+				
 			}
 
 				void Transfer(a2vf v,inout v2ff i)

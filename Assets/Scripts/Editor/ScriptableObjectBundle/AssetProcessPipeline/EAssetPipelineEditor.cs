@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Extensions;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace UnityEditor.Extensions.ScriptableObjectBundle
@@ -8,26 +10,13 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
     public class EAssetPipelineEditor: AScriptableObjectBundleEditor
     {
         private EAssetPipelineExecutable m_PipelineExecutable;
+        private Queue<EAssetPipelineProcess> m_ExecutingSteps = new Queue<EAssetPipelineProcess>();
+        private IAssetPipelineProcessContinuous m_CurrentStep;
         protected override void OnEnable()
         {
             base.OnEnable();
             m_PipelineExecutable = target as EAssetPipelineExecutable;
             EditorApplication.update += Tick;
-        }
-
-
-        protected override void DrawElement(Rect _rect,int _index, SerializedProperty _property, bool _isActive, bool _isFocused)
-        {
-            base.DrawElement(_rect, _index,_property, _isActive, _isFocused);
-            if(!UEGUI.IsExpanded(_property))return;
-
-            if (GUI.Button(_rect.Move(14f,EditorGUI.GetPropertyHeight(_property)).Resize(_rect.size.x - 14f,EditorGUIUtility.singleLineHeight), "Execute"))
-                m_PipelineExecutable.Execute(UCollection.SingleExecute(m_PipelineExecutable.m_Objects[_index] as EAssetPipelineProcess));
-        }
-
-        protected override float GetElementHeight(SerializedProperty _property)
-        {
-            return base.GetElementHeight(_property) + (UEGUI.IsExpanded(_property)? 20f : 0f);
         }
 
         void OnDisable()
@@ -41,13 +30,80 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
             if (m_PipelineExecutable == null)
                 return;
             
-            m_PipelineExecutable?.Tick();
+            if (m_CurrentStep != null)
+            {
+                if (m_CurrentStep.Executing()) return;
+                m_CurrentStep.End();
+                m_CurrentStep = null;
+                return;
+            }
+            
+            if (m_ExecutingSteps.Count == 0)
+                return;
+
+            var step = m_ExecutingSteps.Dequeue();
+            if (!step.Execute())
+            {
+                Cancel();
+                return;
+            }
+            m_CurrentStep = step as IAssetPipelineProcessContinuous;
+            
         }
     
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            m_PipelineExecutable.OnGUI();
+            EditorGUILayout.BeginVertical();
+
+            if (m_CurrentStep != null && m_ExecutingSteps.Count > 0)
+            {
+                EditorGUILayout.LabelField("Executions:");
+                if(m_CurrentStep != null)
+                    EditorGUILayout.LabelField($"{(m_CurrentStep as EAssetPipelineProcess).name} (%{math.floor(m_CurrentStep.process*100)})");
+                foreach (var step in m_ExecutingSteps)
+                    EditorGUILayout.LabelField(step.name);
+            }
+            EditorGUILayout.EndVertical();
+            
+            EditorGUILayout.BeginHorizontal();
+            if (m_ExecutingSteps.Count == 0 && m_CurrentStep ==null)
+            {
+                if (m_ObjectsList.selectedIndices.Count > 0)
+                {
+                    if(GUILayout.Button("Execute Selected"))
+                        Execute(m_PipelineExecutable.m_Objects.CollectIndex(m_ObjectsList.selectedIndices).Select(p=>p as EAssetPipelineProcess));
+                }
+                
+                if (GUILayout.Button("Execute Batch"))
+                    Execute(m_PipelineExecutable.m_Objects.Select(p=>p as EAssetPipelineProcess));
+            }
+            else
+            {
+                if (m_CurrentStep != null)
+                {
+                    m_CurrentStep.OnGUI();
+                    if (GUILayout.Button("Cancel"))
+                        Cancel();
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+        
+        void Execute(IEnumerable<EAssetPipelineProcess> _steps)
+        {
+            m_ExecutingSteps.Clear();
+            m_ExecutingSteps.EnqueueRange(_steps);
+        }
+        
+        void Cancel()
+        {
+            m_ExecutingSteps.Clear();
+            if (m_CurrentStep == null)
+                return;
+            
+            m_CurrentStep.Cancel();
+            m_CurrentStep = null;
         }
     }
 }

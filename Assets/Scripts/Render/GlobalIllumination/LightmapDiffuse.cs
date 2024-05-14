@@ -25,7 +25,7 @@ namespace Rendering.Lightmap
     [Serializable]
     public class GlobalIllumination_LightmapDiffuse
     {
-        [Readonly] public LightmapsMode LightmapsMode;
+        [Readonly] public bool directional;
         [Readonly] public LightmapTextures[] lightmaps;
         [Readonly] public LightmapParameter[] parameters;
         [Readonly] public LightBaking[] bakingOutput;
@@ -38,7 +38,7 @@ namespace Rendering.Lightmap
             
             return new GlobalIllumination_LightmapDiffuse()
             {
-                LightmapsMode = LightmapSettings.lightmapsMode,
+                directional = LightmapSettings.lightmapsMode == LightmapsMode.CombinedDirectional,
                 reflectionProbes =  reflectionProbes.Select(p => p.texture).ToArray(),
                 bakingOutput = lights.Select(p=>(LightBaking)p.bakingOutput).ToArray(),
                 lightmaps = LightmapSettings.lightmaps.Select(p => (LightmapTextures)p ).ToArray(),
@@ -100,7 +100,7 @@ namespace Rendering.Lightmap
                 renderer.lightmapScaleOffset = parameter.scaleOffset;
             }
             
-            LightmapSettings.lightmapsMode = _collection.LightmapsMode;
+            LightmapSettings.lightmapsMode = _collection.directional? LightmapsMode.CombinedDirectional : LightmapsMode.NonDirectional;
             LightmapSettings.lightmaps = _collection.lightmaps.Select(p=>(LightmapData)p).ToArray();
         }
 

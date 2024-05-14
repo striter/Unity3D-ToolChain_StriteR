@@ -1,4 +1,5 @@
 ﻿
+using System;
 using UnityEngine;
 
 namespace UnityEditor.Extensions.ScriptableObjectBundle
@@ -14,6 +15,6 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
     
     public abstract class EAssetPipelineProcess : AScriptableObjectBundleElement
     {
-        public abstract void OnExecute();
+        public abstract bool Execute();
     }
 }

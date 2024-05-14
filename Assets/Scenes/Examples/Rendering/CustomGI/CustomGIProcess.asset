@@ -1,22 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-3671689672056444614
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c21daf0d2af48ea8ee8ce8d750c8ccb, type: 3}
-  m_Name: 1_Bake SkyLight Lightmap
-  m_EditorClassIdentifier: 
-  m_Title: Bake SkyLight Lightmap
-  m_RenderMode: 0
-  m_RenderDirMode: 2
-  m_LightProbeMode: 0
---- !u!114 &-859314239378169361
+--- !u!114 &-8797701469887199425
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -26,11 +10,73 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42c7d9a7d63a48b4969384aa60a3514c, type: 3}
-  m_Name: 0_Sky Light Preparation
+  m_Name: 9_Indirect 3 Prep
   m_EditorClassIdentifier: 
-  m_Title: Sky Light Preparation
-  m_Settings: 1
---- !u!114 &-274911177846377872
+  m_Title: Indirect 3 Prep
+  m_Process: 3
+  m_Irradiance:
+    color: {r: 0.990566, g: 0.8155667, b: 0.630785, a: 0}
+    intensity: 4.22
+    rotation:
+      x: 123.7
+      y: -90.2
+      z: 0
+    cubemap: {fileID: 8900000, guid: 1135303bf34e08e49a54f2cef9219111, type: 2}
+    shIntensity: 1.64
+--- !u!114 &-8796364102359075724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 108c55fc7f364cd9a2b1dfed922bf32a, type: 3}
+  m_Name: 16_Clean Up Temporary
+  m_EditorClassIdentifier: 
+  m_Title: Clean Up Temporary
+  m_DeletePaths:
+  - <#activeScenePath>/Temporary_DirectLM0
+  - <#activeScenePath>/Temporary_DirectLM1
+  - <#activeScenePath>/Temporary_DirectLM2
+  - <#activeScenePath>/Temporary_DirectLM3
+  - <#activeScenePath>/Temporary_SkyLight
+--- !u!114 &-7597292198996242642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e4daafa46444195bbdc47f3a5ee697d, type: 3}
+  m_Name: 15_Load Lightmaps
+  m_EditorClassIdentifier: 
+  m_Title: Load Lightmaps
+  m_Folder: <#activeScenePath>/<#activeSceneName>
+  m_LoadLightmaps: 5
+  m_LightmapIdentity: _final
+  m_DirectionalIdentity: _dir
+  m_ShadowMaskIdentity: _indirectLuminance
+--- !u!114 &-4382450019758538792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c21daf0d2af48ea8ee8ce8d750c8ccb, type: 3}
+  m_Name: 1_Indirect Bake
+  m_EditorClassIdentifier: 
+  m_Title: Indirect Bake
+  m_RenderMode: 1
+  m_RenderDirMode: 0
+  m_LightProbeMode: 0
+--- !u!114 &-2440914206392047387
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,11 +86,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 43cfc4ea19424404a2e56d49680dbfc7, type: 3}
-  m_Name: 2_Save Lightmap_SkyLight
+  m_Name: 2_Indirect 0 Save
   m_EditorClassIdentifier: 
-  m_Title: Save Lightmap_SkyLight
-  m_LightmapToSave: 3
-  m_DestinationPath: <#activeScenePath>/Temporary_SkyLight
+  m_Title: Indirect 0 Save
+  m_LightmapToSave: 1
+  m_DestinationPath: <#activeScenePath>/Temporary_DirectLM0
+  leaveReadable: 0
+--- !u!114 &-2290693803790595315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43cfc4ea19424404a2e56d49680dbfc7, type: 3}
+  m_Name: 5_Indirect 1 Save
+  m_EditorClassIdentifier: 
+  m_Title: Indirect 1 Save
+  m_LightmapToSave: 1
+  m_DestinationPath: <#activeScenePath>/Temporary_DirectLM1
+  leaveReadable: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58,11 +121,25 @@ MonoBehaviour:
   m_Name: CustomGIProcess
   m_EditorClassIdentifier: 
   m_Objects:
-  - {fileID: -859314239378169361}
-  - {fileID: -3671689672056444614}
-  - {fileID: -274911177846377872}
-  - {fileID: 4231774579971326425}
---- !u!114 &4231774579971326425
+  - {fileID: 8303641448923561366}
+  - {fileID: -4382450019758538792}
+  - {fileID: -2440914206392047387}
+  - {fileID: 3037502352619290541}
+  - {fileID: 1112282153803203411}
+  - {fileID: -2290693803790595315}
+  - {fileID: 3867583866530605071}
+  - {fileID: 1973664686790337929}
+  - {fileID: 2368432489931508107}
+  - {fileID: -8797701469887199425}
+  - {fileID: 6704690728814897891}
+  - {fileID: 6282114579515941684}
+  - {fileID: 6774038958107235689}
+  - {fileID: 7359210479556282057}
+  - {fileID: 4338383466481115789}
+  - {fileID: -7597292198996242642}
+  - {fileID: -8796364102359075724}
+  - {fileID: 4338964056558085788}
+--- !u!114 &1112282153803203411
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -71,9 +148,232 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 108c55fc7f364cd9a2b1dfed922bf32a, type: 3}
-  m_Name: 3_DeleteDirectory
+  m_Script: {fileID: 11500000, guid: 1c21daf0d2af48ea8ee8ce8d750c8ccb, type: 3}
+  m_Name: 4_Indirect Bake
   m_EditorClassIdentifier: 
-  m_Title: DeleteDirectory
-  m_DeletePaths:
-  - <#activeScenePath>/Temporary_SkyLight
+  m_Title: Indirect Bake
+  m_RenderMode: 1
+  m_RenderDirMode: 0
+  m_LightProbeMode: 0
+--- !u!114 &1973664686790337929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c21daf0d2af48ea8ee8ce8d750c8ccb, type: 3}
+  m_Name: 7_Indirect Bake
+  m_EditorClassIdentifier: 
+  m_Title: Indirect Bake
+  m_RenderMode: 1
+  m_RenderDirMode: 0
+  m_LightProbeMode: 0
+--- !u!114 &2368432489931508107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43cfc4ea19424404a2e56d49680dbfc7, type: 3}
+  m_Name: 8_Indirect 2 Save
+  m_EditorClassIdentifier: 
+  m_Title: Indirect 2 Save
+  m_LightmapToSave: 1
+  m_DestinationPath: <#activeScenePath>/Temporary_DirectLM2
+  leaveReadable: 1
+--- !u!114 &3037502352619290541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42c7d9a7d63a48b4969384aa60a3514c, type: 3}
+  m_Name: 3_Indirect 1 Prep
+  m_EditorClassIdentifier: 
+  m_Title: Indirect 1 Prep
+  m_Process: 1
+  m_Irradiance:
+    color: {r: 1, g: 0.9993962, b: 0.9198113, a: 0}
+    intensity: 0.87
+    rotation:
+      x: 90
+      y: 0
+      z: 0
+    cubemap: {fileID: 8900000, guid: 806735ed03f5be44db41fa40bb7b2f91, type: 3}
+    shIntensity: 0.8
+--- !u!114 &3867583866530605071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42c7d9a7d63a48b4969384aa60a3514c, type: 3}
+  m_Name: 6_Indirect 2 Prep
+  m_EditorClassIdentifier: 
+  m_Title: Indirect 2 Prep
+  m_Process: 2
+  m_Irradiance:
+    color: {r: 0.5653702, g: 0.72433263, b: 0.990566, a: 0}
+    intensity: 1
+    rotation:
+      x: 103.8
+      y: -30.1
+      z: 0
+    cubemap: {fileID: 8900000, guid: d4c8dc343ae5d4673b7720ffdb1ddf00, type: 3}
+    shIntensity: 1
+--- !u!114 &4338383466481115789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdae4c17f2c4248b872fc3bad1affb7, type: 3}
+  m_Name: 14_Indirect Illuminance Combine
+  m_EditorClassIdentifier: 
+  m_Title: Indirect Illuminance Combine
+  m_R:
+    operation: 42
+    constantValue: 0
+    texturesPath: <#activeScenePath>/Temporary_DirectLM0
+    filter: 
+  m_G:
+    operation: 42
+    constantValue: 0
+    texturesPath: <#activeScenePath>/Temporary_DirectLM1
+    filter: 
+  m_B:
+    operation: 42
+    constantValue: 0
+    texturesPath: <#activeScenePath>/Temporary_DirectLM2
+    filter: 
+  m_A:
+    operation: 42
+    constantValue: 0
+    texturesPath: <#activeScenePath>/Temporary_DirectLM3
+    filter: 
+  m_OutputPath: <#activeScenePath>/<#activeSceneName>
+  m_NameIdentity: _final
+  m_NameReplacement: _indirectLuminance
+  m_ExportType: 0
+--- !u!114 &4338964056558085788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d8a9fcb1654d91a7b37989166d9e8c, type: 3}
+  m_Name: 17_Finalize
+  m_EditorClassIdentifier: 
+  m_Title: Finalize
+--- !u!114 &6282114579515941684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43cfc4ea19424404a2e56d49680dbfc7, type: 3}
+  m_Name: 11_Indirect 3 Save
+  m_EditorClassIdentifier: 
+  m_Title: Indirect 3 Save
+  m_LightmapToSave: 1
+  m_DestinationPath: <#activeScenePath>/Temporary_DirectLM3
+  leaveReadable: 1
+--- !u!114 &6704690728814897891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c21daf0d2af48ea8ee8ce8d750c8ccb, type: 3}
+  m_Name: 10_Indirect Bake
+  m_EditorClassIdentifier: 
+  m_Title: Indirect Bake
+  m_RenderMode: 1
+  m_RenderDirMode: 0
+  m_LightProbeMode: 0
+--- !u!114 &6774038958107235689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42c7d9a7d63a48b4969384aa60a3514c, type: 3}
+  m_Name: 12_Sky Light Prep
+  m_EditorClassIdentifier: 
+  m_Title: Sky Light Prep
+  m_Process: -1
+  m_Irradiance:
+    color: {r: 0, g: 0, b: 0, a: 0}
+    intensity: 0
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+    cubemap: {fileID: 0}
+    shIntensity: 1
+--- !u!114 &7359210479556282057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c21daf0d2af48ea8ee8ce8d750c8ccb, type: 3}
+  m_Name: 13_SkyLight Bake
+  m_EditorClassIdentifier: 
+  m_Title: SkyLight Bake
+  m_RenderMode: 0
+  m_RenderDirMode: 1
+  m_LightProbeMode: 0
+--- !u!114 &8303641448923561366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42c7d9a7d63a48b4969384aa60a3514c, type: 3}
+  m_Name: 0_Indirect 0 Prep
+  m_EditorClassIdentifier: 
+  m_Title: Indirect 0 Prep
+  m_Process: 0
+  m_Irradiance:
+    color: {r: 0.990566, g: 0.864409, b: 0.9550844, a: 0}
+    intensity: 0.34
+    rotation:
+      x: 104.06
+      y: 143
+      z: 0
+    cubemap: {fileID: 8900000, guid: 1e7febd1f2df36f4e8e05490845861e2, type: 3}
+    shIntensity: 1

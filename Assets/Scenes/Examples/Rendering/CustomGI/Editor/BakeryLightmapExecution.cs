@@ -10,20 +10,22 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle.Process.Lightmap.Bakery
         
         public bool Executing() => ftRenderLightmap.bakeInProgress;
         public float process => ftRenderLightmap.progressBarPercent;
-        public override void OnExecute()
+        public override bool Execute()
         {
             if (ftRenderLightmap.instance == null)
                 ftRenderLightmap.RenderLightmap();
             
             if (ftRenderLightmap.bakeInProgress)
-                return;
+                return false;
 
+            ftRenderLightmap.instance.settingsMode = ftRenderLightmap.SettingsMode.Advanced;
             ftRenderLightmap.instance.userRenderMode = m_RenderMode;
             ftRenderLightmap.lightProbeMode = m_LightProbeMode;
             ftRenderLightmap.renderDirMode = m_RenderDirMode;
             ftRenderLightmap.useScenePath = true;
             ftRenderLightmap.instance.unloadScenesInDeferredMode = false;
             ftRenderLightmap.instance.RenderButton();
+            return true;
         }
 
         public void Cancel()

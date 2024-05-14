@@ -45,7 +45,7 @@ namespace UnityEditor.Extensions.EditorPath
             if(!m_Foldout)
                 return;
 
-            EditorGUI.PropertyField(GUILayout_HorizontalScope.NewLine(kPadding,kOutputHeight,kDepth),property,GUIContent.none,true);
+            property.stringValue =EditorGUI.TextField(GUILayout_HorizontalScope.NewLine(kPadding,kOutputHeight,kDepth),GUIContent.none,property.stringValue);
             
             GUILayout_HorizontalScope.NewLine(kPadding, kAppendRegexHeigth);
             EditorGUI.BeginChangeCheck();

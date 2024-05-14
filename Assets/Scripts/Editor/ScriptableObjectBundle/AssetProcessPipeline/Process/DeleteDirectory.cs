@@ -7,7 +7,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle.Process
     public class DeleteDirectory : EAssetPipelineProcess
     {
         [EditorPath] public string[] m_DeletePaths;
-        public override void OnExecute()
+        public override bool Execute()
         {
             foreach (var path in m_DeletePaths)
             {
@@ -19,6 +19,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle.Process
                     File.Delete(metaFilePath);
             }
             AssetDatabase.Refresh();
+            return true;
         }
     }
 }

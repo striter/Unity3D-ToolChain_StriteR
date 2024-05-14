@@ -15,7 +15,7 @@ namespace UnityEditor.Extensions
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             if (!(attribute as ConditionAttribute).IsPropertyVisible( property))
-                return -2;
+                return 0;
 
             return base.GetPropertyHeight(property, label);
         }
@@ -30,9 +30,14 @@ namespace UnityEditor.Extensions
 
     public static class UConditionAttribute
     {
-
         static bool Equals(this ConditionAttribute.ConditionFieldParameters parameter, object _comparer)
         {
+            if (_comparer is Enum)
+            {
+                if(_comparer.GetType().GetCustomAttributes().OfType<FlagsAttribute>().Any())
+                    return parameter.refValue?.Any(p=>((Enum)_comparer).HasFlag((Enum)p))??false;
+            }
+            
             return parameter.refValue?.Contains(_comparer) ??  _comparer == null;
         }
         

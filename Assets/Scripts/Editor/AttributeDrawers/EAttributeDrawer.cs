@@ -75,13 +75,11 @@ namespace UnityEditor.Extensions
 
         void CacheProperties(SerializedProperty _property)
         {
-            if (_property.objectReferenceValue == null) return;
-            m_SerializedObject = new SerializedObject(_property.objectReferenceValue);
 
             m_ChildProperties.Clear();
             m_Heights.Clear();
             m_ChildProperties.Add(_property);
-            m_Heights.Add(EditorGUI.GetPropertyHeight(_property)); 
+            m_Heights.Add(EditorGUI.GetPropertyHeight(_property));
             foreach (var field in _property.objectReferenceValue.GetType().GetFields())
             {
                 var childProperty = m_SerializedObject.FindProperty(field.Name);
@@ -112,15 +110,18 @@ namespace UnityEditor.Extensions
         
         public override float GetPropertyHeight(SerializedProperty _property, GUIContent _label)
         {
-            CacheProperties(_property);
-            if (!m_Foldout || m_SerializedObject == null)
+            if (_property.objectReferenceValue == null) 
                 return base.GetPropertyHeight(_property, _label);
+            m_SerializedObject = new SerializedObject(_property.objectReferenceValue);
+            
+            if (!m_Foldout)
+                return base.GetPropertyHeight(_property, _label);
+            CacheProperties(_property);
             return m_Heights.Sum() + 2;
         }
 
         public override void OnGUI(Rect _position, SerializedProperty _property, GUIContent _label)
         {
-            CacheProperties(_property);
             m_Foldout = EditorGUI.Foldout(_position.Resize(20,20), m_Foldout,"");
             if (!m_Foldout || m_SerializedObject == null)
             {
@@ -128,11 +129,13 @@ namespace UnityEditor.Extensions
                 return;
             }
             
+            CacheProperties(_property);
             EditorGUI.DrawRect(_position,Color.black.SetA(.1f));
             Rect rect = _position.Resize(_position.size.x, 0f);
             rect = rect.Resize(_position.size.x - 24f,_position.size.y);
             rect = rect.Move(20f, 0f);
             EditorGUI.BeginChangeCheck();
+            
             foreach (var (index,child) in m_ChildProperties.LoopIndex())
             {
                 float height = m_Heights[index];
@@ -148,7 +151,8 @@ namespace UnityEditor.Extensions
             if (EditorGUI.EndChangeCheck())
             {
                 m_SerializedObject.ApplyModifiedProperties();
-                _property.serializedObject.targetObject.GetType().GetMethod("OnValidate",BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)?.Invoke(_property.serializedObject.targetObject,null);
+                var type = _property.serializedObject.targetObject.GetType();
+                type.GetMethod("OnValidate",BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)?.Invoke(_property.serializedObject.targetObject,null);
             }
         }
     }

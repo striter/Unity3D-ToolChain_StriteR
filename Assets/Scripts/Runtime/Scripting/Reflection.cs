@@ -2,12 +2,23 @@
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Diagnostics;
+using Debug = UnityEngine.Debug;
 
 public static class UReflection
 {
     public static bool IsStatic(this Type _type) => _type.IsAbstract && _type.IsSealed;
-    
+    public static bool IsCalledFromEditor()
+    {
+        foreach (var frame in new StackTrace().GetFrames()!)
+        {
+            if (frame.GetMethod().DeclaringType == typeof(UnityEditor.Editor))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     public static T DeepCopyInstance<T>(this T _src) where T:class
     {
         var dst = Activator.CreateInstance<T>();

@@ -14,50 +14,37 @@ namespace UnityEditor.Extensions.TextureEditor
         LightmapToLuminance,
     }
     
-    [Serializable]
-    public struct ChannelCollector
+    public enum ETextureExportType
     {
-        public EChannelOperation operation;
-        [MFoldout(nameof(operation), EChannelOperation.Constant)] [Range(0, 1)] public float constantValue;
-        [MFold(nameof(operation),EChannelOperation.Constant)] public Texture2D texture;
-
-        public bool Valid => operation == EChannelOperation.Constant || (texture != null && texture.isReadable);
-        
-        private Color[] pixels;
-        public void Prepare()
-        {
-            if (operation == EChannelOperation.Constant)
-                return;
-            pixels = texture.GetPixels();
-        }
-        
-        public float Collect(int _index)
-        {
-            if (operation == EChannelOperation.Constant)
-                return UColor.toColor32(constantValue);
-
-            var color = pixels[_index];
-            return operation switch
-            {
-                EChannelOperation.R => color.r, EChannelOperation.ROneMinus => 1f - color.r,
-                EChannelOperation.G => color.g, EChannelOperation.GOneMinus => 1f - color.g,
-                EChannelOperation.B => color.b, EChannelOperation.BOneMinus => 1f - color.b,
-                EChannelOperation.A => color.a, EChannelOperation.AOneMinus => 1f - color.a,
-                EChannelOperation.LightmapToLuminance => color.to3().sum()/3f,
-                _ => throw new InvalidEnumArgumentException()
-            };
-        }
-
-        public void End()
-        {
-            pixels = null;
-        }
-        
-        public static readonly ChannelCollector kDefault = new ChannelCollector()
-        {
-            texture = null,
-            operation = EChannelOperation.R,
-        };
+        PNG,
+        JPG,
+        TGA,
+        EXR,
     }
 
+
+    public static class UTextureEditor
+    {
+        public static string GetExtension(this ETextureExportType _exportType) => _exportType switch
+            {
+                ETextureExportType.JPG => "jpg",
+                ETextureExportType.PNG => "png",
+                ETextureExportType.TGA => "tga",
+                ETextureExportType.EXR => "exr",
+                _ => throw new Exception("Invalid Type:" + _exportType)
+            };
+        
+        public static void ExportTexture(Texture2D _exportTexture,string _filePath,ETextureExportType _exportType)
+        {
+            var bytes = _exportType switch
+            {
+                ETextureExportType.TGA => _exportTexture.EncodeToTGA(),
+                ETextureExportType.EXR => _exportTexture.EncodeToEXR(),
+                ETextureExportType.JPG => _exportTexture.EncodeToJPG(),
+                ETextureExportType.PNG => _exportTexture.EncodeToPNG(),
+                _ => null
+            };
+            UEAsset.CreateOrReplaceFile(_filePath,bytes);
+        }
+    }
 }

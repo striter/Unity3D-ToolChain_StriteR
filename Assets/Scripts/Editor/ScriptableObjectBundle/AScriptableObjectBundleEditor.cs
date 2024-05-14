@@ -14,8 +14,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
         private AScriptableObjectBundle m_Target;
         private List<Type> kInheritTypes = new List<Type>();
         private bool m_Dirty = false;
-        private ReorderableList m_ObjectsList;
-        
+        protected ReorderableList m_ObjectsList { get; private set; }
         protected virtual void OnEnable()
         {
             m_Target = target as AScriptableObjectBundle;
@@ -24,17 +23,31 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
             m_ObjectsList = new ReorderableList(serializedObject,serializedObject.FindProperty(nameof(m_Target.m_Objects)),true,true,true,true);
             m_ObjectsList.drawElementCallback = (rect, index, isActive, isFocused)=>DrawElement(rect,index,m_ObjectsList.serializedProperty.GetArrayElementAtIndex(index),isActive,isFocused);
             m_ObjectsList.elementHeightCallback = (index) => GetElementHeight(m_ObjectsList.serializedProperty.GetArrayElementAtIndex(index));
-            
-            m_ObjectsList.onAddDropdownCallback = (_, _) =>
-            {
+            m_ObjectsList.multiSelect = true;
+            m_ObjectsList.onAddDropdownCallback = (_, _) => {
                 var menu = new GenericMenu();
-                string nameSpace = kInheritTypes[0].Namespace;
+                if (m_ObjectsList.selectedIndices.Count > 0)
+                {
+                    menu.AddItem(new GUIContent("Copy Selected"),false,()=> {
+                        foreach (var selectIndex in m_ObjectsList.selectedIndices)
+                        {
+                            var srcClone = m_Target.m_Objects[selectIndex];
+                            var instance = ScriptableObject.CreateInstance(srcClone.GetType()) as AScriptableObjectBundleElement;
+                            UReflection.CopyFields(srcClone,instance);
+                            m_Target.m_Objects.Add(instance);
+                            SetBundleDirty();
+                        }
+                    });
+                }
+                menu.AddSeparator(string.Empty);
+                
+                var nameSpace = kInheritTypes[0].Namespace;
                 foreach (var type in kInheritTypes)
                 {
                     if (type.Namespace != nameSpace)
                     {
                         menu.AddSeparator(string.Empty);
-                        nameSpace = type.Namespace;                        
+                        nameSpace = type.Namespace;
                     }
                     
                     menu.AddItem(new GUIContent(type.Name), false, () =>

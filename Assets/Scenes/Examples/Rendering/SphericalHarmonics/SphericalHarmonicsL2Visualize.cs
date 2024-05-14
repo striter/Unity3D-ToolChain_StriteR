@@ -15,7 +15,7 @@ namespace Examples.Rendering.SH
         protected override string GetInstanceName() => "SHL2";
         protected override void PopulateMesh(Mesh _mesh, Transform _transform, Transform _viewTransform)
         {
-            
+            //Fill its with spheres with custom color & SH converted vertex etc
             
         }
     }

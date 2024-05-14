@@ -16,16 +16,26 @@ namespace UnityEditor.Extensions.TextureEditor
         Texture2D GetTextureOutput();
     }
 
+    [Serializable]
+    public struct ChannelCollector : IChannelCollector
+    {
+        public EChannelOperation operation;
+        [MFoldout(nameof(operation), EChannelOperation.Constant)] [Range(0, 1)] public float constantValue;
+        [MFold(nameof(operation),EChannelOperation.Constant)] public Texture2D texture;
+        public EChannelOperation Operation => operation;
+        public Texture2D Texture => texture;
+        public float ConstantValue => constantValue;
+        public Color[] PixelsResolved { get; set; }
+        
+        public static readonly ChannelCollector kDefault = new ChannelCollector()
+        {
+            texture = null,
+            operation = EChannelOperation.R,
+        };
+    }
+
     public class ETextureEditor : EditorWindow
     {
-        enum ETextureExportType
-        {
-            PNG,
-            JPG,
-            TGA,
-            EXR,
-        }
-
         enum EEditorMode
         {
             ChannelMixer = 0,
@@ -130,7 +140,10 @@ namespace UnityEditor.Extensions.TextureEditor
                 if (GUI.Button(HorizontalScope.NextRect(20, 80), "Export"))
                 {
                     var exportTexture = textureEditor.GetTextureOutput();
-                    ExportTexture(exportTexture,exportTexture.name,m_TextureExportType);
+                    if (!UEAsset.SaveFilePath(out string filePath, UTextureEditor.GetExtension(m_TextureExportType), exportTexture.name + "_M"))
+                        return;
+
+                    UTextureEditor.ExportTexture(exportTexture,filePath,m_TextureExportType);
                 }
 
                 return;
@@ -142,30 +155,5 @@ namespace UnityEditor.Extensions.TextureEditor
             }
         }
         
-        static void ExportTexture(Texture2D _exportTexture,string _name,ETextureExportType _exportType)
-        {
-            string extend = "";
-            switch(_exportType)
-            {
-                default:throw new Exception("Invalid Type:"+_exportType);
-                case ETextureExportType.JPG:extend = "jpg";break;
-                case ETextureExportType.PNG:extend = "png";break;
-                case ETextureExportType.TGA:extend = "tga";break;
-                case ETextureExportType.EXR:extend = "exr";break;
-            }
-
-            if (!UEAsset.SaveFilePath(out string filePath, extend, _name + "_M"))
-                return;
-            
-            byte[] bytes = null; 
-            switch(_exportType)
-            {
-                case ETextureExportType.TGA:bytes = _exportTexture.EncodeToTGA();break;
-                case ETextureExportType.EXR: bytes = _exportTexture.EncodeToEXR(); break;
-                case ETextureExportType.JPG: bytes = _exportTexture.EncodeToJPG(); break;
-                case ETextureExportType.PNG: bytes = _exportTexture.EncodeToPNG(); break;
-            }
-            UEAsset.CreateOrReplaceFile(filePath,bytes);
-        }
     }
 }

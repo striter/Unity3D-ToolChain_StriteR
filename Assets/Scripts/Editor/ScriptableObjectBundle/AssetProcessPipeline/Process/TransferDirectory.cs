@@ -7,7 +7,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle.Process
     {
         [EditorPath] public string m_SourcePath;
         [EditorPath] public string m_DestinationPath;
-        public override void OnExecute()
+        public override bool Execute()
         {
             var srcDirectory = UEPath.PathRegex(m_SourcePath);
             var dstDirectory = UEPath.PathRegex(m_DestinationPath);
@@ -17,6 +17,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle.Process
             
             AssetDatabase.MoveAsset(srcDirectory, dstDirectory);
             AssetDatabase.Refresh();
+            return true;
         }
     }
 }

@@ -99,7 +99,29 @@ namespace System.Linq.Extensions
             {
                 yield return _element;
             }
-            public static IEnumerable<int> CollectIndex<T>(this IEnumerable<T> _collection, Predicate<T> _Predicate)
+
+            public static IEnumerable<T> Range<T>(this IEnumerable<T> _collection, RangeInt _range)
+            {
+                var index = 0;
+                foreach (var element in _collection)
+                {
+                    if (_range.Contains(index))
+                        yield return element;
+                    index++;
+                }
+            }
+
+            public static IEnumerable<T> CollectIndex<T>(this IEnumerable<T> _collection, IEnumerable<int> _indexes)
+            {
+                var index = 0;
+                foreach (var element in _collection)
+                {
+                    if (_indexes.Contains(index))
+                        yield return element;
+                    index++;
+                }
+            }
+            public static IEnumerable<int> CollectAsIndex<T>(this IEnumerable<T> _collection, Predicate<T> _Predicate)
             {
                 foreach (var (index,value) in _collection.LoopIndex())
                 {
@@ -109,7 +131,7 @@ namespace System.Linq.Extensions
                 }
             }
             
-            public static IEnumerable<int> CollectIndex<T>(this IEnumerable<T> _collection, Func<int,T,bool> _Predicate)
+            public static IEnumerable<int> CollectAsIndex<T>(this IEnumerable<T> _collection, Func<int,T,bool> _Predicate)
             {
                 foreach (var (index,value) in _collection.LoopIndex())
                 {
@@ -713,7 +735,7 @@ namespace System.Linq.Extensions
             return index;
         }
 
-        public static (T start, T end, float value) Gradient<T>(this IList<T> _collection,float _value)
+        public static (T start, T end, float value,float repeat) Gradient<T>(this IList<T> _collection,float _value)
         {
             Debug.Assert(_collection!=null, "collection can't be null");
             Debug.Assert(_collection.Count!=0, "collection can't be 0");
@@ -723,7 +745,7 @@ namespace System.Linq.Extensions
             var count = _collection.Count;
             var start = (int)_value % count;
             var end = (start + 1) % count;
-            return (_collection[start], _collection[end], _value%1);
+            return (_collection[start], _collection[end], _value%1,_value % count);
         }
         
         public static bool Contains<T>(this IList<T> _collection1, IList<T> _collection2) where T:IEquatable<T>

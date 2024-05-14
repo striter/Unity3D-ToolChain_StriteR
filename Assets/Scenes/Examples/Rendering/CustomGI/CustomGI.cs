@@ -8,140 +8,89 @@ using System.Linq.Extensions;
 namespace Examples.Rendering.GI.CustomGI
 {
     [Serializable]
-    public class GIData
+    public struct CustomGIIrradiance
     {
-        public Cubemap cubemap;
-        public float shIntensity = 1f;
-        [HideInInspector] public SHL2Data shData = SHL2Data.kZero;
+        [ColorUsage(false,false)]public Color color;
+        public float intensity;
+        public float3 rotation;
+        public SHL2Data shData;
+
+        public CustomGIIrradiance Interpolate(CustomGIIrradiance _a, CustomGIIrradiance _b, float _t) => new()
+            {
+                color = Color.Lerp(_a.color, _b.color, _t),
+                intensity = Mathf.Lerp(_a.intensity, _b.intensity, _t),
+                rotation = math.lerp(_a.rotation, _b.rotation, _t),
+                shData = SHL2Data.Interpolate(_a.shData, _b.shData, _t),
+            };
     }
 
-    [Serializable]
-    public class MainLightData
-    {
-        public quaternion rotation;
-        [ColorUsage(false,true)]public Color color;
-        public float intensity;
-    }
-    
-    [ExecuteInEditMode]
     public class CustomGI : MonoBehaviour
     {
-        public GIData[] kGiData;
-        public MainLightData[] kMainLightData;
-        [Range(1, 10)] public float m_SkylightIndirectIntensity;
-        [Range(1, 10)] public float m_MainLightIndirectIntensity;
-
-        public float div = 5f;
+        [Min(0)]public float m_CurrentLightIndex;
+        [Readonly] public CustomGIIrradiance[] m_Irradiances;
         
-        private bool isDirty;
-        public SHL2ShaderProperties kSHProperties = new SHL2ShaderProperties();
-        public GlobalIllumination_LightmapDiffuse m_Diffuse;
-        private readonly PassiveInstance<Light> m_MainLight = new PassiveInstance<Light>(()=>GameObject.FindObjectOfType<Light>(true));
-        public float m_CurrentLightIndex;
+        public bool m_GIEnable = true;
+        [MFoldout(nameof(m_GIEnable),true)]public GlobalIllumination_LightmapDiffuse m_Diffuse;
+        [MFoldout(nameof(m_GIEnable),true)][Range(0, 10)] public float m_SkylightIndirectIntensity = 1f;
+        [MFoldout(nameof(m_GIEnable),true)][Range(0, 10)] public float m_MainLightIndirectIntensity = 1f;
 
-        public bool m_EnableIndirect = true;
-        public float m_CurLightmapIndex;
-        
-        private void OnValidate()
-        {
-            isDirty = true;
-        }
+        public Damper m_TimeDamper = new Damper();
+
+        private PassiveInstance<Light> m_MainLight = new(FindObjectOfType<Light>);
 
         private void Awake()
         {
-            if (!Application.isPlaying)
-                return;
-            
             TouchConsole.InitDefaultCommands();
-            TouchConsole.Command("NextMainLight",KeyCode.Space).Button(()=>{
-                isDirty = true;
-                m_CurrentLightIndex += 1f;
-            });
-            TouchConsole.Command("MainLightIrradiance",KeyCode.Q).Button(()=>{
-                isDirty = true;
-                m_EnableIndirect = !m_EnableIndirect;
-            });
-
-            ApplyGlobalIllumination();
+            TouchConsole.Command("NextMainLight", KeyCode.Space).Button(() => { m_CurrentLightIndex += 1f; });
+            TouchConsole.Command("MainLightIrradiance", KeyCode.Q).Button(() => {m_MainLightIndirectIntensity = m_MainLightIndirectIntensity > 0 ? 0 : 1; });
+            TouchConsole.Command("NextSkylightIrradiance", KeyCode.E).Button(() => { m_SkylightIndirectIntensity = m_SkylightIndirectIntensity > 0 ? 0 : 1; });
+            
+            m_Diffuse?.Apply(transform);
+            m_TimeDamper.Initialize(m_CurrentLightIndex);
+            Apply(m_CurrentLightIndex);
         }
 
-        private void Update()
+        private void OnValidate()
         {
-            
-            if (isDirty)
-            {
-                isDirty = false;
-                ValidateSH();
+            m_Diffuse?.Apply(transform);
+            Apply(m_CurrentLightIndex);
+        }
 
-            }
+        private void Update() => Apply(m_TimeDamper.Tick(Time.deltaTime, m_CurrentLightIndex));
+
+        private SHL2ShaderProperties kSHProperties = new SHL2ShaderProperties();
+        private static readonly int IrradianceParameters = Shader.PropertyToID("_IrradianceParameters");
+        private static string kCustomLMEnabled = "LIGHTMAP_CUSTOM";
+        public void Apply(float _gradient)
+        {
+            var giAvailable =  m_GIEnable && m_Irradiances is { Length: 4 } && m_Diffuse != null && m_Diffuse.lightmaps.Length > 0;
+            URender.EnableGlobalKeyword(kCustomLMEnabled,giAvailable);
+
+            var irradianceAvailable = m_Irradiances is { Length: >0 };
+            if (!irradianceAvailable)
+                return;
             
-            var (start,end,interp) = kGiData.Gradient(UTime.time / div);
+            var (start, end, interp,repeat) =  m_Irradiances.Gradient(_gradient);
+            ApplyIrradiance( start, end, interp,repeat);
+        }
+        
+
+        void ApplyIrradiance(CustomGIIrradiance start, CustomGIIrradiance end, float interp,float repeat)
+        {
             var sh = SHL2Data.Interpolate(start.shData, end.shData, interp);
             kSHProperties.ApplyGlobal(sh.Output());
 
-            if (Application.isPlaying)
-            {
-                m_CurLightmapIndex = math.lerp(m_CurLightmapIndex,m_CurrentLightIndex,Time.deltaTime);
-                UpdateMainLightIndirectContribution(m_CurLightmapIndex);
-            }
-            Shader.SetGlobalVector("_IrradianceParameters",new Vector4(m_SkylightIndirectIntensity,m_CurLightmapIndex,m_MainLightIndirectIntensity));
-        }
-
-        void UpdateMainLightIndirectContribution(float _value)
-        {
-            URender.EnableGlobalKeyword("_LIGHTMAP_MAIN_INDIRECT", m_EnableIndirect);
-            var(lightStart,lightEnd,lightInterp) = kMainLightData.Gradient(_value);
-            m_MainLight.Value.transform.rotation = math.slerp(lightStart.rotation, lightEnd.rotation, lightInterp);
-            m_MainLight.Value.color = Color.Lerp(lightStart.color, lightEnd.color, lightInterp);
-            m_MainLight.Value.intensity = math.lerp(lightStart.intensity, lightEnd.intensity, lightInterp);
+            m_MainLight.Value.transform.rotation = math.slerp(quaternion.Euler(start.rotation * kmath.kDeg2Rad), quaternion.Euler(end.rotation * kmath.kDeg2Rad), interp);
+            m_MainLight.Value.color = Color.Lerp(start.color, end.color, interp);
+            m_MainLight.Value.intensity = math.lerp(start.intensity, end.intensity, interp);
+            Shader.SetGlobalVector(IrradianceParameters, new Vector4(m_SkylightIndirectIntensity, repeat , m_MainLightIndirectIntensity));
         }
         
-        void ValidateSH()
+        public void ApplyIrradiance(CustomGIIrradiance _irradiance) =>  ApplyIrradiance(_irradiance, _irradiance, 1, 1);
+        public void ClearGI()
         {
-            foreach (var giData in kGiData)
-            {
-                if (giData.cubemap == null)
-                    return;
-                giData.shData = SphericalHarmonicsExport.ExportL2Cubemap(64, giData.cubemap, giData.shIntensity,ESHSampleMode.Fibonacci);
-            }
+            URender.EnableGlobalKeyword(kCustomLMEnabled,false);
+            kSHProperties.ApplyGlobal(SHL2Data.kZero.Output());
         }
-
-
-        public bool developerMode = false;
-        [FoldoutButton(nameof(developerMode),true)]
-        void RecordMainLightDataToLast()
-        {
-            kMainLightData[^1] = new MainLightData()
-            {
-                color = m_MainLight.Value.color,
-                rotation = m_MainLight.Value.transform.rotation,
-                intensity = m_MainLight.Value.intensity,
-            };
-        }
-
-        [FoldoutButton(nameof(developerMode),true)]
-        void SyncMainLightToDataIndex(int _index)
-        {
-            var lightData = kMainLightData[_index];
-            m_MainLight.Value.transform.rotation = lightData.rotation;
-            m_MainLight.Value.intensity = 1f;
-            m_MainLight.Value.color = Color.white;
-        }
-        
-        [FoldoutButton(nameof(developerMode),true)]
-        public void ApplyGlobalIllumination()
-        {
-            m_Diffuse?.Apply(transform);
-        }
-        
-        
-        [FoldoutButton(nameof(developerMode),true)]
-        public void OutputSkyIrradiance()
-        {
-#if UNITY_EDITOR
-            m_Diffuse = GlobalIllumination_LightmapDiffuse.Export(transform);
-#endif
-        }
-        
     }
 }

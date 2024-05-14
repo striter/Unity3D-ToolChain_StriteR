@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
+using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 
 namespace UnityEditor.Extensions
@@ -103,7 +104,7 @@ namespace UnityEditor.Extensions
                         continue;
                     var fileName = Path.GetFileName(path);
                     var newPath = Path.Combine(folderPath, fileName);
-                    v[i] = UEAsset.CreateOrReplaceMainAsset(new Material(material),newPath,false);
+                    v[i] = UEAsset.CreateOrReplaceMainAsset(new Material(material){name = fileName.RemoveExtension()},newPath,false);
                 }
             }
 

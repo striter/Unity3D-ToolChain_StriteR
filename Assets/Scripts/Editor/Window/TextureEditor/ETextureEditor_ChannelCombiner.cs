@@ -1,10 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq.Extensions;
 using UnityEngine;
 
 namespace UnityEditor.Extensions.TextureEditor
 {
+    interface IChannelCollector
+    {
+        EChannelOperation Operation { get; }
+        Texture2D Texture { get; }
+        float ConstantValue { get; }
+        Color[] PixelsResolved { get; set; }
+    }
+    
+    
+    
+    internal static class IChannelCollector_Extension
+    {
+    
+        public static bool Valid(this IChannelCollector _r)=>_r.Operation == EChannelOperation.Constant || (_r.Texture != null && _r.Texture.isReadable);
+        
+        public static void Prepare(this IChannelCollector _r)
+        {
+            if (_r.Operation == EChannelOperation.Constant)
+                return;
+            _r.PixelsResolved = _r.Texture.GetPixels();
+        }
+        
+        public static float Collect(this IChannelCollector _r,int _index)
+        {
+            if (_r.Operation == EChannelOperation.Constant)
+                return UColor.toColor32(_r.ConstantValue);
+
+            var color = _r.PixelsResolved[_index];
+            return _r.Operation switch
+            {
+                EChannelOperation.R => color.r, EChannelOperation.ROneMinus => 1f - color.r,
+                EChannelOperation.G => color.g, EChannelOperation.GOneMinus => 1f - color.g,
+                EChannelOperation.B => color.b, EChannelOperation.BOneMinus => 1f - color.b,
+                EChannelOperation.A => color.a, EChannelOperation.AOneMinus => 1f - color.a,
+                EChannelOperation.LightmapToLuminance => color.to3().sum()/3f,
+                _ => throw new InvalidEnumArgumentException()
+            };
+        }
+
+        public static void End(this IChannelCollector _r)
+        {
+            _r.PixelsResolved = null;
+        }
+    }
+    
     [Serializable]
     class ChannelCombiner : ITextureEditor
     {
@@ -40,45 +86,45 @@ namespace UnityEditor.Extensions.TextureEditor
             EditorGUI.PropertyField(HorizontalScope.NextRect(30, 300), pA,true);
         }
 
-        public bool IsValidTexture(out int width, out int height, out TextureFormat format) => IsValidTexture(m_R,m_G,m_B,m_A,out width,out height,out format);
-        public Texture2D GetTextureOutput() => Combine(m_R,m_G,m_B,m_A);
+        public bool IsValidTexture(out int width, out int height,out TextureFormat _format)
+        {
+            _format = TextureFormat.ARGB32;
+            return IsValidTexture(m_R,m_G,m_B,m_A,out width,out height);
+        }
+        public Texture2D GetTextureOutput() => Combine(m_R,m_G,m_B,m_A,TextureFormat.ARGB32);
 
-        public static bool IsValidTexture(ChannelCollector _r,ChannelCollector _g,ChannelCollector _b,ChannelCollector _a,out int _width,out int _height,out TextureFormat _format)
+        public static bool IsValidTexture(IChannelCollector _r,IChannelCollector _g,IChannelCollector _b,IChannelCollector _a,out int _width,out int _height)
         {         
-            var valid = _r.Valid && _g.Valid && _b.Valid && _a.Valid;
-            IEnumerable<ChannelCollector> AllTextures()
+            var valid = _r.Valid() && _g.Valid() && _b.Valid() && _a.Valid();
+            IEnumerable<IChannelCollector> AllTextures()
             {
                 yield return _r;
                 yield return _g;
                 yield return _b;
                 yield return _a;
             }
-            var firstValidTexture = AllTextures().Find(p => p.operation != EChannelOperation.Constant);
-            _width = firstValidTexture.texture!=null ? firstValidTexture.texture.width : 2;
-            _height = firstValidTexture.texture!=null ? firstValidTexture.texture.height : 2;
-            _format = TextureFormat.RGBA32;
+            var firstValidTexture = AllTextures().Find(p => p.Operation != EChannelOperation.Constant);
+            _width = firstValidTexture.Texture!=null ? firstValidTexture.Texture.width : 2;
+            _height = firstValidTexture.Texture!=null ? firstValidTexture.Texture.height : 2;
             if (!valid)
                 return false;
             foreach (var input in AllTextures())
             {
-                if (input.operation == EChannelOperation.Constant)
+                if (input.Operation == EChannelOperation.Constant)
                     continue;
                 
-                var currentWidth = input.texture.width;
-                var currentHeight = input.texture.height;
+                var currentWidth = input.Texture.width;
+                var currentHeight = input.Texture.height;
                 if (_width != currentWidth || _height != currentHeight)
                     return false;
             }
             
             return true;
         }
-        
-        public static Texture2D Combine(ChannelCollector _r,ChannelCollector _g,ChannelCollector _b,ChannelCollector _a)
+        public static Texture2D Combine(IChannelCollector _r,IChannelCollector _g,IChannelCollector _b,IChannelCollector _a,TextureFormat _format)
         {
-            if (!IsValidTexture(_r, _g, _b, _a, out var width, out var height, out var format))
-            {
+            if (!IsValidTexture(_r, _g, _b, _a, out var width, out var height))
                 return null;
-            }
             
             _r.Prepare(); _g.Prepare(); _b.Prepare(); _a.Prepare();
             var totalSize = width * height;
@@ -87,7 +133,7 @@ namespace UnityEditor.Extensions.TextureEditor
                 mix[i] = new Color(_r.Collect(i), _g.Collect(i), _b.Collect(i), _a.Collect(i));
             _r.End(); _g.End(); _b.End(); _a.End();
             
-            var targetTexture = new Texture2D(width, height, format, true);
+            var targetTexture = new Texture2D(width, height, _format, true);
             targetTexture.SetPixels(mix);
             targetTexture.Apply();
             return targetTexture;

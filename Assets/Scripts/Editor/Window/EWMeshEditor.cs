@@ -316,7 +316,7 @@ namespace UnityEditor.Extensions
                 return;
             PTriangle polygon = m_Polygons[m_SelectedPolygon];
             GTriangle mainTriangle = (GTriangle)polygon.Convert(m_Verticies);
-            m_SubPolygons=m_Polygons.CollectIndex((index, triangle) => index != m_SelectedPolygon && triangle.GetEnumerator(m_Verticies).Any(subVertex => mainTriangle.IterateAny(mainVertex => (Vector3)mainVertex == subVertex))).ToList();
+            m_SubPolygons=m_Polygons.CollectAsIndex((index, triangle) => index != m_SelectedPolygon && triangle.GetEnumerator(m_Verticies).Any(subVertex => mainTriangle.IterateAny(mainVertex => (Vector3)mainVertex == subVertex))).ToList();
         }
         void SelectVertex(int _index)
         {
@@ -451,7 +451,7 @@ namespace UnityEditor.Extensions
             List<int> modifingIndices = new List<int>();
             modifingIndices.Add(_srcIndex);
             if (m_EditSameVertex)
-                modifingIndices.AddRange(m_Verticies.CollectIndex(p => p == m_Verticies[_srcIndex]));
+                modifingIndices.AddRange(m_Verticies.CollectAsIndex(p => p == m_Verticies[_srcIndex]));
             return modifingIndices;
         }
 
@@ -627,7 +627,7 @@ namespace UnityEditor.Extensions
                     m_PaintPosition = hitPosition;
                     m_PaintAffectedIndices.Clear();
                     float sqrRaidus = m_PaintSize * m_PaintSize;
-                    m_Verticies.CollectIndex((index, p) => {
+                    m_Verticies.CollectAsIndex((index, p) => {
                         bool normalPassed = false;
                         switch (m_PaintNormal)
                         {

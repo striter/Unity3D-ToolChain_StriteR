@@ -154,7 +154,7 @@ namespace QuadricErrorsMetric
                     polygons.Collect(_p => _p.Contains(i)).Select(_p => (IEnumerable<int>)_p).Resolve();
 
                 //Lets care about the non contraction later
-                var nonContractionIndexes = vertices.CollectIndex(_p =>
+                var nonContractionIndexes = vertices.CollectAsIndex(_p =>
                     (vertex.position - _p.position).sqrmagnitude() <= KQEM.kSqrEdgeClosure);
 
                 var edges = contractionIndexes
