@@ -8,7 +8,7 @@ namespace Runtime.Geometry
     public struct GRay
     {
         public float3 origin;
-        public float3 direction;
+        [PostNormalize] public float3 direction;
         public GRay(float3 _position, float3 _direction) { origin = _position; direction = _direction; }
         public float3 GetPoint(float _distance) => origin + direction * _distance;
 
@@ -23,6 +23,8 @@ namespace Runtime.Geometry
         public GRay Inverse() => new GRay(origin, -direction);
         public GRay Forward(float _value)=> new GRay(origin + direction*_value, direction);
         #endregion
+
+        public static readonly GRay kDefault = new GRay(0,kfloat3.forward);
     }
 
 }

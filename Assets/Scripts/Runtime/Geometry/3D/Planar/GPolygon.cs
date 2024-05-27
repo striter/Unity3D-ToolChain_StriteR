@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Runtime.Geometry
 {
     [Serializable]
-    public struct GPolygon:IShape3D
+    public struct GPolygon
     {
         public float3[] positions;
         [NonSerialized] public float3 center;

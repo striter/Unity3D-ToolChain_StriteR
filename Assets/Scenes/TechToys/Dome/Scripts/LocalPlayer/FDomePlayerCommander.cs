@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Dome.Entity;
 using Dome.Model;
 using Runtime.Geometry;
-using Runtime.Geometry.Validation;
+using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -113,7 +113,7 @@ namespace Dome.LocalPlayer
             }
             
             var ray = _camera.ScreenPointToRay(_input.hoverPosition);
-            var position = ray.GetPoint(UGeometry.Distance(ray, GPlane.kUp));
+            var position = ray.GetPoint(ray.Intersection(GPlane.kUp));
 
             var primary = _input.entityInput.primary;
             if (primary.Down())

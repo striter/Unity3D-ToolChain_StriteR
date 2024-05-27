@@ -4,10 +4,9 @@ using Unity.Mathematics;
 
 namespace Runtime.DataStructure
 {
-    public abstract class AQuadTree<Node, Boundary, Element> : ATreeIncrement<Node, Boundary, Element> 
-        where Node : struct, ITreeNode<Boundary, Element>
+    public abstract class AQuadTree<Helper, Boundary, Element> : ATreeIncrement<Helper, Boundary, Element> 
+        where Helper : struct, ITreeIncrementHelper<Boundary,Element>
         where Boundary : struct
-        where Element : struct
     {
         public int m_QuadDivision { get; private set; }
 

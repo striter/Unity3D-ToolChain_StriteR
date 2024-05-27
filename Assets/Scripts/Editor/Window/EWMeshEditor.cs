@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
 using Runtime.Geometry;
-using Runtime.Geometry.Validation;
+using Runtime.Geometry.Extension;
 using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 
@@ -462,7 +462,7 @@ namespace UnityEditor.Extensions
 
             foreach (var index in m_Polygons[m_SelectedPolygon])
             {
-                if (!UGeometry.Intersect(_ray,new GSphere( m_Verticies[index], C_VertexSphereRadius * m_GUISize)))
+                if (!new GSphere( m_Verticies[index], C_VertexSphereRadius * m_GUISize).Intersect(_ray))
                     continue;
                 SelectVertex(index);
                 return true;

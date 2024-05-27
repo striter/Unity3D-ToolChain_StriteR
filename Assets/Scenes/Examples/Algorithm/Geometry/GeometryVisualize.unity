@@ -387,70 +387,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 603151350}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &548546586
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 548546587}
-  - component: {fileID: 548546588}
-  m_Layer: 0
-  m_Name: ConeRayCollision
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &548546587
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 548546586}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 603151350}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &548546588
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 548546586}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b21e0ebd76974194da8d1369c1c45f7c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Data:
-    origin:
-      x: 0
-      y: 0
-      z: -1.0799096
-    normal:
-      x: 0.060358997
-      y: -0.4111448
-      z: 0.90956956
-    angle: 51
-    height: 0.89
-  m_Ray:
-    origin:
-      x: -0.64
-      y: -0.13
-      z: -0.88403606
-    direction:
-      x: 0.7158208
-      y: -0.027901703
-      z: 0.44
 --- !u!1 &603151349
 GameObject:
   m_ObjectHideFlags: 0
@@ -482,11 +418,8 @@ Transform:
   m_Children:
   - {fileID: 1763637944}
   - {fileID: 359821878}
-  - {fileID: 1203903735}
-  - {fileID: 1899185938}
   - {fileID: 314156686}
   - {fileID: 999107286}
-  - {fileID: 548546587}
   - {fileID: 1616913}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -722,99 +655,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bae26b7d983318647a0ebe669e7cac5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1203903734
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1203903735}
-  - component: {fileID: 1203903736}
-  m_Layer: 0
-  m_Name: BSRayCollision
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1203903735
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1203903734}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9, y: 0, z: 8}
-  m_LocalScale: {x: 1.0000004, y: 1, z: 1.0000004}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 603151350}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1203903736
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1203903734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a15ab499fd28e8145b2a10164673d508, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Sphere:
-    center:
-      x: 4
-      y: 0
-      z: 0
-    radius: 1
-  m_SRay:
+  m_SupportDirection:
+    x: 0.9643254
+    y: -0.26471996
+    z: -0.000000012072797
+  m_ManualCast: 0
+  m_CastDirection:
+    x: 0.030195208
+    y: -0.99937713
+    z: -0.018265862
+  m_ManualCastRay:
     origin:
-      x: 4.8143606
-      y: -0.09847446
-      z: -2.319504
+      x: 0.28
+      y: 0.85
+      z: -1.24
     direction:
-      x: -0.4262953
-      y: 0.02491019
-      z: 0.904241
-  m_Ellipsoid:
-    center:
-      x: 0
-      y: 0
-      z: 0
-    radius:
-      x: 2
-      y: 1
-      z: 2
-  m_ERay:
-    origin:
-      x: -1.3242302
-      y: 0
-      z: 4.300792
-    direction:
-      x: 0.12531675
-      y: -0.15495342
-      z: -0.97993934
-  m_Circle:
-    center:
-      x: 7.63
-      y: 0
-    radius: 0.98
-  m_CirclePoint:
-  - x: 1
-    y: 0
-  - x: 0
-    y: 0
-  - x: 0
-    y: 0.38
-  - x: 0
-    y: -0.45
-  - x: -0.98
-    y: 0.09
+      x: -0.3047757
+      y: -0.20463955
+      z: 0.9301798
 --- !u!1 &1344025775
 GameObject:
   m_ObjectHideFlags: 0
@@ -1784,86 +1642,6 @@ MonoBehaviour:
       x: 0.5
       y: 0.5
       z: 0.5
---- !u!1 &1899185937
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1899185938}
-  - component: {fileID: 1899185939}
-  m_Layer: 0
-  m_Name: AABB
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1899185938
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1899185937}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.08, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 603151350}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1899185939
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1899185937}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc0c4d63fdae11240985ef31dd03b5a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Box:
-    center:
-      x: 0
-      y: 0
-      z: 0
-    extent:
-      x: 0.66
-      y: 0.53
-      z: 0.37
-  m_Ray:
-    origin:
-      x: 0.71147275
-      y: -0.081962764
-      z: -1.448267
-    direction:
-      x: -0.33242807
-      y: 0.23028132
-      z: 0.914583
-  m_CollisionBox1:
-    center:
-      x: -0.65
-      y: 0.05
-      z: 0
-    extent:
-      x: 0.27
-      y: 0.05
-      z: -0.02
-  m_CollisionBox2:
-    center:
-      x: 0.7
-      y: 0
-      z: -0.53
-    extent:
-      x: 0.2
-      y: 0.24
-      z: 0.11
 --- !u!1 &1980265612
 GameObject:
   m_ObjectHideFlags: 0

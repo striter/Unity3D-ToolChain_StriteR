@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
-using Runtime.Geometry.Validation;
+using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -12,6 +12,7 @@ namespace Runtime.Geometry
     public partial struct GTriangle
     {
         public Triangle<float3> triangle;
+        [NonSerialized] public float3 baryCentre;
         [NonSerialized] public float3 normal;
         [NonSerialized] public float3 uOffset;
         [NonSerialized] public float3 vOffset;
@@ -31,11 +32,12 @@ namespace Runtime.Geometry
             vOffset = triangle.v2 - triangle.v0;
             // wOffset = V0 - V2;
             normal = math.cross(uOffset.normalize(),vOffset.normalize()).normalize();
+            baryCentre = GetBarycenter();
         }
     }
 
     [Serializable]
-    public partial struct GTriangle :ITriangle<float3>, IIterate<float3>,ISerializationCallbackReceiver, IShape3D, IConvex3D
+    public partial struct GTriangle :ITriangle<float3>, IIterate<float3>,ISerializationCallbackReceiver, IVolume, IConvex
     {
         public float3 V0 => triangle.v0;
         public float3 V1 => triangle.v1;
@@ -78,11 +80,9 @@ namespace Runtime.Geometry
         }
         
 
-        public float3 GetSupportPoint(float3 _direction)
-        {
-            return this.MaxElement(_p => math.dot(_p, _direction));
-        }
-        public float3 Center => (V0 + V1 + V2) / 3;
+        public float3 GetSupportPoint(float3 _direction) => this.MaxElement(_p => math.dot(_p, _direction));
+        public GBox GetBoundingBox() => UGeometry.GetBoundingBox(this);
+        public GSphere GetBoundingSphere() => UGeometry.GetBoundingSphere(this);
 
         public float GetArea()
         {
@@ -119,6 +119,8 @@ namespace Runtime.Geometry
         {
             return GetEnumerator();
         }
+
+        public float3 Center => baryCentre;
     }
 
     public static class GTriangle_Extension

@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Extensions;
+using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 
 namespace Runtime.Geometry
 {
-    public partial struct GPlane : IShape3D
+    public partial struct GPlane : IShape
     {
         public float3 normal;
         public float distance;
@@ -36,14 +37,10 @@ namespace Runtime.Geometry
         }
 
         public float3 Center => position;
-        public float3 GetSupportPoint(float3 _direction)
-        {
-            throw new NotImplementedException();
-        }
     }
 
     [Serializable]
-    public partial struct GPlane:IEquatable<GPlane>,IEqualityComparer<GPlane>,ISerializationCallbackReceiver
+    public partial struct GPlane:IEquatable<GPlane>,IEqualityComparer<GPlane>,ISerializationCallbackReceiver ,IRayIntersection
     {
         public static readonly GPlane kComparer = new GPlane();
         public static readonly GPlane kDefault = new GPlane(Vector3.up, 0f);
@@ -71,7 +68,25 @@ namespace Runtime.Geometry
         public override int GetHashCode()=> normal.GetHashCode()+distance.GetHashCode()+position.GetHashCode();
 
         public override string ToString() => $"{normal},{distance}";
-        
+        public bool RayIntersection(GRay _ray, out float _distance)
+        {
+            _distance = -1;
+            var nrD = math.dot(normal, _ray.direction);
+            if (nrD == 0)
+                return false;
+            
+            var nrO = math.dot(normal, _ray.origin);
+            _distance = (distance - nrO) / nrD;
+            return true;
+        }
+
+        public float Ditance(GRay _ray)
+        {
+            var nrO = math.dot(normal, _ray.origin);
+            var nrD = math.dot(normal, _ray.direction);
+            return (distance - nrO) / nrD;
+        }
+
         public static implicit operator float4(GPlane _plane)=>_plane.normal.to4(_plane.distance);
         
         public void OnBeforeSerialize() { }

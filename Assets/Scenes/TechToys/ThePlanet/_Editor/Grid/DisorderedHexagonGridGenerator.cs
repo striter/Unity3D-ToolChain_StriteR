@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
 using Runtime.Geometry;
-using Runtime.Geometry.Validation;
+using Runtime.Geometry.Extension;
 using Procedural;
 using Procedural.Hexagon;
 using Procedural.Hexagon.Area;

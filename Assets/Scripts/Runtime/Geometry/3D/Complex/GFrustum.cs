@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
-using Runtime.Geometry.Validation;
+using Runtime.Geometry.Extension;
 
 namespace Runtime.Geometry
 {

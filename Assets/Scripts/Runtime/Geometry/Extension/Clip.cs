@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Runtime.Geometry.Validation
+namespace Runtime.Geometry.Extension
 {
     public static partial class UGeometry
     {
-        public static bool Clip(this GTriangle _triangle,GPlane _plane, out IShape3D _outputShape,bool _directed = true)
+        public static bool Clip(this GTriangle _triangle,GPlane _plane, out IVolume _outputShape,bool _directed = true)
         {
             _outputShape = null;
             if (_directed && math.dot(_triangle.normal, _plane.normal) < 0)

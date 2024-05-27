@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Runtime.Geometry;
-using Runtime.Geometry.Validation;
+using Runtime.Geometry.Extension;
 using TPool;
 using System.Linq.Extensions;
 using TTouchTracker;

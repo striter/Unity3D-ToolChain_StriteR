@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using Runtime.Geometry;
-using Runtime.Geometry.Validation;
+using Runtime.Geometry.Extension;
 using System.Linq.Extensions;
 using TPool;
 using Unity.Collections;

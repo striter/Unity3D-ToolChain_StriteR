@@ -1,6 +1,6 @@
 using Unity.Mathematics;
 
-namespace Runtime.Geometry.Validation
+namespace Runtime.Geometry.Extension
 {
     using static math;
 
@@ -20,28 +20,9 @@ namespace Runtime.Geometry.Validation
         }
         
         public static bool Intersect(this GLine _line,GTriangle _triangle, out float _distance,bool _rayDirectionCheck = false,bool _triangleDirectionCheck = false) =>Intersect(_line.ToRay(), _triangle, out _distance,_rayDirectionCheck,_triangleDirectionCheck) && _distance >= 0 && _distance <= _line.length;
-
-        public static bool Intersect(this GRay _ray, GSphere _sphere)
-        {
-            RayIntersection.SphereCalculate(_ray, _sphere, out var dotOffsetDirection, out var discriminant);
-            return discriminant >= 0;
-        }
-
-        public static bool Intersect(this GRay _ray, GEllipsoid _ellipsoid)
-        {
-            RayIntersection.EllipsoidCalculate(_ellipsoid, _ray, out var a, out var b, out var c, out var discriminant);
-            return discriminant >= 0;
-        }
-
-        public static bool Intersect(this GRay _ray, GBox _box)
-        {
-            RayIntersection.AABBCalculate(_ray, _box, out var tmin, out var tmax);
-            return tmin.maxElement() <= tmax.minElement();
-        }
-
         public static bool Intersect(this GRay _ray, GPlane _plane, out float3 _hitPoint)
         {
-            var distance = Distance(_ray, _plane);
+            var distance = _ray.Intersection(_plane);
             _hitPoint = _ray.GetPoint(distance);
             return distance != 0;
         }

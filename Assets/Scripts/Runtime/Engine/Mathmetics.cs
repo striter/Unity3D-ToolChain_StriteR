@@ -5,12 +5,21 @@ using Unity.Mathematics;
 
 public static class kmath
 {
+    public const float kOneMinusEpsilon = 1f - float.Epsilon;
     public static readonly float kInv2 = 1f / 2;
     public static readonly float kInv3 = 1f / 3;
     public static readonly float kInv6 = 1f / 6;
     public static readonly float kInv9 = 1f / 9;
     
+    public const float kSQRT2 = 1.4142135623731f;
     public const float kSQRT3 = 1.7320508075689f;
+    public const float kSQRT5 = 2.2360679774998f;
+    public const float kSQRT7 = 2.6457513110646f;
+    public const float kSQRT15 = 3.8729833462074f;
+    public const float kSQRT21 = 4.5825756949558f;
+    public const float kSQRT35 = 5.3851648071345f;
+    public const float kSQRT105 = 7.0710678118655f;
+    
     public static readonly float kSQRT3Half = kSQRT3 / 2f;
     public static readonly float kInvSQRT3 = 1f / kSQRT3;
 
@@ -20,7 +29,6 @@ public static class kmath
     
     public const float kDeg2Rad = 0.017453292519943f;//PI / 180
     public const float kRad2Deg = 57.295779513082f ;//180f / PI;
-    public const float kSQRT2 = 1.4142135623731f;
     
     //PI
     public const float kPI = 3.14159265359f;
@@ -37,8 +45,8 @@ public static class kmath
     //Invert
     public const float kInvPI = 0.31830988618f;
     public const float k128InvPi = 40.74366543152f;
-
-    public const float kOneMinusEpsilon = 1f - float.Epsilon;
+    
+    public const float kSQRTPi = 1.7724538509055f;
 
     public static readonly ushort[] kPrimes128 = new ushort[] {
         2,3   ,5   ,7  ,11 ,13 ,17 ,19 ,23 ,29 ,

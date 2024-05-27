@@ -8062,17 +8062,17 @@ MonoBehaviour:
         z: 0.05400476
   m_GIEnable: 1
   m_Diffuse:
-    directional: 0
+    directional: 1
     lightmaps:
     - color: {fileID: 2800000, guid: ed67eaffd2839e04ea60e08d6ad32d9f, type: 3}
       directional: {fileID: 0}
-      shadowMask: {fileID: 0}
+      shadowMask: {fileID: 2800000, guid: aa084ce9274233f45b72e16c50bf7b38, type: 3}
     - color: {fileID: 2800000, guid: 38acb9f4eea64344bb8b04a20cd14873, type: 3}
       directional: {fileID: 0}
-      shadowMask: {fileID: 0}
+      shadowMask: {fileID: 2800000, guid: 8555a9b71c13ae4429bb17b01343c421, type: 3}
     - color: {fileID: 2800000, guid: 2a62afa3f2f8a884e906a908bc089990, type: 3}
       directional: {fileID: 0}
-      shadowMask: {fileID: 0}
+      shadowMask: {fileID: 2800000, guid: 1d1c9dde5afb8884a866584614a12a42, type: 3}
     parameters:
     - index: 0
       scaleOffset: {x: 0.04256697, y: 0.042566616, z: 0.6340937, w: 0.9507851}

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Runtime.Geometry;
-using Runtime.Geometry.Validation;
+using Runtime.Geometry.Extension;
 using Procedural;
 using Procedural.Hexagon;
 using Procedural.Hexagon.Area;
@@ -83,7 +83,7 @@ namespace TechToys.ThePlanet
         public bool ValidateGridSelection(GRay _ray, out GridID _vertexID)
         {
             _vertexID = default;
-            var distance = UGeometry.Distance(_ray,new GSphere(0, KPCG.kGridSize)).x;
+            var distance = _ray.Distance(new GSphere(0, KPCG.kGridSize)).x;
             if (distance < 0)
                 return false;
             var hitPos = _ray.GetPoint(distance);

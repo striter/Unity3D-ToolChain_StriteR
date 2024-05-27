@@ -4,7 +4,7 @@ using System.Linq.Extensions;
 using TObjectPool;
 using Unity.Mathematics;
 
-namespace Runtime.Geometry.Validation
+namespace Runtime.Geometry.Extension
 {
     public static partial class UGeometry
     {

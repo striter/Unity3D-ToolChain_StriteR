@@ -3,7 +3,7 @@ using System.Linq;
 using System.Linq.Extensions;
 using Runtime.DataStructure;
 using Runtime.Geometry;
-using Runtime.Geometry.Validation;
+using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEditor.Extensions;
 using UnityEngine;
@@ -50,7 +50,7 @@ namespace Examples.Rendering.Voxelizer
             if (triangles.Count == 0)
                 return;
             
-            m_Voxelizer.Construct(triangles,64,16,true,true);
+            m_Voxelizer.Construct(triangles,64,16);
 
             
             var resolution = (int) m_Resolution;
@@ -67,7 +67,7 @@ namespace Examples.Rendering.Voxelizer
                     kIntersectDistances.Clear();
                     var ray = new GRay(m_Box.GetPoint(new float3(0, step * (j + .5f),step * (i + .5f)) - .5f),
                         kfloat3.right);
-                    foreach (var node in m_Voxelizer.Collect(p => ray.Intersect(p.boundary)))
+                    foreach (var node in m_Voxelizer.GetLeafs().Collect(p => ray.Intersect(p.boundary)))
                     {
                         foreach (var triangle in node.elements)
                         {
@@ -110,14 +110,12 @@ namespace Examples.Rendering.Voxelizer
         }
         
 
-
         public bool m_DrawBounds;
-        public bool m_DrawElements;
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
             m_Box.DrawGizmos();
-            m_Voxelizer.DrawGizmos(m_DrawBounds,m_DrawElements);
+            m_Voxelizer.DrawGizmos(m_DrawBounds);
         }
     }
 

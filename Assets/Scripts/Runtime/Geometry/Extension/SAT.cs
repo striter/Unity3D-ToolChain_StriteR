@@ -2,13 +2,13 @@
 using System.Linq;
 using Unity.Mathematics;
 
-namespace Runtime.Geometry.Validation
+namespace Runtime.Geometry.Extension
 {
     public static class SAT //Separating Axis Theorem
     {
 
         public static bool Intersect(this IConvex2D _convex, IConvex2D _comparer) => _2D.Intersect(_convex,_comparer);
-        public static bool Intersect(this IConvex3D _convex, IConvex3D _comparer) => _3D.Intersect(_convex,_comparer);
+        public static bool Intersect(this IConvex _convex, IConvex _comparer) => _3D.Intersect(_convex,_comparer);
         internal static class _2D
         {
             public static bool Intersect(IConvex2D _convex, IConvex2D _comparer)
@@ -53,7 +53,7 @@ namespace Runtime.Geometry.Validation
 
         internal static class _3D
         {
-            public static bool Intersect(IConvex3D _convex, IConvex3D _comparer)
+            public static bool Intersect(IConvex _convex, IConvex _comparer)
             {
                 foreach (var axis in _convex.GetAxes().Concat(_comparer.GetAxes()))
                 {
@@ -67,7 +67,7 @@ namespace Runtime.Geometry.Validation
                 return true;
             }
             
-            public static float2 ProjectOntoAxis(IConvex3D _convex, float3 _axis)
+            public static float2 ProjectOntoAxis(IConvex _convex, float3 _axis)
             {
                 var min = float.MaxValue;
                 var max = float.MinValue;

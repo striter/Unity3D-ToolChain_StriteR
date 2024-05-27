@@ -159,13 +159,13 @@ namespace Rendering.GI.SphericalHarmonics
         
         public static readonly SHL2Data kZero = new SHL2Data();
 
-        public static implicit operator SHL2Data(SphericalHarmonicsL2 _l2)
+        public static implicit operator SHL2Data(SphericalHarmonicsL2 _data)
         {
-            SphericalHarmonicsL2Utils.GetL1(_l2,out var l10, out var l11, out var l12);
-            SphericalHarmonicsL2Utils.GetL2(_l2,out var l20, out var l21, out var l22, out var l23, out var l24);
+            SphericalHarmonicsL2Utils.GetL1(_data,out var l10, out var l11, out var l12);
+            SphericalHarmonicsL2Utils.GetL2(_data,out var l20, out var l21, out var l22, out var l23, out var l24);
             return new SHL2Data()
             {
-                l00 = SphericalHarmonicsL2Utils.GetCoefficient(_l2,0),
+                l00 = SphericalHarmonicsL2Utils.GetCoefficient(_data,0),
                 l10 = l10,
                 l11 = l11,
                 l12 = l12,

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Runtime.Geometry;
-using Runtime.Geometry.Validation;
+using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;
@@ -17,7 +17,7 @@ namespace Examples.Algorithm.Geometry
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            float distance = UGeometry.Distance(m_Ray,m_Plane);
+            float distance = m_Ray.Intersection(m_Plane);
 
             Gizmos.matrix = transform.localToWorldMatrix;
             Vector3 planeSize = new Vector3(1,0,1);

@@ -1,6 +1,6 @@
 using System;
 using Runtime.Geometry;
-using Runtime.Geometry.Validation;
+using Runtime.Geometry.Extension;
 using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;

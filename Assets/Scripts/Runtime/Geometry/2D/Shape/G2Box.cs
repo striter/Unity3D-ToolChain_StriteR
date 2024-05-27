@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Extensions;
+using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -31,7 +32,7 @@ namespace Runtime.Geometry
     }
     
     [Serializable]
-    public partial struct G2Box : ISerializationCallbackReceiver,IShape2D,IConvex2D
+    public partial struct G2Box : ISerializationCallbackReceiver,IShape2D , IRayAreaIntersection,IConvex2D
     {
         public void OnBeforeSerialize(){  }
         public void OnAfterDeserialize()=>Ctor();
@@ -55,6 +56,25 @@ namespace Runtime.Geometry
         public static readonly G2Box kDefault = new G2Box(0f,.5f);
 
         public float2 GetSupportPoint(float2 _direction) => this.MaxElement(_p => math.dot(_direction, _p));
+        public bool RayIntersection(G2Ray _ray, out float2 distances)
+        {
+            distances = -1;
+            var invRayDir = 1f/(_ray.direction);
+            var t0 = (min - _ray.origin)*(invRayDir);
+            var t1 = (max - _ray.origin)*(invRayDir);
+            var tmin = math.min(t0, t1);
+            var tmax = math.max(t0, t1);
+            if (tmin.maxElement() > tmax.minElement())
+                return false;
+            
+            var dstA = math.max(tmin.x, tmin.y);
+            var dstB = math.min(tmax.x, tmax.y);
+            var dstToBox = math.max(0, dstA);
+            var dstInsideBox = math.max(0, dstB - dstToBox);
+            distances = new float2(dstToBox, dstInsideBox);
+            return true;
+        }
+
         public float2 Center => center;
 
         public GBox To3XZ() => new GBox(center.to3xz(),extent.to3xz());

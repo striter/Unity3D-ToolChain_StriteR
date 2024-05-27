@@ -1,5 +1,5 @@
 using Runtime.Geometry;
-using Runtime.Geometry.Validation;
+using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;

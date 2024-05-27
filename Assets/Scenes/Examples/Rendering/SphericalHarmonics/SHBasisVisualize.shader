@@ -1,4 +1,4 @@
-Shader "Game/Unfinished/UnitySHL2"
+Shader "Hidden/SHBasisVisualize"
 {
     SubShader
     {
@@ -15,6 +15,7 @@ Shader "Game/Unfinished/UnitySHL2"
             {
                 float3 positionOS : POSITION;
                 float3 normalOS:NORMAL;
+                float4 color :COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -22,6 +23,7 @@ Shader "Game/Unfinished/UnitySHL2"
             {
                 float4 positionCS : SV_POSITION;
                 float3 normalWS:NORMAL;
+                float4 color :COLOR;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -32,13 +34,14 @@ Shader "Game/Unfinished/UnitySHL2"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
                 o.positionCS = TransformObjectToHClip(v.positionOS);
                 o.normalWS=TransformObjectToWorldNormal(v.normalOS);
+                o.color = v.color;
                 return o;
             }
 
             float4 frag (v2f i) : SV_Target
             {
 				UNITY_SETUP_INSTANCE_ID(i);
-                return float4(SampleSH(normalize(i.normalWS)),1);
+                return i.color;
             }
             ENDHLSL
         }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq.Extensions;
+using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -35,7 +37,7 @@ namespace Runtime.Geometry
     }
 
     [Serializable]
-    public partial struct GCapsule : IShape3D , IBoundingBox3D,IBoundingSphere3D , ISerializationCallbackReceiver
+    public partial struct GCapsule : IVolume , ISerializationCallbackReceiver , IRayIntersection , ISDF
     {
         public GCapsule(CapsuleCollider _collider)
         {
@@ -58,17 +60,16 @@ namespace Runtime.Geometry
 
         public float3 GetSupportPoint(float3 _direction)
         {
-            throw new NotImplementedException();
-            // var normal = _direction;
-            // var d = math.dot(normal, normal);
-            // if (d == 0)
-                // return cylinderTop;
-            // var t = math.dot(cylinderTop, normal) / d;
-            // if (t < 0)
-                // return cylinderTop;
-            // if (t > 1)
-                // return cylinderBottom;
-            // return cylinderTop + (cylinderBottom - cylinderTop) * t;
+            var center = Center;
+            float distanceAlongDirection = math.dot(_direction, cylinderTop - center);
+        
+            float3 supportPoint;
+            if (distanceAlongDirection >= 0)
+                supportPoint = cylinderTop  + radius * _direction;
+            else
+                supportPoint = cylinderBottom  + radius * _direction;
+
+            return supportPoint;
         }
 
         public GBox GetBoundingBox()
@@ -87,5 +88,54 @@ namespace Runtime.Geometry
         
         public void OnBeforeSerialize(){}
         public void OnAfterDeserialize() => Ctor();
+        public float SDF(float3 p)
+        {
+            var a = cylinderTop;
+            var b = cylinderBottom;
+            var pa = p - a;
+            var ba = b - a;
+            var h = math.clamp( math.dot(pa,ba)/math.dot(ba,ba), 0.0f, 1.0f );
+            return math.length( pa - ba*h ) - radius;
+        }
+        public bool RayIntersection(GRay _ray, out float distance)
+        {
+            distance = -1;
+            var pa = cylinderTop;
+            var pb = cylinderBottom;
+            var ro = _ray.origin;
+            var rd = _ray.direction;
+            var ra = radius;
+            var  ba = pb - pa;
+            var  oa = ro - pa;
+            var baba = math.dot(ba,ba);
+            var bard = math.dot(ba,rd);
+            var baoa = math.dot(ba,oa);
+            var rdoa = math.dot(rd,oa);
+            var oaoa = math.dot(oa,oa);
+            var a = baba      - bard*bard;
+            var b = baba*rdoa - baoa*bard;
+            var c = baba*oaoa - baoa*baoa - ra*ra*baba;
+            var h = b*b - a*c;
+            if (!(h >= 0.0)) return false;
+            var t = (-b-math.sqrt(h))/a;
+            var y = baoa + t*bard;
+            // body
+            if (y > 0.0 && y < baba)
+            {
+                distance = t;
+                return true;
+            }
+            // caps
+            var oc = (y <= 0.0) ? oa : ro - pb;
+            b = math.dot(rd,oc);
+            c = math.dot(oc,oc) - ra*ra;
+            h = b*b - c;
+            if (h > 0.0)
+            {
+                distance = -b - math.sqrt(h);
+                return true;
+            }
+            return false;
+        }
     }
 }

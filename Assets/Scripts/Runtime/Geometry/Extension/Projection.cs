@@ -1,6 +1,6 @@
 using Unity.Mathematics;
 
-namespace Runtime.Geometry.Validation
+namespace Runtime.Geometry.Extension
 {
     using static math;
     public static partial class UGeometry
@@ -8,13 +8,13 @@ namespace Runtime.Geometry.Validation
         public static float3 Projection(this GPlane _projectionPlane,float3 _srcPoint, float3 _origin)
         {
             var ray = new GRay(_origin, _srcPoint - _origin);
-            return ray.GetPoint(Distance(ray, _projectionPlane));
+            return ray.GetPoint(ray.Intersection(_projectionPlane));
         }
 
         public static float3 Projection(this GPlane _projectionPlane,float3 _srcPoint)
         {
             var ray = new GRay(_srcPoint, _projectionPlane.normal);
-            return ray.GetPoint(Distance(ray, _projectionPlane));
+            return ray.GetPoint(ray.Intersection(_projectionPlane));
         }
         
         public static float3 Projection(this GTriangle _triangle,float3 _direction)
@@ -76,7 +76,7 @@ namespace Runtime.Geometry.Validation
         public static float2 Projection(this G2Box _box, float2 _direction)
         {
             var ray = new G2Ray(_box.center, _direction.normalize());
-            return ray.GetPoint(Distance(ray, _box).sum());
+            return ray.GetPoint(ray.Distance(_box).sum());
         }
     }
 }

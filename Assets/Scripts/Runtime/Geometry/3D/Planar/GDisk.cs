@@ -1,8 +1,9 @@
-﻿using Unity.Mathematics;
+﻿using Runtime.Geometry.Extension;
+using Unity.Mathematics;
 
 namespace Runtime.Geometry
 {
-    public struct GDisk : IShape3D, IBoundingBox3D
+    public struct GDisk : IVolume , IRayIntersection
     {
         public float3 origin;
         public float3 normal;
@@ -13,15 +14,16 @@ namespace Runtime.Geometry
         public static GDisk kDefault = new GDisk(float3.zero, kfloat3.rightUpForward.normalize(), .5f);
         
         public float3 Center => origin;
+        
+        public float3 GetPoint(float rad) => origin + normal * rad * radius;
 
         public float3 GetSupportPoint(float3 _direction)
         {
-            _direction = math.normalize(_direction);
             var diskCenterToPoint =  _direction - normal * math.dot(_direction, normal);
             return origin + diskCenterToPoint * radius;
         }
         
-        public GPlane GetPlane() => new GPlane(origin, normal);
+        public GPlane GetPlane() => new GPlane(normal,origin);
 
         public GBox GetBoundingBox()
         {
@@ -30,6 +32,17 @@ namespace Runtime.Geometry
             var rad = radius;
             var e = rad*math.sqrt( 1.0f - nor*nor );
             return GBox.Minmax( cen-e, cen+e );
+        }
+
+        public GSphere GetBoundingSphere() => new GSphere(origin, radius);
+        public bool RayIntersection(GRay _ray, out float distance)
+        {
+            var plane = this.GetPlane();
+            if (!plane.RayIntersection(_ray,out distance))
+                return false;
+
+            var pointOnPlane = _ray.GetPoint(distance);
+            return math.length(origin - pointOnPlane) <= radius;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Runtime.Geometry;
-using Runtime.Geometry.Validation;
+using Runtime.Geometry.Extension;
 using UnityEngine;
 
 namespace Examples.Algorithm.Geometry

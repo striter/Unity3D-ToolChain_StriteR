@@ -110,6 +110,15 @@ public static class URandom
         }
         return default;
     }
+    
+    public static float3 RandomPerpendicular(float3 normal,System.Random _seed = null)
+    {
+        float3 randomVector;
+        do {
+            randomVector = RandomSphere(_seed);
+        } while (umath.isParallel(normal, randomVector));
+        return umath.calculatePerpendicular(randomVector, normal).normalize();
+    }
 
     
 #region Shuffle

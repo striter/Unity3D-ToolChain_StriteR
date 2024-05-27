@@ -1,6 +1,6 @@
 using System;
 using Runtime.Geometry;
-using Runtime.Geometry.Validation;
+using Runtime.Geometry.Extension;
 using Procedural;
 using Procedural.Tile;
 using UnityEditor;

@@ -52,7 +52,6 @@ namespace Runtime.Geometry
 
         IEnumerator IEnumerable.GetEnumerator()=> GetEnumerator();
         public float2 GetSupportPoint(float2 _direction) => this.MaxElement(_p => math.dot(_p, _direction));
-        public float2 Center => (V0 + V1 + V2) / 3f;
 
         public bool Contains(float2 _position)
         {
@@ -68,5 +67,6 @@ namespace Runtime.Geometry
         
         public void OnBeforeSerialize() { }
         public void OnAfterDeserialize()=>Ctor();
+        public float2 Center => baryCentre;
     }
 }

@@ -146,14 +146,13 @@ namespace Runtime.Geometry
             Handles.DrawWireDisc(_circle.center.to3xz(), Vector3.up, _circle.radius);
         }
 
+        public static void DrawGizmos(this G2Plane _plane) => DrawGizmos(_plane,5f);
         public static void DrawGizmos(this G2Plane _plane,float _radius = 5f)
         {
             var direction = umath.cross(_plane.normal);
             Gizmos.DrawLine((_plane.position + direction * _radius).to3xz(),( _plane.position - direction*_radius).to3xz() );
             DrawArrow(_plane.position.to3xz(),_plane.normal.to3xz(),1f,.1f);
         }
-
-        
     }
     
 

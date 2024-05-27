@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
+using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -22,7 +23,7 @@ namespace Runtime.Geometry
     }
     
     [Serializable]
-    public partial struct GQuad : IQuad<float3>,IIterate<float3>,IShape3D  , IConvex3D
+    public partial struct GQuad : IQuad<float3>,IIterate<float3>,IVolume  , IConvex
     {
         public GQuad(float3 _vb, float3 _vl, float3 _vf, float3 _vr):this(new Quad<float3>(_vb,_vl,_vf,_vr)){}
         public GQuad((float3 _vb, float3 _vl, float3 _vf, float3 _vr) _tuple) : this(_tuple._vb, _tuple._vl, _tuple._vf, _tuple._vr) { }
@@ -40,6 +41,8 @@ namespace Runtime.Geometry
         public static GQuad operator -(GQuad _src, float3 _dst)=> new GQuad(_src.B - _dst, _src.L - _dst, _src.F - _dst,_src.R-_dst);
         public float3 GetPoint(float2 _uv)=>umath.bilinearLerp(B, L, F, R, _uv);
         public float3 GetSupportPoint(float3 _direction) => quad.Max(p => math.dot(p, _direction));
+        public GBox GetBoundingBox() => UGeometry.GetBoundingBox(this);
+        public GSphere GetBoundingSphere() =>  UGeometry.GetBoundingSphere(this);
         public float3 Center => quad.Average();
 
         public IEnumerator<float3> GetEnumerator()

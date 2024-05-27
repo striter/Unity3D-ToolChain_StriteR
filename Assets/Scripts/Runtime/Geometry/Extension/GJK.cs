@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using Unity.Mathematics;
 
-namespace Runtime.Geometry.Validation
+namespace Runtime.Geometry.Extension
 {
     public static class GJK
     {
         public static bool Intersect(this IShape2D _shape2D, IShape2D _target)=> _2D.Intersect(_shape2D, _target);
-        public static bool Intersect(this IShape3D _shape3D, IShape3D _target)=> _3D.Intersect(_shape3D, _target);
+        public static bool Intersect(this IVolume _shape3D, IVolume _target)=> _3D.Intersect(_shape3D, _target);
         
         public static class _2D
         {
@@ -152,10 +152,10 @@ namespace Runtime.Geometry.Validation
                 return TriangleCase(_simplex, ref _direction);
             }
 
-            static float3 Support(IShape3D _a, IShape3D _b, float3 _direction) => _a.GetSupportPoint(_direction) - _b.GetSupportPoint(-_direction);
+            static float3 Support(IVolume _a, IVolume _b, float3 _direction) => _a.GetSupportPoint(_direction) - _b.GetSupportPoint(-_direction);
 
             private static readonly List<float3> kSimplex = new List<float3>();
-            public static bool Intersect(IShape3D _a,IShape3D _b) 
+            public static bool Intersect(IVolume _a,IVolume _b) 
             {
                 kSimplex.Clear();
                 var d = (_a.Center - _b.Center).normalize();
@@ -172,7 +172,7 @@ namespace Runtime.Geometry.Validation
                 }
             }
             
-            public static GPointSets Difference(IShape3D _a, IShape3D _b, int _sampleCount = 64)
+            public static GPointSets Difference(IVolume _a, IVolume _b, int _sampleCount = 64)
             {
                 kSimplex.Clear();
                 for(int i=0;i<_sampleCount;i++)

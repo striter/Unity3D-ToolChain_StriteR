@@ -294,7 +294,19 @@ namespace System.Linq.Extensions
                 }
                 return elementRecorded;
             }
-                    
+
+            public static void Minmax(out float _min, out float _max,params float[] _values)
+            {
+                _min = float.MaxValue;
+                _max = float.MinValue;
+                foreach (var element in _values)
+                {
+                    if (_min > element)
+                        _min = element;
+                    if (_max < element)
+                        _max = element;
+                }
+            }
             public static T Find<T>(this IEnumerable<T> _collection,Predicate<T> _OnEachElement)
             {
                 foreach (var element in _collection)

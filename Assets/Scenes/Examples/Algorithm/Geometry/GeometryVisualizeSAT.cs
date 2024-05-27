@@ -1,6 +1,6 @@
 using System.Linq;
 using Runtime.Geometry;
-using Runtime.Geometry.Validation;
+using Runtime.Geometry.Extension;
 using System.Linq.Extensions;
 using Unity.Mathematics;
 using UnityEngine;
@@ -28,11 +28,12 @@ namespace Examples.Algorithm.Geometry
             }
             
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.back * 3f);
-            var convex3D = new IConvex3D[] { m_Box + kfloat3.up * math.sin(UTime.time), m_Triangle };
+            var convex3D = new IConvex[] { m_Box + kfloat3.up * math.sin(UTime.time), m_Triangle };
             foreach (var convex in convex3D)
             {
                 Gizmos.color = convex3D.Exclude(convex).Any(p => p.Intersect(convex)) ? Color.yellow : Color.white;
-                convex.DrawGizmos();
+                if (convex is IShapeGizmos gizmos)
+                    gizmos.DrawGizmos();
             }
         }
     }

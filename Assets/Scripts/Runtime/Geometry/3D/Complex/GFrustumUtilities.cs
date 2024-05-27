@@ -1,4 +1,4 @@
-using Runtime.Geometry.Validation;
+using Runtime.Geometry.Extension;
 
 namespace Runtime.Geometry
 {

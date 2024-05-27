@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -30,26 +31,29 @@ namespace Runtime.Geometry
     }
 
     [Serializable]
-    public partial struct GBox : ISerializationCallbackReceiver,IShape3D , IConvex3D
+    public partial struct GBox : ISerializationCallbackReceiver, IVolume , IConvex , IRayVolumeIntersection , ISDF
     {
         public void OnBeforeSerialize(){  }
         public void OnAfterDeserialize()=>Ctor();
-        public float3 GetSupportPoint(float3 _direction)
+        public GSphere GetBoundingSphere() => GSphere.Minmax(min,max);
+        public float SDF(float3 _position)
         {
-            var ray = new GRay(center, _direction.normalize());
-            return ray.GetPoint(Validation.UGeometry.Distance(ray, this).sum());
+            var p = _position - center;
+            var b = extent;
+            var q = math.abs(p) - b;
+            return math.length(math.max(q,0.0f)) + math.min(math.max(q.x,math.max(q.y,q.z)),0.0f);
         }
+
+        public GBox GetBoundingBox() => this;
         public float3 GetPoint(float3 _uvw) => center + _uvw * size;
         public float3 Center => center;
 
-        
         public bool Contains(float3 _point,float _bias = float.Epsilon)
         {
             float3 absOffset = math.abs(center-_point) + _bias;
             return absOffset.x < extent.x && absOffset.y < extent.y && absOffset.z < extent.z;
         }
 
-        
         public IEnumerable<GPlane> GetPlanes(bool _x,bool _y,bool _z)
         {
             if (_x)
@@ -128,6 +132,36 @@ namespace Runtime.Geometry
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+
+        public float3 GetSupportPoint(float3 _direction)
+        {
+            var invRayDir = 1f/_direction;
+            var t0 = extent*invRayDir;
+            var t1 = -extent*invRayDir;
+            var tmax = math.max(t0, t1);
+            var dstB = math.min(tmax.x, math.min(tmax.y, tmax.z));
+            var dstInsideBox = math.max(0, dstB);
+            return center + _direction*dstInsideBox;
+        }
+        public bool RayIntersection(GRay _ray, out float2 distances)
+        {
+            distances = -1;
+            var invRayDir = 1f/_ray.direction;
+            var t0 = (min - _ray.origin)*invRayDir;
+            var t1 = (max - _ray.origin)*invRayDir;
+            var tmin = math.min(t0, t1);
+            var tmax = math.max(t0, t1);
+            if (tmin.maxElement() > tmax.minElement())
+                return false;
+            
+            var dstA = math.max(math.max(tmin.x, tmin.y), tmin.z);
+            var dstB = math.min(tmax.x, math.min(tmax.y, tmax.z));
+            var dstToBox = math.max(0, dstA);
+            var dstInsideBox = math.max(0, dstB - dstToBox);
+            distances = new float2(dstToBox, dstInsideBox);
+            return true;
         }
     }
 }

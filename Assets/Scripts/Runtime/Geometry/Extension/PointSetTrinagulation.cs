@@ -4,7 +4,7 @@ using System.Linq;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Runtime.Geometry.Validation
+namespace Runtime.Geometry.Extension
 {
     public static class UTriangulation
     {

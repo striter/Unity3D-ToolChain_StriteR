@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace Runtime.Geometry
 
     
     [Serializable]
-    public struct G2Circle:IShape2D
+    public struct G2Circle: IArea , ISDF2D
     {
         public float2 center;
         public float radius;
@@ -54,12 +55,12 @@ namespace Runtime.Geometry
             }
         }
         
-        public bool Contains(float2 _p, float _bias = float.Epsilon) =>math.lengthsq(_p - center) < radius * radius + _bias;
         public static readonly G2Circle kZero = new G2Circle(float2.zero, 0f);
         public static readonly G2Circle kOne = new G2Circle(float2.zero, 1f);
         public static G2Circle operator +(G2Circle _src, float2 _dst) => new G2Circle(_src.center+_dst,_src.radius);
         public static G2Circle operator -(G2Circle _src, float2 _dst) => new G2Circle(_src.center - _dst, _src.radius);
         public float2 GetSupportPoint(float2 _direction) => center + _direction * radius;
+        public float SDF(float2 _position) => math.lengthsq(_position - center) - radius;
         public float2 Center => center;
     }
     

@@ -29,7 +29,7 @@ namespace Examples.Rendering.Misc
         [MFoldout(nameof(shape),ESDFShape.Sphere)] public float radius;
         [MFoldout(nameof(shape),ESDFShape.Box)] public float3 extents;
         [MFoldout(nameof(shape), ESDFShape.Plane)] public float3 normal;
-        public IShape3D FormatCPU(Matrix4x4 _localToWorldMatrix)
+        public IShape FormatCPU(Matrix4x4 _localToWorldMatrix)
         {
             var origin = (float3)_localToWorldMatrix.GetPosition() + position;
             switch (shape)
