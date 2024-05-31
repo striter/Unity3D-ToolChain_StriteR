@@ -38,6 +38,7 @@ Shader "Game/Unfinished/UnitySHL2"
             float4 frag (v2f i) : SV_Target
             {
 				UNITY_SETUP_INSTANCE_ID(i);
+
                 return float4(SampleSH(normalize(i.normalWS)),1);
             }
             ENDHLSL

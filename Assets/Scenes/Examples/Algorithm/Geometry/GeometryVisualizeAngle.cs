@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ namespace Examples.Algorithm.Geometry
     #if UNITY_EDITOR
     public class GeometryVisualizeAngle : MonoBehaviour
     {
-        public Vector3 m_Position;
+        [PostNormalize] public Vector3 m_Position;
         private void OnDrawGizmos()
         {
             if (SceneView.currentDrawingSceneView == null)
@@ -22,8 +23,8 @@ namespace Examples.Algorithm.Geometry
             var yaw = umath.toPitchYaw(m_Position);
             UGizmos.DrawString( Vector3.zero,yaw.ToString());
 
-            var estimatePitch = umath.angle(m_Position.normalized,Vector3.forward,kfloat3.right);
-            var estimateYaw = umath.angle(Vector3.forward,m_Position.normalized,kfloat3.up) ;
+            var estimatePitch = umath.angle(m_Position.SetX(0f),Vector3.forward,kfloat3.right);
+            var estimateYaw = umath.angle(Vector3.forward,m_Position.SetY(0f).normalized,kfloat3.up) ;
             UGizmos.DrawString( Vector3.down * .1f,estimatePitch + "|" +estimateYaw);
         }
     }

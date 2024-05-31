@@ -55,6 +55,7 @@ namespace Runtime.Geometry
             }
         }
         
+        public static readonly G2Circle kDefault = new G2Circle(float2.zero, .5f);
         public static readonly G2Circle kZero = new G2Circle(float2.zero, 0f);
         public static readonly G2Circle kOne = new G2Circle(float2.zero, 1f);
         public static G2Circle operator +(G2Circle _src, float2 _dst) => new G2Circle(_src.center+_dst,_src.radius);

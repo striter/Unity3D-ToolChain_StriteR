@@ -19,13 +19,15 @@ public static partial class umath
         return nonCloseAngle;
     }
 
-    public static float angle(float3 _first, float3 _second, float3 _up)
+    public static float angle(float3 _first, float3 _second, float3 _up) => rad(_first, _second, _up) * kmath.kRad2Deg;
+    
+    public static float rad(float3 _first, float3 _second, float3 _up)
     {
-        var nonCloseAngle = radBetween(_first, _second) * kmath.kRad2Deg;
+        var nonCloseAngle = radBetween(_first, _second) ;
         nonCloseAngle *= math.sign(dot(_up, cross(_first, _second)));
         return nonCloseAngle;
     }
-    
+
     public static float closestYaw(float3 _direction) => closestAngle(kfloat3.forward,_direction.setY(0).normalize(),kfloat3.up);
     public static float2 closestPitchYaw(float3 _direction)
     {

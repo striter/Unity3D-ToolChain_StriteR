@@ -15,7 +15,7 @@ public static class UColorTransform
     public static float4 SRGBToLinear(float4 rgba) {
         return new float4(lerp(rgba.xyz / 12.92f, pow((rgba.xyz + 0.055f) / 1.055f, 2.4f), step(0.04045f, rgba.xyz)),rgba.w);
     }
-    public static float GammaToLinearSpace(float value)
+    public static float GammaToLinear_Accurate(float value)
     {
         if (value <= 0.04045F)
             return value / 12.92F;
@@ -26,14 +26,9 @@ public static class UColorTransform
         return pow(value, 2.2f);
     }
 
-    public static float3 GammaToLinearSpace(float3 sRGB) {
-        // Approximate version from http://chilliant.blogspot.com.au/2012/08/srgb-approximations-for-hlsl.html?m=1
-        float3 result = new float3(sRGB.x,sRGB.y,sRGB.z);
-        result.x = GammaToLinearSpace(sRGB.x);
-        result.y = GammaToLinearSpace(sRGB.y);
-        result.z = GammaToLinearSpace(sRGB.z);
-        return result;
-    }
+    public static float GammaToLinear(float sRGB) => sRGB * (sRGB * (sRGB * 0.305306011f + 0.682171111f) + 0.012522878f);
+    public static float3 GammaToLinear(float3 sRGB) => sRGB * (sRGB * (sRGB * 0.305306011f + 0.682171111f) + 0.012522878f);
+    
     
     public static float LinearToGamma_Accurate(float col)
     {

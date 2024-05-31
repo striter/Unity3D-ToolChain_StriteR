@@ -15,7 +15,7 @@ namespace Rendering.GI.SphericalHarmonics
 
         public SHGradient Ctor()
         {
-            shData = SphericalHarmonicsExport.ExportL2Gradient(gradientSky, gradientEquator,gradientGround);
+            shData = SphericalHarmonicsExport.ExportL2Gradient(gradientSky.to3(), gradientEquator.to3(),gradientGround.to3());
             return this;
         }
 
@@ -26,8 +26,7 @@ namespace Rendering.GI.SphericalHarmonics
             gradientEquator = Color.white.SetA(.5f),
         }.Ctor();
         
-        public static SHGradient Interpolate(SHGradient _a, SHGradient _b,
-            float _interpolate)
+        public static SHGradient Interpolate(SHGradient _a, SHGradient _b, float _interpolate)
         {
             return new SHGradient()
             {
@@ -105,34 +104,11 @@ namespace Rendering.GI.SphericalHarmonics
     }
     public static class SphericalHarmonicsExport
     {
-        static SHL2Data CalculateSHL2Contribution(float3 direction)
-        {
-            float x = direction.x;
-            float y = direction.y;
-            float z = direction.z;
-            SHL2Data data = new SHL2Data()
-            {
-                l00 = SHBasis.kL00,
-                
-                l10 = SHBasis.kL1N1 * z,
-                l11 = SHBasis.kL10 * y,
-                l12 = SHBasis.kL1P1 * x,
-
-                l20 = SHBasis.kL2N2 * x * y,
-                l21 = SHBasis.kL2N1 * y * z,
-                l22 = SHBasis.kL20 * (-x * x - y * y + 2 * z * z),
-                l23 = SHBasis.kL2P1 * z * x,
-                l24 = SHBasis.kL2P2 * (x * x - y * y),
-            };
-            return data;
-        }
-
-        
         static SHL2Data ExportSample(ESHSampleMode _mode,int _sampleCount,Func<float3, float3> _sampleColor,string _randomSeed = null)
         {
             SHL2Data data = default;
             var random = _randomSeed == null ? null : new System.Random(_randomSeed.GetHashCode());
-            for (int i = 0; i < _sampleCount; i++)
+            for (var i = 0; i < _sampleCount; i++)
             {
                 switch (_mode)
                 {
@@ -141,25 +117,23 @@ namespace Rendering.GI.SphericalHarmonics
                     {
                         var randomPos = URandom.RandomDirection(random);
                         var color = _sampleColor(randomPos);
-                        data += CalculateSHL2Contribution(randomPos) *  color;
+                        data += SHL2Data.Contribution(randomPos) *  color;
                     }
                         break;
                     case ESHSampleMode.Fibonacci:
                     {
                         var randomPos = ULowDiscrepancySequences.FibonacciSphere(i, _sampleCount);
-                        data += CalculateSHL2Contribution(randomPos) * _sampleColor(randomPos);
+                        data += SHL2Data.Contribution(randomPos) * _sampleColor(randomPos);
                     }
                         break;
                 }
             }
 
-            data /= _sampleCount / kmath.kPI4;
-            return data;
+            return data * (kmath.kPI4 / _sampleCount);
         }
         
         public static SHL2Data ExportL2Cubemap(int _sampleCount, Cubemap _cubemap,float _intensity,ESHSampleMode _mode = ESHSampleMode.Random, string _randomSeed = null)
         {
-            
             if (!_cubemap.isReadable)
             {
                 Debug.LogError($"{_cubemap.name} is Not Readable",_cubemap);
@@ -167,11 +141,11 @@ namespace Rendering.GI.SphericalHarmonics
             }
             return ExportSample(_mode,_sampleCount, _p =>
             {
-                float xAbs = Mathf.Abs(_p.x);
-                float yAbs = Mathf.Abs(_p.y);
-                float zAbs = Mathf.Abs(_p.z);
-                int index;
-                Vector2 uv = new Vector2();
+                var xAbs = Mathf.Abs(_p.x);
+                var yAbs = Mathf.Abs(_p.y);
+                var zAbs = Mathf.Abs(_p.z);
+                var index = 0;
+                var uv = float2.zero;
                 if (xAbs >= yAbs && xAbs >= zAbs)
                 {
                     index = _p.x > 0 ? 0 : 1;
@@ -191,40 +165,27 @@ namespace Rendering.GI.SphericalHarmonics
                     uv.y = _p.y / _p.z;
                 }
 
-                uv = (uv + Vector2.one) / 2f;
-                int width = _cubemap.width - 1;
-                int x = (int) (width * uv.x);
-                int y = (int) (width * uv.y);
-                return _cubemap.GetPixel((CubemapFace) index, x, y).linear.to3()*_intensity;
-            },_randomSeed);
+                uv = (uv + kfloat2.one) / 2f;
+                var width = _cubemap.width - 1;
+                var x = (int) (width * uv.x);
+                var y = (int) (width * uv.y);
+                var color = _cubemap.GetPixel((CubemapFace) index, x, y);
+                if (_cubemap.isDataSRGB)
+                    color = color.linear;
+                return color.to3();
+            },_randomSeed) * _intensity;
         }
         
-        public static SHL2Data ExportL2Gradient(Color _top,Color _equator,Color _bottom)
+        public static SHL2Data ExportL2Gradient(float3 _top,float3 _equator,float3 _bottom)
         {
-            var topColor = _top.to3();
-            var equatorColor = _equator.to3();
-            var bottomColor = _bottom.to3();
-            //Closest take cause i can't get the source code
-  
-            var top = math.lerp(topColor, equatorColor, .5f);
-            var bottom = math.lerp( bottomColor,equatorColor, .5f);
-            var center = equatorColor * .9f + (bottomColor + equatorColor) * .1f;
-            return ExportSample(ESHSampleMode.Fibonacci,16, p =>
-            {
-                var value = p.y;
-                var tb = math.lerp(center, top,  math.smoothstep(0, 1, value));
-                var color =  math.lerp(tb, bottom,  math.smoothstep(0, 1, -value));
-                return color;
-            });
+            var eq = _equator;
+            var sky = _top - eq;
+            var ground = _bottom - eq;
+            
+            return SHL2Data.Ambient(eq)
+                + SHL2Data.Direction(kfloat3.up,sky)
+                + SHL2Data.Direction(kfloat3.down,ground);
         }
-
-        public static SHL2Data ExportDirectionalLight(float3 _direction, float3 _color,bool _clamp) => ExportSample(ESHSampleMode.Fibonacci, 32, p =>
-        {
-            var color = math.dot(p, -_direction);
-            if (_clamp)
-                color = math.max(0, color);
-            return color;
-        })*_color;
 
     }
 }
