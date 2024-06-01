@@ -1,17 +1,13 @@
 using System;
 using System.Runtime.InteropServices;
-using Procedural.Tile;
 using Rendering.GI.SphericalHarmonics;
 using Runtime;
 using Runtime.Geometry.Explicit;
 using Runtime.Geometry.Explicit.Mesh.Sphere;
 using Unity.Collections;
 using Unity.Mathematics;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
-using static kmath;
-using static umath;
 
 namespace Examples.Rendering.SH
 {
@@ -28,7 +24,7 @@ namespace Examples.Rendering.SH
     public class FSphericalHarmonicsL2VisualizeCore : ARuntimeRendererBase
     {
         protected override string GetInstanceName() => "SHL2";
-        [Range(0,SphericalHarmonics.Basis.kAvailableBands)] public int band;
+        [Range(0,SHBasis.kAvailableBands)] public int band;
         public int basis;
 
         public PolygonSphereGenerator m_Generator;
@@ -60,7 +56,7 @@ namespace Examples.Rendering.SH
             meshData.SetIndexBufferParams(indexCount,IndexFormat.UInt32);
             vertexAttributes.Dispose();
 
-            var shBasisFunction = SphericalHarmonics.Basis.GetBasisFunction(band,basis);
+            var shBasisFunction = SHBasis.GetBasisFunction(band,basis);
             Vertex GetVertex( half4 tangent,Point _p)
             {
                 var basisOutput = shBasisFunction(_p.position.normalize());

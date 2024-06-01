@@ -24,7 +24,7 @@ RenderSettings:
   m_AmbientEquatorColor: {r: 0, g: 1, b: 0, a: 1}
   m_AmbientGroundColor: {r: 0, g: 0, b: 1, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 0
+  m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: 088be0c16ada253448c696e7dd45a032, type: 2}
   m_HaloStrength: 0.5
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12113415, g: 0.18692702, b: 0.33550555, a: 1}
+  m_IndirectSpecularColor: {r: 0.451547, g: 0.34389797, b: 0.20970395, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -363,7 +363,7 @@ Transform:
   m_GameObject: {fileID: 247573181}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.52278125, z: -0, w: 0.8524669}
-  m_LocalPosition: {x: -5, y: 3.56, z: -0.31}
+  m_LocalPosition: {x: -5, y: 3, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -433,84 +433,84 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Data:
     l00:
-      x: 0.12345448
-      y: 0.19057746
-      z: 0.34221825
+      x: 0.23529409
+      y: 0
+      z: 0
     l10:
-      x: 0.048476737
-      y: 0.07153774
-      z: 0.12975548
+      x: -0.47058818
+      y: -0
+      z: -0
     l11:
-      x: 0.020971766
-      y: 0.007911583
-      z: 0.00084497593
+      x: 0
+      y: 0
+      z: 0
     l12:
-      x: 0.031473093
-      y: 0.029658675
-      z: 0.015682202
+      x: -0
+      y: -0
+      z: -0
     l20:
-      x: 0.020838616
-      y: 0.018920766
-      z: 0.010797844
+      x: 0
+      y: 0
+      z: 0
     l21:
-      x: -0.04375066
-      y: -0.062760025
-      z: -0.088514395
+      x: -0
+      y: -0
+      z: -0
     l22:
-      x: 0.0050375545
-      y: 0.005881347
-      z: 0.0082225185
+      x: -0.073529415
+      y: -0
+      z: -0
     l23:
-      x: -0.03280194
-      y: -0.04875431
-      z: -0.07393635
+      x: -0
+      y: -0
+      z: -0
     l24:
-      x: 0.0071461955
-      y: 0.0139373485
-      z: 0.02174367
+      x: -0.2205882
+      y: -0
+      z: -0
   m_Output:
     shAr:
-      x: 0.031473093
-      y: 0.048476737
-      z: 0.020971766
-      w: 0.11841693
+      x: -0
+      y: -0.47058818
+      z: 0
+      w: 0.3088235
     shAg:
-      x: 0.029658675
-      y: 0.07153774
-      z: 0.007911583
-      w: 0.18469611
+      x: -0
+      y: -0
+      z: 0
+      w: 0
     shAb:
-      x: 0.015682202
-      y: 0.12975548
-      z: 0.00084497593
-      w: 0.33399573
+      x: -0
+      y: -0
+      z: 0
+      w: 0
     shBr:
-      x: 0.020838616
-      y: -0.04375066
-      z: 0.015112664
-      w: -0.03280194
+      x: 0
+      y: -0
+      z: -0.22058824
+      w: -0
     shBg:
-      x: 0.018920766
-      y: -0.062760025
-      z: 0.017644042
-      w: -0.04875431
+      x: 0
+      y: -0
+      z: -0
+      w: -0
     shBb:
-      x: 0.010797844
-      y: -0.088514395
-      z: 0.024667555
-      w: -0.07393635
+      x: 0
+      y: -0
+      z: -0
+      w: -0
     shC:
-      x: 0.0071461955
-      y: 0.0139373485
-      z: 0.02174367
-  m_SHMode: 2
+      x: -0.2205882
+      y: -0
+      z: -0
+  m_SHMode: 4
   m_SampleCount: 2048
-  m_Cubemap: {fileID: 8900000, guid: 6dd39db5fbf7b2b40ad45c87ff3d49b7, type: 3}
+  m_Cubemap: {fileID: 8900000, guid: 4eaa7aeb0cb156a418a747c4e7c468c5, type: 3}
   m_Intensity: 1
   m_GradientTop: {r: 1, g: 0, b: 0, a: 1}
   m_GradientEquator: {r: 0, g: 1, b: 0, a: 1}
   m_GradientBottom: {r: 0, g: 0, b: 1, a: 1}
-  m_LightColor: {r: 1, g: 0, b: 1, a: 1}
+  m_LightColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &311748593
 GameObject:
   m_ObjectHideFlags: 0
@@ -1892,7 +1892,7 @@ Transform:
   m_GameObject: {fileID: 1345503065}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5, y: 3.73, z: 0}
+  m_LocalPosition: {x: 5, y: 3, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []

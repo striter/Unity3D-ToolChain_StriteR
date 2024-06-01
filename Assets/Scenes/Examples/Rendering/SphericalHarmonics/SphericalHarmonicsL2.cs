@@ -10,12 +10,13 @@ namespace Examples.Rendering.SH
         Ambient,
         Gradient,
         Cubemap,
+        CubemapAccurate,
         Directional,
     }
     public class SphericalHarmonicsL2 : MonoBehaviour
     {
         public SHL2Data m_Data;
-        public SHL2Output m_Output;
+        public SHL2ShaderConstants m_Output;
         
         [Header("Bake")]
         public ESphericalHarmonicsExport m_SHMode = ESphericalHarmonicsExport.Gradient;
@@ -36,19 +37,20 @@ namespace Examples.Rendering.SH
                     m_Data = SHL2Data.Ambient(UColorTransform.GammaToLinear(m_LightColor.to3()));
                     break;
                 case ESphericalHarmonicsExport.Gradient:            //???????????????????????????????????
-                    m_Data = SphericalHarmonicsExport.ExportL2Gradient(UColorTransform.GammaToLinear(m_GradientTop.to3()) * .6f,
-                                                                                    UColorTransform.GammaToLinear(m_GradientEquator.to3()) * 1.5f,
-                                                                                    UColorTransform.GammaToLinear(m_GradientBottom.to3()) * .6f);
+                    m_Data = SphericalHarmonicsExport.ExportL2Gradient(m_GradientTop.to3(), m_GradientEquator.to3(), m_GradientBottom.to3());
                     break;
                 case ESphericalHarmonicsExport.Cubemap:
                     m_Data = SphericalHarmonicsExport.ExportL2Cubemap(m_SampleCount, m_Cubemap,m_Intensity,ESHSampleMode.Fibonacci);
+                    break;
+                case ESphericalHarmonicsExport.CubemapAccurate:
+                    m_Data = SphericalHarmonicsExport.ExportCubemap(m_Cubemap,m_Intensity);
                     break;
                 case ESphericalHarmonicsExport.Directional:
                     m_Data = SHL2Data.Direction(kfloat3.up, m_LightColor.to3());
                     break;
             }
             
-            m_Output = m_Data.Output();
+            m_Output = m_Data;
             Ctor();
         }
 
@@ -62,6 +64,15 @@ namespace Examples.Rendering.SH
         void Ctor()
         {
             MaterialPropertyBlock block = new MaterialPropertyBlock();
+            block.SetVector("_L00", m_Data.l00.to4());
+            block.SetVector("_L10", m_Data.l10.to4());
+            block.SetVector("_L11", m_Data.l11.to4());
+            block.SetVector("_L12", m_Data.l12.to4());
+            block.SetVector("_L20", m_Data.l20.to4());
+            block.SetVector("_L21", m_Data.l21.to4());
+            block.SetVector("_L22", m_Data.l22.to4());
+            block.SetVector("_L23", m_Data.l23.to4());
+            block.SetVector("_L24", m_Data.l24.to4());
             SHL2ShaderProperties.kDefault.Apply(block,m_Output);
             GetComponent<MeshRenderer>().SetPropertyBlock(block);
         }

@@ -77,8 +77,7 @@ namespace Examples.Rendering.GI.CustomGI
 
         void ApplyIrradiance(CustomGIIrradiance start, CustomGIIrradiance end, float interp,float repeat)
         {
-            var sh = SHL2Data.Interpolate(start.shData, end.shData, interp);
-            kSHProperties.ApplyGlobal(sh.Output());
+            kSHProperties.ApplyGlobal(SHL2Data.Interpolate(start.shData, end.shData, interp));
 
             m_MainLight.Value.transform.rotation = math.slerp(quaternion.Euler(start.rotation * kmath.kDeg2Rad), quaternion.Euler(end.rotation * kmath.kDeg2Rad), interp);
             m_MainLight.Value.color = Color.Lerp(start.color, end.color, interp);
@@ -90,7 +89,7 @@ namespace Examples.Rendering.GI.CustomGI
         public void ClearGI()
         {
             URender.EnableGlobalKeyword(kCustomLMEnabled,false);
-            kSHProperties.ApplyGlobal(SHL2Data.kZero.Output());
+            kSHProperties.ApplyGlobal(SHL2Data.kZero);
         }
     }
 }

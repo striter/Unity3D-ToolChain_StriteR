@@ -7691,8 +7691,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.990566, g: 0.8155667, b: 0.630785, a: 0}
-  m_Intensity: 4.22
+  m_Color: {r: 1, g: 0.9993962, b: 0.9198113, a: 0}
+  m_Intensity: 0.87
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -7816,7 +7816,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5170140530717178463}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.62237793, y: -0.33418167, z: 0.6245542, w: 0.3330172}
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -7886,7 +7886,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1264ed89c2692a14bb5550517ccca9ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_CurrentLightIndex: 3
+  m_CurrentLightIndex: 1
   m_Irradiances:
   - color: {r: 0.990566, g: 0.864409, b: 0.9550844, a: 0}
     intensity: 0.34

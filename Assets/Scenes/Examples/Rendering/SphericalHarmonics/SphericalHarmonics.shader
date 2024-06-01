@@ -13,6 +13,34 @@ Shader "Game/Unfinished/SphericalHarmonicsL2"
             float4 _SHAr,_SHAg,_SHAb;
             float3 _SHBr,_SHBg,_SHBb,_SHC;
             
+            float3 _L00;
+            float3 _L10;
+            float3 _L11;
+            float3 _L12;
+            float3 _L20;
+            float3 _L21;
+            float3 _L22;
+            float3 _L23;
+            float3 _L24;
+
+            #define kSQRT2 1.4142135623731
+            #define kSQRT3 1.7320508075689
+            #define kSQRT5 2.2360679774998
+            #define kSQRT15 3.8729833462074
+            #define kSQRT21 4.5825756949558
+            #define kSQRT35 5.3851648071345
+            #define kSQRT105 7.0710678118655
+            #define kSQRTPi 1.7724538509055
+
+            float3 V00(float3 p){return (1.0f/(2.0 * kSQRTPi)) * _L00;}
+            float3 V10(float3 p){return (-kSQRT3*p.y/(2*kSQRTPi)) * _L10;}
+            float3 V11(float3 p){return (kSQRT3*p.z/(2*kSQRTPi)) * _L11;}
+            float3 V12(float3 p){return (-kSQRT3*p.x/(2*kSQRTPi)) * _L12;}
+            float3 V20(float3 p){return (kSQRT15 * p.y * p.x/(2*kSQRTPi)) * _L20;}
+            float3 V21(float3 p){return (-kSQRT15 * p.y * p.z /(2*kSQRTPi)) * _L21;}
+            float3 V22(float3 p){return (kSQRT5*(3 * p.z * p.z - 1) / (4*kSQRTPi)) * _L22;}
+            float3 V23(float3 p){return (-kSQRT15 * p.x * p.z /(2*kSQRTPi)) * _L23;}
+            float3 V24(float3 p){return (kSQRT15 * (p.x * p.x - p.y*p.y) / (4*kSQRTPi)) * _L24;}
             struct a2v
             {
                 float3 positionOS : POSITION;
@@ -47,6 +75,9 @@ Shader "Game/Unfinished/SphericalHarmonicsL2"
             {
 				UNITY_SETUP_INSTANCE_ID(i);
                 float3 v = normalize(i.normalWS);
+
+                float3 sh = V00(v) + V10(v) + V11(v) + V12(v) + V20(v) + V21(v) + V22(v) + V23(v) + V24(v);
+                return float4(sh,1);
                 
                 float3 sh01=0;
                 float4 vA=float4(v,1);

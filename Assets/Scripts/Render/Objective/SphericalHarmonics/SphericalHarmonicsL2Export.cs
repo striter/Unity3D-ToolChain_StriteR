@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 
 namespace Rendering.GI.SphericalHarmonics
 {
@@ -43,65 +44,7 @@ namespace Rendering.GI.SphericalHarmonics
         Random,
         Fibonacci,
     }
-    public class SHL2ShaderProperties
-    {
-        public readonly int kSHAr;
-        public readonly int kSHAg;
-        public readonly int kSHAb;
-        public readonly int kSHBr;
-        public readonly int kSHBg;
-        public readonly int kSHBb;
-        public readonly int kSHC;
-        public SHL2ShaderProperties(string _prefix = "")
-        {
-            kSHAr = Shader.PropertyToID(_prefix+"_SHAr");
-            kSHAg = Shader.PropertyToID(_prefix+"_SHAg");
-            kSHAb = Shader.PropertyToID(_prefix+"_SHAb");
-            kSHBr = Shader.PropertyToID(_prefix+"_SHBr");
-            kSHBg = Shader.PropertyToID(_prefix+"_SHBg");
-            kSHBb = Shader.PropertyToID(_prefix+"_SHBb");
-            kSHC = Shader.PropertyToID(_prefix+"_SHC");
-        }
-        
-        public static SHL2ShaderProperties kDefault = new SHL2ShaderProperties();
-        public static SHL2ShaderProperties kUnity = new SHL2ShaderProperties("unity");
-        
-        public void Apply(MaterialPropertyBlock _block,SHL2Output _output)
-        {
-            _block.SetVector(kSHAr, _output.shAr);
-            _block.SetVector(kSHAg, _output.shAg);
-            _block.SetVector(kSHAb, _output.shAb);
-            _block.SetVector(kSHBr, _output.shBr);
-            _block.SetVector(kSHBg, _output.shBg);
-            _block.SetVector(kSHBb, _output.shBb);
-            _block.SetVector(kSHC, _output.shC.to4());
-        }
 
-        public void ApplyGlobal(SHL2Output _output)
-        {
-            Shader.SetGlobalVector(kSHAr, _output.shAr);
-            Shader.SetGlobalVector(kSHAg, _output.shAg);
-            Shader.SetGlobalVector(kSHAb, _output.shAb);
-            Shader.SetGlobalVector(kSHBr, _output.shBr);
-            Shader.SetGlobalVector(kSHBg, _output.shBg);
-            Shader.SetGlobalVector(kSHBb, _output.shBb);
-            Shader.SetGlobalVector(kSHC, _output.shC.to4());
-        }
-
-        public SHL2Output FetchGlobal()
-        {
-            return new SHL2Output()
-            {
-                shAr = Shader.GetGlobalVector(kSHAr),
-                shAg = Shader.GetGlobalVector(kSHAg),
-                shAb = Shader.GetGlobalVector(kSHAb),
-                shBr = Shader.GetGlobalVector(kSHBr),
-                shBg = Shader.GetGlobalVector(kSHBg),
-                shBb = Shader.GetGlobalVector(kSHBb),
-                shC = ((float4)Shader.GetGlobalVector(kSHC)).to3xyz(),
-            };
-        }
-    }
     public static class SphericalHarmonicsExport
     {
         static SHL2Data ExportSample(ESHSampleMode _mode,int _sampleCount,Func<float3, float3> _sampleColor,string _randomSeed = null)
@@ -117,19 +60,19 @@ namespace Rendering.GI.SphericalHarmonics
                     {
                         var randomPos = URandom.RandomDirection(random);
                         var color = _sampleColor(randomPos);
-                        data += SHL2Data.Contribution(randomPos) *  color;
+                        data += new SHL2Contribution(randomPos) *  color;
                     }
                         break;
                     case ESHSampleMode.Fibonacci:
                     {
                         var randomPos = ULowDiscrepancySequences.FibonacciSphere(i, _sampleCount);
-                        data += SHL2Data.Contribution(randomPos) * _sampleColor(randomPos);
+                        data += new SHL2Contribution(randomPos) * _sampleColor(randomPos);
                     }
                         break;
                 }
             }
 
-            return data * (kmath.kPI4 / _sampleCount);
+            return data * (kmath.kPI4 / _sampleCount) ;
         }
         
         public static SHL2Data ExportL2Cubemap(int _sampleCount, Cubemap _cubemap,float _intensity,ESHSampleMode _mode = ESHSampleMode.Random, string _randomSeed = null)
@@ -174,6 +117,61 @@ namespace Rendering.GI.SphericalHarmonics
                     color = color.linear;
                 return color.to3();
             },_randomSeed) * _intensity;
+        }
+        private static readonly float3[] kCubemapOrthoBases = new float3[6 * 3] {
+            new float3(0, 0, -1), new float3(0, -1, 0), new float3(-1, 0, 0),
+            new float3(0, 0, 1), new float3(0, -1, 0), new float3(1, 0, 0),
+            new float3(1, 0, 0), new float3(0, 0, 1), new float3(0, -1, 0),
+            new float3(1, 0, 0), new float3(0, 0, -1), new float3(0, 1, 0),
+            new float3(1, 0, 0), new float3(0, -1, 0), new float3(0, 0, -1),
+            new float3(-1, 0, 0), new float3(0, -1, 0), new float3(0, 0, 1),
+        };
+        public static SHL2Data ExportCubemap(Cubemap _cubemap,float intensity = 1f)
+        {
+            if (!_cubemap.isReadable)
+            {
+                Debug.LogError($"{_cubemap.name} is Not Readable",_cubemap);
+                return SHL2Data.kZero;
+            }
+
+            var data = SHL2Data.kZero;
+            var size = _cubemap.width;
+            var coordBias = -1f + 1f / size;
+            var coordScale = 2f / size;
+            var floatParam = GraphicsFormatUtility.IsHDRFormat(_cubemap.format) ? 1f / 255f : 1f;
+            for (var face = 0; face < 6; face++)
+            {
+                var pixels = _cubemap.GetPixels((CubemapFace)face);
+                var faceData = SHL2Data.kZero;
+                var weightSum = 0f;
+                var basisX = kCubemapOrthoBases[face * 3 + 0];
+                var basisY = kCubemapOrthoBases[face * 3 + 1];
+                var basisZ = -kCubemapOrthoBases[face * 3 + 2];
+                for (var y = 0; y < size; y++)
+                {
+                    var fy = y * coordScale + coordBias;
+                    for (var x = 0; x < size; x++)
+                    {
+                        var fx = x * coordScale + coordBias;
+
+                        // fx, fy are pixel coordinates in -1..+1 range
+                        var ftmp = 1.0f + fx * fx + fy * fy;
+                        var linearWeight = 4.0f / (math.sqrt(ftmp) * ftmp);
+                        var dir = (basisZ + basisX * fx + basisY * fy).normalize();
+                        
+                        var color = pixels[y * size + x];
+                        if (_cubemap.isDataSRGB)
+                            color = color.linear;
+
+                        faceData += new SHL2Contribution(dir) * (color.to3() * linearWeight * floatParam);
+                        weightSum += linearWeight;
+                    }
+                }
+
+                faceData /= (kmath.kPI4 / weightSum / 6f);
+                data += faceData;
+            }
+            return data * intensity;
         }
         
         public static SHL2Data ExportL2Gradient(float3 _top,float3 _equator,float3 _bottom)
