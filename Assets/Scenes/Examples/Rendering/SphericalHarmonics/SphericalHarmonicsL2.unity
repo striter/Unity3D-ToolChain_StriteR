@@ -24,7 +24,7 @@ RenderSettings:
   m_AmbientEquatorColor: {r: 1, g: 0, b: 0, a: 1}
   m_AmbientGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 1
+  m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: 088be0c16ada253448c696e7dd45a032, type: 2}
   m_HaloStrength: 0.5
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.451547, g: 0.34389797, b: 0.20970395, a: 1}
+  m_IndirectSpecularColor: {r: 0.32672334, g: 0.26421025, b: 0.37576196, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -433,79 +433,79 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Data:
     l00:
-      x: 0.6447059
-      y: 0
-      z: 0
+      x: 0.33095556
+      y: 0.26803806
+      z: 0.38250032
     l10:
-      x: 0
-      y: 0
-      z: 0
+      x: 0.031437967
+      y: 0.047740553
+      z: 0.10972425
     l11:
-      x: 0
-      y: 0
-      z: 0
+      x: 0.04679087
+      y: 0.035904583
+      z: 0.020167956
     l12:
-      x: 0
-      y: 0
-      z: 0
+      x: 0.0441677
+      y: 0.03311741
+      z: 0.016517702
     l20:
-      x: 0
-      y: 0
-      z: 0
+      x: -0.005435387
+      y: -0.008492822
+      z: -0.00623749
     l21:
-      x: 0
-      y: 0
-      z: 0
+      x: -0.02082647
+      y: -0.032050274
+      z: -0.04320966
     l22:
-      x: 0.073529415
-      y: 0
-      z: 0
+      x: 0.021901838
+      y: 0.0157767
+      z: 0.013291157
     l23:
-      x: 0
-      y: 0
-      z: 0
+      x: -0.013120336
+      y: -0.025033072
+      z: -0.03920766
     l24:
-      x: 0.2205882
-      y: 0
-      z: 0
+      x: 0.05482329
+      y: 0.03640148
+      z: 0.036544688
   m_Output:
     shAr:
-      x: 0
-      y: 0
-      z: 0
-      w: 0.57117647
+      x: 0.0441677
+      y: 0.031437967
+      z: 0.04679087
+      w: 0.30905372
     shAg:
-      x: 0
-      y: 0
-      z: 0
-      w: 0
+      x: 0.03311741
+      y: 0.047740553
+      z: 0.035904583
+      w: 0.25226137
     shAb:
-      x: 0
-      y: 0
-      z: 0
-      w: 0
+      x: 0.016517702
+      y: 0.10972425
+      z: 0.020167956
+      w: 0.36920917
     shBr:
-      x: 0
-      y: 0
-      z: 0.22058824
-      w: 0
+      x: -0.005435387
+      y: -0.02082647
+      z: 0.065705515
+      w: -0.013120336
     shBg:
-      x: 0
-      y: 0
-      z: 0
-      w: 0
+      x: -0.008492822
+      y: -0.032050274
+      z: 0.047330096
+      w: -0.025033072
     shBb:
-      x: 0
-      y: 0
-      z: 0
-      w: 0
+      x: -0.00623749
+      y: -0.04320966
+      z: 0.03987347
+      w: -0.03920766
     shC:
-      x: 0.2205882
-      y: 0
-      z: 0
-  m_SHMode: 1
+      x: 0.05482329
+      y: 0.03640148
+      z: 0.036544688
+  m_SHMode: 2
   m_SampleCount: 2048
-  m_Cubemap: {fileID: 8900000, guid: 1135303bf34e08e49a54f2cef9219111, type: 2}
+  m_Cubemap: {fileID: 8900000, guid: 1e7febd1f2df36f4e8e05490845861e2, type: 3}
   m_Intensity: 1
   m_GradientTop: {r: 0, g: 0, b: 0, a: 1}
   m_GradientEquator: {r: 1, g: 0, b: 0, a: 1}
