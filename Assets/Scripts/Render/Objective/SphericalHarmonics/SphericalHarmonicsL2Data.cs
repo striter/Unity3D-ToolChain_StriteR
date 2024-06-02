@@ -66,7 +66,7 @@ namespace Rendering.GI.SphericalHarmonics
                 l00 = ambient, //Constant.kAmbientNormalizataionFactor * Basis.kB00,    //Equals 1
             };
 
-        public static SHL2Data Direction(float3 _direction,float3  _color) => new SHL2Contribution(_direction)* Constant.kNormalizationConstants * (_color * Constant.kDirectionNormalizationFactor);
+        public static SHL2Data Direction(float3 _direction, float3 _color) =>  (new SHL2Contribution(_direction) * Constant.kNormalizationConstants) * (_color * Constant.kDirectionNormalizationFactor);
 
         public static SHL2Data operator *(SHL2Data _data, SHL2Contribution _contribution) => new() {
             l00 = _data.l00 * _contribution.l00,
@@ -83,6 +83,12 @@ namespace Rendering.GI.SphericalHarmonics
             l10 = _data.l10 * _color, l11 = _data.l11 * _color, l12 = _data.l12 * _color,
             l20 = _data.l20 * _color, l21 = _data.l21 * _color, l22 = _data.l22 * _color, l23 = _data.l23 * _color, l24 = _data.l24 * _color,
         };
+        public static SHL2Data operator *(SHL2Data _data, float _value) => new () {
+            l00 = _data.l00 * _value,
+            l10 = _data.l10 * _value, l11 = _data.l11 * _value, l12 = _data.l12 * _value,
+            l20 = _data.l20 * _value, l21 = _data.l21 * _value, l22 = _data.l22 * _value, l23 = _data.l23 * _value, l24 = _data.l24 * _value,
+        };
+        
         public static SHL2Data operator /(SHL2Data _data, float _value) => new () {
             l00 = _data.l00 * _value,
             l10 = _data.l10 * _value, l11 = _data.l11 * _value, l12 = _data.l12 * _value,
@@ -107,11 +113,10 @@ namespace Rendering.GI.SphericalHarmonics
 
         public static implicit operator SHL2Data(SphericalHarmonicsL2 _data)
         {
-            SphericalHarmonicsL2Utils.GetL1(_data,out var l10, out var l11, out var l12);
             SphericalHarmonicsL2Utils.GetL2(_data,out var l20, out var l21, out var l22, out var l23, out var l24);
             return new SHL2Data() {
                 l00 = SphericalHarmonicsL2Utils.GetCoefficient(_data,0),
-                l10 = l10, l11 = l11, l12 = l12,
+                l10 = SphericalHarmonicsL2Utils.GetCoefficient(_data,1), l11 = SphericalHarmonicsL2Utils.GetCoefficient(_data,2), l12 = SphericalHarmonicsL2Utils.GetCoefficient(_data,3),
                 l20 = l20, l21 = l21, l22 = l22, l23 = l23, l24 = l24,
             };
         }

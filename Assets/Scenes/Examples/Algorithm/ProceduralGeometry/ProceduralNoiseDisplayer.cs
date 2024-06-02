@@ -100,7 +100,7 @@ namespace Examples.Algorithm.Procedural
             m_MaterialPropertyBlock.SetBuffer(kPositions,m_PositionBuffer);
             m_MaterialPropertyBlock.SetBuffer(kNormals,m_NormalBuffer);
             m_MaterialPropertyBlock.SetVector(kConfigID,new Vector4(m_Resolution,elementSize/m_Resolution,displacement));
-            var l2 = SphericalHarmonicsExport.ExportL2Gradient(RenderSettings.ambientSkyColor.to3(),RenderSettings.ambientEquatorColor.to3(),RenderSettings.ambientGroundColor.to3());
+            var l2 = SphericalHarmonicsExport.ExportGradient(RenderSettings.ambientSkyColor.to3(),RenderSettings.ambientEquatorColor.to3(),RenderSettings.ambientGroundColor.to3());
             SHL2ShaderProperties.kUnity.Apply(m_MaterialPropertyBlock,l2);
         }
 

@@ -28,16 +28,19 @@ namespace Examples.Rendering.SH
         [MFoldout(nameof(m_SHMode),ESphericalHarmonicsExport.Gradient)] [ColorUsage(false, true)] public Color m_GradientEquator = Color.green;
         [MFoldout(nameof(m_SHMode),ESphericalHarmonicsExport.Gradient)] [ColorUsage(false, true)] public Color m_GradientBottom = Color.blue;
 
+        [MFoldout(nameof(m_SHMode), ESphericalHarmonicsExport.Directional)] [PostNormalize]
+        public float3 m_Direction = kfloat3.up;
+
         [MFoldout(nameof(m_SHMode),ESphericalHarmonicsExport.Ambient,ESphericalHarmonicsExport.Directional)][ColorUsage(false, true)] public Color m_LightColor = Color.white;
         private void OnValidate()
         {
             switch (m_SHMode)
             {
                 case ESphericalHarmonicsExport.Ambient:
-                    m_Data = SHL2Data.Ambient(UColorTransform.GammaToLinear(m_LightColor.to3()));
+                    m_Data = SHL2Data.Ambient(m_LightColor.linear.to3());
                     break;
                 case ESphericalHarmonicsExport.Gradient:            //???????????????????????????????????
-                    m_Data = SphericalHarmonicsExport.ExportL2Gradient(m_GradientTop.to3(), m_GradientEquator.to3(), m_GradientBottom.to3());
+                    m_Data = SphericalHarmonicsExport.ExportGradient(m_GradientTop.linear.to3(), m_GradientEquator.linear.to3(), m_GradientBottom.linear.to3());
                     break;
                 case ESphericalHarmonicsExport.Cubemap:
                     m_Data = SphericalHarmonicsExport.ExportL2Cubemap(m_SampleCount, m_Cubemap,m_Intensity,ESHSampleMode.Fibonacci);
@@ -46,7 +49,7 @@ namespace Examples.Rendering.SH
                     m_Data = SphericalHarmonicsExport.ExportCubemap(m_Cubemap,m_Intensity);
                     break;
                 case ESphericalHarmonicsExport.Directional:
-                    m_Data = SHL2Data.Direction(kfloat3.up, m_LightColor.to3());
+                    m_Data = SHL2Data.Direction(m_Direction, m_LightColor.linear.to3());
                     break;
             }
             
@@ -57,7 +60,8 @@ namespace Examples.Rendering.SH
         [Button]
         void SyncWithUnity()
         {
-            m_Output = SHL2ShaderProperties.kUnity.FetchGlobal();
+            m_Data = RenderSettings.ambientProbe;
+            m_Output = m_Data;
             Ctor();
         }
 

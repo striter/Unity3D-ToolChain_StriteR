@@ -39,7 +39,25 @@ Shader "Game/Unfinished/UnitySHL2"
             {
 				UNITY_SETUP_INSTANCE_ID(i);
 
-                return float4(SampleSH(normalize(i.normalWS)),1);
+                float3 v = normalize(i.normalWS);
+                
+                float3 sh01=0;
+                float4 vA=float4(v,1);
+                sh01.r=dot(vA,unity_SHAr);
+                sh01.g=dot(vA,unity_SHAg);
+                sh01.b=dot(vA,unity_SHAb);
+
+                float4 vB = v.xyzz*v.yzzx;
+                float3 sh2;
+                sh2.r=dot(vB,unity_SHBr);
+                sh2.g=dot(vB,unity_SHBg);
+                sh2.b=dot(vB,unity_SHBb);
+                
+                float vC=(v.x*v.x-v.y*v.y);
+                sh2 += unity_SHC * vC;
+                
+                return float4(sh01+sh2,1);
+                // return float4(SampleSH(normalize(i.normalWS)),1);
             }
             ENDHLSL
         }

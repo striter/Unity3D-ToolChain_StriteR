@@ -80,10 +80,7 @@ namespace Rendering.GI.SphericalHarmonics
             Shader.SetGlobalVector(kSHC, _output.shC.to4());
         }
 
-        public SHL2ShaderConstants FetchGlobal()
-        {
-            return new SHL2ShaderConstants()
-            {
+        public SHL2ShaderConstants FetchGlobal() => new() {
                 shAr = Shader.GetGlobalVector(kSHAr),
                 shAg = Shader.GetGlobalVector(kSHAg),
                 shAb = Shader.GetGlobalVector(kSHAb),
@@ -92,6 +89,5 @@ namespace Rendering.GI.SphericalHarmonics
                 shBb = Shader.GetGlobalVector(kSHBb),
                 shC = ((float4)Shader.GetGlobalVector(kSHC)).to3xyz(),
             };
-        }
     }
 }

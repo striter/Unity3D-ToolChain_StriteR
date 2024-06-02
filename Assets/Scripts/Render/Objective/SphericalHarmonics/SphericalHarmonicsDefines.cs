@@ -15,8 +15,8 @@ namespace Rendering.GI.SphericalHarmonics
         private static readonly float kC4 = 0.5f * kC2;
         public static readonly SHL2Contribution kNormalizationConstants = new SHL2Contribution(){
             l00 = kC0,
-            l10 = kC1, l11 = kC1, l12 = kC1,
-            l20 = kC2, l21 = kC2, l22 = kC3, l23 = kC2, l24 = kC4
+            l10 = -kC1, l11 = kC1, l12 = -kC1,
+            l20 = kC2, l21 = -kC2, l22 = kC3, l23 = -kC2, l24 = kC4
         };
     }
     

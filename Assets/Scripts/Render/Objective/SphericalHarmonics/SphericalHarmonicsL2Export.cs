@@ -3,6 +3,7 @@ using System.ComponentModel;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
+using UnityEngine.Rendering;
 
 namespace Rendering.GI.SphericalHarmonics
 {
@@ -16,7 +17,7 @@ namespace Rendering.GI.SphericalHarmonics
 
         public SHGradient Ctor()
         {
-            shData = SphericalHarmonicsExport.ExportL2Gradient(gradientSky.to3(), gradientEquator.to3(),gradientGround.to3());
+            shData = SphericalHarmonicsExport.ExportGradient(gradientSky.to3(), gradientEquator.to3(),gradientGround.to3());
             return this;
         }
 
@@ -60,13 +61,13 @@ namespace Rendering.GI.SphericalHarmonics
                     {
                         var randomPos = URandom.RandomDirection(random);
                         var color = _sampleColor(randomPos);
-                        data += new SHL2Contribution(randomPos) *  color;
+                        data += new SHL2Contribution(randomPos) * Constant.kNormalizationConstants *  color;
                     }
                         break;
                     case ESHSampleMode.Fibonacci:
                     {
                         var randomPos = ULowDiscrepancySequences.FibonacciSphere(i, _sampleCount);
-                        data += new SHL2Contribution(randomPos) * _sampleColor(randomPos);
+                        data += new SHL2Contribution(randomPos) * Constant.kNormalizationConstants * _sampleColor(randomPos);
                     }
                         break;
                 }
@@ -118,6 +119,7 @@ namespace Rendering.GI.SphericalHarmonics
                 return color.to3();
             },_randomSeed) * _intensity;
         }
+        
         private static readonly float3[] kCubemapOrthoBases = new float3[6 * 3] {
             new float3(0, 0, -1), new float3(0, -1, 0), new float3(-1, 0, 0),
             new float3(0, 0, 1), new float3(0, -1, 0), new float3(1, 0, 0),
@@ -126,6 +128,7 @@ namespace Rendering.GI.SphericalHarmonics
             new float3(1, 0, 0), new float3(0, -1, 0), new float3(0, 0, -1),
             new float3(-1, 0, 0), new float3(0, -1, 0), new float3(0, 0, 1),
         };
+        
         public static SHL2Data ExportCubemap(Cubemap _cubemap,float intensity = 1f)
         {
             if (!_cubemap.isReadable)
@@ -163,7 +166,7 @@ namespace Rendering.GI.SphericalHarmonics
                         if (_cubemap.isDataSRGB)
                             color = color.linear;
 
-                        faceData += new SHL2Contribution(dir) * (color.to3() * linearWeight * floatParam);
+                        faceData += new SHL2Contribution(dir) * Constant.kNormalizationConstants * (color.to3() * linearWeight * floatParam);
                         weightSum += linearWeight;
                     }
                 }
@@ -174,15 +177,12 @@ namespace Rendering.GI.SphericalHarmonics
             return data * intensity;
         }
         
-        public static SHL2Data ExportL2Gradient(float3 _top,float3 _equator,float3 _bottom)
+        public static SHL2Data ExportGradient(float3 _top,float3 _equator,float3 _bottom)
         {
             var eq = _equator;
-            var sky = _top - eq;
-            var ground = _bottom - eq;
-            
-            return SHL2Data.Ambient(eq)
-                + SHL2Data.Direction(kfloat3.up,sky)
-                + SHL2Data.Direction(kfloat3.down,ground);
+            var sky = _top - _equator;
+            var ground = _bottom - _equator;
+            return SHL2Data.Ambient(eq * .88f) + SHL2Data.Direction(kfloat3.up,sky * .5f) + SHL2Data.Direction(kfloat3.down,ground * .5f);
         }
 
     }
