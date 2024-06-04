@@ -22,7 +22,6 @@ public struct cfloat2
     public static cfloat2 operator *(float _c1, cfloat2 _c2) => new cfloat2(_c1 * _c2.x, _c1 * _c2.i);
     public static cfloat2 operator /(cfloat2 _c1, float _c2) => new cfloat2(_c1.x / _c2, _c1.i / _c2);
     
-
     public static cfloat2 operator /(cfloat2 _complex1, cfloat2 _complex2)
     {
         var real1 = _complex1.x;

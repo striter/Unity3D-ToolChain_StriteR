@@ -23,7 +23,7 @@ namespace Runtime.Geometry
     }
     
     [Serializable]
-    public partial struct GQuad : IQuad<float3>,IIterate<float3>,IVolume  , IConvex
+    public partial struct GQuad : IQuad<float3>,IIterate<float3>,IVolume  , IConvex , IRayIntersection
     {
         public GQuad(float3 _vb, float3 _vl, float3 _vf, float3 _vr):this(new Quad<float3>(_vb,_vl,_vf,_vr)){}
         public GQuad((float3 _vb, float3 _vl, float3 _vf, float3 _vr) _tuple) : this(_tuple._vb, _tuple._vl, _tuple._vf, _tuple._vr) { }
@@ -42,7 +42,7 @@ namespace Runtime.Geometry
         public float3 GetPoint(float2 _uv)=>umath.bilinearLerp(B, L, F, R, _uv);
         public float3 GetSupportPoint(float3 _direction) => quad.Max(p => math.dot(p, _direction));
         public GBox GetBoundingBox() => UGeometry.GetBoundingBox(this);
-        public GSphere GetBoundingSphere() =>  UGeometry.GetBoundingSphere(this);
+        public GSphere GetBoundingSphere() => UGeometry.GetBoundingSphere(this);
         public float3 Center => quad.Average();
 
         public IEnumerator<float3> GetEnumerator()
@@ -93,6 +93,12 @@ namespace Runtime.Geometry
             yield return midNormal;
             yield return finalNormal;
             yield return midNormal;
+        }
+
+        public bool RayIntersection(GRay _ray, out float distance)
+        {
+            GetTriangles(out var triangle1, out var triangle2);
+            return triangle1.RayIntersection(_ray,out distance) || triangle2.RayIntersection(_ray,out distance);
         }
     }
 

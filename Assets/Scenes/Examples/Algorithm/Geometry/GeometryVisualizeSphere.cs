@@ -1,11 +1,10 @@
 using Runtime.Geometry.Explicit;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Examples.Algorithm.Procedural
 {
-    public class ProceduralPointSphere : MonoBehaviour
+    public class GeometryVisualizeSphere : MonoBehaviour
     {
         [Clamp(0,128)] public int kAxixResolution = 12;
         [Clamp(0,128)] public int kPolygonRhombusCount = 4;

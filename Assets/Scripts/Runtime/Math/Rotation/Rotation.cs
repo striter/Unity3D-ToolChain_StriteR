@@ -1,8 +1,8 @@
-using UnityEngine;
 using Unity.Mathematics;
 using static kmath;
 using static Unity.Mathematics.math;
 using float2x2 = Unity.Mathematics.float2x2;
+using quaternion = Unity.Mathematics.quaternion;
 
 public static class KRotation
 {
@@ -26,28 +26,18 @@ public static partial class umath
 {
     public static quaternion mul(this quaternion _q, quaternion _q2, quaternion _q3) => math.mul(_q, math.mul(_q2, _q3));
     public static float3 mul(this quaternion _q, float3 _direction) => math.mul(_q, _direction);
-    
-    public static float2 toPitchYaw(this quaternion _rotation)
-    {
-        var direction = math.mul(_rotation, kfloat3.forward);
-        var pitch = atan2(-direction.y, sqrt(direction.x * direction.x + direction.z * direction.z));
-        var yaw = atan2(direction.x, direction.z);
-        return new float2(pitch, yaw) * kRad2Deg;
-    }
-    
- 
     public static quaternion AngleAxisToQuaternion(float _radin, float3 _axis)
     {
         var radinH = _radin / 2;
-        var sinH = Mathf.Sin(radinH);
-        var cosH = Mathf.Cos(radinH);
+        var sinH = sin(radinH);
+        var cosH = cos(radinH);
         return new quaternion(_axis.x * sinH, _axis.y * sinH, _axis.z * sinH, cosH);
     }
 
     public static float2x2 Rotate2D(float _rad, bool _clockWise = false)
     {
-        var sinA = Mathf.Sin(_rad);
-        var cosA = Mathf.Cos(_rad);
+        var sinA = sin(_rad);
+        var cosA = cos(_rad);
         if(_clockWise)
             return new float2x2(cosA, sinA, -sinA, cosA);
         return new float2x2(cosA, -sinA, sinA, cosA);
@@ -55,8 +45,8 @@ public static partial class umath
 
     public static Matrix3x3 AngleAxis3x3(float _radin, float3 _axis)
     {
-        var s = Mathf.Sin(_radin);
-        var c = Mathf.Cos(_radin);
+        var s = sin(_radin);
+        var c = cos(_radin);
 
         var t = 1 - c;
         var x = _axis.x;
@@ -110,7 +100,7 @@ public static partial class umath
     public static quaternion FromToQuaternion(float3 _from, float3 _to)
     {
         var e = dot(_from, _to);
-        var v = cross(_from, _to);
+        var v = math.cross(_from, _to);
         var sqrt1Pe = sqrt(2 * (1 + e));
         var Qv = v * (1f / sqrt1Pe);
         var Qw = sqrt1Pe / 2f;
@@ -119,8 +109,8 @@ public static partial class umath
 
     public static Matrix3x3 FromTo3x3(float3 _from, float3 _to)
     {
-        var v = Vector3.Cross(_from, _to);
-        var e = Vector3.Dot(_from, _to);
+        var v = math.cross(_from, _to);
+        var e = math.dot(_from, _to);
         var h = 1 / (1 + e);
         return new Matrix3x3(e + h * v.x * v.x, h * v.x * v.y - v.z, h * v.x * v.z + v.y,
             h * v.x * v.y + v.z, e + h * v.y * v.y, h * v.y * v.z - v.x,

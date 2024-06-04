@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Procedural.Tile;
 using Runtime.DataStructure;
-using Unity.Collections;
 using Unity.Mathematics;
-using UnityEngine;
 using static UBitwise;
 using static kmath;
 using static Unity.Mathematics.math;
@@ -169,7 +167,6 @@ public static class ULowDiscrepancySequences
         return samplePoints.Values.Select(p=>p/gridSize - .5f).ToArray();
     }
     
-    private static readonly float kGoldenRatio = (1f + sqrt(5f)) / 2f;
     public static float3 FibonacciSphere(int _index,int _count) 
     {
         float j = _index + .5f;

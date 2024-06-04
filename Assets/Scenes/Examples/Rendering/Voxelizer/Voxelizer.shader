@@ -1,4 +1,4 @@
-Shader "Game/Unfinished/Voxelizer"
+Shader "Hidden/Voxelizer"
 {
     Properties
     {

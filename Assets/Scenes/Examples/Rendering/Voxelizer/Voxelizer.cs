@@ -23,7 +23,7 @@ namespace Examples.Rendering.Voxelizer
         public GBox m_Box = GBox.kDefault;
         public EResolution m_Resolution = EResolution._64;
 
-        private BoundingVolumeHierarchy<TreeHelper_Box_Triangle, GBox, GTriangle> m_Voxelizer = new();
+        private QuadTree_triangle3 m_Voxelizer = new(2);
 
         private List<float> kIntersectDistances = new List<float>();
 
