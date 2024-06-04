@@ -6,7 +6,7 @@ namespace CameraController.Component
     public enum ERotationMode
     {
         Euler,
-        Quaternion,
+        EulerRepeated,
         EulerInputSeperated,
     }
 
@@ -26,9 +26,9 @@ namespace CameraController.Component
                     m_RotationDamper.Initialize(_input.euler + baseParameters.euler);
                 }
                     break;
-                case ERotationMode.Quaternion:
+                case ERotationMode.EulerRepeated:
                 {
-                    m_RotationDamper.Initialize(quaternion.Euler((_input.euler + baseParameters.euler) * kmath.kDeg2Rad));
+                    m_RotationDamper.InitializeAngle(_input.euler + baseParameters.euler);
                 }
                     break;
                 case ERotationMode.EulerInputSeperated:
@@ -39,18 +39,17 @@ namespace CameraController.Component
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
-                
             }
         }
 
-        public quaternion Tick(float _deltaTime, AnchoredControllerParameters _input, AnchoredControllerParameters baseParameters)
+        public float3 Tick(float _deltaTime, AnchoredControllerParameters _input, AnchoredControllerParameters baseParameters)
         {
+            
             return m_RotationMode switch
             {
-                ERotationMode.Euler => quaternion.Euler(m_RotationDamper.Tick(_deltaTime, _input.euler + baseParameters.euler) * kmath.kDeg2Rad),
-                ERotationMode.Quaternion => m_RotationDamper.Tick(_deltaTime, quaternion.Euler((_input.euler + baseParameters.euler) * kmath.kDeg2Rad)),
-                ERotationMode.EulerInputSeperated => quaternion.Euler(m_RotationDamper.Tick(_deltaTime, baseParameters.euler) * kmath.kDeg2Rad +
-                                                                       m_PlayerInputDamper.Tick(_deltaTime, _input.euler) * kmath.kDeg2Rad),
+                ERotationMode.Euler => m_RotationDamper.Tick(_deltaTime, _input.euler + baseParameters.euler),
+                ERotationMode.EulerRepeated => m_RotationDamper.TickAngle(_deltaTime,_input.euler + baseParameters.euler),
+                ERotationMode.EulerInputSeperated => m_RotationDamper.Tick(_deltaTime, baseParameters.euler)  + m_PlayerInputDamper.Tick(_deltaTime, _input.euler),
                 _ => throw new ArgumentOutOfRangeException()
             };
         }

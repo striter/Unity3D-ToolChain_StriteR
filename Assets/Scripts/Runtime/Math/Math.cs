@@ -136,51 +136,6 @@ public static partial class umath
         return _value.y > _value.z ? EAxis.Y : EAxis.Z;
     }
     
-    public static float2 bilinearLerp(float2 tl, float2 tr, float2 br, float2 bl,float2 p)=> tl + (tr - tl) * p.x + (bl - tl) * p.y + (tl - tr + br - bl) * (p.x * p.y);
-    public static float3 bilinearLerp(float3 tl, float3 tr, float3 br, float3 bl,float2 p)=> tl + (tr - tl) * p.x + (bl - tl) * p.y + (tl - tr + br - bl) * (p.x * p.y);
-
-    public static float3 bilinearLerp(float3 tl, float3 tr, float3 br, float3 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
-    public static float2 bilinearLerp(float2 tl, float2 tr, float2 br, float2 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
-    public static float bilinearLerp(float tl, float tr, float br, float bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
-    public static float2 invBilinearLerp(float2 tl, float2 tr, float2 br, float2 bl, float2 p)
-    {
-        var e = tr - tl;
-        var f = bl - tl;
-        var g = tl - tr + br - bl;
-        var h = p - tl;
-        var k2 = cross(g,f);
-        var k1 = cross(e, f);
-        var k0 = cross(h, e);
-        if (Mathf.Abs(k2) > float.Epsilon)
-        {
-            float w = k1 * k1 - 4f * k0 * k2;
-            if (w < 0f)
-                return -Vector2.one;
-            w = Mathf.Sqrt(w);
-            float ik2 = .5f / k2;
-            float v = (-k1 - w) * ik2;
-            float u = (h.x - f.x * v) / (e.x + g.x * v);
-            if (!RangeFloat.k01.Contains(u) || !RangeFloat.k01.Contains(v))
-            {
-                v = (-k1 + w) * ik2;
-                u = (h.x - f.x * v) / (e.x + g.x * v);
-            }
-            return new Vector2(u,v);
-        }
-        else
-        {
-            float u=(h.x*k1+f.x*k0)/(e.x*k1-g.x*k0);
-            float v = -k0 / k1;
-            return new Vector2(u,v);
-        }
-    }
-
-    public static float smoothLerp(float from,float to,float t)
-    {
-        t = -2.0f * t * t * t + 3.0f * t * t;
-        return to * t + from * (1.0f - t);
-    }
-    
     public static Matrix4x4 add(this Matrix4x4 _src, Matrix4x4 _dst)
     {
         Matrix4x4 dst = Matrix4x4.identity;
@@ -188,17 +143,6 @@ public static partial class umath
             dst.SetRow(i,_src.GetRow(i)+_dst.GetRow(i));
         return dst;
     }
-    
-    public static int lerp(int _src, int _dst, float _interpolate)=> (int)math.lerp(_src, _dst, _interpolate);
-    public static bool lerp(bool _src, bool _dst, float _interpolate)
-    {
-        if (Math.Abs(_interpolate - 1) < float.Epsilon)
-            return _dst;
-        if (_interpolate == 0)
-            return _src;
-        return _src || _dst;
-    }
-
     
     public static float cosH(float _src) => (Mathf.Exp(_src) + Mathf.Exp(_src)) / 2;
     public static float copySign(float _a, float _b)
@@ -279,6 +223,19 @@ public static partial class umath
     public static float repeat(float _t,float _length) => math.clamp(_t - math.floor(_t / _length) * _length, 0.0f, _length);
     public static float2 repeat(float2 _t,float2 _length) => math.clamp(_t - math.floor(_t / _length) * _length, 0.0f, _length);
     
+    public static float lerpAngle(float _a,float _b,float _t)
+    {
+        var num = repeat( _b - _a, 360);
+        if (num > 180)
+            num -= 360;
+        return _a + num * _t;
+    }
+
+    public static float3 lerpAngle(float3 _a, float3 _b, float _t) => new(
+        lerpAngle(_a.x, _b.x, _t), 
+        lerpAngle(_a.y, _b.y, _t), 
+        lerpAngle(_a.z, _b.z, _t));
+
     public static float deltaAngle(float _x,float _xd)
     {
         float num = repeat(_xd - _x, 360f);

@@ -2,17 +2,19 @@ Shader "Hidden/ProceduralNoise"
 {
     Properties
     {
+    	_MainTex("MainTex", 2D) = "white" {}
     }
     SubShader
     {
     HLSLINCLUDE
-            
+				
 			#include "Assets/Shaders/Library/Common.hlsl"
 			#include "Assets/Shaders/Library/Lighting.hlsl"
             #pragma multi_compile_instancing
 			#pragma instancing_options assumeuniformscaling procedural:ConfigureProcedural
 			#pragma editor_sync_compilation
 
+			TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
             StructuredBuffer<uint> _Hashes;
             StructuredBuffer<float3> _Positions;
 			StructuredBuffer<float3> _Normals;

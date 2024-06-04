@@ -7,7 +7,6 @@ using TTouchTracker;
 using Unity.Mathematics;
 using UnityEngine;
 
-
 namespace CameraController.Demo
 {
     
@@ -71,7 +70,7 @@ namespace CameraController.Demo
         private void Update()
         {
             if(Input.GetKeyDown(KeyCode.R))
-                m_Core.Reset(ref m_Input);
+                m_Core.Reset();
             
             if (Input.GetKeyDown(KeyCode.CapsLock))
             {

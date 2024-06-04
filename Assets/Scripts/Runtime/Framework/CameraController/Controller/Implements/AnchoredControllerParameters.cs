@@ -46,14 +46,14 @@ namespace CameraController
         {
             var root = UController.CollectAnchor(_anchor, childName);
             var origin = (float3)root.position;
-            var distance = this.distance;
+            var finalDistance = this.distance;
             var finalAnchor = origin;
             if (useBoundingBox)
             {
                 if (!UController.CollectBoundingBox(root, out var boundingBox))
                     boundingBox = new GBox(origin,1f);
                 if(distanceAABBAdaption)
-                    distance *= boundingBox.size.y;
+                    finalDistance *= boundingBox.size.y;
                 finalAnchor = boundingBox.GetPoint(kfloat3.up*anchorY);
             }
 
@@ -66,7 +66,7 @@ namespace CameraController
                 euler = new float3(pitch,yaw,roll),
                 fov = fov,
                 viewport = new float2(viewportX,viewportY),
-                distance = distance,
+                distance = finalDistance,
             };
         }
     }

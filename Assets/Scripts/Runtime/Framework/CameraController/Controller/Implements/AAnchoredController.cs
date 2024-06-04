@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using CameraController.Animation;
 using CameraController.Component;
 using CameraController.Inputs;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -11,14 +11,21 @@ namespace CameraController
     public abstract class AAnchoredController : ACameraController
     {
         [ScriptableObjectEdit] public AControllerInputProcessor m_InputProcessor;
+        [ScriptableObjectEdit] public AControllerPostModifer m_Collision;
         [Header("Position Damper")] public FAnchorDamper m_Anchor = new FAnchorDamper();
         [Header("Rotation Damper")] public FRotationDamper m_Rotation = new FRotationDamper();
-        [Header("Distance Damper")] public FControllerCollision m_Collision; public Damper m_DistanceDamper = new Damper();
+        [Header("Distance Damper")]  public Damper m_DistanceDamper = new Damper();
         [Header("Viewport Damper")] public Damper m_ViewportDamper = new Damper();    
         public override IEnumerable<IControllerInputProcessor> InputProcessor { get
             {
                 if (m_InputProcessor == null) yield break;
                 yield return m_InputProcessor;
+            }
+        }
+        public override IEnumerable<IControllerPostModifer> PostModifier { get
+            {
+                if (m_Collision == null) yield break;
+                yield return m_Collision;
             }
         }
 
@@ -47,14 +54,12 @@ namespace CameraController
             _output = new FCameraControllerOutput()
             {
                 anchor = m_Anchor.Tick(_deltaTime, _input, baseParameters) + playerInputParameters.anchor,
-                rotation = m_Rotation.Tick(_deltaTime,playerInputParameters,baseParameters),
+                euler = m_Rotation.Tick(_deltaTime,playerInputParameters,baseParameters),
                 viewPort = viewportNfov.xy + playerInputParameters.viewport,
                 fov = viewportNfov.z + playerInputParameters.fov,
                 distance = m_DistanceDamper.Tick(_deltaTime,baseParameters.distance + playerInputParameters.distance),
             };
             
-            _output.Evaluate(_input.Camera, out var frustumRays, out var viewportRay);
-            _output.distance = m_Collision.Evaluate(_input.Camera,viewportRay, _output.distance);
             return true;
         }
 
@@ -69,14 +74,11 @@ namespace CameraController
             var output = new FCameraControllerOutput()
             {
                 anchor = m_Anchor.DrawGizmos(_input,parameters),
-                rotation = quaternion.Euler(parameters.euler * kmath.kDeg2Rad),
+                euler = parameters.euler,
                 viewPort = parameters.viewport,
                 fov = parameters.fov,
                 distance = parameters.distance,
             };
-            output.Evaluate(_input.Camera, out var frustumRays, out var viewportRay);
-            Gizmos.color = Color.white;
-            m_Collision.DrawGizmos(_input.Camera,viewportRay,parameters.distance);
             
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(output.anchor,.05f);

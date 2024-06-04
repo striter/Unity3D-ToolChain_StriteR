@@ -61,28 +61,36 @@ namespace CameraController.Inputs.Touch
             _ => throw new ArgumentOutOfRangeException(nameof(_mode), _mode, null)
         };
 
+        private float lastActiveYaw;
         void Initialize<T>(bool _isReset,ref T _input) where T : AControllerInput
         {
             if (_input is not IControllerPlayerTouchInput playerInput)
                 return;
-            
+
+            var initialYaw = _input.Anchor.eulerAngles.y;
             if (pitchInitializer.Initialize(_isReset, out var pitch))
                 playerInput.Pitch = pitch;
             if (yawInitializer.Initialize(_isReset, out var yaw))
+                playerInput.Yaw = initialYawWithAnchor ? initialYaw : yaw;
+            else if (initialYawWithAnchor)  //it takes to keep yawing the same
             {
-                if(initialYawWithAnchor && !_input.Target)
-                    yaw += _input.Anchor.eulerAngles.y;
-                playerInput.Yaw = yaw;
+                var lastYawDelta = umath.deltaAngle(lastActiveYaw,_input.InputEuler.y );
+                playerInput.Yaw = initialYaw + lastYawDelta;
             }
             if (pinchInitializer.Initialize(_isReset, out var pinch))
                 playerInput.Pinch = pinch;
+        }  
+        public void OnEnter<T>(ref T _input) where T : AControllerInput
+        {
+            lastActiveYaw = _input.Anchor.eulerAngles.y;
+            Initialize(false,ref _input);
         }
-        public void OnEnter<T>(ref T _input) where T : AControllerInput => Initialize(false,ref _input);
         public void OnReset<T>(ref T _input) where T : AControllerInput => Initialize(true,ref _input);
-        public void OnTick<T>(float _deltaTime,ref T _input) where T : AControllerInput
+        public void OnTick<T>(float _deltaTime,ref T _input) where T : AControllerInput     //here handles the input
         {
             if (_input is not IControllerPlayerTouchInput touchInput)
                 return;
+            lastActiveYaw = _input.Anchor.eulerAngles.y;
             
             var drag = touchInput.PlayerDrag;
             var pinch = touchInput.PlayerPinch;

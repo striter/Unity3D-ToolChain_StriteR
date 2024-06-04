@@ -6,7 +6,7 @@
         public float Yaw { get; set; }
         public float Pinch { get; set; }
 
-        public void Clear()
+        public void PlayerInputClear()
         {
             Pitch = 0f;
             Yaw = 0f;

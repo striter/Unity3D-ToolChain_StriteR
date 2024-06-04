@@ -59,7 +59,7 @@ namespace CameraController.Inputs
             }
         }
         
-        public void Clear()
+        public virtual void Clear()
         {
             foreach (var clear in m_ClearMethods) 
                 clear.Invoke(this, null);

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CameraController.Animation;
 using CameraController.Inputs;
 
 namespace CameraController
@@ -12,6 +13,15 @@ namespace CameraController
                 yield break;
             }
         }
+
+        public IEnumerable<IControllerPostModifer> PostModifier
+        {
+            get
+            {
+                yield break;
+            }
+        }
+
         public void OnEnter(AControllerInput _input)
         {
             

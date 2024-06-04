@@ -11,7 +11,7 @@ namespace CameraController.Inputs
     {
         public float OffsetFOV { get; set; }
 
-        public void Clear()
+        public void FOVOffsetClear()
         {
             OffsetFOV = 0;
         }
@@ -19,7 +19,7 @@ namespace CameraController.Inputs
     public interface IDistanceOffset
     {
         public float OffsetDistance { get; set; }
-        public void Clear()
+        public void DistanceOffsetClear()
         {
             OffsetDistance = 0;
         }
@@ -30,7 +30,7 @@ namespace CameraController.Inputs
         public float OffsetPitch { get; set; }
         public float OffsetYaw { get; set; }
         public float OffsetRoll { get; set; }
-        public void Clear()
+        public void EulerOffsetClear()
         {
             OffsetPitch = 0;
             OffsetYaw = 0;
@@ -42,14 +42,11 @@ namespace CameraController.Inputs
     {
         public float OffsetViewPortX { get; set; }
         public float OffsetViewPortY { get; set; }
-        public void Clear()
+        public void ViewportOffsetClear()
         {
             OffsetViewPortX = 0;
             OffsetViewPortY = 0;
         }
     }
 
-    public static partial class APlayerInputExtensions
-    {
-    }
 }

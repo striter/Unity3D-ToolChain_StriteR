@@ -7,10 +7,12 @@ using static Unity.Mathematics.math;
 using static umath;
 using static kmath;
 using static UDamper;
+using quaternion = Unity.Mathematics.quaternion;
 
 public enum EDamperMode
 {
-    None,
+    Never = -1,
+    Instant,
     SpringSimple,
     SpringCritical,
     SpringImplicit,
@@ -31,7 +33,6 @@ public class Damper
     public float lifeTime { get; private set; }
     public float4 value { get; private set; }
     public float4 velocity { get; private set; }
-    public void Initialize(quaternion _begin) => Initialize(_begin.value);
     public void Initialize(float _begin) => Initialize((float4)_begin);
     public void Initialize(float2 _begin) => Initialize(_begin.to4());
     public void Initialize(float3 _begin) => Initialize(_begin.to4());
@@ -43,17 +44,10 @@ public class Damper
         lifeTime = 0f;
     }
 
-    public float TickAngle(float _deltaTime, float _desire)
-    {
-        _desire = value.x + deltaAngle(value.x,_desire);
-        return Tick(_deltaTime,(float4)_desire).x;
-    }
-    public float2 TickAngle(float _deltaTime, float2 _desire)
-    {
-        _desire = value.xy + deltaAngle(value.xy,_desire);
-        return Tick(_deltaTime,_desire.to4()).xy;
-    }
+    public void InitializeAngle(float3 _begin) => Initialize(quaternion.Euler(_begin * kDeg2Rad));
+    public float3 TickAngle(float _deltaTime, float3 _desire) => Tick(_deltaTime,quaternion.Euler(_desire * kDeg2Rad)).toEulerAngles();
 
+    public void Initialize(quaternion _begin) => Initialize(_begin.value);
     public quaternion Tick(float _deltaTime, quaternion _target)
     {
         var dot = math.dot(value, _target.value);
@@ -77,12 +71,16 @@ public class Damper
         
         switch (mode)
         {
-            case EDamperMode.None:
+            case EDamperMode.Never: break;
+            case EDamperMode.Instant:
             {
+                velocity = 0;
                 value = xd;
             } break;
             case EDamperMode.Lerp: {
-                value = lerp(value,xd, 1.0f - negExp_Fast( dt*0.69314718056f /(halfLife+float.Epsilon)));
+                var nextValue = lerp(value,xd, 1.0f - negExp_Fast( dt*0.69314718056f /(halfLife+float.Epsilon)));
+                velocity = nextValue - value;
+                value = nextValue;
             } break;
             case EDamperMode.SpringSimple:
             {
@@ -167,7 +165,7 @@ public class Damper
             {
                 default:
                     throw new InvalidEnumArgumentException();
-                case EDamperMode.None:
+                case EDamperMode.Instant:
                     return 0;
                 case EDamperMode.Lerp:
                 case EDamperMode.SpringCritical:

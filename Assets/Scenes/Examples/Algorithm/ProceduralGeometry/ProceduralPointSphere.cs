@@ -15,14 +15,14 @@ namespace Examples.Algorithm.Procedural
         private void OnDrawGizmos()
         {
             float r = kUVSphereResolution;
-            Gizmos.matrix = Matrix4x4.identity;
+            Gizmos.matrix = transform.localToWorldMatrix;
             for (int i = 0; i <= kUVSphereResolution ; i ++)
                 for(int j = 0 ; j <= kUVSphereResolution*2 ; j++)
                     Gizmos.DrawSphere(USphereExplicit.UV.GetPoint( new float2( i / r , j/r*2)),.02f);
             UGizmos.DrawString(Vector3.zero,"UV Sphere");
             
             r = kAxixResolution;
-            Gizmos.matrix = Matrix4x4.Translate(Vector3.right*3f);
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right*3f);
 
             for (int k = 0; k < UCubeExplicit.kCubeFacingAxisCount; k++)
             {
@@ -33,7 +33,7 @@ namespace Examples.Algorithm.Procedural
             }
             UGizmos.DrawString(Vector3.zero,"Cube Sphere");
             
-            Gizmos.matrix = Matrix4x4.Translate(Vector3.right*6f);
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right*6f);
             for (int k = 0; k < kPolygonRhombusCount; k++)
             {
                 var axis = UCubeExplicit.GetOctahedronRhombusAxis(k,kPolygonRhombusCount);
@@ -43,7 +43,7 @@ namespace Examples.Algorithm.Procedural
             }
             UGizmos.DrawString(Vector3.zero,"Poly Sphere");
             
-            Gizmos.matrix = Matrix4x4.Translate(Vector3.right*9f);
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right*9f);
             for (int k = 0; k < kPolygonRhombusCount; k++)
             {
                 var axis = UCubeExplicit.GetOctahedronRhombusAxis(k,kPolygonRhombusCount);
@@ -53,7 +53,7 @@ namespace Examples.Algorithm.Procedural
             }
             UGizmos.DrawString(Vector3.zero,"Poly Sphere Geodesic");
             
-            Gizmos.matrix = Matrix4x4.Translate(Vector3.right*12f);
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right*12f);
             for (int i = 0; i < kFibonacciResolution; i++)
             {
                 Gizmos.color = Color.Lerp(Color.white,KColor.kOrange,(float)i/kFibonacciResolution);
