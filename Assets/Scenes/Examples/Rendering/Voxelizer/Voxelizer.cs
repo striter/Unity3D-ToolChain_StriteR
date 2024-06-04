@@ -23,7 +23,7 @@ namespace Examples.Rendering.Voxelizer
         public GBox m_Box = GBox.kDefault;
         public EResolution m_Resolution = EResolution._64;
 
-        private QuadTree_triangle3 m_Voxelizer = new QuadTree_triangle3(2);
+        private BoundingVolumeHierarchy<TreeHelper_Box_Triangle, GBox, GTriangle> m_Voxelizer = new();
 
         private List<float> kIntersectDistances = new List<float>();
 
@@ -50,7 +50,7 @@ namespace Examples.Rendering.Voxelizer
             if (triangles.Count == 0)
                 return;
             
-            m_Voxelizer.Construct(triangles,64,16);
+            m_Voxelizer.Construct(triangles,64,32);
 
             
             var resolution = (int) m_Resolution;
@@ -65,27 +65,23 @@ namespace Examples.Rendering.Voxelizer
                 for (var j = 0; j < resolution; j++)
                 {
                     kIntersectDistances.Clear();
-                    var ray = new GRay(m_Box.GetPoint(new float3(0, step * (j + .5f),step * (i + .5f)) - .5f),
-                        kfloat3.right);
-                    foreach (var node in m_Voxelizer.GetLeafs().Collect(p => ray.Intersect(p.boundary)))
+                    var ray = new GRay(m_Box.GetPoint(new float3(0, step * (j + .5f),step * (i + .5f)) - .5f), kfloat3.right);
+                    foreach (var triangle in m_Voxelizer.Query(p => ray.Intersect(p.boundary)))
                     {
-                        foreach (var triangle in node.elements)
-                        {
-                            if (ray.Intersect(triangle, out var distance))
-                                kIntersectDistances.TryAdd(distance);
-                        }
+                        if (ray.Intersect(triangle, out var distance))
+                            kIntersectDistances.TryAdd(distance);
                     }
-
-                    if (kIntersectDistances.Count <= 0)
-                        continue;
 
                     if (kIntersectDistances.Count % 2 != 0)
                         kIntersectDistances.RemoveLast();
 
+                    if (kIntersectDistances.Count <= 0)
+                        continue;
+
                     kIntersectDistances.Sort((a, b) => a > b ? 1 : -1);
 
-                    // Debug.DrawLine(ray.GetPoint(intersectDistances[0]),ray.GetPoint(intersectDistances[0]) + kfloat3.up*step*.1f,Color.red,10f);
-                    // Debug.DrawLine(ray.GetPoint(intersectDistances[^1]),ray.GetPoint(intersectDistances[^1]) + kfloat3.up*step*.1f,Color.blue,10f);
+                    // Debug.DrawLine(ray.GetPoint(kIntersectDistances[0]) + kfloat3.right*step*.1f,ray.GetPoint(kIntersectDistances[0]) + kfloat3.left*step*.1f,Color.red,10f);
+                    // Debug.DrawLine(ray.GetPoint(kIntersectDistances[^1]) + kfloat3.right*step*.1f,ray.GetPoint(kIntersectDistances[^1]) + kfloat3.left*step*.1f,Color.blue,10f);
                     var flag = false;
                     var index = 0;
                     for (var k = 0; k < resolution; k++)
@@ -108,14 +104,16 @@ namespace Examples.Rendering.Voxelizer
             texture.name = "Voxelizer";
             UEAsset.CreateOrReplaceMainAsset(texture, "Assets/Scenes/Examples/Rendering/Voxelizer/Voxelizer.asset");
         }
-        
 
-        public bool m_DrawBounds;
+
+        public bool m_DrawGizmos;
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
             m_Box.DrawGizmos();
-            m_Voxelizer.DrawGizmos(m_DrawBounds);
+            
+            if(m_DrawGizmos)
+                m_Voxelizer.DrawGizmos(true);
         }
     }
 

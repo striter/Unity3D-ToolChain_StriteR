@@ -310,7 +310,7 @@ namespace Examples.PhysicsScenes.FluidSimulation
             if (m_Ping != null)
                 m_FluidSystem.Pop(new GSphere(m_Ping.transform.position, m_Radius),10f * deltaTime,true);
             
-            if (Input.GetMouseButton(0) && UGeometry.Intersect(m_Camera.ScreenPointToRay(Input.mousePosition), GPlane.kDefault, out float3 _hitPoint))
+            if (Input.GetMouseButton(0) && ((GRay)m_Camera.ScreenPointToRay(Input.mousePosition)).IntersectPoint( GPlane.kDefault, out var _hitPoint))
                 m_FluidSystem.Pop(new GSphere(_hitPoint + kfloat3.up*0.01f, 0.75f),10f * deltaTime,true);
         }
 

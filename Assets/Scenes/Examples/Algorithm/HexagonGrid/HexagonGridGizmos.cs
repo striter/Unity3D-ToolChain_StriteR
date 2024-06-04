@@ -108,7 +108,7 @@ namespace Examples.Algorithm.HexagonGrid
         {
             GRay ray = _sceneView.camera.ScreenPointToRay(UnityEditor.Extensions.UECommon.GetScreenPoint(_sceneView));
             GPlane plane = new GPlane(Vector3.up, transform.position);
-            UGeometry.Intersect(ray,plane,out var hitPoint);
+            ray.IntersectPoint(plane,out var hitPoint);
             m_HitPointCS = (transform.InverseTransformPoint(hitPoint) / m_CellRadius).ToCoord();
             m_HitAxialCS = m_HitPointCS.ToCube();
             if (Event.current.type == EventType.MouseDown)

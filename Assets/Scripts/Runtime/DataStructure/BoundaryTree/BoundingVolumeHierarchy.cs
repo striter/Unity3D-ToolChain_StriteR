@@ -23,6 +23,7 @@ namespace Runtime.DataStructure
             var elements2 = new List<Element>(_elements.Iterate(median, last));
             yield return (kHelper.CalculateBoundary(elements2),elements2);
         }
+        public void Construct(IList<Element> _elements, int _maxIteration, int _volumeCapacity) => Construct(_elements,kHelper.CalculateBoundary(_elements),_maxIteration,_volumeCapacity);
     }
 }
 

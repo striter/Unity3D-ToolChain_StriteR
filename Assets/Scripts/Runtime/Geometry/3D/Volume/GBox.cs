@@ -163,5 +163,13 @@ namespace Runtime.Geometry
             distances = new float2(dstToBox, dstInsideBox);
             return true;
         }
+
+    }
+
+
+    public static class GBox_Extension
+    {
+        public static GBox Resize(this GBox _box, float _normalizedValue) =>
+            new GBox(_box.center, _box.extent * _normalizedValue);
     }
 }

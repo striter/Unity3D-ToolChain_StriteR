@@ -14,7 +14,7 @@ namespace Examples.Algorithm.DataStructures
             public const int kQuadDivision = 2;
         }
         
-        public int m_NodeCapacity = 4;
+        [Min(8)]public int m_NodeCapacity = 4;
         public int m_Iteration = 4;
         public int m_RandomCount = 128;
         public float2[] m_RandomPoints;
@@ -23,7 +23,7 @@ namespace Examples.Algorithm.DataStructures
         private QuadTree_float2 m_QuadTree = new QuadTree_float2(kQuadDivision);
         private KDTree_float2 m_KDTree = new KDTree_float2();
         private BSPTree m_BSPTree = new BSPTree();
-        private BoundingVolumeHierarchy<IbvhHelperTriangle2, G2Box, G2Triangle> m_BVH = new();
+        private BoundingVolumeHierarchy<TreeNode_triangle2, G2Box, G2Triangle> m_BVH = new();
 
 
         public bool m_ParentGizmos;
@@ -69,32 +69,31 @@ namespace Examples.Algorithm.DataStructures
                 return;
 
             Gizmos.matrix = Matrix4x4.identity;            
-            m_QuadTree.Construct(m_RandomPoints, m_NodeCapacity,m_Iteration);
+            m_QuadTree.Construct(m_RandomPoints, m_Iteration,m_NodeCapacity);
             m_QuadTree.DrawGizmos(m_ParentGizmos);
-
+            
             Gizmos.matrix = Matrix4x4.Translate(Vector3.right * 50f);
-            m_KDTree.Construct(m_RandomPoints,m_NodeCapacity,m_Iteration);
+            m_KDTree.Construct(m_RandomPoints,m_Iteration,m_NodeCapacity);
             m_KDTree.DrawGizmos(m_ParentGizmos);
-
+            
             Gizmos.matrix = Matrix4x4.Translate(Vector3.right * 100f);
             m_BSPTree.Construct(m_RandomPoints,m_Iteration,m_NodeCapacity);
             m_BSPTree.DrawGizmos(m_ParentGizmos);
-
+            
             Gizmos.matrix = Matrix4x4.Translate(Vector3.right * 150f);
-            m_BVH.Construct(m_RandomTriangles, m_Iteration, m_NodeCapacity);
+            m_BVH.Construct(m_RandomTriangles, m_Iteration,m_NodeCapacity);
             m_BVH.DrawGizmos(m_ParentGizmos);
-
-
+            
             Gizmos.matrix = Matrix4x4.Translate(Vector3.back * 50f);
-            m_QuadTree3.Construct(m_RandomPoints3,m_NodeCapacity,m_Iteration);
+            m_QuadTree3.Construct(m_RandomPoints3,m_Iteration,m_NodeCapacity);
             m_QuadTree3.DrawGizmos(m_ParentGizmos);
             
             Gizmos.matrix = Matrix4x4.Translate(Vector3.back * 50f + Vector3.right*50f);
-            m_KDTree3.Construct(m_RandomPoints3,m_NodeCapacity,m_Iteration);
+            m_KDTree3.Construct(m_RandomPoints3,m_Iteration,m_NodeCapacity);
             m_KDTree3.DrawGizmos(m_ParentGizmos);
             
             Gizmos.matrix = Matrix4x4.Translate(Vector3.back * 100f);
-            m_QuadTree_triangle3.Construct(m_RandomTriangles3,m_NodeCapacity,m_Iteration);
+            m_QuadTree_triangle3.Construct(m_RandomTriangles3,m_Iteration,m_NodeCapacity);
             m_QuadTree_triangle3.DrawGizmos(m_ParentGizmos);
         }
     }

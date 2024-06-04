@@ -88,7 +88,7 @@ namespace TechToys.ThePlanet.Grid
         {
             GRay ray = _sceneView.camera.ScreenPointToRay(_sceneView.GetScreenPoint());
             GPlane plane = new GPlane(Vector3.up, transform.position);
-            UGeometry.Intersect(ray,plane,out var hitPos);
+            ray.IntersectPoint(plane,out var hitPos);
             var hitCoord = ((Vector3)hitPos).ToCoord();
             var hitHex = hitCoord.ToCube();
             var hitArea = UHexagonArea.GetBelongAreaCoord(hitHex);

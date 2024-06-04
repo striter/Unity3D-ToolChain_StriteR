@@ -17,7 +17,7 @@ namespace Examples.Algorithm.Geometry
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            float distance = m_Ray.Intersection(m_Plane);
+            float distance = m_Ray.Distance(m_Plane);
 
             Gizmos.matrix = transform.localToWorldMatrix;
             Vector3 planeSize = new Vector3(1,0,1);

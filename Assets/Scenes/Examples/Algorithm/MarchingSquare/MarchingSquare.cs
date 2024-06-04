@@ -67,8 +67,8 @@ namespace Examples.Algorithm.MarchingSquare
             var trackData = TouchTracker.Execute(Time.unscaledDeltaTime);
             foreach (var click in trackData.ResolveClicks(.1f))
             {
-                var ray = Camera.main.ScreenPointToRay(click);
-                if (!UGeometry.Intersect(ray,GPlane.kUp,out var point))
+                var ray = (GRay)Camera.main.ScreenPointToRay(click);
+                if (!ray.IntersectPoint(GPlane.kUp,out var point))
                     continue;
                 var switchNode=m_Nodes.Last(p=>p.transform.position,point,true);
                 SwitchNode(switchNode.identity);

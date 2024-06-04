@@ -6,27 +6,6 @@ namespace Runtime.Geometry.Extension
 
     public static partial class UGeometry
     {
-        public static bool Intersect(this GRay _ray, GTriangle _triangle) =>   RayIntersection.TriangleCalculate(_ray, _triangle, out var u, out var v, out var t) && !(u < 0.0 || v < 0.0 || u + v > 1.0);
-
-        public static bool Intersect(this GRay _ray, GTriangle _triangle, out float _distance,bool _rayDirectionCheck = false,bool _triangleDirectionCheck = false)
-        {
-            if (!RayIntersection.TriangleCalculate(_ray, _triangle, out var u, out var v, out _distance))
-                return false;
-
-            var intersect = !(u < 0.0 || v < 0.0 || u + v > 1.0);
-            intersect = intersect && (!_rayDirectionCheck || _distance > 0);
-            intersect = intersect && (!_triangleDirectionCheck || dot(_triangle.normal, _ray.direction) < 0);
-            return intersect;
-        }
-        
-        public static bool Intersect(this GLine _line,GTriangle _triangle, out float _distance,bool _rayDirectionCheck = false,bool _triangleDirectionCheck = false) =>Intersect(_line.ToRay(), _triangle, out _distance,_rayDirectionCheck,_triangleDirectionCheck) && _distance >= 0 && _distance <= _line.length;
-        public static bool Intersect(this GRay _ray, GPlane _plane, out float3 _hitPoint)
-        {
-            var distance = _ray.Intersection(_plane);
-            _hitPoint = _ray.GetPoint(distance);
-            return distance != 0;
-        }
-
         #region AABB
 
         public static bool Intersect(GPlane _plane, GBox _box)
@@ -54,10 +33,10 @@ namespace Runtime.Geometry.Extension
         {
             _quad.GetTriangles(out var _triangle1,out var _triangle2);
             var ray = _line.ToRay();
-            if (Intersect(ray, _triangle1,out _distance,_directed))
+            if (ray.Intersect(_triangle1,out _distance))
                 return true;
 
-            return Intersect(ray, _triangle2,out _distance,_directed);
+            return ray.Intersect(_triangle2,out _distance);
         }
         
         public static bool Intersect(GFrustumPlanes _frustumPlanes, GBox _bounding)

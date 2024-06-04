@@ -240,7 +240,7 @@ namespace UnityEditor.Extensions
             int index = _polygons.LastIndex(p =>
             {
                 GTriangle triangle = (GTriangle)p.Convert(_vertices);
-                bool intersect = _ray.Intersect(triangle, out var distance, true, true);
+                bool intersect = _ray.Intersect(triangle, out var distance);
                 if (intersect && minDistance > distance)
                 {
                     collisionTriangle = triangle;

@@ -6,7 +6,6 @@ namespace Runtime.DataStructure
 {
     public interface ITreeIncrementHelper<Boundary, Element> 
     {
-        public bool Contains(Boundary _bounds, Element _element);
         public Boundary CalculateBoundary(IList<Element> _elements);
     }
     
@@ -15,18 +14,16 @@ namespace Runtime.DataStructure
         where Boundary : struct
     {
         protected static readonly Helper kHelper = default;
-        protected abstract IEnumerable<Boundary> Divide(Boundary _src, int _iteration);
+        protected abstract IEnumerable<IList<Element>> Divide(Boundary _src,IList<Element> _elements,int _iteration);
         protected override IEnumerable<(Boundary, IList<Element>)> Split(int _iteration, Boundary _boundary, IList<Element> _elements)
         {
-            if (_iteration == 1)
-                _boundary = kHelper.CalculateBoundary(_elements);
-            
-            foreach (var boundary in Divide(_boundary, _iteration))
+            foreach (var newElements in Divide(_boundary,_elements,_iteration))
             {
-                var newElements = _elements.Collect(p => kHelper.Contains(boundary, p)).ToList();
                 if(newElements.Count > 0)
-                    yield return (boundary,newElements);
+                    yield return (kHelper.CalculateBoundary(newElements),newElements);
             }
         }
+
+        public void Construct(IList<Element> _elements, int _maxIteration, int _volumeCapacity) => Construct( _elements.ToList(),kHelper.CalculateBoundary(_elements),_maxIteration,_volumeCapacity);
     }
 }

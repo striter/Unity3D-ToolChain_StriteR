@@ -20,7 +20,6 @@ namespace Examples.Algorithm.Geometry
         public TriangleRayIntersection[] visualizations;
         
         public GQuad kQQuad = GQuad.kDefault;
-#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             int index = 0;
@@ -39,7 +38,7 @@ namespace Examples.Algorithm.Geometry
                     UGizmos.DrawArrow(triangle.GetBarycenter(), Quaternion.LookRotation(triangle.normal), .5f, .1f);
 
                 float distance = 2f;
-                var intersect = ray.Intersect(triangle, out var rayDistance,visualization.rayDirectionCheck,visualization.planeDirectionCheck);
+                var intersect = ray.Intersect(triangle, out var rayDistance);
                 if(intersect)
                 {
                     distance = rayDistance;
@@ -52,6 +51,5 @@ namespace Examples.Algorithm.Geometry
                 Gizmos.DrawLine(ray.origin, ray.GetPoint(distance));
             }
         }
-#endif
     }
 }

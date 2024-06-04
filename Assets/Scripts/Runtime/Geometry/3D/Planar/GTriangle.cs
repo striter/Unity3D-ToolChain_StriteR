@@ -37,7 +37,7 @@ namespace Runtime.Geometry
     }
 
     [Serializable]
-    public partial struct GTriangle :ITriangle<float3>, IIterate<float3>,ISerializationCallbackReceiver, IVolume, IConvex
+    public partial struct GTriangle :ITriangle<float3>, IIterate<float3>,ISerializationCallbackReceiver, IVolume, IConvex , IRayIntersection
     {
         public float3 V0 => triangle.v0;
         public float3 V1 => triangle.v1;
@@ -121,11 +121,38 @@ namespace Runtime.Geometry
         }
 
         public float3 Center => baryCentre;
+
+        //https://iquilezles.org/articles/hackingintersector/
+        public bool RayIntersection(GRay _ray, out float distance)
+        {
+            var ro = _ray.origin;
+            var rd = _ray.direction;
+            var v0 = V0;
+            var v1v0 = V1 - v0;
+            var v2v0 = V2 - v0;
+            var rov0 = ro-v0;
+ 
+            var n = math.cross( v1v0, v2v0 );
+            var q = math.cross( rov0, rd );
+            var d = 1.0f/math.dot(  n, rd );
+            var u =   d*math.dot( -q, v2v0 );
+            var v =   d*math.dot(  q, v1v0 );
+            var t =   d*math.dot( -n, rov0 );
+            distance = -1;
+            if( u<0.0f || v<0.0f || (u+v)>1.0f ) 
+                return false;
+
+            distance = t;
+            return true;
+        }
     }
 
     public static class GTriangle_Extension
     {
         public static GTriangle to3xz(this G2Triangle _triangle2 )=> new GTriangle(_triangle2.V0.to3xz(),_triangle2.V1.to3xz(),_triangle2.V2.to3xz());
+        public static GTriangle shrink(this GTriangle _triangle,float _value) => new GTriangle(math.lerp(_triangle.baryCentre,_triangle.V0,_value)
+            , math.lerp(_triangle.baryCentre,_triangle.V1,_value)
+            , math.lerp(_triangle.baryCentre,_triangle.V2,_value));
         
     }
 }

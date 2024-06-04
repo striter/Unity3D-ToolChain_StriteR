@@ -6,53 +6,44 @@ namespace Runtime.DataStructure
 {
     public class KDTree_float2 : ATreeIncrement<TreeNode_float2, G2Box, float2>
     {
-        protected override IEnumerable<G2Box> Divide(G2Box _src, int _iteration)
+
+        protected override IEnumerable<IList<float2>> Divide(G2Box _src, IList<float2> _elements, int _iteration)
         {
             var b = _src;
-            var extent = b.size / 2;
-            var min = b.min;
+            var newElements1 = new List<float2>();
+            var newElements2 = new List<float2>();
+            var axis = _iteration % 2;
+            foreach (var element in _elements)
+            {
+                if (element[axis] < b.center[axis])
+                    newElements1.Add(element);
+                else
+                    newElements2.Add(element);
+            }
 
-            if (_iteration % 2 == 1)
-            {
-                var halfExtent = b.extent * new float2(1, 0.5f);
-                yield return new G2Box(min + extent * new float2(1f, .5f), halfExtent);
-                yield return new G2Box(min + extent * new float2(1f, 1.5f), halfExtent);
-            }
-            else
-            {
-                var halfExtent = b.extent * new float2(0.5f, 1f);
-                yield return new G2Box(min + extent * new float2(.5f, 1f), halfExtent);
-                yield return new G2Box(min + extent * new float2(1.5f, 1f), halfExtent);
-            }
+            yield return newElements1;
+            yield return newElements2;
         }
     }
     public class KDTree_float3 : ATreeIncrement<TreeNode_float3, GBox, float3>
     {
-        protected override IEnumerable<GBox> Divide(GBox _src, int _iteration)
+        protected override IEnumerable<IList<float3>> Divide(GBox _src, IList<float3> _elements, int _iteration)
         {
             var b = _src;
-            var extent = b.size / 2;
-            var min = b.min;
-
             var axis = _iteration % 3;
-            if (axis == 0)
+            var newElements1 = new List<float3>();
+            var newElements2 = new List<float3>();
+            foreach (var element in _elements)
             {
-                var halfExtent = b.extent * new float3(0.5f, 1f,1f);
-                yield return new GBox(min + extent * new float3(.5f, 1f,1f), halfExtent);
-                yield return new GBox(min + extent * new float3(1.5f, 1f,1f), halfExtent);
+                if (element[axis] < b.center[axis])
+                    newElements1.Add(element);
+                else
+                    newElements2.Add(element);
             }
-            else if(axis == 1)
-            {
-                var halfExtent = b.extent * new float3(1, 0.5f,1f);
-                yield return new GBox(min + extent * new float3(1f, .5f,1f), halfExtent);
-                yield return new GBox(min + extent * new float3(1f, 1.5f,1f), halfExtent);
-            }
-            else
-            {
-                var halfExtent = b.extent * new float3(1f,1f,0.5f);
-                yield return new GBox(min + extent * new float3(1f, 1f,.5f), halfExtent);
-                yield return new GBox(min + extent * new float3(1f, 1f,1.5f), halfExtent);
-            }
+
+            yield return newElements1;
+            yield return newElements2;
+            
         }
     }
 }

@@ -25,6 +25,7 @@ namespace Runtime.DataStructure
             yield return (_plane , _front);
             yield return (_plane.Flip() , _back);
         }
+        public void Construct(IList<float2> _elements, int _maxIteration, int _volumeCapacity) => Construct(_elements,G2Plane.kDefault, _maxIteration,_volumeCapacity);
 
     }
 }

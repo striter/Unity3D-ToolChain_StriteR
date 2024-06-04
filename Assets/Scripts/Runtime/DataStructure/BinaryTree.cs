@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
+using UnityEngine;
 
 namespace Runtime.DataStructure
 {
@@ -29,6 +30,8 @@ namespace Runtime.DataStructure
             m_Root = _root;
             m_TreeNodes.Add(m_Root);
 
+            var rootChildCount = _root.elements.Count;
+            var finalChildCount = rootChildCount;
             var constructing = true;
             while (constructing)
             {
@@ -45,6 +48,7 @@ namespace Runtime.DataStructure
                         continue;
 
                     var childrenList = new List<TreeNode>();
+                    finalChildCount -= treeNode.elements.Count;
                     foreach (var childElements in _split(treeNode))
                     {
                         if(childElements.elements.Count == 0)
@@ -52,6 +56,7 @@ namespace Runtime.DataStructure
                         
                         m_TreeNodes.Add(childElements);
                         childrenList.Add(childElements);
+                        finalChildCount += childElements.elements.Count;
                     }
                 
                     treeNode.SetParent(childrenList);
@@ -61,6 +66,9 @@ namespace Runtime.DataStructure
 
                 constructing = split;
             }
+            
+            if(finalChildCount != rootChildCount)
+                Debug.LogError($"Tree construct failed, finalChildCount != childCount {finalChildCount} != {rootChildCount}");
         }
         
         public IEnumerable<TreeNode> GetLeafs() => from node in m_TreeNodes where !node.IsParent select node;

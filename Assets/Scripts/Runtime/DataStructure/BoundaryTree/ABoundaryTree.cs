@@ -21,10 +21,11 @@ namespace Runtime.DataStructure
 
 
         protected abstract IEnumerable<(Boundary,IList<Element>)> Split(int _iteration,Boundary _boundary, IList<Element> _elements);
-        public void Construct(IList<Element> _elements, int _maxIteration, int _volumeCapacity) => Construct_Internal(new BoundaryTreeNode()
+        public void Construct(IList<Element> _elements,Boundary _boundary, int _maxIteration, int _volumeCapacity) => Construct_Internal(new BoundaryTreeNode()
         {
             iteration = 0,
             elements = _elements,
+            boundary = _boundary,
         }, _maxIteration, _volumeCapacity, Split);
         IEnumerable<BoundaryTreeNode> Split(BoundaryTreeNode _node)
         {

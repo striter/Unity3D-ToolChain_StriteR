@@ -3,7 +3,6 @@
 namespace Runtime.Geometry.Extension
 {
     //https://iquilezles.org/articles/intersectors/
-    
     public interface IRayAreaIntersection : IArea
     {
         public bool RayIntersection(G2Ray _ray,out float2 distance);
@@ -21,9 +20,22 @@ namespace Runtime.Geometry.Extension
 
     public static class IRayIntersection_Extention
     {
-        public static float Intersection(this GRay _ray, IRayIntersection _intersection) => _intersection.RayIntersection(_ray,out var distance) ? distance : -1;
+        public static float Distance(this GRay _ray, IRayIntersection _intersection) => _intersection.RayIntersection(_ray,out var distance) ? distance : -1;
         public static bool Intersect(this IRayIntersection _intersection, GRay _ray) => Intersect(_intersection, _ray);
         public static bool Intersect(this GRay _ray, IRayIntersection _intersection) => _intersection.RayIntersection(_ray,out var distance);
+        public static bool Intersect(this GRay _ray, IRayIntersection _intersection,out float distance) => _intersection.RayIntersection(_ray,out distance);
+
+        public static bool IntersectPoint(this GRay _ray, IRayIntersection _intersection, out float3 hitPoint)
+        {
+            hitPoint = float3.zero;
+            if (!_intersection.RayIntersection(_ray, out var distance)) return false;
+            hitPoint = _ray.GetPoint(distance);
+            return true;
+        }
+        
+        
+        public static bool Intersect(this GLine _line, IRayIntersection _intersection) => _intersection.RayIntersection(_line.ToRay(),out var distance) && distance <= _line.length;
+        public static bool Intersect(this IRayIntersection _intersection, GLine _line) => Intersect( _line,_intersection);
     }
     
     public static class IVolumeDistance_Extention

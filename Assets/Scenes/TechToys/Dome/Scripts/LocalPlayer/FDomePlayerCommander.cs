@@ -113,7 +113,7 @@ namespace Dome.LocalPlayer
             }
             
             var ray = _camera.ScreenPointToRay(_input.hoverPosition);
-            var position = ray.GetPoint(ray.Intersection(GPlane.kUp));
+            var position = ray.GetPoint(ray.Distance(GPlane.kUp));
 
             var primary = _input.entityInput.primary;
             if (primary.Down())
