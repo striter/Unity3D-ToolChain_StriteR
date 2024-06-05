@@ -1,15 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.Composition.Primitives;
 using System.Linq;
-using Rendering.GI.SphericalHarmonics;
 using UnityEngine;
 
 namespace Rendering.Lightmap
 {
-        
-
     [Serializable]
     public struct LightBaking
     {
