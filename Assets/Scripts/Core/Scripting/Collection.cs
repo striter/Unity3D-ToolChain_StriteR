@@ -29,6 +29,16 @@ namespace System.Linq.Extensions
                     }
                 }
             }
+            public static IEnumerable<Y> Resolve<T,Y>(this IEnumerable<T> _collections) where T: IEnumerable<Y>
+            {
+                foreach (var collection in _collections)
+                {
+                    foreach (var element in collection)
+                    {
+                        yield return element;
+                    }                
+                }
+            }
             
             public static IEnumerable<(int index,T value)> LoopIndex<T>(this IEnumerable<T> _collection)
             {

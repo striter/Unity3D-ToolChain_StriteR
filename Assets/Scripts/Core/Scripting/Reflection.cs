@@ -41,7 +41,7 @@ public static class UReflection
     public static T CreateInstance<T>(Type _type,params object[] _args) => (T)Activator.CreateInstance(_type, _args);
     public static void TraversalAllInheritedClasses<T>(Action<Type> _onEachClass)
     {
-        Type[] allTypes = Assembly.GetExecutingAssembly().GetTypes();
+        Type[] allTypes = Assembly.GetCallingAssembly().GetTypes();
         Type parentType = typeof(T);
         for (int i = 0; i < allTypes.Length; i++)
         {
