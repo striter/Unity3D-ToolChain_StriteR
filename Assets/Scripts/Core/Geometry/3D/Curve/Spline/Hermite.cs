@@ -15,7 +15,7 @@ namespace Runtime.Geometry.Curves.Spline
     }
     
     [Serializable]
-    public struct GHermiteSpline : ISplineDimensions<float3>
+    public struct GHermiteSpline : ISpline<float3>
     {
         public GHermitePoint[] positions;
         public float3 Evaluate(float _value)

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Runtime.Geometry.Curves.Spline
 {
     [Serializable]
-    public struct G2FourierSpline : ISplineDimensions<float2> ,ISerializationCallbackReceiver
+    public struct G2FourierSpline : ISpline<float2> ,ISerializationCallbackReceiver
     {
         public float2[] paths;
         [Clamp(2)] public int coefficients;

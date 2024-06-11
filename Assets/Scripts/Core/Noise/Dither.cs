@@ -5,25 +5,25 @@ namespace Noise
 {
     public static class Dither
     {
-        public static float2x2 kDither2x2 = new float2x2(
+        public static readonly float2x2 kDither2x2 = new float2x2(
             1,3,
             4,2
         ) / 5f;
 
-        public static float3x3 kDither3x3 = new float3x3(
+        public static readonly float3x3 kDither3x3 = new float3x3(
             1,8,4,
             7,6,4, 
             5,2,9
         )/10f;
         
-        public static float4x4 kDither4x4 = new float4x4(
+        public static readonly float4x4 kDither4x4 = new float4x4(
             1,9,3,11,
             13,5,15,7,
             4,12,2,10,
             16,8,14,6
         ) / 17f;
 
-        public static float[] kDither8x8 = new float[]
+        public static readonly float[] kDither8x8 = (float[])new float[]
         {
             1, 49, 13, 61, 4, 52, 16, 64,
             33, 17, 45, 29, 36, 20, 48, 32,

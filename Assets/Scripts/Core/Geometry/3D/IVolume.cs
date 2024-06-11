@@ -3,9 +3,7 @@ using Unity.Mathematics;
 
 namespace Runtime.Geometry
 {
-    public interface IShape  : IShapeDimension<float3>
-    {
-    }
+    public interface IShape  : IShape<float3> { }
     
     public interface IVolume : IShape
     {

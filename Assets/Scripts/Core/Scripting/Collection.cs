@@ -251,6 +251,30 @@ namespace System.Linq.Extensions
                 }
                 return minElement;
             }
+
+            public static void MinmaxElement<T>(this IEnumerable<T> _collection, Func<T, float> _getValue,out T _minElement,out T _max)
+            {
+                _minElement = default;
+                _max = default;
+                var minValue = float.MaxValue;
+                var maxValue = float.MinValue;
+                foreach (var element in _collection)
+                {
+                    var value = _getValue(element);
+                    if (minValue >= value)
+                    {
+                        minValue = value;
+                        _minElement = element;
+                    }
+
+                    if (maxValue <= value)
+                    {
+                        maxValue = value;
+                        _max = element;                        
+                    }
+                }
+            }
+
             public static T MaxElement<T>(this IEnumerable<T> _collection, Func<T, float> _getValue)
             {
                 T maxElement = default;
@@ -820,7 +844,25 @@ namespace System.Linq.Extensions
             return _list;
         }
         
+        public static IList<T> Remake<T>(this IList<T> _array, Func<int, T, T> _onEach)
+        {
+            var count = _array.Count;
+            for (int i = 0; i < count; i++)
+            {
+                var element = _array[i];
+                _array[i] = _onEach(i, element);
+            }
+
+            return _array;
+        }
         
+        public static IList<T> Remake<T>(this IList<T> _collection, Func<T, T> _convert)
+        {
+            for (int i = 0; i < _collection.Count; i++)
+                _collection[i] = _convert(_collection[i]);
+            return _collection;
+        }
+
         public static void AddRange<T>(this IList<T> _src, IList<T> _dst)
         {
             int count = _dst.Count;

@@ -4,7 +4,7 @@ using Unity.Mathematics;
 namespace Runtime.Geometry
 {
 
-    public interface IShape2D : IShapeDimension<float2>
+    public interface IShape2D : IShape<float2>
     {
         float2 GetSupportPoint(float2 _direction);
     }

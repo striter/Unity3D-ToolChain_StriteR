@@ -19,7 +19,7 @@ namespace Examples.Algorithm.Procedural
             for (int j = 0; j <= kUVSphereResolution * 2; j++)
             {
                 var uv = new float2(i / r, j / r);
-                Gizmos.color = Color.red * uv.x + Color.green * uv.y;
+                Gizmos.color = (Color.red * uv.x + Color.green * uv.y).SetA(1f);
                 Gizmos.DrawSphere(USphereExplicit.UV.GetPoint( uv),.02f);
             }
             UGizmos.DrawString(Vector3.zero,"UV");
@@ -29,7 +29,7 @@ namespace Examples.Algorithm.Procedural
             for (int j = 0; j <= kUVSphereResolution; j++)
             {
                 var uv = new float2(i / r, j / r);
-                Gizmos.color = Color.red * uv.x + Color.green * uv.y;
+                Gizmos.color = (Color.red * uv.x + Color.green * uv.y).SetA(1f);
                 Gizmos.DrawSphere(USphereExplicit.UV.Octahedral(uv),.02f);
             }
             UGizmos.DrawString(Vector3.zero,"Octahedral");

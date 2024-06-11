@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Runtime.Geometry.Curves.Spline
 {
     [Serializable]
-    public struct GCatmullRomSpline:ISplineDimensions<float3>
+    public struct GCatmullRomSpline:ISpline<float3>
     {
         public float3[] positions;
         public GCatmullRomSpline(params float3[] _positions)

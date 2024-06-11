@@ -21,7 +21,7 @@ namespace Runtime.Geometry.Curves.Spline
     }
     
     [Serializable]
-    public struct GSpline:ISplineDimensions<float3>,ISerializationCallbackReceiver
+    public struct GSpline:ISpline<float3>,ISerializationCallbackReceiver
     {
         public float3[] coordinates;
         [Clamp(kMinDegree)] public int k;
@@ -141,7 +141,7 @@ namespace Runtime.Geometry.Curves.Spline
     }
 
     [Serializable]
-    public struct GBezierSplineUniform:ISplineDimensions<float3>
+    public struct GBezierSplineUniform:ISpline<float3>
     {
         public float3[] coordinates;
         [Clamp(kMinDegree)]public int k;

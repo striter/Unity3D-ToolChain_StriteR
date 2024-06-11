@@ -8,7 +8,7 @@ namespace Runtime.Geometry.Curves.Spline
 {
     //& https://iquilezles.org/articles/fourier
     [Serializable]
-    public struct GFourierSpline : ISplineDimensions<float3> ,ISerializationCallbackReceiver
+    public struct GFourierSpline : ISpline<float3> ,ISerializationCallbackReceiver
     {
         public float3[] paths;
         [Clamp(2)] public int coefficients;

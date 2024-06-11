@@ -131,7 +131,7 @@ public static class URandom
             var other = i + (int)(Random01(_random) * (shuffleTimes - i));
             other *= _dimension;
             var src = i * _dimension;
-            for (int j = 0; j < _dimension; j++)
+            for (var j = 0; j < _dimension; j++)
             {
                 var srcDimension = src + j;
                 var otherDimension = other + j;

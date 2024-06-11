@@ -14,10 +14,10 @@ namespace Runtime.Geometry
     [Serializable]
     public partial struct GSphere : IVolume , IRayVolumeIntersection , ISDF
     {
+        public float3 Center => center;
         public static readonly GSphere kDefault = kOne;
         public static readonly GSphere kOne = new GSphere(float3.zero, .5f);
         public static readonly GSphere kZero = new GSphere(0,0);
-        public float3 Center => center;
         public float3 GetSupportPoint(float3 _direction) => center + _direction.normalize() * radius;
         public GSphere GetBoundingSphere() => this;
         public float SDF(float3 _position)

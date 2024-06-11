@@ -15,6 +15,11 @@ namespace Runtime.Geometry.Curves
         T EvaluateTangent(float _value);
     }
 
+    public interface ISpline<T> : ICurveDimensions<T>
+    {
+        IEnumerable<T> Coordinates { get; }
+    }
+    
     public static class UCurve
     {
         public static T[] Output<T>(this ICurveDimensions<T> _curve,int _amount)
