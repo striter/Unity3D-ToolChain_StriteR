@@ -21,7 +21,7 @@ namespace Dome.Entity
            if (!_model.pitchTransform)
                _model.pitchTransform = _model.yawTransform;
            
-           _model.viewDamper = _model.kViewDamperData.DeepCopyInstance();
+           _model.viewDamper = _model.kViewDamperData;
            _model.viewDamper.Initialize(0);
         }
         
@@ -29,7 +29,6 @@ namespace Dome.Entity
         {
             _model.yawTransform = null;
             _model.pitchTransform = null;
-            _model.viewDamper = null;
         }
         
         public static void Tick(this ITurretModel _model,float _deltaTime)

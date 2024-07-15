@@ -1,11 +1,25 @@
 ﻿using System;
-using CameraController.Inputs;
+using Runtime.CameraController.Inputs;
 using Runtime.Geometry;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace CameraController
+namespace Runtime.CameraController
 {
+    public interface ITransformHandle
+    {
+        public Transform transform { get; }
+        public Transform Get(string _name);
+    }
+
+    public struct FTransformHandleDefault : ITransformHandle
+    {
+        public Transform transform { get; }
+        public FTransformHandleDefault(Transform _anchor) => transform = _anchor;
+        public Transform Get(string _name) => UController.CollectAnchor(transform, _name);
+        public static implicit operator FTransformHandleDefault(Transform _anchor) => new FTransformHandleDefault(_anchor);
+    }
+    
     [Serializable]
     public struct AnchoredControllerInput
     {
@@ -41,10 +55,11 @@ namespace CameraController
             anchorY = 0f,
             distance = 1f,
         };
-        
-        public AnchoredControllerParameters Evaluate(Transform _anchor)
+
+        public AnchoredControllerParameters Evaluate(ITransformHandle _anchor)
         {
-            var root = UController.CollectAnchor(_anchor, childName);
+            var root = _anchor.Get(childName);
+            var anchor = _anchor.transform;
             var origin = (float3)root.position;
             var finalDistance = this.distance;
             var finalAnchor = origin;
@@ -58,11 +73,11 @@ namespace CameraController
             }
 
             if (useTransformPosition)
-                finalAnchor.xz = ((float3)_anchor.position).xz;
+                finalAnchor.xz = ((float3)anchor.position).xz;
             
             return new AnchoredControllerParameters()
             {
-                anchor = finalAnchor + math.mul(_anchor.rotation, anchorOffset),
+                anchor = finalAnchor + math.mul(anchor.rotation, anchorOffset),
                 euler = new float3(pitch,yaw,roll),
                 fov = fov,
                 viewport = new float2(viewportX,viewportY),
@@ -116,7 +131,7 @@ namespace CameraController
         
         public static AnchoredControllerParameters FormatDelta(AControllerInput _input) => new AnchoredControllerParameters()
         {
-            anchor = math.mul(_input.Anchor.rotation,_input.InputAnchorOffset),
+            anchor = math.mul(_input.Anchor.transform.rotation,_input.InputAnchorOffset),
             euler = _input.InputEuler,
             distance = _input.InputDistance,
             viewport = _input.InputViewPort,

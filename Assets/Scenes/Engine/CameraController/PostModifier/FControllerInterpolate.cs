@@ -1,9 +1,9 @@
-﻿using CameraController.Component;
-using CameraController.Inputs;
+﻿using Runtime.CameraController.Component;
+using Runtime.CameraController.Inputs;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace CameraController.Animation
+namespace Runtime.CameraController.Animation
 {
     [CreateAssetMenu(fileName = "Interpolate", menuName = "Camera/PostModifier/Interpolate")]
     public class FControllerInterpolate : AControllerPostModifer

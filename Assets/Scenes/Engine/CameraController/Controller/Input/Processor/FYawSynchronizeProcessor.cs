@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace CameraController.Inputs
+namespace Runtime.CameraController.Inputs
 {
     [CreateAssetMenu(fileName = "InputProcessor", menuName = "Camera/InputProcessor/YawSynchronizer", order = 0)]
     public class FYawSynchronizeProcessor : AControllerInputProcessor
@@ -13,17 +13,12 @@ namespace CameraController.Inputs
                 return;
             
             playerInput.PlayerInputClear();
-            playerInput.Yaw = UController.GetYaw(_input.Anchor.forward);
+            playerInput.Yaw = UController.GetYaw(_input.Anchor.transform.forward);
         }
 
         public override void OnEnter<T>(ref T _input) => Init(ref _input);
         public override void OnTick<T>(float _deltaTime, ref T _input) => Init(ref _input);
-        public override void OnReset<T>(ref T _input)
-        {
-        }
-
-        public override void OnExit<T>(ref T _input)
-        {
-        }
+        public override void OnReset<T>(ref T _input) { }
+        public override void OnExit() { }
     }
 }

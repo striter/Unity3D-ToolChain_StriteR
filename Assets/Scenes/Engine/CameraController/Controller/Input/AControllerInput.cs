@@ -6,12 +6,12 @@ using System.Linq;
 using System.Linq.Extensions;
 using System.Reflection;
 
-namespace CameraController.Inputs
+namespace Runtime.CameraController.Inputs
 {
     public abstract class AControllerInput
     {
         public bool Available => Camera !=null && Camera.enabled  && Camera.gameObject.activeInHierarchy
-                                 && Anchor != null && Anchor.gameObject.activeInHierarchy;
+                                 && Anchor != null && Anchor.transform!=null &&  Anchor.transform.gameObject.activeInHierarchy;
         
         private static readonly string kAnchor = "Anchor";
         private static readonly string kEuler = "Euler";
@@ -66,16 +66,16 @@ namespace CameraController.Inputs
         }
         
         public abstract Camera Camera { get; }
-        public abstract Transform Anchor { get; }
+        public abstract ITransformHandle Anchor { get; }
         public abstract Transform Target { get;}
 
-        public float3 InputEuler => new float3(GetProperty<float>(kPitch).Sum(), GetProperty<float>(kYaw).Sum(),GetProperty<float>(kRoll).Sum())  
-                                    + GetProperty<float3>(kEuler).Sum().value;
         public float InputPinch => (this is IPlayerInput touchMixin) ? touchMixin.Pinch : 0;
-        public float InputFOV => GetProperty<float>(kFOV).Sum();
-        public float3 InputAnchorOffset => GetProperty<float3>(kAnchor).Sum().value;
-        public float InputDistance => GetProperty<float>(kDistance).Sum();
-        public float2 InputViewPort => new float2(GetProperty<float>(kViewPortX).Sum(), GetProperty<float>(kViewPortY).Sum());
+        public virtual float3 InputEuler => new float3(GetProperty<float>(kPitch).Sum(), GetProperty<float>(kYaw).Sum(),GetProperty<float>(kRoll).Sum())  
+                                    + GetProperty<float3>(kEuler).Sum().value;
+        public virtual float InputFOV => GetProperty<float>(kFOV).Sum();
+        public virtual float3 InputAnchorOffset => GetProperty<float3>(kAnchor).Sum().value;
+        public virtual float InputDistance => GetProperty<float>(kDistance).Sum();
+        public virtual float2 InputViewPort => new float2(GetProperty<float>(kViewPortX).Sum(), GetProperty<float>(kViewPortY).Sum());
     }
 
     public static class IControllerInput_Extension

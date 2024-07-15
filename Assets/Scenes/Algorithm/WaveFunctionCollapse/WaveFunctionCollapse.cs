@@ -119,7 +119,7 @@ namespace Examples.Algorithm.WaveFunctionCollapse
             return m_FillDic;
         }
         
-        class WFCTileContainer:AWFCTile<ETileDirection,WaveFunctionData>,ITransformHandle,IPoolCallback<int>
+        class WFCTileContainer:AWFCTile<ETileDirection,WaveFunctionData>,ITransform,IPoolCallback<int>
         {
             public Transform transform { get; }
             public Action<int> DoRecycle { get; set; }

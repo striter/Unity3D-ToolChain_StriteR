@@ -1,31 +1,35 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CameraController.Animation;
-using CameraController.Component;
-using CameraController.Inputs;
+using Runtime.CameraController.Animation;
+using Runtime.CameraController.Component;
+using Runtime.CameraController.Inputs;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace CameraController
+namespace Runtime.CameraController
 {
     public abstract class AAnchoredController : ACameraController
     {
         [ScriptableObjectEdit] public AControllerInputProcessor m_InputProcessor;
-        [ScriptableObjectEdit] public AControllerPostModifer m_Collision;
+        [ScriptableObjectEdit] public FControllerCollision m_Collision;
         [Header("Position Damper")] public FAnchorDamper m_Anchor = new FAnchorDamper();
         [Header("Rotation Damper")] public FRotationDamper m_Rotation = new FRotationDamper();
-        [Header("Distance Damper")]  public Damper m_DistanceDamper = new Damper();
-        [Header("Viewport Damper")] public Damper m_ViewportDamper = new Damper();    
-        public override IEnumerable<IControllerInputProcessor> InputProcessor { get
-            {
-                if (m_InputProcessor == null) yield break;
+        [Header("Distance Damper")]  public Damper m_DistanceDamper = Damper.kDefault;
+        [Header("Viewport Damper")] public Damper m_ViewportDamper = Damper.kDefault;    
+        public override IEnumerable<IControllerInputProcessor> InputProcessor
+        {
+            get
+            {   
+                if(m_InputProcessor == null) yield break;
                 yield return m_InputProcessor;
             }
         }
-        public override IEnumerable<IControllerPostModifer> PostModifier { get
+
+        public override IEnumerable<IControllerPostModifer> PostModifier { get      //lets handle it with distance damper
             {
-                if (m_Collision == null) yield break;
-                yield return m_Collision;
+                // if (m_Collision == null) yield break;
+                yield break;
             }
         }
 
@@ -57,8 +61,18 @@ namespace CameraController
                 euler = m_Rotation.Tick(_deltaTime,playerInputParameters,baseParameters),
                 viewPort = viewportNfov.xy + playerInputParameters.viewport,
                 fov = viewportNfov.z + playerInputParameters.fov,
-                distance = m_DistanceDamper.Tick(_deltaTime,baseParameters.distance + playerInputParameters.distance),
+                distance = baseParameters.distance + playerInputParameters.distance,
             };
+
+            _output.Evaluate(_input.Camera, out var frustumRays, out var ray);
+            var hitDistance = _output.distance;
+            if (m_Collision != null && m_Collision.CalculateDistance(ray, hitDistance, out hitDistance))
+            {
+                if(m_DistanceDamper.value.x > hitDistance)
+                    m_DistanceDamper.Initialize(hitDistance);
+            }
+            
+            _output.distance = m_DistanceDamper.Tick(_deltaTime, hitDistance);
             
             return true;
         }

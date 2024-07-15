@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,14 +21,14 @@ public class UILineRenderer : MaskableGraphic
         if (m_LocalPositions.Length <= 1)
             return;
 
-        List<UIVertex> vertices = new List<UIVertex>();
-        List<int> indexes = new List<int>();
+        var vertices = new List<UIVertex>();
+        var indexes = new List<int>();
 
         var totalLength = 0f;
 
         var count = m_LocalPositions.Length;
-        Vector2[] upDeltas = new Vector2[count - 1];
-        for (int i = 0; i < count - 1; i++)
+        var upDeltas = new Vector2[count - 1];
+        for (var i = 0; i < count - 1; i++)
         {
             var forward = m_LocalPositions[i + 1] - m_LocalPositions[i];
             upDeltas[i] = new Vector2(-forward.y, forward.x);
@@ -38,7 +36,7 @@ public class UILineRenderer : MaskableGraphic
 
 
         var curIndex = 0;
-        for (int i = 0; i < count - 1; i++)
+        for (var i = 0; i < count - 1; i++)
         {
             var curPosition = m_LocalPositions[i];
 
@@ -61,8 +59,8 @@ public class UILineRenderer : MaskableGraphic
             curIndex += 2;
         }
 
-        var lastPoint = Enumerable.Last(m_LocalPositions);
-        var lastUpDelta = Enumerable.Last(upDeltas).normalized;
+        var lastPoint = m_LocalPositions[^1];
+        var lastUpDelta = upDeltas[^1].normalized;
         totalLength += lastUpDelta.magnitude;
         var lastUpDirection = lastUpDelta.normalized;
         vertices.Add(new UIVertex() { position = lastPoint - lastUpDirection * m_Width, uv0 = new Vector4(totalLength, 0), color = color });

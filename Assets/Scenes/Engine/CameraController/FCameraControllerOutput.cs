@@ -1,10 +1,9 @@
 ﻿using System;
-using CameraController.Inputs;
 using Runtime.Geometry;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace CameraController
+namespace Runtime.CameraController
 {
     [Serializable]
     public struct FCameraControllerOutput
@@ -24,9 +23,9 @@ namespace CameraController
         
         public void Apply(Camera _camera)
         {
+            _camera.fieldOfView = fov;
             Evaluate(_camera, out var frustumRays, out var viewportRay);
             _camera.transform.SetPositionAndRotation( viewportRay.GetPoint(distance), Rotation);
-            _camera.fieldOfView = fov;
         }
 
         public void DrawGizmos(Camera _camera)

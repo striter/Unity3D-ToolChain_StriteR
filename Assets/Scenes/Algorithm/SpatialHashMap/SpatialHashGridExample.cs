@@ -93,7 +93,7 @@ namespace Examples.Algorithm.SpatialHashGrid
         }
     }
 
-    public class Actor:ITransformHandle,ITransform
+    public class Actor:ITransform
     {
         public Transform transform { get; }
         public Vector3 position { get; private set; }

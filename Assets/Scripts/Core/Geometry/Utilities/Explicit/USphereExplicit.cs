@@ -172,7 +172,7 @@ namespace Runtime.Geometry.Explicit
                 var r = 1 - abs(d);
 
                 var z = sign(d) * (1 - r * r);
-                var theta = kPI / 4 * ((abs(v) - abs(u)) / r + 1);
+                var theta = kPI / 4 * (r==0? 1: ((abs(v) - abs(u)) / r + 1));
                 var sinTheta = sign(v) * sin(theta);
                 var cosTheta = sign(u) * cos(theta);
                 var radius = sqrt(2 - r * r);

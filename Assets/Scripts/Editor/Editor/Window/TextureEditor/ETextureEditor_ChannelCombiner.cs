@@ -14,11 +14,8 @@ namespace UnityEditor.Extensions.TextureEditor
         Color[] PixelsResolved { get; set; }
     }
     
-    
-    
     internal static class IChannelCollector_Extension
     {
-    
         public static bool Valid(this IChannelCollector _r)=>_r.Operation == EChannelOperation.Constant || (_r.Texture != null && _r.Texture.isReadable);
         
         public static void Prepare(this IChannelCollector _r)

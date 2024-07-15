@@ -21,14 +21,16 @@ public enum EDamperMode
 }
 
 [Serializable]
-public class Damper
+public struct Damper
 {
     [Header("Config")]
-    public EDamperMode mode = EDamperMode.SpringCritical;
-    [MFoldout(nameof(mode),EDamperMode.Lerp,EDamperMode.SpringCritical)][Clamp(0.01f)] public float halfLife = .1f;
-    [MFoldout(nameof(mode),EDamperMode.SpringSimple,EDamperMode.SpringImplicit)][Range(0,200)] public float stiffness = 20f;
-    [MFoldout(nameof(mode),EDamperMode.SpringSimple,EDamperMode.SpringImplicit)][Range(0,30)] public float damping = 4f;
-    [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] public SecondOrderDynamics secondOrderDynamics = SecondOrderDynamics.kDefault;
+    public EDamperMode mode;
+    [MFoldout(nameof(mode),EDamperMode.Lerp,EDamperMode.SpringCritical)][Clamp(0.01f)] public float halfLife;
+    [MFoldout(nameof(mode),EDamperMode.SpringSimple,EDamperMode.SpringImplicit)][Range(0,200)] public float stiffness;
+    [MFoldout(nameof(mode),EDamperMode.SpringSimple,EDamperMode.SpringImplicit)][Range(0,30)] public float damping;
+    [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] public SecondOrderDynamics secondOrderDynamics;
+    
+    public static Damper kDefault => new() {mode = EDamperMode.SpringCritical, halfLife = .1f, stiffness = 20f, damping = 4f, secondOrderDynamics = SecondOrderDynamics.kDefault};
     
     public float lifeTime { get; private set; }
     public float4 value { get; private set; }
@@ -119,8 +121,9 @@ public class Damper
                     j = sqrt(j);
                     
                     var p = ((velocity + (value - c) * y)/(-(value - c) * w + eps4)).convert(atan_Fast);
-                    
-                    j = j.convert((_i,_value)=>(value[_i]-c[_i])>0?_value:-_value);
+
+                    var srcValue = value;
+                    j = j.convert((_i,_value)=>(srcValue[_i]-c[_i])>0?_value:-_value);
                     
                     var jeydt = j*negExp_Fast(y * dt );
                     

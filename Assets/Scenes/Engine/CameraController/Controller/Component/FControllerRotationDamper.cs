@@ -1,7 +1,7 @@
 ﻿using System;
 using Unity.Mathematics;
 
-namespace CameraController.Component
+namespace Runtime.CameraController.Component
 {
     public enum ERotationMode
     {
@@ -14,8 +14,8 @@ namespace CameraController.Component
     public class FRotationDamper
     {
         public ERotationMode m_RotationMode = ERotationMode.Euler;
-        [MFoldout(nameof(m_RotationMode),ERotationMode.EulerInputSeperated)]public Damper m_PlayerInputDamper = new Damper();
-        public Damper m_RotationDamper = new Damper();
+        [MFoldout(nameof(m_RotationMode),ERotationMode.EulerInputSeperated)]public Damper m_PlayerInputDamper = Damper.kDefault;
+        public Damper m_RotationDamper = Damper.kDefault;
         
         public void Initialize(AnchoredControllerParameters _input,AnchoredControllerParameters baseParameters)
         {
@@ -49,7 +49,7 @@ namespace CameraController.Component
             {
                 ERotationMode.Euler => m_RotationDamper.Tick(_deltaTime, _input.euler + baseParameters.euler),
                 ERotationMode.EulerRepeated => m_RotationDamper.TickAngle(_deltaTime,_input.euler + baseParameters.euler),
-                ERotationMode.EulerInputSeperated => m_RotationDamper.Tick(_deltaTime, baseParameters.euler)  + m_PlayerInputDamper.Tick(_deltaTime, _input.euler),
+                ERotationMode.EulerInputSeperated => m_RotationDamper.TickAngle(_deltaTime, baseParameters.euler)  + m_PlayerInputDamper.Tick(_deltaTime, _input.euler),
                 _ => throw new ArgumentOutOfRangeException()
             };
         }

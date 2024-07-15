@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using CameraController.Animation;
-using CameraController.Inputs;
-using CameraController.Inputs.Touch;
-using TTouchTracker;
+using Runtime.CameraController.Animation;
+using Runtime.CameraController.Inputs;
+using Runtime.CameraController.Inputs.Touch;
+using Runtime.TouchTracker;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace CameraController.Demo
+namespace Runtime.CameraController.Demo
 {
     
     [Serializable]
@@ -26,7 +26,7 @@ namespace CameraController.Demo
         public float2 PlayerDrag { get; set; }
         public float PlayerPinch { get; set; }
         public FPlayerInputMultiplier Sensitive { get; set; } = FPlayerInputMultiplier.kDefaultPixels;
-        public override Transform Anchor => anchor;
+        public override ITransformHandle Anchor => new FTransformHandleDefault(anchor);
         public override Transform Target => target;
         public float Pitch { get => euler.x; set=> euler.x = value; }
         public float Yaw { get => euler.y; set=> euler.y = value; }
@@ -64,7 +64,7 @@ namespace CameraController.Demo
             var controller = (ICameraController)m_Controllers[m_Index];
             if (m_ScripedControllerOverride is ICameraController overrideController)
                 controller = overrideController;
-            m_Core.Switch(controller, ref m_Input);
+            m_Core.Switch(controller);
         }
 
         private void Update()
@@ -79,19 +79,19 @@ namespace CameraController.Demo
             }
 
             if (Input.GetKeyDown(KeyCode.Space))
-                m_Core.AppendModifier(m_Shake);
+                m_Core.AppendModifier(m_Shake.Output());
             
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 m_Index = (m_Index + 1) % m_Controllers.Count;
-                m_Core.Switch(m_Controllers[m_Index],ref m_Input);
+                m_Core.Switch(m_Controllers[m_Index]);
                 m_Core.AppendModifier(m_Interpolate);
             }
 
             if (Input.GetKeyDown(KeyCode.R))
             {
                 m_Core.Apply(m_Input, m_Input.Camera.transform.position, m_Input.Camera.transform.rotation, m_Input.Camera.fieldOfView);
-                m_Core.Switch(FEmptyController.kDefault, ref m_Input);
+                m_Core.Switch(FEmptyController.kDefault);
             }
         }
 
@@ -99,11 +99,10 @@ namespace CameraController.Demo
         {
             if (!Application.isPlaying) return;
             
-            var tracks = TouchTracker.Execute(Time.unscaledDeltaTime);
+            var tracks = UTouchTracker.Execute(Time.unscaledDeltaTime);
             m_Input.PlayerDrag = tracks.CombinedDrag();
             m_Input.PlayerPinch = tracks.CombinedPinch();            
         }
-        
         
         private void LateUpdate()
         {

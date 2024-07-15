@@ -4,7 +4,7 @@ using Rendering.Pipeline;
 using TPool;
 using UnityEngine;
 
-public class FBirdPoop : ITransformHandle , IPoolCallback<int>
+public class FBirdPoop : ITransform , IPoolCallback<int>
 {
     public Transform transform { get; }
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Unity.Mathematics;
 using UnityEngine;
-using TTouchTracker;
+using Runtime.TouchTracker;
 using UnityEngine.AI;
 using UnityEngine.VFX;
 
@@ -54,7 +54,7 @@ namespace Examples.Rendering.Navigation
             m_Character.Tick(deltaTime);
             m_Visualizer.Update(m_Character.m_WayPoints);
             
-            var touches =  TouchTracker.Execute(Time.deltaTime);
+            var touches =  UTouchTracker.Execute(Time.deltaTime);
             var clicks = touches.ResolveClicks();
             if (clicks.Any() && Physics.Raycast(m_Camera.ScreenPointToRay(clicks.First()),out var hitInfo))
                 m_Character.Navigate(hitInfo.point);

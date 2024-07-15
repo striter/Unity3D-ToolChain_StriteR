@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using System.Linq.Extensions;
-using TTouchTracker;
+using Runtime.TouchTracker;
 using UnityEngine;
 using TDataPersistent;
 using TechToys.ThePlanet.Module;
@@ -122,7 +122,7 @@ namespace TechToys.ThePlanet
         
         void InputTick(float _deltaTime)
         {
-            var touch=TouchTracker.Execute(_deltaTime);
+            var touch= UTouchTracker.Execute(_deltaTime);
             foreach (var clickPos in touch.ResolveClicks(.2f))
             {
                 m_Module.Input( m_ModuleSpawning,m_Camera.m_Camera.ScreenPointToRay(clickPos),touch.Count==1);

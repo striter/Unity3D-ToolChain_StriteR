@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Extensions;
-using CameraController;
-using CameraController.Demo;
+using Runtime.CameraController;
+using Runtime.CameraController.Demo;
 using UnityEngine;
-using TTouchTracker;
+using Runtime.TouchTracker;
 using Unity.Mathematics;
 
 namespace Examples.PhysicsScenes
@@ -76,7 +76,7 @@ namespace Examples.PhysicsScenes
             {
                 _character.OnTakeControl();
                 m_ControllerInput.anchor = _character.transform;
-                m_CameraController.Switch(_character.m_CameraController,ref m_ControllerInput);
+                m_CameraController.Switch(_character.m_CameraController);
             }
         }
 
@@ -120,7 +120,7 @@ namespace Examples.PhysicsScenes
         
         public void Tick(float _deltaTime)
         {
-            var trackers=TouchTracker.Execute(Time.unscaledTime);
+            var trackers=UTouchTracker.Execute(Time.unscaledTime);
             Tick(_deltaTime,ref trackers);
             trackers.Joystick_Stationary(
                 (position,active)=>{ TouchConsole.DoSetJoystick(position,active);if(!active) m_MoveDelta=Vector2.zero; },

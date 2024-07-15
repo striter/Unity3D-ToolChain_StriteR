@@ -55,15 +55,47 @@ public static class ULowDiscrepancySequences
             m = _m;
         }
     }
-    static readonly SobelMatrix[] kSobelMatrices = new SobelMatrix[]
-    {
-        new SobelMatrix(0,new uint[]{0,0}),new SobelMatrix(0,new uint[]{0,1}),          new SobelMatrix(1,new uint[]{0,1,3}),       new SobelMatrix(1,new uint[]{0,1,3,1}),  
-        new SobelMatrix(2,new uint[]{0,1,1,1}),new SobelMatrix(1,new uint[]{0,1,1,3,3}),     new SobelMatrix(4,new uint[]{0,1,3,5,13}),  new SobelMatrix(2,new uint[]{0,1,1,5,5,17}),
-        new SobelMatrix(4,new uint[]{0,1,1,5,5,5}),  new SobelMatrix(4,new uint[]{0,1,1,7,11,19}), new SobelMatrix(7,new uint[]{0,1,1,5,1,1}), new SobelMatrix(11,new uint[]{0,1,1,1,3,11}),
-        new SobelMatrix(13,new uint[]{0,1,3,5,5,31}), new SobelMatrix(14,new uint[]{0,1,3,3,9,7,49}), new SobelMatrix(1,new uint[]{0,1,1,1,15,21,21}), new SobelMatrix(13,new uint[]{0,1,3,1,13,27,49}),
+    static readonly SobelMatrix[] kSobelMatrices = {
+        new (0,new uint[]{0,0}),new (0,new uint[]{0,1}),          new (1,new uint[]{0,1,3}),       new (1,new uint[]{0,1,3,1}),  
+        new (2,new uint[]{0,1,1,1}),new (1,new uint[]{0,1,1,3,3}),     new (4,new uint[]{0,1,3,5,13}),  new (2,new uint[]{0,1,1,5,5,17}),
+        new (4,new uint[]{0,1,1,5,5,5}),  new (4,new uint[]{0,1,1,7,11,19}), new (7,new uint[]{0,1,1,5,1,1}), new (11,new uint[]{0,1,1,1,3,11}),
+        new (13,new uint[]{0,1,3,5,5,31}), new (14,new uint[]{0,1,3,3,9,7,49}), new (1,new uint[]{0,1,1,1,15,21,21}), new (13,new uint[]{0,1,3,1,13,27,49}),
     };
 
     private static readonly float kSobolMaxValue = math.pow(2, 32);
+
+    public static float[] Sobel(uint _size,float _offset)
+    {
+        var N = _size;
+        var points = new float[N];
+        var C = new uint[N];
+        for (int i = 0; i < N; i++)
+        {
+            C[i] = 1;
+            var value = i;
+            while ((value & 1) > 0)
+            {
+                value >>= 1;
+                C[i]++;
+            }
+        }
+
+        var L = (uint) math.ceil(math.log(N) / math.log(2.0f));
+        
+        var V = new uint[L + 1];
+        for (int i = 1; i <= L; i++) V[i] = 1u << (32 - i);
+        
+        var X = new uint[N];
+        X[0] = 0;
+        for (uint i = 1u; i < N; i++)
+        {
+            X[i] = X[i - 1] ^ V[C[i - 1]];
+            points[i] = X[i] / kSobolMaxValue + _offset;
+        }
+        
+        return points;
+    }
+    
     public static float2[] Sobol2D(uint _size,float _offset = -.5f)
     {
         var N = _size;
@@ -118,9 +150,9 @@ public static class ULowDiscrepancySequences
         return points;
     }
 
-    public static float2[] PoissonDisk2D(int _width,int _height,int _k = 30,System.Random _seed = null,Func<float2,float> _getRadiusNoramlized = null)
+    public static float2[] PoissonDisk2D(int _width,int _height,int _k = 30,System.Random _seed = null,Func<float2,float> _getRadiusNrormalized = null)
     {
-        float2 gridSize = new float2(_width, _height);
+        var gridSize = new float2(_width, _height);
         var r = 1;
         
         var k = _k;
@@ -143,7 +175,7 @@ public static class ULowDiscrepancySequences
             {
                 var angle = URandom.Random01(_seed)* PI * 2;
                 var direction = new float2(cos(angle), sin(angle));
-                var radius = _getRadiusNoramlized !=null ? _getRadiusNoramlized(activePoint/gridSize) : r;
+                var radius = _getRadiusNrormalized?.Invoke(activePoint/gridSize) ?? r;
                 var distance = URandom.Random01(_seed) * (2 * radius - radius) + radius;
                 var newPoint = activePoint + direction * distance;
 
@@ -151,13 +183,14 @@ public static class ULowDiscrepancySequences
                     continue;
 
                 var gridPosition = (int2)floor(newPoint);
-                if (samplePoints.GetValues(UTile.GetAxisRange(gridPosition,2).Select(p=>new int2(p.x,p.y))).All(p=>(newPoint - p).sqrmagnitude() > radius*radius))
-                {
-                    found = true;
-                    checkList.Add(newPoint);
-                    samplePoints.Add(gridPosition, newPoint);
-                    break;
-                }
+                if (!samplePoints.GetValues(UTile.GetAxisRange(gridPosition, 2)
+                                 .Select(p => new int2(p.x, p.y)))
+                                 .All(p => (newPoint - p).sqrmagnitude() > radius * radius))
+                    continue;
+                found = true;
+                checkList.Add(newPoint);
+                samplePoints.Add(gridPosition, newPoint);
+                break;
             }
 
             if (!found)

@@ -38,12 +38,8 @@ public struct TRS
 
 public interface ITransform
 {
-    Vector3 position { get; }
-}
-
-public interface ITransformHandle
-{
     Transform transform { get; }
+    public Vector3 position => transform.position;
 }
 
 public class SingletonMono<T> : MonoBehaviour where T : MonoBehaviour

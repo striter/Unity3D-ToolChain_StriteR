@@ -1,47 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Extensions;
-using CameraController.Animation;
-using CameraController.Inputs;
+using Runtime.CameraController.Animation;
+using Runtime.CameraController.Inputs;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace CameraController
+namespace Runtime.CameraController
 {
     [Serializable]
-    public sealed class FCameraControllerCore      //Executor
+    public sealed class FCameraControllerCore : ISerializationCallbackReceiver     //Executor
     {
+        public bool m_Initialize = true;
         public bool m_Reset = false;
+        [MFold(nameof(m_SerializedController),null)] public MonoBehaviour m_SerializedController;
+        [MFold(nameof(m_ScriptableController),null)] public ScriptableObject m_ScriptableController;
         [Readonly] public FCameraControllerOutput m_Output;
         public ICameraController m_Controller { get; private set; } = FEmptyController.kDefault;
         private List<IControllerPostModifer> m_Animations = new List<IControllerPostModifer>();
 
-        public bool Switch<T>(ICameraController _controller,ref T _input) where T :AControllerInput
+        public bool Switch(ICameraController _controller)
         {
-            if( !_input.Available || _controller == m_Controller)
+            _controller ??= FEmptyController.kDefault;
+            if (_controller == m_Controller)
                 return false;
-
-            if (_controller == null)
+            
+            m_Reset = false;
+            if (!m_Initialize)
             {
-                Debug.LogError("Can't switch to null controller");
-                _controller = FEmptyController.kDefault;
+                foreach (var processor in m_Controller.InputProcessor)
+                    processor.OnExit();
+                foreach (var modifier in m_Controller.PostModifier)
+                    RemoveModifier(modifier);
+                m_Controller.OnExit();
             }
 
-            m_Reset = false;
-            foreach (var processor in m_Controller.InputProcessor)
-                processor.OnExit(ref _input);
-            foreach (var modifier in m_Controller.PostModifier)
-                RemoveModifier(modifier);
-            m_Controller.OnExit();
-        
             m_Controller = _controller;
-
-            foreach (var processor in m_Controller.InputProcessor)
-                processor.OnEnter(ref _input);
-            foreach (var modifier in m_Controller.PostModifier)
-                AppendModifier(modifier);
+            m_SerializedController = m_Controller as MonoBehaviour;
+            m_ScriptableController = m_Controller as ScriptableObject;
+            m_Initialize = true;
             
-            m_Controller?.OnEnter(_input);
             return true;
         }
         
@@ -50,6 +48,18 @@ namespace CameraController
             if(!_input.Available)
                 return false;
 
+            if (m_Initialize)
+            {
+                foreach (var processor in m_Controller.InputProcessor)
+                    processor.OnEnter(ref _input);
+                foreach (var modifier in m_Controller.PostModifier)
+                    AppendModifier(modifier);
+            
+                m_Controller.OnEnter(_input);
+                m_Initialize = false;
+                m_Reset = false;
+            }
+            
             if (m_Reset)
             {
                 m_Reset = false;
@@ -105,7 +115,7 @@ namespace CameraController
         }
         public void Apply(AControllerInput _input,float3 _position, quaternion _rotation, float _fov)
         {
-            var anchor = _input.Anchor ? (float3)_input.Anchor.position : 0;
+            var anchor = _input.Available ?  (float3)_input.Anchor.transform.position : 0;
             var forward = math.mul(_rotation , kfloat3.forward);
             var delta = anchor - _position;
             
@@ -138,7 +148,19 @@ namespace CameraController
             m_Controller.DrawGizmos(_input);
             m_Animations.Traversal(p=>p.DrawGizmos(_input));
             m_Output.DrawGizmos(_input.Camera);
-        } 
+        }
+
+        public void OnBeforeSerialize()
+        {
+        }
+
+        public void OnAfterDeserialize()
+        {
+            if(m_SerializedController != null && m_SerializedController is ICameraController _controllerSerialized)
+                Switch(_controllerSerialized);
+            if(m_ScriptableController != null && m_ScriptableController is ICameraController _controllerScriptable)
+                Switch(_controllerScriptable);
+        }
     }
 
 }

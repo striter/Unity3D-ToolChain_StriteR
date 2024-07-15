@@ -21,7 +21,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.Bird
         Traveling = 11,
     }
 
-    public interface IBirdPerchingRoot : IBoidsPerching, ITransformHandle
+    public interface IBirdPerchingRoot : IBoidsPerching, ITransform
     {
         Vector3 CenterWS { get; }
         List<FBoidsVertex> m_BirdLandings { get; }

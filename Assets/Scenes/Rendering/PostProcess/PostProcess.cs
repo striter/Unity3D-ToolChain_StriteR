@@ -1,7 +1,7 @@
 ﻿using System;
 using Rendering.PostProcess;
 using UnityEngine;
-using TTouchTracker;
+using Runtime.TouchTracker;
 using UnityEngine.UIElements;
 using System.Linq.Extensions;
 
@@ -29,7 +29,7 @@ namespace Examples.Rendering.PostProcess
 
         private void Update()
         {
-            var tracks=TouchTracker.Execute(Time.unscaledDeltaTime);
+            var tracks = UTouchTracker.Execute(Time.unscaledDeltaTime);
             foreach (var click in tracks.ResolveClicks())
             {
                 if (m_ControlCamera.InputRayCheck(click, out RaycastHit _hit))

@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace TechToys.ThePlanet.Module.BOIDS
 {
-    public abstract class BoidsFlock<TBoidsBehaviour,TBoidsTarget>:ITransformHandle where TBoidsBehaviour:ABoidsBehaviour where TBoidsTarget:ABoidsTarget
+    public abstract class BoidsFlock<TBoidsBehaviour,TBoidsTarget>:ITransform where TBoidsBehaviour:ABoidsBehaviour where TBoidsTarget:ABoidsTarget
     {
         public Transform transform { get; }
         public BoidsActor this[int _index] => m_Actors[_index];

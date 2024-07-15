@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CameraController.Inputs
+namespace Runtime.CameraController.Inputs
 {
     public interface IControllerInputProcessor
     {
@@ -8,7 +8,7 @@ namespace CameraController.Inputs
         public void OnEnter<T>(ref T _input) where T : AControllerInput;
         public void OnTick<T>(float _deltaTime,ref T _input) where T : AControllerInput;
         public void OnReset<T>(ref T _input) where T : AControllerInput;
-        public void OnExit<T>(ref T _input) where T : AControllerInput;
+        public void OnExit();
     }
 
     public abstract class AControllerInputProcessor : ScriptableObject, IControllerInputProcessor
@@ -17,6 +17,6 @@ namespace CameraController.Inputs
         public abstract void OnEnter<T>(ref T _input) where T : AControllerInput;
         public abstract void OnTick<T>(float _deltaTime,ref T _input) where T : AControllerInput;
         public abstract void OnReset<T>(ref T _input) where T : AControllerInput;
-        public abstract void OnExit<T>(ref T _input) where T : AControllerInput;
+        public abstract void OnExit();
     }
 }

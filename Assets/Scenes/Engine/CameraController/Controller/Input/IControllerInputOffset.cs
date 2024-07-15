@@ -1,6 +1,6 @@
 ﻿using Unity.Mathematics;
 
-namespace CameraController.Inputs
+namespace Runtime.CameraController.Inputs
 {
     public interface IAnchorOffset
     {

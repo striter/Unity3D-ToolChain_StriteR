@@ -369,7 +369,7 @@ namespace TPool
     } 
     #endregion
     #region Implement
-    public abstract class APoolTransform<T>:ITransformHandle,IPoolCallback<T>
+    public abstract class APoolTransform<T>:ITransform,IPoolCallback<T>
     {
         public Transform transform { get; }
         public Action<T> DoRecycle { get; set; }
@@ -387,7 +387,7 @@ namespace TPool
     }
     
 
-    public class ObjectPoolClass<T,Y> : AObjectPool<T,Y> where Y :ITransformHandle
+    public class ObjectPoolClass<T,Y> : AObjectPool<T,Y> where Y :ITransform
     {
         private readonly Type m_Type;
         private readonly Func<object[]> CostructParameters;

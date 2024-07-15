@@ -1,4 +1,4 @@
-﻿namespace CameraController.Inputs
+﻿namespace Runtime.CameraController.Inputs
 {
     public interface IPlayerInput
     {

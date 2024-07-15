@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace CameraController.Inputs.Touch
+namespace Runtime.CameraController.Inputs.Touch
 {
     public enum EConstrainMode
     {
@@ -67,7 +67,7 @@ namespace CameraController.Inputs.Touch
             if (_input is not IControllerPlayerTouchInput playerInput)
                 return;
 
-            var initialYaw = _input.Anchor.eulerAngles.y;
+            var initialYaw = _input.Anchor.transform.eulerAngles.y;
             if (pitchInitializer.Initialize(_isReset, out var pitch))
                 playerInput.Pitch = pitch;
             if (yawInitializer.Initialize(_isReset, out var yaw))
@@ -79,10 +79,11 @@ namespace CameraController.Inputs.Touch
             }
             if (pinchInitializer.Initialize(_isReset, out var pinch))
                 playerInput.Pinch = pinch;
-        }  
+        }
+
         public void OnEnter<T>(ref T _input) where T : AControllerInput
         {
-            lastActiveYaw = _input.Anchor.eulerAngles.y;
+            lastActiveYaw = _input.Anchor.transform.eulerAngles.y;
             Initialize(false,ref _input);
         }
         public void OnReset<T>(ref T _input) where T : AControllerInput => Initialize(true,ref _input);
@@ -90,7 +91,7 @@ namespace CameraController.Inputs.Touch
         {
             if (_input is not IControllerPlayerTouchInput touchInput)
                 return;
-            lastActiveYaw = _input.Anchor.eulerAngles.y;
+            lastActiveYaw = _input.Anchor.transform.eulerAngles.y;
             
             var drag = touchInput.PlayerDrag;
             var pinch = touchInput.PlayerPinch;
@@ -107,7 +108,10 @@ namespace CameraController.Inputs.Touch
             touchInput.Pinch = Evaluate(pinchMode, touchInput.Pinch, RangeFloat.k01);
         }
 
-        public void OnExit<T>(ref T _input) where T : AControllerInput {}
+        public void OnExit()
+        {
+            lastActiveYaw = 0f;
+        }
     }
 
     [CreateAssetMenu(fileName = "InputProcessor", menuName = "Camera/InputProcessor/PlayerInputConstrains", order = 0)]
@@ -118,6 +122,6 @@ namespace CameraController.Inputs.Touch
         public override void OnEnter<T>(ref T _input)=> data.OnEnter(ref _input);
         public override void OnTick<T>(float _deltaTime,ref T _input)=> data.OnTick(_deltaTime,ref _input);
         public override void OnReset<T>(ref T _input)=> data.OnReset(ref _input);
-        public override void OnExit<T>(ref T _input)=> data.OnExit(ref _input);
+        public override void OnExit()=> data.OnExit();
     }
 }

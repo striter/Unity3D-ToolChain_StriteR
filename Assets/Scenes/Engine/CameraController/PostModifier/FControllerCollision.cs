@@ -1,8 +1,8 @@
-﻿using CameraController.Inputs;
+﻿using Runtime.CameraController.Inputs;
 using Runtime.Geometry;
 using UnityEngine;
 
-namespace CameraController.Animation
+namespace Runtime.CameraController.Animation
 {
 
     [CreateAssetMenu(fileName = "ControllerCollisionDefault", menuName = "Camera/Controller/Component/Collision")]
@@ -21,16 +21,19 @@ namespace CameraController.Animation
         [Header("Debug")] public bool m_ForceSyncEveryFrame;
         [Readonly] public GameObject m_LastHitObject;
         [Readonly] public FCameraControllerOutput m_LastOutput;
-        bool CalculateDistance(GRay ray,float distance,out float hitDistance)
+        public bool CalculateDistance(GRay ray,float distance,out float hitDistance)
         {
-            hitDistance = default;
+            ray = ray.Forward(m_CollisionMin);
+            hitDistance = distance;
+            distance -= m_CollisionForward;
+            
             m_LastHitObject = null;
             if (m_CullingMask == 0)
                 return false;
 
             if(m_ForceSyncEveryFrame)
-                Physics.SyncTransforms();
-            if (Physics.SphereCast(ray, m_ColliderRadius, out var hit, distance, m_CullingMask))
+                UnityEngine.Physics.SyncTransforms();
+            if (UnityEngine.Physics.SphereCast(ray, m_ColliderRadius, out var hit, distance, m_CullingMask))
             {
                 m_LastHitObject = hit.collider.gameObject;
                 hitDistance =  hit.distance;
@@ -42,9 +45,9 @@ namespace CameraController.Animation
 
         public override void Tick(float _deltaTime, AControllerInput _input, ref FCameraControllerOutput _output)
         {
-            m_LastOutput = _output;;
+            m_LastOutput = _output;
             _output.Evaluate(_input.Camera, out var frustumRays, out var ray);
-            _output.distance = CalculateDistance(ray.Forward(m_CollisionMin), _output.distance - m_CollisionMin, out var hitDistance) ? hitDistance : _output.distance;
+            CalculateDistance(ray, _output.distance, out _output.distance);
         }
 
         public override void DrawGizmos(AControllerInput _input)
@@ -53,7 +56,7 @@ namespace CameraController.Animation
             m_LastOutput.Evaluate(_input.Camera, out var frustumRays, out var ray);
             var distance = m_LastOutput.distance - m_CollisionMin;
             ray = ray.Forward(m_CollisionMin);
-            if (m_CullingMask != 0 && Physics.SphereCast(ray, m_ColliderRadius,out var hit, distance, m_CullingMask))
+            if (m_CullingMask != 0 && UnityEngine.Physics.SphereCast(ray, m_ColliderRadius,out var hit, distance, m_CullingMask))
             {
                 m_LastHitObject = hit.collider.gameObject;
                 Gizmos.color = Color.green;

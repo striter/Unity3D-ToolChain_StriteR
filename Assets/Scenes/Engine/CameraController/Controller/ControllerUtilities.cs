@@ -1,19 +1,27 @@
-﻿using System.Linq.Extensions;
+﻿using System.Collections.Generic;
+using System.Linq.Extensions;
 using Runtime.Geometry;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace CameraController
+namespace Runtime.CameraController
 {
     public static class UController
     {
+        private static List<Transform> kTransformHelper = new List<Transform>();
+        private static List<Renderer> kRendererHelper = new List<Renderer>();
         public static Transform CollectAnchor(Transform _root,string _name)
         {
             if (string.IsNullOrEmpty(_name))
                 return _root;
-            
-            var root = _root.GetComponentsInChildren<Transform>().Find(p => p.name == _name);
-            return root ? root : _root;
+            _root.GetComponentsInChildren(false,kTransformHelper);
+            for (var i = 0; i < kTransformHelper.Count; i++)
+            {
+                var transform = kTransformHelper[i];
+                if (string.Equals(transform.gameObject.name, _name))
+                    return transform;
+            }
+            return _root;
         }
         
         public static bool CollectBoundingBox(Transform anchor,out GBox _boundingBox,int mask = -1)
@@ -22,11 +30,11 @@ namespace CameraController
             if (mask == 0)
                 return false;
             
-            var renderers = anchor.GetComponentsInChildren<Renderer>(false);
+            anchor.GetComponentsInChildren(false,kRendererHelper);
             var min = kfloat3.max;
             var max = kfloat3.min;
             var valid = false;
-            foreach (var renderer in renderers)
+            foreach (var renderer in kRendererHelper)
             {
                 if ((mask & (1 << renderer.gameObject.layer)) == 0)
                     continue;
@@ -41,7 +49,6 @@ namespace CameraController
                 return false;
 
             _boundingBox = GBox.Minmax(min, max);
-            
             return true;
         }
 

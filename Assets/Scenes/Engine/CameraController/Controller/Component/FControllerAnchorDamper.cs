@@ -1,9 +1,9 @@
 ﻿using System;
-using CameraController.Inputs;
+using Runtime.CameraController.Inputs;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace CameraController.Component
+namespace Runtime.CameraController.Component
 {
     public enum EAnchorMode
     {
@@ -15,13 +15,13 @@ namespace CameraController.Component
     public class FAnchorDamper
     {
         public EAnchorMode m_AnchorMode = EAnchorMode.Normal;
-        public Damper m_OriginDamper = new Damper();
-        [MFoldout(nameof(m_AnchorMode),EAnchorMode.ShockAbsorber,EAnchorMode.ShockAbsorber_VerticalSeperated)] public Damper m_OriginExtraDamper = new Damper();
-        [MFoldout(nameof(m_AnchorMode),EAnchorMode.ShockAbsorber_VerticalSeperated)] public Damper m_OriginExtraDamper2 = new Damper();
+        public Damper m_OriginDamper = Damper.kDefault;
+        [MFoldout(nameof(m_AnchorMode),EAnchorMode.ShockAbsorber,EAnchorMode.ShockAbsorber_VerticalSeperated)] public Damper m_OriginExtraDamper = Damper.kDefault;
+        [MFoldout(nameof(m_AnchorMode),EAnchorMode.ShockAbsorber_VerticalSeperated)] public Damper m_OriginExtraDamper2 = Damper.kDefault;
 
         public void Initialize(AControllerInput _input,AnchoredControllerParameters parameters)
         {
-            var origin = (float3)_input.Anchor.position;
+            var origin = (float3)_input.Anchor.transform.position;
             var targetAnchor = parameters.anchor;
             switch (m_AnchorMode)
             {
@@ -50,7 +50,7 @@ namespace CameraController.Component
 
         public float3 Tick(float _deltaTime, AControllerInput _input, AnchoredControllerParameters parameters)
         {
-            var origin = (float3)_input.Anchor.position;
+            var origin = (float3)_input.Anchor.transform.position;
             var targetAnchor = parameters.anchor;
             float3 dampedAnchor;
             switch (m_AnchorMode)
@@ -81,7 +81,7 @@ namespace CameraController.Component
 
         public float3 DrawGizmos(AControllerInput _input,AnchoredControllerParameters parameters)
         {
-            var origin = (float3)_input.Anchor.position;
+            var origin = (float3)_input.Anchor.transform.position;
             var anchor = float3.zero;
             Gizmos.color = Color.green;
             switch (m_AnchorMode)

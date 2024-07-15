@@ -2,7 +2,7 @@
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace CameraController.Inputs.Touch
+namespace Runtime.CameraController.Inputs.Touch
 {
     [Serializable]
     public struct FPlayerInputMultiplier

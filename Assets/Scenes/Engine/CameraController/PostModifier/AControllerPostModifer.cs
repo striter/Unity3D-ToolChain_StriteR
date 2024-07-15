@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
-using CameraController.Inputs;
+using Runtime.CameraController.Inputs;
 using UnityEngine;
 
-namespace CameraController.Animation
+namespace Runtime.CameraController.Animation
 {
     public enum EControllerPostModiferQueue
     {

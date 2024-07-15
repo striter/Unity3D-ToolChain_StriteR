@@ -1,8 +1,8 @@
 using System;
-using CameraController;
-using CameraController.Animation;
-using CameraController.Inputs;
-using CameraController.Inputs.Touch;
+using Runtime.CameraController;
+using Runtime.CameraController.Animation;
+using Runtime.CameraController.Inputs;
+using Runtime.CameraController.Inputs.Touch;
 using Dome.Entity;
 using Dome.LocalPlayer;
 using Runtime.Geometry;
@@ -39,7 +39,7 @@ namespace Dome
         public void OnEntityControlChanged(ADomePlayerControl _controller)
         {
             m_Input.anchor = _controller?.GetAnchor();
-            m_Controller.Switch(_controller==null?FEmptyController.kDefault:_controller.m_CameraController,ref m_Input);
+            m_Controller.Switch(_controller==null?FEmptyController.kDefault:_controller.m_CameraController);
             m_Controller.AppendModifier(m_Interpolate);
         }
         
@@ -62,7 +62,7 @@ namespace Dome
         public float fovDelta;
 
         public override Camera Camera => camera;
-        public override Transform Anchor => anchor;
+        public override ITransformHandle Anchor => new FTransformHandleDefault(anchor);
         public override Transform Target => target;
         public float OffsetFOV { get => fovDelta; set => fovDelta = value; }
         public float OffsetViewPortX { get => viewPort.x; set => viewPort.x = value; }

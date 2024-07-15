@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using CameraController.Animation;
-using CameraController.Inputs;
+using Runtime.CameraController.Animation;
+using Runtime.CameraController.Inputs;
 
-namespace CameraController
+namespace Runtime.CameraController
 {
     public class FEmptyController : ICameraController
     {

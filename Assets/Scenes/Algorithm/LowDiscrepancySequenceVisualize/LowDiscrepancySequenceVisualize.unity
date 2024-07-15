@@ -288,7 +288,7 @@ MonoBehaviour:
   patternType: 1
   patternWidth: 32
   patternHeight: 32
-  m_Repeat: 0
+  m_Mode: 0
   m_Texture: {fileID: 0}
   patterns:
   - x: -0.469078
@@ -2372,7 +2372,7 @@ MonoBehaviour:
   patternType: 5
   patternWidth: 256
   patternHeight: 256
-  m_Repeat: 0
+  m_Mode: 2
   m_Texture: {fileID: 0}
   patterns:
   - x: 0.119021
@@ -31177,7 +31177,7 @@ MonoBehaviour:
   patternType: 2
   patternWidth: 32
   patternHeight: 32
-  m_Repeat: 0
+  m_Mode: 0
   m_Texture: {fileID: 0}
   patterns:
   - x: -0.5
@@ -33276,7 +33276,7 @@ MonoBehaviour:
   patternType: 4
   patternWidth: 32
   patternHeight: 32
-  m_Repeat: 0
+  m_Mode: 0
   m_Texture: {fileID: 0}
   patterns:
   - x: 0
@@ -35548,7 +35548,7 @@ MonoBehaviour:
   patternType: 3
   patternWidth: 32
   patternHeight: 32
-  m_Repeat: 0
+  m_Mode: 0
   m_Texture: {fileID: 0}
   patterns:
   - x: -0.5
