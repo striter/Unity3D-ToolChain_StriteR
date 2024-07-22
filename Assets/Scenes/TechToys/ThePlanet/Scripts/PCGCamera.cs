@@ -9,9 +9,9 @@ namespace TechToys.ThePlanet
     {
         private Transform m_CameraRoot;
         public Camera m_Camera { get; private set; }
-        public Damper m_PositionDamper = new Damper(){mode = EDamperMode.SpringCritical,halfLife = .2f};
-        public Damper m_RotationDamper = new Damper(){mode = EDamperMode.SpringCritical,halfLife = .2f};
-        public Damper m_ZoomDamper = new Damper(){mode = EDamperMode.SpringCritical,halfLife = .2f};
+        public Damper m_PositionDamper = Damper.kDefault;
+        public Damper m_RotationDamper = Damper.kDefault;
+        public Damper m_ZoomDamper = Damper.kDefault;
         
         public Vector3 m_RootPosition = Vector3.zero;
         [Header("Constant?")] 

@@ -12,7 +12,6 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _DEPTHBUFFER
   - _DEPTHMAP
   - _NDF_COOKTORRANCE
   - _NORMALMAP
@@ -212,10 +211,10 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
-    - _DepthBuffer: 1
+    - _DepthBuffer: 0
     - _DepthBufferScale: 10
-    - _DepthOffset: 0.13
-    - _DepthScale: 0.019
+    - _DepthOffset: 0.174
+    - _DepthScale: 0.011
     - _DetailAlbedoMapScale: 1
     - _DetailBlendMode: 3
     - _DetailNormalMapScale: 1
@@ -251,7 +250,7 @@ Material:
     - _NumLayersCount: 1
     - _OcclusionStrength: 0
     - _Parallax: 1
-    - _ParallaxCount: 32
+    - _ParallaxCount: 128
     - _Parallex: 1
     - _ParallexCount: 128
     - _ParallexOffset: 1

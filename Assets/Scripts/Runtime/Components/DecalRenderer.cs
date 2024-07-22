@@ -126,9 +126,9 @@ namespace Runtime
             _mesh.SetIndices(curIndexes,MeshTopology.Triangles,0,true);
         }
 
-        public override void DrawGizmos(Transform _transform)
+        public override void DrawGizmos(Transform _transform,Transform _viewTransform)
         {
-            base.DrawGizmos(_transform);
+            base.DrawGizmos(_transform,_viewTransform);
             Gizmos.matrix = _transform.localToWorldMatrix;
             Gizmos.DrawWireCube(Vector3.zero,new Vector3(m_Width,m_Height,m_Distance));
         }
@@ -145,7 +145,7 @@ namespace Runtime
             m_MatrixValidator.Set(transform.localToWorldMatrix);
         }
 
-        private new void Update()
+        private void Update()
         {
             if(m_MatrixValidator.Check(transform.localToWorldMatrix))
                 PopulateMesh();

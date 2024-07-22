@@ -81,14 +81,15 @@ MonoBehaviour:
     m_MaskData:
       renderMask: 64
       color: {r: 1, g: 1, b: 1, a: 1}
-      m_Outline: 0
+      inheritDepth: 1
+      outline: 0
       extendWidth: 0
       outlineVertex: 0
     m_Reflection: 1
     m_PlanarReflection:
       maxPlanarReflectionTexture: 4
     m_AntiAliasing:
-      mode: 2
+      mode: 0
       fxaa: 2
       m_AdditionalSample: 1
       m_UseDepth: 1

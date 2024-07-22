@@ -14,7 +14,8 @@
         {
             Blend One One
             ZWrite Off
-            Cull Back
+            Cull Front
+            ZTest Always
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag

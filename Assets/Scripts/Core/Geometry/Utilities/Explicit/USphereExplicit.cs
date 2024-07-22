@@ -1,3 +1,4 @@
+using System;
 using Procedural.Tile;
 using Unity.Mathematics;
 using UnityEngine;
@@ -14,6 +15,38 @@ namespace Runtime.Geometry.Explicit
             return _point * sqrt(1f - (sqrP.yxx + sqrP.zzy) / 2f + sqrP.yxx * sqrP.zzy / 3f);
         }
 
+        
+        public enum ESphereMapping
+        {
+            Cube,
+            Octahedral,
+            ConcentricOctahedral,
+            PolySphere,
+        }
+
+        public static float3 Mapping(float2 _uv, ESphereMapping _sphereMapping = ESphereMapping.ConcentricOctahedral)
+        {
+            return _sphereMapping switch
+            {
+                ESphereMapping.Cube => UV.Cube(_uv),
+                ESphereMapping.Octahedral => UV.Octahedral(_uv),
+                ESphereMapping.ConcentricOctahedral => UV.ConcentricOctahedral(_uv),
+                ESphereMapping.PolySphere => Polygon.GetPoint(_uv),
+                _ => throw new ArgumentOutOfRangeException(nameof(_sphereMapping), _sphereMapping, null)
+            };
+        }
+
+        public static float2 InvMapping(float3 _direction, ESphereMapping _sphereMapping = ESphereMapping.ConcentricOctahedral)
+        {
+            return _sphereMapping switch
+            {
+                ESphereMapping.Cube => UV.CubeToUV(_direction),
+                ESphereMapping.Octahedral => UV.OctahedralToUV(_direction),
+                _ => throw new ArgumentOutOfRangeException(nameof(_sphereMapping), _sphereMapping, null)
+            };
+        }
+
+        
         public static float2 SpherePositionToUV(float3 _point,bool _poleValidation=false)
         {
             float2 texCoord=new float2(atan2(_point.x, -_point.z) / -kPI2, math.asin(_point.y) / kPI)+.5f;
@@ -138,7 +171,8 @@ namespace Runtime.Geometry.Explicit
         
         public static class UV
         {
-            public static float3 GetPoint(float2 _uv)        //uv [0,1)
+            
+            public static float3 Cube(float2 _uv)        //uv [0,1)
             {
                 float3 position = 0;
                 float uvRadius = sin(_uv.y * kPI);
@@ -148,21 +182,37 @@ namespace Runtime.Geometry.Explicit
                 return position;
             }
 
+            public static float2 CubeToUV(float3 _direction)
+            {
+                var phi = acos(-_direction.y);
+                var theta = atan2(_direction.z, _direction.x);
+                return new float2(theta / kPI2, phi / kPI);
+            }
+            
             public static float3 Octahedral(float2 _uv)
             {
-                var sample = 2 * _uv - kfloat2.one;
-                var p = new float3(sample.x, sample.y, 1.0f - abs(sample.x) - abs(sample.y));
-                if (p.z < 0)
-                {
-                    var x = p.x;
-                    var y = p.y;
-                    p.x = (1 - abs(y)) * sign(p.x);
-                    p.y = (1 - abs(x)) * sign(p.y);
-                }
-
-                return p.normalize();
+                if (_uv.x > 1)
+                    _uv.x %= 1;
+                if(_uv.y > 1)
+                    _uv.y %= 1;
+                
+                var sample = 2f * _uv - kfloat2.one;
+                var N = float3( sample, 1.0f - dot( 1.0f, abs(sample) ) );
+                if( N.z < 0 )
+                    N.xy = ( 1 - abs(N.yx) ) * sign( N.xy);
+                return normalize(N);
             }
 
+            public static float2 OctahedralToUV(float3 _direction)
+            {
+                var d = _direction;
+                d /= dot(1.0f, abs(d));
+                if (d.z <= 0)
+                    d.xy = (1f - abs(d.yx)) * sign(d.xy);
+                return d.xy * 0.5f + 0.5f;
+            }
+            
+            //&https://fileadmin.cs.lth.se/graphics/research/papers/2008/simdmapping/clarberg_simdmapping08_preprint.pdf
             public static float3 ConcentricOctahedral(float2 _uv)
             {
                 var offset = 2 * _uv - kfloat2.one;
@@ -170,9 +220,9 @@ namespace Runtime.Geometry.Explicit
                 var v = offset.y;
                 var d = 1 - (abs(u) + abs(v));
                 var r = 1 - abs(d);
-
                 var z = sign(d) * (1 - r * r);
-                var theta = kPI / 4 * (r==0? 1: ((abs(v) - abs(u)) / r + 1));
+                
+                var theta = kPIDiv4 * (r==0? 1: ((abs(v) - abs(u)) / r + 1));
                 var sinTheta = sign(v) * sin(theta);
                 var cosTheta = sign(u) * cos(theta);
                 var radius = sqrt(2 - r * r);
@@ -182,6 +232,14 @@ namespace Runtime.Geometry.Explicit
 
         public static class Polygon
         {
+            public static float3 GetPoint(float2 _uv, int _axisCount = 4, bool _geodesic = false)
+            {
+                var k = (int)(_uv.x * (_axisCount - 1));
+                var axis = UCubeExplicit.GetOctahedronRhombusAxis(k,_axisCount);
+                // _uv.x = umath.invLerp(k, k + 1, _uv.x);
+                return GetPoint(_uv,axis,_geodesic);
+            }
+            
             public static float3 GetPoint(float2 _uv,Axis _axis,bool _geodesic)        //uv [0,1)
             {
                 float3 position = 0;
@@ -192,7 +250,7 @@ namespace Runtime.Geometry.Explicit
                 }
                 else
                 {
-                    float2 posUV = (_uv.x+_uv.y)<=1?_uv:(1f-_uv.yx);
+                    var posUV = (_uv.x+_uv.y)<=1?_uv:(1f-_uv.yx);
                     position = new float3(0,_uv.x+_uv.y-1, 0) + _axis.origin + posUV.x * _axis.uDir + posUV.y * _axis.vDir;
                 }
                 return normalize(position);

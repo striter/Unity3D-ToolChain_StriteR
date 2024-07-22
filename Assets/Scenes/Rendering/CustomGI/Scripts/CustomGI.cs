@@ -34,7 +34,7 @@ namespace Examples.Rendering.GI.CustomGI
         [MFoldout(nameof(m_GIEnable),true)][Range(0, 10)] public float m_SkylightIndirectIntensity = 1f;
         [MFoldout(nameof(m_GIEnable),true)][Range(0, 10)] public float m_MainLightIndirectIntensity = 1f;
 
-        public Damper m_TimeDamper = new Damper();
+        public Damper m_TimeDamper = Damper.kDefault;
 
         private PassiveInstance<Light> m_MainLight = new(FindObjectOfType<Light>);
 

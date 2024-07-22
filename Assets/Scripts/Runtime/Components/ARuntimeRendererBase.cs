@@ -1,5 +1,7 @@
 using System;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Runtime
 {
@@ -30,7 +32,7 @@ namespace Runtime
 
         protected virtual string GetInstanceName() => "Runtime Mesh";
         protected abstract void PopulateMesh(Mesh _mesh,Transform _transform,Transform _viewTransform);
-        public virtual void DrawGizmos(Transform _transform){}
+        public virtual void DrawGizmos(Transform _transform,Transform _viewTransform){}
         public virtual bool isBillboard() => false;
     }
     
@@ -38,59 +40,50 @@ namespace Runtime
     public abstract class ARuntimeRendererMonoBehaviour<T> : MonoBehaviour where T:ARuntimeRendererBase,new()
     {
         public T meshConstructor = new T();
+        private bool m_Dirty;
         public bool m_DrawGizmos;
         
         protected virtual void Awake()
         {
             GetComponent<MeshFilter>().sharedMesh = meshConstructor?.Initialize(transform);
-            PopulateMesh();
+            m_Dirty = true;
         }
 
-        Camera GetCurrentCamera()
-        {
-            if (Application.isPlaying)
-                return Camera.main;
-            return Camera.current;
-        }
-        
-        public void PopulateMesh()
-        {
-            if (meshConstructor == null) return;
-            var isBillboard = meshConstructor.isBillboard();
-            var curCamera = GetCurrentCamera();
-            if (isBillboard && !curCamera) return;
-            meshConstructor.PopulateMesh(transform,isBillboard ? curCamera.transform : null);
-        }
-        
         private void OnDestroy()
         {
             meshConstructor?.Dispose();
         }
 
-        protected virtual void Update()
+        private void OnEnable()
         {
-            if (!meshConstructor.isBillboard()) return;
-            var curCamera = GetCurrentCamera();
-            if (!curCamera) return; 
-            if (m_CameraTRChecker.Check(curCamera.transform.localToWorldMatrix))
-                meshConstructor.PopulateMesh(transform,curCamera.transform);
+            RenderPipelineManager.beginCameraRendering += BeginRendering;
         }
 
+        private void OnDisable()
+        {
+            RenderPipelineManager.beginCameraRendering -= BeginRendering;
+        }
+
+        public void PopulateMesh() => m_Dirty = true;
+        protected virtual void BeginRendering(ScriptableRenderContext _context, Camera _camera)
+        {
+            if (m_CameraTRChecker.Check(_camera.transform.localToWorldMatrix))
+                PopulateMesh();
+            
+            if (!m_Dirty) return;
+            m_Dirty = false;
+            
+            meshConstructor.PopulateMesh(transform,_camera.transform);
+        }
+        
         private void OnDrawGizmos()
         {
             if (!m_DrawGizmos) return;
-            meshConstructor?.DrawGizmos(transform);
+            meshConstructor?.DrawGizmos(transform,Camera.current.transform);
         }
         
         private ValueChecker<Matrix4x4> m_CameraTRChecker = new ValueChecker<Matrix4x4>();
-
-        private void OnValidate()
-        {
-            if(meshConstructor.isBillboard())
-                m_CameraTRChecker.Set(Matrix4x4.identity);
-            else
-                meshConstructor.PopulateMesh(transform,null);
-        }
+        private void OnValidate() => PopulateMesh();
 
     }
 }

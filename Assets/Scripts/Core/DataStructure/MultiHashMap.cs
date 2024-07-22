@@ -30,6 +30,12 @@ namespace Runtime.DataStructure
                 m_Grids.Remove(_key);
         }
 
+        public void Clear()
+        {
+            m_Elements.Clear();
+            m_Grids.Clear();
+        }
+        
         public List<Value> this[Key _key] => m_Grids[_key];
 
         public bool TryGetValues(Key _key, out List<Value> _values)

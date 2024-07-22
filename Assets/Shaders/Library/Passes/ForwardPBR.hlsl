@@ -55,17 +55,17 @@ BRDFSurface InitializeFragmentSurface(v2ff i)
 
 	half3 tangentWS = 0;
 	half3 biTangentWS = 0;
-	#if !defined (_NORMALOFF)
+#if !defined (_NORMALOFF)
 	tangentWS=normalize(i.tangentWS);
 	biTangentWS=normalize(i.biTangentWS);
 	#if defined(GET_NORMAL)
-	normalTS = GET_NORMAL(i);
+		normalTS = GET_NORMAL(i);
 	#else
-	normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
+		normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,baseUV));
 	#endif
 	float3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
 	normalWS=normalize(mul(transpose(TBNWS), normalTS));
-	#endif
+#endif
 	
 	half3 emission =0;
 	#if !defined(_EMISSIONOFF)

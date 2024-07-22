@@ -80,9 +80,9 @@ namespace Runtime
         }
 
 #if UNITY_EDITOR
-        public override void DrawGizmos(Transform _transform)
+        public override void DrawGizmos(Transform _transform,Transform _viewTransform)
         {
-            base.DrawGizmos(_transform);
+            base.DrawGizmos(_transform,_viewTransform);
             CalculatePositions(_transform,out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(m_ControlDamper.value.xyz,.2f);
@@ -95,7 +95,7 @@ namespace Runtime
     
     public class RopeRenderer : ARuntimeRendererMonoBehaviour<FRopeRenderer>
     {
-        protected override void Update()
+        protected void Update()
         {
             PopulateMesh();
         }

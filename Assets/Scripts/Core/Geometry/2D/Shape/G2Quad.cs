@@ -51,7 +51,8 @@ namespace Runtime.Geometry
         public float2 L => quad.L;
         public float2 F => quad.F;
         public float2 R => quad.R;
-
+        public static  G2Quad operator *(G2Quad _src,float2 _value) => new G2Quad(_src.B * _value, _src.L * _value, _src.F * _value, _src.R * _value);
+        public static  G2Quad operator %(G2Quad _src,float2 _value) => new G2Quad(_src.B % _value, _src.L % _value, _src.F % _value, _src.R % _value);
         public float2 GetSupportPoint(float2 _direction) => quad.Max(p => math.dot(_direction, p));
         public float2 Center => center;
         public void OnBeforeSerialize(){}

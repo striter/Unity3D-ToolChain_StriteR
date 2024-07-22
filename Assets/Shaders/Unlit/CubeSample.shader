@@ -15,6 +15,7 @@ Shader "Game/Unlit/CubeSample"
     {
         Tags { "Queue" = "Geometry" }
             ZTest Always
+            Cull Off
         HLSLINCLUDE
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "Assets/Shaders/Library/Geometry.hlsl"
@@ -48,7 +49,7 @@ Shader "Game/Unlit/CubeSample"
 
                 #if _SPHERICAL
                     GSphere sphere = GSphere_Ctor(float3(0,0,.5),1);
-                    float distance = max(SphereRayDistance(sphere,viewRay));
+                    float distance = sum(Distance(sphere,viewRay));
                 #else
                     GBox box=GBox_Ctor(float3(0,0,.5),1);
                     float distance=sum(Distance(box,viewRay));

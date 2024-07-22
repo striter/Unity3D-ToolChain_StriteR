@@ -15,7 +15,7 @@ namespace Dome.Entity
 
         public static DomeTurretData kDefault = new DomeTurretData()
         {
-            viewDamper = new Damper(){mode = EDamperMode.SpringCritical,halfLife = .05f},
+            viewDamper = Damper.kDefault,
         };
     }
 

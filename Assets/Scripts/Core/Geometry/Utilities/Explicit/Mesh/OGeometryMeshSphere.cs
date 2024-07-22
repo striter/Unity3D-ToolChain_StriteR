@@ -35,7 +35,7 @@ namespace Runtime.Geometry.Explicit.Mesh.Sphere
             for (int i = 0; i <= resolutionU; i++)
             {
                 float2 uv = new float2(i / (float) resolutionU, j / (float) resolutionV);
-                vertex.position = USphereExplicit.UV.GetPoint(uv);
+                vertex.position = USphereExplicit.UV.Cube(uv);
                 uv.x = (i - .5f) / resolutionU;
                 vertex.texCoord0.xy = (half2) uv;
                 math.sincos(kPI2 * uv.x, out var tangentZ, out var tangentX);

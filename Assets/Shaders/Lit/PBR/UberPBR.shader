@@ -117,9 +117,8 @@
 				half3 normalWS:TEXCOORD3;
 				half3 tangentWS:TEXCOORD4;
 				half3 biTangentWS:TEXCOORD5;
-				half3 viewDirWS:TEXCOORD6;
-				V2F_FOG(7)
-				V2F_LIGHTMAP(8)
+				V2F_FOG(6)
+				V2F_LIGHTMAP(7)
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -137,7 +136,6 @@
 				o.normalWS = TransformObjectToWorldNormal(v.normalOS);
 				o.tangentWS = TransformObjectToWorldDir(v.tangentOS.xyz);
 				o.biTangentWS = cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
-				o.viewDirWS = GetViewDirectionWS(o.positionWS);
 				LIGHTMAP_TRANSFER(v,o)
 				FOG_TRANSFER(o)
 				return o;
@@ -255,7 +253,7 @@
 				half3 biTangentWS=normalize(i.biTangentWS);
 				half3 tangentWS=normalize(i.tangentWS);
 				float3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
-				float3 viewDirWS=normalize(i.viewDirWS);
+				float3 viewDirWS = -GetCameraRealDirectionWS(positionWS);
 				half3 normalTS=half3(0,0,1);
 				float2 baseUV=i.uv.xy;
 				ParallaxUVMapping(baseUV,o.depth,positionWS,TBNWS,viewDirWS);

@@ -33,9 +33,9 @@ namespace Runtime
             m_FinalVertices.Clear();
             m_FinalVertices.AddRange(m_LocalSpace?m_LinePositions.Select(p=>(float3)_transform.localToWorldMatrix.MultiplyPoint(p)):m_LinePositions);
 
-            for (int i = 0; i < length; i++)
+            for (var i = 0; i < length; i++)
             {
-                _vertices.Add(m_FinalVertices[i]);
+                _vertices.Add(m_FinalVertices[i]); 
                 var normal = m_ManualInput ? m_Normals[i] : m_Normal;
                 var tangent = i == length - 1
                     ? _tangents[^1]
@@ -44,9 +44,9 @@ namespace Runtime
             }
         }
 
-        public override void DrawGizmos(Transform _transform)
+        public override void DrawGizmos(Transform _transform,Transform _viewTransform)
         {
-            base.DrawGizmos(_transform);
+            base.DrawGizmos(_transform,_viewTransform);
             UGizmos.DrawLines(m_FinalVertices,p=>p);
         }
     }

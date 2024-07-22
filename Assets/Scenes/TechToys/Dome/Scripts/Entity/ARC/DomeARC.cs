@@ -20,7 +20,7 @@ namespace Dome.Entity
         {
             speedAccel = new ARCSpeedDamper {max=6,accelerate = 4,friction = 8},
             angularSpeedAccel = new ARCSpeedDamper {max=90,accelerate = 180,friction = 360},
-            viewDamper = new Damper(){mode = EDamperMode.SpringCritical,halfLife = .05f},
+            viewDamper = Damper.kDefault,
             extents = EntityExtentData.kDefault,
         };
     }

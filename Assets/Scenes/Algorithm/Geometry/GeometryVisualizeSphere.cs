@@ -20,7 +20,7 @@ namespace Examples.Algorithm.Procedural
             {
                 var uv = new float2(i / r, j / r);
                 Gizmos.color = (Color.red * uv.x + Color.green * uv.y).SetA(1f);
-                Gizmos.DrawSphere(USphereExplicit.UV.GetPoint( uv),.02f);
+                Gizmos.DrawSphere(USphereExplicit.UV.Cube( uv),.02f);
             }
             UGizmos.DrawString(Vector3.zero,"UV");
             

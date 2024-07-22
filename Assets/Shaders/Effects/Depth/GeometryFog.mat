@@ -70,7 +70,7 @@ Material:
     - _BumpScale: 1
     - _ColorSample: 0
     - _Cutoff: 0.5
-    - _Density: 0.07
+    - _Density: 0.38
     - _Depth: 1
     - _DepthSample: 1
     - _DetailNormalMapScale: 1
@@ -87,7 +87,7 @@ Material:
     - _NoiseScale: 10
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Pow: 1.45
+    - _Pow: 2.05
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -95,7 +95,7 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 36.13944, g: 64.67057, b: 72.65929, a: 1}
+    - _Color: {r: 36.13944, g: 64.67057, b: 72.65929, a: 0.3764706}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _NoiseFlow: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

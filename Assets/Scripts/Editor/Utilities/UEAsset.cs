@@ -38,16 +38,27 @@ namespace UnityEditor.Extensions
             return replacedAsset;
         }
         
-        public static void CreateOrReplaceSubAsset(ScriptableObject _object, IEnumerable<UnityEngine.Object> _subValues)=> CreateOrReplaceSubAsset(AssetDatabase.GetAssetPath(_object), _subValues);
-        public static void CreateOrReplaceSubAsset(string _mainAssetPath, IEnumerable<UnityEngine.Object> _subValues)
+        public static void CreateOrReplaceSubAsset(ScriptableObject _object, IEnumerable<UnityEngine.Object> _subAssets)=> CreateOrReplaceSubAsset(AssetDatabase.GetAssetPath(_object), _subAssets);
+        
+        private static List<UnityEngine.Object> kOriginalAssets = new List<UnityEngine.Object>();
+        public static void CreateOrReplaceSubAsset(string _mainAssetPath, IEnumerable<UnityEngine.Object> _subAssets)
         {
-            UnityEngine.Object mainAsset = AssetDatabase.LoadMainAssetAtPath(_mainAssetPath);
+            var mainAsset = AssetDatabase.LoadMainAssetAtPath(_mainAssetPath);
             if (!mainAsset)
                 throw new Exception("Invalid Main Assets:" + _mainAssetPath);
-            UnityEngine.Object[] assets = AssetDatabase.LoadAllAssetsAtPath(_mainAssetPath);
-            foreach (var dstAsset in _subValues)
+            var assets = AssetDatabase.LoadAllAssetsAtPath(_mainAssetPath).Collect(p=>p!=mainAsset).FillList(kOriginalAssets);
+            for(var i=assets.Count-1;i>=0;i--)
             {
-                UnityEngine.Object srcAsset = Array.Find(assets, p => AssetDatabase.IsSubAsset(p)&& p.name == dstAsset.name && p.GetType() == dstAsset.GetType());
+                var srcAsset = assets[i];
+                var subAsset = _subAssets.Find(p=>p.name == srcAsset.name && p.GetType() == srcAsset.GetType());
+                if (subAsset)
+                    continue;
+                AssetDatabase.RemoveObjectFromAsset(srcAsset);
+            }
+            
+            foreach (var dstAsset in _subAssets)
+            {
+                var srcAsset = assets.Find( p => AssetDatabase.IsSubAsset(p)&& p.name == dstAsset.name && p.GetType() == dstAsset.GetType());
                 if (srcAsset)
                     CopyPropertyTo(dstAsset, srcAsset);
                 else
@@ -66,14 +77,43 @@ namespace UnityEditor.Extensions
                 AssetDatabase.RemoveObjectFromAsset(asset);
             }
         }
-        public static T CreateAssetCombination<T>(string _path, T _mainAsset, IEnumerable<UnityEngine.Object> _subAssets) where T : UnityEngine.Object
+        public static T CreateAssetCombination<T>(string _assetPath, T _mainAsset, IEnumerable<UnityEngine.Object> _subAssets) where T : UnityEngine.Object
         {
-            T mainAsset = CreateOrReplaceMainAsset(_mainAsset, _path);
-            CreateOrReplaceSubAsset(_path, _subAssets);
-            Debug.Log("Asset Combination Generate Successful:" + _path);
+            T mainAsset = CreateOrReplaceMainAsset(_mainAsset, _assetPath);
+            CreateOrReplaceSubAsset(_assetPath, _subAssets);
+            Debug.Log("Asset Combination Generate Successful:" + _assetPath);
             return mainAsset;
         }
 
+        private static List<FieldInfo> kSubAssetFields = new List<FieldInfo>();
+        private static List<UnityEngine.Object> kSubAssets = new List<UnityEngine.Object>();
+        private static List<string> kSubAssetNames = new List<string>();
+        public static T CreateAssetCombination<T>(string _assetPath, T _mainAsset) where T : UnityEngine.ScriptableObject
+        {
+            var mainAsset = CreateOrReplaceMainAsset(_mainAsset, _assetPath);
+            var mainAssetPath = AssetDatabase.GetAssetPath(mainAsset);
+            var subAssetFields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Collect(p=>p.FieldType.IsSubclassOf(typeof(UnityEngine.Object))).Where(p=>p!=null).FillList(kSubAssetFields);
+            var subAssets = subAssetFields.Select(p => p.GetValue(_mainAsset) as UnityEngine.Object).Where(p => p != null).FillList(kSubAssets);
+            var assetNames = subAssets.Select(p=>p.name).FillList(kSubAssetNames);
+            
+            CreateOrReplaceSubAsset(_assetPath, subAssets);
+            var storedAssets = AssetDatabase.LoadAllAssetsAtPath(mainAssetPath);
+            foreach (var (index,fieldInfo) in subAssetFields.LoopIndex())
+            {
+                var assetName = assetNames[index];
+                var storedAsset = storedAssets.Find(p => p.name == assetName);
+                if (!storedAsset)
+                {
+                    Debug.LogError($"Invalid asset stored found:{assetName}");
+                    continue;
+                }
+                
+                fieldInfo.SetValue(_mainAsset, storedAsset);
+            }
+            AssetDatabase.ImportAsset(mainAssetPath);
+            Debug.Log("Asset Combination Generate Successful:" + _assetPath);
+            return mainAsset;
+        }
         public static bool SelectFilePath(out string filePath, string extension = "", string startDirectory = null)
         {
             filePath = EditorUtility.OpenFilePanel("Select File To Open", startDirectory ?? UEPath.GetCurrentProjectWindowDirectory(), extension);

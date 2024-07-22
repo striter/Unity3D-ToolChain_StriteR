@@ -1,34 +1,41 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Extensions;
+using Runtime.DataStructure;
 using Runtime.Geometry;
-using Runtime.Geometry.Explicit;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEditor.Extensions;
+using UnityEditor.Extensions.EditorPath;
 using UnityEditor.Extensions.TextureEditor;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 
 namespace Examples.Rendering.Imposter
 {
     public class Imposter : MonoBehaviour
     {
-        public GSphere m_BoundingSphere;
-        public RenderTexture m_RenderTexture;
-        public int width = 4;
-        public int height = 2;
-        
+        public ImposterInput m_Input = ImposterInput.kDefault;
+        public ImposterCameraHandle[] m_CameraHandles;
+
+        private List<KeyValuePair<Material, Shader>> m_SharedMaterialShaderRef = new();
         [Button]
         void Construct()
         {
-            if (!UEAsset.SaveFilePath(out var filePath, ETextureExportType.PNG.GetExtension(), "Imposter"))
-                return;
-            
             var meshRenderers = GetComponentsInChildren<MeshRenderer>(false);
+            if (meshRenderers.Length == 0)
+            {
+                Debug.LogError("No MeshRenderer Found");
+                return;
+            }
+            var initialName = $"Imposter_{meshRenderers.Select(p=>p.name).ToString('_')}";
+            if (!UEAsset.SaveFilePath(out var filePath, "asset",initialName))
+            {
+                Debug.LogWarning("Invalid Folder Selected");
+                return;
+            }
 
-            var camera = GetComponentInChildren<Camera>();
-            
-            List<float3> verticies = new List<float3>();
+            var vertices = new List<float3>();
             foreach (var renderer in meshRenderers)
             {
                 var meshFilter = renderer.GetComponent<MeshFilter>();
@@ -37,49 +44,112 @@ namespace Examples.Rendering.Imposter
                 
                 var matrix = renderer.transform.localToWorldMatrix;
                 var intersectMesh = meshFilter.sharedMesh;
-                verticies.AddRange(intersectMesh.vertices.Select(p=>(float3)matrix.MultiplyPoint(p)));
+                vertices.AddRange(intersectMesh.vertices.Select(p=>(float3)matrix.MultiplyPoint(p)));
             }
 
-            if (verticies.Count == 0)
+            if (vertices.Count == 0)
                 return;
 
-            m_BoundingSphere = UGeometry.GetBoundingSphere(verticies);
-            
-            camera.orthographicSize = m_BoundingSphere.radius;
-            camera.targetTexture = m_RenderTexture;
-            RenderTexture.active = m_RenderTexture;
-            GL.Clear(true,true,Color.black);
-            
-            camera.clearFlags = CameraClearFlags.Color;
-            camera.backgroundColor = Color.black.SetA(0f);
-            var rectSize = 1f / new float2(width,height);
-            for (var j = 0 ; j < height ; j++)
-            for(var i = 0 ; i < width ; i++)
+            var block = new MaterialPropertyBlock();
+            m_SharedMaterialShaderRef.Clear();
+            meshRenderers.Traversal(p=>p.sharedMaterials.Traversal(p =>
             {
-                var uv = new float2((i+.5f) / width, (j+.5f) / height);
-                
-                var direction = USphereExplicit.UV.GetPoint(uv);
-                var position =  m_BoundingSphere.center + direction * (m_BoundingSphere.radius + 0.1f);
-                
-                camera.transform.SetPositionAndRotation(position,Quaternion.LookRotation(-direction,Vector3.up));
-                camera.rect = new Rect(uv.x - rectSize.x/2,uv.y - rectSize.y/2,rectSize.x,rectSize.y); 
-                camera.Render();
+                if (p == null || p.shader == null)
+                    return;
+
+                m_SharedMaterialShaderRef.Add(new (p,p.shader));
+            }));
+
+            var boundingSphere = UGeometry.GetBoundingSphere(vertices);
+            var boundingSphereExtrude = 0.05f;
+            boundingSphere.radius += boundingSphereExtrude;
+            
+            block.SetVector(ImposterDefine.kBounding, (float4)boundingSphere);
+            
+            m_CameraHandles.Traversal(p=>p.Init(m_Input,boundingSphere));
+            foreach (var (rect, direction) in m_Input.GetImposterViewsNormalized())
+            {
+                m_CameraHandles.Traversal(handle=>
+                {
+                    m_SharedMaterialShaderRef.Traversal(p=>p.Key.shader = handle.m_Shader);
+                    meshRenderers.Traversal(p=>p.SetPropertyBlock(block));
+                    handle.Render(boundingSphere, direction, rect);
+                });
+            }
+            m_CameraHandles.Traversal(p=>p.Output(initialName, filePath));
+            
+            m_SharedMaterialShaderRef.Traversal(p=>p.Key.shader = p.Value);
+            boundingSphere.radius += boundingSphereExtrude;
+            boundingSphere.center = transform.worldToLocalMatrix.MultiplyPoint(boundingSphere.center);
+            
+            var asset = ScriptableObject.CreateInstance<ImposterData>();
+            asset.m_Input = m_Input;
+            asset.m_BoundingSphere = boundingSphere;
+            UEAsset.CreateOrReplaceMainAsset(asset,filePath.FileToAssetPath());
+        }
+
+        [Serializable]
+        public class ImposterCameraHandle
+        {
+            public string m_Name;
+            public Shader m_Shader;
+            private Camera m_Camera;
+            private RenderTexture m_RenderTexture;
+            
+            public void Init(ImposterInput _input, GSphere _sphere)
+            { 
+                m_Camera = new GameObject($"Camera_{m_Name}").AddComponent<Camera>();
+                m_RenderTexture = RenderTexture.GetTemporary(_input.TextureResolution.x,_input.TextureResolution.y, 0, RenderTextureFormat.ARGB32);
+                _sphere.radius += 0.05f;
+                RenderTexture.active = m_RenderTexture;
+                GL.Clear(true,true,Color.clear);
+
+                m_Camera.orthographic = true;
+                m_Camera.clearFlags = CameraClearFlags.Depth;
+                m_Camera.backgroundColor = Color.black.SetA(0f);
+                m_Camera.nearClipPlane = 0.01f;
+                m_Camera.orthographicSize = _sphere.radius;
+                m_Camera.targetTexture = m_RenderTexture;
+                m_Camera.farClipPlane = _sphere.radius * 2;
             }
 
-            var texture = new Texture2D(m_RenderTexture.width, m_RenderTexture.height,TextureFormat.ARGB32,false);
-            texture.ReadPixels(new Rect(0, 0, m_RenderTexture.width, m_RenderTexture.height), 0, 0);
-            texture.Apply();
-            
-            UTextureEditor.ExportTexture(texture,filePath,ETextureExportType.JPG);
-            
-            RenderTexture.active = null;
-            camera.targetTexture = null;
-        }
+            public void Render(GSphere _sphere,float3 _direction,G2Box _rect)
+            {
+                var index = 0;
+                
+                var position = _sphere.GetSupportPoint(_direction * _sphere.radius);
+                m_Camera.transform.SetPositionAndRotation(position,Quaternion.LookRotation(-_direction,Vector3.up));
+                m_Camera.rect = _rect;
+                m_Camera.Render();
+            }
 
+            public void Output(string initialName,string filePath)
+            {
+                RenderTexture.active = m_RenderTexture;
+                var textureName = $"{initialName}_{m_Name}";
+                var texture = new Texture2D(m_RenderTexture.width, m_RenderTexture.height,TextureFormat.ARGB32,false){name = textureName};
+                texture.ReadPixels(new Rect(0, 0, m_RenderTexture.width, m_RenderTexture.height), 0, 0);
+                texture.Apply();
+                
+                var encoding = ETextureExportType.PNG;
+                var texturePath = filePath.Replace(initialName, textureName).Replace("asset", encoding.GetExtension());
+                UTextureEditor.ExportTexture(texture,texturePath,encoding);
+                
+                RenderTexture.ReleaseTemporary(m_RenderTexture);
+                RenderTexture.active = null;
+                m_Camera.targetTexture = null;
+                GameObject.DestroyImmediate(m_Camera.gameObject);
+            }
+            
+        }
+        
+        public bool m_DrawGizmos;
         private void OnDrawGizmos()
         {
-            m_BoundingSphere.DrawGizmos();
+            if (!m_DrawGizmos)
+                return;
+            Gizmos.matrix = transform.localToWorldMatrix;   
+            m_Input.DrawGizmos();
         }
     }
-    
 }

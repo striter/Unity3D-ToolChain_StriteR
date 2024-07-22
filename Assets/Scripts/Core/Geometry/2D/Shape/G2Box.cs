@@ -52,6 +52,7 @@ namespace Runtime.Geometry
             return absOffset.x < extent.x && absOffset.y < extent.y;
         }
 
+        public float2 GetUV(float2 _pos) => (_pos - min) / size;
         public float2 GetPoint(float2 _uv) => min + _uv * size;
         public static readonly G2Box kDefault = new G2Box(0f,.5f);
 
@@ -100,6 +101,18 @@ namespace Runtime.Geometry
         public static G2Box operator -(G2Box _src, float2 _dst) => new G2Box(_src.center-_dst,_src.extent);
         public static G2Box operator /(G2Box _bounds,float2 _div) => new G2Box(_bounds.center/_div,_bounds.extent/_div);
         public static G2Box operator *(G2Box _bounds,float2 _div) => new G2Box(_bounds.center*_div,_bounds.extent*_div);
+
+        public static implicit operator Rect(G2Box _src) => new Rect(_src.min, _src.size);
+
+        public static implicit operator G2Quad(G2Box _src)
+        {
+            var b = _src.min;
+            var f = _src.max;
+            var l = new float2(b.x, f.y);
+            var r = new float2(f.x, b.y);
+            return new G2Quad(b, l, f, r);
+        }
+        public float4 ToTexelSize() => new float4( size.x, size.y,min.x, min.y);
         
         public override string ToString() => $"G2Box {center} {extent}";
         IEnumerator IEnumerable.GetEnumerator()
