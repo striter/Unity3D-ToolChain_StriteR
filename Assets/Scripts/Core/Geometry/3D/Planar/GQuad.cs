@@ -27,6 +27,7 @@ namespace Runtime.Geometry
     {
         public GQuad(float3 _vb, float3 _vl, float3 _vf, float3 _vr):this(new Quad<float3>(_vb,_vl,_vf,_vr)){}
         public GQuad((float3 _vb, float3 _vl, float3 _vf, float3 _vr) _tuple) : this(_tuple._vb, _tuple._vl, _tuple._vf, _tuple._vr) { }
+        public GQuad(IList<float3> _points) : this(new Quad<float3>(_points[0], _points[1], _points[2], _points[3])) { }
         public static explicit operator GQuad(Quad<float3> _src) => new GQuad(_src);
         
         public float3 this[int _index] => quad[_index];
@@ -40,7 +41,7 @@ namespace Runtime.Geometry
         public static GQuad operator +(GQuad _src, float3 _dst)=> new GQuad(_src.B + _dst, _src.L + _dst, _src.F + _dst,_src.R+_dst);
         public static GQuad operator -(GQuad _src, float3 _dst)=> new GQuad(_src.B - _dst, _src.L - _dst, _src.F - _dst,_src.R-_dst);
         public float3 GetPoint(float2 _uv)=>umath.bilinearLerp(B, L, F, R, _uv);
-        public float3 GetSupportPoint(float3 _direction) => quad.Max(p => math.dot(p, _direction));
+        public float3 GetSupportPoint(float3 _direction) => quad.MaxElement(p => math.dot(p, _direction));
         public GBox GetBoundingBox() => UGeometry.GetBoundingBox(this);
         public GSphere GetBoundingSphere() => UGeometry.GetBoundingSphere(this);
         public float3 Center => quad.Average();
@@ -53,12 +54,8 @@ namespace Runtime.Geometry
             yield return quad.R;
         }
 
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        
         public void GetTriangles(out GTriangle _triangle1, out GTriangle _triangle2)
         {
             _triangle1 = new GTriangle(B, L, F);
@@ -83,9 +80,7 @@ namespace Runtime.Geometry
 
         public IEnumerable<float3> GetNormals()
         {
-            var triangle1 = new GTriangle(B, L, F);
-            var triangle2 = new GTriangle(B, F, R);
-
+            GetTriangles(out var triangle1, out var triangle2);
             var initialNormal = triangle1.normal;
             var midNormal = (triangle1.normal + triangle2.normal)/2;
             var finalNormal = triangle2.normal;
@@ -93,6 +88,30 @@ namespace Runtime.Geometry
             yield return midNormal;
             yield return finalNormal;
             yield return midNormal;
+        }
+
+        public float GetArea()
+        {
+            GetTriangles(out var triangle1, out var triangle2);
+            return triangle1.GetArea() + triangle2.GetArea();
+        }
+
+        public float4 GetWeightsToPoint(float3 _point)
+        {
+            GetTriangles(out var triangle1, out var triangle2);
+            
+            var weights = float4.zero;
+            
+            var weight1 = triangle1.GetWeightsToPoint(_point);
+            var weight2 = triangle2.GetWeightsToPoint(_point);
+
+            if (!weight1.anyLesser(0))
+                weights.xyz = weight1;
+
+            if (!weight2.anyLesser(0))
+                weights.xzw = weight2;
+                
+            return weights;
         }
 
         public bool RayIntersection(GRay _ray, out float distance)

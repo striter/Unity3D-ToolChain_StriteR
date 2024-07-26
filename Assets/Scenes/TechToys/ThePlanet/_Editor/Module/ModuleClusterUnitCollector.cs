@@ -55,7 +55,7 @@ namespace TechToys.ThePlanet.Baking
                 DrawQubeGizmos(transform,Color.red.SetA(.5f));
                 return;
             }
-            UGizmos.DrawString(transform.position+Vector3.up*.5f,m_Relation.ToByte().ToString(),0f);
+            UGizmos.DrawString(m_Relation.ToByte().ToString(),transform.position+Vector3.up*.5f, 0f);
             for (int i = 0; i < childCount; i++)
             {
                 var setTransform = transform.GetChild(i);

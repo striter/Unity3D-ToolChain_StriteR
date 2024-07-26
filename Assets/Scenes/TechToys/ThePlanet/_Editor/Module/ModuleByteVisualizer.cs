@@ -31,7 +31,7 @@ namespace TechToys.ThePlanet.Baking
                 Gizmos.color = Color.white;
                 Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(translate);
                 Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
-                UGizmos.DrawString(Vector3.zero, qubeByte.ToString(), 0f);
+                UGizmos.DrawString(qubeByte.ToString(), Vector3.zero, 0f);
                 if (!m_DrawCluster)
                 {
                     Qube<bool> qube = default;

@@ -224,7 +224,7 @@ namespace TechToys.ThePlanet.Module.Cluster
             {
                 Gizmos.color = UColor.IndexToColor(pair.Key);
                 var orientedIndex=UModuleByte.kByteOrientation[pair.Value];
-                UGizmos.DrawString(Vector3.up*.15f*(2+index++),$"{pair.Key}|{orientedIndex._byte},{orientedIndex._orientation}");
+                UGizmos.DrawString($"{pair.Key}|{orientedIndex._byte},{orientedIndex._orientation}", Vector3.up*.15f*(2+index++));
             }
             for (int i = 0; i < 8; i++)
             {
@@ -246,7 +246,7 @@ namespace TechToys.ThePlanet.Module.Cluster
 
                 // anchorByte = anchorByte.RotateYawCW((ushort) ((4-outputByte._orientation) % 4));
                 // availableByte = availableByte.RotateYawCW((ushort) ((4-outputByte._orientation) % 4));
-                UGizmos.DrawString(qubeCenterLS,$"Qube Ind:{i}\nType:{input.type},{input.status}\nAnchor:{outputByte._byte},Ort:{outputByte._orientation}",0f);
+                UGizmos.DrawString($"Qube Ind:{i}\nType:{input.type},{input.status}\nAnchor:{outputByte._byte},Ort:{outputByte._orientation}",qubeCenterLS, 0f);
                 var localQube = new Qube<Vector3>();
                 for (int j = 0; j < 8; j++)
                     localQube[j]=qubeCenterLS+(localQuad.positions[j%4] - qubeCenterLS).setY(0f)*.25f + (-.5f+j/4)*kfloat3.up*.5f;   //Da fk

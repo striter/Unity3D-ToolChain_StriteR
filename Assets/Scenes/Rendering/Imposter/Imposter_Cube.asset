@@ -13,15 +13,20 @@ MonoBehaviour:
   m_Name: Imposter_Cube
   m_EditorClassIdentifier: 
   m_Input:
-    mapping: 2
-    lightMode: 1
+    mapping: 1
     hemisphere: 1
-    width: 16
+    width: 8
     height: 8
     cellResolution: 128
+    cellSizeNormalized:
+      x: 0.125
+      y: 0.125
+    cellCount:
+      x: 8
+      y: 8
   m_BoundingSphere:
     center:
-      x: -0.0023937225
-      y: -0.004234611
-      z: 0.0052709035
-    radius: 0.91701925
+      x: 0.02273035
+      y: 0.48889083
+      z: -0.014269529
+    radius: 0.83677113

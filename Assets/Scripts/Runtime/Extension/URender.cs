@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using Runtime.Geometry;
+using Unity.Mathematics;
 using UnityEngine.Rendering;
 
 public static class URender
@@ -346,5 +347,7 @@ public static class URender
         br = startPos + toRight - toTop;
     }
     
+    
     public static Vector4 GetTexelSizeParameters(this Texture _texture)=>new Vector4(1f/_texture.width,1f/_texture.height,_texture.width,_texture.height);
+    public static float2 TransformTex(float2 _uv,float4 _st) => _uv * _st.xy + _st.zw;
 }

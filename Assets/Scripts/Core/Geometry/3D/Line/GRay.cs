@@ -12,6 +12,8 @@ namespace Runtime.Geometry
         public GRay(float3 _position, float3 _direction) { origin = _position; direction = _direction; }
         public float3 GetPoint(float _distance) => origin + direction * _distance;
 
+        public static GRay StartEnd(float3 _start,float3 _end,bool _normalize) => new GRay(_start, _normalize?(_end - _start).normalize():(_end - _start));
+        
         #region Implements
         public GLine ToLine(float _length)=>new GLine(origin,direction,_length);
         public static implicit operator Ray(GRay _ray)=>new Ray(_ray.origin,_ray.direction);

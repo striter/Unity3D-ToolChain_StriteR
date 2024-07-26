@@ -172,7 +172,7 @@ namespace TechToys.ThePlanet.Module.Path
                 Gizmos.matrix = Matrix4x4.identity;
                 var collapse = m_VoxelPathCollapsing[voxelID];
                 if (collapse.m_Possibilities.Count > 0)
-                    UGizmos.DrawString(voxel.transform.position, collapse.m_Possibilities.Count.ToString());
+                    UGizmos.DrawString(collapse.m_Possibilities.Count.ToString(), voxel.transform.position);
 
                 for (int i = 0; i < 4; i++)
                 {

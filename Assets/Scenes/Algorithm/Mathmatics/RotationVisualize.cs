@@ -57,7 +57,7 @@ namespace Examples.Mathmatics
             Gizmos.DrawLine(Vector3.zero,m_SlerpTo);
             Gizmos.color = Color.blue;
             Gizmos.DrawLine(Vector3.zero,umath.slerp(m_SlerpFrom, m_SlerpTo, m_SlerpVal,kfloat3.up));
-            UGizmos.DrawString(Vector3.zero, umath.angle(m_SlerpFrom,m_SlerpTo).ToString());
+            UGizmos.DrawString(umath.angle(m_SlerpFrom,m_SlerpTo).ToString(), Vector3.zero);
             
         }
 // #endif

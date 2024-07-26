@@ -137,7 +137,7 @@ public static class UGizmos
     }
     
     public static GUIStyle kLabelStyle => new GUIStyle(GUI.skin.label) { alignment = TextAnchor.LowerCenter,fontSize=12, fontStyle = FontStyle.Normal};
-    public static void DrawString(Vector3 _position,string _text,float _offset=0.1f)
+    public static void DrawString(string _text, Vector3 _position = default, float _offset = 0.1f)
     {
         Handles.matrix = Gizmos.matrix;
         Handles.Label(_position+_offset*Vector3.up,_text,kLabelStyle);

@@ -156,10 +156,10 @@ namespace Runtime.Geometry.Explicit.Mesh.Sphere
 
         private Point GetPoint(int _i, int _j, Axis _axis)
         {
-            float r = resolution;
-            float2 uv = new float2(_i, _j) / r;
+            var r = resolution;
+            var uv = new float2(_i, _j) / r;
 
-            float3 position = USphereExplicit.Polygon.GetPoint(uv,_axis,geodesic);
+            var position = USphereExplicit.Polygon.GetPoint(uv,_axis,geodesic);
             position = math.normalize(position);
             
             if (overlapUV)

@@ -1,4 +1,4 @@
-Shader "Hidden/Imposter_Normal"
+Shader "Hidden/Imposter_NormalDepth"
 {
     Properties
     {
@@ -29,10 +29,12 @@ Shader "Hidden/Imposter_Normal"
             struct v2f
             {
                 float4 positionCS : SV_POSITION;
-                float2 uv:TEXCOORD0;
-                float3 normalWS:NORMAL;
-                half3 tangentWS:TEXCOORD3;
-                half3 biTangentWS:TEXCOORD4;
+                float2 uv : TEXCOORD0;
+                float3 normalWS : NORMAL;
+                half3 tangentWS : TEXCOORD3;
+                half3 biTangentWS : TEXCOORD4;
+            	float eyeDepth : TEXCOORD5;
+
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -51,6 +53,9 @@ Shader "Hidden/Imposter_Normal"
 	            o.normalWS = TransformObjectToWorldNormal(v.normalOS);
 	            o.tangentWS = TransformObjectToWorldDir(v.tangentOS.xyz);
 	            o.biTangentWS = cross(o.normalWS,o.tangentWS)*v.tangentOS.w;
+
+            	float3 view = TransformObjectToView(v.positionOS);
+            	o.eyeDepth = -view.z;
                 return o;
             }
 
@@ -63,12 +68,12 @@ Shader "Hidden/Imposter_Normal"
 		        float3 normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv));
 	            float3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
 	            normalWS = normalize(mul(transpose(TBNWS), normalTS));
-                return float4(normalWS * 0.5 + 0.5,1);
+
+            	float eyeDepth = i.eyeDepth; 
+				float depthOS = ( -1.0 / UNITY_MATRIX_P[2].z );
+                return float4(normalWS * 0.5f + 0.5f,( eyeDepth + depthOS ) / depthOS ) ;
             }
             ENDHLSL
         }
-        
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
     }
 }

@@ -305,6 +305,32 @@ MonoBehaviour:
       x: 0.59136575
       y: -0.57208973
       z: -0.5683308
+  m_Axis:
+    origin:
+      x: 0.77
+      y: 0
+      z: 0
+    right:
+      x: 0.5992408
+      y: 0.45432606
+      z: -0.65916485
+    forward:
+      x: 0
+      y: 0
+      z: 1
+  m_AxisPoint:
+    x: 0.97
+    y: 0.67
+    z: -0.33
+  m_AxisRay:
+    origin:
+      x: 0.91
+      y: 0.75
+      z: 1.08
+    direction:
+      x: 0.06376972
+      y: -0.7971215
+      z: -0.60044205
 --- !u!4 &359821878
 Transform:
   m_ObjectHideFlags: 0
@@ -449,9 +475,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SupportDirection:
-    x: 0.9643253
-    y: -0.26471993
-    z: -0.000000012072795
+    x: 0.9643254
+    y: -0.26471996
+    z: -0.000000012072797
   m_ManualCast: 0
   m_CastDirection:
     x: 0.030195208
@@ -662,7 +688,7 @@ GameObject:
   - component: {fileID: 1365951603}
   - component: {fileID: 1365951604}
   m_Layer: 0
-  m_Name: Angle
+  m_Name: Scalars
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -696,6 +722,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Position: {x: 0.84354126, y: -0.5370643, z: 0}
+  m_Triangle:
+    triangle:
+      v0:
+        x: 0
+        y: 0
+        z: 0.5
+      v1:
+        x: -0.5
+        y: 0
+        z: -0.5
+      v2:
+        x: 0.5
+        y: 0
+        z: -0.5
+  m_Quad:
+    quad:
+      vB:
+        x: 0.5
+        y: 0
+        z: -0.5
+      vL:
+        x: -0.5
+        y: 0
+        z: -0.5
+      vF:
+        x: -0.5
+        y: 0
+        z: 0.5
+      vR:
+        x: 0.5
+        y: 0
+        z: 0.5
+  m_WeightPosition:
+    x: -0.42
+    y: 0
+    z: -0.43
 --- !u!1 &1408747506
 GameObject:
   m_ObjectHideFlags: 1

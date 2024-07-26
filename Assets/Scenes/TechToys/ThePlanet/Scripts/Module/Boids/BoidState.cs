@@ -62,7 +62,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.States
 #if UNITY_EDITOR
         public void DrawGizmosSelected(BoidsActor _actor)
         {
-            UGizmos.DrawString(Vector3.up*.2f,$"{m_ReactionCounter:F1}");
+            UGizmos.DrawString($"{m_ReactionCounter:F1}", Vector3.up*.2f);
         }
 #endif
     }

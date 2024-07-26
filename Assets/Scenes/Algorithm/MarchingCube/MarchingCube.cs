@@ -182,7 +182,7 @@ namespace Examples.Algorithm.MarchingCube
             {
                 var cubeByte = cube.m_GridAvailable.ToByte();
                 if( MarchingCubeDefines.GetOrientedModule(cubeByte,out var module,out var orientation) && (m_DrawAllCubeElements || !m_CubeMeshes.ContainsKey(module)))
-                    UGizmos.DrawString(cube.position,$"{cubeByte},{module},{orientation}");
+                    UGizmos.DrawString($"{cubeByte},{module},{orientation}", cube.position);
             }
         }
 #endif

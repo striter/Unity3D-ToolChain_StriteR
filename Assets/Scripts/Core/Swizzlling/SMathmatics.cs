@@ -51,6 +51,10 @@ public static class umath_swizzlling       //Swizzling
     public static bool anyGreater(this float3 _value, float _comparer) => _value.x > _comparer || _value.y > _comparer || _value.z > _comparer;
     public static bool anyGreater(this float4 _value, float _comparer) => _value.x > _comparer || _value.y > _comparer || _value.z > _comparer || _value.w > _comparer;
     
+    public static bool anyLesser(this float2 _value, float _comparer) => _value.x < _comparer || _value.y < _comparer;
+    public static bool anyLesser(this float3 _value, float _comparer) => _value.x < _comparer || _value.y < _comparer || _value.z < _comparer;
+    public static bool anyLesser(this float4 _value, float _comparer) => _value.x < _comparer || _value.y < _comparer || _value.z < _comparer || _value.w < _comparer;
+    
     public static float minElement(this float2 _src) => Mathf.Min(_src.x, _src.y);
     public static float minElement(this float3 _src) => Mathf.Min(_src.x, _src.y, _src.z);
     public static float minElement(this float4 _src) => Mathf.Min(_src.x, _src.y, _src.z, _src.w);

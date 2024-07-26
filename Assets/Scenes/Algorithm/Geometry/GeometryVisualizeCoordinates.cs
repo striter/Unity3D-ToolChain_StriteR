@@ -6,7 +6,6 @@ using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Algorithm.Geometry
 {
-    
     public class GeometryVisualizeCoordinates : MonoBehaviour
     {
         [Header("Cylindrical")] public float cAzimuth;
@@ -21,16 +20,16 @@ namespace Examples.Algorithm.Geometry
         public void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
-            var positionCS = UCoordinateTransform.CylindricalToCartesian(cAzimuth, cHeight, cRadius);
+            var positionCS = UCoordinates.Cylindrical.ToCartesian(cAzimuth, cHeight, cRadius);
             Gizmos.DrawWireSphere(positionCS, 0.1f);
             new GDisk(0,Vector3.up,cRadius).DrawGizmos();
-            UGizmos.DrawString(positionCS,UCoordinateTransform.CartesianToCylindrical(positionCS).ToString());
+            UGizmos.DrawString(UCoordinates.Cylindrical.ToCylindrical(positionCS).ToString(), positionCS);
             
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right * 5f);
-            var positionSS = UCoordinateTransform.SphericalToCartesian(sAzimuth, sPolar, sRadius);
+            var positionSS = UCoordinates.Spherical.ToCartesian(sAzimuth, sPolar, sRadius);
             Gizmos.DrawWireSphere(positionSS, 0.1f);
             new GSphere(0,sRadius).DrawGizmos();
-            UGizmos.DrawString(positionSS,UCoordinateTransform.CartesianToSpherical(positionSS).ToString());
+            UGizmos.DrawString(UCoordinates.Spherical.ToSpherical(positionSS).ToString(), positionSS);
         }
     }
 

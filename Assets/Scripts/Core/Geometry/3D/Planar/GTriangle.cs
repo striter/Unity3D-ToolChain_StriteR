@@ -13,10 +13,10 @@ namespace Runtime.Geometry
     {
         public Triangle<float3> triangle;
         [NonSerialized] public float3 baryCentre;
+        [NonSerialized] public GAxis axis;
         [NonSerialized] public float3 normal;
-        [NonSerialized] public float3 uOffset;
-        [NonSerialized] public float3 vOffset;
-        // [NonSerialized] public float3 wOffset;
+        public float3 uOffset => axis.right;
+        public float3 vOffset => axis.up;
         public GTriangle((float3 v0,float3 v1,float3 v2) _tuple) : this(_tuple.v0,_tuple.v1,_tuple.v2) { }
 
         public GTriangle(float3 _vertex0, float3 _vertex1, float3 _vertex2)
@@ -28,10 +28,8 @@ namespace Runtime.Geometry
 
         void Ctor()
         {
-            uOffset = triangle.v1 - triangle.v0;
-            vOffset = triangle.v2 - triangle.v0;
-            // wOffset = V0 - V2;
-            normal = math.cross(uOffset.normalize(),vOffset.normalize()).normalize();
+            axis = new GAxis(V0,V1-V0,V2-V0);
+            normal = axis.forward.normalize();
             baryCentre = GetBarycenter();
         }
     }
@@ -42,10 +40,7 @@ namespace Runtime.Geometry
         public float3 V0 => triangle.v0;
         public float3 V1 => triangle.v1;
         public float3 V2 => triangle.v2;
-        public float3 GetNormalUnnormalized() => math.cross(uOffset, vOffset);
-        public float3 GetBarycenter() => GetPoint(.25f);
-        public float3 GetPoint(float2 _uv) => GetPoint(_uv.x, _uv.y);
-        public float3 GetPoint(float _u,float _v) => V0 + _u * +uOffset + _v * vOffset;
+        public float3 GetNormalUnnormalized() => axis.forward;
         public GPlane GetPlane() => new GPlane(normal,V0);
         public float3 GetForward()=> (V0 - (V1 + V2) / 2).normalize();
         public quaternion GetRotation() => quaternion.LookRotation(GetForward(),normal);
@@ -84,18 +79,7 @@ namespace Runtime.Geometry
         public GBox GetBoundingBox() => UGeometry.GetBoundingBox(this);
         public GSphere GetBoundingSphere() => UGeometry.GetBoundingSphere(this);
 
-        public float GetArea()
-        {
-#if true        //https://iquilezles.org/articles/trianglearea/
-            var A = uOffset.sqrmagnitude();
-            var B = vOffset.sqrmagnitude();
-            var C = (V2 - V1).sqrmagnitude();
-            return (2 * A * B + 2 * B * C + 2 * C * A - A * A - B * B - C * C) / 16f;
-#else
-            return math.length(math.cross(uOffset, vOffset)) / 2;
-#endif
-        }
-
+      
         public IEnumerable<GLine> GetEdges()
         {
             yield return new GLine(V0, V1);
@@ -121,7 +105,6 @@ namespace Runtime.Geometry
         }
 
         public float3 Center => baryCentre;
-
         //https://iquilezles.org/articles/hackingintersector/
         public bool RayIntersection(GRay _ray, out float distance)
         {
@@ -147,12 +130,4 @@ namespace Runtime.Geometry
         }
     }
 
-    public static class GTriangle_Extension
-    {
-        public static GTriangle to3xz(this G2Triangle _triangle2 )=> new GTriangle(_triangle2.V0.to3xz(),_triangle2.V1.to3xz(),_triangle2.V2.to3xz());
-        public static GTriangle shrink(this GTriangle _triangle,float _value) => new GTriangle(math.lerp(_triangle.baryCentre,_triangle.V0,_value)
-            , math.lerp(_triangle.baryCentre,_triangle.V1,_value)
-            , math.lerp(_triangle.baryCentre,_triangle.V2,_value));
-        
-    }
 }

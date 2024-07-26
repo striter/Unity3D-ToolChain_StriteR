@@ -8,14 +8,15 @@ namespace Runtime.Geometry.Extension
         public static float3 Projection(this GPlane _projectionPlane,float3 _srcPoint, float3 _origin)
         {
             var ray = new GRay(_origin, _srcPoint - _origin);
-            return ray.GetPoint(ray.Distance(_projectionPlane));
+            return ray.GetPoint(ray.IntersectDistance(_projectionPlane));
         }
 
         public static float3 Projection(this GPlane _projectionPlane,float3 _srcPoint)
         {
             var ray = new GRay(_srcPoint, _projectionPlane.normal);
-            return ray.GetPoint(ray.Distance(_projectionPlane));
+            return ray.GetPoint(ray.IntersectDistance(_projectionPlane));
         }
+        
         
         public static float3 Projection(this GTriangle _triangle,float3 _direction)
         {
@@ -55,6 +56,8 @@ namespace Runtime.Geometry.Extension
             return clamp(Projection(_line.ToRay(), _point), 0, _line.length);
         }
         
+        public static float3 Projection(this GAxis _axis,float3 _point) => ((GPlane)_axis).Projection(_point);
+
         public static float2 Projection(this GRay _ray, GRay _dstRay)   //x src ray projection, y dst ray projection
         {
             var diff = _ray.origin - _dstRay.origin;

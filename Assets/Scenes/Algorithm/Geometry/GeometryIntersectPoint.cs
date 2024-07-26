@@ -17,15 +17,18 @@ namespace Examples.Algorithm.Geometry
         [Header("Ray & Ray")]
         public GRay m_Ray20;
         public GRay m_Ray21;
+        [Header("Plane & Point")]
+        public GAxis m_Axis = GAxis.kDefault;
+        public float3 m_AxisPoint;
+        public GRay m_AxisRay = new GRay(float3.zero, kfloat3.down);
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
-            
             Gizmos.color = Color.white;
             Gizmos.DrawSphere(m_Point, .1f);
-            float rayPointProjection= m_Ray.Projection(m_Point);
+            float rayPointProjection = m_Ray.Projection(m_Point);
             m_Ray.ToLine(rayPointProjection).DrawGizmos();
             Gizmos.color = Color.blue;
             Gizmos.DrawSphere(m_Ray.GetPoint(rayPointProjection),.1f);
@@ -47,6 +50,20 @@ namespace Examples.Algorithm.Geometry
             Gizmos.DrawSphere(m_Ray20.GetPoint(rayrayProjections.x), .1f);
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(m_Ray21.GetPoint(rayrayProjections.y), .1f);
+
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(kfloat3.right * 6f);
+            m_Axis.DrawGizmos();
+            Gizmos.color = Color.white;
+            Gizmos.DrawWireSphere(m_AxisPoint,.05f);
+            var uv = m_Axis.GetUV(m_AxisPoint);
+            var point = m_Axis.GetPoint(uv);
+            UGizmos.DrawLinesConcat(m_Axis.GetPoint(kfloat2.zero),m_Axis.GetPoint(kfloat2.up),m_Axis.GetPoint(kfloat2.one),m_Axis.GetPoint(kfloat2.right));
+            UGizmos.DrawString(uv.ToString(),point);
+            Gizmos.DrawWireSphere(point,.05f);
+            
+            m_AxisRay.DrawGizmos();
+            Gizmos.DrawWireSphere(m_AxisRay.GetPoint(m_Axis.IntersectDistance(m_AxisRay)),.025f);
+
         }
 #endif
     }

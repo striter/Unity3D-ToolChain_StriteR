@@ -113,7 +113,7 @@ namespace Runtime.Geometry.Curves.LineSegments
             for (int i = 0; i < divisions.Count; i++)
             {
                 UGizmos.DrawLinesConcat(divisions[i].quad.Iterate(),_p=>_p);
-                UGizmos.DrawString(divisions[i].quad.GetBaryCenter(),divisions[i].quadIndex.ToString());
+                UGizmos.DrawString(divisions[i].quadIndex.ToString(), divisions[i].quad.GetBaryCenter());
             }
         }
     }

@@ -113,7 +113,7 @@ namespace TechToys.ThePlanet.Module.Cluster
                     Gizmos.DrawWireSphere(Vector3.zero, .2f);
                     
                     if (m_CornerStatus)
-                        UGizmos.DrawString(Vector3.up * .2f, $"{corner.m_Status}",.2f);
+                        UGizmos.DrawString($"{corner.m_Status}",Vector3.up * .2f, .2f);
                 }
             }
             if(m_VoxelGizmos)

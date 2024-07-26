@@ -22,7 +22,7 @@ namespace Examples.Algorithm.Procedural
                 Gizmos.color = (Color.red * uv.x + Color.green * uv.y).SetA(1f);
                 Gizmos.DrawSphere(USphereExplicit.UV.Cube( uv),.02f);
             }
-            UGizmos.DrawString(Vector3.zero,"UV");
+            UGizmos.DrawString("UV", Vector3.zero);
             
             Gizmos.matrix *= Matrix4x4.Translate(Vector3.right*3f);
             for (int i = 0; i <= kUVSphereResolution ; i ++)
@@ -32,7 +32,7 @@ namespace Examples.Algorithm.Procedural
                 Gizmos.color = (Color.red * uv.x + Color.green * uv.y).SetA(1f);
                 Gizmos.DrawSphere(USphereExplicit.UV.Octahedral(uv),.02f);
             }
-            UGizmos.DrawString(Vector3.zero,"Octahedral");
+            UGizmos.DrawString("Octahedral", Vector3.zero);
             
             
             Gizmos.matrix *= Matrix4x4.Translate(Vector3.right*3f);
@@ -43,7 +43,7 @@ namespace Examples.Algorithm.Procedural
                 Gizmos.color = Color.red * uv.x + Color.green * uv.y;
                 Gizmos.DrawSphere(USphereExplicit.UV.ConcentricOctahedral(uv),.02f);
             }
-            UGizmos.DrawString(Vector3.zero,"Concentric Octahedral");
+            UGizmos.DrawString("Concentric Octahedral", Vector3.zero);
 
             r = kAxixResolution;
             Gizmos.matrix *= Matrix4x4.Translate(Vector3.right*3f);
@@ -56,7 +56,7 @@ namespace Examples.Algorithm.Procedural
                 for(int j = 0 ; j <= kAxixResolution ; j++)
                     Gizmos.DrawSphere(USphereExplicit.CubeToSpherePosition(axis.GetPoint(new float2( i / r , j/ r))),.02f);
             }
-            UGizmos.DrawString(Vector3.zero,"Cube");
+            UGizmos.DrawString("Cube", Vector3.zero);
             
             Gizmos.matrix *= Matrix4x4.Translate(Vector3.right*3f);
             for (int k = 0; k < kPolygonRhombusCount; k++)
@@ -67,7 +67,7 @@ namespace Examples.Algorithm.Procedural
                 for(int j = 0 ; j <= kAxixResolution ; j++)
                     Gizmos.DrawSphere(USphereExplicit.Polygon.GetPoint(new float2( i / r , j/ r),axis,false),.02f);
             }
-            UGizmos.DrawString(Vector3.zero,"Poly");
+            UGizmos.DrawString("Poly", Vector3.zero);
             
             Gizmos.matrix *= Matrix4x4.Translate(Vector3.right*3f);
             for (int k = 0; k < kPolygonRhombusCount; k++)
@@ -78,7 +78,7 @@ namespace Examples.Algorithm.Procedural
                 for(int j = 0 ; j <= kAxixResolution ; j++)
                     Gizmos.DrawSphere(USphereExplicit.Polygon.GetPoint(new float2( i / r , j/ r),axis,true),.02f);
             }
-            UGizmos.DrawString(Vector3.zero,"Poly Geodesic");
+            UGizmos.DrawString("Poly Geodesic", Vector3.zero);
             
             Gizmos.matrix *= Matrix4x4.Translate(Vector3.right*3f);
             for (int i = 0; i < kFibonacciResolution; i++)
@@ -86,7 +86,7 @@ namespace Examples.Algorithm.Procedural
                 Gizmos.color = Color.Lerp(Color.white,KColor.kOrange,(float)i/kFibonacciResolution);
                 Gizmos.DrawSphere(USphereExplicit.LowDiscrepancySequences.Fibonacci(i,kFibonacciResolution),.02f);
             }
-            UGizmos.DrawString(Vector3.zero,"Fibonacci");
+            UGizmos.DrawString("Fibonacci", Vector3.zero);
         }
     }
 

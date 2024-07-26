@@ -51,7 +51,6 @@ namespace Examples.Algorithm.Geometry
             Gizmos.color = KColor.kHotPink;
             GJK._2D.Difference(finalPolygon,finalCircle).DrawGizmos();
 
-
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.back * 6f);
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(Vector3.zero, .05f);

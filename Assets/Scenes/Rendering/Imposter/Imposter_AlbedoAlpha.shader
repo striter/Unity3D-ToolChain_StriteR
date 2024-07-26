@@ -1,8 +1,8 @@
-Shader "Hidden/Imposter_Position"
+Shader "Hidden/Imposter_AlbedoAlpha"
 {
     Properties
     {
-        _NormalTex("_NormalTex",2D) = "white"
+        _MainTex("_MainTex",2D) = "white"
     }
     SubShader
     {
@@ -15,7 +15,6 @@ Shader "Hidden/Imposter_Position"
             #pragma fragment frag
 
             #include "Assets/Shaders/Library/Common.hlsl"
-            #include "Assets/Shaders/Library/Lighting.hlsl"
             #include "Imposter.hlsl"
 
             struct a2v
@@ -29,14 +28,12 @@ Shader "Hidden/Imposter_Position"
             {
                 float4 positionCS : SV_POSITION;
                 float2 uv:TEXCOORD0;
-                float3 positionWS:TEXCOORD1;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            
-            TEXTURE2D(_NormalTex);SAMPLER(sampler_NormalTex);
+            TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
             INSTANCING_BUFFER_START
-                INSTANCING_PROP(float4,_NormalTex_ST)
+                INSTANCING_PROP(float4,_MainTex_ST)
             INSTANCING_BUFFER_END
             
             v2f vert (a2v v)
@@ -45,21 +42,16 @@ Shader "Hidden/Imposter_Position"
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
                 o.positionCS = TransformObjectToHClip(v.positionOS);
-                o.uv = TRANSFORM_TEX(v.uv,_NormalTex);
-                o.positionWS = TransformObjectToWorld(v.positionOS);
+                o.uv = TRANSFORM_TEX(v.uv,_MainTex);
                 return o;
             }
 
             float4 frag (v2f i) : SV_Target
             {
 				UNITY_SETUP_INSTANCE_ID(i);
-                float3 positionOS = (i.positionWS - _BoundingSphere.xyz)/_BoundingSphere.w  * .5 + .5;
-                return float4(positionOS,1);
+                return SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
             }
             ENDHLSL
         }
-        
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
     }
 }

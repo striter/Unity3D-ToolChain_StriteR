@@ -67,13 +67,13 @@ namespace Examples.Rendering.Imposter
             block.SetVector(ImposterDefine.kBounding, (float4)boundingSphere);
             
             m_CameraHandles.Traversal(p=>p.Init(m_Input,boundingSphere));
-            foreach (var (rect, direction) in m_Input.GetImposterViewsNormalized())
+            foreach (var corner in m_Input.GetImposterViewsNormalized())
             {
                 m_CameraHandles.Traversal(handle=>
                 {
                     m_SharedMaterialShaderRef.Traversal(p=>p.Key.shader = handle.m_Shader);
                     meshRenderers.Traversal(p=>p.SetPropertyBlock(block));
-                    handle.Render(boundingSphere, direction, rect);
+                    handle.Render(boundingSphere, corner.direction, corner.rect);
                 });
             }
             m_CameraHandles.Traversal(p=>p.Output(initialName, filePath));
@@ -115,8 +115,6 @@ namespace Examples.Rendering.Imposter
 
             public void Render(GSphere _sphere,float3 _direction,G2Box _rect)
             {
-                var index = 0;
-                
                 var position = _sphere.GetSupportPoint(_direction * _sphere.radius);
                 m_Camera.transform.SetPositionAndRotation(position,Quaternion.LookRotation(-_direction,Vector3.up));
                 m_Camera.rect = _rect;

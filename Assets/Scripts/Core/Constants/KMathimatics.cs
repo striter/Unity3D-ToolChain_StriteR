@@ -4,6 +4,7 @@ using Unity.Mathematics;
 
 public static class kfloat3
 {
+    public static readonly float3 zero = 0f;
     public static readonly float3 one = 1f;
     public static readonly float3 up = new float3(0, 1, 0);
     public static readonly float3 down = new float3(0, -1, 0);
@@ -20,6 +21,7 @@ public static class kfloat3
 
 public static class kfloat2
 {
+    public static readonly float2 zero = new float2(0f, 0f);
     public static readonly float2 half = new float2(.5f, .5f);
     public static readonly float2 one = new float2(1, 1);
     public static readonly float2 up = new float2(0, 1);

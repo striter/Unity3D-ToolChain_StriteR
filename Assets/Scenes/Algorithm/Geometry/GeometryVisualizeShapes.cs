@@ -16,7 +16,7 @@ public class GeometryVisualizeShapes : MonoBehaviour
     [MFoldout(nameof(m_ManualCast),false)][PostNormalize] public float3 m_CastDirection = kfloat3.forward;
     [MFoldout(nameof(m_ManualCast),true)] public GRay m_ManualCastRay = GRay.kDefault;
     private IShape[] drawingShapes = {GTriangle.kDefault,GDisk.kDefault,GQuad.kDefault,   GBox.kDefault, GCapsule.kDefault, GCylinder.kDefault, GSphere.kOne, GEllipsoid.kDefault, GCone.kDefault};
-
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         m_SupportDirection = m_SupportDirection.normalize();
@@ -88,4 +88,5 @@ public class GeometryVisualizeShapes : MonoBehaviour
 
         }
     }
+#endif
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Runtime.Geometry
 {
 
-#if  UNITY_EDITOR
+#if UNITY_EDITOR
     
     using static UGizmos;
 
@@ -53,6 +53,21 @@ namespace Runtime.Geometry
             Handles.color = Gizmos.color;
             Handles.matrix = Gizmos.matrix;
             Handles_Extend.DrawLine(_line);
+        }
+
+        public static void DrawGizmos(this GRay _ray)
+        {
+            Handles.color = Gizmos.color;
+            Handles.matrix = Gizmos.matrix;
+            Handles_Extend.DrawLine(_ray.ToLine(1f));
+        }
+        
+        public static void DrawGizmos(this GAxis _axis)
+        {
+            Gizmos.color = Color.red;
+            _axis.Right().DrawGizmos();
+            Gizmos.color = Color.green;
+            _axis.Up().DrawGizmos();
         }
 
         public static void DrawGizmos(this GCylinder _cylinder)

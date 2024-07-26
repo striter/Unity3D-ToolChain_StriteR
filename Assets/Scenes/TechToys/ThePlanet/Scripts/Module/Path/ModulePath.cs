@@ -95,7 +95,7 @@ namespace TechToys.ThePlanet.Module.Prop
                 return;
             Gizmos.color = Color.blue;
             var indexer = UModulePropByte.GetOrientedPathIndex(m_PathByte);
-            UGizmos.DrawString(transform.position,$"{indexer.srcByte}");
+            UGizmos.DrawString($"{indexer.srcByte}", transform.position);
         }
 #endif
 

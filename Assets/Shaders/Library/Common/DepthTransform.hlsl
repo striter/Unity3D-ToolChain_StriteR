@@ -28,9 +28,15 @@ bool DepthLesser(float _depthSrc,float _depthComp)
     #endif
 }
 
+
 float TransformWorldToEyeDepth(float3 _positionWS,float4x4 _matrixV)
 {
     return -(_positionWS.x*_matrixV._m20+_positionWS.y*_matrixV._m21+_positionWS.z*_matrixV._m22+_matrixV._m23);
+}
+
+float TransformWorldToEyeDepth(float3 _positionWS)
+{
+    return TransformWorldToEyeDepth(_positionWS,unity_MatrixV);
 }
 
 //Eye Raw 01 Depth Transformation

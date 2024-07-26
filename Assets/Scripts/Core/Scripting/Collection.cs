@@ -844,6 +844,14 @@ namespace System.Linq.Extensions
             return _list;
         }
         
+        public static IList<T> FillList<T>(this IEnumerable<T> _collection, IList<T> _list)
+        {
+            _list.Clear();
+            foreach (var element in _collection)
+                _list.Add(element);
+
+            return _list;
+        }
         public static IList<T> Remake<T>(this IList<T> _array, Func<int, T, T> _onEach)
         {
             var count = _array.Count;

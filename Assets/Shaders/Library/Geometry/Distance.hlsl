@@ -11,6 +11,13 @@ float Distance(GPlane _plane, GRay _ray)
     return (_plane.distance - nrO) / nrD;
 }
 
+float Distance(GAxis _axis,GRay _ray)
+{
+    float nrO = dot(_axis.up, _ray.origin);
+    float nrD = dot(_axis.up, _ray.direction);
+    return (_axis.distance - nrO) / nrD;
+}
+
 float Distance(GLine _line,float3 _point)
 {
     float3 lineDirection = _line.direction;
