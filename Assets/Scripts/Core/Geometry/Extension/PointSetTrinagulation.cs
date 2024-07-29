@@ -134,8 +134,8 @@ namespace Runtime.Geometry.Extension
             _triangles.Clear();
             var sphere = UGeometry.GetBoundingSphere(_vertices);
             var kSphereRadius = sphere.radius;
-            PoleTriangulation(_vertices, sphere.Center + new float3(0,kSphereRadius,0),new GPlane(kfloat3.up, sphere.Center - kfloat3.up*kSphereRadius ),ref _triangles);      //Project from north pole
-            PoleTriangulation(_vertices, sphere.Center + new float3(0,-kSphereRadius,0),new GPlane(kfloat3.down, sphere.Center - kfloat3.down*kSphereRadius ),ref _triangles);       //Project from south pole
+            PoleTriangulation(_vertices, sphere.Origin + new float3(0,kSphereRadius,0),new GPlane(kfloat3.up, sphere.Origin - kfloat3.up*kSphereRadius ),ref _triangles);      //Project from north pole
+            PoleTriangulation(_vertices, sphere.Origin + new float3(0,-kSphereRadius,0),new GPlane(kfloat3.down, sphere.Origin - kfloat3.down*kSphereRadius ),ref _triangles);       //Project from south pole
             for (int i = 0; i < _triangles.Count; i++)       //Exclude abundant triangles
             {
                 var cur = _triangles[i];

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Runtime.Geometry
 {
     [Serializable]
-    public struct GRay
+    public struct GRay : ILine
     {
         public float3 origin;
         [PostNormalize] public float3 direction;
@@ -27,6 +27,8 @@ namespace Runtime.Geometry
         #endregion
 
         public static readonly GRay kDefault = new GRay(0,kfloat3.forward);
+        public float3 Origin => origin;
+        public void DrawGizmos() => Gizmos.DrawRay(origin, direction);
     }
 
 }

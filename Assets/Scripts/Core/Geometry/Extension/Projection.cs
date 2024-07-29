@@ -21,7 +21,7 @@ namespace Runtime.Geometry.Extension
         public static float3 Projection(this GTriangle _triangle,float3 _direction)
         {
             var normal = _triangle.normal;
-            var center = _triangle.Center;
+            var center = _triangle.Origin;
             
             _direction -= dot(_direction, normal) * normal;    //Project on to plane
             _direction = _direction.normalize();

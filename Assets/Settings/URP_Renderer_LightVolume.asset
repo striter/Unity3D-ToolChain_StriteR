@@ -90,16 +90,14 @@ MonoBehaviour:
   m_Active: 1
   m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
   m_Data:
-    m_Normal: 0
-    m_Mask: 0
+    m_Features: 0
     m_MaskData:
       renderMask: 2147483647
       color: {r: 1, g: 1, b: 1, a: 1}
-      m_Outline: 0
+      inheritDepth: 1
+      outline: 0
       extendWidth: 0.1
       outlineVertex: 0
-    m_MotionVector: 0
-    m_Reflection: 0
     m_PlanarReflection:
       maxPlanarReflectionTexture: 4
     m_AntiAliasing:

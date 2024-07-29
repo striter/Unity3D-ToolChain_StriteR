@@ -23,7 +23,7 @@ namespace Runtime.Geometry
         
         public float Radius => ((GConeUnheighted)this).GetRadius(height);
         public float3 Bottom => origin + normal * height;
-        public float3 Center => origin + normal * height/2;
+        public float3 Origin => origin + normal * height/2;
     }
 
     public partial struct GCone : IVolume , IRayIntersection , ISDF
@@ -140,6 +140,9 @@ namespace Runtime.Geometry
             distance = t;
             return true;
         }
+
+        public void DrawGizmos() => UGizmos.DrawCone(origin, normal, Radius, height);
+
     }
     
 }

@@ -7,23 +7,30 @@ using Rendering.PostProcess;
 
 namespace Rendering.Pipeline
 {
+    [Flags]
+    public enum EPipeLineExtensionFeature
+    {
+        Normal = 1 << 0,
+        Mask = 1 << 1,
+        MotionVector = 1 << 2,
+        Reflection = 1 << 3,
+        Antialiasing = 1 << 4,
+    }
+    
     [Serializable]
     public struct FPipelineExtensionParameters
     {
-        [Header("Screen Space"),Tooltip("Screen Space World Position Reconstruction")]
-        public bool m_Normal;
-        public bool m_Mask;
-        [MFoldout(nameof(m_Mask), true)] public SRD_MaskData m_MaskData;
-        public bool m_Reflection;
-        [MFoldout(nameof(m_Reflection), true)] public ReflectionPassData m_PlanarReflection;
-        public DAntiAliasing m_AntiAliasing;
+        [Header("Screen Space"), Tooltip("Screen Space World Position Reconstruction")]
+
+        public EPipeLineExtensionFeature m_Features;
+        [MFoldout(nameof(m_Features), EPipeLineExtensionFeature.Mask)] public SRD_MaskData m_MaskData;
+        [MFoldout(nameof(m_Features), EPipeLineExtensionFeature.Reflection)] public ReflectionPassData m_PlanarReflection;
+        [MFoldout(nameof(m_Features), EPipeLineExtensionFeature.Antialiasing)] public DAntiAliasing m_AntiAliasing;
 
         public static FPipelineExtensionParameters kDefault = new FPipelineExtensionParameters()
         {
-            m_Normal = false,
-            m_Mask = false,
+            m_Features = default,
             m_MaskData = SRD_MaskData.kDefault,
-            m_Reflection = false,
             m_PlanarReflection = ReflectionPassData.kDefault,
             m_AntiAliasing = DAntiAliasing.kDefault,
         };
@@ -58,8 +65,8 @@ namespace Rendering.Pipeline
             m_Normal = new NormalTexturePass() { renderPassEvent = RenderPassEvent.BeforeRenderingSkybox + 1 };
             m_Reflection = new ReflectionTexturePass(m_Data.m_PlanarReflection, RenderPassEvent.BeforeRenderingSkybox + 2);
             
-            m_OpaquePostProcess=new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 3 };
-            m_ScreenPostProcess=new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing + 1 };
+            m_OpaquePostProcess = new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 3 };
+            m_ScreenPostProcess = new SRP_ComponentBasedPostProcess() { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing + 1 };
             m_AntiAliasingPostProcess = new PostProcess_AntiAliasing(m_Data.m_AntiAliasing,m_TAA);
 
             m_Passes = new ISRPBase[] {m_GlobalParameters,
@@ -70,6 +77,9 @@ namespace Rendering.Pipeline
         protected override void Dispose(bool _disposing)
         {
             base.Dispose(_disposing);
+            if (!m_Resources)
+                return;
+            
             m_AntiAliasingPostProcess.Dispose();
             m_Passes.Traversal(_p=>_p.Dispose());
         }
@@ -82,9 +92,10 @@ namespace Rendering.Pipeline
             if (_renderingData.cameraData.isPreviewCamera)
                 return;
 
-            var mask = m_Data.m_Mask;
-            var normal = m_Data.m_Normal;
-            var reflection = _renderingData.cameraData.isSceneViewCamera || m_Data.m_Reflection;
+            var mask = m_Data.m_Features.IsFlagEnable(EPipeLineExtensionFeature.Mask);
+            var normal = m_Data.m_Features.IsFlagEnable(EPipeLineExtensionFeature.Normal);
+            var reflection = _renderingData.cameraData.isSceneViewCamera || m_Data.m_Features.IsFlagEnable(EPipeLineExtensionFeature.Reflection);
+            var motionVector = m_Data.m_Features.IsFlagEnable(EPipeLineExtensionFeature.MotionVector);
             if(_renderingData.cameraData.camera.TryGetComponent(out CameraOverride param))
             {
                 normal = param.m_Normal.IsEnabled(normal);
@@ -96,7 +107,6 @@ namespace Rendering.Pipeline
             if (normal)
                 _renderer.EnqueuePass(m_Normal);
             
-            var motionVector = m_Data.m_AntiAliasing.mode == EAntiAliasing.TAA;
             if(motionVector)
                 _renderer.EnqueuePass(m_MotionVectorTexture);
             if (reflection)

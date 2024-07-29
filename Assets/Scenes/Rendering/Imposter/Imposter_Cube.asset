@@ -16,17 +16,17 @@ MonoBehaviour:
     mapping: 1
     hemisphere: 1
     width: 8
-    height: 8
+    height: 4
     cellResolution: 128
     cellSizeNormalized:
       x: 0.125
-      y: 0.125
+      y: 0.25
     cellCount:
       x: 8
-      y: 8
+      y: 4
   m_BoundingSphere:
     center:
-      x: 0.02273035
-      y: 0.48889083
-      z: -0.014269529
-    radius: 0.83677113
+      x: 0
+      y: 0.09712451
+      z: -0.2976039
+    radius: 1.4964477

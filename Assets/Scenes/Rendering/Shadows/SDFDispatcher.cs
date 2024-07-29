@@ -16,14 +16,14 @@ namespace Examples.Rendering.Shadows
     {
         public void SortElements(int _median, GSphere _boundary, IList<GCapsule> _elements)
         {
-            PrincipleComponentAnalysis.Evaluate(_elements.Select(p=>p.Center),out var center,out var right,out var up,out var forward);
+            PrincipleComponentAnalysis.Evaluate(_elements.Select(p=>p.Origin),out var center,out var right,out var up,out var forward);
             _elements.Divide(_median,
                 // .Sort(
                 // ESortType.Bubble,
                 (_a, _b) =>
                 {
-                    float aDot = math.dot(_a.Center - center, right);
-                    float bDot = math.dot(_b.Center - center, right);
+                    float aDot = math.dot(_a.Origin - center, right);
+                    float bDot = math.dot(_b.Origin - center, right);
                     return aDot >= bDot ? 1 : -1;
                 }
             );

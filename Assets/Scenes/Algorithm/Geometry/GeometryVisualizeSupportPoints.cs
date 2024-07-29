@@ -33,7 +33,7 @@ namespace Examples.Algorithm.Geometry
             {
                 Gizmos.color = shapes.Exclude(shape).Any(p=> p.Intersect(shape)) ? Color.yellow : Color.white;
                 shape.DrawGizmos();
-                UGizmos.DrawArrow(shape.Center.to3xz(), supportPointDirection.to3xz(), .5f, .1f);
+                UGizmos.DrawArrow(shape.Origin.to3xz(), supportPointDirection.to3xz(), .5f, .1f);
                 Gizmos.DrawWireSphere(shape.GetSupportPoint(supportPointDirection).to3xz(), .1f);
             }
 

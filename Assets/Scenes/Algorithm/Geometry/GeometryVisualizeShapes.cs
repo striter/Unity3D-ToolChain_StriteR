@@ -30,7 +30,7 @@ public class GeometryVisualizeShapes : MonoBehaviour
                 continue;
 
             Gizmos.color = Color.green;
-            var center = volume.Center;
+            var center = volume.Origin;
             Gizmos.DrawSphere(center, .05f);
 
             Gizmos.color = Color.red;

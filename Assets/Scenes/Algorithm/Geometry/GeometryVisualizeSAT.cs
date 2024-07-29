@@ -32,8 +32,8 @@ namespace Examples.Algorithm.Geometry
             foreach (var convex in convex3D)
             {
                 Gizmos.color = convex3D.Exclude(convex).Any(p => p.Intersect(convex)) ? Color.yellow : Color.white;
-                if (convex is IShapeGizmos gizmos)
-                    gizmos.DrawGizmos();
+                if (convex is IShape shape)
+                    shape.DrawGizmos();
             }
         }
     }

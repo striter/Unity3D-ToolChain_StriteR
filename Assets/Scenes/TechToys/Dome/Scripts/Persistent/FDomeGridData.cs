@@ -55,7 +55,7 @@ namespace Dome
                     {
                         Gizmos.color = UColor.IndexToColor(index);
                         if (quadIndex < 0) continue;
-                        UGizmos.DrawLine(quad.positions.Center,o.vertices[quadIndex].positions.Center,.5f);
+                        UGizmos.DrawLine(quad.positions.Origin,o.vertices[quadIndex].positions.Origin,.5f);
                     }
             }
 

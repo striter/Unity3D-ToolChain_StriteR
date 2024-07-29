@@ -29,8 +29,8 @@ namespace Dome
         {
         }
 
-        public float Heuristic(FDomeCell _src, FDomeCell _dst) => math.lengthsq(_src.positions.Center - _dst.positions.Center);
-        public float Cost(FDomeCell _src, FDomeCell _dst)=> math.lengthsq(_src.positions.Center - _dst.positions.Center);
+        public float Heuristic(FDomeCell _src, FDomeCell _dst) => math.lengthsq(_src.positions.Origin - _dst.positions.Origin);
+        public float Cost(FDomeCell _src, FDomeCell _dst)=> math.lengthsq(_src.positions.Origin - _dst.positions.Origin);
         public IEnumerable<FDomeCell> GetAdjacentNodes(FDomeCell _src)
         {
             foreach (var connection in _src.connections)
@@ -44,7 +44,7 @@ namespace Dome
         public FDomeCell Validate(float3 _position)
         {
             var nearestCell = m_Vertices.MinElement(p =>
-                math.lengthsq(p.available ? p.positions.Center - _position : float.MaxValue));
+                math.lengthsq(p.available ? p.positions.Origin - _position : float.MaxValue));
             
             return nearestCell;
         }

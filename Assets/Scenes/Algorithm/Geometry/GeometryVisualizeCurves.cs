@@ -39,7 +39,7 @@ namespace Examples.Algorithm.Geometry
             //Bezeir Curves
             var localToWorldMatrix = transform.localToWorldMatrix;
             Gizmos.matrix = localToWorldMatrix;
-            m_QuadraticCurve.DrawGizmos(m_QuadraticTangents);
+            m_QuadraticCurve.DrawGizmos(64,m_QuadraticTangents);
             Gizmos.color = Color.grey;
             m_QuadraticCurve.GetBoundingBox().DrawGizmos();
             

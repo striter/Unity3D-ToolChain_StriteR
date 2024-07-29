@@ -1,6 +1,7 @@
 ﻿using System;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace Runtime.Geometry
 {
@@ -11,7 +12,7 @@ namespace Runtime.Geometry
         public float3 radius;
         public GEllipsoid(float3 _center,float3 _radius) {  center = _center; radius = _radius;}
         public static readonly GEllipsoid kDefault = new GEllipsoid(float3.zero, new float3(.5f,1f,0.5f));
-        public float3 Center => center;
+        public float3 Origin => center;
         public float3 GetSupportPoint(float3 _direction) => center + _direction.normalize() * radius;
         public GSphere GetBoundingSphere() => new GSphere(center, radius.maxElement());
         public float SDF(float3 _position)
@@ -51,6 +52,14 @@ namespace Runtime.Geometry
                 t0 = t1;
             distances =  new float2(t0, t1 - t0)/(2*a);
             return true;
+        }
+        public void DrawGizmos( )
+        {
+            //Dude
+            Matrix4x4 preMatrix = Gizmos.matrix;
+            Gizmos.matrix = preMatrix * Matrix4x4.TRS(center,Quaternion.identity, radius);
+            Gizmos.DrawWireSphere(Vector3.zero,1f);
+            Gizmos.matrix = preMatrix;
         }
     }
 }

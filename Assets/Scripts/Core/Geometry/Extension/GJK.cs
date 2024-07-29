@@ -62,7 +62,7 @@ namespace Runtime.Geometry.Extension
             public static bool Intersect(IShape2D _a,IShape2D _b) 
             {
                 kSimplex.Clear();
-                var d = (_a.Center - _b.Center).normalize();
+                var d = (_a.Origin - _b.Origin).normalize();
                 kSimplex.Add(Support(_a, _b, d));
                 d = -kSimplex[^1].normalize();
                 while (true)
@@ -159,7 +159,7 @@ namespace Runtime.Geometry.Extension
             public static bool Intersect(IVolume _a,IVolume _b) 
             {
                 kSimplex.Clear();
-                var d = (_a.Center - _b.Center).normalize();
+                var d = (_a.Origin - _b.Origin).normalize();
                 kSimplex.Add(Support(_a, _b, d));
                 d = -kSimplex[^1].normalize();
                 while (true)

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Linq.Extensions;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
+using UnityEditor;
 using UnityEngine;
 
 namespace Runtime.Geometry
@@ -32,7 +32,7 @@ namespace Runtime.Geometry
             cylinderTop = origin + cylinderExtent;
             cylinderBottom = origin - cylinderExtent;
         }
-        public float3 Center => origin;
+        public float3 Origin => origin;
         public static readonly GCapsule kDefault = new GCapsule(float3.zero, .5f, kfloat3.up, 1f);
     }
 
@@ -60,7 +60,7 @@ namespace Runtime.Geometry
 
         public float3 GetSupportPoint(float3 _direction)
         {
-            var center = Center;
+            var center = Origin;
             float distanceAlongDirection = math.dot(_direction, cylinderTop - center);
         
             float3 supportPoint;
@@ -137,5 +137,8 @@ namespace Runtime.Geometry
             }
             return false;
         }
+
+
+        public void DrawGizmos() => UGizmos.DrawWireCapsule(origin,normal,radius,height);
     }
 }

@@ -54,7 +54,7 @@ namespace Dome
         public void PopulateMesh()
         {
             var outerQuad = m_Cell.positions;
-            var center = outerQuad.Center;
+            var center = outerQuad.Origin;
             var innerQuad = (GQuad)outerQuad.Shrink(m_Environment.m_Shape.m_Shrink) + kfloat3.up * m_Environment.m_Shape.m_Upward;
             outerQuad -= center;
             innerQuad -= center;

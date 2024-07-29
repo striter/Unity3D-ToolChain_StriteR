@@ -39,7 +39,7 @@ namespace Dome.Entity.AI
                 return;
             }
             
-            var current = destinations.Peek().positions.Center;
+            var current = destinations.Peek().positions.Origin;
             var direction = current - m_Entity.position;
             if (direction.sqrmagnitude()<3f)
             {
@@ -61,10 +61,10 @@ namespace Dome.Entity.AI
             base.DrawGizmos();
             Gizmos.matrix = Matrix4x4.Translate(Vector3.up * .5f);
             foreach (var destination in destinations)
-                Gizmos.DrawWireSphere(destination.positions.Center,.1f);
+                Gizmos.DrawWireSphere(destination.positions.Origin,.1f);
             if(destinations.Count>0)
-                Gizmos.DrawLine(m_Entity.position,destinations.Peek().positions.Center);
-            UGizmos.DrawLines(destinations,p=>p.positions.Center);
+                Gizmos.DrawLine(m_Entity.position,destinations.Peek().positions.Origin);
+            UGizmos.DrawLines(destinations,p=>p.positions.Origin);
         }
     }
 }

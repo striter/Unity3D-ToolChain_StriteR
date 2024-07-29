@@ -17,18 +17,18 @@ Shader "Game/Unfinished/Imposter"
             struct a2v
             {
                 float3 positionOS : POSITION;
-            	float2 uv0 : TEXCOORD0;
-            	float2 uv1 : TEXCOORD1;
-            	float2 uv2 : TEXCOORD2;
+            	float4 uv0 : TEXCOORD0;
+            	float4 uv1 : TEXCOORD1;
+            	float4 uv2 : TEXCOORD2;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
             {
                 float4 positionCS : SV_POSITION;
-                float2 uv0:TEXCOORD0;
-            	float2 uv1:TEXCOORD1;
-				float2 uv2:TEXCOORD2;
+                float4 uv0:TEXCOORD0;
+            	float4 uv1:TEXCOORD1;
+				float4 uv2:TEXCOORD2;
                 float3 positionWS :TEXCOORD4;
             	float4 positionHCS : TEXCOORD5;
             	float3 positionOS : TEXCOORD6;
@@ -55,7 +55,7 @@ Shader "Game/Unfinished/Imposter"
             
 			float3 _ImposterViewDirection;
             float _AlphaClip;
-            float4 _Weights;
+            float3 _Weights;
 
 			float4 GetColumn(float4x4 _matrix,int _index)
 			{
@@ -77,7 +77,7 @@ Shader "Game/Unfinished/Imposter"
                 return o;
             }
 
-			float2 GetFragmentUV(v2f i,int index)
+			float4 GetFragmentUV(v2f i,int index)
             {
 	            switch (index)
 	            {
@@ -99,15 +99,15 @@ Shader "Game/Unfinished/Imposter"
 
             	for(int index=0;index<3;index++)
             	{
-            		float2 uv = GetFragmentUV(i,index);
+            		float4 uv = GetFragmentUV(i,index);
             		float4 directionNWeight = _Weights[index];
             		float weight = directionNWeight.w;
-
-            		albedoAlpha += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, uv) * weight;
-            		float4 normalDepth = SAMPLE_TEXTURE2D(_NormalDepthTex, sampler_NormalDepthTex, uv) * 2 - 1;
-            		normalWS = lerp(normalWS,normalDepth.rgb , weight);
+            		albedoAlpha += SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, uv.xy) * weight;
+            		float4 normalDepth = SAMPLE_TEXTURE2D(_NormalDepthTex, sampler_NormalDepthTex, uv.xy);
+            		normalWS += normalDepth.rgb * weight;
             		depthExtrude += normalDepth.a * weight;
             	}
+				normalWS = normalWS * 2 - 1;
 				normalWS = quaternionMul(_Rotation,normalWS);
                 
                 float diffuse = saturate(dot(normalWS,normalize(_MainLightPosition))) ;
@@ -115,7 +115,7 @@ Shader "Game/Unfinished/Imposter"
                 float3 albedo = albedoAlpha.rgb;
             	clip(albedoAlpha.a-_AlphaClip);
 
-                o.result = float4(albedo * diffuse * _MainLightColor + albedo * SHL2Sample(normalWS,unity),1);
+                o.result = float4(albedo * diffuse * _MainLightColor + albedo * SHL2Sample(normalWS,unity),albedoAlpha.a);
                 o.depth = EyeToRawDepth(TransformWorldToEyeDepth(TransformObjectToWorld(i.positionOS + _ImposterViewDirection * saturate(depthExtrude))));
                 return o;
             }

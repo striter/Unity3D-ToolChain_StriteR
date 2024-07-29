@@ -46,7 +46,7 @@ namespace Runtime.Geometry
 
         public GBox GetBoundingBox() => this;
         public float3 GetPoint(float3 _uvw) => center + _uvw * size;
-        public float3 Center => center;
+        public float3 Origin => center;
 
         public bool Contains(float3 _point,float _bias = float.Epsilon)
         {
@@ -164,6 +164,7 @@ namespace Runtime.Geometry
             return true;
         }
 
+        public void DrawGizmos() => Gizmos.DrawWireCube(center,size);
     }
 
 

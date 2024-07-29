@@ -4,9 +4,10 @@ using Unity.Mathematics;
 
 namespace Runtime.Geometry
 {
-    public interface IShape<Dimension>:IShapeGizmos where Dimension:struct 
+    public interface IShape<Dimension> where Dimension:struct 
     {
-        Dimension Center { get; }
+        Dimension Origin { get; }
+        public void DrawGizmos();
     }
 
     public interface IRound<Dimenison>  where Dimenison : struct
@@ -27,20 +28,5 @@ namespace Runtime.Geometry
     {
         public static bool Contains<T>(this ISDF<T> _sdf, T _position,float _epsilon = 0) where T:struct => _sdf.SDF(_position) <= _epsilon;
         public static float Distance<T>(this ISDF<T> _sdf,T _position) where T:struct => _sdf.SDF(_position);
-    }
-    
-    public interface IShapeGizmos { }
-    
-    public static class IShape_Extension
-    {
-        public static void DrawGizmos(this IShapeGizmos _shape)
-        { 
-#if UNITY_EDITOR
-            var method = typeof(Gizmos_Geometry).GetMethod("DrawGizmos", new[] {_shape.GetType()});
-            if (method == null)
-                throw new NotImplementedException($"Create a DrawGizmos method in {nameof(Gizmos_Geometry)} for {_shape.GetType()}");
-            method.Invoke(null,new object[]{_shape});
-#endif
-        }
     }
 }

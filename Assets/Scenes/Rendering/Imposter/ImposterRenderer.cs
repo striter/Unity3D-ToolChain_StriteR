@@ -28,7 +28,7 @@ namespace Examples.Rendering.Imposter
 
         private static List<Vector3> kVertices = new List<Vector3>();
         private static List<int> kIndices = new List<int>();
-        private static List<Vector2> kUVs = new List<Vector2>();
+        private static List<Vector4> kUVs = new List<Vector4>();
         protected override void PopulateMesh(Mesh _mesh, Transform _transform, Transform _viewTransform)
         {
             if (!m_Data)
@@ -53,41 +53,33 @@ namespace Examples.Rendering.Imposter
                 
                 _mesh.SetVertices(billboard.Select(p=>(Vector3)p).FillList(kVertices));
                 _mesh.SetIndices(PQuad.kDefault.GetTriangleIndexes().FillList(kIndices),MeshTopology.Triangles,0);
-                _mesh.SetUVs(0,G2Quad.kDefaultUV.Select(p=> (Vector2)URender.TransformTex(p  ,corner.rect.ToTexelSize())).FillList(kUVs));
+                _mesh.SetUVs(0,G2Quad.kDefaultUV.Select(p=> (Vector4)(URender.TransformTex(p  ,corner.rect.ToTexelSize()).to4(1))).FillList(kUVs));
             }
             else
             {
-                var F = -viewDirectionOS;    
-                var billboardRotation = Quaternion.LookRotation(F, Vector3.up);
-            
-                var U = math.mul(billboardRotation, kfloat3.up);
-                var R = math.mul(billboardRotation, kfloat3.right);
-                U = math.cross(R,viewDirectionOS).normalize();
-                R = math.cross(viewDirectionOS,U).normalize();
-
+                var output = m_Data.m_Input.GetImposterViews(viewDirectionOS);
+                var centerOS = output.centroid;
+                var axis = GAxis.ForwardBillboard(centerOS,-centerOS);
                 math.sincos(0,out var s0,out var c0);
-                var X = size * c0 * R + size * s0 * U;
-                var Y = -size * s0 * R + size * c0 * U;
+                var X = size * c0 * axis.right + size * s0 * axis.up;
+                var Y = -size * s0 * axis.right + size * c0 * axis.up;
                 var billboard = new GQuad(-X - Y,-X + Y, X + Y,X - Y) + m_Data.m_BoundingSphere.center;
 
                 _mesh.SetVertices(billboard.Select(p=>(Vector3)p).FillList(kVertices));
                 _mesh.SetIndices(PQuad.kDefault.GetTriangleIndexes().FillList(kIndices),MeshTopology.Triangles,0);
-                
-                var texelIndex = 0;
-                foreach (var (imposterViewData,weight) in m_Data.m_Input.GetImposterViews(viewDirectionOS))
+
+                for (var texelIndex = 0; texelIndex < 3; texelIndex++)
                 {
+                    var weight = output.weights[texelIndex];
                     if(weight == 0)
                         continue;
                 
-                    var forwardOS = imposterViewData.direction;
-                    var rightOS = math.normalize(math. cross( forwardOS, kfloat3.up) );
-                    var upOS = math.normalize(math.cross( rightOS, forwardOS ));
-                    var axis = new GAxis(0,rightOS,upOS);
-                    var parallax = axis.GetUV(viewDirectionOS) * m_Parallax * 2 * (1-weight);
-                    var texelST = imposterViewData.rect.ToTexelSize();
-                    _mesh.SetUVs(texelIndex,G2Quad.kDefaultUV.Select(p=> (Vector2)(URender.TransformTex(p  ,texelST)+ parallax * m_Data.m_Input.cellSizeNormalized)).FillList(kUVs));
+                    var corner = output.corners[texelIndex];
+                    var forwardOS = corner.direction;
+                    var parallax = -axis.GetUV(forwardOS) * m_Parallax * 2 * (1-weight);
+                    var texelST = corner.rect.ToTexelSize();
+                    _mesh.SetUVs(texelIndex,G2Quad.kDefaultUV.Select(p=>(Vector4)(URender.TransformTex(p  ,texelST)+ parallax * m_Data.m_Input.cellSizeNormalized).to4()).FillList(kUVs));
                     weights[texelIndex] = weight;
-                    texelIndex += 1;
                 }
             }
             
@@ -109,16 +101,18 @@ namespace Examples.Rendering.Imposter
             
             Gizmos.matrix = _transform.localToWorldMatrix * Matrix4x4.TRS(center,Quaternion.identity,m_Data.m_BoundingSphere.radius  * Vector3.one);
             var viewDirection = _transform.worldToLocalMatrix.rotation * (_viewTransform.position - center).normalized;
-            Gizmos.color = Color.blue;
-            Gizmos.DrawCube(viewDirection, Vector3.one * 0.01f);
             
             if(m_DrawInput)
                 m_Data.m_Input.DrawGizmos();
 
-            var index = 0;
-            foreach (var (corner, weight) in m_Data.m_Input.GetImposterViews(viewDirection))
+            var output = m_Data.m_Input.GetImposterViews(viewDirection);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawCube(output.centroid, Vector3.one * 0.01f);
+            for(var i =0;i<3;i++)
             {
-                Gizmos.color =  UColor.IndexToColor(index++).SetA(weight);
+                var weight = output.weights[i];
+                var corner = output.corners[i];
+                Gizmos.color =  UColor.IndexToColor(i).SetA(weight);
                 Gizmos.DrawCube(corner.direction, Vector3.one * 0.02f);
             }
         }

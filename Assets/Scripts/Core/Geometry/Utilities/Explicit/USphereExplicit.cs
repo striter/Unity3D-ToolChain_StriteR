@@ -20,23 +20,21 @@ namespace Runtime.Geometry.Explicit
         {
             Cube,
             Octahedral,
-            ConcentricOctahedral,
-            PolySphere,
+            // ConcentricOctahedral,
         }
 
-        public static float3 Mapping(float2 _uv, ESphereMapping _sphereMapping = ESphereMapping.ConcentricOctahedral)
+        public static float3 Mapping(float2 _uv, ESphereMapping _sphereMapping = ESphereMapping.Octahedral)
         {
             return _sphereMapping switch
             {
                 ESphereMapping.Cube => UV.Cube(_uv),
                 ESphereMapping.Octahedral => UV.Octahedral(_uv),
-                ESphereMapping.ConcentricOctahedral => UV.ConcentricOctahedral(_uv),
-                ESphereMapping.PolySphere => Polygon.GetPoint(_uv),
+                // ESphereMapping.ConcentricOctahedral => UV.ConcentricOctahedral(_uv),
                 _ => throw new ArgumentOutOfRangeException(nameof(_sphereMapping), _sphereMapping, null)
             };
         }
 
-        public static float2 InvMapping(float3 _direction, ESphereMapping _sphereMapping = ESphereMapping.ConcentricOctahedral)
+        public static float2 InvMapping(float3 _direction, ESphereMapping _sphereMapping = ESphereMapping.Octahedral)
         {
             return _sphereMapping switch
             {

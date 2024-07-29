@@ -1,5 +1,7 @@
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
+using UnityEditor;
+using UnityEngine;
 
 namespace Runtime.Geometry
 {
@@ -21,7 +23,7 @@ namespace Runtime.Geometry
         public static readonly GCylinder kDefault = new GCylinder() {origin = kfloat3.down*.5f, normal = kfloat3.up, radius = .5f, height = 1f};
         public float3 Bottom => origin;
         public float3 Top => origin + normal * height;
-        public float3 Center => origin + normal * (height / 2);
+        public float3 Origin => origin + normal * (height / 2);
         public float3 GetSupportPoint(float3 _direction)
         {
             var projectDisk = new GDisk(origin + normal * height * (math.dot(_direction, normal)/2 + .5f),normal,radius);
@@ -37,7 +39,7 @@ namespace Runtime.Geometry
             var e = ra* math.sqrt( 1.0f - a*a/math.dot(a,a) );
             return GBox.Minmax( math.min( pa - e, pb - e ), math.max( pa + e, pb + e ) );
         }
-        public GSphere GetBoundingSphere() => new GSphere(Center, math.sqrt(umath.sqr(height/2)+ umath.sqr(radius)));
+        public GSphere GetBoundingSphere() => new GSphere(Origin, math.sqrt(umath.sqr(height/2)+ umath.sqr(radius)));
         public float SDF(float3 _position)
         {
             var p = _position;
@@ -113,5 +115,7 @@ namespace Runtime.Geometry
 
             return false;
         }
+        
+        public void DrawGizmos() => UGizmos.DrawCylinder(origin,normal,radius,height);
     }
 }

@@ -1,43 +1,15 @@
-#if UNITY_EDITOR
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
-using Runtime.Geometry;
 using Unity.Mathematics;
-using UnityEditor;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;
 
 public static class UGizmos
 {
-    public static void DrawWireCube(Vector3 _pos, Quaternion _rot, Vector3 _cubeSize)
-    {
-        Handles.color = Gizmos.color;
-        Handles.matrix = Gizmos.matrix;
-        Handles_Extend.DrawWireCube(_pos, _rot, _cubeSize);
-    }
 
-    public static void DrawArrow(Vector3 _pos, Vector3 _direction, float _length, float _radius) => DrawArrow(_pos, Quaternion.LookRotation(_direction), _length, _radius);
-    public static void DrawArrow(Vector3 _pos, Quaternion _rot, float _length, float _radius)
-    {
-        Handles.color = Gizmos.color;
-        Handles.matrix = Gizmos.matrix;
-        Handles_Extend.DrawArrow(_pos, _rot, _length, _radius);
-    }
-    public static void DrawCylinder(Vector3 _pos, Vector3 _up, float _radius, float _height)
-    {
-        Handles.color = Gizmos.color;
-        Handles.matrix = Gizmos.matrix;
-        Handles_Extend.DrawCylinder(_pos, _up, _radius, _height);
-    }
-
-    public static void DrawTrapezium(Vector3 _pos, Quaternion _rot, Vector4 _trapeziumInfo)
-    {
-        Handles.color = Gizmos.color;
-        Handles.matrix = Gizmos.matrix;
-        Handles_Extend.DrawTrapezium(_pos, _rot, _trapeziumInfo);
-    }
     public static void DrawLine(Vector3 _src, Vector3 _dest, float _normalizedLength=1f)
     {
         Gizmos.DrawLine(_src,(_src+(_dest-_src)*_normalizedLength));
@@ -139,9 +111,64 @@ public static class UGizmos
     public static GUIStyle kLabelStyle => new GUIStyle(GUI.skin.label) { alignment = TextAnchor.LowerCenter,fontSize=12, fontStyle = FontStyle.Normal};
     public static void DrawString(string _text, Vector3 _position = default, float _offset = 0.1f)
     {
-        Handles.matrix = Gizmos.matrix;
-        Handles.Label(_position+_offset*Vector3.up,_text,kLabelStyle);
-    }
-}
-
+#if UNITY_EDITOR
+        UnityEditor.Handles.matrix = Gizmos.matrix;
+        UnityEditor.Handles.Label(_position+_offset*Vector3.up,_text,kLabelStyle);
 #endif
+    }
+    public static void DrawArrow(Vector3 _pos, Vector3 _direction, float _length, float _radius) => DrawArrow(_pos, Quaternion.LookRotation(_direction), _length, _radius);
+    public static void DrawArrow(Vector3 _pos, Quaternion _rot, float _length, float _radius)
+    {
+#if UNITY_EDITOR
+        UnityEditor.Handles.color = Gizmos.color;
+        UnityEditor.Handles.matrix = Gizmos.matrix;
+        UnityEditor.Handles_Extend.DrawArrow(_pos, _rot, _length, _radius);
+#endif
+    }
+    public static void DrawCylinder(Vector3 _pos, Vector3 _up, float _radius, float _height)
+    {
+#if UNITY_EDITOR
+        UnityEditor.Handles.color = Gizmos.color;
+        UnityEditor.Handles.matrix = Gizmos.matrix;
+        UnityEditor.Handles_Extend.DrawCylinder(_pos, _up, _radius, _height);
+#endif
+    }
+
+    public static void DrawTrapezium(Vector3 _pos, Quaternion _rot, Vector4 _trapeziumInfo)
+    {
+#if UNITY_EDITOR
+        UnityEditor.Handles.color = Gizmos.color;
+        UnityEditor.Handles.matrix = Gizmos.matrix;
+        UnityEditor.Handles_Extend.DrawTrapezium(_pos, _rot, _trapeziumInfo);
+#endif
+    }
+
+    public static void DrawWireDisk(Vector3 _pos, Vector3 _normal, float _radius)
+    {
+#if UNITY_EDITOR
+        UnityEditor.Handles.color = Gizmos.color;
+        UnityEditor.Handles.matrix = Gizmos.matrix;
+        UnityEditor.Handles.DrawWireDisc(_pos, _normal, _radius);
+#endif
+    }
+
+    public static void DrawCone(Vector3 _origin,Vector3 _normal,float _radius,float _height)
+    {
+#if UNITY_EDITOR
+        UnityEditor.Handles.color = Gizmos.color;
+        UnityEditor.Handles.matrix = Gizmos.matrix;
+        UnityEditor.Handles_Extend.DrawCone(_origin, _normal, _radius, _height);
+#endif
+    }
+    
+    public static void DrawWireCapsule(Vector3 _origin,Vector3 _normal,float _radius,float _height)
+    {
+#if UNITY_EDITOR
+        UnityEditor.Handles.color = Gizmos.color;
+        UnityEditor.Handles.matrix = Gizmos.matrix;
+        UnityEditor.Handles_Extend.DrawWireCapsule(_origin,Quaternion.LookRotation(_normal),Vector3.zero, _radius, _height);
+#endif
+    }
+    
+    
+}

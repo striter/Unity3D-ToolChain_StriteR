@@ -44,7 +44,7 @@ public abstract class ConditionAttribute : PropertyAttribute
 [AttributeUsage(AttributeTargets.Field)]
 public class MFoldoutAttribute : ConditionAttribute
 {
-    public override EConditionAction Condition => EConditionAction.AnyEquals;
+    public override EConditionAction Condition => EConditionAction.AllEquals;
     public MFoldoutAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
     public MFoldoutAttribute(string _foldoutFieldName1, object _refValue1, string _foldoutFieldName2, object _refValue2) : base(new KeyValuePair<string, object[]>(_foldoutFieldName1, new object[] { _refValue1 }), new KeyValuePair<string, object[]>(_foldoutFieldName2, new object[] { _refValue2 })) { }
     public MFoldoutAttribute(string _foldoutFieldName1, object _refValue1, string _foldoutFieldName2, object[] _refValue2) : base(new KeyValuePair<string, object[]>(_foldoutFieldName1, new object[] { _refValue1 }), new KeyValuePair<string, object[]>(_foldoutFieldName2,  _refValue2 )) { }

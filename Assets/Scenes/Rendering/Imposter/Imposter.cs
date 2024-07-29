@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
-using Runtime.DataStructure;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
@@ -17,7 +16,6 @@ namespace Examples.Rendering.Imposter
     {
         public ImposterInput m_Input = ImposterInput.kDefault;
         public ImposterCameraHandle[] m_CameraHandles;
-
         private List<KeyValuePair<Material, Shader>> m_SharedMaterialShaderRef = new();
         [Button]
         void Construct()

@@ -9,7 +9,10 @@ Shader "Hidden/Imposter_AlbedoAlpha"
 		Tags{"LightMode" = "UniversalForward"}
         Pass
         {
-            Blend SrcAlpha OneMinusSrcAlpha
+            Blend Off
+            Cull Back
+            ZWrite On
+            ZTest LEqual
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag

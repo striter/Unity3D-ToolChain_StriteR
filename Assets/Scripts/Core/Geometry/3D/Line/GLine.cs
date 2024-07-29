@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Runtime.Geometry
 {
     [Serializable]
-    public struct GLine:ISerializationCallbackReceiver
+    public struct GLine: ISerializationCallbackReceiver , ILine
     {
         public float3 start;
         public float3 end;
@@ -44,6 +44,8 @@ namespace Runtime.Geometry
         public GRay ToRay()=>new GRay(start,direction);
         
         public static readonly GLine kDefault = new GLine(float3.zero, kfloat3.forward);
+        public void DrawGizmos() => Gizmos.DrawLine(start, end);
+        public float3 Origin => start + end / 2;
     }
     
 }

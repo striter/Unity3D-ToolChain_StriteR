@@ -1,6 +1,7 @@
 using System;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace Runtime.Geometry
 {
@@ -14,7 +15,7 @@ namespace Runtime.Geometry
     [Serializable]
     public partial struct GSphere : IVolume , IRayVolumeIntersection , ISDF
     {
-        public float3 Center => center;
+        public float3 Origin => center;
         public static readonly GSphere kDefault = kOne;
         public static readonly GSphere kOne = new GSphere(float3.zero, .5f);
         public static readonly GSphere kZero = new GSphere(0,0);
@@ -55,5 +56,6 @@ namespace Runtime.Geometry
             distances =  new float2(t0, t1);
             return !(t0 < 0);
         }
+        public void DrawGizmos() => Gizmos.DrawWireSphere(center,radius);
     }
 }

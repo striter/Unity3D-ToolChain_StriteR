@@ -76,8 +76,7 @@ MonoBehaviour:
   m_Active: 1
   m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
   m_Data:
-    m_Normal: 1
-    m_Mask: 1
+    m_Features: 15
     m_MaskData:
       renderMask: 64
       color: {r: 1, g: 1, b: 1, a: 1}
@@ -85,11 +84,10 @@ MonoBehaviour:
       outline: 0
       extendWidth: 0
       outlineVertex: 0
-    m_Reflection: 1
     m_PlanarReflection:
       maxPlanarReflectionTexture: 4
     m_AntiAliasing:
-      mode: 0
+      mode: 2
       fxaa: 2
       m_AdditionalSample: 1
       m_UseDepth: 1

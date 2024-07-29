@@ -48,6 +48,12 @@ namespace Examples.Rendering.Imposter
 
         public float2 TransformWorldToUV(float3 _direction)
         {
+            if (hemisphere)
+            {
+                _direction.y = math.max(_direction.y,0.01f);
+                _direction = _direction.normalize();
+            }
+
             var uv = InvMapping(_direction,mapping);
             if(hemisphere)
                 uv.y = umath.invLerp(0.5f,1f, uv.y);
@@ -72,18 +78,23 @@ namespace Examples.Rendering.Imposter
             public float3 direction;
         }
 
-        private struct ImposterHelper
+        public class ImposterOutput
         {
-            public int index;
-            public float rad;
+            public Triangle<ImposterCorner> corners = new ();
+            public float3 weights = new ();
+            public float3 centroid;
         }
         
         private static List<ImposterCorner> kCorners = new();
-        public IEnumerable<(ImposterCorner corner,float weight)> GetImposterViews(float3 directionOS)
+        private static readonly ImposterOutput kOuptut = new();
+        public ImposterOutput GetImposterViews(float3 directionOS)
         {
             // var value = GetImposterViewsNormalized().MinElement(p => math.dot(p.direction, -_directionOS));
             // yield return (value, 1);
-
+            kOuptut.corners = default;
+            kOuptut.weights = default;
+            kOuptut.centroid = kfloat3.zero;
+            
             var uv = DirectionToUV(directionOS);
             var viewDirection = UVToDirection(math.round(uv * cellCount) / cellCount);
             kCorners.Clear();
@@ -107,20 +118,22 @@ namespace Examples.Rendering.Imposter
             R = math.cross(viewDirection,U).normalize();
 
             var axis = new GAxis(viewDirection,U,R);
-            kCorners.Sort( (a, b) => -axis.ProjectRadClockwise(a.direction) . CompareTo(axis.ProjectRadClockwise(b.direction)));
+            kCorners.Sort( (a, b) => axis.ProjectRadClockwise(a.direction) . CompareTo(axis.ProjectRadClockwise(b.direction)));
             
             switch (kCorners.Count)
             {
                 default:
                 {
                     Debug.LogError("kCorners.Count = " + kCorners.Count);
-                    yield break;
+                    return kOuptut;
                 }
                 case 0:
-                    yield break;
+                    return kOuptut;
                 case 1:
-                    yield return (kCorners[0],1);
-                    break;
+                    kOuptut.corners[0] = kCorners[0];
+                    kOuptut.weights[0] = 1;
+                    kOuptut.centroid = kCorners[0].direction;
+                    return kOuptut;
                 case 2:
                 {
                     var corner0 = kCorners[0].direction;
@@ -129,14 +142,27 @@ namespace Examples.Rendering.Imposter
                     var ray = new GRay(corner0,offset.normalize());
                     var length = offset.magnitude();
                     var projection= ray.Projection(directionOS);
-                    var weight1Normalized = 1 - projection / length;
+                    var weight1Normalized = 1 - (projection / length);
                     // var weight1 = umath.invLerp(0.4f, 0.5f, weight1Normalized).saturate();
                     // var weight2 = umath.invLerp(0.4f,0.5f,  1 - weight1Normalized).saturate();
-            
-                    yield return (kCorners[0],weight1Normalized);
-                    yield return (kCorners[1], 1- weight1Normalized);
+
+                    kOuptut.centroid = ray.GetPoint(projection);
+                    if (weight1Normalized > .5f)
+                    {
+                        kOuptut.corners[0] = kCorners[0];
+                        kOuptut.weights[0] = weight1Normalized;
+                        kOuptut.corners[1] = kCorners[1];
+                        kOuptut.weights[1] = 1 - weight1Normalized;
+                    }
+                    else
+                    {
+                        kOuptut.corners[0] = kCorners[1];
+                        kOuptut.weights[0] = 1 - weight1Normalized;
+                        kOuptut.corners[1] = kCorners[0];
+                        kOuptut.weights[1] = weight1Normalized;
+                    }
+                    return kOuptut;
                 }
-                    break;
                 case 4:
                 {
                     var weights = new GQuad(kCorners[0].direction,kCorners[1].direction,kCorners[2].direction,kCorners[3].direction);
@@ -145,19 +171,22 @@ namespace Examples.Rendering.Imposter
                     var weight1 = triangle1.GetWeightsToPoint(directionOS);
                     // weight1 = umath.invLerp( 0f,0.35f, weight1).saturate();
                     
-                    if (!weight1.anyLesser(-0.01f))
+                    kOuptut.centroid = directionOS;
+                    if (!weight1.anyLesser(-0.05f))
                     {
-                        yield return (kCorners[0], weight1.x);
-                        yield return (kCorners[1], weight1.y);
-                        yield return (kCorners[2], weight1.z);
-                        yield break;
+                        kOuptut.corners[0] = kCorners[0];
+                        kOuptut.corners[1] = kCorners[1];
+                        kOuptut.corners[2] = kCorners[2];
+                        kOuptut.weights = weight1;
+                        return kOuptut;
                     }
                     var weight2 = triangle2.GetWeightsToPoint(directionOS);
-                    yield return (kCorners[0], weight2.x);
-                    yield return (kCorners[2], weight2.y);
-                    yield return (kCorners[3], weight2.z);
+                    kOuptut.corners[0] = kCorners[0];
+                    kOuptut.corners[1] = kCorners[2];
+                    kOuptut.corners[2] = kCorners[3];
+                    kOuptut.weights = weight2;
+                    return kOuptut;
                 }
-                    break;
             }
         }
 
