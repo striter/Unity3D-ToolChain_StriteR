@@ -89,6 +89,13 @@ namespace TechToys.ThePlanet.Module.BOIDS
             m_Butterflies?.DrawGizmos(m_DrawButterflyAttractions);
             m_BirdConfig?.DrawGizmos();
         }
+
+        [Button]
+        public void CreateNewBirdConfig() =>UnityEditor.Extensions.UEAsset.CreateScriptableInstanceAtCurrentSceneRoot<FBirdConfig>("Bird");   
+
+        [Button]
+        public void CreateNewButterflyConfig() => UnityEditor.Extensions.UEAsset.CreateScriptableInstanceAtCurrentSceneRoot<FButterflyConfig>("Butterfly"); 
+        
 #endif
     }
 

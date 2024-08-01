@@ -71,6 +71,12 @@ namespace Dome
                 Gizmos.matrix = transform.localToWorldMatrix;
                 m_Data?.DrawGizmos();
             }
+
+
+            [Button]
+            void NewDomeData()
+            {
+            }
         #endif
     }
 }

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Extensions;
 using UnityEditor;
+using UnityEditor.Extensions;
+using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 
 namespace Examples.Rendering.Imposter
@@ -9,8 +11,7 @@ namespace Examples.Rendering.Imposter
     [InitializeOnLoad]
     public class ImposterHierarchyCreator : Editor
     {
-        static ImposterHierarchyCreator ()
-        {
+        static ImposterHierarchyCreator () {
             DragAndDrop.AddDropHandler(DropHandler);
         }
 
@@ -42,5 +43,7 @@ namespace Examples.Rendering.Imposter
             Selection.objects = objects.ToArray();
             return DragAndDropVisualMode.None;
         }
+        
     }
+    
 }

@@ -243,6 +243,14 @@ namespace UnityEditor.Extensions
                 AssetDatabase.DeleteAsset(assetPath);
             }
         }
+
+        public static void CreateScriptableInstanceAtCurrentSceneRoot<T>(string _defaultName,bool _ping = true) where T:ScriptableObject
+        {
+            var path = UEPath.PathRegex($"<#activeScenePath>/{_defaultName}.asset");
+            AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<T>(), path);
+            AssetDatabase.ImportAsset(path);
+            EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath<T>(path));
+        }
         #endregion
 
         #region Serialize Helper

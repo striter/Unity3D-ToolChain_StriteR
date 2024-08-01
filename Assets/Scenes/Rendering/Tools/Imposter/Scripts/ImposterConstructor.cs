@@ -11,6 +11,7 @@ using UnityEditor.Extensions.EditorPath;
 using UnityEditor.Extensions.TextureEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering.Universal;
 
 namespace Examples.Rendering.Imposter
 {
@@ -44,41 +45,25 @@ namespace Examples.Rendering.Imposter
                 Construct((obj as GameObject).transform,name,$"{directory}/{name}.asset");
             }
         }
-
-        [Button]
-        void GenerateSelected()
-        {
-            var obj = Selection.activeObject;
-
-            if (!obj.IsSceneObject())
-            {
-                Debug.LogWarning($"{obj} is not SceneObject");
-                return;
-            }
-            
-            var directory = GetDirectory();
-            var initialName = $"Imposter_{obj.name}";
-            if (!UEAsset.SaveFilePath(out var filePath, "asset",initialName,directory))
-            {
-                Debug.LogWarning("Invalid Folder Selected");
-                return;
-            }
-            
-            Construct((obj as GameObject).transform,initialName,filePath);
-        }
         
-        public void Construct(Transform _root,string _initialName,string _filePath)
+        public void Construct(Transform _sceneObjectRoot,string _initialName,string _filePath)
         {
+            if (!_sceneObjectRoot.gameObject.IsSceneObject())
+            {
+                Debug.LogError($"{_sceneObjectRoot} is not SceneObject");
+                return;
+            }
+            
             if (m_Shader == null)
             {
                 Debug.LogError($"Invalid Renderer : {this}");
                 return;
             }
             
-            var meshRenderers = _root.GetComponentsInChildren<MeshRenderer>(false);
+            var meshRenderers = _sceneObjectRoot.GetComponentsInChildren<MeshRenderer>(false);
             if (meshRenderers.Length == 0)
             {
-                Debug.LogError($"No MeshRenderer Found : {_root}");
+                Debug.LogError($"No MeshRenderer Found : {_sceneObjectRoot}");
                 return;
             }
 
@@ -140,7 +125,7 @@ namespace Examples.Rendering.Imposter
             m_RendererLayerRef.Traversal(p=>p.Key.gameObject.layer = p.Value);
             m_SharedMaterialShaderRef.Traversal(p=>p.Key.shader = p.Value);
             boundingSphere.radius += boundingSphereExtrude;
-            boundingSphere.center = _root.transform.worldToLocalMatrix.MultiplyPoint(boundingSphere.center);
+            boundingSphere.center = _sceneObjectRoot.transform.worldToLocalMatrix.MultiplyPoint(boundingSphere.center);
             
             var asset = ScriptableObject.CreateInstance<ImposterData>();
             asset.m_Input = m_Input;
@@ -175,6 +160,8 @@ namespace Examples.Rendering.Imposter
                 m_Camera.farClipPlane = _sphere.radius * 2;
                 m_Camera.allowMSAA = true;
                 m_Camera.cullingMask = 1 << kLayerID;
+                var additional = m_Camera.gameObject.AddComponent<UniversalAdditionalCameraData>();
+                additional.renderPostProcessing = false;
             }
 
             public void Render(GSphere _sphere,float3 _direction,G2Box _rect)

@@ -2,7 +2,6 @@ using UnityEngine;
 namespace TechToys.ThePlanet.Module.BOIDS.Bird
 {
 
-    [CreateAssetMenu(fileName = "Bird Config",menuName = "Config/Boids/Bird")]
     public class FBirdConfig:ScriptableObject
     {
         public FBoidsMeshAnimationConfig animConfig;

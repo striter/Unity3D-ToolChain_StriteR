@@ -16,7 +16,6 @@ namespace TechToys.ThePlanet.Module.BOIDS.Butterfly
     }
 
     
-    [CreateAssetMenu(fileName = "Butterfly_Config",menuName = "Config/Boids/Butterfly")]
     public class FButterflyConfig:ScriptableObject
     {
         public FBoidsMeshAnimationConfig animConfig;

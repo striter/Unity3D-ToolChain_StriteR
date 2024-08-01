@@ -27,7 +27,6 @@ namespace Dome
         public GSphere bounds;
     }
     
-    [CreateAssetMenu(fileName = "DomeGrid",menuName = "Game/Dome/Grid")]
     public class FDomeGridData : ScriptableObject
     {
         [Min(2)] public int width;

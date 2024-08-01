@@ -27,8 +27,8 @@ namespace UnityEditor.Extensions.AssetPipeline.Model
             {
                 modelProcess.Process(_gameObject);
                 EditorUtility.SetDirty(_gameObject);
-                AssetDatabase.SaveAssetIfDirty(_gameObject);
             }
+            AssetDatabase.SaveAssetIfDirty(_gameObject);
         }
     }
 }
