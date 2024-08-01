@@ -74,9 +74,7 @@ namespace Dome
 
 
             [Button]
-            void NewDomeData()
-            {
-            }
-        #endif
+            void NewDomeData() => UnityEditor.Extensions.UEAsset.CreateScriptableInstanceAtCurrentSceneRoot<FDomeGridData>("DomeData");
+#endif
     }
 }
