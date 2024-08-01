@@ -6,11 +6,35 @@ Shader "Game/UI/Diffuse"
         _Color("Color Tint",Color)=(1,1,1,1)
         _Lambert("Lambert",Range(0,1))=0.5
         [Vector3]_LightDirection("Light Direction",Vector)=(0,-1,0)
+        
+		[Header(Misc)]
+        [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=0
+        [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
+        
+        _StencilComp ("Stencil Comparison", Float) = 8
+        _Stencil ("Stencil ID", Float) = 0
+        _StencilOp ("Stencil Operation", Float) = 0
+        _StencilWriteMask ("Stencil Write Mask", Float) = 255
+        _StencilReadMask ("Stencil Read Mask", Float) = 255
+
+        _ColorMask ("Color Mask", Float) = 15
     }
     SubShader
     {
-        ZTest Always
-        ZWrite Off
+        Stencil
+        {
+            Ref [_Stencil]
+            Comp [_StencilComp]
+            Pass [_StencilOp]
+            ReadMask [_StencilReadMask]
+            WriteMask [_StencilWriteMask]
+        }
+
+        Cull [_Cull]
+        ZWrite [_ZWrite]
+        ZTest [unity_GUIZTestMode]
+        Blend SrcAlpha OneMinusSrcAlpha
+        ColorMask [_ColorMask]
         Pass
         {
             HLSLPROGRAM

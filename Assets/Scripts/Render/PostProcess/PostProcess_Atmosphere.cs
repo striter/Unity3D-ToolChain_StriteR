@@ -24,13 +24,13 @@ namespace Rendering.PostProcess
             _128=128,
         }
 
-        [MTitle]public bool m_VolumetricLight;
+        [Title]public bool m_VolumetricLight;
         [MFoldout(nameof(m_VolumetricLight),true)] public DVolumetricLight m_VolumetricLightData;
         [Header("Optimize")]
         [Range(1, 4)] public int m_VolumetricDownSample;
-        [MTitle] public bool m_EnableVolumetricBlur;
+        [Title] public bool m_EnableVolumetricBlur;
         [MFoldout(nameof(m_EnableVolumetricBlur), true)] public DBlurs m_VolumetricBlur;
-        [MTitle] public bool m_MultiScattering;
+        [Title] public bool m_MultiScattering;
         [MFoldout(nameof(m_MultiScattering), true)] public DMultiScattering m_MultiScatteringData;
         public bool Validate() => m_MultiScattering || m_VolumetricLight;
         public static readonly DAtmosphere kDefault = new DAtmosphere()

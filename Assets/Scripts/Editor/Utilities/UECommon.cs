@@ -51,6 +51,23 @@ namespace UnityEditor.Extensions
             foreach (var component in _transform.GetComponentsInChildren<T>())
                 Object.DestroyImmediate(component);
         }
+        
+        public static bool IsSceneObject(this Object obj)
+        {
+            if (obj == null)
+                return false;
+
+            var isSceneType = obj is GameObject or Component;
+            if (!isSceneType)
+                return false;
+
+            return !PrefabUtility.IsPartOfPrefabAsset(obj);
+        }
+
+        public static bool IsPrefab(this Object obj)
+        {
+            return obj != null && PrefabUtility.IsPartOfPrefabAsset(obj);
+        }
     }
     
 }

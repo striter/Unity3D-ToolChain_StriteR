@@ -64,7 +64,7 @@ namespace Runtime.Geometry.Extension
         }
         
         
-        public static bool Clip(this G2Triangle _triangle,G2Plane _plane, out IShape2D _clippedShape)
+        public static bool Clip(this G2Triangle _triangle,G2Plane _plane, out IGeometry2 _clippedShape)
         {
             _clippedShape = null;
             for (int i = 0; i < 3; i++)

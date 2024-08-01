@@ -32,11 +32,12 @@ namespace Runtime
 
         protected virtual string GetInstanceName() => "Runtime Mesh";
         protected abstract void PopulateMesh(Mesh _mesh,Transform _transform,Transform _viewTransform);
+        public virtual void OnValidate(){}
         public virtual void DrawGizmos(Transform _transform,Transform _viewTransform){}
         public virtual bool isBillboard() => false;
     }
     
-    [ExecuteInEditMode,RequireComponent(typeof(MeshFilter),typeof(MeshRenderer))]
+    [ExecuteInEditMode,RequireComponent(typeof(MeshFilter),typeof(MeshRenderer)),DisallowMultipleComponent]
     public abstract class ARuntimeRendererMonoBehaviour<T> : MonoBehaviour where T:ARuntimeRendererBase,new()
     {
         public T meshConstructor = new T();
@@ -46,6 +47,7 @@ namespace Runtime
         protected virtual void Awake()
         {
             GetComponent<MeshFilter>().sharedMesh = meshConstructor?.Initialize(transform);
+            meshConstructor.OnValidate();
             m_Dirty = true;
         }
 
@@ -56,20 +58,28 @@ namespace Runtime
 
         private void OnEnable()
         {
+            if(meshConstructor.isBillboard())
+                RenderPipelineManager.beginCameraRendering += BillboardValidator;
             RenderPipelineManager.beginCameraRendering += BeginRendering;
         }
 
         private void OnDisable()
         {
+            if(meshConstructor.isBillboard())
+                RenderPipelineManager.beginCameraRendering -= BillboardValidator;
             RenderPipelineManager.beginCameraRendering -= BeginRendering;
         }
 
         public void PopulateMesh() => m_Dirty = true;
-        protected virtual void BeginRendering(ScriptableRenderContext _context, Camera _camera)
+
+        private ValueChecker<Matrix4x4> m_CameraTRChecker = new ValueChecker<Matrix4x4>();
+        protected void BillboardValidator(ScriptableRenderContext _context, Camera _camera)
         {
             if (m_CameraTRChecker.Check(_camera.transform.localToWorldMatrix))
                 PopulateMesh();
-            
+        }
+        protected void BeginRendering(ScriptableRenderContext _context, Camera _camera)
+        {
             if (!m_Dirty) return;
             m_Dirty = false;
             
@@ -81,9 +91,12 @@ namespace Runtime
             if (!m_DrawGizmos) return;
             meshConstructor?.DrawGizmos(transform,Camera.current.transform);
         }
-        
-        private ValueChecker<Matrix4x4> m_CameraTRChecker = new ValueChecker<Matrix4x4>();
-        private void OnValidate() => PopulateMesh();
+
+        public void OnValidate()
+        {
+            meshConstructor.OnValidate();
+            PopulateMesh();
+        }
 
     }
 }

@@ -10,6 +10,16 @@ namespace Rendering.PostProcess
     {
         public override bool m_OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.ColorUpgrade;
+
+        [Button]
+        void SepiaToneFilter()
+        {
+            m_Data = DColorUpgrade.kDefault;
+            m_Data.m_MixRed = new Vector3(0.393f, 0.349f, 0.272f)-Vector3.right;
+            m_Data.m_MixGreen = new Vector3(0.769f, 0.686f, 0.534f)-Vector3.up;
+            m_Data.m_MixBlue = new Vector3(0.189f, 0.168f, 0.131f)-Vector3.forward;
+            ValidateParameters();
+        }
     }
 
     public enum EBloomSample
@@ -21,25 +31,25 @@ namespace Rendering.PostProcess
     [Serializable]
     public struct DColorUpgrade:IPostProcessParameter
     {
-        [MTitle] public Texture2D m_LUTTex ;
+        [Title] public Texture2D m_LUTTex ;
         [MFold(nameof(m_LUTTex),null)] public bool m_64LUT;
         [MFold(nameof(m_LUTTex),null)] [Range(0,1)] public float m_LUTWeight;
-        [MTitle] public bool m_BSC;
+        [Title] public bool m_BSC;
         [MFoldout(nameof(m_BSC),true)] [Range(0, 2)]public float m_Brightness ;
         [MFoldout(nameof(m_BSC),true)] [Range(0, 2)] public float m_Saturation ;
         [MFoldout(nameof(m_BSC),true)] [Range(0, 2)]public float m_Contrast ;
 
-        [MTitle]public bool m_ChannelMix;
+        [Title]public bool m_ChannelMix;
         [MFoldout(nameof(m_ChannelMix),true)] [RangeVector(-1, 1)] public Vector3 m_MixRed;
         [MFoldout(nameof(m_ChannelMix),true)] [RangeVector(-1, 1)] public Vector3 m_MixGreen;
         [MFoldout(nameof(m_ChannelMix),true)] [RangeVector(-1, 1)] public Vector3 m_MixBlue;
 
         public bool m_UseMaskTexture;
         
-        [MTitle]public bool m_Bloom;
+        [Title]public bool m_Bloom;
         [MFoldout(nameof(m_Bloom),true)] public Data_Bloom m_BloomData;
 
-        [MTitle] public bool motionBlur;
+        [Title] public bool motionBlur;
         [MFoldout(nameof(motionBlur), true)] [Clamp(1,8)]public int iteration;
         [MFoldout(nameof(motionBlur), true)] [Range(-5,5)] public float intensity;
         public bool Validate() => motionBlur ||

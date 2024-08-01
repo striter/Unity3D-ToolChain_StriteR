@@ -8,7 +8,7 @@ using Unity.Mathematics;
 namespace Runtime.Geometry
 {
     [Serializable]
-    public struct G2Polygon : IShape2D, IConvex2D
+    public struct G2Polygon : IGeometry2, IConvex2D
     {
         public float2[] positions;
         [NonSerialized] public float2 center;

@@ -6,7 +6,7 @@ namespace Runtime.Geometry.Extension
 {
     public static class GJK
     {
-        public static bool Intersect(this IShape2D _shape2D, IShape2D _target)=> _2D.Intersect(_shape2D, _target);
+        public static bool Intersect(this IGeometry2 _shape2D, IGeometry2 _target)=> _2D.Intersect(_shape2D, _target);
         public static bool Intersect(this IVolume _shape3D, IVolume _target)=> _3D.Intersect(_shape3D, _target);
         
         public static class _2D
@@ -56,10 +56,10 @@ namespace Runtime.Geometry.Extension
                 return TriangleCase(_simplex, ref _direction);
             }
 
-            static float2 Support(IShape2D _a, IShape2D _b, float2 _direction) => _a.GetSupportPoint(_direction) - _b.GetSupportPoint(-_direction);
+            static float2 Support(IGeometry2 _a, IGeometry2 _b, float2 _direction) => _a.GetSupportPoint(_direction) - _b.GetSupportPoint(-_direction);
 
             private static readonly List<float2> kSimplex = new List<float2>();
-            public static bool Intersect(IShape2D _a,IShape2D _b) 
+            public static bool Intersect(IGeometry2 _a,IGeometry2 _b) 
             {
                 kSimplex.Clear();
                 var d = (_a.Origin - _b.Origin).normalize();
@@ -76,7 +76,7 @@ namespace Runtime.Geometry.Extension
                 }
             }
 
-            public static G2Polygon Sum(IShape2D _a, IShape2D _b,int _sampleCount=64)  //Minkowski sum
+            public static G2Polygon Sum(IGeometry2 _a, IGeometry2 _b,int _sampleCount=64)  //Minkowski sum
             {
                 kSimplex.Clear();
                 for(int i=0;i<_sampleCount;i++)
@@ -91,7 +91,7 @@ namespace Runtime.Geometry.Extension
                 return new G2Polygon(kSimplex);
             }
 
-            public static G2Polygon Difference(IShape2D _a, IShape2D _b, int _sampleCount = 64)
+            public static G2Polygon Difference(IGeometry2 _a, IGeometry2 _b, int _sampleCount = 64)
             {
                 kSimplex.Clear();
                 for(int i=0;i<_sampleCount;i++)

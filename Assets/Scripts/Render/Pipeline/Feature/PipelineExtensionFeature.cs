@@ -96,6 +96,8 @@ namespace Rendering.Pipeline
             var normal = m_Data.m_Features.IsFlagEnable(EPipeLineExtensionFeature.Normal);
             var reflection = _renderingData.cameraData.isSceneViewCamera || m_Data.m_Features.IsFlagEnable(EPipeLineExtensionFeature.Reflection);
             var motionVector = m_Data.m_Features.IsFlagEnable(EPipeLineExtensionFeature.MotionVector);
+            var antialiasing = m_Data.m_Features.IsFlagEnable(EPipeLineExtensionFeature.Antialiasing);
+            
             if(_renderingData.cameraData.camera.TryGetComponent(out CameraOverride param))
             {
                 normal = param.m_Normal.IsEnabled(normal);
@@ -113,21 +115,24 @@ namespace Rendering.Pipeline
                 m_Reflection.EnqueuePass(_renderer);
             
             _renderer.EnqueuePass(m_GlobalParameters);
-            EnqueuePostProcess(_renderer,ref _renderingData,param);
+            EnqueuePostProcess(_renderer,ref _renderingData,param,antialiasing);
         }
 
         private readonly List<IPostProcessBehaviour> m_PostprocessQueue = new List<IPostProcessBehaviour>();
         private readonly List<IPostProcessBehaviour> m_OpaqueProcessing = new List<IPostProcessBehaviour>();
         private readonly List<IPostProcessBehaviour> m_ScreenProcessing = new List<IPostProcessBehaviour>();
         private CameraOverride m_PostProcessingPreview;
-        void EnqueuePostProcess(ScriptableRenderer _renderer,ref RenderingData _data,CameraOverride _override)
+        void EnqueuePostProcess(ScriptableRenderer _renderer,ref RenderingData _data,CameraOverride _override,bool antialiasing)
         {
             m_PostprocessQueue.Clear();
             //Enqueue AntiAliasing
-            if (m_Data.m_AntiAliasing.mode != EAntiAliasing.None)
-                m_PostprocessQueue.Add(m_AntiAliasingPostProcess);
-            if(m_Data.m_AntiAliasing.mode == EAntiAliasing.TAA)
-                _renderer.EnqueuePass(m_TAA);
+            if (antialiasing)
+            {
+                if (m_Data.m_AntiAliasing.mode != EAntiAliasing.None)
+                    m_PostprocessQueue.Add(m_AntiAliasingPostProcess);
+                if(m_Data.m_AntiAliasing.mode == EAntiAliasing.TAA)
+                    _renderer.EnqueuePass(m_TAA);
+            }
 
             //Enqueue Global
             if(PostProcessGlobalVolume.HasGlobal)

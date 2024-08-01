@@ -48,7 +48,7 @@ namespace Runtime.DataStructure
                 foreach (var node in GetParents())
                 {
                     Gizmos.color = UColor.IndexToColor(node.iteration).SetA(.2f);
-                    if (node.boundary is IShape boundsShape)
+                    if (node.boundary is IGeometry boundsShape)
                         boundsShape.DrawGizmos();
                 }
             }
@@ -58,12 +58,12 @@ namespace Runtime.DataStructure
                 foreach (var leaf in GetLeafs())
                 {
                     Gizmos.color = UColor.IndexToColor(index++);
-                    if (leaf.boundary is IShape boundsShape)
+                    if (leaf.boundary is IGeometry boundsShape)
                         boundsShape.DrawGizmos();
                     foreach (var element in leaf.elements)
                         switch (element)
                         {
-                            case IShape gizmos:
+                            case IGeometry gizmos:
                                 gizmos.DrawGizmos();
                                 break;
                             case float3 v:

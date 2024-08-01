@@ -8,7 +8,7 @@ namespace Rendering.PostProcess
     [ExecuteInEditMode]
     public class PostProcessBehaviour<T,Y> : MonoBehaviour,IPostProcessBehaviour where T : PostProcessCore<Y>, new() where Y:struct,IPostProcessParameter
     {
-        [MTitle] public Y m_Data;
+        [Title] public Y m_Data;
         protected T m_Effect { get; private set; }
         private static readonly string kDefaultName = typeof(T).Name;
         public string m_Name => kDefaultName;

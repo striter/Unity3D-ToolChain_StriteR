@@ -15,7 +15,7 @@ public class UITrailRenderer : MaskableGraphic
     public AnimationCurve m_Width;
     public float m_MinVertexDistance = .1f;
     public bool m_Emitting = true;
-    [SerializeField] public Gradient m_Gradient = new Gradient();
+    public Gradient m_Gradient = new Gradient();
     
     private float kMinVertexDistanceSqr = 0f;
     private List<TrailPath> m_TrailPaths = new List<TrailPath>();

@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &-6720633002495213827
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Imposter_0_Imposter_Suzanne
+  m_Shader: {fileID: 4800000, guid: 232a4cc1dd239574ab6f69d8e0b18ff2, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlbedoAlpha:
+        m_Texture: {fileID: 2800000, guid: 7c11dc84c3ac4b74d9edf1bd13f1ce5b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalDepth:
+        m_Texture: {fileID: 2800000, guid: 2495847e526231f4f94284f2b3fcd65b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AlphaClip: 0.5
+    m_Colors:
+    - _ImposterViewDirection: {r: 1, g: 1, b: 1, a: 1}
+    - _Weights: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 855a6bfeaebacb04bab6a5fb5a958936, type: 3}
+  m_Name: Imposter_0_Imposter_Suzanne
+  m_EditorClassIdentifier: 
+  m_Interpolate: 0
+  m_Parallax: 0
+  m_Input:
+    mapping: 1
+    hemisphere: 1
+    width: 16
+    height: 16
+    cellResolution: 64
+    cellSizeNormalized:
+      x: 0.0625
+      y: 0.125
+    cellCount:
+      x: 16
+      y: 8
+  m_BoundingSphere:
+    center:
+      x: 0
+      y: 0.09712451
+      z: -0.2976039
+    radius: 8.67385
+  m_Material: {fileID: -6720633002495213827}

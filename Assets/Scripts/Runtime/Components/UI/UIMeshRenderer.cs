@@ -53,7 +53,7 @@ public class UIMeshRenderer : MaskableGraphic
         finalSize = new Vector3(rectSize.x/modelSize.x,rectSize.y/modelSize.y,float.Epsilon);
         
         var matrixTRS = Matrix4x4.TRS(Vector3.zero,Quaternion.identity, finalSize) * Matrix4x4.Translate(transform.position);
-        for (int i = 0; i < vertices.Length; i++)
+        for (var i = 0; i < vertices.Length; i++)
         {
             uiVertices.Add(new UIVertex()
             {

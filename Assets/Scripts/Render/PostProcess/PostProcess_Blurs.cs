@@ -72,7 +72,7 @@ namespace Rendering.PostProcess
     [Serializable]
     public struct DBlurs:IPostProcessParameter
     {
-        [MTitle] public EBlurType m_BlurType;
+        [Title] public EBlurType m_BlurType;
         [MFold(nameof(m_BlurType), EBlurType.None)] [Range(0.05f, 2f)] public float m_BlurSize;
         [MFold(nameof(m_BlurType),  EBlurType.None,EBlurType.Grainy)]
         [Range(1, FBlursCore.kMaxIteration)] public int m_Iteration;

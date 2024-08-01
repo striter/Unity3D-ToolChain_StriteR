@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Runtime.Geometry.Curves.Spline;
 using Unity.Mathematics;
 using UnityEngine;
 
 namespace Runtime.Geometry.Curves.Spline
 {
     [Serializable]
-    public struct G2FourierSpline : ISpline<float2> ,ISerializationCallbackReceiver
+    public struct G2FourierSpline : ISerializationCallbackReceiver
     {
         public float2[] paths;
         [Clamp(2)] public int coefficients;

@@ -32,7 +32,7 @@ namespace Runtime.Geometry
     }
     
     [Serializable]
-    public partial struct G2Box : ISerializationCallbackReceiver,IShape2D , IRayAreaIntersection,IConvex2D
+    public partial struct G2Box : ISerializationCallbackReceiver,IGeometry2 , IRayAreaIntersection,IConvex2D
     {
         public void OnBeforeSerialize(){  }
         public void OnAfterDeserialize()=>Ctor();

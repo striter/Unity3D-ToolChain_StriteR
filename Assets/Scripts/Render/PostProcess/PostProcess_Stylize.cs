@@ -31,7 +31,7 @@ namespace Rendering.PostProcess
     [Serializable]
     public struct DStylize:IPostProcessParameter
     {
-        [MTitle]public EStylize m_Stylize;
+        [Title]public EStylize m_Stylize;
         [MFoldout(nameof(m_Stylize),EStylize.Pixel)] [ Range(2,20)] public int m_DownSample;
         [MFoldout(nameof(m_Stylize), EStylize.Pixel)] public EPixelBound m_PixelGrid;
         [MFoldout(nameof(m_Stylize), EStylize.Pixel)] [MFold(nameof(m_PixelGrid), EPixelBound.None)] [Range(0.01f, 0.49f)] public float m_GridWidth;

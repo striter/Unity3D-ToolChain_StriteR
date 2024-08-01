@@ -18,27 +18,27 @@ namespace Rendering.PostProcess
     public struct DColorDegrade:IPostProcessParameter
     {
         [Header("UVs")]
-        [MTitle] public EVHSScreenCut m_ScreenCut;
+        [Title] public EVHSScreenCut m_ScreenCut;
         [MFold(nameof(m_ScreenCut), EVHSScreenCut.None), RangeVector(0, 1)] public Vector2 m_ScreenCutDistance;
 
-        [MTitle] public bool m_PixelDistort;
+        [Title] public bool m_PixelDistort;
         [MFoldout(nameof(m_PixelDistort), true)][ RangeVector(0, 1)] public Vector2 m_PixelDistortScale;
         [MFoldout(nameof(m_PixelDistort), true)][ Range(0, 0.5f)] public float m_PixelDistortStrength;
         [MFoldout(nameof(m_PixelDistort), true)][ Range(0.5f, 1f)] public float m_PixelDistortClip;
         [MFoldout(nameof(m_PixelDistort), true)][ Range(0f, 144f)] public int m_PixelDistortFrequency;
 
-        [MTitle] public bool m_LineDistort;
+        [Title] public bool m_LineDistort;
         [MFoldout(nameof(m_LineDistort), true)][ Range(-2f, 2f)] public float m_LineDistortSpeed;
         [MFoldout(nameof(m_LineDistort), true)][ Range(-.1f, .1f)] public float m_LineDistortStrength;
         [MFoldout(nameof(m_LineDistort), true)][ Range(0f, 1f)] public float m_LineDistortClip;
         [MFoldout(nameof(m_LineDistort), true)][ Range(0, 10f)] public float m_LineDistortFrequency;
 
-        [MTitle] public bool m_VortexDistort;
+        [Title] public bool m_VortexDistort;
         [MFoldout(nameof(m_VortexDistort), true)][RangeVector(0, 1)] public Vector2 m_VortexCenter;
         [MFoldout(nameof(m_VortexDistort), true)][Range(-5, 5)] public float m_VortexStrength;
         
         [Header("Colors")]
-        [MTitle] public bool m_ColorBleed;
+        [Title] public bool m_ColorBleed;
         [MFoldout(nameof(m_ColorBleed), true)] [Range(0, 5)] public float m_ColorBleedStrength;
         [MFoldout(nameof(m_ColorBleed), true)][ Range(1, 4)] public int m_ColorBleedIteration;
         [MFoldout(nameof(m_ColorBleed), true)][ Range(0, 2)] public float m_ColorBleedSize;
@@ -46,7 +46,7 @@ namespace Rendering.PostProcess
         [MFoldout(nameof(m_ColorBleed), true)][ RangeVector(-5, 5)] public Vector2 m_ColorBleedG;
         [MFoldout(nameof(m_ColorBleed), true)][ RangeVector(-5, 5)] public Vector2 m_ColorBleedB;
 
-        [MTitle] public bool m_Grain;
+        [Title] public bool m_Grain;
         [MFoldout(nameof(m_Grain), true)] public Color m_GrainColor;
         [MFoldout(nameof(m_Grain), true)] [RangeVector(0, 1)] public Vector2 m_GrainScale;
         [MFoldout(nameof(m_Grain), true)] [Range(0, 1)] public float m_GrainClip;
@@ -54,7 +54,7 @@ namespace Rendering.PostProcess
         [MFoldout(nameof(m_Grain), true)] public bool m_GrainCirlce;
         [MFoldout(nameof(m_Grain), true, nameof(m_GrainCirlce), true)] [Range(0, .5f)] public float m_GrainCircleWidth;
 
-        [MTitle] public bool m_Vignette;
+        [Title] public bool m_Vignette;
         [MFoldout(nameof(m_Vignette), true)] public Color m_VignetteColor;
         [MFoldout(nameof(m_Vignette), true), Range(0, 10)] public float m_VignetteValue;
 

@@ -210,20 +210,20 @@ namespace Rendering.PostProcess
     [Serializable]
     public struct DOpaque:IPostProcessParameter
     {
-        [MTitle] public bool m_Scan;
+        [Title] public bool m_Scan;
         [MFoldout(nameof(m_Scan), true)] public DScan m_ScanData;
-        [MTitle] public bool m_Area;
+        [Title] public bool m_Area;
         [MFoldout(nameof(m_Area), true)] public DArea m_AreaData;
-        [MTitle] public bool m_Outline;
+        [Title] public bool m_Outline;
         [MFoldout(nameof(m_Outline),true)] public DOutline m_OutlineData;
-        [MTitle] public bool m_MaskedHighlight;
+        [Title] public bool m_MaskedHighlight;
         [MFoldout(nameof(m_MaskedHighlight), true)] public DHighlight m_HighlightData;
         
         [Header("Multi Sample")]
         [Range(1, 4)] public int m_DownSample;
-        [MTitle] public bool m_SSAO;
+        [Title] public bool m_SSAO;
         [MFoldout(nameof(m_SSAO), true)] public DSSAO m_SSAOData;
-        [MTitle] public bool m_VolumetricCloud;
+        [Title] public bool m_VolumetricCloud;
         [MFoldout(nameof(m_VolumetricCloud), true)] public DVolumetricCloud m_VolumetricCloudData;
         public bool Validate() => m_Scan || m_Area || m_Outline || m_MaskedHighlight || m_SSAO || m_VolumetricCloud;
         public static readonly DOpaque kDefault = new DOpaque()
@@ -474,12 +474,12 @@ namespace Rendering.PostProcess
         [Serializable]
         public struct DVolumetricCloud
         {
-            [MTitle]public bool m_Shape;
+            [Title]public bool m_Shape;
             [MFoldout(nameof(m_Shape),true)] [CullingMask] public int m_CullingMask;
             [MFoldout(nameof(m_Shape),false)] public float m_VerticalStart;
             [MFoldout(nameof(m_Shape),false)] public float m_VerticalLength;
             
-            [MTitle] public Texture3D m_MainNoise;
+            [Title] public Texture3D m_MainNoise;
             [MFold(nameof(m_MainNoise)), RangeVector(0f, 1000f)] public Vector3 m_MainNoiseScale;
             [MFold(nameof(m_MainNoise)), RangeVector(0f, 10f)] public Vector3 m_MainNoiseFlow;
             

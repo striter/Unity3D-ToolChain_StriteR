@@ -10,7 +10,7 @@ namespace UnityEditor.Extensions.EditorPath
 
 
     [CustomPropertyDrawer(typeof(EditorPathAttribute))]
-    public class PathPropertyDrawer : SubAttributePropertyDrawer<EditorPathAttribute>
+    public class PathPropertyDrawer : ASubAttributePropertyDrawer<EditorPathAttribute>
     {
         private bool m_Foldout;
         private const float kOutputHeight = 20;
@@ -27,7 +27,7 @@ namespace UnityEditor.Extensions.EditorPath
 
         public override void OnGUI(Rect _position, SerializedProperty property, GUIContent label)
         {
-            if (!OnGUIAttributePropertyCheck(_position, property, out EditorPathAttribute attribute, SerializedPropertyType.String))
+            if (!OnGUIAttributePropertyCheck(_position, property, SerializedPropertyType.String))
                 return;
 
             var kDepth = 20f;

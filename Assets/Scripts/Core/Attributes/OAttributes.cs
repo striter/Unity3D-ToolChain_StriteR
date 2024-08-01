@@ -4,10 +4,23 @@ using System.Linq;
 using UnityEngine;
 
 [AttributeUsage(AttributeTargets.Field)]
-public class ScriptableObjectEditAttribute : PropertyAttribute { }
+public class TitleAttribute : PropertyAttribute { }
 
 [AttributeUsage(AttributeTargets.Field)]
-public class MTitleAttribute : PropertyAttribute { }
+public class ScriptableObjectEditAttribute : PropertyAttribute
+{
+    public bool on;
+    public ScriptableObjectEditAttribute()
+    {
+        on = false;
+    }
+    
+    public ScriptableObjectEditAttribute(bool _on)
+    {
+        on = _on;
+    }
+}
+
 
 [AttributeUsage(AttributeTargets.Field)]
 public class Readonly:PropertyAttribute{ }

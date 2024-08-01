@@ -36,7 +36,7 @@ namespace Runtime.Geometry
         public static readonly G2Triangle kDefault = new G2Triangle(new float2(0,1),new float2(-.5f,-1),new float2(.5f,-1));
     }
     [Serializable]
-    public partial struct G2Triangle :  ITriangle<float2> ,ISerializationCallbackReceiver, IShape2D,IConvex2D
+    public partial struct G2Triangle :  ITriangle<float2> ,ISerializationCallbackReceiver, IGeometry2,IConvex2D
     {
         public float2 V0 => triangle.v0;
         public float2 V1 => triangle.v1;

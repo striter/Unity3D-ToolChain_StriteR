@@ -31,7 +31,7 @@ namespace Runtime.Geometry
     }
 
     [Serializable]
-    public partial struct G2Plane : IShape<float2>, ISerializationCallbackReceiver
+    public partial struct G2Plane : IGeometry<float2>, ISerializationCallbackReceiver
     {
         public static readonly G2Plane kDefault = new(new float2(0,1),0f);
         

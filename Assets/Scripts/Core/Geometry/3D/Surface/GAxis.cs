@@ -64,7 +64,7 @@ namespace Runtime.Geometry
         public static GAxis kDefault = new GAxis(kfloat3.zero,kfloat3.right,kfloat3.forward);
         public static  implicit operator GPlane(GAxis _axis) => new GPlane(_axis.forward,_axis.origin);
         public bool RayIntersection(GRay _ray, out float distance) => ((GPlane)this).RayIntersection(_ray,out distance);
-        
+
         public void DrawGizmos()
         {
             Gizmos.color = Color.red;

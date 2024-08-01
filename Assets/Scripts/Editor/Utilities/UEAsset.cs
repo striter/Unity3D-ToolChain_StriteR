@@ -64,7 +64,8 @@ namespace UnityEditor.Extensions
                 else
                     AssetDatabase.AddObjectToAsset(dstAsset, mainAsset);
             }
-            AssetDatabase.SaveAssets();
+            EditorUtility.SetDirty(mainAsset);
+            AssetDatabase.SaveAssetIfDirty(mainAsset);
         }
 
         public static void ClearSubAssets(ScriptableObject _object)=> ClearSubAssets(AssetDatabase.GetAssetPath(_object));
@@ -77,6 +78,7 @@ namespace UnityEditor.Extensions
                 AssetDatabase.RemoveObjectFromAsset(asset);
             }
         }
+        
         public static T CreateAssetCombination<T>(string _assetPath, T _mainAsset, IEnumerable<UnityEngine.Object> _subAssets) where T : UnityEngine.Object
         {
             T mainAsset = CreateOrReplaceMainAsset(_mainAsset, _assetPath);
@@ -85,11 +87,18 @@ namespace UnityEditor.Extensions
             return mainAsset;
         }
 
-        private static List<FieldInfo> kSubAssetFields = new List<FieldInfo>();
-        private static List<UnityEngine.Object> kSubAssets = new List<UnityEngine.Object>();
-        private static List<string> kSubAssetNames = new List<string>();
-        public static T CreateAssetCombination<T>(string _assetPath, T _mainAsset) where T : UnityEngine.ScriptableObject
+        private static List<FieldInfo> kSubAssetFields = new();
+        private static List<UnityEngine.Object> kSubAssets = new();
+        private static List<string> kSubAssetNames = new();
+        public static T CreateAssetCombination<T>(string _assetPath, T _mainAsset) where T : ScriptableObject
         {
+            var directory =_assetPath.GetPathDirectory();
+            if (!AssetDatabase.IsValidFolder(directory))
+            {
+                Debug.LogError($"Directory not exists {directory}");
+                return null;
+            }
+            
             var mainAsset = CreateOrReplaceMainAsset(_mainAsset, _assetPath);
             var mainAssetPath = AssetDatabase.GetAssetPath(mainAsset);
             var subAssetFields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Collect(p=>p.FieldType.IsSubclassOf(typeof(UnityEngine.Object))).Where(p=>p!=null).FillList(kSubAssetFields);
@@ -97,23 +106,25 @@ namespace UnityEditor.Extensions
             var assetNames = subAssets.Select(p=>p.name).FillList(kSubAssetNames);
             
             CreateOrReplaceSubAsset(_assetPath, subAssets);
-            var storedAssets = AssetDatabase.LoadAllAssetsAtPath(mainAssetPath);
+            var storedAssets = AssetDatabase.LoadAllAssetsAtPath(mainAssetPath).Exclude(mainAsset);
             foreach (var (index,fieldInfo) in subAssetFields.LoopIndex())
             {
                 var assetName = assetNames[index];
-                var storedAsset = storedAssets.Find(p => p.name == assetName);
+                var storedAsset = storedAssets.Find(p => p.name == assetName && p.GetType() == fieldInfo.FieldType);
                 if (!storedAsset)
                 {
                     Debug.LogError($"Invalid asset stored found:{assetName}");
                     continue;
                 }
                 
+                EditorGUIUtility.PingObject(storedAsset);
                 fieldInfo.SetValue(_mainAsset, storedAsset);
             }
-            AssetDatabase.ImportAsset(mainAssetPath);
-            Debug.Log("Asset Combination Generate Successful:" + _assetPath);
+            mainAsset = CreateOrReplaceMainAsset(_mainAsset, _assetPath);
+            Debug.Log("Asset Combination Generate Successful:" + mainAsset);
             return mainAsset;
         }
+        
         public static bool SelectFilePath(out string filePath, string extension = "", string startDirectory = null)
         {
             filePath = EditorUtility.OpenFilePanel("Select File To Open", startDirectory ?? UEPath.GetCurrentProjectWindowDirectory(), extension);
@@ -212,7 +223,26 @@ namespace UnityEditor.Extensions
                     yield return template;
             }
         }
+
+        public static string MakeSureDirectory(string _filePath)
+        {
+            if(!Directory.Exists(_filePath))
+                Directory.CreateDirectory(_filePath);
+            return _filePath;
+        }
         
+        public static void DeleteAllAssetAtPath(string _assetPath, Predicate<string> _p = null)
+        {
+            string[] guids = AssetDatabase.FindAssets("", new[] { _assetPath });
+            foreach (string guid in guids)
+            {
+                string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                if (_p != null && _p(assetPath))
+                    continue;
+                // Debug.LogError(assetPath);
+                AssetDatabase.DeleteAsset(assetPath);
+            }
+        }
         #endregion
 
         #region Serialize Helper
@@ -231,7 +261,7 @@ namespace UnityEditor.Extensions
         public static void CopyMesh(Mesh _src, Mesh _tar)
         {
             _tar.Clear();
-            Vector3[] vertices = _src.vertices;
+            var vertices = _src.vertices;
             _tar.vertices = vertices;
             _tar.normals = _src.normals;
             _tar.tangents = _src.tangents;
@@ -240,7 +270,7 @@ namespace UnityEditor.Extensions
             _tar.bindposes = _src.bindposes;
             _tar.colors = _src.colors;
             _tar.boneWeights = _src.boneWeights;
-            List<Vector4> uvs = new List<Vector4>();
+            var uvs = new List<Vector4>();
             for (int i = 0; i < 8; i++)
             {
                 _src.GetUVs(i, uvs);

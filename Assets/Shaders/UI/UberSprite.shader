@@ -41,7 +41,7 @@
 			"CanUseSpriteAtlas" = "True"
 		}
 
-       Stencil
+        Stencil
         {
             Ref [_Stencil]
             Comp [_StencilComp]

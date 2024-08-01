@@ -27,7 +27,7 @@ namespace Runtime.Geometry
     }
 
     [Serializable]
-    public partial struct G2Quad : IQuad<float2>, IIterate<float2>, IShape2D, ISerializationCallbackReceiver,IConvex2D
+    public partial struct G2Quad : IQuad<float2>, IIterate<float2>, IGeometry2, ISerializationCallbackReceiver,IConvex2D
     {
         public static implicit operator G2Quad(Quad<float2> _src) => new G2Quad(_src);
         

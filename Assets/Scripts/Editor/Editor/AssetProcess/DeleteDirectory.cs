@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 
@@ -12,14 +13,21 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle.Process
             foreach (var path in m_DeletePaths)
             {
                 var directoryPath = UEPath.PathRegex(path).AssetToFilePath();
-                if (!Directory.Exists(directoryPath)) continue;
-                Directory.Delete(directoryPath, true);
-                var metaFilePath = directoryPath + ".meta";
-                if (File.Exists(metaFilePath))
-                    File.Delete(metaFilePath);
+                Execute(directoryPath);
             }
             AssetDatabase.Refresh();
             return true;
         }
+
+        public static void Execute(string _filePath)
+        {
+            if (!Directory.Exists(_filePath))
+                return;
+            Directory.Delete(_filePath, true);
+            var metaFilePath = _filePath + ".meta";
+            if (File.Exists(metaFilePath))
+                File.Delete(metaFilePath);
+        }
+
     }
 }
