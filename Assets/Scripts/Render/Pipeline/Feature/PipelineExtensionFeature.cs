@@ -133,28 +133,18 @@ namespace Rendering.Pipeline
                 if(m_Data.m_AntiAliasing.mode == EAntiAliasing.TAA)
                     _renderer.EnqueuePass(m_TAA);
             }
-
-            //Enqueue Global
-            if(PostProcessGlobalVolume.HasGlobal)
-            {
-                var components = PostProcessGlobalVolume.GlobalVolume.GetComponents<IPostProcessBehaviour>();
-                for(int j=0;j<components.Length;j++)
-                    m_PostprocessQueue.Add(components[j]);
-            }
             
-            //Enqueue Camera Preview
-            if (_data.cameraData.isSceneViewCamera)
+            if (_data.postProcessingEnabled && _data.cameraData.postProcessEnabled)
             {
-                if(m_PostProcessingPreview !=null && m_PostProcessingPreview.m_PostProcessPreview)
-                    m_PostprocessQueue.AddRange(m_PostProcessingPreview.GetComponentsInChildren<IPostProcessBehaviour>());
-            }
-            else
-            {
-                if (_data.postProcessingEnabled && _data.cameraData.postProcessEnabled)
+                m_PostprocessQueue.AddRange(
+                    _data.cameraData.camera.GetComponentsInChildren<IPostProcessBehaviour>());
+
+                //Enqueue Global
+                if (PostProcessGlobalVolume.HasGlobal)
                 {
-                    if (_override != null && _override.m_PostProcessPreview)
-                        m_PostProcessingPreview = _override;
-                    m_PostprocessQueue.AddRange(_data.cameraData.camera.GetComponentsInChildren<IPostProcessBehaviour>());
+                    var components = PostProcessGlobalVolume.GlobalVolume.GetComponents<IPostProcessBehaviour>();
+                    for (var j = 0; j < components.Length; j++)
+                        m_PostprocessQueue.Add(components[j]);
                 }
             }
             

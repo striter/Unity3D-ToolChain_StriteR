@@ -1,9 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq.Extensions;
 using UnityEditor;
-using UnityEditor.Extensions;
-using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 
 namespace Examples.Rendering.Imposter

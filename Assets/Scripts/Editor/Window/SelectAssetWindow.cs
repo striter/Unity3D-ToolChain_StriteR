@@ -20,7 +20,7 @@ namespace UnityEditor.Extensions
                 return;
             }
             
-            var window = GetWindow<AssetSelectWindow>();
+            var window = GetWindow<AssetSelectWindow>(typeof(T).Name);
             window.m_Type = typeof(T);
             window.m_Assets = kAssets;
             window.m_OnSelect = (p)=>_onSelect(p as T);

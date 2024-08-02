@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Name: Imposter_0_Imposter_Suzanne
   m_EditorClassIdentifier: 
   m_Interpolate: 0
-  m_Parallax: 0
+  m_Parallax: 0.073
   m_Input:
     mapping: 1
     hemisphere: 1

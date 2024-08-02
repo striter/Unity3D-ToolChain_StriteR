@@ -14,7 +14,7 @@ namespace Examples.Rendering.Imposter
             var selections = Selection.objects.ToArray();
             if (selections.Length == 0)
             {
-                Debug.LogWarning("No ImposterData selected");
+                Debug.LogWarning("Nothing selected");
                 return;
             }
 
@@ -43,7 +43,35 @@ namespace Examples.Rendering.Imposter
                 if(!successful)
                     Debug.LogWarning("No ImposterData selected");
             });
-            
+        }
+
+        private static string GetDirectory() => UEAsset.MakeSureDirectory(UEPath.PathRegex("<#activeScenePath>/Imposter"));
+        [MenuItem("GameObject/Optimize/Imposter/Data", false, 10)]
+        public static void CreateSceneSelections()
+        {
+            var selections = Selection.objects.ToArray();
+            if (selections.Length == 0)
+            {
+                Debug.LogWarning("Nothing selected");
+                return;
+            }
+
+            var directory = GetDirectory();
+            UEAsset.DeleteAllAssetAtPath(directory.FileToAssetPath());
+            var index = 0;
+            AssetSelectWindow.Select<ImposterConstructor>(p => {
+                foreach (var obj in selections)
+                {
+                    if (!obj.IsSceneObject())
+                    {
+                        Debug.LogWarning($"{obj} is not SceneObject");
+                        continue;
+                    }
+                
+                    var name = UEPath.PathRegex($"<#activeSceneName>_{index++}_Imposter_{obj.name}");
+                    p.Construct((obj as GameObject).transform,name,$"{directory}/{name}.asset");
+                }
+            });
         }
     }
 }

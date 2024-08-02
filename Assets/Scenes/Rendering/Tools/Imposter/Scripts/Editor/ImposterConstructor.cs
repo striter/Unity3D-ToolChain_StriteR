@@ -25,26 +25,6 @@ namespace Examples.Rendering.Imposter
         private static List<KeyValuePair<Material, Shader>> m_SharedMaterialShaderRef = new();
         private static List<KeyValuePair<Renderer,int>> m_RendererLayerRef = new();
         private static int kLayerID = 30;
-        private string GetDirectory() => UEAsset.MakeSureDirectory(UEPath.PathRegex("<#activeScenePath>/Imposter"));
-        
-        [Button]
-        void GenerateSceneSelections()
-        {
-            var directory = GetDirectory();
-            UEAsset.DeleteAllAssetAtPath(directory.FileToAssetPath());
-            var index = 0;
-            foreach (var obj in Selection.objects)
-            {
-                if (!obj.IsSceneObject())
-                {
-                    Debug.LogWarning($"{obj} is not SceneObject");
-                    continue;
-                }
-                
-                var name = UEPath.PathRegex($"<#activeSceneName>_{index++}_Imposter_{obj.name}");
-                Construct((obj as GameObject).transform,name,$"{directory}/{name}.asset");
-            }
-        }
         
         public void Construct(Transform _sceneObjectRoot,string _initialName,string _filePath)
         {
