@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: sponza_vase_hanging
+  m_Name: customGI_sponza_vase_hanging
   m_Shader: {fileID: 4800000, guid: 640a4958e83da2e4b8fba0fdd5ee74e1, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0

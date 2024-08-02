@@ -115,14 +115,14 @@ namespace Rendering.Pipeline
                 m_Reflection.EnqueuePass(_renderer);
             
             _renderer.EnqueuePass(m_GlobalParameters);
-            EnqueuePostProcess(_renderer,ref _renderingData,param,antialiasing);
+            EnqueuePostProcess(_renderer,ref _renderingData,antialiasing);
         }
 
         private readonly List<IPostProcessBehaviour> m_PostprocessQueue = new List<IPostProcessBehaviour>();
         private readonly List<IPostProcessBehaviour> m_OpaqueProcessing = new List<IPostProcessBehaviour>();
         private readonly List<IPostProcessBehaviour> m_ScreenProcessing = new List<IPostProcessBehaviour>();
         private CameraOverride m_PostProcessingPreview;
-        void EnqueuePostProcess(ScriptableRenderer _renderer,ref RenderingData _data,CameraOverride _override,bool antialiasing)
+        void EnqueuePostProcess(ScriptableRenderer _renderer,ref RenderingData _data,bool antialiasing)
         {
             m_PostprocessQueue.Clear();
             //Enqueue AntiAliasing

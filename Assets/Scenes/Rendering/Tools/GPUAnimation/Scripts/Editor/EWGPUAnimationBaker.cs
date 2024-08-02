@@ -8,9 +8,25 @@ namespace UnityEditor.Extensions
     
     public class GPUAnimationBaker : EditorWindow
     {
-        [MenuItem("Work Flow/Rendering/(Optimize)GPU Animation Baker", false, 400)]
-        static void ShowOptimizeWindow() => EditorWindow.GetWindow(typeof(GPUAnimationBaker)).titleContent =
-            new GUIContent("GPU Animation Instance Baker", EditorGUIUtility.IconContent("AvatarSelector").image);
+        [MenuItem("Assets/Create/Optimize/GPU Animation/Data", false, 10)]
+        static void ShowOptimizeWindow()
+        {
+            var window = GetWindow<GPUAnimationBaker>();
+            window.titleContent = new GUIContent("GPU Animation Instance Baker", EditorGUIUtility.IconContent("AvatarSelector").image);
+            window.UpdateWithSelections();
+
+            if (window.m_TargetPrefab == null)
+            {
+                Debug.LogError("No Prefab Selected");
+                window.Close();
+            }
+            
+            if (window.m_TargetAnimations == null || window.m_TargetAnimations.Length == 0)
+            {
+                Debug.LogError("No Animation Selected");
+                window.Close();
+            }
+        }
         
         GameObject m_TargetPrefab;
         SerializedObject m_SerializedWindow;
@@ -41,19 +57,13 @@ namespace UnityEditor.Extensions
         private void OnGUI()
         {
             EditorGUILayout.BeginVertical();
+            UpdateWithSelections();
             DrawGUI();
             EditorGUILayout.EndVertical();
         }
-        void DrawGUI()
-        {
-            //Select Prefab
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Select FBX&Animation Data");
-            m_TargetPrefab = (GameObject)EditorGUILayout.ObjectField(m_TargetPrefab, typeof(GameObject), false);
-            EditorGUILayout.EndHorizontal();
 
-            EditorGUILayout.PropertyField(m_AnimationProperty, true);
-            m_SerializedWindow.ApplyModifiedProperties();
+        void UpdateWithSelections()
+        {
             //Select AnimationClipAsset  
             List<AnimationClip> clip = new List<AnimationClip>();
             foreach (Object obj in Selection.objects)
@@ -68,6 +78,18 @@ namespace UnityEditor.Extensions
                 m_TargetAnimations = clip.ToArray();
                 m_SerializedWindow.Update();
             }
+        }
+        
+        void DrawGUI()
+        {
+            //Select Prefab
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Select FBX&Animation Data");
+            m_TargetPrefab = (GameObject)EditorGUILayout.ObjectField(m_TargetPrefab, typeof(GameObject), false);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.PropertyField(m_AnimationProperty, true);
+            m_SerializedWindow.ApplyModifiedProperties();
 
             ModelImporter importer = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(m_TargetPrefab)) as ModelImporter;
             if (m_TargetPrefab == null || importer == null || m_TargetAnimations==null || m_TargetAnimations.Length==0)
