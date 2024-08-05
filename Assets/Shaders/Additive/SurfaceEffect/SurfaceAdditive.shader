@@ -1,27 +1,18 @@
-Shader "Game/Additive/StencilOnly"
+Shader "Game/Surface/Additive"
 {
     Properties
     {
-		_Stencil("Stencil ID", Float) = 0
-		[Enum(UnityEngine.Rendering.CompareFunction)]_StencilComp("Stencil Comparison", Float) = 0
-		[Enum(UnityEngine.Rendering.StencilOp)]_StencilOp("Stencil Operation", Float) = 0
-		_StencilWriteMask("Stencil Write Mask", Float) = 255
-		_StencilReadMask("Stencil Read Mask", Float) = 255
+        _AdditiveTexture("Additive Texture",2D) = "black"{}
+        [HDR]_AdditiveColor("Color Tint",Color)=(1,1,1,1)
     }
     SubShader
     {
-        Stencil
-        {
-            Ref[_Stencil]
-            Comp[_StencilComp]
-            Pass[_StencilOp]
-            ReadMask[_StencilReadMask]
-            WriteMask[_StencilWriteMask]
-        }
+        Tags{"Queue" = "Transparent"}
         Pass
         {
+            Blend One One
             ZWrite Off
-            Blend Zero DstColor
+            ZTest Equal
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -31,15 +22,22 @@ Shader "Game/Additive/StencilOnly"
             struct a2v
             {
                 float3 positionOS : POSITION;
+                float2 uv : TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
             {
                 float4 positionCS : SV_POSITION;
+                float2 uv:TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
+            TEXTURE2D(_AdditiveTexture);SAMPLER(sampler_AdditiveTexture);
+            INSTANCING_BUFFER_START
+                INSTANCING_PROP(float4,_AdditiveColor)
+                INSTANCING_PROP(float4,_AdditiveTexture_ST)
+            INSTANCING_BUFFER_END
             
             v2f vert (a2v v)
             {
@@ -47,13 +45,16 @@ Shader "Game/Additive/StencilOnly"
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
                 o.positionCS = TransformObjectToHClip(v.positionOS);
+                o.uv = TRANSFORM_TEX(v.uv,_AdditiveTexture);
                 return o;
             }
 
             float4 frag (v2f i) : SV_Target
             {
 				UNITY_SETUP_INSTANCE_ID(i);
-                return 0;
+
+                float4 colorSample = SAMPLE_TEXTURE2D(_AdditiveTexture, sampler_AdditiveTexture, i.uv) * INSTANCE(_AdditiveColor);
+                return float4(colorSample.rgb * colorSample.a,1);
             }
             ENDHLSL
         }

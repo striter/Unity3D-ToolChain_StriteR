@@ -1,4 +1,3 @@
-using Rendering.Lightmap;
 using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 

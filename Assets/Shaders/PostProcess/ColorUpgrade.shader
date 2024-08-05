@@ -120,7 +120,7 @@
 		        float4 frag(v2f_img i) : SV_Target
 		        {
 		            float4 color = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv);
-		            color*=step(_BloomThreshold+0.01,RGBtoLuminance(color.rgb));
+		            color *= max(RGBtoLuminance(color.rgb) - _BloomThreshold,0);
 		            return max(0,color);
 		        }
 	        ENDHLSL

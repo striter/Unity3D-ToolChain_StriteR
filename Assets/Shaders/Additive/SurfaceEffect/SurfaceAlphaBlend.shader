@@ -1,22 +1,20 @@
-Shader "Game/SurfaceEffects/Rim"
+Shader "Game/Surface/AlphaBlend"
 {
     Properties
     {
-        [HDR] _RimColor("Color Tint",Color)=(1,1,1,1)
-        _RimWidth("Rim Width",Range(0.1,10))=2
-		[Header(Render Options)]
-        [Enum(UnityEngine.Rendering.BlendMode)]_SrcBlend("Src Blend",int)=1
-        [Enum(UnityEngine.Rendering.BlendMode)]_DstBlend("Dst Blend",int)=1
+        _MainTex("Texture",2D) = "black"{}
+        _Color("Color",Color)=(1,1,1,1)
     }
     SubShader
     {
         Tags{"Queue" = "Transparent"}
         Pass
         {
-            Blend [_SrcBlend] [_DstBlend]
+            Blend SrcAlpha OneMinusSrcAlpha
             ZWrite Off
-            ZTest LEqual
+            ZTest Equal
             HLSLPROGRAM
+            #pragma multi_compile_instancing
             #pragma vertex vert
             #pragma fragment frag
 
@@ -25,7 +23,6 @@ Shader "Game/SurfaceEffects/Rim"
             struct a2v
             {
                 float3 positionOS : POSITION;
-                float3 normalOS:NORMAL;
                 float2 uv : TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
@@ -33,15 +30,14 @@ Shader "Game/SurfaceEffects/Rim"
             struct v2f
             {
                 float4 positionCS : SV_POSITION;
-                float3 normalWS:NORMAL;
-                float2 uv : TEXCOORD0;
-                float3 viewDirWS : TEXCOORD1;
+                float2 uv:TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
+            TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
             INSTANCING_BUFFER_START
-                INSTANCING_PROP(float4,_RimColor)
-                INSTANCING_PROP(float,_RimWidth)
+                INSTANCING_PROP(float4,_Color)
+                INSTANCING_PROP(float4,_MainTex_ST)
             INSTANCING_BUFFER_END
             
             v2f vert (a2v v)
@@ -50,18 +46,21 @@ Shader "Game/SurfaceEffects/Rim"
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
                 o.positionCS = TransformObjectToHClip(v.positionOS);
-                o.normalWS=TransformObjectToWorldNormal(v.normalOS);
-                o.viewDirWS = GetWorldSpaceViewDir(TransformObjectToWorld(v.positionOS));
-                o.uv = v.uv;
+                o.uv = TRANSFORM_TEX(v.uv,_MainTex);
                 return o;
             }
 
             float4 frag (v2f i) : SV_Target
             {
 				UNITY_SETUP_INSTANCE_ID(i);
-                float ndv = pow(1-saturate(dot(normalize(i.viewDirWS),normalize(i.normalWS))),INSTANCE(_RimWidth));
-                float4 color = INSTANCE(_RimColor);
-                return float4(color.rgb,1)*ndv*color.a;
+
+                float4 texSample=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
+                float3 albedo=texSample.rgb;
+                float alpha=texSample.a;
+                float4 color = INSTANCE(_Color);
+                albedo*= color.rgb;
+                alpha*=color.a;
+                return float4(albedo.rgb,saturate(alpha));
             }
             ENDHLSL
         }

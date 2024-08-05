@@ -1,8 +1,7 @@
-
-using Rendering.GI.SphericalHarmonics;
 using UnityEngine;
 using UnityEditor;
 using System.Linq.Extensions;
+using Rendering.GI.SphericalHarmonics;
 
 namespace UnityEditor.Extensions
 {

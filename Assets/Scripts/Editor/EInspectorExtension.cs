@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Extensions;
 using System.Reflection;
+using Unity.Mathematics;
 using UnityEngine;
+using static System.Activator;
 
 namespace UnityEditor.Extensions
 {
@@ -18,6 +21,8 @@ namespace UnityEditor.Extensions
             String,
             Float,
             Integer,
+            Vector3,
+            Object,
         }
 
         private Dictionary<Type, EButtonParameters> kTypeLookupTable = new Dictionary<Type, EButtonParameters>()
@@ -25,11 +30,21 @@ namespace UnityEditor.Extensions
             {typeof(string),EButtonParameters.String},
             {typeof(float),EButtonParameters.Float},
             {typeof(int),EButtonParameters.Integer},
+            {typeof(float3),EButtonParameters.Vector3},
+            {typeof(Vector3),EButtonParameters.Vector3},
         };
+
+        EButtonParameters LookUp(Type _type)
+        {
+            if(_type.IsSubclassOf(typeof(UnityEngine.Object)))
+                return EButtonParameters.Object;
+            
+            return kTypeLookupTable.GetValueOrDefault(_type, EButtonParameters.NotSupported);
+        }
 
         public class ParameterData
         {
-            public EButtonParameters type;
+            public Type type;
             public string name;
             public object value;
         }
@@ -61,9 +76,9 @@ namespace UnityEditor.Extensions
                     var parameter = parameters[i];
                     buttonData.parameters[i] = new ParameterData()
                     {
-                        type = kTypeLookupTable[parameter.ParameterType],
+                        type = parameter.ParameterType,
                         name = parameter.Name,
-                        value = parameter.HasDefaultValue ? parameter.DefaultValue : Activator.CreateInstance(parameter.ParameterType),
+                        value = parameter.HasDefaultValue ? parameter.DefaultValue : (parameter.ParameterType.IsClass ? null : Activator.CreateInstance(parameter.ParameterType)),
                     };
                 }
                 clickMethods.Add(buttonData); 
@@ -84,33 +99,33 @@ namespace UnityEditor.Extensions
             EditorGUILayout.BeginVertical();
             foreach (var data in clickMethods)
             {
-                if(data.attribute is FoldoutButtonAttribute foldOutButton && !foldOutButton.IsElementVisible(target))
+                if(data.attribute is ButtonAttribute button && !button.IsElementVisible(target))
                     continue;
 
                 EditorGUILayout.BeginVertical();
                 if (data.parameters.Length > 0)
                 {
-                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField(data.method.Name, EditorStyles.boldLabel);   
                     foreach (var parameter in data.parameters)
                     {
                         var key = parameter.type;
-                        switch (key)
+                        switch ( LookUp(key))
                         {
                             case EButtonParameters.Float: parameter.value = EditorGUILayout.FloatField(parameter.name,(float)parameter.value); break;
                             case EButtonParameters.Integer: parameter.value = EditorGUILayout.IntField(parameter.name,(int)parameter.value); break;
                             case EButtonParameters.String: parameter.value = EditorGUILayout.TextField(parameter.name,(string)parameter.value); break;
-                            default:
-                            case EButtonParameters.NotSupported:
-                                EditorGUILayout.LabelField($"Not Supported Type {key}");break;
+                            case EButtonParameters.Vector3: parameter.value = EditorGUILayout.Vector3Field(parameter.name,(Vector3)parameter.value); break;
+                            case EButtonParameters.Object: parameter.value = EditorGUILayout.ObjectField((UnityEngine.Object)parameter.value,parameter.type,true); break;
+                            default: case EButtonParameters.NotSupported: EditorGUILayout.LabelField($"Not Supported Type {key}");break;
                         }
                     }
-                    if (GUILayout.Button(data.method.Name))
+                    
+                    if (GUILayout.Button("Execute"))
                     {
                         data.method.Invoke(target,data.parameters.Select(p=>p.value).ToArray());
                         Undo.RegisterCompleteObjectUndo(target,"Button Click");
                         return;
                     }
-                    EditorGUILayout.EndHorizontal();
                 }
                 else
                 {

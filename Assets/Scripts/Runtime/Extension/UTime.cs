@@ -14,25 +14,29 @@ public static class UTime
     }
 #endif
     
-    public static float deltaTime => GetDeltaTime();
-    static float GetDeltaTime()
+    public static float deltaTime
     {
-        #if UNITY_EDITOR
-            if(!Application.isPlaying)    
-                return editorDeltaTime;
-        #endif
-        return Time.deltaTime;
+        get
+        {
+            #if UNITY_EDITOR
+                if(!Application.isPlaying)    
+                    return editorDeltaTime;
+            #endif
+            return Time.deltaTime;
+        }
     }
 
-    public static float time => GetTime();
-    static float GetTime()
-    {
+    public static float time {
+        get
+        {
 #if UNITY_EDITOR
-        if(!Application.isPlaying)    
-            return editorTime;
+            if(!Application.isPlaying)    
+                return editorTime;
 #endif
-        return Time.time;
+            return Time.time;
+        }
     }
+    
     public const int kStampADay = 86400;
     public const int kStampAnHour = 3600;
     public static readonly DateTime kStampBegin = new DateTime(1970, 1, 1, 8, 0, 0);

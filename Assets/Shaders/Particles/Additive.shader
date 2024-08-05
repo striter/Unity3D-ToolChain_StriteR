@@ -9,7 +9,7 @@ Shader "Game/Particles/Additive"
         _MaskTex("Mask Tex",2D)="white"{}
         
         [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
-        [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
+        [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=4
 
         _StencilComp("Stencil Comparison", Float) = 8
         _Stencil("Stencil ID", Float) = 0

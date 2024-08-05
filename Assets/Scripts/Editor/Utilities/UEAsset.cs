@@ -244,12 +244,15 @@ namespace UnityEditor.Extensions
             }
         }
 
-        public static void CreateScriptableInstanceAtCurrentSceneRoot<T>(string _defaultName,bool _ping = true) where T:ScriptableObject
+        public static T CreateScriptableInstanceAtCurrentSceneRoot<T>(string _defaultName,bool _ping = true) where T:ScriptableObject
         {
             var path = UEPath.PathRegex($"<#activeScenePath>/{_defaultName}.asset");
             AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<T>(), path);
             AssetDatabase.ImportAsset(path);
-            EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath<T>(path));
+            var asset = AssetDatabase.LoadAssetAtPath<T>(path);
+            if(_ping)
+                EditorGUIUtility.PingObject(asset);
+            return asset;
         }
         #endregion
 

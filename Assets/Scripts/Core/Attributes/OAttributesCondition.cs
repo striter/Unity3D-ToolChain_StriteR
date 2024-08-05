@@ -65,9 +65,17 @@ public class ButtonAttribute : ConditionAttribute
     protected ButtonAttribute(params KeyValuePair<string, object[]>[] _pairs) : base(_pairs) { }
 }
 
+
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
 public class FoldoutButtonAttribute : ButtonAttribute
 {
-    public override EConditionAction Condition => EConditionAction.AnyEquals;
+    public override EConditionAction Condition => EConditionAction.AllEquals;
     public FoldoutButtonAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
+}
+
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+public class FoldButtonAttribute : ButtonAttribute
+{
+    public override EConditionAction Condition => EConditionAction.NonAnyEquals;
+    public FoldButtonAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
 }
