@@ -12,7 +12,7 @@ Shader "Game/Surface/AlphaBlend"
         {
             Blend SrcAlpha OneMinusSrcAlpha
             ZWrite Off
-            ZTest Equal
+            ZTest LEqual
             HLSLPROGRAM
             #pragma multi_compile_instancing
             #pragma vertex vert

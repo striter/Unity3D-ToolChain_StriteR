@@ -12,8 +12,8 @@ namespace UnityEditor.Extensions.EditorPath
             { "<#activeScenePath>", () => UnityEngine.SceneManagement.SceneManager.GetActiveScene().path.GetPathDirectory() },
         };
 
-        public static Dictionary<string, Func<string>> kActivePath { get; private set; } = new Dictionary<string, Func<string>>() {
-                { "Active Directory", UEPath.GetCurrentProjectWindowDirectory },
+        public static Dictionary<string, Func<string>> kActivePath { get; private set; } = new() {
+                { "Active Directory", GetCurrentProjectWindowDirectory },
             };
         
         public static string PathRegex(string _srcPath)

@@ -47,9 +47,9 @@ public static class UTime
     public static int GetDayStampNow() => GetDayStamp(DateTime.Now);
     public static int GetDayStamp(DateTime dt) => (int)(dt - kStampBegin).TotalDays;
 
-    public static string GetHourMinuteSecond(int seconds) => string.Format("{0:D2}:{1:D2}:{2:D2}", seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60);
+    public static string GetHourMinuteSecond(int seconds) => $"{seconds / 3600:D2}:{(seconds % 3600) / 60:D2}:{(seconds % 3600) % 60:D2}";
 
-    public static string GetMinuteSecond(int seconds) => string.Format("{0:D2}:{1:D2}", (seconds % 3600) / 60, (seconds % 3600) % 60);
+    public static string GetMinuteSecond(int seconds) => $"{(seconds % 3600) / 60:D2}:{(seconds % 3600) % 60:D2}";
 
     public static DateTime GetDateTime(int timeStamp)
     {

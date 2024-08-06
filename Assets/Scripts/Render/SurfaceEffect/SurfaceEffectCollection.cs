@@ -9,6 +9,7 @@ namespace Rendering.Pipeline.Component
     {
         [Readonly] public List<EntityEffectClip> m_AnimationClips;
 
+        #if UNITY_EDITOR
         [Button]
         public void InsertAnimation(string _name,AnimationClip _clip,Material _material)
         {
@@ -27,6 +28,7 @@ namespace Rendering.Pipeline.Component
                 warpMode = _clip.wrapMode,
             });
         }
+        #endif
     }
 
     [Serializable]

@@ -31,7 +31,7 @@ namespace Runtime
             var meshRenderers = GameObject.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None)
                 .Collect(p => p.bounds.Intersects(curBounds));
 
-            List<GTriangle> triangles = new List<GTriangle>();
+            var triangles = new List<GTriangle>();
             foreach (var renderer in meshRenderers)
             {
                 if (( m_Layer & (1 << renderer.gameObject.layer)) == 0)

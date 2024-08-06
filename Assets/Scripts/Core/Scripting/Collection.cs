@@ -70,6 +70,16 @@ namespace System.Linq.Extensions
                 }
             }
 
+            public static IEnumerable<T> UnCollect<T>(this IEnumerable<T> _collection, Predicate<T> _predicate)
+            {
+                foreach (T element in _collection)
+                {
+                    if (_predicate(element))
+                        continue;
+                    yield return element;
+                }
+            }
+
             public static IEnumerable<T> Exclude<T>(this IEnumerable<T> _collection, T _exclude)
             {
                 foreach (T element in _collection)

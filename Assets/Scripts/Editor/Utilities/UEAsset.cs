@@ -244,9 +244,9 @@ namespace UnityEditor.Extensions
             }
         }
 
-        public static T CreateScriptableInstanceAtCurrentSceneRoot<T>(string _defaultName,bool _ping = true) where T:ScriptableObject
+        public static T CreateScriptableInstanceAtCurrentRoot<T>(string _defaultName,bool _ping = true) where T:ScriptableObject
         {
-            var path = UEPath.PathRegex($"<#activeScenePath>/{_defaultName}.asset");
+            var path = $"{UEPath.GetCurrentProjectWindowDirectory()}/{_defaultName}.asset";
             AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<T>(), path);
             AssetDatabase.ImportAsset(path);
             var asset = AssetDatabase.LoadAssetAtPath<T>(path);

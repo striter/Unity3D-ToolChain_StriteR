@@ -9,6 +9,7 @@ namespace Rendering.Pipeline.Component
     [ExecuteInEditMode]
     public class SurfaceEffectBehaviour : MonoBehaviour
     {
+        public CullingMask m_Mask = CullingMask.kAll;
         public static List<SurfaceEffectBehaviour> kBehaviours { get; private set; } = new List<SurfaceEffectBehaviour>();
         public SurfaceEffectCollection m_Collection;
         [SerializeField,Readonly]private List<SurfaceEffectAnimation> m_Playing = new List<SurfaceEffectAnimation>();
@@ -18,12 +19,22 @@ namespace Rendering.Pipeline.Component
         {
             kBehaviours.Add(this);
             m_Renderers = GetComponentsInChildren<Renderer>(false);
+            
+#if UNITY_EDITOR
+            if(!Application.isPlaying)
+                UnityEditor.EditorApplication.update += Update;
+#endif
         }
 
         private void OnDisable()
         {
             kBehaviours.Remove(this);
             m_Renderers = null;
+            
+#if UNITY_EDITOR
+            if(!Application.isPlaying)
+                UnityEditor.EditorApplication.update -= Update;
+#endif
         }
 
         private static List<int> kExpired = new List<int>();
@@ -98,7 +109,7 @@ namespace Rendering.Pipeline.Component
                 if(material == null)
                     continue;
                 
-                foreach (var renderer in m_Renderers)
+                foreach (var renderer in m_Renderers.Collect(p => m_Mask.HasLayer(p.gameObject.layer)))
                     yield return (renderer,material);
             }
         }
@@ -107,7 +118,7 @@ namespace Rendering.Pipeline.Component
         [FoldoutButton(nameof(GetRenderers), null)]
         public void NewCollection()
         {
-            m_Collection = UnityEditor.Extensions.UEAsset.CreateScriptableInstanceAtCurrentSceneRoot<SurfaceEffectCollection>("SurfaceEffectCollection");
+            m_Collection = UnityEditor.Extensions.UEAsset.CreateScriptableInstanceAtCurrentRoot<SurfaceEffectCollection>("SurfaceEffectCollection");
         }
 #endif
     }
