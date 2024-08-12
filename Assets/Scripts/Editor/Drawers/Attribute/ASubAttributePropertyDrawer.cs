@@ -9,7 +9,7 @@ namespace UnityEditor.Extensions
 {
     public abstract class ASubAttributePropertyDrawer<T> : PropertyDrawer where T : PropertyAttribute
     {
-        public T attribute => base.attribute as T;
+        public new T attribute => base.attribute as T;
         
         public bool OnGUIAttributePropertyCheck(Rect _position, SerializedProperty _property, params SerializedPropertyType[] _checkTypes)
         {

@@ -9,10 +9,10 @@ using static System.Activator;
 
 namespace UnityEditor.Extensions
 {
-    [CustomEditor(typeof(ScriptableObject),true),CanEditMultipleObjects]
+    [CustomEditor(typeof(ScriptableObject),editorForChildClasses:true,isFallback = true),CanEditMultipleObjects]
     public class EScriptableExtension : EInspectorExtension {}
     
-    [CustomEditor(typeof(MonoBehaviour), true),CanEditMultipleObjects]
+    [CustomEditor(typeof(MonoBehaviour), editorForChildClasses:true,isFallback = true),CanEditMultipleObjects]
     public class EInspectorExtension : Editor
     {
         public enum EButtonParameters
@@ -56,7 +56,7 @@ namespace UnityEditor.Extensions
         }
 
         private List<ButtonAttributeData> clickMethods = new List<ButtonAttributeData>();
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             foreach (var (method,attribute) in target.GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance).Select(p=>(p,p.GetCustomAttribute<ButtonAttribute>(true))))
             {

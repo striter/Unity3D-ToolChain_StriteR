@@ -114,13 +114,13 @@ namespace Rendering.Pipeline.Component
             }
         }
         
-#if UNITY_EDITOR
-        [FoldoutButton(nameof(GetRenderers), null)]
-        public void NewCollection()
-        {
-            m_Collection = UnityEditor.Extensions.UEAsset.CreateScriptableInstanceAtCurrentRoot<SurfaceEffectCollection>("SurfaceEffectCollection");
-        }
-#endif
+// #if UNITY_EDITOR
+//         [FoldoutButton(nameof(GetRenderers), null)]
+//         public void NewCollection()
+//         {
+//             m_Collection = UnityEditor.Extensions.UEAsset.CreateScriptableInstanceAtCurrentRoot<SurfaceEffectCollection>("SurfaceEffectCollection");
+//         }
+// #endif
     }
 
     [Serializable]

@@ -5,7 +5,6 @@ using Runtime.DataStructure;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
-using UnityEditor.Extensions;
 using UnityEngine;
 
 namespace Examples.Rendering.Voxelizer
@@ -26,7 +25,7 @@ namespace Examples.Rendering.Voxelizer
         private QuadTree_triangle3 m_Voxelizer = new(2);
 
         private List<float> kIntersectDistances = new List<float>();
-
+#if UNITY_EDITOR
         [Button]
         void Construct()
         {
@@ -102,8 +101,9 @@ namespace Examples.Rendering.Voxelizer
             texture.SetPixels(pixels);
             texture.Apply();
             texture.name = "Voxelizer";
-            UEAsset.CreateOrReplaceMainAsset(texture, "Assets/Scenes/Examples/Rendering/Voxelizer/Voxelizer.asset");
+            UnityEditor.Extensions.UEAsset.CreateOrReplaceMainAsset(texture, "Assets/Scenes/Examples/Rendering/Voxelizer/Voxelizer.asset");
         }
+#endif
 
 
         public bool m_DrawGizmos;

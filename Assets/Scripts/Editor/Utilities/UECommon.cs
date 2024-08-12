@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using UnityEditor;
@@ -67,6 +68,17 @@ namespace UnityEditor.Extensions
         public static bool IsPrefab(this Object obj)
         {
             return obj != null && PrefabUtility.IsPartOfPrefabAsset(obj);
+        }
+        public static bool IsCalledFromEditor()
+        {
+            foreach (var frame in new StackTrace().GetFrames()!)
+            {
+                if (frame.GetMethod().DeclaringType == typeof(UnityEditor.Editor))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
     

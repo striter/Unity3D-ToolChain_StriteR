@@ -102,7 +102,7 @@ public static class URender
             case EVertexAttribute.UV5:
             case EVertexAttribute.UV6:
             case EVertexAttribute.UV7:
-                _srcMesh.SetUVs((int)_dataType, _data);
+                _srcMesh.SetUVs(UEnum.GetIndex(_dataType), _data);
                 break;
             case EVertexAttribute.Color:
                 _srcMesh.SetColors(_data.Select(p => new Color(p.x, p.y, p.z, p.w)).ToArray());

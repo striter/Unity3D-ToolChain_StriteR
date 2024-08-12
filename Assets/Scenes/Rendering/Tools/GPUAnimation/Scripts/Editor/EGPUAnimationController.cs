@@ -4,8 +4,8 @@ using Rendering.Optimize;
 
 namespace UnityEditor.Extensions
 {
-    [CustomEditor(typeof(GPUAnimationControllerEditor))]
-    public class GPUAnimationControllerEditor : UnityEditor.Editor
+    [CustomEditor(typeof(GPUAnimationController))]
+    public class GPUAnimationControllerEditor : EInspectorExtension
     {
         PreviewRenderUtility m_Preview;
         GPUAnimationController m_PreviewTarget;
@@ -24,8 +24,9 @@ namespace UnityEditor.Extensions
                 return false;
             return true;
         } 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             if (!HasPreviewGUI())
                 return;
             m_CameraDirection = Vector3.Normalize(new Vector3(0f,3f,15f));
@@ -121,10 +122,9 @@ namespace UnityEditor.Extensions
             if(m_PreviewReplay&&m_PreviewTarget.GetScale()>=1)
                 m_PreviewTarget.SetTime(0f);
 
-            m_PreviewTarget.Tick(0.012f* m_PreviewTickSpeed,m_TargetBlock);
-            m_PreviewTarget.m_MeshRenderer.SetPropertyBlock(m_TargetBlock);
+            (target as GPUAnimationController).Tick(UTime.deltaTime);
+            m_PreviewTarget.Tick(UTime.deltaTime);
 
-            m_PreviewMeshRenderer.SetPropertyBlock(m_TargetBlock);
             m_Preview.camera.transform.position = m_CameraDirection * m_CameraDistance;
             m_Preview.camera.transform.LookAt(m_PreviewTarget.transform);
             m_PreviewTarget.transform.rotation = Quaternion.Euler(m_RotateDelta.y,m_RotateDelta.x,0f);

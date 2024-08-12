@@ -10,7 +10,7 @@ namespace UnityEditor.Extensions
 
     public abstract class AMainAttributePropertyDrawer<T> : PropertyDrawer where T : PropertyAttribute
     {
-        public T attribute => base.attribute as T;
+        public new T attribute => base.attribute as T;
         static readonly Type kPropertyDrawerType = typeof(PropertyDrawer);
         private PropertyDrawer m_SubPropertyDrawer;
         PropertyDrawer GetSubPropertyDrawer(SerializedProperty _property)

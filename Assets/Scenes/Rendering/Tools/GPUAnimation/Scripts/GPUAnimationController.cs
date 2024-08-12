@@ -7,49 +7,46 @@ namespace Rendering.Optimize
     public class GPUAnimationController : MonoBehaviour
     {
         public GPUAnimationData m_Data;
-        public AnimationTicker m_Ticker { get; private set; } = new AnimationTicker(); 
         public MeshFilter m_MeshFilter { get; private set; }
         public MeshRenderer m_MeshRenderer { get; private set; }
-        Action<string> OnAnimEvent;
+        public Action<string> OnAnimEvent;
+        public AnimationTicker m_Ticker { get; private set; }=  new AnimationTicker(); 
 
-        protected void Awake() => OnValidate();
-        public void OnValidate()
+        protected void OnValidate() => Init();
+
+        public void Init()
         {
-            if (!m_Data)
-                return;
-            m_Ticker.Setup(m_Data.m_AnimationClips);
             m_MeshFilter = GetComponent<MeshFilter>();
             m_MeshRenderer = GetComponent<MeshRenderer>();
-
-            m_MeshFilter.sharedMesh =m_Data.m_BakedMesh;
+            if (!m_Data || m_MeshRenderer.sharedMaterial == null)
+                return;
+            m_Ticker.Setup(m_Data.m_AnimationClips);
+            m_MeshFilter.sharedMesh = m_Data.m_BakedMesh;
             m_Data.ApplyMaterial(m_MeshRenderer.sharedMaterial);
-        }
-        public GPUAnimationController Init( Action<string> _OnAnimEvent = null)
-        {
-            if (!m_Data)
-                throw new Exception("Invalid Data Found Of:" + gameObject);
-
-            OnValidate();
-            m_Ticker.Reset();
             InitExposeBones();
-            OnAnimEvent = _OnAnimEvent;
-            return this;
         }
+
+        [Button]
         public GPUAnimationController SetAnimation(int _animIndex)
         {
             m_Ticker.SetAnimation(_animIndex);
             return this;
         }
+
+        public void Tick(float _deltaTime)
+        {
+            if (!m_Ticker.Tick(Time.deltaTime,out var output,OnAnimEvent))
+                return;
+            var block = new MaterialPropertyBlock();
+            output.ApplyPropertyBlock(block);
+            m_MeshRenderer.SetPropertyBlock(block);
+            TickExposeBones(output);
+        }
+        
         public void SetTime(float _time) => m_Ticker.SetTime(_time);
         public void SetTimeScale(float _scale) => m_Ticker.SetNormalizedTime(_scale);
         public float GetScale() => m_Ticker.GetNormalizedTime();
-        public void Tick(float _deltaTime,MaterialPropertyBlock _block)
-        {
-            if (!m_Ticker.Tick(_deltaTime,out var output,OnAnimEvent))
-                return;
-            output.ApplyPropertyBlock(_block);
-            TickExposeBones(output);
-        }
+        
         #region ExposeBones
         Transform m_ExposeBoneParent;
         Transform[] m_ExposeBones;
