@@ -67,11 +67,16 @@ Shader "Hidden/Imposter_NormalDepth"
             {
 				UNITY_SETUP_INSTANCE_ID(i);
                 float3 normalWS = normalize(i.normalWS);
-                float3 tangentWS=normalize(i.tangentWS);
-	            float3 biTangentWS=normalize(i.biTangentWS);
-		        float3 normalTS=DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv));
-	            float3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
-	            normalWS = normalize(mul(transpose(TBNWS), normalTS));
+            	float4 normalSample = SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv);
+
+				if(normalSample.x != 1 || normalSample.y != 1 || normalSample.z != 1 || normalSample.w != 1)
+				{
+	                float3 tangentWS=normalize(i.tangentWS);
+		            float3 biTangentWS=normalize(i.biTangentWS);
+			        float3 normalTS=DecodeNormalMap(normalSample);
+		            float3x3 TBNWS=half3x3(tangentWS,biTangentWS,normalWS);
+		            normalWS = normalize(mul(transpose(TBNWS), normalTS));
+				}
 
             	float eyeDepth = i.eyeDepth; 
 				float depthOS = ( -1.0 / UNITY_MATRIX_P[2].z );

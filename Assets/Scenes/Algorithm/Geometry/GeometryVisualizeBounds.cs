@@ -20,7 +20,7 @@ namespace Examples.Algorithm.Geometry
 
         [Header("Polygon")] public float2[] boundingPolygonPoints;
         
-        [Button]
+        [InspectorButton]
         private void RandomPoints()
         {
             if (boundingBoxRandomPoints is { Length: > 0 })

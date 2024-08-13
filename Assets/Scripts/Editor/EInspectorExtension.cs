@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
@@ -13,95 +13,27 @@ namespace UnityEditor.Extensions
     public class EScriptableExtension : EInspectorExtension {}
     
     [CustomEditor(typeof(MonoBehaviour), editorForChildClasses:true,isFallback = true),CanEditMultipleObjects]
-    public class EInspectorExtension : Editor
+   public class EInspectorExtension : Editor 
     {
-        public enum EButtonParameters
-        {
-            NotSupported,
-            String,
-            Float,
-            Integer,
-            Vector3,
-            Object,
-        }
-
-        private Dictionary<Type, EButtonParameters> kTypeLookupTable = new Dictionary<Type, EButtonParameters>()
-        {
-            {typeof(string),EButtonParameters.String},
-            {typeof(float),EButtonParameters.Float},
-            {typeof(int),EButtonParameters.Integer},
-            {typeof(float3),EButtonParameters.Vector3},
-            {typeof(Vector3),EButtonParameters.Vector3},
-        };
-
-        EButtonParameters LookUp(Type _type)
-        {
-            if(_type.IsSubclassOf(typeof(UnityEngine.Object)))
-                return EButtonParameters.Object;
-            
-            return kTypeLookupTable.GetValueOrDefault(_type, EButtonParameters.NotSupported);
-        }
-
-        public class ParameterData
-        {
-            public Type type;
-            public string name;
-            public object value;
-        }
-        public struct ButtonAttributeData
-        {
-            public Attribute attribute;
-            public MethodInfo method;
-            public ParameterData[] parameters;
-        }
-
-        private List<ButtonAttributeData> clickMethods = new List<ButtonAttributeData>();
+        private List<ButtonAttributeData> inspectorMethods;
         protected virtual void OnEnable()
         {
-            foreach (var (method,attribute) in target.GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance).Select(p=>(p,p.GetCustomAttribute<ButtonAttribute>(true))))
-            {
-                if (attribute == null)
-                    continue;
-
-                var parameters = method.GetParameters();
-                var buttonData = new ButtonAttributeData()
-                {
-                    attribute = attribute,
-                    parameters = new ParameterData[parameters.Length],
-                    method = method,
-                };
-
-                for (var i = 0; i < parameters.Length; i++)
-                {
-                    var parameter = parameters[i];
-                    buttonData.parameters[i] = new ParameterData()
-                    {
-                        type = parameter.ParameterType,
-                        name = parameter.Name,
-                        value = parameter.HasDefaultValue ? parameter.DefaultValue : (parameter.ParameterType.IsClass ? null : Activator.CreateInstance(parameter.ParameterType)),
-                    };
-                }
-                clickMethods.Add(buttonData); 
-            }
-        }
-
-        private void OnDisable()
-        {
-            clickMethods.Clear();
+            inspectorMethods = UInspectorExtension.GetInspectorMethods(target);
         }
 
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            if (clickMethods.Count <= 0)
+            if (inspectorMethods.Count <= 0)
                 return;
             
             EditorGUILayout.BeginVertical();
-            foreach (var data in clickMethods)
+            foreach (var data in inspectorMethods)
             {
-                if(data.attribute is ButtonAttribute button && !button.IsElementVisible(target))
+                if(!data.attribute.IsElementVisible(target))
                     continue;
 
+                var undo = data.attribute.undo;
                 EditorGUILayout.BeginVertical();
                 if (data.parameters.Length > 0)
                 {
@@ -109,7 +41,7 @@ namespace UnityEditor.Extensions
                     foreach (var parameter in data.parameters)
                     {
                         var key = parameter.type;
-                        switch ( LookUp(key))
+                        switch (UInspectorExtension.LookUp(key))
                         {
                             case EButtonParameters.Float: parameter.value = EditorGUILayout.FloatField(parameter.name,(float)parameter.value); break;
                             case EButtonParameters.Integer: parameter.value = EditorGUILayout.IntField(parameter.name,(int)parameter.value); break;
@@ -122,8 +54,10 @@ namespace UnityEditor.Extensions
                     
                     if (GUILayout.Button("Execute"))
                     {
-                        data.method.Invoke(target,data.parameters.Select(p=>p.value).ToArray());
-                        Undo.RegisterCompleteObjectUndo(target,"Button Click");
+                        foreach (var target in targets)
+                            data.method.Invoke(target,data.parameters.Select(p=>p.value).ToArray());
+                        if(undo)
+                            Undo.RegisterCompleteObjectUndo(targets,"Button Click");
                         return;
                     }
                 }
@@ -131,8 +65,10 @@ namespace UnityEditor.Extensions
                 {
                     if (GUILayout.Button(data.method.Name))
                     {
-                        data.method.Invoke(target,null);
-                        Undo.RegisterCompleteObjectUndo(target,"Button Click");
+                        foreach (var target in targets)
+                            data.method.Invoke(target,null);
+                        if(undo)
+                            Undo.RegisterCompleteObjectUndo(targets,"Button Click");
                         return;
                     }
                 }

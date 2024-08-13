@@ -36,27 +36,35 @@ namespace Examples.Rendering.Imposter
             
             if (m_Shader == null)
             {
-                Debug.LogError($"Invalid Renderer : {this}");
+                Debug.LogError($"Invalid Constructor Renderer : {this}");
                 return;
             }
             
-            var meshRenderers = _sceneObjectRoot.GetComponentsInChildren<MeshRenderer>(false);
+            var meshRenderers = _sceneObjectRoot.GetComponentsInChildren<Renderer>(false);
             if (meshRenderers.Length == 0)
             {
-                Debug.LogError($"No MeshRenderer Found : {_sceneObjectRoot}");
+                Debug.LogError($"No Renderer Found : {_sceneObjectRoot}");
                 return;
             }
 
             var vertices = new List<float3>();
             foreach (var renderer in meshRenderers)
             {
-                var meshFilter = renderer.GetComponent<MeshFilter>();
-                if (!meshFilter || meshFilter.sharedMesh == null)
+                Mesh sharedMesh = null;
+                if (renderer is SkinnedMeshRenderer skinned)
+                    sharedMesh = skinned.sharedMesh;
+                else
+                {
+                    var meshFilter = renderer.GetComponent<MeshFilter>();
+                    if(meshFilter != null)
+                        sharedMesh = meshFilter.sharedMesh;
+                }
+                
+                if(sharedMesh == null)
                     continue;
                 
                 var matrix = renderer.transform.localToWorldMatrix;
-                var intersectMesh = meshFilter.sharedMesh;
-                vertices.AddRange(intersectMesh.vertices.Select(p=>(float3)matrix.MultiplyPoint(p)));
+                vertices.AddRange(sharedMesh.vertices.Select(p=>(float3)matrix.MultiplyPoint(p)));
             }
 
             if (vertices.Count == 0)
@@ -105,8 +113,8 @@ namespace Examples.Rendering.Imposter
             m_RendererLayerRef.Traversal(p=>p.Key.gameObject.layer = p.Value);
             m_SharedMaterialShaderRef.Traversal(p=>p.Key.shader = p.Value);
             boundingSphere.radius += boundingSphereExtrude;
-            boundingSphere.center = _sceneObjectRoot.transform.worldToLocalMatrix.MultiplyPoint(boundingSphere.center);
-            
+            boundingSphere.center -= (float3)_sceneObjectRoot.position;
+                
             var asset = ScriptableObject.CreateInstance<ImposterData>();
             asset.m_Input = m_Input;
             asset.m_BoundingSphere = boundingSphere;

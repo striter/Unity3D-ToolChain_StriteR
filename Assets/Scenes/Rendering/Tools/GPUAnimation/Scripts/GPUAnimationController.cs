@@ -26,7 +26,7 @@ namespace Rendering.Optimize
             InitExposeBones();
         }
 
-        [Button]
+        [InspectorButton]
         public GPUAnimationController SetAnimation(int _animIndex)
         {
             m_Ticker.SetAnimation(_animIndex);

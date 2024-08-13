@@ -41,7 +41,7 @@ namespace Examples.Rendering.Effects
             m_Camera.transform.SetPositionAndRotation(originAndDistance.xyz+ viewportRay.GetPoint(originAndDistance.w),rotationWS);
         }
 
-        [Button]
+        [InspectorButton]
         public void PitchYawTest(float _pitch = 30f, float _yaw = 180f)
         {
             pitchYaw = new float2(_pitch, _yaw);

@@ -32,8 +32,8 @@ MonoBehaviour:
     hdrDebugViewPS: {fileID: 4800000, guid: 573620ae32aec764abd4d728906d2587, type: 3}
   m_RendererFeatures:
   - {fileID: 9038337560460315165}
-  - {fileID: -3033789447685576703}
-  m_RendererFeatureMap: 1dca4ec31fa06e7d01685f2f92d0e5d5
+  - {fileID: 2162743148974953565}
+  m_RendererFeatureMap: 1dca4ec31fa06e7d5dd40f6f6f9b031e
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 0}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -76,6 +76,20 @@ MonoBehaviour:
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
+--- !u!114 &2162743148974953565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71045df687a34db78255998bd1ba396e, type: 3}
+  m_Name: SurfaceEffectFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  m_Event: 500
 --- !u!114 &9038337560460315165
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -39,12 +39,12 @@ namespace TechToys.ThePlanet
         private string m_ModuleSpawning;
         private bool m_SimplexForward;
 
-        [ExtendButton("Copy To Clipboard",nameof(CopyToClipboard),null,
-            "Clipboard To Persistent",nameof(ClipboardToData),null)]
         public bool m_ReadPersistent = true;
         public ModulePersistent m_Persistent = new ModulePersistent();
 
+        [InspectorButton]
         void CopyToClipboard()=> GUIUtility.systemCopyBuffer = TDataConvert.Convert(m_Persistent);
+        [InspectorButton]
         void ClipboardToData()=>m_Persistent = TDataConvert.Convert<ModulePersistent>(GUIUtility.systemCopyBuffer);
         
         private void Awake()

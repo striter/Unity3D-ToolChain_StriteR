@@ -57,7 +57,7 @@ namespace Examples.Rendering.SH
             Ctor();
         }
 
-        [Button]
+        [InspectorButton]
         void SyncWithUnity()
         {
             m_Data = RenderSettings.ambientProbe;

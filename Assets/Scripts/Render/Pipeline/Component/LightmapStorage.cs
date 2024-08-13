@@ -22,7 +22,7 @@ namespace Rendering.Pipeline
             m_Diffuse.Apply(transform);
         }
 
-        [Button]
+        [InspectorButton]
         public void Export()
         {
             m_Diffuse = GlobalIllumination_LightmapDiffuse.Export(transform);

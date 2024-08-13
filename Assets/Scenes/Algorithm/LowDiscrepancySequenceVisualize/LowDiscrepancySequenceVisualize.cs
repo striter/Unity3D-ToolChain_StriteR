@@ -33,7 +33,7 @@ namespace Examples.Algorithm.SamplePatternVisualize
         [Readonly] public float2[] patterns;
         [Range(0, 1f)] public float gizmosRadius = 0.03f;
         
-        [Button]
+        [InspectorButton]
         void Generate()
         {
             patterns = patternType switch

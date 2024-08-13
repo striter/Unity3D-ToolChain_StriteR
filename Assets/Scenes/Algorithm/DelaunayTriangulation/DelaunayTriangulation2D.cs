@@ -21,7 +21,7 @@ namespace Examples.Algorithm.DelaunayTriangulation
         public List<float2> m_Vertices = new List<float2>();
         private List<PTriangle> triangles = new List<PTriangle>();
 
-        [Button]
+        [InspectorButton]
         void Randomize()
         {
             m_Vertices.Clear();
@@ -34,7 +34,7 @@ namespace Examples.Algorithm.DelaunayTriangulation
             OnValidate();
         }
 
-        [Button]
+        [InspectorButton]
         void Sequence()
         {
             m_Vertices.Clear();
@@ -47,7 +47,7 @@ namespace Examples.Algorithm.DelaunayTriangulation
             OnValidate();
         }
         
-        [Button]
+        [InspectorButton]
         void PoissonDisk()
         {
             var size = (int)math.sqrt(m_RandomCount);

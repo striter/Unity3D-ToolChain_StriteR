@@ -308,7 +308,7 @@ namespace Examples.PhysicsScenes.FabricSimulation
             m_FabricInstance.DrawGizmos();
         }
 
-        [Button]
+        [InspectorButton]
         public void Reset()
         {
             m_FabricInstance.Reset();

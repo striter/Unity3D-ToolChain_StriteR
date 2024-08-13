@@ -90,10 +90,10 @@ namespace TechToys.ThePlanet.Module.BOIDS
             m_BirdConfig?.DrawGizmos();
         }
 
-        [Button]
+        [InspectorButton]
         public void CreateNewBirdConfig() =>UnityEditor.Extensions.UEAsset.CreateScriptableInstanceAtCurrentRoot<FBirdConfig>("Bird");   
 
-        [Button]
+        [InspectorButton]
         public void CreateNewButterflyConfig() => UnityEditor.Extensions.UEAsset.CreateScriptableInstanceAtCurrentRoot<FButterflyConfig>("Butterfly"); 
         
 #endif

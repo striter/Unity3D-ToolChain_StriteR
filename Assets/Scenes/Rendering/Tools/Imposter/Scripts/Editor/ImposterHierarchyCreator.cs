@@ -28,7 +28,10 @@ namespace Examples.Rendering.Imposter
                 Undo.RegisterCreatedObjectUndo(renderer.gameObject, "Create Imposter");
                 var transform = renderer.transform;
                 if (dropRoot != null)
+                {
                     transform.SetParentAndSyncPositionRotation(dropRoot.transform);
+                    transform.rotation = Quaternion.identity;   
+                }
                     
                 renderer.meshConstructor.m_Data = imposterData;
                 renderer.OnValidate();

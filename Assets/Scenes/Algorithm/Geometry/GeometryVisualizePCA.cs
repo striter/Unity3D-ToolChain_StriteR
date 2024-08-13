@@ -24,7 +24,7 @@ namespace Examples.Algorithm.Geometry
         [Readonly] public float2 right2D;
         [Readonly] public float2 up2D;
         
-        [Button]
+        [InspectorButton]
         void GenerateRandomPoints()
         {
             for (int i = 0; i < randomPoints.Length; i++)

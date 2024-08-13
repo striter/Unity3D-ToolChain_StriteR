@@ -90,6 +90,13 @@ namespace UnityEditor.Extensions
             return EditorGUI.GetPropertyHeight(_property) > _comparer;
         }
         
+
+        public static object GetFieldValue(this SerializedProperty _property)
+        {
+            var fieldInfo = GetFieldInfo(_property, out var targetObject);
+            return fieldInfo.GetValue(targetObject);
+        }
+        
         public static FieldInfo GetFieldInfo(this SerializedProperty _property,out object _parentObject)
         {
             _parentObject = _property.serializedObject.targetObject;
@@ -124,7 +131,7 @@ namespace UnityEditor.Extensions
             }
             return fieldInfo;
         }
-
+        
         public static IEnumerable<MethodInfo> AllMethods(this SerializedProperty _property)=>_property.serializedObject.targetObject.GetType().GetMethods(BindingFlags.Instance |  BindingFlags.Public | BindingFlags.NonPublic);
 
         public static IEnumerable<(FieldInfo,object)> AllRelativeFields(this SerializedProperty _property,BindingFlags _flags = BindingFlags.Instance |  BindingFlags.Public | BindingFlags.NonPublic)

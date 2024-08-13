@@ -58,24 +58,26 @@ public class MFoldAttribute : ConditionAttribute
 }
 
 [AttributeUsage(AttributeTargets.Method)]
-public class ButtonAttribute : ConditionAttribute
+public class InspectorButtonAttribute : ConditionAttribute
 {
     public override EConditionAction Condition => EConditionAction.AlwaysVisible;
-    public ButtonAttribute() {}
-    protected ButtonAttribute(params KeyValuePair<string, object[]>[] _pairs) : base(_pairs) { }
+    public bool undo;
+
+    public InspectorButtonAttribute(bool _undo = false) { undo = _undo;}
+    protected InspectorButtonAttribute(params KeyValuePair<string, object[]>[] _pairs) : base(_pairs) { }
 }
 
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-public class FoldoutButtonAttribute : ButtonAttribute
+public class FoldoutInspectorButtonAttribute : InspectorButtonAttribute
 {
     public override EConditionAction Condition => EConditionAction.AllEquals;
-    public FoldoutButtonAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
+    public FoldoutInspectorButtonAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
 }
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-public class FoldButtonAttribute : ButtonAttribute
+public class FoldInspectorButtonAttribute : InspectorButtonAttribute
 {
     public override EConditionAction Condition => EConditionAction.NonAnyEquals;
-    public FoldButtonAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
+    public FoldInspectorButtonAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
 }

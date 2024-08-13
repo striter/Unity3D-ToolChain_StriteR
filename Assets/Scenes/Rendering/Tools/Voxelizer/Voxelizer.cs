@@ -25,8 +25,8 @@ namespace Examples.Rendering.Voxelizer
         private QuadTree_triangle3 m_Voxelizer = new(2);
 
         private List<float> kIntersectDistances = new List<float>();
-#if UNITY_EDITOR
-        [Button]
+        
+        [InspectorButton]
         void Construct()
         {
             var meshRenderers = GameObject.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None)
@@ -103,8 +103,6 @@ namespace Examples.Rendering.Voxelizer
             texture.name = "Voxelizer";
             UnityEditor.Extensions.UEAsset.CreateOrReplaceMainAsset(texture, "Assets/Scenes/Examples/Rendering/Voxelizer/Voxelizer.asset");
         }
-#endif
-
 
         public bool m_DrawGizmos;
         private void OnDrawGizmos()

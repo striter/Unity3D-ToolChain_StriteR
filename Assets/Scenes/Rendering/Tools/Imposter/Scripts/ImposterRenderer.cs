@@ -41,7 +41,7 @@ namespace Examples.Rendering.Imposter
 
             var center = _transform.TransformPoint(m_Data.m_BoundingSphere.center);
             var viewDirectionWS = (_viewTransform.position - center).normalized;
-            var viewDirectionOS = _transform.worldToLocalMatrix.rotation *viewDirectionWS;
+            var viewDirectionOS = _transform.worldToLocalMatrix.rotation * viewDirectionWS;
             
             var weights = float4.zero;
             var size = m_Data.m_BoundingSphere.radius;
@@ -112,7 +112,6 @@ namespace Examples.Rendering.Imposter
                 m_Data.m_Input.DrawGizmos();
             var viewDirection = _transform.worldToLocalMatrix.rotation * (_viewTransform.position - center).normalized;
             
-
             var output = m_Data.m_Input.GetImposterViews(viewDirection);
             Gizmos.color = Color.blue;
             Gizmos.DrawCube(output.centroid, Vector3.one * 0.01f);

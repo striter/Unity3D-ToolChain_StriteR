@@ -112,7 +112,7 @@ public static class URuntime
     public static Rect Move(this Rect _rect, Vector2 _deltaPosition) { _rect.position += _deltaPosition; return _rect; }
     public static Rect MoveX(this Rect _rect, float _deltaX) { _rect.position += new Vector2(_deltaX,0); return _rect; }
     public static Rect MoveY(this Rect _rect, float _deltaY) { _rect.position += new Vector2(0,_deltaY); return _rect; }
-    
+    public static Rect MoveY(this Rect _rect) { _rect.position += new Vector2(0,_rect.size.y); return _rect; }
     public static Rect Reposition(this Rect _rect, float _newPositionX, float _newPositionY) => Reposition(_rect, new Vector2(_newPositionX, _newPositionY));
     public static Rect Reposition(this Rect _rect, Vector2 _newPosition) { _rect.position = _newPosition; return _rect; }
     public static Rect Resize(this Rect _rect, float _newSizeX, float _newSizeY) => Resize(_rect, new Vector2(_newSizeX, _newSizeY));

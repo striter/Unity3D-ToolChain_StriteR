@@ -11,7 +11,7 @@ namespace Rendering.PostProcess
         public override bool m_OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.ColorUpgrade;
 
-        [Button]
+        [InspectorButton]
         void SepiaToneFilter()
         {
             m_Data = DColorUpgrade.kDefault;

@@ -25,9 +25,9 @@ namespace Rendering.Pipeline
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             var cmd = CommandBufferPool.Get("SurfaceEffectPass");
-            foreach (var obj in SurfaceEffectBehaviour.kBehaviours)
+            foreach (var obj in ISurfaceEffect.kBehaviours)
             {
-                foreach (var (renderer, material) in obj.GetRenderers())
+                foreach (var (renderer, material) in obj.GetSurfaceEffectDrawCalls(renderingData.cameraData.camera))
                 {
                     for(int i=0;i<renderer.sharedMaterials.Length;i++)
                         cmd.DrawRenderer(renderer,material,i);

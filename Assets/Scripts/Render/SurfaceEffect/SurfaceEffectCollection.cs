@@ -7,16 +7,16 @@ namespace Rendering.Pipeline.Component
 {
     public class SurfaceEffectCollection : ScriptableObject
     {
-        [Readonly] public List<EntityEffectClip> m_AnimationClips;
+        [Readonly] public List<SurfaceEffectClip> m_AnimationClips;
 
-        #if UNITY_EDITOR
-        [Button]
+    #if UNITY_EDITOR
+        [InspectorButton]
         public void InsertAnimation(string _name,AnimationClip _clip,Material _material)
         {
             if (_clip == null)
                 return;
             
-            m_AnimationClips.Add(new EntityEffectClip() {
+            m_AnimationClips.Add(new SurfaceEffectClip() {
                 material = _material,
                 curves = UnityEditor.AnimationUtility.GetCurveBindings(_clip).Select(p=> new SurfaceEffectCurve()
                 {
@@ -28,7 +28,7 @@ namespace Rendering.Pipeline.Component
                 warpMode = _clip.wrapMode,
             });
         }
-        #endif
+#endif
     }
 
     [Serializable]
@@ -39,7 +39,7 @@ namespace Rendering.Pipeline.Component
     }
 
     [Serializable]
-    public struct EntityEffectClip 
+    public struct SurfaceEffectClip 
     {
         public Material material;
         public string name;

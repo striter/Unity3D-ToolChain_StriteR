@@ -32,7 +32,7 @@ namespace Examples.Algorithm.DataStructures
         public QuadTree_float3 m_QuadTree3 = new QuadTree_float3(2);
         public KDTree_float3 m_KDTree3 = new KDTree_float3();
         public QuadTree_triangle3 m_QuadTree_triangle3 = new QuadTree_triangle3(2);
-        [Button]
+        [InspectorButton]
         void Randomize()
         {
             m_RandomPoints = new float2[m_RandomCount];

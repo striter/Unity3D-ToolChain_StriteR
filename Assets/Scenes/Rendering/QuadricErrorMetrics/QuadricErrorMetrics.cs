@@ -18,7 +18,7 @@ namespace Examples.Rendering.QuadricErrorMetrics
 
         private Mesh m_QEMMesh;
 
-        [Button]
+        [InspectorButton]
         void Init()
         {
             m_Filter = GetComponent<MeshFilter>();
@@ -33,7 +33,7 @@ namespace Examples.Rendering.QuadricErrorMetrics
             m_Constructor.PopulateMesh(m_QEMMesh);
         }
 
-        [Button]
+        [InspectorButton]
         private void Optimize()
         {
             m_Constructor.simplify_mesh(500); // m_Constructor.Collapse(m_Data);
