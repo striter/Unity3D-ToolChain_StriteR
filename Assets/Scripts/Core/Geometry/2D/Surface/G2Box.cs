@@ -29,6 +29,8 @@ namespace Runtime.Geometry
             min = center - extent;
             max = center + extent;
         }
+        public static readonly G2Box kDefault = new G2Box(0f,.5f);
+        public static readonly G2Box kOne = new G2Box(0f,1f);
     }
     
     [Serializable]
@@ -54,7 +56,6 @@ namespace Runtime.Geometry
 
         public float2 GetUV(float2 _pos) => (_pos - min) / size;
         public float2 GetPoint(float2 _uv) => min + _uv * size;
-        public static readonly G2Box kDefault = new G2Box(0f,.5f);
 
         public float2 GetSupportPoint(float2 _direction) => this.MaxElement(_p => math.dot(_direction, _p));
         public bool RayIntersection(G2Ray _ray, out float2 distances)

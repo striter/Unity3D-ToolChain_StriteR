@@ -92,5 +92,16 @@ namespace Runtime.Geometry
             return cliped;
         }
 
+        public static IEnumerable<int> GetIndexes(this G2Polygon _polygon)
+        {
+            for (int i = 1; i < _polygon.Count-1; i++)
+            {
+                yield return 0;
+                yield return i;
+                yield return i+1;
+               
+            }
+        }
+        
     }
 }

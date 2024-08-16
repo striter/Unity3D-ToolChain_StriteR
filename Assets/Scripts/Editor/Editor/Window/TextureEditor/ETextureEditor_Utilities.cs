@@ -34,7 +34,7 @@ namespace UnityEditor.Extensions.TextureEditor
                 _ => throw new Exception("Invalid Type:" + _exportType)
             };
         
-        public static void ExportTexture(Texture2D _exportTexture,string _filePath,ETextureExportType _exportType)
+        public static Texture2D ExportTexture(Texture2D _exportTexture,string _filePath,ETextureExportType _exportType)
         {
             var bytes = _exportType switch
             {
@@ -44,7 +44,7 @@ namespace UnityEditor.Extensions.TextureEditor
                 ETextureExportType.PNG => _exportTexture.EncodeToPNG(),
                 _ => null
             };
-            UEAsset.CreateOrReplaceFile(_filePath,bytes);
+            return UEAsset.CreateOrReplaceFile<Texture2D>(_filePath,bytes);
         }
     }
 }

@@ -1,11 +1,12 @@
 using System;
+using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 
 namespace Runtime.Geometry
 {
     [Serializable]
-    public struct GLine: ISerializationCallbackReceiver , ILine
+    public struct GLine: ISerializationCallbackReceiver , ILine , ISDF
     {
         public float3 start;
         public float3 end;
@@ -46,6 +47,12 @@ namespace Runtime.Geometry
         public static readonly GLine kDefault = new GLine(float3.zero, kfloat3.forward);
         public void DrawGizmos() => Gizmos.DrawLine(start, end);
         public float3 Origin => start + end / 2;
+        public float SDF(float3 _position)
+        {
+            var lineDirection = direction;
+            var pointToStart = _position - start;
+            return math.length(math.cross(lineDirection, pointToStart));
+        }
     }
     
 }

@@ -62,8 +62,7 @@ public static partial class umath
     {
         var sin = _vector.x * _axis.y - _axis.x * _vector.y;
         var cos = _vector.x * _axis.x + _vector.y * _axis.y;
-        
-        return math.atan2(sin,cos);
+        return atan2(sin,cos);
     }
     public static float2 closestPitchYaw(quaternion _quaternion) => closestPitchYaw(math.mul(_quaternion,kfloat3.forward));
     

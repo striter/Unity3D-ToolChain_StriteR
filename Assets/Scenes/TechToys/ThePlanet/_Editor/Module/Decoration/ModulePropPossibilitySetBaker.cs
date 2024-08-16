@@ -126,7 +126,7 @@ namespace TechToys.ThePlanet.Baking
             Gizmos.matrix = qubeTransform.localToWorldMatrix;
             Gizmos.color = Color.white;
             Gizmos.DrawWireCube(Vector3.up*.5f,Vector3.one);
-            Gizmos.DrawLine(KQuad.k3SquareCentered[0]+kfloat3.up*.5f,KQuad.k3SquareCentered[2]+kfloat3.up*.5f);
+            Gizmos.DrawLine(KQuad.k3SquareCenteredUpward[0]+kfloat3.up*.5f,KQuad.k3SquareCenteredUpward[2]+kfloat3.up*.5f);
             var qubeBytes = UModuleByte.kByteQubeIndexer[m_Relation.ToByte()];
             for (int j = 0; j < qubeBytes.Length; j++)
             {

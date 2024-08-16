@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
 using Runtime.Geometry.Extension.BoundingSphere;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace Runtime.Geometry.Extension
 {
@@ -103,23 +105,30 @@ namespace Runtime.Geometry.Extension
         
         public static G2Circle GetBoundingCircle(IList<float2> _positions) => Welzl<G2Circle, float2>.Evaluate(_positions);
         private static readonly List<float2> kBoundingPolygonPoints = new List<float2>();
-        public static G2Polygon GetBoundingPolygon(IList<float2> _positions,float _bias = float.Epsilon)
+
+        public static G2Polygon GetBoundingPolygon(IList<float2> _positions,float _bias = float.Epsilon)        //Graham Scan
         {
             if(_positions.Count<=0)
                 return G2Polygon.kZero;
             
             kBoundingPolygonPoints.Clear();
-            var direction = kfloat2.right + kfloat2.up;
-            var initialPoint = _positions.MinElement(p=>p.sum());
+            var minimumY = _positions.MinElement(p => p.y).y;
+            var initialPoint = _positions.Collect(p=>Math.Abs(p.y - minimumY) < _bias).MinElement(p => p.x);
+            var curDirection = kfloat2.right + kfloat2.down;
             kBoundingPolygonPoints.Add(initialPoint);
-            
+
             while (kBoundingPolygonPoints.Count <= _positions.Count)
             {
                 var previousPoint = kBoundingPolygonPoints[^1];
-                var nextPoint = _positions.Collect(p=>(p-previousPoint).sqrmagnitude()> 0.001f).MinElement(p =>  umath.getRadClockwise(p-previousPoint,direction));
+                var direction = curDirection;
+                var nextPoint = _positions.Collect(p=>(p-previousPoint).sqrmagnitude()> 0.001f).MinElement(p =>
+                {
+                    var radCW = umath.getRadClockwise(p - previousPoint, direction);
+                    return radCW <= 0 ? float.MaxValue : radCW;
+                });
                 if ((nextPoint - initialPoint).sqrmagnitude() < _bias)
                     break;
-                direction = nextPoint - previousPoint;
+                curDirection = nextPoint - previousPoint;
                 kBoundingPolygonPoints.Add(nextPoint);
             }
 

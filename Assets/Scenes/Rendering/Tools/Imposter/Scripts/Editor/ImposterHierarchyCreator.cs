@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Extensions;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 namespace Examples.Rendering.Imposter
@@ -23,20 +25,31 @@ namespace Examples.Rendering.Imposter
                 
                 if (!perform) 
                     return DragAndDropVisualMode.Link;
+
+                var gameObject = new GameObject(imposterData.name);
                 
-                var renderer = new GameObject(imposterData.name).AddComponent<ImposterRenderer>();
-                Undo.RegisterCreatedObjectUndo(renderer.gameObject, "Create Imposter");
-                var transform = renderer.transform;
+                Undo.RegisterCreatedObjectUndo(gameObject, "Create Imposter");
+                var transform = gameObject.transform;
                 if (dropRoot != null)
                 {
                     transform.SetParentAndSyncPositionRotation(dropRoot.transform);
                     transform.rotation = Quaternion.identity;   
                 }
-                    
-                renderer.meshConstructor.m_Data = imposterData;
-                renderer.OnValidate();
+                if (imposterData.m_Instanced)
+                {
+                    gameObject.AddComponent<MeshRenderer>().sharedMaterial = imposterData.m_Material;
+                    gameObject.AddComponent<MeshFilter>().sharedMesh = imposterData.m_Mesh;
+                    if (dropRoot != null)
+                        transform.localPosition = imposterData.m_BoundingSphere.center;
+                }
+                else
+                {
+                    var renderer = gameObject.AddComponent<ImposterRenderer>();
+                    renderer.meshConstructor.m_Data = imposterData;
+                    renderer.OnValidate();
+                }
                 
-                objects.Add(renderer.gameObject);
+                objects.Add(gameObject);
             }
             
             Selection.objects = objects.ToArray();

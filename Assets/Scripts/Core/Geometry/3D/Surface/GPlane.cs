@@ -41,7 +41,7 @@ namespace Runtime.Geometry
     }
 
     [Serializable]
-    public partial struct GPlane:IEquatable<GPlane>,IEqualityComparer<GPlane>,ISerializationCallbackReceiver ,IRayIntersection
+    public partial struct GPlane:IEquatable<GPlane>,IEqualityComparer<GPlane>,ISerializationCallbackReceiver ,IRayIntersection , ISDF
     {
         public static readonly GPlane kComparer = new GPlane();
         public static readonly GPlane kDefault = new GPlane(Vector3.up, 0f);
@@ -81,12 +81,13 @@ namespace Runtime.Geometry
             return true;
         }
 
-        public float Ditance(GRay _ray)
+        public float Distance(GRay _ray)
         {
             var nrO = math.dot(normal, _ray.origin);
             var nrD = math.dot(normal, _ray.direction);
             return (distance - nrO) / nrD;
         }
+        public float SDF(float3 _position) => math.dot(normal, _position - position);
 
         public static implicit operator float4(GPlane _plane)=>_plane.normal.to4(_plane.distance);
         

@@ -1,11 +1,12 @@
 ﻿using System;
+using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 
 namespace Runtime.Geometry
 {
     [Serializable]
-    public struct GRay : ILine
+    public struct GRay : ILine , ISDF
     {
         public float3 origin;
         [PostNormalize] public float3 direction;
@@ -29,6 +30,11 @@ namespace Runtime.Geometry
         public static readonly GRay kDefault = new GRay(0,kfloat3.forward);
         public float3 Origin => origin;
         public void DrawGizmos() => Gizmos.DrawRay(origin, direction);
+        public float SDF(float3 _position)
+        {
+            var pointToStart = _position - origin;
+            return math.length(math.cross(direction, pointToStart));
+        }
     }
 
 }

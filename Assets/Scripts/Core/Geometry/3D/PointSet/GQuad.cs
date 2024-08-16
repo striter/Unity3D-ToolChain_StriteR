@@ -19,7 +19,7 @@ namespace Runtime.Geometry
             quad = _quad;
         }
 
-        public static readonly GQuad kDefault = (GQuad)KQuad.k3SquareCentered;
+        public static readonly GQuad kDefault = (GQuad)KQuad.k3SquareCenteredUpward;
     }
     
     [Serializable]

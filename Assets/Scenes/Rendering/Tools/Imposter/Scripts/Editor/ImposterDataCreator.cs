@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.Extensions;
 using UnityEditor.Extensions.EditorPath;
@@ -57,9 +58,9 @@ namespace Examples.Rendering.Imposter
             }
 
             var directory = GetDirectory();
-            UEAsset.DeleteAllAssetAtPath(directory.FileToAssetPath());
             var index = 0;
             AssetSelectWindow.Select<ImposterConstructor>(p => {
+                UEAsset.BeginAssetDirty();
                 foreach (var obj in selections)
                 {
                     if (!obj.IsSceneObject())
@@ -68,9 +69,11 @@ namespace Examples.Rendering.Imposter
                         continue;
                     }
                 
-                    var name = UEPath.PathRegex($"<#activeSceneName>_{index++}_Imposter_{obj.name}");
+                    var name = UEPath.PathRegex($"<#activeSceneName>_Imposter{index++}_{obj.name}");
                     p.Construct((obj as GameObject).transform,name,$"{directory}/{name}.asset");
                 }
+                
+                UEAsset.DeleteAllAssetAtPath(directory.FileToAssetPath(),p=>!UEAsset.IsAssetDirty(p));
             });
         }
     }

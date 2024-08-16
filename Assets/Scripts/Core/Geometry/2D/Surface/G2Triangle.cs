@@ -23,6 +23,12 @@ namespace Runtime.Geometry
             Ctor();
         }
 
+        public G2Triangle(IList<float2> _position, PTriangle _index)
+        {
+            this = default;
+            triangle = new Triangle<float2>(_position[_index.V0], _position[_index.V1], _position[_index.V2]);
+            Ctor();
+        }
         void Ctor()
         {
             baryCentre = GetBaryCentre();
@@ -69,5 +75,8 @@ namespace Runtime.Geometry
         public void OnAfterDeserialize()=>Ctor();
         public float2 Origin => baryCentre;
         public void DrawGizmos()=>UGizmos.DrawLinesConcat(this.Select(p=>p.to3xz()));
+        
+        //0.5 * |x1(y2 - y3) + x2(y3 - y1) + x3(y1 - y2)|
+        public float GetArea() => 0.5f * math.abs(V0.x * (V1.y - V2.y) + V1.x * (V2.y - V0.y) + V2.x * (V0.y - V1.y));
     }
 }

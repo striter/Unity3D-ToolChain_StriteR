@@ -34,10 +34,10 @@ namespace Runtime.Geometry
     
     public partial class KQube
     {
-        public static readonly Qube<float3> kUnitQubeBottomed = KQuad.k3SquareCentered.ExpandToQube(kfloat3.up,0f);
+        public static readonly Qube<float3> kUnitQubeBottomed = KQuad.k3SquareCenteredUpward.ExpandToQube(kfloat3.up,0f);
         public static readonly Qube<float3> kHalfUnitQubeBottomed = kUnitQubeBottomed.Resize(.5f);
         
-        public static readonly Qube<float3> kUnitQubeCentered = KQuad.k3SquareCentered.ExpandToQube(kfloat3.up,.5f);
+        public static readonly Qube<float3> kUnitQubeCentered = KQuad.k3SquareCenteredUpward.ExpandToQube(kfloat3.up,.5f);
         public static readonly Qube<float3> kHalfUnitQubeCentered = kUnitQubeCentered.Resize(.5f);
         
         public static readonly Qube<int> kZero = new Qube<int>(0);

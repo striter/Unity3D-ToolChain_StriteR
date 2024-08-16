@@ -9,7 +9,7 @@ namespace TechToys.ThePlanet.Baking
     public class ModuleByteVisualizer : MonoBehaviour
     {
         public bool m_DrawCluster;
-        private static readonly Qube<float3> kUnitQube = KQuad.k3SquareCentered.ExpandToQube(kfloat3.up, .5f);
+        private static readonly Qube<float3> kUnitQube = KQuad.k3SquareCenteredUpward.ExpandToQube(kfloat3.up, .5f);
         private static readonly Qube<float3> kHalfUnitQube = kUnitQube.Resize(.5f);
         private static readonly Vector3 kHalfSize = Vector3.one * .45f;
         private void OnDrawGizmos()

@@ -238,7 +238,7 @@ namespace System.Linq.Extensions
                 foreach (var (_,element) in _collection.LoopIndex())
                 {
                     var value = _getValue(element);
-                    if(minValue<value)
+                    if(minValue<=value)
                         continue;
                     minValue = value;
                     minElement = element;
@@ -704,6 +704,13 @@ namespace System.Linq.Extensions
             return _collection;
         }
 
+        public static T[] Cut<T>(this T[] _collection, int _startInclusive, int _endExclusive)
+        {
+            var template = new T[_endExclusive - _startInclusive];
+            for (var i = 0; i < template.Length; i++)
+                template[i] = _collection[i + _startInclusive];
+            return template;
+        }
         #endregion
         #region List
         public static List<T> DeepCopy<T>(this List<T> _list)

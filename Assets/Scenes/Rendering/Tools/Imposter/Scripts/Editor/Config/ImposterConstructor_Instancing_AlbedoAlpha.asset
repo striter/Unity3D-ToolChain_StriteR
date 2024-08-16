@@ -10,21 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a58d023782551c148b5ad9b0c0c2cd45, type: 3}
-  m_Name: ImposterConstructor_AlbedoAlpha_High
+  m_Name: ImposterConstructor_Instancing_AlbedoAlpha
   m_EditorClassIdentifier: 
   m_Input:
     mapping: 1
     hemisphere: 1
-    width: 16
-    height: 16
-    cellResolution: 256
+    width: 32
+    height: 32
+    cellResolution: 128
     cellSizeNormalized:
-      x: 0.0625
-      y: 0.125
+      x: 0.03125
+      y: 0.0625
     cellCount:
-      x: 16
-      y: 8
-  m_Shader: {fileID: 4800000, guid: 232a4cc1dd239574ab6f69d8e0b18ff2, type: 3}
+      x: 32
+      y: 16
+  m_Shader: {fileID: 4800000, guid: d4f1b0b09561424f997fac26d5edc511, type: 3}
+  m_Instanced: 1
   m_CameraHandles:
   - m_Name: _AlbedoAlpha
     m_Shader: {fileID: 4800000, guid: d9d6c3e694287174d9db193388f24390, type: 3}

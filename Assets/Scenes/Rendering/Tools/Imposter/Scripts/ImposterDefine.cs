@@ -21,6 +21,9 @@ namespace Examples.Rendering.Imposter
 
         [Readonly] public float2 cellSizeNormalized; 
         [Readonly] public int2 cellCount;
+
+        public float4 GetImposterTexel() =>
+            new float4(cellCount.x, cellCount.y, cellSizeNormalized.x, cellSizeNormalized.y);
         public int2 TextureResolution =>  cellCount * cellResolution;
         public ImposterInput Ctor()
         {
@@ -62,12 +65,14 @@ namespace Examples.Rendering.Imposter
         {
             for (var j = 0; j < cellCount.y; j++)
             for (var i = 0; i < cellCount.x; i++)
-            {
-                var rectMin =  new float2(i, j)  * cellSizeNormalized;
-                var rect = G2Box.Minmax(rectMin, rectMin + cellSizeNormalized);
-                var direction = TransformUVToWorld(rect.center);
-                yield return new ImposterCorner() { rect = rect, direction = direction };
-            }
+                yield return GetImposterCorner(new float2(i, j)  * cellSizeNormalized);
+        }
+
+        public ImposterCorner GetImposterCorner(float2 _rectMin)
+        {
+            var rect = G2Box.Minmax(_rectMin, _rectMin + cellSizeNormalized);
+            var direction = TransformUVToWorld(rect.center);
+            return new ImposterCorner() { rect = rect, direction = direction };
         }
 
         public struct ImposterCorner
@@ -190,13 +195,6 @@ namespace Examples.Rendering.Imposter
 
         public float3 UVToDirection(float2 _uv) => TransformUVToWorld(_uv); 
         public float2 DirectionToUV(float3 _direction) => TransformWorldToUV(_direction);
-
-        public G2Box UVToUVRect(float2 _uvCenter)
-        {
-            var min = _uvCenter - cellSizeNormalized * .5f;
-            return G2Box.Minmax(min, min + cellSizeNormalized);
-        }
-
         public void DrawGizmos()
         {
             foreach (var corner in GetImposterViewsNormalized())
@@ -224,8 +222,10 @@ namespace Examples.Rendering.Imposter
 
     public class ImposterDefine
     {
-        public static readonly int kBounding = Shader.PropertyToID("_BoundingSphere");
         public static readonly int kRotation = Shader.PropertyToID("_Rotation");
         public static readonly int kWeights = Shader.PropertyToID("_Weights");
+
+        public static readonly int kBounding = Shader.PropertyToID("_ImposterBoundingSphere");
+        public static readonly int kTexel = Shader.PropertyToID("_ImposterTexel");
     }
 }

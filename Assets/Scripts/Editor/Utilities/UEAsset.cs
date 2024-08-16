@@ -7,16 +7,28 @@ using System.Reflection;
 using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Object = UnityEngine.Object;
 
 namespace UnityEditor.Extensions
 {
     public static class UEAsset
     {
+        public static class Dirty
+        {
+            
+        }
+        
+        private static List<Object> kDirtyList = new();
+        public static void BeginAssetDirty() => kDirtyList.Clear();
+        public static bool IsAssetDirty(Object _object) => kDirtyList.Contains(_object);
+        public static bool IsAssetDirty(string _assetPath) => kDirtyList.Contains(AssetDatabase.LoadAssetAtPath<Object>(_assetPath));
+        static void SetAssetDirty(Object _object) => kDirtyList.TryAdd(_object);
+        
         #region Assets
-        public static T CreateOrReplaceMainAsset<T>(T asset, string path,bool ping = true) where T : UnityEngine.Object
+        public static T CreateOrReplaceMainAsset<T>(T asset, string path,bool ping = true) where T : Object
         {
             asset.name = path.GetFileName().RemoveExtension();
-            UnityEngine.Object previousAsset = AssetDatabase.LoadMainAssetAtPath(path);
+            Object previousAsset = AssetDatabase.LoadMainAssetAtPath(path);
             T replacedAsset = null;
 
             if (previousAsset != null)
@@ -35,6 +47,7 @@ namespace UnityEditor.Extensions
             }
             if(ping)
                 EditorGUIUtility.PingObject(replacedAsset);
+            SetAssetDirty(replacedAsset);
             return replacedAsset;
         }
         
@@ -66,6 +79,7 @@ namespace UnityEditor.Extensions
             }
             EditorUtility.SetDirty(mainAsset);
             AssetDatabase.SaveAssetIfDirty(mainAsset);
+            SetAssetDirty(mainAsset);
         }
 
         public static void ClearSubAssets(ScriptableObject _object)=> ClearSubAssets(AssetDatabase.GetAssetPath(_object));
@@ -165,7 +179,7 @@ namespace UnityEditor.Extensions
             return true;
         }
 
-        public static bool CreateOrReplaceFile(string path, byte[] bytes)
+        public static T CreateOrReplaceFile<T>(string path, byte[] bytes) where T:Object
         {
             try
             {
@@ -175,13 +189,15 @@ namespace UnityEditor.Extensions
                 writer.Close();
                 fileStream.Close();
                 AssetDatabase.Refresh();
-                return true;
+                var asset = AssetDatabase.LoadAssetAtPath<T>(path.FileToAssetPath());
+                SetAssetDirty(asset);
+                return asset;
 
             }
             catch (Exception e)
             {
                 Debug.LogError(e);
-                return false;
+                return null;
             }
         }
 
@@ -231,13 +247,13 @@ namespace UnityEditor.Extensions
             return _filePath;
         }
         
-        public static void DeleteAllAssetAtPath(string _assetPath, Predicate<string> _p = null)
+        public static void DeleteAllAssetAtPath(string _assetPath, Predicate<string> _assetPathPredicate = null)
         {
-            string[] guids = AssetDatabase.FindAssets("", new[] { _assetPath });
-            foreach (string guid in guids)
+            var guids = AssetDatabase.FindAssets("", new[] { _assetPath });
+            foreach (var guid in guids)
             {
-                string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-                if (_p != null && _p(assetPath))
+                var assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                if (_assetPathPredicate != null && !_assetPathPredicate(assetPath))
                     continue;
                 // Debug.LogError(assetPath);
                 AssetDatabase.DeleteAsset(assetPath);
@@ -254,8 +270,27 @@ namespace UnityEditor.Extensions
                 EditorGUIUtility.PingObject(asset);
             return asset;
         }
+        
+        public static T LoadAssetFromUniqueAssetPath<T>(string aAssetPath) where T : UnityEngine.Object
+        {
+            if (!aAssetPath.Contains("::")) 
+                return AssetDatabase.LoadAssetAtPath<T>(aAssetPath);
+            
+            var parts = aAssetPath.Split(new[] { "::" },StringSplitOptions.RemoveEmptyEntries);
+            aAssetPath = parts[0];
+            if (parts.Length <= 1) return AssetDatabase.LoadAssetAtPath<T>(aAssetPath);
+            var assetName = parts[1];
+            var t = typeof(T);
+            var assets = AssetDatabase.LoadAllAssetsAtPath(aAssetPath)
+                .Where(i => t.IsInstanceOfType(i)).Cast<T>();
+            var obj = assets.FirstOrDefault(i => i.name == assetName);
+            if (obj == null)
+                if (int.TryParse(parts[1], out var id))
+                    obj = assets.FirstOrDefault(i => i.GetInstanceID() == id);
+            return obj != null ? obj : AssetDatabase.LoadAssetAtPath<T>(aAssetPath);
+        }
         #endregion
-
+        
         #region Serialize Helper
 
         public static void CopyPropertyTo(UnityEngine.Object _src, UnityEngine.Object _tar)

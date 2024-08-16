@@ -17,9 +17,9 @@ Shader "Hidden/Imposter_NormalDepth"
             #pragma vertex vert
             #pragma fragment frag
 
-            #include "../Imposter.hlsl"
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "Assets/Shaders/Library/Lighting.hlsl"
+            #include "../Imposter.hlsl"
 
             struct a2v
             {

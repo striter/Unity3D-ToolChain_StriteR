@@ -20,31 +20,31 @@ namespace Examples.Rendering.Imposter
     {
         public ImposterInput m_Input = ImposterInput.kDefault;
         public Shader m_Shader;
+        public bool m_Instanced;
         public ImposterCameraHandle[] m_CameraHandles;
-        
+        private static int kLayerID = 30;
         private static List<KeyValuePair<Material, Shader>> m_SharedMaterialShaderRef = new();
         private static List<KeyValuePair<Renderer,int>> m_RendererLayerRef = new();
-        private static int kLayerID = 30;
         
-        public void Construct(Transform _sceneObjectRoot,string _initialName,string _filePath)
+        public ImposterData Construct(Transform _sceneObjectRoot,string _initialName,string _filePath)
         {
             if (!_sceneObjectRoot.gameObject.IsSceneObject())
             {
                 Debug.LogError($"{_sceneObjectRoot} is not SceneObject");
-                return;
+                return null;
             }
             
             if (m_Shader == null)
             {
                 Debug.LogError($"Invalid Constructor Renderer : {this}");
-                return;
+                return null;
             }
             
             var meshRenderers = _sceneObjectRoot.GetComponentsInChildren<Renderer>(false);
             if (meshRenderers.Length == 0)
             {
                 Debug.LogError($"No Renderer Found : {_sceneObjectRoot}");
-                return;
+                return null;
             }
 
             var vertices = new List<float3>();
@@ -68,9 +68,9 @@ namespace Examples.Rendering.Imposter
             }
 
             if (vertices.Count == 0)
-                return;
+                return null;
 
-            var material = new Material(m_Shader){name = _initialName};
+            var material = new Material(m_Shader){name = _initialName,enableInstancing = m_Instanced};
             var block = new MaterialPropertyBlock();
             m_SharedMaterialShaderRef.Clear();
             m_RendererLayerRef.Clear();
@@ -92,35 +92,46 @@ namespace Examples.Rendering.Imposter
             boundingSphere.radius += boundingSphereExtrude;
             
             block.SetVector(ImposterDefine.kBounding, (float4)boundingSphere);
-            
-            m_CameraHandles.Traversal(p=>p.Init(m_Input,boundingSphere));
+            meshRenderers.Traversal(p=>p.SetPropertyBlock(block));
+
+            m_CameraHandles.Traversal(p=>p.Init(m_Input.TextureResolution,boundingSphere));
             foreach (var corner in m_Input.GetImposterViewsNormalized())
-            {
-                m_CameraHandles.Traversal(handle=>
-                {
-                    if(handle.m_Shader != null)
-                        m_SharedMaterialShaderRef.Traversal(p=>p.Key.shader = handle.m_Shader);
-                    meshRenderers.Traversal(p=>p.SetPropertyBlock(block));
-                    handle.Render(boundingSphere, corner.direction, corner.rect);
-                });
-            }
-            m_CameraHandles.Traversal(p=>
-            {
-                var texture = p.Output(_initialName, _filePath);
-                material.SetTexture(p.m_Name,texture);
-            });
+                m_CameraHandles.Traversal(handle => handle.Render(m_SharedMaterialShaderRef,boundingSphere, corner.direction, corner.rect));
+            m_CameraHandles.Traversal(p=> { material.SetTexture(p.m_Name,p.OutputAsset(_initialName, _filePath)); });
             
-            m_RendererLayerRef.Traversal(p=>p.Key.gameObject.layer = p.Value);
-            m_SharedMaterialShaderRef.Traversal(p=>p.Key.shader = p.Value);
+            var mesh = new Mesh(){name = _initialName};
+            var contourMeshHandle = new ImposterCameraHandle() {m_Name = "_ContourMesh", m_Shader = Shader.Find("Hidden/Imposter_ContourShape") };
+            contourMeshHandle.Init(m_Input.cellResolution,boundingSphere,false);
+            foreach (var corner in m_Input.GetImposterViewsNormalized())
+                contourMeshHandle.Render(m_SharedMaterialShaderRef,boundingSphere, corner.direction, G2Box.kOne);
+            var contourPixels = contourMeshHandle.OutputPixels(out var resolution);
+            var resolutionF = (float2)resolution;
+            var contourOutline = ContourTracing.FromColorAlpha(resolution.x, contourPixels, 0.5f).MooreNeighborTracing().Select(p => p / resolutionF);
+            var contourPolygon = UGeometry.GetBoundingPolygon(contourOutline.ToList());
+            contourPolygon = new G2Polygon(CartographicGeneralization.VisvalingamWhyatt(contourPolygon.positions.ToList(),math.min(contourPolygon.positions.Length,10),true));
+            
             boundingSphere.radius += boundingSphereExtrude;
             boundingSphere.center -= (float3)_sceneObjectRoot.position;
-                
+
+            mesh.SetVertices(contourPolygon.Select(p=>(Vector3)((p-.5f).to3xy()) * boundingSphere.radius * 2).ToList());
+            mesh.SetIndices(contourPolygon.GetIndexes().ToArray(),MeshTopology.Triangles,0);
+            mesh.SetUVs(0,contourPolygon.Select(p=>(Vector2)p).ToArray());
+            mesh.bounds = boundingSphere.GetBoundingBox();
+
+            material.SetVector(ImposterDefine.kTexel,m_Input.GetImposterTexel());
+            material.SetVector(ImposterDefine.kBounding, (float4)boundingSphere);
+
+            m_RendererLayerRef.Traversal(p=>p.Key.gameObject.layer = p.Value);
+            m_SharedMaterialShaderRef.Traversal(p=>p.Key.shader = p.Value);
+            
             var asset = ScriptableObject.CreateInstance<ImposterData>();
             asset.m_Input = m_Input;
             asset.m_BoundingSphere = boundingSphere;
             asset.m_Material = material;
+            asset.m_Instanced = m_Instanced;
+            asset.m_Mesh = mesh;
             var assetPath = _filePath.FileToAssetPath();
-            asset = UEAsset.CreateAssetCombination(assetPath,asset);
+            return UEAsset.CreateAssetCombination(assetPath,asset);
         }
 
         [Serializable]
@@ -129,18 +140,20 @@ namespace Examples.Rendering.Imposter
             public string m_Name;
             public Shader m_Shader;
             private Camera m_Camera;
-            private RenderTexture m_RenderTexture;
-            
-            public void Init(ImposterInput _input, GSphere _sphere)
-            { 
+            public RenderTexture m_RenderTexture { get; private set; }
+
+            public void Init(int2 _resolution, GSphere _sphere, bool _clear = true)
+            {
                 m_Camera = new GameObject($"Camera_{m_Name}").AddComponent<Camera>();
-                m_RenderTexture = RenderTexture.GetTemporary(_input.TextureResolution.x,_input.TextureResolution.y, 0, RenderTextureFormat.ARGB32);
+                m_RenderTexture =
+                    RenderTexture.GetTemporary(_resolution.x, _resolution.y, 0, RenderTextureFormat.ARGB32);
+
                 _sphere.radius += 0.05f;
                 RenderTexture.active = m_RenderTexture;
-                GL.Clear(true,true,Color.clear);
+                GL.Clear(true, true, Color.clear);
 
                 m_Camera.orthographic = true;
-                m_Camera.clearFlags = CameraClearFlags.Depth;
+                m_Camera.clearFlags = _clear ? CameraClearFlags.Depth : CameraClearFlags.Nothing;
                 m_Camera.backgroundColor = Color.black.SetA(0f);
                 m_Camera.nearClipPlane = 0.01f;
                 m_Camera.orthographicSize = _sphere.radius;
@@ -152,32 +165,60 @@ namespace Examples.Rendering.Imposter
                 additional.renderPostProcessing = false;
             }
 
-            public void Render(GSphere _sphere,float3 _direction,G2Box _rect)
+            public void Render(List<KeyValuePair<Material, Shader>> _materialRef, GSphere _sphere, float3 _direction,
+                G2Box _rect)
             {
+                if (m_Shader != null)
+                    _materialRef.Traversal(p => p.Key.shader = m_Shader);
+
                 var position = _sphere.GetSupportPoint(_direction * _sphere.radius);
-                m_Camera.transform.SetPositionAndRotation(position,Quaternion.LookRotation(-_direction,Vector3.up));
+                m_Camera.transform.SetPositionAndRotation(position, Quaternion.LookRotation(-_direction, Vector3.up));
                 m_Camera.rect = _rect;
                 m_Camera.Render();
             }
 
-            public Texture2D Output(string initialName,string filePath)
+
+            public Color[] OutputPixels(out int2 resolution)
+            {
+                RenderTexture.active = m_RenderTexture;
+                var texture2D = new Texture2D(m_RenderTexture.width, m_RenderTexture.height, TextureFormat.ARGB32, false);
+                texture2D.ReadPixels(new Rect(0, 0, m_RenderTexture.width, m_RenderTexture.height), 0, 0);
+                texture2D.Apply();
+
+                resolution = new int2(m_RenderTexture.width, m_RenderTexture.height);
+                var pixels = texture2D.GetPixels();
+
+                Dispose(texture2D);
+                return pixels;
+            }
+
+            public Texture2D OutputAsset(string initialName, string filePath)
             {
                 RenderTexture.active = m_RenderTexture;
                 var textureName = $"{initialName}{m_Name}";
-                var texture = new Texture2D(m_RenderTexture.width, m_RenderTexture.height,TextureFormat.ARGB32,false){name = textureName};
-                texture.ReadPixels(new Rect(0, 0, m_RenderTexture.width, m_RenderTexture.height), 0, 0);
-                texture.Apply();
-                
+                var texture2D =
+                    new Texture2D(m_RenderTexture.width, m_RenderTexture.height, TextureFormat.ARGB32, false)
+                        { name = textureName };
+                texture2D.ReadPixels(new Rect(0, 0, m_RenderTexture.width, m_RenderTexture.height), 0, 0);
+                texture2D.Apply();
+
                 var encoding = ETextureExportType.PNG;
                 var texturePath = filePath.Replace(initialName, textureName).Replace("asset", encoding.GetExtension());
-                UTextureEditor.ExportTexture(texture,texturePath,encoding);
-                
+                var textureAsset = UTextureEditor.ExportTexture(texture2D, texturePath, encoding);
+
+                Dispose(texture2D);
+                return textureAsset;
+            }
+
+            void Dispose(Texture2D _texture2D)
+            {
                 RenderTexture.ReleaseTemporary(m_RenderTexture);
                 RenderTexture.active = null;
                 m_Camera.targetTexture = null;
                 GameObject.DestroyImmediate(m_Camera.gameObject);
-                return AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath.FileToAssetPath());
+                GameObject.DestroyImmediate(_texture2D);
             }
         }
     }
+     
 }

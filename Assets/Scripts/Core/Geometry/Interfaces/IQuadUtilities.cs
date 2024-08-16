@@ -18,11 +18,13 @@ namespace Runtime.Geometry
         public static readonly Quad<bool> kFalse = new Quad<bool>(false, false, false, false);
         public static readonly Quad<bool> kTrue = new Quad<bool>(true, true, true, true);
         
-        public static readonly Quad<float3> k3SquareCentered = new Quad<float3>( Vector3.right+Vector3.back,Vector3.back+Vector3.left, Vector3.left+Vector3.forward ,Vector3.forward+Vector3.right).Resize(.5f);
+        public static readonly Quad<float3> k3SquareCenteredUpward = new Quad<float3>( Vector3.right+Vector3.back,Vector3.back+Vector3.left, Vector3.left+Vector3.forward ,Vector3.forward+Vector3.right).Resize(.5f);
+        public static readonly Quad<float3> k3SquareCenteredBackward = new Quad<float3>( Vector3.left+Vector3.down,Vector3.left+Vector3.up, Vector3.right+Vector3.up ,Vector3.right+Vector3.down).Resize(.5f);
         public static readonly Quad<float3> k3SquareBottomLeft = new Quad<float3>(Vector3.zero,Vector3.forward,Vector3.forward+Vector3.right,Vector3.right);
         public static readonly Quad<float3> k3SquareCentered45Deg = new Quad<float3>(Vector3.back,Vector3.left,Vector3.forward,Vector3.right);
         
-        public static readonly Quad<float2> k2SquareCentered = k3SquareCentered.Convert(p=>p.xz);
+        
+        public static readonly Quad<float2> k2SquareCentered = k3SquareCenteredUpward.Convert(p=>p.xz);
     }
     
     public static partial class UQuad

@@ -42,21 +42,19 @@ namespace UnityEditor.Extensions
                 {
                     m_OnSelect(asset);
                     successful = true;
-                    break;
                 }
                 GUILayout.EndHorizontal();
+                if (successful)
+                    break;
             }
 
             if (GUILayout.Button("Close"))
-            {
-                m_OnSelect(null);
                 successful = true;
-            }
-            
+
             GUILayout.EndVertical();
             
-            if(successful)
-                this.Close();
+            if (successful)
+                Close();
         }
     }
 }

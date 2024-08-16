@@ -49,7 +49,8 @@ namespace Examples.Rendering.Imposter
             var axis = GAxis.kDefault;
             if (!m_Data.m_Interpolate)
             {
-                var corner = m_Data.m_Input.GetImposterViewsNormalized().MaxElement(p => math.dot(p.direction, viewDirectionOS));
+                var estimateUV = math.floor((m_Data.m_Input.DirectionToUV(viewDirectionOS) * m_Data.m_Input.cellCount) % m_Data.m_Input.cellCount) * m_Data.m_Input.cellSizeNormalized;
+                var corner = m_Data.m_Input.GetImposterCorner(estimateUV);
                 axis = GAxis.ForwardBillboard(0,-corner.direction);
                 math.sincos(0,out var s0,out var c0);
                 var X = size * c0 * axis.right + size * s0 * axis.up;

@@ -28,29 +28,6 @@ namespace Runtime.Geometry.Extension
             return length(closestPointRay1 - closestPointRay2);
         }
         
-        public static float Distance(GLine _line, float3 _point)
-        {
-            var lineDirection = _line.direction;
-            var pointToStart = _point - _line.start;
-            return  length(cross(lineDirection, pointToStart));
-        }
-
-        public static float Distance(GRay _ray, float3 _point)
-        {
-            var pointToStart = _point - _ray.origin;
-            return length(cross(_ray.direction, pointToStart));
-        }
-
-        public static float Distance(GPlane _plane, float3 _point)
-        {
-            // float nr = _point.x * _plane.normal.x + _point.y * _plane.normal.y + _point.z * _plane.normal.z +
-            //            _plane.distance;
-            // return nr / length(_plane.normal);
-            
-            return dot(_plane.normal, _point - _plane.position);
-        }
-
-
         public static float Distance(GSphere _sphere, GBox _box)
         {
             var sphereCenter = _sphere.center;

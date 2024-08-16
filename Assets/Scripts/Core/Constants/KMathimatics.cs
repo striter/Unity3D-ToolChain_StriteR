@@ -37,4 +37,8 @@ public static class kint2
     public static readonly int2 k10 = new(1, 0); public static readonly int2 k11 = new(1, 1); public static readonly int2 k12 = new(1, 2); public static readonly int2 k13 = new(1, 3);
     public static readonly int2 k20 = new(2, 0); public static readonly int2 k21 = new(2, 1); public static readonly int2 k22 = new(2, 2); public static readonly int2 k23 = new(2, 3);
     public static readonly int2 k30 = new(3, 0); public static readonly int2 k31 = new(3, 1); public static readonly int2 k32 = new(3, 2); public static readonly int2 k33 = new(3, 3);
+    public static readonly int2 kLeft = new(-1, 0);
+    public static readonly int2 kRight = new(1, 0);
+    public static readonly int2 kUp = new(0, 1);
+    public static readonly int2 kDown = new(0, -1);
 }

@@ -38,7 +38,7 @@ namespace Runtime.Geometry
 
             if (a == 0)
             {
-                if (UGeometry.Distance(_ray, origin) > radius)
+                if (_ray.Distance(origin) > radius)
                     return false;
                 
                 distances = new float2(float.MinValue,float.MaxValue - float.MinValue) ;

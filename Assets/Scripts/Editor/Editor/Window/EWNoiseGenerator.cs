@@ -171,7 +171,7 @@ namespace UnityEditor.Extensions
             if (GUI.Button(HorizontalScope.NextRect(0, 80), "Export"))
             {
                 if (UEAsset.SaveFilePath(out string filePath, "png", m_Input.noiseType.ToString()))
-                    UEAsset.CreateOrReplaceFile(filePath, m_Texture.EncodeToPNG());
+                    UEAsset.CreateOrReplaceFile<Texture2D>(filePath, m_Texture.EncodeToPNG());
             }
         }
     }
