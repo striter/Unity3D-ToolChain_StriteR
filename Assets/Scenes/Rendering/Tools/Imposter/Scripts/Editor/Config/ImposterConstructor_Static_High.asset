@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: ImposterConstructor_Static_High
   m_EditorClassIdentifier: 
   m_Input:
-    mapping: 1
-    hemisphere: 1
-    width: 16
-    height: 16
+    mapping: 4
+    count: 8
     cellResolution: 256
-    cellSizeNormalized:
-      x: 0.0625
+    CellTexelSizeNormalized:
+      x: 0.125
       y: 0.125
     cellCount:
-      x: 16
+      x: 8
       y: 8
   m_Shader: {fileID: 4800000, guid: b61440472b0a160409f913d815ce983d, type: 3}
+  m_Instanced: 0
   m_CameraHandles:
   - m_Name: _Static
     m_Shader: {fileID: 0}

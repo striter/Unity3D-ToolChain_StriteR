@@ -108,21 +108,22 @@ public static class UGizmos
         Gizmos.DrawLine(tempPoint,firstPoint);
     }
     
-    public static GUIStyle kLabelStyle => new GUIStyle(GUI.skin.label) { alignment = TextAnchor.LowerCenter,fontSize=12, fontStyle = FontStyle.Normal};
     public static void DrawString(string _text, Vector3 _position = default, float _offset = 0.1f)
     {
 #if UNITY_EDITOR
+        UnityEditor.Handles.color = Gizmos.color;
         UnityEditor.Handles.matrix = Gizmos.matrix;
-        UnityEditor.Handles.Label(_position+_offset*Vector3.up,_text,kLabelStyle);
+        UnityEditor.UHandles.DrawString(_text,_position,_offset);
 #endif
     }
+    public static void DrawString(Vector3 _position,string _text, float _offset = 0.1f) => DrawString(_text,_position,_offset);
     public static void DrawArrow(Vector3 _pos, Vector3 _direction, float _length, float _radius) => DrawArrow(_pos, Quaternion.LookRotation(_direction), _length, _radius);
     public static void DrawArrow(Vector3 _pos, Quaternion _rot, float _length, float _radius)
     {
 #if UNITY_EDITOR
         UnityEditor.Handles.color = Gizmos.color;
         UnityEditor.Handles.matrix = Gizmos.matrix;
-        UnityEditor.Handles_Extend.DrawArrow(_pos, _rot, _length, _radius);
+        UnityEditor.UHandles.DrawArrow(_pos, _rot, _length, _radius);
 #endif
     }
     public static void DrawCylinder(Vector3 _pos, Vector3 _up, float _radius, float _height)
@@ -130,7 +131,7 @@ public static class UGizmos
 #if UNITY_EDITOR
         UnityEditor.Handles.color = Gizmos.color;
         UnityEditor.Handles.matrix = Gizmos.matrix;
-        UnityEditor.Handles_Extend.DrawCylinder(_pos, _up, _radius, _height);
+        UnityEditor.UHandles.DrawCylinder(_pos, _up, _radius, _height);
 #endif
     }
 
@@ -139,7 +140,7 @@ public static class UGizmos
 #if UNITY_EDITOR
         UnityEditor.Handles.color = Gizmos.color;
         UnityEditor.Handles.matrix = Gizmos.matrix;
-        UnityEditor.Handles_Extend.DrawTrapezium(_pos, _rot, _trapeziumInfo);
+        UnityEditor.UHandles.DrawTrapezium(_pos, _rot, _trapeziumInfo);
 #endif
     }
 
@@ -157,7 +158,7 @@ public static class UGizmos
 #if UNITY_EDITOR
         UnityEditor.Handles.color = Gizmos.color;
         UnityEditor.Handles.matrix = Gizmos.matrix;
-        UnityEditor.Handles_Extend.DrawCone(_origin, _normal, _radius, _height);
+        UnityEditor.UHandles.DrawCone(_origin, _normal, _radius, _height);
 #endif
     }
     
@@ -166,7 +167,7 @@ public static class UGizmos
 #if UNITY_EDITOR
         UnityEditor.Handles.color = Gizmos.color;
         UnityEditor.Handles.matrix = Gizmos.matrix;
-        UnityEditor.Handles_Extend.DrawWireCapsule(_origin,Quaternion.LookRotation(_normal),Vector3.zero, _radius, _height);
+        UnityEditor.UHandles.DrawWireCapsule(_origin,Quaternion.LookRotation(_normal),Vector3.zero, _radius, _height);
 #endif
     }
     

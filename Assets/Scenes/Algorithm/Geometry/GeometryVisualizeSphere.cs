@@ -1,4 +1,5 @@
 using Runtime.Geometry.Explicit;
+using Runtime.Geometry.Explicit.Sphere;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -13,40 +14,23 @@ namespace Examples.Algorithm.Procedural
         
         private void OnDrawGizmos()
         {
+            var index = 0;
             float r = kUVSphereResolution;
-            Gizmos.matrix = transform.localToWorldMatrix;
-            for (int i = 0; i <= kUVSphereResolution ; i ++)
-            for (int j = 0; j <= kUVSphereResolution * 2; j++)
+            foreach (var mapping in UEnum.GetEnums<ESphereMapping>())
             {
-                var uv = new float2(i / r, j / r);
-                Gizmos.color = (Color.red * uv.x + Color.green * uv.y).SetA(1f);
-                Gizmos.DrawSphere(USphereExplicit.UV.Cube( uv),.02f);
+                Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right *index++*3f );
+                for (int i = 0; i <= kUVSphereResolution ; i ++)
+                for (int j = 0; j <= kUVSphereResolution; j++)
+                {
+                    var uv = new float2(i / r, j / r);
+                    Gizmos.color = (Color.red * uv.x + Color.green * uv.y).SetA(1f);
+                    Gizmos.DrawSphere(mapping.UVToSphere( uv),.02f);
+                }
+                UGizmos.DrawString(mapping.ToString(), Vector3.zero);
             }
-            UGizmos.DrawString("UV", Vector3.zero);
             
-            Gizmos.matrix *= Matrix4x4.Translate(Vector3.right*3f);
-            for (int i = 0; i <= kUVSphereResolution ; i ++)
-            for (int j = 0; j <= kUVSphereResolution; j++)
-            {
-                var uv = new float2(i / r, j / r);
-                Gizmos.color = (Color.red * uv.x + Color.green * uv.y).SetA(1f);
-                Gizmos.DrawSphere(USphereExplicit.UV.Octahedral(uv),.02f);
-            }
-            UGizmos.DrawString("Octahedral", Vector3.zero);
-            
-            
-            Gizmos.matrix *= Matrix4x4.Translate(Vector3.right*3f);
-            for (int i = 0; i <= kUVSphereResolution ; i ++)
-            for (int j = 0; j <= kUVSphereResolution; j++)
-            {
-                var uv = new float2(i / r, j / r);
-                Gizmos.color = Color.red * uv.x + Color.green * uv.y;
-                Gizmos.DrawSphere(USphereExplicit.UV.ConcentricOctahedral(uv),.02f);
-            }
-            UGizmos.DrawString("Concentric Octahedral", Vector3.zero);
-
             r = kAxixResolution;
-            Gizmos.matrix *= Matrix4x4.Translate(Vector3.right*3f);
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.forward*3f);
 
             for (int k = 0; k < UCubeExplicit.kCubeFacingAxisCount; k++)
             {
@@ -65,7 +49,7 @@ namespace Examples.Algorithm.Procedural
                 var axis = UCubeExplicit.GetOctahedronRhombusAxis(k,kPolygonRhombusCount);
                 for(int i = 0 ; i <= kAxixResolution ; i ++)
                 for(int j = 0 ; j <= kAxixResolution ; j++)
-                    Gizmos.DrawSphere(USphereExplicit.Polygon.GetPoint(new float2( i / r , j/ r),axis,false),.02f);
+                    Gizmos.DrawSphere(Polygon.GetPoint(new float2( i / r , j/ r),axis,false),.02f);
             }
             UGizmos.DrawString("Poly", Vector3.zero);
             
@@ -76,7 +60,7 @@ namespace Examples.Algorithm.Procedural
                 var axis = UCubeExplicit.GetOctahedronRhombusAxis(k,kPolygonRhombusCount);
                 for(int i = 0 ; i <= kAxixResolution ; i ++)
                 for(int j = 0 ; j <= kAxixResolution ; j++)
-                    Gizmos.DrawSphere(USphereExplicit.Polygon.GetPoint(new float2( i / r , j/ r),axis,true),.02f);
+                    Gizmos.DrawSphere(Polygon.GetPoint(new float2( i / r , j/ r),axis,true),.02f);
             }
             UGizmos.DrawString("Poly Geodesic", Vector3.zero);
             

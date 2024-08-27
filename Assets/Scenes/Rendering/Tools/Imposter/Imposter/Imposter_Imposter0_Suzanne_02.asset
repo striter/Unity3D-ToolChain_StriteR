@@ -1,50 +1,12 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!21 &-3805207840272427927
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Imposter_Imposter0_Suzanne
-  m_Shader: {fileID: 4800000, guid: d4f1b0b09561424f997fac26d5edc511, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _AlbedoAlpha:
-        m_Texture: {fileID: 2800000, guid: d60deb7c52e119e4cb9aaea8e982d268, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NormalDepth:
-        m_Texture: {fileID: 2800000, guid: d1fde9af4965e8846b7c625f3f8f0065, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _AlphaClip: 0.5
-    m_Colors:
-    - _ImposterBoundingSphere: {r: 0, g: 0.12595217, b: -0.28659606, a: 1.4964477}
-    - _ImposterTexel: {r: 8, g: 4, b: 0.125, a: 0.25}
-  m_BuildTextureStacks: []
---- !u!43 &-583849651633164159
+--- !u!43 &-9202769628559706602
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Imposter_Imposter0_Suzanne
+  m_Name: Imposter_Imposter0_Suzanne_02
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
@@ -55,8 +17,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 10
     localAABB:
-      m_Center: {x: -0.015681982, y: -0.042838037, z: 0}
-      m_Extent: {x: 1.43212, y: 1.4081569, z: 0}
+      m_Center: {x: -0.08848047, y: -0.0748229, z: 0}
+      m_Extent: {x: 8.152643, y: 8.426777, z: 0}
   m_Shapes:
     vertices: []
     shapes: []
@@ -135,7 +97,7 @@ Mesh:
       format: 0
       dimension: 0
     m_DataSize: 200
-    _typelessdata: c040303e34bab9bf00000000fdb80e3f54d2783cb6af443fc5e99dbf00000000bfb7413f17ccb33dd74db53f7968d6be000000000328793f695cb83ed230a33fecc3353f00000000540d6d3f76bb3c3f97c9183e6c4eae3f0000000034c30c3fe67a743f654640bec5c2ae3f00000000cbe0df3ea6c8743f3feea4bf2851583f0000000022488e3ddf46483f9351b9bf512e79be000000009626853c0b5fd63ee63979bfd1ae85bf00000000dce8323e84aa1a3e6110ecbeda06b2bf000000000e20b13e408a103d
+    _typelessdata: 12b046c08e0608c100000000b75fa43e14ae223cd7a3f23fa8a203c10000000047f91b3fd6e9d23c1149b740c7a4ccc000000000f285543f5782063eb3b8db403db796c0000000007153653f64fc693ecf060141398b674000000000bb00773f9263353f28978540a553ee4000000000289b3d3fe7e76d3ff2d91b3f9ba1054100000000e6fb083ff33f7b3f221384c0f932fd4000000000912f863eadc3743fa4db03c14b05804000000000fe57cc3c9c093b3f2591f9c01ed3a1c000000000e7914e3d817e553e
   m_CompressedMesh:
     m_Vertices:
       m_NumItems: 0
@@ -189,8 +151,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 0, y: 0.12595212, z: -0.28659606}
-    m_Extent: {x: 1.4964477, y: 1.4964477, z: 1.4964477}
+    m_Center: {x: 0.0000009536743, y: -1.6427402, z: 1.5635738}
+    m_Extent: {x: 8.673849, y: 8.673849, z: 8.673849}
   m_MeshUsageFlags: 0
   m_CookingOptions: 30
   m_BakedConvexCollisionMesh: 
@@ -213,28 +175,68 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 855a6bfeaebacb04bab6a5fb5a958936, type: 3}
-  m_Name: Imposter_Imposter0_Suzanne
+  m_Name: Imposter_Imposter0_Suzanne_02
   m_EditorClassIdentifier: 
-  m_Interpolate: 0
   m_Parallax: 0
   m_Instanced: 1
   m_Input:
-    mapping: 1
-    hemisphere: 1
-    width: 8
-    height: 8
+    mapping: 4
+    count: 8
     cellResolution: 64
-    cellSizeNormalized:
+    CellTexelSizeNormalized:
       x: 0.125
-      y: 0.25
+      y: 0.125
     cellCount:
       x: 8
-      y: 4
+      y: 8
   m_BoundingSphere:
     center:
-      x: 0
-      y: 0.12595217
-      z: -0.28659606
-    radius: 1.4964477
-  m_Material: {fileID: -3805207840272427927}
-  m_Mesh: {fileID: -583849651633164159}
+      x: 0.0000009536743
+      y: -1.6427402
+      z: 1.5635738
+    radius: 8.673849
+  m_Material: {fileID: 3510524147428808968}
+  m_Mesh: {fileID: -9202769628559706602}
+--- !u!21 &3510524147428808968
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Imposter_Imposter0_Suzanne_02
+  m_Shader: {fileID: 4800000, guid: d4f1b0b09561424f997fac26d5edc511, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _INTERPOLATE
+  - _MAPPING_OCTAHEDRAL_HEMISPHERE
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlbedoAlpha:
+        m_Texture: {fileID: 2800000, guid: b1c223549579d394daa8559f0f7643f2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalDepth:
+        m_Texture: {fileID: 2800000, guid: ef1c7560c3355bd4dbd408372d841d39, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AlphaClip: 0.536
+    - _Interpolate: 1
+    - _MAPPING: 4
+    - _Parallax: 0.091
+    m_Colors:
+    - _ImposterBoundingSphere: {r: 0.0000009536743, g: -1.6427402, b: 1.5635738, a: 8.673849}
+    - _ImposterTexel: {r: 8, g: 8, b: 0.125, a: 0.125}
+  m_BuildTextureStacks: []

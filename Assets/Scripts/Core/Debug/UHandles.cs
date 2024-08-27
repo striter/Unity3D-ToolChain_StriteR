@@ -1,10 +1,22 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Extensions;
+using Unity.Mathematics;
+using UnityEngine;
 
 #if UNITY_EDITOR
 namespace UnityEditor
 {
-    public static class Handles_Extend
+    public static class UHandles
     {
+        public static GUIStyle kLabelStyle => new GUIStyle(GUI.skin.label) { alignment = TextAnchor.LowerCenter,fontSize=12, fontStyle = FontStyle.Normal};
+        public static void DrawString(Vector3 _position,string _text, float _offset = 0.1f) => DrawString(_text,_position,_offset);
+        public static void DrawString(string _text, Vector3 _position = default, float _offset = 0.1f)
+        {
+#if UNITY_EDITOR
+            Handles.Label(_position+_offset*Vector3.up,_text,kLabelStyle);
+#endif
+        }
         public static void DrawCone(Vector3 _origin,Vector3 _normal,float _radius,float _height)
         {
             using(new Handles.DrawingScope(Handles.color, Handles.matrix*Matrix4x4.TRS(_origin, Quaternion.LookRotation(_normal),Vector3.one )))
@@ -24,14 +36,27 @@ namespace UnityEditor
                 Handles.DrawLine(Vector3.zero, bottomLeft);
             }
         }
-        
-        public static void DrawLines_Concat(Vector3[] _lines)
-        {
-            int length = _lines.Length;
-            for (int i = 0; i < length; i++)
-                Handles.DrawLine(_lines[i],_lines[(i+1)%length]);
-        }
 
+        public static void DrawLinesConcat(Vector3[] _lines) => DrawLinesConcat(_lines.Select(p => (float3)p));
+        public static void DrawLinesConcat(params float3[] _lines) => DrawLinesConcat(_lines.AsEnumerable());
+        public static void DrawLinesConcat(IEnumerable<float3> _points)
+        {
+            float3 tempPoint = default;
+            float3 startPoint = default;
+            foreach (var (index,point) in _points.LoopIndex())
+            {
+                if (index == 0)
+                {
+                    tempPoint = point;
+                    startPoint = point;
+                    continue;
+                }
+
+                Handles.DrawLine(tempPoint,point);
+                tempPoint = point;
+            }
+            Handles.DrawLine(tempPoint,startPoint);
+        }
         public static void DrawWireCapsule(Vector3 _pos, Quaternion _rot, Vector3 _scale, float _radius, float _height)
         {
             using (new Handles.DrawingScope(Handles.color, Handles.matrix * Matrix4x4.TRS(_pos, _rot, _scale)))
@@ -56,6 +81,7 @@ namespace UnityEditor
                 Handles.DrawLine(offsetPoint - up * _radius, -offsetPoint - up * _radius);
             }
         }
+        public static void DrawWireSphere(Vector3 _pos, float _radius) => DrawWireSphere(_pos,kfloat3.forward,_radius);
         public static void DrawWireSphere(Vector3 _pos, Vector3 _dir, float _radius) => DrawWireSphere(_pos,Quaternion.LookRotation(_dir),_radius);
         public static void DrawWireSphere(Vector3 _pos,Quaternion _rot,  float _radius)
         {
@@ -64,31 +90,6 @@ namespace UnityEditor
                 Handles.DrawWireDisc(Vector3.zero, Vector3.up, _radius);
                 Handles.DrawWireDisc(Vector3.zero, Vector3.right, _radius);
                 Handles.DrawWireDisc(Vector3.zero, Vector3.forward, _radius);
-            }
-        }
-        public static void DrawWireCube(Vector3 _pos, Quaternion _rot, Vector3 _cubeSize)
-        {
-            using (new Handles.DrawingScope(Handles.color, Handles.matrix * Matrix4x4.TRS(_pos, _rot, Handles.matrix.lossyScale)))
-            {
-                float halfWidth, halfHeight, halfLength;
-                halfWidth = _cubeSize.x / 2;
-                halfHeight = _cubeSize.y / 2;
-                halfLength = _cubeSize.z / 2;
-
-                Handles.DrawLine(new Vector3(halfWidth, halfHeight, halfLength), new Vector3(-halfWidth, halfHeight, halfLength));
-                Handles.DrawLine(new Vector3(halfWidth, halfHeight, -halfLength), new Vector3(-halfWidth, halfHeight, -halfLength));
-                Handles.DrawLine(new Vector3(halfWidth, -halfHeight, halfLength), new Vector3(-halfWidth, -halfHeight, halfLength));
-                Handles.DrawLine(new Vector3(halfWidth, -halfHeight, -halfLength), new Vector3(-halfWidth, -halfHeight, -halfLength));
-
-                Handles.DrawLine(new Vector3(halfWidth, halfHeight, halfLength), new Vector3(halfWidth, -halfHeight, halfLength));
-                Handles.DrawLine(new Vector3(-halfWidth, halfHeight, halfLength), new Vector3(-halfWidth, -halfHeight, halfLength));
-                Handles.DrawLine(new Vector3(halfWidth, halfHeight, -halfLength), new Vector3(halfWidth, -halfHeight, -halfLength));
-                Handles.DrawLine(new Vector3(-halfWidth, halfHeight, -halfLength), new Vector3(-halfWidth, -halfHeight, -halfLength));
-
-                Handles.DrawLine(new Vector3(halfWidth, halfHeight, halfLength), new Vector3(halfWidth, halfHeight, -halfLength));
-                Handles.DrawLine(new Vector3(-halfWidth, halfHeight, halfLength), new Vector3(-halfWidth, halfHeight, -halfLength));
-                Handles.DrawLine(new Vector3(halfWidth, -halfHeight, halfLength), new Vector3(halfWidth, -halfHeight, -halfLength));
-                Handles.DrawLine(new Vector3(-halfWidth, -halfHeight, halfLength), new Vector3(-halfWidth, -halfHeight, -halfLength));
             }
         }
         public static void DrawArrow(Vector3 _pos, Vector3 _direction, float _length, float _radius) => DrawArrow(_pos, Quaternion.LookRotation(_direction), _length, _radius);

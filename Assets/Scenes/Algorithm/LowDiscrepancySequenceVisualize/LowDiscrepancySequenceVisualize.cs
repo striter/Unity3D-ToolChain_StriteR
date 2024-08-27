@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using System.Linq.Extensions;
 using Runtime.Geometry;
 using Runtime.Geometry.Explicit;
+using Runtime.Geometry.Explicit.Sphere;
 
 namespace Examples.Algorithm.SamplePatternVisualize
 {
@@ -97,7 +98,7 @@ namespace Examples.Algorithm.SamplePatternVisualize
                     {
                         var uv = patterns[k] + .5f;
                         Gizmos.color = Color.red * uv.x + Color.green * uv.y;
-                        Gizmos.DrawSphere(USphereExplicit.UV.ConcentricOctahedral( uv) * .5f,gizmosRadius);
+                        Gizmos.DrawSphere(ESphereMapping.ConcentricOctahedral.UVToSphere( uv) * .5f,gizmosRadius);
                     }
                     Gizmos.color = Color.green;
                     Gizmos.DrawWireSphere(Vector3.zero,.5f);

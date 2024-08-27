@@ -23,15 +23,17 @@ Shader "Game/Optimize/Imposter/Normal_Depth"
             	float4 uv0 : TEXCOORD0;
             	float4 uv1 : TEXCOORD1;
             	float4 uv2 : TEXCOORD2;
+            	float4 uv3 : TEXCOORD3;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
             {
                 float4 positionCS : SV_POSITION;
-                float4 uv0:TEXCOORD0;
-            	float4 uv1:TEXCOORD1;
-				float4 uv2:TEXCOORD2;
+                float4 uv0 : TEXCOORD0;
+            	float4 uv1 : TEXCOORD1;
+				float4 uv2 : TEXCOORD2;
+            	float4 uv3 :TEXCOORD3;
                 float3 positionWS :TEXCOORD4;
             	float4 positionHCS : TEXCOORD5;
             	float3 positionOS : TEXCOORD6;
@@ -58,7 +60,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth"
             
 			float3 _ImposterViewDirection;
             float _AlphaClip;
-            float3 _Weights;
+            float4 _Weights;
 
 			float4 GetColumn(float4x4 _matrix,int _index)
 			{
@@ -77,6 +79,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth"
 				o.uv0 = v.uv0;
 				o.uv1 = v.uv1;
 				o.uv2 = v.uv2;
+				o.uv3 = v.uv3;
                 return o;
             }
 
@@ -87,6 +90,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth"
 		            case 0: return i.uv0;
 		            case 1: return i.uv1;
 		            case 2: return i.uv2;
+					case 3: return i.uv3;
 	            }
             	return i.uv0;
             }
@@ -100,7 +104,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth"
 				float3 normalWS = 0;
 				float depthExtrude = 0;
 
-            	for(int index=0;index<3;index++)
+            	for(int index=0;index<4;index++)
             	{
             		float4 uv = GetFragmentUV(i,index);
             		float4 directionNWeight = _Weights[index];

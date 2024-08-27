@@ -41,6 +41,7 @@ public static class kmath
     
     //Invert
     public const float kInvPI = 0.31830988618f;
+    public const float kInv2PI = 0.63661977237f;
     public const float k128InvPi = 40.74366543152f;
     
     public const float kSQRTPi = 1.7724538509055f;

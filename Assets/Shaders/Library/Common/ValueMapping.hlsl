@@ -237,3 +237,35 @@ float3 bump(float3 _x){
 float3 bumpy(float3 _x,float3 _offset){
     float3 y = 1 - _x*_x; y = saturate(y-_offset);return y;
 }
+
+
+// Coefficients for 6th degree minimax approximation of atan(x)*2/pi, x=[0,1].
+float atan_Fast_2DivPI(float _x) 
+{
+    const float t1 =  0.406758566246788489601959989e-5f;
+    const float t2 =  0.636226545274016134946890922156f;
+    const float t3 =  0.61572017898280213493197203466e-2f;
+    const float t4 = -0.247333733281268944196501420480f;
+    const float t5 =  0.881770664775316294736387951347e-1f;
+    const float t6 =  0.419038818029165735901852432784e-1f;
+    const float t7 = -0.251390972343483509333252996350e-1f;
+    
+    float phi = t6 + t7*_x;
+    phi = t5 + phi*_x;
+    phi = t4 + phi*_x;
+    phi = t3 + phi*_x;
+    phi = t2 + phi*_x;
+    phi = t1 + phi*_x;
+    return phi;
+}
+
+int signNonZero(float _value)
+{
+    return _value < 0 ? -1 : 1;
+}
+
+float flipSign(float a, int s)
+{
+    float newSign = signNonZero(signNonZero(a) ^ s);
+    return abs(a) * newSign;
+}

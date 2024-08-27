@@ -7,7 +7,7 @@ using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Runtime.Geometry.Explicit.Mesh.Sphere
+namespace Runtime.Geometry.Explicit.Mesh
 {
     [Serializable]
     public struct HexagonGridGenerator:IProceduralMeshGenerator,ISerializationCallbackReceiver

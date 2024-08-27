@@ -42,6 +42,7 @@ namespace Runtime.Geometry
         public void OnBeforeSerialize() { }
         public void OnAfterDeserialize() { Ctor(); }
         
+        public static GLine StartEnd(float3 _start, float3 _end) => new GLine(_start, _end);
         public GRay ToRay()=>new GRay(start,direction);
         
         public static readonly GLine kDefault = new GLine(float3.zero, kfloat3.forward);

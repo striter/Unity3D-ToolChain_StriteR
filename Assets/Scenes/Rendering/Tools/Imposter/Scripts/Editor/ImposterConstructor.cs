@@ -5,12 +5,10 @@ using System.Linq.Extensions;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
-using UnityEditor;
 using UnityEditor.Extensions;
 using UnityEditor.Extensions.EditorPath;
 using UnityEditor.Extensions.TextureEditor;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.Rendering.Universal;
 
 namespace Examples.Rendering.Imposter
@@ -21,11 +19,11 @@ namespace Examples.Rendering.Imposter
         public ImposterInput m_Input = ImposterInput.kDefault;
         public Shader m_Shader;
         public bool m_Instanced;
+
         public ImposterCameraHandle[] m_CameraHandles;
         private static int kLayerID = 30;
         private static List<KeyValuePair<Material, Shader>> m_SharedMaterialShaderRef = new();
         private static List<KeyValuePair<Renderer,int>> m_RendererLayerRef = new();
-        
         public ImposterData Construct(Transform _sceneObjectRoot,string _initialName,string _filePath)
         {
             if (!_sceneObjectRoot.gameObject.IsSceneObject())
@@ -91,12 +89,12 @@ namespace Examples.Rendering.Imposter
             var boundingSphereExtrude = 0.05f;
             boundingSphere.radius += boundingSphereExtrude;
             
-            block.SetVector(ImposterDefine.kBounding, (float4)boundingSphere);
+            block.SetVector(ImposterShaderProperties.kBoundingID, (float4)boundingSphere);
             meshRenderers.Traversal(p=>p.SetPropertyBlock(block));
 
             m_CameraHandles.Traversal(p=>p.Init(m_Input.TextureResolution,boundingSphere));
             foreach (var corner in m_Input.GetImposterViewsNormalized())
-                m_CameraHandles.Traversal(handle => handle.Render(m_SharedMaterialShaderRef,boundingSphere, corner.direction, corner.rect));
+                m_CameraHandles.Traversal(handle => handle.Render(m_SharedMaterialShaderRef,boundingSphere, corner.direction, corner.uvRect));
             m_CameraHandles.Traversal(p=> { material.SetTexture(p.m_Name,p.OutputAsset(_initialName, _filePath)); });
             
             var mesh = new Mesh(){name = _initialName};
@@ -104,12 +102,13 @@ namespace Examples.Rendering.Imposter
             contourMeshHandle.Init(m_Input.cellResolution,boundingSphere,false);
             foreach (var corner in m_Input.GetImposterViewsNormalized())
                 contourMeshHandle.Render(m_SharedMaterialShaderRef,boundingSphere, corner.direction, G2Box.kOne);
+
+            var contourPolygon = G2Polygon.kDefault;
             var contourPixels = contourMeshHandle.OutputPixels(out var resolution);
-            var resolutionF = (float2)resolution;
-            var contourOutline = ContourTracing.FromColorAlpha(resolution.x, contourPixels, 0.5f).MooreNeighborTracing().Select(p => p / resolutionF);
-            var contourPolygon = UGeometry.GetBoundingPolygon(contourOutline.ToList());
-            contourPolygon = new G2Polygon(CartographicGeneralization.VisvalingamWhyatt(contourPolygon.positions.ToList(),math.min(contourPolygon.positions.Length,10),true));
-            
+            var contourOutline = ContourTracing.FromColorAlpha(resolution.x, contourPixels, 0.5f).MooreNeighborTracing();
+            contourPolygon = UGeometry.GetBoundingPolygon(contourOutline.Select(p=>(float2)p).ToList());
+            contourPolygon = new G2Polygon(CartographicGeneralization.VisvalingamWhyatt(contourPolygon.positions.Select(p=>p/resolution).ToList(),math.min(contourPolygon.positions.Length ,10),true));
+        
             boundingSphere.radius += boundingSphereExtrude;
             boundingSphere.center -= (float3)_sceneObjectRoot.position;
 
@@ -118,8 +117,9 @@ namespace Examples.Rendering.Imposter
             mesh.SetUVs(0,contourPolygon.Select(p=>(Vector2)p).ToArray());
             mesh.bounds = boundingSphere.GetBoundingBox();
 
-            material.SetVector(ImposterDefine.kTexel,m_Input.GetImposterTexel());
-            material.SetVector(ImposterDefine.kBounding, (float4)boundingSphere);
+            material.SetVector(ImposterShaderProperties.kTexelID,m_Input.GetImposterTexel());
+            material.SetVector(ImposterShaderProperties.kBoundingID, (float4)boundingSphere);
+            material.SetInt(ImposterShaderProperties.kModeID,(int)m_Input.mapping);
 
             m_RendererLayerRef.Traversal(p=>p.Key.gameObject.layer = p.Value);
             m_SharedMaterialShaderRef.Traversal(p=>p.Key.shader = p.Value);
@@ -145,8 +145,7 @@ namespace Examples.Rendering.Imposter
             public void Init(int2 _resolution, GSphere _sphere, bool _clear = true)
             {
                 m_Camera = new GameObject($"Camera_{m_Name}").AddComponent<Camera>();
-                m_RenderTexture =
-                    RenderTexture.GetTemporary(_resolution.x, _resolution.y, 0, RenderTextureFormat.ARGB32);
+                m_RenderTexture = RenderTexture.GetTemporary(_resolution.x, _resolution.y, 0, RenderTextureFormat.ARGB32);
 
                 _sphere.radius += 0.05f;
                 RenderTexture.active = m_RenderTexture;

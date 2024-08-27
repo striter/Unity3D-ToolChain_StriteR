@@ -9,12 +9,13 @@ namespace Runtime.Geometry
     {
         public float3 center;
         [Clamp(0)] public float radius;
-        public GSphere(float3 _center,float _radius) { center = _center;radius = _radius; }
     }
 
     [Serializable]
     public partial struct GSphere : IVolume , IRayVolumeIntersection , ISDF
     {
+        public GSphere(float3 _center, float _radius) { center = _center; radius = _radius; }
+        public GSphere(float4 _centerAndRadius) : this(_centerAndRadius.xyz, _centerAndRadius.w) { }
         public float3 Origin => center;
         public static readonly GSphere kDefault = kOne;
         public static readonly GSphere kOne = new GSphere(float3.zero, .5f);

@@ -6,7 +6,7 @@ public static class UCoordinates
     {
         public static float3 ToCartesian(float _rad,float _height,float _radius = 1f)
         {
-            umath.sincos(_rad, out var sine, out var cosine);
+            umath.sincos_fast(_rad, out var sine, out var cosine);
             return new float3(cosine*_radius, _height,sine*_radius);
         }
 
@@ -20,8 +20,8 @@ public static class UCoordinates
     {
         public static float3 ToCartesian(float _azimuth,float _polar,float _radius = 1f) 
         {
-            umath.sincos(_azimuth, out var Asine, out var Acosine);
-            umath.sincos(_polar,out var Psine,out var Pcosine);
+            umath.sincos_fast(_azimuth, out var Asine, out var Acosine);
+            umath.sincos_fast(_polar,out var Psine,out var Pcosine);
             return new float3(Psine*Acosine,Pcosine,Psine*Asine) * _radius;
         }
     

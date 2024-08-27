@@ -314,7 +314,7 @@ MonoBehaviour:
       x: 0.5992408
       y: 0.45432606
       z: -0.65916485
-    forward:
+    up:
       x: 0
       y: 0
       z: 1
@@ -522,7 +522,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   kAxixResolution: 8
-  kPolygonRhombusCount: 4
+  kPolygonRhombusCount: 8
   kUVSphereResolution: 32
   kFibonacciResolution: 128
 --- !u!4 &1152943079

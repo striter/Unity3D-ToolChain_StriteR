@@ -13,17 +13,15 @@ MonoBehaviour:
   m_Name: ImposterConstructor_Instancing_AlbedoAlpha
   m_EditorClassIdentifier: 
   m_Input:
-    mapping: 1
-    hemisphere: 1
-    width: 8
-    height: 8
+    mapping: 4
+    count: 8
     cellResolution: 64
-    cellSizeNormalized:
+    CellTexelSizeNormalized:
       x: 0.125
-      y: 0.25
+      y: 0.125
     cellCount:
       x: 8
-      y: 4
+      y: 8
   m_Shader: {fileID: 4800000, guid: d4f1b0b09561424f997fac26d5edc511, type: 3}
   m_Instanced: 1
   m_CameraHandles:

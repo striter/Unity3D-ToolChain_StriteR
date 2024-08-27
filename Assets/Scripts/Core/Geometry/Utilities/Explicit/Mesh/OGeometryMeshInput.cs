@@ -1,6 +1,4 @@
 using System;
-using Runtime.Geometry.Explicit.Mesh.Cube;
-using Runtime.Geometry.Explicit.Mesh.Sphere;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;

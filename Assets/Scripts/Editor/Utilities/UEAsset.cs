@@ -183,6 +183,9 @@ namespace UnityEditor.Extensions
         {
             try
             {
+                if (File.Exists(path))
+                    File.Delete(path);
+                
                 FileStream fileStream = File.Open(path, FileMode.OpenOrCreate);
                 BinaryWriter writer = new BinaryWriter(fileStream);
                 writer.Write(bytes);

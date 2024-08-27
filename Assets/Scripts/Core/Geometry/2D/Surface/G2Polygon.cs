@@ -56,6 +56,8 @@ namespace Runtime.Geometry
                 return;
             UGizmos.DrawLinesConcat(positions.Select(p=>p.to3xz()));
         } 
+        
+        public static readonly G2Polygon kDefaultUV = new G2Polygon(new float2(0,0),new float2(0,1),new float2(1,1),new float2(1,0));
     }
 
     public static class G2Polygon_Extension

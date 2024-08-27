@@ -1,12 +1,14 @@
 using System;
 using AOT;
 using Procedural.Tile;
+using Runtime.Geometry.Explicit.Sphere;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
+using Runtime.Geometry.Explicit.Sphere;
 
-namespace Runtime.Geometry.Explicit.Mesh.Sphere
+namespace Runtime.Geometry.Explicit.Mesh
 {
     using static umath;
     using static kmath;
@@ -26,6 +28,7 @@ namespace Runtime.Geometry.Explicit.Mesh.Sphere
 
         public void Execute(int _index, NativeArray<Vertex> _vertices, NativeArray<uint3> _triangles)
         {
+            var helper = Cube.kDefault;
             int ti = 0;
             int vertexWidth = resolutionU + 1;
 
@@ -34,8 +37,8 @@ namespace Runtime.Geometry.Explicit.Mesh.Sphere
             for (int j = 0; j <= resolutionV; j++)
             for (int i = 0; i <= resolutionU; i++)
             {
-                float2 uv = new float2(i / (float) resolutionU, j / (float) resolutionV);
-                vertex.position = USphereExplicit.UV.Cube(uv);
+                var uv = new float2(i / (float) resolutionU, j / (float) resolutionV);
+                vertex.position = helper.ToPosition(uv);
                 uv.x = (i - .5f) / resolutionU;
                 vertex.texCoord0.xy = (half2) uv;
                 math.sincos(kPI2 * uv.x, out var tangentZ, out var tangentX);
@@ -159,7 +162,7 @@ namespace Runtime.Geometry.Explicit.Mesh.Sphere
             var r = resolution;
             var uv = new float2(_i, _j) / r;
 
-            var position = USphereExplicit.Polygon.GetPoint(uv,_axis,geodesic);
+            var position = Polygon.GetPoint(uv,_axis,geodesic);
             position = math.normalize(position);
             
             if (overlapUV)

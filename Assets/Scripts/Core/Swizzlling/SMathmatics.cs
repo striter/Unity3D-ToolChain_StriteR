@@ -55,13 +55,13 @@ public static class umath_swizzlling       //Swizzling
     public static bool anyLesser(this float3 _value, float _comparer) => _value.x < _comparer || _value.y < _comparer || _value.z < _comparer;
     public static bool anyLesser(this float4 _value, float _comparer) => _value.x < _comparer || _value.y < _comparer || _value.z < _comparer || _value.w < _comparer;
     
-    public static float minElement(this float2 _src) => Mathf.Min(_src.x, _src.y);
-    public static float minElement(this float3 _src) => Mathf.Min(_src.x, _src.y, _src.z);
-    public static float minElement(this float4 _src) => Mathf.Min(_src.x, _src.y, _src.z, _src.w);
+    public static float minElement(this float2 _src) => math.min(_src.x, _src.y);
+    public static float minElement(this float3 _src) => math.min(_src.x, math.min(_src.y, _src.z));
+    public static float minElement(this float4 _src) => math.min(_src.x, math.min(_src.y, math.min(_src.z, _src.w)));
     
-    public static float maxElement(this float2 _src) => Mathf.Max(_src.x, _src.y);
-    public static float maxElement(this float3 _src) => Mathf.Max(_src.x, _src.y, _src.z);
-    public static float maxElement(this float4 _src) => Mathf.Max(_src.x, _src.y, _src.z, _src.w);
+    public static float maxElement(this float2 _src) => math.max(_src.x, _src.y);
+    public static float maxElement(this float3 _src) => math.max(_src.x,math.max( _src.y, _src.z));
+    public static float maxElement(this float4 _src) => math.max(_src.x, math.max(_src.y,math.max( _src.z, _src.w)));
 
     public static float convert(this float _src, Func<float, float> _func) => _func(_src);
     public static float2 convert(this float2 _src, Func<float, float> _func) => new float2(_func(_src.x),_func(_src.y));

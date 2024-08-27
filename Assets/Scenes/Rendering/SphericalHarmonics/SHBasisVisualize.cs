@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using Rendering.GI.SphericalHarmonics;
 using Runtime;
 using Runtime.Geometry.Explicit;
-using Runtime.Geometry.Explicit.Mesh.Sphere;
+using Runtime.Geometry.Explicit.Mesh;
 using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
@@ -26,7 +26,6 @@ namespace Examples.Rendering.SH
         protected override string GetInstanceName() => "SHL2";
         [Range(0,SHBasis.kAvailableBands)] public int band;
         public int basis;
-
         public PolygonSphereGenerator m_Generator;
         
         [StructLayout(LayoutKind.Sequential)]

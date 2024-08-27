@@ -30,7 +30,7 @@ namespace TechToys.ThePlanet.Module.BOIDS
         public void DrawGizmos()
         {
             Handles.matrix=Matrix4x4.identity;
-            Handles_Extend.DrawWireSphere(origin,Vector3.up,height);
+            UHandles.DrawWireSphere(origin,Vector3.up,height);
         }
     #endif
     }
