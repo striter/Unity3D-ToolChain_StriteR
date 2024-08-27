@@ -48,22 +48,22 @@ namespace Examples.Rendering.Imposter
             var size = m_Data.m_BoundingSphere.radius;
             var block = new MaterialPropertyBlock();
             var axis = GAxis.kDefault;
-            // if (m_Data.m_Parallax <= 0)
-            // {
-                // var corner = m_Data.m_Input.GetImposterCorner(viewDirectionOS);
-                // axis = GAxis.ForwardBillboard(0,-corner.direction);
-                // math.sincos(0,out var s0,out var c0);
-                // var X = size * c0 * axis.right + size * s0 * axis.up;
-                // var Y = -size * s0 * axis.right + size * c0 * axis.up;
-                // var billboard = new GQuad(-X - Y,-X + Y, X + Y,X - Y) + m_Data.m_BoundingSphere.center;
-                // weights[0] = 1;
+            if (m_Data.m_Parallax <= 0)
+            {
+                var corner = m_Data.m_Input.GetImposterCorner(viewDirectionOS);
+                axis = GAxis.ForwardBillboard(0,-corner.direction);
+                math.sincos(0,out var s0,out var c0);
+                var X = size * c0 * axis.right + size * s0 * axis.up;
+                var Y = -size * s0 * axis.right + size * c0 * axis.up;
+                var billboard = new GQuad(-X - Y,-X + Y, X + Y,X - Y) + m_Data.m_BoundingSphere.center;
+                weights[0] = 1;
                 
-                // _mesh.SetVertices(billboard.Select(p=>(Vector3)p).FillList(kVertices));
-                // _mesh.SetIndices(PQuad.kDefault.GetTriangleIndexes().FillList(kIndices),MeshTopology.Triangles,0);
-                // var texelSize = corner.uvRect.ToTexelSize();
-                // _mesh.SetUVs(0,G2Quad.kDefaultUV.Select(p=> (Vector4)(URender.TransformTex(p ,texelSize)).to4()).FillList(kUVs));
-            // }
-            // else
+                _mesh.SetVertices(billboard.Select(p=>(Vector3)p).FillList(kVertices));
+                _mesh.SetIndices(PQuad.kDefault.GetTriangleIndexes().FillList(kIndices),MeshTopology.Triangles,0);
+                var texelSize = corner.uvRect.ToTexelSize();
+                _mesh.SetUVs(0,G2Quad.kDefaultUV.Select(p=> (Vector4)(URender.TransformTex(p ,texelSize)).to4()).FillList(kUVs));
+            }
+            else
             {
                 var output = m_Data.m_Input.GetImposterViews(viewDirectionOS);
                 weights = output.weights;
