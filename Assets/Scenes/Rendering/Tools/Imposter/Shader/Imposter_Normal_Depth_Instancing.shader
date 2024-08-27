@@ -102,9 +102,9 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
 				float depthExtrude = 0;
             	#if _INTERPOLATE
 					Sample(i.uv01.xy,i.uvWeights.x,albedoAlpha,normalOS,depthExtrude);
-					Sample(i.uv23.xy,i.uvWeights.y,albedoAlpha,normalOS,depthExtrude);
-					Sample(i.uv23.zw,i.uvWeights.z,albedoAlpha,normalOS,depthExtrude);
-					Sample(i.uv01.zw,i.uvWeights.w,albedoAlpha,normalOS,depthExtrude);
+					Sample(i.uv01.zw,i.uvWeights.y,albedoAlpha,normalOS,depthExtrude);
+					Sample(i.uv23.xy,i.uvWeights.z,albedoAlpha,normalOS,depthExtrude);
+					Sample(i.uv23.zw,i.uvWeights.w,albedoAlpha,normalOS,depthExtrude);
             	#else
 					Sample(i.uv0,1,albedoAlpha,normalOS,depthExtrude);
             	#endif
