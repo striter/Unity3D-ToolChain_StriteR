@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TObjectPool;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -163,13 +162,8 @@ namespace System.Linq.Extensions
 
             public static void Traversal<T>(this IEnumerable<T> _collection, Action<T> _onEach, bool _copy = false)
             {
-                List<T> tempList = null;
                 if (_copy)
-                {
-                    tempList = TSPoolList<T>.Spawn();
-                    tempList.AddRange(_collection);
-                    _collection = tempList;
-                }
+                    _collection = UIterate.Iterate(_collection);
 
                 if (_collection is IList<T> list)
                 {
@@ -182,9 +176,6 @@ namespace System.Linq.Extensions
                     foreach (T element in _collection)
                         _onEach(element);
                 }
-                
-                if(tempList != null)
-                    TSPoolList<T>.Recycle(tempList);
             }
             public static void Traversal<T>(this IEnumerable<T> _collection, Action<int,T> _onEach)
             {
@@ -654,13 +645,12 @@ namespace System.Linq.Extensions
         
         public static void SortIndex<T>(this T[] _array, IEnumerable<int> _indexes)
         {
-            TSPoolList<T>.Spawn(out var tempList);
+            var tempList  = UIterate.EmptyList(_array);
             foreach (var index in _indexes)
                 tempList.Add(_array[index]);
 
             for (int i = 0; i < tempList.Count; i++)
                 _array[i] = tempList[i];
-            TSPoolList<T>.Recycle(tempList);
         }
 
         public static T Last<T>(this T[] _array)=> _array[_array.Length - 1];
@@ -764,12 +754,11 @@ namespace System.Linq.Extensions
 
         public static void SortIndex<T>(this List<T> _list, IEnumerable<int> _indexes)
         {
-            TSPoolList<T>.Spawn(out var tempList);
+            var tempList  = UIterate.EmptyList(_list);
             foreach (var index in _indexes)
                 tempList.Add(_list[index]);
             _list.Clear();
             _list.AddRange(tempList);
-            TSPoolList<T>.Recycle(tempList);
         }
         
         public static void Reindex<T>(this List<T> _list,int _index)

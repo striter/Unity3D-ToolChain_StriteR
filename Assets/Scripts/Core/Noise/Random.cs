@@ -38,7 +38,6 @@ public static class URandom
         Vector2 randomCirlce = new Vector2(Mathf.Sin(radin), Mathf.Cos(radin));
         return new Vector2(randomCirlce.x, randomCirlce.y);
     }
-
     
     public static int Random(this RangeInt ir, System.Random seed = null) => ir.start + RandomInt(ir.length + 1, seed);
     public static float Random(this RangeFloat ir, System.Random seed = null) => seed?.Next((int)(ir.start * 1000), (int)(ir.end * 1000)) / 1000f ?? UnityEngine.Random.Range(ir.start, ir.end);
@@ -120,7 +119,6 @@ public static class URandom
         return umath.calculatePerpendicular(randomVector, normal).normalize();
     }
 
-    
 #region Shuffle
     public static void Shuffle<T>(IList<T> _array,int _count,int _dimension, System.Random _random=null)
     {

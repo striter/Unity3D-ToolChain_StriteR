@@ -1,6 +1,6 @@
 ﻿using System;
 using Unity.Mathematics;
-using static KEulerAngles;
+using static umath.KEulerAngle;
 using static Unity.Mathematics.math;
 using static kmath;
 using quaternion = Unity.Mathematics.quaternion;
@@ -13,27 +13,28 @@ public enum EEulerOrder
     kOrderZXY,
     kOrderZYX,
 };
-public static class KEulerAngles
-{
-    public const EEulerOrder DEFAULT_ORDER = EEulerOrder.kOrderZXY;
-    public const float SINGULARITY_CUTOFF = 0.499999f;
-    public static float qAtan2(float _a, float _b) => atan2(_a, _b);
-    public static float qNull(float _a, float _b) => 0f;
-    public static float qAsin(float _a, float _b) => _a * asin(clamp(_b, -1.0f, 1.0f));
-
-    public static readonly Func<float, float, float>[][] qFuncs =
-    {
-        new Func<float, float, float>[] { qAtan2, qAsin, qAtan2 }, //OrderXYZ
-        new Func<float, float, float>[] { qAtan2, qAtan2, qAsin }, //OrderXZY
-        new Func<float, float, float>[] { qAtan2, qAtan2, qAsin }, //OrderYZX,
-        new Func<float, float, float>[] { qAsin, qAtan2, qAtan2 }, //OrderYXZ,
-        new Func<float, float, float>[] { qAsin, qAtan2, qAtan2 }, //OrderZXY,
-        new Func<float, float, float>[] { qAtan2, qAsin, qAtan2 } //OrderZYX,
-    };
-}
 
 public static partial class umath
 {
+    public static class KEulerAngle
+    {
+        public const EEulerOrder DEFAULT_ORDER = EEulerOrder.kOrderZXY;
+        public const float SINGULARITY_CUTOFF = 0.499999f;
+        public static float qAtan2(float _a, float _b) => atan2(_a, _b);
+        public static float qNull(float _a, float _b) => 0f;
+        public static float qAsin(float _a, float _b) => _a * asin(clamp(_b, -1.0f, 1.0f));
+
+        public static readonly Func<float, float, float>[][] qFuncs =
+        {
+            new Func<float, float, float>[] { qAtan2, qAsin, qAtan2 }, //OrderXYZ
+            new Func<float, float, float>[] { qAtan2, qAtan2, qAsin }, //OrderXZY
+            new Func<float, float, float>[] { qAtan2, qAtan2, qAsin }, //OrderYZX,
+            new Func<float, float, float>[] { qAsin, qAtan2, qAtan2 }, //OrderYXZ,
+            new Func<float, float, float>[] { qAsin, qAtan2, qAtan2 }, //OrderZXY,
+            new Func<float, float, float>[] { qAtan2, qAsin, qAtan2 } //OrderZYX,
+        };
+    }
+
     private static Func<float, float, float>[] kQuaternionHelper = {qNull, qNull, qNull};
     public static float radBetween(float3 _from,float3 _to)      //Radin
     {

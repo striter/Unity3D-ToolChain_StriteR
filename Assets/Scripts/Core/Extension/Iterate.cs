@@ -7,6 +7,29 @@ public interface IIterate<T>
 }
 public static class UIterate
 {
+    #region List
+
+    static class ListStorage<T>
+    {
+        public static List<T> m_List = new List<T>();
+    }
+
+    public static List<T> EmptyList<T>(IEnumerable<T> _src)
+    {
+        var list = ListStorage<T>.m_List;
+        list.Clear();
+        return list;
+    }
+    public static List<T> Iterate<T>(IEnumerable<T> _src)
+    {
+        var list = ListStorage<T>.m_List;
+        list.Clear();
+        list.AddRange(_src);
+        return list;
+    }
+    
+    #endregion
+    
     #region Array
     static class ArrayStorage<T>
     {
