@@ -57,6 +57,8 @@ namespace UnityEditor
             }
             Handles.DrawLine(tempPoint,startPoint);
         }
+
+        public static void DrawWireCapsule(float3 _origin, float3 _normal, float _radius, float _height) => DrawWireCapsule(_origin,Quaternion.LookRotation(_normal),Vector3.one, _radius, _height);
         public static void DrawWireCapsule(Vector3 _pos, Quaternion _rot, Vector3 _scale, float _radius, float _height)
         {
             using (new Handles.DrawingScope(Handles.color, Handles.matrix * Matrix4x4.TRS(_pos, _rot, _scale)))
@@ -90,6 +92,16 @@ namespace UnityEditor
                 Handles.DrawWireDisc(Vector3.zero, Vector3.up, _radius);
                 Handles.DrawWireDisc(Vector3.zero, Vector3.right, _radius);
                 Handles.DrawWireDisc(Vector3.zero, Vector3.forward, _radius);
+            }
+        }
+
+        public static void DrawEllipsoid(Vector3 _pos, float3 _radius)
+        {
+            using (new Handles.DrawingScope(Handles.color, Handles.matrix* Matrix4x4.TRS(_pos, Quaternion.identity, _radius)))
+            {
+                Handles.DrawWireDisc(Vector3.zero, Vector3.up,1f);
+                Handles.DrawWireDisc(Vector3.zero, Vector3.right, 1f);
+                Handles.DrawWireDisc(Vector3.zero, Vector3.forward, 1f);
             }
         }
         public static void DrawArrow(Vector3 _pos, Vector3 _direction, float _length, float _radius) => DrawArrow(_pos, Quaternion.LookRotation(_direction), _length, _radius);

@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEditor.Extensions;
 using UnityEngine;
 
-namespace Examples.Rendering.Imposter
+namespace Runtime.Optimize.Imposter
 {
     public class ImposterShaderGUI : ShaderGUIExtension
     {

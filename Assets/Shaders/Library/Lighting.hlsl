@@ -1,8 +1,7 @@
 ﻿#define LIGHTING
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
-#include "Assets/Shaders/Library/Lighting/Normal.hlsl"
-#include "Assets/Shaders/Library/Lighting/GlobalIllumination.hlsl"
+#include "Lighting/GlobalIllumination.hlsl"
 
 //Diffuse-Lambert
 float GetDiffuse(float3 normal,float3 lightDir)
@@ -38,5 +37,5 @@ float StrandSpecular(float3 T,float3 N,float3 H,float exponent,float3 shift)
     return dirAtten*pow(sinTH,exponent);
 }
 
-#include "Assets/Shaders/Library/Lighting/Shadow.hlsl"
-#include "Assets/Shaders/Library/Lighting/SSS.hlsl"
+#include "Lighting/Shadow.hlsl"
+#include "Lighting/SSS.hlsl"

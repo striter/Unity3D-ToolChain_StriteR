@@ -5,6 +5,7 @@ float2 CentricHemisphere_ToUV(float3 _direction)
     float r = sqrt(x * x + z * z);
     float u = r * r;
     float v = atan2(x, z) / kPI2;
+    v += step(v,0);
     return float2(u, v);
 }
 
@@ -14,8 +15,9 @@ float3 CentricHemisphere_ToPosition(float2 _uv)
     float v = _uv.y;
     float r = sqrt(u);
     float theta =  kPI2 * v;
-    float sinTheta = sin(theta);
-    float cosTheta = cos(theta);
+    float sinTheta;
+    float cosTheta;
+    sincos(theta,sinTheta,cosTheta);
     return float3(sinTheta * r,  sqrt(1 - u),  cosTheta * r);
 }
 
@@ -63,9 +65,10 @@ float3 Cube_ToPosition(float2 _uv)
 
 float2 Cube_ToUV(float3 _direction)
 {
-    float phi = acos(-_direction.y);
-    float theta = atan2(_direction.z, _direction.x);
-    return float2(theta / kPI2, phi / kPI);
+    float phi = acos(-_direction.y) / kPI;
+    float theta = atan2(_direction.z, _direction.x) / kPI2;
+    theta += step(theta,0);
+    return float2(theta , phi );
 }
 
 float3 ConcentricOctahedral_ToPosition(float2 _uv)

@@ -6,7 +6,6 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
-using Runtime.Geometry.Explicit.Sphere;
 
 namespace Runtime.Geometry.Explicit.Mesh
 {

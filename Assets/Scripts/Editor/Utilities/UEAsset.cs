@@ -245,9 +245,25 @@ namespace UnityEditor.Extensions
 
         public static string MakeSureDirectory(string _filePath)
         {
-            if(!Directory.Exists(_filePath))
+            if (!Directory.Exists(_filePath))
+            {           
                 Directory.CreateDirectory(_filePath);
+                AssetDatabase.Refresh();
+            }
+
             return _filePath;
+        }
+        
+        public static void DeleteDirectory(string _directory)
+        {
+            if (!Directory.Exists(_directory))
+                return;
+    
+            string metaFilePath = _directory + ".meta";
+            File.Delete(metaFilePath);        
+            Directory.Delete(_directory);    
+    
+            AssetDatabase.Refresh();
         }
         
         public static void DeleteAllAssetAtPath(string _assetPath, Predicate<string> _assetPathPredicate = null)

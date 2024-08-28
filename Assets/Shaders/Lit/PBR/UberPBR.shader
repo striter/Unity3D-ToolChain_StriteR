@@ -140,17 +140,11 @@
 				FOG_TRANSFER(o)
 				return o;
 			}
-			float3 CalculateAlbedo(float2 uv)
-			{
-				float4 sample = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv)*INSTANCE(_Color);
-				return sample.rgb;
-			}
 			half3 OverrideEmission(float2 uv)
 			{
 				return SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,uv).rgb*INSTANCE(_EmissionColor).rgb;
 			}
 
-			#define GET_ALBEDO(i) CalculateAlbedo(i.uv);
 			#define GET_EMISSION(i) OverrideEmission(i.uv.xy);
 		ENDHLSL
 
@@ -274,12 +268,12 @@
 				half metallic=INSTANCE(_Metallic);
 				half ao=1.h;
 				half anisotropic=INSTANCE(_AnisoTropicValue);
-				#if _PBRMAP
-					half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
-					smoothness = mix.r;
-					metallic = mix.g;
-					ao = mix.b;
-				#endif
+			#if _PBRMAP
+				half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,baseUV).rgb;
+				smoothness = mix.r;
+				metallic = mix.g;
+				ao = mix.b;
+			#endif
 
 			#if defined(GET_EMISSION)
 				half3 emission = GET_EMISSION(i); 

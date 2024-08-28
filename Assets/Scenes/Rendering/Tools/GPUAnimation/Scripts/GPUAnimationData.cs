@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-namespace Rendering.Optimize
+namespace Runtime.Optimize.GPUAnimation
 {
     public enum EGPUAnimationMode
     {

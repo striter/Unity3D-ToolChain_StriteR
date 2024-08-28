@@ -4,7 +4,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
     {
     	_AlphaClip("Clip",Range(0,1)) = 0.5
     	[Toggle(_INTERPOLATE)]_Interpolate("Interpolate",int) = 1
-    	_Parallax("Parallax",Range(0,1)) = 0.5
+    	_Parallax("Parallax",Range(0,1)) = 0.1
     	
         [NoScaleOffset]_AlbedoAlpha("_AlbedoAlpha",2D) = "white"
         [NoScaleOffset]_NormalDepth("_NormalDepth",2D) = "white"
@@ -12,7 +12,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
     	_ImposterBoundingSphere("Bounding Sphere",Vector)=(1,1,1,1)
     	[KeywordEnum(CUBE,OCTAHEDRAL,CONCENTRIC_OCTAHEDRAL,CENTRIC_HEMISPHERE,OCTAHEDRAL_HEMISPHERE)]_MAPPING("Sphere Mode",int) = 4
     }
-	CustomEditor "Examples.Rendering.Imposter.ImposterShaderGUI"
+	CustomEditor "Runtime.Optimize.Imposter.ImposterShaderGUI"
     SubShader
     {
     	Blend Off
@@ -140,14 +140,5 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
             ENDHLSL
         }
         
-		Pass
-		{
-			NAME "MAIN"
-			Tags{"LightMode" = "DepthOnly"}
-			HLSLPROGRAM
-			#pragma vertex vert
-			#pragma fragment frag
-			ENDHLSL
-		}
     }
 }

@@ -1,3 +1,3 @@
-﻿#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
-#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
-#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
+﻿#include "PBR/BRDFInput.hlsl"
+#include "PBR/BRDFMethods.hlsl"
+#include "PBR/BRDFLighting.hlsl"

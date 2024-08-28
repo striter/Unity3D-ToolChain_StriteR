@@ -34,7 +34,6 @@ namespace Runtime.Geometry
             return new G2Circle(p, math.sqrt(sqR));
         }
 
-
         public static G2Circle Create(IList<float2> _positions)
         {
             switch (_positions.Count)

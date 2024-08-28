@@ -39,19 +39,15 @@ BRDFSurface InitializeFragmentSurface(v2ff i)
 
 	half4 color = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV);
 	
-	half3 albedo = 
+	half4 albedoAlpha = 
 #if defined(GET_ALBEDO)
 	 GET_ALBEDO(i);
 #else
-	 	color.rgb*INSTANCE(_Color).rgb;
+	 	color*INSTANCE(_Color);
 #endif
-	
-	half alpha =
-#if defined(GET_ALPHA)
-	 GET_ALPHA(i,surface);
-#else
-	color.a;
-#endif
+
+	half3 albedo = albedoAlpha.rgb;
+	half alpha = albedoAlpha.a;
 
 	half3 tangentWS = 0;
 	half3 biTangentWS = 0;

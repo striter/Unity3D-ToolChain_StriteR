@@ -6,7 +6,7 @@ using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Examples.Rendering.Imposter
+namespace Runtime.Optimize.Imposter
 {
     public enum EImposterCount
     {
@@ -83,7 +83,7 @@ namespace Examples.Rendering.Imposter
 
         public (G2Quad corners, float4 weights, float3 centroid) GetImposterViews(float3 _directionOS)
         {
-            mapping.InvBilinearInterpolate(mapping.SphereToUV(_directionOS),cellCount.x,out var corners,out var weights );
+            mapping.InvBilinearInterpolate(_directionOS,cellCount.x,out var corners,out var weights );
             return (corners, weights, _directionOS);
         }
 

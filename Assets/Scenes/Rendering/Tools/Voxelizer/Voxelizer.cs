@@ -7,7 +7,7 @@ using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Examples.Rendering.Voxelizer
+namespace Runtime.Optimize.Voxelizer
 {
     public enum EResolution
     {

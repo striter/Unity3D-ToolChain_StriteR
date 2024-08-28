@@ -3,7 +3,7 @@
 namespace Runtime.Geometry.Explicit.Sphere
 {
     using static math;
-    public struct Octahedral : IUVMapping
+    public struct Octahedral : ISphereUVMapping
     {
         public float3 ToPosition(float2 _uv)
         {
@@ -23,5 +23,6 @@ namespace Runtime.Geometry.Explicit.Sphere
             return oct * .5f + .5f;
         }
         public static readonly Octahedral kDefault = default;
+        public bool IsHemisphere => false;
     }
 }

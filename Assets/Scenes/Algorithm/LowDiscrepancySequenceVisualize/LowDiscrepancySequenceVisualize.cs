@@ -49,7 +49,7 @@ namespace Examples.Algorithm.SamplePatternVisualize
                 ESamplePattern.PoissonDisk => m_Texture != null
                     ? ULowDiscrepancySequences.PoissonDisk2D(patternWidth, patternHeight, 30, null,
                         val => math.lerp(3f, 1f,
-                            UColorTransform.RGBtoLuminance(m_Texture.GetPixel((int)(val.x * m_Texture.width),
+                            UColor.RGBtoLuminance(m_Texture.GetPixel((int)(val.x * m_Texture.width),
                                     (int)(val.y * m_Texture.height))
                                 .to3())))
                     : ULowDiscrepancySequences.PoissonDisk2D(patternWidth, patternHeight),

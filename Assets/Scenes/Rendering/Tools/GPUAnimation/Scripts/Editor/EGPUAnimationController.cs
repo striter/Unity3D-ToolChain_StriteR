@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using Rendering.Optimize;
+using Runtime.Optimize.GPUAnimation;
 
 namespace UnityEditor.Extensions
 {

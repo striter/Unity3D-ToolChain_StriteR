@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Rendering.Optimize;
+using Runtime.Optimize.GPUAnimation;
 
 namespace Examples.Rendering.GPUAnimationInstance
 {

@@ -12,7 +12,7 @@ public enum EColorVisualize
     B,
     A,
 }
-public static class UColor
+public static partial class UColor
 {
     #region ColorTransform
     public static byte toColor32(float _src) => (byte)(_src * 255);

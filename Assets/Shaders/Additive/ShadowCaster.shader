@@ -33,6 +33,11 @@
 			{
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
+#if defined(GET_POSITION_WS)
+	float3 positionWS = GET_POSITION_WS(v,o);
+#else
+	float3 positionWS=TransformObjectToWorld(v.positionOS);
+#endif
 				SHADOW_CASTER_VERTEX(v,TransformObjectToWorld(v.positionOS.xyz));
 				return o;
 			}

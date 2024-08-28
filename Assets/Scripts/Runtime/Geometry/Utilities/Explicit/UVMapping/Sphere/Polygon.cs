@@ -4,7 +4,7 @@ namespace Runtime.Geometry.Explicit.Sphere
 {
     using static math;
     using static kmath;
-    public struct Polygon : IUVMapping
+    public struct Polygon : ISphereUVMapping
     {
         public bool geodesic;
         public int axisCount;
@@ -41,5 +41,6 @@ namespace Runtime.Geometry.Explicit.Sphere
         public static Polygon kDefault = new Polygon(){axisCount = 4,geodesic = true};
         public static Polygon kGeodesic = new Polygon(){axisCount = 4,geodesic = false};
         public static Polygon GetHelper(int _axisCount,bool _geodesic) => new Polygon(){axisCount = _axisCount,geodesic = _geodesic};
+        public bool IsHemisphere => false;
     }
 }

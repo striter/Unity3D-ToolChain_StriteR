@@ -1,7 +1,7 @@
 using Runtime.Geometry;
 using UnityEngine;
 
-namespace Examples.Rendering.Imposter
+namespace Runtime.Optimize.Imposter
 {
     public class ImposterData : ScriptableObject
     {

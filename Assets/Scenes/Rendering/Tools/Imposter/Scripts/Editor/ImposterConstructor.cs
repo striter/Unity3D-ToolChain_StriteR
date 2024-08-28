@@ -7,18 +7,17 @@ using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEditor.Extensions;
 using UnityEditor.Extensions.EditorPath;
-using UnityEditor.Extensions.TextureEditor;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-namespace Examples.Rendering.Imposter
+namespace Runtime.Optimize.Imposter
 {
     [CreateAssetMenu(menuName = "Optimize/Imposter/Constructor", fileName = "ImposterConstructor_Default")]
     public class ImposterConstructor : ScriptableObject
     {
         public ImposterInput m_Input = ImposterInput.kDefault;
         public Shader m_Shader;
-        public bool m_Instanced;
+        public bool m_Instanced = true;
 
         public ImposterCameraHandle[] m_CameraHandles;
         private static int kLayerID = 30;
@@ -112,7 +111,7 @@ namespace Examples.Rendering.Imposter
             boundingSphere.radius += boundingSphereExtrude;
             boundingSphere.center -= (float3)_sceneObjectRoot.position;
 
-            mesh.SetVertices(contourPolygon.Select(p=>(Vector3)((p-.5f).to3xy()) * boundingSphere.radius * 2).ToList());
+            mesh.SetVertices(contourPolygon.Select(p=>(Vector3)((p-.5f).to3xy() * boundingSphere.radius * 2 + boundingSphere.center)).ToList());
             mesh.SetIndices(contourPolygon.GetIndexes().ToArray(),MeshTopology.Triangles,0);
             mesh.SetUVs(0,contourPolygon.Select(p=>(Vector2)p).ToArray());
             mesh.bounds = boundingSphere.GetBoundingBox();
@@ -203,7 +202,7 @@ namespace Examples.Rendering.Imposter
 
                 var encoding = ETextureExportType.PNG;
                 var texturePath = filePath.Replace(initialName, textureName).Replace("asset", encoding.GetExtension());
-                var textureAsset = UTextureEditor.ExportTexture(texture2D, texturePath, encoding);
+                var textureAsset = UTextureExport.ExportTexture(texture2D, texturePath, encoding);
 
                 Dispose(texture2D);
                 return textureAsset;

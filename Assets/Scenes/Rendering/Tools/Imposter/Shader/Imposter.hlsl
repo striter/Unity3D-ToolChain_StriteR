@@ -77,14 +77,21 @@ float2 ImposterTilling(int2 _pixelIndex,int _N)
         _pixelIndex &= (_N - 1);
         return _pixelIndex;
     #endif
+
+    #if defined(_HEMISPHERE)
+        _pixelIndex = clamp(_pixelIndex,0,_N - 1);
+        return _pixelIndex;
+    #endif
     
-    return _pixelIndex % _N;
+    _pixelIndex = (_pixelIndex + _N) % _N;
+    return _pixelIndex;
 }
 
 float2 CalculateBilinearLerpUV(float2 _uv,float2 imposterUV,float _parallax,int2 cellIndex)
 {
     float2 scale = _ImposterTexel.zw;
     int N = _ImposterTexel.x;
+    
     float2 tilling = ImposterTilling(cellIndex,N) * scale;
     float4 st = float4(scale,tilling);
     UNITY_BRANCH
@@ -101,8 +108,15 @@ float2 CalculateBilinearLerpUV(float2 _uv,float2 imposterUV,float _parallax,int2
 void ImposterVertexEvaluate_Bilinear(float2 _uv,float _parallax,float3 _viewPositionWS,out float3 imposterPositionOS,out float3 _forwardOS,out float4 _imposterUV01,out float4 _imposterUV23,out float4 _imposterWeights)
 {
     float3 viewPositionOS = TransformWorldToObject(_viewPositionWS);
-    _forwardOS = normalize(viewPositionOS - _BoundingSphere.xyz);
+    _forwardOS = viewPositionOS - _BoundingSphere.xyz;
 
+    #if defined(_HEMISPHERE)
+        _forwardOS.y = max(0.01f, _forwardOS.y);
+        _forwardOS = normalize(_forwardOS);
+    #endif
+
+    _forwardOS = normalize(_forwardOS);
+    
     float2 imposterUV = TransformObjectDirectionToUV(_forwardOS);
     float s = imposterUV.x;
     float t = imposterUV.y;

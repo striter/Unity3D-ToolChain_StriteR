@@ -4,7 +4,7 @@ using UnityEditor.Extensions;
 using UnityEditor.Rendering;
 using UnityEngine;
 
-namespace Examples.Rendering.Imposter
+namespace Runtime.Optimize.Imposter
 {
     [InitializeOnLoad]
     public class ImposterHierarchyCreator : Editor
@@ -39,8 +39,6 @@ namespace Examples.Rendering.Imposter
                 {
                     gameObject.AddComponent<MeshRenderer>().sharedMaterial = imposterData.m_Material;
                     gameObject.AddComponent<MeshFilter>().sharedMesh = imposterData.m_Mesh;
-                    if (dropRoot != null)
-                        transform.localPosition = imposterData.m_BoundingSphere.center;
                 }
                 else
                 {

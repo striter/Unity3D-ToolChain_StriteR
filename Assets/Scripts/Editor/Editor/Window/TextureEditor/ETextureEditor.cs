@@ -140,10 +140,10 @@ namespace UnityEditor.Extensions.TextureEditor
                 if (GUI.Button(HorizontalScope.NextRect(20, 80), "Export"))
                 {
                     var exportTexture = textureEditor.GetTextureOutput();
-                    if (!UEAsset.SaveFilePath(out string filePath, UTextureEditor.GetExtension(m_TextureExportType), exportTexture.name + "_M"))
+                    if (!UEAsset.SaveFilePath(out string filePath, UTextureExport.GetExtension(m_TextureExportType), exportTexture.name + "_M"))
                         return;
 
-                    UTextureEditor.ExportTexture(exportTexture,filePath,m_TextureExportType);
+                    UTextureExport.ExportTexture(exportTexture,filePath,m_TextureExportType);
                 }
 
                 return;

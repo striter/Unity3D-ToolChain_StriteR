@@ -131,7 +131,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle.Process
                     name = name.Replace(m_NameIdentity, m_NameReplacement);
                 
                 var filePath = $"{dstDirectory.AssetToFilePath()}/{name}.{m_ExportType.GetExtension()}";
-                UTextureEditor.ExportTexture(newTexture, filePath,m_ExportType);
+                UTextureExport.ExportTexture(newTexture, filePath,m_ExportType);
                 var importer = AssetImporter.GetAtPath(filePath.FileToAssetPath()) as TextureImporter;
                 if (importer != null)
                 {

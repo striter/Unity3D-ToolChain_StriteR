@@ -1,4 +1,4 @@
-﻿#include "Assets/Shaders/Library/Common.hlsl"
+﻿#include "Common.hlsl"
 #include "PostProcess/Depth.hlsl"
 
 float _SmoothParticleDistance;

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Rendering.Optimize
+namespace Runtime.Optimize.GPUAnimation
 {
     public static class UGPUAnimation
     {

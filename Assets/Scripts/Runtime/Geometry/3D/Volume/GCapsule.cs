@@ -55,7 +55,8 @@ namespace Runtime.Geometry
             }
             this = new GCapsule(position, radius, normal, height - radius * 2);
         }
-
+        
+        public static GCapsule operator +(GCapsule _src, float3 _dst) => new GCapsule(_src.origin+_dst, _src.radius, _src.normal, _src.height);
         public static GCapsule operator *(Matrix4x4 _matrix, GCapsule _plane) => new GCapsule(_matrix.MultiplyPoint(_plane.origin),_plane.radius, _matrix.MultiplyVector(_plane.normal),_plane.height);
 
         public float3 GetSupportPoint(float3 _direction)
@@ -140,5 +141,8 @@ namespace Runtime.Geometry
 
 
         public void DrawGizmos() => UGizmos.DrawWireCapsule(origin,normal,radius,height);
+        #if UNITY_EDITOR
+        public void DrawHandles() => UnityEditor.UHandles.DrawWireCapsule(origin,normal,radius,height);
+        #endif
     }
 }

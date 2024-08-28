@@ -76,5 +76,44 @@ namespace Runtime.DataStructure
                 }
             }
         }
+        
+        #if UNITY_EDITOR
+        public void DrawHandles(bool _parentMode)
+        {
+            if (_parentMode)
+            {
+                foreach (var node in GetParents())
+                {
+                    Gizmos.color = UColor.IndexToColor(node.iteration).SetA(.2f);
+                    if (node.boundary is IVolume boundsShape)
+                        boundsShape.DrawHandles();
+                }
+            }
+            else
+            {
+                var index = 0;
+                foreach (var leaf in GetLeafs())
+                {
+                    Gizmos.color = UColor.IndexToColor(index++);
+                    if (leaf.boundary is IGeometry boundsShape)
+                        boundsShape.DrawGizmos();
+                    foreach (var element in leaf.elements)
+                        switch (element)
+                        {
+                            case IVolume handles:
+                                handles.DrawHandles();
+                                break;
+                            case float3 v:
+                                UnityEditor.UHandles.DrawWireSphere(v,0.1f);
+                                break;
+                            case float2 v2:
+                                UnityEditor.UHandles.DrawWireSphere(v2.to3xz(),0.1f);
+                                break;
+                        }
+                }
+            }
+            
+        }
+        #endif
     }
 }

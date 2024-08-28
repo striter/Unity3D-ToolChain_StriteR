@@ -167,9 +167,15 @@ public static class UGizmos
 #if UNITY_EDITOR
         UnityEditor.Handles.color = Gizmos.color;
         UnityEditor.Handles.matrix = Gizmos.matrix;
-        UnityEditor.UHandles.DrawWireCapsule(_origin,Quaternion.LookRotation(_normal),Vector3.zero, _radius, _height);
+        UnityEditor.UHandles.DrawWireCapsule(_origin,_normal, _radius, _height);
 #endif
     }
-    
-    
+
+    public static void DrawEllipsoid(Vector3 center, float3 radius)
+    {
+        var preMatrix = Gizmos.matrix;
+        Gizmos.matrix = preMatrix * Matrix4x4.TRS(center,Quaternion.identity, radius);
+        Gizmos.DrawWireSphere(Vector3.zero,1f);
+        Gizmos.matrix = preMatrix;
+    }
 }

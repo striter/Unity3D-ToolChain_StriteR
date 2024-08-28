@@ -102,4 +102,6 @@ public class ClampAttribute:PropertyAttribute
 }
 
 [AttributeUsage(AttributeTargets.Field)]
-public class CullingMaskAttribute : PropertyAttribute { }
+public class CullingMaskAttribute : PropertyAttribute {
+    public static bool Enabled(int _mask,int _value) => _mask ==-1 || (_mask & _value) != 0;
+}

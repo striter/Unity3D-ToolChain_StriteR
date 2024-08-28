@@ -1,8 +1,7 @@
 ﻿using System;
-using System.ComponentModel;
 using UnityEngine;
 
-namespace UnityEditor.Extensions.TextureEditor
+namespace UnityEditor.Extensions
 {
     public enum EChannelOperation
     {
@@ -22,8 +21,7 @@ namespace UnityEditor.Extensions.TextureEditor
         EXR,
     }
 
-
-    public static class UTextureEditor
+    public static class UTextureExport
     {
         public static string GetExtension(this ETextureExportType _exportType) => _exportType switch
             {

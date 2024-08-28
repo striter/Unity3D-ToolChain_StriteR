@@ -19,13 +19,17 @@ namespace Examples.Algorithm.Procedural
             foreach (var mapping in UEnum.GetEnums<ESphereMapping>())
             {
                 Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right *index++*3f );
-                for (int i = 0; i <= kUVSphereResolution ; i ++)
-                for (int j = 0; j <= kUVSphereResolution; j++)
+                for (int i = 0; i < kUVSphereResolution ; i ++)
+                for (int j = 0; j < kUVSphereResolution; j++)
                 {
-                    var uv = new float2(i / r, j / r);
+                    var uv = (new float2(i , j ) + .5f) / r;
                     Gizmos.color = (Color.red * uv.x + Color.green * uv.y).SetA(1f);
+                    if ((mapping.SphereToUV(mapping.UVToSphere(uv)) - uv).sqrmagnitude() > 0.0001f)
+                        Gizmos.color = Color.magenta.SetA(.5f);
+                    
                     Gizmos.DrawSphere(mapping.UVToSphere( uv),.02f);
                 }
+                
                 UGizmos.DrawString(mapping.ToString(), Vector3.zero);
             }
             

@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
-using Runtime;
 using Runtime.Geometry;
 using Runtime.Geometry.Explicit.Sphere;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Examples.Rendering.Imposter
+namespace Runtime.Optimize.Imposter
 {
     [Serializable]
     public class ImposterRendererCore : ARuntimeRendererBase

@@ -7,7 +7,7 @@ namespace Runtime.Geometry.Explicit.Sphere
     using static umath;
 
     //https://fileadmin.cs.lth.se/graphics/research/papers/2008/simdmapping/clarberg_simdmapping08_preprint.pdf
-    public struct ConcentricOctahedral : IUVMapping
+    public struct ConcentricOctahedral : ISphereUVMapping
     {
         public float3 ToPosition(float2 _uv)
         {
@@ -68,5 +68,6 @@ namespace Runtime.Geometry.Explicit.Sphere
         }
 
         public static readonly ConcentricOctahedral kDefault = default;
+        public bool IsHemisphere => false;
     }
 }

@@ -69,15 +69,15 @@ public class InspectorButtonAttribute : ConditionAttribute
 
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-public class FoldoutInspectorButtonAttribute : InspectorButtonAttribute
+public class InspectorFoldoutButtonAttribute : InspectorButtonAttribute
 {
     public override EConditionAction Condition => EConditionAction.AllEquals;
-    public FoldoutInspectorButtonAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
+    public InspectorFoldoutButtonAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
 }
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-public class FoldInspectorButtonAttribute : InspectorButtonAttribute
+public class InspectorFoldButtonAttribute : InspectorButtonAttribute
 {
     public override EConditionAction Condition => EConditionAction.NonAnyEquals;
-    public FoldInspectorButtonAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
+    public InspectorFoldButtonAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Rendering.Optimize;
+using Runtime.Optimize.GPUAnimation;
 
 namespace UnityEditor.Extensions
 {

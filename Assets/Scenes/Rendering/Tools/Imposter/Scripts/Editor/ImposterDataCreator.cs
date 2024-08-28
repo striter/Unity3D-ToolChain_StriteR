@@ -5,7 +5,7 @@ using UnityEditor.Extensions;
 using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 
-namespace Examples.Rendering.Imposter
+namespace Runtime.Optimize.Imposter
 {
     public static class ImposterDataCreator
     {
@@ -46,8 +46,37 @@ namespace Examples.Rendering.Imposter
             });
         }
 
+        
+        [MenuItem("GameObject/Optimize/Imposter/Data", false, 11)]
+        public static void CreateWithSelection()
+        {
+            var selections = Selection.objects.ToArray();
+            if (selections.Length != 1)
+            {
+                Debug.LogWarning("Nothing selected");
+                return;
+            }
+
+            var selection = selections.First();
+            
+            AssetSelectWindow.Select<ImposterConstructor>(p =>
+            {
+                if (p == null)
+                    return;
+
+                if (!selection.IsSceneObject())
+                {
+                    Debug.LogWarning($"{selection} is not SceneObject");
+                    return;
+                }
+        
+                var name = UEPath.PathRegex($"{selection.name}_Imposter");
+                p.Construct((selection as GameObject).transform,name,$"{GetDirectory()}/{name}.asset");
+            });
+        }
+        
         private static string GetDirectory() => UEAsset.MakeSureDirectory(UEPath.PathRegex("<#activeScenePath>/Imposter"));
-        [MenuItem("GameObject/Optimize/Imposter/Data", false, 10)]
+        [MenuItem("GameObject/Optimize/Imposter/ActiveSceneData", false, 11)]
         public static void CreateSceneSelections()
         {
             var selections = Selection.objects.ToArray();
@@ -76,5 +105,6 @@ namespace Examples.Rendering.Imposter
                 UEAsset.DeleteAllAssetAtPath(directory.FileToAssetPath(),p=>!UEAsset.IsAssetDirty(p));
             });
         }
+
     }
 }

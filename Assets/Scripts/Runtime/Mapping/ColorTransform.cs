@@ -1,7 +1,7 @@
 ﻿using Unity.Mathematics;
 using static Unity.Mathematics.math;
 
-public static class UColorTransform
+public static partial class UColor
 {
     private static readonly float3 kLuminanceMultiplier = new float3(0.2126729f, 0.7151522f, 0.0721750f);
     public static float RGBtoLuminance(float3 color) => math.dot(color,kLuminanceMultiplier);
@@ -28,7 +28,6 @@ public static class UColorTransform
 
     public static float GammaToLinear(float sRGB) => sRGB * (sRGB * (sRGB * 0.305306011f + 0.682171111f) + 0.012522878f);
     public static float3 GammaToLinear(float3 sRGB) => sRGB * (sRGB * (sRGB * 0.305306011f + 0.682171111f) + 0.012522878f);
-    
     
     public static float LinearToGamma_Accurate(float col)
     {

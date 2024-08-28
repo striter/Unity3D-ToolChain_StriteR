@@ -88,11 +88,11 @@ Shader "PCG/Foliage"
 				float3 tangentWS = TransformObjectToWorldDir(_tangentOS);
 				return positionWS + Wind(positionWS,_color.r,INSTANCE(_BendStrength),normalWS,tangentWS);
 			}
-			float3 GetAlbedoOverride(float2 uv,float3 color)
+			float4 GetAlbedoOverride(float2 uv,float3 color)
 			{
 				float4 sample =SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, uv);
 				clip(sample.a-_AlphaCutoff);
-				return sample.rgb  * _Color;
+				return sample  * _Color;
 			}
     		
 			#define GET_EMISSION(i) 0;

@@ -37,7 +37,7 @@ namespace Rendering.Pipeline.Component
             this.Tick(UTime.deltaTime);
         }
 
-        [FoldInspectorButton(nameof(m_Collection),null)]
+        [InspectorFoldButton(nameof(m_Collection),null)]
         public void Play(string _anim)
         {
             if (m_Collection == null)
@@ -53,7 +53,7 @@ namespace Rendering.Pipeline.Component
             this.Play(m_Collection.m_AnimationClips[clipIndex]);
         }
 
-        [FoldInspectorButton(nameof(m_Collection), null)]
+        [InspectorFoldButton(nameof(m_Collection), null)]
         void StopAll() => ((ISurfaceEffect)this).StopAll();
         
 // #if UNITY_EDITOR
