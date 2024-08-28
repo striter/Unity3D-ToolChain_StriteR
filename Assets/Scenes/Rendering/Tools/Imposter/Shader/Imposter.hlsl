@@ -49,16 +49,12 @@ float2 TransformObjectDirectionToUV(float3 _direction)
     return 0;
 }
 
-void ImposterVertexEvaluate(float2 uv,float3 _viewPositionWS,out float3 imposterPositionOS,out float3 forwardOS,out float2 imposterUV)
+void ImposterVertexEvaluate(float2 uv,float3 forwardOS,out float3 imposterPositionOS,out float2 imposterUV)
 {
-    float3 viewPositionOS = TransformWorldToObject(_viewPositionWS);
-    float3 viewDirectionOS = normalize(viewPositionOS - _BoundingSphere.xyz);
-
-    float2 _imposterUV = TransformObjectDirectionToUV(viewDirectionOS);
+    float2 _imposterUV = TransformObjectDirectionToUV(forwardOS);
     int2 cellIndex = floor(_imposterUV * _ImposterTexel.xy) % _ImposterTexel.xy;
     float2 uvMin = cellIndex * _ImposterTexel.zw;
     imposterUV = TransformTex(uv,float4(_ImposterTexel.zw,uvMin));
-    
     forwardOS = TransformUVToObjectDirection((cellIndex + .5f) * _ImposterTexel.zw);
     float3 rightOS = normalize( cross( forwardOS, float3( 0,1,0 ) ) );
     float3 upOS = cross( rightOS, forwardOS );
@@ -105,14 +101,10 @@ float2 CalculateBilinearLerpUV(float2 _uv,float2 imposterUV,float _parallax,int2
     return clamp(TransformTex(_uv,st),tilling,tilling + scale);
 }
 
-void ImposterVertexEvaluate_Bilinear(float2 _uv,float _parallax,float3 _viewPositionWS,out float3 imposterPositionOS,out float3 _forwardOS,out float4 _imposterUV01,out float4 _imposterUV23,out float4 _imposterWeights)
+void ImposterVertexEvaluate_Bilinear(float2 _uv,float _parallax,float3 _forwardOS,out float3 imposterPositionOS,out float4 _imposterUV01,out float4 _imposterUV23,out float4 _imposterWeights)
 {
-    float3 viewPositionOS = TransformWorldToObject(_viewPositionWS);
-    _forwardOS = viewPositionOS - _BoundingSphere.xyz;
-
     #if defined(_HEMISPHERE)
         _forwardOS.y = max(0.01f, _forwardOS.y);
-        _forwardOS = normalize(_forwardOS);
     #endif
 
     _forwardOS = normalize(_forwardOS);

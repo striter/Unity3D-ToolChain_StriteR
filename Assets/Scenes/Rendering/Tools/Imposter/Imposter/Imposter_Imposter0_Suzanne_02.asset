@@ -232,7 +232,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaClip: 0.627
+    - _AlphaClip: 0.418
     - _Interpolate: 1
     - _MAPPING: 4
     - _Parallax: 0.082
