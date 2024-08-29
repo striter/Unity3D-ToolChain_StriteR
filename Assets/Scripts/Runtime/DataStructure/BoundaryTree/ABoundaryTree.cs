@@ -78,13 +78,13 @@ namespace Runtime.DataStructure
         }
         
         #if UNITY_EDITOR
-        public void DrawHandles(bool _parentMode)
+        public void DrawHandles(bool _parentMode = false)
         {
             if (_parentMode)
             {
                 foreach (var node in GetParents())
                 {
-                    Gizmos.color = UColor.IndexToColor(node.iteration).SetA(.2f);
+                    UnityEditor.Handles.color = UColor.IndexToColor(node.iteration).SetA(.2f);
                     if (node.boundary is IVolume boundsShape)
                         boundsShape.DrawHandles();
                 }
@@ -94,9 +94,9 @@ namespace Runtime.DataStructure
                 var index = 0;
                 foreach (var leaf in GetLeafs())
                 {
-                    Gizmos.color = UColor.IndexToColor(index++);
-                    if (leaf.boundary is IGeometry boundsShape)
-                        boundsShape.DrawGizmos();
+                    UnityEditor.Handles.color = UColor.IndexToColor(index++);
+                    if (leaf.boundary is IVolume boundsShape)
+                        boundsShape.DrawHandles();
                     foreach (var element in leaf.elements)
                         switch (element)
                         {

@@ -27,7 +27,6 @@ namespace Runtime.Optimize.Imposter
             m_BoundingSphere = new GSphere(MaterialEditor.GetMaterialProperty(materialEditor.targets, ImposterShaderProperties.kBounding).vectorValue);
             m_Input.mapping = (ESphereMapping)MaterialEditor.GetMaterialProperty(materialEditor.targets, ImposterShaderProperties.kMode).floatValue;
             m_Input.count = (EImposterCount)(MaterialEditor.GetMaterialProperty(materialEditor.targets, ImposterShaderProperties.kTexel).vectorValue.x);
-            m_Input.Ctor();
         }
 
 

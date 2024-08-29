@@ -50,7 +50,7 @@ namespace Runtime.Geometry.Extension
                 min = math.min(box.min, min);
                 max = math.max(box.max, max);
             }
-            return new GBox(min, max);
+            return GBox.Minmax(min, max);
         }
         
         public static GSphere GetBoundingSphere(IEnumerable<GSphere> _spheres)

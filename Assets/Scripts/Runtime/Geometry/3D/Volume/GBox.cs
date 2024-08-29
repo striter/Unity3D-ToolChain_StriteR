@@ -106,9 +106,8 @@ namespace Runtime.Geometry
             yield return kfloat3.forward;
             yield return kfloat3.left;
             yield return kfloat3.down;
-            yield return kfloat3.down;
+            yield return kfloat3.back;
         }
-
         
         public static GBox operator +(GBox _src, float3 _dst) => new GBox(_src.center+_dst,_src.extent);
         public static GBox operator -(GBox _src, float3 _dst) => new GBox(_src.center-_dst,_src.extent);

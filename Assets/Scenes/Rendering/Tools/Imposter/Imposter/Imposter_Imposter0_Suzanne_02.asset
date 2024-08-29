@@ -183,12 +183,6 @@ MonoBehaviour:
     mapping: 4
     count: 8
     cellResolution: 64
-    CellTexelSizeNormalized:
-      x: 0.125
-      y: 0.125
-    cellCount:
-      x: 8
-      y: 8
   m_BoundingSphere:
     center:
       x: 0.0000009536743

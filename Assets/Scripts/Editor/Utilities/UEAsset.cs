@@ -13,11 +13,6 @@ namespace UnityEditor.Extensions
 {
     public static class UEAsset
     {
-        public static class Dirty
-        {
-            
-        }
-        
         private static List<Object> kDirtyList = new();
         public static void BeginAssetDirty() => kDirtyList.Clear();
         public static bool IsAssetDirty(Object _object) => kDirtyList.Contains(_object);

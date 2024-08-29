@@ -63,19 +63,18 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
             v2f vert (a2v v)
             {
                 v2f o;
+            	ZERO_INITIALIZE(v2f,o);
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-				float3 positionOS = 0;
             	float3 viewPositionOS = TransformWorldToObject(_WorldSpaceCameraPos);
-				float3 forwardOS = viewPositionOS - _BoundingSphere.xyz;
+				float3 forwardOS = viewPositionOS;
             	
             	#if _INTERPOLATE
-					ImposterVertexEvaluate_Bilinear(v.uv,INSTANCE(_Parallax),forwardOS, positionOS,o.uv01,o.uv23,o.uvWeights);
+					ImposterVertexEvaluate_Bilinear(v.uv,INSTANCE(_Parallax),forwardOS,o.positionWS,o.uv01,o.uv23,o.uvWeights);
             	#else
-					ImposterVertexEvaluate(v.uv,forwardOS, positionOS, o.uv0);
+					ImposterVertexEvaluate(v.uv,forwardOS, o.positionWS, o.uv0);
             	#endif
-                o.positionCS = TransformObjectToHClip(positionOS);
-				o.positionWS = TransformObjectToWorld(positionOS);
+                o.positionCS = TransformWorldToHClip(o.positionWS);
 				o.forwardWS = TransformObjectToWorldDir(forwardOS);
                 return o;
             }
@@ -116,12 +115,13 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
 				float3 normalWS = normalOS * 2 - 1;
 				normalWS = normalize(normalWS);
 				normalWS = TransformObjectToWorldNormal(normalWS);
-				depthExtrude = depthExtrude * 2 -1;
                 float diffuse = saturate(dot(normalWS,_MainLightPosition.xyz)) ;
 
                 f2o o;
                 o.result = float4(albedo * diffuse * _MainLightColor.rgb + albedo * SHL2Sample(normalWS,unity),1);
             	// o.result = float4(i.uv3.z,0,0,1);
+            	
+				// depthExtrude = depthExtrude * 2 -1;
                 // o.depth = EyeToRawDepth(TransformWorldToEyeDepth(i.positionWS + normalize(i.forwardWS) * saturate(depthExtrude)));
                 return o;
             }
@@ -172,18 +172,20 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
 			v2fSC ShadowVertex(a2fSC v)
 			{
 				v2fSC o;
+            	ZERO_INITIALIZE(v2fSC,o);
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-				float3 positionOS = 0;
+            	ZERO_INITIALIZE(v2fSC,o);
+				float3 positionWS = 0;
             	float3 viewPositionOS = TransformWorldToObjectDir(_MainLightPosition.xyz);
 				
             #if _INTERPOLATE
-				ImposterVertexEvaluate_Bilinear(v.uv,INSTANCE(_Parallax),viewPositionOS, positionOS,o.uv01,o.uv23,o.uvWeights);
+				ImposterVertexEvaluate_Bilinear(v.uv,INSTANCE(_Parallax),viewPositionOS, positionWS,o.uv01,o.uv23,o.uvWeights);
             #else
-				ImposterVertexEvaluate(v.uv,viewPositionOS, positionOS, o.uv0);
+				ImposterVertexEvaluate(v.uv,viewPositionOS, positionWS, o.uv0);
             #endif
 				
-				SHADOW_CASTER_VERTEX(v,TransformObjectToWorld(positionOS));
+				SHADOW_CASTER_VERTEX(v,positionWS);
 				return o;
 			}
 

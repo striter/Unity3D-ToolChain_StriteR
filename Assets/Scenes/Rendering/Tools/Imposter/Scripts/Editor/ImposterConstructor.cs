@@ -20,6 +20,9 @@ namespace Runtime.Optimize.Imposter
         public bool m_Instanced = true;
 
         public ImposterCameraHandle[] m_CameraHandles;
+
+        [Header("Debug")]
+        public bool m_ContourMeshTexture = false;
         private static int kLayerID = 30;
         private static List<KeyValuePair<Material, Shader>> m_SharedMaterialShaderRef = new();
         private static List<KeyValuePair<Renderer,int>> m_RendererLayerRef = new();
@@ -68,58 +71,70 @@ namespace Runtime.Optimize.Imposter
                 return null;
 
             var material = new Material(m_Shader){name = _initialName,enableInstancing = m_Instanced};
+            var mesh = new Mesh(){name = _initialName};
             var block = new MaterialPropertyBlock();
+            var boundingSphere = UGeometry.GetBoundingSphere(vertices);
             m_SharedMaterialShaderRef.Clear();
             m_RendererLayerRef.Clear();
-            meshRenderers.Traversal(p=>
+            try
             {
-                m_RendererLayerRef.Add(new (p,p.gameObject.layer));
-                p.gameObject.layer = kLayerID;
-                p.sharedMaterials.Traversal(p =>
+                meshRenderers.Traversal(p=>
                 {
-                    if (p == null || p.shader == null)
-                        return;
+                    m_RendererLayerRef.Add(new (p,p.gameObject.layer));
+                    p.gameObject.layer = kLayerID;
+                    p.sharedMaterials.Traversal(p =>
+                    {
+                        if (p == null || p.shader == null)
+                            return;
 
-                    m_SharedMaterialShaderRef.Add(new(p, p.shader));
+                        m_SharedMaterialShaderRef.Add(new(p, p.shader));
+                    });
                 });
-            });
 
-            var boundingSphere = UGeometry.GetBoundingSphere(vertices);
-            var boundingSphereExtrude = 0.05f;
-            boundingSphere.radius += boundingSphereExtrude;
+                var boundingSphereExtrude = 0.05f;
+                boundingSphere.radius += boundingSphereExtrude;
+                
+                block.SetVector(ImposterShaderProperties.kBoundingID, (float4)boundingSphere);
+                meshRenderers.Traversal(p=>p.SetPropertyBlock(block));
+
+                m_CameraHandles.Traversal(p=>p.Init(m_Input.TextureResolution,boundingSphere));
+                foreach (var corner in m_Input.GetImposterViewsNormalized())
+                    m_CameraHandles.Traversal(handle => handle.Render(m_SharedMaterialShaderRef,boundingSphere, corner.direction, corner.uvRect));
+                m_CameraHandles.Traversal(p=> { material.SetTexture(p.m_Name,p.OutputAsset(_initialName, _filePath)); });
+                
+                var contourMeshHandle = new ImposterCameraHandle() {m_Name = "_ContourMesh", m_Shader = Shader.Find("Hidden/Imposter_ContourShape") };
+                contourMeshHandle.Init(m_Input.cellResolution,boundingSphere,false);
+                foreach (var corner in m_Input.GetImposterViewsNormalized())
+                    contourMeshHandle.Render(m_SharedMaterialShaderRef,boundingSphere, corner.direction, G2Box.kOne);
+
+                var contourPolygon = G2Polygon.kDefault;
+                if (m_ContourMeshTexture)
+                {
+                    contourMeshHandle.OutputAsset(_initialName,_filePath);
+                }
+                else
+                {    
+                    var contourPixels = contourMeshHandle.OutputPixels(out var resolution);
+                    var contourOutline = ContourTracing.FromColorAlpha(resolution.x, contourPixels, 0.01f).MooreNeighborTracing();
+                    contourPolygon = UGeometry.GetBoundingPolygon(contourOutline.Select(p=>(float2)p).ToList());
+                    contourPolygon = new G2Polygon(CartographicGeneralization.VisvalingamWhyatt(contourPolygon.positions.Select(p=>p/resolution).ToList(),math.min(contourPolygon.positions.Length ,10),true));
+                }
+                
+                boundingSphere.center -= (float3)_sceneObjectRoot.position;
+                mesh.SetVertices(contourPolygon.Select(p=>(Vector3)((p-.5f).to3xy() * boundingSphere.radius * 2 + boundingSphere.center)).ToList());
+                mesh.SetIndices(contourPolygon.GetIndexes().ToArray(),MeshTopology.Triangles,0);
+                mesh.SetUVs(0,contourPolygon.Select(p=>(Vector2)p).ToArray());
+                mesh.bounds = boundingSphere.GetBoundingBox();
+
+                material.SetVector(ImposterShaderProperties.kTexelID,m_Input.GetImposterTexel());
+                material.SetVector(ImposterShaderProperties.kBoundingID, (float4)boundingSphere);
+                material.SetInt(ImposterShaderProperties.kModeID,(int)m_Input.mapping);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
             
-            block.SetVector(ImposterShaderProperties.kBoundingID, (float4)boundingSphere);
-            meshRenderers.Traversal(p=>p.SetPropertyBlock(block));
-
-            m_CameraHandles.Traversal(p=>p.Init(m_Input.TextureResolution,boundingSphere));
-            foreach (var corner in m_Input.GetImposterViewsNormalized())
-                m_CameraHandles.Traversal(handle => handle.Render(m_SharedMaterialShaderRef,boundingSphere, corner.direction, corner.uvRect));
-            m_CameraHandles.Traversal(p=> { material.SetTexture(p.m_Name,p.OutputAsset(_initialName, _filePath)); });
-            
-            var mesh = new Mesh(){name = _initialName};
-            var contourMeshHandle = new ImposterCameraHandle() {m_Name = "_ContourMesh", m_Shader = Shader.Find("Hidden/Imposter_ContourShape") };
-            contourMeshHandle.Init(m_Input.cellResolution,boundingSphere,false);
-            foreach (var corner in m_Input.GetImposterViewsNormalized())
-                contourMeshHandle.Render(m_SharedMaterialShaderRef,boundingSphere, corner.direction, G2Box.kOne);
-
-            var contourPolygon = G2Polygon.kDefault;
-            var contourPixels = contourMeshHandle.OutputPixels(out var resolution);
-            var contourOutline = ContourTracing.FromColorAlpha(resolution.x, contourPixels, 0.5f).MooreNeighborTracing();
-            contourPolygon = UGeometry.GetBoundingPolygon(contourOutline.Select(p=>(float2)p).ToList());
-            contourPolygon = new G2Polygon(CartographicGeneralization.VisvalingamWhyatt(contourPolygon.positions.Select(p=>p/resolution).ToList(),math.min(contourPolygon.positions.Length ,10),true));
-        
-            boundingSphere.radius += boundingSphereExtrude;
-            boundingSphere.center -= (float3)_sceneObjectRoot.position;
-
-            mesh.SetVertices(contourPolygon.Select(p=>(Vector3)((p-.5f).to3xy() * boundingSphere.radius * 2 + boundingSphere.center)).ToList());
-            mesh.SetIndices(contourPolygon.GetIndexes().ToArray(),MeshTopology.Triangles,0);
-            mesh.SetUVs(0,contourPolygon.Select(p=>(Vector2)p).ToArray());
-            mesh.bounds = boundingSphere.GetBoundingBox();
-
-            material.SetVector(ImposterShaderProperties.kTexelID,m_Input.GetImposterTexel());
-            material.SetVector(ImposterShaderProperties.kBoundingID, (float4)boundingSphere);
-            material.SetInt(ImposterShaderProperties.kModeID,(int)m_Input.mapping);
-
             m_RendererLayerRef.Traversal(p=>p.Key.gameObject.layer = p.Value);
             m_SharedMaterialShaderRef.Traversal(p=>p.Key.shader = p.Value);
             
@@ -166,9 +181,7 @@ namespace Runtime.Optimize.Imposter
             public void Render(List<KeyValuePair<Material, Shader>> _materialRef, GSphere _sphere, float3 _direction,
                 G2Box _rect)
             {
-                if (m_Shader != null)
-                    _materialRef.Traversal(p => p.Key.shader = m_Shader);
-
+                _materialRef.Traversal(p => p.Key.shader = (m_Shader == null ? p.Value : m_Shader));
                 var position = _sphere.GetSupportPoint(_direction * _sphere.radius);
                 m_Camera.transform.SetPositionAndRotation(position, Quaternion.LookRotation(-_direction, Vector3.up));
                 m_Camera.rect = _rect;

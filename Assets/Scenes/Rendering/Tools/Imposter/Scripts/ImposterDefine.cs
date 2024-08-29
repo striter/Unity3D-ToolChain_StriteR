@@ -18,35 +18,29 @@ namespace Runtime.Optimize.Imposter
     }
     
     [Serializable]
-    public struct ImposterInput : ISerializationCallbackReceiver
+    public struct ImposterInput 
     {
         public ESphereMapping mapping;
         public EImposterCount count;
         public int cellResolution;
 
-        [Readonly] public float2 CellTexelSizeNormalized; 
-        [Readonly] public int2 cellCount;
+        public float2 CellTexelSizeNormalized => 1f / (float)count;
+        public int2 CellCount => (int)count;
 
-        public float4 GetImposterTexel() => new float4(cellCount.x, cellCount.y, CellTexelSizeNormalized.x, CellTexelSizeNormalized.y);
-        public int2 TextureResolution =>  cellCount * cellResolution;
+        public float4 GetImposterTexel() => new float4(CellCount.x, CellCount.y, CellTexelSizeNormalized.x, CellTexelSizeNormalized.y);
+        public int2 TextureResolution =>  CellCount * cellResolution;
         public float2 CellWorldSpaceSizeNormalized => 1f / (int)count;
-        public ImposterInput Ctor() {
-            var _count = (int)count;
-            cellCount = new int2(_count,  _count);
-            CellTexelSizeNormalized = 1f / new float2(cellCount);
-            return this;
-        }
-
+        
         public static readonly ImposterInput kDefault = new ImposterInput() {
             mapping = ESphereMapping.OctahedralHemisphere,
             count = EImposterCount._8,
             cellResolution = 256,
-        }.Ctor();
+        };
 
         public IEnumerable<ImposterCorner> GetImposterViewsNormalized()
         {
-            for (var j = 0; j < cellCount.y; j++)
-            for (var i = 0; i < cellCount.x; i++)
+            for (var j = 0; j < CellCount.y; j++)
+            for (var i = 0; i < CellCount.x; i++)
                 yield return CellIndexToCorner(new int2(i, j ));
         }
 
@@ -83,7 +77,7 @@ namespace Runtime.Optimize.Imposter
 
         public (G2Quad corners, float4 weights, float3 centroid) GetImposterViews(float3 _directionOS)
         {
-            mapping.InvBilinearInterpolate(_directionOS,cellCount.x,out var corners,out var weights );
+            mapping.InvBilinearInterpolate(_directionOS,CellCount.x,out var corners,out var weights );
             return (corners, weights, _directionOS);
         }
 
@@ -136,9 +130,6 @@ namespace Runtime.Optimize.Imposter
             }
         }
         #endif
-
-        public void OnBeforeSerialize() { }
-        public void OnAfterDeserialize() => Ctor();
     }
 
     public class ImposterShaderProperties
