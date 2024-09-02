@@ -9,13 +9,13 @@ namespace Examples.Rendering.ContourOutline
     public class ContourOutlineVisualize : MonoBehaviour {
         public Texture2D m_ContourTexture;
         [Range(0, 1)] public float m_Simplification = 0.1f;
-        private ContourTracing m_ContourTracing;
+        private ContourTracingData m_ContourTracing;
         private void OnValidate()
         {
             if (m_ContourTexture == null)
                 return;
 
-            m_ContourTracing = ContourTracing.FromColorAlpha(m_ContourTexture.width, m_ContourTexture.GetPixels());
+            m_ContourTracing = ContourTracingData.FromColorAlpha(m_ContourTexture.width, m_ContourTexture.GetPixels());
         }
 
         private void OnDrawGizmos()
@@ -43,7 +43,7 @@ namespace Examples.Rendering.ContourOutline
             }
 
             Gizmos.color = Color.green.SetA(.5f);
-            var pixels = m_ContourTracing.MooreNeighborTracing();
+            var pixels = m_ContourTracing.RadialSweep();
             foreach (var pixel in pixels)
                 Gizmos.DrawCube(pixel.to3xz(), Vector3.one);
             UGizmos.DrawLines(pixels,p=>p.to3xz());
@@ -58,7 +58,6 @@ namespace Examples.Rendering.ContourOutline
             // var tolerance = m_Simplification * m_ContourTracing.resolution.x;
             var simplifiedPolygon = new G2Polygon( CartographicGeneralization.VisvalingamWhyatt(polygon, (int)(polygon.Count * m_Simplification),true));
             simplifiedPolygon.DrawGizmos();
-            
         }
     }
 }

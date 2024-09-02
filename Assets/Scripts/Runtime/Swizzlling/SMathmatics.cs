@@ -73,4 +73,12 @@ public static class umath_swizzlling       //Swizzling
 
 
     public static float2 cross(this float2 _src) => new float2(_src.y,-_src.x);
+    
+    public static bool any(this bool2 _src) => _src.x || _src.y;
+    public static bool any(this bool3 _src) => _src.x || _src.y || _src.z;
+    public static bool any(this bool4 _src) => _src.x || _src.y || _src.z || _src.w;
+    public static bool all(this bool2 _src) => _src is { x: true, y: true };
+    public static bool all(this bool3 _src) => _src is { x: true, y: true, z: true };
+    public static bool all(this bool4 _src) => _src is { x: true, y: true, z: true, w: true };
+    
 }
