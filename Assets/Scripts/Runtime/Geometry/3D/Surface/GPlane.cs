@@ -100,9 +100,9 @@ namespace Runtime.Geometry
         }
         
         public void DrawGizmos() => DrawGizmos(5f);
-        public void DrawGizmos(float radius)
+        public void DrawGizmos(float _radius)
         {
-            UGizmos.DrawWireDisk(position, normal, 5f);
+            UGizmos.DrawWireDisk(position, normal, _radius);
             UGizmos.DrawArrow(position,normal,.5f,.1f);
         }
     }

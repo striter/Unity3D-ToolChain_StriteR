@@ -74,31 +74,6 @@ namespace Runtime.Geometry
                 yield return new GPlane(kfloat3.back,GetPoint(kfloat3.forward*.5f));
             }
         }
-
-        public IEnumerable<GLine> GetEdges()
-        {
-            var topForwardRight = GetPoint( new float3(.5f, .5f, .5f));
-            var topForwardLeft  =  GetPoint(new float3(-.5f, .5f, .5f));
-            var topBackRight =  GetPoint(new float3(.5f, .5f, -.5f));
-            var topBackLeft =  GetPoint(new float3(-.5f, .5f, -.5f));
-            var bottomForwardRight =  GetPoint(new float3(.5f, -.5f, .5f));
-            var bottomForwardLeft =  GetPoint(new float3(-.5f, -.5f, .5f));
-            var bottomBackRight = GetPoint( new float3(.5f, -.5f, -.5f));
-            var bottomBackLeft =  GetPoint(new float3(-.5f, -.5f, -.5f));
-            yield return new GLine(topForwardRight,  topForwardLeft);
-            yield return new GLine(topForwardLeft,  topBackLeft);
-            yield return new GLine(topBackLeft,  topBackRight);
-            yield return new GLine(topBackRight,  topForwardRight);
-            yield return new GLine(bottomForwardRight,  bottomForwardLeft);
-            yield return new GLine(bottomForwardLeft,  bottomBackLeft);
-            yield return new GLine(bottomBackLeft,  bottomBackRight);
-            yield return new GLine(bottomBackRight,  bottomForwardRight);
-            yield return new GLine(topForwardRight,  bottomForwardRight);
-            yield return new GLine(topForwardLeft,  bottomForwardLeft);
-            yield return new GLine(topBackRight,  bottomBackRight);
-            yield return new GLine(topBackLeft,  bottomBackLeft);
-        }
-
         public IEnumerable<float3> GetAxes()
         {
             yield return kfloat3.right;

@@ -60,6 +60,7 @@ namespace Examples.Algorithm.Geometry
                 m_CubicCurve.GetBoundingBox().DrawGizmos();
             }
             
+            
             Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(10f,0f,0f));
             m_PolynomialCurve.DrawGizmos();
             
@@ -69,29 +70,35 @@ namespace Examples.Algorithm.Geometry
             Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(20f,0f,0f));
             m_ProjectileCurve.DrawGizmos();
 
-            //Splines
-            Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(0f,0f,-3f));
-            m_FourierSpline.DrawGizmos();
-            
-            Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(5f,0f,-3f));
-            m_HermineSpline.DrawGizmos();
-            
-            Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(10f,0f,-3f));
-            m_CatmullRomSpline.DrawGizmos();
-            
-            //BSpline
-            Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(0f,0f,-6f));
-            m_BSpline.DrawGizmos();
-            
-            Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(5f,0f,-6f));
-            m_BSplineUniform.DrawGizmos();
+            var splines = new ISpline[]{m_FourierSpline,m_HermineSpline,m_CatmullRomSpline,m_BSpline,m_BSplineUniform};
+            for (int i = 0; i < splines.Length; i++)
+            {
+                Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(i*5f,0f,3f));
+                splines[i].DrawGizmos();
+            }
+            // //Splines
+            // Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(0f,0f,-3f));
+            // m_FourierSpline.DrawGizmos();
+            //
+            // Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(5f,0f,-3f));
+            // m_HermineSpline.DrawGizmos();
+            //
+            // Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(10f,0f,-3f));
+            // m_CatmullRomSpline.DrawGizmos();
+            //
+            // //BSpline
+            // Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(0f,0f,-6f));
+            // m_BSpline.DrawGizmos();
+            //
+            // Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(5f,0f,-6f));
+            // m_BSplineUniform.DrawGizmos();
             
             //Line segments
-            Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(0f,0f,-9f));
+            Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(0f,0f,6f));
             m_DivisionCurve.DrawGizmos();
-            Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(5f,0f,-9f));
+            Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(5f,0f,6f));
             m_ChaikinCurve.DrawGizmos();
-            Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(10f,0f,-9f)) * Matrix4x4.Scale(Vector3.one*.1f);
+            Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(10f,0f, 6f)) * Matrix4x4.Scale(Vector3.one*.1f);
             m_DragonCurve.DrawGizmos();
         }
 #endif

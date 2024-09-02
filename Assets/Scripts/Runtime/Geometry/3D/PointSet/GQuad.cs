@@ -68,14 +68,6 @@ namespace Runtime.Geometry
             yield return new GTriangle(B, F, R);
         }
 
-        public IEnumerable<GLine> GetEdges()
-        {
-            yield return new GLine(quad.B, quad.L);
-            yield return new GLine(quad.L, quad.F);
-            yield return new GLine(quad.F, quad.R);
-            yield return new GLine(quad.R, quad.B);
-        }
-
         public IEnumerable<float3> GetAxes() => GetTriangles().Select(p => p.normal);
 
         public IEnumerable<float3> GetNormals()

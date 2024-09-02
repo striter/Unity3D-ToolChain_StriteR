@@ -47,7 +47,6 @@ namespace Examples.Algorithm.Geometry
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.back*5f);
             Gizmos.color = Color.white.SetA(.5f);
             var movedGPlane  = new GPlane(gPlane.normal,gPlane.distance * math.sin(UTime.time)*2);
-                
             movedGPlane.DrawGizmos(UGeometry.GetBoundingCircle(triangle.triangle.Iterate()).radius);
             gTriangle.DrawGizmos();
             if (gTriangle.Clip(movedGPlane, out var clippedGShape,gDirected))

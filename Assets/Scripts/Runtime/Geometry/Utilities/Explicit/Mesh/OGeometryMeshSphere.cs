@@ -1,13 +1,13 @@
 using System;
 using AOT;
 using Procedural.Tile;
-using Runtime.Geometry.Explicit.Sphere;
+using Runtime.Geometry.Extension.Sphere;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Runtime.Geometry.Explicit.Mesh
+namespace Runtime.Geometry.Extension.Mesh
 {
     using static umath;
     using static kmath;
@@ -67,7 +67,7 @@ namespace Runtime.Geometry.Explicit.Mesh
         [Rename("Tight As fuck")]public bool tight;
         public static CubeSphereGenerator kDefault = new CubeSphereGenerator() {radius = .5f,resolution = 10,tight = false};
 
-        public int vertexCount => !tight ? kCubeFacingAxisCount * sqr(resolution + 1) : USphereExplicit.Cube.GetVertexCount(resolution);
+        public int vertexCount => !tight ? kCubeFacingAxisCount * sqr(resolution + 1) : USphereMapping.Cube.GetVertexCount(resolution);
 
         public int triangleCount => kCubeFacingAxisCount * resolution * resolution * 2;
 
@@ -76,7 +76,7 @@ namespace Runtime.Geometry.Explicit.Mesh
             if (!tight)
                 return _sideIndex * sqr(resolution + 1) + new Int2(_i, _j).ToIndex(resolution + 1);
             
-            return USphereExplicit.Cube.GetVertexIndex(_i,_j,resolution,_sideIndex);
+            return USphereMapping.Cube.GetVertexIndex(_i,_j,resolution,_sideIndex);
         }
 
         private Point GetPoint(int _i, int _j, Axis _axis)
@@ -84,7 +84,7 @@ namespace Runtime.Geometry.Explicit.Mesh
             float r = resolution;
             int index = GetIndex(_i, _j, _axis.index);
             float2 uv = new float2(_i / r, _j / r);
-            float3 position = USphereExplicit.CubeToSpherePosition(_axis.origin + uv.x * _axis.uDir + uv.y * _axis.vDir);
+            float3 position = USphereMapping.CubeToSpherePosition(_axis.origin + uv.x * _axis.uDir + uv.y * _axis.vDir);
             position *= radius;
 
             return new Point()
@@ -165,7 +165,7 @@ namespace Runtime.Geometry.Explicit.Mesh
             position = math.normalize(position);
             
             if (overlapUV)
-                uv = USphereExplicit.SpherePositionToUV(position,_axis.index==rhombusCount-1);
+                uv = USphereMapping.SpherePositionToUV(position,_axis.index==rhombusCount-1);
 
             return new Point()
             {

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using Runtime.Geometry.Explicit;
+using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
@@ -67,7 +67,7 @@ namespace Rendering.GI.SphericalHarmonics
                         break;
                     case ESHSampleMode.Fibonacci:
                     {
-                        var randomPos = USphereExplicit.LowDiscrepancySequences.Fibonacci(i, _sampleCount);
+                        var randomPos = USphereMapping.LowDiscrepancySequences.Fibonacci(i, _sampleCount);
                         data += new SHL2Contribution(randomPos) * Constant.kNormalizationConstants * _sampleColor(randomPos);
                     }
                         break;

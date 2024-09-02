@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Linq.Extensions;
 using Runtime.Geometry;
+using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 using static Unity.Mathematics.math;

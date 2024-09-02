@@ -6,7 +6,6 @@ using AlgorithmExtension;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
-using UnityEngine;
 
 namespace Runtime.DataStructure
 {
@@ -25,7 +24,7 @@ namespace Runtime.DataStructure
     public struct TreeNode_triangle2 : ITreeIncrementHelper<G2Box, G2Triangle> , IBVHHelper<G2Box, G2Triangle> 
     {
         public G2Box CalculateBoundary(IList<G2Triangle> _elements)=> UGeometry.GetBoundingBox(_elements.Select(p => (IEnumerable<float2>)p).Resolve());
-        public bool Contains(G2Box _bounds, G2Triangle _element) => GJK.Intersect(_bounds,_element);
+        public bool Contains(G2Box _bounds, G2Triangle _element) => GJK2.Intersect(_bounds,_element);
         
         public void SortElements(int _median, G2Box _boundary, IList<G2Triangle> _elements)
         {

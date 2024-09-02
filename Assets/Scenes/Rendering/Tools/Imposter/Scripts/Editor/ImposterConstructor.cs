@@ -116,8 +116,9 @@ namespace Runtime.Optimize.Imposter
                 {    
                     var contourPixels = contourMeshHandle.OutputPixels(out var resolution);
                     var contourOutline = ContourTracing.FromColorAlpha(resolution.x, contourPixels, 0.01f).MooreNeighborTracing();
-                    contourPolygon = UGeometry.GetBoundingPolygon(contourOutline.Select(p=>(float2)p).ToList());
-                    contourPolygon = new G2Polygon(CartographicGeneralization.VisvalingamWhyatt(contourPolygon.positions.Select(p=>p/resolution).ToList(),math.min(contourPolygon.positions.Length ,10),true));
+                    var contourPolygonPositions = UGeometry.GetBoundingPolygon(contourOutline);
+                    contourPolygonPositions = CartographicGeneralization.VisvalingamWhyatt(contourPolygonPositions.Remake(p=>p/resolution),math.min(contourPolygonPositions.Count ,10),true);
+                    contourPolygon = new G2Polygon(contourPolygonPositions);
                 }
                 
                 boundingSphere.center -= (float3)_sceneObjectRoot.position;

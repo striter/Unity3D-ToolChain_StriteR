@@ -1,6 +1,5 @@
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
-using Runtime.Geometry.Extension.BoundingSphere;
 using Unity.Mathematics;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;
@@ -20,7 +19,7 @@ namespace Examples.Algorithm.Geometry
 
         [Header("Polygon")] public float2[] boundingPolygonPoints;
         
-        [InspectorButton]
+        [InspectorButton(true)]
         private void RandomPoints()
         {
             if (boundingBoxRandomPoints is { Length: > 0 })
@@ -43,7 +42,8 @@ namespace Examples.Algorithm.Geometry
         }
 
         public GBox box;
-        
+
+        private const float kPadding = 3f;
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.white;
@@ -53,7 +53,7 @@ namespace Examples.Algorithm.Geometry
                 foreach (var points in boundingBoxRandomPoints)
                     Gizmos.DrawWireSphere(points,.02f);
 
-            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(-Vector3.right * 1.5f);
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right * kPadding);
             UGeometry.GetBoundingSphere(boundingSpherePoints).DrawGizmos();
             if (boundingSpherePoints != null)
             {
@@ -61,7 +61,7 @@ namespace Examples.Algorithm.Geometry
                     Gizmos.DrawWireSphere(points,.02f);
             }
 
-            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(-Vector3.right * 3f);
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right * kPadding * 2);
             Gizmos.color = Color.red;
             boundingSphere1.DrawGizmos();
             Gizmos.color = Color.blue;
@@ -69,8 +69,8 @@ namespace Examples.Algorithm.Geometry
             Gizmos.color = Color.white;
             GSphere.Minmax(boundingSphere1,boundingSphere2).DrawGizmos();
             
-            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.back * 5f);
-            UGeometry.GetBoundingPolygon(boundingPolygonPoints).DrawGizmos();
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.forward * kPadding);
+            ((G2Polygon)UGeometry.GetBoundingPolygon(boundingPolygonPoints)).DrawGizmos();
             if (boundingPolygonPoints != null)
             {
                 foreach (var points in boundingPolygonPoints)

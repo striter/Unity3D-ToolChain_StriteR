@@ -59,7 +59,7 @@ namespace Runtime
             meshConstructor.m_Normal = kfloat3.up;
             meshConstructor.m_ManualInput = false;
             if(_positions.Length > 3)
-                PrincipleComponentAnalysis.Evaluate(_positions,out var _center,out var right,out var forward,out meshConstructor.m_Normal);
+                PCA.Evaluate(_positions,out var _center,out var right,out var forward,out meshConstructor.m_Normal);
             PopulateMesh();
         }
         public void SetPositions(float3[] _positions,float3[] _normals)

@@ -226,10 +226,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaClip: 0.418
+    - _AlphaClip: 0.749
     - _Interpolate: 1
     - _MAPPING: 4
-    - _Parallax: 0.082
+    - _Parallax: 0.182
     m_Colors:
     - _ImposterBoundingSphere: {r: 0.0000009536743, g: -1.6427402, b: 1.5635738, a: 8.673849}
     - _ImposterTexel: {r: 8, g: 8, b: 0.125, a: 0.125}

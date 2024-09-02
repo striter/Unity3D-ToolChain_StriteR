@@ -1,6 +1,6 @@
 ﻿using Unity.Mathematics;
 
-namespace Runtime.Geometry.Explicit.Sphere
+namespace Runtime.Geometry.Extension.Sphere
 {
     using static math;
     public struct Octahedral : ISphereUVMapping

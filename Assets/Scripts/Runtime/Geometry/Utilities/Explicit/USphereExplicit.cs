@@ -4,12 +4,12 @@ using Procedural.Tile;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Runtime.Geometry.Explicit
+namespace Runtime.Geometry.Extension
 {
     using static math;
     using static kmath;
     using static umath;
-    public static class USphereExplicit
+    public static class USphereMapping
     {
         public static float3 CubeToSpherePosition(float3 _point)
         {

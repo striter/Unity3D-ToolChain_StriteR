@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Runtime.Geometry;
-using Runtime.Geometry.Explicit;
+using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -22,7 +22,7 @@ namespace TechToys.ThePlanet
 
             public static float3 OutputOceanCoordinates(float3 _positionWSNormalized,float _time)
             {
-                float2 uv = USphereExplicit.SpherePositionToUV(_positionWSNormalized);
+                float2 uv = USphereMapping.SpherePositionToUV(_positionWSNormalized);
                 float3 positionWS = _positionWSNormalized * kOceanRadius;
                 positionWS+=GerstnerWave(uv,kOceanST1,kOceanAmplitude1,_positionWSNormalized,_time);
                 positionWS+=GerstnerWave(uv,kOceanST2,kOceanAmplitude2,_positionWSNormalized,_time);

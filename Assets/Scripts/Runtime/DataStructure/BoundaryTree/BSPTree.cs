@@ -2,7 +2,6 @@
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
-using UnityEngine;
 
 namespace Runtime.DataStructure
 {
@@ -10,7 +9,7 @@ namespace Runtime.DataStructure
     {
         protected override IEnumerable<(G2Plane, IList<float2>)> Split(int _iteration, G2Plane _boundary, IList<float2> _elements)
         {
-            PrincipleComponentAnalysis.Evaluate(_elements, out var centre, out var right, out var up);
+            PCA2.Evaluate(_elements, out var centre, out var right, out var up);
             var _plane = new G2Plane(up, centre);
             var _front = new List<float2>();
             var _back = new List<float2>();

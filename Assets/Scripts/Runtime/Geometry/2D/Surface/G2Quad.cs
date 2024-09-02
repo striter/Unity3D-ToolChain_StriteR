@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
+using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -27,7 +28,7 @@ namespace Runtime.Geometry
     }
 
     [Serializable]
-    public partial struct G2Quad : IQuad<float2>, IIterate<float2>, IGeometry2, ISerializationCallbackReceiver,IConvex2D
+    public partial struct G2Quad :IGeometry2,IConvex2 , IQuad<float2>, IIterate<float2>, ISerializationCallbackReceiver
     {
         public static implicit operator G2Quad(Quad<float2> _src) => new G2Quad(_src);
         

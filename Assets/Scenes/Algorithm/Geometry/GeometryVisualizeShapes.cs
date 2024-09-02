@@ -15,7 +15,7 @@ public class GeometryVisualizeShapes : MonoBehaviour
     public bool m_ManualCast = false;
     [MFoldout(nameof(m_ManualCast),false)][PostNormalize] public float3 m_CastDirection = kfloat3.forward;
     [MFoldout(nameof(m_ManualCast),true)] public GRay m_ManualCastRay = GRay.kDefault;
-    private IGeometry[] drawingShapes = {GTriangle.kDefault,GDisk.kDefault,GQuad.kDefault,   GBox.kDefault, GCapsule.kDefault, GCylinder.kDefault, GSphere.kOne, GEllipsoid.kDefault, GCone.kDefault};
+    private IGeometry[] drawingShapes = {GTriangle.kDefault,GDisk.kDefault,GQuad.kDefault, GPolygon.kBunny,   GBox.kDefault, GCapsule.kDefault, GCylinder.kDefault, GSphere.kOne, GEllipsoid.kDefault, GCone.kDefault };
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
@@ -56,19 +56,18 @@ public class GeometryVisualizeShapes : MonoBehaviour
                 ? m_ManualCastRay
                 : new GRay(boundingBox.GetSupportPoint(-m_CastDirection) - m_CastDirection * .2f + math.sin(UTime.time),
                     m_CastDirection);
-            Gizmos.color = Color.blue.SetA(.5f);
-            UGizmos.DrawArrow(ray.origin, ray.direction, 0.5f, .1f);
+            
             if (volume is IRayVolumeIntersection volumeIntersection)
             {
+                Gizmos.color = KColor.kIndigo;
+                UGizmos.DrawArrow(ray.origin, ray.direction, 0.5f, .1f);
                 var intersect = volumeIntersection.RayIntersection(ray, out var distances);
                 if (!intersect)
                     continue;
-                Gizmos.color = Color.blue;
 
                 var distancePoint = ray.GetPoint(distances.x);
                 Gizmos.DrawSphere(distancePoint, .02f);
 
-                Gizmos.color = KColor.kIndigo;
                 var distancePoint2 = ray.GetPoint(distances.sum());
                 Gizmos.DrawSphere(distancePoint2, .02f);
 
@@ -76,10 +75,11 @@ public class GeometryVisualizeShapes : MonoBehaviour
             }
             else if (volume is IRayIntersection rayIntersection)
             {
+                Gizmos.color = KColor.kRoyalBlue;
+                UGizmos.DrawArrow(ray.origin, ray.direction, 0.5f, .1f);
                 var intersect = rayIntersection.RayIntersection(ray, out var distance);
                 if (!intersect)
                     continue;
-                Gizmos.color = KColor.kRoyalBlue;
 
                 var distancePoint = ray.GetPoint(distance);
                 Gizmos.DrawSphere(distancePoint, .02f);

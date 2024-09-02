@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
 using Runtime.Geometry;
-using Runtime.Geometry.Explicit.Sphere;
+using Runtime.Geometry.Extension.Sphere;
 using Unity.Mathematics;
 using UnityEngine;
 

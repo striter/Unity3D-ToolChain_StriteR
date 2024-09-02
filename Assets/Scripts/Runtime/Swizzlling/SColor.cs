@@ -179,7 +179,7 @@ public static partial class UColor
             case 4: return Color.cyan;
             case 5: return Color.white;
             case 6: return Color.magenta;
-            case 7: return KColor.kDarkCyan;
+            case 7: return KColor.kSandyBrown;
             case 8: return KColor.kPaleGreen;
             case 9: return KColor.kPaleTurquoise;
             case 10: return KColor.kChocolate;

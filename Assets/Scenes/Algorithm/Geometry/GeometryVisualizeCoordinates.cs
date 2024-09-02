@@ -24,6 +24,7 @@ namespace Examples.Algorithm.Geometry
             Gizmos.DrawWireSphere(positionCS, 0.1f);
             new GDisk(0,Vector3.up,cRadius).DrawGizmos();
             UGizmos.DrawString(UCoordinates.Cylindrical.ToCylindrical(positionCS).ToString(), positionCS);
+            new GCylinder(0, kfloat3.up, cHeight, cRadius).DrawGizmos();
             
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right * 5f);
             var positionSS = UCoordinates.Spherical.ToCartesian(sAzimuth, sPolar, sRadius);

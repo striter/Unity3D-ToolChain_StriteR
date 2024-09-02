@@ -3,8 +3,8 @@ using UnityEngine;
 using Unity.Mathematics;
 using System.Linq.Extensions;
 using Runtime.Geometry;
-using Runtime.Geometry.Explicit;
-using Runtime.Geometry.Explicit.Sphere;
+using Runtime.Geometry.Extension;
+using Runtime.Geometry.Extension.Sphere;
 
 namespace Examples.Algorithm.SamplePatternVisualize
 {

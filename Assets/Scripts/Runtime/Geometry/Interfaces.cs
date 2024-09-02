@@ -16,4 +16,15 @@ namespace Runtime.Geometry
         public int kMaxBoundsCount { get; }
         public IRound<Dimenison> Create(IList<Dimenison> _positions);
     }
+
+    public interface IConvex<Dimension> : IEnumerable<Dimension> where Dimension : struct
+    {
+        
+    }
+    
+    public interface ISDF<Dimension> : IGeometry<Dimension> where Dimension :struct
+    {
+        public float SDF(Dimension _position);
+    }
+
 }

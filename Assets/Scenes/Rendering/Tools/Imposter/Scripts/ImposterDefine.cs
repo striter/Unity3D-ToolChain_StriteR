@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Runtime.Geometry;
-using Runtime.Geometry.Explicit.Sphere;
+using Runtime.Geometry.Extension.Sphere;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;

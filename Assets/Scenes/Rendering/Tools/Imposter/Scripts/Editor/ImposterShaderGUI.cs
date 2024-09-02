@@ -1,5 +1,5 @@
 ﻿using Runtime.Geometry;
-using Runtime.Geometry.Explicit.Sphere;
+using Runtime.Geometry.Extension.Sphere;
 using UnityEditor;
 using UnityEditor.Extensions;
 using UnityEngine;

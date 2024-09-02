@@ -20,7 +20,7 @@ namespace Examples.Algorithm.Geometry
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
-            var convex2D = new IConvex2D[] { m_Polygon2,m_Triangle2, m_Box2 + kfloat2.up * math.sin(UTime.time) };
+            var convex2D = new IConvex2[] { m_Polygon2,m_Triangle2, m_Box2 + kfloat2.up * math.sin(UTime.time) };
             foreach (var convex in convex2D)
             {
                 Gizmos.color = convex2D.Exclude(convex).Any(p => p.Intersect(convex)) ? Color.yellow : Color.white;

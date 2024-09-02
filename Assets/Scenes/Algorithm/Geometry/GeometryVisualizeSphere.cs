@@ -1,5 +1,5 @@
-using Runtime.Geometry.Explicit;
-using Runtime.Geometry.Explicit.Sphere;
+using Runtime.Geometry.Extension;
+using Runtime.Geometry.Extension.Sphere;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -42,7 +42,7 @@ namespace Examples.Algorithm.Procedural
                 var axis = UCubeExplicit.GetFacingAxis(k);
                 for(int i = 0 ; i <= kAxixResolution ; i ++)
                 for(int j = 0 ; j <= kAxixResolution ; j++)
-                    Gizmos.DrawSphere(USphereExplicit.CubeToSpherePosition(axis.GetPoint(new float2( i / r , j/ r))),.02f);
+                    Gizmos.DrawSphere(USphereMapping.CubeToSpherePosition(axis.GetPoint(new float2( i / r , j/ r))),.02f);
             }
             UGizmos.DrawString("Cube", Vector3.zero);
             
@@ -68,11 +68,11 @@ namespace Examples.Algorithm.Procedural
             }
             UGizmos.DrawString("Poly Geodesic", Vector3.zero);
             
-            Gizmos.matrix *= Matrix4x4.Translate(Vector3.right*3f);
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.forward*6f);
             for (int i = 0; i < kFibonacciResolution; i++)
             {
                 Gizmos.color = Color.Lerp(Color.white,KColor.kOrange,(float)i/kFibonacciResolution);
-                Gizmos.DrawSphere(USphereExplicit.LowDiscrepancySequences.Fibonacci(i,kFibonacciResolution),.02f);
+                Gizmos.DrawSphere(USphereMapping.LowDiscrepancySequences.Fibonacci(i,kFibonacciResolution),.02f);
             }
             UGizmos.DrawString("Fibonacci", Vector3.zero);
         }

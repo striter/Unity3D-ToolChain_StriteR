@@ -44,8 +44,8 @@ namespace Examples.Algorithm.Geometry
         
         private void OnValidate()
         {
-            PrincipleComponentAnalysis.Evaluate(randomPoints,out centre,out right,out up,out forward);
-            PrincipleComponentAnalysis.Evaluate(randomPoints2D,out centre2D,out right2D,out up2D);
+            PCA.Evaluate(randomPoints,out centre,out right,out up,out forward);
+            PCA2.Evaluate(randomPoints2D,out centre2D,out right2D,out up2D);
         }
 
         private void OnDrawGizmos()

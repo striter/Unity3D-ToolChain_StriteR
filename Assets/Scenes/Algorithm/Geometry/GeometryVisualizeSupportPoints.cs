@@ -42,14 +42,14 @@ namespace Examples.Algorithm.Geometry
             Gizmos.DrawSphere(Vector3.zero, .1f);
             var finalCircle = sumCircle + kfloat2.right * math.sin(UTime.time);
             var finalPolygon = sumPolygon + sumPolygonOffset;
-            Gizmos.color = GJK.Intersect( finalPolygon,finalCircle) ? Color.green : Color.white;
+            Gizmos.color = finalPolygon.Intersect( finalCircle) ? Color.green : Color.white;
             finalCircle.DrawGizmos();
             finalPolygon.DrawGizmos();
 
             Gizmos.color = KColor.kChocolate;
-            GJK._2D.Sum(finalPolygon,finalCircle).DrawGizmos();
+            GJK2.Sum(finalPolygon,finalCircle).DrawGizmos();
             Gizmos.color = KColor.kHotPink;
-            GJK._2D.Difference(finalPolygon,finalCircle).DrawGizmos();
+            GJK2.Difference(finalPolygon,finalCircle).DrawGizmos();
 
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.back * 6f);
             Gizmos.color = Color.red;
@@ -61,7 +61,7 @@ namespace Examples.Algorithm.Geometry
             finalTriangle.DrawGizmos();
             finalSphere3D.DrawGizmos();
             Gizmos.color = KColor.kHotPink;
-            GJK._3D.Difference(finalTriangle,finalSphere3D,256).DrawGizmos();
+            GJK.Difference(finalTriangle,finalSphere3D,256).DrawGizmos();
         }
     }
 }

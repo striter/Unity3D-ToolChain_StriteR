@@ -675,6 +675,12 @@ namespace System.Linq.Extensions
             return -1;
         }
         
+        public static T[] Remake<T>(this T[] _collection, Func<T, T> _convert)
+        {
+            for (int i = 0; i < _collection.Length; i++)
+                _collection[i] = _convert(_collection[i]);
+            return _collection;
+        }
         public static T[] Remake<T>(this T[] _array, Func<int, T, T> _onEach)
         {
             var count = _array.Length;
@@ -687,12 +693,6 @@ namespace System.Linq.Extensions
             return _array;
         }
         
-        public static T[] Remake<T>(this T[] _collection, Func<T, T> _convert)
-        {
-            for (int i = 0; i < _collection.Length; i++)
-                _collection[i] = _convert(_collection[i]);
-            return _collection;
-        }
 
         public static T[] Cut<T>(this T[] _collection, int _startInclusive, int _endExclusive)
         {
@@ -787,6 +787,14 @@ namespace System.Linq.Extensions
             return index;
         }
 
+        
+        public static List<T> Remake<T>(this List<T> _collection, Func<T, T> _convert)
+        {
+            for (int i = 0; i < _collection.Count; i++)
+                _collection[i] = _convert(_collection[i]);
+            return _collection;
+        }
+
         public static (T start, T end, float value,float repeat) Gradient<T>(this IList<T> _collection,float _value)
         {
             Debug.Assert(_collection!=null, "collection can't be null");
@@ -858,25 +866,6 @@ namespace System.Linq.Extensions
 
             return _list;
         }
-        public static IList<T> Remake<T>(this IList<T> _array, Func<int, T, T> _onEach)
-        {
-            var count = _array.Count;
-            for (int i = 0; i < count; i++)
-            {
-                var element = _array[i];
-                _array[i] = _onEach(i, element);
-            }
-
-            return _array;
-        }
-        
-        public static IList<T> Remake<T>(this IList<T> _collection, Func<T, T> _convert)
-        {
-            for (int i = 0; i < _collection.Count; i++)
-                _collection[i] = _convert(_collection[i]);
-            return _collection;
-        }
-
         public static void AddRange<T>(this IList<T> _src, IList<T> _dst)
         {
             int count = _dst.Count;

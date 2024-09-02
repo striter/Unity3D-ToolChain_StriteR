@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Runtime.Geometry;
-using Runtime.Geometry.Explicit;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
@@ -32,7 +31,7 @@ namespace Examples.Algorithm.DelaunayTriangulation
         {
             m_Vertices.Clear();
             for (int i = 0; i < m_RandomCount; i++)
-                m_Vertices.Add(USphereExplicit.LowDiscrepancySequences.Fibonacci(i,m_RandomCount)*kSphereRadius);
+                m_Vertices.Add(USphereMapping.LowDiscrepancySequences.Fibonacci(i,m_RandomCount)*kSphereRadius);
         }
 
         private void OnDrawGizmos()

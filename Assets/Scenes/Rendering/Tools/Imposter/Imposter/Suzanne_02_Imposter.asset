@@ -40,7 +40,7 @@ Material:
     - _MAPPING: 4
     - _Parallax: 0.1
     m_Colors:
-    - _ImposterBoundingSphere: {r: 0.0000009536743, g: 5.104322, b: 2.2310734, a: 8.67385}
+    - _ImposterBoundingSphere: {r: 0.0000009536743, g: 5.104322, b: 2.231074, a: 8.62385}
     - _ImposterTexel: {r: 8, g: 8, b: 0.125, a: 0.125}
   m_BuildTextureStacks: []
 --- !u!43 &-2269682378997342530
@@ -60,8 +60,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 10
     localAABB:
-      m_Center: {x: -0.08847952, y: 5.029499, z: 2.2310734}
-      m_Extent: {x: 8.152643, y: 8.426779, z: 0}
+      m_Center: {x: -0.0879693, y: 5.02993, z: 2.231074}
+      m_Extent: {x: 8.105648, y: 8.378202, z: 0}
   m_Shapes:
     vertices: []
     shapes: []
@@ -140,7 +140,7 @@ Mesh:
       format: 0
       dimension: 0
     m_DataSize: 200
-    _typelessdata: 0fb046c0066d59c0e8c90e40b75fa43e14ae223ce1a3f23f6edd47c0e8c90e4047f91b3fd6e9d23c1549b740b838a5bfe8c90e40f285543f5782063eb7b8db40d0f5c93ee8c90e407153653f64fc693ed10601411c8e0b41e8c90e40bb00773f9263353f2b97854020d54841e8c90e40289b3d3fe7e76d3f03da1b3fea4c5741e8c90e40e6fb083ff33f7b3f211384c0ca445041e8c90e40912f863eadc3743fa4db03c1f4ad1141e8c90e40fe57cc3c9c093b3f2591f9c000be413de8c90e40e7914e3d817e553e
+    _typelessdata: db8a45c0164a56c0ebc90e40b75fa43e14ae223cd03df13f66d444c0ebc90e4047f91b3fd6e9d23c9b3ab640bc80a0bfebc90e40f285543f5782063e7874da4070dcd73eebc90e407153653f64fc693e69480041b0380b41ebc90e40bb00773f9263353f07d2844047254841ebc90e40289b3d3fe7e76d3f05f41a3fb6875641ebc90e40e6fb083ff33f7b3f3a5083c0f8894f41ebc90e40912f863eadc3743f0e1903c17e4f1141ebc90e40fe57cc3c9c093b3fdc20f8c080929c3debc90e40e7914e3d817e553e
   m_CompressedMesh:
     m_Vertices:
       m_NumItems: 0
@@ -194,8 +194,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 0.0000009536743, y: 5.104322, z: 2.2310734}
-    m_Extent: {x: 8.67385, y: 8.67385, z: 8.67385}
+    m_Center: {x: 0.0000009536743, y: 5.104322, z: 2.2310743}
+    m_Extent: {x: 8.62385, y: 8.62385, z: 8.62385}
   m_MeshUsageFlags: 0
   m_CookingOptions: 30
   m_BakedConvexCollisionMesh: 
@@ -226,17 +226,11 @@ MonoBehaviour:
     mapping: 4
     count: 8
     cellResolution: 64
-    CellTexelSizeNormalized:
-      x: 0.125
-      y: 0.125
-    cellCount:
-      x: 8
-      y: 8
   m_BoundingSphere:
     center:
       x: 0.0000009536743
       y: 5.104322
-      z: 2.2310734
-    radius: 8.67385
+      z: 2.231074
+    radius: 8.62385
   m_Material: {fileID: -4954424237171745066}
   m_Mesh: {fileID: -2269682378997342530}

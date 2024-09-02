@@ -6,7 +6,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Runtime.Geometry.Explicit.Mesh
+namespace Runtime.Geometry.Extension.Mesh
 {
     public enum EProceduralMeshType
     {

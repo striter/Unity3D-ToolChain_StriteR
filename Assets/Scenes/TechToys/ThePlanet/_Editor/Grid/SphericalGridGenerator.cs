@@ -1,7 +1,7 @@
 using System;
 using Runtime.Geometry;
-using Runtime.Geometry.Explicit;
-using Runtime.Geometry.Explicit.Mesh;
+using Runtime.Geometry.Extension;
+using Runtime.Geometry.Extension.Mesh;
 using System.Linq.Extensions;
 using Unity.Mathematics;
 using UnityEditor;
@@ -11,8 +11,8 @@ using Gizmos = UnityEngine.Gizmos;
 namespace TechToys.ThePlanet.Grid
 {
     using static UCubeExplicit;
-    using static USphereExplicit;
-    using static USphereExplicit.Cube;
+    using static USphereMapping;
+    using static USphereMapping.Cube;
     [Serializable]
     public class SphericalGridGenerator : IGridGenerator
     {
@@ -63,7 +63,7 @@ namespace TechToys.ThePlanet.Grid
         {         
             float r = resolution;
             _collection.vertices = new GridVertexData[Cube.GetVertexCount(resolution)];
-            _collection.chunks = new GridChunkData[] {new GridChunkData(){ quads =new GridQuadData[USphereExplicit.Cube.GetQuadCount(resolution)]}};
+            _collection.chunks = new GridChunkData[] {new GridChunkData(){ quads =new GridQuadData[USphereMapping.Cube.GetQuadCount(resolution)]}};
             int quadIndex = 0;
             for (int k = 0; k < kCubeFacingAxisCount; k++)
             {

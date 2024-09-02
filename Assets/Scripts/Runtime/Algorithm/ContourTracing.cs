@@ -6,6 +6,9 @@ using Procedural.Tile;
 using Unity.Mathematics;
 using UnityEngine;
 using static kint2;
+
+//https://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/index.html
+
 public struct ContourTracing
 {
     public int2 resolution;
@@ -26,8 +29,6 @@ public struct ContourTracing
 
 public static class ContourTracing_Extension
 {
-    
-    
     public static bool ContourAble(this ContourTracing _data,out int2 _startPixel)
     {
         _startPixel = int2.zero;
@@ -42,7 +43,6 @@ public static class ContourTracing_Extension
         return true;
     }
 
-
     private static readonly Dictionary<int2, List<int2>> kMooreNeighbotIteration = new() {
         { kRight, new() {kLeft,kUp,kRight,kRight,kDown,kDown,kLeft,kLeft } },
         { kLeft, new() {kRight,kDown,kLeft,kLeft,kUp,kUp,kRight,kRight } },
@@ -50,14 +50,14 @@ public static class ContourTracing_Extension
         { kUp, new (){kDown,kLeft,kUp,kUp,kRight,kRight,kDown,kDown}}
     };
     
-    public static List<int2> MooreNeighborTracing(this ContourTracing _data)
+    public static List<float2> MooreNeighborTracing(this ContourTracing _data)      // integer positions
     {
         if (!_data.ContourAble(out var startPixel))
             return null;
 
         var curDirection = kUp;
         var curPixel = startPixel;
-        var contourEdges = new List<int2> { startPixel };
+        var contourEdges = new List<float2> { startPixel };
 
         var curIteration = _data.m_ContourTessellation.Length;
         while (curIteration-- > 0 )

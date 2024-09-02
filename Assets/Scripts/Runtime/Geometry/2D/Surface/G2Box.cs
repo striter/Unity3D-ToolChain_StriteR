@@ -34,7 +34,7 @@ namespace Runtime.Geometry
     }
     
     [Serializable]
-    public partial struct G2Box : ISerializationCallbackReceiver,IGeometry2 , IRayAreaIntersection,IConvex2D
+    public partial struct G2Box : IGeometry2, IConvex2 , IArea2,IRayArea2Intersection,ISerializationCallbackReceiver
     {
         public void OnBeforeSerialize(){  }
         public void OnAfterDeserialize()=>Ctor();
@@ -58,6 +58,7 @@ namespace Runtime.Geometry
         public float2 GetPoint(float2 _uv) => min + _uv * size;
 
         public float2 GetSupportPoint(float2 _direction) => this.MaxElement(_p => math.dot(_direction, _p));
+        public float GetArea() => extent.x * extent.y;
         public bool RayIntersection(G2Ray _ray, out float2 distances)
         {
             distances = -1;

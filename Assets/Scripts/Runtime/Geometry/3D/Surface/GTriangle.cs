@@ -35,7 +35,7 @@ namespace Runtime.Geometry
     }
 
     [Serializable]
-    public partial struct GTriangle :ITriangle<float3>, IIterate<float3>,ISerializationCallbackReceiver, IVolume, IConvex , IRayIntersection , ISurface
+    public partial struct GTriangle :IVolume, IConvex , ISurface , IRayIntersection , ITriangle<float3>, IIterate<float3>,ISerializationCallbackReceiver
     {
         public float3 V0 => triangle.v0;
         public float3 V1 => triangle.v1;
@@ -78,14 +78,6 @@ namespace Runtime.Geometry
         public float3 GetSupportPoint(float3 _direction) => this.MaxElement(_p => math.dot(_p, _direction));
         public GBox GetBoundingBox() => UGeometry.GetBoundingBox(this);
         public GSphere GetBoundingSphere() => UGeometry.GetBoundingSphere(this);
-
-      
-        public IEnumerable<GLine> GetEdges()
-        {
-            yield return new GLine(V0, V1);
-            yield return new GLine(V1, V2);
-            yield return new GLine(V2, V0);
-        }
 
         public IEnumerable<float3> GetAxes()
         {
