@@ -21,7 +21,7 @@ struct v2fmeta
     #endif
 };
 
-v2fmeta VertexMeta(a2vmeta input)
+v2fmeta vert(a2vmeta input)
 {
     v2fmeta output = (v2fmeta)0;
     output.positionCS = UnityMetaVertexPosition(input.positionOS.xyz, input.uv1, input.uv2);

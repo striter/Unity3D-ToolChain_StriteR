@@ -1,5 +1,4 @@
 ﻿#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
-
 #include "Assets//Shaders/Library/PBR.hlsl"
 #include "ForwardPBR.hlsl"
 
@@ -36,11 +35,15 @@ v2fmeta VertexMeta(a2vmeta input)
 
 float4 FragmentMeta(v2fmeta i) : SV_Target
 {
+    half4 albedoAlpha = 
 #if defined(GET_ALBEDO)
-    half3 albedo = GET_ALBEDO(i);
-#else
-    half3 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*INSTANCE(_Color).rgb;
-#endif
+        GET_ALBEDO(i);
+    #else
+	    SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*INSTANCE(_Color);
+    #endif
+
+    half3 albedo = albedoAlpha.rgb;
+    AlphaClip(albedoAlpha.a);
 
 #if defined(GET_EMISSION)
     half3 emission = GET_EMISSION(i); 

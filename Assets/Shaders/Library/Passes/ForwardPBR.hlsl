@@ -1,4 +1,6 @@
 ﻿#include "Assets/Shaders/Library/Additional/Local/AlphaClip.hlsl"
+#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
+
 v2ff ForwardVertex(a2vf v)
 {
 	v2ff o;
@@ -37,13 +39,12 @@ BRDFSurface InitializeFragmentSurface(v2ff i)
 	float3 viewDirWS=normalize(i.viewDirWS);
 	half3 normalTS=half3(0,0,1);
 
-	half4 color = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV);
 	
 	half4 albedoAlpha = 
 #if defined(GET_ALBEDO)
-	 GET_ALBEDO(i);
+	GET_ALBEDO(i);
 #else
-	 	color*INSTANCE(_Color);
+	SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV)*INSTANCE(_Color);
 #endif
 
 	half3 albedo = albedoAlpha.rgb;

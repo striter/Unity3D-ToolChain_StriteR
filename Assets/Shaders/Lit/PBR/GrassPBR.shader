@@ -1,4 +1,4 @@
-﻿Shader "Game/Lit/ShellPBR"
+﻿Shader "Game/Lit/GrassPBR"
 {
 	Properties
 	{
@@ -85,6 +85,40 @@
             #pragma multi_compile_fog
             #pragma target 3.5
 
+			float3 GetPositionWS(float3 positionOS,float3 normalWS)
+			{
+				float3 positionWS = TransformObjectToWorld(positionOS);
+				
+				float delta=INSTANCE(_ShellDelta);
+				float amount=delta+=(delta- delta*delta);
+				
+				positionWS+=normalWS*INSTANCE(_FurLength)*amount;
+				return positionWS;
+			}
+
+			float4 GetAlbedo(float2 uv)
+			{
+				float delta= INSTANCE(_ShellDelta);
+							
+				float2 flow1UV=(uv+_FlowSpeed1*_Time.y)/_FlowScale1;
+				float2 flow1=SAMPLE_TEXTURE2D(_FlowTex,sampler_FlowTex,flow1UV).xy*2-1;
+				float2 flow2UV=(uv+_FlowSpeed2*_Time.y)/_FlowScale2;
+				float2 flow2=SAMPLE_TEXTURE2D(_FlowTex,sampler_FlowTex,flow2UV).xy*2-1;
+				float2 finalFlow=(flow1*flow2);
+				uv+=finalFlow*_FlowStrength*delta;
+				
+				float furSample=SAMPLE_TEXTURE2D(_FurTex,sampler_FurTex,uv).r;
+				clip(furSample-delta*delta*INSTANCE(_FurAlphaClip));
+				
+				float4 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv);
+				albedo*=lerp(INSTANCE(_RootColor),INSTANCE(_EdgeColor),delta);
+				return albedo;
+			}
+
+			#define V2F_ADDITIONAL float2 furUV:TEXCOORD8;
+			#define V2F_ADDITIONAL_TRANSFER(v,o) o.furUV = TRANSFORM_TEX(v.uv,_FurTex);
+			#define GET_POSITION_WS(v,o) GetPositionWS(v.positionOS,o.normalWS)
+			#define GET_ALBEDO(i)  GetAlbedo(i.furUV)
 
 		ENDHLSL
 		Pass
@@ -96,8 +130,6 @@
 			#pragma vertex ForwardVertex
 			#pragma fragment ForwardFragment
 			
-			#define V2F_ADDITIONAL float2 furUV:TEXCOORD8;
-			#define V2F_ADDITIONAL_TRANSFER(v,o) o.furUV = TRANSFORM_TEX(v.uv,_FurTex);
 			
 			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
 			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
@@ -116,48 +148,63 @@
 				return normalDistribution;
 			}
 
-			float3 GetPositionWS(float3 positionOS,float3 normalWS)
-			{
-				float3 positionWS = TransformObjectToWorld(positionOS);
-				
-				float delta=INSTANCE(_ShellDelta);
-				float amount=delta+=(delta- delta*delta);
-				
-				positionWS+=normalWS*INSTANCE(_FurLength)*amount;
-				return positionWS;
-			}
-
-			float3 GetAlbedo(float2 uv)
-			{
-				float delta= INSTANCE(_ShellDelta);
-							
-				float2 flow1UV=(uv+_FlowSpeed1*_Time.y)/_FlowScale1;
-				float2 flow1=SAMPLE_TEXTURE2D(_FlowTex,sampler_FlowTex,flow1UV).xy*2-1;
-				float2 flow2UV=(uv+_FlowSpeed2*_Time.y)/_FlowScale2;
-				float2 flow2=SAMPLE_TEXTURE2D(_FlowTex,sampler_FlowTex,flow2UV).xy*2-1;
-				float2 finalFlow=(flow1*flow2);
-				uv+=finalFlow*_FlowStrength*delta;
-				
-				float furSample=SAMPLE_TEXTURE2D(_FurTex,sampler_FurTex,uv).r;
-				clip(furSample-delta*delta*INSTANCE(_FurAlphaClip));
-				
-				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv);
-				half3 albedo=color.rgb;
-				albedo*=lerp(INSTANCE(_RootColor).rgb,INSTANCE(_EdgeColor).rgb,delta);
-				return albedo;
-			}
-
-			#define GET_POSITION_WS(v,o) GetPositionWS(v.positionOS,o.normalWS)
-			#define GET_ALBEDO(i)  GetAlbedo(i.furUV)
 			#define GET_PBRPARAM(i,smoothness,metallic,ao) ao=saturate(ao-(1-INSTANCE(_ShellDelta))*INSTANCE(_FurShadow));
 	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
 			#define GET_EMISSION(i) 0
-			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
-			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			
+			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			ENDHLSL
 		}
-		USEPASS "Game/Additive/ShadowCaster/MAIN"
-        USEPASS "Game/Additive/DepthOnly/MAIN"
+
+
+		Pass
+		{
+			NAME "SHADOWCASTER"
+			Tags{"LightMode" = "ShadowCaster"}
+			
+			Blend Off
+			ZWrite On
+			ZTest LEqual
+			Cull Off
+			
+			HLSLPROGRAM
+			
+            #include "Assets/Shaders/Library/Passes/ShadowCaster.hlsl"
+			#pragma vertex ShadowVertex
+			#pragma fragment ShadowFragment
+			ENDHLSL
+		}
+
+		Pass
+		{
+			NAME "DEPTH"
+			Tags{"LightMode" = "DepthOnly"}
+			
+			Blend Off
+			ZWrite On
+			ZTest [_ZTest]
+			Cull Off
+			
+			HLSLPROGRAM
+			#pragma vertex DepthVertex
+			#pragma fragment DepthFragment
+            #include "Assets/Shaders/Library/Passes/DepthOnly.hlsl"
+			ENDHLSL
+		}
+
+		Pass
+		{
+            Tags{"LightMode" = "SceneSelectionPass"}
+			Blend Off
+			ZWrite On
+			ZTest [_ZTest]
+			Cull Off
+
+            HLSLPROGRAM
+            #pragma vertex VertexSceneSelection
+            #pragma fragment FragmentSceneSelection
+            #include "Assets/Shaders/Library/Passes/SceneOutlinePass.hlsl"
+            ENDHLSL
+		}
 	}
 }

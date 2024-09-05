@@ -384,6 +384,17 @@
             #include "Assets/Shaders/Library/Passes/MetaPBR.hlsl"
             ENDHLSL
 		}
+		Pass
+		{
+            Tags{"LightMode" = "SceneSelectionPass"}
+            ZWrite On
+
+            HLSLPROGRAM
+            #pragma vertex VertexSceneSelection
+            #pragma fragment FragmentSceneSelection
+            #include "Assets/Shaders/Library/Passes/SceneOutlinePass.hlsl"
+            ENDHLSL
+		}
 	}
 	
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
-using Procedural.Tile;
 using Unity.Mathematics;
 using UnityEngine;
 using static kint2;
@@ -39,7 +38,7 @@ public static class ContourTracingData_Extension   //Transform ContourTracingDat
         if (index == -1)
             return false;
         
-        _startPixel = UTile.GetAxisByIndex(index, _data.resolution.x);
+        _startPixel = UCoordinates.Tile.ToIndex(index, _data.resolution.x);
         return true;
     }
 

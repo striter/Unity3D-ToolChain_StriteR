@@ -52,7 +52,7 @@ Shader "Hidden/Imposter_AlbedoAlpha"
             float4 frag (v2f i) : SV_Target
             {
 				UNITY_SETUP_INSTANCE_ID(i);
-                return SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
+                return float4(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb,1);
             }
             ENDHLSL
         }

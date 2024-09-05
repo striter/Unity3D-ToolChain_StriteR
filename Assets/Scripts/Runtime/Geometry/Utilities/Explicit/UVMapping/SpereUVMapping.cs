@@ -13,6 +13,7 @@ namespace Runtime.Geometry.Extension.Sphere
         ConcentricHemisphere,
         OctahedralHemisphere,
     }
+    
     public static class ISphereUVMapping_Extension
     {
         public static ISphereUVMapping GetHelper(this ESphereMapping _mapping) =>_mapping switch {
@@ -24,6 +25,8 @@ namespace Runtime.Geometry.Extension.Sphere
             _ => throw new ArgumentOutOfRangeException()
         };
 
+        public static bool IsHemisphere(this ESphereMapping _mapping) => _mapping is ESphereMapping.ConcentricHemisphere or ESphereMapping.OctahedralHemisphere;
+        
         public static float3 UVToSphere(this ESphereMapping _mapping, float2 _uv) => _mapping.GetHelper().ToPosition(_uv);
 
         public static float2 SphereToUV(this ESphereMapping _mapping, float3 _direction) => _mapping.GetHelper().ToUV(_direction);

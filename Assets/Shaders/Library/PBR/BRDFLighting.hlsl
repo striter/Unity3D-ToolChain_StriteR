@@ -1,3 +1,5 @@
+#ifndef _BRDFLIGHTING
+#define _BRDFLIGHTING
 
 struct BRDFLight
 {
@@ -76,3 +78,5 @@ half3 BRDFGlobalIllumination(BRDFSurface surface,half3 indirectDiffuse,half3 ind
     half3 giSpecular = indirectSpecular * surfaceReduction;
     return giDiffuse + giSpecular;
 }
+
+#endif

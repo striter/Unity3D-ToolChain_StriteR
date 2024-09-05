@@ -1,4 +1,4 @@
-Shader "Game/Hidden/SubstancePainterPBRtoUnity"
+Shader "Hidden/SubstancePainterPBRtoUnity"
 {
 	Properties
 	{

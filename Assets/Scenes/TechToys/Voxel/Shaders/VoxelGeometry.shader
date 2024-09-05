@@ -36,7 +36,7 @@ Shader "Game/Unfinished/VoxelGeometry"
 			#define GET_PBRPARAM(i,smoothness,metallic,ao) GetPBRParameters(smoothness,metallic,ao)
 			#define GET_ALBEDO(i) GetAlbedo(i.uv,i.color);
 			#define GET_EMISSION 0;
-			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
+			
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			
             #pragma target 3.5

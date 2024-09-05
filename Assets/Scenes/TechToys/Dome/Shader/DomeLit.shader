@@ -48,7 +48,7 @@ Shader "Dome/Lit"
 			INSTANCING_BUFFER_END
 			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
 			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
-			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
+			
 			
 			float GetNormalDistribution(BRDFSurface surface,BRDFLightInput lightSurface)
 			{

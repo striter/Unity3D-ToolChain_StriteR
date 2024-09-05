@@ -38,10 +38,8 @@ namespace Procedural.Tile
 
         public static (ETileDirection, Int2)[] GetNearbyTilesDirection(this Int2 _tile) => kNearbyTiles.Select(p =>(p.Item1, p.Item2+_tile)).ToArray();
 
-        
         public static bool InRange<T>(this Int2 axis, T[,] range) => axis.x >= 0 && axis.x < range.GetLength(0) && axis.y >= 0 && axis.y < range.GetLength(1);
         public static bool InRange<T>(this Int2 originSize, Int2 sizeAxis, T[,] range) => InRange<T>(originSize + sizeAxis, range);
-        public static Int2 GetAxisByIndex(int index, int width) => new Int2(index % width, index / width);
         public static T Get<T>(this T[,] tileArray, Int2 _begin) where T : class => _begin.InRange(tileArray) ? tileArray[_begin.x, _begin.y] : null;
         public static bool Get<T>(this T[,] tileArray, Int2 _begin, Int2 _size, ref List<T> tileList) where T : class
         {

@@ -269,3 +269,12 @@ float flipSign(float a, int s)
     float newSign = signNonZero(signNonZero(a) ^ s);
     return abs(a) * newSign;
 }
+
+float4 GetColumn(float4x4 _matrix,int _index)
+{
+    return float4(_matrix[0][_index],_matrix[1][_index],_matrix[2][_index],_matrix[3][_index]);
+}
+float4 GetRow(float4x4 _matrix,int _index)
+{
+    return float4(_matrix[_index][0],_matrix[_index][1],_matrix[_index][2],_matrix[_index][3]);
+}

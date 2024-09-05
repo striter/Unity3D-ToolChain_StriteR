@@ -17,6 +17,7 @@ struct v2fs
 	float4 positionCS:SV_POSITION;
 	float3 normalWS:NORMAL;
 	float2 uv:TEXCOORD0;
+	float3 positionWS : TEXCOORD1;
 #if defined(V2F_ADDITIONAL)
 	V2F_ADDITIONAL
 #endif
@@ -29,11 +30,13 @@ v2fs ShadowVertex(a2fs v)
 	UNITY_SETUP_INSTANCE_ID(v);
 	UNITY_TRANSFER_INSTANCE_ID(v,o);
 	o.normalWS=TransformObjectToWorldNormal(v.normalOS);
-#if defined(GET_POSITION_WS)
-	float3 positionWS= GET_POSITION_WS(v,o);
-#else
-	float3 positionWS=TransformObjectToWorld(v.positionOS);
-#endif
+	float3 positionWS =
+	#if defined(GET_POSITION_WS)
+		GET_POSITION_WS(v,o);
+	#else
+		TransformObjectToWorld(v.positionOS);
+	#endif
+	o.positionWS = positionWS;
 	o.positionCS= ShadowCasterCS(positionWS,o.normalWS);
 	o.uv = TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
 #if defined(V2F_ADDITIONAL_TRANSFER)
@@ -44,6 +47,14 @@ v2fs ShadowVertex(a2fs v)
 
 float4 ShadowFragment(v2fs i) :SV_TARGET
 {
-	AlphaClip(SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).a*INSTANCE(_Color).a);
+	UNITY_SETUP_INSTANCE_ID(i);
+	half4 albedoAlpha = 
+	#if defined(GET_ALBEDO)
+		GET_ALBEDO(i);
+	#else
+		SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*INSTANCE(_Color);
+	#endif
+
+	AlphaClip(albedoAlpha.a);
 	return 0;
 }

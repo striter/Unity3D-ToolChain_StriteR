@@ -278,7 +278,7 @@ public partial class umath
     public static float lerp(float _a, float _b, float _value) => _a + (_b - _a) * _value;
     public static float invLerp(float _a, float _b, float _value)=> (_value - _a) / (_b - _a);
     public static float invLerp(this RangeFloat _range, float _value)=> (_value - _range.start) / (_range.length);
-
+    public static float2 invLerp(float2 _a, float2 _b, float2 _value)=> float2(invLerp(_a.x,_b.x, _value.x),invLerp(_a.y,_b.y, _value.y));
     public static float3 invLerp(float3 _a, float3 _b, float3 _value)=> float3(invLerp(_a.x,_b.x, _value.x),invLerp(_a.y,_b.y, _value.y),invLerp(_a.z,_b.z, _value.z));
     
     //&https://iquilezles.org/articles/functions/

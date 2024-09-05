@@ -60,11 +60,11 @@ Shader "PCG/Structure"
 				return positionWS - normalize(positionWS) * INSTANCE(_Progress) * .3f  ;
 			}
 			
-			float3 GetAlbedoOverride(float2 uv,float4 color)
+			float4 GetAlbedoOverride(float2 uv,float4 color)
 			{
 				float4 albedo = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, uv);
 				clip(albedo.a-.1f);
-				return albedo.rgb * color * INSTANCE(_Color);
+				return albedo * color * INSTANCE(_Color);
 			}
 
 			float3 GetEmissionOverride(float3 color)
@@ -75,7 +75,7 @@ Shader "PCG/Structure"
 			#define GET_POSITION_WS(v,o) GetPositionWSOverride(v.positionOS,v.color)
 			#define GET_ALBEDO(i) GetAlbedoOverride(i.uv,i.color);
 			#define GET_EMISSION(i) GetEmissionOverride(i.color.rgb);
-			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
+			
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			
             #pragma target 3.5

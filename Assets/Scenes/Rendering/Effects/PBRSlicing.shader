@@ -52,7 +52,6 @@ Shader "Hidden/PBRSlicing"
 			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile _ _ADDITIONAL_LIGHTS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
-
 			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
 			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
 			
@@ -77,15 +76,14 @@ Shader "Hidden/PBRSlicing"
 			    return toonSpecular;
 			}
 
-			float3 OverrideAlbedo(v2ff i)
+			float4 OverrideAlbedo(float3 positionWS,float2 uv)
 			{
-				float3 positionWS = i.positionWS;
 				GPlane plane = GPlane_Ctor(_SlicePlane.xyz, _SlicePlane.w);
 				clip(- Distance(plane,positionWS));
-				return SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb*INSTANCE(_Color).rgb;
+				return SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv)*INSTANCE(_Color);
 			}
 
-			#define GET_ALBEDO(i) OverrideAlbedo(i)
+			#define GET_ALBEDO(i) OverrideAlbedo(i.positionWS,i.uv)
 			#define GET_GEOMETRYSHADOW(surface,lightSurface) GetGeometryShadow(surface,lightSurface)
 	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
 			#define GET_INDIRECTSPECULAR(surface) IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
@@ -98,7 +96,6 @@ Shader "Hidden/PBRSlicing"
 			Tags{"LightMode" = "UniversalForward"}
 			HLSLPROGRAM
 			
-			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			
             #pragma target 3.5
@@ -123,7 +120,6 @@ Shader "Hidden/PBRSlicing"
 				i.uv = positionWS.xz;
 			}
 			#define FRAGMENT_SETUP(i) FragmentSetup(i);
-			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
             #pragma target 3.5
 			#pragma vertex ForwardVertex
@@ -131,8 +127,53 @@ Shader "Hidden/PBRSlicing"
 			ENDHLSL
 		}
 
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
+		Pass
+		{
+			NAME "SHADOWCASTER"
+			Tags{"LightMode" = "ShadowCaster"}
+			
+			Blend Off
+			ZWrite On
+			ZTest LEqual
+			Cull Off
+			
+			HLSLPROGRAM
+			
+            #include "Assets/Shaders/Library/Passes/ShadowCaster.hlsl"
+			#pragma vertex ShadowVertex
+			#pragma fragment ShadowFragment
+			ENDHLSL
+		}
+
+		Pass
+		{
+			NAME "DEPTH"
+			Tags{"LightMode" = "DepthOnly"}
+			
+			Blend Off
+			ZWrite On
+			ZTest LEqual
+			Cull Off
+			
+			HLSLPROGRAM
+			#pragma vertex DepthVertex
+			#pragma fragment DepthFragment
+            #include "Assets/Shaders/Library/Passes/DepthOnly.hlsl"
+			ENDHLSL
+		}
+
+		Pass
+		{
+            Tags{"LightMode" = "SceneSelectionPass"}
+			Blend Off
+			Cull Off
+
+            HLSLPROGRAM
+            #pragma vertex VertexSceneSelection
+            #pragma fragment FragmentSceneSelection
+            #include "Assets/Shaders/Library/Passes/SceneOutlinePass.hlsl"
+            ENDHLSL
+		}
     }
 
 

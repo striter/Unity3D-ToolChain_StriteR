@@ -122,15 +122,14 @@
 			}
 
 
-			float3 GetAlbedo(float2 baseUV,float2 furUV)
+			float4 GetAlbedo(float2 baseUV,float2 furUV)
 			{
 				float delta= INSTANCE(_ShellDelta);
 				float furSample=SAMPLE_TEXTURE2D(_FurTex,sampler_FurTex,furUV).r;
 				clip(furSample-delta*delta*INSTANCE(_FurAlphaClip));
 				
-				half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV);
-				half3 albedo=color.rgb;
-				albedo*=lerp(INSTANCE(_RootColor).rgb,INSTANCE(_EdgeColor).rgb,delta);
+				float4 albedo=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,baseUV);
+				albedo*=lerp(INSTANCE(_RootColor),INSTANCE(_EdgeColor),delta);
 				return albedo;
 			}
 			
@@ -140,7 +139,7 @@
 	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
 			#define GET_EMISSION(i) 0
 			
-			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
+			
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			
 			ENDHLSL

@@ -12,11 +12,13 @@ namespace Runtime.Optimize.Imposter
         [Readonly] public GSphere m_BoundingSphere;
         public bool m_DrawGizmos;
         public bool m_DrawInput;
-        public override void OnEnable() {
+        protected override void OnEnable(MaterialEditor materialEditor) {
+            base.OnEnable(materialEditor);
             SceneView.duringSceneGui += OnSceneGUI;
         }
 
-        public override void OnDisable() { 
+        protected override void OnDisable() { 
+            base.OnDisable();
             SceneView.duringSceneGui -= OnSceneGUI; 
         }
 

@@ -12,6 +12,14 @@ GRay GRay_Ctor(float3 _origin, float3 _direction)
     ray.direction = _direction;
     return ray;
 }
+
+GRay GRay_StartEnd(float3 _origin, float3 _end)
+{
+    GRay ray;
+    ray.origin = _origin;
+    ray.direction =  normalize(_end - _origin);
+    return ray;
+}
 struct GLine
 {
     float3 start;

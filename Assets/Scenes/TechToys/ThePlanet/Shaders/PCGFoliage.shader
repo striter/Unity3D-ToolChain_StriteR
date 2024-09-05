@@ -88,7 +88,7 @@ Shader "PCG/Foliage"
 				float3 tangentWS = TransformObjectToWorldDir(_tangentOS);
 				return positionWS + Wind(positionWS,_color.r,INSTANCE(_BendStrength),normalWS,tangentWS);
 			}
-			float4 GetAlbedoOverride(float2 uv,float3 color)
+			float4 GetAlbedoOverride(float2 uv)
 			{
 				float4 sample =SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, uv);
 				clip(sample.a-_AlphaCutoff);
@@ -97,7 +97,7 @@ Shader "PCG/Foliage"
     		
 			#define GET_EMISSION(i) 0;
 			#define GET_POSITION_WS(v,o) GetPositionWS(v.positionOS,v.color,v.normalOS,v.tangentOS)
-			#define GET_ALBEDO(i) GetAlbedoOverride(i.uv,i.color.rgb);
+			#define GET_ALBEDO(i) GetAlbedoOverride(i.uv);
 			#define _NORMALOFF
     		#define _ALPHACLIP
 			void GetPBRParameters(inout float g,inout float m,inout float a) { g = 0.5; m = 0; a = 1; }
@@ -109,7 +109,7 @@ Shader "PCG/Foliage"
 			NAME "FORWARD"
 			Tags{"LightMode" = "UniversalForward"}
 			HLSLPROGRAM
-			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
+			
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			
             #pragma target 3.5

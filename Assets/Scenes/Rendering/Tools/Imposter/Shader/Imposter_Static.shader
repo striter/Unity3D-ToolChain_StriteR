@@ -11,7 +11,6 @@ Shader "Game/Optimize/Imposter/Static"
     	Blend Off
     	HLSLINCLUDE
             #include "Assets/Shaders/Library/Common.hlsl"
-			#include "Assets/Shaders/Library/Geometry.hlsl"
             #include "Imposter.hlsl"
 
             struct a2v
@@ -43,11 +42,6 @@ Shader "Game/Optimize/Imposter/Static"
             float _AlphaClip;
             float4 _Weights;
 
-			float4 GetColumn(float4x4 _matrix,int _index)
-			{
-				return float4(_matrix[0][_index],_matrix[1][_index],_matrix[2][_index],_matrix[3][_index]);
-			}
-            
             v2f vert (a2v v)
             {
                 v2f o;

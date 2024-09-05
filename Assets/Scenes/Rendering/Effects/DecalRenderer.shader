@@ -55,8 +55,9 @@ Shader "Game/Unfinished/Decals"
             float4 frag (v2f i) : SV_Target
             {
 				UNITY_SETUP_INSTANCE_ID(i);
-                float3 finalCol=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv).rgb * INSTANCE(_Color).rgb * i.color.a;
-                return float4(finalCol,1);
+                float4 sample=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv) * INSTANCE(_Color) * i.color.a;
+                clip(sample.a - 0.01);
+                return float4(sample.rgb,1);
             }
             ENDHLSL
         }

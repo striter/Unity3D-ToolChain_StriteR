@@ -121,6 +121,7 @@ namespace Runtime.Optimize.Imposter
                     contourPolygon = new G2Polygon(contourPolygonPositions);
                 }
                 
+                boundingSphere.radius -= boundingSphereExtrude;
                 boundingSphere.center -= (float3)_sceneObjectRoot.position;
                 mesh.SetVertices(contourPolygon.Select(p=>(Vector3)((p-.5f).to3xy() * boundingSphere.radius * 2 + boundingSphere.center)).ToList());
                 mesh.SetIndices(contourPolygon.GetIndexes().ToArray(),MeshTopology.Triangles,0);
@@ -169,10 +170,11 @@ namespace Runtime.Optimize.Imposter
                 m_Camera.orthographic = true;
                 m_Camera.clearFlags = _clear ? CameraClearFlags.Depth : CameraClearFlags.Nothing;
                 m_Camera.backgroundColor = Color.black.SetA(0f);
-                m_Camera.nearClipPlane = 0.01f;
+                m_Camera.nearClipPlane = 0.0001f;
                 m_Camera.orthographicSize = _sphere.radius;
                 m_Camera.targetTexture = m_RenderTexture;
                 m_Camera.farClipPlane = _sphere.radius * 2;
+                m_Camera.aspect = 1;
                 m_Camera.allowMSAA = true;
                 m_Camera.cullingMask = 1 << kLayerID;
                 var additional = m_Camera.gameObject.AddComponent<UniversalAdditionalCameraData>();

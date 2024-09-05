@@ -64,7 +64,9 @@ namespace Runtime.Optimize.Imposter
             var cellWorldMin = _cellIndexActual * CellWorldSpaceSizeNormalized;
             var worldRect = G2Box.Minmax(cellWorldMin, cellWorldMin + CellWorldSpaceSizeNormalized);
             var texelMinRect = _cellIndexActual * CellTexelSizeNormalized;
-            return new ImposterCorner() {cellIndex = _cellIndexActual, uvRect = G2Box.Minmax(texelMinRect, texelMinRect + CellTexelSizeNormalized),worldRect = worldRect, direction = mapping.UVToSphere((_cellIndexActual + kfloat2.one * .5f) * CellWorldSpaceSizeNormalized) };
+
+            var mappingUV = (_cellIndexActual + kfloat2.one * .5f) * CellWorldSpaceSizeNormalized;
+            return new ImposterCorner() {cellIndex = _cellIndexActual, uvRect = G2Box.Minmax(texelMinRect, texelMinRect + CellTexelSizeNormalized),worldRect = worldRect, direction = mapping.UVToSphere(mappingUV) };
         }
 
         public struct ImposterCorner

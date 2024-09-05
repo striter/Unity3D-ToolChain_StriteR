@@ -124,10 +124,10 @@ Shader "Hidden/CustomGI"
 			#endif
 				}
 				
-				#define V2F_ADDITIONAL_TRANSFER(v,o) Transfer(v,o);
+			#define V2F_ADDITIONAL_TRANSFER(v,o) Transfer(v,o);
 			
 			#define GET_GI(indirectDiffuse,indirectSpecular,i,surface,mainLight) OverrideGlobalIllumination(indirectDiffuse,indirectSpecular,i,surface,mainLight);
-			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
+			
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			
             #pragma target 3.5

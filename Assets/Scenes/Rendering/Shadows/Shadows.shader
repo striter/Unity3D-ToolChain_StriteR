@@ -47,7 +47,7 @@ Shader "Hidden/Unfinished/Shadows"
             #include "Assets/Shaders/Library/Geometry.hlsl"
 			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
 			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
-			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
+			
 
 			#define MAX_SDF_VOLUME_COUNT 32
 			int _SDFVolumeCount;

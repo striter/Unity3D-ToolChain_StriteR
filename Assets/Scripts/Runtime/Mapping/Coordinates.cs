@@ -2,6 +2,11 @@
 
 public static class UCoordinates
 {
+    public static class Tile
+    {
+        public static int2 ToIndex(int _index,int _width) => new int2(_index % _width, _index / _width);
+    }
+    
     public static class Cylindrical
     {
         public static float3 ToCartesian(float _rad,float _height,float _radius = 1f)

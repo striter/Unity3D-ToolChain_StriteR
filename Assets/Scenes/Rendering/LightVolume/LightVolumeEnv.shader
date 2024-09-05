@@ -71,7 +71,7 @@ Shader "Hidden/LightVolumeEnv"
 				return mainLight;
 			}
 			#define  GET_MAINLIGHT(i) GetMainLight(i.positionHCS,i.positionWS);
-			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
+			
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			
             #pragma target 3.5

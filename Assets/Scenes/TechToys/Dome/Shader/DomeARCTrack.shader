@@ -54,7 +54,7 @@ Shader "Dome/Lit_ARCTrack"
 			#define V2F_ADDITIONAL_TRANSFER(v,o) o.lTrack = step(v.positionOS,0);
 			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
 			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
-			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
+			
 			
 			float GetNormalDistribution(BRDFSurface surface,BRDFLightInput lightSurface)
 			{

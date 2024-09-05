@@ -61,7 +61,7 @@ Shader "Hidden/ProceduralNoise"
 			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
 					
 			#define GET_ALBEDO(i) OverrideAlbedo()
-			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
+			
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			
             #pragma target 3.5
