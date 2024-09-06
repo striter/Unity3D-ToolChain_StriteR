@@ -15,7 +15,7 @@ namespace Examples.Rendering.ContourOutline
             if (m_ContourTexture == null)
                 return;
 
-            m_ContourTracing = ContourTracingData.FromColorAlpha(m_ContourTexture.width, m_ContourTexture.GetPixels());
+            m_ContourTracing = ContourTracingData.FromColor(m_ContourTexture.width, m_ContourTexture.GetPixels());
         }
 
         private void OnDrawGizmos()
@@ -43,7 +43,7 @@ namespace Examples.Rendering.ContourOutline
             }
 
             Gizmos.color = Color.green.SetA(.5f);
-            var pixels = m_ContourTracing.RadialSweep();
+            var pixels = m_ContourTracing.TheoPavlidis();
             foreach (var pixel in pixels)
                 Gizmos.DrawCube(pixel.to3xz(), Vector3.one);
             UGizmos.DrawLines(pixels,p=>p.to3xz());

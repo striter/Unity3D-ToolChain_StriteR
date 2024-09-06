@@ -15,17 +15,15 @@ MonoBehaviour:
   m_Input:
     mapping: 4
     count: 8
-    cellResolution: 64
-    CellTexelSizeNormalized:
-      x: 0.125
-      y: 0.125
-    cellCount:
-      x: 8
-      y: 8
+    cellResolution: 128
   m_Shader: {fileID: 4800000, guid: d4f1b0b09561424f997fac26d5edc511, type: 3}
   m_Instanced: 1
   m_CameraHandles:
   - m_Name: _AlbedoAlpha
     m_Shader: {fileID: 4800000, guid: d9d6c3e694287174d9db193388f24390, type: 3}
+    m_DilateAlpha: 0
   - m_Name: _NormalDepth
     m_Shader: {fileID: 4800000, guid: 2e56b50841a2480f94153cfc944e024e, type: 3}
+    m_DilateAlpha: 1
+  m_AlphaTexture: 0
+  m_ContourMeshTexture: 0

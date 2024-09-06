@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
+using Runtime.Geometry;
 using Unity.Mathematics;
 using UnityEngine;
 using static kint2;
@@ -12,18 +13,24 @@ public struct ContourTracingData
 {
     public int2 resolution;
     public bool[] m_ContourTessellation;
-    public static ContourTracingData FromColorAlpha(int _width,Color[] _colors,float _threshold = 0.5f)
+    public int Count => m_ContourTessellation.Length;
+    public static ContourTracingData FromColor(int _width,Color[] _colors,Func<Color,bool> _predicate = null)
     {
+        _predicate ??= color => color.a > 0.1f;
+        
         var length = _colors.Length;
         var height = length / _width;
         var contourTessellation = new bool[_width * height];
-        for (int i = 0; i < length; i++)
-            contourTessellation[i] = _colors[i].a > _threshold;
+        for (var i = 0; i < length; i++)
+            contourTessellation[i] = _predicate(_colors[i]) ;
         return new ContourTracingData {
             resolution = new int2(_width, height),
             m_ContourTessellation = contourTessellation,
         };
     }
+
+    public bool OutOfBounds(int2 _pixel) => (_pixel < int2.zero).any() || (_pixel >= resolution).any();
+    public bool Sample(int2 _pixel) => !OutOfBounds(_pixel) && m_ContourTessellation[UCoordinates.Tile.ToIndex(_pixel,resolution.x)];
 }
 
 public static class ContourTracingData_Extension   //Transform ContourTracingData to integer positions which represent contour edges
@@ -38,10 +45,9 @@ public static class ContourTracingData_Extension   //Transform ContourTracingDat
         if (index == -1)
             return false;
         
-        _startPixel = UCoordinates.Tile.ToIndex(index, _data.resolution.x);
+        _startPixel = UCoordinates.Tile.ToTile(index, _data.resolution.x);
         return true;
     }
-
 
     private static List<int2> kSquareTracingIndexer = new () { kLeft, kDown, kRight, kUp };
     public static List<float2> SquareTracing(this ContourTracingData _data)
@@ -60,8 +66,7 @@ public static class ContourTracingData_Extension   //Transform ContourTracingDat
             nextPixel += kSquareTracingIndexer[directionIndex];
             while (true)
             {
-                var outOfBounds = (nextPixel < int2.zero).any() || (nextPixel >= _data.resolution).any();
-                if (!outOfBounds)
+                if (!_data.OutOfBounds(nextPixel))
                     break;
                 directionIndex = (directionIndex + indexMovement + 4) % 4;
                 nextPixel =  _curPixel + kSquareTracingIndexer[directionIndex];
@@ -69,11 +74,11 @@ public static class ContourTracingData_Extension   //Transform ContourTracingDat
             return nextPixel;
         };
 
-        var curIteration = _data.m_ContourTessellation.Length;
+        var curIteration = _data.Count;
         curPixel = MoveToNext(curPixel,true);
         while (curIteration-- > 0 )
         {
-            var sampled = _data.m_ContourTessellation[curPixel.x + curPixel.y * _data.resolution.x];
+            var sampled = _data.Sample(curPixel);
             if(sampled)
                 contourEdges.Add(curPixel);
             curPixel = MoveToNext(curPixel,sampled);
@@ -84,7 +89,6 @@ public static class ContourTracingData_Extension   //Transform ContourTracingDat
         return contourEdges;
     }
 
-    
     private static readonly Dictionary<int2, List<int2>> kMooreNeighbotIteration = new() {
         { kRight, new() {kLeft,kUp,kRight,kRight,kDown,kDown,kLeft,kLeft } },
         { kLeft, new() {kRight,kDown,kLeft,kLeft,kUp,kUp,kRight,kRight } },
@@ -101,7 +105,7 @@ public static class ContourTracingData_Extension   //Transform ContourTracingDat
         var curPixel = startPixel;
         var contourEdges = new List<float2> { startPixel };
 
-        var curIteration = _data.m_ContourTessellation.Length;
+        var curIteration = _data.Count;
         while (curIteration-- > 0 )
         {
             var iteration = kMooreNeighbotIteration[curDirection];
@@ -111,10 +115,7 @@ public static class ContourTracingData_Extension   //Transform ContourTracingDat
             {
                 curDirection = iteration[i];
                 curPixel += curDirection;
-                
-                var outOfBounds = (curPixel < int2.zero).any() || (curPixel >= _data.resolution).any();
-                sampled = !outOfBounds && _data.m_ContourTessellation[curPixel.x + curPixel.y * _data.resolution.x];
-
+                sampled = _data.Sample(curPixel);
                 if (!sampled) 
                     continue;
                 contourEdges.Add(curPixel);
@@ -138,7 +139,7 @@ public static class ContourTracingData_Extension   //Transform ContourTracingDat
         var curPixel = startPixel;
         var contourEdges = new List<float2> { startPixel };
 
-        var curIteration = _data.m_ContourTessellation.Length;
+        var curIteration = _data.Count;
         while (curIteration-- > 0 )
         {
             var swept = false;
@@ -146,8 +147,7 @@ public static class ContourTracingData_Extension   //Transform ContourTracingDat
             for(var i=0;i<8;i++)
             {
                 var sweepPixel = curPixel + kNeighbors8[(sweepDirection + i)%8];
-                var outOfBounds = (sweepPixel < int2.zero).any() || (sweepPixel >= _data.resolution).any();
-                swept = !outOfBounds && _data.m_ContourTessellation[sweepPixel.x + sweepPixel.y * _data.resolution.x];
+                swept = _data.Sample(sweepPixel);
                 if (!swept) 
                     continue;
                 sweepDirection = (sweepDirection + i + 5) % 8;
@@ -162,6 +162,71 @@ public static class ContourTracingData_Extension   //Transform ContourTracingDat
         }
         return contourEdges;
     }
+
+    private static readonly Dictionary<EQuadCorner, List<int2>> kFacingPixels = new Dictionary<EQuadCorner, List<int2>>() {
+        {EQuadCorner.L,new (){kLeft + kDown,kLeft,kLeft + kUp}},
+        {EQuadCorner.F,new (){kLeft + kUp,kUp,kRight + kUp}},
+        {EQuadCorner.R,new (){kRight + kUp,kRight,kRight + kDown}},
+        {EQuadCorner.B,new (){kRight + kDown,kDown,kLeft + kDown}}
+    };
+
     
+    public static List<float2> TheoPavlidis(this ContourTracingData _data)
+    {
+        if (!_data.ContourAble(out var startPixel))
+            return null;
+    
+        var contourEdges = new List<float2> { startPixel };
+        
+        var step = EQuadCorner.L;
+
+        var curPixel = startPixel;
+        var curIteration = _data.Count;
+        while (curIteration-- > 0 )
+        {
+            var sampled = false;
+            
+            for(var i=0;i<4;i++)
+            {
+                var p0 = curPixel + kFacingPixels[step][0];
+                var p1 = curPixel + kFacingPixels[step][1];
+                var p2 = curPixel + kFacingPixels[step][2];
+                
+                if (_data.Sample(p0))
+                {
+                    sampled = true;
+                    curPixel = p0;
+                    step = step.Prev();
+                }
+                else if (_data.Sample(p1))
+                {
+                    sampled = true;
+                    curPixel = p1;
+
+                }
+                else if(_data.Sample(p2))
+                {
+                    sampled = true;
+                    curPixel = p2;
+                }
+                else
+                {
+                    step = step.Next();
+                }
+
+                if (sampled)
+                {
+                    contourEdges.Add(curPixel);
+                    break;
+                }
+            }
+    
+            var startPixelMarched = (startPixel == curPixel).all();
+            if (!sampled || startPixelMarched)
+                break;
+        }
+
+        return contourEdges;
+    }
     
 }

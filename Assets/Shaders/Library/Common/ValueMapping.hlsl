@@ -83,6 +83,11 @@ half max(half3 _target)
     return max(_target.x,_target.y,_target.z);
 }
 
+float4 max(float4 _target)
+{
+    return max(_target.x,_target.y,_target.z,_target.w);
+}
+
 //Min Float
 float min(float _min1,float _min2,float _min3){
     return min(_min1,min(_min2,_min3));

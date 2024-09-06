@@ -52,40 +52,54 @@ float2 TransformObjectDirectionToUV(float3 _direction)
     return 0;
 }
 
-float2 ImposterVertexEvaluate(float3 _viewPositionWS,out float3 imposterCenterWS)
+float2 ImposterVertexEvaluate(out float3 _viewPositionWS,out float3 _imposterCenterWS,out float3 _forwardOS)
 {
-    imposterCenterWS = TransformObjectToWorld(_BoundingSphere.xyz);
-    float3 forwardOS = mul((float3x3)GetWorldToObjectMatrix(), _viewPositionWS - imposterCenterWS);
+    float3 worldOrigin = 0;
+    float4 perspective = float4( 0, 0, 0, 1 );
+    if( UNITY_MATRIX_P[ 3 ][ 3 ] == 1 ) 
+    {
+        perspective = float4( 0, 0, 5000, 0 );
+        worldOrigin = GetColumn(GetObjectToWorldMatrix(),3);
+    }
+    _viewPositionWS = worldOrigin + mul( UNITY_MATRIX_I_V, perspective ).xyz;
+    _imposterCenterWS = TransformObjectToWorld(_BoundingSphere.xyz);
+    _forwardOS = TransformWorldToObject(_viewPositionWS) - _BoundingSphere.xyz ;
     
     #if defined(_HEMISPHERE)
-        forwardOS.y = max(0.01f, forwardOS.y);
-        forwardOS = normalize(forwardOS);
+        _forwardOS.y = max(0.01f, _forwardOS.y);
     #endif
+    _forwardOS = normalize(_forwardOS);
     
-    return TransformObjectDirectionToUV(forwardOS);
+    return TransformObjectDirectionToUV(_forwardOS);
 }
 
-// #define _PLANE_SAMPLE
+#define _PLANE_SAMPLE
 
-void ImposterVertexEvaluate(float2 _uv,float3 _viewPositionWS,out float3 forwardWS,out float3 _imposterPositionWS,out float2 imposterUV)
+void ImposterVertexEvaluate(float2 _uv,out float3 forwardWS,out float3 _imposterPositionWS,out float2 imposterUV)
 {
+    float3 _viewPositionWS = 0;
     float3 imposterCenterWS = 0;
-    float2 imposterViewUV = ImposterVertexEvaluate(_viewPositionWS,imposterCenterWS);
+    float3 forwardOS;
+    
+    float2 imposterViewUV = ImposterVertexEvaluate(_viewPositionWS,imposterCenterWS,forwardOS);
 
     int2 imposterCellIndex = floor(imposterViewUV * _ImposterTexel.xy) % _ImposterTexel.xy;
     
-    float2 imposterViewSampleUV = (imposterCellIndex + .5f) * _ImposterTexel.zw;
-    float3 forwardOS = TransformUVToObjectDirection(imposterViewSampleUV);
     forwardWS = TransformObjectToWorldDir(forwardOS);
-    float3 rightWS = normalize( cross( forwardWS, float3( 0,1,0 ) ) );
-    float3 upWS = cross( rightWS, forwardWS );
 
+    float3 billboardRightWS = normalize( cross( forwardWS, float3( 0,1,0 ) ) );
+    float3 billboardUpwardWS = cross( billboardRightWS, forwardWS );
     float2 billboardUV = _uv;
     billboardUV -= .5;
-    _imposterPositionWS = imposterCenterWS + (billboardUV.x * rightWS + billboardUV.y * upWS)  * _BoundingSphere.w * 2;
+    _imposterPositionWS =  (billboardUV.x * billboardRightWS + billboardUV.y * billboardUpwardWS)  * _BoundingSphere.w * 2 + imposterCenterWS;
 
     #if defined(_PLANE_SAMPLE)
-        GPlane plane = GPlane_Ctor(-forwardWS,imposterCenterWS);
+        float2 imposterViewSampleUV = (imposterCellIndex + .5f) * _ImposterTexel.zw;
+        float3 normalWS = TransformObjectToWorldDir(TransformUVToObjectDirection(imposterViewSampleUV));
+        float3 rightWS = normalize( cross( normalWS, float3(0,1,0) ) );
+        float3 upWS = normalize( cross( rightWS, normalWS ) );
+    
+        GPlane plane = GPlane_Ctor(normalWS,imposterCenterWS);
         GRay viewRay = GRay_StartEnd(_viewPositionWS,_imposterPositionWS);
         float distance = Distance(plane,viewRay);
         float3 hitOffset = viewRay.GetPoint(distance) - imposterCenterWS;
@@ -94,10 +108,12 @@ void ImposterVertexEvaluate(float2 _uv,float3 _viewPositionWS,out float3 forward
             
         imposterUV = float2( frameX, frameZ ) / _BoundingSphere.w; // why negative???
         imposterUV = imposterUV * .5f + .5;
+        imposterUV = clamp(imposterUV,0,1);
+
     #else
         imposterUV = _uv;
     #endif
-    
+
     float2 tilling = imposterCellIndex * _ImposterTexel.zw;
     imposterUV = TransformTex(imposterUV,float4(_ImposterTexel.zw,tilling));
     
@@ -149,12 +165,11 @@ float2 CalculateBilinearLerpUV(float2 _uv,float3 _imposterPositionWS,float3 _vie
                 
         uv = float2( frameX, frameZ ) / _BoundingSphere.w; // why negative???
         uv = uv * .5f + .5;
+        uv = clamp(uv,0,1);
     #endif
     
     float2 tilling = ImposterTilling(cellIndex,N) * scale;
     float4 st = float4(scale,tilling);
-    
-    uv = TransformTex(uv,st);
     
     // UNITY_BRANCH
     // if(_parallax > 0)
@@ -164,13 +179,17 @@ float2 CalculateBilinearLerpUV(float2 _uv,float3 _imposterPositionWS,float3 _vie
     //
     //     uv -= offset * _parallax;
     // }
+    
+    uv = TransformTex(uv,st);
     return uv;
 }
 
-void ImposterVertexEvaluate_Bilinear(float2 _uv,float _parallax,float3 _viewPositionWS,out float3 forwardWS,out float3 _imposterPositionWS,out float4 _imposterUV01,out float4 _imposterUV23,out float4 _imposterWeights)
+void ImposterVertexEvaluate_Bilinear(float2 _uv,float _parallax,out float3 forwardWS,out float3 _imposterPositionWS,out float4 _imposterUV01,out float4 _imposterUV23,out float4 _imposterWeights)
 {
+    float3 forwardOS = 0;
     float3 imposterCenterWS = 0;
-    float2 imposterViewUV = ImposterVertexEvaluate(_viewPositionWS,imposterCenterWS);
+    float3 _viewPositionWS = 0;
+    float2 imposterViewUV = ImposterVertexEvaluate(_viewPositionWS,imposterCenterWS,forwardOS);
     float s = imposterViewUV.x;
     float t = imposterViewUV.y;
     int N = _ImposterTexel.x;
@@ -182,7 +201,7 @@ void ImposterVertexEvaluate_Bilinear(float2 _uv,float _parallax,float3 _viewPosi
 
     int2 imposterCellIndex = int2(x,y);
     float2 imposterViewSampleUV = (imposterCellIndex + 1) * _ImposterTexel.zw;
-    float3 forwardOS = TransformUVToObjectDirection(imposterViewSampleUV);
+    // float3 forwardOS = TransformUVToObjectDirection(imposterViewSampleUV);
     forwardWS = TransformObjectToWorldDir(forwardOS);
     float3 rightWS = normalize( cross( forwardWS, float3( 0,1,0 ) ) );
     float3 upWS = cross( rightWS, forwardWS );
@@ -196,7 +215,6 @@ void ImposterVertexEvaluate_Bilinear(float2 _uv,float _parallax,float3 _viewPosi
     _imposterUV23 = float4(CalculateBilinearLerpUV(_uv,_imposterPositionWS,_viewPositionWS,imposterCenterWS,imposterViewSampleUV,_parallax,imposterCellIndex + int2(1,1))
                         ,CalculateBilinearLerpUV(_uv,_imposterPositionWS,_viewPositionWS,imposterCenterWS,imposterViewSampleUV,_parallax,imposterCellIndex + int2(0,1)));
     _imposterWeights = float4((1 - aX) * (1 - aY), aX * (1 - aY) , aX * aY, ( 1 - aX ) * aY);
-    
     #if UNITY_PASS_SHADOWCASTER
         _imposterPositionWS -= forwardWS * _BoundingSphere.w * .25;
     #endif

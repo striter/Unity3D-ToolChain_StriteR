@@ -29,7 +29,6 @@ namespace Runtime.Optimize.Imposter
 
         public float4 GetImposterTexel() => new float4(CellCount.x, CellCount.y, CellTexelSizeNormalized.x, CellTexelSizeNormalized.y);
         public int2 TextureResolution =>  CellCount * cellResolution;
-        public float2 CellWorldSpaceSizeNormalized => 1f / (int)count;
         
         public static readonly ImposterInput kDefault = new ImposterInput() {
             mapping = ESphereMapping.OctahedralHemisphere,
@@ -61,18 +60,14 @@ namespace Runtime.Optimize.Imposter
 
         public ImposterCorner CellIndexToCorner(int2 _cellIndexActual)
         {
-            var cellWorldMin = _cellIndexActual * CellWorldSpaceSizeNormalized;
-            var worldRect = G2Box.Minmax(cellWorldMin, cellWorldMin + CellWorldSpaceSizeNormalized);
             var texelMinRect = _cellIndexActual * CellTexelSizeNormalized;
-
-            var mappingUV = (_cellIndexActual + kfloat2.one * .5f) * CellWorldSpaceSizeNormalized;
-            return new ImposterCorner() {cellIndex = _cellIndexActual, uvRect = G2Box.Minmax(texelMinRect, texelMinRect + CellTexelSizeNormalized),worldRect = worldRect, direction = mapping.UVToSphere(mappingUV) };
+            var mappingUV = (_cellIndexActual + kfloat2.one * .5f) / (int)count;
+            return new ImposterCorner() {cellIndex = _cellIndexActual, uvRect = G2Box.Minmax(texelMinRect, texelMinRect + CellTexelSizeNormalized), direction = mapping.UVToSphere(mappingUV) };
         }
 
         public struct ImposterCorner
         {
             public G2Box uvRect;
-            public G2Box worldRect;
             public float3 direction;
             public int2 cellIndex;
         }
@@ -88,47 +83,28 @@ namespace Runtime.Optimize.Imposter
         {
             foreach (var corner in GetImposterViewsNormalized())
             {
-                var rect = corner.worldRect;
                 var direction = corner.direction;
                 if (math.dot(direction, _viewDirection) < kGizmosSkipBias)
                     continue;
-                var color = rect.center.to4(0, 1f).toColor();
+                var color = (corner.cellIndex/(float2)(int)count).to4(0, 1f).toColor();
                 Gizmos.color =color.SetA(1f);
                 Gizmos.DrawWireSphere(direction, .015f);
-                var cell = rect.center * (int)count;
-                UGizmos.DrawString($"{cell.x} | {cell.y}",direction, 0.02f);
-
-                Gizmos.color = color.SetA(.2f);
-                var bottom = rect.min;
-                var top = rect.max;
-                var left = new float2(bottom.x,top.y);
-                var right = new float2(top.x,bottom.y);
-                UGizmos.DrawLinesConcat(mapping.UVToSphere(bottom), mapping.UVToSphere(left), mapping.UVToSphere(top), mapping.UVToSphere(right));
+                UGizmos.DrawString($"{corner.cellIndex}",direction, 0.02f);
             }
         }
 
         #if UNITY_EDITOR
-        public void DrawHandles(float3 viewDirection)
+        public void DrawHandles(float3 _viewDirection)
         {
             foreach (var corner in GetImposterViewsNormalized())
             {
-                var rect = corner.worldRect;
                 var direction = corner.direction;
-                if (math.dot(direction, viewDirection) < kGizmosSkipBias)
+                if (math.dot(direction, _viewDirection) < kGizmosSkipBias)
                     continue;
-                
-                var color = rect.center.to4(0, 1f).toColor();
+                var color = (corner.cellIndex/(float2)(int)count).to4(0, 1f).toColor();
                 UnityEditor.Handles.color =color.SetA(1f);
                 UnityEditor.UHandles.DrawWireSphere(direction, .015f);
-                var cell = rect.center * (int)count;
-                UnityEditor.UHandles.DrawString($"{cell.x} | {cell.y}",direction, 0.02f);
-
-                UnityEditor.Handles.color = color.SetA(.2f);
-                var bottom = rect.min;
-                var top = rect.max;
-                var left = new float2(bottom.x,top.y);
-                var right = new float2(top.x,bottom.y);
-                UnityEditor.UHandles.DrawLinesConcat(mapping.UVToSphere(bottom), mapping.UVToSphere(left), mapping.UVToSphere(top), mapping.UVToSphere(right));
+                UnityEditor.UHandles.DrawString($"{corner.cellIndex}",direction, 0.02f);
             }
         }
         #endif

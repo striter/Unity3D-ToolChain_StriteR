@@ -25,7 +25,7 @@ namespace Examples.Rendering.ContourOutline.Editor
                 var filePath = path.AssetToFilePath();
     
                 var resolution = texture.GetResolution();
-                var contourPixels = ContourTracingData.FromColorAlpha(texture.width, texture.GetPixels(), 0.01f).MooreNeighborTracing();
+                var contourPixels = ContourTracingData.FromColor(texture.width, texture.GetPixels()).MooreNeighborTracing();
                 var polygon = UGeometry.GetBoundingPolygon(contourPixels,0.1f);
                 contourPixels.Remake(p => p / resolution);
                 var contourPolygon = new G2Polygon(CartographicGeneralization.VisvalingamWhyatt(contourPixels,math.min(contourPixels.Count ,10),true));

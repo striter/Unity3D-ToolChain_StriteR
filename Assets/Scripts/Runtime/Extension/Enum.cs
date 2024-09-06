@@ -49,10 +49,19 @@ public static class UEnum
         if (allEnums.Length<2)
             throw new Exception("Invalid Enum Type Next:"+typeof(T));
 
-        int index = allEnums.FindIndex(p => p.Equals(_enumValue));
+        var index = allEnums.FindIndex(p => p.Equals(_enumValue));
         return allEnums[(index + 1) % allEnums.Length];
     }
 
+    public static T Prev<T>(this T _enumValue) where T : Enum
+    {
+        var allEnums = GetEnums<T>();
+        if (allEnums.Length<2)
+            throw new Exception("Invalid Enum Type Prev:"+typeof(T));
+        var index = allEnums.FindIndex(p => p.Equals(_enumValue));
+        return allEnums[(index - 1 + allEnums.Length) % allEnums.Length];
+    }
+    
     private static bool IsFlagEnable(int _flags,int _compare) => (_flags&_compare) == _compare;
     public static bool IsFlagEnable<T>(this T _flags, T _compare) where T : Enum => IsFlagEnable(Convert.ToInt32(_flags),  GetValue(_compare));
     public static bool IsFlagEnable<T>(this T _flags, int _compare) where T : Enum => IsFlagEnable(Convert.ToInt32(_flags), _compare);

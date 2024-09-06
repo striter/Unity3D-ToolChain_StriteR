@@ -22,6 +22,7 @@ namespace Runtime.Optimize.Imposter
         public ImposterCameraHandle[] m_CameraHandles;
 
         [Header("Debug")]
+        public bool m_AlphaTexture = false;
         public bool m_ContourMeshTexture = false;
         private static int kLayerID = 30;
         private static List<KeyValuePair<Material, Shader>> m_SharedMaterialShaderRef = new();
@@ -97,25 +98,43 @@ namespace Runtime.Optimize.Imposter
                 block.SetVector(ImposterShaderProperties.kBoundingID, (float4)boundingSphere);
                 meshRenderers.Traversal(p=>p.SetPropertyBlock(block));
 
+                
+                var alphaHandle = new ImposterCameraHandle() {m_Name = "_AlphaMask", m_Shader = null};
+                var contourMeshHandle = new ImposterCameraHandle() {m_Name = "_ContourMesh", m_Shader = Shader.Find("Hidden/Imposter_ContourShape") };
+                alphaHandle.Init(m_Input.TextureResolution,boundingSphere);
+                contourMeshHandle.Init(m_Input.TextureResolution,boundingSphere,false);
+                
                 m_CameraHandles.Traversal(p=>p.Init(m_Input.TextureResolution,boundingSphere));
                 foreach (var corner in m_Input.GetImposterViewsNormalized())
+                {
+                    alphaHandle.Render(m_SharedMaterialShaderRef,boundingSphere, corner.direction, corner.uvRect);
                     m_CameraHandles.Traversal(handle => handle.Render(m_SharedMaterialShaderRef,boundingSphere, corner.direction, corner.uvRect));
-                m_CameraHandles.Traversal(p=> { material.SetTexture(p.m_Name,p.OutputAsset(_initialName, _filePath)); });
-                
-                var contourMeshHandle = new ImposterCameraHandle() {m_Name = "_ContourMesh", m_Shader = Shader.Find("Hidden/Imposter_ContourShape") };
-                contourMeshHandle.Init(m_Input.cellResolution,boundingSphere,false);
-                foreach (var corner in m_Input.GetImposterViewsNormalized())
                     contourMeshHandle.Render(m_SharedMaterialShaderRef,boundingSphere, corner.direction, G2Box.kOne);
+                }
 
+                var dilateMaterial = new Material(Shader.Find("Hidden/Imposter_Dilate")){hideFlags = HideFlags.HideAndDontSave};
+                dilateMaterial.SetTexture("_MaskTex",alphaHandle.m_RenderTexture);
+
+                m_CameraHandles.Traversal(p =>
+                {
+                    material.SetTexture(p.m_Name, p.OutputAsset(m_Input,_initialName, _filePath,alphaHandle.m_RenderTexture,dilateMaterial));
+                });
+
+                GameObject.DestroyImmediate(dilateMaterial);
+                if(m_AlphaTexture)
+                    alphaHandle.OutputAsset(m_Input,_initialName,_filePath,null,null);
+                else
+                    alphaHandle.Dispose();
+                
                 var contourPolygon = G2Polygon.kDefault;
                 if (m_ContourMeshTexture)
                 {
-                    contourMeshHandle.OutputAsset(_initialName,_filePath);
+                    contourMeshHandle.OutputAsset(m_Input,_initialName,_filePath,null,null);
                 }
                 else
                 {    
                     var contourPixels = contourMeshHandle.OutputPixels(out var resolution);
-                    var contourOutline = ContourTracingData.FromColorAlpha(resolution.x, contourPixels, 0.01f).MooreNeighborTracing();
+                    var contourOutline = ContourTracingData.FromColor(resolution.x, contourPixels, p=>p.to4().maxElement()>0.01f).MooreNeighborTracing();
                     var contourPolygonPositions = UGeometry.GetBoundingPolygon(contourOutline);
                     contourPolygonPositions = CartographicGeneralization.VisvalingamWhyatt(contourPolygonPositions.Remake(p=>p/resolution),math.min(contourPolygonPositions.Count ,10),true);
                     contourPolygon = new G2Polygon(contourPolygonPositions);
@@ -155,6 +174,7 @@ namespace Runtime.Optimize.Imposter
         {
             public string m_Name;
             public Shader m_Shader;
+            public bool m_DilateAlpha;
             private Camera m_Camera;
             public RenderTexture m_RenderTexture { get; private set; }
 
@@ -181,8 +201,7 @@ namespace Runtime.Optimize.Imposter
                 additional.renderPostProcessing = false;
             }
 
-            public void Render(List<KeyValuePair<Material, Shader>> _materialRef, GSphere _sphere, float3 _direction,
-                G2Box _rect)
+            public void Render(List<KeyValuePair<Material, Shader>> _materialRef, GSphere _sphere, float3 _direction, G2Box _rect)
             {
                 _materialRef.Traversal(p => p.Key.shader = (m_Shader == null ? p.Value : m_Shader));
                 var position = _sphere.GetSupportPoint(_direction * _sphere.radius);
@@ -190,7 +209,6 @@ namespace Runtime.Optimize.Imposter
                 m_Camera.rect = _rect;
                 m_Camera.Render();
             }
-
 
             public Color[] OutputPixels(out int2 resolution)
             {
@@ -201,36 +219,57 @@ namespace Runtime.Optimize.Imposter
 
                 resolution = new int2(m_RenderTexture.width, m_RenderTexture.height);
                 var pixels = texture2D.GetPixels();
-
-                Dispose(texture2D);
+                
+                GameObject.DestroyImmediate(texture2D);
+                Dispose();
                 return pixels;
             }
 
-            public Texture2D OutputAsset(string initialName, string filePath)
+            public Texture2D OutputAsset(ImposterInput _input,string initialName, string filePath,RenderTexture dilateTex,Material dilateMat)
             {
-                RenderTexture.active = m_RenderTexture;
                 var textureName = $"{initialName}{m_Name}";
-                var texture2D =
-                    new Texture2D(m_RenderTexture.width, m_RenderTexture.height, TextureFormat.ARGB32, false)
-                        { name = textureName };
+                var texture2D = new Texture2D(m_RenderTexture.width, m_RenderTexture.height, TextureFormat.ARGB32, false) { name = textureName };
+
+                if (dilateMat != null)
+                {
+                    RenderTexture tempTex = RenderTexture.GetTemporary( m_RenderTexture.width, m_RenderTexture.height, m_RenderTexture.depth, m_RenderTexture.format );
+                    RenderTexture tempMask = RenderTexture.GetTemporary( m_RenderTexture.width, m_RenderTexture.height, m_RenderTexture.depth, m_RenderTexture.format );
+                    RenderTexture dilatedMask = RenderTexture.GetTemporary( m_RenderTexture.width, m_RenderTexture.height, m_RenderTexture.depth, m_RenderTexture.format );
+                    Graphics.Blit(dilateTex,dilatedMask);
+                    for( int i = 0; i < _input.cellResolution / 4; i++ )
+                    {
+                        dilateMat.SetTexture( "_MaskTex", dilatedMask );
+
+                        Graphics.Blit( m_RenderTexture, tempTex, dilateMat, m_DilateAlpha ? 1 : 0 );
+                        Graphics.Blit( tempTex, m_RenderTexture );
+
+                        Graphics.Blit( dilatedMask, tempMask, dilateMat, 1 );
+                        Graphics.Blit( tempMask, dilatedMask );
+                    }
+                    RenderTexture.ReleaseTemporary( tempTex );
+                    RenderTexture.ReleaseTemporary( tempMask );
+                    RenderTexture.ReleaseTemporary( dilatedMask );
+                }
+                
+                RenderTexture.active = m_RenderTexture;
                 texture2D.ReadPixels(new Rect(0, 0, m_RenderTexture.width, m_RenderTexture.height), 0, 0);
                 texture2D.Apply();
-
+                
                 var encoding = ETextureExportType.PNG;
                 var texturePath = filePath.Replace(initialName, textureName).Replace("asset", encoding.GetExtension());
                 var textureAsset = UTextureExport.ExportTexture(texture2D, texturePath, encoding);
 
-                Dispose(texture2D);
+                GameObject.DestroyImmediate(texture2D);
+                Dispose();
                 return textureAsset;
             }
 
-            void Dispose(Texture2D _texture2D)
+            public void Dispose()
             {
                 RenderTexture.ReleaseTemporary(m_RenderTexture);
                 RenderTexture.active = null;
                 m_Camera.targetTexture = null;
                 GameObject.DestroyImmediate(m_Camera.gameObject);
-                GameObject.DestroyImmediate(_texture2D);
             }
         }
     }

@@ -3,8 +3,8 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
     Properties
     {
     	_AlphaClip("Clip",Range(0,1)) = 0.5
-    	[Toggle(_INTERPOLATE)]_Interpolate("Interpolate",int) = 0
-//    	[Foldout(_INTERPOLATE)]_Parallax("Parallax",Range(0,1)) = 0.1
+//    	_Parallax("Parallax",Range(0,1)) = 0.1
+    	[Toggle(_INTERPOLATE)]_Interpolate("Interpolate",int) = 1
     	
         [NoScaleOffset]_AlbedoAlpha("_AlbedoAlpha",2D) = "white"
         [NoScaleOffset]_NormalDepth("_NormalDepth",2D) = "white"
@@ -80,7 +80,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
             #define F2O_RESULT(i,imposterOutput,albedo) Output(albedo,imposterOutput,i.positionWS,i.forwardWS)
             #if _INTERPOLATE
 				#define V2F_IMPOSTER float4 uv01 : TEXCOORD0; float4 uv23 : TEXCOORD1; float4 uvWeights:TEXCOORD2; float3 positionWS : TEXCOORD3; float3 forwardWS : TEXCOORD4
-				#define V2F_IMPOSTER_TRANSFER(v,o,forwardOS) ImposterVertexEvaluate_Bilinear(v.uv,INSTANCE(_Parallax),forwardOS,o.forwardWS,o.positionWS,o.uv01,o.uv23,o.uvWeights);
+				#define V2F_IMPOSTER_TRANSFER(v,o) ImposterVertexEvaluate_Bilinear(v.uv,INSTANCE(_Parallax),o.forwardWS,o.positionWS,o.uv01,o.uv23,o.uvWeights);
             	ImposterFragmentOutput ImposterFragment(float4 uv01,float4 uv23, float4 uvWeights)
 				{
 					ImposterFragmentOutput o;
@@ -95,7 +95,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
 				#define F2O_IMPOSTER_FRAGMENT(i) ImposterFragment(i.uv01,i.uv23,i.uvWeights);
             #else
 				#define V2F_IMPOSTER float2 uv0 : TEXCOORD0;float3 positionWS : TEXCOORD1; float3 forwardWS : TEXCOORD2
-				#define V2F_IMPOSTER_TRANSFER(v,o,viewPositionWS) ImposterVertexEvaluate(v.uv,viewPositionWS,o.forwardWS, o.positionWS, o.uv0);
+				#define V2F_IMPOSTER_TRANSFER(v,o) ImposterVertexEvaluate(v.uv,o.forwardWS, o.positionWS, o.uv0);
 				ImposterFragmentOutput ImposterFragment(float2 uv01)
 				{
 					ImposterFragmentOutput o;
@@ -136,7 +136,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
             	ZERO_INITIALIZE(v2f,o);
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-            	V2F_IMPOSTER_TRANSFER(v,o,_WorldSpaceCameraPos.xyz);
+            	V2F_IMPOSTER_TRANSFER(v,o);
                 o.positionCS = TransformWorldToHClip(o.positionWS);
                 return o;
             }
@@ -186,7 +186,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
             	ZERO_INITIALIZE(v2f,o);
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-            	V2F_IMPOSTER_TRANSFER(v,o,_WorldSpaceCameraPos);
+            	V2F_IMPOSTER_TRANSFER(v,o);
                 o.positionCS = TransformWorldToHClip(o.positionWS);
                 return o;
             }
@@ -233,7 +233,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
             	ZERO_INITIALIZE(v2f,o);
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-            	V2F_IMPOSTER_TRANSFER(v,o,_WorldSpaceCameraPos);
+            	V2F_IMPOSTER_TRANSFER(v,o);
                 o.positionCS = TransformWorldToHClip(o.positionWS);
                 return o;
             }
@@ -281,7 +281,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
             	ZERO_INITIALIZE(v2f,o);
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-            	V2F_IMPOSTER_TRANSFER(v,o,_WorldSpaceCameraPos);
+            	V2F_IMPOSTER_TRANSFER(v,o);
                 o.positionCS = TransformWorldToHClip(o.positionWS);
                 return o;
             }
@@ -325,7 +325,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
             	ZERO_INITIALIZE(v2fSC,o);
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-            	V2F_IMPOSTER_TRANSFER(v,o, TransformObjectToWorld(_BoundingSphere.xyz) + _MainLightPosition.xyz);
+            	V2F_IMPOSTER_TRANSFER(v,o);
 				SHADOW_CASTER_VERTEX(v,o.positionWS);
 				return o;
 			}

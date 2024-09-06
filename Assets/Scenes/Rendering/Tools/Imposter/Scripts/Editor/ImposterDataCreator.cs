@@ -69,9 +69,11 @@ namespace Runtime.Optimize.Imposter
                     Debug.LogWarning($"{selection} is not SceneObject");
                     return;
                 }
+                if (!UEAsset.SelectDirectory(out var directoryPath))
+                    return;
         
                 var name = UEPath.PathRegex($"{selection.name}_Imposter");
-                p.Construct((selection as GameObject).transform,name,$"{GetDirectory()}/{name}.asset");
+                p.Construct((selection as GameObject).transform,name,$"{directoryPath}/{name}.asset");
             });
         }
         

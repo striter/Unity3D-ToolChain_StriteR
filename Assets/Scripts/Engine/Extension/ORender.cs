@@ -1,4 +1,6 @@
-﻿public enum EColorChannel
+﻿using System;
+
+public enum EColorChannel
 {
     None = 0,
     Red = 1,
