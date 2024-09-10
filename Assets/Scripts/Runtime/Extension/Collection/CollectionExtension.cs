@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Unity.Mathematics;
 using UnityEngine;
@@ -89,6 +87,17 @@ namespace System.Linq.Extensions
                 }
             }
             
+            public static IEnumerable<T> ExcludeIndex<T>(this IEnumerable<T> _collection, int _index)
+            {
+                var index = 0;
+                foreach (T element in _collection)
+                {
+                    if (index++ == _index)
+                        continue;
+                    yield return element;
+                }
+            }
+
             public static  IEnumerable<Y> CollectAs<T,Y>(this IEnumerable<T> _collection) where T:class
             {
                 foreach (T element in _collection)
@@ -163,12 +172,12 @@ namespace System.Linq.Extensions
             public static void Traversal<T>(this IEnumerable<T> _collection, Action<T> _onEach, bool _copy = false)
             {
                 if (_copy)
-                    _collection = UIterate.Iterate(_collection);
+                    _collection = UList.Traversal(_collection);
 
                 if (_collection is IList<T> list)
                 {
-                    int count = list.Count;
-                    for (int i = 0; i < count; i++)
+                    var count = list.Count;
+                    for (var i = 0; i < count; i++)
                         _onEach(list[i]);
                 }
                 else
@@ -253,10 +262,10 @@ namespace System.Linq.Extensions
                 return minElement;
             }
 
-            public static void MinmaxElement<T>(this IEnumerable<T> _collection, Func<T, float> _getValue,out T _minElement,out T _max)
+            public static void MinmaxElement<T>(this IEnumerable<T> _collection, Func<T, float> _getValue,out T _minElement,out T _maxElement)
             {
                 _minElement = default;
-                _max = default;
+                _maxElement = default;
                 var minValue = float.MaxValue;
                 var maxValue = float.MinValue;
                 foreach (var element in _collection)
@@ -271,8 +280,34 @@ namespace System.Linq.Extensions
                     if (maxValue <= value)
                     {
                         maxValue = value;
-                        _max = element;                        
+                        _maxElement = element;                        
                     }
+                }
+            }
+            
+            public static void MinmaxIndex<T>(this IEnumerable<T> _collection, Func<T, float> _getValue,out int _minIndex,out int _maxIndex)
+            {
+                var minValue = float.MaxValue;
+                var maxValue = float.MinValue;
+                _minIndex = -1;
+                _maxIndex = -1;
+                var index = 0;
+                foreach (var element in _collection)
+                {
+                    var value = _getValue(element);
+                    if (minValue >= value)
+                    {
+                        minValue = value;
+                        _minIndex = index;
+                    }
+
+                    if (maxValue <= value)
+                    {
+                        maxValue = value;
+                        _maxIndex = index;                        
+                    }
+                    
+                    index += 1;
                 }
             }
 
@@ -290,13 +325,13 @@ namespace System.Linq.Extensions
                 }
                 return maxElement;
             }
-            public static int MaxIndex<T>(this IEnumerable<T> _collection, Func<T, int> _sorting)
+            public static int MaxIndex<T>(this IEnumerable<T> _collection, Func<T, float> _getValue)
             {
-                int maxIndex = 0;
-                int maxValue = int.MinValue;
+                var maxIndex = -1;
+                var maxValue = float.MinValue;
                 foreach (var (index,element) in _collection.LoopIndex())
                 {
-                    int value = _sorting(element);
+                    var value = _getValue(element);
                     if(maxValue>value)
                         continue;
                     maxValue = value;
@@ -645,7 +680,7 @@ namespace System.Linq.Extensions
         
         public static void SortIndex<T>(this T[] _array, IEnumerable<int> _indexes)
         {
-            var tempList  = UIterate.EmptyList(_array);
+            var tempList  = UList.Empty<T>();
             foreach (var index in _indexes)
                 tempList.Add(_array[index]);
 
@@ -653,7 +688,7 @@ namespace System.Linq.Extensions
                 _array[i] = tempList[i];
         }
 
-        public static T Last<T>(this T[] _array)=> _array[_array.Length - 1];
+        public static T Last<T>(this T[] _array)=> _array[^1];
         public static void FillArray<T>(this IEnumerable<T> _collection, T[] _array,int _offset=0)
         {
             int index=_offset;
@@ -754,7 +789,7 @@ namespace System.Linq.Extensions
 
         public static void SortIndex<T>(this List<T> _list, IEnumerable<int> _indexes)
         {
-            var tempList  = UIterate.EmptyList(_list);
+            var tempList  = UList.Empty<T>();
             foreach (var index in _indexes)
                 tempList.Add(_list[index]);
             _list.Clear();

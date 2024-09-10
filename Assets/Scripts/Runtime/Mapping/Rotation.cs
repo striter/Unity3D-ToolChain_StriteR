@@ -43,6 +43,13 @@ public static partial class umath
         return new float2x2(cosA, -sinA, sinA, cosA);
     }
 
+    public static float2 Rotate2DCW90(float2 _directon,int _times = 1) => (_times % 4) switch {
+            1 => new float2(_directon.y, -_directon.x),
+            2 => new float2(-_directon.x, -_directon.y),
+            3 => new float2(-_directon.y, _directon.x),
+            _ => _directon
+        };
+
     public static Matrix3x3 AngleAxis3x3(float _radin, float3 _axis)
     {
         var s = sin(_radin);

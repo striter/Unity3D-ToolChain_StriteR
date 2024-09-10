@@ -60,7 +60,7 @@ namespace Examples.Algorithm.Geometry
                 foreach (var points in boundingSpherePoints)
                     Gizmos.DrawWireSphere(points,.02f);
             }
-
+            
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right * kPadding * 2);
             Gizmos.color = Color.red;
             boundingSphere1.DrawGizmos();
@@ -77,6 +77,13 @@ namespace Examples.Algorithm.Geometry
                     Gizmos.DrawSphere(points.to3xz(),.02f);
             }
             
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.forward * kPadding + Vector3.right * kPadding);
+            ((G2Polygon)UGeometry.QuickHull(boundingPolygonPoints)).DrawGizmos();
+            if (boundingPolygonPoints != null)
+            {
+                foreach (var points in boundingPolygonPoints)
+                    Gizmos.DrawSphere(points.to3xz(),.02f);
+            }
         }
     }
 }
