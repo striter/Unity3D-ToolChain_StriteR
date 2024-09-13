@@ -78,7 +78,7 @@ Shader "Dome/Lit_ARCTrack"
 				surface.ao = surface.ao*i.color.a;
 			}
 
-			float3 GetAlbedoOverride(inout v2ff i)
+			float4 GetAlbedoOverride(inout v2ff i)
 			{
 				float4 sample = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv.xy);
 
@@ -88,7 +88,7 @@ Shader "Dome/Lit_ARCTrack"
 
 				i.uv.xy += float2(trackMove,0);
 				float3 trackSample = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv.xy);
-				return lerp(sample.rgb,trackSample,isTrack);
+				return float4(lerp(sample.rgb,trackSample,isTrack),1);
 			}
             
             // float GetGeometryShadow(BRDFSurface surface,BRDFLightInput lightSurface)
