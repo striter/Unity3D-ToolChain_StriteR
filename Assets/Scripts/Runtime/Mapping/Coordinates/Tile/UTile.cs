@@ -27,16 +27,27 @@ namespace Procedural.Tile
     
     public static partial class UTile       //Deprecated
     {
-        
-        public static readonly (ETileDirection,Int2)[] kNearbyTiles = {
+        public static readonly (ETileDirection,Int2)[] kNearbyTiles4 = {
             (ETileDirection.Left, new Int2(-1, 0)),
             (ETileDirection.Right, new Int2(1, 0)),
             (ETileDirection.Forward, new Int2(0, 1)),
-            (ETileDirection.Back ,new Int2(0, -1))};
-    
-        public static Int2[] GetNearbyTiles(this Int2 _tile) => kNearbyTiles.Select(p => p.Item2+_tile).ToArray();
+            (ETileDirection.Back ,new Int2(0, -1)),
+        };
 
-        public static (ETileDirection, Int2)[] GetNearbyTilesDirection(this Int2 _tile) => kNearbyTiles.Select(p =>(p.Item1, p.Item2+_tile)).ToArray();
+        public static readonly (ETileDirection, Int2)[] kNearbyTiles8 = {
+                (ETileDirection.Left, new Int2(-1, 0)),
+                (ETileDirection.Right, new Int2(1, 0)),
+                (ETileDirection.Forward, new Int2(0, 1)),
+                (ETileDirection.Back ,new Int2(0, -1)),
+                (ETileDirection.ForwardRight, new Int2(1, 1)),
+                (ETileDirection.BackRight, new Int2(1, -1)),
+                (ETileDirection.BackLeft, new Int2(-1, -1)),
+                (ETileDirection.TopLeft, new Int2(-1, 1))
+            };
+    
+        public static Int2[] GetNearbyTiles(this Int2 _tile) => kNearbyTiles4.Select(p => p.Item2+_tile).ToArray();
+
+        public static (ETileDirection, Int2)[] GetNearbyTilesDirection(this Int2 _tile) => kNearbyTiles4.Select(p =>(p.Item1, p.Item2+_tile)).ToArray();
 
         public static bool InRange<T>(this Int2 axis, T[,] range) => axis.x >= 0 && axis.x < range.GetLength(0) && axis.y >= 0 && axis.y < range.GetLength(1);
         public static bool InRange<T>(this Int2 originSize, Int2 sizeAxis, T[,] range) => InRange<T>(originSize + sizeAxis, range);

@@ -55,6 +55,13 @@ namespace Examples.Rendering.ContourOutline
             Gizmos.color = KColor.kOlive;
             var simplifiedPolygon = new G2Polygon( CartographicGeneralization.VisvalingamWhyatt(polygon, (int)(polygon.Count * m_Simplification),true));
             simplifiedPolygon.DrawGizmos();
+
+            foreach (var pixel in m_ContourTracing.DFS(startPixel))
+            {
+                Gizmos.color = Color.cyan.SetA(.3f);
+                Gizmos.DrawCube(new Vector3(pixel.x, 0, pixel.y),  .5f * Vector3.one);
+            }
+            
         }
     }
 }

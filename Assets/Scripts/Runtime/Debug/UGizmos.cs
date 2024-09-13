@@ -22,11 +22,20 @@ public static class UGizmos
             Gizmos.DrawLine(_points[i],_points[i+1]);
     }
     
-    public static void DrawLines(IList<float3> _points)
+    public static void DrawLines(IEnumerable<float3> _points)
     {
-        var count = _points.Count;
-        for(int i=0;i<count-1;i++)
-            Gizmos.DrawLine(_points[i],_points[i+1]);
+        Vector3 tempPoint=default;
+        foreach (var (index,point) in _points.LoopIndex())
+        {
+            if (index == 0)
+            {
+                tempPoint = point;
+                continue;
+            }
+
+            Gizmos.DrawLine(tempPoint,point);
+            tempPoint = point;
+        }
     }
 
     public static void DrawLines(IEnumerable<Vector3> _points)

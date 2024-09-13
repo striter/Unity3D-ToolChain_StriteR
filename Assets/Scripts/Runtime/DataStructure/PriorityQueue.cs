@@ -1,33 +1,34 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Runtime.DataStructure
 {
-    public class PriorityQueue<T, Y> where Y : struct
+    public class PriorityQueue<Element, Comparerer> where Comparerer : IComparable<Comparerer>
     {
-        private List<(T element, Y priority)> elements = new List<(T, Y)>();
+        static readonly Comparer<Comparerer> comparer = Comparer<Comparerer>.Default;
+        private Dictionary<Element,Comparerer> elements = new Dictionary<Element, Comparerer>();
         public int Count => elements.Count;
         public void Clear() => elements.Clear();
 
-        public void Enqueue(T _item, Y _priority)
+        public void Enqueue(Element _item, Comparerer _priority)
         {
-            elements.Insert(0, (_item, _priority));
+            elements.TryAdd(_item, _priority);
+            elements[_item] = _priority;
         }
 
-        static readonly Comparer<Y> comparer = Comparer<Y>.Default;
-
-        public T Dequeue()
+        public Element Dequeue()
         {
-            int bestIndex = 0;
-
-            for (int i = 0; i < elements.Count; i++)
+            var least = elements.First();
+            var minimumKey = least.Key;
+            var leastValue = least.Value;
+            foreach (var pair in elements)
             {
-                if (comparer.Compare(elements[i].priority, elements[bestIndex].priority) < 0)
-                    bestIndex = i;
+                if (comparer.Compare(pair.Value, leastValue) < 0)
+                    minimumKey = pair.Key;
             }
-
-            var bestItem = elements[bestIndex].Item1;
-            elements.RemoveAt(bestIndex);
-            return bestItem;
+            elements.Remove(minimumKey);
+            return minimumKey;
         }
     }
 }

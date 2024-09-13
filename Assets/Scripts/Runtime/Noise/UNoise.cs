@@ -127,18 +127,18 @@ public static class UNoise
     public static class Voronoi
     {  
         public static float2 Unit2f2(float _x, float _y) => Unit2f2(new float2( _x, _y));
-        public  static float2 Unit2f2(float2 _v)
+        public static float2 Unit2f2(float2 _v)
         {
-            float sqrDstToCell = float.MaxValue;
-            float2 baseCell = floor(_v);
-            float2 closetCell = baseCell;
-            for (int i=-1;i<=1;i++)
-                for(int j=-1;j<=1;j++)
+            var sqrDstToCell = float.MaxValue;
+            var baseCell = floor(_v);
+            var closetCell = baseCell;
+            for (var i=-1;i<=1;i++)
+                for(var j=-1;j<=1;j++)
                 {
-                    float2 cell = baseCell+new float2(i,j);
-                    float2 cellPos = cell + Value.Unit2f2(cell);
-                    float2 toCell = cellPos - _v;
-                    float sqrDistance = toCell.sqrmagnitude();
+                    var cell = baseCell+new float2(i,j);
+                    var cellPos = cell + Value.Unit2f2(cell);
+                    var toCell = cellPos - _v;
+                    var sqrDistance = toCell.sqrmagnitude();
                     if (sqrDstToCell < sqrDistance)
                         continue;
 

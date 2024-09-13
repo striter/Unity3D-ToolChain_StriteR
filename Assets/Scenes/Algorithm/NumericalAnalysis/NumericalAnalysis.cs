@@ -47,8 +47,6 @@ namespace Examples.Algorithm.NumericalAnalysis
             Gizmos.DrawSphere(new Vector3(root1,0,0)/kNumericRange,0.01f);
             
             //Newton's fractal
-            
-            
             const float kSqrApproximation = .01f*.01f;
             List<float2> roots = new List<float2>();
             Gizmos.matrix = Matrix4x4.Translate(kGraphSize*Vector3.right * 2)*Matrix4x4.Scale(Vector3.one*kGraphSize);

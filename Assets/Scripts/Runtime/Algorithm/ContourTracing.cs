@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
@@ -9,10 +10,11 @@ using static kint2;
 
 //https://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/index.html
 
-public struct ContourTracingData
+public struct ContourTracingData : IGraph<int2>
 {
     public int2 resolution;
     public bool[] m_ContourTessellation;
+
     public int Count => m_ContourTessellation.Length;
     public static ContourTracingData FromColor(int _width,Color[] _colors,Func<Color,bool> _predicate = null)
     {
@@ -31,6 +33,22 @@ public struct ContourTracingData
 
     public bool OutOfBounds(int2 _pixel) => (_pixel < int2.zero).any() || (_pixel >= resolution).any();
     public bool Sample(int2 _pixel) => !OutOfBounds(_pixel) && m_ContourTessellation[UCoordinates.Tile.ToIndex(_pixel,resolution.x)];
+
+    public IEnumerable<int2> GetAdjacentNodes(int2 _src)
+    {
+        if(Sample(_src + kDown)) yield return _src + kDown;
+        if(Sample(_src + kLeft)) yield return _src + kLeft;
+        if(Sample(_src + kUp)) yield return _src + kUp;
+        if(Sample(_src + kRight)) yield return _src + kRight;
+    }
+
+    public IEnumerator<int2> GetEnumerator()
+    {
+        for(var i=0;i<m_ContourTessellation.Length;i++)
+            yield return UCoordinates.Tile.ToTile(i,resolution.x);
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
 
 public static class ContourTracingData_Extension   //Transform ContourTracingData to integer positions which represent contour edges

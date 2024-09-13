@@ -2,19 +2,25 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
-public interface IGraph<T> 
+public interface IGraphBoundless<Node> 
 {
-    IEnumerable<T> GetAdjacentNodes(T _src);
+    IEnumerable<Node> GetAdjacentNodes(Node _src);
 }
 
-public interface IGraphDiscrete<T>
+public interface IGraph<Node> : IGraphBoundless<Node> , IEnumerable<Node>
 {
-    T GetNode(float3 _srcPosition);
-    Vector3 ToNodePosition(T _node);
+    int Count { get; }
 }
 
-public interface IGraphPathFinding<T>
+
+public interface IGraphMapping<Node>
 {
-    float Heuristic(T _src, T _dst);
-    float Cost(T _src, T _dst);
+    bool PositionToNode(float3 _position, out Node _node);
+    bool NodeToPosition(Node _node,out float3 _position);
+}
+
+public interface IGraphPathFinding<Node> : IGraph<Node> , IGraphMapping<Node>
+{
+    float Heuristic(Node _src, Node _dst);
+    float Cost(Node _src, Node _dst);
 }

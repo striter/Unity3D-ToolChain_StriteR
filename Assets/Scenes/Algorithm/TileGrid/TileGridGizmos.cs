@@ -1,8 +1,8 @@
-using System;
+using Examples.Algorithm.SpatialHashGrid;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
-using Procedural;
 using Procedural.Tile;
+using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 
@@ -32,15 +32,22 @@ namespace Examples.Algorithm.TileGrid
 
             Handles.matrix = transform.localToWorldMatrix * Matrix4x4.Scale(Vector3.one);
 
-            Int2 origin = m_Grid.GetNode(hitPoint);
+            m_Grid.PositionToNode(hitPoint,out var origin);
             for(int i=-kSenseRadius;i<=kSenseRadius;i++)
-                for(int j=-kSenseRadius;j<=kSenseRadius;j++)
-                    Handles.DrawWireCube(m_Grid.ToNodePosition(new Int2(i,j)+origin),kFlatCube);
+            for (int j = -kSenseRadius; j <= kSenseRadius; j++)
+            {
+                m_Grid.NodeToPosition(new int2(i,j)+origin,out var pos);
+                Handles.DrawWireCube(pos,kFlatCube);
+            }
 
             Handles.color = Color.green;
-            Handles.DrawWireDisc(m_Grid.ToNodePosition(origin),Vector3.up,5*kSize);
-            foreach (var range in UTile.GetAxisRange(origin,5))
-                Handles.DrawWireCube(m_Grid.ToNodePosition(range),Vector3.one);
+            m_Grid.NodeToPosition(origin,out var disk);
+            Handles.DrawWireDisc(disk,Vector3.up,5*kSize);
+            foreach (var range in UTile.GetAxisRange(origin, 5))
+            {
+                m_Grid.NodeToPosition(range, out var pos);
+                Handles.DrawWireCube(pos,Vector3.one);
+            }
             
         }
     }

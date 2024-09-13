@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Dome.Entity;
+using Runtime.PathFinding;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace Dome.Entity.AI
         public FARCBrain(ADomeARC _entity) :base(_entity)
         {
             var randomCell = kGrid.Random();
-            kGrid.PathFind(kGrid.Validate(m_Entity.position),randomCell, destinations);
+            kGrid.AStar(kGrid.Validate(m_Entity.position),randomCell, destinations);
             moveInput = 0;
         }
 
@@ -35,7 +36,7 @@ namespace Dome.Entity.AI
         {
             if (destinations.Count <= 0)
             {
-                kGrid.PathFind(kGrid.Validate(m_Entity.position),kGrid.Random(), destinations);
+                kGrid.AStar(kGrid.Validate(m_Entity.position),kGrid.Random(), destinations);
                 return;
             }
             

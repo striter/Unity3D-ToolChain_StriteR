@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq.Extensions;
 using UnityEngine;
 
-public class SpatialHashMap<T,Y,U> where T:struct where Y:class,IGraph<T>,IGraphDiscrete<T> where U:ITransform
+public class SpatialHashMap<T,Y,U> where T:struct where Y:class,IGraphBoundless<T>,IGraphMapping<T> where U:ITransform
 {
     private Y m_Query;
     private List<U> m_Elements = new List<U>();
@@ -34,7 +34,7 @@ public class SpatialHashMap<T,Y,U> where T:struct where Y:class,IGraph<T>,IGraph
     public IEnumerable<U> Query(Vector3 _position,float _radius)
     {
         var sqrRadius = _radius * _radius;
-        var srcNode = m_Query.GetNode(_position);
+        m_Query.PositionToNode(_position,out var srcNode);
         if (!m_Grids.ContainsKey(srcNode))
             yield break;
         var elements = m_Grids[srcNode];
@@ -49,7 +49,7 @@ public class SpatialHashMap<T,Y,U> where T:struct where Y:class,IGraph<T>,IGraph
     public IEnumerable<U> QueryRange(Vector3 _position,float _radius)
     {
         var sqrRadius = _radius * _radius;
-        var srcNode = m_Query.GetNode(_position);
+        m_Query.PositionToNode(_position,out var srcNode);
         foreach (var node in m_Query.GetAdjacentNodes(srcNode).Extend(srcNode))
         {
             if (!m_Grids.ContainsKey(node))
@@ -70,7 +70,7 @@ public class SpatialHashMap<T,Y,U> where T:struct where Y:class,IGraph<T>,IGraph
         m_Grids.Clear();
         foreach (var element in m_Elements)
         {
-            var node = m_Query.GetNode(element.position);
+           m_Query.PositionToNode(element.position,out var node);
             if (!m_Grids.ContainsKey(node))
                 m_Grids.Add(node,new List<U>());
             m_Grids[node].Add(element);

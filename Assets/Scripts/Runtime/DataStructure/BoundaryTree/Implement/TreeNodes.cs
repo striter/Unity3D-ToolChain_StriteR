@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Extensions;
-using AlgorithmExtension;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;

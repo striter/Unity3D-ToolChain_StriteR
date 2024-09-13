@@ -1,7 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using Runtime.Geometry;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Procedural.Tile
@@ -50,6 +50,47 @@ namespace Procedural.Tile
             m_Origin = origin;
             m_Size = size;
             m_End = m_Origin + m_Size;
+        }
+    }
+    
+    public class TileGraph:IGraphBoundless<int2>,IGraphMapping<int2>
+    {
+        private float m_Size;
+        public int Count => -1;
+
+        public TileGraph(float _size)
+        {
+            m_Size = _size;
+        }
+
+        public IEnumerable<int2> GetAdjacentNodes(int2 _src)
+        {
+            yield return new int2(_src.x - 1, _src.y);
+            yield return new int2(_src.x, _src.y - 1);
+            yield return new int2(_src.x + 1, _src.y);
+            yield return new int2(_src.x, _src.y + 1);
+            yield return new int2(_src.x + 1, _src.y - 1);
+            yield return new int2(_src.x + 1, _src.y + 1);
+            yield return new int2(_src.x - 1, _src.y + 1);
+            yield return new int2(_src.x - 1, _src.y - 1);
+        }
+
+        public void DrawGizmos(int2 _node)
+        {
+            var bounds = GBox.Minmax(new Vector3(_node.x,0f,_node.y)*m_Size,new Vector3(_node.x+1,0f,_node.y+1)*m_Size);
+            Gizmos.DrawWireCube(bounds.center,bounds.size);
+        }
+
+        public bool PositionToNode(float3 _position, out int2 _node)
+        {
+            _node = new int2(Mathf.RoundToInt(_position.x / m_Size), Mathf.RoundToInt(_position.z / m_Size));
+            return true;
+        }
+
+        public bool NodeToPosition(int2 _node, out float3 _position)
+        {
+            _position = new Vector3(_node.x * m_Size, 0, _node.y * m_Size);
+            return true;
         }
     }
 }

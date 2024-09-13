@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Extensions;
 using Runtime.Geometry;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 namespace Dome
 {
-    public class FDomeGrid : ADomeController,IGraph<FDomeCell>,IGraphPathFinding<FDomeCell>
+    public class FDomeGrid : ADomeController,IGraphPathFinding<FDomeCell>
     {
         [ScriptableObjectEdit] public FDomeGridData m_Data;
         public float4[] initialTechPoints { get; private set; }
@@ -29,6 +30,7 @@ namespace Dome
         {
         }
 
+        public int Count => m_Vertices.Count;
         public float Heuristic(FDomeCell _src, FDomeCell _dst) => math.lengthsq(_src.positions.Origin - _dst.positions.Origin);
         public float Cost(FDomeCell _src, FDomeCell _dst)=> math.lengthsq(_src.positions.Origin - _dst.positions.Origin);
         public IEnumerable<FDomeCell> GetAdjacentNodes(FDomeCell _src)
@@ -40,6 +42,7 @@ namespace Dome
                 yield return m_Vertices[connection];
             }
         }
+
 
         public FDomeCell Validate(float3 _position)
         {
@@ -76,5 +79,19 @@ namespace Dome
             [InspectorButton]
             void NewDomeData() => UnityEditor.Extensions.UEAsset.CreateScriptableInstanceAtCurrentRoot<FDomeGridData>("DomeGridData");
 #endif
+        public IEnumerator<FDomeCell> GetEnumerator() => m_Vertices.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        public bool PositionToNode(float3 _position, out FDomeCell _node)
+        {
+            _node = m_Vertices.MinElement(p => (p.positions.Origin - _position).magnitude());
+            return true;
+        }
+
+        public bool NodeToPosition(FDomeCell _node, out float3 _position)
+        {
+            _position = _node.positions.Origin;
+            return true;
+        }
     }
 }

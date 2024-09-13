@@ -1,7 +1,8 @@
-using System;
 using System.Collections.Generic;
 using TPool;
 using System.Linq.Extensions;
+using Procedural.Tile;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Examples.Algorithm.SpatialHashGrid
@@ -21,14 +22,14 @@ namespace Examples.Algorithm.SpatialHashGrid
         
         private ObjectPoolClass<int, Actor> m_Actors;
         private TileGraph m_Graph;
-        private SpatialHashMap<Int2, TileGraph, Actor> m_SpatialHashMap;
+        private SpatialHashMap<int2, TileGraph, Actor> m_SpatialHashMap;
         
         private void Awake()
         {
             Instance = this;
             m_Actors = new ObjectPoolClass<int, Actor>(transform.Find("Actor"));
             m_Graph = new TileGraph(m_SenseRadius.end);
-            m_SpatialHashMap = new SpatialHashMap<Int2, TileGraph, Actor>(m_Graph);
+            m_SpatialHashMap = new SpatialHashMap<int2, TileGraph, Actor>(m_Graph);
             Spawn();
         }
 
@@ -83,13 +84,12 @@ namespace Examples.Algorithm.SpatialHashGrid
             
             Gizmos.DrawWireSphere(m_Actors[0].position,m_SenseRadius.end);
 
-            var srcNode = m_Graph.GetNode(m_Actors[0].position);
+            m_Graph.PositionToNode(m_Actors[0].position,out var srcNode);
             foreach (var node in m_Graph.GetAdjacentNodes(srcNode).Extend(srcNode))
             {
-                Gizmos.color = node == srcNode ? Color.red : Color.green.SetA(.3f);
+                Gizmos.color = (node == srcNode).all() ? Color.red : Color.green.SetA(.3f);
                 m_Graph.DrawGizmos(node);
             }
-            
         }
     }
 
