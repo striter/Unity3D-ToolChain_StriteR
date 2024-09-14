@@ -41,6 +41,8 @@ public struct Matrix2x2
     public static Matrix2x2 Identity = new Matrix2x2(1f, 0f, 0f, 1f);
     public static implicit operator Matrix2x2(float2x2 _matrix) => new Matrix2x2(_matrix.c0.x, _matrix.c0.y, 
                                                                                 _matrix.c1.x, _matrix.c1.y);
+    public static implicit operator float2x2(Matrix2x2 _matrix) => new float2x2(_matrix.m00, _matrix.m01, 
+                                                                                _matrix.m10, _matrix.m11);
 }
 
 [Serializable]

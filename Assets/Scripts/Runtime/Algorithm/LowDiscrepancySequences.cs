@@ -150,7 +150,7 @@ public static class ULowDiscrepancySequences
         return points;
     }
 
-    public static float2[] PoissonDisk2D(int _width,int _height,int _k = 30,System.Random _seed = null,Func<float2,float> _getRadiusNrormalized = null)
+    public static float2[] PoissonDisk2D(int _width,int _height,int _k = 30,System.Random _seed = null,Func<float2,float> _getRadiusNormalized = null)
     {
         var gridSize = new float2(_width, _height);
         var r = 1;
@@ -175,7 +175,7 @@ public static class ULowDiscrepancySequences
             {
                 var angle = URandom.Random01(_seed)* PI * 2;
                 var direction = new float2(cos(angle), sin(angle));
-                var radius = _getRadiusNrormalized?.Invoke(activePoint/gridSize) ?? r;
+                var radius = _getRadiusNormalized?.Invoke(activePoint/gridSize) ?? r;
                 var distance = URandom.Random01(_seed) * (2 * radius - radius) + radius;
                 var newPoint = activePoint + direction * distance;
 

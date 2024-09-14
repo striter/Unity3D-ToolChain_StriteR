@@ -30,6 +30,8 @@ namespace Runtime.Geometry.Extension.Sphere
         public static float3 UVToSphere(this ESphereMapping _mapping, float2 _uv) => _mapping.GetHelper().ToPosition(_uv);
 
         public static float2 SphereToUV(this ESphereMapping _mapping, float3 _direction) => _mapping.GetHelper().ToUV(_direction);
+        
+        public static int2 Tilling(this ESphereMapping _mapping,int2 _cellIndex,int2 _cellCount) => _mapping.GetHelper().Tilling(_cellIndex,_cellCount);
 
         public static void InvBilinearInterpolate(this ESphereMapping _mapping, float3 _directionOS,int _cellCount,out G2Quad _corners,out float4 _weights) //uv weights
         {

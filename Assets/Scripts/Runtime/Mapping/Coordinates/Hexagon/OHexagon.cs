@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 namespace Procedural.Hexagon
 {
@@ -140,6 +141,10 @@ namespace Procedural.Hexagon
         public bool Equals(HexCoord _src, HexCoord _dst)=> _src.x == _dst.x && _src.y == _dst.y && _src.z == _dst.z;
         public bool Equals(HexCoord _dst)=> x == _dst.x && y == _dst.y && z == _dst.z;
         public override bool Equals(object obj)=> obj is HexCoord other && Equals(other);
+        public static implicit operator int2(HexCoord _hex) => new int2(_hex.x, _hex.z);
+        public static implicit operator HexCoord(int2 _hex) => new HexCoord(_hex.x, _hex.y);
+        public static implicit operator int3(HexCoord _hex) => new int3(_hex.x,_hex.y, _hex.z);
+        public static implicit operator HexCoord(int3 _hex) => new HexCoord(_hex.x, _hex.y);
     }
     
     [Serializable]

@@ -120,13 +120,13 @@ public static class URandom
     }
 
 #region Shuffle
-    public static void Shuffle<T>(IList<T> _array,int _count,int _dimension, System.Random _random=null)
+    public static void Shuffle<T>(IList<T> _array,int _count,int _dimension)
     {
         var shuffleTimes = _count / _dimension;
         
         for (var i = 0; i < shuffleTimes; i++)
         {
-            var other = i + (int)(Random01(_random) * (shuffleTimes - i));
+            var other = i + (int)(UNoise.Value.Unit1f1((float)shuffleTimes / _count) * (shuffleTimes - i));
             other *= _dimension;
             var src = i * _dimension;
             for (var j = 0; j < _dimension; j++)

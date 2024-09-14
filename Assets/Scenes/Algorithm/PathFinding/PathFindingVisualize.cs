@@ -13,16 +13,47 @@ namespace Examples.Algorithm.PathFinding
 {
     public interface INode
     {
-        public int m_Identity { get; }
         public bool m_Available { get; set; }
         public float3 m_Position { get; }
         public void DrawGizmos();
+    }
+
+    public interface IGraph :IGraphPathFinding<INode>
+    {
+        public float3 RandomPosition() => this.ToArray().RandomLoop().First(p => p.m_Available).m_Position;
+    }
+
+    public enum EGraph
+    {
+        Tile,
+        Hexagon,
+        Poisson,
+        Sphere,
+    }
+
+    public enum EPathFind
+    {
+        AStar,
+        Dijkstra,
     }
     
     [ExecuteInEditMode]
     public class PathFindingVisualize : MonoBehaviour
     {
-        public TileGraph m_TileGraph = new TileGraph();
+        public EPathFind m_PathFind = EPathFind.AStar;
+        public EGraph m_Graph;
+        [MFoldout(nameof(m_Graph),EGraph.Tile)] public TileGraph m_TileGraph = new TileGraph();
+        [MFoldout(nameof(m_Graph),EGraph.Hexagon)] public HexagonGraph m_HexagonGraph = new HexagonGraph();
+        [MFoldout(nameof(m_Graph),EGraph.Poisson)] public PoissonGraph m_PoissonGraph = new PoissonGraph();
+        [MFoldout(nameof(m_Graph),EGraph.Sphere)] public SphereGraph m_SphereGraph = new SphereGraph();
+        public IGraph Graph => m_Graph switch
+        {
+            EGraph.Tile => m_TileGraph,
+            EGraph.Hexagon => m_HexagonGraph,
+            EGraph.Poisson => m_PoissonGraph,
+            EGraph.Sphere => m_SphereGraph,
+            _ => throw new System.NotImplementedException()
+        };
         
         private Vector3 m_Agent,m_Destination;
         private Queue<float3> m_Paths = new Queue<float3>();
@@ -37,11 +68,11 @@ namespace Examples.Algorithm.PathFinding
 
         void Randomize()
         {
-            foreach (var node in m_TileGraph)
-                node.SetAvailable(URandom.Random01()>0.1f);
+            foreach (var node in Graph)
+                node.m_Available = URandom.Random01()>0.1f;
             
-            m_Agent = m_TileGraph.RandomPosition();
-            m_Destination = m_TileGraph.RandomPosition();
+            m_Agent = Graph.RandomPosition();
+            m_Destination = Graph.RandomPosition();
             PathFind();
         }
         
@@ -55,7 +86,7 @@ namespace Examples.Algorithm.PathFinding
                 {
                     case 0:
                     {
-                        if(m_TileGraph.PositionToNode(hitPoint,out var node))
+                        if(Graph.PositionToNode(hitPoint,out var node))
                             node.m_Available = !node.m_Available;
                         PathFind();
                     } break;
@@ -78,31 +109,60 @@ namespace Examples.Algorithm.PathFinding
         private void OnDrawGizmos()
         {
             
-            m_TileGraph.OnDrawGizmos();
+            Gizmos.matrix = transform.localToWorldMatrix;
+            foreach (var node in Graph)
+            {
+                Gizmos.color = Color.white.SetA(.3f);
+                var adjacent = Graph.GetAdjacentNodes(node);
+                if (node.m_Available)
+                {
+                    foreach (var adjacentNode in adjacent)
+                    {
+                        Gizmos.color = Color.white.SetA(.3f);
+                        Gizmos.DrawLine(node.m_Position,adjacentNode.m_Position);
+                    }
+                    
+                }
+                
+                if (!node.m_Available)
+                {
+                    Gizmos.matrix = transform.localToWorldMatrix;
+                    Gizmos.color = Color.red;
+                    node.DrawGizmos();
+                }
+            }
+            
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(m_Agent,.2f);
             UGizmos.DrawLines(m_Paths);
             foreach (var path in m_Paths)
                 Gizmos.DrawWireSphere(path,.1f);
             
-            if(m_TileGraph.PositionToNode(m_Agent,out var startNode))
+            if(Graph.PositionToNode(m_Agent,out var startNode))
                 startNode.DrawGizmos();
-            if(m_TileGraph.PositionToNode(m_Destination,out var endNode))
+            if(Graph.PositionToNode(m_Destination,out var endNode))
                 endNode.DrawGizmos();
         }
 
         void PathFind()
         {
-            if (m_TileGraph.PositionToNode(m_Agent,out var startNode) && m_TileGraph.PositionToNode(m_Destination,out var endNode))
+            if (Graph.PositionToNode(m_Agent,out var startNode) && Graph.PositionToNode(m_Destination,out var endNode))
             {
-                Stack<TileGraph.Node> outputs = new Stack<TileGraph.Node>();
-                m_TileGraph.AStar(startNode,endNode, outputs);
+                Stack<INode> outputs = new Stack<INode>();
+                switch (m_PathFind)
+                {
+                    case EPathFind.AStar:
+                            Graph.AStar(startNode, endNode, outputs);
+                        break;
+                    case EPathFind.Dijkstra:
+                            Graph.Dijkstra(startNode, endNode, outputs);
+                        break;
+                    default:
+                        throw new System.NotImplementedException();
+                }
                 m_Paths.Clear();
                 m_Paths.EnqueueRange(outputs.Select(p=> p.m_Position));
             }
         }
-        
     }
-
-    
 }

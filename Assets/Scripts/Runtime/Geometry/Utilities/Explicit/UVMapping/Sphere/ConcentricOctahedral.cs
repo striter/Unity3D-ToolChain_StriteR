@@ -54,15 +54,15 @@ namespace Runtime.Geometry.Extension.Sphere
             return new float2(u, v) * .5f + .5f;
         }
 
-        public int2 Tilling(int2 _pixelIndex, int _cellCount)
+        public int2 Tilling(int2 _pixelIndex, int2 _cellCount)
         {
             var N = _cellCount;
             var mirror = (_pixelIndex.x ^ _pixelIndex.y) & N;
-            if (mirror != 0)
-            {
-                _pixelIndex.x = N - 1 - _pixelIndex.x;
-                _pixelIndex.y = N - 1 - _pixelIndex.y;
-            }
+            if (mirror.x != 0)
+                _pixelIndex.x = N.x - 1 - _pixelIndex.x;
+            
+            if (mirror.y != 0)
+                _pixelIndex.y = N.y - 1 - _pixelIndex.y;
             _pixelIndex &= (N - 1);
             return _pixelIndex;
         }

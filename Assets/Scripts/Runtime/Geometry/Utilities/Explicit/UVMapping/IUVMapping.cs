@@ -7,7 +7,7 @@ namespace Runtime.Geometry.Extension.Sphere
     {
         public float2 ToUV(float3 _position);
         public float3 ToPosition(float2 _uv);
-        public int2 Tilling(int2 _pixelIndex, int _cellCount) => (_pixelIndex + _cellCount) % _cellCount;
+        public int2 Tilling(int2 _pixelIndex, int2 _cellCount) => (_pixelIndex + _cellCount) % _cellCount;
     }
 
     public interface ISphereUVMapping : IUVMapping

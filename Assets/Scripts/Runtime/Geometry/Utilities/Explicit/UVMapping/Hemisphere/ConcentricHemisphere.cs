@@ -27,9 +27,9 @@ namespace Runtime.Geometry.Extension.Sphere
             return new float3(sinTheta * r,  sqrt(1 - u),  cosTheta * r);
         }
 
-        public int2 Tilling(int2 _pixelIndex, int _cellCount)
+        public int2 Tilling(int2 _pixelIndex, int2 _cellCount)
         {
-            _pixelIndex.x = clamp(_pixelIndex.x,0,_cellCount - 1);
+            _pixelIndex.x = clamp(_pixelIndex.x,0,_cellCount.x - 1);
             return _pixelIndex;
         }
 

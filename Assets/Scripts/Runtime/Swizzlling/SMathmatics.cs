@@ -18,6 +18,7 @@ public static class umath_swizzlling       //Swizzling
     public static float magnitude(this float3 _value) => math.length(_value);
     public static float magnitude(this float4 _value) => math.length(_value);
     
+    public static float sqrmagnitude(this int2 _value) => math.lengthsq(_value);
     public static float sqrmagnitude(this float2 _value) => math.lengthsq(_value);
     public static float sqrmagnitude(this float3 _value) => math.lengthsq(_value);
     public static float sqrmagnitude(this float4 _value) => math.lengthsq(_value);

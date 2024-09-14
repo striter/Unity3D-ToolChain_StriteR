@@ -1,8 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Extensions;
+using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 namespace Procedural.Hexagon
 {
@@ -10,27 +11,49 @@ namespace Procedural.Hexagon
     #region Flat&Pointy
     public static class KHexagon
     {
-        public static readonly Matrix2x2 kFlatAxialToPixel = new Matrix2x2( 1.5f, 0f, kSQRT3Half, kSQRT3);
-        public static readonly Matrix2x2 kFlatPixelToAxial = new Matrix2x2(2f / 3f, 0, -1f / 3f, kInvSQRT3);
-        public static readonly Coord[] kFlatUnitPoints =
+        public static readonly float2x2 kFlatAxialToPixel = new float2x2( 1.5f, 0f, kSQRT3Half, kSQRT3);
+        public static readonly float2x2 kFlatPixelToAxial = new float2x2(2f / 3f, 0, -1f / 3f, kInvSQRT3);
+        public static readonly float2[] kFlatUnitPoints =
         {
-            new Coord(1, 0), new Coord(.5f, -kSQRT3Half),
-            new Coord(-.5f, -kSQRT3Half), new Coord(-1, 0),
-            new Coord(-.5f, kSQRT3Half), new Coord(.5f, kSQRT3Half)
+            new float2(1, 0), new float2(.5f, -kSQRT3Half),
+            new float2(-.5f, -kSQRT3Half), new float2(-1, 0),
+            new float2(-.5f, kSQRT3Half), new float2(.5f, kSQRT3Half)
         };
 
-        public static readonly Matrix2x2 kPointyAxialToPixel = new Matrix2x2(kSQRT3, kSQRT3Half, 0, 1.5f);
-        public static readonly Matrix2x2 kPointyPixelToAxial = new Matrix2x2(kInvSQRT3, -1f / 3f, 0f, 2f / 3f);
-        public static readonly Coord[] kPointyUnitPoints =
+        public static readonly float2x2 kPointyAxialToPixel = new float2x2(kSQRT3, kSQRT3Half, 0, 1.5f);
+        public static readonly float2x2 kPointyPixelToAxial = new float2x2(kInvSQRT3, -1f / 3f, 0f, 2f / 3f);
+        public static readonly float2[] kPointyUnitPoints =
         {
-            new Coord(0, 1), new Coord(kSQRT3Half, .5f),
-            new Coord(kSQRT3Half, -.5f), new Coord(0, -1),
-            new Coord(-kSQRT3Half, -.5f), new Coord(-kSQRT3Half, .5f)
+            new float2(0, 1), new float2(kSQRT3Half, .5f),
+            new float2(kSQRT3Half, -.5f), new float2(0, -1),
+            new float2(-kSQRT3Half, -.5f), new float2(-kSQRT3Half, .5f)
         };
     }
     #endregion
 
-    public static class UHexagon
+    public static partial class UHexagon
+    {
+        public static HexCoord TransformPositionToHex(float2 _position, bool _flat)
+        {
+            var matrix = _flat ? KHexagon.kFlatPixelToAxial : KHexagon.kPointyPixelToAxial;
+            return (int2)math.round(math.mul(matrix, _position));
+        }
+
+        public static float2 TransformHexToPosition(HexCoord _hex, bool _flat = true) => math.mul(_flat ? KHexagon.kFlatAxialToPixel : KHexagon.kPointyAxialToPixel, (int2)_hex);
+
+        public static void DrawHexagonGizmos(float3 center,float size,float height = 0,bool _flat = true)
+        {
+            var unitPoints = _flat?KHexagon.kFlatUnitPoints:KHexagon.kPointyUnitPoints;
+            
+            UGizmos.DrawLinesConcat(unitPoints.Select(p => center + p.to3xz()*size).ToArray());
+            if (!(height > 0))
+                return;
+            UGizmos.DrawLinesConcat(unitPoints.Select(p => center + p.to3xz()*size + height * kfloat3.up).ToArray());
+            unitPoints.Traversal(p=>Gizmos.DrawLine( center + p.to3xz()*size,center + p.to3xz()*size + height * kfloat3.up));
+        }
+    }
+    
+    public static partial class UHexagon
     {
         static Matrix2x2 kAxialToPixel;
         static Matrix2x2 kPixelToAxial;
@@ -43,20 +66,13 @@ namespace Procedural.Hexagon
         public static bool flat   {
             set
             {
-                kUnitPoints = value?KHexagon.kFlatUnitPoints:KHexagon.kPointyUnitPoints;
+                kUnitPoints = (value?KHexagon.kFlatUnitPoints:KHexagon.kPointyUnitPoints).Select(p=>(Coord)p).ToArray();
                 kAxialToPixel =value?KHexagon.kFlatAxialToPixel: KHexagon.kPointyAxialToPixel;
                 kPixelToAxial = value?KHexagon.kFlatPixelToAxial:KHexagon.kPointyPixelToAxial;
             }
         } 
         
         #region Transformation
-
-        public static Coord ToCoord(this HexCoordO _offset, bool _flat)
-        {
-            if (_flat)
-                return new Coord(_offset.col * 1.5f, kSQRT3Half * (_offset.row * 2 + _offset.col % 2));
-            return new Coord(kSQRT3Half * (_offset.col * 2 + _offset.row % 2), _offset.row * 1.5f);
-        }
 
         public static Coord ToCoord(this HexCoord _axial) =>
             new Coord(kAxialToPixel.Multiply(_axial.col, _axial.row));

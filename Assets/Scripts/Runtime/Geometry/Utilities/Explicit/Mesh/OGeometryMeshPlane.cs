@@ -58,12 +58,12 @@ namespace Runtime.Geometry.Extension.Mesh
                
                uint startVertex = (uint)(index*vertexCountPerHexagon);
                var startTriangle = index*triangleCountPerHexagon;
-               var center = new Coord(KHexagon.kFlatAxialToPixel.Multiply(coord.col,coord.row));
+               var center = math.mul(KHexagon.kFlatAxialToPixel,(int2)coord);
                
                int curVertexIndex = (int)startVertex;
                if (centered)
                {
-                   Vector3 position = new Vector3(center.x, 0f, center.y)*tileSize;
+                   var position = new Vector3(center.x, 0f, center.y)*tileSize;
                    _vertices[curVertexIndex++] = new Vertex()
                    {
                        position = new float3(position),

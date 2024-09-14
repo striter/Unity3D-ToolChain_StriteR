@@ -22,7 +22,7 @@ namespace Runtime.Geometry.Extension.Sphere
             return oct * .5f + .5f;
         }
 
-        public int2 Tilling(int2 _pixelIndex, int _cellCount)
+        public int2 Tilling(int2 _pixelIndex, int2 _cellCount)
         {
             _pixelIndex = clamp(_pixelIndex,0,_cellCount - 1);
             return _pixelIndex;
