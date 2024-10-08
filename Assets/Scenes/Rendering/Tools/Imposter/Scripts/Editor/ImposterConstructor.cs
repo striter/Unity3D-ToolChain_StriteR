@@ -12,6 +12,13 @@ using UnityEngine.Rendering.Universal;
 
 namespace Runtime.Optimize.Imposter
 {
+    public enum EContourDownSample
+    {
+        _1 = 1,
+        _2 = 2,
+        _4 = 4,
+        _8 = 8
+    }
     [CreateAssetMenu(menuName = "Optimize/Imposter/Constructor", fileName = "ImposterConstructor_Default")]
     public class ImposterConstructor : ScriptableObject
     {
@@ -19,6 +26,8 @@ namespace Runtime.Optimize.Imposter
         public Shader m_Shader;
         public bool m_Instanced = true;
 
+        public EContourDownSample m_ContourDownSample = EContourDownSample._1;
+        
         public ImposterCameraHandle[] m_CameraHandles;
 
         [Header("Debug")]
@@ -69,7 +78,10 @@ namespace Runtime.Optimize.Imposter
             }
 
             if (vertices.Count == 0)
+            {
+                Debug.LogError($"No Vertices Found : {_sceneObjectRoot}");
                 return null;
+            }
 
             var material = new Material(m_Shader){name = _initialName,enableInstancing = m_Instanced};
             var mesh = new Mesh(){name = _initialName};
@@ -102,7 +114,7 @@ namespace Runtime.Optimize.Imposter
                 var alphaHandle = new ImposterCameraHandle() {m_Name = "_AlphaMask", m_Shader = null};
                 var contourMeshHandle = new ImposterCameraHandle() {m_Name = "_ContourMesh", m_Shader = Shader.Find("Hidden/Imposter_ContourShape") };
                 alphaHandle.Init(m_Input.TextureResolution,boundingSphere);
-                contourMeshHandle.Init(m_Input.TextureResolution,boundingSphere,false);
+                contourMeshHandle.Init(m_Input.TextureResolution / (int)m_ContourDownSample,boundingSphere,false);
                 
                 m_CameraHandles.Traversal(p=>p.Init(m_Input.TextureResolution,boundingSphere));
                 foreach (var corner in m_Input.GetImposterViewsNormalized())
@@ -134,7 +146,7 @@ namespace Runtime.Optimize.Imposter
                 else
                 {    
                     var contourPixels = contourMeshHandle.OutputPixels(out var resolution);
-                    var contourOutline = ContourTracingData.FromColor(resolution.x, contourPixels, p=>p.to4().maxElement()>0.01f).MooreNeighborTracing();
+                    var contourOutline = ContourTracingData.FromColor(resolution.x, contourPixels, p=> p.to4().maxElement() > 0.01f).RadialSweep();
                     var contourPolygonPositions = UGeometry.GetBoundingPolygon(contourOutline);
                     contourPolygonPositions = CartographicGeneralization.VisvalingamWhyatt(contourPolygonPositions.Remake(p=>p/resolution),math.min(contourPolygonPositions.Count ,10),true);
                     contourPolygon = new G2Polygon(contourPolygonPositions);
@@ -199,6 +211,7 @@ namespace Runtime.Optimize.Imposter
                 m_Camera.cullingMask = 1 << kLayerID;
                 var additional = m_Camera.gameObject.AddComponent<UniversalAdditionalCameraData>();
                 additional.renderPostProcessing = false;
+                additional.SetRenderer(1);
             }
 
             public void Render(List<KeyValuePair<Material, Shader>> _materialRef, GSphere _sphere, float3 _direction, G2Box _rect)
@@ -213,7 +226,7 @@ namespace Runtime.Optimize.Imposter
             public Color[] OutputPixels(out int2 resolution)
             {
                 RenderTexture.active = m_RenderTexture;
-                var texture2D = new Texture2D(m_RenderTexture.width, m_RenderTexture.height, TextureFormat.ARGB32, false);
+                var texture2D = new Texture2D(m_RenderTexture.width, m_RenderTexture.height, TextureFormat.ARGB32, false){filterMode = FilterMode.Bilinear};
                 texture2D.ReadPixels(new Rect(0, 0, m_RenderTexture.width, m_RenderTexture.height), 0, 0);
                 texture2D.Apply();
 

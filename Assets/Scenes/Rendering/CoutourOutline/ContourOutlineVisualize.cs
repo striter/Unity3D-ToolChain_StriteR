@@ -8,7 +8,9 @@ namespace Examples.Rendering.ContourOutline
 {
     public class ContourOutlineVisualize : MonoBehaviour {
         public Texture2D m_ContourTexture;
-        [Range(0, 1)] public float m_AlphaBias = 0.01f;
+        public bool m_MaxElement = false;
+        public bool m_CentricDFS = false;
+        [Range(0, 1)] public float m_Bias = 0.01f;
         [Range(0, 1)] public float m_Simplification = 0.1f;
         private ContourTracingData m_ContourTracing;
         private void OnValidate()
@@ -16,12 +18,11 @@ namespace Examples.Rendering.ContourOutline
             if (m_ContourTexture == null)
                 return;
 
-            m_ContourTracing = ContourTracingData.FromColor(m_ContourTexture.width, m_ContourTexture.GetPixels(),p=>p.a > m_AlphaBias);
+            m_ContourTracing = ContourTracingData.FromColor(m_ContourTexture.width, m_ContourTexture.GetPixels(),p=> m_MaxElement?p.to4().maxElement() > m_Bias : p.a > m_Bias);
         }
 
         private void OnDrawGizmos()
         {
-
             Gizmos.matrix = transform.localToWorldMatrix;
             for (var y = 0 ; y < m_ContourTracing.resolution.y; y++)
             {
@@ -36,12 +37,13 @@ namespace Examples.Rendering.ContourOutline
                 }
             }
 
-            if (!m_ContourTracing.ContourAble(out var startPixel))
+            var initialPixel = m_CentricDFS ?  m_ContourTracing.resolution / 2 : int2.zero;
+            if (!m_ContourTracing.ContourAble(initialPixel ,out var startPixel))
                 return;
             Gizmos.color = Color.green.SetA(.5f);
             Gizmos.DrawCube(new Vector3(startPixel.x, 0, startPixel.y), 1.25f * Vector3.one);
             
-            var pixels = m_ContourTracing.TheoPavlidis();
+            var pixels = m_ContourTracing.TheoPavlidis(initialPixel);
             foreach (var pixel in pixels)
                 Gizmos.DrawCube(pixel.to3xz(), Vector3.one);
             UGizmos.DrawLines(pixels,p=>p.to3xz());

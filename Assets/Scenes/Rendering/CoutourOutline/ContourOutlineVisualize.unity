@@ -423,7 +423,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ContourTexture: {fileID: 2800000, guid: daa7f4d79033a1843a3ae75cf2604ede, type: 3}
-  m_AlphaBias: 0.312
+  m_MaxElement: 1
+  m_CentricDFS: 0
+  m_Bias: 0.051
   m_Simplification: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

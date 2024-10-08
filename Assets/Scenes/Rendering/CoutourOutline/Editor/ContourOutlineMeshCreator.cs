@@ -27,7 +27,7 @@ namespace Examples.Rendering.ContourOutline.Editor
                 var resolution = texture.GetResolution();
                 var contourPixels = ContourTracingData.FromColor(texture.width, texture.GetPixels()).MooreNeighborTracing();
                 var polygon = UGeometry.GetBoundingPolygon(contourPixels,0.1f);
-                var contourPolygon = new G2Polygon(CartographicGeneralization.VisvalingamWhyatt(polygon,math.min(contourPixels.Count ,10),true).Remake(p=>p/resolution));
+                var contourPolygon = new G2Polygon(CartographicGeneralization.VisvalingamWhyatt(polygon.Remake(p=>p/resolution),math.min(contourPixels.Count ,10),true));
 
                 var mesh = new Mesh() { name = $"{path.GetFileName().RemoveExtension()}_Contour"};
                 mesh.SetVertices(contourPolygon.Select(p=>(Vector3)((p-.5f).to3xy() )).ToList());
@@ -39,7 +39,7 @@ namespace Examples.Rendering.ContourOutline.Editor
             }
         
             if(!successful)
-                Debug.LogWarning("No ImposterData selected");
+                Debug.LogWarning("No Readable Texture Selected");
         }
     }
 }

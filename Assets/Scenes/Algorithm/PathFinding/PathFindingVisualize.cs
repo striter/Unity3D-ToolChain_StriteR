@@ -66,6 +66,7 @@ namespace Examples.Algorithm.PathFinding
             Randomize();
         }
 
+        [InspectorButton]
         void Randomize()
         {
             foreach (var node in Graph)

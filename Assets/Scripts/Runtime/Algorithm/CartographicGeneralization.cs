@@ -57,7 +57,7 @@ public static class CartographicGeneralization
                 _pointList[minTriangleIndex.V2] += offset;
             }
             
-            _pointList.RemoveAt(minTriangleIndex[1]);
+            _pointList.RemoveAt(minTriangleIndex.V1);
         }
 
         return _pointList;

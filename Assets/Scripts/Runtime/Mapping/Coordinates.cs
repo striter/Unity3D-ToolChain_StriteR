@@ -6,6 +6,7 @@ public static class UCoordinates
     {
         public static int2 ToTile(int _index,int _width) => new int2(_index % _width, _index / _width);
         public static int ToIndex(int2 _pixel, int _width) => _pixel.x + _pixel.y * _width;
+        public static int2 ToIndex(int _index,int _width) => new int2(_index % _width, _index / _width);
     }
     
     public static class Cylindrical

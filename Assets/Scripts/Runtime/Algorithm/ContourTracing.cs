@@ -9,7 +9,6 @@ using UnityEngine;
 using static kint2;
 
 //https://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/index.html
-
 public struct ContourTracingData : IGraph<int2>
 {
     public int2 resolution;
@@ -53,13 +52,15 @@ public struct ContourTracingData : IGraph<int2>
 
 public static class ContourTracingData_Extension   //Transform ContourTracingData to integer positions which represent contour edges
 {
-    public static bool ContourAble(this ContourTracingData _data,out int2 _startPixel)
+    public static bool ContourAble(this ContourTracingData _data,int2 _initialPixel,out int2 _startPixel)
     {
         _startPixel = int2.zero;
         if (_data.m_ContourTessellation== null || _data.m_ContourTessellation.Length == 0)
             return false;
-        
-        var index = _data.m_ContourTessellation.IndexOf(true);
+
+        var index = (_initialPixel != int2.zero).all() && _data.Sample(_initialPixel) ? 
+                _data.DFS(_initialPixel).Min(p=>UCoordinates.Tile.ToIndex(p,_data.resolution.x)) : 
+                _data.m_ContourTessellation.IndexOf(true);        
         if (index == -1)
             return false;
         
@@ -68,9 +69,9 @@ public static class ContourTracingData_Extension   //Transform ContourTracingDat
     }
 
     private static List<int2> kSquareTracingIndexer = new () { kLeft, kDown, kRight, kUp };
-    public static List<float2> SquareTracing(this ContourTracingData _data)
+    public static List<float2> SquareTracing(this ContourTracingData _data,int2 _initialPixel = default)
     {
-        if (!_data.ContourAble(out var startPixel))
+        if (!_data.ContourAble(_initialPixel,out var startPixel))
             return null;
         
         var curPixel = startPixel;
@@ -114,9 +115,9 @@ public static class ContourTracingData_Extension   //Transform ContourTracingDat
         { kUp, new (){kDown,kLeft,kUp,kUp,kRight,kRight,kDown,kDown}}
     };
     
-    public static List<float2> MooreNeighborTracing(this ContourTracingData _data)
+    public static List<float2> MooreNeighborTracing(this ContourTracingData _data,int2 _initialPixel = default)
     {
-        if (!_data.ContourAble(out var startPixel))
+        if (!_data.ContourAble(_initialPixel,out var startPixel))
             return null;
 
         var curDirection = kUp;
@@ -148,9 +149,9 @@ public static class ContourTracingData_Extension   //Transform ContourTracingDat
     }
     
     private static readonly List<int2> kNeighbors8 = new() { kLeft + kDown,kLeft, kLeft + kUp, kUp, kRight + kUp, kRight, kRight + kDown, kDown };
-    public static List<float2> RadialSweep(this ContourTracingData _data)
+    public static List<float2> RadialSweep(this ContourTracingData _data,int2 _initialPixel = default)
     {
-        if (!_data.ContourAble(out var startPixel))
+        if (!_data.ContourAble(_initialPixel,out var startPixel))
             return null;
 
         var sweepDirection = 0;
@@ -189,9 +190,9 @@ public static class ContourTracingData_Extension   //Transform ContourTracingDat
     };
 
     
-    public static List<float2> TheoPavlidis(this ContourTracingData _data)
+    public static List<float2> TheoPavlidis(this ContourTracingData _data,int2 _initialPixel = default)
     {
-        if (!_data.ContourAble(out var startPixel))
+        if (!_data.ContourAble(_initialPixel,out var startPixel))
             return null;
     
         var contourEdges = new List<float2> { startPixel };
