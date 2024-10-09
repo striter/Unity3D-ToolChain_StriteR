@@ -2,13 +2,13 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
 {
     Properties
     {
-    	_AlphaClip("Clip",Range(0,1)) = 0.5
-//    	_Parallax("Parallax",Range(0,1)) = 0.1
+    	_AlphaClip("Clip",Range(0,1)) = 0.25
     	[Toggle(_INTERPOLATE)]_Interpolate("Interpolate",int) = 1
+//    	[Foldout(_INTERPOLATE)]_Parallax("Parallax",Range(0,1)) = 0.1
     	
         [NoScaleOffset]_AlbedoAlpha("_AlbedoAlpha",2D) = "white"
         [NoScaleOffset]_NormalDepth("_NormalDepth",2D) = "white"
-    	_ImposterTexel("Texel",Vector)=(1,1,1,1)
+    	[Header(Constant)]_ImposterTexel("Texel",Vector)=(1,1,1,1)
     	_ImposterBoundingSphere("Bounding Sphere",Vector)=(1,1,1,1)
     	[KeywordEnum(CUBE,OCTAHEDRAL,CONCENTRIC_OCTAHEDRAL,CENTRIC_HEMISPHERE,OCTAHEDRAL_HEMISPHERE)]_MAPPING("Sphere Mode",int) = 4
     }
@@ -26,11 +26,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
 
             TEXTURE2D(_AlbedoAlpha);SAMPLER(sampler_AlbedoAlpha);
             TEXTURE2D(_NormalDepth);SAMPLER(sampler_NormalDepth);
-            INSTANCING_BUFFER_START
-				INSTANCING_PROP(float,_AlphaClip)
-				INSTANCING_PROP(float,_Parallax)
-            INSTANCING_BUFFER_END
-
+            
 			struct ImposterFragmentOutput
             {
 				float4 albedoAlpha ;
@@ -41,7 +37,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
             struct f2o
             {
                 float3 result : SV_TARGET;
-                float depth : SV_DEPTH;
+                // float depth : SV_DEPTH;
             };
             
 			void Sample(float2 _uv,float _weight,inout ImposterFragmentOutput o)
@@ -72,7 +68,6 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
 				f2o o;
 				o.result = albedo;
 				float depthExtrude = imposterOutput.depthExtrude;
-                o.depth = EyeToRawDepth(TransformWorldToEyeDepth(positionWS + normalize(forwardWS) * saturate(depthExtrude) * _BoundingSphere.w));
 				return o;
 			}
 
@@ -116,6 +111,25 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
             ZWrite On
             Cull Off
             HLSLPROGRAM
+            #pragma shader_feature_fragment _ _ENABLE_DEBUG_MODE
+			
+			float _CurrentLodForDebug;
+			void GrassDebugMode(inout half3 col)
+		    {
+		        #if defined(_ENABLE_DEBUG_MODE)
+		            if (_CurrentLodForDebug == 1)
+		            {
+		                // 当前为LOD1，设置为蓝色
+		                col = half4(0, 0, 1, 1);
+		            }
+		            else if (_CurrentLodForDebug == 2)
+		            {
+		                // 当前为LOD2，设置为红色
+		                col = half4(1, 0, 0, 1);
+		            }
+		        #endif
+		    }
+            
             struct a2v
             {
 				A2V_IMPOSTER;
@@ -146,9 +160,12 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
 				UNITY_SETUP_INSTANCE_ID(i);
 				ImposterFragmentOutput output = F2O_IMPOSTER_FRAGMENT(i);
                 float3 albedo = output.albedoAlpha.rgb;
-                float diffuse = saturate(dot(output.normalWS,_MainLightPosition.xyz)) ;
+                float diffuse = saturate(dot(output.normalWS,_MainLightPosition.xyz));
                 float3 result =  albedo * diffuse * _MainLightColor.rgb + albedo * SHL2Sample(output.normalWS,unity);
-                return F2O_RESULT(i,output,result);
+
+            	f2o o = F2O_RESULT(i,output,result);
+				GrassDebugMode(o.result);
+                return o;
             }
             
             #pragma vertex vert

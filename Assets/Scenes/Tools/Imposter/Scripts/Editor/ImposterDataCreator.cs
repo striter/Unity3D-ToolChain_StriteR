@@ -36,7 +36,6 @@ namespace Runtime.Optimize.Imposter
 
                     var prefab = PrefabUtility.InstantiatePrefab(obj) as GameObject;
                     p.Construct(prefab.transform,fileName,$"{filePath.GetPathDirectory()}/{fileName}_Imposter.asset");
-                    
                     GameObject.DestroyImmediate(prefab);
                     successful = true;
                 }
@@ -46,8 +45,7 @@ namespace Runtime.Optimize.Imposter
             });
         }
 
-        
-        [MenuItem("GameObject/Optimize/Imposter/Data", false, 11)]
+        [MenuItem("GameObject/Optimize/Imposter/Data", false, 10)]
         public static void CreateWithSelection()
         {
             var selections = Selection.objects.ToArray();
@@ -69,9 +67,10 @@ namespace Runtime.Optimize.Imposter
                     Debug.LogWarning($"{selection} is not SceneObject");
                     return;
                 }
+
                 if (!UEAsset.SelectDirectory(out var directoryPath))
                     return;
-        
+                
                 var name = UEPath.PathRegex($"{selection.name}_Imposter");
                 p.Construct((selection as GameObject).transform,name,$"{directoryPath}/{name}.asset");
             });

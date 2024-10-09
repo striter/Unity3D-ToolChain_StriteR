@@ -12,6 +12,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace Runtime.Optimize.Imposter
 {
+    using static ImposterDefine;
     public enum EContourDownSample
     {
         _1 = 1,
@@ -33,7 +34,6 @@ namespace Runtime.Optimize.Imposter
         [Header("Debug")]
         public bool m_AlphaTexture = false;
         public bool m_ContourMeshTexture = false;
-        private static int kLayerID = 30;
         private static List<KeyValuePair<Material, Shader>> m_SharedMaterialShaderRef = new();
         private static List<KeyValuePair<Renderer,int>> m_RendererLayerRef = new();
         public ImposterData Construct(Transform _sceneObjectRoot,string _initialName,string _filePath)
@@ -211,7 +211,7 @@ namespace Runtime.Optimize.Imposter
                 m_Camera.cullingMask = 1 << kLayerID;
                 var additional = m_Camera.gameObject.AddComponent<UniversalAdditionalCameraData>();
                 additional.renderPostProcessing = false;
-                additional.SetRenderer(1);
+                additional.SetRenderer(kRendererIndex);
             }
 
             public void Render(List<KeyValuePair<Material, Shader>> _materialRef, GSphere _sphere, float3 _direction, G2Box _rect)

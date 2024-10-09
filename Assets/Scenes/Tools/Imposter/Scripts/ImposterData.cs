@@ -12,5 +12,30 @@ namespace Runtime.Optimize.Imposter
         [Readonly] public GSphere m_BoundingSphere;
         [Readonly] public Material m_Material;
         [Readonly] public Mesh m_Mesh;
+        
+        public static GameObject CreateImposterRenderer(ImposterData imposterData,Transform dropRoot = null)
+        {
+            var gameObject = new GameObject(imposterData.name);
+            var transform = gameObject.transform;
+            if (dropRoot != null)
+            {
+                transform.SetParentAndSyncPositionRotation(dropRoot);
+                transform.rotation = Quaternion.identity;   
+            }
+            
+            if (imposterData.m_Instanced)
+            {
+                gameObject.AddComponent<MeshRenderer>().sharedMaterial = imposterData.m_Material;
+                gameObject.AddComponent<MeshFilter>().sharedMesh = imposterData.m_Mesh;
+            }
+            else
+            {
+                var renderer = gameObject.AddComponent<ImposterRenderer>();
+                renderer.meshConstructor.m_Data = imposterData;
+                renderer.OnValidate();
+            }
+
+            return gameObject;
+        }
     }
 }

@@ -13,6 +13,7 @@ namespace Runtime.Optimize.Imposter
             DragAndDrop.AddDropHandler(DropHandler);
         }
 
+        
         static DragAndDropVisualMode DropHandler(int dropTargetInstanceID, HierarchyDropFlags dropMode, Transform parentForDraggedObjects, bool perform)
         {
             var dropRoot = EditorUtility.InstanceIDToObject(dropTargetInstanceID) as GameObject;
@@ -26,27 +27,8 @@ namespace Runtime.Optimize.Imposter
                 if (!perform) 
                     return DragAndDropVisualMode.Link;
 
-                var gameObject = new GameObject(imposterData.name);
-                
+                var gameObject = ImposterData.CreateImposterRenderer(imposterData,dropRoot != null ? dropRoot.transform : null);
                 Undo.RegisterCreatedObjectUndo(gameObject, "Create Imposter");
-                var transform = gameObject.transform;
-                if (dropRoot != null)
-                {
-                    transform.SetParentAndSyncPositionRotation(dropRoot.transform);
-                    transform.rotation = Quaternion.identity;   
-                }
-                if (imposterData.m_Instanced)
-                {
-                    gameObject.AddComponent<MeshRenderer>().sharedMaterial = imposterData.m_Material;
-                    gameObject.AddComponent<MeshFilter>().sharedMesh = imposterData.m_Mesh;
-                }
-                else
-                {
-                    var renderer = gameObject.AddComponent<ImposterRenderer>();
-                    renderer.meshConstructor.m_Data = imposterData;
-                    renderer.OnValidate();
-                }
-                
                 objects.Add(gameObject);
             }
             
