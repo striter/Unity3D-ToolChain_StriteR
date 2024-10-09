@@ -426,7 +426,8 @@ MonoBehaviour:
   m_MaxElement: 1
   m_CentricDFS: 0
   m_Bias: 0.051
-  m_Simplification: 1
+  m_Simplification: 0.344
+  m_MinumumSimplification: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

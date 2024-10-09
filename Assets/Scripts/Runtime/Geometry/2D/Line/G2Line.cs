@@ -12,21 +12,20 @@ namespace Runtime.Geometry
         public float2 start;
         public float2 end;
         [NonSerialized] public float2 direction;
-        [NonSerialized] public float length;
+        [NonSerialized] public float length,sqrLength;
         public G2Line(float2 _start,float2 _end)
         {
+            this = default;
             start = _start;
             end = _end;
-
-            direction = default;
-            length = default;
             Ctor();
         }
 
         void Ctor()
         {
             var delta = end - start;
-            length = delta.magnitude();
+            sqrLength = delta.sqrmagnitude();
+            length = math.sqrt(sqrLength);
             direction = delta / length;
         }
 

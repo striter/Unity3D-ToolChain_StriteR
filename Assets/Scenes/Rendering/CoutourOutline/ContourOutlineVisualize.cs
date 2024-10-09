@@ -12,6 +12,7 @@ namespace Examples.Rendering.ContourOutline
         public bool m_CentricDFS = false;
         [Range(0, 1)] public float m_Bias = 0.01f;
         [Range(0, 1)] public float m_Simplification = 0.1f;
+        [MFold(nameof(m_Simplification),1f)]public bool m_MinumumSimplification = false;
         private ContourTracingData m_ContourTracing;
         private void OnValidate()
         {
@@ -55,7 +56,7 @@ namespace Examples.Rendering.ContourOutline
             UGizmos.DrawLinesConcat(polygon,p=>p.to3xz());
 
             Gizmos.color = KColor.kOlive;
-            var simplifiedPolygon = new G2Polygon( CartographicGeneralization.VisvalingamWhyatt(polygon, (int)(polygon.Count * m_Simplification),true));
+            var simplifiedPolygon = new G2Polygon( CartographicGeneralization.VisvalingamWhyatt(polygon, (int)(polygon.Count * m_Simplification),m_MinumumSimplification));
             simplifiedPolygon.DrawGizmos();
 
             foreach (var pixel in m_ContourTracing.DFS(startPixel))
