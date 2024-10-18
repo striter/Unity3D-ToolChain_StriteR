@@ -33,7 +33,7 @@ namespace Runtime.CameraController.Component
                     break;
                 case ERotationMode.EulerInputSeperated:
                 {
-                    m_RotationDamper.Initialize(baseParameters.euler);
+                    m_RotationDamper.InitializeAngle(baseParameters.euler);
                     m_PlayerInputDamper.Initialize(_input.euler);
                 }
                     break;

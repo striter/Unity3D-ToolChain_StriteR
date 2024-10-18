@@ -31,34 +31,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\Library\PackageCache\com.unity.burst@1.8.12\Tests\Editor\burstTestTarget.txt">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Library\PackageCache\com.unity.collections@1.2.4\ApiUpdater~\2020.1\ValidationWhiteList.txt">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Library\PackageCache\com.unity.collections@1.2.4\ApiUpdater~\ValidationWhiteList.txt">
-          <value>
-            <Attribute>
-              <option name="separator" value="|" />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Library\PackageCache\com.unity.collections@1.2.4\Unity.Collections.LowLevel.ILSupport\README.txt">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\Library\PackageCache\com.unity.render-pipelines.universal@14.0.10\Editor\RendererFeatures\NewRendererFeature.cs.txt">
           <value>
             <Attribute>

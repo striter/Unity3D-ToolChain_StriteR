@@ -48,6 +48,7 @@ namespace Runtime.Geometry
         public static readonly GTriangle kDefault = new GTriangle(new float3(0,0,.5f),new float3(-.5f,0,-.5f),new float3(.5f,0,-.5f));
         public static explicit operator GTriangle(Triangle<float3> _src) => new GTriangle(_src.v0,_src.v1,_src.v2);
         public static explicit operator GTriangle(Triangle<Vector3> _src) => new GTriangle(_src.v0,_src.v1,_src.v2);
+        public static GTriangle Convert<T>(ITriangle<T> _src,Func<T,float3> _converter)where T:struct => new GTriangle(_converter(_src.V0),_converter(_src.V1),_converter(_src.V2)); 
         public Triangle<Vector3> ToVector3() => new Triangle<Vector3>(V0, V1, V2);
         public static GTriangle operator +(GTriangle _src, float3 _dst)=> new GTriangle(_src.V0 + _dst, _src.V1 + _dst, _src.V2 + _dst);
         public static GTriangle operator -(GTriangle _src, float3 _dst)=> new GTriangle(_src.V0 - _dst, _src.V1 - _dst, _src.V2 - _dst);

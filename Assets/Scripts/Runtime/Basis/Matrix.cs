@@ -203,21 +203,21 @@ public struct float4x3_homogenous  //float3x4
 [Serializable]
 public struct float4x4_symmetric
 {
-    public float c0;
-    public float2 c1;
-    public float3 c2;
-    public float4 c3;
-
-    public float4x4_symmetric( float _m01, float _m02, float _m03, float _m04
-                                         , float _m12, float _m13, float _m14
-                                                     , float _m23, float _m24
-                                                                 , float _m34
-    )
+    public float c0; public float2 c1; public float3 c2; public float4 c3;
+    public float x00 => c0; public float x01 => c1.x; public float x02 => c2.x; public float x03 => c3.x;
+    public float x10 => x01; public float x11 => c1.y; public float x12 => c2.y; public float x13 => c3.y;
+    public float x20 => x02; public float x21 => x12; public float x22 => c2.z; public float x23 => c3.z;
+    public float x30 => x03; public float x31 => x13; public float x32 => x23; public float x33 => c3.w;
+    
+    public float4x4_symmetric( float _m00, float _m01, float _m02, float _m03
+                                         , float _m11, float _m12, float _m13
+                                                     , float _m22, float _m23
+                                                                 , float _m33)
     {
-                             c0 = _m01; c1.x = _m02; c2.x = _m03; c3.x = _m04;
-                                        c1.y = _m12; c2.y = _m13; c3.y = _m14;
-                                                     c2.z = _m23; c3.z = _m24;
-                                                                  c3.w = _m34;
+                             c0 = _m00; c1.x = _m01; c2.x = _m02; c3.x = _m03;
+                                        c1.y = _m11; c2.y = _m12; c3.y = _m13;
+                                                     c2.z = _m22; c3.z = _m23;
+                                                                  c3.w = _m33;
     }
 
     public float this[int2 _index] => this[_index.x + _index.y * 4];
@@ -234,18 +234,6 @@ public struct float4x4_symmetric
                 case 12: return c3.x; case 13: return c3.y; case 14: return c3.z; case 15: return c3.w;
             }
         }
-    }
-
-    public float Index(int _value)
-    {
-        return _value switch
-        {
-            0 => c0, 1 => c1.x, 2 => c2.x, 3 => c3.x,
-                    4 => c1.y, 5 => c2.y, 6 => c3.y,
-                                7 => c2.z, 8 => c3.z,
-                                            9 => c3.w,
-            _ => throw new IndexOutOfRangeException()
-        };
     }
 
     public float4 GetRow(int _index)
@@ -269,27 +257,26 @@ public struct float4x4_symmetric
             c3 = _src.c3 + _dst.c3,
         };
 
-    public float determinant(int _a00, int _a01, int _a02, 
-                             int _a10, int _a11, int _a12, 
-                             int _a20, int _a21, int _a22)
-    {
-        return Index(_a00) * Index(_a11) * Index(_a22) + Index(_a01) * Index(_a12) * Index(_a20) + Index(_a02) * Index(_a10) * Index(_a21) 
-               - Index(_a02) * Index(_a11) * Index(_a20) - Index(_a01) * Index(_a10) * Index(_a22) - Index(_a00) * Index(_a12) * Index(_a21);
-    }
-
     public static float4 operator *(float4x4_symmetric _src, float4 _value) =>  
         _src.GetColumn(0) * _value.x + 
         _src.GetColumn(1) * _value.y + 
         _src.GetColumn(2) * _value.z + 
         _src.GetColumn(3) * _value.w;
-
+    
+    public static float4x4_symmetric operator *(float4x4_symmetric _src,float _value) => new float4x4_symmetric(_src.x00 * _value, _src.x01 * _value, _src.x02 * _value, _src.x03 * _value,
+                                                                                                                _src.x11 * _value, _src.x12 * _value, _src.x13 * _value,
+                                                                                                                _src.x22 * _value, _src.x23 * _value,
+                                                                                                                _src.x33 * _value);
+    
+    public static implicit operator float4x4(float4x4_symmetric _src) => new float4x4(_src.GetColumn(0), _src.GetColumn(1), _src.GetColumn(2), _src.GetColumn(3));
     public static readonly float4x4_symmetric zero = default;
+    
 }
 
 public static class matrix_extension
 {
     public static float2 mul(this float2x2 _matrix, float2 _point) => math.mul(_matrix, _point);
-    
+
     public static float3 GetEigenValues(this float3x3 _C)
     {
         var c0 = _C.c0; var c00 = c0.x; var c01 = c0.y; var c02 = c0.z;

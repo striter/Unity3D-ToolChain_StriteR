@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Extensions;
 using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
@@ -84,6 +85,15 @@ namespace Runtime.Geometry.Extension
             return GetPolygons(_indices);
         }
 
+        public static PLine[] GetEdges(this UnityEngine.Mesh _srcMesh, out int[] _indices)
+        {
+            _indices = _srcMesh.triangles;
+            var polygons = GetPolygons(_srcMesh, out _indices);
+            return polygons.Select(p => p.GetLines()).Resolve().Distinct().ToArray();
+        }
+
+        public static IEnumerable<PLine> GetDistinctEdges(this IEnumerable<PTriangle> _triangles) => _triangles.SelectMany(p => p.GetLines()).Select(p=>p.start > p.end ? new PLine(p.end,p.start) : p).Distinct();
+        
         public static GTriangle[] GetPolygonVertices(this UnityEngine.Mesh _srcMesh, out int[] _indices,out Vector3[] _vertices)
         {
             var vertices = _srcMesh.vertices;

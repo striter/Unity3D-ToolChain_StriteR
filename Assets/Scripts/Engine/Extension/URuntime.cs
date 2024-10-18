@@ -162,4 +162,57 @@ public static class URuntime
     }
     public static Quaternion CameraProjectionOnPlane(this Camera _camera, Vector3 _position) => Quaternion.LookRotation(Vector3.ProjectOnPlane(_position - _camera.transform.position, _camera.transform.right), _camera.transform.up);
     #endregion
+    
+    #region LODGroup
+    
+    //https://github.com/Unity-Technologies/AutoLOD/tree/master/Runtime
+    public static bool GetCurrentLOD(this LODGroup lodGroup, Camera camera,out LOD _lod)
+    {
+        var lods = lodGroup.GetLODs();
+        var relativeHeight = DistanceToRelativeHeight(camera, lodGroup.size, GetWorldSpaceScale(lodGroup.transform));
+        
+        var lodIndex = -1;
+
+        for (var i = 0; i < lods.Length; i++)
+        {
+            var lod = lods[i];
+            if (!(relativeHeight >= lod.screenRelativeTransitionHeight))
+                continue;
+            lodIndex = i;
+            break;
+        }
+
+        _lod = default;
+        if (lodIndex == -1)
+            return false;
+
+        _lod = lods[lodIndex];
+        return lodIndex > 0;
+    }
+    
+    static float GetWorldSpaceScale(Transform t)
+    {
+        var scale = t.lossyScale;
+        var largestAxis = Mathf.Abs(scale.x);
+        largestAxis = Mathf.Max(largestAxis, Mathf.Abs(scale.y));
+        largestAxis = Mathf.Max(largestAxis, Mathf.Abs(scale.z));
+        return largestAxis;
+    }
+    static float DistanceToRelativeHeight(Camera camera, float distance, float size)
+    {
+        if (camera.orthographic)
+            return size * 0.5F / camera.orthographicSize;
+
+        var halfAngle = Mathf.Tan(Mathf.Deg2Rad * camera.fieldOfView * 0.5f);
+        var relativeHeight = size * 0.5F / (distance * halfAngle);
+        return relativeHeight;
+    }
+
+    static float GetRelativeHeight(LODGroup lodGroup, Camera camera)
+    {
+        var distance = (lodGroup.transform.TransformPoint(lodGroup.localReferencePoint) - camera.transform.position).magnitude;
+        return DistanceToRelativeHeight(camera, distance / QualitySettings.lodBias,  GetWorldSpaceScale(lodGroup.transform) * lodGroup.size);
+    }
+    
+    #endregion
 }

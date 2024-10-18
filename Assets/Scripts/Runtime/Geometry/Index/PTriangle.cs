@@ -30,6 +30,13 @@ namespace Runtime.Geometry
         public IEnumerator<int> GetEnumerator() => triangle.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator()=>GetEnumerator();
 
+        public IEnumerable<PLine> GetLines()
+        {
+            yield return new PLine(V0, V1);
+            yield return new PLine(V1, V2);
+            yield return new PLine(V2, V0);
+        }
+        
         public int Length => 3;
         public int this[int _index]
         {

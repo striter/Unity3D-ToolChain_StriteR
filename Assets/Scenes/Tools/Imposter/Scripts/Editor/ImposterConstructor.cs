@@ -12,7 +12,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace Runtime.Optimize.Imposter
 {
-    using static ImposterDefine;
+    using static ImposterEditorDefine;
     public enum EContourDownSample
     {
         _1 = 1,

@@ -216,6 +216,22 @@ namespace System.Linq.Extensions
                 return index;
             }
 
+            public static float MinIndex(this IEnumerable<float> _collection)
+            {
+                var minValue = float.MaxValue;
+                var minIndex = -1;
+                var index = 0;
+                foreach (var element in _collection)
+                {
+                    if(minValue<element)
+                        continue;
+                    minValue = element;
+                    minIndex = index;
+                    index++;
+                }
+                return minIndex;
+            }
+
             public static float Min<T>(this IEnumerable<T> _collection, Func<T, float> _getValue, out int _minIndex)
             {
                 _minIndex = -1;
