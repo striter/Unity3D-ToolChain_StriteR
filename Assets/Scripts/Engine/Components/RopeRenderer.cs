@@ -16,6 +16,7 @@ namespace Runtime
     public class FRopeRenderer : ALineRendererBase
     { 
         [Clamp(0)] public float m_Extend = 3;
+        [Range(4, 64)] public int m_Resolution;
         public ERopePosition m_RopePosition = ERopePosition.Constant;
 
         [MFoldout(nameof(m_RopePosition), ERopePosition.Transform)] public Transform m_EndTransform;
@@ -24,9 +25,6 @@ namespace Runtime
         public Damper m_ControlDamper = new Damper();
         
         private GBezierCurveQuadratic m_Curve;
-        private int kRopeInstanceID = 0;
-        protected override string GetInstanceName() => $"Rope - {kRopeInstanceID++}";
-
         public override Mesh Initialize(Transform _transform)
         {
             Reset(_transform);
@@ -63,15 +61,20 @@ namespace Runtime
             m_ControlDamper.Initialize(control);
         }
 
+        public override void Tick(Transform _transform,float _deltaTime)
+        {
+            base.Tick(_transform,_deltaTime);
+            CalculatePositions(_transform,out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
+            m_ControlDamper.Tick(UTime.deltaTime, control);
+        }
+
         protected override void PopulatePositions(Transform _transform, List<Vector3> _vertices, List<Vector3> _tangents)
         {
             CalculatePositions(_transform,out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
-            control = m_ControlDamper.Tick(UTime.deltaTime, control);
-            m_Curve = new GBezierCurveQuadratic(srcPosition, dstPosition, control);
-
-            for (int i = 0; i < 64; i++)
+            m_Curve = new GBezierCurveQuadratic(srcPosition, dstPosition, m_ControlDamper.value.xyz);
+            for (var i = 0; i < m_Resolution; i++)
             {
-                var evaluate = (float)i/63;
+                var evaluate = (float)i/(m_Resolution-1);
                 _vertices.Add(m_Curve.Evaluate(evaluate));
                 var tangent = m_Curve.EvaluateTangent(evaluate);
                 var biTangent = Vector3.Lerp(srcBiTangent,dstBiTangent,evaluate);
@@ -95,11 +98,6 @@ namespace Runtime
     
     public class RopeRenderer : ARuntimeRendererMonoBehaviour<FRopeRenderer>
     {
-        protected void Update()
-        {
-            PopulateMesh();
-        }
-
         public void Initialize() => meshConstructor.Reset(transform);
     }
     

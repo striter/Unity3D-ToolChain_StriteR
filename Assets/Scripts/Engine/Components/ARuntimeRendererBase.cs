@@ -1,18 +1,33 @@
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Runtime
 {
+    public interface IRuntimeRendererBillboard
+    {
+        bool Billboard { get; }
+    }
+    
     public abstract class ARuntimeRendererBase
     {
+        private Dictionary<Type,int> kInstanceID = new Dictionary<Type, int>();
+        
+        private static int kInstanceCount = 0;
         private Mesh m_Mesh;
-        public Mesh Mesh => m_Mesh;
+
         public virtual Mesh Initialize(Transform _transform)
         {
-            m_Mesh = new Mesh {name = GetInstanceName(),hideFlags = HideFlags.HideAndDontSave};
+            var type = GetType();
+            if(!kInstanceID.TryGetValue(type,out var count))
+                kInstanceID.Add(type,0);
+            
+            m_Mesh = new Mesh {name = $"{type.Name} {count}",hideFlags = HideFlags.HideAndDontSave};
             m_Mesh.MarkDynamic();
+            
+            kInstanceID[type] = count+1;
             return m_Mesh;
         }
 
@@ -20,6 +35,11 @@ namespace Runtime
         {
             GameObject.DestroyImmediate(m_Mesh);
             m_Mesh = null;
+        }
+
+        public virtual void Tick(Transform _transform,float _deltaTime)
+        {
+            
         }
         
         public void PopulateMesh(Transform _transform,Transform _viewTransform)
@@ -30,11 +50,9 @@ namespace Runtime
             PopulateMesh(m_Mesh,_transform,_viewTransform);
         }
 
-        protected virtual string GetInstanceName() => "Runtime Mesh";
         protected abstract void PopulateMesh(Mesh _mesh,Transform _transform,Transform _viewTransform);
         public virtual void OnValidate(){}
         public virtual void DrawGizmos(Transform _transform,Transform _viewTransform){}
-        public virtual bool isBillboard() => false;
     }
     
     [ExecuteInEditMode,RequireComponent(typeof(MeshFilter),typeof(MeshRenderer)),DisallowMultipleComponent]
@@ -58,16 +76,21 @@ namespace Runtime
 
         private void OnEnable()
         {
-            if(meshConstructor.isBillboard())
+            if(meshConstructor is IRuntimeRendererBillboard { Billboard: true })
                 RenderPipelineManager.beginCameraRendering += BillboardValidator;
             RenderPipelineManager.beginCameraRendering += BeginRendering;
         }
 
         private void OnDisable()
         {
-            if(meshConstructor.isBillboard())
+            if(meshConstructor is IRuntimeRendererBillboard { Billboard: true })
                 RenderPipelineManager.beginCameraRendering -= BillboardValidator;
             RenderPipelineManager.beginCameraRendering -= BeginRendering;
+        }
+
+        protected virtual void Update()
+        {
+            meshConstructor.Tick(transform,UTime.deltaTime);
         }
 
         public void PopulateMesh() => m_Dirty = true;

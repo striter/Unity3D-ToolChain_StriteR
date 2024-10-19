@@ -19,10 +19,6 @@ namespace Runtime
         public float m_Height = 1;
         public float m_Distance = 1;
         [Range(0,0.9999f)]public float m_Falloff = 0.5f;
-
-        private static int kInstanceID = 0;
-        protected override string GetInstanceName() => $"Decal - ({kInstanceID++})";
-        
         protected override void PopulateMesh(Mesh _mesh,Transform _transform,Transform _viewTransform)
         {
             var curBounds = new Bounds(_transform.position,new Vector3(m_Width,m_Height,m_Distance));

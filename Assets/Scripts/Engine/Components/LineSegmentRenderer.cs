@@ -17,10 +17,6 @@ namespace Runtime
         public bool m_ManualInput = false;
         [MFoldout(nameof(m_ManualInput), false)] public float3 m_Normal = kfloat3.up;
         [MFoldout(nameof(m_ManualInput),true)] public float3[] m_Normals =  new [] {GTriangle.kDefault.normal,GTriangle.kDefault.normal,GTriangle.kDefault.normal} ;
-        
-        private static int kInstanceID = 0;
-        protected override string GetInstanceName() => $"Line - ({kInstanceID++})";
-
         private List<float3> m_FinalVertices = new List<float3>();
         //I should put all these stuffs into shaders ?
         protected override void PopulatePositions(Transform _transform, List<Vector3> _vertices, List<Vector3> _tangents)

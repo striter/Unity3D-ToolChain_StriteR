@@ -3,7 +3,7 @@
 [Flags]
 public enum EVertexAttribute
 {
-    None = -1,
+    None = 0,
     UV0 = 1 << 0,
     UV1= 1 << 1,
     UV2= 1 << 2,

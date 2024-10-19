@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
-using UnityEditor;
 using UnityEngine;
 
 namespace Runtime.Geometry

@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Runtime
 {
-    public abstract class ALineRendererBase : ARuntimeRendererBase
+    public abstract class ALineRendererBase : ARuntimeRendererBase , IRuntimeRendererBillboard
     {
         [Header("Shape")]
         public float m_Width = .1f;
@@ -17,8 +17,6 @@ namespace Runtime
         [MFoldout(nameof(m_JointSubdivision), true)] [Range(1,180)] public float m_TolerangeInAngles = 10f;
         [MFoldout(nameof(m_JointSubdivision), true)] [Range(0f,3f)] public float m_DistanceDamper = 0.1f;
         [MFoldout(nameof(m_JointSubdivision), true)] public bool m_ExtraDivision;
-
-        public override bool isBillboard() => m_Billboard;
 
         protected abstract void PopulatePositions(Transform _transform,List<Vector3> _vertices, List<Vector3> _tangents);
 
@@ -166,6 +164,7 @@ namespace Runtime
             TSPoolList<Vector3>.Recycle(tangents);
         }
 
+        public bool Billboard => m_Billboard;
     }
 
 }

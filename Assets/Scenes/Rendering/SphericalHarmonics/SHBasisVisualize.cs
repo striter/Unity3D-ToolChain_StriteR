@@ -23,7 +23,6 @@ namespace Examples.Rendering.SH
     [Serializable]
     public class FSphericalHarmonicsL2VisualizeCore : ARuntimeRendererBase
     {
-        protected override string GetInstanceName() => "SHL2";
         [Range(0,SHBasis.kAvailableBands)] public int band;
         public int basis;
         public PolygonSphereGenerator m_Generator;

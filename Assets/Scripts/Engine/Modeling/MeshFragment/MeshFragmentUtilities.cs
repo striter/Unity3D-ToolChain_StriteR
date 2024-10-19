@@ -186,7 +186,8 @@ namespace MeshFragment
                 _mesh.SetSubMesh(i,new SubMeshDescriptor(indexStart,subMeshCombiner.m_TotalIndexCount));
                 indexStart += subMeshCombiner.m_TotalIndexCount;
                 subMeshIndexes.Dispose();
-                _embedMaterials[i] = _materialLibrary[subMeshCombiner.m_EmbedMaterial];
+                if(subMeshCombiner.m_EmbedMaterial >= 0)
+                    _embedMaterials[i] = _materialLibrary[subMeshCombiner.m_EmbedMaterial];
             }
 
             for (int i = 0; i < subMeshCombiners.Count; i++)

@@ -14,10 +14,8 @@ namespace Runtime.Physics
         [Range(0, 1.5f)] public float z;
         [Range(-5, 5)] public float r;
         public bool poleMatching;
-        
-        [Header("Constants")]
-        [Readonly] public float4 _xp;
-        [Readonly] public float _w,_d,_k1, _k2, _k3;
+        private float4 _xp;
+        private float _w,_d,_k1, _k2, _k3;
         public float duration => 4 / (z * f);
         SecondOrderDynamics Ctor()
         {

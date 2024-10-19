@@ -41,11 +41,21 @@ namespace Runtime.Geometry
 
         public G2Box Move(float2 _deltaPosition)=> new G2Box(center + _deltaPosition, extent);
         
+        
+        public static G2Box MinSize(float2 _min, float2 _size) => new G2Box(_min + _size / 2, _size / 2);
         public static G2Box Minmax(float2 _min, float2 _max)
         {
             var size = _max - _min;
             var extend = size / 2;
             return new G2Box(_min+extend,extend);
+        }
+
+        public IEnumerable<G2Box> Divide(int _division)
+        {
+            var size = this.size / _division;
+            for (var i = 0; i < _division; i++)
+            for (var j = 0; j < _division; j++)
+                yield return MinSize(min + size * new float2(i, j), size);
         }
 
         public bool Contains(float2 _point,float _bias = float.Epsilon)
@@ -121,6 +131,8 @@ namespace Runtime.Geometry
         {
             return GetEnumerator();
         }
+
+        public G2Box Resize(float _factor) => G2Box.Minmax(center - extent * _factor, center + extent * _factor);
         public void DrawGizmos() => Gizmos.DrawWireCube(center.to3xz(),size.to3xz());
     }
 

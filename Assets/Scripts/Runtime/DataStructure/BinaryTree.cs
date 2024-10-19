@@ -24,6 +24,7 @@ namespace Runtime.DataStructure
     {
         private TreeNode m_Root;
         private List<TreeNode> m_TreeNodes = new List<TreeNode>();
+        protected virtual bool Optimize => true;
         protected void Construct_Internal(TreeNode _root, int _maxIteration, int _volumeCapacity,Func<TreeNode,IEnumerable<TreeNode>> _split)
         {
             m_TreeNodes.Clear();
@@ -51,7 +52,7 @@ namespace Runtime.DataStructure
                     finalChildCount -= treeNode.elements.Count;
                     foreach (var childElements in _split(treeNode))
                     {
-                        if(childElements.elements.Count == 0)
+                        if(Optimize && childElements.elements.Count == 0)
                             continue;
                         
                         m_TreeNodes.Add(childElements);

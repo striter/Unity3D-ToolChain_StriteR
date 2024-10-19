@@ -48,7 +48,7 @@ namespace Runtime.DataStructure
                 foreach (var node in GetParents())
                 {
                     Gizmos.color = UColor.IndexToColor(node.iteration).SetA(.2f);
-                    if (node.boundary is IGeometry boundsShape)
+                    if (node.boundary is IGizmos boundsShape)
                         boundsShape.DrawGizmos();
                 }
             }
@@ -58,12 +58,17 @@ namespace Runtime.DataStructure
                 foreach (var leaf in GetLeafs())
                 {
                     Gizmos.color = UColor.IndexToColor(index++);
-                    if (leaf.boundary is IGeometry boundsShape)
-                        boundsShape.DrawGizmos();
+                    switch (leaf.boundary)
+                    {
+                        case IGizmos gizmos:
+                            gizmos.DrawGizmos();
+                            break;
+                    }
+                    
                     foreach (var element in leaf.elements)
                         switch (element)
                         {
-                            case IGeometry gizmos:
+                            case IGizmos gizmos:
                                 gizmos.DrawGizmos();
                                 break;
                             case float3 v:
@@ -85,7 +90,7 @@ namespace Runtime.DataStructure
                 foreach (var node in GetParents())
                 {
                     UnityEditor.Handles.color = UColor.IndexToColor(node.iteration).SetA(.2f);
-                    if (node.boundary is IVolume boundsShape)
+                    if (node.boundary is IHandles boundsShape)
                         boundsShape.DrawHandles();
                 }
             }
@@ -95,12 +100,12 @@ namespace Runtime.DataStructure
                 foreach (var leaf in GetLeafs())
                 {
                     UnityEditor.Handles.color = UColor.IndexToColor(index++);
-                    if (leaf.boundary is IVolume boundsShape)
+                    if (leaf.boundary is IHandles boundsShape)
                         boundsShape.DrawHandles();
                     foreach (var element in leaf.elements)
                         switch (element)
                         {
-                            case IVolume handles:
+                            case IHandles handles:
                                 handles.DrawHandles();
                                 break;
                             case float3 v:

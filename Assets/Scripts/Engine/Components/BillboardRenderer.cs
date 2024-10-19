@@ -8,15 +8,12 @@ using UnityEngine;
 namespace Runtime
 {
     [Serializable]
-    public class FBillboardRendererCore : ARuntimeRendererBase
+    public class FBillboardRendererCore : ARuntimeRendererBase,IRuntimeRendererBillboard
     {
         public float m_Width = 1;
         public float m_Height = 1;
         [Range(0,360f)] public float m_Rotate = 0;
         public EBillboardType m_PositionMatching = EBillboardType.Position;
-
-        private static int kInstanceID = 0;
-        protected override string GetInstanceName() => $"Billboard - {kInstanceID++}";
 
         protected override void PopulateMesh(Mesh _mesh,Transform _transform,Transform _viewTransform)
         {
@@ -55,7 +52,7 @@ namespace Runtime
             _mesh.SetUVs(0,uvs);
         }
 
-        public override bool isBillboard() => true;
+        public bool Billboard => true;
     }
     
     public class BillboardRenderer : ARuntimeRendererMonoBehaviour<FBillboardRendererCore>

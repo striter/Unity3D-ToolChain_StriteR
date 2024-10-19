@@ -10,11 +10,24 @@ namespace Runtime.Geometry
         public float3 Normal { get; }
     }
     
-    public interface IVolume : IGeometry
+    public interface IVolume : IGeometry , IHandles
     {
         float3 GetSupportPoint(float3 _direction);
         public GBox GetBoundingBox();
         public GSphere GetBoundingSphere();
+        
+        #if UNITY_EDITOR
+        void IHandles.DrawHandles()
+        {
+            switch (this)
+            {
+                default: UnityEngine.Debug.LogWarning($"Unknown Handles For Volume {this.GetType()}"); break;
+                case GBox box: UnityEditor.Handles.DrawWireCube(box.center,box.size); break;
+                case GSphere sphere: UnityEditor.UHandles.DrawWireSphere(sphere.center,sphere.radius); break;
+            }
+        }
+        #endif
+        
     }
     
     public interface IConvex : IGeometry , IEnumerable<float3>
@@ -22,20 +35,6 @@ namespace Runtime.Geometry
         public IEnumerable<float3> GetAxes();
     }
 
-    public static class IVolume_Extension
-    {
-#if UNITY_EDITOR
-        public static void DrawHandles(this IVolume _volume)
-        {
-            switch (_volume)
-            {
-                default: UnityEngine.Debug.LogWarning($"Unknown Handles For Volume {_volume.GetType()}"); break;
-                case GBox box: UnityEditor.Handles.DrawWireCube(box.center,box.size); break;
-                case GSphere sphere: UnityEditor.UHandles.DrawWireSphere(sphere.center,sphere.radius); break;
-            }
-        }
-#endif
-    }
 
     public static class IConvex_Extension
     {
