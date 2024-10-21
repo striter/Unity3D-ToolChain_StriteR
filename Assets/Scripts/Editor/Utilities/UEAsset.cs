@@ -285,7 +285,7 @@ namespace UnityEditor.Extensions
             return asset;
         }
         
-        public static T LoadAssetFromUniqueAssetPath<T>(string aAssetPath) where T : UnityEngine.Object
+        public static T LoadAssetFromUniqueAssetPath<T>(string aAssetPath) where T : Object
         {
             if (!aAssetPath.Contains("::")) 
                 return AssetDatabase.LoadAssetAtPath<T>(aAssetPath);

@@ -9,13 +9,8 @@ namespace Runtime.Geometry
     {
         public float Radius => radius;
         public int kMaxBoundsCount => 3;
-        IRound<float2> IRound<float2>.Create(IList<float2> _positions)
-        {
-            return Create(_positions);
-        }
-        
+        IRound<float2> IRound<float2>.Create(IList<float2> _positions) =>Create(_positions);
         public static G2Circle Minmax(float2 _a, float2 _b) => new G2Circle((_a + _b) / 2,math.length(_b-_a)/2);
-
         public static G2Circle TriangleCircumscribed(G2Triangle _triangle) => TriangleCircumscribed(_triangle.V0,_triangle.V1,_triangle.V2);
         public static G2Circle TriangleCircumscribed(float2 _a, float2 _b, float2 _c)
         {

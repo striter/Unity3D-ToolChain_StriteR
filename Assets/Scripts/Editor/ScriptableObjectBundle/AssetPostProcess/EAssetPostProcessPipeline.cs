@@ -10,12 +10,15 @@ namespace UnityEditor.Extensions.AssetPipeline.Model
     {
         private IEnumerable<Y> Filter<Y>() where Y:AssetPostProcessRule
         {
-            foreach (var bundle in AssetPostProcessBundle.kBundles.Collect(p=>p.m_Enable))
+            var guids = AssetDatabase.FindAssets($"t:{typeof(Y).Name}");
+            foreach (var guid in guids)
             {
-                var directory = AssetDatabase.GetAssetPath(bundle).GetPathDirectory();
+                var assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                var directory = assetPath.GetPathDirectory();
                 if (!assetPath.Contains(directory))
                     continue;
-                
+
+                var bundle = AssetDatabase.LoadAssetAtPath<AScriptableObjectBundle>(assetPath);
                 foreach (var rule in bundle.m_Objects.CollectAs<ScriptableObject, Y>())
                     yield return rule;
             }

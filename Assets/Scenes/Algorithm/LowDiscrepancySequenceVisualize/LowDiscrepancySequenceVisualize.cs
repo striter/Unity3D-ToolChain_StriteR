@@ -47,7 +47,7 @@ namespace Examples.Algorithm.SamplePatternVisualize
                     ULowDiscrepancySequences.Hammersley2D((uint)i, (uint)(patternWidth * patternHeight)) - .5f),
                 ESamplePattern.Sobol => ULowDiscrepancySequences.Sobol2D((uint)(patternWidth * patternHeight)),
                 ESamplePattern.PoissonDisk => m_Texture != null
-                    ? ULowDiscrepancySequences.PoissonDisk2D(patternWidth, patternHeight, 30, null,
+                    ? ULowDiscrepancySequences.PoissonDisk2D(patternWidth*patternHeight, 30, null,
                         val => math.lerp(3f, 1f,
                             UColor.RGBtoLuminance(m_Texture.GetPixel((int)(val.x * m_Texture.width),
                                     (int)(val.y * m_Texture.height))

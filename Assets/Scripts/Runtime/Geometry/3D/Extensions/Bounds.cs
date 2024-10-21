@@ -61,7 +61,7 @@ namespace Runtime.Geometry.Extension
             return boundingSphere;
         }
 
-        public static GSphere GetBoundingSphere(IEnumerable<float3> _positions) => EPOS.Evaluate(_positions,EPOS.EMode.EPOS26,Welzl<GSphere,float3>.Evaluate);
+        public static GSphere GetBoundingSphere(IEnumerable<float3> _positions) => EPOS._3D.Evaluate(_positions,EPOS._3D.EMode.EPOS26,Welzl<GSphere,float3>.Evaluate);
         public static GEllipsoid GetBoundingEllipsoid(IEnumerable<float3> _positions)
         {
             var box = GetBoundingBox(_positions);

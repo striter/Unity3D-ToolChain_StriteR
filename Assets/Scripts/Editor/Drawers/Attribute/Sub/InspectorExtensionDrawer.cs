@@ -24,6 +24,9 @@ namespace UnityEditor.Extensions
             
             foreach (var method in inspectorMethods)
             {
+                if(!method.attribute.IsElementVisible(target))
+                    continue;
+                
                 height += kPadding;
                 if (method.parameters.Length == 0)
                 {
@@ -50,6 +53,9 @@ namespace UnityEditor.Extensions
             position = position.MoveX(25).ResizeX(position.size.x - 25);
             foreach (var data in inspectorMethods)
             {
+                if(!data.attribute.IsElementVisible(target))
+                    continue;
+                
                 position = position.MoveY().ResizeY(kPadding);
                 if (data.parameters.Length == 0)
                 {

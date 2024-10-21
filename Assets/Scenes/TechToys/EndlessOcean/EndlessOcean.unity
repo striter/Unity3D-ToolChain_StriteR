@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 462668156}
   - component: {fileID: 462668155}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -156,14 +156,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   meshConstructor:
     m_BoundaryDivision: 3
-    m_CellDivision: 32
+    m_CellDivision: 16
     m_Boundary:
       center:
         x: 0
         y: 0
       extent:
-        x: 100
-        y: 100
+        x: 500
+        y: 500
+    m_Chunk:
+      m_Division: 3
   m_DrawGizmos: 1
 --- !u!4 &462668154
 Transform:
@@ -200,7 +202,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 95908d19ee6e18344b4074c38f9a640c, type: 2}
+  - {fileID: 2100000, guid: b736cae2b6800e148a0819f77d8ecfbf, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

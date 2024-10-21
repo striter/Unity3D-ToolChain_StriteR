@@ -137,7 +137,7 @@ public static class UReflection
             dstObject = tarObject;
         }
     }
-    public static IEnumerable<FieldInfo> GetAllFields(this Type _type,BindingFlags _flags)
+    public static IEnumerable<FieldInfo> GetAllFields(this Type _type,BindingFlags _flags = BindingFlags.Instance)
     {
         if (_type == null)
             throw new NullReferenceException();

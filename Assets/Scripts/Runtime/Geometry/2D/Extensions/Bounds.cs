@@ -38,7 +38,7 @@ namespace Runtime.Geometry.Extension
             );
         }
         
-        public static G2Circle GetBoundingCircle(IList<float2> _positions) => Welzl<G2Circle, float2>.Evaluate(_positions);
+        public static G2Circle GetBoundingCircle(IList<float2> _positions) => EPOS._2D.Evaluate(_positions, EPOS._2D.EMode.EPOS8,Welzl<G2Circle, float2>.Evaluate);
 
         public static List<float2> GetBoundingPolygon(IList<float2> _positions,float _bias = float.Epsilon)        //Graham Scan
         {

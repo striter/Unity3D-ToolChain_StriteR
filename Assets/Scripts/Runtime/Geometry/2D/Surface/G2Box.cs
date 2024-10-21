@@ -58,9 +58,9 @@ namespace Runtime.Geometry
                 yield return MinSize(min + size * new float2(i, j), size);
         }
 
-        public bool Contains(float2 _point,float _bias = float.Epsilon)
+        public bool Contains(float2 _point,float _tolerence = float.Epsilon)
         {
-            var absOffset = math.abs(center-_point) + _bias;
+            var absOffset = math.abs(center-_point) - _tolerence;
             return absOffset.x < extent.x && absOffset.y < extent.y;
         }
 
