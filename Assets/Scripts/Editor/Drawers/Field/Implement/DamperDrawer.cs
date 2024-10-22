@@ -15,10 +15,7 @@ namespace UnityEditor.Extensions
             int division1 =(int)( 10f/kDeltaTime * sizeAspect);
             int division2 = (int)( 20f/kDeltaTime * sizeAspect);
             
-            Damper damper = Damper.kDefault;
-            var info = _property.GetFieldInfo(out var parentObject);
-            UReflection.CopyFields(info.GetValue(parentObject),damper);
-            damper.Initialize(Vector3.zero);
+            Damper damper = (Damper)_property.GetFieldInfo(out var parentObject).GetValue(parentObject);
             
             for (int i = 0; i < _helper.sizeX; i++)
             {

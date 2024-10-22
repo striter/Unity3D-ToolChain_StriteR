@@ -43,6 +43,7 @@ namespace EndlessOcean
         [Range(1,64)]public int m_CellDivision = 3;
         public G2Box m_Boundary;
         public EndlessOceanChunk m_Chunk = new EndlessOceanChunk();
+        public Camera m_CullingCamera;
     
         void Ctor()
         {
@@ -53,13 +54,28 @@ namespace EndlessOcean
         
         protected override void PopulateMesh(Mesh _mesh, Transform _transform, Transform _viewTransform)
         {
+            if (!m_CullingCamera)
+                return;
+            
             var indexes = UList.Empty<int>();
             var vertices = UList.Empty<float2>();
+            var normals = UList.Empty<Vector3>();
+            var tangents = UList.Empty<Vector4>();
             var positions = ULowDiscrepancySequences.PoissonDisk2D(m_CellDivision * m_CellDivision,30).Remake(p=>p+.5f);
+
+            var frustumPlanes = new GFrustum(m_CullingCamera).GetFrustumPlanes();
+            
+            
             foreach (var node in m_Chunk.GetLeafs())
             {
                 var boundary = node.boundary;
+                var boundary3D = node.boundary.To3XZ();
+                if(!frustumPlanes.AABBIntersection(boundary3D))
+                    continue;
+                
                 vertices.AddRange(positions.Select(p => boundary.GetPoint(p)));
+                normals.AddRange(positions.Select(p => Vector3.up));
+                tangents.AddRange(positions.Select(p => Vector3.forward.ToVector4(1f)));
             }
             
             var triangles = UList.Empty<PTriangle>();
@@ -67,6 +83,8 @@ namespace EndlessOcean
             indexes.AddRange(triangles.Resolve<PTriangle,int>());
             
             _mesh.SetVertices(vertices.Select(p=>(Vector3)p.to3xz()).ToList());
+            _mesh.SetNormals(normals);
+            _mesh.SetTangents(tangents);
             _mesh.SetIndices(indexes,MeshTopology.Triangles,0);
             
             

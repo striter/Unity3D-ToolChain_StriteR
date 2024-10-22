@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   meshConstructor:
-    m_BoundaryDivision: 3
+    m_BoundaryDivision: 5
     m_CellDivision: 16
     m_Boundary:
       center:
@@ -166,6 +166,7 @@ MonoBehaviour:
         y: 500
     m_Chunk:
       m_Division: 3
+    m_CullingCamera: {fileID: 971045254}
   m_DrawGizmos: 1
 --- !u!4 &462668154
 Transform:
@@ -320,13 +321,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 511821754}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: -0.26245058, y: -0.7103658, z: 0.331249, w: -0.5628271}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 50, y: -256.78, z: 0}
 --- !u!114 &511821757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -436,13 +437,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 971045252}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.02904643, y: -0, z: -0, w: 0.99957806}
+  m_LocalPosition: {x: 0, y: 4.14, z: -6.24}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 3.329, y: 0, z: 0}
 --- !u!114 &971045256
 MonoBehaviour:
   m_ObjectHideFlags: 0
