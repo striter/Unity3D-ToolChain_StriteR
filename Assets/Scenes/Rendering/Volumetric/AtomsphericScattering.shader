@@ -10,6 +10,8 @@ Shader "Game/Skybox/AtomsphericScattering"
     }
     SubShader
     {
+        Tags { "Queue" = "Transparent" }
+        
         Pass
         {
             ZWrite Off
