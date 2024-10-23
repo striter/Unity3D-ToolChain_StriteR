@@ -122,12 +122,12 @@ namespace Examples.ArtScenes.CornellBox
             m_ViewRoot.SetChildLayer(layer);
             m_RenderTexture = RenderTexture.GetTemporary(Screen.width, Screen.height, 0, RenderTextureFormat.ARGB32);
             m_Quad = _quad;
-            var meshRoot = transform.GetComponentInChildren<MeshRenderer>();
             
-            var right = m_Quad.GetVertexTangents().Average();
-            var up = m_Quad.GetVertexNormals().Average();
-            var axis = new GAxis(_quad.GetBaryCenter(),right, up);
-            meshRoot.transform.parent.SetPositionAndRotation(axis.origin,axis.GetRotation());
+            var quadRenderer = transform.GetComponentInChildren<QuadRenderer>();
+            quadRenderer.m_Quad = _quad;
+            quadRenderer.SetDirty();
+            
+            var meshRoot = transform.GetComponentInChildren<MeshRenderer>();
             meshRoot.GetComponentInChildren<MeshRenderer>().material.mainTexture = m_RenderTexture;
             m_Camera.targetTexture = m_RenderTexture;
             m_Camera.cullingMask = layerMask;
