@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Runtime
 {
-    public abstract class ALineRendererBase : ARuntimeRendererBase , IRuntimeRendererBillboard
+    public abstract class ALineRendererBase : ARendererBase , IRuntimeRendererBillboard
     {
         [Header("Shape")]
         public float m_Width = .1f;
@@ -18,11 +18,11 @@ namespace Runtime
         [MFoldout(nameof(m_JointSubdivision), true)] [Range(0f,3f)] public float m_DistanceDamper = 0.1f;
         [MFoldout(nameof(m_JointSubdivision), true)] public bool m_ExtraDivision;
 
-        protected abstract void PopulatePositions(Transform _transform,List<Vector3> _vertices, List<Vector3> _tangents);
+        protected abstract void PopulatePositions(List<Vector3> _vertices, List<Vector3> _tangents);
 
-        private void PopulatePositions_Internal(Transform _transform, List<Vector3> _positions, List<Vector3> _tangents,Transform _viewTransform)
+        private void PopulatePositions_Internal(List<Vector3> _positions, List<Vector3> _tangents,Transform _viewTransform)
         {
-            PopulatePositions(_transform,_positions,_tangents);
+            PopulatePositions(_positions,_tangents);
             var count = _positions.Count;
             if (m_JointSubdivision)
             {
@@ -94,12 +94,12 @@ namespace Runtime
             }
         }
         
-        protected sealed override void PopulateMesh(Mesh _mesh,Transform _transform,Transform _viewTransform)
+        protected sealed override void PopulateMesh(Mesh _mesh,Transform _viewTransform)
         {
-            Matrix4x4 worldToLocal = _transform.worldToLocalMatrix;
+            Matrix4x4 worldToLocal = transform.worldToLocalMatrix;
             TSPoolList<Vector3>.Spawn(out var positions);
             TSPoolList<Vector3>.Spawn(out var tangents);
-            PopulatePositions_Internal(_transform,positions, tangents,_viewTransform);
+            PopulatePositions_Internal(positions, tangents,_viewTransform);
             var count = positions.Count;
             if (count > 1)
             {
@@ -167,4 +167,6 @@ namespace Runtime
         public bool Billboard => m_Billboard;
     }
 
+    
+    
 }

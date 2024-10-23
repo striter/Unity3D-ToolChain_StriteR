@@ -8,14 +8,13 @@ using UnityEngine;
 namespace Runtime
 {
     [Serializable]
-    public class FBillboardRendererCore : ARuntimeRendererBase,IRuntimeRendererBillboard
+    public class BillboardRenderer : ARendererBase , IRuntimeRendererBillboard
     {
         public float m_Width = 1;
         public float m_Height = 1;
         [Range(0,360f)] public float m_Rotate = 0;
         public EBillboardType m_PositionMatching = EBillboardType.Position;
-
-        protected override void PopulateMesh(Mesh _mesh,Transform _transform,Transform _viewTransform)
+        protected override void PopulateMesh(Mesh _mesh, Transform _viewTransform)
         {
             var U = _viewTransform.up;
             var R = _viewTransform.right;
@@ -23,14 +22,14 @@ namespace Runtime
             {
                 case EBillboardType.Position:
                 {
-                    var Z = (_viewTransform.position - _transform.position).normalized;
+                    var Z = (_viewTransform.position - transform.position).normalized;
                     U = math.cross(R,Z);
                     R = math.cross(Z,U);
                 }
                     break;
                 case EBillboardType.YConstrained:
                 {
-                    var Z = (_viewTransform.position - _transform.position).normalized;
+                    var Z = (_viewTransform.position - transform.position).normalized;
                     U = Vector3.up;
                     R = math.cross(Z,U).normalize();
                 }
@@ -53,10 +52,6 @@ namespace Runtime
         }
 
         public bool Billboard => true;
-    }
-    
-    public class BillboardRenderer : ARuntimeRendererMonoBehaviour<FBillboardRendererCore>
-    {
     }
 }
 public enum EBillboardType

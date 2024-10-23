@@ -52,16 +52,17 @@ namespace Runtime.Geometry.Extension
             };
         }
         public static void FillQuadTriangle(this GQuad _quad, List<Vector3> _vertices, List<int> _indices,
-            List<Vector2> _uvs, List<Vector3> _normals,List<Color> _colors,Color _color=default)
+            List<Vector2> _uvs = default, List<Vector3> _normals = default,List<Vector4> _tangents = default,List<Color> _colors = default,Color _color=default)
         {
             int indexOffset = _vertices.Count;
             for (int i = 0; i < 4; i++)
             {
                 _vertices.Add(_quad[i]);
                 _uvs?.Add(IndexToQuadUV(i));
-                _normals?.AddRange(_quad.GetNormals().Select(p=>(Vector3)p));
                 _colors?.Add(_color);
-            }
+            };
+            _normals?.AddRange(_quad.GetVertexNormals().Select(p=>(Vector3)p));
+            _tangents?.AddRange(_quad.GetVertexTangents().Select(p=>(Vector4)p.to4(1)));
             QuadToTriangleIndices(_indices, indexOffset + 0, indexOffset + 1, indexOffset + 2,indexOffset+3);
         }
 

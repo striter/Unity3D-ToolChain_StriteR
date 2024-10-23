@@ -31,7 +31,7 @@ namespace Runtime.Optimize.Imposter
             else
             {
                 var renderer = gameObject.AddComponent<ImposterRenderer>();
-                renderer.meshConstructor.m_Data = imposterData;
+                renderer.m_Data = imposterData;
                 renderer.OnValidate();
             }
 

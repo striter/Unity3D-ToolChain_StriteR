@@ -29,7 +29,7 @@ namespace Runtime.Geometry
         void Ctor()
         {
             axis = new GAxis(V0,V1-V0,V2-V0);
-            normal = axis.forward;
+            normal = axis.forward.normalize();
             baryCentre = GetBarycenter();
         }
     }

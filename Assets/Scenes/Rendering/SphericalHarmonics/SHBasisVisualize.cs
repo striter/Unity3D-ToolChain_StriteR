@@ -20,8 +20,8 @@ namespace Examples.Rendering.SH
         public half2 texCoord0;
     }
     
-    [Serializable]
-    public class FSphericalHarmonicsL2VisualizeCore : ARuntimeRendererBase
+    [ExecuteInEditMode]
+    public class SHBasisVisualize : ARendererBase
     {
         [Range(0,SHBasis.kAvailableBands)] public int band;
         public int basis;
@@ -36,7 +36,7 @@ namespace Examples.Rendering.SH
             public half2 texCoord0;
         }
         
-        protected override void PopulateMesh(Mesh _mesh, Transform _transform, Transform _viewTransform)
+        protected override void PopulateMesh(Mesh _mesh, Transform _viewTransform)
         {
             var meshDataArray = Mesh.AllocateWritableMeshData(1);
             var meshData = meshDataArray[0];
@@ -87,10 +87,5 @@ namespace Examples.Rendering.SH
             _mesh.bounds = meshData.GetSubMesh(0).bounds;
             UnityEngine.Mesh.ApplyAndDisposeWritableMeshData(meshDataArray,_mesh, MeshUpdateFlags.DontRecalculateBounds);
         }
-    }
-    
-    [ExecuteInEditMode]
-    public class SHBasisVisualize : ARuntimeRendererMonoBehaviour<FSphericalHarmonicsL2VisualizeCore>
-    {
     }
 }

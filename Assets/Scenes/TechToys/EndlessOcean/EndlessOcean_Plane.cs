@@ -36,23 +36,26 @@ namespace EndlessOcean
         }
     }
     
-    [Serializable]
-    public class EndlessOceanPlaneConstructor : ARuntimeRendererBase, ISerializationCallbackReceiver
+    
+    
+    public class EndlessOcean_Plane : ARendererBase
     {
+        
         [Range(1,5)]public int m_BoundaryDivision = 3;
         [Range(1,64)]public int m_CellDivision = 3;
         public G2Box m_Boundary;
         public EndlessOceanChunk m_Chunk = new EndlessOceanChunk();
         public Camera m_CullingCamera;
-    
-        void Ctor()
+
+        protected override void Validate()
         {
+            base.Validate();
             var elements = UList.Empty<float2>();
             elements.Add(float2.zero);
             m_Chunk.Construct(elements,m_Boundary,m_BoundaryDivision,0);
         }
-        
-        protected override void PopulateMesh(Mesh _mesh, Transform _transform, Transform _viewTransform)
+
+        protected override void PopulateMesh(Mesh _mesh,Transform _viewTransform)
         {
             if (!m_CullingCamera)
                 return;
@@ -122,9 +125,9 @@ namespace EndlessOcean
             // UMeshFragment.Combine(meshFragments,_mesh,null,out var embedMaterials,EVertexAttribute.None);
         }
 
-        public override void DrawGizmos(Transform _transform, Transform _viewTransform)
+        public override void DrawGizmos(Transform _viewTransform)
         {
-            Gizmos.matrix = _transform.localToWorldMatrix;
+            Gizmos.matrix = transform.localToWorldMatrix;
             foreach (var (index, parent) in m_Chunk.GetLeafs().LoopIndex())
             {
                 Gizmos.color = UColor.IndexToColor(index);
@@ -132,14 +135,6 @@ namespace EndlessOcean
             }
         }
 
-        public void OnBeforeSerialize(){}
-        public void OnAfterDeserialize() => Ctor();
-    }
-    
-    
-    public class EndlessOcean_Plane : ARuntimeRendererMonoBehaviour<EndlessOceanPlaneConstructor>
-    {
-        
     }
 
 }

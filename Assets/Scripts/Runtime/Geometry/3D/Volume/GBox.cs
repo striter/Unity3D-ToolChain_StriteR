@@ -46,6 +46,7 @@ namespace Runtime.Geometry
 
         public GBox GetBoundingBox() => this;
         public float3 GetPoint(float3 _uvw) => center + _uvw * size;
+        public float3 GetPoint(float _u, float _v, float _w) => GetPoint(new float3(_u, _v, _w));
         public float3 Origin => center;
 
         public bool Contains(float3 _point,float _bias = float.Epsilon)
@@ -74,6 +75,17 @@ namespace Runtime.Geometry
                 yield return new GPlane(kfloat3.back,GetPoint(kfloat3.forward*.5f));
             }
         }
+
+        public IEnumerable<GQuad> GetQuads()
+        {
+            yield return new GQuad(GetPoint(.5f,-.5f,-.5f),GetPoint(-.5f,-.5f,-.5f),GetPoint(-.5f,.5f,-.5f),GetPoint(.5f,.5f,-.5f));
+            yield return new GQuad(GetPoint(-.5f,-.5f,-.5f),GetPoint(-.5f,-.5f,.5f),GetPoint(-.5f,.5f,.5f),GetPoint(-.5f,.5f,-.5f));
+            yield return new GQuad(GetPoint(-.5f,-.5f,.5f),GetPoint(.5f,-.5f,.5f),GetPoint(.5f,.5f,.5f),GetPoint(-.5f,.5f,.5f));
+            yield return new GQuad(GetPoint(.5f,-.5f,.5f),GetPoint(.5f,-.5f,-.5f),GetPoint(.5f,.5f,-.5f),GetPoint(.5f,.5f,.5f));
+            yield return new GQuad(GetPoint(.5f,-.5f,.5f),GetPoint(-.5f,-.5f,.5f),GetPoint(-.5f,-.5f,-.5f),GetPoint(.5f,-.5f,-.5f));
+            yield return new GQuad(GetPoint(.5f,.5f,-.5f),GetPoint(-.5f,.5f,-.5f),GetPoint(-.5f,.5f,.5f),GetPoint(.5f,.5f,.5f));
+        }
+        
         public IEnumerable<float3> GetAxes()
         {
             yield return kfloat3.right;
@@ -93,22 +105,17 @@ namespace Runtime.Geometry
         public static readonly GBox kDefault = new GBox(0f,.5f);
         public IEnumerator<float3> GetEnumerator()
         {
-            yield return GetPoint(new float3(-.5f,-.5f,-.5f));
-            yield return GetPoint(new float3(-.5f,.5f,-.5f));
-            yield return GetPoint(new float3(-.5f,-.5f,.5f));
-            yield return GetPoint(new float3(-.5f,.5f,.5f));
-            yield return GetPoint(new float3(.5f,-.5f,-.5f));
-            yield return GetPoint(new float3(.5f,.5f,-.5f));
-            yield return GetPoint(new float3(.5f,-.5f,.5f));
-            yield return GetPoint(new float3(.5f,.5f,.5f));
+            yield return GetPoint(-.5f,-.5f,-.5f);
+            yield return GetPoint(-.5f,.5f,-.5f);
+            yield return GetPoint(-.5f,-.5f,.5f);
+            yield return GetPoint(-.5f,.5f,.5f);
+            yield return GetPoint(.5f,-.5f,-.5f);
+            yield return GetPoint(.5f,.5f,-.5f);
+            yield return GetPoint(.5f,-.5f,.5f);
+            yield return GetPoint(.5f,.5f,.5f);
         }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-
+        
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         public float3 GetSupportPoint(float3 _direction)
         {
             var invRayDir = 1f/_direction;

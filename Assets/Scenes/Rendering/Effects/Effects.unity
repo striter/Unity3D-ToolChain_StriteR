@@ -397,6 +397,180 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 131890177}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &192610383
+GameObject:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 192610385}
+  - component: {fileID: 192610384}
+  m_Layer: 0
+  m_Name: '!ftraceLightmaps'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &192610384
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 192610383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7fa80e7116296f4eb4f49ec1544ee22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  renderSettingsBounces: 5
+  renderSettingsGISamples: 16
+  renderSettingsGIBackFaceWeight: 0
+  renderSettingsTileSize: 512
+  renderSettingsPriority: 2
+  renderSettingsTexelsPerUnit: 20
+  renderSettingsForceRefresh: 1
+  renderSettingsForceRebuildGeometry: 1
+  renderSettingsPerformRendering: 1
+  renderSettingsUserRenderMode: 0
+  renderSettingsDistanceShadowmask: 1
+  renderSettingsSettingsMode: 0
+  renderSettingsFixSeams: 1
+  renderSettingsDenoise: 1
+  renderSettingsDenoise2x: 0
+  renderSettingsEncode: 1
+  renderSettingsEncodeMode: 0
+  renderSettingsOverwriteWarning: 0
+  renderSettingsAutoAtlas: 1
+  renderSettingsUnwrapUVs: 1
+  renderSettingsForceDisableUnwrapUVs: 0
+  renderSettingsMaxAutoResolution: 4096
+  renderSettingsMinAutoResolution: 16
+  renderSettingsUnloadScenes: 1
+  renderSettingsAdjustSamples: 1
+  renderSettingsGILODMode: 2
+  renderSettingsGILODModeEnabled: 0
+  renderSettingsCheckOverlaps: 0
+  renderSettingsSkipOutOfBoundsUVs: 1
+  renderSettingsHackEmissiveBoost: 1
+  renderSettingsHackIndirectBoost: 1
+  renderSettingsTempPath: 
+  renderSettingsOutPath: BakeryLightmaps
+  renderSettingsUseScenePath: 0
+  renderSettingsHackAOIntensity: 0
+  renderSettingsHackAOSamples: 16
+  renderSettingsHackAORadius: 1
+  renderSettingsShowAOSettings: 0
+  renderSettingsShowTasks: 1
+  renderSettingsShowTasks2: 0
+  renderSettingsShowPaths: 1
+  renderSettingsShowNet: 1
+  renderSettingsOcclusionProbes: 0
+  renderSettingsTexelsPerMap: 0
+  renderSettingsTexelsColor: 1
+  renderSettingsTexelsMask: 1
+  renderSettingsTexelsDir: 1
+  renderSettingsShowDirWarning: 1
+  renderSettingsRenderDirMode: 0
+  renderSettingsShowCheckerSettings: 0
+  renderSettingsSamplesWarning: 1
+  renderSettingsSuppressPopups: 0
+  renderSettingsPrefabWarning: 1
+  renderSettingsSplitByScene: 0
+  renderSettingsSplitByTag: 0
+  renderSettingsUVPaddingMax: 0
+  renderSettingsPostPacking: 1
+  renderSettingsHoleFilling: 0
+  renderSettingsBeepOnFinish: 0
+  renderSettingsExportTerrainAsHeightmap: 1
+  renderSettingsRTXMode: 0
+  renderSettingsLightProbeMode: 1
+  renderSettingsClientMode: 0
+  renderSettingsServerAddress: 127.0.0.1
+  renderSettingsUnwrapper: 0
+  renderSettingsDenoiserType: 100
+  renderSettingsExportTerrainTrees: 0
+  renderSettingsShowPerf: 1
+  renderSettingsSampleDiv: 1
+  renderSettingsAtlasPacker: 0
+  renderSettingsBatchPoints: 1
+  renderSettingsCompressVolumes: 0
+  renderSettingsSector: {fileID: 0}
+  renderSettingsRTPVExport: 1
+  renderSettingsRTPVSceneView: 1
+  renderSettingsRTPVHDR: 0
+  renderSettingsRTPVWidth: 1000
+  renderSettingsRTPVHeight: 327
+  lastBakeTime: 0
+  enlightenWarningShown: 0
+  enlightenWarningShown2: 0
+  uniqueLights: []
+  lights: []
+  implicitGroups: []
+  implicitGroupedObjects: []
+  bounds: []
+  hasEmissive: 
+  uvBuffOffsets: 
+  uvBuffLengths: 
+  uvSrcBuff: []
+  uvDestBuff: []
+  lmrIndicesOffsets: 
+  lmrIndicesLengths: 
+  lmrIndicesBuff: 
+  lmGroupLODResFlags: 
+  lmGroupMinLOD: 
+  lmGroupLODMatrix: 
+  serverGetFileList: []
+  lightmapHasColor: 
+  lightmapHasMask: 
+  lightmapHasDir: 
+  lightmapHasRNM: 
+  modifiedAssetPathList: []
+  modifiedAssets: []
+  maps: []
+  masks: []
+  dirMaps: []
+  rnmMaps0: []
+  rnmMaps1: []
+  rnmMaps2: []
+  mapsMode: 
+  bakedRenderers: []
+  bakedIDs: 
+  bakedScaleOffset: []
+  bakedVertexOffset: 
+  bakedVertexColorMesh: []
+  nonBakedRenderers: []
+  bakedLights: []
+  bakedLightChannels: 
+  bakedRenderersTerrain: []
+  bakedIDsTerrain: 
+  bakedScaleOffsetTerrain: []
+  assetList: []
+  uvOverlapAssetList: 
+  idremap: 
+  usesRealtimeGI: 0
+  emptyDirectionTex: {fileID: 0}
+  anyVolumes: 0
+  compressedVolumes: 0
+  sectors: []
+--- !u!4 &192610385
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 192610383}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &247969022
 GameObject:
   m_ObjectHideFlags: 0
@@ -1201,39 +1375,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9348aed9be69c7a4f9dde9b9a6623ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshConstructor:
-    m_Width: 0.05
-    m_Billboard: 1
-    m_JointSubdivision: 0
-    m_TolerangeInAngles: 10
-    m_DistanceDamper: 0.1
-    m_ExtraDivision: 0
-    m_Extend: 3
-    m_RopePosition: 0
-    m_EndTransform: {fileID: 0}
-    m_EndPosition: {x: -3.1, y: 22.4, z: 0.37}
-    m_EndBiTangent: {x: 0, y: 4.06, z: 0}
-    m_ControlDamper:
-      mode: 1
-      halfLife: 0.5
-      stiffness: 97
-      damping: 2.3
-      secondOrderDynamics:
-        f: 5
-        z: 0.35
-        r: -0.5
-        poleMatching: 1
-        _xp:
-          x: 1.5840001
-          y: 19.39
-          z: 0.45
-          w: 0
-        _w: 31.415928
-        _d: 29.428862
-        _k1: 0.022281691
-        _k2: 0.0010132118
-        _k3: -0.005570423
-  m_DrawGizmos: 1
+  m_Width: 0.1
+  m_Billboard: 1
+  m_JointSubdivision: 0
+  m_TolerangeInAngles: 10
+  m_DistanceDamper: 0.1
+  m_ExtraDivision: 0
+  m_Extend: 3
+  m_Resolution: 25
+  m_RopePosition: 0
+  m_EndTransform: {fileID: 0}
+  m_EndPosition: {x: -3.12, y: 22.38, z: 0.5}
+  m_EndBiTangent: {x: 1, y: 0, z: 0}
+  m_ControlDamper:
+    mode: 3
+    halfLife: 0
+    stiffness: 89
+    damping: 0.8
+    secondOrderDynamics:
+      f: 0
+      z: 0
+      r: 0
+      poleMatching: 0
 --- !u!23 &515041061
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1615,16 +1778,6 @@ MonoBehaviour:
       z: 0.35
       r: -0.5
       poleMatching: 1
-      _xp:
-        x: 0
-        y: 0
-        z: 0
-        w: 0
-      _w: 31.415928
-      _d: 29.428862
-      _k1: 0.022281691
-      _k2: 0.0010132118
-      _k3: -0.005570423
   m_OriginDistanceDamper:
     mode: 1
     halfLife: 0.5
@@ -1635,16 +1788,6 @@ MonoBehaviour:
       z: 0.35
       r: -0.5
       poleMatching: 1
-      _xp:
-        x: 0
-        y: 0
-        z: 0
-        w: 0
-      _w: 31.415928
-      _d: 29.428862
-      _k1: 0.022281691
-      _k2: 0.0010132118
-      _k3: -0.005570423
 --- !u!23 &744910360
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2030,13 +2173,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3167c09818c490e4f8b8775cf3b80918, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshConstructor:
-    m_Layer: 8
-    m_Width: 2
-    m_Height: 2
-    m_Distance: 2
-    m_Falloff: 0
-  m_DrawGizmos: 1
+  m_Layer: 2147483647
+  m_Width: 1
+  m_Height: 1
+  m_Distance: 1
+  m_Falloff: 0.5
 --- !u!33 &899020575
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -2285,12 +2426,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cf8b3436b9041943b3fd7ad0991341c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshConstructor:
-    m_Width: 1
-    m_Height: 1
-    m_Rotate: 87
-    m_PositionMatching: 1
-  m_DrawGizmos: 0
+  m_Width: 1
+  m_Height: 1
+  m_Rotate: 0
+  m_PositionMatching: 1
 --- !u!33 &950296588
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -2642,11 +2781,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6df22b74cc15446799bd8f24f4e3ed3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Mask:
-    value: -1
-  m_Collection: {fileID: 11400000, guid: b03119d3548961c4db60e49a811352e2, type: 2}
-  m_Playing: []
-  m_Renderers: []
 --- !u!1 &1010847132
 GameObject:
   m_ObjectHideFlags: 0
@@ -3459,11 +3593,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6df22b74cc15446799bd8f24f4e3ed3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Mask:
-    value: -1
-  m_Collection: {fileID: 11400000, guid: b03119d3548961c4db60e49a811352e2, type: 2}
-  m_Playing: []
-  m_Renderers: []
 --- !u!1 &1313486580
 GameObject:
   m_ObjectHideFlags: 0
@@ -3992,13 +4121,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1479387142}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.43177262, z: -0, w: 0.9019825}
-  m_LocalPosition: {x: -1.4, y: 2.49, z: 0}
+  m_LocalRotation: {x: 0.2736956, y: 0.6557897, z: 0.27965102, w: 0.64562064}
+  m_LocalPosition: {x: -14.06, y: 2.91, z: -12.99}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 334861160}
-  m_LocalEulerAnglesHint: {x: 0, y: 51.16, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.766, y: 90.57, z: 46.066}
 --- !u!114 &1479387144
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4011,43 +4140,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b29fb390adb5e84d9438b25cb0ae40e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshConstructor:
-    m_Width: 0.44
-    m_Billboard: 1
-    m_JointSubdivision: 0
-    m_TolerangeInAngles: 10
-    m_DistanceDamper: 3
-    m_ExtraDivision: 0
-    m_LocalSpace: 0
-    m_LinePositions:
-    - x: -4.14
-      y: 2.63
-      z: -9.22
-    - x: -1.52
-      y: 0.28
-      z: -9.84
-    - x: 0
-      y: 0
-      z: -10
-    - x: 3.14
-      y: 0
-      z: -7.32
-    m_ManualInput: 0
-    m_Normal:
-      x: 0
-      y: 1
-      z: 0
-    m_Normals:
-    - x: 0
-      y: -0.99999994
-      z: -0
-    - x: 0
-      y: -0.99999994
-      z: -0
-    - x: 0
-      y: -0.99999994
-      z: -0
-  m_DrawGizmos: 0
+  m_Width: 0.28
+  m_Billboard: 1
+  m_JointSubdivision: 1
+  m_TolerangeInAngles: 10
+  m_DistanceDamper: 0.1
+  m_ExtraDivision: 1
+  m_LocalSpace: 1
+  m_LinePositions:
+  - x: 0
+    y: 0
+    z: 2.97
+  - x: -0.5
+    y: -0.23
+    z: -0.24
+  - x: -0.19
+    y: 0
+    z: -4.26
+  m_ManualInput: 0
+  m_Normal:
+    x: 0
+    y: 1
+    z: 0
+  m_Normals:
+  - x: 0
+    y: -1
+    z: -0
+  - x: 0
+    y: -1
+    z: -0
+  - x: 0
+    y: -1
+    z: -0
 --- !u!23 &1479387145
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5325,16 +5449,6 @@ MonoBehaviour:
       z: 0.35
       r: -0.5
       poleMatching: 1
-      _xp:
-        x: 0
-        y: 0
-        z: 0
-        w: 0
-      _w: 31.415928
-      _d: 29.428862
-      _k1: 0.022281691
-      _k2: 0.0010132118
-      _k3: -0.005570423
   m_OriginDistanceDamper:
     mode: 1
     halfLife: 0.5
@@ -5345,16 +5459,6 @@ MonoBehaviour:
       z: 0.35
       r: -0.5
       poleMatching: 1
-      _xp:
-        x: 0
-        y: 0
-        z: 0
-        w: 0
-      _w: 31.415928
-      _d: 29.428862
-      _k1: 0.022281691
-      _k2: 0.0010132118
-      _k3: -0.005570423
 --- !u!23 &1658747372
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -6380,16 +6484,6 @@ MonoBehaviour:
       z: 0.35
       r: -0.5
       poleMatching: 1
-      _xp:
-        x: 0
-        y: 0
-        z: 0
-        w: 0
-      _w: 31.415928
-      _d: 29.428862
-      _k1: 0.022281691
-      _k2: 0.0010132118
-      _k3: -0.005570423
   m_OriginDistanceDamper:
     mode: 3
     halfLife: 0.5
@@ -6400,16 +6494,6 @@ MonoBehaviour:
       z: 0.35
       r: -0.5
       poleMatching: 1
-      _xp:
-        x: 0
-        y: 0
-        z: 0
-        w: 0
-      _w: 31.415928
-      _d: 29.428862
-      _k1: 0.022281691
-      _k2: 0.0010132118
-      _k3: -0.005570423
 --- !u!4 &1907904227
 Transform:
   m_ObjectHideFlags: 0
@@ -7007,3 +7091,4 @@ SceneRoots:
   - {fileID: 1104898066}
   - {fileID: 357924379}
   - {fileID: 610872873}
+  - {fileID: 192610385}

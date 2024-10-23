@@ -9,15 +9,15 @@ namespace Runtime.Geometry
     public struct GAxis : ISerializationCallbackReceiver , IRayIntersection , ISurface
     {
         public float3 origin;
-        [PostNormalize]public float3 right;
-        [PostNormalize]public float3 up;
+        [PostNormalize] public float3 right;
+        [PostNormalize] public float3 up;
         [NonSerialized] public float3 forward;
         public GAxis(float3 _origin, float3 _right, float3 _up)
         {
             this = default;
             origin = _origin;
-            right = _right;
-            up = _up;
+            right = _right.normalize();
+            up = _up.normalize();
             Ctor();
         }
         void Ctor()
@@ -35,6 +35,7 @@ namespace Runtime.Geometry
             return new GAxis(origin, R, U);
         }
 
+        public quaternion GetRotation() => quaternion.LookRotation(forward,up);
         public GLine Right() => new GLine(origin, origin + right);
         public GLine Up() => new GLine(origin, origin + up);
 

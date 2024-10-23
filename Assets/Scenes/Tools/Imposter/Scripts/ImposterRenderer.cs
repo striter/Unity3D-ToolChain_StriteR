@@ -9,36 +9,36 @@ using UnityEngine;
 
 namespace Runtime.Optimize.Imposter
 {
-    [Serializable]
-    public class ImposterRendererCore : ARuntimeRendererBase, IRuntimeRendererBillboard
+    public class ImposterRenderer : ARendererBase , IRuntimeRendererBillboard
     {
         [ScriptableObjectEdit(true)] public ImposterData m_Data;
         private MeshRenderer m_Renderer;
-        public override Mesh Initialize(Transform _transform)
+        protected override void OnInitialize()
         {
-            m_Renderer = _transform.GetComponent<MeshRenderer>();
-            return base.Initialize(_transform);
+            base.OnInitialize();
+            m_Renderer = transform.GetComponent<MeshRenderer>();
         }
 
-        public override void OnValidate()
+        protected override void Validate()
         {
-            base.OnValidate();
+            base.Validate();
             if (m_Renderer != null && m_Data != null)
                 m_Renderer.sharedMaterial = m_Data.m_Material;
         }
+
 
         private static List<Vector3> kVertices = new List<Vector3>();
         private static List<int> kIndices = new List<int>();
         private static List<Vector4> kUVs = new List<Vector4>();
 
-        protected override void PopulateMesh(Mesh _mesh, Transform _transform, Transform _viewTransform)
+        protected override void PopulateMesh(Mesh _mesh, Transform _viewTransform)
         {
             if (!m_Data)
                 return;
 
-            var center = _transform.TransformPoint(m_Data.m_BoundingSphere.center);
+            var center = transform.TransformPoint(m_Data.m_BoundingSphere.center);
             var viewDirectionWS = (_viewTransform.position - center).normalized;
-            var viewDirectionOS = _transform.worldToLocalMatrix.rotation * viewDirectionWS;
+            var viewDirectionOS = transform.worldToLocalMatrix.rotation * viewDirectionWS;
 
             var weights = float4.zero;
             var size = m_Data.m_BoundingSphere.radius;
@@ -92,7 +92,7 @@ namespace Runtime.Optimize.Imposter
 
             block.SetVector(ImposterShaderProperties.kWeights, weights);
             block.SetVector(ImposterShaderProperties.kBoundingID, (float4)m_Data.m_BoundingSphere);
-            block.SetVector(ImposterShaderProperties.kRotation, ((quaternion)_transform.rotation).value);
+            block.SetVector(ImposterShaderProperties.kRotation, ((quaternion)transform.rotation).value);
             block.SetVector("_ImposterViewDirection", axis.forward.to4());
 
             m_Renderer.SetPropertyBlock(block);
@@ -100,17 +100,17 @@ namespace Runtime.Optimize.Imposter
 
         public bool m_DrawInput;
 
-        public override void DrawGizmos(Transform _transform, Transform _viewTransform)
+        public override void DrawGizmos(Transform _viewTransform)
         {
-            base.DrawGizmos(_transform, _viewTransform);
+            base.DrawGizmos( _viewTransform);
             if (m_Data == null)
                 return;
 
-            var center = _transform.TransformPoint(m_Data.m_BoundingSphere.center);
+            var center = transform.TransformPoint(m_Data.m_BoundingSphere.center);
 
             Gizmos.matrix = Matrix4x4.TRS(center, Quaternion.identity,
-                _transform.lossyScale * m_Data.m_BoundingSphere.radius);
-            var viewDirection = _transform.worldToLocalMatrix.rotation * (_viewTransform.position - center).normalized;
+                transform.lossyScale * m_Data.m_BoundingSphere.radius);
+            var viewDirection = transform.worldToLocalMatrix.rotation * (_viewTransform.position - center).normalized;
             if (m_DrawInput)
                 m_Data.m_Input.DrawGizmos(_viewTransform.position);
 
@@ -132,10 +132,5 @@ namespace Runtime.Optimize.Imposter
         }
 
         public bool Billboard => true;
-    }
-    
-
-    public class ImposterRenderer : ARuntimeRendererMonoBehaviour<ImposterRendererCore>
-    {
     }
 }

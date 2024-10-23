@@ -57,6 +57,6 @@ namespace UnityEditor.Extensions
             }
         }
         public static bool IsPropertyVisible(this ConditionAttribute _attribute,SerializedProperty _property)=>IsVisible(_attribute,()=>_property.AllRelativeFields());
-        public static bool IsElementVisible(this ConditionAttribute _attribute,Object _target)=>IsVisible(_attribute,()=>_target.GetType().GetFields().Select(p=>(p,p.GetValue(_target))));
+        public static bool IsElementVisible(this ConditionAttribute _attribute,Object _target)=>IsVisible(_attribute,()=>_target.GetType().GetAllFields( _flags: BindingFlags.Instance).Select(p=>(p,p.GetValue(_target))));
     }
 }

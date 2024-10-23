@@ -12,24 +12,23 @@ namespace Runtime
         Transform,
     }
 
-    [Serializable]
-    public class FRopeRenderer : ALineRendererBase
-    { 
+    public class RopeRenderer : ALineRendererBase
+    {
         [Clamp(0)] public float m_Extend = 3;
-        [Range(4, 64)] public int m_Resolution;
+        [Range(4, 64)] public int m_Resolution = 16;
         public ERopePosition m_RopePosition = ERopePosition.Constant;
 
         [MFoldout(nameof(m_RopePosition), ERopePosition.Transform)] public Transform m_EndTransform;
         [MFoldout(nameof(m_RopePosition), ERopePosition.Constant)] public Vector3 m_EndPosition;
         [MFoldout(nameof(m_RopePosition), ERopePosition.Constant,nameof(m_Billboard),false)] public Vector3 m_EndBiTangent;
-        public Damper m_ControlDamper = new Damper();
+        public Damper m_ControlDamper = Damper.kDefault;
         
         private GBezierCurveQuadratic m_Curve;
-        public override Mesh Initialize(Transform _transform)
-        {
-            Reset(_transform);
-            return base.Initialize(_transform);
-        }
+        protected override void OnInitialize() => Reset(transform);
+
+        protected override void Validate() => Reset(transform);
+
+        public void Initialize() => Reset(transform);
 
         void CalculatePositions(Transform _transform,out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control)
         {
@@ -61,16 +60,17 @@ namespace Runtime
             m_ControlDamper.Initialize(control);
         }
 
-        public override void Tick(Transform _transform,float _deltaTime)
+        protected override void Tick(float _deltaTime)
         {
-            base.Tick(_transform,_deltaTime);
-            CalculatePositions(_transform,out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
+            base.Tick(_deltaTime);
+            CalculatePositions(transform,out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
             m_ControlDamper.Tick(UTime.deltaTime, control);
+            SetDirty();
         }
 
-        protected override void PopulatePositions(Transform _transform, List<Vector3> _vertices, List<Vector3> _tangents)
+        protected override void PopulatePositions(List<Vector3> _vertices, List<Vector3> _tangents)
         {
-            CalculatePositions(_transform,out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
+            CalculatePositions(transform,out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
             m_Curve = new GBezierCurveQuadratic(srcPosition, dstPosition, m_ControlDamper.value.xyz);
             for (var i = 0; i < m_Resolution; i++)
             {
@@ -83,10 +83,10 @@ namespace Runtime
         }
 
 #if UNITY_EDITOR
-        public override void DrawGizmos(Transform _transform,Transform _viewTransform)
+        public override void DrawGizmos(Transform _viewTransform)
         {
-            base.DrawGizmos(_transform,_viewTransform);
-            CalculatePositions(_transform,out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
+            base.DrawGizmos(_viewTransform);
+            CalculatePositions(transform,out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(m_ControlDamper.value.xyz,.2f);
             Gizmos.color = Color.blue;
@@ -94,11 +94,6 @@ namespace Runtime
             m_Curve.DrawGizmos();
         }
 #endif
-    }
-    
-    public class RopeRenderer : ARuntimeRendererMonoBehaviour<FRopeRenderer>
-    {
-        public void Initialize() => meshConstructor.Reset(transform);
     }
     
 }

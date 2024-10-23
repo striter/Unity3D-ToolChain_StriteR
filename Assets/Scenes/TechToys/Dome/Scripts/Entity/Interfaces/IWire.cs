@@ -45,7 +45,7 @@ namespace Dome.Entity
         {
             if (!_entity.isWireAttaching()) return;
             _entity.wireRoot.transform.position = _entity.wireNode.position;
-            _entity.wireRoot.meshConstructor.m_EndPosition =_entity.connecting.wireNode.position;
+            _entity.wireRoot.m_EndPosition =_entity.connecting.wireNode.position;
         }
         
         public static void OnModelClear(this IWireEnd _entity)
@@ -59,11 +59,11 @@ namespace Dome.Entity
             _entity.connecting = _target;
             _entity.wireRoot = FAssets.GetModel(kWire).GetComponent<RopeRenderer>();
             _entity.wireRoot.transform.position = _entity.position;
-            _entity.wireRoot.meshConstructor.m_EndPosition = _target.wireNode.position;
+            _entity.wireRoot.m_EndPosition = _target.wireNode.position;
 
-            _entity.wireRoot.meshConstructor.m_Extend = 0;
+            _entity.wireRoot.m_Extend = 0;
             _entity.wireRoot.Initialize();
-            _entity.wireRoot.meshConstructor.m_Extend = 6;
+            _entity.wireRoot.m_Extend = 6;
         }
 
         public static void DetachWire(this IWireEnd _entity)

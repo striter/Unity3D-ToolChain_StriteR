@@ -404,13 +404,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3167c09818c490e4f8b8775cf3b80918, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshConstructor:
-    m_Layer: 2147483647
-    m_Width: 1
-    m_Height: 1
-    m_Distance: 1
-    m_Falloff: 0.5
-  m_DrawGizmos: 0
+  m_Layer: 2147483647
+  m_Width: 2
+  m_Height: 2
+  m_Distance: 2
+  m_Falloff: 0.5
 --- !u!33 &52574022
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -2737,7 +2735,6 @@ MonoBehaviour:
   m_CameraController: {fileID: 11400000, guid: c20c08a34d259e546bdd034eeeec00f5, type: 2}
   m_MoveSpeed: 10
   m_RotateSpeed: 1
-  m_CameraController: {fileID: 0}
   m_CameraFollow: {fileID: 4134352683900706328}
   m_CameraAttach: {fileID: 710567232}
   m_SkinHips: {fileID: 3842325509327754211}
@@ -3811,7 +3808,6 @@ MonoBehaviour:
   m_CameraController: {fileID: 11400000, guid: c20c08a34d259e546bdd034eeeec00f5, type: 2}
   m_MoveSpeed: 100
   m_RotateSpeed: 0.5
-  m_CameraController: {fileID: 0}
   m_CameraFollow: {fileID: 4293808370460056936}
   m_CameraAttach: {fileID: 1484250851}
   m_LostConcious: 0
@@ -6144,7 +6140,6 @@ MonoBehaviour:
   m_CameraController: {fileID: 11400000, guid: c20c08a34d259e546bdd034eeeec00f5, type: 2}
   m_MoveSpeed: 10
   m_RotateSpeed: 1
-  m_CameraController: {fileID: 0}
   m_CameraFollow: {fileID: 821360168}
   m_CameraAttach: {fileID: 13789777}
   m_SkinHips: {fileID: 2108202975}
@@ -10960,6 +10955,25 @@ MonoBehaviour:
   m_marionetteCharacter: {fileID: 715545223}
   m_Human_Balance: {fileID: 511884974}
   m_Human_StaticAnimator: {fileID: 1048702356}
+  m_CameraController:
+    m_Initialize: 1
+    m_Reset: 0
+    m_SerializedController: {fileID: 0}
+    m_ScriptableController: {fileID: 0}
+    m_Output:
+      anchor:
+        x: 0
+        y: 0
+        z: 0
+      euler:
+        x: 0
+        y: 0
+        z: 0
+      fov: 0
+      distance: 0
+      viewPort:
+        x: 0
+        y: 0
   m_ControllerInput:
     camera: {fileID: 0}
     anchor: {fileID: 0}
@@ -15243,39 +15257,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9348aed9be69c7a4f9dde9b9a6623ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshConstructor:
-    m_Width: 0.05
-    m_Billboard: 1
-    m_JointSubdivision: 0
-    m_TolerangeInAngles: 10
-    m_DistanceDamper: 0.1
-    m_ExtraDivision: 0
-    m_Extend: 3
-    m_RopePosition: 1
-    m_EndTransform: {fileID: 1352949499}
-    m_EndPosition: {x: 0, y: 0, z: 0}
-    m_EndBiTangent: {x: 0, y: 0, z: 0}
-    m_ControlDamper:
-      mode: 1
-      halfLife: 0.5
-      stiffness: 20
-      damping: 4
-      secondOrderDynamics:
-        f: 5
-        z: 0.35
-        r: -0.5
-        poleMatching: 1
-        _xp:
-          x: 9.794001
-          y: 3.16325
-          z: -5.8471
-          w: 0
-        _w: 31.415928
-        _d: 29.428862
-        _k1: 0.022281691
-        _k2: 0.0010132118
-        _k3: -0.005570423
-  m_DrawGizmos: 0
+  m_Width: 0.05
+  m_Billboard: 1
+  m_JointSubdivision: 0
+  m_TolerangeInAngles: 10
+  m_DistanceDamper: 0.1
+  m_ExtraDivision: 0
+  m_Extend: 3
+  m_Resolution: 32
+  m_RopePosition: 1
+  m_EndTransform: {fileID: 1352949499}
+  m_EndPosition: {x: 0, y: 0, z: 0}
+  m_EndBiTangent: {x: 0, y: 0, z: 0}
+  m_ControlDamper:
+    mode: 1
+    halfLife: 0.5
+    stiffness: 20
+    damping: 4
+    secondOrderDynamics:
+      f: 5
+      z: 0.35
+      r: -0.5
+      poleMatching: 1
 --- !u!23 &1997819912
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -16484,10 +16487,10 @@ MonoBehaviour:
   renderSettingsCompressVolumes: 0
   renderSettingsSector: {fileID: 0}
   renderSettingsRTPVExport: 1
-  renderSettingsRTPVSceneView: 0
+  renderSettingsRTPVSceneView: 1
   renderSettingsRTPVHDR: 0
-  renderSettingsRTPVWidth: 640
-  renderSettingsRTPVHeight: 360
+  renderSettingsRTPVWidth: 1000
+  renderSettingsRTPVHeight: 327
   lastBakeTime: 0
   enlightenWarningShown: 0
   enlightenWarningShown2: 0

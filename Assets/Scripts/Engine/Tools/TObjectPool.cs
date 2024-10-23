@@ -393,8 +393,7 @@ namespace TPool
         private readonly Func<object[]> CostructParameters;
         public ObjectPoolClass(Transform _pooledElement, Type type) : base(_pooledElement.gameObject,_pooledElement.parent) { m_Type = type; }
 
-        public ObjectPoolClass(Transform _pooledElement, Func<object[]> _constructParameters = null) : this(_pooledElement,
-            typeof(Y))
+        public ObjectPoolClass(Transform _pooledElement, Func<object[]> _constructParameters = null) : this(_pooledElement, typeof(Y))
         {
             CostructParameters = _constructParameters;
         }

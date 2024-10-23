@@ -12,8 +12,6 @@ namespace Runtime.Geometry
     public partial struct GQuad
     {
         public Quad<float3> quad;
-        // public Vector3 normal;
-        // public float area;
         public GQuad(Quad<float3> _quad)
         {
             quad = _quad;
@@ -59,18 +57,17 @@ namespace Runtime.Geometry
         public void GetTriangles(out GTriangle _triangle1, out GTriangle _triangle2)
         {
             _triangle1 = new GTriangle(B, L, F);
-            _triangle2 = new GTriangle(B, F, R);
+            _triangle2 = new GTriangle(F, R, B);
         }
 
         public IEnumerable<GTriangle> GetTriangles()
         {
             yield return new GTriangle(B, L, F);
-            yield return new GTriangle(B, F, R);
+            yield return new GTriangle(F, R, B);
         }
 
         public IEnumerable<float3> GetAxes() => GetTriangles().Select(p => p.normal);
-
-        public IEnumerable<float3> GetNormals()
+        public IEnumerable<float3> GetVertexNormals()
         {
             GetTriangles(out var triangle1, out var triangle2);
             var initialNormal = triangle1.normal;
@@ -80,6 +77,17 @@ namespace Runtime.Geometry
             yield return midNormal;
             yield return finalNormal;
             yield return midNormal;
+        }
+
+        public IEnumerable<float3> GetVertexTangents()
+        {
+            var initialTangent = (B - L).normalize();
+            var finalTangent = (R - F).normalize();
+            var midTangent = (initialTangent + finalTangent)/2;
+            yield return initialTangent;
+            yield return midTangent;
+            yield return finalTangent;
+            yield return midTangent;
         }
 
         public float GetArea()
