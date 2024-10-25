@@ -154,20 +154,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 725e5a87c6a16a74abae0ce2528ad9ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshConstructor:
-    m_BoundaryDivision: 5
-    m_CellDivision: 16
-    m_Boundary:
-      center:
-        x: 0
-        y: 0
-      extent:
-        x: 500
-        y: 500
-    m_Chunk:
-      m_Division: 3
-    m_CullingCamera: {fileID: 971045254}
-  m_DrawGizmos: 1
+  m_BoundaryDivision: 4
+  m_CellDivision: 16
+  m_Boundary:
+    center:
+      x: 0
+      y: 0
+    extent:
+      x: 500
+      y: 500
+  m_Chunk:
+    m_Division: 3
+  m_CullingCamera: {fileID: 971045254}
 --- !u!4 &462668154
 Transform:
   m_ObjectHideFlags: 0
