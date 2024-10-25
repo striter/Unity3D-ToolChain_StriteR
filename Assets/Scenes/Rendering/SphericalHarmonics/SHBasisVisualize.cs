@@ -25,7 +25,7 @@ namespace Examples.Rendering.SH
     {
         [Range(0,SHBasis.kAvailableBands)] public int band;
         public int basis;
-        public PolygonSphereGenerator m_Generator;
+        public PolygonSphereGenerator m_Generator = PolygonSphereGenerator.kDefault;
         
         [StructLayout(LayoutKind.Sequential)]
         public struct Vertex
