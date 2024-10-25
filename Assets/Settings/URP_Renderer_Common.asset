@@ -105,7 +105,7 @@ MonoBehaviour:
   m_Active: 1
   m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
   m_Data:
-    m_Features: -1
+    m_Features: 15
     m_MaskData:
       renderMask: 64
       color: {r: 1, g: 1, b: 1, a: 1}
