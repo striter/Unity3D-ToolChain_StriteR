@@ -100,8 +100,7 @@ Shader "PCG/Foliage"
 			#define GET_ALBEDO(i) GetAlbedoOverride(i.uv);
 			#define _NORMALOFF
     		#define _ALPHACLIP
-			void GetPBRParameters(inout float g,inout float m,inout float a) { g = 0.5; m = 0; a = 1; }
-			#define GET_PBRPARAM(i,smoothness,metallic,ao) GetPBRParameters(smoothness,metallic,ao)
+			#define _PBROFF
     	ENDHLSL
     	
         Pass

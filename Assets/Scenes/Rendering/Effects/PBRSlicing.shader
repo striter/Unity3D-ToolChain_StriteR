@@ -83,10 +83,16 @@ Shader "Hidden/PBRSlicing"
 				return SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv)*INSTANCE(_Color);
 			}
 
+			void OverrideGlobalIllumination(out half3 indirectDiffuse,out half3 indirectSpecular,v2ff i,BRDFSurface surface,Light mainLight)
+			{
+				indirectDiffuse = IndirectDiffuse(mainLight,i,surface.normal);
+				indirectSpecular = IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
+			}
+			
 			#define GET_ALBEDO(i) OverrideAlbedo(i.positionWS,i.uv)
 			#define GET_GEOMETRYSHADOW(surface,lightSurface) GetGeometryShadow(surface,lightSurface)
 	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
-			#define GET_INDIRECTSPECULAR(surface) IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
+			#define GET_GI(indirectDiffuse,indirectSpecular,i,surface,mainLight) OverrideGlobalIllumination(indirectDiffuse,indirectSpecular,i,surface,mainLight);
     	ENDHLSL
     	
 		Pass
@@ -109,17 +115,19 @@ Shader "Hidden/PBRSlicing"
 			Cull Front
 			NAME "FORWARD1"
 			HLSLPROGRAM
-			void FragmentSetup(inout v2ff i)
+
+			void VertexTransfer(a2vf v,inout v2ff o)
 			{
-				float3 positionWS = i.positionWS;
+				float3 positionWS = o.positionWS;
 				GRay cameraRay = GRay_Ctor(GetCameraRealPositionWS(positionWS),GetCameraRealDirectionWS(positionWS));
 				GPlane plane = GPlane_Ctor(_SlicePlane.xyz , _SlicePlane.xyz * _SlicePlane.w );
-				i.normalWS = _SlicePlane.xyz;
+				o.normalWS = _SlicePlane.xyz;
 				float distance = Distance(plane,cameraRay);
 				positionWS = cameraRay.GetPoint(distance);
-				i.uv = positionWS.xz;
+				o.uv = positionWS.xz;
 			}
-			#define FRAGMENT_SETUP(i) FragmentSetup(i);
+			
+			#define V2F_ADDITIONAL_TRANSFER(v,o) VertexTransfer(v,o);
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
             #pragma target 3.5
 			#pragma vertex ForwardVertex

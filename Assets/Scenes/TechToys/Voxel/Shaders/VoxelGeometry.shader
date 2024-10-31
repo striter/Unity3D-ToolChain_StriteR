@@ -31,9 +31,8 @@ Shader "Game/Unfinished/VoxelGeometry"
 				INSTANCING_PROP(float4, _Color)
 			INSTANCING_BUFFER_END
 			#define _NORMALOFF
-			void GetPBRParameters(inout float g,inout float m,inout float a) { g = 0.5; m = 0; a = 1; }
+	        #define _PBROFF
 			float4 GetAlbedo(float2 uv,float4 color) { return float4(color.rgb*color.a,1);}
-			#define GET_PBRPARAM(i,smoothness,metallic,ao) GetPBRParameters(smoothness,metallic,ao)
 			#define GET_ALBEDO(i) GetAlbedo(i.uv,i.color);
 			#define GET_EMISSION 0;
 			

@@ -11,11 +11,11 @@ Shader "Hidden/SubstancePainterPBRtoUnity"
 		[NoScaleOffset]_PBRTex("PBR Tex(Glossiness.Metallic.AO)",2D)="white"{}
 
 		[Header(Detail Tex)]
-		_EmissionTex("Emission",2D)="white"{}
+		[NoScaleOffset]_EmissionTex("Emission",2D)="white"{}
 		[HDR]_EmissionColor("Emission Color",Color)=(0,0,0,0)
 
 		[Header(IndirectSpecular)]
-		_SpecularCube("Specular",Cube)="black"{}
+		[NoScaleOffset]_SpecularCube("Specular",Cube)="black"{}
 		
 		[Header(Render Options)]
         [Enum(UnityEngine.Rendering.BlendMode)]_SrcBlend("Src Blend",int)=1
@@ -60,23 +60,6 @@ Shader "Hidden/SubstancePainterPBRtoUnity"
 			Tags{"LightMode" = "UniversalForward"}
 			HLSLPROGRAM
 			
-			float3 OverrideIndirectDiffuse(Light mainLight,v2ff i,float3 normalWS,BRDFSurface surface)
-			{
-			    return SampleSHL2(surface.normal,
-			    	half4(0.0109134,0.1585592,0.0129353,0.7254902),
-			    	half4(0.0109134,0.1585592,0.0129353,0.7254902),
-			    	half4(0.0109134,0.1585592,0.0129353,0.7254902),
-			    	half4(0.06141909,0.02248548,0.01431291,0.007843138),
-			    	half4(0.06141909,0.02248548,0.01431291,0.007843138),
-			    	half4(0.06141909,0.02248548,0.01431291,0.007843138),
-			    	half4(0.06627715,0.06627715,0.06627715,0));
-			}
-			
-			half4 _SpecularCube_HDR;
-			float3 OverrideIndirectSpecular(BRDFSurface surface)
-			{
-				return SampleCubeSpecular(TEXTURECUBE_ARGS(_SpecularCube,sampler_SpecularCube),_SpecularCube_HDR,surface.reflectDir,surface.perceptualRoughness);
-			}
 			
 			Light OverrideLighting()
 			{
@@ -88,10 +71,23 @@ Shader "Hidden/SubstancePainterPBRtoUnity"
 				return mainLight;
 			}
 
-			#define GET_INDIRECTDIFFUSE(mainLight,i,normalWS,surface) OverrideIndirectDiffuse(mainLight,i,normalWS,surface);
-			#define GET_INDIRECTSPECULAR(surface) OverrideIndirectSpecular(surface);
+			half4 _SpecularCube_HDR;
+			void OverrideGI(out half3 indirectDiffuse, out half3 indirectSpecular, v2ff i, BRDFSurface surface, Light mainLight)
+			{
+				indirectDiffuse = SampleSHL2(surface.normal,
+			    	half4(0.0109134,0.1585592,0.0129353,0.7254902),
+			    	half4(0.0109134,0.1585592,0.0129353,0.7254902),
+			    	half4(0.0109134,0.1585592,0.0129353,0.7254902),
+			    	half4(0.06141909,0.02248548,0.01431291,0.007843138),
+			    	half4(0.06141909,0.02248548,0.01431291,0.007843138),
+			    	half4(0.06141909,0.02248548,0.01431291,0.007843138),
+			    	half4(0.06627715,0.06627715,0.06627715,0));
+				indirectSpecular = SampleCubeSpecular(TEXTURECUBE_ARGS(_SpecularCube,sampler_SpecularCube),_SpecularCube_HDR,surface.reflectDir,surface.perceptualRoughness);
+			}
+			
 			#define GET_MAINLIGHT(i) OverrideLighting();
-			#define GET_PBRPARAM(i,smoothness,metallic,ao) 
+			#define GET_PBRPARAM(i,smoothness,metallic,ao)
+			#define GET_GI(indirectDiffuse,indirectSpecular,i,surface,mainLight) OverrideGI(indirectDiffuse,indirectSpecular,i,surface,mainLight);
 			
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			

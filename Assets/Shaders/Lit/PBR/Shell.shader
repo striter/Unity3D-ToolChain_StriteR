@@ -1,4 +1,4 @@
-﻿Shader "Game/Lit/ShellPBR"
+﻿Shader "Game/Lit/PBR/Shell"
 {
 	Properties
 	{
@@ -18,7 +18,6 @@
 		_FurAlphaClip("Alpha Clip",Range(0,1))=0.5
 		_FurShadow("Inner Shadow",Range(0,1))=0.5
 		_FURUVDelta("UV Delta",Range(0,5))=0.1
-		_FurGravity("Gravity",Range(0,1))=.1
 		
 		[Header(PBR)]
 		[ToggleTex(_PBRMAP)] [NoScaleOffset]_PBRTex("PBR Tex(Smoothness.Metallic.AO)",2D)="white"{}
@@ -92,6 +91,20 @@
 			
 			#define V2F_ADDITIONAL float2 furUV:TEXCOORD8;
 			#define V2F_ADDITIONAL_TRANSFER(v,o) o.furUV = TRANSFORM_TEX(v.uv,_FurTex)+float2(0,pow2(INSTANCE(_ShellDelta))*INSTANCE(_FURUVDelta));
+			#define BRDF_SURFACE_INITIALIZE_ADDITIONAL half2 furUV;
+			#define BRDF_SURFACE_INITIALIZE_ADDITIONAL_TRANSFER(i,input,o) input.furUV=i.furUV;
+			
+#if _ANISOTROPIC
+    #define BRDF_SURFACE_ADDITIONAL  half roughnessT; half roughnessB;
+	void AnisotropicSurface(float roughness,out float roughnessT, out float roughnessB)
+	{
+	    float anisotropic = INSTANCE(_AnisoTropicValue);
+	    float anisotropicAspect = sqrt(1.0h - anisotropic * 0.9h);
+	    roughnessT = max(.001, roughness / anisotropicAspect) * 5;
+	    roughnessB = max(.001, roughness * anisotropicAspect) * 5;
+	}
+	#define BRDF_SURFACE_ADDITIONAL_TRANSFER(input,surface) AnisotropicSurface(surface.roughness,surface.roughnessT, surface.roughnessB)
+#endif
 			
 			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
 			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
@@ -132,7 +145,6 @@
 				albedo*=lerp(INSTANCE(_RootColor),INSTANCE(_EdgeColor),delta);
 				return albedo;
 			}
-			
 			#define GET_ALBEDO(i)  GetAlbedo(i.uv,i.furUV)
 			#define GET_POSITION_WS(v,o) GetPositionWS(v.positionOS,o.normalWS)
 			#define GET_PBRPARAM(i,smoothness,metallic,ao) ao=saturate(ao-(1-INSTANCE(_ShellDelta))*INSTANCE(_FurShadow));

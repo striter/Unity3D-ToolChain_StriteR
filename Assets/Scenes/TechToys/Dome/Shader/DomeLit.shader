@@ -65,11 +65,10 @@ Shader "Dome/Lit"
 			    float toonSpecular = round(specular * steps) / steps;
 			    return toonSpecular;
 			}
-
 			
-			void SurfaceOverride(v2ff i,inout BRDFSurface surface)
+			void SurfaceOverride(BRDFInitializeInput i,inout BRDFSurface surface)
 			{
-					surface.ao = surface.ao*i.color.a;
+				surface.ao = surface.ao*i.color.a;
 			}
 
             // float GetGeometryShadow(BRDFSurface surface,BRDFLightInput lightSurface)
@@ -78,8 +77,8 @@ Shader "Dome/Lit"
 			// }
 			// #define GET_GEOMETRYSHADOW(surface,lightSurface) GetGeometryShadow(surface,lightSurface)
 	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
-			// #define GET_INDIRECTSPECULAR(surface) IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
-            #define BRDFSURFACE_OVERRIDE(i,surface) SurfaceOverride(i,surface)
+			// #define GET_GI(i,(surface) IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
+            #define BRDF_SURFACE_ADDITIONAL_TRANSFER(i,surface) SurfaceOverride(i,surface)
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			
             #pragma target 3.5

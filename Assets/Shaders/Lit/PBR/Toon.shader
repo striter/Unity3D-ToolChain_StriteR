@@ -1,4 +1,4 @@
-Shader "Game/Lit/ToonPBR"
+Shader "Game/Lit/PBR/Toon"
 {
     Properties
 	{
@@ -86,9 +86,15 @@ Shader "Game/Lit/ToonPBR"
 			    return toonSpecular;
 			}
 
+			void GetGlobalIllumination(out half3 indirectDiffuse,out half3 indirectSpecular,v2ff i,BRDFSurface surface,Light light)
+			{
+				indirectDiffuse = IndirectDiffuse(light,i,surface.normal);
+				indirectSpecular = IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
+			}
+
 			#define GET_GEOMETRYSHADOW(surface,lightSurface) GetGeometryShadow(surface,lightSurface)
 	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
-			#define GET_INDIRECTSPECULAR(surface) IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
+			#define GET_GI(indirectDiffuse,indirectSpecular,i,surface,mainLight) GetGlobalIllumination(indirectDiffuse,indirectSpecular,i,surface,mainLight);
 			
             #pragma target 3.5
 			#pragma vertex ForwardVertex
@@ -104,7 +110,7 @@ Shader "Game/Lit/ToonPBR"
 			Cull Off
 
             HLSLPROGRAM
-            #pragma vertex vert
+            #pragma vertex VertexMeta
             #pragma fragment FragmentMeta
             #include "Assets/Shaders/Library/Passes/MetaPBR.hlsl"
             ENDHLSL

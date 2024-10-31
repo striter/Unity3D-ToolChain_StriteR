@@ -51,7 +51,7 @@ float4 FragmentMeta(v2fmeta i) : SV_Target
     half3 emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,i.uv).rgb*INSTANCE(_EmissionColor).rgb;
 #endif
 
-    half smoothness=0.5,metallic=0;
+    half smoothness=0.5,metallic=0,ao = 1;
 #if !defined(_PBROFF)
     #if defined(GET_PBRPARAM)
         GET_PBRPARAM(i,smoothness,metallic,ao);

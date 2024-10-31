@@ -1,3 +1,5 @@
+#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
+
 #ifndef _BRDFLIGHTING
 #define _BRDFLIGHTING
 
@@ -55,17 +57,6 @@ half3 BRDFLighting(BRDFSurface surface,BRDFLight light)
     return brdf*light.radiance;
 }
 
-half3 BRDFLighting(BRDFSurface surface, Light light)
-{
-    #if defined(GET_LIGHTING)
-        return GET_LIGHTING(surface,light);
-    #else
-        BRDFLightInput input=BRDFLightInput_Ctor(surface,light.direction,light.color,light.shadowAttenuation,light.distanceAttenuation);
-        BRDFLight brdfLight=BRDFLight_Ctor(surface,input);
-        return BRDFLighting(surface,brdfLight);
-    #endif
-}
-
 half3 BRDFGlobalIllumination(BRDFSurface surface,half3 indirectDiffuse,half3 indirectSpecular)
 {
     indirectDiffuse *= surface.ao;
@@ -73,7 +64,7 @@ half3 BRDFGlobalIllumination(BRDFSurface surface,half3 indirectDiffuse,half3 ind
     
     half3 giDiffuse = indirectDiffuse * surface.diffuse;
     
-    float fresnelTerm =F_Schlick(max(0,surface.NDV));
+    float fresnelTerm = F_Schlick(max(0,surface.NDV));
     float3 surfaceReduction = 1.0 / (surface.roughness2 + 1.0) * lerp(surface.specular, surface.grazingTerm, fresnelTerm);
     half3 giSpecular = indirectSpecular * surfaceReduction;
     return giDiffuse + giSpecular;

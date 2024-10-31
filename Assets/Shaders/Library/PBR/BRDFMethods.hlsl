@@ -1,4 +1,7 @@
-﻿//NDF,Normal Distribution Function
+﻿#ifndef _BRDFMETHODS
+#define _BRDFMETHODS
+
+//NDF,Normal Distribution Function
 float NDF_BlinnPhong(float NDH, float specularPower, float specularGloss)
 {
     float distribution = pow(NDH, specularGloss) * specularPower;
@@ -83,5 +86,6 @@ float F_Schlick(float NDV)
     float x = saturate(1. - NDV);
     return pow4(x);//pow5(x);
 }
+#endif
 
 

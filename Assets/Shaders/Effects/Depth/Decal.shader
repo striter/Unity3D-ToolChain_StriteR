@@ -74,7 +74,7 @@
 				
 				// half atten=MainLightRealtimeShadow(TransformWorldToShadowCoord(positionWS));
 				// color.a*=atten;
-				color.rgb+=_GlossyEnvironmentColor.rgb;
+				// color.rgb+=_GlossyEnvironmentColor.rgb;
 				return color;
 			}
 			ENDHLSL

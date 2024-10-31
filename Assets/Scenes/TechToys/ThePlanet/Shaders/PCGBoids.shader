@@ -64,8 +64,7 @@ Shader "PCG/Bird"
 			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
 			#include "PCGInclude.hlsl"
 			#define _NORMALOFF
-			void GetPBRParameters(inout float g,inout float m,inout float a) { g = 0.5; m = 0; a = 1; }
-			#define GET_PBRPARAM(i,smoothness,metallic,ao) GetPBRParameters(smoothness,metallic,ao)
+			#define _PBROFF
 			
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			

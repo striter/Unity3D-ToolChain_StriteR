@@ -52,9 +52,11 @@ Shader "Dome/Lit_ARCTrack"
             
 			#define V2F_ADDITIONAL float lTrack:TEXCOORD8;
 			#define V2F_ADDITIONAL_TRANSFER(v,o) o.lTrack = step(v.positionOS,0);
+			#define BRDF_SURFACE_INITIALIZE_ADDITIONAL float lTrack;
+			#define BRDF_SURFACE_INITIALIZE_ADDITIONAL_TRANSFER(i,input,o) input.lTrack = i.lTrack;
+			
 			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
 			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
-			
 			
 			float GetNormalDistribution(BRDFSurface surface,BRDFLightInput lightSurface)
 			{
@@ -72,13 +74,12 @@ Shader "Dome/Lit_ARCTrack"
 			    return toonSpecular;
 			}
 
-			
-			void SurfaceOverride(v2ff i,inout BRDFSurface surface)
+			void SurfaceOverride(BRDFInitializeInput input,inout BRDFSurface surface)
 			{
-				surface.ao = surface.ao*i.color.a;
+				surface.ao = surface.ao*input.color.a;
 			}
 
-			float4 GetAlbedoOverride(inout v2ff i)
+			float4 GetAlbedoOverride(inout BRDFInitializeInput i)
 			{
 				float4 sample = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv.xy);
 
@@ -98,8 +99,8 @@ Shader "Dome/Lit_ARCTrack"
 			// #define GET_GEOMETRYSHADOW(surface,lightSurface) GetGeometryShadow(surface,lightSurface)
 	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
 			#define GET_ALBEDO(i) GetAlbedoOverride(i);
-			// #define GET_INDIRECTSPECULAR(surface) IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
-            #define BRDFSURFACE_OVERRIDE(i,surface) SurfaceOverride(i,surface)
+			// #define GET_GI(i,(surface) IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
+            #define BRDF_SURFACE_ADDITIONAL_TRANSFER(input,surface) SurfaceOverride(input,surface)
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			
             #pragma target 3.5

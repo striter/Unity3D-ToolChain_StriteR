@@ -9,6 +9,8 @@ Shader "Game/Unfinished/GeometryOcclusion"
     {
         Blend SrcAlpha OneMinusSrcAlpha
         ZWrite Off
+        ZTest Always
+        Cull Front
         Pass
         {
             HLSLPROGRAM

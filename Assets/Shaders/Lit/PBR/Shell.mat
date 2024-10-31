@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ShellPBR
+  m_Name: Shell
   m_Shader: {fileID: 4800000, guid: fdfa701d43a47f142adaf904a5ebb997, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0

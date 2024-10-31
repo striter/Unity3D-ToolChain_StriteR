@@ -13,9 +13,7 @@ namespace Runtime
     {
         private ValueChecker<Matrix4x4> m_MatrixValidator = new ValueChecker<Matrix4x4>();
         [CullingMask] public int m_Layer = int.MaxValue;
-        public float m_Width = 1;
-        public float m_Height = 1;
-        public float m_Distance = 1;
+        public GBox m_Bounding = GBox.kDefault;
         [Range(0,0.9999f)]public float m_Falloff = 0.5f;
         protected override void OnInitialize() {
             m_MatrixValidator.Set(transform.localToWorldMatrix);
@@ -28,19 +26,20 @@ namespace Runtime
                 SetDirty();
         }
 
+        [InspectorButton]
         protected override void Validate()
         {
            m_MatrixValidator.Set(Matrix4x4.identity);      //how mysterious
+           Tick(0f);
         }
 
         protected override void PopulateMesh(Mesh _mesh,Transform _viewTransform)
         {
-            var curBounds = new Bounds(transform.position,new Vector3(m_Width,m_Height,m_Distance));
-            var intersectBox = (GBox) curBounds;
+            var intersectBox = new GBox((float3)transform.position + m_Bounding.center    ,m_Bounding.extent);
             
             //Filter available meshes
             var meshRenderers = GameObject.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None)
-                .Collect(p => p.bounds.Intersects(curBounds));
+                .Collect(p => p.bounds.Intersects(intersectBox));
 
             var triangles = new List<GTriangle>();
             foreach (var renderer in meshRenderers)
@@ -124,8 +123,8 @@ namespace Runtime
                 var alpha =math.clamp( (math.dot(up, normal) / up.magnitude() - m_Falloff)/(1-m_Falloff),0,1);
                 curColors.Add(Color.white.SetA(alpha));
                 curUVs.Add(new Vector2(
-                    math.dot(tangent,vertex)/m_Width + .5f,
-                    math.dot(biTangent,vertex)/m_Height + .5f
+                    math.dot(tangent,vertex)/m_Bounding.size.x + .5f,
+                    math.dot(biTangent,vertex)/m_Bounding.size.y + .5f
                     ));
             }
 
@@ -141,7 +140,7 @@ namespace Runtime
         {
             base.DrawGizmos(_viewTransform);
             Gizmos.matrix = transform.localToWorldMatrix;
-            Gizmos.DrawWireCube(Vector3.zero,new Vector3(m_Width,m_Height,m_Distance));
+            m_Bounding.DrawGizmos();
         }
     }
 }

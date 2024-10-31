@@ -18,7 +18,6 @@ INSTANCING_BUFFER_END
 #define _ImposterTexel INSTANCE(_ImposterTexel)
 #define _BoundingSphere INSTANCE(_ImposterBoundingSphere)
 
-#include "SphereMapping.hlsl"
 float3 TransformUVToObjectDirection(float2 _uv)
 {
     #if defined(_MAPPING_CONCENTRIC_OCTAHEDRAL)

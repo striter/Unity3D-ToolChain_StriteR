@@ -7,18 +7,17 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SSSSuzanne
-  m_Shader: {fileID: 4800000, guid: 5b54c00f3931488095671762849255d4, type: 3}
+  m_Name: Grass
+  m_Shader: {fileID: 4800000, guid: a3ed444ff715cb6458df4360304125a6, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _ANISOTROPIC
   m_InvalidKeywords:
-  - _DEPTHBUFFER
-  - _EMISSIONFLASH
-  - _NDF_COOKTORRANCE
-  - _NORMALMAP
+  - _DEPTHMAP
+  - _NDF_GGX
   - _PARALLAX
-  - _SSS
+  - _SPECULARHIGHLIGHTS_OFF
   - _VF_GGX
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -31,19 +30,27 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _AOTex:
-        m_Texture: {fileID: 2800000, guid: fd8a0a74130f91d45885d2878f35c2ac, type: 3}
+        m_Texture: {fileID: 2800000, guid: 23770a160eda9a742b84b66e3742cb5e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BackRimTex:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: ea2f0f63e40f326458d3d1a3fe7125ec, type: 3}
+        m_Texture: {fileID: 2800000, guid: c196e7189c20ddd4e876d46929e470b9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 2800000, guid: dc57807282857d345827be7fb4f64b5b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _DepthTex:
+    - _Control:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DepthTex:
+        m_Texture: {fileID: 2800000, guid: a731e8696e6d50f41b1bd4e03fc713d5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -60,8 +67,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _DetailNormalTex:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 0.2, y: 0.2}
-        m_Offset: {x: 0.5, y: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -70,7 +77,35 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _FlowTex:
+        m_Texture: {fileID: 2800000, guid: 4885e105013f21f488121cc7a80b69af, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FurTex:
+        m_Texture: {fileID: 2800000, guid: d2409ec56dc566740a007bdeadd4eed2, type: 3}
+        m_Scale: {x: 16, y: 16}
+        m_Offset: {x: 0, y: 0}
+    - _FurTexture:
+        m_Texture: {fileID: 2800000, guid: d2409ec56dc566740a007bdeadd4eed2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Mask0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Mask1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Mask2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Mask3:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -83,6 +118,22 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal3:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -103,7 +154,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallexTex:
-        m_Texture: {fileID: 2800000, guid: d0b408275162b224ca69ea8aef45fe14, type: 3}
+        m_Texture: {fileID: 2800000, guid: 29bc01a7a6734914cbf7e3ac2bd322b5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RoughnessTex:
@@ -114,8 +165,28 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _ThicknessMap:
-        m_Texture: {fileID: 2800000, guid: 61569baceba7d134bb7f4c5ad2e53d7c, type: 3}
+    - _Splat0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Splat1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Splat2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Splat3:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TerrainHolesTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _UpperBlendTex:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -136,23 +207,29 @@ Material:
     - _AlphaClipRange: 0.01
     - _AlphaCutoff: 0.01
     - _AnisoTropicValue: 1
+    - _Anisotropic: 1
+    - _Atlas: 0
+    - _AtlasHeight: 0
+    - _AtlasIndex: 0
+    - _AtlasWidth: 0
     - _Blend: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
-    - _DepthBuffer: 1
-    - _DepthBufferScale: 1
-    - _DepthOffset: 0.42
-    - _DepthScale: 1
+    - _DepthBuffer: 0
+    - _DepthBufferScale: 80
+    - _DepthOffset: -0.01
+    - _DepthScale: 0.5
     - _DetailAlbedoMapScale: 1
-    - _DetailBlendMode: 0
+    - _DetailBlendMode: 3
     - _DetailNormalMapScale: 1
+    - _Diffuse: 1
     - _DstBlend: 0
-    - _EmissionFlash: 1
-    - _EmissionFlashRatio: 0
     - _EnableAOMap: 0
+    - _EnableHeightBlend: 0
+    - _EnableInstancedPerPixelNormal: 1
     - _EnableNormalMap: 0
     - _EnableParallexMap: 0
     - _EnableRoughnessMap: 0
@@ -160,48 +237,77 @@ Material:
     - _EnvironmentReflections: 1
     - _F: 0
     - _FRESNEL: 0
+    - _FURUVDelta: 0
+    - _FlowScale1: 20
+    - _FlowScale2: 100
+    - _FlowStrength: 0.47
+    - _FurAlphaClip: 1
+    - _FurGravity: 0
+    - _FurLength: 0.328
+    - _FurScattering: 0
+    - _FurShadow: 1
     - _GSF: 6
     - _GlossMapScale: 0
-    - _Glossiness: 0.55
+    - _Glossiness: 1
     - _GlossyReflections: 0
+    - _Grid: 0
+    - _HeightTransition: 0
     - _Ior: 1
     - _Lambert: 0
-    - _LightmapIndex: 0
-    - _LightmapInterpolateIndex: 0
-    - _Metallic: 0
-    - _NDF: 1
+    - _Lighting: 1
+    - _Metallic: 1
+    - _Metallic0: 0
+    - _Metallic1: 0
+    - _Metallic2: 0
+    - _Metallic3: 0
+    - _NDF: 4
+    - _NumLayersCount: 1
     - _OcclusionStrength: 0
-    - _Parallax: 0.005
-    - _ParallaxCount: 16
-    - _Parallex: 0
-    - _ParallexCount: 16
+    - _Parallax: 1
+    - _ParallaxCount: 128
+    - _Parallex: 1
+    - _ParallexCount: 128
     - _ParallexOffset: 1
-    - _ParallexScale: 0.017
+    - _ParallexScale: 0.2
     - _QueueOffset: 0
+    - _ReceiveShadow: 1
     - _ReceiveShadows: 1
-    - _SSSIntensity: 1
-    - _SSSNormalInfluence: 0.647
-    - _Smoothness: 0.872
+    - _RimIntensity: 0.5
+    - _ShellDelta: 0
+    - _Smoothness: 0
+    - _Smoothness0: 0.5
+    - _Smoothness1: 0.5
+    - _Smoothness2: 0.5
+    - _Smoothness3: 0.5
     - _SmoothnessTextureChannel: 0
-    - _SpecularHighlights: 1
+    - _SpecularHighlights: 0
     - _SpecularRange: 0.9
     - _SrcBlend: 1
     - _SteepCount: 128
-    - _SteepParallex: 0
+    - _SteepParallex: 1
     - _Surface: 0
+    - _UpperBlend: 0
+    - _UpperBlendAmount: 0.5
     - _VF: 1
+    - _Wave: 0
+    - _WaveFrequency: 5
+    - _WaveSpeed: 1
+    - _WaveStrength: 1
     - _WorkflowMode: 1
-    - _ZTest: 4
+    - _WorldUV: 1
+    - _ZTest: 2
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EdgeColor: {r: 0.4365038, g: 0.9339623, b: 0.39208794, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _EmissionFlashColor: {r: 1, g: 1, b: 1, a: 1}
-    - _LightmapInterpolateST: {r: 1, g: 1, b: 1, a: 1}
-    - _LightmapST: {r: 1, g: 1, b: 1, a: 1}
-    - _MatCapColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FlowSpeed1: {r: 1, g: 0, b: 0, a: 0}
+    - _FlowSpeed2: {r: 20, g: 0, b: 0, a: 0}
+    - _RootColor: {r: 0.17662628, g: 0.8679245, b: 0.061409745, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    - _UpperBlendColor: {r: 1, g: 1, b: 1, a: 1}
+    - _WaveDirection: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &1842042723372290674
 MonoBehaviour:
