@@ -86,6 +86,8 @@ struct BRDFSurface
     half3 viewDir;
     half3 reflectDir;
     half NDV;
+    half TDV;
+    half BDV;
 
     half3 normalTS;
     
@@ -108,6 +110,8 @@ struct BRDFLightInput
     half LDH;
     half TDH;
     half BDH;
+    half TDL;
+    half BDL;
 };
 
 BRDFLightInput BRDFLightInput_Ctor(BRDFSurface surface,half3 lightDir,half3 lightColor,half shadowAttenuation,half distanceAttenuation)
@@ -128,6 +132,8 @@ BRDFLightInput BRDFLightInput_Ctor(BRDFSurface surface,half3 lightDir,half3 ligh
     input.LDH = dot(lightDir, halfDir);
     input.TDH = dot(surface.tangent,halfDir);
     input.BDH = dot(surface.biTangent,halfDir);
+    input.TDL = dot(surface.tangent,lightDir);
+    input.BDL = dot(surface.biTangent,lightDir);
     return input;
 }
 

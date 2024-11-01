@@ -107,7 +107,9 @@ float smoothness=0.5,metallic=0,ao =1;
 	surface.viewDir = input.viewDirWS;
 	surface.reflectDir = normalize(reflect(-surface.viewDir, surface.normal));
 	surface.NDV = dot(surface.normal,surface.viewDir);
-
+	surface.TDV = dot(surface.tangent,surface.viewDir);
+	surface.BDV = dot(surface.biTangent,surface.viewDir);
+	
 	surface.smoothness = smoothness;
 	surface.grazingTerm = saturate(smoothness + reflectivity);
 	surface.perceptualRoughness = 1.0h - smoothness;

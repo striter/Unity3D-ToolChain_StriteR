@@ -84,7 +84,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PBRTex:
-        m_Texture: {fileID: 2800000, guid: 1adff7f0ce0f0354a9869763b513e0f2, type: 3}
+        m_Texture: {fileID: 2800000, guid: e4262459edff0b046a03fa129f3f54cb, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
@@ -122,13 +122,16 @@ Material:
     - _Distance: 1600
     - _DstBlend: 0
     - _EnvironmentReflections: 1
+    - _ExternalIOR: 1
     - _GeometryShadow: 0
     - _GeometryShadowEnd: 0.030234326
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _IndirectSpecularOffset: 4.1
+    - _InternalIOR: 1.25
     - _Metallic: 0
+    - _MicrofacetExponent: 100
     - _NDF: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -139,6 +142,8 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
+    - _Thickness: 800
+    - _ThinFilmIOR: 1.5
     - _WorkflowMode: 1
     - _ZTest: 2
     - _ZWrite: 1

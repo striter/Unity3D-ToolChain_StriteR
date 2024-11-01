@@ -87,5 +87,3 @@ float F_Schlick(float NDV)
     return pow4(x);//pow5(x);
 }
 #endif
-
-

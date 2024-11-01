@@ -10,7 +10,7 @@ struct BRDFLight
     half3 lightDir;
     
     half normalDistribution;
-    half normalizationTerm;
+    half3 normalizationTerm;
 };
 
 BRDFLight BRDFLight_Ctor(BRDFSurface surface,BRDFLightInput input)
@@ -51,7 +51,7 @@ half3 BRDFLighting(BRDFSurface surface,BRDFLight light)
 {
     half3 brdf = surface.diffuse;
     half D = light.normalDistribution;
-    half VF = light.normalizationTerm;
+    half3 VF = light.normalizationTerm;
 
     brdf += surface.specular * D * rcp(VF);
     return brdf*light.radiance;
