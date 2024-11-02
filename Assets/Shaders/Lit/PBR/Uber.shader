@@ -153,25 +153,6 @@
 			}
 			#define GET_NORMAL(input) GetNormalTS(input.uv,input.detailnormalUV)
             
-            Light GetMainLight(float3 positionWS,float3 normalWS)
-			{
-				Light mainLight = GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
-			#if _MATCAP
-				float2 matcapUV=float2(dot(UNITY_MATRIX_V[0].xyz,normalWS),dot(UNITY_MATRIX_V[1].xyz,normalWS));
-				matcapUV=matcapUV*.5h+.5h;
-				mainLight.color=SAMPLE_TEXTURE2D(_Matcap,sampler_Matcap,matcapUV).rgb*INSTANCE(_MatCapColor).rgb;
-				mainLight.distanceAttenuation = 1;
-			#endif
-				return mainLight;
-			}
-			#define GET_MAINLIGHT(i) GetMainLight(i.positionWS,i.normalWS) 
-
-			void GetGlobalIllumination(out half3 indirectDiffuse,out half3 indirectSpecular,v2ff i,BRDFSurface surface,Light mainLight)
-			{
-				indirectDiffuse = IndirectDiffuse(mainLight,i,surface.normal);
-				indirectSpecular = IndirectSpecularWithSSR(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,surface.normalTS);
-			}
-			#define GET_GI(indirectDiffuse,indirectSpecular,i,surface,mainLight) GetGlobalIllumination(indirectDiffuse,indirectSpecular,i,surface,mainLight);
 
 			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
 			float GetGeometryShadow(BRDFSurface surface,BRDFLightInput lightSurface)
@@ -227,6 +208,30 @@
 			#define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
 			#define GET_GEOMETRYSHADOW(surface,input) GetGeometryShadow(surface,input)
 	        #define GET_NORMALIZATIONTERM(surface,input) GetNormalizationTerm(surface,input)
+
+			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
+            
+            Light GetMainLight(float3 positionWS,float3 normalWS)
+			{
+				Light mainLight = GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
+			#if _MATCAP
+				float2 matcapUV=float2(dot(UNITY_MATRIX_V[0].xyz,normalWS),dot(UNITY_MATRIX_V[1].xyz,normalWS));
+				matcapUV=matcapUV*.5h+.5h;
+				mainLight.color=SAMPLE_TEXTURE2D(_Matcap,sampler_Matcap,matcapUV).rgb*INSTANCE(_MatCapColor).rgb;
+				mainLight.distanceAttenuation = 1;
+			#endif
+				return mainLight;
+			}
+			#define GET_MAINLIGHT(i) GetMainLight(i.positionWS,i.normalWS) 
+
+			float3 GetGlobalIllumination(v2ff i,BRDFSurface surface,Light mainLight)
+			{
+				half3 indirectDiffuse = IndirectDiffuse(mainLight,i,surface.normal);
+				half3 indirectSpecular = IndirectSpecularWithSSR(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,surface.normalTS);
+				return BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
+			}
+			#define GET_GI(i,surface,mainLight) GetGlobalIllumination(i,surface,mainLight);
+            
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			ENDHLSL
 		}

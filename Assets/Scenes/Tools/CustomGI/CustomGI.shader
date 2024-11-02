@@ -9,7 +9,7 @@ Shader "Hidden/CustomGI"
 		[Toggle(_WORLDUV)]_WorldUV("World UV",float) = 1
 		
 		[Header(PBR)]
-		[NoScaleOffset]_PBRTex("PBR Tex(Glossiness.Metallic.AO)",2D)="black"{}
+		[NoScaleOffset]_PBRTex("PBR Tex(Smoothness.Metallic.AO)",2D)="black"{}
 		
 		[Header(Detail Tex)]
 		_EmissionTex("Emission",2D)="white"{}
@@ -78,16 +78,19 @@ Shader "Hidden/CustomGI"
 			    half density = FogDesnity(fogFactor);
 			    return lerp(srcColor,sh,density);
 			}
-			
+
+			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
 			float3 _IrradianceParameters;
-			void OverrideGlobalIllumination(out half3 indirectDiffuse,out half3 indirectSpecular,v2ff i,BRDFSurface surface,Light mainLight)
+			float3 OverrideGlobalIllumination(v2ff i,BRDFSurface surface,Light mainLight)
 			{
+				half3 indirectDiffuse;
+				half3 indirectSpecular;
 				half3 normal = normalize(surface.normal);
 				indirectDiffuse = SHL2Sample(normal,);
 				#ifndef LIGHTMAP_CUSTOM
 					indirectDiffuse *= IndirectDiffuse(mainLight,i,normal) * _IrradianceParameters.y;
 					indirectSpecular = indirectDiffuse;
-					return;
+					return BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 				#endif
 
 				//Custom Lightmap Goes here
@@ -113,7 +116,7 @@ Shader "Hidden/CustomGI"
 		
 				indirectDiffuse += mainLightIndirectIntensity * _MainLightColor.rgb ;
 			#endif
-				
+				return BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 			}
 
 				void Transfer(a2vf v,inout v2ff i)
@@ -126,7 +129,7 @@ Shader "Hidden/CustomGI"
 				
 			#define V2F_ADDITIONAL_TRANSFER(v,o) Transfer(v,o);
 			
-			#define GET_GI(indirectDiffuse,indirectSpecular,i,surface,mainLight) OverrideGlobalIllumination(indirectDiffuse,indirectSpecular,i,surface,mainLight);
+			#define GET_GI(i,surface,mainLight) OverrideGlobalIllumination(i,surface,mainLight);
 			
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			

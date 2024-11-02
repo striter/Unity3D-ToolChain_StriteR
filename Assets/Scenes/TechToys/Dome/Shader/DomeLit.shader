@@ -8,7 +8,7 @@ Shader "Dome/Lit"
 		[NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
 		
 		[Header(PBR)]
-		[NoScaleOffset]_PBRTex("PBR Tex(Glossiness.Metallic.AO)",2D)="black"{}
+		[NoScaleOffset]_PBRTex("PBR Tex(Smoothness.Metallic.AO)",2D)="black"{}
 		
 //		[Header(Tooness)]
 //    	[MinMaxRange]_GeometryShadow("Geometry Shadow",Range(0,1))=0

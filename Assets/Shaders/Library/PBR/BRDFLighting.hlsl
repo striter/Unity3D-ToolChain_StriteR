@@ -59,15 +59,18 @@ half3 BRDFLighting(BRDFSurface surface,BRDFLight light)
 
 half3 BRDFGlobalIllumination(BRDFSurface surface,half3 indirectDiffuse,half3 indirectSpecular)
 {
-    indirectDiffuse *= surface.ao;
-    indirectSpecular *= surface.ao;
-    
     half3 giDiffuse = indirectDiffuse * surface.diffuse;
+
+    float fresnelTerm =
+    #if defined(GET_FRESNELTERM_GI)
+        GET_FRESNELTERM_GI(surface);
+    #else
+        F_Schlick(max(0,surface.NDV));
+    #endif
     
-    float fresnelTerm = F_Schlick(max(0,surface.NDV));
     float3 surfaceReduction = 1.0 / (surface.roughness2 + 1.0) * lerp(surface.specular, surface.grazingTerm, fresnelTerm);
     half3 giSpecular = indirectSpecular * surfaceReduction;
-    return giDiffuse + giSpecular;
+    return (giDiffuse + giSpecular) * surface.ao;
 }
 
 #endif

@@ -20,13 +20,14 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Anisotropic
-  m_Shader: {fileID: 4800000, guid: 9f4cae01eb73d64469be5f17fa88e18a, type: 3}
+  m_Name: ClearCoat
+  m_Shader: {fileID: 4800000, guid: 5e53206f1cee94547a3514dc1b5a8c75, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _NDF_ANISOTROPIC_TROWBRIDGEREITZ
+  - _CLEARCOAT_NORMALMAP
   m_InvalidKeywords:
+  - _NDF_ANISOTROPIC_TROWBRIDGEREITZ
   - _NDF_COOKTORRANCE
   - _NORMALMAP
   m_LightmapFlags: 4
@@ -45,6 +46,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ClearcoatMaskMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ClearcoatNormalMap:
+        m_Texture: {fileID: 2800000, guid: 466cf78ab98da024182881a54a032ed4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -70,7 +79,7 @@ Material:
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0.75, y: 0}
+        m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -110,11 +119,16 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
-    - _AnisotropicValue: 0.839
+    - _AnisotropicValue: 1
     - _Blend: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
+    - _ClearcoatGloss: 1
+    - _ClearcoatIOR: 1.5
+    - _ClearcoatMask: 1
+    - _ClearcoatNormalIntensity: 1
+    - _ClearcoatSmoothness: 1
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
@@ -149,7 +163,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 0.020843485, g: 0, b: 0.26415092, a: 1}
+    - _Color: {r: 0, g: 0.5999999, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []

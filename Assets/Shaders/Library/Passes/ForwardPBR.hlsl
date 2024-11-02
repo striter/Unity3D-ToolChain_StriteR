@@ -136,6 +136,17 @@ half3 BRDFLighting(BRDFSurface surface, Light light)
 	#endif
 }
 
+half3 PBRGlobalIllumination(v2ff i,BRDFSurface surface,Light mainLight)
+{
+	#if defined(GET_GI)
+		return GET_GI(i,surface,mainLight)
+	#else
+		half3 indirectDiffuse = IndirectDiffuse(mainLight, i, surface.normal);
+		half3 indirectSpecular = IndirectSpecular(surface.reflectDir, surface.perceptualRoughness, 0);
+		return BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
+	#endif
+}
+
 f2of ForwardFragment(v2ff i)
 {
 	UNITY_SETUP_INSTANCE_ID(i);
@@ -157,17 +168,8 @@ f2of ForwardFragment(v2ff i)
 	#else
 		GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
 	#endif
-
-	half3 indirectDiffuse;
-	half3 indirectSpecular;
-	#if defined(GET_GI)
-		GET_GI(indirectDiffuse,indirectSpecular,i,surface,mainLight)
-	#else
-		indirectDiffuse = IndirectDiffuse(mainLight,i,surface.normal);
-		indirectSpecular = IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,0);
-	#endif
 	
-	finalCol += BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
+	finalCol += PBRGlobalIllumination(i,surface,mainLight);
 
 	#if defined BRDF_MAINLIGHTING
 		BRDF_MAINLIGHTING(mainLight,surface);

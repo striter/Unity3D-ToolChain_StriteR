@@ -7,7 +7,7 @@ Shader "Game/Lit/PBR/Toon"
 		_Color("Color Tint",Color) = (1,1,1,1)
 		
 		[Header(PBR)]
-		[NoScaleOffset]_PBRTex("PBR Tex(Glossiness.Metallic.AO)",2D)="black"{}
+		[NoScaleOffset]_PBRTex("PBR Tex(Smoothness.Metallic.AO)",2D)="black"{}
 		
 		[Header(Tooness)]
     	[MinMaxRange]_GeometryShadow("Geometry Shadow",Range(0,1))=0
@@ -86,15 +86,18 @@ Shader "Game/Lit/PBR/Toon"
 			    return toonSpecular;
 			}
 
-			void GetGlobalIllumination(out half3 indirectDiffuse,out half3 indirectSpecular,v2ff i,BRDFSurface surface,Light light)
-			{
-				indirectDiffuse = IndirectDiffuse(light,i,surface.normal);
-				indirectSpecular = IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
-			}
 
 			#define GET_GEOMETRYSHADOW(surface,lightSurface) GetGeometryShadow(surface,lightSurface)
 	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
-			#define GET_GI(indirectDiffuse,indirectSpecular,i,surface,mainLight) GetGlobalIllumination(indirectDiffuse,indirectSpecular,i,surface,mainLight);
+			
+			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
+			float3 GetGlobalIllumination(v2ff i,BRDFSurface surface,Light light)
+			{
+				float3 indirectDiffuse = IndirectDiffuse(light,i,surface.normal);
+				float3 indirectSpecular = IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
+				return BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
+			}
+			#define GET_GI(i,surface,mainLight) GetGlobalIllumination(i,surface,mainLight);
 			
             #pragma target 3.5
 			#pragma vertex ForwardVertex

@@ -14,7 +14,6 @@ Material:
   m_ValidKeywords:
   - _DEPTHMAP
   - _NDF_COOKTORRANCE
-  - _PARALLAX
   - _PBRMAP
   - _VF_GGX
   m_InvalidKeywords:
@@ -213,8 +212,8 @@ Material:
     - _Cutoff: 0.5
     - _DepthBuffer: 0
     - _DepthBufferScale: 10
-    - _DepthOffset: 0.174
-    - _DepthScale: 0.011
+    - _DepthOffset: 0
+    - _DepthScale: 0.005
     - _DetailAlbedoMapScale: 1
     - _DetailBlendMode: 3
     - _DetailNormalMapScale: 1
@@ -249,8 +248,8 @@ Material:
     - _NDF: 1
     - _NumLayersCount: 1
     - _OcclusionStrength: 0
-    - _Parallax: 1
-    - _ParallaxCount: 128
+    - _Parallax: 0
+    - _ParallaxCount: 32
     - _Parallex: 1
     - _ParallexCount: 128
     - _ParallexOffset: 1

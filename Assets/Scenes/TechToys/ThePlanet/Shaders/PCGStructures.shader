@@ -9,7 +9,7 @@ Shader "PCG/Structure"
 		[NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
 		
 		[Header(PBR)]
-		[NoScaleOffset]_PBRTex("PBR Tex(Glossiness.Metallic.AO)",2D)="black"{}
+		[NoScaleOffset]_PBRTex("PBR Tex(Smoothness.Metallic.AO)",2D)="black"{}
 		
 		[Header(Detail Tex)]
 		_EmissionTex("Emission",2D)="white"{}

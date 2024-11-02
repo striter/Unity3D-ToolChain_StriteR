@@ -8,7 +8,7 @@ Shader "Game/Lit/PBR/Anisotropic"
 		
 		[Header(PBR)]
 		[ToggleTex(_NORMALMAP)][NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
-		[NoScaleOffset]_PBRTex("PBR Tex(Glossiness.Metallic.AO)",2D)="black"{}
+		[NoScaleOffset]_PBRTex("PBR Tex(Smoothness.Metallic.AO)",2D)="black"{}
 		
 		[Header(Anisotropic)]
         [KeywordEnum(Anisotropic_TrowbridgeReitz,Anisotropic_Ward,Anisotropic_Beckmann,Anisotropic_GGX)]_NDF("Normal Distribution:",float) = 1
@@ -187,7 +187,7 @@ Shader "Game/Lit/PBR/Anisotropic"
 		        return 1 - beamRatio * (ts + tp) * 0.5f; 
 		    }
 
-            half3 GetNormlizationTerm(BRDFSurface surface,BRDFLightInput input)
+            half3 GetNormalizationTerm(BRDFSurface surface,BRDFLightInput input)
 			{
 				half V = V_SmithJointGGXAniso(surface.TDV,surface.BDV,surface.NDV,input.TDL,input.BDL,input.NDL,surface.roughnessT,surface.roughnessB);
 				float3 F = F_Coating(input.VDH);
@@ -195,35 +195,7 @@ Shader "Game/Lit/PBR/Anisotropic"
 			}
 
             #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input);
-            #define GET_NORMALIZATIONTERM(surface,input) GetNormlizationTerm(surface,input);
-
-			// float3 GetDiffractionGrating(BRDFSurface surface,Light light)
-			// {
-		 //        BRDFLightInput input=BRDFLightInput_Ctor(surface,light.direction,light.color,light.shadowAttenuation,light.distanceAttenuation);
-		 //        BRDFLight brdfLight=BRDFLight_Ctor(surface,input);
-		 //        float3 pbr = BRDFLighting(surface,brdfLight);
-			// 	
-			// 	float3 L = light.direction;
-			//     float3 V = surface.viewDir;
-			//     float3 T = surface.tangent;
-			//     float d = _Distance;
-			//     float cos_ThetaL = dot(L, T);
-			//     float cos_ThetaV = dot(V, T);
-			//     float u = abs(cos_ThetaL - cos_ThetaV);
-			//     if (u == 0)
-			//         return pbr;
-			// 	
-			//     float3 color = 0;
-			//     for (int n = 1; n <= 8; n++)
-			//     {
-			//         float wavelength = u * d / n;
-			//         color += spectral_zucconi6(wavelength);
-			//     }
-			//     color = saturate(color);
-			// 	return color + pbr;
-			// }
-   //          
-			// #define GET_LIGHTING_OUTPUT(surface,light) GetDiffractionGrating(surface,light)
+            #define GET_NORMALIZATIONTERM(surface,input) GetNormalizationTerm(surface,input);
 			
             #pragma target 3.5
 			#pragma vertex ForwardVertex

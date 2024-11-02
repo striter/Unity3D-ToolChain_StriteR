@@ -8,7 +8,7 @@ Shader "Game/Lit/PBR/SSS"
 		
 		[Header(PBR)]
 		[ToggleTex(_NORMALMAP)][NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
-		[NoScaleOffset]_PBRTex("PBR Tex(Glossiness.Metallic.AO)",2D)="black"{}
+		[NoScaleOffset]_PBRTex("PBR Tex(Smoothness.Metallic.AO)",2D)="black"{}
 		
 		[NoScaleOffset]_ThicknessMap("SSS Thickness",2D)="black"{}
 		_SSSNormalInfluence("SSS Normal Influence",Range(0,1))=1
