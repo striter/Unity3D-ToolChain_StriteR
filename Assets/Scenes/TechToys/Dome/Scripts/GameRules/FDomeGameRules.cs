@@ -1,6 +1,7 @@
 using System.Linq.Extensions;
 using Dome.Entity;
 using Dome.LocalPlayer;
+using Runtime.Random;
 using UnityEngine;
 
 namespace Dome
@@ -58,7 +59,7 @@ namespace Dome
             if (_state == EGameState.GameStart)
             {
                 var initialTechPoints = Refer<FDomeGrid>().initialTechPoints.DeepCopy();
-                URandom.Shuffle(initialTechPoints,initialTechPoints.Length,1);
+                UShuffle.Shuffle(initialTechPoints,initialTechPoints.Length,1);
                 for (int i = 0; i < m_Teams.Length; i++)
                     m_Teams[i].RoundStart(initialTechPoints[i]);
 

@@ -1,5 +1,6 @@
 
 using System;
+using System.Linq;
 using System.Linq.Extensions;
 using Procedural.Tile;
 using TPool;
@@ -11,6 +12,11 @@ namespace TheVoxel
     [Serializable]
     public struct TerrainData
     {
+        [Header("Execution")]
+        public int visualRange;
+        public int iterationPerTick;
+
+        [Header("Terrain")]
         public int baseHeight;
         public float formScale;
         public float mountainValidation;
@@ -28,6 +34,7 @@ namespace TheVoxel
         [Header("Cave")] 
         public float caveScale;
         public float caveValidation;
+        
     }
     
     public class ChunkManager : MonoBehaviour
@@ -58,8 +65,14 @@ namespace TheVoxel
 
         public void Tick(float _deltaTime)
         {
-            foreach (var chunk in m_Chunks)
-                chunk.Tick(_deltaTime,m_Chunks.m_Dic);
+            var validIteration = m_TerrainData.iterationPerTick;
+            while (validIteration >= 0)
+            {
+                if (m_Chunks.Any(chunk => chunk.Tick(_deltaTime, m_Chunks.m_Dic)))
+                    validIteration--;
+                else
+                    break;
+            }
         }
         
         public void ChunkValidate(Vector3 _position)
@@ -67,14 +80,7 @@ namespace TheVoxel
             Int2 centerChunk = DVoxel.GetChunkID(_position);
             TSPoolHashset<Int2>.Spawn(out var currentChunkList);
             TSPoolHashset<Int2>.Spawn(out var removeChunkList);
-            UTile.GetAxisRange(centerChunk, DVoxel.kVisualizeRange).FillHashset(currentChunkList);
-            foreach (var chunk in currentChunkList)
-            {
-                if(m_Chunks.Contains(chunk))
-                    continue;
-
-                m_Chunks.Spawn(chunk);
-            }
+            UTile.GetAxisRange(centerChunk, m_TerrainData.visualRange).FillHashset(currentChunkList);
 
             foreach (var chunk in m_Chunks.m_Dic.Keys)
             {
@@ -85,6 +91,14 @@ namespace TheVoxel
 
             foreach (var chunk in removeChunkList)
                 m_Chunks.Recycle(chunk);
+            
+            foreach (var chunk in currentChunkList)
+            {
+                if(m_Chunks.Contains(chunk))
+                    continue;
+
+                m_Chunks.Spawn(chunk);
+            }
 
             TSPoolHashset<Int2>.Recycle(currentChunkList);
             TSPoolHashset<Int2>.Recycle(removeChunkList);

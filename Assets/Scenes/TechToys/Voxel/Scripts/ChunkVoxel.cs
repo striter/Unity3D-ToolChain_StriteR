@@ -17,7 +17,7 @@ namespace TheVoxel
         public ushort intervalGeometry;
         
         public static readonly ChunkVoxel kInvalid = new ChunkVoxel() {type = EVoxelType.Air};
-
+        public static readonly ChunkVoxel kVoid = new ChunkVoxel() { type = EVoxelType.Void };
 
         public override bool Equals(object obj)
         {
@@ -33,5 +33,8 @@ namespace TheVoxel
         {
             return identity.Equals(other.identity) && type == other.type && sideGeometry == other.sideGeometry && cornerGeometry == other.cornerGeometry && intervalGeometry == other.intervalGeometry;
         }
+
+        public static readonly byte kEmptyGeometry = byte.MinValue;
+        public static readonly byte kFullGeometry = UByte.ToByte(true,true,true,true,true,true,false,false);
     }
 }

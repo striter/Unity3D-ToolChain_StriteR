@@ -31,6 +31,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Library\PackageCache\com.unity.burst@1.8.17\Tests\Editor\burstTestTarget.txt">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Library\PackageCache\com.unity.render-pipelines.universal@14.0.10\Editor\RendererFeatures\NewRendererFeature.cs.txt">
           <value>
             <Attribute>

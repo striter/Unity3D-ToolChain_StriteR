@@ -29,7 +29,7 @@ namespace Examples.ArtScenes.CornellBox
         private void OnEnable()
         {
             var views = transform.Find(kViewModelRoot);
-            m_Views = new (transform.Find("Views/Template"));
+            m_Views = new (transform.Find(kViewsTemplateRoot));
             var quads  = m_Bounding.GetQuads().FillList(UList.Empty<GQuad>());
             if (quads.Count != views.childCount)
             {
@@ -108,9 +108,6 @@ namespace Examples.ArtScenes.CornellBox
         public GQuad m_Quad;
         private Camera m_Camera;
         private MeshRenderer m_MeshRenderer;
-        
-        public Action<int> DoRecycle { get; set; }
-        public int identity { get; set; }
 
         public CornellBoxView(Transform _transform) : base(_transform) { }
         public CornellBoxView Initialize(int _layerIndex,Transform _viewRoot, GQuad _quad)

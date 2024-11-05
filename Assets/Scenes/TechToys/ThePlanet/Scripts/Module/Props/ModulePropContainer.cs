@@ -25,7 +25,7 @@ namespace TechToys.ThePlanet.Module.Prop
         {
             m_Voxel = _voxel;
             transform.SyncPositionRotation(_voxel.transform);
-            m_Random = UNoise.Value.Unit1f1(m_Voxel.Identity.GetHashCode());//float)m_Voxel.Identity.location.x/ int.MaxValue,(float)m_Voxel.Identity.location.y/int.MaxValue,(float)m_Voxel.Identity.height/byte.MaxValue);
+            m_Random = Noise.Value.Unit1f1(m_Voxel.Identity.GetHashCode());//float)m_Voxel.Identity.location.x/ int.MaxValue,(float)m_Voxel.Identity.location.y/int.MaxValue,(float)m_Voxel.Identity.height/byte.MaxValue);
             
         }
         public override void OnPoolRecycle()

@@ -1,7 +1,7 @@
 using System.Linq.Extensions;
 using Unity.Mathematics;
 
-namespace Noise
+namespace Runtime.Random
 {
     public static class Dither
     {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq.Extensions;
+using Runtime.Random;
 
 namespace Runtime.Geometry.Extension.BoundingSphere
 {
@@ -12,7 +13,7 @@ namespace Runtime.Geometry.Extension.BoundingSphere
         {
             kContainedPoints.Clear();
             kContainedPoints.TryAddRange(_positions);
-            URandom.Shuffle(kContainedPoints,kContainedPoints.Count,1);
+            UShuffle.Shuffle(kContainedPoints,kContainedPoints.Count,1);
             kBoundaryPoints.Clear();
             return GetBoundingSphereWelzl(kContainedPoints,kBoundaryPoints);
         }

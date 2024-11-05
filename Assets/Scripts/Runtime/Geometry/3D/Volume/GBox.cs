@@ -101,7 +101,8 @@ namespace Runtime.Geometry
         
         public static implicit operator Bounds(GBox _box)=> new Bounds(_box.center, _box.size);
         public static implicit operator GBox(Bounds _bounds) => new GBox(_bounds.center,_bounds.extents);
-        
+
+        public static readonly GBox kZero = new GBox(0, 0);
         public static readonly GBox kDefault = new GBox(0f,.5f);
         public IEnumerator<float3> GetEnumerator()
         {
@@ -146,6 +147,7 @@ namespace Runtime.Geometry
         }
 
         public void DrawGizmos() => Gizmos.DrawWireCube(center,size);
+        public override string ToString() => $"GBox {center} {size}";
     }
 
 

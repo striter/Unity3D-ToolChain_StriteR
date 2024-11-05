@@ -1,4 +1,4 @@
-using Noise;
+using Runtime.Random;
 using Rendering.GI.SphericalHarmonics;
 using Unity.Burst;
 using Unity.Collections;

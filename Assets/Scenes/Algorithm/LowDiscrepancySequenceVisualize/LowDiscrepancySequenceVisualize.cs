@@ -5,6 +5,7 @@ using System.Linq.Extensions;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
 using Runtime.Geometry.Extension.Sphere;
+using Runtime.Random;
 
 namespace Examples.Algorithm.SamplePatternVisualize
 {
@@ -31,12 +32,14 @@ namespace Examples.Algorithm.SamplePatternVisualize
         public int patternWidth=4,patternHeight=4;
         public EVisualMode m_Mode = EVisualMode.Flat;
         [MFoldout(nameof(patternType), ESamplePattern.PoissonDisk)] public Texture2D m_Texture;
+        [MFoldout(nameof(patternType), ESamplePattern.PoissonDisk)] public string m_Seed = "Test";
         [Readonly] public float2[] patterns;
         [Range(0, 1f)] public float gizmosRadius = 0.03f;
         
         [InspectorButton]
         void Generate()
         {
+            var randomGenerator = !string.IsNullOrEmpty(m_Seed) ? new LCGRandom(m_Seed.GetHashCode()) : null;
             patterns = patternType switch
             {
                 ESamplePattern.Grid => ULowDiscrepancySequences.Grid2D(patternWidth, patternHeight),
@@ -47,12 +50,12 @@ namespace Examples.Algorithm.SamplePatternVisualize
                     ULowDiscrepancySequences.Hammersley2D((uint)i, (uint)(patternWidth * patternHeight)) - .5f),
                 ESamplePattern.Sobol => ULowDiscrepancySequences.Sobol2D((uint)(patternWidth * patternHeight)),
                 ESamplePattern.PoissonDisk => m_Texture != null
-                    ? ULowDiscrepancySequences.PoissonDisk2D(patternWidth*patternHeight, 30, null,
+                    ? ULowDiscrepancySequences.PoissonDisk2D(patternWidth*patternHeight, 30, randomGenerator,
                         val => math.lerp(3f, 1f,
                             UColor.RGBtoLuminance(m_Texture.GetPixel((int)(val.x * m_Texture.width),
                                     (int)(val.y * m_Texture.height))
                                 .to3())))
-                    : ULowDiscrepancySequences.PoissonDisk2D(patternWidth, patternHeight),
+                    : ULowDiscrepancySequences.PoissonDisk2D(patternWidth * patternHeight,30,randomGenerator),
                 _ => patterns
             };
         }

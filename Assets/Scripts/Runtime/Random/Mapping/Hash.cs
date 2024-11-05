@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Noise
+namespace Runtime.Random
 {
     public readonly struct SmallXXHash
     {

@@ -11,6 +11,7 @@ namespace TheVoxel
     
     public enum EVoxelType
     {
+        Void = -2,
         Air = -1,
         Dirt,
         Grass,
@@ -26,12 +27,10 @@ namespace TheVoxel
     {
         public const float kVoxelSize = 2f;
 
-        public const int kVisualizeRange = 2;
-        
-        public const int kChunkSize = 128;
-        public const int kChunkSizeM1 = 127;
+        public const int kChunkSize = 32;
+        public const int kChunkSizeM1 = kChunkSize - 1;
 
-        public static Int2 GetChunkID(Vector3 _positionWS) => new Int2((int)(_positionWS.x/(kVoxelSize*kChunkSize)),(int)(_positionWS.z/(kVoxelSize*kChunkSize)));
+        public static Int2 GetChunkID(Vector3 _positionWS) => new Int2((int)math.floor(_positionWS.x/(kVoxelSize*kChunkSize)),(int)math.floor(_positionWS.z/(kVoxelSize*kChunkSize)));
         public static Vector3 GetChunkPositionWS(Int2 _chunkID) => new Vector3(_chunkID.x*kChunkSize*kVoxelSize,0,_chunkID.y*kChunkSize*kVoxelSize);
         public static Vector3 GetVoxelPositionOS(Int3 _voxelID) => new Vector3(_voxelID.x*kVoxelSize,_voxelID.y*kVoxelSize,_voxelID.z*kVoxelSize);
 

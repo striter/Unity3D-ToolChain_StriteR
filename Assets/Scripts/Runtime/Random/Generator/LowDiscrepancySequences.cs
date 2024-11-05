@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Procedural.Tile;
 using Runtime.DataStructure;
+using Runtime.Random;
 using Unity.Mathematics;
 using static UBitwise;
 using static kmath;
@@ -28,7 +29,7 @@ public static class ULowDiscrepancySequences
         return grid;
     }
 
-    public static float2[] Stratified2D(int _width, int _height, bool _jitter = false,float _offset = -.5f, System.Random _random = null)
+    public static float2[] Stratified2D(int _width, int _height, bool _jitter = false,float _offset = -.5f, IRandomGenerator _random = null)
     {
         float2 uvOffset = 1f / new float2(_width,_height);
         float2[] grid = new float2[_width*_height];
@@ -39,7 +40,7 @@ public static class ULowDiscrepancySequences
             var jy = _jitter ? URandom.Random01(_random) : .5f;
             grid[y * _width + x] = new float2(x+jx,y+jy)*uvOffset + _offset;
         } 
-        URandom.LatinHypercube(grid,grid.Length,_width,_random);
+        UShuffle.LatinHypercube(grid,grid.Length,_width,_random);
         return grid;
     }
 
@@ -150,7 +151,7 @@ public static class ULowDiscrepancySequences
         return points;
     }
 
-    public static float2[] PoissonDisk2D(int _maxCount,int _k = 30,System.Random _seed = null,Func<float2,float> _getRadiusNormalized = null)
+    public static float2[] PoissonDisk2D(int _maxCount,int _k = 30,IRandomGenerator _seed = null,Func<float2,float> _getRadiusNormalized = null)
     {
         var count = sqrt(_maxCount) + .5f;
         
@@ -169,7 +170,7 @@ public static class ULowDiscrepancySequences
         
         while (checkList.Count > 0)     //Optimize with spatial hashmap
         {
-            var activeIndex = URandom.RandomInt(checkList.Count,_seed);
+            var activeIndex = URandom.RandomInt(checkList.Count - 1,_seed);
             var activePoint = checkList[activeIndex];
 
             var found = false;

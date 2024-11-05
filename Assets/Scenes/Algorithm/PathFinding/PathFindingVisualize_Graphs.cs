@@ -7,6 +7,7 @@ using Procedural.Hexagon;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
 using Runtime.Geometry.Extension.Sphere;
+using Runtime.Random;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -182,7 +183,7 @@ namespace Examples.Algorithm.PathFinding
         {
             var positions = UList.Empty<float2>();
             var triangles = UList.Empty<PTriangle>();
-            var random = new System.Random(seed.GetHashCode());
+            var random = new LCGRandom(seed.GetHashCode());
             ULowDiscrepancySequences.PoissonDisk2D(resolution*resolution,30,random).Select(p=>p*kRadius).FillList(positions);
             
             m_Nodes.Clear();

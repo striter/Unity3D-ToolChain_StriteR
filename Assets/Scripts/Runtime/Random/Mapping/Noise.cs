@@ -4,7 +4,7 @@ using static Unity.Mathematics.math;
 using static umath;
 using static kmath;
 
-public static class UNoise
+public static class Noise
 {
     public static class Value
     {
@@ -20,7 +20,6 @@ public static class UNoise
         
         public static float2 Unit2f2(float2 _random) => new float2(Unit1f2(_random),Unit1f2(new float2(_random.y, _random.x)) );
     }
-    
     
     public static class Perlin
     {

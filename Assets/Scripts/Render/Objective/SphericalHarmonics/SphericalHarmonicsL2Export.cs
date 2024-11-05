@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Runtime.Geometry.Extension;
+using Runtime.Random;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
@@ -52,7 +53,7 @@ namespace Rendering.GI.SphericalHarmonics
         static SHL2Data ExportSample(ESHSampleMode _mode,int _sampleCount,Func<float3, float3> _sampleColor,string _randomSeed = null)
         {
             SHL2Data data = default;
-            var random = _randomSeed == null ? null : new System.Random(_randomSeed.GetHashCode());
+            var random = _randomSeed == null ? null : new LCGRandom(_randomSeed.GetHashCode());
             for (var i = 0; i < _sampleCount; i++)
             {
                 switch (_mode)

@@ -53,7 +53,7 @@ namespace Examples.Algorithm.Geometry
             int index = 0;
             foreach (var aabb in m_IntersectionAABBs)
             {
-                var deltaPosition = math.cos(time * 2 * math.PI * UNoise.Value.Unit1f1((float)index++/m_IntersectionAABBs.Length)) * .5f;
+                var deltaPosition = math.cos(time * 2 * math.PI * Noise.Value.Unit1f1((float)index++/m_IntersectionAABBs.Length)) * .5f;
                 var deltaAABB= aabb.Move(deltaPosition) ;
                 Gizmos.color = frustumPlanes.AABBIntersection(deltaAABB,frustumPoints) ? Color.green : Color.red;
                 deltaAABB.DrawGizmos();

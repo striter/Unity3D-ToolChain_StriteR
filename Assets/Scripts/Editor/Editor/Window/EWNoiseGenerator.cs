@@ -87,11 +87,11 @@ namespace UnityEditor.Extensions
             _noiseY *= _scale;
             switch (_noiseType)
             {
-                case ENoiseType.Value: noise = UNoise.Value.Unit1f2(Mathf.Floor(_noiseX) , Mathf.Floor( _noiseY) ); break;
-                case ENoiseType.Perlin: noise = UNoise.Perlin.Unit1f3( _noiseX ,_noiseY, 0); break;
-                case ENoiseType.Simplex: noise = UNoise.Simplex.Unit1f2(_noiseX , _noiseY ); break;
-                case ENoiseType.VoronoiUnit: noise = UNoise.Voronoi.Unit2f2(_noiseX, _noiseY).y; break;
-                case ENoiseType.VoronoiDistance: noise = UNoise.Voronoi.Unit2f2(_noiseX, _noiseY).x;break;
+                case ENoiseType.Value: noise = Noise.Value.Unit1f2(Mathf.Floor(_noiseX) , Mathf.Floor( _noiseY) ); break;
+                case ENoiseType.Perlin: noise = Noise.Perlin.Unit1f3( _noiseX ,_noiseY, 0); break;
+                case ENoiseType.Simplex: noise = Noise.Simplex.Unit1f2(_noiseX , _noiseY ); break;
+                case ENoiseType.VoronoiUnit: noise = Noise.Voronoi.Unit2f2(_noiseX, _noiseY).y; break;
+                case ENoiseType.VoronoiDistance: noise = Noise.Voronoi.Unit2f2(_noiseX, _noiseY).x;break;
             }
             return noise;
         }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Runtime.Geometry;
 using TPool;
@@ -22,30 +23,18 @@ namespace TheVoxel
         Vertices = 1 << 2,
     }
 
-    [Flags]
-    public enum EDirtyVoxels
-    {
-        Nothing = 0,
-        Back = 1 << 0,
-        Left = 1 << 1,
-        Forward = 1 << 2,        
-        Right =  1 << 3,
-        Everything = int.MaxValue,
-    }
-
-
     public class ChunkElement : PoolBehaviour<Int2>
     {
-        public EChunkDirty m_Status { get; private set; }
+        [Readonly] public int m_SideCount;
+        public EChunkDirty m_DirtyStatus;
         private MeshFilter m_Filter;
         private Mesh m_Mesh;
 
         private NativeHashMap<Int3, int> m_Indexes;
         private NativeList<Int3> m_Keys;
         private NativeList<ChunkVoxel> m_Values;
-        private EDirtyVoxels m_DirtyVoxels;
-        private int m_SideCount;
 
+        static readonly float3 kChunkSize = new float3(DVoxel.kVoxelSize* DVoxel.kChunkSize);
         public override void OnPoolCreate()
         {
             base.OnPoolCreate();
@@ -71,8 +60,7 @@ namespace TheVoxel
         {
             base.OnPoolSpawn();
             transform.position = DVoxel.GetChunkPositionWS(identity);
-            m_Status = EChunkDirty.Generation;
-            m_DirtyVoxels = EDirtyVoxels.Nothing;
+            m_DirtyStatus = (EChunkDirty)int.MaxValue;
         }
 
         public override void OnPoolRecycle()
@@ -81,39 +69,61 @@ namespace TheVoxel
             Clear();
         }
 
-        public void Tick(float _deltaTime, Dictionary<Int2, ChunkElement> _chunks)
+        public bool Tick(float _deltaTime, Dictionary<Int2, ChunkElement> _chunks)
         {
-            if (m_Status.IsFlagEnable(EChunkDirty.Generation))
+            if (m_DirtyStatus.IsFlagEnable(EChunkDirty.Generation))
             {
-                m_Status &= int.MaxValue - EChunkDirty.Generation;
+                m_DirtyStatus &= int.MaxValue - EChunkDirty.Generation;
+                Clear();
                 PopulateImplicit();
-                SetDirty(EDirtyVoxels.Everything);
-                _chunks.GetValueOrDefault(identity + Int2.kForward)?.SetDirty(EDirtyVoxels.Back);
-                _chunks.GetValueOrDefault(identity + Int2.kBack)?.SetDirty(EDirtyVoxels.Forward);
-                _chunks.GetValueOrDefault(identity + Int2.kLeft)?.SetDirty(EDirtyVoxels.Right);
-                _chunks.GetValueOrDefault(identity + Int2.kRight)?.SetDirty(EDirtyVoxels.Left);
-                return;
+                return true;
             }
 
-            if (m_Status.IsFlagEnable(EChunkDirty.Relation))
+            if (!m_DirtyStatus.IsFlagEnable(EChunkDirty.Relation) && !m_DirtyStatus.IsFlagEnable(EChunkDirty.Vertices))
+                return false;
+            
+            var sides = new Quad<ChunkElement>(
+                _chunks.TryGetValue(identity + Int2.kBack, out var backChunk) ? backChunk : null,
+                _chunks.TryGetValue(identity + Int2.kLeft, out var leftChunk) ? leftChunk : null,
+                _chunks.TryGetValue(identity + Int2.kForward, out var forwardChunk) ? forwardChunk : null,
+                _chunks.TryGetValue(identity + Int2.kRight, out var rightChunk) ? rightChunk : null);
+
+            if (sides.Any(p => p == null))
+                return false;
+            
+            if (m_DirtyStatus.IsFlagEnable(EChunkDirty.Relation))
             {
-                PopulateRelation(_chunks);
-                m_Status &= int.MaxValue - EChunkDirty.Relation;
-                return;
+                if (sides.Any(p => p.m_DirtyStatus.IsFlagEnable(EChunkDirty.Generation)))
+                    return false;
+                
+                if (!PopulateRelation(sides))
+                    return false;
+                m_DirtyStatus &= int.MaxValue - EChunkDirty.Relation;
+                return true;
             }
             
-            if (m_Status.IsFlagEnable(EChunkDirty.Vertices))
+            if (m_DirtyStatus.IsFlagEnable(EChunkDirty.Vertices))
             {
                 PopulateVertices();
-                m_Status &= int.MaxValue - EChunkDirty.Vertices;
-                return;
+                m_DirtyStatus &= int.MaxValue - EChunkDirty.Vertices;
+                return true;
             }
+
+            return false;
         }
 
-        void SetDirty(EDirtyVoxels _voxels)
+        private void OnDrawGizmos()
         {
-            m_DirtyVoxels |= _voxels;
-            m_Status |= EChunkDirty.Relation | EChunkDirty.Vertices;
+            Gizmos.matrix = transform.localToWorldMatrix;
+            var index = 0;
+            foreach (var chunkDirty in UEnum.GetEnums<EChunkDirty>())
+            {
+                if (!m_DirtyStatus.IsFlagEnable(chunkDirty))
+                    continue;
+                Gizmos.color = UColor.IndexToColor(index++);
+
+                GBox.Minmax(float3.zero, kChunkSize).DrawGizmos();
+            }
         }
 
         void Clear()
@@ -123,7 +133,7 @@ namespace TheVoxel
             m_Keys.Clear();
             m_Values.Clear();
         }
-        
+
         void PopulateImplicit()
         {
             new ImplicitJob(identity,m_Indexes,m_Keys,m_Values).ScheduleParallel(1,1,default).Complete();
@@ -160,7 +170,7 @@ namespace TheVoxel
                 float r = DVoxel.kChunkSize;
                 float3 p3D = new float3(_p2D.x,_height/r,_p2D.y);
                 
-                float noise = UNoise.Perlin.Unit1f3(p3D * terrainData.caveScale);
+                float noise = Noise.Perlin.Unit1f3(p3D * terrainData.caveScale);
                 return noise > terrainData.caveValidation;
             }
             
@@ -174,20 +184,20 @@ namespace TheVoxel
                     float2 p2D = new float2(i / r  + identity.x + kHalfMax, j / r + identity.y + kHalfMax) ;
 
                     ETerrainForm terrainForm = ETerrainForm.Plane;
-                    float formRandom = UNoise.Perlin.Unit1f2(p2D / terrainData.formScale) * .5f + .5f;
+                    float formRandom = Noise.Perlin.Unit1f2(p2D / terrainData.formScale) * .5f + .5f;
                     if (formRandom > terrainData.mountainValidation)
                         terrainForm = ETerrainForm.Mountains;
 
                     Insert(new Int3(i, 0, j), EVoxelType.BedRock);
                     int surfaceHeight = terrainData.baseHeight;
-                    float noiseRandom = UNoise.Value.Unit1f2(p2D-.5f);
+                    float noiseRandom = Noise.Value.Unit1f2(p2D-.5f);
                     switch (terrainForm)
                     {
                         case ETerrainForm.Mountains:
                         {
                             float mountainFormStrength = umath.invLerp(terrainData.mountainValidation,1f,formRandom);
-                            float terrainRandom = UNoise.Perlin.Unit1f2(p2D * terrainData.planeScale);
-                            float mountainRandom = UNoise.Perlin.Unit1f2(p2D * terrainData.mountainScale) *.5f + .5f;
+                            float terrainRandom = Noise.Perlin.Unit1f2(p2D * terrainData.planeScale);
+                            float mountainRandom = Noise.Perlin.Unit1f2(p2D * terrainData.mountainScale) *.5f + .5f;
 
                             var height = math.max(terrainData.mountainHeight.GetValueContains(mountainRandom * mountainFormStrength), terrainData.planeHeight.GetValueContains(terrainRandom));
                             surfaceHeight +=  height;
@@ -209,7 +219,7 @@ namespace TheVoxel
                             break;
                         case ETerrainForm.Plane:
                         {
-                            float planeRandom = UNoise.Perlin.Unit1f2(p2D * terrainData.planeScale);
+                            float planeRandom = Noise.Perlin.Unit1f2(p2D * terrainData.planeScale);
                             int dirtRandom = terrainData.dirtRandom.GetValueContains(noiseRandom);
                             surfaceHeight += terrainData.planeHeight.GetValueContains(planeRandom) - dirtRandom;
                             int stoneHeight = surfaceHeight;
@@ -238,22 +248,22 @@ namespace TheVoxel
             }
         }
 
-        void PopulateRelation(Dictionary<Int2,ChunkElement> _chunks)
+        bool PopulateRelation(Quad<ChunkElement> _sides)
         {
-            var back = _chunks.TryGetValue(identity + Int2.kBack, out var backChunk);
-            var left = _chunks.TryGetValue(identity + Int2.kLeft, out var leftChunk);
-            var forward = _chunks.TryGetValue(identity + Int2.kForward, out var forwardChunk);
-            var right = _chunks.TryGetValue(identity + Int2.kRight, out var rightChunk);
+            var back = _sides.B;
+            var left = _sides.L;
+            var forward = _sides.F;
+            var right = _sides.R;
             
             var emptyIndexes = new NativeHashMap<Int3, int>(0,Allocator.Persistent);
             var emptyValues = new NativeList<ChunkVoxel>(0, Allocator.Persistent);
         
             NativeArray<int> sideCount = new NativeArray<int>(1,Allocator.TempJob);
-            var refreshJob = new RefreshRelationJob(sideCount,m_DirtyVoxels,m_Indexes,m_Keys,m_Values,
-                back?backChunk.m_Indexes : emptyIndexes,back?backChunk.m_Values : emptyValues,
-                left?leftChunk.m_Indexes : emptyIndexes,left?leftChunk.m_Values : emptyValues,
-                forward?forwardChunk.m_Indexes:emptyIndexes, forward?forwardChunk.m_Values : emptyValues,
-                right?rightChunk.m_Indexes : emptyIndexes,right?rightChunk.m_Values : emptyValues);
+            var refreshJob = new RefreshRelationJob(sideCount,m_Indexes,m_Keys,m_Values,
+                back?back.m_Indexes : emptyIndexes,back?back.m_Values : emptyValues,
+                left?left.m_Indexes : emptyIndexes,left?left.m_Values : emptyValues,
+                forward?forward.m_Indexes:emptyIndexes, forward?forward.m_Values : emptyValues,
+                right?right.m_Indexes : emptyIndexes,right?right.m_Values : emptyValues);
             refreshJob.ScheduleParallel(1,1,default).Complete();
             m_SideCount = sideCount[0];
 
@@ -261,26 +271,24 @@ namespace TheVoxel
             
             emptyIndexes.Dispose();
             emptyValues.Dispose();
-            m_DirtyVoxels = EDirtyVoxels.Nothing;
+            return true;
         }
 
         [BurstCompile(FloatPrecision.Standard, FloatMode.Fast, CompileSynchronously = true)]
         public struct RefreshRelationJob : IJobFor
         {
-            private int dirtyVoxels;
             [NativeDisableContainerSafetyRestriction] private NativeArray<int> sideCount;
             [NativeDisableContainerSafetyRestriction] [ReadOnly] private NativeList<Int3> keys;
             [NativeDisableContainerSafetyRestriction] private NativeList<ChunkVoxel> values;
             [NativeDisableContainerSafetyRestriction] [ReadOnly] private NativeHashMap<Int3, int> indexes,backIndexes,leftIndexes,forwardIndexes,rightIndexes;
             [NativeDisableContainerSafetyRestriction] [ReadOnly] private NativeList<ChunkVoxel> backValues,leftValues,forwardValues,rightValues;
             
-            public RefreshRelationJob(NativeArray<int> _sideCount,EDirtyVoxels _dirtyVoxels, NativeHashMap<Int3,int> _indexes,NativeList<Int3> _keys,NativeList<ChunkVoxel> _values,
+            public RefreshRelationJob(NativeArray<int> _sideCount,NativeHashMap<Int3,int> _indexes,NativeList<Int3> _keys,NativeList<ChunkVoxel> _values,
                 NativeHashMap<Int3,int> _backIndexes,NativeList<ChunkVoxel> _backVoxels,
                 NativeHashMap<Int3,int> _leftIndexes,NativeList<ChunkVoxel> _leftVoxels,
                 NativeHashMap<Int3,int> _forwardIndexes,NativeList<ChunkVoxel> _forwardVoxels,
                 NativeHashMap<Int3,int> _rightIndexes,NativeList<ChunkVoxel> _rightVoxels)
             {
-                dirtyVoxels = (int)_dirtyVoxels;
                 sideCount = _sideCount;
                 indexes = _indexes;
                 keys = _keys; values = _values;
@@ -289,25 +297,12 @@ namespace TheVoxel
                 forwardIndexes = _forwardIndexes;forwardValues = _forwardVoxels;
                 rightIndexes = _rightIndexes;rightValues = _rightVoxels;
             }
-
-            bool IsVoxelDirty(Int3 _voxelID)
-            {
-                if (dirtyVoxels == int.MaxValue)
-                    return true;
-                
-                if ((dirtyVoxels & 1) == 1 && _voxelID.y == 0)
-                    return true;
-                if ((dirtyVoxels & 2) == 2 && _voxelID.y == DVoxel.kChunkSizeM1)
-                    return true;
-                if ((dirtyVoxels & 4) == 4 && _voxelID.x == 0)
-                    return true;
-                if ((dirtyVoxels & 8) == 8 && _voxelID.x == DVoxel.kChunkSizeM1)
-                    return true;
-                return false;
-            }
             
             ChunkVoxel GetVoxel(Int3 _voxelID)
             {
+                if(_voxelID.y < 0)
+                    return ChunkVoxel.kVoid;
+                
                 var curIndexes = indexes;
                 var curVoxels = values;
                 if (_voxelID.x < 0)
@@ -334,58 +329,64 @@ namespace TheVoxel
                     curVoxels = forwardValues;
                 }
 
-                if(curIndexes.TryGetValue((_voxelID + DVoxel.kChunkSize) % DVoxel.kChunkSize,out var index))
+                _voxelID.x = (_voxelID.x + DVoxel.kChunkSize) % DVoxel.kChunkSize;
+                _voxelID.z = (_voxelID.z + DVoxel.kChunkSize) % DVoxel.kChunkSize;
+
+                if(curIndexes.TryGetValue(_voxelID,out var index))
                     return curVoxels[index];
                 return ChunkVoxel.kInvalid;
             }
             
             public void Execute(int _jobIndex)
             {
-                int length = values.Length;
-                for(int keyIndex=0;keyIndex<length;keyIndex++)
+                var length = values.Length;
+                var renderFaces = 0;
+                for(var keyIndex=0;keyIndex<length;keyIndex++)
                 {
                     var identity = keys[keyIndex];
                     var index = indexes[identity];
-                    ChunkVoxel srcVoxel = values[index];
+                    var faceToRender = 0;
+                    var srcVoxel = values[index];
+                    var replaceVoxel = new ChunkVoxel() {identity = srcVoxel.identity, type = srcVoxel.type};
+                    for (var i = 0; i < 6; i++)
+                    {
+                        var facing = UCube.IndexToFacing(i);
+                        var facingVoxel = GetVoxel(identity + UCube.GetCubeOffset(facing));
+                        var shouldRenderFace = facingVoxel.type == EVoxelType.Air;
+                        if(shouldRenderFace)
+                            faceToRender += 1;
+                        else
+                            replaceVoxel.sideGeometry += (byte)(1 << i);
+                    }
+
+                    if (faceToRender != 6)
+                        renderFaces += faceToRender;
+
+                    if (replaceVoxel.sideGeometry != ChunkVoxel.kEmptyGeometry && replaceVoxel.sideGeometry != ChunkVoxel.kFullGeometry)
+                    {
+                        for (var i = 0; i < 8; i++)
+                        {
+                            var cornerVoxel =  GetVoxel(identity+KCube.kCornerIdentity[i]);
+                            var cornerValid = cornerVoxel.type != EVoxelType.Air;
+                            if (!cornerValid)
+                                continue;
+                            replaceVoxel.cornerGeometry += (byte) (1 << i);
+                        }
+
+                        for (var i = 0; i < 12; i++)
+                        {
+                            var intervalVoxel =  GetVoxel(identity + KCube.kIntervalIdentity[i]);
+                            var interValid = intervalVoxel.type != EVoxelType.Air;
+                            var intervalByte = (interValid ? 1 : 0) << i;
+                            replaceVoxel.intervalGeometry += (ushort)intervalByte;
+                        }
+
+                    }
                     
-                    if (!IsVoxelDirty(identity))
-                    {
-                        sideCount[0] += (6-UByte.PosValidCount(srcVoxel.sideGeometry));
-                        continue;
-                    }
-
-                    ChunkVoxel replaceVoxel = new ChunkVoxel() {identity = srcVoxel.identity, type = srcVoxel.type};
-                    for (int i = 0; i < 6; i++)
-                    {
-                        var facingVoxel = GetVoxel(identity + UCube.GetCubeOffset(UCube.IndexToFacing(i)));
-                        bool sideValid =  facingVoxel.type != EVoxelType.Air;
-                        replaceVoxel.sideGeometry += (byte)((sideValid?1:0) << i);
-                        if(!sideValid)
-                            sideCount[0] += 1;
-                    }
-
-                    if(replaceVoxel.sideGeometry== byte.MinValue)
-                        continue;
-                    
-                    for (int i = 0; i < 8; i++)
-                    {
-                        var cornerVoxel =  GetVoxel(identity+KCube.kCornerIdentity[i]);
-                        bool cornerValid = cornerVoxel.type != EVoxelType.Air;
-                        if (!cornerValid)
-                            continue;
-                        replaceVoxel.cornerGeometry += (byte) (1 << i);
-                    }
-
-                    for (int i = 0; i < 12; i++)
-                    {
-                        var intervalVoxel =  GetVoxel(identity + KCube.kIntervalIdentity[i]);
-                        bool interValid = intervalVoxel.type != EVoxelType.Air;
-                        var intervalByte = (interValid ? 1 : 0) << i;
-                        replaceVoxel.intervalGeometry += (ushort)intervalByte;
-                    }
-                
                     values[index] = replaceVoxel;
                 }
+
+                sideCount[0] = renderFaces;
             }
         }
         
@@ -394,19 +395,42 @@ namespace TheVoxel
             Mesh.MeshDataArray meshDataArray = Mesh.AllocateWritableMeshData(1);
             Mesh.MeshData meshData = meshDataArray[0];
 
-            int vertexCount = m_SideCount * 4;
-            int indexCount = m_SideCount * 6;
+            var vertexCount = m_SideCount * 4;
+            var indexCount = m_SideCount * 6;
             
-            new ExplicitJob(meshData, m_Values,vertexCount,indexCount).ScheduleParallel(1,1,default).Complete();
-            meshData.subMeshCount = 1;
-            meshData.SetSubMesh(0,new SubMeshDescriptor(0,m_SideCount*6){vertexCount = m_SideCount*4});
+            var bounds = new NativeArray<float3>(1, Allocator.TempJob);
+            var meshjob = new ExplicitMeshJob(meshData, m_Values,bounds,vertexCount,indexCount);
+            meshjob.ScheduleParallel(1,1,default).Complete();
 
-            m_Mesh.bounds = UBoundsIncrement.MinMax(Vector3.zero, new float3(DVoxel.kVoxelSize * DVoxel.kChunkSize));
-            Mesh.ApplyAndDisposeWritableMeshData(meshDataArray,m_Mesh, MeshUpdateFlags.DontRecalculateBounds);
+            try
+            {
+                meshData.subMeshCount = 1;
+                meshData.SetSubMesh(0,new SubMeshDescriptor(0,indexCount){ vertexCount = vertexCount, });
+                m_Mesh.bounds = GBox.Minmax(0, bounds[0]);
+                Mesh.ApplyAndDisposeWritableMeshData(meshDataArray,m_Mesh);
+            }
+            catch (Exception e)
+            {
+                int length = m_Values.Length;
+
+                var sideCount = 0;
+                for (var i = 0; i < length; i++)
+                {
+                    var voxel = m_Values[i];
+                    if (voxel.sideGeometry == ChunkVoxel.kEmptyGeometry || voxel.sideGeometry == ChunkVoxel.kFullGeometry)
+                        continue;
+                    sideCount++;
+                }
+                
+                Debug.LogError($"Chunk Error {identity} {sideCount}/{m_SideCount} \n{e.Message}\n{e.StackTrace}");
+                meshDataArray.Dispose();
+            }
+
+            bounds.Dispose();
         }
 
         [BurstCompile(FloatPrecision.Standard, FloatMode.Fast, CompileSynchronously = true)]
-        public struct ExplicitJob : IJobFor
+        public struct ExplicitMeshJob : IJobFor
         {
             [StructLayout(LayoutKind.Sequential)]
             public struct Vertex
@@ -417,14 +441,16 @@ namespace TheVoxel
                 public half4 color;
                 public half2 uv;
             }
-            
+
+            private NativeArray<float3> bounds;
             [ReadOnly] [NativeDisableContainerSafetyRestriction] private NativeList<ChunkVoxel> voxels;
             [WriteOnly] [NativeDisableContainerSafetyRestriction] private NativeArray<Vertex> vertices;
             [WriteOnly] [NativeDisableContainerSafetyRestriction] private NativeArray<uint3> indexes;
 
-            public ExplicitJob(Mesh.MeshData _meshData, NativeList<ChunkVoxel> _voxels,int _vertexCount,int _indexCount)
+            public ExplicitMeshJob(Mesh.MeshData _meshData, NativeList<ChunkVoxel> _voxels,NativeArray<float3> _bounds,int _vertexCount,int _indexCount)
             {
                 voxels = _voxels;
+                bounds = _bounds;
                 
                 var vertexAttributes = new NativeArray<VertexAttributeDescriptor>(5,Allocator.Temp,NativeArrayOptions.UninitializedMemory);
                 vertexAttributes[0] = new VertexAttributeDescriptor(VertexAttribute.Position , VertexAttributeFormat.Float32,3);
@@ -435,10 +461,10 @@ namespace TheVoxel
 
                 _meshData.SetVertexBufferParams(_vertexCount,vertexAttributes);
                 _meshData.SetIndexBufferParams(_indexCount,IndexFormat.UInt32);
-                
+
                 vertices = _meshData.GetVertexData<Vertex>();
                 indexes = _meshData.GetIndexData<uint>().Reinterpret<uint3>(sizeof(uint));
-
+                
                 vertexAttributes.Dispose();
             }
 
@@ -456,14 +482,16 @@ namespace TheVoxel
                 Vertex v = new Vertex();
                 int length = voxels.Length;
 
+                int highestID = 0;
                 int vertexIndex = 0;
                 int triangleIndex = 0;
                 for (int i = 0; i < length; i++)
                 {
-                    var voxel =  voxels[i];
-                    if (voxel.sideGeometry == byte.MinValue)
+                    var voxel = voxels[i];
+                    if (voxel.sideGeometry == ChunkVoxel.kEmptyGeometry || voxel.sideGeometry == ChunkVoxel.kFullGeometry)
                         continue;
 
+                    highestID = math.max(highestID, voxel.identity.y);
                     v.color = (half4)DVoxel.GetVoxelBaseColor(voxel.type);
                     float3 centerOS = DVoxel.GetVoxelPositionOS(voxel.identity);
                     for (int j = 0; j < 6; j++)
@@ -517,6 +545,8 @@ namespace TheVoxel
                         triangleIndex += 2;
                     }
                 }
+
+                bounds[0] = new float3(DVoxel.kVoxelSize * DVoxel.kChunkSize).setY(highestID * DVoxel.kVoxelSize);
             }
         }
 

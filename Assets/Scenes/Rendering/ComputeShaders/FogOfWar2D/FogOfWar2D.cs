@@ -23,8 +23,8 @@ namespace Examples.Rendering.ComputeShaders.FogOfWar2D
                 lights = new Vector4[randomCount];
                 for(int i=0;i<randomCount;i++)
                 {
-                    float randomPixelX = URandom.RandomInt(Screen.width);
-                    float randomPixelY = URandom.RandomInt(Screen.height);
+                    float randomPixelX = URandom.RandomInt(Screen.width - 1);
+                    float randomPixelY = URandom.RandomInt(Screen.height - 1);
                     float randomRadius = 50f + URandom.Random01()*200f;
                     randomRadius *= randomRadius;
                     float randomIntensity = .5f + URandom.Random01()*2f;

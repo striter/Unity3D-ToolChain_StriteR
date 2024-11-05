@@ -55,7 +55,7 @@ namespace TechToys.ThePlanet
             m_Camera = transform.Find("Camera").GetComponent<PCGCamera>();
             m_Environment = transform.Find("Environment").GetComponent<PCGEnvironment>();
             m_Audio = transform.Find("Audios").GetComponent<PCGAudios>();
-            m_Controls = new IPCGControl[]{ m_Grid,m_Module,m_Simplex,m_Camera,m_Environment,m_Audio };
+            m_Controls = new IPCGControl[]{ m_Grid,m_Simplex,m_Camera,m_Environment,m_Module,m_Audio };
             m_Controls.Traversal(p=>p.Init());
 
             m_Grid.Setup(m_GridData);

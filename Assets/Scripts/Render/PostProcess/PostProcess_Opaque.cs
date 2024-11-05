@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Extensions;
 using Rendering.Pipeline;
+using Runtime.Random;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -320,10 +322,8 @@ namespace Rendering.PostProcess
                 const int m_MaxArraySize = 64;
                 public void Apply(Material _material)
                 {
-                    Random random = new Random(m_RandomVectorKeywords?.GetHashCode() ?? "AOCodeDefault".GetHashCode());
-                    Vector4[] randomVectors = new Vector4[m_MaxArraySize];
-                    for (int i = 0; i < m_MaxArraySize; i++)
-                        randomVectors[i] = URandom.RandomDirection(random)*Mathf.Lerp( 1f-m_Radius,1f,URandom.Random01(random));
+                    var random = new LCGRandom(m_RandomVectorKeywords?.GetHashCode() ?? "AOCodeDefault".GetHashCode());
+                    var randomVectors = new Vector4[m_MaxArraySize].Remake(p=> URandom.RandomSphere(random));
                     _material.SetFloat(ID_Bias,m_Radius+m_Bias);
                     _material.SetFloat(ID_Radius, m_Radius);
                     _material.SetInt(ID_SampleCount, m_SampleCount);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Runtime.Random;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -268,7 +269,7 @@ namespace Procedural.Tile
             }
         }
 
-        public static T TileEdgeRandom<T>(this T[,] tileArray, System.Random randomSeed = null, Predicate<T> predicate = null, List<ETileDirection> edgeOutcluded = null, int predicateTryCount = -1) where T : class, ITile        //Target Edges Random Tile
+        public static T TileEdgeRandom<T>(this T[,] tileArray, IRandomGenerator randomSeed = null, Predicate<T> predicate = null, List<ETileDirection> edgeOutcluded = null, int predicateTryCount = -1) where T : class, ITile        //Target Edges Random Tile
         {
             if (edgeOutcluded != null && edgeOutcluded.Count > 3)
                 Debug.LogError("Can't Outclude All Edges!");
@@ -287,20 +288,20 @@ namespace Procedural.Tile
                 switch (randomDirection)
                 {
                     case ETileDirection.Back:
-                        axisX = randomSeed.Next(tileWidth - 1) + 1;
+                        axisX = randomSeed.NextInt(tileWidth - 1) + 1;
                         axisY = 0;
                         break;
                     case ETileDirection.Forward:
-                        axisX = randomSeed.Next(tileWidth - 1);
+                        axisX = randomSeed.NextInt(tileWidth - 1);
                         axisY = tileHeight - 1;
                         break;
                     case ETileDirection.Left:
                         axisX = 0;
-                        axisY = randomSeed.Next(tileHeight - 1);
+                        axisY = randomSeed.NextInt(tileHeight - 1);
                         break;
                     case ETileDirection.Right:
                         axisX = tileWidth - 1;
-                        axisY = randomSeed.Next(tileHeight - 1) + 1;
+                        axisY = randomSeed.NextInt(tileHeight - 1) + 1;
                         break;
                 }
                 targetTile = tileArray[axisX, axisY];
@@ -324,7 +325,7 @@ namespace Procedural.Tile
             return true;
         }
 
-        public static List<T> TileRandomFill<T>(this T[,] tileArray, System.Random seed, Int2 originAxis, Action<T> OnEachFill, Predicate<T> availableAxis, int fillCount) where T : class, ITile
+        public static List<T> TileRandomFill<T>(this T[,] tileArray, IRandomGenerator seed, Int2 originAxis, Action<T> OnEachFill, Predicate<T> availableAxis, int fillCount) where T : class, ITile
         {
             List<T> targetList = new List<T>();
             T targetAdd = tileArray.Get(originAxis);

@@ -45,11 +45,11 @@ namespace TechToys.ThePlanet.Module
             foreach (var quad in m_Grid.m_Quads)
             {
                 var position = (quad.Value.position/KPCG.kGridSize + kfloat3.one)*m_Scale;
-                var randomFoliage = UNoise.Perlin.Unit1f3(position) / 2 + .5f;
+                var randomFoliage = Noise.Perlin.Unit1f3(position) / 2 + .5f;
                 if (m_Density > randomFoliage)
                     m_Foliage.Spawn(quad.Key).Init(quad.Value);
                 
-                var randomBoat = UNoise.Perlin.Unit1f3(position) / 2 + .5f;
+                var randomBoat = Noise.Perlin.Unit1f3(position) / 2 + .5f;
                 if (randomBoat > m_BoatDensity)
                 {
                     m_Boat.Spawn(quad.Key).Init(quad.Value);

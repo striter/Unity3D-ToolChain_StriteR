@@ -9,6 +9,7 @@ using Procedural;
 using Procedural.Hexagon;
 using Procedural.Hexagon.Area;
 using Procedural.Hexagon.Geometry;
+using Runtime.Random;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEditor.Extensions;
@@ -222,7 +223,7 @@ namespace TechToys.ThePlanet.Grid
     public class RelaxArea
     {
         public HexagonArea m_Area { get; }
-        public Random m_Random { get; }
+        public IRandomGenerator m_Random { get; }
         public EConvexIterate m_State { get; private set; }
         public readonly List<HexQuad> m_Quads = new List<HexQuad>();
         public readonly Dictionary<HexCoord, Coord> m_Vertices = new Dictionary<HexCoord, Coord>();
@@ -236,7 +237,7 @@ namespace TechToys.ThePlanet.Grid
         public RelaxArea(HexagonArea _area)
         {
             m_Area = _area;
-            m_Random= new Random(("Test"+m_Area.coord).GetHashCode());
+            m_Random= new LCGRandom(("Test"+m_Area.coord).GetHashCode());
             m_State = EConvexIterate.Empty;
         }
         public IEnumerator Tesselation()

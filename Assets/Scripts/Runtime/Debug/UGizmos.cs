@@ -15,6 +15,7 @@ public static class UGizmos
         Gizmos.DrawLine(_src,(_src+(_dest-_src)*_normalizedLength));
     }
 
+    public static void DrawLines(params Vector3[] _positions) => DrawLines((IList<Vector3>)_positions);
     public static void DrawLines(IList<Vector3> _points)
     {
         var count = _points.Count;
