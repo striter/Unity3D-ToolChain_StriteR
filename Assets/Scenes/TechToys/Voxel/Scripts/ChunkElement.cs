@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Extensions;
 using System.Runtime.InteropServices;
 using Runtime.Geometry;
 using TPool;
@@ -23,9 +24,24 @@ namespace TheVoxel
         Vertices = 1 << 2,
     }
 
+    [Serializable]
+    public struct ChunkData
+    {
+        public GBox bounds;
+        public int sideCount;
+        public int highestCount;
+
+        public static ChunkData kDefault = new ChunkData()
+        {
+            bounds = GBox.Minmax(float3.zero, new float3(DVoxel.kVoxelSize * DVoxel.kChunkSize)),
+            sideCount = 0,
+            highestCount = 0,
+        };
+    }
+    
     public class ChunkElement : PoolBehaviour<Int2>
     {
-        [Readonly] public int m_SideCount;
+        [Readonly] public ChunkData m_Data;
         public EChunkDirty m_DirtyStatus;
         private MeshFilter m_Filter;
         private Mesh m_Mesh;
@@ -34,7 +50,6 @@ namespace TheVoxel
         private NativeList<Int3> m_Keys;
         private NativeList<ChunkVoxel> m_Values;
 
-        static readonly float3 kChunkSize = new float3(DVoxel.kVoxelSize* DVoxel.kChunkSize);
         public override void OnPoolCreate()
         {
             base.OnPoolCreate();
@@ -46,6 +61,7 @@ namespace TheVoxel
             m_Indexes = new NativeHashMap<Int3, int>(0,Allocator.Persistent);
             m_Keys = new NativeList<Int3>(Allocator.Persistent);
             m_Values = new NativeList<ChunkVoxel>(Allocator.Persistent);
+            m_Data = ChunkData.kDefault;
         }
 
         public override void OnPoolDispose()
@@ -108,10 +124,10 @@ namespace TheVoxel
                 m_DirtyStatus &= int.MaxValue - EChunkDirty.Vertices;
                 return true;
             }
-
             return false;
         }
 
+        public bool m_GizmosDetailed;
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix;
@@ -122,7 +138,16 @@ namespace TheVoxel
                     continue;
                 Gizmos.color = UColor.IndexToColor(index++);
 
-                GBox.Minmax(float3.zero, kChunkSize).DrawGizmos();
+                m_Data.bounds.DrawGizmos();
+                switch (chunkDirty)
+                {
+                    case EChunkDirty.Generation:
+                        break;
+                    case EChunkDirty.Relation:
+                        break;
+                    case EChunkDirty.Vertices:
+                        break;
+                }
             }
         }
 
@@ -136,7 +161,12 @@ namespace TheVoxel
 
         void PopulateImplicit()
         {
-            new ImplicitJob(identity,m_Indexes,m_Keys,m_Values).ScheduleParallel(1,1,default).Complete();
+            var implicitJob =new ImplicitJob(identity,m_Indexes,m_Keys,m_Values);
+            implicitJob.ScheduleParallel(1,1,default).Complete();
+            var length = m_Values.Length;
+            for (int i = 0; i < length; i++)
+                m_Data.highestCount = Math.Max(m_Data.highestCount, m_Values[i].identity.y);
+            m_Data.bounds = GBox.Minmax(float3.zero, new float3(DVoxel.kVoxelSize * DVoxel.kChunkSize).setY(m_Data.highestCount * DVoxel.kVoxelSize));
         }
 
         [BurstCompile(FloatPrecision.Standard, FloatMode.Fast, CompileSynchronously = true)]
@@ -265,7 +295,7 @@ namespace TheVoxel
                 forward?forward.m_Indexes:emptyIndexes, forward?forward.m_Values : emptyValues,
                 right?right.m_Indexes : emptyIndexes,right?right.m_Values : emptyValues);
             refreshJob.ScheduleParallel(1,1,default).Complete();
-            m_SideCount = sideCount[0];
+            m_Data.sideCount = sideCount[0];
 
             sideCount.Dispose();
             
@@ -395,18 +425,17 @@ namespace TheVoxel
             Mesh.MeshDataArray meshDataArray = Mesh.AllocateWritableMeshData(1);
             Mesh.MeshData meshData = meshDataArray[0];
 
-            var vertexCount = m_SideCount * 4;
-            var indexCount = m_SideCount * 6;
+            var vertexCount = m_Data.sideCount * 4;
+            var indexCount = m_Data.sideCount * 6;
             
-            var bounds = new NativeArray<float3>(1, Allocator.TempJob);
-            var meshjob = new ExplicitMeshJob(meshData, m_Values,bounds,vertexCount,indexCount);
+            var meshjob = new ExplicitMeshJob(meshData, m_Values,vertexCount,indexCount);
             meshjob.ScheduleParallel(1,1,default).Complete();
 
             try
             {
                 meshData.subMeshCount = 1;
                 meshData.SetSubMesh(0,new SubMeshDescriptor(0,indexCount){ vertexCount = vertexCount, });
-                m_Mesh.bounds = GBox.Minmax(0, bounds[0]);
+                m_Mesh.bounds = m_Data.bounds;
                 Mesh.ApplyAndDisposeWritableMeshData(meshDataArray,m_Mesh);
             }
             catch (Exception e)
@@ -422,11 +451,9 @@ namespace TheVoxel
                     sideCount++;
                 }
                 
-                Debug.LogError($"Chunk Error {identity} {sideCount}/{m_SideCount} \n{e.Message}\n{e.StackTrace}");
+                Debug.LogError($"Chunk Error {identity} {sideCount}/{m_Data.sideCount} \n{e.Message}\n{e.StackTrace}");
                 meshDataArray.Dispose();
             }
-
-            bounds.Dispose();
         }
 
         [BurstCompile(FloatPrecision.Standard, FloatMode.Fast, CompileSynchronously = true)]
@@ -442,15 +469,12 @@ namespace TheVoxel
                 public half2 uv;
             }
 
-            private NativeArray<float3> bounds;
             [ReadOnly] [NativeDisableContainerSafetyRestriction] private NativeList<ChunkVoxel> voxels;
             [WriteOnly] [NativeDisableContainerSafetyRestriction] private NativeArray<Vertex> vertices;
             [WriteOnly] [NativeDisableContainerSafetyRestriction] private NativeArray<uint3> indexes;
-
-            public ExplicitMeshJob(Mesh.MeshData _meshData, NativeList<ChunkVoxel> _voxels,NativeArray<float3> _bounds,int _vertexCount,int _indexCount)
+            public ExplicitMeshJob(Mesh.MeshData _meshData, NativeList<ChunkVoxel> _voxels,int _vertexCount,int _indexCount)
             {
                 voxels = _voxels;
-                bounds = _bounds;
                 
                 var vertexAttributes = new NativeArray<VertexAttributeDescriptor>(5,Allocator.Temp,NativeArrayOptions.UninitializedMemory);
                 vertexAttributes[0] = new VertexAttributeDescriptor(VertexAttribute.Position , VertexAttributeFormat.Float32,3);
@@ -482,7 +506,6 @@ namespace TheVoxel
                 Vertex v = new Vertex();
                 int length = voxels.Length;
 
-                int highestID = 0;
                 int vertexIndex = 0;
                 int triangleIndex = 0;
                 for (int i = 0; i < length; i++)
@@ -491,7 +514,6 @@ namespace TheVoxel
                     if (voxel.sideGeometry == ChunkVoxel.kEmptyGeometry || voxel.sideGeometry == ChunkVoxel.kFullGeometry)
                         continue;
 
-                    highestID = math.max(highestID, voxel.identity.y);
                     v.color = (half4)DVoxel.GetVoxelBaseColor(voxel.type);
                     float3 centerOS = DVoxel.GetVoxelPositionOS(voxel.identity);
                     for (int j = 0; j < 6; j++)
@@ -546,7 +568,6 @@ namespace TheVoxel
                     }
                 }
 
-                bounds[0] = new float3(DVoxel.kVoxelSize * DVoxel.kChunkSize).setY(highestID * DVoxel.kVoxelSize);
             }
         }
 
