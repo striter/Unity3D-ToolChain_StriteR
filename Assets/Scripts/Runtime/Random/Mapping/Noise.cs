@@ -126,25 +126,32 @@ public static class Noise
     public static class Voronoi
     {  
         public static float2 Unit2f2(float _x, float _y) => Unit2f2(new float2( _x, _y));
+
         public static float2 Unit2f2(float2 _v)
+        {
+            var output = Evaluate(_v);
+            return new float2(output.x, Value.Unit1f2(output.yz));
+        }
+
+        public static float3 Evaluate(float2 _v)
         {
             var sqrDstToCell = float.MaxValue;
             var baseCell = floor(_v);
             var closetCell = baseCell;
             for (var i=-1;i<=1;i++)
-                for(var j=-1;j<=1;j++)
-                {
-                    var cell = baseCell+new float2(i,j);
-                    var cellPos = cell + Value.Unit2f2(cell);
-                    var toCell = cellPos - _v;
-                    var sqrDistance = toCell.sqrmagnitude();
-                    if (sqrDstToCell < sqrDistance)
-                        continue;
+            for(var j=-1;j<=1;j++)
+            {
+                var cell = baseCell+new float2(i,j);
+                var cellPos = cell + Value.Unit2f2(cell);
+                var toCell = cellPos - _v;
+                var sqrDistance = toCell.sqrmagnitude();
+                if (sqrDstToCell < sqrDistance)
+                    continue;
 
-                    sqrDstToCell = sqrDistance;
-                    closetCell = cell;
-                }
-            return new float2(sqrDstToCell,  Value.Unit1f2(closetCell) );
+                sqrDstToCell = sqrDistance;
+                closetCell = cell;
+            }
+            return new float3(sqrDstToCell,closetCell);
         }
     }
 }

@@ -89,9 +89,9 @@ namespace UnityEditor.Extensions
             {
                 case ENoiseType.Value: noise = Noise.Value.Unit1f2(Mathf.Floor(_noiseX) , Mathf.Floor( _noiseY) ); break;
                 case ENoiseType.Perlin: noise = Noise.Perlin.Unit1f3( _noiseX ,_noiseY, 0); break;
-                case ENoiseType.Simplex: noise = Noise.Simplex.Unit1f2(_noiseX , _noiseY ); break;
-                case ENoiseType.VoronoiUnit: noise = Noise.Voronoi.Unit2f2(_noiseX, _noiseY).y; break;
-                case ENoiseType.VoronoiDistance: noise = Noise.Voronoi.Unit2f2(_noiseX, _noiseY).x;break;
+                case ENoiseType.Simplex: noise = Noise.Simplex.Unit1f2(_noiseX - .5f , _noiseY - .5f); break;
+                case ENoiseType.VoronoiUnit: noise = Noise.Voronoi.Unit2f2(_noiseX - .5f, _noiseY - .5f).y; break;
+                case ENoiseType.VoronoiDistance: noise = Noise.Voronoi.Unit2f2(_noiseX - .5f, _noiseY - .5f).x;break;
             }
             return noise;
         }

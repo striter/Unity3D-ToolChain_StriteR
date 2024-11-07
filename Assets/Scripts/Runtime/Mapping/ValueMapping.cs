@@ -199,7 +199,7 @@ public partial class umath
 
     public static float sin_basic_approximation(float _x)
     {
-        int k = (int)math.floor(_x / kPIDiv2);
+        int k = (int)floor(_x / kPIDiv2);
         float y = _x - k * kPIDiv2;
         switch (( k % 4+4) % 4)
         {
@@ -210,8 +210,9 @@ public partial class umath
             case 3: return -sin_kinda(kPIDiv2 - y);
         }
     }
-    public static float repeat(float _t,float _length) => math.clamp(_t - math.floor(_t / _length) * _length, 0.0f, _length);
-    public static float2 repeat(float2 _t,float2 _length) => math.clamp(_t - math.floor(_t / _length) * _length, 0.0f, _length);
+    public static int repeat(int _t,int _length) => clamp(_t - _t / _length * _length, 0, _length);
+    public static float repeat(float _t,float _length) => clamp(_t - floor(_t / _length) * _length, 0.0f, _length);
+    public static float2 repeat(float2 _t,float2 _length) => clamp(_t - floor(_t / _length) * _length, 0.0f, _length);
     
     public static bool IsPrime(ushort _value)
     {

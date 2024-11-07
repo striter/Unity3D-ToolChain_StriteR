@@ -3,10 +3,12 @@ using UnityEngine;
 
 namespace TheVoxel
 {
-    public enum ETerrainForm
+    public enum EBiome
     {
-        Plane,
-        Mountains,
+        Ocean = 0,
+        Plane = 1,
+        Mountains = 2,
+        Max,
     }
     
     public enum EVoxelType
@@ -19,6 +21,8 @@ namespace TheVoxel
         
         Snow,
         BedRock,
+        
+        GeometryEnd = -1,
         
         Ocean,
     }

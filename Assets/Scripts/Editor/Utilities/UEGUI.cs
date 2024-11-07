@@ -77,7 +77,7 @@ namespace UnityEditor.Extensions
             m_Offset.y += m_CurrentY + _spacingY;
             m_CurrentY = _sizeY;
             m_Offset.x = 0;
-            return NextRect(0,m_SizeX);
+            return NextRect(0,0);
         }
 
         public static Rect Finish(float _spacing) => NextRect(_spacing, m_SizeX - m_CurrentSizeX - _spacing);

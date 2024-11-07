@@ -34,7 +34,6 @@ namespace TheVoxel
         [Header("Cave")] 
         public float caveScale;
         public float caveValidation;
-        
     }
     
     public class ChunkManager : MonoBehaviour
