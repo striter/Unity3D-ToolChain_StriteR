@@ -22,8 +22,6 @@ namespace TheVoxel
         Snow,
         BedRock,
         
-        GeometryEnd = -1,
-        
         Ocean,
     }
     
@@ -47,6 +45,7 @@ namespace TheVoxel
                 case EVoxelType.Stone: return new float4(0.612775f, 0.6320754f, 0.6121988f, 1f);
                 case EVoxelType.Snow: return new float4(.9f, .9f, .9f, 1f);
                 case EVoxelType.BedRock: return new float4(.1f, .1f, .1f, 1f);
+                case EVoxelType.Ocean: return new float4(.1f, .1f, 1f, 1f);
             }
 
             return default;

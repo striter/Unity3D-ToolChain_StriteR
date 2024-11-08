@@ -111,7 +111,7 @@ namespace TheVoxel.ChunkProcess
                     case EBiome.Mountains:
                     {
                         var mountainFormStrength = umath.invLerp(terrainData.mountainValidation,1f,1f - formSample.x);
-                        if (mountainFormStrength <= 0 || Noise.Simplex.Unit1f2(formSample.yz * .5f + .5f) < .8f)
+                        if (mountainFormStrength <= 0 || Noise.Simplex.Unit1f2(formSample.yz * .5f + .5f) < .7f)
                         {
                             geometryHeight = Plane(index,terrainData.baseHeight,noiseRandom,noiseSample);
                             break;
