@@ -65,19 +65,18 @@ namespace UnityEditor.Extensions
         void UpdateWithSelections()
         {
             //Select AnimationClipAsset  
-            List<AnimationClip> clip = new List<AnimationClip>();
-            foreach (Object obj in Selection.objects)
+            var clip = new List<AnimationClip>();
+            foreach (var obj in Selection.objects)
             {
                 if ((obj as AnimationClip) != null && AssetDatabase.IsMainAsset(obj))
                     clip.Add(obj as AnimationClip);
                 else if (AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(obj)) as ModelImporter != null)
                     m_TargetPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GetAssetPath(obj));
             }
-            if(clip.Count>0)
-            {
-                m_TargetAnimations = clip.ToArray();
-                m_SerializedWindow.Update();
-            }
+
+            if (clip.Count <= 0) return;
+            m_TargetAnimations = clip.ToArray();
+            m_SerializedWindow.Update();
         }
         
         void DrawGUI()
@@ -131,16 +130,16 @@ namespace UnityEditor.Extensions
 
         static int GetInstanceParams(AnimationClip[] _clips, out AnimationTickerClip[] instanceParams)
         {
-            int totalHeight = 0;
+            var totalHeight = 0;
             instanceParams = new AnimationTickerClip[_clips.Length];
-            for (int i = 0; i < _clips.Length; i++)
+            for (var i = 0; i < _clips.Length; i++)
             {
                 AnimationClip clip = _clips[i];
 
                 AnimationTickerEvent[] instanceEvents = new AnimationTickerEvent[clip.events.Length];
-                for (int j = 0; j < clip.events.Length; j++)
+                for (var j = 0; j < clip.events.Length; j++)
                     instanceEvents[j] = new AnimationTickerEvent(clip.events[j], clip.frameRate);
-                int frameCount = (int)(clip.length * clip.frameRate);
+                var frameCount = (int)(clip.length * clip.frameRate);
                 instanceParams[i] = new AnimationTickerClip(clip.name, totalHeight, clip.frameRate, clip.length, clip.isLooping, instanceEvents.ToArray());
                 totalHeight += frameCount;
             }
@@ -153,35 +152,35 @@ namespace UnityEditor.Extensions
                 Debug.LogWarning("Invalid Folder Selected");
                 return;
             }
-            GameObject instantiatedObj = GameObject.Instantiate(m_TargetPrefab);
-            SkinnedMeshRenderer skinnedMeshRenderer = instantiatedObj.GetComponentInChildren<SkinnedMeshRenderer>();
+            var instantiatedObj = GameObject.Instantiate(m_TargetPrefab);
+            var skinnedMeshRenderer = instantiatedObj.GetComponentInChildren<SkinnedMeshRenderer>();
             #region Bake Animation Atlas
-            int vertexCount = skinnedMeshRenderer.sharedMesh.vertexCount;
-            int totalVertexRecord = vertexCount * 2;
-            int totalFrame = GetInstanceParams(_clips, out AnimationTickerClip[] instanceParams);
+            var vertexCount = skinnedMeshRenderer.sharedMesh.vertexCount;
+            var totalVertexRecord = vertexCount * 2;
+            var totalFrame = GetInstanceParams(_clips, out AnimationTickerClip[] instanceParams);
 
-            Texture2D atlasTexture = new Texture2D(Mathf.NextPowerOfTwo(totalVertexRecord), Mathf.NextPowerOfTwo(totalFrame), TextureFormat.RGBAHalf, false)
+            var atlasTexture = new Texture2D(Mathf.NextPowerOfTwo(totalVertexRecord), Mathf.NextPowerOfTwo(totalFrame), TextureFormat.RGBAHalf, false)
                 {
                     filterMode = FilterMode.Point,
                     wrapModeU = TextureWrapMode.Clamp,
                     wrapModeV = TextureWrapMode.Repeat
                 };
             UBoundsIncrement.Begin();
-            for (int i = 0; i < _clips.Length; i++)
+            for (var i = 0; i < _clips.Length; i++)
             {
-                AnimationClip clip = _clips[i];
-                Mesh vertexBakeMesh = new Mesh();
-                float length = clip.length;
-                float frameRate = clip.frameRate;
-                int frameCount = (int)(length * frameRate);
-                int startFrame = instanceParams[i].frameBegin;
-                for (int j = 0; j < frameCount; j++)
+                var clip = _clips[i];
+                var vertexBakeMesh = new Mesh();
+                var length = clip.length;
+                var frameRate = clip.frameRate;
+                var frameCount = (int)(length * frameRate);
+                var startFrame = instanceParams[i].frameBegin;
+                for (var j = 0; j < frameCount; j++)
                 {
                     clip.SampleAnimation(instantiatedObj, length * j / frameCount);
                     skinnedMeshRenderer.BakeMesh(vertexBakeMesh);
-                    Vector3[] vertices = vertexBakeMesh.vertices;
-                    Vector3[] normals = vertexBakeMesh.normals;
-                    for (int k = 0; k < vertexCount; k++)
+                    var vertices = vertexBakeMesh.vertices;
+                    var normals = vertexBakeMesh.normals;
+                    for (var k = 0; k < vertexCount; k++)
                     {
                         UBoundsIncrement.Iterate(vertices[k]);
                         var frame = startFrame + j;
@@ -197,7 +196,7 @@ namespace UnityEditor.Extensions
             #endregion
 
             #region Bake Mesh
-            Mesh instanceMesh = skinnedMeshRenderer.sharedMesh.Copy();
+            var instanceMesh = skinnedMeshRenderer.sharedMesh.Copy();
             instanceMesh.normals = null;
             instanceMesh.tangents = null;
             instanceMesh.boneWeights = null;
@@ -206,18 +205,18 @@ namespace UnityEditor.Extensions
             #endregion
             DestroyImmediate(instantiatedObj);
 
-            GPUAnimationData data = CreateInstance<GPUAnimationData>();
+            var data = CreateInstance<GPUAnimationData>();
             data.m_Mode = EGPUAnimationMode._ANIM_VERTEX;
             data.m_AnimationClips = instanceParams;
 
             atlasTexture.name = meshName + "_AnimationAtlas";
             instanceMesh.name = meshName + "_InstanceMesh";
             data=UEAsset.CreateAssetCombination(savePath + meshName + "_GPU_Vertex.asset", data, new Object[]{atlasTexture,instanceMesh});
-            Object[] assets = AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GetAssetPath(data));
+            var assets = AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GetAssetPath(data));
             foreach (var asset in assets)
             {
-                Texture2D atlas = asset as Texture2D;
-                Mesh mesh = asset as Mesh;
+                var atlas = asset as Texture2D;
+                var mesh = asset as Mesh;
                 if (atlas)
                     data.m_BakeTexture = atlas;
                 if (mesh)
@@ -234,23 +233,23 @@ namespace UnityEditor.Extensions
                 Debug.LogWarning("Invalid Folder Selected");
                 return;
             }
-            GameObject _instantiatedObj = GameObject.Instantiate(m_TargetPrefab);
-            SkinnedMeshRenderer _skinnedMeshRenderer = _instantiatedObj.GetComponentInChildren<SkinnedMeshRenderer>();
+            var instantiatedObj = GameObject.Instantiate(m_TargetPrefab);
+            var skinnedMeshRenderer = instantiatedObj.GetComponentInChildren<SkinnedMeshRenderer>();
             try
             {
-                Matrix4x4[] bindPoses = _skinnedMeshRenderer.sharedMesh.bindposes;
-                Transform[] bones = _skinnedMeshRenderer.bones;
+                var bindPoses = skinnedMeshRenderer.sharedMesh.bindposes;
+                var bones = skinnedMeshRenderer.bones;
                 #region Record Expose Bone
-                List<GPUAnimationExposeBone> exposeTransformParam = new List<GPUAnimationExposeBone>();
+                var exposeTransformParam = new List<GPUAnimationExposeBone>();
                 if (exposeBones != "")
                 {
-                    Transform[] activeTransforms = _instantiatedObj.GetComponentsInChildren<Transform>();
+                    var activeTransforms = instantiatedObj.GetComponentsInChildren<Transform>();
                     foreach (var activeTransform in activeTransforms)
                     {
                         if (!System.Text.RegularExpressions.Regex.Match(activeTransform.name, exposeBones).Success)
                             continue;
-                        int relativeBoneIndex = -1;
-                        Transform relativeBone = activeTransform;
+                        var relativeBoneIndex = -1;
+                        var relativeBone = activeTransform;
                         while (relativeBone != null)
                         {
                             relativeBoneIndex = System.Array.FindIndex( bones,p => p == relativeBone);
@@ -261,7 +260,7 @@ namespace UnityEditor.Extensions
                         if (relativeBoneIndex == -1)
                             continue;
 
-                        Matrix4x4 rootWorldToLocal = _skinnedMeshRenderer.transform.worldToLocalMatrix;
+                        var rootWorldToLocal = skinnedMeshRenderer.transform.worldToLocalMatrix;
 
                         exposeTransformParam.Add(new GPUAnimationExposeBone()
                         {
@@ -274,45 +273,46 @@ namespace UnityEditor.Extensions
                 }
                 #endregion
                 #region Bake Animation Atlas
-                int transformCount = _skinnedMeshRenderer.sharedMesh.bindposes.Length;
-                int totalWidth = transformCount * 3;
-                int totalFrame = GetInstanceParams(_clips, out AnimationTickerClip[] instanceParams);
-                List<AnimationTickerEvent> instanceEvents = new List<AnimationTickerEvent>();
+                var transformCount = skinnedMeshRenderer.sharedMesh.bindposes.Length;
+                var totalWidth = transformCount * 3;
+                var totalFrame = GetInstanceParams(_clips, out AnimationTickerClip[] instanceParams);
 
-                Texture2D atlasTexture = new Texture2D(Mathf.NextPowerOfTwo(totalWidth), Mathf.NextPowerOfTwo(totalFrame), TextureFormat.RGBAHalf, false)
+                var atlasTexture = new Texture2D(Mathf.NextPowerOfTwo(totalWidth), Mathf.NextPowerOfTwo(totalFrame), TextureFormat.RGBAHalf, false)
                     {
                         filterMode = FilterMode.Point,
                         wrapModeU = TextureWrapMode.Clamp,
                         wrapModeV = TextureWrapMode.Repeat
                     };
                 UBoundsIncrement.Begin();
-                for (int i = 0; i < _clips.Length; i++)
+                for (var i = 0; i < _clips.Length; i++)
                 {
-                    AnimationClip clip = _clips[i];
-                    float length = clip.length;
-                    float frameRate = clip.frameRate;
-                    int frameCount = (int)(length * frameRate);
-                    int startFrame = instanceParams[i].frameBegin;
-                    for (int j = 0; j < frameCount; j++)
+                    var clip = _clips[i];
+                    var length = clip.length;
+                    var frameRate = clip.frameRate;
+                    var frameCount = (int)(length * frameRate);
+                    var startFrame = instanceParams[i].frameBegin;
+                    for (var j = 0; j < frameCount; j++)
                     {
-                        clip.SampleAnimation(_instantiatedObj, length * j / frameCount);
-                        for (int k = 0; k < transformCount; k++)
+                        clip.SampleAnimation(instantiatedObj, length * j / frameCount);
+                        for (var k = 0; k < transformCount; k++)
                         {
-                            Matrix4x4 curFrameTransformMatrix = bones[k].localToWorldMatrix * bindPoses[k];
+                            var bindPoseToLocal = bindPoses[k];
+                            var localToBoneAnimated = bones[k].localToWorldMatrix;
+                            var bindPoseToBoneAnimated = localToBoneAnimated * bindPoseToLocal;
                             var frame = startFrame + j;
                             var pixel = UGPUAnimation.GetTransformPixel(k,0,frame);
-                            atlasTexture.SetPixel(pixel.x,pixel.y, UColor.toColor(curFrameTransformMatrix.GetRow(0)));
+                            atlasTexture.SetPixel(pixel.x,pixel.y, bindPoseToBoneAnimated.GetRow(0).toColor());
                             pixel = UGPUAnimation.GetTransformPixel(k,1,frame);
-                            atlasTexture.SetPixel(pixel.x, pixel.y, UColor.toColor(curFrameTransformMatrix.GetRow(1)));
+                            atlasTexture.SetPixel(pixel.x, pixel.y, bindPoseToBoneAnimated.GetRow(1).toColor());
                             pixel = UGPUAnimation.GetTransformPixel(k,2,frame);
-                            atlasTexture.SetPixel(pixel.x, pixel.y, UColor.toColor( curFrameTransformMatrix.GetRow(2)));
+                            atlasTexture.SetPixel(pixel.x, pixel.y, bindPoseToBoneAnimated.GetRow(2).toColor());
                         }
 
-                        Mesh boundsCheckMesh = new Mesh();
-                        _skinnedMeshRenderer.BakeMesh(boundsCheckMesh);
-                        Vector3[] vertices = boundsCheckMesh.vertices;
-                        for (int k = 0; k < vertices.Length; k++)
-                            UBoundsIncrement.Iterate(vertices[k].div(_skinnedMeshRenderer.transform.localScale));
+                        var boundsCheckMesh = new Mesh();
+                        skinnedMeshRenderer.BakeMesh(boundsCheckMesh);
+                        var vertices = boundsCheckMesh.vertices;
+                        for (var k = 0; k < vertices.Length; k++)
+                            UBoundsIncrement.Iterate(vertices[k].div(skinnedMeshRenderer.transform.localScale));
 
                         boundsCheckMesh.Clear();
                     }
@@ -320,11 +320,11 @@ namespace UnityEditor.Extensions
                 atlasTexture.Apply();
                 #endregion
                 #region Bake Mesh
-                Mesh instanceMesh = _skinnedMeshRenderer.sharedMesh.Copy();
-                BoneWeight[] transformWeights = instanceMesh.boneWeights;
-                Vector4[] uv1 = new Vector4[transformWeights.Length];
-                Vector4[] uv2 = new Vector4[transformWeights.Length];
-                for (int i = 0; i < transformWeights.Length; i++)
+                var instanceMesh = skinnedMeshRenderer.sharedMesh.Copy();
+                var transformWeights = instanceMesh.boneWeights;
+                var uv1 = new Vector4[transformWeights.Length];
+                var uv2 = new Vector4[transformWeights.Length];
+                for (var i = 0; i < transformWeights.Length; i++)
                 {
                     uv1[i] = new Vector4(transformWeights[i].boneIndex0, transformWeights[i].boneIndex1, transformWeights[i].boneIndex2, transformWeights[i].boneIndex3);
                     uv2[i] = new Vector4(transformWeights[i].weight0, transformWeights[i].weight1, transformWeights[i].weight2, transformWeights[i].weight3);
@@ -335,9 +335,9 @@ namespace UnityEditor.Extensions
                 instanceMesh.bindposes = null;
                 instanceMesh.bounds = UBoundsIncrement.End();
                 #endregion
-                DestroyImmediate(_instantiatedObj);
+                DestroyImmediate(instantiatedObj);
 
-                GPUAnimationData data = ScriptableObject.CreateInstance<GPUAnimationData>();
+                var data = ScriptableObject.CreateInstance<GPUAnimationData>();
                 data.m_Mode = EGPUAnimationMode._ANIM_BONE;
                 data.m_AnimationClips = instanceParams;
                 data.m_ExposeTransforms = exposeTransformParam.ToArray();
@@ -345,11 +345,11 @@ namespace UnityEditor.Extensions
                 atlasTexture.name = meshName + "_AnimationAtlas";
                 instanceMesh.name = meshName + "_InstanceMesh";
                 data = UEAsset.CreateAssetCombination(savePath + meshName + "_GPU_Transform.asset",data, new Object[]{atlasTexture,instanceMesh});
-                Object[] assets=AssetDatabase.LoadAllAssetsAtPath( AssetDatabase.GetAssetPath(data));
+                var assets=AssetDatabase.LoadAllAssetsAtPath( AssetDatabase.GetAssetPath(data));
                 foreach(var asset in assets)
                 {
-                    Texture2D atlas = asset as Texture2D;
-                    Mesh mesh = asset as Mesh;
+                    var atlas = asset as Texture2D;
+                    var mesh = asset as Mesh;
                     if (atlas)
                         data.m_BakeTexture = atlas;
                     if (mesh)
@@ -361,7 +361,7 @@ namespace UnityEditor.Extensions
             catch (System.Exception e)
             {
                 Debug.LogError("Generate Failed:" + e.Message);
-                DestroyImmediate(_instantiatedObj);
+                DestroyImmediate(instantiatedObj);
             }
         }
     }
