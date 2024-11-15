@@ -371,4 +371,10 @@ public partial class umath
         var a = kmath.kPI * ((_k * _x - 1));
         return sin(a) / a;
     }
+
+    public static float2 sincos(float _rad)
+    {
+        math.sincos(_rad, out var s, out var c);
+        return new float2(s, c);
+    }
 }

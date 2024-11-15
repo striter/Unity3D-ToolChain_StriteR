@@ -48,6 +48,7 @@ namespace Runtime.Geometry.Extension.BoundingSphere
             public static GSphere Evaluate(IEnumerable<float3> _positions,EMode _normals = EMode.EPOS14,Func<IEnumerable<float3>,GSphere> _exactSolver = null)
             {
                 _exactSolver ??= Welzl<GSphere,float3>.Evaluate;
+                positions.Clear();
                 positions.AddRange(_positions);
 
                 var n = positions.Count;
