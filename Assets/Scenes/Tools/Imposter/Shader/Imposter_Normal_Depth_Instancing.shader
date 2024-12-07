@@ -259,7 +259,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
             {
 				UNITY_SETUP_INSTANCE_ID(i);
             	ImposterFragmentOutput imposterFragmentOutput = F2O_IMPOSTER_FRAGMENT(i);
-				return EyeToRawDepth(TransformWorldToEyeDepth(i.positionWS + normalize(imposterFragmentOutput.normalWS) * saturate(imposterFragmentOutput.depthExtrude) * _BoundingSphere.w * 2));
+				return EyeToRawDepth(TransformWorldToEyeDepth(i.positionWS + normalize(imposterFragmentOutput.normalWS) * saturate(imposterFragmentOutput.depthExtrude) * INSTANCE(_ImposterBoundingSphere.w * 2)));
             }
             
             #pragma vertex vert

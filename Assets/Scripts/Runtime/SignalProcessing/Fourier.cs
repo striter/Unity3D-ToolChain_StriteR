@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace Runtime.SignalProcessing
 {
+    //https://iquilezles.org/articles/fourier/
     public static class Fourier
     {
         static List<float> kTransformHelper = new List<float>();
