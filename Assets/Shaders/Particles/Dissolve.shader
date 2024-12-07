@@ -75,16 +75,18 @@
 
                 float3 finalCol = color.rgb;
                 float alpha =color.a;
-                
+\
+                float dissolveWidth = INSTANCE(_DissolveWidth);
+                float dissolveProgress = INSTANCE(_Dissolve);
                 float dissolveSample = SAMPLE_TEXTURE2D(_DissolveMask,sampler_DissolveMask,i.uv.zw).r;
-                float dissolveAmount = 1-invlerp(_DissolveWidth+_Dissolve,_Dissolve,dissolveSample);
 
-                float edgeAmount = step(dissolveAmount,1)*step(0,dissolveAmount);
-                dissolveAmount = step(0,dissolveAmount);
+                float dissolveComparer = dissolveSample - dissolveProgress;
+                float dissolve = step(0,dissolveComparer) ;
+                float edge = step(dissolveComparer,dissolveWidth) * dissolve;
                 
-                alpha*=dissolveAmount;
+                alpha*=dissolve;
 
-                finalCol = lerp(finalCol,_DissolveEdgeColor.rgb,edgeAmount*_DissolveEdgeColor.a);
+                finalCol = lerp(finalCol,_DissolveEdgeColor.rgb,edge*_DissolveEdgeColor.a);
                 return float4(finalCol ,alpha);
             }
             ENDHLSL

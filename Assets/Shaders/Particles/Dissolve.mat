@@ -11,10 +11,10 @@ Material:
   m_Shader: {fileID: 4800000, guid: fcc2286c2e55694428106912d32426fe, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
+  m_ValidKeywords: []
+  m_InvalidKeywords:
   - _SMOOTHEDGE
   - _SMOOTHPARTICLE
-  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -46,9 +46,9 @@ Material:
     - _AlphaClip: 0
     - _AlphaClipRange: 0.01
     - _Cull: 2
-    - _Dissolve: 0.221
+    - _Dissolve: 1
     - _DissolveEnd: 0.7261906
-    - _DissolveWidth: 0.114
+    - _DissolveWidth: 0.071
     - _DistortStrength: 0.1
     - _DstBlend: 1
     - _Mask: 0
@@ -61,11 +61,10 @@ Material:
     - _ZTest: 2
     - _ZWrite: 0
     m_Colors:
-    - _Color: {r: 766.9961, g: 766.9961, b: 766.9961, a: 0.7019608}
-    - _DissolveEdgeColor: {r: 4.4647527, g: 4.4647527, b: 4.4647527, a: 1}
+    - _Color: {r: 766.9961, g: 766.9961, b: 766.9961, a: 1}
+    - _DissolveEdgeColor: {r: 1, g: 0, b: 0, a: 1}
     - _SecondaryFlow: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!114 &8363284013944699640
 MonoBehaviour:
   m_ObjectHideFlags: 11
