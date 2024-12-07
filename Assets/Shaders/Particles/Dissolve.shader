@@ -62,7 +62,7 @@
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
                 o.positionCS = TransformObjectToHClip(v.positionOS);
-                o.uv = float4(TRANSFORM_TEX_FLOW_INSTANCE(v.uv, _MainTex),TRANSFORM_TEX(v.uv,_DissolveMask));
+                o.uv = float4(TRANSFORM_TEX_FLOW_INSTANCE(v.uv, _MainTex),TRANSFORM_TEX_FLOW_INSTANCE(v.uv,_DissolveMask));
                 o.color=v.color;
                 return o;
             }
@@ -78,6 +78,7 @@
 \
                 float dissolveWidth = INSTANCE(_DissolveWidth);
                 float dissolveProgress = INSTANCE(_Dissolve);
+                dissolveProgress = lerp(-dissolveWidth - 0.01,1.01,dissolveProgress);
                 float dissolveSample = SAMPLE_TEXTURE2D(_DissolveMask,sampler_DissolveMask,i.uv.zw).r;
 
                 float dissolveComparer = dissolveSample - dissolveProgress;

@@ -26,16 +26,16 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _DissolveMask:
-        m_Texture: {fileID: 2800000, guid: 0db5b19ef3682e449a1e176e4ae4f623, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+        m_Texture: {fileID: 2800000, guid: fa57e5ff6a47ada49b4a0ec740c02bec, type: 3}
+        m_Scale: {x: 5, y: 1}
+        m_Offset: {x: 0.1, y: 0.1}
     - _DistortTex:
         m_Texture: {fileID: 2800000, guid: eec618cb356b9594e91e7778126bb5dc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: d90b4216a85df8746affc65025ae47d4, type: 3}
-        m_Scale: {x: 2, y: 2}
+        m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0.1, y: 0.1}
     - _SecondaryTexture:
         m_Texture: {fileID: 0}
@@ -46,9 +46,9 @@ Material:
     - _AlphaClip: 0
     - _AlphaClipRange: 0.01
     - _Cull: 2
-    - _Dissolve: 1
+    - _Dissolve: 0.547
     - _DissolveEnd: 0.7261906
-    - _DissolveWidth: 0.071
+    - _DissolveWidth: 0.046
     - _DistortStrength: 0.1
     - _DstBlend: 1
     - _Mask: 0
@@ -61,8 +61,8 @@ Material:
     - _ZTest: 2
     - _ZWrite: 0
     m_Colors:
-    - _Color: {r: 766.9961, g: 766.9961, b: 766.9961, a: 1}
-    - _DissolveEdgeColor: {r: 1, g: 0, b: 0, a: 1}
+    - _Color: {r: 0.29036134, g: 0.4245283, b: 0.40263194, a: 1}
+    - _DissolveEdgeColor: {r: 1.8734213, g: 2.9834702, b: 2.329542, a: 1}
     - _SecondaryFlow: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &8363284013944699640
