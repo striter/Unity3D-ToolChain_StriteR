@@ -117,7 +117,7 @@
 		{
 			r+=1.0/r;
 			rotate=mul(rot,rotate);
-			float4 bokeh=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+(r-1.0)*rotate*_MainTex_TexelSize.xy);
+			float4 bokeh = float4(SampleBlurTex(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),i.uv,(r-1.0)*rotate*_MainTex_TexelSize.xy),1);
 			sum+=bokeh;
 		}
 		return sum/_Iteration;

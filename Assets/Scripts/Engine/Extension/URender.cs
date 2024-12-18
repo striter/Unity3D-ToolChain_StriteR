@@ -232,7 +232,7 @@ public static class URender
     {
         if (_material == null)
         {
-            Debug.LogWarning("Mull Material Found.");
+            Debug.LogWarning("Null Material Found.");
             return false;
         }
         

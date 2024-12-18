@@ -17,7 +17,7 @@ namespace Examples.Algorithm.Geometry
         public bool m_QuadraticTangents = false;
         public GBezierCurveCubic m_CubicCurve;
         public GPolynomialCurve m_PolynomialCurve;
-        [Range(0,1)]public float m_BezeirSplit = 0;
+        [Range(0,1)] public float m_BezierSplit = 0;
         public GHermiteCurve m_HermiteCurve = GHermiteCurve.kDefault;
         public GProjectileCurve m_ProjectileCurve = GProjectileCurve.kDefault;
         
@@ -44,9 +44,9 @@ namespace Examples.Algorithm.Geometry
             m_QuadraticCurve.GetBoundingBox().DrawGizmos();
             
             Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(5f,0f,0f));
-            if (m_BezeirSplit > 0)
+            if (m_BezierSplit > 0)
             {
-                m_CubicCurve.Split(m_BezeirSplit,out var L,out var R);
+                m_CubicCurve.Split(m_BezierSplit,out var L,out var R);
                 L.DrawGizmos();
                 R.DrawGizmos();
                 Gizmos.color = Color.grey;

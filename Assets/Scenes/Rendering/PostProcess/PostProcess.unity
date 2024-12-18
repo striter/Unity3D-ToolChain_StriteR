@@ -219,7 +219,6 @@ GameObject:
   - component: {fileID: 289594998}
   - component: {fileID: 289594996}
   - component: {fileID: 289595001}
-  - component: {fileID: 289594997}
   m_Layer: 0
   m_Name: Opaque
   m_TagString: MainCamera
@@ -320,21 +319,6 @@ MonoBehaviour:
       m_LightAbsorption: 0.13
   m_Opaque: 1
   m_DrawGizmos: 1
---- !u!114 &289594997
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 289594994}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 700a36809ef0bd64f919f357b45b0fa8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Normal: 2
-  m_Reflection: 2
-  m_PostProcessPreview: 0
 --- !u!20 &289594998
 Camera:
   m_ObjectHideFlags: 0
@@ -609,16 +593,6 @@ MonoBehaviour:
       z: 0.35
       r: -0.5
       poleMatching: 1
-      _xp:
-        x: 0
-        y: 0
-        z: 0
-        w: 0
-      _w: 31.415928
-      _d: 29.428862
-      _k1: 0.022281691
-      _k2: 0.0010132118
-      _k3: -0.005570423
   m_OriginDistanceDamper:
     mode: 1
     halfLife: 0.5
@@ -629,16 +603,6 @@ MonoBehaviour:
       z: 0.35
       r: -0.5
       poleMatching: 1
-      _xp:
-        x: 0
-        y: 0
-        z: 0
-        w: 0
-      _w: 31.415928
-      _d: 29.428862
-      _k1: 0.022281691
-      _k2: 0.0010132118
-      _k3: -0.005570423
 --- !u!1 &520397182
 GameObject:
   m_ObjectHideFlags: 0
@@ -651,7 +615,6 @@ GameObject:
   - component: {fileID: 520397185}
   - component: {fileID: 520397188}
   - component: {fileID: 520397184}
-  - component: {fileID: 520397183}
   m_Layer: 0
   m_Name: Stylize
   m_TagString: MainCamera
@@ -659,21 +622,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &520397183
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 520397182}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 700a36809ef0bd64f919f357b45b0fa8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Normal: 2
-  m_Reflection: 2
-  m_PostProcessPreview: 0
 --- !u!114 &520397184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1637,7 +1585,6 @@ GameObject:
   - component: {fileID: 1230212947}
   - component: {fileID: 1230212951}
   - component: {fileID: 1230212950}
-  - component: {fileID: 1230212949}
   m_Layer: 0
   m_Name: ColorDegrade
   m_TagString: MainCamera
@@ -1711,21 +1658,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 559505670}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1230212949
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1230212946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 700a36809ef0bd64f919f357b45b0fa8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Normal: 2
-  m_Reflection: 2
-  m_PostProcessPreview: 0
 --- !u!114 &1230212950
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1880,16 +1812,6 @@ MonoBehaviour:
       z: 0.35
       r: -0.5
       poleMatching: 1
-      _xp:
-        x: 0
-        y: 0
-        z: 0
-        w: 0
-      _w: 31.415928
-      _d: 29.428862
-      _k1: 0.022281691
-      _k2: 0.0010132118
-      _k3: -0.005570423
   m_OriginDistanceDamper:
     mode: 1
     halfLife: 0.5
@@ -1900,16 +1822,6 @@ MonoBehaviour:
       z: 0.35
       r: -0.5
       poleMatching: 1
-      _xp:
-        x: 0
-        y: 0
-        z: 0
-        w: 0
-      _w: 31.415928
-      _d: 29.428862
-      _k1: 0.022281691
-      _k2: 0.0010132118
-      _k3: -0.005570423
 --- !u!64 &1397122144
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2100,7 +2012,6 @@ GameObject:
   - component: {fileID: 1941222569}
   - component: {fileID: 1941222566}
   - component: {fileID: 1941222565}
-  - component: {fileID: 1941222563}
   m_Layer: 0
   m_Name: ColorUpgrade
   m_TagString: MainCamera
@@ -2108,21 +2019,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1941222563
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1941222562}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 700a36809ef0bd64f919f357b45b0fa8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Normal: 2
-  m_Reflection: 2
-  m_PostProcessPreview: 1
 --- !u!114 &1941222565
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2289,7 +2185,6 @@ GameObject:
   - component: {fileID: 2086077255}
   - component: {fileID: 2086077262}
   - component: {fileID: 2086077260}
-  - component: {fileID: 2086077258}
   m_Layer: 0
   m_Name: Transparent
   m_TagString: MainCamera
@@ -2387,21 +2282,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 559505670}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2086077258
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2086077254}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 700a36809ef0bd64f919f357b45b0fa8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Normal: 2
-  m_Reflection: 2
-  m_PostProcessPreview: 0
 --- !u!114 &2086077260
 MonoBehaviour:
   m_ObjectHideFlags: 0

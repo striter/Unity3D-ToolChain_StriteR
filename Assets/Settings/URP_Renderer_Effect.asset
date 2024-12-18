@@ -1,5 +1,27 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-1994350910559773674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73a36542a2a2406bb20ceb87b0f8ea59, type: 3}
+  m_Name: PostProcessFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  m_AntiAliasing:
+    mode: 1
+    fxaa: 2
+    m_AdditionalSample: 1
+    m_UseDepth: 0
+    m_ContrastSkip: 0.1
+    m_RelativeSkip: 0.2
+    m_SubPixelBlend: 1
+    blend: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18,7 +40,9 @@ MonoBehaviour:
     hdrDebugViewPS: {fileID: 4800000, guid: 573620ae32aec764abd4d728906d2587, type: 3}
   m_RendererFeatures:
   - {fileID: 9038337560460315165}
-  m_RendererFeatureMap: 1dca4ec31fa06e7d
+  - {fileID: -1994350910559773674}
+  - {fileID: 1686083681849477250}
+  m_RendererFeatureMap: 1dca4ec31fa06e7d169c9bd269a452e4828838e62c2c6617
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 0}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -61,6 +85,20 @@ MonoBehaviour:
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
+--- !u!114 &1686083681849477250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71045df687a34db78255998bd1ba396e, type: 3}
+  m_Name: SurfaceEffectFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  m_Event: 500
 --- !u!114 &9038337560460315165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,24 +112,6 @@ MonoBehaviour:
   m_Name: Additional
   m_EditorClassIdentifier: 
   m_Active: 1
-  m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
   m_Data:
     m_Features: -1
-    m_MaskData:
-      renderMask: 64
-      color: {r: 1, g: 1, b: 1, a: 1}
-      inheritDepth: 1
-      outline: 0
-      extendWidth: 0
-      outlineVertex: 0
-    m_PlanarReflection:
-      maxPlanarReflectionTexture: 4
-    m_AntiAliasing:
-      mode: 2
-      fxaa: 2
-      m_AdditionalSample: 1
-      m_UseDepth: 1
-      m_ContrastSkip: 0.61
-      m_RelativeSkip: 0.22
-      m_SubPixelBlend: 2
-      blend: 0.1
+  m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}

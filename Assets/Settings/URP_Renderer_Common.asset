@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-3033789447685576703
+--- !u!114 &-3528349265234055559
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e42cb5686a2e47d696d1d32e171150d3, type: 3}
+  m_Script: {fileID: 11500000, guid: 71045df687a34db78255998bd1ba396e, type: 3}
   m_Name: SurfaceEffectFeature
   m_EditorClassIdentifier: 
   m_Active: 1
@@ -31,9 +31,10 @@ MonoBehaviour:
       type: 3}
     hdrDebugViewPS: {fileID: 4800000, guid: 573620ae32aec764abd4d728906d2587, type: 3}
   m_RendererFeatures:
-  - {fileID: 9038337560460315165}
-  - {fileID: 2162743148974953565}
-  m_RendererFeatureMap: 1dca4ec31fa06e7d5dd40f6f6f9b031e
+  - {fileID: 1759527312370271274}
+  - {fileID: -3528349265234055559}
+  - {fileID: 6427212684956401222}
+  m_RendererFeatureMap: 2a846daac4186b1879ae368a09c908cf46feb556e20b3259
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 0}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -76,21 +77,7 @@ MonoBehaviour:
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
---- !u!114 &2162743148974953565
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71045df687a34db78255998bd1ba396e, type: 3}
-  m_Name: SurfaceEffectFeature
-  m_EditorClassIdentifier: 
-  m_Active: 1
-  m_Event: 500
---- !u!114 &9038337560460315165
+--- !u!114 &1759527312370271274
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -100,27 +87,31 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59bf9e073cf798b41b61b969a7d7487c, type: 3}
-  m_Name: Additional
+  m_Name: PipelineExtensionFeature
   m_EditorClassIdentifier: 
   m_Active: 1
-  m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
   m_Data:
-    m_Features: 15
-    m_MaskData:
-      renderMask: 64
-      color: {r: 1, g: 1, b: 1, a: 1}
-      inheritDepth: 1
-      outline: 0
-      extendWidth: 0
-      outlineVertex: 0
-    m_PlanarReflection:
-      maxPlanarReflectionTexture: 4
-    m_AntiAliasing:
-      mode: 0
-      fxaa: 2
-      m_AdditionalSample: 1
-      m_UseDepth: 1
-      m_ContrastSkip: 0.61
-      m_RelativeSkip: 0.22
-      m_SubPixelBlend: 2
-      blend: 0.1
+    m_Features: -1
+  m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
+--- !u!114 &6427212684956401222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73a36542a2a2406bb20ceb87b0f8ea59, type: 3}
+  m_Name: PostProcessFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  m_AntiAliasing:
+    mode: 1
+    fxaa: 2
+    m_AdditionalSample: 1
+    m_UseDepth: 0
+    m_ContrastSkip: 0.1
+    m_RelativeSkip: 0.2
+    m_SubPixelBlend: 1
+    blend: 0

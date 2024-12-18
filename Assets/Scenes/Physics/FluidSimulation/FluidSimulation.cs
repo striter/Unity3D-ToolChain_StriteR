@@ -110,7 +110,7 @@ namespace Examples.PhysicsScenes.FluidSimulation
 
             
             m_Ticker.Set(m_Data.t);
-            int vertexCount = m_Data.width * m_Data.height;
+            var vertexCount = m_Data.width * m_Data.height;
             vertexBuffers = new[] {
                 new NativeArray<float3>(vertexCount,Allocator.Persistent),
                 new NativeArray<float3>(vertexCount,Allocator.Persistent)
@@ -118,8 +118,8 @@ namespace Examples.PhysicsScenes.FluidSimulation
             normalBuffers = new NativeArray<float3>(vertexCount, Allocator.Persistent);
             tangentBuffers = new NativeArray<float3>(vertexCount, Allocator.Persistent);
             uvBuffers = new NativeArray<float2>(vertexCount,Allocator.Persistent);
-            for(int j=0;j<m_Data.height;j++)
-                for (int i = 0; i < m_Data.width; i++)
+            for(var j=0;j<m_Data.height;j++)
+                for (var i = 0; i < m_Data.width; i++)
                 {
                     var position = new float3(i * m_Data.size, 0, j * m_Data.size);
                     var index = Index(i, j);
@@ -259,8 +259,8 @@ namespace Examples.PhysicsScenes.FluidSimulation
             if (m_Life != EFluidLife.Initialized) return;
             
             var crnt = vertexBuffers[vertexBufferIndex];
-            for(int j=1;j<m_Data.height - 1;j++)
-            for (int i = 1; i < m_Data.width - 1; i++)
+            for(var j=1;j<m_Data.height - 1;j++)
+            for (var i = 1; i < m_Data.width - 1; i++)
             {
                 var position =  crnt[Index(i, j)];
                 if (!_blastSphere.Contains(position))

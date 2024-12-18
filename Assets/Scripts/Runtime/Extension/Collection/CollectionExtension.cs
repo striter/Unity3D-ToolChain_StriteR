@@ -36,6 +36,16 @@ namespace System.Linq.Extensions
                     }                
                 }
             }
+
+            public static IEnumerable<T> Stride<T>(this IEnumerable<T> _collection, int _stride)
+            {
+                var index = 0;
+                foreach (var element in _collection)
+                {
+                    if (index++ % _stride == 0)
+                        yield return element;
+                }
+            }
             
             public static IEnumerable<(int index,T value)> LoopIndex<T>(this IEnumerable<T> _collection)
             {
