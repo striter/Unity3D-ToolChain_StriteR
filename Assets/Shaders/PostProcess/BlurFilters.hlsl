@@ -1,5 +1,7 @@
-
-    
+#define IDEPTH
+half _FocalStart;
+half _FocalEnd;
+TEXTURE2D(_CameraFocalMaskTexture); SAMPLER(sampler_CameraFocalMaskTexture);
 half3 SampleBlurTex(TEXTURE2D_PARAM(_tex,_sampler),float2 uv,float2 offset)
 {
     #if defined(_DOF)||defined(_DOF_CLIPSKY)
@@ -7,7 +9,7 @@ half3 SampleBlurTex(TEXTURE2D_PARAM(_tex,_sampler),float2 uv,float2 offset)
         half focal=saturate(invlerp(_FocalStart,_FocalEnd,RawToEyeDepth(rawDepth)));
         offset*=focal;
     #elif _DOF_MASK
-        offset *= (1-max(SAMPLE_TEXTURE2D(_CameraMaskTexture,sampler_CameraMaskTexture,uv+offset).r,SAMPLE_TEXTURE2D(_CameraMaskTexture,sampler_CameraMaskTexture,uv).r));
+        offset *= (1-max(SAMPLE_TEXTURE2D(_CameraFocalMaskTexture,sampler_CameraFocalMaskTexture,uv+offset).r,SAMPLE_TEXTURE2D(_CameraFocalMaskTexture,sampler_CameraFocalMaskTexture,uv).r));
     #endif
 
     float4 color = SAMPLE_TEXTURE2D(_tex,_sampler,uv+offset);

@@ -46,15 +46,15 @@ namespace UnityEditor.Extensions
         {
             if (_attribute.m_Conditions==null || _attribute.m_Conditions.Length==0) return true;
             var fields = _getFields();
-            switch (_attribute.Condition)
+            return _attribute.Condition switch
             {
-                default: throw new InvalidEnumArgumentException();
-                case ConditionAttribute.EConditionAction.AlwaysVisible: return true;
-                case ConditionAttribute.EConditionAction.AnyEquals: return _attribute.m_Conditions.Any(condition => fields.Any(p => p.Item1.Name == condition.fieldName && Equals(condition,p.Item2)));
-                case ConditionAttribute.EConditionAction.NonAnyEquals: return !_attribute.m_Conditions.Any(condition => fields.Any(p => p.Item1.Name == condition.fieldName && Equals(condition,p.Item2)));
-                case ConditionAttribute.EConditionAction.AllEquals: return _attribute.m_Conditions.All(condition => fields.Any(p => p.Item1.Name == condition.fieldName && Equals(condition,p.Item2)));
-                case ConditionAttribute.EConditionAction.NonAllEquals: return _attribute.m_Conditions.All(condition => fields.Any(p => p.Item1.Name == condition.fieldName && Equals(condition,p.Item2)));
-            }
+                ConditionAttribute.EConditionAction.AlwaysVisible => true,
+                ConditionAttribute.EConditionAction.AnyEquals => _attribute.m_Conditions.Any(condition => fields.Any(p => p.Item1.Name == condition.fieldName && Equals(condition, p.Item2))),
+                ConditionAttribute.EConditionAction.NonAnyEquals => !_attribute.m_Conditions.Any(condition => fields.Any(p => p.Item1.Name == condition.fieldName && Equals(condition, p.Item2))),
+                ConditionAttribute.EConditionAction.AllEquals => _attribute.m_Conditions.All(condition => fields.Any(p => p.Item1.Name == condition.fieldName && Equals(condition, p.Item2))),
+                ConditionAttribute.EConditionAction.NonAllEquals => _attribute.m_Conditions.All(condition => fields.Any(p => p.Item1.Name == condition.fieldName && Equals(condition, p.Item2))),
+                _ => throw new InvalidEnumArgumentException()
+            };
         }
         public static bool IsPropertyVisible(this ConditionAttribute _attribute,SerializedProperty _property)=>IsVisible(_attribute,()=>_property.AllRelativeFields());
         public static bool IsElementVisible(this ConditionAttribute _attribute,Object _target)=>IsVisible(_attribute,()=>_target.GetType().GetAllFields( _flags: BindingFlags.Instance).Select(p=>(p,p.GetValue(_target))));

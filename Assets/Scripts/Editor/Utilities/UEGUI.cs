@@ -162,13 +162,16 @@ namespace UnityEditor.Extensions
 
             foreach (var subfield in targetType.GetFields(_flags))
             {
+                if(subfield.IsNotSerialized)
+                    continue;
+                
                 paths[^1] = subfield.Name;
                 var propertyPath =  string.Join(".", paths, 0, paths.Length);
                 if (propertyPath == _property.propertyPath)
                     continue;
                 
                 var property = _property.serializedObject.FindProperty(propertyPath);
-                if(property==null)
+                if(property == null)
                     continue;
                 
                 if(property.propertyType == SerializedPropertyType.ObjectReference)

@@ -34,7 +34,8 @@ MonoBehaviour:
   - {fileID: 1759527312370271274}
   - {fileID: -3528349265234055559}
   - {fileID: 6427212684956401222}
-  m_RendererFeatureMap: 2a846daac4186b1879ae368a09c908cf46feb556e20b3259
+  - {fileID: 3068563560998926471}
+  m_RendererFeatureMap: 2a846daac4186b1879ae368a09c908cf46feb556e20b325987780c004dba952a
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 0}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -90,9 +91,24 @@ MonoBehaviour:
   m_Name: PipelineExtensionFeature
   m_EditorClassIdentifier: 
   m_Active: 1
+  m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
   m_Data:
     m_Features: -1
-  m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
+--- !u!114 &3068563560998926471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 269d4d5ecbb44cc6a0c796656046e676, type: 3}
+  m_Name: PlanarReflectionFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  m_Data:
+    maxPlanarReflectionTexture: 4
 --- !u!114 &6427212684956401222
 MonoBehaviour:
   m_ObjectHideFlags: 0

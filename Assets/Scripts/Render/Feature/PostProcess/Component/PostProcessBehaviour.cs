@@ -54,7 +54,7 @@ namespace Rendering.PostProcess
         }
         
         public void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor) => m_Effect.Configure(_buffer,_descriptor,ref m_Data);
-        public void Execute(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _executeData, 
+        public virtual void Execute(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _executeData, 
             ScriptableRenderer _renderer, ScriptableRenderContext _context,ref RenderingData _renderingData)=>
             m_Effect.Execute(_executeData,ref  m_Data,_buffer, _src, _dst ,_renderer, _context, ref _renderingData);
 

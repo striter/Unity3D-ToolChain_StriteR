@@ -10,7 +10,7 @@ namespace Rendering.PostProcess
     [Serializable]
     public class PostProcessCore<T> where T: struct
     {
-        protected Material m_Material { get; private set; }
+        public Material m_Material { get; private set; }
         public PostProcessCore()
         {
             var srcName = GetType().Name;

@@ -19,11 +19,6 @@
     #pragma multi_compile _ _FIRSTBLUR
     #pragma multi_compile _ _FINALBLUR
     #pragma multi_compile_local_fragment _ _ENCODE
-	#if defined(_DOF)||defined(_DOF_CLIPSKY)
-		#define IDEPTH
-        half _FocalStart;
-        half _FocalEnd;
-    #endif
     #include "Assets/Shaders/Library/PostProcess.hlsl"
 	#include "BlurFilters.hlsl"
 	
@@ -211,7 +206,7 @@
 		half3 srcCol = DualFilteringUpFilter(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),i.uv,_MainTex_TexelSize,_BlurSize);
 		half3 mipCol = DualFilteringUpFilter(TEXTURE2D_ARGS(_PreDownSample,sampler_PreDownSample),i.uv,_PreDownSample_TexelSize,_BlurSize);
 
-		half3 finalCol = srcCol + mipCol;
+		half3 finalCol = (srcCol + mipCol)*.5;
 		return RecordBlurTex(finalCol);
 	}
 

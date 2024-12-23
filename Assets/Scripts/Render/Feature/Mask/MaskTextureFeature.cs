@@ -4,12 +4,12 @@ namespace Rendering.Pipeline.Mask
 {
     public class MaskTextureFeature : ScriptableRendererFeature
     {
-        public SRD_MaskData m_Data = SRD_MaskData.kDefault;
+        [ScriptableObjectEdit]public MaskTextureData m_Data;
         private MaskTexturePass m_Mask;
 
         public override void Create()
         {
-            m_Mask = new MaskTexturePass() { renderPassEvent = RenderPassEvent.BeforeRenderingOpaques };
+            m_Mask = new MaskTexturePass() { renderPassEvent = RenderPassEvent.AfterRenderingOpaques + 1 };
         }
 
         public override void AddRenderPasses(ScriptableRenderer _renderer, ref RenderingData renderingData)

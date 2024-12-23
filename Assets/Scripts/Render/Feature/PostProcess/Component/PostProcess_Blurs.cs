@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using Rendering.Pipeline.Mask;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -13,12 +15,45 @@ namespace Rendering.PostProcess
         public override EPostProcess Event => EPostProcess.DepthOfField;
 
         public enum_Focal m_Focal;
-        [MFoldout(nameof(m_Focal),enum_Focal._DOF)]public DDepthOfField m_FocalData;
+        [MFoldout(nameof(m_Focal),enum_Focal._DOF)] public RangeFloat m_FocalData;
+        [MFoldout(nameof(m_Focal),enum_Focal._DOF_MASK)] public MaskTextureData m_FocalMaskData;
+
+        private static readonly int kIDFocalBegin = Shader.PropertyToID("_FocalStart");
+        private static readonly int kIDFocalEnd = Shader.PropertyToID("_FocalEnd");
+        public static readonly int kFocalMaskID = Shader.PropertyToID("_CameraFocalMaskTexture");
+        public static readonly RenderTargetIdentifier kFocalMaskRT = new RenderTargetIdentifier(kFocalMaskID);
 
         protected override void ApplyParameters()
         {
             base.ApplyParameters();
-            m_Effect?.SetFocal(m_Focal,ref m_FocalData);
+            var material = m_Effect.m_Material;
+            if (material.EnableKeywords(m_Focal))
+            {
+                material.SetFloat(kIDFocalBegin, m_FocalData.start);
+                material.SetFloat(kIDFocalEnd, m_FocalData.end);
+            }
+        }
+
+        public override void Execute(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,
+            RenderTextureDescriptor _executeData, ScriptableRenderer _renderer, ScriptableRenderContext _context,
+            ref RenderingData _renderingData)
+        {
+            if (m_Focal != enum_Focal._DOF_MASK )
+            {
+                base.Execute(_buffer, _src, _dst, _executeData, _renderer, _context, ref _renderingData);
+                return;
+            }
+
+            var descriptor = _executeData;
+            descriptor.colorFormat = RenderTextureFormat.R8;
+            descriptor.depthBufferBits = 0;
+            _buffer.GetTemporaryRT(kFocalMaskID, descriptor);
+            _context.ExecuteCommandBuffer(_buffer);
+            _buffer.Clear();
+            
+            MaskTexturePass.DrawMask(kFocalMaskRT,_context,ref _renderingData,m_FocalMaskData);
+            base.Execute(_buffer, _src, _dst, _executeData, _renderer, _context, ref _renderingData);
+            _buffer.ReleaseTemporaryRT(kFocalMaskID);
         }
     }
 
@@ -84,6 +119,7 @@ namespace Rendering.PostProcess
         [RangeVector(0, 1)] public Vector2 m_Vector;
         [MFoldout(nameof(m_BlurType), EBlurType.LightStreak)]
         [Range(.9f, 1f)] public float m_Attenuation;
+        
         public bool Validate() => m_BlurType != EBlurType.None && m_DownSample > 0;
         
         public static readonly DBlurs kDefault = new DBlurs()
@@ -98,18 +134,6 @@ namespace Rendering.PostProcess
         };
     }
 
-    [Serializable]
-    public struct DDepthOfField
-    {
-        [Clamp(0)]public float m_Begin;
-        [Clamp(0)]public float m_Width;
-
-        public static readonly DDepthOfField kDefault = new DDepthOfField()
-        {
-            m_Begin = 10,
-            m_Width = 5,
-        };
-    }
 
     public class FBlursCore : PostProcessCore<DBlurs>
     {
@@ -121,23 +145,10 @@ namespace Rendering.PostProcess
         private static readonly int kIDVector = Shader.PropertyToID("_Vector");
         private static readonly int kIDAttenuation = Shader.PropertyToID("_Attenuation");
 
-        private static readonly int kIDFocalBegin = Shader.PropertyToID("_FocalStart");
-        private static readonly int kIDFocalEnd = Shader.PropertyToID("_FocalEnd");
-
         private static readonly string kKWFirstBlur = "_FIRSTBLUR";
         private static readonly string kKWFinalBlur = "_FINALBLUR";
         private static readonly string kKWEncoding = "_ENCODE";
 
-        public bool SetFocal(enum_Focal _focal, ref DDepthOfField focalData)
-        {
-            if (m_Material.EnableKeywords(_focal))
-            {
-                m_Material.SetFloat(kIDFocalBegin, focalData.m_Begin);
-                m_Material.SetFloat(kIDFocalEnd, focalData.m_Begin + focalData.m_Width);
-            }
-
-            return _focal != enum_Focal.None;
-        }
 
         #endregion
 

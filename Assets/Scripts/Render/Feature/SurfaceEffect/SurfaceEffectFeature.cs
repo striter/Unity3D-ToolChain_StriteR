@@ -29,7 +29,7 @@ namespace Rendering.Pipeline
             {
                 foreach (var (renderer, material) in obj.GetSurfaceEffectDrawCalls(renderingData.cameraData.camera))
                 {
-                    for(int i=0;i<renderer.sharedMaterials.Length;i++)
+                    for(var i=0;i<renderer.sharedMaterials.Length;i++)
                         cmd.DrawRenderer(renderer,material,i);
                 }
             }

@@ -8,9 +8,6 @@ float4 _MainTex_TexelSize;
 #define _MainTex_TexelUpRight float2(1,1)*_MainTex_TexelSize.xy
 #define _MainTex_TexelUpLeft float2(-1,1)*_MainTex_TexelSize.xy
 
-TEXTURE2D(_CameraMaskTexture); SAMPLER(sampler_CameraMaskTexture);
-float4 _CameraMaskTexture_TexelSize;
-
 float4 SampleMainTex(float2 uv){return  SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,uv);}
 
 struct a2v_img

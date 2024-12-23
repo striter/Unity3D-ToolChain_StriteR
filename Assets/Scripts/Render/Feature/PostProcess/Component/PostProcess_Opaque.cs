@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Extensions;
 using Rendering.Pipeline;
+using Rendering.Pipeline.Mask;
 using Runtime.Random;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -78,13 +79,14 @@ namespace Rendering.PostProcess
         private const string kAmbientOcclusionKW = "_AO";
         private const string kVolumetricCloudKW = "_VOLUMETRICCLOUD";
         
-        private static readonly int kHighlightMaskBlurID = Shader.PropertyToID("_OUTLINE_MASK_BLUR");
-        private static readonly RenderTargetIdentifier kHighlightMaskBlurRT = new RenderTargetIdentifier(kHighlightMaskBlurID);
 
         private static readonly int kSampleID = Shader.PropertyToID("_Opaque_Sample");
         
-        private RenderTextureDescriptor m_HighlightDescriptor;
         private readonly FBlursCore m_HighlightBlur;
+        private static readonly int kHighlightMaskID = Shader.PropertyToID("_OUTLINE_MASK");
+        private static readonly RenderTargetIdentifier kHighlightMaskRT = new RenderTargetIdentifier(kHighlightMaskID);
+        private static readonly int kHighlightMaskBlurID = Shader.PropertyToID("_OUTLINE_MASK_BLUR");
+        private static readonly RenderTargetIdentifier kHighlightMaskBlurRT = new RenderTargetIdentifier(kHighlightMaskBlurID);
 
         private RenderTextureDescriptor m_VolumetricCloudDescriptor;
         private readonly Material m_RenderFrontDepth;
@@ -127,12 +129,15 @@ namespace Rendering.PostProcess
                 _data.m_VolumetricCloudData.Apply(m_Material);
         }
 
-        public override  void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor,ref DOpaque _data)
+        public override void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor,ref DOpaque _data)
         {
             if (_data.m_MaskedHighlight)
             {
-                m_HighlightDescriptor = new RenderTextureDescriptor(_descriptor.width, _descriptor.height, RenderTextureFormat.R8, 0, 0);
-                _buffer.GetTemporaryRT(kHighlightMaskBlurID, m_HighlightDescriptor, FilterMode.Bilinear);
+                var highlightDescriptor = _descriptor;
+                highlightDescriptor.colorFormat = RenderTextureFormat.R8;
+                highlightDescriptor.depthBufferBits = 0;
+                _buffer.GetTemporaryRT(kHighlightMaskID, highlightDescriptor);
+                _buffer.GetTemporaryRT(kHighlightMaskBlurID, _descriptor, FilterMode.Bilinear);
             }
 
             if (_data.m_VolumetricCloud && _data.m_VolumetricCloudData.m_Shape)
@@ -150,7 +155,7 @@ namespace Rendering.PostProcess
             if (_data.m_VolumetricCloud && _data.m_VolumetricCloudData.m_Shape)
             {
                 var volumetricData = _data.m_VolumetricCloudData;
-                CommandBuffer buffer = CommandBufferPool.Get("Volumetric Fog Mask");
+                var buffer = CommandBufferPool.Get("Volumetric Fog Mask");
                 buffer.SetRenderTarget(RT_ID_VolumetricCloud_Depth);
                 buffer.ClearRenderTarget(RTClearFlags.ColorDepth,Color.clear,0,0);
                 _context.ExecuteCommandBuffer(buffer);
@@ -176,9 +181,12 @@ namespace Rendering.PostProcess
                 _context.ExecuteCommandBuffer(buffer);
                 CommandBufferPool.Release(buffer);
             }
-            
-            if(_data.m_MaskedHighlight) 
-                m_HighlightBlur.Execute(m_HighlightDescriptor,ref _data.m_HighlightData.m_Blur,_buffer, KRenderTextures.kCameraMaskTextureRT, kHighlightMaskBlurRT,_renderer,_context,ref _renderingData);
+
+            if (_data.m_MaskedHighlight)
+            {
+                MaskTexturePass.DrawMask(kHighlightMaskRT,_context,ref _renderingData,_data.m_HighlightData.m_Mask);
+                m_HighlightBlur.Execute(_descriptor,ref _data.m_HighlightData.m_Blur,_buffer, kHighlightMaskRT, kHighlightMaskBlurRT,_renderer,_context,ref _renderingData);
+            }
 
             if (!_data.m_SSAO && !_data.m_VolumetricCloud)
             {
@@ -201,6 +209,7 @@ namespace Rendering.PostProcess
         {
             if (_data.m_MaskedHighlight)
             {
+                _buffer.ReleaseTemporaryRT(kHighlightMaskID);
                 _buffer.ReleaseTemporaryRT(kHighlightMaskBlurID);
             }
 
@@ -458,7 +467,8 @@ namespace Rendering.PostProcess
         [Serializable]
         public struct DHighlight
         {
-            [ColorUsage(true,true)]public Color m_Color;
+            [ColorUsage(true,true)] public Color m_Color;
+            public MaskTextureData m_Mask;
             public DBlurs m_Blur;
             
             #region Properties
@@ -469,6 +479,12 @@ namespace Rendering.PostProcess
                 _blur.OnValidate(ref m_Blur);
             }
             #endregion
+            public static readonly DHighlight kDefault = new DHighlight()
+            {
+                m_Color = Color.white,
+                m_Mask = MaskTextureData.kDefault,
+                m_Blur = DBlurs.kDefault
+            };
         }
         
         [Serializable]

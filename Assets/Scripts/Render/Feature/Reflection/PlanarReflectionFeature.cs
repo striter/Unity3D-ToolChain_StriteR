@@ -16,7 +16,7 @@ namespace Rendering.Pipeline
         };
     }
     
-    public class ScreenSpaceReflectionFeature : ScriptableRendererFeature
+    public class PlanarReflectionFeature : ScriptableRendererFeature
     {
         public ReflectionPassData m_Data = ReflectionPassData.kDefault;
         private FBlursCore m_Blurs;

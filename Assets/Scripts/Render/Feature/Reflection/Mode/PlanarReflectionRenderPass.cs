@@ -1,5 +1,6 @@
 ﻿using Runtime.Geometry;
 using Rendering.PostProcess;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -47,20 +48,21 @@ namespace Rendering.Pipeline
          protected override void Execute(ref PlanarReflectionData _data, ScriptableRenderContext _context, ref RenderingData _renderingData,
              CommandBuffer _cmd, ref PlanarReflection _config,  ref RenderTextureDescriptor _descriptor, ref RTHandle _target,
              ref ScriptableRenderer _renderer)
-         {
-             ref var cameraData = ref _renderingData.cameraData;
-             ref Camera camera = ref cameraData.camera;
-            
-            Matrix4x4 planeMirrorMatrix = _config.m_PlaneData.GetMirrorMatrix();
-            Matrix4x4 cullingMatrix = camera.cullingMatrix;
+        {
+            ref var cameraData = ref _renderingData.cameraData;
+            ref Camera camera = ref cameraData.camera;
+
+            var plane = _config.m_PlaneData;
+            var planeMirrorMatrix = plane.GetMirrorMatrix();
+            var cullingMatrix = camera.cullingMatrix;
             camera.cullingMatrix = cullingMatrix * planeMirrorMatrix;
 
-            DrawingSettings drawingSettings = CreateDrawingSettings(UPipeline.kDefaultShaderTags, ref _renderingData,  SortingCriteria.CommonOpaque);
-            FilteringSettings filterSettings = new FilteringSettings(_data.m_IncludeTransparent? RenderQueueRange.all : RenderQueueRange.opaque);
-            Matrix4x4 projectionMatrix = GL.GetGPUProjectionMatrix(cameraData.GetProjectionMatrix(), cameraData.IsCameraProjectionMatrixFlipped());
-            Matrix4x4 viewMatrix = cameraData.GetViewMatrix();
-            viewMatrix*= planeMirrorMatrix;
-            
+            var drawingSettings = CreateDrawingSettings(UPipeline.kDefaultShaderTags, ref _renderingData,  SortingCriteria.CommonOpaque);
+            var filterSettings = new FilteringSettings(_data.m_IncludeTransparent? RenderQueueRange.all : RenderQueueRange.opaque);
+            var projectionMatrix = GL.GetGPUProjectionMatrix(cameraData.GetProjectionMatrix(), cameraData.IsCameraProjectionMatrixFlipped());
+            var viewMatrix = cameraData.GetViewMatrix();
+            viewMatrix *= planeMirrorMatrix;
+
             RenderingUtils.SetViewAndProjectionMatrices(_cmd, viewMatrix , projectionMatrix, false);
             var cameraPosition = camera.transform.position;
             _cmd.SetGlobalVector( kCameraWorldPosition,planeMirrorMatrix.MultiplyPoint(cameraPosition));
@@ -79,13 +81,13 @@ namespace Rendering.Pipeline
             {
                 _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
             }
-            
+
             _cmd.Clear();
             _cmd.SetInvertCulling(false);
             _cmd.SetGlobalVector( kCameraWorldPosition,cameraPosition);
             RenderingUtils.SetViewAndProjectionMatrices(_cmd, cameraData.GetViewMatrix(), cameraData.GetGPUProjectionMatrix(), false);
             camera.ResetCullingMatrix();
-         }
+        }
 
     }
 }

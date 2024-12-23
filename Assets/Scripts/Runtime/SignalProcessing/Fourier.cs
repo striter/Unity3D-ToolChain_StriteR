@@ -46,5 +46,34 @@ namespace Runtime.SignalProcessing
             }
             return result / _N;
         }
+
+        // public static IEnumerable<cfloat2> DITFFT(IList<float> _input, int _coefficients,int _N = -1,int _stirde = 1)
+        // {
+        //     var N = _input.Count;
+        //     if (!math.ispow2(N))
+        //     {
+        //         Debug.LogError("N is not a power of 2");
+        //         yield break;
+        //     }
+        //     
+        //     if(N <= 2)
+        //         foreach (var result in DFT(_input, _coefficients))
+        //             yield return result;
+        //     
+        //     var even = new List<float>();
+        //     var odd = new List<float>();
+        //     for (var i = 0; i < N; i++)
+        //     {
+        //         if (i % 2 == 0)
+        //             even.Add(_input[i]);
+        //         else
+        //             odd.Add(_input[i]);
+        //     }
+        //     
+        //     foreach (var result in DITFFT(even, _coefficients))
+        //         yield return result;
+        //     foreach (var result in DITFFT(odd, _coefficients))
+        //         yield return result;
+        // }
     }
 }
