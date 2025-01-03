@@ -16,9 +16,6 @@ namespace Runtime.Geometry
         public static GDisk kDefault = new GDisk(float3.zero, kfloat3.rightUpForward.normalize(), .5f);
         
         public float3 Origin => origin;
-        
-        public float3 GetPoint(float rad) => origin + normal * rad * radius;
-
         public float3 GetSupportPoint(float3 _direction)
         {
             var diskCenterToPoint =  _direction - normal * math.dot(_direction, normal);

@@ -54,7 +54,7 @@ namespace Rendering.Pipeline
          protected PlanarReflectionData m_Data;
          protected FBlursCore m_Blur;
          private int m_Index;
-         private PlanarReflection m_Compnent;
+         private PlanarReflectionProvider m_Compnent;
          private RenderTextureDescriptor m_ColorDescriptor;
          private RTHandle m_ColorTarget;
          private ScriptableRenderer m_Renderer;
@@ -63,7 +63,7 @@ namespace Rendering.Pipeline
          private int m_ReflectionBlurTexture;
          private RenderTargetIdentifier m_ReflectionBlurTextureID;
          
-         public APlanarReflectionBase(PlanarReflectionData _data,FBlursCore _blur,PlanarReflection _component,ScriptableRenderer _renderer,int _index)
+         public APlanarReflectionBase(PlanarReflectionData _data,FBlursCore _blur,PlanarReflectionProvider _component,ScriptableRenderer _renderer,int _index)
          {
              m_Index = _index;
              m_Data = _data;
@@ -128,7 +128,7 @@ namespace Rendering.Pipeline
 
          protected abstract void Execute(ref PlanarReflectionData _data,
              ScriptableRenderContext _context, ref RenderingData _renderingData, CommandBuffer _cmd,
-             ref PlanarReflection _config, ref RenderTextureDescriptor _descriptor, 
+             ref PlanarReflectionProvider _config, ref RenderTextureDescriptor _descriptor, 
              ref RTHandle _target,ref ScriptableRenderer _renderer);
     }
 }

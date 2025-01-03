@@ -24,7 +24,7 @@ namespace Rendering.Pipeline
         
         private readonly PassiveInstance<ComputeShader> m_ReflectionComputeShader=new PassiveInstance<ComputeShader>(()=>RenderResources.FindComputeShader("PlanarReflection"));
         
-        public FGeometryReflectionScreenSpace(PlanarReflectionData _data, FBlursCore _blur, PlanarReflection _component, ScriptableRenderer _renderer, int _index) : base(_data, _blur, _component, _renderer, _index)
+        public FGeometryReflectionScreenSpace(PlanarReflectionData _data, FBlursCore _blur, PlanarReflectionProvider _component, ScriptableRenderer _renderer, int _index) : base(_data, _blur, _component, _renderer, _index)
         {
         }
         protected override void ConfigureColorDescriptor(ref RenderTextureDescriptor _descriptor, ref PlanarReflectionData _data)
@@ -46,7 +46,7 @@ namespace Rendering.Pipeline
         }
 
         protected override void Execute(ref PlanarReflectionData _data, ScriptableRenderContext _context,
-            ref RenderingData _renderingData, CommandBuffer _cmd, ref PlanarReflection _config,  ref RenderTextureDescriptor _descriptor,
+            ref RenderingData _renderingData, CommandBuffer _cmd, ref PlanarReflectionProvider _config,  ref RenderTextureDescriptor _descriptor,
             ref RTHandle _target,ref ScriptableRenderer _renderer)
         {
             _cmd.SetComputeIntParam(m_ReflectionComputeShader, kSampleCount, _data.m_Sample);

@@ -36,8 +36,8 @@ namespace Runtime.Geometry.Curves.Spline
         {
             float3 result = 0;
             var N = paths.Count;
-            result.x = Fourier.IDFT(fourierCoefficients.Select(p=>p.c0),N,_value);
-            result.y = Fourier.IDFT(fourierCoefficients.Select(p=>p.c1),N,_value);
+            result.x = Fourier.IFT(fourierCoefficients.Select(p=>p.c0),N,_value);
+            result.y = Fourier.IFT(fourierCoefficients.Select(p=>p.c1),N,_value);
             return result;
         }
 

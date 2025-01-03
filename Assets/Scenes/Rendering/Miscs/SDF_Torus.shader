@@ -59,7 +59,7 @@ Shader "Hidden/SDF_Torus"
                 SDFOutput distAB = SDFUnionSmin(distA,distB,.2,5);
                 return SDFUnion(distAB,distC);
             }
-            #include "Assets/Shaders/Library/Geometry/GeometrySDFPass.hlsl"
+            #include "Assets/Shaders/Library/Passes/GeometrySDFPass.hlsl"
             ENDHLSL
         }
     }

@@ -6,35 +6,39 @@ using UnityEngine.Rendering.Universal;
 namespace Rendering.PostProcess
 {
     [ExecuteInEditMode]
-    public class PostProcessBehaviour<T,Y> : MonoBehaviour,IPostProcessBehaviour where T : PostProcessCore<Y>, new() where Y:struct,IPostProcessParameter
+    public class PostProcessBehaviour<T,Y> : MonoBehaviour , IPostProcessBehaviour  where T : PostProcessCore<Y>, new() where Y:struct,IPostProcessParameter
     {
-        [Title] public Y m_Data;
+        public Y m_Data;
         protected T m_Effect { get; private set; }
         private static readonly string kDefaultName = typeof(T).Name;
         public string m_Name => kDefaultName;
         public virtual bool m_OpaqueProcess => throw new NotImplementedException();
         public virtual EPostProcess Event => throw new NotImplementedException();
         public bool m_Enabled { get; private set;}
+        private bool m_Dirty;
         protected void Awake()
         {
             m_Effect = new T();
-            ValidateParameters();
+            SetDirty();
         }
-        void OnDidApplyAnimationProperties() => ValidateParameters();       //Undocumented Magic Fucntion ,Triggered By AnimationClip
+        void OnDidApplyAnimationProperties() => SetDirty();       //Undocumented Magic Fucntion ,Triggered By AnimationClip
 
         void Reset()
         {
             m_Data = UReflection.GetDefaultData<Y>();
-            ValidateParameters();
+            SetDirty();
         }
+
+        public void SetDirty() => m_Dirty = true;
         void OnValidate()
         {
             #if UNITY_EDITOR
             if (m_Effect == null)
                 m_Effect = new T();
             #endif
-            ValidateParameters();
+            SetDirty();
         }
+        
         protected void OnDestroy()
         {
             m_Effect.Destroy();
@@ -43,6 +47,9 @@ namespace Rendering.PostProcess
 
         public void ValidateParameters()
         {
+            if(!m_Dirty)
+                return;
+            m_Dirty = false;
             m_Enabled = m_Data.Validate();
             if (!m_Enabled)
                 return;

@@ -250,12 +250,20 @@ public partial class umath
 
     public static int pow(int _src, int _pow)
     {
-        if (_pow == 0) return 1;
-        if (_pow == 1) return _src;
-        int dst = _src;
-        for (int i = 0; i < _pow - 1; i++)
-            dst *= _src;
-        return dst;
+        switch (_pow)
+        {
+            case 0:
+                return 1;
+            case 1:
+                return _src;
+            default:
+            {
+                var dst = _src;
+                for (var i = 0; i < _pow - 1; i++)
+                    dst *= _src;
+                return dst;
+            }
+        }
     }
 
     public static uint pow(uint _src, uint _pow)

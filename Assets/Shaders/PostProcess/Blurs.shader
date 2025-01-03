@@ -15,7 +15,9 @@
     half4 _Vector;
 	half4 _Attenuation;
     
-    #pragma multi_compile_local_fragment _ _DOF _DOF_MASK
+    #pragma multi_compile_local_fragment _ _DOF_DISTANCE
+    #pragma multi_compile_local_fragment _ _DOF_MASK
+    
     #pragma multi_compile _ _FIRSTBLUR
     #pragma multi_compile _ _FINALBLUR
     #pragma multi_compile_local_fragment _ _ENCODE
@@ -127,7 +129,7 @@
 			half3 hexagonBlur = SampleBlurTex(TEXTURE2D_ARGS(_tex,_samp),uv,direction*float2(i+.5,i+.5));
 			finalCol+=hexagonBlur;
 		}
-		return RecordBlurTex(finalCol/_Iteration);
+		return RecordBlurTex(finalCol/_Iteration).rgb;
 	}
 	
 	half4 fragHexagonVertical(v2f_img i):SV_TARGET
@@ -206,13 +208,12 @@
 		half3 srcCol = DualFilteringUpFilter(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),i.uv,_MainTex_TexelSize,_BlurSize);
 		half3 mipCol = DualFilteringUpFilter(TEXTURE2D_ARGS(_PreDownSample,sampler_PreDownSample),i.uv,_PreDownSample_TexelSize,_BlurSize);
 
-		half3 finalCol = (srcCol + mipCol)*.5;
-		return RecordBlurTex(finalCol);
+		return (RecordBlurTex(srcCol) + RecordBlurTex(mipCol));
 	}
 
     half4 fragNextGenUpSampleFinal(v2f_img i):SV_TARGET
 	{
-		return RecordBlurTex(DualFilteringUpFilter(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),i.uv,_MainTex_TexelSize,_BlurSize));
+		return RecordBlurTex(DualFilteringUpFilter(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),i.uv,_MainTex_TexelSize,_BlurSize)) * .5;
 	}
 	ENDHLSL
 

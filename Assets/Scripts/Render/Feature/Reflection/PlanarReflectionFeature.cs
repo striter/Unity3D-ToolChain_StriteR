@@ -38,12 +38,12 @@ namespace Rendering.Pipeline
 
             if (_renderingData.cameraData.isPreviewCamera)
                 return;
-            if (PlanarReflection.m_Reflections.Count == 0)
+            if (PlanarReflectionProvider.m_Reflections.Count == 0)
                 return;
             
             var propertyBlock = new MaterialPropertyBlock();
             int index = 0; 
-            foreach (var reflectionComponent in PlanarReflection.m_Reflections)
+            foreach (var reflectionComponent in PlanarReflectionProvider.m_Reflections)
             {
                 if (index >= m_Data.maxPlanarReflectionTexture)
                 {

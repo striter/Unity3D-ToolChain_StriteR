@@ -8,7 +8,8 @@ namespace Rendering.Pipeline.Mask
     {
         public bool collectFromProviders ;
         [MFoldout(nameof(collectFromProviders),false),CullingMask]public int renderMask;
-        public Material overrideMaterial;
+        [MFoldout(nameof(collectFromProviders),true)]public Material overrideMaterial;
+        [MFoldout(nameof(collectFromProviders),false)]public Shader overrideShader;
         public bool inheritDepth;
 
         public static MaskTextureData kDefault = new MaskTextureData()

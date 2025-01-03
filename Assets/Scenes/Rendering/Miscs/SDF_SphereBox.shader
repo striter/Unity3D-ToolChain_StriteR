@@ -55,7 +55,7 @@ Shader "Hidden/SDF_SphereBox"
                 SDFOutput distD=GBox_SDF(box,SDFInput_Ctor(RotateAround(position,origin,_Time.y,float3(0,0,1) ),_BoxColor));
                 return SDFUnion( SDFDifference(distB,distA),distC,distD);
             }
-            #include "Assets/Shaders/Library/Geometry/GeometrySDFPass.hlsl"
+            #include "Assets/Shaders/Library/Passes/GeometrySDFPass.hlsl"
             
             ENDHLSL
         }

@@ -7,28 +7,43 @@ namespace Rendering.Pipeline.Mask
     public interface IMaskTextureProvider
     {
         public static List<IMaskTextureProvider> kMasks { get; private set; } = new List<IMaskTextureProvider>();
-        IEnumerable<Renderer> Renderers { get; }
-        void Register(IMaskTextureProvider _provider) => kMasks.Add(_provider);
-        void Unregister(IMaskTextureProvider _provider) => kMasks.Remove(_provider);
+        public CullingMask CullingMask { get; }
+        public bool Enable { get; }
+        IEnumerable<Renderer> GetRenderers(Camera _camera);
     }
     
     [ExecuteInEditMode]
     public class MaskTextureProvider : MonoBehaviour , IMaskTextureProvider
     {
         private Renderer[] m_Renderers;
+        [CullingMask] public int m_CullingMask = -1;
+        public CullingMask CullingMask => m_CullingMask;
+        public bool Enable => this.enabled;
         private void OnEnable()
         {
             m_Renderers = GetComponentsInChildren<Renderer>(false);
-            ((IMaskTextureProvider)this).Register(this);
+            this.OnMaskProviderEnable();
         }
 
         private void OnDisable()
         {
             m_Renderers = null;
-            ((IMaskTextureProvider)this).Unregister(this);
+            this.OnMaskProviderDisable();
         }
 
-        public IEnumerable<Renderer> Renderers => m_Renderers;
+        IEnumerable<Renderer> IMaskTextureProvider.GetRenderers(Camera _camera) => m_Renderers;
+    }
 
+    public static class IMaskTextureProvider_Extension
+    {
+        public static void OnMaskProviderEnable(this IMaskTextureProvider _effect)
+        {
+            IMaskTextureProvider.kMasks.Add(_effect);
+        }
+
+        public static void OnMaskProviderDisable(this IMaskTextureProvider _effect)
+        {
+            IMaskTextureProvider.kMasks.Remove(_effect);
+        }
     }
 }

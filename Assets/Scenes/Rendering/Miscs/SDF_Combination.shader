@@ -57,7 +57,7 @@ Shader "Hidden/SDF_Combination"
 
             #pragma vertex vertSDF2
             #pragma fragment fragSDF2
-            #include "Assets/Shaders/Library/Geometry/GeometrySDFPass.hlsl"
+            #include "Assets/Shaders/Library/Passes/GeometrySDFPass.hlsl"
             struct a2vSDF2
             {
                 float3 positionOS : POSITION;

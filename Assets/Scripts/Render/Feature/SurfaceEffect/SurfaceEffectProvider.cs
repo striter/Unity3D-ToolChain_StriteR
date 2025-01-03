@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Rendering.Pipeline.Component
 {
     [ExecuteInEditMode]
-    public class SurfaceEffectBehaviour : MonoBehaviour , ISurfaceEffect
+    public class SurfaceEffectProvider : MonoBehaviour , ISurfaceEffect
     {
         public CullingMask m_Mask = CullingMask.kAll;
         public SurfaceEffectCollection m_Collection;

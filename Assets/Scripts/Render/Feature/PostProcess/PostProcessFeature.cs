@@ -66,10 +66,7 @@ namespace Rendering.Pipeline
             for (int i = 0; i < postProcessCount; i++)
             {
                 var postProcess = m_PostprocessQueue[i];
-#if UNITY_EDITOR
                 postProcess.ValidateParameters();
-#endif
-                
                 if (!postProcess.m_Enabled)
                     continue;
                 

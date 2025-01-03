@@ -5,7 +5,7 @@ using Runtime.Geometry;
 namespace Rendering.Pipeline
 {
     [ExecuteInEditMode,RequireComponent(typeof(MeshRenderer),typeof(MeshFilter))]
-    public class PlanarReflection : MonoBehaviour
+    public class PlanarReflectionProvider : MonoBehaviour
     {
         [Header("Shape")]
         public EPlanarReflectionGeometry m_Geometry = EPlanarReflectionGeometry._PLANE;
@@ -14,7 +14,7 @@ namespace Rendering.Pipeline
         [MFoldout(nameof(m_Geometry),EPlanarReflectionGeometry._PLANE)]public bool m_Upward = true;
         public PlanarReflectionData m_Data = PlanarReflectionData.kDefault;
         
-        public static List<PlanarReflection> m_Reflections { get; private set; } = new List<PlanarReflection>();
+        public static List<PlanarReflectionProvider> m_Reflections { get; private set; } = new List<PlanarReflectionProvider>();
         public bool Available => m_MeshRenderer.enabled && enabled;
         
         private MeshRenderer m_MeshRenderer;

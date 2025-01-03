@@ -62,7 +62,7 @@ Shader "Hidden/SDF_SphereBox"
                 SDFOutput output=SDFUnion( SDFDifference( distB,distA),SDFDifference( distD,distC));
                 return  SDFDifference(output,distC);
             }
-            #include "Assets/Shaders/Library/Geometry/GeometrySDFPass.hlsl"
+            #include "Assets/Shaders/Library/Passes/GeometrySDFPass.hlsl"
             ENDHLSL
         }
     }

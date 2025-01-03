@@ -13,7 +13,7 @@ namespace Runtime.Geometry.Curves.Spline
     public struct GFourierSpline : ISpline ,ISerializationCallbackReceiver
     {
         public float3[] paths;
-        [Clamp(2)] public int coefficients;
+        [Clamp(0)] public int coefficients;
         [NonSerialized] private cfloat2x3[] fourierCoefficients;
 
         public GFourierSpline(float3[] _paths,int _coefficients = 5)
@@ -33,14 +33,13 @@ namespace Runtime.Geometry.Curves.Spline
             this.fourierCoefficients = fourierCoefficients;
         }
 
-
         public float3 Evaluate(float _value)
         {
             float3 result = 0;
             var N = paths.Length;
-            result.x = Fourier.IDFT(fourierCoefficients.Select(p=>p.c0),N,_value);
-            result.y = Fourier.IDFT(fourierCoefficients.Select(p=>p.c1),N,_value);
-            result.z = Fourier.IDFT(fourierCoefficients.Select(p=>p.c2),N,_value);
+            result.x = Fourier.IFT(fourierCoefficients.Select(p=>p.c0),N,_value);
+            result.y = Fourier.IFT(fourierCoefficients.Select(p=>p.c1),N,_value);
+            result.z = Fourier.IFT(fourierCoefficients.Select(p=>p.c2),N,_value);
             return result;
         }
 

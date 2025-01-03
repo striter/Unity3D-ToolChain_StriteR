@@ -15,7 +15,7 @@ namespace Rendering.Pipeline
          int m_ReflectionDepth;
          RenderTargetIdentifier m_ReflectionDepthID;
 
-         public FGeometryReflectionMirrorSpace(PlanarReflectionData _data, FBlursCore _blur, PlanarReflection _component, ScriptableRenderer _renderer, int _index) : base(_data, _blur, _component, _renderer, _index)
+         public FGeometryReflectionMirrorSpace(PlanarReflectionData _data, FBlursCore _blur, PlanarReflectionProvider _component, ScriptableRenderer _renderer, int _index) : base(_data, _blur, _component, _renderer, _index)
          {
              m_ReflectionDepth = Shader.PropertyToID(kReflectionDepth + _index);
              m_ReflectionDepthID = new RenderTargetIdentifier(m_ReflectionDepth);
@@ -46,7 +46,7 @@ namespace Rendering.Pipeline
          }
 
          protected override void Execute(ref PlanarReflectionData _data, ScriptableRenderContext _context, ref RenderingData _renderingData,
-             CommandBuffer _cmd, ref PlanarReflection _config,  ref RenderTextureDescriptor _descriptor, ref RTHandle _target,
+             CommandBuffer _cmd, ref PlanarReflectionProvider _config,  ref RenderTextureDescriptor _descriptor, ref RTHandle _target,
              ref ScriptableRenderer _renderer)
         {
             ref var cameraData = ref _renderingData.cameraData;

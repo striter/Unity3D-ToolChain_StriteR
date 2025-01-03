@@ -15,30 +15,39 @@ namespace Rendering.PostProcess
         public override EPostProcess Event => EPostProcess.DepthOfField;
 
         public enum_Focal m_Focal;
-        [MFoldout(nameof(m_Focal),enum_Focal._DOF)] public RangeFloat m_FocalData;
-        [MFoldout(nameof(m_Focal),enum_Focal._DOF_MASK)] public MaskTextureData m_FocalMaskData;
+        [MFoldout(nameof(m_Focal),enum_Focal._DOF_DISTANCE,enum_Focal._DOF_DISTANCE_MASK)] public RangeFloat m_FocalData;
+        [MFoldout(nameof(m_Focal),enum_Focal._DOF_MASK,enum_Focal._DOF_DISTANCE_MASK)] public MaskTextureData m_FocalMaskData;
 
         private static readonly int kIDFocalBegin = Shader.PropertyToID("_FocalStart");
         private static readonly int kIDFocalEnd = Shader.PropertyToID("_FocalEnd");
         public static readonly int kFocalMaskID = Shader.PropertyToID("_CameraFocalMaskTexture");
+        public static readonly string kDOF_Distance = "_DOF_DISTANCE";
+        public static readonly string kDOF_Mask = "_DOF_MASK";
         public static readonly RenderTargetIdentifier kFocalMaskRT = new RenderTargetIdentifier(kFocalMaskID);
 
+        public void SetFocalDistance(float _distance)
+        {
+            m_FocalData = new RangeFloat(_distance, _distance);
+            SetDirty();
+        }
+        
         protected override void ApplyParameters()
         {
             base.ApplyParameters();
             var material = m_Effect.m_Material;
-            if (material.EnableKeywords(m_Focal))
+            if (material.EnableKeyword(kDOF_Distance, m_Focal is enum_Focal._DOF_DISTANCE or enum_Focal._DOF_DISTANCE_MASK))
             {
                 material.SetFloat(kIDFocalBegin, m_FocalData.start);
                 material.SetFloat(kIDFocalEnd, m_FocalData.end);
             }
+            material.EnableKeyword(kDOF_Mask, m_Focal is enum_Focal._DOF_MASK or enum_Focal._DOF_DISTANCE_MASK);
         }
 
         public override void Execute(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,
             RenderTextureDescriptor _executeData, ScriptableRenderer _renderer, ScriptableRenderContext _context,
             ref RenderingData _renderingData)
         {
-            if (m_Focal != enum_Focal._DOF_MASK )
+            if (m_Focal == enum_Focal._DOF_DISTANCE)
             {
                 base.Execute(_buffer, _src, _dst, _executeData, _renderer, _context, ref _renderingData);
                 return;
@@ -101,13 +110,14 @@ namespace Rendering.PostProcess
     public enum enum_Focal
     {
         None=0,
-        _DOF,
+        _DOF_DISTANCE,
         _DOF_MASK,
+        _DOF_DISTANCE_MASK,
     }
     [Serializable]
     public struct DBlurs:IPostProcessParameter
     {
-        [Title] public EBlurType m_BlurType;
+        public EBlurType m_BlurType;
         [MFold(nameof(m_BlurType), EBlurType.None)] [Range(0.05f, 2f)] public float m_BlurSize;
         [MFold(nameof(m_BlurType),  EBlurType.None,EBlurType.Grainy)]
         [Range(1, FBlursCore.kMaxIteration)] public int m_Iteration;

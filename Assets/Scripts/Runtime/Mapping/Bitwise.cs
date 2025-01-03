@@ -2,6 +2,20 @@ using UnityEngine;
 
 public static class UBitwise
 {
+    public static int Reverse(int n, int bits) {
+        var reversedN = n;
+        var count = bits - 1;
+
+        n >>= 1;
+        while (n > 0) {
+            reversedN = (reversedN << 1) | (n & 1);
+            count--;
+            n >>= 1;
+        }
+
+        return ((reversedN << count) & ((1 << bits) - 1));
+    }
+    
     public static uint ReverseBits32(uint _n)
     {
         _n = (_n << 16) | (_n >> 16);

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -15,7 +16,7 @@ namespace Rendering.Pipeline.Mask
             renderMaterial.SetInt(KShaderProperties.kCull,(int)CullMode.Off);
             renderMaterial.SetInt(KShaderProperties.kColorMask,(int)ColorWriteMask.All);
             renderMaterial.SetInt(KShaderProperties.kZWrite,0);
-            renderMaterial.SetInt(KShaderProperties.kZTest,(int)CompareFunction.Equal);
+            renderMaterial.SetInt(KShaderProperties.kZTest,(int)CompareFunction.LessEqual);
             return renderMaterial;
         },GameObject.DestroyImmediate);
         
@@ -49,11 +50,33 @@ namespace Rendering.Pipeline.Mask
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             DrawMask( kCameraMaskTextureRT,_context,ref _renderingData,m_Data);
-        } 
+        }
 
+        private static readonly List<Renderer> kMaskRenderers = new List<Renderer>();
+
+        public static bool Validate(MaskTextureData _data,Camera _camera)
+        {
+            if (!_data.collectFromProviders)
+                return true;
+            
+            if (IMaskTextureProvider.kMasks.Count == 0)
+                return false;
+
+            kMaskRenderers.Clear();
+            foreach (var provider in IMaskTextureProvider.kMasks)
+                if (provider.Enable)
+                    foreach (var renderer in provider.GetRenderers(_camera))
+                    {
+                        if(renderer.gameObject.activeInHierarchy && CullingMask.HasLayer(provider.CullingMask,renderer.gameObject.layer))
+                            kMaskRenderers.Add(renderer);
+                    }
+            
+            return kMaskRenderers.Count != 0;
+        }
+        
         public static void DrawMask(RenderTargetIdentifier _maskTextureId,ScriptableRenderContext _context,ref RenderingData _renderingData, MaskTextureData _data)
         {
-            if (_data.collectFromProviders && IMaskTextureProvider.kMasks.Count == 0)
+            if(!Validate(_data, _renderingData.cameraData.camera))
                 return;
 
             var buffer = CommandBufferPool.Get("Render Mask");
@@ -66,20 +89,24 @@ namespace Rendering.Pipeline.Mask
             _context.ExecuteCommandBuffer(buffer);
             buffer.Clear();
 
-            var renderMaterial = _data.overrideMaterial;
-            if(renderMaterial == null)
-                renderMaterial = m_MaskMaterial.Value;
-            
             if (_data.collectFromProviders)
             {
-                foreach (var renderer in IMaskTextureProvider.kMasks.SelectMany(mask => mask.Renderers))
-                    buffer.DrawRenderer(renderer,renderMaterial);
+                var renderMaterial = _data.overrideMaterial;
+                if(renderMaterial == null)
+                    renderMaterial = m_MaskMaterial;
+                
+                foreach (var renderer in kMaskRenderers)
+                    for (var i = 0; i < renderer.sharedMaterials.Length; i++)
+                        buffer.DrawRenderer(renderer,renderMaterial,i);
                 _context.ExecuteCommandBuffer(buffer);
             }
             else
             {
                 var drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
-                drawingSettings.overrideMaterial = renderMaterial;
+                if(_data.overrideShader != null)
+                    drawingSettings.overrideShader = _data.overrideShader;
+                else
+                    drawingSettings.overrideMaterial = m_MaskMaterial;
                 var filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = _data.renderMask };
                 _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
             }
