@@ -13,12 +13,10 @@ namespace TheVoxel.ChunkProcess
     {
         private TerrainData terrainData;
         private Int2 identity;
-        private int startIndex;
         [ReadOnly] [NativeDisableContainerSafetyRestriction] private NativeHashMap<Int3, ChunkVoxel> indexes;
         public ImplicitJob(Int2 _identity, NativeHashMap<Int3, ChunkVoxel> _indexes)
         {
             terrainData = ChunkManager.Instance;
-            startIndex = 0;
             identity = _identity;
             indexes = _indexes;
         }

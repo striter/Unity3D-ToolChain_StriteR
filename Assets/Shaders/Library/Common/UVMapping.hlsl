@@ -1,5 +1,6 @@
 ﻿float2 TransformTex(float2 _uv, float4 _st) {return _uv * _st.xy + _st.zw;}
 float2 TransformTex_Flow(float2 _uv,float4 _st) {return _uv * _st.xy + _Time.y*_st.zw;}
+float2 TransformTex_Flow(float2 _uv,float4 _st,float2 _flow) {return _uv * _st.xy +_st.zw+ _Time.y * _flow;}
 
 half2 Atlas(half2 _uv,uint2 _wh,int _index)
 {

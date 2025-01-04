@@ -6,7 +6,6 @@ namespace Runtime.Mapping
     {
         public static float4x4 inverse(this float4x4 a)
         {
-            float4x4 m;
             var r = 1 / determinant(a);
             var x00 = (a.c1.z * a.c2.w * a.c3.y - a.c1.w * a.c2.z * a.c3.y + a.c1.w * a.c2.y * a.c3.z -
                 a.c1.y * a.c2.w * a.c3.z - a.c1.z * a.c2.y * a.c3.w + a.c1.y * a.c2.z * a.c3.w) * r;

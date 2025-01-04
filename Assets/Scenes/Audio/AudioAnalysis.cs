@@ -20,7 +20,6 @@ public class AudioAnalysis : MonoBehaviour
     }
 
     public AudioSource m_Audio;
-    public float m_Time;
     public EVisualize m_Visualize = EVisualize.Spectrum;
     [MFoldout(nameof(m_Visualize),EVisualize.Spectrum)] public bool m_CustomFourier = false;
     private float[] m_VisualizeData;
@@ -35,8 +34,6 @@ public class AudioAnalysis : MonoBehaviour
     private void Awake()
     {
         m_Audio = GetComponent<AudioSource>();
-        m_Audio.time = m_Time;
-
         m_TransformPool = new ObjectPoolTransform(transform.Find("Element"));
         OnValidate();
     }

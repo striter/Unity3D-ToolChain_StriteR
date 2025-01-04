@@ -51,7 +51,6 @@ namespace Runtime.SignalProcessing
                 (_input[j], _input[swapPos]) = (_input[swapPos], _input[j]);
             }
 
-
             for (var N = 2; N <= _input.Count; N <<= 1)
             {
                 for (var i = 0; i < _input.Count; i += N)
