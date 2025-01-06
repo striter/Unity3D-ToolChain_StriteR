@@ -40,20 +40,20 @@ namespace Rendering.Pipeline
             cmd.GetTemporaryRT(ID_Blit_Temp1, descriptor);
             cmd.GetTemporaryRT(ID_Blit_Temp2, descriptor);
             var renderer = renderingData.cameraData.renderer;
-            int lastIndex = m_Effects.Count - 1;
-            int blitIndex = 0;
-            bool blitSwap = true;
+            var lastIndex = m_Effects.Count - 1;
+            var blitIndex = 0;
+            var blitSwap = true;
             foreach (var effect in m_Effects)
             {
-                RenderTargetIdentifier src = blitSwap ? m_BlitTemp1 : m_BlitTemp2;
-                RenderTargetIdentifier dst = blitSwap ? m_BlitTemp2 : m_BlitTemp1;
+                var src = blitSwap ? m_BlitTemp1 : m_BlitTemp2;
+                var dst = blitSwap ? m_BlitTemp2 : m_BlitTemp1;
                 if (blitIndex == 0)
                     src = renderer.cameraColorTargetHandle;
                 else if (blitIndex == lastIndex)
                     dst = renderer.cameraColorTargetHandle;
                 blitSwap = !blitSwap;
 
-                string name = effect.m_Name;
+                var name = effect.m_Name;
                 cmd.BeginSample(name);
                 effect.Execute(cmd, src, dst, descriptor,renderer, context, ref renderingData);
                 cmd.EndSample(name);

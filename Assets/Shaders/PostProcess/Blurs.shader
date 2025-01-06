@@ -208,12 +208,12 @@
 		half3 srcCol = DualFilteringUpFilter(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),i.uv,_MainTex_TexelSize,_BlurSize);
 		half3 mipCol = DualFilteringUpFilter(TEXTURE2D_ARGS(_PreDownSample,sampler_PreDownSample),i.uv,_PreDownSample_TexelSize,_BlurSize);
 
-		return (RecordBlurTex(srcCol) + RecordBlurTex(mipCol));
+		return RecordBlurTex(srcCol) + RecordBlurTex(mipCol);
 	}
 
     half4 fragNextGenUpSampleFinal(v2f_img i):SV_TARGET
 	{
-		return RecordBlurTex(DualFilteringUpFilter(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),i.uv,_MainTex_TexelSize,_BlurSize)) * .5;
+		return RecordBlurTex(DualFilteringUpFilter(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),i.uv,_MainTex_TexelSize,_BlurSize));
 	}
 	ENDHLSL
 

@@ -28,6 +28,15 @@ namespace Runtime.Geometry.Curves.Spline
 
         public EBSplineMode mode;
         public float[] knotVectors;
+
+        public GSpline(IEnumerable<float3> _positions, int _k = 3, EBSplineMode _mode = EBSplineMode.OpenUniformClamped)
+        {
+            coordinates = _positions.ToArray();
+            k = _k;
+            mode = _mode;
+            knotVectors = null;
+            Ctor();
+        }
         
         public static readonly GSpline kDefault = new GSpline() {
             coordinates = new float3[]{new float3(-1,0,-1),new float3(0,0,1),new float3(1,0,-1)},

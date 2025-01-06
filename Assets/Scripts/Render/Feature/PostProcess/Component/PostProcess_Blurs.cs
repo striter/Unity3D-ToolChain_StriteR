@@ -109,7 +109,7 @@ namespace Rendering.PostProcess
 
     public enum enum_Focal
     {
-        None=0,
+        None = 0,
         _DOF_DISTANCE,
         _DOF_MASK,
         _DOF_DISTANCE_MASK,
@@ -158,7 +158,6 @@ namespace Rendering.PostProcess
         private static readonly string kKWFirstBlur = "_FIRSTBLUR";
         private static readonly string kKWFinalBlur = "_FINALBLUR";
         private static readonly string kKWEncoding = "_ENCODE";
-
 
         #endregion
 
