@@ -141,18 +141,17 @@ public class AudioAnalysis : MonoBehaviour
             _source.GetSpectrumData(m_SampleData,0,m_Window);
             float average = 0;
             for (var i = 0; i < m_SpectrumPow; i++)
-            {
-                var startIndex = i == 0 ? 0 : (int)Mathf.Pow(2, i);
-                var max = 0f;
-                var endIndex = (int)Mathf.Pow(2, i + 1);
-                for(var j = startIndex; j < endIndex; j++)
-                {
-                    var sample = m_SampleData[j];
-                    average += sample;
-                    max = math.max(max,sample);
+            {    
+                int sampleCount = (int)Mathf.Pow(2, i)*2;
+                int count = 0;
+                for (int j=0; j<sampleCount; j++) {
+ 
+                    average += m_SampleData[count]* ( count+1);
+                    count++;
                 }
-                average /= (endIndex - startIndex);
-                yield return new float2(average * m_ValueMultiplier,max);
+ 
+                average /= count;
+                yield return new float2(average * m_ValueMultiplier,average);
             }
         }
     }
@@ -161,7 +160,6 @@ public class AudioAnalysis : MonoBehaviour
     {
         Line,
         Circle,
-        Spline,
     }
 
     public interface IAudioVisualize

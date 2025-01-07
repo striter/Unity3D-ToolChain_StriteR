@@ -613,141 +613,21 @@ MonoBehaviour:
     m_OutputMultiplier: 100
   m_SpectrumAnalysis:
     m_Window: 5
-    m_SpectrumPow: 9
+    m_SpectrumPow: 8
     m_SpectrumMultiplier: 20
   m_BandAnalysis:
     m_Window: 5
     m_SpectrumPow: 8
     m_ValueMultiplier: 10
-  m_Visualize: 2
+  m_Visualize: 1
   m_LineVisualize:
-    m_Width: 200
+    m_Width: 20
   m_CircleVisualize:
     m_Radius: 100
     m_Offset: 0.75
-  m_SplineVisualize:
-    m_Polygon:
-      paths:
-      - x: 0.098
-        y: 0
-        z: 0.062
-      - x: 0.352
-        y: 0
-        z: 0.073
-      - x: 0.422
-        y: 0
-        z: 0.136
-      - x: 0.371
-        y: 0
-        z: 0.085
-      - x: 0.449
-        y: 0
-        z: 0.14
-      - x: 0.352
-        y: 0
-        z: 0.187
-      - x: 0.379
-        y: 0
-        z: 0.202
-      - x: 0.398
-        y: 0
-        z: 0.202
-      - x: 0.266
-        y: 0
-        z: 0.198
-      - x: 0.318
-        y: 0
-        z: 0.345
-      - x: 0.402
-        y: 0
-        z: 0.359
-      - x: 0.361
-        y: 0
-        z: 0.425
-      - x: 0.371
-        y: 0
-        z: 0.521
-      - x: 0.41
-        y: 0
-        z: 0.491
-      - x: 0.41
-        y: 0
-        z: 0.357
-      - x: 0.502
-        y: 0
-        z: 0.482
-      - x: 0.529
-        y: 0
-        z: 0.435
-      - x: 0.426
-        y: 0
-        z: 0.343
-      - x: 0.449
-        y: 0
-        z: 0.343
-      - x: 0.504
-        y: 0
-        z: 0.335
-      - x: 0.664
-        y: 0
-        z: 0.355
-      - x: 0.748
-        y: 0
-        z: 0.208
-      - x: 0.738
-        y: 0
-        z: 0.277
-      - x: 0.787
-        y: 0
-        z: 0.308
-      - x: 0.748
-        y: 0
-        z: 0.183
-      - x: 0.623
-        y: 0
-        z: 0.081
-      - x: 0.557
-        y: 0
-        z: 0.099
-      - x: 0.648
-        y: 0
-        z: 0.116
-      - x: 0.598
-        y: 0
-        z: 0.116
-      - x: 0.566
-        y: 0
-        z: 0.195
-      - x: 0.584
-        y: 0
-        z: 0.228
-      - x: 0.508
-        y: 0
-        z: 0.083
-      - x: 0.457
-        y: 0
-        z: 0.14
-      - x: 0.508
-        y: 0
-        z: 0.13
-      - x: 0.625
-        y: 0
-        z: 0.071
-      - x: 0.818
-        y: 0
-        z: 0.093
-      - x: 0.951
-        y: 0
-        z: 0.066
-      - x: 0.547
-        y: 0
-        z: 0.081
-      coefficients: 20
-    m_Radius: 100
-    m_Offset: 0
   m_Damper:
     mode: 2
-    halfLife: 0.2
+    halfLife: 0.1
     stiffness: 20
     damping: 4
     secondOrderDynamics:
