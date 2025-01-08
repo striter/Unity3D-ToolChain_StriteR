@@ -391,7 +391,7 @@ MonoBehaviour:
       m_SampleMode: 0
       m_Threshold: 0.1
       m_LayerMask: 2147483647
-      m_Color: {r: 0.20754719, g: 0.2026522, b: 0.2026522, a: 1}
+      m_Color: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 1}
       m_Blur:
         m_BlurType: 8
         m_BlurSize: 0.48
