@@ -74,7 +74,8 @@ public struct cfloat2
         var num4 = num1 / num2;
         return num2 * math.sqrt(1.0f + num4 * num4);
     }
-    
+
+    public float abs() => abs(this);
     public float sum() => x + i;
     public float sqrmagnitude() => x * x + i * i;
     public float magnitude() => math.sqrt(x * x + i * i);

@@ -27,6 +27,9 @@ namespace UnityEditor.Extensions
         public override float GetPropertyHeight(SerializedProperty _property, GUIContent _label) => EditorGUI.GetPropertyHeight(_property, _label,true) + kSize + kSpacing;
         public override void OnGUI(Rect _position, SerializedProperty _property, GUIContent _label)
         {
+            if (_position.size.x < 0)
+                return;
+            
             if (_position.size.sqrMagnitude < 10f)   //Some times the value gets too small
                 return;
             

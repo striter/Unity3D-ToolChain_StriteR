@@ -36,16 +36,16 @@ namespace Runtime.SignalProcessing
         public static bool FFT(IEnumerable<float> _input,cfloat2[] _output) => FFT(_input.Select(p=>new cfloat2(p,0)).FillList(kComplexFiller),_output);
         public static bool FFT(IList<cfloat2> _input,cfloat2[] _output)
         {
-            if (!math.ispow2(_input.Count))
+            if (!math.ispow2(_input.Count) || _input.Count != _output.Length)
             {
                 Debug.LogWarning($"Input Count {_input.Count} Not a power of 2");
                 return false;
             }
             
-            var bits = (int)Math.Log(_input.Count,2);
+            var bits = (int)math.log2(_input.Count);
             for (var j = 1; j < _input.Count; j++)
             {
-                var swapPos = UBitwise.Reverse(j, bits);
+                var swapPos = UBit.Reverse(j, bits);
                 if (swapPos <= j)
                     continue;
                 (_input[j], _input[swapPos]) = (_input[swapPos], _input[j]);

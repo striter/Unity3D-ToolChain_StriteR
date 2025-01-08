@@ -5,7 +5,7 @@ using Procedural.Tile;
 using Runtime.DataStructure;
 using Runtime.Random;
 using Unity.Mathematics;
-using static UBitwise;
+using static UBit;
 using static kmath;
 using static Unity.Mathematics.math;
 

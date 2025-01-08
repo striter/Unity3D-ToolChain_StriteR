@@ -389,13 +389,13 @@ MonoBehaviour:
     m_Bloom: 1
     m_BloomData:
       m_SampleMode: 0
-      m_Threshold: 0.5
+      m_Threshold: 0.1
       m_LayerMask: 2147483647
-      m_Color: {r: 2, g: 2, b: 2, a: 1}
+      m_Color: {r: 0.20754719, g: 0.2026522, b: 0.2026522, a: 1}
       m_Blur:
         m_BlurType: 8
-        m_BlurSize: 0.47
-        m_Iteration: 5
+        m_BlurSize: 0.48
+        m_Iteration: 8
         m_DownSample: 1
         m_Angle: 0
         m_Vector: {x: 0.5, y: 0.5}
@@ -607,34 +607,60 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Audio: {fileID: 1908510724}
-  m_Analysis: 1
+  m_Analysis: 2
   m_OutputAnalysis:
     m_SpectrumPow: 8
     m_OutputMultiplier: 100
   m_SpectrumAnalysis:
     m_Window: 5
     m_SpectrumPow: 8
-    m_SpectrumMultiplier: 20
+  m_CustomSpectrumAnalysis:
+    m_SpectrumPow: 8
   m_BandAnalysis:
     m_Window: 5
     m_SpectrumPow: 8
-    m_ValueMultiplier: 10
   m_Visualize: 1
   m_LineVisualize:
     m_Width: 20
+    m_Damper:
+      mode: 2
+      halfLife: 0.1
+      stiffness: 20
+      damping: 4
+      secondOrderDynamics:
+        f: 5
+        z: 0.35
+        r: -0.5
+        poleMatching: 1
   m_CircleVisualize:
     m_Radius: 100
     m_Offset: 0.75
-  m_Damper:
-    mode: 2
-    halfLife: 0.1
-    stiffness: 20
-    damping: 4
-    secondOrderDynamics:
-      f: 5
-      z: 0.35
-      r: -0.5
-      poleMatching: 1
+    m_ValueMultiplier: 0.52
+    m_ColorPalette:
+      a: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+      b: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+      c: {r: 1, g: 1, b: 1, a: 1}
+      d: {r: 0, g: 0.33, b: 0.67, a: 1}
+    m_Damper:
+      mode: 2
+      halfLife: 0.1
+      stiffness: 20
+      damping: 4
+      secondOrderDynamics:
+        f: 5
+        z: 0.35
+        r: -0.5
+        poleMatching: 1
+    m_ColorDamper:
+      mode: 2
+      halfLife: 0.3
+      stiffness: 20
+      damping: 4
+      secondOrderDynamics:
+        f: 5
+        z: 0.35
+        r: -0.5
+        poleMatching: 1
 --- !u!1 &1988539802
 GameObject:
   m_ObjectHideFlags: 0

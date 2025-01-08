@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public static class UBitwise
+public static class UBit
 {
     public static int Reverse(int n, int bits) {
         var reversedN = n;
