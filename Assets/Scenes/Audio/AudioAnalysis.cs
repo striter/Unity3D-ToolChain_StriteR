@@ -133,6 +133,7 @@ public class AudioAnalysis : MonoBehaviour
     {
         [Range(6,12)]public int m_SpectrumPow = 8;
         private float[] m_OutputSample;
+        public bool m_DFT = false;
         private cfloat2[] m_FrequencySample;  public int Initialize(AudioSource _source)
         {
             var size = umath.pow(2,m_SpectrumPow);
@@ -151,7 +152,10 @@ public class AudioAnalysis : MonoBehaviour
             for(var i = 0; i < N; i++)
                 m_FrequencySample[i] = new cfloat2(m_OutputSample[i] * UAudio.Hanning(i,N), 0);
 
-            Fourier.FFT(m_FrequencySample, m_FrequencySample);
+            if (m_DFT)
+                Fourier.DFT(m_FrequencySample,N).FillList(UList.Empty<cfloat2>()).FillArray(m_FrequencySample);
+            else
+                Fourier.FFT(m_FrequencySample, m_FrequencySample);
             
             for (var i = 0; i < N/2; i++)
             {
