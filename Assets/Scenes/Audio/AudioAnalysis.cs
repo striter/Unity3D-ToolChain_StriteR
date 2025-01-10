@@ -64,6 +64,14 @@ public class AudioAnalysis : MonoBehaviour
         var elements = AnalysisCore.Tick(m_Audio, deltaTime);
         VisualizeCore.Tick(deltaTime,m_TransformPool, elements);
     }
+
+    [InspectorButton]
+    public void Play(float _normalizedTime = 0f)
+    {
+        if (m_Audio == null)
+            return;
+        m_Audio.time = _normalizedTime * m_Audio.clip.length;
+    }
     
     public enum EAnalysis
     {

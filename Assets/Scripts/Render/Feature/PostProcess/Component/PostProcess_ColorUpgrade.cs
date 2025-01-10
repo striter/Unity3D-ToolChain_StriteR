@@ -153,12 +153,8 @@ namespace Rendering.PostProcess
             Process = 0,
             BloomSample = 1,
         }
-        FBlursCore m_CoreBlurs;
-        public FColorUpgradeCore()
-        {
-            m_CoreBlurs = new FBlursCore();
-        }
-        
+        FBlursCore m_CoreBlurs = new();
+
         public override void Destroy()
         {
             base.Destroy();

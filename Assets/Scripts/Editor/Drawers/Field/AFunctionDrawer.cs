@@ -13,7 +13,7 @@ namespace UnityEditor.Extensions
         private float AdditionalSize => (m_Visualize ? kSize : 0f);
         public sealed override float GetPropertyHeight(SerializedProperty _property, GUIContent _label) => EditorGUI.GetPropertyHeight(_property, _label,true) + AdditionalSize;
 
-        protected abstract void OnFunctionDraw(SerializedProperty _property, FFunctionDrawerColors _helper);
+        protected abstract void OnFunctionDraw(SerializedProperty _property, FTextureDrawer _helper);
 
         public virtual float2 GetOrigin() => new float2(0,1);
         
@@ -38,7 +38,7 @@ namespace UnityEditor.Extensions
 
             Texture2D previewTexture = new Texture2D(sizeX,sizeY,TextureFormat.ARGB32,false,true);
 
-            var colorHelper = new FFunctionDrawerColors(sizeX, sizeY, Color.black.SetA(.5f));
+            var colorHelper = new FTextureDrawer(sizeX, sizeY, Color.black.SetA(.5f));
             OnFunctionDraw(_property, colorHelper);
             previewTexture.SetPixels(colorHelper.colors);
             previewTexture.Apply();
