@@ -11,8 +11,9 @@ namespace Rendering.Pipeline.Mask
     public class MaskTexturePass : ScriptableRenderPass
     {
         private MaskTextureData m_Data;
-        private static readonly PassiveInstance<Material> m_MaskMaterial = new PassiveInstance<Material>(() => {
-            var renderMaterial = new Material(RenderResources.FindInclude("Game/Unlit/Color")) { hideFlags = HideFlags.HideAndDontSave };
+        private static readonly PassiveInstance<Shader> m_MaskShader = new(() => RenderResources.FindInclude("Game/Unlit/Color"));
+        private static readonly PassiveInstance<Material> m_MaskMaterial = new(() => {
+            var renderMaterial = new Material(m_MaskShader) { hideFlags = HideFlags.HideAndDontSave };
             renderMaterial.SetInt(KShaderProperties.kCull,(int)CullMode.Off);
             renderMaterial.SetInt(KShaderProperties.kColorMask,(int)ColorWriteMask.All);
             renderMaterial.SetInt(KShaderProperties.kZWrite,0);
@@ -53,10 +54,9 @@ namespace Rendering.Pipeline.Mask
         }
 
         private static readonly List<Renderer> kMaskRenderers = new List<Renderer>();
-
         public static bool Validate(MaskTextureData _data,Camera _camera)
         {
-            if (!_data.collectFromProviders)
+            if (_data.mode != EMaskTextureMode.ProviderMaterialReplacement)
                 return true;
             
             if (IMaskTextureProvider.kMasks.Count == 0)
@@ -89,26 +89,43 @@ namespace Rendering.Pipeline.Mask
             _context.ExecuteCommandBuffer(buffer);
             buffer.Clear();
 
-            if (_data.collectFromProviders)
+            switch (_data.mode)
             {
-                var renderMaterial = _data.overrideMaterial;
-                if(renderMaterial == null)
-                    renderMaterial = m_MaskMaterial;
-                
-                foreach (var renderer in kMaskRenderers)
-                    for (var i = 0; i < renderer.sharedMaterials.Length; i++)
-                        buffer.DrawRenderer(renderer,renderMaterial,i);
-                _context.ExecuteCommandBuffer(buffer);
-            }
-            else
-            {
-                var drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
-                if(_data.overrideShader != null)
-                    drawingSettings.overrideShader = _data.overrideShader;
-                else
-                    drawingSettings.overrideMaterial = m_MaskMaterial;
-                var filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = _data.renderMask };
-                _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
+                case EMaskTextureMode.Redraw:
+                {
+                    var drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
+                    drawingSettings.perObjectData = (PerObjectData)int.MaxValue;
+                    var filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = _data.renderMask };
+                    _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
+                }
+                    break;
+                case EMaskTextureMode.MaterialReplacement:
+                {
+                    var drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
+                    drawingSettings.perObjectData = (PerObjectData)int.MaxValue;
+                    drawingSettings.overrideMaterial = _data.overrideMaterial != null ? _data.overrideMaterial : m_MaskMaterial;
+                    var filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = _data.renderMask };
+                    _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
+                }
+                    break;
+                case EMaskTextureMode.ShaderReplacement:
+                {
+                    var drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
+                    drawingSettings.perObjectData = (PerObjectData)int.MaxValue;
+                    drawingSettings.overrideShader = _data.overrideShader != null ? _data.overrideShader : m_MaskShader;
+                    var filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = _data.renderMask };
+                    _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
+                }
+                    break;
+                case EMaskTextureMode.ProviderMaterialReplacement:
+                {
+                    var renderMaterial = _data.overrideMaterial != null ? _data.overrideMaterial : m_MaskMaterial;
+                    foreach (var renderer in kMaskRenderers)
+                        for (var i = 0; i < renderer.sharedMaterials.Length; i++)
+                            buffer.DrawRenderer(renderer,renderMaterial,i);
+                    _context.ExecuteCommandBuffer(buffer);
+                }
+                    break;
             }
 
             buffer.SetRenderTarget(_renderingData.cameraData.renderer.cameraColorTargetHandle);

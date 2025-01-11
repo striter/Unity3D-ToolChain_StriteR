@@ -3,19 +3,27 @@ using UnityEngine;
 
 namespace Rendering.Pipeline.Mask
 {
+    public enum EMaskTextureMode
+    {
+        Redraw = 0,
+        ShaderReplacement,
+        MaterialReplacement,
+        ProviderMaterialReplacement,
+    }
+    
     [Serializable]
     public struct MaskTextureData
     {
-        public bool collectFromProviders ;
-        [MFoldout(nameof(collectFromProviders),false),CullingMask]public int renderMask;
-        [MFoldout(nameof(collectFromProviders),true)]public Material overrideMaterial;
-        [MFoldout(nameof(collectFromProviders),false)]public Shader overrideShader;
+        public EMaskTextureMode mode;
+        [MFold(nameof(mode),EMaskTextureMode.ProviderMaterialReplacement),CullingMask] public int renderMask;
+        [MFoldout(nameof(mode),EMaskTextureMode.MaterialReplacement,EMaskTextureMode.ProviderMaterialReplacement)]public Material overrideMaterial;
+        [MFoldout(nameof(mode),EMaskTextureMode.ShaderReplacement)] public Shader overrideShader;
         public bool inheritDepth;
 
         public static MaskTextureData kDefault = new MaskTextureData()
         {
-            collectFromProviders = false,
-            renderMask = int.MaxValue,
+            mode = EMaskTextureMode.ShaderReplacement,
+            renderMask = -1,
             overrideMaterial = null,
             inheritDepth = true
         };

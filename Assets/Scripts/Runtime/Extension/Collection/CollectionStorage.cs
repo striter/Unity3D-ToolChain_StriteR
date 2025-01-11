@@ -4,17 +4,25 @@ namespace System.Linq.Extensions
 {
     public static class UList
     {
-        static class Storage<T> { public static List<T> m_List = new List<T>(); }
-        
-        public static List<T> Empty<T>()
+        static class Storage<T>
         {
-            var list = Storage<T>.m_List;
-            list.Clear();
+            public static Dictionary<int,List<T>> m_Dictionary = new( ){ {-1,new List<T>()} };
+        }
+        public static List<T> Empty<T>(int _uniqueId = -1)
+        {
+            if (Storage<T>.m_Dictionary.TryGetValue(_uniqueId, out var existList))
+            {
+                existList.Clear();
+                return existList; 
+            }
+            
+            var list = new List<T>();
+            Storage<T>.m_Dictionary.Add(_uniqueId, list);
             return list;
         }
         public static List<T> Traversal<T>(IEnumerable<T> _src)
         {
-            var list = Storage<T>.m_List;
+            var list = Empty<T>();
             list.Clear();
             list.AddRange(_src);
             return list;

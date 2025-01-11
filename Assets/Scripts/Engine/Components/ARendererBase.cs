@@ -16,7 +16,6 @@ namespace Runtime
     {
         private bool m_Dirty;
         private Dictionary<Type,int> kInstanceID = new Dictionary<Type, int>();
-        private static int kInstanceCount = 0;
         private Mesh m_Mesh;
         private void Awake()
         {

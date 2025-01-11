@@ -388,13 +388,18 @@ MonoBehaviour:
     m_UseMaskTexture: 0
     m_Bloom: 1
     m_BloomData:
-      m_SampleMode: 0
+      m_SampleMode: 1
       m_Threshold: 0.1
-      m_LayerMask: 2147483647
-      m_Color: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 1}
+      m_MaskData:
+        mode: 0
+        renderMask: -1
+        overrideMaterial: {fileID: 0}
+        overrideShader: {fileID: 0}
+        inheritDepth: 0
+      m_Color: {r: 0.16981131, g: 0.16981131, b: 0.16981131, a: 1}
       m_Blur:
         m_BlurType: 8
-        m_BlurSize: 0.48
+        m_BlurSize: 0.28
         m_Iteration: 8
         m_DownSample: 1
         m_Angle: 0
@@ -616,6 +621,7 @@ MonoBehaviour:
     m_SpectrumPow: 8
   m_CustomSpectrumAnalysis:
     m_SpectrumPow: 8
+    m_DFT: 0
   m_BandAnalysis:
     m_Window: 5
     m_SpectrumPow: 8

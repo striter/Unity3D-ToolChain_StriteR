@@ -1,4 +1,5 @@
 ﻿using System;
+using Rendering.Pipeline.Mask;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -25,7 +26,7 @@ namespace Rendering.PostProcess
     public enum EBloomSample
     {
         Luminance,
-        Redraw,
+        Mask,
     }
 
     [Serializable]
@@ -80,9 +81,9 @@ namespace Rendering.PostProcess
             m_BloomData = new Data_Bloom()
             {
                 m_SampleMode = EBloomSample.Luminance,
-                m_LayerMask = int.MaxValue,
                 m_Threshold = 0.25f,
                 m_Color = Color.white,
+                m_MaskData = MaskTextureData.kDefault,
                 m_Blur = DBlurs.kDefault,
                 m_BloomDebug = false,
             },
@@ -97,7 +98,7 @@ namespace Rendering.PostProcess
         {
             public EBloomSample m_SampleMode;
             [MFoldout(nameof(m_SampleMode),EBloomSample.Luminance)] [Range(0.0f, 3f)] public float m_Threshold;
-            [MFoldout(nameof(m_SampleMode),EBloomSample.Redraw)][CullingMask] public int m_LayerMask;
+            [MFoldout(nameof(m_SampleMode),EBloomSample.Mask)] public MaskTextureData m_MaskData;
             [ColorUsage(true,true)] public Color m_Color;
             public DBlurs m_Blur;
             public bool m_BloomDebug;
@@ -222,23 +223,9 @@ namespace Rendering.PostProcess
             }
 
             ref var bloomData = ref _data.m_BloomData;
-            if (bloomData.m_SampleMode == EBloomSample.Redraw)
-            {
-                CommandBuffer buffer = CommandBufferPool.Get("Bloom Redraw Execute");
-                buffer.SetRenderTarget(kSampleID);
-                buffer.ClearRenderTarget(true, true, Color.black);
-                _context.ExecuteCommandBuffer(buffer);
-
-                DrawingSettings drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
-                drawingSettings.perObjectData = (PerObjectData)int.MaxValue;
-                FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = bloomData.m_LayerMask };
-                _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
-
-                buffer.Clear();
-                buffer.SetRenderTarget(_renderer.cameraColorTargetHandle);
-                _context.ExecuteCommandBuffer(buffer);
-                CommandBufferPool.Release(buffer);
-            }
+            
+            if (bloomData.m_SampleMode == EBloomSample.Mask)
+                MaskTexturePass.DrawMask(RT_Sample, _context, ref _renderingData, bloomData.m_MaskData);
             else if(bloomData.m_SampleMode == EBloomSample.Luminance)
                 _buffer.Blit(_src, RT_Sample, m_Material, (int)EPassIndex.BloomSample);
 
@@ -256,6 +243,7 @@ namespace Rendering.PostProcess
                 return;
             ref var data = ref _data.m_BloomData;
             _descriptor.mipCount = 0;
+            _descriptor.depthBufferBits = 0;
 
             _buffer.GetTemporaryRT(kSampleID, _descriptor, FilterMode.Bilinear);
             _buffer.GetTemporaryRT(kBlurID, _descriptor ,FilterMode.Bilinear);

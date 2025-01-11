@@ -30,61 +30,18 @@ namespace UnityEditor.Extensions
         }
 
         public void Clear(Color _color) => colors.FillDefault(_color);
-        
-        int preX,preY;
-        public void PixelContinuous(int2 _pos,Color _color) => PixelContinuous(_pos.x,_pos.y,_color);
-        public void PixelContinuous(int _x,int _y,Color _color)
+
+        private int2 pre;
+        public void PixelContinuousStart(int2 _pos) => pre = _pos;
+        public void PixelContinuousStart(int _x, int _y) => PixelContinuousStart(new int2(_x, _y));
+        public void PixelContinuous(int _x,int _y,Color _color) => PixelContinuous(new int2(_x,_y),_color);
+        public void PixelContinuous(int2 _pos,Color _color)
         {
-            var transparent = _color.SetA(.5f);
-            Pixel(_x , _y , _color);
-            // Pixel(_x + 1 , _y , transparent);
-            // Pixel(_x - 1 , _y , transparent);
-            // Pixel(_x , _y + 1 , transparent);
-            // Pixel(_x , _y - 1 , transparent);
-            var x1 = preX;
-            var x2 = _x;
-            var y1 = preY;
-            var y2 = _y;
-            
-            var dx = math.abs(x2 - x1);
-            var dy = math.abs(y2 - y1);
+            // Pixel(_x , _y , _color);
+            foreach (var pos in CartographicGeneralization.BresenhamLine(pre,_pos).ToArray())
+                Pixel(pos.x,pos.y, _color);
 
-            var sx = x1 < x2 ? 1 : -1;
-            var sy = y1 < y2 ? 1 : -1;
-
-            var err = dx - dy;
-
-            var drawCount = dy * dx;
-            while (drawCount-- > 0)
-            {
-                // Set the pixel color at the current position
-                Pixel(x1, y1, _color);
-                // Pixel(x1 + 1 , y1 , transparent);
-                // Pixel(x1 - 1 , y1 , transparent);
-                // Pixel(x1 , y1 + 1 , transparent);
-                // Pixel(x1 , y1 - 1 , transparent);
-
-                if (x1 == x2 && y1 == y2)
-                {
-                    break;
-                }
-
-                var e2 = 2 * err;
-
-                if (e2 > -dy)
-                {
-                    err -= dy;
-                    x1 += sx;
-                }
-
-                if (e2 < dx)
-                {
-                    err += dx;
-                    y1 += sy;
-                }
-            }
-            preX = _x;
-            preY = _y;
+            pre = _pos;
         }
         
         

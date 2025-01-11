@@ -62,4 +62,32 @@ public static class CartographicGeneralization
 
         return _pointList;
     }
+
+    private static List<int2> kResults = new List<int2>();
+    public static List<int2> BresenhamLine(int2 _start, int2 _end)
+    {
+        kResults.Clear();
+
+        var x0 = _start.x;
+        var x1 = _end.x;
+        var y0 = _start.y;
+        var y1 = _end.y;
+            
+        var dx = math.abs(x1 - x0);
+        var dy = math.abs(y1 - y0);
+        var sx = x0 < x1 ? 1 : -1;
+        var sy = y0 < y1 ? 1 : -1;
+        var err = (dx > dy ? dx : -dy) / 2;
+        for(;;) {
+            kResults.Add(new int2(x0, y0));
+            if (x0 == x1 && y0 == y1) break;
+            var e2 = err;
+            if (e2 > -dx) { err -= dy; x0 += sx; }
+
+            if (e2 >= dy) continue;
+            err += dx; y0 += sy;
+        }
+
+        return kResults;
+    }
 }
