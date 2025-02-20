@@ -2,9 +2,9 @@
 
 namespace Rendering.Pipeline.Mask
 {
-    public class MaskTextureFeature : ScriptableRendererFeature
+    public class MaskTextureFeature : AScriptableRendererFeature
     {
-        [ScriptableObjectEdit]public MaskTextureData m_Data;
+        [ScriptableObjectEdit] public MaskTextureData m_Data;
         private MaskTexturePass m_Mask;
 
         public override void Create()
@@ -12,7 +12,7 @@ namespace Rendering.Pipeline.Mask
             m_Mask = new MaskTexturePass() { renderPassEvent = RenderPassEvent.AfterRenderingOpaques + 1 };
         }
 
-        public override void AddRenderPasses(ScriptableRenderer _renderer, ref RenderingData renderingData)
+        protected override void EnqueuePass(ScriptableRenderer _renderer, ref RenderingData _renderingData)
         {
             _renderer.EnqueuePass(m_Mask.Setup(m_Data));
         }

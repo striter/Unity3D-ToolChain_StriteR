@@ -27,7 +27,7 @@ namespace Rendering.Pipeline
         };
     }
 
-    public class PipelineExtension : ScriptableRendererFeature
+    public class PipelineExtension : AScriptableRendererFeature
     {
         public static PipelineExtension Instance { get; private set; } 
         public RenderResources m_Resources;
@@ -54,11 +54,8 @@ namespace Rendering.Pipeline
             m_Normal.Dispose();
         }
 
-        public override void AddRenderPasses(ScriptableRenderer _renderer, ref RenderingData _renderingData)
+        protected override void EnqueuePass(ScriptableRenderer _renderer, ref RenderingData _renderingData)
         {
-            if (_renderingData.cameraData.isPreviewCamera)
-                return;
-
             _renderer.EnqueuePass(m_GlobalParameters);
             
             if (m_Data.m_Features.IsFlagEnable(EPipeLineExtensionFeature.Normal))

@@ -55,7 +55,7 @@ namespace Rendering.Pipeline
 
                 var name = effect.m_Name;
                 cmd.BeginSample(name);
-                effect.Execute(cmd, src, dst, descriptor,renderer, context, ref renderingData);
+                effect.Execute(cmd, src, dst, descriptor, context, ref renderingData);
                 cmd.EndSample(name);
                 
                 blitIndex++;

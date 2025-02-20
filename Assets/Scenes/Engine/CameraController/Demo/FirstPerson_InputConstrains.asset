@@ -34,7 +34,7 @@ MonoBehaviour:
       setOnReset: 1
       defaultValue: 0
     initialYawWithAnchor: 1
-    pinchMode: 0
+    pinchMode: 1
     pinchInitializer:
       setOnEnter: 1
       setOnReset: 1

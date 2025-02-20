@@ -47,7 +47,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle.Process.Lightmap.Bakery
         }
 
         public EGICustomLightmapProcess m_Process = EGICustomLightmapProcess.ESkyLight;
-        [MFold(nameof(m_Process),EGICustomLightmapProcess.ESkyLight)]public CustomGIIrradianceInput m_Irradiance;
+        [Fold(nameof(m_Process),EGICustomLightmapProcess.ESkyLight)]public CustomGIIrradianceInput m_Irradiance;
 
         public static void Finish()
         {

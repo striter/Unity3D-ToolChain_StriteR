@@ -5,7 +5,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace Rendering.Pipeline
 {
-    public class SurfaceEffectFeature : ScriptableRendererFeature
+    public class SurfaceEffectFeature : AScriptableRendererFeature
     {
         public RenderPassEvent m_Event = RenderPassEvent.AfterRenderingTransparents;
         SurfaceEffectPass m_Passes;
@@ -13,11 +13,11 @@ namespace Rendering.Pipeline
         {
             m_Passes = new SurfaceEffectPass { renderPassEvent = m_Event, };
         }
-        public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
+        protected override void EnqueuePass(ScriptableRenderer _renderer, ref RenderingData _renderingData)
         {
-            if (renderingData.cameraData.isPreviewCamera)
+            if (_renderingData.cameraData.isPreviewCamera)
                 return;
-            renderer.EnqueuePass(m_Passes);
+            _renderer.EnqueuePass(m_Passes);
         }
     }
     public class SurfaceEffectPass:ScriptableRenderPass

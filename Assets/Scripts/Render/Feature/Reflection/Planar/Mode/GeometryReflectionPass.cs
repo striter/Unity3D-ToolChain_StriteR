@@ -24,7 +24,7 @@ namespace Rendering.Pipeline
         
         private readonly PassiveInstance<ComputeShader> m_ReflectionComputeShader=new PassiveInstance<ComputeShader>(()=>RenderResources.FindComputeShader("PlanarReflection"));
         
-        public FGeometryReflectionScreenSpace(PlanarReflectionData _data, FBlursCore _blur, PlanarReflectionProvider _component, ScriptableRenderer _renderer, int _index) : base(_data, _blur, _component, _renderer, _index)
+        public FGeometryReflectionScreenSpace(PlanarReflectionData _data,  PlanarReflectionProvider _component,  int _index) : base(_data, _component, _index)
         {
         }
         protected override void ConfigureColorDescriptor(ref RenderTextureDescriptor _descriptor, ref PlanarReflectionData _data)
@@ -46,8 +46,7 @@ namespace Rendering.Pipeline
         }
 
         protected override void Execute(ref PlanarReflectionData _data, ScriptableRenderContext _context,
-            ref RenderingData _renderingData, CommandBuffer _cmd, ref PlanarReflectionProvider _config,  ref RenderTextureDescriptor _descriptor,
-            ref RTHandle _target,ref ScriptableRenderer _renderer)
+            ref RenderingData _renderingData, CommandBuffer _cmd, ref PlanarReflectionProvider _config,  ref RenderTextureDescriptor _descriptor, ref RTHandle _target)
         {
             _cmd.SetComputeIntParam(m_ReflectionComputeShader, kSampleCount, _data.m_Sample);
             _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kResultTexelSize, _descriptor.GetTexelSize());
@@ -66,7 +65,7 @@ namespace Rendering.Pipeline
                 _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kPlanePosition, _plane.position.to4());
             }
             
-            _cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels, kKernelInput, _renderer.cameraColorTargetHandle);
+            _cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels, kKernelInput, _renderingData.cameraData.renderer.cameraColorTargetHandle);
             _cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels, kKernelResult, _target);
             _cmd.DispatchCompute(m_ReflectionComputeShader, m_Kernels, m_ThreadGroups.x,m_ThreadGroups.y, 1);
         }

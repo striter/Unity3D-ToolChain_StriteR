@@ -20,8 +20,8 @@ namespace Runtime.CameraController
         [Readonly] public FCameraControllerOutput m_Output;
         public bool m_AnchorDebugRecording = false;
         private List<float3> m_AnchorList = new List<float3>();
-        [MFold(nameof(m_SerializedController),null)] public MonoBehaviour m_SerializedController;
-        [MFold(nameof(m_ScriptableController),null)] public ScriptableObject m_ScriptableController;
+        [Fold(nameof(m_SerializedController),null)] public MonoBehaviour m_SerializedController;
+        [Fold(nameof(m_ScriptableController),null)] public ScriptableObject m_ScriptableController;
         public bool Switch(ICameraController _controller)
         {
             _controller ??= FEmptyController.kDefault;

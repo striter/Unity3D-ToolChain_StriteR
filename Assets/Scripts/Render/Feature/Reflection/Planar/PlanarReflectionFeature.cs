@@ -19,17 +19,10 @@ namespace Rendering.Pipeline
     public class PlanarReflectionFeature : ScriptableRendererFeature
     {
         public ReflectionPassData m_Data = ReflectionPassData.kDefault;
-        private FBlursCore m_Blurs;
         public override void Create()
         {
-            m_Blurs = new FBlursCore();
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-            m_Blurs.Destroy();
-        }
 
         public override void AddRenderPasses(ScriptableRenderer _renderer, ref RenderingData _renderingData)
         {
@@ -42,7 +35,7 @@ namespace Rendering.Pipeline
                 return;
             
             var propertyBlock = new MaterialPropertyBlock();
-            int index = 0; 
+            var index = 0; 
             foreach (var reflectionComponent in PlanarReflectionProvider.m_Reflections)
             {
                 if (index >= m_Data.maxPlanarReflectionTexture)
@@ -56,8 +49,8 @@ namespace Rendering.Pipeline
                 APlanarReflectionBase reflectionPass=null;
                 switch (data.m_Type)
                 {
-                    case EPlanarReflectionMode.ScreenSpaceGeometry: reflectionPass = new FGeometryReflectionScreenSpace(data,m_Blurs, reflectionComponent,_renderer,index){renderPassEvent = RenderPassEvent.BeforeRenderingSkybox + 2}; break;
-                    case EPlanarReflectionMode.Render: reflectionPass = new FGeometryReflectionMirrorSpace(data,m_Blurs, reflectionComponent,_renderer,index){renderPassEvent = RenderPassEvent.BeforeRenderingSkybox + 2}; break;
+                    case EPlanarReflectionMode.ScreenSpaceGeometry: reflectionPass = new FGeometryReflectionScreenSpace(data, reflectionComponent,index){renderPassEvent = RenderPassEvent.BeforeRenderingSkybox + 2}; break;
+                    case EPlanarReflectionMode.Render: reflectionPass = new FGeometryReflectionMirrorSpace(data, reflectionComponent,index){renderPassEvent = RenderPassEvent.BeforeRenderingSkybox + 2}; break;
                 }
                 _renderer.EnqueuePass(reflectionPass);
                 index++;

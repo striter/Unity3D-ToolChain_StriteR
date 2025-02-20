@@ -148,10 +148,9 @@ namespace Rendering.PostProcess
         }
 
         public override void Execute(RenderTextureDescriptor _descriptor, ref DOpaque _data, CommandBuffer _buffer,
-            RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderer _renderer,
-            ScriptableRenderContext _context, ref RenderingData _renderingData)
+            RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
-            
+            var renderer = _renderingData.cameraData.renderer;
             if (_data.m_VolumetricCloud && _data.m_VolumetricCloudData.m_Shape)
             {
                 var volumetricData = _data.m_VolumetricCloudData;
@@ -177,7 +176,7 @@ namespace Rendering.PostProcess
                 }
 
                 buffer.Clear();
-                buffer.SetRenderTarget(_renderer.cameraColorTargetHandle);
+                buffer.SetRenderTarget(renderer.cameraColorTargetHandle);
                 _context.ExecuteCommandBuffer(buffer);
                 CommandBufferPool.Release(buffer);
             }
@@ -185,7 +184,7 @@ namespace Rendering.PostProcess
             if (_data.m_MaskedHighlight)
             {
                 MaskTexturePass.DrawMask(kHighlightMaskRT,_context,ref _renderingData,_data.m_HighlightData.m_Mask);
-                m_HighlightBlur.Execute(_descriptor,ref _data.m_HighlightData.m_Blur,_buffer, kHighlightMaskRT, kHighlightMaskBlurRT,_renderer,_context,ref _renderingData);
+                m_HighlightBlur.Execute(_descriptor,ref _data.m_HighlightData.m_Blur,_buffer, kHighlightMaskRT, kHighlightMaskBlurRT,_context,ref _renderingData);
             }
 
             if (!_data.m_SSAO && !_data.m_VolumetricCloud)
@@ -354,7 +353,7 @@ namespace Rendering.PostProcess
             [Range(0.01f,2)]public float m_FadingPow;
 
             public Texture2D m_MaskTexture;
-            [MFold(nameof(m_MaskTexture),null),Clamp(0.000001f)] public float m_MaskTextureScale;
+            [Fold(nameof(m_MaskTexture),null),Clamp(0.000001f)] public float m_MaskTextureScale;
 
             #region ShaderProperties
             static readonly int ID_Origin = Shader.PropertyToID("_ScanOrigin");
@@ -393,8 +392,8 @@ namespace Rendering.PostProcess
             [ColorUsage(true,true)]public Color m_FillColor;
             [ColorUsage(true,true)]public Color m_EdgeColor;
             public Texture2D m_FillTexture;
-            [MFold(nameof(m_FillTexture),null), RangeVector(-5,5)] public Vector2 m_FillTextureFlow;
-            [MFold(nameof(m_FillTexture),null),Clamp(0.000001f)] public float m_FillTextureScale;
+            [Fold(nameof(m_FillTexture),null), RangeVector(-5,5)] public Vector2 m_FillTextureFlow;
+            [Fold(nameof(m_FillTexture),null),Clamp(0.000001f)] public float m_FillTextureScale;
 
             #region ShaderProperties
                 static readonly int ID_Origin = Shader.PropertyToID("_AreaOrigin");
@@ -496,8 +495,8 @@ namespace Rendering.PostProcess
             [Foldout(nameof(m_Shape),false)] public float m_VerticalLength;
             
             [Title] public Texture3D m_MainNoise;
-            [MFold(nameof(m_MainNoise)), RangeVector(0f, 1000f)] public Vector3 m_MainNoiseScale;
-            [MFold(nameof(m_MainNoise)), RangeVector(0f, 10f)] public Vector3 m_MainNoiseFlow;
+            [Fold(nameof(m_MainNoise)), RangeVector(0f, 1000f)] public Vector3 m_MainNoiseScale;
+            [Fold(nameof(m_MainNoise)), RangeVector(0f, 10f)] public Vector3 m_MainNoiseFlow;
             
             [Range(0f, 100f)] public float m_Density;
             [Range(0, 1)] public float m_DensityClip;

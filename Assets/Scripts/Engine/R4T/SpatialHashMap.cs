@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq.Extensions;
 using UnityEngine;
 
-public class SpatialHashMap<T,Y,U> where T:struct where Y:class,IGraphBoundless<T>,IGraphMapping<T> where U:ITransform
+public class SpatialHashMap<T,Y,U> where T:struct where Y:class,IGraph<T>,IGraphMapping<T> where U:ITransform
 {
     private Y m_Query;
     private List<U> m_Elements = new List<U>();

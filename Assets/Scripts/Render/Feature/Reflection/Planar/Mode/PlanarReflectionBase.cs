@@ -52,23 +52,19 @@ namespace Rendering.Pipeline
 #endregion
 
          protected PlanarReflectionData m_Data;
-         protected FBlursCore m_Blur;
          private int m_Index;
          private PlanarReflectionProvider m_Compnent;
          private RenderTextureDescriptor m_ColorDescriptor;
          private RTHandle m_ColorTarget;
-         private ScriptableRenderer m_Renderer;
          int m_ReflectionTexture;
          RenderTargetIdentifier m_ReflectionTextureID;
          private int m_ReflectionBlurTexture;
          private RenderTargetIdentifier m_ReflectionBlurTextureID;
          
-         public APlanarReflectionBase(PlanarReflectionData _data,FBlursCore _blur,PlanarReflectionProvider _component,ScriptableRenderer _renderer,int _index)
+         public APlanarReflectionBase(PlanarReflectionData _data,PlanarReflectionProvider _component,int _index)
          {
              m_Index = _index;
              m_Data = _data;
-             m_Blur = _blur;
-             m_Renderer = _renderer;
              m_Compnent = _component;
              
              m_ReflectionTexture = Shader.PropertyToID( C_ReflectionTex + _index);
@@ -86,7 +82,7 @@ namespace Rendering.Pipeline
              _cmd.GetTemporaryRT(m_ReflectionTexture, m_ColorDescriptor,FilterMode.Bilinear);
             
              m_ColorTarget = RTHandles.Alloc(m_ReflectionTextureID);
-             if (m_Data.m_BlurParam.m_BlurType!=EBlurType.None)
+             if (m_Data.m_BlurParam.Validate())
              {
                  _cmd.GetTemporaryRT(m_ReflectionBlurTexture, m_ColorDescriptor, FilterMode.Bilinear);
                  m_ColorTarget = RTHandles.Alloc(m_ReflectionBlurTextureID);
@@ -96,7 +92,7 @@ namespace Rendering.Pipeline
 
          protected virtual void ConfigureColorDescriptor(ref RenderTextureDescriptor _descriptor,ref PlanarReflectionData _data)
          {
-             int downSample = Mathf.Max(_data.m_DownSample, 1);
+             var downSample = Mathf.Max(_data.m_DownSample, 1);
              _descriptor.width /= downSample;
              _descriptor.height /= downSample;
          }
@@ -108,18 +104,18 @@ namespace Rendering.Pipeline
          public override void OnCameraCleanup(CommandBuffer _cmd)
          {
              base.OnCameraCleanup(_cmd);
-             if (m_Data.m_BlurParam.m_BlurType!=EBlurType.None)
+             if (m_Data.m_BlurParam.Validate())
                  _cmd.ReleaseTemporaryRT(m_ReflectionBlurTexture);
              _cmd.ReleaseTemporaryRT(m_ReflectionTexture);
          }
 
          public sealed override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
          {
-             CommandBuffer cmd = CommandBufferPool.Get($"Planar Reflection Pass ({m_Index})");
+             var cmd = CommandBufferPool.Get($"Planar Reflection Pass ({m_Index})");
              
-             Execute(ref m_Data,_context,ref _renderingData,cmd,ref m_Compnent,ref m_ColorDescriptor,ref m_ColorTarget,ref m_Renderer);
+             Execute(ref m_Data,_context,ref _renderingData,cmd,ref m_Compnent,ref m_ColorDescriptor,ref m_ColorTarget);
              if (m_Data.m_BlurParam.m_BlurType!=EBlurType.None)
-                 m_Blur.Execute(m_ColorDescriptor ,ref m_Data.m_BlurParam,cmd, m_ColorTarget, m_ReflectionTextureID,m_Renderer,_context,ref _renderingData); 
+                 FBlursCore.Instance.Execute(m_ColorDescriptor ,ref m_Data.m_BlurParam,cmd, m_ColorTarget, m_ReflectionTextureID,_context,ref _renderingData); 
             
              _context.ExecuteCommandBuffer(cmd);
              cmd.Clear();
@@ -128,7 +124,6 @@ namespace Rendering.Pipeline
 
          protected abstract void Execute(ref PlanarReflectionData _data,
              ScriptableRenderContext _context, ref RenderingData _renderingData, CommandBuffer _cmd,
-             ref PlanarReflectionProvider _config, ref RenderTextureDescriptor _descriptor, 
-             ref RTHandle _target,ref ScriptableRenderer _renderer);
+             ref PlanarReflectionProvider _config, ref RenderTextureDescriptor _descriptor, ref RTHandle _target);
     }
 }

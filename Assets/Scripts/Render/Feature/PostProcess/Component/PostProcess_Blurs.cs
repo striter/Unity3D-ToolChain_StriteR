@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rendering.Pipeline.Mask;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -44,12 +45,11 @@ namespace Rendering.PostProcess
         }
 
         public override void Execute(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,
-            RenderTextureDescriptor _executeData, ScriptableRenderer _renderer, ScriptableRenderContext _context,
-            ref RenderingData _renderingData)
+            RenderTextureDescriptor _executeData,  ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             if (m_Focal == enum_Focal._DOF_DISTANCE)
             {
-                base.Execute(_buffer, _src, _dst, _executeData, _renderer, _context, ref _renderingData);
+                base.Execute(_buffer, _src, _dst, _executeData, _context, ref _renderingData);
                 return;
             }
 
@@ -61,7 +61,7 @@ namespace Rendering.PostProcess
             _buffer.Clear();
             
             MaskTexturePass.DrawMask(kFocalMaskRT,_context,ref _renderingData,m_FocalMaskData);
-            base.Execute(_buffer, _src, _dst, _executeData, _renderer, _context, ref _renderingData);
+            base.Execute(_buffer, _src, _dst, _executeData, _context, ref _renderingData);
             _buffer.ReleaseTemporaryRT(kFocalMaskID);
         }
     }
@@ -118,8 +118,8 @@ namespace Rendering.PostProcess
     public struct DBlurs:IPostProcessParameter
     {
         public EBlurType m_BlurType;
-        [MFold(nameof(m_BlurType), EBlurType.None)] [Range(0.05f, 2f)] public float m_BlurSize;
-        [MFold(nameof(m_BlurType),  EBlurType.None,EBlurType.Grainy)]
+        [Fold(nameof(m_BlurType), EBlurType.None)] [Range(0.05f, 2f)] public float m_BlurSize;
+        [Fold(nameof(m_BlurType),  EBlurType.None,EBlurType.Grainy)]
         [Range(1, FBlursCore.kMaxIteration)] public int m_Iteration;
         [Foldout(nameof(m_BlurType), EBlurType.Kawase, EBlurType.GaussianVHSeperated, EBlurType.AverageVHSeperated, EBlurType.Hexagon, EBlurType.DualFiltering,EBlurType.NextGen,EBlurType.LightStreak)]
         [Range(1, 4)] public int m_DownSample;
@@ -130,14 +130,23 @@ namespace Rendering.PostProcess
         [Foldout(nameof(m_BlurType), EBlurType.LightStreak)]
         [Range(.9f, 1f)] public float m_Attenuation;
         
-        public bool Validate() => m_BlurType != EBlurType.None && m_DownSample > 0;
+        public bool Validate() => m_BlurType != EBlurType.None;
         
-        public static readonly DBlurs kDefault = new DBlurs()
-        {
+        public static readonly DBlurs kDefault = new DBlurs() {
             m_BlurSize = 1.3f,
             m_DownSample = 2,
             m_Iteration = 7,
             m_BlurType = EBlurType.DualFiltering,
+            m_Angle = 0,
+            m_Vector = Vector2.one * .5f,
+            m_Attenuation =  1f,
+        };
+
+        public static readonly DBlurs kNone = new() {
+            m_BlurSize = 1.3f,
+            m_DownSample = 2,
+            m_Iteration = 7,
+            m_BlurType = EBlurType.None,
             m_Angle = 0,
             m_Vector = Vector2.one * .5f,
             m_Attenuation =  1f,
@@ -147,6 +156,9 @@ namespace Rendering.PostProcess
 
     public class FBlursCore : PostProcessCore<DBlurs>
     {
+        public static FBlursCore Instance => kInstance;
+        private static readonly PassiveInstance<FBlursCore> kInstance = new (()=> new ());
+        
         #region ShaderProperties
 
         private static readonly int kIDBlurSize = Shader.PropertyToID("_BlurSize");
@@ -218,20 +230,13 @@ namespace Rendering.PostProcess
         static readonly RenderTargetIdentifier kDiagonalRT = new RenderTargetIdentifier(kHexagonDiagonalID);
 
         public override void Execute(RenderTextureDescriptor _descriptor, ref DBlurs _data, CommandBuffer _buffer,
-            RenderTargetIdentifier _src, RenderTargetIdentifier _dst, 
-            ScriptableRenderer _renderer,ScriptableRenderContext _context, ref RenderingData _renderingData)
+            RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
-            if (_data.m_DownSample <= 0)
-            {
-                Debug.LogWarning("Invalid Down Sample!");
-                _buffer.Blit(_src, _dst);
-                return;
-            }
-
             var sampleName = kBlurSample[_data.m_BlurType];
             _buffer.BeginSample(sampleName);
-            var startWidth = _descriptor.width / _data.m_DownSample;
-            var startHeight = _descriptor.height / _data.m_DownSample;
+            var baseDownSample = math.max(_data.m_DownSample, 1);
+            var startWidth = _descriptor.width / baseDownSample;
+            var startHeight = _descriptor.height / baseDownSample;
             m_Material.EnableKeyword(kKWEncoding,EncodingRequired(_data.m_BlurType) && _descriptor.colorFormat!=RenderTextureFormat.ARGB32);
             
             switch (_data.m_BlurType)

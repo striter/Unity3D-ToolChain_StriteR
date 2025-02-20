@@ -5,7 +5,7 @@ namespace Runtime.PathFinding
 {
     public static partial class UPathFinding
     {
-        public static void AStar<T,Graph>(this Graph _graph, T _src, T _tar,Stack<T> _outputPaths) where Graph:IGraphBoundless<T>,IGraphPathFinding<T>
+        public static void AStar<T>(this IGraphPathFinding<T> _graph, T _src, T _tar,Stack<T> _outputPaths)
         {
             AStarStorage<T>.Request(out var frontier, out var previousLink, out var pathCosts);
             var start = _src;

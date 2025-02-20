@@ -15,7 +15,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle.Process
     {
         public EChannelOperation operation;
         [Foldout(nameof(operation), EChannelOperation.Constant)] [Range(0, 1)] public float constantValue;
-        [MFold(nameof(operation), EChannelOperation.Constant)] [EditorPath] public string texturesPath;
+        [Fold(nameof(operation), EChannelOperation.Constant)] [EditorPath] public string texturesPath;
         public string filter;
         
         private Texture2D[] m_Textures;
@@ -67,7 +67,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle.Process
         [Header("Export")]
         [EditorPath] public string m_OutputPath;
         public string m_NameIdentity;
-        [MFold(nameof(m_NameIdentity),"")]public string m_NameReplacement;
+        [Fold(nameof(m_NameIdentity),"")]public string m_NameReplacement;
         public ETextureExportType m_ExportType = ETextureExportType.JPG;
 
         bool SanityCheck(out ITextureCombineIEnumerable _textureCollector)

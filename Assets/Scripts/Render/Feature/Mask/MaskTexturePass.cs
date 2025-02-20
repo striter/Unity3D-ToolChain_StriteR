@@ -37,20 +37,16 @@ namespace Rendering.Pipeline.Mask
             ConfigureTarget(RTHandles.Alloc(kCameraMaskTexture));
             base.Configure(cmd, cameraTextureDescriptor);
         }
+        
         public override void FrameCleanup(CommandBuffer _cmd)
         {
             base.FrameCleanup(_cmd);
             _cmd.ReleaseTemporaryRT(kCameraMaskTexture);
         }
 
-        public void Dispose()
-        {
-            m_MaskMaterial.Dispose();
-        }
-
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
-            DrawMask( kCameraMaskTextureRT,_context,ref _renderingData,m_Data);
+            DrawMask(kCameraMaskTextureRT,_context,ref _renderingData,m_Data);
         }
 
         private static readonly List<Renderer> kMaskRenderers = new List<Renderer>();

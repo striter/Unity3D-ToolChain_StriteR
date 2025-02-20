@@ -34,8 +34,8 @@ namespace Rendering.PostProcess
         [Title]public EStylize m_Stylize;
         [Foldout(nameof(m_Stylize),EStylize.Pixel)] [ Range(2,20)] public int m_DownSample;
         [Foldout(nameof(m_Stylize), EStylize.Pixel)] public EPixelBound m_PixelGrid;
-        [Foldout(nameof(m_Stylize), EStylize.Pixel)] [MFold(nameof(m_PixelGrid), EPixelBound.None)] [Range(0.01f, 0.49f)] public float m_GridWidth;
-        [Foldout(nameof(m_Stylize), EStylize.Pixel)] [MFold(nameof(m_PixelGrid), EPixelBound.None)] public Color m_PixelGridColor;
+        [Foldout(nameof(m_Stylize), EStylize.Pixel)] [Fold(nameof(m_PixelGrid), EPixelBound.None)] [Range(0.01f, 0.49f)] public float m_GridWidth;
+        [Foldout(nameof(m_Stylize), EStylize.Pixel)] [Fold(nameof(m_PixelGrid), EPixelBound.None)] public Color m_PixelGridColor;
         [Foldout(nameof(m_Stylize), EStylize.OilPaint)] [Range(1,20)]public int m_OilPaintKernel;
         [Foldout(nameof(m_Stylize), EStylize.OilPaint)] [Range(0.1f, 5f)] public float m_OilPaintSize;
         [Foldout(nameof(m_Stylize), EStylize.ObraDithering)] [Range(0.001f,1f)]public float m_ObraDitherScale;
@@ -119,13 +119,13 @@ namespace Rendering.PostProcess
         }
 
         public override void Execute(RenderTextureDescriptor _descriptor, ref DStylize _data, CommandBuffer _buffer,
-            RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderer _renderer,
+            RenderTargetIdentifier _src, RenderTargetIdentifier _dst,
             ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             switch (_data.m_Stylize)
             {
                 default:
-                    base.Execute(_descriptor, ref _data, _buffer, _src, _dst, _renderer, _context, ref _renderingData);
+                    base.Execute(_descriptor, ref _data, _buffer, _src, _dst, _context, ref _renderingData);
                     break;
                 case EStylize.Pixel:
                     _buffer.GetTemporaryRT(ID_PixelizeDownSample, _descriptor.width / _data.m_DownSample, _descriptor.height / _data.m_DownSample, 0, FilterMode.Point, _descriptor.colorFormat);

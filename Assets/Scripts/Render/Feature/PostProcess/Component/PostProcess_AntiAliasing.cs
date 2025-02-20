@@ -32,11 +32,8 @@ namespace Rendering.PostProcess
         
         public void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor) => m_AntiAliasingPassCore.Configure(_buffer, _descriptor, ref m_AliasingData);
         public void Execute(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,
-            RenderTextureDescriptor _executeData, ScriptableRenderer _renderer, ScriptableRenderContext _context,
-            ref RenderingData _renderingData) => m_AntiAliasingPassCore.Execute(
-            _executeData,ref m_AliasingData,_buffer,_src,_dst,
-            _renderer,_context,ref _renderingData
-            );
+            RenderTextureDescriptor _executeData, ScriptableRenderContext _context, ref RenderingData _renderingData) => 
+            m_AntiAliasingPassCore.Execute(_executeData,ref m_AliasingData,_buffer,_src,_dst, _context,ref _renderingData);
 
         public void FrameCleanUp(CommandBuffer _buffer) => m_AntiAliasingPassCore.FrameCleanUp(_buffer,ref m_AliasingData);
         public void ValidateParameters() => m_AntiAliasingPassCore.OnValidate(ref m_AliasingData);
@@ -222,12 +219,11 @@ namespace Rendering.PostProcess
         }
 
         public override void Execute(RenderTextureDescriptor _descriptor, ref DAntiAliasing _data, CommandBuffer _buffer,
-            RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderer _renderer,
-            ScriptableRenderContext _context, ref RenderingData _renderingData)
+            RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             switch (_data.mode)
             {
-                case EAntiAliasing.FXAA:base.Execute(_descriptor, ref _data, _buffer, _src, _dst, _renderer, _context, ref _renderingData);break;
+                case EAntiAliasing.FXAA:base.Execute(_descriptor, ref _data, _buffer, _src, _dst, _context, ref _renderingData);break;
                 case EAntiAliasing.TAA:m_TAAPass.ExecuteBuffer(_buffer,_src,_dst,_descriptor,ref _data,m_Material,ref _renderingData);break;
             }
 

@@ -21,7 +21,7 @@ namespace UnityEditor.Extensions.TextureEditor
     {
         public EChannelOperation operation;
         [Foldout(nameof(operation), EChannelOperation.Constant)] [Range(0, 1)] public float constantValue;
-        [MFold(nameof(operation),EChannelOperation.Constant)] public Texture2D texture;
+        [Fold(nameof(operation),EChannelOperation.Constant)] public Texture2D texture;
         public EChannelOperation Operation => operation;
         public Texture2D Texture => texture;
         public float ConstantValue => constantValue;

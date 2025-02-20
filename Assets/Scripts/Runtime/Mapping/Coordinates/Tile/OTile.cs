@@ -53,11 +53,9 @@ namespace Procedural.Tile
         }
     }
     
-    public class TileGraph:IGraphBoundless<int2>,IGraphMapping<int2>
+    public class TileGraph:IGraph<int2>,IGraphMapping<int2>
     {
         private float m_Size;
-        public int Count => -1;
-
         public TileGraph(float _size)
         {
             m_Size = _size;

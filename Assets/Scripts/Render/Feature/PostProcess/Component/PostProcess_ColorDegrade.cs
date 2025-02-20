@@ -19,7 +19,7 @@ namespace Rendering.PostProcess
     {
         [Header("UVs")]
         [Title] public EVHSScreenCut m_ScreenCut;
-        [MFold(nameof(m_ScreenCut), EVHSScreenCut.None), RangeVector(0, 1)] public Vector2 m_ScreenCutDistance;
+        [Fold(nameof(m_ScreenCut), EVHSScreenCut.None), RangeVector(0, 1)] public Vector2 m_ScreenCutDistance;
 
         [Title] public bool m_PixelDistort;
         [Foldout(nameof(m_PixelDistort), true)][ RangeVector(0, 1)] public Vector2 m_PixelDistortScale;

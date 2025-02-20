@@ -19,7 +19,6 @@
 			#pragma multi_compile_local_fragment _ _LUT
 			#pragma multi_compile_local_fragment _ _BSC
 			#pragma multi_compile_local_fragment _ _CHANNEL_MIXER
-			#pragma multi_compile_local_fragment _ _MASK
 
 			//Color Grading
 			TEXTURE2D(_LUTTex);SAMPLER(sampler_LUTTex);
@@ -52,9 +51,6 @@
 					col = mul(col,half3x3(_MixRed,_MixGreen,_MixBlue));
 				#endif
 
-            	#if _MASK
-					col = lerp(col,srcCol,SAMPLE_TEXTURE2D(_CameraMaskTexture,sampler_CameraMaskTexture,uv).r);
-            	#endif
 				return col;
 			}
 		

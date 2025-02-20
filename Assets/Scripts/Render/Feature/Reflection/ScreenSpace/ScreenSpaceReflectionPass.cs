@@ -6,38 +6,19 @@ using UnityEngine.Rendering.Universal;
 
 namespace Rendering.Pipeline
 {
-    [Serializable]
-    public struct ScreenSpaceReflectionData
-    {
-        [Range(1,4)] public int downSample;
-        public DBlurs blurData;
-
-        public static readonly ScreenSpaceReflectionData kDefault = new ScreenSpaceReflectionData()
-        {
-            downSample = 1,
-            blurData = DBlurs.kDefault,
-        };
-    }
     
     class ScreenSpaceReflectionPass : ScriptableRenderPass
     {
         private readonly PassiveInstance<Shader> m_ReflectionBlit=new PassiveInstance<Shader>(()=>RenderResources.FindInclude("Hidden/ScreenSpaceReflection"));
-        private readonly FBlursCore m_Blur;
         private readonly Material m_Material;
         private ScreenSpaceReflectionData m_Data;
         static readonly int kSSRTex = Shader.PropertyToID("_ScreenSpaceReflectionTexture");
         static readonly RenderTargetIdentifier kSSRTexID = new RenderTargetIdentifier(kSSRTex);
 
-        public ScreenSpaceReflectionPass(ScreenSpaceReflectionData _data, FBlursCore _blurs)
+        public ScreenSpaceReflectionPass(ScreenSpaceReflectionData _data)
         {
             m_Data = _data;
             m_Material = new Material(m_ReflectionBlit){hideFlags = HideFlags.HideAndDontSave};
-            m_Blur = _blurs;
-        }
-
-        public void Dispose()
-        {            
-            GameObject.DestroyImmediate(m_Material);
         }
 
         public override void Configure(CommandBuffer _cmd, RenderTextureDescriptor _cameraTextureDescriptor)

@@ -12,7 +12,7 @@ namespace Examples.Rendering.ContourOutline
         public bool m_CentricDFS = false;
         [Range(0, 1)] public float m_Bias = 0.01f;
         [Range(0, 1)] public float m_Simplification = 0.1f;
-        [MFold(nameof(m_Simplification),1f)]public bool m_MinumumSimplification = false;
+        [Fold(nameof(m_Simplification),1f)]public bool m_MinumumSimplification = false;
         private ContourTracingData m_ContourTracing;
         private void OnValidate()
         {

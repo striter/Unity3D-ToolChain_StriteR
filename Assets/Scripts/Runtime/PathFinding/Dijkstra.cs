@@ -4,7 +4,7 @@ namespace Runtime.PathFinding
 {
     public static partial class UPathFinding
     {
-        public static void Dijkstra<T,Graph>(this Graph _graph, T _src, T _tar,Stack<T> _outputPaths) where Graph: IGraph<T>,IGraphPathFinding<T>
+        public static void Dijkstra<T>(this IGraphPathFinding<T> _graph, T _src, T _tar,Stack<T> _outputPaths)
         {
             AStarStorage<T>.Request(out var frontier, out var previous, out var distance);
             distance.Add(_src,0);

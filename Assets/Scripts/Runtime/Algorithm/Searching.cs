@@ -4,7 +4,7 @@ using System.Linq.Extensions;
 
 public static class USearching
 {
-    public static IEnumerable<T> BFS<T>(this IGraph<T> _graph, T _start)
+    public static IEnumerable<T> BFS<T>(this IGraphFinite<T> _graph, T _start)
     {
         if(_graph.Count == 0)
             yield break;
@@ -30,7 +30,7 @@ public static class USearching
         }
     }
 
-    public static IEnumerable<T> DFS<T>(this IGraph<T> _graph, T _start)
+    public static IEnumerable<T> DFS<T>(this IGraphFinite<T> _graph, T _start)
     {
         if(_graph.Count == 0)
             yield break;

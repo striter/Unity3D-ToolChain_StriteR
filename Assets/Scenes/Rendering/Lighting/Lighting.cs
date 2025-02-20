@@ -21,10 +21,10 @@ namespace Examples.Rendering.Lighting
         public ELightType type;
         [ColorUsage(false,false)] public Color color;
         [Clamp(0.01f)]public float intensity;
-        [MFold(nameof(type),ELightType.Directional)] [Clamp(0)] public float constant,linear,quadric;
+        [Fold(nameof(type),ELightType.Directional)] [Clamp(0)] public float constant,linear,quadric;
         [Foldout(nameof(type),ELightType.Spot)] public float spotPower;
-        [MFold(nameof(type),ELightType.Directional)] public float3 position;
-        [MFold(nameof(type),ELightType.Point,ELightType.Line)] public float3 euler;
+        [Fold(nameof(type),ELightType.Directional)] public float3 position;
+        [Fold(nameof(type),ELightType.Point,ELightType.Line)] public float3 euler;
 
         [Foldout(nameof(type), ELightType.Line)] public float3 endPosition;
         

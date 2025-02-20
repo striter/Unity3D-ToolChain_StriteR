@@ -151,33 +151,18 @@ namespace Rendering.PostProcess
         private static int kParticleDensityLUT = Shader.PropertyToID("_AtmosphereDensityLUT");
         private RenderTargetIdentifier kParticleDensityLUTRT = new RenderTargetIdentifier(kParticleDensityLUT);
     #endregion
-        
-        readonly FBlursCore m_VolumetricBlur;
-        public FAtmosphereCore()
-        {
-            m_VolumetricBlur = new FBlursCore();
-        }
-        
-        public override void Destroy()
-        {
-            base.Destroy();
-            m_VolumetricBlur.Destroy();
-        }
-
         public override void OnValidate(ref DAtmosphere _data)
         {
             base.OnValidate(ref _data);
             if(m_Material.EnableKeyword(kVolumetricLight, _data.m_VolumetricLight))
                 _data.m_VolumetricLightData.Apply(m_Material);
-            m_VolumetricBlur.OnValidate(ref _data.m_VolumetricBlur);
             
             if(_data.m_MultiScattering)
                 _data.m_MultiScatteringData.Apply(m_Material);
         }
 
         public override void Execute(RenderTextureDescriptor _descriptor, ref DAtmosphere _data, CommandBuffer _buffer,
-            RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderer _renderer,
-            ScriptableRenderContext _context, ref RenderingData _renderingData)
+            RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             if (_data.m_MultiScattering)
             {
@@ -205,7 +190,7 @@ namespace Rendering.PostProcess
                 {
                     _buffer.GetTemporaryRT(kBlurID, sampleDescriptor, FilterMode.Bilinear);
                     _buffer.Blit(_src, kBlurID, m_Material,  (int)EPassIndex.Sample);
-                    m_VolumetricBlur.Execute(sampleDescriptor,ref _data.m_VolumetricBlur,_buffer, kBlurID, kVolumetricID,_renderer,_context,ref _renderingData ); 
+                    FBlursCore.Instance.Execute(sampleDescriptor,ref _data.m_VolumetricBlur,_buffer, kBlurID, kVolumetricID,_context,ref _renderingData ); 
                     _buffer.ReleaseTemporaryRT(kBlurID);
                 }
             

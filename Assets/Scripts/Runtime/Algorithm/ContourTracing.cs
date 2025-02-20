@@ -9,7 +9,7 @@ using UnityEngine;
 using static kint2;
 
 //https://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/index.html
-public struct ContourTracingData : IGraph<int2>
+public struct ContourTracingData : IGraphFinite<int2>
 {
     public int2 resolution;
     public bool[] m_ContourTessellation;

@@ -48,7 +48,7 @@ namespace Rendering.PostProcess
         }
         public virtual void Execute(RenderTextureDescriptor _descriptor,ref T _data,
             CommandBuffer _buffer,  RenderTargetIdentifier _src, RenderTargetIdentifier _dst,
-            ScriptableRenderer _renderer, ScriptableRenderContext _context, ref RenderingData _renderingData)
+            ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             if (!m_Material)
                 return;

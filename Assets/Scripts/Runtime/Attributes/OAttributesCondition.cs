@@ -49,12 +49,12 @@ public class FoldoutAttribute : ConditionAttribute
 }
 
 [AttributeUsage(AttributeTargets.Field)]
-public class MFoldAttribute : ConditionAttribute
+public class FoldAttribute : ConditionAttribute
 {
     public override EConditionAction Condition => EConditionAction.NonAnyEquals;
-    public MFoldAttribute(string _foldoutFieldName) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, null)) { }
-    public MFoldAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
-    public MFoldAttribute(params KeyValuePair<string, object[]>[] _pairs) : base(_pairs) { }
+    public FoldAttribute(string _foldoutFieldName) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, null)) { }
+    public FoldAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
+    public FoldAttribute(params KeyValuePair<string, object[]>[] _pairs) : base(_pairs) { }
 }
 
 [AttributeUsage(AttributeTargets.Method)]

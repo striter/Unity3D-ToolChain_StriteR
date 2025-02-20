@@ -33,8 +33,8 @@ namespace Rendering.PostProcess
     public struct DColorUpgrade:IPostProcessParameter
     {
         [Title] public Texture2D m_LUTTex ;
-        [MFold(nameof(m_LUTTex),null)] public bool m_64LUT;
-        [MFold(nameof(m_LUTTex),null)] [Range(0,1)] public float m_LUTWeight;
+        [Fold(nameof(m_LUTTex),null)] public bool m_64LUT;
+        [Fold(nameof(m_LUTTex),null)] [Range(0,1)] public float m_LUTWeight;
         [Title] public bool m_BSC;
         [Foldout(nameof(m_BSC),true)] [Range(0, 2)]public float m_Brightness ;
         [Foldout(nameof(m_BSC),true)] [Range(0, 2)] public float m_Saturation ;
@@ -45,19 +45,13 @@ namespace Rendering.PostProcess
         [Foldout(nameof(m_ChannelMix),true)] [RangeVector(-1, 1)] public Vector3 m_MixGreen;
         [Foldout(nameof(m_ChannelMix),true)] [RangeVector(-1, 1)] public Vector3 m_MixBlue;
 
-        public bool m_UseMaskTexture;
-        
         [Title]public bool m_Bloom;
         [Foldout(nameof(m_Bloom),true)] public Data_Bloom m_BloomData;
 
         [Title] public bool motionBlur;
         [Foldout(nameof(motionBlur), true)] [Clamp(1,8)]public int iteration;
         [Foldout(nameof(motionBlur), true)] [Range(-5,5)] public float intensity;
-        public bool Validate() => motionBlur ||
-                                  m_LUTTex!=null  || 
-                                  m_BSC  || 
-                                  m_ChannelMix  || 
-                                  m_Bloom;
+        public bool Validate() => motionBlur || m_LUTTex != null || m_BSC || m_ChannelMix || m_Bloom;
         
         public static readonly DColorUpgrade kDefault = new DColorUpgrade()
         {
@@ -74,8 +68,6 @@ namespace Rendering.PostProcess
             m_MixRed = Vector3.zero,
             m_MixGreen = Vector3.zero,
             m_MixBlue = Vector3.zero,
-            
-            m_UseMaskTexture = false,
             
             m_Bloom = false,
             m_BloomData = new Data_Bloom()
@@ -107,11 +99,10 @@ namespace Rendering.PostProcess
             static readonly int ID_Threshold = Shader.PropertyToID("_BloomThreshold");
             static readonly int ID_Color = Shader.PropertyToID("_BloomColor");
 
-            public void Apply(Material _material, FBlursCore _blur)
+            public void Apply(Material _material)
             {
                 _material.SetFloat(ID_Threshold, m_Threshold);
                 _material.SetColor(ID_Color, m_Color);
-                _blur.OnValidate(ref m_Blur);
             }
             #endregion
         }
@@ -145,21 +136,12 @@ namespace Rendering.PostProcess
         const string kBloom = "_BLOOM";
         static readonly RenderTargetIdentifier RT_Sample = new RenderTargetIdentifier(kSampleID);
         static readonly RenderTargetIdentifier RT_Blur = new RenderTargetIdentifier(kBlurID);
-        
-        static readonly string kUseMaskTexture = "_MASK";
         #endregion
         
         enum EPassIndex
         {
             Process = 0,
             BloomSample = 1,
-        }
-        FBlursCore m_CoreBlurs = new();
-
-        public override void Destroy()
-        {
-            base.Destroy();
-            m_CoreBlurs.Destroy();
         }
 
         float4 GetLUTParameters(int _size,int width,int height)
@@ -199,10 +181,8 @@ namespace Rendering.PostProcess
                 m_Material.SetVector(kMixBlue, _data.m_MixBlue + Vector3.forward);
             }
 
-            m_Material.EnableKeyword(kUseMaskTexture, _data.m_UseMaskTexture);
-
             if (m_Material.EnableKeyword(kBloom, _data.m_Bloom))
-                _data.m_BloomData.Apply(m_Material, m_CoreBlurs);
+                _data.m_BloomData.Apply(m_Material);
 
             if (m_Material.EnableKeyword(kMotionBlur, _data.motionBlur))
             {
@@ -213,8 +193,7 @@ namespace Rendering.PostProcess
 
 
         public override void Execute(RenderTextureDescriptor _descriptor, ref DColorUpgrade _data, CommandBuffer _buffer,
-            RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderer _renderer,
-            ScriptableRenderContext _context, ref RenderingData _renderingData)
+            RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             if (!_data.m_Bloom || !_data.m_BloomData.m_Blur.Validate())
             {
@@ -229,7 +208,7 @@ namespace Rendering.PostProcess
             else if(bloomData.m_SampleMode == EBloomSample.Luminance)
                 _buffer.Blit(_src, RT_Sample, m_Material, (int)EPassIndex.BloomSample);
 
-            m_CoreBlurs.Execute(_descriptor, ref bloomData.m_Blur,_buffer, RT_Sample, RT_Blur, _renderer,_context,ref _renderingData);
+            FBlursCore.Instance.Execute(_descriptor, ref bloomData.m_Blur,_buffer, RT_Sample, RT_Blur,_context,ref _renderingData);
 
             if(bloomData.m_BloomDebug)
                 _buffer.Blit(RT_Blur,_dst);

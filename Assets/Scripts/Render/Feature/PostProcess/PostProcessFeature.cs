@@ -4,7 +4,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace Rendering.Pipeline
 {
-    public class PostProcessFeature : ScriptableRendererFeature
+    public class PostProcessFeature : AScriptableRendererFeature
     {
         public DAntiAliasing m_AntiAliasing = DAntiAliasing.kDefault;
         private PostProcess_AntiAliasing m_AntiAliasingPostProcess;
@@ -32,7 +32,7 @@ namespace Rendering.Pipeline
             m_AntiAliasingPostProcess.Dispose();
         }
 
-        public override void AddRenderPasses(ScriptableRenderer _renderer, ref RenderingData _data)
+        protected override void EnqueuePass(ScriptableRenderer _renderer, ref RenderingData _renderingData)
         {
             if (!RenderResources.Enabled)
                 return;
@@ -43,9 +43,9 @@ namespace Rendering.Pipeline
             if(m_AntiAliasing.mode == EAntiAliasing.TAA)
                 _renderer.EnqueuePass(m_TAA);
             
-            if (_data is { postProcessingEnabled: true, cameraData: { postProcessEnabled: true } })
+            if (_renderingData is { postProcessingEnabled: true, cameraData: { postProcessEnabled: true } })
             {
-                m_PostprocessQueue.AddRange(_data.cameraData.camera.GetComponentsInChildren<IPostProcessBehaviour>());
+                m_PostprocessQueue.AddRange(_renderingData.cameraData.camera.GetComponentsInChildren<IPostProcessBehaviour>());
 
                 //Enqueue Global
                 if (PostProcessGlobalVolume.HasGlobal)

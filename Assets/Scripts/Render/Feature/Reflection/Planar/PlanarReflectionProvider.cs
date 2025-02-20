@@ -15,7 +15,6 @@ namespace Rendering.Pipeline
         public PlanarReflectionData m_Data = PlanarReflectionData.kDefault;
         
         public static List<PlanarReflectionProvider> m_Reflections { get; private set; } = new List<PlanarReflectionProvider>();
-        public bool Available => m_MeshRenderer.enabled && enabled;
         
         private MeshRenderer m_MeshRenderer;
         private MeshFilter m_MeshFilter;
