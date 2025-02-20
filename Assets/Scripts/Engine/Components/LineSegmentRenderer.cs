@@ -13,8 +13,8 @@ namespace Runtime
         public bool m_LocalSpace = false;
         public float3[] m_LinePositions = GTriangle.kDefault.IterateToArray();
         public bool m_ManualInput = false;
-        [MFoldout(nameof(m_ManualInput), false)] public float3 m_Normal = kfloat3.up;
-        [MFoldout(nameof(m_ManualInput),true)] public float3[] m_Normals =  new [] {GTriangle.kDefault.normal,GTriangle.kDefault.normal,GTriangle.kDefault.normal} ;
+        [Foldout(nameof(m_ManualInput), false)] public float3 m_Normal = kfloat3.up;
+        [Foldout(nameof(m_ManualInput),true)] public float3[] m_Normals =  new [] {GTriangle.kDefault.normal,GTriangle.kDefault.normal,GTriangle.kDefault.normal} ;
         private List<float3> m_FinalVertices = new List<float3>();
         //I should put all these stuffs into shaders ?
         protected override void PopulatePositions( List<Vector3> _vertices, List<Vector3> _tangents)

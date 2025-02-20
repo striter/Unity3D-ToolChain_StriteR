@@ -10,9 +10,9 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle.Process.Lightmap
     {
         [EditorPath] public string m_Folder;
         public ELightmap m_LoadLightmaps = ELightmap.Color;
-        [MFoldout(nameof(m_LoadLightmaps),ELightmap.Color)] public string m_LightmapIdentity;
-        [MFoldout(nameof(m_LoadLightmaps),ELightmap.Directional)]public string m_DirectionalIdentity;
-        [MFoldout(nameof(m_LoadLightmaps),ELightmap.ShadowMask)]public string m_ShadowMaskIdentity;
+        [Foldout(nameof(m_LoadLightmaps),ELightmap.Color)] public string m_LightmapIdentity;
+        [Foldout(nameof(m_LoadLightmaps),ELightmap.Directional)]public string m_DirectionalIdentity;
+        [Foldout(nameof(m_LoadLightmaps),ELightmap.ShadowMask)]public string m_ShadowMaskIdentity;
         public override bool Execute()
         {
             var directory = UEPath.PathRegex(m_Folder);

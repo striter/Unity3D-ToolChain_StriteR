@@ -116,12 +116,12 @@ namespace TechToys.ThePlanet
         #region Gizmos
         [Header("Gizmos")]
         public bool m_VertexGizmos;
-        [MFoldout(nameof(m_VertexGizmos), true)] public bool m_VertexDirection;
-        [MFoldout(nameof(m_VertexGizmos), true, nameof(m_VertexDirection), true)] public bool m_VertexAdjacentRelation;
-        [MFoldout(nameof(m_VertexGizmos), true, nameof(m_VertexDirection), true)] public bool m_VertexIntervalRelation;
+        [Foldout(nameof(m_VertexGizmos), true)] public bool m_VertexDirection;
+        [Foldout(nameof(m_VertexGizmos), true, nameof(m_VertexDirection), true)] public bool m_VertexAdjacentRelation;
+        [Foldout(nameof(m_VertexGizmos), true, nameof(m_VertexDirection), true)] public bool m_VertexIntervalRelation;
 
         public bool m_QuadGizmos;
-        [MFoldout(nameof(m_QuadGizmos), true)] public bool m_QuadVertexRelation;
+        [Foldout(nameof(m_QuadGizmos), true)] public bool m_QuadVertexRelation;
 
         private void OnDrawGizmos()
         {

@@ -22,11 +22,11 @@ namespace Rendering.Pipeline
     public struct PlanarReflectionData
     {
         public EPlanarReflectionMode m_Type;
-        [MFoldout(nameof(m_Type), EPlanarReflectionMode.ScreenSpaceGeometry)] [Range(1, 4)] public int m_Sample;
+        [Foldout(nameof(m_Type), EPlanarReflectionMode.ScreenSpaceGeometry)] [Range(1, 4)] public int m_Sample;
 
-        [MFoldout(nameof(m_Type), EPlanarReflectionMode.Render)] public bool m_Recull;
-        [MFoldout(nameof(m_Type), EPlanarReflectionMode.Render,nameof(m_Recull),true)] [Range(0,8)]public int m_AdditionalLightcount;
-        [MFoldout(nameof(m_Type), EPlanarReflectionMode.Render)] public bool m_IncludeTransparent;
+        [Foldout(nameof(m_Type), EPlanarReflectionMode.Render)] public bool m_Recull;
+        [Foldout(nameof(m_Type), EPlanarReflectionMode.Render,nameof(m_Recull),true)] [Range(0,8)]public int m_AdditionalLightcount;
+        [Foldout(nameof(m_Type), EPlanarReflectionMode.Render)] public bool m_IncludeTransparent;
 
         [Header("Blur")] 
         [Range(1,4)] public int m_DownSample;

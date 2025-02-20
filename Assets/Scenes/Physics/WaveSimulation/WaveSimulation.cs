@@ -1,14 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq.Extensions;
-using Procedural.Tile;
 using Unity.Mathematics;
 using UnityEditor.Extensions;
 using UnityEngine;
-using UnityEngine.UI;
-using Color = UnityEngine.Color;
 
 namespace Examples.PhysicsScenes.WaveSimulation
 {
@@ -41,43 +36,17 @@ namespace Examples.PhysicsScenes.WaveSimulation
         } 
     }
     
-    
-    [ExecuteAlways]
-    public class WaveSimulation : MonoBehaviour
+    public class WaveSimulation : ADrawerSimulation
     {
         public List<Wave> m_Waves = new List<Wave>();
 
-        public ColorPalette m_Colors = new ColorPalette();
-        Texture2D m_Texture;
-        private FTextureDrawer m_Drawer;
-        private RawImage m_Image;
-        private void OnEnable()
-        {
-            var canvas = GetComponentInChildren<Canvas>();
-            m_Drawer = new FTextureDrawer(new int2(canvas.pixelRect.size), Color.clear);
-            m_Texture = new Texture2D(m_Drawer.SizeX,m_Drawer.SizeY, TextureFormat.ARGB32,false) { name = "Wave Texture",filterMode = FilterMode.Point,wrapMode = TextureWrapMode.Clamp};
-            m_Image = GetComponentInChildren<RawImage>();
-            m_Image.texture = m_Texture;
-        }
-        
-        private void OnDestroy()
-        {
-            if (m_Image == null)
-                return;
-            
-            m_Image.texture = null;
-            Destroy(m_Texture);
-            m_Texture = null;
-        }
-
-        [Range(0,500)]public int sampleInterval = 200;
+        public ColorPalette m_Colors = ColorPalette.kDefault;
         public RangeFloat m_Edge = new RangeFloat(0.05f,0.95f);
-        private void Update()
+        [Range(0,500)]public int sampleInterval = 200;
+        protected override void TickDrawer(FTextureDrawer _drawer,float _deltaTime)
         {
-            var deltaTime = UTime.deltaTime;
-            m_Waves.Traversal(p=>p.Tick(deltaTime,m_Edge));
+            m_Waves.Traversal(p=>p.Tick(_deltaTime,m_Edge));
             
-            m_Drawer.Clear(Color.clear);
             for (var i = 0; i < sampleInterval ; i++)
             {
                 var timeInterval = (float)i / sampleInterval;
@@ -87,20 +56,17 @@ namespace Examples.PhysicsScenes.WaveSimulation
                     sample += wave.Evaluate(timeInterval);
 
                 var normalized = new float2(timeInterval, sample);
-                var pixel = (int2)(normalized * m_Drawer.size);
+                var pixel = (int2)(normalized * _drawer.size);
                 if(i == 0)
-                    m_Drawer.PixelContinuousStart(pixel);
-                m_Drawer.PixelContinuous(pixel,m_Colors.Evaluate(timeInterval));
+                    _drawer.PixelContinuousStart(pixel);
+                _drawer.PixelContinuous(pixel,m_Colors.Evaluate(timeInterval));
             }
 
             foreach (var wave in m_Waves)
             {
-                var centre = (int2)(new float2(wave.position,wave.Evaluate(wave.position)) * m_Drawer.size);
-                m_Drawer.Circle(centre,5, m_Colors.Evaluate(wave.position));
+                var centre = (int2)(new float2(wave.position,wave.Evaluate(wave.position)) * _drawer.size);
+                _drawer.Circle(centre,5, m_Colors.Evaluate(wave.position));
             }
-            
-            m_Texture.SetPixels(m_Drawer.colors);
-            m_Texture.Apply();
         }
     }
 

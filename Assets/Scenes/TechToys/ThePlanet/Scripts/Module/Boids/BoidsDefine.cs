@@ -48,8 +48,8 @@ namespace TechToys.ThePlanet.Module.BOIDS
         public EBoidsFloatingConstrain constrain;
         public float speed;
         public float damping;
-        [MFoldout(nameof(constrain),EBoidsFloatingConstrain.Spherical)]public float sqrRadius;
-        [MFoldout(nameof(constrain),EBoidsFloatingConstrain.Box)] public Vector3 boxSize;
+        [Foldout(nameof(constrain),EBoidsFloatingConstrain.Spherical)]public float sqrRadius;
+        [Foldout(nameof(constrain),EBoidsFloatingConstrain.Box)] public Vector3 boxSize;
         public string anim;
     }
     

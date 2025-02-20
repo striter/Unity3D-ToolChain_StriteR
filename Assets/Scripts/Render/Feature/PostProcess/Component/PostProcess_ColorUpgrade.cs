@@ -36,23 +36,23 @@ namespace Rendering.PostProcess
         [MFold(nameof(m_LUTTex),null)] public bool m_64LUT;
         [MFold(nameof(m_LUTTex),null)] [Range(0,1)] public float m_LUTWeight;
         [Title] public bool m_BSC;
-        [MFoldout(nameof(m_BSC),true)] [Range(0, 2)]public float m_Brightness ;
-        [MFoldout(nameof(m_BSC),true)] [Range(0, 2)] public float m_Saturation ;
-        [MFoldout(nameof(m_BSC),true)] [Range(0, 2)]public float m_Contrast ;
+        [Foldout(nameof(m_BSC),true)] [Range(0, 2)]public float m_Brightness ;
+        [Foldout(nameof(m_BSC),true)] [Range(0, 2)] public float m_Saturation ;
+        [Foldout(nameof(m_BSC),true)] [Range(0, 2)]public float m_Contrast ;
 
         [Title]public bool m_ChannelMix;
-        [MFoldout(nameof(m_ChannelMix),true)] [RangeVector(-1, 1)] public Vector3 m_MixRed;
-        [MFoldout(nameof(m_ChannelMix),true)] [RangeVector(-1, 1)] public Vector3 m_MixGreen;
-        [MFoldout(nameof(m_ChannelMix),true)] [RangeVector(-1, 1)] public Vector3 m_MixBlue;
+        [Foldout(nameof(m_ChannelMix),true)] [RangeVector(-1, 1)] public Vector3 m_MixRed;
+        [Foldout(nameof(m_ChannelMix),true)] [RangeVector(-1, 1)] public Vector3 m_MixGreen;
+        [Foldout(nameof(m_ChannelMix),true)] [RangeVector(-1, 1)] public Vector3 m_MixBlue;
 
         public bool m_UseMaskTexture;
         
         [Title]public bool m_Bloom;
-        [MFoldout(nameof(m_Bloom),true)] public Data_Bloom m_BloomData;
+        [Foldout(nameof(m_Bloom),true)] public Data_Bloom m_BloomData;
 
         [Title] public bool motionBlur;
-        [MFoldout(nameof(motionBlur), true)] [Clamp(1,8)]public int iteration;
-        [MFoldout(nameof(motionBlur), true)] [Range(-5,5)] public float intensity;
+        [Foldout(nameof(motionBlur), true)] [Clamp(1,8)]public int iteration;
+        [Foldout(nameof(motionBlur), true)] [Range(-5,5)] public float intensity;
         public bool Validate() => motionBlur ||
                                   m_LUTTex!=null  || 
                                   m_BSC  || 
@@ -97,8 +97,8 @@ namespace Rendering.PostProcess
         public struct Data_Bloom
         {
             public EBloomSample m_SampleMode;
-            [MFoldout(nameof(m_SampleMode),EBloomSample.Luminance)] [Range(0.0f, 3f)] public float m_Threshold;
-            [MFoldout(nameof(m_SampleMode),EBloomSample.Mask)] public MaskTextureData m_MaskData;
+            [Foldout(nameof(m_SampleMode),EBloomSample.Luminance)] [Range(0.0f, 3f)] public float m_Threshold;
+            [Foldout(nameof(m_SampleMode),EBloomSample.Mask)] public MaskTextureData m_MaskData;
             [ColorUsage(true,true)] public Color m_Color;
             public DBlurs m_Blur;
             public bool m_BloomDebug;

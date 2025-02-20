@@ -16,10 +16,10 @@ public class AudioAnalysis : MonoBehaviour
 {
     public AudioSource m_Audio;
     public EAnalysis m_Analysis = EAnalysis.Spectrum;
-    [MFoldout(nameof(m_Analysis), EAnalysis.Output)] public FOutputAnalysis m_OutputAnalysis = new();
-    [MFoldout(nameof(m_Analysis), EAnalysis.Spectrum)] public FSpectrumAnalysis m_SpectrumAnalysis = new();
-    [MFoldout(nameof(m_Analysis), EAnalysis.CustomSpectrum)] public FSpectrumAnalysisHanning m_CustomSpectrumAnalysis = new();
-    [MFoldout(nameof(m_Analysis), EAnalysis.Band)] public FBandAnalysis m_BandAnalysis = new();
+    [Foldout(nameof(m_Analysis), EAnalysis.Output)] public FOutputAnalysis m_OutputAnalysis = new();
+    [Foldout(nameof(m_Analysis), EAnalysis.Spectrum)] public FSpectrumAnalysis m_SpectrumAnalysis = new();
+    [Foldout(nameof(m_Analysis), EAnalysis.CustomSpectrum)] public FSpectrumAnalysisHanning m_CustomSpectrumAnalysis = new();
+    [Foldout(nameof(m_Analysis), EAnalysis.Band)] public FBandAnalysis m_BandAnalysis = new();
     private IAudioAnalysis AnalysisCore => m_Analysis switch {
         EAnalysis.Output => m_OutputAnalysis,
         EAnalysis.Spectrum => m_SpectrumAnalysis,
@@ -30,8 +30,8 @@ public class AudioAnalysis : MonoBehaviour
     
     
     public EVisualize m_Visualize = EVisualize.Line;
-    [MFoldout(nameof(m_Visualize), EVisualize.Line)] public FVisualizeLine m_LineVisualize = new(); 
-    [MFoldout(nameof(m_Visualize), EVisualize.Circle)] public FVisualizeCircle m_CircleVisualize = new();
+    [Foldout(nameof(m_Visualize), EVisualize.Line)] public FVisualizeLine m_LineVisualize = new(); 
+    [Foldout(nameof(m_Visualize), EVisualize.Circle)] public FVisualizeCircle m_CircleVisualize = new();
     private IAudioVisualize VisualizeCore => m_Visualize switch {
         EVisualize.Line => m_LineVisualize,
         EVisualize.Circle => m_CircleVisualize,
@@ -163,7 +163,7 @@ public class AudioAnalysis : MonoBehaviour
             if (m_DFT)
                 Fourier.DFT(m_FrequencySample,N).FillList(UList.Empty<cfloat2>()).FillArray(m_FrequencySample);
             else
-                Fourier.FFT(m_FrequencySample, m_FrequencySample);
+                Fourier.FFT(m_FrequencySample);
             
             for (var i = 0; i < N/2; i++)
             {

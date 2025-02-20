@@ -15,8 +15,8 @@ namespace Rendering.PostProcess
         public override EPostProcess Event => EPostProcess.DepthOfField;
 
         public enum_Focal m_Focal;
-        [MFoldout(nameof(m_Focal),enum_Focal._DOF_DISTANCE,enum_Focal._DOF_DISTANCE_MASK)] public RangeFloat m_FocalData;
-        [MFoldout(nameof(m_Focal),enum_Focal._DOF_MASK,enum_Focal._DOF_DISTANCE_MASK)] public MaskTextureData m_FocalMaskData;
+        [Foldout(nameof(m_Focal),enum_Focal._DOF_DISTANCE,enum_Focal._DOF_DISTANCE_MASK)] public RangeFloat m_FocalData;
+        [Foldout(nameof(m_Focal),enum_Focal._DOF_MASK,enum_Focal._DOF_DISTANCE_MASK)] public MaskTextureData m_FocalMaskData;
 
         private static readonly int kIDFocalBegin = Shader.PropertyToID("_FocalStart");
         private static readonly int kIDFocalEnd = Shader.PropertyToID("_FocalEnd");
@@ -121,13 +121,13 @@ namespace Rendering.PostProcess
         [MFold(nameof(m_BlurType), EBlurType.None)] [Range(0.05f, 2f)] public float m_BlurSize;
         [MFold(nameof(m_BlurType),  EBlurType.None,EBlurType.Grainy)]
         [Range(1, FBlursCore.kMaxIteration)] public int m_Iteration;
-        [MFoldout(nameof(m_BlurType), EBlurType.Kawase, EBlurType.GaussianVHSeperated, EBlurType.AverageVHSeperated, EBlurType.Hexagon, EBlurType.DualFiltering,EBlurType.NextGen,EBlurType.LightStreak)]
+        [Foldout(nameof(m_BlurType), EBlurType.Kawase, EBlurType.GaussianVHSeperated, EBlurType.AverageVHSeperated, EBlurType.Hexagon, EBlurType.DualFiltering,EBlurType.NextGen,EBlurType.LightStreak)]
         [Range(1, 4)] public int m_DownSample;
-        [MFoldout(nameof(m_BlurType), EBlurType.Hexagon, EBlurType.Bokeh)]
+        [Foldout(nameof(m_BlurType), EBlurType.Hexagon, EBlurType.Bokeh)]
         [Range(-1, 1)] public float m_Angle;
-        [MFoldout(nameof(m_BlurType), EBlurType.LightStreak)]
+        [Foldout(nameof(m_BlurType), EBlurType.LightStreak)]
         [RangeVector(0, 1)] public Vector2 m_Vector;
-        [MFoldout(nameof(m_BlurType), EBlurType.LightStreak)]
+        [Foldout(nameof(m_BlurType), EBlurType.LightStreak)]
         [Range(.9f, 1f)] public float m_Attenuation;
         
         public bool Validate() => m_BlurType != EBlurType.None && m_DownSample > 0;

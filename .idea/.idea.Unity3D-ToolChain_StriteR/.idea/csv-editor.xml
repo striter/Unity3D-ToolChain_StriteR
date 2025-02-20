@@ -38,6 +38,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Library\PackageCache\com.unity.collections@2.5.1\ApiUpdater~\ValidationWhiteList.txt">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Library\PackageCache\com.unity.render-pipelines.universal@14.0.10\Editor\RendererFeatures\NewRendererFeature.cs.txt">
           <value>
             <Attribute>

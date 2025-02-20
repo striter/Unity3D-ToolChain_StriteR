@@ -18,9 +18,9 @@ namespace Runtime
         [Range(4, 64)] public int m_Resolution = 16;
         public ERopePosition m_RopePosition = ERopePosition.Constant;
 
-        [MFoldout(nameof(m_RopePosition), ERopePosition.Transform)] public Transform m_EndTransform;
-        [MFoldout(nameof(m_RopePosition), ERopePosition.Constant)] public Vector3 m_EndPosition;
-        [MFoldout(nameof(m_RopePosition), ERopePosition.Constant,nameof(m_Billboard),false)] public Vector3 m_EndBiTangent;
+        [Foldout(nameof(m_RopePosition), ERopePosition.Transform)] public Transform m_EndTransform;
+        [Foldout(nameof(m_RopePosition), ERopePosition.Constant)] public Vector3 m_EndPosition;
+        [Foldout(nameof(m_RopePosition), ERopePosition.Constant,nameof(m_Billboard),false)] public Vector3 m_EndBiTangent;
         public Damper m_ControlDamper = Damper.kDefault;
         
         private GBezierCurveQuadratic m_Curve;

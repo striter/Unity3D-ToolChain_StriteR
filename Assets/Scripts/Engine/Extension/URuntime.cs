@@ -166,31 +166,7 @@ public static class URuntime
     #region LODGroup
     
     //https://github.com/Unity-Technologies/AutoLOD/tree/master/Runtime
-    public static bool GetCurrentLOD(this LODGroup lodGroup, Camera camera,out LOD _lod)
-    {
-        var lods = lodGroup.GetLODs();
-        var relativeHeight = DistanceToRelativeHeight(camera, lodGroup.size, GetWorldSpaceScale(lodGroup.transform));
-        
-        var lodIndex = -1;
-
-        for (var i = 0; i < lods.Length; i++)
-        {
-            var lod = lods[i];
-            if (!(relativeHeight >= lod.screenRelativeTransitionHeight))
-                continue;
-            lodIndex = i;
-            break;
-        }
-
-        _lod = default;
-        if (lodIndex == -1)
-            return false;
-
-        _lod = lods[lodIndex];
-        return lodIndex > 0;
-    }
-    
-    static float GetWorldSpaceScale(Transform t)
+   static float GetWorldSpaceScale(Transform t)
     {
         var scale = t.lossyScale;
         var largestAxis = Mathf.Abs(scale.x);
@@ -198,6 +174,7 @@ public static class URuntime
         largestAxis = Mathf.Max(largestAxis, Mathf.Abs(scale.z));
         return largestAxis;
     }
+    
     static float DistanceToRelativeHeight(Camera camera, float distance, float size)
     {
         if (camera.orthographic)
@@ -212,6 +189,31 @@ public static class URuntime
     {
         var distance = (lodGroup.transform.TransformPoint(lodGroup.localReferencePoint) - camera.transform.position).magnitude;
         return DistanceToRelativeHeight(camera, distance / QualitySettings.lodBias,  GetWorldSpaceScale(lodGroup.transform) * lodGroup.size);
+    }
+    
+    public static bool GetCurrentLOD(this LODGroup _lodGroup, Camera _camera,out LOD _lod)
+    {
+        _lod = default;
+        var lods = _lodGroup.GetLODs();
+        if (lods.Length == 0)
+            return false;
+        
+        var relativeHeight = GetRelativeHeight(_lodGroup, _camera);
+        var lodIndex = 0;
+
+        for (var i = 0; i < lods.Length; i++)
+        {
+            var lod = lods[i];
+
+            if (relativeHeight >= lod.screenRelativeTransitionHeight)
+            {
+                lodIndex = i;
+                break;
+            }
+        }
+
+        _lod =  lods[lodIndex];
+        return true;
     }
     
     #endregion

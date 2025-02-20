@@ -16,8 +16,8 @@ namespace Rendering.Pipeline.Mask
     {
         public EMaskTextureMode mode;
         [MFold(nameof(mode),EMaskTextureMode.ProviderMaterialReplacement),CullingMask] public int renderMask;
-        [MFoldout(nameof(mode),EMaskTextureMode.MaterialReplacement,EMaskTextureMode.ProviderMaterialReplacement)]public Material overrideMaterial;
-        [MFoldout(nameof(mode),EMaskTextureMode.ShaderReplacement)] public Shader overrideShader;
+        [Foldout(nameof(mode),EMaskTextureMode.MaterialReplacement,EMaskTextureMode.ProviderMaterialReplacement)]public Material overrideMaterial;
+        [Foldout(nameof(mode),EMaskTextureMode.ShaderReplacement)] public Shader overrideShader;
         public bool inheritDepth;
 
         public static MaskTextureData kDefault = new MaskTextureData()

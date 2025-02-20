@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Runtime.Algorithm;
 using Runtime.Geometry;
 using Runtime.Geometry.Curves;
 using Runtime.Geometry.Curves.Spline;
@@ -25,8 +26,7 @@ namespace Examples.Algorithm.Geometry
         public GFourierSpline m_FourierSpline = GFourierSpline.kBunny;
         public GHermiteSpline m_HermineSpline = GHermiteSpline.kDefault;
         public GCatmullRomSpline m_CatmullRomSpline = GCatmullRomSpline.kDefault;
-        public GSpline m_BSpline = GSpline.kDefault;
-        public GBezierSplineUniform m_BSplineUniform = GBezierSplineUniform.kDefault;
+        public GBezierSpline m_BSpline = GBezierSpline.kDefault;
         
         [Header("Line Segments")]
         public GDivisionCurve m_DivisionCurve = GDivisionCurve.kDefault;
@@ -70,7 +70,7 @@ namespace Examples.Algorithm.Geometry
             Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(20f,0f,0f));
             m_ProjectileCurve.DrawGizmos();
 
-            var splines = new ISpline[]{m_FourierSpline,m_HermineSpline,m_CatmullRomSpline,m_BSpline,m_BSplineUniform};
+            var splines = new ISpline[]{m_FourierSpline,m_HermineSpline,m_CatmullRomSpline,m_BSpline};
             for (int i = 0; i < splines.Length; i++)
             {
                 Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(i*5f,0f,3f));
@@ -100,6 +100,8 @@ namespace Examples.Algorithm.Geometry
             m_ChaikinCurve.DrawGizmos();
             Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(10f,0f, 6f)) * Matrix4x4.Scale(Vector3.one*.1f);
             m_DragonCurve.DrawGizmos();
+            Debug.LogError(NumericalIntegration.TrapezoidRule(m_BSpline.Evaluate));
+            Debug.LogError(NumericalIntegration.RombergIntegration(m_BSpline.Evaluate));
         }
 #endif
     }

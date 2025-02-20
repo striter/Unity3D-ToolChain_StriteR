@@ -36,10 +36,10 @@ namespace Runtime.CameraController.Inputs.Touch
         
         [Header("Initialize")]
         public EConstrainMode pitchMode;
-        [MFoldout(nameof(pitchMode),EConstrainMode.Clamp)] [MinMaxRange(-90,90)] public RangeFloat pitchClamp;
+        [Foldout(nameof(pitchMode),EConstrainMode.Clamp)] [MinMaxRange(-90,90)] public RangeFloat pitchClamp;
         public FInputInitializer pitchInitializer;
         public EConstrainMode yawMode;
-        [MFoldout(nameof(yawMode),EConstrainMode.Clamp)] [MinMaxRange(-360,360)] public RangeFloat yawClamp;
+        [Foldout(nameof(yawMode),EConstrainMode.Clamp)] [MinMaxRange(-360,360)] public RangeFloat yawClamp;
         public FInputInitializer yawInitializer;
         public bool initialYawWithAnchor;
         public EConstrainMode pinchMode;

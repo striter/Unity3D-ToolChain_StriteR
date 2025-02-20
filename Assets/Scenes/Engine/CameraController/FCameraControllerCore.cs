@@ -13,12 +13,15 @@ namespace Runtime.CameraController
     {
         public bool m_Initialize = true;
         public bool m_Reset = false;
-        [MFold(nameof(m_SerializedController),null)] public MonoBehaviour m_SerializedController;
-        [MFold(nameof(m_ScriptableController),null)] public ScriptableObject m_ScriptableController;
-        [Readonly] public FCameraControllerOutput m_Output;
         public ICameraController m_Controller { get; private set; } = FEmptyController.kDefault;
         private List<IControllerPostModifer> m_Animations = new List<IControllerPostModifer>();
-
+        
+        [Header("Debug")]
+        [Readonly] public FCameraControllerOutput m_Output;
+        public bool m_AnchorDebugRecording = false;
+        private List<float3> m_AnchorList = new List<float3>();
+        [MFold(nameof(m_SerializedController),null)] public MonoBehaviour m_SerializedController;
+        [MFold(nameof(m_ScriptableController),null)] public ScriptableObject m_ScriptableController;
         public bool Switch(ICameraController _controller)
         {
             _controller ??= FEmptyController.kDefault;
@@ -42,11 +45,15 @@ namespace Runtime.CameraController
             
             return true;
         }
-        
+
         public bool Tick<T>(float _deltaTime,ref T _input) where T:AControllerInput
         {
-            if(!_input.Available)
+            if (!_input.Available)
+            {             
+                if(_input.Camera != null && _input.Camera.gameObject.activeInHierarchy)
+                    m_Output.Apply(_input.Camera);
                 return false;
+            }
 
             if (m_Initialize)
             {
@@ -72,11 +79,14 @@ namespace Runtime.CameraController
             
             foreach (var processor in m_Controller.InputProcessor)
                 processor.OnTick(_deltaTime,ref _input);
-
+            
             if (!m_Controller.Tick(_deltaTime, _input, ref m_Output))
                 return false;
             
             IControllerPostModifer.Tick(_deltaTime,_input,ref m_Output, ref m_Animations);
+            if(m_AnchorDebugRecording)
+                m_AnchorList.Add(m_Output.anchor);
+
             m_Output.Apply(_input.Camera);
             return true;
         }
@@ -126,28 +136,25 @@ namespace Runtime.CameraController
             Apply(_input,anchor + anchorOffset,_rotation,_fov, forwardProjection,0);
         }
 
-        public void Apply(AControllerInput _input,float3 _anchor, quaternion _rotation, float _fov, float _distance, float2 _viewPort)
-        {
-            var output =  new FCameraControllerOutput()
-            {
+        public void Apply(AControllerInput _input,float3 _anchor, quaternion _rotation, float _fov, float _distance, float2 _viewPort) => m_Output = new FCameraControllerOutput() {
                 anchor = _anchor,
                 euler = _rotation.toEulerAngles(),
                 fov = _fov,
                 viewPort = _viewPort,
                 distance = _distance
             };
-            
-            if(_input.Camera != null)
-                output.Apply(_input.Camera);
-            
-            m_Output = output;
-        }
         
         public void DrawGizmos(AControllerInput _input)
         {
             m_Controller.DrawGizmos(_input);
             m_Animations.Traversal(p=>p.DrawGizmos(_input));
             m_Output.DrawGizmos(_input.Camera);
+
+            Gizmos.color = Color.green.SetA(.5f);
+            foreach (var anchor in m_AnchorList)
+                Gizmos.DrawSphere(anchor,.05f);
+            Gizmos.color = Color.green;
+            UGizmos.DrawLines(m_AnchorList);
         }
 
         public void OnBeforeSerialize()
@@ -156,6 +163,8 @@ namespace Runtime.CameraController
 
         public void OnAfterDeserialize()
         {
+            if(m_AnchorDebugRecording)
+                m_AnchorList.Clear();
             if(m_SerializedController != null && m_SerializedController is ICameraController _controllerSerialized)
                 Switch(_controllerSerialized);
             if(m_ScriptableController != null && m_ScriptableController is ICameraController _controllerScriptable)

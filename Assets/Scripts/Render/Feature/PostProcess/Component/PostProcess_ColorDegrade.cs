@@ -22,41 +22,41 @@ namespace Rendering.PostProcess
         [MFold(nameof(m_ScreenCut), EVHSScreenCut.None), RangeVector(0, 1)] public Vector2 m_ScreenCutDistance;
 
         [Title] public bool m_PixelDistort;
-        [MFoldout(nameof(m_PixelDistort), true)][ RangeVector(0, 1)] public Vector2 m_PixelDistortScale;
-        [MFoldout(nameof(m_PixelDistort), true)][ Range(0, 0.5f)] public float m_PixelDistortStrength;
-        [MFoldout(nameof(m_PixelDistort), true)][ Range(0.5f, 1f)] public float m_PixelDistortClip;
-        [MFoldout(nameof(m_PixelDistort), true)][ Range(0f, 144f)] public int m_PixelDistortFrequency;
+        [Foldout(nameof(m_PixelDistort), true)][ RangeVector(0, 1)] public Vector2 m_PixelDistortScale;
+        [Foldout(nameof(m_PixelDistort), true)][ Range(0, 0.5f)] public float m_PixelDistortStrength;
+        [Foldout(nameof(m_PixelDistort), true)][ Range(0.5f, 1f)] public float m_PixelDistortClip;
+        [Foldout(nameof(m_PixelDistort), true)][ Range(0f, 144f)] public int m_PixelDistortFrequency;
 
         [Title] public bool m_LineDistort;
-        [MFoldout(nameof(m_LineDistort), true)][ Range(-2f, 2f)] public float m_LineDistortSpeed;
-        [MFoldout(nameof(m_LineDistort), true)][ Range(-.1f, .1f)] public float m_LineDistortStrength;
-        [MFoldout(nameof(m_LineDistort), true)][ Range(0f, 1f)] public float m_LineDistortClip;
-        [MFoldout(nameof(m_LineDistort), true)][ Range(0, 10f)] public float m_LineDistortFrequency;
+        [Foldout(nameof(m_LineDistort), true)][ Range(-2f, 2f)] public float m_LineDistortSpeed;
+        [Foldout(nameof(m_LineDistort), true)][ Range(-.1f, .1f)] public float m_LineDistortStrength;
+        [Foldout(nameof(m_LineDistort), true)][ Range(0f, 1f)] public float m_LineDistortClip;
+        [Foldout(nameof(m_LineDistort), true)][ Range(0, 10f)] public float m_LineDistortFrequency;
 
         [Title] public bool m_VortexDistort;
-        [MFoldout(nameof(m_VortexDistort), true)][RangeVector(0, 1)] public Vector2 m_VortexCenter;
-        [MFoldout(nameof(m_VortexDistort), true)][Range(-5, 5)] public float m_VortexStrength;
+        [Foldout(nameof(m_VortexDistort), true)][RangeVector(0, 1)] public Vector2 m_VortexCenter;
+        [Foldout(nameof(m_VortexDistort), true)][Range(-5, 5)] public float m_VortexStrength;
         
         [Header("Colors")]
         [Title] public bool m_ColorBleed;
-        [MFoldout(nameof(m_ColorBleed), true)] [Range(0, 5)] public float m_ColorBleedStrength;
-        [MFoldout(nameof(m_ColorBleed), true)][ Range(1, 4)] public int m_ColorBleedIteration;
-        [MFoldout(nameof(m_ColorBleed), true)][ Range(0, 2)] public float m_ColorBleedSize;
-        [MFoldout(nameof(m_ColorBleed), true)][ RangeVector(-5, 5)] public Vector2 m_ColorBleedR;
-        [MFoldout(nameof(m_ColorBleed), true)][ RangeVector(-5, 5)] public Vector2 m_ColorBleedG;
-        [MFoldout(nameof(m_ColorBleed), true)][ RangeVector(-5, 5)] public Vector2 m_ColorBleedB;
+        [Foldout(nameof(m_ColorBleed), true)] [Range(0, 5)] public float m_ColorBleedStrength;
+        [Foldout(nameof(m_ColorBleed), true)][ Range(1, 4)] public int m_ColorBleedIteration;
+        [Foldout(nameof(m_ColorBleed), true)][ Range(0, 2)] public float m_ColorBleedSize;
+        [Foldout(nameof(m_ColorBleed), true)][ RangeVector(-5, 5)] public Vector2 m_ColorBleedR;
+        [Foldout(nameof(m_ColorBleed), true)][ RangeVector(-5, 5)] public Vector2 m_ColorBleedG;
+        [Foldout(nameof(m_ColorBleed), true)][ RangeVector(-5, 5)] public Vector2 m_ColorBleedB;
 
         [Title] public bool m_Grain;
-        [MFoldout(nameof(m_Grain), true)] public Color m_GrainColor;
-        [MFoldout(nameof(m_Grain), true)] [RangeVector(0, 1)] public Vector2 m_GrainScale;
-        [MFoldout(nameof(m_Grain), true)] [Range(0, 1)] public float m_GrainClip;
-        [MFoldout(nameof(m_Grain), true)] [Range(0, 144)] public int m_GrainFrequency;
-        [MFoldout(nameof(m_Grain), true)] public bool m_GrainCirlce;
-        [MFoldout(nameof(m_Grain), true, nameof(m_GrainCirlce), true)] [Range(0, .5f)] public float m_GrainCircleWidth;
+        [Foldout(nameof(m_Grain), true)] public Color m_GrainColor;
+        [Foldout(nameof(m_Grain), true)] [RangeVector(0, 1)] public Vector2 m_GrainScale;
+        [Foldout(nameof(m_Grain), true)] [Range(0, 1)] public float m_GrainClip;
+        [Foldout(nameof(m_Grain), true)] [Range(0, 144)] public int m_GrainFrequency;
+        [Foldout(nameof(m_Grain), true)] public bool m_GrainCirlce;
+        [Foldout(nameof(m_Grain), true, nameof(m_GrainCirlce), true)] [Range(0, .5f)] public float m_GrainCircleWidth;
 
         [Title] public bool m_Vignette;
-        [MFoldout(nameof(m_Vignette), true)] public Color m_VignetteColor;
-        [MFoldout(nameof(m_Vignette), true), Range(0, 10)] public float m_VignetteValue;
+        [Foldout(nameof(m_Vignette), true)] public Color m_VignetteColor;
+        [Foldout(nameof(m_Vignette), true), Range(0, 10)] public float m_VignetteValue;
 
         public bool Validate() => m_ScreenCut != EVHSScreenCut.None || m_PixelDistort || m_LineDistort ||
                                   m_VortexDistort || m_ColorBleed || m_Grain || m_Vignette;

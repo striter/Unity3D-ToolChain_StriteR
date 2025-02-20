@@ -96,9 +96,9 @@ namespace TechToys.ThePlanet.Module.Cluster
         #region Gizmos
         [Header("Gizmos")]
         public bool m_CornerGizmos;
-        [MFoldout(nameof(m_CornerGizmos),true)] public bool m_CornerStatus;
+        [Foldout(nameof(m_CornerGizmos),true)] public bool m_CornerStatus;
         public bool m_VoxelGizmos;
-        [MFoldout(nameof(m_VoxelGizmos),true)] public bool m_VoxelQuad;
+        [Foldout(nameof(m_VoxelGizmos),true)] public bool m_VoxelQuad;
         void OnDrawGizmos()
         {
             if (m_ClusterCorners==null)

@@ -63,14 +63,14 @@ namespace Rendering.PostProcess
     public struct DAntiAliasing:IPostProcessParameter
     {
         public EAntiAliasing mode;
-        [MFoldout(nameof(mode),EAntiAliasing.FXAA)] public EFXAA fxaa;
-        [MFoldout(nameof(mode),EAntiAliasing.FXAA)] public bool m_AdditionalSample;
-        [MFoldout(nameof(mode),EAntiAliasing.FXAA)] public bool m_UseDepth;
-        [MFoldout(nameof(mode),EAntiAliasing.FXAA)] [Range(.01f,1f)] public float m_ContrastSkip;
-        [MFoldout(nameof(mode),EAntiAliasing.FXAA)] [Range(.01f,1f)] public float m_RelativeSkip;
-        [MFoldout(nameof(mode),EAntiAliasing.FXAA, nameof(fxaa),new object[]{EFXAA.SubPixel,EFXAA.Both})] [Range(.1f,2f)] public float m_SubPixelBlend;
+        [Foldout(nameof(mode),EAntiAliasing.FXAA)] public EFXAA fxaa;
+        [Foldout(nameof(mode),EAntiAliasing.FXAA)] public bool m_AdditionalSample;
+        [Foldout(nameof(mode),EAntiAliasing.FXAA)] public bool m_UseDepth;
+        [Foldout(nameof(mode),EAntiAliasing.FXAA)] [Range(.01f,1f)] public float m_ContrastSkip;
+        [Foldout(nameof(mode),EAntiAliasing.FXAA)] [Range(.01f,1f)] public float m_RelativeSkip;
+        [Foldout(nameof(mode),EAntiAliasing.FXAA, nameof(fxaa),new object[]{EFXAA.SubPixel,EFXAA.Both})] [Range(.1f,2f)] public float m_SubPixelBlend;
         
-        [MFoldout(nameof(mode),EAntiAliasing.TAA)] [Range(0,1)] public float blend;
+        [Foldout(nameof(mode),EAntiAliasing.TAA)] [Range(0,1)] public float blend;
         public bool Validate() =>mode != EAntiAliasing.None;
         public static DAntiAliasing kDefault = new DAntiAliasing()
         {

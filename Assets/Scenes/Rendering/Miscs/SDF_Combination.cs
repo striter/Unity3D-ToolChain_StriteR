@@ -25,10 +25,10 @@ namespace Examples.Rendering.Misc
         public float3 position;
         [ColorUsage(false)]public Color albedo;
 
-        [MFoldout(nameof(shape), ESDFShape.Capsule)] public float2 capsuleShape;
-        [MFoldout(nameof(shape),ESDFShape.Sphere)] public float radius;
-        [MFoldout(nameof(shape),ESDFShape.Box)] public float3 extents;
-        [MFoldout(nameof(shape), ESDFShape.Plane)] public float3 normal;
+        [Foldout(nameof(shape), ESDFShape.Capsule)] public float2 capsuleShape;
+        [Foldout(nameof(shape),ESDFShape.Sphere)] public float radius;
+        [Foldout(nameof(shape),ESDFShape.Box)] public float3 extents;
+        [Foldout(nameof(shape), ESDFShape.Plane)] public float3 normal;
         public IGeometry FormatCPU(Matrix4x4 _localToWorldMatrix)
         {
             var origin = (float3)_localToWorldMatrix.GetPosition() + position;

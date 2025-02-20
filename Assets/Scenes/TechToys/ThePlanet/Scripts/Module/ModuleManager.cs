@@ -16,7 +16,7 @@ namespace TechToys.ThePlanet.Module
         [ColorUsage(false,true)]public Color[] m_EmissionColors;
         [Header("Wave Function Collapse")]
         public bool m_ForceIteration = false;
-        [MFoldout(nameof(m_ForceIteration),false)] [Clamp(1,1024)]public int m_IterationPerFrame =1;
+        [Foldout(nameof(m_ForceIteration),false)] [Clamp(1,1024)]public int m_IterationPerFrame =1;
         
         private IModuleControl[] m_Controls;
         

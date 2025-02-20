@@ -1,10 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Extensions;
 using System.Reflection;
 using UnityEngine;
 
 public static class UDebug
 {
-    static object CheckValue(object _value,Type _type)
+    private static readonly BindingFlags kInstanceBindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+    private static readonly BindingFlags kStaticBindingFlags = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
+    
+    static object CheckArgsValue(object _value,Type _type)
     {
         if (_value is not double doubleVal) 
             return _value;
@@ -17,7 +23,13 @@ public static class UDebug
         return _value;
     }
 
-    private static readonly BindingFlags kBindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+    static Type CheckArgsType(Type _inputType,Type _argsType)
+    {
+        if (_argsType == typeof(float) && _inputType == typeof(double))
+            return typeof(float);
+        return _inputType;
+    }
+
     public static object GetFieldValue(object _parent, string _paths)
     {
         if (string.IsNullOrEmpty(_paths))
@@ -27,7 +39,7 @@ public static class UDebug
         var paths = _paths.Split('.');
         for (var i = 0; i < paths.Length; i++)
         {
-            var fieldInfo = target.GetType().GetField(paths[i], kBindingFlags);
+            var fieldInfo = target.GetType().GetField(paths[i], kInstanceBindingFlags);
             if (fieldInfo == null)
             {
                 Debug.LogError($"Field {paths[i]} not found for {target}({target.GetType().Name})");
@@ -49,7 +61,7 @@ public static class UDebug
         var paths = _paths.Split('.');
         for (var i = 0; i < paths.Length; i++)
         {
-            var propertyInfo = target.GetType().GetProperty(paths[i], kBindingFlags);
+            var propertyInfo = target.GetType().GetProperty(paths[i], kInstanceBindingFlags);
             if (propertyInfo == null)
             {
                 Debug.LogError($"Property {paths[i]} not found for {target}({target.GetType().Name})");
@@ -63,7 +75,7 @@ public static class UDebug
     public static object GetIndex(object _parent, int _index)
     {
         var type = _parent.GetType();
-        var propertyInfo = type.GetProperty("Item",kBindingFlags);
+        var propertyInfo = type.GetProperty("Item",kInstanceBindingFlags);
         if (propertyInfo == null)
         {
             Debug.LogError($"Property Item not found for {type.Name}");
@@ -76,7 +88,7 @@ public static class UDebug
     public static void SetIndex(object _parent, int _index, object _value)
     {
         var type = _parent.GetType();
-        var propertyInfo = type.GetProperty("Item",kBindingFlags);
+        var propertyInfo = type.GetProperty("Item",kInstanceBindingFlags);
         if (propertyInfo == null)
         {
             Debug.LogError($"Property Item not found for {type.Name}");
@@ -84,55 +96,102 @@ public static class UDebug
         }
         propertyInfo.SetValue(_parent, _value, new object[] { _index });
     }
+
     
-    public static object CallMethod(object _object, string _methodName, params object[] _args)
+    private static Dictionary<Type,MethodInfo[]> kMethodsHelper = new Dictionary<Type, MethodInfo[]>();
+    public static object CallMethod(object _instance, string _methodName, params object[] _args)
     {
-        var type = _object.GetType();
-        var method = _object.GetType().GetMethod(_methodName, kBindingFlags);
-        if (method == null)
+        if (_instance == null)
         {
-            Debug.LogError($"Method {_methodName} not found for {_object}({type.Name})");
+            Debug.LogError($"Parameter _object can't be null");
             return null;
         }
         
-        var argsInfo = method.GetParameters();
+        return CallTypeMethod(_instance.GetType(),_instance,_methodName,kInstanceBindingFlags,_args);
+    }
+    public static object CallMethodStatic(string _className, string _methodName, params object[] _args)
+    {
+        var type = Type.GetType(_className);
+        if (type == null)
+        {
+            Debug.LogError($"Type {_className} not found");
+            return null;
+        }
+        return CallTypeMethod(type, null, _methodName, kStaticBindingFlags, _args);
+    }
+
+    public static object CallTypeMethod(Type _type,object _instance, string _methodName,BindingFlags _bindingFlags, params object[] _args)
+    {
+        if (!kMethodsHelper.TryGetValue(_type, out var methods))
+        {
+            methods = _type.GetMethods(_bindingFlags);
+            kMethodsHelper.Add(_type, methods);
+        }
+
+        MethodInfo methodToInvoke = null;
+        var argsLength = _args.Length;
+        foreach(var method in methods.Where(p => p.Name == _methodName))
+        {
+            var methodParams = method.GetParameters();
+            if(method.GetParameters().Length != argsLength)
+                continue;
+
+            var validMethod = true;
+            for (var i = 0; i < methodParams.Length; i++)
+            {
+                var param = methodParams[i];
+                if (param.ParameterType != CheckArgsType(_args[i].GetType(),param.ParameterType))
+                    validMethod = false;
+            }
+
+            if (validMethod)
+                methodToInvoke = method;
+        }
+        
+        if (methodToInvoke == null)
+        {
+            Debug.LogError($"Method {_methodName} not found for ({_type.Name})");
+            return null;
+        }
+        
+        var argsInfo = methodToInvoke.GetParameters();
         if (_args.Length != argsInfo.Length)
         {
-            Debug.LogError($"Method {_methodName} has {argsInfo.Length} args, but {_args.Length} given for {_object}({type.Name})");
+            Debug.LogError($"Method {_methodName} has {argsInfo.Length} args, but {_args.Length} given for ({_type.Name})");
             return null;
         }
         
         if(_args.Length != 0)
             for (var i = 0; i < argsInfo.Length; i++)
-                _args[i] = CheckValue(_args[i], argsInfo[i].ParameterType);
+                _args[i] = CheckArgsValue(_args[i], argsInfo[i].ParameterType);
         
-        return method.Invoke(_object, _args);
+        return methodToInvoke.Invoke(_instance, _args);
     }
     
     public static void SetFieldValue(object _object,  string _fieldName, object _value)
     {
         var type = _object.GetType();
-        var fieldInfo = type.GetField(_fieldName,kBindingFlags);
+        var fieldInfo = type.GetField(_fieldName,kInstanceBindingFlags);
         if (fieldInfo == null)
         {
             Debug.LogError($"Field:{_fieldName} not found in {type.Name}");
             return;
         }
 
-        _value = CheckValue(_value,fieldInfo.FieldType);
+        _value = CheckArgsValue(_value,fieldInfo.FieldType);
         fieldInfo.SetValue(_object,_value);
     }
 
     public static void SetPropertyValue(object _object, string _propertyName, object _value)
     {
         var type = _object.GetType();
-        var propertyInfo = type.GetProperty(_propertyName,kBindingFlags);
+        var propertyInfo = type.GetProperty(_propertyName,kInstanceBindingFlags);
         if (propertyInfo == null)
         {
             Debug.LogError($"Property:{_propertyName} not found in {type.Name}");
             return;
         }
         
-        propertyInfo.SetValue(_object,CheckValue(_value,propertyInfo.PropertyType));
+        propertyInfo.SetValue(_object,CheckArgsValue(_value,propertyInfo.PropertyType));
     }
 }

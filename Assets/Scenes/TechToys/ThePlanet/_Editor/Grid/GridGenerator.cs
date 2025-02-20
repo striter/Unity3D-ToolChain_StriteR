@@ -14,8 +14,8 @@ namespace TechToys.ThePlanet.Grid
     public class GridGenerator : MonoBehaviour
     {
         public EGridType m_GridType;
-        [MFoldout(nameof(m_GridType),EGridType.DisorderedGrid)] public DisorderedHexagonGridGenerator m_DisorderedHexagonGrid = new DisorderedHexagonGridGenerator();
-        [MFoldout(nameof(m_GridType),EGridType.SphericalGrid)] public SphericalGridGenerator m_SphericalGrid = new SphericalGridGenerator();
+        [Foldout(nameof(m_GridType),EGridType.DisorderedGrid)] public DisorderedHexagonGridGenerator m_DisorderedHexagonGrid = new DisorderedHexagonGridGenerator();
+        [Foldout(nameof(m_GridType),EGridType.SphericalGrid)] public SphericalGridGenerator m_SphericalGrid = new SphericalGridGenerator();
         private Dictionary<EGridType, IGridGenerator> m_Grids;
 
         private void OnEnable()

@@ -10,8 +10,8 @@ namespace Dome.Collision
     public struct ECollisionCasterData
     {
         public EGeometryType type;
-        [MFoldout(nameof(type),EGeometryType.Sphere)] public float radius;
-        [MFoldout(nameof(type),EGeometryType.Box)] public float3 boxBounds;
+        [Foldout(nameof(type),EGeometryType.Sphere)] public float radius;
+        [Foldout(nameof(type),EGeometryType.Box)] public float3 boxBounds;
     }
 
     public interface ICollisionCaster

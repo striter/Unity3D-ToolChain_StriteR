@@ -22,12 +22,12 @@ namespace Runtime.Geometry.Extension.Mesh
     public struct ProceduralMeshInput
     {
         public EProceduralMeshType meshType;
-        [MFoldout(nameof(meshType),EProceduralMeshType.GridHexagon)] public HexagonGridGenerator m_Hexagon;
-        [MFoldout(nameof(meshType), EProceduralMeshType.GridSquare)]  public SquareGridGenerator m_Plane;
-        [MFoldout(nameof(meshType), EProceduralMeshType.Cube)] public CubeGenerator m_Cube;
-        [MFoldout(nameof(meshType), EProceduralMeshType.SphereUV)] public UVSphereGenerator m_UVSphere;
-        [MFoldout(nameof(meshType), EProceduralMeshType.SphereCube)] public CubeSphereGenerator m_CubeSphere;
-        [MFoldout(nameof(meshType), EProceduralMeshType.SpherePolygon)] public PolygonSphereGenerator m_PolygonSphere;
+        [Foldout(nameof(meshType),EProceduralMeshType.GridHexagon)] public HexagonGridGenerator m_Hexagon;
+        [Foldout(nameof(meshType), EProceduralMeshType.GridSquare)]  public SquareGridGenerator m_Plane;
+        [Foldout(nameof(meshType), EProceduralMeshType.Cube)] public CubeGenerator m_Cube;
+        [Foldout(nameof(meshType), EProceduralMeshType.SphereUV)] public UVSphereGenerator m_UVSphere;
+        [Foldout(nameof(meshType), EProceduralMeshType.SphereCube)] public CubeSphereGenerator m_CubeSphere;
+        [Foldout(nameof(meshType), EProceduralMeshType.SpherePolygon)] public PolygonSphereGenerator m_PolygonSphere;
         public static readonly ProceduralMeshInput kDefault = new ProceduralMeshInput()
         {
             meshType = EProceduralMeshType.GridSquare,

@@ -10,7 +10,7 @@ namespace UnityEditor.Extensions.EditorPath
 
 
     [CustomPropertyDrawer(typeof(EditorPathAttribute))]
-    public class PathPropertyDrawer : ASubAttributePropertyDrawer<EditorPathAttribute>
+    public class PathPropertyDrawer : AAttributePropertyDrawer<EditorPathAttribute>
     {
         private bool m_Foldout;
         private const float kOutputHeight = 20;

@@ -8,7 +8,7 @@ public class UIMeshRenderer : MaskableGraphic
 {
     public Mesh m_Mesh;
     public bool m_ConstantSize = true;
-    [MFoldout(nameof(m_ConstantSize),true)]public int m_BaseSize = 200;
+    [Foldout(nameof(m_ConstantSize),true)]public int m_BaseSize = 200;
     public Vector3 m_OSRotation = Vector3.zero;
     #if UNITY_EDITOR
     protected override void OnValidate()

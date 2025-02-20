@@ -14,7 +14,7 @@ namespace Runtime.CameraController.Component
     public class FRotationDamper
     {
         public ERotationMode m_RotationMode = ERotationMode.Euler;
-        [MFoldout(nameof(m_RotationMode),ERotationMode.EulerInputSeperated)]public Damper m_PlayerInputDamper = Damper.kDefault;
+        [Foldout(nameof(m_RotationMode),ERotationMode.EulerInputSeperated)]public Damper m_PlayerInputDamper = Damper.kDefault;
         public Damper m_RotationDamper = Damper.kDefault;
         
         public void Initialize(AnchoredControllerParameters _input,AnchoredControllerParameters baseParameters)

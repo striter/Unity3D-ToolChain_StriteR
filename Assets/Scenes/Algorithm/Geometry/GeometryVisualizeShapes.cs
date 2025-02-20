@@ -13,8 +13,8 @@ public class GeometryVisualizeShapes : MonoBehaviour
 {
     [PostNormalize] public float3 m_SupportDirection = kfloat3.forward;
     public bool m_ManualCast = false;
-    [MFoldout(nameof(m_ManualCast),false)][PostNormalize] public float3 m_CastDirection = kfloat3.forward;
-    [MFoldout(nameof(m_ManualCast),true)] public GRay m_ManualCastRay = GRay.kDefault;
+    [Foldout(nameof(m_ManualCast),false)][PostNormalize] public float3 m_CastDirection = kfloat3.forward;
+    [Foldout(nameof(m_ManualCast),true)] public GRay m_ManualCastRay = GRay.kDefault;
     private IGeometry[] drawingShapes = {GTriangle.kDefault,GDisk.kDefault,GQuad.kDefault, GPolygon.kBunny,   GBox.kDefault, GCapsule.kDefault, GCylinder.kDefault, GSphere.kOne, GEllipsoid.kDefault, GCone.kDefault };
 #if UNITY_EDITOR
     private void OnDrawGizmos()

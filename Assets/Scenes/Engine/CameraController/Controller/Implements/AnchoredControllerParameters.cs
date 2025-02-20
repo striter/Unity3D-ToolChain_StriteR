@@ -30,7 +30,7 @@ namespace Runtime.CameraController
         public float3 anchorOffset;
         public string childName;
         public bool useTransformPosition;     //In some case its bounding box goes pretty weird
-        [MFoldout(nameof(useBoundingBox),true)] [Range(-.5f,.5f)] public float anchorY;
+        [Foldout(nameof(useBoundingBox),true)] [Range(-.5f,.5f)] public float anchorY;
         
         [Header("Screen Space Centering")]
         [Range(-.5f, .5f)] public float viewportX;
@@ -42,7 +42,7 @@ namespace Runtime.CameraController
         
         [Header("Distance")]
         [Range(5f, 90f)] public float fov;
-        [MFoldout(nameof(useBoundingBox),true)]  public bool distanceAABBAdaption;
+        [Foldout(nameof(useBoundingBox),true)]  public bool distanceAABBAdaption;
         public float distance;
         
         public static readonly AnchoredControllerInput kDefault = new()

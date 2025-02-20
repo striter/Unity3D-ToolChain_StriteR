@@ -25,10 +25,10 @@ public struct Damper
 {
     [Header("Config")]
     public EDamperMode mode;
-    [MFoldout(nameof(mode),EDamperMode.Lerp,EDamperMode.SpringCritical)][Clamp(0.01f)] public float halfLife;
-    [MFoldout(nameof(mode),EDamperMode.SpringSimple,EDamperMode.SpringImplicit)][Range(0,200)] public float stiffness;
-    [MFoldout(nameof(mode),EDamperMode.SpringSimple,EDamperMode.SpringImplicit)][Range(0,30)] public float damping;
-    [MFoldout(nameof(mode), EDamperMode.SecondOrderDynamics)] public SecondOrderDynamics secondOrderDynamics;
+    [Foldout(nameof(mode),EDamperMode.Lerp,EDamperMode.SpringCritical)][Clamp(0.01f)] public float halfLife;
+    [Foldout(nameof(mode),EDamperMode.SpringSimple,EDamperMode.SpringImplicit)][Range(0,200)] public float stiffness;
+    [Foldout(nameof(mode),EDamperMode.SpringSimple,EDamperMode.SpringImplicit)][Range(0,30)] public float damping;
+    [Foldout(nameof(mode), EDamperMode.SecondOrderDynamics)] public SecondOrderDynamics secondOrderDynamics;
     
     public static Damper kDefault => new() {mode = EDamperMode.SpringCritical, halfLife = .1f, stiffness = 20f, damping = 4f, secondOrderDynamics = SecondOrderDynamics.kDefault};
     

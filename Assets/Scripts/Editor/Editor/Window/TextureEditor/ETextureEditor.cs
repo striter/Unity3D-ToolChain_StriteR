@@ -20,7 +20,7 @@ namespace UnityEditor.Extensions.TextureEditor
     public struct ChannelCollector : IChannelCollector
     {
         public EChannelOperation operation;
-        [MFoldout(nameof(operation), EChannelOperation.Constant)] [Range(0, 1)] public float constantValue;
+        [Foldout(nameof(operation), EChannelOperation.Constant)] [Range(0, 1)] public float constantValue;
         [MFold(nameof(operation),EChannelOperation.Constant)] public Texture2D texture;
         public EChannelOperation Operation => operation;
         public Texture2D Texture => texture;

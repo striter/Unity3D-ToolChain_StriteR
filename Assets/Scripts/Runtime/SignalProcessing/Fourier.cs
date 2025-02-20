@@ -33,10 +33,9 @@ namespace Runtime.SignalProcessing
         }
 
         //https://rosettacode.org/wiki/Fast_Fourier_transform
-        public static bool FFT(IEnumerable<float> _input,cfloat2[] _output) => FFT(_input.Select(p=>new cfloat2(p,0)).FillList(kComplexFiller),_output);
-        public static bool FFT(IList<cfloat2> _input,cfloat2[] _output)
+        public static bool FFT(IList<cfloat2> _input)
         {
-            if (!math.ispow2(_input.Count) || _input.Count != _output.Length)
+            if (!math.ispow2(_input.Count))
             {
                 Debug.LogWarning($"Input Count {_input.Count} Not a power of 2");
                 return false;
@@ -66,8 +65,8 @@ namespace Runtime.SignalProcessing
                         umath.sincos_fast(term,out var sin,out var cos);
                         var exp = new cfloat2(cos,sin) * odd;
 
-                        _output[evenIndex] = even + exp;
-                        _output[oddIndex] = even - exp;
+                        _input[evenIndex] = even + exp;
+                        _input[oddIndex] = even - exp;
                     }
                 }
             }

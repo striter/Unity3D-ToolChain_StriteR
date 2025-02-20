@@ -16,8 +16,8 @@ namespace Runtime.CameraController.Component
     {
         public EAnchorMode m_AnchorMode = EAnchorMode.Normal;
         public Damper m_OriginDamper = Damper.kDefault;
-        [MFoldout(nameof(m_AnchorMode),EAnchorMode.ShockAbsorber,EAnchorMode.ShockAbsorber_VerticalSeperated)] public Damper m_OriginExtraDamper = Damper.kDefault;
-        [MFoldout(nameof(m_AnchorMode),EAnchorMode.ShockAbsorber_VerticalSeperated)] public Damper m_OriginExtraDamper2 = Damper.kDefault;
+        [Foldout(nameof(m_AnchorMode),EAnchorMode.ShockAbsorber,EAnchorMode.ShockAbsorber_VerticalSeperated)] public Damper m_OriginExtraDamper = Damper.kDefault;
+        [Foldout(nameof(m_AnchorMode),EAnchorMode.ShockAbsorber_VerticalSeperated)] public Damper m_OriginExtraDamper2 = Damper.kDefault;
 
         public void Initialize(AControllerInput _input,AnchoredControllerParameters parameters)
         {

@@ -14,7 +14,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle.Process
     public class ITextureCombineIEnumerable : IChannelCollector , IEnumerable<Texture2D>
     {
         public EChannelOperation operation;
-        [MFoldout(nameof(operation), EChannelOperation.Constant)] [Range(0, 1)] public float constantValue;
+        [Foldout(nameof(operation), EChannelOperation.Constant)] [Range(0, 1)] public float constantValue;
         [MFold(nameof(operation), EChannelOperation.Constant)] [EditorPath] public string texturesPath;
         public string filter;
         

@@ -31,8 +31,8 @@ namespace Examples.Algorithm.SamplePatternVisualize
         public ESamplePattern patternType = ESamplePattern.Grid;
         public int patternWidth=4,patternHeight=4;
         public EVisualMode m_Mode = EVisualMode.Flat;
-        [MFoldout(nameof(patternType), ESamplePattern.PoissonDisk)] public Texture2D m_Texture;
-        [MFoldout(nameof(patternType), ESamplePattern.PoissonDisk)] public string m_Seed = "Test";
+        [Foldout(nameof(patternType), ESamplePattern.PoissonDisk)] public Texture2D m_Texture;
+        [Foldout(nameof(patternType), ESamplePattern.PoissonDisk)] public string m_Seed = "Test";
         [Readonly] public float2[] patterns;
         [Range(0, 1f)] public float gizmosRadius = 0.03f;
         

@@ -202,18 +202,18 @@ namespace Examples.Algorithm.HexagonGrid
 
         public EGridAxialTest m_Test = EGridAxialTest.AxialAxis;
 
-        [MFoldout(nameof(m_Test), EGridAxialTest.Range, EGridAxialTest.Intersect, EGridAxialTest.Distance,
+        [Foldout(nameof(m_Test), EGridAxialTest.Range, EGridAxialTest.Intersect, EGridAxialTest.Distance,
             EGridAxialTest.Ring)]
         [Range(1, 5)]
         public int m_Radius1;
 
-        [MFoldout(nameof(m_Test), EGridAxialTest.Intersect, EGridAxialTest.Distance)]
+        [Foldout(nameof(m_Test), EGridAxialTest.Intersect, EGridAxialTest.Distance)]
         public HexCoord m_TestAxialPoint = new HexCoord(2, 1,-1);
 
-        [MFoldout(nameof(m_Test), EGridAxialTest.Intersect)]
+        [Foldout(nameof(m_Test), EGridAxialTest.Intersect)]
         public int m_Radius2;
 
-        [MFoldout(nameof(m_Test), EGridAxialTest.Reflect)]
+        [Foldout(nameof(m_Test), EGridAxialTest.Reflect)]
         public ECubicAxis m_ReflectAxis = ECubicAxis.X;
 
         public enum EGridAxialTest

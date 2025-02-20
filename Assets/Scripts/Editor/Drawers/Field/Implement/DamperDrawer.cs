@@ -16,7 +16,7 @@ namespace UnityEditor.Extensions
             int division2 = (int)( 20f/kDeltaTime * sizeAspect);
             
             Damper damper = (Damper)_property.GetFieldInfo(out var parentObject).GetValue(parentObject);
-            
+            damper.Initialize(0f);
             for (int i = 0; i < _helper.SizeX; i++)
             {
                 Vector3 point = i>=division1? i>=division2?Vector3.one*.8f:Vector3.one*.2f:Vector3.one * .5f;

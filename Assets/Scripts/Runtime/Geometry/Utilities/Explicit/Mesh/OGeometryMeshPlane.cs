@@ -116,10 +116,10 @@ namespace Runtime.Geometry.Extension.Mesh
     {
         public float tileSize;
         public bool m_Disk;
-        [MFoldout(nameof(m_Disk),true)]public int radius;
-        [MFoldout(nameof(m_Disk),false)]public int width;
-        [MFoldout(nameof(m_Disk),false)]public int height;
-        [MFoldout(nameof(m_Disk),false)]public Vector2 pivot;
+        [Foldout(nameof(m_Disk),true)]public int radius;
+        [Foldout(nameof(m_Disk),false)]public int width;
+        [Foldout(nameof(m_Disk),false)]public int height;
+        [Foldout(nameof(m_Disk),false)]public Vector2 pivot;
         public static readonly SquareGridGenerator kDefault = new SquareGridGenerator() {tileSize = 2f,radius=5,width = 10,height = 10,pivot = kfloat2.half,m_Disk = false}.Ctor();
         
         public int vertexCount { get; set; }

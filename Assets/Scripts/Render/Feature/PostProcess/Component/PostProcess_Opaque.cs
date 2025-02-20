@@ -222,20 +222,20 @@ namespace Rendering.PostProcess
     public struct DOpaque:IPostProcessParameter
     {
         [Title] public bool m_Scan;
-        [MFoldout(nameof(m_Scan), true)] public DScan m_ScanData;
+        [Foldout(nameof(m_Scan), true)] public DScan m_ScanData;
         [Title] public bool m_Area;
-        [MFoldout(nameof(m_Area), true)] public DArea m_AreaData;
+        [Foldout(nameof(m_Area), true)] public DArea m_AreaData;
         [Title] public bool m_Outline;
-        [MFoldout(nameof(m_Outline),true)] public DOutline m_OutlineData;
+        [Foldout(nameof(m_Outline),true)] public DOutline m_OutlineData;
         [Title] public bool m_MaskedHighlight;
-        [MFoldout(nameof(m_MaskedHighlight), true)] public DHighlight m_HighlightData;
+        [Foldout(nameof(m_MaskedHighlight), true)] public DHighlight m_HighlightData;
         
         [Header("Multi Sample")]
         [Range(1, 4)] public int m_DownSample;
         [Title] public bool m_SSAO;
-        [MFoldout(nameof(m_SSAO), true)] public DSSAO m_SSAOData;
+        [Foldout(nameof(m_SSAO), true)] public DSSAO m_SSAOData;
         [Title] public bool m_VolumetricCloud;
-        [MFoldout(nameof(m_VolumetricCloud), true)] public DVolumetricCloud m_VolumetricCloudData;
+        [Foldout(nameof(m_VolumetricCloud), true)] public DVolumetricCloud m_VolumetricCloudData;
         public bool Validate() => m_Scan || m_Area || m_Outline || m_MaskedHighlight || m_SSAO || m_VolumetricCloud;
         public static readonly DOpaque kDefault = new DOpaque()
         {
@@ -491,9 +491,9 @@ namespace Rendering.PostProcess
         public struct DVolumetricCloud
         {
             [Title]public bool m_Shape;
-            [MFoldout(nameof(m_Shape),true)] [CullingMask] public int m_CullingMask;
-            [MFoldout(nameof(m_Shape),false)] public float m_VerticalStart;
-            [MFoldout(nameof(m_Shape),false)] public float m_VerticalLength;
+            [Foldout(nameof(m_Shape),true)] [CullingMask] public int m_CullingMask;
+            [Foldout(nameof(m_Shape),false)] public float m_VerticalStart;
+            [Foldout(nameof(m_Shape),false)] public float m_VerticalLength;
             
             [Title] public Texture3D m_MainNoise;
             [MFold(nameof(m_MainNoise)), RangeVector(0f, 1000f)] public Vector3 m_MainNoiseScale;

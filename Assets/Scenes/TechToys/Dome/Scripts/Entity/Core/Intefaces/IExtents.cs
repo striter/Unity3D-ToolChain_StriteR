@@ -18,8 +18,8 @@ namespace Dome
     public struct EntityExtentData
     {
         public EGeometryType type;
-        [MFoldout(nameof(type),EGeometryType.Sphere)] public GSphere sphericalBounds;
-        [MFoldout(nameof(type),EGeometryType.Box)] public GBox boxBounds;
+        [Foldout(nameof(type),EGeometryType.Sphere)] public GSphere sphericalBounds;
+        [Foldout(nameof(type),EGeometryType.Box)] public GBox boxBounds;
 
         public static EntityExtentData Sphere(GSphere _sphere) => new() {type = EGeometryType.Sphere, sphericalBounds = _sphere};
         public static EntityExtentData Box(GBox _boxBounds) => new() {type = EGeometryType.Box, boxBounds = _boxBounds};

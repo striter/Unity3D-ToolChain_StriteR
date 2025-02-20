@@ -33,7 +33,7 @@ namespace UnityEditor.Extensions
         public ENoiseType noiseType;
         public ENoiseSample noiseSample;
         public bool octave;
-        [MFoldout(nameof(octave),true)] [Range( 2, 7)] public int octaveCount;
+        [Foldout(nameof(octave),true)] [Range( 2, 7)] public int octaveCount;
         public static readonly NoiseTextureInput kDefault = new NoiseTextureInput() {sizePower = 9,filterMode = FilterMode.Bilinear,scale = 5f,noiseType = ENoiseType.Value,noiseSample = ENoiseSample._01,octave = false,octaveCount = 3};
 
         public Texture2D Output(Texture2D _texture)

@@ -42,10 +42,10 @@ namespace Examples.Algorithm.PathFinding
     {
         public EPathFind m_PathFind = EPathFind.AStar;
         public EGraph m_Graph;
-        [MFoldout(nameof(m_Graph),EGraph.Tile)] public TileGraph m_TileGraph = new TileGraph();
-        [MFoldout(nameof(m_Graph),EGraph.Hexagon)] public HexagonGraph m_HexagonGraph = new HexagonGraph();
-        [MFoldout(nameof(m_Graph),EGraph.Poisson)] public PoissonGraph m_PoissonGraph = new PoissonGraph();
-        [MFoldout(nameof(m_Graph),EGraph.Sphere)] public SphereGraph m_SphereGraph = new SphereGraph();
+        [Foldout(nameof(m_Graph),EGraph.Tile)] public TileGraph m_TileGraph = new TileGraph();
+        [Foldout(nameof(m_Graph),EGraph.Hexagon)] public HexagonGraph m_HexagonGraph = new HexagonGraph();
+        [Foldout(nameof(m_Graph),EGraph.Poisson)] public PoissonGraph m_PoissonGraph = new PoissonGraph();
+        [Foldout(nameof(m_Graph),EGraph.Sphere)] public SphereGraph m_SphereGraph = new SphereGraph();
         public IGraph Graph => m_Graph switch
         {
             EGraph.Tile => m_TileGraph,

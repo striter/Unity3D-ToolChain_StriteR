@@ -58,7 +58,6 @@ public static partial class umath
         float theta = angle(from, to);
         float sin_theta = sin(theta);
         var dotValue = dot(from.normalize(), to.normalize());
-        Debug.Log(dotValue);
         if (dotValue > .999f)
             return to;
         if(dotValue < -.999f)

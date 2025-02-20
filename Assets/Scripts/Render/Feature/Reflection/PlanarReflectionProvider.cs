@@ -10,8 +10,8 @@ namespace Rendering.Pipeline
         [Header("Shape")]
         public EPlanarReflectionGeometry m_Geometry = EPlanarReflectionGeometry._PLANE;
         [Range(0f, 0.2f)] public float m_NormalDistort = .1f;
-        [MFoldout(nameof(m_Geometry),EPlanarReflectionGeometry._PLANE)][Range(-5f, 5f)] public float m_PlaneOffset = 0f;
-        [MFoldout(nameof(m_Geometry),EPlanarReflectionGeometry._PLANE)]public bool m_Upward = true;
+        [Foldout(nameof(m_Geometry),EPlanarReflectionGeometry._PLANE)][Range(-5f, 5f)] public float m_PlaneOffset = 0f;
+        [Foldout(nameof(m_Geometry),EPlanarReflectionGeometry._PLANE)]public bool m_Upward = true;
         public PlanarReflectionData m_Data = PlanarReflectionData.kDefault;
         
         public static List<PlanarReflectionProvider> m_Reflections { get; private set; } = new List<PlanarReflectionProvider>();

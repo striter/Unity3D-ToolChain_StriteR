@@ -14,9 +14,9 @@ namespace Runtime
         public float m_Width = .1f;
         public bool m_Billboard = false;
         public bool m_JointSubdivision = false;
-        [MFoldout(nameof(m_JointSubdivision), true)] [Range(1,180)] public float m_TolerangeInAngles = 10f;
-        [MFoldout(nameof(m_JointSubdivision), true)] [Range(0f,3f)] public float m_DistanceDamper = 0.1f;
-        [MFoldout(nameof(m_JointSubdivision), true)] public bool m_ExtraDivision;
+        [Foldout(nameof(m_JointSubdivision), true)] [Range(1,180)] public float m_TolerangeInAngles = 10f;
+        [Foldout(nameof(m_JointSubdivision), true)] [Range(0f,3f)] public float m_DistanceDamper = 0.1f;
+        [Foldout(nameof(m_JointSubdivision), true)] public bool m_ExtraDivision;
 
         protected abstract void PopulatePositions(List<Vector3> _vertices, List<Vector3> _tangents);
 

@@ -21,17 +21,17 @@ namespace Examples.Rendering.SH
         [Header("Bake")]
         public ESphericalHarmonicsExport m_SHMode = ESphericalHarmonicsExport.Gradient;
 
-        [MFoldout(nameof(m_SHMode),ESphericalHarmonicsExport.Cubemap)] public int m_SampleCount = 8192;
-        [MFoldout(nameof(m_SHMode),ESphericalHarmonicsExport.Cubemap)] public Cubemap m_Cubemap;
-        [MFoldout(nameof(m_SHMode),ESphericalHarmonicsExport.Cubemap)] [Range(0.1f,3f)]public float m_Intensity = 1f;
-        [MFoldout(nameof(m_SHMode),ESphericalHarmonicsExport.Gradient)] [ColorUsage(false, true)] public Color m_GradientTop = Color.red;
-        [MFoldout(nameof(m_SHMode),ESphericalHarmonicsExport.Gradient)] [ColorUsage(false, true)] public Color m_GradientEquator = Color.green;
-        [MFoldout(nameof(m_SHMode),ESphericalHarmonicsExport.Gradient)] [ColorUsage(false, true)] public Color m_GradientBottom = Color.blue;
+        [Foldout(nameof(m_SHMode),ESphericalHarmonicsExport.Cubemap)] public int m_SampleCount = 8192;
+        [Foldout(nameof(m_SHMode),ESphericalHarmonicsExport.Cubemap)] public Cubemap m_Cubemap;
+        [Foldout(nameof(m_SHMode),ESphericalHarmonicsExport.Cubemap)] [Range(0.1f,3f)]public float m_Intensity = 1f;
+        [Foldout(nameof(m_SHMode),ESphericalHarmonicsExport.Gradient)] [ColorUsage(false, true)] public Color m_GradientTop = Color.red;
+        [Foldout(nameof(m_SHMode),ESphericalHarmonicsExport.Gradient)] [ColorUsage(false, true)] public Color m_GradientEquator = Color.green;
+        [Foldout(nameof(m_SHMode),ESphericalHarmonicsExport.Gradient)] [ColorUsage(false, true)] public Color m_GradientBottom = Color.blue;
 
-        [MFoldout(nameof(m_SHMode), ESphericalHarmonicsExport.Directional)] [PostNormalize]
+        [Foldout(nameof(m_SHMode), ESphericalHarmonicsExport.Directional)] [PostNormalize]
         public float3 m_Direction = kfloat3.up;
 
-        [MFoldout(nameof(m_SHMode),ESphericalHarmonicsExport.Ambient,ESphericalHarmonicsExport.Directional)][ColorUsage(false, true)] public Color m_LightColor = Color.white;
+        [Foldout(nameof(m_SHMode),ESphericalHarmonicsExport.Ambient,ESphericalHarmonicsExport.Directional)][ColorUsage(false, true)] public Color m_LightColor = Color.white;
         private void OnValidate()
         {
             switch (m_SHMode)

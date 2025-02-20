@@ -437,15 +437,15 @@ namespace TechToys.ThePlanet.Module
         [Header("2 Dimension")]
         public bool m_VertexGizmos;
         public bool m_QuadGizmos;
-        [MFoldout(nameof(m_QuadGizmos),true)] public bool m_RelativeQuadGizmos;
+        [Foldout(nameof(m_QuadGizmos),true)] public bool m_RelativeQuadGizmos;
         [Header("3 Dimension")]
         public bool m_CornerGizmos;
-        [MFoldout(nameof(m_CornerGizmos), true)] public bool m_CornerAdjacentRelations;
-        [MFoldout(nameof(m_CornerGizmos), true)] public bool m_CornerIntervalRelations;
-        [MFoldout(nameof(m_CornerGizmos), true)] public bool m_CornerVoxelRelations;
+        [Foldout(nameof(m_CornerGizmos), true)] public bool m_CornerAdjacentRelations;
+        [Foldout(nameof(m_CornerGizmos), true)] public bool m_CornerIntervalRelations;
+        [Foldout(nameof(m_CornerGizmos), true)] public bool m_CornerVoxelRelations;
         public bool m_VoxelGizmos;
-        [MFoldout(nameof(m_VoxelGizmos),true)] public bool m_VoxelCornerRelations;
-        [MFoldout(nameof(m_VoxelGizmos),true)] public bool m_VoxelVoxelRelation;
+        [Foldout(nameof(m_VoxelGizmos),true)] public bool m_VoxelCornerRelations;
+        [Foldout(nameof(m_VoxelGizmos),true)] public bool m_VoxelVoxelRelation;
 
         [Header("Propaganda")]
         public bool m_PropagandaGizmos;
