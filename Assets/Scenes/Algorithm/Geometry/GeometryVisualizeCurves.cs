@@ -100,6 +100,11 @@ namespace Examples.Algorithm.Geometry
             m_ChaikinCurve.DrawGizmos();
             Gizmos.matrix = localToWorldMatrix * Matrix4x4.Translate(new Vector3(10f,0f, 6f)) * Matrix4x4.Scale(Vector3.one*.1f);
             m_DragonCurve.DrawGizmos();
+        }
+
+        [InspectorButton]
+        void Execution()
+        {
             Debug.LogError(NumericalIntegration.TrapezoidRule(m_BSpline.Evaluate));
             Debug.LogError(NumericalIntegration.RombergIntegration(m_BSpline.Evaluate));
         }

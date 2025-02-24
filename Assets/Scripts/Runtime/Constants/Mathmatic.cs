@@ -30,6 +30,12 @@ public static class kfloat2
     public static readonly float2 right = new float2(1, 0);
 }
 
+public static class kfloat4
+{
+    public static readonly float4 zero = new(0f, 0f, 0f, 0f);
+    public static readonly float4 one = new(1f, 1f, 1f, 1f);
+}
+
 public static class kint2
 {
     public static readonly int2 one = new(1, 1);

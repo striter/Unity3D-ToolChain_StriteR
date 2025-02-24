@@ -33,8 +33,12 @@ namespace Runtime.Swizzlling
         public T mul(T _a, float _b);
         public T div(T _a, T _b);
         public T div(T _a, float _b);
+        public T pow(T _a, float _value);
+        public T sqrt(T _a);
         public float distance(T _a, T _b);
         public float length(T _a);
+        public T kOne { get; }
+        public T kZero { get; }
     }
 
     public struct floatDecimal : IDecimal<float>
@@ -46,6 +50,10 @@ namespace Runtime.Swizzlling
         public float div(float _a, float _b) => _a / _b;
         public float distance(float _a, float _b) => math.distance(_a, _b);
         public float length(float _a) => math.length(_a);
+        public float pow(float _a, float _value) => math.pow(_a, _value);
+        public float sqrt(float _a) => math.sqrt(_a);
+        public float kOne => 1f;
+        public float kZero => 0f;
     }
 
     public struct float2Decimal : IDecimal<float2>
@@ -59,6 +67,10 @@ namespace Runtime.Swizzlling
         public float2 div(float2 _a, float _b) => _a / _b;
         public float distance(float2 _a, float2 _b) => math.distance(_a, _b);
         public float length(float2 _a) => math.length(_a);
+        public float2 pow(float2 _a, float _value) => math.pow(_a, _value);
+        public float2 sqrt(float2 _a) => math.sqrt(_a);
+        public float2 kOne => kfloat2.one;
+        public float2 kZero => kfloat2.zero;
     }
 
     public struct float3Decimal : IDecimal<float3>
@@ -72,6 +84,10 @@ namespace Runtime.Swizzlling
         public float3 div(float3 _a, float _b) => _a / _b;
         public float distance(float3 _a, float3 _b) => math.distance(_a, _b);
         public float length(float3 _a) => math.length(_a);
+        public float3 pow(float3 _a, float _value) => math.pow(_a, _value);
+        public float3 sqrt(float3 _a) => math.sqrt(_a);
+        public float3 kOne => kfloat3.one;
+        public float3 kZero => kfloat3.zero;
     }
 
     public struct float4Decimal : IDecimal<float4>
@@ -85,5 +101,9 @@ namespace Runtime.Swizzlling
         public float4 div(float4 _a, float _b) => _a / _b;
         public float distance(float4 _a, float4 _b) => math.distance(_a, _b);
         public float length(float4 _a) => math.length(_a);
+        public float4 pow(float4 _a, float _value) => math.pow(_a, _value);
+        public float4 sqrt(float4 _a) => math.sqrt(_a);
+        public float4 kOne => kfloat4.one;
+        public float4 kZero => kfloat4.zero;
     }
 }

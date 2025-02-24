@@ -224,6 +224,9 @@ public partial class umath
         return true;
     }
 
+    public static bool IsOdd(int _value) => _value % 2 == 1;
+    public static bool IsEven(int _value) => _value % 2 == 0;
+    
     public static int Factorial(int n)
     {
         var result = 1;
