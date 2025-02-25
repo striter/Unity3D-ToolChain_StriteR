@@ -31,6 +31,7 @@ namespace Runtime.Geometry
         }
         public static readonly G2Box kDefault = new G2Box(0f,.5f);
         public static readonly G2Box kOne = new G2Box(0f,1f);
+        public static readonly G2Box kZero = new G2Box(0f,0f);
     }
     
     [Serializable]
@@ -113,7 +114,11 @@ namespace Runtime.Geometry
         public static G2Box operator -(G2Box _src, float2 _dst) => new G2Box(_src.center-_dst,_src.extent);
         public static G2Box operator /(G2Box _bounds,float2 _div) => new G2Box(_bounds.center/_div,_bounds.extent/_div);
         public static G2Box operator *(G2Box _bounds,float2 _div) => new G2Box(_bounds.center*_div,_bounds.extent*_div);
-
+        
+        public static bool operator ==(G2Box _a, G2Box _b) => ((float4)_a == _b).all();
+        public static bool operator !=(G2Box _a, G2Box _b) => ((float4)_a != _b).any();
+        
+        public static implicit operator float4(G2Box _box) => new float4(_box.center.x, _box.center.y, _box.extent.x, _box.extent.y);
         public static implicit operator Rect(G2Box _src) => new Rect(_src.min, _src.size);
 
         public static implicit operator G2Quad(G2Box _src)

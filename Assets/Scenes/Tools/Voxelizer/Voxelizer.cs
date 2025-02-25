@@ -25,7 +25,7 @@ namespace Runtime.Optimize.Voxelizer
         private QuadTree_triangle3 m_Voxelizer = new(2);
 
         private List<float> kIntersectDistances = new List<float>();
-        
+        #if UNITY_EDITOR
         [InspectorButton]
         void Construct()
         {
@@ -103,6 +103,7 @@ namespace Runtime.Optimize.Voxelizer
             texture.name = "Voxelizer";
             UnityEditor.Extensions.UEAsset.CreateOrReplaceMainAsset(texture, "Assets/Scenes/Examples/Rendering/Voxelizer/Voxelizer.asset");
         }
+        #endif
 
         public bool m_DrawGizmos;
         private void OnDrawGizmos()

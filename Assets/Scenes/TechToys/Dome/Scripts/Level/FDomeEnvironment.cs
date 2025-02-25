@@ -93,11 +93,11 @@ namespace Dome
             vertices[vertexStart + 7] = new FVertex() {position = innerQuad.R, normal = kfloat3.up,color = kUpColor,uv = (half2)innerUV[3]};
 
             int indexStart = 0;        
-            UMesh.ApplyQuadIndexes(indexes,indexStart + 0,vertexStart+4,vertexStart+5,vertexStart+6,vertexStart+7);      //Top
-            UMesh.ApplyQuadIndexes(indexes,indexStart + 2,vertexStart+0,vertexStart+1,vertexStart+5,vertexStart+4);      //Bottom
-            UMesh.ApplyQuadIndexes(indexes,indexStart + 4,vertexStart+1,vertexStart+2,vertexStart+6,vertexStart+5);      //Left
-            UMesh.ApplyQuadIndexes(indexes,indexStart + 6,vertexStart+2,vertexStart+3,vertexStart+7,vertexStart+6);      //Forward   
-            UMesh.ApplyQuadIndexes(indexes,indexStart + 8,vertexStart+3,vertexStart+0,vertexStart+4,vertexStart+7);      //Right       
+            UGeometryExplicit.ApplyQuadIndexes(indexes,indexStart + 0,vertexStart+4,vertexStart+5,vertexStart+6,vertexStart+7);      //Top
+            UGeometryExplicit.ApplyQuadIndexes(indexes,indexStart + 2,vertexStart+0,vertexStart+1,vertexStart+5,vertexStart+4);      //Bottom
+            UGeometryExplicit.ApplyQuadIndexes(indexes,indexStart + 4,vertexStart+1,vertexStart+2,vertexStart+6,vertexStart+5);      //Left
+            UGeometryExplicit.ApplyQuadIndexes(indexes,indexStart + 6,vertexStart+2,vertexStart+3,vertexStart+7,vertexStart+6);      //Forward   
+            UGeometryExplicit.ApplyQuadIndexes(indexes,indexStart + 8,vertexStart+3,vertexStart+0,vertexStart+4,vertexStart+7);      //Right       
 
             meshData.subMeshCount = 1;
             meshData.SetSubMesh(0,new SubMeshDescriptor(0,indexCount){vertexCount = vertexCount});

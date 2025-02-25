@@ -105,8 +105,8 @@ namespace Examples.Algorithm.Geometry
         [InspectorButton]
         void Execution()
         {
-            Debug.LogError(NumericalIntegration.TrapezoidRule(m_BSpline.Evaluate));
-            Debug.LogError(NumericalIntegration.RombergIntegration(m_BSpline.Evaluate));
+            Debug.LogError(NumericalIntegration.TrapezoidRule(m_FourierSpline.Evaluate,m_FourierSpline.paths.Length * 10));
+            Debug.LogError(NumericalIntegration.RombergIntegration(m_FourierSpline.Evaluate));
         }
 #endif
     }

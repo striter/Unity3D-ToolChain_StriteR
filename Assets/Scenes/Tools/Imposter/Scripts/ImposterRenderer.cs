@@ -58,7 +58,7 @@ namespace Runtime.Optimize.Imposter
                 _mesh.SetIndices(PQuad.kDefault.GetTriangleIndexes().FillList(kIndices), MeshTopology.Triangles, 0);
                 var texelSize = corner.uvRect.ToTexelSize();
                 _mesh.SetUVs(0,
-                    G2Quad.kDefaultUV.Select(p => (Vector4)(URender.TransformTex(p, texelSize)).to4()).FillList(kUVs));
+                    G2Quad.kDefaultUV.Select(p => (Vector4)(UTexture.TransformTex(p, texelSize)).to4()).FillList(kUVs));
             }
             else
             {
@@ -85,7 +85,7 @@ namespace Runtime.Optimize.Imposter
                     var texelST = corner.uvRect.ToTexelSize();
                     _mesh.SetUVs(texelIndex,
                         G2Quad.kDefaultUV.Select(p =>
-                            (Vector4)(URender.TransformTex(p, texelST) +
+                            (Vector4)(UTexture.TransformTex(p, texelST) +
                                       parallax * m_Data.m_Input.CellTexelSizeNormalized).to4()).FillList(kUVs));
                 }
             }

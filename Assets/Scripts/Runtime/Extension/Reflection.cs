@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq.Extensions;
 using Debug = UnityEngine.Debug;
 
 public static class UReflection
@@ -25,6 +26,18 @@ public static class UReflection
     {
         foreach (var fieldInfo in _src.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public))
             fieldInfo.SetValue(_dst,fieldInfo.GetValue(_src));
+    }
+    
+    public static void CopyPublicMembers<T>(T _to, T _from)
+    {
+        var type = typeof(T);
+        var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
+        foreach (var field in fields)
+            field.SetValue(_to, field.GetValue(_from));
+    
+        var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        foreach (var property in properties.Collect(p=>p.CanWrite && p.CanRead))
+            property.SetValue(_to, property.GetValue(_from));
     }
     
     public static T CreateInstance<T>(Type _type,params object[] _args) => (T)Activator.CreateInstance(_type, _args);

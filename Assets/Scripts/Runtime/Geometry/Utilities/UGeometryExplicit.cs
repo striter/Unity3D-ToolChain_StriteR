@@ -5,11 +5,10 @@ using System.Linq.Extensions;
 using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
-using Runtime.Geometry.Extension.Mesh;
 
 namespace Runtime.Geometry.Extension
 {
-    public static class UMesh
+    public static class UGeometryExplicit
     {
         public static readonly int[] kQuadToTriangles = new int[] {0, 1, 2, 2, 3, 0};
         public static void QuadToTriangleIndices(List<int> _indices, int _quad0, int _quad1, int _quad2, int _quad3)
