@@ -22,7 +22,7 @@ public class ScriptableObjectEditAttribute : PropertyAttribute
 }
 
 
-[AttributeUsage(AttributeTargets.Field)]
+[AttributeUsage(AttributeTargets.GenericParameter | AttributeTargets.Field, Inherited = true,AllowMultiple = true)]
 public class Readonly:PropertyAttribute{ }
 
 [AttributeUsage(AttributeTargets.Field)]

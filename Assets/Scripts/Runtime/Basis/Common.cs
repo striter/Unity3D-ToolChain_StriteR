@@ -152,40 +152,48 @@ public class ValueChecker<T>
     }
     public static implicit operator T(ValueChecker<T> checker) => checker.m_Value;
 }
-public class Ticker
+
+[Serializable]
+public struct Ticker
 {
-    public float m_Duration { get; private set; }
-    public float m_Elapsed { get; private set; }
-    public float m_Tick { get; private set; }
-    public float m_TickScale { get; private set; }
-    public Ticker(float _tick) {
+    
+    public float duration;
+    public float elapsed;
+    public int elpasedTick;
+    public float tick;
+    public float tickScale;
+    public Ticker(float _tick)
+    {
+        this = default;
         Set(_tick);
     }
 
     public void Set(float _tick)
     {
-        m_Duration = _tick;
         Reset();
+        duration = _tick;
     }
     
     public void Reset()
     {
-        m_Elapsed = 0;
-        m_Tick = 0;
-        m_TickScale = 0f;
+        elapsed = 0;
+        tick = 0;
+        tickScale = 0f;
+        elpasedTick = 0;
     }
     
     public bool Tick(float _delta)
     {
-        m_Elapsed += _delta;
-        m_Tick += _delta;
-        bool availableTick = false;
-        if(m_Tick > m_Duration)
+        elapsed += _delta;
+        tick += _delta;
+        var availableTick = false;
+        if(tick > duration)
         {
-            m_Tick -= m_Duration;
+            tick -= duration;
+            elpasedTick += 1;
             availableTick = true;
         }
-        m_TickScale = m_Tick / m_Duration;
+        tickScale = tick / duration;
         return availableTick;
     }
 }

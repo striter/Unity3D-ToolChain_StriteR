@@ -159,7 +159,7 @@ namespace Examples.PhysicsScenes.FabricSimulation
 
             var stiffness = m_Data.stiffness;
             var damping = m_Data.damping;
-            var deltaTime = m_Ticker.m_Duration;
+            var deltaTime = m_Ticker.duration;
             var particleCount = particles.Length;
 
             for(int i=0;i<particleCount;i++)

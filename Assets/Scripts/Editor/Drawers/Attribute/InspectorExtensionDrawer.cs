@@ -71,16 +71,7 @@ namespace UnityEditor.Extensions
                 foreach (var parameter in data.parameters)
                 {
                     position = position.MoveY().ResizeY(kParameterHeight);
-                    var key = parameter.type;
-                    switch (UInspectorExtension.LookUp(key))
-                    {
-                        case EButtonParameters.Float: parameter.value = EditorGUI.FloatField(position,parameter.name,(float)parameter.value); break;
-                        case EButtonParameters.Integer: parameter.value = EditorGUI.IntField(position,parameter.name,(int)parameter.value); break;
-                        case EButtonParameters.String: parameter.value = EditorGUI.TextField(position,parameter.name,(string)parameter.value); break;
-                        case EButtonParameters.Vector3: parameter.value = EditorGUI.Vector3Field(position,parameter.name,(Vector3)parameter.value); break;
-                        case EButtonParameters.Object: parameter.value = EditorGUI.ObjectField(position,(Object)parameter.value,parameter.type,true); break;
-                        default: case EButtonParameters.NotSupported: EditorGUI.LabelField(position,$"Not Supported Type {key}");break;
-                    }
+                    UInspectorExtension.LayoutField(position, parameter);
                 }
                 
                 position = position.MoveY().ResizeY(kMethodButtonHeight);

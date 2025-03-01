@@ -764,10 +764,11 @@ namespace System.Linq.Extensions
         }
         #endregion
         #region List
-        public static List<T> DeepCopy<T>(this List<T> _list)
+        public static List<T> DeepCopy<T>(this List<T> _list) where T:class
         {
-            List<T> copyList = new List<T>(_list.Count);
-            copyList.AddRange(_list);
+            var copyList = new List<T>(_list.Count);
+            foreach (var element in _list)
+                copyList.Add(element.DeepCopyInstance());
             return copyList;
         }
         

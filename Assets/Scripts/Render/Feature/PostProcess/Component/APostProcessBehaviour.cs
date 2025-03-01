@@ -22,18 +22,12 @@ namespace Rendering.PostProcess
         {
             m_Effect = new ();
             SetDirty();
-#if UNITY_EDITOR
-            UnityEditor.SceneManagement.EditorSceneManager.sceneSaved += OnSceneSaved;
-#endif
         }
         
         protected virtual void OnDestroy()
         {
             m_Effect.Destroy();
             m_Effect = null;
-#if UNITY_EDITOR
-            UnityEditor.SceneManagement.EditorSceneManager.sceneSaved -= OnSceneSaved;
-#endif
         }
         
         void OnDidApplyAnimationProperties() => SetDirty();       //Undocumented Magic Function ,Triggered By AnimationClip
@@ -76,6 +70,17 @@ namespace Rendering.PostProcess
         public void FrameCleanUp(CommandBuffer _buffer) =>  m_Effect.FrameCleanUp(_buffer,ref m_Data);
         
 #if UNITY_EDITOR
+        private void OnEnable()
+        {
+            
+            UnityEditor.SceneManagement.EditorSceneManager.sceneSaved += OnSceneSaved;
+        }
+
+        private void OnDisable()
+        {
+            
+            UnityEditor.SceneManagement.EditorSceneManager.sceneSaved -= OnSceneSaved;
+        }
         void OnSceneSaved(UnityEngine.SceneManagement.Scene _scene) => SetDirty();
 #endif
     }

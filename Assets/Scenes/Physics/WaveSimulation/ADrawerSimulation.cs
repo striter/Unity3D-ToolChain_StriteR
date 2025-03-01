@@ -20,6 +20,7 @@ namespace Examples.PhysicsScenes.WaveSimulation
             m_Texture = new Texture2D(m_Drawer.SizeX,m_Drawer.SizeY, TextureFormat.ARGB32,false) { name = "Wave Texture",filterMode = FilterMode.Point,wrapMode = TextureWrapMode.Clamp};
             m_Image = GetComponentInChildren<RawImage>();
             m_Image.texture = m_Texture;
+            Update();
         }
         
         private void OnDisable()

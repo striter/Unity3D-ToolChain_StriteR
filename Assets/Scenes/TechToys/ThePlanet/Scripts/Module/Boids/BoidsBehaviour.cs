@@ -88,7 +88,7 @@ namespace TechToys.ThePlanet.Module.BOIDS
                 m_Direction = Vector3.zero;
 
             m_VelocityTicker.Reset();
-            m_VelocityTicker.Tick(m_VelocityTicker.m_Duration);
+            m_VelocityTicker.Tick(m_VelocityTicker.duration);
         }
 
         public override void Tick(float _deltaTime, IList<BoidsActor> _members, out Vector3 _position, out Quaternion _rotation)
@@ -114,7 +114,7 @@ namespace TechToys.ThePlanet.Module.BOIDS
 
             if (m_VelocityTicker.Tick(_deltaTime))
             {
-                float behaviourDeltaTime = m_VelocityTicker.m_Duration;
+                float behaviourDeltaTime = m_VelocityTicker.duration;
                 m_TransformVelocity.TickVelocity(m_Actor, _members, behaviourDeltaTime, ref m_Direction);
             }
 

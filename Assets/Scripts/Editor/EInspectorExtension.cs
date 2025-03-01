@@ -39,23 +39,12 @@ namespace UnityEditor.Extensions
                 {
                     EditorGUILayout.LabelField(data.method.Name, EditorStyles.boldLabel);   
                     foreach (var parameter in data.parameters)
-                    {
-                        var key = parameter.type;
-                        switch (UInspectorExtension.LookUp(key))
-                        {
-                            case EButtonParameters.Float: parameter.value = EditorGUILayout.FloatField(parameter.name,(float)parameter.value); break;
-                            case EButtonParameters.Integer: parameter.value = EditorGUILayout.IntField(parameter.name,(int)parameter.value); break;
-                            case EButtonParameters.String: parameter.value = EditorGUILayout.TextField(parameter.name,(string)parameter.value); break;
-                            case EButtonParameters.Vector3: parameter.value = EditorGUILayout.Vector3Field(parameter.name,(Vector3)parameter.value); break;
-                            case EButtonParameters.Object: parameter.value = EditorGUILayout.ObjectField((UnityEngine.Object)parameter.value,parameter.type,true); break;
-                            default: case EButtonParameters.NotSupported: EditorGUILayout.LabelField($"Not Supported Type {key}");break;
-                        }
-                    }
+                        UInspectorExtension.GUILayoutField(parameter);
                     
                     if (GUILayout.Button("Execute"))
                     {
                         foreach (var target in targets)
-                            data.method.Invoke(target,data.parameters.Select(p=>p.value).ToArray());
+                            data.method.Invoke(target,data.parameters.Select(p=>UInspectorExtension.Reformat(p.type,p.value)).ToArray());
                         if(undo)
                             Undo.RegisterCompleteObjectUndo(targets,"Button Click");
                         return;
