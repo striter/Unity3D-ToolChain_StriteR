@@ -12,7 +12,7 @@ using Random = System.Random;
 
 namespace Rendering.PostProcess
 {
-    public class PostProcess_Opaque:PostProcessBehaviour<FOpaqueCore, DOpaque>
+    public class PostProcess_Opaque:APostProcessBehaviour<FOpaqueCore, DOpaque>
     {
         public bool m_Opaque = true;
         public override bool m_OpaqueProcess => m_Opaque;

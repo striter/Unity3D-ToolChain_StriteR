@@ -10,7 +10,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace Rendering.PostProcess
 {
-    public class PostProcess_Blurs : PostProcessBehaviour<FBlursCore, DBlurs>
+    public class PostProcess_Blurs : APostProcessBehaviour<FBlursCore, DBlurs>
     {
         public override bool m_OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.DepthOfField;
@@ -92,7 +92,6 @@ namespace Rendering.PostProcess
         DualFiltering_UpSample,
         Grainy,
         
-        
         //Shaped
         Bokeh,
         Hexagon_Vertical,
@@ -154,6 +153,7 @@ namespace Rendering.PostProcess
     }
 
 
+    [Serializable]
     public class FBlursCore : PostProcessCore<DBlurs>
     {
         public static FBlursCore Instance => kInstance;

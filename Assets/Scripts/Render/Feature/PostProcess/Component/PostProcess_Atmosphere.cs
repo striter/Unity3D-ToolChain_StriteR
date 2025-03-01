@@ -6,7 +6,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace Rendering.PostProcess
 {
-    public class PostProcess_Atmosphere : PostProcessBehaviour<FAtmosphereCore, DAtmosphere>
+    public class PostProcess_Atmosphere : APostProcessBehaviour<FAtmosphereCore, DAtmosphere>
     {
         public override bool m_OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.Volumetric;

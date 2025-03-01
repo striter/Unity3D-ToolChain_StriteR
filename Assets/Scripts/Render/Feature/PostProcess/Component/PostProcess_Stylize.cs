@@ -22,7 +22,7 @@ namespace Rendering.PostProcess
         _PIXEL_CIRCLE,
     }
 
-    public class PostProcess_Stylize : PostProcessBehaviour<FStylizeCore, DStylize>
+    public class PostProcess_Stylize : APostProcessBehaviour<FStylizeCore, DStylize>
     {
         public override bool m_OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.Stylize;

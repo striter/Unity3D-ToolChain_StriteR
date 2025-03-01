@@ -7,7 +7,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace Rendering.PostProcess
 {
-    public class PostProcess_ColorUpgrade : PostProcessBehaviour<FColorUpgradeCore, DColorUpgrade>
+    public class PostProcess_ColorUpgrade : APostProcessBehaviour<FColorUpgradeCore, DColorUpgrade>
     {
         public override bool m_OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.ColorUpgrade;

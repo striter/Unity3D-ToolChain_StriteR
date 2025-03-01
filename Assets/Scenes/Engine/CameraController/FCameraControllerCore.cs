@@ -28,7 +28,6 @@ namespace Runtime.CameraController
             if (_controller == m_Controller)
                 return false;
             
-            m_Reset = false;
             if (!m_Initialize)
             {
                 foreach (var processor in m_Controller.InputProcessor)
@@ -64,7 +63,6 @@ namespace Runtime.CameraController
             
                 m_Controller.OnEnter(_input);
                 m_Initialize = false;
-                m_Reset = false;
             }
             
             if (m_Reset)

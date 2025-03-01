@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Rendering.PostProcess
 {
 
-    public class PostProcess_ColorDegrade : PostProcessBehaviour<FColorDegradeCore, DColorDegrade>
+    public class PostProcess_ColorDegrade : APostProcessBehaviour<FColorDegradeCore, DColorDegrade>
     {
         public override bool m_OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.ColorDegrade;
