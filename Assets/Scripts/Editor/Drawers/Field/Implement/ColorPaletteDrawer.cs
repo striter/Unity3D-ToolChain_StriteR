@@ -40,6 +40,7 @@ namespace UnityEditor.Extensions
             {
                 kPreset++;
                 fieldInfo.SetValue(parentObject,kPalettePresets[kPreset%kPalettePresets.Length]);
+                Undo.RegisterCompleteObjectUndo(_property.serializedObject.targetObject, "Color Palette Preset");
             }
             
             EditorGUI.PropertyField(propertyField, _property, _label, true);

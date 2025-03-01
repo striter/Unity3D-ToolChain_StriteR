@@ -65,6 +65,14 @@ namespace Runtime.Geometry
             return absOffset.x < extent.x && absOffset.y < extent.y;
         }
 
+        public float2 Clamp(float2 _point) => math.clamp(_point, min, max);
+
+        public bool Clamp(float2 _point, out float2 _clamped)
+        {
+            _clamped = Clamp(_point);
+            return !Contains(_point);
+        }
+        
         public float2 GetUV(float2 _pos) => (_pos - min) / size;
         public float2 GetPoint(float2 _uv) => min + _uv * size;
 

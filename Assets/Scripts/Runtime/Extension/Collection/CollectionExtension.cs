@@ -351,6 +351,15 @@ namespace System.Linq.Extensions
                 }
                 return maxElement;
             }
+            
+            public static Y Find<T, Y>(this IEnumerable<T> _collection) where Y : T
+            {
+                foreach(var element in _collection)
+                    if (element is Y target)
+                        return target;
+                return default;
+            }
+            
             public static int MaxIndex<T>(this IEnumerable<T> _collection, Func<T, float> _getValue)
             {
                 var maxIndex = -1;
@@ -372,7 +381,7 @@ namespace System.Linq.Extensions
                 float distanceRecord = _minimum?float.MaxValue:float.MinValue;
                 foreach (var element in _collection)
                 {
-                    Vector3 position = _getPosition(element);
+                    var position = _getPosition(element);
                     float sqrDistance = (position - _origin).sqrMagnitude;
                     if (_minimum)
                     {
