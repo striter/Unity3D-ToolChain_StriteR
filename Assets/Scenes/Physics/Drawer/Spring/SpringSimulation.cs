@@ -32,7 +32,6 @@ namespace Examples.PhysicsScenes.SpringSimulation
         public RectTransform m_Extruder;
         public int m_ExtruderSize = 20;
         public float m_ExtruderForce = 20;
-        [Readonly] public Ticker m_Ticker = new Ticker(1f/60f);
         public float2 m_Gravity = kfloat2.down * 0.98f;
         public ColorPalette m_ColorPalette = ColorPalette.kDefault;
         public float m_Stiffness = 500;
@@ -92,97 +91,91 @@ namespace Examples.PhysicsScenes.SpringSimulation
             edges.Clear();
         }
 
-        private static readonly Color kBoundsColor = Color.white.SetA(.2f);
         void Draw(FTextureDrawer _drawer, IList<SpringJoint> _joints)
         {
             if (_joints.Count == 0)
                 return;
             
             _drawer.PixelContinuousStart((int2)_joints[0].position);
-            foreach (var joint in _joints)
+            foreach (var (index,joint) in _joints.LoopIndex())
             {
-                var color = m_ColorPalette.Evaluate(joint.position.x / _drawer.SizeX);
+                var color = m_ColorPalette.Evaluate((float)index / _joints.Count);
                 _drawer.Circle((int2)joint.position, 5, color);
                 _drawer.PixelContinuous((int2)joint.position, color);
             }
             
             _drawer.PixelContinuousStart((int2)m_Bounds.GetPoint(new float2(0,1)));
             foreach (var bound in m_Bounds)
-                _drawer.PixelContinuous((int2)bound,kBoundsColor);
+                _drawer.PixelContinuous((int2)bound,Color.white.SetA(.2f));
 
             if (m_Extruder != null)
-            {
                 _drawer.Circle((int2)(float2)m_Extruder.anchoredPosition, m_ExtruderSize, Color.white);
-            }
         }
-        
-        protected override void TickDrawer(FTextureDrawer _drawer, float _deltaTime)
+
+
+        protected override void Draw(FTextureDrawer _drawer)
         {
             if (joints.Count == 0)
             {
                 Draw(_drawer,config);
                 return;
             }
+            Draw(_drawer,joints);
+        }
 
-            var maxSimulatePerTick = 5;
-            while (maxSimulatePerTick-- > 0 && m_Ticker.Tick(_deltaTime))
+        protected override void FixedTick(float _fixedDeltaTime)
+        {
+            foreach (var joint in joints)
             {
-                _deltaTime = 0f;
-                var simulateDeltaTime = m_Ticker.duration;
-                foreach (var joint in joints)
+                joint.force = joint.mass * m_Gravity;
+                joint.force += m_WindForce / joint.mass;
+                joint.force -= m_DragCoefficient * joint.velocity;
+                if (m_Extruder != null)
                 {
-                    joint.force = joint.mass * m_Gravity;
-                    joint.force += m_WindForce / joint.mass;
-                    joint.force -= m_DragCoefficient * joint.velocity;
-                    if (m_Extruder != null)
+                    var extruderPosition = (float2)m_Extruder.anchoredPosition;
+                    var distance = math.distance(extruderPosition, joint.position);
+                    if (distance < m_ExtruderSize)
                     {
-                        var extruderPosition = (float2)m_Extruder.anchoredPosition;
-                        var distance = math.distance(extruderPosition, joint.position);
-                        if (distance < m_ExtruderSize)
-                        {
-                            var force = m_ExtruderForce * (joint.position - extruderPosition).normalize();
-                            joint.force += force;
-                        }
+                        var force = m_ExtruderForce * (joint.position - extruderPosition).normalize();
+                        joint.force += force;
                     }
-                }
-
-                foreach (var edge in edges)
-                {
-                    var lengthOffset = joints[edge.startIndex].position - joints[edge.endIndex].position;
-                    var length = math.length(lengthOffset);
-                    if ((lengthOffset != float2.zero).any())
-                    {
-                        var force = (length - edge.distance) * lengthOffset.normalize() * -m_Stiffness;
-                        joints[edge.startIndex].force += force;
-                        joints[edge.endIndex].force -= force;
-                    }
-
-                    var velocityOffset = joints[edge.startIndex].velocity - joints[edge.endIndex].velocity;
-                    var dampingForce = velocityOffset * -m_DampingCoefficient;
-                    joints[edge.startIndex].force += dampingForce;
-                }
-
-                foreach (var joint in joints)
-                {
-                    if (joint.mass == 0f)
-                        continue;
-                    
-                    var acceleration = joint.force / joint.mass;
-                    var newVelocity = joint.velocity + acceleration * simulateDeltaTime;
-                    var newPosition = joint.position + newVelocity * simulateDeltaTime;
-                    
-                    if (m_Bounds.Clamp(newPosition, out var clampedNewPosition))
-                    {
-                        newPosition = clampedNewPosition;
-                        newVelocity = -newVelocity * m_BounceReflective;
-                    }
-                    
-                    joint.velocity = newVelocity;
-                    joint.position = newPosition;
                 }
             }
-            
-            Draw(_drawer,joints);
+
+            foreach (var edge in edges)
+            {
+                var lengthOffset = joints[edge.startIndex].position - joints[edge.endIndex].position;
+                var length = math.length(lengthOffset);
+                if ((lengthOffset != float2.zero).any())
+                {
+                    var force = (length - edge.distance) * lengthOffset.normalize() * -m_Stiffness;
+                    joints[edge.startIndex].force += force;
+                    joints[edge.endIndex].force -= force;
+                }
+
+                var velocityOffset = joints[edge.startIndex].velocity - joints[edge.endIndex].velocity;
+                var dampingForce = velocityOffset * -m_DampingCoefficient;
+                joints[edge.startIndex].force += dampingForce;
+            }
+
+            foreach (var joint in joints)
+            {
+                if (joint.mass == 0f)
+                    continue;
+                
+                var acceleration = joint.force / joint.mass;
+                var newVelocity = joint.velocity + acceleration * _fixedDeltaTime;
+                var newPosition = joint.position + newVelocity * _fixedDeltaTime;
+                
+                if (m_Bounds.Clamp(newPosition, out var clampedNewPosition))
+                {
+                    newPosition = clampedNewPosition;
+                    newVelocity = -newVelocity * m_BounceReflective;
+                }
+                
+                joint.velocity = newVelocity;
+                joint.position = newPosition;
+            }
         }
     }
 

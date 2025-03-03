@@ -43,9 +43,9 @@ namespace Examples.PhysicsScenes.WaveSimulation
         public ColorPalette m_Colors = ColorPalette.kDefault;
         public RangeFloat m_Edge = new RangeFloat(0.05f,0.95f);
         [Range(0,500)]public int sampleInterval = 200;
-        protected override void TickDrawer(FTextureDrawer _drawer,float _deltaTime)
+        protected override void FixedTick(float _fixedDeltaTime)
         {
-            m_Waves.Traversal(p=>p.Tick(_deltaTime,m_Edge));
+            m_Waves.Traversal(p=>p.Tick(_fixedDeltaTime,m_Edge));
             
             for (var i = 0; i < sampleInterval ; i++)
             {
@@ -54,14 +54,22 @@ namespace Examples.PhysicsScenes.WaveSimulation
 
                 foreach (var wave in m_Waves)
                     sample += wave.Evaluate(timeInterval);
+            }
+        }
 
+        protected override void Draw(FTextureDrawer _drawer)
+        {
+            for (var i = 0; i < sampleInterval; i++)
+            {
+                var timeInterval = (float)i / sampleInterval;
+                var sample = 0f;
                 var normalized = new float2(timeInterval, sample);
                 var pixel = (int2)(normalized * _drawer.size);
                 if(i == 0)
                     _drawer.PixelContinuousStart(pixel);
                 _drawer.PixelContinuous(pixel,m_Colors.Evaluate(timeInterval));
             }
-
+            
             foreach (var wave in m_Waves)
             {
                 var centre = (int2)(new float2(wave.position,wave.Evaluate(wave.position)) * _drawer.size);
@@ -69,5 +77,4 @@ namespace Examples.PhysicsScenes.WaveSimulation
             }
         }
     }
-
 }

@@ -4,13 +4,13 @@ using UnityEditor.Extensions;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Examples.PhysicsScenes.WaveSimulation
+namespace Examples.PhysicsScenes
 {
     [ExecuteAlways]
     public abstract class ADrawerSimulation : MonoBehaviour
     {
+        [Readonly] public Ticker m_Ticker = new Ticker(1f/60f);
         Texture2D m_Texture;
-        protected abstract void TickDrawer(FTextureDrawer _drawer, float _deltaTime);
         private FTextureDrawer m_Drawer;
         private RawImage m_Image;
         private void OnEnable()
@@ -36,11 +36,20 @@ namespace Examples.PhysicsScenes.WaveSimulation
         private void Update()
         {
             var deltaTime = UTime.deltaTime;
+
+            var maxSimulatePerTick = 5;
+            while (maxSimulatePerTick-- > 0 && m_Ticker.Tick(deltaTime))
+            {
+                deltaTime = 0f;
+                FixedTick(m_Ticker.duration);
+            }
             m_Drawer.Clear(Color.clear);
-            TickDrawer(m_Drawer,deltaTime);
-            
+            Draw(m_Drawer);
             m_Texture.SetPixels(m_Drawer.colors);
             m_Texture.Apply();
         }
+
+        protected abstract void FixedTick(float _fixedDeltaTime);
+        protected abstract void Draw(FTextureDrawer _drawer);
     }
 }
