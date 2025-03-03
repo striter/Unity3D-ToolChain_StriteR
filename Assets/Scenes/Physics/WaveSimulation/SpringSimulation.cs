@@ -29,6 +29,9 @@ namespace Examples.PhysicsScenes.SpringSimulation
     
     public class SpringSimulation : ADrawerSimulation
     {
+        public RectTransform m_Extruder;
+        public int m_ExtruderSize = 20;
+        public float m_ExtruderForce = 20;
         [Readonly] public Ticker m_Ticker = new Ticker(1f/60f);
         public float2 m_Gravity = kfloat2.down * 0.98f;
         public ColorPalette m_ColorPalette = ColorPalette.kDefault;
@@ -41,7 +44,7 @@ namespace Examples.PhysicsScenes.SpringSimulation
         
         public List<SpringJoint> config;
 
-        [Readonly] public List<SpringJoint> joints = new List<SpringJoint>();
+        public List<SpringJoint> joints = new List<SpringJoint>();
         [Readonly] public List<SpringEdge> edges = new List<SpringEdge>();
 
         private void Start()
@@ -51,11 +54,24 @@ namespace Examples.PhysicsScenes.SpringSimulation
             Initialize();
         }
 
+        private void OnDestroy()
+        {
+            Clear();
+        }
+
         [InspectorButton(true)]
         public void Bunny(float _scale = 100f,float2 _offset = default,int _mass =1)
         {
             config.Clear();
             config.AddRange( (G2Polygon.kBunny).Select(p=>new SpringJoint(){position = p * _scale + _offset,mass = _mass}));
+        }
+
+        [InspectorButton(true)]
+        public void Line(float2 _start = default, float2 _end = default,int _count = 10, int _mass = 1)
+        {
+            config.Clear();
+            for (var i = 0; i < _count; i++)
+                config.Add(new SpringJoint(){position = math.lerp(_start,_end,(float)i / (_count - 1)),mass = _mass});
         }
         
         [InspectorButton]
@@ -93,6 +109,11 @@ namespace Examples.PhysicsScenes.SpringSimulation
             _drawer.PixelContinuousStart((int2)m_Bounds.GetPoint(new float2(0,1)));
             foreach (var bound in m_Bounds)
                 _drawer.PixelContinuous((int2)bound,kBoundsColor);
+
+            if (m_Extruder != null)
+            {
+                _drawer.Circle((int2)(float2)m_Extruder.anchoredPosition, m_ExtruderSize, Color.white);
+            }
         }
         
         protected override void TickDrawer(FTextureDrawer _drawer, float _deltaTime)
@@ -103,7 +124,7 @@ namespace Examples.PhysicsScenes.SpringSimulation
                 return;
             }
 
-            var maxSimulatePerTick= 5;
+            var maxSimulatePerTick = 5;
             while (maxSimulatePerTick-- > 0 && m_Ticker.Tick(_deltaTime))
             {
                 _deltaTime = 0f;
@@ -111,15 +132,25 @@ namespace Examples.PhysicsScenes.SpringSimulation
                 foreach (var joint in joints)
                 {
                     joint.force = joint.mass * m_Gravity;
-                    joint.force += m_WindForce;
+                    joint.force += m_WindForce / joint.mass;
                     joint.force -= m_DragCoefficient * joint.velocity;
+                    if (m_Extruder != null)
+                    {
+                        var extruderPosition = (float2)m_Extruder.anchoredPosition;
+                        var distance = math.distance(extruderPosition, joint.position);
+                        if (distance < m_ExtruderSize)
+                        {
+                            var force = m_ExtruderForce * (joint.position - extruderPosition).normalize();
+                            joint.force += force;
+                        }
+                    }
                 }
 
                 foreach (var edge in edges)
                 {
                     var lengthOffset = joints[edge.startIndex].position - joints[edge.endIndex].position;
                     var length = math.length(lengthOffset);
-                    if (length != 0f)
+                    if ((lengthOffset != float2.zero).any())
                     {
                         var force = (length - edge.distance) * lengthOffset.normalize() * -m_Stiffness;
                         joints[edge.startIndex].force += force;
@@ -127,8 +158,7 @@ namespace Examples.PhysicsScenes.SpringSimulation
                     }
 
                     var velocityOffset = joints[edge.startIndex].velocity - joints[edge.endIndex].velocity;
-                    var velocity = math.length(velocityOffset);
-                    var dampingForce = velocity * -m_DampingCoefficient;
+                    var dampingForce = velocityOffset * -m_DampingCoefficient;
                     joints[edge.startIndex].force += dampingForce;
                 }
 
@@ -140,7 +170,7 @@ namespace Examples.PhysicsScenes.SpringSimulation
                     var acceleration = joint.force / joint.mass;
                     var newVelocity = joint.velocity + acceleration * simulateDeltaTime;
                     var newPosition = joint.position + newVelocity * simulateDeltaTime;
-
+                    
                     if (m_Bounds.Clamp(newPosition, out var clampedNewPosition))
                     {
                         newPosition = clampedNewPosition;
