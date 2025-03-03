@@ -68,20 +68,5 @@ namespace Rendering.PostProcess
             m_Effect.Execute(_executeData,ref  m_Data,_buffer, _src, _dst , _context, ref _renderingData);
 
         public void FrameCleanUp(CommandBuffer _buffer) =>  m_Effect.FrameCleanUp(_buffer,ref m_Data);
-        
-#if UNITY_EDITOR
-        private void OnEnable()
-        {
-            
-            UnityEditor.SceneManagement.EditorSceneManager.sceneSaved += OnSceneSaved;
-        }
-
-        private void OnDisable()
-        {
-            
-            UnityEditor.SceneManagement.EditorSceneManager.sceneSaved -= OnSceneSaved;
-        }
-        void OnSceneSaved(UnityEngine.SceneManagement.Scene _scene) => SetDirty();
-#endif
     }
 }
