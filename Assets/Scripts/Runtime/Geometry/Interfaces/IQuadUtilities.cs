@@ -241,7 +241,7 @@ namespace Runtime.Geometry
             return (vertex0+vertex1+vertex2+vertex3)/4;
         }
         
-        public static (Y vBL, Y vLF, Y vFR, Y vRB, Y vC) GetQuadMidVertices_Dynamic<T,Y>(this T _quad) where T:IQuad<Y> 
+        public static (T vBL, T vLF, T vFR, T vRB, T vC) GetQuadMidVertices_Dynamic<T>(this IQuad<T>  _quad)
         {
             dynamic vB = _quad.B;
             dynamic vL = _quad.L;
@@ -250,13 +250,13 @@ namespace Runtime.Geometry
             return ((vB + vL) / 2, (vL + vF) / 2, (vF + vR)/2,(vR+vB)/2,(vB+vL+vF+vR)/4);
         }
 
-        public static IEnumerable<Quad<Y>> SplitToQuads_Dynamic<T,Y>(this T _quad,bool _insideOut) where T:IQuad<Y> 
+        public static IEnumerable<Quad<T>> SplitToQuads_Dynamic<T>(this IQuad<T>  _quad,bool _insideOut)
         {
             var vB = _quad.B;
             var vL = _quad.L;
             var vF = _quad.F;
             var vR = _quad.R;
-            var midTuple = _quad.GetQuadMidVertices_Dynamic<T,Y>();
+            var midTuple = _quad.GetQuadMidVertices_Dynamic();
                 
             var vBL = midTuple.vBL;
             var vLF = midTuple.vLF;
@@ -266,34 +266,34 @@ namespace Runtime.Geometry
 
             if (_insideOut) 
             {
-                yield return new Quad<Y>(vC, vRB, vB, vBL);    //B
-                yield return new Quad<Y>(vC, vBL, vL, vLF);    //L
-                yield return new Quad<Y>(vC, vLF, vF, vFR);    //F
-                yield return new Quad<Y>(vC, vFR, vR, vRB);    //R
+                yield return new Quad<T>(vC, vRB, vB, vBL);    //B
+                yield return new Quad<T>(vC, vBL, vL, vLF);    //L
+                yield return new Quad<T>(vC, vLF, vF, vFR);    //F
+                yield return new Quad<T>(vC, vFR, vR, vRB);    //R
             }
             else   //Forwarded 
             {
-                yield return new Quad<Y>(vB,vBL,vC,vRB);   //B
-                yield return new Quad<Y>(vBL,vL,vLF,vC);   //L
-                yield return new Quad<Y>(vC,vLF,vF,vFR);   //F
-                yield return new Quad<Y>(vRB,vC,vFR,vR);   //R
+                yield return new Quad<T>(vB,vBL,vC,vRB);   //B
+                yield return new Quad<T>(vBL,vL,vLF,vC);   //L
+                yield return new Quad<T>(vC,vLF,vF,vFR);   //F
+                yield return new Quad<T>(vRB,vC,vFR,vR);   //R
             }
         }
 
         
-        public static IEnumerable<Quad<Y>> SplitTopDownQuads_Dynamic<T, Y>(this T _quad) where T : IQuad<Y>
+        public static IEnumerable<Quad<T>> SplitTopDownQuads_Dynamic<T>(this IQuad<T> _quad)
         {
             var vB = _quad.B;
             var vL = _quad.L;
             var vF = _quad.F;
             var vR = _quad.R;
-            var midTuple = _quad.GetQuadMidVertices_Dynamic<T,Y>();
+            var midTuple = _quad.GetQuadMidVertices_Dynamic();
                 
             var vLF = midTuple.vLF;
             var vRB = midTuple.vRB;
             
-            yield return new Quad<Y>(vB,vL,vLF,vRB);
-            yield return new Quad<Y>(vRB,vLF,vF,vR);
+            yield return new Quad<T>(vB,vL,vLF,vRB);
+            yield return new Quad<T>(vRB,vLF,vF,vR);
         }
 
         public static Quad<Y> Convert<T,Y>(this IQuad<T> _srcQuad, Func<T, Y> _convert)

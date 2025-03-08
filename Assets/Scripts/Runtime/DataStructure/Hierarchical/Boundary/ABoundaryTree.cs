@@ -19,7 +19,6 @@ namespace Runtime.DataStructure
             public IList<BoundaryTreeNode> children { get; set; }
         }
 
-
         protected abstract IEnumerable<(Boundary,IList<Element>)> Split(int _iteration,Boundary _boundary, IList<Element> _elements);
         public void Construct(IList<Element> _elements,Boundary _boundary, int _maxIteration, int _volumeCapacity) => Construct_Internal(new BoundaryTreeNode()
         {
@@ -41,7 +40,7 @@ namespace Runtime.DataStructure
                 };
             }
         }
-        public void DrawGizmos(bool _parentMode = false)
+        public virtual void DrawGizmos(bool _parentMode = false)
         {
             if (_parentMode)
             {

@@ -1,7 +1,11 @@
+using System;
 using System.Collections.Generic;
 using TPool;
 using System.Linq.Extensions;
 using Procedural.Tile;
+using Runtime.DataStructure;
+using Runtime.Geometry;
+using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -20,19 +24,25 @@ namespace Examples.Algorithm.SpatialHashGrid
         public float m_Alignment;
         public float m_Separation;
         
-        private ObjectPoolClass<int, Actor> m_Actors;
         private TileGraph m_Graph;
-        private SpatialHashMap<int2, TileGraph, Actor> m_SpatialHashMap;
+        private ObjectPoolClass<int, Actor> m_Actors;
+        private SpatialHashMap<Node, Actor> m_SpatialHashMap;
         
         private void Awake()
         {
             Instance = this;
             m_Actors = new ObjectPoolClass<int, Actor>(transform.Find("Actor"));
             m_Graph = new TileGraph(m_SenseRadius.end);
-            m_SpatialHashMap = new SpatialHashMap<int2, TileGraph, Actor>(m_Graph);
+            m_SpatialHashMap = new SpatialHashMap<Node, Actor>(PositionToNode);
             Spawn();
         }
 
+        Node PositionToNode(Actor _actor)
+        {
+            m_Graph.PositionToNode(_actor.position, out var _node);
+            return new Node(){index = _node,bounds = m_Graph.NodeToBoundingBox(_node)};
+        }
+        
         private void OnValidate()
         {
             if (m_SpatialHashMap==null)
@@ -50,29 +60,29 @@ namespace Examples.Algorithm.SpatialHashGrid
         void Spawn()
         {
             m_Actors.Clear();
-            m_SpatialHashMap.Reset();
+            m_SpatialHashMap.Clear();
             for (int i = 0; i < m_Amount; i++)
-            {
-                var actor = m_Actors.Spawn().Init(URandom.Random2DSphere().ToVector3_XZ()*m_SenseRadius.end*10,URandom.Random2DSphere().ToVector3_XZ());
-                m_SpatialHashMap.Register(actor);
-            }
+                m_Actors.Spawn().Init(URandom.Random2DSphere().ToVector3_XZ()*m_SenseRadius.end*10,URandom.Random2DSphere().ToVector3_XZ());
         }
 
-        // Update is called once per frame
         void Update()
         {
-            float deltaTime = Time.deltaTime;
-            m_SpatialHashMap.Tick(deltaTime);
-            m_Actors.Traversal(p=>p.Tick(deltaTime,m_SpatialHashMap.QueryRange(m_Actors.transform.position,m_SenseRadius.end)));
-
-
+            var deltaTime = Time.deltaTime;
+            var actors = m_Actors.FillList(UList.Empty<Actor>());
+            m_SpatialHashMap.Construct(actors);
+            var querySphere = new GSphere(m_Actors.transform.position, m_SenseRadius.end);
+            m_Actors.Traversal(p=>p.Tick(deltaTime,m_SpatialHashMap.Query(p=> p.bounds.Intersect(querySphere),actors)));
+            
             foreach (var actor in m_Actors)
                 actor.ApplyColor(Color.white);
             
             if (m_Actors.Count > 0)
             {
-                foreach (var actor in m_SpatialHashMap.QueryRange(m_Actors[0].position,m_SenseRadius.end))
+                var firstActorQuerySphere = new GSphere(m_Actors[0].position,m_SenseRadius.end);
+                foreach (var actor in m_SpatialHashMap.Query(p=>p.bounds.Intersect(firstActorQuerySphere),actors))
                     actor.ApplyColor(Color.green);
+                foreach (var actor in m_SpatialHashMap.Query(p=>firstActorQuerySphere.Intersect(p.bounds),p=>firstActorQuerySphere.Contains(p.position),actors))
+                    actor.ApplyColor(Color.yellow);
                 m_Actors[0].ApplyColor(Color.red);
             }
         }
@@ -85,14 +95,27 @@ namespace Examples.Algorithm.SpatialHashGrid
             Gizmos.DrawWireSphere(m_Actors[0].position,m_SenseRadius.end);
 
             m_Graph.PositionToNode(m_Actors[0].position,out var srcNode);
-            foreach (var node in m_Graph.GetAdjacentNodes(srcNode).Extend(srcNode))
-            {
-                Gizmos.color = (node == srcNode).all() ? Color.red : Color.green.SetA(.3f);
-                m_Graph.DrawGizmos(node);
-            }
+            Gizmos.color = Color.white.SetA(.2f);
+            foreach (var node in m_SpatialHashMap)
+                node.bounds.DrawGizmos();
         }
     }
 
+    public struct Node : IEqualityComparer<Node> , IEquatable<Node>
+    {
+        public int2 index;
+        public GBox bounds;
+        public override int GetHashCode() => index.GetHashCode();
+
+        public bool Equals(Node x, Node y) => x.index.Equals(y.index);
+
+        public int GetHashCode(Node obj) => obj.GetHashCode();
+
+        public bool Equals(Node other) => index.Equals(other.index) ;
+
+        public override bool Equals(object obj) =>  obj is Node other && Equals(other);
+    }
+    
     public class Actor:ITransform
     {
         public Transform transform { get; }
@@ -110,23 +133,24 @@ namespace Examples.Algorithm.SpatialHashGrid
             return this;
         }
         
-        public void Tick(float _deltaTime,IEnumerable<Actor> _actors)
+        public void Tick(float _deltaTime,IList<Actor> _actors)
         {
-            Quaternion rotation = Quaternion.LookRotation(direciton,Vector3.up);
+            var rotation = Quaternion.LookRotation(direciton,Vector3.up);
             position += direciton * Instance.m_Velocity * _deltaTime;
             transform.SetPositionAndRotation(position,rotation);
 
-            Vector3 separation = Vector3.zero;
-            Vector3 com = Vector3.zero;
-            Vector3 alignment = Vector3.zero;
-            int localBehaviourCount = 0;
-            foreach (var actor in _actors)
+            var separation = Vector3.zero;
+            var com = Vector3.zero;
+            var alignment = Vector3.zero;
+            var localBehaviourCount = 0;
+            for(var i = _actors.Count - 1; i >=0 ;i--)
             {
+                var actor = _actors[i];
                 localBehaviourCount++;
                 alignment += actor.direciton;
 
-                Vector3 offset = position - actor.position;
-                float distance = offset.magnitude;
+                var offset = position - actor.position;
+                var distance = offset.magnitude;
                 if (distance > Instance.m_SenseRadius.start)
                 {
                     com += actor.position;
@@ -134,7 +158,7 @@ namespace Examples.Algorithm.SpatialHashGrid
                 }
                 separation -= offset;
             }
-            Vector3 final = Vector3.zero;
+            var final = Vector3.zero;
             if (localBehaviourCount > 0)
             {
                 com /= localBehaviourCount;

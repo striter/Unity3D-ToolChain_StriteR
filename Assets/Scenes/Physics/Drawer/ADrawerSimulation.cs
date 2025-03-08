@@ -33,7 +33,7 @@ namespace Examples.PhysicsScenes
             m_Texture = null;
         }
 
-        private void Update()
+        protected virtual void Update()
         {
             var deltaTime = UTime.deltaTime;
 

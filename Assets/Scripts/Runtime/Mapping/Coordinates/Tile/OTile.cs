@@ -73,15 +73,9 @@ namespace Procedural.Tile
             yield return new int2(_src.x - 1, _src.y - 1);
         }
 
-        public void DrawGizmos(int2 _node)
-        {
-            var bounds = GBox.Minmax(new Vector3(_node.x,0f,_node.y)*m_Size,new Vector3(_node.x+1,0f,_node.y+1)*m_Size);
-            Gizmos.DrawWireCube(bounds.center,bounds.size);
-        }
-
         public bool PositionToNode(float3 _position, out int2 _node)
         {
-            _node = new int2(Mathf.RoundToInt(_position.x / m_Size), Mathf.RoundToInt(_position.z / m_Size));
+            _node = new int2((int)math.floor(_position.x / m_Size), (int)math.floor(_position.z / m_Size));
             return true;
         }
 
@@ -90,5 +84,7 @@ namespace Procedural.Tile
             _position = new Vector3(_node.x * m_Size, 0, _node.y * m_Size);
             return true;
         }
+
+        public GBox NodeToBoundingBox(int2 _node) => GBox.Minmax(new float3(_node.x,0f,_node.y)*m_Size,new float3(_node.x+1,0f,_node.y+1)*m_Size);
     }
 }

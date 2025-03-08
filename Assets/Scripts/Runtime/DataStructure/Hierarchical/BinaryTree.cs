@@ -20,12 +20,12 @@ namespace Runtime.DataStructure
         }
     }
     
-    public class BinaryTree<TreeNode, Element> : IEnumerable<Element> where TreeNode : ITreeNode<TreeNode,Element>
+    public class BinaryTree<Key, Element> : IEnumerable<Element> where Key : ITreeNode<Key,Element>
     {
-        private TreeNode m_Root;
-        private List<TreeNode> m_TreeNodes = new List<TreeNode>();
+        private Key m_Root;
+        private List<Key> m_TreeNodes = new List<Key>();
         protected virtual bool Optimize => true;
-        protected void Construct_Internal(TreeNode _root, int _maxIteration, int _volumeCapacity,Func<TreeNode,IEnumerable<TreeNode>> _split)
+        protected void Construct_Internal(Key _root, int _maxIteration, int _volumeCapacity,Func<Key,IEnumerable<Key>> _split)
         {
             m_TreeNodes.Clear();
             m_Root = _root;
@@ -48,7 +48,7 @@ namespace Runtime.DataStructure
                     if (treeNode.elements.Count <= _volumeCapacity)
                         continue;
 
-                    var childrenList = new List<TreeNode>();
+                    var childrenList = new List<Key>();
                     finalChildCount -= treeNode.elements.Count;
                     foreach (var childElements in _split(treeNode))
                     {
@@ -72,11 +72,11 @@ namespace Runtime.DataStructure
                 Debug.LogError($"Tree construct failed, finalChildCount != childCount {finalChildCount} != {rootChildCount}");
         }
         
-        public IEnumerable<TreeNode> GetLeafs() => from node in m_TreeNodes where !node.IsParent select node;
-        public IEnumerable<TreeNode> GetParents() => from node in m_TreeNodes where node.IsParent select node;
+        public IEnumerable<Key> GetLeafs() => from node in m_TreeNodes where !node.IsParent select node;
+        public IEnumerable<Key> GetParents() => from node in m_TreeNodes where node.IsParent select node;
         
-        private static readonly Stack<TreeNode> m_QueryNodes = new Stack<TreeNode>();
-        public IEnumerable<Element> Query(Predicate<TreeNode> _queryFunction)
+        private static readonly Stack<Key> m_QueryNodes = new Stack<Key>();
+        public IEnumerable<Element> Query(Predicate<Key> _queryFunction)
         {
             m_QueryNodes.Clear();
             m_QueryNodes.Push(m_Root);

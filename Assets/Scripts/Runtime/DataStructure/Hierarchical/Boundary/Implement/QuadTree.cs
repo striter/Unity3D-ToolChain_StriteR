@@ -33,8 +33,8 @@ namespace Runtime.DataStructure
             var size = b.size / division;
             var min = b.min;
             
-            for (int i = 0; i < division; i++)
-            for (int j = 0; j < division; j++)
+            for (var i = 0; i < division; i++)
+            for (var j = 0; j < division; j++)
             {
                 var rangeMin = min + size * new float2(i,j);
                 var rangeMax = rangeMin + size;
