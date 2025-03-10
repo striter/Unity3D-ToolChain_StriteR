@@ -18,8 +18,24 @@ namespace Runtime.Scripting
             inActiveElements = null;
         }
         
-        public T Spawn() => inActiveElements.Count > 0 ? inActiveElements.Pop() : new();
+        public virtual T Spawn() => inActiveElements.Count > 0 ? inActiveElements.Pop() : new();
+        public void Spawn(out T element) => element = Spawn();
+        public virtual void Despawn(T _element)
+        {
+            if (_element == null)
+                return;
+            inActiveElements.Push(_element);
+        }
+    }
 
-        public void Despawn(T _element) => inActiveElements.Push(_element);
+    public class ListPool<T> : Pool<List<T>>
+    {
+        public override void Despawn(List<T> _element)
+        {
+            _element?.Clear();
+            base.Despawn(_element);
+        }
+
+        public static ListPool<T> Instance = new();
     }
 }

@@ -6,32 +6,32 @@ using UnityEngine;
 namespace Examples.Algorithm.DataStructures
 {
     using static DataStructures.Constants;
+    using static BoundaryTreeHelper;
     public class DataStructures : MonoBehaviour
     {
         public static class Constants
         {
             public const int kRandomRadius = 20;
             public const int kQuadDivision = 2;
+            public const int kNodeCapacity = 8;
+            public const int kMaxIteration = 4;
         }
         
-        [Min(8)]public int m_NodeCapacity = 4;
-        public int m_Iteration = 4;
         public int m_RandomCount = 128;
         public float2[] m_RandomPoints;
         
         public G2Triangle[] m_RandomTriangles;
-        private QuadTree_float2 m_QuadTree = new QuadTree_float2(kQuadDivision);
-        private KDTree_float2 m_KDTree = new KDTree_float2();
-        private BSPTree m_BSPTree = new BSPTree();
-        private BoundingVolumeHierarchy<TreeNode_triangle2, G2Box, G2Triangle> m_BVH = new();
-
+        private QuadTree2<float2,G2Box_float2> m_QuadTree = new (kNodeCapacity,kMaxIteration,kQuadDivision);
+        private KDTree<G2Box,float2,G2Box_float2> m_KDTree = new (kNodeCapacity,kMaxIteration);
+        private BSPTree m_BSPTree = new(kNodeCapacity,kMaxIteration);
+        private BoundingVolumeHierarchy<G2Box, G2Triangle , G2Box_G2Triangle> m_BVH = new(kNodeCapacity,kMaxIteration);
 
         public bool m_ParentGizmos;
         public float3[] m_RandomPoints3;
         public GTriangle[] m_RandomTriangles3;
-        public QuadTree_float3 m_QuadTree3 = new QuadTree_float3(2);
-        public KDTree_float3 m_KDTree3 = new KDTree_float3();
-        public QuadTree_triangle3 m_QuadTree_triangle3 = new QuadTree_triangle3(2);
+        public QuadTree3<float3,GBox_float3> m_QuadTree3 = new (kNodeCapacity,kMaxIteration,kQuadDivision);
+        public KDTree<GBox,float3,GBox_float3> m_KDTree3 = new (kNodeCapacity,kMaxIteration);
+        public QuadTree3<GTriangle,GBox_GTriangle> m_QuadTree_triangle3 = new (kNodeCapacity,kMaxIteration,kQuadDivision);
         [InspectorButton]
         void Randomize()
         {
@@ -62,39 +62,38 @@ namespace Examples.Algorithm.DataStructures
             }
         }
 
-        
         private void OnDrawGizmos()
         {
             if (m_RandomPoints == null)
                 return;
 
-            Gizmos.matrix = Matrix4x4.identity;            
-            m_QuadTree.Construct(m_RandomPoints, m_Iteration,m_NodeCapacity);
-            m_QuadTree.DrawGizmos(m_ParentGizmos);
+            Gizmos.matrix = Matrix4x4.identity;
+            m_QuadTree.Construct(m_RandomPoints);
+            m_QuadTree.DrawGizmos(m_RandomPoints,m_ParentGizmos);
             
             Gizmos.matrix = Matrix4x4.Translate(Vector3.right * 50f);
-            m_KDTree.Construct(m_RandomPoints,m_Iteration,m_NodeCapacity);
-            m_KDTree.DrawGizmos(m_ParentGizmos);
+            m_KDTree.Construct(m_RandomPoints);
+            m_KDTree.DrawGizmos(m_RandomPoints,m_ParentGizmos);
             
             Gizmos.matrix = Matrix4x4.Translate(Vector3.right * 100f);
-            m_BSPTree.Construct(m_RandomPoints,m_Iteration,m_NodeCapacity);
-            m_BSPTree.DrawGizmos(m_ParentGizmos);
+            m_BSPTree.Construct(m_RandomPoints);
+            m_BSPTree.DrawGizmos(m_RandomPoints,m_ParentGizmos);
             
             Gizmos.matrix = Matrix4x4.Translate(Vector3.right * 150f);
-            m_BVH.Construct(m_RandomTriangles, m_Iteration,m_NodeCapacity);
-            m_BVH.DrawGizmos(m_ParentGizmos);
+            m_BVH.Construct(m_RandomTriangles);
+            m_BVH.DrawGizmos(m_RandomTriangles,m_ParentGizmos);
             
             Gizmos.matrix = Matrix4x4.Translate(Vector3.back * 50f);
-            m_QuadTree3.Construct(m_RandomPoints3,m_Iteration,m_NodeCapacity);
-            m_QuadTree3.DrawGizmos(m_ParentGizmos);
+            m_QuadTree3.Construct(m_RandomPoints3);
+            m_QuadTree3.DrawGizmos(m_RandomPoints3,m_ParentGizmos);
             
             Gizmos.matrix = Matrix4x4.Translate(Vector3.back * 50f + Vector3.right*50f);
-            m_KDTree3.Construct(m_RandomPoints3,m_Iteration,m_NodeCapacity);
-            m_KDTree3.DrawGizmos(m_ParentGizmos);
+            m_KDTree3.Construct(m_RandomPoints3);
+            m_KDTree3.DrawGizmos(m_RandomPoints3,m_ParentGizmos);
             
             Gizmos.matrix = Matrix4x4.Translate(Vector3.back * 100f);
-            m_QuadTree_triangle3.Construct(m_RandomTriangles3,m_Iteration,m_NodeCapacity);
-            m_QuadTree_triangle3.DrawGizmos(m_ParentGizmos);
+            m_QuadTree_triangle3.Construct(m_RandomTriangles3);
+            m_QuadTree_triangle3.DrawGizmos(m_RandomTriangles3,m_ParentGizmos);
         }
     }
 

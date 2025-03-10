@@ -11,22 +11,22 @@ namespace Examples.Rendering.Shadows
 {
     public struct IbvhHelperSphereCapsule : IBVHHelper<GSphere, GCapsule>
     {
-        public void SortElements(int _median, GSphere _boundary, IList<GCapsule> _elements)
+        public void SortElements(int _median, GSphere _boundary, IList<int> _elementIndexes,IList<GCapsule> _elements)
         {
             PCA.Evaluate(_elements.Select(p=>p.Origin),out var center,out var right,out var up,out var forward);
-            _elements.Divide(_median,
+            _elementIndexes.Divide(_median,
                 // .Sort(
                 // ESortType.Bubble,
                 (_a, _b) =>
                 {
-                    float aDot = math.dot(_a.Origin - center, right);
-                    float bDot = math.dot(_b.Origin - center, right);
+                    var aDot = math.dot(_elements[_a].Origin - center, right);
+                    var bDot = math.dot(_elements[_b].Origin - center, right);
                     return aDot >= bDot ? 1 : -1;
                 }
             );
         }
 
-        public GSphere CalculateBoundary(IList<GCapsule> _elements) => UGeometry.GetBoundingSphere(_elements.Select(p=>p.GetBoundingSphere()));
+        public GSphere CalculateBoundary(IEnumerable<GCapsule> _elements) => UGeometry.GetBoundingSphere(_elements.Select(p=>p.GetBoundingSphere()));
     }
     
     [ExecuteInEditMode]
@@ -45,16 +45,15 @@ namespace Examples.Rendering.Shadows
         
         private int kSDFParameters1 = Shader.PropertyToID("_SDFParameters1");
         private int kSDFParameters2 = Shader.PropertyToID("_SDFParameters2");
-        public int m_VolumeCapacity = 4;
-        public int m_MaxIteration = 4;
-        private BoundingVolumeHierarchy<IbvhHelperSphereCapsule, GSphere, GCapsule> m_BVH = new();
+        private BoundingVolumeHierarchy<GSphere, GCapsule,IbvhHelperSphereCapsule> m_BVH = new(4,4);
         
+        List<GCapsule> capsules = new List<GCapsule>();
         public void Update()
         {
             if (SDFRenderer.sRenderers.Count <= 0)
                 return;
 
-            List<GCapsule> capsules = new List<GCapsule>();
+            capsules.Clear();
             foreach (var renderer in SDFRenderer.sRenderers)
             {
                 var localToWorld = renderer.transform.localToWorldMatrix;
@@ -67,7 +66,7 @@ namespace Examples.Rendering.Shadows
                 }
             }
             
-            m_BVH.Construct(capsules,m_MaxIteration,m_VolumeCapacity);
+            m_BVH.Construct(capsules);
 
             int volumeIndex = 0;
             int elementIndex = 0;
@@ -76,10 +75,10 @@ namespace Examples.Rendering.Shadows
             {
                 int start = elementIndex;
                 
-                var count = volume.elements.Count;
+                var count = volume.elementsIndex.Count;
                 for (int i = 0; i < count; i++)
                 {
-                    var shapeWS = volume.elements[i];   
+                    var shapeWS = volume.Index(capsules,i);   
                     var parameter1 = shapeWS.origin.to4(shapeWS.radius);
                     var parameter2 = shapeWS.normal.to4(shapeWS.height);
                     m_ShapeParameters1[start+i] = (parameter1);
@@ -112,8 +111,8 @@ namespace Examples.Rendering.Shadows
             {
                 Gizmos.color = UColor.IndexToColor(index++);
                 volume.boundary.DrawGizmos();
-                foreach (var element in volume.elements)
-                    element.DrawGizmos();
+                foreach (var element in volume.elementsIndex)
+                    capsules[element].DrawGizmos();
             }
             // foreach (var renderer in SDFRenderer.sRenderers)
             // {

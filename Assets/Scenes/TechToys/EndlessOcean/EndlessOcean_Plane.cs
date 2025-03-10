@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
-using MeshFragment;
 using Runtime;
 using Runtime.DataStructure;
 using Runtime.Geometry;
@@ -16,43 +14,47 @@ namespace EndlessOcean
     [Serializable]
     public class EndlessOceanChunk : ABoundaryTree<G2Box, float2>
     {
-        [Range(2,3)]public int m_Division;
-        protected override bool Optimize => false;
-        protected override IEnumerable<(G2Box, IList<float2>)> Split(int _iteration, G2Box _boundary, IList<float2> _elements)
+        public EndlessOceanChunk(int _maxIteration) : base(0, _maxIteration) { }
+        public void Construct(G2Box _boundary)
         {
-            foreach (var boundary in _boundary.Divide(m_Division))
+            var point = UList.Empty<float2>();
+            point.Add(float2.zero);
+            Construct(_boundary,point);
+        }
+
+        protected override IEnumerable<Node> Split(Node _parent, IList<float2> _elements)
+        {
+            foreach (var boundary in _parent.boundary.Divide(3))
             {
-                var list = new List<float2>();
-                for (var i = _elements.Count - 1; i >= 0; i--)
+                var node = Node.Spawn(_parent.iteration + 1, boundary);
+                for (var i = _parent.elementsIndex.Count - 1; i >= 0; i--)
                 {
-                    if (!boundary.Contains(_elements[i], 0.1f)) 
+                    var childIndex = _parent.elementsIndex[i];
+                    if (!boundary.Contains(_elements[childIndex], 0.1f)) 
                         continue;
                     
-                    list.Add(_elements[i]);
-                    _elements.RemoveAt(i);
+                    node.elementsIndex.Add(childIndex);
+                    _parent.elementsIndex.RemoveAt(i);   
                 }
-                yield return (boundary,list);
+
+                yield return node;
             }
         }
     }
     
-    
-    
     public class EndlessOcean_Plane : ARendererBase
     {
-        
-        [Range(1,5)]public int m_BoundaryDivision = 3;
         [Range(1,64)]public int m_CellDivision = 3;
+        [Range(1,5)]public int m_Division = 3;
         public G2Box m_Boundary;
-        public EndlessOceanChunk m_Chunk = new EndlessOceanChunk();
+        public EndlessOceanChunk m_Chunk = new EndlessOceanChunk(3);
         public Camera m_CullingCamera;
 
         protected override void Validate()
         {
             base.Validate();
-            var elements = UList.Empty<float2>();
-            elements.Add(float2.zero);
-            m_Chunk.Construct(elements,m_Boundary,m_BoundaryDivision,0);
+            m_Chunk.m_MaxIteration = m_Division;
+            m_Chunk.Construct(m_Boundary);
         }
 
         protected override void PopulateMesh(Mesh _mesh,Transform _viewTransform)
@@ -67,8 +69,6 @@ namespace EndlessOcean
             var positions = ULowDiscrepancySequences.PoissonDisk2D(m_CellDivision * m_CellDivision,30).Remake(p=>p+.5f);
 
             var frustumPlanes = new GFrustum(m_CullingCamera).GetFrustumPlanes();
-            
-            
             foreach (var node in m_Chunk.GetLeafs())
             {
                 var boundary = node.boundary;

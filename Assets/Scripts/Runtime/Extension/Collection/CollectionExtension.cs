@@ -488,6 +488,7 @@ namespace System.Linq.Extensions
                 return builder.ToString();
             }
 
+            public static T Index<T>(this IList<T> _collection, int _index) => _collection[_index];
             public static IEnumerable<T> Iterate<T>(this IList<T> _collection, int _startIndex,int _endIndex = -1)
             {
                 if(_endIndex== -1)
@@ -616,6 +617,12 @@ namespace System.Linq.Extensions
             
         #endregion
         #region Array
+        public static void FillDefault<T>(this T[] _src, T _dst = default)
+        {
+            var length = _src.Length;
+            for (var i = 0; i < length; i++)
+                _src[i] = _dst;
+        }
         public static IEnumerable<object> GetEnumerable(this Array _array)
         {
             foreach(var element in _array)
@@ -724,7 +731,7 @@ namespace System.Linq.Extensions
         }
 
         public static T Last<T>(this T[] _array)=> _array[^1];
-        public static void FillArray<T>(this IEnumerable<T> _collection, T[] _array,int _offset=0)
+        public static void Fill<T>(this IEnumerable<T> _collection, T[] _array,int _offset=0)
         {
             int index=_offset;
             foreach (var element in _collection)

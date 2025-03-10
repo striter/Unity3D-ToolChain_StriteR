@@ -26,14 +26,13 @@ namespace Examples.Algorithm.SpatialHashGrid
         
         private TileGraph m_Graph;
         private ObjectPoolClass<int, Actor> m_Actors;
-        private SpatialHashMap<Node, Actor> m_SpatialHashMap;
+        private SpatialHashMap<Node, Actor> m_SpatialHashMap = new ();
         
         private void Awake()
         {
             Instance = this;
             m_Actors = new ObjectPoolClass<int, Actor>(transform.Find("Actor"));
             m_Graph = new TileGraph(m_SenseRadius.end);
-            m_SpatialHashMap = new SpatialHashMap<Node, Actor>(PositionToNode);
             Spawn();
         }
 
@@ -45,7 +44,7 @@ namespace Examples.Algorithm.SpatialHashGrid
         
         private void OnValidate()
         {
-            if (m_SpatialHashMap==null)
+            if (m_Actors==null)
                 return;
             
             Spawn();
@@ -69,7 +68,7 @@ namespace Examples.Algorithm.SpatialHashGrid
         {
             var deltaTime = Time.deltaTime;
             var actors = m_Actors.FillList(UList.Empty<Actor>());
-            m_SpatialHashMap.Construct(actors);
+            m_SpatialHashMap.Construct(actors,PositionToNode);
             var querySphere = new GSphere(m_Actors.transform.position, m_SenseRadius.end);
             m_Actors.Traversal(p=>p.Tick(deltaTime,m_SpatialHashMap.Query(p=> p.bounds.Intersect(querySphere),actors)));
             

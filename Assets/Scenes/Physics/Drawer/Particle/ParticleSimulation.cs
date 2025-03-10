@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Linq.Extensions;
 using Runtime.DataStructure;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
@@ -18,7 +16,6 @@ namespace Examples.PhysicsScenes.Particle
         public float2 m_Gravity = new float2(0f, -9.8f);
         public float2 m_WindForce = new float2(1f, 0f);
         [Range(0, 1)] public float m_AirDragCoefficient = 0.1f;
-
         public SmoothedParticleHydrodynamics.SPHStdKernal3 m_SPH = SmoothedParticleHydrodynamics.SPHStdKernal3.kDefault;
         
         [Header("Bounds")]
@@ -34,38 +31,35 @@ namespace Examples.PhysicsScenes.Particle
             public float density;
             public struct BVHHelper : IBVHHelper<G2Box,ParticleData>
             {
-                public void SortElements(int _median, G2Box _boundary, IList<ParticleData> _elements)
+                public void SortElements(int _median, G2Box _boundary,IList<int> _elementIndexes, IList<ParticleData> _elements)
                 {
                     var axis = _boundary.size.maxAxis();
-                    _elements.Divide(_median,
+                    _elementIndexes.Divide(_median,
                         // .Sort(
                         // ESortType.Bubble,
-                        (_a, _b) => axis switch
+                        (_a, _b) =>
                         {
-                            EAxis.X => _a.position.x >= _b.position.x ? 1 : -1,
-                            EAxis.Y => _a.position.y >= _b.position.y ? 1 : -1,
-                            _ => throw new InvalidEnumArgumentException()
+                            var a = _elements[_a];
+                            var b = _elements[_b];
+                            return axis switch
+                            {
+                                EAxis.X => a.position.x >= b.position.x ? 1 : -1,
+                                EAxis.Y => a.position.y >= b.position.y ? 1 : -1,
+                                _ => throw new InvalidEnumArgumentException()
+                            };
                         });
                 }
 
-                public G2Box CalculateBoundary(IList<ParticleData> _elements) =>
-                    UGeometry.GetBoundingBox(_elements.Select(p => p.position));
+                public G2Box CalculateBoundary(IEnumerable<ParticleData> _elements) => UGeometry.GetBoundingBox(_elements.Select(p => p.position));
             }
         }
-
-        private class ParticleBVH : BoundingVolumeHierarchy<ParticleData.BVHHelper,G2Box, ParticleData>
+        private class ParticleBVH : BoundingVolumeHierarchy<G2Box, ParticleData,ParticleData.BVHHelper>
         {
-            public override void DrawGizmos(bool _parentMode = false)
-            {
-                foreach (var node in GetLeafs())
-                    node.boundary.DrawGizmosXY();
-            }
-
-            protected override bool Optimize { get; }
+            public ParticleBVH(int _nodeCapcity, int _maxIteration) : base(_nodeCapcity, _maxIteration) { }
         }
 
         private List<ParticleData> particles = new List<ParticleData>();
-        private ParticleBVH particleQueries = new ParticleBVH();
+        private ParticleBVH particleQueries = new ParticleBVH(32,4);
 
         public int Count => particles.Count;
 
@@ -74,7 +68,7 @@ namespace Examples.PhysicsScenes.Particle
             if (!Application.isPlaying)
                 return;
             for(int i=0;i<2048;i++)
-                AddParticle(new ParticleData(){force = URandom.Random2DDirection() * 5000f,mass = math.lerp(1f,5f,URandom.Random01()),position = m_Bounds.center,
+                AddParticle(new ParticleData(){force = URandom.Random2DDirection() * 5000f,mass = math.lerp(1f,5f,URandom.Random01()),position = m_Bounds.center + (float2)URandom.Random2DSphere() * 500f,
                     velocity = URandom.Random2DSphere() * 10f,density = 1f});
         }
 
@@ -114,8 +108,8 @@ namespace Examples.PhysicsScenes.Particle
 
         void ResolveCollision()
         {
-            particleQueries.Construct( particles.FillList(UList.Empty<ParticleData>()),m_Bounds,4,16);
-            UpdateDensity((_position,_radius) => particleQueries.Query(p=>p.boundary.Intersect(new G2Circle(_position,_radius))));
+            particleQueries.Construct( m_Bounds,particles);
+            UpdateDensity((_position,_radius) => particleQueries.Query(particles,p=> p.Intersect(new G2Circle(_position,_radius))));
             for (var i = 0; i < Count; i++)
             {
                 var particle = particles[i];
@@ -137,7 +131,7 @@ namespace Examples.PhysicsScenes.Particle
                 var particle = particles[i];
                 
                 var density = 0f;
-                foreach (var nearbyParticles in _query(particle.position,50f))
+                foreach (var nearbyParticles in _query(particle.position,5f))
                 {
                     var sqrDistance = (particle.position - nearbyParticles.position).sqrmagnitude();
                     density += m_SPH.Evaluate(sqrDistance);
@@ -167,8 +161,7 @@ namespace Examples.PhysicsScenes.Particle
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(-m_Bounds.center.to3xy());
-            particleQueries.DrawGizmos();
-
+            particleQueries.DrawGizmos(particles);
             foreach (var particle in particles)
             {
                 Gizmos.DrawWireSphere(particle.position.to3xy(),m_SPH.h);

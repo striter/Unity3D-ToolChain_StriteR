@@ -169,7 +169,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Velocity: 5
-  m_Amount: 1024
+  m_Amount: 2048
   m_SenseRadius:
     start: 3
     length: 5

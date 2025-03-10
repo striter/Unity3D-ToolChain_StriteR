@@ -17,11 +17,7 @@ public static class UReflection
         return dst;
     }
 
-    public static T GetDefaultData<T>(string _srFieldName = "kDefault") where T:struct
-    {
-        return (T)typeof(T).GetField(_srFieldName, BindingFlags.Static | BindingFlags.Public)?.GetValue(null);
-    }
-    
+    public static T GetDefaultData<T>(string _srFieldName = "kDefault") where T:struct => (T)typeof(T).GetField(_srFieldName, BindingFlags.Static | BindingFlags.Public)?.GetValue(null);
     public static void CopyFields<T>(T _src, T _dst) where T : class
     {
         foreach (var fieldInfo in _src.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public))

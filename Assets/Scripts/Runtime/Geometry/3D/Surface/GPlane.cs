@@ -53,7 +53,7 @@ namespace Runtime.Geometry
         static float3[] kTempArray = new float3[3];
         public static GPlane FromPositions(IEnumerable<float3> _ienumerable)
         {
-            _ienumerable.FillArray(kTempArray);
+            _ienumerable.Fill(kTempArray);
             return FromPositions(kTempArray[0],kTempArray[1],kTempArray[2]);
         }
         public static GPlane FromPositions(float3 _V0, float3 _V1, float3 _V2) => new GPlane(math.cross((_V1 - _V0).normalize(),(_V2 - _V0).normalize()).normalize(),_V0);

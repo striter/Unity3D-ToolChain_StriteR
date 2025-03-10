@@ -52,6 +52,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Library\PackageCache\com.unity.render-pipelines.universal@14.0.10\Runtime\External\LibTessDotNet\LICENSE.txt">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Library\PackageCache\com.unity.timeline@1.7.6\Editor\StyleSheets\res\Timeline_DarkSkin.txt">
           <value>
             <Attribute>

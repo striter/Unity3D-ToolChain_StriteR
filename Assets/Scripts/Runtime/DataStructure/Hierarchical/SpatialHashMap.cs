@@ -7,14 +7,8 @@ namespace Runtime.DataStructure
     public class SpatialHashMap<Key,Element> : IEnumerable<Key> where Key:struct 
     {
         private MultiHashMap<Key,  int> m_Map = new();
-        private Func<Element, Key> m_ConvertFunc;
 
         private List<Element> kQueryResults = new();
-        private SpatialHashMap() { }
-        public SpatialHashMap(Func<Element, Key> _convertFunc) {
-            m_ConvertFunc = _convertFunc;
-        }
-
         public void Clear()
         {
             m_Map.Clear();
@@ -28,11 +22,11 @@ namespace Runtime.DataStructure
             m_Map = null;
         }
 
-        public void Construct(IList<Element> _values)
+        public void Construct(IList<Element> _values, Func<Element, Key> _convertFunc)
         {
             Clear();
             for(var i = _values.Count - 1; i >= 0; i--)
-                m_Map.Add(m_ConvertFunc(_values[i]),i);
+                m_Map.Add(_convertFunc(_values[i]),i);
         }
 
         public IList<Element> Query(Predicate<Key> _predicateKey,IList<Element> _values)

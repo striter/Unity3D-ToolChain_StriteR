@@ -22,9 +22,10 @@ namespace Runtime.Optimize.Voxelizer
         public GBox m_Box = GBox.kDefault;
         public EResolution m_Resolution = EResolution._64;
 
-        private QuadTree_triangle3 m_Voxelizer = new(2);
+        private QuadTree3<GTriangle,BoundaryTreeHelper.GBox_GTriangle> m_Voxelizer = new(64,32,2);
 
         private List<float> kIntersectDistances = new List<float>();
+        private List<GTriangle> m_Triangles = new List<GTriangle>();
         #if UNITY_EDITOR
         [InspectorButton]
         void Construct()
@@ -32,7 +33,7 @@ namespace Runtime.Optimize.Voxelizer
             var meshRenderers = GameObject.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None)
                 .Collect(p => p.bounds.Intersects(m_Box));
 
-            List<GTriangle> triangles = new List<GTriangle>();
+            m_Triangles.Clear();
             foreach (var renderer in meshRenderers)
             {
                 var meshFilter = renderer.GetComponent<MeshFilter>();
@@ -43,13 +44,13 @@ namespace Runtime.Optimize.Voxelizer
                 var trianglesOS = intersectMesh.GetPolygonVertices(out var meshVertices,out var meshIndexes);
 
                 var localToObject =  transform.worldToLocalMatrix * meshFilter.transform.localToWorldMatrix;
-                triangles.AddRange(trianglesOS.Select(p=>(localToObject*p)));
+                m_Triangles.AddRange(trianglesOS.Select(p=>(localToObject*p)));
             }
 
-            if (triangles.Count == 0)
+            if (m_Triangles.Count == 0)
                 return;
             
-            m_Voxelizer.Construct(triangles,64,32);
+            m_Voxelizer.Construct(m_Triangles);
 
             
             var resolution = (int) m_Resolution;
@@ -65,7 +66,7 @@ namespace Runtime.Optimize.Voxelizer
                 {
                     kIntersectDistances.Clear();
                     var ray = new GRay(m_Box.GetPoint(new float3(0, step * (j + .5f),step * (i + .5f)) - .5f), kfloat3.right);
-                    foreach (var triangle in m_Voxelizer.Query(p => ray.Intersect(p.boundary)))
+                    foreach (var triangle in m_Voxelizer.Query(m_Triangles,p => ray.Intersect(p)))
                     {
                         if (ray.Intersect(triangle, out var distance))
                             kIntersectDistances.TryAdd(distance);
@@ -112,7 +113,7 @@ namespace Runtime.Optimize.Voxelizer
             m_Box.DrawGizmos();
             
             if(m_DrawGizmos)
-                m_Voxelizer.DrawGizmos(true);
+                m_Voxelizer.DrawGizmos(m_Triangles,true);
         }
     }
 
