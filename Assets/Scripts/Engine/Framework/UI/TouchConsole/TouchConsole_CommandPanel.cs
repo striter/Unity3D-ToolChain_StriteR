@@ -239,7 +239,7 @@ public partial class TouchConsole
             command.KeycodeTick();
 
         m_FastKeyCooldownTimer.Tick(_deltaTime);
-        if (m_FastKeyCooldownTimer.m_Playing)
+        if (m_FastKeyCooldownTimer.Playing)
             return;
         if (Input.touchCount >= 5 || Input.GetKey(KeyCode.BackQuote))
         {

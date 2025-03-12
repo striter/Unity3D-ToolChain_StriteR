@@ -191,10 +191,10 @@ namespace TechToys.ThePlanet.Module.Cluster
         
         public void TickLighting(float _deltaTime, Vector3 _lightDir)
         {
-            if (!m_AnimationCounter.m_Playing)
+            if (!m_AnimationCounter.Playing)
                 return;
             m_AnimationCounter.Tick(_deltaTime);
-            m_PropertyBlock.SetFloat(kProgressID,m_AnimationCounter.m_TimeLeftScale);
+            m_PropertyBlock.SetFloat(kProgressID,m_AnimationCounter.TimeScale);
             m_Renderer.SetPropertyBlock(m_PropertyBlock);
         }
 #if UNITY_EDITOR

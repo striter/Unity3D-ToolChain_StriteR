@@ -70,7 +70,7 @@ namespace TechToys.ThePlanet
             if (!clip)
                 throw new Exception("Invalid clip name");
 
-            if (m_AudioPitcher.m_Playing)
+            if (m_AudioPitcher.Playing)
                 m_PitchCounter++;
             if (m_CurPitching != _name)
             {

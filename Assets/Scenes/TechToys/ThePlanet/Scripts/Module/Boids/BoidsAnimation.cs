@@ -111,12 +111,12 @@ namespace TechToys.ThePlanet.Module.BOIDS
         
         public void Tick(float _deltaTime)
         {
-            if (!m_BlendCounter.m_Playing)
+            if (!m_BlendCounter.Playing)
                 return;
             m_BlendCounter.Tick(_deltaTime);
-            m_MainFilter.transform.localScale = Vector3.one * m_BlendCounter.m_TimeLeftScale;
-            m_BlendFilter.transform.localScale = Vector3.one * m_BlendCounter.m_TimeElapsedScale;
-            if (m_BlendCounter.m_Playing)
+            m_MainFilter.transform.localScale = Vector3.one * m_BlendCounter.TimeScale;
+            m_BlendFilter.transform.localScale = Vector3.one * m_BlendCounter.TimeElapsedScale;
+            if (m_BlendCounter.Playing)
                 return;
             m_MainFilter.sharedMesh = m_BlendFilter.sharedMesh;
             m_MainFilter.transform.localScale = Vector3.one;

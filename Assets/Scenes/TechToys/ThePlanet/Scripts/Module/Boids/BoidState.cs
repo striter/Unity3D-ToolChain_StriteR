@@ -36,17 +36,17 @@ namespace TechToys.ThePlanet.Module.BOIDS.States
         public bool TickStateSwitch(BoidsActor _actor, float _deltaTime,out T _nextBehaviour)
         {
             _nextBehaviour = m_ChillBehaviour;
-            if (m_ReactionCounter.m_Playing)
+            if (m_ReactionCounter.Playing)
                 return false;
             
             m_StartleCounter.Tick(_deltaTime);
-            return !m_StartleCounter.m_Playing;
+            return !m_StartleCounter.Playing;
         }
         
         public virtual void TickVelocity(BoidsActor _actor, IList<BoidsActor> _members, float _deltaTime,
             ref Vector3 _velocity)
         {
-            if (m_ReactionCounter.m_Playing)       //Do nothing during reaction time
+            if (m_ReactionCounter.Playing)       //Do nothing during reaction time
             {
                 if(m_ReactionCounter.TickTrigger(_deltaTime))
                     _actor.m_Animation.SetAnimation(m_StartleConfig.animName);

@@ -60,7 +60,7 @@ namespace TechToys.ThePlanet.Grid
         public void Tick(float _deltaTime)
         {
             m_IterateCounter.Tick(_deltaTime);
-            if (m_IterateCounter.m_Playing)
+            if (m_IterateCounter.Playing)
                 return;
             m_IterateCounter.Replay();
 

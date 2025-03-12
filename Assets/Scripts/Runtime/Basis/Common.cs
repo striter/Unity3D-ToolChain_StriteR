@@ -198,43 +198,39 @@ public struct Ticker
     }
 }
 
-public class Counter
+[Serializable]
+public struct Counter
 {
-    public float m_TimerDuration { get; private set; } = 0;
-    public bool m_Playing { get; private set; } = false;
-    public float m_TimeLeft { get; private set; } = -1;
-    public float m_TimeLeftScale { get; private set; } = 0;
-    public float m_TimeElapsed { get; private set; }
-    public float m_TimeElapsedScale { get; private set; } = 0;
+    public float duration;
+    public float timeElapsed;
+    public bool Playing => TimeLeft > 0;
+    public float TimeLeft => duration - timeElapsed;
+    public float TimeLeftScale => TimeLeft / duration;
+    public float TimeElapsedScale => 1f - TimeLeftScale;
+
     public Counter(float _countDuration = 0, bool _startOff = false)
     {
+        this = default;
         Set(_countDuration);
         if (_startOff)
             Stop();
     }
-    void Validate(float _timeLeft)
-    {
-        m_TimeLeft = Mathf.Clamp( _timeLeft,0f,m_TimerDuration);
-        m_TimeElapsed = m_TimerDuration - m_TimeLeft;
-        m_Playing = m_TimeLeft > 0;
-        m_TimeLeftScale = m_TimeLeft / m_TimerDuration;
-        m_TimeElapsedScale = 1f - m_TimeLeftScale;
-    }
+    void Validate(float _timeLeft) => timeElapsed = math.clamp(duration - _timeLeft,0,duration);
     
     public void Set(float _duration)
     {
-        m_TimerDuration = _duration;
-        Validate(m_TimerDuration);
+        duration = _duration;
+        Validate(duration);
     }
-    public void Tick(float _deltaTime) => Validate(m_TimeLeft - _deltaTime);
-    public void Replay() => Validate(m_TimerDuration);
+    public void Tick(float _deltaTime) => Validate(TimeLeft - _deltaTime);
+    public void Replay() => Validate(duration);
     public void Stop() => Validate(0);
     public bool TickTrigger(float _deltaTime)
     {
-        if (!m_Playing)
+        if (!Playing)
             return false;
         Tick(_deltaTime);
-        return !m_Playing;
+        return !Playing;
     }
 }
 

@@ -43,7 +43,7 @@ namespace Dome.Entity
             
             if (!_caster.input.primary.Press()) return;
             {
-                if (_caster.projectileCastCooldown.m_Playing) return;
+                if (_caster.projectileCastCooldown.Playing) return;
                 _caster.projectileCastCooldown.Replay();
                 _caster.CastProjectile(_caster.kProjectileName, _caster.desiredTarget.targetPosition());
             }

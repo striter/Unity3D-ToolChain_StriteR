@@ -21,13 +21,13 @@ namespace Examples.Rendering.LightVolume
         public Vector3 Tick(float _deltaTime)
         {
             m_Counter.Tick(_deltaTime);
-            if (!m_Counter.m_Playing)
+            if (!m_Counter.Playing)
             {
                 m_Counter.Replay();
                 m_Forward = !m_Forward;
             }
 
-            return m_MovingCurve.Evaluate(m_Forward?m_Counter.m_TimeElapsedScale:m_Counter.m_TimeLeftScale);
+            return m_MovingCurve.Evaluate(m_Forward?m_Counter.TimeElapsedScale:m_Counter.TimeScale);
         }
     }
     

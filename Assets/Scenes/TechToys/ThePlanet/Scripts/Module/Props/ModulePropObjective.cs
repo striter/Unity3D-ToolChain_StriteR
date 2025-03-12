@@ -239,11 +239,11 @@ namespace TechToys.ThePlanet.Module.Prop
         
         public bool TickRecycle(float _deltaTime)
         {
-            if (!m_AnimationCounter.m_Playing)
+            if (!m_AnimationCounter.Playing)
                 return false;
             m_AnimationCounter.Tick(_deltaTime);
-            transform.localScale = (m_Show?m_AnimationCounter.m_TimeElapsedScale:m_AnimationCounter.m_TimeLeftScale)*m_Scale*KPCG.kUnitSize*2;
-            if (!m_AnimationCounter.m_Playing&&!m_Show)
+            transform.localScale = (m_Show?m_AnimationCounter.TimeElapsedScale:m_AnimationCounter.TimeScale)*m_Scale*KPCG.kUnitSize*2;
+            if (!m_AnimationCounter.Playing&&!m_Show)
                 return true;
             return false;
         }

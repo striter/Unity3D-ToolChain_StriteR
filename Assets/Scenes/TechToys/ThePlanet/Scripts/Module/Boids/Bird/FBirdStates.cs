@@ -61,7 +61,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.States.Bird
              return false;
             
             m_TiringCounter.Tick(_deltaTime);
-            if (m_TiringCounter.m_Playing)
+            if (m_TiringCounter.Playing)
                 return false;
 
             if (!_actor.m_Target.PickAvailablePerching())
@@ -84,7 +84,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.States.Bird
                 _velocity += this.TickFollowing(_actor,target.m_Leader,_deltaTime,followingConfig);
             
             m_AnimationCounter.Tick(_deltaTime);
-            if (!m_AnimationCounter.m_Playing)
+            if (!m_AnimationCounter.Playing)
             {
                 if (m_Gliding.Check(upward<0f))
                 {
@@ -215,7 +215,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.States.Bird
             m_VelocityCounter.Tick(_deltaTime);
             _velocity = Vector3.Lerp(m_StartVelocity,
                 (_actor.m_Target.m_Destination - _actor.Position).normalized,
-                m_VelocityCounter.m_TimeElapsedScale);
+                m_VelocityCounter.TimeElapsedScale);
         }
 
         public bool TickStateSwitch(BoidsActor _actor, float _deltaTime, out T _nextState)
@@ -229,7 +229,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.States.Bird
             ref Vector3 _position, ref Quaternion _rotation)
         {
             Vector3 direction = _actor.m_Target.m_Destination-_actor.Position;
-            var rotation= Quaternion.Lerp(Quaternion.LookRotation(_actor.m_Target.m_Up,-m_StartVelocity),Quaternion.LookRotation(direction),m_VelocityCounter.m_TimeElapsedScale);
+            var rotation= Quaternion.Lerp(Quaternion.LookRotation(_actor.m_Target.m_Up,-m_StartVelocity),Quaternion.LookRotation(direction),m_VelocityCounter.TimeElapsedScale);
             _rotation = Quaternion.Lerp(_rotation,rotation,_deltaTime*20f);
         }
 
@@ -324,8 +324,8 @@ namespace TechToys.ThePlanet.Module.BOIDS.States.Bird
             {
                 case EPerchingState.Move:
                 {
-                    _position = Vector3.Lerp(m_Origin, _actor.m_Target.m_Destination, m_StateCounter.m_TimeElapsedScale);
-                    _rotation = Quaternion.Lerp(_rotation,   Quaternion.LookRotation(m_MoveDirection,_actor.m_Target.m_Up),m_StateCounter.m_TimeElapsedScale);
+                    _position = Vector3.Lerp(m_Origin, _actor.m_Target.m_Destination, m_StateCounter.TimeElapsedScale);
+                    _rotation = Quaternion.Lerp(_rotation,   Quaternion.LookRotation(m_MoveDirection,_actor.m_Target.m_Up),m_StateCounter.TimeElapsedScale);
                 }
                     break;
                 case EPerchingState.Alert:
@@ -346,7 +346,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.States.Bird
         public bool TickStateSwitch(BoidsActor _actor, float _deltaTime, out EBirdBehaviour _nextState)
         {
             _nextState = default;
-            if (m_StateCounter.m_Playing)
+            if (m_StateCounter.Playing)
                 return false;
             
             switch (m_State)
@@ -393,7 +393,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.States.Bird
         void TickRotate(BoidsActor _actor,float _deltaTime,ref Quaternion _rotation)
         {
             m_RotateCooldown.Tick(_deltaTime);
-            if (m_RotateCooldown.m_Playing)
+            if (m_RotateCooldown.Playing)
                 return;
 
             m_Rotation += m_RotateSpeed * _deltaTime;
