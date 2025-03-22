@@ -617,10 +617,10 @@ RectTransform:
   m_Father: {fileID: 1206016905}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 650.8, y: 961.5}
+  m_Pivot: {x: 0, y: 0}
 --- !u!114 &740208587
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -642,12 +642,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Texture: {fileID: 2800000, guid: 292bbcf19d097bb4989068ddd151906e, type: 3}
-  m_UVRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 0.3
-    height: 0.3
 --- !u!222 &740208588
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -54,10 +54,7 @@ namespace UnityEditor.Extensions
             EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
         }
         #endregion
-        public static void SwitchPause()
-        {
-            EditorApplication.isPaused = !EditorApplication.isPaused;
-        }
+        
         public static void TakeScreenShot()
         {
             DirectoryInfo directory = new DirectoryInfo(Application.persistentDataPath + "/ScreenShots");
@@ -68,7 +65,6 @@ namespace UnityEditor.Extensions
         
         public static void OutputActiveWindowDirectory()=> Debug.Log(  UEPath.GetCurrentProjectWindowDirectory());
         public static void OutputAssetDirectory()=> Debug.Log(  AssetDatabase.GetAssetPath(Selection.activeObject));
-
         
         public static void SortTransformBySize()
         {

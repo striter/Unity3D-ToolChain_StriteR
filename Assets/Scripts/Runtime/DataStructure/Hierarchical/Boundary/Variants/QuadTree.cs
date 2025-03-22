@@ -16,7 +16,7 @@ namespace Runtime.DataStructure
         public int m_Division {get; private set;} = 2;
         public QuadTree2(int _nodeCapcity, int __maxIteration,int _division) : base(_nodeCapcity,__maxIteration) { m_Division = _division; }
         public void Construct(IList<Element> _elements) => Construct(kHelper.CalculateBoundary(_elements),_elements);
-        protected override IEnumerable<Node> Split(Node _parent, IList<Element> _elements)
+        protected override void Split(Node _parent, IList<Element> _elements, List<Node> _nodeList)
         {
             var b = _parent.boundary;
             var division = m_Division;
@@ -35,7 +35,7 @@ namespace Runtime.DataStructure
                 if (i == division - 1 && j == division - 1)
                 {
                     newNode.elementsIndex.AddRange(parentElementIndexes);
-                    yield return newNode;
+                    _nodeList.Add(newNode);
                     break;
                 }
                 
@@ -49,7 +49,7 @@ namespace Runtime.DataStructure
                     parentElementIndexes.RemoveAt(k);
                     newNode.elementsIndex.Add(elementIndex);
                 }
-                yield return newNode;
+                _nodeList.Add(newNode);
             }
         }
     }
@@ -61,7 +61,7 @@ namespace Runtime.DataStructure
         public int m_Division {get; private set;} = 2;
         public QuadTree3(int _nodeCapcity, int __maxIteration,int _division) : base(_nodeCapcity,__maxIteration) { m_Division = _division; }
         public void Construct(IList<Element> _elements) => Construct(kHelper.CalculateBoundary(_elements),_elements);
-        protected override IEnumerable<Node> Split(Node _parent, IList<Element> _elements)
+        protected override void Split(Node _parent, IList<Element> _elements, List<Node> _nodeList)
         {
             var b = _parent.boundary;
             var division = m_Division;
@@ -81,7 +81,7 @@ namespace Runtime.DataStructure
                 if (i == division - 1 && j == division - 1 && k == division - 1)
                 {
                     newNode.elementsIndex.AddRange(parentElementIndexes);
-                    yield return newNode;
+                    _nodeList.Add(newNode);
                     break;
                 }
 
@@ -96,7 +96,7 @@ namespace Runtime.DataStructure
                     newNode.elementsIndex.Add(elementIndex);
                 }
 
-                yield return newNode;
+                _nodeList.Add(newNode);
             }
         }
 

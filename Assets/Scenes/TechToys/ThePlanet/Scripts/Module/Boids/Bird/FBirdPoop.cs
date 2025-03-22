@@ -53,7 +53,7 @@ public class FBirdPoop : ITransform , IPoolCallback<int>
     {
         if (m_PoopRecycler.TickTrigger(_deltaTime))
             DoRecycle(identity);
-        m_Block.SetColor(KShaderProperties.kColor,m_BaseColor.SetA(m_PoopRecycler.TimeScale));
+        m_Block.SetColor(KShaderProperties.kColor,m_BaseColor.SetA(m_PoopRecycler.TimeLeftScale));
         m_Mesh.SetPropertyBlock(m_Block);
 
         if (m_Sticking == null)
@@ -69,6 +69,6 @@ public class FBirdPoop : ITransform , IPoolCallback<int>
 
     public void OnPoolDispose()
     {
-        m_PoopRecycler = null;
+        m_PoopRecycler.Replay();
     }
 }

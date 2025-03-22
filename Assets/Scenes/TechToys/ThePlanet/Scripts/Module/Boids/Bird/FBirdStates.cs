@@ -97,7 +97,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.States.Bird
 #if UNITY_EDITOR
         public void DrawGizmosSelected(BoidsActor _actor)
         {
-            UGizmos.DrawString($"{m_TiringCounter.m_TimeLeft:F1}", Vector3.up*.2f);
+            UGizmos.DrawString($"{m_TiringCounter.TimeLeft:F1}", Vector3.up*.2f);
             Gizmos.matrix = Matrix4x4.identity;
             Gizmos.color = Color.white;
             Gizmos.DrawLine(_actor.Position,m_Config.origin);
@@ -237,7 +237,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.States.Bird
 #if UNITY_EDITOR
         public void DrawGizmosSelected(BoidsActor _actor)
         {
-            UGizmos.DrawString($"{m_Interpolation:F1} ${m_VelocityCounter.m_TimeElapsedScale:F1}", Vector3.up*.2f);
+            UGizmos.DrawString($"{m_Interpolation:F1} ${m_VelocityCounter.TimeElapsedScale:F1}", Vector3.up*.2f);
         }
 #endif
     }
@@ -406,7 +406,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.States.Bird
 #if UNITY_EDITOR
         public void DrawGizmosSelected(BoidsActor _actor)
         {
-            UGizmos.DrawString($"{m_State} {m_StateCounter.m_TimeLeft:F1}", Vector3.up*.2f);
+            UGizmos.DrawString($"{m_State} {m_StateCounter.TimeLeft:F1}", Vector3.up*.2f);
         }
 #endif
     }

@@ -10,7 +10,7 @@ namespace Runtime.DataStructure
     {
         public BSPTree(int _nodeCapcity, int _maxIteration) : base(_nodeCapcity, _maxIteration) { }
         public void Construct(IList<float2> _elements) => Construct(G2Plane.kDefault,_elements);
-        protected override IEnumerable<Node> Split(Node _parent, IList<float2> _elements)
+        protected override void Split(Node _parent, IList<float2> _elements, List<Node> _nodeList)
         {
             PCA2.Evaluate(_parent.elementsIndex.Select(p=>_elements[p]), out var centre, out var right, out var up);
             var plane = new G2Plane(up, centre);
@@ -24,8 +24,8 @@ namespace Runtime.DataStructure
                     backNode.elementsIndex.Add(elementIndex);
             }
 
-            yield return frontNode;
-            yield return backNode;
+            _nodeList.Add(frontNode);
+            _nodeList.Add(backNode);
         }
     }
 }

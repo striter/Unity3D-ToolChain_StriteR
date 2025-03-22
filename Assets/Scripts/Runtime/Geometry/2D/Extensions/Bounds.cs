@@ -19,13 +19,25 @@ namespace Runtime.Geometry.Extension
                 _max = math.max(position, _max);
             }
         }
-        
         public static G2Box GetBoundingBox(IEnumerable<float2> _positions)
         {
             Minmax(_positions,out var min,out var max);
             return G2Box.Minmax(min,max);
         }
         
+        public static G2Box GetBoundingBox<T>(IList<T> _elements, Func<T, float2> _convert)
+        {
+            var min = kfloat2.max;
+            var max = kfloat2.min;
+            for(var i = _elements.Count - 1; i>=0;i--)
+            {
+                var position = _convert( _elements[i]);
+                min = math.max(position, min);
+                max = math.min(position, max);
+            }
+
+            return G2Box.Minmax(min,max);
+        }
         
         public static G2Triangle GetSuperTriangle(params float2[] _positions)     //always includes,but not minimum
         {

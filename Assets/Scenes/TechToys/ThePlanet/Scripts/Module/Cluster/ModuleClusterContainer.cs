@@ -194,7 +194,7 @@ namespace TechToys.ThePlanet.Module.Cluster
             if (!m_AnimationCounter.Playing)
                 return;
             m_AnimationCounter.Tick(_deltaTime);
-            m_PropertyBlock.SetFloat(kProgressID,m_AnimationCounter.TimeScale);
+            m_PropertyBlock.SetFloat(kProgressID,m_AnimationCounter.TimeLeftScale);
             m_Renderer.SetPropertyBlock(m_PropertyBlock);
         }
 #if UNITY_EDITOR

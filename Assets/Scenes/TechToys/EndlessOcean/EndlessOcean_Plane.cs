@@ -22,7 +22,7 @@ namespace EndlessOcean
             Construct(_boundary,point);
         }
 
-        protected override IEnumerable<Node> Split(Node _parent, IList<float2> _elements)
+        protected override void Split(Node _parent, IList<float2> _elements, List<Node> _nodeList)
         {
             foreach (var boundary in _parent.boundary.Divide(3))
             {
@@ -37,7 +37,7 @@ namespace EndlessOcean
                     _parent.elementsIndex.RemoveAt(i);   
                 }
 
-                yield return node;
+                _nodeList.Add(node);
             }
         }
     }

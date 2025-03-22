@@ -28,6 +28,8 @@ public static class kfloat2
     public static readonly float2 down = new float2(0, -1);
     public static readonly float2 left = new float2(-1, 0);
     public static readonly float2 right = new float2(1, 0);
+    public static readonly float2 max = float.MaxValue;
+    public static readonly float2 min = float.MinValue;
 }
 
 public static class kfloat4

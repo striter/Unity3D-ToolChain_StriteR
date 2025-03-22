@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Runtime.Geometry;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -169,19 +170,19 @@ public static class URuntime
    static float GetWorldSpaceScale(Transform t)
     {
         var scale = t.lossyScale;
-        var largestAxis = Mathf.Abs(scale.x);
-        largestAxis = Mathf.Max(largestAxis, Mathf.Abs(scale.y));
-        largestAxis = Mathf.Max(largestAxis, Mathf.Abs(scale.z));
+        var largestAxis = math.abs(scale.x);
+        largestAxis = math.max(largestAxis, math.abs(scale.y));
+        largestAxis = math.max(largestAxis, math.abs(scale.z));
         return largestAxis;
     }
     
-    static float DistanceToRelativeHeight(Camera camera, float distance, float size)
+    public static float DistanceToRelativeHeight(Camera camera, float distance, float size)
     {
         if (camera.orthographic)
-            return size * 0.5F / camera.orthographicSize;
+            return size * 0.5f / camera.orthographicSize;
 
-        var halfAngle = Mathf.Tan(Mathf.Deg2Rad * camera.fieldOfView * 0.5f);
-        var relativeHeight = size * 0.5F / (distance * halfAngle);
+        var halfAngle = math.tan(kmath.kDeg2Rad * camera.fieldOfView * 0.5f);
+        var relativeHeight = size * 0.5f / (distance * halfAngle);
         return relativeHeight;
     }
 

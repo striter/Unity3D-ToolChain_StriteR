@@ -27,7 +27,7 @@ namespace Examples.Rendering.LightVolume
                 m_Forward = !m_Forward;
             }
 
-            return m_MovingCurve.Evaluate(m_Forward?m_Counter.TimeElapsedScale:m_Counter.TimeScale);
+            return m_MovingCurve.Evaluate(m_Forward?m_Counter.TimeElapsedScale:m_Counter.TimeLeftScale);
         }
     }
     

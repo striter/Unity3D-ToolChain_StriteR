@@ -4,6 +4,6 @@ namespace Runtime.DataStructure
 {
     public interface IBoundaryTreeHelper<Boundary, Element> where Boundary : struct
     {
-        public Boundary CalculateBoundary(IEnumerable<Element> _elements);
+        public Boundary CalculateBoundary(IList<Element> _elements);
     }
 }

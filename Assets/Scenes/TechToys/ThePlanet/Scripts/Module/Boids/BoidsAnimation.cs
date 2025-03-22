@@ -114,7 +114,7 @@ namespace TechToys.ThePlanet.Module.BOIDS
             if (!m_BlendCounter.Playing)
                 return;
             m_BlendCounter.Tick(_deltaTime);
-            m_MainFilter.transform.localScale = Vector3.one * m_BlendCounter.TimeScale;
+            m_MainFilter.transform.localScale = Vector3.one * m_BlendCounter.TimeLeftScale;
             m_BlendFilter.transform.localScale = Vector3.one * m_BlendCounter.TimeElapsedScale;
             if (m_BlendCounter.Playing)
                 return;

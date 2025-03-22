@@ -38,9 +38,8 @@ namespace UnityEditor.Extensions
         public void PixelContinuous(int2 _pos,Color _color)
         {
             // Pixel(_x , _y , _color);
-            foreach (var pos in CartographicGeneralization.BresenhamLine(pre,_pos).ToArray())
+            foreach (var pos in CartographicGeneralization.BresenhamLine(pre,_pos))
                 Pixel(pos.x,pos.y, _color);
-
             pre = _pos;
         }
         

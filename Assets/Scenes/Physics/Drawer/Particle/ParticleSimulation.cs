@@ -29,33 +29,42 @@ namespace Examples.PhysicsScenes.Particle
             public float2 force;
             public float mass;
             public float density;
-            public struct BVHHelper : IBVHHelper<G2Box,ParticleData>
+            public class BVHHelper : IBVHHelper<G2Box,ParticleData>
             {
+                
                 public void SortElements(int _median, G2Box _boundary,IList<int> _elementIndexes, IList<ParticleData> _elements)
                 {
                     var axis = _boundary.size.maxAxis();
+                    int Comparison(int _a, int _b)
+                    {
+                        var a = _elements[_a];
+                        var b = _elements[_b];
+                        return axis switch
+                        {
+                            EAxis.X => a.position.x >= b.position.x ? 1 : -1,
+                            EAxis.Y => a.position.y >= b.position.y ? 1 : -1,
+                            _ => throw new InvalidEnumArgumentException()
+                        };
+                    }
+
                     _elementIndexes.Divide(_median,
                         // .Sort(
                         // ESortType.Bubble,
-                        (_a, _b) =>
-                        {
-                            var a = _elements[_a];
-                            var b = _elements[_b];
-                            return axis switch
-                            {
-                                EAxis.X => a.position.x >= b.position.x ? 1 : -1,
-                                EAxis.Y => a.position.y >= b.position.y ? 1 : -1,
-                                _ => throw new InvalidEnumArgumentException()
-                            };
-                        });
+                        Comparison);
                 }
 
-                public G2Box CalculateBoundary(IEnumerable<ParticleData> _elements) => UGeometry.GetBoundingBox(_elements.Select(p => p.position));
+                public G2Box CalculateBoundary(IList<ParticleData> _elements) => UGeometry.GetBoundingBox(_elements,p=>p.position);
             }
         }
         private class ParticleBVH : BoundingVolumeHierarchy<G2Box, ParticleData,ParticleData.BVHHelper>
         {
             public ParticleBVH(int _nodeCapcity, int _maxIteration) : base(_nodeCapcity, _maxIteration) { }
+            public override void DrawGizmos(IList<ParticleData> _elements, bool _parentMode = false)
+            {
+                // base.DrawGizmos(_elements, _parentMode);
+                foreach (var leaf in GetLeafs())
+                    leaf.boundary.DrawGizmosXY();
+            }
         }
 
         private List<ParticleData> particles = new List<ParticleData>();
@@ -106,10 +115,35 @@ namespace Examples.PhysicsScenes.Particle
             }
         }
 
+
+        private class ParticleDenstiyQuery : IBoundaryTreeQuery<G2Box,ParticleData>
+        {
+            public G2Circle circle;
+            public bool Query(G2Box _boundary) => _boundary.Intersect(circle);
+            public bool Query(ParticleData _element) => circle.Contains(_element.position);
+        }
+
+        private ParticleDenstiyQuery kQuery = new ();
         void ResolveCollision()
         {
             particleQueries.Construct( m_Bounds,particles);
-            UpdateDensity((_position,_radius) => particleQueries.Query(particles,p=> p.Intersect(new G2Circle(_position,_radius))));
+            for (var i = 0; i < Count; i++)
+            {
+                var particle = particles[i];
+                
+                var density = 0f;
+                kQuery.circle = new G2Circle(particle.position, 5f);
+                var nearbyParticles = kQuery.Query(particleQueries,particles);
+                for(var j = nearbyParticles.Count- 1 ; j>=0;j--)
+                {
+                    var nearbyParticle = nearbyParticles[j];
+                    var sqrDistance = (particle.position - nearbyParticle.position).sqrmagnitude();
+                    density += m_SPH.Evaluate(sqrDistance);
+                }
+                particle.density = density;
+                particles[i] = particle;
+            }
+            
             for (var i = 0; i < Count; i++)
             {
                 var particle = particles[i];
@@ -124,22 +158,6 @@ namespace Examples.PhysicsScenes.Particle
             }
         }
 
-        void UpdateDensity(Func<float2, float, IEnumerable<ParticleData>> _query)
-        {
-            for (var i = 0; i < Count; i++)
-            {
-                var particle = particles[i];
-                
-                var density = 0f;
-                foreach (var nearbyParticles in _query(particle.position,5f))
-                {
-                    var sqrDistance = (particle.position - nearbyParticles.position).sqrmagnitude();
-                    density += m_SPH.Evaluate(sqrDistance);
-                }
-                particle.density = density;
-                particles[i] = particle;
-            }
-        }
         
         [InspectorButton]
         void AddParticle(ParticleData _data)
@@ -162,10 +180,10 @@ namespace Examples.PhysicsScenes.Particle
         {
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(-m_Bounds.center.to3xy());
             particleQueries.DrawGizmos(particles);
-            foreach (var particle in particles)
-            {
-                Gizmos.DrawWireSphere(particle.position.to3xy(),m_SPH.h);
-            }
+            // foreach (var particle in particles)
+            // {
+                // Gizmos.DrawWireSphere(particle.position.to3xy(),m_SPH.h);
+            // }
             
             var position = Input.mousePosition.XY();
             Gizmos.DrawWireSphere(position,5f);

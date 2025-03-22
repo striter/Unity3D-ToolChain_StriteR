@@ -9,7 +9,7 @@ using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Rendering.Shadows
 {
-    public struct IbvhHelperSphereCapsule : IBVHHelper<GSphere, GCapsule>
+    public class IbvhHelperSphereCapsule : IBVHHelper<GSphere, GCapsule>
     {
         public void SortElements(int _median, GSphere _boundary, IList<int> _elementIndexes,IList<GCapsule> _elements)
         {
@@ -26,7 +26,7 @@ namespace Examples.Rendering.Shadows
             );
         }
 
-        public GSphere CalculateBoundary(IEnumerable<GCapsule> _elements) => UGeometry.GetBoundingSphere(_elements.Select(p=>p.GetBoundingSphere()));
+        public GSphere CalculateBoundary(IList<GCapsule> _elements) => UGeometry.GetBoundingSphere(_elements.Select(p=>p.GetBoundingSphere()));
     }
     
     [ExecuteInEditMode]

@@ -11,12 +11,8 @@ public enum EAxis
 
 public static partial class umath
 {
-    public static EAxis maxAxis(this float2 _value)
-    {
-        if (_value.x > _value.y)
-            return EAxis.X;
-        return EAxis.Y;
-    }
+    public static EAxis maxAxis(this float2 _value) => _value.x > _value.y ? EAxis.X : EAxis.Y;
+
     public static EAxis maxAxis(this float3 _value)
     {
         if (_value.x > _value.y && _value.x > _value.z)

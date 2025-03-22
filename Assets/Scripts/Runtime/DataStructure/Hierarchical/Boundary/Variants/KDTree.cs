@@ -13,7 +13,8 @@ namespace Runtime.DataStructure
         private static readonly Helper kHelper = default;
         public KDTree(int _nodeCapcity, int _maxIteration) : base(_nodeCapcity, _maxIteration) { }
         public void Construct(IList<Element> _elements) => Construct(kHelper.CalculateBoundary(_elements),_elements);
-        protected override IEnumerable<Node> Split(Node _parent, IList<Element> _elements)
+        private static List<Element> kElementHelper = new ();
+        protected override void Split(Node _parent, IList<Element> _elements, List<Node> _nodeList)
         {
             var boundary = _parent.boundary;
             var newNode1 = Node.Spawn(_parent.iteration + 1);
@@ -26,10 +27,10 @@ namespace Runtime.DataStructure
                     newNode2.elementsIndex.Add(elementIndex);
             }
 
-            newNode1.boundary = kHelper.CalculateBoundary(newNode1.ForEach(_elements));
-            newNode2.boundary = kHelper.CalculateBoundary(newNode2.ForEach(_elements));
-            yield return newNode1;
-            yield return newNode2;
+            newNode1.boundary = kHelper.CalculateBoundary(newNode1.FillList(_elements,kElementHelper));
+            newNode2.boundary = kHelper.CalculateBoundary(newNode2.FillList(_elements,kElementHelper));
+            _nodeList.Add(newNode1);
+            _nodeList.Add(newNode2);
         }
 
     }

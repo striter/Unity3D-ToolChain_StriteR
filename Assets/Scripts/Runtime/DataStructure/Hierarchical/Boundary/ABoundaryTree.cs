@@ -9,6 +9,17 @@ using UnityEngine;
 
 namespace Runtime.DataStructure
 {
+    public interface IBoundaryTreeQuery<Boundary,Element>
+    {
+        bool Query(Boundary _boundary);
+        bool Query(Element _element);
+    }
+
+    public static class IBoundaryTreeQuery_Extension
+    {
+        public static List<Element> Query<Boundary, Element>(this IBoundaryTreeQuery<Boundary, Element> _query, ABoundaryTree<Boundary,Element> _boundaryTree,IList<Element> _elements) where Boundary:struct =>_boundaryTree.Query(_elements, _query);
+    }
+    
     public abstract class ABoundaryTree<Boundary,Element> where Boundary : struct
     {
         public struct Node
@@ -18,6 +29,7 @@ namespace Runtime.DataStructure
             public List<int> elementsIndex;
             public List<int> childNodeIndex;
             public bool IsParent => childNodeIndex.Count > 0;
+            public int ElementCount => elementsIndex.Count;
             private static ListPool<int> kIndexPool = new();
 
             public static Node Spawn() => new() {
@@ -51,10 +63,12 @@ namespace Runtime.DataStructure
             }
 
             public T Index<T>(IList<T> _elements, int _index) => _elements[elementsIndex[_index]];
-            public IEnumerable<T> ForEach<T>(IList<T> _elements)
+            public List<T> FillList<T>(IList<T> _elements, List<T> _list)
             {
+                _list.Clear();
                 for (var i = 0; i < elementsIndex.Count; i++)
-                    yield return _elements[elementsIndex[i]];
+                    _list.Add(_elements[elementsIndex[i]]);
+                return _list;
             }
         }
 
@@ -78,7 +92,9 @@ namespace Runtime.DataStructure
             Clear();
             m_Nodes = null;
         }
-        protected abstract IEnumerable<Node> Split(Node _parent, IList<Element> _elements);
+
+        protected abstract void Split(Node _parent, IList<Element> _elements, List<Node> _nodeList);
+        private static List<Node> kNodeHelper = new();
         public void Construct(Boundary _boundary,IList<Element> _elements)
         {
             Clear();
@@ -93,10 +109,18 @@ namespace Runtime.DataStructure
             while (constructing)
             {
                 var split = false;
-                foreach (var node in from node in m_Nodes where !node.IsParent && node.iteration < m_MaxIteration && node.elementsIndex.Count > m_NodeCapacity select node)
+                for(var i= m_Nodes.Count -1;i>=0;i--)
                 {
+                    var node = m_Nodes[i];
+                    if (node.IsParent || 
+                        node.iteration > m_MaxIteration ||
+                        node.elementsIndex.Count <= m_NodeCapacity)
+                        continue;
+                    
                     finalChildCount -= node.elementsIndex.Count;
-                    foreach (var childNode in Split(node,_elements))
+                    kNodeHelper.Clear();
+                    Split(node, _elements, kNodeHelper);
+                    foreach (var childNode in kNodeHelper)
                     {
                         finalChildCount += childNode.elementsIndex.Count;
                         node.childNodeIndex.Add(m_Nodes.Count);
@@ -124,30 +148,48 @@ namespace Runtime.DataStructure
         public IEnumerable<Node> GetParents() => from node in m_Nodes where node.IsParent select node;
 
         private Stack<Node> m_QueryNodes = new();
-        public IEnumerable<Element> Query<Element>(IList<Element> _elements,Predicate<Boundary> _queryFunction)
+        private List<Element> m_QueryElements = new();
+        private struct FDefaultQuery : IBoundaryTreeQuery<Boundary,Element>
         {
+            public Predicate<Boundary> queryBoundary;
+            public Predicate<Element> queryElement;
+
+            public bool Query(Boundary _boundary) => queryBoundary(_boundary);
+            public bool Query(Element _element) => queryElement(_element);
+        }
+        public List<Element> Query(IList<Element> _elements,Predicate<Boundary> _queryBoundary,Predicate<Element> _queryElement = null) => this.Query(_elements,new FDefaultQuery(){queryBoundary = _queryBoundary,queryElement = _queryElement ?? (_=>true)});
+
+        public List<Element> Query(IList<Element> _elements,IBoundaryTreeQuery<Boundary, Element> _query)
+        {
+            m_QueryElements.Clear();
             if (m_Nodes.Count == 0)
-                yield break;
+                return m_QueryElements;
             
             m_QueryNodes.Clear();
             m_QueryNodes.Push(m_Nodes[0]);
             while (m_QueryNodes.Count > 0)
             {
                 var currentTreeNode = m_QueryNodes.Pop();
-                if(!_queryFunction(currentTreeNode.boundary))
+                if(!_query.Query(currentTreeNode.boundary))
                     continue;
 
                 if (currentTreeNode.IsParent)
                 {
-                    for(var i = currentTreeNode.childNodeIndex.Count - 1 ;i >= 0; i--)
+                    for(var i = currentTreeNode.ElementCount - 1 ;i >= 0; i--)
                         m_QueryNodes.Push(m_Nodes[currentTreeNode.childNodeIndex[i]]);
                 }
 
                 if (currentTreeNode.elementsIndex == null) continue;
-                
-                foreach (var element in currentTreeNode.elementsIndex)
-                    yield return _elements[element];
+
+                for (var i = currentTreeNode.ElementCount - 1; i >= 0; i--)
+                {
+                    var element = currentTreeNode.Index(_elements, i);
+                    if(_query.Query(element))
+                        m_QueryElements.Add(element);
+                }
             }
+
+            return m_QueryElements;
         }
         
         public IEnumerator<Element> ForEach<Element>(IList<Element> _elements)

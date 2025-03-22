@@ -15,9 +15,6 @@ namespace UnityEditor.Extensions
         [MenuItem("Work Flow/Hotkeys/Take Screen Shot _F12", false, 103)]
         static void Hotkey103() => Hotkeys.TakeScreenShot();
         
-        [MenuItem("Work Flow/Hotkeys/Fast Pause _HOME", false, 104)]
-        static void Hotkey104() => Hotkeys.SwitchPause();
-        
         [MenuItem("Work Flow/Hotkeys/Output Window Asset Path _&-", false, 110)]
         static void Hotkey110() => Hotkeys.OutputActiveWindowDirectory();
         

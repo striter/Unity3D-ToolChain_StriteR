@@ -10,10 +10,10 @@ namespace Runtime.DataStructure
 {
     public static class BoundaryTreeHelper
     {
-        public struct G2Box_float2 : IQuadTreeHelper<G2Box, float2> ,IKDTreeHelper<G2Box,float2>
+        public class G2Box_float2 : IQuadTreeHelper<G2Box, float2> ,IKDTreeHelper<G2Box,float2>
         {
             public bool QuadTreeValidate(G2Box _boundary, float2 p) => (p <= _boundary.max).all();
-            public G2Box CalculateBoundary(IEnumerable<float2> _elements)=> UGeometry.GetBoundingBox(_elements);
+            public G2Box CalculateBoundary(IList<float2> _elements)=> UGeometry.GetBoundingBox(_elements);
             public bool KDTreeValidate(int iteration, G2Box _boundary, float2 _element)
             {
                 var axis = iteration % 2;
@@ -21,10 +21,10 @@ namespace Runtime.DataStructure
             }
         }
 
-        public struct GBox_float3 : IQuadTreeHelper<GBox, float3> ,IKDTreeHelper<GBox,float3>
+        public class GBox_float3 : IQuadTreeHelper<GBox, float3> ,IKDTreeHelper<GBox,float3>
         {
             public bool QuadTreeValidate(GBox _boundary, float3 p) => (p <= _boundary.max).all();
-            public GBox CalculateBoundary(IEnumerable<float3> _elements)=> UGeometry.GetBoundingBox(_elements);
+            public GBox CalculateBoundary(IList<float3> _elements)=> UGeometry.GetBoundingBox(_elements);
             public bool KDTreeValidate(int iteration, GBox _boundary, float3 _element)
             {
                 var axis = iteration % 3;
@@ -32,9 +32,9 @@ namespace Runtime.DataStructure
             }
         }
         
-        public struct G2Box_G2Triangle :  IBVHHelper<G2Box, G2Triangle> 
+        public class G2Box_G2Triangle :  IBVHHelper<G2Box, G2Triangle> 
         {
-            public G2Box CalculateBoundary(IEnumerable<G2Triangle> _elements)=> UGeometry.GetBoundingBox(_elements.Select(p => (IEnumerable<float2>)p).Resolve());
+            public G2Box CalculateBoundary(IList<G2Triangle> _elements)=> UGeometry.GetBoundingBox(_elements.Select(p => (IEnumerable<float2>)p).Resolve());
             public void SortElements(int _median, G2Box _boundary,IList<int> _elementIndexes, IList<G2Triangle> _elements)
             {
                 var axis = _boundary.size.maxAxis();
@@ -55,9 +55,9 @@ namespace Runtime.DataStructure
             }
         }
         
-        public struct GBox_GTriangle : IBVHHelper<GBox, GTriangle> ,IQuadTreeHelper<GBox, GTriangle>
+        public class GBox_GTriangle : IBVHHelper<GBox, GTriangle> ,IQuadTreeHelper<GBox, GTriangle>
         {
-            public GBox CalculateBoundary(IEnumerable<GTriangle> _elements) => UGeometry.GetBoundingBox(_elements.Select(p => (IEnumerable<float3>)p).Resolve());
+            public GBox CalculateBoundary(IList<GTriangle> _elements) => UGeometry.GetBoundingBox(_elements.Select(p => (IEnumerable<float3>)p).Resolve());
             public void SortElements(int _median, GBox _boundary,IList<int> _elementIndexes, IList<GTriangle> _elements)
             {
                 var axis = _boundary.size.maxAxis();
