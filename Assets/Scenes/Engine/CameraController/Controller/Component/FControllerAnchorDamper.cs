@@ -1,9 +1,9 @@
 ﻿using System;
-using Runtime.CameraController.Inputs;
+using CameraController.Inputs;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Runtime.CameraController.Component
+namespace CameraController.Component
 {
     public enum EAnchorMode
     {

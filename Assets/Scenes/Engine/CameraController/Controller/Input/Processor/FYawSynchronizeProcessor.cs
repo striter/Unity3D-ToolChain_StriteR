@@ -1,18 +1,20 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Runtime.CameraController.Inputs
+namespace CameraController.Inputs
 {
     [CreateAssetMenu(fileName = "InputProcessor", menuName = "Camera/InputProcessor/YawSynchronizer", order = 0)]
     public class FYawSynchronizeProcessor : AControllerInputProcessor
     {
+        public float m_FixedPinch = 0;
         public override bool Controllable => false;
         void Init<T>(ref T _input) where T: AControllerInput
         {
             if (_input is not IPlayerInput playerInput)
                 return;
             
-            playerInput.PlayerInputClear();
+            playerInput.Pinch = m_FixedPinch;
+            playerInput.Pitch = UController.GetPitch(_input.Anchor.transform.forward);
             playerInput.Yaw = UController.GetYaw(_input.Anchor.transform.forward);
         }
 

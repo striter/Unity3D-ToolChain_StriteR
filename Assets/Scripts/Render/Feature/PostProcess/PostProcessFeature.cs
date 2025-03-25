@@ -47,10 +47,12 @@ namespace Rendering.Pipeline
             {
                 m_PostprocessQueue.AddRange(_renderingData.cameraData.camera.GetComponentsInChildren<IPostProcessBehaviour>());
 
-                //Enqueue Global
-                if (PostProcessGlobalVolume.HasGlobal)
+                foreach (var volume in PostProcessGlobalVolume.kVolumes)
                 {
-                    var components = PostProcessGlobalVolume.GlobalVolume.GetComponents<IPostProcessBehaviour>();
+                    if (!CullingMaskAttribute.Enabled(_renderingData.cameraData.volumeLayerMask.value, volume.gameObject.layer))
+                        continue;
+                    
+                    var components = volume.GetComponents<IPostProcessBehaviour>();
                     for (var j = 0; j < components.Length; j++)
                         m_PostprocessQueue.Add(components[j]);
                 }

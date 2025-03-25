@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using Runtime.CameraController.Animation;
-using Runtime.CameraController.Inputs;
-using Runtime.CameraController.Inputs.Touch;
+using CameraController.Animation;
+using CameraController.Inputs;
+using CameraController.Inputs.Touch;
 using Runtime.TouchTracker;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-namespace Runtime.CameraController.Demo
+
+namespace CameraController.Demo
 {
     
     [Serializable]
@@ -48,7 +50,7 @@ namespace Runtime.CameraController.Demo
         public MonoBehaviour m_ScripedControllerOverride;
         [Header("Animation")]
         public FControllerInterpolate m_Interpolate;
-        public FControllerShake m_Shake;
+        public FControllerAdditionalAnimation m_AdditionalAnimation;
 
         public FCameraControllerCore m_Core = new FCameraControllerCore();
         private Transform m_Target;
@@ -79,7 +81,7 @@ namespace Runtime.CameraController.Demo
             }
 
             if (Input.GetKeyDown(KeyCode.Space))
-                m_Core.AppendModifier(m_Shake.Output());
+                m_Core.AppendModifier(m_AdditionalAnimation);
             
             if (Input.GetKeyDown(KeyCode.Tab))
             {
@@ -103,6 +105,7 @@ namespace Runtime.CameraController.Demo
             m_Input.PlayerDrag = tracks.CombinedDrag();
             m_Input.PlayerPinch = tracks.CombinedPinch();            
         }
+        
         
         private void LateUpdate()
         {

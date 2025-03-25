@@ -1,10 +1,10 @@
 ﻿using System;
-using Runtime.CameraController.Inputs;
+using CameraController.Inputs;
 using Runtime.Geometry;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Runtime.CameraController
+namespace CameraController
 {
     public interface ITransformHandle
     {
@@ -28,6 +28,7 @@ namespace Runtime.CameraController
 
         [Header("Anchor")] 
         public float3 anchorOffset;
+        public bool anchorBeforeRotation;
         public string childName;
         public bool useTransformPosition;     //In some case its bounding box goes pretty weird
         [Foldout(nameof(useBoundingBox),true)] [Range(-.5f,.5f)] public float anchorY;
@@ -77,7 +78,7 @@ namespace Runtime.CameraController
             
             return new AnchoredControllerParameters()
             {
-                anchor = finalAnchor + math.mul(anchor.rotation, anchorOffset),
+                anchor = finalAnchor + (anchorBeforeRotation ? anchorOffset : math.mul(anchor.rotation, anchorOffset)),
                 euler = new float3(pitch,yaw,roll),
                 fov = fov,
                 viewport = new float2(viewportX,viewportY),

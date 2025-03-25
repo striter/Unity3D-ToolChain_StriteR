@@ -9,11 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 075b1a70149843499c162661df1b45c5, type: 3}
+  m_Script: {fileID: 11500000, guid: 127312f2077b4718b40bd157489acc0b, type: 3}
   m_Name: ThirdPerson
   m_EditorClassIdentifier: 
   m_InputProcessor: {fileID: 11400000, guid: 8530a87b22501cb49ba23f624743cba6, type: 2}
-  m_Collision: {fileID: 0}
   m_Anchor:
     m_AnchorMode: 1
     m_OriginDamper:
@@ -68,6 +67,12 @@ MonoBehaviour:
         z: 0.35
         r: -0.5
         poleMatching: 1
+  m_Collision:
+    m_CollisionMin: 0.42
+    m_CollisionForward: 0.189
+    m_CullingMask: -1
+    m_ColliderRadius: 0.1
+    m_SceneMask: 0
   m_DistanceDamper:
     mode: 2
     halfLife: 0.1
@@ -137,3 +142,33 @@ MonoBehaviour:
     fov: 40
     distanceAABBAdaption: 0
     distance: 21.8
+  m_HorizontalSpeedFOV:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  m_HorizontalSpeedDistance:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

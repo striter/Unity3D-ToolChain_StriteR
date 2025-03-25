@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using Runtime.CameraController.Animation;
-using Runtime.CameraController.Inputs;
+using CameraController.Animation;
+using CameraController.Inputs;
 using UnityEngine;
 
-namespace Runtime.CameraController
+namespace CameraController
 {
     
     public interface ICameraController 

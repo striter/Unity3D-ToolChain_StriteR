@@ -1,7 +1,7 @@
 ﻿using System;
 using Unity.Mathematics;
 
-namespace Runtime.CameraController.Component
+namespace CameraController.Component
 {
     public enum ERotationMode
     {

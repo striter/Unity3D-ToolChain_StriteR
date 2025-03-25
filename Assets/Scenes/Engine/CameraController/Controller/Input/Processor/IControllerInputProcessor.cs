@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Runtime.CameraController.Inputs
+namespace CameraController.Inputs
 {
     public interface IControllerInputProcessor
     {

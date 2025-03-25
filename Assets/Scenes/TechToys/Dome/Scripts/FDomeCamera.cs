@@ -1,9 +1,7 @@
 using System;
-using Runtime.CameraController;
-using Runtime.CameraController.Animation;
-using Runtime.CameraController.Inputs;
-using Runtime.CameraController.Inputs.Touch;
-using Dome.Entity;
+using CameraController;
+using CameraController.Animation;
+using CameraController.Inputs;
 using Dome.LocalPlayer;
 using Runtime.Geometry;
 using Unity.Mathematics;

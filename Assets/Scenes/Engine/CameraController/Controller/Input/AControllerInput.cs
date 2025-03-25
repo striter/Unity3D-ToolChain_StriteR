@@ -6,12 +6,12 @@ using System.Linq;
 using System.Linq.Extensions;
 using System.Reflection;
 
-namespace Runtime.CameraController.Inputs
+namespace CameraController.Inputs
 {
     public abstract class AControllerInput
     {
         public bool Available => Camera !=null && Camera.enabled  && Camera.gameObject.activeInHierarchy
-                                 && Anchor != null && Anchor.transform!=null &&  Anchor.transform.gameObject.activeInHierarchy;
+                                 && Anchor != null && Anchor.transform!=null;
         
         private static readonly string kAnchor = "Anchor";
         private static readonly string kEuler = "Euler";

@@ -1,8 +1,8 @@
-﻿using Runtime.CameraController.Inputs;
+﻿using CameraController.Inputs;
 using Runtime.Geometry;
 using UnityEngine;
 
-namespace Runtime.CameraController.Animation
+namespace CameraController.Animation
 {
 
     [CreateAssetMenu(fileName = "ControllerCollisionDefault", menuName = "Camera/Controller/Component/Collision")]
@@ -32,8 +32,8 @@ namespace Runtime.CameraController.Animation
                 return false;
 
             if(m_ForceSyncEveryFrame)
-                UnityEngine.Physics.SyncTransforms();
-            if (UnityEngine.Physics.SphereCast(ray, m_ColliderRadius, out var hit, distance, m_CullingMask))
+                Physics.SyncTransforms();
+            if (Physics.SphereCast(ray, m_ColliderRadius, out var hit, distance, m_CullingMask))
             {
                 m_LastHitObject = hit.collider.gameObject;
                 hitDistance =  hit.distance;
@@ -56,7 +56,7 @@ namespace Runtime.CameraController.Animation
             m_LastOutput.Evaluate(_input.Camera, out var frustumRays, out var ray);
             var distance = m_LastOutput.distance - m_CollisionMin;
             ray = ray.Forward(m_CollisionMin);
-            if (m_CullingMask != 0 && UnityEngine.Physics.SphereCast(ray, m_ColliderRadius,out var hit, distance, m_CullingMask))
+            if (m_CullingMask != 0 && Physics.SphereCast(ray, m_ColliderRadius,out var hit, distance, m_CullingMask))
             {
                 m_LastHitObject = hit.collider.gameObject;
                 Gizmos.color = Color.green;

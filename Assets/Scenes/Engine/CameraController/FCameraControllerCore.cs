@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Extensions;
-using Runtime.CameraController.Animation;
-using Runtime.CameraController.Inputs;
+using CameraController.Animation;
+using CameraController.Inputs;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Runtime.CameraController
+namespace CameraController
 {
     [Serializable]
     public sealed class FCameraControllerCore : ISerializationCallbackReceiver     //Executor

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
-using Runtime.CameraController.Inputs;
+using CameraController.Inputs;
 using UnityEngine;
 
-namespace Runtime.CameraController.Animation
+namespace CameraController.Animation
 {
     public enum EControllerPostModiferQueue
     {
@@ -65,7 +65,7 @@ namespace Runtime.CameraController.Animation
 
     public abstract class AControllerPostModifer : ScriptableObject , IControllerPostModifer
     {
-        public float timeExists { get; set; }
+        public virtual float timeExists { get; set; }
         public abstract bool Disposable(bool _reset);
         public abstract EControllerPostModiferQueue Queue { get; }
         public virtual void OnBegin(FCameraControllerCore _input) { }

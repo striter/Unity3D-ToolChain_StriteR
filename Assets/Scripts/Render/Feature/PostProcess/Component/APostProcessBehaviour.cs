@@ -9,11 +9,11 @@ namespace Rendering.PostProcess
     public abstract class APostProcessBehaviour<EffectCore,EffectData> : MonoBehaviour , IPostProcessBehaviour  where EffectCore : PostProcessCore<EffectData>, new() where EffectData:struct,IPostProcessParameter
     {
         public EffectData m_Data;
-        public EffectCore m_Effect;
+        protected EffectCore m_Effect { get; private set; }
         private static readonly string kDefaultName = typeof(EffectCore).Name;
         public string m_Name => kDefaultName;
-        public virtual bool m_OpaqueProcess => throw new NotImplementedException();
-        public virtual EPostProcess Event => throw new NotImplementedException();
+        public abstract bool m_OpaqueProcess { get; }
+        public abstract EPostProcess Event { get; }
         public bool m_Enabled { get; private set;}
         private bool m_Dirty;
         public void SetDirty() => m_Dirty = true;

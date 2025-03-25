@@ -1,9 +1,9 @@
 ﻿using System.Linq.Extensions;
-using Runtime.CameraController.Inputs;
+using CameraController.Inputs;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Runtime.CameraController
+namespace CameraController
 {
     [CreateAssetMenu(fileName = "AnchoredController", menuName = "Camera/Controller/Simple")]
     public class FAnchoredControllerPinch : AAnchoredController

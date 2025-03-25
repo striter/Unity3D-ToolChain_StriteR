@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Extensions;
-using Runtime.CameraController;
-using Runtime.CameraController.Demo;
+using CameraController;
+using CameraController.Demo;
 using UnityEngine;
 using Runtime.TouchTracker;
 using Unity.Mathematics;

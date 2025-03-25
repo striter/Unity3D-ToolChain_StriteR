@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Extensions;
+using CameraController;
+using CameraController.Demo;
 using Runtime;
-using Runtime.CameraController;
-using Runtime.CameraController.Demo;
 using Runtime.Geometry;
-using Runtime.Geometry.Extension;
 using Runtime.TouchTracker;
 using TPool;
 using UnityEngine;

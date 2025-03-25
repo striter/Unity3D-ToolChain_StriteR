@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Runtime.CameraController.Inputs.Touch
+namespace CameraController.Inputs.Touch
 {
     public enum EConstrainMode
     {
@@ -71,7 +71,7 @@ namespace Runtime.CameraController.Inputs.Touch
             if (pitchInitializer.Initialize(_isReset, out var pitch))
                 playerInput.Pitch = pitch;
             if (yawInitializer.Initialize(_isReset, out var yaw))
-                playerInput.Yaw = initialYawWithAnchor ? initialYaw : yaw;
+                playerInput.Yaw = initialYawWithAnchor ? initialYaw + yaw : yaw;
             else if (initialYawWithAnchor)  //it takes to keep yawing the same
             {
                 var lastYawDelta = umath.deltaAngle(lastActiveYaw,_input.InputEuler.y );

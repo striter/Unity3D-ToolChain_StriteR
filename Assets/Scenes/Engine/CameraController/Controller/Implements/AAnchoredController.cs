@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Runtime.CameraController.Animation;
-using Runtime.CameraController.Component;
-using Runtime.CameraController.Inputs;
+using CameraController.Animation;
+using CameraController.Component;
+using CameraController.Inputs;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Runtime.CameraController
+namespace CameraController
 {
     public abstract class AAnchoredController : ACameraController
     {
@@ -15,7 +15,7 @@ namespace Runtime.CameraController
         [ScriptableObjectEdit] public FControllerCollision m_Collision;
         [Header("Position Damper")] public FAnchorDamper m_Anchor = new FAnchorDamper();
         [Header("Rotation Damper")] public FRotationDamper m_Rotation = new FRotationDamper();
-        [Header("Distance Damper")]  public Damper m_DistanceDamper = Damper.kDefault;
+        [Header("Distance Damper")] public Damper m_DistanceDamper = Damper.kDefault;
         [Header("Viewport Damper")] public Damper m_ViewportDamper = Damper.kDefault;    
         public override IEnumerable<IControllerInputProcessor> InputProcessor
         {

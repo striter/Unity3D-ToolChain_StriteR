@@ -4,7 +4,7 @@ using Runtime.Geometry;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Runtime.CameraController
+namespace CameraController
 {
     public static class UController
     {

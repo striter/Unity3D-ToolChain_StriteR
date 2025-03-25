@@ -1,9 +1,10 @@
 ﻿using System;
+using CameraController.Inputs;
 using Runtime.Geometry;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Runtime.CameraController
+namespace CameraController
 {
     [Serializable]
     public struct FCameraControllerOutput
