@@ -994,7 +994,7 @@ MonoBehaviour:
       y: 0.5
     - x: 0.2
       y: -0.5
-    - x: 0.2
+    - x: -0.2
       y: -0.5
 --- !u!114 &1424984982
 MonoBehaviour:
