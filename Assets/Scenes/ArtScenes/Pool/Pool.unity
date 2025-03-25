@@ -448,8 +448,8 @@ MonoBehaviour:
     angle: 30
     UID: 2
   implicitGroups:
-  - {fileID: 729033954}
-  - {fileID: 729033954}
+  - {fileID: 1527646860}
+  - {fileID: 1527646860}
   implicitGroupedObjects:
   - {fileID: 4897146623160722921}
   - {fileID: 7896635788393355836}
@@ -487,8 +487,8 @@ MonoBehaviour:
   - {fileID: 7336123222728839876}
   bakedIDs: 0000000000000000
   bakedScaleOffset:
-  - {x: 0.90824175, y: 0.9081815, z: -0.006745826, w: -0.006744989}
-  - {x: 0.09768695, y: 0.097684145, z: 0.0019523244, w: 0.89846045}
+  - {x: 0.9034252, y: 0.90342706, z: -0.0066813207, w: -0.0066813463}
+  - {x: 0.09785565, y: 0.09788795, z: 0.001943156, w: 0.89822465}
   bakedVertexOffset: ffffffffffffffff
   bakedVertexColorMesh:
   - {fileID: 0}
@@ -508,17 +508,24 @@ MonoBehaviour:
   compressedVolumes: 0
   sectors:
   - name: $G
-    maps: []
+    maps:
+    - {fileID: 2800000, guid: aedacf53f485c7243b08de6550a92d59, type: 3}
     masks: []
     dirMaps: []
     rnmMaps0: []
     rnmMaps1: []
     rnmMaps2: []
     mapsMode: 
-    bakedRenderers: []
-    bakedIDs: 
-    bakedScaleOffset: []
-    bakedVertexColorMesh: []
+    bakedRenderers:
+    - {fileID: 2950292321550687211}
+    - {fileID: 7336123222728839876}
+    bakedIDs: 0000000000000000
+    bakedScaleOffset:
+    - {x: 0.9034252, y: 0.90342706, z: -0.0066813207, w: -0.0066813463}
+    - {x: 0.09785565, y: 0.09788795, z: 0.001943156, w: 0.89822465}
+    bakedVertexColorMesh:
+    - {fileID: 0}
+    - {fileID: 0}
     bakedRenderersTerrain: []
     bakedIDsTerrain: 
     bakedScaleOffsetTerrain: []
@@ -604,49 +611,6 @@ Transform:
   - {fileID: 1883280165}
   m_Father: {fileID: 1424984980}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &729033954
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec0b4dd729a12d046982652f834580a2, type: 3}
-  m_Name: Pool_LM0
-  m_EditorClassIdentifier: 
-  resolution: 512
-  bitmask: 1
-  id: 0
-  sortingID: 0
-  isImplicit: 1
-  area: 531.69855
-  totalVertexCount: 0
-  vertexCounter: 0
-  sceneLodLevel: -1
-  autoResolution: 0
-  sceneName: 
-  tag: -1
-  containsTerrains: 0
-  probes: 0
-  mode: 1
-  renderMode: 1000
-  renderDirMode: 1000
-  atlasPacker: 1000
-  computeSSS: 0
-  sssSamples: 16
-  sssDensity: 10
-  sssColor: {r: 1, g: 1, b: 1, a: 1}
-  sssScale: 1
-  fakeShadowBias: 0
-  transparentSelfShadow: 0
-  flipNormal: 0
-  parentName: 
-  overridePath: 
-  fixPos3D: 0
-  voxelSize: {x: 1, y: 1, z: 1}
-  passedFilter: 0
 --- !u!1 &1053284536
 GameObject:
   m_ObjectHideFlags: 0
@@ -1030,7 +994,7 @@ MonoBehaviour:
       y: 0.5
     - x: 0.2
       y: -0.5
-    - x: -0.2
+    - x: 0.2
       y: -0.5
 --- !u!114 &1424984982
 MonoBehaviour:
@@ -1045,7 +1009,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Diffuse:
-    LightmapsMode: 0
+    directional: 0
     lightmaps:
     - color: {fileID: 2800000, guid: aedacf53f485c7243b08de6550a92d59, type: 3}
       directional: {fileID: 0}
@@ -1077,6 +1041,49 @@ MonoBehaviour:
       mixedLightingMode: 0
     reflectionProbes:
     - {fileID: 8900000, guid: 771a7c3a6a982ea41a778b72dc512ba7, type: 3}
+--- !u!114 &1527646860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec0b4dd729a12d046982652f834580a2, type: 3}
+  m_Name: Pool_LM0
+  m_EditorClassIdentifier: 
+  resolution: 512
+  bitmask: 1
+  id: 0
+  sortingID: 0
+  isImplicit: 1
+  area: 531.6985
+  totalVertexCount: 0
+  vertexCounter: 0
+  sceneLodLevel: -1
+  autoResolution: 0
+  sceneName: 
+  tag: -1
+  containsTerrains: 0
+  probes: 0
+  mode: 1
+  renderMode: 1000
+  renderDirMode: 1000
+  atlasPacker: 1000
+  computeSSS: 0
+  sssSamples: 16
+  sssDensity: 10
+  sssColor: {r: 1, g: 1, b: 1, a: 1}
+  sssScale: 1
+  fakeShadowBias: 0
+  transparentSelfShadow: 0
+  flipNormal: 0
+  parentName: 
+  overridePath: 
+  fixPos3D: 0
+  voxelSize: {x: 1, y: 1, z: 1}
+  passedFilter: 0
 --- !u!1 &1550576563
 GameObject:
   m_ObjectHideFlags: 0
