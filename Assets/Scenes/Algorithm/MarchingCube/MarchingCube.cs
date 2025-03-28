@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
+using CameraController.Demo.Implement;
 using Runtime.Geometry;
 using TObjectPool;
 using Runtime.TouchTracker;
@@ -197,12 +198,14 @@ namespace Examples.Algorithm.MarchingCube
         private Vector2 pitchYaw;
         
         private Vector2 m_MoveDelta;
+        private CameraControllerSimple m_Controller;
         public MarchingCubeActor(Transform _transform)
         {
             transform = _transform;
             position = Vector3.zero;
             pitchYaw = Vector2.zero;
             m_CameraAttacher = _transform.Find("CameraAttacher");
+            m_Controller = Camera.main.GetComponent<CameraControllerSimple>();
         }
 
         public void TickInput(float _unscaledDeltaTime)
@@ -221,7 +224,8 @@ namespace Examples.Algorithm.MarchingCube
             rotateDelta /= 50f;
             pitchYaw.x = Mathf.Clamp(pitchYaw.x-rotateDelta.y,-60f,60f);
             pitchYaw.y += rotateDelta.x;
-            
+
+            m_Controller.m_Input.euler = pitchYaw.ToVector3_XY();
         }
 
         void Click(bool _construct,Vector2 _screenPos)

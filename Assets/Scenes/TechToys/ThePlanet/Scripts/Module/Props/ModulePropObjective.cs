@@ -193,12 +193,12 @@ namespace TechToys.ThePlanet.Module.Prop
         
         private bool m_Show;
         private Vector3 m_Scale;
-        private readonly Counter m_AnimationCounter = new Counter(.25f,true);
+        private Counter m_AnimationCounter = new Counter(.25f,true);
 
         private readonly MaterialPropertyBlock m_PropertyBlock;
         private bool m_Emissive;
         private Color m_EmissionColor;
-        private readonly Counter m_EmissionCounter = new Counter(.25f,true);
+        private Counter m_EmissionCounter = new Counter(.25f,true);
         
         public ModulePropElement(Transform _transform):base(_transform)
         {

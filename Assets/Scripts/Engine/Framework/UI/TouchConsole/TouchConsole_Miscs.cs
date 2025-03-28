@@ -25,7 +25,7 @@ public partial class TouchConsole
     
     private RectTransform m_Joystick;
     private RectTransform m_JoystickCore;
-    private readonly Counter m_AnimationCounter=new Counter(.2f);
+    private Counter m_AnimationCounter=new Counter(.2f);
     private bool m_JoystickActive = false;
     private Dictionary<ETouchConsoleButton,UIEventTriggerListenerExtension> m_ButtonListeners = new Dictionary<ETouchConsoleButton, UIEventTriggerListenerExtension>();
     

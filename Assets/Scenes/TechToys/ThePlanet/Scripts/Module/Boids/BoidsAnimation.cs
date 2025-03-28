@@ -67,7 +67,7 @@ namespace TechToys.ThePlanet.Module.BOIDS
     {
         private readonly Material m_Material;
         private readonly Mesh[] m_AnimationMeshes;
-        private readonly Counter m_BlendCounter = new Counter(.25f);
+        private Counter m_BlendCounter = new Counter(.25f);
         private MeshFilter m_MainFilter;
         private MeshFilter m_BlendFilter;
         private Animation m_MainAnimation;

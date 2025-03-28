@@ -23,7 +23,7 @@ namespace TechToys.ThePlanet.Module.BOIDS
         // public FFishFlock m_FishFlock;
 
         private int m_ModuleCount = 0;
-        private readonly Counter m_BirdSpawnCounter = new Counter(10f);
+        private Counter m_BirdSpawnCounter = new Counter(10f);
         public GridManager m_Grid { get; set; }
 
         public void Init()

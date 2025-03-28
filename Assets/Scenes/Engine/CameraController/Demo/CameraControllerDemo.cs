@@ -59,6 +59,8 @@ namespace CameraController.Demo
 
         private void OnValidate()
         {
+            if (m_Input == null)
+                return;
             // m_Index = 0;
             m_Target = transform.Find("Target");
             m_Input.camera = transform.GetComponentInChildren<Camera>();

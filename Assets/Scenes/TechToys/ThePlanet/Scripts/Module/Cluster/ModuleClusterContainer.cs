@@ -28,7 +28,7 @@ namespace TechToys.ThePlanet.Module.Cluster
         public Vector3 CenterWS => transform.position;
         public List<FBoidsVertex> m_BirdLandings { get; } = new List<FBoidsVertex>();
 
-        private readonly Counter m_AnimationCounter = new Counter(.25f);
+        private Counter m_AnimationCounter = new Counter(.25f);
         private MaterialPropertyBlock m_PropertyBlock ;
         private static readonly int kProgressID = Shader.PropertyToID("_Progress");
 

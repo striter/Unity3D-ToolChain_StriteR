@@ -46,7 +46,7 @@ namespace TechToys.ThePlanet.Grid
 
         [Header("Iterate")] public int m_IteratePerFrame = 8;
 
-        private readonly Counter m_IterateCounter = new Counter(1f / 60f);
+        private Counter m_IterateCounter = new Counter(1f / 60f);
         private readonly Dictionary<HexCoord, RelaxArea> m_Chunks = new Dictionary<HexCoord, RelaxArea>();
         public readonly Dictionary<HexCoord, Coord> m_ExistVertices = new Dictionary<HexCoord, Coord>();
 

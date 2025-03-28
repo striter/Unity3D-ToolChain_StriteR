@@ -30,8 +30,8 @@ namespace TechToys.ThePlanet.Module.BOIDS.States.Bird
         BoidsFlockingConfig m_FlockingConfig;
         BoidsFollowingConfig followingConfig;
 
-        private readonly Counter m_TiringCounter = new Counter();
-        private readonly Counter m_AnimationCounter = new Counter(1f);
+        private Counter m_TiringCounter = new Counter();
+        private Counter m_AnimationCounter = new Counter(1f);
         private readonly ValueChecker<bool> m_Gliding=new ValueChecker<bool>();
         private T m_TiredBehaviour;
         
@@ -187,7 +187,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.States.Bird
         private float m_Interpolation;
         private float m_Distance;
 
-        private readonly Counter m_VelocityCounter = new Counter(3f);
+        private Counter m_VelocityCounter = new Counter(3f);
         private Vector3 m_StartVelocity;
 
         public HoverLanding(BoidsLandingConfig _config,T _nextBehaviour)
@@ -255,9 +255,9 @@ namespace TechToys.ThePlanet.Module.BOIDS.States.Bird
         private EPerchingState m_State;
         private BoidsPerchConfig m_Config;
         
-        private readonly Counter m_StateCounter = new Counter();
-        private readonly Counter m_RotateCounter = new Counter();
-        private readonly Counter m_RotateCooldown = new Counter();
+        private Counter m_StateCounter = new Counter();
+        private Counter m_RotateCounter = new Counter();
+        private Counter m_RotateCooldown = new Counter();
         private float m_Rotation,m_RotateSpeed=0f;
         private Vector3 m_Origin=Vector3.zero;
         private Vector3 m_MoveDirection;

@@ -11,8 +11,8 @@ namespace TechToys.ThePlanet.Module.BOIDS.States
         private Vector3 m_StartleDirection;
         private BoidsStartleConfig m_StartleConfig;
         private BoidsFlockingConfig m_FlockingConfig;
-        private readonly Counter m_StartleCounter = new Counter();
-        private readonly Counter m_ReactionCounter = new Counter();
+        private Counter m_StartleCounter = new Counter();
+        private Counter m_ReactionCounter = new Counter();
         private T m_ChillBehaviour;
         public Startle(BoidsStartleConfig _config,BoidsFlockingConfig _flockingConfig,T _chillBehaviour)
         {

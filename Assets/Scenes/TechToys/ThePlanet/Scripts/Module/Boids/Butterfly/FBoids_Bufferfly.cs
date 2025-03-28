@@ -49,7 +49,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.Butterfly
         protected override IBoidsAnimation GetAnimation() => new FBoidsMeshAnimation(m_Config.animConfig);
 
         private readonly Dictionary<int, FButterflyAttractionControl> m_Controls = new Dictionary<int, FButterflyAttractionControl>();
-        private readonly Counter m_Counter = new Counter(5f);
+        private Counter m_Counter = new Counter(5f);
         public FBoids_Bufferfly(FButterflyConfig _config, Transform _transform) : base(_transform)
         {
             m_Config = _config;

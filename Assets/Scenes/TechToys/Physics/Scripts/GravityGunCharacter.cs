@@ -17,7 +17,7 @@ namespace Examples.PhysicsScenes
         bool m_AltFiring;
         Rigidbody m_TargetObject;
         LineRenderer gravityALine;
-        readonly Counter m_GravityGunCounter = new Counter(.35f);
+        Counter m_GravityGunCounter = new Counter(.35f);
         public override void OnTakeControl()
         {
             base.OnTakeControl();
