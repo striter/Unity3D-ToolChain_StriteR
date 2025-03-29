@@ -45,7 +45,15 @@ public class AudioAnalysis : MonoBehaviour
         m_Audio = GetComponent<AudioSource>();
 
         m_TransformPool = new ObjectPoolTransform(transform.Find("Element"));
+        if(RenderSettings.skybox)
+            RenderSettings.skybox = new Material(RenderSettings.skybox){hideFlags = HideFlags.HideAndDontSave};
         OnValidate();
+    }
+
+    private void OnDestroy()
+    {
+        if(RenderSettings.skybox)
+            GameObject.Destroy(RenderSettings.skybox);
     }
 
     private void OnValidate()
@@ -311,6 +319,8 @@ public class AudioAnalysis : MonoBehaviour
                 var visualizeTransform = _elements.Get(i);
                 visualizeTransform.GetComponentInChildren<Renderer>().material.color = m_ColorPalette.Evaluate((colorValue + i / (float)size) % 1f).SetA(colorValue);
             }
+            
+            RenderSettings.skybox.SetFloat("_Exposure",m_ColorDamper.value.x);
         }
     }
 
