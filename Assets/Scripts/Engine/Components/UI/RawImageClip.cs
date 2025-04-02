@@ -18,11 +18,21 @@ public class RawImageClip : MaskableGraphic , ICanvasRaycastFilter
         useLegacyMeshGeneration = false;
     }
 
-    private void OnValidate()
+    protected void OnValidate()
     {
-        Update();
+        ClipRectCheck();
     }
 
+    void ClipRectCheck()
+    {
+        if(m_ClipRect == null)
+            return;
+        if (m_ClipRect.parent == transform)
+            return;
+        Debug.LogError("RawImageClip m_ClipRect.parent != transform");
+        m_ClipRect = null;
+    }
+    
     public override Texture mainTexture
     {
         get
@@ -79,6 +89,7 @@ public class RawImageClip : MaskableGraphic , ICanvasRaycastFilter
 
     private void Update()
     {
+        ClipRectCheck();
         if (m_ClipRect == null)
             return;
         var newRect = (Rect)m_ClipRect.GetLocalBoundsNormalized(rectTransform);
