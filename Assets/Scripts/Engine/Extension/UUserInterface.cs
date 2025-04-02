@@ -132,12 +132,12 @@ public static class UUserInterface
         return G2Box.Minmax(min, max);
     }
  
-    public static G2Box GetLocalBoundsNormalized(this RectTransform _rectTrans,RectTransform _rootTransform)
+    public static G2Box GetLocalBoundsNormalized(this RectTransform _rectTrans,RectTransform _rootTransform = null)
     {
-        // var root = (_rectTrans.parent as RectTransform);
+        _rootTransform ??= _rectTrans.root as RectTransform;
         return GetLocalBounds(_rectTrans,_rootTransform) / _rootTransform.rect.size;
     }
-
+    
     public static bool GetPointInsideImage(this Image _image, float2 _positionNormalized, RectTransform _root)
     {
         var bound = _image.rectTransform.GetLocalBoundsNormalized(_root);

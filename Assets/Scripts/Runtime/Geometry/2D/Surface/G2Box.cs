@@ -30,7 +30,7 @@ namespace Runtime.Geometry
             max = center + extent;
         }
         public static readonly G2Box kDefault = new G2Box(0f,.5f);
-        public static readonly G2Box kOne = new G2Box(0f,1f);
+        public static readonly G2Box kOne = new G2Box(.5f,.5f);
         public static readonly G2Box kZero = new G2Box(0f,0f);
     }
     
@@ -65,8 +65,8 @@ namespace Runtime.Geometry
             return absOffset.x < extent.x && absOffset.y < extent.y;
         }
 
+        public static G2Box Clamp(G2Box _clamp,G2Box _dst) => Minmax(math.clamp(_dst.min,_clamp.min,_clamp.max), math.clamp(_dst.max,_clamp.min,_clamp.max));
         public float2 Clamp(float2 _point) => math.clamp(_point, min, max);
-
         public bool Clamp(float2 _point, out float2 _clamped)
         {
             _clamped = Clamp(_point);
@@ -122,13 +122,23 @@ namespace Runtime.Geometry
         public static G2Box operator -(G2Box _src, float2 _dst) => new G2Box(_src.center-_dst,_src.extent);
         public static G2Box operator /(G2Box _bounds,float2 _div) => new G2Box(_bounds.center/_div,_bounds.extent/_div);
         public static G2Box operator *(G2Box _bounds,float2 _div) => new G2Box(_bounds.center*_div,_bounds.extent*_div);
+        public static G2Box operator /(G2Box _src,G2Box _dst) => new G2Box(_src.center / _dst.center, _src.extent / _dst.extent);
+        public static G2Box operator *(G2Box _src,G2Box _dst) => new G2Box(_src.center * _dst.center, _src.extent * _dst.extent);
+
+        public static G2Box Normalize(G2Box _src, G2Box _normalize)
+        {
+            var min = math.lerp(_src.min, _src.max, _normalize.min);
+            var max = math.lerp(_src.min, _src.max, _normalize.max);
+            return new G2Box(min, max - min);
+        }
         
         public static bool operator ==(G2Box _a, G2Box _b) => ((float4)_a == _b).all();
         public static bool operator !=(G2Box _a, G2Box _b) => ((float4)_a != _b).any();
         
-        public static implicit operator float4(G2Box _box) => new float4(_box.center.x, _box.center.y, _box.extent.x, _box.extent.y);
-        public static implicit operator Rect(G2Box _src) => new Rect(_src.min, _src.size);
-
+        public static implicit operator float4(G2Box _box) => new(_box.center.x, _box.center.y, _box.extent.x, _box.extent.y);
+        public static implicit operator Rect(G2Box _src) => new(_src.min, _src.size);
+        public static implicit operator G2Box(Rect _src) => new(_src.center, _src.size / 2);
+        
         public static implicit operator G2Quad(G2Box _src)
         {
             var b = _src.min;

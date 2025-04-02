@@ -1,14 +1,26 @@
-﻿using UnityEngine;
+﻿using System;
+using Runtime.Geometry;
+using Unity.Mathematics;
+using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(CanvasRenderer))]
-public class RawImageClip : MaskableGraphic , ISerializationCallbackReceiver
+public class RawImageClip : MaskableGraphic , ICanvasRaycastFilter
 {
+    
     [SerializeField] Texture m_Texture;
+    
+    public RectTransform m_ClipRect;
+    public Rect m_UVRect = new Rect(0.2f, 0.2f, 0.6f, 0.6f);
 
     protected RawImageClip()
     {
         useLegacyMeshGeneration = false;
+    }
+
+    private void OnValidate()
+    {
+        Update();
     }
 
     public override Texture mainTexture
@@ -45,7 +57,6 @@ public class RawImageClip : MaskableGraphic , ISerializationCallbackReceiver
         }
     }
 
-
     [InspectorButton]
     public override void SetNativeSize()
     {
@@ -65,36 +76,56 @@ public class RawImageClip : MaskableGraphic , ISerializationCallbackReceiver
         SetVerticesDirty();
         SetRaycastDirty();
     }
-    
+
+    private void Update()
+    {
+        if (m_ClipRect == null)
+            return;
+        var newRect = (Rect)m_ClipRect.GetLocalBoundsNormalized(rectTransform);
+        newRect = G2Box.Clamp(G2Box.kOne,newRect);
+        
+        if (m_UVRect == newRect)
+            return;
+        m_UVRect = newRect;
+        SetVerticesDirty();
+    }
+
     protected override void OnPopulateMesh(VertexHelper vh)
     {
         Texture tex = mainTexture;
         vh.Clear();
-        if (tex != null)
-        {
-            var r = GetPixelAdjustedRect();
-            var v = new Vector4(r.x, r.y, r.x + r.width, r.y + r.height);
-            
-            var scaleX = tex.width * tex.texelSize.x;
-            var scaleY = tex.height * tex.texelSize.y;
+        if (tex == null)
+            return;
 
-            var pivot = rectTransform.pivot;
-            var clipRect = new Rect(r.xMin /  tex.width + pivot.x,r.yMin / tex.height + pivot.y, r.width / tex.width,r.height / tex.height);
+        var clipRect = m_UVRect;
+        var r = GetPixelAdjustedRect();
+        var v = new float4(r.x, r.y, r.x + r.width, r.y + r.height);
+        var v2 = new float4(r.x + r.width * clipRect.min.x, r.y + r.height * clipRect.min.y, r.x + r.width * clipRect.max.x, r.y + r.height * clipRect.max.y);
+        
+        var color32 = color;
             
-            {
-                var color32 = color;
-                vh.AddVert(new Vector3(v.x, v.y), color32, new Vector2(clipRect.xMin * scaleX,clipRect.yMin * scaleY));
-                vh.AddVert(new Vector3(v.x, v.w), color32, new Vector2(clipRect.xMin * scaleX, clipRect.yMax * scaleY));
-                vh.AddVert(new Vector3(v.z, v.w), color32, new Vector2(clipRect.xMax * scaleX, clipRect.yMax * scaleY));
-                vh.AddVert(new Vector3(v.z, v.y), color32, new Vector2(clipRect.xMax * scaleX, clipRect.yMin * scaleY));
+        vh.AddVert(new Vector3(v.x, v.y), color32, new Vector2(0,0));
+        vh.AddVert(new Vector3(v.x, v.w), color32, new Vector2(0,1));
+        vh.AddVert(new Vector3(v.z, v.w), color32, new Vector2(1,1));
+        vh.AddVert(new Vector3(v.z, v.y), color32, new Vector2(1,0));
+        vh.AddVert(new Vector3(v2.x, v2.y), color32, new Vector2(clipRect.min.x , clipRect.min.y));
+        vh.AddVert(new Vector3(v2.x, v2.w), color32, new Vector2(clipRect.min.x , clipRect.max.y));
+        vh.AddVert(new Vector3(v2.z, v2.w), color32, new Vector2(clipRect.max.x , clipRect.max.y));
+        vh.AddVert(new Vector3(v2.z, v2.y), color32, new Vector2(clipRect.max.x , clipRect.min.y));
 
-                vh.AddTriangle(0, 1, 2);
-                vh.AddTriangle(2, 3, 0);
-            }
-        }
+        vh.AddTriangle(0,1,4); vh.AddTriangle(5,4,1);
+        vh.AddTriangle(1,2,5); vh.AddTriangle(2,6,5);
+        vh.AddTriangle(2,3,6); vh.AddTriangle(3,7,6);
+        vh.AddTriangle(3,4,7); vh.AddTriangle(3,0,4);
     }
-
-    public void OnBeforeSerialize(){}
-
-    public void OnAfterDeserialize() => OnDidApplyAnimationProperties();
+    
+    private Vector3[] worldCorners = new Vector3[4];
+    public bool IsRaycastLocationValid(Vector2 screenPoint, Camera eventCamera)
+    {
+        rectTransform.GetWorldCorners(worldCorners);
+        var clipMin = RectTransformUtility.WorldToScreenPoint(eventCamera, worldCorners[0]);
+        var clipMax = RectTransformUtility.WorldToScreenPoint(eventCamera, worldCorners[2]);
+        var screenRect = G2Box.Normalize(G2Box.Minmax(clipMin, clipMax), m_UVRect);
+        return !screenRect.Contains(screenPoint);
+    }
 }
