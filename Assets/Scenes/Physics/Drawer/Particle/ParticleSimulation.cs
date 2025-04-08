@@ -23,34 +23,25 @@ namespace Examples.PhysicsScenes.Particle
         [Range(0, 1)] public float m_BoundsBounceCoefficient = 0.1f;
         private struct ParticleData
         {
-            public int index;
+            [NonSerialized] public int index;
             public float2 position;
             public float2 velocity;
             public float2 force;
             public float mass;
-            public float density;
+            [NonSerialized] public float density;
             public class BVHHelper : IBVHHelper<G2Box,ParticleData>
             {
-                
+                private static IList<ParticleData> kElements;
+                Comparison<int> CompareX = (_a, _b) => kElements[_a].position.x >= kElements[_b].position.x ? 1 : -1;
+                Comparison<int> CompareY = (_a, _b) => kElements[_a].position.y >= kElements[_b].position.y ? 1 : -1;
                 public void SortElements(int _median, G2Box _boundary,IList<int> _elementIndexes, IList<ParticleData> _elements)
                 {
-                    var axis = _boundary.size.maxAxis();
-                    int Comparison(int _a, int _b)
+                    kElements = _elements;
+                    switch (_boundary.size.maxAxis())
                     {
-                        var a = _elements[_a];
-                        var b = _elements[_b];
-                        return axis switch
-                        {
-                            EAxis.X => a.position.x >= b.position.x ? 1 : -1,
-                            EAxis.Y => a.position.y >= b.position.y ? 1 : -1,
-                            _ => throw new InvalidEnumArgumentException()
-                        };
+                        case EAxis.X: _elementIndexes.Divide(_median,CompareX); break;
+                        case EAxis.Y: _elementIndexes.Divide(_median,CompareY); break;
                     }
-
-                    _elementIndexes.Divide(_median,
-                        // .Sort(
-                        // ESortType.Bubble,
-                        Comparison);
                 }
 
                 public G2Box CalculateBoundary(IList<ParticleData> _elements) => UGeometry.GetBoundingBox(_elements,p=>p.position);

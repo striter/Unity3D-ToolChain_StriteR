@@ -71,7 +71,7 @@ namespace UnityEditor.Extensions
                 foreach (var parameter in data.parameters)
                 {
                     position = position.MoveY().ResizeY(kParameterHeight);
-                    UInspectorExtension.LayoutField(position, parameter);
+                    UEGUIExtension.Field(position, parameter);
                 }
                 
                 position = position.MoveY().ResizeY(kMethodButtonHeight);

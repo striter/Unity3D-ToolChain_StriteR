@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Extensions;
-using System.Reflection;
-using Unity.Mathematics;
 using UnityEngine;
-using static System.Activator;
 
 namespace UnityEditor.Extensions
 {
@@ -39,12 +35,12 @@ namespace UnityEditor.Extensions
                 {
                     EditorGUILayout.LabelField(data.method.Name, EditorStyles.boldLabel);   
                     foreach (var parameter in data.parameters)
-                        UInspectorExtension.GUILayoutField(parameter);
+                        parameter.value = UEGUIExtension.LayoutField(parameter.value,parameter.type,parameter.name);
                     
                     if (GUILayout.Button("Execute"))
                     {
                         foreach (var target in targets)
-                            data.method.Invoke(target,data.parameters.Select(p=>UInspectorExtension.Reformat(p.type,p.value)).ToArray());
+                            data.method.Invoke(target,data.parameters.Select(p=>UEGUIExtension.Reformat(p.type,p.value)).ToArray());
                         if(undo)
                             Undo.RegisterCompleteObjectUndo(targets,"Button Click");
                         return;
