@@ -110,17 +110,23 @@ namespace UnityEditor.Extensions
             }
             return _value;
         }
-        
+
+        private static Dictionary<string, bool> kFoldout = new();
         public static object StructLayoutField(object value, string label = null) 
         {
+            if(!kFoldout.ContainsKey(label))
+                kFoldout.Add(label,false);
             if (!string.IsNullOrEmpty(label))
-                EditorGUILayout.LabelField(label, EditorStyles.boldLabel);
+                kFoldout[label] = EditorGUILayout.Foldout(kFoldout[label],label);
 
+            if (!kFoldout[label])
+                return value;
+            
             EditorGUI.indentLevel++;
-            var modified = StructFieldRecursive(value);
+            value = StructFieldRecursive(value);
             EditorGUI.indentLevel--;
         
-            return modified;
+            return value;
         }
 
         private static object StructFieldRecursive(object _struct)
