@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using Runtime.DataStructure;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;

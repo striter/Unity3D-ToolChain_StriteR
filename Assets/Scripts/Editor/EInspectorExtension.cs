@@ -40,7 +40,7 @@ namespace UnityEditor.Extensions
                     if (GUILayout.Button("Execute"))
                     {
                         foreach (var target in targets)
-                            data.method.Invoke(target,data.parameters.Select(p=>UEGUIExtension.Reformat(p.type,p.value)).ToArray());
+                            data.method.Invoke(target,data.parameters.Select(p=>p.value).ToArray());
                         if(undo)
                             Undo.RegisterCompleteObjectUndo(targets,"Button Click");
                         return;

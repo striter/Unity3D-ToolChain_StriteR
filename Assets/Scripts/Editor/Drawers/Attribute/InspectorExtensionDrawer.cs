@@ -9,8 +9,7 @@ namespace UnityEditor.Extensions
     {
         private object target;
         private List<ButtonAttributeData> inspectorMethods;
-        private const int kPadding = 1;
-        private const int kParameterHeight = 20;
+        private const int kPadding = 2;
         private const int kMethodButtonHeight = 20;
         private const int kTitleHeight = 18;
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
@@ -33,9 +32,10 @@ namespace UnityEditor.Extensions
                     height += kMethodButtonHeight;
                     continue;
                 }
-                
+
                 height += kTitleHeight;
-                height += method.parameters.Length * kParameterHeight;
+                foreach (var parameter in method.parameters)
+                    height += kPadding + UEGUIExtension.FieldHeight(parameter.value, parameter.type,parameter.name);
                 height += kMethodButtonHeight;
             }
             
@@ -67,14 +67,12 @@ namespace UnityEditor.Extensions
                 
                 position = position.MoveY().ResizeY(kTitleHeight);
                 EditorGUI.LabelField(position,data.method.Name, EditorStyles.boldLabel);
-
                 foreach (var parameter in data.parameters)
                 {
-                    position = position.MoveY().ResizeY(kParameterHeight);
-                    UEGUIExtension.Field(position, parameter);
+                    position = position.MoveY().MoveY(kPadding).ResizeY(UEGUIExtension.FieldHeight(parameter.value,parameter.type,parameter.name));
+                    parameter.value = UEGUIExtension.Field(position, parameter.value,parameter.type,parameter.name);
                 }
-                
-                position = position.MoveY().ResizeY(kMethodButtonHeight);
+                position = position.MoveY().MoveY(kPadding).ResizeY(kMethodButtonHeight);
                 if (GUI.Button(position, "Execute"))
                     data.method.Invoke(target,data.parameters.Select(p=>p.value).ToArray());
             }
