@@ -112,10 +112,7 @@ namespace UnityEditor.Extensions
         static void ShowScriptableObjectsCombinerWindow() => EditorWindow.GetWindow(typeof(ScriptableObjectCombiner)).titleContent = new GUIContent("Scriptable Objects Combiner", EditorGUIUtility.IconContent("d_Import").image);
 
         [MenuItem("Work Flow/Render/OverdrawDebugger", false, 501)]
-        static void ShowOverdrawDebugger()
-        {
-            AssetSelectWindow.Select<OverdrawProfilerData>(OverdrawProfiler.Init);
-        }
+        static void ShowOverdrawDebugger() => AssetSelectWindow.Select<OverdrawProfilerData>(OverdrawProfiler.Switch);
         #endregion
     }
 

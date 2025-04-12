@@ -12,6 +12,6 @@ namespace Render.Debug
         public Color m_Color = Color.red;
         
         [InspectorButton]
-        public void Profile() => OverdrawProfiler.Init(this);
+        public void Profile() => OverdrawProfiler.Switch(this);
     }
 }
