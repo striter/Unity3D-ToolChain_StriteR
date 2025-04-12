@@ -131,4 +131,15 @@
             
             return false;
         }
+        
+        public static ScriptableRendererFeature GetFeature(Camera _camera,string _featureName)
+        {
+            if (!Valid)
+                return null;
+            
+            foreach (var feature in GetFeatures(GetScriptableRendererData(_camera),_featureName))
+                return feature;
+            
+            return null;
+        }
     }
