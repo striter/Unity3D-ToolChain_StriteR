@@ -25,6 +25,7 @@ namespace Render.Debug
             if (m_RenderPass == null) 
                 return;
             m_RenderPass = null;
+            RenderPipelineManager.beginCameraRendering -= OnBeginCameraRendering;
 #if UNITY_EDITOR
             SceneView.duringSceneGui -= SceneGUI;
 #endif
