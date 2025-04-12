@@ -22,7 +22,6 @@ namespace Rendering.PostProcess
     
     public interface IPostProcessBehaviour
     {
-        string m_Name { get; }
         bool m_OpaqueProcess { get; }
         bool m_Enabled { get; }
         EPostProcess Event { get; }

@@ -4,7 +4,6 @@
 	{
 		[Header(Misc)]
 		[Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
-		[Enum(UnityEngine.Rendering.ColorWriteMask)]_ColorMask("Color Mask",int)=15
 		[Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=1
 	}
 	
@@ -44,7 +43,6 @@
 			ZWrite On
 			Blend Off
 			ZTest [_ZTest]
-			ColorMask [_ColorMask]
 			Cull [_Cull]
 			
 			NAME "MAIN"

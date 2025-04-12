@@ -90,7 +90,7 @@ namespace Rendering.Pipeline.Mask
                 case EMaskTextureMode.Redraw:
                 {
                     var drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
-                    drawingSettings.perObjectData = (PerObjectData)int.MaxValue;
+                    drawingSettings.perObjectData = PerObjectData.None;
                     var filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = _data.renderMask };
                     _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
                 }
@@ -107,7 +107,7 @@ namespace Rendering.Pipeline.Mask
                 case EMaskTextureMode.ShaderReplacement:
                 {
                     var drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
-                    drawingSettings.perObjectData = (PerObjectData)int.MaxValue;
+                    drawingSettings.perObjectData = PerObjectData.None;
                     drawingSettings.overrideShader = _data.overrideShader != null ? _data.overrideShader : m_MaskShader;
                     var filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = _data.renderMask };
                     _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);

@@ -57,7 +57,7 @@ namespace Examples.PhysicsScenes.Particle
         }
 
         private List<ParticleData> particles = new List<ParticleData>();
-        private ParticleBVH particleQueries = new ParticleBVH(32,4);
+        private ParticleBVH kParticleQueries = new ParticleBVH(32,4);
 
         public int Count => particles.Count;
 
@@ -104,7 +104,6 @@ namespace Examples.PhysicsScenes.Particle
             }
         }
 
-
         private class ParticleDenstiyQuery : IBoundaryTreeQuery<G2Box,ParticleData>
         {
             public G2Circle circle;
@@ -115,14 +114,14 @@ namespace Examples.PhysicsScenes.Particle
         private ParticleDenstiyQuery kQuery = new ();
         void ResolveCollision()
         {
-            particleQueries.Construct( m_Bounds,particles);
+            kParticleQueries.Construct( m_Bounds,particles);
             for (var i = 0; i < Count; i++)
             {
                 var particle = particles[i];
                 
                 var density = 0f;
                 kQuery.circle = new G2Circle(particle.position, 5f);
-                var nearbyParticles = kQuery.Query(particleQueries,particles);
+                var nearbyParticles = kQuery.Query(kParticleQueries,particles);
                 for(var j = nearbyParticles.Count- 1 ; j>=0;j--)
                 {
                     var nearbyParticle = nearbyParticles[j];
@@ -168,7 +167,7 @@ namespace Examples.PhysicsScenes.Particle
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(-m_Bounds.center.to3xy());
-            particleQueries.DrawGizmos(particles);
+            kParticleQueries.DrawGizmos(particles);
             // foreach (var particle in particles)
             // {
                 // Gizmos.DrawWireSphere(particle.position.to3xy(),m_SPH.h);

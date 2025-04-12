@@ -64,7 +64,7 @@ namespace Rendering.Pipeline.GrabPass
                 case EGrabTextureMode.Redraw:
                 {
                     var drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
-                    drawingSettings.perObjectData = (PerObjectData)int.MaxValue;
+                    drawingSettings.perObjectData = PerObjectData.None;
                     var filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = m_Data.renderMask };
                     _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
                 }

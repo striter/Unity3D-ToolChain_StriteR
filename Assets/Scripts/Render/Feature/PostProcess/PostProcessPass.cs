@@ -34,7 +34,7 @@ namespace Rendering.Pipeline
         }
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {            
-            CommandBuffer cmd = CommandBufferPool.Get("Component Based Post Process");
+            var cmd = CommandBufferPool.Get("Post Process");
             var descriptor = renderingData.cameraData.cameraTargetDescriptor;
             descriptor.msaaSamples = 1;
             cmd.GetTemporaryRT(ID_Blit_Temp1, descriptor);
@@ -53,7 +53,7 @@ namespace Rendering.Pipeline
                     dst = renderer.cameraColorTargetHandle;
                 blitSwap = !blitSwap;
 
-                var name = effect.m_Name;
+                var name = effect.GetType().Name;
                 cmd.BeginSample(name);
                 effect.Execute(cmd, src, dst, descriptor, context, ref renderingData);
                 cmd.EndSample(name);

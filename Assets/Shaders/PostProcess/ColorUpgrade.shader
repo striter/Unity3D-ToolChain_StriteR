@@ -112,11 +112,18 @@
 	            #pragma vertex vert_img
 	            #pragma fragment frag
 		       
-		        half _BloomThreshold;
+		        half4 _BloomThreshold;
 		        float4 frag(v2f_img i) : SV_Target
 		        {
 		            float4 color = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv);
-		            color *= max(RGBtoLuminance(color.rgb) - _BloomThreshold,0);
+
+		        	half Threshold = _BloomThreshold.r;
+		            half ThresholdKnee = _BloomThreshold.g;
+					half brightness = max(color.r, color.g, color.b);
+		            half softness = clamp(brightness - Threshold + ThresholdKnee, 0.0, 2.0 * ThresholdKnee);
+		            softness = (softness * softness) / (4.0 * ThresholdKnee + 1e-4);
+		            half multiplier = max(brightness - Threshold, softness) / max(brightness, 1e-4);
+		            color *= multiplier;
 		            return max(0,color);
 		        }
 	        ENDHLSL

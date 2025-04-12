@@ -101,7 +101,8 @@ namespace Rendering.PostProcess
 
             public void Apply(Material _material)
             {
-                _material.SetFloat(ID_Threshold, m_Threshold);
+                var threshold = UColor.GammaToLinear(m_Threshold);
+                _material.SetVector(ID_Threshold, new Vector4(threshold,threshold * .5f,0,0));
                 _material.SetColor(ID_Color, m_Color);
             }
             #endregion

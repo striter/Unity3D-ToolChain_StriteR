@@ -13,9 +13,9 @@
 		Pass
 		{
 			Blend SrcAlpha OneMinusSrcAlpha
-			Cull Back
+			Cull Front
 			ZWrite Off
-			ZTest LEqual
+			ZTest Always
 
 			HLSLPROGRAM
 			#pragma vertex vert
