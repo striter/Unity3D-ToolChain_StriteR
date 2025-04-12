@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Mask:
     value: 64
-  m_Event: 1000
+  m_Event: 550
   m_Stack:
     start: 4
     length: 5
