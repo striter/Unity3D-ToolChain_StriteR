@@ -14,4 +14,4 @@ namespace Render.Debug
         [InspectorButton]
         public void Profile() => OverdrawProfiler.Switch(this);
     }
-}
+}   

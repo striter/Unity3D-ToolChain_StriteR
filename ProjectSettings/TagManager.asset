@@ -15,12 +15,12 @@ TagManager:
   - Entity
   - Character
   - CharacterNoSelfCollision
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Layer10
+  - Layer11
+  - Layer12
+  - Layer13
+  - Layer14
+  - Layer15
   - 
   - 
   - 

@@ -11,6 +11,7 @@ namespace CameraController.Animation
         public AnimationCurve m_PositionCurve;
         public AnimationCurve m_RotationCurve;
         public AnimationCurve m_ExtraInterpolationCurve;
+        public FControllerCollision m_Collision;
         public override bool Disposable(bool _reset) => _reset || timeExists >= math.max(m_PositionCurve.length,m_RotationCurve.length);
         public override EControllerPostModiferQueue Queue => EControllerPostModiferQueue.Interpolate;
         private FCameraControllerOutput lastOutput;
@@ -33,6 +34,9 @@ namespace CameraController.Animation
                 distance = math.lerp(lastOutput.distance, _output.distance, extraValue),
                 viewPort = math.lerp(lastOutput.viewPort, _output.viewPort, extraValue),
             };
+            
+            if(m_Collision != null)
+                m_Collision.Tick(_deltaTime, _input, ref _output);
         }
 
     }

@@ -18,4 +18,4 @@ MonoBehaviour:
   m_Stack:
     start: 4
     length: 5
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 0.5424528, b: 0.5424528, a: 1}
