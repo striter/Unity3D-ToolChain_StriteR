@@ -18,7 +18,7 @@ namespace CameraController
         
         public void Evaluate(Camera _camera,out GFrustumRays _frustumRays, out GRay _viewportRay)
         {
-            _frustumRays = new GFrustumRays(anchor,Rotation ,_camera.fieldOfView,_camera.aspect,_camera.nearClipPlane,_camera.farClipPlane);
+            _frustumRays = new GFrustumRays(anchor,Rotation ,fov,_camera.aspect,_camera.nearClipPlane,_camera.farClipPlane);
             _viewportRay = _frustumRays.GetRay(viewPort + .5f).Inverse().Forward(_camera.nearClipPlane);
         }
         

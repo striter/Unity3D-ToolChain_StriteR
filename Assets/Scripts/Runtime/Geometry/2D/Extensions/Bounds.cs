@@ -32,8 +32,8 @@ namespace Runtime.Geometry.Extension
             for(var i = _elements.Count - 1; i>=0;i--)
             {
                 var position = _convert( _elements[i]);
-                min = math.max(position, min);
-                max = math.min(position, max);
+                min = math.min(position, min);
+                max = math.max(position, max);
             }
 
             return G2Box.Minmax(min,max);

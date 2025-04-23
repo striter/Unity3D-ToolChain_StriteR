@@ -122,7 +122,7 @@ namespace TechToys.ThePlanet
         
         void InputTick(float _deltaTime)
         {
-            var touch= UTouchTracker.Execute(_deltaTime);
+            var touch= TouchTracker.Execute(_deltaTime);
             foreach (var clickPos in touch.ResolveClicks(.2f))
             {
                 m_Module.Input( m_ModuleSpawning,m_Camera.m_Camera.ScreenPointToRay(clickPos),touch.Count==1);

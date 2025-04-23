@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Runtime.Geometry
 {
     [Serializable]
-    public struct G2Ray : ISDF2
+    public struct G2Ray : ISDF<float2>
     {
         public float2 origin;
         public float2 direction;

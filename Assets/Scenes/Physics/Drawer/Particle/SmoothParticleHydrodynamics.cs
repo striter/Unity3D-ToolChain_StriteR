@@ -1,0 +1,108 @@
+﻿using System;
+using Unity.Mathematics;
+using UnityEngine;
+
+namespace Examples.PhysicsScenes.Particle
+{
+        public interface ISPH
+        {
+            public float Radius { get; }
+            float this[float _distance] { get; }
+            float FirstDerivative(float _distance);
+            float SecondDerivative(float _distance);
+        }
+
+
+        public static class ISPH_Extension
+        {
+            public static float2 Gradient(this ISPH _sph,float _distance, float2 _directionToCenter) => _sph.FirstDerivative(_distance) * _directionToCenter;
+        }
+        
+        public struct SPHStdKernel3 : ISPH
+        {
+            public float h;
+            public float Radius => h;
+            private float h2;
+            private float h3;
+            private float h5;
+            public SPHStdKernel3(float _radius)
+            {
+                h = _radius;
+                h2 = h * h;
+                h3 = h * h * h;
+                h5 = h * h * h * h * h;
+            }
+
+            public float this[float _distance]
+            {
+                get
+                {
+                    var x = 1f - _distance * _distance / h2;
+                    return 315 / (64f * kmath.kPI * h3) * x * x * x;
+                }
+            }
+
+            public float FirstDerivative(float _distance)
+            {
+                if (_distance >= h)
+                    return 0f;
+                var x = 1.0f - _distance * _distance / h2;
+                return -945.0f / (32f * kmath.kPI * h5) * _distance * x * x;
+            }
+
+            public float SecondDerivative(float _distance)
+            {
+                if (_distance > h)
+                    return 0f;
+                var x = _distance * _distance / h2;
+                return 945f / (32f * kmath.kPI * h5) * (1 - x) * (3 * x - 1);
+            }
+        }
+        
+        [Serializable]
+        public struct SPHSpikyKernel : ISPH
+        {
+            public float h;
+            public float Radius => h;
+            private float h2;
+            private float h3;
+            private float h4;
+            private float h5;
+            public SPHSpikyKernel(float _radius)
+            {
+                h = _radius;
+                h2 = h * h;
+                h3 = h * h * h;
+                h4 = h * h * h * h;
+                h5 = h * h * h * h * h;
+            }
+
+            public float this[float _distance]
+            {
+                get
+                {
+                    if (_distance >= h)
+                        return 0f;
+                    var x = 1f - _distance / h;
+                    return 15f / (kmath.kPI * h3) / x * x * x;
+                }
+            }
+
+            public float FirstDerivative(float _distance)
+            {
+                if (_distance >= h)
+                    return 0f;
+                var x = 1f - _distance / h;
+                return -45f / (kmath.kPI * h4) * x * x;
+            }
+
+            public float SecondDerivative(float _distance)
+            {
+                if (_distance >= h)
+                    return 0f;
+                
+                var x = 1f - _distance / h;
+                return 90f / (kmath.kPI * h5) * x;
+            }
+        }
+}

@@ -29,7 +29,7 @@ namespace Examples.Rendering.PostProcess
 
         private void Update()
         {
-            var tracks = UTouchTracker.Execute(Time.unscaledDeltaTime);
+            var tracks = TouchTracker.Execute(Time.unscaledDeltaTime);
             foreach (var click in tracks.ResolveClicks())
             {
                 if (m_ControlCamera.InputRayCheck(click, out RaycastHit _hit))

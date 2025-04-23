@@ -12,6 +12,4 @@ namespace Runtime.Geometry
     {
         float GetArea();
     }
-    
-    public interface IConvex2 : IGeometry2 , IEnumerable<float2> { }
 }

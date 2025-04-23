@@ -49,7 +49,7 @@ namespace Examples.ArtScenes.CornellBox
         void LateUpdate()
         {
             var deltaTime = Time.deltaTime;
-            var tracks = UTouchTracker.Execute(deltaTime);
+            var tracks = TouchTracker.Execute(deltaTime);
             m_Input.PlayerPinch += tracks.CombinedPinch();
             m_Input.PlayerDrag += tracks.CombinedDrag();
             

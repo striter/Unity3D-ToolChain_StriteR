@@ -175,7 +175,7 @@ namespace Runtime.DataStructure
 
                 if (currentTreeNode.IsParent)
                 {
-                    for(var i = currentTreeNode.ElementCount - 1 ;i >= 0; i--)
+                    for(var i = currentTreeNode.childNodeIndex.Count - 1 ;i >= 0; i--)
                         m_QueryNodes.Push(m_Nodes[currentTreeNode.childNodeIndex[i]]);
                 }
 

@@ -64,7 +64,7 @@ namespace Examples.Algorithm.MarchingSquare
 
         private void Update()
         {
-            var trackData = UTouchTracker.Execute(Time.unscaledDeltaTime);
+            var trackData = TouchTracker.Execute(Time.unscaledDeltaTime);
             foreach (var click in trackData.ResolveClicks(.1f))
             {
                 var ray = (GRay)Camera.main.ScreenPointToRay(click);
@@ -93,7 +93,7 @@ namespace Examples.Algorithm.MarchingSquare
         }
         private void OnGUI()
         {
-            UTouchTracker.DrawDebugGUI();
+            TouchTracker.DrawDebugGUI();
         }
 #endif
     }

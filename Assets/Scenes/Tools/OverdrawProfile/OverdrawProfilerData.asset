@@ -17,5 +17,5 @@ MonoBehaviour:
   m_Event: 550
   m_Stack:
     start: 4
-    length: 5
-  m_Color: {r: 1, g: 0.5424528, b: 0.5424528, a: 1}
+    length: 4
+  m_Color: {r: 1, g: 0.1885397, b: 0.042452812, a: 1}

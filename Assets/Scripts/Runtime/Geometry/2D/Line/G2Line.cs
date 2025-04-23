@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Runtime.Geometry
 {
     [Serializable]
-    public struct G2Line : ISDF2
+    public struct G2Line : ISDF<float2>
     {
         public float2 start;
         public float2 end;

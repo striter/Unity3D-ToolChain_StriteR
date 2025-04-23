@@ -103,7 +103,7 @@ namespace CameraController.Demo
         {
             if (!Application.isPlaying) return;
             
-            var tracks = UTouchTracker.Execute(Time.unscaledDeltaTime);
+            var tracks = TouchTracker.Execute(Time.unscaledDeltaTime);
             m_Input.PlayerDrag = tracks.CombinedDrag();
             m_Input.PlayerPinch = tracks.CombinedPinch();            
         }

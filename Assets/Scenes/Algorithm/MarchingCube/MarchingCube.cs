@@ -210,7 +210,7 @@ namespace Examples.Algorithm.MarchingCube
 
         public void TickInput(float _unscaledDeltaTime)
         {
-            var tracks= UTouchTracker.Execute(_unscaledDeltaTime);
+            var tracks= TouchTracker.Execute(_unscaledDeltaTime);
 
             tracks.ResolveClicks(.2f).Traversal(position=>Click(tracks.Count>1, position));
             
