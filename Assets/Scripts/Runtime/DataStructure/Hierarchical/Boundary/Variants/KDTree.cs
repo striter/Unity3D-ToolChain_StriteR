@@ -8,9 +8,11 @@ namespace Runtime.DataStructure
         public bool KDTreeValidate(int iteration,Boundary _boundary, Element _element);
     }
     
-    public class KDTree<Boundary, Element ,Helper> : ABoundaryTree<Boundary, Element> where Helper : IKDTreeHelper<Boundary,Element> where Boundary : struct
+    public class KDTree<Boundary, Element ,Helper> : ABoundaryTree<Boundary, Element> 
+        where Helper : class ,IKDTreeHelper<Boundary,Element> , new () 
+        where Boundary : struct
     {
-        private static readonly Helper kHelper = default;
+        private static readonly Helper kHelper = new ();
         public KDTree(int _nodeCapcity, int _maxIteration) : base(_nodeCapcity, _maxIteration) { }
         public void Construct(IList<Element> _elements) => Construct(kHelper.CalculateBoundary(_elements),_elements);
         private static List<Element> kElementHelper = new ();

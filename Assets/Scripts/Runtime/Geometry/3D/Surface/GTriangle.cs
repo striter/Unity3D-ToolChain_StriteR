@@ -15,8 +15,8 @@ namespace Runtime.Geometry
         [NonSerialized] public float3 baryCentre;
         [NonSerialized] public GAxis axis;
         [NonSerialized] public float3 normal;
-        public float3 uOffset => axis.right;
-        public float3 vOffset => axis.up;
+        [NonSerialized] public float3 uOffset;
+        [NonSerialized] public float3 vOffset ;
         public GTriangle((float3 v0,float3 v1,float3 v2) _tuple) : this(_tuple.v0,_tuple.v1,_tuple.v2) { }
 
         public GTriangle(float3 _vertex0, float3 _vertex1, float3 _vertex2)
@@ -28,7 +28,9 @@ namespace Runtime.Geometry
 
         void Ctor()
         {
-            axis = new GAxis(V0,V1-V0,V2-V0);
+            uOffset = V1 - V0;
+            vOffset = V2 - V0;
+            axis = new GAxis(V0,uOffset,vOffset);
             normal = axis.forward.normalize();
             baryCentre = GetBarycenter();
         }

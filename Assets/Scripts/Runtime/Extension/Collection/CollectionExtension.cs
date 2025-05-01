@@ -957,13 +957,17 @@ namespace System.Linq.Extensions
                 _src.Add(element);
         }
 
-        public static void Resize<T>(this List<T> _src,int _newSize)
+        public static void Resize<T>(this List<T> _src,int _newSize,Func<T> _onEachSpawn = null,Action<T> _onEachDespawn = null)
         {
-            for(int i=_src.Count;i<_newSize;i++)
-                _src.Add(default);
-            
-            for(int i=_src.Count-1;i>=_newSize;i--)
+            for(var i=_src.Count;i<_newSize;i++)
+                _src.Add(_onEachSpawn != null ? _onEachSpawn() : default);
+
+            for (var i = _src.Count - 1; i >= _newSize; i--)
+            {
+                _onEachDespawn?.Invoke(_src[i]);
                 _src.RemoveAt(i);
+            }
+
         }
         #endregion
         #region Dictionary

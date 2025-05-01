@@ -489,6 +489,7 @@ MonoBehaviour:
       y: 0.5
       z: 0.5
   m_Resolution: 64
+  m_Path: <#activeScenePath>/Voxelizer.asset
   m_DrawGizmos: 1
 --- !u!1 &951123556
 GameObject:

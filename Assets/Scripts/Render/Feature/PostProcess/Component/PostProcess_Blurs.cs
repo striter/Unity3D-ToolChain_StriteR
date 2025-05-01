@@ -207,27 +207,26 @@ namespace Rendering.PostProcess
                 case EBlurType.LightStreak:
                     return true;
             }
-
             return false;
         }
 
         private static readonly Dictionary<EBlurType, string> kBlurSample = UEnum.GetEnums<EBlurType>().ToDictionary(p=>p,p=>p.ToString());
         static readonly int kBlurTempID1 = Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp1");
-        static readonly RenderTargetIdentifier kBlurTempRT1 = new RenderTargetIdentifier(kBlurTempID1);
+        static readonly RenderTargetIdentifier kBlurTempRT1 = new (kBlurTempID1);
         static readonly int kBlurTempID2 = Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp2");
-        static readonly RenderTargetIdentifier kBlurTempRT2 = new RenderTargetIdentifier(kBlurTempID2);
+        static readonly RenderTargetIdentifier kBlurTempRT2 = new (kBlurTempID2);
         static readonly int kBlurTempID3 = Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp3");
-        static readonly RenderTargetIdentifier kBlurTempRT3 = new RenderTargetIdentifier(kBlurTempID3);
+        static readonly RenderTargetIdentifier kBlurTempRT3 = new (kBlurTempID3);
 
         private static readonly int kBlinkingVerticalID = Shader.PropertyToID("_Blinking_Vertical");
-        static readonly RenderTargetIdentifier kBlinkingVerticalRT = new RenderTargetIdentifier(kBlinkingVerticalID);
+        static readonly RenderTargetIdentifier kBlinkingVerticalRT = new (kBlinkingVerticalID);
         private static readonly int kBlinkingHorizontalID = Shader.PropertyToID("_Blinking_Horizontal");
-        static readonly RenderTargetIdentifier kBlinkingHorizontalRT = new RenderTargetIdentifier(kBlinkingHorizontalID);
+        static readonly RenderTargetIdentifier kBlinkingHorizontalRT = new (kBlinkingHorizontalID);
         
         static readonly int kHexagonVerticalID = Shader.PropertyToID("_Hexagon_Vertical");
-        static readonly RenderTargetIdentifier kVerticalRT = new RenderTargetIdentifier(kHexagonVerticalID);
+        static readonly RenderTargetIdentifier kVerticalRT = new (kHexagonVerticalID);
         static readonly int kHexagonDiagonalID = Shader.PropertyToID("_Hexagon_Diagonal");
-        static readonly RenderTargetIdentifier kDiagonalRT = new RenderTargetIdentifier(kHexagonDiagonalID);
+        static readonly RenderTargetIdentifier kDiagonalRT = new (kHexagonDiagonalID);
 
         public override void Execute(RenderTextureDescriptor _descriptor, ref DBlurs _data, CommandBuffer _buffer,
             RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderContext _context, ref RenderingData _renderingData)
@@ -400,7 +399,14 @@ namespace Rendering.PostProcess
                     break;
                 case EBlurType.NextGen:
                     {
-                        var iteration = Mathf.Clamp(_data.m_Iteration,2,(int)Mathf.Log(Mathf.ClosestPowerOfTwo(Mathf.Min(startWidth,startHeight)) -1,2));
+                        var maxIteration = (int)Mathf.Log(Mathf.ClosestPowerOfTwo(Mathf.Min(startWidth,startHeight)) -1,2);
+                        if (maxIteration <= 2)
+                        {
+                            _buffer.EndSample(sampleName);
+                            return;
+                        }
+                        
+                        var iteration = Mathf.Clamp(_data.m_Iteration,2,maxIteration);
                         var downSamplePass = (int)EBlurPass.NextGen_DownSample;
                         var upSamplePass = (int)EBlurPass.NextGen_UpSample;
                         var upSampleFinalPass = (int) EBlurPass.NextGen_UpSampleFinal;

@@ -25,14 +25,14 @@ namespace Runtime.DataStructure
             var median = _parent.elementsIndex.Count / 2;
             kHelper.SortElements(median,_parent.boundary,_parent.elementsIndex, _elements);
             var newNode1 = Node.Spawn();
-            newNode1.iteration = -1;
+            newNode1.iteration = _parent.iteration + 1;
             for(var i=0;i<median;i++)
                 newNode1.elementsIndex.Add(_parent.elementsIndex[i]);
             newNode1.boundary = kHelper.CalculateBoundary(newNode1.FillList(_elements,kElementHelper));
             _nodeList.Add(newNode1);
             
             var newNode2 = Node.Spawn();
-            newNode2.iteration = -1; 
+            newNode2.iteration = _parent.iteration + 1; 
             for(var i=median;i<last;i++)
                 newNode2.elementsIndex.Add(_parent.elementsIndex[i]);
             newNode2.boundary = kHelper.CalculateBoundary(newNode2.FillList(_elements,kElementHelper));

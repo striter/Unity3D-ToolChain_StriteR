@@ -15,7 +15,6 @@ namespace Runtime.Scripting
         public void Dispose()
         {
             inActiveElements.Clear();
-            inActiveElements = null;
         }
         
         public virtual T Spawn() => inActiveElements.Count > 0 ? inActiveElements.Pop() : new();
@@ -35,7 +34,5 @@ namespace Runtime.Scripting
             _element?.Clear();
             base.Despawn(_element);
         }
-
-        public static ListPool<T> Instance = new();
     }
 }

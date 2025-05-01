@@ -10,9 +10,9 @@ namespace Runtime.DataStructure
     }
 
     public class QuadTree2<Element,Helper> : ABoundaryTree<G2Box, Element> 
-        where Helper :IQuadTreeHelper<G2Box,Element>
+        where Helper :class,IQuadTreeHelper<G2Box,Element>,new()
     {
-        private static readonly Helper kHelper = default;
+        private static readonly Helper kHelper = new ();
         public int m_Division {get; private set;} = 2;
         public QuadTree2(int _nodeCapcity, int __maxIteration,int _division) : base(_nodeCapcity,__maxIteration) { m_Division = _division; }
         public void Construct(IList<Element> _elements) => Construct(kHelper.CalculateBoundary(_elements),_elements);
@@ -55,9 +55,9 @@ namespace Runtime.DataStructure
     }
 
     public class QuadTree3<Element ,Helper> : ABoundaryTree<GBox, Element>
-        where Helper :IQuadTreeHelper<GBox,Element>
+        where Helper : class,IQuadTreeHelper<GBox,Element>,new()
     {
-        private static readonly Helper kHelper = default;
+        private static readonly Helper kHelper = new ();
         public int m_Division {get; private set;} = 2;
         public QuadTree3(int _nodeCapcity, int __maxIteration,int _division) : base(_nodeCapcity,__maxIteration) { m_Division = _division; }
         public void Construct(IList<Element> _elements) => Construct(kHelper.CalculateBoundary(_elements),_elements);

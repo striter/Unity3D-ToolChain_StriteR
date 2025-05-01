@@ -15,7 +15,7 @@ namespace Examples.PhysicsScenes.Particle
 
         public static class ISPH_Extension
         {
-            public static float2 Gradient(this ISPH _sph,float _distance, float2 _directionToCenter) => _sph.FirstDerivative(_distance) * _directionToCenter;
+            public static float3 Gradient(this ISPH _sph,float _distance, float3 _directionToCenter) => _sph.FirstDerivative(_distance) * _directionToCenter;
         }
         
         public struct SPHStdKernel3 : ISPH
@@ -84,7 +84,7 @@ namespace Examples.PhysicsScenes.Particle
                     if (_distance >= h)
                         return 0f;
                     var x = 1f - _distance / h;
-                    return 15f / (kmath.kPI * h3) / x * x * x;
+                    return 15f / (kmath.kPI * h3) * x * x * x;
                 }
             }
 

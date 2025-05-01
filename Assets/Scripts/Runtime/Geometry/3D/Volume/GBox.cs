@@ -153,7 +153,12 @@ namespace Runtime.Geometry
 
     public static class GBox_Extension
     {
-        public static GBox Resize(this GBox _box, float _normalizedValue) =>
-            new GBox(_box.center, _box.extent * _normalizedValue);
+        public static GBox Resize(this GBox _box, float _normalizedValue) => new GBox(_box.center, _box.extent * _normalizedValue);
+        public static float3 Clamp(this GBox _clamp,float3 _point) => math.clamp(_point, _clamp.min, _clamp.max);
+        public static bool Clamp(this GBox _clamp,float3 _point, out float3 _clamped)
+        {
+            _clamped = _clamp.Clamp(_point);
+            return !_clamp.Contains(_point);
+        }
     }
 }

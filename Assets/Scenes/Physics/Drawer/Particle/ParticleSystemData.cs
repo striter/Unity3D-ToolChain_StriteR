@@ -4,6 +4,7 @@ using System.Linq.Extensions;
 using Runtime.DataStructure;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
+using Runtime.Scripting;
 using Unity.Mathematics;
 
 namespace Examples.PhysicsScenes.Particle
@@ -11,27 +12,50 @@ namespace Examples.PhysicsScenes.Particle
     [Serializable]
     public class ParticleSystemData
     {
-        private List<float> m_Densities = new();
-        private ParticleBVH kParticleQueries = new ParticleBVH(32,4);
-        public List<ParticleData> Query(float2 _origin, float _radius, List<ParticleData> _particles)
+        public List<float> m_Densities = new();
+        private ParticleBVH m_ParticleQueries = new ParticleBVH(4,8);
+
+        private List<List<ParticleData>> m_ParticleQueryCache = new();
+        private static ListPool<ParticleData> kIndexPool = new();
+        public void Destroy()
         {
-            var query = new ParticleDensityQuery() { circle = new G2Circle(_origin, _radius) };
-            return kParticleQueries.Query(_particles,query);
+            m_ParticleQueryCache.Clear();
         }
+        
         public float Density(int _index) => m_Densities[_index];
         public void Construct(ISPH _kernel,List<ParticleData> particles)
         {
-            kParticleQueries.Construct(particles);
+            m_ParticleQueries.Construct(particles);
             var count = particles.Count;
-            m_Densities.Resize(particles.Count);
+            m_ParticleQueryCache.Resize(count,kIndexPool.Spawn,kIndexPool.Despawn);
             for (var i = 0; i < count; i++)
-                m_Densities[i] = SumOfKernelsNearby(_kernel,particles,particles[i].position) * particles[i].mass;
-        }
+                m_ParticleQueries.Query(particles,new ParticleDensityQuery(particles[i],_kernel),m_ParticleQueryCache[i]);
+            
+            m_Densities.Resize(count);
+            for (var i = count - 1; i >= 0 ; i--)
+            {
+                var particle = particles[i];
+                var origin = particle.position;
+                var sum = 0f;
+                var nearbyParticles = Query(i); 
+                for (var j = nearbyParticles.Count - 1; j >= 0; j--)
+                {
+                    var nearbyParticle = nearbyParticles[j];
+                    var distance = (origin - nearbyParticle.position).magnitude();
+                    sum += nearbyParticle.mass * _kernel[distance];
+                }
 
-        public float2 Interpolate(ISPH kernel,List<ParticleData> particles,float2 _origin, float2[] _values)
+                m_Densities[i] = sum;
+            }
+        }
+        
+        public List<ParticleData> Query(int particleIndex) => m_ParticleQueryCache[particleIndex];
+        public List<ParticleData> Query(List<ParticleData> _data,ISPH _kernel,float3 _position) => m_ParticleQueries.Query(_data,new ParticleDensityQuery(_position,_kernel));
+
+        public float3 Interpolate(ISPH kernel,List<ParticleData> particles,float3 _origin, float3[] _values)
         {
-            var sum = float2.zero;
-            var nearbyParticles = Query(_origin,kernel.Radius, particles);
+            var sum = float3.zero;
+            var nearbyParticles = m_ParticleQueries.Query(particles,new ParticleDensityQuery() { circle = new GSphere(_origin, kernel.Radius) });
             for (var i = nearbyParticles.Count - 1; i >= 0; i--)
             {
                 var particle = nearbyParticles[i];
@@ -42,28 +66,16 @@ namespace Examples.PhysicsScenes.Particle
             return sum;
         }
 
-        public float SumOfKernelsNearby(ISPH kernel,List<ParticleData> particles,float2 _origin)
-        {
-            var sum = 0f;
-            var nearbyParticles  = Query(_origin,kernel.Radius, particles); 
-            for (var i = nearbyParticles.Count - 1; i >= 0; i--)
-            {
-                var particle = nearbyParticles[i];
-                var distance = (_origin - particle.position).magnitude();
-                sum += kernel[distance];
-            }
-            return sum;
-        }
 
-        public float2 GradientAt(ISPH kernel,List<ParticleData> particles,int _index, float[] _values)
+        public float3 GradientAt(ISPH kernel,List<ParticleData> particles,int _index, float[] _values)
         {
             var particle = particles[_index];
-            var sum = kfloat2.zero;
+            var sum = kfloat3.zero;
             var origin = particle.position;
             var mass = particle.mass;;
             var value = _values[_index];
             var density = m_Densities[_index];
-            var nearbyParticles = Query(particle.position,kernel.Radius, particles);
+            var nearbyParticles = Query(_index);
             for(var j = nearbyParticles.Count - 1 ; j>=0;j--)
             {
                 var nearbyParticle = nearbyParticles[j];
@@ -85,7 +97,7 @@ namespace Examples.PhysicsScenes.Particle
             var origin = particle.position;
             var mass = particle.mass;;
             var value = _values[_index];
-            var nearbyParticles = Query(particle.position,kernel.Radius, particles);
+            var nearbyParticles = Query(_index);
             var sum = 0f;
             for(var j = nearbyParticles.Count - 1 ; j>=0;j--)
             {
@@ -99,7 +111,7 @@ namespace Examples.PhysicsScenes.Particle
 
         public void DrawGizmos(List<ParticleData> _particles)
         {
-            kParticleQueries.DrawGizmos(_particles);
+            m_ParticleQueries.DrawGizmos(_particles);
         }
         
     }

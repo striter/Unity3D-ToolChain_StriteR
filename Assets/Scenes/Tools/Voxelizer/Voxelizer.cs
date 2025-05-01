@@ -5,6 +5,7 @@ using Runtime.DataStructure;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
+using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 
 namespace Runtime.Optimize.Voxelizer
@@ -22,11 +23,12 @@ namespace Runtime.Optimize.Voxelizer
         public GBox m_Box = GBox.kDefault;
         public EResolution m_Resolution = EResolution._64;
 
-        private QuadTree3<GTriangle,BoundaryTreeHelper.GBox_GTriangle> m_Voxelizer = new(64,32,2);
+#if UNITY_EDITOR
+        [EditorPath] public string m_Path;
+        private BoundingVolumeHierarchy<GBox,GTriangle,BoundaryTreeHelper.GBox_GTriangle> m_Voxelizer = new(64,8);
 
         private List<float> kIntersectDistances = new List<float>();
         private List<GTriangle> m_Triangles = new List<GTriangle>();
-        #if UNITY_EDITOR
         [InspectorButton]
         void Construct()
         {
@@ -66,7 +68,7 @@ namespace Runtime.Optimize.Voxelizer
                 {
                     kIntersectDistances.Clear();
                     var ray = new GRay(m_Box.GetPoint(new float3(0, step * (j + .5f),step * (i + .5f)) - .5f), kfloat3.right);
-                    foreach (var triangle in m_Voxelizer.Query(m_Triangles,p => ray.Intersect(p),_=>true))
+                    foreach (var triangle in m_Voxelizer.Query(m_Triangles,p=>ray.Intersect(p)))
                     {
                         if (ray.Intersect(triangle, out var distance))
                             kIntersectDistances.TryAdd(distance);
@@ -102,9 +104,8 @@ namespace Runtime.Optimize.Voxelizer
             texture.SetPixels(pixels);
             texture.Apply();
             texture.name = "Voxelizer";
-            UnityEditor.Extensions.UEAsset.CreateOrReplaceMainAsset(texture, "Assets/Scenes/Examples/Rendering/Voxelizer/Voxelizer.asset");
+            UnityEditor.Extensions.UEAsset.CreateOrReplaceMainAsset(texture, UEPath.PathRegex(m_Path));
         }
-        #endif
 
         public bool m_DrawGizmos;
         private void OnDrawGizmos()
@@ -113,8 +114,9 @@ namespace Runtime.Optimize.Voxelizer
             m_Box.DrawGizmos();
             
             if(m_DrawGizmos)
-                m_Voxelizer.DrawGizmos(m_Triangles,true);
+                m_Voxelizer.DrawGizmos(m_Triangles);
         }
+#endif
     }
 
 }

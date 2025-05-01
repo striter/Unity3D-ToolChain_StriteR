@@ -10,16 +10,16 @@ namespace Examples.PhysicsScenes.Particle
     public struct ParticleData
     {
         [NonSerialized] public int index;
-        public float2 position;
-        public float2 velocity;
-        public float2 force;
+        public float3 position;
+        public float3 velocity;
+        public float3 force;
         public float mass;
-        public class BVHHelper : IBVHHelper<G2Box,ParticleData>
+        public class BVHHelper : IBVHHelper<GBox,ParticleData>
         {
             private static IList<ParticleData> kElements;
             Comparison<int> CompareX = (_a, _b) => kElements[_a].position.x >= kElements[_b].position.x ? 1 : -1;
             Comparison<int> CompareY = (_a, _b) => kElements[_a].position.y >= kElements[_b].position.y ? 1 : -1;
-            public void SortElements(int _median, G2Box _boundary,IList<int> _elementIndexes, IList<ParticleData> _elements)
+            public void SortElements(int _median, GBox _boundary,IList<int> _elementIndexes, IList<ParticleData> _elements)
             {
                 kElements = _elements;
                 switch (_boundary.size.maxAxis())
@@ -29,7 +29,7 @@ namespace Examples.PhysicsScenes.Particle
                 }
             }
 
-            public G2Box CalculateBoundary(IList<ParticleData> _elements) => UGeometry.GetBoundingBox(_elements,p=>p.position);
+            public GBox CalculateBoundary(IList<ParticleData> _elements) => UGeometry.GetBoundingBox(_elements,p=>p.position);
         }
     }
 
@@ -41,21 +41,28 @@ namespace Examples.PhysicsScenes.Particle
         public static readonly FieldData kDefault = new();
     }
     
-    public class ParticleBVH : BoundingVolumeHierarchy<G2Box, ParticleData,ParticleData.BVHHelper>
+    public class ParticleBVH : BoundingVolumeHierarchy<GBox, ParticleData,ParticleData.BVHHelper>
     {
         public ParticleBVH(int _nodeCapcity, int _maxIteration) : base(_nodeCapcity, _maxIteration) { }
-        public override void DrawGizmos(IList<ParticleData> _elements, bool _parentMode = false)
-        {
-            // base.DrawGizmos(_elements, _parentMode);
-            foreach (var leaf in GetLeafs())
-                leaf.boundary.DrawGizmosXY();
-        }
     }
     
-    public struct ParticleDensityQuery  : IBoundaryTreeQuery<G2Box,ParticleData>
+    public struct ParticleDensityQuery  : IBoundaryTreeQuery<GBox,ParticleData>
     {
-        public G2Circle circle;
-        public bool Query(G2Box _boundary) => _boundary.Intersect(circle);
-        public bool Query(ParticleData _element) => circle.Intersect(_element.position);
+        public GSphere circle;
+        public int index;
+
+        public ParticleDensityQuery(ParticleData _data,ISPH _kernel)
+        {
+            circle = new GSphere(_data.position, _kernel.Radius);
+            index = _data.index;
+        }
+
+        public ParticleDensityQuery(float3 _origin, ISPH _kernel)
+        {
+            circle = new GSphere(_origin, _kernel.Radius);
+            index = -1;
+        }
+        public bool Query(GBox _boundary) => _boundary.Intersect(circle);
+        public bool Query(int _index,ParticleData _element) => _index != index && circle.Intersect(_element.position);
     }
 }

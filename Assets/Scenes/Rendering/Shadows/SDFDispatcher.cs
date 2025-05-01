@@ -78,7 +78,7 @@ namespace Examples.Rendering.Shadows
                 var count = volume.elementsIndex.Count;
                 for (int i = 0; i < count; i++)
                 {
-                    var shapeWS = volume.Index(capsules,i);   
+                    var shapeWS = volume.Index(capsules,i,out var index);   
                     var parameter1 = shapeWS.origin.to4(shapeWS.radius);
                     var parameter2 = shapeWS.normal.to4(shapeWS.height);
                     m_ShapeParameters1[start+i] = (parameter1);

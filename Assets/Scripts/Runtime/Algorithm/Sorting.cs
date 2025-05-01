@@ -95,9 +95,9 @@ public static class USorting
     {
         if (_startIndex >= _endIndex)
             return;
-        T pivot = _sortTarget[_startIndex];
-        int leftIndex = _startIndex;
-        int rightIndex = _endIndex;
+        var pivot = _sortTarget[_startIndex];
+        var leftIndex = _startIndex;
+        var rightIndex = _endIndex;
         while (leftIndex != rightIndex)
         {
             while (leftIndex != rightIndex)

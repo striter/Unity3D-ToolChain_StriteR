@@ -20,13 +20,26 @@ namespace Runtime.Geometry.Extension
                 _max = math.max(position, _max);
             }
         }
-        
         public static GBox GetBoundingBox(IEnumerable<float3> _positions)
         {
             Minmax(_positions,out var min,out var max);
             return GBox.Minmax(min,max);
         }
         
+        public static GBox GetBoundingBox<T>(IList<T> _elements, Func<T, float3> _convert)
+        {
+            var min = kfloat3.max;
+            var max = kfloat3.min;
+            for(var i = _elements.Count - 1; i>=0;i--)
+            {
+                var position = _convert( _elements[i]);
+                min = math.min(position, min);
+                max = math.max(position, max);
+            }
+
+            return GBox.Minmax(min,max);
+        }
+
         public static GBox GetBoundingBoxOriented(float3 _right,float3 _up,float3 _forward,IEnumerable<float3> _points)
         {
             float3 min = float.MaxValue;

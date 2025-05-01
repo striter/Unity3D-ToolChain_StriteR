@@ -39,9 +39,11 @@ namespace Runtime.Geometry.Extension
                 max(boxMin.y, min(sphereCenter.y, boxMax.y)),
                 max(boxMin.z, min(sphereCenter.z, boxMax.z))
             );
-
-            return (closestPoint - sphereCenter).sqrmagnitude() <= sphereRadius * sphereRadius;
+            return Intersect(_sphere,closestPoint);
         }
+
+        public static bool Intersect(this GSphere _sphere, float3 _position) =>
+            (_position - _sphere.center).sqrmagnitude() <= _sphere.radius * _sphere.radius;
         public static bool Intersect(this GBox _box,GSphere _sphere) => Intersect(_sphere, _box);
         public static bool Intersect(this GLine _line,GQuad _quad,out float _distance,bool _directed = false)
         {

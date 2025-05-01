@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Extensions;
 using Runtime.Geometry;
 using Runtime.Scripting;
 using Unity.Mathematics;
@@ -12,7 +11,7 @@ namespace Runtime.DataStructure
     public interface IBoundaryTreeQuery<Boundary,Element>
     {
         bool Query(Boundary _boundary);
-        bool Query(Element _element);
+        bool Query(int _index,Element _element);
     }
 
     public static class IBoundaryTreeQuery_Extension
@@ -62,7 +61,11 @@ namespace Runtime.DataStructure
                 _node.childNodeIndex = null;
             }
 
-            public T Index<T>(IList<T> _elements, int _index) => _elements[elementsIndex[_index]];
+            public T Index<T>(IList<T> _elements, int _treeIndex, out int _elementIndex)
+            {
+                _elementIndex = elementsIndex[_treeIndex];
+                return _elements[_elementIndex];
+            }
             public List<T> FillList<T>(IList<T> _elements, List<T> _list)
             {
                 _list.Clear();
@@ -113,7 +116,7 @@ namespace Runtime.DataStructure
                 {
                     var node = m_Nodes[i];
                     if (node.IsParent || 
-                        node.iteration > m_MaxIteration ||
+                        node.iteration >= m_MaxIteration ||
                         node.elementsIndex.Count <= m_NodeCapacity)
                         continue;
                     
@@ -147,49 +150,49 @@ namespace Runtime.DataStructure
         public IEnumerable<Node> GetLeafs() => from node in m_Nodes where !node.IsParent select node;
         public IEnumerable<Node> GetParents() => from node in m_Nodes where node.IsParent select node;
 
-        private Stack<Node> m_QueryNodes = new();
-        private List<Element> m_QueryElements = new();
         private struct FDefaultQuery : IBoundaryTreeQuery<Boundary,Element>
         {
             public Predicate<Boundary> queryBoundary;
-            public Predicate<Element> queryElement;
+            public Func<int,Element,bool> queryElement;
 
             public bool Query(Boundary _boundary) => queryBoundary(_boundary);
-            public bool Query(Element _element) => queryElement(_element);
+            public bool Query(int _index,Element _element) => queryElement!=null ? queryElement(_index,_element) : true;
         }
-        public List<Element> Query(IList<Element> _elements,Predicate<Boundary> _queryBoundary,Predicate<Element> _queryElement = null) => this.Query(_elements,new FDefaultQuery(){queryBoundary = _queryBoundary,queryElement = _queryElement ?? (_=>true)});
 
-        public List<Element> Query(IList<Element> _elements,IBoundaryTreeQuery<Boundary, Element> _query)
+        private List<Element> kQueryTempElements = new();
+        public List<Element> Query(IList<Element> _elements ,Predicate<Boundary> _queryBoundary, Func<int,Element,bool> _queryElement = null) => Query(_elements, new FDefaultQuery { queryBoundary = _queryBoundary, queryElement = _queryElement },kQueryTempElements);
+        public List<Element> Query(IList<Element> _elements, IBoundaryTreeQuery<Boundary, Element> _query) => Query(_elements, _query, kQueryTempElements);
+        
+        private Stack<Node> kQueryNodes = new();
+        public List<Element> Query(IList<Element> _elements,IBoundaryTreeQuery<Boundary, Element> _query,List<Element> _queryList)
         {
-            m_QueryElements.Clear();
+            _queryList.Clear();
             if (m_Nodes.Count == 0)
-                return m_QueryElements;
+                return _queryList;
             
-            m_QueryNodes.Clear();
-            m_QueryNodes.Push(m_Nodes[0]);
-            while (m_QueryNodes.Count > 0)
+            kQueryNodes.Clear();
+            kQueryNodes.Push(m_Nodes[0]);
+            while (kQueryNodes.Count > 0)
             {
-                var currentTreeNode = m_QueryNodes.Pop();
+                var currentTreeNode = kQueryNodes.Pop();
                 if(!_query.Query(currentTreeNode.boundary))
                     continue;
 
                 if (currentTreeNode.IsParent)
                 {
                     for(var i = currentTreeNode.childNodeIndex.Count - 1 ;i >= 0; i--)
-                        m_QueryNodes.Push(m_Nodes[currentTreeNode.childNodeIndex[i]]);
+                        kQueryNodes.Push(m_Nodes[currentTreeNode.childNodeIndex[i]]);
+                    continue;
                 }
-
-                if (currentTreeNode.elementsIndex == null) continue;
 
                 for (var i = currentTreeNode.ElementCount - 1; i >= 0; i--)
                 {
-                    var element = currentTreeNode.Index(_elements, i);
-                    if(_query.Query(element))
-                        m_QueryElements.Add(element);
+                    var element = currentTreeNode.Index(_elements, i,out var index);
+                    if (_query.Query(index,element))
+                        _queryList.Add(element);
                 }
             }
-
-            return m_QueryElements;
+            return _queryList;
         }
         
         public IEnumerator<Element> ForEach<Element>(IList<Element> _elements)
