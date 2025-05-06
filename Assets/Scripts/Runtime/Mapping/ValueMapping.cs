@@ -281,6 +281,7 @@ public partial class umath
 
     public static int sqr(int _src) => _src * _src;
     public static float sqr(float _src) => _src * _src;
+    public static double sqr(double _src) => _src * _src;
     public static float2 sqr(float2 _src) => _src * _src;
     public static float3 sqr(float3 _src) => _src * _src; 
     public static float4 sqr(float4 _src) => _src * _src;

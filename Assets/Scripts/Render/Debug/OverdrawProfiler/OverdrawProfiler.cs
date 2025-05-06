@@ -54,6 +54,9 @@ namespace Render.Debug
             if (GUI.Button(new Rect(10, _sceneView.camera.pixelHeight - 30, 200, 20), $"Disable"))
                 Switch(null);
 
+            if(Event.current.isKey && Event.current.keyCode == KeyCode.Escape)
+                Switch(null);
+            
             Handles.EndGUI();
         }
 #endif

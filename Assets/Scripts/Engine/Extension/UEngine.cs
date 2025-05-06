@@ -6,13 +6,13 @@ using UnityEngine;
 
 public static class UEngineIntergration
 {
-    static readonly List<Type> kSerializeBaseType = new List<Type>() {
+    static readonly List<Type> kSerializeBaseType = new() {
         typeof(bool), typeof(string),typeof(char),
-        typeof(float),  typeof(double),
-        typeof(int),typeof(short),typeof(long),
+        typeof(float), typeof(double),
+        typeof(int), typeof(short), typeof(long),
         typeof(Vector3), typeof(Vector2), typeof(Vector4),
         typeof(RangeInt), typeof(RangeFloat),
-        typeof(Texture2D),typeof(Texture3D),typeof(Mesh),typeof(AnimationClip),
+        typeof(Texture2D), typeof(Texture3D), typeof(Mesh), typeof(AnimationClip),
         typeof(IntPtr),
     };
     

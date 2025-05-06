@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Extensions;
-using Runtime.DataStructure;
 using Runtime.Geometry;
-using Runtime.Geometry.Extension;
 using Runtime.Scripting;
 using Unity.Mathematics;
 
@@ -12,7 +10,7 @@ namespace Examples.PhysicsScenes.Particle
     [Serializable]
     public class ParticleSystemData
     {
-        public List<float> m_Densities = new();
+        public List<double> m_Densities = new();
         private ParticleBVH m_ParticleQueries = new ParticleBVH(4,8);
 
         private List<List<ParticleData>> m_ParticleQueryCache = new();
@@ -22,7 +20,7 @@ namespace Examples.PhysicsScenes.Particle
             m_ParticleQueryCache.Clear();
         }
         
-        public float Density(int _index) => m_Densities[_index];
+        public double Density(int _index) => m_Densities[_index];
         public void Construct(ISPH _kernel,List<ParticleData> particles)
         {
             m_ParticleQueries.Construct(particles);
@@ -42,10 +40,12 @@ namespace Examples.PhysicsScenes.Particle
                 {
                     var nearbyParticle = nearbyParticles[j];
                     var distance = (origin - nearbyParticle.position).magnitude();
-                    sum += nearbyParticle.mass * _kernel[distance];
+                    var kernel = (double)_kernel[distance];
+                    var nearbyMass = (double)nearbyParticle.mass;
+                    sum += (float)(nearbyMass * kernel);
                 }
 
-                m_Densities[i] = sum;
+                m_Densities[i] = sum; 
             }
         }
         
@@ -60,42 +60,41 @@ namespace Examples.PhysicsScenes.Particle
             {
                 var particle = nearbyParticles[i];
                 var distance = (_origin - particle.position).magnitude();
-                var weight = particle.mass / m_Densities[i] * kernel[distance];
+                var weight = (float)(particle.mass / m_Densities[i] * kernel[distance]);
                 sum += weight * _values[i];
             }
             return sum;
         }
-
-
-        public float3 GradientAt(ISPH kernel,List<ParticleData> particles,int _index, float[] _values)
-        {
-            var particle = particles[_index];
-            var sum = kfloat3.zero;
-            var origin = particle.position;
-            var mass = particle.mass;;
-            var value = _values[_index];
-            var density = m_Densities[_index];
-            var nearbyParticles = Query(_index);
-            for(var j = nearbyParticles.Count - 1 ; j>=0;j--)
-            {
-                var nearbyParticle = nearbyParticles[j];
-                var distance = (nearbyParticle.position - origin).magnitude();
-                if (distance > 0)
-                {
-                    var dir = (nearbyParticle.position - origin) / distance;
-                    sum += density * mass * 
-                           (value / umath.sqr(density) + _values[j] / umath.sqr(m_Densities[j]))
-                            * kernel.Gradient(distance,dir);
-                }
-            }
-            return sum;
-        }
+        
+        // public float3 GradientAt(ISPH kernel,List<ParticleData> particles,int _index, float[] _values)
+        // {
+        //     var particle = particles[_index];
+        //     var sum = kfloat3.zero;
+        //     var origin = particle.position;
+        //     var mass = particle.mass;;
+        //     var value = _values[_index];
+        //     var density = m_Densities[_index];
+        //     var nearbyParticles = Query(_index);
+        //     for(var j = nearbyParticles.Count - 1 ; j>=0;j--)
+        //     {
+        //         var nearbyParticle = nearbyParticles[j];
+        //         var distance = (nearbyParticle.position - origin).magnitude();
+        //         if (distance > 0)
+        //         {
+        //             var dir = (nearbyParticle.position - origin) / distance;
+        //             sum += density * mass * 
+        //                    (value / umath.sqr(density) + _values[j] / umath.sqr(m_Densities[j]))
+        //                     * kernel.Gradient(distance,dir);
+        //         }
+        //     }
+        //     return sum;
+        // }
 
         public float LaplacianAt(ISPH kernel,List<ParticleData> particles,int _index, float[] _values)
         {
             var particle = particles[_index];
             var origin = particle.position;
-            var mass = particle.mass;;
+            var mass = (double)particle.mass;
             var value = _values[_index];
             var nearbyParticles = Query(_index);
             var sum = 0f;
@@ -103,8 +102,9 @@ namespace Examples.PhysicsScenes.Particle
             {
                 var nearbyParticle = nearbyParticles[j];
                 var distance = (nearbyParticle.position - origin).magnitude();
+                var valueDelta = _values[j] - value;
                 if (distance > 0)
-                    sum += mass * (_values[j] - value) / distance * kernel.SecondDerivative(distance);
+                    sum += valueDelta * (float) (mass/ distance * kernel.SecondDerivative(distance));
             }
             return sum;
         }

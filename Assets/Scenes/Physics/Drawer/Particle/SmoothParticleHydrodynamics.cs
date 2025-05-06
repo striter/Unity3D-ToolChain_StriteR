@@ -7,24 +7,24 @@ namespace Examples.PhysicsScenes.Particle
         public interface ISPH
         {
             public float Radius { get; }
-            float this[float _distance] { get; }
-            float FirstDerivative(float _distance);
-            float SecondDerivative(float _distance);
+            double this[float _distance] { get; }
+            double FirstDerivative(float _distance);
+            double SecondDerivative(float _distance);
         }
 
 
         public static class ISPH_Extension
         {
-            public static float3 Gradient(this ISPH _sph,float _distance, float3 _directionToCenter) => _sph.FirstDerivative(_distance) * _directionToCenter;
+            public static float3 Gradient(this ISPH _sph,float _distance, float3 _directionToCenter) => -(float)_sph.FirstDerivative(_distance) * _directionToCenter;
         }
         
         public struct SPHStdKernel3 : ISPH
         {
             public float h;
             public float Radius => h;
-            private float h2;
-            private float h3;
-            private float h5;
+            private double h2;
+            private double h3;
+            private double h5;
             public SPHStdKernel3(float _radius)
             {
                 h = _radius;
@@ -33,7 +33,7 @@ namespace Examples.PhysicsScenes.Particle
                 h5 = h * h * h * h * h;
             }
 
-            public float this[float _distance]
+            public double this[float _distance]
             {
                 get
                 {
@@ -42,7 +42,7 @@ namespace Examples.PhysicsScenes.Particle
                 }
             }
 
-            public float FirstDerivative(float _distance)
+            public double FirstDerivative(float _distance)
             {
                 if (_distance >= h)
                     return 0f;
@@ -50,7 +50,7 @@ namespace Examples.PhysicsScenes.Particle
                 return -945.0f / (32f * kmath.kPI * h5) * _distance * x * x;
             }
 
-            public float SecondDerivative(float _distance)
+            public double SecondDerivative(float _distance)
             {
                 if (_distance > h)
                     return 0f;
@@ -64,10 +64,10 @@ namespace Examples.PhysicsScenes.Particle
         {
             public float h;
             public float Radius => h;
-            private float h2;
-            private float h3;
-            private float h4;
-            private float h5;
+            private double h2;
+            private double h3;
+            private double h4;
+            private double h5;
             public SPHSpikyKernel(float _radius)
             {
                 h = _radius;
@@ -77,32 +77,32 @@ namespace Examples.PhysicsScenes.Particle
                 h5 = h * h * h * h * h;
             }
 
-            public float this[float _distance]
+            public double this[float _distance]
             {
                 get
                 {
                     if (_distance >= h)
                         return 0f;
-                    var x = 1f - _distance / h;
-                    return 15f / (kmath.kPI * h3) * x * x * x;
+                    var x = 1.0 - _distance / h;
+                    return (15 / (kmath.kPI * h3) * x * x * x);
                 }
             }
 
-            public float FirstDerivative(float _distance)
+            public double FirstDerivative(float _distance)
             {
                 if (_distance >= h)
                     return 0f;
-                var x = 1f - _distance / h;
-                return -45f / (kmath.kPI * h4) * x * x;
+                var x = 1.0 - _distance / h;
+                return (float)(-45f / (kmath.kPI * h4) * x * x);
             }
 
-            public float SecondDerivative(float _distance)
+            public double SecondDerivative(float _distance)
             {
                 if (_distance >= h)
                     return 0f;
                 
-                var x = 1f - _distance / h;
-                return 90f / (kmath.kPI * h5) * x;
+                var x = 1.0 - _distance / h;
+                return (float)(90f / (kmath.kPI * h5) * x);
             }
         }
 }

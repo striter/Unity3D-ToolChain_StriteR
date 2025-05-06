@@ -15,9 +15,11 @@ namespace Examples.PhysicsScenes.Particle
     
     public class ParticleSimulation : ADrawerSimulation
     {
+        public bool m_Simulate = false;
+        public float m_ParticleVisualizeRadius = 1f;
+        public float m_KernelRadius;
         public int m_ParticleCount = 1024;
         public float m_InitialMass = 0.1f;
-        public float m_KernelRadius;
         public float3 m_Gravity = new(0f, -9.8f,0);
 
         public ESPHKernel m_KernelType = ESPHKernel.Default;
@@ -62,13 +64,31 @@ namespace Examples.PhysicsScenes.Particle
             m_Data.Destroy();
         }
 
+        protected override void Update()
+        {
+            if (Input.GetKey(KeyCode.Space))
+                m_Simulate = true;
+            base.Update();
+        }
+
         protected override void FixedTick(float _fixedDeltaTime)
         {
             var kernel = GetKernel(m_KernelRadius);
             m_Data.Construct(kernel,particles);
+            
+            for (var i = 0; i < Count; i++)
+            {
+                var particle = particles[i];
+                particle.force = 0f;
+                particles[i] = particle;
+            }
             m_Solver.AccumulateForces(_fixedDeltaTime,kernel,m_Data,particles);
-            AccumulateExtraForces(_fixedDeltaTime);
-            TimeIntegration(_fixedDeltaTime);
+            if (m_Simulate)
+            {
+                AccumulateExtraForces(_fixedDeltaTime);
+                TimeIntegration(_fixedDeltaTime);
+                m_Simulate = false;
+            }
         }
 
         void AccumulateExtraForces(float _fixedDeltaTime) 
@@ -134,18 +154,17 @@ namespace Examples.PhysicsScenes.Particle
             // }
 
             Gizmos.color = Color.white;
-            if (m_DebugIndex == -1)
-            {
-                foreach (var particle in particles)
-                    Gizmos.DrawWireSphere(particle.position,m_KernelRadius);
-            }
+            foreach (var particle in particles)
+                Gizmos.DrawWireSphere(particle.position,m_ParticleVisualizeRadius);
+                
+            if (particles.Count <= 0)
+                return;
             
             var position = particles[m_DebugIndex].position;
             var kernel = GetKernel(m_KernelRadius);
-            Gizmos.DrawSphere(position,kernel.Radius);
-            Gizmos.DrawWireSphere(position,5f);
+            Gizmos.DrawWireSphere(position,m_KernelRadius);
             foreach (var query in m_Data.Query(particles,kernel,position))
-                Gizmos.DrawWireSphere(query.position,m_KernelRadius);
+                Gizmos.DrawSphere(query.position,m_ParticleVisualizeRadius);
         }
     }
 
