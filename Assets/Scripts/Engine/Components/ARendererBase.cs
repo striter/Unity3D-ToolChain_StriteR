@@ -11,12 +11,14 @@ namespace Runtime
         bool Billboard { get; }
     }
     
+    
     [ExecuteInEditMode,RequireComponent(typeof(MeshFilter),typeof(MeshRenderer)),DisallowMultipleComponent]
     public abstract class ARendererBase : MonoBehaviour
     {
         private bool m_Dirty;
         private Dictionary<Type,int> kInstanceID = new Dictionary<Type, int>();
         private Mesh m_Mesh;
+        private MeshFilter m_Filter;
         private void Awake()
         {
             var type = GetType();
@@ -26,7 +28,8 @@ namespace Runtime
             
             m_Mesh = new Mesh {name = $"{type.Name} {count}",hideFlags = HideFlags.HideAndDontSave};
             m_Mesh.MarkDynamic();
-            GetComponent<MeshFilter>().sharedMesh = m_Mesh;
+            m_Filter = GetComponent<MeshFilter>();
+            m_Filter.sharedMesh = m_Mesh;
             
             OnInitialize();
             OnValidate();
@@ -40,6 +43,7 @@ namespace Runtime
 
         private void OnDestroy()
         {
+            m_Filter.mesh = null;
             GameObject.DestroyImmediate(m_Mesh);
             OnDispose();
             m_Mesh = null;
@@ -52,14 +56,10 @@ namespace Runtime
         public void SetDirty() => m_Dirty = true;
 
         private ValueChecker<Matrix4x4> m_CameraTRChecker = new ValueChecker<Matrix4x4>();
-        protected void BillboardValidator(ScriptableRenderContext _context, Camera _camera)
-        {
-        }
         protected void BeginRendering(ScriptableRenderContext _context, Camera _camera)
         {
             if (!m_Mesh) 
                 return;
-
 
             if (this is IRuntimeRendererBillboard { Billboard: true })
             {
@@ -87,7 +87,7 @@ namespace Runtime
         protected virtual void Validate() {}
         
         private bool m_DrawGizmos;
-        [InspectorFoldoutButton(nameof(m_DrawGizmos),false)] public void DrawGizmos() => m_DrawGizmos = !m_DrawGizmos;
+        [InspectorButtonFoldout(nameof(m_DrawGizmos),false)] public void DrawGizmos() => m_DrawGizmos = !m_DrawGizmos;
         private void OnDrawGizmos()
         {
             if (!m_DrawGizmos) return;

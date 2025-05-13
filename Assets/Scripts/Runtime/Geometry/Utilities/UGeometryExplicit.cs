@@ -50,7 +50,7 @@ namespace Runtime.Geometry.Extension
                 _ => throw new Exception("Invalid Index:" + _index)
             };
         }
-        public static void FillQuadTriangle(this GQuad _quad, List<Vector3> _vertices, List<int> _indices,
+        public static void PopulateVertex(this GQuad _quad, List<Vector3> _vertices, List<int> _indices,
             List<Vector2> _uvs = default, List<Vector3> _normals = default,List<Vector4> _tangents = default,List<Color> _colors = default,Color _color=default)
         {
             int indexOffset = _vertices.Count;
@@ -65,6 +65,45 @@ namespace Runtime.Geometry.Extension
             QuadToTriangleIndices(_indices, indexOffset + 0, indexOffset + 1, indexOffset + 2,indexOffset+3);
         }
 
+        
+        public static void PopulateVertex(this GLine _line,float _lineWidth,float3 _upVector, List<Vector3> _vertices, List<int> _indices,
+            List<Vector2> _uvs = default, List<Vector3> _normals = default,List<Vector4> _tangents = default,List<Color> _colors = default,Color _color=default)
+        {
+            var indexOffset = _vertices.Count;
+            var right = math.cross(_upVector,_line.direction).normalize();
+            
+            _vertices.Add(_line.start - right * _lineWidth * 0.5f);
+            _vertices.Add(_line.end - right * _lineWidth * 0.5f);
+            _vertices.Add(_line.end + right * _lineWidth * 0.5f);
+            _vertices.Add(_line.start + right * _lineWidth * 0.5f);
+
+            if (_normals != null)
+            {
+                _normals.Add(_upVector);
+                _normals.Add(_upVector);
+                _normals.Add(_upVector);
+                _normals.Add(_upVector);
+            }
+
+            if (_uvs != null)
+            {
+                _uvs.Add(G2Quad.kDefaultUV[0]);
+                _uvs.Add(G2Quad.kDefaultUV[1]);
+                _uvs.Add(G2Quad.kDefaultUV[2]);
+                _uvs.Add(G2Quad.kDefaultUV[3]); 
+            }
+
+            if (_tangents != null)
+            {
+                _tangents.Add(new Vector4(1, 0, 0, 1));
+                _tangents.Add(new Vector4(1, 0, 0, 1));
+                _tangents.Add(new Vector4(1, 0, 0, 1));
+                _tangents.Add(new Vector4(1, 0, 0, 1));
+            }
+            
+            QuadToTriangleIndices(_indices, indexOffset + 0, indexOffset + 1, indexOffset + 2,indexOffset+3);
+        }
+        
         public static PTriangle[] GetPolygons(int[] _indices)
         {
             PTriangle[] polygons = new PTriangle[_indices.Length / 3];

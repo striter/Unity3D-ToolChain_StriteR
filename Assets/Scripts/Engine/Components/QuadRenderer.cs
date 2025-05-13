@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
+using Runtime.Scripting;
 using UnityEngine;
 
 namespace Runtime
@@ -9,20 +10,24 @@ namespace Runtime
     {
         
         public GQuad m_Quad = GQuad.kDefault;
-
         protected override void PopulateMesh(Mesh _mesh, Transform _viewTransform)
         {
-            var positions = new List<Vector3>();
-            var normals = new List<Vector3>();
-            var uvs = new List<Vector2>();
-            var indices = new List<int>();
+            ListPool<Vector3>.ISpawn(out var vertices);
+            ListPool<Vector3>.ISpawn(out var normals);
+            ListPool<Vector2>.ISpawn(out var uvs);
+            ListPool<int>.ISpawn(out var indexes);
 
-            m_Quad.FillQuadTriangle(positions, indices, uvs, normals);
+            m_Quad.PopulateVertex(vertices, indexes, uvs, normals);
 
-            _mesh.SetVertices(positions);
+            _mesh.SetVertices(vertices);
             _mesh.SetNormals(normals);
             _mesh.SetUVs(0, uvs);
-            _mesh.SetIndices(indices.ToArray(), MeshTopology.Triangles, 0);
+            _mesh.SetIndices(indexes, MeshTopology.Triangles, 0);
+            
+            ListPool<Vector3>.IDespawn(vertices);
+            ListPool<Vector3>.IDespawn(normals);
+            ListPool<Vector2>.IDespawn(uvs);
+            ListPool<int>.IDespawn(indexes);
         }
     }
 }

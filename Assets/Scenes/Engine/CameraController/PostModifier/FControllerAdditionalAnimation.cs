@@ -115,8 +115,8 @@ namespace CameraController.Animation
 
         public FrequencyData(uint frequency)
         {
-            sobel = ULowDiscrepancySequences.Sobel(frequency,0);
-            sobel2 = ULowDiscrepancySequences.Sobol2D(frequency,0);
+            sobel = ULowDiscrepancySequences.Sobel(frequency);
+            sobel2 = ULowDiscrepancySequences.Sobol2D(frequency);
             direction1 = sobel.Select(p => math.sign(p - .5f)).ToArray();
             direction2 = sobel.Select(GetCircle).ToArray();
             direction3 = sobel2.Select(ConcentricOctahedral.kDefault.ToPosition).ToArray();

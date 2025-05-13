@@ -81,41 +81,6 @@ namespace Runtime.Geometry.Extension
             return polygonPoints;
         }
 
-        static void FindHull(List<float2> _convexHull,int _insertIndex, IList<float2> _positions, float2 _P,float2 _Q)
-        {
-            if (_positions.Count == 0)
-                return;
-
-            var ray = G2Ray.StartEnd(_P, _Q);
-            var maxIndex = _positions.MaxIndex(p=>ray.Distance(p));
-            var C = _positions[maxIndex];
-            _convexHull.Insert(_insertIndex,C);
-
-            var s1 = new List<float2>();
-            var s2 = new List<float2>();
-
-            var linePC = G2Ray.StartEnd(_P, C);
-            var lineCQ = G2Ray.StartEnd(C, _Q);
-
-            foreach (var (index,point) in _positions.LoopIndex())
-            {
-                if(index == maxIndex)
-                    continue;
-                
-                if (linePC.SideSign(point))
-                {
-                    s1.Add(point);
-                    continue;                    
-                }
-
-                if (lineCQ.SideSign(point))
-                    s2.Add(point);
-            }
-            
-            FindHull(_convexHull,_insertIndex+1,s2,C,_Q);
-            FindHull(_convexHull,_insertIndex,s1,_P,C);
-        }
-        
         //https://algs4.cs.princeton.edu/99hull/quickhull/Algorithm.html
         public static List<float2> QuickHull(IList<float2> _positions)
         {
@@ -153,5 +118,39 @@ namespace Runtime.Geometry.Extension
             return convexHull;
         }
         
+        static void FindHull(List<float2> _convexHull,int _insertIndex, IList<float2> _positions, float2 _P,float2 _Q)
+        {
+            if (_positions.Count == 0)
+                return;
+
+            var ray = G2Ray.StartEnd(_P, _Q);
+            var maxIndex = _positions.MaxIndex(p=>ray.Distance(p));
+            var C = _positions[maxIndex];
+            _convexHull.Insert(_insertIndex,C);
+
+            var s1 = new List<float2>();
+            var s2 = new List<float2>();
+
+            var linePC = G2Ray.StartEnd(_P, C);
+            var lineCQ = G2Ray.StartEnd(C, _Q);
+
+            foreach (var (index,point) in _positions.LoopIndex())
+            {
+                if(index == maxIndex)
+                    continue;
+                
+                if (linePC.SideSign(point))
+                {
+                    s1.Add(point);
+                    continue;                    
+                }
+
+                if (lineCQ.SideSign(point))
+                    s2.Add(point);
+            }
+            
+            FindHull(_convexHull,_insertIndex+1,s2,C,_Q);
+            FindHull(_convexHull,_insertIndex,s1,_P,C);
+        }
     }
 }

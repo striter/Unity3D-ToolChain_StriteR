@@ -39,9 +39,8 @@ Material:
     - _SmoothParticle: 0
     - _SmoothParticleDistance: 2
     m_Colors:
-    - _Color: {r: 6.529924, g: 7.5781, b: 11.798387, a: 1}
+    - _Color: {r: 0.8766315, g: 2.0779417, b: 6.8831806, a: 1}
   m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!114 &8363284013944699640
 MonoBehaviour:
   m_ObjectHideFlags: 11

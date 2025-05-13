@@ -158,10 +158,10 @@ public struct Ticker
 {
     
     public float duration;
-    public float elapsed;
-    public int elpasedTick;
-    public float tick;
-    public float tickScale;
+    [NonSerialized] public float elapsed;
+    [NonSerialized] public int elpasedTick;
+    [NonSerialized] public float tick;
+    [NonSerialized]  public float tickScale;
     public Ticker(float _tick)
     {
         this = default;

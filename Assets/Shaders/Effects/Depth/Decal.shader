@@ -65,11 +65,12 @@
 				#else
 					half4 color=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,decalUV);
 				#endif
+
 				color *= _Color;
 				#if _DECALCLIP_SPHERE
-				color.a*=step(sqrDistance(positionOS),.25h);
+					color.a*=step(sqrDistance(positionOS),.25h);
 				#elif _DECALCLIP_BOX
-				color.a*=step(abs(positionOS.x),.5h)*step(abs(positionOS.y),.5h)*step(abs(positionOS.z),.5h);
+					color.a*=step(abs(positionOS.x),.5h)*step(abs(positionOS.y),.5h)*step(abs(positionOS.z),.5h);
 				#endif
 				
 				// half atten=MainLightRealtimeShadow(TransformWorldToShadowCoord(positionWS));

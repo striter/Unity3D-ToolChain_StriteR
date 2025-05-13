@@ -75,7 +75,7 @@ public static partial class umath
     }
     public static float2 closestPitchYaw(quaternion _quaternion) => closestPitchYaw(math.mul(_quaternion,kfloat3.forward));
     
-    public static float3 rotateCW(this float3 _src, float3 _axis, float _angle) => math.mul(quaternion.AxisAngle( _axis,_angle) , _src).normalize();
+    public static float3 rotateCW(this float3 _src, float3 _axis, float _rad) => math.mul(quaternion.AxisAngle( _axis,_rad) , _src).normalize();
     
     public static float2 toPitchYaw(this quaternion _rotation)
     {

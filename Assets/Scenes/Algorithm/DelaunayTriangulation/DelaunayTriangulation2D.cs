@@ -21,7 +21,7 @@ namespace Examples.Algorithm.DelaunayTriangulation
         public List<float2> m_Vertices = new List<float2>();
         private List<PTriangle> triangles = new List<PTriangle>();
 
-        [InspectorButton]
+        [InspectorButton(true)]
         void Randomize()
         {
             m_Vertices.Clear();
@@ -34,7 +34,7 @@ namespace Examples.Algorithm.DelaunayTriangulation
             OnValidate();
         }
 
-        [InspectorButton]
+        [InspectorButton(true)]
         void Sequence()
         {
             m_Vertices.Clear();
@@ -47,11 +47,11 @@ namespace Examples.Algorithm.DelaunayTriangulation
             OnValidate();
         }
         
-        [InspectorButton]
+        [InspectorButton(true)]
         void PoissonDisk()
         {
             var size = (int)math.sqrt(m_RandomCount);
-            ULowDiscrepancySequences.PoissonDisk2D(size,size).Select(p=>p*kRandomRadius).FillList(m_Vertices);
+            ULowDiscrepancySequences.PoissonDisk2D(size*size).Select(p=>(p - .5f)*kRandomRadius).FillList(m_Vertices);
             OnValidate();
         }
         private void OnValidate()

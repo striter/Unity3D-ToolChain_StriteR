@@ -6,7 +6,7 @@ using UnityEngine;
 namespace UnityEditor.Extensions
 {
     [CustomEditor(typeof(ScriptableObject),editorForChildClasses:true,isFallback = true),CanEditMultipleObjects]
-    public class EScriptableExtension : EInspectorExtension {}
+    public class EScriptableObjectExtension : EInspectorExtension {}
     
     [CustomEditor(typeof(MonoBehaviour), editorForChildClasses:true,isFallback = true),CanEditMultipleObjects]
    public class EInspectorExtension : Editor 
@@ -24,6 +24,9 @@ namespace UnityEditor.Extensions
                 return;
             
             EditorGUILayout.BeginVertical();
+            if(inspectorMethods.Any(p=>p.attribute.IsElementVisible(target)))
+                EditorGUILayout.LabelField("Extension Buttons", EditorStyles.boldLabel);
+            
             foreach (var data in inspectorMethods)
             {
                 if(!data.attribute.IsElementVisible(target))
@@ -33,28 +36,20 @@ namespace UnityEditor.Extensions
                 EditorGUILayout.BeginVertical();
                 if (data.parameters.Length > 0)
                 {
-                    EditorGUILayout.LabelField(data.method.Name, EditorStyles.boldLabel);   
+                    EditorGUILayout.LabelField(data.method.Name, EditorStyles.boldLabel);
                     foreach (var parameter in data.parameters)
-                        parameter.value = UEGUIExtension.LayoutField(parameter.value,parameter.type,parameter.name);
-                    
-                    if (GUILayout.Button("Execute"))
-                    {
-                        foreach (var target in targets)
-                            data.method.Invoke(target,data.parameters.Select(p=>p.value).ToArray());
-                        if(undo)
-                            Undo.RegisterCompleteObjectUndo(targets,"Button Click");
-                        return;
-                    }
+                        parameter.value = UEGUIExtension.LayoutField(parameter.value, parameter.type, parameter.name);
                 }
-                else
+
+                if (GUILayout.Button(data.parameters.Length > 0 ? "Execute" :  data.method.Name))
                 {
-                    if (GUILayout.Button(data.method.Name))
+                    if(undo)
+                        Undo.RegisterCompleteObjectUndo(targets,"Button Click");
+                    foreach (var target in targets)
                     {
-                        foreach (var target in targets)
-                            data.method.Invoke(target,null);
-                        if(undo)
-                            Undo.RegisterCompleteObjectUndo(targets,"Button Click");
-                        return;
+                        data.method.Invoke(target,data.parameters.Select(p=>p.value).ToArray());
+                        if(undo && target is MonoBehaviour mono)
+                            UDebug.CallMethod(mono,"OnValidate");
                     }
                 }
                 EditorGUILayout.EndVertical();

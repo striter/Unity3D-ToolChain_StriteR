@@ -14,29 +14,34 @@ public abstract class ConditionAttribute : PropertyAttribute
         NonAnyEquals,
     }
 
-    public struct ConditionFieldParameters
+    public struct ConditionPrediciton
     {
         public string fieldName;
-        public object[] refValue;
-        public ConditionFieldParameters(string _fieldName,params object[] _refValue)
+        public Func<object,bool> prediction;
+        public ConditionPrediciton(string _fieldName,Func<object,bool> _prediction)
         {
             fieldName = _fieldName;
-            refValue = _refValue;
+            prediction = _prediction;
         }
     }
     
     public abstract EConditionAction Condition { get; }
-    public readonly ConditionFieldParameters[] m_Conditions;
+    public readonly ConditionPrediciton[] m_Conditions;
 
     public ConditionAttribute()
     {
         m_Conditions = null;
     }
-    public ConditionAttribute(params ConditionFieldParameters[] _conditions)
+    public ConditionAttribute(ConditionPrediciton[] _conditions) => m_Conditions = _conditions;
+
+    public ConditionAttribute(params KeyValuePair<string, object[]>[] _pairs) :this( _pairs.Select(p=>new ConditionPrediciton(p.Key,fieldValue=>FieldEquals(fieldValue,p.Value))).ToArray()) { }
+
+    static bool FieldEquals(object _comparer, object[] refValues)
     {
-        m_Conditions = _conditions; 
+        if (_comparer is Enum)
+            return refValues?.Any(p=>((Enum)_comparer).HasFlag((Enum)p))??false;
+        return refValues?.Contains(_comparer) ??  _comparer == null;
     }
-    public ConditionAttribute(params KeyValuePair<string, object[]>[] _pairs) { m_Conditions = _pairs.Select(p=>new ConditionFieldParameters(p.Key,p.Value)).ToArray(); }
 }
 
 [AttributeUsage(AttributeTargets.Field)]
@@ -54,7 +59,6 @@ public class FoldAttribute : ConditionAttribute
     public override EConditionAction Condition => EConditionAction.NonAnyEquals;
     public FoldAttribute(string _foldoutFieldName) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, null)) { }
     public FoldAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
-    public FoldAttribute(params KeyValuePair<string, object[]>[] _pairs) : base(_pairs) { }
 }
 
 [AttributeUsage(AttributeTargets.Method)]
@@ -62,22 +66,35 @@ public class InspectorButtonAttribute : ConditionAttribute
 {
     public override EConditionAction Condition => EConditionAction.AlwaysVisible;
     public bool undo;
-
     public InspectorButtonAttribute(bool _undo = false) { undo = _undo;}
+    protected InspectorButtonAttribute(bool _undo,params ConditionPrediciton[] _param) : base(_param) { undo = _undo; }
     protected InspectorButtonAttribute(params KeyValuePair<string, object[]>[] _pairs) : base(_pairs) { }
 }
 
-
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-public class InspectorFoldoutButtonAttribute : InspectorButtonAttribute
+public class InspectorButtonFoldout : InspectorButtonAttribute
 {
     public override EConditionAction Condition => EConditionAction.AllEquals;
-    public InspectorFoldoutButtonAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
+    public InspectorButtonFoldout(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
 }
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-public class InspectorFoldButtonAttribute : InspectorButtonAttribute
+public class InspectorButtonFold : InspectorButtonAttribute
 {
     public override EConditionAction Condition => EConditionAction.NonAnyEquals;
-    public InspectorFoldButtonAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
+    public InspectorButtonFold(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
+}
+
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+public class InspectorButtonEditor : InspectorButtonAttribute
+{
+    public override EConditionAction Condition => EConditionAction.AllEquals;
+    public InspectorButtonEditor(bool _undo = false):base(_undo, new ConditionPrediciton(null,_=>!Application.isPlaying)) { }
+}
+
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+public class InspectorButtonRuntime : InspectorButtonAttribute
+{
+    public override EConditionAction Condition => EConditionAction.AllEquals;
+    public InspectorButtonRuntime(bool _undo = false) : base(_undo, new ConditionPrediciton(null, _ => Application.isPlaying)) { }
 }

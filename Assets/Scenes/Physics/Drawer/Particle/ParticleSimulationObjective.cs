@@ -51,15 +51,15 @@ namespace Examples.PhysicsScenes.Particle
         public GSphere circle;
         public int index;
 
-        public ParticleDensityQuery(ParticleData _data,ISPH _kernel)
+        public ParticleDensityQuery(ParticleData _data,float _radius)
         {
-            circle = new GSphere(_data.position, _kernel.Radius);
+            circle = new GSphere(_data.position, _radius);
             index = _data.index;
         }
 
-        public ParticleDensityQuery(float3 _origin, ISPH _kernel)
+        public ParticleDensityQuery(float3 _origin, float _radius)
         {
-            circle = new GSphere(_origin, _kernel.Radius);
+            circle = new GSphere(_origin, _radius);
             index = -1;
         }
         public bool Query(GBox _boundary) => _boundary.Intersect(circle);

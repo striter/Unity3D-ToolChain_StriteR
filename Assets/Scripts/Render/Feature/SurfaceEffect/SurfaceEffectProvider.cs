@@ -8,7 +8,7 @@ namespace Rendering.Pipeline.Component
     {
         public CullingMask m_Mask = CullingMask.kAll;
         public SurfaceEffectCollection m_Collection;
-        [SerializeField,Readonly]private List<SurfaceEffectAnimation> m_Playing = new List<SurfaceEffectAnimation>();
+        [SerializeField,Readonly] private List<SurfaceEffectAnimation> m_Playing = new List<SurfaceEffectAnimation>();
         private Renderer[] m_Renderers;
         private void OnEnable()
         {
@@ -37,7 +37,7 @@ namespace Rendering.Pipeline.Component
             this.Tick(UTime.deltaTime);
         }
 
-        [InspectorFoldButton(nameof(m_Collection),null)]
+        [InspectorButtonFold(nameof(m_Collection),null)]
         public void Play(string _anim)
         {
             if (m_Collection == null)
@@ -53,7 +53,7 @@ namespace Rendering.Pipeline.Component
             this.Play(m_Collection.m_AnimationClips[clipIndex]);
         }
 
-        [InspectorFoldButton(nameof(m_Collection), null)]
+        [InspectorButtonFold(nameof(m_Collection), null)]
         void StopAll() => ((ISurfaceEffect)this).StopAll();
         
 // #if UNITY_EDITOR

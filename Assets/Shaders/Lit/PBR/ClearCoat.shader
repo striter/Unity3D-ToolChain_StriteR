@@ -105,8 +105,8 @@ Shader "Game/Lit/PBR/ClearCoat"
             	_surface.clearCoat = clearcoatData;
             	
             	float ieta = lerp(1.0, 1.0 / clearcoatData.IOR, clearcoatData.mask);
-				    half coatRoughnessScale          = Sq(ieta);
-				    half sigma                       = RoughnessToVariance(PerceptualRoughnessToRoughness(_surface.perceptualRoughness));
+			    half coatRoughnessScale          = Sq(ieta);
+			    half sigma                       = RoughnessToVariance(PerceptualRoughnessToRoughness(_surface.perceptualRoughness));
 
 			    _surface.perceptualRoughness = RoughnessToPerceptualRoughness(VarianceToRoughness(sigma * coatRoughnessScale));
 
@@ -115,12 +115,11 @@ Shader "Game/Lit/PBR/ClearCoat"
 			    _surface.roughness2         = max(_surface.roughness * _surface.roughness, HALF_MIN);
 			    _surface.specular = lerp(_surface.specular, ConvertF0ForAirInterfaceToF0ForClearCoat15(_surface.specular), clearcoatData.mask);
             }
-
             #define BRDF_SURFACE_ADDITIONAL_TRANSFER(input,surface) GetClearCoatData(input,surface)
+            
 			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
-
-
 			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
+            
 			float3 BRDFLightingClearCoat(BRDFSurface surface,Light light)
             {
 				BRDFLightInput input=BRDFLightInput_Ctor(surface,light.direction,light.color,light.shadowAttenuation,light.distanceAttenuation);

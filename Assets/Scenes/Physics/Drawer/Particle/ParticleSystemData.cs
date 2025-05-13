@@ -4,12 +4,27 @@ using System.Linq.Extensions;
 using Runtime.Geometry;
 using Runtime.Scripting;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace Examples.PhysicsScenes.Particle
 {
     [Serializable]
     public class ParticleSystemData
     {
+        public float m_TargetSpacing = 0.1f;
+        public float m_KernelRadiusOverTargetSpacing = 1.8f;
+        public float m_TargetDensity = 50f;
+        public float m_SpeedOfSound = 1480f;
+
+        public float KernelRadius => m_TargetSpacing * m_KernelRadiusOverTargetSpacing;
+        public ESPHKernel m_KernelType = ESPHKernel.Default;
+        public ISPH GetKernel() => m_KernelType switch {
+            ESPHKernel.Default => new SPHStdKernel3( m_KernelRadiusOverTargetSpacing * m_TargetSpacing ),
+            ESPHKernel.Spiky => new SPHSpikyKernel( m_KernelRadiusOverTargetSpacing * m_TargetSpacing),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+
+        
         public List<double> m_Densities = new();
         private ParticleBVH m_ParticleQueries = new ParticleBVH(4,8);
 
@@ -27,7 +42,7 @@ namespace Examples.PhysicsScenes.Particle
             var count = particles.Count;
             m_ParticleQueryCache.Resize(count,kIndexPool.Spawn,kIndexPool.Despawn);
             for (var i = 0; i < count; i++)
-                m_ParticleQueries.Query(particles,new ParticleDensityQuery(particles[i],_kernel),m_ParticleQueryCache[i]);
+                m_ParticleQueries.Query(particles,new ParticleDensityQuery(particles[i],KernelRadius),m_ParticleQueryCache[i]);
             
             m_Densities.Resize(count);
             for (var i = count - 1; i >= 0 ; i--)
@@ -35,12 +50,12 @@ namespace Examples.PhysicsScenes.Particle
                 var particle = particles[i];
                 var origin = particle.position;
                 var sum = 0f;
-                var nearbyParticles = Query(i); 
+                var nearbyParticles = m_ParticleQueries.Query(particles, new ParticleDensityQuery(particles[i].position, KernelRadius));
                 for (var j = nearbyParticles.Count - 1; j >= 0; j--)
                 {
                     var nearbyParticle = nearbyParticles[j];
                     var distance = (origin - nearbyParticle.position).magnitude();
-                    var kernel = (double)_kernel[distance];
+                    var kernel = _kernel[distance];
                     var nearbyMass = (double)nearbyParticle.mass;
                     sum += (float)(nearbyMass * kernel);
                 }
@@ -50,7 +65,7 @@ namespace Examples.PhysicsScenes.Particle
         }
         
         public List<ParticleData> Query(int particleIndex) => m_ParticleQueryCache[particleIndex];
-        public List<ParticleData> Query(List<ParticleData> _data,ISPH _kernel,float3 _position) => m_ParticleQueries.Query(_data,new ParticleDensityQuery(_position,_kernel));
+        public List<ParticleData> Query(List<ParticleData> _data,float3 _position) => m_ParticleQueries.Query(_data,new ParticleDensityQuery(_position,KernelRadius));
 
         public float3 Interpolate(ISPH kernel,List<ParticleData> particles,float3 _origin, float3[] _values)
         {
@@ -113,6 +128,30 @@ namespace Examples.PhysicsScenes.Particle
         {
             m_ParticleQueries.DrawGizmos(_particles);
         }
-        
+
+        public float ComputeMass()
+        {
+            var kernel = GetKernel();
+            var targetDensity = m_TargetDensity;
+            var kernelRadius = kernel.Radius;
+            var points = ULowDiscrepancySequences.BCCLattice2D((1.5f * kernelRadius)/ m_TargetSpacing);
+            var maxNumberDensity = 0.0f;
+
+            for (var i = 0; i < points.Length; ++i) {
+                var point = points[i];
+                var sum = 0.0f;
+
+                for (var j = 0; j < points.Length; ++j) {
+                    var neighborPoint = points[j];
+                    sum += (float)kernel[(neighborPoint - point).magnitude()];
+                }
+
+                maxNumberDensity = math.max(maxNumberDensity, sum);
+            }
+
+            Debug.Assert(maxNumberDensity > 0);
+
+            return targetDensity / maxNumberDensity;
+        }
     }
 }

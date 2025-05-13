@@ -38,7 +38,7 @@ namespace Runtime.Geometry
         public quaternion GetRotation() => quaternion.LookRotation(forward,up);
         public GLine Right() => new GLine(origin, origin + right);
         public GLine Up() => new GLine(origin, origin + up);
-
+        public GLine Forward() => new GLine(origin, origin + forward);
         public float3 GetPoint(float2 _uv) => origin + _uv.x * right + _uv.y * up;
         public float2 GetUV(float3 _point)
         {
@@ -62,7 +62,7 @@ namespace Runtime.Geometry
         public void OnBeforeSerialize(){}
         public void OnAfterDeserialize() => Ctor();
 
-        public static GAxis kDefault = new GAxis(kfloat3.zero,kfloat3.right,kfloat3.forward);
+        public static GAxis kDefault = new GAxis(kfloat3.zero,kfloat3.right,kfloat3.up);
         public static  implicit operator GPlane(GAxis _axis) => new GPlane(_axis.forward,_axis.origin);
         public bool RayIntersection(GRay _ray, out float distance) => ((GPlane)this).RayIntersection(_ray,out distance);
 
@@ -72,6 +72,8 @@ namespace Runtime.Geometry
             Right().DrawGizmos();
             Gizmos.color = Color.green;
             Up().DrawGizmos();
+            Gizmos.color = Color.blue;
+            Forward().DrawGizmos();
         }
 
         public float3 Origin => origin;

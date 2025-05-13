@@ -156,6 +156,9 @@ namespace Runtime.Geometry
         }
 
         public G2Box Resize(float _factor) => G2Box.Minmax(center - extent * _factor, center + extent * _factor);
+        
+        public G2Box Collapse(float2 _factor, float2 _center = default) => new G2Box(center + _center * extent, extent * _factor);
+
         public void DrawGizmos() => Gizmos.DrawWireCube(center.to3xz(),size.to3xz());
         public void DrawGizmosXY() => Gizmos.DrawWireCube(center.to3xy(), size.to3xy());
     }

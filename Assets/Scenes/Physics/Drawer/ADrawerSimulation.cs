@@ -9,7 +9,7 @@ namespace Examples.PhysicsScenes
     [ExecuteAlways]
     public abstract class ADrawerSimulation : MonoBehaviour
     {
-        [Readonly] public Ticker m_Ticker = new Ticker(1f/60f);
+        public Ticker m_Ticker = new Ticker(1f/60f);
         Texture2D m_Texture;
         private FTextureDrawer m_Drawer;
         private RawImage m_Image;

@@ -103,7 +103,6 @@ namespace Runtime
             var count = positions.Count;
             if (count > 1)
             {
-                
                 //Fill positions
                 TSPoolList<Vector3>.Spawn(out var vertices);
                 TSPoolList<Vector4>.Spawn(out var uvs);

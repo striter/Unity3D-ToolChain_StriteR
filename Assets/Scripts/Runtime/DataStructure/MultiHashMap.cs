@@ -8,7 +8,7 @@ namespace Runtime.DataStructure
         private List<Key> m_Keys = new();
         private List<Value> m_Values = new List<Value>();
         private Dictionary<Key, List<Value>> m_Map = new Dictionary<Key, List<Value>>();
-        private Pool<List<Value>> kGridElementPool = new ();
+        private ListPool<Value> kGridElementPool = new ();
         public void Dispose()
         {
             m_Map = null;

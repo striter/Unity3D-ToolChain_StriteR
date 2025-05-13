@@ -66,7 +66,7 @@ namespace EndlessOcean
             var vertices = UList.Empty<float2>();
             var normals = UList.Empty<Vector3>();
             var tangents = UList.Empty<Vector4>();
-            var positions = ULowDiscrepancySequences.PoissonDisk2D(m_CellDivision * m_CellDivision,30).Remake(p=>p+.5f);
+            var positions = ULowDiscrepancySequences.PoissonDisk2D(m_CellDivision * m_CellDivision);
 
             var frustumPlanes = new GFrustum(m_CullingCamera).GetFrustumPlanes();
             foreach (var node in m_Chunk.GetLeafs())

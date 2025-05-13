@@ -78,7 +78,7 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DisintegrateAmount: 0.264
-    - _DissolveEdgeWidth: 0.124
+    - _DissolveEdgeWidth: 0.337
     - _DstBlend: 0
     - _FlowAmount: 5
     - _FlowExpand: 1.71
@@ -98,8 +98,8 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DissolveEdgeColor: {r: 68.03897, g: 68.03897, b: 220.26175, a: 1}
+    - _DissolveEdgeColor: {r: 2.372939, g: 2.372939, b: 26.477013, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlowDirection: {r: 0, g: 2, b: 0, a: 0}
-    - _ParticleColor: {r: 55.35374, g: 26.523668, b: 110.13088, a: 0.6313726}
+    - _ParticleColor: {r: 93.74572, g: 39.815784, b: 196.30107, a: 0.6313726}
   m_BuildTextureStacks: []

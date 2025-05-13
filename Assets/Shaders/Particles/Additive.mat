@@ -59,7 +59,6 @@ Material:
     - _Color: {r: 2.1660998, g: 11.181761, b: 6.969663, a: 1}
     - _SecondaryFlow: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!114 &8363284013944699640
 MonoBehaviour:
   m_ObjectHideFlags: 11

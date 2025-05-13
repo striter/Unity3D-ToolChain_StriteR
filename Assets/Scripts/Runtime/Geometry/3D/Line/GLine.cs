@@ -43,6 +43,7 @@ namespace Runtime.Geometry
         public void OnAfterDeserialize() { Ctor(); }
         
         public static GLine StartEnd(float3 _start, float3 _end) => new GLine(_start, _end);
+        public GLine Trim(RangeFloat _range) => new GLine(start + direction * length * _range.start, start + direction * length * _range.end);
         public GRay ToRay()=>new GRay(start,direction);
         
         public static readonly GLine kDefault = new GLine(float3.zero, kfloat3.forward);

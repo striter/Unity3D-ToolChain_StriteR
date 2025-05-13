@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Runtime.Scripting
 {
-    public class Pool<T> : IDisposable  where T : new()
+    public class Pool<T> : IDisposable where T : new()
     {
         private Stack<T> inActiveElements = new ();
         public Pool(int _initialSize = 32)
@@ -25,8 +25,8 @@ namespace Runtime.Scripting
                 return;
             inActiveElements.Push(_element);
         }
-    }
 
+    }
     public class ListPool<T> : Pool<List<T>>
     {
         public override void Despawn(List<T> _element)
@@ -34,5 +34,9 @@ namespace Runtime.Scripting
             _element?.Clear();
             base.Despawn(_element);
         }
+        
+        private static ListPool<T> Instance { get; } = new();
+        public static void ISpawn(out List<T> _list) => _list = Instance.Spawn();
+        public static void IDespawn(List<T> _list) => Instance.Despawn(_list);
     }
 }

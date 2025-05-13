@@ -122,9 +122,7 @@ public static class URuntime
     public static Rect ResizeY(this Rect _rect, float _newSizeY) => Resize(_rect, new Vector2(_rect.size.x, _newSizeY));
     public static Rect Expand(this Rect _rect, Vector2 _size) { _rect.position -= _size / 2; _rect.size += _size; return _rect; }
     
-    public static Rect Collapse(this Rect _rect,Vector2 _size) { _rect.position += _size / 2;_rect.size -= _size;return _rect; }
-
-    public static Rect Collapse(this Rect _rect, Vector2 _size, Vector2 _center)
+    public static Rect Collapse(this Rect _rect, Vector2 _size, Vector2 _center = default)
     {
         _rect.position += _size.mul(_center);
         _rect.size -= _size;

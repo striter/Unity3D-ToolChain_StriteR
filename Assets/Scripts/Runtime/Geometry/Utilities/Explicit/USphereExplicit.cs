@@ -113,9 +113,9 @@ namespace Runtime.Geometry.Extension
         {
             public static float3 Fibonacci(int _index,int _count) 
             {
-                float j = _index + .5f;
-                float phi = acos(1f - 2f * j / _count);
-                float theta = kPI2 * j / kGoldenRatio;
+                var j = _index + .5f;
+                var phi = acos(1f - 2f * j / _count);
+                var theta = kPI2 * j / kGoldenRatio;
         
                 sincos(theta,out var sinT,out var cosT);
                 sincos(phi,out var sinP,out var cosP);
@@ -126,13 +126,13 @@ namespace Runtime.Geometry.Extension
             {
                 var hammersley2D = ULowDiscrepancySequences.Hammersley2D(_index,_count);
         
-                float phi = 2f * kPI * hammersley2D.x;
-                float cosTheta = 1f - 2f * hammersley2D.y;
-                float sinTheta = sqrt(1f - cosTheta * cosTheta);
+                var phi = 2f * kPI * hammersley2D.x;
+                var cosTheta = 1f - 2f * hammersley2D.y;
+                var sinTheta = sqrt(1f - cosTheta * cosTheta);
         
-                float x = sinTheta * cos(phi);
-                float y = sinTheta * sin(phi);
-                float z = cosTheta;
+                var x = sinTheta * cos(phi);
+                var y = sinTheta * sin(phi);
+                var z = cosTheta;
         
                 return new float3(x, y, z);
             }

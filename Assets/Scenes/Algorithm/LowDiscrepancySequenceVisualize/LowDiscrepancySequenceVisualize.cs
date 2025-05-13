@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using Unity.Mathematics;
 using System.Linq.Extensions;
@@ -17,6 +18,8 @@ namespace Examples.Algorithm.SamplePatternVisualize
         HammersLey,
         Sobol,
         PoissonDisk,
+        BCCLattice,
+        BCCLattice3D,
     }
 
     public enum EVisualMode
@@ -33,29 +36,27 @@ namespace Examples.Algorithm.SamplePatternVisualize
         public EVisualMode m_Mode = EVisualMode.Flat;
         [Foldout(nameof(patternType), ESamplePattern.PoissonDisk)] public Texture2D m_Texture;
         [Foldout(nameof(patternType), ESamplePattern.PoissonDisk)] public string m_Seed = "Test";
-        [Readonly] public float2[] patterns;
+        [Readonly] public float3[] patterns;
         [Range(0, 1f)] public float gizmosRadius = 0.03f;
         
-        [InspectorButton]
+        [InspectorButton(true)]
         void Generate()
         {
             var randomGenerator = !string.IsNullOrEmpty(m_Seed) ? new LCGRandom(m_Seed.GetHashCode()) : null;
             patterns = patternType switch
             {
-                ESamplePattern.Grid => ULowDiscrepancySequences.Grid2D(patternWidth, patternHeight),
-                ESamplePattern.Stratified => ULowDiscrepancySequences.Stratified2D(patternWidth, patternHeight, true),
-                ESamplePattern.Halton => new float2[patternWidth * patternHeight].Remake((i, p) =>
-                    ULowDiscrepancySequences.Halton2D((uint)i) - .5f),
-                ESamplePattern.HammersLey => new float2[patternWidth * patternHeight].Remake((i, p) =>
-                    ULowDiscrepancySequences.Hammersley2D((uint)i, (uint)(patternWidth * patternHeight)) - .5f),
-                ESamplePattern.Sobol => ULowDiscrepancySequences.Sobol2D((uint)(patternWidth * patternHeight)),
+                ESamplePattern.Grid => ULowDiscrepancySequences.Grid2D(patternWidth, patternHeight).Select(p=>(p-.5f).to3xz()).ToArray(),
+                ESamplePattern.Stratified => ULowDiscrepancySequences.Stratified2D(patternWidth, patternHeight, true).Select(p=>(p-.5f).to3xz()).ToArray(),
+                ESamplePattern.Halton => new float3[patternWidth * patternHeight].Remake((i, p) => (ULowDiscrepancySequences.Halton2D((uint)i) - .5f).to3xz()),
+                ESamplePattern.HammersLey => new float3[patternWidth * patternHeight].Remake((i, p) => (ULowDiscrepancySequences.Hammersley2D((uint)i, (uint)(patternWidth * patternHeight))-.5f).to3xz()),
+                ESamplePattern.Sobol => ULowDiscrepancySequences.Sobol2D((uint)(patternWidth * patternHeight)).Select(p=>(p-.5f).to3xz()).ToArray(),
                 ESamplePattern.PoissonDisk => m_Texture != null
-                    ? ULowDiscrepancySequences.PoissonDisk2D(patternWidth*patternHeight, 30, randomGenerator,
-                        val => math.lerp(3f, 1f,
-                            UColor.RGBtoLuminance(m_Texture.GetPixel((int)(val.x * m_Texture.width),
-                                    (int)(val.y * m_Texture.height))
-                                .to3())))
-                    : ULowDiscrepancySequences.PoissonDisk2D(patternWidth * patternHeight,30,randomGenerator),
+                    ? ULowDiscrepancySequences.PoissonDisk2D(patternWidth*patternHeight, 30, randomGenerator, val =>
+                        math.lerp(3f, 1f, UColor.RGBtoLuminance(m_Texture.GetPixel((int)(val.x * m_Texture.width), (int)(val.y * m_Texture.height)).to3())))
+                        .Select(p=>(p-.5f).to3xz()).ToArray()
+                    : ULowDiscrepancySequences.PoissonDisk2D(patternWidth * patternHeight,30,randomGenerator).Select(p=>(p-.5f).to3xz()).ToArray(),
+                ESamplePattern.BCCLattice => ULowDiscrepancySequences.BCCLattice2D(1f / math.sqrt(patternWidth * patternHeight)).Select(p=>(p-.5f).to3xz()).ToArray(),
+                ESamplePattern.BCCLattice3D => ULowDiscrepancySequences.BCCLattice3D(1f/math.sqrt(patternWidth * patternHeight)).Remake(p=>p-.5f),
                 _ => patterns
             };
         }
@@ -69,10 +70,13 @@ namespace Examples.Algorithm.SamplePatternVisualize
             {
                 case EVisualMode.Flat:
                 {
-                    Gizmos.color = Color.white;
                     for (var k = 0; k < size; k++)
-                        Gizmos.DrawSphere(patterns[k].to3xz(),gizmosRadius);
-                    Gizmos.color = Color.green;
+                    {
+                        var pattern = patterns[k];
+                        Gizmos.color = Color.Lerp(Color.red,Color.green,k/(float)size);
+                        Gizmos.DrawSphere(pattern,gizmosRadius);
+                    }
+                    Gizmos.color = Color.white;
                     Gizmos.DrawWireCube(Vector3.zero,Vector3.one.SetY(0f));
                 }
                     break;
@@ -99,11 +103,12 @@ namespace Examples.Algorithm.SamplePatternVisualize
                 {
                     for (var k = 0; k < size; k++)
                     {
-                        var uv = patterns[k] + .5f;
+                        var pattern = patterns[k].xy;
+                        var uv = pattern + .5f;
                         Gizmos.color = Color.red * uv.x + Color.green * uv.y;
                         Gizmos.DrawSphere(ESphereMapping.ConcentricOctahedral.UVToSphere( uv) * .5f,gizmosRadius);
                     }
-                    Gizmos.color = Color.green;
+                    Gizmos.color = Color.white;
                     Gizmos.DrawWireSphere(Vector3.zero,.5f);
                 }
                     break;

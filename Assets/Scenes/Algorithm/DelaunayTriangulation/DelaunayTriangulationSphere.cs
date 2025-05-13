@@ -18,7 +18,7 @@ namespace Examples.Algorithm.DelaunayTriangulation
         public int m_RandomCount = 128;
         public List<float3> m_Vertices = new List<float3>();
 
-        [InspectorButton]
+        [InspectorButton(true)]
         void Randomize()
         {
             m_Vertices.Clear();
@@ -26,7 +26,7 @@ namespace Examples.Algorithm.DelaunayTriangulation
                 m_Vertices.Add(URandom.RandomDirection() * kSphereRadius);
         }
 
-        [InspectorButton]
+        [InspectorButton(true)]
         void Fibonacci()
         {
             m_Vertices.Clear();
