@@ -98,13 +98,11 @@ Shader "Game/Lit/UberPhong"
             	float3 specular = SAMPLE_TEXTURE2D(_SpecularTex,sampler_MainTex,i.uv).rgb;
             	float3 emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_MainTex,i.uv).rgb;
             	
-				normalWS=normalize(mul(transpose(TBNWS), DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_MainTex,baseUV))));
+				normalWS=normalize(mul(transpose(TBNWS), SAMPLE_TEXTURE2D(_NormalTex,sampler_MainTex,baseUV)));
 				float3 ambient = IndirectDiffuse(mainLight,i,normalWS);
-
-            	
             	float3 finalCol=0;
 				
-            	finalCol+=ambient*0.05;
+            	finalCol+=ambient*albedo;
             	
             	Light mainLight = GetMainLight(TransformWorldToShadowCoord(positionWS),positionWS,unity_ProbesOcclusion);
 				finalCol+=PhongLighting(albedo,specular,normalWS,viewDirWS,mainLight);
