@@ -38,15 +38,15 @@ namespace Rendering.Pipeline
                 return;
             
             m_PostprocessQueue.Clear();
-            if (m_AntiAliasing.mode != EAntiAliasing.None)
-                m_PostprocessQueue.Add(m_AntiAliasingPostProcess);
-            if(m_AntiAliasing.mode == EAntiAliasing.TAA)
-                _renderer.EnqueuePass(m_TAA);
             
             if (_renderingData is { postProcessingEnabled: true, cameraData: { postProcessEnabled: true } })
             {
+                if (m_AntiAliasing.mode != EAntiAliasing.None)
+                    m_PostprocessQueue.Add(m_AntiAliasingPostProcess);
+                if(m_AntiAliasing.mode == EAntiAliasing.TAA)
+                    _renderer.EnqueuePass(m_TAA);
+                
                 m_PostprocessQueue.AddRange(_renderingData.cameraData.camera.GetComponentsInChildren<IPostProcessBehaviour>());
-
                 foreach (var volume in PostProcessGlobalVolume.kVolumes)
                 {
                     if (!CullingMaskAttribute.Enabled(_renderingData.cameraData.volumeLayerMask.value, volume.gameObject.layer))

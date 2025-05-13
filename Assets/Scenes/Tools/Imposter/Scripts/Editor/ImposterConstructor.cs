@@ -209,8 +209,10 @@ namespace Runtime.Optimize.Imposter
                 m_Camera.aspect = 1;
                 m_Camera.allowMSAA = true;
                 m_Camera.cullingMask = 1 << kLayerID;
+                m_Camera.allowHDR = false;
                 var additional = m_Camera.gameObject.AddComponent<UniversalAdditionalCameraData>();
                 additional.renderPostProcessing = false;
+                additional.allowHDROutput = false;
                 additional.SetRenderer(kRendererIndex);
             }
 

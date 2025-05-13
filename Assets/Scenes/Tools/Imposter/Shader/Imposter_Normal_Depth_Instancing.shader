@@ -37,7 +37,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
             struct f2o
             {
                 float3 result : SV_TARGET;
-                // float depth : SV_DEPTH;
+                float depth : SV_DEPTH;
             };
             
 			void Sample(float2 _uv,float _weight,inout ImposterFragmentOutput o)
@@ -67,7 +67,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
 			{
 				f2o o;
 				o.result = albedo;
-				float depthExtrude = imposterOutput.depthExtrude;
+				o.depth = EyeToRawDepth(TransformWorldToEyeDepth(positionWS + normalize(imposterOutput.normalWS) * saturate(imposterOutput.depthExtrude) * INSTANCE(_ImposterBoundingSphere.w * 2)));
 				return o;
 			}
 
@@ -75,7 +75,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
             #define F2O_RESULT(i,imposterOutput,albedo) Output(albedo,imposterOutput,i.positionWS,i.forwardWS)
             #if _INTERPOLATE
 				#define V2F_IMPOSTER float4 uv01 : TEXCOORD0; float4 uv23 : TEXCOORD1; float4 uvWeights:TEXCOORD2; float3 positionWS : TEXCOORD3; float3 forwardWS : TEXCOORD4
-				#define V2F_IMPOSTER_TRANSFER(v,o) ImposterVertexEvaluate_Bilinear(v.uv,INSTANCE(_Parallax),o.forwardWS,o.positionWS,o.uv01,o.uv23,o.uvWeights);
+				#define V2F_IMPOSTER_TRANSFER(v,o) ImposterVertexEvaluate_Bilinear(v.uv,INSTANCE(_Parallax),o.fdorwardWS,o.positionWS,o.uv01,o.uv23,o.uvWeights);
             	ImposterFragmentOutput ImposterFragment(float4 uv01,float4 uv23, float4 uvWeights)
 				{
 					ImposterFragmentOutput o;
@@ -111,25 +111,6 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
             ZWrite On
             Cull Off
             HLSLPROGRAM
-            #pragma shader_feature_fragment _ _ENABLE_DEBUG_MODE
-			
-			float _CurrentLodForDebug;
-			void GrassDebugMode(inout half3 col)
-		    {
-		        #if defined(_ENABLE_DEBUG_MODE)
-		            if (_CurrentLodForDebug == 1)
-		            {
-		                // 当前为LOD1，设置为蓝色
-		                col = half4(0, 0, 1, 1);
-		            }
-		            else if (_CurrentLodForDebug == 2)
-		            {
-		                // 当前为LOD2，设置为红色
-		                col = half4(1, 0, 0, 1);
-		            }
-		        #endif
-		    }
-            
             struct a2v
             {
 				A2V_IMPOSTER;
@@ -162,10 +143,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
                 float3 albedo = output.albedoAlpha.rgb;
                 float diffuse = saturate(dot(output.normalWS,_MainLightPosition.xyz));
                 float3 result =  albedo * diffuse * _MainLightColor.rgb + albedo * SHL2Sample(output.normalWS,unity);
-
-            	f2o o = F2O_RESULT(i,output,result);
-				GrassDebugMode(o.result);
-                return o;
+                return F2O_RESULT(i,output,result);
             }
             
             #pragma vertex vert

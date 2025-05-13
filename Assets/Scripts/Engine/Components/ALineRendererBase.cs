@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Runtime.Geometry.Curves;
-using TObjectPool;
+using Runtime.Scripting;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -97,16 +95,16 @@ namespace Runtime
         protected sealed override void PopulateMesh(Mesh _mesh,Transform _viewTransform)
         {
             Matrix4x4 worldToLocal = transform.worldToLocalMatrix;
-            TSPoolList<Vector3>.Spawn(out var positions);
-            TSPoolList<Vector3>.Spawn(out var tangents);
+            ListPool<Vector3>.ISpawn(out var positions);
+            ListPool<Vector3>.ISpawn(out var tangents);
             PopulatePositions_Internal(positions, tangents,_viewTransform);
             var count = positions.Count;
             if (count > 1)
             {
                 //Fill positions
-                TSPoolList<Vector3>.Spawn(out var vertices);
-                TSPoolList<Vector4>.Spawn(out var uvs);
-                TSPoolList<int>.Spawn(out var indexes);
+                ListPool<Vector3>.ISpawn(out var vertices);
+                ListPool<Vector4>.ISpawn(out var uvs);
+                ListPool<int>.ISpawn(out var indexes);
 
                 var totalLength = 0f;
                 var curIndex = 0;
@@ -155,12 +153,12 @@ namespace Runtime
                 _mesh.RecalculateBounds();
                 _mesh.RecalculateNormals();
                 
-                TSPoolList<Vector3>.Recycle(vertices);
-                TSPoolList<Vector4>.Recycle(uvs);
-                TSPoolList<int>.Recycle(indexes);
+                ListPool<Vector3>.IDespawn(vertices);
+                ListPool<Vector4>.IDespawn(uvs);
+                ListPool<int>.IDespawn(indexes);
             }
-            TSPoolList<Vector3>.Recycle(positions);
-            TSPoolList<Vector3>.Recycle(tangents);
+            ListPool<Vector3>.IDespawn(positions);
+            ListPool<Vector3>.IDespawn(tangents);
         }
 
         public bool Billboard => m_Billboard;
