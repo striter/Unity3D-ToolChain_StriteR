@@ -4,12 +4,9 @@ using System.Linq;
 using System.Linq.Extensions;
 using System.Reflection;
 using UnityEngine;
-
+using static UReflection;
 public static class UDebug
 {
-    private static readonly BindingFlags kInstanceBindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
-    private static readonly BindingFlags kStaticBindingFlags = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
-    
     static object CheckArgsValue(object _value,Type _type)
     {
         if (_value is not double doubleVal) 

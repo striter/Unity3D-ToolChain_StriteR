@@ -117,4 +117,5 @@ namespace Examples.Algorithm.SamplePatternVisualize
             }
         }
     }
+    
 }

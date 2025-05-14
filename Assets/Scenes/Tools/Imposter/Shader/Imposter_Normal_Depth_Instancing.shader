@@ -4,7 +4,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
     {
     	_AlphaClip("Clip",Range(0,1)) = 0.25
     	[Toggle(_INTERPOLATE)]_Interpolate("Interpolate",int) = 1
-//    	[Foldout(_INTERPOLATE)]_Parallax("Parallax",Range(0,1)) = 0.1
+    	[Foldout(_INTERPOLATE)]_Parallax("Parallax",Range(0,1)) = 0.1
     	
         [NoScaleOffset]_AlbedoAlpha("_AlbedoAlpha",2D) = "white"
         [NoScaleOffset]_NormalDepth("_NormalDepth",2D) = "white"

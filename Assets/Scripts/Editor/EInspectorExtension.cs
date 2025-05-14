@@ -48,8 +48,14 @@ namespace UnityEditor.Extensions
                     foreach (var target in targets)
                     {
                         data.method.Invoke(target,data.parameters.Select(p=>p.value).ToArray());
-                        if(undo && target is MonoBehaviour mono)
-                            UDebug.CallMethod(mono,"OnValidate");
+                        if (undo)
+                        {
+                            if (target is MonoBehaviour mono)
+                            {
+                                var method = target.GetType().GetMethod("OnValidate",UReflection.kInstanceBindingFlags);
+                                method?.Invoke(target,null);
+                            }
+                        }
                     }
                 }
                 EditorGUILayout.EndVertical();

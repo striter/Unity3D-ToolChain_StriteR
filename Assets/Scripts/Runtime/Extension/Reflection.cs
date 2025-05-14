@@ -8,6 +8,9 @@ using Debug = UnityEngine.Debug;
 
 public static class UReflection
 {
+    public static readonly BindingFlags kInstanceBindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+    public static readonly BindingFlags kStaticBindingFlags = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
+
     public static bool IsStatic(this Type _type) => _type.IsAbstract && _type.IsSealed;
     public static T DeepCopyInstance<T>(this T _src) where T:class
     {

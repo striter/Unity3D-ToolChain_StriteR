@@ -75,6 +75,7 @@ namespace Runtime.Geometry
         
         public float2 GetUV(float2 _pos) => (_pos - min) / size;
         public float2 GetPoint(float2 _uv) => min + _uv * size;
+        public float2 GetPoint(float _u, float _v) => GetPoint(new float2(_u, _v));
 
         public float2 GetSupportPoint(float2 _direction) => this.MaxElement(_p => math.dot(_direction, _p));
         public float GetArea() => extent.x * extent.y;
@@ -156,8 +157,8 @@ namespace Runtime.Geometry
         }
 
         public G2Box Resize(float _factor) => G2Box.Minmax(center - extent * _factor, center + extent * _factor);
-        
-        public G2Box Collapse(float2 _factor, float2 _center = default) => new G2Box(center + _center * extent, extent * _factor);
+
+        public G2Box Collapse(float2 _factor, float2 _center = default) =>new G2Box(center + _center * size, extent * _factor);
 
         public void DrawGizmos() => Gizmos.DrawWireCube(center.to3xz(),size.to3xz());
         public void DrawGizmosXY() => Gizmos.DrawWireCube(center.to3xy(), size.to3xy());

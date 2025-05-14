@@ -161,7 +161,7 @@ public struct Ticker
     [NonSerialized] public float elapsed;
     [NonSerialized] public int elpasedTick;
     [NonSerialized] public float tick;
-    [NonSerialized]  public float tickScale;
+    [NonSerialized] public float tickScale;
     public Ticker(float _tick)
     {
         this = default;

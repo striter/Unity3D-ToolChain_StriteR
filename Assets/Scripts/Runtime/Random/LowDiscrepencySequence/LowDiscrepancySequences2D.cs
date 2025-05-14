@@ -5,6 +5,7 @@ using Procedural.Tile;
 using Runtime.DataStructure;
 using Runtime.Random;
 using Unity.Mathematics;
+using UnityEngine;
 using static kmath;
 using static Unity.Mathematics.math;
 
@@ -109,20 +110,21 @@ public static partial class ULowDiscrepancySequences   // 0 - 1
         
         return points;
     }
-
-    public static float2[] PoissonDisk2D(int _maxCount,int _k = 30,IRandomGenerator _seed = null,Func<float2,float> _getRadiusNormalized = null)
+    
+    public static float2[] PoissonDisk2D(int _maxCount,int _k = 30,IRandomGenerator _seed = null,Func<float2,float> _getRadiusNormalized = null) => PoissonDisk2D(sqrt(_maxCount) + .5f,_maxCount,_k,_seed,_getRadiusNormalized);
+    public static float2[] PoissonDisk2D(float _radius,float2 _gridSize,int _k = 30,IRandomGenerator _seed = null,Func<float2,float> _getRadiusNormalized = null)
     {
-        var count = sqrt(_maxCount) + .5f;
-        
-        var gridSize = new float2(count,count);
-        var r = 1;
-        
+        if (_gridSize.anyLesser(0f))
+        {
+            Debug.LogError($"[LDS PoissionDisk] Invalid spacing:{_gridSize}");
+            return Array.Empty<float2>();
+        }
+        var r = _radius;
         var k = _k;
-
         var checkList = new List<float2>();
         var samplePoints = new MultiHashMap<int2,float2>();
         
-        var initialPoint = new float2(URandom.Random01(_seed) , URandom.Random01(_seed) ) * gridSize;
+        var initialPoint = new float2(URandom.Random01(_seed) , URandom.Random01(_seed) ) * _gridSize;
         
         checkList.Add(initialPoint);
         samplePoints.Add((int2)floor(initialPoint), initialPoint);
@@ -137,11 +139,11 @@ public static partial class ULowDiscrepancySequences   // 0 - 1
             {
                 var angle = URandom.Random01(_seed)* PI * 2;
                 var direction = new float2(cos(angle), sin(angle));
-                var radius = _getRadiusNormalized?.Invoke(activePoint/gridSize) ?? r;
+                var radius = _getRadiusNormalized?.Invoke(activePoint/_gridSize) ?? r;
                 var distance = URandom.Random01(_seed) * (2 * radius - radius) + radius;
                 var newPoint = activePoint + direction * distance;
 
-                if (newPoint.x < 0 || newPoint.x >= gridSize.x || newPoint.y < 0 || newPoint.y >= gridSize.y)
+                if (newPoint.x < 0 || newPoint.x >= _gridSize.x || newPoint.y < 0 || newPoint.y >= _gridSize.y)
                     continue;
 
                 var gridPosition = (int2)floor(newPoint);
@@ -159,22 +161,27 @@ public static partial class ULowDiscrepancySequences   // 0 - 1
                 checkList.RemoveAt(activeIndex);
         }
         
-        return samplePoints.Values.Select(p=>p/gridSize).ToArray();
+        return samplePoints.Values.Select(p=>p/_gridSize).ToArray();
     }
 
     private static List<float2> kPositionHelper = new();
-    public static float2[] BCCLattice2D(float2 _spacing) // normalized spacing
+    public static float2[] BCCLattice2D(float2 _spacing,float _bias = float.Epsilon) // normalized spacing
     {
+        if (_spacing.anyLesser(0f))
+        {
+            Debug.LogError($"[LDS BCCLattice] Invalid spacing:{_spacing}");
+            return Array.Empty<float2>();
+        }
         kPositionHelper.Clear();
         var halfSpacing = _spacing.x / 2.0f;
         var hasOffset = false;
         var position = kfloat2.zero;
-        for (var j = 0; j * _spacing.y <= 1f; ++j) {
+        for (var j = 0; j * _spacing.y <= 1f + _bias; ++j) {
             position.y = j * _spacing.y;
 
             var offset = hasOffset ? halfSpacing : 0.0f;
 
-            for (var i = 0; i * _spacing.x + offset <= 1f; ++i) {
+            for (var i = 0; i * _spacing.x + offset <= 1f + _bias; ++i) {
                 position.x = i * _spacing.x + offset;
                 kPositionHelper.Add(position);
             }
