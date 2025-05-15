@@ -104,7 +104,7 @@ namespace Examples.PhysicsScenes.SpringSimulation
                 _drawer.PixelContinuous((int2)joint.position, color);
             }
             
-            _drawer.PixelContinuousStart((int2)m_Bounds.GetPoint(new float2(0,1)));
+            _drawer.PixelContinuousStart((int2)m_Bounds.GetPoint(new float2(-.5f,.5f)));
             foreach (var bound in m_Bounds)
                 _drawer.PixelContinuous((int2)bound,Color.white.SetA(.2f));
 

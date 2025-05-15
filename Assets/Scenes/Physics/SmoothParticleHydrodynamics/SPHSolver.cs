@@ -9,9 +9,12 @@ using UnityEngine;
 namespace Examples.PhysicsScenes.Particle
 {
     [Serializable]
-    public class ParticleSystemSolver
+    public class SPHSolver
     {
-        public ParticleSystemData m_Data;
+        public SPHData m_Data;
+        public List<double> m_Pressures = new();
+        [Range(0,1)] public float m_NegativePressureScale = 0f;
+        [Min(0)] public float m_EOSExponent = 5f;
         public void Destroy()
         {
             m_Data.Destroy();
@@ -21,22 +24,18 @@ namespace Examples.PhysicsScenes.Particle
         {
             var _kernel = m_Data.GetKernel();
             m_Data.Construct(_kernel,_particles);
+            m_Pressures.Resize(_particles.Count);
+            
+            var eosScale = m_Data.m_TargetDensity * umath.sqr(m_Data.m_SpeedOfSound);
+            for (var i = 0; i < _particles.Count; i++)
+                m_Pressures[i] = ComputePressureFromEOS(m_Data.Density(i),m_Data.m_TargetDensity,eosScale,m_EOSExponent,m_NegativePressureScale);
+
             AccumulatePressureForces(_fixedDeltaTime,_kernel , m_Data , _particles);
             AccumulateViscosityForces(_kernel , m_Data, _particles);
         }
 
-        [Range(0,1)] public float m_NegativePressureScale = 0f;
-        [Min(0)] public float m_EOSExponent = 5f;
-        public List<double> m_Pressures = new();
-        public List<float3> m_PressureForces = new();
-        void AccumulatePressureForces(float _fixedDeltaTime,ISPH _kernel,ParticleSystemData _data,List<ParticleData> _particles)
+        protected virtual void AccumulatePressureForces(float _fixedDeltaTime,ISPH _kernel,SPHData _data,List<ParticleData> _particles)
         {
-            m_Pressures.Resize(_particles.Count);
-            var eosScale = _data.m_TargetDensity * umath.sqr(_data.m_SpeedOfSound);
-            for (var i = 0; i < _particles.Count; i++)
-                m_Pressures[i] = ComputePressureFromEOS(_data.Density(i),_data.m_TargetDensity,eosScale,m_EOSExponent,m_NegativePressureScale);
-
-            m_PressureForces.Resize(_particles.Count);
             for (var i = _particles.Count - 1; i >= 0; i--)
             {
                 var particle = _particles[i];
@@ -63,17 +62,14 @@ namespace Examples.PhysicsScenes.Particle
                     pressureForce -= (float)pressureMultiplier * gradient;
                 }
 
-                m_PressureForces[i] = pressureForce;
                 particle.force += pressureForce;
                 _particles[i] = particle;
             }
         }
         
         [Range(0,1)]public float m_ViscosityCoefficient = 0.1f;
-        public List<float3> m_ViscosityForces = new();
-        void AccumulateViscosityForces(ISPH _kernel,ParticleSystemData _data,List<ParticleData> _particles)
+        void AccumulateViscosityForces(ISPH _kernel,SPHData _data,List<ParticleData> _particles)
         {
-            m_ViscosityForces.Resize(_particles.Count);
             for (var i = 0; i < _particles.Count; i++)
             {
                 var particle = _particles[i];
@@ -91,7 +87,6 @@ namespace Examples.PhysicsScenes.Particle
                     viscosityForce += (float)mass2  * m_ViscosityCoefficient * velocityDelta;
                 }
 
-                m_ViscosityForces[i] = viscosityForce;
                 particle.force += viscosityForce;
                 _particles[i] = particle;
             }
@@ -127,10 +122,6 @@ namespace Examples.PhysicsScenes.Particle
             Gizmos.DrawWireSphere(position,m_Data.KernelRadius);
             foreach (var query in m_Data.Query(_particles,position))
                 Gizmos.DrawSphere(query.position,m_ParticleVisualizeRadius);
-        }
-
-        public void Draw(FTextureDrawer _drawer,List<ParticleData> _particles,Matrix4x4 _TRS)
-        {
         }
 
     }

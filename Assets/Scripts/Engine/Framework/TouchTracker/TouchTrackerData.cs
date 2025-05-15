@@ -3,10 +3,11 @@
 namespace Runtime.TouchTracker
 {
 
+   
     public struct TrackData
     {
         public bool valid;
-        public int index;
+        public int id;
         public Vector2 origin;
         public float lifeTime;
         public Vector2 current;
@@ -20,7 +21,7 @@ namespace Runtime.TouchTracker
         public Vector2 deltaNormalized;
         public TrackData(Touch _touch, Vector2 _screenSize, bool _valid)
         {
-            index = _touch.fingerId;
+            id = _touch.fingerId;
             origin = _touch.position;
             valid = _valid;
             

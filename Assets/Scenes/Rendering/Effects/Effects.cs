@@ -32,7 +32,7 @@ namespace Examples.Rendering.Effects
             var boundingBoxWS = (GBox)m_FocusTarget.bounds;
 
             var deltaTime = Time.deltaTime;
-            var originAndDistance = m_OriginDistanceDamper.Tick(deltaTime, boundingBoxWS.GetPoint(kfloat3.up*m_YAnchor).to4(-boundingBoxWS.size.magnitude()));
+            var originAndDistance = m_OriginDistanceDamper.Tick(deltaTime, boundingBoxWS.GetCenteredPoint(kfloat3.up*m_YAnchor).to4(-boundingBoxWS.size.magnitude()));
             var rotationWS = math.normalize( m_RotationDamper.Tick(deltaTime, quaternion.Euler(pitchYaw.to3xy() * kmath.kDeg2Rad)));
             
             var frustum = new GFrustum(0,rotationWS ,m_Camera.fieldOfView,m_Camera.aspect,m_Camera.nearClipPlane,m_Camera.farClipPlane);

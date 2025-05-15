@@ -11,6 +11,7 @@ namespace UnityEditor.Extensions
         public int2 size;
         public int SizeX => size.x;
         public int SizeY => size.y;
+
         public FTextureDrawer(int2 _size, Color _initial = default)
         {
             size = _size;

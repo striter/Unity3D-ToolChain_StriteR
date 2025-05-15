@@ -61,12 +61,12 @@ namespace Rendering.PostProcess
             m_Effect.OnValidate(ref m_Data);
         }
         
-        public void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor) => m_Effect.Configure(_buffer,_descriptor,ref m_Data);
+        public virtual void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor) => m_Effect.Configure(_buffer,_descriptor,ref m_Data);
         
         public virtual void Execute(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _executeData, 
             ScriptableRenderContext _context,ref RenderingData _renderingData)=>
             m_Effect.Execute(_executeData,ref  m_Data,_buffer, _src, _dst , _context, ref _renderingData);
 
-        public void FrameCleanUp(CommandBuffer _buffer) =>  m_Effect.FrameCleanUp(_buffer,ref m_Data);
+        public virtual void FrameCleanUp(CommandBuffer _buffer) =>  m_Effect.FrameCleanUp(_buffer,ref m_Data);
     }
 }

@@ -29,7 +29,6 @@ namespace Examples.PhysicsScenes.WaveSimulation
 
         public float Evaluate(float _x)
         {
-            
             var distance = math.min(math.abs(position - _x) * frequency,.5f) ;
             var height = amplitude * .5f * (math.cos(distance * kmath.kPI2)) + offset;
             return height;
@@ -63,6 +62,9 @@ namespace Examples.PhysicsScenes.WaveSimulation
             {
                 var timeInterval = (float)i / sampleInterval;
                 var sample = 0f;
+                foreach (var wave in m_Waves)
+                    sample += wave.Evaluate(timeInterval);
+                
                 var normalized = new float2(timeInterval, sample);
                 var pixel = (int2)(normalized * _drawer.size);
                 if(i == 0)

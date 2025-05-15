@@ -67,7 +67,7 @@ namespace Runtime.Optimize.Voxelizer
                 for (var j = 0; j < resolution; j++)
                 {
                     kIntersectDistances.Clear();
-                    var ray = new GRay(m_Box.GetPoint(new float3(0, step * (j + .5f),step * (i + .5f)) - .5f), kfloat3.right);
+                    var ray = new GRay(m_Box.GetCenteredPoint(new float3(0, step * (j + .5f),step * (i + .5f)) - .5f), kfloat3.right);
                     foreach (var triangle in m_Voxelizer.Query(m_Triangles,p=>ray.Intersect(p)))
                     {
                         if (ray.Intersect(triangle, out var distance))

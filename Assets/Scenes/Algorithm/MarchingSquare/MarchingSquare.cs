@@ -91,10 +91,6 @@ namespace Examples.Algorithm.MarchingSquare
             foreach (var squares in m_Squares)
                 UGizmos.DrawString(squares.m_Byte.ToString(), squares.m_Position);
         }
-        private void OnGUI()
-        {
-            TouchTracker.DrawDebugGUI();
-        }
 #endif
     }
 

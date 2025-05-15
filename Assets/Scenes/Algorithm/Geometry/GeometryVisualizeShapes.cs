@@ -45,7 +45,7 @@ public class GeometryVisualizeShapes : MonoBehaviour
             Gizmos.color = KColor.kSienna.SetA(.2f);
             volume.GetBoundingSphere().DrawGizmos();
 
-            var position = boundingBox.GetPoint(math.sin(UTime.time) *1.2f / 2);
+            var position = boundingBox.GetCenteredPoint(math.sin(UTime.time) *1.2f / 2);
             if (volume is ISDF sdf)
             {
                 Gizmos.color =  sdf.Contains(position) ? Color.green : Color.yellow;

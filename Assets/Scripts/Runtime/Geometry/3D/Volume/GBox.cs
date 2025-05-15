@@ -45,8 +45,11 @@ namespace Runtime.Geometry
         }
 
         public GBox GetBoundingBox() => this;
-        public float3 GetPoint(float3 _uvw) => center + _uvw * size;
+        public float3 GetUVW(float3 _pos) => (_pos - min) / size;
+        public float3 GetPoint(float3 _uvw) => min + _uvw * size;
         public float3 GetPoint(float _u, float _v, float _w) => GetPoint(new float3(_u, _v, _w));
+        public float3 GetCenteredPoint(float3 _uvw) => center + _uvw * size;
+        public float3 GetCenteredPoint(float _u, float _v, float _w) => GetCenteredPoint(new float3(_u, _v, _w));
         public float3 Origin => center;
 
         public bool Contains(float3 _point,float _bias = float.Epsilon)
@@ -55,35 +58,35 @@ namespace Runtime.Geometry
             return absOffset.x < extent.x && absOffset.y < extent.y && absOffset.z < extent.z;
         }
 
-        public IEnumerable<GPlane> GetPlanes(bool _x,bool _y,bool _z)
+        public IEnumerable<GPlane> GetPlanes(bool _x = true,bool _y = true,bool _z = true)
         {
             if (_x)
             {
-                yield return new GPlane(kfloat3.left,GetPoint(kfloat3.right*.5f));
-                yield return new GPlane(kfloat3.right,GetPoint(kfloat3.left*.5f));
+                yield return new GPlane(kfloat3.left,GetCenteredPoint(kfloat3.right*.5f));
+                yield return new GPlane(kfloat3.right,GetCenteredPoint(kfloat3.left*.5f));
             }
 
             if (_y)
             {
-                yield return new GPlane(kfloat3.down,GetPoint(kfloat3.up*.5f));
-                yield return new GPlane(kfloat3.up,GetPoint(kfloat3.down*.5f));
+                yield return new GPlane(kfloat3.down,GetCenteredPoint(kfloat3.up*.5f));
+                yield return new GPlane(kfloat3.up,GetCenteredPoint(kfloat3.down*.5f));
             }
 
             if (_z)
             {
-                yield return new GPlane(kfloat3.forward,GetPoint(kfloat3.back*.5f));
-                yield return new GPlane(kfloat3.back,GetPoint(kfloat3.forward*.5f));
+                yield return new GPlane(kfloat3.forward,GetCenteredPoint(kfloat3.back*.5f));
+                yield return new GPlane(kfloat3.back,GetCenteredPoint(kfloat3.forward*.5f));
             }
         }
 
         public IEnumerable<GQuad> GetQuads()
         {
-            yield return new GQuad(GetPoint(.5f,-.5f,-.5f),GetPoint(-.5f,-.5f,-.5f),GetPoint(-.5f,.5f,-.5f),GetPoint(.5f,.5f,-.5f));
-            yield return new GQuad(GetPoint(-.5f,-.5f,-.5f),GetPoint(-.5f,-.5f,.5f),GetPoint(-.5f,.5f,.5f),GetPoint(-.5f,.5f,-.5f));
-            yield return new GQuad(GetPoint(-.5f,-.5f,.5f),GetPoint(.5f,-.5f,.5f),GetPoint(.5f,.5f,.5f),GetPoint(-.5f,.5f,.5f));
-            yield return new GQuad(GetPoint(.5f,-.5f,.5f),GetPoint(.5f,-.5f,-.5f),GetPoint(.5f,.5f,-.5f),GetPoint(.5f,.5f,.5f));
-            yield return new GQuad(GetPoint(.5f,-.5f,.5f),GetPoint(-.5f,-.5f,.5f),GetPoint(-.5f,-.5f,-.5f),GetPoint(.5f,-.5f,-.5f));
-            yield return new GQuad(GetPoint(.5f,.5f,-.5f),GetPoint(-.5f,.5f,-.5f),GetPoint(-.5f,.5f,.5f),GetPoint(.5f,.5f,.5f));
+            yield return new GQuad(GetCenteredPoint(.5f,-.5f,-.5f),GetCenteredPoint(-.5f,-.5f,-.5f),GetCenteredPoint(-.5f,.5f,-.5f),GetCenteredPoint(.5f,.5f,-.5f));
+            yield return new GQuad(GetCenteredPoint(-.5f,-.5f,-.5f),GetCenteredPoint(-.5f,-.5f,.5f),GetCenteredPoint(-.5f,.5f,.5f),GetCenteredPoint(-.5f,.5f,-.5f));
+            yield return new GQuad(GetCenteredPoint(-.5f,-.5f,.5f),GetCenteredPoint(.5f,-.5f,.5f),GetCenteredPoint(.5f,.5f,.5f),GetCenteredPoint(-.5f,.5f,.5f));
+            yield return new GQuad(GetCenteredPoint(.5f,-.5f,.5f),GetCenteredPoint(.5f,-.5f,-.5f),GetCenteredPoint(.5f,.5f,-.5f),GetCenteredPoint(.5f,.5f,.5f));
+            yield return new GQuad(GetCenteredPoint(.5f,-.5f,.5f),GetCenteredPoint(-.5f,-.5f,.5f),GetCenteredPoint(-.5f,-.5f,-.5f),GetCenteredPoint(.5f,-.5f,-.5f));
+            yield return new GQuad(GetCenteredPoint(.5f,.5f,-.5f),GetCenteredPoint(-.5f,.5f,-.5f),GetCenteredPoint(-.5f,.5f,.5f),GetCenteredPoint(.5f,.5f,.5f));
         }
         
         public IEnumerable<float3> GetAxes()
@@ -106,14 +109,14 @@ namespace Runtime.Geometry
         public static readonly GBox kDefault = new GBox(0f,.5f);
         public IEnumerator<float3> GetEnumerator()
         {
-            yield return GetPoint(-.5f,-.5f,-.5f);
-            yield return GetPoint(-.5f,.5f,-.5f);
-            yield return GetPoint(-.5f,-.5f,.5f);
-            yield return GetPoint(-.5f,.5f,.5f);
-            yield return GetPoint(.5f,-.5f,-.5f);
-            yield return GetPoint(.5f,.5f,-.5f);
-            yield return GetPoint(.5f,-.5f,.5f);
-            yield return GetPoint(.5f,.5f,.5f);
+            yield return GetCenteredPoint(-.5f,-.5f,-.5f);
+            yield return GetCenteredPoint(-.5f,.5f,-.5f);
+            yield return GetCenteredPoint(-.5f,-.5f,.5f);
+            yield return GetCenteredPoint(-.5f,.5f,.5f);
+            yield return GetCenteredPoint(.5f,-.5f,-.5f);
+            yield return GetCenteredPoint(.5f,.5f,-.5f);
+            yield return GetCenteredPoint(.5f,-.5f,.5f);
+            yield return GetCenteredPoint(.5f,.5f,.5f);
         }
         
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

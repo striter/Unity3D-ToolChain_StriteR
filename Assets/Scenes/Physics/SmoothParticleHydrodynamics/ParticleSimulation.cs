@@ -17,11 +17,11 @@ namespace Examples.PhysicsScenes.Particle
         public bool m_Simulate = false;
         public float m_InitialMass = 0.1f;
         public float3 m_Gravity = new(0f, -9.8f,0);
-        public ParticleSystemSolver m_Solver = new();
+        public SPHSolver m_Solver = new();
         [Range(0f, 1f)] public float m_EmitterRange = 0.3f;
         
         [Header("Bounds")]
-        public GBox m_Bounds = new GBox(0f, new float3(1f,1.5f,1f));
+        public G2Box m_Bounds = new G2Box(0f, new float2(1f,1.5f));
         [Range(0, 1)] public float m_BoundsBounceCoefficient = 0.1f;
         private List<ParticleData> particles = new List<ParticleData>();
         public int Count => particles.Count;
@@ -42,12 +42,12 @@ namespace Examples.PhysicsScenes.Particle
             if (!Application.isPlaying)
                 return;
             particles.Clear();
-            var bounds = GBox.Minmax(m_Bounds.GetPoint(0f),m_Bounds.GetPoint(1f,m_EmitterRange,1f));
-            var positions = ULowDiscrepancySequences.BCCLattice3D(m_Solver.m_Data.m_TargetSpacing / bounds.size,0.01f);
+            var bounds = G2Box.Minmax(m_Bounds.GetPoint(0f),m_Bounds.GetPoint(1f,m_EmitterRange));
+            var positions = ULowDiscrepancySequences.BCCLattice2D(m_Solver.m_Data.m_TargetSpacing / bounds.size,0.01f);
             for(int i=0;i<positions.Length;i++)
                 AddParticle(new ParticleData(){force = 0f,
                     mass = m_InitialMass,
-                    position = bounds.GetPoint(positions[i]),
+                    position = bounds.GetPoint(positions[i]).to3xy(),
                     velocity = 0f});
         }
 
@@ -62,8 +62,8 @@ namespace Examples.PhysicsScenes.Particle
             if(Input.GetKeyDown(KeyCode.R))
                 Start();
             
-            if (Input.GetKey(KeyCode.Space))
-                m_Simulate = true;
+            if (Input.GetKeyDown(KeyCode.Space))
+                m_Simulate = !m_Simulate;
             base.Update();
         }
 
@@ -80,7 +80,6 @@ namespace Examples.PhysicsScenes.Particle
             {
                 AccumulateExtraForces(_fixedDeltaTime);
                 TimeIntegration(_fixedDeltaTime);
-                m_Simulate = false;
             }
         }
 
@@ -110,7 +109,7 @@ namespace Examples.PhysicsScenes.Particle
             {
                 var particle = particles[i];
                 
-                if (m_Bounds.Clamp(particle.position, out var clampedNewPosition))
+                if (m_Bounds.Clamp(particle.position.xy, out var clampedNewPosition))
                 {
                     particle.position.xy = clampedNewPosition.xy;
                     particle.velocity = -particle.velocity * m_BoundsBounceCoefficient;
@@ -138,8 +137,8 @@ namespace Examples.PhysicsScenes.Particle
 
         private void OnDrawGizmos()
         {
-            Gizmos.matrix = Matrix4x4.Translate(-m_Bounds.center);
-            m_Bounds.DrawGizmos();
+            Gizmos.matrix = Matrix4x4.Translate(-m_Bounds.center.to3xy());
+            m_Bounds.To3XY().DrawGizmos();
             m_Solver.DrawGizmos(particles);
         }
     }

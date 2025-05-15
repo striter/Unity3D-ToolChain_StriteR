@@ -7,6 +7,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.UI;
 
 namespace Rendering.PostProcess
 {
@@ -44,25 +45,61 @@ namespace Rendering.PostProcess
             material.EnableKeyword(kDOF_Mask, m_Focal is enum_Focal._DOF_MASK or enum_Focal._DOF_DISTANCE_MASK);
         }
 
+        public override void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor)
+        {
+            base.Configure(_buffer, _descriptor);
+            switch (m_Focal)
+            {
+                case enum_Focal._DOF_MASK:
+                case enum_Focal._DOF_DISTANCE_MASK:
+                {
+                    _descriptor.colorFormat = RenderTextureFormat.R8;
+                    _descriptor.depthBufferBits = 0;
+                    _buffer.GetTemporaryRT(kFocalMaskID, _descriptor);
+                }
+                    break;
+            }
+        }
+
         public override void Execute(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,
             RenderTextureDescriptor _executeData,  ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
-            if (m_Focal == enum_Focal._DOF_DISTANCE)
+            switch (m_Focal)
             {
-                base.Execute(_buffer, _src, _dst, _executeData, _context, ref _renderingData);
-                return;
+                case enum_Focal.None:
+                case enum_Focal._DOF_DISTANCE:
+                {
+                    base.Execute(_buffer, _src, _dst, _executeData, _context, ref _renderingData);
+                }
+                    break;
+                case enum_Focal._DOF_MASK:
+                case enum_Focal._DOF_DISTANCE_MASK:
+                {
+                    MaskTexturePass.DrawMask(kFocalMaskRT,_context,ref _renderingData,m_FocalMaskData);
+                    base.Execute(_buffer, _src, _dst, _executeData, _context, ref _renderingData);
+                }
+                    break;
+                default:
+                {
+                    Debug.LogError($"Unknown Focal {m_Focal}");
+                    _buffer.Blit(_src, _dst);
+                }
+                    break;
             }
+        }
 
-            var descriptor = _executeData;
-            descriptor.colorFormat = RenderTextureFormat.R8;
-            descriptor.depthBufferBits = 0;
-            _buffer.GetTemporaryRT(kFocalMaskID, descriptor);
-            _context.ExecuteCommandBuffer(_buffer);
-            _buffer.Clear();
-            
-            MaskTexturePass.DrawMask(kFocalMaskRT,_context,ref _renderingData,m_FocalMaskData);
-            base.Execute(_buffer, _src, _dst, _executeData, _context, ref _renderingData);
-            _buffer.ReleaseTemporaryRT(kFocalMaskID);
+        public override void FrameCleanUp(CommandBuffer _buffer)
+        {
+            base.FrameCleanUp(_buffer);
+            switch (m_Focal)
+            {
+                case enum_Focal._DOF_MASK:
+                case enum_Focal._DOF_DISTANCE_MASK:
+                {
+                    _buffer.ReleaseTemporaryRT(kFocalMaskID);
+                }
+                    break;
+            }
         }
     }
 

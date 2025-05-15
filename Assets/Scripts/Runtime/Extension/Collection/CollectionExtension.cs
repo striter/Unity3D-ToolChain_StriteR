@@ -487,52 +487,7 @@ namespace System.Linq.Extensions
                 }
                 return builder.ToString();
             }
-
-            public static T Index<T>(this IList<T> _collection, int _index) => _collection[_index];
-            public static IEnumerable<T> Iterate<T>(this IList<T> _collection, int _startIndex,int _endIndex = -1)
-            {
-                if(_endIndex== -1)
-                    _endIndex = _collection.Count;
-                for (int i = _startIndex; i < _endIndex; i++)
-                    yield return _collection[i];
-            }
-
-            public static void FillDefault<T>(this IList<T> _src, T _dst = default)
-            {
-                int length = _src.Count;
-                for (int i = 0; i < length; i++)
-                    _src[i] = _dst;
-            }
             
-            public static void FillArray<T>(this IList<T> _src, IList<T> _dst)
-            {
-                int length = _src.Count;
-                for (int i = 0; i < length; i++)
-                    _dst[i] =  _src[i];
-            }
-
-            public static void FillArray<T, Y>(this IList<T> _src, IList<Y> _dst, Func<T, Y> _convert)
-            {
-                int length = _src.Count;
-                for (int i = 0; i < length; i++)
-                {
-                    var element = _src[i];
-                    _dst[i] = _convert(element);
-                }
-            }
-            public static int FillArray<T>(this IList<T> _src, IList<T> _dst, Predicate<T> _validate) 
-            {
-                int index = 0;
-                int length = _src.Count;
-                for (int i = 0; i < length; i++)
-                {
-                    var element = _src[i];
-                    if(!_validate(element))
-                        continue;
-                    _dst[index++] = element;
-                }
-                return index;
-            }        
             //Vector2 
             public static (Vector2 total,int count) Sum(this IEnumerable<Vector2> _collection)      //To Be Continued With Demical
             {
@@ -616,6 +571,108 @@ namespace System.Linq.Extensions
             }
             
         #endregion
+        
+        #region IList
+        public static bool Contains<T>(this IList<T> _collection1, IList<T> _collection2) where T:IEquatable<T>
+        {
+            foreach (T element1 in _collection1)
+            {
+                foreach (T element2 in _collection2)
+                    if (element1.Equals(element2))
+                        return true;
+            }
+            return false;
+        }
+
+        public static byte Max(this IList<byte> _collection)
+        {
+            var maxByte = byte.MinValue;
+            var count = _collection.Count;
+            for (int i = 0; i < count; i++)
+            {
+                var compare = _collection[i];
+                maxByte = maxByte < compare ? compare : maxByte;
+            }
+            return maxByte;
+
+        }
+        public static void AddRange<T>(this IList<T> _src, IList<T> _dst)
+        {
+            int count = _dst.Count;
+            for (int i = 0; i < count; i++)
+                _src.Add(_dst[i]);
+        }
+        
+        public static void AddRange<T>(this IList<T> _src, IEnumerable<T> _collection)
+        {
+            foreach (var element in _collection)
+                _src.Add(element);
+        }
+
+        public static T Index<T>(this IList<T> _collection, int _index) => _collection[_index];
+        public static IEnumerable<T> Iterate<T>(this IList<T> _collection, int _startIndex,int _endIndex = -1)
+        {
+            if(_endIndex== -1)
+                _endIndex = _collection.Count;
+            for (int i = _startIndex; i < _endIndex; i++)
+                yield return _collection[i];
+        }
+
+        public static void FillDefault<T>(this IList<T> _src, T _dst = default)
+        {
+            int length = _src.Count;
+            for (int i = 0; i < length; i++)
+                _src[i] = _dst;
+        }
+        
+        public static void FillArray<T>(this IList<T> _src, IList<T> _dst)
+        {
+            int length = _src.Count;
+            for (int i = 0; i < length; i++)
+                _dst[i] =  _src[i];
+        }
+
+        public static void FillArray<T, Y>(this IList<T> _src, IList<Y> _dst, Func<T, Y> _convert)
+        {
+            int length = _src.Count;
+            for (int i = 0; i < length; i++)
+            {
+                var element = _src[i];
+                _dst[i] = _convert(element);
+            }
+        }
+        public static int FillArray<T>(this IList<T> _src, IList<T> _dst, Predicate<T> _validate) 
+        {
+            int index = 0;
+            int length = _src.Count;
+            for (int i = 0; i < length; i++)
+            {
+                var element = _src[i];
+                if(!_validate(element))
+                    continue;
+                _dst[index++] = element;
+            }
+            return index;
+        }        
+        
+        public static bool TryFind<T>(this IList<T> _collection,Predicate<T> _OnEachElement, out T _element)
+        {
+            _element = default;
+            var length = _collection.Count;
+            for (var i = 0; i < length; i++)
+            {
+                var element = _collection[i];
+                if (_OnEachElement(element))
+                {
+                    _element= element;
+                    return true;
+                }
+            }
+            return false;
+        }
+            
+        #endregion
+        
         #region Array
         public static void FillDefault<T>(this T[] _src, T _dst = default)
         {
@@ -873,42 +930,6 @@ namespace System.Linq.Extensions
             return _collection;
         }
 
-        public static (T start, T end, float value,float repeat) Gradient<T>(this IList<T> _collection,float _value)
-        {
-            Debug.Assert(_collection!=null, "collection can't be null");
-            Debug.Assert(_collection.Count!=0, "collection can't be 0");
-            Debug.Assert(_value>=0, "value must be non-negative");
-                
-            
-            var count = _collection.Count;
-            var start = (int)_value % count;
-            var end = (start + 1) % count;
-            return (_collection[start], _collection[end], _value%1,_value % count);
-        }
-        
-        public static bool Contains<T>(this IList<T> _collection1, IList<T> _collection2) where T:IEquatable<T>
-        {
-            foreach (T element1 in _collection1)
-            {
-                foreach (T element2 in _collection2)
-                    if (element1.Equals(element2))
-                        return true;
-            }
-            return false;
-        }
-
-        public static byte Max(this IList<byte> _collection)
-        {
-            var maxByte = byte.MinValue;
-            var count = _collection.Count;
-            for (int i = 0; i < count; i++)
-            {
-                var compare = _collection[i];
-                maxByte = maxByte < compare ? compare : maxByte;
-            }
-            return maxByte;
-
-        }
         
         public static void FillHashset<T>(this IEnumerable<T> _collection, HashSet<T> _hashset,bool _sameCheck = false)
         {
@@ -944,19 +965,18 @@ namespace System.Linq.Extensions
 
             return _list;
         }
-        public static void AddRange<T>(this IList<T> _src, IList<T> _dst)
+        public static (T start, T end, float value,float repeat) Gradient<T>(this IList<T> _collection,float _value)
         {
-            int count = _dst.Count;
-            for (int i = 0; i < count; i++)
-                _src.Add(_dst[i]);
+            Debug.Assert(_collection!=null, "collection can't be null");
+            Debug.Assert(_collection.Count!=0, "collection can't be 0");
+            Debug.Assert(_value>=0, "value must be non-negative");
+                
+            
+            var count = _collection.Count;
+            var start = (int)_value % count;
+            var end = (start + 1) % count;
+            return (_collection[start], _collection[end], _value%1,_value % count);
         }
-        
-        public static void AddRange<T>(this IList<T> _src, IEnumerable<T> _collection)
-        {
-            foreach (var element in _collection)
-                _src.Add(element);
-        }
-
         public static void Resize<T>(this List<T> _src,int _newSize,Func<T> _onEachSpawn = null,Action<T> _onEachDespawn = null)
         {
             for(var i=_src.Count;i<_newSize;i++)
@@ -1123,6 +1143,7 @@ namespace System.Linq.Extensions
         }
         
         #endregion
+        
     }
 
 }

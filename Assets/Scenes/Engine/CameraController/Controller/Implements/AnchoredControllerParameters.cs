@@ -70,7 +70,7 @@ namespace CameraController
                     boundingBox = new GBox(origin,1f);
                 if(distanceAABBAdaption)
                     finalDistance *= boundingBox.size.y;
-                finalAnchor = boundingBox.GetPoint(kfloat3.up*anchorY);
+                finalAnchor = boundingBox.GetCenteredPoint(kfloat3.up*anchorY);
             }
 
             if (useTransformPosition)

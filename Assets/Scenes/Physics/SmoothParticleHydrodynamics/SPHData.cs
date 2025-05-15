@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Examples.PhysicsScenes.Particle
 {
     [Serializable]
-    public class ParticleSystemData
+    public class SPHData
     {
         public float m_TargetSpacing = 0.1f;
         public float m_KernelRadiusOverTargetSpacing = 1.8f;
