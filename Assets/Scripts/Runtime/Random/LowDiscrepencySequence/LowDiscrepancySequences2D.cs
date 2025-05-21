@@ -110,18 +110,23 @@ public static partial class ULowDiscrepancySequences   // 0 - 1
         
         return points;
     }
-    
-    public static float2[] PoissonDisk2D(int _maxCount,int _k = 30,IRandomGenerator _seed = null,Func<float2,float> _getRadiusNormalized = null) => PoissonDisk2D(sqrt(_maxCount) + .5f,_maxCount,_k,_seed,_getRadiusNormalized);
+
+    public static float2[] PoissonDisk2D(int _maxCount,int _k = 30,IRandomGenerator _seed = null,Func<float2,float> _getRadiusNormalized = null) => PoissonDisk2D(1f,new float2(_maxCount,_maxCount),_k,_seed,_getRadiusNormalized);
     public static float2[] PoissonDisk2D(float _radius,float2 _gridSize,int _k = 30,IRandomGenerator _seed = null,Func<float2,float> _getRadiusNormalized = null)
     {
         if (_gridSize.anyLesser(0f))
         {
-            Debug.LogError($"[LDS PoissionDisk] Invalid spacing:{_gridSize}");
+            Debug.LogError($"[LDS PoissonDisk] Invalid spacing:{_gridSize}");
             return Array.Empty<float2>();
         }
         var r = _radius;
+        if (r < 1f)
+        {
+            _gridSize *= 1f / r;
+            r = 1f;
+        }
         var k = _k;
-        var checkList = new List<float2>();
+        var checkList =  new List<float2>();
         var samplePoints = new MultiHashMap<int2,float2>();
         
         var initialPoint = new float2(URandom.Random01(_seed) , URandom.Random01(_seed) ) * _gridSize;
@@ -139,7 +144,7 @@ public static partial class ULowDiscrepancySequences   // 0 - 1
             {
                 var angle = URandom.Random01(_seed)* PI * 2;
                 var direction = new float2(cos(angle), sin(angle));
-                var radius = _getRadiusNormalized?.Invoke(activePoint/_gridSize) ?? r;
+                var radius = _getRadiusNormalized?.Invoke(activePoint/_gridSize) * r ?? r;
                 var distance = URandom.Random01(_seed) * (2 * radius - radius) + radius;
                 var newPoint = activePoint + direction * distance;
 

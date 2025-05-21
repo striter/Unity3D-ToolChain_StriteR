@@ -51,10 +51,10 @@ namespace Examples.Algorithm.SamplePatternVisualize
                 ESamplePattern.HammersLey => new float3[patternWidth * patternHeight].Remake((i, p) => (ULowDiscrepancySequences.Hammersley2D((uint)i, (uint)(patternWidth * patternHeight))-.5f).to3xz()),
                 ESamplePattern.Sobol => ULowDiscrepancySequences.Sobol2D((uint)(patternWidth * patternHeight)).Select(p=>(p-.5f).to3xz()).ToArray(),
                 ESamplePattern.PoissonDisk => m_Texture != null
-                    ? ULowDiscrepancySequences.PoissonDisk2D(patternWidth*patternHeight, 30, randomGenerator, val =>
+                    ? ULowDiscrepancySequences.PoissonDisk2D((int)math.sqrt(patternWidth*patternHeight), 30, randomGenerator, val =>
                         math.lerp(3f, 1f, UColor.RGBtoLuminance(m_Texture.GetPixel((int)(val.x * m_Texture.width), (int)(val.y * m_Texture.height)).to3())))
                         .Select(p=>(p-.5f).to3xz()).ToArray()
-                    : ULowDiscrepancySequences.PoissonDisk2D(patternWidth * patternHeight,30,randomGenerator).Select(p=>(p-.5f).to3xz()).ToArray(),
+                    : ULowDiscrepancySequences.PoissonDisk2D((int)math.sqrt(patternWidth * patternHeight),30,randomGenerator).Select(p=>(p-.5f).to3xz()).ToArray(),
                 ESamplePattern.BCCLattice => ULowDiscrepancySequences.BCCLattice2D(1f / math.sqrt(patternWidth * patternHeight)).Select(p=>(p-.5f).to3xz()).ToArray(),
                 ESamplePattern.BCCLattice3D => ULowDiscrepancySequences.BCCLattice3D(1f/math.sqrt(patternWidth * patternHeight)).Remake(p=>p-.5f),
                 _ => patterns

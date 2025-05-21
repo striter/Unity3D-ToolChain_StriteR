@@ -81,8 +81,8 @@ namespace Examples.Algorithm.PathFinding
 
         private void OnSceneGUI(SceneView _sceneView)
         {
-            GRay ray = _sceneView.camera.ScreenPointToRay(UnityEditor.Extensions.UECommon.GetScreenPoint(_sceneView));
-            GPlane plane = new GPlane(Vector3.up, transform.position);
+            var ray = (GRay)_sceneView.camera.ScreenPointToRay(UnityEditor.Extensions.UECommon.GetScreenPoint(_sceneView));
+            var plane = new GPlane(Vector3.up, transform.position);
             ray.IntersectPoint(plane,out var hitPoint);
             if (Event.current.type == EventType.MouseDown)
                 switch (Event.current.button)

@@ -185,7 +185,7 @@ namespace Examples.Algorithm.PathFinding
             var positions = PoolList<float2>.Empty(seedHash);
             var triangles = PoolList<PTriangle>.Empty(seedHash);
             var random = new LCGRandom(seedHash);
-            ULowDiscrepancySequences.PoissonDisk2D(resolution*resolution,30,random).Select(p=>(p-.5f)*kRadius).FillList(positions);
+            ULowDiscrepancySequences.PoissonDisk2D(resolution,30,random).Select(p=>(p-.5f)*kRadius).FillList(positions);
             
             m_Nodes.Clear();
             foreach (var (index,position) in positions.LoopIndex())

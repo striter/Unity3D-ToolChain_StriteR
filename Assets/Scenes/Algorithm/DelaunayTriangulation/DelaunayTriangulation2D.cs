@@ -51,7 +51,7 @@ namespace Examples.Algorithm.DelaunayTriangulation
         void PoissonDisk()
         {
             var size = (int)math.sqrt(m_RandomCount);
-            ULowDiscrepancySequences.PoissonDisk2D(size*size).Select(p=>(p - .5f)*kRandomRadius).FillList(m_Vertices);
+            ULowDiscrepancySequences.PoissonDisk2D(size).Select(p=>(p - .5f)*kRandomRadius).FillList(m_Vertices);
             OnValidate();
         }
         private void OnValidate()
