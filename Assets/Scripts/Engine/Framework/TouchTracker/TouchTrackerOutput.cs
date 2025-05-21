@@ -28,11 +28,11 @@ namespace Runtime.TouchTracker
         {
             var pinch = 0f;
             
-            #if UNITY_STANDALONE || UNITY_EDITOR
+        #if UNITY_STANDALONE || UNITY_EDITOR
             var scroll = Input.GetAxis("Mouse ScrollWheel");
             if (math.abs(scroll) > float.Epsilon && ExecuteEvents.GetEventHandler<IScrollHandler>(!TouchTracker.FilterUITrack(new Touch(){position = Input.mousePosition},_eventSystem,out var results) ?results[0].gameObject : null) == null)
                 pinch += scroll * Time.unscaledDeltaTime * -10000f ;      // pixels / sec while scrolling
-            #endif
+        #endif
 
             if (_tracks.Count < 2) 
                 return pinch;

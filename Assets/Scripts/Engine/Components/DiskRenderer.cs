@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
-using Runtime.Scripting;
+using Runtime.Pool;
 using UnityEngine;
 
 namespace Runtime
@@ -12,9 +12,9 @@ namespace Runtime
         [Min(0.01f)] public float m_Radius = 1f;
         public RangeFloat m_AngleRange = new RangeFloat(0f,180f);
         [MinMaxRange(0f,1f)] public RangeFloat m_DiskTrim = new RangeFloat(0f,1f);
-        public EUVMode m_UVMode = EUVMode.Repeat;
+        [Title]public EUVMode m_UVMode = EUVMode.Repeat;
         [Foldout(nameof(m_UVMode), EUVMode.Repeat), Range(0, 180f)] public float m_DegreePerRepeat = 60f;
-        public bool m_EdgeLine = true;
+        [Title]public bool m_EdgeLine = true;
         [Foldout(nameof(m_EdgeLine),true),Range(0.01f,1f)] public float m_EdgeLineWidth = 0.1f;
         [Foldout(nameof(m_EdgeLine),true)] public bool m_LineTrim = false;
         public EResolution m_Resolution = EResolution._64;
@@ -37,15 +37,16 @@ namespace Runtime
             Repeat,
             Normalized,
             PerFrame,
+            Quad,
         }
         
         private static GAxis kAxis = GAxis.kDefault;
         protected override void PopulateMesh(Mesh _mesh, Transform _viewTransform)
         {
-            ListPool<Vector3>.ISpawn(out var vertices);
-            ListPool<Vector3>.ISpawn(out var normals);
-            ListPool<Vector2>.ISpawn(out var uvs);
-            ListPool<int>.ISpawn(out var indexes);
+            PoolList<Vector3>.ISpawn(out var vertices);
+            PoolList<Vector3>.ISpawn(out var normals);
+            PoolList<Vector2>.ISpawn(out var uvs);
+            PoolList<int>.ISpawn(out var indexes);
             List<int> indexes1 = null;
 
             var upVector = kAxis.up;
@@ -100,6 +101,15 @@ namespace Runtime
                         uvs.Add(G2Quad.kDefaultUV[3]);
                     }
                         break;
+                    case EUVMode.Quad:
+                    {
+                        var boundingBox = GBox.kOne * m_Radius;
+                        uvs.Add(boundingBox.GetUVW(curLine.start).xz);
+                        uvs.Add(boundingBox.GetUVW(curLine.end).xz);
+                        uvs.Add(boundingBox.GetUVW(nextLine.end).xz);
+                        uvs.Add(boundingBox.GetUVW(nextLine.start).xz);
+                    }
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -122,7 +132,7 @@ namespace Runtime
                 curLine = curLine.Trim(lineTrim);
                 nextLine = nextLine.Trim(lineTrim);
                 
-                ListPool<int>.ISpawn(out indexes1);
+                PoolList<int>.ISpawn(out indexes1);
                 curLine.PopulateVertex(m_EdgeLineWidth,kAxis.up,vertices, indexes1, uvs, normals);
                 nextLine.PopulateVertex(m_EdgeLineWidth,kAxis.up,vertices, indexes1, uvs, normals);
             }
@@ -136,13 +146,13 @@ namespace Runtime
             if (indexes1 != null)
             {
                 _mesh.SetIndices(indexes1, MeshTopology.Triangles, 1);
-                ListPool<int>.IDespawn(indexes1);
+                PoolList<int>.IDespawn(indexes1);
             }
             
-            ListPool<Vector3>.IDespawn(vertices);
-            ListPool<Vector3>.IDespawn(normals);
-            ListPool<Vector2>.IDespawn(uvs);
-            ListPool<int>.IDespawn(indexes);
+            PoolList<Vector3>.IDespawn(vertices);
+            PoolList<Vector3>.IDespawn(normals);
+            PoolList<Vector2>.IDespawn(uvs);
+            PoolList<int>.IDespawn(indexes);
         }
 
         public override void DrawGizmos(Transform _viewTransform)

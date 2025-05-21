@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Runtime.Geometry;
-using Runtime.Scripting;
+using Runtime.Pool;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -29,7 +29,7 @@ namespace Runtime.DataStructure
             public List<int> childNodeIndex;
             public bool IsParent => childNodeIndex.Count > 0;
             public int ElementCount => elementsIndex.Count;
-            private static ListPool<int> kIndexPool = new();
+            private static PoolList<int> kIndexPool = new();
 
             public static Node Spawn() => new() {
                 iteration = -1,

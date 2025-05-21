@@ -26,6 +26,7 @@ public partial class umath
         var newSign = signNonZero(signNonZero(a) ^ s);
         return abs(a) * newSign;
     }
+    
     public static float2 invBilinearLerp(float2 tl, float2 tr, float2 br, float2 bl, float2 p)
     {
         var e = tr - tl;
@@ -35,7 +36,7 @@ public partial class umath
         var k2 = cross(g,f);
         var k1 = cross(e, f);
         var k0 = cross(h, e);
-        if (math.abs(k2) > float.Epsilon)
+        if (abs(k2) > float.Epsilon)
         {
             var w = k1 * k1 - 4f * k0 * k2;
             if (w < 0f)
@@ -44,11 +45,10 @@ public partial class umath
             var ik2 = .5f / k2;
             var v = (-k1 - w) * ik2;
             var u = (h.x - f.x * v) / (e.x + g.x * v);
-            if (!RangeFloat.k01.Contains(u) || !RangeFloat.k01.Contains(v))
-            {
-                v = (-k1 + w) * ik2;
-                u = (h.x - f.x * v) / (e.x + g.x * v);
-            }
+            if (RangeFloat.k01.Contains(u) && RangeFloat.k01.Contains(v)) 
+                return new float2(u, v);
+            v = (-k1 + w) * ik2;
+            u = (h.x - f.x * v) / (e.x + g.x * v);
             return new float2(u,v);
         }
         else

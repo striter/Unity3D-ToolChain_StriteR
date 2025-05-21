@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Runtime.Pool;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -8,6 +9,11 @@ namespace System.Linq.Extensions
 {
     public static class UCollection
     {
+        static class Keys
+        {
+            public static readonly int kSorting = nameof(SortIndex).GetHashCode();
+        }
+        
         #region IEnumrable
             public static void Execute(this IEnumerator _iterator)
             {
@@ -182,7 +188,7 @@ namespace System.Linq.Extensions
             public static void Traversal<T>(this IEnumerable<T> _collection, Action<T> _onEach, bool _copy = false)
             {
                 if (_copy)
-                    _collection = UList.Traversal(_collection);
+                    _collection = PoolList<T>.Traversal(_collection);
 
                 if (_collection is IList<T> list)
                 {
@@ -779,7 +785,7 @@ namespace System.Linq.Extensions
         
         public static void SortIndex<T>(this T[] _array, IEnumerable<int> _indexes)
         {
-            var tempList  = UList.Empty<T>();
+            var tempList  = PoolList<T>.Empty(Keys.kSorting);
             foreach (var index in _indexes)
                 tempList.Add(_array[index]);
 
@@ -889,7 +895,7 @@ namespace System.Linq.Extensions
 
         public static void SortIndex<T>(this List<T> _list, IEnumerable<int> _indexes)
         {
-            var tempList  = UList.Empty<T>();
+            var tempList  = PoolList<T>.Empty(Keys.kSorting);
             foreach (var index in _indexes)
                 tempList.Add(_list[index]);
             _list.Clear();

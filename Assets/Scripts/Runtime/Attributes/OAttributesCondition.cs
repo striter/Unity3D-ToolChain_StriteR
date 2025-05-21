@@ -38,8 +38,8 @@ public abstract class ConditionAttribute : PropertyAttribute
 
     static bool FieldEquals(object _comparer, object[] refValues)
     {
-        if (_comparer is Enum)
-            return refValues?.Any(p=>((Enum)_comparer).HasFlag((Enum)p))??false;
+        if (_comparer is Enum enumComparer && _comparer.GetType().GetCustomAttributes(typeof(FlagsAttribute),false).Length>0)
+            return refValues?.All(p => enumComparer.HasFlag((Enum)p)) ?? false;
         return refValues?.Contains(_comparer) ??  _comparer == null;
     }
 }

@@ -6,6 +6,7 @@ using Runtime;
 using Runtime.DataStructure;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
+using Runtime.Pool;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -17,7 +18,7 @@ namespace EndlessOcean
         public EndlessOceanChunk(int _maxIteration) : base(0, _maxIteration) { }
         public void Construct(G2Box _boundary)
         {
-            var point = UList.Empty<float2>();
+            var point = PoolList<float2>.Empty(nameof(EndlessOceanChunk));
             point.Add(float2.zero);
             Construct(_boundary,point);
         }
@@ -61,11 +62,12 @@ namespace EndlessOcean
         {
             if (!m_CullingCamera)
                 return;
-            
-            var indexes = UList.Empty<int>();
-            var vertices = UList.Empty<float2>();
-            var normals = UList.Empty<Vector3>();
-            var tangents = UList.Empty<Vector4>();
+
+            var kListQuery = "EndlessOcean".GetHashCode();
+            var indexes = PoolList<int>.Empty(kListQuery);
+            var vertices = PoolList<float2>.Empty(kListQuery);
+            var normals = PoolList<Vector3>.Empty(kListQuery);
+            var tangents = PoolList<Vector4>.Empty(kListQuery);
             var positions = ULowDiscrepancySequences.PoissonDisk2D(m_CellDivision * m_CellDivision);
 
             var frustumPlanes = new GFrustum(m_CullingCamera).GetFrustumPlanes();
@@ -81,7 +83,7 @@ namespace EndlessOcean
                 tangents.AddRange(positions.Select(p => Vector3.forward.ToVector4(1f)));
             }
             
-            var triangles = UList.Empty<PTriangle>();
+            var triangles = PoolList<PTriangle>.Empty(kListQuery);
             UTriangulation.BowyerWatson(vertices,ref triangles);
             indexes.AddRange(triangles.Resolve<PTriangle,int>());
             
@@ -89,7 +91,6 @@ namespace EndlessOcean
             _mesh.SetNormals(normals);
             _mesh.SetTangents(tangents);
             _mesh.SetIndices(indexes,MeshTopology.Triangles,0);
-            
             
             // var meshFragments = new List<IMeshFragment>();
             // var vertexLineCount = (m_CellDivision + 1); 

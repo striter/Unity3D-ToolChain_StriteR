@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
 using Runtime.Geometry.Extension.BoundingSphere;
+using Runtime.Pool;
 using Unity.Mathematics;
 
 namespace Runtime.Geometry.Extension
@@ -54,7 +55,7 @@ namespace Runtime.Geometry.Extension
 
         public static List<float2> GetBoundingPolygon(IList<float2> _positions,float _bias = float.Epsilon)        //Graham Scan
         {
-            var polygonPoints = UList.Empty<float2>();
+            var polygonPoints = PoolList<float2>.Empty(nameof(QuickHull));
             if(_positions.Count<=0)
                 return polygonPoints;
             
@@ -84,7 +85,7 @@ namespace Runtime.Geometry.Extension
         //https://algs4.cs.princeton.edu/99hull/quickhull/Algorithm.html
         public static List<float2> QuickHull(IList<float2> _positions)
         {
-            var convexHull = UList.Empty<float2>();
+            var convexHull = PoolList<float2>.Empty(nameof(QuickHull));
             if(_positions.Count<=0)
                 return convexHull;
 

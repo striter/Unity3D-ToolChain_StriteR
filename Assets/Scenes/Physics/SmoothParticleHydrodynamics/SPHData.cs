@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Extensions;
 using Runtime.Geometry;
-using Runtime.Scripting;
+using Runtime.Pool;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -29,7 +29,7 @@ namespace Examples.PhysicsScenes.SmoothParticleHydrodynamics
         private ParticleBVH m_ParticleQueries = new ParticleBVH(4,8);
 
         private List<List<ParticleData>> m_ParticleQueryCache = new();
-        private static ListPool<ParticleData> kIndexPool = new();
+        private static PoolList<ParticleData> kIndexPool = new();
         public void Destroy()
         {
             m_ParticleQueryCache.Clear();

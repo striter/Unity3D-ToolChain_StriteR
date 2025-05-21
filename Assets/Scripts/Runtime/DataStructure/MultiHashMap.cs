@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Runtime.Scripting;
+using Runtime.Pool;
 
 namespace Runtime.DataStructure
 {
@@ -8,7 +8,7 @@ namespace Runtime.DataStructure
         private List<Key> m_Keys = new();
         private List<Value> m_Values = new List<Value>();
         private Dictionary<Key, List<Value>> m_Map = new Dictionary<Key, List<Value>>();
-        private ListPool<Value> kGridElementPool = new ();
+        private PoolList<Value> kGridElementPool = new ();
         public void Dispose()
         {
             m_Map = null;

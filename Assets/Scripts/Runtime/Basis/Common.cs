@@ -91,13 +91,13 @@ public struct RangeFloat
         length = _length;
     }
 
-    public static readonly RangeFloat k01 = new RangeFloat(0f,1f);
+    public static readonly RangeFloat k01 = new (0f,1f);
     public float Clamp(float _value)=>math.clamp(_value,start,end);
-    public bool Contains(float _check) => start <= _check && _check <= end;
+    public readonly bool Contains(float _check) => start <= _check && _check <= end;
     public float NormalizedAmount(float _check) => umath.invLerp(start, end, _check);
     public float Evaluate(float _normalized) => start + length * _normalized;
-    public static RangeFloat Minmax(float _min, float _max) => new RangeFloat(_min, _max - _min);
-    public static RangeFloat operator*(RangeFloat _src, float _scale) => new RangeFloat(_src.start * _scale, _src.length * _scale);
+    public static RangeFloat Minmax(float _min, float _max) => new(_min, _max - _min);
+    public static RangeFloat operator*(RangeFloat _src, float _scale) => new (_src.start * _scale, _src.length * _scale);
 }
 
 [Serializable]

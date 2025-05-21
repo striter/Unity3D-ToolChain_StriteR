@@ -45,7 +45,7 @@ namespace Runtime.Geometry
         }
 
         public GBox GetBoundingBox() => this;
-        public float3 GetUVW(float3 _pos) => (_pos - min) / size;
+        public readonly float3 GetUVW(float3 _pos) => (_pos - min) / size;
         public float3 GetPoint(float3 _uvw) => min + _uvw * size;
         public float3 GetPoint(float _u, float _v, float _w) => GetPoint(new float3(_u, _v, _w));
         public float3 GetCenteredPoint(float3 _uvw) => center + _uvw * size;
@@ -101,11 +101,14 @@ namespace Runtime.Geometry
         
         public static GBox operator +(GBox _src, float3 _dst) => new GBox(_src.center+_dst,_src.extent);
         public static GBox operator -(GBox _src, float3 _dst) => new GBox(_src.center-_dst,_src.extent);
+        public static GBox operator *(GBox _src, float _dst) => new GBox(_src.center * _dst,_src.extent*_dst);
+        public static GBox operator /(GBox _src, float _dst) => new GBox(_src.center / _dst,_src.extent/_dst);
         
         public static implicit operator Bounds(GBox _box)=> new Bounds(_box.center, _box.size);
         public static implicit operator GBox(Bounds _bounds) => new GBox(_bounds.center,_bounds.extents);
 
         public static readonly GBox kZero = new GBox(0, 0);
+        public static readonly GBox kOne = new GBox(.5f,.5f);
         public static readonly GBox kDefault = new GBox(0f,.5f);
         public IEnumerator<float3> GetEnumerator()
         {

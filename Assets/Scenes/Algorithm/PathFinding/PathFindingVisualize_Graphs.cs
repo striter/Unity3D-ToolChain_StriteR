@@ -8,6 +8,7 @@ using Runtime.Geometry;
 using Runtime.Geometry.Extension;
 using Runtime.Geometry.Extension.Sphere;
 using Runtime.Random;
+using Runtime.Pool;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -176,14 +177,14 @@ namespace Examples.Algorithm.PathFinding
     {
         [Range(8,32)] public int resolution = 16;
         [Range(1,20f)] public float kRadius = 20;
-        public string seed = "PoissonDisk";
-        private Dictionary<int, Node> m_Nodes = new Dictionary<int, Node>();
+        private readonly int seedHash = "PoissonDisk".GetHashCode();
+        private Dictionary<int, Node> m_Nodes = new();
         public int Count => m_Nodes.Count;
         void Ctor()
         {
-            var positions = UList.Empty<float2>();
-            var triangles = UList.Empty<PTriangle>();
-            var random = new LCGRandom(seed.GetHashCode());
+            var positions = PoolList<float2>.Empty(seedHash);
+            var triangles = PoolList<PTriangle>.Empty(seedHash);
+            var random = new LCGRandom(seedHash);
             ULowDiscrepancySequences.PoissonDisk2D(resolution*resolution,30,random).Select(p=>(p-.5f)*kRadius).FillList(positions);
             
             m_Nodes.Clear();

@@ -1,16 +1,18 @@
 ﻿
 using System.Collections.Generic;
 using System.Linq.Extensions;
+using Runtime.Pool;
 
 public static class USearching
 {
+    static readonly int kSearchingPoolKey = nameof(USearching).GetHashCode();
     public static IEnumerable<T> BFS<T>(this IGraphFinite<T> _graph, T _start)
     {
         if(_graph.Count == 0)
             yield break;
         
-        var queue = UQueue.Empty<T>();
-        var visited = UHashSet.Empty<T>();
+        var queue = PoolQueue<T>.Empty(kSearchingPoolKey);
+        var visited = PoolHashSet<T>.Empty(kSearchingPoolKey);
         queue.Enqueue(_start);
         visited.Add(_start);
 
@@ -35,8 +37,8 @@ public static class USearching
         if(_graph.Count == 0)
             yield break;
 
-        var stack = UStack.Empty<T>();
-        var visited = UHashSet.Empty<T>();
+        var stack = PoolStack<T>.Empty(kSearchingPoolKey);
+        var visited = PoolHashSet<T>.Empty(kSearchingPoolKey);
         stack.Push(_start);
         visited.Add(_start);
         

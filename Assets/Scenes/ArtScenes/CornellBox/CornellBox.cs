@@ -3,6 +3,7 @@ using CameraController;
 using CameraController.Demo;
 using Runtime;
 using Runtime.Geometry;
+using Runtime.Pool;
 using Runtime.TouchTracker;
 using TPool;
 using UnityEngine;
@@ -26,7 +27,7 @@ namespace Examples.ArtScenes.CornellBox
         {
             var views = transform.Find(kViewModelRoot);
             m_Views = new (transform.Find(kViewsTemplateRoot));
-            var quads  = m_Bounding.GetQuads().FillList(UList.Empty<GQuad>());
+            var quads  = m_Bounding.GetQuads().FillList(PoolList<GQuad>.Empty(nameof(CornellBox)));
             if (quads.Count != views.childCount)
             {
                 Debug.LogError($"Expected {views.childCount} but got {quads.Count}");
@@ -78,7 +79,7 @@ namespace Examples.ArtScenes.CornellBox
             var viewModelRoot = transform.Find(kViewModelRoot);
             if (viewModelRoot != null)
             {
-                var quads  = m_Bounding.GetQuads().FillList(UList.Empty<GQuad>());
+                var quads  = m_Bounding.GetQuads().FillList(PoolList<GQuad>.Empty(nameof(CornellBox)));
                 for (int i = 0; i < viewModelRoot.childCount; i++)
                 {
                     var quad = quads[i];

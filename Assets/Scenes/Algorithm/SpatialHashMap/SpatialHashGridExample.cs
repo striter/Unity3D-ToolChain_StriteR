@@ -6,6 +6,7 @@ using Procedural.Tile;
 using Runtime.DataStructure;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
+using Runtime.Pool;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -67,7 +68,7 @@ namespace Examples.Algorithm.SpatialHashGrid
         void Update()
         {
             var deltaTime = Time.deltaTime;
-            var actors = m_Actors.FillList(UList.Empty<Actor>());
+            var actors = m_Actors.FillList(PoolList<Actor>.Empty(nameof(SpatialHashGridExample)));
             m_SpatialHashMap.Construct(actors,PositionToNode);
             var querySphere = new GSphere(m_Actors.transform.position, m_SenseRadius.end);
             m_Actors.Traversal(p=>p.Tick(deltaTime,m_SpatialHashMap.Query(p=> p.bounds.Intersect(querySphere),actors)));

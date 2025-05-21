@@ -1,15 +1,10 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Extensions;
-using Unity.Mathematics;
+using Runtime.Pool;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Runtime.TouchTracker
 {
-   
-    
     public static class TouchTracker
     {
         static readonly List<TrackData> m_TrackData = new List<TrackData>();
@@ -48,7 +43,7 @@ namespace Runtime.TouchTracker
         private static IList<Touch> GetTouches()
         {
             #if  UNITY_STANDALONE || UNITY_EDITOR
-                var touches = UList.Empty<Touch>();
+                var touches = PoolList<Touch>.Empty(nameof(GetTouches));
                 var position = (Vector2)Input.mousePosition;
                 for (var index = 0; index < 3; index++)
                 {

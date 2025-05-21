@@ -5,6 +5,7 @@ using System.Linq.Extensions;
 using System.Numerics;
 using Runtime.Geometry;
 using Runtime.Geometry.Curves.Spline;
+using Runtime.Pool;
 using Runtime.SignalProcessing;
 using TPool;
 using Unity.Mathematics;
@@ -169,7 +170,7 @@ public class AudioAnalysis : MonoBehaviour
                 m_FrequencySample[i] = new cfloat2(m_OutputSample[i] * UAudio.Hanning(i,N), 0);
 
             if (m_DFT)
-                Fourier.DFT(m_FrequencySample,N).FillList(UList.Empty<cfloat2>()).FillArray(m_FrequencySample);
+                Fourier.DFT(m_FrequencySample,N).FillList(PoolList<cfloat2>.Empty(nameof(AudioAnalysis))).FillArray(m_FrequencySample);
             else
                 Fourier.FFT(m_FrequencySample);
             
