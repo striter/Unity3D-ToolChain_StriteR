@@ -21,6 +21,7 @@ namespace Examples.Algorithm.TileGrid
     {
         private TileGraph m_Grid = new TileGraph(kSize);
 
+        #if UNITY_EDITOR
         private void OnEnable() => SceneView.duringSceneGui += OnSceneGUI;
         private void OnDisable() => SceneView.duringSceneGui -= OnSceneGUI;
 
@@ -50,6 +51,7 @@ namespace Examples.Algorithm.TileGrid
             }
             
         }
+        #endif
     }
 
 }

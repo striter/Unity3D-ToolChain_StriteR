@@ -1,3 +1,5 @@
+
+#if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
@@ -23,7 +25,6 @@ namespace Runtime.Optimize.Voxelizer
         public GBox m_Box = GBox.kDefault;
         public EResolution m_Resolution = EResolution._64;
 
-#if UNITY_EDITOR
         [EditorPath] public string m_Path;
         private BoundingVolumeHierarchy<GBox,GTriangle,BoundaryTreeHelper.GBox_GTriangle> m_Voxelizer = new(64,8);
 
@@ -116,7 +117,7 @@ namespace Runtime.Optimize.Voxelizer
             if(m_DrawGizmos)
                 m_Voxelizer.DrawGizmos(m_Triangles);
         }
-#endif
     }
 
 }
+#endif

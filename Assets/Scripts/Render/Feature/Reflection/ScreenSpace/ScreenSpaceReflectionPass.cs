@@ -9,7 +9,7 @@ namespace Rendering.Pipeline
     
     class ScreenSpaceReflectionPass : ScriptableRenderPass
     {
-        private readonly PassiveInstance<Shader> m_ReflectionBlit=new PassiveInstance<Shader>(()=>RenderResources.FindInclude("Hidden/ScreenSpaceReflection"));
+        private readonly PassiveInstance<Shader> m_ReflectionBlit = new PassiveInstance<Shader>(()=>RenderResources.FindInclude("Hidden/ScreenSpaceReflection"));
         private readonly Material m_Material;
         private ScreenSpaceReflectionData m_Data;
         static readonly int kSSRTex = Shader.PropertyToID("_ScreenSpaceReflectionTexture");

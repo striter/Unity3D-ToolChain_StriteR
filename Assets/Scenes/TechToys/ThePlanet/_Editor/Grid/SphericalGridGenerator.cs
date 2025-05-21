@@ -31,9 +31,11 @@ namespace TechToys.ThePlanet.Grid
         {
         }
 
+#if UNITY_EDITOR
         public void OnSceneGUI(SceneView _sceneView)
         {
         }
+#endif
 
         public void OnGizmos()
         {

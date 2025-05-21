@@ -1884,8 +1884,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 700a36809ef0bd64f919f357b45b0fa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Normal: 2
-  m_Reflection: 2
 --- !u!114 &742298818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1910,12 +1908,16 @@ MonoBehaviour:
     m_MixRed: {x: 0, y: 0, z: 0}
     m_MixGreen: {x: 0, y: 0, z: 0}
     m_MixBlue: {x: 0, y: 0, z: 0}
-    m_UseMaskTexture: 0
     m_Bloom: 1
     m_BloomData:
       m_SampleMode: 0
       m_Threshold: 2
-      m_LayerMask: 2147483647
+      m_MaskData:
+        mode: 0
+        renderMask: 0
+        overrideMaterial: {fileID: 0}
+        overrideShader: {fileID: 0}
+        inheritDepth: 0
       m_Color: {r: 1, g: 1, b: 1, a: 1}
       m_Blur:
         m_BlurType: 8
@@ -2759,7 +2761,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Constants:
-    kForcePerSecond: 0
+    kForcePerSecond: 5
 --- !u!114 &1345815184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3897,6 +3899,7 @@ MonoBehaviour:
   m_TolerangeInAngles: 20
   m_DistanceDamper: 1
   m_ExtraDivision: 1
+  m_LocalSpace: 0
   m_LinePositions:
   - x: 4
     y: 0.049999714
@@ -3952,9 +3955,6 @@ MonoBehaviour:
   - x: 0
     y: 1
     z: 2.220446e-17
-    - x: 0
-    y: 1
-    z: 2.2204464e-17
   - x: 0
     y: 1
     z: 2.2204459e-17

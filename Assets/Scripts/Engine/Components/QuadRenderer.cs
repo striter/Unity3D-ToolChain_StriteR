@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Runtime.Geometry;
+﻿using Runtime.Geometry;
 using Runtime.Geometry.Extension;
 using Runtime.Scripting;
 using UnityEngine;
@@ -8,7 +7,6 @@ namespace Runtime
 {
     public class QuadRenderer : ARendererBase
     {
-        
         public GQuad m_Quad = GQuad.kDefault;
         protected override void PopulateMesh(Mesh _mesh, Transform _viewTransform)
         {

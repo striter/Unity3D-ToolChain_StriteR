@@ -58,9 +58,6 @@ namespace Examples.Algorithm.PathFinding
         private Vector3 m_Agent,m_Destination;
         private Queue<float3> m_Paths = new Queue<float3>();
 
-        private void OnEnable() => SceneView.duringSceneGui += OnSceneGUI;
-        private void OnDisable() => SceneView.duringSceneGui -= OnSceneGUI;
-
         private void OnValidate()
         {
             Randomize();
@@ -76,7 +73,12 @@ namespace Examples.Algorithm.PathFinding
             m_Destination = Graph.RandomPosition();
             PathFind();
         }
+
         
+    #if UNITY_EDITOR
+        private void OnEnable() => SceneView.duringSceneGui += OnSceneGUI;
+        private void OnDisable() => SceneView.duringSceneGui -= OnSceneGUI;
+
         private void OnSceneGUI(SceneView _sceneView)
         {
             GRay ray = _sceneView.camera.ScreenPointToRay(UnityEditor.Extensions.UECommon.GetScreenPoint(_sceneView));
@@ -106,6 +108,7 @@ namespace Examples.Algorithm.PathFinding
                 }
             }
         }
+    #endif
 
         private void OnDrawGizmos()
         {

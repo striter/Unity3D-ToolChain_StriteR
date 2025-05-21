@@ -9,16 +9,15 @@ namespace Runtime
 {
     public class DiskRenderer : ARendererBase
     {
-        public GAxis m_Axis = GAxis.kDefault;
         [Min(0.01f)] public float m_Radius = 1f;
-        
-        [Header("Details")]
         public RangeFloat m_AngleRange = new RangeFloat(0f,180f);
-        public EResolution m_Resolution = EResolution._64;
         [MinMaxRange(0f,1f)] public RangeFloat m_DiskTrim = new RangeFloat(0f,1f);
         public EUVMode m_UVMode = EUVMode.Repeat;
+        [Foldout(nameof(m_UVMode), EUVMode.Repeat), Range(0, 180f)] public float m_DegreePerRepeat = 60f;
         public bool m_EdgeLine = true;
         [Foldout(nameof(m_EdgeLine),true),Range(0.01f,1f)] public float m_EdgeLineWidth = 0.1f;
+        [Foldout(nameof(m_EdgeLine),true)] public bool m_LineTrim = false;
+        public EResolution m_Resolution = EResolution._64;
         
         public enum EResolution
         {
@@ -37,8 +36,10 @@ namespace Runtime
         {
             Repeat,
             Normalized,
+            PerFrame,
         }
         
+        private static GAxis kAxis = GAxis.kDefault;
         protected override void PopulateMesh(Mesh _mesh, Transform _viewTransform)
         {
             ListPool<Vector3>.ISpawn(out var vertices);
@@ -47,15 +48,17 @@ namespace Runtime
             ListPool<int>.ISpawn(out var indexes);
             List<int> indexes1 = null;
 
-            var upVector = m_Axis.up;
+            var upVector = kAxis.up;
             var resolution = (float)m_Resolution;
-            var forward = m_Axis.forward.rotateCW(m_Axis.up, kmath.kPI2 * (m_AngleRange.start / 360f));
+            var forward = kAxis.forward.rotateCW(kAxis.up, kmath.kPI2 * (m_AngleRange.start / 360f));
             for (var i = 0; i < resolution; i++)
             {
-                var curX = (i / resolution);
-                var nextX = ((i+1) / resolution);
-                var curLine = new GLine(m_Axis.origin,m_Axis.origin + (m_Radius * forward.rotateCW(m_Axis.up, kmath.kPI2 * curX * (m_AngleRange.length / 360f)))).Trim(m_DiskTrim);
-                var nextLine = new GLine(m_Axis.origin,m_Axis.origin + (m_Radius *forward.rotateCW(m_Axis.up, kmath.kPI2 * nextX * (m_AngleRange.length / 360f)))).Trim(m_DiskTrim);
+                var curX = i / resolution;
+                var nextX = (i+1) / resolution;
+                var curDegree = curX * m_AngleRange.length;
+                var nextDegree =  nextX * m_AngleRange.length;
+                var curLine = new GLine(kAxis.origin,kAxis.origin + m_Radius * forward.rotateCW(kAxis.up,curDegree * kmath.kDeg2Rad)).Trim(m_DiskTrim);
+                var nextLine = new GLine(kAxis.origin,kAxis.origin + m_Radius *forward.rotateCW(kAxis.up, nextDegree * kmath.kDeg2Rad)).Trim(m_DiskTrim);
 
                 var indexOffset = vertices.Count;
                 vertices.Add(curLine.start);
@@ -80,6 +83,17 @@ namespace Runtime
                         break;
                     case EUVMode.Repeat:
                     {
+                        var repeat = m_DegreePerRepeat;
+                        var curRepeat = curDegree / repeat;
+                        var nextRepeat = nextDegree / repeat;
+                        uvs.Add(new Vector2(curRepeat, 0f));
+                        uvs.Add(new Vector2(curRepeat, 1f));
+                        uvs.Add(new Vector2(nextRepeat, 1f));
+                        uvs.Add(new Vector2(nextRepeat, 0f));
+                    }
+                        break;
+                    case EUVMode.PerFrame:
+                    {
                         uvs.Add(G2Quad.kDefaultUV[0]);
                         uvs.Add(G2Quad.kDefaultUV[1]);
                         uvs.Add(G2Quad.kDefaultUV[2]);
@@ -100,12 +114,17 @@ namespace Runtime
 
             if (m_EdgeLine)
             {
-                var curLine = new GLine(m_Axis.origin,m_Axis.origin + forward * m_Radius).Trim(m_DiskTrim);
-                var nextLine = new GLine(m_Axis.origin,m_Axis.origin + m_Radius *forward.rotateCW(m_Axis.up, kmath.kPI2 * (m_AngleRange.length / 360f))).Trim(m_DiskTrim);
+                var curLine = new GLine(kAxis.origin,kAxis.origin + forward * m_Radius);
+                var nextLine = new GLine(kAxis.origin,kAxis.origin + m_Radius *forward.rotateCW(kAxis.up, kmath.kPI2 * (m_AngleRange.length / 360f)));
+                var lineTrim = m_DiskTrim;
+                if (!m_LineTrim)
+                    lineTrim = RangeFloat.Minmax(0f,m_DiskTrim.end);
+                curLine = curLine.Trim(lineTrim);
+                nextLine = nextLine.Trim(lineTrim);
                 
                 ListPool<int>.ISpawn(out indexes1);
-                curLine.PopulateVertex(m_EdgeLineWidth,m_Axis.up,vertices, indexes1, uvs, normals);
-                nextLine.PopulateVertex(m_EdgeLineWidth,m_Axis.up,vertices, indexes1, uvs, normals);
+                curLine.PopulateVertex(m_EdgeLineWidth,kAxis.up,vertices, indexes1, uvs, normals);
+                nextLine.PopulateVertex(m_EdgeLineWidth,kAxis.up,vertices, indexes1, uvs, normals);
             }
             
             _mesh.subMeshCount = indexes1 != null ? 2 : 1;
@@ -130,16 +149,16 @@ namespace Runtime
         {
             base.DrawGizmos(_viewTransform);
             Gizmos.matrix = transform.localToWorldMatrix;
-            m_Axis.DrawGizmos();
+            kAxis.DrawGizmos();
             Gizmos.color = Color.white.SetA(.3f);
-            new GDisk(m_Axis.origin,m_Axis.up,m_Radius).DrawGizmos();
+            new GDisk(kAxis.origin,kAxis.up,m_Radius).DrawGizmos();
 
             var resolution = (float)m_Resolution;
-            var forward = m_Axis.forward.rotateCW(m_Axis.up, kmath.kPI2 * (m_AngleRange.start / 360f)) * m_Radius;
+            var forward = kAxis.forward.rotateCW(kAxis.up, kmath.kPI2 * (m_AngleRange.start / 360f)) * m_Radius;
             for (var i = 0; i <= resolution; i++)
             {
                 var curX = (i / resolution);
-                var diskEdge = new GLine(m_Axis.origin,m_Axis.origin + (m_Radius * forward.rotateCW(m_Axis.up, kmath.kPI2 * curX * (m_AngleRange.length / 360f)))).Trim(m_DiskTrim);
+                var diskEdge = new GLine(kAxis.origin,kAxis.origin + (m_Radius * forward.rotateCW(kAxis.up, kmath.kPI2 * curX * (m_AngleRange.length / 360f)))).Trim(m_DiskTrim);
                 diskEdge.DrawGizmos();
             }
         }

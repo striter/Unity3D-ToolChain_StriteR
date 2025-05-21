@@ -5,7 +5,7 @@ using Runtime.Geometry;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 
-namespace Examples.PhysicsScenes.Particle
+namespace Examples.PhysicsScenes.SmoothParticleHydrodynamics
 {
     public struct ParticleData
     {

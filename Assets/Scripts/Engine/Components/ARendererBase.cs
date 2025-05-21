@@ -12,7 +12,7 @@ namespace Runtime
     }
     
     
-    [ExecuteInEditMode,RequireComponent(typeof(MeshFilter),typeof(MeshRenderer)),DisallowMultipleComponent]
+    [ExecuteInEditMode,RequireComponent(typeof(MeshFilter)),DisallowMultipleComponent]
     public abstract class ARendererBase : MonoBehaviour
     {
         private bool m_Dirty;

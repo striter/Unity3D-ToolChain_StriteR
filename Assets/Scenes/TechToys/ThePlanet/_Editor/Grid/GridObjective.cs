@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -10,7 +9,9 @@ namespace TechToys.ThePlanet
         void Setup();
         void Tick(float _deltaTime);
         void Clear();
+#if UNITY_EDITOR
         void OnSceneGUI(SceneView _sceneView);
+#endif
         void OnGizmos();
         void Output(GridCollection _collection);
     }
@@ -21,4 +22,3 @@ namespace TechToys.ThePlanet
         SphericalGrid,
     }
 }
-#endif

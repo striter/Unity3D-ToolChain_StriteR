@@ -20,6 +20,7 @@ public static class kmath
     public static readonly float kSQRT3Half = kSQRT3 / 2f;
     public static readonly float kInvSQRT3 = 1f / kSQRT3;
 
+    //d = degree
     public const float kSin0d = 0, kSin30d = 0.5f,     kSin45d=kSQRT2/2f, kSin60d = kSQRT3/2f, kSin90d = 1f,             kSin120d = kSQRT3/2;
     public const float kCos0d = 1, kCos30d = kSQRT3/2, kCos45d=kSQRT2/2f, kCos60d = 0.5f,      kCos90d = 0f,             kCos120d = -1/2f;
     public const float kTan0d = 0, kTan30d = kSQRT3/3, kTan45d = 1,       kTan60d = kSQRT3,    kTan90d = float.MaxValue, kTan120d =-kSQRT3;

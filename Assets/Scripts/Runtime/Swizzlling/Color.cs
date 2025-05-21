@@ -167,29 +167,13 @@ public static partial class UColor
         return new Color(Mathf.Cos(_value.r), Mathf.Cos(_value.g), Mathf.Cos(_value.b), _value.a);//Mathf.Cos(_value.a));
     }
     
-    public static Color IndexToColor(int _index)
-    {
-        switch (_index % 16)
-        {
-            default: return Color.grey;
-            case 0: return Color.red;
-            case 1: return Color.green;
-            case 2: return Color.blue;
-            case 3: return Color.yellow;
-            case 4: return Color.cyan;
-            case 5: return Color.white;
-            case 6: return Color.magenta;
-            case 7: return KColor.kSandyBrown;
-            case 8: return KColor.kPaleGreen;
-            case 9: return KColor.kPaleTurquoise;
-            case 10: return KColor.kChocolate;
-            case 11:return KColor.kCrimson;
-            case 12: return KColor.kLime;
-            case 13: return KColor.kOlive;
-            case 14: return KColor.kTeal;
-            case 15: return KColor.kTomato;
-        }
-    }
+    public static Color IndexToColor(int _index) => (_index % 16) switch {
+            0 => Color.red, 1 => Color.green, 2 => Color.blue, 3 => Color.yellow,
+            4 => Color.cyan, 5 => Color.white, 6 => Color.magenta, 7 => KColor.kSandyBrown,
+            8 => KColor.kPaleGreen, 9 => KColor.kPaleTurquoise, 10 => KColor.kChocolate, 11 => KColor.kCrimson,
+            12 => KColor.kLime,13 => KColor.kOlive, 14 => KColor.kTeal, 15 => KColor.kTomato,
+            _ => Color.grey
+        };
 }
 
 [Serializable]

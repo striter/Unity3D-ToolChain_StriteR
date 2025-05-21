@@ -26,16 +26,12 @@ namespace Rendering.Pipeline.Component
         private void OnValidate()
         {
             OnDestroy();
-            Awake();
-        }
-        private void Awake()
-        {
             if (m_ShellMaterial == null)
                 return;
             m_MeshRenderer=GetComponent<MeshRenderer>();
             var count = UEnum.GetValue(m_ShellCount);
             m_Materials = new Material[count];
-            for (int i = count-1; i >=0; i--)        //Edge to skin so it matches early Z
+            for (var i = count-1; i >=0; i--)        //Edge to skin so it matches early Z
             {
                 m_Materials[i] = new Material(m_ShellMaterial)
                     { name = $"{m_ShellMaterial.name}  Temporal: {i}", hideFlags = HideFlags.HideAndDontSave };
@@ -44,6 +40,8 @@ namespace Rendering.Pipeline.Component
             m_MeshRenderer.materials = m_Materials;
         }
 
+        private void Awake() => OnValidate();
+
 #if UNITY_EDITOR
         private void Update()
         {
@@ -51,7 +49,7 @@ namespace Rendering.Pipeline.Component
                 return;
             
             var count = UEnum.GetValue(m_ShellCount);
-            for (int i = count-1; i >=0; i--)        //Edge to skin so it matches early Z
+            for (var i = count-1; i >=0; i--)        //Edge to skin so it matches early Z
             {
                 m_Materials[i].CopyPropertiesFromMaterial(m_ShellMaterial); 
                 m_Materials[i].SetFloat(ID_ShellIndex,(float)i/count);

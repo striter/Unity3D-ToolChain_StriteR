@@ -44,7 +44,7 @@ namespace UnityEditor.Extensions
             };
         }
 
-        static bool ConditionPassed(ConditionAttribute.ConditionPrediciton condition,IEnumerable<(FieldInfo,object)> _fields)
+        static bool ConditionPassed(ConditionAttribute.ConditionPrediction condition,IEnumerable<(FieldInfo,object)> _fields)
         {
             if (string.IsNullOrEmpty(condition.fieldName))
                 return condition.prediction(null);

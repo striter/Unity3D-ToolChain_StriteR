@@ -39,22 +39,19 @@ namespace Runtime.Geometry.Extension
             _indices[_start + 5] = _quad0;
         }
         
-        public static Vector2 IndexToQuadUV(int _index)
-        {
-            return _index switch
-            {
+        public static Vector2 IndexToQuadUV(int _index) => _index switch {
                 0 => Vector2.zero,
                 1 => Vector2.right,
                 2 => Vector2.one,
                 3 => Vector2.up,
                 _ => throw new Exception("Invalid Index:" + _index)
             };
-        }
+        
         public static void PopulateVertex(this GQuad _quad, List<Vector3> _vertices, List<int> _indices,
             List<Vector2> _uvs = default, List<Vector3> _normals = default,List<Vector4> _tangents = default,List<Color> _colors = default,Color _color=default)
         {
-            int indexOffset = _vertices.Count;
-            for (int i = 0; i < 4; i++)
+            var indexOffset = _vertices.Count;
+            for (var i = 0; i < 4; i++)
             {
                 _vertices.Add(_quad[i]);
                 _uvs?.Add(IndexToQuadUV(i));
@@ -103,7 +100,7 @@ namespace Runtime.Geometry.Extension
             
             QuadToTriangleIndices(_indices, indexOffset + 0, indexOffset + 1, indexOffset + 2,indexOffset+3);
         }
-        
+
         public static PTriangle[] GetPolygons(int[] _indices)
         {
             PTriangle[] polygons = new PTriangle[_indices.Length / 3];

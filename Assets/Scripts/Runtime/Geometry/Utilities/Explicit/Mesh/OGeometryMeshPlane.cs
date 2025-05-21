@@ -41,14 +41,14 @@ namespace Runtime.Geometry.Extension.Mesh
         {
             boundsMin = Vector3.zero;
             boundsMax = Vector3.zero;
-            int index = 0;
+            var index = 0;
 
-            int sqrRadius = umath.sqr(radius+1);
+            var sqrRadius = umath.sqr(radius+1);
             var unitPoints = KHexagon.kFlatUnitPoints;
 
             // foreach (var coord in  UHexagon.GetCoordsInRadius(HexCoord.zero, radius,rounded))
-            for (int i = -radius; i <= radius; i++)
-            for (int j = -radius; j <= radius; j++)
+            for (var i = -radius; i <= radius; i++)
+            for (var j = -radius; j <= radius; j++)
             {
                var coord = new HexCoord(i, j);
                if (!coord.InRange(radius))
@@ -56,11 +56,11 @@ namespace Runtime.Geometry.Extension.Mesh
                if (rounded && coord.x * coord.x + coord.y * coord.y + coord.z*coord.z >= sqrRadius)
                    continue;
                
-               uint startVertex = (uint)(index*vertexCountPerHexagon);
+               var startVertex = (uint)(index*vertexCountPerHexagon);
                var startTriangle = index*triangleCountPerHexagon;
-               var center = math.mul(KHexagon.kFlatAxialToPixel,(int2)coord);
+               var center = KHexagon.kFlatAxialToPixel.Multiply(coord.x,coord.y);
                
-               int curVertexIndex = (int)startVertex;
+               var curVertexIndex = (int)startVertex;
                if (centered)
                {
                    var position = new Vector3(center.x, 0f, center.y)*tileSize;

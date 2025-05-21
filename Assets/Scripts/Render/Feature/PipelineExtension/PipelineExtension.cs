@@ -40,9 +40,8 @@ namespace Rendering.Pipeline
         {
             Instance = this;
             m_GlobalParameters = new GlobalParametersPass() { renderPassEvent = RenderPassEvent.BeforeRendering };
-            m_MotionVectorTexture = new MotionVectorTexturePass()
-                { renderPassEvent = RenderPassEvent.BeforeRenderingOpaques - 1 };
-            m_Normal = new NormalTexturePass() { renderPassEvent = RenderPassEvent.BeforeRenderingSkybox + 1 };
+            m_MotionVectorTexture = new MotionVectorTexturePass() { renderPassEvent = RenderPassEvent.BeforeRenderingOpaques - 1 };
+            m_Normal = new NormalTexturePass() { renderPassEvent = RenderPassEvent.BeforeRenderingSkybox };
         }
 
         protected override void Dispose(bool _disposing)

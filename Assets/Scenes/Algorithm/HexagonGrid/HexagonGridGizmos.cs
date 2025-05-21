@@ -58,14 +58,8 @@ namespace Examples.Algorithm.HexagonGrid
             {
                 var area = UHexagonArea.GetBelongingArea(coord);
 
-                var index = (area.coord.x-area.coord.y + int.MaxValue / 2) % 3;
-                // var index = (i - k + int.MaxValue) % 3;
-                switch (index)
-                {
-                    case 0: Gizmos.color = Color.red; break;
-                    case 1: Gizmos.color = Color.blue; break;
-                    case 2:  Gizmos.color = Color.green; break;
-                }
+                var index = area.coord.x-area.coord.y + int.MaxValue / 2;
+                Gizmos.color = UColor.IndexToColor(index);
                 coord.DrawHexagon();
             }
             
@@ -338,17 +332,8 @@ namespace Examples.Algorithm.HexagonGrid
     
     public static class GridHelper
     {
-        public static float3 ToWorld(this HexCoord _hexCube)
-        {
-            return _hexCube.ToCoord().ToPosition();
-        }
-#if UNITY_EDITOR
-        public static void DrawHexagon(this HexCoord _coord)
-        {
-            var hexagonList = UHexagon.kUnitPoints.Select(p=>p.ToPosition() + _coord.ToWorld()).ToArray();
-            UGizmos.DrawLinesConcat(hexagonList);
-        }
-#endif
+        public static float3 ToWorld(this HexCoord _hexCube) => _hexCube.ToCoord().ToPosition();
+        public static void DrawHexagon(this HexCoord _coord) => UGizmos.DrawLinesConcat(UHexagon.kUnitPoints.Select(p=>p.ToPosition() + _coord.ToWorld()));
     }
     
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using Unity.Mathematics;
 
-namespace Examples.PhysicsScenes.Particle
+namespace Examples.PhysicsScenes.SmoothParticleHydrodynamics
 {
         public interface ISPH
         {

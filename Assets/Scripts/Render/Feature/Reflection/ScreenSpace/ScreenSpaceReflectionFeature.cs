@@ -2,13 +2,13 @@
 
 namespace Rendering.Pipeline
 {
-    public class ScreenSpaceReflectFeature : AScriptableRendererFeature
+    public class ScreenSpaceReflectionFeature : AScriptableRendererFeature
     {
-        public ScreenSpaceReflectionData m_Data;
-        private ScreenSpaceReflectionPass m_Pass ;
+        public ScreenSpaceReflectionData m_Data = ScreenSpaceReflectionData.kDefault;
+        private ScreenSpaceReflectionPass m_Pass;
         public override void Create()
         {
-            m_Pass = new(m_Data) { renderPassEvent = RenderPassEvent.AfterRenderingOpaques};
+            m_Pass = new(m_Data) { renderPassEvent = RenderPassEvent.BeforeRenderingSkybox + 1 };
         }
 
         protected override void EnqueuePass(ScriptableRenderer _renderer, ref RenderingData _renderingData)

@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using UnityEditor.Extensions;
 using UnityEngine;
 
-namespace Examples.PhysicsScenes.Particle
+namespace Examples.PhysicsScenes.SmoothParticleHydrodynamics
 {
     public enum ESPHKernel
     {

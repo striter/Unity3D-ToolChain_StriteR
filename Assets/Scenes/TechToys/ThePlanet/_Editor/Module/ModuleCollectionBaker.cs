@@ -1,8 +1,9 @@
+
+#if UNITY_EDITOR
 using TechToys.ThePlanet.Module.Cluster;
 using System.Linq.Extensions;
 using UnityEditor.Extensions.EditorPath;
 
-#if UNITY_EDITOR
 namespace TechToys.ThePlanet.Baking
 {
     using UnityEditor.Extensions;

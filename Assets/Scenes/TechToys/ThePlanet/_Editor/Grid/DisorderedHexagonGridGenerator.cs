@@ -84,7 +84,8 @@ namespace TechToys.ThePlanet.Grid
             foreach (var key in m_ConvexIterator.Keys)
                 m_ConvexIterator[key].Clear();
         }
-
+        
+#if UNITY_EDITOR
         public void OnSceneGUI(SceneView _sceneView)
         {
             GRay ray = _sceneView.camera.ScreenPointToRay(_sceneView.GetScreenPoint());
@@ -115,6 +116,7 @@ namespace TechToys.ThePlanet.Grid
                 }
             }
         }
+#endif
 
         public void OnGizmos()
         {
@@ -463,7 +465,6 @@ namespace TechToys.ThePlanet.Grid
             yield return null;
         }
 
-        #if UNITY_EDITOR
         public void DrawGizmos()
         {
             Gizmos.color = Color.white.SetA(.5f);
@@ -487,7 +488,6 @@ namespace TechToys.ThePlanet.Grid
             foreach (var quad in m_Quads)
                 UGizmos.DrawLinesConcat(quad.Iterate(p=>m_Vertices[p].ToPosition()));
         }
-        #endif
     }
 
     public static class Extension

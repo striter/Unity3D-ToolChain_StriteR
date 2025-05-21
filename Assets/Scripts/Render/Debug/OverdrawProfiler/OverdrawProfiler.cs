@@ -34,7 +34,7 @@ namespace Render.Debug
         static void OnBeginCameraRendering(ScriptableRenderContext _context, Camera _camera)
         {
             var cameraData = _camera.GetUniversalAdditionalCameraData();
-            if (_camera.cameraType == CameraType.Preview || _camera.cameraType == CameraType.Reflection)
+            if (_camera.cameraType is CameraType.Preview or CameraType.Reflection)
                 return;
             
             cameraData.scriptableRenderer.EnqueuePass(m_RenderPass);

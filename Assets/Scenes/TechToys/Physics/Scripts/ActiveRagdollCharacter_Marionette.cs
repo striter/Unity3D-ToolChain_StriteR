@@ -46,8 +46,8 @@ namespace Examples.PhysicsScenes
 
         public bool GrabCheck(out Vector3 _grabPoint, out Rigidbody _grabBody)
         {
-            Vector3 handPos = m_Hand.transform.position + m_Hand.transform.up * .15f;
-            Collider[] casts = UnityEngine.Physics.OverlapSphere(handPos, .05f, PhysicsLayer.I_ItemMask);
+            var handPos = m_Hand.transform.position + m_Hand.transform.up * .15f;
+            var casts = UnityEngine.Physics.OverlapSphere(handPos, .05f, PhysicsLayer.I_ItemMask);
             _grabPoint = Vector3.zero;
             _grabBody = null;
             foreach (var cast in casts)

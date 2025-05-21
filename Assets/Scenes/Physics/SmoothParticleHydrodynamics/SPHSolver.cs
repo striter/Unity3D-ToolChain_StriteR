@@ -6,7 +6,7 @@ using Unity.Mathematics;
 using UnityEditor.Extensions;
 using UnityEngine;
 
-namespace Examples.PhysicsScenes.Particle
+namespace Examples.PhysicsScenes.SmoothParticleHydrodynamics
 {
     [Serializable]
     public class SPHSolver
