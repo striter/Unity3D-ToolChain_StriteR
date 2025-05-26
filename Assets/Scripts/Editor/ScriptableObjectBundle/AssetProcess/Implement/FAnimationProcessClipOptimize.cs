@@ -15,7 +15,7 @@ namespace UnityEditor.Extensions.AssetPipeline.Process
             _importer.animationCompression = ModelImporterAnimationCompression.Optimal;
             return true;
         }
-        protected override bool Postprocess(ModelImporter _importer, AnimationClip _target)
+        protected override bool Postprocess(AnimationClip _target)
         {
             var precisionRegex = $"f{m_FloatingPointPrecision}";
             var tolerance = 1f / (float)Math.Pow(10, m_FloatingPointPrecision);

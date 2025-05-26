@@ -28,7 +28,7 @@ namespace UnityEditor.Extensions.AssetPipeline.Process
             return true;
         }
 
-        protected override bool Postprocess(TextureImporter _importer,Texture2D _target)
+        protected override bool Postprocess(Texture2D _target)
         {
             return false;
         }

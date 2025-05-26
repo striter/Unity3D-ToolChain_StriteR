@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: AnimationOptimize
   m_EditorClassIdentifier: 
   m_Objects:
-  - {fileID: 6532457977772424829}
+  - {fileID: 7481947304979757770}
   m_Enable: 1
---- !u!114 &6532457977772424829
+--- !u!114 &7481947304979757770
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -25,8 +25,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5bf4af3d1d08456fa9d0297ba13e7dcf, type: 3}
-  m_Name: 0_FAnimationClipOptimizeProcess
+  m_Name: 0_AnimationClipOptimize
   m_EditorClassIdentifier: 
-  m_Title: FAnimationClipOptimizeProcess
+  m_Title: AnimationClipOptimize
   m_FloatingPointPrecision: 3
   m_RemoveStaticIdentityCurve: 1

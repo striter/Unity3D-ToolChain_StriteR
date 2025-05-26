@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Extensions;
-using UnityEditor.Extensions.AssetPipeline.Process;
 using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace UnityEditor.Extensions.AssetPipeline
 {
@@ -26,22 +23,9 @@ namespace UnityEditor.Extensions.AssetPipeline
                 
                 var importer = AssetImporter.GetAtPath(assetPath);
                 foreach (var process in bundle.m_Objects.CollectAs<ScriptableObject, Process>())
-                    if (_object == null)
-                    {
-                        if( process.Preprocess(importer))
+                        if(_object == null ? process.Preprocess(importer) : process.Postprocess(_object))
                             importer.SaveAndReimport();
-                    }
-                    else
-                    {
-                        if (process.Postprocess(importer, _object))
-                        {
-                            importer.SaveAndReimport();
-                            EditorUtility.SetDirty(_object);
-                        }
-                    }
             }
-            if (_object != null)
-                AssetDatabase.SaveAssetIfDirty(_object);
         }
 
         private void OnPreprocessModel() => ProcessRulesBundle<AModelProcess>(null);

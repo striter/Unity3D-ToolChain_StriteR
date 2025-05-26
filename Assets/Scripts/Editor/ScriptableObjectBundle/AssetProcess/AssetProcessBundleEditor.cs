@@ -1,4 +1,5 @@
 ﻿using UnityEditor.Extensions.ScriptableObjectBundle;
+using UnityEngine;
 
 namespace UnityEditor.Extensions.AssetPipeline
 {
@@ -14,13 +15,17 @@ namespace UnityEditor.Extensions.AssetPipeline
 
         public override void OnInspectorGUI()
         {
+            var bundle = target as AssetProcessBundle;;
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.PropertyField(m_EnableProperty);
             base.OnInspectorGUI();
             if (EditorGUI.EndChangeCheck())
-            {
                 serializedObject.ApplyModifiedProperties();
-                (target as AssetProcessBundle).OnManualChange();
+
+            if (GUILayout.Button("Refresh Assets"))
+            {
+                bundle.RefreshAssets();
+                this.SetBundleDirty();
             }
         }
     }

@@ -78,17 +78,14 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
             EditorGUI.PropertyField(_rect, _property);
         }
 
-        protected virtual float GetElementHeight(SerializedProperty _property)
-        {
-            return EditorGUI.GetPropertyHeight(_property,true);
-        }
+        protected virtual float GetElementHeight(SerializedProperty _property) => EditorGUI.GetPropertyHeight(_property,true);
 
         public override void OnInspectorGUI()
         {
             m_ObjectsList.DoLayoutList();
         }
         
-        private void SetBundleDirty()
+        protected void SetBundleDirty()
         {
             m_ObjectsList.serializedProperty.serializedObject.ApplyModifiedProperties();
             m_Dirty = true;

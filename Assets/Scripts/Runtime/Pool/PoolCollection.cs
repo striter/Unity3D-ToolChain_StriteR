@@ -22,7 +22,6 @@ namespace Runtime.Pool
         public static void ISpawn(out PoolElement _list) => _list = Instance.Spawn();
         public static void IDespawn(PoolElement _list) => Instance.Despawn(_list);
         
-        
         public static Dictionary<int,PoolElement> kEmptyCollections = new( ){ {-1,new PoolElement()} };
         public static PoolElement Empty(string _uniqueKey) => Empty(_uniqueKey.GetHashCode());
         public static PoolElement Empty(int _uniqueId)
