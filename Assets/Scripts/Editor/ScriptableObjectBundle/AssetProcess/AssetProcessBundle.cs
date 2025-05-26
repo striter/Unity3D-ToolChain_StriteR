@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq.Extensions;
 using Runtime.Pool;
@@ -24,12 +23,15 @@ namespace UnityEditor.Extensions.AssetPipeline
             var folderPath = AssetDatabase.GetAssetPath(this).GetPathDirectory();
             var dirtyAssetPaths = PoolList<string>.Empty(nameof(RefreshAssets));
 
-            foreach(var backend in backends)
+            var allFiles = Directory.GetFiles(folderPath,$"*.*",SearchOption.AllDirectories);
+            foreach (var file in allFiles)
             {
-                var assetPaths = Directory.GetFiles(folderPath,$"*{backend}",SearchOption.AllDirectories);
-                dirtyAssetPaths.AddRange(assetPaths);
+                var ext = file.GetExtension().ToLower();
+                if(backends.Contains(ext))
+                    dirtyAssetPaths.Add(file);
             }
 
+            Debug.Log($"Refreshed {dirtyAssetPaths.Count} assets from {folderPath}");
             foreach (var assetPath in dirtyAssetPaths)
                 AssetDatabase.ImportAsset(assetPath);
         }

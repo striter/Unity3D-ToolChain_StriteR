@@ -22,7 +22,7 @@ namespace UnityEditor.Extensions.AssetPipeline
             if (EditorGUI.EndChangeCheck())
                 serializedObject.ApplyModifiedProperties();
 
-            if (GUILayout.Button("Refresh Assets"))
+            if (bundle.m_Enable && GUILayout.Button("Refresh Assets"))
             {
                 bundle.RefreshAssets();
                 this.SetBundleDirty();

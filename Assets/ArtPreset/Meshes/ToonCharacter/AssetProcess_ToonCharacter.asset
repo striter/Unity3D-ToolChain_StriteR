@@ -1,20 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-4699925426307487460
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d356ff776dff4e99a1970f5d3e126aad, type: 3}
-  m_Name: 0_FMeshProcess_SmoothNormal
-  m_EditorClassIdentifier: 
-  m_Title: FMeshProcess_SmoothNormal
-  m_OutputAttributeFlags: 512
---- !u!114 &-3936265688096572496
+--- !u!114 &-7731092041192627891
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -29,6 +15,20 @@ MonoBehaviour:
   m_Title: FTextureSettingProcess
   maxTextureSize: 512
   sRGB: 1
+--- !u!114 &-1705894400982097761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d356ff776dff4e99a1970f5d3e126aad, type: 3}
+  m_Name: 0_FMeshProcess_SmoothNormal
+  m_EditorClassIdentifier: 
+  m_Title: FMeshProcess_SmoothNormal
+  m_OutputAttributeFlags: 512
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42,6 +42,6 @@ MonoBehaviour:
   m_Name: AssetProcess_ToonCharacter
   m_EditorClassIdentifier: 
   m_Objects:
-  - {fileID: -4699925426307487460}
-  - {fileID: -3936265688096572496}
+  - {fileID: -1705894400982097761}
+  - {fileID: -7731092041192627891}
   m_Enable: 1

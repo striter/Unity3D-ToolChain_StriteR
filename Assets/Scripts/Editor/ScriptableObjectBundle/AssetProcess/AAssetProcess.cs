@@ -29,7 +29,7 @@ namespace UnityEditor.Extensions.AssetPipeline
     
     public abstract class AModelProcess : AAssetProcess<GameObject,ModelImporter>
     {
-        public override string[] kRelativeBackends => new[] { ".fbx" ,".FBX"};
+        public override string[] kRelativeBackends => new[] { ".fbx" , ".obj"};
         protected override bool Postprocess(GameObject _target)
         {
             var flag = false;
@@ -47,6 +47,6 @@ namespace UnityEditor.Extensions.AssetPipeline
 
     public abstract class AAnimationProcess : AAssetProcess<AnimationClip, ModelImporter>
     {
-        public override string[] kRelativeBackends => new[] { ".fbx", ".FBX" };
+        public override string[] kRelativeBackends => new[] { ".fbx", ".obj" };
     }
 }
