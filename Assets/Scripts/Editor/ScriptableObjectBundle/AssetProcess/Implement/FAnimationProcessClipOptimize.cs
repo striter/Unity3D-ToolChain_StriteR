@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace UnityEditor.Extensions.AssetPipeline.Process
 {
-    public class FAnimationClipOptimizeProcess : AAnimationProcess
+    public class FAnimationProcessClipOptimize : AAnimationProcess
     {
-        [Range(1,16)] public int m_FloatingPointPrecision = 3;
+        [Range(1,8)] public int m_FloatingPointPrecision = 3;
         public bool m_RemoveStaticIdentityCurve = true;
         protected override bool PreProcess(ModelImporter _importer)
         {

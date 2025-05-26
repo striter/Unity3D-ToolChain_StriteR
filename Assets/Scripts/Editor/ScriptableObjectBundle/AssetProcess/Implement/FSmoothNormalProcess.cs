@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UnityEditor.Extensions.AssetPipeline.Process
 {
-    public class FMeshProcess_SmoothNormal: AModelProcess
+    public class FMeshProcessSmoothNormal: AModelProcess
     {
         public EVertexAttribute m_OutputAttributeFlags = EVertexAttribute.Tangent;
         protected override bool PreProcess(ModelImporter _importer)

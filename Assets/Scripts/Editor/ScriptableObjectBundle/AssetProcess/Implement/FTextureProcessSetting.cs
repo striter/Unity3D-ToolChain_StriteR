@@ -17,7 +17,7 @@ namespace UnityEditor.Extensions.AssetPipeline.Process
         _16384 = 16384
     }
     
-    public class FTextureSettingProcess : ATextureProcess
+    public class FTextureProcessSetting : ATextureProcess
     {
         public ETextureResolution maxTextureSize = ETextureResolution._1024;
         public bool sRGB = true;

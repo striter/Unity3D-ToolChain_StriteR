@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7959997802aa401cb8fb6db28515f1e2, type: 3}
-  m_Name: ToonCharacterProcess
+  m_Name: AssetProcess_ToonCharacter
   m_EditorClassIdentifier: 
   m_Objects:
   - {fileID: 4956977853013569976}
