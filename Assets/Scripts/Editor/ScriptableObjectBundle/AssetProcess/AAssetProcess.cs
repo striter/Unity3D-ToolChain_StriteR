@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor.Extensions.ScriptableObjectBundle;
 using UnityEngine;
 
-namespace UnityEditor.Extensions.AssetPipeline
+namespace UnityEditor.Extensions.AssetProcess
 {
     [Serializable]
     public abstract class AAssetProcess : AScriptableObjectBundleElement {
@@ -16,9 +16,9 @@ namespace UnityEditor.Extensions.AssetPipeline
         where Target : UnityEngine.Object
         where Importer : AssetImporter
     {
-        public override bool Preprocess(AssetImporter _importer) => PreProcess(_importer as Importer);
+        public override bool Preprocess(AssetImporter _importer) => Preprocess(_importer as Importer);
         public override bool Postprocess(UnityEngine.Object _object) => Postprocess( _object as Target);
-        protected abstract bool PreProcess(Importer _importer);
+        protected abstract bool Preprocess(Importer _importer);
         protected abstract bool Postprocess(Target _target);
     }
 

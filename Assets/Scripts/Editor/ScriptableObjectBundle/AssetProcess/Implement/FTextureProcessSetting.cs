@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace UnityEditor.Extensions.AssetPipeline.Process
+namespace UnityEditor.Extensions.AssetProcess
 {
     public enum ETextureResolution
     {
@@ -21,7 +21,7 @@ namespace UnityEditor.Extensions.AssetPipeline.Process
     {
         public ETextureResolution maxTextureSize = ETextureResolution._1024;
         public bool sRGB = true;
-        protected override bool PreProcess(TextureImporter _importer)
+        protected override bool Preprocess(TextureImporter _importer)
         {
             _importer.sRGBTexture = sRGB;
             _importer.maxTextureSize = (int)maxTextureSize;

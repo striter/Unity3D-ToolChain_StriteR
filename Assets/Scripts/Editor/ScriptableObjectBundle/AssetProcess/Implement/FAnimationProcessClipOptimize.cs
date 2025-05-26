@@ -4,13 +4,13 @@ using System.Linq.Extensions;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace UnityEditor.Extensions.AssetPipeline.Process
+namespace UnityEditor.Extensions.AssetProcess
 {
     public class FAnimationProcessClipOptimize : AAnimationProcess
     {
         [Range(1,8)] public int m_FloatingPointPrecision = 3;
         public bool m_RemoveStaticIdentityCurve = true;
-        protected override bool PreProcess(ModelImporter _importer)
+        protected override bool Preprocess(ModelImporter _importer)
         {
             _importer.animationCompression = ModelImporterAnimationCompression.Optimal;
             return true;

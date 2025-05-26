@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq.Extensions;
+﻿using System.Linq.Extensions;
 using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 
-namespace UnityEditor.Extensions.AssetPipeline
+namespace UnityEditor.Extensions.AssetProcess
 {
     public class AssetProcessPipeline : AssetPostprocessor
     {

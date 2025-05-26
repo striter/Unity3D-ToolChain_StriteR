@@ -1,7 +1,7 @@
 ﻿using UnityEditor.Extensions.ScriptableObjectBundle;
 using UnityEngine;
 
-namespace UnityEditor.Extensions.AssetPipeline
+namespace UnityEditor.Extensions.AssetProcess
 {
     [CustomEditor(typeof(AssetProcessBundle))]
     public class AssetProcessBundleEditor: AScriptableObjectBundleEditor
@@ -24,7 +24,7 @@ namespace UnityEditor.Extensions.AssetPipeline
 
             if (bundle.m_Enable && GUILayout.Button("Refresh Assets"))
             {
-                bundle.RefreshAssets();
+                bundle.ManualRefreshAssets();
                 this.SetBundleDirty();
             }
         }

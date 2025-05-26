@@ -6,7 +6,7 @@ using UnityEditor.Extensions.EditorPath;
 using UnityEditor.Extensions.ScriptableObjectBundle;
 using UnityEngine;
 
-namespace UnityEditor.Extensions.AssetPipeline
+namespace UnityEditor.Extensions.AssetProcess
 {
     [Serializable, CreateAssetMenu(fileName = "AssetProcess", menuName = "AssetProcess/Bundle", order = 0)]
     public class AssetProcessBundle : AScriptableObjectBundle
@@ -14,14 +14,14 @@ namespace UnityEditor.Extensions.AssetPipeline
         public bool m_Enable = true;
         public override Type GetBaseType() => typeof(AAssetProcess);
 
-        public virtual void RefreshAssets()
+        public virtual void ManualRefreshAssets()
         {
-            var backends = PoolList<string>.Empty($"{nameof(RefreshAssets)}_Backends");
+            var backends = PoolList<string>.Empty($"{nameof(ManualRefreshAssets)}_Backends");
             foreach (var process in m_Objects.CollectAs<ScriptableObject, AAssetProcess>())
                 backends.TryAddRange(process.kRelativeBackends);
 
             var folderPath = AssetDatabase.GetAssetPath(this).GetPathDirectory();
-            var dirtyAssetPaths = PoolList<string>.Empty(nameof(RefreshAssets));
+            var dirtyAssetPaths = PoolList<string>.Empty($"{nameof(ManualRefreshAssets)}_DirtyAssets");
 
             var allFiles = Directory.GetFiles(folderPath,$"*.*",SearchOption.AllDirectories);
             foreach (var file in allFiles)

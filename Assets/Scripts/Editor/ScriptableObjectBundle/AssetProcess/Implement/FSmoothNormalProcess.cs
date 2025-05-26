@@ -1,13 +1,12 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
-namespace UnityEditor.Extensions.AssetPipeline.Process
+namespace UnityEditor.Extensions.AssetProcess
 {
     public class FMeshProcessSmoothNormal: AModelProcess
     {
         public EVertexAttribute m_OutputAttributeFlags = EVertexAttribute.Tangent;
-        protected override bool PreProcess(ModelImporter _importer)
+        protected override bool Preprocess(ModelImporter _importer)
         {
             if (m_OutputAttributeFlags == EVertexAttribute.Tangent && _importer.importTangents != ModelImporterTangents.None)
             {
