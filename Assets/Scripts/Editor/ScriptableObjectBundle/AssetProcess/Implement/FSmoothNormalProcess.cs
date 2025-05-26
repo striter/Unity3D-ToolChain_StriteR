@@ -6,11 +6,10 @@ namespace UnityEditor.Extensions.AssetPipeline.Process
 {
     public class FMeshProcess_SmoothNormal: AModelProcess
     {
-        public EVertexAttributeFlags m_OutputAttributeFlags;
-
+        public EVertexAttribute m_OutputAttributeFlags = EVertexAttribute.Tangent;
         protected override bool Preprocess(ModelImporter _importer)
         {
-            if (m_OutputAttributeFlags == EVertexAttributeFlags.Tangent && _importer.importTangents != ModelImporterTangents.None)
+            if (m_OutputAttributeFlags == EVertexAttribute.Tangent && _importer.importTangents != ModelImporterTangents.None)
             {
                 _importer.importTangents = ModelImporterTangents.CalculateLegacy;
                 return true;
@@ -20,8 +19,8 @@ namespace UnityEditor.Extensions.AssetPipeline.Process
 
         protected override bool PostProcess(Mesh _mesh)
         {
-            var smoothNormals = UModel.GenerateSmoothNormals(_mesh,m_OutputAttributeFlags is not (EVertexAttributeFlags.Normal or EVertexAttributeFlags.Tangent)).Select(p=>p.ToVector4(1f)).ToArray();
-            _mesh.SetVertexData(m_OutputAttributeFlags, smoothNormals);
+            var smoothNormals = UModel.GenerateSmoothNormals(_mesh,m_OutputAttributeFlags is not (EVertexAttribute.Normal or EVertexAttribute.Tangent)).Select(p=>p.ToVector4(1f)).ToArray();
+            _mesh.SetVertexData((EVertexAttributeFlags)m_OutputAttributeFlags,smoothNormals);
             return true;
         }
     }

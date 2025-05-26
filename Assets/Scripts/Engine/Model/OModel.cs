@@ -1,17 +1,18 @@
 ﻿using System;
+
 public enum EVertexAttribute
 {
-    UV0 = 0,
-    UV1 = 1,
-    UV2 = 2,
-    UV3 = 3,
-    UV4 = 4,
-    UV5 = 5,
-    UV6 = 6,
-    UV7 = 7,
-    Normal = 8,
-    Tangent = 9,
-    Color = 10
+    UV0 = EVertexAttributeFlags.UV0,
+    UV1 = EVertexAttributeFlags.UV1,
+    UV2 = EVertexAttributeFlags.UV2,
+    UV3 = EVertexAttributeFlags.UV3,
+    UV4 = EVertexAttributeFlags.UV4,
+    UV5 = EVertexAttributeFlags.UV5,
+    UV6 = EVertexAttributeFlags.UV6,
+    UV7 = EVertexAttributeFlags.UV7,
+    Normal = EVertexAttributeFlags.Normal,
+    Tangent = EVertexAttributeFlags.Tangent,
+    Color = EVertexAttributeFlags.Color,
 }
 
 [Flags]

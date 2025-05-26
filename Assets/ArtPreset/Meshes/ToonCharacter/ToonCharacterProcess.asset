@@ -29,7 +29,7 @@ MonoBehaviour:
   m_Name: 0_FMeshProcess_SmoothNormal
   m_EditorClassIdentifier: 
   m_Title: FMeshProcess_SmoothNormal
-  m_OutputAttributeFlags: 0
+  m_OutputAttributeFlags: 512
 --- !u!114 &7325924344386399462
 MonoBehaviour:
   m_ObjectHideFlags: 0
