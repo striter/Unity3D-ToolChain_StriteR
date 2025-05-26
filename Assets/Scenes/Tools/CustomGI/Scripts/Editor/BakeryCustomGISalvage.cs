@@ -3,7 +3,7 @@ using Rendering.Lightmap;
 using UnityEngine;
 
 #if BAKERY_INCLUDED
-namespace UnityEditor.Extensions.ScriptableObjectBundle.Process.Lightmap.Bakery
+namespace UnityEditor.Extensions.EditorExecutable.Process.Lightmap.Bakery
 {
     public class BakeryCustomGISalvage : EditorExecutableProcess
     {

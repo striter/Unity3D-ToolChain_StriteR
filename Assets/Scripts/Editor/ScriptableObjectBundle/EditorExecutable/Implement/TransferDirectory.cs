@@ -1,7 +1,7 @@
 ﻿using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 
-namespace UnityEditor.Extensions.ScriptableObjectBundle.Process
+namespace UnityEditor.Extensions.EditorExecutable.Process
 {
     public class TransferDirectory : EditorExecutableProcess
     {

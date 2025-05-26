@@ -1,4 +1,4 @@
-﻿using UnityEditor.Extensions.ScriptableObjectBundle;
+﻿using UnityEditor.Extensions.EditorExecutable;
 using UnityEngine;
 
 namespace UnityEditor.Extensions.AssetProcess

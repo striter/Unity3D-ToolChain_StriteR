@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace UnityEditor.Extensions.ScriptableObjectBundle
+namespace UnityEditor.Extensions.EditorExecutable
 {
     [Serializable]
     public abstract class AScriptableObjectBundle : ScriptableObject

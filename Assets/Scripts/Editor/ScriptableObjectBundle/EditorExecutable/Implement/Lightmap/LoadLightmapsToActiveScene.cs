@@ -4,7 +4,7 @@ using Rendering.Lightmap;
 using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 
-namespace UnityEditor.Extensions.ScriptableObjectBundle.Process.Lightmap
+namespace UnityEditor.Extensions.EditorExecutable.Process.Lightmap
 {
     public class LoadLightmapsToActiveScene : EditorExecutableProcess
     {

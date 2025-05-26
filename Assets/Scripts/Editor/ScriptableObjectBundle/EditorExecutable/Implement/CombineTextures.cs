@@ -8,7 +8,7 @@ using UnityEditor.Extensions.EditorPath;
 using UnityEditor.Extensions.TextureEditor;
 using UnityEngine;
 
-namespace UnityEditor.Extensions.ScriptableObjectBundle.Process
+namespace UnityEditor.Extensions.EditorExecutable.Process
 {
     [Serializable]
     public class ITextureCombineIEnumerable : IChannelCollector , IEnumerable<Texture2D>

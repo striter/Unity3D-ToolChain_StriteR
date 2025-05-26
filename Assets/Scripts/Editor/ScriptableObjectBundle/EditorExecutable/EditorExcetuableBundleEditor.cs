@@ -4,7 +4,7 @@ using System.Linq.Extensions;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace UnityEditor.Extensions.ScriptableObjectBundle
+namespace UnityEditor.Extensions.EditorExecutable
 {
     [CustomEditor(typeof(EditorExecutableBundle))]
     public class EditorExcetuableBundleEditor: AScriptableObjectBundleEditor

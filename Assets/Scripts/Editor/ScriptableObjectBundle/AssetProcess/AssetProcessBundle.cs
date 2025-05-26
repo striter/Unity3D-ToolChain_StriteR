@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq.Extensions;
 using Runtime.Pool;
 using UnityEditor.Extensions.EditorPath;
-using UnityEditor.Extensions.ScriptableObjectBundle;
+using UnityEditor.Extensions.EditorExecutable;
 using UnityEngine;
 
 namespace UnityEditor.Extensions.AssetProcess

@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-namespace UnityEditor.Extensions.ScriptableObjectBundle
+namespace UnityEditor.Extensions.EditorExecutable
 {
     public interface IEditorExecutableProcessContinuous
     {

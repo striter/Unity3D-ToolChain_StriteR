@@ -5,7 +5,7 @@ using System.Linq.Extensions;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace UnityEditor.Extensions.ScriptableObjectBundle
+namespace UnityEditor.Extensions.EditorExecutable
 {
 
     [CustomEditor(typeof(AScriptableObjectBundle),true)]

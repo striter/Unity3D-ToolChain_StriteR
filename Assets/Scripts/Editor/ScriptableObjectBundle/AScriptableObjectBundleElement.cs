@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UnityEditor.Extensions.ScriptableObjectBundle
+namespace UnityEditor.Extensions.EditorExecutable
 {
     public abstract class AScriptableObjectBundleElement : ScriptableObject
     {

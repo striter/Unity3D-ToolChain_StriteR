@@ -1,5 +1,5 @@
 ﻿#if BAKERY_INCLUDED
-namespace UnityEditor.Extensions.ScriptableObjectBundle.Process.Lightmap.Bakery
+namespace UnityEditor.Extensions.EditorExecutable.Process.Lightmap.Bakery
 {
     public class BakeryDeleteLightmapAsset : EditorExecutableProcess
     {
