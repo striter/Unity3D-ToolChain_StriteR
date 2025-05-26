@@ -1,6 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-6863194004372344869
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7959997802aa401cb8fb6db28515f1e2, type: 3}
+  m_Name: ToonCharacterProcess
+  m_EditorClassIdentifier: 
+  m_Objects:
+  - {fileID: 540283514589147947}
+  - {fileID: 7325924344386399462}
+  m_Enable: 1
+--- !u!114 &540283514589147947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d356ff776dff4e99a1970f5d3e126aad, type: 3}
+  m_Name: 0_FMeshProcess_SmoothNormal
+  m_EditorClassIdentifier: 
+  m_Title: FMeshProcess_SmoothNormal
+  m_OutputAttributeFlags: 0
+--- !u!114 &7325924344386399462
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -15,33 +45,3 @@ MonoBehaviour:
   m_Title: FTextureSettingProcess
   maxTextureSize: 512
   sRGB: 1
---- !u!114 &-5657995630971034609
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d356ff776dff4e99a1970f5d3e126aad, type: 3}
-  m_Name: 0_FMeshProcess_SmoothNormal
-  m_EditorClassIdentifier: 
-  m_Title: FMeshProcess_SmoothNormal
-  m_OutputAttributeFlags: 0
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7959997802aa401cb8fb6db28515f1e2, type: 3}
-  m_Name: ToonCharacterProcess
-  m_EditorClassIdentifier: 
-  m_Objects:
-  - {fileID: -5657995630971034609}
-  - {fileID: -6863194004372344869}
-  m_Enable: 0

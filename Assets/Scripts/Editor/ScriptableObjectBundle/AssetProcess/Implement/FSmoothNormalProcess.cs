@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace UnityEditor.Extensions.AssetPipeline.Process
 {
-    [Serializable]
     public class FMeshProcess_SmoothNormal: AModelProcess
     {
         public EVertexAttributeFlags m_OutputAttributeFlags;

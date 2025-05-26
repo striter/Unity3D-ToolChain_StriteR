@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace UnityEditor.Extensions.AssetPipeline
 {
+    [Serializable]
     public abstract class AAssetProcess : AScriptableObjectBundleElement {
         public abstract bool Preprocess(AssetImporter _importer);
         public abstract bool PostProcess(UnityEngine.Object _object);
