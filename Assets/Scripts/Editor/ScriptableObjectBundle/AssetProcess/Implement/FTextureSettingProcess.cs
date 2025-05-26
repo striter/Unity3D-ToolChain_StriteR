@@ -21,14 +21,14 @@ namespace UnityEditor.Extensions.AssetPipeline.Process
     {
         public ETextureResolution maxTextureSize = ETextureResolution._1024;
         public bool sRGB = true;
-        protected override bool Preprocess(TextureImporter _importer)
+        protected override bool PreProcess(TextureImporter _importer)
         {
             _importer.sRGBTexture = sRGB;
             _importer.maxTextureSize = (int)maxTextureSize;
             return true;
         }
 
-        protected override bool PostProcess(Texture2D _target)
+        protected override bool Postprocess(TextureImporter _importer,Texture2D _target)
         {
             return false;
         }

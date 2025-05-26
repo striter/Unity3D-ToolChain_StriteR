@@ -7,7 +7,7 @@ namespace UnityEditor.Extensions.AssetPipeline.Process
     public class FMeshProcess_SmoothNormal: AModelProcess
     {
         public EVertexAttribute m_OutputAttributeFlags = EVertexAttribute.Tangent;
-        protected override bool Preprocess(ModelImporter _importer)
+        protected override bool PreProcess(ModelImporter _importer)
         {
             if (m_OutputAttributeFlags == EVertexAttribute.Tangent && _importer.importTangents != ModelImporterTangents.None)
             {

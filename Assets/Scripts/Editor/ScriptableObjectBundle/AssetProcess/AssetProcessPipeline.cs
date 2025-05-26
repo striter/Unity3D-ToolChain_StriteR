@@ -24,17 +24,20 @@ namespace UnityEditor.Extensions.AssetPipeline
                 if(!bundle.m_Enable)
                     continue;
                 
+                var importer = AssetImporter.GetAtPath(assetPath);
                 foreach (var process in bundle.m_Objects.CollectAs<ScriptableObject, Process>())
                     if (_object == null)
                     {
-                        var importer = AssetImporter.GetAtPath(assetPath);
                         if( process.Preprocess(importer))
                             importer.SaveAndReimport();
                     }
                     else
-                    { 
-                        if (process.PostProcess(_object))
+                    {
+                        if (process.Postprocess(importer, _object))
+                        {
+                            importer.SaveAndReimport();
                             EditorUtility.SetDirty(_object);
+                        }
                     }
             }
             if (_object != null)
@@ -45,18 +48,8 @@ namespace UnityEditor.Extensions.AssetPipeline
         private void OnPostprocessModel(GameObject _modelRoot) => ProcessRulesBundle<AModelProcess>(_modelRoot);
         private void OnPreprocessTexture() => ProcessRulesBundle<ATextureProcess>(null);
         private void OnPostprocessTexture(Texture2D _texture)=> ProcessRulesBundle<ATextureProcess>(_texture);
-
-        // private void OnPostprocessAnimation(Animation _animation)
-        // {
-        //     foreach (var animationProcess in ProcessRulesBundle<AAnimationProcess>())
-        //     {
-        //         animationProcess.importer = AssetImporter.GetAtPath(assetPath) as AnimationImporter;
-        //         animationProcess.Process(_animation);
-        //         animationProcess.importer.SaveAndReimport();
-        //         EditorUtility.SetDirty(_animation);
-        //     }
-        //     
-        //     AssetDatabase.SaveAssetIfDirty(_animation);
-        // }
+        private void OnPreprocessAnimation() => ProcessRulesBundle<AAnimationProcess>(null);
+        private void OnPostprocessAnimation(GameObject root, AnimationClip clip) => ProcessRulesBundle<AAnimationProcess>(clip);
+        
     }
 }

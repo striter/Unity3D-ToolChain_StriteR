@@ -13,24 +13,10 @@ MonoBehaviour:
   m_Name: ToonCharacterProcess
   m_EditorClassIdentifier: 
   m_Objects:
-  - {fileID: 540283514589147947}
-  - {fileID: 7325924344386399462}
+  - {fileID: 4956977853013569976}
+  - {fileID: 4156258092523156839}
   m_Enable: 1
---- !u!114 &540283514589147947
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d356ff776dff4e99a1970f5d3e126aad, type: 3}
-  m_Name: 0_FMeshProcess_SmoothNormal
-  m_EditorClassIdentifier: 
-  m_Title: FMeshProcess_SmoothNormal
-  m_OutputAttributeFlags: 512
---- !u!114 &7325924344386399462
+--- !u!114 &4156258092523156839
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -45,3 +31,17 @@ MonoBehaviour:
   m_Title: FTextureSettingProcess
   maxTextureSize: 512
   sRGB: 1
+--- !u!114 &4956977853013569976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d356ff776dff4e99a1970f5d3e126aad, type: 3}
+  m_Name: 0_FMeshProcess_SmoothNormal
+  m_EditorClassIdentifier: 
+  m_Title: FMeshProcess_SmoothNormal
+  m_OutputAttributeFlags: 512
