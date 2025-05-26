@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;

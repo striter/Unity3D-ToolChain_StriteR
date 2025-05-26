@@ -1,5 +1,5 @@
 ﻿using System;
-using Runtime.Swizzlling;
+using Runtime.Swizzling;
 using Unity.Mathematics;
 
 namespace Runtime.Algorithm
@@ -8,7 +8,7 @@ namespace Runtime.Algorithm
     {
         public static float TrapezoidRule<T>(Func<float,T> _function,float _a = 0f,float _b = 1f, int _stepCount = 64,Func<T,T,float> _evaluate = null,IDecimal<T> _decimal = default) where T : struct
         {
-            _decimal ??= FDecimal.Helper<T>();
+            _decimal ??= UDecimal.Helper<T>();
             _evaluate ??= _decimal.distance;
             var length = 0f;
             var sample = _function(_a);
@@ -24,7 +24,7 @@ namespace Runtime.Algorithm
         
         public static float RombergIntegration<T>(Func<float, T> _function,int _n = 10,float _a = 0, float _b = 1,Func<T,T,float> _evaluate = null, IDecimal<T> _decimal = default) where T : struct
         {
-            _decimal ??= FDecimal.Helper<T>();
+            _decimal ??= UDecimal.Helper<T>();
             _evaluate ??= _decimal.distance;
         
             var R = new float[_n + 1, _n + 1];

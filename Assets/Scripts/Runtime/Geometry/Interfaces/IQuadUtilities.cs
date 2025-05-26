@@ -23,7 +23,6 @@ namespace Runtime.Geometry
         public static readonly Quad<float3> k3SquareBottomLeft = new Quad<float3>(Vector3.zero,Vector3.forward,Vector3.forward+Vector3.right,Vector3.right);
         public static readonly Quad<float3> k3SquareCentered45Deg = new Quad<float3>(Vector3.back,Vector3.left,Vector3.forward,Vector3.right);
         
-        
         public static readonly Quad<float2> k2SquareCentered = k3SquareCenteredUpward.Convert(p=>p.xz);
     }
     

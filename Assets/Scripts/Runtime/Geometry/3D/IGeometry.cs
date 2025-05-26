@@ -27,12 +27,11 @@ namespace Runtime.Geometry
             }
         }
         #endif
-        
     }
     
     public interface IConvex : IGeometry , IEnumerable<float3>
     {
-        public IEnumerable<float3> GetAxes();
+        public IEnumerable<float3> GetAxis();
     }
 
 

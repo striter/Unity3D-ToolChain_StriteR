@@ -1,5 +1,4 @@
-﻿using Runtime.Geometry.Extension;
-using Unity.Mathematics;
+﻿using Unity.Mathematics;
 
 namespace Runtime.Geometry
 {
@@ -33,7 +32,8 @@ namespace Runtime.Geometry
     public static class GTriangle_Extension
     {
         public static GTriangle to3xz(this G2Triangle _triangle2 )=> new GTriangle(_triangle2.V0.to3xz(),_triangle2.V1.to3xz(),_triangle2.V2.to3xz());
-        public static GTriangle shrink(this GTriangle _triangle,float _value) => new GTriangle(math.lerp(_triangle.baryCentre,_triangle.V0,_value)
+        public static GTriangle shrink(this GTriangle _triangle,float _value) =>
+            new GTriangle(math.lerp(_triangle.baryCentre,_triangle.V0,_value)
             , math.lerp(_triangle.baryCentre,_triangle.V1,_value)
             , math.lerp(_triangle.baryCentre,_triangle.V2,_value));
     }

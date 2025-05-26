@@ -12,8 +12,8 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
     public class AScriptableObjectBundleEditor : Editor
     {
         private AScriptableObjectBundle m_Target;
-        private List<Type> kInheritTypes = new List<Type>();
-        private bool m_Dirty = false;
+        private List<Type> kInheritTypes = new();
+        private bool m_Dirty;
         protected ReorderableList m_ObjectsList { get; private set; }
         protected virtual void OnEnable()
         {
@@ -22,7 +22,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
             kInheritTypes = baseType.GetChildTypes().FillList(kInheritTypes);
             m_ObjectsList = new ReorderableList(serializedObject,serializedObject.FindProperty(nameof(m_Target.m_Objects)),true,true,true,true);
             m_ObjectsList.drawElementCallback = (rect, index, isActive, isFocused)=>DrawElement(rect,index,m_ObjectsList.serializedProperty.GetArrayElementAtIndex(index),isActive,isFocused);
-            m_ObjectsList.elementHeightCallback = (index) => GetElementHeight(m_ObjectsList.serializedProperty.GetArrayElementAtIndex(index));
+            m_ObjectsList.elementHeightCallback = index => GetElementHeight(m_ObjectsList.serializedProperty.GetArrayElementAtIndex(index));
             m_ObjectsList.multiSelect = true;
             m_ObjectsList.onAddDropdownCallback = (_, _) => {
                 var menu = new GenericMenu();
@@ -32,7 +32,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
                         foreach (var selectIndex in m_ObjectsList.selectedIndices)
                         {
                             var srcClone = m_Target.m_Objects[selectIndex];
-                            var instance = ScriptableObject.CreateInstance(srcClone.GetType()) as AScriptableObjectBundleElement;
+                            var instance = CreateInstance(srcClone.GetType()) as AScriptableObjectBundleElement;
                             UReflection.CopyFields(srcClone,instance);
                             m_Target.m_Objects.Add(instance);
                             SetBundleDirty();
@@ -52,7 +52,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle
                     
                     menu.AddItem(new GUIContent(type.Name), false, () =>
                     {
-                        var instance = ScriptableObject.CreateInstance(type) as AScriptableObjectBundleElement;
+                        var instance = CreateInstance(type) as AScriptableObjectBundleElement;
                         instance.m_Title = type.Name;
                         m_Target.m_Objects.Add(instance);
                         SetBundleDirty();

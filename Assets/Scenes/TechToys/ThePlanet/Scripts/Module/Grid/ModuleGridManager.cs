@@ -404,7 +404,6 @@ namespace TechToys.ThePlanet.Module
             TSPoolList<Vector3>.Spawn(out var vertices);
             TSPoolList<int>.Spawn(out var indices);
             TSPoolList<TrapezoidQuad>.Spawn(out var cornerQuads);
-            UBoundsIncrement.Begin();
             var center = m_Grid.m_Vertices[_corner.location].GetCornerPosition(_corner.height);
             
             var vertex = m_Grid.m_Vertices[_corner.location];

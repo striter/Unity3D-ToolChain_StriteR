@@ -376,6 +376,65 @@ Transform:
   - {fileID: 1616913}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &723239858
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 723239860}
+  - component: {fileID: 723239859}
+  m_Layer: 0
+  m_Name: ScreenProjection
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &723239859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 723239858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c368432a59437d479441b11e733e325, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Sphere:
+    center:
+      x: -6.23
+      y: 0
+      z: 0
+    radius: 0.5
+  m_Box:
+    center:
+      x: -3
+      y: 0
+      z: 0
+    extent:
+      x: 0.5
+      y: 0.5
+      z: 0.5
+--- !u!4 &723239860
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 723239858}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.03, y: 0, z: 0.01}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1004309176
 GameObject:
   m_ObjectHideFlags: 0
@@ -615,12 +674,12 @@ Camera:
   m_ShutterSpeed: 0.005
   m_Aperture: 16
   m_FocusDistance: 10
-  m_FocalLength: 50
+  m_FocalLength: 2.2
   m_BladeCount: 5
   m_Curvature: {x: 2, y: 11}
   m_BarrelClipping: 0.25
   m_Anamorphism: 0
-  m_SensorSize: {x: 36, y: 24}
+  m_SensorSize: {x: 4.8, y: 3.5}
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
@@ -630,9 +689,9 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 46
   orthographic: 0
-  orthographic size: 5
+  orthographic size: 0.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -656,8 +715,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1344025775}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.23229688, y: 0.18662977, z: -0.046141814, w: 0.95345604}
+  m_LocalPosition: {x: -8.820774, y: 18.072525, z: -45.092937}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1798,7 +1857,7 @@ MonoBehaviour:
       x: -4.14
       y: 0
       z: 1.06
-  m_BezeirSplit: 0.488
+  m_BezierSplit: 0
   m_HermiteCurve:
     srcPosition:
       x: -1
@@ -1947,187 +2006,6 @@ MonoBehaviour:
       y: 0
       z: 0.081
     coefficients: 20
-    fourierCoefficients:
-    - c0:
-        x: 19.444
-        y: 0
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: 8.551002
-        y: 0
-    - c0:
-        x: -1.0341547
-        y: 2.8462794
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: -2.500485
-        y: -2.0065658
-    - c0:
-        x: 0.7855173
-        y: -0.12338039
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: -0.37289372
-        y: 1.1142491
-    - c0:
-        x: 0.18100977
-        y: 1.363179
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: 0.027786907
-        y: 0.008211676
-    - c0:
-        x: -0.85882926
-        y: 0.51664126
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: -0.033842556
-        y: -0.6287041
-    - c0:
-        x: -0.39545107
-        y: 1.2432964
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: 0.06810838
-        y: 0.21621875
-    - c0:
-        x: -1.4436154
-        y: 0.5214189
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: -0.1787872
-        y: 0.3480451
-    - c0:
-        x: -0.7270753
-        y: 0.28757924
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: 0.08022173
-        y: -0.26295817
-    - c0:
-        x: -0.8297503
-        y: -0.2711873
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: 0.1435923
-        y: -0.11586866
-    - c0:
-        x: -0.94261545
-        y: 0.06121126
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: -0.14102152
-        y: 0.10944418
-    - c0:
-        x: -0.498777
-        y: -0.3016082
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: 0.17171037
-        y: -0.17701772
-    - c0:
-        x: -0.26707238
-        y: 0.09617704
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: -0.6164912
-        y: 0.31610858
-    - c0:
-        x: -0.4563091
-        y: -0.30928075
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: 0.09494713
-        y: -0.110101216
-    - c0:
-        x: -0.48491973
-        y: -0.5831456
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: 0.19838867
-        y: -0.16961014
-    - c0:
-        x: -0.412587
-        y: 0.0024596155
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: -0.12316965
-        y: 0.12180643
-    - c0:
-        x: -0.17009646
-        y: 0.008323222
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: 0.1491033
-        y: 0.31325078
-    - c0:
-        x: -0.23941624
-        y: 0.061704487
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: -0.19109516
-        y: 0.08841421
-    - c0:
-        x: 0.0083709955
-        y: -0.058547705
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: 0.12838739
-        y: 0.114509776
-    - c0:
-        x: -0.049257457
-        y: 0.041018717
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: -0.014472231
-        y: -0.17096676
-    - c0:
-        x: -0.05000016
-        y: -0.000000023888617
-      c1:
-        x: 0
-        y: 0
-      c2:
-        x: 0.025000013
-        y: -0.00000059592566
   m_HermineSpline:
     positions:
     - position:
@@ -2203,21 +2081,6 @@ MonoBehaviour:
     - 3
     - 4
     - 5
-  m_BSplineUniform:
-    coordinates:
-    - x: -1
-      y: 0
-      z: -1
-    - x: 0
-      y: 0
-      z: 1
-    - x: 1
-      y: 0
-      z: -1
-    - x: 2.28
-      y: 0
-      z: 0.24
-    k: 3
   m_DivisionCurve:
     begin:
       x: -1
@@ -2275,3 +2138,4 @@ SceneRoots:
   - {fileID: 1408747508}
   - {fileID: 1152943079}
   - {fileID: 1196101758}
+  - {fileID: 723239860}

@@ -12,7 +12,6 @@ namespace Runtime.Geometry
     {
         public float3[] vertices;
         public int[] triangles;
-
         public GMesh(float3[] _vertices, int[] _triangles)
         {
             vertices = _vertices;
@@ -22,7 +21,6 @@ namespace Runtime.Geometry
         }
         
         public GMesh(IEnumerable<float3> _vertices, IEnumerable<int> _triangles):this(_vertices.ToArray(),_triangles.ToArray()) { }
-
         void Ctor()
         {
             Origin = vertices.Average();
@@ -30,11 +28,8 @@ namespace Runtime.Geometry
         
         public float3 Origin { get; set; }
         public float3 GetSupportPoint(float3 _direction)=> vertices.MaxElement(_p => math.dot(_direction, _p));
-
         public GBox GetBoundingBox() => UGeometry.GetBoundingBox(vertices);
         public GSphere GetBoundingSphere() => UGeometry.GetBoundingSphere(vertices);
-
-
         public void DrawGizmos() => DrawGizmos(EDrawMeshFlag.Vertices);
         public void DrawGizmos(EDrawMeshFlag _flag)
         {

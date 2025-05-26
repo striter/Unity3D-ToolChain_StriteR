@@ -4,6 +4,7 @@ using Rendering.Lightmap;
 using Unity.Mathematics;
 using UnityEngine;
 using System.Linq.Extensions;
+using Rendering;
 
 namespace Examples.Rendering.GI.CustomGI
 {
@@ -64,7 +65,7 @@ namespace Examples.Rendering.GI.CustomGI
         public void Apply(float _gradient)
         {
             var giAvailable =  m_GIEnable && m_Irradiances is { Length: 4 } && m_Diffuse != null && m_Diffuse.lightmaps.Length > 0;
-            URender.EnableGlobalKeyword(kCustomLMEnabled,giAvailable);
+            UPipeline.EnableGlobalKeyword(kCustomLMEnabled,giAvailable);
 
             var irradianceAvailable = m_Irradiances is { Length: >0 };
             if (!irradianceAvailable)
@@ -88,7 +89,7 @@ namespace Examples.Rendering.GI.CustomGI
         public void ApplyIrradiance(CustomGIIrradiance _irradiance) =>  ApplyIrradiance(_irradiance, _irradiance, 1, 1);
         public void ClearGI()
         {
-            URender.EnableGlobalKeyword(kCustomLMEnabled,false);
+            UPipeline.EnableGlobalKeyword(kCustomLMEnabled,false);
             kSHProperties.ApplyGlobal(SHL2Data.kZero);
         }
     }

@@ -2,6 +2,7 @@ using System;
 using Runtime.Geometry;
 using UnityEngine;
 using System.Linq.Extensions;
+using Unity.Mathematics;
 using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Algorithm.Geometry

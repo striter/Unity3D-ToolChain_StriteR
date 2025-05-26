@@ -8,7 +8,7 @@ namespace UnityEditor.Extensions.TextureEditor
     {
         Texture2D m_ModifyTexture;
         private Texture2D m_TargetTexture;
-        EColorVisualize m_ChannelModify = EColorVisualize.None;
+        EColorChannelFlags m_ChannelModify = EColorChannelFlags.None;
         public void OnEnable(SerializedProperty _parent)
         {
         }
@@ -53,9 +53,9 @@ namespace UnityEditor.Extensions.TextureEditor
 
             HorizontalScope.NextLine(2, 20);
             EditorGUI.LabelField(HorizontalScope.NextRect(5, 60), "Modify:", UEGUIStyle_Window.m_TitleLabel);
-            m_ChannelModify = (EColorVisualize)EditorGUI.EnumPopup(HorizontalScope.NextRect(5, 120), m_ChannelModify);
+            m_ChannelModify = (EColorChannelFlags)EditorGUI.EnumPopup(HorizontalScope.NextRect(5, 120), m_ChannelModify);
 
-            if (m_ChannelModify != EColorVisualize.None)
+            if (m_ChannelModify != EColorChannelFlags.None)
             {
                 HorizontalScope.NextLine(2, 20);
                 if (GUI.Button(HorizontalScope.NextRect(10, 60), "Reverse"))
@@ -76,19 +76,19 @@ namespace UnityEditor.Extensions.TextureEditor
             _targetTexture.Apply();
         }
 
-        static void DoColorModify(Texture2D _target, EColorVisualize _color, Func<float, float> _OnEachValue)
+        static void DoColorModify(Texture2D _target, EColorChannelFlags _color, Func<float, float> _OnEachValue)
         {
             Color[] colors = _target.GetPixels();
             for (int i = 0; i < colors.Length; i++)
             {
                 switch (_color)
                 {
-                    case EColorVisualize.RGBA: colors[i] = new Color(_OnEachValue(colors[i].r), _OnEachValue(colors[i].g), _OnEachValue(colors[i].b), _OnEachValue(colors[i].a)); break;
-                    case EColorVisualize.RGB: colors[i] = new Color(_OnEachValue(colors[i].r), _OnEachValue(colors[i].g), _OnEachValue(colors[i].b), colors[i].a); break;
-                    case EColorVisualize.R: colors[i] = new Color(_OnEachValue(colors[i].r), colors[i].g, colors[i].b, colors[i].a); break;
-                    case EColorVisualize.G: colors[i] = new Color(colors[i].r, _OnEachValue(colors[i].g), colors[i].b, colors[i].a); break;
-                    case EColorVisualize.B: colors[i] = new Color(colors[i].r, colors[i].g, _OnEachValue(colors[i].b), colors[i].a); break;
-                    case EColorVisualize.A: colors[i] = new Color(colors[i].r, colors[i].g, colors[i].b, _OnEachValue(colors[i].a)); break;
+                    case EColorChannelFlags.RGBA: colors[i] = new Color(_OnEachValue(colors[i].r), _OnEachValue(colors[i].g), _OnEachValue(colors[i].b), _OnEachValue(colors[i].a)); break;
+                    case EColorChannelFlags.RGB: colors[i] = new Color(_OnEachValue(colors[i].r), _OnEachValue(colors[i].g), _OnEachValue(colors[i].b), colors[i].a); break;
+                    case EColorChannelFlags.R: colors[i] = new Color(_OnEachValue(colors[i].r), colors[i].g, colors[i].b, colors[i].a); break;
+                    case EColorChannelFlags.G: colors[i] = new Color(colors[i].r, _OnEachValue(colors[i].g), colors[i].b, colors[i].a); break;
+                    case EColorChannelFlags.B: colors[i] = new Color(colors[i].r, colors[i].g, _OnEachValue(colors[i].b), colors[i].a); break;
+                    case EColorChannelFlags.A: colors[i] = new Color(colors[i].r, colors[i].g, colors[i].b, _OnEachValue(colors[i].a)); break;
                 }
             }
             _target.SetPixels(colors);

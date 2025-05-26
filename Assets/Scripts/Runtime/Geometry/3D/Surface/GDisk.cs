@@ -10,11 +10,8 @@ namespace Runtime.Geometry
         public float3 origin;
         public float3 normal;
         public float radius;
-        
         public GDisk(float3 _origin, float3 _normal, float _radius) { origin = _origin;normal = _normal;radius = _radius; }
-
         public static GDisk kDefault = new GDisk(float3.zero, kfloat3.rightUpForward.normalize(), .5f);
-        
         public float3 Origin => origin;
         public float3 GetSupportPoint(float3 _direction)
         {

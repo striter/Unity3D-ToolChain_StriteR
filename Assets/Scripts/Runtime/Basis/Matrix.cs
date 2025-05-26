@@ -282,12 +282,10 @@ public static class matrix_extension
         var c0 = _C.c0; var c00 = c0.x; var c01 = c0.y; var c02 = c0.z;
         var c1 = _C.c1; var c10 = c1.x; var c11 = c1.y; var c12 = c1.z;
         var c2 = _C.c2; var c20 = c2.x; var c21 = c2.y; var c22 = c2.z;
-            
-        var polynomial = new CubicPolynomial(-1,
-            c00 + c11 + c22,
+        var root =  umath.cubicPolynomialRoots(-1,c00 + c11 + c22,
             -c00*c11 -c00*c22 + c12*c21 -c11*c22 +c10*c01 +c20*c02,
-            -c00*c12*c21 + c00*c11*c22-c10*c01*c22 +c10*c02*c21+c20*c01*c12-c20*c02*c11);
-        var root = polynomial.GetRoots(out var _roots);
+            -c00*c12*c21 + c00*c11*c22-c10*c01*c22 +c10*c02*c21+c20*c01*c12-c20*c02*c11,
+            out var _roots);
         Debug.Assert(root == 3 , $"Invalid Root Length Find:{root}");
         Array.Sort(_roots,(a,b)=>a<b?1:-1);
         return new float3(_roots[0], _roots[1], _roots[2]);
@@ -315,8 +313,7 @@ public static class matrix_extension
     {
         var c00 = _C.c0.x; var c01 = _C.c0.y;
         var c10 = _C.c1.x; var c11 = _C.c1.y;
-        var polynomial = new QuadraticPolynomial(1, - c00 - c11 , c00*c11 - c10*c01);
-        polynomial.GetRoots(out var roots);
+        umath.quadraticPolynomialRoots(1, - c00 - c11 , c00*c11 - c10*c01,out var roots);
         Array.Sort(roots,(_a,_b)=>_a<_b?1:-1);
         return new float2(roots[0], roots[1]);
     }

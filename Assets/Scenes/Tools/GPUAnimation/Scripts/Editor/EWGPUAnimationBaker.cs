@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Runtime.Geometry;
 using UnityEngine;
 using Runtime.Optimize.GPUAnimation;
 
@@ -165,7 +166,8 @@ namespace UnityEditor.Extensions
                     wrapModeU = TextureWrapMode.Clamp,
                     wrapModeV = TextureWrapMode.Repeat
                 };
-            UBoundsIncrement.Begin();
+
+            var bounds = GBox.kZero;
             for (var i = 0; i < _clips.Length; i++)
             {
                 var clip = _clips[i];
@@ -182,7 +184,7 @@ namespace UnityEditor.Extensions
                     var normals = vertexBakeMesh.normals;
                     for (var k = 0; k < vertexCount; k++)
                     {
-                        UBoundsIncrement.Iterate(vertices[k]);
+                        bounds = bounds.Encapsulate(vertices[k]);
                         var frame = startFrame + j;
                         var pixel = UGPUAnimation.GetVertexPositionPixel(k,frame);
                         atlasTexture.SetPixel(pixel.x,pixel.y, UColor.toColor(vertices[k]));
@@ -201,7 +203,7 @@ namespace UnityEditor.Extensions
             instanceMesh.tangents = null;
             instanceMesh.boneWeights = null;
             instanceMesh.bindposes = null;
-            instanceMesh.bounds = UBoundsIncrement.End();
+            instanceMesh.bounds = bounds;
             #endregion
             DestroyImmediate(instantiatedObj);
 
@@ -283,7 +285,8 @@ namespace UnityEditor.Extensions
                         wrapModeU = TextureWrapMode.Clamp,
                         wrapModeV = TextureWrapMode.Repeat
                     };
-                UBoundsIncrement.Begin();
+
+                var bounds = GBox.kZero;
                 for (var i = 0; i < _clips.Length; i++)
                 {
                     var clip = _clips[i];
@@ -312,7 +315,7 @@ namespace UnityEditor.Extensions
                         skinnedMeshRenderer.BakeMesh(boundsCheckMesh);
                         var vertices = boundsCheckMesh.vertices;
                         for (var k = 0; k < vertices.Length; k++)
-                            UBoundsIncrement.Iterate(vertices[k].div(skinnedMeshRenderer.transform.localScale));
+                            bounds = bounds.Encapsulate(vertices[k].div(skinnedMeshRenderer.transform.localScale));
 
                         boundsCheckMesh.Clear();
                     }
@@ -333,7 +336,7 @@ namespace UnityEditor.Extensions
                 instanceMesh.SetUVs(2, uv2);
                 instanceMesh.boneWeights = null;
                 instanceMesh.bindposes = null;
-                instanceMesh.bounds = UBoundsIncrement.End();
+                instanceMesh.bounds = bounds;
                 #endregion
                 DestroyImmediate(instantiatedObj);
 

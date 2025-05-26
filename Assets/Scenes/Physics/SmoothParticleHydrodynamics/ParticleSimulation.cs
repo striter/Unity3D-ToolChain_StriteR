@@ -21,11 +21,10 @@ namespace Examples.PhysicsScenes.SmoothParticleHydrodynamics
         [Range(0f, 1f)] public float m_EmitterRange = 0.3f;
         
         [Header("Bounds")]
-        public G2Box m_Bounds = new G2Box(0f, new float2(1f,1.5f));
+        public G2Box m_Bounds = new(0f, new float2(1f,1.5f));
         [Range(0, 1)] public float m_BoundsBounceCoefficient = 0.1f;
-        private List<ParticleData> particles = new List<ParticleData>();
+        private List<ParticleData> particles = new();
         public int Count => particles.Count;
-
         private void OnValidate()
         {
             for (var i = particles.Count - 1; i >= 0; i--)
@@ -45,7 +44,7 @@ namespace Examples.PhysicsScenes.SmoothParticleHydrodynamics
             var bounds = G2Box.Minmax(m_Bounds.GetPoint(0f),m_Bounds.GetPoint(1f,m_EmitterRange));
             var positions = ULowDiscrepancySequences.BCCLattice2D(m_Solver.m_Data.m_TargetSpacing / bounds.size,0.01f);
             for(int i=0;i<positions.Length;i++)
-                AddParticle(new ParticleData(){force = 0f,
+                AddParticle(new (){force = 0f,
                     mass = m_InitialMass,
                     position = bounds.GetPoint(positions[i]).to3xy(),
                     velocity = 0f});

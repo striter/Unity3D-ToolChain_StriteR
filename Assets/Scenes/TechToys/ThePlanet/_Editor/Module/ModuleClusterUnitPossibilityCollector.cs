@@ -4,6 +4,7 @@ using System.Linq.Extensions;
 using MeshFragment;
 using TechToys.ThePlanet.Module;
 using TechToys.ThePlanet.Module.Cluster;
+using Unity.Mathematics;
 
 #if UNITY_EDITOR
 namespace TechToys.ThePlanet.Baking

@@ -53,7 +53,7 @@ namespace UnityEditor.Extensions.TextureEditor
         
         Texture2D m_DisplayTexture;
 
-        private EColorVisualize m_ColorVisualize= EColorVisualize.RGBA;
+        private EColorChannelFlags m_ColorVisualize= EColorChannelFlags.RGBA;
 
         private List<ITextureEditor> m_Editors;
         private SerializedObject m_SerializedObject;
@@ -101,7 +101,7 @@ namespace UnityEditor.Extensions.TextureEditor
                 
                 
                 EditorGUI.LabelField(HorizontalScope.NextRect(0, 60), "Visualize:");
-                m_ColorVisualize = (EColorVisualize)EditorGUI.EnumPopup(HorizontalScope.NextRect(5,40),m_ColorVisualize);
+                m_ColorVisualize = (EColorChannelFlags)EditorGUI.EnumPopup(HorizontalScope.NextRect(5,40),m_ColorVisualize);
                 if (EditorGUI.EndChangeCheck())
                 {
                     m_SerializedObject.ApplyModifiedProperties();

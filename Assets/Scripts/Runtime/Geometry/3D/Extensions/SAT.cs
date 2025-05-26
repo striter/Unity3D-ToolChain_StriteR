@@ -7,7 +7,7 @@ namespace Runtime.Geometry
     {   
         public static bool Intersect(this IConvex _convex, IConvex _comparer)
         {
-            foreach (var axis in _convex.GetAxes().Concat(_comparer.GetAxes()))
+            foreach (var axis in _convex.GetAxis().Concat(_comparer.GetAxis()))
             {
                 var projection1 = ProjectOntoAxis(_convex,axis);
                 var projection2 = ProjectOntoAxis(_comparer,axis);

@@ -18,8 +18,8 @@ namespace Runtime.Geometry
         public GSphere(float4 _centerAndRadius) : this(_centerAndRadius.xyz, _centerAndRadius.w) { }
         public float3 Origin => center;
         public static readonly GSphere kDefault = kOne;
-        public static readonly GSphere kOne = new GSphere(float3.zero, .5f);
-        public static readonly GSphere kZero = new GSphere(0,0);
+        public static readonly GSphere kOne = new(float3.zero, .5f);
+        public static readonly GSphere kZero = new(0,0);
         public float3 GetSupportPoint(float3 _direction) => center + _direction.normalize() * radius;
         public GSphere GetBoundingSphere() => this;
         public float SDF(float3 _position)
@@ -29,10 +29,10 @@ namespace Runtime.Geometry
             return math.length(p) - r;
         }
 
-        public static GSphere operator +(GSphere _src, float3 _dst) => new GSphere(_src.center+_dst,_src.radius);
-        public static GSphere operator -(GSphere _src, float3 _dst) => new GSphere(_src.center - _dst, _src.radius);
+        public static GSphere operator +(GSphere _src, float3 _dst) => new(_src.center+_dst,_src.radius);
+        public static GSphere operator -(GSphere _src, float3 _dst) => new(_src.center - _dst, _src.radius);
         
-        public static implicit operator float4(GSphere _src) => new float4(_src.center,_src.radius);
+        public static implicit operator float4(GSphere _src) => new(_src.center,_src.radius);
         public bool Contains(float3 _p, float _bias = float.Epsilon) =>math.lengthsq(_p - center) < radius * radius + _bias;
         public bool Contains(GSphere _sphere) =>math.lengthsq(_sphere.center - center) < radius * radius + _sphere.radius;
         public GBox GetBoundingBox()=> GBox.Minmax(center - radius,center + radius);

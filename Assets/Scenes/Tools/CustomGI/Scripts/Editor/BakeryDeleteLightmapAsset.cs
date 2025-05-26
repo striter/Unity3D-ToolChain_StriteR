@@ -1,7 +1,7 @@
 ﻿#if BAKERY_INCLUDED
 namespace UnityEditor.Extensions.ScriptableObjectBundle.Process.Lightmap.Bakery
 {
-    public class BakeryDeleteLightmapAsset : EAssetPipelineProcess
+    public class BakeryDeleteLightmapAsset : EditorExecutableProcess
     {
         public ftClearMenu.SceneClearingMode m_Mode = ftClearMenu.SceneClearingMode.lightmapReferences;
         public bool m_RemoveLightmapFiles = true;

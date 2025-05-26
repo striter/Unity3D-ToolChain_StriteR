@@ -7,6 +7,7 @@ using TechToys.ThePlanet.Module.BOIDS.Bird;
 using TPool;
 using System.Linq.Extensions;
 using TObjectPool;
+using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;
@@ -89,7 +90,7 @@ namespace TechToys.ThePlanet.Module.Cluster
             m_Input = targetInput;
         }
         
-        static readonly EVertexAttribute kOutputs = EVertexAttribute.Normal | EVertexAttribute.Tangent | EVertexAttribute.UV0 | EVertexAttribute.Color; 
+        static readonly EVertexAttributeFlags kOutputs = EVertexAttributeFlags.Normal | EVertexAttributeFlags.Tangent | EVertexAttributeFlags.UV0 | EVertexAttributeFlags.Color; 
         public void Collapse()
         {
             for (int i = 0; i < 8; i++)

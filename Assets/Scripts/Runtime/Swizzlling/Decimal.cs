@@ -1,9 +1,9 @@
 ﻿using System;
 using Unity.Mathematics;
 
-namespace Runtime.Swizzlling
+namespace Runtime.Swizzling
 {
-    public static class FDecimal
+    public static class UDecimal
     {
         private static readonly floatDecimal kFloatHelper = new floatDecimal();
         private static readonly float2Decimal kFloat2Helper = new float2Decimal();

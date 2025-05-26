@@ -60,7 +60,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle.Process
             return GetEnumerator();
         }
     }
-    public class CombineTextures : EAssetPipelineProcess , IEnumerable<ITextureCombineIEnumerable>
+    public class CombineTextures : EditorExecutableProcess , IEnumerable<ITextureCombineIEnumerable>
     {
         public ITextureCombineIEnumerable m_R, m_G, m_B, m_A;
         

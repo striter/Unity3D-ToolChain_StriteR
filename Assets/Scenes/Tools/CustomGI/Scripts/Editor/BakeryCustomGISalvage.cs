@@ -5,7 +5,7 @@ using UnityEngine;
 #if BAKERY_INCLUDED
 namespace UnityEditor.Extensions.ScriptableObjectBundle.Process.Lightmap.Bakery
 {
-    public class BakeryCustomGISalvage : EAssetPipelineProcess
+    public class BakeryCustomGISalvage : EditorExecutableProcess
     {
         protected void OnValidate() => BakeryCustomGIPreparation.Finish();
         public override bool Execute()

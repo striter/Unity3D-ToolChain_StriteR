@@ -5,7 +5,6 @@ using System.Linq;
 using System.Linq.Extensions;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
-using UnityEngine;
 
 namespace Runtime.Geometry
 {
@@ -24,10 +23,8 @@ namespace Runtime.Geometry
     public partial struct GQuad : IQuad<float3>,IIterate<float3>,IVolume  , IConvex , IRayIntersection
     {
         public GQuad(float3 _vb, float3 _vl, float3 _vf, float3 _vr):this(new Quad<float3>(_vb,_vl,_vf,_vr)){}
-        public GQuad((float3 _vb, float3 _vl, float3 _vf, float3 _vr) _tuple) : this(_tuple._vb, _tuple._vl, _tuple._vf, _tuple._vr) { }
         public GQuad(IList<float3> _points) : this(new Quad<float3>(_points[0], _points[1], _points[2], _points[3])) { }
         public static explicit operator GQuad(Quad<float3> _src) => new GQuad(_src);
-        
         public float3 this[int _index] => quad[_index];
         public float3 this[EQuadCorner _corner] => quad[_corner];
         public float3 B => quad.B;
@@ -66,7 +63,7 @@ namespace Runtime.Geometry
             yield return new GTriangle(F, R, B);
         }
 
-        public IEnumerable<float3> GetAxes() => GetTriangles().Select(p => p.normal);
+        public IEnumerable<float3> GetAxis() => GetTriangles().Select(p => p.normal);
         public IEnumerable<float3> GetVertexNormals()
         {
             GetTriangles(out var triangle1, out var triangle2);

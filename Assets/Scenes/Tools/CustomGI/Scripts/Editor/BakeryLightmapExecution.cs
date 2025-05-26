@@ -2,7 +2,7 @@
 #if BAKERY_INCLUDED
 namespace UnityEditor.Extensions.ScriptableObjectBundle.Process.Lightmap.Bakery
 {
-    public class BakeryLightmapProcessor : EAssetPipelineProcess , IAssetPipelineProcessContinuous
+    public class BakeryLightmapProcessor : EditorExecutableProcess , IEditorExecutableProcessContinuous
     {
         public ftRenderLightmap.RenderMode m_RenderMode;
         public ftRenderLightmap.RenderDirMode m_RenderDirMode;

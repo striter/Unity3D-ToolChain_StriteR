@@ -18,10 +18,13 @@ public class RawImageClip : MaskableGraphic , ICanvasRaycastFilter
         useLegacyMeshGeneration = false;
     }
 
-    protected void OnValidate()
+#if UNITY_EDITOR
+    protected override void OnValidate()
     {
+        base.OnValidate();
         ClipRectCheck();
     }
+#endif
 
     void ClipRectCheck()
     {

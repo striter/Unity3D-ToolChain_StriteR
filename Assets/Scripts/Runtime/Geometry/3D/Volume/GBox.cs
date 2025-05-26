@@ -89,7 +89,7 @@ namespace Runtime.Geometry
             yield return new GQuad(GetCenteredPoint(.5f,.5f,-.5f),GetCenteredPoint(-.5f,.5f,-.5f),GetCenteredPoint(-.5f,.5f,.5f),GetCenteredPoint(.5f,.5f,.5f));
         }
         
-        public IEnumerable<float3> GetAxes()
+        public IEnumerable<float3> GetAxis()
         {
             yield return kfloat3.right;
             yield return kfloat3.up;

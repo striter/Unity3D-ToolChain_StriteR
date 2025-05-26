@@ -195,17 +195,6 @@ namespace Runtime.DataStructure
             return _queryList;
         }
         
-        public IEnumerator<Element> ForEach<Element>(IList<Element> _elements)
-        {
-            foreach (var volume in m_Nodes)
-            {
-                if(volume.IsParent)
-                    continue;
-                foreach (var elementIndex in volume.elementsIndex)
-                    yield return _elements[elementIndex];
-            }
-        }
-        
         #if UNITY_EDITOR
         public void DrawHandles(IList<Element> _elements,bool _parentMode = false)
         {

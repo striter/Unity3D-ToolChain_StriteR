@@ -43,14 +43,14 @@ namespace Runtime.Optimize.Imposter
             var weights = float4.zero;
             var size = m_Data.m_BoundingSphere.radius;
             var block = new MaterialPropertyBlock();
-            var axis = GAxis.kDefault;
+            var coordinates = GCoordinates.kDefault;
             if (m_Data.m_Parallax <= 0)
             {
                 var corner = m_Data.m_Input.GetImposterCorner(viewDirectionOS);
-                axis = GAxis.ForwardBillboard(0, -corner.direction);
+                coordinates = GCoordinates.ForwardBillboard(0, -corner.direction);
                 math.sincos(0, out var s0, out var c0);
-                var X = size * c0 * axis.right + size * s0 * axis.up;
-                var Y = -size * s0 * axis.right + size * c0 * axis.up;
+                var X = size * c0 * coordinates.right + size * s0 * coordinates.up;
+                var Y = -size * s0 * coordinates.right + size * c0 * coordinates.up;
                 var billboard = new GQuad(-X - Y, -X + Y, X + Y, X - Y) + m_Data.m_BoundingSphere.center;
                 weights[0] = 1;
 
@@ -65,10 +65,10 @@ namespace Runtime.Optimize.Imposter
                 var output = m_Data.m_Input.GetImposterViews(viewDirectionOS);
                 weights = output.weights;
                 var centerOS = output.centroid;
-                axis = GAxis.ForwardBillboard(0, -centerOS);
+                coordinates = GCoordinates.ForwardBillboard(0, -centerOS);
                 math.sincos(0, out var s0, out var c0);
-                var X = size * c0 * axis.right + size * s0 * axis.up;
-                var Y = -size * s0 * axis.right + size * c0 * axis.up;
+                var X = size * c0 * coordinates.right + size * s0 * coordinates.up;
+                var Y = -size * s0 * coordinates.right + size * c0 * coordinates.up;
                 var billboard = new GQuad(-X - Y, -X + Y, X + Y, X - Y) + m_Data.m_BoundingSphere.center;
 
                 _mesh.SetVertices(billboard.Select(p => (Vector3)p).FillList(kVertices));
@@ -81,7 +81,7 @@ namespace Runtime.Optimize.Imposter
                         continue;
 
                     var corner = m_Data.m_Input.GetImposterCorner(output.corners[texelIndex]);
-                    var parallax = -axis.GetUV(corner.direction) * m_Data.m_Parallax * 2;
+                    var parallax = -coordinates.GetUV(corner.direction) * m_Data.m_Parallax * 2;
                     var texelST = corner.uvRect.ToTexelSize();
                     _mesh.SetUVs(texelIndex,
                         G2Quad.kDefaultUV.Select(p =>
@@ -93,7 +93,7 @@ namespace Runtime.Optimize.Imposter
             block.SetVector(ImposterShaderProperties.kWeights, weights);
             block.SetVector(ImposterShaderProperties.kBoundingID, (float4)m_Data.m_BoundingSphere);
             block.SetVector(ImposterShaderProperties.kRotation, ((quaternion)transform.rotation).value);
-            block.SetVector("_ImposterViewDirection", axis.forward.to4());
+            block.SetVector("_ImposterViewDirection", coordinates.forward.to4());
 
             m_Renderer.SetPropertyBlock(block);
         }

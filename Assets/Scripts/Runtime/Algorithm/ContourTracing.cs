@@ -6,7 +6,7 @@ using System.Linq.Extensions;
 using Runtime.Geometry;
 using Unity.Mathematics;
 using UnityEngine;
-using static kint2;
+using static Unity.Mathematics.kint2;
 
 //https://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/index.html
 public struct ContourTracingData : IGraphFinite<int2>

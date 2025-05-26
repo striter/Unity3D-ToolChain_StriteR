@@ -32,7 +32,7 @@ namespace UnityEditor.Extensions
             {
 
                 var type = targetObject.GetType();
-                if (type.IsArray)
+                if (type.IsArray || type.IsGenericType)
                 {
                     array = true;
                     continue;

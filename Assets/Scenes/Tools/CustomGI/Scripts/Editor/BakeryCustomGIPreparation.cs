@@ -35,7 +35,7 @@ namespace UnityEditor.Extensions.ScriptableObjectBundle.Process.Lightmap.Bakery
         public BakerySkyLight skyLight;
     }
     
-    public class BakeryCustomGIPreparation : EAssetPipelineProcess
+    public class BakeryCustomGIPreparation : EditorExecutableProcess
     {
         public enum EGICustomLightmapProcess
         {

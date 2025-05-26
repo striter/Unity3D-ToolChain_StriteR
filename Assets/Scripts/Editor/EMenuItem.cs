@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using Render.Debug;
-using UnityEditor;
 using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 
@@ -93,13 +92,10 @@ namespace UnityEditor.Extensions
         [MenuItem("Work Flow/Asset/Procedural Mesh Generator", false, 301)]
         static void ShowPlaneGenerator() => EditorWindow.GetWindow(typeof(EProceduralMeshGenerator)).titleContent = new GUIContent("Procedural Mesh Generator", EditorGUIUtility.IconContent("CustomTool").image);
 
-        [MenuItem("Work Flow/Asset/Mesh Smooth Normal Generator", false, 302)]
-        static void ShowSmoothNormalGenerator() => EditorWindow.GetWindow(typeof(SmoothNormalGenerator)).titleContent = new GUIContent("Smooth Normal Generator", EditorGUIUtility.IconContent("CustomTool").image);
-
-        [MenuItem("Work Flow/Asset/Mesh Editor", false, 303)]
+        [MenuItem("Work Flow/Asset/Mesh Editor", false, 302)]
         static void ShowMeshEditor() => EditorWindow.GetWindow(typeof(MeshEditor)).titleContent = new GUIContent("Mesh Editor", EditorGUIUtility.IconContent("AvatarPivot").image);
 
-        [MenuItem("Work Flow/Asset/Texture Editor", false, 305)]
+        [MenuItem("Work Flow/Asset/Texture Editor", false, 303)]
         static void ShowTextureModifier() => EditorWindow.GetWindow(typeof(TextureEditor.ETextureEditor)).titleContent = new GUIContent("Texture Editor", EditorGUIUtility.IconContent("d_PreTextureMipMapHigh").image);
 
         [MenuItem("Work Flow/Asset/Noise Texture Generator", false, 304)]

@@ -1,3 +1,4 @@
+using Rendering;
 using UnityEngine;
 
 namespace Runtime.Optimize.GPUAnimation

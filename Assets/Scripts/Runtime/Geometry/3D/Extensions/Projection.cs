@@ -4,6 +4,7 @@ using Unity.Mathematics;
 namespace Runtime.Geometry.Extension
 {
     using static math;
+    using static umath;
     public static partial class UGeometry
     {
         public static float3 Projection(this GPlane _projectionPlane,float3 _srcPoint, float3 _origin)
@@ -46,17 +47,11 @@ namespace Runtime.Geometry.Extension
             return hitPoint;
         }
         
-        public static float Projection(this GRay _ray, float3 _point)
-        {
-            return dot(_point - _ray.origin, _ray.direction);
-        }
+        public static float Projection(this GRay _ray, float3 _point) => dot(_point - _ray.origin, _ray.direction);
 
-        public static float Projection(this GLine _line, float3 _point)
-        {
-            return clamp(Projection(_line.ToRay(), _point), 0, _line.length);
-        }
+        public static float Projection(this GLine _line, float3 _point) => clamp(Projection(_line.ToRay(), _point), 0, _line.length);
         
-        public static float3 Projection(this GAxis _axis,float3 _point) => ((GPlane)_axis).Projection(_point);
+        public static float3 Projection(this GCoordinates _axis,float3 _point) => ((GPlane)_axis).Projection(_point);
 
         public static float2 Projection(this GRay _ray, GRay _dstRay)   //x src ray projection, y dst ray projection
         {
@@ -74,6 +69,13 @@ namespace Runtime.Geometry.Extension
             projections.x = clamp(projections.x, 0, _line.length);
             projections.y = Projection(_ray, _line.GetPoint(projections.x));
             return projections;
+        }
+
+        //&https://iquilezles.org/articles/sphereproj/
+        public static float ScreenProjection(this GSphere _sphere, float4x4 _worldToCamera,float _pixelHeight, float _fovYInRad)
+        {
+            var o = mul(_worldToCamera,new float4(_sphere.Origin,1.0f)).xyz;
+            return 0.5f *_pixelHeight* _sphere.radius / (tan(_fovYInRad / 2) * -o.z);
         }
     }
 }

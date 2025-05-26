@@ -18,7 +18,7 @@ namespace Examples.Algorithm.Geometry
         public GRay m_Ray20;
         public GRay m_Ray21;
         [Header("Plane & Point")]
-        public GAxis m_Axis = GAxis.kDefault;
+        public GCoordinates m_Axis = GCoordinates.kDefault;
         public float3 m_AxisPoint;
         public GRay m_AxisRay = new GRay(float3.zero, kfloat3.down);
 

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using Runtime.Geometry.Extension;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -42,7 +44,7 @@ public class UIMeshRenderer : MaskableGraphic
         
         bool colorValid = colors.Length > 0;
 
-        var modelSize = UBoundsIncrement.Process(m_Mesh.bounds.GetEdges().Select(p => rotation * p)).size; 
+        var modelSize = (Vector3)UGeometry.GetBoundingBox(m_Mesh.bounds.GetEdges().Select(p => (float3)(rotation * p))).size; 
         var rectSize = rectTransform.rect.size;
         var finalSize = Vector3.one;
         

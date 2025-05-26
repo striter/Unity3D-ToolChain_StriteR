@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Linq.Extensions;
 using Runtime.Geometry;
-using Runtime.Geometry.Extension;
 using Unity.Mathematics;
+using static Unity.Mathematics.math;
 
 public static class CartographicGeneralization
 {
@@ -63,31 +65,102 @@ public static class CartographicGeneralization
         return _pointList;
     }
 
-    private static List<int2> kResults = new List<int2>();
-    public static List<int2> BresenhamLine(int2 _start, int2 _end)
+    
+    //https://zingl.github.io/bresenham.html
+    public static class Bresenham
     {
-        kResults.Clear();
-
-        var x0 = _start.x;
-        var x1 = _end.x;
-        var y0 = _start.y;
-        var y1 = _end.y;
-            
-        var dx = math.abs(x1 - x0);
-        var dy = math.abs(y1 - y0);
-        var sx = x0 < x1 ? 1 : -1;
-        var sy = y0 < y1 ? 1 : -1;
-        var err = (dx > dy ? dx : -dy) / 2;
-        for(;;) {
-            kResults.Add(new int2(x0, y0));
-            if (x0 == x1 && y0 == y1) break;
-            var e2 = err;
-            if (e2 > -dx) { err -= dy; x0 += sx; }
-
-            if (e2 >= dy) continue;
-            err += dx; y0 += sy;
+        public static void Line(int2 _start, int2 _end,Action<int2,float> _lineOpacity)
+        {
+            var x0 = _start.x;
+            var x1 = _end.x;
+            var y0 = _start.y;
+            var y1 = _end.y;
+                
+            var dx = abs(x1 - x0);
+            var dy = abs(y1 - y0);
+            var sx = x0 < x1 ? 1 : -1;
+            var sy = y0 < y1 ? 1 : -1;
+            var err = (dx > dy ? dx : -dy) / 2;
+            for(;;)
+            {
+                _lineOpacity(new int2(x0, y0), 1);
+                if (x0 == x1 && y0 == y1) break;
+                var e2 = err;
+                if (e2 > -dx) { err -= dy; x0 += sx; }
+                if (e2 >= dy) continue;
+                err += dx; y0 += sy;
+            }
         }
 
-        return kResults;
+        public static void LineWidth(int2 _start, int2 _end, float wd, Action<int2, float> _lineOpacity)
+        {
+            var x0 = _start.x;
+            var x1 = _end.x;
+            var y0 = _start.y;
+            var y1 = _end.y;
+
+            int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+            int dy = abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+            int err = dx - dy, e2, x2, y2; /* error value e_xy */
+            float ed = dx + dy == 0 ? 1 : sqrt((float)dx * dx + (float)dy * dy);
+
+            for (wd = (wd + 1) / 2;;)
+            {
+                /* pixel loop */
+                _lineOpacity(new int2(x0, y0), 1f - max(0, abs(err - dx + dy) / ed - wd + 1));
+                e2 = err;
+                x2 = x0;
+                if (2 * e2 >= -dx)
+                {
+                    /* x step */
+                    for (e2 += dy, y2 = y0; e2 < ed * wd && (y1 != y2 || dx > dy); e2 += dx)
+                        _lineOpacity(new int2(x0, y2 += sy), 1f - max(0, abs(e2) / ed - wd + 1));
+                    if (x0 == x1) break;
+                    e2 = err;
+                    err -= dy;
+                    x0 += sx;
+                }
+
+                if (2 * e2 <= dy)
+                {
+                    /* y step */
+                    for (e2 = dx - e2; e2 < ed * wd && (x1 != x2 || dx < dy); e2 += dy)
+                        _lineOpacity(new int2(x2 += sx, y0), 1f - max(0, abs(e2) / ed - wd + 1));
+                    if (y0 == y1) break;
+                    err += dx;
+                    y0 += sy;
+                }
+            }
+        }
+        
+        
+        static void plot1(int x,int y,int2 _centre,Action<int2, float> _color) => _color(new int2(_centre.x + x, _centre.y + y), 1f);
+        static void plot8(int x,int y,int2 _centre, Action<int2, float> _color){
+            plot1(x,y,_centre,_color);plot1(y,x,_centre,_color);
+            plot1(x,-y,_centre,_color);plot1(y,-x,_centre,_color);
+            plot1(-x,-y,_centre,_color);plot1(-y,-x,_centre,_color);
+            plot1(-x,y,_centre,_color);plot1(-y,x,_centre,_color);
+        }
+
+        public static void Circle(int2 _centre, int _radius, Action<int2, float> _lineOpacity)
+        {
+            var x = 0;
+            var y = _radius;
+            var d = 1 - _radius;
+            while(x < y)
+            {
+                if(d < 0)
+                {
+                    d += 2 * x + 3;
+                }
+                else
+                {
+                    d += 2 * (x-y) + 5;
+                    y--;
+                }
+                plot8(x,y, _centre,_lineOpacity);
+                x++;
+            }
+        }
     }
 }

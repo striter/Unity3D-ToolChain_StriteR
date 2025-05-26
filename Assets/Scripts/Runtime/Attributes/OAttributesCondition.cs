@@ -14,11 +14,11 @@ public abstract class ConditionAttribute : PropertyAttribute
         NonAnyEquals,
     }
 
-    public struct ConditionPrediction
+    public struct Prediction
     {
         public string fieldName;
         public Func<object,bool> prediction;
-        public ConditionPrediction(string _fieldName,Func<object,bool> _prediction)
+        public Prediction(string _fieldName,Func<object,bool> _prediction)
         {
             fieldName = _fieldName;
             prediction = _prediction;
@@ -26,15 +26,15 @@ public abstract class ConditionAttribute : PropertyAttribute
     }
     
     public abstract EConditionAction Condition { get; }
-    public readonly ConditionPrediction[] m_Conditions;
+    public readonly Prediction[] m_Conditions;
 
     public ConditionAttribute()
     {
         m_Conditions = null;
     }
-    public ConditionAttribute(ConditionPrediction[] _conditions) => m_Conditions = _conditions;
+    public ConditionAttribute(Prediction[] _conditions) => m_Conditions = _conditions;
 
-    public ConditionAttribute(params KeyValuePair<string, object[]>[] _pairs) :this( _pairs.Select(p=>new ConditionPrediction(p.Key,fieldValue=>FieldEquals(fieldValue,p.Value))).ToArray()) { }
+    public ConditionAttribute(params KeyValuePair<string, object[]>[] _pairs) :this( _pairs.Select(p=>new Prediction(p.Key,fieldValue=>FieldEquals(fieldValue,p.Value))).ToArray()) { }
 
     static bool FieldEquals(object _comparer, object[] refValues)
     {
@@ -67,18 +67,18 @@ public class InspectorButtonAttribute : ConditionAttribute
     public override EConditionAction Condition => EConditionAction.AlwaysVisible;
     public bool undo;
     public InspectorButtonAttribute(bool _undo = false) { undo = _undo;}
-    protected InspectorButtonAttribute(bool _undo,params ConditionPrediction[] _param) : base(_param) { undo = _undo; }
+    protected InspectorButtonAttribute(bool _undo,params Prediction[] _param) : base(_param) { undo = _undo; }
     protected InspectorButtonAttribute(params KeyValuePair<string, object[]>[] _pairs) : base(_pairs) { }
 }
 
-[AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 public class InspectorButtonFoldout : InspectorButtonAttribute
 {
     public override EConditionAction Condition => EConditionAction.AllEquals;
     public InspectorButtonFoldout(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
 }
 
-[AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 public class InspectorButtonFold : InspectorButtonAttribute
 {
     public override EConditionAction Condition => EConditionAction.NonAnyEquals;
@@ -89,12 +89,12 @@ public class InspectorButtonFold : InspectorButtonAttribute
 public class InspectorButtonEditor : InspectorButtonAttribute
 {
     public override EConditionAction Condition => EConditionAction.AllEquals;
-    public InspectorButtonEditor(bool _undo = false):base(_undo, new ConditionPrediction(null,_=>!Application.isPlaying)) { }
+    public InspectorButtonEditor(bool _undo = false):base(_undo, new Prediction(null,_=>!Application.isPlaying)) { }
 }
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
 public class InspectorButtonRuntime : InspectorButtonAttribute
 {
     public override EConditionAction Condition => EConditionAction.AllEquals;
-    public InspectorButtonRuntime(bool _undo = false) : base(_undo, new ConditionPrediction(null, _ => Application.isPlaying)) { }
+    public InspectorButtonRuntime(bool _undo = false) : base(_undo, new Prediction(null, _ => Application.isPlaying)) { }
 }

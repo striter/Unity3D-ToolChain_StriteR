@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
+using Rendering;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
+using Unity.Mathematics;
 using UnityEditor.Extensions.EditorPath;
 using UnityEngine;
 
@@ -282,15 +284,15 @@ namespace UnityEditor.Extensions
         EVertexEditMode m_VertexEditMode;
 
         Vector3[] m_Verticies;
-        ValueChecker<EVertexAttribute> m_VertexDataSource = new ValueChecker<EVertexAttribute>(EVertexAttribute.Normal);
+        ValueChecker<EVertexAttributeFlags> m_VertexDataSource = new ValueChecker<EVertexAttributeFlags>(EVertexAttributeFlags.Normal);
         List<Vector3> m_VertexDatas = new List<Vector3>();
         bool m_AvailableDatas => m_VertexDatas.Count > 0;
-        bool m_EditingVectors => m_VertexDataSource != EVertexAttribute.None && m_VertexDatas.Count > 0;
+        bool m_EditingVectors => m_VertexDataSource != EVertexAttributeFlags.None && m_VertexDatas.Count > 0;
         public override void Begin()
         {
             base.Begin();
             m_Verticies = m_ModifingMesh.vertices;
-            SelectVectorData(EVertexAttribute.Normal);
+            SelectVectorData(EVertexAttributeFlags.Normal);
             SelectVertex(0);
             SelectPolygon(0);
         }
@@ -299,7 +301,7 @@ namespace UnityEditor.Extensions
             base.End();
             m_PositionChecker.Check(Vector3.zero);
             m_RotationChecker.Check(Quaternion.identity);
-            m_VertexDataSource.Check(EVertexAttribute.None);
+            m_VertexDataSource.Check(EVertexAttributeFlags.None);
             m_SelectedPolygon = -1;
             m_SelectedVertexIndex = -1;
             m_VertexEditMode = EVertexEditMode.Position;
@@ -329,13 +331,13 @@ namespace UnityEditor.Extensions
         }
         void RecalculateBounds()
         {
-            m_ModifingMesh.bounds = UBoundsIncrement.Process(m_Verticies);
+            m_ModifingMesh.bounds = UGeometry.GetBoundingBox(m_Verticies.Select(p=>(float3)p));
         }
-        void SelectVectorData(EVertexAttribute _data)
+        void SelectVectorData(EVertexAttributeFlags _data)
         {
             if (!m_VertexDataSource.Check(_data))
                 return;
-            if (m_VertexDataSource != EVertexAttribute.None)
+            if (m_VertexDataSource != EVertexAttributeFlags.None)
                 m_ModifingMesh.GetVertexData(m_VertexDataSource, m_VertexDatas);
         }
         public override void OnEditorSceneGUI(SceneView _sceneView, GameObject _meshObject, EditorWindow _window)
@@ -493,7 +495,7 @@ namespace UnityEditor.Extensions
         public override void OnEditorWindowGUI()
         {
             base.OnEditorWindowGUI();
-            SelectVectorData((EVertexAttribute)EditorGUILayout.EnumPopup("Data Source", m_VertexDataSource));
+            SelectVectorData((EVertexAttributeFlags)EditorGUILayout.EnumPopup("Data Source", m_VertexDataSource));
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Scene GUI Size (Z X):");
@@ -568,7 +570,7 @@ namespace UnityEditor.Extensions
         Vector3 m_PaintPosition;
         List<int> m_PaintAffectedIndices = new List<int>();
         EPaintNormal m_PaintNormal = EPaintNormal.TriangleNormal;
-        ValueChecker<EVertexAttribute> m_VertexDataSource = new ValueChecker<EVertexAttribute>(EVertexAttribute.Color);
+        ValueChecker<EVertexAttributeFlags> m_VertexDataSource = new ValueChecker<EVertexAttributeFlags>(EVertexAttributeFlags.Color);
         List<Vector4> m_VertexDatas = new List<Vector4>();
         bool m_AvailableDatas => m_VertexDatas.Count > 0;
         public override Material GetDefaultMaterial() => new Material(Shader.Find("Hidden/VertexColorVisualize")) { hideFlags = HideFlags.HideAndDontSave };
@@ -583,7 +585,7 @@ namespace UnityEditor.Extensions
             m_VertexDataSource.Bind(value =>
             {
                 m_VertexDatas.Clear();
-                if (value != EVertexAttribute.None)
+                if (value != EVertexAttributeFlags.None)
                 {
                     m_ModifingMesh.GetVertexData(value, m_VertexDatas);
                     if (!m_Parent.m_MaterialOverride)
@@ -707,7 +709,7 @@ namespace UnityEditor.Extensions
         public override void OnEditorWindowGUI()
         {
             base.OnEditorWindowGUI();
-            m_VertexDataSource.Check((EVertexAttribute)EditorGUILayout.EnumPopup("Data Source", m_VertexDataSource));
+            m_VertexDataSource.Check((EVertexAttributeFlags)EditorGUILayout.EnumPopup("Data Source", m_VertexDataSource));
             if (!m_AvailableDatas)
             {
                 EditorGUILayout.LabelField("<Color=#FF0000>Empty Vertex Data</Color>", UEGUIStyle_Window.m_ErrorLabel);

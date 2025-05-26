@@ -1,5 +1,8 @@
 using System;
 using System.IO;
+using System.Linq;
+using Runtime.Geometry;
+using Runtime.Geometry.Extension;
 using UnityEditor.Extensions.EditorPath;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -74,14 +77,10 @@ namespace UnityEditor.Extensions
             var selectObject = (GameObject) Selection.activeObject;
             var childCount = selectObject.transform.childCount;
             var position = Vector3.zero;
-            for (int i = 0; i < selectObject.transform.childCount; i++)
+            for (int i = 0; i < childCount; i++)
             {
                 var child = selectObject.transform.GetChild(i);
-                UBoundsIncrement.Begin();
-                foreach (var filter in child.GetComponentsInChildren<MeshFilter>())
-                    UBoundsIncrement.Iterate(filter.sharedMesh.bounds);
-                var bounds = UBoundsIncrement.End();
-                
+                var bounds = UGeometry.GetBoundingBox(child.GetComponentsInChildren<MeshFilter>().Select(p=>(GBox)p.sharedMesh.bounds));
                 child.transform.localPosition = position;
                 position += (bounds.size.x + 1f) * Vector3.right;
             }

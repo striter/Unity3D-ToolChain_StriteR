@@ -2,6 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using Rendering.GI.SphericalHarmonics;
 using Runtime;
+using Runtime.Geometry;
 using Runtime.Geometry.Extension;
 using Runtime.Geometry.Extension.Mesh;
 using Unity.Collections;
@@ -82,7 +83,7 @@ namespace Examples.Rendering.SH
             }
 
             meshData.subMeshCount = 1;
-            meshData.SetSubMesh(0,new SubMeshDescriptor(0,indexCount){vertexCount = vertexCount,bounds = UBoundsIncrement.MinMax(min, max)});
+            meshData.SetSubMesh(0,new SubMeshDescriptor(0,indexCount){vertexCount = vertexCount,bounds = GBox.Minmax(min, max)});
 
             _mesh.bounds = meshData.GetSubMesh(0).bounds;
             UnityEngine.Mesh.ApplyAndDisposeWritableMeshData(meshDataArray,_mesh, MeshUpdateFlags.DontRecalculateBounds);

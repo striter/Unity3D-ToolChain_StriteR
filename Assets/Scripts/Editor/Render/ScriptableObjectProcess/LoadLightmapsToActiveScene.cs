@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UnityEditor.Extensions.ScriptableObjectBundle.Process.Lightmap
 {
-    public class LoadLightmapsToActiveScene : EAssetPipelineProcess
+    public class LoadLightmapsToActiveScene : EditorExecutableProcess
     {
         [EditorPath] public string m_Folder;
         public ELightmap m_LoadLightmaps = ELightmap.Color;

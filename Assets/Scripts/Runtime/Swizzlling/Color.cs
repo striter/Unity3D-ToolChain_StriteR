@@ -2,16 +2,6 @@
 using Unity.Mathematics;
 using UnityEngine;
 
-public enum EColorVisualize
-{
-    None,
-    RGB,
-    RGBA,
-    R,
-    G,
-    B,
-    A,
-}
 public static partial class UColor
 {
     #region ColorTransform
@@ -132,40 +122,7 @@ public static partial class UColor
         return Color.magenta;
     }
 
-    public static Color FilterColor(this EColorVisualize _visualize,Color _color)
-    {
-        switch (_visualize)
-        {
-            default:throw new System.Exception("Invalid Visualize Color Type:"+_visualize);
-            case EColorVisualize.None: return Color.clear;
-            case EColorVisualize.RGBA: return _color; 
-            case EColorVisualize.RGB: return _color.SetA(1);
-            case EColorVisualize.R: return Color.red * _color.r;
-            case EColorVisualize.G: return Color.green * _color.g; 
-            case EColorVisualize.B: return Color.blue * _color.b;
-            case EColorVisualize.A: return Color.white * _color.a;
-        }
-    }
-    
-    public static Color FilterGreyScale(this EColorVisualize _visualize, Color _color)
-    {
-        switch (_visualize)
-        {
-            default: throw new System.Exception("Invalid Visualize Color Type:" + _visualize);
-            case EColorVisualize.None:return Color.clear;
-            case EColorVisualize.RGBA: return _color;
-            case EColorVisualize.RGB: return _color.SetA(1);
-            case EColorVisualize.R: return Color.white * _color.r;
-            case EColorVisualize.G: return Color.white * _color.g;
-            case EColorVisualize.B: return Color.white * _color.b;
-            case EColorVisualize.A: return Color.white * _color.a;
-        }
-    }
-
-    public static Color Cos(Color _value)
-    {
-        return new Color(Mathf.Cos(_value.r), Mathf.Cos(_value.g), Mathf.Cos(_value.b), _value.a);//Mathf.Cos(_value.a));
-    }
+    public static Color Cos(Color _value) => new Color(Mathf.Cos(_value.r), Mathf.Cos(_value.g), Mathf.Cos(_value.b), _value.a);//Mathf.Cos(_value.a));
     
     public static Color IndexToColor(int _index) => (_index % 16) switch {
             0 => Color.red, 1 => Color.green, 2 => Color.blue, 3 => Color.yellow,
@@ -174,14 +131,4 @@ public static partial class UColor
             12 => KColor.kLime,13 => KColor.kOlive, 14 => KColor.kTeal, 15 => KColor.kTomato,
             _ => Color.grey
         };
-}
-
-[Serializable]
-public struct ColorPalette
-{
-    public Color a,b,c,d;
-    public static readonly ColorPalette kDefault = new ColorPalette()
-        {a = new Color(.5f,.5f,.5f,1f), b = new Color(.5f,.5f,.5f,1f), c = new Color(1f,1f,1f,1f), d = new Color(0,0.1f,0.2f,1f)};
-    
-    public Color Evaluate(float _value) => (a + b * UColor.Cos(kmath.kPI2*(c*_value+d))).SetA(1f);
 }

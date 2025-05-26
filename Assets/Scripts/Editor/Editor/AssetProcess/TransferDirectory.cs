@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace UnityEditor.Extensions.ScriptableObjectBundle.Process
 {
-    public class TransferDirectory : EAssetPipelineProcess
+    public class TransferDirectory : EditorExecutableProcess
     {
         [EditorPath] public string m_SourcePath;
         [EditorPath] public string m_DestinationPath;

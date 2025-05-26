@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace UnityEditor.Extensions.ScriptableObjectBundle.Process
 {
-    public class DeleteDirectory : EAssetPipelineProcess
+    public class DeleteDirectory : EditorExecutableProcess
     {
         [EditorPath] public string[] m_DeletePaths;
         public override bool Execute()

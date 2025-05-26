@@ -53,8 +53,6 @@ namespace Examples.Algorithm.PathFinding
             }
         }
 
-        
-
         public IEnumerable<INode> GetAdjacentNodes(INode _node)
         {
             var _src = (_node as Node).identity;

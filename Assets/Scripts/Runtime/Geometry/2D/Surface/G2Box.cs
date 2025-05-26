@@ -126,6 +126,19 @@ namespace Runtime.Geometry
         public static G2Box operator /(G2Box _src,G2Box _dst) => new G2Box(_src.center / _dst.center, _src.extent / _dst.extent);
         public static G2Box operator *(G2Box _src,G2Box _dst) => new G2Box(_src.center * _dst.center, _src.extent * _dst.extent);
 
+        public static implicit operator float4(G2Box _box) => new(_box.center.x, _box.center.y, _box.extent.x, _box.extent.y);
+        public static implicit operator Rect(G2Box _src) => new(_src.min, _src.size);
+        public static implicit operator G2Box(Rect _src) => new(_src.center, _src.size / 2);
+        public static implicit operator G2Quad(G2Box _src)
+        {
+            var b = _src.min;
+            var f = _src.max;
+            var l = new float2(b.x, f.y);
+            var r = new float2(f.x, b.y);
+            return new G2Quad(b, l, f, r);
+        }
+        
+        public float4 ToTexelSize() => new( size.x, size.y,min.x, min.y);
         public static G2Box Normalize(G2Box _src, G2Box _normalize)
         {
             var min = math.lerp(_src.min, _src.max, _normalize.min);
@@ -136,30 +149,19 @@ namespace Runtime.Geometry
         public static bool operator ==(G2Box _a, G2Box _b) => ((float4)_a == _b).all();
         public static bool operator !=(G2Box _a, G2Box _b) => ((float4)_a != _b).any();
         
-        public static implicit operator float4(G2Box _box) => new(_box.center.x, _box.center.y, _box.extent.x, _box.extent.y);
-        public static implicit operator Rect(G2Box _src) => new(_src.min, _src.size);
-        public static implicit operator G2Box(Rect _src) => new(_src.center, _src.size / 2);
-        
-        public static implicit operator G2Quad(G2Box _src)
-        {
-            var b = _src.min;
-            var f = _src.max;
-            var l = new float2(b.x, f.y);
-            var r = new float2(f.x, b.y);
-            return new G2Quad(b, l, f, r);
-        }
-        public float4 ToTexelSize() => new float4( size.x, size.y,min.x, min.y);
+        public bool Equals(G2Box other) => center.Equals(other.center) && extent.Equals(other.extent) && size.Equals(other.size) && min.Equals(other.min) && max.Equals(other.max);
+
+        public override bool Equals(object obj) => obj is G2Box other && Equals(other);
+
+        public override int GetHashCode() => HashCode.Combine(center, extent, size, min, max);
+
         
         public override string ToString() => $"G2Box {center} {extent}";
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public G2Box Resize(float _factor) => G2Box.Minmax(center - extent * _factor, center + extent * _factor);
+        public G2Box Resize(float _factor) => Minmax(center - extent * _factor, center + extent * _factor);
 
-        public G2Box Collapse(float2 _factor, float2 _center = default) =>new G2Box(center + _center * size, extent * _factor);
-
+        public G2Box Collapse(float2 _factor, float2 _center = default) => new(center + _center * size, extent * _factor);
         public void DrawGizmos() => Gizmos.DrawWireCube(center.to3xz(),size.to3xz());
         public void DrawGizmosXY() => Gizmos.DrawWireCube(center.to3xy(), size.to3xy());
     }
