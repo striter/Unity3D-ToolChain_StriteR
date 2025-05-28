@@ -1,16 +1,19 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Runtime
 {
-    public interface IRuntimeRendererBillboard
+    public interface IRendererViewSpace
     {
-        bool Billboard { get; }
+        bool ViewSpaceRequired { get; }
     }
-    
+
+    public interface IRendererLightSpace
+    {
+        bool LightSpaceRequired { get; }
+    }
     
     [ExecuteInEditMode,RequireComponent(typeof(MeshFilter)),DisallowMultipleComponent]
     public abstract class ARendererBase : MonoBehaviour
@@ -55,17 +58,14 @@ namespace Runtime
         
         public void SetDirty() => m_Dirty = true;
 
-        private ValueChecker<Matrix4x4> m_CameraTRChecker = new ValueChecker<Matrix4x4>();
+        private ValueChecker<Matrix4x4> m_ViewSpaceChecker = new();
         protected void BeginRendering(ScriptableRenderContext _context, Camera _camera)
         {
             if (!m_Mesh) 
                 return;
 
-            if (this is IRuntimeRendererBillboard { Billboard: true })
-            {
-                if (m_CameraTRChecker.Check(_camera.transform.localToWorldMatrix))
-                    SetDirty();
-            }
+            if (this is IRendererViewSpace { ViewSpaceRequired: true } && m_ViewSpaceChecker.Check(_camera.transform.localToWorldMatrix))
+                SetDirty();
             
             if (!m_Dirty) return;
             m_Dirty = false;

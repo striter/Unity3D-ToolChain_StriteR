@@ -32,14 +32,14 @@ namespace Rendering.Pipeline
                 effect.Configure(cmd, cameraTextureDescriptor);
             ConfigureTarget(colorAttachmentHandle,depthAttachmentHandle);
         }
-        public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
+        public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {            
             var cmd = CommandBufferPool.Get("Post Process");
-            var descriptor = renderingData.cameraData.cameraTargetDescriptor;
+            var descriptor = _renderingData.cameraData.cameraTargetDescriptor;
             descriptor.msaaSamples = 1;
             cmd.GetTemporaryRT(ID_Blit_Temp1, descriptor);
             cmd.GetTemporaryRT(ID_Blit_Temp2, descriptor);
-            var renderer = renderingData.cameraData.renderer;
+            var renderer = _renderingData.cameraData.renderer;
             var lastIndex = m_Effects.Count - 1;
             var blitIndex = 0;
             var blitSwap = true;
@@ -55,7 +55,7 @@ namespace Rendering.Pipeline
 
                 var name = effect.GetType().Name;
                 cmd.BeginSample(name);
-                effect.Execute(cmd, src, dst, descriptor, context, ref renderingData);
+                effect.Execute(cmd, src, dst, descriptor, _context, ref _renderingData);
                 cmd.EndSample(name);
                 
                 blitIndex++;
@@ -65,7 +65,7 @@ namespace Rendering.Pipeline
             
             cmd.ReleaseTemporaryRT(ID_Blit_Temp1);
             cmd.ReleaseTemporaryRT(ID_Blit_Temp2);
-            context.ExecuteCommandBuffer(cmd);
+            _context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }
         public override void FrameCleanup(CommandBuffer cmd)

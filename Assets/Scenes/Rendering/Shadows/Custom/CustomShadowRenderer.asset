@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de640fe3d0db1804a85f9fc8f5cadab6, type: 3}
-  m_Name: URP_Renderer_CustomShadow
+  m_Name: CustomShadowRenderer
   m_EditorClassIdentifier: 
   debugShaders:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7,
@@ -77,27 +77,7 @@ MonoBehaviour:
   m_Active: 1
   m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
   m_Data:
-    m_Normal: 0
-    m_Mask: 0
-    m_MaskData:
-      renderMask: 2147483647
-      color: {r: 1, g: 1, b: 1, a: 1}
-      m_Outline: 0
-      extendWidth: 0.1
-      outlineVertex: 0
-    m_MotionVector: 0
-    m_Reflection: 0
-    m_PlanarReflection:
-      maxPlanarReflectionTexture: 4
-    m_AntiAliasing:
-      mode: 1
-      fxaa: 2
-      m_AdditionalSample: 1
-      m_UseDepth: 0
-      m_ContrastSkip: 0.1
-      m_RelativeSkip: 0.2
-      m_SubPixelBlend: 1
-      blend: 0
+    m_Features: 0
 --- !u!114 &5260401770450578518
 MonoBehaviour:
   m_ObjectHideFlags: 0

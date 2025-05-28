@@ -105,3 +105,13 @@ public class ClampAttribute:PropertyAttribute
 public class CullingMaskAttribute : PropertyAttribute {
     public static bool Enabled(int _mask,int _layer) =>  _mask == -1 || ((_mask >> _layer) & 1) == 1;
 }
+
+[AttributeUsage(AttributeTargets.Field)]
+public class AssetAttribute : PropertyAttribute
+{
+    public Func<UnityEngine.Object> m_Getter;
+    public AssetAttribute(Func<UnityEngine.Object> _getter)
+    {
+        m_Getter = _getter;
+    }
+}

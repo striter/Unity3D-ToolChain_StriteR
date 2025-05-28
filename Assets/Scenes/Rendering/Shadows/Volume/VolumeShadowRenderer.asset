@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-3528349265234055559
+--- !u!114 &-795417826519530736
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,27 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71045df687a34db78255998bd1ba396e, type: 3}
-  m_Name: SurfaceEffectFeature
+  m_Script: {fileID: 11500000, guid: 1133ff7b78818b2408e9dc3e71fcc1cb, type: 3}
+  m_Name: VolumeShadowFeature
   m_EditorClassIdentifier: 
   m_Active: 1
-  m_Event: 500
---- !u!114 &-924903564014875152
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0592f8c5d1384f27b80b1283e2e36479, type: 3}
-  m_Name: GrabTextureFeature
-  m_EditorClassIdentifier: 
-  m_Active: 1
-  m_Config:
-    blurActive: 1
-  kActiveComponents: []
+  m_Shader: {fileID: 4800000, guid: d81403b53ce591a488b0d58013a1e6e4, type: 3}
+  m_Data:
+    bias: 0.126
+    normal: 0.126
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40,19 +27,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de640fe3d0db1804a85f9fc8f5cadab6, type: 3}
-  m_Name: URP_Renderer_Common
+  m_Name: VolumeShadowRenderer
   m_EditorClassIdentifier: 
   debugShaders:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7,
       type: 3}
     hdrDebugViewPS: {fileID: 4800000, guid: 573620ae32aec764abd4d728906d2587, type: 3}
   m_RendererFeatures:
-  - {fileID: 1759527312370271274}
-  - {fileID: -3528349265234055559}
-  - {fileID: 6427212684956401222}
-  - {fileID: 3068563560998926471}
-  - {fileID: -924903564014875152}
-  m_RendererFeatureMap: 2a846daac4186b1879ae368a09c908cf46feb556e20b325987780c004dba952af08d66df1b152af3
+  - {fileID: 5260401770450578518}
+  - {fileID: -795417826519530736}
+  m_RendererFeatureMap: 56ec8a178ab3004910434a7ab31bf6f4
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 0}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -91,11 +75,11 @@ MonoBehaviour:
     zFailOperation: 0
   m_ShadowTransparentReceive: 1
   m_RenderingMode: 0
-  m_DepthPrimingMode: 0
+  m_DepthPrimingMode: 2
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
---- !u!114 &1759527312370271274
+--- !u!114 &5260401770450578518
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -104,47 +88,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59bf9e073cf798b41b61b969a7d7487c, type: 3}
-  m_Name: PipelineExtensionFeature
+  m_Script: {fileID: 11500000, guid: 8dd1dd6e2ca70114ebb594ec54214458, type: 3}
+  m_Name: SRFShadowMap
   m_EditorClassIdentifier: 
   m_Active: 1
-  m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
-  m_Data:
-    m_Features: -1
---- !u!114 &3068563560998926471
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 269d4d5ecbb44cc6a0c796656046e676, type: 3}
-  m_Name: PlanarReflectionFeature
-  m_EditorClassIdentifier: 
-  m_Active: 1
-  m_Data:
-    maxPlanarReflectionTexture: 4
---- !u!114 &6427212684956401222
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73a36542a2a2406bb20ceb87b0f8ea59, type: 3}
-  m_Name: PostProcessFeature
-  m_EditorClassIdentifier: 
-  m_Active: 1
-  m_AntiAliasing:
-    mode: 1
-    fxaa: 2
-    m_AdditionalSample: 1
-    m_UseDepth: 0
-    m_ContrastSkip: 0.1
-    m_RelativeSkip: 0.2
-    m_SubPixelBlend: 1
-    blend: 0
+  m_ShadowMapConfig:
+    resolution: 2048
+    distance: 100
+    pointSampler: 0
+    border: 0.123

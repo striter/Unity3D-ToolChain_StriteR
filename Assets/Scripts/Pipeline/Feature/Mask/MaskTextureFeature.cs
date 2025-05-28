@@ -9,7 +9,7 @@ namespace Rendering.Pipeline.Mask
 
         public override void Create()
         {
-            m_Mask = new MaskTexturePass() { renderPassEvent = RenderPassEvent.AfterRenderingOpaques + 1 };
+            m_Mask = new MaskTexturePass { renderPassEvent = RenderPassEvent.AfterRenderingOpaques + 1 };
         }
 
         protected override void EnqueuePass(ScriptableRenderer _renderer, ref RenderingData _renderingData)

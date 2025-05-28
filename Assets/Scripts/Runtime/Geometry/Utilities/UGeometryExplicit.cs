@@ -101,41 +101,32 @@ namespace Runtime.Geometry.Extension
             QuadToTriangleIndices(_indices, indexOffset + 0, indexOffset + 1, indexOffset + 2,indexOffset+3);
         }
 
-        public static PTriangle[] GetPolygons(int[] _indices)
+        public static IEnumerable<PTriangle> GetPolygons(IList<int> _indices)
         {
-            PTriangle[] polygons = new PTriangle[_indices.Length / 3];
-            for (int i = 0; i < polygons.Length; i++)
+            var count = _indices.Count / 3;
+            for (var i = 0; i <count; i++)
             {
-                int startIndex = i * 3;
-                int triangle0 = _indices[startIndex];
-                int triangle1 = _indices[startIndex + 1];
-                int triangle2 = _indices[startIndex + 2];
-                polygons[i] = new PTriangle(triangle0, triangle1, triangle2);
+                var startIndex = i * 3;
+                var triangle0 = _indices[startIndex];
+                var triangle1 = _indices[startIndex + 1];
+                var triangle2 = _indices[startIndex + 2];
+                yield return new PTriangle(triangle0, triangle1, triangle2);
             }
-            return polygons;
         }
         
-        public static PTriangle[] GetPolygons(this UnityEngine.Mesh _srcMesh, out int[] _indices)
+        public static IEnumerable<PTriangle> GetPolygons(this UnityEngine.Mesh _srcMesh, out int[] _indices)
         {
             _indices = _srcMesh.triangles;
             return GetPolygons(_indices);
         }
 
-        public static PLine[] GetEdges(this UnityEngine.Mesh _srcMesh, out int[] _indices)
-        {
-            _indices = _srcMesh.triangles;
-            var polygons = GetPolygons(_srcMesh, out _indices);
-            return polygons.Select(p => p.GetLines()).Resolve().Distinct().ToArray();
-        }
-
-        public static IEnumerable<PLine> GetDistinctEdges(this IEnumerable<PTriangle> _triangles) => _triangles.SelectMany(p => p.GetLines()).Select(p=>p.start > p.end ? new PLine(p.end,p.start) : p).Distinct();
-        
-        public static GTriangle[] GetPolygonVertices(this UnityEngine.Mesh _srcMesh, out int[] _indices,out Vector3[] _vertices)
+        public static IEnumerable<PLine> GetDistinctEdges(this IEnumerable<PTriangle> _polygons) => _polygons.SelectMany(p => p.GetLines()).Select(p=> p.Distinct()).Distinct();
+        public static IEnumerable<GTriangle> GetPolygonVertices(this UnityEngine.Mesh _srcMesh, out int[] _indices,out Vector3[] _vertices)
         {
             var vertices = _srcMesh.vertices;
             var polygons = GetPolygons(_srcMesh, out _indices);
             _vertices = vertices;
-            return polygons.Select(p => (GTriangle)p.Convert(vertices)).ToArray();
+            return polygons.Select(p => (GTriangle)p.Convert(vertices));
         }
 
     }

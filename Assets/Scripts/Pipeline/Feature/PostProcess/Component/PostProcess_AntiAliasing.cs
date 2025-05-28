@@ -133,7 +133,7 @@ namespace Rendering.PostProcess
         }
 
         private TAAHistoryBuffer currentBuffer;
-        public override void Execute(ScriptableRenderContext context, ref RenderingData _renderingData)
+        public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             var camera = _renderingData.cameraData.camera;
             
@@ -163,7 +163,7 @@ namespace Rendering.PostProcess
             cmd.SetViewProjectionMatrices(viewMatrix, projectionMatrix);
             cmd.SetGlobalTexture(kHistoryBufferID,currentBuffer.buffer);
             
-            context.ExecuteCommandBuffer(cmd);
+            _context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }
 

@@ -843,46 +843,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2926810310747978068, guid: fccaf719df321b64c883fa036ce0a9cd,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.89983654
-      objectReference: {fileID: 0}
-    - target: {fileID: 2926810310747978068, guid: fccaf719df321b64c883fa036ce0a9cd,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.37272447
-      objectReference: {fileID: 0}
-    - target: {fileID: 2926810310747978068, guid: fccaf719df321b64c883fa036ce0a9cd,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.20939843
-      objectReference: {fileID: 0}
-    - target: {fileID: 2926810310747978068, guid: fccaf719df321b64c883fa036ce0a9cd,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.086735666
-      objectReference: {fileID: 0}
-    - target: {fileID: 2926810310747978068, guid: fccaf719df321b64c883fa036ce0a9cd,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 45
-      objectReference: {fileID: 0}
-    - target: {fileID: 2926810310747978068, guid: fccaf719df321b64c883fa036ce0a9cd,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -26.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4270393296490480671, guid: fccaf719df321b64c883fa036ce0a9cd,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6437697944934361384, guid: fccaf719df321b64c883fa036ce0a9cd,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6437697944934361384, guid: fccaf719df321b64c883fa036ce0a9cd,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -933,36 +893,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7284025015204509531, guid: fccaf719df321b64c883fa036ce0a9cd,
-        type: 3}
-      propertyPath: m_Materials.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7284025015204509531, guid: fccaf719df321b64c883fa036ce0a9cd,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: d0fd195e941089a4a8a3f23cec69f001, type: 2}
-    - target: {fileID: 7284025015204509531, guid: fccaf719df321b64c883fa036ce0a9cd,
-        type: 3}
-      propertyPath: m_Materials.Array.data[1]
-      value: 
-      objectReference: {fileID: 2100000, guid: 012063806b0030849959f24285672841, type: 2}
-    - target: {fileID: 7284025015206438617, guid: fccaf719df321b64c883fa036ce0a9cd,
-        type: 3}
-      propertyPath: m_Layer
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 7284025015206438617, guid: fccaf719df321b64c883fa036ce0a9cd,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7284025015206438793, guid: fccaf719df321b64c883fa036ce0a9cd,
-        type: 3}
-      propertyPath: m_Layer
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 8251465252787906534, guid: fccaf719df321b64c883fa036ce0a9cd,
         type: 3}
       propertyPath: m_Name
@@ -971,11 +901,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7284025015206438705, guid: fccaf719df321b64c883fa036ce0a9cd,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1302432249}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fccaf719df321b64c883fa036ce0a9cd, type: 3}
 --- !u!1 &334861159
 GameObject:
@@ -1704,6 +1630,7 @@ MonoBehaviour:
   m_EndBiTangent: {x: 1, y: 0, z: 0}
   m_ControlDamper:
     mode: 3
+    constant: 0
     halfLife: 0.01
     stiffness: 89
     damping: 0.8
@@ -2087,6 +2014,7 @@ MonoBehaviour:
   m_YAnchor: 0
   m_RotationDamper:
     mode: 1
+    constant: 0
     halfLife: 0.5
     stiffness: 20
     damping: 4
@@ -2097,6 +2025,7 @@ MonoBehaviour:
       poleMatching: 1
   m_OriginDistanceDamper:
     mode: 1
+    constant: 0
     halfLife: 0.5
     stiffness: 20
     damping: 4
@@ -2524,13 +2453,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 899020572}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.028413644, y: 0.12840147, z: -0.0033634787, w: -0.99130946}
-  m_LocalPosition: {x: -20.95, y: 4.33, z: 5}
+  m_LocalRotation: {x: -0.0022680778, y: 0.99767435, z: 0.06381494, w: 0.023841545}
+  m_LocalPosition: {x: -7.76, y: 3.41, z: -6.08}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 334861160}
-  m_LocalEulerAnglesHint: {x: 3.612, y: -20.874, z: -11.082}
+  m_LocalEulerAnglesHint: {x: 0, y: 24.36, z: 0}
 --- !u!114 &899020574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2550,9 +2479,9 @@ MonoBehaviour:
       y: 0
       z: 0
     extent:
-      x: 0.5
-      y: 0.5
-      z: 0.5
+      x: 2
+      y: 2
+      z: 2
   m_Falloff: 0.5
 --- !u!33 &899020575
 MeshFilter:
@@ -3875,24 +3804,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1279508206}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &1302432245 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7284025015206438705, guid: fccaf719df321b64c883fa036ce0a9cd,
-    type: 3}
-  m_PrefabInstance: {fileID: 307301429}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1302432249
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1302432245}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6df22b74cc15446799bd8f24f4e3ed3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1313486580
 GameObject:
   m_ObjectHideFlags: 0
@@ -5751,6 +5662,7 @@ MonoBehaviour:
   m_YAnchor: 0
   m_RotationDamper:
     mode: 1
+    constant: 0
     halfLife: 0.5
     stiffness: 20
     damping: 4
@@ -5761,6 +5673,7 @@ MonoBehaviour:
       poleMatching: 1
   m_OriginDistanceDamper:
     mode: 1
+    constant: 0
     halfLife: 0.5
     stiffness: 20
     damping: 4
@@ -6768,6 +6681,7 @@ MonoBehaviour:
   m_YAnchor: -0.5
   m_RotationDamper:
     mode: 1
+    constant: 0
     halfLife: 0.5
     stiffness: 150
     damping: 15
@@ -6778,6 +6692,7 @@ MonoBehaviour:
       poleMatching: 1
   m_OriginDistanceDamper:
     mode: 3
+    constant: 0
     halfLife: 0.5
     stiffness: 93
     damping: 9.6
@@ -7164,6 +7079,7 @@ MonoBehaviour:
   m_DegreePerRepeat: 60
   m_EdgeLine: 1
   m_EdgeLineWidth: 0.07
+  m_LineTrim: 0
   m_Resolution: 32
 --- !u!1 &2081628220
 GameObject:

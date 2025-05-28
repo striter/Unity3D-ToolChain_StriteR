@@ -16,6 +16,7 @@ namespace Runtime.Geometry
             end = _end;
         }
 
+        public PLine Distinct() => start > end ? new PLine(end, start) : this;
         
         #region Implements
         public bool Equals(PLine other) => start == other.start && end == other.end;

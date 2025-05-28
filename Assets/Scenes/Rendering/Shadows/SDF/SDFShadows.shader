@@ -47,7 +47,6 @@ Shader "Hidden/Unfinished/Shadows"
             #include "Assets/Shaders/Library/Geometry.hlsl"
 			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
 			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
-			
 
 			#define MAX_SDF_VOLUME_COUNT 32
 			int _SDFVolumeCount;
@@ -113,26 +112,8 @@ Shader "Hidden/Unfinished/Shadows"
 			Light GetMainLight(v2ff i)
 			{
 			    Light light = GetMainLight();
-
-				float3 positionWS = i.positionWS;
-				float4 shadowCoord = mul(_WorldToShadow, float4(positionWS, 1.0));
-		        ShadowSamplingData shadowSamplingData = GetMainLightShadowSamplingData();
-		        half4 shadowParams = GetMainLightShadowParams();
-
-				float shadowMap = SampleShadowmap(TEXTURE2D_ARGS(_ShadowmapTexture, sampler_LinearClampCompare), shadowCoord, shadowSamplingData, shadowParams, false);
-			    float3 camToPixel = positionWS - _WorldSpaceCameraPos;
-			    float distanceCamToPixel2 = dot(camToPixel, camToPixel);
-
-				float fade = saturate(distanceCamToPixel2 * float(_ShadowParams.z) + float(_ShadowParams.w));
-				if(fade > 0)
-				{
-					float sdf = RaymarchSDFSoftShadow(i.positionWS,light.direction * 1000,0.005,0.1,128);
-					light.shadowAttenuation = lerp(sdf,shadowMap,fade);
-				}
-				else
-				{
-					light.shadowAttenuation = shadowMap;
-				}
+				float sdf = RaymarchSDFSoftShadow(i.positionWS,light.direction * 1000,0.005,0.1,128);
+				light.shadowAttenuation = sdf;
 				return light;
 			}
 			

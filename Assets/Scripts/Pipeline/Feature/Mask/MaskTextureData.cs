@@ -20,7 +20,7 @@ namespace Rendering.Pipeline.Mask
         [Foldout(nameof(mode),EMaskTextureMode.ShaderReplacement)] public Shader overrideShader;
         public bool inheritDepth;
 
-        public static MaskTextureData kDefault = new MaskTextureData()
+        public static MaskTextureData kDefault = new()
         {
             mode = EMaskTextureMode.ShaderReplacement,
             renderMask = -1,

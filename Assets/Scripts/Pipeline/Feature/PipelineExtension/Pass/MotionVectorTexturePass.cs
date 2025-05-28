@@ -8,10 +8,10 @@ namespace Rendering.Pipeline
 {
     public class MotionVectorTexturePass : ScriptableRenderPass
     {
-        private readonly PassiveInstance<Material> m_CameraMaterial =  new PassiveInstance<Material>(() => new Material(RenderResources.FindInclude("Hidden/MotionVectorCamera")) { hideFlags = HideFlags.HideAndDontSave },GameObject.DestroyImmediate);
-        private readonly PassiveInstance<Material> m_ObjectMaterial = new PassiveInstance<Material>(() => new Material(RenderResources.FindInclude("Hidden/MotionVectorObject")) { hideFlags = HideFlags.HideAndDontSave },GameObject.DestroyImmediate);
+        private readonly PassiveInstance<Material> m_CameraMaterial =  new(() => new Material(RenderResources.FindInclude("Hidden/MotionVectorCamera")) { hideFlags = HideFlags.HideAndDontSave },GameObject.DestroyImmediate);
+        private readonly PassiveInstance<Material> m_ObjectMaterial = new(() => new Material(RenderResources.FindInclude("Hidden/MotionVectorObject")) { hideFlags = HideFlags.HideAndDontSave },GameObject.DestroyImmediate);
         private static readonly int kMatrix_VP_Pre = Shader.PropertyToID("_Matrix_VP_Pre");
-        private static Dictionary<int, Matrix4x4> m_PreViewProjectionMatrixes = new Dictionary<int, Matrix4x4>();
+        private static Dictionary<int, Matrix4x4> m_PreViewProjectionMatrixes = new();
 
         public override void Configure(CommandBuffer _cmd, RenderTextureDescriptor _cameraTextureDescriptor)
         {
@@ -26,33 +26,36 @@ namespace Rendering.Pipeline
             _cmd.ReleaseTemporaryRT(KRenderTextures.kCameraMotionVector);
         }
         
+        static readonly string kSampling = nameof(MotionVectorTexturePass); 
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             var cameraID = _renderingData.cameraData.camera.GetInstanceID();
             
             _renderingData.cameraData.camera.depthTextureMode |= DepthTextureMode.Depth | DepthTextureMode.MotionVectors;    //Dude wtf
 
-            Matrix4x4 projection = GL.GetGPUProjectionMatrix(_renderingData.cameraData.GetProjectionMatrix(),_renderingData.cameraData.IsCameraProjectionMatrixFlipped());
-            Matrix4x4 view = _renderingData.cameraData.GetViewMatrix();
-            Matrix4x4 vp = projection * view;
+            var projection = GL.GetGPUProjectionMatrix(_renderingData.cameraData.GetProjectionMatrix(),_renderingData.cameraData.IsCameraProjectionMatrixFlipped());
+            var view = _renderingData.cameraData.GetViewMatrix();
+            var vp = projection * view;
 
             if (!m_PreViewProjectionMatrixes.ContainsKey(cameraID))
                 m_PreViewProjectionMatrixes.Add(cameraID,vp);
 
-            CommandBuffer cmd = CommandBufferPool.Get("Motion Vector");
+            var cmd = CommandBufferPool.Get(kSampling);
+            cmd.BeginSample(kSampling);
             cmd.SetGlobalMatrix(kMatrix_VP_Pre,m_PreViewProjectionMatrixes[cameraID]);
             m_PreViewProjectionMatrixes[cameraID] = vp;
             cmd.DrawProcedural(Matrix4x4.identity,m_CameraMaterial,0,MeshTopology.Triangles,3,1);
             _context.ExecuteCommandBuffer(cmd);
 
-            DrawingSettings drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
+            var drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
             drawingSettings.overrideMaterial = m_ObjectMaterial;
             drawingSettings.perObjectData = PerObjectData.MotionVectors;
-            FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.opaque) { layerMask = int.MaxValue};
+            var filterSettings = new FilteringSettings(RenderQueueRange.opaque) { layerMask = int.MaxValue};
             _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
             
             cmd.Clear();
             cmd.SetRenderTarget(_renderingData.cameraData.renderer.cameraColorTargetHandle);
+            cmd.EndSample(kSampling);
             _context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }

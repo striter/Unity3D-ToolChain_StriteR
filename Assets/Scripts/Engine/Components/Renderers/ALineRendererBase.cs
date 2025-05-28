@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Runtime
 {
-    public abstract class ALineRendererBase : ARendererBase , IRuntimeRendererBillboard
+    public abstract class ALineRendererBase : ARendererBase , IRendererViewSpace
     {
         [Header("Shape")]
         public float m_Width = .1f;
@@ -161,7 +161,7 @@ namespace Runtime
             PoolList<Vector3>.IDespawn(tangents);
         }
 
-        public bool Billboard => m_Billboard;
+        public bool ViewSpaceRequired => m_Billboard;
     }
 
     

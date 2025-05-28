@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Runtime
 {
     [Serializable]
-    public class BillboardRenderer : ARendererBase , IRuntimeRendererBillboard
+    public class BillboardRenderer : ARendererBase , IRendererViewSpace
     {
         public float m_Width = 1;
         public float m_Height = 1;
@@ -59,7 +59,7 @@ namespace Runtime
             PoolList<Vector2>.IDespawn(uvs);
         }
 
-        public bool Billboard => true;
+        public bool ViewSpaceRequired => true;
     }
 }
 public enum EBillboardType

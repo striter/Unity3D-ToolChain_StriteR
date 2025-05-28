@@ -37,17 +37,17 @@ namespace Rendering.Pipeline
             m_PerObjectPerObjectData = _perObjectData;
         }
 
-        public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
+        public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             FilteringSettings filterSettings = new FilteringSettings( RenderQueueRange.all,m_LayerMask);
             DrawingSettings drawingSettings = new DrawingSettings  {
-                sortingSettings = new SortingSettings(renderingData.cameraData.camera),
+                sortingSettings = new SortingSettings(_renderingData.cameraData.camera),
                 enableDynamicBatching = true,
                 enableInstancing = true,
                 perObjectData = m_PerObjectPerObjectData,
             };
             drawingSettings.SetShaderPassName(0,new ShaderTagId(m_PassName));
-            context.DrawRenderers(renderingData.cullResults,ref drawingSettings,ref filterSettings);
+            _context.DrawRenderers(_renderingData.cullResults,ref drawingSettings,ref filterSettings);
         }
     }
 }

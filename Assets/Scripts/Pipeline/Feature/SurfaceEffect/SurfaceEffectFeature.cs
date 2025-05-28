@@ -22,19 +22,19 @@ namespace Rendering.Pipeline
     }
     public class SurfaceEffectPass:ScriptableRenderPass
     {
-        public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
+        public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             var cmd = CommandBufferPool.Get("SurfaceEffectPass");
             foreach (var obj in ISurfaceEffect.kBehaviours)
             {
-                foreach (var (renderer, material) in obj.GetSurfaceEffectDrawCalls(renderingData.cameraData.camera))
+                foreach (var (renderer, material) in obj.GetSurfaceEffectDrawCalls(_renderingData.cameraData.camera))
                 {
                     for(var i=0;i<renderer.sharedMaterials.Length;i++)
                         cmd.DrawRenderer(renderer,material,i);
                 }
             }
             
-            context.ExecuteCommandBuffer(cmd);
+            _context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }
     }

@@ -1,69 +1,10 @@
-using System;
+﻿using System;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-
-namespace Rendering.Pipeline
+namespace Examples.Rendering.Shadows.Custom
 {
-    public class SRF_ShadowMap : ScriptableRendererFeature
-    {
-        public FShadowMapConfig m_ShadowMapConfig = FShadowMapConfig.kDefault;
-        private SRP_ShadowMap m_ShadowMap;
-        public override void Create()
-        {
-            m_ShadowMap = new SRP_ShadowMap(){renderPassEvent = RenderPassEvent.BeforeRenderingShadows};
-        }
-
-        public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
-        {
-            var shadowMap = m_ShadowMap.Setup(m_ShadowMapConfig, ref renderingData);
-            if(shadowMap != null)
-                renderer.EnqueuePass(shadowMap);
-        }
-    }
-
-    public enum EShadowResolution
-    {
-        _64 = 64,
-        _128 = 128,
-        _256 = 256,
-        _512 = 512,
-        _1024 = 1024,
-        _2048 = 2048,
-        _4096 = 4096,
-    }
-    
-    [Serializable]
-    public struct FShadowMapConfig
-    {
-        public EShadowResolution resolution;
-        [Min(0)] public float distance;
-        public bool pointSampler;
-        [Range(0, 1)] public float border;
-        public static FShadowMapConfig kDefault = new FShadowMapConfig()
-        {
-            resolution = EShadowResolution._1024,
-            distance = 100f,
-            border = 0.8f,
-            pointSampler = false,
-        };
-
-        public RenderTextureDescriptor GetDescriptor()
-        {
-            var size = (int)resolution;
-            return new RenderTextureDescriptor(size, size, GraphicsFormat.None, GraphicsFormat.D16_UNorm)
-            {
-                shadowSamplingMode = RenderingUtils.SupportsRenderTextureFormat(RenderTextureFormat.Shadowmap) && (SystemInfo.graphicsDeviceType != GraphicsDeviceType.OpenGLES2)
-                    ? ShadowSamplingMode.CompareDepths
-                    : ShadowSamplingMode.None
-            };;
-        }
-
-        public FilterMode GetFilterMode() => pointSampler ? FilterMode.Point : FilterMode.Bilinear;
-
-    }
-
+    using static FShadowMapConstants;
     public struct FShadowMapConstants
     {
         public static readonly string kShadowmapName = "_ShadowmapTexture";
@@ -75,11 +16,11 @@ namespace Rendering.Pipeline
         public static readonly int kShadowmapSize = Shader.PropertyToID("_MainLightShadowmapSize");
         public static readonly int kShadowParams = Shader.PropertyToID("_ShadowParams");
     }
-    
+
     public class SRP_ShadowMap :ScriptableRenderPass
     {
         private RTHandle m_ShadowmapRT;
-        private ValueChecker<FShadowMapConfig> m_Config = new ValueChecker<FShadowMapConfig>(default);
+        private FShadowMapConfig m_Config = FShadowMapConfig.kDefault;
         private bool supportsMainLightShadows;
         public SRP_ShadowMap Setup(FShadowMapConfig _config, ref RenderingData _data)
         {
@@ -101,11 +42,7 @@ namespace Rendering.Pipeline
             if (!_data.cullResults.GetShadowCasterBounds(shadowLightIndex, out var bounds))
                 return null;
 
-            if (m_Config.Check(_config))
-            {
-                m_ShadowmapRT?.Release();
-                m_ShadowmapRT = RTHandles.Alloc(m_Config.m_Value.GetDescriptor(),m_Config.m_Value.GetFilterMode(),TextureWrapMode.Clamp, true,1,0,FShadowMapConstants.kShadowmapName);
-            }
+            m_ShadowmapRT = RTHandles.Alloc(m_Config.GetDescriptor(),m_Config.GetFilterMode(),TextureWrapMode.Clamp, true,1,0,kShadowmapName);
             return this;
         }
         
@@ -120,65 +57,56 @@ namespace Rendering.Pipeline
             ConfigureClear(ClearFlag.All,Color.black);
         }
 
-        public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
+        public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
-            var shadowData = renderingData.shadowData;
+            var shadowData = _renderingData.shadowData;
             if (!supportsMainLightShadows)
                 return;
 
-            var shadowLightIndex = renderingData.lightData.mainLightIndex;
-            var cullResults = renderingData.cullResults;
-            var lightData = renderingData.lightData;
+            var shadowLightIndex = _renderingData.lightData.mainLightIndex;
+            var cullResults = _renderingData.cullResults;
+            var lightData = _renderingData.lightData;
             if (shadowLightIndex == -1)
                 return;
             
             var shadowLight = lightData.visibleLights[shadowLightIndex];
             var light = shadowLight.light;
-
+            
             if (!cullResults.ComputeDirectionalShadowMatricesAndCullingPrimitives(shadowLightIndex,
                     0, 1, Vector3.one,
-                    (int)m_Config.m_Value.resolution, shadowLight.light.shadowNearPlane,
+                    (int)m_Config.resolution, shadowLight.light.shadowNearPlane,
                     out var viewMatrix, out var projMatrix, out var shadowSplitData))
                 return;
 
-            var resolution = (float)m_Config.m_Value.resolution;
-            var shadowBias = ShadowUtils.GetShadowBias(ref shadowLight,0,ref shadowData,projMatrix,resolution);
-
+            var resolution = (float)m_Config.resolution;
+            
             var cmd = CommandBufferPool.Get("_ShadowmapBuffer");
-            cmd.SetGlobalVector(FShadowMapConstants.kWorldSpaceCameraPos,renderingData.cameraData.worldSpaceCameraPos);
-            cmd.SetGlobalMatrix(FShadowMapConstants.kWorldToShadow, GetShadowTransform(projMatrix,viewMatrix));
+            cmd.SetGlobalVector(kWorldSpaceCameraPos,_renderingData.cameraData.worldSpaceCameraPos);
+            cmd.SetGlobalMatrix(kWorldToShadow, GetShadowTransform(projMatrix,viewMatrix));
             
             cmd.SetViewProjectionMatrices(viewMatrix,projMatrix);
             cmd.SetGlobalDepthBias(1f,2.5f);
             cmd.SetViewport(new Rect(0,0,resolution,resolution));
-            cmd.SetGlobalVector(FShadowMapConstants.kShadowBias,shadowBias);
-            cmd.SetGlobalVector(FShadowMapConstants.kLightDirection,-shadowLight.localToWorldMatrix.GetColumn(2));
-            cmd.SetGlobalVector(FShadowMapConstants.kLightPosition,shadowLight.localToWorldMatrix.GetColumn(3));
-            context.ExecuteCommandBuffer(cmd);
+            cmd.SetGlobalVector(kShadowBias,ShadowUtils.GetShadowBias(ref shadowLight,0,ref shadowData,projMatrix,resolution));
+            cmd.SetGlobalVector(kLightDirection,-shadowLight.localToWorldMatrix.GetColumn(2));
+            cmd.SetGlobalVector(kLightPosition,shadowLight.localToWorldMatrix.GetColumn(3));
+            _context.ExecuteCommandBuffer(cmd);
             
             var settings = new ShadowDrawingSettings(cullResults,shadowLightIndex,BatchCullingProjectionType.Orthographic) {
                 useRenderingLayerMaskTest = UniversalRenderPipeline.asset.useRenderingLayers,
             };
-            context.DrawShadows(ref settings);
+            _context.DrawShadows(ref settings);
             cmd.Clear();
             cmd.DisableScissorRect();
-            context.ExecuteCommandBuffer(cmd);
-            
-            cmd.Clear();
+            _context.ExecuteCommandBuffer(cmd);
             cmd.SetGlobalDepthBias(0f,0f);
             cmd.SetGlobalTexture(m_ShadowmapRT.name,m_ShadowmapRT.nameID);
-
-            var invShadowAtlasWidth = 1f / resolution;
-            var invShadowAtlasHeight = 1f / resolution;
-
-            var config = m_Config.m_Value;
-            var maxShadowDistanceSQ = umath.sqr(config.distance);
-            var border = config.border;
-            GetScaleAndBiasForLinearDistanceFade(maxShadowDistanceSQ,border,out var shadowFadeScale,out var shadowFadeBias);
-            float softShadowsProp = SoftShadowQualityToShaderProperty(light, light.shadows == LightShadows.Soft && shadowData.supportsSoftShadows);
-            cmd.SetGlobalVector(FShadowMapConstants.kShadowParams,new Vector4(light.shadowStrength,softShadowsProp,shadowFadeScale,shadowFadeBias));
-            cmd.SetGlobalVector(FShadowMapConstants.kShadowmapSize, new Vector4(invShadowAtlasWidth, invShadowAtlasHeight, resolution, resolution));
-            context.ExecuteCommandBuffer(cmd);
+            
+            GetScaleAndBiasForLinearDistanceFade(umath.sqr(m_Config.distance),m_Config.border,out var shadowFadeScale,out var shadowFadeBias);
+            var softShadowsProp = SoftShadowQualityToShaderProperty(light, light.shadows == LightShadows.Soft && shadowData.supportsSoftShadows);
+            cmd.SetGlobalVector(kShadowParams,new Vector4(light.shadowStrength,softShadowsProp,shadowFadeScale,shadowFadeBias));
+            cmd.SetGlobalVector(kShadowmapSize, new Vector4(1f / resolution, 1f / resolution, resolution, resolution));
+            _context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }
 
@@ -239,4 +167,5 @@ namespace Rendering.Pipeline
             return textureScaleAndBias * worldToShadow;
         }
     }
+
 }

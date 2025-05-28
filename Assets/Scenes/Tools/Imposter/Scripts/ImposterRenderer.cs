@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Runtime.Optimize.Imposter
 {
-    public class ImposterRenderer : ARendererBase , IRuntimeRendererBillboard
+    public class ImposterRenderer : ARendererBase , IRendererViewSpace
     {
         [ScriptableObjectEdit(true)] public ImposterData m_Data;
         private MeshRenderer m_Renderer;
@@ -131,6 +131,6 @@ namespace Runtime.Optimize.Imposter
             }
         }
 
-        public bool Billboard => true;
+        public bool ViewSpaceRequired => true;
     }
 }

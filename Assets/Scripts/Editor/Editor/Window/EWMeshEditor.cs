@@ -206,7 +206,7 @@ namespace UnityEditor.Extensions
         public MeshEditorHelperBase(MeshEditor _parent) { m_Parent = _parent; }
         public virtual void Begin()
         {
-            m_Polygons = m_ModifingMesh.GetPolygons(out int[] triangles);
+            m_Polygons = m_ModifingMesh.GetPolygons(out int[] triangles).ToArray();
         }
         public virtual Material GetDefaultMaterial() => new Material(Shader.Find("Game/Lit/UberPBR")) { hideFlags = HideFlags.HideAndDontSave };
         public virtual void End() { }
