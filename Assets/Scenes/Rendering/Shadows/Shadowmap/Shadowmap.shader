@@ -1,4 +1,4 @@
-Shader "Hidden/CustomShadow"
+Shader "Hidden/Shadowmap"
 {
     Properties
     {

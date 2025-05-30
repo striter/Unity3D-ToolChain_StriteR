@@ -4,7 +4,7 @@ using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-namespace Examples.Rendering.Shadows.Custom
+namespace Examples.Rendering.Shadows.Shadowmap
 {
 
     public enum EShadowResolution
@@ -50,14 +50,14 @@ namespace Examples.Rendering.Shadows.Custom
         public FilterMode GetFilterMode() => pointSampler ? FilterMode.Point : FilterMode.Bilinear;
     }
 
-    public class CustomShadowFeature : ScriptableRendererFeature
+    public class ShadowmapFeature : ScriptableRendererFeature
     {
         public FShadowMapConfig m_ShadowMapConfig = FShadowMapConfig.kDefault;
-        private SRP_ShadowMap m_ShadowMapPass;
+        private ShadowmapPass m_ShadowMapPass;
 
         public override void Create()
         {
-            m_ShadowMapPass = new SRP_ShadowMap() { renderPassEvent = RenderPassEvent.BeforeRenderingShadows };
+            m_ShadowMapPass = new ShadowmapPass() { renderPassEvent = RenderPassEvent.BeforeRenderingShadows };
         }
 
         protected override void Dispose(bool disposing)

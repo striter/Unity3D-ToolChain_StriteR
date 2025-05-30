@@ -103,6 +103,18 @@ namespace Runtime.Geometry
         public static GBox operator -(GBox _src, float3 _dst) => new GBox(_src.center-_dst,_src.extent);
         public static GBox operator *(GBox _src, float _dst) => new GBox(_src.center * _dst,_src.extent*_dst);
         public static GBox operator /(GBox _src, float _dst) => new GBox(_src.center / _dst,_src.extent/_dst);
+        public static GBox operator *(float4x4 _dst,GBox _src)
+        {
+            var min = kfloat3.max;
+            var max = kfloat3.min;
+            foreach (var point in _src.GetCorners())
+            {
+                var pointTransformed = math.mul(_dst, point.to4(1)).xyz;
+                min = math.min(min, pointTransformed);
+                max = math.max(max, pointTransformed);
+            }
+            return Minmax(min,max);
+        }
         
         public static implicit operator Bounds(GBox _box)=> new Bounds(_box.center, _box.size);
         public static implicit operator GBox(Bounds _bounds) => new GBox(_bounds.center,_bounds.extents);

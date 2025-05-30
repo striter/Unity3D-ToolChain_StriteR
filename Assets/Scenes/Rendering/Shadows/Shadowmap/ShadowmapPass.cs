@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-namespace Examples.Rendering.Shadows.Custom
+namespace Examples.Rendering.Shadows.Shadowmap
 {
     using static FShadowMapConstants;
     public struct FShadowMapConstants
@@ -19,12 +19,12 @@ namespace Examples.Rendering.Shadows.Custom
         public static readonly int kWorldToShadow = Shader.PropertyToID("_WorldToShadow");
     }
 
-    public class SRP_ShadowMap :ScriptableRenderPass
+    public class ShadowmapPass :ScriptableRenderPass
     {
         private RTHandle m_ShadowmapRT;
         private ValueChecker<FShadowMapConfig> m_Config = new ValueChecker<FShadowMapConfig>(default);
         private bool supportsMainLightShadows;
-        public SRP_ShadowMap Setup(FShadowMapConfig _config, ref RenderingData _data)
+        public ShadowmapPass Setup(FShadowMapConfig _config, ref RenderingData _data)
         {
             var shadowLightIndex = _data.lightData.mainLightIndex;
             
@@ -173,24 +173,11 @@ namespace Examples.Rendering.Shadows.Custom
             var lightPos = shadowCasterBounds.center - (float3)(lightDirection * (shadowCasterBounds.extent.magnitude()+ padding));
             // Create view matrix (light's perspective)
             viewMatrix = Matrix4x4.TRS(lightPos, Quaternion.LookRotation(lightDirection), Vector3.one).inverse;
-            
-            // Initialize min/max in view space
-            var min = Vector3.positiveInfinity;
-            var max = Vector3.negativeInfinity;
-
-            // Transform corners to view space and find min/max
-            // Transform corners to view space and find min/max
-            foreach (var corner in shadowCasterBounds.GetCorners())
-            {
-                var viewSpaceCorner = viewMatrix.MultiplyPoint(corner);
-                min = Vector3.Min(min, viewSpaceCorner);
-                max = Vector3.Max(max, viewSpaceCorner);
-            }
+            var boundsLS = viewMatrix * shadowCasterBounds;
 
             // Apply padding to avoid clipping
-            var paddingVec = new Vector3(padding, padding, padding);
-            min -= paddingVec;
-            max += paddingVec;
+            var min = boundsLS.min - padding;
+            var max = boundsLS.max + padding;
 
             // Create orthographic projection matrix
             proj = Matrix4x4.Ortho(
