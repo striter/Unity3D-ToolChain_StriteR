@@ -1,4 +1,4 @@
-Shader "Hidden/ShadowVolumeCasterPasses"
+Shader "Hidden/VolumeShadowCasterPasses"
 {
     Properties
     {

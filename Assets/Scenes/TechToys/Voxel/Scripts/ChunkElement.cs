@@ -156,7 +156,7 @@ namespace TheVoxel
         {
             var implicitJob =new ImplicitJob(identity,m_Indexes);
             implicitJob.ScheduleParallel(1,1,default).Complete();
-            var length = m_Indexes.Count;
+            var length = m_Indexes.Count();
             var keys = m_Indexes.GetKeyArray(Allocator.Temp);
             for (int i = 0; i < length; i++)
                 m_Data.highestCount = Math.Max(m_Data.highestCount, m_Indexes[keys[i]].identity.y);
@@ -208,7 +208,7 @@ namespace TheVoxel
             }
             catch (Exception e)
             {
-                int length = m_Indexes.Count;
+                int length = m_Indexes.Count();
 
                 var keys = m_Indexes.GetKeyArray(Allocator.Temp);
                 var sideCount = 0;

@@ -106,7 +106,6 @@ Shader "Hidden/Unfinished/Shadows"
 			    return 0.25*(1.0+res)*(1.0+res)*(2.0-res);
 			}
 
-			float4x4 _WorldToShadow;
 			float4 _ShadowParams;
 			TEXTURE2D(_ShadowmapTexture);
 			Light GetMainLight(v2ff i)

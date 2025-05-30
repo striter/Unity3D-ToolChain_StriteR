@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Runtime.DataStructure;
@@ -5,6 +6,7 @@ using Runtime.Geometry;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Rendering.Shadows

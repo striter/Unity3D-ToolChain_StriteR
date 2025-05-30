@@ -15,7 +15,7 @@ MonoBehaviour:
   m_Active: 1
   m_Shader: {fileID: 4800000, guid: d81403b53ce591a488b0d58013a1e6e4, type: 3}
   m_Data:
-    bias: 0.126
+    bias: 0.093
     normal: 0.126
 --- !u!114 &11400000
 MonoBehaviour:
@@ -34,9 +34,8 @@ MonoBehaviour:
       type: 3}
     hdrDebugViewPS: {fileID: 4800000, guid: 573620ae32aec764abd4d728906d2587, type: 3}
   m_RendererFeatures:
-  - {fileID: 5260401770450578518}
   - {fileID: -795417826519530736}
-  m_RendererFeatureMap: 56ec8a178ab3004910434a7ab31bf6f4
+  m_RendererFeatureMap: 10434a7ab31bf6f4
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 0}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -79,21 +78,3 @@ MonoBehaviour:
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
---- !u!114 &5260401770450578518
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8dd1dd6e2ca70114ebb594ec54214458, type: 3}
-  m_Name: SRFShadowMap
-  m_EditorClassIdentifier: 
-  m_Active: 1
-  m_ShadowMapConfig:
-    resolution: 2048
-    distance: 100
-    pointSampler: 0
-    border: 0.123

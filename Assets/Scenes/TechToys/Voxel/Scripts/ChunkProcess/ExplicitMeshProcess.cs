@@ -59,13 +59,13 @@ namespace TheVoxel.ChunkProcess
             
             public void Execute(int _)
             {
-                Vertex v = new Vertex();
-                int length = voxels.Count;
+                var v = new Vertex();
+                var length = voxels.Count();
                 var keys = voxels.GetKeyArray(Allocator.Temp);
 
-                int vertexIndex = 0;
-                int triangleIndex = 0;
-                for (int i = 0; i < length; i++)
+                var vertexIndex = 0;
+                var triangleIndex = 0;
+                for (var i = 0; i < length; i++)
                 {
                     var voxel = voxels[keys[i]];
                     if (voxel.sideGeometry == ChunkVoxel.kEmptyGeometry || voxel.sideGeometry == ChunkVoxel.kFullGeometry)
@@ -73,7 +73,7 @@ namespace TheVoxel.ChunkProcess
 
                     v.color = (half4)DVoxel.GetVoxelBaseColor(voxel.type);
                     float3 centerOS = DVoxel.GetVoxelPositionOS(voxel.identity);
-                    for (int j = 0; j < 6; j++)
+                    for (var j = 0; j < 6; j++)
                     {
                         if (UByte.PosValid(voxel.sideGeometry, j))
                             continue;
@@ -105,10 +105,10 @@ namespace TheVoxel.ChunkProcess
                         v.uv = (half2) new float2(1, 0);
                         vertices[vertexIndex+3] = v;
 
-                        uint iB = (uint)vertexIndex+0;
-                        uint iL = (uint)vertexIndex+1;
-                        uint iF = (uint)vertexIndex+2;
-                        uint iR = (uint)vertexIndex+3;
+                        var iB = (uint)vertexIndex+0;
+                        var iL = (uint)vertexIndex+1;
+                        var iF = (uint)vertexIndex+2;
+                        var iR = (uint)vertexIndex+3;
                         if (aol + aor > aof + aob)
                         {
                             indexes[triangleIndex] = new uint3(iL, iR, iB);

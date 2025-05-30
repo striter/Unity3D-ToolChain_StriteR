@@ -2,8 +2,8 @@
 
 namespace UnityEditor.Extensions
 {
-    [CustomPropertyDrawer(typeof(AssetAttribute))]
-    public class AssetAttributeDrawer : AAttributePropertyDrawer<AssetAttribute>
+    [CustomPropertyDrawer(typeof(global::DefaultAsset))]
+    public class AssetAttributeDrawer : AAttributePropertyDrawer<global::DefaultAsset>
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -11,7 +11,7 @@ namespace UnityEditor.Extensions
                 return;
             base.OnGUI(position, property, label);
             if (property.objectReferenceValue == null)
-                property.objectReferenceValue = attribute.m_Getter();
+                property.objectReferenceValue = attribute.m_AssetPath as Object;
         }
     }
 }

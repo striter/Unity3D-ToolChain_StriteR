@@ -21,4 +21,4 @@ float SampleHardShadow(TEXTURE2D_SHADOW_PARAM(_ShadowMap, _sampler_ShadowMap),fl
 
 #define A2V_SHADOW_CASTER float3 positionOS:POSITION; float3 normalOS:NORMAL
 #define V2F_SHADOW_CASTER float4 positionCS:SV_POSITION
-#define SHADOW_CASTER_VERTEX(v,positionWS) o.positionCS= ShadowCasterCS(positionWS,TransformObjectToWorldNormal(v.normalOS))
+#define SHADOW_CASTER_VERTEX(v,positionWS) o.positionCS = ShadowCasterCS(positionWS,TransformObjectToWorldNormal(v.normalOS))

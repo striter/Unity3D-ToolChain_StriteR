@@ -13,7 +13,7 @@ namespace Examples.Rendering.Shadows.Volume
     }
     public class VolumeShadowFeature : ScriptableRendererFeature
     {
-        public Shader m_Shader;
+        [DefaultAsset("Hidden/VolumeShadowCasterPasses")] public Shader m_Shader;
         public VolumeShadowData m_Data;
         private VolumeShadowPass m_Pass = new();
         private Material m_Material;

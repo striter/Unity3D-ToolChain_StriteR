@@ -112,16 +112,17 @@ namespace Runtime.Geometry
         public static readonly GBox kDefault = new GBox(0f,.5f);
         public IEnumerator<float3> GetEnumerator()
         {
-            yield return GetCenteredPoint(-.5f,-.5f,-.5f);
-            yield return GetCenteredPoint(-.5f,.5f,-.5f);
-            yield return GetCenteredPoint(-.5f,-.5f,.5f);
-            yield return GetCenteredPoint(-.5f,.5f,.5f);
-            yield return GetCenteredPoint(.5f,-.5f,-.5f);
-            yield return GetCenteredPoint(.5f,.5f,-.5f);
-            yield return GetCenteredPoint(.5f,-.5f,.5f);
-            yield return GetCenteredPoint(.5f,.5f,.5f);
+            yield return GetCenteredPoint(-.5f, -.5f, -.5f);
+            yield return GetCenteredPoint(-.5f, .5f, -.5f);
+            yield return GetCenteredPoint(-.5f, -.5f, .5f);
+            yield return GetCenteredPoint(-.5f, .5f, .5f);
+            yield return GetCenteredPoint(.5f, -.5f, -.5f);
+            yield return GetCenteredPoint(.5f, .5f, -.5f);
+            yield return GetCenteredPoint(.5f, -.5f, .5f);
+            yield return GetCenteredPoint(.5f, .5f, .5f);
         }
-        
+        public IEnumerable<float3> GetCorners() => this;
+
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         public float3 GetSupportPoint(float3 _direction)
         {

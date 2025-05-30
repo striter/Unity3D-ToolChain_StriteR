@@ -107,11 +107,11 @@ public class CullingMaskAttribute : PropertyAttribute {
 }
 
 [AttributeUsage(AttributeTargets.Field)]
-public class AssetAttribute : PropertyAttribute
+public class DefaultAsset : PropertyAttribute
 {
-    public Func<UnityEngine.Object> m_Getter;
-    public AssetAttribute(Func<UnityEngine.Object> _getter)
+    public object m_AssetPath;
+    public DefaultAsset(object assetPath)
     {
-        m_Getter = _getter;
+        m_AssetPath = assetPath;
     }
 }

@@ -53,22 +53,22 @@ namespace Examples.Rendering.Shadows.Custom
     public class CustomShadowFeature : ScriptableRendererFeature
     {
         public FShadowMapConfig m_ShadowMapConfig = FShadowMapConfig.kDefault;
-        private SRP_ShadowMap m_ShadowMap;
+        private SRP_ShadowMap m_ShadowMapPass;
 
         public override void Create()
         {
-            m_ShadowMap = new SRP_ShadowMap() { renderPassEvent = RenderPassEvent.BeforeRenderingShadows };
+            m_ShadowMapPass = new SRP_ShadowMap() { renderPassEvent = RenderPassEvent.BeforeRenderingShadows };
         }
 
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            m_ShadowMap.Dispose();
+            m_ShadowMapPass.Dispose();
         }
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
-            var shadowMap = m_ShadowMap.Setup(m_ShadowMapConfig, ref renderingData);
+            var shadowMap = m_ShadowMapPass.Setup(m_ShadowMapConfig, ref renderingData);
             if (shadowMap != null)
                 renderer.EnqueuePass(shadowMap);
         }

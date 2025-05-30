@@ -51,7 +51,7 @@ namespace Examples.Rendering.MeshDecimation
             Edge
         }
         
-        public EGizmosMode m_GimzosMode = EGizmosMode.None;
+        public EGizmosMode m_GizmosMode = EGizmosMode.None;
         private void OnDrawGizmos()
         {
             if (m_Constructor == null || m_Constructor.vertices.Count == 0)
@@ -60,7 +60,7 @@ namespace Examples.Rendering.MeshDecimation
             Gizmos.matrix = transform.localToWorldMatrix;
             vertexCount = m_Constructor.vertices.Count;
             trianglesCount = m_Constructor.triangles.Count;
-            switch (m_GimzosMode)
+            switch (m_GizmosMode)
             {
                 case EGizmosMode.Vertex:
                     foreach (var point in m_Constructor.vertices)
