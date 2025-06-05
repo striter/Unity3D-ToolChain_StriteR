@@ -21,8 +21,8 @@ namespace Examples.Algorithm.Geometry
         {
             time += UTime.deltaTime;
             
-            var frustumPlanes = m_Frustum.GetFrustumPlanes();
-            var frustumRays = m_Frustum.GetFrustumRays();
+            var frustumPlanes = m_Frustum.planes;
+            var frustumRays = m_Frustum.rays;
             var frustumPoints = frustumRays.GetFrustumPoints();
             
             if (m_DrawPlanes)

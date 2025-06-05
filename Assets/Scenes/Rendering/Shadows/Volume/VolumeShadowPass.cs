@@ -9,15 +9,15 @@ namespace Examples.Rendering.Shadows.Volume
     public class VolumeShadowPass : ScriptableRenderPass
     {
         private VolumeShadowData m_Data;
-        private Material m_Materials;
+        private Material m_Material;
         private static readonly int kVolumeShadow = Shader.PropertyToID("_VolumeShadowTexture");
         private static readonly RenderTargetIdentifier kVolumeShadowRT = new RenderTargetIdentifier(kVolumeShadow);
         private static readonly int kShadowVolumeParams = Shader.PropertyToID("_ShadowVolumeParams");
-        private static readonly string kKeyword = "SHADOWS_VOLUME";
+        private static readonly string kKeyword = "Volume Shadow";
         public VolumeShadowPass Setup(VolumeShadowData _data, Material _material)
         {
             m_Data = _data;
-            m_Materials = _material;
+            m_Material = _material;
             renderPassEvent = RenderPassEvent.BeforeRenderingOpaques;
             return this;
         }
@@ -33,16 +33,16 @@ namespace Examples.Rendering.Shadows.Volume
 
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
-            if (!m_Materials)
+            if (!m_Material)
                 return;
             
-            var cmd = CommandBufferPool.Get("Volume Shadow");
-            cmd.BeginSample("Volume Shadow");
+            var cmd = CommandBufferPool.Get(kKeyword);
+            cmd.BeginSample(kKeyword);
             cmd.SetGlobalVector(kShadowVolumeParams,new float4(m_Data.bias,m_Data.normal,0,0));
             _context.ExecuteCommandBuffer(cmd);
             var drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
             drawingSettings.perObjectData = PerObjectData.None;
-            drawingSettings.overrideMaterial = m_Materials;
+            drawingSettings.overrideMaterial = m_Material;
             drawingSettings.overrideMaterialPassIndex = 0;
             var filterSettings = new FilteringSettings(RenderQueueRange.opaque) { layerMask = _renderingData.cameraData.camera.cullingMask };
             _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
@@ -53,8 +53,8 @@ namespace Examples.Rendering.Shadows.Volume
             cmd.Clear();
             cmd.SetRenderTarget(kVolumeShadowRT,_renderingData.cameraData.renderer.cameraDepthTargetHandle);
             cmd.ClearRenderTarget(false,true,Color.black);
-            cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, m_Materials,0,2);
-            cmd.EndSample("Volume Shadow");
+            cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, m_Material,0,2);
+            cmd.EndSample(kKeyword);
             _context.ExecuteCommandBuffer(cmd);
         }
 

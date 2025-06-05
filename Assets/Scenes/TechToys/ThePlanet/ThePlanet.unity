@@ -31579,7 +31579,7 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: 2
+  m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
@@ -31679,6 +31679,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PositionDamper:
     mode: 3
+    constant: 0
     halfLife: 0.2
     stiffness: 81
     damping: 13.6
@@ -31687,18 +31688,9 @@ MonoBehaviour:
       z: 0.35
       r: -0.5
       poleMatching: 1
-      _xp:
-        x: 0
-        y: 0
-        z: 0
-        w: 0
-      _w: 31.415928
-      _d: 29.428862
-      _k1: 0.022281691
-      _k2: 0.0010132118
-      _k3: -0.005570423
   m_RotationDamper:
     mode: 3
+    constant: 0
     halfLife: 0.05
     stiffness: 97
     damping: 22.9
@@ -31707,18 +31699,9 @@ MonoBehaviour:
       z: 0.35
       r: -0.5
       poleMatching: 1
-      _xp:
-        x: 0
-        y: 0
-        z: 0
-        w: 0
-      _w: 31.415928
-      _d: 29.428862
-      _k1: 0.022281691
-      _k2: 0.0010132118
-      _k3: -0.005570423
   m_ZoomDamper:
     mode: 3
+    constant: 0
     halfLife: 0.3
     stiffness: 80.6
     damping: 16.8
@@ -31727,16 +31710,6 @@ MonoBehaviour:
       z: 0.35
       r: -0.5
       poleMatching: 1
-      _xp:
-        x: 0
-        y: 0
-        z: 0
-        w: 0
-      _w: 31.415928
-      _d: 29.428862
-      _k1: 0.022281691
-      _k2: 0.0010132118
-      _k3: -0.005570423
   m_RootPosition: {x: 0, y: 0, z: 0}
   m_Fov: 50
   m_SphericalHeight: 0
@@ -49317,12 +49290,16 @@ MonoBehaviour:
     m_MixRed: {x: 0, y: 0, z: 0}
     m_MixGreen: {x: 0, y: 0, z: 0}
     m_MixBlue: {x: 0, y: 0, z: 0}
-    m_UseMaskTexture: 0
     m_Bloom: 1
     m_BloomData:
       m_SampleMode: 0
       m_Threshold: 1.4
-      m_LayerMask: 2147483647
+      m_MaskData:
+        mode: 0
+        renderMask: 0
+        overrideMaterial: {fileID: 0}
+        overrideShader: {fileID: 0}
+        inheritDepth: 0
       m_Color: {r: 1, g: 1, b: 1, a: 1}
       m_Blur:
         m_BlurType: 8
@@ -52155,6 +52132,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_RotationDamper:
     mode: 1
+    constant: 0
     halfLife: 0.5
     stiffness: 55
     damping: 8.2
@@ -52163,16 +52141,6 @@ MonoBehaviour:
       z: 0
       r: 0
       poleMatching: 0
-      _xp:
-        x: 0
-        y: 0
-        z: 0
-        w: 0
-      _w: 0
-      _d: 0
-      _k1: NaN
-      _k2: Infinity
-      _k3: NaN
 --- !u!1 &1479563081
 GameObject:
   m_ObjectHideFlags: 0

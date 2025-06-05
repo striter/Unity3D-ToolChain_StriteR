@@ -35,13 +35,12 @@ namespace Runtime.Geometry
     }
     
     [Serializable]
-    public partial struct G2Box : IGeometry2, IConvex2 , IArea2,IRayArea2Intersection,ISerializationCallbackReceiver
+    public partial struct G2Box : IConvex2 , IArea2,IRayArea2Intersection,ISerializationCallbackReceiver
     {
-        public void OnBeforeSerialize(){  }
-        public void OnAfterDeserialize()=>Ctor();
+        public void OnBeforeSerialize() { }
+        public void OnAfterDeserialize() => Ctor();
 
         public G2Box Move(float2 _deltaPosition)=> new G2Box(center + _deltaPosition, extent);
-        
         
         public static G2Box MinSize(float2 _min, float2 _size) => new G2Box(_min + _size / 2, _size / 2);
         public static G2Box Minmax(float2 _min, float2 _max)
@@ -100,8 +99,8 @@ namespace Runtime.Geometry
 
         public float2 Origin => center;
 
-        public GBox To3XZ() => new GBox(center.to3xz(),extent.to3xz());
-        public GBox To3XY() => new GBox(center.to3xy(),extent.to3xy());
+        public GBox To3XZ() => new(center.to3xz(),extent.to3xz());
+        public GBox To3XY() => new(center.to3xy(),extent.to3xy());
 
         public IEnumerator<float2> GetEnumerator()
         {
@@ -154,7 +153,6 @@ namespace Runtime.Geometry
         public override bool Equals(object obj) => obj is G2Box other && Equals(other);
 
         public override int GetHashCode() => HashCode.Combine(center, extent, size, min, max);
-
         
         public override string ToString() => $"G2Box {center} {extent}";
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

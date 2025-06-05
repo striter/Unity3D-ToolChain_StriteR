@@ -70,7 +70,7 @@ namespace EndlessOcean
             var tangents = PoolList<Vector4>.Empty(kListQuery);
             var positions = ULowDiscrepancySequences.PoissonDisk2D(m_CellDivision);
 
-            var frustumPlanes = new GFrustum(m_CullingCamera).GetFrustumPlanes();
+            var frustumPlanes = new GFrustum(m_CullingCamera).planes;
             foreach (var node in m_Chunk.GetLeafs())
             {
                 var boundary = node.boundary;

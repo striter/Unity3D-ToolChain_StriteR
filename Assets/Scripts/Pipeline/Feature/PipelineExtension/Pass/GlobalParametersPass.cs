@@ -23,8 +23,11 @@ namespace Rendering.Pipeline
             private static readonly int kOrthoCameraPositionTR = Shader.PropertyToID("_OrthoCameraPosTR");
 
             private static readonly int kMatrixV = Shader.PropertyToID("_Matrix_V");
+            private static readonly int kMatrixI_V = Shader.PropertyToID("_Matrix_I_V");
             private static readonly int kMatrix_VP = Shader.PropertyToID("_Matrix_VP");
             private static readonly int kMatrix_I_VP=Shader.PropertyToID("_Matrix_I_VP");
+            private static readonly int kMatrix_P = Shader.PropertyToID("_Matrix_P");
+            private static readonly int kMatrix_I_P = Shader.PropertyToID("_Matrix_I_P");
         #endregion
 
             public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
@@ -41,7 +44,7 @@ namespace Rendering.Pipeline
                 }
                 else
                 {
-                    var rays = new GFrustum(camera).GetFrustumRays();
+                    var rays = new GFrustum(camera).rays;
                     Shader.SetGlobalVector(kFrustumCornersRayBL, rays.bottomLeft.direction.to4());
                     Shader.SetGlobalVector(kFrustumCornersRayBR, rays.bottomRight.direction.to4());
                     Shader.SetGlobalVector(kFrustumCornersRayTL, rays.topLeft.direction.to4());
@@ -55,6 +58,9 @@ namespace Rendering.Pipeline
                 Shader.SetGlobalMatrix(kMatrix_VP,vp);
                 Shader.SetGlobalMatrix(kMatrix_I_VP,vp.inverse);
                 Shader.SetGlobalMatrix(kMatrixV,view);
+                Shader.SetGlobalMatrix(kMatrixI_V,view.inverse);
+                Shader.SetGlobalMatrix(kMatrix_P,projection);
+                Shader.SetGlobalMatrix(kMatrix_I_P,projection.inverse);
             }
 
 

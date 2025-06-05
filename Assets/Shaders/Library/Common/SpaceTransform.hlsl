@@ -32,6 +32,9 @@ float2 TransformHClipToNDC(float4 _hClip)
 float4x4 _Matrix_VP;
 float4x4 _Matrix_V;
 float4x4 _Matrix_I_VP;
+float4x4 _Matrix_I_V;
+float4x4 _Matrix_P;
+float4x4 _Matrix_I_P;
 float3 TransformClipToWorld(float3 _positionCS)
 {
     float4 pos=mul(_Matrix_I_VP,float4(_positionCS,1));

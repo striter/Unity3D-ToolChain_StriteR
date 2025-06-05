@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Environment
+  m_Name: VolumeShadowReceiver
   m_Shader: {fileID: 4800000, guid: 7b065a19f4f6ae049b27464e7631f700, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0

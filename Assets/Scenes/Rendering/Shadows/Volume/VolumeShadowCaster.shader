@@ -81,7 +81,7 @@ Shader "Hidden/VolumeShadowCasterPasses"
         }
         Pass
         {      
-            Name "VolumeSample"     
+            Name "VolumeSample"
             Stencil {
                 Ref 1
                 Comp LEqual
@@ -117,7 +117,7 @@ Shader "Hidden/VolumeShadowCasterPasses"
                 v2fSample o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-                    o.positionCS = float4(v.positionOS.xyz, 1.0);
+                o.positionCS = float4(v.positionOS.xyz, 1.0);
                 #if UNITY_UV_STARTS_AT_TOP
                     o.positionCS.y *= -1;
                 #endif
