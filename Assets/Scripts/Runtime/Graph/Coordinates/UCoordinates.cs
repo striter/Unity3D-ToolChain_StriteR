@@ -9,6 +9,26 @@ public static class UCoordinates
         public static int2 ToIndex(int _index,int _width) => new int2(_index % _width, _index / _width);
     }
     
+    public static class Polar
+    {
+        public static float2 ToPolar(float2 _cartesian)
+        {
+            var radius = math.length(_cartesian);
+            var theta = math.atan2(_cartesian.x, _cartesian.y);
+            if (theta < 0)
+                theta += kmath.kPI2;
+            theta *= kmath.kInv2PI;
+            return new float2(radius, theta);
+        }
+
+        public static float2 ToCartesian(float2 _polar)
+        {
+            var radius = _polar.x;
+            var angle = _polar.y * kmath.kPI2;
+            return new float2(radius * math.cos(angle), radius * math.sin(angle));
+        }
+    }
+    
     public static class Cylindrical
     {
         public static float3 ToCartesian(float _rad,float _height,float _radius = 1f)
@@ -22,6 +42,7 @@ public static class UCoordinates
             return new float3(math.sqrt(_cartesian.x*_cartesian.x + _cartesian.z*_cartesian.z),_cartesian.y,math.atan2(_cartesian.z,_cartesian.x));
         }
     }
+
     
     public static class Spherical
     {
