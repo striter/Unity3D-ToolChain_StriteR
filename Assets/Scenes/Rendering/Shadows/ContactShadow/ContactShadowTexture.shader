@@ -42,9 +42,7 @@ Shader "Hidden/ContactShadow"
                 return o;
             }
             
-			float CastScreenSpaceShadowRay(
-				float3 RayOriginTranslatedWorld, float3 RayDirection, float RayLength, int NumSteps,
-				float Dither, float CompareToleranceScale)
+			float CastScreenSpaceShadowRay(float3 RayOriginTranslatedWorld, float3 RayDirection, float RayLength, int NumSteps,float Dither, float CompareToleranceScale)
 			{
             	float4x4 worldToHClip = GetWorldToHClipMatrix();
 				float4 RayStartClip = mul(worldToHClip,float4(RayOriginTranslatedWorld, 1));
@@ -106,7 +104,7 @@ Shader "Hidden/ContactShadow"
                 
                 float maxMarchDistance = .1;
                 int marchStepCount = 32;
-                return pow(1 - CastScreenSpaceShadowRay(samplePos,-lightDir,maxMarchDistance,marchStepCount,0,1),2);
+                return pow(1 - CastScreenSpaceShadowRay(samplePos,-lightDir,maxMarchDistance,marchStepCount,0,1),10);
             }
 
             ENDHLSL

@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: PipelineExtension
   m_EditorClassIdentifier: 
   m_Active: 1
-  m_Resources: {fileID: 0}
+  m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
   m_Data:
-    m_Features: -1
+    m_Features: 2
 --- !u!114 &-5567263896593191266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26,7 +26,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb1754d4499a75842b2d825866c24acf, type: 3}
-  m_Name: ScreenSpaceShadowFeature
+  m_Name: ContactShadowFeature
   m_EditorClassIdentifier: 
   m_Active: 1
   m_Shader: {fileID: 4800000, guid: 9b4af0cf46e4207419b5496b1d5b9684, type: 3}
@@ -40,7 +40,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de640fe3d0db1804a85f9fc8f5cadab6, type: 3}
-  m_Name: ScreenSpaceShadowRenderer
+  m_Name: ContactShadowRenderer
   m_EditorClassIdentifier: 
   debugShaders:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7,
@@ -114,4 +114,4 @@ MonoBehaviour:
     m_ContrastSkip: 0.1
     m_RelativeSkip: 0.2
     m_SubPixelBlend: 1
-    blend: 0.115
+    blend: 0.104

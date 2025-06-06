@@ -8,7 +8,7 @@ namespace Rendering.Pipeline
     {
         public DAntiAliasing m_AntiAliasing = DAntiAliasing.kDefault;
         private PostProcess_AntiAliasing m_AntiAliasingPostProcess;
-        private SRP_TAAPass m_TAA;
+        private SRP_TAASetupPass m_TAASetup;
         private PostProcessPass m_OpaquePostProcess;
         private PostProcessPass m_ScreenPostProcess;
         
@@ -17,16 +17,16 @@ namespace Rendering.Pipeline
         private readonly List<IPostProcessBehaviour> m_ScreenProcessing = new List<IPostProcessBehaviour>();
         public override void Create()
         {
-            m_TAA = new SRP_TAAPass() { renderPassEvent = RenderPassEvent.BeforeRenderingOpaques - 1 };
+            m_TAASetup = new SRP_TAASetupPass() { renderPassEvent = RenderPassEvent.BeforeRendering };
             m_OpaquePostProcess = new PostProcessPass() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 3 };
             m_ScreenPostProcess = new PostProcessPass() { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing + 1 };
-            m_AntiAliasingPostProcess = new PostProcess_AntiAliasing(m_AntiAliasing, m_TAA);
+            m_AntiAliasingPostProcess = new PostProcess_AntiAliasing(m_AntiAliasing, m_TAASetup);
         }
 
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            m_TAA.Dispose();
+            m_TAASetup.Dispose();
             m_OpaquePostProcess.Dispose();
             m_ScreenPostProcess.Dispose();
             m_AntiAliasingPostProcess.Dispose();
@@ -44,7 +44,7 @@ namespace Rendering.Pipeline
                 if (m_AntiAliasing.mode != EAntiAliasing.None)
                     m_PostprocessQueue.Add(m_AntiAliasingPostProcess);
                 if(m_AntiAliasing.mode == EAntiAliasing.TAA)
-                    _renderer.EnqueuePass(m_TAA);
+                    _renderer.EnqueuePass(m_TAASetup);
                 
                 m_PostprocessQueue.AddRange(_renderingData.cameraData.camera.GetComponentsInChildren<IPostProcessBehaviour>());
                 foreach (var volume in PostProcessGlobalVolume.kVolumes)

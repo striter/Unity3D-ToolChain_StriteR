@@ -19,7 +19,7 @@ namespace Rendering.PostProcess
         private DAntiAliasing m_AliasingData;
         private DAntiAliasingCore m_AntiAliasingPassCore;
 
-        public PostProcess_AntiAliasing(DAntiAliasing _data,SRP_TAAPass _taaPass)
+        public PostProcess_AntiAliasing(DAntiAliasing _data,SRP_TAASetupPass _taaPass)
         {
             m_AliasingData = _data;
             m_AntiAliasingPassCore = new DAntiAliasingCore(_taaPass);
@@ -81,14 +81,15 @@ namespace Rendering.PostProcess
     }
 #endregion
 
-    public class SRP_TAAPass : ScriptableRenderPass
+    public class SRP_TAASetupPass : ScriptableRenderPass
     {
         private const int kJitterAmount = 16;
         private uint jitterIndex = 0;
 
-        private int kHistoryBufferID;
+        private bool m_FirstBuffer = true;
+        private static readonly int kHistoryBufferID = Shader.PropertyToID("_HistoryBuffer");
         private static readonly float2[] kJitters = new float2[kJitterAmount].Remake((i,p)=>ULowDiscrepancySequences.Halton2D((uint)i) - .5f);
-        private static readonly Dictionary<int, TAAHistoryBuffer> m_Buffers = new Dictionary<int, TAAHistoryBuffer>();
+        private static readonly Dictionary<int, TAAHistoryBuffer> m_Buffers = new();
         
         class TAAHistoryBuffer
         {
@@ -117,13 +118,6 @@ namespace Rendering.PostProcess
             public void Dispose()=> RenderTexture.ReleaseTemporary(buffer);
         }
 
-        private bool m_FirstBuffer;
-        
-        public SRP_TAAPass()
-        {
-            kHistoryBufferID = Shader.PropertyToID("_HistoryBuffer");
-            m_FirstBuffer = true;
-        }
 
         public void Dispose()
         {
@@ -194,8 +188,8 @@ namespace Rendering.PostProcess
         readonly int kRelativeSkip = Shader.PropertyToID("_FXAARelativeSkip");
         readonly int kBlendStrength = Shader.PropertyToID("_FXAABlendStrength");
 
-        private SRP_TAAPass m_TAAPass;
-        public DAntiAliasingCore(SRP_TAAPass _taaPass)
+        private SRP_TAASetupPass m_TAAPass;
+        public DAntiAliasingCore(SRP_TAASetupPass _taaPass)
         {
             m_TAAPass = _taaPass;
         }

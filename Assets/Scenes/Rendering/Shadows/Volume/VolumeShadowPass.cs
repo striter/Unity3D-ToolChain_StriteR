@@ -13,7 +13,8 @@ namespace Examples.Rendering.Shadows.Volume
         private static readonly int kVolumeShadow = Shader.PropertyToID("_VolumeShadowTexture");
         private static readonly RenderTargetIdentifier kVolumeShadowRT = new RenderTargetIdentifier(kVolumeShadow);
         private static readonly int kShadowVolumeParams = Shader.PropertyToID("_ShadowVolumeParams");
-        private static readonly string kKeyword = "Volume Shadow";
+        private static readonly string kKeyword = "SHADOWS_VOLUME";
+        private static readonly string kTitle = "Volume Shadow";
         public VolumeShadowPass Setup(VolumeShadowData _data, Material _material)
         {
             m_Data = _data;
@@ -36,8 +37,8 @@ namespace Examples.Rendering.Shadows.Volume
             if (!m_Material)
                 return;
             
-            var cmd = CommandBufferPool.Get(kKeyword);
-            cmd.BeginSample(kKeyword);
+            var cmd = CommandBufferPool.Get(kTitle);
+            cmd.BeginSample(kTitle);
             cmd.SetGlobalVector(kShadowVolumeParams,new float4(m_Data.bias,m_Data.normal,0,0));
             _context.ExecuteCommandBuffer(cmd);
             var drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
@@ -54,7 +55,7 @@ namespace Examples.Rendering.Shadows.Volume
             cmd.SetRenderTarget(kVolumeShadowRT,_renderingData.cameraData.renderer.cameraDepthTargetHandle);
             cmd.ClearRenderTarget(false,true,Color.black);
             cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, m_Material,0,2);
-            cmd.EndSample(kKeyword);
+            cmd.EndSample(kTitle);
             _context.ExecuteCommandBuffer(cmd);
         }
 

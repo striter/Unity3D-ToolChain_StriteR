@@ -31,7 +31,7 @@ Shader "Hidden/ContactShadowReceiver"
 			#include "Assets/Shaders/Library/Common.hlsl"
 			#include "Assets/Shaders/Library/Lighting.hlsl"
 			
-			#pragma multi_compile_fragment _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+			// #pragma multi_compile_fragment _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
 			#pragma multi_compile_fragment _ CONTACT_SHADOW
 
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);

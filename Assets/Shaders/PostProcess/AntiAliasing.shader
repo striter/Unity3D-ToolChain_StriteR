@@ -8,7 +8,7 @@ Shader "Hidden/PostProcess/AntiAliasing"
 	{
 		Cull Off ZWrite Off ZTest Always
 		HLSLINCLUDE
-			#include "Assets/Shaders/Library/PostProcess.hlsl"
+		#include "Assets/Shaders/Library/PostProcess.hlsl"
 		ENDHLSL
 		
 		Pass
@@ -144,7 +144,7 @@ Shader "Hidden/PostProcess/AntiAliasing"
 			HLSLPROGRAM
 			#pragma vertex vert_img
 			#pragma fragment frag
-			TEXTURE2D(_HistoryBuffer);SAMPLER(sampler_HistoryBuffer);
+			TEXTURE2D(_HistoryBuffer); SAMPLER(sampler_HistoryBuffer);
 			float _Blend;
 
 			void SampleMinMax(float2 uv,inout float3 _min,inout float3 _max)
@@ -157,9 +157,8 @@ Shader "Hidden/PostProcess/AntiAliasing"
 			
 			half4 frag (v2f_img i) : SV_Target
 			{
-				float2 motionVector = SampleMotionVector(i.uv);
-				
 				half3 current = SampleMainTex(i.uv).rgb;
+				float2 motionVector = SampleMotionVector(i.uv);
 				float2 historyUV = i.uv-motionVector;
 				half3 history = SAMPLE_TEXTURE2D(_HistoryBuffer,sampler_HistoryBuffer,historyUV).rgb;
 				history = lerp(current,history,step(max(historyUV),1) * step(0,min(historyUV))); //Clamp
