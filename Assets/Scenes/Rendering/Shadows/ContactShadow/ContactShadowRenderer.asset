@@ -105,7 +105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73a36542a2a2406bb20ceb87b0f8ea59, type: 3}
   m_Name: PostProcessFeature
   m_EditorClassIdentifier: 
-  m_Active: 0
+  m_Active: 1
   m_AntiAliasing:
     mode: 2
     fxaa: 2

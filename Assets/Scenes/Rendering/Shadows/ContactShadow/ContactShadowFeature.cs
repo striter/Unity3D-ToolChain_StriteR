@@ -11,7 +11,7 @@ namespace Examples.Rendering.Shadows.ScreenspaceShadow
     }
     public class ContactShadowFeature : ScriptableRendererFeature
     {
-        [DefaultAsset("Hidden/VolumeShadowCasterPasses")] public Shader m_Shader;
+        [DefaultAsset("Hidden/ContactShadow")] public Shader m_Shader;
         public ScreenSpaceShadowData m_Data = ScreenSpaceShadowData.kDefault;
         private ContactShadowPass m_Pass = new();
         private Material m_Material;

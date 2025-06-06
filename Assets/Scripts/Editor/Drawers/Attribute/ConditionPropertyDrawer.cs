@@ -15,7 +15,7 @@ namespace UnityEditor.Extensions
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             if (!attribute.IsPropertyVisible( property))
-                return 0;
+                return -2;
 
             return base.GetPropertyHeight(property, label);
         }

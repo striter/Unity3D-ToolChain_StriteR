@@ -46,7 +46,7 @@ namespace Examples.Rendering.Shadows.ScreenspaceShadow
             cmd.Clear();
             cmd.SetRenderTarget(kShadowRT,_renderingData.cameraData.renderer.cameraDepthTargetHandle);
             cmd.ClearRenderTarget(false,true,Color.black);
-            cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, m_Material);
+            cmd.DrawMesh(UPipeline.kFullscreenMesh, Matrix4x4.identity, m_Material);
             _context.ExecuteCommandBuffer(cmd);
         }
 

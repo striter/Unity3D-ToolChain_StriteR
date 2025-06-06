@@ -118,7 +118,6 @@ namespace Rendering.PostProcess
             public void Dispose()=> RenderTexture.ReleaseTemporary(buffer);
         }
 
-
         public void Dispose()
         {
             foreach (var buffer in m_Buffers.Values)

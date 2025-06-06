@@ -12,12 +12,12 @@ namespace Rendering.Pipeline
         private PostProcessPass m_OpaquePostProcess;
         private PostProcessPass m_ScreenPostProcess;
         
-        private readonly List<IPostProcessBehaviour> m_PostprocessQueue = new List<IPostProcessBehaviour>();
-        private readonly List<IPostProcessBehaviour> m_OpaqueProcessing = new List<IPostProcessBehaviour>();
-        private readonly List<IPostProcessBehaviour> m_ScreenProcessing = new List<IPostProcessBehaviour>();
+        private readonly List<IPostProcessBehaviour> m_PostprocessQueue = new();
+        private readonly List<IPostProcessBehaviour> m_OpaqueProcessing = new();
+        private readonly List<IPostProcessBehaviour> m_ScreenProcessing = new();
         public override void Create()
         {
-            m_TAASetup = new SRP_TAASetupPass() { renderPassEvent = RenderPassEvent.BeforeRendering };
+            m_TAASetup = new SRP_TAASetupPass() { renderPassEvent = RenderPassEvent.BeforeRenderingPrePasses };
             m_OpaquePostProcess = new PostProcessPass() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 3 };
             m_ScreenPostProcess = new PostProcessPass() { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing + 1 };
             m_AntiAliasingPostProcess = new PostProcess_AntiAliasing(m_AntiAliasing, m_TAASetup);
@@ -59,7 +59,7 @@ namespace Rendering.Pipeline
             }
             
             if (m_PostprocessQueue.Count<=0)
-                return; 
+                return;
             //Sort&Enqeuue
             m_OpaqueProcessing.Clear();
             m_ScreenProcessing.Clear();

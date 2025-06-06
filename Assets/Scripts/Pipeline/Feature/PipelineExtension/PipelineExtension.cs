@@ -30,7 +30,7 @@ namespace Rendering.Pipeline
     public class PipelineExtension : AScriptableRendererFeature
     {
         public static PipelineExtension Instance { get; private set; } 
-        public RenderResources m_Resources;
+        [DefaultAsset("Assets/Settings/RenderResources.asset")] public RenderResources m_Resources;
         public FPipelineExtensionParameters m_Data = FPipelineExtensionParameters.kDefault;
         private GlobalParametersPass m_GlobalParameters;
         private NormalTexturePass m_Normal;

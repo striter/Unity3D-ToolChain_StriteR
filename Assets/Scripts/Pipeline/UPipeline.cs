@@ -10,7 +10,7 @@ namespace Rendering
 {
     public static class UPipeline
     {
-        public static PassiveInstance<List<ShaderTagId>> kDefaultShaderTags => new PassiveInstance<List<ShaderTagId>>(() =>
+        public static PassiveInstance<List<ShaderTagId>> kDefaultShaderTags => new(() =>
             new List<ShaderTagId>()
             {
                 new ShaderTagId("SRPDefaultUnlit"),
@@ -19,8 +19,34 @@ namespace Rendering
                 new ShaderTagId("LightweightForward"),
             });
 
-        public static readonly PassiveInstance<ShaderTagId> kLightVolumeTag =new PassiveInstance<ShaderTagId>(()=>new ShaderTagId("LightVolume"));
+        public static readonly PassiveInstance<ShaderTagId> kLightVolumeTag =new(()=>new ShaderTagId("LightVolume"));
         
+        public static readonly Mesh kFullscreenMesh = GetFullScreenMesh();
+        private static Mesh GetFullScreenMesh()
+        {
+            float topV = 1.0f;
+            float bottomV = 0.0f;
+
+            var fullScreenMesh = new Mesh { name = "Fullscreen Quad" };
+            fullScreenMesh.SetVertices(new List<Vector3> {
+                new (-1.0f, -1.0f, 0.0f),
+                new (-1.0f,  1.0f, 0.0f),
+                new (1.0f, -1.0f, 0.0f),
+                new (1.0f,  1.0f, 0.0f)
+            });
+
+            fullScreenMesh.SetUVs(0, new List<Vector2> {
+                new (0.0f, bottomV),
+                new (0.0f, topV),
+                new (1.0f, bottomV),
+                new (1.0f, topV)
+            });
+
+            fullScreenMesh.SetIndices(new[] { 0, 1, 2, 2, 1, 3 }, MeshTopology.Triangles, 0, false);
+            fullScreenMesh.UploadMeshData(true);
+            return fullScreenMesh;
+        }
+
 
         public static DrawingSettings CreateDrawingSettings(bool _fillDefault, Camera _camera)
         {

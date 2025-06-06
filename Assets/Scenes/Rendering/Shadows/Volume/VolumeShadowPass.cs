@@ -54,7 +54,7 @@ namespace Examples.Rendering.Shadows.Volume
             cmd.Clear();
             cmd.SetRenderTarget(kVolumeShadowRT,_renderingData.cameraData.renderer.cameraDepthTargetHandle);
             cmd.ClearRenderTarget(false,true,Color.black);
-            cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, m_Material,0,2);
+            cmd.DrawMesh(UPipeline.kFullscreenMesh, Matrix4x4.identity, m_Material,0,2);
             cmd.EndSample(kTitle);
             _context.ExecuteCommandBuffer(cmd);
         }

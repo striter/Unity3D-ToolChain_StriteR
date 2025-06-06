@@ -107,11 +107,11 @@ public class CullingMaskAttribute : PropertyAttribute {
 }
 
 [AttributeUsage(AttributeTargets.Field)]
-public class DefaultAsset : PropertyAttribute
+public class DefaultAssetAttribute : PropertyAttribute
 {
-    public object m_AssetPath;
-    public DefaultAsset(object assetPath)
+    public string m_RelativePath;
+    public DefaultAssetAttribute(string relativePath)
     {
-        m_AssetPath = assetPath;
+        m_RelativePath = relativePath;
     }
 }
